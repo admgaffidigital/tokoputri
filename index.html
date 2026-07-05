@@ -5672,7 +5672,7 @@ window.previewTempoReceipt = async (orderId) => {
         
         let h = `<div class="text-center font-bold" style="font-size:13px;margin-bottom:2px;">${esc(sN)}</div>`;
         if(sW) h += `<div class="text-center" style="margin-bottom:4px;">WA: ${esc(sW)}</div>`;
-        h += `<div class="text-center font-bold uppercase mb-2" style="font-size:14px;border-bottom:1px solid #000;border-top:1px solid #000;padding:2px 0;">NOTA TEMPO${o.payment?.paymentStatus === 'lunas' ? ' - LUNAS' : ''}</div>`;
+        h += `<div class="text-center font-bold uppercase my-2" style="font-size:14px;border-bottom:1px solid #000;border-top:1px solid #000;padding:2px 0;">NOTA TEMPO${o.payment?.paymentStatus === 'lunas' ? ' - LUNAS' : ''}</div>`;
         h += `<div style="white-space:pre;">Order: #${o.orderId}</div><div style="white-space:pre;">Tgl  : ${d}</div><div style="white-space:pre;">Plg  : ${esc(o.customer?.name||'Guest').substring(0,20)}</div>`;
         if (o.payment?.tempoDueDate) {
             h += `<div style="white-space:pre;">J.Tmp: ${new Date(o.payment.tempoDueDate).toLocaleDateString('id-ID')}</div>`;
@@ -5701,7 +5701,7 @@ window.previewTempoReceipt = async (orderId) => {
             }
         }
         
-        h += `<div style="white-space:pre;font-weight:bold;font-size:13px;margin-top:4px;">${pL('TOTAL KREDIT', (o.payment?.grandTotal || subtotal).toLocaleString('id-ID'))}</div>`;
+        h += `<div style="white-space:pre;font-weight:bold;margin-top:4px;">${pL('TOTAL KREDIT', (o.payment?.grandTotal || subtotal).toLocaleString('id-ID'))}</div>`;
         h += `<div class="border-b border-black my-2" style="border-width:1px;"></div>`;
         
         let totalPaid = 0;
@@ -5741,9 +5741,9 @@ window.previewTempoReceipt = async (orderId) => {
         
         let tagihanAkhir = sisaPokok + latePenalty;
         h += `<div class="border-b border-black my-2" style="border-width:1px;"></div>`;
-        h += `<div style="white-space:pre;font-weight:black;font-size:14px;">${pL('SISA TAGIHAN', Math.round(tagihanAkhir).toLocaleString('id-ID'))}</div>`;
+        h += `<div style="white-space:pre;font-weight:black;">${pL('SISA TAGIHAN', Math.round(tagihanAkhir).toLocaleString('id-ID'))}</div>`;
         
-        h += `<div class="border-b border-dashed border-black my-3"></div><div class="text-center" style="font-size:10px;">Terima kasih atas kepercayaannya.</div>`;
+        h += `<div class="border-b border-dashed border-black my-2"></div><div class="text-center my-2" style="font-size:10px;">Terima kasih atas kepercayaannya.</div><div class="border-b border-dashed border-black my-2"></div><div style="height:20px;"></div>`;
         
         setH('receipt-paper-content', h);
         const mRec = el('receipt-preview-modal');
@@ -5754,7 +5754,6 @@ window.previewTempoReceipt = async (orderId) => {
         hLoad(); showToast('Gagal memuat struk: ' + e.message);
     }
 };
-
 window.markTempoPaid = async (orderId) => {
     if (!confirm('Tandai tagihan tempo ini sebagai LUNAS?')) return;
     try {
