@@ -5745,8 +5745,11 @@ window.previewTempoReceipt = async (orderId) => {
         
         h += `<div class="border-b border-dashed border-black my-3"></div><div class="text-center" style="font-size:10px;">Terima kasih atas kepercayaannya.</div>`;
         
-        setH('receipt-html', h);
+        setH('receipt-paper-content', h);
+        const mRec = el('receipt-preview-modal');
+        if (mRec && mRec.classList.contains('hidden')) pushModalHistory('receipt');
         show('receipt-preview-modal');
+        setTimeout(() => { el('receipt-preview-modal').classList.remove('opacity-0'); el('receipt-preview-modal-box').classList.remove('scale-95'); }, 10);
     } catch (e) {
         hLoad(); showToast('Gagal memuat struk: ' + e.message);
     }
