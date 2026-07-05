@@ -678,7 +678,7 @@
     </div>
 
     <div class='fixed inset-0 z-[100] bg-slate-900/80 hidden flex items-center justify-center p-3 opacity-0 transition-all duration-300' id='admin-order-modal' onclick='if(event.target===this) closeOrderDetailModal()'>
-        <div class='bg-white dark:bg-slate-800 rounded-[2rem] w-full max-w-md sm:max-w-lg md:max-w-3xl lg:max-w-4xl xl:max-w-5xl max-h-[92dvh] overflow-y-auto hide-scrollbar shadow-2xl border border-slate-200 dark:border-slate-700 relative transform scale-95 transition-all duration-300 flex flex-col' id='admin-order-modal-box'>
+        <div class='bg-white dark:bg-slate-800 rounded-[2rem] w-full max-w-md sm:max-w-lg md:max-w-3xl lg:max-w-4xl xl:max-w-[1200px] max-h-[92dvh] overflow-y-auto hide-scrollbar shadow-2xl border border-slate-200 dark:border-slate-700 relative transform scale-95 transition-all duration-300 flex flex-col' id='admin-order-modal-box'>
             <div class='sticky top-0 bg-white dark:bg-slate-800 px-6 py-4 border-b border-slate-200 flex justify-between items-center z-20 rounded-t-[2rem] dark:border-slate-700'>
                 <h3 class='font-black text-slate-900 dark:text-white text-base flex items-center gap-2'><i class='fa-solid fa-file-invoice text-emerald-500'></i> Detail Pesanan</h3>
                 <button class='w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 dark:bg-slate-700 text-slate-500 hover:text-rose-500 transition-all' onclick='closeOrderDetailModal()'><i class='fa-solid fa-xmark'></i></button>
@@ -774,11 +774,11 @@
             </div>
           
             <div class='scroll-content hide-scrollbar pb-[calc(7rem+env(safe-area-inset-bottom))]'>
-                <div class='w-full max-w-full xl:max-w-[1200px] px-4 lg:px-8 mx-auto mt-6' id='dynamic-banners-container'></div>
-                <div class='w-full max-w-full xl:max-w-[1200px] px-4 lg:px-8 mx-auto mt-6 hidden overflow-hidden rounded-2xl' id='ad-slot-banner'></div>
-                <div class='w-full max-w-full xl:max-w-[1200px] px-4 lg:px-8 mx-auto mt-5 hidden' id='dynamic-vouchers-container'></div>
+                <div class='w-full max-w-full xl:max-w-[1200px] px-4 lg:px-10 mx-auto mt-6' id='dynamic-banners-container'></div>
+                <div class='w-full max-w-full xl:max-w-[1200px] px-4 lg:px-10 mx-auto mt-6 hidden overflow-hidden rounded-2xl' id='ad-slot-banner'></div>
+                <div class='w-full max-w-full xl:max-w-[1200px] px-4 lg:px-10 mx-auto mt-5 hidden' id='dynamic-vouchers-container'></div>
                                     
-                <div class='w-full max-w-full xl:max-w-[1200px] px-4 lg:px-8 mx-auto mt-6'>
+                <div class='w-full max-w-full xl:max-w-[1200px] px-4 lg:px-10 mx-auto mt-6'>
                     <div class='bg-white dark:bg-slate-800 rounded-[1.5rem] border border-slate-200 dark:border-slate-700 shadow-sm p-5 sm:p-7'>
                         <div class='flex items-center justify-between mb-5 pb-4 border-b border-slate-100 dark:border-slate-700/50'>
                             <div class='flex items-center gap-3'>
@@ -791,7 +791,7 @@
                     </div>
                 </div>
 
-                <div class='w-full max-w-full xl:max-w-[1200px] px-4 lg:px-8 mx-auto mt-6 mb-2'>
+                <div class='w-full max-w-full xl:max-w-[1200px] px-4 lg:px-10 mx-auto mt-6 mb-2'>
                     <div class='bg-white dark:bg-slate-800 rounded-[1.5rem] border border-slate-200 dark:border-slate-700 shadow-sm p-5 sm:p-7'>
                         <div class='flex items-center justify-between mb-5 pb-4 border-b border-slate-100 dark:border-slate-700/50'>
                             <div class='flex items-center gap-3'>
@@ -957,7 +957,7 @@
   
         <div class='view-section flex flex-col fade-in bg-slate-50 dark:bg-slate-900 hidden' id='view-cart'>
             <div class='glass-header shrink-0 px-5 flex justify-center z-30 sticky top-0 pb-3'>
-                <div class='flex items-center justify-between w-full max-w-full xl:max-w-3xl mx-auto px-4 lg:px-8'>
+                <div class='flex items-center justify-between w-full max-w-full xl:max-w-[1200px] mx-auto px-4 lg:px-10'>
                     <button class='w-10 h-10 flex items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 active:scale-95 transition-all shadow-sm' onclick='history.back()'><i class='fa-solid fa-arrow-left text-sm'></i></button>
                     <h1 class='text-base font-black text-slate-900 dark:text-white tracking-tight'>Keranjang Belanja</h1>
                     <button class='w-10 h-10 flex items-center justify-center rounded-full bg-rose-50 border border-rose-200 text-rose-500 hover:bg-rose-100 active:scale-95 transition-all shadow-sm hidden dark:bg-rose-900/20 dark:border-rose-800' id='btn-clear-cart' onclick='clearCart()'><i class='fa-solid fa-trash-can text-sm'></i></button>
@@ -971,10 +971,10 @@
                     <p class='text-slate-500 dark:text-slate-400 text-sm mb-8 font-medium'>Belum ada produk yang dipilih.</p>
                     <button class='btn-primary px-8 py-3.5 text-sm shadow-glow rounded-xl' onclick='history.back()'>Belanja Sekarang</button>
                 </div>
-                <div class='px-4 space-y-4 max-w-full xl:max-w-3xl lg:px-8 mx-auto w-full' id='cart-items-container'></div>
+                <div class='px-4 space-y-4 max-w-full xl:max-w-[1200px] lg:px-8 mx-auto w-full' id='cart-items-container'></div>
             </div>
             <div class='absolute bottom-0 left-0 w-full glass-nav px-4 pt-3 z-30' id='cart-bottom-bar'>
-                <div class='max-w-full xl:max-w-3xl px-2 lg:px-8 mx-auto flex items-center justify-between gap-3'>
+                <div class='max-w-full xl:max-w-[1200px] px-4 lg:px-10 mx-auto flex items-center justify-between gap-3'>
                     <div class='min-w-0'>
                         <p class='text-slate-400 dark:text-slate-500 text-[9px] font-black uppercase tracking-widest mb-0.5'>Total Belanja</p>
                         <p class='font-black text-slate-900 dark:text-white text-xl leading-none' id='cart-subtotal'>Rp 0</p>
@@ -988,7 +988,7 @@
 <div class='view-section flex flex-col fade-in bg-slate-50 dark:bg-slate-900 hidden' id='view-checkout'>
             
             <div class='glass-header shrink-0 px-5 flex justify-center z-30 sticky top-0 pb-3'>
-                <div class='flex items-center justify-between w-full max-w-full xl:max-w-3xl mx-auto px-4 lg:px-8'>
+                <div class='flex items-center justify-between w-full max-w-full xl:max-w-[1200px] mx-auto px-4 lg:px-10'>
                     <button class='w-10 h-10 flex items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 active:scale-95 transition-all shadow-sm' onclick='history.back()'><i class='fa-solid fa-arrow-left text-sm'></i></button>
                     <div class='text-center'>
                         <h1 class='text-base font-black text-slate-900 dark:text-white tracking-tight leading-tight'>Pengiriman</h1>
@@ -999,7 +999,7 @@
             </div>
 
             <div class='scroll-content flex-1 overflow-y-auto z-10 pt-4 pb-[calc(8rem+env(safe-area-inset-bottom))]'>
-                <div class='px-4 space-y-5 max-w-full xl:max-w-3xl lg:px-8 mx-auto w-full'>
+                <div class='px-4 space-y-5 max-w-full xl:max-w-[1200px] lg:px-8 mx-auto w-full'>
                     
                     <div class='bg-white dark:bg-slate-800 p-5 sm:p-6 rounded-[1.5rem] border border-slate-200 dark:border-slate-700 shadow-sm'>
                         <h3 class='font-black text-slate-900 dark:text-white mb-4 text-xs uppercase tracking-wider border-b border-slate-100 dark:border-slate-700 pb-3 flex items-center gap-2'><i class='fa-solid fa-truck-fast text-blue-500'></i> Opsi Pengiriman</h3>
@@ -1073,7 +1073,7 @@
             </div>
             
             <div class='absolute bottom-0 left-0 w-full glass-nav px-4 pt-3 z-30 pb-5'>
-                <div class='max-w-full xl:max-w-3xl px-2 lg:px-8 mx-auto'>
+                <div class='max-w-full xl:max-w-[1200px] px-4 lg:px-10 mx-auto'>
                     <button class='btn-primary shadow-glow rounded-2xl py-4' id='btn-checkout-next' onclick='validateAndGoToPayment()'>Lanjut ke Pembayaran <i class='fa-solid fa-arrow-right ml-1.5 text-xs'></i></button>
                 </div>
             </div>
@@ -1082,7 +1082,7 @@
 <div class='view-section flex flex-col fade-in bg-slate-50 dark:bg-slate-900 hidden' id='view-payment'>
             
             <div class='glass-header shrink-0 px-5 flex justify-center z-30 sticky top-0 pb-3'>
-                <div class='flex items-center justify-between w-full max-w-full xl:max-w-3xl mx-auto px-4 lg:px-8'>
+                <div class='flex items-center justify-between w-full max-w-full xl:max-w-[1200px] mx-auto px-4 lg:px-10'>
                     <button class='w-10 h-10 flex items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 active:scale-95 transition-all shadow-sm' onclick='history.back()'><i class='fa-solid fa-arrow-left text-sm'></i></button>
                     <div class='text-center'>
                         <h1 class='text-base font-black text-slate-900 dark:text-white tracking-tight leading-tight'>Pembayaran</h1>
@@ -1093,7 +1093,7 @@
             </div>
 
             <div class='scroll-content flex-1 overflow-y-auto z-10 pt-4 pb-[calc(11rem+env(safe-area-inset-bottom))]'>
-                <div class='px-4 space-y-5 max-w-full xl:max-w-3xl lg:px-8 mx-auto w-full'>
+                <div class='px-4 space-y-5 max-w-full xl:max-w-[1200px] lg:px-8 mx-auto w-full'>
                     
                     <div class='bg-white dark:bg-slate-800 p-5 sm:p-6 rounded-[1.5rem] border border-slate-200 dark:border-slate-700 shadow-sm'>
                         <h3 class='font-black text-slate-900 dark:text-white mb-4 text-xs uppercase tracking-wider border-b border-slate-100 dark:border-slate-700 pb-3 flex items-center gap-2'><i class='fa-solid fa-wallet text-blue-500'></i> Pilih Pembayaran</h3>
@@ -1234,7 +1234,7 @@
             </div>
             
             <div class='absolute bottom-0 left-0 w-full glass-nav px-4 pt-3 z-30 pb-5'>
-                <div class='max-w-full xl:max-w-3xl px-2 lg:px-8 mx-auto flex flex-col gap-2.5'>
+                <div class='max-w-full xl:max-w-[1200px] px-4 lg:px-10 mx-auto flex flex-col gap-2.5'>
                     <label class='flex items-center gap-3 cursor-pointer bg-slate-50 dark:bg-slate-800/80 p-3 rounded-xl border border-slate-200 dark:border-slate-700'>
                         <input class='peer sr-only' id='tnc-checkbox' onchange='toggleOrderButton()' type='checkbox'></i>
                         <div class='w-5 h-5 border-2 border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 rounded-md flex items-center justify-center peer-checked:bg-emerald-500 peer-checked:border-emerald-500 transition-all shrink-0'><i class='fa-solid fa-check text-white text-[10px] opacity-0 peer-checked:opacity-100 transition-opacity'></i></div>
@@ -1247,7 +1247,7 @@
 
      <div class='view-section flex flex-col fade-in bg-slate-50 dark:bg-slate-900 hidden' id='view-orders'>
             <div class='glass-header shrink-0 px-5 flex justify-center z-30 sticky top-0 pb-3'>
-                <div class='flex items-center justify-between w-full max-w-full xl:max-w-3xl mx-auto px-4 lg:px-8'>
+                <div class='flex items-center justify-between w-full max-w-full xl:max-w-[1200px] mx-auto px-4 lg:px-10'>
                     <button class='w-10 h-10 flex items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 active:scale-95 transition-all shadow-sm' onclick='history.back()'><i class='fa-solid fa-arrow-left text-sm'></i></button>
                     <h1 class='text-base font-black text-slate-900 dark:text-white tracking-tight'>Riwayat Pesanan</h1>
                     <button class='w-10 h-10 flex items-center justify-center rounded-full bg-rose-50 border border-rose-200 text-rose-500 hover:bg-rose-100 active:scale-95 transition-all shadow-sm hidden dark:bg-rose-900/20 dark:border-rose-800' id='btn-clear-orders' onclick='clearMyOrders()'><i class='fa-solid fa-trash-can text-sm'></i></button>
@@ -1260,13 +1260,13 @@
                     <h3 class='font-black text-slate-800 dark:text-white text-xl mb-2'>Belum Ada Pesanan</h3>
                     <p class='text-slate-500 dark:text-slate-400 text-sm font-medium'>Pesanan yang Anda buat akan muncul di sini.</p>
                 </div>
-                <div class='px-4 space-y-4 max-w-full xl:max-w-3xl lg:px-8 mx-auto w-full' id='orders-items-container'></div>
+                <div class='px-4 space-y-4 max-w-full xl:max-w-[1200px] lg:px-8 mx-auto w-full' id='orders-items-container'></div>
             </div>
         </div> 
       
 <div class='view-section flex flex-col fade-in bg-slate-50 dark:bg-slate-900 hidden' id='view-wishlist'>
             <div class='glass-header shrink-0 px-5 flex justify-center z-30 sticky top-0 pb-3'>
-                <div class='flex items-center justify-between w-full max-w-full xl:max-w-3xl mx-auto px-4 lg:px-8'>
+                <div class='flex items-center justify-between w-full max-w-full xl:max-w-[1200px] mx-auto px-4 lg:px-10'>
                     <button class='w-10 h-10 flex items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 active:scale-95 transition-all shadow-sm' onclick='history.back()'><i class='fa-solid fa-arrow-left text-sm'></i></button>
                     <h1 class='text-base font-black text-slate-900 dark:text-white tracking-tight'>Favorit Saya</h1>
                     <button class='w-10 h-10 flex items-center justify-center rounded-full bg-rose-50 border border-rose-200 text-rose-500 hover:bg-rose-100 active:scale-95 transition-all shadow-sm hidden dark:bg-rose-900/20 dark:border-rose-800' id='btn-clear-wishlist' onclick='clearWishlist()'><i class='fa-solid fa-trash-can text-sm'></i></button>
@@ -1279,7 +1279,7 @@
                     <h3 class='font-black text-slate-800 dark:text-white text-xl mb-2'>Belum Ada Favorit</h3>
                     <p class='text-slate-500 dark:text-slate-400 text-sm font-medium'>Kumpulkan produk impianmu di sini.</p>
                 </div>
-                <div class='px-4 space-y-4 max-w-full xl:max-w-3xl lg:px-8 mx-auto w-full' id='wishlist-items-container'></div>
+                <div class='px-4 space-y-4 max-w-full xl:max-w-[1200px] lg:px-8 mx-auto w-full' id='wishlist-items-container'></div>
             </div>
         </div>
 
@@ -1315,7 +1315,7 @@
         <div class='view-section flex flex-col fade-in bg-slate-50 dark:bg-slate-900 z-50 hidden' id='view-admin'>
             
             <div class='glass-header shrink-0 px-4 flex items-center justify-center z-30 sticky top-0 pb-3'>
-                <div class='flex items-center justify-between w-full max-w-full xl:max-w-5xl mx-auto px-2 lg:px-8'>
+                <div class='flex items-center justify-between w-full max-w-full xl:max-w-[1200px] mx-auto px-4 lg:px-10'>
                     <div class='flex items-center gap-3'>
                         <button class='hidden w-9 h-9 items-center justify-center rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700 active:scale-95 transition-all shadow-sm' id='btn-admin-back' onclick='history.back()'><i class='fa-solid fa-arrow-left text-xs'></i></button>
                         <div class='w-10 h-10 rounded-xl bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-dark)] text-white flex items-center justify-center shadow-md shrink-0 border border-[rgba(var(--color-primary-rgb),0.3)]' id='admin-logo-box'><i class='fa-solid fa-layer-group text-sm'></i></div>
@@ -6348,7 +6348,7 @@ window.openSettingForm = (type) => {
     }
 
     let h = `
-    <div class="max-w-xl mx-auto px-4 lg:px-8 pb-12 text-sm fade-in-scale">
+    <div class="max-w-xl mx-auto px-4 lg:px-10 pb-12 text-sm fade-in-scale">
         <button onclick="rAdmSet()" class="mb-5 flex items-center justify-center w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-500 hover:text-slate-800 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-slate-700 transition-all shadow-sm group">
             <i class="fa-solid fa-arrow-left group-hover:-translate-x-0.5 transition-transform"></i>
         </button>
