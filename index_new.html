@@ -4,7 +4,7 @@
     <meta charset='UTF-8'/>
     <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover' name='viewport'/>
   
-    <meta content='default-src &apos;self&apos; blob:; script-src &apos;self&apos; &apos;unsafe-inline&apos; https://cdn.tailwindcss.com https://cdnjs.cloudflare.com https://www.gstatic.com https://cdn.sheetjs.com https://apis.google.com https://www.blogger.com https://www.googletagmanager.com https://www.google-analytics.com; connect-src &apos;self&apos; https://*.googleapis.com https://*.firebaseio.com https://firestore.googleapis.com https://identitytoolkit.googleapis.com https://script.google.com https://script.googleusercontent.com https://wa.me https://www.google-analytics.com https://analytics.google.com https://cdnjs.cloudflare.com https://*.gstatic.com; img-src &apos;self&apos; data: https: blob:; style-src &apos;self&apos; &apos;unsafe-inline&apos; https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src &apos;self&apos; https://fonts.gstatic.com https://cdnjs.cloudflare.com; manifest-src &apos;self&apos; blob:; frame-src https://www.blogger.com https://www.google.com; object-src &apos;none&apos;' http-equiv='Content-Security-Policy'/>
+    <meta content='default-src &apos;self&apos; blob:; script-src &apos;self&apos; &apos;unsafe-inline&apos; https://cdn.tailwindcss.com https://cdnjs.cloudflare.com https://www.gstatic.com https://cdn.sheetjs.com https://apis.google.com https://www.blogger.com https://www.googletagmanager.com https://www.google-analytics.com https://pagead2.googlesyndication.com https://googleads.g.doubleclick.net https://www.googletagservices.com https://tpc.googlesyndication.com https://*.adtrafficquality.google; connect-src &apos;self&apos; https://*.googleapis.com https://*.firebaseio.com https://firestore.googleapis.com https://identitytoolkit.googleapis.com https://script.google.com https://script.googleusercontent.com https://wa.me https://www.google-analytics.com https://analytics.google.com https://cdnjs.cloudflare.com https://*.gstatic.com https://pagead2.googlesyndication.com https://googleads.g.doubleclick.net https://tpc.googlesyndication.com https://*.adtrafficquality.google; img-src &apos;self&apos; data: https: blob:; style-src &apos;self&apos; &apos;unsafe-inline&apos; https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src &apos;self&apos; https://fonts.gstatic.com https://cdnjs.cloudflare.com; manifest-src &apos;self&apos; blob:; frame-src https://www.blogger.com https://www.google.com https://googleads.g.doubleclick.net https://tpc.googlesyndication.com https://*.adtrafficquality.google; object-src &apos;none&apos;' http-equiv='Content-Security-Policy'/>
   
     <title>Toko Putri</title>
     <link rel='icon' id='dynamic-favicon' href='data:image/x-icon;base64,AA'>
@@ -597,12 +597,12 @@
 <div class='w-12 h-1.5 bg-slate-200 dark:bg-slate-700 rounded-full absolute top-3 left-1/2 transform -translate-x-1/2 z-30 sm:hidden'></div>
 
             <div class='absolute top-3 right-3 z-20 flex gap-1.5'>
-                <button class='w-9 h-9 flex items-center justify-center rounded-full bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm border border-slate-200 dark:border-slate-700 shadow-sm text-slate-600 dark:text-slate-300 hover:bg-emerald-500 hover:text-white hover:border-emerald-500 transition-all active:scale-90' onclick='shareProduct()'><i class='fa-solid fa-share-nodes text-xs'></i></button>
-                <button class='w-9 h-9 flex items-center justify-center rounded-full bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm border border-slate-200 dark:border-slate-700 shadow-sm text-slate-600 dark:text-slate-300 hover:bg-rose-500 hover:text-white hover:border-rose-500 transition-all active:scale-90' onclick='closeProductModal()'><i class='fa-solid fa-xmark text-sm'></i></button>
+                <button class='w-9 h-9 flex items-center justify-center rounded-full bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm border border-slate-200 dark:border-slate-700 shadow-sm text-slate-600 hover:bg-emerald-500 hover:text-white hover:border-emerald-500 transition-all active:scale-90' onclick='shareProduct()'><i class='fa-solid fa-share-nodes text-xs'></i></button>
+                <button class='w-9 h-9 flex items-center justify-center rounded-full bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm border border-slate-200 dark:border-slate-700 shadow-sm text-slate-600 hover:bg-rose-500 hover:text-white hover:border-rose-500 transition-all active:scale-90' onclick='closeProductModal()'><i class='fa-solid fa-xmark text-sm'></i></button>
             </div>
             
-            <div class='w-full aspect-square shrink-0 bg-white flex items-center justify-center border-b border-slate-100 dark:border-slate-800/60 sm:rounded-t-[2rem] rounded-t-[2rem] overflow-hidden'>
-                  <img alt='Product' class='w-full h-full object-cover transition-transform duration-500 hover:scale-105' id='product-modal-img' loading='lazy' src='data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'></i>
+            <div class='w-full aspect-square shrink-0 bg-white flex items-center justify-center p-8 sm:p-10 border-b border-slate-100 dark:border-slate-800/60 sm:rounded-t-[2rem]'>
+                <img alt='Product' class='max-w-full max-h-full object-contain transition-transform duration-500 hover:scale-105' id='product-modal-img' loading='lazy' src='data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'></i>
             </div>
             
             <div class='flex-1 p-6 sm:p-7 bg-white dark:bg-[#0f172a]'>
@@ -1902,7 +1902,7 @@ const loadAppData = async () => {
     // halaman selamanya (laporan: "layar mati tidak bisa discroll"). Sekarang
     // dijalankan async + dibungkus try/catch agar TIDAK PERNAH bisa mengganggu
     // proses loading utama, apapun yang terjadi pada iklan.
-    
+    setTimeout(() => { try { renderAdSlots(); } catch(e) { console.error('Gagal render iklan:', e); } }, 50);
     setIn('stat-products', appData.products.filter(p => p.isActive !== 'false' && p.isActive !== false).length);
     
     // --- PWA DYNAMIC MANIFEST & SPLASH SCREEN ENGINE ---
@@ -2493,7 +2493,7 @@ window.openCategoryModal = () => {
     // bukan grid kotak-kotak lagi. Logo merek (openBrandModal di bawah) TIDAK diubah, tetap grid.
     h += `
     <button onclick="setCat('Semua Produk'); closeCategoryModal()" class="w-full flex items-center gap-3.5 p-3 sm:p-3.5 rounded-2xl border transition-all active:scale-[0.98] ${isActiveAll ? 'bg-emerald-50/80 border-emerald-500 dark:bg-emerald-900/30 dark:border-emerald-500 shadow-[0_0_0_1px_rgba(var(--color-primary-rgb),0.2)]' : 'bg-slate-50 border-slate-200 dark:bg-slate-800/50 dark:border-slate-700 hover:border-emerald-300 dark:hover:border-emerald-600'} group">
-        <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-xl ${isActiveAll ? 'bg-emerald-500 text-white border-none' : 'bg-white text-slate-400 border border-slate-200 dark:border-slate-600 group-hover:text-emerald-500'} flex items-center justify-center shadow-sm shrink-0 overflow-hidden transition-colors">
+        <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-xl ${isActiveAll ? 'bg-emerald-500 text-white border-none' : 'bg-white dark:bg-slate-700 text-slate-400 border border-slate-200 dark:border-slate-600 group-hover:text-emerald-500'} flex items-center justify-center shadow-sm shrink-0 overflow-hidden transition-colors">
             <i class="fa-solid fa-layer-group text-base sm:text-lg"></i>
         </div>
         <span class="text-xs sm:text-sm font-black uppercase tracking-widest text-left flex-1 ${isActiveAll ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-600 dark:text-slate-300'}">SEMUA</span>
@@ -2531,7 +2531,7 @@ window.openBrandModal = () => {
     
     h += `
     <button onclick="setBrand('Semua Merek'); closeBrandModal()" class="flex flex-col items-center justify-start p-2.5 sm:p-3.5 rounded-[1.25rem] border transition-all ${isActiveAll ? 'bg-blue-50/80 border-blue-500 dark:bg-blue-900/30 dark:border-blue-500 shadow-[0_0_0_1px_rgba(59,130,246,0.2)]' : 'bg-slate-50 border-slate-200 dark:bg-slate-800/50 dark:border-slate-700 hover:border-blue-300 dark:hover:border-blue-600'} group">
-        <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-full ${isActiveAll ? 'bg-blue-500 text-white border-none' : 'bg-white text-slate-400 border border-slate-200 dark:border-slate-600 group-hover:text-blue-500'} flex items-center justify-center shadow-sm mb-2.5 transition-colors shrink-0">
+        <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-full ${isActiveAll ? 'bg-blue-500 text-white border-none' : 'bg-white dark:bg-slate-700 text-slate-400 border border-slate-200 dark:border-slate-600 group-hover:text-blue-500'} flex items-center justify-center shadow-sm mb-2.5 transition-colors shrink-0">
             <i class="fa-solid fa-copyright text-lg sm:text-xl"></i>
         </div>
         <span class="text-[9px] font-black uppercase tracking-widest text-center leading-tight line-clamp-2 w-full break-words ${isActiveAll ? 'text-blue-600 dark:text-blue-400' : 'text-slate-600 dark:text-slate-300'}">SEMUA MEREK</span>
@@ -2539,10 +2539,10 @@ window.openBrandModal = () => {
 
     appData.brands.forEach(b => {
         let isActive = aBrand === b.name;
-        let imgH = b.img ? `<img loading="lazy" src="${esc(b.img)}" class="w-full h-full object-contain p-1.5" ></i>` : `<i class="fa-solid fa-tag text-lg sm:text-xl"></i>`;
+        let imgH = b.img ? `<img loading="lazy" src="${esc(b.img)}" class="w-8 h-8 sm:w-9 sm:h-9 object-contain" ></i>` : `<i class="fa-solid fa-tag text-lg sm:text-xl"></i>`;
         h += `
         <button onclick="setBrand('${esc(b.name)}'); closeBrandModal()" class="flex flex-col items-center justify-start p-2.5 sm:p-3.5 rounded-[1.25rem] border transition-all ${isActive ? 'bg-blue-50/80 border-blue-500 dark:bg-blue-900/30 dark:border-blue-500 shadow-[0_0_0_1px_rgba(59,130,246,0.2)]' : 'bg-slate-50 border-slate-200 dark:bg-slate-800/50 dark:border-slate-700 hover:border-blue-300 dark:hover:border-blue-600'} group">
-            <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-white flex items-center justify-center shadow-sm mb-2.5 text-slate-400 group-hover:text-blue-500 overflow-hidden shrink-0 border border-slate-200 dark:border-slate-600">
+            <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-white dark:bg-slate-800 flex items-center justify-center shadow-sm mb-2.5 text-slate-400 group-hover:text-blue-500 overflow-hidden shrink-0 border border-slate-200 dark:border-slate-600">
                 ${imgH}
             </div>
             <span class="text-[9px] font-black uppercase tracking-widest text-center leading-tight line-clamp-2 w-full break-words ${isActive ? 'text-blue-600 dark:text-blue-400' : 'text-slate-600 dark:text-slate-300'}">${esc(b.name)}</span>
@@ -2832,13 +2832,13 @@ window.rDyn = () => {
         if(appData.store.brandStyle === 'text') {
             return `<div onclick="filterBrand('${nameSafe}')" class="cursor-pointer shrink-0 snap-start group py-1"><div class="px-5 py-2.5 rounded-[1.25rem] border-2 transition-all duration-300 flex items-center gap-3 ${isSel ? 'bg-gradient-to-r from-blue-500 to-indigo-500 border-transparent text-white shadow-md' : 'bg-white dark:bg-slate-800 border-slate-100 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-blue-300 hover:shadow-md hover:-translate-y-1'}"><div class="w-6 h-6 rounded-full flex items-center justify-center ${isSel ? 'bg-white/20 text-white shadow-inner' : 'bg-slate-50 dark:bg-slate-700 text-slate-400 group-hover:bg-blue-50 group-hover:text-blue-500'} transition-all duration-300"><i class="fa-solid fa-copyright text-[10px]"></i></div><span class="font-black text-[11px] sm:text-xs uppercase tracking-widest pr-2">${esc(b.name)}</span></div></div>`;
         } else {
-            return `<div onclick="filterBrand('${nameSafe}')" class="flex flex-col items-center gap-3 cursor-pointer shrink-0 w-[75px] sm:w-[85px] group snap-start py-1"><div class="relative w-16 h-16 sm:w-[68px] sm:h-[68px] rounded-full bg-white flex items-center justify-center overflow-hidden p-2 transition-all duration-500 ${isSel ? 'ring-4 ring-blue-500 ring-offset-2 ring-offset-slate-50 dark:ring-offset-slate-800 shadow-lg shadow-blue-500/30' : 'border border-slate-200 dark:border-slate-700 shadow-sm group-hover:border-blue-400 group-hover:shadow-lg group-hover:-translate-y-1.5'}"><img loading="lazy" src="${esc(b.img)}" onerror="this.onerror=null;this.src='https://placehold.co/150/3b82f6/ffffff?text=Brand'" class="w-full h-full object-contain drop-shadow-sm transition-transform duration-500 group-hover:scale-110"></i></div><span class="text-[9px] sm:text-[10px] text-center w-full line-clamp-2 leading-tight px-1 ${isSel ? 'font-black text-blue-600 dark:text-blue-400' : 'font-bold text-slate-500 dark:text-slate-400 group-hover:text-blue-600'} uppercase tracking-widest transition-colors">${esc(b.name)}</span></div>`;
+            return `<div onclick="filterBrand('${nameSafe}')" class="flex flex-col items-center gap-3 cursor-pointer shrink-0 w-[75px] sm:w-[85px] group snap-start py-1"><div class="relative w-16 h-16 sm:w-[68px] sm:h-[68px] rounded-full bg-white dark:bg-slate-800 flex items-center justify-center p-3 transition-all duration-500 ${isSel ? 'ring-4 ring-blue-500 ring-offset-2 ring-offset-slate-50 dark:ring-offset-slate-800 shadow-lg shadow-blue-500/30' : 'border border-slate-200 dark:border-slate-700 shadow-sm group-hover:border-blue-400 group-hover:shadow-lg group-hover:-translate-y-1.5'}"><img loading="lazy" src="${esc(b.img)}" onerror="this.onerror=null;this.src='https://placehold.co/150/3b82f6/ffffff?text=Brand'" class="w-full h-full object-contain drop-shadow-sm transition-transform duration-500 group-hover:scale-110"></i></div><span class="text-[9px] sm:text-[10px] text-center w-full line-clamp-2 leading-tight px-1 ${isSel ? 'font-black text-blue-600 dark:text-blue-400' : 'font-bold text-slate-500 dark:text-slate-400 group-hover:text-blue-600'} uppercase tracking-widest transition-colors">${esc(b.name)}</span></div>`;
         }
     }).join(''));
     
     setH('modal-brand-grid', bLModal.map(b => {
         const isSel = aBrand === b.name; const nameSafe = decodeURIComponent(encodeURIComponent(b.name).replace(/'/g,"%27"));
-        return `<button onclick="filterBrand('${nameSafe}'); closeBrandModal();" class="flex flex-col items-center gap-3 p-4 rounded-[1.25rem] border ${isSel?'border-blue-500 bg-blue-50 dark:bg-blue-900/20 shadow-md':'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-blue-300 hover:shadow-sm'} transition-all active:scale-[0.96]"><div class="w-14 h-14 rounded-full flex items-center justify-center bg-white border border-slate-100 dark:border-slate-600 shadow-inner overflow-hidden p-1.5"><img loading="lazy" src="${esc(b.img)}" class="w-full h-full object-contain" onerror="this.src='https://placehold.co/100?text=Brand'"></i></div> <span class="text-[10px] sm:text-xs font-black ${isSel?'text-blue-700 dark:text-blue-400':'text-slate-700 dark:text-slate-300'} text-center leading-tight line-clamp-2 uppercase tracking-widest">${esc(b.name)}</span></button>`;
+        return `<button onclick="filterBrand('${nameSafe}'); closeBrandModal();" class="flex flex-col items-center gap-3 p-4 rounded-[1.25rem] border ${isSel?'border-blue-500 bg-blue-50 dark:bg-blue-900/20 shadow-md':'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-blue-300 hover:shadow-sm'} transition-all active:scale-[0.96]"><div class="w-14 h-14 rounded-full flex items-center justify-center p-2.5 bg-white dark:bg-slate-700 border border-slate-100 dark:border-slate-600 shadow-inner"><img loading="lazy" src="${esc(b.img)}" class="w-full h-full object-contain" onerror="this.src='https://placehold.co/100?text=Brand'"></i></div> <span class="text-[10px] sm:text-xs font-black ${isSel?'text-blue-700 dark:text-blue-400':'text-slate-700 dark:text-slate-300'} text-center leading-tight line-clamp-2 uppercase tracking-widest">${esc(b.name)}</span></button>`;
     }).join(''));
 
     if(el('dyn-qris-img') && appData.payment) el('dyn-qris-img').src = appData.payment.qrisUrl;
@@ -2851,7 +2851,17 @@ window.rDyn = () => {
 // di level AKUN AdSense (anchor ads, vignette/interstitial layar-penuh) bisa otomatis aktif
 // TANPA bisa dimatikan oleh toggle kita — inilah kemungkinan sebab "layar mati" yang dilaporkan.
 // Sekarang: skrip ini benar-benar TIDAK PERNAH dimuat sama sekali kalau adsEnabled bukan true.
-
+window.loadAdsenseScriptOnce = () => {
+    if (document.getElementById('adsbygoogle-lib-script')) return;
+    try {
+        const s = document.createElement('script');
+        s.id = 'adsbygoogle-lib-script';
+        s.async = true;
+        s.crossOrigin = 'anonymous';
+        s.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2636322336243340';
+        document.head.appendChild(s);
+    } catch(e) { console.error('Gagal memuat skrip AdSense:', e); }
+};
 
 // FITUR BARU (PERFORMA): Loader skrip on-demand generik. Dipakai untuk library berat
 // yang cuma dibutuhkan admin (html2canvas, jsPDF, XLSX) atau fitur yang jarang dipakai
@@ -2875,7 +2885,7 @@ window.ensureScriptLoaded = (src, checkFn) => {
 window.renderAdSlots = () => {
     // FIX: default NONAKTIF — harus eksplisit appData.store.adsEnabled === true
     const adsOn = appData.store.adsEnabled === true || appData.store.adsEnabled === 'true';
-    
+    if (adsOn) loadAdsenseScriptOnce();
     const slots = [
         { id: 'ad-slot-banner', html: `<ins class="adsbygoogle" style="display:block;width:100%" data-ad-client="ca-pub-2636322336243340" data-ad-slot="4610725620" data-ad-format="auto" data-full-width-responsive="true"></ins>` },
         { id: 'ad-slot-catalog-end', html: `<ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-2636322336243340" data-ad-slot="2966737393" data-ad-format="autorelaxed"></ins>` }
@@ -3049,9 +3059,9 @@ window.rCat = () => {
             return `
             <div class="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700/80 rounded-[1.25rem] shadow-sm ${cardCursorCls} transition-all duration-300 flex flex-col group relative overflow-hidden" onclick="openProductModal(${p.id})">
                 ${nH}
-                <div class="relative aspect-square w-full bg-white flex items-center justify-center shrink-0 border-b border-slate-100 dark:border-slate-700/50">
-                      ${stockBadge}
-                      <img loading="lazy" src="${esc(p.img)}" onerror="this.onerror=null;this.src='https://placehold.co/400?text=No+Image'" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 ${!a?'grayscale opacity-50':''}"></i>
+                <div class="relative aspect-square w-full bg-white flex items-center justify-center p-3 sm:p-5 shrink-0 border-b border-slate-100 dark:border-slate-700/50">
+                    ${stockBadge}
+                    <img loading="lazy" src="${esc(p.img)}" onerror="this.onerror=null;this.src='https://placehold.co/400?text=No+Image'" class="max-w-full max-h-full object-contain transition-transform duration-500 group-hover:scale-105 ${!a?'grayscale opacity-50':''}"></i>
                 </div>
                 <div class="flex-1 flex flex-col p-3 sm:p-4 min-w-0 bg-white dark:bg-slate-800 relative z-10">
                     ${bH}
@@ -3168,7 +3178,7 @@ window.openProductModal = i => {
         if (adBox) {
             const adsOn = appData.store.adsEnabled === true || appData.store.adsEnabled === 'true';
             if (adsOn) {
-                
+                loadAdsenseScriptOnce();
                 adBox.classList.remove('hidden');
                 adBox.innerHTML = `<ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-2636322336243340" data-ad-slot="8219064079"></ins>`;
                 (window.adsbygoogle = window.adsbygoogle || []).push({});
@@ -6824,7 +6834,22 @@ window.openSettingForm = (type) => {
                     <p class="text-[10px] font-bold text-amber-700 dark:text-amber-300 leading-relaxed"><i class="fa-solid fa-circle-info mr-1"></i> PPN dihitung dari total setelah diskon dan ongkir. Muncul di rincian checkout, WA, struk, dan invoice PDF.</p>
                 </div>
             </div>
-            
+            <div class="bg-orange-50 dark:bg-orange-900/10 border border-orange-100 dark:border-orange-900/30 rounded-2xl p-5 space-y-4">
+                <div class="flex items-center gap-3 mb-1">
+                    <div class="w-9 h-9 rounded-xl bg-orange-100 dark:bg-orange-900/30 text-orange-500 flex items-center justify-center shrink-0"><i class="fa-solid fa-rectangle-ad"></i></div>
+                    <div><h4 class="font-black text-slate-800 dark:text-white text-sm">Iklan Google AdSense</h4><p class="text-[10px] font-bold text-slate-400 mt-0.5">Tampilkan iklan AdSense di beranda &amp; halaman produk</p></div>
+                </div>
+                <div class="relative"><select id="set-ads-enabled" class="admin-input !py-3.5 bg-white dark:bg-slate-800 shadow-sm cursor-pointer appearance-none pr-10">
+                    <option value="true" ${adsOnCur?'selected':''}>Aktif — Iklan ditampilkan ke pengunjung</option>
+                    <option value="false" ${!adsOnCur?'selected':''}>Nonaktif — Semua slot iklan disembunyikan</option>
+                </select><i class="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-[10px]"></i></div>
+                <div class="bg-orange-100/60 dark:bg-orange-900/20 p-3 rounded-xl border border-orange-200 dark:border-orange-800">
+                    <p class="text-[10px] font-bold text-orange-700 dark:text-orange-300 leading-relaxed"><i class="fa-solid fa-circle-info mr-1"></i> Iklan tampil di 3 lokasi: banner beranda, akhir daftar produk, dan di dalam detail produk. Matikan kapan saja tanpa perlu edit kode.</p>
+                </div>
+                <div class="bg-rose-100/60 dark:bg-rose-900/20 p-3 rounded-xl border border-rose-200 dark:border-rose-800">
+                    <p class="text-[10px] font-bold text-rose-700 dark:text-rose-300 leading-relaxed"><i class="fa-solid fa-triangle-exclamation mr-1"></i> <b>Sebelum mengaktifkan:</b> buka akun Google AdSense Anda → menu "Iklan Saya" / "Auto ads" → pastikan "Vinyet" (iklan layar-penuh) dan "Anchor ads" dalam keadaan wajar/sesuai keinginan Anda. Fitur ini dikontrol dari sisi Google, bukan dari pengaturan ini.</p>
+                </div>
+            </div>
         `;
     }
 
@@ -6910,7 +6935,7 @@ window.saveAdminSettings = async (type) => {
         // supaya tab admin lain yang sedang mengubah kategori/voucher/banner tidak tertimpa.
         const settingsKeyMap = { profile:'store', catalog:'store', shipping:'store', operasional:'store', payment:'payment', config:'config' };
         await saveApp([settingsKeyMap[type] || 'store']);
-         // FIX: dibungkus, tidak boleh ganggu proses simpan
+        try { renderAdSlots(); } catch(e) { console.error('Gagal render iklan:', e); } // FIX: dibungkus, tidak boleh ganggu proses simpan
         
         if (type === 'profile' || type === 'config') {
             // Wajib memuat ulang halaman agar Warna atau Koneksi Database Baru bisa berfungsi
@@ -7193,7 +7218,7 @@ window.deleteReview = (reviewId) => {
 // =====================================================================
 let taxYear = new Date().getFullYear();
 let taxMonth = 0; // 0 = Setahun Penuh, 1-12 = bulan spesifik
-let taxActiveTab = 'menu';
+let taxActiveTab = 'summary';
 let gTaxMonthly = null; // cache hasil fetch: { "1":{omset,ppn,hpp,disc,orderCount}, ..., "12":{...} }
 const MONTH_NAMES = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
 
@@ -7252,77 +7277,50 @@ window.rTaxPanel = async () => {
 // Kerangka panel (tab switcher + filter tahun/bulan) -- dipanggil sekali,
 // lalu konten sub-tab di-refresh terpisah tanpa reload data periode ulang.
 window.rTaxRenderShell = () => {
-      const yearOptions = Array.from({length:6}, (_,i) => new Date().getFullYear() - 4 + i);
-      const tabs = [
-          {k:'summary', l:'Ringkasan PPN', i:'fa-receipt', desc:'Laporan pajak pertambahan nilai'},
-          {k:'income', l:'Laba Rugi', i:'fa-chart-pie', desc:'Laporan keuangan laba & rugi'},
-          {k:'balance', l:'Neraca', i:'fa-scale-balanced', desc:'Informasi aset & kewajiban'},
-          {k:'settings', l:'Pengaturan', i:'fa-gear', desc:'Konfigurasi tarif & data pajak'}
-      ];
-      
-      let headerHTML = '';
-      if(taxActiveTab === 'menu') {
-           headerHTML = `
-           <div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-5">
-              ${tabs.map(t => `
-                  <button onclick="switchTaxTab('${t.k}')" class="flex flex-col items-start gap-3 p-4 sm:p-5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl hover:-translate-y-1 hover:shadow-md hover:border-emerald-300 dark:hover:border-emerald-600 transition-all text-left group">
-                      <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-emerald-50 dark:bg-emerald-900/30 text-emerald-500 flex items-center justify-center text-lg sm:text-xl group-hover:scale-110 transition-transform">
-                          <i class="fa-solid ${t.i}"></i>
-                      </div>
-                      <div>
-                          <h4 class="font-black text-slate-800 dark:text-white text-xs sm:text-sm uppercase tracking-widest mb-1 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">${t.l}</h4>
-                          <p class="text-[10px] font-medium text-slate-400 leading-tight">${t.desc}</p>
-                      </div>
-                  </button>
-              `).join('')}
-           </div>
-           `;
-      } else {
-           const activeTabInfo = tabs.find(t => t.k === taxActiveTab) || tabs[0];
-           headerHTML = `
-           <div class="flex flex-wrap items-center justify-between gap-3 mb-5 bg-white dark:bg-slate-800 p-3 sm:p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
-               <div class="flex items-center gap-3">
-                   <button onclick="switchTaxTab('menu')" class="w-9 h-9 flex items-center justify-center rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-500 hover:text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/30 transition-all shrink-0">
-                       <i class="fa-solid fa-arrow-left"></i>
-                   </button>
-                   <div>
-                       <h3 class="font-black text-slate-800 dark:text-white text-xs sm:text-sm uppercase tracking-widest leading-none">${activeTabInfo.l}</h3>
-                       <p class="text-[10px] text-slate-400 font-medium mt-1 hidden sm:block">Data Pajak & Keuangan</p>
-                   </div>
-               </div>
-               
-               ${taxActiveTab === 'settings' ? '' : `
-               <div class="flex gap-2 items-center">
-                  <select id="tax-year-select" onchange="changeTaxYear(this.value)" class="admin-input !py-2 !px-3 text-xs font-bold bg-slate-50 dark:bg-slate-900 w-24 border-slate-200 dark:border-slate-700">
-                      ${yearOptions.map(y => `<option value="${y}" ${y===taxYear?'selected':''}>${y}</option>`).join('')}
-                  </select>
-                  <select id="tax-month-select" onchange="changeTaxMonth(this.value)" class="admin-input !py-2 !px-3 text-xs font-bold bg-slate-50 dark:bg-slate-900 w-32 sm:w-36 border-slate-200 dark:border-slate-700">
-                      <option value="0" ${taxMonth===0?'selected':''}>Setahun Penuh</option>
-                      ${MONTH_NAMES.map((n,idx) => `<option value="${idx+1}" ${taxMonth===idx+1?'selected':''}>${n} ${taxYear}</option>`).join('')}
-                  </select>
-              </div>
-               `}
-           </div>
-           `;
-      }
-      
-      setH('admin-content', `<div class="fade-in-scale">
-          <div class="bg-amber-50 dark:bg-amber-900/10 border border-amber-200 dark:border-amber-800 rounded-2xl p-4 mb-5 flex items-start gap-3">
-              <i class="fa-solid fa-triangle-exclamation text-amber-500 mt-0.5"></i>
-              <p class="text-[11px] font-bold text-amber-700 dark:text-amber-400 leading-relaxed">Halaman ini adalah <b>alat bantu rekap</b> Omset, PPN, Laba Rugi, dan Neraca dari data transaksi toko. Bukan pengganti konsultan pajak/akuntan � validasi kembali angkanya sebelum digunakan untuk lapor SPT resmi.</p>
-          </div>
-  
-          ${headerHTML}
-  
-          <div id="tax-content"></div>
-      </div>`);
-      rTaxSubContent();
-  };
+    const yearOptions = Array.from({length:6}, (_,i) => new Date().getFullYear() - 4 + i);
+    const tabs = [
+        {k:'summary', l:'Ringkasan PPN', i:'fa-receipt'},
+        {k:'income', l:'Laba Rugi', i:'fa-chart-pie'},
+        {k:'balance', l:'Neraca', i:'fa-scale-balanced'},
+        {k:'settings', l:'Pengaturan', i:'fa-gear'}
+    ];
+    setH('admin-content', `
+        <div class="bg-amber-50 dark:bg-amber-900/10 border border-amber-200 dark:border-amber-800 rounded-2xl p-4 mb-5 flex items-start gap-3">
+            <i class="fa-solid fa-triangle-exclamation text-amber-500 mt-0.5"></i>
+            <p class="text-[11px] font-bold text-amber-700 dark:text-amber-400 leading-relaxed">Halaman ini adalah <b>alat bantu rekap</b> Omset, PPN, Laba Rugi, dan Neraca dari data transaksi toko. Bukan pengganti konsultan pajak/akuntan — validasi kembali angkanya sebelum digunakan untuk lapor SPT resmi.</p>
+        </div>
+
+        <div class="flex flex-wrap items-center justify-between gap-3 mb-5">
+            <div class="flex gap-1.5 bg-slate-100 dark:bg-slate-800 p-1 rounded-xl overflow-x-auto" id="tax-tab-switcher">
+                ${tabs.map(t => `<button onclick="switchTaxTab('${t.k}')" data-tax-tab="${t.k}" class="tax-tab-btn px-3.5 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap flex items-center gap-1.5 ${taxActiveTab===t.k?'shadow-sm':'text-slate-500 dark:text-slate-400'}" style="${taxActiveTab===t.k?'background:var(--color-primary);color:#fff':''}"><i class="fa-solid ${t.i}"></i> ${t.l}</button>`).join('')}
+            </div>
+            <div class="flex gap-2 items-center">
+                <select id="tax-year-select" onchange="changeTaxYear(this.value)" class="admin-input !py-2.5 !px-3 text-xs font-bold bg-white dark:bg-slate-800 w-28">
+                    ${yearOptions.map(y => `<option value="${y}" ${y===taxYear?'selected':''}>${y}</option>`).join('')}
+                </select>
+                <select id="tax-month-select" onchange="changeTaxMonth(this.value)" class="admin-input !py-2.5 !px-3 text-xs font-bold bg-white dark:bg-slate-800 w-36">
+                    <option value="0" ${taxMonth===0?'selected':''}>Setahun Penuh</option>
+                    ${MONTH_NAMES.map((n,idx) => `<option value="${idx+1}" ${taxMonth===idx+1?'selected':''}>${n} ${taxYear}</option>`).join('')}
+                </select>
+            </div>
+        </div>
+
+        <div id="tax-content"></div>
+    `);
+    rTaxSubContent();
+};
 
 window.switchTaxTab = (tab) => {
-      taxActiveTab = tab;
-      window.rTaxRenderShell();
-  };
+    taxActiveTab = tab;
+    document.querySelectorAll('.tax-tab-btn').forEach(b => {
+        const active = b.dataset.taxTab === tab;
+        b.style.background = active ? 'var(--color-primary)' : '';
+        b.style.color = active ? '#fff' : '';
+        b.classList.toggle('text-slate-500', !active);
+        b.classList.toggle('dark:text-slate-400', !active);
+    });
+    rTaxSubContent();
+};
 
 window.changeTaxYear = async (y) => {
     taxYear = parseInt(y);
