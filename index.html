@@ -1130,6 +1130,14 @@
                                     <span class='font-black text-[11px] text-slate-600 dark:text-slate-300 peer-checked:text-amber-600 dark:peer-checked:text-amber-400 uppercase tracking-wide'>KASIR</span>
                                 </div>
                             </label>
+
+                            <label class='block cursor-pointer relative hidden' id='payment-option-tempo'>
+                                <input class='peer sr-only custom-radio' name='payment' onchange='togglePaymentDetails()' type='radio' value='tempo'></i>
+                                <div class='border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 p-3.5 rounded-2xl transition-all flex flex-col items-center text-center gap-2 peer-checked:border-pink-500 peer-checked:bg-pink-50 dark:peer-checked:bg-pink-900/20 peer-checked:shadow-[0_0_0_2px_rgba(236,72,153,0.2)] hover:border-pink-300'>
+                                    <div class='w-10 h-10 rounded-full bg-white dark:bg-slate-800 flex items-center justify-center shadow-sm mb-1'><i class='fa-solid fa-clock-rotate-left text-lg text-slate-400 peer-checked:text-pink-500 transition-colors'></i></div>
+                                    <span class='font-black text-[11px] text-slate-600 dark:text-slate-300 peer-checked:text-pink-600 dark:peer-checked:text-pink-400 uppercase tracking-wide'>Tempo VIP</span>
+                                </div>
+                            </label>
                         </div>
 
                         <div class='mt-4 pt-4 border-t border-slate-100 dark:border-slate-700' id='detail-transfer'>
@@ -1140,6 +1148,26 @@
                                 <p class='text-[10px] text-slate-500 dark:text-slate-400 mb-4 text-center font-bold uppercase tracking-widest'>Scan QR Code Pembayaran:</p>
                                 <div class='p-3 border-2 border-dashed border-purple-400 rounded-2xl bg-white dark:bg-slate-800 shadow-sm'>
                                     <img alt='QRIS' class='w-48 h-48 object-contain rounded-xl' id='dyn-qris-img' loading='lazy' src=''></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class='mt-4 pt-4 border-t border-slate-100 dark:border-slate-700 hidden' id='detail-tempo'>
+                            <div class='bg-pink-50 dark:bg-pink-900/10 p-5 rounded-2xl border border-pink-200 dark:border-pink-800/30 flex flex-col'>
+                                <p class='text-[10px] text-pink-600 dark:text-pink-400 mb-3 font-bold uppercase tracking-widest flex items-center gap-1.5'><i class="fa-solid fa-crown text-amber-500"></i> Khusus Pelanggan VIP</p>
+                                <div class="flex items-center justify-between gap-3 mb-4 bg-white dark:bg-slate-800 rounded-xl p-3 shadow-inner border border-slate-100 dark:border-slate-700">
+                                    <span class="text-[11px] font-black text-slate-700 dark:text-slate-300 uppercase tracking-widest">Down Payment (DP)</span>
+                                    <div class="relative flex items-center">
+                                        <span class="absolute left-3 text-xs font-black text-slate-400">Rp</span>
+                                        <input type="number" id="tempo-dp-input" oninput="calculateTempoBalance()" class="w-32 bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-white border border-slate-200 dark:border-slate-700 rounded-lg py-2 pl-8 pr-3 text-sm font-black text-right outline-none focus:border-pink-400 transition-colors" placeholder="0" min="0">
+                                    </div>
+                                </div>
+                                <div class="flex items-center justify-between px-1 mb-2">
+                                    <span class="text-[11px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest">Sisa Tagihan</span>
+                                    <span class="text-sm font-black text-rose-500" id="tempo-balance-display">Rp 0</span>
+                                </div>
+                                <div class="mt-2 bg-white/60 dark:bg-slate-800/60 p-3 rounded-xl">
+                                    <p class="text-[9px] font-bold text-slate-500 dark:text-slate-400 leading-relaxed"><i class="fa-solid fa-circle-info mr-1 text-blue-400"></i>Maksimal pelunasan adalah 30 hari. Keterlambatan akan dikenakan denda sebesar 1% dari sisa tagihan per hari.</p>
                                 </div>
                             </div>
                         </div>
@@ -1452,6 +1480,12 @@
                                 <div class='absolute inset-0 bg-gradient-to-b from-red-50/80 to-transparent dark:from-red-900/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-[1.25rem]'></div>
                                 <div class='w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-br from-red-400 to-red-600 text-white flex items-center justify-center shadow-md group-hover:scale-110 transition-all duration-300 relative z-10'><i class='fa-solid fa-file-invoice-dollar text-xl sm:text-2xl'></i></div>
                                 <div class='relative z-10'><span class='block text-[10px] sm:text-[11px] font-black text-slate-800 dark:text-white uppercase tracking-widest leading-tight'>Pajak</span><span class='block text-[9px] font-bold text-slate-400 mt-0.5'>PPN, Laba Rugi, Neraca</span></div>
+                            </button>
+
+                            <button class='card-modern p-4 sm:p-5 flex flex-col items-center justify-center text-center gap-3 group hover:-translate-y-1.5 hover:shadow-xl hover:border-pink-300 dark:hover:border-pink-600 transition-all duration-300 relative overflow-hidden' onclick='openAdminTab(&quot;piutang&quot;)'>
+                                <div class='absolute inset-0 bg-gradient-to-b from-pink-50/80 to-transparent dark:from-pink-900/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-[1.25rem]'></div>
+                                <div class='w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-br from-pink-400 to-pink-600 text-white flex items-center justify-center shadow-md group-hover:scale-110 transition-all duration-300 relative z-10'><i class='fa-solid fa-clock-rotate-left text-xl sm:text-2xl'></i></div>
+                                <div class='relative z-10'><span class='block text-[10px] sm:text-[11px] font-black text-slate-800 dark:text-white uppercase tracking-widest leading-tight'>Piutang Tempo</span><span class='block text-[9px] font-bold text-slate-400 mt-0.5'>Laporan Hutang Pelanggan</span></div>
                             </button>
                         </div>
                     </div>
@@ -4104,16 +4138,16 @@ window.checkMemberStatus = () => {
         const waNum = window.normalizeWA(getV('cust-wa'));
         const banner = el('member-status-banner');
         if (!banner) return;
-        if (!waNum || waNum.length < 10) { hide(banner); currentMember = null; selectedReward = null; return; }
+        if (!waNum || waNum.length < 10) { hide(banner); hide('payment-option-tempo'); currentMember = null; selectedReward = null; return; }
         try {
             const doc = await db.collection("freshmart").doc("cms_data").collection("customers").doc(waNum).get();
             if (doc.exists) {
                 currentMember = doc.data();
                 banner.className = 'mt-3 p-4 rounded-2xl border border-emerald-200 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-900/20 flex items-center justify-between gap-3';
                 banner.innerHTML = `<p class="text-[11px] font-bold text-emerald-700 dark:text-emerald-400 leading-snug"><i class="fa-solid fa-circle-check mr-1"></i>Nomor Anda terdaftar sebagai pelanggan toko kami!</p><button type="button" onclick="openMemberModal()" class="shrink-0 bg-emerald-500 hover:bg-emerald-600 text-white text-[10px] font-black uppercase tracking-widest px-3.5 py-2.5 rounded-xl shadow-sm active:scale-95 transition-all whitespace-nowrap">Lihat Data Saya</button>`;
-                show(banner);
+                show(banner); show('payment-option-tempo');
             } else {
-                currentMember = null; selectedReward = null; hide(banner);
+                currentMember = null; selectedReward = null; hide(banner); hide('payment-option-tempo');
             }
         } catch(e) { /* diam saja kalau gagal cek -- bukan bagian wajib checkout */ }
     }, 500); // debounce supaya tidak query tiap ketikan huruf
@@ -4644,6 +4678,41 @@ window.togglePaymentDetails = () => {
     const m = (document.querySelector('input[name="payment"]:checked')||{}).value;
     toggleCls('detail-transfer', 'hidden', m !== 'transfer'); toggleCls('detail-qris', 'hidden', m !== 'qris');
     toggleCls('detail-cashier', 'hidden', m !== 'cashier'); toggleCls('detail-cod', 'hidden', m !== 'cod');
+    toggleCls('detail-tempo', 'hidden', m !== 'tempo');
+    if (m === 'tempo') window.calculateTempoBalance();
+};
+
+window.calculateTempoBalance = () => {
+    let dp = parseFloat(document.getElementById('tempo-dp-input').value) || 0;
+    let total = cart.reduce((s,i) => s + (parseFloat(getEffP(i))||0) * (parseFloat(i.qty)||0), 0);
+    let sC = 0, productDisc = 0, shippingDisc = 0;
+    if (cust.deliveryMethod === 'delivery') {
+        sC = Math.ceil((parseFloat(cust.distance)||0) * (parseFloat(appData.store.costPerKm)||0) / 500) * 500;
+    }
+    if (vouch) {
+        if (vouch.type === 'product_nominal') productDisc = parseFloat(vouch.discount);
+        else if (vouch.type === 'product_percent') productDisc = total * parseFloat(vouch.discount)/100;
+        else if (vouch.type === 'shipping_nominal') shippingDisc = Math.min(sC, parseFloat(vouch.discount));
+        else if (vouch.type === 'shipping_percent') shippingDisc = Math.min(sC, sC * parseFloat(vouch.discount)/100);
+    }
+    let subAfterDisc = Math.max(0, total - productDisc);
+    let shippingAfterDisc = Math.max(0, sC - shippingDisc);
+    let ppnAmount = 0;
+    if (appData.store.ppnEnabled === 'true' || appData.store.ppnEnabled === true) {
+        let ppnRate = parseFloat(appData.store.ppnRate) || 0;
+        ppnAmount = (subAfterDisc + shippingAfterDisc) * (ppnRate/100);
+    }
+    let pointsDisc = 0;
+    if (window.useMemberPoints && currentMember) {
+        pointsDisc = Math.min(subAfterDisc + shippingAfterDisc + ppnAmount, parseFloat(currentMember.points) || 0);
+    }
+    let grandTotal = subAfterDisc + shippingAfterDisc + ppnAmount - pointsDisc;
+    if (dp > grandTotal) {
+        dp = grandTotal;
+        document.getElementById('tempo-dp-input').value = dp;
+    }
+    let balance = grandTotal - dp;
+    document.getElementById('tempo-balance-display').innerText = fCur(balance);
 };
 
 const rPay = () => {
@@ -4907,6 +4976,16 @@ window.processOrder = async () => {
             status: 'Baru',
             buktiPayment: window.buktiPaymentUrl || null
         };
+
+        if (m === 'tempo') {
+            const dpInput = document.getElementById('tempo-dp-input');
+            let dp = dpInput ? parseFloat(dpInput.value) || 0 : 0;
+            if (dp > tot) dp = tot;
+            oD.payment.tempoDp = dp;
+            oD.payment.tempoBalance = tot - dp;
+            oD.payment.tempoDueDate = Date.now() + (30 * 24 * 60 * 60 * 1000);
+            oD.payment.paymentStatus = 'hutang';
+        }
 
         const orderRef = db.collection("freshmart_orders").doc(oI);
 
@@ -5461,6 +5540,129 @@ window.logoutAdmin = async () => {
 
 window.checkProPrint = () => { openReceiptPreview(); };
 
+window.markTempoPaid = async (orderId) => {
+    if (!confirm('Tandai tagihan tempo ini sebagai LUNAS?')) return;
+    try {
+        await db.collection("freshmart_orders").doc(orderId).update({
+            'payment.paymentStatus': 'lunas',
+            'payment.tempoBalance': 0,
+            status: 'Selesai'
+        });
+        showToast('Tagihan berhasil dilunasi!');
+        let idx = gOrds.findIndex(o => o.orderId === orderId);
+        if(idx !== -1) {
+            gOrds[idx].payment.paymentStatus = 'lunas';
+            gOrds[idx].payment.tempoBalance = 0;
+            gOrds[idx].status = 'Selesai';
+        }
+        window.rAdmPiutang(); 
+    } catch(e) {
+        showToast('Gagal mengubah status: ' + e.message);
+    }
+};
+
+window.rAdmPiutang = () => {
+    let piutangOrders = gOrds.filter(o => o.payment?.method === 'tempo' && o.payment?.paymentStatus === 'hutang');
+    let totalPiutang = 0;
+    
+    let h = `
+    <div class="max-w-full pb-10 fade-in text-sm">
+        <div class="mb-5 bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 bg-pink-50 dark:bg-pink-900/30 text-pink-600 rounded-xl flex items-center justify-center"><i class="fa-solid fa-hand-holding-dollar text-xl"></i></div>
+                <div>
+                    <h2 class="font-black text-slate-800 dark:text-slate-100 uppercase tracking-widest text-sm">Tagihan Tempo</h2>
+                    <p class="text-[10px] font-bold text-slate-400 mt-1">Daftar pelanggan VIP yang belum lunas</p>
+                </div>
+            </div>
+            <div class="text-right">
+                <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Total Piutang Berjalan</p>
+                <p class="text-xl font-black text-rose-500" id="total-piutang-header">Rp 0</p>
+            </div>
+        </div>
+    `;
+
+    if (piutangOrders.length === 0) {
+        h += `<div class="bg-white dark:bg-slate-800 p-8 text-center rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
+                <div class="w-20 h-20 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-500 rounded-full flex items-center justify-center mx-auto mb-4"><i class="fa-solid fa-check-double text-4xl"></i></div>
+                <h3 class="font-black text-slate-700 dark:text-slate-200 text-lg uppercase tracking-widest">Luar Biasa!</h3>
+                <p class="text-slate-500 mt-2 text-xs font-bold">Semua tagihan pelanggan telah lunas. Tidak ada piutang tertunda.</p>
+              </div>`;
+    } else {
+        h += `<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">`;
+        piutangOrders.forEach(o => {
+            let sisa = o.payment?.tempoBalance || 0;
+            let latePenalty = 0;
+            let dueDate = o.payment?.tempoDueDate || 0;
+            let daysLate = 0;
+            let isLate = false;
+            
+            if (Date.now() > dueDate) {
+                daysLate = Math.floor((Date.now() - dueDate) / (24 * 60 * 60 * 1000));
+                if (daysLate > 0) {
+                    isLate = true;
+                    latePenalty = (0.01 * sisa) * daysLate;
+                }
+            }
+            
+            let totalAkhir = sisa + latePenalty;
+            totalPiutang += totalAkhir;
+            let waNum = window.normalizeWA ? window.normalizeWA(o.customer?.wa) : (o.customer?.wa || "");
+            
+            h += `
+            <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border ${isLate ? 'border-rose-300 dark:border-rose-700 shadow-[0_0_15px_rgba(225,29,72,0.1)]' : 'border-slate-200 dark:border-slate-700 shadow-sm'} relative overflow-hidden group hover:-translate-y-1 transition-all">
+                ${isLate ? `<div class="absolute -right-6 top-4 bg-rose-500 text-white text-[9px] font-black uppercase tracking-widest px-8 py-1 rotate-45 shadow-sm">TERLAMBAT ${daysLate} HARI</div>` : ''}
+                
+                <div class="flex justify-between items-start mb-4 pr-12">
+                    <div>
+                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Pesanan #${o.orderId.substring(4, 10)}</p>
+                        <h3 class="font-black text-slate-800 dark:text-slate-200 mt-1 uppercase">${esc(o.customer?.name || 'Anonim')}</h3>
+                        <p class="text-[10px] font-bold text-slate-500 flex items-center gap-1 mt-0.5"><i class="fa-brands fa-whatsapp text-emerald-500"></i> ${esc(o.customer?.wa || '-')}</p>
+                    </div>
+                </div>
+                
+                <div class="space-y-2 mb-4 bg-slate-50 dark:bg-slate-900/50 p-3.5 rounded-xl border border-slate-100 dark:border-slate-700/50">
+                    <div class="flex justify-between items-center text-xs">
+                        <span class="font-bold text-slate-500">Jatuh Tempo</span>
+                        <span class="font-black ${isLate ? 'text-rose-600' : 'text-slate-700 dark:text-slate-300'}">${new Date(dueDate).toLocaleDateString('id-ID')}</span>
+                    </div>
+                    <div class="flex justify-between items-center text-xs">
+                        <span class="font-bold text-slate-500">Sisa Pokok</span>
+                        <span class="font-black text-slate-700 dark:text-slate-300 font-mono">${fCur(sisa)}</span>
+                    </div>
+                    ${isLate ? `
+                    <div class="flex justify-between items-center text-xs text-rose-600">
+                        <span class="font-bold">Denda (1%/hari)</span>
+                        <span class="font-black font-mono">+${fCur(latePenalty)}</span>
+                    </div>` : ''}
+                </div>
+                
+                <div class="flex justify-between items-center bg-rose-50 text-rose-600 dark:bg-rose-900/20 dark:text-rose-400 p-3.5 rounded-xl border border-rose-100 dark:border-rose-900/30 mb-4">
+                    <span class="text-[10px] font-black uppercase tracking-widest">Total Tagihan</span>
+                    <span class="text-sm font-black font-mono tracking-tight">${fCur(totalAkhir)}</span>
+                </div>
+                
+                <div class="flex gap-2">
+                    <a href="https://wa.me/${waNum}?text=Halo%20kak%20${esc(o.customer?.name||'')},%20mengingatkan%20bahwa%20tagihan%20Tempo%20untuk%20pesanan%20${o.orderId}%20sebesar%20${fCur(totalAkhir)}%20sudah%20jatuh%20tempo.%20Mohon%20segera%20dilunasi." target="_blank" class="flex-1 bg-emerald-50 dark:bg-emerald-900/30 hover:bg-emerald-100 dark:hover:bg-emerald-900/50 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 rounded-xl py-2.5 flex items-center justify-center gap-1.5 text-[10px] font-black uppercase tracking-widest transition-all">
+                        <i class="fa-brands fa-whatsapp text-sm"></i> Tagih
+                    </a>
+                    <button onclick="markTempoPaid('${o.orderId}')" class="flex-1 bg-blue-500 hover:bg-blue-600 text-white rounded-xl py-2.5 flex items-center justify-center gap-1.5 text-[10px] font-black uppercase tracking-widest shadow-sm shadow-blue-500/30 transition-all">
+                        <i class="fa-solid fa-check"></i> Lunas
+                    </button>
+                </div>
+            </div>`;
+        });
+        h += `</div>`;
+    }
+    
+    h += `</div>`;
+    setH('admin-content', h);
+    
+    setTimeout(() => {
+        if(el('total-piutang-header')) el('total-piutang-header').innerText = fCur(totalPiutang);
+    }, 100);
+};
+
 window.openAdminTab = (t, fH=false) => {
     cTab=t; aSq=''; if(!fH) history.pushState({view:'view-admin',tab:t}, '', window.location.href);
     const lockedTabs = ['settings','banks','banners','vouchers'];
@@ -5470,7 +5672,7 @@ window.openAdminTab = (t, fH=false) => {
         return;
     }
     hide('admin-dashboard-view'); show('admin-content-view'); show('btn-admin-back'); hide('admin-logo-box');
-    const titles = {'orders':'Pesanan', 'settings':'Toko', 'products':'Produk', 'categories':'Kategori', 'brands':'Merek', 'banks':'Rekening', 'banners':'Banner', 'vouchers':'Voucher', 'customers':'Database Pelanggan', 'rewards':'Program Hadiah', 'reviews':'Ulasan Pelanggan', 'tax':'Pajak & Keuangan'};
+    const titles = {'orders':'Pesanan', 'settings':'Toko', 'products':'Produk', 'categories':'Kategori', 'brands':'Merek', 'banks':'Rekening', 'banners':'Banner', 'vouchers':'Voucher', 'customers':'Database Pelanggan', 'rewards':'Program Hadiah', 'reviews':'Ulasan Pelanggan', 'tax':'Pajak & Keuangan', 'piutang':'Piutang Tempo'};
     setIn('admin-header-title', titles[t]||'CMS');
     if(t !== 'orders' && aOrdLst){ aOrdLst(); aOrdLst=null; }
     // FIX BUG: tab Database Pelanggan dulu cuma ambil data SEKALI (snapshot),
@@ -5483,6 +5685,7 @@ window.openAdminTab = (t, fH=false) => {
     if(t === 'settings') rAdmSet();
     else if(t === 'orders') rAdmOrd();
     else if (t === 'tax') { rTaxPanel(); } // FITUR BARU: Menu Pajak & Keuangan
+    else if (t === 'piutang') { window.rAdmPiutang(); }
     else if (t === 'customers') {
         // FITUR BARU: data pelanggan (PII: nama & no. WA) SENGAJA tidak dimuat sejak awal
         // untuk semua pengunjung (beda dengan produk/kategori) -- hanya diambil dari Firestore
@@ -8109,7 +8312,7 @@ window.openDocPreview = (type) => {
             </div>
         </div>
         <div class="text-right">
-            <h2 class="font-black text-3xl tracking-widest ${type === 'invoice' ? 'text-blue-600' : 'text-amber-600'} uppercase">${type === 'invoice' ? 'INVOICE' : 'SURAT JALAN'}</h2>
+            <h2 class="font-black text-3xl tracking-widest ${type === 'invoice' ? 'text-blue-600' : 'text-amber-600'} uppercase">${type === 'invoice' ? (o.payment?.method === 'tempo' ? 'PROFORMA INVOICE' : 'INVOICE') : 'SURAT JALAN'}</h2>
             <p class="text-sm font-bold text-slate-600 mt-2 font-mono">#${o.orderId}</p>
             <p class="text-xs font-semibold text-slate-500 mt-1">Tanggal: ${d}</p>
         </div>
@@ -8179,6 +8382,13 @@ window.openDocPreview = (type) => {
                     <span class="font-black text-base uppercase tracking-widest">Grand Total</span>
                     <span class="font-mono text-xl text-emerald-400 font-black tracking-tight">${fCur(o.payment?.grandTotal)}</span>
                 </div>
+                ${o.payment?.method === 'tempo' ? `
+                <div class="flex justify-between px-4 mt-4 text-emerald-600"><span>Uang Muka (DP)</span><span class="font-mono">${fCur(o.payment?.tempoDp || 0)}</span></div>
+                <div class="flex justify-between items-center bg-rose-50 text-rose-700 p-4 rounded-xl mt-2 border border-rose-200">
+                    <span class="font-black text-base uppercase tracking-widest">Sisa Tagihan</span>
+                    <span class="font-mono text-xl font-black tracking-tight">${fCur(o.payment?.tempoBalance || 0)}</span>
+                </div>
+                ` : ''}
             </div>
         </div>`;
     } else {
@@ -8237,6 +8447,14 @@ window.openDocPreview = (type) => {
                 </div>
             </div>
             <span class="text-[10px] font-black px-3 py-2 rounded-lg bg-violet-600 text-white uppercase tracking-widest text-center shrink-0">${statusTxt}</span>
+        </div>`;
+    }
+
+    if (o.payment?.method === 'tempo') {
+        h += `
+        <div class="mt-6 mb-8 border border-pink-200 bg-pink-50 p-4 rounded-xl text-left">
+            <h4 class="font-black text-pink-700 text-xs uppercase tracking-widest mb-1"><i class="fa-solid fa-clock-rotate-left mr-1"></i> Syarat & Ketentuan Pembayaran Tempo</h4>
+            <p class="text-[10px] text-pink-600 font-bold leading-relaxed">Maksimal pembayaran sisa tagihan adalah 30 hari (Jatuh Tempo: ${o.payment.tempoDueDate ? new Date(o.payment.tempoDueDate).toLocaleDateString('id-ID') : '-'}). Keterlambatan pembayaran akan dikenakan denda sebesar 1% dari sisa tagihan untuk setiap harinya.</p>
         </div>`;
     }
 
