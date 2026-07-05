@@ -7300,7 +7300,7 @@ window.rTaxRenderShell = () => {
            `;
       }
       
-      setH('admin-content', `
+      setH('admin-content', `<div class="fade-in-scale">
           <div class="bg-amber-50 dark:bg-amber-900/10 border border-amber-200 dark:border-amber-800 rounded-2xl p-4 mb-5 flex items-start gap-3">
               <i class="fa-solid fa-triangle-exclamation text-amber-500 mt-0.5"></i>
               <p class="text-[11px] font-bold text-amber-700 dark:text-amber-400 leading-relaxed">Halaman ini adalah <b>alat bantu rekap</b> Omset, PPN, Laba Rugi, dan Neraca dari data transaksi toko. Bukan pengganti konsultan pajak/akuntan � validasi kembali angkanya sebelum digunakan untuk lapor SPT resmi.</p>
@@ -7309,7 +7309,7 @@ window.rTaxRenderShell = () => {
           ${headerHTML}
   
           <div id="tax-content"></div>
-      `);
+      </div>`);
       rTaxSubContent();
   };
 
