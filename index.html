@@ -6858,7 +6858,7 @@ window.rTaxSummary = () => {
                 <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1.5">DPP (Dasar Pengenaan Pajak)</p>
                 <p class="text-lg sm:text-xl font-black text-slate-800 dark:text-white truncate">${fCur(dpp)}</p>
             </div>
-            <div class="card-modern p-5 sm:p-5 bg-amber-50 dark:bg-amber-900/10 border-amber-200 dark:border-amber-800">
+            <div class="card-modern p-5 sm:p-5 border-amber-200 dark:border-amber-700 relative overflow-hidden" style="background: linear-gradient(135deg, rgba(245,158,11,0.1), rgba(245,158,11,0.02))"><div class="absolute -right-4 -bottom-4 w-24 h-24 bg-amber-500/20 rounded-full blur-xl pointer-events-none"></div>
                 <p class="text-[9px] font-black text-amber-600 uppercase tracking-widest mb-1.5"><i class="fa-solid fa-file-invoice-dollar mr-1"></i>PPN Keluaran</p>
                 <p class="text-lg sm:text-xl font-black text-amber-600 truncate">${fCur(t.ppn)}</p>
                 <p class="text-[10px] font-bold text-amber-500/80 mt-1">Wajib disetor ke negara</p>
@@ -6916,7 +6916,7 @@ window.rTaxIncome = () => {
     }
 
     setH('tax-content', `
-        <div class="card-modern p-5 sm:p-7 max-w-2xl mx-auto">
+        <div class="card-modern p-5 sm:p-7 max-w-4xl mx-auto">
             <div class="flex items-center justify-between mb-6 pb-4 border-b border-slate-100 dark:border-slate-700">
                 <h4 class="font-black text-slate-800 dark:text-white text-sm uppercase tracking-widest">Laporan Laba Rugi — ${periodLabel}</h4>
                 <button onclick="openTaxDocPreview('income')" class="text-[10px] font-black text-slate-400 hover:text-[var(--color-primary)] flex items-center gap-1.5"><i class="fa-solid fa-eye"></i> Preview &amp; Cetak</button>
@@ -6962,8 +6962,8 @@ window.rTaxBalance = () => {
     const modalDanLaba = totalAset - totalKewajiban; // supaya neraca tetap balance, modal+laba ditahan = sisa dari aset-kewajiban
 
     setH('tax-content', `
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 max-w-4xl mx-auto">
-            <div class="card-modern p-5 sm:p-6">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 sm:gap-6 max-w-5xl mx-auto">
+            <div class="card-modern p-5 sm:p-6 relative overflow-hidden shadow-lg border-emerald-100 dark:border-emerald-900/30" style="background: linear-gradient(135deg, rgba(16,185,129,0.05), transparent)"><div class="absolute -top-10 -right-10 w-32 h-32 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none"></div>
                 <h4 class="font-black text-slate-800 dark:text-white text-xs uppercase tracking-widest mb-4 pb-3 border-b border-slate-100 dark:border-slate-700"><i class="fa-solid fa-arrow-down-wide-short mr-1.5 text-emerald-500"></i>ASET</h4>
                 <div class="space-y-3">
                     <div class="flex items-center justify-between gap-2"><span class="text-xs font-bold text-slate-500 dark:text-slate-400">Kas &amp; Bank (manual)</span><input type="number" min="0" value="${bs.kas||0}" onchange="saveBalanceField('kas', this.value)" class="admin-input !py-2 !px-3 text-xs w-32 text-right bg-slate-50 dark:bg-slate-900/50"></i></div>
@@ -6972,7 +6972,7 @@ window.rTaxBalance = () => {
                     <div class="flex justify-between pt-3 border-t-2 border-slate-800 dark:border-slate-200"><span class="font-black text-slate-900 dark:text-white text-sm">Total Aset</span><span class="font-black text-sm" style="color:var(--color-primary)">${fCur(totalAset)}</span></div>
                 </div>
             </div>
-            <div class="card-modern p-5 sm:p-6">
+            <div class="card-modern p-5 sm:p-6 relative overflow-hidden shadow-lg border-rose-100 dark:border-rose-900/30" style="background: linear-gradient(135deg, rgba(244,63,94,0.05), transparent)"><div class="absolute -top-10 -right-10 w-32 h-32 bg-rose-500/10 rounded-full blur-2xl pointer-events-none"></div>
                 <h4 class="font-black text-slate-800 dark:text-white text-xs uppercase tracking-widest mb-4 pb-3 border-b border-slate-100 dark:border-slate-700"><i class="fa-solid fa-arrow-up-wide-short mr-1.5 text-rose-500"></i>KEWAJIBAN &amp; MODAL</h4>
                 <div class="space-y-3">
                     <div class="flex items-center justify-between gap-2"><span class="text-xs font-bold text-slate-500 dark:text-slate-400">Hutang Usaha (manual)</span><input type="number" min="0" value="${bs.hutang||0}" onchange="saveBalanceField('hutang', this.value)" class="admin-input !py-2 !px-3 text-xs w-32 text-right bg-slate-50 dark:bg-slate-900/50"></i></div>
@@ -6982,7 +6982,7 @@ window.rTaxBalance = () => {
                 </div>
             </div>
         </div>
-        <div class="max-w-4xl mx-auto mt-4 text-center">
+        <div class="max-w-5xl mx-auto mt-6 text-center">
             <button onclick="openTaxDocPreview('balance')" class="text-[10px] font-black text-slate-400 hover:text-[var(--color-primary)] inline-flex items-center gap-1.5"><i class="fa-solid fa-eye"></i> Preview &amp; Cetak Neraca</button>
         </div>
     `);
