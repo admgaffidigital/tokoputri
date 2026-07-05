@@ -735,7 +735,7 @@
                 </div>
             </div>
             
-            <div class='p-4 sm:p-5 bg-white dark:bg-slate-800 border-t border-slate-200 z-20 dark:border-slate-700 grid grid-cols-3 gap-3'>
+            <div class='p-4 sm:p-5 md:p-6 lg:p-8 bg-white dark:bg-slate-800 border-t border-slate-200 z-20 dark:border-slate-700 grid grid-cols-3 gap-3'>
                 <button class='py-3 bg-blue-600 hover:bg-blue-700 text-white font-black rounded-xl text-[10px] sm:text-xs flex items-center justify-center gap-2 transition-all active:scale-95 shadow-md shadow-blue-500/20' onclick='exportDocFile(&quot;image&quot;)'><i class='fa-solid fa-image text-sm sm:text-base'></i> <span class='hidden sm:inline'>Simpan Gambar</span></button>
                 <button class='py-3 bg-rose-600 hover:bg-rose-700 text-white font-black rounded-xl text-[10px] sm:text-xs flex items-center justify-center gap-2 transition-all active:scale-95 shadow-md shadow-rose-500/20' onclick='exportDocFile(&quot;pdf&quot;)'><i class='fa-solid fa-file-pdf text-sm sm:text-base'></i> <span class='hidden sm:inline'>Cetak PDF</span></button>
                 <button class='py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-black rounded-xl text-[10px] sm:text-xs flex items-center justify-center gap-2 transition-all active:scale-95 shadow-md shadow-emerald-500/20' onclick='printDocA4()'><i class='fa-solid fa-print text-sm sm:text-base'></i> <span class='hidden sm:inline'>Print Langsung</span></button>
@@ -779,26 +779,26 @@
                 <div class='w-full max-w-full xl:max-w-[1200px] px-4 lg:px-10 mx-auto mt-5 hidden' id='dynamic-vouchers-container'></div>
                                     
                 <div class='w-full max-w-full xl:max-w-[1200px] px-4 lg:px-10 mx-auto mt-6'>
-                    <div class='bg-white dark:bg-slate-800 rounded-[1.5rem] border border-slate-200 dark:border-slate-700 shadow-sm p-5 sm:p-7'>
+                    <div class='bg-white dark:bg-slate-800 rounded-[1.5rem] border border-slate-200 dark:border-slate-700 shadow-sm p-5 sm:p-6 md:p-7 lg:p-8'>
                         <div class='flex items-center justify-between mb-5 pb-4 border-b border-slate-100 dark:border-slate-700/50'>
                             <div class='flex items-center gap-3'>
                                 <div class='w-8 h-8 rounded-xl bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center text-white shadow-md'><i class='fa-solid fa-layer-group text-sm'></i></div>
                                 <h3 class='font-black text-slate-800 dark:text-white text-sm sm:text-base tracking-tight uppercase'>KATEGORI PRODUK</h3>
                             </div>
-                            <button class='text-[10px] font-black text-emerald-600 hover:text-white hover:bg-emerald-500 bg-emerald-50 dark:bg-emerald-900/40 px-4 py-2 rounded-lg transition-all active:scale-95 shadow-sm uppercase tracking-widest' onclick='openCategoryModal()'>Lihat Semua</button>
+                            <button class='text-[10px] font-black text-emerald-600 hover:text-white hover:bg-emerald-500 bg-emerald-50 dark:bg-emerald-900/40 px-4 py-2 rounded-xl transition-all active:scale-95 shadow-sm uppercase tracking-widest' onclick='openCategoryModal()'>Lihat Semua</button>
                         </div>
                         <div class='flex gap-4 overflow-x-auto hide-scrollbar snap-x pb-4 pt-2' id='dynamic-categories-container'></div>
                     </div>
                 </div>
 
                 <div class='w-full max-w-full xl:max-w-[1200px] px-4 lg:px-10 mx-auto mt-6 mb-2'>
-                    <div class='bg-white dark:bg-slate-800 rounded-[1.5rem] border border-slate-200 dark:border-slate-700 shadow-sm p-5 sm:p-7'>
+                    <div class='bg-white dark:bg-slate-800 rounded-[1.5rem] border border-slate-200 dark:border-slate-700 shadow-sm p-5 sm:p-6 md:p-7 lg:p-8'>
                         <div class='flex items-center justify-between mb-5 pb-4 border-b border-slate-100 dark:border-slate-700/50'>
                             <div class='flex items-center gap-3'>
                                 <div class='w-8 h-8 rounded-xl bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-white shadow-md'><i class='fa-solid fa-copyright text-sm'></i></div>
                                 <h3 class='font-black text-slate-800 dark:text-white text-sm sm:text-base tracking-tight uppercase'>BRAND MITRA</h3>
                             </div>
-                            <button class='text-[10px] font-black text-blue-600 hover:text-white hover:bg-blue-500 bg-blue-50 dark:bg-blue-900/40 px-4 py-2 rounded-lg transition-all active:scale-95 shadow-sm uppercase tracking-widest' onclick='openBrandModal()'>Lihat Semua</button>
+                            <button class='text-[10px] font-black text-blue-600 hover:text-white hover:bg-blue-500 bg-blue-50 dark:bg-blue-900/40 px-4 py-2 rounded-xl transition-all active:scale-95 shadow-sm uppercase tracking-widest' onclick='openBrandModal()'>Lihat Semua</button>
                         </div>
                         <div class='flex gap-4 overflow-x-auto hide-scrollbar snap-x pb-4 pt-2' id='dynamic-brands-container'></div>
                     </div>
@@ -809,7 +809,7 @@
                         <div class='relative w-full sm:w-80 flex items-center bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200 dark:border-slate-700 focus-within:border-emerald-400 dark:focus-within:border-emerald-500 focus-within:ring-2 focus-within:ring-emerald-400/20 transition-all'>
                             <i class='fa-solid fa-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm'></i>
                             <input autocomplete='off' class='w-full pl-11 pr-12 py-3 bg-transparent rounded-xl text-sm font-semibold focus:outline-none transition-all text-slate-800 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500' id='search-input' name='cari_produk_q' onkeyup='window.handleSearch &amp;&amp; window.handleSearch(this.value)' placeholder='Cari nama produk...' type='text'></i>
-                            <button class='absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center text-slate-400 hover:text-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 rounded-lg transition-all' onclick='openCameraScanner()'><i class='fa-solid fa-qrcode text-sm'></i></button>
+                            <button class='absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center text-slate-400 hover:text-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 rounded-xl transition-all' onclick='openCameraScanner()'><i class='fa-solid fa-qrcode text-sm'></i></button>
                         </div>
                         <div class='flex gap-2 w-full sm:w-auto px-1 pb-1 sm:p-0 sm:pr-1'>
                             <div class='relative flex-1 sm:w-40'>
@@ -819,8 +819,8 @@
                                 <i class='fa-solid fa-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-[10px]'></i>
                             </div>
                             <div class='flex bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden shrink-0 p-1'>
-                                <button class='w-8 h-8 rounded-lg flex items-center justify-center text-emerald-600 bg-white dark:bg-slate-700 shadow-sm transition-all' id='btn-view-grid' onclick='toggleView(&quot;grid&quot;)'><i class='fa-solid fa-border-all text-sm'></i></button>
-                                <button class='w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 transition-all' id='btn-view-list' onclick='toggleView(&quot;list&quot;)'><i class='fa-solid fa-list text-sm'></i></button>
+                                <button class='w-8 h-8 rounded-xl flex items-center justify-center text-emerald-600 bg-white dark:bg-slate-700 shadow-sm transition-all' id='btn-view-grid' onclick='toggleView(&quot;grid&quot;)'><i class='fa-solid fa-border-all text-sm'></i></button>
+                                <button class='w-8 h-8 rounded-xl flex items-center justify-center text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 transition-all' id='btn-view-list' onclick='toggleView(&quot;list&quot;)'><i class='fa-solid fa-list text-sm'></i></button>
                             </div>
                         </div>
                     </div>
@@ -868,7 +868,7 @@
 
             <div class='md:col-span-5 lg:col-span-3 flex flex-col items-center md:items-start'>
                 <h4 class='font-black text-slate-800 dark:text-white mb-5 uppercase tracking-widest text-sm flex items-center justify-center md:justify-start gap-3 pb-4 border-b border-slate-100 dark:border-slate-800 w-full'>
-                    <div class='w-7 h-7 rounded-lg bg-[var(--color-primary-light)] text-[var(--color-primary)] dark:bg-[var(--color-primary-dark)]/30 flex items-center justify-center'><i class='fa-solid fa-link text-xs'></i></div> Tautan Cepat
+                    <div class='w-7 h-7 rounded-xl bg-[var(--color-primary-light)] text-[var(--color-primary)] dark:bg-[var(--color-primary-dark)]/30 flex items-center justify-center'><i class='fa-solid fa-link text-xs'></i></div> Tautan Cepat
                 </h4>
                 <ul class='space-y-1.5 w-full max-w-[200px] md:max-w-none'>
                     <li><a class='text-sm font-bold text-slate-500 dark:text-slate-400 hover:text-[var(--color-primary)] dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800/50 px-3 py-2.5 md:-ml-3 rounded-xl flex items-center justify-center md:justify-start gap-3 group transition-all cursor-pointer' href='javascript:void(0)' onclick='changeView(&quot;view-catalog&quot;)'>
@@ -891,7 +891,7 @@
 
             <div class='md:col-span-7 lg:col-span-4 flex flex-col items-center md:items-start'>
                 <h4 class='font-black text-slate-800 dark:text-white mb-5 uppercase tracking-widest text-sm flex items-center justify-center md:justify-start gap-3 pb-4 border-b border-slate-100 dark:border-slate-800 w-full'>
-                    <div class='w-7 h-7 rounded-lg bg-[var(--color-primary-light)] text-[var(--color-primary)] dark:bg-[var(--color-primary-dark)]/30 flex items-center justify-center'><i class='fa-solid fa-headset text-xs'></i></div> Hubungi Kami
+                    <div class='w-7 h-7 rounded-xl bg-[var(--color-primary-light)] text-[var(--color-primary)] dark:bg-[var(--color-primary-dark)]/30 flex items-center justify-center'><i class='fa-solid fa-headset text-xs'></i></div> Hubungi Kami
                 </h4>
                 
                 <div class='space-y-4 w-full max-w-sm md:max-w-none'>
@@ -1159,7 +1159,7 @@
                                     <span class="text-[11px] font-black text-slate-700 dark:text-slate-300 uppercase tracking-widest">Down Payment (DP)</span>
                                     <div class="relative flex items-center">
                                         <span class="absolute left-3 text-xs font-black text-slate-400">Rp</span>
-                                        <input type="number" id="tempo-dp-input" oninput="calculateTempoBalance()" class="w-32 bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-white border border-slate-200 dark:border-slate-700 rounded-lg py-2 pl-8 pr-3 text-sm font-black text-right outline-none focus:border-pink-400 transition-colors" placeholder="0" min="0">
+                                        <input type="number" id="tempo-dp-input" oninput="calculateTempoBalance()" class="w-32 bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-white border border-slate-200 dark:border-slate-700 rounded-xl py-2 pl-8 pr-3 text-sm font-black text-right outline-none focus:border-pink-400 transition-colors" placeholder="0" min="0">
                                     </div>
                                 </div>
                                 <div class="flex items-center justify-between px-1 mb-2">
@@ -1246,8 +1246,8 @@
                         <div class='space-y-3.5 text-sm font-medium text-slate-300 relative z-10'>
                             <div class='flex justify-between items-center'><span>Subtotal Produk</span><span class='font-bold text-white text-base' id='summary-subtotal'>Rp 0</span></div>
                             <div class='flex justify-between items-center hidden' id='summary-shipping-row'><span>Ongkir <span class='text-[9px] text-slate-400 bg-slate-800 px-1.5 py-0.5 rounded ml-1 font-bold tracking-widest uppercase border border-slate-700' id='summary-distance'></span></span><span class='font-bold text-white text-base' id='summary-shipping'>Rp 0</span></div>
-                            <div class='flex justify-between items-center text-emerald-400 hidden bg-emerald-900/20 px-2 py-1.5 -mx-2 rounded-lg border border-emerald-800/30' id='summary-discount-row'><span>Diskon Ongkir</span><span class='font-bold' id='summary-discount'>- Rp 0</span></div>
-                            <div class='flex justify-between items-center text-amber-400 hidden bg-amber-900/20 px-2 py-1.5 -mx-2 rounded-lg border border-amber-800/30' id='summary-ppn-row'><span id='summary-ppn-label'>PPN (11%)</span><span class='font-bold' id='summary-ppn'>Rp 0</span></div>
+                            <div class='flex justify-between items-center text-emerald-400 hidden bg-emerald-900/20 px-2 py-1.5 -mx-2 rounded-xl border border-emerald-800/30' id='summary-discount-row'><span>Diskon Ongkir</span><span class='font-bold' id='summary-discount'>- Rp 0</span></div>
+                            <div class='flex justify-between items-center text-amber-400 hidden bg-amber-900/20 px-2 py-1.5 -mx-2 rounded-xl border border-amber-800/30' id='summary-ppn-row'><span id='summary-ppn-label'>PPN (11%)</span><span class='font-bold' id='summary-ppn'>Rp 0</span></div>
                         </div>
 
                         <div class='border-t border-dashed border-slate-600/60 my-5 relative z-10'></div>
@@ -1265,7 +1265,7 @@
                 <div class='max-w-full xl:max-w-[1200px] px-4 lg:px-10 mx-auto flex flex-col gap-2.5'>
                     <label class='flex items-center gap-3 cursor-pointer bg-slate-50 dark:bg-slate-800/80 p-3 rounded-xl border border-slate-200 dark:border-slate-700'>
                         <input class='peer sr-only' id='tnc-checkbox' onchange='toggleOrderButton()' type='checkbox'></i>
-                        <div class='w-5 h-5 border-2 border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 rounded-md flex items-center justify-center peer-checked:bg-emerald-500 peer-checked:border-emerald-500 transition-all shrink-0'><i class='fa-solid fa-check text-white text-[10px] opacity-0 peer-checked:opacity-100 transition-opacity'></i></div>
+                        <div class='w-5 h-5 border-2 border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 rounded-xl flex items-center justify-center peer-checked:bg-emerald-500 peer-checked:border-emerald-500 transition-all shrink-0'><i class='fa-solid fa-check text-white text-[10px] opacity-0 peer-checked:opacity-100 transition-opacity'></i></div>
                         <span class='text-[11px] font-bold text-slate-600 dark:text-slate-400 leading-snug'>Saya setuju dan memastikan pesanan sudah benar.</span>
                     </label>
                     <button class='btn-primary btn-disabled w-full py-4 text-sm uppercase tracking-wider font-black rounded-2xl shadow-glow flex justify-center items-center gap-2 active:scale-[0.98]' id='btn-process-order' onclick='processOrder()'><i class='fa-solid fa-paper-plane'></i> Proses Pesanan</button>
@@ -1352,7 +1352,7 @@
                                 <h1 class='text-sm font-black tracking-tight text-slate-900 dark:text-white leading-none' id='admin-header-title'>CMS TOKO</h1>
                                 <div id='admin-pro-badge'></div>
                             </div>
-                            <span class='text-[9px] font-black text-[var(--color-primary)] uppercase tracking-widest bg-[rgba(var(--color-primary-rgb),0.1)] px-1.5 py-0.5 rounded-md inline-block mt-0.5 leading-none'>Superadmin</span>
+                            <span class='text-[9px] font-black text-[var(--color-primary)] uppercase tracking-widest bg-[rgba(var(--color-primary-rgb),0.1)] px-1.5 py-0.5 rounded-xl inline-block mt-0.5 leading-none'>Superadmin</span>
                         </div>
                     </div>
                     <div class='flex items-center gap-1.5'>
@@ -1365,7 +1365,7 @@
             <div class='scroll-content flex-1 overflow-y-auto w-full pb-16 relative'>
                 <div class='max-w-full lg:px-8 mx-auto pt-6 px-4 w-full'>
                     
-                    <div class='fade-in-scale block w-full max-w-5xl mx-auto' id='admin-dashboard-view'>
+                    <div class='fade-in-scale block w-full max-w-7xl mx-auto' id='admin-dashboard-view'>
                         
                         <!-- Welcome Banner -->
                         <div class='relative overflow-hidden rounded-[1.5rem] mb-7 p-6 sm:p-8 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 dark:from-slate-800 dark:to-slate-900 border border-slate-700/60 shadow-xl'>
@@ -1387,14 +1387,14 @@
                         <div class='mb-7'>
                             <div class='flex items-center justify-between gap-3 mb-4 px-1 flex-wrap'>
                                 <div class='flex items-center gap-2.5'>
-                                    <div class='w-8 h-8 rounded-lg flex items-center justify-center shrink-0' style='background: rgba(var(--color-primary-rgb),0.1); color: var(--color-primary)'><i class='fa-solid fa-chart-line text-sm'></i></div>
+                                    <div class='w-8 h-8 rounded-xl flex items-center justify-center shrink-0' style='background: rgba(var(--color-primary-rgb),0.1); color: var(--color-primary)'><i class='fa-solid fa-chart-line text-sm'></i></div>
                                     <h3 class='font-black text-slate-700 dark:text-slate-200 text-xs uppercase tracking-widest'>Laporan Toko</h3>
                                 </div>
                                 <div class='flex gap-1.5 bg-slate-100 dark:bg-slate-800 p-1 rounded-xl' id='report-period-tabs'>
-                                    <button class='report-period-btn px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all text-slate-500 dark:text-slate-400' data-period='today' onclick='loadAdminReport(&apos;today&apos;)'>Hari Ini</button>
-                                    <button class='report-period-btn px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all text-slate-500 dark:text-slate-400' data-period='week' onclick='loadAdminReport(&apos;week&apos;)'>Minggu Ini</button>
-                                    <button class='report-period-btn px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all text-slate-500 dark:text-slate-400' data-period='month' onclick='loadAdminReport(&apos;month&apos;)'>Bulan Ini</button>
-                                    <button class='report-period-btn px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all text-slate-500 dark:text-slate-400' data-period='all' onclick='loadAdminReport(&apos;all&apos;)'>Semua</button>
+                                    <button class='report-period-btn px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all text-slate-500 dark:text-slate-400' data-period='today' onclick='loadAdminReport(&apos;today&apos;)'>Hari Ini</button>
+                                    <button class='report-period-btn px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all text-slate-500 dark:text-slate-400' data-period='week' onclick='loadAdminReport(&apos;week&apos;)'>Minggu Ini</button>
+                                    <button class='report-period-btn px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all text-slate-500 dark:text-slate-400' data-period='month' onclick='loadAdminReport(&apos;month&apos;)'>Bulan Ini</button>
+                                    <button class='report-period-btn px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all text-slate-500 dark:text-slate-400' data-period='all' onclick='loadAdminReport(&apos;all&apos;)'>Semua</button>
                                 </div>
                             </div>
                             <div id='admin-report-container'>
@@ -1403,86 +1403,86 @@
                         </div>
 
                         <div class='flex items-center gap-2.5 mb-4 px-1'>
-                            <div class='w-8 h-8 rounded-lg flex items-center justify-center shrink-0' style='background: rgba(var(--color-primary-rgb),0.1); color: var(--color-primary)'><i class='fa-solid fa-compass text-sm'></i></div>
+                            <div class='w-8 h-8 rounded-xl flex items-center justify-center shrink-0' style='background: rgba(var(--color-primary-rgb),0.1); color: var(--color-primary)'><i class='fa-solid fa-compass text-sm'></i></div>
                             <h3 class='font-black text-slate-700 dark:text-slate-200 text-xs uppercase tracking-widest'>Menu Navigasi Utama</h3>
                         </div>
                         
                         <!-- Grid Menu Admin -->
                         <div class='grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 pb-8'>
                             
-                            <button class='card-modern p-4 sm:p-5 flex flex-col items-center justify-center text-center gap-3 group hover:-translate-y-1.5 hover:shadow-xl hover:border-[rgba(var(--color-primary-rgb),0.4)] transition-all duration-300 relative overflow-hidden' onclick='openAdminTab(&quot;orders&quot;)'>
+                            <button class='card-modern p-4 sm:p-5 md:p-6 lg:p-8 flex flex-col items-center justify-center text-center gap-3 group hover:-translate-y-1.5 hover:shadow-xl hover:border-[rgba(var(--color-primary-rgb),0.4)] transition-all duration-300 relative overflow-hidden' onclick='openAdminTab(&quot;orders&quot;)'>
                                 <div class='absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-[1.25rem]' style='background: linear-gradient(to bottom, rgba(var(--color-primary-rgb),0.06), transparent)'></div>
                                 <div class='w-12 h-12 sm:w-14 sm:h-14 rounded-2xl text-white flex items-center justify-center shadow-md group-hover:scale-110 transition-all duration-300 relative z-10' style='background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark))'><i class='fa-solid fa-receipt text-xl sm:text-2xl'></i></div>
                                 <div class='relative z-10'><span class='block text-[10px] sm:text-[11px] font-black text-slate-800 dark:text-white uppercase tracking-widest leading-tight'>Pesanan</span><span class='block text-[9px] font-bold text-slate-400 mt-0.5'>Kelola Transaksi</span></div>
                             </button>
                             
-                            <button class='card-modern p-4 sm:p-5 flex flex-col items-center justify-center text-center gap-3 group hover:-translate-y-1.5 hover:shadow-xl hover:border-blue-300 dark:hover:border-blue-600 transition-all duration-300 relative overflow-hidden' onclick='openAdminTab(&quot;products&quot;)'>
+                            <button class='card-modern p-4 sm:p-5 md:p-6 lg:p-8 flex flex-col items-center justify-center text-center gap-3 group hover:-translate-y-1.5 hover:shadow-xl hover:border-blue-300 dark:hover:border-blue-600 transition-all duration-300 relative overflow-hidden' onclick='openAdminTab(&quot;products&quot;)'>
                                 <div class='absolute inset-0 bg-gradient-to-b from-blue-50/80 to-transparent dark:from-blue-900/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-[1.25rem]'></div>
                                 <div class='w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-br from-blue-400 to-blue-600 text-white flex items-center justify-center shadow-md group-hover:scale-110 transition-all duration-300 relative z-10'><i class='fa-solid fa-box-open text-xl sm:text-2xl'></i></div>
                                 <div class='relative z-10'><span class='block text-[10px] sm:text-[11px] font-black text-slate-800 dark:text-white uppercase tracking-widest leading-tight'>Produk</span><span class='block text-[9px] font-bold text-slate-400 mt-0.5'>Katalog Barang</span></div>
                             </button>
                             
-                            <button class='card-modern p-4 sm:p-5 flex flex-col items-center justify-center text-center gap-3 group hover:-translate-y-1.5 hover:shadow-xl hover:border-slate-400 dark:hover:border-slate-500 transition-all duration-300 relative overflow-hidden' onclick='openAdminTab(&quot;settings&quot;)'>
+                            <button class='card-modern p-4 sm:p-5 md:p-6 lg:p-8 flex flex-col items-center justify-center text-center gap-3 group hover:-translate-y-1.5 hover:shadow-xl hover:border-slate-400 dark:hover:border-slate-500 transition-all duration-300 relative overflow-hidden' onclick='openAdminTab(&quot;settings&quot;)'>
                                 <div class='absolute inset-0 bg-gradient-to-b from-slate-100/80 to-transparent dark:from-slate-700/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-[1.25rem]'></div>
                                 <div class='w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-br from-slate-600 to-slate-800 text-white flex items-center justify-center shadow-md group-hover:scale-110 transition-all duration-300 relative z-10'><i class='fa-solid fa-gear text-xl sm:text-2xl group-hover:rotate-90 transition-transform duration-500'></i></div>
                                 <div class='relative z-10'><span class='block text-[10px] sm:text-[11px] font-black text-slate-800 dark:text-white uppercase tracking-widest leading-tight'>Pengaturan</span><span class='block text-[9px] font-bold text-slate-400 mt-0.5'>Sistem Toko</span></div>
                             </button>
 
-                            <button class='card-modern p-4 sm:p-5 flex flex-col items-center justify-center text-center gap-3 group hover:-translate-y-1.5 hover:shadow-xl hover:border-amber-300 dark:hover:border-amber-600 transition-all duration-300 relative overflow-hidden' onclick='openAdminTab(&quot;categories&quot;)'>
+                            <button class='card-modern p-4 sm:p-5 md:p-6 lg:p-8 flex flex-col items-center justify-center text-center gap-3 group hover:-translate-y-1.5 hover:shadow-xl hover:border-amber-300 dark:hover:border-amber-600 transition-all duration-300 relative overflow-hidden' onclick='openAdminTab(&quot;categories&quot;)'>
                                 <div class='absolute inset-0 bg-gradient-to-b from-amber-50/80 to-transparent dark:from-amber-900/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-[1.25rem]'></div>
                                 <div class='w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-br from-amber-400 to-amber-600 text-white flex items-center justify-center shadow-md group-hover:scale-110 transition-all duration-300 relative z-10'><i class='fa-solid fa-tags text-xl sm:text-2xl'></i></div>
                                 <div class='relative z-10'><span class='block text-[10px] sm:text-[11px] font-black text-slate-800 dark:text-white uppercase tracking-widest leading-tight'>Kategori</span><span class='block text-[9px] font-bold text-slate-400 mt-0.5'>Grup Etalase</span></div>
                             </button>
                             
-                            <button class='card-modern p-4 sm:p-5 flex flex-col items-center justify-center text-center gap-3 group hover:-translate-y-1.5 hover:shadow-xl hover:border-indigo-300 dark:hover:border-indigo-600 transition-all duration-300 relative overflow-hidden' onclick='openAdminTab(&quot;brands&quot;)'>
+                            <button class='card-modern p-4 sm:p-5 md:p-6 lg:p-8 flex flex-col items-center justify-center text-center gap-3 group hover:-translate-y-1.5 hover:shadow-xl hover:border-indigo-300 dark:hover:border-indigo-600 transition-all duration-300 relative overflow-hidden' onclick='openAdminTab(&quot;brands&quot;)'>
                                 <div class='absolute inset-0 bg-gradient-to-b from-indigo-50/80 to-transparent dark:from-indigo-900/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-[1.25rem]'></div>
                                 <div class='w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-br from-indigo-400 to-indigo-600 text-white flex items-center justify-center shadow-md group-hover:scale-110 transition-all duration-300 relative z-10'><i class='fa-solid fa-copyright text-xl sm:text-2xl'></i></div>
                                 <div class='relative z-10'><span class='block text-[10px] sm:text-[11px] font-black text-slate-800 dark:text-white uppercase tracking-widest leading-tight'>Merek</span><span class='block text-[9px] font-bold text-slate-400 mt-0.5'>Brand Ternama</span></div>
                             </button>
                             
-                            <button class='card-modern p-4 sm:p-5 flex flex-col items-center justify-center text-center gap-3 group hover:-translate-y-1.5 hover:shadow-xl hover:border-purple-300 dark:hover:border-purple-600 transition-all duration-300 relative overflow-hidden' onclick='openAdminTab(&quot;vouchers&quot;)'>
+                            <button class='card-modern p-4 sm:p-5 md:p-6 lg:p-8 flex flex-col items-center justify-center text-center gap-3 group hover:-translate-y-1.5 hover:shadow-xl hover:border-purple-300 dark:hover:border-purple-600 transition-all duration-300 relative overflow-hidden' onclick='openAdminTab(&quot;vouchers&quot;)'>
                                 <div class='absolute inset-0 bg-gradient-to-b from-purple-50/80 to-transparent dark:from-purple-900/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-[1.25rem]'></div>
                                 <div class='w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-br from-purple-400 to-purple-600 text-white flex items-center justify-center shadow-md group-hover:scale-110 transition-all duration-300 relative z-10'><i class='fa-solid fa-ticket-simple text-xl sm:text-2xl -rotate-45'></i></div>
                                 <div class='relative z-10'><span class='block text-[10px] sm:text-[11px] font-black text-slate-800 dark:text-white uppercase tracking-widest leading-tight'>Voucher</span><span class='block text-[9px] font-bold text-slate-400 mt-0.5'>Diskon &amp; Promo</span></div>
                             </button>
                             
-                            <button class='card-modern p-4 sm:p-5 flex flex-col items-center justify-center text-center gap-3 group hover:-translate-y-1.5 hover:shadow-xl hover:border-cyan-300 dark:hover:border-cyan-600 transition-all duration-300 relative overflow-hidden' onclick='openAdminTab(&quot;banks&quot;)'>
+                            <button class='card-modern p-4 sm:p-5 md:p-6 lg:p-8 flex flex-col items-center justify-center text-center gap-3 group hover:-translate-y-1.5 hover:shadow-xl hover:border-cyan-300 dark:hover:border-cyan-600 transition-all duration-300 relative overflow-hidden' onclick='openAdminTab(&quot;banks&quot;)'>
                                 <div class='absolute inset-0 bg-gradient-to-b from-cyan-50/80 to-transparent dark:from-cyan-900/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-[1.25rem]'></div>
                                 <div class='w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-br from-cyan-400 to-cyan-600 text-white flex items-center justify-center shadow-md group-hover:scale-110 transition-all duration-300 relative z-10'><i class='fa-solid fa-building-columns text-xl sm:text-2xl'></i></div>
                                 <div class='relative z-10'><span class='block text-[10px] sm:text-[11px] font-black text-slate-800 dark:text-white uppercase tracking-widest leading-tight'>Rekening</span><span class='block text-[9px] font-bold text-slate-400 mt-0.5'>Metode Transfer</span></div>
                             </button>
                             
-                            <button class='card-modern p-4 sm:p-5 flex flex-col items-center justify-center text-center gap-3 group hover:-translate-y-1.5 hover:shadow-xl hover:border-pink-300 dark:hover:border-pink-600 transition-all duration-300 relative overflow-hidden' onclick='openAdminTab(&quot;banners&quot;)'>
+                            <button class='card-modern p-4 sm:p-5 md:p-6 lg:p-8 flex flex-col items-center justify-center text-center gap-3 group hover:-translate-y-1.5 hover:shadow-xl hover:border-pink-300 dark:hover:border-pink-600 transition-all duration-300 relative overflow-hidden' onclick='openAdminTab(&quot;banners&quot;)'>
                                 <div class='absolute inset-0 bg-gradient-to-b from-pink-50/80 to-transparent dark:from-pink-900/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-[1.25rem]'></div>
                                 <div class='w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-br from-pink-400 to-pink-600 text-white flex items-center justify-center shadow-md group-hover:scale-110 transition-all duration-300 relative z-10'><i class='fa-solid fa-images text-xl sm:text-2xl'></i></div>
                                 <div class='relative z-10'><span class='block text-[10px] sm:text-[11px] font-black text-slate-800 dark:text-white uppercase tracking-widest leading-tight'>Banner</span><span class='block text-[9px] font-bold text-slate-400 mt-0.5'>Slider Promosi</span></div>
                             </button>
 
-                            <button class='card-modern p-4 sm:p-5 flex flex-col items-center justify-center text-center gap-3 group hover:-translate-y-1.5 hover:shadow-xl hover:border-teal-300 dark:hover:border-teal-600 transition-all duration-300 relative overflow-hidden' onclick='openAdminTab(&quot;customers&quot;)'>
+                            <button class='card-modern p-4 sm:p-5 md:p-6 lg:p-8 flex flex-col items-center justify-center text-center gap-3 group hover:-translate-y-1.5 hover:shadow-xl hover:border-teal-300 dark:hover:border-teal-600 transition-all duration-300 relative overflow-hidden' onclick='openAdminTab(&quot;customers&quot;)'>
                                 <div class='absolute inset-0 bg-gradient-to-b from-teal-50/80 to-transparent dark:from-teal-900/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-[1.25rem]'></div>
                                 <div class='w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-br from-teal-400 to-teal-600 text-white flex items-center justify-center shadow-md group-hover:scale-110 transition-all duration-300 relative z-10'><i class='fa-solid fa-address-book text-xl sm:text-2xl'></i></div>
                                 <div class='relative z-10'><span class='block text-[10px] sm:text-[11px] font-black text-slate-800 dark:text-white uppercase tracking-widest leading-tight'>Pelanggan</span><span class='block text-[9px] font-bold text-slate-400 mt-0.5'>Database Member</span></div>
                             </button>
 
-                            <button class='card-modern p-4 sm:p-5 flex flex-col items-center justify-center text-center gap-3 group hover:-translate-y-1.5 hover:shadow-xl hover:border-violet-300 dark:hover:border-violet-600 transition-all duration-300 relative overflow-hidden' onclick='openAdminTab(&quot;rewards&quot;)'>
+                            <button class='card-modern p-4 sm:p-5 md:p-6 lg:p-8 flex flex-col items-center justify-center text-center gap-3 group hover:-translate-y-1.5 hover:shadow-xl hover:border-violet-300 dark:hover:border-violet-600 transition-all duration-300 relative overflow-hidden' onclick='openAdminTab(&quot;rewards&quot;)'>
                                 <div class='absolute inset-0 bg-gradient-to-b from-violet-50/80 to-transparent dark:from-violet-900/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-[1.25rem]'></div>
                                 <div class='w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-br from-violet-400 to-violet-600 text-white flex items-center justify-center shadow-md group-hover:scale-110 transition-all duration-300 relative z-10'><i class='fa-solid fa-gift text-xl sm:text-2xl'></i></div>
                                 <div class='relative z-10'><span class='block text-[10px] sm:text-[11px] font-black text-slate-800 dark:text-white uppercase tracking-widest leading-tight'>Hadiah</span><span class='block text-[9px] font-bold text-slate-400 mt-0.5'>Tukar Poin Member</span></div>
                             </button>
 
-                            <button class='card-modern p-4 sm:p-5 flex flex-col items-center justify-center text-center gap-3 group hover:-translate-y-1.5 hover:shadow-xl hover:border-amber-300 dark:hover:border-amber-600 transition-all duration-300 relative overflow-hidden' onclick='openAdminTab(&quot;reviews&quot;)'>
+                            <button class='card-modern p-4 sm:p-5 md:p-6 lg:p-8 flex flex-col items-center justify-center text-center gap-3 group hover:-translate-y-1.5 hover:shadow-xl hover:border-amber-300 dark:hover:border-amber-600 transition-all duration-300 relative overflow-hidden' onclick='openAdminTab(&quot;reviews&quot;)'>
                                 <div class='absolute inset-0 bg-gradient-to-b from-amber-50/80 to-transparent dark:from-amber-900/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-[1.25rem]'></div>
                                 <div class='w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-br from-amber-400 to-amber-600 text-white flex items-center justify-center shadow-md group-hover:scale-110 transition-all duration-300 relative z-10'><i class='fa-solid fa-star text-xl sm:text-2xl'></i></div>
                                 <div class='relative z-10'><span class='block text-[10px] sm:text-[11px] font-black text-slate-800 dark:text-white uppercase tracking-widest leading-tight'>Ulasan</span><span class='block text-[9px] font-bold text-slate-400 mt-0.5'>Testimoni Pelanggan</span></div>
                             </button>
 
-                            <button class='hidden card-modern p-4 sm:p-5 flex-col items-center justify-center text-center gap-3 group hover:-translate-y-1.5 hover:shadow-xl hover:border-red-300 dark:hover:border-red-600 transition-all duration-300 relative overflow-hidden' id='admin-menu-tax-btn' onclick='openAdminTab(&quot;tax&quot;)'>
+                            <button class='hidden card-modern p-4 sm:p-5 md:p-6 lg:p-8 flex-col items-center justify-center text-center gap-3 group hover:-translate-y-1.5 hover:shadow-xl hover:border-red-300 dark:hover:border-red-600 transition-all duration-300 relative overflow-hidden' id='admin-menu-tax-btn' onclick='openAdminTab(&quot;tax&quot;)'>
                                 <div class='absolute inset-0 bg-gradient-to-b from-red-50/80 to-transparent dark:from-red-900/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-[1.25rem]'></div>
                                 <div class='w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-br from-red-400 to-red-600 text-white flex items-center justify-center shadow-md group-hover:scale-110 transition-all duration-300 relative z-10'><i class='fa-solid fa-file-invoice-dollar text-xl sm:text-2xl'></i></div>
                                 <div class='relative z-10'><span class='block text-[10px] sm:text-[11px] font-black text-slate-800 dark:text-white uppercase tracking-widest leading-tight'>Pajak</span><span class='block text-[9px] font-bold text-slate-400 mt-0.5'>PPN, Laba Rugi, Neraca</span></div>
                             </button>
 
-                            <button class='card-modern p-4 sm:p-5 flex flex-col items-center justify-center text-center gap-3 group hover:-translate-y-1.5 hover:shadow-xl hover:border-pink-300 dark:hover:border-pink-600 transition-all duration-300 relative overflow-hidden' onclick='openAdminTab(&quot;piutang&quot;)'>
+                            <button class='card-modern p-4 sm:p-5 md:p-6 lg:p-8 flex flex-col items-center justify-center text-center gap-3 group hover:-translate-y-1.5 hover:shadow-xl hover:border-pink-300 dark:hover:border-pink-600 transition-all duration-300 relative overflow-hidden' onclick='openAdminTab(&quot;piutang&quot;)'>
                                 <div class='absolute inset-0 bg-gradient-to-b from-pink-50/80 to-transparent dark:from-pink-900/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-[1.25rem]'></div>
                                 <div class='w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-br from-pink-400 to-pink-600 text-white flex items-center justify-center shadow-md group-hover:scale-110 transition-all duration-300 relative z-10'><i class='fa-solid fa-clock-rotate-left text-xl sm:text-2xl'></i></div>
                                 <div class='relative z-10'><span class='block text-[10px] sm:text-[11px] font-black text-slate-800 dark:text-white uppercase tracking-widest leading-tight'>Piutang Tempo</span><span class='block text-[9px] font-bold text-slate-400 mt-0.5'>Laporan Hutang Pelanggan</span></div>
@@ -1490,7 +1490,7 @@
                         </div>
                     </div>
                     
-                    <div class='hidden fade-in w-full max-w-5xl mx-auto' id='admin-content-view'><div id='admin-content'></div></div>
+                    <div class='hidden fade-in w-full max-w-7xl mx-auto' id='admin-content-view'><div id='admin-content' class='pb-10 md:pb-12'></div></div>
                 </div>
             </div>
         </div>
@@ -2738,7 +2738,7 @@ window.rDyn = () => {
             <div class="absolute right-20 -bottom-12 w-32 h-32 bg-white/20 rounded-full blur-2xl pointer-events-none"></div>
             <div class="absolute -left-12 top-10 w-24 h-24 bg-gradient-to-tr from-white/5 to-white/20 rounded-full backdrop-blur-sm border border-white/10 pointer-events-none transform -rotate-12 shadow-inner"></div>
             <div class="flex flex-1 w-full relative z-10">
-                <div class="w-[60%] p-5 sm:p-7 flex flex-col justify-center z-20">
+                <div class="w-[60%] p-5 sm:p-6 md:p-7 lg:p-8 flex flex-col justify-center z-20">
                     <span class="inline-block px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-white text-[9px] sm:text-[10px] font-black uppercase tracking-widest w-max mb-2.5 border border-white/30 shadow-sm"><i class="fa-solid fa-star text-yellow-300 mr-1 animate-pulse"></i> Promo</span>
                     <h2 class="text-[15px] sm:text-xl font-black text-white leading-snug mb-1.5 drop-shadow-md line-clamp-3">${esc(b.title || 'Penawaran Spesial')}</h2>
                     <p class="text-[10px] sm:text-[11px] text-white/90 font-medium line-clamp-3 leading-relaxed mb-3">${esc(b.desc || 'Belanja sekarang dan dapatkan penawaran terbaik.')}</p>
@@ -2787,7 +2787,7 @@ window.rDyn = () => {
                             <h4 class="font-black text-white text-sm sm:text-base leading-tight mb-1 drop-shadow-md line-clamp-1">${desc}</h4>
                             <p class="text-[8px] sm:text-[9px] font-bold text-white/90 flex items-center gap-1.5 mb-2.5 drop-shadow-sm uppercase tracking-wider"><i class="fa-solid fa-circle-info text-white/80"></i> ${termsStr}</p>
                             <div class="inline-flex">
-                                <span class="bg-black/20 backdrop-blur-md text-white text-[10px] sm:text-xs font-black px-3 py-1.5 rounded-lg uppercase tracking-widest border border-white/30 shadow-inner flex items-center gap-2">
+                                <span class="bg-black/20 backdrop-blur-md text-white text-[10px] sm:text-xs font-black px-3 py-1.5 rounded-xl uppercase tracking-widest border border-white/30 shadow-inner flex items-center gap-2">
                                     <i class="fa-solid fa-ticket text-white/60"></i> ${esc(v.code)}
                                 </span>
                             </div>
@@ -2979,7 +2979,7 @@ window.rCat = () => {
         let a = p.isActive !== 'false' && p.isActive !== false;
         
         // nH adalah tampilan "HABIS" menutupi gambar (tidak diubah)
-        let nH = !a ? `<div class="absolute inset-0 bg-white/60 dark:bg-slate-900/60 backdrop-blur-[2px] z-20 flex items-center justify-center rounded-[1.25rem]"><span class="bg-slate-800 text-white text-[10px] font-black px-3 py-1.5 rounded-lg shadow-lg uppercase tracking-widest"><i class="fa-solid fa-ban mr-1"></i> HABIS</span></div>` : '';
+        let nH = !a ? `<div class="absolute inset-0 bg-white/60 dark:bg-slate-900/60 backdrop-blur-[2px] z-20 flex items-center justify-center rounded-[1.25rem]"><span class="bg-slate-800 text-white text-[10px] font-black px-3 py-1.5 rounded-xl shadow-lg uppercase tracking-widest"><i class="fa-solid fa-ban mr-1"></i> HABIS</span></div>` : '';
         
         // Badge stok (hanya jika manajemen stok aktif)
         const useStk = appData.store.useStock === true || appData.store.useStock === 'true';
@@ -2989,13 +2989,13 @@ window.rCat = () => {
                 ? p.variants.filter(v => v.isActive !== false && v.isActive !== 'false').reduce((s,v) => s + (parseFloat(v.stock)||0), 0)
                 : parseFloat(p.stock) || 0;
             if (totalStock <= 0) {
-                nH = `<div class="absolute inset-0 bg-white/60 dark:bg-slate-900/60 backdrop-blur-[2px] z-20 flex items-center justify-center rounded-[1.25rem]"><span class="bg-slate-800 text-white text-[10px] font-black px-3 py-1.5 rounded-lg shadow-lg uppercase tracking-widest"><i class="fa-solid fa-ban mr-1"></i> HABIS</span></div>`;
+                nH = `<div class="absolute inset-0 bg-white/60 dark:bg-slate-900/60 backdrop-blur-[2px] z-20 flex items-center justify-center rounded-[1.25rem]"><span class="bg-slate-800 text-white text-[10px] font-black px-3 py-1.5 rounded-xl shadow-lg uppercase tracking-widest"><i class="fa-solid fa-ban mr-1"></i> HABIS</span></div>`;
             } else if (totalStock <= 5) {
                 // FIX BUG: dulu stok HANYA tampil kalau menipis (≤5) -- di luar itu tidak
                 // tampil sama sekali di card, membuat pelanggan tidak tahu ada berapa stok.
-                stockBadge = `<span class="absolute top-2 left-2 z-10 bg-rose-500 text-white text-[8px] font-black px-2 py-1 rounded-lg shadow uppercase tracking-wider"><i class="fa-solid fa-fire mr-0.5"></i> SISA ${totalStock}</span>`;
+                stockBadge = `<span class="absolute top-2 left-2 z-10 bg-rose-500 text-white text-[8px] font-black px-2 py-1 rounded-xl shadow uppercase tracking-wider"><i class="fa-solid fa-fire mr-0.5"></i> SISA ${totalStock}</span>`;
             } else {
-                stockBadge = `<span class="absolute top-2 left-2 z-10 bg-slate-800/80 text-white text-[8px] font-black px-2 py-1 rounded-lg shadow uppercase tracking-wider backdrop-blur-sm"><i class="fa-solid fa-box mr-0.5"></i> Stok ${totalStock}</span>`;
+                stockBadge = `<span class="absolute top-2 left-2 z-10 bg-slate-800/80 text-white text-[8px] font-black px-2 py-1 rounded-xl shadow uppercase tracking-wider backdrop-blur-sm"><i class="fa-solid fa-box mr-0.5"></i> Stok ${totalStock}</span>`;
             }
         }
         
@@ -3128,8 +3128,8 @@ window.handleSort = v => { cSort=v; cPage=1; window.rCat(); };
 
 window.toggleView = v => {
     cView = v; cPage = 1;
-    el('btn-view-grid').className = v === 'grid' ? "w-8 h-8 rounded-lg flex items-center justify-center text-[var(--color-primary)] bg-white dark:bg-slate-700 shadow-sm transition-all" : "w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 transition-all";
-    el('btn-view-list').className = v === 'list' ? "w-8 h-8 rounded-lg flex items-center justify-center text-[var(--color-primary)] bg-white dark:bg-slate-700 shadow-sm transition-all" : "w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 transition-all";
+    el('btn-view-grid').className = v === 'grid' ? "w-8 h-8 rounded-xl flex items-center justify-center text-[var(--color-primary)] bg-white dark:bg-slate-700 shadow-sm transition-all" : "w-8 h-8 rounded-xl flex items-center justify-center text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 transition-all";
+    el('btn-view-list').className = v === 'list' ? "w-8 h-8 rounded-xl flex items-center justify-center text-[var(--color-primary)] bg-white dark:bg-slate-700 shadow-sm transition-all" : "w-8 h-8 rounded-xl flex items-center justify-center text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 transition-all";
     window.rCat();
 };
 
@@ -3326,7 +3326,7 @@ const rProdMod = () => {
                 if (hV2) {
                     stockRows = `<div class="col-span-2 space-y-1.5">${(p.variants||[]).map(vr => {
                         const s = parseFloat(vr.stock)||0;
-                        return `<div class="flex justify-between items-center text-[11px] font-bold bg-white dark:bg-slate-900 p-2 rounded-lg border border-slate-200 dark:border-slate-700">
+                        return `<div class="flex justify-between items-center text-[11px] font-bold bg-white dark:bg-slate-900 p-2 rounded-xl border border-slate-200 dark:border-slate-700">
                             <span class="text-slate-500 flex items-center gap-1.5">${vr.colorCode?`<span class="w-3 h-3 rounded-full inline-block" style="background:${esc(vr.colorCode)}"></span>`:''}${esc(vr.name)}</span>
                             <span class="${s===0?'text-rose-500':s<=5?'text-amber-500':'text-blue-500'} font-black">${s} ${esc(vr.unit||p.unit||'pcs')}</span>
                         </div>`;
@@ -3624,9 +3624,9 @@ window.renderMyOrders = async () => {
             </div>
             ${(o.pointsEarned > 0 || o.claimedReward) ? `
             <div class="flex flex-wrap gap-1.5 mb-3">
-                ${o.pointsEarned > 0 ? `<span class="text-[9px] font-black px-2 py-1 rounded-lg bg-amber-50 text-amber-600 border border-amber-200 dark:bg-amber-900/20 dark:border-amber-800 dark:text-amber-400"><i class="fa-solid fa-star mr-1"></i>+${o.pointsEarned} Poin</span>` : ''}
-                ${o.claimedReward ? `<span class="text-[9px] font-black px-2 py-1 rounded-lg bg-violet-50 text-violet-600 border border-violet-200 dark:bg-violet-900/20 dark:border-violet-800 dark:text-violet-400"><i class="fa-solid fa-gift mr-1"></i>Hadiah: ${esc(o.claimedReward.name)} ${rewardStatusLabel(o.claimedReward)}</span>` : ''}
-                ${(o.claimedReward && o.finalMemberPoints !== undefined && o.finalMemberPoints !== null) ? `<span class="text-[9px] font-black px-2 py-1 rounded-lg bg-slate-100 text-slate-500 border border-slate-200 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-400"><i class="fa-solid fa-wallet mr-1"></i>Sisa Poin: ${o.finalMemberPoints}</span>` : ''}
+                ${o.pointsEarned > 0 ? `<span class="text-[9px] font-black px-2 py-1 rounded-xl bg-amber-50 text-amber-600 border border-amber-200 dark:bg-amber-900/20 dark:border-amber-800 dark:text-amber-400"><i class="fa-solid fa-star mr-1"></i>+${o.pointsEarned} Poin</span>` : ''}
+                ${o.claimedReward ? `<span class="text-[9px] font-black px-2 py-1 rounded-xl bg-violet-50 text-violet-600 border border-violet-200 dark:bg-violet-900/20 dark:border-violet-800 dark:text-violet-400"><i class="fa-solid fa-gift mr-1"></i>Hadiah: ${esc(o.claimedReward.name)} ${rewardStatusLabel(o.claimedReward)}</span>` : ''}
+                ${(o.claimedReward && o.finalMemberPoints !== undefined && o.finalMemberPoints !== null) ? `<span class="text-[9px] font-black px-2 py-1 rounded-xl bg-slate-100 text-slate-500 border border-slate-200 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-400"><i class="fa-solid fa-wallet mr-1"></i>Sisa Poin: ${o.finalMemberPoints}</span>` : ''}
             </div>` : ''}
             <div class="flex justify-between items-end mt-2">
                 <div>
@@ -3738,7 +3738,7 @@ window.renderOrderDetailModal = (orderId, d, reviewedKeys) => {
             <div class="flex gap-3 items-center border-b border-slate-100 dark:border-slate-700/50 py-3 last:border-0">
                 <div class="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 bg-cover bg-center shrink-0 border border-slate-200 dark:border-slate-700" style="background-image:url('${esc(i.img || (appData && appData.store ? appData.store.logo : ''))}')"></div>
                 <div class="flex-1 min-w-0">
-                    <p class="text-xs font-bold text-slate-800 dark:text-white truncate">${esc(i.name)} ${i.variantName ? `<span class="bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-1.5 py-0.5 rounded-md text-[9px] ml-1.5">${esc(i.variantName)}</span>` : ''}</p>
+                    <p class="text-xs font-bold text-slate-800 dark:text-white truncate">${esc(i.name)} ${i.variantName ? `<span class="bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-1.5 py-0.5 rounded-xl text-[9px] ml-1.5">${esc(i.variantName)}</span>` : ''}</p>
                     <p class="text-[10px] text-slate-500">${qty} ${esc(i.unit || 'pcs')} x ${fCur(price)}</p>
                     ${canReview ? `<button type="button" onclick="openReviewModal('${orderId}',${i.id},'${esc(i.variantName||'').replace(/'/g,"\\'")}','${esc(i.name).replace(/'/g,"\\'")}','${cName.replace(/'/g,"\\'")}')" class="mt-1.5 text-[10px] font-black text-amber-500 hover:text-amber-600 flex items-center gap-1"><i class="fa-solid fa-star"></i> Berikan Ulasan</button>` : ''}
                 </div>
@@ -4795,7 +4795,7 @@ const rPay = () => {
     setIn('payment-cust-method', cust.deliveryMethod === 'delivery' ? `Kurir (${cust.distance.toFixed(1)}km)` : 'Ambil di Toko');
     setIn('payment-cust-address', cust.address || '-');
     
-    setH('payment-items-preview', cart.map(i => `<div class="flex justify-between items-center bg-white dark:bg-slate-800 p-4 rounded-[1.25rem] border border-slate-200 dark:border-slate-700 shadow-sm min-w-0"><div class="flex items-center gap-3.5 min-w-0"><img loading="lazy" src="${esc(i.img)}" class="w-12 h-12 rounded-xl object-cover border border-slate-200 dark:border-slate-700 shrink-0" onerror="this.onerror=null;this.src='https://placehold.co/400?text=No+Image'"></i><div class="min-w-0"><p class="text-sm font-black text-slate-800 dark:text-white truncate">${esc(i.name)}${i.variantName?` (${esc(i.variantName)})`:''}${i.poTime?`<span class="bg-amber-100 dark:bg-amber-900/50 text-amber-600 dark:text-amber-400 px-1.5 py-0.5 rounded-md text-[8px] font-bold border border-amber-200 dark:border-amber-800 uppercase ml-1.5 whitespace-nowrap">PO ${esc(i.poTime)}</span>`:''}</p><p class="text-[11px] text-[var(--color-primary)] font-bold mt-1">${parseFloat(i.qty)} ${esc(i.unit||'pcs')} x ${fCur(getEffP(i))}</p></div></div><div class="text-sm font-black text-slate-900 dark:text-white whitespace-nowrap ml-3 shrink-0">${fCur(getEffP(i)*parseFloat(i.qty))}</div></div>`).join('')
+    setH('payment-items-preview', cart.map(i => `<div class="flex justify-between items-center bg-white dark:bg-slate-800 p-4 rounded-[1.25rem] border border-slate-200 dark:border-slate-700 shadow-sm min-w-0"><div class="flex items-center gap-3.5 min-w-0"><img loading="lazy" src="${esc(i.img)}" class="w-12 h-12 rounded-xl object-cover border border-slate-200 dark:border-slate-700 shrink-0" onerror="this.onerror=null;this.src='https://placehold.co/400?text=No+Image'"></i><div class="min-w-0"><p class="text-sm font-black text-slate-800 dark:text-white truncate">${esc(i.name)}${i.variantName?` (${esc(i.variantName)})`:''}${i.poTime?`<span class="bg-amber-100 dark:bg-amber-900/50 text-amber-600 dark:text-amber-400 px-1.5 py-0.5 rounded-xl text-[8px] font-bold border border-amber-200 dark:border-amber-800 uppercase ml-1.5 whitespace-nowrap">PO ${esc(i.poTime)}</span>`:''}</p><p class="text-[11px] text-[var(--color-primary)] font-bold mt-1">${parseFloat(i.qty)} ${esc(i.unit||'pcs')} x ${fCur(getEffP(i))}</p></div></div><div class="text-sm font-black text-slate-900 dark:text-white whitespace-nowrap ml-3 shrink-0">${fCur(getEffP(i)*parseFloat(i.qty))}</div></div>`).join('')
         + (selectedReward ? `<div class="flex justify-between items-center bg-violet-50 dark:bg-violet-900/20 p-4 rounded-[1.25rem] border border-violet-200 dark:border-violet-800 shadow-sm min-w-0"><div class="flex items-center gap-3.5 min-w-0"><div class="w-12 h-12 rounded-xl bg-violet-500 text-white flex items-center justify-center shrink-0"><i class="fa-solid fa-gift"></i></div><div class="min-w-0"><p class="text-sm font-black text-violet-700 dark:text-violet-300 truncate">${esc(selectedReward.name)}</p><p class="text-[11px] text-violet-500 font-bold mt-1"><i class="fa-solid fa-star mr-1"></i>Tukar ${selectedReward.pointsCost} Poin (Gratis)</p></div></div><button type="button" onclick="deselectReward(); rPay();" class="text-[10px] font-black text-rose-500 uppercase shrink-0 ml-3">Batal</button></div>` : ''));
         
     if(cust.note){ setIn('payment-note-text', `"${esc(cust.note)}"`); show('payment-note-preview'); } else hide('payment-note-preview');
@@ -5887,10 +5887,10 @@ window.rAdmPiutang = async () => {
                 </div>
                 
                 <div class="flex gap-2 mb-3">
-                    <button onclick="editTempoPenalty('${o.orderId}', ${rate})" class="flex-1 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-300 rounded-lg py-2 flex items-center justify-center gap-1.5 text-[10px] font-black uppercase tracking-widest transition-all">
+                    <button onclick="editTempoPenalty('${o.orderId}', ${rate})" class="flex-1 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-300 rounded-xl py-2 flex items-center justify-center gap-1.5 text-[10px] font-black uppercase tracking-widest transition-all">
                         <i class="fa-solid fa-percent"></i> Edit Denda
                     </button>
-                    <button onclick="stopTempoPenalty('${o.orderId}', ${latePenalty}, ${isStopped})" class="flex-1 ${isStopped ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-200' : 'bg-rose-100 dark:bg-rose-900/30 text-rose-600 dark:text-rose-400 hover:bg-rose-200'} rounded-lg py-2 flex items-center justify-center gap-1.5 text-[10px] font-black uppercase tracking-widest transition-all">
+                    <button onclick="stopTempoPenalty('${o.orderId}', ${latePenalty}, ${isStopped})" class="flex-1 ${isStopped ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-200' : 'bg-rose-100 dark:bg-rose-900/30 text-rose-600 dark:text-rose-400 hover:bg-rose-200'} rounded-xl py-2 flex items-center justify-center gap-1.5 text-[10px] font-black uppercase tracking-widest transition-all">
                         <i class="fa-solid ${isStopped ? 'fa-play' : 'fa-stop'}"></i> ${isStopped ? 'Lanjut Denda' : 'Stop Denda'}
                     </button>
                 </div>
@@ -6210,7 +6210,7 @@ window.exportOrdersToExcel = async () => {
                 
                 // DESAIN KARTU PESANAN BARU (PREMIUM)
                 return `
-                <div class="bg-white dark:bg-slate-800 p-4 sm:p-5 rounded-[1.5rem] border border-slate-200 dark:border-slate-700 shadow-sm relative overflow-hidden group cursor-pointer hover:shadow-lg hover:-translate-y-1 hover:border-emerald-400 dark:hover:border-emerald-500 transition-all duration-300" onclick="openOrderDetail('${o.orderId}')">
+                <div class="bg-white dark:bg-slate-800 p-4 sm:p-5 md:p-6 lg:p-8 rounded-[1.5rem] border border-slate-200 dark:border-slate-700 shadow-sm relative overflow-hidden group cursor-pointer hover:shadow-lg hover:-translate-y-1 hover:border-emerald-400 dark:hover:border-emerald-500 transition-all duration-300" onclick="openOrderDetail('${o.orderId}')">
                     
                     <div class="flex items-center gap-4">
                         <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl ${boxBg} ${boxText} flex items-center justify-center shrink-0 transition-colors">
@@ -6229,9 +6229,9 @@ window.exportOrdersToExcel = async () => {
                             <div class="flex items-center gap-2 mt-1.5">
                                 <p class="text-xs font-bold text-slate-600 dark:text-slate-300 truncate max-w-[120px] sm:max-w-xs"><i class="fa-solid fa-user text-slate-400 mr-1"></i> ${esc(o.customer?.name||'Anonim')}</p>
                                 <span class="w-1 h-1 rounded-full bg-slate-300 dark:bg-slate-600 shrink-0"></span>
-                                <span class="text-[9px] font-black text-slate-500 bg-slate-100 dark:bg-slate-900 px-2 py-0.5 rounded-lg border border-slate-200 dark:border-slate-700 uppercase tracking-widest shrink-0">${itemCount} Item</span>
-                                ${o.customer?.lat ? `<span class="text-[9px] font-black text-blue-500 bg-blue-50 dark:bg-blue-900/20 px-1.5 py-0.5 rounded-lg border border-blue-100 dark:border-blue-800 uppercase tracking-widest shrink-0"><i class="fa-solid fa-location-dot"></i> GPS</span>` : ''}
-                                ${o.buktiPayment ? `<span class="text-[9px] font-black text-violet-500 bg-violet-50 dark:bg-violet-900/20 px-1.5 py-0.5 rounded-lg border border-violet-100 dark:border-violet-800 uppercase tracking-widest shrink-0"><i class="fa-solid fa-image"></i></span>` : ''}
+                                <span class="text-[9px] font-black text-slate-500 bg-slate-100 dark:bg-slate-900 px-2 py-0.5 rounded-xl border border-slate-200 dark:border-slate-700 uppercase tracking-widest shrink-0">${itemCount} Item</span>
+                                ${o.customer?.lat ? `<span class="text-[9px] font-black text-blue-500 bg-blue-50 dark:bg-blue-900/20 px-1.5 py-0.5 rounded-xl border border-blue-100 dark:border-blue-800 uppercase tracking-widest shrink-0"><i class="fa-solid fa-location-dot"></i> GPS</span>` : ''}
+                                ${o.buktiPayment ? `<span class="text-[9px] font-black text-violet-500 bg-violet-50 dark:bg-violet-900/20 px-1.5 py-0.5 rounded-xl border border-violet-100 dark:border-violet-800 uppercase tracking-widest shrink-0"><i class="fa-solid fa-image"></i></span>` : ''}
                             </div>
                         </div>
                         
@@ -6284,7 +6284,7 @@ window.openOrderDetail = i => {
             <div class="flex flex-col gap-4">
 
             <div class="bg-white dark:bg-slate-800 p-5 sm:p-6 rounded-[1.5rem] border border-slate-200 dark:border-slate-700 shadow-sm">
-                <h4 class="font-black text-slate-900 dark:text-white text-sm border-b border-slate-100 dark:border-slate-700 pb-4 mb-4 flex items-center gap-3"><div class="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-900/30 text-blue-500 flex items-center justify-center border border-blue-100 dark:border-blue-800"><i class="fa-solid fa-user"></i></div> Data Pemesan</h4>
+                <h4 class="font-black text-slate-900 dark:text-white text-sm border-b border-slate-100 dark:border-slate-700 pb-4 mb-4 flex items-center gap-3"><div class="w-8 h-8 rounded-xl bg-blue-50 dark:bg-blue-900/30 text-blue-500 flex items-center justify-center border border-blue-100 dark:border-blue-800"><i class="fa-solid fa-user"></i></div> Data Pemesan</h4>
                 <div class="space-y-4">
                     <div class="flex justify-between items-center"><span class="text-slate-500 dark:text-slate-400 font-bold">Nama</span><span class="font-black text-slate-900 dark:text-white text-base">${esc(o.customer?.name||'-')}</span></div>
                     ${o.customer?.wa ? `<div class="flex justify-between items-center"><span class="text-slate-500 dark:text-slate-400 font-bold flex items-center gap-1.5"><i class="fa-brands fa-whatsapp text-green-500"></i> WhatsApp</span><a href="https://wa.me/${esc(o.customer.wa)}" target="_blank" class="font-black text-green-600 dark:text-green-400 hover:underline">+${esc(o.customer.wa)}</a></div>` : ''}
@@ -6304,13 +6304,13 @@ window.openOrderDetail = i => {
             <div class="flex flex-col gap-4">
 
             <div class="bg-white dark:bg-slate-800 p-5 sm:p-6 rounded-[1.5rem] border border-slate-200 dark:border-slate-700 shadow-sm">
-                <h4 class="font-black text-slate-900 dark:text-white text-sm border-b border-slate-100 dark:border-slate-700 pb-4 mb-4 flex items-center gap-3"><div class="w-8 h-8 rounded-lg bg-emerald-50 dark:bg-emerald-900/30 text-emerald-500 flex items-center justify-center border border-emerald-100 dark:border-emerald-800"><i class="fa-solid fa-box-open"></i></div> Rincian Item</h4>
+                <h4 class="font-black text-slate-900 dark:text-white text-sm border-b border-slate-100 dark:border-slate-700 pb-4 mb-4 flex items-center gap-3"><div class="w-8 h-8 rounded-xl bg-emerald-50 dark:bg-emerald-900/30 text-emerald-500 flex items-center justify-center border border-emerald-100 dark:border-emerald-800"><i class="fa-solid fa-box-open"></i></div> Rincian Item</h4>
                 <div class="space-y-3">${o.items.map(t=>`
                     <div class="flex justify-between items-center bg-slate-50 dark:bg-slate-900 p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
                         <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 flex items-center justify-center text-slate-400 dark:text-slate-500 shrink-0"><i class="fa-solid fa-tag text-sm"></i></div>
+                            <div class="w-10 h-10 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 flex items-center justify-center text-slate-400 dark:text-slate-500 shrink-0"><i class="fa-solid fa-tag text-sm"></i></div>
                             <div>
-                                <p class="font-black text-sm text-slate-900 dark:text-white">${esc(t.name)} ${t.variantName?`<span class="bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-1.5 py-0.5 rounded-md border border-slate-300 dark:border-slate-600 text-[9px] ml-1.5">${esc(t.variantName)}</span>`:''}${t.poTime?`<span class="bg-amber-100 dark:bg-amber-900/50 text-amber-600 dark:text-amber-400 px-1.5 py-0.5 rounded-md text-[8px] font-bold border border-amber-200 dark:border-amber-800 uppercase ml-1.5 whitespace-nowrap">PO ${esc(t.poTime)}</span>`:''}</p>
+                                <p class="font-black text-sm text-slate-900 dark:text-white">${esc(t.name)} ${t.variantName?`<span class="bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-1.5 py-0.5 rounded-xl border border-slate-300 dark:border-slate-600 text-[9px] ml-1.5">${esc(t.variantName)}</span>`:''}${t.poTime?`<span class="bg-amber-100 dark:bg-amber-900/50 text-amber-600 dark:text-amber-400 px-1.5 py-0.5 rounded-xl text-[8px] font-bold border border-amber-200 dark:border-amber-800 uppercase ml-1.5 whitespace-nowrap">PO ${esc(t.poTime)}</span>`:''}</p>
                                 <p class="text-[11px] text-slate-500 dark:text-slate-400 font-bold mt-1">${parseFloat(t.qty)} ${esc(t.unit||'pcs')} x ${fCur(t.effectivePrice)}</p>
                             </div>
                         </div>
@@ -6321,12 +6321,12 @@ window.openOrderDetail = i => {
 
             ${o.claimedReward ? `
             <div class="bg-violet-50 dark:bg-violet-900/10 p-5 sm:p-6 rounded-[1.5rem] border border-violet-200 dark:border-violet-800 shadow-sm">
-                <h4 class="font-black text-violet-700 dark:text-violet-400 text-sm border-b border-violet-200 dark:border-violet-800 pb-4 mb-4 flex items-center gap-3"><div class="w-8 h-8 rounded-lg bg-violet-100 dark:bg-violet-900/40 text-violet-500 flex items-center justify-center border border-violet-200 dark:border-violet-800"><i class="fa-solid fa-gift"></i></div> Klaim Hadiah</h4>
+                <h4 class="font-black text-violet-700 dark:text-violet-400 text-sm border-b border-violet-200 dark:border-violet-800 pb-4 mb-4 flex items-center gap-3"><div class="w-8 h-8 rounded-xl bg-violet-100 dark:bg-violet-900/40 text-violet-500 flex items-center justify-center border border-violet-200 dark:border-violet-800"><i class="fa-solid fa-gift"></i></div> Klaim Hadiah</h4>
                 <div class="space-y-3">
                     <div class="flex justify-between items-center"><span class="text-slate-500 dark:text-slate-400 font-bold text-xs">Hadiah</span><span class="font-black text-violet-700 dark:text-violet-400 text-sm">${esc(o.claimedReward.name)}</span></div>
                     <div class="flex justify-between items-center"><span class="text-slate-500 dark:text-slate-400 font-bold text-xs">Poin Ditukar</span><span class="font-black text-slate-800 dark:text-white text-sm">${o.claimedReward.pointsCost} Poin</span></div>
-                    <div class="flex justify-between items-center"><span class="text-slate-500 dark:text-slate-400 font-bold text-xs">Status</span><span class="font-black text-xs px-2 py-1 rounded-lg ${o.claimedReward.status==='ready'?'bg-emerald-100 text-emerald-600':o.claimedReward.status==='waiting_stock'?'bg-amber-100 text-amber-600':'bg-slate-200 text-slate-600'}">${window.rewardStatusLabel(o.claimedReward)}</span></div>
-                    ${o.claimedReward.note ? `<div class="bg-white/70 dark:bg-slate-900/40 p-2.5 rounded-lg text-[11px] italic text-violet-600 dark:text-violet-400">"${esc(o.claimedReward.note)}"</div>` : ''}
+                    <div class="flex justify-between items-center"><span class="text-slate-500 dark:text-slate-400 font-bold text-xs">Status</span><span class="font-black text-xs px-2 py-1 rounded-xl ${o.claimedReward.status==='ready'?'bg-emerald-100 text-emerald-600':o.claimedReward.status==='waiting_stock'?'bg-amber-100 text-amber-600':'bg-slate-200 text-slate-600'}">${window.rewardStatusLabel(o.claimedReward)}</span></div>
+                    ${o.claimedReward.note ? `<div class="bg-white/70 dark:bg-slate-900/40 p-2.5 rounded-xl text-[11px] italic text-violet-600 dark:text-violet-400">"${esc(o.claimedReward.note)}"</div>` : ''}
                     <div class="border-t border-dashed border-violet-200 dark:border-violet-800 pt-3.5 mt-1 space-y-2.5">
                         <button type="button" onclick="ackRewardClaim('${o.orderId}','ready')" class="w-full py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white text-[11px] font-black uppercase tracking-widest flex items-center justify-center gap-2 active:scale-95 transition-all"><i class="fa-solid fa-check"></i> Stok Ada — Kirim Bersama Pesanan</button>
                         <button type="button" onclick="ackRewardClaim('${o.orderId}','waiting_stock')" class="w-full py-2.5 rounded-xl bg-amber-100 dark:bg-amber-900/30 hover:bg-amber-200 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-800 text-[11px] font-black uppercase tracking-widest flex items-center justify-center gap-2 active:scale-95 transition-all"><i class="fa-solid fa-clock"></i> Stok Kosong — Tunda Pengiriman</button>
@@ -6340,15 +6340,15 @@ window.openOrderDetail = i => {
                 
                 <div class="flex justify-between items-center border-b border-slate-700/80 pb-4 mb-4 relative z-10">
                     <h4 class="font-black text-[11px] uppercase tracking-widest text-slate-300 flex items-center gap-2.5"><i class="fa-solid fa-wallet text-emerald-400 text-sm"></i> Ringkasan Bayar</h4>
-                    <span class="bg-white/10 backdrop-blur-md px-3 py-1 rounded-lg text-[10px] font-black tracking-widest border border-white/10 uppercase shadow-inner text-white">${esc(o.payment?.method||'').toUpperCase()}</span>
+                    <span class="bg-white/10 backdrop-blur-md px-3 py-1 rounded-xl text-[10px] font-black tracking-widest border border-white/10 uppercase shadow-inner text-white">${esc(o.payment?.method||'').toUpperCase()}</span>
                 </div>
                 
                 <div class="space-y-3 font-medium text-sm text-slate-300 relative z-10">
                     <div class="flex justify-between items-center"><span>Subtotal Produk</span><span class="font-bold text-white">${fCur(o.payment?.subtotal)}</span></div>
                     ${o.customer?.deliveryMethod==='delivery'?`<div class="flex justify-between items-center"><span>Ongkos Kirim</span><span class="font-bold text-white">${fCur(o.payment?.shippingCost)}</span></div>`:''}
-                    ${o.payment?.shippingDiscount?`<div class="flex justify-between items-center text-emerald-400 bg-emerald-900/20 px-2 py-1 -mx-2 rounded-lg"><span>Diskon Ongkir</span><span class="font-bold">-${fCur(o.payment.shippingDiscount)}</span></div>`:''}
-                    ${o.payment?.productDiscount?`<div class="flex justify-between items-center text-rose-400 bg-rose-900/20 px-2 py-1 -mx-2 rounded-lg"><span>Diskon Promo</span><span class="font-bold">-${fCur(o.payment.productDiscount)}</span></div>`:''}
-                    ${o.payment?.ppnAmount?`<div class="flex justify-between items-center text-amber-400 bg-amber-900/20 px-2 py-1 -mx-2 rounded-lg"><span>PPN (${o.payment.ppnRate||11}%)</span><span class="font-bold">+${fCur(o.payment.ppnAmount)}</span></div>`:''}
+                    ${o.payment?.shippingDiscount?`<div class="flex justify-between items-center text-emerald-400 bg-emerald-900/20 px-2 py-1 -mx-2 rounded-xl"><span>Diskon Ongkir</span><span class="font-bold">-${fCur(o.payment.shippingDiscount)}</span></div>`:''}
+                    ${o.payment?.productDiscount?`<div class="flex justify-between items-center text-rose-400 bg-rose-900/20 px-2 py-1 -mx-2 rounded-xl"><span>Diskon Promo</span><span class="font-bold">-${fCur(o.payment.productDiscount)}</span></div>`:''}
+                    ${o.payment?.ppnAmount?`<div class="flex justify-between items-center text-amber-400 bg-amber-900/20 px-2 py-1 -mx-2 rounded-xl"><span>PPN (${o.payment.ppnRate||11}%)</span><span class="font-bold">+${fCur(o.payment.ppnAmount)}</span></div>`:''}
                 </div>
                 
                 <div class="border-t border-dashed border-slate-600/60 my-5 relative z-10"></div>
@@ -7069,7 +7069,7 @@ window.rAdmItms = t => {
         let delBtn = `<button class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-rose-50 border border-rose-200 text-rose-500 flex items-center justify-center hover:bg-rose-500 hover:text-white dark:bg-rose-900/30 dark:border-rose-800 transition-all active:scale-95 shadow-sm" onclick="event.stopPropagation(); oADel('${t}',${x.id})" title="Hapus Permanen"><i class="fa-solid fa-trash text-xs sm:text-sm"></i></button>`;
 
         return `
-        <div class="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-[1.5rem] border shadow-sm cursor-pointer hover:shadow-md hover:-translate-y-1 hover:border-emerald-300 dark:hover:border-emerald-600 transition-all duration-300 ${bC}" onclick="oAEd('${t}',${x.id})">
+        <div class="p-4 sm:p-5 md:p-6 lg:p-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-[1.5rem] border shadow-sm cursor-pointer hover:shadow-md hover:-translate-y-1 hover:border-emerald-300 dark:hover:border-emerald-600 transition-all duration-300 ${bC}" onclick="oAEd('${t}',${x.id})">
             <div class="flex items-start sm:items-center gap-4 min-w-0 w-full">
                 ${img}
                 <div class="min-w-0 flex flex-col justify-center py-1">
@@ -7118,7 +7118,7 @@ window.rAdmReviews = () => {
     const filterTabs = `
         <div class="flex gap-1.5 bg-slate-100 dark:bg-slate-800 p-1 rounded-xl mb-5 w-fit">
             ${[{k:'all',l:'Semua'},{k:'visible',l:'Ditampilkan'},{k:'hidden',l:'Disembunyikan'}].map(f => `
-                <button onclick="filterReviews('${f.k}')" class="px-3.5 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${reviewFilterMode===f.k ? 'shadow-sm' : 'text-slate-500 dark:text-slate-400'}" style="${reviewFilterMode===f.k ? 'background:var(--color-primary);color:#fff' : ''}">${f.l}</button>
+                <button onclick="filterReviews('${f.k}')" class="px-3.5 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${reviewFilterMode===f.k ? 'shadow-sm' : 'text-slate-500 dark:text-slate-400'}" style="${reviewFilterMode===f.k ? 'background:var(--color-primary);color:#fff' : ''}">${f.l}</button>
             `).join('')}
         </div>`;
 
@@ -7134,7 +7134,7 @@ window.rAdmReviews = () => {
         try { if (r.createdAt && r.createdAt.toDate) dateStr = r.createdAt.toDate().toLocaleDateString('id-ID', {day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit'}); } catch(e) {}
         const hidden = r.isVisible === false;
         return `
-        <div class="p-4 sm:p-5 rounded-[1.5rem] border shadow-sm ${hidden ? 'border-rose-200 bg-rose-50/40 dark:border-rose-900/40 dark:bg-rose-900/10' : 'border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-800'} mb-3">
+        <div class="p-4 sm:p-5 md:p-6 lg:p-8 rounded-[1.5rem] border shadow-sm ${hidden ? 'border-rose-200 bg-rose-50/40 dark:border-rose-900/40 dark:bg-rose-900/10' : 'border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-800'} mb-3">
             <div class="flex items-start justify-between gap-3 mb-2">
                 <div class="min-w-0">
                     <p class="text-sm font-black text-slate-800 dark:text-white truncate">${esc(r.customerName || 'Pelanggan')}</p>
@@ -7147,9 +7147,9 @@ window.rAdmReviews = () => {
             ${r.photoUrl ? `<img src="${esc(r.photoUrl)}" onclick="window.open('${esc(r.photoUrl)}','_blank')" class="w-20 h-20 rounded-xl object-cover border border-slate-200 dark:border-slate-700 cursor-pointer mb-2.5" onerror="this.style.display='none'"></i>` : ''}
             ${r.adminReply ? `<div class="bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-xl p-3 mb-2.5"><p class="text-[9px] font-black text-[var(--color-primary)] uppercase tracking-widest mb-1"><i class="fa-solid fa-store mr-1"></i>Balasan Anda</p><p class="text-[11px] text-slate-600 dark:text-slate-300">${esc(r.adminReply)}</p></div>` : ''}
             <div class="flex flex-wrap gap-2 pt-2 border-t border-slate-100 dark:border-slate-700/60">
-                <button onclick="replyToReview(${r.id})" class="px-3 py-2 rounded-lg bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 text-[10px] font-black uppercase tracking-widest flex items-center gap-1.5 hover:bg-blue-100 transition-all"><i class="fa-solid fa-reply"></i> ${r.adminReply ? 'Edit Balasan' : 'Balas'}</button>
-                <button onclick="toggleReviewVisibility(${r.id})" class="px-3 py-2 rounded-lg ${hidden ? 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-100' : 'bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400 hover:bg-amber-100'} text-[10px] font-black uppercase tracking-widest flex items-center gap-1.5 transition-all"><i class="fa-solid ${hidden ? 'fa-eye' : 'fa-eye-slash'}"></i> ${hidden ? 'Tampilkan' : 'Sembunyikan'}</button>
-                <button onclick="deleteReview(${r.id})" class="px-3 py-2 rounded-lg bg-rose-50 dark:bg-rose-900/20 text-rose-500 text-[10px] font-black uppercase tracking-widest flex items-center gap-1.5 hover:bg-rose-100 transition-all"><i class="fa-solid fa-trash"></i> Hapus</button>
+                <button onclick="replyToReview(${r.id})" class="px-3 py-2 rounded-xl bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 text-[10px] font-black uppercase tracking-widest flex items-center gap-1.5 hover:bg-blue-100 transition-all"><i class="fa-solid fa-reply"></i> ${r.adminReply ? 'Edit Balasan' : 'Balas'}</button>
+                <button onclick="toggleReviewVisibility(${r.id})" class="px-3 py-2 rounded-xl ${hidden ? 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-100' : 'bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400 hover:bg-amber-100'} text-[10px] font-black uppercase tracking-widest flex items-center gap-1.5 transition-all"><i class="fa-solid ${hidden ? 'fa-eye' : 'fa-eye-slash'}"></i> ${hidden ? 'Tampilkan' : 'Sembunyikan'}</button>
+                <button onclick="deleteReview(${r.id})" class="px-3 py-2 rounded-xl bg-rose-50 dark:bg-rose-900/20 text-rose-500 text-[10px] font-black uppercase tracking-widest flex items-center gap-1.5 hover:bg-rose-100 transition-all"><i class="fa-solid fa-trash"></i> Hapus</button>
             </div>
         </div>`;
     }).join('');
@@ -7285,7 +7285,7 @@ window.rTaxRenderShell = () => {
 
         <div class="flex flex-wrap items-center justify-between gap-3 mb-5">
             <div class="flex gap-1.5 bg-slate-100 dark:bg-slate-800 p-1 rounded-xl overflow-x-auto" id="tax-tab-switcher">
-                ${tabs.map(t => `<button onclick="switchTaxTab('${t.k}')" data-tax-tab="${t.k}" class="tax-tab-btn px-3.5 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap flex items-center gap-1.5 ${taxActiveTab===t.k?'shadow-sm':'text-slate-500 dark:text-slate-400'}" style="${taxActiveTab===t.k?'background:var(--color-primary);color:#fff':''}"><i class="fa-solid ${t.i}"></i> ${t.l}</button>`).join('')}
+                ${tabs.map(t => `<button onclick="switchTaxTab('${t.k}')" data-tax-tab="${t.k}" class="tax-tab-btn px-3.5 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap flex items-center gap-1.5 ${taxActiveTab===t.k?'shadow-sm':'text-slate-500 dark:text-slate-400'}" style="${taxActiveTab===t.k?'background:var(--color-primary);color:#fff':''}"><i class="fa-solid ${t.i}"></i> ${t.l}</button>`).join('')}
             </div>
             <div class="flex gap-2 items-center">
                 <select id="tax-year-select" onchange="changeTaxYear(this.value)" class="admin-input !py-2.5 !px-3 text-xs font-bold bg-white dark:bg-slate-800 w-28">
@@ -7369,7 +7369,7 @@ window.rTaxSummary = () => {
             </div>
         </div>
         <div class="card-modern overflow-hidden">
-            <div class="p-4 sm:p-5 border-b border-slate-100 dark:border-slate-700 flex items-center justify-between">
+            <div class="p-4 sm:p-5 md:p-6 lg:p-8 border-b border-slate-100 dark:border-slate-700 flex items-center justify-between">
                 <h4 class="font-black text-slate-700 dark:text-slate-200 text-xs uppercase tracking-widest">Rincian Per Bulan — ${taxYear}</h4>
                 <button onclick="openTaxDocPreview('summary')" class="text-[10px] font-black text-slate-400 hover:text-[var(--color-primary)] flex items-center gap-1.5"><i class="fa-solid fa-eye"></i> Preview &amp; Cetak</button>
             </div>
@@ -7420,7 +7420,7 @@ window.rTaxIncome = () => {
     }
 
     setH('tax-content', `
-        <div class="card-modern p-5 sm:p-7 max-w-4xl mx-auto">
+        <div class="card-modern p-5 sm:p-6 md:p-7 lg:p-8 max-w-4xl mx-auto">
             <div class="flex items-center justify-between mb-6 pb-4 border-b border-slate-100 dark:border-slate-700">
                 <h4 class="font-black text-slate-800 dark:text-white text-sm uppercase tracking-widest">Laporan Laba Rugi — ${periodLabel}</h4>
                 <button onclick="openTaxDocPreview('income')" class="text-[10px] font-black text-slate-400 hover:text-[var(--color-primary)] flex items-center gap-1.5"><i class="fa-solid fa-eye"></i> Preview &amp; Cetak</button>
@@ -7466,7 +7466,7 @@ window.rTaxBalance = () => {
     const modalDanLaba = totalAset - totalKewajiban; // supaya neraca tetap balance, modal+laba ditahan = sisa dari aset-kewajiban
 
     setH('tax-content', `
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 sm:gap-6 max-w-5xl mx-auto">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 sm:gap-6 max-w-7xl mx-auto">
             <div class="card-modern p-5 sm:p-6 relative overflow-hidden shadow-lg border-emerald-100 dark:border-emerald-900/30" style="background: linear-gradient(135deg, rgba(16,185,129,0.05), transparent)"><div class="absolute -top-10 -right-10 w-32 h-32 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none"></div>
                 <h4 class="font-black text-slate-800 dark:text-white text-xs uppercase tracking-widest mb-4 pb-3 border-b border-slate-100 dark:border-slate-700"><i class="fa-solid fa-arrow-down-wide-short mr-1.5 text-emerald-500"></i>ASET</h4>
                 <div class="space-y-3">
@@ -7486,7 +7486,7 @@ window.rTaxBalance = () => {
                 </div>
             </div>
         </div>
-        <div class="max-w-5xl mx-auto mt-6 text-center">
+        <div class="max-w-7xl mx-auto mt-6 text-center">
             <button onclick="openTaxDocPreview('balance')" class="text-[10px] font-black text-slate-400 hover:text-[var(--color-primary)] inline-flex items-center gap-1.5"><i class="fa-solid fa-eye"></i> Preview &amp; Cetak Neraca</button>
         </div>
     `);
@@ -7506,7 +7506,7 @@ window.saveBalanceField = async (key, value) => {
 window.rTaxSettingsPanel = () => {
     const ts = appData.taxSettings;
     setH('tax-content', `
-        <div class="card-modern p-5 sm:p-7 max-w-xl mx-auto space-y-5">
+        <div class="card-modern p-5 sm:p-6 md:p-7 lg:p-8 max-w-xl mx-auto space-y-5">
             <div>
                 <label class="block text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Nama Badan Usaha</label>
                 <input id="tax-company-name" type="text" value="${esc(ts.companyName||'')}" placeholder="Cth: PT/CV Restu Karya Utama" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-inner"></i>
@@ -7701,11 +7701,11 @@ window.oAEd = (t, id) => {
             (appData.products||[]).forEach(p => { h += `<option value="${p.id}" ${v==p.id?'selected':''} class="font-bold">${esc(p.name)}</option>`; });
             h += `</select><i class="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-[10px]"></i></div>`;
         } else if(k.type === 'variants_builder') {
-            h += `<div id="variants-builder-container" class="bg-slate-50/50 dark:bg-slate-900/30 p-4 sm:p-5 lg:p-6 rounded-[1.5rem] border border-slate-200 dark:border-slate-700 shadow-inner min-h-[60px]"></div>`;
+            h += `<div id="variants-builder-container" class="bg-slate-50/50 dark:bg-slate-900/30 p-4 sm:p-5 md:p-6 lg:p-8 lg:p-6 rounded-[1.5rem] border border-slate-200 dark:border-slate-700 shadow-inner min-h-[60px]"></div>`;
         } else if(k.type === 'wholesale_builder') {
-            h += `<div id="wholesale-builder-container" class="bg-slate-50/50 dark:bg-slate-900/30 p-4 sm:p-5 lg:p-6 rounded-[1.5rem] border border-slate-200 dark:border-slate-700 shadow-inner min-h-[60px]"></div>`;
+            h += `<div id="wholesale-builder-container" class="bg-slate-50/50 dark:bg-slate-900/30 p-4 sm:p-5 md:p-6 lg:p-8 lg:p-6 rounded-[1.5rem] border border-slate-200 dark:border-slate-700 shadow-inner min-h-[60px]"></div>`;
         } else if(k.key === 'sku') {
-            h += `<div class="relative flex items-center"><input autocomplete='off' type="${k.type}" id="af-${k.key}" value="${esc(v)}" class="admin-input shadow-sm bg-slate-50 dark:bg-slate-900 !pr-12" placeholder="Scan atau ketik..." ></i><button type="button" onclick="openCameraScanner('af-${k.key}')" class="absolute right-2 w-9 h-9 flex items-center justify-center text-slate-400 hover:bg-slate-200 hover:text-emerald-500 rounded-lg transition-all" title="Scan Barcode via HP"><i class="fa-solid fa-qrcode text-lg"></i></button></div>`;
+            h += `<div class="relative flex items-center"><input autocomplete='off' type="${k.type}" id="af-${k.key}" value="${esc(v)}" class="admin-input shadow-sm bg-slate-50 dark:bg-slate-900 !pr-12" placeholder="Scan atau ketik..." ></i><button type="button" onclick="openCameraScanner('af-${k.key}')" class="absolute right-2 w-9 h-9 flex items-center justify-center text-slate-400 hover:bg-slate-200 hover:text-emerald-500 rounded-xl transition-all" title="Scan Barcode via HP"><i class="fa-solid fa-qrcode text-lg"></i></button></div>`;
         } else if(k.key === 'img') {
             h += `<div class="flex gap-3"><input autocomplete='off' type="text" id="af-${k.key}" value="${esc(v)}" class="admin-input shadow-sm flex-1 bg-slate-50 dark:bg-slate-900" placeholder="URL Gambar" ></i><label class="bg-emerald-50 dark:bg-emerald-900/30 border border-emerald-200 dark:border-emerald-800 text-emerald-600 dark:text-emerald-400 font-bold rounded-xl px-5 flex items-center justify-center cursor-pointer hover:bg-emerald-100 transition-all shrink-0 active:scale-95 shadow-sm" title="Upload dari Galeri"><i class="fa-solid fa-cloud-arrow-up sm:mr-2"></i><span class="hidden sm:inline">Upload</span><input type="file" accept="image/*" class="hidden" onchange="handleImageUpload(this, 'af-${k.key}')" ></i></label><label class="bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 text-blue-600 dark:text-blue-400 font-bold rounded-xl px-5 flex items-center justify-center cursor-pointer hover:bg-blue-100 transition-all shrink-0 active:scale-95 shadow-sm" title="Ambil Foto Langsung"><i class="fa-solid fa-camera"></i><input type="file" accept="image/*" capture="environment" class="hidden" onchange="handleImageUpload(this, 'af-${k.key}')" ></i></label></div>`;
         } else if(k.type === 'richtext') {
@@ -7754,12 +7754,12 @@ window.rVarsB = () => {
     let h = `<div class="space-y-5 mb-5">${tVars.map((v,i) => {
         let isAct = v.isActive !== false && v.isActive !== 'false';
         return `
-        <div class="bg-slate-50 dark:bg-slate-900/50 p-5 sm:p-6 lg:p-7 rounded-[1.5rem] border border-slate-200 dark:border-slate-700 shadow-sm relative transition-all duration-300 hover:border-emerald-300 dark:hover:border-emerald-600 hover:shadow-md">
+        <div class="bg-slate-50 dark:bg-slate-900/50 p-5 sm:p-6 md:p-7 lg:p-8 rounded-[1.5rem] border border-slate-200 dark:border-slate-700 shadow-sm relative transition-all duration-300 hover:border-emerald-300 dark:hover:border-emerald-600 hover:shadow-md">
             
             <!-- Header varian: nomor + tombol hapus selalu terlihat -->
             <div class="flex items-center justify-between mb-5 pb-4 border-b border-slate-200 dark:border-slate-700">
                 <div class="flex items-center gap-2.5">
-                    <div class="w-7 h-7 rounded-lg bg-emerald-500 text-white text-[11px] font-black flex items-center justify-center shadow-sm">${i+1}</div>
+                    <div class="w-7 h-7 rounded-xl bg-emerald-500 text-white text-[11px] font-black flex items-center justify-center shadow-sm">${i+1}</div>
                     <span class="text-xs font-black text-slate-700 dark:text-slate-200 uppercase tracking-widest">${v.name || 'Varian Baru'}</span>
                 </div>
                 <button onclick="rmVar(${i})" class="w-8 h-8 rounded-xl bg-rose-50 border border-rose-200 text-rose-500 hover:bg-rose-500 hover:text-white dark:bg-rose-900/30 dark:border-rose-800 transition-all flex items-center justify-center shadow-sm active:scale-95" title="Hapus Varian"><i class="fa-solid fa-trash text-xs"></i></button>
@@ -7811,7 +7811,7 @@ window.rVarsB = () => {
                     <label class="block text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">SKU / Barcode</label>
                     <div class="relative h-[48px]">
                         <input autocomplete='off' id="var-sku-${i}" placeholder="Auto (Bisa Kosong)" class="admin-input !text-sm h-full bg-white dark:bg-slate-800 shadow-sm !pr-12" value="${esc(v.sku||'')}" onchange="uVar(${i},'sku',this.value)"></i>
-                        <button type="button" onclick="openCameraScanner('var-sku-${i}')" class="absolute right-1.5 top-1/2 -translate-y-1/2 w-9 h-9 flex items-center justify-center text-slate-400 hover:text-emerald-500 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-all"><i class="fa-solid fa-qrcode text-lg"></i></button>
+                        <button type="button" onclick="openCameraScanner('var-sku-${i}')" class="absolute right-1.5 top-1/2 -translate-y-1/2 w-9 h-9 flex items-center justify-center text-slate-400 hover:text-emerald-500 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-xl transition-all"><i class="fa-solid fa-qrcode text-lg"></i></button>
                     </div>
                 </div>
                 <div>
@@ -8302,7 +8302,7 @@ window.rQpWhol = () => {
         <div class="flex items-center gap-2">
             <input type="number" min="1" placeholder="Min. Qty" value="${w.minQty||''}" onchange="qpWhol[${i}].minQty=parseFloat(this.value)||0" class="admin-input !py-2.5 !px-3 text-xs bg-slate-50 dark:bg-slate-900/50 flex-1"></i>
             <input type="number" min="0" placeholder="Harga/Unit" value="${w.price||''}" onchange="qpWhol[${i}].price=parseFloat(this.value)||0" class="admin-input !py-2.5 !px-3 text-xs bg-slate-50 dark:bg-slate-900/50 flex-1"></i>
-            <button type="button" onclick="qpWhol.splice(${i},1); rQpWhol();" class="w-9 h-9 shrink-0 rounded-lg bg-rose-50 text-rose-500 hover:bg-rose-500 hover:text-white flex items-center justify-center transition-all"><i class="fa-solid fa-trash text-xs"></i></button>
+            <button type="button" onclick="qpWhol.splice(${i},1); rQpWhol();" class="w-9 h-9 shrink-0 rounded-xl bg-rose-50 text-rose-500 hover:bg-rose-500 hover:text-white flex items-center justify-center transition-all"><i class="fa-solid fa-trash text-xs"></i></button>
         </div>`).join('') : `<p class="text-[11px] font-bold text-slate-400 text-center py-2">Belum ada tingkat harga grosir.</p>`);
 };
 window.qpAddWhol = () => { qpWhol.push({minQty:0, price:0}); rQpWhol(); };
@@ -8613,7 +8613,7 @@ window.openDocPreview = (type) => {
             <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 border-b border-slate-200 pb-2">Ditagihkan / Dikirim Kepada:</h3>
             <p class="font-black text-base text-slate-900 uppercase mb-1">${esc(o.customer?.name || 'Guest')}</p>
             <p class="text-sm font-medium text-slate-700 leading-relaxed mb-3">${esc(o.customer?.address || '-')}</p>
-            ${o.customer?.note ? `<p class="text-xs font-semibold text-amber-700 bg-amber-50 p-2.5 rounded-lg border border-amber-200"><i class="fa-solid fa-note-sticky"></i> Catatan: ${esc(o.customer.note)}</p>` : ''}
+            ${o.customer?.note ? `<p class="text-xs font-semibold text-amber-700 bg-amber-50 p-2.5 rounded-xl border border-amber-200"><i class="fa-solid fa-note-sticky"></i> Catatan: ${esc(o.customer.note)}</p>` : ''}
         </div>
         
         <div class="bg-slate-50 p-5 rounded-xl border border-slate-200 flex flex-col justify-center space-y-3">
@@ -8638,11 +8638,11 @@ window.openDocPreview = (type) => {
         <table class="w-full text-left text-sm text-slate-900 border-collapse mb-6">
             <thead>
                 <tr class="bg-slate-800 text-white font-bold uppercase tracking-wider text-xs">
-                    <th class="py-3 px-4 rounded-tl-lg w-10 text-center border-r border-slate-700">No</th>
+                    <th class="py-3 px-4 rounded-tl-xl w-10 text-center border-r border-slate-700">No</th>
                     <th class="py-3 px-4 border-r border-slate-700">Deskripsi Produk & Varian</th>
                     <th class="py-3 px-4 text-center w-24 border-r border-slate-700">Qty</th>
                     <th class="py-3 px-4 text-right w-32 border-r border-slate-700">Harga Sat.</th>
-                    <th class="py-3 px-4 rounded-tr-lg text-right w-32">Total</th>
+                    <th class="py-3 px-4 rounded-tr-xl text-right w-32">Total</th>
                 </tr>
             </thead>
             <tbody class="border-b-2 border-slate-800 divide-y divide-slate-200">
@@ -8687,11 +8687,11 @@ window.openDocPreview = (type) => {
         <table class="w-full text-left text-sm text-slate-900 border-collapse mb-10">
             <thead>
                 <tr class="bg-slate-800 text-white font-bold uppercase tracking-wider text-xs">
-                    <th class="py-3 px-4 rounded-tl-lg w-10 text-center border-r border-slate-700">No</th>
+                    <th class="py-3 px-4 rounded-tl-xl w-10 text-center border-r border-slate-700">No</th>
                     <th class="py-3 px-4 border-r border-slate-700">Nama & Spesifikasi Barang</th>
                     <th class="py-3 px-4 text-center w-28 border-r border-slate-700">Kuantitas</th>
                     <th class="py-3 px-4 text-center w-24 border-r border-slate-700">Satuan</th>
-                    <th class="py-3 px-4 rounded-tr-lg text-center w-24">Ceklis Gudang</th>
+                    <th class="py-3 px-4 rounded-tr-xl text-center w-24">Ceklis Gudang</th>
                 </tr>
             </thead>
             <tbody class="border-b-2 border-slate-800 divide-y divide-slate-200">
@@ -8715,7 +8715,7 @@ window.openDocPreview = (type) => {
     if (o.pointsEarned > 0 || (o.finalMemberPoints !== undefined && o.finalMemberPoints !== null)) {
         h += `
         <div class="bg-amber-50 border border-amber-200 rounded-xl p-5 mb-5 flex items-center gap-6">
-            <div class="w-10 h-10 rounded-lg bg-amber-400 text-white flex items-center justify-center shrink-0"><i class="fa-solid fa-star"></i></div>
+            <div class="w-10 h-10 rounded-xl bg-amber-400 text-white flex items-center justify-center shrink-0"><i class="fa-solid fa-star"></i></div>
             ${o.pointsEarned > 0 ? `<div><p class="text-[10px] font-black text-amber-500 uppercase tracking-widest">Poin Didapat</p><p class="font-black text-lg text-amber-700">+${o.pointsEarned}</p></div>` : ''}
             ${(o.finalMemberPoints !== undefined && o.finalMemberPoints !== null) ? `<div><p class="text-[10px] font-black text-amber-500 uppercase tracking-widest">Saldo Poin Terkumpul</p><p class="font-black text-lg text-amber-700">${o.finalMemberPoints}</p></div>` : ''}
         </div>`;
@@ -8729,14 +8729,14 @@ window.openDocPreview = (type) => {
         h += `
         <div class="bg-violet-50 border-2 border-violet-300 border-dashed rounded-xl p-5 mb-8 flex items-center justify-between gap-4">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-lg bg-violet-500 text-white flex items-center justify-center shrink-0"><i class="fa-solid fa-gift"></i></div>
+                <div class="w-10 h-10 rounded-xl bg-violet-500 text-white flex items-center justify-center shrink-0"><i class="fa-solid fa-gift"></i></div>
                 <div>
                     <p class="text-[10px] font-black text-violet-500 uppercase tracking-widest">Klaim Hadiah Member (${o.claimedReward.pointsCost} Poin)</p>
                     <p class="font-black text-base text-violet-800 uppercase">${esc(o.claimedReward.name)}</p>
                     ${o.claimedReward.note ? `<p class="text-xs italic text-violet-600 mt-1">"${esc(o.claimedReward.note)}"</p>` : ''}
                 </div>
             </div>
-            <span class="text-[10px] font-black px-3 py-2 rounded-lg bg-violet-600 text-white uppercase tracking-widest text-center shrink-0">${statusTxt}</span>
+            <span class="text-[10px] font-black px-3 py-2 rounded-xl bg-violet-600 text-white uppercase tracking-widest text-center shrink-0">${statusTxt}</span>
         </div>`;
     }
 
