@@ -5561,8 +5561,22 @@ window.markTempoPaid = async (orderId) => {
     }
 };
 
-window.rAdmPiutang = () => {
-    let piutangOrders = gOrds.filter(o => o.payment?.method === 'tempo' && o.payment?.paymentStatus === 'hutang');
+window.rAdmPiutang = async () => {
+    sLoad('Memuat data piutang...');
+    let piutangOrders = [];
+    try {
+        const snap = await db.collection("freshmart_orders")
+            .where("payment.method", "==", "tempo")
+            .where("payment.paymentStatus", "==", "hutang")
+            .get();
+        snap.forEach(doc => { piutangOrders.push(doc.data()); });
+    } catch (e) {
+        hLoad();
+        showToast('Gagal memuat piutang: ' + e.message);
+        return;
+    }
+    hLoad();
+
     let totalPiutang = 0;
     
     let h = `
