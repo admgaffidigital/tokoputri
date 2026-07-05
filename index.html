@@ -5755,7 +5755,7 @@ window.previewTempoReceipt = async (orderId) => {
     }
 };
 window.markTempoPaid = async (orderId) => {
-    if (!confirm('Tandai tagihan tempo ini sebagai LUNAS?')) return;
+    showConfirm('Konfirmasi', 'Tandai tagihan tempo ini sebagai LUNAS?', async () => {
     try {
         await db.collection("freshmart_orders").doc(orderId).update({
             'payment.paymentStatus': 'lunas',
@@ -5773,6 +5773,7 @@ window.markTempoPaid = async (orderId) => {
     } catch(e) {
         showToast('Gagal mengubah status: ' + e.message);
     }
+    });
 };
 
 window.rAdmPiutang = async () => {
@@ -6383,10 +6384,31 @@ window.saveOrderCustomerToDB = async (name, waRaw) => {
 
 // FITUR BARU: admin ACC status klaim hadiah (stok ada -> kirim bersama pesanan / stok kosong -> tunda)
 window.ackRewardClaim = async (orderId, status) => {
-    let note = '';
     if (status === 'waiting_stock') {
-        note = prompt("Catatan untuk pelanggan (contoh: estimasi 3 hari lagi):", "Stok hadiah kosong, akan kami kirim susulan begitu stok tersedia kembali.") || '';
+        window.customPrompt("Catatan untuk pelanggan:", "Stok hadiah kosong, akan kami kirim susulan begitu stok tersedia kembali.", async (note) => {
+            if (note === null) return;
+            sLoad('Menyimpan...');
+            try {
+                await db.collection("freshmart_orders").doc(orderId).update({
+                    'claimedReward.status': status,
+                    'claimedReward.note': note || ''
+                });
+                showToast('Status klaim hadiah diperbarui!');
+                let idx = gOrds.findIndex(o => o.orderId === orderId);
+                if(idx !== -1) {
+                    if(!gOrds[idx].claimedReward) gOrds[idx].claimedReward = {};
+                    gOrds[idx].claimedReward.status = status;
+                    gOrds[idx].claimedReward.note = note || '';
+                }
+                openCustomerOrderDetail(orderId);
+            } catch (e) {
+                showToast('Gagal update klaim: ' + e.message);
+            } finally { hLoad(); }
+        });
+        return; // async via callback
     }
+    
+    let note = '';
     sLoad('Menyimpan...');
     try {
         await db.collection("freshmart_orders").doc(orderId).update({
@@ -7131,14 +7153,19 @@ window.rAdmReviews = () => {
 window.replyToReview = async (reviewId) => {
     const r = gReviews.find(x => x.id === reviewId);
     if (!r) return;
-    const reply = prompt("Tulis balasan untuk ulasan ini:", r.adminReply || '');
-    if (reply === null) return; // batal
-    sLoad('Menyimpan balasan...');
-    try {
-        await db.collection("freshmart").doc("cms_data").collection("reviews").doc(reviewId.toString()).update({ adminReply: reply });
-        showToast("Balasan tersimpan!");
-    } catch(e) { showToast("Gagal menyimpan balasan!"); }
-    finally { hLoad(); }
+    
+    window.customPrompt("Tulis balasan untuk ulasan ini:", r.adminReply || '', async (reply) => {
+        // jika kosong, bisa juga dianggap menghapus balasan
+        sLoad('Menyimpan balasan...');
+        try {
+            await db.collection("freshmart").doc("cms_data").collection("reviews").doc(reviewId.toString()).update({ adminReply: reply });
+            showToast("Balasan tersimpan!");
+        } catch(e) { 
+            showToast("Gagal menyimpan balasan!"); 
+        } finally { 
+            hLoad(); 
+        }
+    });
 };
 
 window.toggleReviewVisibility = async (reviewId) => {
