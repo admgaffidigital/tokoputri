@@ -5543,7 +5543,7 @@ window.checkProPrint = () => { openReceiptPreview(); };
 window.editTempoPenalty = async (orderId, currentRate) => {
     let newRate = prompt('Masukkan persentase denda baru per hari (contoh: 1 atau 0.5):', currentRate);
     if (newRate === null) return;
-    newRate = parseFloat(newRate);
+    newRate = parseFloat(newRate.replace(',', '.'));
     if (isNaN(newRate) || newRate < 0) return showToast('Persentase tidak valid!');
     try {
         await db.collection("freshmart_orders").doc(orderId).update({
