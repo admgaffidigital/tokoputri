@@ -5555,20 +5555,27 @@ window.customPrompt = (title, defaultVal, callback) => {
     `;
     document.body.appendChild(div);
     const box = div.querySelector('div');
+    
+    pushModalHistory('prompt');
+    
     setTimeout(() => { div.classList.remove('opacity-0'); box.classList.remove('scale-95'); }, 10);
     const input = div.querySelector('#prompt-input');
     input.focus();
     input.select();
     
-    const closeIt = () => {
-        div.classList.add('opacity-0'); box.classList.add('scale-95');
-        setTimeout(() => div.remove(), 300);
+    window.closePrompt = (fH=false) => {
+        if (!div || !div.parentNode) return;
+        requestCloseModal('prompt', fH, () => {
+            div.classList.add('opacity-0'); box.classList.add('scale-95');
+            setTimeout(() => div.remove(), 300);
+            window.closePrompt = null;
+        });
     };
     
-    div.querySelector('#prompt-cancel').onclick = closeIt;
+    div.querySelector('#prompt-cancel').onclick = () => window.closePrompt();
     div.querySelector('#prompt-ok').onclick = () => {
         let val = input.value;
-        closeIt();
+        window.closePrompt();
         callback(val);
     };
 };
@@ -8086,21 +8093,14 @@ window.openRestockModal = (id) => {
 };
 
 window.closeRestockModal = (fH=false) => {
-    const m = document.getElementById('restock-modal');
-    if (!m || m.style.display === 'none') return;
-    // FIX #3a: animasi tutup
-    m.style.opacity = '0';
-    m.style.transition = 'opacity 0.25s ease';
-    setTimeout(() => {
-        m.style.display = 'none';
-        m.style.opacity = '';
-        m.style.transition = '';
-    }, 250);
-    // FIX #3b: sync History API agar back button Android berfungsi
-    if (!fH && oMods.length && oMods[oMods.length-1] === 'restock') {
-        oMods.pop();
-        history.back();
-    }
+    requestCloseModal('restock', fH, () => {
+        const m = document.getElementById('restock-modal');
+        if (!m || m.style.display === 'none') return;
+        m.style.opacity = '0'; m.style.transition = 'opacity 0.25s ease';
+        setTimeout(() => {
+            m.style.display = 'none'; m.style.opacity = ''; m.style.transition = '';
+        }, 250);
+    });
 };
 
 window.processRestock = async (id) => {
@@ -8308,19 +8308,14 @@ window.rQpWhol = () => {
 window.qpAddWhol = () => { qpWhol.push({minQty:0, price:0}); rQpWhol(); };
 
 window.closeQuickPriceModal = (fH=false) => {
-    const m = document.getElementById('quickprice-modal');
-    if (!m || m.style.display === 'none') return;
-    m.style.opacity = '0';
-    m.style.transition = 'opacity 0.25s ease';
-    setTimeout(() => {
-        m.style.display = 'none';
-        m.style.opacity = '';
-        m.style.transition = '';
-    }, 250);
-    if (!fH && oMods.length && oMods[oMods.length-1] === 'quickprice') {
-        oMods.pop();
-        history.back();
-    }
+    requestCloseModal('quickprice', fH, () => {
+        const m = document.getElementById('quickprice-modal');
+        if (!m || m.style.display === 'none') return;
+        m.style.opacity = '0'; m.style.transition = 'opacity 0.25s ease';
+        setTimeout(() => {
+            m.style.display = 'none'; m.style.opacity = ''; m.style.transition = '';
+        }, 250);
+    });
 };
 
 window.processQuickPrice = async (id) => {
@@ -8482,6 +8477,7 @@ window.addEventListener('popstate', e => {
         else if (m === 'restock') closeRestockModal(true); // FIX: back button tutup restock modal
         else if (m === 'quickprice') closeQuickPriceModal(true); // FITUR BARU: back button tutup modal edit cepat harga
         else if (m === 'member') closeMemberModal(true); // FITUR BARU: back button tutup modal data member
+          else if (m === 'prompt' && typeof window.closePrompt === 'function') window.closePrompt(true);
         else if (m === 'review') closeReviewModal(true); // FITUR BARU: back button tutup modal ulasan
     } else if (e.state && e.state.view) {
         let v = e.state.view;
