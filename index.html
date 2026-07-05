@@ -600,9 +600,9 @@
                 <button class='w-9 h-9 flex items-center justify-center rounded-full bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm border border-slate-200 dark:border-slate-700 shadow-sm text-slate-600 dark:text-slate-300 hover:bg-emerald-500 hover:text-white hover:border-emerald-500 transition-all active:scale-90' onclick='shareProduct()'><i class='fa-solid fa-share-nodes text-xs'></i></button>
                 <button class='w-9 h-9 flex items-center justify-center rounded-full bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm border border-slate-200 dark:border-slate-700 shadow-sm text-slate-600 dark:text-slate-300 hover:bg-rose-500 hover:text-white hover:border-rose-500 transition-all active:scale-90' onclick='closeProductModal()'><i class='fa-solid fa-xmark text-sm'></i></button>
             </div>
-            
-            <div class='w-full aspect-square shrink-0 bg-white flex items-center justify-center border-b border-slate-100 dark:border-slate-800/60 sm:rounded-t-[2rem] rounded-t-[2rem] overflow-hidden'>
-                  <img alt='Product' class='w-full h-full object-cover transition-transform duration-500 hover:scale-105' id='product-modal-img' loading='lazy' src='data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'></i>
+            <div class='w-full aspect-square shrink-0 bg-white flex items-center justify-center border-b border-slate-100 dark:border-slate-800/60 sm:rounded-t-[2rem] rounded-t-[2rem] overflow-hidden relative'>
+                  <img alt='Product' class='w-full h-full object-cover transition-transform duration-500 hover:scale-105' id='product-modal-img' loading='lazy' src='data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'>
+                  <div id='product-modal-video-container' class='absolute inset-0 bg-black hidden flex items-center justify-center'></div>
             </div>
             
             <div class='flex-1 p-6 sm:p-7 bg-white dark:bg-[#0f172a]'>
@@ -3197,6 +3197,11 @@ window.closeProductModal = (fH=false) => {
         requestCloseModal('product', fH, () => {
             m.classList.add('opacity-0'); c.classList.add('translate-y-full','sm:translate-y-10');
             setTimeout(() => hide('product-modal'), 300);
+            const vc = el('product-modal-video-container');
+            if (vc) {
+                vc.innerHTML = '';
+                vc.classList.add('hidden');
+            }
         });
     }
 };
@@ -3212,9 +3217,28 @@ const rProdMod = () => {
     let unt = v?.unit || p.unit || 'Pcs';
     
     const i = el('product-modal-img');
-    if (i) {
-        i.style.opacity = 0;
-        setTimeout(() => { i.src = (v?.img || p.img || ''); i.style.opacity = 1; }, 150);
+    const vc = el('product-modal-video-container');
+    const yId = getYouTubeId(p.video);
+    const showVarImg = v && v.img;
+
+    if (yId && !showVarImg) {
+        if (i) i.style.display = 'none';
+        if (vc) {
+            vc.classList.remove('hidden');
+            if (!vc.innerHTML) {
+                vc.innerHTML = `<iframe class="w-full h-full" src="https://www.youtube.com/embed/${yId}?autoplay=1&mute=1&loop=1&playlist=${yId}&enablejsapi=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`;
+            }
+        }
+    } else {
+        if (vc) {
+            vc.innerHTML = '';
+            vc.classList.add('hidden');
+        }
+        if (i) {
+            i.style.display = 'block';
+            i.style.opacity = 0;
+            setTimeout(() => { i.src = (v?.img || p.img || ''); i.style.opacity = 1; }, 150);
+        }
     }
     
     setIn('product-modal-title', p.name);
@@ -5260,6 +5284,15 @@ window.normalizeWA = (raw) => {
     return n;
 };
 
+window.getYouTubeId = (url) => {
+    if (!url) return null;
+    url = url.trim();
+    if (/^[a-zA-Z0-9_-]{11}$/.test(url)) return url;
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+    const match = url.match(regExp);
+    return (match && match[2].length === 11) ? match[2] : null;
+};
+
 // --- 12. SISTEM ADMIN PANEL ---
 const aF = {
     products: [
@@ -5270,7 +5303,9 @@ const aF = {
         {key:'poin', label:'Poin Member (per unit terjual, Produk Tanpa Varian)', type:'number'},
         {key:'stock', label:'Stok Awal (Qty) — Aktif jika Manajemen Stok ON', type:'number'},
         {key:'unit', label:'Satuan Dasar (Cth: Pcs, Kg)', type:'text'},
-        {key:'poTime', label:'Estimasi Pre-Order (Opsional)', type:'text'}, {key:'img', label:'URL Gambar', type:'text'},
+        {key:'poTime', label:'Estimasi Pre-Order (Opsional)', type:'text'}, 
+        {key:'video', label:'Link Video YouTube (Opsional)', type:'text'},
+        {key:'img', label:'URL Gambar', type:'text'},
         {key:'category', label:'Kategori', type:'dynamic_select_category'}, {key:'brand', label:'Merek', type:'dynamic_select_brand'},
         {key:'tag', label:'Label/Tag', type:'text'}, {key:'isActive', label:'Status', type:'select', options:[{val:'true',text:'Tersedia'},{val:'false',text:'Habis'}]},
         {key:'desc', label:'Deskripsi Lengkap', type:'richtext'}, {key:'wholesale', label:'Grosir', type:'wholesale_builder'}, {key:'variants', label:'Varian', type:'variants_builder'}
@@ -7684,7 +7719,7 @@ window.oAEd = (t, id) => {
     
     // REDESIGN: Kelompokkan field produk dalam grid 2-kolom di lg
     const FULL_WIDTH_TYPES = ['textarea','richtext','variants_builder','wholesale_builder'];
-    const FULL_WIDTH_KEYS  = ['img','desc','name','isActive','tag','poTime'];
+    const FULL_WIDTH_KEYS  = ['img','desc','name','isActive','tag','poTime','video'];
     const isFullWidth = k => FULL_WIDTH_TYPES.includes(k.type) || FULL_WIDTH_KEYS.includes(k.key);
 
     f.forEach(k => {
