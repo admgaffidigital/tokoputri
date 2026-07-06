@@ -6732,7 +6732,7 @@ window.openSettingForm = (type) => {
         title = "Profil Toko & Tampilan"; icon = "fa-store"; 
         colorTheme = { line: "bg-[var(--color-primary)]", box: "bg-[rgba(var(--color-primary-rgb),0.08)] text-[var(--color-primary)]" };
         formContent = `
-            <div><label class="block text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Nama Toko (Nama Aplikasi)</label><input autocomplete='off' id="set-name" value="${esc(appData.store.name)}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm" ></i></div>
+            <div><label class="block text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Nama Toko (Nama Aplikasi)</label><input autocomplete='off' id="set-name" value="${esc(appData.store.name)}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm"></div>
             
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 <div><label class="block text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Warna Tema UI Web</label>
@@ -6764,18 +6764,18 @@ window.openSettingForm = (type) => {
 
                 <div><label class="block text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Warna Header App (PWA)</label>
                     <div class="flex gap-3">
-                        <input type="color" id="set-theme-color-picker" value="${esc(appData.store.themeColor || '#10b981')}" class="w-14 h-12 rounded-xl cursor-pointer shadow-sm border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-1" oninput="document.getElementById('set-theme-color').value = this.value" ></i>
-                        <input autocomplete='off' id="set-theme-color" value="${esc(appData.store.themeColor || '#10b981')}" class="admin-input !py-3.5 uppercase font-mono flex-1 shadow-sm bg-slate-50 dark:bg-slate-900" oninput="document.getElementById('set-theme-color-picker').value = this.value" placeholder="#10b981" ></i>
+                        <input type="color" id="set-theme-color-picker" value="${esc(appData.store.themeColor || '#10b981')}" class="w-14 h-12 rounded-xl cursor-pointer shadow-sm border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-1" oninput="document.getElementById('set-theme-color').value = this.value">
+                        <input autocomplete='off' id="set-theme-color" value="${esc(appData.store.themeColor || '#10b981')}" class="admin-input !py-3.5 uppercase font-mono flex-1 shadow-sm bg-slate-50 dark:bg-slate-900" oninput="document.getElementById('set-theme-color-picker').value = this.value" placeholder="#10b981">
                     </div>
                 </div>
             </div>
 
-            <div><label class="block text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Slogan Toko</label><input autocomplete='off' id="set-slogan" value="${esc(appData.store.slogan)}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm" ></i></div>
+            <div><label class="block text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Slogan Toko</label><input autocomplete='off' id="set-slogan" value="${esc(appData.store.slogan)}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm"></div>
             <div>
                 <label class="block text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Logo Toko (Ikon Aplikasi)</label>
                 <div class="flex gap-3">
-                    <input autocomplete='off' id="set-logo" value="${esc(appData.store.logo)}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 flex-1 shadow-sm" placeholder="URL Gambar / fa-icon" ></i>
-                    <label class="bg-white hover:bg-slate-50 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-300 rounded-xl px-5 flex items-center justify-center cursor-pointer transition-all shrink-0 active:scale-95 shadow-sm font-bold"><i class="fa-solid fa-cloud-arrow-up sm:mr-2"></i> <span class="hidden sm:inline">Upload</span><input type="file" accept="image/*" class="hidden" onchange="handleImageUpload(this, 'set-logo')" ></i></label>
+                    <input autocomplete='off' id="set-logo" value="${esc(appData.store.logo)}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 flex-1 shadow-sm" placeholder="URL Gambar / fa-icon">
+                    <label class="bg-white hover:bg-slate-50 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-300 rounded-xl px-5 flex items-center justify-center cursor-pointer transition-all shrink-0 active:scale-95 shadow-sm font-bold"><i class="fa-solid fa-cloud-arrow-up sm:mr-2"></i> <span class="hidden sm:inline">Upload</span><input type="file" accept="image/*" class="hidden" onchange="handleImageUpload(this, 'set-logo')"></label>
                 </div>
             </div>
             <div><label class="block text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Deskripsi Usaha (Footer)</label><textarea autocomplete='off' id="set-description" class="admin-input resize-none !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm" rows="3" placeholder="Deskripsi untuk footer...">${esc(appData.store.description || '')}</textarea></div>
@@ -6792,15 +6792,15 @@ window.openSettingForm = (type) => {
             <div>
                 <label class="block text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Ikon "Semua Produk"</label>
                 <div class="flex gap-3">
-                    <input autocomplete='off' id="set-all-cat-icon" value="${esc(appData.store.allProductsIcon||'')}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 flex-1 shadow-sm" placeholder="Kosongkan utk Auto..." ></i>
-                    <label class="bg-white hover:bg-slate-50 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-300 rounded-xl px-5 flex items-center justify-center cursor-pointer transition-all shrink-0 active:scale-95 shadow-sm font-bold"><i class="fa-solid fa-cloud-arrow-up sm:mr-2"></i> <span class="hidden sm:inline">Upload</span><input type="file" accept="image/*" class="hidden" onchange="handleImageUpload(this, 'set-all-cat-icon')" ></i></label>
+                    <input autocomplete='off' id="set-all-cat-icon" value="${esc(appData.store.allProductsIcon||'')}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 flex-1 shadow-sm" placeholder="Kosongkan utk Auto...">
+                    <label class="bg-white hover:bg-slate-50 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-300 rounded-xl px-5 flex items-center justify-center cursor-pointer transition-all shrink-0 active:scale-95 shadow-sm font-bold"><i class="fa-solid fa-cloud-arrow-up sm:mr-2"></i> <span class="hidden sm:inline">Upload</span><input type="file" accept="image/*" class="hidden" onchange="handleImageUpload(this, 'set-all-cat-icon')"></label>
                 </div>
             </div>
             <div>
                 <label class="block text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Ikon "Semua Merek"</label>
                 <div class="flex gap-3">
-                    <input autocomplete='off' id="set-all-brand-icon" value="${esc(appData.store.allBrandsIcon||'')}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 flex-1 shadow-sm" placeholder="Kosongkan utk Auto..." ></i>
-                    <label class="bg-white hover:bg-slate-50 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-300 rounded-xl px-5 flex items-center justify-center cursor-pointer transition-all shrink-0 active:scale-95 shadow-sm font-bold"><i class="fa-solid fa-cloud-arrow-up sm:mr-2"></i> <span class="hidden sm:inline">Upload</span><input type="file" accept="image/*" class="hidden" onchange="handleImageUpload(this, 'set-all-brand-icon')" ></i></label>
+                    <input autocomplete='off' id="set-all-brand-icon" value="${esc(appData.store.allBrandsIcon||'')}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 flex-1 shadow-sm" placeholder="Kosongkan utk Auto...">
+                    <label class="bg-white hover:bg-slate-50 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-300 rounded-xl px-5 flex items-center justify-center cursor-pointer transition-all shrink-0 active:scale-95 shadow-sm font-bold"><i class="fa-solid fa-cloud-arrow-up sm:mr-2"></i> <span class="hidden sm:inline">Upload</span><input type="file" accept="image/*" class="hidden" onchange="handleImageUpload(this, 'set-all-brand-icon')"></label>
                 </div>
             </div>
         `;
@@ -6810,20 +6810,20 @@ window.openSettingForm = (type) => {
         colorTheme = { line: "bg-amber-500", box: "bg-amber-50 text-amber-500 dark:bg-amber-900/30" };
         formContent = `
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                <div><label class="block text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Nomor WhatsApp Admin</label><input autocomplete='off' id="set-wa" value="${esc(appData.store.wa)}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm" placeholder="Contoh: 0812..." ></i></div>
-                <div><label class="block text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Tarif Ongkir per KM (Rp)</label><input autocomplete='off' type="number" id="set-cost" value="${appData.store.costPerKm||0}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm" ></i></div>
+                <div><label class="block text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Nomor WhatsApp Admin</label><input autocomplete='off' id="set-wa" value="${esc(appData.store.wa)}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm" placeholder="Contoh: 0812..."></div>
+                <div><label class="block text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Tarif Ongkir per KM (Rp)</label><input autocomplete='off' type="number" id="set-cost" value="${appData.store.costPerKm||0}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm"></div>
             </div>
             <div><label class="block text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Alamat Fisik Toko</label><textarea autocomplete='off' id="set-address" class="admin-input !py-3.5 resize-none bg-slate-50 dark:bg-slate-900 shadow-sm" rows="2">${esc(appData.store.address)}</textarea></div>
             <div class="grid grid-cols-2 gap-5">
                 <div><label class="block text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Sistem Kurir</label><div class="relative"><select id="set-delivery-enabled" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm cursor-pointer appearance-none pr-10"><option value="true" ${appData.store.isDeliveryEnabled!==false?'selected':''}>Aktif</option><option value="false" ${appData.store.isDeliveryEnabled===false?'selected':''}>Nonaktif</option></select><i class="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-[10px]"></i></div></div>
                 <div><label class="block text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Ambil Sendiri</label><div class="relative"><select id="set-pickup-enabled" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm cursor-pointer appearance-none pr-10"><option value="true" ${appData.store.isPickupEnabled!==false?'selected':''}>Aktif</option><option value="false" ${appData.store.isPickupEnabled===false?'selected':''}>Nonaktif</option></select><i class="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-[10px]"></i></div></div>
             </div>
-            <div class="bg-amber-50 dark:bg-amber-900/20 p-5 rounded-2xl border border-amber-200 dark:border-amber-800 shadow-sm">
-                <label class="block text-[10px] font-black text-amber-800 dark:text-amber-400 mb-2 uppercase tracking-widest"><i class="fa-solid fa-map-pin mr-1"></i> Titik Koordinat Toko (GPS)</label>
-                <input autocomplete='off' id="set-coords" onchange="autoParseCoords(this)" class="admin-input !py-3 mb-3 bg-white dark:bg-slate-900 border-amber-300 focus:border-amber-500" placeholder="Paste Lat,Lng dari Google Maps..." ></i>
+            <div>
+                <label class="block text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest"><i class="fa-solid fa-map-pin mr-1"></i> Titik Koordinat Toko (GPS)</label>
+                <input autocomplete='off' id="set-coords" onchange="autoParseCoords(this)" class="admin-input !py-3.5 mb-3 bg-slate-50 dark:bg-slate-900 shadow-sm" placeholder="Paste Lat,Lng dari Google Maps...">
                 <div class="flex gap-3">
-                    <input autocomplete='off' id="set-lat" value="${appData.store.lat}" class="admin-input !py-3 text-xs font-mono bg-amber-100/50 dark:bg-amber-900/50 border border-amber-300 dark:border-amber-700" readonly="readonly" placeholder="Latitude" ></i>
-                    <input autocomplete='off' id="set-lng" value="${appData.store.lng}" class="admin-input !py-3 text-xs font-mono bg-amber-100/50 dark:bg-amber-900/50 border border-amber-300 dark:border-amber-700" readonly="readonly" placeholder="Longitude" ></i>
+                    <input autocomplete='off' id="set-lat" value="${appData.store.lat}" class="admin-input !py-3.5 flex-1 text-xs font-mono bg-slate-100/50 dark:bg-slate-800/50 shadow-inner" readonly="readonly" placeholder="Latitude">
+                    <input autocomplete='off' id="set-lng" value="${appData.store.lng}" class="admin-input !py-3.5 flex-1 text-xs font-mono bg-slate-100/50 dark:bg-slate-800/50 shadow-inner" readonly="readonly" placeholder="Longitude">
                 </div>
             </div>
         `;
@@ -6832,12 +6832,14 @@ window.openSettingForm = (type) => {
         title = "Pembayaran QRIS"; icon = "fa-qrcode"; 
         colorTheme = { line: "bg-indigo-500", box: "bg-indigo-50 text-indigo-500 dark:bg-indigo-900/30" };
         formContent = `
-            <label class="block text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Gambar QR Code Standar Nasional</label>
-            <div class="flex gap-3 mb-5">
-                <input autocomplete='off' id="set-qris-url" value="${esc(appData.payment.qrisUrl)}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 flex-1 shadow-sm" placeholder="URL QRIS..." ></i>
-                <label class="bg-white hover:bg-slate-50 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-300 rounded-xl px-5 flex items-center justify-center cursor-pointer transition-all shrink-0 active:scale-95 shadow-sm font-bold"><i class="fa-solid fa-cloud-arrow-up sm:mr-2"></i> <span class="hidden sm:inline">Upload</span><input type="file" accept="image/*" class="hidden" onchange="handleImageUpload(this, 'set-qris-url')" ></i></label>
+            <div>
+                <label class="block text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Gambar QR Code Standar Nasional</label>
+                <div class="flex gap-3 mb-5">
+                    <input autocomplete='off' id="set-qris-url" value="${esc(appData.payment.qrisUrl)}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 flex-1 shadow-sm" placeholder="URL QRIS...">
+                    <label class="bg-white hover:bg-slate-50 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-300 rounded-xl px-5 flex items-center justify-center cursor-pointer transition-all shrink-0 active:scale-95 shadow-sm font-bold"><i class="fa-solid fa-cloud-arrow-up sm:mr-2"></i> <span class="hidden sm:inline">Upload</span><input type="file" accept="image/*" class="hidden" onchange="handleImageUpload(this, 'set-qris-url')"></label>
+                </div>
+                ${appData.payment.qrisUrl ? `<div class="p-4 border border-slate-200 dark:border-slate-700 rounded-2xl flex justify-center bg-slate-50/50 dark:bg-slate-900/10"><img loading="eager" src="${esc(appData.payment.qrisUrl)}" class="w-40 h-40 object-contain rounded-xl shadow-sm"></div>` : ''}
             </div>
-            ${appData.payment.qrisUrl ? `<div class="p-4 border-2 border-dashed border-indigo-200 dark:border-indigo-800 rounded-2xl flex justify-center bg-indigo-50/50 dark:bg-indigo-900/10"><img loading="eager" src="${esc(appData.payment.qrisUrl)}" class="w-40 h-40 object-contain rounded-xl shadow-sm"></i></div>` : ''}
         `;
     }
     // FITUR BARU: FORM KONFIGURASI SISTEM
@@ -6848,28 +6850,30 @@ window.openSettingForm = (type) => {
         let savedGas = (appData.config && appData.config.gasUrl) ? appData.config.gasUrl : GAS_UPLOAD_URL;
         
         formContent = `
-            <div class="bg-rose-50 dark:bg-rose-900/20 p-4 rounded-2xl border border-rose-200 dark:border-rose-800 mb-5 shadow-sm">
-                <p class="text-[10px] sm:text-xs font-black text-rose-600 dark:text-rose-400 leading-relaxed"><i class="fa-solid fa-triangle-exclamation mr-1"></i> PERINGATAN: Kesalahan pengisian pada form ini dapat membuat aplikasi error atau terputus dari Database!</p>
+            <div class="bg-rose-50 dark:bg-rose-900/10 border border-rose-200 dark:border-rose-800/30 p-4 rounded-xl mb-6 flex gap-3 items-start">
+                <i class="fa-solid fa-triangle-exclamation text-rose-500 mt-0.5"></i>
+                <p class="text-[10px] sm:text-[11px] font-bold text-rose-700 dark:text-rose-400 leading-relaxed">PERINGATAN: Kesalahan pengisian pada form ini dapat membuat aplikasi error atau terputus dari Database!</p>
             </div>
             
             <div>
                 <label class="block text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">URL Google Apps Script (GS URL)</label>
-                <input autocomplete='off' id="set-gas-url" value="${esc(savedGas)}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm font-mono text-[11px]" placeholder="https://script.google.com/macros/s/.../exec" ></i>
+                <input autocomplete='off' id="set-gas-url" value="${esc(savedGas)}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm font-mono text-[11px]" placeholder="https://script.google.com/macros/s/.../exec">
                 <p class="text-[9px] font-bold text-slate-400 mt-1.5">* Digunakan sebagai endpoint untuk sistem upload gambar.</p>
             </div>
 
             <div class="border-t border-dashed border-slate-200 dark:border-slate-700 my-6"></div>
-            <h4 class="font-black text-slate-800 dark:text-white mb-4 text-xs uppercase tracking-wider flex items-center gap-2"><i class="fa-solid fa-fire text-amber-500"></i> Firebase Configuration</h4>
+            
+            <h4 class="font-black text-slate-800 dark:text-white mb-4 text-[11px] uppercase tracking-widest flex items-center gap-2"><i class="fa-solid fa-fire text-amber-500"></i> Firebase Configuration</h4>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div><label class="block text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">API Key</label><input id="set-fb-apikey" value="${esc(fbC.apiKey)}" class="admin-input !py-3 bg-slate-50 dark:bg-slate-900 shadow-sm text-xs font-mono" ></i></div>
-                <div><label class="block text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Auth Domain</label><input id="set-fb-auth" value="${esc(fbC.authDomain)}" class="admin-input !py-3 bg-slate-50 dark:bg-slate-900 shadow-sm text-xs font-mono" ></i></div>
-                <div class="sm:col-span-2"><label class="block text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Database URL</label><input id="set-fb-db" value="${esc(fbC.databaseURL)}" class="admin-input !py-3 bg-slate-50 dark:bg-slate-900 shadow-sm text-xs font-mono" ></i></div>
-                <div><label class="block text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Project ID</label><input id="set-fb-pid" value="${esc(fbC.projectId)}" class="admin-input !py-3 bg-slate-50 dark:bg-slate-900 shadow-sm text-xs font-mono" ></i></div>
-                <div><label class="block text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Storage Bucket</label><input id="set-fb-storage" value="${esc(fbC.storageBucket)}" class="admin-input !py-3 bg-slate-50 dark:bg-slate-900 shadow-sm text-xs font-mono" ></i></div>
-                <div><label class="block text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Messaging Sender ID</label><input id="set-fb-msg" value="${esc(fbC.messagingSenderId)}" class="admin-input !py-3 bg-slate-50 dark:bg-slate-900 shadow-sm text-xs font-mono" ></i></div>
-                <div><label class="block text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">App ID</label><input id="set-fb-app" value="${esc(fbC.appId)}" class="admin-input !py-3 bg-slate-50 dark:bg-slate-900 shadow-sm text-xs font-mono" ></i></div>
-                <div class="sm:col-span-2"><label class="block text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Measurement ID</label><input id="set-fb-measure" value="${esc(fbC.measurementId)}" class="admin-input !py-3 bg-slate-50 dark:bg-slate-900 shadow-sm text-xs font-mono" ></i></div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                <div><label class="block text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">API Key</label><input id="set-fb-apikey" value="${esc(fbC.apiKey)}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm text-xs font-mono"></div>
+                <div><label class="block text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Auth Domain</label><input id="set-fb-auth" value="${esc(fbC.authDomain)}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm text-xs font-mono"></div>
+                <div class="sm:col-span-2"><label class="block text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Database URL</label><input id="set-fb-db" value="${esc(fbC.databaseURL)}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm text-xs font-mono"></div>
+                <div><label class="block text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Project ID</label><input id="set-fb-pid" value="${esc(fbC.projectId)}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm text-xs font-mono"></div>
+                <div><label class="block text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Storage Bucket</label><input id="set-fb-storage" value="${esc(fbC.storageBucket)}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm text-xs font-mono"></div>
+                <div><label class="block text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Messaging Sender ID</label><input id="set-fb-msg" value="${esc(fbC.messagingSenderId)}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm text-xs font-mono"></div>
+                <div><label class="block text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">App ID</label><input id="set-fb-app" value="${esc(fbC.appId)}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm text-xs font-mono"></div>
+                <div class="sm:col-span-2"><label class="block text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Measurement ID</label><input id="set-fb-measure" value="${esc(fbC.measurementId)}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm text-xs font-mono"></div>
             </div>
         `;
     }
@@ -6882,51 +6886,48 @@ window.openSettingForm = (type) => {
         const ppnRateCur = parseFloat(appData.store.ppnRate) || 11;
         const adsOnCur = appData.store.adsEnabled === true || appData.store.adsEnabled === 'true';
         formContent = `
-            <div class="bg-blue-50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-900/30 rounded-2xl p-5 space-y-4">
-                <div class="flex items-center gap-3 mb-1">
-                    <div class="w-9 h-9 rounded-xl bg-blue-100 dark:bg-blue-900/30 text-blue-500 flex items-center justify-center shrink-0"><i class="fa-solid fa-boxes-stacked"></i></div>
-                    <div><h4 class="font-black text-slate-800 dark:text-white text-sm">Manajemen Stok Produk</h4><p class="text-[10px] font-bold text-slate-400 mt-0.5">Aktifkan untuk validasi dan tracking stok otomatis</p></div>
-                </div>
-                <div class="relative"><select id="set-use-stock" class="admin-input !py-3.5 bg-white dark:bg-slate-800 shadow-sm cursor-pointer appearance-none pr-10">
-                    <option value="true" ${useStockCur?'selected':''}>Aktif — Stok divalidasi dan dikurangi tiap order</option>
-                    <option value="false" ${!useStockCur?'selected':''}>Nonaktif — Produk bebas dibeli tanpa cek stok</option>
-                </select><i class="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-[10px]"></i></div>
-                <div class="bg-blue-100/60 dark:bg-blue-900/20 p-3 rounded-xl border border-blue-200 dark:border-blue-800">
-                    <p class="text-[10px] font-bold text-blue-700 dark:text-blue-300 leading-relaxed"><i class="fa-solid fa-circle-info mr-1"></i> Jika aktif, stok berkurang otomatis saat pesanan dikirim. Isi stok di form produk atau varian. Gunakan tombol <b>Restock (+)</b> di daftar produk untuk menambah stok kapan saja.</p>
-                </div>
-            </div>
-            <div class="bg-amber-50 dark:bg-amber-900/10 border border-amber-100 dark:border-amber-900/30 rounded-2xl p-5 space-y-4">
-                <div class="flex items-center gap-3 mb-1">
-                    <div class="w-9 h-9 rounded-xl bg-amber-100 dark:bg-amber-900/30 text-amber-500 flex items-center justify-center shrink-0"><i class="fa-solid fa-percent"></i></div>
-                    <div><h4 class="font-black text-slate-800 dark:text-white text-sm">Pajak PPN</h4><p class="text-[10px] font-bold text-slate-400 mt-0.5">Tampilkan dan hitung PPN di rincian pesanan</p></div>
-                </div>
-                <div class="relative"><select id="set-ppn-enabled" class="admin-input !py-3.5 bg-white dark:bg-slate-800 shadow-sm cursor-pointer appearance-none pr-10">
-                    <option value="true" ${ppnOnCur?'selected':''}>Aktif — PPN ditampilkan dan ditambahkan ke total</option>
-                    <option value="false" ${!ppnOnCur?'selected':''}>Nonaktif — Harga sudah termasuk pajak</option>
-                </select><i class="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-[10px]"></i></div>
+            <div class="space-y-8">
+                <!-- Stok -->
                 <div>
-                    <label class="block text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Persentase PPN (%)</label>
-                    <input autocomplete='off' type="number" id="set-ppn-rate" min="0" max="100" step="0.1" value="${ppnRateCur}" class="admin-input !py-3.5 bg-white dark:bg-slate-800 shadow-sm" placeholder="11"></i>
-                    <p class="text-[9px] font-bold text-slate-400 mt-1.5">* PPN Indonesia saat ini 11%. Sesuaikan dengan regulasi yang berlaku.</p>
+                    <h4 class="font-black text-slate-800 dark:text-white text-[11px] uppercase tracking-widest mb-4 flex items-center gap-2"><i class="fa-solid fa-boxes-stacked text-blue-500"></i> Manajemen Stok</h4>
+                    <div class="relative mb-3"><select id="set-use-stock" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm cursor-pointer appearance-none pr-10">
+                        <option value="true" ${useStockCur?'selected':''}>Aktif — Stok divalidasi dan dikurangi tiap order</option>
+                        <option value="false" ${!useStockCur?'selected':''}>Nonaktif — Produk bebas dibeli tanpa cek stok</option>
+                    </select><i class="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-[10px]"></i></div>
+                    <p class="text-[10px] font-bold text-slate-500 dark:text-slate-400 leading-relaxed">* Jika aktif, stok berkurang otomatis saat pesanan dikirim. Gunakan tombol <b>Restock (+)</b> di daftar produk untuk menambah stok.</p>
                 </div>
-                <div class="bg-amber-100/60 dark:bg-amber-900/20 p-3 rounded-xl border border-amber-200 dark:border-amber-800">
-                    <p class="text-[10px] font-bold text-amber-700 dark:text-amber-300 leading-relaxed"><i class="fa-solid fa-circle-info mr-1"></i> PPN dihitung dari total setelah diskon dan ongkir. Muncul di rincian checkout, WA, struk, dan invoice PDF.</p>
+                
+                <div class="border-t border-dashed border-slate-200 dark:border-slate-700"></div>
+
+                <!-- PPN -->
+                <div>
+                    <h4 class="font-black text-slate-800 dark:text-white text-[11px] uppercase tracking-widest mb-4 flex items-center gap-2"><i class="fa-solid fa-percent text-amber-500"></i> Pajak PPN</h4>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-3">
+                        <div>
+                            <label class="block text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Status PPN</label>
+                            <div class="relative"><select id="set-ppn-enabled" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm cursor-pointer appearance-none pr-10">
+                                <option value="true" ${ppnOnCur?'selected':''}>Aktif</option>
+                                <option value="false" ${!ppnOnCur?'selected':''}>Nonaktif</option>
+                            </select><i class="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-[10px]"></i></div>
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Persentase PPN (%)</label>
+                            <input autocomplete='off' type="number" id="set-ppn-rate" min="0" max="100" step="0.1" value="${ppnRateCur}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm" placeholder="11">
+                        </div>
+                    </div>
+                    <p class="text-[10px] font-bold text-slate-500 dark:text-slate-400 leading-relaxed">* PPN dihitung dari total setelah diskon dan ongkir. Muncul di rincian checkout, WA, struk, dan invoice PDF.</p>
                 </div>
-            </div>
-            <div class="bg-orange-50 dark:bg-orange-900/10 border border-orange-100 dark:border-orange-900/30 rounded-2xl p-5 space-y-4">
-                <div class="flex items-center gap-3 mb-1">
-                    <div class="w-9 h-9 rounded-xl bg-orange-100 dark:bg-orange-900/30 text-orange-500 flex items-center justify-center shrink-0"><i class="fa-solid fa-rectangle-ad"></i></div>
-                    <div><h4 class="font-black text-slate-800 dark:text-white text-sm">Iklan Google AdSense</h4><p class="text-[10px] font-bold text-slate-400 mt-0.5">Tampilkan iklan AdSense di beranda &amp; halaman produk</p></div>
-                </div>
-                <div class="relative"><select id="set-ads-enabled" class="admin-input !py-3.5 bg-white dark:bg-slate-800 shadow-sm cursor-pointer appearance-none pr-10">
-                    <option value="true" ${adsOnCur?'selected':''}>Aktif — Iklan ditampilkan ke pengunjung</option>
-                    <option value="false" ${!adsOnCur?'selected':''}>Nonaktif — Semua slot iklan disembunyikan</option>
-                </select><i class="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-[10px]"></i></div>
-                <div class="bg-orange-100/60 dark:bg-orange-900/20 p-3 rounded-xl border border-orange-200 dark:border-orange-800">
-                    <p class="text-[10px] font-bold text-orange-700 dark:text-orange-300 leading-relaxed"><i class="fa-solid fa-circle-info mr-1"></i> Iklan tampil di 3 lokasi: banner beranda, akhir daftar produk, dan di dalam detail produk. Matikan kapan saja tanpa perlu edit kode.</p>
-                </div>
-                <div class="bg-rose-100/60 dark:bg-rose-900/20 p-3 rounded-xl border border-rose-200 dark:border-rose-800">
-                    <p class="text-[10px] font-bold text-rose-700 dark:text-rose-300 leading-relaxed"><i class="fa-solid fa-triangle-exclamation mr-1"></i> <b>Sebelum mengaktifkan:</b> buka akun Google AdSense Anda → menu "Iklan Saya" / "Auto ads" → pastikan "Vinyet" (iklan layar-penuh) dan "Anchor ads" dalam keadaan wajar/sesuai keinginan Anda. Fitur ini dikontrol dari sisi Google, bukan dari pengaturan ini.</p>
+
+                <div class="border-t border-dashed border-slate-200 dark:border-slate-700"></div>
+
+                <!-- Ads -->
+                <div>
+                    <h4 class="font-black text-slate-800 dark:text-white text-[11px] uppercase tracking-widest mb-4 flex items-center gap-2"><i class="fa-solid fa-rectangle-ad text-orange-500"></i> Iklan Google AdSense</h4>
+                    <div class="relative mb-3"><select id="set-ads-enabled" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm cursor-pointer appearance-none pr-10">
+                        <option value="true" ${adsOnCur?'selected':''}>Aktif — Tampilkan iklan ke pengunjung</option>
+                        <option value="false" ${!adsOnCur?'selected':''}>Nonaktif — Sembunyikan iklan</option>
+                    </select><i class="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-[10px]"></i></div>
+                    <p class="text-[10px] font-bold text-slate-500 dark:text-slate-400 leading-relaxed">* Iklan tampil di banner beranda, akhir daftar produk, dan di dalam detail produk. Pastikan pengaturan "Auto Ads" di akun Google AdSense Anda sesuai keinginan.</p>
                 </div>
             </div>
         `;
