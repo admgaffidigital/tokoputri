@@ -6287,6 +6287,7 @@ window.rAdmL = t => {
     // tepat di atas kolom cari -- lebih relevan di tempat pengelolaan produknya langsung.
     const statsContainer = t === 'products' ? `<div id="admin-product-stats" class="mb-5"></div>` : '';
     setH('admin-content', `
+        <div class="max-w-5xl mx-auto">
         ${statsContainer}
         <div class="mb-6">
             <div class="flex gap-2 items-center mb-4">
@@ -6299,6 +6300,7 @@ window.rAdmL = t => {
             </div>
         </div>
         <div id="admin-list-container" class="space-y-3 pb-12"></div>
+        </div>
     `);
     rAdmItms(t);
 };

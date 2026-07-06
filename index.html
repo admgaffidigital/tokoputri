@@ -682,7 +682,7 @@
     </div>
 
     <div class='fixed inset-0 z-[100] bg-slate-900/80 hidden flex items-center justify-center p-3 opacity-0 transition-all duration-300' id='admin-order-modal' onclick='if(event.target===this) closeOrderDetailModal()'>
-        <div class='bg-white dark:bg-slate-800 rounded-[2rem] w-full max-w-md sm:max-w-lg md:max-w-3xl lg:max-w-4xl xl:max-w-[1200px] max-h-[92dvh] overflow-y-auto hide-scrollbar shadow-2xl border border-slate-200 dark:border-slate-700 relative transform scale-95 transition-all duration-300 flex flex-col' id='admin-order-modal-box'>
+        <div class='bg-white dark:bg-slate-800 rounded-[2rem] w-full max-w-md sm:max-w-lg md:max-w-3xl lg:max-w-4xl max-h-[92dvh] overflow-y-auto hide-scrollbar shadow-2xl border border-slate-200 dark:border-slate-700 relative transform scale-95 transition-all duration-300 flex flex-col' id='admin-order-modal-box'>
             <div class='sticky top-0 bg-white dark:bg-slate-800 px-6 py-4 border-b border-slate-200 flex justify-between items-center z-20 rounded-t-[2rem] dark:border-slate-700'>
                 <h3 class='font-black text-slate-900 dark:text-white text-base flex items-center gap-2'><i class='fa-solid fa-file-invoice text-emerald-500'></i> Detail Pesanan</h3>
                 <button class='w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 dark:bg-slate-700 text-slate-500 hover:text-rose-500 transition-all' onclick='closeOrderDetailModal()'><i class='fa-solid fa-xmark'></i></button>
@@ -1369,7 +1369,7 @@
             <div class='scroll-content flex-1 overflow-y-auto w-full pb-16 relative'>
                 <div class='max-w-full lg:px-8 mx-auto pt-6 px-4 w-full'>
                     
-                    <div class='fade-in-scale block w-full max-w-7xl mx-auto' id='admin-dashboard-view'>
+                    <div class='fade-in-scale block w-full max-w-5xl mx-auto' id='admin-dashboard-view'>
                         
                         <!-- Welcome Banner -->
                         <div class='relative overflow-hidden rounded-[1.5rem] mb-7 p-6 sm:p-8 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 dark:from-slate-800 dark:to-slate-900 border border-slate-700/60 shadow-xl'>
@@ -1494,7 +1494,7 @@
                         </div>
                     </div>
                     
-                    <div class='hidden fade-in w-full max-w-7xl mx-auto' id='admin-content-view'><div id='admin-content' class='pb-10 md:pb-12'></div></div>
+                    <div class='hidden fade-in w-full max-w-5xl mx-auto' id='admin-content-view'><div id='admin-content' class='pb-10 md:pb-12'></div></div>
                 </div>
             </div>
         </div>
@@ -1612,7 +1612,7 @@ const defApp = {
         useStock: false,   // Manajemen stok aktif/nonaktif
         ppnEnabled: false, // PPN aktif/nonaktif
         ppnRate: 11,        // Persentase PPN (default 11%)
-        adsEnabled: false   // FITUR BARU: Iklan Google AdSense aktif/nonaktif (default NONAKTIF — admin harus aktifkan manual setelah cek akun AdSense)
+        
     }, 
     // auth field dihapus: login admin sudah pakai Firebase Authentication (signInWithEmailAndPassword), bukan field ini 
     payment: { qrisUrl: "" }, 
@@ -2846,753 +2846,6 @@ window.rDyn = () => {
 
     if(el('dyn-qris-img') && appData.payment) el('dyn-qris-img').src = appData.payment.qrisUrl;
     cPage = 1; window.rCat();
-};
-
-// FITUR BARU: Muat skrip AdSense secara dinamis — HANYA kalau iklan diaktifkan admin.
-// FIX KRITIS: sebelumnya skrip ini dimuat statis & SELALU aktif di <head>, terlepas dari
-// toggle ON/OFF kita. Itu berbahaya karena begitu skrip Google ini dimuat, fitur "Auto Ads"
-// di level AKUN AdSense (anchor ads, vignette/interstitial layar-penuh) bisa otomatis aktif
-// TANPA bisa dimatikan oleh toggle kita — inilah kemungkinan sebab "layar mati" yang dilaporkan.
-// Sekarang: skrip ini benar-benar TIDAK PERNAH dimuat sama sekali kalau adsEnabled bukan true.
-
-
-// FITUR BARU (PERFORMA): Loader skrip on-demand generik. Dipakai untuk library berat
-// yang cuma dibutuhkan admin (html2canvas, jsPDF, XLSX) atau fitur yang jarang dipakai
-// (html5-qrcode) — supaya TIDAK dimuat di setiap kunjungan, cuma saat benar-benar dipakai.
-const loadedScripts = {};
-window.ensureScriptLoaded = (src, checkFn) => {
-    if (checkFn && checkFn()) return Promise.resolve();
-    if (loadedScripts[src]) return loadedScripts[src];
-    loadedScripts[src] = new Promise((resolve, reject) => {
-        const s = document.createElement('script');
-        s.src = src;
-        s.onload = () => resolve();
-        s.onerror = () => { delete loadedScripts[src]; reject(new Error('Gagal memuat: ' + src)); };
-        document.head.appendChild(s);
-    });
-    return loadedScripts[src];
-};
-
-// FITUR BARU: Render slot iklan AdSense (banner & multiplex akhir katalog).
-// Iklan di dalam modal produk (in-article) ditangani langsung di openProductModal.
-window.renderAdSlots = () => {
-    // FIX: default NONAKTIF — harus eksplisit appData.store.adsEnabled === true
-    const adsOn = appData.store.adsEnabled === true || appData.store.adsEnabled === 'true';
-    
-    const slots = [
-        { id: 'ad-slot-banner', html: `<ins class="adsbygoogle" style="display:block;width:100%" data-ad-client="ca-pub-2636322336243340" data-ad-slot="4610725620" data-ad-format="auto" data-full-width-responsive="true"></ins>` },
-        { id: 'ad-slot-catalog-end', html: `<ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-2636322336243340" data-ad-slot="2966737393" data-ad-format="autorelaxed"></ins>` }
-    ];
-    slots.forEach(s => {
-        try {
-            const box = el(s.id);
-            if (!box) return;
-            if (adsOn) {
-                box.classList.remove('hidden');
-                if (!box.dataset.loaded) {
-                    box.innerHTML = s.html;
-                    box.dataset.loaded = '1';
-                    (window.adsbygoogle = window.adsbygoogle || []).push({});
-                }
-            } else {
-                box.classList.add('hidden');
-                box.innerHTML = '';
-                delete box.dataset.loaded;
-            }
-        } catch(e) { console.error(`Gagal render slot iklan ${s.id}:`, e); }
-    });
-};
-
-window.rCat = () => {
-    const isFiltered = (aCat !== 'Semua Produk' || aBrand !== 'Semua Merek' || sQ !== '');
-    
-    toggleCls('dynamic-banners-container', 'hidden', isFiltered);
-    toggleCls('dynamic-vouchers-container', 'hidden', isFiltered);
-    toggleCls('dynamic-categories-container', 'hidden', isFiltered);
-    toggleCls('dynamic-brands-container', 'hidden', isFiltered);
-
-    const boxKategori = document.getElementById('dynamic-categories-container')?.parentElement;
-    if (boxKategori) boxKategori.classList.toggle('hidden', isFiltered);
-    const boxMerek = document.getElementById('dynamic-brands-container')?.parentElement;
-    if (boxMerek) boxMerek.classList.toggle('hidden', isFiltered);
-
-    let backBtnContainer = el('dynamic-active-filter');
-    if (!backBtnContainer) {
-        let pContainer = el('product-container');
-        if (pContainer) { pContainer.insertAdjacentHTML('beforebegin', '<div id="dynamic-active-filter" class="transition-all w-full"></div>'); backBtnContainer = el('dynamic-active-filter'); }
-    }
-    
-    if (backBtnContainer) {
-        if (isFiltered) {
-            let filterLabel = "Menampilkan"; let filterValue = ""; let filterIcon = "fa-filter"; let iconColor = "text-indigo-500 bg-indigo-50 dark:bg-indigo-900/30";
-            if (sQ !== '') { filterLabel = "Hasil Pencarian"; filterValue = `"${sQ}"`; filterIcon = "fa-magnifying-glass"; iconColor = "text-rose-500 bg-rose-50 dark:bg-rose-900/30"; } 
-            else if (aCat !== 'Semua Produk') { filterLabel = "Kategori Pilihan"; filterValue = aCat; filterIcon = "fa-layer-group"; iconColor = "text-[var(--color-primary)] bg-[var(--color-primary-light)] dark:bg-[var(--color-primary-dark)]/30"; } 
-            else if (aBrand !== 'Semua Merek') { filterLabel = "Merek Pilihan"; filterValue = aBrand; filterIcon = "fa-tag"; iconColor = "text-blue-500 bg-blue-50 dark:bg-blue-900/30"; }
-
-            backBtnContainer.innerHTML = `
-            <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-3 flex justify-between items-center mb-5 shadow-sm">
-                <div class="flex items-center gap-3 overflow-hidden">
-                    <div class="w-10 h-10 rounded-xl ${iconColor} flex items-center justify-center shrink-0"><i class="fa-solid ${filterIcon} text-lg"></i></div>
-                    <div class="flex flex-col min-w-0 pr-2">
-                        <span class="text-[10px] text-slate-400 dark:text-slate-500 font-bold uppercase tracking-widest">${filterLabel}</span>
-                        <span class="text-sm font-black text-slate-800 dark:text-white truncate leading-tight mt-0.5">${esc(filterValue)}</span>
-                    </div>
-                </div>
-                <button onclick="resetSemuaFilter()" class="shrink-0 bg-slate-50 dark:bg-slate-900 text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-700 w-10 h-10 flex items-center justify-center rounded-xl font-black shadow-sm hover:bg-rose-50 hover:text-rose-500 hover:border-rose-200 transition-all active:scale-95 group"><i class="fa-solid fa-xmark text-lg group-hover:rotate-90 transition-transform duration-300"></i></button>
-            </div>`;
-            backBtnContainer.classList.remove('hidden');
-        } else { backBtnContainer.innerHTML = ''; backBtnContainer.classList.add('hidden'); }
-    }
-
-    let f = appData.products.filter(p => {
-        if(aCat !== 'Semua Produk' && p.category !== aCat) return false;
-        if(aBrand !== 'Semua Merek' && p.brand !== aBrand) return false;
-        if(!sQ) return true;
-        let q = sQ.toLowerCase();
-        return (p.name||'').toLowerCase().includes(q) || ((p.sku||'').toLowerCase().includes(q)) || (p.variants && p.variants.some(v=>(v.sku||'').toLowerCase().includes(q)));
-    }).sort((a,b) => {
-        if(cSort === 'cheapest') return (a.price||0) - (b.price||0);
-        if(cSort === 'expensive') return (b.price||0) - (a.price||0);
-        if(cSort === 'az') return (a.name||'').localeCompare(b.name||'');
-        if(cSort === 'za') return (b.name||'').localeCompare(a.name||'');
-        if(cSort === 'oldest') return (a.id||0) - (b.id||0);
-        return (b.id||0) - (a.id||0);
-    });
-
-    const c = el('product-container');
-    if (!c) return; // guard: elemen belum ada di DOM (misalnya dipanggil sebelum view-catalog aktif)
-    c.className = cView === 'grid' ? 'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-5 2xl:grid-cols-6 gap-4 sm:gap-6 lg:gap-8' : 'flex flex-col gap-3 sm:gap-4';
-    
-    if(!f.length) {
-        c.innerHTML = `<div class="col-span-full text-center py-16 sm:py-24 text-slate-500 dark:text-slate-400 font-bold bg-slate-50 dark:bg-slate-800/50 rounded-[1.5rem] border border-slate-200 border-dashed dark:border-slate-700 text-sm sm:text-base flex flex-col items-center justify-center"><div class="w-20 h-20 bg-white dark:bg-slate-800 rounded-full flex items-center justify-center shadow-sm mb-4"><i class="fa-solid fa-box-open text-3xl sm:text-4xl text-slate-300 dark:text-slate-600"></i></div>Maaf, produk tidak ditemukan.<br></b><span class="text-xs font-medium text-slate-400 mt-2 font-normal">Coba gunakan kata kunci pencarian yang berbeda atau hapus filter.</span></div>`;
-        hide('load-more-container'); return;
-    }
-    
-    const v = f.slice(0, cPage * iPP);
-    c.innerHTML = v.map(p => {
-        let a = p.isActive !== 'false' && p.isActive !== false;
-        
-        // nH adalah tampilan "HABIS" menutupi gambar (tidak diubah)
-        let nH = !a ? `<div class="absolute inset-0 bg-white/60 dark:bg-slate-900/60 backdrop-blur-[2px] z-20 flex items-center justify-center rounded-[1.25rem]"><span class="bg-slate-800 text-white text-[10px] font-black px-3 py-1.5 rounded-xl shadow-lg uppercase tracking-widest"><i class="fa-solid fa-ban mr-1"></i> HABIS</span></div>` : '';
-        
-        // Badge stok (hanya jika manajemen stok aktif)
-        const useStk = appData.store.useStock === true || appData.store.useStock === 'true';
-        let stockBadge = '';
-        if (useStk && a) {
-            const totalStock = p.variants && p.variants.length
-                ? p.variants.filter(v => v.isActive !== false && v.isActive !== 'false').reduce((s,v) => s + (parseFloat(v.stock)||0), 0)
-                : parseFloat(p.stock) || 0;
-            if (totalStock <= 0) {
-                nH = `<div class="absolute inset-0 bg-white/60 dark:bg-slate-900/60 backdrop-blur-[2px] z-20 flex items-center justify-center rounded-[1.25rem]"><span class="bg-slate-800 text-white text-[10px] font-black px-3 py-1.5 rounded-xl shadow-lg uppercase tracking-widest"><i class="fa-solid fa-ban mr-1"></i> HABIS</span></div>`;
-            } else if (totalStock <= 5) {
-                // FIX BUG: dulu stok HANYA tampil kalau menipis (≤5) -- di luar itu tidak
-                // tampil sama sekali di card, membuat pelanggan tidak tahu ada berapa stok.
-                stockBadge = `<span class="absolute top-2 left-2 z-10 bg-rose-500 text-white text-[8px] font-black px-2 py-1 rounded-xl shadow uppercase tracking-wider"><i class="fa-solid fa-fire mr-0.5"></i> SISA ${totalStock}</span>`;
-            } else {
-                stockBadge = `<span class="absolute top-2 left-2 z-10 bg-slate-800/80 text-white text-[8px] font-black px-2 py-1 rounded-xl shadow uppercase tracking-wider backdrop-blur-sm"><i class="fa-solid fa-box mr-0.5"></i> Stok ${totalStock}</span>`;
-            }
-        }
-        
-        // FITUR BARU: produk/varian yang benar-benar kosong tidak bisa diklik untuk dibuka.
-        // Pengecekan utamanya ada di dalam openProductModal() sendiri (satu sumber kebenaran,
-        // berlaku juga untuk deep-link URL) — di sini cuma untuk styling kursor/hover saja.
-        const canOpen = !nH;
-        const cardCursorCls = canOpen ? 'cursor-pointer hover:shadow-xl hover:-translate-y-1.5 hover:border-[var(--color-primary-dark)]' : 'cursor-not-allowed';
-        const cardCursorClsList = canOpen ? 'cursor-pointer hover:shadow-xl hover:-translate-y-1 hover:border-[var(--color-primary-dark)]' : 'cursor-not-allowed';
-
-        // LOGIKA HARGA CORET (DISKON DI LUAR GAMBAR)
-        let discPill = '';
-        let priceNormalHtml = '';
-        if (p.priceNormal && p.priceNormal > p.price) {
-            let pct = Math.round(((p.priceNormal - p.price) / p.priceNormal) * 100);
-            discPill = `<span class="bg-rose-500 text-white px-2 py-0.5 rounded-full text-[8px] font-black flex items-center gap-1 whitespace-nowrap uppercase tracking-wider shadow-sm"><i class="fa-solid fa-tags"></i> -${pct}%</span>`;
-            priceNormalHtml = `<p class="text-[10px] text-slate-400 dark:text-slate-500 line-through mb-0.5 font-bold">${fCur(p.priceNormal)}</p>`;
-        }
-
-        // LOGIKA PO PILL (PINDAH KE BAWAH, SEJAJAR DENGAN LABEL OFFICIAL)
-        let poPill = p.poTime ? `<span class="bg-amber-500 text-white px-2 py-0.5 rounded-full text-[8px] font-black flex items-center gap-1 whitespace-nowrap uppercase tracking-wider shadow-sm"><i class="fa-solid fa-clock"></i> PO ${esc(p.poTime)}</span>` : '';
-
-        // FITUR BARU: badge "Dapat Poin" di katalog untuk produk/varian yang punya poin member
-        let poinBadge = '';
-        if (p.variants && p.variants.length) {
-            const poinVals = p.variants.map(v => parseFloat(v.poin) || 0).filter(x => x > 0);
-            if (poinVals.length) {
-                const uniq = [...new Set(poinVals)];
-                poinBadge = uniq.length === 1
-                    ? `<span class="bg-violet-100 text-violet-700 dark:bg-violet-900/40 dark:text-violet-400 px-2 py-0.5 rounded-full text-[8px] font-black flex items-center gap-1 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-star"></i> +${uniq[0]} Poin</span>`
-                    : `<span class="bg-violet-100 text-violet-700 dark:bg-violet-900/40 dark:text-violet-400 px-2 py-0.5 rounded-full text-[8px] font-black flex items-center gap-1 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-star"></i> Dapat Poin</span>`;
-            }
-        } else if (parseFloat(p.poin) > 0) {
-            poinBadge = `<span class="bg-violet-100 text-violet-700 dark:bg-violet-900/40 dark:text-violet-400 px-2 py-0.5 rounded-full text-[8px] font-black flex items-center gap-1 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-star"></i> +${parseFloat(p.poin)} Poin</span>`;
-        }
-
-        // FITUR BARU: badge total terjual di card katalog
-        const totalSoldCard = p.variants && p.variants.length
-            ? p.variants.reduce((s,vv) => s + (parseFloat(vv.totalSold)||0), 0)
-            : (parseFloat(p.totalSold) || 0);
-        const soldBadge = totalSoldCard > 0
-            ? `<span class="bg-slate-100 text-slate-500 dark:bg-slate-700 dark:text-slate-400 px-2 py-0.5 rounded-full text-[8px] font-black flex items-center gap-1 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-fire-flame-curved text-orange-400"></i> ${totalSoldCard} Terjual</span>`
-            : '';
-
-        // Kumpulkan semua badge menjadi satu baris sejajar
-        let bH = `<div class="mb-2.5 flex flex-wrap gap-1.5 items-center overflow-hidden shrink-0">
-            ${discPill}
-            ${poPill}
-            ${poinBadge}
-            ${soldBadge}
-            ${p.tag ? `<span class="bg-[var(--color-primary-light)] text-[var(--color-primary-dark)] dark:bg-[var(--color-primary-dark)]/50 dark:text-[var(--color-primary)] px-2 py-0.5 rounded-full text-[8px] font-black flex items-center gap-1 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-hashtag"></i> ${esc(p.tag)}</span>` : ''}
-            <span class="bg-indigo-100 text-indigo-700 dark:bg-indigo-900/50 dark:text-indigo-400 px-2 py-0.5 rounded-full text-[8px] font-black flex items-center gap-1 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-circle-check"></i> Official</span>
-            ${p.brand ? `<span class="bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300 px-2 py-0.5 rounded-full text-[8px] font-black flex items-center gap-1 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-tag"></i> ${esc(p.brand)}</span>` : ''}
-            ${(p.wholesale?.length && !p.variants?.length) ? `<span class="bg-amber-100 text-amber-700 dark:bg-amber-900/50 dark:text-amber-400 px-2 py-0.5 rounded-full text-[8px] font-black flex items-center gap-1 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-layer-group"></i> Grosir</span>` : ''}
-        </div>`;
-        
-        let unt = `<span class="text-[9px] text-slate-400 dark:text-slate-500 font-bold ml-0.5 mb-0.5 uppercase tracking-wide">/${esc(p.unit||'PCS')}</span>`;
-        
-        if (cView === 'grid') {
-            return `
-            <div class="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700/80 rounded-[1.25rem] shadow-sm ${cardCursorCls} transition-all duration-300 flex flex-col group relative overflow-hidden" onclick="openProductModal(${p.id})">
-                ${nH}
-                <div class="relative aspect-square w-full bg-white flex items-center justify-center shrink-0 border-b border-slate-100 dark:border-slate-700/50">
-                      ${stockBadge}
-                      <img loading="lazy" src="${esc(p.img)}" onerror="this.onerror=null;this.src='https://placehold.co/400?text=No+Image'" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 ${!a?'grayscale opacity-50':''}"></i>
-                </div>
-                <div class="flex-1 flex flex-col p-3 sm:p-4 min-w-0 bg-white dark:bg-slate-800 relative z-10">
-                    ${bH}
-                    <h4 class="text-[11px] sm:text-xs font-bold text-slate-700 dark:text-slate-200 line-clamp-2 leading-snug mb-2 group-hover:text-[var(--color-primary)] transition-colors uppercase">${esc(p.name)}</h4>
-                    <div class="flex items-end justify-between mt-auto pt-1">
-                        <div>
-                            ${p.variants && p.variants.length > 0 ? '' : priceNormalHtml}
-                            <p class="text-[var(--color-primary)] font-black text-sm sm:text-[15px] leading-none tracking-tight">
-                                ${p.variants && p.variants.length > 0 ? '<span class="text-[10px] sm:text-xs text-slate-400 dark:text-slate-500 font-bold uppercase tracking-wider">PILIH VARIAN</span>' : fCur(p.price)}
-                            </p>
-                            ${p.variants && p.variants.length > 0 ? '' : unt}
-                        </div>
-                        <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[var(--color-primary-light)] text-[var(--color-primary)] flex items-center justify-center group-hover:bg-[var(--color-primary)] group-hover:text-white transition-colors shadow-sm dark:bg-[var(--color-primary-dark)]/30">
-                            <i class="fa-solid fa-plus text-xs sm:text-sm"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>`;
-        } else {
-            return `
-            <div class="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700/80 rounded-[1.25rem] shadow-sm ${cardCursorClsList} transition-all duration-300 flex items-stretch p-2.5 sm:p-3 gap-3 sm:gap-4 group relative overflow-hidden" onclick="openProductModal(${p.id})">
-                ${nH}
-                <div class="relative w-24 h-24 sm:w-28 sm:h-28 shrink-0 bg-white rounded-xl flex items-center justify-center p-2 border border-slate-100 dark:border-slate-700/50 overflow-hidden">
-                    ${stockBadge}
-                    <img loading="lazy" src="${esc(p.img)}" onerror="this.onerror=null;this.src='https://placehold.co/400?text=No+Image'" class="max-w-full max-h-full object-contain transition-transform duration-500 group-hover:scale-105 ${!a?'grayscale opacity-50':''}"></i>
-                </div>
-                <div class="flex-1 min-w-0 py-1 flex flex-col justify-center h-full relative z-10 pr-2">
-                    ${bH}
-                    <h4 class="text-[11px] sm:text-xs font-bold text-slate-700 dark:text-slate-200 line-clamp-2 leading-snug mb-1.5 group-hover:text-[var(--color-primary)] transition-colors uppercase">${esc(p.name)}</h4>
-                    <div class="flex items-end justify-between mt-auto pt-1">
-                        <div>
-                            ${p.variants && p.variants.length > 0 ? '' : priceNormalHtml}
-                            <p class="text-[var(--color-primary)] font-black text-sm sm:text-[15px] leading-none tracking-tight">
-                                ${p.variants && p.variants.length > 0 ? '<span class="text-[10px] sm:text-xs text-slate-400 dark:text-slate-500 font-bold uppercase tracking-wider">PILIH VARIAN</span>' : fCur(p.price)}
-                            </p>
-                            ${p.variants && p.variants.length > 0 ? '' : unt}
-                        </div>
-                        <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[var(--color-primary-light)] text-[var(--color-primary)] flex items-center justify-center group-hover:bg-[var(--color-primary)] group-hover:text-white transition-colors shadow-sm mr-1 dark:bg-[var(--color-primary-dark)]/30">
-                            <i class="fa-solid fa-plus text-xs sm:text-sm"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>`;
-        }
-    }).join('');
-    
-    v.length < f.length ? show('load-more-container') : hide('load-more-container');
-};
-
-window.filterCategory = c => {
-    aCat = (aCat === c && c !== 'Semua Produk') ? 'Semua Produk' : c; cPage = 1; window.rDyn();
-    const sc = document.querySelector('#view-catalog .scroll-content'); if (sc) setTimeout(() => sc.scrollTo({top:0, behavior:'smooth'}), 10);
-};
-
-window.filterBrand = b => {
-    aBrand = (aBrand === b && b !== 'Semua Merek') ? 'Semua Merek' : b; cPage = 1; window.rDyn();
-    const sc = document.querySelector('#view-catalog .scroll-content'); if (sc) setTimeout(() => sc.scrollTo({top:0, behavior:'smooth'}), 10);
-};
-
-window.resetSemuaFilter = () => { aCat = 'Semua Produk'; aBrand = 'Semua Merek'; sQ = ''; cPage = 1; window.rDyn(); };
-
-let searchTmr; 
-window.handleSearch = v => { clearTimeout(searchTmr); searchTmr = setTimeout(()=>{ sQ=v; cPage=1; window.rCat(); }, 300); };
-window.handleSort = v => { cSort=v; cPage=1; window.rCat(); };
-
-window.toggleView = v => {
-    cView = v; cPage = 1;
-    el('btn-view-grid').className = v === 'grid' ? "w-8 h-8 rounded-xl flex items-center justify-center text-[var(--color-primary)] bg-white dark:bg-slate-700 shadow-sm transition-all" : "w-8 h-8 rounded-xl flex items-center justify-center text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 transition-all";
-    el('btn-view-list').className = v === 'list' ? "w-8 h-8 rounded-xl flex items-center justify-center text-[var(--color-primary)] bg-white dark:bg-slate-700 shadow-sm transition-all" : "w-8 h-8 rounded-xl flex items-center justify-center text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 transition-all";
-    window.rCat();
-};
-
-window.loadMoreProducts = () => { cPage++; window.rCat(); };
-
-// --- 9. PRODUCT MODAL & CART INTERACTIONS ---
-window.openProductModal = i => {
-    window.cSlideIdx = 0;
-    const p = appData.products.find(x => x.id === i);
-    if (!p) return;
-    
-    // FITUR BARU: Blokir buka modal kalau produk nonaktif, ATAU (manajemen stok aktif
-    // DAN tidak ada satupun varian/stok produk yang tersedia). Ini sumber kebenaran
-    // tunggal — berlaku sama baik diklik dari kartu katalog maupun dari deep-link URL.
-    const pActive = p.isActive !== 'false' && p.isActive !== false;
-    const useStk = appData.store.useStock === true || appData.store.useStock === 'true';
-    let totalAvail = Infinity;
-    if (useStk) {
-        totalAvail = (p.variants && p.variants.length)
-            ? p.variants.filter(v => v.isActive !== false && v.isActive !== 'false').reduce((s,v) => s + (parseFloat(v.stock)||0), 0)
-            : (parseFloat(p.stock) || 0);
-    }
-    if (!pActive || (useStk && totalAvail <= 0)) {
-        showToast('Maaf, stok produk ini sedang kosong');
-        return;
-    }
-    
-    cProd = p; 
-    cQty = 1;
-    
-    // FITUR BARU: Jika produk ini adalah Cat (punya varian warna), 
-    // set varian ke 'null' agar pembeli WAJIB memilih warna dulu.
-    if (p.variants && p.variants.length > 0) {
-        cVar = null;
-    } else {
-        cVar = 0;
-    }
-    
-    setV('modal-qty-input', 1);
-    rProdMod();
-    
-    // FITUR BARU: Iklan in-article di dalam modal produk (sekali per buka modal, sesuai pengaturan toko)
-    // FIX: dibungkus try/catch agar masalah pada skrip iklan tidak pernah menggagalkan/mengunci modal produk
-    try {
-        const adBox = el('product-modal-ad-container');
-        if (adBox) {
-            const adsOn = appData.store.adsEnabled === true || appData.store.adsEnabled === 'true';
-            if (adsOn) {
-                
-                adBox.classList.remove('hidden');
-                adBox.innerHTML = `<ins class="adsbygoogle" style="display:block; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-2636322336243340" data-ad-slot="8219064079"></ins>`;
-                (window.adsbygoogle = window.adsbygoogle || []).push({});
-            } else {
-                adBox.classList.add('hidden');
-                adBox.innerHTML = '';
-            }
-        }
-    } catch(e) { console.error('Gagal render iklan in-article:', e); }
-    
-    // FITUR BARU: muat ulasan pelanggan untuk produk ini (async, tidak blocking modal terbuka)
-    loadProductReviews(p.id);
-    
-    const m = el('product-modal'), c = el('product-modal-content');
-    if (m && c) {
-        if (m.classList.contains('hidden')) pushModalHistory('product');
-        show('product-modal');
-        c.scrollTo(0,0); // reset scroll setiap ganti produk (sekarang seluruh kotak modal yang scroll, jadi cukup reset di sini)
-        setTimeout(() => { m.classList.remove('opacity-0'); c.classList.remove('translate-y-full','sm:translate-y-10'); }, 10);
-    }
-};
-
-window.closeProductModal = (fH=false) => {
-    const m = el('product-modal'), c = el('product-modal-content');
-    if (m && c) {
-        requestCloseModal('product', fH, () => {
-            m.classList.add('opacity-0'); c.classList.add('translate-y-full','sm:translate-y-10');
-            setTimeout(() => hide('product-modal'), 300);
-            const vc = el('product-modal-video-container');
-            if (vc) {
-                vc.innerHTML = '';
-                vc.classList.add('hidden');
-            }
-        });
-    }
-};
-
-window.changeSlide = (dir) => {
-    let p = cProd;
-    let yId = getYouTubeId(p?.video);
-    if (!yId) return;
-    window.cSlideIdx += dir;
-    if (window.cSlideIdx > 1) window.cSlideIdx = 0;
-    if (window.cSlideIdx < 0) window.cSlideIdx = 1;
-    rProdMod();
-};
-
-const rProdMod = () => {
-    if (!cProd) return;
-    let p = cProd;
-    let a = p.isActive !== 'false' && p.isActive !== false;
-    let hV = p.variants?.length > 0;
-    
-    // Ambil data varian HANYA jika pembeli sudah menekan salah satu warna
-    let v = (hV && cVar !== null) ? p.variants[cVar] : null;
-    let unt = v?.unit || p.unit || 'Pcs';
-    
-    const i = el('product-modal-img');
-    const vc = el('product-modal-video-container');
-    const yId = getYouTubeId(p.video);
-    const showVarImg = v && v.img;
-
-    const btnPrev = el('slide-prev');
-    const btnNext = el('slide-next');
-    const dotsContainer = el('slide-dots');
-
-    if (yId && !showVarImg) {
-        if (btnPrev) btnPrev.classList.remove('hidden');
-        if (btnNext) btnNext.classList.remove('hidden');
-        if (dotsContainer) {
-            dotsContainer.classList.remove('hidden');
-            dotsContainer.innerHTML = `
-                <div class="w-2 h-2 rounded-full ${window.cSlideIdx === 0 ? 'bg-emerald-500 scale-125' : 'bg-slate-300 dark:bg-slate-600'} transition-all cursor-pointer shadow-sm" onclick="window.cSlideIdx=0; rProdMod()"></div>
-                <div class="w-2 h-2 rounded-full ${window.cSlideIdx === 1 ? 'bg-emerald-500 scale-125' : 'bg-slate-300 dark:bg-slate-600'} transition-all cursor-pointer shadow-sm" onclick="window.cSlideIdx=1; rProdMod()"></div>
-            `;
-        }
-
-        if (window.cSlideIdx === 1) {
-            if (i) i.style.display = 'none';
-            if (vc) {
-                vc.classList.remove('hidden');
-                if (!vc.innerHTML) {
-                    vc.innerHTML = `<iframe class="w-full h-full pointer-events-none" src="https://www.youtube.com/embed/${yId}?autoplay=1&mute=1&loop=1&playlist=${yId}&enablejsapi=1&modestbranding=1&controls=0&rel=0&showinfo=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; compute-pressure" allowfullscreen></iframe>`;
-                }
-            }
-        } else {
-            if (vc) vc.classList.add('hidden');
-            if (i) {
-                i.style.display = 'block';
-                i.src = (v?.img || p.img || '');
-                i.style.opacity = 1;
-            }
-        }
-    } else {
-        if (btnPrev) btnPrev.classList.add('hidden');
-        if (btnNext) btnNext.classList.add('hidden');
-        if (dotsContainer) dotsContainer.classList.add('hidden');
-
-        if (vc) {
-            vc.innerHTML = '';
-            vc.classList.add('hidden');
-        }
-        if (i) {
-            i.style.display = 'block';
-            i.style.opacity = 0;
-            setTimeout(() => { i.src = (v?.img || p.img || ''); i.style.opacity = 1; }, 150);
-        }
-    }
-    
-    // Setel Harga dan info lain
-
-    
-    setIn('product-modal-title', p.name);
-    
-// KONTROL HARGA: Tampilkan teks "Pilih Varian" jika warna belum dipilih
-    if (hV && cVar === null) {
-        setH('product-modal-price', '<span class="text-base sm:text-lg text-slate-400 dark:text-slate-500 font-bold uppercase tracking-wider">Pilih Warna/Varian</span>');
-    } else {
-        // Ambil harga yang sedang aktif (Varian atau Base)
-        let actPrice = v?.price ?? p.price;
-        let actNormal = v?.priceNormal ?? p.priceNormal;
-        
-        let pHtml = '';
-        if (actNormal && actNormal > actPrice) {
-            let pct = Math.round(((actNormal - actPrice) / actNormal) * 100);
-            pHtml = `<div class="flex flex-col"><span class="text-[11px] text-rose-500 font-black line-through mb-0.5 tracking-wide">${fCur(actNormal)} <span class="bg-rose-100 text-rose-600 px-1.5 py-0.5 rounded ml-1 text-[9px] no-underline tracking-widest border border-rose-200">-${pct}%</span></span><span>${fCur(actPrice)}</span></div>`;
-        } else {
-            pHtml = fCur(actPrice);
-        }
-        setH('product-modal-price', pHtml);
-    }
-    const descEl = el('product-modal-desc');
-    if(descEl) {
-        descEl.className = 'text-[13px] text-slate-600 dark:text-slate-400 font-medium leading-relaxed [&_ol]:list-decimal [&_ol]:pl-5 [&_ul]:list-disc [&_ul]:pl-5 [&_b]:font-black [&_strong]:font-black [&_img]:max-w-full [&_img]:rounded-xl [&_img]:my-2 [&_div]:my-1';
-        // SECURITY PATCH: Sanitasi konten HTML dari database sebelum dirender (Anti XSS)
-        const rawDesc = p.desc || '-';
-        descEl.innerHTML = (typeof DOMPurify !== 'undefined')
-            ? DOMPurify.sanitize(rawDesc, {
-                ALLOWED_TAGS: ['p','br','b','strong','i','em','u','s','span','div',
-                    'h1','h2','h3','h4','ul','ol','li','a','img','table',
-                    'thead','tbody','tr','th','td','blockquote','code','pre','hr'],
-                ALLOWED_ATTR: ['href','src','alt','title','class','style','target',
-                    'rel','width','height','loading'],
-                FORBID_TAGS: ['script','iframe','object','embed','form','input'],
-                FORBID_ATTR: ['onclick','oninput','onload','onmouseover','onsubmit','onerror']
-              })
-            : rawDesc;
-    }
-    setIn('modal-unit-label', unt);
-    
-    // Header Badge Premium
-    let bH = ``;
-    if (p.sku) bH += `<span class="bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400 px-2.5 py-1 rounded-full text-[9px] font-black flex items-center gap-1.5 whitespace-nowrap tracking-wider"><i class="fa-solid fa-barcode"></i> ${esc(p.sku)}</span>`;
-    if (p.tag) bH += `<span class="bg-emerald-100 text-emerald-700 dark:bg-emerald-900/50 dark:text-emerald-400 px-2.5 py-1 rounded-full text-[9px] font-black flex items-center gap-1.5 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-hashtag"></i> ${esc(p.tag)}</span>`;
-    
-    bH += `<span class="bg-indigo-100 text-indigo-700 dark:bg-indigo-900/50 dark:text-indigo-400 px-2.5 py-1 rounded-full text-[9px] font-black flex items-center gap-1.5 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-circle-check"></i> Official</span>`;
-    
-    if (p.brand) bH += `<span class="bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300 px-2.5 py-1 rounded-full text-[9px] font-black flex items-center gap-1.5 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-tag"></i> ${esc(p.brand)}</span>`;
-    
-    if (p.poTime) bH += `<span class="bg-amber-500 text-white px-2.5 py-1 rounded-full text-[9px] font-black flex items-center gap-1.5 whitespace-nowrap uppercase tracking-wider shadow-sm"><i class="fa-solid fa-clock"></i> PO ${esc(p.poTime)}</span>`;
-
-    // FITUR BARU: badge poin member, ikut varian yang sedang dipilih (kalau ada)
-    const activePoin = parseFloat(v ? v.poin : p.poin) || 0;
-    if (activePoin > 0 && (!hV || cVar !== null)) {
-        bH += `<span class="bg-violet-500 text-white px-2.5 py-1 rounded-full text-[9px] font-black flex items-center gap-1.5 whitespace-nowrap uppercase tracking-wider shadow-sm"><i class="fa-solid fa-star"></i> +${activePoin} Poin</span>`;
-    }
-
-    // FITUR BARU: total terjual -- jumlah keseluruhan varian kalau tidak ada varian dipilih,
-    // atau khusus varian itu saja kalau sedang dipilih.
-    const totalSoldDisplay = hV && cVar !== null
-        ? (parseFloat(v ? v.totalSold : 0) || 0)
-        : (hV ? p.variants.reduce((s,vv) => s + (parseFloat(vv.totalSold)||0), 0) : (parseFloat(p.totalSold) || 0));
-    if (totalSoldDisplay > 0) {
-        bH += `<span class="bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400 px-2.5 py-1 rounded-full text-[9px] font-black flex items-center gap-1.5 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-fire-flame-curved text-orange-400"></i> ${totalSoldDisplay} Terjual</span>`;
-    }
-
-    setH('product-modal-badges', bH);
-    
-    // Wholesale Section
-    // FIX (konsisten dengan getEffP): tabel harga grosir disembunyikan jika produk
-    // ini juga punya varian, karena grosir produk dasar tidak lagi berlaku untuk
-    // pembelian varian (lihat fix di getEffP) — mencegah info yang menyesatkan.
-    setH('product-modal-wholesale-container', (p.wholesale?.length && !p.variants?.length) ? `
-        <div class="mb-6 bg-amber-50 dark:bg-amber-900/10 rounded-2xl p-4 border border-amber-200 dark:border-amber-800/50 shadow-inner">
-            <p class="text-[10px] font-black text-amber-600 dark:text-amber-500 mb-3 uppercase tracking-widest flex items-center gap-1.5"><i class="fa-solid fa-layer-group"></i> Harga Grosir</p>
-            <div class="space-y-2">${p.wholesale.slice().sort((a,b)=>a.minQty-b.minQty).map(w=>`
-                <div class="flex justify-between items-center text-sm font-bold bg-white dark:bg-slate-800 p-2.5 rounded-xl border border-amber-100 dark:border-slate-700 shadow-sm">
-                    <span class="text-slate-600 dark:text-slate-300">≥ ${parseFloat(w.minQty)} <span class="text-[10px] uppercase tracking-wider">${esc(unt)}</span></span>
-                    <span class="text-emerald-600 dark:text-emerald-400 font-black">${fCur(w.price)}</span>
-                </div>`).join('')}
-            </div>
-        </div>` : '');
-    
-    // ADMIN PANEL: HPP & Stok (hanya tampil saat admin login DAN sedang di dalam panel admin)
-    // FIX PRIVASI: sebelumnya info HPP/Margin muncul ke siapa saja yang login sebagai admin,
-    // termasuk saat admin membuka produk dari halaman toko publik (view-catalog, view-wishlist, dsb).
-    // Sekarang info ini HANYA ditampilkan jika modal dibuka dari dalam panel admin (curViewName === 'view-admin').
-    const adminInfoEl = el('product-modal-admin-info');
-    if (adminInfoEl) {
-        if (window.isAdm && curViewName === 'view-admin') {
-            const useStk = appData.store.useStock === true || appData.store.useStock === 'true';
-            const hV2 = p.variants?.length > 0;
-            const currHpp = v ? (v.hpp||0) : (p.hpp||0);
-            const currStock = v ? (v.stock !== undefined ? v.stock : '—') : (p.stock !== undefined ? p.stock : '—');
-            const currPrice = v ? (v.price||p.price||0) : (p.price||0);
-            const margin = currHpp > 0 ? Math.round(((currPrice - currHpp) / currPrice) * 100) : null;
-            
-            let stockRows = '';
-            if (useStk) {
-                if (hV2) {
-                    stockRows = `<div class="col-span-2 space-y-1.5">${(p.variants||[]).map(vr => {
-                        const s = parseFloat(vr.stock)||0;
-                        return `<div class="flex justify-between items-center text-[11px] font-bold bg-white dark:bg-slate-900 p-2 rounded-xl border border-slate-200 dark:border-slate-700">
-                            <span class="text-slate-500 flex items-center gap-1.5">${vr.colorCode?`<span class="w-3 h-3 rounded-full inline-block" style="background:${esc(vr.colorCode)}"></span>`:''}${esc(vr.name)}</span>
-                            <span class="${s===0?'text-rose-500':s<=5?'text-amber-500':'text-blue-500'} font-black">${s} ${esc(vr.unit||p.unit||'pcs')}</span>
-                        </div>`;
-                    }).join('')}</div>`;
-                } else {
-                    const s = parseFloat(p.stock)||0;
-                    stockRows = `<div class="flex flex-col gap-1"><p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Sisa Stok</p><p class="font-black text-xl ${s===0?'text-rose-500':s<=5?'text-amber-500':'text-blue-500'}">${s} <span class="text-sm font-bold">${esc(p.unit||'pcs')}</span></p></div>`;
-                }
-            }
-            
-            adminInfoEl.innerHTML = `
-            <div class="mb-6 bg-violet-50 dark:bg-violet-900/10 rounded-2xl p-4 border border-violet-200 dark:border-violet-800/50">
-                <p class="text-[10px] font-black text-violet-600 dark:text-violet-400 mb-3 uppercase tracking-widest flex items-center gap-1.5"><i class="fa-solid fa-lock"></i> Info Admin</p>
-                <div class="grid grid-cols-2 gap-3">
-                    <div class="flex flex-col gap-1">
-                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">HPP / Modal</p>
-                        <p class="font-black text-lg text-amber-500">${fCur(currHpp)}</p>
-                    </div>
-                    <div class="flex flex-col gap-1">
-                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Margin</p>
-                        <p class="font-black text-lg ${margin === null ? 'text-slate-400' : margin >= 30 ? 'text-emerald-500' : margin >= 10 ? 'text-amber-500' : 'text-rose-500'}">${margin !== null ? margin + '%' : '—'}</p>
-                    </div>
-                    ${stockRows}
-                </div>
-                <button onclick="closeProductModal(); setTimeout(()=>{ openAdminTab('products'); setTimeout(()=>oAEd('products',${p.id}),200); }, 400);" class="mt-3 w-full py-2.5 rounded-xl border border-violet-200 dark:border-violet-800 bg-white dark:bg-slate-800 text-violet-600 font-black text-[11px] uppercase tracking-widest hover:bg-violet-600 hover:text-white transition-all flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-pen-to-square"></i> Edit Produk
-                </button>
-            </div>`;
-        } else {
-            adminInfoEl.innerHTML = '';
-        }
-    }
-    
-    // Variants Section (DENGAN TAMPILAN GRID & WARNA JUMBO)
-    if (a) {
-        if (hV && cVar === null) {
-            hide('modal-active-controls'); hide('modal-inactive-controls');
-        } else {
-            let vActive = hV ? (v.isActive !== false && v.isActive !== 'false') : true;
-            if(vActive) {
-                show('modal-active-controls'); hide('modal-inactive-controls');
-            } else {
-                hide('modal-active-controls'); show('modal-inactive-controls');
-            }
-        }
-
-        if(hV) {
-            show('product-modal-options-container');
-            
-            // Kontainer Grid yang otomatis menyesuaikan lebar layar
-            let gridHTML = `<div class="grid grid-cols-[repeat(auto-fill,minmax(80px,1fr))] sm:grid-cols-[repeat(auto-fill,minmax(95px,1fr))] gap-2 sm:gap-3 w-full">`;
-            
-            gridHTML += p.variants.map((r,x) => {
-                let isVarActive = r.isActive !== false && r.isActive !== 'false';
-                // FITUR BARU: varian dengan stok 0 (saat manajemen stok aktif) juga tidak bisa dipilih
-                const useStkV = appData.store.useStock === true || appData.store.useStock === 'true';
-                const varStock = parseFloat(r.stock) || 0;
-                const isVarOutOfStock = useStkV && varStock <= 0;
-                let isVarSelectable = isVarActive && !isVarOutOfStock;
-                
-                // Bulatan warna JUMBO di atas (jika admin mengisi warnanya)
-                let colorCircle = r.colorCode ? `<span class="w-10 h-10 sm:w-12 sm:h-12 rounded-full shadow-inner border border-slate-300 dark:border-slate-600 mb-2 shrink-0" style="background-color: ${esc(r.colorCode)};"></span>` : '';
-                
-                let btnClass = "";
-                if (!isVarSelectable) {
-                    btnClass = "bg-slate-100 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700 text-slate-400 dark:text-slate-500 opacity-60 cursor-not-allowed";
-                } else if (x === cVar) {
-                    btnClass = "bg-emerald-50 border-emerald-500 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400 shadow-sm";
-                } else {
-                    btnClass = "bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:border-emerald-300 hover:shadow-sm";
-                }
-
-                // Desain tombol Flex Column (Atas ke Bawah)
-                return `<button ${!isVarSelectable ? 'disabled' : ''} class="p-2.5 sm:p-3 rounded-xl text-[10px] sm:text-[11px] font-black uppercase tracking-wide border-2 transition-all active:scale-95 flex flex-col items-center justify-start text-center h-full ${btnClass}" ${isVarSelectable ? `onclick="selectVariant(${x})"` : ''}>
-                    ${colorCircle} 
-                    <span class="${!isVarSelectable ? 'line-through' : ''} leading-snug break-words w-full ${!r.colorCode ? 'my-auto' : ''}">${esc(r.name)}</span>
-                    ${isVarOutOfStock && isVarActive ? '<span class="text-[8px] font-black text-rose-500 normal-case mt-0.5">Stok Habis</span>' : ''}
-                </button>`;
-            }).join('');
-            
-            gridHTML += `</div>`;
-            setH('product-modal-options', gridHTML);
-            
-        } else { hide('product-modal-options-container'); }
-    } else {
-        hide('modal-active-controls'); show('modal-inactive-controls'); hide('product-modal-options-container');
-    }
-    uMPP();
-};
-// FIX: expose ke window agar bisa dipanggil dari attachRealtimeStockSync
-window.rProdMod = rProdMod;
-
-const uMPP = () => {
-    if (!cProd) return;
-    
-    // Cegah perhitungan salah jika pembeli belum klik warna
-    if (cProd.variants?.length > 0 && cVar === null) {
-        setIn('btn-modal-price-preview', 'Rp 0');
-        return;
-    }
-    
-    let v = (cProd.variants || [])[cVar];
-    let p = v?.price ?? cProd.price;
-    let e = p;
-    let eQ = parseFloat(cart.find(c => c.id === cProd.id)?.qty || 0);
-    let tQ = cQty + eQ;
-    if (cProd.wholesale?.length) {
-        for (let w of cProd.wholesale.slice().sort((a,b) => b.minQty - a.minQty)){
-            if (tQ >= parseFloat(w.minQty)) { e = w.price; break; }
-        }
-    }
-    setIn('btn-modal-price-preview', fCur(e * cQty));
-};
-
-window.updateModalQty = c => {
-    const useStk = appData.store.useStock === true || appData.store.useStock === 'true';
-    const v2 = cProd?.variants?.[cVar];
-    const vN2 = v2?.name || null;
-    const maxStk = useStk ? (vN2 ? (parseFloat(v2?.stock)||0) : (parseFloat(cProd?.stock)||0)) : Infinity;
-    cQty = parseFloat(Math.min(maxStk, Math.max(0.01, cQty+c)).toFixed(2));
-    setV('modal-qty-input', cQty); uMPP();
-    if (useStk && maxStk !== Infinity && cQty >= maxStk) showToast(`Maks stok: ${maxStk}`);
-};
-window.handleModalQtyChange = v => {
-    const useStk = appData.store.useStock === true || appData.store.useStock === 'true';
-    const v2 = cProd?.variants?.[cVar];
-    const vN2 = v2?.name || null;
-    const maxStk = useStk ? (vN2 ? (parseFloat(v2?.stock)||0) : (parseFloat(cProd?.stock)||0)) : Infinity;
-    let nv = parseFloat(v); if(isNaN(nv)||nv<=0) nv=0.01;
-    nv = Math.min(maxStk, nv);
-    cQty=parseFloat(nv.toFixed(2)); setV('modal-qty-input',cQty); uMPP();
-};
-window.selectVariant = i => { cVar = i; rProdMod(); };
-
-window.confirmAddProductToCart = () => {
-    // Pengaman: Jangan bisa diklik masuk keranjang jika varian belum dipilih
-    if (cProd.variants?.length > 0 && cVar === null) return showToast("Pilih varian / warna terlebih dahulu!");
-    
-    // Validasi stok saat tambah ke keranjang (jika fitur stok aktif)
-    const useStk = appData.store.useStock === true || appData.store.useStock === 'true';
-    if (useStk) {
-        const v2 = cProd.variants?.[cVar];
-        const vN2 = v2?.name || null;
-        const avail = vN2 ? (parseFloat(v2.stock)||0) : (parseFloat(cProd.stock)||0);
-        const inCart = cart.find(i => i.id === cProd.id && i.variantName === vN2);
-        const alreadyInCart = inCart ? parseFloat(inCart.qty)||0 : 0;
-        if (cQty + alreadyInCart > avail) {
-            return showToast(`Stok tidak cukup! Tersisa: ${avail}`);
-        }
-    }
-    
-    const v = cProd.variants?.[cVar], vN = v?.name || null, e = cart.find(i => i.id === cProd.id && i.variantName === vN), unt = v?.unit || cProd.unit || 'pcs';
-    if (e) {
-        e.qty = parseFloat((e.qty + cQty).toFixed(2)); e.unit = unt;
-    } else {
-        cart.push({id:cProd.id, name:cProd.name, variantName:vN, price:v?.price??cProd.price, img:v?.img||cProd.img, qty:cQty, unit:unt, poTime:cProd.poTime||'', colorCode:v?.colorCode||'', poin:parseFloat(v?.poin??cProd.poin)||0});
-    }
-    updCart();
-    if(typeof analytics!=='undefined') analytics.logEvent('add_to_cart',{item_id:cProd.id,item_name:cProd.name,quantity:cQty});
-    closeProductModal(); showToast("Berhasil Masuk Keranjang");
-};
-
-window.confirmAddToWishlist = () => {
-    if (cProd.variants?.length > 0 && cVar === null) return showToast("Pilih varian / warna terlebih dahulu!");
-
-    const v = cProd.variants?.[cVar], vN = v?.name || null;
-    if (wishlist.find(i => i.id === cProd.id && i.variantName === vN)) return showToast("Sudah di Favorit!");
-    wishlist.push({id:cProd.id, name:cProd.name, variantName:vN, price:v?.price??cProd.price, img:v?.img||cProd.img, colorCode:v?.colorCode||''});
-    ssL('freshmart_wishlist', JSON.stringify(wishlist));
-    updWish(); closeProductModal(); showToast("Masuk Favorit ❤️");
-};
-
-window.shareProduct = () => {
-    if (!cProd) return;
-    
-    // Membuat Link unik khusus untuk produk ini
-    const productUrl = window.location.origin + window.location.pathname + '?p=' + cProd.id;
-    const shareTitle = cProd.name;
-    const shareText = `Cek produk ${cProd.name} di ${appData.store.name} sekarang!`;
-
-    if (navigator.share) {
-        // Jika HP mendukung fitur Share bawaan (Native Web Share API)
-        navigator.share({
-            title: shareTitle,
-            text: shareText,
-            url: productUrl
-        }).catch(err => {
-            console.log('User membatalkan share', err);
-        });
-    } else {
-        // Fallback untuk PC / Browser Lama: Copy Link Otomatis
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-            navigator.clipboard.writeText(productUrl)
-                .then(() => showToast("Link produk berhasil disalin!"))
-                .catch(() => showToast("Gagal menyalin link."));
-        } else {
-            const e = document.createElement('textarea');
-            e.value = productUrl;
-            e.style.position = 'fixed';
-            e.style.opacity = '0';
-            document.body.appendChild(e);
-            e.select();
-            document.execCommand('copy');
-            document.body.removeChild(e);
-            showToast("Link produk berhasil disalin!");
-        }
-    }
 };
 
 // --- 10. CART & WISHLIST VIEW ---
@@ -6910,21 +6163,12 @@ window.openSettingForm = (type) => {
 
                 <div class="border-t border-dashed border-slate-200 dark:border-slate-700"></div>
 
-                <!-- Ads -->
-                <div>
-                    <h4 class="font-black text-slate-800 dark:text-white text-[11px] uppercase tracking-widest mb-4 flex items-center gap-2"><i class="fa-solid fa-rectangle-ad text-orange-500"></i> Iklan Google AdSense</h4>
-                    <div class="relative mb-3"><select id="set-ads-enabled" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm cursor-pointer appearance-none pr-10">
-                        <option value="true" ${adsOnCur?'selected':''}>Aktif — Tampilkan iklan ke pengunjung</option>
-                        <option value="false" ${!adsOnCur?'selected':''}>Nonaktif — Sembunyikan iklan</option>
-                    </select><i class="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-[10px]"></i></div>
-                    <p class="text-[10px] font-bold text-slate-500 dark:text-slate-400 leading-relaxed">* Iklan tampil di banner beranda, akhir daftar produk, dan di dalam detail produk. Pastikan pengaturan "Auto Ads" di akun Google AdSense Anda sesuai keinginan.</p>
                 </div>
-            </div>
         `;
     }
 
     let h = `
-    <div class="max-w-3xl mx-auto px-4 lg:px-10 pb-12 text-sm fade-in-scale">
+    <div class="max-w-5xl mx-auto px-4 lg:px-10 pb-12 text-sm fade-in-scale">
         <button onclick="rAdmSet()" class="mb-5 flex items-center justify-center w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-500 hover:text-slate-800 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-slate-700 transition-all shadow-sm group">
             <i class="fa-solid fa-arrow-left group-hover:-translate-x-0.5 transition-transform"></i>
         </button>
@@ -6997,7 +6241,7 @@ window.saveAdminSettings = async (type) => {
             appData.store.useStock  = getV('set-use-stock') === 'true';
             appData.store.ppnEnabled = getV('set-ppn-enabled') === 'true';
             appData.store.ppnRate    = parseFloat(getV('set-ppn-rate')) || 11;
-            appData.store.adsEnabled = getV('set-ads-enabled') === 'true';
+            
             toggleTaxMenuVisibility(); // FITUR BARU: tombol menu Pajak langsung muncul/hilang begitu PPN diaktif/nonaktifkan
         }
         
@@ -7049,6 +6293,7 @@ window.rAdmL = t => {
     // tepat di atas kolom cari -- lebih relevan di tempat pengelolaan produknya langsung.
     const statsContainer = t === 'products' ? `<div id="admin-product-stats" class="mb-5"></div>` : '';
     setH('admin-content', `
+        <div class="max-w-5xl mx-auto">
         ${statsContainer}
         <div class="mb-6">
             <div class="flex gap-2 items-center mb-4">
@@ -7061,6 +6306,7 @@ window.rAdmL = t => {
             </div>
         </div>
         <div id="admin-list-container" class="space-y-3 pb-12"></div>
+        </div>
     `);
     rAdmItms(t);
 };
@@ -7524,7 +6770,7 @@ window.rTaxIncome = () => {
     }
 
     setH('tax-content', `
-        <div class="card-modern p-5 sm:p-6 md:p-7 lg:p-8 max-w-4xl mx-auto">
+        <div class="card-modern p-5 sm:p-6 md:p-7 lg:p-8 w-full mx-auto">
             <div class="flex items-center justify-between mb-6 pb-4 border-b border-slate-100 dark:border-slate-700">
                 <h4 class="font-black text-slate-800 dark:text-white text-sm uppercase tracking-widest">Laporan Laba Rugi — ${periodLabel}</h4>
                 <button onclick="openTaxDocPreview('income')" class="text-[10px] font-black text-slate-400 hover:text-[var(--color-primary)] flex items-center gap-1.5"><i class="fa-solid fa-eye"></i> Preview &amp; Cetak</button>
@@ -7570,7 +6816,7 @@ window.rTaxBalance = () => {
     const modalDanLaba = totalAset - totalKewajiban; // supaya neraca tetap balance, modal+laba ditahan = sisa dari aset-kewajiban
 
     setH('tax-content', `
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 sm:gap-6 max-w-7xl mx-auto">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 sm:gap-6 w-full mx-auto">
             <div class="card-modern p-5 sm:p-6 relative overflow-hidden shadow-lg border-emerald-100 dark:border-emerald-900/30" style="background: linear-gradient(135deg, rgba(16,185,129,0.05), transparent)"><div class="absolute -top-10 -right-10 w-32 h-32 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none"></div>
                 <h4 class="font-black text-slate-800 dark:text-white text-xs uppercase tracking-widest mb-4 pb-3 border-b border-slate-100 dark:border-slate-700"><i class="fa-solid fa-arrow-down-wide-short mr-1.5 text-emerald-500"></i>ASET</h4>
                 <div class="space-y-3">
@@ -7610,7 +6856,7 @@ window.saveBalanceField = async (key, value) => {
 window.rTaxSettingsPanel = () => {
     const ts = appData.taxSettings;
     setH('tax-content', `
-        <div class="card-modern p-5 sm:p-6 md:p-7 lg:p-8 max-w-xl mx-auto space-y-5">
+        <div class="card-modern p-5 sm:p-6 md:p-7 lg:p-8 w-full max-w-3xl mx-auto space-y-5">
             <div>
                 <label class="block text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Nama Badan Usaha</label>
                 <input id="tax-company-name" type="text" value="${esc(ts.companyName||'')}" placeholder="Cth: PT/CV Restu Karya Utama" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-inner"></i>
