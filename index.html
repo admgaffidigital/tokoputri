@@ -682,7 +682,7 @@
     </div>
 
     <div class='fixed inset-0 z-[100] bg-slate-900/80 hidden flex items-center justify-center p-3 opacity-0 transition-all duration-300' id='admin-order-modal' onclick='if(event.target===this) closeOrderDetailModal()'>
-        <div class='bg-white dark:bg-slate-800 rounded-[2rem] w-full max-w-md sm:max-w-lg md:max-w-3xl lg:max-w-4xl xl:max-w-[1200px] max-h-[92dvh] overflow-y-auto hide-scrollbar shadow-2xl border border-slate-200 dark:border-slate-700 relative transform scale-95 transition-all duration-300 flex flex-col' id='admin-order-modal-box'>
+        <div class='bg-white dark:bg-slate-800 rounded-[2rem] w-full max-w-md sm:max-w-lg md:max-w-3xl lg:max-w-4xl max-h-[92dvh] overflow-y-auto hide-scrollbar shadow-2xl border border-slate-200 dark:border-slate-700 relative transform scale-95 transition-all duration-300 flex flex-col' id='admin-order-modal-box'>
             <div class='sticky top-0 bg-white dark:bg-slate-800 px-6 py-4 border-b border-slate-200 flex justify-between items-center z-20 rounded-t-[2rem] dark:border-slate-700'>
                 <h3 class='font-black text-slate-900 dark:text-white text-base flex items-center gap-2'><i class='fa-solid fa-file-invoice text-emerald-500'></i> Detail Pesanan</h3>
                 <button class='w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 dark:bg-slate-700 text-slate-500 hover:text-rose-500 transition-all' onclick='closeOrderDetailModal()'><i class='fa-solid fa-xmark'></i></button>
@@ -1369,7 +1369,7 @@
             <div class='scroll-content flex-1 overflow-y-auto w-full pb-16 relative'>
                 <div class='max-w-full lg:px-8 mx-auto pt-6 px-4 w-full'>
                     
-                    <div class='fade-in-scale block w-full max-w-7xl mx-auto' id='admin-dashboard-view'>
+                    <div class='fade-in-scale block w-full max-w-5xl mx-auto' id='admin-dashboard-view'>
                         
                         <!-- Welcome Banner -->
                         <div class='relative overflow-hidden rounded-[1.5rem] mb-7 p-6 sm:p-8 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 dark:from-slate-800 dark:to-slate-900 border border-slate-700/60 shadow-xl'>
@@ -1494,7 +1494,7 @@
                         </div>
                     </div>
                     
-                    <div class='hidden fade-in w-full max-w-7xl mx-auto' id='admin-content-view'><div id='admin-content' class='pb-10 md:pb-12'></div></div>
+                    <div class='hidden fade-in w-full max-w-5xl mx-auto' id='admin-content-view'><div id='admin-content' class='pb-10 md:pb-12'></div></div>
                 </div>
             </div>
         </div>
@@ -6885,7 +6885,7 @@ window.openSettingForm = (type) => {
     }
 
     let h = `
-    <div class="max-w-3xl mx-auto px-4 lg:px-10 pb-12 text-sm fade-in-scale">
+    <div class="w-full mx-auto pb-12 text-sm fade-in-scale">
         <button onclick="rAdmSet()" class="mb-5 flex items-center justify-center w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-500 hover:text-slate-800 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-slate-700 transition-all shadow-sm group">
             <i class="fa-solid fa-arrow-left group-hover:-translate-x-0.5 transition-transform"></i>
         </button>
@@ -7010,6 +7010,7 @@ window.rAdmL = t => {
     // tepat di atas kolom cari -- lebih relevan di tempat pengelolaan produknya langsung.
     const statsContainer = t === 'products' ? `<div id="admin-product-stats" class="mb-5"></div>` : '';
     setH('admin-content', `
+        <div class="max-w-5xl mx-auto">
         ${statsContainer}
         <div class="mb-6">
             <div class="flex gap-2 items-center mb-4">
@@ -7022,6 +7023,7 @@ window.rAdmL = t => {
             </div>
         </div>
         <div id="admin-list-container" class="space-y-3 pb-12"></div>
+        </div>
     `);
     rAdmItms(t);
 };
@@ -7485,7 +7487,7 @@ window.rTaxIncome = () => {
     }
 
     setH('tax-content', `
-        <div class="card-modern p-5 sm:p-6 md:p-7 lg:p-8 max-w-4xl mx-auto">
+        <div class="card-modern p-5 sm:p-6 md:p-7 lg:p-8 w-full mx-auto">
             <div class="flex items-center justify-between mb-6 pb-4 border-b border-slate-100 dark:border-slate-700">
                 <h4 class="font-black text-slate-800 dark:text-white text-sm uppercase tracking-widest">Laporan Laba Rugi — ${periodLabel}</h4>
                 <button onclick="openTaxDocPreview('income')" class="text-[10px] font-black text-slate-400 hover:text-[var(--color-primary)] flex items-center gap-1.5"><i class="fa-solid fa-eye"></i> Preview &amp; Cetak</button>
@@ -7531,7 +7533,7 @@ window.rTaxBalance = () => {
     const modalDanLaba = totalAset - totalKewajiban; // supaya neraca tetap balance, modal+laba ditahan = sisa dari aset-kewajiban
 
     setH('tax-content', `
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 sm:gap-6 max-w-7xl mx-auto">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 sm:gap-6 w-full mx-auto">
             <div class="card-modern p-5 sm:p-6 relative overflow-hidden shadow-lg border-emerald-100 dark:border-emerald-900/30" style="background: linear-gradient(135deg, rgba(16,185,129,0.05), transparent)"><div class="absolute -top-10 -right-10 w-32 h-32 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none"></div>
                 <h4 class="font-black text-slate-800 dark:text-white text-xs uppercase tracking-widest mb-4 pb-3 border-b border-slate-100 dark:border-slate-700"><i class="fa-solid fa-arrow-down-wide-short mr-1.5 text-emerald-500"></i>ASET</h4>
                 <div class="space-y-3">
@@ -7571,7 +7573,7 @@ window.saveBalanceField = async (key, value) => {
 window.rTaxSettingsPanel = () => {
     const ts = appData.taxSettings;
     setH('tax-content', `
-        <div class="card-modern p-5 sm:p-6 md:p-7 lg:p-8 max-w-xl mx-auto space-y-5">
+        <div class="card-modern p-5 sm:p-6 md:p-7 lg:p-8 w-full max-w-3xl mx-auto space-y-5">
             <div>
                 <label class="block text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Nama Badan Usaha</label>
                 <input id="tax-company-name" type="text" value="${esc(ts.companyName||'')}" placeholder="Cth: PT/CV Restu Karya Utama" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-inner"></i>
