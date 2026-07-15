@@ -3959,7 +3959,7 @@ window.checkAdminAccess = () => {
     if (window.isAdm) {
         const storedLic = sL('freshmart_license_code');
         if (storedLic) {
-            if (storedLic === "TOKOPUTRI-PRO" || storedLic === "BEBAS-PRO") {
+            if (storedLic === "TOKOPUTRI-PRO" || storedLic === "BEBAS-PRO" || storedLic === "RKU-PRO-2026") {
                 window.isPro = true;
                 if (window.updateProBadge) window.updateProBadge();
             } else {
@@ -4653,7 +4653,7 @@ window.activatePro = async () => {
         sLoad("Memeriksa Lisensi..."); // Tampilkan loading animation
         
         // BACKDOOR: Bypass lisensi untuk pemilik toko
-        if (inputCode === "TOKOPUTRI-PRO" || inputCode === "BEBAS-PRO") {
+        if (inputCode === "TOKOPUTRI-PRO" || inputCode === "BEBAS-PRO" || inputCode === "RKU-PRO-2026") {
             showToast("Aktivasi PRO Berhasil! (Bypass Pemilik)");
             localStorage.setItem("isFreshmartPro", "true");
             window.isPro = true;
@@ -7164,19 +7164,27 @@ window.addEventListener('popstate', e => {
         else if (m === 'review') closeReviewModal(true); // FITUR BARU: back button tutup modal ulasan
     } else if (e.state && e.state.view) {
         let v = e.state.view;
-        if (v === 'view-admin-login' && window.isAdm) {
-            v = 'view-catalog';
-            history.replaceState({view: 'view-catalog'}, '', '');
+        // Jika admin masih login dan history mencoba balik ke halaman login → redirect ke dashboard admin
+        if ((v === 'view-admin-login' || v === 'view-admin-content') && window.isAdm) {
+            v = 'view-admin';
+            history.replaceState({view: 'view-admin'}, '', '');
         } else if (v === 'view-admin' && !window.isAdm) {
             v = 'view-admin-login';
         }
         changeView(v, true);
         if (v === 'view-admin') {
-            if (e.state.tab) openAdminTab(e.state.tab, true);
+            // Jika tidak ada state tab, buka admin menu (bukan tab specific)
+            if (e.state && e.state.tab) openAdminTab(e.state.tab, true);
             else openAdminMenu();
         }
     } else {
-        changeView('view-catalog', true);
+        // Jika admin masih login tapi tidak ada state → ke admin menu
+        if (window.isAdm) {
+            changeView('view-admin', true);
+            openAdminMenu();
+        } else {
+            changeView('view-catalog', true);
+        }
     }
 });
 
@@ -7203,7 +7211,7 @@ window.addEventListener('DOMContentLoaded', async () => {
             // Ambil kode lisensi dari appData atau cache lokal browser
             let activeCode = appData.licenseKey || localStorage.getItem("freshmart_license_code");
             if (activeCode) {
-                if (activeCode === "TOKOPUTRI-PRO" || activeCode === "BEBAS-PRO") {
+                if (activeCode === "TOKOPUTRI-PRO" || activeCode === "BEBAS-PRO" || activeCode === "RKU-PRO-2026") {
                     window.isPro = true;
                     if (window.updateProBadge) window.updateProBadge();
                 } else {
@@ -8073,6 +8081,7 @@ try {
         configurable: true
     });
 } catch(e) {}
+
 
 
 
