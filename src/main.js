@@ -7663,3 +7663,444 @@ window.exportDocFile = async (mode) => {
     }
 };
 
+
+
+// ==========================================
+// AUTO-GENERATED BINDINGS FOR GLOBAL SCOPE
+// ==========================================
+window.el = el;
+window.show = show;
+window.hide = hide;
+window.toggleCls = toggleCls;
+window.c = c;
+window.f = f;
+window.setIn = setIn;
+window.t = t;
+window.setH = setH;
+window.h = h;
+window.setV = setV;
+window.v = v;
+window.getV = getV;
+window.esc = esc;
+window.fixD = fixD;
+window.fCur = fCur;
+window.sL = sL;
+window.ssL = ssL;
+window.defaultFbC = defaultFbC;
+window.fbC = fbC;
+window.defApp = defApp;
+window.ADMIN_UID = ADMIN_UID;
+window.sLoad = sLoad;
+window.hLoad = hLoad;
+window.sanitizeCart = sanitizeCart;
+window.loadAppData = loadAppData;
+window.saveApp = saveApp;
+window.GAS_SECRET_TOKEN = GAS_SECRET_TOKEN;
+window.loadedScripts = loadedScripts;
+window.rProdMod = rProdMod;
+window.uMPP = uMPP;
+window.rChck = rChck;
+window.rPay = rPay;
+window.aF = aF;
+window.rAdmOrd = rAdmOrd;
+window.MONTH_NAMES = MONTH_NAMES;
+window.fitDocPreview = fitDocPreview;
+try {
+    Object.defineProperty(window, 'GAS_UPLOAD_URL', {
+        get: () => GAS_UPLOAD_URL,
+        set: (v) => { GAS_UPLOAD_URL = v; },
+        configurable: true
+    });
+} catch(e) {}
+try {
+    Object.defineProperty(window, 'confirmCb', {
+        get: () => confirmCb,
+        set: (v) => { confirmCb = v; },
+        configurable: true
+    });
+} catch(e) {}
+try {
+    Object.defineProperty(window, 'appData', {
+        get: () => appData,
+        set: (v) => { appData = v; },
+        configurable: true
+    });
+} catch(e) {}
+try {
+    Object.defineProperty(window, 'cart', {
+        get: () => cart,
+        set: (v) => { cart = v; },
+        configurable: true
+    });
+} catch(e) {}
+try {
+    Object.defineProperty(window, 'wishlist', {
+        get: () => wishlist,
+        set: (v) => { wishlist = v; },
+        configurable: true
+    });
+} catch(e) {}
+try {
+    Object.defineProperty(window, 'myOrders', {
+        get: () => myOrders,
+        set: (v) => { myOrders = v; },
+        configurable: true
+    });
+} catch(e) {}
+try {
+    Object.defineProperty(window, 'cust', {
+        get: () => cust,
+        set: (v) => { cust = v; },
+        configurable: true
+    });
+} catch(e) {}
+try {
+    Object.defineProperty(window, 'address', {
+        get: () => address,
+        set: (v) => { address = v; },
+        configurable: true
+    });
+} catch(e) {}
+try {
+    Object.defineProperty(window, 'lat', {
+        get: () => lat,
+        set: (v) => { lat = v; },
+        configurable: true
+    });
+} catch(e) {}
+try {
+    Object.defineProperty(window, 'lng', {
+        get: () => lng,
+        set: (v) => { lng = v; },
+        configurable: true
+    });
+} catch(e) {}
+try {
+    Object.defineProperty(window, 'deliveryMethod', {
+        get: () => deliveryMethod,
+        set: (v) => { deliveryMethod = v; },
+        configurable: true
+    });
+} catch(e) {}
+try {
+    Object.defineProperty(window, 'distance', {
+        get: () => distance,
+        set: (v) => { distance = v; },
+        configurable: true
+    });
+} catch(e) {}
+try {
+    Object.defineProperty(window, 'note', {
+        get: () => note,
+        set: (v) => { note = v; },
+        configurable: true
+    });
+} catch(e) {}
+try {
+    Object.defineProperty(window, 'wa', {
+        get: () => wa,
+        set: (v) => { wa = v; },
+        configurable: true
+    });
+} catch(e) {}
+try {
+    Object.defineProperty(window, 'currentMember', {
+        get: () => currentMember,
+        set: (v) => { currentMember = v; },
+        configurable: true
+    });
+} catch(e) {}
+try {
+    Object.defineProperty(window, 'selectedReward', {
+        get: () => selectedReward,
+        set: (v) => { selectedReward = v; },
+        configurable: true
+    });
+} catch(e) {}
+try {
+    Object.defineProperty(window, 'memberCheckTimer', {
+        get: () => memberCheckTimer,
+        set: (v) => { memberCheckTimer = v; },
+        configurable: true
+    });
+} catch(e) {}
+try {
+    Object.defineProperty(window, 'aCat', {
+        get: () => aCat,
+        set: (v) => { aCat = v; },
+        configurable: true
+    });
+} catch(e) {}
+try {
+    Object.defineProperty(window, 'aBrand', {
+        get: () => aBrand,
+        set: (v) => { aBrand = v; },
+        configurable: true
+    });
+} catch(e) {}
+try {
+    Object.defineProperty(window, 'sQ', {
+        get: () => sQ,
+        set: (v) => { sQ = v; },
+        configurable: true
+    });
+} catch(e) {}
+try {
+    Object.defineProperty(window, 'cSort', {
+        get: () => cSort,
+        set: (v) => { cSort = v; },
+        configurable: true
+    });
+} catch(e) {}
+try {
+    Object.defineProperty(window, 'cView', {
+        get: () => cView,
+        set: (v) => { cView = v; },
+        configurable: true
+    });
+} catch(e) {}
+try {
+    Object.defineProperty(window, 'cPage', {
+        get: () => cPage,
+        set: (v) => { cPage = v; },
+        configurable: true
+    });
+} catch(e) {}
+try {
+    Object.defineProperty(window, 'iPP', {
+        get: () => iPP,
+        set: (v) => { iPP = v; },
+        configurable: true
+    });
+} catch(e) {}
+try {
+    Object.defineProperty(window, 'cTab', {
+        get: () => cTab,
+        set: (v) => { cTab = v; },
+        configurable: true
+    });
+} catch(e) {}
+try {
+    Object.defineProperty(window, 'aSq', {
+        get: () => aSq,
+        set: (v) => { aSq = v; },
+        configurable: true
+    });
+} catch(e) {}
+try {
+    Object.defineProperty(window, 'eId', {
+        get: () => eId,
+        set: (v) => { eId = v; },
+        configurable: true
+    });
+} catch(e) {}
+try {
+    Object.defineProperty(window, 'cProd', {
+        get: () => cProd,
+        set: (v) => { cProd = v; },
+        configurable: true
+    });
+} catch(e) {}
+try {
+    Object.defineProperty(window, 'cVar', {
+        get: () => cVar,
+        set: (v) => { cVar = v; },
+        configurable: true
+    });
+} catch(e) {}
+try {
+    Object.defineProperty(window, 'tVars', {
+        get: () => tVars,
+        set: (v) => { tVars = v; },
+        configurable: true
+    });
+} catch(e) {}
+try {
+    Object.defineProperty(window, 'tWhol', {
+        get: () => tWhol,
+        set: (v) => { tWhol = v; },
+        configurable: true
+    });
+} catch(e) {}
+try {
+    Object.defineProperty(window, 'cQty', {
+        get: () => cQty,
+        set: (v) => { cQty = v; },
+        configurable: true
+    });
+} catch(e) {}
+try {
+    Object.defineProperty(window, 'oMods', {
+        get: () => oMods,
+        set: (v) => { oMods = v; },
+        configurable: true
+    });
+} catch(e) {}
+try {
+    Object.defineProperty(window, 'aOrdLst', {
+        get: () => aOrdLst,
+        set: (v) => { aOrdLst = v; },
+        configurable: true
+    });
+} catch(e) {}
+try {
+    Object.defineProperty(window, 'aCustLst', {
+        get: () => aCustLst,
+        set: (v) => { aCustLst = v; },
+        configurable: true
+    });
+} catch(e) {}
+try {
+    Object.defineProperty(window, 'aRevLst', {
+        get: () => aRevLst,
+        set: (v) => { aRevLst = v; },
+        configurable: true
+    });
+} catch(e) {}
+try {
+    Object.defineProperty(window, 'gOrds', {
+        get: () => gOrds,
+        set: (v) => { gOrds = v; },
+        configurable: true
+    });
+} catch(e) {}
+try {
+    Object.defineProperty(window, 'gReviews', {
+        get: () => gReviews,
+        set: (v) => { gReviews = v; },
+        configurable: true
+    });
+} catch(e) {}
+try {
+    Object.defineProperty(window, 'cVOrd', {
+        get: () => cVOrd,
+        set: (v) => { cVOrd = v; },
+        configurable: true
+    });
+} catch(e) {}
+try {
+    Object.defineProperty(window, 'vouch', {
+        get: () => vouch,
+        set: (v) => { vouch = v; },
+        configurable: true
+    });
+} catch(e) {}
+try {
+    Object.defineProperty(window, 'toastT', {
+        get: () => toastT,
+        set: (v) => { toastT = v; },
+        configurable: true
+    });
+} catch(e) {}
+try {
+    Object.defineProperty(window, 'isSaving', {
+        get: () => isSaving,
+        set: (v) => { isSaving = v; },
+        configurable: true
+    });
+} catch(e) {}
+try {
+    Object.defineProperty(window, 'bannerTmr', {
+        get: () => bannerTmr,
+        set: (v) => { bannerTmr = v; },
+        configurable: true
+    });
+} catch(e) {}
+try {
+    Object.defineProperty(window, 'reviewFilterMode', {
+        get: () => reviewFilterMode,
+        set: (v) => { reviewFilterMode = v; },
+        configurable: true
+    });
+} catch(e) {}
+try {
+    Object.defineProperty(window, 'lastReportPeriod', {
+        get: () => lastReportPeriod,
+        set: (v) => { lastReportPeriod = v; },
+        configurable: true
+    });
+} catch(e) {}
+try {
+    Object.defineProperty(window, 'unsubMyOrdersRealtime', {
+        get: () => unsubMyOrdersRealtime,
+        set: (v) => { unsubMyOrdersRealtime = v; },
+        configurable: true
+    });
+} catch(e) {}
+try {
+    Object.defineProperty(window, 'isSyncingRealtime', {
+        get: () => isSyncingRealtime,
+        set: (v) => { isSyncingRealtime = v; },
+        configurable: true
+    });
+} catch(e) {}
+try {
+    Object.defineProperty(window, 'viewScrollPos', {
+        get: () => viewScrollPos,
+        set: (v) => { viewScrollPos = v; },
+        configurable: true
+    });
+} catch(e) {}
+try {
+    Object.defineProperty(window, 'curViewName', {
+        get: () => curViewName,
+        set: (v) => { curViewName = v; },
+        configurable: true
+    });
+} catch(e) {}
+try {
+    Object.defineProperty(window, 'searchTmr', {
+        get: () => searchTmr,
+        set: (v) => { searchTmr = v; },
+        configurable: true
+    });
+} catch(e) {}
+try {
+    Object.defineProperty(window, 'taxYear', {
+        get: () => taxYear,
+        set: (v) => { taxYear = v; },
+        configurable: true
+    });
+} catch(e) {}
+try {
+    Object.defineProperty(window, 'taxMonth', {
+        get: () => taxMonth,
+        set: (v) => { taxMonth = v; },
+        configurable: true
+    });
+} catch(e) {}
+try {
+    Object.defineProperty(window, 'taxActiveTab', {
+        get: () => taxActiveTab,
+        set: (v) => { taxActiveTab = v; },
+        configurable: true
+    });
+} catch(e) {}
+try {
+    Object.defineProperty(window, 'gTaxMonthly', {
+        get: () => gTaxMonthly,
+        set: (v) => { gTaxMonthly = v; },
+        configurable: true
+    });
+} catch(e) {}
+try {
+    Object.defineProperty(window, 'qpWhol', {
+        get: () => qpWhol,
+        set: (v) => { qpWhol = v; },
+        configurable: true
+    });
+} catch(e) {}
+try {
+    Object.defineProperty(window, 'html5QrCode', {
+        get: () => html5QrCode,
+        set: (v) => { html5QrCode = v; },
+        configurable: true
+    });
+} catch(e) {}
+try {
+    Object.defineProperty(window, 'currentDocType', {
+        get: () => currentDocType,
+        set: (v) => { currentDocType = v; },
+        configurable: true
+    });
+} catch(e) {}
