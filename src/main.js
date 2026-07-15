@@ -7665,6 +7665,8 @@ window.exportDocFile = async (mode) => {
 
 
 
+
+
 // ==========================================
 // AUTO-GENERATED BINDINGS FOR GLOBAL SCOPE
 // ==========================================
@@ -7672,14 +7674,9 @@ window.el = el;
 window.show = show;
 window.hide = hide;
 window.toggleCls = toggleCls;
-window.c = c;
-window.f = f;
 window.setIn = setIn;
-window.t = t;
 window.setH = setH;
-window.h = h;
 window.setV = setV;
-window.v = v;
 window.getV = getV;
 window.esc = esc;
 window.fixD = fixD;
@@ -7751,55 +7748,6 @@ try {
     Object.defineProperty(window, 'cust', {
         get: () => cust,
         set: (v) => { cust = v; },
-        configurable: true
-    });
-} catch(e) {}
-try {
-    Object.defineProperty(window, 'address', {
-        get: () => address,
-        set: (v) => { address = v; },
-        configurable: true
-    });
-} catch(e) {}
-try {
-    Object.defineProperty(window, 'lat', {
-        get: () => lat,
-        set: (v) => { lat = v; },
-        configurable: true
-    });
-} catch(e) {}
-try {
-    Object.defineProperty(window, 'lng', {
-        get: () => lng,
-        set: (v) => { lng = v; },
-        configurable: true
-    });
-} catch(e) {}
-try {
-    Object.defineProperty(window, 'deliveryMethod', {
-        get: () => deliveryMethod,
-        set: (v) => { deliveryMethod = v; },
-        configurable: true
-    });
-} catch(e) {}
-try {
-    Object.defineProperty(window, 'distance', {
-        get: () => distance,
-        set: (v) => { distance = v; },
-        configurable: true
-    });
-} catch(e) {}
-try {
-    Object.defineProperty(window, 'note', {
-        get: () => note,
-        set: (v) => { note = v; },
-        configurable: true
-    });
-} catch(e) {}
-try {
-    Object.defineProperty(window, 'wa', {
-        get: () => wa,
-        set: (v) => { wa = v; },
         configurable: true
     });
 } catch(e) {}
