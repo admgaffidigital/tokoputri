@@ -158,7 +158,7 @@ const ssL = (k, v) => { try { localStorage.setItem(k, v); } catch(e) {} };
 const defaultFbC = { 
     apiKey: "AIzaSyCOjrhMP52TGbiOyQLY92NDYE26N6d9hJM",
     authDomain: "restu-karya-utama.firebaseapp.com",
-    databaseURL: "",
+    databaseURL: "https://restu-karya-utama-default-rtdb.asia-southeast1.firebasedatabase.app",
     projectId: "restu-karya-utama",
     storageBucket: "restu-karya-utama.firebasestorage.app",
     messagingSenderId: "858310421352",

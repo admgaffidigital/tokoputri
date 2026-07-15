@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "dompurify": "^3.0.9",
-    "firebase": "^10.8.1"
+    "firebase": "^10.14.1"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.18",
