@@ -254,11 +254,6 @@ db.settings({
     experimentalAutoDetectLongPolling: true
 });
 
-db.enablePersistence({ synchronizeTabs: true }).catch(err => {
-    if (err.code == 'failed-precondition') console.warn('Multiple tabs open. Offline mode di tab lain.');
-    else if (err.code == 'unimplemented') console.warn('Browser tidak support offline data.');
-});
-
 // State Variables
 let confirmCb = null;
 let appData = JSON.parse(JSON.stringify(defApp));
