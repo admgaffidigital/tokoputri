@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <!-- Resource hints: preconnect to key CDN origins -->
+    <!-- Resource hints -->
     <link rel="preconnect" href="https://www.gstatic.com" crossorigin/>
     <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin/>
     <link rel="dns-prefetch" href="https://firestore.googleapis.com"/>
@@ -18,7 +18,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin/>
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
     <link rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap&font-display=swap"
+          href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap"
           media="print" onload="this.media='all'"/>
     <noscript>
         <link rel="stylesheet"
@@ -74,7 +74,7 @@
             document.documentElement.style.setProperty('--color-primary-rgb', window.hexToRgb(colors[500]));
 
             // Memaksa Tailwind menggunakan warna pilihan Admin
-            window.tailwind = window.tailwind || {}; window.tailwind.config = { 
+            tailwind.config = { 
                 darkMode: 'class',
                 theme: {
                     extend: {
@@ -114,11 +114,11 @@
     <link crossorigin='anonymous' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css' integrity='sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==' referrerpolicy='no-referrer' rel='stylesheet' media='print' onload="this.media='all'"/>
     <noscript><link crossorigin='anonymous' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css' rel='stylesheet'/></noscript>
     
-    <script src='https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js' defer></script>
-    <script src='https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js' defer></script>
-    <script src='https://www.gstatic.com/firebasejs/10.8.1/firebase-auth-compat.js' defer></script>
-    <script src='https://www.gstatic.com/firebasejs/10.8.1/firebase-analytics-compat.js' defer></script>
-    <script src='https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js' defer></script>
+    <script src='https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js'></script>
+    <script src='https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js'></script>
+    <script src='https://www.gstatic.com/firebasejs/10.8.1/firebase-auth-compat.js'></script>
+    <script src='https://www.gstatic.com/firebasejs/10.8.1/firebase-analytics-compat.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js'></script>
     
     <style type='text/css'>/*<![CDATA[*/
         
@@ -8915,14 +8915,7 @@ window.printDocA4 = () => {
             <div class="w-full max-w-[794px] mx-auto p-4 text-sm leading-relaxed text-slate-900">
                 ${p}
             </div>
-        
-    <script>
-        // Remove no-transitions class after first paint to allow smooth transitions
-        requestAnimationFrame(() => requestAnimationFrame(() => {
-            document.documentElement.classList.remove('no-transitions');
-        }));
-    </script>
-</body>
+        </body>
         </html>
     `);
     printWindow.document.close();
