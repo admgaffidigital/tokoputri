@@ -257,6 +257,16 @@ db.settings({
 // State Variables
 let confirmCb = null;
 let appData = JSON.parse(JSON.stringify(defApp));
+
+window.updateProBadge = () => {
+    let badgeEl = document.getElementById('admin-pro-badge');
+    if (badgeEl) {
+        badgeEl.innerHTML = window.isPro 
+            ? '<span class="bg-amber-500 text-white px-2 py-0.5 rounded text-[9px] font-black shadow-sm flex items-center gap-1"><i class="fa-solid fa-crown"></i> PRO</span>' 
+            : '<span class="bg-slate-200 text-slate-500 px-2 py-0.5 rounded text-[9px] font-black border border-slate-300">FREE</span>';
+    }
+};
+
 let cart = [], wishlist = [], myOrders = [];
 let cust = { name:'', address:'', lat:null, lng:null, deliveryMethod:'delivery', distance:0, note:'', wa:'' };
 // FITUR BARU: state program loyalitas member (dicek ulang tiap kali nomor WA di form checkout berubah)
@@ -452,11 +462,10 @@ const loadAppData = async () => {
         // Jika statusnya sudah admin, paksa update lencana PRO
         if (window.isAdm) {
             db.collection("freshmart_licenses").doc(appData.licenseKey).get().then(doc => {
-                if (doc.exists && doc.data().status === "active") {
+                if (doc.exists && (doc.data().status || '').toLowerCase() === "active") {
                     window.isPro = true;
                     localStorage.setItem("isFreshmartPro", "true");
-                    let badgeEl = document.getElementById('admin-pro-badge');
-                    if (badgeEl) badgeEl.innerHTML = '<span class="bg-amber-500 text-white px-2 py-0.5 rounded text-[9px] font-black shadow-sm flex items-center gap-1"><i class="fa-solid fa-crown"></i> PRO</span>';
+                    if (window.updateProBadge) window.updateProBadge();
                 }
             }).catch(()=>{});
         }
@@ -3952,13 +3961,15 @@ window.checkAdminAccess = () => {
         if (storedLic) {
             db.collection('freshmart_licenses').doc(storedLic).get()
               .then(doc => {
-                if (doc.exists && doc.data().status === 'active') {
+                if (doc.exists && (doc.data().status || "").toLowerCase() === "active") {
                     window.isPro = true;
+                    if (window.updateProBadge) window.updateProBadge();
                 } else {
                     // Lisensi sudah tidak aktif, cabut akses PRO
                     window.isPro = false;
-                    localStorage.removeItem('isFreshmartPro');
-                    localStorage.removeItem('freshmart_license_code');
+                    localStorage.removeItem("isFreshmartPro");
+                    localStorage.removeItem("freshmart_license_code");
+                    if (window.updateProBadge) window.updateProBadge();
                     console.warn('[Security] Lisensi tidak aktif, akses PRO dicabut.');
                 }
               })
@@ -3966,7 +3977,8 @@ window.checkAdminAccess = () => {
         } else {
             // Tidak ada kode lisensi tersimpan = bukan PRO
             window.isPro = false;
-            localStorage.removeItem('isFreshmartPro');
+            localStorage.removeItem("isFreshmartPro");
+            if (window.updateProBadge) window.updateProBadge();
         }
         changeView('view-admin');
         openAdminMenu();
@@ -4156,6 +4168,7 @@ window.logoutAdmin = async () => {
         await auth.signOut();
         window.isAdm=false; 
         window.isPro=false; 
+        if (window.updateProBadge) window.updateProBadge();
         if(aOrdLst){ aOrdLst(); aOrdLst=null; } 
         if(aCustLst){ aCustLst(); aCustLst=null; }
         if(aRevLst){ aRevLst(); aRevLst=null; }
@@ -4640,15 +4653,14 @@ window.activatePro = async () => {
 
         if (docSnap.exists) {
             const data = docSnap.data();
-            
             // Cek apakah statusnya aktif di Firebase
-            if (data.status === "active") {
+            if ((data.status || "").toLowerCase() === "active") {
                 showToast("Aktivasi PRO Berhasil! Terima kasih.");
                 
                 // Simpan status di LocalStorage
                 localStorage.setItem("isFreshmartPro", "true");
-                window.isPro = true; 
-                
+                window.isPro = true;
+                if (window.updateProBadge) window.updateProBadge();
                 // TAMBAHAN BARU: Simpan kode lisensi ke lokal agar bisa dicek ulang saat refresh
                 localStorage.setItem("freshmart_license_code", inputCode);
                 
@@ -7176,7 +7188,7 @@ window.addEventListener('DOMContentLoaded', async () => {
                 // Tembak langsung ke Firebase untuk cek apakah kode ini masih 'active'
                 const docSnap = await db.collection("freshmart_licenses").doc(activeCode).get();
 
-                if (docSnap.exists && docSnap.data().status === "active") {
+                if (docSnap.exists && (docSnap.data().status || "").toLowerCase() === "active") {
                     // Lisensi masih aktif di Firebase
                     window.isPro = true;
                     localStorage.setItem("isFreshmartPro", "true");
@@ -7200,12 +7212,7 @@ window.addEventListener('DOMContentLoaded', async () => {
         }
 
         // 2. LANGSUNG UPDATE BADGE UI
-        let badgeEl = document.getElementById('admin-pro-badge');
-        if (badgeEl) {
-            badgeEl.innerHTML = window.isPro 
-                ? '<span class="bg-amber-500 text-white px-2 py-0.5 rounded text-[9px] font-black shadow-sm flex items-center gap-1"><i class="fa-solid fa-crown"></i> PRO</span>' 
-                : '<span class="bg-slate-200 text-slate-500 px-2 py-0.5 rounded text-[9px] font-black border border-slate-300">FREE</span>';
-        }
+        if (window.updateProBadge) window.updateProBadge();
 
         // 3. MASUK KE DASHBOARD ADMIN
         let loginView = document.getElementById('view-admin-login');
@@ -7218,6 +7225,7 @@ window.addEventListener('DOMContentLoaded', async () => {
         // JIKA LOGOUT ATAU SESI HABIS
         window.isAdm = false;
         window.isPro = false;
+        if (window.updateProBadge) window.updateProBadge();
         localStorage.removeItem("isFreshmartPro");
         localStorage.removeItem("freshmart_license_code");
     }
@@ -8047,3 +8055,5 @@ try {
         configurable: true
     });
 } catch(e) {}
+
+
