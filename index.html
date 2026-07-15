@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
+    <!-- Resource hints: preconnect to key CDN origins -->
+    <link rel="preconnect" href="https://www.gstatic.com" crossorigin/>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin/>
+    <link rel="dns-prefetch" href="https://firestore.googleapis.com"/>
+    <link rel="dns-prefetch" href="https://identitytoolkit.googleapis.com"/>
     <meta charset='UTF-8'/>
     <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover' name='viewport'/>
   
@@ -9,11 +14,18 @@
     <title>Toko Putri</title>
     <link rel='icon' id='dynamic-favicon' href='data:image/x-icon;base64,AA'>
     
-    <style> 
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap'); 
-    </style>
+        <!-- Google Fonts — non-blocking (preconnect + media trick) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap&font-display=swap"
+          media="print" onload="this.media='all'"/>
+    <noscript>
+        <link rel="stylesheet"
+              href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap"/>
+    </noscript>
     
-    <script data-no-production-warning='true' src='https://cdn.tailwindcss.com'></script>
+    <script data-no-production-warning='true' src='https://cdn.tailwindcss.com' defer></script>
     <script>//<![CDATA[
         // ==========================================
         // WARNA (MAGIC COLOR INJECTOR)
@@ -62,7 +74,7 @@
             document.documentElement.style.setProperty('--color-primary-rgb', window.hexToRgb(colors[500]));
 
             // Memaksa Tailwind menggunakan warna pilihan Admin
-            tailwind.config = { 
+            window.tailwind = window.tailwind || {}; window.tailwind.config = { 
                 darkMode: 'class',
                 theme: {
                     extend: {
@@ -99,13 +111,14 @@
         }
     //]]></script>
     
-    <link crossorigin='anonymous' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css' integrity='sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==' referrerpolicy='no-referrer' rel='stylesheet'/>
+    <link crossorigin='anonymous' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css' integrity='sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==' referrerpolicy='no-referrer' rel='stylesheet' media='print' onload="this.media='all'"/>
+    <noscript><link crossorigin='anonymous' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css' rel='stylesheet'/></noscript>
     
-    <script src='https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js'></script>
-    <script src='https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js'></script>
-    <script src='https://www.gstatic.com/firebasejs/10.8.1/firebase-auth-compat.js'></script>
-    <script src='https://www.gstatic.com/firebasejs/10.8.1/firebase-analytics-compat.js'></script>
-    <script src='https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js'></script>
+    <script src='https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js' defer></script>
+    <script src='https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js' defer></script>
+    <script src='https://www.gstatic.com/firebasejs/10.8.1/firebase-auth-compat.js' defer></script>
+    <script src='https://www.gstatic.com/firebasejs/10.8.1/firebase-analytics-compat.js' defer></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js' defer></script>
     
     <style type='text/css'>/*<![CDATA[*/
         
@@ -1207,7 +1220,7 @@
                                 <p class='text-[10px] text-slate-300 mt-0.5'>JPG, PNG, WEBP</p>
                             </div>
                             <div class='hidden w-full h-full absolute inset-0' id='bukti-preview-wrap'>
-                                <img class='w-full h-full object-cover' id='bukti-preview-img' src='data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'></i>
+                                <img class='w-full h-full object-cover' id='bukti-preview-img' src='data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7' loading="lazy"></i>
                                 <div class='absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity'>
                                     <p class='text-white text-xs font-black'><i class='fa-solid fa-pen mr-1'></i>Ganti Gambar</p>
                                 </div>
@@ -3858,7 +3871,7 @@ try {
                     <div>
                         <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 flex items-center gap-1.5"><i class="fa-solid fa-image text-violet-400"></i> Bukti Pembayaran</h4>
                         <a href="${esc(d.buktiPayment)}" target="_blank" class="block rounded-2xl overflow-hidden border-2 border-violet-200 dark:border-violet-800 hover:border-violet-400 transition-colors shadow-sm">
-                            <img src="${esc(d.buktiPayment)}" alt="Bukti Pembayaran" class="w-full max-h-56 object-cover" onerror="this.style.display='none'"></i>
+                            <img src="${esc(d.buktiPayment)}" alt="Bukti Pembayaran" class="w-full max-h-56 object-cover" onerror="this.style.display='none'" loading="lazy"></i>
                             <div class="bg-violet-50 dark:bg-violet-900/20 p-2 flex items-center justify-center gap-1.5 text-[10px] font-black text-violet-600 dark:text-violet-400"><i class="fa-solid fa-arrow-up-right-from-square"></i> Tap untuk buka full screen</div>
                         </a>
                     </div>` : ''}
@@ -4214,7 +4227,7 @@ window.rMemberModalBody = () => {
         const isSelected = selectedReward && selectedReward.id === r.id;
         return `
         <div class="flex items-center gap-3 p-4 rounded-[1.25rem] border ${isSelected ? 'border-violet-400 bg-violet-50 dark:bg-violet-900/20' : 'border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50'}">
-            ${r.img ? `<img src="${esc(r.img)}" class="w-14 h-14 rounded-xl object-cover border border-slate-200 dark:border-slate-700 shrink-0" onerror="this.style.display='none'"></i>` : `<div class="w-14 h-14 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-300 shrink-0"><i class="fa-solid fa-gift text-xl"></i></div>`}
+            ${r.img ? `<img src="${esc(r.img)}" class="w-14 h-14 rounded-xl object-cover border border-slate-200 dark:border-slate-700 shrink-0" onerror="this.style.display='none'" loading="lazy"></i>` : `<div class="w-14 h-14 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-300 shrink-0"><i class="fa-solid fa-gift text-xl"></i></div>`}
             <div class="min-w-0 flex-1">
                 <p class="text-xs font-black text-slate-800 dark:text-white truncate">${esc(r.name)}</p>
                 <p class="text-[11px] font-black text-violet-500 mt-0.5"><i class="fa-solid fa-star mr-1"></i>${parseFloat(r.pointsCost)||0} Poin</p>
@@ -4309,7 +4322,7 @@ window.openReviewModal = (orderId, productId, variantName, productName, customer
                     <label class="block text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Unggah Foto (Opsional)</label>
                     <input type="file" accept="image/*" id="review-photo-input" onchange="handleReviewPhotoSelect(event)" class="hidden"></i>
                     <div id="review-photo-preview-wrap" class="hidden mb-2.5 relative w-24 h-24">
-                        <img id="review-photo-preview" class="w-24 h-24 rounded-xl object-cover border border-slate-200 dark:border-slate-700"></i>
+                        <img id="review-photo-preview" class="w-24 h-24 rounded-xl object-cover border border-slate-200 dark:border-slate-700" loading="lazy"></i>
                         <button type="button" onclick="removeReviewPhoto()" class="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-rose-500 text-white flex items-center justify-center text-[10px] shadow"><i class="fa-solid fa-xmark"></i></button>
                     </div>
                     <button type="button" onclick="document.getElementById('review-photo-input').click()" id="review-photo-btn" class="w-full py-3 rounded-xl border-2 border-dashed border-slate-300 dark:border-slate-700 text-slate-400 text-[11px] font-black uppercase tracking-widest flex items-center justify-center gap-2 hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] transition-all"><i class="fa-solid fa-camera"></i> Tambah Foto Bukti</button>
@@ -4451,7 +4464,7 @@ window.loadProductReviews = async (productId) => {
                 <div class="flex text-[11px] mb-2">${starRow(r.rating)}</div>
                 ${r.variantName ? `<p class="text-[10px] font-bold text-slate-400 mb-1.5">Varian: ${esc(r.variantName)}</p>` : ''}
                 ${r.text ? `<p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed mb-2">${esc(r.text)}</p>` : ''}
-                ${r.photoUrl ? `<img src="${esc(r.photoUrl)}" onclick="window.open('${esc(r.photoUrl)}','_blank')" class="w-20 h-20 rounded-xl object-cover border border-slate-200 dark:border-slate-700 cursor-pointer mb-2" onerror="this.style.display='none'"></i>` : ''}
+                ${r.photoUrl ? `<img src="${esc(r.photoUrl)}" onclick="window.open('${esc(r.photoUrl)}','_blank')" class="w-20 h-20 rounded-xl object-cover border border-slate-200 dark:border-slate-700 cursor-pointer mb-2" onerror="this.style.display='none'" loading="lazy"></i>` : ''}
                 ${r.adminReply ? `<div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl p-3 mt-2"><p class="text-[9px] font-black text-[var(--color-primary)] uppercase tracking-widest mb-1"><i class="fa-solid fa-store mr-1"></i>Balasan Toko</p><p class="text-[11px] text-slate-600 dark:text-slate-300">${esc(r.adminReply)}</p></div>` : ''}
             </div>`;
         }).join('');
@@ -6340,7 +6353,7 @@ window.openOrderDetail = i => {
                         ${o.customer?.lat && o.customer?.deliveryMethod === 'delivery' ? `<a href="https://www.google.com/maps?q=${esc(o.customer.lat)},${esc(o.customer.lng)}" target="_blank" class="mt-3 flex items-center justify-center gap-2 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-800 font-black text-xs py-2.5 px-4 rounded-xl hover:bg-blue-100 transition-colors"><i class="fa-solid fa-location-dot"></i> Buka Lokasi di Google Maps</a>` : ''}
                     </div>
                     ${o.customer?.note?`<div class="bg-amber-50 dark:bg-amber-900/20 p-4 rounded-xl border border-amber-200 dark:border-amber-800 mt-2"><p class="text-[10px] font-black text-amber-600 uppercase tracking-widest mb-1.5"><i class="fa-solid fa-note-sticky"></i> Catatan Pembeli</p><p class="text-sm text-amber-900 dark:text-amber-100 font-bold">${esc(o.customer.note)}</p></div>`:''}
-                    ${o.buktiPayment ? `<div class="bg-violet-50 dark:bg-violet-900/20 p-4 rounded-xl border border-violet-200 dark:border-violet-800 mt-2"><p class="text-[10px] font-black text-violet-600 dark:text-violet-400 uppercase tracking-widest mb-2.5"><i class="fa-solid fa-image"></i> Bukti Pembayaran</p><a href="${esc(o.buktiPayment)}" target="_blank" class="block rounded-xl overflow-hidden border border-violet-200 dark:border-violet-800"><img src="${esc(o.buktiPayment)}" alt="Bukti Pembayaran" class="w-full max-h-48 object-cover" onerror="this.style.display='none'"></i><div class="bg-violet-100 dark:bg-violet-900/40 py-2 text-center text-[10px] font-black text-violet-600 dark:text-violet-400"><i class="fa-solid fa-arrow-up-right-from-square mr-1"></i> Tap untuk buka</div></a></div>` : ''}
+                    ${o.buktiPayment ? `<div class="bg-violet-50 dark:bg-violet-900/20 p-4 rounded-xl border border-violet-200 dark:border-violet-800 mt-2"><p class="text-[10px] font-black text-violet-600 dark:text-violet-400 uppercase tracking-widest mb-2.5"><i class="fa-solid fa-image"></i> Bukti Pembayaran</p><a href="${esc(o.buktiPayment)}" target="_blank" class="block rounded-xl overflow-hidden border border-violet-200 dark:border-violet-800"><img src="${esc(o.buktiPayment)}" alt="Bukti Pembayaran" class="w-full max-h-48 object-cover" onerror="this.style.display='none'" loading="lazy"></i><div class="bg-violet-100 dark:bg-violet-900/40 py-2 text-center text-[10px] font-black text-violet-600 dark:text-violet-400"><i class="fa-solid fa-arrow-up-right-from-square mr-1"></i> Tap untuk buka</div></a></div>` : ''}
                 </div>
             </div>
 
@@ -7184,7 +7197,7 @@ window.rAdmReviews = () => {
             </div>
             <div class="flex text-xs mb-2.5">${starRow(r.rating)}</div>
             ${r.text ? `<p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed mb-2.5">${esc(r.text)}</p>` : ''}
-            ${r.photoUrl ? `<img src="${esc(r.photoUrl)}" onclick="window.open('${esc(r.photoUrl)}','_blank')" class="w-20 h-20 rounded-xl object-cover border border-slate-200 dark:border-slate-700 cursor-pointer mb-2.5" onerror="this.style.display='none'"></i>` : ''}
+            ${r.photoUrl ? `<img src="${esc(r.photoUrl)}" onclick="window.open('${esc(r.photoUrl)}','_blank')" class="w-20 h-20 rounded-xl object-cover border border-slate-200 dark:border-slate-700 cursor-pointer mb-2.5" onerror="this.style.display='none'" loading="lazy"></i>` : ''}
             ${r.adminReply ? `<div class="bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-xl p-3 mb-2.5"><p class="text-[9px] font-black text-[var(--color-primary)] uppercase tracking-widest mb-1"><i class="fa-solid fa-store mr-1"></i>Balasan Anda</p><p class="text-[11px] text-slate-600 dark:text-slate-300">${esc(r.adminReply)}</p></div>` : ''}
             <div class="flex flex-wrap gap-2 pt-2 border-t border-slate-100 dark:border-slate-700/60">
                 <button onclick="replyToReview(${r.id})" class="px-3 py-2 rounded-xl bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 text-[10px] font-black uppercase tracking-widest flex items-center gap-1.5 hover:bg-blue-100 transition-all"><i class="fa-solid fa-reply"></i> ${r.adminReply ? 'Edit Balasan' : 'Balas'}</button>
@@ -7868,7 +7881,7 @@ window.rVarsB = () => {
                 <div>
                     <label class="block text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Gambar Khusus Varian</label>
                     <div class="flex gap-2.5 items-center">
-                        ${v.img ? `<img src="${esc(v.img)}" class="w-11 h-11 rounded-xl object-cover border-2 border-slate-200 dark:border-slate-600 shrink-0 shadow-sm" onerror="this.style.display='none'"></i>` : ''}
+                        ${v.img ? `<img src="${esc(v.img)}" class="w-11 h-11 rounded-xl object-cover border-2 border-slate-200 dark:border-slate-600 shrink-0 shadow-sm" onerror="this.style.display='none'" loading="lazy"></i>` : ''}
                         <input autocomplete='off' id="var-img-${i}" placeholder="URL Gambar Varian" class="admin-input !text-sm flex-1 bg-white dark:bg-slate-800 shadow-sm" value="${esc(v.img||'')}" onchange="uVar(${i},'img',fixD(this.value))"></i>
                         <label class="bg-emerald-50 dark:bg-emerald-900/30 border border-emerald-200 dark:border-emerald-800 text-emerald-600 dark:text-emerald-400 rounded-xl w-11 h-11 flex items-center justify-center cursor-pointer hover:bg-emerald-100 transition-all shrink-0 active:scale-95 shadow-sm" title="Upload dari Galeri"><i class="fa-solid fa-upload text-sm"></i><input type="file" accept="image/*" class="hidden" onchange="handleImageUpload(this, 'var-img-${i}')" ></i></label>
                         <label class="bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 text-blue-600 dark:text-blue-400 rounded-xl w-11 h-11 flex items-center justify-center cursor-pointer hover:bg-blue-100 transition-all shrink-0 active:scale-95 shadow-sm" title="Ambil Foto Langsung"><i class="fa-solid fa-camera text-sm"></i><input type="file" accept="image/*" capture="environment" class="hidden" onchange="handleImageUpload(this, 'var-img-${i}')" ></i></label>
@@ -8902,7 +8915,14 @@ window.printDocA4 = () => {
             <div class="w-full max-w-[794px] mx-auto p-4 text-sm leading-relaxed text-slate-900">
                 ${p}
             </div>
-        </body>
+        
+    <script>
+        // Remove no-transitions class after first paint to allow smooth transitions
+        requestAnimationFrame(() => requestAnimationFrame(() => {
+            document.documentElement.classList.remove('no-transitions');
+        }));
+    </script>
+</body>
         </html>
     `);
     printWindow.document.close();
