@@ -1,2 +1,8 @@
+# Dependencies
+node_modules/
+
+# Production output
+dist/
+
 # Helper/fix scripts — not needed in production
 _scripts/

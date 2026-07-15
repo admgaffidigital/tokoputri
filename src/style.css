@@ -1,0 +1,413 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* === BASE & DYNAMIC COLOR THEME VARIABLES === */
+:root {
+    --sat-bottom: env(safe-area-inset-bottom); 
+    --sat-top: env(safe-area-inset-top); 
+
+    /* Default Theme: Emerald */
+    --color-emerald-50: #ecfdf5;
+    --color-emerald-100: #d1fae5;
+    --color-emerald-200: #a7f3d0;
+    --color-emerald-300: #6ee7b7;
+    --color-emerald-400: #34d399;
+    --color-emerald-500: #10b981;
+    --color-emerald-600: #059669;
+    --color-emerald-700: #047857;
+    --color-emerald-800: #065f46;
+    --color-emerald-900: #064e3b;
+
+    --color-primary: var(--color-emerald-500);
+    --color-primary-dark: var(--color-emerald-600);
+    --color-primary-light: var(--color-emerald-50);
+    --color-primary-rgb: 16,185,129;
+}
+
+/* === Prevent transition flash on first paint === */
+.no-transitions *, .no-transitions *::before, .no-transitions *::after {
+    transition-duration: 0s !important;
+    animation-duration: 0s !important;
+}
+
+/* === DESIGN TOKENS: SKALA RADIUS (PANDUAN KONSISTENSI) ===
+   Agar tampilan tetap rapi saat dikembangkan, pakai HANYA skala berikut.
+   Jangan menambah nilai rounded-[Nrem] baru di luar daftar ini.
+   
+     rounded-xl           0.75rem  -> input, thumbnail kecil, tombol ikon
+     rounded-2xl          1rem     -> tombol/kontrol standar, ikon box
+     rounded-[1.25rem]    1.25rem  -> card produk, list item, baris item
+     rounded-[1.5rem]     1.5rem   -> panel/section besar (card pembungkus)
+     rounded-[2rem]       2rem     -> modal, bottom-sheet, hero box
+     rounded-full                  -> avatar, badge bulat, pil/tombol bulat
+*/
+
+/* === DESIGN TOKENS: SKALA FONT KECIL (PANDUAN KONSISTENSI) ===
+   Beberapa ukuran di bawah text-xs (12px) bawaan Tailwind dipakai sengaja
+   untuk elemen UI yang sangat padat (badge, label, caption). Pakai HANYA
+   skala berikut agar tidak menambah variasi baru yang tidak perlu:
+
+     text-[8px]   -> badge/pill kecil (diskon, status, tag produk)
+     text-[9px]   -> caption sekunder, sub-label kecil
+     text-[10px]  -> label uppercase standar (paling sering dipakai)
+     text-[11px]  -> teks kecil sekunder (harga satuan, meta info)
+     text-[13px]  -> body text deskripsi/harga (antara xs & sm)
+     text-[15px]  -> judul/harga sedikit ditonjolkan (antara sm & base)
+     text-xs/sm/base/lg/xl/2xl/3xl -> mengikuti skala Tailwind standar
+*/
+
+body { 
+    font-family: 'Plus Jakarta Sans', sans-serif; 
+    background-color: #f1f5f9; 
+    margin: 0; 
+    padding: 0; 
+    color: #0f172a; 
+    -webkit-font-smoothing: antialiased; 
+    -moz-osx-font-smoothing: grayscale; 
+    transition: background-color 0.4s ease, color 0.4s ease; 
+    overflow-x: hidden; 
+}
+
+#app-container { 
+    width: 100%; 
+    height: 100vh; 
+    height: 100dvh; 
+    background-color: #f8fafc; 
+    position: relative; 
+    overflow: hidden; 
+    margin: 0 auto; 
+    overscroll-behavior-y: none; 
+    transition: background-color 0.4s ease; 
+}
+
+@media (min-width: 1280px) { 
+    #app-container { 
+        max-width: 100%; 
+        border-radius: 0; 
+        margin-top: 0; 
+        height: 100vh; 
+        border: none; 
+        box-shadow: none; 
+    } 
+}
+
+/* === 2. LAYOUT & UTILITIES === */
+.hide-scrollbar::-webkit-scrollbar { display: none; } 
+.hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+.view-section { 
+    width: 100%; 
+    height: 100%; 
+    position: absolute; 
+    top: 0; 
+    left: 0; 
+    overflow: hidden; 
+}
+
+.scroll-content { 
+    flex: 1; 
+    overflow-y: auto; 
+    -webkit-overflow-scrolling: touch; 
+    scrollbar-width: none; 
+    scroll-behavior: smooth; 
+}
+
+/* === 3. ANIMATIONS === */
+.fade-in { animation: fadeIn 0.3s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
+@keyframes fadeIn { 
+    from { opacity: 0; transform: translateY(8px); } 
+    to { opacity: 1; transform: translateY(0); } 
+}
+
+.fade-in-scale { animation: fadeInScale 0.3s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
+@keyframes fadeInScale { 
+    from { opacity: 0; transform: scale(0.97); } 
+    to { opacity: 1; transform: scale(1); } 
+}
+
+/* === 4. UI COMPONENTS === */
+.glass-header { 
+    background: rgba(255, 255, 255, 0.97); 
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    z-index: 30; 
+    border-bottom: 1px solid rgba(226, 232, 240, 0.6); 
+    box-shadow: 0 2px 20px -4px rgba(15, 23, 42, 0.06); 
+    padding-top: max(0.75rem, env(safe-area-inset-top)); 
+}
+
+.glass-nav { 
+    background: rgba(255, 255, 255, 0.97); 
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-top: 1px solid rgba(226, 232, 240, 0.6); 
+    box-shadow: 0 -8px 24px -8px rgba(15, 23, 42, 0.06); 
+    padding-bottom: max(1rem, env(safe-area-inset-bottom)); 
+}
+
+.admin-input { 
+    width: 100%; 
+    background-color: #fff; 
+    border: 1.5px solid #e2e8f0; 
+    border-radius: 0.875rem; 
+    padding: 0.875rem 1rem; 
+    font-size: 13px; 
+    font-weight: 600; 
+    color: #0f172a; 
+    transition: border-color 0.2s, box-shadow 0.2s; 
+    box-sizing: border-box; 
+    box-shadow: inset 0 1px 3px rgba(15, 23, 42, 0.04); 
+}
+.admin-input:focus { 
+    outline: none; 
+    border-color: var(--color-primary); 
+    box-shadow: 0 0 0 3px rgba(var(--color-primary-rgb), 0.12), inset 0 1px 3px rgba(15, 23, 42, 0.04); 
+}
+.admin-input::placeholder { font-weight: 500; color: #94a3b8; }
+html.dark .admin-input::placeholder { color: #64748b; }
+
+.card-modern { 
+    background: #fff; 
+    border-radius: 1.25rem; 
+    border: 1px solid rgba(226, 232, 240, 0.7); 
+    box-shadow: 0 2px 12px -2px rgba(15, 23, 42, 0.05), 0 0 0 0 rgba(var(--color-primary-rgb), 0); 
+    transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1); 
+    box-sizing: border-box; 
+}
+.card-modern:hover { 
+    transform: translateY(-3px); 
+    box-shadow: 0 12px 28px -6px rgba(15, 23, 42, 0.10); 
+    border-color: rgba(var(--color-primary-rgb), 0.3); 
+}
+
+.custom-radio:checked + div { 
+    border-color: var(--color-primary); 
+    background-color: var(--color-primary-light); 
+    box-shadow: 0 0 0 2px rgba(var(--color-primary-rgb), 0.2); 
+}
+
+.btn-primary { 
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%); 
+    color: #fff; 
+    padding: 0.9375rem 1.5rem; 
+    border-radius: 1rem; 
+    font-weight: 800; 
+    font-size: 0.875rem; 
+    letter-spacing: 0.01em;
+    transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1); 
+    box-shadow: 0 4px 18px -4px rgba(var(--color-primary-rgb), 0.45); 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    gap: 0.5rem; 
+    cursor: pointer; 
+    width: 100%; 
+    border: none; 
+    box-sizing: border-box; 
+    position: relative; 
+    overflow: hidden; 
+}
+.btn-primary::after { 
+    content: ''; 
+    position: absolute; 
+    top: 0; left: 0; 
+    width: 100%; height: 100%; 
+    background: linear-gradient(rgba(255,255,255,0.12), transparent 60%); 
+    border-radius: inherit; 
+    pointer-events: none;
+}
+.btn-primary:hover { 
+    transform: translateY(-2px); 
+    box-shadow: 0 8px 24px -4px rgba(var(--color-primary-rgb), 0.55); 
+}
+.btn-primary:active { transform: scale(0.96); }
+
+.btn-disabled { 
+    background: #cbd5e1 !important; 
+    color: #64748b !important; 
+    box-shadow: none !important; 
+    pointer-events: none; 
+    background-image: none !important; 
+}
+
+/* Varian tombol warna solid (bukan gradient) untuk konteks tertentu
+   (login admin, simpan form, dsb). Tetap ikut tema dinamis karena
+   berbasis CSS variable, sama seperti .btn-primary. */
+.btn-solid { 
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+    color: #fff; 
+    padding: 1rem 1.5rem; 
+    border-radius: 1rem; 
+    font-weight: 900; 
+    font-size: 0.875rem; 
+    text-transform: uppercase; 
+    letter-spacing: 0.04em; 
+    transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1); 
+    box-shadow: 0 4px 18px -4px rgba(var(--color-primary-rgb), 0.45); 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    gap: 0.5rem; 
+    cursor: pointer; 
+    width: 100%; 
+    border: none; 
+    box-sizing: border-box;
+    position: relative;
+    overflow: hidden;
+}
+.btn-solid::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: linear-gradient(rgba(255,255,255,0.10), transparent 60%);
+    border-radius: inherit;
+    pointer-events: none;
+}
+.btn-solid:hover { box-shadow: 0 8px 24px -4px rgba(var(--color-primary-rgb), 0.55); transform: translateY(-1px); }
+.btn-solid:active { transform: scale(0.97); }
+
+.modal-bottom-sheet { border-top-left-radius: 2rem; border-top-right-radius: 2rem; }
+.pull-indicator { width: 48px; height: 4px; background-color: #e2e8f0; border-radius: 99px; margin: 12px auto 20px; transition: background 0.2s; }
+.modal-bottom-sheet:hover .pull-indicator { background-color: #cbd5e1; }
+
+/* === TOAST NOTIFICATION SYSTEM === */
+#toast {
+    position: fixed;
+    top: -160px;
+    left: 50%;
+    transform: translateX(-50%);
+    transition: top 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px 12px 12px;
+    border-radius: 18px;
+    min-width: 240px;
+    max-width: calc(100vw - 2rem);
+    /* --toast-bg, --toast-border, --toast-accent di-set oleh JS */
+    background: var(--toast-bg, linear-gradient(135deg, #1a2e24 0%, #0d1a15 100%));
+    border: 1px solid var(--toast-border, rgba(var(--color-primary-rgb), 0.25));
+    box-shadow: 0 20px 60px -10px rgba(0,0,0,0.55),
+                0 0 0 1px rgba(var(--color-primary-rgb), 0.05);
+    color: #fff;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    overflow: hidden;
+}
+#toast-icon-wrap {
+    width: 36px; height: 36px;
+    border-radius: 11px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    background: var(--toast-icon-bg, rgba(var(--color-primary-rgb), 0.18));
+    color: var(--toast-accent, var(--color-primary));
+    font-size: 15px;
+}
+#toast-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    min-width: 0;
+}
+#toast-title {
+    font-size: 10px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--toast-accent, var(--color-primary));
+    opacity: 0.9;
+    display: none;
+}
+#toast-message {
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1.35;
+    white-space: normal;
+    word-break: break-word;
+}
+#toast-close {
+    width: 26px; height: 26px;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.06);
+    border: none;
+    color: rgba(255,255,255,0.38);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    font-size: 11px;
+    flex-shrink: 0;
+    transition: all 0.15s;
+}
+#toast-close:hover { background: rgba(255,255,255,0.15); color: #fff; }
+
+/* Progress bar — warna dari JS via --toast-accent */
+#toast-progress {
+    position: absolute;
+    bottom: 0; left: 0;
+    height: 3px;
+    border-radius: 0 0 18px 18px;
+    background: var(--toast-accent, var(--color-primary));
+    opacity: 0.75;
+    transition: width linear;
+    width: 100%;
+}
+
+.border-2 { border-width: 1px !important; }
+
+/* === 5. DARK MODE OVERRIDES === */
+html.dark body { background-color: #020617; color: #f8fafc; }
+html.dark #app-container { background-color: #0f172a; border-color: rgba(51, 65, 85, 0.5); }
+html.dark .glass-header { background: rgba(15, 23, 42, 0.97); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom-color: rgba(30, 41, 59, 0.8); box-shadow: 0 2px 20px -4px rgba(0, 0, 0, 0.3); }
+html.dark .glass-nav { background: rgba(15, 23, 42, 0.97); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-top-color: rgba(30, 41, 59, 0.8); box-shadow: 0 -8px 24px -8px rgba(0, 0, 0, 0.4); }
+html.dark .card-modern { background-color: #1e293b !important; border-color: rgba(51, 65, 85, 0.6) !important; box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.3); }
+html.dark .card-modern:hover { border-color: #475569 !important; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4); }
+html.dark .admin-input { background-color: #0f172a !important; border-color: #1e293b !important; color: #f1f5f9 !important; box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.25); }
+html.dark .admin-input:focus { border-color: var(--color-primary) !important; box-shadow: 0 0 0 3px rgba(var(--color-primary-rgb), 0.15), inset 0 1px 3px rgba(0, 0, 0, 0.25) !important; }
+html.dark .custom-radio:checked + div { background-color: rgba(var(--color-primary-rgb), 0.05); border-color: var(--color-primary); }
+html.dark .pull-indicator { background-color: #334155; }
+html.dark .modal-bottom-sheet:hover .pull-indicator { background-color: #475569; }
+
+/* === 6. THERMAL PRINT STYLES === */
+#thermal-print-section { display: none; }
+@media print {
+    @page { margin: 0; size: 58mm auto; }
+    html, body { 
+        background-color: #fff !important; 
+        color: #000 !important; 
+        margin: 0 !important; 
+        padding: 0 !important; 
+        width: 58mm !important; 
+    }
+    #app-container, #global-loader, #toast, .fixed, .absolute { 
+        display: none !important; 
+        height: 0 !important; 
+        opacity: 0 !important; 
+        overflow: hidden !important; 
+    }
+    #thermal-print-section { 
+        display: block !important; 
+        width: 58mm !important; 
+        max-width: 58mm !important; 
+        margin: 0 !important; 
+        padding: 2mm !important; 
+        background-color: #fff !important; 
+        color: #000 !important; 
+        opacity: 1 !important; 
+        visibility: visible !important; 
+    }
+    #thermal-print-section * { 
+        font-family: 'Courier New', Courier, monospace !important; 
+        font-size: 11px !important; 
+        font-weight: bold !important; 
+        color: #000 !important; 
+        line-height: 1.2 !important; 
+        box-sizing: border-box !important; 
+    }
+    * { 
+        -webkit-print-color-adjust: exact !important; 
+        print-color-adjust: exact !important; 
+    }
+}
