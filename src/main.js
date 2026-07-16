@@ -1472,7 +1472,7 @@ window.rCat = () => {
                 <div class="flex items-center gap-3 overflow-hidden">
                     <div class="w-10 h-10 rounded-xl ${iconColor} flex items-center justify-center shrink-0"><i class="fa-solid ${filterIcon} text-lg"></i></div>
                     <div class="flex flex-col min-w-0 pr-2">
-                        <span class="text-[10px] text-slate-400 dark:text-slate-500 font-bold uppercase tracking-widest">${filterLabel}</span>
+                        <span class="text-[10px] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-widest">${filterLabel}</span>
                         <span class="text-sm font-black text-slate-800 dark:text-white truncate leading-tight mt-0.5">${esc(filterValue)}</span>
                     </div>
                 </div>
@@ -1544,7 +1544,7 @@ window.rCat = () => {
         if (p.priceNormal && p.priceNormal > p.price) {
             let pct = Math.round(((p.priceNormal - p.price) / p.priceNormal) * 100);
             discPill = `<span class="bg-rose-500 text-white px-2 py-0.5 rounded-full text-[8px] font-black flex items-center gap-1 whitespace-nowrap uppercase tracking-wider shadow-sm"><i class="fa-solid fa-tags"></i> -${pct}%</span>`;
-            priceNormalHtml = `<p class="text-[10px] text-slate-400 dark:text-slate-500 line-through mb-0.5 font-bold">${fCur(p.priceNormal)}</p>`;
+            priceNormalHtml = `<p class="text-[10px] text-slate-500 dark:text-slate-400 line-through mb-0.5 font-bold">${fCur(p.priceNormal)}</p>`;
         }
 
         // LOGIKA PO PILL (PINDAH KE BAWAH, SEJAJAR DENGAN LABEL OFFICIAL)
@@ -1584,7 +1584,7 @@ window.rCat = () => {
             ${(p.wholesale?.length && !p.variants?.length) ? `<span class="bg-amber-100 text-amber-700 dark:bg-amber-900/50 dark:text-amber-400 px-2 py-0.5 rounded-full text-[8px] font-black flex items-center gap-1 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-layer-group"></i> Grosir</span>` : ''}
         </div>`;
         
-        let unt = `<span class="text-[9px] text-slate-400 dark:text-slate-500 font-bold ml-0.5 mb-0.5 uppercase tracking-wide">/${esc(p.unit||'PCS')}</span>`;
+        let unt = `<span class="text-[9px] text-slate-500 dark:text-slate-400 font-bold ml-0.5 mb-0.5 uppercase tracking-wide">/${esc(p.unit||'PCS')}</span>`;
         
         if (cView === 'grid') {
             return `
@@ -1601,7 +1601,7 @@ window.rCat = () => {
                         <div>
                             ${p.variants && p.variants.length > 0 ? '' : priceNormalHtml}
                             <p class="text-[var(--color-primary)] font-black text-sm sm:text-[15px] leading-none tracking-tight">
-                                ${p.variants && p.variants.length > 0 ? '<span class="text-[10px] sm:text-xs text-slate-400 dark:text-slate-500 font-bold uppercase tracking-wider">PILIH VARIAN</span>' : fCur(p.price)}
+                                ${p.variants && p.variants.length > 0 ? '<span class="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider">PILIH VARIAN</span>' : fCur(p.price)}
                             </p>
                             ${p.variants && p.variants.length > 0 ? '' : unt}
                         </div>
@@ -1626,7 +1626,7 @@ window.rCat = () => {
                         <div>
                             ${p.variants && p.variants.length > 0 ? '' : priceNormalHtml}
                             <p class="text-[var(--color-primary)] font-black text-sm sm:text-[15px] leading-none tracking-tight">
-                                ${p.variants && p.variants.length > 0 ? '<span class="text-[10px] sm:text-xs text-slate-400 dark:text-slate-500 font-bold uppercase tracking-wider">PILIH VARIAN</span>' : fCur(p.price)}
+                                ${p.variants && p.variants.length > 0 ? '<span class="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider">PILIH VARIAN</span>' : fCur(p.price)}
                             </p>
                             ${p.variants && p.variants.length > 0 ? '' : unt}
                         </div>
@@ -1827,7 +1827,7 @@ const rProdMod = () => {
     
 // KONTROL HARGA: Tampilkan teks "Pilih Varian" jika warna belum dipilih
     if (hV && cVar === null) {
-        setH('product-modal-price', '<span class="text-base sm:text-lg text-slate-400 dark:text-slate-500 font-bold uppercase tracking-wider">Pilih Warna/Varian</span>');
+        setH('product-modal-price', '<span class="text-base sm:text-lg text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider">Pilih Warna/Varian</span>');
     } else {
         // Ambil harga yang sedang aktif (Varian atau Base)
         let actPrice = v?.price ?? p.price;
@@ -1989,7 +1989,7 @@ const rProdMod = () => {
                 
                 let btnClass = "";
                 if (!isVarSelectable) {
-                    btnClass = "bg-slate-100 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700 text-slate-400 dark:text-slate-500 opacity-60 cursor-not-allowed";
+                    btnClass = "bg-slate-100 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 opacity-60 cursor-not-allowed";
                 } else if (x === cVar) {
                     btnClass = "bg-emerald-50 border-emerald-500 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400 shadow-sm";
                 } else {
@@ -4851,7 +4851,7 @@ window.openOrderDetail = i => {
                 <div class="space-y-3">${o.items.map(t=>`
                     <div class="flex justify-between items-center bg-slate-50 dark:bg-slate-900 p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
                         <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 flex items-center justify-center text-slate-400 dark:text-slate-500 shrink-0"><i class="fa-solid fa-tag text-sm"></i></div>
+                            <div class="w-10 h-10 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 flex items-center justify-center text-slate-500 dark:text-slate-400 shrink-0"><i class="fa-solid fa-tag text-sm"></i></div>
                             <div>
                                 <p class="font-black text-sm text-slate-900 dark:text-white">${esc(t.name)} ${t.variantName?`<span class="bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-1.5 py-0.5 rounded-xl border border-slate-300 dark:border-slate-600 text-[9px] ml-1.5">${esc(t.variantName)}</span>`:''}${t.poTime?`<span class="bg-amber-100 dark:bg-amber-900/50 text-amber-600 dark:text-amber-400 px-1.5 py-0.5 rounded-xl text-[8px] font-bold border border-amber-200 dark:border-amber-800 uppercase ml-1.5 whitespace-nowrap">PO ${esc(t.poTime)}</span>`:''}</p>
                                 <p class="text-[11px] text-slate-500 dark:text-slate-400 font-bold mt-1">${parseFloat(t.qty)} ${esc(t.unit||'pcs')} x ${fCur(t.effectivePrice)}</p>
@@ -5574,7 +5574,7 @@ window.rAdmItms = t => {
     setH('admin-list-container', i.map(x => {
         let isP = t==='products', isOff = isP && (x.isActive==='false'||x.isActive===false);
         let bC = isOff ? 'border-rose-200 bg-rose-50/50 dark:border-rose-900/50 dark:bg-rose-900/10' : 'border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-800';
-        let tC = isOff ? 'text-slate-400 dark:text-slate-500 line-through' : 'text-slate-800 dark:text-slate-100';
+        let tC = isOff ? 'text-slate-500 dark:text-slate-400 line-through' : 'text-slate-800 dark:text-slate-100';
         
         let img = x.img 
             ? `<div class="w-16 h-16 sm:w-20 sm:h-20 shrink-0 bg-white border border-slate-100 dark:border-slate-700/60 rounded-2xl p-1.5 flex items-center justify-center overflow-hidden"><img loading="lazy" src="${esc(x.img)}" onerror="this.onerror=null;this.src='https://placehold.co/100?text=Img'" class="w-full h-full object-contain ${isOff?'grayscale opacity-50':''}"></i></div>`
