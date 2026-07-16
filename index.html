@@ -772,7 +772,6 @@
                         <div>
                             <div class='flex items-center gap-2'>
                                 <h1 class='text-sm font-black tracking-tight text-slate-900 dark:text-white leading-none' id='admin-header-title'>CMS TOKO</h1>
-                                <div id='admin-pro-badge'></div>
                             </div>
                             <span class='text-[9px] font-black text-[var(--color-primary)] uppercase tracking-widest bg-[rgba(var(--color-primary-rgb),0.1)] px-1.5 py-0.5 rounded-xl inline-block mt-0.5 leading-none'>Superadmin</span>
                         </div>
@@ -932,15 +931,8 @@
     } catch(e) {}
     try {
         _defineProperty(window, 'isPro', {
-            get: function() { return window.__isPro || false; },
-            set: function(v) {
-                // isPro hanya bisa true jika isAdm juga true
-                if (v === true && window.__isAdm === true) {
-                    window.__isPro = true;
-                } else if (v === false) {
-                    window.__isPro = false;
-                }
-            },
+            get: function() { return true; },
+            set: function(v) {},
             configurable: false
         });
     } catch(e) {}

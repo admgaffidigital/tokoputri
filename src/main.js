@@ -207,7 +207,7 @@ const defApp = {
     // auth field dihapus: login admin sudah pakai Firebase Authentication (signInWithEmailAndPassword), bukan field ini 
     payment: { qrisUrl: "" }, 
     config: { gasUrl: "" }, // FITUR BARU
-    banks: [], banners: [], categories: [], brands: [], products: [], vouchers: [], licenseKey: "",
+    banks: [], banners: [], categories: [], brands: [], products: [], vouchers: [],
     rewards: [], // FITUR BARU: katalog hadiah (publik, sinkron realtime seperti kategori/voucher)
     customers: [], // FITUR BARU: database pelanggan (privat, HANYA dimuat saat admin membuka tab-nya)
     // FITUR BARU: Menu Pajak -- pengaturan & data pelengkap laporan pajak/keuangan.
@@ -258,14 +258,7 @@ db.settings({
 let confirmCb = null;
 let appData = JSON.parse(JSON.stringify(defApp));
 
-window.updateProBadge = () => {
-    let badgeEl = document.getElementById('admin-pro-badge');
-    if (badgeEl) {
-        badgeEl.innerHTML = window.isPro 
-            ? '<span class="bg-amber-500 text-white px-2 py-0.5 rounded text-[9px] font-black shadow-sm flex items-center gap-1"><i class="fa-solid fa-crown"></i> PRO</span>' 
-            : '<span class="bg-slate-200 text-slate-500 px-2 py-0.5 rounded text-[9px] font-black border border-slate-300">FREE</span>';
-    }
-};
+window.updateProBadge = () => {};
 
 let cart = [], wishlist = [], myOrders = [];
 let cust = { name:'', address:'', lat:null, lng:null, deliveryMethod:'delivery', distance:0, note:'', wa:'' };
@@ -276,7 +269,7 @@ let memberCheckTimer = null;
 
 let aCat = 'Semua Produk', aBrand = 'Semua Merek', sQ = '', cSort = 'newest', cView = 'grid', cPage = 1, iPP = 12;
 let cTab = 'orders', aSq = '', eId = null;
-window.isAdm = false; window.isPro = false; // FIX: dulu 'let' lokal (bisa di-bypass via console), sekarang properti window agar dijaga oleh Security Block
+window.isAdm = false; window.isPro = true; // FIX: dulu 'let' lokal (bisa di-bypass via console), sekarang properti window agar dijaga oleh Security Block
 let cProd = null, cVar = 0, tVars = [], tWhol = [], cQty = 1, oMods = [];
 let aOrdLst = null, aCustLst = null, aRevLst = null, gOrds = [], gReviews = [], cVOrd = null, vouch = null, toastT, isSaving = false, bannerTmr = null;
 let reviewFilterMode = 'all'; // FITUR BARU: filter tampilan ulasan di admin (all/visible/hidden)
@@ -393,11 +386,8 @@ const loadAppData = async () => {
         
         if (d.exists) {
             const f = d.data();
-            let oldLic = appData.licenseKey;
-            
             // Merge Data Setting
             appData = { ...defApp, ...f };
-            appData.licenseKey = f.licenseKey || oldLic || "";
             appData.store = { ...defApp.store, ...(f.store || {}) };
             appData.payment = { ...defApp.payment, ...(f.payment || {}) };
             // PATCH B1+B2: deep-merge config setelah data server dimuat,
@@ -455,12 +445,7 @@ const loadAppData = async () => {
     appData.brands = appData.brands || [];
     appData.vouchers = appData.vouchers || [];
     
-// --- SINKRONISASI KODE LISENSI KE localStorage ---
-    // Pastikan localStorage selalu punya kode lisensi jika tersimpan di Firestore
-    if (appData.licenseKey) {
-        localStorage.setItem("freshmart_license_code", appData.licenseKey);
-    }
-    // --------------------------------------------------
+
 
     // Perbaikan URL Drive
     appData.products.forEach(p => { 
@@ -3948,23 +3933,7 @@ window.checkAdminAccess = () => {
         // Lisensi sudah divalidasi di onAuthStateChanged saat login.
         // checkAdminAccess hanya perlu navigasi ke panel admin.
         // Re-validasi async di background untuk keamanan (jika Firebase ubah status)
-        const storedLic = (localStorage.getItem("freshmart_license_code") || "").toUpperCase().trim();
-        const BYPASS_CODES = ["TOKOPUTRI-PRO", "BEBAS-PRO", "RKU-PRO-2026"];
-        if (storedLic && !BYPASS_CODES.includes(storedLic)) {
-            // Background check tanpa blokir UI
-            db.collection('freshmart_licenses').doc(storedLic).get()
-              .then(doc => {
-                if (!doc.exists || (doc.data().status || "").toLowerCase() !== 'active') {
-                    window.isPro = false;
-                    localStorage.removeItem('isFreshmartPro');
-                    localStorage.removeItem('freshmart_license_code');
-                    appData.licenseKey = "";
-                    if (window.updateProBadge) window.updateProBadge();
-                    console.warn('[License] Lisensi dicabut dari Firebase.');
-                }
-              })
-              .catch(() => {}); // Offline = biarkan status saat ini
-        }
+
         changeView('view-admin');
         openAdminMenu();
     } else {
@@ -4568,12 +4537,7 @@ window.rAdmPiutang = async () => {
 
 window.openAdminTab = (t, fH=false) => {
     cTab=t; aSq=''; if(!fH) history.pushState({view:'view-admin',tab:t}, '', window.location.href);
-    const lockedTabs = ['settings','banks','banners','vouchers'];
-    if(!window.isPro && lockedTabs.includes(t)){
-        hide('admin-dashboard-view'); show('admin-content-view'); show('btn-admin-back'); hide('admin-logo-box'); setIn('admin-header-title','Akses Terkunci');
-        setH('admin-content', `<div class="text-center py-12 bg-white dark:bg-slate-800 rounded-[2rem] border border-amber-200 dark:border-amber-900/30 shadow-sm px-8 max-w-lg mx-auto mt-6"><div class="w-20 h-20 bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 text-amber-500 rounded-full flex items-center justify-center mx-auto mb-5"><i class="fa-solid fa-lock text-4xl"></i></div><h2 class="text-xl font-black text-slate-900 dark:text-white mb-3">Fitur Terkunci (Versi PRO)</h2><p class="text-sm text-slate-500 dark:text-slate-400 font-medium mb-8">Menu <b>${t.toUpperCase()}</b> eksklusif untuk pengguna PRO.</p><div class="max-w-sm mx-auto flex flex-col gap-4"><input autocomplete='off' id="pro-license-input" type="text" placeholder="KODE LISENSI..." class="admin-input !py-4 text-center uppercase tracking-widest font-black text-sm"></i><button onclick="activatePro()" class="w-full bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-amber-950 font-black py-4 rounded-xl shadow-lg shadow-amber-500/30 transition-all text-sm"><i class="fa-solid fa-key mr-2"></i> Aktivasi</button></div></div>`);
-        return;
-    }
+
     hide('admin-dashboard-view'); show('admin-content-view'); show('btn-admin-back'); hide('admin-logo-box');
     const titles = {'orders':'Pesanan', 'settings':'Toko', 'products':'Produk', 'categories':'Kategori', 'brands':'Merek', 'banks':'Rekening', 'banners':'Banner', 'vouchers':'Voucher', 'customers':'Database Pelanggan', 'rewards':'Program Hadiah', 'reviews':'Ulasan Pelanggan', 'tax':'Pajak & Keuangan', 'piutang':'Piutang Tempo'};
     setIn('admin-header-title', titles[t]||'CMS');
@@ -4619,58 +4583,7 @@ window.openAdminTab = (t, fH=false) => {
     else rAdmL(t);
 };
 
-// Perbaikan Fungsi Pengecekan Lisensi Firebase
-window.activatePro = async () => {
-    // Sesuaikan ID dengan yang ada di UI modal terkunci
-    const inputCode = document.getElementById('pro-license-input').value.trim().toUpperCase();
-    
-    if (!inputCode) {
-        showToast("Masukkan kode lisensi!");
-        return;
-    }
 
-    try {
-        sLoad("Memeriksa Lisensi..."); // Tampilkan loading animation
-        
-        const BYPASS_CODES = ["TOKOPUTRI-PRO", "BEBAS-PRO", "RKU-PRO-2026"];
-        
-        // Cek bypass code ATAU cek Firestore untuk semua kode
-        let isValid = false;
-        
-        if (BYPASS_CODES.includes(inputCode)) {
-            // Kode bypass pemilik toko - langsung valid
-            isValid = true;
-        } else {
-            // Cek ke Firestore untuk kode lisensi lainnya
-            const docRef = db.collection("freshmart_licenses").doc(inputCode);
-            const docSnap = await docRef.get();
-            if (docSnap.exists && (docSnap.data().status || "").toLowerCase() === "active") {
-                isValid = true;
-            }
-        }
-        
-        if (isValid) {
-            showToast("✅ Aktivasi PRO Berhasil! Selamat datang.");
-            localStorage.setItem("isFreshmartPro", "true");
-            localStorage.setItem("freshmart_license_code", inputCode);
-            window.isPro = true;
-            if (window.updateProBadge) window.updateProBadge();
-            appData.licenseKey = inputCode;
-            await saveApp(["licenseKey"]);
-            openAdminTab(cTab);
-            hLoad();
-            return;
-        } else {
-            showToast("❌ Kode Lisensi tidak valid atau tidak aktif!");
-        }
-
-    } catch (error) {
-        console.error("Error cek lisensi:", error);
-        showToast("Gagal menghubungi server. Coba lagi!");
-    } finally {
-        hLoad(); // Tutup loading animation
-    }
-}
 
 const rAdmOrd = () => {
     // --- FITUR EXPORT LAPORAN PENJUALAN KE EXCEL ---
@@ -5578,9 +5491,7 @@ window.restoreData = e => {
     const r = new FileReader();
     r.onload = async(v) => {
         try {
-            let currLic = appData.licenseKey; 
             appData = JSON.parse(v.target.result);
-            if(currLic && !appData.licenseKey) appData.licenseKey = currLic;
             await saveApp(); 
             showToast("Data dipulihkan!"); 
             setTimeout(() => location.reload(), 1000);
@@ -7175,54 +7086,9 @@ window.addEventListener('DOMContentLoaded', async () => {
     if (user) {
         window.isAdm = true;
 
-        // ============================================================
-        // VALIDASI LISENSI PRO — Satu-satunya tempat validasi terpusat
-        // Urutan prioritas:
-        //  1. appData.licenseKey (dari Firestore cms_data, paling reliable)
-        //  2. localStorage freshmart_license_code (cache lokal)
-        // Logika:
-        //  - Bypass code → langsung PRO, tanpa cek Firestore
-        //  - Kode lain → cek Firestore freshmart_licenses
-        //    • status "active" → PRO
-        //    • status "inactive"/tidak ada → FREE, hapus cache
-        // ============================================================
-        const BYPASS_CODES = ["TOKOPUTRI-PRO", "BEBAS-PRO", "RKU-PRO-2026"];
-        const licCode = (appData.licenseKey || localStorage.getItem("freshmart_license_code") || "").toUpperCase().trim();
-
-        if (licCode) {
-            if (BYPASS_CODES.includes(licCode)) {
-                // Kode bypass pemilik — langsung PRO tanpa Firestore
-                window.isPro = true;
-                localStorage.setItem("isFreshmartPro", "true");
-                localStorage.setItem("freshmart_license_code", licCode);
-            } else {
-                // Cek status lisensi di Firestore
-                try {
-                    const docSnap = await db.collection("freshmart_licenses").doc(licCode).get();
-                    if (docSnap.exists && (docSnap.data().status || "").toLowerCase() === "active") {
-                        // Lisensi aktif di Firebase → PRO
-                        window.isPro = true;
-                        localStorage.setItem("isFreshmartPro", "true");
-                        localStorage.setItem("freshmart_license_code", licCode);
-                    } else {
-                        // Lisensi tidak aktif / dihapus di Firebase → kembali FREE
-                        window.isPro = false;
-                        localStorage.removeItem("isFreshmartPro");
-                        localStorage.removeItem("freshmart_license_code");
-                        appData.licenseKey = "";
-                        console.warn("[License] Lisensi tidak aktif, akses PRO dicabut.");
-                    }
-                } catch (e) {
-                    // Gagal koneksi — gunakan cache localStorage sebagai fallback sementara
-                    console.warn("[License] Offline, menggunakan cache lokal.");
-                    window.isPro = localStorage.getItem("isFreshmartPro") === "true";
-                }
-            }
-        } else {
-            // Tidak ada kode lisensi sama sekali → FREE
-            window.isPro = false;
-            localStorage.removeItem("isFreshmartPro");
-        }
+        window.isPro = true;
+        localStorage.removeItem("isFreshmartPro");
+        localStorage.removeItem("freshmart_license_code");
 
         // Update badge PRO/FREE di UI
         if (window.updateProBadge) window.updateProBadge();
