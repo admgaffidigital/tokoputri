@@ -26,6 +26,9 @@
     <noscript><link crossorigin='anonymous' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css' rel='stylesheet'/></noscript>
     <!-- Vite entry point -->
     <script type="module" src="/src/main.js"></script>
+    <!-- Critical CSS: sembunyikan body sampai JS siap, mencegah FOUC -->
+    <style>body{visibility:hidden;opacity:0;transition:opacity .25s ease}body.app-ready{visibility:visible;opacity:1}</style>
+    <script>setTimeout(()=>document.body.classList.add('app-ready'),5000)</script>
 </head>
 <body>
     <!-- UI Components Global -->
@@ -39,7 +42,7 @@
         <button id='toast-close' onclick="clearTimeout(toastT); document.getElementById('toast').style.top='-160px'"><i class='fa-solid fa-xmark'></i></button>
         <div id='toast-progress'></div>
     </div>
-    <div class='fixed inset-0 z-[9999] bg-white/95 dark:bg-[#0f172a]/95 backdrop-blur-md flex flex-col items-center justify-center hidden' id='global-loader'>
+    <div class='fixed inset-0 z-[9999] bg-white/95 dark:bg-[#0f172a]/95 backdrop-blur-md flex flex-col items-center justify-center' id='global-loader' style='display:none'>
         <div class='absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-emerald-500/20 rounded-full blur-[3rem] pointer-events-none'></div>
         <div class='relative flex flex-col items-center z-10'>
             <div class='relative w-28 h-28 mb-8 flex items-center justify-center'>

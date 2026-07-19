@@ -359,8 +359,8 @@ try { myOrders = JSON.parse(sL('freshmart_my_orders')) || []; } catch(e) {}
 // sisa sesi sebelumnya saat halaman di-refresh.
 history.replaceState({view: 'view-catalog'}, '', '');
 
-const sLoad = t => { if(t) setIn('loader-text', t); show('global-loader'); };
-const hLoad = () => hide('global-loader');
+const sLoad = t => { if(t) setIn('loader-text', t); const gl = el('global-loader'); if(gl) { gl.style.display = 'flex'; } };
+const hLoad = () => { const gl = el('global-loader'); if(gl) gl.style.display = 'none'; document.body.classList.add('app-ready'); };
 
 // Fungsi untuk membersihkan keranjang dari produk yang sudah dihapus/dinonaktifkan Admin
 const sanitizeCart = () => {
