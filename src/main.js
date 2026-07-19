@@ -6642,7 +6642,7 @@ window.openRestockModal = (id) => {
                         <p class="text-[10px] font-bold text-slate-400 mt-0.5">Stok saat ini: <span class="text-blue-500 font-black">${parseFloat(v.stock)||0}</span></p>
                     </div>
                 </div>
-                <input type="number" id="restock-var-${i}" min="0" placeholder="Tambah" class="admin-input !py-2.5 !px-3 w-24 text-center text-sm bg-white dark:bg-slate-800 shadow-sm shrink-0" value="">
+                <input type="number" id="restock-var-${i}" min="0" placeholder="Tambah" class="admin-input !py-2.5 !px-3 !w-28 text-center text-sm bg-white dark:bg-slate-800 shadow-sm shrink-0" value="">
             </div>`
         ).join('');
     } else {
@@ -6652,7 +6652,7 @@ window.openRestockModal = (id) => {
                     <p class="text-xs font-black text-slate-800 dark:text-white truncate">${esc(p.name)}</p>
                     <p class="text-[10px] font-bold text-slate-400 mt-0.5">Stok saat ini: <span class="text-blue-500 font-black">${parseFloat(p.stock)||0}</span></p>
                 </div>
-                <input type="number" id="restock-main" min="0" placeholder="Tambah" class="admin-input !py-2.5 !px-3 w-24 text-center text-sm bg-white dark:bg-slate-800 shadow-sm shrink-0" value="">
+                <input type="number" id="restock-main" min="0" placeholder="Tambah" class="admin-input !py-2.5 !px-3 !w-28 text-center text-sm bg-white dark:bg-slate-800 shadow-sm shrink-0" value="">
             </div>`;
     }
 
