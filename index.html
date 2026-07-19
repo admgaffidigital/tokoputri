@@ -41,26 +41,82 @@
         <button id='toast-close' onclick="clearTimeout(toastT); document.getElementById('toast').style.top='-160px'"><i class='fa-solid fa-xmark'></i></button>
         <div id='toast-progress'></div>
     </div>
-    <div class='fixed inset-0 z-[9999] bg-white/95 dark:bg-[#0f172a]/95 backdrop-blur-md flex flex-col items-center justify-center' id='global-loader'>
-        <div class='absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-emerald-500/20 rounded-full blur-[3rem] pointer-events-none'></div>
-        <div class='relative flex flex-col items-center z-10'>
-            <div class='relative w-28 h-28 mb-8 flex items-center justify-center'>
-                <div class='absolute inset-0 rounded-full border-t-4 border-b-4 border-emerald-500/30 animate-[spin_3s_linear_infinite]'></div>
-                <div class='absolute inset-2 rounded-full border-l-4 border-r-4 border-emerald-500/60 animate-[spin_2s_linear_infinite_reverse]'></div>
-                <div class='relative w-16 h-16 bg-gradient-to-tr from-emerald-400 to-emerald-600 rounded-[1.25rem] shadow-glow flex items-center justify-center animate-pulse'>
-                    <i class='fa-solid fa-store text-3xl text-white'></i>
+    <div class='fixed inset-0 z-[9999] flex flex-col items-center justify-center overflow-hidden' id='global-loader'>
+        <!-- Background gradient -->
+        <div style='position:absolute;inset:0;background:linear-gradient(135deg,#f0fdf4 0%,#ecfdf5 40%,#f0fdfa 70%,#fffbeb 100%)'></div>
+        <!-- Dark mode bg -->
+        <style>.dark #global-loader{background:linear-gradient(135deg,#020617 0%,#0f172a 40%,#0c1a2e 70%,#111827 100%)!important}</style>
+        <!-- Animated blobs -->
+        <div style='position:absolute;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(16,185,129,0.15) 0%,transparent 70%);top:-100px;left:-100px;animation:blobMove1 8s ease-in-out infinite'></div>
+        <div style='position:absolute;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(52,211,153,0.12) 0%,transparent 70%);bottom:-80px;right:-80px;animation:blobMove2 10s ease-in-out infinite'></div>
+        <div style='position:absolute;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(245,158,11,0.08) 0%,transparent 70%);top:40%;right:10%;animation:blobMove3 12s ease-in-out infinite'></div>
+        <!-- Floating particles -->
+        <div style='position:absolute;inset:0;overflow:hidden;pointer-events:none'>
+            <div style='position:absolute;width:6px;height:6px;border-radius:50%;background:#10b981;opacity:0.4;top:15%;left:20%;animation:floatUp 6s ease-in-out infinite'></div>
+            <div style='position:absolute;width:4px;height:4px;border-radius:50%;background:#34d399;opacity:0.3;top:70%;left:10%;animation:floatUp 8s 1s ease-in-out infinite'></div>
+            <div style='position:absolute;width:5px;height:5px;border-radius:50%;background:#059669;opacity:0.35;top:30%;right:15%;animation:floatUp 7s 2s ease-in-out infinite'></div>
+            <div style='position:absolute;width:3px;height:3px;border-radius:50%;background:#f59e0b;opacity:0.4;top:60%;right:25%;animation:floatUp 9s 0.5s ease-in-out infinite'></div>
+            <div style='position:absolute;width:5px;height:5px;border-radius:50%;background:#10b981;opacity:0.25;top:80%;left:40%;animation:floatUp 10s 3s ease-in-out infinite'></div>
+            <div style='position:absolute;width:4px;height:4px;border-radius:50%;background:#6ee7b7;opacity:0.3;top:20%;left:70%;animation:floatUp 7s 1.5s ease-in-out infinite'></div>
+        </div>
+        <!-- Main content -->
+        <div style='position:relative;z-index:10;display:flex;flex-direction:column;align-items:center;gap:0'>
+            <!-- Logo ring -->
+            <div style='position:relative;width:120px;height:120px;margin-bottom:28px;display:flex;align-items:center;justify-content:center'>
+                <!-- Outer ring -->
+                <div style='position:absolute;inset:0;border-radius:50%;border:2px solid rgba(16,185,129,0.2);animation:spinRing 8s linear infinite'></div>
+                <!-- Dashed ring -->
+                <div style='position:absolute;inset:8px;border-radius:50%;border:2px dashed rgba(16,185,129,0.3);animation:spinRing 5s linear infinite reverse'></div>
+                <!-- Glow ring -->
+                <div style='position:absolute;inset:16px;border-radius:50%;background:radial-gradient(circle,rgba(16,185,129,0.1) 0%,transparent 70%);animation:pulse 2s ease-in-out infinite'></div>
+                <!-- Logo box -->
+                <div style='position:relative;width:68px;height:68px;border-radius:20px;background:linear-gradient(135deg,#10b981,#059669);display:flex;align-items:center;justify-content:center;box-shadow:0 0 40px rgba(16,185,129,0.4),0 8px 32px rgba(16,185,129,0.3);animation:logoFloat 3s ease-in-out infinite'>
+                    <i class='fa-solid fa-store' style='font-size:28px;color:white'></i>
                 </div>
+                <!-- Orbit dot -->
+                <div style='position:absolute;width:10px;height:10px;border-radius:50%;background:#10b981;box-shadow:0 0 8px #10b981;animation:orbitDot 3s linear infinite;top:5px;left:50%;margin-left:-5px;transform-origin:5px 55px'></div>
             </div>
-            <h2 class='text-sm sm:text-base font-black tracking-widest text-slate-800 dark:text-white uppercase mb-4 drop-shadow-sm' id='loader-text'>Memuat Data...</h2>
-            <div class='flex gap-2 items-center'>
-                <div class='w-2.5 h-2.5 rounded-full bg-emerald-500 animate-bounce' style='animation-delay: 0s'></div>
-                <div class='w-2.5 h-2.5 rounded-full bg-emerald-500 animate-bounce' style='animation-delay: 0.15s'></div>
-                <div class='w-2.5 h-2.5 rounded-full bg-emerald-500 animate-bounce' style='animation-delay: 0.3s'></div>
+            <!-- Store name -->
+            <div style='text-align:center;margin-bottom:6px'>
+                <h1 id='loader-store-name' style='font-size:22px;font-weight:900;letter-spacing:0.15em;color:#0f172a;text-transform:uppercase;margin:0;line-height:1'>TOKO PUTRI</h1>
+                <p style='font-size:9px;font-weight:700;letter-spacing:0.3em;color:#10b981;text-transform:uppercase;margin:6px 0 0'>Solusi Teknik & Perkakas</p>
+            </div>
+            <!-- Divider -->
+            <div style='width:60px;height:2px;background:linear-gradient(90deg,transparent,#10b981,transparent);margin:16px 0;border-radius:2px'></div>
+            <!-- Loading text -->
+            <p id='loader-text' style='font-size:11px;font-weight:800;letter-spacing:0.2em;color:#475569;text-transform:uppercase;margin:0 0 20px;min-height:16px'>Memuat Data...</p>
+            <!-- Progress bar -->
+            <div style='width:200px;height:4px;background:rgba(16,185,129,0.15);border-radius:99px;overflow:hidden;margin-bottom:20px'>
+                <div style='height:100%;width:40%;background:linear-gradient(90deg,#10b981,#34d399,#10b981);border-radius:99px;animation:shimmerBar 1.5s ease-in-out infinite;background-size:200% 100%'></div>
+            </div>
+            <!-- Dots -->
+            <div style='display:flex;gap:8px;align-items:center'>
+                <div style='width:8px;height:8px;border-radius:50%;background:#10b981;animation:dotBounce 1.2s 0s ease-in-out infinite'></div>
+                <div style='width:8px;height:8px;border-radius:50%;background:#34d399;animation:dotBounce 1.2s 0.2s ease-in-out infinite'></div>
+                <div style='width:8px;height:8px;border-radius:50%;background:#6ee7b7;animation:dotBounce 1.2s 0.4s ease-in-out infinite'></div>
             </div>
         </div>
-        <div class='absolute bottom-10 left-0 w-full text-center z-10'>
-            <p class='text-[9px] font-black text-slate-400 uppercase tracking-widest flex items-center justify-center gap-2'><i class='fa-solid fa-shield-halved text-emerald-500'></i> Secure Connection</p>
+        <!-- Bottom badge -->
+        <div style='position:absolute;bottom:32px;left:0;right:0;text-align:center;z-index:10'>
+            <span style='font-size:9px;font-weight:700;letter-spacing:0.25em;color:#94a3b8;text-transform:uppercase;display:inline-flex;align-items:center;gap:6px'>
+                <i class='fa-solid fa-shield-halved' style='color:#10b981;font-size:10px'></i> Secure Connection
+            </span>
         </div>
+        <!-- Keyframes -->
+        <style>
+            @keyframes blobMove1{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(30px,20px) scale(1.05)}}
+            @keyframes blobMove2{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-20px,-30px) scale(1.08)}}
+            @keyframes blobMove3{0%,100%{transform:translate(0,0)}50%{transform:translate(15px,-20px)}}
+            @keyframes floatUp{0%,100%{transform:translateY(0) scale(1);opacity:0.4}50%{transform:translateY(-30px) scale(1.2);opacity:0.2}}
+            @keyframes spinRing{to{transform:rotate(360deg)}}
+            @keyframes pulse{0%,100%{opacity:0.5;transform:scale(1)}50%{opacity:1;transform:scale(1.1)}}
+            @keyframes logoFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+            @keyframes orbitDot{to{transform:rotate(360deg)}}
+            @keyframes shimmerBar{0%{background-position:200% 0}100%{background-position:-200% 0}}
+            @keyframes dotBounce{0%,100%{transform:translateY(0);opacity:1}50%{transform:translateY(-10px);opacity:0.5}}
+            .dark #loader-store-name{color:#f1f5f9!important}
+            .dark #loader-text{color:#94a3b8!important}
+        </style>
     </div>
     <!-- Confirm Modal -->
     <div class='fixed inset-0 z-[120] bg-slate-900/80 hidden flex items-center justify-center p-4 opacity-0 transition-opacity duration-300' id='custom-confirm-modal' onclick="if(event.target===this) closeConfirm()">
