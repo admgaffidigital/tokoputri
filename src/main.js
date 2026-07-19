@@ -1085,7 +1085,7 @@ window.openCategoryModal = () => {
     appData.categories.forEach(c => {
         let isActive = aCat === c.name;
         // Ikon kategori tetap bisa diganti gambar custom (di Pengaturan > Kategori); kalau kosong, fallback ke ikon default
-        let imgH = c.img ? `<img loading="lazy" src="${esc(c.img)}" class="w-full h-full object-cover" onerror="this.onerror=null;this.src='https://placehold.co/100?text=Cat'"></i>` : `<i class="fa-solid fa-box text-base sm:text-lg"></i>`;
+        let imgH = c.img ? `<img loading="lazy" src="${esc(c.img)}" alt="${esc(c.name)}" class="w-full h-full object-cover" onerror="this.onerror=null;this.src='https://placehold.co/100?text=Cat'"></i>` : `<i class="fa-solid fa-box text-base sm:text-lg"></i>`;
         h += `
         <button onclick="setCat('${esc(c.name)}'); closeCategoryModal()" class="w-full flex items-center gap-3.5 p-3 sm:p-3.5 rounded-2xl border transition-all active:scale-[0.98] ${isActive ? 'bg-emerald-50/80 border-emerald-500 dark:bg-emerald-900/30 dark:border-emerald-500 shadow-[0_0_0_1px_rgba(var(--color-primary-rgb),0.2)]' : 'bg-slate-50 border-slate-200 dark:bg-slate-800/50 dark:border-slate-700 hover:border-emerald-300 dark:hover:border-emerald-600'} group">
             <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-white dark:bg-slate-800 flex items-center justify-center shadow-sm shrink-0 text-slate-400 group-hover:text-emerald-500 overflow-hidden border border-slate-200 dark:border-slate-600">
@@ -1121,7 +1121,7 @@ window.openBrandModal = () => {
 
     appData.brands.forEach(b => {
         let isActive = aBrand === b.name;
-        let imgH = b.img ? `<img loading="lazy" src="${esc(b.img)}" class="w-full h-full object-contain p-1.5" ></i>` : `<i class="fa-solid fa-tag text-lg sm:text-xl"></i>`;
+        let imgH = b.img ? `<img loading="lazy" src="${esc(b.img)}" alt="${esc(b.name)}" class="w-full h-full object-contain p-1.5" ></i>` : `<i class="fa-solid fa-tag text-lg sm:text-xl"></i>`;
         h += `
         <button onclick="setBrand('${esc(b.name)}'); closeBrandModal()" class="flex flex-col items-center justify-start p-2.5 sm:p-3.5 rounded-[1.25rem] border transition-all ${isActive ? 'bg-blue-50/80 border-blue-500 dark:bg-blue-900/30 dark:border-blue-500 shadow-[0_0_0_1px_rgba(59,130,246,0.2)]' : 'bg-slate-50 border-slate-200 dark:bg-slate-800/50 dark:border-slate-700 hover:border-blue-300 dark:hover:border-blue-600'} group">
             <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-white flex items-center justify-center shadow-sm mb-2.5 text-slate-400 group-hover:text-blue-500 overflow-hidden shrink-0 border border-slate-200 dark:border-slate-600">
@@ -1291,6 +1291,15 @@ window.startBannerAutoSlide = () => {
 };
 
 window.rDyn = () => {
+    const waLink = el('footer-wa-link');
+    if (waLink) {
+        if (appData.store.wa) {
+            waLink.href = `https://wa.me/${appData.store.wa}`;
+            waLink.removeAttribute('onclick');
+        } else {
+            waLink.href = '#';
+        }
+    }
     setIn('dyn-store-name', appData.store.name || 'Nama Toko Anda');
     setIn('dyn-store-slogan', appData.store.slogan || 'Slogan Toko');
     setIn('footer-store-name', appData.store.name || 'Nama Toko Anda');
@@ -1329,7 +1338,7 @@ window.rDyn = () => {
                 </div>
                 <div class="w-[40%] relative z-10 flex items-center justify-center p-2 sm:p-4 pr-4 sm:pr-6">
                     <div class="absolute inset-0 bg-gradient-to-l from-black/10 to-transparent pointer-events-none"></div>
-                    ${b.img ? `<img loading="lazy" src="${esc(getOptImg(b.img, 'w800-rw'))}" class="w-full h-full object-contain drop-shadow-2xl transition-transform duration-700 group-hover:scale-125 group-hover:-translate-y-2 group-hover:-rotate-3" onerror="this.style.display='none'"></i>` : `<i class="fa-solid fa-gift text-6xl text-white/50 group-hover:scale-110 transition-transform"></i>`}
+                    ${b.img ? `<img loading="lazy" src="${esc(getOptImg(b.img, 'w800-rw'))}" alt="${esc(b.title || 'Promo Banner')}" class="w-full h-full object-contain drop-shadow-2xl transition-transform duration-700 group-hover:scale-125 group-hover:-translate-y-2 group-hover:-rotate-3" onerror="this.style.display='none'"></i>` : `<i class="fa-solid fa-gift text-6xl text-white/50 group-hover:scale-110 transition-transform"></i>`}
                 </div>
             </div>
         </div>`;
@@ -1402,7 +1411,7 @@ window.rDyn = () => {
         if(appData.store.categoryStyle === 'text' || !appData.store.categoryStyle) {
             return `<div onclick="filterCategory('${nameSafe}')" class="cursor-pointer shrink-0 snap-start group py-1"><div class="px-5 py-2.5 rounded-[1.25rem] border-2 transition-all duration-300 flex items-center gap-3 ${isSel ? 'bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-primary-dark)] border-transparent text-white shadow-md' : 'bg-white dark:bg-slate-800 border-slate-100 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-[var(--color-primary)] hover:shadow-md hover:-translate-y-1'}"><div class="w-6 h-6 rounded-full flex items-center justify-center ${isSel ? 'bg-white/20 text-white shadow-inner' : 'bg-slate-50 dark:bg-slate-700 text-slate-400 group-hover:bg-[var(--color-primary-light)] group-hover:text-[var(--color-primary)]'} transition-all duration-300"><i class="fa-solid fa-layer-group text-[10px]"></i></div><span class="font-black text-[11px] sm:text-xs uppercase tracking-widest pr-2">${esc(c.name)}</span></div></div>`;
         } else {
-            return `<div onclick="filterCategory('${nameSafe}')" class="flex flex-col items-center gap-3 cursor-pointer shrink-0 w-[80px] sm:w-[95px] group snap-start py-1"><div class="relative w-16 h-16 sm:w-[72px] sm:h-[72px] rounded-[1.25rem] bg-slate-50 dark:bg-slate-800 flex items-center justify-center p-2 transition-all duration-300 ${isSel ? 'bg-[var(--color-primary-light)] border-2 border-[var(--color-primary)] shadow-glow dark:bg-[var(--color-primary-dark)]/20' : 'border border-slate-200 dark:border-slate-700 shadow-sm group-hover:border-[var(--color-primary)] group-hover:shadow-lg group-hover:-translate-y-1.5'} overflow-hidden"><img loading="lazy" src="${esc(getOptImg(c.img, 'w150-rw'))}" onerror="this.onerror=null;this.src='https://placehold.co/150/10b981/ffffff?text=Cat'" class="w-full h-full object-cover rounded-xl transition-transform duration-500 group-hover:scale-110"></i></div><span class="text-[9px] sm:text-[10px] text-center w-full line-clamp-2 leading-tight px-1 ${isSel ? 'font-black text-[var(--color-primary)]' : 'font-bold text-slate-500 dark:text-slate-400 group-hover:text-[var(--color-primary)]'} uppercase tracking-widest transition-colors">${esc(c.name)}</span></div>`;
+            return `<div onclick="filterCategory('${nameSafe}')" class="flex flex-col items-center gap-3 cursor-pointer shrink-0 w-[80px] sm:w-[95px] group snap-start py-1"><div class="relative w-16 h-16 sm:w-[72px] sm:h-[72px] rounded-[1.25rem] bg-slate-50 dark:bg-slate-800 flex items-center justify-center p-2 transition-all duration-300 ${isSel ? 'bg-[var(--color-primary-light)] border-2 border-[var(--color-primary)] shadow-glow dark:bg-[var(--color-primary-dark)]/20' : 'border border-slate-200 dark:border-slate-700 shadow-sm group-hover:border-[var(--color-primary)] group-hover:shadow-lg group-hover:-translate-y-1.5'} overflow-hidden"><img loading="lazy" src="${esc(getOptImg(c.img, 'w150-rw'))}" alt="${esc(c.name)}" onerror="this.onerror=null;this.src='https://placehold.co/150/10b981/ffffff?text=Cat'" class="w-full h-full object-cover rounded-xl transition-transform duration-500 group-hover:scale-110"></i></div><span class="text-[9px] sm:text-[10px] text-center w-full line-clamp-2 leading-tight px-1 ${isSel ? 'font-black text-[var(--color-primary)]' : 'font-bold text-slate-500 dark:text-slate-400 group-hover:text-[var(--color-primary)]'} uppercase tracking-widest transition-colors">${esc(c.name)}</span></div>`;
         }
     }).join(''));
     
@@ -1414,13 +1423,13 @@ window.rDyn = () => {
         if(appData.store.brandStyle === 'text') {
             return `<div onclick="filterBrand('${nameSafe}')" class="cursor-pointer shrink-0 snap-start group py-1"><div class="px-5 py-2.5 rounded-[1.25rem] border-2 transition-all duration-300 flex items-center gap-3 ${isSel ? 'bg-gradient-to-r from-blue-500 to-indigo-500 border-transparent text-white shadow-md' : 'bg-white dark:bg-slate-800 border-slate-100 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-blue-300 hover:shadow-md hover:-translate-y-1'}"><div class="w-6 h-6 rounded-full flex items-center justify-center ${isSel ? 'bg-white/20 text-white shadow-inner' : 'bg-slate-50 dark:bg-slate-700 text-slate-400 group-hover:bg-blue-50 group-hover:text-blue-500'} transition-all duration-300"><i class="fa-solid fa-copyright text-[10px]"></i></div><span class="font-black text-[11px] sm:text-xs uppercase tracking-widest pr-2">${esc(b.name)}</span></div></div>`;
         } else {
-            return `<div onclick="filterBrand('${nameSafe}')" class="flex flex-col items-center gap-3 cursor-pointer shrink-0 w-[75px] sm:w-[85px] group snap-start py-1"><div class="relative w-16 h-16 sm:w-[68px] sm:h-[68px] rounded-full bg-white flex items-center justify-center overflow-hidden p-2 transition-all duration-500 ${isSel ? 'ring-4 ring-blue-500 ring-offset-2 ring-offset-slate-50 dark:ring-offset-slate-800 shadow-lg shadow-blue-500/30' : 'border border-slate-200 dark:border-slate-700 shadow-sm group-hover:border-blue-400 group-hover:shadow-lg group-hover:-translate-y-1.5'}"><img loading="lazy" src="${esc(getOptImg(b.img, 'w150-rw'))}" onerror="this.onerror=null;this.src='https://placehold.co/150/3b82f6/ffffff?text=Brand'" class="w-full h-full object-contain drop-shadow-sm transition-transform duration-500 group-hover:scale-110"></i></div><span class="text-[9px] sm:text-[10px] text-center w-full line-clamp-2 leading-tight px-1 ${isSel ? 'font-black text-blue-600 dark:text-blue-400' : 'font-bold text-slate-500 dark:text-slate-400 group-hover:text-blue-600'} uppercase tracking-widest transition-colors">${esc(b.name)}</span></div>`;
+            return `<div onclick="filterBrand('${nameSafe}')" class="flex flex-col items-center gap-3 cursor-pointer shrink-0 w-[75px] sm:w-[85px] group snap-start py-1"><div class="relative w-16 h-16 sm:w-[68px] sm:h-[68px] rounded-full bg-white flex items-center justify-center overflow-hidden p-2 transition-all duration-500 ${isSel ? 'ring-4 ring-blue-500 ring-offset-2 ring-offset-slate-50 dark:ring-offset-slate-800 shadow-lg shadow-blue-500/30' : 'border border-slate-200 dark:border-slate-700 shadow-sm group-hover:border-blue-400 group-hover:shadow-lg group-hover:-translate-y-1.5'}"><img loading="lazy" src="${esc(getOptImg(b.img, 'w150-rw'))}" alt="${esc(b.name)}" onerror="this.onerror=null;this.src='https://placehold.co/150/3b82f6/ffffff?text=Brand'" class="w-full h-full object-contain drop-shadow-sm transition-transform duration-500 group-hover:scale-110"></i></div><span class="text-[9px] sm:text-[10px] text-center w-full line-clamp-2 leading-tight px-1 ${isSel ? 'font-black text-blue-600 dark:text-blue-400' : 'font-bold text-slate-500 dark:text-slate-400 group-hover:text-blue-600'} uppercase tracking-widest transition-colors">${esc(b.name)}</span></div>`;
         }
     }).join(''));
     
     setH('modal-brand-grid', bLModal.map(b => {
         const isSel = aBrand === b.name; const nameSafe = decodeURIComponent(encodeURIComponent(b.name).replace(/'/g,"%27"));
-        return `<button onclick="filterBrand('${nameSafe}'); closeBrandModal();" class="flex flex-col items-center gap-3 p-4 rounded-[1.25rem] border ${isSel?'border-blue-500 bg-blue-50 dark:bg-blue-900/20 shadow-md':'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-blue-300 hover:shadow-sm'} transition-all active:scale-[0.96]"><div class="w-14 h-14 rounded-full flex items-center justify-center bg-white border border-slate-100 dark:border-slate-600 shadow-inner overflow-hidden p-1.5"><img loading="lazy" src="${esc(getOptImg(b.img, 'w150-rw'))}" class="w-full h-full object-contain" onerror="this.src='https://placehold.co/100?text=Brand'"></i></div> <span class="text-[10px] sm:text-xs font-black ${isSel?'text-blue-700 dark:text-blue-400':'text-slate-700 dark:text-slate-300'} text-center leading-tight line-clamp-2 uppercase tracking-widest">${esc(b.name)}</span></button>`;
+        return `<button onclick="filterBrand('${nameSafe}'); closeBrandModal();" class="flex flex-col items-center gap-3 p-4 rounded-[1.25rem] border ${isSel?'border-blue-500 bg-blue-50 dark:bg-blue-900/20 shadow-md':'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-blue-300 hover:shadow-sm'} transition-all active:scale-[0.96]"><div class="w-14 h-14 rounded-full flex items-center justify-center bg-white border border-slate-100 dark:border-slate-600 shadow-inner overflow-hidden p-1.5"><img loading="lazy" src="${esc(getOptImg(b.img, 'w150-rw'))}" alt="${esc(b.name)}" class="w-full h-full object-contain" onerror="this.src='https://placehold.co/100?text=Brand'"></div> <span class="text-[10px] sm:text-xs font-black ${isSel?'text-blue-700 dark:text-blue-400':'text-slate-700 dark:text-slate-300'} text-center leading-tight line-clamp-2 uppercase tracking-widest">${esc(b.name)}</span></button>`;
     }).join(''));
 
     if(el('dyn-qris-img') && appData.payment) el('dyn-qris-img').src = appData.payment.qrisUrl;
@@ -2520,7 +2529,7 @@ window.renderWish = () => {
         <div class="bg-white dark:bg-slate-800 p-4 rounded-[1.25rem] border border-slate-200 dark:border-slate-700 shadow-sm flex gap-4 relative overflow-hidden group min-w-0 hover:shadow-md hover:-translate-y-1 hover:border-rose-300 dark:hover:border-rose-600 transition-all duration-300">
             
             <div class="relative w-20 h-20 sm:w-24 sm:h-24 shrink-0 rounded-2xl bg-white border border-slate-100 dark:border-slate-700/50 p-2 flex items-center justify-center overflow-hidden">
-                <img loading="lazy" src="${esc(i.img)}" class="w-full h-full object-contain transition-transform duration-500 group-hover:scale-110" onerror="this.onerror=null;this.src='https://placehold.co/400?text=No+Image'"></i>
+                <img loading="lazy" src="${esc(i.img)}" alt="${esc(i.name)}" class="w-full h-full object-contain transition-transform duration-500 group-hover:scale-110" onerror="this.onerror=null;this.src='https://placehold.co/400?text=No+Image'"></i>
             </div>
             
             <div class="flex-1 flex flex-col min-w-0 relative">
@@ -2555,7 +2564,7 @@ window.renderCart = () => {
         <div class="bg-white dark:bg-slate-800 p-4 rounded-[1.25rem] border border-slate-200 dark:border-slate-700 shadow-sm flex gap-4 relative overflow-hidden group min-w-0 hover:shadow-md hover:-translate-y-1 hover:border-emerald-300 dark:hover:border-emerald-600 transition-all duration-300">
             
             <div class="relative w-20 h-20 sm:w-24 sm:h-24 shrink-0 rounded-2xl bg-white border border-slate-100 dark:border-slate-700/50 p-2 flex items-center justify-center overflow-hidden">
-                <img loading="lazy" src="${esc(i.img)}" class="w-full h-full object-contain transition-transform duration-500 group-hover:scale-110" onerror="this.onerror=null;this.src='https://placehold.co/400?text=No+Image'"></i>
+                <img loading="lazy" src="${esc(i.img)}" alt="${esc(i.name)}" class="w-full h-full object-contain transition-transform duration-500 group-hover:scale-110" onerror="this.onerror=null;this.src='https://placehold.co/400?text=No+Image'"></i>
             </div>
             
             <div class="flex-1 flex flex-col min-w-0 relative">
@@ -3402,7 +3411,7 @@ const rPay = () => {
     setIn('payment-cust-method', cust.deliveryMethod === 'delivery' ? `Kurir (${cust.distance.toFixed(1)}km)` : 'Ambil di Toko');
     setIn('payment-cust-address', cust.address || '-');
     
-    setH('payment-items-preview', cart.map(i => `<div class="flex justify-between items-center bg-white dark:bg-slate-800 p-4 rounded-[1.25rem] border border-slate-200 dark:border-slate-700 shadow-sm min-w-0"><div class="flex items-center gap-3.5 min-w-0"><img loading="lazy" src="${esc(i.img)}" class="w-12 h-12 rounded-xl object-cover border border-slate-200 dark:border-slate-700 shrink-0" onerror="this.onerror=null;this.src='https://placehold.co/400?text=No+Image'"></i><div class="min-w-0"><p class="text-sm font-black text-slate-800 dark:text-white truncate">${esc(i.name)}${i.variantName?` (${esc(i.variantName)})`:''}${i.poTime?`<span class="bg-amber-100 dark:bg-amber-900/50 text-amber-600 dark:text-amber-400 px-1.5 py-0.5 rounded-xl text-[8px] font-bold border border-amber-200 dark:border-amber-800 uppercase ml-1.5 whitespace-nowrap">PO ${esc(i.poTime)}</span>`:''}</p><p class="text-[11px] text-[var(--color-primary)] font-bold mt-1">${parseFloat(i.qty)} ${esc(i.unit||'pcs')} x ${fCur(getEffP(i))}</p></div></div><div class="text-sm font-black text-slate-900 dark:text-white whitespace-nowrap ml-3 shrink-0">${fCur(getEffP(i)*parseFloat(i.qty))}</div></div>`).join('')
+    setH('payment-items-preview', cart.map(i => `<div class="flex justify-between items-center bg-white dark:bg-slate-800 p-4 rounded-[1.25rem] border border-slate-200 dark:border-slate-700 shadow-sm min-w-0"><div class="flex items-center gap-3.5 min-w-0"><img loading="lazy" src="${esc(i.img)}" alt="${esc(i.name)}" class="w-12 h-12 rounded-xl object-cover border border-slate-200 dark:border-slate-700 shrink-0" onerror="this.onerror=null;this.src='https://placehold.co/400?text=No+Image'"></i><div class="min-w-0"><p class="text-sm font-black text-slate-800 dark:text-white truncate">${esc(i.name)}${i.variantName?` (${esc(i.variantName)})`:''}${i.poTime?`<span class="bg-amber-100 dark:bg-amber-900/50 text-amber-600 dark:text-amber-400 px-1.5 py-0.5 rounded-xl text-[8px] font-bold border border-amber-200 dark:border-amber-800 uppercase ml-1.5 whitespace-nowrap">PO ${esc(i.poTime)}</span>`:''}</p><p class="text-[11px] text-[var(--color-primary)] font-bold mt-1">${parseFloat(i.qty)} ${esc(i.unit||'pcs')} x ${fCur(getEffP(i))}</p></div></div><div class="text-sm font-black text-slate-900 dark:text-white whitespace-nowrap ml-3 shrink-0">${fCur(getEffP(i)*parseFloat(i.qty))}</div></div>`).join('')
         + (selectedReward ? `<div class="flex justify-between items-center bg-violet-50 dark:bg-violet-900/20 p-4 rounded-[1.25rem] border border-violet-200 dark:border-violet-800 shadow-sm min-w-0"><div class="flex items-center gap-3.5 min-w-0"><div class="w-12 h-12 rounded-xl bg-violet-500 text-white flex items-center justify-center shrink-0"><i class="fa-solid fa-gift"></i></div><div class="min-w-0"><p class="text-sm font-black text-violet-700 dark:text-violet-300 truncate">${esc(selectedReward.name)}</p><p class="text-[11px] text-violet-500 font-bold mt-1"><i class="fa-solid fa-star mr-1"></i>Tukar ${selectedReward.pointsCost} Poin (Gratis)</p></div></div><button type="button" onclick="deselectReward(); rPay();" class="text-[10px] font-black text-rose-500 uppercase shrink-0 ml-3">Batal</button></div>` : ''));
         
     if(cust.note){ setIn('payment-note-text', `"${esc(cust.note)}"`); show('payment-note-preview'); } else hide('payment-note-preview');
@@ -5305,7 +5314,7 @@ window.openSettingForm = (type) => {
                     <input autocomplete='off' id="set-qris-url" value="${esc(appData.payment.qrisUrl)}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 flex-1 shadow-sm" placeholder="URL QRIS...">
                     <label class="bg-white hover:bg-slate-50 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-300 rounded-xl px-5 flex items-center justify-center cursor-pointer transition-all shrink-0 active:scale-95 shadow-sm font-bold"><i class="fa-solid fa-cloud-arrow-up sm:mr-2"></i> <span class="hidden sm:inline">Upload</span><input type="file" accept="image/*" class="hidden" onchange="handleImageUpload(this, 'set-qris-url')"></label>
                 </div>
-                ${appData.payment.qrisUrl ? `<div class="p-4 border border-slate-200 dark:border-slate-700 rounded-2xl flex justify-center bg-slate-50/50 dark:bg-slate-900/10"><img loading="eager" src="${esc(appData.payment.qrisUrl)}" class="w-40 h-40 object-contain rounded-xl shadow-sm"></div>` : ''}
+                ${appData.payment.qrisUrl ? `<div class="p-4 border border-slate-200 dark:border-slate-700 rounded-2xl flex justify-center bg-slate-50/50 dark:bg-slate-900/10"><img loading="eager" src="${esc(appData.payment.qrisUrl)}" alt="Preview QRIS" class="w-40 h-40 object-contain rounded-xl shadow-sm"></div>` : ''}
             </div>
         `;
     }
@@ -5587,7 +5596,7 @@ window.rAdmItms = t => {
         let tC = isOff ? 'text-slate-500 dark:text-slate-400 line-through' : 'text-slate-800 dark:text-slate-100';
         
         let img = x.img 
-            ? `<div class="w-16 h-16 sm:w-20 sm:h-20 shrink-0 bg-white border border-slate-100 dark:border-slate-700/60 rounded-2xl p-1.5 flex items-center justify-center overflow-hidden"><img loading="lazy" src="${esc(x.img)}" onerror="this.onerror=null;this.src='https://placehold.co/100?text=Img'" class="w-full h-full object-contain ${isOff?'grayscale opacity-50':''}"></i></div>`
+            ? `<div class="w-16 h-16 sm:w-20 sm:h-20 shrink-0 bg-white border border-slate-100 dark:border-slate-700/60 rounded-2xl p-1.5 flex items-center justify-center overflow-hidden"><img loading="lazy" src="${esc(x.img)}" alt="${esc(x.name)}" onerror="this.onerror=null;this.src='https://placehold.co/100?text=Img'" class="w-full h-full object-contain ${isOff?'grayscale opacity-50':''}"></i></div>`
             : `<div class="w-16 h-16 sm:w-20 sm:h-20 shrink-0 bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700/60 rounded-2xl flex items-center justify-center text-slate-300 dark:text-slate-600"><i class="fa-solid fa-image text-2xl"></i></div>`;
         
         let tglBtn = isP ? (isOff 
