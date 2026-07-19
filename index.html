@@ -7,8 +7,8 @@
     <link rel="dns-prefetch" href="https://firestore.googleapis.com"/>
     <link rel="dns-prefetch" href="https://identitytoolkit.googleapis.com"/>
     <meta charset='UTF-8'/>
-    <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover' name='viewport'/>
-    <meta content='default-src &apos;self&apos; blob:; script-src &apos;self&apos; &apos;unsafe-inline&apos; https://vercel.live https://cdn.tailwindcss.com https://cdnjs.cloudflare.com https://www.gstatic.com https://cdn.sheetjs.com https://apis.google.com https://www.blogger.com https://www.googletagmanager.com https://www.google-analytics.com; connect-src &apos;self&apos; https://vercel.live https://*.googleapis.com https://*.firebaseio.com https://firestore.googleapis.com https://identitytoolkit.googleapis.com https://script.google.com https://script.googleusercontent.com https://wa.me https://www.google-analytics.com https://analytics.google.com https://cdnjs.cloudflare.com https://*.gstatic.com; img-src &apos;self&apos; data: https: blob:; style-src &apos;self&apos; &apos;unsafe-inline&apos; https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src &apos;self&apos; https://fonts.gstatic.com https://cdnjs.cloudflare.com; manifest-src &apos;self&apos; blob:; frame-src https://www.blogger.com https://www.google.com https://www.youtube.com https://youtube.com https://restu-karya-utama.firebaseapp.com https://apis.google.com https://vercel.live; object-src &apos;none&apos;' http-equiv='Content-Security-Policy'/>
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name='viewport'/>
+    <meta content="default-src 'self' blob:; script-src 'self' 'unsafe-inline' https://vercel.live https://cdn.tailwindcss.com https://cdnjs.cloudflare.com https://www.gstatic.com https://cdn.sheetjs.com https://apis.google.com https://www.blogger.com https://www.googletagmanager.com https://www.google-analytics.com; connect-src 'self' https://vercel.live https://*.googleapis.com https://*.firebaseio.com https://firestore.googleapis.com https://identitytoolkit.googleapis.com https://script.google.com https://script.googleusercontent.com https://wa.me https://www.google-analytics.com https://analytics.google.com https://cdnjs.cloudflare.com https://*.gstatic.com; img-src 'self' data: https: blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; manifest-src 'self' blob:; frame-src https://www.blogger.com https://www.google.com https://www.youtube.com https://youtube.com https://restu-karya-utama.firebaseapp.com https://apis.google.com https://vercel.live; object-src 'none'" http-equiv='Content-Security-Policy'/>
     <title>Toko Putri</title>
     <meta name="description" content="Toko Putri - Solusi grosir dan e-commerce terpercaya untuk alat teknik, perkakas, dan perlengkapan pertukangan berkualitas dengan harga terbaik."/>
     <link rel='icon' id='dynamic-favicon' href='data:image/x-icon;base64,AA'>
@@ -36,7 +36,7 @@
             <span id='toast-title'></span>
             <span id='toast-message'>Notifikasi</span>
         </div>
-        <button id='toast-close' onclick='clearTimeout(toastT); document.getElementById(&quot;toast&quot;).style.top=&quot;-160px&quot;'><i class='fa-solid fa-xmark'></i></button>
+        <button id='toast-close' onclick="clearTimeout(toastT); document.getElementById('toast').style.top='-160px'"><i class='fa-solid fa-xmark'></i></button>
         <div id='toast-progress'></div>
     </div>
     <div class='fixed inset-0 z-[9999] bg-white/95 dark:bg-[#0f172a]/95 backdrop-blur-md flex flex-col items-center justify-center hidden' id='global-loader'>
@@ -61,62 +61,62 @@
         </div>
     </div>
     <!-- Confirm Modal -->
-    <div class='fixed inset-0 z-[120] bg-slate-900/80 hidden flex items-center justify-center p-4 opacity-0 transition-opacity duration-300' id='custom-confirm-modal' onclick='if(event.target===this) closeConfirm()'>
+    <div class='fixed inset-0 z-[120] bg-slate-900/80 hidden flex items-center justify-center p-4 opacity-0 transition-opacity duration-300' id='custom-confirm-modal' onclick="if(event.target===this) closeConfirm()">
         <div class='bg-white dark:bg-slate-800 rounded-[2rem] w-full max-w-[320px] p-8 shadow-2xl border border-slate-200 dark:border-slate-700 relative transform scale-95 transition-all duration-300 flex flex-col text-center' id='custom-confirm-box'>
             <div class='w-16 h-16 bg-rose-50 dark:bg-rose-900/30 text-rose-500 dark:text-rose-400 rounded-2xl flex items-center justify-center text-2xl mx-auto mb-5 border border-rose-100 dark:border-rose-800' id='confirm-icon-box'><i class='fa-solid fa-triangle-exclamation' id='confirm-icon'></i></div>
             <h3 class='font-black text-slate-900 dark:text-white text-xl mb-2' id='confirm-title'>Konfirmasi</h3>
             <p class='text-sm text-slate-500 dark:text-slate-400 font-medium mb-8' id='confirm-msg'>Apakah Anda yakin?</p>
             <div class='flex gap-3'>
-                <button class='flex-1 py-3.5 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold rounded-xl hover:bg-slate-200 dark:hover:bg-slate-600 active:scale-95 transition-all text-sm' onclick='closeConfirm()'>Batal</button>
-                <button class='flex-1 py-3.5 bg-rose-600 text-white font-bold rounded-xl hover:bg-rose-700 active:scale-95 transition-all text-sm shadow-md shadow-rose-500/30' id='confirm-yes-btn' onclick='executeConfirm()'>Ya, Hapus</button>
+                <button class='flex-1 py-3.5 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold rounded-xl hover:bg-slate-200 dark:hover:bg-slate-600 active:scale-95 transition-all text-sm' onclick="closeConfirm()">Batal</button>
+                <button class='flex-1 py-3.5 bg-rose-600 text-white font-bold rounded-xl hover:bg-rose-700 active:scale-95 transition-all text-sm shadow-md shadow-rose-500/30' id='confirm-yes-btn' onclick="executeConfirm()">Ya, Hapus</button>
             </div>
         </div>
     </div>
     <!-- Scanner Modal -->
-    <div class='fixed inset-0 z-[9999] bg-slate-900/90 hidden flex-col items-center justify-center p-4 transition-opacity duration-300 opacity-0' id='scanner-modal' onclick='if(event.target===this) closeCameraScanner()'>
+    <div class='fixed inset-0 z-[9999] bg-slate-900/90 hidden flex-col items-center justify-center p-4 transition-opacity duration-300 opacity-0' id='scanner-modal' onclick="if(event.target===this) closeCameraScanner()">
         <div class='bg-white dark:bg-slate-800 rounded-[2rem] w-full max-w-md overflow-hidden shadow-2xl border border-slate-200 dark:border-slate-700 relative flex flex-col'>
             <div class='p-5 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center'>
                 <h3 class='font-black text-slate-900 dark:text-white text-sm flex items-center gap-2'><i class='fa-solid fa-qrcode text-emerald-500'></i> Scan Barcode</h3>
-                <button class='w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-500 hover:text-rose-600 hover:bg-rose-50 flex items-center justify-center transition-all' onclick='closeCameraScanner()'><i class='fa-solid fa-xmark'></i></button>
+                <button class='w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-500 hover:text-rose-600 hover:bg-rose-50 flex items-center justify-center transition-all' onclick="closeCameraScanner()"><i class='fa-solid fa-xmark'></i></button>
             </div>
             <div class='p-4 bg-slate-900 dark:bg-[#020617]'><div class='w-full overflow-hidden rounded-2xl bg-slate-900 text-white' id='reader' style='min-height: 250px;'></div></div>
             <div class='p-5 bg-slate-50 dark:bg-slate-800 text-center'><p class='text-xs font-semibold text-slate-500 dark:text-slate-400'>Arahkan kamera ke barcode/SKU.</p></div>
         </div>
     </div>
-<div class='fixed inset-0 z-[75] bg-slate-900/80 hidden opacity-0 transition-opacity duration-300 flex items-end sm:items-center justify-center p-0 sm:p-5' id='category-modal' onclick='if(event.target===this) closeCategoryModal()'>
+<div class='fixed inset-0 z-[75] bg-slate-900/80 hidden opacity-0 transition-opacity duration-300 flex items-end sm:items-center justify-center p-0 sm:p-5' id='category-modal' onclick="if(event.target===this) closeCategoryModal()">
         <div class='w-full max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl bg-white dark:bg-[#0f172a] sm:rounded-[2rem] rounded-t-[2rem] max-h-[85dvh] overflow-hidden transform translate-y-full sm:translate-y-10 transition-transform duration-300 shadow-2xl flex flex-col relative border-t sm:border border-slate-200 dark:border-slate-800' id='category-modal-content'>
             <div class='w-12 h-1.5 bg-slate-200 dark:bg-slate-700 rounded-full mx-auto mt-4 mb-1 sm:hidden'></div>
             <div class='px-6 pb-4 pt-2 sm:pt-5 border-b border-slate-100 dark:border-slate-800/60 flex justify-between items-center shrink-0'>
                 <h3 class='font-black text-base text-slate-900 dark:text-white flex items-center gap-3'><div class='w-8 h-8 rounded-xl bg-emerald-50 text-emerald-500 flex items-center justify-center dark:bg-emerald-900/30'><i class='fa-solid fa-layer-group text-sm'></i></div> KATEGORI PRODUK</h3>
-                <button class='w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:bg-rose-50 hover:text-rose-500 dark:hover:bg-rose-900/30 flex items-center justify-center transition-all' onclick='closeCategoryModal()'><i class='fa-solid fa-xmark'></i></button>
+                <button class='w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:bg-rose-50 hover:text-rose-500 dark:hover:bg-rose-900/30 flex items-center justify-center transition-all' onclick="closeCategoryModal()"><i class='fa-solid fa-xmark'></i></button>
             </div>
             <div class='flex-1 overflow-y-auto p-5 hide-scrollbar bg-white dark:bg-[#0f172a]' id='modal-category-list'></div>
         </div>
     </div>
-    <div class='fixed inset-0 z-[75] bg-slate-900/80 hidden opacity-0 transition-opacity duration-300 flex items-end sm:items-center justify-center p-0 sm:p-5' id='brand-modal' onclick='if(event.target===this) closeBrandModal()'>
+    <div class='fixed inset-0 z-[75] bg-slate-900/80 hidden opacity-0 transition-opacity duration-300 flex items-end sm:items-center justify-center p-0 sm:p-5' id='brand-modal' onclick="if(event.target===this) closeBrandModal()">
         <div class='w-full max-w-md sm:max-w-lg md:max-w-2xl lg:max-w-3xl xl:max-w-4xl bg-white dark:bg-[#0f172a] sm:rounded-[2rem] rounded-t-[2rem] max-h-[85dvh] overflow-hidden transform translate-y-full sm:translate-y-10 transition-transform duration-300 shadow-2xl flex flex-col relative border-t sm:border border-slate-200 dark:border-slate-800' id='brand-modal-content'>
             <div class='w-12 h-1.5 bg-slate-200 dark:bg-slate-700 rounded-full mx-auto mt-4 mb-1 sm:hidden'></div>
             <div class='px-6 pb-4 pt-2 sm:pt-5 border-b border-slate-100 dark:border-slate-800/60 flex justify-between items-center shrink-0'>
                 <h3 class='font-black text-base text-slate-900 dark:text-white flex items-center gap-3'><div class='w-8 h-8 rounded-xl bg-blue-50 text-blue-500 flex items-center justify-center dark:bg-blue-900/30'><i class='fa-solid fa-copyright text-sm'></i></div> BRAND MITRA</h3>
-                <button class='w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:bg-rose-50 hover:text-rose-500 dark:hover:bg-rose-900/30 flex items-center justify-center transition-all' onclick='closeBrandModal()'><i class='fa-solid fa-xmark'></i></button>
+                <button class='w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:bg-rose-50 hover:text-rose-500 dark:hover:bg-rose-900/30 flex items-center justify-center transition-all' onclick="closeBrandModal()"><i class='fa-solid fa-xmark'></i></button>
             </div>
             <div class='flex-1 overflow-y-auto p-5 sm:p-6 hide-scrollbar bg-white dark:bg-[#0f172a]'>
                 <div class='grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-3 md:gap-4' id='modal-brand-grid'></div>
             </div>
         </div>
     </div>
-<div class='fixed inset-0 z-[70] bg-slate-900/80 hidden opacity-0 transition-opacity duration-300 flex items-end sm:items-center justify-center p-0 sm:p-5' id='product-modal' onclick='if(event.target===this) closeProductModal()'>
+<div class='fixed inset-0 z-[70] bg-slate-900/80 hidden opacity-0 transition-opacity duration-300 flex items-end sm:items-center justify-center p-0 sm:p-5' id='product-modal' onclick="if(event.target===this) closeProductModal()">
         <div class='w-full max-w-md bg-white dark:bg-[#0f172a] modal-bottom-sheet sm:rounded-[2rem] max-h-[92dvh] overflow-y-auto transform translate-y-full sm:translate-y-10 transition-transform duration-300 hide-scrollbar shadow-2xl border-t sm:border border-slate-200 dark:border-slate-800 flex flex-col relative' id='product-modal-content'>
 <div class='w-12 h-1.5 bg-slate-200 dark:bg-slate-700 rounded-full absolute top-3 left-1/2 transform -translate-x-1/2 z-30 sm:hidden'></div>
             <div class='absolute top-3 right-3 z-20 flex gap-1.5'>
-                <button class='w-9 h-9 flex items-center justify-center rounded-full bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm border border-slate-200 dark:border-slate-700 shadow-sm text-slate-600 dark:text-slate-300 hover:bg-emerald-500 hover:text-white hover:border-emerald-500 transition-all active:scale-90' onclick='shareProduct()'><i class='fa-solid fa-share-nodes text-xs'></i></button>
-                <button class='w-9 h-9 flex items-center justify-center rounded-full bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm border border-slate-200 dark:border-slate-700 shadow-sm text-slate-600 dark:text-slate-300 hover:bg-rose-500 hover:text-white hover:border-rose-500 transition-all active:scale-90' onclick='closeProductModal()'><i class='fa-solid fa-xmark text-sm'></i></button>
+                <button class='w-9 h-9 flex items-center justify-center rounded-full bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm border border-slate-200 dark:border-slate-700 shadow-sm text-slate-600 dark:text-slate-300 hover:bg-emerald-500 hover:text-white hover:border-emerald-500 transition-all active:scale-90' onclick="shareProduct()"><i class='fa-solid fa-share-nodes text-xs'></i></button>
+                <button class='w-9 h-9 flex items-center justify-center rounded-full bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm border border-slate-200 dark:border-slate-700 shadow-sm text-slate-600 dark:text-slate-300 hover:bg-rose-500 hover:text-white hover:border-rose-500 transition-all active:scale-90' onclick="closeProductModal()"><i class='fa-solid fa-xmark text-sm'></i></button>
             </div>
             <div class='w-full aspect-square shrink-0 bg-white flex items-center justify-center p-8 sm:p-10 border-b border-slate-100 dark:border-slate-800/60 sm:rounded-t-[2rem] relative overflow-hidden'>
                   <img alt='Product' class='w-full h-full object-cover transition-transform duration-500 hover:scale-105' id='product-modal-img' loading='lazy' src='data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'>
                   <div id='product-modal-video-container' class='absolute inset-0 bg-black hidden flex items-center justify-center'></div>
-                  <button id='slide-prev' class='absolute left-3 top-1/2 transform -translate-y-1/2 w-8 h-8 rounded-full bg-white/80 dark:bg-slate-800/80 backdrop-blur shadow text-slate-600 dark:text-slate-200 hidden items-center justify-center hover:bg-emerald-500 hover:text-white transition-all z-10 active:scale-95' onclick='changeSlide(-1)'><i class='fa-solid fa-chevron-left text-xs'></i></button>
-                  <button id='slide-next' class='absolute right-3 top-1/2 transform -translate-y-1/2 w-8 h-8 rounded-full bg-white/80 dark:bg-slate-800/80 backdrop-blur shadow text-slate-600 dark:text-slate-200 hidden items-center justify-center hover:bg-emerald-500 hover:text-white transition-all z-10 active:scale-95' onclick='changeSlide(1)'><i class='fa-solid fa-chevron-right text-xs'></i></button>
+                  <button id='slide-prev' class='absolute left-3 top-1/2 transform -translate-y-1/2 w-8 h-8 rounded-full bg-white/80 dark:bg-slate-800/80 backdrop-blur shadow text-slate-600 dark:text-slate-200 hidden items-center justify-center hover:bg-emerald-500 hover:text-white transition-all z-10 active:scale-95' onclick="changeSlide(-1)"><i class='fa-solid fa-chevron-left text-xs'></i></button>
+                  <button id='slide-next' class='absolute right-3 top-1/2 transform -translate-y-1/2 w-8 h-8 rounded-full bg-white/80 dark:bg-slate-800/80 backdrop-blur shadow text-slate-600 dark:text-slate-200 hidden items-center justify-center hover:bg-emerald-500 hover:text-white transition-all z-10 active:scale-95' onclick="changeSlide(1)"><i class='fa-solid fa-chevron-right text-xs'></i></button>
                   <div id='slide-dots' class='absolute bottom-3 left-1/2 transform -translate-x-1/2 flex gap-1.5 z-10 hidden'></div>
             </div>
             <div class='flex-1 p-6 sm:p-7 bg-white dark:bg-[#0f172a]'>
@@ -146,9 +146,9 @@
                         <div class='flex items-center justify-between'>
                             <span class='text-xs font-bold text-slate-500 dark:text-slate-400 flex items-center'>Jumlah <span class='text-[9px] font-black text-emerald-600 bg-emerald-50 dark:bg-emerald-900/40 dark:text-emerald-400 px-1.5 py-0.5 rounded ml-1.5 uppercase tracking-widest border border-emerald-200 dark:border-emerald-800' id='modal-unit-label'>Pcs</span></span>
                             <div class='flex items-center bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl h-11 overflow-hidden shadow-sm'>
-                                <button class='w-11 h-full flex items-center justify-center font-black text-slate-500 hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors' onclick='updateModalQty(-1)'><i class='fa-solid fa-minus text-xs'></i></button>
-                                <input class='w-14 text-center text-sm font-black bg-transparent focus:outline-none dark:text-white border-x border-slate-200 dark:border-slate-700' id='modal-qty-input' min='0.01' onchange='handleModalQtyChange(this.value)' step='0.01' type='number' value='1'></i>
-                                <button class='w-11 h-full flex items-center justify-center font-black text-slate-500 hover:text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/30 transition-colors' onclick='updateModalQty(1)'><i class='fa-solid fa-plus text-xs'></i></button>
+                                <button class='w-11 h-full flex items-center justify-center font-black text-slate-500 hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors' onclick="updateModalQty(-1)"><i class='fa-solid fa-minus text-xs'></i></button>
+                                <input class='w-14 text-center text-sm font-black bg-transparent focus:outline-none dark:text-white border-x border-slate-200 dark:border-slate-700' id='modal-qty-input' min='0.01' onchange="handleModalQtyChange(this.value)" step='0.01' type='number' value='1'></i>
+                                <button class='w-11 h-full flex items-center justify-center font-black text-slate-500 hover:text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/30 transition-colors' onclick="updateModalQty(1)"><i class='fa-solid fa-plus text-xs'></i></button>
                             </div>
                         </div>
                         <div class='flex items-center justify-between bg-emerald-50 dark:bg-emerald-900/20 p-4 rounded-2xl border border-emerald-100 dark:border-emerald-800/50 shadow-inner'>
@@ -156,8 +156,8 @@
                             <span class='text-xl font-black text-emerald-600 dark:text-emerald-400 tracking-tight' id='btn-modal-price-preview'>Rp 0</span>
                         </div>
                         <div class='flex gap-3 mt-2'>
-                            <button class='w-14 h-14 shrink-0 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm text-slate-400 rounded-2xl flex items-center justify-center hover:bg-rose-50 hover:text-rose-500 hover:border-rose-200 active:scale-95 transition-all' onclick='confirmAddToWishlist()'><i class='fa-solid fa-heart text-xl'></i></button>
-                            <button class='btn-primary flex-1 text-sm uppercase tracking-wider shadow-glow active:scale-[0.98]' onclick='confirmAddProductToCart()'><i class='fa-solid fa-cart-plus mr-2 text-lg'></i> Keranjang</button>
+                            <button class='w-14 h-14 shrink-0 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm text-slate-400 rounded-2xl flex items-center justify-center hover:bg-rose-50 hover:text-rose-500 hover:border-rose-200 active:scale-95 transition-all' onclick="confirmAddToWishlist()"><i class='fa-solid fa-heart text-xl'></i></button>
+                            <button class='btn-primary flex-1 text-sm uppercase tracking-wider shadow-glow active:scale-[0.98]' onclick="confirmAddProductToCart()"><i class='fa-solid fa-cart-plus mr-2 text-lg'></i> Keranjang</button>
                         </div>
                     </div>
                     <div class='hidden bg-rose-50 border border-rose-100 p-4 rounded-2xl text-center text-rose-600 font-bold text-sm dark:bg-rose-900/20 dark:border-rose-800' id='modal-inactive-controls'><i class='fa-solid fa-box-open mr-2'></i> Stok Sedang Kosong</div>
@@ -166,60 +166,60 @@
             </div>
         </div>
     </div>
-<div class='fixed inset-0 z-[80] bg-slate-900/80 hidden flex items-center justify-center p-3 opacity-0 transition-all duration-300' id='admin-modal' onclick='if(event.target===this) closeAdminModal()'>
+<div class='fixed inset-0 z-[80] bg-slate-900/80 hidden flex items-center justify-center p-3 opacity-0 transition-all duration-300' id='admin-modal' onclick="if(event.target===this) closeAdminModal()">
         <div class='bg-white dark:bg-slate-800 rounded-[2rem] w-full max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl max-h-[92dvh] flex flex-col hide-scrollbar shadow-2xl border border-slate-200 dark:border-slate-700 relative transform scale-95 transition-all duration-300' id='admin-modal-box'>
             <div class='sticky top-0 bg-white dark:bg-slate-800 px-6 py-5 border-b border-slate-100 flex justify-between items-center z-20 rounded-t-[2rem] dark:border-slate-700/50'>
                 <h3 class='font-black text-slate-900 dark:text-white text-base flex items-center gap-2' id='admin-modal-title'>Form Data</h3>
-                <button class='w-8 h-8 flex items-center justify-center rounded-full bg-slate-50 dark:bg-slate-700 text-slate-500 hover:text-rose-500 hover:bg-rose-50 transition-all' onclick='closeAdminModal()'><i class='fa-solid fa-xmark'></i></button>
+                <button class='w-8 h-8 flex items-center justify-center rounded-full bg-slate-50 dark:bg-slate-700 text-slate-500 hover:text-rose-500 hover:bg-rose-50 transition-all' onclick="closeAdminModal()"><i class='fa-solid fa-xmark'></i></button>
             </div>
             <div class='p-5 sm:p-6 lg:p-8 overflow-y-auto flex-1 bg-white dark:bg-slate-800' id='admin-modal-form'></div>
             <div class='p-5 sticky bottom-0 bg-white dark:bg-slate-800 border-t border-slate-100 z-20 rounded-b-[2rem] dark:border-slate-700/50 shadow-[0_-10px_20px_-10px_rgba(0,0,0,0.03)]'>
-                <button class='btn-solid shadow-glow' onclick='submitAdminForm()'><i class='fa-solid fa-floppy-disk'></i> Simpan Data</button>
+                <button class='btn-solid shadow-glow' onclick="submitAdminForm()"><i class='fa-solid fa-floppy-disk'></i> Simpan Data</button>
             </div>
         </div>
     </div>
-    <div class='fixed inset-0 z-[100] bg-slate-900/80 hidden flex items-center justify-center p-3 opacity-0 transition-all duration-300' id='admin-order-modal' onclick='if(event.target===this) closeOrderDetailModal()'>
+    <div class='fixed inset-0 z-[100] bg-slate-900/80 hidden flex items-center justify-center p-3 opacity-0 transition-all duration-300' id='admin-order-modal' onclick="if(event.target===this) closeOrderDetailModal()">
         <div class='bg-white dark:bg-slate-800 rounded-[2rem] w-full max-w-md sm:max-w-lg md:max-w-3xl lg:max-w-4xl max-h-[92dvh] overflow-y-auto hide-scrollbar shadow-2xl border border-slate-200 dark:border-slate-700 relative transform scale-95 transition-all duration-300 flex flex-col' id='admin-order-modal-box'>
             <div class='sticky top-0 bg-white dark:bg-slate-800 px-6 py-4 border-b border-slate-200 flex justify-between items-center z-20 rounded-t-[2rem] dark:border-slate-700'>
                 <h3 class='font-black text-slate-900 dark:text-white text-base flex items-center gap-2'><i class='fa-solid fa-file-invoice text-emerald-500'></i> Detail Pesanan</h3>
-                <button class='w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 dark:bg-slate-700 text-slate-500 hover:text-rose-500 transition-all' onclick='closeOrderDetailModal()'><i class='fa-solid fa-xmark'></i></button>
+                <button class='w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 dark:bg-slate-700 text-slate-500 hover:text-rose-500 transition-all' onclick="closeOrderDetailModal()"><i class='fa-solid fa-xmark'></i></button>
             </div>
             <div class='p-5 sm:p-6 lg:p-8 space-y-4 flex-1 bg-slate-50 dark:bg-slate-900' id='admin-order-modal-content'></div>
             <div class='p-5 lg:px-8 sticky bottom-0 bg-white dark:bg-slate-800 border-t border-slate-100 z-20 rounded-b-[2rem] flex flex-col gap-3 dark:border-slate-700/50 shadow-[0_-15px_25px_-5px_rgba(0,0,0,0.05)]'>
                 <div class='flex gap-2.5 w-full'>
-                    <button class='flex-1 py-3 bg-emerald-50 text-emerald-600 border border-emerald-100 font-black rounded-xl text-xs flex items-center justify-center gap-1.5 hover:bg-emerald-100 transition-all shadow-sm active:scale-95 dark:bg-emerald-900/20 dark:border-emerald-800' onclick='checkProPrint()'><i class='fa-solid fa-print'></i> Struk</button>
-                    <button class='flex-1 py-3 bg-blue-50 text-blue-600 border border-blue-100 font-black rounded-xl text-xs flex items-center justify-center gap-1.5 hover:bg-blue-100 transition-all shadow-sm active:scale-95 dark:bg-blue-900/20 dark:border-blue-800' onclick='openDocPreview(&quot;invoice&quot;)'><i class='fa-solid fa-file-invoice-dollar'></i> Invoice</button>
-                    <button class='flex-1 py-3 bg-amber-50 text-amber-600 border border-amber-100 font-black rounded-xl text-xs flex items-center justify-center gap-1.5 hover:bg-amber-100 transition-all shadow-sm active:scale-95 dark:bg-amber-900/20 dark:border-amber-800' onclick='openDocPreview(&quot;surat_jalan&quot;)'><i class='fa-solid fa-truck-ramp-box'></i> Srt Jalan</button>
+                    <button class='flex-1 py-3 bg-emerald-50 text-emerald-600 border border-emerald-100 font-black rounded-xl text-xs flex items-center justify-center gap-1.5 hover:bg-emerald-100 transition-all shadow-sm active:scale-95 dark:bg-emerald-900/20 dark:border-emerald-800' onclick="checkProPrint()"><i class='fa-solid fa-print'></i> Struk</button>
+                    <button class='flex-1 py-3 bg-blue-50 text-blue-600 border border-blue-100 font-black rounded-xl text-xs flex items-center justify-center gap-1.5 hover:bg-blue-100 transition-all shadow-sm active:scale-95 dark:bg-blue-900/20 dark:border-blue-800' onclick="openDocPreview('invoice')"><i class='fa-solid fa-file-invoice-dollar'></i> Invoice</button>
+                    <button class='flex-1 py-3 bg-amber-50 text-amber-600 border border-amber-100 font-black rounded-xl text-xs flex items-center justify-center gap-1.5 hover:bg-amber-100 transition-all shadow-sm active:scale-95 dark:bg-amber-900/20 dark:border-amber-800' onclick="openDocPreview('surat_jalan')"><i class='fa-solid fa-truck-ramp-box'></i> Srt Jalan</button>
                 </div>
                 <div class='flex flex-col sm:flex-row gap-3'>
-                    <button class='w-full sm:flex-1 py-3 bg-green-50 text-green-600 font-black rounded-xl text-xs flex items-center justify-center gap-1.5 border border-green-100 dark:bg-green-900/20 dark:border-green-800 hover:bg-green-500 hover:text-white transition-all shadow-sm active:scale-95' onclick='konfirmasiKeWA(cVOrd)'><i class='fa-brands fa-whatsapp'></i> Konfirmasi ke WA Pelanggan</button>
-                    <button class='w-full sm:flex-1 py-3.5 sm:py-3 bg-rose-50 text-rose-600 font-black rounded-xl text-xs flex items-center justify-center gap-1.5 border border-rose-100 dark:bg-rose-900/20 dark:border-rose-800 hover:bg-rose-500 hover:text-white transition-all shadow-sm active:scale-95 group' onclick='deleteOrder(cVOrd)'><i class='fa-solid fa-trash group-hover:animate-bounce'></i> Hapus Pesanan</button>
+                    <button class='w-full sm:flex-1 py-3 bg-green-50 text-green-600 font-black rounded-xl text-xs flex items-center justify-center gap-1.5 border border-green-100 dark:bg-green-900/20 dark:border-green-800 hover:bg-green-500 hover:text-white transition-all shadow-sm active:scale-95' onclick="konfirmasiKeWA(cVOrd)"><i class='fa-brands fa-whatsapp'></i> Konfirmasi ke WA Pelanggan</button>
+                    <button class='w-full sm:flex-1 py-3.5 sm:py-3 bg-rose-50 text-rose-600 font-black rounded-xl text-xs flex items-center justify-center gap-1.5 border border-rose-100 dark:bg-rose-900/20 dark:border-rose-800 hover:bg-rose-500 hover:text-white transition-all shadow-sm active:scale-95 group' onclick="deleteOrder(cVOrd)"><i class='fa-solid fa-trash group-hover:animate-bounce'></i> Hapus Pesanan</button>
                 </div>
             </div>
         </div>
     </div>
-    <div class='fixed inset-0 z-[110] bg-slate-900/80 hidden flex items-center justify-center p-3 opacity-0 transition-all duration-300' id='receipt-preview-modal' onclick='if(event.target===this) closeReceiptPreviewModal()'>
+    <div class='fixed inset-0 z-[110] bg-slate-900/80 hidden flex items-center justify-center p-3 opacity-0 transition-all duration-300' id='receipt-preview-modal' onclick="if(event.target===this) closeReceiptPreviewModal()">
         <div class='bg-slate-50 dark:bg-slate-800 rounded-[2rem] w-full max-w-[320px] max-h-[92dvh] overflow-hidden shadow-2xl border border-slate-200 dark:border-slate-700 relative transform scale-95 transition-all duration-300 flex flex-col' id='receipt-preview-modal-box'>
             <div class='sticky top-0 bg-white dark:bg-slate-800 px-5 py-4 border-b border-slate-200 flex justify-between items-center z-20 dark:border-slate-700'>
                 <h3 class='font-black text-slate-900 dark:text-white text-sm'>Preview Struk</h3>
-                <button class='w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 dark:bg-slate-700 text-slate-500 hover:text-rose-500 transition-all' onclick='closeReceiptPreviewModal()'><i class='fa-solid fa-xmark'></i></button>
+                <button class='w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 dark:bg-slate-700 text-slate-500 hover:text-rose-500 transition-all' onclick="closeReceiptPreviewModal()"><i class='fa-solid fa-xmark'></i></button>
             </div>
             <div class='p-5 flex justify-center items-start bg-slate-200 dark:bg-slate-900 overflow-y-auto hide-scrollbar' style='flex:1;'>
                 <div class='bg-white shadow-md p-4 font-mono text-[11px] font-bold text-black border border-slate-300 rounded w-[260px] leading-tight shrink-0 h-max' id='receipt-paper-content' style='font-family:&quot;Courier New&quot;,Courier,monospace;min-height:300px;background-color:#fff!important;color:#000!important;'></div>
             </div>
             <div class='p-5 bg-white dark:bg-slate-800 border-t border-slate-200 z-20 dark:border-slate-700'>
-                <button class='btn-primary w-full py-4 text-sm rounded-xl shadow-glow flex items-center justify-center' onclick='executePrintReceipt()'><i class='fa-solid fa-print mr-2'></i> Print Thermal</button>
+                <button class='btn-primary w-full py-4 text-sm rounded-xl shadow-glow flex items-center justify-center' onclick="executePrintReceipt()"><i class='fa-solid fa-print mr-2'></i> Print Thermal</button>
             </div>
         </div>
     </div>
-    <div class='fixed inset-0 z-[115] bg-slate-900/80 hidden flex items-center justify-center p-2 sm:p-5 opacity-0 transition-all duration-300' id='doc-preview-modal' onclick='if(event.target===this) closeDocPreviewModal()'>
+    <div class='fixed inset-0 z-[115] bg-slate-900/80 hidden flex items-center justify-center p-2 sm:p-5 opacity-0 transition-all duration-300' id='doc-preview-modal' onclick="if(event.target===this) closeDocPreviewModal()">
         <div class='bg-slate-100 dark:bg-slate-800 rounded-[2rem] w-full max-w-4xl max-h-[95dvh] overflow-hidden shadow-2xl border border-slate-200 dark:border-slate-700 relative transform scale-95 transition-all duration-300 flex flex-col' id='doc-preview-modal-box'>
             <div class='sticky top-0 bg-white dark:bg-slate-800 px-5 py-4 border-b border-slate-200 flex justify-between items-center z-20 dark:border-slate-700 shadow-sm'>
                 <div>
                     <h3 class='font-black text-slate-900 dark:text-white text-base' id='doc-modal-title'>Preview Dokumen</h3>
                     <p class='text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-0.5'>Format Kertas Standar A4</p>
                 </div>
-                <button class='w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-500 hover:text-rose-500 flex items-center justify-center transition-all shrink-0' onclick='closeDocPreviewModal()'><i class='fa-solid fa-xmark'></i></button>
+                <button class='w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-500 hover:text-rose-500 flex items-center justify-center transition-all shrink-0' onclick="closeDocPreviewModal()"><i class='fa-solid fa-xmark'></i></button>
             </div>
             <div class='p-3 sm:p-8 bg-slate-200 dark:bg-slate-900 overflow-auto flex-1 hide-scrollbar' id='doc-paper-scroll-area'>
                 <div class='relative w-full' id='doc-paper-wrapper'>
@@ -228,9 +228,9 @@
                 </div>
             </div>
             <div class='p-4 sm:p-5 md:p-6 lg:p-8 bg-white dark:bg-slate-800 border-t border-slate-200 z-20 dark:border-slate-700 grid grid-cols-3 gap-3'>
-                <button class='py-3 bg-blue-600 hover:bg-blue-700 text-white font-black rounded-xl text-[10px] sm:text-xs flex items-center justify-center gap-2 transition-all active:scale-95 shadow-md shadow-blue-500/20' onclick='exportDocFile(&quot;image&quot;)'><i class='fa-solid fa-image text-sm sm:text-base'></i> <span class='hidden sm:inline'>Simpan Gambar</span></button>
-                <button class='py-3 bg-rose-600 hover:bg-rose-700 text-white font-black rounded-xl text-[10px] sm:text-xs flex items-center justify-center gap-2 transition-all active:scale-95 shadow-md shadow-rose-500/20' onclick='exportDocFile(&quot;pdf&quot;)'><i class='fa-solid fa-file-pdf text-sm sm:text-base'></i> <span class='hidden sm:inline'>Cetak PDF</span></button>
-                <button class='py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-black rounded-xl text-[10px] sm:text-xs flex items-center justify-center gap-2 transition-all active:scale-95 shadow-md shadow-emerald-500/20' onclick='printDocA4()'><i class='fa-solid fa-print text-sm sm:text-base'></i> <span class='hidden sm:inline'>Print Langsung</span></button>
+                <button class='py-3 bg-blue-600 hover:bg-blue-700 text-white font-black rounded-xl text-[10px] sm:text-xs flex items-center justify-center gap-2 transition-all active:scale-95 shadow-md shadow-blue-500/20' onclick="exportDocFile('image')"><i class='fa-solid fa-image text-sm sm:text-base'></i> <span class='hidden sm:inline'>Simpan Gambar</span></button>
+                <button class='py-3 bg-rose-600 hover:bg-rose-700 text-white font-black rounded-xl text-[10px] sm:text-xs flex items-center justify-center gap-2 transition-all active:scale-95 shadow-md shadow-rose-500/20' onclick="exportDocFile('pdf')"><i class='fa-solid fa-file-pdf text-sm sm:text-base'></i> <span class='hidden sm:inline'>Cetak PDF</span></button>
+                <button class='py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-black rounded-xl text-[10px] sm:text-xs flex items-center justify-center gap-2 transition-all active:scale-95 shadow-md shadow-emerald-500/20' onclick="printDocA4()"><i class='fa-solid fa-print text-sm sm:text-base'></i> <span class='hidden sm:inline'>Print Langsung</span></button>
             </div>
         </div>
     </div>
@@ -240,7 +240,7 @@
             <div class='glass-header shrink-0 px-5 flex items-center justify-center sticky top-0 pb-3 z-30'>
                 <div class='flex items-center justify-between w-full xl:max-w-[1200px] mx-auto px-4 lg:px-10 gap-4'>
                     <div class='flex items-center gap-3 flex-1 min-w-0'>
-                        <div class='w-12 h-12 bg-gradient-to-br from-slate-50 to-white rounded-2xl flex items-center justify-center shadow-soft border border-slate-200 dark:border-slate-700 overflow-hidden shrink-0 cursor-pointer select-none transition-transform active:scale-95' ondblclick='checkAdminAccess()' title='Ketuk 2x untuk Login Admin'>
+                        <div class='w-12 h-12 bg-gradient-to-br from-slate-50 to-white rounded-2xl flex items-center justify-center shadow-soft border border-slate-200 dark:border-slate-700 overflow-hidden shrink-0 cursor-pointer select-none transition-transform active:scale-95' ondblclick="checkAdminAccess()" title='Ketuk 2x untuk Login Admin'>
                             <img alt='Logo' class='w-full h-full object-cover hidden' id='dyn-store-logo-img' loading='lazy' src='data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'></i>
                             <i class='fa-solid fa-store text-xl text-emerald-500' id='dyn-store-logo-icon'></i>
                         </div>
@@ -250,8 +250,8 @@
                         </div>
                     </div>
                     <div class='flex gap-2 items-center shrink-0'>
-                        <button class='w-10 h-10 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm text-slate-600 dark:text-slate-300 rounded-full flex items-center justify-center hover:bg-slate-200 dark:hover:bg-slate-700 active:scale-95 transition-all' id='btn-theme-toggle' onclick='toggleTheme()'><i class='fa-solid fa-moon text-sm' id='icon-theme'></i></button>
-                        <button class='w-10 h-10 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm text-slate-600 dark:text-slate-300 rounded-full flex items-center justify-center hover:text-rose-500 active:scale-95 relative transition-all' onclick='changeView(&quot;view-wishlist&quot;)'>
+                        <button class='w-10 h-10 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm text-slate-600 dark:text-slate-300 rounded-full flex items-center justify-center hover:bg-slate-200 dark:hover:bg-slate-700 active:scale-95 transition-all' id='btn-theme-toggle' onclick="toggleTheme()"><i class='fa-solid fa-moon text-sm' id='icon-theme'></i></button>
+                        <button class='w-10 h-10 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm text-slate-600 dark:text-slate-300 rounded-full flex items-center justify-center hover:text-rose-500 active:scale-95 relative transition-all' onclick="changeView('view-wishlist')">
                             <i class='fa-solid fa-heart text-sm'></i>
                             <span class='absolute -top-1 -right-1 bg-rose-500 text-white text-[9px] w-[18px] h-[18px] flex items-center justify-center rounded-full transform scale-0 transition-transform duration-300 font-bold shadow-sm' id='wishlist-badge'>0</span>
                         </button>
@@ -269,7 +269,7 @@
                                 <div class='w-8 h-8 rounded-xl bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center text-white shadow-md'><i class='fa-solid fa-layer-group text-sm'></i></div>
                                 <h3 class='font-black text-slate-800 dark:text-white text-sm sm:text-base tracking-tight uppercase'>KATEGORI PRODUK</h3>
                             </div>
-                            <button class='text-[10px] font-black text-emerald-600 hover:text-white hover:bg-emerald-500 bg-emerald-50 dark:bg-emerald-900/40 px-4 py-2 rounded-xl transition-all active:scale-95 shadow-sm uppercase tracking-widest' onclick='openCategoryModal()'>Lihat Semua</button>
+                            <button class='text-[10px] font-black text-emerald-600 hover:text-white hover:bg-emerald-500 bg-emerald-50 dark:bg-emerald-900/40 px-4 py-2 rounded-xl transition-all active:scale-95 shadow-sm uppercase tracking-widest' onclick="openCategoryModal()">Lihat Semua</button>
                         </div>
                         <div class='flex gap-4 overflow-x-auto hide-scrollbar snap-x pb-4 pt-2' id='dynamic-categories-container'></div>
                     </div>
@@ -281,7 +281,7 @@
                                 <div class='w-8 h-8 rounded-xl bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-white shadow-md'><i class='fa-solid fa-copyright text-sm'></i></div>
                                 <h3 class='font-black text-slate-800 dark:text-white text-sm sm:text-base tracking-tight uppercase'>BRAND MITRA</h3>
                             </div>
-                            <button class='text-[10px] font-black text-blue-600 hover:text-white hover:bg-blue-500 bg-blue-50 dark:bg-blue-900/40 px-4 py-2 rounded-xl transition-all active:scale-95 shadow-sm uppercase tracking-widest' onclick='openBrandModal()'>Lihat Semua</button>
+                            <button class='text-[10px] font-black text-blue-600 hover:text-white hover:bg-blue-500 bg-blue-50 dark:bg-blue-900/40 px-4 py-2 rounded-xl transition-all active:scale-95 shadow-sm uppercase tracking-widest' onclick="openBrandModal()">Lihat Semua</button>
                         </div>
                         <div class='flex gap-4 overflow-x-auto hide-scrollbar snap-x pb-4 pt-2' id='dynamic-brands-container'></div>
                     </div>
@@ -290,25 +290,25 @@
                     <div class='flex flex-col sm:flex-row gap-3 mb-6 items-center justify-between card-modern p-3'>
                         <div class='relative w-full sm:w-80 flex items-center bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200 dark:border-slate-700 focus-within:border-emerald-400 dark:focus-within:border-emerald-500 focus-within:ring-2 focus-within:ring-emerald-400/20 transition-all'>
                             <i class='fa-solid fa-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm'></i>
-                            <input autocomplete='off' class='w-full pl-11 pr-12 py-3 bg-transparent rounded-xl text-sm font-semibold focus:outline-none transition-all text-slate-800 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-400' id='search-input' name='cari_produk_q' onkeyup='window.handleSearch &amp;&amp; window.handleSearch(this.value)' placeholder='Cari nama produk...' type='text'></i>
-                            <button class='absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center text-slate-400 hover:text-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 rounded-xl transition-all' onclick='openCameraScanner()'><i class='fa-solid fa-qrcode text-sm'></i></button>
+                            <input autocomplete='off' class='w-full pl-11 pr-12 py-3 bg-transparent rounded-xl text-sm font-semibold focus:outline-none transition-all text-slate-800 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-400' id='search-input' name='cari_produk_q' onkeyup="if(window.handleSearch) window.handleSearch(this.value)" placeholder='Cari nama produk...' type='text'></i>
+                            <button class='absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center text-slate-400 hover:text-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 rounded-xl transition-all' onclick="openCameraScanner()"><i class='fa-solid fa-qrcode text-sm'></i></button>
                         </div>
                         <div class='flex gap-2 w-full sm:w-auto px-1 pb-1 sm:p-0 sm:pr-1'>
                             <div class='relative flex-1 sm:w-40'>
-                                <select class='w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-2.5 text-xs font-bold text-slate-700 dark:text-slate-300 appearance-none focus:outline-none cursor-pointer hover:border-slate-300 transition-colors' id='sort-input' onchange='handleSort(this.value)'>
+                                <select class='w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-2.5 text-xs font-bold text-slate-700 dark:text-slate-300 appearance-none focus:outline-none cursor-pointer hover:border-slate-300 transition-colors' id='sort-input' onchange="handleSort(this.value)">
                                     <option value='newest'>Terbaru</option><option value='cheapest'>Termurah</option><option value='expensive'>Termahal</option><option value='az'>Nama A-Z</option>
                                 </select>
                                 <i class='fa-solid fa-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-[10px]'></i>
                             </div>
                             <div class='flex bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden shrink-0 p-1'>
-                                <button class='w-8 h-8 rounded-xl flex items-center justify-center text-emerald-600 bg-white dark:bg-slate-700 shadow-sm transition-all' id='btn-view-grid' onclick='toggleView(&quot;grid&quot;)'><i class='fa-solid fa-border-all text-sm'></i></button>
-                                <button class='w-8 h-8 rounded-xl flex items-center justify-center text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 transition-all' id='btn-view-list' onclick='toggleView(&quot;list&quot;)'><i class='fa-solid fa-list text-sm'></i></button>
+                                <button class='w-8 h-8 rounded-xl flex items-center justify-center text-emerald-600 bg-white dark:bg-slate-700 shadow-sm transition-all' id='btn-view-grid' onclick="toggleView('grid')"><i class='fa-solid fa-border-all text-sm'></i></button>
+                                <button class='w-8 h-8 rounded-xl flex items-center justify-center text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 transition-all' id='btn-view-list' onclick="toggleView('list')"><i class='fa-solid fa-list text-sm'></i></button>
                             </div>
                         </div>
                     </div>
                     <div class='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-5 2xl:grid-cols-6 gap-4 sm:gap-6 lg:gap-8' id='product-container'></div>
                     <div class='mt-10 mb-6 text-center hidden' id='load-more-container'>
-                        <button class='inline-flex items-center gap-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-black text-xs px-8 py-3.5 rounded-2xl shadow-sm hover:shadow-md hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] active:scale-95 transition-all' onclick='loadMoreProducts()'>Muat Lebih Banyak <i class='fa-solid fa-chevron-down text-[10px]'></i></button>
+                        <button class='inline-flex items-center gap-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-black text-xs px-8 py-3.5 rounded-2xl shadow-sm hover:shadow-md hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] active:scale-95 transition-all' onclick="loadMoreProducts()">Muat Lebih Banyak <i class='fa-solid fa-chevron-down text-[10px]'></i></button>
                     </div>
                     <div class='mt-8 mb-2 hidden overflow-hidden rounded-2xl' id='ad-slot-catalog-end'></div>
                 </div> 
@@ -345,19 +345,19 @@
                     <div class='w-7 h-7 rounded-xl bg-[var(--color-primary-light)] text-[var(--color-primary)] dark:bg-[var(--color-primary-dark)]/30 flex items-center justify-center'><i class='fa-solid fa-link text-xs'></i></div> Tautan Cepat
                 </h4>
                 <ul class='space-y-1.5 w-full max-w-[200px] md:max-w-none'>
-                    <li><a class='text-sm font-bold text-slate-500 dark:text-slate-400 hover:text-[var(--color-primary)] dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800/50 px-3 py-2.5 md:-ml-3 rounded-xl flex items-center justify-center md:justify-start gap-3 group transition-all cursor-pointer' href='#catalog' onclick='event.preventDefault(); changeView(&quot;view-catalog&quot;)'>
+                    <li><a class='text-sm font-bold text-slate-500 dark:text-slate-400 hover:text-[var(--color-primary)] dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800/50 px-3 py-2.5 md:-ml-3 rounded-xl flex items-center justify-center md:justify-start gap-3 group transition-all cursor-pointer' href='#catalog' onclick="event.preventDefault(); changeView('view-catalog')">
                         <i class='fa-solid fa-chevron-right text-[10px] text-slate-300 dark:text-slate-600 group-hover:text-[var(--color-primary)] transition-colors hidden md:block'></i> Halaman Utama
                     </a></li>
-                    <li><a class='text-sm font-bold text-slate-500 dark:text-slate-400 hover:text-[var(--color-primary)] dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800/50 px-3 py-2.5 md:-ml-3 rounded-xl flex items-center justify-center md:justify-start gap-3 group transition-all cursor-pointer' href='#cart' onclick='event.preventDefault(); changeView(&quot;view-cart&quot;)'>
+                    <li><a class='text-sm font-bold text-slate-500 dark:text-slate-400 hover:text-[var(--color-primary)] dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800/50 px-3 py-2.5 md:-ml-3 rounded-xl flex items-center justify-center md:justify-start gap-3 group transition-all cursor-pointer' href='#cart' onclick="event.preventDefault(); changeView('view-cart')">
                         <i class='fa-solid fa-chevron-right text-[10px] text-slate-300 dark:text-slate-600 group-hover:text-[var(--color-primary)] transition-colors hidden md:block'></i> Keranjang Belanja
                     </a></li>
-                    <li><a class='text-sm font-bold text-slate-500 dark:text-slate-400 hover:text-[var(--color-primary)] dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800/50 px-3 py-2.5 md:-ml-3 rounded-xl flex items-center justify-center md:justify-start gap-3 group transition-all cursor-pointer' href='#wishlist' onclick='event.preventDefault(); changeView(&quot;view-wishlist&quot;)'>                      
+                    <li><a class='text-sm font-bold text-slate-500 dark:text-slate-400 hover:text-[var(--color-primary)] dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800/50 px-3 py-2.5 md:-ml-3 rounded-xl flex items-center justify-center md:justify-start gap-3 group transition-all cursor-pointer' href='#wishlist' onclick="event.preventDefault(); changeView('view-wishlist')">                      
                       <i class='fa-solid fa-chevron-right text-[10px] text-slate-300 dark:text-slate-600 group-hover:text-[var(--color-primary)] transition-colors hidden md:block'></i> Produk Favorit
                     </a></li>
-                    <li><a class='text-sm font-bold text-slate-500 dark:text-slate-400 hover:text-[var(--color-primary)] dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800/50 px-3 py-2.5 md:-ml-3 rounded-xl flex items-center justify-center md:justify-start gap-3 group transition-all cursor-pointer' href='#orders' onclick='event.preventDefault(); changeView(&apos;view-orders&apos;)'>                     
+                    <li><a class='text-sm font-bold text-slate-500 dark:text-slate-400 hover:text-[var(--color-primary)] dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800/50 px-3 py-2.5 md:-ml-3 rounded-xl flex items-center justify-center md:justify-start gap-3 group transition-all cursor-pointer' href='#orders' onclick="event.preventDefault(); changeView('view-orders')">                     
                         <i class='fa-solid fa-chevron-right text-[10px] text-slate-300 dark:text-slate-600 group-hover:text-[var(--color-primary)] transition-colors hidden md:block'></i> Riwayat Pesanan
                     </a></li>
-                    <li><a class='text-sm font-bold text-slate-500 dark:text-slate-400 hover:text-[var(--color-primary)] dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800/50 px-3 py-2.5 md:-ml-3 rounded-xl flex items-center justify-center md:justify-start gap-3 group transition-all cursor-pointer' href='#admin' onclick='event.preventDefault(); checkAdminAccess()'>
+                    <li><a class='text-sm font-bold text-slate-500 dark:text-slate-400 hover:text-[var(--color-primary)] dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800/50 px-3 py-2.5 md:-ml-3 rounded-xl flex items-center justify-center md:justify-start gap-3 group transition-all cursor-pointer' href='#admin' onclick="event.preventDefault(); checkAdminAccess()">
                         <i class='fa-solid fa-shield-halved text-[10px] text-slate-300 dark:text-slate-600 group-hover:text-[var(--color-primary)] transition-colors hidden md:block'></i> Akses Admin
                     </a></li>
                 </ul>
@@ -367,7 +367,7 @@
                     <div class='w-7 h-7 rounded-xl bg-[var(--color-primary-light)] text-[var(--color-primary)] dark:bg-[var(--color-primary-dark)]/30 flex items-center justify-center'><i class='fa-solid fa-headset text-xs'></i></div> Hubungi Kami
                 </h4>
                 <div class='space-y-4 w-full max-w-sm md:max-w-none'>
-                    <a id='footer-wa-link' class='flex flex-col sm:flex-row items-center sm:items-start justify-center md:justify-start gap-4 p-4 rounded-2xl bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-100 dark:border-emerald-800/50 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 transition-all group cursor-pointer shadow-sm' href='#' target='_blank' onclick='event.preventDefault(); if(appData.store.wa) window.open(&quot;https://wa.me/&quot;+appData.store.wa, &quot;_blank&quot;)'>
+                    <a id='footer-wa-link' class='flex flex-col sm:flex-row items-center sm:items-start justify-center md:justify-start gap-4 p-4 rounded-2xl bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-100 dark:border-emerald-800/50 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 transition-all group cursor-pointer shadow-sm' href='#' target='_blank' onclick="event.preventDefault(); if(appData.store.wa) window.open('https://wa.me/'+appData.store.wa, '_blank')">
                         <div class='w-12 h-12 bg-emerald-500 text-white rounded-xl flex items-center justify-center shadow-md group-hover:scale-110 group-hover:rotate-6 transition-transform duration-300 shrink-0'>
                             <i class='fa-brands fa-whatsapp text-2xl'></i>
                         </div>
@@ -406,7 +406,7 @@
 </div>
 </div> <!-- PENUTUP SCROLL-CONTENT -->
             <div class='absolute left-1/2 transform -translate-x-1/2 w-[calc(100%-2rem)] max-w-md z-40 pointer-events-none' style='bottom: calc(max(1.25rem, env(safe-area-inset-bottom)) + 0.5rem)'>
-                <button class='w-full bg-gradient-to-r from-slate-900 to-slate-800 dark:from-slate-800 dark:to-slate-900 text-white px-4 py-3 rounded-[1.25rem] shadow-[0_8px_32px_-8px_rgba(0,0,0,0.5)] flex justify-between items-center transition-all duration-200 pointer-events-auto border border-white/8 hover:border-emerald-500/30 group active:scale-[0.97]' onclick='changeView(&quot;view-cart&quot;)'>
+                <button class='w-full bg-gradient-to-r from-slate-900 to-slate-800 dark:from-slate-800 dark:to-slate-900 text-white px-4 py-3 rounded-[1.25rem] shadow-[0_8px_32px_-8px_rgba(0,0,0,0.5)] flex justify-between items-center transition-all duration-200 pointer-events-auto border border-white/8 hover:border-emerald-500/30 group active:scale-[0.97]' onclick="changeView('view-cart')">
                     <div class='flex items-center gap-3.5'>
                         <div class='relative bg-gradient-to-br from-emerald-400 to-emerald-600 w-11 h-11 rounded-xl flex items-center justify-center shadow-lg shrink-0'>
                             <i class='fa-solid fa-bag-shopping text-white text-base'></i>
@@ -424,9 +424,9 @@
         <div class='view-section flex flex-col fade-in bg-slate-50 dark:bg-slate-900 hidden' id='view-cart'>
             <div class='glass-header shrink-0 px-5 flex justify-center z-30 sticky top-0 pb-3'>
                 <div class='flex items-center justify-between w-full max-w-full xl:max-w-[1200px] mx-auto px-4 lg:px-10'>
-                    <button class='w-10 h-10 flex items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 active:scale-95 transition-all shadow-sm' onclick='history.back()'><i class='fa-solid fa-arrow-left text-sm'></i></button>
+                    <button class='w-10 h-10 flex items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 active:scale-95 transition-all shadow-sm' onclick="history.back()"><i class='fa-solid fa-arrow-left text-sm'></i></button>
                     <h1 class='text-base font-black text-slate-900 dark:text-white tracking-tight'>Keranjang Belanja</h1>
-                    <button class='w-10 h-10 flex items-center justify-center rounded-full bg-rose-50 border border-rose-200 text-rose-500 hover:bg-rose-100 active:scale-95 transition-all shadow-sm hidden dark:bg-rose-900/20 dark:border-rose-800' id='btn-clear-cart' onclick='clearCart()'><i class='fa-solid fa-trash-can text-sm'></i></button>
+                    <button class='w-10 h-10 flex items-center justify-center rounded-full bg-rose-50 border border-rose-200 text-rose-500 hover:bg-rose-100 active:scale-95 transition-all shadow-sm hidden dark:bg-rose-900/20 dark:border-rose-800' id='btn-clear-cart' onclick="clearCart()"><i class='fa-solid fa-trash-can text-sm'></i></button>
                     <div class='w-10 hidden' id='spacer-cart'></div>
                 </div>
             </div>
@@ -435,7 +435,7 @@
                     <div class='w-24 h-24 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center mb-5 text-slate-300 dark:text-slate-600 shadow-inner'><i class='fa-solid fa-bag-shopping text-5xl'></i></div>
                     <h3 class='font-black text-slate-900 dark:text-white text-xl mb-2'>Keranjang Kosong</h3>
                     <p class='text-slate-500 dark:text-slate-400 text-sm mb-8 font-medium'>Belum ada produk yang dipilih.</p>
-                    <button class='btn-primary px-8 py-3.5 text-sm shadow-glow rounded-xl' onclick='history.back()'>Belanja Sekarang</button>
+                    <button class='btn-primary px-8 py-3.5 text-sm shadow-glow rounded-xl' onclick="history.back()">Belanja Sekarang</button>
                 </div>
                 <div class='px-4 space-y-4 max-w-full xl:max-w-[1200px] lg:px-8 mx-auto w-full' id='cart-items-container'></div>
             </div>
@@ -445,7 +445,7 @@
                         <p class='text-slate-500 dark:text-slate-400 text-[9px] font-black uppercase tracking-widest mb-0.5'>Total Belanja</p>
                         <p class='font-black text-slate-900 dark:text-white text-xl leading-none' id='cart-subtotal'>Rp 0</p>
                     </div>
-                    <button class='btn-primary !w-auto px-7 py-3.5 text-sm shadow-glow rounded-2xl shrink-0' onclick='validateCartToCheckout()'>Checkout <i class='fa-solid fa-arrow-right ml-1.5 text-xs'></i></button>
+                    <button class='btn-primary !w-auto px-7 py-3.5 text-sm shadow-glow rounded-2xl shrink-0' onclick="validateCartToCheckout()">Checkout <i class='fa-solid fa-arrow-right ml-1.5 text-xs'></i></button>
                 </div>
             </div>
         </div>
@@ -453,7 +453,7 @@
 <div class='view-section flex flex-col fade-in bg-slate-50 dark:bg-slate-900 hidden' id='view-checkout'>
             <div class='glass-header shrink-0 px-5 flex justify-center z-30 sticky top-0 pb-3'>
                 <div class='flex items-center justify-between w-full max-w-full xl:max-w-[1200px] mx-auto px-4 lg:px-10'>
-                    <button class='w-10 h-10 flex items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 active:scale-95 transition-all shadow-sm' onclick='history.back()'><i class='fa-solid fa-arrow-left text-sm'></i></button>
+                    <button class='w-10 h-10 flex items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 active:scale-95 transition-all shadow-sm' onclick="history.back()"><i class='fa-solid fa-arrow-left text-sm'></i></button>
                     <div class='text-center'>
                         <h1 class='text-base font-black text-slate-900 dark:text-white tracking-tight leading-tight'>Pengiriman</h1>
                         <p class='text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-0.5'>Lengkapi Data Pesanan</p>
@@ -468,14 +468,14 @@
                         <p class='text-rose-500 font-bold text-[11px] hidden mb-4 bg-rose-50 p-3 rounded-xl border border-rose-100 dark:bg-rose-900/20 dark:border-rose-800' id='no-delivery-warning'>Mohon maaf, toko sedang tidak melayani pemesanan online.</p>
                         <div class='grid grid-cols-2 gap-3' id='delivery-methods-grid'>
                             <label class='cursor-pointer relative' id='delivery-option-container'>
-                                <input checked='checked' class='peer sr-only custom-radio' name='delivery-method' onchange='toggleDeliveryMethod()' type='radio' value='delivery'></i>
+                                <input checked='checked' class='peer sr-only custom-radio' name='delivery-method' onchange="toggleDeliveryMethod()" type='radio' value='delivery'></i>
                                 <div class='border border-slate-200 bg-slate-50 dark:bg-slate-900 dark:border-slate-700 p-4 rounded-2xl transition-all flex flex-col items-center text-center gap-2 peer-checked:border-blue-500 peer-checked:bg-blue-50 dark:peer-checked:bg-blue-900/20 peer-checked:shadow-[0_0_0_2px_rgba(59,130,246,0.2)] hover:border-blue-300'>
                                     <div class='w-10 h-10 rounded-full bg-white dark:bg-slate-800 flex items-center justify-center shadow-sm mb-1'><i class='fa-solid fa-motorcycle text-lg text-slate-400 radio-icon transition-colors peer-checked:text-blue-500'></i></div>
                                     <span class='font-black text-[11px] text-slate-600 dark:text-slate-300 peer-checked:text-blue-600 dark:peer-checked:text-blue-400 uppercase tracking-wide'>Diantar Kurir</span>
                                 </div>
                             </label>
                             <label class='cursor-pointer relative' id='pickup-option-container'>
-                                <input class='peer sr-only custom-radio' name='delivery-method' onchange='toggleDeliveryMethod()' type='radio' value='pickup'></i>
+                                <input class='peer sr-only custom-radio' name='delivery-method' onchange="toggleDeliveryMethod()" type='radio' value='pickup'></i>
                                 <div class='border border-slate-200 bg-slate-50 dark:bg-slate-900 dark:border-slate-700 p-4 rounded-2xl transition-all flex flex-col items-center text-center gap-2 peer-checked:border-emerald-500 peer-checked:bg-emerald-50 dark:peer-checked:bg-emerald-900/20 peer-checked:shadow-[0_0_0_2px_rgba(var(--color-primary-rgb),0.2)] hover:border-emerald-300'>
                                     <div class='w-10 h-10 rounded-full bg-white dark:bg-slate-800 flex items-center justify-center shadow-sm mb-1'><i class='fa-solid fa-store text-lg text-slate-400 radio-icon transition-colors peer-checked:text-emerald-500'></i></div>
                                     <span class='font-black text-[11px] text-slate-600 dark:text-slate-300 peer-checked:text-emerald-600 dark:peer-checked:text-emerald-400 uppercase tracking-wide'>Ambil di Toko</span>
@@ -498,7 +498,7 @@
                                 <label class='block text-[10px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest'><i class='fa-brands fa-whatsapp text-green-500 mr-1'></i>Nomor WhatsApp Aktif <span class='text-rose-500'>*</span></label>
                                 <div class='relative'>
                                     <span class='absolute left-4 top-1/2 -translate-y-1/2 text-sm font-black text-slate-500 dark:text-slate-400'>+62</span>
-                                    <input autocomplete='off' class='admin-input bg-slate-50 border-slate-200 text-sm font-bold !py-3.5 shadow-inner dark:bg-slate-900 dark:border-slate-700 !pl-14' id='cust-wa' inputmode='numeric' oninput='checkMemberStatus()' placeholder='81234567890' type='tel'></i>
+                                    <input autocomplete='off' class='admin-input bg-slate-50 border-slate-200 text-sm font-bold !py-3.5 shadow-inner dark:bg-slate-900 dark:border-slate-700 !pl-14' id='cust-wa' inputmode='numeric' oninput="checkMemberStatus()" placeholder='81234567890' type='tel'></i>
                                 </div>
                                 <p class='text-[10px] text-slate-400 mt-1.5 font-medium'><i class='fa-solid fa-circle-info mr-1'></i>Konfirmasi pesanan &amp; update status dikirim ke nomor ini.</p>
                                 <div class='hidden mt-3' id='member-status-banner'></div>
@@ -515,7 +515,7 @@
                             <div class='bg-amber-50 border border-amber-200 rounded-2xl p-4 shadow-sm dark:bg-amber-950/20 dark:border-amber-900/50'>
                                 <label class='block text-[10px] font-black text-amber-800 dark:text-amber-400 mb-2 uppercase tracking-widest'><i class='fa-solid fa-satellite-dish mr-1'></i> Akurasi Ongkir via GPS</label>
                                 <p class='text-[11px] text-amber-700 dark:text-amber-500/90 font-medium leading-relaxed mb-3.5'>Sematkan koordinat lokasi Anda agar kalkulasi ongkos kirim otomatis akurat.</p>
-                                <button class='w-full py-3.5 bg-white dark:bg-slate-800 border border-amber-300 dark:border-amber-700 text-amber-700 dark:text-amber-400 font-black rounded-xl text-xs flex items-center justify-center gap-2 hover:bg-amber-100 active:scale-95 transition-all shadow-sm' id='btn-location' onclick='getLocation()'><i class='fa-solid fa-location-crosshairs text-sm text-amber-500'></i> <span id='text-get-location'>Sematkan Titik Lokasi</span></button>
+                                <button class='w-full py-3.5 bg-white dark:bg-slate-800 border border-amber-300 dark:border-amber-700 text-amber-700 dark:text-amber-400 font-black rounded-xl text-xs flex items-center justify-center gap-2 hover:bg-amber-100 active:scale-95 transition-all shadow-sm' id='btn-location' onclick="getLocation()"><i class='fa-solid fa-location-crosshairs text-sm text-amber-500'></i> <span id='text-get-location'>Sematkan Titik Lokasi</span></button>
                                 <div class='hidden mt-3 bg-emerald-100 border border-emerald-300 rounded-xl p-3 flex items-center gap-2 dark:bg-emerald-900/40 dark:border-emerald-800' id='location-status'>
                                     <i class='fa-solid fa-circle-check text-emerald-600 dark:text-emerald-400 text-lg shrink-0'></i>
                                     <span class='text-[10px] font-black text-emerald-700 dark:text-emerald-300 uppercase tracking-wide leading-tight'>Koordinat berhasil diamankan!</span>
@@ -527,14 +527,14 @@
             </div>
             <div class='absolute bottom-0 left-0 w-full glass-nav px-4 pt-3 z-30'>
                 <div class='max-w-full xl:max-w-[1200px] px-4 lg:px-10 mx-auto'>
-                    <button class='btn-primary shadow-glow rounded-2xl py-4' id='btn-checkout-next' onclick='validateAndGoToPayment()'>Lanjut ke Pembayaran <i class='fa-solid fa-arrow-right ml-1.5 text-xs'></i></button>
+                    <button class='btn-primary shadow-glow rounded-2xl py-4' id='btn-checkout-next' onclick="validateAndGoToPayment()">Lanjut ke Pembayaran <i class='fa-solid fa-arrow-right ml-1.5 text-xs'></i></button>
                 </div>
             </div>
         </div>
 <div class='view-section flex flex-col fade-in bg-slate-50 dark:bg-slate-900 hidden' id='view-payment'>
             <div class='glass-header shrink-0 px-5 flex justify-center z-30 sticky top-0 pb-3'>
                 <div class='flex items-center justify-between w-full max-w-full xl:max-w-[1200px] mx-auto px-4 lg:px-10'>
-                    <button class='w-10 h-10 flex items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 active:scale-95 transition-all shadow-sm' onclick='history.back()'><i class='fa-solid fa-arrow-left text-sm'></i></button>
+                    <button class='w-10 h-10 flex items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 active:scale-95 transition-all shadow-sm' onclick="history.back()"><i class='fa-solid fa-arrow-left text-sm'></i></button>
                     <div class='text-center'>
                         <h1 class='text-base font-black text-slate-900 dark:text-white tracking-tight leading-tight'>Pembayaran</h1>
                         <p class='text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-0.5'>Langkah Terakhir</p>
@@ -548,35 +548,35 @@
                         <h3 class='font-black text-slate-900 dark:text-white mb-4 text-xs uppercase tracking-wider border-b border-slate-100 dark:border-slate-700 pb-3 flex items-center gap-2'><i class='fa-solid fa-wallet text-blue-500'></i> Pilih Pembayaran</h3>
                         <div class='grid grid-cols-2 sm:grid-cols-4 gap-3'>
                             <label class='block cursor-pointer relative'>
-                                <input checked='checked' class='peer sr-only custom-radio' name='payment' onchange='togglePaymentDetails()' type='radio' value='transfer'></i>
+                                <input checked='checked' class='peer sr-only custom-radio' name='payment' onchange="togglePaymentDetails()" type='radio' value='transfer'></i>
                                 <div class='border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 p-3.5 rounded-2xl transition-all flex flex-col items-center text-center gap-2 peer-checked:border-blue-500 peer-checked:bg-blue-50 dark:peer-checked:bg-blue-900/20 peer-checked:shadow-[0_0_0_2px_rgba(59,130,246,0.2)] hover:border-blue-300'>
                                     <div class='w-10 h-10 rounded-full bg-white dark:bg-slate-800 flex items-center justify-center shadow-sm mb-1'><i class='fa-solid fa-building-columns text-lg text-slate-400 peer-checked:text-blue-500 transition-colors'></i></div>
                                     <span class='font-black text-[11px] text-slate-600 dark:text-slate-300 peer-checked:text-blue-600 dark:peer-checked:text-blue-400 uppercase tracking-wide'>Transfer</span>
                                 </div>
                             </label>
                             <label class='block cursor-pointer relative'>
-                                <input class='peer sr-only custom-radio' name='payment' onchange='togglePaymentDetails()' type='radio' value='qris'></i>
+                                <input class='peer sr-only custom-radio' name='payment' onchange="togglePaymentDetails()" type='radio' value='qris'></i>
                                 <div class='border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 p-3.5 rounded-2xl transition-all flex flex-col items-center text-center gap-2 peer-checked:border-purple-500 peer-checked:bg-purple-50 dark:peer-checked:bg-purple-900/20 peer-checked:shadow-[0_0_0_2px_rgba(168,85,247,0.2)] hover:border-purple-300'>
                                     <div class='w-10 h-10 rounded-full bg-white dark:bg-slate-800 flex items-center justify-center shadow-sm mb-1'><i class='fa-solid fa-qrcode text-lg text-slate-400 peer-checked:text-purple-500 transition-colors'></i></div>
                                     <span class='font-black text-[11px] text-slate-600 dark:text-slate-300 peer-checked:text-purple-600 dark:peer-checked:text-purple-400 uppercase tracking-wide'>QRIS Dinamis</span>
                                 </div>
                             </label>
                             <label class='block cursor-pointer relative hidden' id='payment-option-cod'>
-                                <input class='peer sr-only custom-radio' name='payment' onchange='togglePaymentDetails()' type='radio' value='cod'></i>
+                                <input class='peer sr-only custom-radio' name='payment' onchange="togglePaymentDetails()" type='radio' value='cod'></i>
                                 <div class='border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 p-3.5 rounded-2xl transition-all flex flex-col items-center text-center gap-2 peer-checked:border-emerald-500 peer-checked:bg-emerald-50 dark:peer-checked:bg-emerald-900/20 peer-checked:shadow-[0_0_0_2px_rgba(var(--color-primary-rgb),0.2)] hover:border-emerald-300'>
                                     <div class='w-10 h-10 rounded-full bg-white dark:bg-slate-800 flex items-center justify-center shadow-sm mb-1'><i class='fa-solid fa-hand-holding-dollar text-lg text-slate-400 peer-checked:text-emerald-500 transition-colors'></i></div>
                                     <span class='font-black text-[11px] text-slate-600 dark:text-slate-300 peer-checked:text-emerald-600 dark:peer-checked:text-emerald-400 uppercase tracking-wide'>COD</span>
                                 </div>
                             </label>
                             <label class='block cursor-pointer relative hidden' id='payment-option-cashier'>
-                                <input class='peer sr-only custom-radio' name='payment' onchange='togglePaymentDetails()' type='radio' value='cashier'></i>
+                                <input class='peer sr-only custom-radio' name='payment' onchange="togglePaymentDetails()" type='radio' value='cashier'></i>
                                 <div class='border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 p-3.5 rounded-2xl transition-all flex flex-col items-center text-center gap-2 peer-checked:border-amber-500 peer-checked:bg-amber-50 dark:peer-checked:bg-amber-900/20 peer-checked:shadow-[0_0_0_2px_rgba(245,158,11,0.2)] hover:border-amber-300'>
                                     <div class='w-10 h-10 rounded-full bg-white dark:bg-slate-800 flex items-center justify-center shadow-sm mb-1'><i class='fa-solid fa-cash-register text-lg text-slate-400 peer-checked:text-amber-500 transition-colors'></i></div>
                                     <span class='font-black text-[11px] text-slate-600 dark:text-slate-300 peer-checked:text-amber-600 dark:peer-checked:text-amber-400 uppercase tracking-wide'>KASIR</span>
                                 </div>
                             </label>
                             <label class='block cursor-pointer relative hidden' id='payment-option-tempo'>
-                                <input class='peer sr-only custom-radio' name='payment' onchange='togglePaymentDetails()' type='radio' value='tempo'></i>
+                                <input class='peer sr-only custom-radio' name='payment' onchange="togglePaymentDetails()" type='radio' value='tempo'></i>
                                 <div class='border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 p-3.5 rounded-2xl transition-all flex flex-col items-center text-center gap-2 peer-checked:border-pink-500 peer-checked:bg-pink-50 dark:peer-checked:bg-pink-900/20 peer-checked:shadow-[0_0_0_2px_rgba(236,72,153,0.2)] hover:border-pink-300'>
                                     <div class='w-10 h-10 rounded-full bg-white dark:bg-slate-800 flex items-center justify-center shadow-sm mb-1'><i class='fa-solid fa-clock-rotate-left text-lg text-slate-400 peer-checked:text-pink-500 transition-colors'></i></div>
                                     <span class='font-black text-[11px] text-slate-600 dark:text-slate-300 peer-checked:text-pink-600 dark:peer-checked:text-pink-400 uppercase tracking-wide'>Tempo VIP</span>
@@ -635,7 +635,7 @@
                         <h3 class='font-black text-slate-900 dark:text-white mb-1 text-xs uppercase tracking-wider flex items-center gap-2'><i class='fa-solid fa-image text-violet-500'></i> Bukti Pembayaran</h3>
                         <p class='text-[10px] text-slate-400 font-medium mb-4'>Upload screenshot/foto bukti transfer/QRIS Anda. <span class='text-rose-500 font-black'>Wajib</span> untuk pembayaran Transfer &amp; QRIS.</p>
                         <label class='flex flex-col items-center justify-center gap-3 w-full h-36 border-2 border-dashed border-slate-300 dark:border-slate-600 rounded-2xl cursor-pointer hover:border-violet-400 hover:bg-violet-50 dark:hover:bg-violet-900/10 transition-all relative overflow-hidden' id='bukti-upload-label'>
-                            <input accept='image/*' class='sr-only' id='bukti-file-input' onchange='handleBuktiUpload(event)' type='file'></i>
+                            <input accept='image/*' class='sr-only' id='bukti-file-input' onchange="handleBuktiUpload(event)" type='file'></i>
                             <div class='text-center pointer-events-none' id='bukti-placeholder'>
                                 <i class='fa-solid fa-cloud-arrow-up text-3xl text-slate-300 dark:text-slate-600 mb-2'></i>
                                 <p class='text-xs font-black text-slate-400'>Tap untuk pilih gambar</p>
@@ -650,7 +650,7 @@
                         </label>
                         <label class='mt-3 flex items-center justify-center gap-2 w-full bg-violet-50 dark:bg-violet-900/20 border border-violet-200 dark:border-violet-800 text-violet-600 dark:text-violet-400 font-black text-xs py-2.5 rounded-xl cursor-pointer hover:bg-violet-100 dark:hover:bg-violet-900/30 transition-all active:scale-95'>
                             <i class='fa-solid fa-camera'></i> Ambil Foto Langsung
-                            <input accept='image/*' capture='environment' class='sr-only' onchange='handleBuktiUpload(event)' type='file'></i>
+                            <input accept='image/*' capture='environment' class='sr-only' onchange="handleBuktiUpload(event)" type='file'></i>
                         </label>
                         <div class='hidden mt-3 items-center gap-2 text-violet-600 dark:text-violet-400' id='bukti-uploading'>
                             <i class='fa-solid fa-spinner animate-spin'></i>
@@ -663,14 +663,14 @@
                         </div>
                         <div class='hidden mt-3 items-center gap-2 text-rose-500 dark:text-rose-400' id='bukti-gdrive-error'>
                             <i class='fa-solid fa-triangle-exclamation'></i>
-                            <span class='text-xs font-black'>Koneksi Google Drive gagal. <button class='underline' onclick='retryBuktiUpload()'>Coba lagi</button> atau hubungi admin.</span>
+                            <span class='text-xs font-black'>Koneksi Google Drive gagal. <button class='underline' onclick="retryBuktiUpload()">Coba lagi</button> atau hubungi admin.</span>
                         </div>
                     </div>
                     <div class='bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 p-5 rounded-[1.5rem] shadow-sm relative overflow-hidden'>
                         <h3 class='font-black text-emerald-800 dark:text-emerald-400 mb-3 text-xs uppercase tracking-widest flex items-center gap-2'><i class='fa-solid fa-ticket text-emerald-500'></i> Voucher Ongkir</h3>
                         <div class='flex gap-3 relative z-10'>
                             <input autocomplete='off' class='admin-input bg-white dark:bg-slate-900 uppercase font-black text-sm !py-3.5 flex-1 shadow-inner border-emerald-200 dark:border-emerald-700' id='voucher-input' placeholder='Kode Promo...' type='text'></i>
-                            <button class='bg-emerald-500 text-white px-6 rounded-xl text-sm font-black hover:bg-emerald-600 active:scale-95 transition-all shadow-md shadow-emerald-500/20' onclick='applyVoucher()'>Klaim</button>
+                            <button class='bg-emerald-500 text-white px-6 rounded-xl text-sm font-black hover:bg-emerald-600 active:scale-95 transition-all shadow-md shadow-emerald-500/20' onclick="applyVoucher()">Klaim</button>
                         </div>
                         <div class='hidden mt-3' id='voucher-msg-container'><p class='text-[11px] font-black uppercase tracking-widest' id='voucher-msg'/></div>
                     </div>
@@ -695,20 +695,20 @@
             <div class='absolute bottom-0 left-0 w-full glass-nav px-4 pt-3 z-30'>
                 <div class='max-w-full xl:max-w-[1200px] px-4 lg:px-10 mx-auto flex flex-col gap-2.5'>
                     <label class='flex items-center gap-3 cursor-pointer bg-slate-50 dark:bg-slate-800/80 p-3 rounded-xl border border-slate-200 dark:border-slate-700'>
-                        <input class='peer sr-only' id='tnc-checkbox' onchange='toggleOrderButton()' type='checkbox'></i>
+                        <input class='peer sr-only' id='tnc-checkbox' onchange="toggleOrderButton()" type='checkbox'></i>
                         <div class='w-5 h-5 border-2 border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 rounded-xl flex items-center justify-center peer-checked:bg-emerald-500 peer-checked:border-emerald-500 transition-all shrink-0'><i class='fa-solid fa-check text-white text-[10px] opacity-0 peer-checked:opacity-100 transition-opacity'></i></div>
                         <span class='text-[11px] font-bold text-slate-600 dark:text-slate-400 leading-snug'>Saya setuju dan memastikan pesanan sudah benar.</span>
                     </label>
-                    <button class='btn-primary btn-disabled w-full py-4 text-sm uppercase tracking-wider font-black rounded-2xl shadow-glow flex justify-center items-center gap-2 active:scale-[0.98]' id='btn-process-order' onclick='processOrder()'><i class='fa-solid fa-paper-plane'></i> Proses Pesanan</button>
+                    <button class='btn-primary btn-disabled w-full py-4 text-sm uppercase tracking-wider font-black rounded-2xl shadow-glow flex justify-center items-center gap-2 active:scale-[0.98]' id='btn-process-order' onclick="processOrder()"><i class='fa-solid fa-paper-plane'></i> Proses Pesanan</button>
                 </div>
             </div>
         </div>
      <div class='view-section flex flex-col fade-in bg-slate-50 dark:bg-slate-900 hidden' id='view-orders'>
             <div class='glass-header shrink-0 px-5 flex justify-center z-30 sticky top-0 pb-3'>
                 <div class='flex items-center justify-between w-full max-w-full xl:max-w-[1200px] mx-auto px-4 lg:px-10'>
-                    <button class='w-10 h-10 flex items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 active:scale-95 transition-all shadow-sm' onclick='history.back()'><i class='fa-solid fa-arrow-left text-sm'></i></button>
+                    <button class='w-10 h-10 flex items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 active:scale-95 transition-all shadow-sm' onclick="history.back()"><i class='fa-solid fa-arrow-left text-sm'></i></button>
                     <h1 class='text-base font-black text-slate-900 dark:text-white tracking-tight'>Riwayat Pesanan</h1>
-                    <button class='w-10 h-10 flex items-center justify-center rounded-full bg-rose-50 border border-rose-200 text-rose-500 hover:bg-rose-100 active:scale-95 transition-all shadow-sm hidden dark:bg-rose-900/20 dark:border-rose-800' id='btn-clear-orders' onclick='clearMyOrders()'><i class='fa-solid fa-trash-can text-sm'></i></button>
+                    <button class='w-10 h-10 flex items-center justify-center rounded-full bg-rose-50 border border-rose-200 text-rose-500 hover:bg-rose-100 active:scale-95 transition-all shadow-sm hidden dark:bg-rose-900/20 dark:border-rose-800' id='btn-clear-orders' onclick="clearMyOrders()"><i class='fa-solid fa-trash-can text-sm'></i></button>
                     <div class='w-10 hidden' id='spacer-orders'></div>
                 </div>
             </div>
@@ -724,9 +724,9 @@
 <div class='view-section flex flex-col fade-in bg-slate-50 dark:bg-slate-900 hidden' id='view-wishlist'>
             <div class='glass-header shrink-0 px-5 flex justify-center z-30 sticky top-0 pb-3'>
                 <div class='flex items-center justify-between w-full max-w-full xl:max-w-[1200px] mx-auto px-4 lg:px-10'>
-                    <button class='w-10 h-10 flex items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 active:scale-95 transition-all shadow-sm' onclick='history.back()'><i class='fa-solid fa-arrow-left text-sm'></i></button>
+                    <button class='w-10 h-10 flex items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 active:scale-95 transition-all shadow-sm' onclick="history.back()"><i class='fa-solid fa-arrow-left text-sm'></i></button>
                     <h1 class='text-base font-black text-slate-900 dark:text-white tracking-tight'>Favorit Saya</h1>
-                    <button class='w-10 h-10 flex items-center justify-center rounded-full bg-rose-50 border border-rose-200 text-rose-500 hover:bg-rose-100 active:scale-95 transition-all shadow-sm hidden dark:bg-rose-900/20 dark:border-rose-800' id='btn-clear-wishlist' onclick='clearWishlist()'><i class='fa-solid fa-trash-can text-sm'></i></button>
+                    <button class='w-10 h-10 flex items-center justify-center rounded-full bg-rose-50 border border-rose-200 text-rose-500 hover:bg-rose-100 active:scale-95 transition-all shadow-sm hidden dark:bg-rose-900/20 dark:border-rose-800' id='btn-clear-wishlist' onclick="clearWishlist()"><i class='fa-solid fa-trash-can text-sm'></i></button>
                     <div class='w-10 hidden' id='spacer-wishlist'></div>
                 </div>
             </div>
@@ -744,11 +744,11 @@
             <div class='absolute -bottom-20 -right-20 w-64 h-64 rounded-full blur-[80px] pointer-events-none opacity-15' style='background: var(--color-primary-dark)'></div>
             <div class='w-full max-w-sm p-5 relative z-10 mx-auto'>
                 <div class='bg-white/8 dark:bg-slate-800/50 backdrop-blur-xl rounded-[2rem] border border-white/15 dark:border-slate-700/50 p-8 shadow-2xl relative flex flex-col items-center text-center'>
-                    <button class='absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-xl bg-white/10 hover:bg-rose-500 text-white transition-all' onclick='history.back()'><i class='fa-solid fa-xmark text-xs'></i></button>
+                    <button class='absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-xl bg-white/10 hover:bg-rose-500 text-white transition-all' onclick="history.back()"><i class='fa-solid fa-xmark text-xs'></i></button>
                     <div class='w-18 h-18 w-[72px] h-[72px] text-white rounded-2xl flex items-center justify-center mb-5 text-3xl border border-white/15 shadow-lg' style='background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark))'><i class='fa-solid fa-shield-halved'></i></div>
                     <h2 class='text-2xl font-black tracking-tight text-white mb-1'>Admin Panel</h2>
                     <p class='text-[10px] font-black text-slate-400 mb-7 uppercase tracking-widest'>Otorisasi Superadmin</p>
-                    <form autocomplete='off' class='space-y-3 w-full text-left' onsubmit='return false;'>
+                    <form autocomplete='off' class='space-y-3 w-full text-left' onsubmit="return false;">
                         <div class='relative'>
                             <i class='fa-solid fa-envelope absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm'></i>
                             <input autocomplete='off' class='w-full bg-black/20 border border-white/10 rounded-xl py-3.5 pl-10 pr-4 text-white placeholder:text-slate-400 dark:placeholder:text-slate-400 text-sm font-semibold focus:outline-none focus:border-[rgba(var(--color-primary-rgb),0.7)] focus:bg-black/30 transition-all shadow-inner' id='login-username' name='x_panel_id_7k2' placeholder='Email Admin' type='email'></i>
@@ -758,7 +758,7 @@
                             <input autocomplete='off' class='w-full bg-black/20 border border-white/10 rounded-xl py-3.5 pl-10 pr-4 text-white placeholder:text-slate-400 dark:placeholder:text-slate-400 text-sm font-semibold focus:outline-none focus:border-[rgba(var(--color-primary-rgb),0.7)] focus:bg-black/30 transition-all shadow-inner' id='login-password' name='x_panel_pw_9m4' placeholder='Password' type='password'></i>
                         </div>
                         <div class='pt-3'>
-                            <button class='btn-solid shadow-glow' onclick='processAdminLogin()' type='button'>Masuk Sekarang <i class='fa-solid fa-arrow-right-to-bracket'></i></button>
+                            <button class='btn-solid shadow-glow' onclick="processAdminLogin()" type='button'>Masuk Sekarang <i class='fa-solid fa-arrow-right-to-bracket'></i></button>
                         </div>
                     </form>
                 </div>
@@ -768,7 +768,7 @@
             <div class='glass-header shrink-0 px-4 flex items-center justify-center z-30 sticky top-0 pb-3'>
                 <div class='flex items-center justify-between w-full max-w-full xl:max-w-[1200px] mx-auto px-4 lg:px-10'>
                     <div class='flex items-center gap-3'>
-                        <button class='hidden w-9 h-9 items-center justify-center rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700 active:scale-95 transition-all shadow-sm' id='btn-admin-back' onclick='openAdminMenu()'><i class='fa-solid fa-arrow-left text-xs'></i></button>
+                        <button class='hidden w-9 h-9 items-center justify-center rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700 active:scale-95 transition-all shadow-sm' id='btn-admin-back' onclick="openAdminMenu()"><i class='fa-solid fa-arrow-left text-xs'></i></button>
                         <div class='w-10 h-10 rounded-xl bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-dark)] text-white flex items-center justify-center shadow-md shrink-0 border border-[rgba(var(--color-primary-rgb),0.3)]' id='admin-logo-box'><i class='fa-solid fa-layer-group text-sm'></i></div>
                         <div>
                             <div class='flex items-center gap-2'>
@@ -778,8 +778,8 @@
                         </div>
                     </div>
                     <div class='flex items-center gap-1.5'>
-                        <button class='h-8 px-3 flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 rounded-xl text-[11px] font-black hover:bg-slate-200 dark:hover:bg-slate-700 shadow-sm transition-all active:scale-95' onclick='changeView(&quot;view-catalog&quot;)'><i class='fa-solid fa-eye text-blue-500 text-xs'></i><span class='hidden sm:inline'>Preview</span></button>
-                        <button class='h-8 px-3 flex items-center gap-1.5 bg-rose-50 dark:bg-rose-900/20 border border-rose-200 dark:border-rose-800 text-rose-600 dark:text-rose-400 rounded-xl text-[11px] font-black hover:bg-rose-500 hover:text-white hover:border-rose-500 dark:hover:bg-rose-500 dark:hover:text-white shadow-sm transition-all active:scale-95' onclick='confirmLogoutAdmin()'><i class='fa-solid fa-power-off text-xs'></i><span class='hidden sm:inline'>Keluar</span></button>
+                        <button class='h-8 px-3 flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 rounded-xl text-[11px] font-black hover:bg-slate-200 dark:hover:bg-slate-700 shadow-sm transition-all active:scale-95' onclick="changeView('view-catalog')"><i class='fa-solid fa-eye text-blue-500 text-xs'></i><span class='hidden sm:inline'>Preview</span></button>
+                        <button class='h-8 px-3 flex items-center gap-1.5 bg-rose-50 dark:bg-rose-900/20 border border-rose-200 dark:border-rose-800 text-rose-600 dark:text-rose-400 rounded-xl text-[11px] font-black hover:bg-rose-500 hover:text-white hover:border-rose-500 dark:hover:bg-rose-500 dark:hover:text-white shadow-sm transition-all active:scale-95' onclick="confirmLogoutAdmin()"><i class='fa-solid fa-power-off text-xs'></i><span class='hidden sm:inline'>Keluar</span></button>
                     </div>
                 </div>
             </div>
@@ -809,10 +809,10 @@
                                     <h3 class='font-black text-slate-700 dark:text-slate-200 text-xs uppercase tracking-widest'>Laporan Toko</h3>
                                 </div>
                                 <div class='flex gap-1.5 bg-slate-100 dark:bg-slate-800 p-1 rounded-xl' id='report-period-tabs'>
-                                    <button class='report-period-btn px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all text-slate-500 dark:text-slate-400' data-period='today' onclick='loadAdminReport(&apos;today&apos;)'>Hari Ini</button>
-                                    <button class='report-period-btn px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all text-slate-500 dark:text-slate-400' data-period='week' onclick='loadAdminReport(&apos;week&apos;)'>Minggu Ini</button>
-                                    <button class='report-period-btn px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all text-slate-500 dark:text-slate-400' data-period='month' onclick='loadAdminReport(&apos;month&apos;)'>Bulan Ini</button>
-                                    <button class='report-period-btn px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all text-slate-500 dark:text-slate-400' data-period='all' onclick='loadAdminReport(&apos;all&apos;)'>Semua</button>
+                                    <button class='report-period-btn px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all text-slate-500 dark:text-slate-400' data-period='today' onclick="loadAdminReport('today')">Hari Ini</button>
+                                    <button class='report-period-btn px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all text-slate-500 dark:text-slate-400' data-period='week' onclick="loadAdminReport('week')">Minggu Ini</button>
+                                    <button class='report-period-btn px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all text-slate-500 dark:text-slate-400' data-period='month' onclick="loadAdminReport('month')">Bulan Ini</button>
+                                    <button class='report-period-btn px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all text-slate-500 dark:text-slate-400' data-period='all' onclick="loadAdminReport('all')">Semua</button>
                                 </div>
                             </div>
                             <div id='admin-report-container'>
@@ -825,67 +825,67 @@
                         </div>
                         <!-- Grid Menu Admin -->
                         <div class='grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 pb-8'>
-                            <button class='card-modern p-4 sm:p-5 md:p-6 lg:p-8 flex flex-col items-center justify-center text-center gap-3 group hover:-translate-y-1.5 hover:shadow-xl hover:border-[rgba(var(--color-primary-rgb),0.4)] transition-all duration-300 relative overflow-hidden' onclick='openAdminTab(&quot;orders&quot;)'>
+                            <button class='card-modern p-4 sm:p-5 md:p-6 lg:p-8 flex flex-col items-center justify-center text-center gap-3 group hover:-translate-y-1.5 hover:shadow-xl hover:border-[rgba(var(--color-primary-rgb),0.4)] transition-all duration-300 relative overflow-hidden' onclick="openAdminTab('orders')">
                                 <div class='absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-[1.25rem]' style='background: linear-gradient(to bottom, rgba(var(--color-primary-rgb),0.06), transparent)'></div>
                                 <div class='w-12 h-12 sm:w-14 sm:h-14 rounded-2xl text-white flex items-center justify-center shadow-md group-hover:scale-110 transition-all duration-300 relative z-10' style='background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark))'><i class='fa-solid fa-receipt text-xl sm:text-2xl'></i></div>
                                 <div class='relative z-10'><span class='block text-[10px] sm:text-[11px] font-black text-slate-800 dark:text-white uppercase tracking-widest leading-tight'>Pesanan</span><span class='block text-[9px] font-bold text-slate-400 mt-0.5'>Kelola Transaksi</span></div>
                             </button>
-                            <button class='card-modern p-4 sm:p-5 md:p-6 lg:p-8 flex flex-col items-center justify-center text-center gap-3 group hover:-translate-y-1.5 hover:shadow-xl hover:border-blue-300 dark:hover:border-blue-600 transition-all duration-300 relative overflow-hidden' onclick='openAdminTab(&quot;products&quot;)'>
+                            <button class='card-modern p-4 sm:p-5 md:p-6 lg:p-8 flex flex-col items-center justify-center text-center gap-3 group hover:-translate-y-1.5 hover:shadow-xl hover:border-blue-300 dark:hover:border-blue-600 transition-all duration-300 relative overflow-hidden' onclick="openAdminTab('products')">
                                 <div class='absolute inset-0 bg-gradient-to-b from-blue-50/80 to-transparent dark:from-blue-900/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-[1.25rem]'></div>
                                 <div class='w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-br from-blue-400 to-blue-600 text-white flex items-center justify-center shadow-md group-hover:scale-110 transition-all duration-300 relative z-10'><i class='fa-solid fa-box-open text-xl sm:text-2xl'></i></div>
                                 <div class='relative z-10'><span class='block text-[10px] sm:text-[11px] font-black text-slate-800 dark:text-white uppercase tracking-widest leading-tight'>Produk</span><span class='block text-[9px] font-bold text-slate-400 mt-0.5'>Katalog Barang</span></div>
                             </button>
-                            <button class='card-modern p-4 sm:p-5 md:p-6 lg:p-8 flex flex-col items-center justify-center text-center gap-3 group hover:-translate-y-1.5 hover:shadow-xl hover:border-slate-400 dark:hover:border-slate-500 transition-all duration-300 relative overflow-hidden' onclick='openAdminTab(&quot;settings&quot;)'>
+                            <button class='card-modern p-4 sm:p-5 md:p-6 lg:p-8 flex flex-col items-center justify-center text-center gap-3 group hover:-translate-y-1.5 hover:shadow-xl hover:border-slate-400 dark:hover:border-slate-500 transition-all duration-300 relative overflow-hidden' onclick="openAdminTab('settings')">
                                 <div class='absolute inset-0 bg-gradient-to-b from-slate-100/80 to-transparent dark:from-slate-700/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-[1.25rem]'></div>
                                 <div class='w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-br from-slate-600 to-slate-800 text-white flex items-center justify-center shadow-md group-hover:scale-110 transition-all duration-300 relative z-10'><i class='fa-solid fa-gear text-xl sm:text-2xl group-hover:rotate-90 transition-transform duration-500'></i></div>
                                 <div class='relative z-10'><span class='block text-[10px] sm:text-[11px] font-black text-slate-800 dark:text-white uppercase tracking-widest leading-tight'>Pengaturan</span><span class='block text-[9px] font-bold text-slate-400 mt-0.5'>Sistem Toko</span></div>
                             </button>
-                            <button class='card-modern p-4 sm:p-5 md:p-6 lg:p-8 flex flex-col items-center justify-center text-center gap-3 group hover:-translate-y-1.5 hover:shadow-xl hover:border-amber-300 dark:hover:border-amber-600 transition-all duration-300 relative overflow-hidden' onclick='openAdminTab(&quot;categories&quot;)'>
+                            <button class='card-modern p-4 sm:p-5 md:p-6 lg:p-8 flex flex-col items-center justify-center text-center gap-3 group hover:-translate-y-1.5 hover:shadow-xl hover:border-amber-300 dark:hover:border-amber-600 transition-all duration-300 relative overflow-hidden' onclick="openAdminTab('categories')">
                                 <div class='absolute inset-0 bg-gradient-to-b from-amber-50/80 to-transparent dark:from-amber-900/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-[1.25rem]'></div>
                                 <div class='w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-br from-amber-400 to-amber-600 text-white flex items-center justify-center shadow-md group-hover:scale-110 transition-all duration-300 relative z-10'><i class='fa-solid fa-tags text-xl sm:text-2xl'></i></div>
                                 <div class='relative z-10'><span class='block text-[10px] sm:text-[11px] font-black text-slate-800 dark:text-white uppercase tracking-widest leading-tight'>Kategori</span><span class='block text-[9px] font-bold text-slate-400 mt-0.5'>Grup Etalase</span></div>
                             </button>
-                            <button class='card-modern p-4 sm:p-5 md:p-6 lg:p-8 flex flex-col items-center justify-center text-center gap-3 group hover:-translate-y-1.5 hover:shadow-xl hover:border-indigo-300 dark:hover:border-indigo-600 transition-all duration-300 relative overflow-hidden' onclick='openAdminTab(&quot;brands&quot;)'>
+                            <button class='card-modern p-4 sm:p-5 md:p-6 lg:p-8 flex flex-col items-center justify-center text-center gap-3 group hover:-translate-y-1.5 hover:shadow-xl hover:border-indigo-300 dark:hover:border-indigo-600 transition-all duration-300 relative overflow-hidden' onclick="openAdminTab('brands')">
                                 <div class='absolute inset-0 bg-gradient-to-b from-indigo-50/80 to-transparent dark:from-indigo-900/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-[1.25rem]'></div>
                                 <div class='w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-br from-indigo-400 to-indigo-600 text-white flex items-center justify-center shadow-md group-hover:scale-110 transition-all duration-300 relative z-10'><i class='fa-solid fa-copyright text-xl sm:text-2xl'></i></div>
                                 <div class='relative z-10'><span class='block text-[10px] sm:text-[11px] font-black text-slate-800 dark:text-white uppercase tracking-widest leading-tight'>Merek</span><span class='block text-[9px] font-bold text-slate-400 mt-0.5'>Brand Ternama</span></div>
                             </button>
-                            <button class='card-modern p-4 sm:p-5 md:p-6 lg:p-8 flex flex-col items-center justify-center text-center gap-3 group hover:-translate-y-1.5 hover:shadow-xl hover:border-purple-300 dark:hover:border-purple-600 transition-all duration-300 relative overflow-hidden' onclick='openAdminTab(&quot;vouchers&quot;)'>
+                            <button class='card-modern p-4 sm:p-5 md:p-6 lg:p-8 flex flex-col items-center justify-center text-center gap-3 group hover:-translate-y-1.5 hover:shadow-xl hover:border-purple-300 dark:hover:border-purple-600 transition-all duration-300 relative overflow-hidden' onclick="openAdminTab('vouchers')">
                                 <div class='absolute inset-0 bg-gradient-to-b from-purple-50/80 to-transparent dark:from-purple-900/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-[1.25rem]'></div>
                                 <div class='w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-br from-purple-400 to-purple-600 text-white flex items-center justify-center shadow-md group-hover:scale-110 transition-all duration-300 relative z-10'><i class='fa-solid fa-ticket-simple text-xl sm:text-2xl -rotate-45'></i></div>
                                 <div class='relative z-10'><span class='block text-[10px] sm:text-[11px] font-black text-slate-800 dark:text-white uppercase tracking-widest leading-tight'>Voucher</span><span class='block text-[9px] font-bold text-slate-400 mt-0.5'>Diskon &amp; Promo</span></div>
                             </button>
-                            <button class='card-modern p-4 sm:p-5 md:p-6 lg:p-8 flex flex-col items-center justify-center text-center gap-3 group hover:-translate-y-1.5 hover:shadow-xl hover:border-cyan-300 dark:hover:border-cyan-600 transition-all duration-300 relative overflow-hidden' onclick='openAdminTab(&quot;banks&quot;)'>
+                            <button class='card-modern p-4 sm:p-5 md:p-6 lg:p-8 flex flex-col items-center justify-center text-center gap-3 group hover:-translate-y-1.5 hover:shadow-xl hover:border-cyan-300 dark:hover:border-cyan-600 transition-all duration-300 relative overflow-hidden' onclick="openAdminTab('banks')">
                                 <div class='absolute inset-0 bg-gradient-to-b from-cyan-50/80 to-transparent dark:from-cyan-900/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-[1.25rem]'></div>
                                 <div class='w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-br from-cyan-400 to-cyan-600 text-white flex items-center justify-center shadow-md group-hover:scale-110 transition-all duration-300 relative z-10'><i class='fa-solid fa-building-columns text-xl sm:text-2xl'></i></div>
                                 <div class='relative z-10'><span class='block text-[10px] sm:text-[11px] font-black text-slate-800 dark:text-white uppercase tracking-widest leading-tight'>Rekening</span><span class='block text-[9px] font-bold text-slate-400 mt-0.5'>Metode Transfer</span></div>
                             </button>
-                            <button class='card-modern p-4 sm:p-5 md:p-6 lg:p-8 flex flex-col items-center justify-center text-center gap-3 group hover:-translate-y-1.5 hover:shadow-xl hover:border-pink-300 dark:hover:border-pink-600 transition-all duration-300 relative overflow-hidden' onclick='openAdminTab(&quot;banners&quot;)'>
+                            <button class='card-modern p-4 sm:p-5 md:p-6 lg:p-8 flex flex-col items-center justify-center text-center gap-3 group hover:-translate-y-1.5 hover:shadow-xl hover:border-pink-300 dark:hover:border-pink-600 transition-all duration-300 relative overflow-hidden' onclick="openAdminTab('banners')">
                                 <div class='absolute inset-0 bg-gradient-to-b from-pink-50/80 to-transparent dark:from-pink-900/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-[1.25rem]'></div>
                                 <div class='w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-br from-pink-400 to-pink-600 text-white flex items-center justify-center shadow-md group-hover:scale-110 transition-all duration-300 relative z-10'><i class='fa-solid fa-images text-xl sm:text-2xl'></i></div>
                                 <div class='relative z-10'><span class='block text-[10px] sm:text-[11px] font-black text-slate-800 dark:text-white uppercase tracking-widest leading-tight'>Banner</span><span class='block text-[9px] font-bold text-slate-400 mt-0.5'>Slider Promosi</span></div>
                             </button>
-                            <button class='card-modern p-4 sm:p-5 md:p-6 lg:p-8 flex flex-col items-center justify-center text-center gap-3 group hover:-translate-y-1.5 hover:shadow-xl hover:border-teal-300 dark:hover:border-teal-600 transition-all duration-300 relative overflow-hidden' onclick='openAdminTab(&quot;customers&quot;)'>
+                            <button class='card-modern p-4 sm:p-5 md:p-6 lg:p-8 flex flex-col items-center justify-center text-center gap-3 group hover:-translate-y-1.5 hover:shadow-xl hover:border-teal-300 dark:hover:border-teal-600 transition-all duration-300 relative overflow-hidden' onclick="openAdminTab('customers')">
                                 <div class='absolute inset-0 bg-gradient-to-b from-teal-50/80 to-transparent dark:from-teal-900/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-[1.25rem]'></div>
                                 <div class='w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-br from-teal-400 to-teal-600 text-white flex items-center justify-center shadow-md group-hover:scale-110 transition-all duration-300 relative z-10'><i class='fa-solid fa-address-book text-xl sm:text-2xl'></i></div>
                                 <div class='relative z-10'><span class='block text-[10px] sm:text-[11px] font-black text-slate-800 dark:text-white uppercase tracking-widest leading-tight'>Pelanggan</span><span class='block text-[9px] font-bold text-slate-400 mt-0.5'>Database Member</span></div>
                             </button>
-                            <button class='card-modern p-4 sm:p-5 md:p-6 lg:p-8 flex flex-col items-center justify-center text-center gap-3 group hover:-translate-y-1.5 hover:shadow-xl hover:border-violet-300 dark:hover:border-violet-600 transition-all duration-300 relative overflow-hidden' onclick='openAdminTab(&quot;rewards&quot;)'>
+                            <button class='card-modern p-4 sm:p-5 md:p-6 lg:p-8 flex flex-col items-center justify-center text-center gap-3 group hover:-translate-y-1.5 hover:shadow-xl hover:border-violet-300 dark:hover:border-violet-600 transition-all duration-300 relative overflow-hidden' onclick="openAdminTab('rewards')">
                                 <div class='absolute inset-0 bg-gradient-to-b from-violet-50/80 to-transparent dark:from-violet-900/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-[1.25rem]'></div>
                                 <div class='w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-br from-violet-400 to-violet-600 text-white flex items-center justify-center shadow-md group-hover:scale-110 transition-all duration-300 relative z-10'><i class='fa-solid fa-gift text-xl sm:text-2xl'></i></div>
                                 <div class='relative z-10'><span class='block text-[10px] sm:text-[11px] font-black text-slate-800 dark:text-white uppercase tracking-widest leading-tight'>Hadiah</span><span class='block text-[9px] font-bold text-slate-400 mt-0.5'>Tukar Poin Member</span></div>
                             </button>
-                            <button class='card-modern p-4 sm:p-5 md:p-6 lg:p-8 flex flex-col items-center justify-center text-center gap-3 group hover:-translate-y-1.5 hover:shadow-xl hover:border-amber-300 dark:hover:border-amber-600 transition-all duration-300 relative overflow-hidden' onclick='openAdminTab(&quot;reviews&quot;)'>
+                            <button class='card-modern p-4 sm:p-5 md:p-6 lg:p-8 flex flex-col items-center justify-center text-center gap-3 group hover:-translate-y-1.5 hover:shadow-xl hover:border-amber-300 dark:hover:border-amber-600 transition-all duration-300 relative overflow-hidden' onclick="openAdminTab('reviews')">
                                 <div class='absolute inset-0 bg-gradient-to-b from-amber-50/80 to-transparent dark:from-amber-900/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-[1.25rem]'></div>
                                 <div class='w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-br from-amber-400 to-amber-600 text-white flex items-center justify-center shadow-md group-hover:scale-110 transition-all duration-300 relative z-10'><i class='fa-solid fa-star text-xl sm:text-2xl'></i></div>
                                 <div class='relative z-10'><span class='block text-[10px] sm:text-[11px] font-black text-slate-800 dark:text-white uppercase tracking-widest leading-tight'>Ulasan</span><span class='block text-[9px] font-bold text-slate-400 mt-0.5'>Testimoni Pelanggan</span></div>
                             </button>
-                            <button class='hidden card-modern p-4 sm:p-5 md:p-6 lg:p-8 flex-col items-center justify-center text-center gap-3 group hover:-translate-y-1.5 hover:shadow-xl hover:border-red-300 dark:hover:border-red-600 transition-all duration-300 relative overflow-hidden' id='admin-menu-tax-btn' onclick='openAdminTab(&quot;tax&quot;)'>
+                            <button class='hidden card-modern p-4 sm:p-5 md:p-6 lg:p-8 flex-col items-center justify-center text-center gap-3 group hover:-translate-y-1.5 hover:shadow-xl hover:border-red-300 dark:hover:border-red-600 transition-all duration-300 relative overflow-hidden' id='admin-menu-tax-btn' onclick="openAdminTab('tax')">
                                 <div class='absolute inset-0 bg-gradient-to-b from-red-50/80 to-transparent dark:from-red-900/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-[1.25rem]'></div>
                                 <div class='w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-br from-red-400 to-red-600 text-white flex items-center justify-center shadow-md group-hover:scale-110 transition-all duration-300 relative z-10'><i class='fa-solid fa-file-invoice-dollar text-xl sm:text-2xl'></i></div>
                                 <div class='relative z-10'><span class='block text-[10px] sm:text-[11px] font-black text-slate-800 dark:text-white uppercase tracking-widest leading-tight'>Pajak</span><span class='block text-[9px] font-bold text-slate-400 mt-0.5'>PPN, Laba Rugi, Neraca</span></div>
                             </button>
-                            <button class='card-modern p-4 sm:p-5 md:p-6 lg:p-8 flex flex-col items-center justify-center text-center gap-3 group hover:-translate-y-1.5 hover:shadow-xl hover:border-pink-300 dark:hover:border-pink-600 transition-all duration-300 relative overflow-hidden' onclick='openAdminTab(&quot;piutang&quot;)'>
+                            <button class='card-modern p-4 sm:p-5 md:p-6 lg:p-8 flex flex-col items-center justify-center text-center gap-3 group hover:-translate-y-1.5 hover:shadow-xl hover:border-pink-300 dark:hover:border-pink-600 transition-all duration-300 relative overflow-hidden' onclick="openAdminTab('piutang')">
                                 <div class='absolute inset-0 bg-gradient-to-b from-pink-50/80 to-transparent dark:from-pink-900/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-[1.25rem]'></div>
                                 <div class='w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-br from-pink-400 to-pink-600 text-white flex items-center justify-center shadow-md group-hover:scale-110 transition-all duration-300 relative z-10'><i class='fa-solid fa-clock-rotate-left text-xl sm:text-2xl'></i></div>
                                 <div class='relative z-10'><span class='block text-[10px] sm:text-[11px] font-black text-slate-800 dark:text-white uppercase tracking-widest leading-tight'>Piutang Tempo</span><span class='block text-[9px] font-bold text-slate-400 mt-0.5'>Laporan Hutang Pelanggan</span></div>
@@ -897,7 +897,7 @@
             </div>
         </div>
     </div>
-    <input accept='.json' class='hidden' id='restore-file' onchange='restoreData(event)' type='file'></i>
+    <input accept='.json' class='hidden' id='restore-file' onchange="restoreData(event)" type='file'></i>
 <script type='text/javascript'>
 //<![CDATA[
 // ================================================================
