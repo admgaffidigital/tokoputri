@@ -27,7 +27,7 @@
     <!-- Vite entry point -->
     <script type="module" src="/src/main.js"></script>
     <!-- Critical CSS: sembunyikan body sampai JS siap, mencegah FOUC -->
-    <style>body{visibility:hidden;opacity:0;transition:opacity .25s ease}body.app-ready{visibility:visible;opacity:1}</style>
+    <style>body{visibility:hidden;opacity:0;transition:opacity .25s ease}body.app-ready{visibility:visible;opacity:1}#global-loader{visibility:visible!important}</style>
     <script>setTimeout(()=>document.body.classList.add('app-ready'),5000)</script>
 </head>
 <body>
