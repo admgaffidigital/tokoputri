@@ -141,6 +141,16 @@ const fixD = v => {
     return m ? `https://lh3.googleusercontent.com/d/${m[1]}` : v;
 };
 
+// Optimizer Google User Content Image (Ukuran & Format WebP)
+const getOptImg = (url, sizeOpt) => {
+    if (typeof url !== 'string') return url;
+    if (url.includes('lh3.googleusercontent.com/d/')) {
+        const cleanUrl = url.split('=')[0];
+        return `${cleanUrl}=${sizeOpt}`;
+    }
+    return url;
+};
+
 // Format Currency Rupiah
 const fCur = a => {
     const n = Number(a);
@@ -1319,7 +1329,7 @@ window.rDyn = () => {
                 </div>
                 <div class="w-[40%] relative z-10 flex items-center justify-center p-2 sm:p-4 pr-4 sm:pr-6">
                     <div class="absolute inset-0 bg-gradient-to-l from-black/10 to-transparent pointer-events-none"></div>
-                    ${b.img ? `<img loading="lazy" src="${esc(b.img)}" class="w-full h-full object-contain drop-shadow-2xl transition-transform duration-700 group-hover:scale-125 group-hover:-translate-y-2 group-hover:-rotate-3" onerror="this.style.display='none'"></i>` : `<i class="fa-solid fa-gift text-6xl text-white/50 group-hover:scale-110 transition-transform"></i>`}
+                    ${b.img ? `<img loading="lazy" src="${esc(getOptImg(b.img, 'w800-rw'))}" class="w-full h-full object-contain drop-shadow-2xl transition-transform duration-700 group-hover:scale-125 group-hover:-translate-y-2 group-hover:-rotate-3" onerror="this.style.display='none'"></i>` : `<i class="fa-solid fa-gift text-6xl text-white/50 group-hover:scale-110 transition-transform"></i>`}
                 </div>
             </div>
         </div>`;
@@ -1392,7 +1402,7 @@ window.rDyn = () => {
         if(appData.store.categoryStyle === 'text' || !appData.store.categoryStyle) {
             return `<div onclick="filterCategory('${nameSafe}')" class="cursor-pointer shrink-0 snap-start group py-1"><div class="px-5 py-2.5 rounded-[1.25rem] border-2 transition-all duration-300 flex items-center gap-3 ${isSel ? 'bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-primary-dark)] border-transparent text-white shadow-md' : 'bg-white dark:bg-slate-800 border-slate-100 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-[var(--color-primary)] hover:shadow-md hover:-translate-y-1'}"><div class="w-6 h-6 rounded-full flex items-center justify-center ${isSel ? 'bg-white/20 text-white shadow-inner' : 'bg-slate-50 dark:bg-slate-700 text-slate-400 group-hover:bg-[var(--color-primary-light)] group-hover:text-[var(--color-primary)]'} transition-all duration-300"><i class="fa-solid fa-layer-group text-[10px]"></i></div><span class="font-black text-[11px] sm:text-xs uppercase tracking-widest pr-2">${esc(c.name)}</span></div></div>`;
         } else {
-            return `<div onclick="filterCategory('${nameSafe}')" class="flex flex-col items-center gap-3 cursor-pointer shrink-0 w-[80px] sm:w-[95px] group snap-start py-1"><div class="relative w-16 h-16 sm:w-[72px] sm:h-[72px] rounded-[1.25rem] bg-slate-50 dark:bg-slate-800 flex items-center justify-center p-2 transition-all duration-300 ${isSel ? 'bg-[var(--color-primary-light)] border-2 border-[var(--color-primary)] shadow-glow dark:bg-[var(--color-primary-dark)]/20' : 'border border-slate-200 dark:border-slate-700 shadow-sm group-hover:border-[var(--color-primary)] group-hover:shadow-lg group-hover:-translate-y-1.5'} overflow-hidden"><img loading="lazy" src="${esc(c.img)}" onerror="this.onerror=null;this.src='https://placehold.co/150/10b981/ffffff?text=Cat'" class="w-full h-full object-cover rounded-xl transition-transform duration-500 group-hover:scale-110"></i></div><span class="text-[9px] sm:text-[10px] text-center w-full line-clamp-2 leading-tight px-1 ${isSel ? 'font-black text-[var(--color-primary)]' : 'font-bold text-slate-500 dark:text-slate-400 group-hover:text-[var(--color-primary)]'} uppercase tracking-widest transition-colors">${esc(c.name)}</span></div>`;
+            return `<div onclick="filterCategory('${nameSafe}')" class="flex flex-col items-center gap-3 cursor-pointer shrink-0 w-[80px] sm:w-[95px] group snap-start py-1"><div class="relative w-16 h-16 sm:w-[72px] sm:h-[72px] rounded-[1.25rem] bg-slate-50 dark:bg-slate-800 flex items-center justify-center p-2 transition-all duration-300 ${isSel ? 'bg-[var(--color-primary-light)] border-2 border-[var(--color-primary)] shadow-glow dark:bg-[var(--color-primary-dark)]/20' : 'border border-slate-200 dark:border-slate-700 shadow-sm group-hover:border-[var(--color-primary)] group-hover:shadow-lg group-hover:-translate-y-1.5'} overflow-hidden"><img loading="lazy" src="${esc(getOptImg(c.img, 'w150-rw'))}" onerror="this.onerror=null;this.src='https://placehold.co/150/10b981/ffffff?text=Cat'" class="w-full h-full object-cover rounded-xl transition-transform duration-500 group-hover:scale-110"></i></div><span class="text-[9px] sm:text-[10px] text-center w-full line-clamp-2 leading-tight px-1 ${isSel ? 'font-black text-[var(--color-primary)]' : 'font-bold text-slate-500 dark:text-slate-400 group-hover:text-[var(--color-primary)]'} uppercase tracking-widest transition-colors">${esc(c.name)}</span></div>`;
         }
     }).join(''));
     
@@ -1404,13 +1414,13 @@ window.rDyn = () => {
         if(appData.store.brandStyle === 'text') {
             return `<div onclick="filterBrand('${nameSafe}')" class="cursor-pointer shrink-0 snap-start group py-1"><div class="px-5 py-2.5 rounded-[1.25rem] border-2 transition-all duration-300 flex items-center gap-3 ${isSel ? 'bg-gradient-to-r from-blue-500 to-indigo-500 border-transparent text-white shadow-md' : 'bg-white dark:bg-slate-800 border-slate-100 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-blue-300 hover:shadow-md hover:-translate-y-1'}"><div class="w-6 h-6 rounded-full flex items-center justify-center ${isSel ? 'bg-white/20 text-white shadow-inner' : 'bg-slate-50 dark:bg-slate-700 text-slate-400 group-hover:bg-blue-50 group-hover:text-blue-500'} transition-all duration-300"><i class="fa-solid fa-copyright text-[10px]"></i></div><span class="font-black text-[11px] sm:text-xs uppercase tracking-widest pr-2">${esc(b.name)}</span></div></div>`;
         } else {
-            return `<div onclick="filterBrand('${nameSafe}')" class="flex flex-col items-center gap-3 cursor-pointer shrink-0 w-[75px] sm:w-[85px] group snap-start py-1"><div class="relative w-16 h-16 sm:w-[68px] sm:h-[68px] rounded-full bg-white flex items-center justify-center overflow-hidden p-2 transition-all duration-500 ${isSel ? 'ring-4 ring-blue-500 ring-offset-2 ring-offset-slate-50 dark:ring-offset-slate-800 shadow-lg shadow-blue-500/30' : 'border border-slate-200 dark:border-slate-700 shadow-sm group-hover:border-blue-400 group-hover:shadow-lg group-hover:-translate-y-1.5'}"><img loading="lazy" src="${esc(b.img)}" onerror="this.onerror=null;this.src='https://placehold.co/150/3b82f6/ffffff?text=Brand'" class="w-full h-full object-contain drop-shadow-sm transition-transform duration-500 group-hover:scale-110"></i></div><span class="text-[9px] sm:text-[10px] text-center w-full line-clamp-2 leading-tight px-1 ${isSel ? 'font-black text-blue-600 dark:text-blue-400' : 'font-bold text-slate-500 dark:text-slate-400 group-hover:text-blue-600'} uppercase tracking-widest transition-colors">${esc(b.name)}</span></div>`;
+            return `<div onclick="filterBrand('${nameSafe}')" class="flex flex-col items-center gap-3 cursor-pointer shrink-0 w-[75px] sm:w-[85px] group snap-start py-1"><div class="relative w-16 h-16 sm:w-[68px] sm:h-[68px] rounded-full bg-white flex items-center justify-center overflow-hidden p-2 transition-all duration-500 ${isSel ? 'ring-4 ring-blue-500 ring-offset-2 ring-offset-slate-50 dark:ring-offset-slate-800 shadow-lg shadow-blue-500/30' : 'border border-slate-200 dark:border-slate-700 shadow-sm group-hover:border-blue-400 group-hover:shadow-lg group-hover:-translate-y-1.5'}"><img loading="lazy" src="${esc(getOptImg(b.img, 'w150-rw'))}" onerror="this.onerror=null;this.src='https://placehold.co/150/3b82f6/ffffff?text=Brand'" class="w-full h-full object-contain drop-shadow-sm transition-transform duration-500 group-hover:scale-110"></i></div><span class="text-[9px] sm:text-[10px] text-center w-full line-clamp-2 leading-tight px-1 ${isSel ? 'font-black text-blue-600 dark:text-blue-400' : 'font-bold text-slate-500 dark:text-slate-400 group-hover:text-blue-600'} uppercase tracking-widest transition-colors">${esc(b.name)}</span></div>`;
         }
     }).join(''));
     
     setH('modal-brand-grid', bLModal.map(b => {
         const isSel = aBrand === b.name; const nameSafe = decodeURIComponent(encodeURIComponent(b.name).replace(/'/g,"%27"));
-        return `<button onclick="filterBrand('${nameSafe}'); closeBrandModal();" class="flex flex-col items-center gap-3 p-4 rounded-[1.25rem] border ${isSel?'border-blue-500 bg-blue-50 dark:bg-blue-900/20 shadow-md':'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-blue-300 hover:shadow-sm'} transition-all active:scale-[0.96]"><div class="w-14 h-14 rounded-full flex items-center justify-center bg-white border border-slate-100 dark:border-slate-600 shadow-inner overflow-hidden p-1.5"><img loading="lazy" src="${esc(b.img)}" class="w-full h-full object-contain" onerror="this.src='https://placehold.co/100?text=Brand'"></i></div> <span class="text-[10px] sm:text-xs font-black ${isSel?'text-blue-700 dark:text-blue-400':'text-slate-700 dark:text-slate-300'} text-center leading-tight line-clamp-2 uppercase tracking-widest">${esc(b.name)}</span></button>`;
+        return `<button onclick="filterBrand('${nameSafe}'); closeBrandModal();" class="flex flex-col items-center gap-3 p-4 rounded-[1.25rem] border ${isSel?'border-blue-500 bg-blue-50 dark:bg-blue-900/20 shadow-md':'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-blue-300 hover:shadow-sm'} transition-all active:scale-[0.96]"><div class="w-14 h-14 rounded-full flex items-center justify-center bg-white border border-slate-100 dark:border-slate-600 shadow-inner overflow-hidden p-1.5"><img loading="lazy" src="${esc(getOptImg(b.img, 'w150-rw'))}" class="w-full h-full object-contain" onerror="this.src='https://placehold.co/100?text=Brand'"></i></div> <span class="text-[10px] sm:text-xs font-black ${isSel?'text-blue-700 dark:text-blue-400':'text-slate-700 dark:text-slate-300'} text-center leading-tight line-clamp-2 uppercase tracking-widest">${esc(b.name)}</span></button>`;
     }).join(''));
 
     if(el('dyn-qris-img') && appData.payment) el('dyn-qris-img').src = appData.payment.qrisUrl;
@@ -1592,7 +1602,7 @@ window.rCat = () => {
                 ${nH}
                 <div class="relative aspect-square w-full bg-white flex items-center justify-center shrink-0 border-b border-slate-100 dark:border-slate-700/50">
                       ${stockBadge}
-                      <img loading="lazy" src="${esc(p.img)}" onerror="this.onerror=null;this.src='https://placehold.co/400?text=No+Image'" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 ${!a?'grayscale opacity-50':''}"></i>
+                      <img loading="lazy" src="${esc(getOptImg(p.img, 'w300-rw'))}" onerror="this.onerror=null;this.src='https://placehold.co/400?text=No+Image'" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 ${!a?'grayscale opacity-50':''}"></i>
                 </div>
                 <div class="flex-1 flex flex-col p-3 sm:p-4 min-w-0 bg-white dark:bg-slate-800 relative z-10">
                     ${bH}
@@ -1617,7 +1627,7 @@ window.rCat = () => {
                 ${nH}
                 <div class="relative w-24 h-24 sm:w-28 sm:h-28 shrink-0 bg-white rounded-xl flex items-center justify-center p-2 border border-slate-100 dark:border-slate-700/50 overflow-hidden">
                     ${stockBadge}
-                    <img loading="lazy" src="${esc(p.img)}" onerror="this.onerror=null;this.src='https://placehold.co/400?text=No+Image'" class="max-w-full max-h-full object-contain transition-transform duration-500 group-hover:scale-105 ${!a?'grayscale opacity-50':''}"></i>
+                    <img loading="lazy" src="${esc(getOptImg(p.img, 'w300-rw'))}" onerror="this.onerror=null;this.src='https://placehold.co/400?text=No+Image'" class="max-w-full max-h-full object-contain transition-transform duration-500 group-hover:scale-105 ${!a?'grayscale opacity-50':''}"></i>
                 </div>
                 <div class="flex-1 min-w-0 py-1 flex flex-col justify-center h-full relative z-10 pr-2">
                     ${bH}
@@ -1800,7 +1810,7 @@ const rProdMod = () => {
             if (vc) vc.classList.add('hidden');
             if (i) {
                 i.style.display = 'block';
-                i.src = (v?.img || p.img || '');
+                i.src = getOptImg(v?.img || p.img || '', 'w600-rw');
                 i.style.opacity = 1;
             }
         }
@@ -1816,7 +1826,7 @@ const rProdMod = () => {
         if (i) {
             i.style.display = 'block';
             i.style.opacity = 0;
-            setTimeout(() => { i.src = (v?.img || p.img || ''); i.style.opacity = 1; }, 150);
+            setTimeout(() => { i.src = getOptImg(v?.img || p.img || '', 'w600-rw'); i.style.opacity = 1; }, 150);
         }
     }
     
