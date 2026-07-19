@@ -87,6 +87,8 @@ window.DOMPurify = DOMPurify;
         if (localStorage.getItem('freshmart_theme') === 'dark' || (!('freshmart_theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) { 
             document.documentElement.classList.add('dark'); 
         }
+
+
     
 
 // ==========================================
@@ -486,7 +488,13 @@ const loadAppData = async () => {
     // proses loading utama, apapun yang terjadi pada iklan.
     
     setIn('stat-products', appData.products.filter(p => p.isActive !== 'false' && p.isActive !== false).length);
-    
+
+    // Sinkron nama toko & tagline di loader dengan data nyata dari Firebase
+    const loaderName = el('loader-store-name');
+    const loaderTagline = el('loader-tagline');
+    if (loaderName) loaderName.textContent = (appData.store.name || '').toUpperCase();
+    if (loaderTagline) loaderTagline.textContent = appData.store.tagline || appData.store.desc || appData.store.address || '';
+
     // --- PWA DYNAMIC MANIFEST & SPLASH SCREEN ENGINE ---
     try {
         const sName = appData.store.name || 'Toko Saya';
