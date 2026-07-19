@@ -405,7 +405,7 @@
     </div>
 </div>
 </div> <!-- PENUTUP SCROLL-CONTENT -->
-            <div class='absolute bottom-5 left-1/2 transform -translate-x-1/2 w-[calc(100%-2rem)] max-w-md z-40 pointer-events-none'>
+            <div class='absolute left-1/2 transform -translate-x-1/2 w-[calc(100%-2rem)] max-w-md z-40 pointer-events-none' style='bottom: calc(max(1.25rem, env(safe-area-inset-bottom)) + 0.5rem)'>
                 <button class='w-full bg-gradient-to-r from-slate-900 to-slate-800 dark:from-slate-800 dark:to-slate-900 text-white px-4 py-3 rounded-[1.25rem] shadow-[0_8px_32px_-8px_rgba(0,0,0,0.5)] flex justify-between items-center transition-all duration-200 pointer-events-auto border border-white/8 hover:border-emerald-500/30 group active:scale-[0.97]' onclick='changeView(&quot;view-cart&quot;)'>
                     <div class='flex items-center gap-3.5'>
                         <div class='relative bg-gradient-to-br from-emerald-400 to-emerald-600 w-11 h-11 rounded-xl flex items-center justify-center shadow-lg shrink-0'>
@@ -525,7 +525,7 @@
                     </div>
                 </div>
             </div>
-            <div class='absolute bottom-0 left-0 w-full glass-nav px-4 pt-3 z-30 pb-5'>
+            <div class='absolute bottom-0 left-0 w-full glass-nav px-4 pt-3 z-30'>
                 <div class='max-w-full xl:max-w-[1200px] px-4 lg:px-10 mx-auto'>
                     <button class='btn-primary shadow-glow rounded-2xl py-4' id='btn-checkout-next' onclick='validateAndGoToPayment()'>Lanjut ke Pembayaran <i class='fa-solid fa-arrow-right ml-1.5 text-xs'></i></button>
                 </div>
@@ -692,7 +692,7 @@
                     </div>
                 </div>
             </div>
-            <div class='absolute bottom-0 left-0 w-full glass-nav px-4 pt-3 z-30 pb-5'>
+            <div class='absolute bottom-0 left-0 w-full glass-nav px-4 pt-3 z-30'>
                 <div class='max-w-full xl:max-w-[1200px] px-4 lg:px-10 mx-auto flex flex-col gap-2.5'>
                     <label class='flex items-center gap-3 cursor-pointer bg-slate-50 dark:bg-slate-800/80 p-3 rounded-xl border border-slate-200 dark:border-slate-700'>
                         <input class='peer sr-only' id='tnc-checkbox' onchange='toggleOrderButton()' type='checkbox'></i>
@@ -712,7 +712,7 @@
                     <div class='w-10 hidden' id='spacer-orders'></div>
                 </div>
             </div>
-            <div class='scroll-content flex-1 overflow-y-auto z-10 pt-6 pb-12'>
+            <div class='scroll-content flex-1 overflow-y-auto z-10 pt-6 pb-[calc(4rem+env(safe-area-inset-bottom))]'>
                 <div class='flex flex-col items-center justify-center h-[50vh] hidden px-5 text-center max-w-xs mx-auto' id='orders-empty-state'>
                     <div class='w-24 h-24 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-full flex items-center justify-center mb-5 text-slate-500 dark:text-slate-400 shadow-inner'><i class='fa-solid fa-clock-rotate-left text-5xl'></i></div>
                     <h3 class='font-black text-slate-800 dark:text-white text-xl mb-2'>Belum Ada Pesanan</h3>
@@ -730,7 +730,7 @@
                     <div class='w-10 hidden' id='spacer-wishlist'></div>
                 </div>
             </div>
-            <div class='scroll-content flex-1 overflow-y-auto z-10 pt-6 pb-12'>
+            <div class='scroll-content flex-1 overflow-y-auto z-10 pt-6 pb-[calc(4rem+env(safe-area-inset-bottom))]'>
                 <div class='flex flex-col items-center justify-center h-[50vh] hidden px-5 text-center max-w-xs mx-auto' id='wishlist-empty-state'>
                     <div class='w-24 h-24 bg-rose-50 border border-rose-200 rounded-full flex items-center justify-center mb-5 text-rose-400 dark:bg-rose-900/20 dark:border-rose-800 shadow-inner'><i class='fa-solid fa-heart text-5xl'></i></div>
                     <h3 class='font-black text-slate-800 dark:text-white text-xl mb-2'>Belum Ada Favorit</h3>
@@ -783,7 +783,7 @@
                     </div>
                 </div>
             </div>
-            <div class='scroll-content flex-1 overflow-y-auto w-full pb-16 relative'>
+            <div class='scroll-content flex-1 overflow-y-auto w-full pb-[calc(5rem+env(safe-area-inset-bottom))] relative'>
                 <div class='max-w-full lg:px-8 mx-auto pt-6 px-4 w-full'>
                     <div class='fade-in-scale block w-full max-w-5xl mx-auto' id='admin-dashboard-view'>
                         <!-- Welcome Banner -->
