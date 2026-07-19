@@ -495,6 +495,17 @@ const loadAppData = async () => {
     if (loaderName) loaderName.textContent = (appData.store.name || '').toUpperCase();
     if (loaderTagline) loaderTagline.textContent = appData.store.tagline || appData.store.desc || appData.store.address || '';
 
+    const loaderLogoIcon = el('loader-logo-icon');
+    const loaderLogoImg = el('loader-logo-img');
+    const logoUrl = (appData.store.logo && appData.store.logo !== 'fa-store') ? appData.store.logo : '';
+    if (logoUrl) {
+        if (loaderLogoIcon) loaderLogoIcon.style.display = 'none';
+        if (loaderLogoImg) {
+            loaderLogoImg.src = logoUrl;
+            loaderLogoImg.style.display = 'block';
+        }
+    }
+
     // --- PWA DYNAMIC MANIFEST & SPLASH SCREEN ENGINE ---
     try {
         const sName = appData.store.name || 'Toko Saya';

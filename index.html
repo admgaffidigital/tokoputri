@@ -88,8 +88,8 @@
     </div>    <div class='fixed inset-0 z-[9999] flex flex-col items-center justify-center overflow-hidden' id='global-loader'>
         <!-- Keyframes & theme-aware CSS (must be first so animations work before Tailwind) -->
         <style>
-            #global-loader { background: linear-gradient(135deg,#f0fdf4 0%,#ecfdf5 40%,#f0fdfa 70%,#fffbeb 100%); }
-            .dark #global-loader { background: linear-gradient(135deg,#020617 0%,#0f172a 40%,#0c1a2e 70%,#111827 100%) !important; }
+            #global-loader { background: linear-gradient(135deg, var(--color-primary-light, #f0fdf4) 0%, #ffffff 100%) !important; }
+            .dark #global-loader { background: linear-gradient(135deg, #020617 0%, #0f172a 100%) !important; }
             #loader-store-name { color: #0f172a; }
             .dark #loader-store-name { color: #f1f5f9 !important; }
             #loader-text { color: #475569; }
@@ -127,8 +127,9 @@
                 <div style='position:absolute;inset:8px;border-radius:50%;border:2px dashed rgba(var(--color-primary-rgb,16,185,129),0.3);animation:spinRing 5s linear infinite reverse'></div>
                 <div style='position:absolute;inset:16px;border-radius:50%;background:radial-gradient(circle,rgba(var(--color-primary-rgb,16,185,129),0.1) 0%,transparent 70%);animation:glowPulse 2s ease-in-out infinite'></div>
                 <!-- Logo box -->
-                <div style='position:relative;width:68px;height:68px;border-radius:20px;background:linear-gradient(135deg,var(--color-primary,#10b981),var(--color-primary-dark,#059669));display:flex;align-items:center;justify-content:center;box-shadow:0 0 40px rgba(var(--color-primary-rgb,16,185,129),0.4),0 8px 32px rgba(var(--color-primary-rgb,16,185,129),0.3);animation:logoFloat 3s ease-in-out infinite'>
-                    <i class='fa-solid fa-store' style='font-size:28px;color:white'></i>
+                <div id='loader-logo-box' style='position:relative;width:68px;height:68px;border-radius:20px;background:linear-gradient(135deg,var(--color-primary,#10b981),var(--color-primary-dark,#059669));display:flex;align-items:center;justify-content:center;box-shadow:0 0 40px rgba(var(--color-primary-rgb,16,185,129),0.4),0 8px 32px rgba(var(--color-primary-rgb,16,185,129),0.3);animation:logoFloat 3s ease-in-out infinite;overflow:hidden;'>
+                    <i class='fa-solid fa-store' id='loader-logo-icon' style='font-size:28px;color:white'></i>
+                    <img id='loader-logo-img' style='display:none;width:100%;height:100%;object-fit:cover;' src='' alt='Logo' onerror='this.style.display="none";document.getElementById("loader-logo-icon").style.display="block";'/>
                 </div>
                 <!-- Orbit dot -->
                 <div style='position:absolute;width:10px;height:10px;border-radius:50%;background:var(--color-primary,#10b981);box-shadow:0 0 8px var(--color-primary,#10b981);animation:orbitDot 3s linear infinite;top:5px;left:50%;margin-left:-5px;transform-origin:5px 55px'></div>
@@ -167,6 +168,14 @@
                     const tagline = (cached && cached.store) ? (cached.store.tagline || cached.store.desc || 'Solusi Teknik & Perkakas') : 'Solusi Teknik & Perkakas';
                     document.getElementById('loader-store-name').textContent = name.toUpperCase();
                     document.getElementById('loader-tagline').textContent = tagline;
+                    
+                    const logo = (cached && cached.store && cached.store.logo && cached.store.logo !== 'fa-store') ? cached.store.logo : '';
+                    if (logo) {
+                        document.getElementById('loader-logo-icon').style.display = 'none';
+                        const img = document.getElementById('loader-logo-img');
+                        img.src = logo;
+                        img.style.display = 'block';
+                    }
                 } catch(e) {
                     document.getElementById('loader-store-name').textContent = 'TOKO PUTRI';
                     document.getElementById('loader-tagline').textContent = 'Solusi Teknik & Perkakas';
