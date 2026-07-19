@@ -1506,7 +1506,7 @@ window.rCat = () => {
                 <div class="flex items-center gap-3 overflow-hidden">
                     <div class="w-10 h-10 rounded-xl ${iconColor} flex items-center justify-center shrink-0"><i class="fa-solid ${filterIcon} text-lg"></i></div>
                     <div class="flex flex-col min-w-0 pr-2">
-                        <span class="text-[10px] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-widest">${filterLabel}</span>
+                        <span class="text-[10px] text-slate-600 dark:text-slate-400 font-bold uppercase tracking-widest">${filterLabel}</span>
                         <span class="text-sm font-black text-slate-800 dark:text-white truncate leading-tight mt-0.5">${esc(filterValue)}</span>
                     </div>
                 </div>
@@ -1536,7 +1536,7 @@ window.rCat = () => {
     c.className = cView === 'grid' ? 'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-5 2xl:grid-cols-6 gap-4 sm:gap-6 lg:gap-8' : 'flex flex-col gap-3 sm:gap-4';
     
     if(!f.length) {
-        c.innerHTML = `<div class="col-span-full text-center py-16 sm:py-24 text-slate-500 dark:text-slate-400 font-bold bg-slate-50 dark:bg-slate-800/50 rounded-[1.5rem] border border-slate-200 border-dashed dark:border-slate-700 text-sm sm:text-base flex flex-col items-center justify-center"><div class="w-20 h-20 bg-white dark:bg-slate-800 rounded-full flex items-center justify-center shadow-sm mb-4"><i class="fa-solid fa-box-open text-3xl sm:text-4xl text-slate-300 dark:text-slate-600"></i></div>Maaf, produk tidak ditemukan.<br></b><span class="text-xs font-medium text-slate-400 mt-2 font-normal">Coba gunakan kata kunci pencarian yang berbeda atau hapus filter.</span></div>`;
+        c.innerHTML = `<div class="col-span-full text-center py-16 sm:py-24 text-slate-500 dark:text-slate-400 font-bold bg-slate-50 dark:bg-slate-800/50 rounded-[1.5rem] border border-slate-200 border-dashed dark:border-slate-700 text-sm sm:text-base flex flex-col items-center justify-center"><div class="w-20 h-20 bg-white dark:bg-slate-800 rounded-full flex items-center justify-center shadow-sm mb-4"><i class="fa-solid fa-box-open text-3xl sm:text-4xl text-slate-300 dark:text-slate-600"></i></div>Maaf, produk tidak ditemukan.<br></b><span class="text-xs font-medium text-slate-500 dark:text-slate-400 mt-2 font-normal">Coba gunakan kata kunci pencarian yang berbeda atau hapus filter.</span></div>`;
         hide('load-more-container'); return;
     }
     
@@ -1578,7 +1578,7 @@ window.rCat = () => {
         if (p.priceNormal && p.priceNormal > p.price) {
             let pct = Math.round(((p.priceNormal - p.price) / p.priceNormal) * 100);
             discPill = `<span class="bg-rose-500 text-white px-2 py-0.5 rounded-full text-[8px] font-black flex items-center gap-1 whitespace-nowrap uppercase tracking-wider shadow-sm"><i class="fa-solid fa-tags"></i> -${pct}%</span>`;
-            priceNormalHtml = `<p class="text-[10px] text-slate-500 dark:text-slate-400 line-through mb-0.5 font-bold">${fCur(p.priceNormal)}</p>`;
+            priceNormalHtml = `<p class="text-[10px] text-slate-600 dark:text-slate-400 line-through mb-0.5 font-bold">${fCur(p.priceNormal)}</p>`;
         }
 
         // LOGIKA PO PILL (PINDAH KE BAWAH, SEJAJAR DENGAN LABEL OFFICIAL)
@@ -1603,7 +1603,7 @@ window.rCat = () => {
             ? p.variants.reduce((s,vv) => s + (parseFloat(vv.totalSold)||0), 0)
             : (parseFloat(p.totalSold) || 0);
         const soldBadge = totalSoldCard > 0
-            ? `<span class="bg-slate-100 text-slate-500 dark:bg-slate-700 dark:text-slate-400 px-2 py-0.5 rounded-full text-[8px] font-black flex items-center gap-1 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-fire-flame-curved text-orange-400"></i> ${totalSoldCard} Terjual</span>`
+            ? `<span class="bg-slate-200 text-slate-700 dark:bg-slate-700 dark:text-slate-300 px-2 py-0.5 rounded-full text-[8px] font-black flex items-center gap-1 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-fire-flame-curved text-orange-400"></i> ${totalSoldCard} Terjual</span>`
             : '';
 
         // Kumpulkan semua badge menjadi satu baris sejajar
@@ -1614,7 +1614,7 @@ window.rCat = () => {
             ${soldBadge}
             ${p.tag ? `<span class="bg-[var(--color-primary-light)] text-[var(--color-primary-dark)] dark:bg-[var(--color-primary-dark)]/50 dark:text-[var(--color-primary)] px-2 py-0.5 rounded-full text-[8px] font-black flex items-center gap-1 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-hashtag"></i> ${esc(p.tag)}</span>` : ''}
             <span class="bg-indigo-100 text-indigo-700 dark:bg-indigo-900/50 dark:text-indigo-400 px-2 py-0.5 rounded-full text-[8px] font-black flex items-center gap-1 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-circle-check"></i> Official</span>
-            ${p.brand ? `<span class="bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300 px-2 py-0.5 rounded-full text-[8px] font-black flex items-center gap-1 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-tag"></i> ${esc(p.brand)}</span>` : ''}
+            ${p.brand ? `<span class="bg-slate-200 text-slate-700 dark:bg-slate-700 dark:text-slate-300 px-2 py-0.5 rounded-full text-[8px] font-black flex items-center gap-1 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-tag"></i> ${esc(p.brand)}</span>` : ''}
             ${(p.wholesale?.length && !p.variants?.length) ? `<span class="bg-amber-100 text-amber-700 dark:bg-amber-900/50 dark:text-amber-400 px-2 py-0.5 rounded-full text-[8px] font-black flex items-center gap-1 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-layer-group"></i> Grosir</span>` : ''}
         </div>`;
         
@@ -1897,12 +1897,12 @@ const rProdMod = () => {
     
     // Header Badge Premium
     let bH = ``;
-    if (p.sku) bH += `<span class="bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400 px-2.5 py-1 rounded-full text-[9px] font-black flex items-center gap-1.5 whitespace-nowrap tracking-wider"><i class="fa-solid fa-barcode"></i> ${esc(p.sku)}</span>`;
+    if (p.sku) bH += `<span class="bg-slate-200 text-slate-600 dark:bg-slate-800 dark:text-slate-400 px-2.5 py-1 rounded-full text-[9px] font-black flex items-center gap-1.5 whitespace-nowrap tracking-wider"><i class="fa-solid fa-barcode"></i> ${esc(p.sku)}</span>`;
     if (p.tag) bH += `<span class="bg-emerald-100 text-emerald-700 dark:bg-emerald-900/50 dark:text-emerald-400 px-2.5 py-1 rounded-full text-[9px] font-black flex items-center gap-1.5 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-hashtag"></i> ${esc(p.tag)}</span>`;
     
     bH += `<span class="bg-indigo-100 text-indigo-700 dark:bg-indigo-900/50 dark:text-indigo-400 px-2.5 py-1 rounded-full text-[9px] font-black flex items-center gap-1.5 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-circle-check"></i> Official</span>`;
     
-    if (p.brand) bH += `<span class="bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300 px-2.5 py-1 rounded-full text-[9px] font-black flex items-center gap-1.5 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-tag"></i> ${esc(p.brand)}</span>`;
+    if (p.brand) bH += `<span class="bg-slate-200 text-slate-700 dark:bg-slate-800 dark:text-slate-300 px-2.5 py-1 rounded-full text-[9px] font-black flex items-center gap-1.5 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-tag"></i> ${esc(p.brand)}</span>`;
     
     if (p.poTime) bH += `<span class="bg-amber-500 text-white px-2.5 py-1 rounded-full text-[9px] font-black flex items-center gap-1.5 whitespace-nowrap uppercase tracking-wider shadow-sm"><i class="fa-solid fa-clock"></i> PO ${esc(p.poTime)}</span>`;
 
@@ -1918,7 +1918,7 @@ const rProdMod = () => {
         ? (parseFloat(v ? v.totalSold : 0) || 0)
         : (hV ? p.variants.reduce((s,vv) => s + (parseFloat(vv.totalSold)||0), 0) : (parseFloat(p.totalSold) || 0));
     if (totalSoldDisplay > 0) {
-        bH += `<span class="bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400 px-2.5 py-1 rounded-full text-[9px] font-black flex items-center gap-1.5 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-fire-flame-curved text-orange-400"></i> ${totalSoldDisplay} Terjual</span>`;
+        bH += `<span class="bg-slate-200 text-slate-600 dark:bg-slate-800 dark:text-slate-400 px-2.5 py-1 rounded-full text-[9px] font-black flex items-center gap-1.5 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-fire-flame-curved text-orange-400"></i> ${totalSoldDisplay} Terjual</span>`;
     }
 
     setH('product-modal-badges', bH);
