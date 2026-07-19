@@ -1059,7 +1059,14 @@ window.closeConfirm = (fH=false) => {
         setTimeout(() => hide('custom-confirm-modal'), 300);
     });
 };
-window.executeConfirm = () => { if(confirmCb) confirmCb(); closeConfirm(); };
+window.executeConfirm = () => {
+    if (confirmCb) {
+        const cb = confirmCb;
+        confirmCb = null;
+        closeConfirm();
+        setTimeout(() => { cb(); }, 150);
+    }
+};
 
 // --- Sistem Modal (Kategori & Merek) Terintegrasi dengan UI Grid Premium ---
 
@@ -4116,7 +4123,8 @@ window.processAdminLogin = async () => {
         
         // Status PRO otomatis dicek & diperbarui oleh auth.onAuthStateChanged
         
-        changeView('view-admin'); 
+        history.replaceState({view: 'view-admin', tab: cTab}, '', window.location.href);
+        changeView('view-admin', true); 
         openAdminMenu();
         showToast("Login Berhasil!");
         
@@ -4145,13 +4153,24 @@ window.logoutAdmin = async () => {
         if(aOrdLst){ aOrdLst(); aOrdLst=null; } 
         if(aCustLst){ aCustLst(); aCustLst=null; }
         if(aRevLst){ aRevLst(); aRevLst=null; }
-        changeView('view-catalog');
+        history.replaceState({view: 'view-catalog'}, '', window.location.href);
+        changeView('view-catalog', true);
         showToast("Berhasil Logout");
     } catch(e) {
         showToast("Gagal logout");
     } finally {
         hLoad();
     }
+};
+
+window.confirmLogoutAdmin = () => {
+    showConfirm(
+        "Keluar Admin",
+        "Apakah anda akan keluar dari dashboard admin?",
+        () => { logoutAdmin(); },
+        "Ya, Keluar",
+        true
+    );
 };
 
 window.checkProPrint = () => { openReceiptPreview(); };
@@ -7061,6 +7080,21 @@ window.addEventListener('popstate', e => {
         else if (m === 'member') closeMemberModal(true); // FITUR BARU: back button tutup modal data member
           else if (m === 'prompt' && typeof window.closePrompt === 'function') window.closePrompt(true);
         else if (m === 'review') closeReviewModal(true); // FITUR BARU: back button tutup modal ulasan
+    } else if (curViewName === 'view-admin' && window.isAdm) {
+        let v = (e.state && e.state.view) ? e.state.view : null;
+        if (v !== 'view-admin') {
+            // Tahan perubahan halaman: kembalikan state ke view-admin terlebih dahulu
+            history.pushState({view: 'view-admin', tab: cTab}, '', window.location.href);
+            
+            showConfirm(
+                "Keluar Admin",
+                "Apakah anda akan keluar dari dashboard admin?",
+                () => { logoutAdmin(); },
+                "Ya, Keluar",
+                true
+            );
+            return;
+        }
     } else if (e.state && e.state.view) {
         let v = e.state.view;
         // Jika admin masih login dan history mencoba balik ke halaman login → redirect ke dashboard admin
@@ -7115,7 +7149,8 @@ window.addEventListener('DOMContentLoaded', async () => {
         // 3. MASUK KE DASHBOARD ADMIN
         let loginView = document.getElementById('view-admin-login');
         if (loginView && !loginView.classList.contains('hidden')) {
-            changeView('view-admin'); 
+            history.replaceState({view: 'view-admin', tab: cTab}, '', window.location.href);
+            changeView('view-admin', true); 
             openAdminMenu();
             showToast("Sesi Dipulihkan! Selamat Datang.");
         }
