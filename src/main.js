@@ -1418,7 +1418,7 @@ window.rDyn = () => {
         if(appData.store.categoryStyle === 'text' || !appData.store.categoryStyle) {
             return `<div onclick="filterCategory('${nameSafe}')" class="cursor-pointer shrink-0 snap-start group py-1"><div class="px-5 py-2.5 rounded-[1.25rem] border-2 transition-all duration-300 flex items-center gap-3 ${isSel ? 'bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-primary-dark)] border-transparent text-white shadow-md' : 'bg-white dark:bg-slate-800 border-slate-100 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-[var(--color-primary)] hover:shadow-md hover:-translate-y-1'}"><div class="w-6 h-6 rounded-full flex items-center justify-center ${isSel ? 'bg-white/20 text-white shadow-inner' : 'bg-slate-50 dark:bg-slate-700 text-slate-400 group-hover:bg-[var(--color-primary-light)] group-hover:text-[var(--color-primary)]'} transition-all duration-300"><i class="fa-solid fa-layer-group text-[10px]"></i></div><span class="font-black text-[11px] sm:text-xs uppercase tracking-widest pr-2">${esc(c.name)}</span></div></div>`;
         } else {
-            return `<div onclick="filterCategory('${nameSafe}')" class="flex flex-col items-center gap-3 cursor-pointer shrink-0 w-[80px] sm:w-[95px] group snap-start py-1"><div class="relative w-16 h-16 sm:w-[72px] sm:h-[72px] rounded-[1.25rem] bg-slate-50 dark:bg-slate-800 flex items-center justify-center p-2 transition-all duration-300 ${isSel ? 'bg-[var(--color-primary-light)] border-2 border-[var(--color-primary)] shadow-glow dark:bg-[var(--color-primary-dark)]/20' : 'border border-slate-200 dark:border-slate-700 shadow-sm group-hover:border-[var(--color-primary)] group-hover:shadow-lg group-hover:-translate-y-1.5'} overflow-hidden"><img loading="lazy" src="${esc(getOptImg(c.img, 'w150-rw'))}" alt="${esc(c.name)}" onerror="this.onerror=null;this.src='https://placehold.co/150/10b981/ffffff?text=Cat'" class="w-full h-full object-cover rounded-xl transition-transform duration-500 group-hover:scale-110"></i></div><span class="text-[9px] sm:text-[10px] text-center w-full line-clamp-2 leading-tight px-1 ${isSel ? 'font-black text-[var(--color-primary)]' : 'font-bold text-slate-500 dark:text-slate-400 group-hover:text-[var(--color-primary)]'} uppercase tracking-widest transition-colors">${esc(c.name)}</span></div>`;
+            return `<div onclick="filterCategory('${nameSafe}')" class="flex flex-col items-center gap-3 cursor-pointer shrink-0 w-[80px] sm:w-[95px] group snap-start py-1"><div class="relative w-16 h-16 sm:w-[72px] sm:h-[72px] rounded-[1.25rem] bg-slate-50 dark:bg-slate-800 flex items-center justify-center p-2 transition-all duration-300 ${isSel ? 'bg-[var(--color-primary-light)] border-2 border-[var(--color-primary)] shadow-glow dark:bg-[var(--color-primary-dark)]/20' : 'border border-slate-200 dark:border-slate-700 shadow-sm group-hover:border-[var(--color-primary)] group-hover:shadow-lg group-hover:-translate-y-1.5'} overflow-hidden"><img loading="lazy" src="${esc(getOptImg(c.img, 'w150-rw'))}" alt="${esc(c.name)}" onerror="this.onerror=null;this.src='https://placehold.co/150/10b981/ffffff?text=Cat'" class="w-full h-full object-cover rounded-xl transition-transform duration-500 group-hover:scale-110"></i></div><span class="text-[9px] sm:text-[10px] text-center w-full line-clamp-2 leading-tight px-1 ${isSel ? 'font-black text-[var(--color-primary)]' : 'font-bold text-slate-600 dark:text-slate-300 group-hover:text-[var(--color-primary)]'} uppercase tracking-widest transition-colors">${esc(c.name)}</span></div>`;
         }
     }).join(''));
     
@@ -1430,7 +1430,7 @@ window.rDyn = () => {
         if(appData.store.brandStyle === 'text') {
             return `<div onclick="filterBrand('${nameSafe}')" class="cursor-pointer shrink-0 snap-start group py-1"><div class="px-5 py-2.5 rounded-[1.25rem] border-2 transition-all duration-300 flex items-center gap-3 ${isSel ? 'bg-gradient-to-r from-blue-500 to-indigo-500 border-transparent text-white shadow-md' : 'bg-white dark:bg-slate-800 border-slate-100 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-blue-300 hover:shadow-md hover:-translate-y-1'}"><div class="w-6 h-6 rounded-full flex items-center justify-center ${isSel ? 'bg-white/20 text-white shadow-inner' : 'bg-slate-50 dark:bg-slate-700 text-slate-400 group-hover:bg-blue-50 group-hover:text-blue-500'} transition-all duration-300"><i class="fa-solid fa-copyright text-[10px]"></i></div><span class="font-black text-[11px] sm:text-xs uppercase tracking-widest pr-2">${esc(b.name)}</span></div></div>`;
         } else {
-            return `<div onclick="filterBrand('${nameSafe}')" class="flex flex-col items-center gap-3 cursor-pointer shrink-0 w-[75px] sm:w-[85px] group snap-start py-1"><div class="relative w-16 h-16 sm:w-[68px] sm:h-[68px] rounded-full bg-white flex items-center justify-center overflow-hidden p-2 transition-all duration-500 ${isSel ? 'ring-4 ring-blue-500 ring-offset-2 ring-offset-slate-50 dark:ring-offset-slate-800 shadow-lg shadow-blue-500/30' : 'border border-slate-200 dark:border-slate-700 shadow-sm group-hover:border-blue-400 group-hover:shadow-lg group-hover:-translate-y-1.5'}"><img loading="lazy" src="${esc(getOptImg(b.img, 'w150-rw'))}" alt="${esc(b.name)}" onerror="this.onerror=null;this.src='https://placehold.co/150/3b82f6/ffffff?text=Brand'" class="w-full h-full object-contain drop-shadow-sm transition-transform duration-500 group-hover:scale-110"></i></div><span class="text-[9px] sm:text-[10px] text-center w-full line-clamp-2 leading-tight px-1 ${isSel ? 'font-black text-blue-600 dark:text-blue-400' : 'font-bold text-slate-500 dark:text-slate-400 group-hover:text-blue-600'} uppercase tracking-widest transition-colors">${esc(b.name)}</span></div>`;
+            return `<div onclick="filterBrand('${nameSafe}')" class="flex flex-col items-center gap-3 cursor-pointer shrink-0 w-[75px] sm:w-[85px] group snap-start py-1"><div class="relative w-16 h-16 sm:w-[68px] sm:h-[68px] rounded-full bg-white flex items-center justify-center overflow-hidden p-2 transition-all duration-500 ${isSel ? 'ring-4 ring-blue-500 ring-offset-2 ring-offset-slate-50 dark:ring-offset-slate-800 shadow-lg shadow-blue-500/30' : 'border border-slate-200 dark:border-slate-700 shadow-sm group-hover:border-blue-400 group-hover:shadow-lg group-hover:-translate-y-1.5'}"><img loading="lazy" src="${esc(getOptImg(b.img, 'w150-rw'))}" alt="${esc(b.name)}" onerror="this.onerror=null;this.src='https://placehold.co/150/3b82f6/ffffff?text=Brand'" class="w-full h-full object-contain drop-shadow-sm transition-transform duration-500 group-hover:scale-110"></i></div><span class="text-[9px] sm:text-[10px] text-center w-full line-clamp-2 leading-tight px-1 ${isSel ? 'font-black text-blue-600 dark:text-blue-400' : 'font-bold text-slate-600 dark:text-slate-300 group-hover:text-blue-600'} uppercase tracking-widest transition-colors">${esc(b.name)}</span></div>`;
         }
     }).join(''));
     
@@ -1610,7 +1610,7 @@ window.rCat = () => {
             ${(p.wholesale?.length && !p.variants?.length) ? `<span class="bg-amber-100 text-amber-700 dark:bg-amber-900/50 dark:text-amber-400 px-2 py-0.5 rounded-full text-[8px] font-black flex items-center gap-1 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-layer-group"></i> Grosir</span>` : ''}
         </div>`;
         
-        let unt = `<span class="text-[9px] text-slate-500 dark:text-slate-400 font-bold ml-0.5 mb-0.5 uppercase tracking-wide">/${esc(p.unit||'PCS')}</span>`;
+        let unt = `<span class="text-[9px] text-slate-600 dark:text-slate-400 font-bold ml-0.5 mb-0.5 uppercase tracking-wide">/${esc(p.unit||'PCS')}</span>`;
         
         if (cView === 'grid') {
             return `
@@ -1627,7 +1627,7 @@ window.rCat = () => {
                         <div>
                             ${p.variants && p.variants.length > 0 ? '' : priceNormalHtml}
                             <p class="text-[var(--color-primary)] font-black text-sm sm:text-[15px] leading-none tracking-tight">
-                                ${p.variants && p.variants.length > 0 ? '<span class="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider">PILIH VARIAN</span>' : fCur(p.price)}
+                                ${p.variants && p.variants.length > 0 ? '<span class="text-[10px] sm:text-xs text-slate-600 dark:text-slate-400 font-bold uppercase tracking-wider">PILIH VARIAN</span>' : fCur(p.price)}
                             </p>
                             ${p.variants && p.variants.length > 0 ? '' : unt}
                         </div>
@@ -1652,7 +1652,7 @@ window.rCat = () => {
                         <div>
                             ${p.variants && p.variants.length > 0 ? '' : priceNormalHtml}
                             <p class="text-[var(--color-primary)] font-black text-sm sm:text-[15px] leading-none tracking-tight">
-                                ${p.variants && p.variants.length > 0 ? '<span class="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider">PILIH VARIAN</span>' : fCur(p.price)}
+                                ${p.variants && p.variants.length > 0 ? '<span class="text-[10px] sm:text-xs text-slate-600 dark:text-slate-400 font-bold uppercase tracking-wider">PILIH VARIAN</span>' : fCur(p.price)}
                             </p>
                             ${p.variants && p.variants.length > 0 ? '' : unt}
                         </div>
@@ -1956,7 +1956,7 @@ const rProdMod = () => {
                     }).join('')}</div>`;
                 } else {
                     const s = parseFloat(p.stock)||0;
-                    stockRows = `<div class="flex flex-col gap-1"><p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Sisa Stok</p><p class="font-black text-xl ${s===0?'text-rose-500':s<=5?'text-amber-500':'text-blue-500'}">${s} <span class="text-sm font-bold">${esc(p.unit||'pcs')}</span></p></div>`;
+                    stockRows = `<div class="flex flex-col gap-1"><p class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Sisa Stok</p><p class="font-black text-xl ${s===0?'text-rose-500':s<=5?'text-amber-500':'text-blue-500'}">${s} <span class="text-sm font-bold">${esc(p.unit||'pcs')}</span></p></div>`;
                 }
             }
             
@@ -1965,11 +1965,11 @@ const rProdMod = () => {
                 <p class="text-[10px] font-black text-violet-600 dark:text-violet-400 mb-3 uppercase tracking-widest flex items-center gap-1.5"><i class="fa-solid fa-lock"></i> Info Admin</p>
                 <div class="grid grid-cols-2 gap-3">
                     <div class="flex flex-col gap-1">
-                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">HPP / Modal</p>
+                        <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest">HPP / Modal</p>
                         <p class="font-black text-lg text-amber-500">${fCur(currHpp)}</p>
                     </div>
                     <div class="flex flex-col gap-1">
-                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Margin</p>
+                        <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Margin</p>
                         <p class="font-black text-lg ${margin === null ? 'text-slate-400' : margin >= 30 ? 'text-emerald-500' : margin >= 10 ? 'text-amber-500' : 'text-rose-500'}">${margin !== null ? margin + '%' : '—'}</p>
                     </div>
                     ${stockRows}
@@ -2241,7 +2241,7 @@ window.renderMyOrders = async () => {
             <div class="flex justify-between items-start mb-3 border-b border-slate-100 dark:border-slate-700/50 pb-3">
                 <div>
                     <span class="font-black text-sm text-slate-800 dark:text-white tracking-tight">#${o.orderId.split('-').pop()}</span>
-                    <p class="text-[10px] font-bold text-slate-400 mt-0.5">${dStr}</p>
+                    <p class="text-[10px] font-bold text-slate-500 mt-0.5">${dStr}</p>
                 </div>
                 <span class="text-[9px] font-black px-2 py-1 rounded border ${bC} uppercase tracking-widest flex items-center"><i class="fa-solid ${iC} mr-1"></i> ${esc(o.status)}</span>
             </div>
@@ -2253,8 +2253,8 @@ window.renderMyOrders = async () => {
             </div>` : ''}
             <div class="flex justify-between items-end mt-2">
                 <div>
-                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Total Tagihan</p>
-                    <p class="text-emerald-600 dark:text-emerald-400 font-black text-base tracking-tight">${fCur(o.total)} <span class="text-[10px] text-slate-400 font-bold ml-1">(${o.itemCount} Item)</span></p>
+                    <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-0.5">Total Tagihan</p>
+                    <p class="text-emerald-600 dark:text-emerald-400 font-black text-base tracking-tight">${fCur(o.total)} <span class="text-[10px] text-slate-500 font-bold ml-1">(${o.itemCount} Item)</span></p>
                 </div>
                 <div class="flex gap-2">
                     <!-- TOMBOL DETAIL BARU -->
@@ -2425,7 +2425,7 @@ try {
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                         <div>
-                            <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 flex items-center gap-1.5"><i class="fa-solid fa-user text-slate-300"></i> Info Pelanggan</h4>
+                            <h4 class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3 flex items-center gap-1.5"><i class="fa-solid fa-user text-slate-300"></i> Info Pelanggan</h4>
                             <div class="space-y-1.5 text-xs">
                                 <p class="font-bold text-slate-800 dark:text-slate-200">${cName}</p>
                                 ${(d.customer && d.customer.wa) ? `<a href="https://wa.me/${cWa}" target="_blank" class="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-bold hover:underline"><i class="fa-brands fa-whatsapp"></i> +${cWa}</a>` : ''}
@@ -2433,7 +2433,7 @@ try {
                             </div>
                         </div>
                         <div>
-                            <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 flex items-center gap-1.5"><i class="fa-solid fa-truck text-slate-300"></i> Kirim & Bayar</h4>
+                            <h4 class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3 flex items-center gap-1.5"><i class="fa-solid fa-truck text-slate-300"></i> Kirim & Bayar</h4>
                             <div class="space-y-1.5 text-xs">
                                 <p><span class="text-slate-500 inline-block w-16">Metode</span> <span class="font-bold text-slate-800 dark:text-slate-200">: ${dMethod}</span></p>
                                 <p><span class="text-slate-500 inline-block w-16">Bayar</span> <span class="font-bold text-slate-800 dark:text-slate-200">: ${pMethod.toUpperCase()}</span></p>
@@ -2451,7 +2451,7 @@ try {
 
                     ${d.buktiPayment ? `
                     <div>
-                        <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 flex items-center gap-1.5"><i class="fa-solid fa-image text-violet-400"></i> Bukti Pembayaran</h4>
+                        <h4 class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3 flex items-center gap-1.5"><i class="fa-solid fa-image text-violet-400"></i> Bukti Pembayaran</h4>
                         <a href="${esc(d.buktiPayment)}" target="_blank" class="block rounded-2xl overflow-hidden border-2 border-violet-200 dark:border-violet-800 hover:border-violet-400 transition-colors shadow-sm">
                             <img src="${esc(d.buktiPayment)}" alt="Bukti Pembayaran" class="w-full max-h-56 object-cover" onerror="this.style.display='none'" loading="lazy"></i>
                             <div class="bg-violet-50 dark:bg-violet-900/20 p-2 flex items-center justify-center gap-1.5 text-[10px] font-black text-violet-600 dark:text-violet-400"><i class="fa-solid fa-arrow-up-right-from-square"></i> Tap untuk buka full screen</div>
@@ -2459,7 +2459,7 @@ try {
                     </div>` : ''}
                     
                     <div>
-                        <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 flex items-center gap-1.5"><i class="fa-solid fa-basket-shopping text-slate-300"></i> Daftar Belanja</h4>
+                        <h4 class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3 flex items-center gap-1.5"><i class="fa-solid fa-basket-shopping text-slate-300"></i> Daftar Belanja</h4>
                         <div class="bg-slate-50 dark:bg-slate-800/30 rounded-2xl px-3 py-1 border border-slate-200 dark:border-slate-700/80">
                             ${itemsHtml}
                         </div>
@@ -2885,7 +2885,7 @@ window.openReviewModal = (orderId, productId, variantName, productName, customer
             <div class="p-5 sm:p-6 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center shrink-0">
                 <div class="min-w-0">
                     <h3 class="font-black text-slate-800 dark:text-white text-base flex items-center gap-2"><i class="fa-solid fa-star text-amber-400"></i> Berikan Ulasan</h3>
-                    <p class="text-[10px] font-bold text-slate-400 mt-0.5 uppercase tracking-widest truncate">${esc(productName)}</p>
+                    <p class="text-[10px] font-bold text-slate-500 mt-0.5 uppercase tracking-widest truncate">${esc(productName)}</p>
                 </div>
                 <button onclick="closeReviewModal()" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:bg-rose-100 hover:text-rose-500 flex items-center justify-center transition-all shrink-0"><i class="fa-solid fa-xmark"></i></button>
             </div>
@@ -3423,7 +3423,7 @@ const rPay = () => {
         
     if(cust.note){ setIn('payment-note-text', `"${esc(cust.note)}"`); show('payment-note-preview'); } else hide('payment-note-preview');
     
-    setH('dynamic-banks-container', appData.banks?.length ? appData.banks.map(b => `<div class="bg-white dark:bg-slate-800 p-4 rounded-[1.25rem] border border-slate-200 dark:border-slate-700 shadow-sm"><p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Bank ${esc(b.bankName)}</p><p class="text-lg font-black text-[var(--color-primary)] tracking-wide">${esc(b.bankAccount)}</p><p class="text-xs text-slate-500 dark:text-slate-400 font-medium mt-1.5">a.n <span class="font-bold text-slate-700 dark:text-white">${esc(b.bankOwner)}</span></p></div>`).join('') : '<div class="bg-rose-50 dark:bg-rose-900/20 border border-rose-200 p-4 rounded-[1.25rem] text-center"><p class="text-sm text-rose-500 dark:text-rose-400 font-bold">Rekening belum diatur.</p></div>');
+    setH('dynamic-banks-container', appData.banks?.length ? appData.banks.map(b => `<div class="bg-white dark:bg-slate-800 p-4 rounded-[1.25rem] border border-slate-200 dark:border-slate-700 shadow-sm"><p class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Bank ${esc(b.bankName)}</p><p class="text-lg font-black text-[var(--color-primary)] tracking-wide">${esc(b.bankAccount)}</p><p class="text-xs text-slate-500 dark:text-slate-400 font-medium mt-1.5">a.n <span class="font-bold text-slate-700 dark:text-white">${esc(b.bankOwner)}</span></p></div>`).join('') : '<div class="bg-rose-50 dark:bg-rose-900/20 border border-rose-200 p-4 rounded-[1.25rem] text-center"><p class="text-sm text-rose-500 dark:text-rose-400 font-bold">Rekening belum diatur.</p></div>');
     
     const co = el('payment-option-cashier'), cc = el('payment-option-cod');
     if (co && cc) {
@@ -4696,7 +4696,7 @@ window.exportOrdersToExcel = async () => {
                 </div>
                 <div>
                     <h2 class="font-black text-sm text-slate-800 dark:text-slate-100 uppercase tracking-widest leading-tight">Live Orders</h2>
-                    <p class="text-[9px] font-bold text-slate-400 mt-0.5">Pantau pesanan masuk secara realtime</p>
+                    <p class="text-[9px] font-bold text-slate-500 mt-0.5">Pantau pesanan masuk secara realtime</p>
                 </div>
             </div>
             <button onclick="exportOrdersToExcel()" class="h-9 px-4 rounded-xl text-xs font-black flex items-center gap-1.5 shadow-sm border transition-all active:scale-95 hover:text-white hover:border-[var(--color-primary)] text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-slate-700 border-slate-200 dark:border-slate-600" style="--tw-shadow-color: rgba(var(--color-primary-rgb),0.2)" onmouseover="this.style.background='var(--color-primary)'" onmouseout="this.style.background=''">
@@ -4851,11 +4851,11 @@ window.openOrderDetail = i => {
             
             <div class="bg-white dark:bg-slate-800 p-5 sm:p-6 rounded-[1.5rem] border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col sm:flex-row justify-between gap-5 sm:items-center">
                 <div class="flex-1">
-                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-1.5"><i class="fa-solid fa-crosshairs text-emerald-500"></i> Status</p>
+                    <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-1.5"><i class="fa-solid fa-crosshairs text-emerald-500"></i> Status</p>
                     ${sSel}
                 </div>
                 <div class="text-left sm:text-right flex flex-col justify-center">
-                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5">ID Pesanan</p>
+                    <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5">ID Pesanan</p>
                     <p class="text-sm sm:text-base font-black text-slate-900 dark:text-white break-all tracking-wide">#${o.orderId}</p>
                     <p class="text-[10px] font-bold text-slate-400 mt-1.5">${o.dateString?new Date(o.dateString).toLocaleString('id-ID'):''}</p>
                 </div>
@@ -5175,7 +5175,7 @@ window.rAdmSet = () => {
                 </div>
                 <div>
                     <h2 class="font-black text-sm text-slate-800 dark:text-slate-100 uppercase tracking-widest leading-tight">Pengaturan Toko</h2>
-                    <p class="text-[9px] font-bold text-slate-400 mt-0.5">Pilih menu konfigurasi di bawah</p>
+                    <p class="text-[9px] font-bold text-slate-500 mt-0.5">Pilih menu konfigurasi di bawah</p>
                 </div>
             </div>
         </div>
@@ -5656,7 +5656,7 @@ window.rAdmItms = t => {
                         return sold > 0 ? `<p class="text-[10px] font-bold text-orange-400 mt-0.5"><i class="fa-solid fa-fire-flame-curved mr-1"></i>Terjual: ${sold}</p>` : '';
                     })() : ''}
                     ${t==='customers' ? `<p class="text-xs font-bold text-slate-500 dark:text-slate-400"><i class="fa-brands fa-whatsapp text-emerald-500 mr-1"></i>+${esc(x.phone)}</p><p class="text-[11px] font-black text-violet-500 mt-0.5"><i class="fa-solid fa-star mr-1"></i>${(parseFloat(x.points)||0)} Poin</p>` : ''}
-                    ${t==='rewards' ? `<p class="text-sm font-black text-violet-500"><i class="fa-solid fa-star mr-1"></i>${(parseFloat(x.pointsCost)||0)} Poin</p><p class="text-[10px] font-bold text-slate-400 mt-0.5"><i class="fa-solid fa-boxes-stacked mr-1"></i>Stok: ${parseFloat(x.stock)||0}</p>` : ''}
+                    ${t==='rewards' ? `<p class="text-sm font-black text-violet-500"><i class="fa-solid fa-star mr-1"></i>${(parseFloat(x.pointsCost)||0)} Poin</p><p class="text-[10px] font-bold text-slate-500 mt-0.5"><i class="fa-solid fa-boxes-stacked mr-1"></i>Stok: ${parseFloat(x.stock)||0}</p>` : ''}
                 </div>
             </div>
             <div class="flex gap-2.5 shrink-0 self-end sm:self-center pt-3 sm:pt-0 border-t border-slate-100 sm:border-0 dark:border-slate-700/50 w-full sm:w-auto justify-end">
@@ -5712,7 +5712,7 @@ window.rAdmReviews = () => {
             <div class="flex items-start justify-between gap-3 mb-2">
                 <div class="min-w-0">
                     <p class="text-sm font-black text-slate-800 dark:text-white truncate">${esc(r.customerName || 'Pelanggan')}</p>
-                    <p class="text-[10px] font-bold text-slate-400 mt-0.5">${esc(r.productName || '')}${r.variantName ? ' · ' + esc(r.variantName) : ''}</p>
+                    <p class="text-[10px] font-bold text-slate-500 mt-0.5">${esc(r.productName || '')}${r.variantName ? ' · ' + esc(r.variantName) : ''}</p>
                 </div>
                 <span class="text-[9px] font-bold text-slate-400 whitespace-nowrap">${dateStr}</span>
             </div>
@@ -6038,7 +6038,7 @@ window.rTaxIncome = () => {
             </div>
 
             <div class="mt-7 pt-5 border-t border-dashed border-slate-200 dark:border-slate-700">
-                <h5 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3"><i class="fa-solid fa-pen mr-1"></i>Input Biaya Operasional (Manual)</h5>
+                <h5 class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3"><i class="fa-solid fa-pen mr-1"></i>Input Biaya Operasional (Manual)</h5>
                 <p class="text-[10px] font-bold text-slate-400 mb-3">Contoh: sewa, gaji, listrik, internet, dll. Sistem tidak melacak ini otomatis.</p>
                 ${expenseInputs}
             </div>
@@ -6639,7 +6639,7 @@ window.openRestockModal = (id) => {
                     ${v.colorCode ? `<span class="w-5 h-5 rounded-full shrink-0 shadow-sm border border-slate-300" style="background-color:${esc(v.colorCode)}"></span>` : ''}
                     <div class="min-w-0 flex-1">
                         <p class="text-xs font-black text-slate-800 dark:text-white truncate">${esc(v.name)}</p>
-                        <p class="text-[10px] font-bold text-slate-400 mt-0.5">Stok saat ini: <span class="text-blue-500 font-black">${parseFloat(v.stock)||0}</span></p>
+                        <p class="text-[10px] font-bold text-slate-500 mt-0.5">Stok saat ini: <span class="text-blue-500 font-black">${parseFloat(v.stock)||0}</span></p>
                     </div>
                 </div>
                 <input type="number" id="restock-var-${i}" min="0" placeholder="Tambah" class="admin-input !py-2.5 !px-3 !w-28 text-center text-sm bg-white dark:bg-slate-800 shadow-sm shrink-0" value="">
@@ -6650,7 +6650,7 @@ window.openRestockModal = (id) => {
             <div class="flex items-center justify-between gap-3 bg-slate-50 dark:bg-slate-900/50 p-4 rounded-[1.25rem] border border-slate-200 dark:border-slate-700">
                 <div class="min-w-0 flex-1">
                     <p class="text-xs font-black text-slate-800 dark:text-white truncate">${esc(p.name)}</p>
-                    <p class="text-[10px] font-bold text-slate-400 mt-0.5">Stok saat ini: <span class="text-blue-500 font-black">${parseFloat(p.stock)||0}</span></p>
+                    <p class="text-[10px] font-bold text-slate-500 mt-0.5">Stok saat ini: <span class="text-blue-500 font-black">${parseFloat(p.stock)||0}</span></p>
                 </div>
                 <input type="number" id="restock-main" min="0" placeholder="Tambah" class="admin-input !py-2.5 !px-3 !w-28 text-center text-sm bg-white dark:bg-slate-800 shadow-sm shrink-0" value="">
             </div>`;
@@ -6670,7 +6670,7 @@ window.openRestockModal = (id) => {
             <div class="p-5 sm:p-6 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center shrink-0">
                 <div>
                     <h3 class="font-black text-slate-800 dark:text-white text-base flex items-center gap-2"><i class="fa-solid fa-boxes-stacked text-indigo-500"></i> Restock Produk</h3>
-                    <p class="text-[10px] font-bold text-slate-400 mt-0.5 uppercase tracking-widest">${esc(p.name)}</p>
+                    <p class="text-[10px] font-bold text-slate-500 mt-0.5 uppercase tracking-widest">${esc(p.name)}</p>
                 </div>
                 <button onclick="closeRestockModal()" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:bg-rose-100 hover:text-rose-500 flex items-center justify-center transition-all"><i class="fa-solid fa-xmark"></i></button>
             </div>
@@ -6878,7 +6878,7 @@ window.openQuickPriceModal = (id) => {
             <div class="p-5 sm:p-6 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center shrink-0">
                 <div>
                     <h3 class="font-black text-slate-800 dark:text-white text-base flex items-center gap-2"><i class="fa-solid fa-tags text-emerald-500"></i> Edit Cepat Harga</h3>
-                    <p class="text-[10px] font-bold text-slate-400 mt-0.5 uppercase tracking-widest">${esc(p.name)}</p>
+                    <p class="text-[10px] font-bold text-slate-500 mt-0.5 uppercase tracking-widest">${esc(p.name)}</p>
                 </div>
                 <button onclick="closeQuickPriceModal()" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:bg-rose-100 hover:text-rose-500 flex items-center justify-center transition-all"><i class="fa-solid fa-xmark"></i></button>
             </div>
@@ -7203,7 +7203,7 @@ window.openDocPreview = (type) => {
 
     <div class="grid grid-cols-2 gap-8 mb-8">
         <div class="bg-slate-50 p-5 rounded-xl border border-slate-200">
-            <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 border-b border-slate-200 pb-2">Ditagihkan / Dikirim Kepada:</h3>
+            <h3 class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3 border-b border-slate-200 pb-2">Ditagihkan / Dikirim Kepada:</h3>
             <p class="font-black text-base text-slate-900 uppercase mb-1">${esc(o.customer?.name || 'Guest')}</p>
             <p class="text-sm font-medium text-slate-700 leading-relaxed mb-3">${esc(o.customer?.address || '-')}</p>
             ${o.customer?.note ? `<p class="text-xs font-semibold text-amber-700 bg-amber-50 p-2.5 rounded-xl border border-amber-200"><i class="fa-solid fa-note-sticky"></i> Catatan: ${esc(o.customer.note)}</p>` : ''}
