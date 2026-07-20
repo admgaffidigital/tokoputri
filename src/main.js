@@ -210,6 +210,7 @@ const defApp = {
         isDeliveryEnabled: true, isPickupEnabled: true, 
         allProductsIcon: "", allBrandsIcon: "", 
         categoryStyle: "text", brandStyle: "image",
+        showCategories: true, showBrands: true,
         themeColor: "#10b981", uiTheme: "emerald", // FIX: default eksplisit, supaya tidak ada nilai undefined yang nyelip
         useStock: false,   // Manajemen stok aktif/nonaktif
         ppnEnabled: false, // PPN aktif/nonaktif
@@ -1494,10 +1495,11 @@ window.rCat = () => {
     toggleCls('dynamic-categories-container', 'hidden', isFiltered);
     toggleCls('dynamic-brands-container', 'hidden', isFiltered);
 
-    const boxKategori = document.getElementById('dynamic-categories-container')?.parentElement;
-    if (boxKategori) boxKategori.classList.toggle('hidden', isFiltered);
-    const boxMerek = document.getElementById('dynamic-brands-container')?.parentElement;
-    if (boxMerek) boxMerek.classList.toggle('hidden', isFiltered);
+    const showCat = appData.store.showCategories !== false && appData.store.showCategories !== 'false';
+    const showBrnd = appData.store.showBrands !== false && appData.store.showBrands !== 'false';
+
+    toggleCls('sec-categories', 'hidden', isFiltered || !showCat);
+    toggleCls('sec-brands', 'hidden', isFiltered || !showBrnd);
 
     let backBtnContainer = el('dynamic-active-filter');
     if (!backBtnContainer) {
@@ -5300,6 +5302,10 @@ window.openSettingForm = (type) => {
         colorTheme = { line: "bg-blue-500", box: "bg-blue-50 text-blue-500 dark:bg-blue-900/30" };
         formContent = `
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                <div><label class="block text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Fitur Kategori</label><div class="relative"><select id="set-show-categories" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm cursor-pointer appearance-none pr-10"><option value="true" ${appData.store.showCategories!==false?'selected':''}>Tampilkan</option><option value="false" ${appData.store.showCategories===false?'selected':''}>Sembunyikan</option></select><i class="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-[10px]"></i></div></div>
+                <div><label class="block text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Fitur Merek</label><div class="relative"><select id="set-show-brands" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm cursor-pointer appearance-none pr-10"><option value="true" ${appData.store.showBrands!==false?'selected':''}>Tampilkan</option><option value="false" ${appData.store.showBrands===false?'selected':''}>Sembunyikan</option></select><i class="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-[10px]"></i></div></div>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 <div><label class="block text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Gaya Kategori</label><div class="relative"><select id="set-category-style" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm cursor-pointer appearance-none pr-10"><option value="image" ${appData.store.categoryStyle!=='text'?'selected':''}>Kartu Gambar</option><option value="text" ${appData.store.categoryStyle==='text'?'selected':''}>Pill Text</option></select><i class="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-[10px]"></i></div></div>
                 <div><label class="block text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Gaya Merek</label><div class="relative"><select id="set-brand-style" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm cursor-pointer appearance-none pr-10"><option value="image" ${(appData.store.brandStyle||'image')==='image'?'selected':''}>Kartu Gambar</option><option value="text" ${appData.store.brandStyle==='text'?'selected':''}>Pill Text</option></select><i class="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-[10px]"></i></div></div>
             </div>
@@ -5483,6 +5489,8 @@ window.saveAdminSettings = async (type) => {
             appData.store.brandStyle = getV('set-brand-style'); 
             appData.store.allProductsIcon = fixD(getV('set-all-cat-icon')); 
             appData.store.allBrandsIcon = fixD(getV('set-all-brand-icon')); 
+            appData.store.showCategories = getV('set-show-categories') === 'true';
+            appData.store.showBrands = getV('set-show-brands') === 'true';
         } 
         else if (type === 'shipping') {
             appData.store.wa = getV('set-wa').replace(/\D/g,''); 
