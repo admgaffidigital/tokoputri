@@ -2491,7 +2491,7 @@ try {
                     ${hasPO ? `
                     <div class="bg-amber-50 dark:bg-amber-900/10 p-3.5 rounded-xl border border-amber-200 dark:border-amber-800/30 flex gap-2.5 items-start">
                         <i class="fa-solid fa-clock text-amber-500 mt-0.5 animate-pulse"></i>
-                        <p class="text-[11px] font-bold text-amber-700 dark:text-amber-400 leading-relaxed">Catatan: Pesanan ini mengandung produk Pre-Order (PO). Produk PO dikirim sesuai estimasi waktu yang tertera pada label (membutuhkan penanganan khusus dan waktu proses tambahan).</p>
+                        <p class="text-[11px] font-bold text-amber-700 dark:text-amber-400 leading-relaxed">Catatan: Pesanan ini mengandung produk Pre-Order (PO). Khusus untuk produk berlabel PO akan dikirimkan menyusul (estimasi sesuai label) tanpa dikenakan biaya tambahan.</p>
                     </div>` : ''}
 
                     ${(d.pointsEarned > 0 || d.claimedReward || (d.finalMemberPoints !== undefined && d.finalMemberPoints !== null)) ? `
@@ -4423,7 +4423,7 @@ window.previewTempoReceipt = async (orderId) => {
         
         const hasPO = o.items.some(i => i.poTime && i.poTime !== '');
         if (hasPO) {
-            h += `<div class="border-b border-dashed border-black my-2"></div><div style="white-space:pre-wrap;font-size:9px;text-align:center;line-height:1.2;font-style:italic;color:#4b5563;margin-bottom:4px;">* Catatan: Produk PO dikirim sesuai estimasi pada label. Produk PO memerlukan penanganan khusus & waktu proses lebih lama.</div>`;
+            h += `<div class="border-b border-dashed border-black my-2"></div><div style="white-space:pre-wrap;font-size:9px;text-align:center;line-height:1.2;font-style:italic;color:#4b5563;margin-bottom:4px;">* Catatan: Untuk pesanan gabungan, produk PO akan dikirimkan menyusul (estimasi sesuai label) tanpa dikenakan biaya tambahan.</div>`;
         }
         h += `<div class="border-b border-dashed border-black my-2"></div><div class="text-center my-2" style="font-size:10px;">Terima kasih atas kepercayaannya.</div><div class="border-b border-dashed border-black my-2"></div><div style="height:20px;"></div>`;
         
@@ -5142,7 +5142,7 @@ window.openReceiptPreview = () => {
     }
     const hasPO = o.items.some(i => i.poTime && i.poTime !== '');
     if (hasPO) {
-        h += `<div class="border-b border-dashed border-black my-2"></div><div style="white-space:pre-wrap;font-size:9px;text-align:center;line-height:1.2;font-style:italic;color:#4b5563;margin-bottom:4px;">* Catatan: Produk PO dikirim sesuai estimasi pada label. Produk PO memerlukan penanganan khusus & waktu proses lebih lama.</div>`;
+        h += `<div class="border-b border-dashed border-black my-2"></div><div style="white-space:pre-wrap;font-size:9px;text-align:center;line-height:1.2;font-style:italic;color:#4b5563;margin-bottom:4px;">* Catatan: Untuk pesanan gabungan, produk PO akan dikirimkan menyusul (estimasi sesuai label) tanpa dikenakan biaya tambahan.</div>`;
     }
     h += `<div class="border-b border-dashed border-black my-2"></div><div class="text-center my-2" style="font-size:10px;">Terima Kasih</div><div class="border-b border-dashed border-black my-2"></div><div style="height:15px;"></div>`;
     
@@ -7404,7 +7404,7 @@ window.openDocPreview = (type) => {
             <i class="fa-solid fa-clock text-amber-500 mt-0.5 animate-pulse"></i>
             <div>
                 <h4 class="font-black text-amber-700 text-xs uppercase tracking-widest mb-1">Informasi Produk Pre-Order (PO)</h4>
-                <p class="text-[10px] text-amber-600 font-bold leading-relaxed">Pesanan ini mengandung produk Pre-Order (PO). Estimasi pengiriman produk PO adalah sesuai dengan label waktu yang tertera pada produk (membutuhkan penanganan khusus dan waktu proses tambahan).</p>
+                <p class="text-[10px] text-amber-600 font-bold leading-relaxed">Pesanan ini mengandung produk Pre-Order (PO). Khusus untuk produk berlabel PO akan dikirimkan menyusul (estimasi sesuai label) tanpa dikenakan biaya tambahan.</p>
             </div>
         </div>`;
     }
