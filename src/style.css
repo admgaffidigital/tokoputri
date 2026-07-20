@@ -150,7 +150,7 @@ body {
     width: 100%; 
     background-color: #fff; 
     border: 1.5px solid #e2e8f0; 
-    border-radius: 0.875rem; 
+    border-radius: 10px; 
     padding: 0.875rem 1rem; 
     font-size: 13px; 
     font-weight: 600; 
@@ -169,7 +169,7 @@ html.dark .admin-input::placeholder { color: #94a3b8; }
 
 .card-modern { 
     background: #fff; 
-    border-radius: 1.25rem; 
+    border-radius: 10px; 
     border: 1px solid rgba(226, 232, 240, 0.7); 
     box-shadow: 0 2px 12px -2px rgba(15, 23, 42, 0.05), 0 0 0 0 rgba(var(--color-primary-rgb), 0); 
     transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1); 
@@ -191,7 +191,7 @@ html.dark .admin-input::placeholder { color: #94a3b8; }
     background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%); 
     color: #fff; 
     padding: 0.9375rem 1.5rem; 
-    border-radius: 1rem; 
+    border-radius: 10px; 
     font-weight: 800; 
     font-size: 0.875rem; 
     letter-spacing: 0.01em;
@@ -238,7 +238,7 @@ html.dark .admin-input::placeholder { color: #94a3b8; }
     background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
     color: #fff; 
     padding: 1rem 1.5rem; 
-    border-radius: 1rem; 
+    border-radius: 10px; 
     font-weight: 900; 
     font-size: 0.875rem; 
     text-transform: uppercase; 
@@ -268,7 +268,7 @@ html.dark .admin-input::placeholder { color: #94a3b8; }
 .btn-solid:hover { box-shadow: 0 8px 24px -4px rgba(var(--color-primary-rgb), 0.55); transform: translateY(-1px); }
 .btn-solid:active { transform: scale(0.97); }
 
-.modal-bottom-sheet { border-top-left-radius: 2rem; border-top-right-radius: 2rem; }
+.modal-bottom-sheet { border-top-left-radius: 10px; border-top-right-radius: 10px; }
 .pull-indicator { width: 48px; height: 4px; background-color: #e2e8f0; border-radius: 99px; margin: 12px auto 20px; transition: background 0.2s; }
 .modal-bottom-sheet:hover .pull-indicator { background-color: #cbd5e1; }
 
@@ -284,7 +284,7 @@ html.dark .admin-input::placeholder { color: #94a3b8; }
     align-items: center;
     gap: 12px;
     padding: 12px 14px 12px 12px;
-    border-radius: 18px;
+    border-radius: 10px;
     min-width: 240px;
     max-width: calc(100vw - 2rem);
     /* --toast-bg, --toast-border, --toast-accent di-set oleh JS */
@@ -299,7 +299,7 @@ html.dark .admin-input::placeholder { color: #94a3b8; }
 }
 #toast-icon-wrap {
     width: 36px; height: 36px;
-    border-radius: 11px;
+    border-radius: 10px;
     display: flex; align-items: center; justify-content: center;
     flex-shrink: 0;
     background: var(--toast-icon-bg, rgba(var(--color-primary-rgb), 0.18));
@@ -348,7 +348,7 @@ html.dark .admin-input::placeholder { color: #94a3b8; }
     position: absolute;
     bottom: 0; left: 0;
     height: 3px;
-    border-radius: 0 0 18px 18px;
+    border-radius: 0 0 10px 10px;
     background: var(--toast-accent, var(--color-primary));
     opacity: 0.75;
     transition: width linear;
