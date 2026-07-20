@@ -1,0 +1,2227 @@
+import React, { useState, useEffect, useRef, useMemo } from 'react';
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/firestore';
+import 'firebase/compat/auth';
+import 'firebase/compat/analytics';
+import DOMPurify from 'dompurify';
+import { db, auth, analytics, ADMIN_UID, GAS_UPLOAD_URL } from './db';
+
+// ==========================================
+// CONSTANTS & DEFAULT STATE
+// ==========================================
+const GAS_SECRET_TOKEN = "B7qgwFQqtYLpBqdaK69HgtCfR7s5t67p";
+
+const uiPalettes = {
+  'emerald' : { 50: '#ecfdf5', 100: '#d1fae5', 200: '#a7f3d0', 300: '#6ee7b7', 400: '#34d399', 500: '#10b981', 600: '#059669', 700: '#047857', 800: '#065f46', 900: '#064e3b' },
+  'teal'    : { 50: '#f0fdfa', 100: '#ccfbf1', 200: '#99f6e4', 300: '#5eead4', 400: '#2dd4bf', 500: '#14b8a6', 600: '#0d9488', 700: '#0f766e', 800: '#115e59', 900: '#134e4a' },
+  'cyan'    : { 50: '#ecfeff', 100: '#cffafe', 200: '#a5f3fc', 300: '#67e8f9', 400: '#22d3ee', 500: '#06b6d4', 600: '#0891b2', 700: '#0e7490', 800: '#155e75', 900: '#164e63' },
+  'sky'     : { 50: '#f0f9ff', 100: '#e0f2fe', 200: '#bae6fd', 300: '#7dd3fc', 400: '#38bdf8', 500: '#0ea5e9', 600: '#0284c7', 700: '#0369a1', 800: '#075985', 900: '#0c4a6e' },
+  'blue'    : { 50: '#eff6ff', 100: '#dbeafe', 200: '#bfdbfe', 300: '#93c5fd', 400: '#60a5fa', 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8', 800: '#1e40af', 900: '#1e3a8a' },
+  'indigo'  : { 50: '#eef2ff', 100: '#e0e7ff', 200: '#c7d2fe', 300: '#a5b4fc', 400: '#818cf8', 500: '#6366f1', 600: '#4f46e5', 700: '#4338ca', 800: '#3730a3', 900: '#312e81' },
+  'violet'  : { 50: '#f5f3ff', 100: '#ede9fe', 200: '#ddd6fe', 300: '#c4b5fd', 400: '#a78bfa', 500: '#8b5cf6', 600: '#7c3aed', 700: '#6d28d9', 800: '#5b21b6', 900: '#4c1d95' },
+  'purple'  : { 50: '#faf5ff', 100: '#f3e8ff', 200: '#e9d5ff', 300: '#d8b4fe', 400: '#c084fc', 500: '#a855f7', 600: '#9333ea', 700: '#7e22ce', 800: '#6b21a8', 900: '#581c87' },
+  'fuchsia' : { 50: '#fdf4ff', 100: '#fae8ff', 200: '#f5d0fe', 300: '#f0abfc', 400: '#e879f9', 500: '#d946ef', 600: '#c026d3', 700: '#a21caf', 800: '#86198f', 900: '#701a75' },
+  'pink'    : { 50: '#fdf2f8', 100: '#fce7f3', 200: '#fbcfe8', 300: '#f9a8d4', 400: '#f472b6', 500: '#ec4899', 600: '#db2777', 700: '#be185d', 800: '#9d174d', 900: '#831843' },
+  'rose'    : { 50: '#fff1f2', 100: '#ffe4e6', 200: '#fecdd3', 300: '#fda4af', 400: '#fb7185', 500: '#f43f5e', 600: '#e11d48', 700: '#be123c', 800: '#9f1239', 900: '#881337' },
+  'red'     : { 50: '#fef2f2', 100: '#fee2e2', 200: '#fecaca', 300: '#fca5a5', 400: '#f87171', 500: '#ef4444', 600: '#dc2626', 700: '#b91c1c', 800: '#991b1b', 900: '#7f1d1d' },
+  'orange'  : { 50: '#fff7ed', 100: '#ffedd5', 200: '#fed7aa', 300: '#fdba74', 400: '#fb923c', 500: '#f97316', 600: '#ea580c', 700: '#c2410c', 800: '#9a3412', 900: '#7c2d12' },
+  'amber'   : { 50: '#fffbeb', 100: '#fef3c7', 200: '#fde68a', 300: '#fcd34d', 400: '#fbbf24', 500: '#f59e0b', 600: '#d97706', 700: '#b45309', 800: '#92400e', 900: '#78350f' },
+  'yellow'  : { 50: '#fefce8', 100: '#fef9c3', 200: '#fef08a', 300: '#fde047', 400: '#facc15', 500: '#eab308', 600: '#ca8a04', 700: '#a16207', 800: '#854d0e', 900: '#713f12' },
+  'lime'    : { 50: '#f7fee7', 100: '#ecfccb', 200: '#d9f99d', 300: '#bef264', 400: '#a3e635', 500: '#84cc16', 600: '#65a30d', 700: '#4d7c0f', 800: '#3f6212', 900: '#365314' },
+  'green'   : { 50: '#f0fdf4', 100: '#dcfce7', 200: '#bbf7d0', 300: '#86efac', 400: '#4ade80', 500: '#22c55e', 600: '#16a34a', 700: '#15803d', 800: '#166534', 900: '#14532d' },
+  'slate'   : { 50: '#f8fafc', 100: '#f1f5f9', 200: '#e2e8f0', 300: '#cbd5e1', 400: '#94a3b8', 500: '#64748b', 600: '#475569', 700: '#334155', 800: '#1e293b', 900: '#0f172a' },
+  'stone'   : { 50: '#fafaf9', 100: '#f5f5f4', 200: '#e7e5e4', 300: '#d6d3d1', 400: '#a8a29e', 500: '#78716c', 600: '#57534e', 700: '#44403c', 800: '#292524', 900: '#1c1917' }
+};
+
+const defApp = { 
+  store: { 
+    name: "Toko Putri", slogan: "Solusi Grosir & Alat Teknik", logo: "fa-store", 
+    wa: "", address: "", lat: "", lng: "", costPerKm: 0, 
+    isDeliveryEnabled: true, isPickupEnabled: true, 
+    allProductsIcon: "", allBrandsIcon: "", 
+    categoryStyle: "text", brandStyle: "image",
+    showCategories: true, showBrands: true,
+    themeColor: "#10b981", uiTheme: "emerald",
+    useStock: false, ppnEnabled: false, ppnRate: 11
+  }, 
+  payment: { qrisUrl: "" }, 
+  config: { gasUrl: "" }, 
+  banks: [], banners: [], categories: [], brands: [], products: [], vouchers: [], rewards: [], customers: [],
+  taxSettings: {
+    companyName: "", npwp: "", taxScheme: "umkm_final", customTaxRate: 0.5,
+    monthlyExpenses: {}, balanceSheet: { kas: 0, piutang: 0, hutang: 0, modalDisetor: 0 }
+  }
+};
+
+// ==========================================
+// UTILITY FUNCTIONS
+// ==========================================
+const esc = s => (s === null || s === undefined) ? '' : s.toString().replace(/[&<>'"]/g, t => ({
+  '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
+}[t]));
+
+const fixD = v => {
+  if (typeof v !== 'string') return v;
+  const m = v.match(/drive\.google\.com.*(?:id=|\/d\/)([a-zA-Z0-9_-]+)/);
+  return m ? `https://lh3.googleusercontent.com/d/${m[1]}` : v;
+};
+
+const getOptImg = (url, sizeOpt) => {
+  if (typeof url !== 'string') return url;
+  if (url.includes('lh3.googleusercontent.com/d/')) {
+    return `${url.split('=')[0]}=${sizeOpt}`;
+  }
+  return url;
+};
+
+const fCur = a => {
+  const n = Number(a);
+  return (isNaN(n) || a === null) ? 'Rp 0' : new Intl.NumberFormat('id-ID', {
+    style: 'currency', currency: 'IDR', minimumFractionDigits: 0
+  }).format(Math.abs(n)).replace(/^/, n < 0 ? '-' : '');
+};
+
+const normalizeWA = (raw) => {
+  let n = (raw||'').toString().replace(/\D/g,'');
+  if (!n) return '';
+  if (n.startsWith('0')) n = '62' + n.substring(1);
+  else if (!n.startsWith('62')) n = '62' + n;
+  return n;
+};
+
+const getYouTubeId = (url) => {
+  if (!url) return null;
+  url = url.trim();
+  if (/^[a-zA-Z0-9_-]{11}$/.test(url)) return url;
+  const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+  const match = url.match(regExp);
+  return (match && match[2].length === 11) ? match[2] : null;
+};
+
+// ==========================================
+// MAIN COMPONENT
+// ==========================================
+export default function App() {
+  // App states
+  const [appData, setAppData] = useState(() => {
+    try {
+      const cached = localStorage.getItem('freshmart_cms_data');
+      return cached ? { ...defApp, ...JSON.parse(cached) } : defApp;
+    } catch(e) {
+      return defApp;
+    }
+  });
+
+  const [cart, setCart] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('freshmart_cart')) || []; } catch(e) { return []; }
+  });
+
+  const [wishlist, setWishlist] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('freshmart_wishlist')) || []; } catch(e) { return []; }
+  });
+
+  const [myOrders, setMyOrders] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('freshmart_my_orders')) || []; } catch(e) { return []; }
+  });
+
+  const [currentView, setCurrentView] = useState('catalog'); // catalog, cart, checkout, payment, orders, wishlist, admin-login, admin
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [user, setUser] = useState(null);
+
+  // Filters & Page settings
+  const [aCat, setACat] = useState('Semua Produk');
+  const [aBrand, setABrand] = useState('Semua Merek');
+  const [sQ, setSQ] = useState('');
+  const [cSort, setCSort] = useState('newest');
+  const [cView, setCView] = useState('grid');
+  const [cPage, setCPage] = useState(1);
+  const iPP = 12;
+
+  // Checkout inputs
+  const [cust, setCust] = useState({
+    name: '', address: '', lat: null, lng: null,
+    deliveryMethod: 'delivery', distance: 0, note: '', wa: ''
+  });
+  const [currentMember, setCurrentMember] = useState(null);
+  const [selectedReward, setSelectedReward] = useState(null);
+  const [vouch, setVouch] = useState(null);
+  const [voucherCodeInput, setVoucherCodeInput] = useState('');
+  const [voucherError, setVoucherError] = useState('');
+  const [useMemberPoints, setUseMemberPoints] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState('transfer');
+  const [tempoDp, setTempoDp] = useState(0);
+
+  // Bukti Upload
+  const [buktiFile, setBuktiFile] = useState(null);
+  const [buktiUrl, setBuktiUrl] = useState(null);
+  const [buktiUploading, setBuktiUploading] = useState(false);
+  const [buktiUploaded, setBuktiUploaded] = useState(false);
+  const [buktiError, setBuktiError] = useState(false);
+  const [buktiUploadingText, setBuktiUploadingText] = useState('');
+
+  // Modals & Popups states
+  const [toast, setToast] = useState({ show: false, message: '', type: 'info', title: '' });
+  const [confirm, setConfirm] = useState({ show: false, title: '', message: '', onConfirm: null, btnText: 'Ya', isDanger: true });
+  const [scannerOpen, setScannerOpen] = useState(false);
+  const [categoryModalOpen, setCategoryModalOpen] = useState(false);
+  const [brandModalOpen, setBrandModalOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [selectedVariantIdx, setSelectedVariantIdx] = useState(null);
+  const [cQty, setCQty] = useState(1);
+  const [activeSlideIdx, setActiveSlideIdx] = useState(0); // 0 = image, 1 = video
+  const [productReviews, setProductReviews] = useState([]);
+  const [reviewsLoading, setReviewsLoading] = useState(false);
+
+  // Member Modal
+  const [memberModalOpen, setMemberModalOpen] = useState(false);
+
+  // Admin states
+  const [activeAdminTab, setActiveAdminTab] = useState('orders');
+  const [adminSearch, setAdminSearch] = useState('');
+  const [adminReportPeriod, setAdminReportPeriod] = useState('today');
+  const [adminReports, setAdminReports] = useState(null);
+  const [adminOrders, setAdminOrders] = useState([]);
+  const [adminCustomers, setAdminCustomers] = useState([]);
+  const [adminReviews, setAdminReviews] = useState([]);
+  const [adminModalOpen, setAdminModalOpen] = useState(false);
+  const [adminFormType, setAdminFormType] = useState(''); // products, categories, brands, vouchers, banks, banners, rewards
+  const [adminFormItem, setAdminFormItem] = useState(null);
+  const [selectedAdminOrder, setSelectedAdminOrder] = useState(null);
+  const [adminOrderModalOpen, setAdminOrderModalOpen] = useState(false);
+  const [receiptPreviewOpen, setReceiptPreviewOpen] = useState(false);
+  const [docPreviewOpen, setDocPreviewOpen] = useState(false);
+  const [docPreviewType, setDocPreviewType] = useState('invoice'); // invoice, surat_jalan
+
+  // Temp variables for wholesale/variants CRUD
+  const [tempWholesale, setTempWholesale] = useState([]);
+  const [tempVariants, setTempVariants] = useState([]);
+
+  // Auto-slide banner ref
+  const bannerSliderRef = useRef(null);
+
+  // Toast handler
+  const showToast = (message, type = null, title = '', duration = 3000) => {
+    if (!type) {
+      const low = message.toLowerCase();
+      if (/berhasil|sukses|selamat|✅|🎉|aktif|dikirim|disimpan|diupload|disalin|dipulihkan|login berhasil|restock|terhapus|diunduh|diperbarui/.test(low)) type = 'success';
+      else if (/gagal|error|tolak|❌|tidak valid|tidak ditemukan|tidak cukup|salah|ditolak|quota|koneksi|putus|izin|wajib/.test(low)) type = 'error';
+      else if (/tunggu|maks|hati|stok|coba|⚠️|pastikan/.test(low)) type = 'warning';
+      else if (/upload|proses|memuat|loading|sedang/.test(low)) type = 'loading';
+      else type = 'info';
+    }
+    setToast({ show: true, message, type, title });
+    setTimeout(() => {
+      setToast(prev => ({ ...prev, show: false }));
+    }, duration);
+  };
+
+  // Confirm Modal
+  const showConfirm = (title, message, onConfirm, btnText = "Ya, Hapus", isDanger = true) => {
+    setConfirm({ show: true, title, message, onConfirm, btnText, isDanger });
+  };
+  const closeConfirm = () => {
+    setConfirm(prev => ({ ...prev, show: false }));
+  };
+
+  // Sync and Theme setup
+  useEffect(() => {
+    const gl = document.getElementById('global-loader');
+    if (gl) gl.style.display = 'none';
+
+    // Check auth
+    const unsubAuth = auth.onAuthStateChanged(usr => {
+      setUser(usr);
+      if (usr && usr.uid === ADMIN_UID) {
+        setIsAdmin(true);
+      } else {
+        setIsAdmin(false);
+      }
+    });
+
+    // Load initial data
+    const loadData = async () => {
+      try {
+        const d = await db.collection("freshmart").doc("cms_data").get();
+        if (d.exists) {
+          const f = d.data();
+          const serverUpdate = f.lastUpdate || 0;
+          const localUpdate = parseInt(localStorage.getItem('freshmart_last_update') || '0');
+
+          let loadedProducts = [];
+          if (localStorage.getItem('freshmart_products') && localUpdate >= serverUpdate) {
+            loadedProducts = JSON.parse(localStorage.getItem('freshmart_products'));
+          } else {
+            const pSnap = await db.collection("freshmart").doc("cms_data").collection("products").get();
+            loadedProducts = pSnap.docs.map(doc => doc.data()).sort((a,b) => (b.id||0) - (a.id||0));
+            localStorage.setItem('freshmart_products', JSON.stringify(loadedProducts));
+            localStorage.setItem('freshmart_last_update', serverUpdate.toString());
+          }
+
+          const merged = { ...defApp, ...f, products: loadedProducts };
+          setAppData(merged);
+          localStorage.setItem('freshmart_cms_data', JSON.stringify(f));
+        }
+      } catch(e) {
+        showToast("Mode Offline (Data Lokal)");
+      }
+    };
+    loadData();
+
+    // Listeners for realtime sync
+    const unsubCms = db.collection("freshmart").doc("cms_data").onSnapshot(async doc => {
+      if (!doc.exists) return;
+      const f = doc.data();
+      const serverUpdate = f.lastUpdate || 0;
+      const localUpdate = parseInt(localStorage.getItem('freshmart_last_update') || '0');
+      if (serverUpdate <= localUpdate) return;
+
+      try {
+        const pSnap = await db.collection("freshmart").doc("cms_data").collection("products").get();
+        const serverProducts = pSnap.docs.map(d => d.data()).sort((a,b) => (b.id||0) - (a.id||0));
+        setAppData(prev => ({
+          ...prev,
+          ...f,
+          products: serverProducts
+        }));
+        localStorage.setItem('freshmart_products', JSON.stringify(serverProducts));
+        localStorage.setItem('freshmart_last_update', serverUpdate.toString());
+      } catch(err) {
+        console.warn(err);
+      }
+    });
+
+    const unsubRewards = db.collection("freshmart").doc("cms_data").collection("rewards").onSnapshot(snap => {
+      const serverRewards = snap.docs.map(d => d.data()).sort((a,b) => (b.id||0) - (a.id||0));
+      setAppData(prev => ({ ...prev, rewards: serverRewards }));
+    });
+
+    return () => {
+      unsubAuth();
+      unsubCms();
+      unsubRewards();
+    };
+  }, []);
+
+  // Theme variable injector
+  const activeColors = useMemo(() => {
+    const themeName = appData.store.uiTheme || 'emerald';
+    const colors = uiPalettes[themeName] || uiPalettes['emerald'];
+    const brandColor = appData.store.themeColor || colors[500];
+
+    const hexToRgb = (hex) => {
+      let bigint = parseInt(hex.replace('#', ''), 16);
+      return ((bigint >> 16) & 255) + ',' + ((bigint >> 8) & 255) + ',' + (bigint & 255);
+    };
+
+    document.documentElement.style.setProperty('--color-primary', brandColor);
+    document.documentElement.style.setProperty('--color-primary-dark', colors[600]);
+    document.documentElement.style.setProperty('--color-primary-light', colors[50]);
+    document.documentElement.style.setProperty('--color-primary-rgb', hexToRgb(brandColor));
+
+    Object.keys(colors).forEach(shade => {
+      document.documentElement.style.setProperty(`--color-emerald-${shade}`, colors[shade]);
+    });
+
+    return colors;
+  }, [appData.store.uiTheme, appData.store.themeColor]);
+
+  // Listen to User Orders status realtime
+  useEffect(() => {
+    if (currentView !== 'orders' || !myOrders.length) return;
+    const MAX_LIVE_ORDERS = 15;
+    const unsubs = myOrders.slice(0, MAX_LIVE_ORDERS).map((o, idx) => {
+      return db.collection("freshmart_orders").doc(o.orderId).onSnapshot(doc => {
+        if (!doc.exists) return;
+        const data = doc.data();
+        const newStatus = data.status;
+        const newRewardStatus = data.claimedReward ? data.claimedReward.status : null;
+        const newRewardNote = data.claimedReward ? (data.claimedReward.note || '') : '';
+
+        setMyOrders(prev => {
+          const updated = [...prev];
+          if (updated[idx]) {
+            let changed = false;
+            if (updated[idx].status !== newStatus) {
+              updated[idx].status = newStatus;
+              changed = true;
+            }
+            if (updated[idx].claimedReward && newRewardStatus) {
+              if (updated[idx].claimedReward.status !== newRewardStatus || updated[idx].claimedReward.note !== newRewardNote) {
+                updated[idx].claimedReward.status = newRewardStatus;
+                updated[idx].claimedReward.note = newRewardNote;
+                changed = true;
+              }
+            }
+            if (changed) {
+              localStorage.setItem('freshmart_my_orders', JSON.stringify(updated));
+              showToast(`Status pesanan #${o.orderId.split('-').pop()} diperbarui!`);
+            }
+          }
+          return updated;
+        });
+      });
+    });
+    return () => unsubs.forEach(unsub => unsub());
+  }, [currentView, myOrders.length]);
+
+  // Auto-slide banner slider
+  useEffect(() => {
+    if (currentView !== 'catalog' || !appData.banners?.length) return;
+    const slideInterval = setInterval(() => {
+      const slider = bannerSliderRef.current;
+      if (!slider) return;
+      const maxScroll = slider.scrollWidth - slider.clientWidth;
+      if (slider.scrollLeft >= maxScroll - 10) {
+        slider.scrollTo({ left: 0, behavior: 'smooth' });
+      } else {
+        slider.scrollBy({ left: slider.clientWidth, behavior: 'smooth' });
+      }
+    }, 4000);
+    return () => clearInterval(slideInterval);
+  }, [currentView, appData.banners]);
+
+  // Load reviews for product modal
+  const loadProductReviews = async (productId) => {
+    setReviewsLoading(true);
+    try {
+      const snap = await db.collection("freshmart").doc("cms_data").collection("reviews").where("productId", "==", productId).get();
+      const list = snap.docs.map(doc => doc.data()).filter(r => r.isVisible === true || r.isVisible === 'true');
+      setProductReviews(list);
+    } catch(e) {
+      console.error(e);
+    } finally {
+      setReviewsLoading(false);
+    }
+  };
+
+  // Image compression and upload helpers
+  const compressImageForUpload = (file, maxSizePx = 1600, quality = 0.82) => {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = (ev) => {
+        const img = new Image();
+        img.onload = () => {
+          let { width, height } = img;
+          if (width > maxSizePx || height > maxSizePx) {
+            if (width > height) { height = Math.round(height * maxSizePx / width); width = maxSizePx; }
+            else { width = Math.round(width * maxSizePx / height); height = maxSizePx; }
+          }
+          const canvas = document.createElement('canvas');
+          canvas.width = width; canvas.height = height;
+          canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+          canvas.toBlob((blob) => {
+            if (!blob) return resolve(file);
+            resolve(new File([blob], file.name, { type: 'image/jpeg', lastModified: Date.now() }));
+          }, 'image/jpeg', quality);
+        };
+        img.onerror = () => resolve(file);
+        img.src = ev.target.result;
+      };
+      reader.onerror = () => resolve(file);
+    });
+  };
+
+  const doSingleGDriveUpload = async (file, orderId) => {
+    const reader = new FileReader();
+    return new Promise((resolve) => {
+      reader.readAsDataURL(file);
+      reader.onload = async () => {
+        try {
+          const base64Data = reader.result.split(',')[1];
+          const safeName = (file.name || 'bukti.jpg').replace(/[^a-zA-Z0-9.]/g, '_');
+          const payload = {
+            name: 'BUKTI_' + orderId + '_' + Date.now() + '_' + safeName,
+            mimeType: file.type || 'image/jpeg',
+            data: base64Data,
+            token: GAS_SECRET_TOKEN
+          };
+          const res = await fetch(GAS_UPLOAD_URL, {
+            method: 'POST',
+            body: JSON.stringify(payload),
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            redirect: 'follow'
+          });
+          if (!res.ok) return resolve(null);
+          const text = await res.ok ? await res.text() : '';
+          let data;
+          try { data = JSON.parse(text); } catch(e) { return resolve(null); }
+          if (data && data.status === 'success' && data.url) {
+            resolve(fixD(data.url));
+          } else {
+            resolve(null);
+          }
+        } catch(e) {
+          resolve(null);
+        }
+      };
+      reader.onerror = () => resolve(null);
+    });
+  };
+
+  const uploadBuktiToGDrive = async (file, orderId) => {
+    if (!file) return null;
+    let fileToUpload = file;
+    try { fileToUpload = await compressImageForUpload(file); } catch(e) {}
+    const MAX_RETRY = 2;
+    const TIMEOUT_MS = 30000;
+
+    for (let attempt = 1; attempt <= MAX_RETRY; attempt++) {
+      setBuktiUploadingText(attempt > 1 ? `Retry ${attempt}/${MAX_RETRY} to Drive...` : 'Uploading to Drive...');
+      try {
+        const url = await Promise.race([
+          doSingleGDriveUpload(fileToUpload, orderId),
+          new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), TIMEOUT_MS))
+        ]);
+        if (url) return url;
+      } catch(e) {
+        console.warn(`Attempt ${attempt} failed:`, e.message);
+      }
+      if (attempt < MAX_RETRY) await new Promise(r => setTimeout(r, 1500 * attempt));
+    }
+    return null;
+  };
+
+  const handleBuktiUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) return showToast('Hanya gambar yang diizinkan!');
+    if (file.size > 5 * 1024 * 1024) return showToast('Max file size 5MB!');
+
+    setBuktiFile(file);
+    setBuktiUrl(null);
+    setBuktiUploading(true);
+    setBuktiUploaded(false);
+    setBuktiError(false);
+
+    const tempOrderId = 'TEMP_' + Date.now().toString(36).toUpperCase();
+    const gDriveUrl = await uploadBuktiToGDrive(file, tempOrderId);
+
+    setBuktiUploading(false);
+    if (gDriveUrl) {
+      setBuktiUrl(gDriveUrl);
+      setBuktiUploaded(true);
+      showToast('Bukti berhasil diupload!');
+    } else {
+      setBuktiError(true);
+      showToast('Upload gagal! Silakan coba lagi.');
+    }
+  };
+
+  const retryBuktiUpload = async () => {
+    if (!buktiFile) return showToast('Pilih file gambar dulu!');
+    setBuktiUploading(true);
+    setBuktiError(false);
+    const tempOrderId = 'RETRY_' + Date.now().toString(36).toUpperCase();
+    const gDriveUrl = await uploadBuktiToGDrive(buktiFile, tempOrderId);
+    setBuktiUploading(false);
+    if (gDriveUrl) {
+      setBuktiUrl(gDriveUrl);
+      setBuktiUploaded(true);
+      showToast('Upload berhasil!');
+    } else {
+      setBuktiError(true);
+      showToast('Upload masih gagal.');
+    }
+  };
+
+  // GPS coordinates semat
+  const getLocation = () => {
+    showToast("Mengakses GPS...", "loading");
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          const lat = position.coords.latitude;
+          const lng = position.coords.longitude;
+          setCust(prev => ({ ...prev, lat, lng }));
+
+          // Geocode / distance calculation from store coordinates
+          const storeLat = parseFloat(appData.store.lat);
+          const storeLng = parseFloat(appData.store.lng);
+          if (!isNaN(storeLat) && !isNaN(storeLng)) {
+            const dist = getDistance(storeLat, storeLng, lat, lng);
+            setCust(prev => ({ ...prev, distance: dist }));
+          }
+          showToast("Lokasi berhasil disematkan!");
+        },
+        (error) => {
+          showToast("Gagal mengakses lokasi. Masukkan koordinat manual.");
+        },
+        { enableHighAccuracy: true, timeout: 10000 }
+      );
+    } else {
+      showToast("Browser tidak mendukung geolokasi.");
+    }
+  };
+
+  const getDistance = (lat1, lon1, lat2, lon2) => {
+    const R = 6371; // km
+    const dLat = (lat2-lat1)*Math.PI/180;
+    const dLon = (lon2-lon1)*Math.PI/180;
+    const a = Math.sin(dLat/2)*Math.sin(dLat/2) + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLon/2)*Math.sin(dLon/2);
+    const c = 2*Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    return R*c;
+  };
+
+  // Cart helper functions
+  const getEffP = (item) => {
+    const p = appData.products.find(x => x.id === item.id);
+    let basePrice = item.price || 0;
+    if (item.variantName && p?.variants) {
+      const v = p.variants.find(vv => vv.name === item.variantName);
+      if (v && v.price != null) basePrice = v.price;
+    }
+    // Grosir calculation (only applies if no variants)
+    if (p && p.wholesale?.length && !p.variants?.length) {
+      // Find eligible wholesale tier based on quantity
+      const tier = p.wholesale.slice().sort((a,b) => b.minQty - a.minQty).find(w => item.qty >= parseFloat(w.minQty));
+      if (tier) basePrice = tier.price;
+    }
+    return basePrice;
+  };
+
+  const getEffHpp = (item) => {
+    const p = appData.products.find(x => x.id === item.id);
+    if (!p) return 0;
+    if (item.variantName && p.variants) {
+      const v = p.variants.find(vv => vv.name === item.variantName);
+      return v?.hpp || p.hpp || 0;
+    }
+    return p.hpp || 0;
+  };
+
+  const subtotalCart = useMemo(() => {
+    return cart.reduce((sum, item) => sum + getEffP(item) * item.qty, 0);
+  }, [cart, appData.products]);
+
+  const shippingCost = useMemo(() => {
+    if (cust.deliveryMethod !== 'delivery') return 0;
+    return Math.ceil((parseFloat(cust.distance)||0) * (parseFloat(appData.store.costPerKm)||0) / 500) * 500;
+  }, [cust.deliveryMethod, cust.distance, appData.store.costPerKm]);
+
+  // Discount calculation
+  const discounts = useMemo(() => {
+    let pDisc = 0;
+    let sDisc = 0;
+    if (vouch) {
+      let eligibleSubtotal = subtotalCart;
+      if (vouch.targetProduct) {
+        const targetId = parseInt(vouch.targetProduct);
+        const eligibleItems = cart.filter(i => i.id === targetId);
+        eligibleSubtotal = eligibleItems.reduce((sum, item) => sum + getEffP(item) * item.qty, 0);
+      }
+      if (vouch.type === 'shipping_free') {
+        sDisc = shippingCost;
+      } else if (vouch.type === 'percent') {
+        let calc = eligibleSubtotal * (parseFloat(vouch.value) / 100);
+        if (vouch.maxDiscount && parseFloat(vouch.maxDiscount) > 0) calc = Math.min(calc, parseFloat(vouch.maxDiscount));
+        pDisc = calc;
+      } else {
+        pDisc = Math.min(parseFloat(vouch.value) || 0, eligibleSubtotal);
+      }
+    }
+    return { productDiscount: pDisc, shippingDiscount: Math.min(sDisc, shippingCost) };
+  }, [vouch, cart, subtotalCart, shippingCost]);
+
+  // PPN calculation
+  const ppnAmount = useMemo(() => {
+    if (!appData.store.ppnEnabled) return 0;
+    const baseVal = Math.max(0, (subtotalCart - discounts.productDiscount) + (shippingCost - discounts.shippingDiscount));
+    const rate = parseFloat(appData.store.ppnRate) || 11;
+    return Math.round(baseVal * rate / 100);
+  }, [appData.store.ppnEnabled, appData.store.ppnRate, subtotalCart, shippingCost, discounts]);
+
+  // Points claim reward point discount
+  const pointsDiscount = useMemo(() => {
+    if (!useMemberPoints || !currentMember) return 0;
+    const maxPayable = (subtotalCart - discounts.productDiscount) + (shippingCost - discounts.shippingDiscount) + ppnAmount;
+    return Math.min(maxPayable, parseFloat(currentMember.points) || 0);
+  }, [useMemberPoints, currentMember, subtotalCart, discounts, shippingCost, ppnAmount]);
+
+  const grandTotal = useMemo(() => {
+    const val = (subtotalCart - discounts.productDiscount) + (shippingCost - discounts.shippingDiscount) + ppnAmount - pointsDiscount;
+    return Math.max(0, val);
+  }, [subtotalCart, discounts, shippingCost, ppnAmount, pointsDiscount]);
+
+  // Check member status on phone change
+  const checkMemberStatus = async (phoneInput) => {
+    const rawWa = phoneInput.trim();
+    if (!rawWa) {
+      setCurrentMember(null);
+      return;
+    }
+    const normalized = normalizeWA(rawWa);
+    setCust(prev => ({ ...prev, wa: normalized }));
+    try {
+      const doc = await db.collection("freshmart").doc("cms_data").collection("customers").doc(normalized).get();
+      if (doc.exists) {
+        setCurrentMember({ phone: normalized, ...doc.data() });
+      } else {
+        setCurrentMember(null);
+      }
+    } catch(e) {
+      setCurrentMember(null);
+    }
+  };
+
+  // Apply Coupon / Voucher
+  const handleApplyVoucher = () => {
+    setVoucherError('');
+    if (!voucherCodeInput.trim()) return;
+    const code = voucherCodeInput.trim().toUpperCase();
+    const found = appData.vouchers.find(v => v.code === code && (v.isShow === true || v.isShow === 'true'));
+    if (!found) {
+      setVoucherError('Kode Tidak Valid');
+      setVouch(null);
+      return;
+    }
+
+    // Validation checks
+    if (found.minPurchase && subtotalCart < parseFloat(found.minPurchase)) {
+      setVoucherError(`Minimal belanja ${fCur(found.minPurchase)}`);
+      setVouch(null);
+      return;
+    }
+    if (found.targetProduct) {
+      const targetId = parseInt(found.targetProduct);
+      if (!cart.some(item => item.id === targetId)) {
+        setVoucherError('Khusus Produk Tertentu!');
+        setVouch(null);
+        return;
+      }
+    }
+    if (found.type.includes('shipping') && cust.deliveryMethod !== 'delivery') {
+      setVoucherError('Khusus pesanan dikirim kurir!');
+      setVouch(null);
+      return;
+    }
+
+    setVouch(found);
+    showToast('Voucher Diterapkan!', 'success');
+  };
+
+  // Remove voucher
+  const handleRemoveVoucher = () => {
+    setVouch(null);
+    setVoucherCodeInput('');
+    setVoucherError('');
+  };
+
+  // Process checkout order
+  const handleProcessOrder = async () => {
+    if (isAdmin) {
+      showToast("Anda login sebagai Admin. Silakan logout terlebih dahulu.");
+      return;
+    }
+
+    const lastOrderTime = localStorage.getItem('freshmart_last_order');
+    if (lastOrderTime && (Date.now() - parseInt(lastOrderTime)) < 60000) {
+      showToast("Mohon tunggu 1 menit untuk pesanan baru.");
+      return;
+    }
+
+    // Price verification check (anti-tamper)
+    let priceWasTampered = false;
+    const updatedCart = cart.map(cartItem => {
+      const serverProd = appData.products.find(p => p.id === cartItem.id);
+      if (!serverProd) return cartItem;
+      const serverPrice = cartItem.variantName
+        ? ((serverProd.variants||[]).find(v => v.name === cartItem.variantName)||{}).price ?? serverProd.price
+        : serverProd.price;
+      if (serverPrice !== undefined && Math.abs(cartItem.price - serverPrice) > 1) {
+        priceWasTampered = true;
+        return { ...cartItem, price: serverPrice };
+      }
+      return cartItem;
+    });
+
+    if (priceWasTampered) {
+      setCart(updatedCart);
+      localStorage.setItem('freshmart_cart', JSON.stringify(updatedCart));
+      showToast("Harga produk diperbarui. Periksa kembali keranjang belanja Anda.");
+      return;
+    }
+
+    // Check payment requirements
+    const needsBukti = (paymentMethod === 'transfer' || paymentMethod === 'qris' || paymentMethod === 'tempo');
+    if (needsBukti && !buktiUploaded) {
+      showToast('Silakan upload bukti pembayaran terlebih dahulu!');
+      return;
+    }
+
+    showToast('Memproses pesanan...', 'loading');
+
+    try {
+      const orderId = 'ORD-' + Date.now().toString(36).toUpperCase() + '-' + Math.random().toString(36).substring(2,6).toUpperCase();
+      const pointsEarned = cart.reduce((sum, item) => sum + ((parseFloat(item.poin)||0) * item.qty), 0);
+
+      const orderDoc = {
+        orderId,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+        dateString: new Date().toISOString(),
+        customer: cust,
+        items: cart.map(i => ({
+          ...i,
+          effectivePrice: getEffP(i),
+          hpp: getEffHpp(i)
+        })),
+        payment: {
+          method: paymentMethod,
+          subtotal: subtotalCart,
+          shippingCost: shippingCost,
+          shippingDiscount: discounts.shippingDiscount,
+          productDiscount: discounts.productDiscount,
+          ppnAmount,
+          ppnRate: appData.store.ppnEnabled ? appData.store.ppnRate : 0,
+          grandTotal
+        },
+        status: 'Baru',
+        buktiPayment: buktiUrl || null
+      };
+
+      if (paymentMethod === 'tempo') {
+        orderDoc.payment.tempoDp = tempoDp;
+        orderDoc.payment.tempoBalance = grandTotal - tempoDp;
+        orderDoc.payment.tempoDueDate = Date.now() + (30 * 24 * 60 * 60 * 1000);
+        orderDoc.payment.paymentStatus = 'hutang';
+      }
+
+      const orderRef = db.collection("freshmart_orders").doc(orderId);
+      const cmsDataRef = db.collection("freshmart").doc("cms_data");
+      const memberRef = cust.wa ? cmsDataRef.collection("customers").doc(cust.wa) : null;
+      let finalMemberPoints = null;
+
+      // Transaction execution for atomic stock decrements and loyalty updates
+      await db.runTransaction(async (transaction) => {
+        // Read Phase
+        const memberDoc = memberRef ? await transaction.get(memberRef) : null;
+        let rewardDoc = null;
+        if (selectedReward) {
+          const rewardRef = db.collection("freshmart").doc("cms_data").collection("rewards").doc(selectedReward.id.toString());
+          rewardDoc = await transaction.get(rewardRef);
+        }
+
+        // Validate stock
+        if (appData.store.useStock) {
+          for (const item of cart) {
+            const productRef = db.collection("freshmart").doc("cms_data").collection("products").doc(item.id.toString());
+            const productSnap = await transaction.get(productRef);
+            if (!productSnap.exists) throw new Error('PRODUK_TIDAK_DITEMUKAN');
+            const pData = productSnap.data();
+
+            if (item.variantName) {
+              const variant = (pData.variants || []).find(v => v.name === item.variantName);
+              const stk = parseFloat(variant?.stock || 0);
+              if (stk < item.qty) throw new Error(`Stok ${item.name} (${item.variantName}) tidak cukup!`);
+            } else {
+              const stk = parseFloat(pData.stock || 0);
+              if (stk < item.qty) throw new Error(`Stok ${item.name} tidak cukup!`);
+            }
+          }
+        }
+
+        // Validate rewards
+        let rewardStockUpdated = null;
+        if (selectedReward) {
+          if (!rewardDoc || !rewardDoc.exists) throw new Error('HADIAH_TIDAK_DITEMUKAN');
+          const rew = rewardDoc.data();
+          if ((parseFloat(rew.stock)||0) <= 0) throw new Error('STOK_HADIAH_HABIS');
+          rewardStockUpdated = (parseFloat(rew.stock)||0) - 1;
+        }
+
+        // Points update
+        if (memberDoc && memberDoc.exists) {
+          let points = parseFloat(memberDoc.data().points) || 0;
+          if (selectedReward) {
+            const cost = selectedReward.pointsCost;
+            if (points < cost) throw new Error('POIN_TIDAK_CUKUP');
+            points -= cost;
+            orderDoc.claimedReward = { id: selectedReward.id, name: selectedReward.name, pointsCost: cost, status: 'pending', note: '' };
+          }
+          points += pointsEarned;
+          finalMemberPoints = points;
+          orderDoc.pointsEarned = pointsEarned;
+          orderDoc.customerPhone = cust.wa;
+          orderDoc.finalMemberPoints = points;
+        }
+
+        // Write Phase (Deductions)
+        if (appData.store.useStock) {
+          for (const item of cart) {
+            const productRef = db.collection("freshmart").doc("cms_data").collection("products").doc(item.id.toString());
+            const pSnap = await transaction.get(productRef);
+            const pData = JSON.parse(JSON.stringify(pSnap.data()));
+
+            if (item.variantName) {
+              const vIdx = (pData.variants || []).findIndex(v => v.name === item.variantName);
+              if (vIdx > -1) {
+                pData.variants[vIdx].stock = Math.max(0, (parseFloat(pData.variants[vIdx].stock)||0) - item.qty);
+                if (pData.variants[vIdx].stock === 0) pData.variants[vIdx].isActive = false;
+                pData.variants[vIdx].totalSold = (parseFloat(pData.variants[vIdx].totalSold)||0) + item.qty;
+              }
+            } else {
+              pData.stock = Math.max(0, (parseFloat(pData.stock)||0) - item.qty);
+              if (pData.stock === 0) pData.isActive = 'false';
+              pData.totalSold = (parseFloat(pData.totalSold)||0) + item.qty;
+            }
+            transaction.set(productRef, pData);
+          }
+        }
+
+        transaction.set(orderRef, orderDoc);
+
+        if (memberRef && finalMemberPoints !== null) {
+          transaction.set(memberRef, { points: finalMemberPoints }, { merge: true });
+        }
+        if (rewardStockUpdated !== null && selectedReward) {
+          const rewardRef = db.collection("freshmart").doc("cms_data").collection("rewards").doc(selectedReward.id.toString());
+          transaction.set(rewardRef, { stock: rewardStockUpdated }, { merge: true });
+        }
+
+        transaction.update(cmsDataRef, { lastUpdate: firebase.firestore.FieldValue.increment(1) });
+      });
+
+      // Clear local states
+      const updatedOrders = [
+        {
+          orderId,
+          date: new Date().toISOString(),
+          total: grandTotal,
+          itemCount: cart.reduce((sum, item) => sum + item.qty, 0),
+          status: 'Baru',
+          pointsEarned: orderDoc.pointsEarned || 0,
+          claimedReward: orderDoc.claimedReward || null,
+          finalMemberPoints: finalMemberPoints
+        },
+        ...myOrders
+      ];
+      setMyOrders(updatedOrders);
+      localStorage.setItem('freshmart_my_orders', JSON.stringify(updatedOrders));
+      localStorage.setItem('freshmart_last_order', Date.now().toString());
+
+      setCart([]);
+      localStorage.removeItem('freshmart_cart');
+      setCust({
+        name: '', address: '', lat: null, lng: null,
+        deliveryMethod: 'delivery', distance: 0, note: '', wa: ''
+      });
+      setVouch(null);
+      setVoucherCodeInput('');
+      setSelectedReward(null);
+      setUseMemberPoints(false);
+      setBuktiFile(null);
+      setBuktiUrl(null);
+      setBuktiUploaded(false);
+
+      showToast('Pesanan berhasil dibuat!', 'success');
+      setCurrentView('catalog');
+
+    } catch(err) {
+      showToast(`Gagal: ${err.message}`, 'error');
+    }
+  };
+
+  // Catalog item listing
+  const filteredProducts = useMemo(() => {
+    let result = [...(appData.products || [])].filter(p => p.isActive !== 'false' && p.isActive !== false);
+
+    if (aCat !== 'Semua Produk') {
+      result = result.filter(p => p.category === aCat);
+    }
+    if (aBrand !== 'Semua Merek') {
+      result = result.filter(p => p.brand === aBrand);
+    }
+    if (sQ) {
+      result = result.filter(p => p.name.toLowerCase().includes(sQ.toLowerCase()));
+    }
+
+    // Sort options
+    if (cSort === 'cheapest') {
+      result.sort((a, b) => (a.price || 0) - (b.price || 0));
+    } else if (cSort === 'expensive') {
+      result.sort((a, b) => (b.price || 0) - (a.price || 0));
+    } else if (cSort === 'az') {
+      result.sort((a, b) => a.name.localeCompare(b.name));
+    } else {
+      // newest
+      result.sort((a, b) => (b.id || 0) - (a.id || 0));
+    }
+
+    return result;
+  }, [appData.products, aCat, aBrand, sQ, cSort]);
+
+  // Pagination for catalog products
+  const paginatedProducts = useMemo(() => {
+    return filteredProducts.slice(0, cPage * iPP);
+  }, [filteredProducts, cPage]);
+
+  // Wishlist toggle
+  const toggleWishlist = (product, variantName = null) => {
+    const isExist = wishlist.some(i => i.id === product.id && i.variantName === variantName);
+    let updated = [];
+    if (isExist) {
+      updated = wishlist.filter(i => !(i.id === product.id && i.variantName === variantName));
+      showToast("Dihapus dari Favorit");
+    } else {
+      const v = variantName ? product.variants.find(vv => vv.name === variantName) : null;
+      updated = [...wishlist, {
+        id: product.id,
+        name: product.name,
+        variantName,
+        price: v ? v.price : product.price,
+        img: v?.img || product.img
+      }];
+      showToast("Masuk Favorit ❤️", "success");
+    }
+    setWishlist(updated);
+    localStorage.setItem('freshmart_wishlist', JSON.stringify(updated));
+  };
+
+  // Add item to cart
+  const handleAddToCart = (product, variantIdx = null, quantity = 1) => {
+    // Check stock
+    const useStk = appData.store.useStock;
+    const v = variantIdx !== null ? product.variants[variantIdx] : null;
+    const variantName = v ? v.name : null;
+
+    if (useStk) {
+      const stockVal = v ? parseFloat(v.stock || 0) : parseFloat(product.stock || 0);
+      const currentInCart = cart.find(i => i.id === product.id && i.variantName === variantName)?.qty || 0;
+      if (currentInCart + quantity > stockVal) {
+        showToast(`Stok tidak cukup! Tersisa: ${stockVal}`, 'warning');
+        return;
+      }
+    }
+
+    const priceVal = v ? v.price : product.price;
+    const unitVal = v?.unit || product.unit || 'pcs';
+
+    setCart(prev => {
+      const updated = [...prev];
+      const foundIdx = updated.findIndex(i => i.id === product.id && i.variantName === variantName);
+      if (foundIdx > -1) {
+        updated[foundIdx].qty = parseFloat((updated[foundIdx].qty + quantity).toFixed(2));
+      } else {
+        updated.push({
+          id: product.id,
+          name: product.name,
+          variantName,
+          price: priceVal,
+          img: v?.img || product.img,
+          qty: quantity,
+          unit: unitVal,
+          poTime: product.poTime || '',
+          colorCode: v?.colorCode || '',
+          poin: parseFloat(v ? v.poin : product.poin) || 0
+        });
+      }
+      localStorage.setItem('freshmart_cart', JSON.stringify(updated));
+      return updated;
+    });
+
+    showToast("Berhasil Masuk Keranjang", "success");
+  };
+
+  // Admin CRUD actions
+  const loadAdminTabList = async (tab) => {
+    if (tab === 'orders') {
+      const snap = await db.collection("freshmart_orders").orderBy("timestamp", "desc").limit(100).get();
+      setAdminOrders(snap.docs.map(doc => doc.data()));
+    } else if (tab === 'customers') {
+      const snap = await db.collection("freshmart").doc("cms_data").collection("customers").get();
+      setAdminCustomers(snap.docs.map(doc => ({ phone: doc.id, ...doc.data() })));
+    } else if (tab === 'reviews') {
+      const snap = await db.collection("freshmart").doc("cms_data").collection("reviews").get();
+      setAdminReviews(snap.docs.map(doc => doc.data()));
+    }
+  };
+
+  useEffect(() => {
+    if (!isAdmin) return;
+    loadAdminTabList(activeAdminTab);
+  }, [activeAdminTab, isAdmin]);
+
+  const loadAdminReport = async (period = 'today') => {
+    setAdminReportPeriod(period);
+    // Calculation stats report matching Vanilla POS stats calculation
+    let q = db.collection("freshmart_orders");
+    if (period === 'today') {
+      const start = new Date(); start.setHours(0,0,0,0);
+      q = q.where("timestamp", ">=", start);
+    } else if (period === 'week') {
+      const start = new Date(); start.setDate(start.getDate() - 7);
+      q = q.where("timestamp", ">=", start);
+    } else if (period === 'month') {
+      const start = new Date(); start.setDate(1); start.setHours(0,0,0,0);
+      q = q.where("timestamp", ">=", start);
+    }
+
+    try {
+      const snap = await q.get();
+      const list = snap.docs.map(doc => doc.data());
+      let omset = 0;
+      let ppnCollected = 0;
+      let costTotal = 0;
+      let orderCount = list.length;
+      let successCount = 0;
+      let tempoCount = 0;
+      let tempoBalance = 0;
+
+      list.forEach(o => {
+        if (o.status !== 'Dibatalkan') {
+          omset += parseFloat(o.payment.grandTotal || 0);
+          ppnCollected += parseFloat(o.payment.ppnAmount || 0);
+          successCount++;
+          // HPP calculation
+          const itemsCost = (o.items || []).reduce((sum, item) => sum + (parseFloat(item.hpp || 0) * (item.qty || 0)), 0);
+          costTotal += itemsCost;
+
+          if (o.payment.method === 'tempo') {
+            tempoCount++;
+            tempoBalance += parseFloat(o.payment.tempoBalance || 0);
+          }
+        }
+      });
+
+      // Asset calculation from catalog
+      let assetHpp = 0;
+      let assetJual = 0;
+      appData.products.forEach(p => {
+        if (p.variants?.length) {
+          p.variants.forEach(v => {
+            const st = parseFloat(v.stock) || 0;
+            assetHpp += (parseFloat(v.hpp) || 0) * st;
+            assetJual += (parseFloat(v.price) || 0) * st;
+          });
+        } else {
+          const st = parseFloat(p.stock) || 0;
+          assetHpp += (parseFloat(p.hpp) || 0) * st;
+          assetJual += (parseFloat(p.price) || 0) * st;
+        }
+      });
+
+      setAdminReports({
+        omset,
+        ppnCollected,
+        profit: omset - costTotal - ppnCollected,
+        costTotal,
+        orderCount,
+        successCount,
+        tempoCount,
+        tempoBalance,
+        assetHpp,
+        assetJual
+      });
+    } catch(e) {
+      console.error(e);
+    }
+  };
+
+  useEffect(() => {
+    if (isAdmin && activeAdminTab === 'orders') {
+      loadAdminReport(adminReportPeriod);
+    }
+  }, [isAdmin, activeAdminTab, adminReportPeriod, appData.products]);
+
+  const handleAdminFormSubmit = async (e) => {
+    e.preventDefault();
+    if (!adminFormItem) return;
+
+    showToast('Menyimpan Data...', 'loading');
+    try {
+      const type = adminFormType;
+      const item = { ...adminFormItem };
+
+      if (type === 'products') {
+        item.id = item.id || Date.now();
+        item.wholesale = tempWholesale;
+        item.variants = tempVariants;
+        await db.collection("freshmart").doc("cms_data").collection("products").doc(item.id.toString()).set(item);
+      } else if (type === 'rewards') {
+        item.id = item.id || Date.now();
+        await db.collection("freshmart").doc("cms_data").collection("rewards").doc(item.id.toString()).set(item);
+      } else {
+        // categories, brands, vouchers, banks, banners
+        const updatedList = [...(appData[type] || [])];
+        const idx = updatedList.findIndex(x => x.id === item.id || (x.code && x.code === item.code));
+        if (idx > -1) {
+          updatedList[idx] = item;
+        } else {
+          item.id = item.id || Date.now();
+          updatedList.push(item);
+        }
+        const updatedData = { ...appData, [type]: updatedList };
+        await db.collection("freshmart").doc("cms_data").set({ [type]: updatedList, lastUpdate: firebase.firestore.FieldValue.increment(1) }, { merge: true });
+        setAppData(updatedData);
+      }
+
+      showToast('Data berhasil disimpan!', 'success');
+      setAdminModalOpen(false);
+      // Reload lists
+      loadAdminTabList(activeAdminTab);
+    } catch(err) {
+      showToast(`Gagal menyimpan: ${err.message}`, 'error');
+    }
+  };
+
+  const handleAdminDelete = (type, item) => {
+    showConfirm("Konfirmasi Hapus", "Yakin ingin menghapus item ini?", async () => {
+      showToast('Menghapus data...', 'loading');
+      try {
+        if (type === 'products') {
+          await db.collection("freshmart").doc("cms_data").collection("products").doc(item.id.toString()).delete();
+        } else if (type === 'rewards') {
+          await db.collection("freshmart").doc("cms_data").collection("rewards").doc(item.id.toString()).delete();
+        } else {
+          const updatedList = [...(appData[type] || [])].filter(x => x.id !== item.id && (!item.code || x.code !== item.code));
+          await db.collection("freshmart").doc("cms_data").set({ [type]: updatedList, lastUpdate: firebase.firestore.FieldValue.increment(1) }, { merge: true });
+          setAppData(prev => ({ ...prev, [type]: updatedList }));
+        }
+        showToast('Data terhapus!', 'success');
+        loadAdminTabList(activeAdminTab);
+      } catch(err) {
+        showToast(`Gagal menghapus: ${err.message}`, 'error');
+      }
+    });
+  };
+
+  // Google Sheet backup/restore
+  const exportDataJson = () => {
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appData));
+    const dlAnchorElem = document.createElement('a');
+    dlAnchorElem.setAttribute("href", dataStr);
+    dlAnchorElem.setAttribute("download", `toko-putri-backup-${new Date().toISOString().slice(0,10)}.json`);
+    dlAnchorElem.click();
+    showToast("Backup data diunduh!");
+  };
+
+  // Admin login flow
+  const handleAdminLogin = async (e) => {
+    e.preventDefault();
+    const email = e.target.email.value;
+    const password = e.target.password.value;
+    showToast("Mengotorisasi Admin...", "loading");
+    try {
+      const res = await auth.signInWithEmailAndPassword(email, password);
+      if (res.user.uid === ADMIN_UID) {
+        setIsAdmin(true);
+        setCurrentView('admin');
+        showToast("Login Berhasil!", "success");
+      } else {
+        await auth.signOut();
+        showToast("Akses Ditolak! Bukan UID owner.", "error");
+      }
+    } catch(err) {
+      showToast("Email/Password salah!", "error");
+    }
+  };
+
+  // Format dynamic badge options inside catalog card
+  const discPill = (p) => {
+    let price = p.price || 0;
+    let normal = p.priceNormal || 0;
+    if (p.variants?.length) {
+      const discounted = p.variants.filter(v => v.priceNormal && v.priceNormal > v.price);
+      if (discounted.length) {
+        const pcts = discounted.map(v => Math.round(((v.priceNormal - v.price)/v.priceNormal)*100));
+        return `<span class="bg-rose-100 text-rose-600 dark:bg-rose-900/40 dark:text-rose-400 px-2 py-0.5 rounded-full text-[8px] font-black flex items-center gap-1 whitespace-nowrap border border-rose-200 dark:border-rose-800 uppercase tracking-wider"><i class="fa-solid fa-percent"></i> HEMAT ${Math.max(...pcts)}%</span>`;
+      }
+    } else if (normal && normal > price) {
+      const pct = Math.round(((normal - price)/normal)*100);
+      return `<span class="bg-rose-100 text-rose-600 dark:bg-rose-900/40 dark:text-rose-400 px-2 py-0.5 rounded-full text-[8px] font-black flex items-center gap-1 whitespace-nowrap border border-rose-200 dark:border-rose-800 uppercase tracking-wider"><i class="fa-solid fa-percent"></i> HEMAT ${pct}%</span>`;
+    }
+    return '';
+  };
+
+  return (
+    <div className="w-full relative bg-slate-50 dark:bg-[#0f172a]" id="app-container">
+      {/* Toast Notification */}
+      {toast.show && (
+        <div id="toast" style={{ top: 'calc(max(env(safe-area-inset-top), 16px) + 8px)', display: 'flex' }}>
+          <div id="toast-icon-wrap"><i className={`fa-solid ${toast.type === 'error' ? 'fa-circle-xmark' : toast.type === 'success' ? 'fa-circle-check' : 'fa-bell'}`}></i></div>
+          <div id="toast-body">
+            <span id="toast-title" style={{ display: 'block' }}>{toast.title || toast.type?.toUpperCase()}</span>
+            <span id="toast-message">{toast.message}</span>
+          </div>
+          <button id="toast-close" onClick={() => setToast({ show: false, message: '', type: 'info' })}><i className="fa-solid fa-xmark"></i></button>
+        </div>
+      )}
+
+      {/* Confirm Modal */}
+      {confirm.show && (
+        <div className="fixed inset-0 z-[120] bg-slate-900/80 flex items-center justify-center p-4 transition-all duration-300" style={{ display: 'flex' }}>
+          <div className="bg-white dark:bg-slate-800 rounded-[2rem] w-full max-w-[320px] p-8 shadow-2xl border border-slate-200 dark:border-slate-700 text-center flex flex-col">
+            <div className={`w-16 h-16 ${confirm.isDanger ? 'bg-rose-50 dark:bg-rose-900/30 text-rose-500' : 'bg-blue-50 dark:bg-blue-900/30 text-blue-505'} rounded-2xl flex items-center justify-center text-2xl mx-auto mb-5 border`}>
+              <i className={`fa-solid ${confirm.isDanger ? 'fa-triangle-exclamation' : 'fa-info-circle'}`}></i>
+            </div>
+            <h3 className="font-black text-slate-900 dark:text-white text-xl mb-2">{confirm.title}</h3>
+            <p className="text-sm text-slate-500 dark:text-slate-400 font-medium mb-8">{confirm.message}</p>
+            <div className="flex gap-3">
+              <button className="flex-1 py-3 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold rounded-xl text-sm" onClick={closeConfirm}>Batal</button>
+              <button className={`flex-1 py-3 ${confirm.isDanger ? 'bg-rose-600 hover:bg-rose-700' : 'bg-blue-600 hover:bg-blue-700'} text-white font-bold rounded-xl text-sm shadow-md`} onClick={() => { confirm.onConfirm(); closeConfirm(); }}>{confirm.btnText}</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Scanner Modal */}
+      {scannerOpen && (
+        <div className="fixed inset-0 z-[9999] bg-slate-900/90 flex flex-col items-center justify-center p-4">
+          <div className="bg-white dark:bg-slate-800 rounded-[2rem] w-full max-w-md overflow-hidden shadow-2xl border border-slate-200 dark:border-slate-700 relative flex flex-col">
+            <div className="p-5 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center">
+              <h3 className="font-black text-slate-900 dark:text-white text-sm flex items-center gap-2"><i className="fa-solid fa-qrcode text-emerald-500"></i> Scan Barcode</h3>
+              <button className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-500 hover:text-rose-600 flex items-center justify-center" onClick={() => setScannerOpen(false)}><i className="fa-solid fa-xmark"></i></button>
+            </div>
+            <div className="p-4 bg-slate-900 text-center text-white" style={{ minHeight: '250px' }}>
+              Barcode Scanner (html5-qrcode integration)
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Category Modal Overlay */}
+      {categoryModalOpen && (
+        <div className="fixed inset-0 z-[75] bg-slate-900/80 flex items-end sm:items-center justify-center p-0 sm:p-5" onClick={() => setCategoryModalOpen(false)}>
+          <div className="w-full max-w-md sm:max-w-lg bg-white dark:bg-[#0f172a] sm:rounded-[2rem] rounded-t-[2rem] max-h-[85vh] overflow-hidden shadow-2xl flex flex-col relative border border-slate-200 dark:border-slate-800" onClick={e => e.stopPropagation()}>
+            <div className="px-6 pb-4 pt-5 border-b border-slate-100 dark:border-slate-800/60 flex justify-between items-center shrink-0">
+              <h3 className="font-black text-base text-slate-900 dark:text-white flex items-center gap-3"><i className="fa-solid fa-layer-group text-emerald-500"></i> KATEGORI PRODUK</h3>
+              <button className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:bg-rose-50 hover:text-rose-500 flex items-center justify-center" onClick={() => setCategoryModalOpen(false)}><i className="fa-solid fa-xmark"></i></button>
+            </div>
+            <div className="flex-1 overflow-y-auto p-5 hide-scrollbar">
+              <div className="flex flex-col gap-2.5 pb-6 w-full">
+                <button onClick={() => { setACat('Semua Produk'); setCategoryModalOpen(false); }} className={`w-full flex items-center gap-3.5 p-3 sm:p-3.5 rounded-2xl border transition-all active:scale-[0.98] ${aCat === 'Semua Produk' ? 'bg-emerald-50/80 border-emerald-500 dark:bg-emerald-900/30' : 'bg-slate-50 border-slate-200 dark:bg-slate-800/50'}`}>
+                  <div className="w-11 h-11 rounded-xl bg-emerald-500 text-white flex items-center justify-center shadow-sm"><i className="fa-solid fa-layer-group"></i></div>
+                  <span className="text-xs sm:text-sm font-black uppercase tracking-widest text-left flex-1">SEMUA KATEGORI</span>
+                </button>
+                {appData.categories.map((c, idx) => (
+                  <button key={idx} onClick={() => { setACat(c.name); setCategoryModalOpen(false); }} className={`w-full flex items-center gap-3.5 p-3 sm:p-3.5 rounded-2xl border transition-all active:scale-[0.98] ${aCat === c.name ? 'bg-emerald-50/80 border-emerald-500 dark:bg-emerald-900/30' : 'bg-slate-50 border-slate-200 dark:bg-slate-800/50'}`}>
+                    <div className="w-11 h-11 rounded-xl bg-white dark:bg-slate-800 flex items-center justify-center shadow-sm overflow-hidden">
+                      {c.img ? <img src={c.img} alt={c.name} className="w-full h-full object-cover" /> : <i className="fa-solid fa-box text-slate-400"></i>}
+                    </div>
+                    <span className="text-xs sm:text-sm font-black uppercase tracking-widest text-left flex-1 line-clamp-1">{c.name}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Brand Modal Overlay */}
+      {brandModalOpen && (
+        <div className="fixed inset-0 z-[75] bg-slate-900/80 flex items-end sm:items-center justify-center p-0 sm:p-5" onClick={() => setBrandModalOpen(false)}>
+          <div className="w-full max-w-md sm:max-w-lg bg-white dark:bg-[#0f172a] sm:rounded-[2rem] rounded-t-[2rem] max-h-[85vh] overflow-hidden shadow-2xl flex flex-col relative border border-slate-200 dark:border-slate-800" onClick={e => e.stopPropagation()}>
+            <div className="px-6 pb-4 pt-5 border-b border-slate-100 dark:border-slate-800/60 flex justify-between items-center shrink-0">
+              <h3 className="font-black text-base text-slate-900 dark:text-white flex items-center gap-3"><i className="fa-solid fa-copyright text-blue-500"></i> BRAND MITRA</h3>
+              <button className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:bg-rose-50 hover:text-rose-500 flex items-center justify-center" onClick={() => setBrandModalOpen(false)}><i className="fa-solid fa-xmark"></i></button>
+            </div>
+            <div className="flex-1 overflow-y-auto p-5 sm:p-6 hide-scrollbar">
+              <div className="grid grid-cols-3 sm:grid-cols-4 gap-3 md:gap-4">
+                <button onClick={() => { setABrand('Semua Merek'); setBrandModalOpen(false); }} className={`flex flex-col items-center justify-start p-2.5 rounded-[1.25rem] border transition-all ${aBrand === 'Semua Merek' ? 'bg-blue-50/80 border-blue-500' : 'bg-slate-50 border-slate-200'}`}>
+                  <div className="w-12 h-12 rounded-full bg-blue-500 text-white flex items-center justify-center shadow-sm mb-2.5"><i className="fa-solid fa-copyright"></i></div>
+                  <span className="text-[9px] font-black uppercase tracking-widest text-center w-full">SEMUA MEREK</span>
+                </button>
+                {appData.brands.map((b, idx) => (
+                  <button key={idx} onClick={() => { setABrand(b.name); setBrandModalOpen(false); }} className={`flex flex-col items-center justify-start p-2.5 rounded-[1.25rem] border transition-all ${aBrand === b.name ? 'bg-blue-50/80 border-blue-500' : 'bg-slate-50 border-slate-200'}`}>
+                    <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center shadow-sm mb-2.5 overflow-hidden border border-slate-200">
+                      {b.img ? <img src={b.img} alt={b.name} className="w-full h-full object-contain" /> : <i className="fa-solid fa-tag text-slate-400"></i>}
+                    </div>
+                    <span className="text-[9px] font-black uppercase tracking-widest text-center w-full line-clamp-2">{b.name}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Main App Layout */}
+      {currentView === 'catalog' && (
+        <div className="view-section flex flex-col fade-in">
+          {/* Header */}
+          <div className="glass-header shrink-0 px-5 flex items-center justify-center sticky top-0 pb-3 z-30">
+            <div className="flex items-center justify-between w-full xl:max-w-[1200px] mx-auto px-4 lg:px-10 gap-4">
+              <div className="flex items-center gap-3 flex-1 min-w-0">
+                <div className="w-12 h-12 bg-gradient-to-br from-slate-50 to-white rounded-2xl flex items-center justify-center shadow-soft border border-slate-200 dark:border-slate-700 overflow-hidden shrink-0 cursor-pointer" onDoubleClick={() => setCurrentView('admin-login')}>
+                  {appData.store.logo && (appData.store.logo.includes('http') || appData.store.logo.includes('data:')) ? (
+                    <img src={appData.store.logo} alt="Logo" className="w-full h-full object-cover" />
+                  ) : (
+                    <i className={`fa-solid ${appData.store.logo || 'fa-store'} text-xl text-emerald-500`}></i>
+                  )}
+                </div>
+                <div className="flex flex-col min-w-0 flex-1 justify-center">
+                  <h1 className="text-sm sm:text-base font-black text-slate-900 dark:text-white tracking-tight leading-tight uppercase">{appData.store.name}</h1>
+                  <p className="text-[9px] sm:text-[10px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-widest leading-snug mt-0.5">{appData.store.slogan}</p>
+                </div>
+              </div>
+              <div className="flex gap-2 items-center shrink-0">
+                <button className="w-10 h-10 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-full flex items-center justify-center" onClick={() => {
+                  const isDark = document.documentElement.classList.toggle('dark');
+                  localStorage.setItem('freshmart_theme', isDark ? 'dark' : 'light');
+                }}><i className="fa-solid fa-moon text-sm"></i></button>
+                <button className="w-10 h-10 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-full flex items-center justify-center hover:text-rose-500 relative" onClick={() => setCurrentView('wishlist')}>
+                  <i className="fa-solid fa-heart text-sm"></i>
+                  {wishlist.length > 0 && <span className="absolute -top-1 -right-1 bg-rose-500 text-white text-[9px] w-[18px] h-[18px] flex items-center justify-center rounded-full font-bold shadow-sm">{wishlist.length}</span>}
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Scrollable Content */}
+          <div className="scroll-content hide-scrollbar pb-[calc(7rem+env(safe-area-inset-bottom))]">
+            {/* Banners Auto-slide */}
+            {appData.banners && appData.banners.length > 0 && (
+              <div className="w-full max-w-full xl:max-w-[1200px] px-4 lg:px-10 mx-auto mt-6">
+                <div ref={bannerSliderRef} className="flex overflow-x-auto gap-4 sm:gap-6 pb-6 pt-2 snap-x hide-scrollbar scroll-smooth">
+                  {appData.banners.map((b, i) => (
+                    <div key={i} onClick={() => b.link && window.open(b.link, '_self')} className="w-[88vw] sm:w-[480px] min-h-[180px] sm:min-h-[220px] snap-center shrink-0 rounded-[2rem] relative overflow-hidden group cursor-pointer bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-dark)] shadow-glow border border-white/20 flex flex-col">
+                      <div className="absolute inset-0 opacity-20 pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle, #ffffff 1px, transparent 1px)', backgroundSize: '14px 14px' }}></div>
+                      <div className="absolute -right-10 -top-10 w-40 h-40 border-[24px] border-white/10 rounded-full pointer-events-none"></div>
+                      <div className="absolute right-20 -bottom-12 w-32 h-32 bg-white/20 rounded-full blur-2xl pointer-events-none"></div>
+                      <div className="absolute -left-12 top-10 w-24 h-24 bg-gradient-to-tr from-white/5 to-white/20 rounded-full backdrop-blur-sm border border-white/10 pointer-events-none"></div>
+                      <div className="flex flex-1 w-full relative z-10">
+                        <div className="w-[60%] p-5 sm:p-6 flex flex-col justify-center z-20 text-white">
+                          <span className="inline-block px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-[9px] font-black uppercase tracking-widest w-max mb-2.5"><i className="fa-solid fa-star text-yellow-300 mr-1"></i> Promo</span>
+                          <h2 className="text-[15px] sm:text-xl font-black leading-snug mb-1.5 drop-shadow-md line-clamp-2">{b.title}</h2>
+                          <p className="text-[10px] sm:text-[11px] text-white/90 font-medium line-clamp-2 leading-relaxed">{b.desc}</p>
+                        </div>
+                        <div className="w-[40%] relative z-10 flex items-center justify-center p-2">
+                          {b.img ? <img src={b.img} alt="Promo" className="w-full h-full object-contain drop-shadow-2xl" /> : <i className="fa-solid fa-gift text-6xl text-white/50"></i>}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Vouchers Promo */}
+            {appData.vouchers && appData.vouchers.filter(v => v.isShow === 'true' || v.isShow === true).length > 0 && (
+              <div className="w-full max-w-full xl:max-w-[1200px] px-4 lg:px-10 mx-auto mt-5">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="font-black text-slate-800 dark:text-white text-sm sm:text-base tracking-tight flex items-center gap-2">
+                    <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-dark)] flex items-center justify-center text-white shadow-md">
+                      <i className="fa-solid fa-ticket-simple text-sm -rotate-45"></i>
+                    </div> VOUCHER TOKO
+                  </h3>
+                </div>
+                <div className="flex gap-4 overflow-x-auto hide-scrollbar snap-x pb-6 pt-2">
+                  {appData.vouchers.filter(v => v.isShow === 'true' || v.isShow === true).map((v, i) => (
+                    <div key={i} onClick={() => {
+                      navigator.clipboard.writeText(v.code);
+                      showToast(`Kode voucher ${v.code} disalin!`, 'success');
+                    }} className="w-[280px] sm:w-[320px] shrink-0 snap-start relative group cursor-pointer active:scale-95 transition-all">
+                      <div className="w-full h-[110px] bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-dark)] rounded-[1.25rem] flex relative overflow-hidden border border-white/20 shadow-md">
+                        <div className="flex-1 px-5 py-3 flex flex-col justify-center text-white">
+                          <h4 className="font-black text-sm sm:text-base leading-tight mb-1 drop-shadow-md truncate">{v.type === 'shipping_free' ? 'Gratis Ongkir' : v.type === 'percent' ? `Diskon ${v.value}%` : `Diskon ${fCur(v.value)}`}</h4>
+                          <p className="text-[8px] sm:text-[9px] font-bold text-white/90 mb-2.5 truncate uppercase">Min. belanja {fCur(v.minPurchase)}</p>
+                          <div className="inline-flex"><span className="bg-black/20 backdrop-blur-md text-[10px] font-black px-3 py-1.5 rounded-xl border border-white/30 tracking-widest">{v.code}</span></div>
+                        </div>
+                        <div className="w-[28%] flex flex-col items-center justify-center bg-white/5 text-white">
+                          <i className="fa-regular fa-copy text-lg mb-1"></i>
+                          <span className="text-[9px] font-black uppercase">Salin</span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Categories */}
+            {appData.store.showCategories && (
+              <div className="w-full max-w-full xl:max-w-[1200px] px-4 lg:px-10 mx-auto mt-6">
+                <div className="bg-white dark:bg-slate-800 rounded-[1.5rem] border border-slate-200 dark:border-slate-700 shadow-sm p-5">
+                  <div className="flex items-center justify-between mb-5 pb-4 border-b border-slate-100 dark:border-slate-700/50">
+                    <h3 className="font-black text-slate-800 dark:text-white text-sm sm:text-base tracking-tight uppercase flex items-center gap-2"><i className="fa-solid fa-layer-group text-emerald-500"></i> Kategori Produk</h3>
+                    <button className="text-[10px] font-black text-emerald-600 bg-emerald-50 dark:bg-emerald-900/40 px-4 py-2 rounded-xl transition-all" onClick={() => setCategoryModalOpen(true)}>Lihat Semua</button>
+                  </div>
+                  <div className="flex gap-4 overflow-x-auto hide-scrollbar snap-x pb-4">
+                    {appData.categories.map((c, idx) => (
+                      <div key={idx} onClick={() => setACat(c.name)} className="flex flex-col items-center gap-2 cursor-pointer shrink-0 snap-start">
+                        <div className={`w-14 h-14 rounded-2xl bg-slate-50 dark:bg-slate-900 flex items-center justify-center border ${aCat === c.name ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-950/30' : 'border-slate-200 dark:border-slate-800'}`}>
+                          {c.img ? <img src={c.img} alt={c.name} className="w-10 h-10 object-cover rounded-xl" /> : <i className="fa-solid fa-box text-slate-400"></i>}
+                        </div>
+                        <span className="text-[9px] font-black text-slate-600 dark:text-slate-300 uppercase tracking-widest text-center truncate w-[75px]">{c.name}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Products Search & List */}
+            <div className="px-4 pt-6 w-full max-w-full xl:max-w-[1200px] lg:px-8 mx-auto">
+              <div className="flex flex-col sm:flex-row gap-3 mb-6 items-center justify-between card-modern p-3">
+                <div className="relative w-full sm:w-80 flex items-center bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200 dark:border-slate-700">
+                  <i className="fa-solid fa-search absolute left-4 text-slate-400 text-sm"></i>
+                  <input className="w-full pl-11 pr-12 py-3 bg-transparent rounded-xl text-sm font-semibold focus:outline-none text-slate-800 dark:text-white" value={sQ} onChange={e => setSQ(e.target.value)} placeholder="Cari nama produk..." type="text" />
+                  <button className="absolute right-2 w-8 h-8 flex items-center justify-center text-slate-400 hover:text-emerald-500" onClick={() => setScannerOpen(true)}><i className="fa-solid fa-qrcode text-sm"></i></button>
+                </div>
+                <div className="flex gap-2 w-full sm:w-auto">
+                  <select className="bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-2.5 text-xs font-bold text-slate-700 dark:text-slate-300 focus:outline-none cursor-pointer" value={cSort} onChange={e => setCSort(e.target.value)}>
+                    <option value="newest">Terbaru</option>
+                    <option value="cheapest">Termurah</option>
+                    <option value="expensive">Termahal</option>
+                    <option value="az">Nama A-Z</option>
+                  </select>
+                  <div className="flex bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-1 shrink-0">
+                    <button className={`w-8 h-8 rounded-xl flex items-center justify-center ${cView === 'grid' ? 'text-emerald-600 bg-white dark:bg-slate-700 shadow-sm' : 'text-slate-400'}`} onClick={() => setCView('grid')}><i className="fa-solid fa-border-all text-sm"></i></button>
+                    <button className={`w-8 h-8 rounded-xl flex items-center justify-center ${cView === 'list' ? 'text-emerald-600 bg-white dark:bg-slate-700 shadow-sm' : 'text-slate-400'}`} onClick={() => setCView('list')}><i className="fa-solid fa-list text-sm"></i></button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Product Grid / List */}
+              <div className={cView === 'grid' ? "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-5 2xl:grid-cols-6 gap-4 sm:gap-6 lg:gap-8" : "flex flex-col gap-4"}>
+                {paginatedProducts.map((p, idx) => {
+                  // Determine variables and display price
+                  const minPrice = p.variants?.length ? Math.min(...p.variants.map(v => v.price || 0)) : p.price;
+                  const maxPrice = p.variants?.length ? Math.max(...p.variants.map(v => v.price || 0)) : p.price;
+
+                  return (
+                    <div key={idx} className={`bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700/80 rounded-[1.25rem] shadow-sm transition-all duration-300 flex ${cView === 'grid' ? 'flex-col' : 'items-stretch gap-4 p-3'} group relative overflow-hidden cursor-pointer`} onClick={() => {
+                      setSelectedProduct(p);
+                      setSelectedVariantIdx(p.variants?.length ? null : 0);
+                      setCQty(1);
+                      setActiveSlideIdx(0);
+                      loadProductReviews(p.id);
+                    }}>
+                      {/* Favorite Button */}
+                      <button className="absolute top-3 right-3 z-20 w-8 h-8 bg-white/80 dark:bg-slate-800/80 rounded-full flex items-center justify-center text-slate-400 hover:text-rose-500 shadow-sm transition-colors" onClick={(e) => { e.stopPropagation(); toggleWishlist(p); }}>
+                        <i className={`fa-heart ${wishlist.some(w => w.id === p.id) ? 'fa-solid text-rose-500' : 'fa-regular'}`}></i>
+                      </button>
+
+                      {/* Image */}
+                      <div className={`relative bg-white flex items-center justify-center border-b border-slate-100 dark:border-slate-700/50 overflow-hidden ${cView === 'grid' ? 'aspect-square w-full shrink-0' : 'w-24 h-24 shrink-0 rounded-xl'}`}>
+                        {p.img ? (
+                          <img src={p.img} alt={p.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                        ) : (
+                          <i className="fa-solid fa-image text-slate-300 text-3xl"></i>
+                        )}
+                        {appData.store.useStock && parseFloat(p.stock) <= 0 && (
+                          <span className="absolute inset-0 bg-slate-900/60 text-white flex items-center justify-center text-xs font-black uppercase">Habis</span>
+                        )}
+                      </div>
+
+                      {/* Description / Actions */}
+                      <div className="flex-1 flex flex-col p-3 min-w-0">
+                        {/* Badges */}
+                        <div className="flex flex-wrap gap-1 mb-2">
+                          {p.poTime && <span className="bg-amber-100 text-amber-600 dark:bg-amber-900/40 px-2 py-0.5 rounded-full text-[8px] font-black uppercase">PO {p.poTime}</span>}
+                          {parseFloat(p.poin) > 0 && <span className="bg-violet-100 text-violet-700 dark:bg-violet-900/40 px-2 py-0.5 rounded-full text-[8px] font-black uppercase"><i className="fa-solid fa-star"></i> +{p.poin} Poin</span>}
+                          {p.tag && <span className="bg-emerald-50 text-emerald-600 dark:bg-emerald-950/20 px-2 py-0.5 rounded-full text-[8px] font-black uppercase">{p.tag}</span>}
+                        </div>
+
+                        <h4 className="text-[11px] sm:text-xs font-bold text-slate-700 dark:text-slate-200 line-clamp-2 uppercase leading-snug mb-2 flex-1 group-hover:text-[var(--color-primary)] transition-colors">{p.name}</h4>
+
+                        <div className="flex items-end justify-between mt-auto pt-1">
+                          <div>
+                            {p.priceNormal && p.priceNormal > p.price && (
+                              <p className="text-[10px] text-rose-500 font-bold line-through">{fCur(p.priceNormal)}</p>
+                            )}
+                            <p className="text-[var(--color-primary)] font-black text-sm leading-none tracking-tight">
+                              {p.variants?.length ? (
+                                `Rp ${minPrice.toLocaleString('id-ID')} - ${maxPrice.toLocaleString('id-ID')}`
+                              ) : (
+                                fCur(p.price)
+                              )}
+                            </p>
+                            <span className="text-[9px] text-slate-500 uppercase">/{p.unit || 'pcs'}</span>
+                          </div>
+                          <div className="w-8 h-8 rounded-full bg-[var(--color-primary-light)] text-[var(--color-primary)] flex items-center justify-center group-hover:bg-[var(--color-primary)] group-hover:text-white transition-all shadow-sm">
+                            <i className="fa-solid fa-plus text-sm"></i>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {filteredProducts.length > paginatedProducts.length && (
+                <div className="mt-10 mb-6 text-center">
+                  <button className="inline-flex items-center gap-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-black text-xs px-8 py-3.5 rounded-2xl shadow-sm hover:shadow-md active:scale-95 transition-all" onClick={() => setCPage(prev => prev + 1)}>Muat Lebih Banyak <i className="fa-solid fa-chevron-down text-[10px]"></i></button>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Floating Cart Button */}
+          <div className="absolute left-1/2 transform -translate-x-1/2 w-[calc(100%-2rem)] max-w-md z-40 pointer-events-none" style={{ bottom: 'calc(max(1.25rem, env(safe-area-inset-bottom)) + 0.5rem)' }}>
+            <button className="w-full bg-slate-900 dark:bg-slate-800 text-white px-4 py-3 rounded-[1.25rem] shadow-lg flex justify-between items-center transition-all pointer-events-auto border border-white/8 hover:border-emerald-500/30 group active:scale-[0.97]" onClick={() => setCurrentView('cart')}>
+              <div className="flex items-center gap-3.5">
+                <div className="relative bg-emerald-500 w-11 h-11 rounded-xl flex items-center justify-center shadow-lg shrink-0">
+                  <i className="fa-solid fa-bag-shopping text-white text-base"></i>
+                  {cart.length > 0 && <span className="absolute -top-1.5 -right-1.5 bg-rose-500 text-white text-[9px] min-w-[18px] h-[18px] px-1 flex items-center justify-center rounded-full font-black border-2 border-slate-900 shadow-sm">{cart.length}</span>}
+                </div>
+                <div className="text-left">
+                  <p className="text-[9px] text-emerald-400 font-black uppercase tracking-widest mb-0.5">Keranjang Belanja</p>
+                  <span className="font-black text-sm text-white">{fCur(subtotalCart)}</span>
+                </div>
+              </div>
+              <div className="w-9 h-9 rounded-xl border border-white/10 flex items-center justify-center text-sm text-slate-400 group-hover:text-white group-hover:bg-emerald-500 group-hover:border-emerald-500 transition-all bg-white/5 shrink-0"><i className="fa-solid fa-arrow-right text-xs"></i></div>
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Cart View */}
+      {currentView === 'cart' && (
+        <div className="view-section flex flex-col fade-in bg-slate-50 dark:bg-slate-900">
+          <div className="glass-header shrink-0 px-5 flex justify-center z-30 sticky top-0 pb-3">
+            <div className="flex items-center justify-between w-full max-w-[1200px] mx-auto px-4 lg:px-10">
+              <button className="w-10 h-10 flex items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 active:scale-95 transition-all shadow-sm" onClick={() => setCurrentView('catalog')}><i className="fa-solid fa-arrow-left text-sm"></i></button>
+              <h1 className="text-base font-black text-slate-900 dark:text-white tracking-tight">Keranjang Belanja</h1>
+              <button className="w-10 h-10 flex items-center justify-center rounded-full bg-rose-50 border border-rose-200 text-rose-500 hover:bg-rose-100 active:scale-95 transition-all" onClick={() => {
+                showConfirm("Kosongkan Keranjang", "Yakin ingin menghapus semua item di keranjang?", () => {
+                  setCart([]);
+                  localStorage.removeItem('freshmart_cart');
+                  showToast('Keranjang dikosongkan!');
+                });
+              }}><i className="fa-solid fa-trash-can text-sm"></i></button>
+            </div>
+          </div>
+          <div className="scroll-content flex-1 overflow-y-auto z-10 pt-6 pb-[calc(8rem+env(safe-area-inset-bottom))]">
+            {cart.length === 0 ? (
+              <div className="flex flex-col items-center justify-center h-[50vh] px-5 text-center max-w-xs mx-auto">
+                <div className="w-24 h-24 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center mb-5 text-slate-300 dark:text-slate-600 shadow-inner"><i className="fa-solid fa-bag-shopping text-5xl"></i></div>
+                <h3 className="font-black text-slate-900 dark:text-white text-xl mb-2">Keranjang Kosong</h3>
+                <p className="text-slate-500 dark:text-slate-400 text-sm mb-8 font-medium">Belum ada produk yang dipilih.</p>
+                <button className="btn-primary px-8 py-3.5 text-sm shadow-glow rounded-xl" onClick={() => setCurrentView('catalog')}>Belanja Sekarang</button>
+              </div>
+            ) : (
+              <div className="px-4 space-y-4 max-w-[1200px] lg:px-8 mx-auto w-full">
+                {cart.map((item, idx) => (
+                  <div key={idx} className="bg-white dark:bg-slate-800 p-4 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm flex items-center gap-4">
+                    <img src={item.img} alt={item.name} className="w-16 h-16 rounded-2xl object-cover border border-slate-100" />
+                    <div className="flex-1 min-w-0">
+                      <h4 className="text-sm font-black text-slate-800 dark:text-white truncate uppercase">{item.name}</h4>
+                      {item.variantName && <p className="text-xs text-slate-500 mt-0.5">Varian: {item.variantName}</p>}
+                      <p className="text-sm font-black text-emerald-600 dark:text-emerald-400 mt-1">{fCur(getEffP(item))} <span className="text-[10px] text-slate-400">/{item.unit || 'pcs'}</span></p>
+                    </div>
+                    <div className="flex items-center gap-2 bg-slate-50 dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 h-10 overflow-hidden">
+                      <button className="w-8 h-full flex items-center justify-center text-slate-500 hover:bg-slate-100" onClick={() => {
+                        const newQty = parseFloat((item.qty - 1).toFixed(2));
+                        if (newQty <= 0) {
+                          setCart(prev => prev.filter((_, i) => i !== idx));
+                        } else {
+                          setCart(prev => {
+                            const updated = [...prev];
+                            updated[idx].qty = newQty;
+                            return updated;
+                          });
+                        }
+                      }}><i className="fa-solid fa-minus text-xs"></i></button>
+                      <span className="w-10 text-center text-xs font-black dark:text-white">{item.qty}</span>
+                      <button className="w-8 h-full flex items-center justify-center text-slate-500 hover:bg-slate-100" onClick={() => {
+                        handleAddToCart(appData.products.find(x => x.id === item.id), item.variantName ? (appData.products.find(x => x.id === item.id)?.variants||[]).findIndex(v => v.name === item.variantName) : null, 1);
+                      }}><i className="fa-solid fa-plus text-xs"></i></button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+          {cart.length > 0 && (
+            <div className="absolute bottom-0 left-0 w-full glass-nav px-4 pt-3 z-30">
+              <div className="max-w-[1200px] px-4 lg:px-10 mx-auto flex items-center justify-between gap-3">
+                <div className="min-w-0 flex-1">
+                  <p className="text-slate-500 dark:text-slate-400 text-[9px] font-black uppercase tracking-widest mb-0.5">Total Belanja</p>
+                  <p className="font-black text-slate-900 dark:text-white text-xl leading-none">{fCur(subtotalCart)}</p>
+                </div>
+                <button className="btn-primary !w-auto px-7 py-3.5 text-sm shadow-glow rounded-2xl shrink-0" onClick={() => setCurrentView('checkout')}>Checkout <i className="fa-solid fa-arrow-right ml-1.5 text-xs"></i></button>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Checkout view */}
+      {currentView === 'checkout' && (
+        <div className="view-section flex flex-col fade-in bg-slate-50 dark:bg-slate-900">
+          <div className="glass-header shrink-0 px-5 flex justify-center z-30 sticky top-0 pb-3">
+            <div className="flex items-center justify-between w-full max-w-[1200px] mx-auto px-4 lg:px-10">
+              <button className="w-10 h-10 flex items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 active:scale-95 transition-all shadow-sm" onClick={() => setCurrentView('cart')}><i className="fa-solid fa-arrow-left text-sm"></i></button>
+              <h1 className="text-base font-black text-slate-900 dark:text-white tracking-tight">Data Pengiriman</h1>
+              <div className="w-10"></div>
+            </div>
+          </div>
+          <div className="scroll-content flex-1 overflow-y-auto z-10 pt-4 pb-[calc(8rem+env(safe-area-inset-bottom))]">
+            <div className="px-4 space-y-5 max-w-[1200px] lg:px-8 mx-auto w-full">
+              {/* Delivery method selection */}
+              <div className="bg-white dark:bg-slate-800 p-5 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm">
+                <h3 className="font-black text-slate-900 dark:text-white mb-4 text-xs uppercase tracking-wider border-b border-slate-100 pb-3 flex items-center gap-2"><i className="fa-solid fa-truck-fast text-blue-500"></i> Opsi Pengiriman</h3>
+                <div className="grid grid-cols-2 gap-3">
+                  <label className="cursor-pointer relative">
+                    <input checked={cust.deliveryMethod === 'delivery'} className="peer sr-only" name="delivery-method" onChange={() => setCust(prev => ({ ...prev, deliveryMethod: 'delivery' }))} type="radio" value="delivery" />
+                    <div className={`border p-4 rounded-2xl transition-all flex flex-col items-center text-center gap-2 ${cust.deliveryMethod === 'delivery' ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20 text-blue-600' : 'border-slate-200 bg-slate-50 dark:bg-slate-900'}`}>
+                      <div className="w-10 h-10 rounded-full bg-white dark:bg-slate-800 flex items-center justify-center shadow-sm mb-1"><i className="fa-solid fa-motorcycle text-lg text-slate-400"></i></div>
+                      <span className="font-black text-[11px] uppercase tracking-wide">Diantar Kurir</span>
+                    </div>
+                  </label>
+                  <label className="cursor-pointer relative">
+                    <input checked={cust.deliveryMethod === 'pickup'} className="peer sr-only" name="delivery-method" onChange={() => setCust(prev => ({ ...prev, deliveryMethod: 'pickup' }))} type="radio" value="pickup" />
+                    <div className={`border p-4 rounded-2xl transition-all flex flex-col items-center text-center gap-2 ${cust.deliveryMethod === 'pickup' ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600' : 'border-slate-200 bg-slate-50 dark:bg-slate-900'}`}>
+                      <div className="w-10 h-10 rounded-full bg-white dark:bg-slate-800 flex items-center justify-center shadow-sm mb-1"><i className="fa-solid fa-store text-lg text-slate-400"></i></div>
+                      <span className="font-black text-[11px] uppercase tracking-wide">Ambil di Toko</span>
+                    </div>
+                  </label>
+                </div>
+              </div>
+
+              {/* Contact info */}
+              <div className="bg-white dark:bg-slate-800 p-5 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm">
+                <h3 className="font-black text-slate-900 dark:text-white mb-4 text-xs uppercase tracking-wider border-b border-slate-100 pb-3 flex items-center gap-2"><i className="fa-solid fa-address-card text-emerald-500"></i> Informasi Kontak</h3>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-[10px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Nama Lengkap</label>
+                    <input className="admin-input bg-slate-50 border-slate-200 text-sm font-bold shadow-inner" value={cust.name} onChange={e => setCust(prev => ({ ...prev, name: e.target.value }))} placeholder="Masukkan nama Anda..." type="text" />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Nomor WhatsApp Aktif</label>
+                    <div className="relative">
+                      <span className="absolute left-4 top-1/2 -translate-y-1/2 text-sm font-black text-slate-500">+62</span>
+                      <input className="admin-input bg-slate-50 border-slate-200 text-sm font-bold shadow-inner !pl-14" value={cust.wa.replace(/^62/, '')} onChange={e => checkMemberStatus(e.target.value)} placeholder="81234567890" type="tel" />
+                    </div>
+                    {currentMember && (
+                      <div className="mt-3 bg-violet-100 border border-violet-200 rounded-xl p-3 flex items-center gap-2 text-violet-700">
+                        <i className="fa-solid fa-star text-lg"></i>
+                        <div>
+                          <p className="text-[10px] font-black uppercase">Member Terdaftar! 🎉</p>
+                          <p className="text-xs font-bold">{currentMember.name} • Saldo Poin: {currentMember.points}</p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Catatan Tambahan (Opsional)</label>
+                    <textarea className="admin-input bg-slate-50 border-slate-200 text-sm font-bold shadow-inner resize-none" value={cust.note} onChange={e => setCust(prev => ({ ...prev, note: e.target.value }))} placeholder="Patokan lokasi, warna cadangan, dll." rows="2"></textarea>
+                  </div>
+                </div>
+              </div>
+
+              {/* Delivery Address (only for shipping) */}
+              {cust.deliveryMethod === 'delivery' && (
+                <div className="bg-white dark:bg-slate-800 p-5 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm">
+                  <h3 className="font-black text-slate-900 dark:text-white mb-4 text-xs uppercase tracking-wider border-b border-slate-100 pb-3 flex items-center gap-2"><i className="fa-solid fa-map-location-dot text-amber-500"></i> Alamat Pengiriman</h3>
+                  <div className="space-y-4">
+                    <textarea className="admin-input resize-none bg-slate-50 border-slate-200 text-sm font-bold shadow-inner" value={cust.address} onChange={e => setCust(prev => ({ ...prev, address: e.target.value }))} placeholder="Detail jalan, nomor rumah, RT/RW, kelurahan..." rows="3"></textarea>
+                    <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 shadow-sm dark:bg-amber-950/20">
+                      <p className="text-[11px] text-amber-700 mb-3.5">Sematkan koordinat lokasi Anda via GPS agar kalkulasi ongkir akurat.</p>
+                      <button className="w-full py-3 bg-white dark:bg-slate-800 border border-amber-300 text-amber-700 font-black rounded-xl text-xs flex items-center justify-center gap-2" onClick={getLocation}><i className="fa-solid fa-location-crosshairs"></i> {cust.lat ? 'Perbarui Lokasi' : 'Sematkan Titik Lokasi'}</button>
+                      {cust.lat && (
+                        <div className="mt-3 bg-emerald-100 border border-emerald-300 rounded-xl p-3 flex items-center gap-2 text-emerald-700 w-full justify-center">
+                          <i className="fa-solid fa-circle-check text-lg"></i>
+                          <span className="text-[10px] font-black uppercase">Lokasi disematkan ({cust.distance.toFixed(1)} km)</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+          <div className="absolute bottom-0 left-0 w-full glass-nav px-4 pt-3 z-30">
+            <div className="max-w-[1200px] px-4 lg:px-10 mx-auto">
+              <button className="btn-primary shadow-glow rounded-2xl py-4" onClick={() => {
+                if (!cust.name || !cust.wa) {
+                  showToast("Mohon lengkapi data Nama & WhatsApp!", "warning");
+                  return;
+                }
+                if (cust.deliveryMethod === 'delivery' && !cust.address) {
+                  showToast("Mohon masukkan alamat pengiriman!", "warning");
+                  return;
+                }
+                setCurrentView('payment');
+              }}>Lanjut ke Pembayaran <i className="fa-solid fa-arrow-right ml-1.5 text-xs"></i></button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Payment view */}
+      {currentView === 'payment' && (
+        <div className="view-section flex flex-col fade-in bg-slate-50 dark:bg-slate-900">
+          <div className="glass-header shrink-0 px-5 flex justify-center z-30 sticky top-0 pb-3">
+            <div className="flex items-center justify-between w-full max-w-[1200px] mx-auto px-4 lg:px-10">
+              <button className="w-10 h-10 flex items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 active:scale-95 transition-all shadow-sm" onClick={() => setCurrentView('checkout')}><i className="fa-solid fa-arrow-left text-sm"></i></button>
+              <h1 className="text-base font-black text-slate-900 dark:text-white tracking-tight">Pembayaran</h1>
+              <div className="w-10"></div>
+            </div>
+          </div>
+          <div className="scroll-content flex-1 overflow-y-auto z-10 pt-4 pb-[calc(11rem+env(safe-area-inset-bottom))]">
+            <div className="px-4 space-y-5 max-w-[1200px] lg:px-8 mx-auto w-full">
+              {/* Payment methods */}
+              <div className="bg-white dark:bg-slate-800 p-5 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm">
+                <h3 className="font-black text-slate-900 dark:text-white mb-4 text-xs uppercase tracking-wider border-b border-slate-100 pb-3 flex items-center gap-2"><i className="fa-solid fa-wallet text-blue-500"></i> Pilih Pembayaran</h3>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                  <label className="block cursor-pointer">
+                    <input checked={paymentMethod === 'transfer'} className="peer sr-only" name="payment" onChange={() => setPaymentMethod('transfer')} type="radio" value="transfer" />
+                    <div className={`border p-3.5 rounded-2xl transition-all flex flex-col items-center text-center gap-2 ${paymentMethod === 'transfer' ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20 text-blue-600' : 'border-slate-200 bg-slate-50 dark:bg-slate-900'}`}>
+                      <i className="fa-solid fa-building-columns text-lg mb-1"></i>
+                      <span className="font-black text-[10px] uppercase">Transfer Bank</span>
+                    </div>
+                  </label>
+                  <label className="block cursor-pointer">
+                    <input checked={paymentMethod === 'qris'} className="peer sr-only" name="payment" onChange={() => setPaymentMethod('qris')} type="radio" value="qris" />
+                    <div className={`border p-3.5 rounded-2xl transition-all flex flex-col items-center text-center gap-2 ${paymentMethod === 'qris' ? 'border-purple-500 bg-purple-50 dark:bg-purple-900/20 text-purple-600' : 'border-slate-200 bg-slate-50 dark:bg-slate-900'}`}>
+                      <i className="fa-solid fa-qrcode text-lg mb-1"></i>
+                      <span className="font-black text-[10px] uppercase">QRIS</span>
+                    </div>
+                  </label>
+                  {cust.deliveryMethod === 'delivery' ? (
+                    <label className="block cursor-pointer">
+                      <input checked={paymentMethod === 'cod'} className="peer sr-only" name="payment" onChange={() => setPaymentMethod('cod')} type="radio" value="cod" />
+                      <div className={`border p-3.5 rounded-2xl transition-all flex flex-col items-center text-center gap-2 ${paymentMethod === 'cod' ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600' : 'border-slate-200 bg-slate-50 dark:bg-slate-900'}`}>
+                        <i className="fa-solid fa-hand-holding-dollar text-lg mb-1"></i>
+                        <span className="font-black text-[10px] uppercase">COD (Bayar di Tempat)</span>
+                      </div>
+                    </label>
+                  ) : (
+                    <label className="block cursor-pointer">
+                      <input checked={paymentMethod === 'cashier'} className="peer sr-only" name="payment" onChange={() => setPaymentMethod('cashier')} type="radio" value="cashier" />
+                      <div className={`border p-3.5 rounded-2xl transition-all flex flex-col items-center text-center gap-2 ${paymentMethod === 'cashier' ? 'border-amber-500 bg-amber-50 dark:bg-amber-900/20 text-amber-600' : 'border-slate-200 bg-slate-50 dark:bg-slate-900'}`}>
+                        <i className="fa-solid fa-cash-register text-lg mb-1"></i>
+                        <span className="font-black text-[10px] uppercase">Kasir</span>
+                      </div>
+                    </label>
+                  )}
+                </div>
+
+                {/* Bank account list */}
+                {paymentMethod === 'transfer' && (
+                  <div className="mt-4 pt-4 border-t border-slate-100 dark:border-slate-700 space-y-3">
+                    {appData.banks && appData.banks.length > 0 ? (
+                      appData.banks.map((b, idx) => (
+                        <div key={idx} className="bg-slate-50 dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800">
+                          <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1">Bank {b.bankName}</p>
+                          <p className="text-lg font-black text-[var(--color-primary)] tracking-wide">{b.bankAccount}</p>
+                          <p className="text-xs text-slate-500 font-medium mt-1">a.n <span className="font-bold text-slate-700 dark:text-white">{b.bankOwner}</span></p>
+                        </div>
+                      ))
+                    ) : (
+                      <p className="text-xs text-rose-500 font-bold text-center">Rekening pembayaran belum diatur admin.</p>
+                    )}
+                  </div>
+                )}
+
+                {/* QRIS preview */}
+                {paymentMethod === 'qris' && appData.payment?.qrisUrl && (
+                  <div className="mt-4 pt-4 border-t border-slate-100 dark:border-slate-700 text-center flex flex-col items-center">
+                    <p className="text-xs text-slate-500 mb-2 font-bold uppercase tracking-widest">Scan QRIS Berikut</p>
+                    <img src={appData.payment.qrisUrl} alt="QRIS" className="w-56 h-56 object-contain border border-slate-200 rounded-2xl p-2 bg-white" />
+                  </div>
+                )}
+              </div>
+
+              {/* Promo & Voucher Input */}
+              <div className="bg-white dark:bg-slate-800 p-5 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm">
+                <h3 className="font-black text-slate-900 dark:text-white mb-3 text-xs uppercase tracking-wider">Gunakan Voucher Diskon</h3>
+                <div className="flex gap-2">
+                  <input className="admin-input flex-1 bg-slate-50 border-slate-200 text-sm font-bold shadow-inner" value={voucherCodeInput} onChange={e => setVoucherCodeInput(e.target.value.toUpperCase())} placeholder="Masukkan kode voucher..." type="text" />
+                  {vouch ? (
+                    <button className="bg-rose-500 text-white font-bold px-4 rounded-xl text-xs active:scale-95" onClick={handleRemoveVoucher}>Hapus</button>
+                  ) : (
+                    <button className="btn-primary !w-auto px-5 text-xs shadow-glow rounded-xl" onClick={handleApplyVoucher}>Terapkan</button>
+                  )}
+                </div>
+                {voucherError && <p className="text-[10px] text-rose-500 font-bold mt-1.5"><i className="fa-solid fa-circle-exclamation mr-1"></i> {voucherError}</p>}
+                {vouch && <p className="text-[10px] text-emerald-600 font-bold mt-1.5"><i className="fa-solid fa-circle-check mr-1"></i> Voucher diterapkan: {vouch.code}</p>}
+              </div>
+
+              {/* Loyalty program member claim */}
+              {currentMember && (
+                <div className="bg-white dark:bg-slate-800 p-5 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm">
+                  <h3 className="font-black text-slate-900 dark:text-white mb-3 text-xs uppercase tracking-wider flex items-center gap-2"><i className="fa-solid fa-star text-violet-500"></i> Poin Loyalitas Member</h3>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-xs font-bold text-slate-600 dark:text-slate-400">Gunakan {Math.min(currentMember.points, grandTotal)} poin untuk potongan harga?</p>
+                      <p className="text-[9px] text-slate-400 mt-0.5">1 Poin = Rp 1</p>
+                    </div>
+                    <button className={`px-4 py-2 text-xs font-black uppercase tracking-wider rounded-xl transition-all ${useMemberPoints ? 'bg-violet-500 text-white' : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300'}`} onClick={() => setUseMemberPoints(prev => !prev)}>{useMemberPoints ? 'Gunakan ✓' : 'Pakai Poin'}</button>
+                  </div>
+                </div>
+              )}
+
+              {/* Proof Upload (if required) */}
+              {(paymentMethod === 'transfer' || paymentMethod === 'qris' || paymentMethod === 'tempo') && (
+                <div className="bg-white dark:bg-slate-800 p-5 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm">
+                  <h3 className="font-black text-slate-900 dark:text-white mb-4 text-xs uppercase tracking-wider border-b border-slate-100 pb-3 flex items-center gap-2"><i className="fa-solid fa-cloud-arrow-up text-indigo-500"></i> Bukti Pembayaran</h3>
+                  <div className="flex flex-col items-center">
+                    <input accept="image/*" className="hidden" id="bukti-file" onChange={handleBuktiUpload} type="file" />
+                    <label className="cursor-pointer w-full py-6 border-2 border-dashed border-slate-300 rounded-2xl flex flex-col items-center justify-center text-center hover:bg-slate-50 dark:hover:bg-slate-900" htmlFor="bukti-file">
+                      <i className="fa-solid fa-image text-4xl text-slate-300 mb-2"></i>
+                      <span className="text-xs font-bold text-slate-600 dark:text-slate-400">Pilih / Ambil Foto Bukti</span>
+                      <span className="text-[9px] text-slate-400 mt-1">Format: JPG, PNG (Max 5MB)</span>
+                    </label>
+
+                    {buktiUploading && (
+                      <div className="mt-3 flex items-center gap-2 text-xs text-slate-500 font-bold">
+                        <i className="fa-solid fa-spinner fa-spin text-emerald-500"></i>
+                        <span>{buktiUploadingText}</span>
+                      </div>
+                    )}
+                    {buktiUploaded && (
+                      <div className="mt-3 bg-emerald-100 border border-emerald-300 rounded-xl p-3 flex items-center gap-2 text-emerald-700 w-full justify-center">
+                        <i className="fa-solid fa-circle-check text-lg"></i>
+                        <span className="text-xs font-black uppercase">Bukti Berhasil Disimpan!</span>
+                      </div>
+                    )}
+                    {buktiError && (
+                      <button className="mt-3 w-full py-2 bg-rose-50 border border-rose-200 text-rose-600 font-bold rounded-xl text-xs" onClick={retryBuktiUpload}>Gagal upload. Coba lagi!</button>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Order Summary */}
+              <div className="bg-white dark:bg-slate-800 p-5 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-3.5">
+                <h3 className="font-black text-slate-900 dark:text-white text-xs uppercase tracking-wider border-b border-slate-100 pb-3">Ringkasan Tagihan</h3>
+                <div className="flex justify-between items-center text-sm font-bold text-slate-500">
+                  <span>Subtotal Belanja</span>
+                  <span className="text-slate-800 dark:text-white">{fCur(subtotalCart)}</span>
+                </div>
+                {cust.deliveryMethod === 'delivery' && (
+                  <div className="flex justify-between items-center text-sm font-bold text-slate-500">
+                    <span>Ongkos Kirim kurir ({cust.distance.toFixed(1)} km)</span>
+                    <span className="text-slate-800 dark:text-white">{fCur(shippingCost)}</span>
+                  </div>
+                )}
+                {(discounts.productDiscount > 0 || discounts.shippingDiscount > 0) && (
+                  <div className="flex flex-col gap-2 pt-2 border-t border-dashed border-slate-100">
+                    {discounts.productDiscount > 0 && (
+                      <div className="flex justify-between items-center text-sm font-bold text-slate-500">
+                        <span>Diskon Belanja</span>
+                        <span className="text-rose-500">-{fCur(discounts.productDiscount)}</span>
+                      </div>
+                    )}
+                    {discounts.shippingDiscount > 0 && (
+                      <div className="flex justify-between items-center text-sm font-bold text-slate-500">
+                        <span>Diskon Ongkir</span>
+                        <span className="text-rose-500">-{fCur(discounts.shippingDiscount)}</span>
+                      </div>
+                    )}
+                  </div>
+                )}
+                {appData.store.ppnEnabled && (
+                  <div className="flex justify-between items-center text-sm font-bold text-slate-500">
+                    <span>PPN ({appData.store.ppnRate || 11}%)</span>
+                    <span className="text-slate-800 dark:text-white">{fCur(ppnAmount)}</span>
+                  </div>
+                )}
+                {useMemberPoints && pointsDiscount > 0 && (
+                  <div className="flex justify-between items-center text-sm font-bold text-slate-500">
+                    <span>Potongan Poin Member</span>
+                    <span className="text-violet-500">-{fCur(pointsDiscount)}</span>
+                  </div>
+                )}
+                <div className="flex justify-between items-center pt-3 border-t border-slate-100 dark:border-slate-700 text-base font-black">
+                  <span className="text-slate-900 dark:text-white uppercase tracking-wider">Total Pembayaran</span>
+                  <span className="text-emerald-600 dark:text-emerald-400">{fCur(grandTotal)}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="absolute bottom-0 left-0 w-full glass-nav px-4 pt-3 z-30">
+            <div className="max-w-[1200px] px-4 lg:px-10 mx-auto">
+              <button className="btn-primary shadow-glow rounded-2xl py-4" onClick={handleProcessOrder}>Proses Pesanan Sekarang <i className="fa-solid fa-paper-plane ml-1.5"></i></button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Admin Panel Login */}
+      {currentView === 'admin-login' && (
+        <div className="view-section flex items-center justify-center bg-slate-900 relative overflow-hidden">
+          <div className="absolute top-4 right-4 z-50">
+            <button className="w-10 h-10 bg-slate-800 text-white rounded-full flex items-center justify-center" onClick={() => setCurrentView('catalog')}><i className="fa-solid fa-xmark"></i></button>
+          </div>
+          <div className="w-full max-w-sm p-5 relative z-10 mx-auto">
+            <div className="bg-white/10 backdrop-blur-xl rounded-[2rem] border border-white/15 p-8 shadow-2xl flex flex-col items-center text-center">
+              <div className="w-[72px] h-[72px] bg-[var(--color-primary)] text-white rounded-2xl flex items-center justify-center mb-5 text-3xl border border-white/15"><i className="fa-solid fa-shield-halved"></i></div>
+              <h2 className="text-2xl font-black tracking-tight text-white mb-1">Admin Panel</h2>
+              <p className="text-[10px] font-black text-slate-400 mb-7 uppercase tracking-widest">Otorisasi Superadmin</p>
+              <form className="space-y-4 w-full text-left" onSubmit={handleAdminLogin}>
+                <div className="relative">
+                  <i className="fa-solid fa-envelope absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                  <input className="w-full bg-black/20 border border-white/10 rounded-xl py-3.5 pl-10 pr-4 text-white placeholder:text-slate-400 text-sm font-semibold focus:outline-none" name="email" placeholder="Email Admin" type="email" required />
+                </div>
+                <div className="relative">
+                  <i className="fa-solid fa-lock absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                  <input className="w-full bg-black/20 border border-white/10 rounded-xl py-3.5 pl-10 pr-4 text-white placeholder:text-slate-400 text-sm font-semibold focus:outline-none" name="password" placeholder="Password" type="password" required />
+                </div>
+                <button className="btn-solid shadow-glow mt-4" type="submit">Masuk Sekarang <i className="fa-solid fa-arrow-right-to-bracket"></i></button>
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Admin Panel Dashboard */}
+      {currentView === 'admin' && isAdmin && (
+        <div className="view-section flex flex-col fade-in bg-slate-50 dark:bg-slate-900 z-50">
+          <div className="glass-header shrink-0 px-4 flex items-center justify-center z-30 sticky top-0 pb-3">
+            <div className="flex items-center justify-between w-full max-w-[1200px] mx-auto px-4 lg:px-10">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-[var(--color-primary)] text-white flex items-center justify-center shadow-md shrink-0"><i className="fa-solid fa-layer-group text-sm"></i></div>
+                <div>
+                  <h1 className="text-sm font-black tracking-tight text-slate-900 dark:text-white leading-none">CMS Toko</h1>
+                  <span className="text-[9px] font-black text-[var(--color-primary)] uppercase tracking-widest bg-[rgba(var(--color-primary-rgb),0.1)] px-1.5 py-0.5 rounded-xl inline-block mt-0.5 leading-none">Superadmin</span>
+                </div>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <button className="h-8 px-3 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 rounded-xl text-[11px] font-black" onClick={() => setCurrentView('catalog')}><i className="fa-solid fa-eye text-blue-500 mr-1"></i> Preview</button>
+                <button className="h-8 px-3 bg-rose-50 dark:bg-rose-900/20 border border-rose-200 dark:border-rose-800 text-rose-600 dark:text-rose-400 rounded-xl text-[11px] font-black" onClick={async () => {
+                  await auth.signOut();
+                  setIsAdmin(false);
+                  setCurrentView('catalog');
+                  showToast("Logout Berhasil!");
+                }}><i className="fa-solid fa-power-off mr-1"></i> Keluar</button>
+              </div>
+            </div>
+          </div>
+
+          <div className="scroll-content flex-1 overflow-y-auto w-full pb-[calc(5rem+env(safe-area-inset-bottom))]">
+            <div className="max-w-[1200px] mx-auto pt-6 px-4 w-full">
+              {/* Dashboard Report Periods */}
+              <div className="bg-white dark:bg-slate-800 rounded-3xl border border-slate-200 dark:border-slate-700 p-6 mb-7 shadow-sm">
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+                  <div>
+                    <h2 className="text-xl font-black text-slate-800 dark:text-white leading-none">Laporan Toko</h2>
+                    <p className="text-xs text-slate-400 mt-1 font-bold">Ringkasan penjualan dan margin terkini.</p>
+                  </div>
+                  <div className="flex gap-1 bg-slate-100 dark:bg-slate-900 p-1 rounded-xl">
+                    {['today', 'week', 'month', 'all'].map((p) => (
+                      <button key={p} className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest ${adminReportPeriod === p ? 'bg-[var(--color-primary)] text-white' : 'text-slate-500'}`} onClick={() => loadAdminReport(p)}>{p === 'today' ? 'Hari Ini' : p === 'week' ? 'Mgu Ini' : p === 'month' ? 'Bln Ini' : 'Semua'}</button>
+                    ))}
+                  </div>
+                </div>
+
+                {adminReports ? (
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
+                    <div className="bg-slate-50 dark:bg-slate-900 p-4 rounded-2xl border border-slate-100">
+                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Omset Penjualan</p>
+                      <p className="text-xl font-black text-emerald-600 dark:text-emerald-400 mt-1">{fCur(adminReports.omset)}</p>
+                    </div>
+                    <div className="bg-slate-50 dark:bg-slate-900 p-4 rounded-2xl border border-slate-100">
+                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Laba Bersih</p>
+                      <p className="text-xl font-black text-blue-600 dark:text-blue-400 mt-1">{fCur(adminReports.profit)}</p>
+                    </div>
+                    <div className="bg-slate-50 dark:bg-slate-900 p-4 rounded-2xl border border-slate-100">
+                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Modal Aset</p>
+                      <p className="text-xl font-black text-slate-700 dark:text-slate-300 mt-1">{fCur(adminReports.assetHpp)}</p>
+                    </div>
+                    <div className="bg-slate-50 dark:bg-slate-900 p-4 rounded-2xl border border-slate-100">
+                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Total Transaksi</p>
+                      <p className="text-xl font-black text-slate-800 dark:text-white mt-1">{adminReports.successCount} Pesanan</p>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="text-center py-6"><i className="fa-solid fa-spinner fa-spin text-xl text-slate-300"></i></div>
+                )}
+              </div>
+
+              {/* Admin Section Tabs Navigation */}
+              <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 mb-6">
+                {[
+                  { id: 'orders', name: 'Orders', icon: 'fa-receipt' },
+                  { id: 'products', name: 'Products', icon: 'fa-box-open' },
+                  { id: 'settings', name: 'Store Set', icon: 'fa-gear' },
+                  { id: 'categories', name: 'Categories', icon: 'fa-tags' },
+                  { id: 'brands', name: 'Brands', icon: 'fa-copyright' },
+                  { id: 'vouchers', name: 'Vouchers', icon: 'fa-ticket-simple' },
+                  { id: 'banks', name: 'Banks', icon: 'fa-building-columns' },
+                  { id: 'banners', name: 'Banners', icon: 'fa-images' },
+                  { id: 'customers', name: 'Customers', icon: 'fa-address-book' },
+                  { id: 'rewards', name: 'Rewards', icon: 'fa-gift' }
+                ].map((tab) => (
+                  <button key={tab.id} className={`p-3 rounded-2xl border flex flex-col items-center justify-center text-center gap-1.5 transition-all ${activeAdminTab === tab.id ? 'bg-[var(--color-primary)] text-white border-transparent' : 'bg-white dark:bg-slate-800 border-slate-200 text-slate-600'}`} onClick={() => setActiveAdminTab(tab.id)}>
+                    <i className={`fa-solid ${tab.icon} text-lg`}></i>
+                    <span className="text-[9px] font-black uppercase tracking-wider">{tab.name}</span>
+                  </button>
+                ))}
+              </div>
+
+              {/* Tab: Orders List */}
+              {activeAdminTab === 'orders' && (
+                <div className="bg-white dark:bg-slate-800 p-5 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm">
+                  <div className="flex justify-between items-center mb-4">
+                    <h3 className="text-sm font-black text-slate-800 dark:text-white uppercase tracking-wider">Daftar Transaksi</h3>
+                    <button className="px-4 py-2 border border-slate-200 rounded-xl text-xs font-bold" onClick={exportDataJson}><i className="fa-solid fa-download mr-1"></i> Backup JSON</button>
+                  </div>
+                  <div className="space-y-3">
+                    {adminOrders.map((o, idx) => (
+                      <div key={idx} className="p-4 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl flex items-center justify-between" onClick={() => {
+                        setSelectedAdminOrder(o);
+                        setAdminOrderModalOpen(true);
+                      }}>
+                        <div>
+                          <p className="font-black text-sm text-slate-800 dark:text-white">#{o.orderId.split('-').pop()}</p>
+                          <p className="text-[10px] text-slate-400 font-bold">{o.customer.name} • {o.payment.method.toUpperCase()}</p>
+                        </div>
+                        <div className="text-right">
+                          <p className="font-black text-sm text-emerald-600">{fCur(o.payment.grandTotal)}</p>
+                          <span className={`text-[8px] font-black px-2 py-0.5 rounded uppercase ${o.status === 'Baru' ? 'bg-rose-100 text-rose-600' : o.status === 'Diproses' ? 'bg-blue-100 text-blue-600' : 'bg-emerald-100 text-emerald-600'}`}>{o.status}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Tab: Products List */}
+              {activeAdminTab === 'products' && (
+                <div className="bg-white dark:bg-slate-800 p-5 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm">
+                  <div className="flex justify-between items-center mb-4">
+                    <h3 className="text-sm font-black text-slate-800 dark:text-white uppercase tracking-wider">Manajemen Produk</h3>
+                    <button className="btn-primary !w-auto px-5 py-2 text-xs shadow-glow rounded-xl" onClick={() => {
+                      setAdminFormType('products');
+                      setAdminFormItem({ name: '', price: 0, stock: 10, category: appData.categories[0]?.name || '', brand: appData.brands[0]?.name || '', sku: '', desc: '', isActive: true });
+                      setTempWholesale([]);
+                      setTempVariants([]);
+                      setAdminModalOpen(true);
+                    }}><i className="fa-solid fa-plus mr-1"></i> Tambah Produk</button>
+                  </div>
+                  <div className="space-y-3">
+                    {appData.products.map((p, idx) => (
+                      <div key={idx} className="p-4 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <img src={p.img} alt={p.name} className="w-12 h-12 object-cover rounded-xl border" />
+                          <div>
+                            <p className="font-black text-xs text-slate-800 dark:text-white uppercase">{p.name}</p>
+                            <p className="text-[10px] text-slate-400 font-bold">Harga: {fCur(p.price)} • Stok: {p.stock}</p>
+                          </div>
+                        </div>
+                        <div className="flex gap-2">
+                          <button className="p-2 bg-blue-50 text-blue-600 rounded-xl hover:bg-blue-100 text-xs" onClick={() => {
+                            setAdminFormType('products');
+                            setAdminFormItem(p);
+                            setTempWholesale(p.wholesale || []);
+                            setTempVariants(p.variants || []);
+                            setAdminModalOpen(true);
+                          }}><i className="fa-solid fa-pen"></i></button>
+                          <button className="p-2 bg-rose-50 text-rose-600 rounded-xl hover:bg-rose-100 text-xs" onClick={() => handleAdminDelete('products', p)}><i className="fa-solid fa-trash-can"></i></button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Admin CRUD Modal */}
+      {adminModalOpen && adminFormItem && (
+        <div className="fixed inset-0 z-[100] bg-slate-900/80 flex items-center justify-center p-3">
+          <div className="bg-white dark:bg-slate-800 rounded-[2rem] w-full max-w-md max-h-[90vh] overflow-y-auto p-6 shadow-2xl border border-slate-200">
+            <h3 className="font-black text-slate-900 dark:text-white text-base mb-4 uppercase tracking-wider">{adminFormItem.id ? 'Edit Item' : 'Tambah Item'}</h3>
+            <form onSubmit={handleAdminFormSubmit} className="space-y-4">
+              {adminFormType === 'products' && (
+                <>
+                  <div>
+                    <label className="block text-[10px] font-black uppercase text-slate-500 mb-1">Nama Produk</label>
+                    <input className="admin-input" value={adminFormItem.name} onChange={e => setAdminFormItem({ ...adminFormItem, name: e.target.value })} required />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-black uppercase text-slate-500 mb-1">Harga Jual (Rp)</label>
+                    <input className="admin-input" type="number" value={adminFormItem.price} onChange={e => setAdminFormItem({ ...adminFormItem, price: parseFloat(e.target.value) || 0 })} required />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-black uppercase text-slate-500 mb-1">Harga Modal / HPP (Rp)</label>
+                    <input className="admin-input" type="number" value={adminFormItem.hpp || 0} onChange={e => setAdminFormItem({ ...adminFormItem, hpp: parseFloat(e.target.value) || 0 })} />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-black uppercase text-slate-500 mb-1">Stok Awal</label>
+                    <input className="admin-input" type="number" value={adminFormItem.stock || 0} onChange={e => setAdminFormItem({ ...adminFormItem, stock: parseFloat(e.target.value) || 0 })} />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-black uppercase text-slate-500 mb-1">Kategori</label>
+                    <select className="admin-input" value={adminFormItem.category} onChange={e => setAdminFormItem({ ...adminFormItem, category: e.target.value })}>
+                      {appData.categories.map((c, i) => (
+                        <option key={i} value={c.name}>{c.name}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-black uppercase text-slate-500 mb-1">Image URL</label>
+                    <input className="admin-input" value={adminFormItem.img || ''} onChange={e => setAdminFormItem({ ...adminFormItem, img: e.target.value })} />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-black uppercase text-slate-500 mb-1">Deskripsi Produk</label>
+                    <textarea className="admin-input resize-none" value={adminFormItem.desc || ''} onChange={e => setAdminFormItem({ ...adminFormItem, desc: e.target.value })} rows="3"></textarea>
+                  </div>
+                </>
+              )}
+              <div className="flex gap-3 mt-6">
+                <button className="flex-1 py-3 bg-slate-100 font-bold rounded-xl text-xs" type="button" onClick={() => setAdminModalOpen(false)}>Batal</button>
+                <button className="flex-1 py-3 btn-primary text-xs shadow-glow rounded-xl" type="submit">Simpan</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Admin Order Detail Modal */}
+      {adminOrderModalOpen && selectedAdminOrder && (
+        <div className="fixed inset-0 z-[100] bg-slate-900/80 flex items-center justify-center p-3">
+          <div className="bg-white dark:bg-slate-800 rounded-[2rem] w-full max-w-md p-6 shadow-2xl border border-slate-200">
+            <div className="flex justify-between items-center mb-4 border-b pb-3">
+              <h3 className="font-black text-slate-900 dark:text-white text-sm">Detail Pesanan #{selectedAdminOrder.orderId.split('-').pop()}</h3>
+              <button className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center" onClick={() => setAdminOrderModalOpen(false)}><i className="fa-solid fa-xmark"></i></button>
+            </div>
+            <div className="space-y-3 max-h-[60vh] overflow-y-auto">
+              <div className="bg-slate-50 dark:bg-slate-900 p-3.5 rounded-xl border border-slate-200 text-xs text-slate-700 dark:text-slate-300">
+                <p className="font-bold">Pelanggan: <span className="font-black">{selectedAdminOrder.customer.name}</span></p>
+                <p className="font-bold">WhatsApp: <span className="font-black">+{selectedAdminOrder.customer.wa}</span></p>
+                <p className="font-bold">Status Pesanan: <span className="font-black text-rose-500 uppercase">{selectedAdminOrder.status}</span></p>
+                <p className="font-bold">Metode Bayar: <span className="font-black uppercase">{selectedAdminOrder.payment.method}</span></p>
+                {selectedAdminOrder.buktiPayment && (
+                  <div className="mt-3">
+                    <p className="font-bold mb-1.5">Bukti Transfer:</p>
+                    <img src={selectedAdminOrder.buktiPayment} alt="Bukti" className="w-full max-h-48 object-contain border rounded-xl" />
+                  </div>
+                )}
+              </div>
+              <div className="border border-slate-200 rounded-xl p-3.5 space-y-2">
+                <p className="text-[10px] font-black uppercase text-slate-400">Rincian Barang</p>
+                {selectedAdminOrder.items.map((i, idx) => (
+                  <div key={idx} className="flex justify-between items-center text-xs font-bold">
+                    <span className="truncate flex-1 pr-2">{i.name} ({i.qty} {i.unit})</span>
+                    <span className="shrink-0">{fCur(i.effectivePrice * i.qty)}</span>
+                  </div>
+                ))}
+                <div className="border-t pt-2 mt-2 flex justify-between items-center text-sm font-black">
+                  <span>Grand Total</span>
+                  <span className="text-emerald-600">{fCur(selectedAdminOrder.payment.grandTotal)}</span>
+                </div>
+              </div>
+            </div>
+            <div className="flex gap-2.5 mt-6 border-t pt-4">
+              <button className="flex-1 py-3 bg-blue-600 text-white font-bold rounded-xl text-xs" onClick={() => {
+                showToast("Mengubah status pesanan...", "loading");
+                db.collection("freshmart_orders").doc(selectedAdminOrder.orderId).update({ status: 'Diproses' })
+                  .then(() => {
+                    showToast("Status diubah ke Diproses", "success");
+                    setAdminOrderModalOpen(false);
+                    loadAdminTabList(activeAdminTab);
+                  });
+              }}>Proses</button>
+              <button className="flex-1 py-3 bg-emerald-600 text-white font-bold rounded-xl text-xs" onClick={() => {
+                showToast("Menyelesaikan pesanan...", "loading");
+                db.collection("freshmart_orders").doc(selectedAdminOrder.orderId).update({ status: 'Selesai' })
+                  .then(() => {
+                    showToast("Status diubah ke Selesai", "success");
+                    setAdminOrderModalOpen(false);
+                    loadAdminTabList(activeAdminTab);
+                  });
+              }}>Selesai</button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}

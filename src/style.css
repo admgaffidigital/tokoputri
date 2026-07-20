@@ -32,15 +32,15 @@
 }
 
 /* === DESIGN TOKENS: SKALA RADIUS (PANDUAN KONSISTENSI) ===
-   Agar tampilan tetap rapi saat dikembangkan, pakai HANYA skala berikut.
-   Jangan menambah nilai rounded-[Nrem] baru di luar daftar ini.
+   Agar tampilan tetap rapi, konsisten, dan kompatibel dalam 1 tema, 
+   pakai HANYA utility Tailwind standar berikut. Seluruh nilai radius 
+   Telah diatur secara terpusat di tailwind.config.js menjadi 10px.
+   DILARANG KERAS menambah nilai hardcode seperti rounded-[1.25rem].
    
-     rounded-xl           0.75rem  -> input, thumbnail kecil, tombol ikon
-     rounded-2xl          1rem     -> tombol/kontrol standar, ikon box
-     rounded-[1.25rem]    1.25rem  -> card produk, list item, baris item
-     rounded-[1.5rem]     1.5rem   -> panel/section besar (card pembungkus)
-     rounded-[2rem]       2rem     -> modal, bottom-sheet, hero box
-     rounded-full                  -> avatar, badge bulat, pil/tombol bulat
+     rounded-xl           (10px) -> input, thumbnail kecil, list item
+     rounded-2xl          (10px) -> tombol/kontrol standar, ikon box
+     rounded-3xl          (10px) -> panel besar, modal, bottom-sheet
+     rounded-full         (9999px) -> avatar, badge bulat, pil/tombol bulat
 */
 
 /* === DESIGN TOKENS: SKALA FONT KECIL (PANDUAN KONSISTENSI) ===
