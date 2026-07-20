@@ -3324,6 +3324,10 @@ window.togglePaymentDetails = () => {
     toggleCls('detail-cashier', 'hidden', m !== 'cashier'); toggleCls('detail-cod', 'hidden', m !== 'cod');
     toggleCls('detail-tempo', 'hidden', m !== 'tempo');
     if (m === 'tempo') window.calculateTempoBalance();
+
+    // Sembunyikan bagian upload bukti pembayaran jika COD atau Kasir
+    const needsBukti = (m === 'transfer' || m === 'qris' || m === 'tempo');
+    toggleCls('bukti-payment-section', 'hidden', !needsBukti);
 };
 
 window.calculateTempoBalance = () => {
@@ -3577,9 +3581,9 @@ window.processOrder = async () => {
         
         const m = (document.querySelector('input[name="payment"]:checked')||{}).value;
         
-        // Validasi bukti pembayaran wajib untuk transfer & QRIS
+        // Validasi bukti pembayaran wajib untuk transfer, QRIS & Tempo
         // Pastikan URL sudah benar-benar GDrive (bukan base64 atau null)
-        const needsBukti = (m === 'transfer' || m === 'qris');
+        const needsBukti = (m === 'transfer' || m === 'qris' || m === 'tempo');
         const buktiReady = window.buktiGDriveUploaded && window.buktiPaymentUrl &&
                            !window.buktiPaymentUrl.startsWith('data:'); // tolak base64
         if (needsBukti && !buktiReady) {
