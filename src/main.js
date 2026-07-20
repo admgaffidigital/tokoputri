@@ -2369,6 +2369,7 @@ window.renderOrderDetailModal = (orderId, d, reviewedKeys) => {
         
         // Cek data belanja
         const cartData = d.items || [];
+        const hasPO = cartData.some(i => i.poTime && i.poTime !== '');
         const itemsHtml = cartData.map((i, itemIdx) => {
             // Mencegah error perhitungan
             const qty = parseFloat(i.qty) || 0;
@@ -2377,12 +2378,13 @@ window.renderOrderDetailModal = (orderId, d, reviewedKeys) => {
             // FITUR BARU: tombol "Berikan Ulasan" -- hanya untuk pesanan SELESAI & item yang belum diulas
             const reviewKey = `${i.id}::${i.variantName || ''}`;
             const canReview = d.status === 'Selesai' && !reviewedKeys.includes(reviewKey) && i.id !== undefined && i.id !== null;
+            const poBadge = i.poTime ? `<span class="bg-amber-100 dark:bg-amber-900/50 text-amber-600 dark:text-amber-400 px-1.5 py-0.5 rounded-xl text-[8px] font-bold border border-amber-200 dark:border-amber-800 uppercase ml-1.5 whitespace-nowrap">PO ${esc(i.poTime)}</span>` : '';
 
             return `
             <div class="flex gap-3 items-center border-b border-slate-100 dark:border-slate-700/50 py-3 last:border-0">
                 <div class="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 bg-cover bg-center shrink-0 border border-slate-200 dark:border-slate-700" style="background-image:url('${esc(i.img || (appData && appData.store ? appData.store.logo : ''))}')"></div>
                 <div class="flex-1 min-w-0">
-                    <p class="text-xs font-bold text-slate-800 dark:text-white truncate">${esc(i.name)} ${i.variantName ? `<span class="bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-1.5 py-0.5 rounded-xl text-[9px] ml-1.5">${esc(i.variantName)}</span>` : ''}</p>
+                    <p class="text-xs font-bold text-slate-800 dark:text-white truncate">${esc(i.name)} ${i.variantName ? `<span class="bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-1.5 py-0.5 rounded-xl text-[9px] ml-1.5">${esc(i.variantName)}</span>` : ''}${poBadge}</p>
                     <p class="text-[10px] text-slate-500">${qty} ${esc(i.unit || 'pcs')} x ${fCur(price)}</p>
                     ${canReview ? `<button type="button" onclick="openReviewModal('${orderId}',${i.id},'${esc(i.variantName||'').replace(/'/g,"\\'")}','${esc(i.name).replace(/'/g,"\\'")}','${cName.replace(/'/g,"\\'")}')" class="mt-1.5 text-[10px] font-black text-amber-500 hover:text-amber-600 flex items-center gap-1"><i class="fa-solid fa-star"></i> Berikan Ulasan</button>` : ''}
                 </div>
@@ -2485,6 +2487,12 @@ try {
                             ${itemsHtml}
                         </div>
                     </div>
+
+                    ${hasPO ? `
+                    <div class="bg-amber-50 dark:bg-amber-900/10 p-3.5 rounded-xl border border-amber-200 dark:border-amber-800/30 flex gap-2.5 items-start">
+                        <i class="fa-solid fa-clock text-amber-500 mt-0.5 animate-pulse"></i>
+                        <p class="text-[11px] font-bold text-amber-700 dark:text-amber-400 leading-relaxed">Catatan: Pesanan ini mengandung produk Pre-Order (PO). Produk PO dikirim sesuai estimasi waktu yang tertera pada label (membutuhkan penanganan khusus dan waktu proses tambahan).</p>
+                    </div>` : ''}
 
                     ${(d.pointsEarned > 0 || d.claimedReward || (d.finalMemberPoints !== undefined && d.finalMemberPoints !== null)) ? `
                     <div class="space-y-2.5">
@@ -4349,10 +4357,13 @@ window.previewTempoReceipt = async (orderId) => {
         let subtotal = 0;
         o.items.forEach(i => {
             let vText = i.variantName ? ` (${esc(i.variantName)}${i.colorCode ? ' ' + esc(i.colorCode) : ''})` : '';
-            const n = (esc(i.name) + vText).substring(0,32);
+            const n = (esc(i.name) + vText + (i.poTime?` [PO]`:'')).substring(0,32);
             const q = `${parseFloat(i.qty)} ${esc(i.unit||'pcs')} x ${i.effectivePrice.toLocaleString('id-ID')}`;
             const t = (parseFloat(i.qty)*i.effectivePrice).toLocaleString('id-ID');
             h += `<div style="white-space:pre-wrap;font-weight:bold;word-break:break-all;">${n}</div><div style="white-space:pre;font-size:11px;">${pL(q,t)}</div>`;
+            if (i.poTime) {
+                h += `<div style="white-space:pre;font-size:10px;font-style:italic;color:#4b5563;">* Estimasi PO: ${esc(i.poTime)}</div>`;
+            }
             subtotal += (parseFloat(i.qty)*i.effectivePrice);
         });
         
@@ -4410,6 +4421,10 @@ window.previewTempoReceipt = async (orderId) => {
         h += `<div class="border-b border-black my-2" style="border-width:1px;"></div>`;
         h += `<div style="white-space:pre;font-weight:black;">${pL('SISA TAGIHAN', Math.round(tagihanAkhir).toLocaleString('id-ID'))}</div>`;
         
+        const hasPO = o.items.some(i => i.poTime && i.poTime !== '');
+        if (hasPO) {
+            h += `<div class="border-b border-dashed border-black my-2"></div><div style="white-space:pre-wrap;font-size:9px;text-align:center;line-height:1.2;font-style:italic;color:#4b5563;margin-bottom:4px;">* Catatan: Produk PO dikirim sesuai estimasi pada label. Produk PO memerlukan penanganan khusus & waktu proses lebih lama.</div>`;
+        }
         h += `<div class="border-b border-dashed border-black my-2"></div><div class="text-center my-2" style="font-size:10px;">Terima kasih atas kepercayaannya.</div><div class="border-b border-dashed border-black my-2"></div><div style="height:20px;"></div>`;
         
         setH('receipt-paper-content', h);
@@ -5107,6 +5122,9 @@ window.openReceiptPreview = () => {
         const q = `${parseFloat(i.qty)} ${esc(i.unit||'pcs')} x ${i.effectivePrice.toLocaleString('id-ID')}`;
         const t = (parseFloat(i.qty)*i.effectivePrice).toLocaleString('id-ID');
         h += `<div style="white-space:pre-wrap;font-weight:bold;word-break:break-all;">${n}</div><div style="white-space:pre;font-size:11px;">${pL(q,t)}</div>`;
+        if (i.poTime) {
+            h += `<div style="white-space:pre;font-size:10px;font-style:italic;color:#4b5563;">* Estimasi PO: ${esc(i.poTime)}</div>`;
+        }
     });
     
     h += `<div class="border-b border-dashed border-black my-2"></div><div style="white-space:pre;">${pL('Subtotal',(o.payment?.subtotal||0).toLocaleString('id-ID'))}</div>`;
@@ -5121,6 +5139,10 @@ window.openReceiptPreview = () => {
         if (o.pointsEarned > 0) h += `<div style="white-space:pre;">${pL('Poin Didapat:', '+' + o.pointsEarned)}</div>`;
         if (o.finalMemberPoints !== undefined && o.finalMemberPoints !== null) h += `<div style="white-space:pre;font-weight:bold;">${pL('Saldo Poin:', String(o.finalMemberPoints))}</div>`;
         if (o.claimedReward) h += `<div style="white-space:pre-wrap;font-weight:bold;word-break:break-all;margin-top:2px;">HADIAH: ${esc(o.claimedReward.name)}</div><div style="white-space:pre;font-size:10px;">(${o.claimedReward.status==='ready'?'Kirim bersama pesanan':o.claimedReward.status==='waiting_stock'?'Stok kosong-ditunda':'Menunggu konfirmasi'})</div>`;
+    }
+    const hasPO = o.items.some(i => i.poTime && i.poTime !== '');
+    if (hasPO) {
+        h += `<div class="border-b border-dashed border-black my-2"></div><div style="white-space:pre-wrap;font-size:9px;text-align:center;line-height:1.2;font-style:italic;color:#4b5563;margin-bottom:4px;">* Catatan: Produk PO dikirim sesuai estimasi pada label. Produk PO memerlukan penanganan khusus & waktu proses lebih lama.</div>`;
     }
     h += `<div class="border-b border-dashed border-black my-2"></div><div class="text-center my-2" style="font-size:10px;">Terima Kasih</div><div class="border-b border-dashed border-black my-2"></div><div style="height:15px;"></div>`;
     
@@ -7276,6 +7298,7 @@ window.openDocPreview = (type) => {
                     <td class="py-4 px-4 font-bold flex items-center gap-2">
                         ${esc(item.name)} 
                         ${item.variantName ? `<span class="bg-slate-100 text-slate-600 px-2 py-0.5 rounded text-[10px] border border-slate-200 whitespace-nowrap ml-1">${esc(item.variantName)}</span> ${item.colorCode ? `<span class="inline-block w-4 h-4 rounded-full border border-slate-300 shadow-sm" style="background-color: ${esc(item.colorCode)};"></span>` : ''}` : ''}
+                        ${item.poTime ? `<span class="bg-amber-100 text-amber-700 px-2 py-0.5 rounded text-[10px] font-bold border border-amber-200 whitespace-nowrap ml-1">PO ${esc(item.poTime)}</span>` : ''}
                     </td>
                     <td class="py-4 px-4 text-center font-black text-slate-700">${parseFloat(item.qty)} <span class="text-[10px] font-bold text-slate-400 uppercase">${esc(item.unit||'pcs')}</span></td>
                     <td class="py-4 px-4 text-right font-mono font-medium">${fCur(item.effectivePrice)}</td>
@@ -7325,6 +7348,7 @@ window.openDocPreview = (type) => {
                     <td class="py-4 px-4 font-bold uppercase flex items-center gap-2">
                         ${esc(item.name)} 
                         ${item.variantName ? `<span class="bg-slate-100 text-slate-600 px-2 py-0.5 rounded text-[10px] border border-slate-200 whitespace-nowrap ml-1">${esc(item.variantName)}</span> ${item.colorCode ? `<span class="inline-block w-4 h-4 rounded-full border border-slate-300 shadow-sm" style="background-color: ${esc(item.colorCode)};"></span>` : ''}` : ''}
+                        ${item.poTime ? `<span class="bg-amber-100 text-amber-700 px-2 py-0.5 rounded text-[10px] font-bold border border-amber-200 whitespace-nowrap ml-1">PO ${esc(item.poTime)}</span>` : ''}
                     </td>
                     <td class="py-4 px-4 text-center font-black text-lg text-slate-800">${parseFloat(item.qty)}</td>
                     <td class="py-4 px-4 text-center text-slate-500 font-bold uppercase text-xs">${esc(item.unit || 'pcs')}</td>
@@ -7369,6 +7393,19 @@ window.openDocPreview = (type) => {
         <div class="mt-6 mb-8 border border-pink-200 bg-pink-50 p-4 rounded-xl text-left">
             <h4 class="font-black text-pink-700 text-xs uppercase tracking-widest mb-1"><i class="fa-solid fa-clock-rotate-left mr-1"></i> Syarat & Ketentuan Pembayaran Tempo</h4>
             <p class="text-[10px] text-pink-600 font-bold leading-relaxed">Maksimal pembayaran sisa tagihan adalah 30 hari (Jatuh Tempo: ${o.payment.tempoDueDate ? new Date(o.payment.tempoDueDate).toLocaleDateString('id-ID') : '-'}). Keterlambatan pembayaran akan dikenakan denda sebesar 1% dari sisa tagihan untuk setiap harinya.</p>
+        </div>`;
+    }
+
+    // FITUR PRE-ORDER: Info estimasi pengiriman untuk pesanan PO
+    const hasPO = o.items.some(i => i.poTime && i.poTime !== '');
+    if (hasPO) {
+        h += `
+        <div class="mt-6 mb-8 border border-amber-200 bg-amber-50 p-4 rounded-xl text-left flex gap-3 items-start">
+            <i class="fa-solid fa-clock text-amber-500 mt-0.5 animate-pulse"></i>
+            <div>
+                <h4 class="font-black text-amber-700 text-xs uppercase tracking-widest mb-1">Informasi Produk Pre-Order (PO)</h4>
+                <p class="text-[10px] text-amber-600 font-bold leading-relaxed">Pesanan ini mengandung produk Pre-Order (PO). Estimasi pengiriman produk PO adalah sesuai dengan label waktu yang tertera pada produk (membutuhkan penanganan khusus dan waktu proses tambahan).</p>
+            </div>
         </div>`;
     }
 
