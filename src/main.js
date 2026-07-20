@@ -5208,7 +5208,7 @@ window.rAdmSet = () => {
             </button>
             <button onclick="openSettingForm('catalog')" class="card-modern p-5 flex flex-col items-center justify-center text-center gap-2.5 hover:-translate-y-1.5 hover:border-blue-300 dark:hover:border-blue-600 hover:shadow-xl transition-all duration-300 group relative overflow-hidden">
                 <div class="w-12 h-12 rounded-2xl bg-blue-50 dark:bg-blue-900/30 text-blue-500 flex items-center justify-center shadow-inner group-hover:scale-110 group-hover:bg-blue-500 group-hover:text-white transition-all duration-300 z-10"><i class="fa-solid fa-palette text-xl"></i></div>
-                <span class="font-black text-slate-700 dark:text-slate-200 uppercase tracking-widest text-[9px] sm:text-[10px] z-10">Katalog UI</span>
+                <span class="font-black text-slate-700 dark:text-slate-200 uppercase tracking-widest text-[9px] sm:text-[10px] z-10">Kategori UI UX</span>
             </button>
             <button onclick="openSettingForm('shipping')" class="card-modern p-5 flex flex-col items-center justify-center text-center gap-2.5 hover:-translate-y-1.5 hover:border-amber-300 dark:hover:border-amber-600 hover:shadow-xl transition-all duration-300 group relative overflow-hidden">
                 <div class="w-12 h-12 rounded-2xl bg-amber-50 dark:bg-amber-900/30 text-amber-500 flex items-center justify-center shadow-inner group-hover:scale-110 group-hover:bg-amber-500 group-hover:text-white transition-all duration-300 z-10"><i class="fa-solid fa-motorcycle text-xl"></i></div>
@@ -5298,7 +5298,7 @@ window.openSettingForm = (type) => {
         `;
     } 
     else if (type === 'catalog') {
-        title = "Tampilan Katalog"; icon = "fa-palette"; 
+        title = "Kategori UI UX"; icon = "fa-palette"; 
         colorTheme = { line: "bg-blue-500", box: "bg-blue-50 text-blue-500 dark:bg-blue-900/30" };
         formContent = `
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
