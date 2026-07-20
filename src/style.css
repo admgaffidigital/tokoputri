@@ -188,7 +188,7 @@ html.dark .admin-input::placeholder { color: #94a3b8; }
 }
 
 .btn-primary { 
-    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%); 
+    background: var(--color-primary); 
     color: #fff; 
     padding: 0.9375rem 1.5rem; 
     border-radius: 10px; 
@@ -235,7 +235,7 @@ html.dark .admin-input::placeholder { color: #94a3b8; }
    (login admin, simpan form, dsb). Tetap ikut tema dinamis karena
    berbasis CSS variable, sama seperti .btn-primary. */
 .btn-solid { 
-    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+    background: var(--color-primary);
     color: #fff; 
     padding: 1rem 1.5rem; 
     border-radius: 10px; 
@@ -288,7 +288,7 @@ html.dark .admin-input::placeholder { color: #94a3b8; }
     min-width: 240px;
     max-width: calc(100vw - 2rem);
     /* --toast-bg, --toast-border, --toast-accent di-set oleh JS */
-    background: var(--toast-bg, linear-gradient(135deg, #1a2e24 0%, #0d1a15 100%));
+    background: var(--toast-bg, #0f172a);
     border: 1px solid var(--toast-border, rgba(var(--color-primary-rgb), 0.25));
     box-shadow: 0 20px 60px -10px rgba(0,0,0,0.55),
                 0 0 0 1px rgba(var(--color-primary-rgb), 0.05);
