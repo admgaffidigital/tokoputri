@@ -37,6 +37,57 @@ Untuk mempermudah pemeliharaan (*maintenance*), pelacakan bug (*debugging*), dan
 
 ---
 
+## 🎨 Panduan Konsistensi UI/UX & Tampilan
+
+Aplikasi ini mengusung estetika premium modern yang responsif dan interaktif. Pengembang atau agen AI di masa depan wajib mematuhi panduan desain berikut untuk menjaga konsistensi tampilan:
+
+### 1. Sistem Warna & Tema (Color Palette)
+* **Warna Utama (Brand Colors)**:
+  * **Emerald/Green (`emerald-500` / `emerald-600`)**: Digunakan untuk elemen bermakna positif, kesuksesan, harga total, dan status bayar **Lunas**.
+  * **Slate/Gray (`slate-800` / `slate-900`)**: Digunakan untuk teks utama, judul, latar belakang gelap, header tabel, dan tombol sekunder.
+  * **Amber/Yellow (`amber-500` / `amber-600`)**: Digunakan untuk peringatan, ulasan bintang, sistem poin member, dan status **Pre-Order (PO)**.
+  * **Rose/Red (`rose-500` / `rose-600`)**: Digunakan untuk pesan eror, tombol hapus, dan status bayar **Belum Lunas/Tempo**.
+  * **Pink/Rose Soft (`pink-500` / `pink-50)`)**: Digunakan khusus untuk aksen tema Nota/Transaksi Tempo.
+
+### 2. Efek Visual & Glassmorphism
+* **Modal Overlay Backdrop**: 
+  Semua modal popup wajib menggunakan overlay blur transparan dengan kelas Tailwind:
+  `fixed inset-0 z-[100] flex justify-center items-end sm:items-center bg-slate-900/60 backdrop-blur-sm`
+* **Transisi Dinamis**:
+  Tombol interaktif harus memiliki transisi kehalusan dan efek pengecilan saat diklik:
+  `transition-all active:scale-95 duration-200`
+* **Shadow (Bayangan)**:
+  Elemen penting diberikan bayangan berwarna halus sesuai aksennya (contoh: `shadow-md shadow-emerald-500/20`).
+
+### 3. Dukungan Mode Gelap (Dark Mode)
+* Aplikasi mendeteksi status dark mode dengan kelas `.dark` pada elemen `html` (`document.documentElement.classList.add('dark')`).
+* Selalu gunakan kombinasi kelas utility `dark:` pada elemen UI baru (contoh: `bg-white dark:bg-slate-900 text-slate-800 dark:text-white`).
+
+---
+
+## 🧠 Arsitektur Logika & Aliran Data ("Mesin Otak")
+
+Berikut adalah pemaparan logika dan alur data utama yang berjalan di balik layar aplikasi:
+
+### 1. State Management Global
+State aplikasi disimpan dalam satu objek utama di `src/main.js` yaitu `appData`. Properti penting:
+* `appData.store`: Berisi detail nama toko, slogan, nomor WA, alamat, logo, serta flag pengaturan katalog (`showCategories` dan `showBrands`).
+* `cart`: Array yang menampung item belanja aktif di kasir. Setiap item menyimpan informasi `id`, `name`, `qty`, `effectivePrice`, `poTime` (opsional), dan data varian.
+
+### 2. Logika Validasi Pembayaran Kasir (Conditional Validation)
+Aturan validasi pengiriman/upload bukti transaksi diatur secara dinamis berdasarkan metode pembayaran terpilih (`needsBukti`):
+* **Wajib Upload Bukti Transfer**: Pembayaran melalui **Transfer Bank**, **QRIS**, dan **Tempo** (karena pembayaran uang muka/DP tempo wajib berupa transfer bank).
+* **Opsional (Tanpa Bukti)**: Pembayaran melalui **Kasir (Cash)** dan **COD** (Cash on Delivery).
+* Penayangan input upload dikendalikan oleh fungsi `togglePaymentDetails()`.
+
+### 3. Logika Produk Pre-Order (PO) & Pengiriman Gabungan
+* **Status Pre-Order**: Produk yang memiliki properti `poTime` terisi akan dianggap sebagai produk pre-order. Properti ini otomatis diikutkan saat item dimasukkan ke keranjang belanja (`cart.push`).
+* **Pengiriman Gabungan (Split-Shipment)**: Pembeli diperbolehkan mencampur produk PO dan Non-PO dalam satu nota belanja.
+* **Biaya Pengiriman**: Catatan sistem secara eksplisit menerangkan bahwa produk berlabel PO akan dikirimkan menyusul sesuai estimasi waktu di labelnya, **tanpa dikenakan biaya pengiriman tambahan**.
+* **Integrasi Cetak**: Catatan aturan pengiriman PO ini secara dinamis disisipkan pada struk cetak thermal (`openReceiptPreview`), nota cicilan tempo (`previewTempoReceipt`), invoice A4, dan surat jalan (`openDocPreview`).
+
+---
+
 ## 🚀 Perintah CLI Pengembangan
 
 Gunakan perintah Node.js berikut dalam terminal projek untuk menjalankan atau membangun website:
