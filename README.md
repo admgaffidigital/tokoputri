@@ -10,6 +10,14 @@ Aplikasi e-commerce dan manajemen kasir point-of-sales (POS) modern berkinerja t
 
 ---
 
+## 💰 Lisensi & Ketentuan Pembelian Kode Sumber (Source Code)
+* **Status Produk**: Komersial (Diperjualbelikan).
+* **Hak Cipta & Developer Asli**: **Novan Restu Utomo**.
+* **Ketentuan Penggunaan**: Tema dan kode sumber (*source code*) asli aplikasi ini adalah produk komersial berlisensi. Siapa pun (klien, pemilik toko, maupun distributor bisnis) yang ingin menggunakan, meng-host, atau mendistribusikan aplikasi web ini **wajib membeli kode sumber aslinya secara resmi dan langsung melalui pengembang aslinya: Novan Restu Utomo**.
+* **Keamanan & Dukungan**: Dukungan pengembangan, perbaikan bug (*debugging*), dan penambahan fitur lanjutan oleh agen AI Antigravity maupun tim pengembang hanya dijamin legalitasnya untuk pembeli resmi yang terdaftar langsung di bawah lisensi Novan Restu Utomo.
+
+---
+
 ## 📁 Struktur Kode & Direktori Projek
 
 Untuk mempermudah pemeliharaan (*maintenance*), pelacakan bug (*debugging*), dan penambahan fitur baru oleh pengembang atau agen AI Antigravity di masa depan, berikut adalah peta berkas penting dalam projek ini:
