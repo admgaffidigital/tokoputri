@@ -292,7 +292,7 @@ export default function App() {
   const [adminOrderModalOpen, setAdminOrderModalOpen] = useState(false);
   const [receiptPreviewOpen, setReceiptPreviewOpen] = useState(false);
   const [docPreviewOpen, setDocPreviewOpen] = useState(false);
-  const [docPreviewType, setDocPreviewType] = useState('invoice'); // invoice, surat_jalan
+  const [docPreviewType, setDocPreviewType] = useState('invoice'); // invoice, proforma, surat_jalan
 
   // Temp variables for wholesale/variants CRUD
   const [tempWholesale, setTempWholesale] = useState([]);
@@ -1852,6 +1852,10 @@ export default function App() {
                   const isDark = document.documentElement.classList.toggle('dark');
                   localStorage.setItem('freshmart_theme', isDark ? 'dark' : 'light');
                 }}><i className="fa-solid fa-moon text-sm"></i></button>
+                <button className="w-10 h-10 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-full flex items-center justify-center hover:text-violet-500 relative" onClick={() => setCurrentView('orders')}>
+                  <i className="fa-solid fa-box-open text-sm"></i>
+                  {myOrders.length > 0 && <span className="absolute -top-1 -right-1 bg-violet-500 text-white text-[9px] w-[18px] h-[18px] flex items-center justify-center rounded-full font-bold shadow-sm">{myOrders.length}</span>}
+                </button>
                 <button className="w-10 h-10 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-full flex items-center justify-center hover:text-rose-500 relative" onClick={() => setCurrentView('wishlist')}>
                   <i className="fa-solid fa-heart text-sm"></i>
                   {wishlist.length > 0 && <span className="absolute -top-1 -right-1 bg-rose-500 text-white text-[9px] w-[18px] h-[18px] flex items-center justify-center rounded-full font-bold shadow-sm">{wishlist.length}</span>}
@@ -2088,6 +2092,7 @@ export default function App() {
                   <button className="inline-flex items-center gap-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-black text-xs px-8 py-3.5 rounded-2xl shadow-sm hover:shadow-md active:scale-95 transition-all" onClick={() => setCPage(prev => prev + 1)}>Muat Lebih Banyak <i className="fa-solid fa-chevron-down text-[10px]"></i></button>
                 </div>
               )}
+              <Footer appData={appData} setCurrentView={setCurrentView} />
             </div>
           </div>
 
@@ -2476,6 +2481,205 @@ export default function App() {
       )}
 
       
+      {/* Orders View — Daftar Pesanan Saya */}
+      {currentView === 'orders' && (
+        <div className="view-section flex flex-col fade-in bg-slate-50 dark:bg-slate-900">
+          {/* Header */}
+          <div className="glass-header shrink-0 px-5 flex justify-center z-30 sticky top-0 pb-3">
+            <div className="flex items-center justify-between w-full max-w-[1200px] mx-auto px-4 lg:px-10">
+              <button className="w-10 h-10 flex items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 active:scale-95 transition-all shadow-sm" onClick={() => setCurrentView('catalog')}><i className="fa-solid fa-arrow-left text-sm"></i></button>
+              <h1 className="text-base font-black text-slate-900 dark:text-white tracking-tight">Pesanan Saya</h1>
+              <div className="w-10 h-10"></div>
+            </div>
+          </div>
+
+          {/* Body */}
+          <div className="flex-1 overflow-y-auto px-4 py-5 hide-scrollbar">
+            <div className="max-w-[640px] mx-auto space-y-4">
+              {myOrders.length === 0 ? (
+                <div className="flex flex-col items-center justify-center py-24 text-center">
+                  <div className="w-20 h-20 rounded-3xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center mb-5 shadow-inner">
+                    <i className="fa-solid fa-box-open text-3xl text-slate-300 dark:text-slate-600"></i>
+                  </div>
+                  <h3 className="font-black text-slate-800 dark:text-white text-base mb-2">Belum Ada Pesanan</h3>
+                  <p className="text-xs font-bold text-slate-400 mb-6">Pesanan kamu akan muncul di sini setelah checkout.</p>
+                  <button className="btn-primary !w-auto px-8 py-3 text-sm shadow-glow rounded-2xl" onClick={() => setCurrentView('catalog')}>
+                    <i className="fa-solid fa-bag-shopping mr-2"></i>Mulai Belanja
+                  </button>
+                </div>
+              ) : (
+                myOrders.map((order, idx) => {
+                  const statusColor = {
+                    'Baru': 'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-400',
+                    'Diproses': 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400',
+                    'Dikirim': 'bg-violet-100 text-violet-700 dark:bg-violet-900/40 dark:text-violet-400',
+                    'Selesai': 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400',
+                    'Dibatalkan': 'bg-rose-100 text-rose-600 dark:bg-rose-900/40 dark:text-rose-400',
+                  }[order.status] || 'bg-slate-100 text-slate-600';
+
+                  const statusIcon = {
+                    'Baru': 'fa-hourglass-start',
+                    'Diproses': 'fa-gear',
+                    'Dikirim': 'fa-truck-fast',
+                    'Selesai': 'fa-circle-check',
+                    'Dibatalkan': 'fa-circle-xmark',
+                  }[order.status] || 'fa-circle-dot';
+
+                  const isSelesai = order.status === 'Selesai';
+                  const isDiterima = order.status === 'Diterima';
+                  const canConfirm = isSelesai && !isDiterima;
+
+                  return (
+                    <div key={idx} className={`bg-white dark:bg-slate-800 rounded-[1.5rem] border shadow-sm overflow-hidden transition-all ${isSelesai ? 'border-emerald-200 dark:border-emerald-800' : 'border-slate-200 dark:border-slate-700'}`}>
+                      {/* Order Header */}
+                      <div className="px-5 py-4 border-b border-slate-100 dark:border-slate-700/60 flex justify-between items-center gap-3">
+                        <div className="min-w-0">
+                          <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-0.5">ID Pesanan</p>
+                          <p className="font-black text-slate-900 dark:text-white text-sm tracking-wide truncate">#{order.orderId}</p>
+                          <p className="text-[10px] text-slate-400 font-bold mt-0.5">{order.date ? new Date(order.date).toLocaleString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : ''}</p>
+                        </div>
+                        <span className={`shrink-0 text-[10px] font-black px-3 py-1.5 rounded-xl uppercase tracking-widest flex items-center gap-1.5 ${statusColor}`}>
+                          <i className={`fa-solid ${statusIcon} text-[10px]`}></i>
+                          {order.status || 'Baru'}
+                        </span>
+                      </div>
+
+                      {/* Order Summary */}
+                      <div className="px-5 py-4">
+                        <div className="flex justify-between items-center mb-3">
+                          <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">
+                            <i className="fa-solid fa-box mr-1.5"></i>{order.itemCount || 1} item
+                          </span>
+                          <span className="font-black text-[var(--color-primary)] text-base tracking-tight">{fCur(order.total || 0)}</span>
+                        </div>
+
+                        {/* Points earned */}
+                        {order.pointsEarned > 0 && (
+                          <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-100 dark:border-amber-800/40 rounded-xl px-3 py-2 flex items-center gap-2 mb-3">
+                            <i className="fa-solid fa-star text-amber-500 text-xs"></i>
+                            <span className="text-[11px] font-black text-amber-700 dark:text-amber-400">+{order.pointsEarned} Poin Member diperoleh</span>
+                          </div>
+                        )}
+
+                        {/* Claimed reward */}
+                        {order.claimedReward && (
+                          <div className="bg-violet-50 dark:bg-violet-900/20 border border-violet-100 dark:border-violet-800/40 rounded-xl px-3 py-2 flex items-center gap-2 mb-3">
+                            <i className="fa-solid fa-gift text-violet-500 text-xs"></i>
+                            <div className="min-w-0">
+                              <span className="text-[10px] font-black text-violet-700 dark:text-violet-400 uppercase tracking-wider block">Klaim Hadiah: {order.claimedReward.name}</span>
+                              <span className="text-[9px] font-bold text-violet-500">
+                                {order.claimedReward.status === 'ready' ? '✅ Sertakan bersama pengiriman' : order.claimedReward.status === 'waiting_stock' ? '⏳ Stok kosong, dikirim susulan' : '⏳ Menunggu konfirmasi toko'}
+                                {order.claimedReward.note ? ` — ${order.claimedReward.note}` : ''}
+                              </span>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Progress Steps */}
+                        <div className="flex items-center gap-1 my-4 overflow-x-auto hide-scrollbar pb-1">
+                          {['Baru', 'Diproses', 'Dikirim', 'Selesai'].map((step, si) => {
+                            const steps = ['Baru', 'Diproses', 'Dikirim', 'Selesai', 'Diterima'];
+                            const curIdx = steps.indexOf(order.status || 'Baru');
+                            const stepIdx = si;
+                            const isActive = curIdx >= stepIdx;
+                            const isCur = curIdx === stepIdx;
+                            return (
+                              <div key={step} className="flex items-center gap-1 shrink-0">
+                                <div className={`flex flex-col items-center gap-1 ${isCur ? 'scale-110' : ''}`}>
+                                  <div className={`w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-black border-2 transition-all ${isActive ? 'bg-[var(--color-primary)] border-[var(--color-primary)] text-white shadow-md' : 'bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-400'}`}>
+                                    <i className={`fa-solid ${['fa-plus', 'fa-gear', 'fa-truck-fast', 'fa-check'][si]}`}></i>
+                                  </div>
+                                  <span className={`text-[8px] font-black whitespace-nowrap ${isActive ? 'text-[var(--color-primary)]' : 'text-slate-400'}`}>{step}</span>
+                                </div>
+                                {si < 3 && <div className={`w-8 h-0.5 rounded mb-4 shrink-0 ${curIdx > si ? 'bg-[var(--color-primary)]' : 'bg-slate-200 dark:bg-slate-700'}`}></div>}
+                              </div>
+                            );
+                          })}
+                        </div>
+
+                        {/* Action Buttons */}
+                        <div className="flex flex-col gap-2 mt-3">
+                          {/* Pesanan Diterima Button — only when status Selesai */}
+                          {canConfirm && (
+                            <button
+                              className="w-full py-3.5 bg-emerald-500 hover:bg-emerald-600 active:scale-95 text-white font-black text-sm rounded-2xl flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/30 transition-all"
+                              onClick={async () => {
+                                showConfirm(
+                                  'Konfirmasi Pesanan Diterima',
+                                  `Apakah pesanan #${order.orderId.split('-').pop()} sudah kamu terima dengan lengkap dan dalam kondisi baik?`,
+                                  async () => {
+                                    showToast('Menyimpan konfirmasi...', 'loading');
+                                    try {
+                                      await db.collection('freshmart_orders').doc(order.orderId).update({ status: 'Diterima' });
+                                      const updated = myOrders.map(o => o.orderId === order.orderId ? { ...o, status: 'Diterima' } : o);
+                                      setMyOrders(updated);
+                                      localStorage.setItem('freshmart_my_orders', JSON.stringify(updated));
+                                      showToast('Terima kasih! Pesanan dikonfirmasi diterima. 🎉', 'success');
+                                    } catch (e) {
+                                      showToast('Gagal konfirmasi: ' + e.message, 'error');
+                                    }
+                                  },
+                                  'Ya, Sudah Diterima',
+                                  false
+                                );
+                              }}
+                            >
+                              <i className="fa-solid fa-box-open text-lg"></i>
+                              Pesanan Diterima
+                            </button>
+                          )}
+
+                          {/* Already confirmed */}
+                          {isDiterima && (
+                            <div className="w-full py-3 bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 text-emerald-600 dark:text-emerald-400 font-black text-xs rounded-2xl flex items-center justify-center gap-2">
+                              <i className="fa-solid fa-circle-check"></i> Pesanan Telah Dikonfirmasi Diterima
+                            </div>
+                          )}
+
+                          {/* Preview Struk */}
+                          <div className="flex gap-2">
+                            <button
+                              className="flex-1 py-2.5 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 font-black text-xs rounded-xl flex items-center justify-center gap-1.5 active:scale-95 transition-all hover:bg-slate-200 dark:hover:bg-slate-600"
+                              onClick={() => {
+                                // Load full order from firebase to preview receipt
+                                showToast('Memuat struk...', 'loading');
+                                db.collection('freshmart_orders').doc(order.orderId).get().then(doc => {
+                                  if (doc.exists) {
+                                    setSelectedAdminOrder(doc.data());
+                                    setReceiptPreviewOpen(true);
+                                  } else {
+                                    showToast('Data pesanan tidak ditemukan', 'error');
+                                  }
+                                }).catch(e => showToast('Gagal memuat: ' + e.message, 'error'));
+                              }}
+                            >
+                              <i className="fa-solid fa-receipt"></i> Struk
+                            </button>
+                            {order.status !== 'Dibatalkan' && (
+                              <button
+                                className="flex-1 py-2.5 bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 border border-green-100 dark:border-green-800 font-black text-xs rounded-xl flex items-center justify-center gap-1.5 active:scale-95 transition-all hover:bg-green-100"
+                                onClick={() => {
+                                  const phone = appData.store?.wa || '';
+                                  if (!phone) return showToast('Nomor WA toko belum dikonfigurasi', 'warning');
+                                  const msg = encodeURIComponent(`Halo ${appData.store?.name || 'Toko'}, saya ingin menanyakan status pesanan saya:\nID: #${order.orderId}\nStatus: ${order.status || 'Baru'}\nTotal: ${fCur(order.total || 0)}`);
+                                  window.open(`https://wa.me/${phone}?text=${msg}`, '_blank');
+                                }}
+                              >
+                                <i className="fa-brands fa-whatsapp"></i> Tanya WA
+                              </button>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Wishlist View */}
       {currentView === 'wishlist' && (
         <div className="view-section flex flex-col fade-in bg-slate-50 dark:bg-slate-900">
@@ -2527,7 +2731,6 @@ export default function App() {
                 })}
               </div>
             )}
-            <Footer appData={appData} setCurrentView={setCurrentView} />
           </div>
         </div>
       )}
@@ -3181,6 +3384,19 @@ export default function App() {
                             setTempVariants(p.variants || []);
                             setAdminModalOpen(true);
                           }}><i className="fa-solid fa-pen"></i></button>
+                          <button className="p-2 bg-emerald-50 text-emerald-600 rounded-xl hover:bg-emerald-100 text-xs" title="Duplikat Produk" onClick={async () => {
+                            showToast('Menduplikat produk...', 'loading');
+                            try {
+                              const newId = Date.now();
+                              const duplicate = { ...p, id: newId, name: p.name + ' (Copy)', sku: (p.sku || '') + '-COPY-' + newId, stock: p.stock || 0 };
+                              const newProducts = [duplicate, ...appData.products];
+                              setAppData(prev => ({ ...prev, products: newProducts }));
+                              await db.collection('freshmart').doc('cms_data').collection('products').doc(String(newId)).set(duplicate);
+                              await db.collection('freshmart').doc('cms_data').update({ lastUpdate: firebase.firestore.FieldValue.increment(1) });
+                              localStorage.setItem('freshmart_products', JSON.stringify(newProducts));
+                              showToast('Produk berhasil diduplikat!', 'success');
+                            } catch(e) { showToast('Gagal duplikat: ' + e.message, 'error'); }
+                          }}><i className="fa-solid fa-copy"></i></button>
                           <button className="p-2 bg-rose-50 text-rose-600 rounded-xl hover:bg-rose-100 text-xs" onClick={() => handleAdminDelete('products', p)}><i className="fa-solid fa-trash-can"></i></button>
                         </div>
                       </div>
@@ -4065,10 +4281,11 @@ export default function App() {
             </div>
 
             <div className="p-5 lg:px-8 border-t border-slate-100 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-b-[2rem] flex flex-col gap-3 shadow-[0_-15px_25px_-5px_rgba(0,0,0,0.05)]">
-              <div className="flex gap-2.5 w-full">
-                <button className="flex-1 py-3 bg-emerald-50 text-emerald-600 border border-emerald-100 font-black rounded-xl text-xs flex items-center justify-center gap-1.5 hover:bg-emerald-100 transition-all shadow-sm active:scale-95 dark:bg-emerald-900/20 dark:border-emerald-800" onClick={() => setReceiptPreviewOpen(true)}><i className="fa-solid fa-print"></i> Struk</button>
-                <button className="flex-1 py-3 bg-blue-50 text-blue-600 border border-blue-100 font-black rounded-xl text-xs flex items-center justify-center gap-1.5 hover:bg-blue-100 transition-all shadow-sm active:scale-95 dark:bg-blue-900/20 dark:border-blue-800" onClick={() => { setDocPreviewType('invoice'); setDocPreviewOpen(true); }}><i className="fa-solid fa-file-invoice-dollar"></i> Invoice</button>
-                <button className="flex-1 py-3 bg-amber-50 text-amber-600 border border-amber-100 font-black rounded-xl text-xs flex items-center justify-center gap-1.5 hover:bg-amber-100 transition-all shadow-sm active:scale-95 dark:bg-amber-900/20 dark:border-amber-800" onClick={() => { setDocPreviewType('surat_jalan'); setDocPreviewOpen(true); }}><i className="fa-solid fa-truck-ramp-box"></i> Srt Jalan</button>
+              <div className="grid grid-cols-4 gap-2 w-full">
+                <button className="py-3 bg-emerald-50 text-emerald-600 border border-emerald-100 font-black rounded-xl text-xs flex items-center justify-center gap-1 hover:bg-emerald-100 transition-all shadow-sm active:scale-95 dark:bg-emerald-900/20 dark:border-emerald-800" onClick={() => setReceiptPreviewOpen(true)}><i className="fa-solid fa-print"></i> Struk</button>
+                <button className="py-3 bg-blue-50 text-blue-600 border border-blue-100 font-black rounded-xl text-xs flex items-center justify-center gap-1 hover:bg-blue-100 transition-all shadow-sm active:scale-95 dark:bg-blue-900/20 dark:border-blue-800" onClick={() => { setDocPreviewType('invoice'); setDocPreviewOpen(true); }}><i className="fa-solid fa-file-invoice-dollar"></i> Invoice</button>
+                <button className="py-3 bg-violet-50 text-violet-600 border border-violet-100 font-black rounded-xl text-xs flex items-center justify-center gap-1 hover:bg-violet-100 transition-all shadow-sm active:scale-95 dark:bg-violet-900/20 dark:border-violet-800" onClick={() => { setDocPreviewType('proforma'); setDocPreviewOpen(true); }}><i className="fa-solid fa-file-lines"></i> Proforma</button>
+                <button className="py-3 bg-amber-50 text-amber-600 border border-amber-100 font-black rounded-xl text-xs flex items-center justify-center gap-1 hover:bg-amber-100 transition-all shadow-sm active:scale-95 dark:bg-amber-900/20 dark:border-amber-800" onClick={() => { setDocPreviewType('surat_jalan'); setDocPreviewOpen(true); }}><i className="fa-solid fa-truck-ramp-box"></i> Srt Jalan</button>
               </div>
               <div className="flex flex-col sm:flex-row gap-3">
                 <button className="w-full sm:flex-1 py-3 bg-green-50 text-green-600 font-black rounded-xl text-xs flex items-center justify-center gap-1.5 border border-green-100 dark:bg-green-900/20 dark:border-green-800 hover:bg-green-500 hover:text-white transition-all shadow-sm active:scale-95" onClick={() => konfirmasiKeWA(selectedAdminOrder.orderId)}><i className="fa-brands fa-whatsapp"></i> Konfirmasi ke WA</button>
@@ -4223,7 +4440,7 @@ export default function App() {
             <div className="sticky top-0 bg-white dark:bg-slate-800 px-5 py-4 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center z-20 shadow-sm shrink-0">
               <div>
                 <h3 className="font-black text-slate-900 dark:text-white text-base">
-                  {docPreviewType === 'invoice' ? 'Preview Faktur Invoice' : 'Preview Surat Jalan'}
+                  {docPreviewType === 'invoice' ? 'Preview Faktur Invoice' : docPreviewType === 'proforma' ? 'Preview Proforma Invoice' : 'Preview Surat Jalan'}
                 </h3>
                 <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-0.5">Format Kertas Standar A4</p>
               </div>
@@ -4250,8 +4467,8 @@ export default function App() {
                       </div>
                     </div>
                     <div className="text-right">
-                      <h2 className={`font-black text-3xl tracking-widest uppercase ${docPreviewType === 'invoice' ? 'text-blue-600' : 'text-amber-600'}`}>
-                        {docPreviewType === 'invoice' ? (selectedAdminOrder.payment?.method === 'tempo' ? 'PROFORMA INVOICE' : 'INVOICE') : 'SURAT JALAN'}
+                      <h2 className={`font-black text-3xl tracking-widest uppercase ${docPreviewType === 'invoice' ? 'text-blue-600' : docPreviewType === 'proforma' ? 'text-violet-600' : 'text-amber-600'}`}>
+                        {docPreviewType === 'invoice' ? 'INVOICE' : docPreviewType === 'proforma' ? 'PROFORMA INVOICE' : 'SURAT JALAN'}
                       </h2>
                       <p className="text-sm font-bold text-slate-600 mt-2 font-mono">#{selectedAdminOrder.orderId}</p>
                       <p className="text-xs font-semibold text-slate-500 mt-1">Tanggal: {selectedAdminOrder.dateString ? new Date(selectedAdminOrder.dateString).toLocaleDateString('id-ID', {day: '2-digit', month: '2-digit', year: 'numeric'}) : ''}</p>
@@ -4288,7 +4505,7 @@ export default function App() {
                   </div>
 
                   {/* Items Table */}
-                  {docPreviewType === 'invoice' ? (
+                  {(docPreviewType === 'invoice' || docPreviewType === 'proforma') ? (
                     <>
                       <table className="w-full text-left text-sm text-slate-900 border-collapse mb-6">
                         <thead>

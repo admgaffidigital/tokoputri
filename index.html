@@ -1,65 +1,78 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <!-- Resource hints -->
-    <link rel="preconnect" href="https://www.gstatic.com" crossorigin/>
-    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin/>
-    <link rel="dns-prefetch" href="https://firestore.googleapis.com"/>
-    <link rel="dns-prefetch" href="https://identitytoolkit.googleapis.com"/>
-    <meta charset='UTF-8'/>
-    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name='viewport'/>
-    <meta content="default-src 'self' blob:; script-src 'self' 'unsafe-inline' https://vercel.live https://cdn.tailwindcss.com https://cdnjs.cloudflare.com https://www.gstatic.com https://cdn.sheetjs.com https://apis.google.com https://www.blogger.com https://www.googletagmanager.com https://www.google-analytics.com; connect-src 'self' https://vercel.live https://*.googleapis.com https://*.firebaseio.com https://firestore.googleapis.com https://identitytoolkit.googleapis.com https://script.google.com https://script.googleusercontent.com https://wa.me https://www.google-analytics.com https://analytics.google.com https://cdnjs.cloudflare.com https://*.gstatic.com; img-src 'self' data: https: blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; manifest-src 'self' blob:; frame-src https://www.blogger.com https://www.google.com https://www.youtube.com https://youtube.com https://restu-karya-utama.firebaseapp.com https://apis.google.com https://vercel.live; object-src 'none'" http-equiv='Content-Security-Policy'/>
+    <link rel="preconnect" href="https://www.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
+    <link rel="dns-prefetch" href="https://firestore.googleapis.com" />
+    <link rel="dns-prefetch" href="https://identitytoolkit.googleapis.com" />
+    <meta charset='UTF-8' />
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
+        name='viewport' />
+    <meta
+        content="default-src 'self' blob:; script-src 'self' 'unsafe-inline' https://vercel.live https://cdn.tailwindcss.com https://cdnjs.cloudflare.com https://www.gstatic.com https://cdn.sheetjs.com https://apis.google.com https://www.blogger.com https://www.googletagmanager.com https://www.google-analytics.com; connect-src 'self' https://vercel.live https://*.googleapis.com https://*.firebaseio.com https://firestore.googleapis.com https://identitytoolkit.googleapis.com https://script.google.com https://script.googleusercontent.com https://wa.me https://www.google-analytics.com https://analytics.google.com https://cdnjs.cloudflare.com https://*.gstatic.com; img-src 'self' data: https: blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; manifest-src 'self' blob:; frame-src https://www.blogger.com https://www.google.com https://www.youtube.com https://youtube.com https://restu-karya-utama.firebaseapp.com https://apis.google.com https://vercel.live; object-src 'none'"
+        http-equiv='Content-Security-Policy' />
     <title>Toko Putri</title>
-    <meta name="description" content="Toko Putri - Solusi grosir dan e-commerce terpercaya untuk alat teknik, perkakas, dan perlengkapan pertukangan berkualitas dengan harga terbaik."/>
+    <meta name="description"
+        content="Toko Putri - Solusi grosir dan e-commerce terpercaya untuk alat teknik, perkakas, dan perlengkapan pertukangan berkualitas dengan harga terbaik." />
     <link rel='icon' id='dynamic-favicon' href='data:image/x-icon;base64,AA'>
     <!-- Google Fonts — non-blocking (preconnect + media trick) -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin/>
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800;900&display=swap" media="print" onload="this.media='all'"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800;900&display=swap" media="print"
+        onload="this.media='all'" />
     <noscript>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800;900&display=swap"/>
+        <link rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800;900&display=swap" />
     </noscript>
-    <link crossorigin='anonymous' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css' integrity='sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==' referrerpolicy='no-referrer' rel='stylesheet' media='print' onload="this.media='all'"/>
-    <noscript><link crossorigin='anonymous' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css' rel='stylesheet'/></noscript>
+    <link crossorigin='anonymous' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css'
+        integrity='sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=='
+        referrerpolicy='no-referrer' rel='stylesheet' media='print' onload="this.media='all'" />
+    <noscript>
+        <link crossorigin='anonymous' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css'
+            rel='stylesheet' />
+    </noscript>
     <!-- Initialize theme color CSS variables & dark mode instantly to avoid FOUC/flash -->
     <script>
-        (function() {
+        (function () {
             // Dark Mode
             if (localStorage.getItem('freshmart_theme') === 'dark' || (!('freshmart_theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
                 document.documentElement.classList.add('dark');
             }
-            
+
             // UI theme & theme color setup
             const uiTheme = localStorage.getItem('freshmart_ui_theme') || 'emerald';
             const themeColor = localStorage.getItem('freshmart_theme_color') || '#10b981';
-            
+
             const palettes = {
-                'emerald' : { 50: '#f0fdf4', 500: '#10b981', 600: '#059669' },
-                'blue'    : { 50: '#eff6ff', 500: '#3b82f6', 600: '#2563eb' },
-                'indigo'  : { 50: '#eef2ff', 500: '#6366f1', 600: '#4f46e5' },
-                'violet'  : { 50: '#f5f3ff', 500: '#8b5cf6', 600: '#7c3aed' },
-                'purple'  : { 50: '#faf5ff', 500: '#a855f7', 600: '#9333ea' },
-                'fuchsia' : { 50: '#fdf4ff', 500: '#d946ef', 600: '#c026d3' },
-                'pink'    : { 50: '#fdf2f8', 500: '#ec4899', 600: '#db2777' },
-                'rose'    : { 50: '#fff1f2', 500: '#f43f5e', 600: '#e11d48' },
-                'red'     : { 50: '#fef2f2', 500: '#ef4444', 600: '#dc2626' },
-                'orange'  : { 50: '#fff7ed', 500: '#f97316', 600: '#ea580c' },
-                'amber'   : { 50: '#fffbeb', 500: '#f59e0b', 600: '#d97706' },
-                'yellow'  : { 50: '#fefce8', 500: '#eab308', 600: '#ca8a04' },
-                'lime'    : { 50: '#f7fee7', 500: '#84cc16', 600: '#65a30d' },
-                'green'   : { 50: '#f0fdf4', 500: '#22c55e', 600: '#16a34a' },
-                'slate'   : { 50: '#f8fafc', 500: '#64748b', 600: '#475569' },
-                'stone'   : { 50: '#fafaf9', 500: '#78716c', 600: '#57534e' }
+                'emerald': { 50: '#f0fdf4', 500: '#10b981', 600: '#059669' },
+                'blue': { 50: '#eff6ff', 500: '#3b82f6', 600: '#2563eb' },
+                'indigo': { 50: '#eef2ff', 500: '#6366f1', 600: '#4f46e5' },
+                'violet': { 50: '#f5f3ff', 500: '#8b5cf6', 600: '#7c3aed' },
+                'purple': { 50: '#faf5ff', 500: '#a855f7', 600: '#9333ea' },
+                'fuchsia': { 50: '#fdf4ff', 500: '#d946ef', 600: '#c026d3' },
+                'pink': { 50: '#fdf2f8', 500: '#ec4899', 600: '#db2777' },
+                'rose': { 50: '#fff1f2', 500: '#f43f5e', 600: '#e11d48' },
+                'red': { 50: '#fef2f2', 500: '#ef4444', 600: '#dc2626' },
+                'orange': { 50: '#fff7ed', 500: '#f97316', 600: '#ea580c' },
+                'amber': { 50: '#fffbeb', 500: '#f59e0b', 600: '#d97706' },
+                'yellow': { 50: '#fefce8', 500: '#eab308', 600: '#ca8a04' },
+                'lime': { 50: '#f7fee7', 500: '#84cc16', 600: '#65a30d' },
+                'green': { 50: '#f0fdf4', 500: '#22c55e', 600: '#16a34a' },
+                'slate': { 50: '#f8fafc', 500: '#64748b', 600: '#475569' },
+                'stone': { 50: '#fafaf9', 500: '#78716c', 600: '#57534e' }
             };
-            
+
             const colors = palettes[uiTheme] || palettes['emerald'];
             const hex = themeColor || colors[500];
-            
+
             function hexToRgb(h) {
                 let bigint = parseInt(h.replace('#', ''), 16);
                 return ((bigint >> 16) & 255) + ',' + ((bigint >> 8) & 255) + ',' + (bigint & 255);
             }
-            
+
             document.documentElement.style.setProperty('--color-primary', hex);
             document.documentElement.style.setProperty('--color-primary-dark', colors[600]);
             document.documentElement.style.setProperty('--color-primary-light', colors[50]);
@@ -67,71 +80,242 @@
         })();
     </script>
     <!-- Critical CSS: loader tampil langsung sebelum Tailwind dimuat, mencegah FOUC -->
-    <style>#global-loader{position:fixed;inset:0;z-index:9999;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center}@media(prefers-color-scheme:dark){#global-loader{background:#0f172a}}</style>
+    <style>
+        #global-loader {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            background: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center
+        }
+
+        @media(prefers-color-scheme:dark) {
+            #global-loader {
+                background: #0f172a
+            }
+        }
+    </style>
 </head>
+
 <body>
     <!-- Initial Loading Screen -->
     <div class='fixed inset-0 z-[9999] flex flex-col items-center justify-center overflow-hidden' id='global-loader'>
         <!-- Keyframes & theme-aware CSS (must be first so animations work before Tailwind) -->
         <style>
-            #global-loader { background: linear-gradient(135deg, var(--color-primary-light, #f0fdf4) 0%, #ffffff 100%) !important; }
-            .dark #global-loader { background: linear-gradient(135deg, #020617 0%, #0f172a 100%) !important; }
-            #loader-store-name { color: #0f172a; }
-            .dark #loader-store-name { color: #f1f5f9 !important; }
-            #loader-text { color: #475569; }
-            .dark #loader-text { color: #94a3b8 !important; }
-            #loader-badge-text { color: #94a3b8; }
-            @keyframes blobMove1{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(30px,20px) scale(1.05)}}
-            @keyframes blobMove2{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-20px,-30px) scale(1.08)}}
-            @keyframes blobMove3{0%,100%{transform:translate(0,0)}50%{transform:translate(15px,-20px)}}
-            @keyframes floatUp{0%,100%{transform:translateY(0) scale(1);opacity:0.4}50%{transform:translateY(-30px) scale(1.2);opacity:0.2}}
-            @keyframes spinRing{to{transform:rotate(360deg)}}
-            @keyframes glowPulse{0%,100%{opacity:0.5;transform:scale(1)}50%{opacity:1;transform:scale(1.1)}}
-            @keyframes logoFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
-            @keyframes orbitDot{to{transform:rotate(360deg)}}
-            @keyframes shimmerBar{0%{background-position:200% 0}100%{background-position:-200% 0}}
-            @keyframes dotBounce{0%,100%{transform:translateY(0);opacity:1}50%{transform:translateY(-10px);opacity:0.5}}
+            #global-loader {
+                background: linear-gradient(135deg, var(--color-primary-light, #f0fdf4) 0%, #ffffff 100%) !important;
+            }
+
+            .dark #global-loader {
+                background: linear-gradient(135deg, #020617 0%, #0f172a 100%) !important;
+            }
+
+            #loader-store-name {
+                color: #0f172a;
+            }
+
+            .dark #loader-store-name {
+                color: #f1f5f9 !important;
+            }
+
+            #loader-text {
+                color: #475569;
+            }
+
+            .dark #loader-text {
+                color: #94a3b8 !important;
+            }
+
+            #loader-badge-text {
+                color: #94a3b8;
+            }
+
+            @keyframes blobMove1 {
+
+                0%,
+                100% {
+                    transform: translate(0, 0) scale(1)
+                }
+
+                50% {
+                    transform: translate(30px, 20px) scale(1.05)
+                }
+            }
+
+            @keyframes blobMove2 {
+
+                0%,
+                100% {
+                    transform: translate(0, 0) scale(1)
+                }
+
+                50% {
+                    transform: translate(-20px, -30px) scale(1.08)
+                }
+            }
+
+            @keyframes blobMove3 {
+
+                0%,
+                100% {
+                    transform: translate(0, 0)
+                }
+
+                50% {
+                    transform: translate(15px, -20px)
+                }
+            }
+
+            @keyframes floatUp {
+
+                0%,
+                100% {
+                    transform: translateY(0) scale(1);
+                    opacity: 0.4
+                }
+
+                50% {
+                    transform: translateY(-30px) scale(1.2);
+                    opacity: 0.2
+                }
+            }
+
+            @keyframes spinRing {
+                to {
+                    transform: rotate(360deg)
+                }
+            }
+
+            @keyframes glowPulse {
+
+                0%,
+                100% {
+                    opacity: 0.5;
+                    transform: scale(1)
+                }
+
+                50% {
+                    opacity: 1;
+                    transform: scale(1.1)
+                }
+            }
+
+            @keyframes logoFloat {
+
+                0%,
+                100% {
+                    transform: translateY(0)
+                }
+
+                50% {
+                    transform: translateY(-6px)
+                }
+            }
+
+            @keyframes orbitDot {
+                to {
+                    transform: rotate(360deg)
+                }
+            }
+
+            @keyframes shimmerBar {
+                0% {
+                    background-position: 200% 0
+                }
+
+                100% {
+                    background-position: -200% 0
+                }
+            }
+
+            @keyframes dotBounce {
+
+                0%,
+                100% {
+                    transform: translateY(0);
+                    opacity: 1
+                }
+
+                50% {
+                    transform: translateY(-10px);
+                    opacity: 0.5
+                }
+            }
         </style>
 
         <!-- Main content -->
         <div style='position:relative;z-index:10;display:flex;flex-direction:column;align-items:center'>
             <!-- Logo ring -->
-            <div style='position:relative;width:120px;height:120px;margin-bottom:28px;display:flex;align-items:center;justify-content:center'>
-                <div style='position:absolute;inset:0;border-radius:50%;border:2px solid rgba(var(--color-primary-rgb,16,185,129),0.2);animation:spinRing 8s linear infinite'></div>
-                <div style='position:absolute;inset:8px;border-radius:50%;border:2px dashed rgba(var(--color-primary-rgb,16,185,129),0.3);animation:spinRing 5s linear infinite reverse'></div>
-                <div style='position:absolute;inset:16px;border-radius:50%;background:radial-gradient(circle,rgba(var(--color-primary-rgb,16,185,129),0.1) 0%,transparent 70%);animation:glowPulse 2s ease-in-out infinite'></div>
+            <div
+                style='position:relative;width:120px;height:120px;margin-bottom:28px;display:flex;align-items:center;justify-content:center'>
+                <div
+                    style='position:absolute;inset:0;border-radius:50%;border:2px solid rgba(var(--color-primary-rgb,16,185,129),0.2);animation:spinRing 8s linear infinite'>
+                </div>
+                <div
+                    style='position:absolute;inset:8px;border-radius:50%;border:2px dashed rgba(var(--color-primary-rgb,16,185,129),0.3);animation:spinRing 5s linear infinite reverse'>
+                </div>
+                <div
+                    style='position:absolute;inset:16px;border-radius:50%;background:radial-gradient(circle,rgba(var(--color-primary-rgb,16,185,129),0.1) 0%,transparent 70%);animation:glowPulse 2s ease-in-out infinite'>
+                </div>
                 <!-- Logo box -->
-                <div id='loader-logo-box' style='position:relative;width:68px;height:68px;border-radius:20px;background:linear-gradient(135deg,var(--color-primary,#10b981),var(--color-primary-dark,#059669));display:flex;align-items:center;justify-content:center;box-shadow:0 0 40px rgba(var(--color-primary-rgb,16,185,129),0.4),0 8px 32px rgba(var(--color-primary-rgb,16,185,129),0.3);animation:logoFloat 3s ease-in-out infinite;overflow:hidden;'>
+                <div id='loader-logo-box'
+                    style='position:relative;width:68px;height:68px;border-radius:20px;background:linear-gradient(135deg,var(--color-primary,#10b981),var(--color-primary-dark,#059669));display:flex;align-items:center;justify-content:center;box-shadow:0 0 40px rgba(var(--color-primary-rgb,16,185,129),0.4),0 8px 32px rgba(var(--color-primary-rgb,16,185,129),0.3);animation:logoFloat 3s ease-in-out infinite;overflow:hidden;'>
                     <i class='fa-solid fa-store' id='loader-logo-icon' style='font-size:28px;color:white'></i>
-                    <img id='loader-logo-img' style='display:none;width:100%;height:100%;object-fit:cover;' src='' alt='Logo' onerror='this.style.display="none";document.getElementById("loader-logo-icon").style.display="block";'/>
+                    <img id='loader-logo-img' style='display:none;width:100%;height:100%;object-fit:cover;' src=''
+                        alt='Logo'
+                        onerror='this.style.display="none";document.getElementById("loader-logo-icon").style.display="block";' />
                 </div>
                 <!-- Orbit dot -->
-                <div style='position:absolute;width:10px;height:10px;border-radius:50%;background:var(--color-primary,#10b981);box-shadow:0 0 8px var(--color-primary,#10b981);animation:orbitDot 3s linear infinite;top:5px;left:50%;margin-left:-5px;transform-origin:5px 55px'></div>
+                <div
+                    style='position:absolute;width:10px;height:10px;border-radius:50%;background:var(--color-primary,#10b981);box-shadow:0 0 8px var(--color-primary,#10b981);animation:orbitDot 3s linear infinite;top:5px;left:50%;margin-left:-5px;transform-origin:5px 55px'>
+                </div>
             </div>
             <!-- Store name -->
             <div style='text-align:center;margin-bottom:6px'>
-                <h1 id='loader-store-name' style='font-size:22px;font-weight:900;letter-spacing:0.15em;text-transform:uppercase;margin:0;line-height:1'>TOKO PUTRI</h1>
-                <p id='loader-tagline' style='font-size:9px;font-weight:700;letter-spacing:0.3em;color:var(--color-primary,#10b981);text-transform:uppercase;margin:6px 0 0'>SOLUSI GROSIR & ALAT TEKNIK</p>
+                <h1 id='loader-store-name'
+                    style='font-size:22px;font-weight:900;letter-spacing:0.15em;text-transform:uppercase;margin:0;line-height:1'>
+                    TOKO PUTRI</h1>
+                <p id='loader-tagline'
+                    style='font-size:9px;font-weight:700;letter-spacing:0.3em;color:var(--color-primary,#10b981);text-transform:uppercase;margin:6px 0 0'>
+                    SOLUSI GROSIR & ALAT TEKNIK</p>
             </div>
             <!-- Divider -->
-            <div style='width:60px;height:2px;background:linear-gradient(90deg,transparent,var(--color-primary,#10b981),transparent);margin:16px 0;border-radius:2px'></div>
+            <div
+                style='width:60px;height:2px;background:linear-gradient(90deg,transparent,var(--color-primary,#10b981),transparent);margin:16px 0;border-radius:2px'>
+            </div>
             <!-- Loading text -->
-            <p id='loader-text' style='font-size:11px;font-weight:800;letter-spacing:0.2em;text-transform:uppercase;margin:0 0 20px;min-height:16px'>Memuat...</p>
+            <p id='loader-text'
+                style='font-size:11px;font-weight:800;letter-spacing:0.2em;text-transform:uppercase;margin:0 0 20px;min-height:16px'>
+                Memuat...</p>
             <!-- Progress bar -->
-            <div style='width:200px;height:4px;background:rgba(var(--color-primary-rgb,16,185,129),0.15);border-radius:99px;overflow:hidden;margin-bottom:20px'>
-                <div style='height:100%;width:40%;background:linear-gradient(90deg,var(--color-primary-dark,#059669),var(--color-primary,#10b981),var(--color-primary-dark,#059669));border-radius:99px;animation:shimmerBar 1.5s ease-in-out infinite;background-size:200% 100%'></div>
+            <div
+                style='width:200px;height:4px;background:rgba(var(--color-primary-rgb,16,185,129),0.15);border-radius:99px;overflow:hidden;margin-bottom:20px'>
+                <div
+                    style='height:100%;width:40%;background:linear-gradient(90deg,var(--color-primary-dark,#059669),var(--color-primary,#10b981),var(--color-primary-dark,#059669));border-radius:99px;animation:shimmerBar 1.5s ease-in-out infinite;background-size:200% 100%'>
+                </div>
             </div>
             <!-- Dots -->
             <div style='display:flex;gap:8px;align-items:center'>
-                <div style='width:8px;height:8px;border-radius:50%;background:var(--color-primary,#10b981);animation:dotBounce 1.2s 0s ease-in-out infinite'></div>
-                <div style='width:8px;height:8px;border-radius:50%;background:var(--color-primary,#10b981);opacity:0.7;animation:dotBounce 1.2s 0.2s ease-in-out infinite'></div>
-                <div style='width:8px;height:8px;border-radius:50%;background:var(--color-primary,#10b981);opacity:0.4;animation:dotBounce 1.2s 0.4s ease-in-out infinite'></div>
+                <div
+                    style='width:8px;height:8px;border-radius:50%;background:var(--color-primary,#10b981);animation:dotBounce 1.2s 0s ease-in-out infinite'>
+                </div>
+                <div
+                    style='width:8px;height:8px;border-radius:50%;background:var(--color-primary,#10b981);opacity:0.7;animation:dotBounce 1.2s 0.2s ease-in-out infinite'>
+                </div>
+                <div
+                    style='width:8px;height:8px;border-radius:50%;background:var(--color-primary,#10b981);opacity:0.4;animation:dotBounce 1.2s 0.4s ease-in-out infinite'>
+                </div>
             </div>
         </div>
         <!-- Bottom badge -->
         <div style='position:absolute;bottom:32px;left:0;right:0;text-align:center;z-index:10'>
-            <span id='loader-badge-text' style='font-size:9px;font-weight:700;letter-spacing:0.25em;text-transform:uppercase;display:inline-flex;align-items:center;gap:6px'>
-                <i class='fa-solid fa-shield-halved' style='color:var(--color-primary,#10b981);font-size:10px'></i> Secure Connection
+            <span id='loader-badge-text'
+                style='font-size:9px;font-weight:700;letter-spacing:0.25em;text-transform:uppercase;display:inline-flex;align-items:center;gap:6px'>
+                <i class='fa-solid fa-shield-halved' style='color:var(--color-primary,#10b981);font-size:10px'></i>
+                Secure Connection
             </span>
         </div>
     </div>
@@ -142,4 +326,5 @@
     <!-- React App Entry Point -->
     <script type="module" src="/src/main.jsx"></script>
 </body>
+
 </html>
