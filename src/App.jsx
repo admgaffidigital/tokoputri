@@ -101,6 +101,108 @@ const getYouTubeId = (url) => {
 // ==========================================
 // MAIN COMPONENT
 // ==========================================
+const Footer = ({ appData, setCurrentView }) => {
+  return (
+    <div className="w-full mt-12 border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 relative overflow-hidden pb-24 sm:pb-12 shadow-[0_-10px_40px_-15px_rgba(0,0,0,0.05)] dark:shadow-none">
+      <div className="absolute top-0 left-0 w-full h-0.5 bg-[var(--color-primary)]"></div>
+      <div className="w-full xl:max-w-[1200px] mx-auto px-5 sm:px-6 lg:px-8 pt-12 pb-8 relative z-10">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-10 lg:gap-12 text-center md:text-left">
+          <div className="md:col-span-12 lg:col-span-5 flex flex-col items-center md:items-start">
+            <div className="flex flex-col sm:flex-row items-center gap-4 mb-6">
+              <div className="w-14 h-14 bg-slate-50 dark:bg-slate-800 rounded-2xl flex items-center justify-center p-2.5 border border-slate-100 dark:border-slate-700 shadow-sm shrink-0 overflow-hidden">
+                {appData.store?.logo && (appData.store.logo.includes('http') || appData.store.logo.includes('data:')) ? (
+                  <img src={appData.store.logo} alt="Logo" className="w-full h-full object-contain" />
+                ) : (
+                  <i className="fa-solid fa-store text-3xl text-[var(--color-primary)]"></i>
+                )}
+              </div>
+              <div className="flex flex-col justify-center items-center sm:items-start mt-2 sm:mt-0">
+                <h3 className="font-black text-xl text-slate-800 dark:text-white leading-tight mb-1.5">{appData.store?.name || 'Toko Putri'}</h3>
+                <span className="inline-flex px-2.5 py-0.5 bg-indigo-50 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400 text-[9px] font-black rounded border border-indigo-100 dark:border-indigo-800/50 uppercase tracking-widest w-max items-center gap-1.5"><i className="fa-solid fa-circle-check"></i> Official Store</span>
+              </div>
+            </div>
+            <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed mb-8 font-semibold pr-0 lg:pr-6 max-w-sm md:max-w-none mx-auto md:mx-0">{appData.store?.description || 'Deskripsi usaha belum diatur.'}</p>
+            <div className="mt-auto pt-5 border-t border-slate-100 dark:border-slate-800/80 w-full">
+              <p className="text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-4">Mendukung Pembayaran &amp; Pengiriman</p>
+              <div className="flex flex-wrap justify-center md:justify-start gap-4 text-2xl text-slate-300 dark:text-slate-600">
+                <i className="fa-brands fa-cc-visa hover:text-blue-500 transition-colors cursor-pointer" title="Visa"></i>
+                <i className="fa-brands fa-cc-mastercard hover:text-orange-500 transition-colors cursor-pointer" title="Mastercard"></i>
+                <i className="fa-solid fa-qrcode hover:text-rose-500 transition-colors cursor-pointer" title="QRIS"></i>
+                <div className="hidden md:block w-px h-6 bg-slate-200 dark:bg-slate-700 mx-1"></div>
+                <i className="fa-solid fa-truck-fast hover:text-emerald-500 transition-colors cursor-pointer" title="Ekspedisi Cepat"></i>
+                <i className="fa-solid fa-box hover:text-amber-500 transition-colors cursor-pointer" title="Kargo"></i>
+              </div>
+            </div>
+          </div>
+          <div className="md:col-span-5 lg:col-span-3 flex flex-col items-center md:items-start">
+            <h4 className="font-black text-slate-800 dark:text-white mb-5 uppercase tracking-widest text-sm flex items-center justify-center md:justify-start gap-3 pb-4 border-b border-slate-100 dark:border-slate-800 w-full">
+              <div className="w-7 h-7 rounded-xl bg-[var(--color-primary-light)] text-[var(--color-primary)] dark:bg-[var(--color-primary-dark)]/30 flex items-center justify-center"><i className="fa-solid fa-link text-xs"></i></div> Tautan Cepat
+            </h4>
+            <ul className="space-y-1.5 w-full max-w-[200px] md:max-w-none text-left">
+              <li><button className="text-sm font-bold text-slate-500 dark:text-slate-400 hover:text-[var(--color-primary)] dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800/50 px-3 py-2.5 md:-ml-3 rounded-xl flex items-center justify-center md:justify-start gap-3 group transition-all w-full text-left" onClick={() => setCurrentView('catalog')}>
+                <i className="fa-solid fa-chevron-right text-[10px] text-slate-300 dark:text-slate-600 group-hover:text-[var(--color-primary)] transition-colors hidden md:block"></i> Halaman Utama
+              </button></li>
+              <li><button className="text-sm font-bold text-slate-500 dark:text-slate-400 hover:text-[var(--color-primary)] dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800/50 px-3 py-2.5 md:-ml-3 rounded-xl flex items-center justify-center md:justify-start gap-3 group transition-all w-full text-left" onClick={() => setCurrentView('cart')}>
+                <i className="fa-solid fa-chevron-right text-[10px] text-slate-300 dark:text-slate-600 group-hover:text-[var(--color-primary)] transition-colors hidden md:block"></i> Keranjang Belanja
+              </button></li>
+              <li><button className="text-sm font-bold text-slate-500 dark:text-slate-400 hover:text-[var(--color-primary)] dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800/50 px-3 py-2.5 md:-ml-3 rounded-xl flex items-center justify-center md:justify-start gap-3 group transition-all w-full text-left" onClick={() => setCurrentView('wishlist')}>                      
+                <i className="fa-solid fa-chevron-right text-[10px] text-slate-300 dark:text-slate-600 group-hover:text-[var(--color-primary)] transition-colors hidden md:block"></i> Produk Favorit
+              </button></li>
+              <li><button className="text-sm font-bold text-slate-500 dark:text-slate-400 hover:text-[var(--color-primary)] dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800/50 px-3 py-2.5 md:-ml-3 rounded-xl flex items-center justify-center md:justify-start gap-3 group transition-all w-full text-left" onClick={() => setCurrentView('orders')}>                     
+                <i className="fa-solid fa-chevron-right text-[10px] text-slate-300 dark:text-slate-600 group-hover:text-[var(--color-primary)] transition-colors hidden md:block"></i> Riwayat Pesanan
+              </button></li>
+              <li><button className="text-sm font-bold text-slate-500 dark:text-slate-400 hover:text-[var(--color-primary)] dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800/50 px-3 py-2.5 md:-ml-3 rounded-xl flex items-center justify-center md:justify-start gap-3 group transition-all w-full text-left" onClick={() => setCurrentView('admin-login')}>
+                <i className="fa-solid fa-shield-halved text-[10px] text-slate-300 dark:text-slate-600 group-hover:text-[var(--color-primary)] transition-colors hidden md:block"></i> Akses Admin
+              </button></li>
+            </ul>
+          </div>
+          <div className="md:col-span-7 lg:col-span-4 flex flex-col items-center md:items-start text-center md:text-left">
+            <h4 className="font-black text-slate-800 dark:text-white mb-5 uppercase tracking-widest text-sm flex items-center justify-center md:justify-start gap-3 pb-4 border-b border-slate-100 dark:border-slate-800 w-full">
+              <div className="w-7 h-7 rounded-xl bg-[var(--color-primary-light)] text-[var(--color-primary)] dark:bg-[var(--color-primary-dark)]/30 flex items-center justify-center"><i className="fa-solid fa-headset text-xs"></i></div> Hubungi Kami
+            </h4>
+            <div className="space-y-4 w-full max-w-sm md:max-w-none mx-auto">
+              {appData.store?.wa && (
+                <a className="flex flex-col sm:flex-row items-center sm:items-start justify-center md:justify-start gap-4 p-4 rounded-2xl bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-700 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 transition-all group cursor-pointer shadow-sm" href={`https://wa.me/${appData.store.wa}`} target="_blank" rel="noopener noreferrer">
+                  <div className="w-12 h-12 bg-emerald-500 text-white rounded-xl flex items-center justify-center shadow-md group-hover:scale-110 group-hover:rotate-6 transition-transform duration-300 shrink-0">
+                    <i className="fa-brands fa-whatsapp text-2xl"></i>
+                  </div>
+                  <div className="min-w-0 text-center sm:text-left">
+                    <p className="text-[10px] font-black text-emerald-700 dark:text-emerald-400 uppercase tracking-widest mb-0.5">Customer Service</p>
+                    <p className="text-sm font-black text-slate-900 dark:text-slate-100 truncate">Konsultasi via WhatsApp</p>
+                  </div>
+                </a>
+              )}
+              <div className="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl border border-slate-100 dark:border-slate-700/50 space-y-4 shadow-sm text-left">
+                <div className="flex flex-col sm:flex-row items-center sm:items-start justify-center md:justify-start gap-3.5 text-sm text-slate-500 dark:text-slate-400">
+                  <div className="w-9 h-9 rounded-full bg-white dark:bg-slate-800 flex items-center justify-center shrink-0 shadow-sm border border-slate-100 dark:border-slate-700"><i className="fa-solid fa-envelope text-slate-400"></i></div>
+                  <span className="font-bold truncate tracking-wide mt-1 sm:mt-1.5">support@restukaryautama.com</span>
+                </div>
+                <div className="flex flex-col sm:flex-row items-center sm:items-start justify-center md:justify-start gap-3.5 text-sm text-slate-500 dark:text-slate-400">
+                  <div className="w-9 h-9 rounded-full bg-white dark:bg-slate-800 flex items-center justify-center shrink-0 shadow-sm border border-slate-100 dark:border-slate-700"><i className="fa-solid fa-clock text-slate-400"></i></div>
+                  <div className="min-w-0 text-center sm:text-left mt-1 sm:mt-0">
+                    <span className="inline-block px-2 py-0.5 bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 text-[9px] font-black rounded border border-amber-200 dark:border-amber-800 uppercase tracking-widest mb-1.5">Operasional</span>
+                    <p className="font-bold text-slate-600 dark:text-slate-300 truncate tracking-wide">Buka Setiap Hari (08:00 - 17:00)</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/80">
+        <div className="w-full xl:max-w-[1200px] mx-auto px-5 sm:px-6 lg:px-8 py-5 flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
+          <p className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider">
+            &#169; 2026 <span className="font-black text-slate-700 dark:text-slate-200">{appData.store?.name || 'Toko'}</span>. All rights reserved.
+          </p>
+          <p className="text-[9px] sm:text-[10px] text-slate-500 dark:text-slate-400 font-black uppercase tracking-widest flex items-center justify-center gap-1.5">
+            Powered by <i className="fa-solid fa-bolt text-[var(--color-primary)]"></i> Blogger PWA System
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 export default function App() {
   // App states
   const [appData, setAppData] = useState(() => {
@@ -1056,6 +1158,30 @@ export default function App() {
     loadAdminTabList(activeAdminTab);
   }, [activeAdminTab, isAdmin]);
 
+  const handleBase64ImageUpload = async (base64) => {
+    const parts = base64.split(',');
+    const mimeType = parts[0].match(/:(.*?);/)?.[1] || 'image/jpeg';
+    const base64Data = parts[1];
+    const payload = {
+      name: 'SETTING_IMG_' + Date.now(),
+      mimeType: mimeType,
+      data: base64Data,
+      token: GAS_SECRET_TOKEN
+    };
+    const res = await fetch(GAS_UPLOAD_URL, {
+      method: 'POST',
+      body: JSON.stringify(payload),
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      redirect: 'follow'
+    });
+    const data = await res.json().catch(() => null);
+    if (data?.status === 'success' && data?.url) {
+      return fixD(data.url);
+    } else {
+      throw new Error(data?.message || 'Server did not return a valid URL.');
+    }
+  };
+
   // Admin image upload to GDrive
   const handleAdminImgUpload = async (e, field) => {
     const file = e.target.files[0];
@@ -1275,6 +1401,204 @@ export default function App() {
     }
   }, [isAdmin, activeAdminTab, adminReportPeriod, appData.products]);
 
+
+  const rewardStatusLabel = (cr) => {
+    if (!cr) return '';
+    if (cr.status === 'ready') return '(Dikirim Bersama Pesanan)';
+    if (cr.status === 'waiting_stock') return '(Stok Kosong - Ditunda)';
+    return '(Menunggu Konfirmasi)';
+  };
+
+  const konfirmasiKeWA = (orderId) => {
+    if (!orderId) return;
+    const d = adminOrders.find(x => x.orderId === orderId) || myOrders.find(x => x.orderId === orderId);
+    if (!d) return showToast('Data pesanan tidak ditemukan!', 'error');
+    const waNum = d.customer && d.customer.wa;
+    if (!waNum) return showToast('Nomor WhatsApp pelanggan tidak tersedia!', 'warning');
+    
+    const storeName = appData.store?.name || 'Toko Kami';
+    const cName = d.customer?.name || 'Pelanggan';
+    const status = d.status || 'Baru';
+    const grandTotal = d.payment?.grandTotal ? fCur(d.payment.grandTotal) : '-';
+    const method = d.payment?.method ? d.payment.method.toUpperCase() : '-';
+    
+    const msg = `Halo *${cName}*! 👋\n\n`
+        + `Terima kasih telah berbelanja di *${storeName}*. 🛒\n\n`
+        + `*Detail Pesanan Anda:*\n`
+        + `📋 ID: *${orderId.split('-').pop()}*\n`
+        + `💰 Total: *${grandTotal}*\n`
+        + `💳 Pembayaran: *${method}*\n`
+        + `📦 Status: *${status}*\n\n`
+        + `Kami akan segera memproses pesanan Anda. Terima kasih! 🙏`;
+    
+    window.open(`https://wa.me/${waNum}?text=${encodeURIComponent(msg)}`, '_blank');
+  };
+
+  const ensureScriptLoaded = (src, checkFn) => {
+    if (checkFn && checkFn()) return Promise.resolve();
+    if (window.loadedScripts = window.loadedScripts || {}, window.loadedScripts[src]) return window.loadedScripts[src];
+    window.loadedScripts[src] = new Promise((resolve, reject) => {
+      const s = document.createElement('script');
+      s.src = src;
+      s.onload = () => resolve();
+      s.onerror = () => { delete window.loadedScripts[src]; reject(new Error('Gagal memuat: ' + src)); };
+      document.head.appendChild(s);
+    });
+    return window.loadedScripts[src];
+  };
+
+  const handlePrintReceipt = () => {
+    if (!selectedAdminOrder) return;
+    const printSection = document.getElementById('thermal-print-section') || document.createElement('div');
+    printSection.id = 'thermal-print-section';
+    printSection.innerHTML = document.getElementById('receipt-paper-content')?.innerHTML || '';
+    if (!document.getElementById('thermal-print-section')) {
+      document.body.appendChild(printSection);
+    }
+    window.print();
+  };
+
+  const handlePrintDocA4 = () => {
+    if (!selectedAdminOrder) return;
+    const p = document.getElementById('doc-paper-content')?.innerHTML || '';
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) {
+      showToast("Gagal membuka tab baru. Izinkan pop-up di browser Anda!", "error");
+      return;
+    }
+    printWindow.document.write(`
+      <html>
+      <head>
+          <title>Cetak Dokumen</title>
+          <script src="https://cdn.tailwindcss.com"><` + `/script>
+          <style>
+              @page { size: A4 portrait; margin: 10mm; }
+              body { font-family: 'Arial', sans-serif; background: #fff; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+          </style>
+      </head>
+      <body onload="setTimeout(() => { window.print(); }, 800)">
+          <div class="w-full max-w-[794px] mx-auto p-4 text-sm leading-relaxed text-slate-900">
+              ${p}
+          </div>
+      </body>
+      </html>
+    `);
+    printWindow.document.close();
+  };
+
+  const exportDocFile = async (mode) => {
+    if (!selectedAdminOrder) return;
+    showToast(mode === 'image' ? 'Membuat Gambar HD...' : 'Menyusun PDF...', 'loading');
+    try {
+      await Promise.all([
+        ensureScriptLoaded('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js', () => typeof html2canvas !== 'undefined'),
+        ensureScriptLoaded('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js', () => typeof window.jspdf !== 'undefined' || typeof window.jsPDF !== 'undefined')
+      ]);
+    } catch(e) {
+      showToast('Gagal memuat modul export. Cek koneksi internet Anda.', 'error');
+      return;
+    }
+
+    try {
+      const originalPaper = document.getElementById('doc-paper-content');
+      if (!originalPaper) throw new Error("Elemen dokumen tidak ditemukan!");
+
+      const cloneWrapper = document.createElement('div');
+      cloneWrapper.style.position = 'absolute';
+      cloneWrapper.style.top = '-9999px'; 
+      cloneWrapper.style.left = '-9999px'; 
+      cloneWrapper.style.width = originalPaper.offsetWidth + 'px'; 
+      cloneWrapper.style.height = 'max-content';
+      cloneWrapper.style.backgroundColor = '#ffffff';
+      cloneWrapper.style.overflow = 'visible';
+      
+      const clone = originalPaper.cloneNode(true);
+      clone.id = 'doc-clone-printing';
+      clone.style.margin = '0 auto';
+      clone.style.boxShadow = 'none'; 
+      clone.classList.remove('absolute', 'top-0', 'left-1/2');
+      clone.style.position = 'static';
+      clone.style.left = 'auto';
+      clone.style.top = 'auto';
+      clone.style.transform = 'none';
+      clone.style.height = 'max-content'; 
+      clone.style.maxHeight = 'none'; 
+      clone.style.overflow = 'visible';
+      clone.classList.add('h-max');
+      
+      cloneWrapper.appendChild(clone);
+      document.body.appendChild(cloneWrapper);
+
+      const imgsInClone = Array.from(clone.querySelectorAll('img'));
+      await Promise.all(imgsInClone.map(img => {
+        if (img.complete) return Promise.resolve();
+        return new Promise(resolve => {
+          img.addEventListener('load', resolve, { once: true });
+          img.addEventListener('error', resolve, { once: true });
+        });
+      }));
+
+      await new Promise(r => setTimeout(r, 300));
+
+      if (cloneWrapper.offsetWidth === 0 || cloneWrapper.offsetHeight === 0) {
+        throw new Error(`Dokumen belum sepenuhnya ter-render. Coba lagi.`);
+      }
+
+      const options = { 
+        scale: 2, 
+        useCORS: true, 
+        backgroundColor: "#ffffff",
+        width: cloneWrapper.offsetWidth,
+        height: cloneWrapper.offsetHeight, 
+        windowWidth: cloneWrapper.offsetWidth,
+        windowHeight: cloneWrapper.offsetHeight
+      };
+      
+      const canvas = await html2canvas(cloneWrapper, options);
+      document.body.removeChild(cloneWrapper);
+
+      if (!canvas || canvas.width === 0 || canvas.height === 0) {
+        throw new Error('Gagal menangkap gambar dokumen.');
+      }
+
+      const fileName = `${docPreviewType.toUpperCase()}_${selectedAdminOrder.orderId}`;
+      
+      if (mode === 'image') {
+        const link = document.createElement('a');
+        link.download = `${fileName}.png`;
+        link.href = canvas.toDataURL('image/png', 1.0);
+        link.click();
+        showToast("Gambar Berhasil Disimpan!", "success");
+      } else {
+        const imgData = canvas.toDataURL('image/jpeg', 1.0);
+        if (!imgData || !imgData.startsWith('data:image/jpeg;base64,')) {
+          throw new Error('Data gambar tidak valid.');
+        }
+        
+        const jsPDF = (window.jspdf && window.jspdf.jsPDF) ? window.jspdf.jsPDF : window.jsPDF;
+        const pdfWidth = 210; 
+        const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+
+        if (!isFinite(pdfHeight) || pdfHeight <= 0) {
+          throw new Error('Ukuran halaman PDF tidak valid.');
+        }
+        
+        const pdf = new jsPDF({
+          orientation: 'p',
+          unit: 'mm',
+          format: [pdfWidth, pdfHeight]
+        });
+        
+        pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
+        pdf.save(`${fileName}.pdf`);
+        showToast("File PDF Berhasil Disimpan!", "success");
+      }
+    } catch (err) {
+      console.error(err);
+      showToast("Gagal memproses dokumen: " + err.message, "error");
+    }
+  };
+
   const handleAdminFormSubmit = async (e) => {
     e.preventDefault();
     if (!adminFormItem) return;
@@ -1295,9 +1619,18 @@ export default function App() {
       } else if (type === 'customers') {
         const docId = item.phone.toString();
         await db.collection("freshmart").doc("cms_data").collection("customers").doc(docId).set(item);
-      } else if (type === 'settings') {
-        await db.collection("freshmart").doc("cms_data").set({ store: item, lastUpdate: firebase.firestore.FieldValue.increment(1) }, { merge: true });
-        setAppData(prev => ({ ...prev, store: item }));
+      } else if (type === 'settings' || type === 'settings_profile' || type === 'settings_catalog' || type === 'settings_shipping' || type === 'settings_operasional') {
+        const newStore = { ...appData.store, ...item };
+        await db.collection("freshmart").doc("cms_data").update({ store: newStore, lastUpdate: firebase.firestore.FieldValue.increment(1) });
+        setAppData(prev => ({ ...prev, store: newStore }));
+      } else if (type === 'settings_payment') {
+        const newPayment = { ...appData.payment, ...item };
+        await db.collection("freshmart").doc("cms_data").update({ payment: newPayment, lastUpdate: firebase.firestore.FieldValue.increment(1) });
+        setAppData(prev => ({ ...prev, payment: newPayment }));
+      } else if (type === 'settings_config') {
+        const newConfig = { ...appData.config, ...item };
+        await db.collection("freshmart").doc("cms_data").update({ config: newConfig, lastUpdate: firebase.firestore.FieldValue.increment(1) });
+        setAppData(prev => ({ ...prev, config: newConfig }));
       } else {
         // categories, brands, vouchers, banks, banners
         const updatedList = [...(appData[type] || [])];
@@ -1667,10 +2000,61 @@ export default function App() {
                       {/* Description / Actions */}
                       <div className="flex-1 flex flex-col p-3 min-w-0">
                         {/* Badges */}
-                        <div className="flex flex-wrap gap-1 mb-2">
-                          {p.poTime && <span className="bg-amber-100 text-amber-600 dark:bg-amber-900/40 px-2 py-0.5 rounded-full text-[8px] font-black uppercase">PO {p.poTime}</span>}
-                          {parseFloat(p.poin) > 0 && <span className="bg-violet-100 text-violet-700 dark:bg-violet-900/40 px-2 py-0.5 rounded-full text-[8px] font-black uppercase"><i className="fa-solid fa-star"></i> +{p.poin} Poin</span>}
-                          {p.tag && <span className="bg-emerald-50 text-emerald-600 dark:bg-emerald-950/20 px-2 py-0.5 rounded-full text-[8px] font-black uppercase">{p.tag}</span>}
+                        <div className="flex flex-wrap gap-1.5 items-center mb-2.5 overflow-hidden shrink-0">
+                          {/* Discount tag */}
+                          {p.priceNormal && p.priceNormal > p.price && (
+                            <span className="bg-rose-500 text-white px-2 py-0.5 rounded-full text-[8px] font-black flex items-center gap-1 whitespace-nowrap uppercase tracking-wider shadow-sm">
+                              <i className="fa-solid fa-tags"></i> -{Math.round(((p.priceNormal - p.price) / p.priceNormal) * 100)}%
+                            </span>
+                          )}
+                          {/* PO Pill */}
+                          {p.poTime && (
+                            <span className="bg-amber-500 text-white px-2 py-0.5 rounded-full text-[8px] font-black flex items-center gap-1 whitespace-nowrap uppercase tracking-wider shadow-sm">
+                              <i className="fa-solid fa-clock"></i> PO {p.poTime}
+                            </span>
+                          )}
+                          {/* Points badge */}
+                          {(() => {
+                            if (p.variants && p.variants.length) {
+                              const poinVals = p.variants.map(v => parseFloat(v.poin) || 0).filter(x => x > 0);
+                              if (poinVals.length) {
+                                const uniq = [...new Set(poinVals)];
+                                return uniq.length === 1 ? (
+                                  <span className="bg-violet-100 text-violet-700 dark:bg-violet-900/40 dark:text-violet-400 px-2 py-0.5 rounded-full text-[8px] font-black flex items-center gap-1 whitespace-nowrap uppercase tracking-wider"><i className="fa-solid fa-star"></i> +{uniq[0]} Poin</span>
+                                ) : (
+                                  <span className="bg-violet-100 text-violet-700 dark:bg-violet-900/40 dark:text-violet-400 px-2 py-0.5 rounded-full text-[8px] font-black flex items-center gap-1 whitespace-nowrap uppercase tracking-wider"><i className="fa-solid fa-star"></i> Dapat Poin</span>
+                                );
+                              }
+                            } else if (parseFloat(p.poin) > 0) {
+                              return <span className="bg-violet-100 text-violet-700 dark:bg-violet-900/40 dark:text-violet-400 px-2 py-0.5 rounded-full text-[8px] font-black flex items-center gap-1 whitespace-nowrap uppercase tracking-wider"><i className="fa-solid fa-star"></i> +{parseFloat(p.poin)} Poin</span>;
+                            }
+                            return null;
+                          })()}
+                          {/* Sold badge */}
+                          {(() => {
+                            const totalSoldCard = p.variants && p.variants.length
+                              ? p.variants.reduce((s, vv) => s + (parseFloat(vv.totalSold) || 0), 0)
+                              : (parseFloat(p.totalSold) || 0);
+                            return totalSoldCard > 0 ? (
+                              <span className="bg-slate-200 text-slate-700 dark:bg-slate-700 dark:text-slate-300 px-2 py-0.5 rounded-full text-[8px] font-black flex items-center gap-1 whitespace-nowrap uppercase tracking-wider"><i className="fa-solid fa-fire-flame-curved text-orange-400"></i> {totalSoldCard} Terjual</span>
+                            ) : null;
+                          })()}
+                          {/* Tag */}
+                          {p.tag && (
+                            <span className="bg-[var(--color-primary-light)] text-[var(--color-primary-dark)] dark:bg-[var(--color-primary-dark)]/50 dark:text-[var(--color-primary)] px-2 py-0.5 rounded-full text-[8px] font-black flex items-center gap-1 whitespace-nowrap uppercase tracking-wider">
+                              <i className="fa-solid fa-hashtag"></i> {p.tag}
+                            </span>
+                          )}
+                          {/* Official Store Badge */}
+                          <span className="bg-indigo-100 text-indigo-700 dark:bg-indigo-900/50 dark:text-indigo-400 px-2 py-0.5 rounded-full text-[8px] font-black flex items-center gap-1 whitespace-nowrap uppercase tracking-wider"><i className="fa-solid fa-circle-check"></i> Official</span>
+                          {/* Brand badge */}
+                          {p.brand && (
+                            <span className="bg-slate-200 text-slate-700 dark:bg-slate-700 dark:text-slate-300 px-2 py-0.5 rounded-full text-[8px] font-black flex items-center gap-1 whitespace-nowrap uppercase tracking-wider"><i className="fa-solid fa-tag"></i> {p.brand}</span>
+                          )}
+                          {/* Wholesale badge */}
+                          {p.wholesale?.length > 0 && !p.variants?.length && (
+                            <span className="bg-amber-100 text-amber-700 dark:bg-amber-900/50 dark:text-amber-400 px-2 py-0.5 rounded-full text-[8px] font-black flex items-center gap-1 whitespace-nowrap uppercase tracking-wider"><i className="fa-solid fa-layer-group"></i> Grosir</span>
+                          )}
                         </div>
 
                         <h4 className="text-[11px] sm:text-xs font-bold text-slate-700 dark:text-slate-200 line-clamp-2 uppercase leading-snug mb-2 flex-1 group-hover:text-[var(--color-primary)] transition-colors">{p.name}</h4>
@@ -2143,6 +2527,7 @@ export default function App() {
                 })}
               </div>
             )}
+            <Footer appData={appData} setCurrentView={setCurrentView} />
           </div>
         </div>
       )}
@@ -2674,20 +3059,92 @@ export default function App() {
                     <p className="text-xs text-slate-400">Sesuaikan profil, warna tema, tarif pengiriman, dan operasional toko.</p>
                   </div>
                   
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
                     <button className="p-4 bg-slate-50 dark:bg-slate-900 border rounded-2xl flex flex-col items-center justify-center text-center gap-2 hover:-translate-y-1 transition-all" onClick={() => {
-                      setAdminSettings({ ...appData.store });
-                      setAdminModalOpen(true);
-                      setAdminFormType('settings');
+                      setAdminFormType('settings_profile');
                       setAdminFormItem({ ...appData.store });
+                      setAdminModalOpen(true);
                     }}>
                       <i className="fa-solid fa-store text-xl text-emerald-500"></i>
                       <span className="text-[10px] font-black uppercase">Profil Toko</span>
                     </button>
-                    <button className="p-4 bg-slate-50 dark:bg-slate-900 border rounded-2xl flex flex-col items-center justify-center text-center gap-2 hover:-translate-y-1 transition-all" onClick={exportDataJson}>
-                      <i className="fa-solid fa-download text-xl text-blue-500"></i>
-                      <span className="text-[10px] font-black uppercase">Backup Data</span>
+                    
+                    <button className="p-4 bg-slate-50 dark:bg-slate-900 border rounded-2xl flex flex-col items-center justify-center text-center gap-2 hover:-translate-y-1 transition-all" onClick={() => {
+                      setAdminFormType('settings_catalog');
+                      setAdminFormItem({ ...appData.store });
+                      setAdminModalOpen(true);
+                    }}>
+                      <i className="fa-solid fa-palette text-xl text-blue-500"></i>
+                      <span className="text-[10px] font-black uppercase">Kategori UI UX</span>
                     </button>
+
+                    <button className="p-4 bg-slate-50 dark:bg-slate-900 border rounded-2xl flex flex-col items-center justify-center text-center gap-2 hover:-translate-y-1 transition-all" onClick={() => {
+                      setAdminFormType('settings_shipping');
+                      setAdminFormItem({ ...appData.store });
+                      setAdminModalOpen(true);
+                    }}>
+                      <i className="fa-solid fa-motorcycle text-xl text-amber-500"></i>
+                      <span className="text-[10px] font-black uppercase">Pengiriman</span>
+                    </button>
+
+                    <button className="p-4 bg-slate-50 dark:bg-slate-900 border rounded-2xl flex flex-col items-center justify-center text-center gap-2 hover:-translate-y-1 transition-all" onClick={() => {
+                      setAdminFormType('settings_payment');
+                      setAdminFormItem({ qrisUrl: appData.payment?.qrisUrl || '' });
+                      setAdminModalOpen(true);
+                    }}>
+                      <i className="fa-solid fa-qrcode text-xl text-indigo-500"></i>
+                      <span className="text-[10px] font-black uppercase">QRIS Pay</span>
+                    </button>
+
+                    <button className="p-4 bg-slate-50 dark:bg-slate-900 border rounded-2xl flex flex-col items-center justify-center text-center gap-2 hover:-translate-y-1 transition-all" onClick={() => {
+                      setAdminFormType('settings_config');
+                      setAdminFormItem({ gasUrl: appData.config?.gasUrl || '' });
+                      setAdminModalOpen(true);
+                    }}>
+                      <i className="fa-solid fa-laptop-code text-xl text-rose-500"></i>
+                      <span className="text-[10px] font-black uppercase">Sistem &amp; API</span>
+                    </button>
+
+                    <button className="p-4 bg-slate-50 dark:bg-slate-900 border rounded-2xl flex flex-col items-center justify-center text-center gap-2 hover:-translate-y-1 transition-all" onClick={() => {
+                      setAdminFormType('settings_operasional');
+                      setAdminFormItem({ useStock: appData.store.useStock, ppnEnabled: appData.store.ppnEnabled, ppnRate: appData.store.ppnRate });
+                      setAdminModalOpen(true);
+                    }}>
+                      <i className="fa-solid fa-sliders text-xl text-violet-500"></i>
+                      <span className="text-[10px] font-black uppercase">Operasional</span>
+                    </button>
+                  </div>
+
+                  <div className="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm mt-6">
+                    <h3 className="font-black text-slate-700 dark:text-white mb-4 text-[10px] uppercase tracking-widest flex items-center gap-2"><i className="fa-solid fa-database text-[var(--color-primary)]"></i> Pencadangan Data</h3>
+                    <div className="flex flex-col sm:flex-row gap-3">
+                      <button onClick={exportDataJson} className="flex-1 bg-slate-900 dark:bg-slate-950 text-white font-black py-3.5 rounded-xl transition-all text-xs flex items-center justify-center gap-2 border border-slate-800 shadow-sm active:scale-95 hover:opacity-90"><i className="fa-solid fa-download"></i> Backup Lokal (.json)</button>
+                      <label className="flex-1 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-slate-700 dark:text-slate-300 font-black py-3.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-600 transition-all text-xs flex items-center justify-center gap-2 shadow-sm active:scale-95 cursor-pointer text-center">
+                        <i className="fa-solid fa-upload"></i> Restore Data
+                        <input type="file" accept=".json" className="hidden" onChange={async (e) => {
+                          const file = e.target.files[0];
+                          if (file) {
+                            const reader = new FileReader();
+                            reader.readAsText(file);
+                            reader.onload = async () => {
+                              try {
+                                const parsed = JSON.parse(reader.result);
+                                if (parsed && (parsed.products || parsed.store)) {
+                                  showToast("Merestore data...", "loading");
+                                  await db.collection("freshmart").doc("cms_data").set(parsed);
+                                  showToast("Restore berhasil! Memuat ulang...", "success");
+                                  setTimeout(() => window.location.reload(), 1500);
+                                } else {
+                                  showToast("Format JSON tidak valid!", "error");
+                                }
+                              } catch(err) {
+                                showToast("Gagal membaca file JSON: " + err.message, "error");
+                              }
+                            };
+                          }
+                        }} />
+                      </label>
+                    </div>
                   </div>
                 </div>
               )}
@@ -3167,8 +3624,8 @@ export default function App() {
                 </>
               )}
 
-              {/* Settings Form */}
-              {adminFormType === 'settings' && (
+              {/* Settings Profile Form */}
+              {adminFormType === 'settings_profile' && (
                 <>
                   <div>
                     <label className="block text-[10px] font-black uppercase text-slate-500 mb-1">Nama Toko</label>
@@ -3184,36 +3641,221 @@ export default function App() {
                   </div>
                   <div>
                     <label className="block text-[10px] font-black uppercase text-slate-500 mb-1">Alamat Toko</label>
-                    <textarea className="admin-input resize-none" value={adminFormItem.address || ''} onChange={e => setAdminFormItem({ ...adminFormItem, address: e.target.value })} rows="2"></textarea>
+                    <textarea className="admin-input resize-none" value={adminFormItem.address || ''} onChange={e => setAdminFormItem({ ...adminFormItem, address: e.target.value })} rows="3"></textarea>
                   </div>
                   <div>
                     <label className="block text-[10px] font-black uppercase text-slate-500 mb-1">Logo Toko (URL)</label>
-                    <input className="admin-input" value={adminFormItem.logo || ''} onChange={e => setAdminFormItem({ ...adminFormItem, logo: e.target.value })} />
+                    <div className="flex gap-2">
+                      <input className="admin-input" value={adminFormItem.logo || ''} onChange={e => setAdminFormItem({ ...adminFormItem, logo: e.target.value })} />
+                      <label className="bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 rounded-xl flex items-center justify-center cursor-pointer font-bold text-xs shrink-0 active:scale-95">
+                        Upload
+                        <input type="file" accept="image/*" className="hidden" onChange={async (e) => {
+                          const file = e.target.files[0];
+                          if (file) {
+                            showToast("Mengupload...", "loading");
+                            try {
+                              const base64 = await new Promise((resolve) => {
+                                const r = new FileReader();
+                                r.readAsDataURL(file);
+                                r.onload = () => resolve(r.result);
+                              });
+                              const uploadedUrl = await handleBase64ImageUpload(base64);
+                              setAdminFormItem({ ...adminFormItem, logo: uploadedUrl });
+                              showToast("Logo berhasil diupload!", "success");
+                            } catch(err) {
+                              showToast("Upload gagal: " + err.message, "error");
+                            }
+                          }
+                        }} />
+                      </label>
+                    </div>
                   </div>
+                </>
+              )}
+
+              {/* Settings Catalog Form */}
+              {adminFormType === 'settings_catalog' && (
+                <>
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="block text-[10px] font-black uppercase text-slate-500 mb-1">Tarif Kurir/km (Rp)</label>
-                      <input className="admin-input" type="number" value={adminFormItem.costPerKm || 0} onChange={e => setAdminFormItem({ ...adminFormItem, costPerKm: parseFloat(e.target.value) || 0 })} />
-                    </div>
-                    <div>
-                      <label className="block text-[10px] font-black uppercase text-slate-500 mb-1">Warna Header PWA</label>
-                      <input className="admin-input" value={adminFormItem.themeColor || '#10b981'} onChange={e => setAdminFormItem({ ...adminFormItem, themeColor: e.target.value })} />
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <label className="block text-[10px] font-black uppercase text-slate-500 mb-1">Kelola Stok?</label>
-                      <select className="admin-input" value={adminFormItem.useStock ? 'true' : 'false'} onChange={e => setAdminFormItem({ ...adminFormItem, useStock: e.target.value === 'true' })}>
-                        <option value="true">Ya, Validasi Stok</option>
-                        <option value="false">Tidak (Bebas Beli)</option>
+                      <label className="block text-[10px] font-black uppercase text-slate-500 mb-1">Fitur Kategori</label>
+                      <select className="admin-input" value={adminFormItem.showCategories !== false ? 'true' : 'false'} onChange={e => setAdminFormItem({ ...adminFormItem, showCategories: e.target.value === 'true' })}>
+                        <option value="true">Tampilkan</option>
+                        <option value="false">Sembunyikan</option>
                       </select>
                     </div>
                     <div>
-                      <label className="block text-[10px] font-black uppercase text-slate-500 mb-1">PPN</label>
+                      <label className="block text-[10px] font-black uppercase text-slate-500 mb-1">Fitur Merek</label>
+                      <select className="admin-input" value={adminFormItem.showBrands !== false ? 'true' : 'false'} onChange={e => setAdminFormItem({ ...adminFormItem, showBrands: e.target.value === 'true' })}>
+                        <option value="true">Tampilkan</option>
+                        <option value="false">Sembunyikan</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-[10px] font-black uppercase text-slate-500 mb-1">Gaya Kategori</label>
+                      <select className="admin-input" value={adminFormItem.categoryStyle !== 'text' ? 'image' : 'text'} onChange={e => setAdminFormItem({ ...adminFormItem, categoryStyle: e.target.value })}>
+                        <option value="image">Kartu Gambar</option>
+                        <option value="text">Pill Text</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-[10px] font-black uppercase text-slate-500 mb-1">Gaya Merek</label>
+                      <select className="admin-input" value={adminFormItem.brandStyle !== 'text' ? 'image' : 'text'} onChange={e => setAdminFormItem({ ...adminFormItem, brandStyle: e.target.value })}>
+                        <option value="image">Kartu Gambar</option>
+                        <option value="text">Pill Text</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-black uppercase text-slate-500 mb-1">Ikon Semua Kategori (URL)</label>
+                    <div className="flex gap-2">
+                      <input className="admin-input" value={adminFormItem.allProductsIcon || ''} onChange={e => setAdminFormItem({ ...adminFormItem, allProductsIcon: e.target.value })} />
+                      <label className="bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 rounded-xl flex items-center justify-center cursor-pointer font-bold text-xs shrink-0 active:scale-95">
+                        Upload
+                        <input type="file" accept="image/*" className="hidden" onChange={async (e) => {
+                          const file = e.target.files[0];
+                          if (file) {
+                            showToast("Mengupload...", "loading");
+                            try {
+                              const base64 = await new Promise((resolve) => {
+                                const r = new FileReader();
+                                r.readAsDataURL(file);
+                                r.onload = () => resolve(r.result);
+                              });
+                              const uploadedUrl = await handleBase64ImageUpload(base64);
+                              setAdminFormItem({ ...adminFormItem, allProductsIcon: uploadedUrl });
+                              showToast("Ikon diupload!", "success");
+                            } catch(err) {
+                              showToast("Upload gagal: " + err.message, "error");
+                            }
+                          }
+                        }} />
+                      </label>
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-black uppercase text-slate-500 mb-1">Ikon Semua Merek (URL)</label>
+                    <div className="flex gap-2">
+                      <input className="admin-input" value={adminFormItem.allBrandsIcon || ''} onChange={e => setAdminFormItem({ ...adminFormItem, allBrandsIcon: e.target.value })} />
+                      <label className="bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 rounded-xl flex items-center justify-center cursor-pointer font-bold text-xs shrink-0 active:scale-95">
+                        Upload
+                        <input type="file" accept="image/*" className="hidden" onChange={async (e) => {
+                          const file = e.target.files[0];
+                          if (file) {
+                            showToast("Mengupload...", "loading");
+                            try {
+                              const base64 = await new Promise((resolve) => {
+                                const r = new FileReader();
+                                r.readAsDataURL(file);
+                                r.onload = () => resolve(r.result);
+                              });
+                              const uploadedUrl = await handleBase64ImageUpload(base64);
+                              setAdminFormItem({ ...adminFormItem, allBrandsIcon: uploadedUrl });
+                              showToast("Ikon diupload!", "success");
+                            } catch(err) {
+                              showToast("Upload gagal: " + err.message, "error");
+                            }
+                          }
+                        }} />
+                      </label>
+                    </div>
+                  </div>
+                </>
+              )}
+
+              {/* Settings Shipping Form */}
+              {adminFormType === 'settings_shipping' && (
+                <>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-[10px] font-black uppercase text-slate-500 mb-1">Sistem Kurir</label>
+                      <select className="admin-input" value={adminFormItem.isDeliveryEnabled !== false ? 'true' : 'false'} onChange={e => setAdminFormItem({ ...adminFormItem, isDeliveryEnabled: e.target.value === 'true' })}>
+                        <option value="true">Aktif</option>
+                        <option value="false">Nonaktif</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-[10px] font-black uppercase text-slate-500 mb-1">Ambil Sendiri</label>
+                      <select className="admin-input" value={adminFormItem.isPickupEnabled !== false ? 'true' : 'false'} onChange={e => setAdminFormItem({ ...adminFormItem, isPickupEnabled: e.target.value === 'true' })}>
+                        <option value="true">Aktif</option>
+                        <option value="false">Nonaktif</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-black uppercase text-slate-500 mb-1">Tarif Kurir per km (Rp)</label>
+                    <input className="admin-input" type="number" value={adminFormItem.costPerKm || 0} onChange={e => setAdminFormItem({ ...adminFormItem, costPerKm: parseFloat(e.target.value) || 0 })} />
+                  </div>
+                </>
+              )}
+
+              {/* Settings Payment Form */}
+              {adminFormType === 'settings_payment' && (
+                <>
+                  <div>
+                    <label className="block text-[10px] font-black uppercase text-slate-500 mb-1">QRIS URL Gambar</label>
+                    <div className="flex gap-2">
+                      <input className="admin-input" value={adminFormItem.qrisUrl || ''} onChange={e => setAdminFormItem({ ...adminFormItem, qrisUrl: e.target.value })} />
+                      <label className="bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 rounded-xl flex items-center justify-center cursor-pointer font-bold text-xs shrink-0 active:scale-95">
+                        Upload
+                        <input type="file" accept="image/*" className="hidden" onChange={async (e) => {
+                          const file = e.target.files[0];
+                          if (file) {
+                            showToast("Mengupload...", "loading");
+                            try {
+                              const base64 = await new Promise((resolve) => {
+                                const r = new FileReader();
+                                r.readAsDataURL(file);
+                                r.onload = () => resolve(r.result);
+                              });
+                              const uploadedUrl = await handleBase64ImageUpload(base64);
+                              setAdminFormItem({ ...adminFormItem, qrisUrl: uploadedUrl });
+                              showToast("QRIS diupload!", "success");
+                            } catch(err) {
+                              showToast("Upload gagal: " + err.message, "error");
+                            }
+                          }
+                        }} />
+                      </label>
+                    </div>
+                  </div>
+                </>
+              )}
+
+              {/* Settings Config Form */}
+              {adminFormType === 'settings_config' && (
+                <>
+                  <div>
+                    <label className="block text-[10px] font-black uppercase text-slate-500 mb-1">Google Apps Script API URL</label>
+                    <input className="admin-input" value={adminFormItem.gasUrl || ''} onChange={e => setAdminFormItem({ ...adminFormItem, gasUrl: e.target.value })} />
+                    <p className="text-[9px] text-slate-400 font-bold mt-1.5">* Digunakan sebagai endpoint untuk sistem upload gambar.</p>
+                  </div>
+                </>
+              )}
+
+              {/* Settings Operasional Form */}
+              {adminFormType === 'settings_operasional' && (
+                <>
+                  <div>
+                    <label className="block text-[10px] font-black uppercase text-slate-500 mb-1">Sistem Validasi Stok</label>
+                    <select className="admin-input" value={adminFormItem.useStock ? 'true' : 'false'} onChange={e => setAdminFormItem({ ...adminFormItem, useStock: e.target.value === 'true' })}>
+                      <option value="true">Ya, Batasi Sesuai Stok</option>
+                      <option value="false">Tidak, Bebas Beli</option>
+                    </select>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-[10px] font-black uppercase text-slate-500 mb-1">PPN Pajak</label>
                       <select className="admin-input" value={adminFormItem.ppnEnabled ? 'true' : 'false'} onChange={e => setAdminFormItem({ ...adminFormItem, ppnEnabled: e.target.value === 'true' })}>
                         <option value="true">Aktif</option>
                         <option value="false">Nonaktif</option>
                       </select>
+                    </div>
+                    <div>
+                      <label className="block text-[10px] font-black uppercase text-slate-500 mb-1">Tarif PPN (%)</label>
+                      <input className="admin-input" type="number" value={adminFormItem.ppnRate || 11} onChange={e => setAdminFormItem({ ...adminFormItem, ppnRate: parseFloat(e.target.value) || 11 })} />
                     </div>
                   </div>
                 </>
@@ -3230,58 +3872,588 @@ export default function App() {
 
       {/* Admin Order Detail Modal */}
       {adminOrderModalOpen && selectedAdminOrder && (
-        <div className="fixed inset-0 z-[100] bg-slate-900/80 flex items-center justify-center p-3">
-          <div className="bg-white dark:bg-slate-800 rounded-[2rem] w-full max-w-md p-6 shadow-2xl border border-slate-200">
-            <div className="flex justify-between items-center mb-4 border-b pb-3">
-              <h3 className="font-black text-slate-900 dark:text-white text-sm">Detail Pesanan #{selectedAdminOrder.orderId.split('-').pop()}</h3>
-              <button className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center" onClick={() => setAdminOrderModalOpen(false)}><i className="fa-solid fa-xmark"></i></button>
+        <div className="fixed inset-0 z-[100] bg-slate-900/80 flex items-center justify-center p-3" onClick={(e) => { if(e.target.id === 'admin-order-modal-bg') setAdminOrderModalOpen(false); }} id="admin-order-modal-bg">
+          <div className="bg-white dark:bg-slate-800 rounded-[2rem] w-full max-w-4xl max-h-[92vh] overflow-y-auto shadow-2xl border border-slate-200 dark:border-slate-700 relative flex flex-col hide-scrollbar">
+            <div className="sticky top-0 bg-white dark:bg-slate-800 px-6 py-4 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center z-20 rounded-t-[2rem]">
+              <h3 className="font-black text-slate-900 dark:text-white text-base flex items-center gap-2"><i className="fa-solid fa-file-invoice text-emerald-500"></i> Detail Pesanan</h3>
+              <button className="w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 dark:bg-slate-700 text-slate-500 hover:text-rose-500 transition-all" onClick={() => setAdminOrderModalOpen(false)}><i className="fa-solid fa-xmark"></i></button>
             </div>
-            <div className="space-y-3 max-h-[60vh] overflow-y-auto">
-              <div className="bg-slate-50 dark:bg-slate-900 p-3.5 rounded-xl border border-slate-200 text-xs text-slate-700 dark:text-slate-300">
-                <p className="font-bold">Pelanggan: <span className="font-black">{selectedAdminOrder.customer.name}</span></p>
-                <p className="font-bold">WhatsApp: <span className="font-black">+{selectedAdminOrder.customer.wa}</span></p>
-                <p className="font-bold">Status Pesanan: <span className="font-black text-rose-500 uppercase">{selectedAdminOrder.status}</span></p>
-                <p className="font-bold">Metode Bayar: <span className="font-black uppercase">{selectedAdminOrder.payment.method}</span></p>
-                {selectedAdminOrder.buktiPayment && (
-                  <div className="mt-3">
-                    <p className="font-bold mb-1.5">Bukti Transfer:</p>
-                    <img src={selectedAdminOrder.buktiPayment} alt="Bukti" className="w-full max-h-48 object-contain border rounded-xl" />
+            
+            <div className="p-5 sm:p-6 lg:p-8 space-y-4 flex-1 bg-slate-50 dark:bg-slate-900 overflow-y-auto">
+              <div className="bg-white dark:bg-slate-800 p-5 sm:p-6 rounded-[1.5rem] border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col sm:flex-row justify-between gap-5 sm:items-center">
+                <div className="flex-1">
+                  <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-1.5"><i className="fa-solid fa-crosshairs text-emerald-500"></i> Status</p>
+                  <div className="relative w-full sm:w-40 mt-1">
+                    <select value={selectedAdminOrder.status} onChange={async (e) => {
+                      const nextStatus = e.target.value;
+                      showToast("Mengubah status...", "loading");
+                      try {
+                        await db.collection("freshmart_orders").doc(selectedAdminOrder.orderId).update({ status: nextStatus });
+                        setSelectedAdminOrder(prev => ({ ...prev, status: nextStatus }));
+                        showToast("Status diperbarui!", "success");
+                        loadAdminTabList(activeAdminTab);
+                      } catch(err) {
+                        showToast("Gagal update status: " + err.message, "error");
+                      }
+                    }} className="w-full text-sm font-black border px-4 py-2.5 rounded-xl appearance-none cursor-pointer focus:outline-none bg-white dark:bg-slate-800 text-slate-800 dark:text-white border-slate-200 dark:border-slate-700">
+                      <option value="Baru">Baru (Pending)</option>
+                      <option value="Diproses">Diproses</option>
+                      <option value="Selesai">Selesai</option>
+                      <option value="Dibatalkan">Dibatalkan</option>
+                    </select>
+                    <i className="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-xs text-slate-400"></i>
                   </div>
-                )}
+                </div>
+                <div className="text-left sm:text-right flex flex-col justify-center">
+                  <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5">ID Pesanan</p>
+                  <p className="text-sm sm:text-base font-black text-slate-900 dark:text-white break-all tracking-wide">#{selectedAdminOrder.orderId}</p>
+                  <p className="text-[10px] font-bold text-slate-400 mt-1.5">{selectedAdminOrder.dateString ? new Date(selectedAdminOrder.dateString).toLocaleString('id-ID') : ''}</p>
+                </div>
               </div>
-              <div className="border border-slate-200 rounded-xl p-3.5 space-y-2">
-                <p className="text-[10px] font-black uppercase text-slate-400">Rincian Barang</p>
-                {selectedAdminOrder.items.map((i, idx) => (
-                  <div key={idx} className="flex justify-between items-center text-xs font-bold">
-                    <span className="truncate flex-1 pr-2">{i.name} ({i.qty} {i.unit})</span>
-                    <span className="shrink-0">{fCur(i.effectivePrice * i.qty)}</span>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-5 items-start">
+                <div className="flex flex-col gap-4">
+                  {/* Data Pemesan */}
+                  <div className="bg-white dark:bg-slate-800 p-5 sm:p-6 rounded-[1.5rem] border border-slate-200 dark:border-slate-700 shadow-sm">
+                    <h4 className="font-black text-slate-900 dark:text-white text-sm border-b dark:border-slate-700 pb-4 mb-4 flex items-center gap-3"><div className="w-8 h-8 rounded-xl bg-blue-50 dark:bg-blue-900/30 text-blue-500 flex items-center justify-center border border-blue-100 dark:border-blue-800"><i className="fa-solid fa-user"></i></div> Data Pemesan</h4>
+                    <div className="space-y-4 text-xs font-bold text-slate-600 dark:text-slate-300">
+                      <div className="flex justify-between items-center"><span className="text-slate-500 font-bold">Nama</span><span className="font-black text-slate-900 dark:text-white text-base">{selectedAdminOrder.customer?.name || '-'}</span></div>
+                      {selectedAdminOrder.customer?.wa && (
+                        <div className="flex justify-between items-center"><span className="text-slate-500 font-bold flex items-center gap-1.5"><i className="fa-brands fa-whatsapp text-green-500"></i> WhatsApp</span><a href={`https://wa.me/${selectedAdminOrder.customer.wa}`} target="_blank" rel="noopener noreferrer" className="font-black text-green-600 dark:text-green-400 hover:underline">+{selectedAdminOrder.customer.wa}</a></div>
+                      )}
+                      {selectedAdminOrder.customer?.wa && (
+                        <button type="button" onClick={() => {
+                          const phone = normalizeWA(selectedAdminOrder.customer.wa);
+                          if (!phone || phone.length < 10) return showToast("Nomor WA tidak valid!", "warning");
+                          showToast('Menyimpan...', 'loading');
+                          db.collection("freshmart").doc("cms_data").collection("customers").doc(phone).get().then(doc => {
+                            if (doc.exists) {
+                              doc.ref.set({ name: selectedAdminOrder.customer.name || doc.data().name }, { merge: true }).then(() => {
+                                showToast("Nama pelanggan diperbarui!", "success");
+                                loadAdminTabList(activeAdminTab);
+                              });
+                            } else {
+                              doc.ref.set({ id: parseInt(phone, 10), name: selectedAdminOrder.customer.name || '-', phone: phone, points: 0 }).then(() => {
+                                showToast("✅ Pelanggan baru disimpan!", "success");
+                                loadAdminTabList(activeAdminTab);
+                              });
+                            }
+                          });
+                        }} className="w-full py-2.5 rounded-xl bg-teal-50 dark:bg-teal-900/20 border border-teal-200 dark:border-teal-800 text-teal-600 dark:text-teal-400 text-[11px] font-black uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-teal-100 transition-all active:scale-95">
+                          <i className="fa-solid fa-address-book"></i> Simpan ke Pelanggan
+                        </button>
+                      )}
+                      <div className="border-t border-dashed border-slate-200 dark:border-slate-700 pt-4">
+                        <span className="text-slate-500 font-bold flex items-center gap-2 mb-2.5"><i className="fa-solid fa-map-location-dot"></i> Alamat ({selectedAdminOrder.customer?.deliveryMethod === 'delivery' ? 'Kurir' : 'Ambil Sendiri'})</span>
+                        <div className="bg-slate-50 dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-bold leading-relaxed shadow-inner text-sm">{selectedAdminOrder.customer?.address || '-'}</div>
+                        {selectedAdminOrder.customer?.lat && selectedAdminOrder.customer?.deliveryMethod === 'delivery' && (
+                          <a href={`https://www.google.com/maps?q=${selectedAdminOrder.customer.lat},${selectedAdminOrder.customer.lng}`} target="_blank" rel="noopener noreferrer" className="mt-3 flex items-center justify-center gap-2 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-800 font-black text-xs py-2.5 px-4 rounded-xl hover:bg-blue-100">
+                            <i className="fa-solid fa-location-dot"></i> Buka Lokasi di Google Maps
+                          </a>
+                        )}
+                      </div>
+                      {selectedAdminOrder.customer?.note && (
+                        <div className="bg-amber-50 dark:bg-amber-900/20 p-4 rounded-xl border border-amber-200 dark:border-amber-800 mt-2">
+                          <p className="text-[10px] font-black text-amber-600 uppercase tracking-widest mb-1.5"><i className="fa-solid fa-note-sticky"></i> Catatan Pembeli</p>
+                          <p className="text-sm text-amber-900 dark:text-amber-100 font-bold">{selectedAdminOrder.customer.note}</p>
+                        </div>
+                      )}
+                      {selectedAdminOrder.buktiPayment && (
+                        <div className="bg-violet-50 dark:bg-violet-900/20 p-4 rounded-xl border border-violet-200 dark:border-violet-800 mt-2">
+                          <p className="text-[10px] font-black text-violet-600 dark:text-violet-400 uppercase tracking-widest mb-2.5"><i className="fa-solid fa-image"></i> Bukti Pembayaran</p>
+                          <a href={selectedAdminOrder.buktiPayment} target="_blank" rel="noopener noreferrer" className="block rounded-xl overflow-hidden border border-violet-200 dark:border-violet-800">
+                            <img src={selectedAdminOrder.buktiPayment} alt="Bukti Pembayaran" className="w-full max-h-48 object-cover" />
+                            <div className="bg-violet-100 dark:bg-violet-900/40 py-2 text-center text-[10px] font-black text-violet-600 dark:text-violet-400"><i className="fa-solid fa-arrow-up-right-from-square mr-1"></i> Tap untuk buka</div>
+                          </a>
+                        </div>
+                      )}
+                    </div>
                   </div>
-                ))}
-                <div className="border-t pt-2 mt-2 flex justify-between items-center text-sm font-black">
-                  <span>Grand Total</span>
-                  <span className="text-emerald-600">{fCur(selectedAdminOrder.payment.grandTotal)}</span>
+                </div>
+
+                <div className="flex flex-col gap-4">
+                  {/* Rincian Item */}
+                  <div className="bg-white dark:bg-slate-800 p-5 sm:p-6 rounded-[1.5rem] border border-slate-200 dark:border-slate-700 shadow-sm">
+                    <h4 className="font-black text-slate-900 dark:text-white text-sm border-b dark:border-slate-700 pb-4 mb-4 flex items-center gap-3"><div className="w-8 h-8 rounded-xl bg-emerald-50 dark:bg-emerald-900/30 text-emerald-500 flex items-center justify-center border border-emerald-100 dark:border-emerald-800"><i className="fa-solid fa-box-open"></i></div> Rincian Item</h4>
+                    <div className="space-y-3">
+                      {selectedAdminOrder.items.map((t, idx) => (
+                        <div key={idx} className="flex justify-between items-center bg-slate-50 dark:bg-slate-900 p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
+                          <div className="flex items-center gap-3 min-w-0">
+                            <div className="w-10 h-10 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 flex items-center justify-center text-slate-500 dark:text-slate-400 shrink-0"><i className="fa-solid fa-tag text-sm"></i></div>
+                            <div className="min-w-0">
+                              <p className="font-black text-sm text-slate-900 dark:text-white truncate">
+                                {t.name}
+                                {t.variantName && <span className="bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-1.5 py-0.5 rounded-xl border border-slate-300 dark:border-slate-600 text-[9px] ml-1.5">{t.variantName}</span>}
+                                {t.poTime && <span className="bg-amber-100 dark:bg-amber-900/50 text-amber-600 dark:text-amber-400 px-1.5 py-0.5 rounded-xl text-[8px] font-bold border border-amber-200 dark:border-amber-800 uppercase ml-1.5 whitespace-nowrap">PO {t.poTime}</span>}
+                              </p>
+                              <p className="text-[11px] text-slate-500 dark:text-slate-400 font-bold mt-1">{parseFloat(t.qty)} {t.unit || 'pcs'} x {fCur(t.effectivePrice)}</p>
+                            </div>
+                          </div>
+                          <div className="font-black text-sm text-slate-900 dark:text-white ml-3 shrink-0">{fCur(t.effectivePrice * parseFloat(t.qty))}</div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Klaim Hadiah */}
+                  {selectedAdminOrder.claimedReward && (
+                    <div className="bg-violet-50 dark:bg-violet-900/10 p-5 sm:p-6 rounded-[1.5rem] border border-violet-200 dark:border-violet-800 shadow-sm">
+                      <h4 className="font-black text-violet-700 dark:text-violet-400 text-sm border-b border-violet-200 dark:border-violet-800 pb-4 mb-4 flex items-center gap-3"><div className="w-8 h-8 rounded-xl bg-violet-100 dark:bg-violet-900/40 text-violet-500 flex items-center justify-center border border-violet-200 dark:border-violet-800"><i className="fa-solid fa-gift"></i></div> Klaim Hadiah</h4>
+                      <div className="space-y-3 text-xs font-bold">
+                        <div className="flex justify-between items-center"><span className="text-slate-500">Hadiah</span><span className="font-black text-violet-700 dark:text-violet-400 text-sm">{selectedAdminOrder.claimedReward.name}</span></div>
+                        <div className="flex justify-between items-center"><span className="text-slate-500">Poin Ditukar</span><span className="font-black text-slate-800 dark:text-white text-sm">{selectedAdminOrder.claimedReward.pointsCost} Poin</span></div>
+                        <div className="flex justify-between items-center"><span className="text-slate-500">Status</span><span className={`font-black text-xs px-2 py-1 rounded-xl ${selectedAdminOrder.claimedReward.status === 'ready' ? 'bg-emerald-100 text-emerald-600' : selectedAdminOrder.claimedReward.status === 'waiting_stock' ? 'bg-amber-100 text-amber-600' : 'bg-slate-200 text-slate-600'}`}>{rewardStatusLabel(selectedAdminOrder.claimedReward)}</span></div>
+                        {selectedAdminOrder.claimedReward.note && <div className="bg-white/70 dark:bg-slate-900/40 p-2.5 rounded-xl text-[11px] italic text-violet-600 dark:text-violet-400">"{selectedAdminOrder.claimedReward.note}"</div>}
+                        <div className="border-t border-dashed border-violet-200 dark:border-violet-800 pt-3.5 mt-1 space-y-2.5">
+                          <button type="button" onClick={async () => {
+                            showToast("Menyimpan...", "loading");
+                            await db.collection("freshmart_orders").doc(selectedAdminOrder.orderId).update({ 'claimedReward.status': 'ready', 'claimedReward.note': '' });
+                            setSelectedAdminOrder(prev => ({ ...prev, claimedReward: { ...prev.claimedReward, status: 'ready', note: '' } }));
+                            showToast('Status klaim hadiah diperbarui!', 'success');
+                            loadAdminTabList(activeAdminTab);
+                          }} className="w-full py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white text-[11px] font-black uppercase tracking-widest flex items-center justify-center gap-2 active:scale-95 transition-all"><i className="fa-solid fa-check"></i> Stok Ada — Kirim Bersama</button>
+                          <button type="button" onClick={async () => {
+                            const note = window.prompt("Catatan untuk pelanggan:", "Stok hadiah kosong, akan kami kirim susulan begitu stok tersedia kembali.");
+                            if (note !== null) {
+                              showToast("Menyimpan...", "loading");
+                              await db.collection("freshmart_orders").doc(selectedAdminOrder.orderId).update({ 'claimedReward.status': 'waiting_stock', 'claimedReward.note': note });
+                              setSelectedAdminOrder(prev => ({ ...prev, claimedReward: { ...prev.claimedReward, status: 'waiting_stock', note } }));
+                              showToast('Status klaim hadiah diperbarui!', 'success');
+                              loadAdminTabList(activeAdminTab);
+                            }
+                          }} className="w-full py-2.5 rounded-xl bg-amber-100 dark:bg-amber-900/30 hover:bg-amber-200 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-800 text-[11px] font-black uppercase tracking-widest flex items-center justify-center gap-2 active:scale-95 transition-all"><i className="fa-solid fa-clock"></i> Stok Kosong — Tunda Pengiriman</button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Ringkasan Bayar */}
+                  <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-950 p-6 sm:p-7 rounded-[1.5rem] text-white shadow-xl border border-slate-700/60 relative overflow-hidden group">
+                    <div className="absolute -top-10 -right-10 w-32 h-32 bg-emerald-500/20 rounded-full blur-3xl pointer-events-none group-hover:bg-emerald-500/30 transition-all duration-700"></div>
+                    <div className="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-emerald-900/20 to-transparent pointer-events-none"></div>
+                    
+                    <div className="flex justify-between items-center border-b border-slate-700/80 pb-4 mb-4 relative z-10">
+                      <h4 className="font-black text-[11px] uppercase tracking-widest text-slate-300 flex items-center gap-2.5"><i className="fa-solid fa-wallet text-emerald-400 text-sm"></i> Ringkasan Bayar</h4>
+                      <span className="bg-white/10 backdrop-blur-md px-3 py-1 rounded-xl text-[10px] font-black tracking-widest border border-white/10 uppercase shadow-inner text-white">{selectedAdminOrder.payment?.method?.toUpperCase()}</span>
+                    </div>
+                    
+                    <div className="space-y-3 font-medium text-sm text-slate-300 relative z-10">
+                      <div className="flex justify-between items-center"><span>Subtotal Produk</span><span className="font-bold text-white">{fCur(selectedAdminOrder.payment?.subtotal)}</span></div>
+                      {selectedAdminOrder.customer?.deliveryMethod === 'delivery' && (
+                        <div className="flex justify-between items-center"><span>Ongkos Kirim</span><span className="font-bold text-white">{fCur(selectedAdminOrder.payment?.shippingCost)}</span></div>
+                      )}
+                      {selectedAdminOrder.payment?.shippingDiscount > 0 && (
+                        <div className="flex justify-between items-center text-emerald-400 bg-emerald-900/20 px-2 py-1 -mx-2 rounded-xl"><span>Diskon Ongkir</span><span className="font-bold">-{fCur(selectedAdminOrder.payment.shippingDiscount)}</span></div>
+                      )}
+                      {selectedAdminOrder.payment?.productDiscount > 0 && (
+                        <div className="flex justify-between items-center text-rose-400 bg-rose-900/20 px-2 py-1 -mx-2 rounded-xl"><span>Diskon Promo</span><span className="font-bold">-{fCur(selectedAdminOrder.payment.productDiscount)}</span></div>
+                      )}
+                      {selectedAdminOrder.payment?.ppnAmount > 0 && (
+                        <div className="flex justify-between items-center text-amber-400 bg-amber-900/20 px-2 py-1 -mx-2 rounded-xl"><span>PPN ({selectedAdminOrder.payment.ppnRate || 11}%)</span><span className="font-bold">+{fCur(selectedAdminOrder.payment.ppnAmount)}</span></div>
+                      )}
+                    </div>
+                    
+                    <div className="border-t border-dashed border-slate-600/60 my-5 relative z-10"></div>
+                    
+                    <div className="flex justify-between items-end relative z-10">
+                      <span className="text-sm font-black text-slate-400 uppercase tracking-widest mb-1">Total Tagihan</span>
+                      <span className="text-3xl font-black bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent tracking-tight drop-shadow-md">{fCur(selectedAdminOrder.payment?.grandTotal)}</span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
-            <div className="flex gap-2.5 mt-6 border-t pt-4">
-              <button className="flex-1 py-3 bg-blue-600 text-white font-bold rounded-xl text-xs" onClick={() => {
-                showToast("Mengubah status pesanan...", "loading");
-                db.collection("freshmart_orders").doc(selectedAdminOrder.orderId).update({ status: 'Diproses' })
-                  .then(() => {
-                    showToast("Status diubah ke Diproses", "success");
-                    setAdminOrderModalOpen(false);
-                    loadAdminTabList(activeAdminTab);
+
+            <div className="p-5 lg:px-8 border-t border-slate-100 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-b-[2rem] flex flex-col gap-3 shadow-[0_-15px_25px_-5px_rgba(0,0,0,0.05)]">
+              <div className="flex gap-2.5 w-full">
+                <button className="flex-1 py-3 bg-emerald-50 text-emerald-600 border border-emerald-100 font-black rounded-xl text-xs flex items-center justify-center gap-1.5 hover:bg-emerald-100 transition-all shadow-sm active:scale-95 dark:bg-emerald-900/20 dark:border-emerald-800" onClick={() => setReceiptPreviewOpen(true)}><i className="fa-solid fa-print"></i> Struk</button>
+                <button className="flex-1 py-3 bg-blue-50 text-blue-600 border border-blue-100 font-black rounded-xl text-xs flex items-center justify-center gap-1.5 hover:bg-blue-100 transition-all shadow-sm active:scale-95 dark:bg-blue-900/20 dark:border-blue-800" onClick={() => { setDocPreviewType('invoice'); setDocPreviewOpen(true); }}><i className="fa-solid fa-file-invoice-dollar"></i> Invoice</button>
+                <button className="flex-1 py-3 bg-amber-50 text-amber-600 border border-amber-100 font-black rounded-xl text-xs flex items-center justify-center gap-1.5 hover:bg-amber-100 transition-all shadow-sm active:scale-95 dark:bg-amber-900/20 dark:border-amber-800" onClick={() => { setDocPreviewType('surat_jalan'); setDocPreviewOpen(true); }}><i className="fa-solid fa-truck-ramp-box"></i> Srt Jalan</button>
+              </div>
+              <div className="flex flex-col sm:flex-row gap-3">
+                <button className="w-full sm:flex-1 py-3 bg-green-50 text-green-600 font-black rounded-xl text-xs flex items-center justify-center gap-1.5 border border-green-100 dark:bg-green-900/20 dark:border-green-800 hover:bg-green-500 hover:text-white transition-all shadow-sm active:scale-95" onClick={() => konfirmasiKeWA(selectedAdminOrder.orderId)}><i className="fa-brands fa-whatsapp"></i> Konfirmasi ke WA</button>
+                <button className="w-full sm:flex-1 py-3 bg-rose-50 text-rose-600 font-black rounded-xl text-xs flex items-center justify-center gap-1.5 border border-rose-100 dark:bg-rose-900/20 dark:border-rose-800 hover:bg-rose-500 hover:text-white transition-all shadow-sm active:scale-95" onClick={() => {
+                  showConfirm("Hapus Pesanan", "Yakin ingin hapus permanen?", async () => {
+                    showToast("Menghapus...", "loading");
+                    try {
+                      await db.collection("freshmart_orders").doc(selectedAdminOrder.orderId).delete();
+                      showToast("Terhapus!", "success");
+                      setAdminOrderModalOpen(false);
+                      loadAdminTabList(activeAdminTab);
+                    } catch(e) {
+                      showToast("Gagal hapus: " + e.message, "error");
+                    }
                   });
-              }}>Proses</button>
-              <button className="flex-1 py-3 bg-emerald-600 text-white font-bold rounded-xl text-xs" onClick={() => {
-                showToast("Menyelesaikan pesanan...", "loading");
-                db.collection("freshmart_orders").doc(selectedAdminOrder.orderId).update({ status: 'Selesai' })
-                  .then(() => {
-                    showToast("Status diubah ke Selesai", "success");
-                    setAdminOrderModalOpen(false);
-                    loadAdminTabList(activeAdminTab);
-                  });
-              }}>Selesai</button>
+                }}><i className="fa-solid fa-trash"></i> Hapus Pesanan</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Receipt Preview Modal */}
+      {receiptPreviewOpen && selectedAdminOrder && (
+        <div className="fixed inset-0 z-[110] bg-slate-900/80 flex items-center justify-center p-3" onClick={(e) => { if(e.target.id === 'receipt-modal-bg') setReceiptPreviewOpen(false); }} id="receipt-modal-bg">
+          <div className="bg-slate-50 dark:bg-slate-800 rounded-[2rem] w-full max-w-[320px] max-h-[92vh] overflow-hidden shadow-2xl border border-slate-200 dark:border-slate-700 flex flex-col">
+            <div className="sticky top-0 bg-white dark:bg-slate-800 px-5 py-4 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center z-20">
+              <h3 className="font-black text-slate-900 dark:text-white text-sm">Preview Struk</h3>
+              <button className="w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 dark:bg-slate-700 text-slate-500 hover:text-rose-500 transition-all" onClick={() => setReceiptPreviewOpen(false)}><i className="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <div className="p-5 flex justify-center items-start bg-slate-200 dark:bg-slate-900 overflow-y-auto hide-scrollbar flex-1">
+              <div id="receipt-paper-content" className="bg-white shadow-md p-4 font-mono text-[11px] font-bold text-black border border-slate-300 rounded w-[260px] leading-tight shrink-0 h-max" style={{ fontFamily: '"Courier New",Courier,monospace', minHeight: '300px', backgroundColor: '#fff', color: '#000' }}>
+                <div className="text-center font-bold mb-[2px] text-[13px]">{appData.store?.name || 'Toko Putri'}</div>
+                {appData.store?.wa && <div className="text-center mb-[4px]">WA: {appData.store.wa}</div>}
+                <div className="border-b border-dashed border-black my-2"></div>
+                <div style={{ whiteSpace: 'pre' }}>Order: #{selectedAdminOrder.orderId}</div>
+                <div style={{ whiteSpace: 'pre' }}>Tgl  : {selectedAdminOrder.dateString ? new Date(selectedAdminOrder.dateString).toLocaleString('id-ID') : ''}</div>
+                <div style={{ whiteSpace: 'pre' }}>Plg  : {(selectedAdminOrder.customer?.name || 'Guest').substring(0, 20)}</div>
+                <div style={{ whiteSpace: 'pre' }}>Tipe : {selectedAdminOrder.customer?.deliveryMethod === 'delivery' ? 'Kurir' : 'Toko'}</div>
+                <div className="border-b border-dashed border-black my-2"></div>
+                {selectedAdminOrder.customer?.note && (
+                  <>
+                    <div style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-all' }}>Cat: {selectedAdminOrder.customer.note}</div>
+                    <div className="border-b border-dashed border-black my-2"></div>
+                  </>
+                )}
+                
+                {selectedAdminOrder.items.map((i, idx) => {
+                  let vText = i.variantName ? ` (${i.variantName}${i.colorCode ? ' ' + i.colorCode : ''})` : '';
+                  const nameStr = (i.name + vText + (i.poTime ? ' [PO]' : '')).substring(0, 32);
+                  const qtyStr = `${parseFloat(i.qty)} ${i.unit || 'pcs'} x ${(i.effectivePrice || 0).toLocaleString('id-ID')}`;
+                  const totalStr = (parseFloat(i.qty) * (i.effectivePrice || 0)).toLocaleString('id-ID');
+                  const spaces = ' '.repeat(Math.max(1, 32 - qtyStr.length - totalStr.length));
+                  return (
+                    <div key={idx} className="mb-2">
+                      <div style={{ whiteSpace: 'pre-wrap', fontWeight: 'bold', wordBreak: 'break-all' }}>{nameStr}</div>
+                      <div style={{ whiteSpace: 'pre', fontSize: '11px' }}>{qtyStr}{spaces}{totalStr}</div>
+                      {i.poTime && <div style={{ whiteSpace: 'pre', fontSize: '10px', fontStyle: 'italic', color: '#4b5563' }}>* Estimasi PO: {i.poTime}</div>}
+                    </div>
+                  );
+                })}
+
+                <div className="border-b border-dashed border-black my-2"></div>
+                <div className="flex justify-between" style={{ whiteSpace: 'pre' }}>
+                  <span>Subtotal</span>
+                  <span>{(selectedAdminOrder.payment?.subtotal || 0).toLocaleString('id-ID')}</span>
+                </div>
+                {selectedAdminOrder.customer?.deliveryMethod === 'delivery' && (
+                  <div className="flex justify-between" style={{ whiteSpace: 'pre' }}>
+                    <span>Ongkir</span>
+                    <span>{(selectedAdminOrder.payment?.shippingCost || 0).toLocaleString('id-ID')}</span>
+                  </div>
+                )}
+                {selectedAdminOrder.payment?.shippingDiscount > 0 && (
+                  <div className="flex justify-between text-emerald-600" style={{ whiteSpace: 'pre' }}>
+                    <span>Pot.Ongkir</span>
+                    <span>-{(selectedAdminOrder.payment.shippingDiscount).toLocaleString('id-ID')}</span>
+                  </div>
+                )}
+                {selectedAdminOrder.payment?.productDiscount > 0 && (
+                  <div className="flex justify-between text-rose-600" style={{ whiteSpace: 'pre' }}>
+                    <span>Pot.Harga</span>
+                    <span>-{(selectedAdminOrder.payment.productDiscount).toLocaleString('id-ID')}</span>
+                  </div>
+                )}
+                {selectedAdminOrder.payment?.ppnAmount > 0 && (
+                  <div className="flex justify-between" style={{ whiteSpace: 'pre' }}>
+                    <span>PPN ({selectedAdminOrder.payment.ppnRate || 11}%)</span>
+                    <span>{(selectedAdminOrder.payment.ppnAmount).toLocaleString('id-ID')}</span>
+                  </div>
+                )}
+
+                <div className="border-b border-dashed border-black my-2"></div>
+                <div className="flex justify-between font-bold text-xs" style={{ whiteSpace: 'pre' }}>
+                  <span>TOTAL</span>
+                  <span>Rp {(selectedAdminOrder.payment?.grandTotal || 0).toLocaleString('id-ID')}</span>
+                </div>
+                <div className="flex justify-between" style={{ whiteSpace: 'pre' }}>
+                  <span>Bayar:</span>
+                  <span className="uppercase">{selectedAdminOrder.payment?.method || 'CASH'}</span>
+                </div>
+
+                {(selectedAdminOrder.pointsEarned > 0 || (selectedAdminOrder.finalMemberPoints !== undefined && selectedAdminOrder.finalMemberPoints !== null)) && (
+                  <>
+                    <div className="border-b border-dashed border-black my-2"></div>
+                    {selectedAdminOrder.pointsEarned > 0 && (
+                      <div className="flex justify-between" style={{ whiteSpace: 'pre' }}>
+                        <span>Poin Didapat:</span>
+                        <span>+{selectedAdminOrder.pointsEarned}</span>
+                      </div>
+                    )}
+                    {selectedAdminOrder.finalMemberPoints !== undefined && selectedAdminOrder.finalMemberPoints !== null && (
+                      <div className="flex justify-between font-bold" style={{ whiteSpace: 'pre' }}>
+                        <span>Saldo Poin:</span>
+                        <span>{selectedAdminOrder.finalMemberPoints}</span>
+                      </div>
+                    )}
+                    {selectedAdminOrder.claimedReward && (
+                      <div style={{ whiteSpace: 'pre-wrap', fontWeight: 'bold', wordBreak: 'break-all', marginTop: '2px' }}>HADIAH: {selectedAdminOrder.claimedReward.name} ({selectedAdminOrder.claimedReward.status === 'ready' ? 'Kirim bersama pesanan' : 'Stok kosong-ditunda'})</div>
+                    )}
+                  </>
+                )}
+
+                {selectedAdminOrder.items.some(i => i.poTime) && (
+                  <>
+                    <div className="border-b border-dashed border-black my-2"></div>
+                    <div className="text-center text-[9px] leading-tight italic text-slate-500 mb-1" style={{ whiteSpace: 'pre-wrap' }}>
+                      * Catatan: Untuk pesanan gabungan, produk PO akan dikirimkan menyusul (estimasi sesuai label) tanpa dikenakan biaya tambahan.
+                    </div>
+                  </>
+                )}
+
+                <div className="border-b border-dashed border-black my-2"></div>
+                <div className="text-center my-2 text-[10px]">Terima Kasih</div>
+                <div className="border-b border-dashed border-black my-2"></div>
+                <div style={{ height: '15px' }}></div>
+              </div>
+            </div>
+            
+            <div className="p-5 bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 z-20">
+              <button className="btn-primary w-full py-4 text-sm rounded-xl shadow-glow flex items-center justify-center font-bold" onClick={handlePrintReceipt}><i className="fa-solid fa-print mr-2"></i> Print Thermal</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Document (Invoice/Surat Jalan) Preview Modal */}
+      {docPreviewOpen && selectedAdminOrder && (
+        <div className="fixed inset-0 z-[115] bg-slate-900/80 flex items-center justify-center p-2 sm:p-5" onClick={(e) => { if(e.target.id === 'doc-preview-modal-bg') setDocPreviewOpen(false); }} id="doc-preview-modal-bg">
+          <div className="bg-slate-100 dark:bg-slate-800 rounded-[2rem] w-full max-w-4xl max-h-[95vh] overflow-hidden shadow-2xl border border-slate-200 dark:border-slate-700 relative transform scale-100 transition-all duration-300 flex flex-col">
+            <div className="sticky top-0 bg-white dark:bg-slate-800 px-5 py-4 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center z-20 shadow-sm shrink-0">
+              <div>
+                <h3 className="font-black text-slate-900 dark:text-white text-base">
+                  {docPreviewType === 'invoice' ? 'Preview Faktur Invoice' : 'Preview Surat Jalan'}
+                </h3>
+                <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-0.5">Format Kertas Standar A4</p>
+              </div>
+              <button className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-500 hover:text-rose-500 flex items-center justify-center transition-all shrink-0" onClick={() => setDocPreviewOpen(false)}><i className="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <div className="p-3 sm:p-8 bg-slate-200 dark:bg-slate-900 overflow-auto flex-1 hide-scrollbar">
+              <div className="relative w-full min-h-[1123px]">
+                <div id="doc-paper-content" className="bg-white text-slate-900 shadow-xl p-8 sm:p-12 rounded-sm border border-slate-300 w-[794px] leading-relaxed flex flex-col absolute top-0 left-1/2 -translate-x-1/2 h-max" style={{ minHeight: '1123px', fontSize: '13px', transformOrigin: 'top center' }}>
+                  
+                  {/* Header */}
+                  <div className="flex justify-between items-start border-b-[3px] border-slate-800 pb-6 mb-6">
+                    <div className="flex items-center gap-4">
+                      {appData.store?.logo && (appData.store.logo.includes('http') || appData.store.logo.includes('data:')) ? (
+                        <img src={appData.store.logo} className="w-16 h-16 object-contain" alt="Logo" />
+                      ) : (
+                        <div className="w-16 h-16 bg-emerald-500 text-white flex items-center justify-center rounded-xl"><i className="fa-solid fa-store text-3xl"></i></div>
+                      )}
+                      <div>
+                        <h1 className="font-black text-2xl tracking-tight text-slate-900 uppercase">{appData.store?.name || 'Toko Putri'}</h1>
+                        <p className="text-sm font-bold text-slate-500 mt-1 uppercase tracking-widest">{appData.store?.slogan || 'General Supplier'}</p>
+                        <p className="text-xs font-medium text-slate-500 mt-1 max-w-sm leading-snug">{appData.store?.address || 'Alamat fisik toko belum diatur.'}</p>
+                        <p className="text-xs font-medium text-slate-500 mt-0.5"><i className="fa-brands fa-whatsapp text-emerald-500"></i> {appData.store?.wa || '-'}</p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <h2 className={`font-black text-3xl tracking-widest uppercase ${docPreviewType === 'invoice' ? 'text-blue-600' : 'text-amber-600'}`}>
+                        {docPreviewType === 'invoice' ? (selectedAdminOrder.payment?.method === 'tempo' ? 'PROFORMA INVOICE' : 'INVOICE') : 'SURAT JALAN'}
+                      </h2>
+                      <p className="text-sm font-bold text-slate-600 mt-2 font-mono">#{selectedAdminOrder.orderId}</p>
+                      <p className="text-xs font-semibold text-slate-500 mt-1">Tanggal: {selectedAdminOrder.dateString ? new Date(selectedAdminOrder.dateString).toLocaleDateString('id-ID', {day: '2-digit', month: '2-digit', year: 'numeric'}) : ''}</p>
+                    </div>
+                  </div>
+
+                  {/* Customer & Info */}
+                  <div className="grid grid-cols-2 gap-8 mb-8">
+                    <div className="bg-slate-50 p-5 rounded-xl border border-slate-200">
+                      <h3 className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3 border-b border-slate-200 pb-2">Ditagihkan / Dikirim Kepada:</h3>
+                      <p className="font-black text-base text-slate-900 uppercase mb-1">{selectedAdminOrder.customer?.name || 'Guest'}</p>
+                      <p className="text-sm font-medium text-slate-700 leading-relaxed mb-3">{selectedAdminOrder.customer?.address || '-'}</p>
+                      {selectedAdminOrder.customer?.note && (
+                        <p className="text-xs font-semibold text-amber-700 bg-amber-50 p-2.5 rounded-xl border border-amber-200"><i className="fa-solid fa-note-sticky"></i> Catatan: {selectedAdminOrder.customer.note}</p>
+                      )}
+                    </div>
+                    
+                    <div className="bg-slate-50 p-5 rounded-xl border border-slate-200 flex flex-col justify-center space-y-3">
+                      <div className="flex justify-between items-center border-b border-slate-200 pb-2">
+                        <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Metode Pengiriman</span>
+                        <span className="text-sm font-black text-slate-800 uppercase">{selectedAdminOrder.customer?.deliveryMethod === 'delivery' ? 'Kurir Toko' : 'Ambil Sendiri'}</span>
+                      </div>
+                      <div className="flex justify-between items-center border-b border-slate-200 pb-2">
+                        <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Sistem Pembayaran</span>
+                        <span className="text-sm font-black text-slate-800 uppercase">{selectedAdminOrder.payment?.method || 'cash'}</span>
+                      </div>
+                      <div className="flex justify-between items-center pb-1">
+                        <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Status Bayar</span>
+                        <span className={`text-sm font-black uppercase ${selectedAdminOrder.status === 'Selesai' ? 'text-emerald-600' : 'text-rose-600'}`}>
+                          {selectedAdminOrder.status === 'Selesai' ? 'LUNAS' : 'BELUM LUNAS'}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Items Table */}
+                  {docPreviewType === 'invoice' ? (
+                    <>
+                      <table className="w-full text-left text-sm text-slate-900 border-collapse mb-6">
+                        <thead>
+                          <tr className="bg-slate-800 text-white font-bold uppercase tracking-wider text-xs">
+                            <th className="py-3 px-4 rounded-tl-xl w-10 text-center border-r border-slate-700">No</th>
+                            <th className="py-3 px-4 border-r border-slate-700">Deskripsi Produk & Varian</th>
+                            <th className="py-3 px-4 text-center w-24 border-r border-slate-700">Qty</th>
+                            <th className="py-3 px-4 text-right w-32 border-r border-slate-700">Harga Sat.</th>
+                            <th className="py-3 px-4 rounded-tr-xl text-right w-32">Total</th>
+                          </tr>
+                        </thead>
+                        <tbody className="border-b-2 border-slate-800 divide-y divide-slate-200">
+                          {selectedAdminOrder.items.map((item, idx) => (
+                            <tr key={idx} className="hover:bg-slate-50 transition-colors">
+                              <td className="py-4 px-4 text-center font-mono text-slate-500">{idx+1}</td>
+                              <td className="py-4 px-4 font-bold flex items-center gap-2">
+                                <span>{item.name}</span>
+                                {item.variantName && <span className="bg-slate-100 text-slate-600 px-2 py-0.5 rounded text-[10px] border border-slate-200 whitespace-nowrap ml-1">{item.variantName}</span>}
+                                {item.colorCode && <span className="inline-block w-4 h-4 rounded-full border border-slate-300 shadow-sm" style={{ backgroundColor: item.colorCode }}></span>}
+                                {item.poTime && <span className="bg-amber-100 text-amber-700 px-2 py-0.5 rounded text-[10px] font-bold border border-amber-200 whitespace-nowrap ml-1">PO {item.poTime}</span>}
+                              </td>
+                              <td className="py-4 px-4 text-center font-black text-slate-700">{parseFloat(item.qty)} <span className="text-[10px] font-bold text-slate-400 uppercase">{item.unit || 'pcs'}</span></td>
+                              <td className="py-4 px-4 text-right font-mono font-medium">{fCur(item.effectivePrice)}</td>
+                              <td className="py-4 px-4 text-right font-mono font-black">{fCur(item.effectivePrice * parseFloat(item.qty))}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+
+                      <div className="flex justify-end mb-10">
+                        <div className="w-1/2 md:w-[45%] space-y-3 text-sm font-bold text-slate-700">
+                          <div className="flex justify-between px-4"><span>Subtotal Produk</span><span className="font-mono">{fCur(selectedAdminOrder.payment?.subtotal)}</span></div>
+                          {selectedAdminOrder.payment?.shippingCost > 0 && <div className="flex justify-between px-4"><span>Ongkos Kirim</span><span className="font-mono">{fCur(selectedAdminOrder.payment.shippingCost)}</span></div>}
+                          {selectedAdminOrder.payment?.shippingDiscount > 0 && <div className="flex justify-between px-4 text-emerald-600"><span>Diskon Ongkir</span><span className="font-mono">-{fCur(selectedAdminOrder.payment.shippingDiscount)}</span></div>}
+                          {selectedAdminOrder.payment?.productDiscount > 0 && <div className="flex justify-between px-4 text-rose-600"><span>Diskon Produk</span><span className="font-mono">-{fCur(selectedAdminOrder.payment.productDiscount)}</span></div>}
+                          {selectedAdminOrder.payment?.ppnAmount > 0 && <div className="flex justify-between px-4 text-amber-600"><span>PPN ({selectedAdminOrder.payment.ppnRate || 11}%)</span><span className="font-mono">+{fCur(selectedAdminOrder.payment.ppnAmount)}</span></div>}
+                          
+                          <div className="flex justify-between items-center bg-slate-800 text-white p-4 rounded-xl mt-4 shadow-md">
+                            <span className="font-black text-base uppercase tracking-widest">Grand Total</span>
+                            <span className="font-mono text-xl text-emerald-400 font-black tracking-tight">{fCur(selectedAdminOrder.payment?.grandTotal)}</span>
+                          </div>
+                          
+                          {selectedAdminOrder.payment?.method === 'tempo' && (
+                            <>
+                              <div className="flex justify-between px-4 mt-4 text-emerald-600"><span>Uang Muka (DP)</span><span className="font-mono">{fCur(selectedAdminOrder.payment?.tempoDp || 0)}</span></div>
+                              <div className="flex justify-between items-center bg-rose-50 text-rose-700 p-4 rounded-xl mt-2 border border-rose-200">
+                                <span className="font-black text-base uppercase tracking-widest">Sisa Tagihan</span>
+                                <span className="font-mono text-xl font-black tracking-tight">{fCur(selectedAdminOrder.payment?.tempoBalance || 0)}</span>
+                              </div>
+                            </>
+                          )}
+                        </div>
+                      </div>
+                    </>
+                  ) : (
+                    <table className="w-full text-left text-sm text-slate-900 border-collapse mb-10">
+                      <thead>
+                        <tr className="bg-slate-800 text-white font-bold uppercase tracking-wider text-xs">
+                          <th className="py-3 px-4 rounded-tl-xl w-10 text-center border-r border-slate-700">No</th>
+                          <th className="py-3 px-4 border-r border-slate-700">Nama & Spesifikasi Barang</th>
+                          <th className="py-3 px-4 text-center w-28 border-r border-slate-700">Kuantitas</th>
+                          <th className="py-3 px-4 text-center w-24 border-r border-slate-700">Satuan</th>
+                          <th className="py-3 px-4 rounded-tr-xl text-center w-24">Ceklis Gudang</th>
+                        </tr>
+                      </thead>
+                      <tbody className="border-b-2 border-slate-800 divide-y divide-slate-200">
+                        {selectedAdminOrder.items.map((item, idx) => (
+                          <tr key={idx} className="hover:bg-slate-50 transition-colors">
+                            <td className="py-4 px-4 text-center font-mono text-slate-500">{idx+1}</td>
+                            <td className="py-4 px-4 font-bold uppercase flex items-center gap-2">
+                              <span>{item.name}</span>
+                              {item.variantName && <span className="bg-slate-100 text-slate-600 px-2 py-0.5 rounded text-[10px] border border-slate-200 whitespace-nowrap ml-1">{item.variantName}</span>}
+                              {item.colorCode && <span className="inline-block w-4 h-4 rounded-full border border-slate-300 shadow-sm" style={{ backgroundColor: item.colorCode }}></span>}
+                              {item.poTime && <span className="bg-amber-100 text-amber-700 px-2 py-0.5 rounded text-[10px] font-bold border border-amber-200 whitespace-nowrap ml-1">PO {item.poTime}</span>}
+                            </td>
+                            <td className="py-4 px-4 text-center font-black text-lg text-slate-800">{parseFloat(item.qty)}</td>
+                            <td className="py-4 px-4 text-center text-slate-500 font-bold uppercase text-xs">{item.unit || 'pcs'}</td>
+                            <td className="py-4 px-4 text-center"><div className="w-5 h-5 border-2 border-slate-300 mx-auto rounded shadow-inner"></div></td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  )}
+
+                  {/* Poin & Hadiah Info */}
+                  {(selectedAdminOrder.pointsEarned > 0 || (selectedAdminOrder.finalMemberPoints !== undefined && selectedAdminOrder.finalMemberPoints !== null)) && (
+                    <div className="bg-amber-50 border border-amber-200 rounded-xl p-5 mb-5 flex items-center gap-6">
+                      <div className="w-10 h-10 rounded-xl bg-amber-400 text-white flex items-center justify-center shrink-0"><i className="fa-solid fa-star"></i></div>
+                      {selectedAdminOrder.pointsEarned > 0 && (
+                        <div>
+                          <p className="text-[10px] font-black text-amber-500 uppercase tracking-widest">Poin Didapat</p>
+                          <p className="font-black text-lg text-amber-700">+{selectedAdminOrder.pointsEarned}</p>
+                        </div>
+                      )}
+                      {selectedAdminOrder.finalMemberPoints !== undefined && selectedAdminOrder.finalMemberPoints !== null && (
+                        <div>
+                          <p className="text-[10px] font-black text-amber-500 uppercase tracking-widest">Saldo Poin Terkumpul</p>
+                          <p className="font-black text-lg text-amber-700">{selectedAdminOrder.finalMemberPoints}</p>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {selectedAdminOrder.claimedReward && (
+                    <div className="bg-violet-50 border-2 border-violet-300 border-dashed rounded-xl p-5 mb-8 flex items-center justify-between gap-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-xl bg-violet-500 text-white flex items-center justify-center shrink-0"><i className="fa-solid fa-gift"></i></div>
+                        <div>
+                          <p className="text-[10px] font-black text-violet-500 uppercase tracking-widest">Klaim Hadiah Member ({selectedAdminOrder.claimedReward.pointsCost} Poin)</p>
+                          <p className="font-black text-base text-violet-800 uppercase">{selectedAdminOrder.claimedReward.name}</p>
+                          {selectedAdminOrder.claimedReward.note && <p className="text-xs italic text-violet-600 mt-1">"{selectedAdminOrder.claimedReward.note}"</p>}
+                        </div>
+                      </div>
+                      <span className="text-[10px] font-black px-3 py-2 rounded-xl bg-violet-600 text-white uppercase tracking-widest text-center shrink-0">
+                        {selectedAdminOrder.claimedReward.status === 'ready' ? 'SERTAKAN BERSAMA PENGIRIMAN INI' : selectedAdminOrder.claimedReward.status === 'waiting_stock' ? 'STOK KOSONG — KIRIM SUSULAN' : 'MENUNGGU KONFIRMASI'}
+                      </span>
+                    </div>
+                  )}
+
+                  {/* T&C Tempo */}
+                  {selectedAdminOrder.payment?.method === 'tempo' && (
+                    <div className="mt-6 mb-8 border border-pink-200 bg-pink-50 p-4 rounded-xl text-left">
+                      <h4 className="font-black text-pink-700 text-xs uppercase tracking-widest mb-1"><i className="fa-solid fa-clock-rotate-left mr-1"></i> Syarat & Ketentuan Pembayaran Tempo</h4>
+                      <p className="text-[10px] text-pink-600 font-bold leading-relaxed">Maksimal pembayaran sisa tagihan adalah 30 hari (Jatuh Tempo: {selectedAdminOrder.payment.tempoDueDate ? new Date(selectedAdminOrder.payment.tempoDueDate).toLocaleDateString('id-ID') : '-'}). Keterlambatan pembayaran akan dikenakan denda sebesar 1% dari sisa tagihan untuk setiap harinya.</p>
+                    </div>
+                  )}
+
+                  {/* Pre-Order Info */}
+                  {selectedAdminOrder.items.some(i => i.poTime) && (
+                    <div className="mt-6 mb-8 border border-amber-200 bg-amber-50 p-4 rounded-xl text-left flex gap-3 items-start">
+                      <i className="fa-solid fa-clock text-amber-500 mt-0.5 animate-pulse"></i>
+                      <div>
+                        <h4 className="font-black text-amber-700 text-xs uppercase tracking-widest mb-1">Informasi Produk Pre-Order (PO)</h4>
+                        <p className="text-[10px] text-amber-600 font-bold leading-relaxed">Pesanan ini mengandung produk Pre-Order (PO). Khusus untuk produk berlabel PO akan dikirimkan menyusul (estimasi sesuai label) tanpa dikenakan biaya tambahan.</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Signatures */}
+                  <div className="grid grid-cols-3 gap-8 text-center text-sm mt-auto pt-8">
+                    <div className="flex flex-col items-center">
+                      <span className="font-bold text-slate-500 mb-20 uppercase tracking-widest text-[10px]">Penerima / Klien</span>
+                      <div className="w-48 border-b-2 border-slate-800 mb-2"></div>
+                      <span className="font-black text-slate-900">{selectedAdminOrder.customer?.name || 'Nama Terang & TTD'}</span>
+                    </div>
+                    <div className="flex flex-col items-center">
+                      <span className="font-bold text-slate-500 mb-20 uppercase tracking-widest text-[10px]">Sopir / Pengantar</span>
+                      <div className="w-48 border-b-2 border-slate-800 mb-2"></div>
+                      <span className="font-black text-slate-900">Nama Terang & TTD</span>
+                    </div>
+                    <div className="flex flex-col items-center">
+                      <span className="font-bold text-slate-500 mb-20 uppercase tracking-widest text-[10px]">Hormat Kami,</span>
+                      <div className="w-48 border-b-2 border-slate-800 mb-2"></div>
+                      <span className="font-black text-slate-900 uppercase">{appData.store?.name || 'Toko'}</span>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+            
+            <div className="p-4 sm:p-5 md:p-6 lg:p-8 bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 z-20 grid grid-cols-3 gap-3 shrink-0">
+              <button className="py-3 bg-blue-600 hover:bg-blue-700 text-white font-black rounded-xl text-[10px] sm:text-xs flex items-center justify-center gap-2 transition-all active:scale-95 shadow-md shadow-blue-500/20" onClick={() => exportDocFile('image')}><i className="fa-solid fa-image text-sm sm:text-base"></i> <span className="hidden sm:inline">Simpan Gambar</span></button>
+              <button className="py-3 bg-rose-600 hover:bg-rose-700 text-white font-black rounded-xl text-[10px] sm:text-xs flex items-center justify-center gap-2 transition-all active:scale-95 shadow-md shadow-rose-500/20" onClick={() => exportDocFile('pdf')}><i className="fa-solid fa-file-pdf text-sm sm:text-base"></i> <span className="hidden sm:inline">Cetak PDF</span></button>
+              <button className="py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-black rounded-xl text-[10px] sm:text-xs flex items-center justify-center gap-2 transition-all active:scale-95 shadow-md shadow-emerald-500/20" onClick={handlePrintDocA4}><i className="fa-solid fa-print text-sm sm:text-base"></i> <span className="hidden sm:inline">Print Langsung</span></button>
             </div>
           </div>
         </div>
