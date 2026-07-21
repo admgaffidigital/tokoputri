@@ -196,6 +196,18 @@ export default function App() {
   const [tempWholesale, setTempWholesale] = useState([]);
   const [tempVariants, setTempVariants] = useState([]);
 
+  // Admin extra states
+  const [reviewFilterMode, setReviewFilterMode] = useState('all'); // all, visible, hidden
+  const [adminReplyTarget, setAdminReplyTarget] = useState(null); // { id, currentReply }
+  const [adminReplyText, setAdminReplyText] = useState('');
+  const [adminImgUploading, setAdminImgUploading] = useState(false);
+  const [adminSettings, setAdminSettings] = useState(null); // for settings tab edit
+  const [adminRestockItem, setAdminRestockItem] = useState(null);
+  const [adminRestockQty, setAdminRestockQty] = useState(0);
+  const [adminRestockVariantIdx, setAdminRestockVariantIdx] = useState(0);
+  const [piutangOrders, setPiutangOrders] = useState([]);
+  const [piutangSearch, setPiutangSearch] = useState('');
+
   // Auto-slide banner ref
   const bannerSliderRef = useRef(null);
 
@@ -1033,6 +1045,9 @@ export default function App() {
     } else if (tab === 'reviews') {
       const snap = await db.collection("freshmart").doc("cms_data").collection("reviews").get();
       setAdminReviews(snap.docs.map(doc => doc.data()));
+    } else if (tab === 'piutang') {
+      const snap = await db.collection("freshmart_orders").where("payment.method", "==", "tempo").orderBy("timestamp", "desc").get();
+      setPiutangOrders(snap.docs.map(doc => doc.data()));
     }
   };
 
@@ -1040,6 +1055,143 @@ export default function App() {
     if (!isAdmin) return;
     loadAdminTabList(activeAdminTab);
   }, [activeAdminTab, isAdmin]);
+
+  // Admin image upload to GDrive
+  const handleAdminImgUpload = async (e, field) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) return showToast('Hanya file gambar!');
+    setAdminImgUploading(true);
+    showToast('Mengupload gambar...', 'loading');
+    const compressed = await compressImageForUpload(file, 1200, 0.80).catch(() => file);
+    const reader = new FileReader();
+    reader.readAsDataURL(compressed);
+    reader.onload = async () => {
+      try {
+        const base64Data = reader.result.split(',')[1];
+        const safeName = file.name.replace(/[^a-zA-Z0-9.]/g, '_');
+        const payload = { name: 'ADMIN_IMG_' + Date.now() + '_' + safeName, mimeType: file.type || 'image/jpeg', data: base64Data, token: GAS_SECRET_TOKEN };
+        const res = await fetch(GAS_UPLOAD_URL, { method: 'POST', body: JSON.stringify(payload), headers: { 'Content-Type': 'text/plain;charset=utf-8' }, redirect: 'follow' });
+        const data = await res.json().catch(() => null);
+        setAdminImgUploading(false);
+        if (data?.status === 'success' && data?.url) {
+          const imgUrl = fixD(data.url);
+          setAdminFormItem(prev => ({ ...prev, [field]: imgUrl }));
+          showToast('Gambar berhasil diupload!', 'success');
+        } else {
+          showToast('Upload gagal, coba lagi.', 'error');
+        }
+      } catch(err) {
+        setAdminImgUploading(false);
+        showToast('Upload error: ' + err.message, 'error');
+      }
+    };
+    reader.onerror = () => { setAdminImgUploading(false); showToast('Gagal baca file.', 'error'); };
+  };
+
+  // Toggle review visibility
+  const handleToggleReviewVisibility = async (review) => {
+    const newVisible = review.isVisible === false;
+    try {
+      await db.collection("freshmart").doc("cms_data").collection("reviews").doc(review.id?.toString()).update({ isVisible: newVisible });
+      setAdminReviews(prev => prev.map(r => r.id === review.id ? { ...r, isVisible: newVisible } : r));
+      showToast(newVisible ? 'Ulasan ditampilkan!' : 'Ulasan disembunyikan!', 'success');
+    } catch(err) { showToast('Gagal: ' + err.message, 'error'); }
+  };
+
+  const handleDeleteReview = async (review) => {
+    showConfirm("Hapus Ulasan", "Yakin ingin menghapus ulasan ini?", async () => {
+      try {
+        await db.collection("freshmart").doc("cms_data").collection("reviews").doc(review.id?.toString()).delete();
+        setAdminReviews(prev => prev.filter(r => r.id !== review.id));
+        showToast('Ulasan dihapus!', 'success');
+      } catch(err) { showToast('Gagal: ' + err.message, 'error'); }
+    });
+  };
+
+  const handleSaveAdminReply = async () => {
+    if (!adminReplyTarget) return;
+    try {
+      await db.collection("freshmart").doc("cms_data").collection("reviews").doc(adminReplyTarget.id?.toString()).update({ adminReply: adminReplyText });
+      setAdminReviews(prev => prev.map(r => r.id === adminReplyTarget.id ? { ...r, adminReply: adminReplyText } : r));
+      setAdminReplyTarget(null);
+      setAdminReplyText('');
+      showToast('Balasan tersimpan!', 'success');
+    } catch(err) { showToast('Gagal: ' + err.message, 'error'); }
+  };
+
+  // Restock product
+  const handleProcessRestock = async () => {
+    if (!adminRestockItem) return;
+    const qty = parseFloat(adminRestockQty) || 0;
+    if (qty <= 0) return showToast('Jumlah restock harus lebih dari 0!');
+    showToast('Menyimpan restock...', 'loading');
+    try {
+      const productRef = db.collection("freshmart").doc("cms_data").collection("products").doc(adminRestockItem.id?.toString());
+      const snap = await productRef.get();
+      if (!snap.exists) throw new Error('Produk tidak ditemukan!');
+      const pData = snap.data();
+      let updatedData = {};
+      if (pData.variants?.length && adminRestockVariantIdx >= 0) {
+        const variants = [...pData.variants];
+        variants[adminRestockVariantIdx] = { ...variants[adminRestockVariantIdx], stock: (parseFloat(variants[adminRestockVariantIdx].stock) || 0) + qty };
+        updatedData = { variants };
+      } else {
+        updatedData = { stock: (parseFloat(pData.stock) || 0) + qty };
+      }
+      await productRef.update(updatedData);
+      // Also update appData locally
+      setAppData(prev => {
+        const prods = prev.products.map(p => {
+          if (p.id !== adminRestockItem.id) return p;
+          if (p.variants?.length && adminRestockVariantIdx >= 0) {
+            const vars = [...p.variants];
+            vars[adminRestockVariantIdx] = { ...vars[adminRestockVariantIdx], stock: (parseFloat(vars[adminRestockVariantIdx].stock) || 0) + qty };
+            return { ...p, variants: vars };
+          }
+          return { ...p, stock: (parseFloat(p.stock) || 0) + qty };
+        });
+        return { ...prev, products: prods };
+      });
+      setAdminRestockItem(null);
+      showToast('Restock berhasil!', 'success');
+    } catch(err) { showToast('Gagal: ' + err.message, 'error'); }
+  };
+
+  // Save settings
+  const handleSaveSettings = async () => {
+    if (!adminSettings) return;
+    showToast('Menyimpan pengaturan...', 'loading');
+    try {
+      await db.collection("freshmart").doc("cms_data").set({ store: adminSettings, lastUpdate: firebase.firestore.FieldValue.increment(1) }, { merge: true });
+      setAppData(prev => ({ ...prev, store: adminSettings }));
+      showToast('Pengaturan toko disimpan!', 'success');
+    } catch(err) { showToast('Gagal: ' + err.message, 'error'); }
+  };
+
+  // Pay tempo installment
+  const handlePayTempoInstallment = async (order, amount) => {
+    const amtNum = parseFloat(amount) || 0;
+    if (amtNum <= 0) return showToast('Masukkan jumlah cicilan yang valid!');
+    const currentBalance = parseFloat(order.payment?.tempoBalance) || 0;
+    if (amtNum > currentBalance) return showToast('Cicilan melebihi sisa tagihan!');
+    const newBalance = Math.max(0, currentBalance - amtNum);
+    const isPaid = newBalance <= 0;
+    const installment = { amount: amtNum, date: new Date().toISOString(), note: 'Cicilan' };
+    const installments = [...(order.payment?.installments || []), installment];
+    showToast('Menyimpan cicilan...', 'loading');
+    try {
+      await db.collection("freshmart_orders").doc(order.orderId).update({
+        'payment.tempoBalance': newBalance,
+        'payment.paymentStatus': isPaid ? 'lunas' : 'hutang',
+        'payment.installments': installments,
+        ...(isPaid ? { status: 'Selesai' } : {})
+      });
+      setPiutangOrders(prev => prev.map(o => o.orderId === order.orderId ? { ...o, payment: { ...o.payment, tempoBalance: newBalance, paymentStatus: isPaid ? 'lunas' : 'hutang', installments } } : o));
+      showToast(isPaid ? 'Piutang LUNAS! ✅' : `Cicilan Rp${amtNum.toLocaleString('id-ID')} tercatat!`, 'success');
+    } catch(err) { showToast('Gagal: ' + err.message, 'error'); }
+  };
+
 
   const loadAdminReport = async (period = 'today') => {
     setAdminReportPeriod(period);
@@ -1140,6 +1292,12 @@ export default function App() {
       } else if (type === 'rewards') {
         item.id = item.id || Date.now();
         await db.collection("freshmart").doc("cms_data").collection("rewards").doc(item.id.toString()).set(item);
+      } else if (type === 'customers') {
+        const docId = item.phone.toString();
+        await db.collection("freshmart").doc("cms_data").collection("customers").doc(docId).set(item);
+      } else if (type === 'settings') {
+        await db.collection("freshmart").doc("cms_data").set({ store: item, lastUpdate: firebase.firestore.FieldValue.increment(1) }, { merge: true });
+        setAppData(prev => ({ ...prev, store: item }));
       } else {
         // categories, brands, vouchers, banks, banners
         const updatedList = [...(appData[type] || [])];
@@ -1172,6 +1330,8 @@ export default function App() {
           await db.collection("freshmart").doc("cms_data").collection("products").doc(item.id.toString()).delete();
         } else if (type === 'rewards') {
           await db.collection("freshmart").doc("cms_data").collection("rewards").doc(item.id.toString()).delete();
+        } else if (type === 'customers') {
+          await db.collection("freshmart").doc("cms_data").collection("customers").doc(item.phone.toString()).delete();
         } else {
           const updatedList = [...(appData[type] || [])].filter(x => x.id !== item.id && (!item.code || x.code !== item.code));
           await db.collection("freshmart").doc("cms_data").set({ [type]: updatedList, lastUpdate: firebase.firestore.FieldValue.increment(1) }, { merge: true });
@@ -1931,6 +2091,62 @@ export default function App() {
         </div>
       )}
 
+      
+      {/* Wishlist View */}
+      {currentView === 'wishlist' && (
+        <div className="view-section flex flex-col fade-in bg-slate-50 dark:bg-slate-900">
+          <div className="glass-header shrink-0 px-5 flex justify-center z-30 sticky top-0 pb-3">
+            <div className="flex items-center justify-between w-full max-w-[1200px] mx-auto px-4 lg:px-10">
+              <button className="w-10 h-10 flex items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 active:scale-95 transition-all shadow-sm" onClick={() => setCurrentView('catalog')}><i className="fa-solid fa-arrow-left text-sm"></i></button>
+              <h1 className="text-base font-black text-slate-900 dark:text-white tracking-tight">Favorit Saya</h1>
+              {wishlist.length > 0 ? (
+                <button className="w-10 h-10 flex items-center justify-center rounded-full bg-rose-50 border border-rose-200 text-rose-500 hover:bg-rose-100 active:scale-95 transition-all" onClick={() => {
+                  showConfirm("Kosongkan Favorit", "Yakin ingin menghapus semua item favorit Anda?", () => {
+                    setWishlist([]);
+                    localStorage.removeItem('freshmart_wishlist');
+                    showToast('Favorit dikosongkan!');
+                  });
+                }}><i className="fa-solid fa-trash-can text-sm"></i></button>
+              ) : <div className="w-10"></div>}
+            </div>
+          </div>
+          <div className="scroll-content flex-1 overflow-y-auto z-10 pt-6 pb-[calc(4rem+env(safe-area-inset-bottom))]">
+            {wishlist.length === 0 ? (
+              <div className="flex flex-col items-center justify-center h-[50vh] px-5 text-center max-w-xs mx-auto">
+                <div className="w-24 h-24 bg-rose-50 border border-rose-200 rounded-full flex items-center justify-center mb-5 text-rose-400 dark:bg-rose-900/20 dark:border-rose-800 shadow-inner"><i className="fa-solid fa-heart text-5xl"></i></div>
+                <h3 className="font-black text-slate-800 dark:text-white text-xl mb-2">Belum Ada Favorit</h3>
+                <p className="text-slate-600 dark:text-slate-400 text-sm font-medium">Kumpulkan produk impianmu di sini.</p>
+              </div>
+            ) : (
+              <div className="px-4 space-y-4 max-w-[1200px] lg:px-8 mx-auto w-full">
+                {wishlist.map((item, idx) => {
+                  const original = appData.products.find(p => p.id === item.id);
+                  return (
+                    <div key={idx} className="bg-white dark:bg-slate-800 p-4 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm flex items-center gap-4 cursor-pointer" onClick={() => {
+                      if (original) {
+                        setSelectedProduct(original);
+                        setSelectedVariantIdx(original.variants?.length ? null : 0);
+                        setCQty(1);
+                        setActiveSlideIdx(0);
+                        loadProductReviews(original.id);
+                      }
+                    }}>
+                      <img src={item.img} alt={item.name} className="w-16 h-16 rounded-2xl object-cover border border-slate-100 shrink-0" />
+                      <div className="flex-1 min-w-0">
+                        <h4 className="text-sm font-black text-slate-800 dark:text-white truncate uppercase">{item.name}</h4>
+                        {item.variantName && <p className="text-xs text-slate-500 mt-0.5">Varian: {item.variantName}</p>}
+                        <p className="text-sm font-black text-emerald-600 dark:text-emerald-400 mt-1">{fCur(item.price)}</p>
+                      </div>
+                      <button className="w-10 h-10 flex items-center justify-center text-slate-400 hover:text-rose-500 transition-colors shrink-0" onClick={(e) => { e.stopPropagation(); toggleWishlist(original || { id: item.id }, item.variantName); }}><i className="fa-solid fa-heart text-rose-500 text-lg"></i></button>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* Admin Panel Login */}
       {currentView === 'admin-login' && (
         <div className="view-section flex items-center justify-center bg-slate-900 relative overflow-hidden">
@@ -2026,15 +2242,17 @@ export default function App() {
               <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 mb-6">
                 {[
                   { id: 'orders', name: 'Orders', icon: 'fa-receipt' },
-                  { id: 'products', name: 'Products', icon: 'fa-box-open' },
-                  { id: 'settings', name: 'Store Set', icon: 'fa-gear' },
-                  { id: 'categories', name: 'Categories', icon: 'fa-tags' },
-                  { id: 'brands', name: 'Brands', icon: 'fa-copyright' },
-                  { id: 'vouchers', name: 'Vouchers', icon: 'fa-ticket-simple' },
-                  { id: 'banks', name: 'Banks', icon: 'fa-building-columns' },
-                  { id: 'banners', name: 'Banners', icon: 'fa-images' },
-                  { id: 'customers', name: 'Customers', icon: 'fa-address-book' },
-                  { id: 'rewards', name: 'Rewards', icon: 'fa-gift' }
+                  { id: 'products', name: 'Produk', icon: 'fa-box-open' },
+                  { id: 'categories', name: 'Kategori', icon: 'fa-tags' },
+                  { id: 'brands', name: 'Merek', icon: 'fa-copyright' },
+                  { id: 'vouchers', name: 'Voucher', icon: 'fa-ticket-simple' },
+                  { id: 'banks', name: 'Rekening', icon: 'fa-building-columns' },
+                  { id: 'banners', name: 'Banner', icon: 'fa-images' },
+                  { id: 'rewards', name: 'Hadiah', icon: 'fa-gift' },
+                  { id: 'customers', name: 'Pelanggan', icon: 'fa-address-book' },
+                  { id: 'reviews', name: 'Ulasan', icon: 'fa-star' },
+                  { id: 'piutang', name: 'Piutang', icon: 'fa-clock-rotate-left' },
+                  { id: 'settings', name: 'Pengaturan', icon: 'fa-gear' },
                 ].map((tab) => (
                   <button key={tab.id} className={`p-3 rounded-2xl border flex flex-col items-center justify-center text-center gap-1.5 transition-all ${activeAdminTab === tab.id ? 'bg-[var(--color-primary)] text-white border-transparent' : 'bg-white dark:bg-slate-800 border-slate-200 text-slate-600'}`} onClick={() => setActiveAdminTab(tab.id)}>
                     <i className={`fa-solid ${tab.icon} text-lg`}></i>
@@ -2069,6 +2287,411 @@ export default function App() {
                   </div>
                 </div>
               )}
+
+              {/* Tab: Categories */}
+              {activeAdminTab === 'categories' && (
+                <div className="bg-white dark:bg-slate-800 p-5 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm">
+                  <div className="flex justify-between items-center mb-4">
+                    <h3 className="text-sm font-black text-slate-800 dark:text-white uppercase tracking-wider">Manajemen Kategori</h3>
+                    <button className="btn-primary !w-auto px-5 py-2 text-xs shadow-glow rounded-xl" onClick={() => {
+                      setAdminFormType('categories');
+                      setAdminFormItem({ name: '', img: '' });
+                      setAdminModalOpen(true);
+                    }}><i className="fa-solid fa-plus mr-1"></i> Tambah Kategori</button>
+                  </div>
+                  <div className="space-y-3">
+                    {(appData.categories || []).map((c, idx) => (
+                      <div key={idx} className="p-4 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <img src={c.img} alt={c.name} className="w-10 h-10 object-cover rounded-xl border" onError={e => { e.target.src = 'https://placehold.co/100'; }} />
+                          <p className="font-black text-xs text-slate-800 dark:text-white uppercase">{c.name}</p>
+                        </div>
+                        <div className="flex gap-2">
+                          <button className="p-2 bg-blue-50 text-blue-600 rounded-xl hover:bg-blue-100 text-xs" onClick={() => {
+                            setAdminFormType('categories');
+                            setAdminFormItem(c);
+                            setAdminModalOpen(true);
+                          }}><i className="fa-solid fa-pen"></i></button>
+                          <button className="p-2 bg-rose-50 text-rose-600 rounded-xl hover:bg-rose-100 text-xs" onClick={() => handleAdminDelete('categories', c)}><i className="fa-solid fa-trash-can"></i></button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Tab: Brands */}
+              {activeAdminTab === 'brands' && (
+                <div className="bg-white dark:bg-slate-800 p-5 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm">
+                  <div className="flex justify-between items-center mb-4">
+                    <h3 className="text-sm font-black text-slate-800 dark:text-white uppercase tracking-wider">Manajemen Merek</h3>
+                    <button className="btn-primary !w-auto px-5 py-2 text-xs shadow-glow rounded-xl" onClick={() => {
+                      setAdminFormType('brands');
+                      setAdminFormItem({ name: '', img: '' });
+                      setAdminModalOpen(true);
+                    }}><i className="fa-solid fa-plus mr-1"></i> Tambah Merek</button>
+                  </div>
+                  <div className="space-y-3">
+                    {(appData.brands || []).map((b, idx) => (
+                      <div key={idx} className="p-4 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <img src={b.img} alt={b.name} className="w-10 h-10 object-cover rounded-xl border" onError={e => { e.target.src = 'https://placehold.co/100'; }} />
+                          <p className="font-black text-xs text-slate-800 dark:text-white uppercase">{b.name}</p>
+                        </div>
+                        <div className="flex gap-2">
+                          <button className="p-2 bg-blue-50 text-blue-600 rounded-xl hover:bg-blue-100 text-xs" onClick={() => {
+                            setAdminFormType('brands');
+                            setAdminFormItem(b);
+                            setAdminModalOpen(true);
+                          }}><i className="fa-solid fa-pen"></i></button>
+                          <button className="p-2 bg-rose-50 text-rose-600 rounded-xl hover:bg-rose-100 text-xs" onClick={() => handleAdminDelete('brands', b)}><i className="fa-solid fa-trash-can"></i></button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Tab: Vouchers */}
+              {activeAdminTab === 'vouchers' && (
+                <div className="bg-white dark:bg-slate-800 p-5 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm">
+                  <div className="flex justify-between items-center mb-4">
+                    <h3 className="text-sm font-black text-slate-800 dark:text-white uppercase tracking-wider">Manajemen Voucher</h3>
+                    <button className="btn-primary !w-auto px-5 py-2 text-xs shadow-glow rounded-xl" onClick={() => {
+                      setAdminFormType('vouchers');
+                      setAdminFormItem({ code: '', type: 'percent', value: 0, minPurchase: 0, maxDiscount: 0, targetProduct: '', isShow: true });
+                      setAdminModalOpen(true);
+                    }}><i className="fa-solid fa-plus mr-1"></i> Tambah Voucher</button>
+                  </div>
+                  <div className="space-y-3">
+                    {(appData.vouchers || []).map((v, idx) => (
+                      <div key={idx} className="p-4 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl flex items-center justify-between">
+                        <div>
+                          <p className="font-black text-sm text-slate-800 dark:text-white">{v.code}</p>
+                          <p className="text-[10px] text-slate-400 font-bold">
+                            {v.type === 'percent' ? `Diskon ${v.value}%` : v.type === 'flat' ? `Diskon Rp ${v.value.toLocaleString('id-ID')}` : v.type === 'shipping_free' ? 'Gratis Ongkir' : `Diskon Ongkir Rp ${v.value.toLocaleString('id-ID')}`}
+                            {v.minPurchase > 0 && ` • Min Belanja: ${fCur(v.minPurchase)}`}
+                          </p>
+                        </div>
+                        <div className="flex gap-2">
+                          <button className="p-2 bg-blue-50 text-blue-600 rounded-xl hover:bg-blue-100 text-xs" onClick={() => {
+                            setAdminFormType('vouchers');
+                            setAdminFormItem(v);
+                            setAdminModalOpen(true);
+                          }}><i className="fa-solid fa-pen"></i></button>
+                          <button className="p-2 bg-rose-50 text-rose-600 rounded-xl hover:bg-rose-100 text-xs" onClick={() => handleAdminDelete('vouchers', v)}><i className="fa-solid fa-trash-can"></i></button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Tab: Banks */}
+              {activeAdminTab === 'banks' && (
+                <div className="bg-white dark:bg-slate-800 p-5 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm">
+                  <div className="flex justify-between items-center mb-4">
+                    <h3 className="text-sm font-black text-slate-800 dark:text-white uppercase tracking-wider">Rekening Bank</h3>
+                    <button className="btn-primary !w-auto px-5 py-2 text-xs shadow-glow rounded-xl" onClick={() => {
+                      setAdminFormType('banks');
+                      setAdminFormItem({ bankName: '', bankAccount: '', bankOwner: '' });
+                      setAdminModalOpen(true);
+                    }}><i className="fa-solid fa-plus mr-1"></i> Tambah Rekening</button>
+                  </div>
+                  <div className="space-y-3">
+                    {(appData.banks || []).map((b, idx) => (
+                      <div key={idx} className="p-4 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl flex items-center justify-between">
+                        <div>
+                          <p className="font-black text-xs text-slate-800 dark:text-white uppercase">{b.bankName}</p>
+                          <p className="text-[10px] text-slate-400 font-bold">{b.bankAccount} a.n {b.bankOwner}</p>
+                        </div>
+                        <div className="flex gap-2">
+                          <button className="p-2 bg-blue-50 text-blue-600 rounded-xl hover:bg-blue-100 text-xs" onClick={() => {
+                            setAdminFormType('banks');
+                            setAdminFormItem(b);
+                            setAdminModalOpen(true);
+                          }}><i className="fa-solid fa-pen"></i></button>
+                          <button className="p-2 bg-rose-50 text-rose-600 rounded-xl hover:bg-rose-100 text-xs" onClick={() => handleAdminDelete('banks', b)}><i className="fa-solid fa-trash-can"></i></button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Tab: Banners */}
+              {activeAdminTab === 'banners' && (
+                <div className="bg-white dark:bg-slate-800 p-5 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm">
+                  <div className="flex justify-between items-center mb-4">
+                    <h3 className="text-sm font-black text-slate-800 dark:text-white uppercase tracking-wider">Banner Promo</h3>
+                    <button className="btn-primary !w-auto px-5 py-2 text-xs shadow-glow rounded-xl" onClick={() => {
+                      setAdminFormType('banners');
+                      setAdminFormItem({ title: '', desc: '', img: '', link: '' });
+                      setAdminModalOpen(true);
+                    }}><i className="fa-solid fa-plus mr-1"></i> Tambah Banner</button>
+                  </div>
+                  <div className="space-y-3">
+                    {(appData.banners || []).map((bn, idx) => (
+                      <div key={idx} className="p-4 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <img src={bn.img} alt={bn.title} className="w-16 h-10 object-cover rounded-lg border" />
+                          <div>
+                            <p className="font-black text-xs text-slate-800 dark:text-white uppercase">{bn.title}</p>
+                            <p className="text-[10px] text-slate-400 font-bold truncate max-w-[200px]">{bn.desc}</p>
+                          </div>
+                        </div>
+                        <div className="flex gap-2">
+                          <button className="p-2 bg-blue-50 text-blue-600 rounded-xl hover:bg-blue-100 text-xs" onClick={() => {
+                            setAdminFormType('banners');
+                            setAdminFormItem(bn);
+                            setAdminModalOpen(true);
+                          }}><i className="fa-solid fa-pen"></i></button>
+                          <button className="p-2 bg-rose-50 text-rose-600 rounded-xl hover:bg-rose-100 text-xs" onClick={() => handleAdminDelete('banners', bn)}><i className="fa-solid fa-trash-can"></i></button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Tab: Rewards */}
+              {activeAdminTab === 'rewards' && (
+                <div className="bg-white dark:bg-slate-800 p-5 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm">
+                  <div className="flex justify-between items-center mb-4">
+                    <h3 className="text-sm font-black text-slate-800 dark:text-white uppercase tracking-wider">Rewards Member</h3>
+                    <button className="btn-primary !w-auto px-5 py-2 text-xs shadow-glow rounded-xl" onClick={() => {
+                      setAdminFormType('rewards');
+                      setAdminFormItem({ name: '', img: '', pointsCost: 100, stock: 5, isActive: true });
+                      setAdminModalOpen(true);
+                    }}><i className="fa-solid fa-plus mr-1"></i> Tambah Reward</button>
+                  </div>
+                  <div className="space-y-3">
+                    {(appData.rewards || []).map((r, idx) => (
+                      <div key={idx} className="p-4 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <img src={r.img} alt={r.name} className="w-10 h-10 object-cover rounded-xl border" />
+                          <div>
+                            <p className="font-black text-xs text-slate-800 dark:text-white uppercase">{r.name}</p>
+                            <p className="text-[10px] text-slate-400 font-bold">{r.pointsCost} Poin • Stok: {r.stock}</p>
+                          </div>
+                        </div>
+                        <div className="flex gap-2">
+                          <button className="p-2 bg-blue-50 text-blue-600 rounded-xl hover:bg-blue-100 text-xs" onClick={() => {
+                            setAdminFormType('rewards');
+                            setAdminFormItem(r);
+                            setAdminModalOpen(true);
+                          }}><i className="fa-solid fa-pen"></i></button>
+                          <button className="p-2 bg-rose-50 text-rose-600 rounded-xl hover:bg-rose-100 text-xs" onClick={() => handleAdminDelete('rewards', r)}><i className="fa-solid fa-trash-can"></i></button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Tab: Customers */}
+              {activeAdminTab === 'customers' && (
+                <div className="bg-white dark:bg-slate-800 p-5 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm">
+                  <div className="flex justify-between items-center mb-4">
+                    <h3 className="text-sm font-black text-slate-800 dark:text-white uppercase tracking-wider">Database Pelanggan</h3>
+                    <button className="btn-primary !w-auto px-5 py-2 text-xs shadow-glow rounded-xl" onClick={() => {
+                      setAdminFormType('customers');
+                      setAdminFormItem({ name: '', phone: '', points: 0 });
+                      setAdminModalOpen(true);
+                    }}><i className="fa-solid fa-plus mr-1"></i> Tambah Pelanggan</button>
+                  </div>
+                  <div className="space-y-3">
+                    {(adminCustomers || []).map((c, idx) => (
+                      <div key={idx} className="p-4 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl flex items-center justify-between">
+                        <div>
+                          <p className="font-black text-xs text-slate-800 dark:text-white uppercase">{c.name}</p>
+                          <p className="text-[10px] text-slate-400 font-bold">+{c.phone} • {c.points || 0} Poin</p>
+                        </div>
+                        <div className="flex gap-2">
+                          <button className="p-2 bg-blue-50 text-blue-600 rounded-xl hover:bg-blue-100 text-xs" onClick={() => {
+                            setAdminFormType('customers');
+                            setAdminFormItem(c);
+                            setAdminModalOpen(true);
+                          }}><i className="fa-solid fa-pen"></i></button>
+                          <button className="p-2 bg-rose-50 text-rose-600 rounded-xl hover:bg-rose-100 text-xs" onClick={() => handleAdminDelete('customers', c)}><i className="fa-solid fa-trash-can"></i></button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Tab: Reviews */}
+              {activeAdminTab === 'reviews' && (
+                <div className="bg-white dark:bg-slate-800 p-5 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm">
+                  <div className="flex justify-between items-center mb-4">
+                    <h3 className="text-sm font-black text-slate-800 dark:text-white uppercase tracking-wider">Moderasi Ulasan</h3>
+                    <div className="flex bg-slate-100 dark:bg-slate-900 p-1 rounded-xl">
+                      {['all', 'visible', 'hidden'].map((f) => (
+                        <button key={f} className={`px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-wider ${reviewFilterMode === f ? 'bg-[var(--color-primary)] text-white' : 'text-slate-500'}`} onClick={() => setReviewFilterMode(f)}>
+                          {f === 'all' ? 'Semua' : f === 'visible' ? 'Tampil' : 'Sembunyi'}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="space-y-4">
+                    {adminReviews
+                      .filter(r => {
+                        if (reviewFilterMode === 'visible') return r.isVisible !== false;
+                        if (reviewFilterMode === 'hidden') return r.isVisible === false;
+                        return true;
+                      })
+                      .map((r, idx) => {
+                        const stars = Array.from({ length: 5 }, (_, i) => (
+                          <i key={i} className={`fa-solid fa-star ${i < r.rating ? 'text-amber-400' : 'text-slate-200 dark:text-slate-700'}`}></i>
+                        ));
+                        return (
+                          <div key={idx} className={`p-4 rounded-2xl border ${r.isVisible === false ? 'border-rose-200 bg-rose-50/40 dark:border-rose-950/20' : 'border-slate-200 dark:border-slate-800 bg-slate-50/30'}`}>
+                            <div className="flex justify-between items-start mb-2">
+                              <div>
+                                <p className="font-black text-xs text-slate-800 dark:text-white uppercase">{r.customerName || 'Pelanggan'}</p>
+                                <p className="text-[9px] text-slate-400 font-bold mt-0.5">{r.productName}</p>
+                              </div>
+                              <div className="flex text-xs">{stars}</div>
+                            </div>
+                            <p className="text-xs text-slate-600 dark:text-slate-300 leading-normal mb-3">{r.text}</p>
+                            {r.photoUrl && (
+                              <img src={r.photoUrl} alt="Review" className="w-16 h-16 object-cover rounded-lg border mb-3 cursor-pointer" onClick={() => window.open(r.photoUrl, '_blank')} />
+                            )}
+                            {r.adminReply && (
+                              <div className="bg-slate-50 dark:bg-slate-900 p-3 rounded-xl border border-slate-200 dark:border-slate-800 mb-3">
+                                <p className="text-[9px] font-black text-[var(--color-primary)] uppercase mb-1">Balasan Anda:</p>
+                                <p className="text-xs text-slate-700 dark:text-slate-300">{r.adminReply}</p>
+                              </div>
+                            )}
+                            <div className="flex gap-2 border-t pt-2.5">
+                              <button className="px-3 py-1.5 rounded-lg bg-blue-50 text-blue-600 text-[10px] font-black uppercase hover:bg-blue-100" onClick={() => {
+                                setAdminReplyTarget(r);
+                                setAdminReplyText(r.adminReply || '');
+                              }}><i className="fa-solid fa-reply"></i> {r.adminReply ? 'Edit Balasan' : 'Balas'}</button>
+                              <button className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase ${r.isVisible === false ? 'bg-emerald-50 text-emerald-600 hover:bg-emerald-100' : 'bg-amber-50 text-amber-600 hover:bg-amber-100'}`} onClick={() => handleToggleReviewVisibility(r)}>
+                                <i className={`fa-solid ${r.isVisible === false ? 'fa-eye' : 'fa-eye-slash'}`}></i> {r.isVisible === false ? 'Tampilkan' : 'Sembunyikan'}
+                              </button>
+                              <button className="px-3 py-1.5 rounded-lg bg-rose-50 text-rose-500 text-[10px] font-black uppercase hover:bg-rose-100 ml-auto" onClick={() => handleDeleteReview(r)}><i className="fa-solid fa-trash"></i> Hapus</button>
+                            </div>
+                          </div>
+                        );
+                      })}
+                  </div>
+                </div>
+              )}
+
+              {/* Tab: Piutang */}
+              {activeAdminTab === 'piutang' && (
+                <div className="bg-white dark:bg-slate-800 p-5 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm">
+                  <div className="flex justify-between items-center mb-4">
+                    <h3 className="text-sm font-black text-slate-800 dark:text-white uppercase tracking-wider">Piutang Pembayaran Tempo</h3>
+                    <input className="admin-input !w-48 text-xs" placeholder="Cari pelanggan..." value={piutangSearch} onChange={e => setPiutangSearch(e.target.value)} />
+                  </div>
+                  <div className="space-y-4">
+                    {piutangOrders
+                      .filter(o => !piutangSearch || (o.customer?.name || '').toLowerCase().includes(piutangSearch.toLowerCase()))
+                      .map((o, idx) => {
+                        const totalKredit = o.payment?.grandTotal || 0;
+                        const sisaPokok = o.payment?.tempoBalance || 0;
+                        const dueDate = o.payment?.tempoDueDate || 0;
+                        const isLunas = o.payment?.paymentStatus === 'lunas' || sisaPokok <= 0;
+                        
+                        let lateDays = 0;
+                        let denda = 0;
+                        if (!isLunas && Date.now() > dueDate) {
+                          lateDays = Math.floor((Date.now() - dueDate) / (24 * 60 * 60 * 1000));
+                          if (o.payment?.tempoPenaltyStopped !== true) {
+                            const rate = o.payment?.tempoPenaltyRate !== undefined ? parseFloat(o.payment.tempoPenaltyRate) : 1;
+                            denda = (rate / 100 * sisaPokok) * lateDays;
+                          } else {
+                            denda = parseFloat(o.payment?.tempoFixedPenalty) || 0;
+                          }
+                        }
+
+                        return (
+                          <div key={idx} className={`p-4 rounded-2xl border ${isLunas ? 'border-emerald-200 bg-emerald-50/20 dark:border-emerald-950/20' : 'border-rose-200 bg-rose-50/20 dark:border-rose-950/20'}`}>
+                            <div className="flex justify-between items-start mb-2">
+                              <div>
+                                <p className="font-black text-xs text-slate-800 dark:text-white">#{o.orderId.split('-').pop()}</p>
+                                <p className="text-[10px] text-slate-500 font-bold uppercase mt-0.5">{o.customer?.name} • WhatsApp: +{o.customer?.wa}</p>
+                              </div>
+                              <span className={`text-[9px] font-black px-2 py-0.5 rounded uppercase ${isLunas ? 'bg-emerald-500 text-white' : 'bg-rose-500 text-white'}`}>
+                                {isLunas ? 'Lunas' : 'Hutang'}
+                              </span>
+                            </div>
+                            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 my-3 text-xs bg-white dark:bg-slate-900 p-3 rounded-xl border border-slate-100 dark:border-slate-800">
+                              <div>
+                                <span className="block text-[8px] font-bold text-slate-400 uppercase">Total Kredit</span>
+                                <span className="font-bold text-slate-700 dark:text-slate-300">{fCur(totalKredit)}</span>
+                              </div>
+                              <div>
+                                <span className="block text-[8px] font-bold text-slate-400 uppercase">Sisa Pokok</span>
+                                <span className="font-black text-rose-500">{fCur(sisaPokok)}</span>
+                              </div>
+                              {!isLunas && (
+                                <div>
+                                  <span className="block text-[8px] font-bold text-slate-400 uppercase">Jatuh Tempo</span>
+                                  <span className="font-bold text-slate-600 dark:text-slate-400">{new Date(dueDate).toLocaleDateString('id-ID')}</span>
+                                </div>
+                              )}
+                              {!isLunas && lateDays > 0 && (
+                                <div className="col-span-2 sm:col-span-1">
+                                  <span className="block text-[8px] font-bold text-rose-400 uppercase">Keterlambatan</span>
+                                  <span className="font-black text-rose-600">{lateDays} Hari (Denda: {fCur(denda)})</span>
+                                </div>
+                              )}
+                            </div>
+                            {!isLunas && (
+                              <div className="flex gap-2.5 border-t pt-2.5">
+                                <button className="px-3 py-1.5 rounded-lg bg-blue-50 text-blue-600 text-[10px] font-black uppercase" onClick={() => {
+                                  const amt = window.prompt(`Masukkan nominal cicilan (Sisa pokok: ${fCur(sisaPokok)}):`);
+                                  if (amt) handlePayTempoInstallment(o, amt);
+                                }}><i className="fa-solid fa-money-bill-wave"></i> Bayar Cicilan</button>
+                                <button className="px-3 py-1.5 rounded-lg bg-rose-50 text-rose-600 text-[10px] font-black uppercase" onClick={() => {
+                                  showConfirm("Bayar Lunas", "Yakin ingin melunasi seluruh sisa piutang ini?", () => {
+                                    handlePayTempoInstallment(o, sisaPokok);
+                                  }, "Ya, Lunasi");
+                                }}><i className="fa-solid fa-check-double"></i> Bayar Lunas</button>
+                                <button className="px-3 py-1.5 rounded-lg bg-slate-100 text-slate-600 text-[10px] font-black uppercase ml-auto" onClick={() => {
+                                  setSelectedAdminOrder(o);
+                                  setReceiptPreviewOpen(true);
+                                }}><i className="fa-solid fa-print"></i> Struk</button>
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
+                  </div>
+                </div>
+              )}
+
+              {/* Tab: Settings */}
+              {activeAdminTab === 'settings' && (
+                <div className="bg-white dark:bg-slate-800 p-5 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-6">
+                  <div>
+                    <h3 className="text-sm font-black text-slate-800 dark:text-white uppercase tracking-wider mb-2">Pengaturan Toko</h3>
+                    <p className="text-xs text-slate-400">Sesuaikan profil, warna tema, tarif pengiriman, dan operasional toko.</p>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                    <button className="p-4 bg-slate-50 dark:bg-slate-900 border rounded-2xl flex flex-col items-center justify-center text-center gap-2 hover:-translate-y-1 transition-all" onClick={() => {
+                      setAdminSettings({ ...appData.store });
+                      setAdminModalOpen(true);
+                      setAdminFormType('settings');
+                      setAdminFormItem({ ...appData.store });
+                    }}>
+                      <i className="fa-solid fa-store text-xl text-emerald-500"></i>
+                      <span className="text-[10px] font-black uppercase">Profil Toko</span>
+                    </button>
+                    <button className="p-4 bg-slate-50 dark:bg-slate-900 border rounded-2xl flex flex-col items-center justify-center text-center gap-2 hover:-translate-y-1 transition-all" onClick={exportDataJson}>
+                      <i className="fa-solid fa-download text-xl text-blue-500"></i>
+                      <span className="text-[10px] font-black uppercase">Backup Data</span>
+                    </button>
+                  </div>
+                </div>
+              )}
+
 
               {/* Tab: Products List */}
               {activeAdminTab === 'products' && (
@@ -2119,42 +2742,483 @@ export default function App() {
           <div className="bg-white dark:bg-slate-800 rounded-[2rem] w-full max-w-md max-h-[90vh] overflow-y-auto p-6 shadow-2xl border border-slate-200">
             <h3 className="font-black text-slate-900 dark:text-white text-base mb-4 uppercase tracking-wider">{adminFormItem.id ? 'Edit Item' : 'Tambah Item'}</h3>
             <form onSubmit={handleAdminFormSubmit} className="space-y-4">
+              
               {adminFormType === 'products' && (
-                <>
-                  <div>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                  <div className="lg:col-span-2">
                     <label className="block text-[10px] font-black uppercase text-slate-500 mb-1">Nama Produk</label>
-                    <input className="admin-input" value={adminFormItem.name} onChange={e => setAdminFormItem({ ...adminFormItem, name: e.target.value })} required />
+                    <input className="admin-input" value={adminFormItem.name || ''} onChange={e => setAdminFormItem({ ...adminFormItem, name: e.target.value })} required />
                   </div>
                   <div>
-                    <label className="block text-[10px] font-black uppercase text-slate-500 mb-1">Harga Jual (Rp)</label>
-                    <input className="admin-input" type="number" value={adminFormItem.price} onChange={e => setAdminFormItem({ ...adminFormItem, price: parseFloat(e.target.value) || 0 })} required />
+                    <label className="block text-[10px] font-black uppercase text-slate-500 mb-1">Barcode / SKU</label>
+                    <input className="admin-input" value={adminFormItem.sku || ''} onChange={e => setAdminFormItem({ ...adminFormItem, sku: e.target.value })} placeholder="Kosongkan untuk auto" />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-black uppercase text-slate-500 mb-1">Harga Jual Promo (Rp)</label>
+                    <input className="admin-input" type="number" value={adminFormItem.price || 0} onChange={e => setAdminFormItem({ ...adminFormItem, price: parseFloat(e.target.value) || 0 })} required />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-black uppercase text-slate-500 mb-1">Harga Coret / Normal (Rp)</label>
+                    <input className="admin-input" type="number" value={adminFormItem.priceNormal || 0} onChange={e => setAdminFormItem({ ...adminFormItem, priceNormal: parseFloat(e.target.value) || 0 })} />
                   </div>
                   <div>
                     <label className="block text-[10px] font-black uppercase text-slate-500 mb-1">Harga Modal / HPP (Rp)</label>
                     <input className="admin-input" type="number" value={adminFormItem.hpp || 0} onChange={e => setAdminFormItem({ ...adminFormItem, hpp: parseFloat(e.target.value) || 0 })} />
                   </div>
                   <div>
+                    <label className="block text-[10px] font-black uppercase text-slate-500 mb-1">Poin Member</label>
+                    <input className="admin-input" type="number" value={adminFormItem.poin || 0} onChange={e => setAdminFormItem({ ...adminFormItem, poin: parseFloat(e.target.value) || 0 })} />
+                  </div>
+                  <div>
                     <label className="block text-[10px] font-black uppercase text-slate-500 mb-1">Stok Awal</label>
                     <input className="admin-input" type="number" value={adminFormItem.stock || 0} onChange={e => setAdminFormItem({ ...adminFormItem, stock: parseFloat(e.target.value) || 0 })} />
                   </div>
                   <div>
+                    <label className="block text-[10px] font-black uppercase text-slate-500 mb-1">Satuan Dasar</label>
+                    <input className="admin-input" value={adminFormItem.unit || 'pcs'} onChange={e => setAdminFormItem({ ...adminFormItem, unit: e.target.value })} required />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-black uppercase text-slate-500 mb-1">Estimasi Pre-Order</label>
+                    <input className="admin-input" value={adminFormItem.poTime || ''} onChange={e => setAdminFormItem({ ...adminFormItem, poTime: e.target.value })} placeholder="Cth: 3 Hari (Kosongkan jika ready)" />
+                  </div>
+                  <div className="lg:col-span-2">
+                    <label className="block text-[10px] font-black uppercase text-slate-500 mb-1">Link Video YouTube</label>
+                    <input className="admin-input" value={adminFormItem.video || ''} onChange={e => setAdminFormItem({ ...adminFormItem, video: e.target.value })} placeholder="Cth: https://youtube.com/watch?v=..." />
+                  </div>
+                  <div className="lg:col-span-2">
+                    <label className="block text-[10px] font-black uppercase text-slate-500 mb-1">URL Gambar</label>
+                    <div className="flex gap-2">
+                      <input className="admin-input flex-1" value={adminFormItem.img || ''} onChange={e => setAdminFormItem({ ...adminFormItem, img: e.target.value })} required />
+                      <label className="bg-emerald-50 dark:bg-emerald-900/30 border border-emerald-200 text-emerald-600 rounded-xl px-3 flex items-center justify-center cursor-pointer hover:bg-emerald-100 text-xs shrink-0 active:scale-95">
+                        <i className="fa-solid fa-cloud-arrow-up"></i>
+                        <input type="file" accept="image/*" className="hidden" onChange={(e) => handleAdminImgUpload(e, 'img')} />
+                      </label>
+                    </div>
+                  </div>
+                  <div>
                     <label className="block text-[10px] font-black uppercase text-slate-500 mb-1">Kategori</label>
-                    <select className="admin-input" value={adminFormItem.category} onChange={e => setAdminFormItem({ ...adminFormItem, category: e.target.value })}>
+                    <select className="admin-input" value={adminFormItem.category || ''} onChange={e => setAdminFormItem({ ...adminFormItem, category: e.target.value })}>
+                      <option value="">Pilih Kategori</option>
                       {appData.categories.map((c, i) => (
                         <option key={i} value={c.name}>{c.name}</option>
                       ))}
                     </select>
                   </div>
                   <div>
-                    <label className="block text-[10px] font-black uppercase text-slate-500 mb-1">Image URL</label>
-                    <input className="admin-input" value={adminFormItem.img || ''} onChange={e => setAdminFormItem({ ...adminFormItem, img: e.target.value })} />
+                    <label className="block text-[10px] font-black uppercase text-slate-500 mb-1">Merek / Brand</label>
+                    <select className="admin-input" value={adminFormItem.brand || ''} onChange={e => setAdminFormItem({ ...adminFormItem, brand: e.target.value })}>
+                      <option value="">Tanpa Merek</option>
+                      {appData.brands.map((b, i) => (
+                        <option key={i} value={b.name}>{b.name}</option>
+                      ))}
+                    </select>
                   </div>
                   <div>
-                    <label className="block text-[10px] font-black uppercase text-slate-500 mb-1">Deskripsi Produk</label>
+                    <label className="block text-[10px] font-black uppercase text-slate-500 mb-1">Label / Tag</label>
+                    <input className="admin-input" value={adminFormItem.tag || ''} onChange={e => setAdminFormItem({ ...adminFormItem, tag: e.target.value })} placeholder="Cth: Best Seller, Promo" />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-black uppercase text-slate-500 mb-1">Status</label>
+                    <select className="admin-input" value={adminFormItem.isActive !== false && adminFormItem.isActive !== 'false' ? 'true' : 'false'} onChange={e => setAdminFormItem({ ...adminFormItem, isActive: e.target.value === 'true' })}>
+                      <option value="true">Tersedia</option>
+                      <option value="false">Habis / Nonaktif</option>
+                    </select>
+                  </div>
+                  <div className="lg:col-span-2">
+                    <label className="block text-[10px] font-black uppercase text-slate-500 mb-1">Deskripsi Lengkap</label>
                     <textarea className="admin-input resize-none" value={adminFormItem.desc || ''} onChange={e => setAdminFormItem({ ...adminFormItem, desc: e.target.value })} rows="3"></textarea>
+                  </div>
+
+                  {/* Wholesale Pricing Builder */}
+                  <div className="lg:col-span-2 border-t pt-4 mt-2">
+                    <div className="flex justify-between items-center mb-2">
+                      <label className="block text-[10px] font-black uppercase text-slate-500">Harga Grosir (Wholesale)</label>
+                      <button type="button" onClick={() => setTempWholesale(prev => [...prev, { minQty: 12, price: 0 }])} className="text-xs text-emerald-500 font-bold"><i className="fa-solid fa-plus mr-1"></i> Tambah</button>
+                    </div>
+                    <div className="space-y-2">
+                      {tempWholesale.map((w, idx) => (
+                        <div key={idx} className="flex gap-2 items-center">
+                          <input type="number" placeholder="Min Qty" value={w.minQty} onChange={e => {
+                            const updated = [...tempWholesale];
+                            updated[idx].minQty = parseFloat(e.target.value) || 0;
+                            setTempWholesale(updated);
+                          }} className="admin-input text-xs w-24 text-center" />
+                          <span className="text-xs text-slate-400">Harga Satuan</span>
+                          <input type="number" placeholder="Harga Rp" value={w.price} onChange={e => {
+                            const updated = [...tempWholesale];
+                            updated[idx].price = parseFloat(e.target.value) || 0;
+                            setTempWholesale(updated);
+                          }} className="admin-input text-xs flex-1 text-center" />
+                          <button type="button" onClick={() => setTempWholesale(prev => prev.filter((_, i) => i !== idx))} className="text-rose-500"><i className="fa-solid fa-trash"></i></button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Variants Builder */}
+                  <div className="lg:col-span-2 border-t pt-4 mt-2">
+                    <div className="flex justify-between items-center mb-2">
+                      <label className="block text-[10px] font-black uppercase text-slate-500">Varian Produk</label>
+                      <button type="button" onClick={() => setTempVariants(prev => [...prev, { name: '', price: 0, hpp: 0, stock: 10, img: '', colorCode: '', sku: '', poin: 0, isActive: true }])} className="text-xs text-emerald-500 font-bold"><i className="fa-solid fa-plus mr-1"></i> Tambah</button>
+                    </div>
+                    <div className="space-y-4">
+                      {tempVariants.map((v, idx) => (
+                        <div key={idx} className="p-4 bg-slate-50 dark:bg-slate-900 border rounded-2xl relative space-y-3">
+                          <button type="button" onClick={() => setTempVariants(prev => prev.filter((_, i) => i !== idx))} className="absolute right-3 top-3 text-rose-500 text-sm"><i className="fa-solid fa-trash"></i></button>
+                          
+                          <div className="grid grid-cols-2 gap-2 text-xs">
+                            <div className="col-span-2">
+                              <label className="block font-black text-slate-500 mb-1">Nama Varian</label>
+                              <input placeholder="Cth: Hijau Tosca" value={v.name || ''} onChange={e => {
+                                const updated = [...tempVariants];
+                                updated[idx].name = e.target.value;
+                                setTempVariants(updated);
+                              }} className="admin-input" required />
+                            </div>
+                            <div>
+                              <label className="block font-black text-slate-500 mb-1">Harga Jual</label>
+                              <input type="number" placeholder="0" value={v.price || 0} onChange={e => {
+                                const updated = [...tempVariants];
+                                updated[idx].price = parseFloat(e.target.value) || 0;
+                                setTempVariants(updated);
+                              }} className="admin-input" />
+                            </div>
+                            <div>
+                              <label className="block font-black text-slate-500 mb-1">Harga Coret</label>
+                              <input type="number" placeholder="0" value={v.priceNormal || 0} onChange={e => {
+                                const updated = [...tempVariants];
+                                updated[idx].priceNormal = parseFloat(e.target.value) || 0;
+                                setTempVariants(updated);
+                              }} className="admin-input" />
+                            </div>
+                            <div>
+                              <label className="block font-black text-slate-500 mb-1">Harga Modal (HPP)</label>
+                              <input type="number" placeholder="0" value={v.hpp || 0} onChange={e => {
+                                const updated = [...tempVariants];
+                                updated[idx].hpp = parseFloat(e.target.value) || 0;
+                                setTempVariants(updated);
+                              }} className="admin-input" />
+                            </div>
+                            <div>
+                              <label className="block font-black text-slate-500 mb-1">Stok Varian</label>
+                              <input type="number" placeholder="0" value={v.stock || 0} onChange={e => {
+                                const updated = [...tempVariants];
+                                updated[idx].stock = parseFloat(e.target.value) || 0;
+                                setTempVariants(updated);
+                              }} className="admin-input" />
+                            </div>
+                            <div>
+                              <label className="block font-black text-slate-500 mb-1">Kode Warna HEX</label>
+                              <div className="flex gap-2">
+                                <input type="color" value={v.colorCode || '#ffffff'} onChange={e => {
+                                  const updated = [...tempVariants];
+                                  updated[idx].colorCode = e.target.value;
+                                  setTempVariants(updated);
+                                }} className="w-8 h-8 rounded border p-0.5 cursor-pointer" />
+                                <input placeholder="#ffffff" value={v.colorCode || ''} onChange={e => {
+                                  const updated = [...tempVariants];
+                                  updated[idx].colorCode = e.target.value;
+                                  setTempVariants(updated);
+                                }} className="admin-input flex-1 !py-1 text-center" />
+                              </div>
+                            </div>
+                            <div>
+                              <label className="block font-black text-slate-500 mb-1">Poin Member</label>
+                              <input type="number" placeholder="0" value={v.poin || 0} onChange={e => {
+                                const updated = [...tempVariants];
+                                updated[idx].poin = parseFloat(e.target.value) || 0;
+                                setTempVariants(updated);
+                              }} className="admin-input" />
+                            </div>
+                            <div className="col-span-2">
+                              <label className="block font-black text-slate-500 mb-1">URL Gambar Varian</label>
+                              <div className="flex gap-2">
+                                <input placeholder="Gambar URL" value={v.img || ''} onChange={e => {
+                                  const updated = [...tempVariants];
+                                  updated[idx].img = e.target.value;
+                                  setTempVariants(updated);
+                                }} className="admin-input flex-1" />
+                                <label className="bg-emerald-50 dark:bg-emerald-900/30 border border-emerald-200 text-emerald-600 rounded-xl px-3 flex items-center justify-center cursor-pointer hover:bg-emerald-100 text-xs shrink-0 active:scale-95">
+                                  <i className="fa-solid fa-cloud-arrow-up"></i>
+                                  <input type="file" accept="image/*" className="hidden" onChange={async (e) => {
+                                    const file = e.target.files[0];
+                                    if (file) {
+                                      const compressed = await compressImageForUpload(file, 1200, 0.80).catch(() => file);
+                                      const reader = new FileReader();
+                                      reader.readAsDataURL(compressed);
+                                      reader.onload = async () => {
+                                        const base64Data = reader.result.split(',')[1];
+                                        const payload = { name: 'VAR_IMG_' + Date.now(), mimeType: file.type, data: base64Data, token: GAS_SECRET_TOKEN };
+                                        const res = await fetch(GAS_UPLOAD_URL, { method: 'POST', body: JSON.stringify(payload), headers: { 'Content-Type': 'text/plain;charset=utf-8' } });
+                                        const rData = await res.json().catch(() => null);
+                                        if (rData?.status === 'success') {
+                                          const updated = [...tempVariants];
+                                          updated[idx].img = fixD(rData.url);
+                                          setTempVariants(updated);
+                                          showToast('Gambar varian terupload!');
+                                        }
+                                      };
+                                    }
+                                  }} />
+                                </label>
+                              </div>
+                            </div>
+                            <div>
+                              <label className="block font-black text-slate-500 mb-1">Status Varian</label>
+                              <button type="button" onClick={() => {
+                                const updated = [...tempVariants];
+                                updated[idx].isActive = v.isActive === false ? true : false;
+                                setTempVariants(updated);
+                              }} className={`w-full py-2 px-3 rounded-xl font-black text-[10px] text-center border ${v.isActive !== false ? 'bg-emerald-500 text-white border-emerald-600' : 'bg-slate-100 text-rose-500 border-rose-200 dark:bg-slate-800'}`}>
+                                {v.isActive !== false ? 'Tersedia' : 'Habis'}
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Category Form */}
+              {adminFormType === 'categories' && (
+                <>
+                  <div>
+                    <label className="block text-[10px] font-black uppercase text-slate-500 mb-1">Nama Kategori</label>
+                    <input className="admin-input" value={adminFormItem.name || ''} onChange={e => setAdminFormItem({ ...adminFormItem, name: e.target.value })} required />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-black uppercase text-slate-500 mb-1">URL Ikon / Gambar</label>
+                    <div className="flex gap-2">
+                      <input className="admin-input flex-1" value={adminFormItem.img || ''} onChange={e => setAdminFormItem({ ...adminFormItem, img: e.target.value })} required />
+                      <label className="bg-emerald-50 dark:bg-emerald-900/30 border border-emerald-200 text-emerald-600 rounded-xl px-3 flex items-center justify-center cursor-pointer hover:bg-emerald-100 text-xs shrink-0 active:scale-95">
+                        <i className="fa-solid fa-cloud-arrow-up"></i>
+                        <input type="file" accept="image/*" className="hidden" onChange={(e) => handleAdminImgUpload(e, 'img')} />
+                      </label>
+                    </div>
                   </div>
                 </>
               )}
+
+              {/* Brands Form */}
+              {adminFormType === 'brands' && (
+                <>
+                  <div>
+                    <label className="block text-[10px] font-black uppercase text-slate-500 mb-1">Nama Merek</label>
+                    <input className="admin-input" value={adminFormItem.name || ''} onChange={e => setAdminFormItem({ ...adminFormItem, name: e.target.value })} required />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-black uppercase text-slate-500 mb-1">URL Logo Merek</label>
+                    <div className="flex gap-2">
+                      <input className="admin-input flex-1" value={adminFormItem.img || ''} onChange={e => setAdminFormItem({ ...adminFormItem, img: e.target.value })} />
+                      <label className="bg-emerald-50 dark:bg-emerald-900/30 border border-emerald-200 text-emerald-600 rounded-xl px-3 flex items-center justify-center cursor-pointer hover:bg-emerald-100 text-xs shrink-0 active:scale-95">
+                        <i className="fa-solid fa-cloud-arrow-up"></i>
+                        <input type="file" accept="image/*" className="hidden" onChange={(e) => handleAdminImgUpload(e, 'img')} />
+                      </label>
+                    </div>
+                  </div>
+                </>
+              )}
+
+              {/* Vouchers Form */}
+              {adminFormType === 'vouchers' && (
+                <>
+                  <div>
+                    <label className="block text-[10px] font-black uppercase text-slate-500 mb-1">Kode Voucher</label>
+                    <input className="admin-input" value={adminFormItem.code || ''} onChange={e => setAdminFormItem({ ...adminFormItem, code: e.target.value.toUpperCase() })} required />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-black uppercase text-slate-500 mb-1">Jenis Diskon</label>
+                    <select className="admin-input" value={adminFormItem.type || 'percent'} onChange={e => setAdminFormItem({ ...adminFormItem, type: e.target.value })}>
+                      <option value="percent">Potongan Persen (%)</option>
+                      <option value="flat">Potongan Rupiah (Rp)</option>
+                      <option value="shipping_free">Gratis Ongkir (100%)</option>
+                      <option value="shipping_flat">Potongan Ongkir (Rp)</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-black uppercase text-slate-500 mb-1">Nilai Potongan</label>
+                    <input className="admin-input" type="number" value={adminFormItem.value || 0} onChange={e => setAdminFormItem({ ...adminFormItem, value: parseFloat(e.target.value) || 0 })} required />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-black uppercase text-slate-500 mb-1">Syarat Minimal Belanja (Rp)</label>
+                    <input className="admin-input" type="number" value={adminFormItem.minPurchase || 0} onChange={e => setAdminFormItem({ ...adminFormItem, minPurchase: parseFloat(e.target.value) || 0 })} />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-black uppercase text-slate-500 mb-1">Maksimal Nominal Potongan (Rp)</label>
+                    <input className="admin-input" type="number" value={adminFormItem.maxDiscount || 0} onChange={e => setAdminFormItem({ ...adminFormItem, maxDiscount: parseFloat(e.target.value) || 0 })} />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-black uppercase text-slate-500 mb-1">Target Produk Spesifik</label>
+                    <select className="admin-input" value={adminFormItem.targetProduct || ''} onChange={e => setAdminFormItem({ ...adminFormItem, targetProduct: e.target.value })}>
+                      <option value="">-- Semua Produk --</option>
+                      {appData.products.map((p, i) => (
+                        <option key={i} value={p.id}>{p.name}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-black uppercase text-slate-500 mb-1">Tampilkan di Beranda?</label>
+                    <select className="admin-input" value={adminFormItem.isShow !== false && adminFormItem.isShow !== 'false' ? 'true' : 'false'} onChange={e => setAdminFormItem({ ...adminFormItem, isShow: e.target.value === 'true' })}>
+                      <option value="true">Ya, Tampilkan Promo</option>
+                      <option value="false">Sembunyikan</option>
+                    </select>
+                  </div>
+                </>
+              )}
+
+              {/* Banks Form */}
+              {adminFormType === 'banks' && (
+                <>
+                  <div>
+                    <label className="block text-[10px] font-black uppercase text-slate-500 mb-1">Nama Bank</label>
+                    <input className="admin-input" value={adminFormItem.bankName || ''} onChange={e => setAdminFormItem({ ...adminFormItem, bankName: e.target.value })} required />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-black uppercase text-slate-500 mb-1">No. Rekening</label>
+                    <input className="admin-input" value={adminFormItem.bankAccount || ''} onChange={e => setAdminFormItem({ ...adminFormItem, bankAccount: e.target.value })} required />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-black uppercase text-slate-500 mb-1">Atas Nama</label>
+                    <input className="admin-input" value={adminFormItem.bankOwner || ''} onChange={e => setAdminFormItem({ ...adminFormItem, bankOwner: e.target.value })} required />
+                  </div>
+                </>
+              )}
+
+              {/* Banners Form */}
+              {adminFormType === 'banners' && (
+                <>
+                  <div>
+                    <label className="block text-[10px] font-black uppercase text-slate-500 mb-1">Judul Banner</label>
+                    <input className="admin-input" value={adminFormItem.title || ''} onChange={e => setAdminFormItem({ ...adminFormItem, title: e.target.value })} required />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-black uppercase text-slate-500 mb-1">Deskripsi Pendek</label>
+                    <textarea className="admin-input resize-none" value={adminFormItem.desc || ''} onChange={e => setAdminFormItem({ ...adminFormItem, desc: e.target.value })} rows="2"></textarea>
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-black uppercase text-slate-500 mb-1">URL Gambar</label>
+                    <div className="flex gap-2">
+                      <input className="admin-input flex-1" value={adminFormItem.img || ''} onChange={e => setAdminFormItem({ ...adminFormItem, img: e.target.value })} required />
+                      <label className="bg-emerald-50 dark:bg-emerald-900/30 border border-emerald-200 text-emerald-600 rounded-xl px-3 flex items-center justify-center cursor-pointer hover:bg-emerald-100 text-xs shrink-0 active:scale-95">
+                        <i className="fa-solid fa-cloud-arrow-up"></i>
+                        <input type="file" accept="image/*" className="hidden" onChange={(e) => handleAdminImgUpload(e, 'img')} />
+                      </label>
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-black uppercase text-slate-500 mb-1">Link Tujuan</label>
+                    <input className="admin-input" value={adminFormItem.link || ''} onChange={e => setAdminFormItem({ ...adminFormItem, link: e.target.value })} placeholder="Cth: https://wa.me/62... atau link produk" />
+                  </div>
+                </>
+              )}
+
+              {/* Customers Form */}
+              {adminFormType === 'customers' && (
+                <>
+                  <div>
+                    <label className="block text-[10px] font-black uppercase text-slate-500 mb-1">Nama Lengkap</label>
+                    <input className="admin-input" value={adminFormItem.name || ''} onChange={e => setAdminFormItem({ ...adminFormItem, name: e.target.value })} required />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-black uppercase text-slate-500 mb-1">No. WhatsApp Aktif</label>
+                    <input className="admin-input" value={adminFormItem.phone || ''} onChange={e => setAdminFormItem({ ...adminFormItem, phone: e.target.value })} placeholder="Cth: 081234567890" required />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-black uppercase text-slate-500 mb-1">Poin Member</label>
+                    <input className="admin-input" type="number" value={adminFormItem.points || 0} onChange={e => setAdminFormItem({ ...adminFormItem, points: parseFloat(e.target.value) || 0 })} />
+                  </div>
+                </>
+              )}
+
+              {/* Rewards Form */}
+              {adminFormType === 'rewards' && (
+                <>
+                  <div>
+                    <label className="block text-[10px] font-black uppercase text-slate-500 mb-1">Nama Hadiah</label>
+                    <input className="admin-input" value={adminFormItem.name || ''} onChange={e => setAdminFormItem({ ...adminFormItem, name: e.target.value })} required />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-black uppercase text-slate-500 mb-1">URL Gambar Hadiah</label>
+                    <div className="flex gap-2">
+                      <input className="admin-input flex-1" value={adminFormItem.img || ''} onChange={e => setAdminFormItem({ ...adminFormItem, img: e.target.value })} required />
+                      <label className="bg-emerald-50 dark:bg-emerald-900/30 border border-emerald-200 text-emerald-600 rounded-xl px-3 flex items-center justify-center cursor-pointer hover:bg-emerald-100 text-xs shrink-0 active:scale-95">
+                        <i className="fa-solid fa-cloud-arrow-up"></i>
+                        <input type="file" accept="image/*" className="hidden" onChange={(e) => handleAdminImgUpload(e, 'img')} />
+                      </label>
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-black uppercase text-slate-500 mb-1">Poin yang Dibutuhkan</label>
+                    <input className="admin-input" type="number" value={adminFormItem.pointsCost || 0} onChange={e => setAdminFormItem({ ...adminFormItem, pointsCost: parseFloat(e.target.value) || 0 })} required />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-black uppercase text-slate-500 mb-1">Stok Hadiah Tersedia</label>
+                    <input className="admin-input" type="number" value={adminFormItem.stock || 0} onChange={e => setAdminFormItem({ ...adminFormItem, stock: parseFloat(e.target.value) || 0 })} required />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-black uppercase text-slate-500 mb-1">Status</label>
+                    <select className="admin-input" value={adminFormItem.isActive !== false && adminFormItem.isActive !== 'false' ? 'true' : 'false'} onChange={e => setAdminFormItem({ ...adminFormItem, isActive: e.target.value === 'true' })}>
+                      <option value="true">Aktif</option>
+                      <option value="false">Nonaktif</option>
+                    </select>
+                  </div>
+                </>
+              )}
+
+              {/* Settings Form */}
+              {adminFormType === 'settings' && (
+                <>
+                  <div>
+                    <label className="block text-[10px] font-black uppercase text-slate-500 mb-1">Nama Toko</label>
+                    <input className="admin-input" value={adminFormItem.name || ''} onChange={e => setAdminFormItem({ ...adminFormItem, name: e.target.value })} required />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-black uppercase text-slate-500 mb-1">Slogan Toko</label>
+                    <input className="admin-input" value={adminFormItem.slogan || ''} onChange={e => setAdminFormItem({ ...adminFormItem, slogan: e.target.value })} />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-black uppercase text-slate-500 mb-1">WhatsApp Admin</label>
+                    <input className="admin-input" value={adminFormItem.wa || ''} onChange={e => setAdminFormItem({ ...adminFormItem, wa: e.target.value })} />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-black uppercase text-slate-500 mb-1">Alamat Toko</label>
+                    <textarea className="admin-input resize-none" value={adminFormItem.address || ''} onChange={e => setAdminFormItem({ ...adminFormItem, address: e.target.value })} rows="2"></textarea>
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-black uppercase text-slate-500 mb-1">Logo Toko (URL)</label>
+                    <input className="admin-input" value={adminFormItem.logo || ''} onChange={e => setAdminFormItem({ ...adminFormItem, logo: e.target.value })} />
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-[10px] font-black uppercase text-slate-500 mb-1">Tarif Kurir/km (Rp)</label>
+                      <input className="admin-input" type="number" value={adminFormItem.costPerKm || 0} onChange={e => setAdminFormItem({ ...adminFormItem, costPerKm: parseFloat(e.target.value) || 0 })} />
+                    </div>
+                    <div>
+                      <label className="block text-[10px] font-black uppercase text-slate-500 mb-1">Warna Header PWA</label>
+                      <input className="admin-input" value={adminFormItem.themeColor || '#10b981'} onChange={e => setAdminFormItem({ ...adminFormItem, themeColor: e.target.value })} />
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-[10px] font-black uppercase text-slate-500 mb-1">Kelola Stok?</label>
+                      <select className="admin-input" value={adminFormItem.useStock ? 'true' : 'false'} onChange={e => setAdminFormItem({ ...adminFormItem, useStock: e.target.value === 'true' })}>
+                        <option value="true">Ya, Validasi Stok</option>
+                        <option value="false">Tidak (Bebas Beli)</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-[10px] font-black uppercase text-slate-500 mb-1">PPN</label>
+                      <select className="admin-input" value={adminFormItem.ppnEnabled ? 'true' : 'false'} onChange={e => setAdminFormItem({ ...adminFormItem, ppnEnabled: e.target.value === 'true' })}>
+                        <option value="true">Aktif</option>
+                        <option value="false">Nonaktif</option>
+                      </select>
+                    </div>
+                  </div>
+                </>
+              )}
+
               <div className="flex gap-3 mt-6">
                 <button className="flex-1 py-3 bg-slate-100 font-bold rounded-xl text-xs" type="button" onClick={() => setAdminModalOpen(false)}>Batal</button>
                 <button className="flex-1 py-3 btn-primary text-xs shadow-glow rounded-xl" type="submit">Simpan</button>
@@ -2222,6 +3286,245 @@ export default function App() {
           </div>
         </div>
       )}
+
+      {/* Product Detail Modal */}
+      {selectedProduct && (
+        <div className="fixed inset-0 z-[110] bg-slate-900/70 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-5" onClick={(e) => { if (e.target.id === 'prod-modal-bg') setSelectedProduct(null); }} id="prod-modal-bg">
+          <div className="bg-white dark:bg-[#0f172a] w-full max-w-md rounded-t-[2rem] sm:rounded-[2rem] max-h-[92vh] overflow-y-auto flex flex-col shadow-2xl border-t sm:border border-slate-200 dark:border-slate-800 relative hide-scrollbar">
+            <div className="absolute top-3 right-3 z-20 flex gap-1.5">
+              <button className="w-9 h-9 flex items-center justify-center rounded-full bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm border border-slate-200 dark:border-slate-700 shadow-sm text-slate-600 dark:text-slate-300 hover:bg-rose-500 hover:text-white hover:border-rose-500 transition-all" onClick={() => setSelectedProduct(null)}><i className="fa-solid fa-xmark text-sm"></i></button>
+            </div>
+            
+            {/* Image & Video Carousel */}
+            <div className="w-full aspect-square bg-white flex items-center justify-center relative overflow-hidden shrink-0 border-b dark:border-slate-800">
+              {(() => {
+                const ytId = getYouTubeId(selectedProduct.video);
+                if (ytId && activeSlideIdx === 1) {
+                  return (
+                    <div className="absolute inset-0 bg-black flex items-center justify-center w-full h-full">
+                      <iframe src={`https://www.youtube.com/embed/${ytId}?autoplay=1`} className="w-full h-full" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
+                    </div>
+                  );
+                }
+                const activeImg = selectedVariantIdx !== null && selectedProduct.variants?.[selectedVariantIdx]?.img ? selectedProduct.variants[selectedVariantIdx].img : selectedProduct.img;
+                return (
+                  <img src={activeImg} alt={selectedProduct.name} className="w-full h-full object-cover transition-transform duration-500 hover:scale-105" />
+                );
+              })()}
+              
+              {/* Media selection controls */}
+              {getYouTubeId(selectedProduct.video) && (
+                <div className="absolute bottom-3 left-1/2 transform -translate-x-1/2 flex gap-1.5 z-10 bg-black/30 backdrop-blur-sm px-3 py-1.5 rounded-full">
+                  <button className={`text-[10px] font-black uppercase tracking-wider px-3 py-1 rounded-full text-white ${activeSlideIdx === 0 ? 'bg-[var(--color-primary)]' : 'opacity-60'}`} onClick={() => setActiveSlideIdx(0)}>Gambar</button>
+                  <button className={`text-[10px] font-black uppercase tracking-wider px-3 py-1 rounded-full text-white ${activeSlideIdx === 1 ? 'bg-red-600' : 'opacity-60'}`} onClick={() => setActiveSlideIdx(1)}><i className="fa-brands fa-youtube mr-1"></i> Video</button>
+                </div>
+              )}
+            </div>
+
+            <div className="p-6 sm:p-7">
+              {/* Badges */}
+              <div className="flex flex-wrap gap-1.5 mb-3">
+                {selectedProduct.poTime && <span className="bg-amber-100 text-amber-600 dark:bg-amber-900/40 px-2 py-0.5 rounded-full text-[8px] font-black uppercase">PO {selectedProduct.poTime}</span>}
+                {parseFloat(selectedProduct.poin) > 0 && <span className="bg-violet-100 text-violet-700 dark:bg-violet-900/40 px-2 py-0.5 rounded-full text-[8px] font-black uppercase"><i className="fa-solid fa-star"></i> +{selectedProduct.poin} Poin</span>}
+                {selectedProduct.tag && <span className="bg-emerald-50 text-emerald-600 dark:bg-emerald-950/20 px-2 py-0.5 rounded-full text-[8px] font-black uppercase">{selectedProduct.tag}</span>}
+              </div>
+
+              <h3 className="text-lg sm:text-xl font-black text-slate-900 dark:text-white mb-2 leading-tight uppercase">{selectedProduct.name}</h3>
+              <div className="flex items-end gap-3 mb-6 pb-6 border-b border-slate-100 dark:border-slate-800/60">
+                <span className="text-emerald-600 dark:text-emerald-400 font-black text-3xl tracking-tight">
+                  {(() => {
+                    if (selectedVariantIdx !== null && selectedProduct.variants?.[selectedVariantIdx]) {
+                      return fCur(selectedProduct.variants[selectedVariantIdx].price);
+                    }
+                    if (selectedProduct.variants?.length) {
+                      const minPrice = Math.min(...selectedProduct.variants.map(v => v.price || 0));
+                      const maxPrice = Math.max(...selectedProduct.variants.map(v => v.price || 0));
+                      return `Rp ${minPrice.toLocaleString('id-ID')} - ${maxPrice.toLocaleString('id-ID')}`;
+                    }
+                    return fCur(selectedProduct.price);
+                  })()}
+                </span>
+                <span className="text-[9px] bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 font-black px-2 py-1 rounded-full border border-emerald-100 dark:border-emerald-800 uppercase tracking-widest mb-1.5">Harga Terbaik</span>
+              </div>
+
+              {/* Description */}
+              <div className="bg-slate-50 dark:bg-slate-900/50 p-5 rounded-2xl border border-slate-100 dark:border-slate-800 mb-6 shadow-sm">
+                <div className="flex items-center gap-2 mb-3 pb-2 border-b border-slate-200 dark:border-slate-700/50">
+                  <i className="fa-solid fa-circle-info text-emerald-500 text-sm"></i>
+                  <h4 className="font-black text-slate-800 dark:text-slate-200 text-[10px] tracking-widest uppercase">Informasi &amp; Deskripsi</h4>
+                </div>
+                <p className="text-[13px] text-slate-600 dark:text-slate-400 font-semibold leading-relaxed whitespace-pre-wrap">{selectedProduct.desc || 'Tidak ada deskripsi produk.'}</p>
+              </div>
+
+              {/* Wholesale Pricing Table preview */}
+              {selectedProduct.wholesale?.length > 0 && (
+                <div className="bg-emerald-50/50 dark:bg-emerald-950/10 p-5 rounded-2xl border border-emerald-100 dark:border-emerald-800/40 mb-6">
+                  <div className="flex items-center gap-2 mb-3 pb-2 border-b border-emerald-200 dark:border-emerald-800/40">
+                    <i className="fa-solid fa-tags text-emerald-600"></i>
+                    <h4 className="font-black text-emerald-800 dark:text-emerald-400 text-[10px] tracking-widest uppercase">Promo Grosir (Wholesale)</h4>
+                  </div>
+                  <div className="space-y-2">
+                    {selectedProduct.wholesale.map((w, i) => (
+                      <div key={i} className="flex justify-between items-center text-xs font-bold text-slate-600 dark:text-slate-400">
+                        <span>Beli minimal {w.minQty} {selectedProduct.unit || 'pcs'}</span>
+                        <span className="font-black text-emerald-600">{fCur(w.price)} / pcs</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Variant Selector */}
+              {selectedProduct.variants?.length > 0 && (
+                <div className="mb-6">
+                  <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3">Pilih Varian / Warna</label>
+                  <div className="flex flex-wrap gap-2">
+                    {selectedProduct.variants.map((v, i) => (
+                      <button key={i} className={`px-4 py-2.5 rounded-xl text-xs font-bold border transition-all flex items-center gap-2 ${selectedVariantIdx === i ? 'bg-[var(--color-primary)] text-white border-transparent shadow-md' : 'bg-slate-50 dark:bg-slate-900 border-slate-200 text-slate-700 dark:text-slate-300 hover:bg-slate-100'}`} onClick={() => setSelectedVariantIdx(i)}>
+                        {v.colorCode && (
+                          <span className="w-3.5 h-3.5 rounded-full border border-black/10 shrink-0" style={{ backgroundColor: v.colorCode }}></span>
+                        )}
+                        {v.name}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Active controls: Quantity & Add to Cart */}
+              <div className="pt-5 mt-1 border-t border-slate-100 dark:border-slate-800/60">
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-slate-500 dark:text-slate-400 flex items-center">Jumlah <span className="text-[9px] font-black text-emerald-600 bg-emerald-50 dark:bg-emerald-900/40 dark:text-emerald-400 px-1.5 py-0.5 rounded ml-1.5 uppercase tracking-widest border border-emerald-200 dark:border-emerald-800">{selectedProduct.variants?.[selectedVariantIdx]?.unit || selectedProduct.unit || 'pcs'}</span></span>
+                    <div className="flex items-center bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl h-11 overflow-hidden shadow-sm">
+                      <button className="w-11 h-full flex items-center justify-center font-black text-slate-500 hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors" onClick={() => setCQty(prev => parseFloat(Math.max(0.01, prev - 1).toFixed(2)))}><i className="fa-solid fa-minus text-xs"></i></button>
+                      <input className="w-14 text-center text-sm font-black bg-transparent focus:outline-none dark:text-white border-x border-slate-200 dark:border-slate-700" type="number" min="0.01" step="0.01" value={cQty} onChange={e => setCQty(parseFloat(parseFloat(e.target.value).toFixed(2)) || 1)} />
+                      <button className="w-11 h-full flex items-center justify-center font-black text-slate-500 hover:text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/30 transition-colors" onClick={() => setCQty(prev => parseFloat((prev + 1).toFixed(2)))}><i className="fa-solid fa-plus text-xs"></i></button>
+                    </div>
+                  </div>
+                  
+                  {/* Dynamic subtotal preview */}
+                  <div className="flex items-center justify-between bg-emerald-50 dark:bg-emerald-900/20 p-4 rounded-2xl border border-emerald-100 dark:border-emerald-800/50 shadow-inner">
+                    <span className="text-[10px] font-black text-emerald-800 dark:text-emerald-400 uppercase tracking-widest">Subtotal</span>
+                    <span className="text-xl font-black text-emerald-600 dark:text-emerald-400 tracking-tight">
+                      {(() => {
+                        let activePrice = selectedProduct.price;
+                        if (selectedVariantIdx !== null && selectedProduct.variants?.[selectedVariantIdx]) {
+                          activePrice = selectedProduct.variants[selectedVariantIdx].price;
+                        }
+                        // Grosir check (only applies if no variants)
+                        if (selectedProduct.wholesale?.length && !selectedProduct.variants?.length) {
+                          const tier = selectedProduct.wholesale.slice().sort((a,b) => b.minQty - a.minQty).find(w => cQty >= parseFloat(w.minQty));
+                          if (tier) activePrice = tier.price;
+                        }
+                        return fCur(activePrice * cQty);
+                      })()}
+                    </span>
+                  </div>
+
+                  <div className="flex gap-3 mt-2">
+                    <button className="w-14 h-14 shrink-0 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm text-slate-400 rounded-2xl flex items-center justify-center hover:bg-rose-50 hover:text-rose-500 hover:border-rose-200 active:scale-95 transition-all" onClick={() => toggleWishlist(selectedProduct, selectedProduct.variants?.[selectedVariantIdx]?.name || null)}><i className="fa-solid fa-heart text-xl text-rose-500"></i></button>
+                    <button className="btn-primary flex-1 text-sm uppercase tracking-wider shadow-glow active:scale-[0.98]" onClick={() => {
+                      if (selectedProduct.variants?.length > 0 && selectedVariantIdx === null) {
+                        showToast("Pilih varian / warna terlebih dahulu!", "warning");
+                        return;
+                      }
+                      handleAddToCart(selectedProduct, selectedVariantIdx, cQty);
+                      setSelectedProduct(null);
+                    }}><i className="fa-solid fa-cart-plus mr-2 text-lg"></i> Keranjang</button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Reviews Section */}
+              <div className="mt-7 pt-6 border-t border-slate-100 dark:border-slate-800">
+                <h4 className="font-black text-xs text-slate-800 dark:text-white uppercase tracking-widest mb-4 flex items-center gap-1.5"><i className="fa-solid fa-comments text-amber-500"></i> Ulasan Pembeli ({productReviews.length})</h4>
+                {reviewsLoading ? (
+                  <div className="text-center py-4"><i className="fa-solid fa-spinner fa-spin text-slate-300 text-xl"></i></div>
+                ) : productReviews.length === 0 ? (
+                  <p className="text-xs text-slate-400 font-bold italic py-2 text-center">Belum ada ulasan untuk produk ini.</p>
+                ) : (
+                  <div className="space-y-3.5">
+                    {productReviews.map((r, i) => (
+                      <div key={i} className="bg-slate-50 dark:bg-slate-900/40 p-4 rounded-xl border border-slate-100 dark:border-slate-800/80">
+                        <div className="flex justify-between items-start mb-1.5">
+                          <p className="font-black text-[11px] text-slate-800 dark:text-slate-200 uppercase truncate">{r.customerName || 'Pelanggan'}</p>
+                          <div className="flex text-[10px]">
+                            {Array.from({ length: 5 }, (_, idx) => (
+                              <i key={idx} className={`fa-solid fa-star ${idx < r.rating ? 'text-amber-400' : 'text-slate-200'}`}></i>
+                            ))}
+                          </div>
+                        </div>
+                        <p className="text-xs text-slate-600 dark:text-slate-400 font-medium leading-relaxed">{r.text}</p>
+                        {r.adminReply && (
+                          <div className="mt-2.5 pt-2.5 border-t border-slate-200/50 dark:border-slate-800/60">
+                            <p className="text-[9px] font-black text-[var(--color-primary)] uppercase tracking-wider mb-0.5"><i className="fa-solid fa-store mr-1"></i> Balasan Toko:</p>
+                            <p className="text-xs text-slate-500 dark:text-slate-400 italic">"{r.adminReply}"</p>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Restock Product Modal */}
+      {adminRestockItem && (
+        <div className="fixed inset-0 z-[110] bg-slate-900/70 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-5" onClick={(e) => { if (e.target.id === 'restock-modal-bg') setAdminRestockItem(null); }} id="restock-modal-bg">
+          <div className="bg-white dark:bg-slate-800 w-full max-w-md rounded-t-[2rem] sm:rounded-[2rem] p-6 shadow-2xl border border-slate-200 dark:border-slate-700">
+            <h3 className="font-black text-slate-900 dark:text-white text-base mb-4 uppercase tracking-wider">Restock Produk</h3>
+            <div className="space-y-4">
+              <p className="text-xs font-bold text-slate-500">{adminRestockItem.name}</p>
+              {adminRestockItem.variants?.length > 0 && (
+                <div>
+                  <label className="block text-[10px] font-black uppercase text-slate-500 mb-1">Pilih Varian</label>
+                  <select className="admin-input" value={adminRestockVariantIdx} onChange={e => setAdminRestockVariantIdx(parseInt(e.target.value) || 0)}>
+                    {adminRestockItem.variants.map((v, i) => (
+                      <option key={i} value={i}>{v.name} (Stok: {v.stock})</option>
+                    ))}
+                  </select>
+                </div>
+              )}
+              <div>
+                <label className="block text-[10px] font-black uppercase text-slate-500 mb-1">Jumlah Tambahan Stok</label>
+                <input className="admin-input" type="number" value={adminRestockQty} onChange={e => setAdminRestockQty(parseFloat(e.target.value) || 0)} required />
+              </div>
+              <div className="flex gap-3">
+                <button className="flex-1 py-3 bg-slate-100 font-bold rounded-xl text-xs" type="button" onClick={() => setAdminRestockItem(null)}>Batal</button>
+                <button className="flex-1 py-3 btn-primary text-xs shadow-glow rounded-xl" type="button" onClick={handleProcessRestock}>Simpan Restock</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Review Reply Modal */}
+      {adminReplyTarget && (
+        <div className="fixed inset-0 z-[110] bg-slate-900/80 flex items-center justify-center p-3">
+          <div className="bg-white dark:bg-slate-800 rounded-[2rem] w-full max-w-md p-6 shadow-2xl border border-slate-200">
+            <h3 className="font-black text-slate-900 dark:text-white text-base mb-4 uppercase tracking-wider">Balas Ulasan</h3>
+            <div className="space-y-4">
+              <div className="bg-slate-50 dark:bg-slate-900 p-3 rounded-xl border">
+                <p className="text-xs font-bold text-slate-500">{adminReplyTarget.customerName} :</p>
+                <p className="text-xs text-slate-700 dark:text-slate-300 italic">"${adminReplyTarget.text}"</p>
+              </div>
+              <div>
+                <label className="block text-[10px] font-black uppercase text-slate-500 mb-1">Pesan Balasan</label>
+                <textarea className="admin-input resize-none" value={adminReplyText} onChange={e => setAdminReplyText(e.target.value)} rows="3" placeholder="Tulis balasan..."></textarea>
+              </div>
+              <div className="flex gap-3">
+                <button className="flex-1 py-3 bg-slate-100 font-bold rounded-xl text-xs" type="button" onClick={() => setAdminReplyTarget(null)}>Batal</button>
+                <button className="flex-1 py-3 btn-primary text-xs shadow-glow rounded-xl" type="button" onClick={handleSaveAdminReply}>Kirim Balasan</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }
