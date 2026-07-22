@@ -245,7 +245,7 @@ export default function App() {
     deliveryMethod: 'delivery', distance: 0, note: '', wa: ''
   });
   const [currentMember, setCurrentMember] = useState(null);
-  const [selectedReward, setSelectedReward] = useState(null);
+  const [claimedReward, setClaimedReward] = useState(null);
   const [vouch, setVouch] = useState(null);
   const [voucherCodeInput, setVoucherCodeInput] = useState('');
   const [voucherError, setVoucherError] = useState('');
@@ -919,9 +919,8 @@ export default function App() {
         // Read Phase
         const memberDoc = memberRef ? await transaction.get(memberRef) : null;
         let rewardDoc = null;
-        if (selectedReward) {
-          const rewardRef = db.collection("freshmart").doc("cms_data").collection("rewards").doc(selectedReward.id.toString());
-          rewardDoc = await transaction.get(rewardRef);
+        if (claimedReward) {
+          orderDoc.claimedReward = claimedReward;
         }
 
         // Validate stock
