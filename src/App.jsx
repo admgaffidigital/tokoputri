@@ -4856,6 +4856,19 @@ export default function App() {
         <div className="fixed inset-0 z-[110] bg-slate-900/70 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-5" onClick={(e) => { if (e.target.id === 'prod-modal-bg') setSelectedProduct(null); }} id="prod-modal-bg">
           <div className="bg-white dark:bg-[#0f172a] w-full max-w-md rounded-t-[2rem] sm:rounded-[2rem] max-h-[92vh] overflow-y-auto flex flex-col shadow-2xl border-t sm:border border-slate-200 dark:border-slate-800 relative hide-scrollbar">
             <div className="absolute top-3 right-3 z-20 flex gap-1.5">
+              <button className="w-9 h-9 flex items-center justify-center rounded-full bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm border border-slate-200 dark:border-slate-700 shadow-sm text-slate-600 dark:text-slate-300 hover:bg-emerald-500 hover:text-white hover:border-emerald-500 transition-all" title="Bagikan Produk" onClick={() => {
+                const pUrl = window.location.href;
+                const pName = selectedProduct.name;
+                const pPrice = selectedProduct.variants?.length ? `Rp ${Math.min(...selectedProduct.variants.map(v => v.price || 0)).toLocaleString('id-ID')}` : fCur(selectedProduct.price);
+                const text = `Lihat produk *${pName}* (${pPrice}) di ${appData.store?.name || 'Toko Kami'}:\n${pUrl}`;
+                
+                if (navigator.share) {
+                  navigator.share({ title: pName, text, url: pUrl }).catch(() => {});
+                } else {
+                  navigator.clipboard.writeText(`${text}`);
+                  showToast("Link & info produk disalin ke clipboard!", "success");
+                }
+              }}><i className="fa-solid fa-share-nodes text-sm"></i></button>
               <button className="w-9 h-9 flex items-center justify-center rounded-full bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm border border-slate-200 dark:border-slate-700 shadow-sm text-slate-600 dark:text-slate-300 hover:bg-rose-500 hover:text-white hover:border-rose-500 transition-all" onClick={() => setSelectedProduct(null)}><i className="fa-solid fa-xmark text-sm"></i></button>
             </div>
             
