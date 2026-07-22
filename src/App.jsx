@@ -1981,19 +1981,40 @@ export default function App() {
             {appData.store.showCategories && (
               <div className="w-full max-w-full xl:max-w-[1200px] px-4 lg:px-10 mx-auto mt-6">
                 <div className="bg-white dark:bg-slate-800 rounded-[1.5rem] border border-slate-200 dark:border-slate-700 shadow-sm p-5">
-                  <div className="flex items-center justify-between mb-5 pb-4 border-b border-slate-100 dark:border-slate-700/50">
+                  <div className="flex items-center justify-between mb-4 pb-3 border-b border-slate-100 dark:border-slate-700/50">
                     <h3 className="font-black text-slate-800 dark:text-white text-sm sm:text-base tracking-tight uppercase flex items-center gap-2"><i className="fa-solid fa-layer-group text-emerald-500"></i> Kategori Produk</h3>
                     <button className="text-[10px] font-black text-emerald-600 bg-emerald-50 dark:bg-emerald-900/40 px-4 py-2 rounded-xl transition-all" onClick={() => setCategoryModalOpen(true)}>Lihat Semua</button>
                   </div>
-                  <div className="flex gap-4 overflow-x-auto hide-scrollbar snap-x pb-4">
-                    {appData.categories.map((c, idx) => (
-                      <div key={idx} onClick={() => setACat(c.name)} className="flex flex-col items-center gap-2 cursor-pointer shrink-0 snap-start">
-                        <div className={`w-14 h-14 rounded-2xl bg-slate-50 dark:bg-slate-900 flex items-center justify-center border ${aCat === c.name ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-950/30' : 'border-slate-200 dark:border-slate-800'}`}>
-                          {c.img ? <img src={c.img} alt={c.name} className="w-10 h-10 object-cover rounded-xl" /> : <i className="fa-solid fa-box text-slate-400"></i>}
-                        </div>
-                        <span className="text-[9px] font-black text-slate-600 dark:text-slate-300 uppercase tracking-widest text-center truncate w-[75px]">{c.name}</span>
+                  <div className="flex gap-3 overflow-x-auto hide-scrollbar snap-x pb-2 pt-1">
+                    {/* Semua Kategori Option */}
+                    <div onClick={() => setACat('Semua Produk')} className="cursor-pointer shrink-0 snap-start group">
+                      <div className={`px-4 py-2.5 rounded-[1.25rem] border-2 transition-all duration-300 flex items-center gap-2.5 ${aCat === 'Semua Produk' ? 'bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-primary-dark)] border-transparent text-white shadow-md' : 'bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-[var(--color-primary)]'}`}>
+                        <div className={`w-6 h-6 rounded-full flex items-center justify-center ${aCat === 'Semua Produk' ? 'bg-white/20 text-white' : 'bg-slate-200 dark:bg-slate-800 text-slate-500'}`}><i className="fa-solid fa-layer-group text-[10px]"></i></div>
+                        <span className="font-black text-xs uppercase tracking-wider whitespace-nowrap">Semua</span>
                       </div>
-                    ))}
+                    </div>
+
+                    {appData.categories.map((c, idx) => {
+                      const isSel = aCat === c.name;
+                      if (appData.store.categoryStyle === 'image' && c.img) {
+                        return (
+                          <div key={idx} onClick={() => setACat(c.name)} className="flex flex-col items-center gap-2 cursor-pointer shrink-0 snap-start">
+                            <div className={`w-14 h-14 rounded-2xl bg-slate-50 dark:bg-slate-900 flex items-center justify-center border ${isSel ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-950/30' : 'border-slate-200 dark:border-slate-800'}`}>
+                              <img src={c.img} alt={c.name} className="w-10 h-10 object-cover rounded-xl" />
+                            </div>
+                            <span className="text-[9px] font-black text-slate-600 dark:text-slate-300 uppercase tracking-widest text-center truncate w-[75px]">{c.name}</span>
+                          </div>
+                        );
+                      }
+                      return (
+                        <div key={idx} onClick={() => setACat(c.name)} className="cursor-pointer shrink-0 snap-start group">
+                          <div className={`px-4 py-2.5 rounded-[1.25rem] border-2 transition-all duration-300 flex items-center gap-2.5 ${isSel ? 'bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-primary-dark)] border-transparent text-white shadow-md' : 'bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-[var(--color-primary)]'}`}>
+                            <div className={`w-6 h-6 rounded-full flex items-center justify-center ${isSel ? 'bg-white/20 text-white' : 'bg-slate-200 dark:bg-slate-800 text-slate-500'}`}><i className="fa-solid fa-tags text-[10px]"></i></div>
+                            <span className="font-black text-xs uppercase tracking-wider whitespace-nowrap">{c.name}</span>
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
               </div>
