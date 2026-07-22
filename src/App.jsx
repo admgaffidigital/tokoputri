@@ -436,8 +436,17 @@ export default function App() {
       document.documentElement.style.setProperty(`--color-emerald-${shade}`, colors[shade]);
     });
 
+    // Update meta theme-color tag for mobile browsers
+    let metaTheme = document.querySelector('meta[name="theme-color"]');
+    if (!metaTheme) {
+      metaTheme = document.createElement('meta');
+      metaTheme.setAttribute('name', 'theme-color');
+      document.head.appendChild(metaTheme);
+    }
+    metaTheme.setAttribute('content', brandColor);
+
     return colors;
-  }, [appData.store.uiTheme, appData.store.themeColor]);
+  }, [appData.store?.uiTheme, appData.store?.themeColor]);
 
   // Listen to User Orders status realtime
   useEffect(() => {
@@ -1619,7 +1628,7 @@ export default function App() {
       } else if (type === 'customers') {
         const docId = item.phone.toString();
         await db.collection("freshmart").doc("cms_data").collection("customers").doc(docId).set(item);
-      } else if (type === 'settings' || type === 'settings_profile' || type === 'settings_catalog' || type === 'settings_shipping' || type === 'settings_operasional') {
+      } else if (type === 'settings' || type === 'settings_profile' || type === 'settings_catalog' || type === 'settings_shipping' || type === 'settings_operasional' || type === 'settings_theme') {
         const newStore = { ...appData.store, ...item };
         await db.collection("freshmart").doc("cms_data").update({ store: newStore, lastUpdate: firebase.firestore.FieldValue.increment(1) });
         setAppData(prev => ({ ...prev, store: newStore }));
@@ -3309,6 +3318,15 @@ export default function App() {
                     </button>
 
                     <button className="p-4 bg-slate-50 dark:bg-slate-900 border rounded-2xl flex flex-col items-center justify-center text-center gap-2 hover:-translate-y-1 transition-all" onClick={() => {
+                      setAdminFormType('settings_theme');
+                      setAdminFormItem({ uiTheme: appData.store.uiTheme || 'emerald', themeColor: appData.store.themeColor || '#10b981' });
+                      setAdminModalOpen(true);
+                    }}>
+                      <i className="fa-solid fa-paintbrush text-xl text-violet-500"></i>
+                      <span className="text-[10px] font-black uppercase">Warna Tema UI</span>
+                    </button>
+
+                    <button className="p-4 bg-slate-50 dark:bg-slate-900 border rounded-2xl flex flex-col items-center justify-center text-center gap-2 hover:-translate-y-1 transition-all" onClick={() => {
                       setAdminFormType('settings_operasional');
                       setAdminFormItem({ useStock: appData.store.useStock, ppnEnabled: appData.store.ppnEnabled, ppnRate: appData.store.ppnRate });
                       setAdminModalOpen(true);
@@ -4047,6 +4065,47 @@ export default function App() {
                     <label className="block text-[10px] font-black uppercase text-slate-500 mb-1">Google Apps Script API URL</label>
                     <input className="admin-input" value={adminFormItem.gasUrl || ''} onChange={e => setAdminFormItem({ ...adminFormItem, gasUrl: e.target.value })} />
                     <p className="text-[9px] text-slate-400 font-bold mt-1.5">* Digunakan sebagai endpoint untuk sistem upload gambar.</p>
+                  </div>
+                </>
+              )}
+
+              {/* Settings Theme Form */}
+              {adminFormType === 'settings_theme' && (
+                <>
+                  <div>
+                    <label className="block text-[10px] font-black uppercase text-slate-500 mb-2">Palet Warna Utama</label>
+                    <select className="admin-input" value={adminFormItem.uiTheme || 'emerald'} onChange={e => {
+                      const selectedTheme = e.target.value;
+                      const palette = uiPalettes[selectedTheme] || uiPalettes['emerald'];
+                      setAdminFormItem({ ...adminFormItem, uiTheme: selectedTheme, themeColor: palette[500] });
+                    }}>
+                      <option value="emerald">Emerald (Hijau Zamrud)</option>
+                      <option value="teal">Teal (Hijau Tosca)</option>
+                      <option value="cyan">Cyan (Biru Cyan)</option>
+                      <option value="sky">Sky (Biru Langit)</option>
+                      <option value="blue">Blue (Biru Utama)</option>
+                      <option value="indigo">Indigo (Nila)</option>
+                      <option value="violet">Violet (Ungu Muda)</option>
+                      <option value="purple">Purple (Ungu)</option>
+                      <option value="fuchsia">Fuchsia (Merah Muda Terang)</option>
+                      <option value="pink">Pink (Merah Muda)</option>
+                      <option value="rose">Rose (Mawar)</option>
+                      <option value="red">Red (Merah)</option>
+                      <option value="orange">Orange (Jingga)</option>
+                      <option value="amber">Amber (Kuning Kunyit)</option>
+                      <option value="yellow">Yellow (Kuning)</option>
+                      <option value="lime">Lime (Hijau Lemon)</option>
+                      <option value="green">Green (Hijau)</option>
+                      <option value="slate">Slate (Abu-abu Modern)</option>
+                      <option value="stone">Stone (Batu Industri)</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-black uppercase text-slate-500 mb-2">Kode Warna Custom (HEX)</label>
+                    <div className="flex gap-2">
+                      <input type="color" value={adminFormItem.themeColor || '#10b981'} onChange={e => setAdminFormItem({ ...adminFormItem, themeColor: e.target.value })} className="w-12 h-10 rounded-xl border border-slate-200 p-1 cursor-pointer" />
+                      <input className="admin-input flex-1" value={adminFormItem.themeColor || '#10b981'} onChange={e => setAdminFormItem({ ...adminFormItem, themeColor: e.target.value })} placeholder="#10b981" />
+                    </div>
                   </div>
                 </>
               )}
