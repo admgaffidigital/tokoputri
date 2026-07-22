@@ -2591,18 +2591,22 @@ export default function App() {
                                 <p className="text-[10px] font-bold text-amber-600">{rw.points} Poin</p>
                               </div>
                               <button
-                                disabled={!isEligible}
+                                type="button"
                                 className={`px-3 py-1.5 rounded-xl text-[10px] font-black uppercase transition-all ${
                                   isSelected
-                                    ? 'bg-rose-500 text-white'
+                                    ? 'bg-rose-500 text-white shadow-glow'
                                     : isEligible
-                                    ? 'bg-amber-500 text-white hover:bg-amber-600 active:scale-95'
-                                    : 'bg-slate-200 text-slate-400 cursor-not-allowed'
+                                    ? 'bg-amber-500 text-white hover:bg-amber-600 active:scale-95 shadow-glow'
+                                    : 'bg-slate-200 dark:bg-slate-700 text-slate-400 dark:text-slate-500 cursor-pointer hover:bg-slate-300'
                                 }`}
                                 onClick={() => {
                                   if (isSelected) {
                                     setClaimedReward(null);
                                     showToast("Klaim hadiah dibatalkan");
+                                  } else if (!isEligible) {
+                                    const reqPts = parseFloat(rw.points) || 0;
+                                    const myPts = parseFloat(currentMember.points) || 0;
+                                    showToast(`Poin Anda tidak mencukupi! (Butuh ${reqPts} Poin, Poin Anda: ${myPts} Poin)`, "warning");
                                   } else {
                                     setClaimedReward({ name: rw.name, pointsCost: parseFloat(rw.points) || 0 });
                                     showToast(`Klaim hadiah ${rw.name} dipilih!`, "success");
