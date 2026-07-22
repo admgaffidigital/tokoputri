@@ -2432,7 +2432,7 @@ export default function App() {
               {/* Payment methods */}
               <div className="bg-white dark:bg-slate-800 p-5 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm">
                 <h3 className="font-black text-slate-900 dark:text-white mb-4 text-xs uppercase tracking-wider border-b border-slate-100 pb-3 flex items-center gap-2"><i className="fa-solid fa-wallet text-blue-500"></i> Pilih Pembayaran</h3>
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                   <label className="block cursor-pointer">
                     <input checked={paymentMethod === 'transfer'} className="peer sr-only" name="payment" onChange={() => setPaymentMethod('transfer')} type="radio" value="transfer" />
                     <div className={`border p-3.5 rounded-2xl transition-all flex flex-col items-center text-center gap-2 ${paymentMethod === 'transfer' ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20 text-blue-600' : 'border-slate-200 bg-slate-50 dark:bg-slate-900'}`}>
@@ -2447,6 +2447,13 @@ export default function App() {
                       <span className="font-black text-[10px] uppercase">QRIS</span>
                     </div>
                   </label>
+                  <label className="block cursor-pointer">
+                    <input checked={paymentMethod === 'tempo'} className="peer sr-only" name="payment" onChange={() => setPaymentMethod('tempo')} type="radio" value="tempo" />
+                    <div className={`border p-3.5 rounded-2xl transition-all flex flex-col items-center text-center gap-2 ${paymentMethod === 'tempo' ? 'border-amber-500 bg-amber-50 dark:bg-amber-900/20 text-amber-600' : 'border-slate-200 bg-slate-50 dark:bg-slate-900'}`}>
+                      <i className="fa-solid fa-clock-rotate-left text-lg mb-1"></i>
+                      <span className="font-black text-[10px] uppercase">Bayar Tempo</span>
+                    </div>
+                  </label>
                   {cust.deliveryMethod === 'delivery' ? (
                     <label className="block cursor-pointer">
                       <input checked={paymentMethod === 'cod'} className="peer sr-only" name="payment" onChange={() => setPaymentMethod('cod')} type="radio" value="cod" />
@@ -2458,13 +2465,21 @@ export default function App() {
                   ) : (
                     <label className="block cursor-pointer">
                       <input checked={paymentMethod === 'cashier'} className="peer sr-only" name="payment" onChange={() => setPaymentMethod('cashier')} type="radio" value="cashier" />
-                      <div className={`border p-3.5 rounded-2xl transition-all flex flex-col items-center text-center gap-2 ${paymentMethod === 'cashier' ? 'border-amber-500 bg-amber-50 dark:bg-amber-900/20 text-amber-600' : 'border-slate-200 bg-slate-50 dark:bg-slate-900'}`}>
+                      <div className={`border p-3.5 rounded-2xl transition-all flex flex-col items-center text-center gap-2 ${paymentMethod === 'cashier' ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600' : 'border-slate-200 bg-slate-50 dark:bg-slate-900'}`}>
                         <i className="fa-solid fa-cash-register text-lg mb-1"></i>
                         <span className="font-black text-[10px] uppercase">Kasir</span>
                       </div>
                     </label>
                   )}
                 </div>
+
+                {/* Information for Tempo Payment */}
+                {paymentMethod === 'tempo' && (
+                  <div className="mt-4 pt-4 border-t border-slate-100 dark:border-slate-700 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 p-4 rounded-2xl">
+                    <p className="text-xs font-black text-amber-700 dark:text-amber-400 uppercase tracking-wide flex items-center gap-1.5 mb-1"><i className="fa-solid fa-circle-info"></i> Pembayaran Tempo (Hutang Langganan)</p>
+                    <p className="text-[11px] font-medium text-amber-800 dark:text-amber-300">Pesanan ini akan dicatat ke dalam buku piutang pelanggan dan wajib dilunasi sesuai batas waktu tempo (30 Hari).</p>
+                  </div>
+                )}
 
                 {/* Bank account list */}
                 {paymentMethod === 'transfer' && (
@@ -2507,17 +2522,62 @@ export default function App() {
                 {vouch && <p className="text-[10px] text-emerald-600 font-bold mt-1.5"><i className="fa-solid fa-circle-check mr-1"></i> Voucher diterapkan: {vouch.code}</p>}
               </div>
 
-              {/* Loyalty program member claim */}
+              {/* Loyalty program member claim & Reward redemption */}
               {currentMember && (
-                <div className="bg-white dark:bg-slate-800 p-5 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm">
-                  <h3 className="font-black text-slate-900 dark:text-white mb-3 text-xs uppercase tracking-wider flex items-center gap-2"><i className="fa-solid fa-star text-violet-500"></i> Poin Loyalitas Member</h3>
+                <div className="bg-white dark:bg-slate-800 p-5 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-4">
+                  <h3 className="font-black text-slate-900 dark:text-white text-xs uppercase tracking-wider flex items-center gap-2 border-b border-slate-100 dark:border-slate-700 pb-3"><i className="fa-solid fa-star text-violet-500"></i> Poin Member ({currentMember.points || 0} Poin)</h3>
+                  
+                  {/* Option 1: Potongan Harga */}
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-xs font-bold text-slate-600 dark:text-slate-400">Gunakan {Math.min(currentMember.points, grandTotal)} poin untuk potongan harga?</p>
-                      <p className="text-[9px] text-slate-400 mt-0.5">1 Poin = Rp 1</p>
+                      <p className="text-xs font-bold text-slate-700 dark:text-slate-300">Gunakan {Math.min(currentMember.points, grandTotal)} poin untuk diskon belanja?</p>
+                      <p className="text-[9px] text-slate-400 mt-0.5">1 Poin = Rp 1 (Dipotong langsung dari total tagihan)</p>
                     </div>
                     <button className={`px-4 py-2 text-xs font-black uppercase tracking-wider rounded-xl transition-all ${useMemberPoints ? 'bg-violet-500 text-white' : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300'}`} onClick={() => setUseMemberPoints(prev => !prev)}>{useMemberPoints ? 'Gunakan ✓' : 'Pakai Poin'}</button>
                   </div>
+
+                  {/* Option 2: Tukar Hadiah */}
+                  {appData.rewards && appData.rewards.length > 0 && (
+                    <div className="pt-3 border-t border-slate-100 dark:border-slate-700">
+                      <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 flex items-center gap-1.5"><i className="fa-solid fa-gift text-amber-500"></i> Tukar Poin dengan Hadiah</p>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                        {appData.rewards.map((rw, rIdx) => {
+                          const isEligible = (currentMember.points || 0) >= (parseFloat(rw.points) || 0);
+                          const isSelected = claimedReward?.name === rw.name;
+                          return (
+                            <div key={rIdx} className={`p-3 rounded-2xl border flex items-center gap-3 transition-all ${isSelected ? 'border-amber-500 bg-amber-50 dark:bg-amber-950/20' : 'border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900'}`}>
+                              {rw.img ? <img src={rw.img} alt={rw.name} className="w-10 h-10 rounded-xl object-cover shrink-0" /> : <div className="w-10 h-10 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center shrink-0"><i className="fa-solid fa-gift text-sm"></i></div>}
+                              <div className="flex-1 min-w-0">
+                                <h5 className="text-xs font-black text-slate-800 dark:text-white truncate">{rw.name}</h5>
+                                <p className="text-[10px] font-bold text-amber-600">{rw.points} Poin</p>
+                              </div>
+                              <button
+                                disabled={!isEligible}
+                                className={`px-3 py-1.5 rounded-xl text-[10px] font-black uppercase transition-all ${
+                                  isSelected
+                                    ? 'bg-rose-500 text-white'
+                                    : isEligible
+                                    ? 'bg-amber-500 text-white hover:bg-amber-600 active:scale-95'
+                                    : 'bg-slate-200 text-slate-400 cursor-not-allowed'
+                                }`}
+                                onClick={() => {
+                                  if (isSelected) {
+                                    setClaimedReward(null);
+                                    showToast("Klaim hadiah dibatalkan");
+                                  } else {
+                                    setClaimedReward({ name: rw.name, pointsCost: parseFloat(rw.points) || 0 });
+                                    showToast(`Klaim hadiah ${rw.name} dipilih!`, "success");
+                                  }
+                                }}
+                              >
+                                {isSelected ? 'Batal' : isEligible ? 'Tukar' : 'Kurang'}
+                              </button>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
 
@@ -2591,6 +2651,12 @@ export default function App() {
                   <div className="flex justify-between items-center text-sm font-bold text-slate-500">
                     <span>Potongan Poin Member</span>
                     <span className="text-violet-500">-{fCur(pointsDiscount)}</span>
+                  </div>
+                )}
+                {claimedReward && (
+                  <div className="flex justify-between items-center text-sm font-bold text-amber-600 bg-amber-50 dark:bg-amber-950/20 p-2.5 rounded-xl border border-amber-200">
+                    <span className="flex items-center gap-1.5"><i className="fa-solid fa-gift"></i> Hadiah Ditukar: {claimedReward.name}</span>
+                    <span className="font-black">-{claimedReward.pointsCost} Poin</span>
                   </div>
                 )}
                 <div className="flex justify-between items-center pt-3 border-t border-slate-100 dark:border-slate-700 text-base font-black">
