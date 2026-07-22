@@ -2955,7 +2955,7 @@ export default function App() {
               </div>
 
               {/* Admin Section Tabs Navigation */}
-              <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 mb-6">
+              <div className="grid grid-cols-3 sm:grid-cols-6 lg:grid-cols-7 gap-2.5 mb-6">
                 {[
                   { id: 'orders', name: 'Orders', icon: 'fa-receipt' },
                   { id: 'products', name: 'Produk', icon: 'fa-box-open' },
@@ -2970,12 +2970,23 @@ export default function App() {
                   { id: 'piutang', name: 'Piutang', icon: 'fa-clock-rotate-left' },
                   { id: 'pajak', name: 'Pajak & Keuangan', icon: 'fa-calculator' },
                   { id: 'settings', name: 'Pengaturan', icon: 'fa-gear' },
-                ].map((tab) => (
-                  <button key={tab.id} className={`p-3 rounded-2xl border flex flex-col items-center justify-center text-center gap-1.5 transition-all ${activeAdminTab === tab.id ? 'bg-[var(--color-primary)] text-white border-transparent' : 'bg-white dark:bg-slate-800 border-slate-200 text-slate-600'}`} onClick={() => setActiveAdminTab(tab.id)}>
-                    <i className={`fa-solid ${tab.icon} text-lg`}></i>
-                    <span className="text-[9px] font-black uppercase tracking-wider">{tab.name}</span>
-                  </button>
-                ))}
+                ].map((tab) => {
+                  const isActive = activeAdminTab === tab.id;
+                  return (
+                    <button
+                      key={tab.id}
+                      className={`p-3.5 rounded-2xl border flex flex-col items-center justify-center text-center gap-1.5 transition-all duration-200 active:scale-95 ${
+                        isActive
+                          ? 'bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-dark)] text-white border-transparent shadow-glow -translate-y-0.5'
+                          : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-[var(--color-primary)] hover:shadow-sm'
+                      }`}
+                      onClick={() => setActiveAdminTab(tab.id)}
+                    >
+                      <i className={`fa-solid ${tab.icon} text-lg ${isActive ? 'text-white' : 'text-slate-500 dark:text-slate-400'}`}></i>
+                      <span className="text-[9px] font-black uppercase tracking-wider leading-tight">{tab.name}</span>
+                    </button>
+                  );
+                })}
               </div>
 
               {/* Tab: Orders List */}
