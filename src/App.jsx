@@ -5054,6 +5054,17 @@ export default function App() {
                           </div>
                         </div>
                         <p className="text-xs text-slate-600 dark:text-slate-400 font-medium leading-relaxed">{r.text}</p>
+                        {(r.photo || r.img) && (
+                          <div className="mt-2 flex gap-2 overflow-x-auto">
+                            <img
+                              src={r.photo || r.img}
+                              alt="Foto Ulasan"
+                              className="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded-xl border border-slate-200 dark:border-slate-700 cursor-pointer hover:opacity-90 transition-opacity shadow-sm shrink-0"
+                              onClick={() => window.open(r.photo || r.img, '_blank')}
+                              title="Klik untuk lihat ukuran penuh"
+                            />
+                          </div>
+                        )}
                         {r.adminReply && (
                           <div className="mt-2.5 pt-2.5 border-t border-slate-200/50 dark:border-slate-800/60">
                             <p className="text-[9px] font-black text-[var(--color-primary)] uppercase tracking-wider mb-0.5"><i className="fa-solid fa-store mr-1"></i> Balasan Toko:</p>
