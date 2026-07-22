@@ -2214,34 +2214,76 @@ export default function App() {
               </div>
             ) : (
               <div className="px-4 space-y-4 max-w-[1200px] lg:px-8 mx-auto w-full">
-                {cart.map((item, idx) => (
-                  <div key={idx} className="bg-white dark:bg-slate-800 p-4 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm flex items-center gap-4">
-                    <img src={item.img} alt={item.name} className="w-16 h-16 rounded-2xl object-cover border border-slate-100" />
-                    <div className="flex-1 min-w-0">
-                      <h4 className="text-sm font-black text-slate-800 dark:text-white truncate uppercase">{item.name}</h4>
-                      {item.variantName && <p className="text-xs text-slate-500 mt-0.5">Varian: {item.variantName}</p>}
-                      <p className="text-sm font-black text-emerald-600 dark:text-emerald-400 mt-1">{fCur(getEffP(item))} <span className="text-[10px] text-slate-400">/{item.unit || 'pcs'}</span></p>
-                    </div>
-                    <div className="flex items-center gap-2 bg-slate-50 dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 h-10 overflow-hidden">
-                      <button className="w-8 h-full flex items-center justify-center text-slate-500 hover:bg-slate-100" onClick={() => {
-                        const newQty = parseFloat((item.qty - 1).toFixed(2));
-                        if (newQty <= 0) {
-                          setCart(prev => prev.filter((_, i) => i !== idx));
-                        } else {
+                {cart.map((item, idx) => {
+                  const p = appData.products.find(x => x.id === item.id);
+                  const effectivePrice = getEffP(item);
+                  const isWholesaleApplied = p && p.wholesale?.length && !p.variants?.length && effectivePrice < item.price;
+                  const itemStock = item.variantName && p?.variants
+                    ? (p.variants.find(v => v.name === item.variantName)?.stock)
+                    : p?.stock;
+
+                  return (
+                    <div key={idx} className="bg-white dark:bg-slate-800 p-4 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm flex items-center gap-4">
+                      <img src={item.img} alt={item.name} className="w-16 h-16 rounded-2xl object-cover border border-slate-100 shrink-0" />
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-1.5 flex-wrap mb-0.5">
+                          <h4 className="text-sm font-black text-slate-800 dark:text-white truncate uppercase">{item.name}</h4>
+                          {isWholesaleApplied && (
+                            <span className="bg-amber-100 text-amber-700 dark:bg-amber-900/50 dark:text-amber-400 px-2 py-0.5 rounded-full text-[8px] font-black uppercase tracking-wider flex items-center gap-1"><i className="fa-solid fa-layer-group"></i> Harga Grosir</span>
+                          )}
+                        </div>
+                        {item.variantName && <p className="text-xs text-slate-500">Varian: {item.variantName}</p>}
+                        <div className="flex items-center gap-2 mt-1">
+                          <p className="text-sm font-black text-emerald-600 dark:text-emerald-400">{fCur(effectivePrice)} <span className="text-[10px] text-slate-400">/{item.unit || 'pcs'}</span></p>
+                          {appData.store.useStock && itemStock !== undefined && itemStock !== null && (
+                            <span className="text-[9px] font-bold text-slate-500 bg-slate-100 dark:bg-slate-700 px-1.5 py-0.5 rounded">Stok: {itemStock}</span>
+                          )}
+                        </div>
+                      </div>
+                      <div className="flex items-center bg-slate-50 dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 h-10 overflow-hidden shrink-0">
+                        <button className="w-8 h-full flex items-center justify-center text-slate-500 hover:bg-slate-100" onClick={() => {
+                          const newQty = parseFloat((item.qty - 1).toFixed(2));
+                          if (newQty <= 0) {
+                            setCart(prev => prev.filter((_, i) => i !== idx));
+                          } else {
+                            setCart(prev => {
+                              const updated = [...prev];
+                              updated[idx].qty = newQty;
+                              return updated;
+                            });
+                          }
+                        }}><i className="fa-solid fa-minus text-xs"></i></button>
+                        <input
+                          type="number"
+                          min="0.01"
+                          step="0.01"
+                          className="w-14 text-center text-xs font-black bg-transparent focus:outline-none dark:text-white border-x border-slate-200 dark:border-slate-700"
+                          value={item.qty}
+                          onChange={(e) => {
+                            const val = parseFloat(parseFloat(e.target.value).toFixed(2));
+                            if (isNaN(val) || val <= 0) {
+                              setCart(prev => prev.filter((_, i) => i !== idx));
+                            } else {
+                              setCart(prev => {
+                                const updated = [...prev];
+                                updated[idx].qty = val;
+                                return updated;
+                              });
+                            }
+                          }}
+                        />
+                        <button className="w-8 h-full flex items-center justify-center text-slate-500 hover:bg-slate-100" onClick={() => {
+                          const newQty = parseFloat((item.qty + 1).toFixed(2));
                           setCart(prev => {
                             const updated = [...prev];
                             updated[idx].qty = newQty;
                             return updated;
                           });
-                        }
-                      }}><i className="fa-solid fa-minus text-xs"></i></button>
-                      <span className="w-10 text-center text-xs font-black dark:text-white">{item.qty}</span>
-                      <button className="w-8 h-full flex items-center justify-center text-slate-500 hover:bg-slate-100" onClick={() => {
-                        handleAddToCart(appData.products.find(x => x.id === item.id), item.variantName ? (appData.products.find(x => x.id === item.id)?.variants||[]).findIndex(v => v.name === item.variantName) : null, 1);
-                      }}><i className="fa-solid fa-plus text-xs"></i></button>
+                        }}><i className="fa-solid fa-plus text-xs"></i></button>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </div>
@@ -4047,7 +4089,14 @@ export default function App() {
               {/* Settings Catalog Form */}
               {adminFormType === 'settings_catalog' && (
                 <>
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-3 gap-3">
+                    <div>
+                      <label className="block text-[10px] font-black uppercase text-slate-500 mb-1">Manajemen Stok</label>
+                      <select className="admin-input" value={adminFormItem.useStock === true || adminFormItem.useStock === 'true' ? 'true' : 'false'} onChange={e => setAdminFormItem({ ...adminFormItem, useStock: e.target.value === 'true' })}>
+                        <option value="true">Aktifkan Stok</option>
+                        <option value="false">Nonaktifkan</option>
+                      </select>
+                    </div>
                     <div>
                       <label className="block text-[10px] font-black uppercase text-slate-500 mb-1">Fitur Kategori</label>
                       <select className="admin-input" value={adminFormItem.showCategories !== false ? 'true' : 'false'} onChange={e => setAdminFormItem({ ...adminFormItem, showCategories: e.target.value === 'true' })}>
