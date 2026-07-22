@@ -2069,9 +2069,22 @@ export default function App() {
                         ) : (
                           <i className="fa-solid fa-image text-slate-300 text-3xl"></i>
                         )}
-                        {appData.store.useStock && parseFloat(p.stock) <= 0 && (
-                          <span className="absolute inset-0 bg-slate-900/60 text-white flex items-center justify-center text-xs font-black uppercase">Habis</span>
-                        )}
+                        {/* Stock Badge Overlay */}
+                        {(() => {
+                          const useStk = appData.store.useStock === true || appData.store.useStock === 'true';
+                          if (!useStk) return null;
+                          const totalStock = p.variants && p.variants.length
+                            ? p.variants.filter(v => v.isActive !== false && v.isActive !== 'false').reduce((s, v) => s + (parseFloat(v.stock) || 0), 0)
+                            : (parseFloat(p.stock) || 0);
+
+                          if (totalStock <= 0) {
+                            return <span className="absolute inset-0 bg-slate-900/60 text-white flex items-center justify-center text-xs font-black uppercase"><i className="fa-solid fa-ban mr-1"></i> Habis</span>;
+                          } else if (totalStock <= 5) {
+                            return <span className="absolute top-2 left-2 z-10 bg-rose-500 text-white text-[8px] font-black px-2 py-1 rounded-xl shadow uppercase tracking-wider"><i className="fa-solid fa-fire mr-1"></i> Sisa {totalStock}</span>;
+                          } else {
+                            return <span className="absolute top-2 left-2 z-10 bg-slate-800/80 text-white text-[8px] font-black px-2 py-1 rounded-xl shadow uppercase tracking-wider backdrop-blur-sm"><i className="fa-solid fa-box mr-1"></i> Stok {totalStock}</span>;
+                          }
+                        })()}
                       </div>
 
                       {/* Description / Actions */}
