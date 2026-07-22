@@ -2448,10 +2448,30 @@ export default function App() {
                     </div>
                   </label>
                   <label className="block cursor-pointer">
-                    <input checked={paymentMethod === 'tempo'} className="peer sr-only" name="payment" onChange={() => setPaymentMethod('tempo')} type="radio" value="tempo" />
-                    <div className={`border p-3.5 rounded-2xl transition-all flex flex-col items-center text-center gap-2 ${paymentMethod === 'tempo' ? 'border-amber-500 bg-amber-50 dark:bg-amber-900/20 text-amber-600' : 'border-slate-200 bg-slate-50 dark:bg-slate-900'}`}>
+                    <input
+                      checked={paymentMethod === 'tempo'}
+                      className="peer sr-only"
+                      name="payment"
+                      onChange={() => {
+                        if (!currentMember) {
+                          showToast("Fitur Bayar Tempo khusus untuk Pelanggan Terdaftar di Database!", "warning");
+                          return;
+                        }
+                        setPaymentMethod('tempo');
+                      }}
+                      type="radio"
+                      value="tempo"
+                    />
+                    <div className={`border p-3.5 rounded-2xl transition-all flex flex-col items-center text-center gap-2 ${
+                      paymentMethod === 'tempo'
+                        ? 'border-amber-500 bg-amber-50 dark:bg-amber-900/20 text-amber-600'
+                        : currentMember
+                        ? 'border-slate-200 bg-slate-50 dark:bg-slate-900'
+                        : 'border-slate-200 bg-slate-100 dark:bg-slate-900/40 opacity-60'
+                    }`}>
                       <i className="fa-solid fa-clock-rotate-left text-lg mb-1"></i>
                       <span className="font-black text-[10px] uppercase">Bayar Tempo</span>
+                      {!currentMember && <span className="text-[8px] font-bold text-amber-600 dark:text-amber-400 bg-amber-100 dark:bg-amber-950/40 px-1.5 py-0.5 rounded">Khusus Member</span>}
                     </div>
                   </label>
                   {cust.deliveryMethod === 'delivery' ? (
