@@ -2547,13 +2547,33 @@ export default function App() {
                   <h3 className="font-black text-slate-900 dark:text-white text-xs uppercase tracking-wider flex items-center gap-2 border-b border-slate-100 dark:border-slate-700 pb-3"><i className="fa-solid fa-star text-violet-500"></i> Poin Member ({currentMember.points || 0} Poin)</h3>
                   
                   {/* Option 1: Potongan Harga */}
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-xs font-bold text-slate-700 dark:text-slate-300">Gunakan {Math.min(currentMember.points, grandTotal)} poin untuk diskon belanja?</p>
-                      <p className="text-[9px] text-slate-400 mt-0.5">1 Poin = Rp 1 (Dipotong langsung dari total tagihan)</p>
-                    </div>
-                    <button className={`px-4 py-2 text-xs font-black uppercase tracking-wider rounded-xl transition-all ${useMemberPoints ? 'bg-violet-500 text-white' : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300'}`} onClick={() => setUseMemberPoints(prev => !prev)}>{useMemberPoints ? 'Gunakan ✓' : 'Pakai Poin'}</button>
-                  </div>
+                  {(() => {
+                    const maxPayable = (subtotalCart - discounts.productDiscount) + (shippingCost - discounts.shippingDiscount) + ppnAmount;
+                    const ptsToUse = Math.min(parseFloat(currentMember.points) || 0, maxPayable);
+                    return (
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-xs font-bold text-slate-700 dark:text-slate-300">Gunakan {ptsToUse} poin untuk diskon belanja?</p>
+                          <p className="text-[9px] text-slate-400 mt-0.5">1 Poin = Rp 1 (Memotong {fCur(ptsToUse)} dari tagihan)</p>
+                        </div>
+                        <button
+                          type="button"
+                          className={`px-4 py-2 text-xs font-black uppercase tracking-wider rounded-xl transition-all ${useMemberPoints ? 'bg-violet-500 text-white shadow-glow' : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200'}`}
+                          onClick={() => {
+                            const nextState = !useMemberPoints;
+                            setUseMemberPoints(nextState);
+                            if (nextState) {
+                              showToast(`Poin member digunakan! Hemat ${fCur(ptsToUse)}`, "success");
+                            } else {
+                              showToast("Penggunaan poin dibatalkan");
+                            }
+                          }}
+                        >
+                          {useMemberPoints ? 'Gunakan ✓' : 'Pakai Poin'}
+                        </button>
+                      </div>
+                    );
+                  })()}
 
                   {/* Option 2: Tukar Hadiah */}
                   {appData.rewards && appData.rewards.length > 0 && (
