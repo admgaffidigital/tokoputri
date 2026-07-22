@@ -2108,7 +2108,7 @@ export default function App() {
                             <span className="bg-slate-200 text-slate-700 dark:bg-slate-700 dark:text-slate-300 px-2 py-0.5 rounded-full text-[8px] font-black flex items-center gap-1 whitespace-nowrap uppercase tracking-wider"><i className="fa-solid fa-tag"></i> {p.brand}</span>
                           )}
                           {/* Wholesale badge */}
-                          {p.wholesale?.length > 0 && !p.variants?.length && (
+                          {Boolean(p.wholesale && p.wholesale.length > 0 && (!p.variants || p.variants.length === 0)) && (
                             <span className="bg-amber-100 text-amber-700 dark:bg-amber-900/50 dark:text-amber-400 px-2 py-0.5 rounded-full text-[8px] font-black flex items-center gap-1 whitespace-nowrap uppercase tracking-wider"><i className="fa-solid fa-layer-group"></i> Grosir</span>
                           )}
                         </div>
