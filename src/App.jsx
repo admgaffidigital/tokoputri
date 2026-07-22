@@ -1771,11 +1771,54 @@ export default function App() {
         <div className="fixed inset-0 z-[9999] bg-slate-900/90 flex flex-col items-center justify-center p-4">
           <div className="bg-white dark:bg-slate-800 rounded-[2rem] w-full max-w-md overflow-hidden shadow-2xl border border-slate-200 dark:border-slate-700 relative flex flex-col">
             <div className="p-5 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center">
-              <h3 className="font-black text-slate-900 dark:text-white text-sm flex items-center gap-2"><i className="fa-solid fa-qrcode text-emerald-500"></i> Scan Barcode</h3>
+              <h3 className="font-black text-slate-900 dark:text-white text-sm flex items-center gap-2"><i className="fa-solid fa-qrcode text-emerald-500"></i> Scan Barcode Produk</h3>
               <button className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-500 hover:text-rose-600 flex items-center justify-center" onClick={() => setScannerOpen(false)}><i className="fa-solid fa-xmark"></i></button>
             </div>
-            <div className="p-4 bg-slate-900 text-center text-white" style={{ minHeight: '250px' }}>
-              Barcode Scanner (html5-qrcode integration)
+            <div className="p-5 flex flex-col items-center space-y-4">
+              <div className="w-full bg-slate-900 rounded-2xl overflow-hidden min-h-[240px] flex items-center justify-center relative border border-slate-700" id="html5-qr-reader">
+                <div className="text-center p-6 text-slate-400 space-y-3">
+                  <i className="fa-solid fa-camera text-4xl text-emerald-500 animate-pulse"></i>
+                  <p className="text-xs font-bold text-slate-300">Arahkan kamera ke Barcode / QR Code Produk</p>
+                  <button className="px-4 py-2 bg-emerald-500 text-white rounded-xl text-xs font-black shadow-md" onClick={() => {
+                    ensureScriptLoaded('https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js', () => typeof window.Html5QrcodeScanner !== 'undefined' || typeof window.Html5Qrcode !== 'undefined').then(() => {
+                      try {
+                        const html5QrCode = new window.Html5Qrcode("html5-qr-reader");
+                        html5QrCode.start(
+                          { facingMode: "environment" },
+                          { fps: 10, qrbox: { width: 220, height: 180 } },
+                          (decodedText) => {
+                            html5QrCode.stop().catch(() => {});
+                            setScannerOpen(false);
+                            setSQ(decodedText);
+                            showToast(`Barcode terdeteksi: ${decodedText}`, "success");
+                          },
+                          () => {}
+                        ).catch(err => {
+                          showToast("Akses kamera ditolak atau tidak tersedia: " + err.message, "warning");
+                        });
+                      } catch(e) {
+                        showToast("Modul kamera gagal: " + e.message, "error");
+                      }
+                    }).catch(() => showToast("Gagal memuat pustaka scanner kamera.", "error"));
+                  }}><i className="fa-solid fa-video mr-1"></i> Aktifkan Kamera Live</button>
+                </div>
+              </div>
+
+              <div className="w-full pt-3 border-t border-slate-100 dark:border-slate-700">
+                <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5">Input Barcode / SKU Manual</label>
+                <form className="flex gap-2" onSubmit={(e) => {
+                  e.preventDefault();
+                  const val = e.target.manualSku.value.trim();
+                  if (val) {
+                    setSQ(val);
+                    setScannerOpen(false);
+                    showToast(`Mencari kode: ${val}`, "info");
+                  }
+                }}>
+                  <input name="manualSku" className="admin-input flex-1 text-xs" placeholder="Ketik nomor barcode..." autoFocus />
+                  <button className="btn-primary !w-auto px-5 text-xs rounded-xl" type="submit">Cari</button>
+                </form>
+              </div>
             </div>
           </div>
         </div>
@@ -2849,6 +2892,7 @@ export default function App() {
                   { id: 'customers', name: 'Pelanggan', icon: 'fa-address-book' },
                   { id: 'reviews', name: 'Ulasan', icon: 'fa-star' },
                   { id: 'piutang', name: 'Piutang', icon: 'fa-clock-rotate-left' },
+                  { id: 'pajak', name: 'Pajak & Keuangan', icon: 'fa-calculator' },
                   { id: 'settings', name: 'Pengaturan', icon: 'fa-gear' },
                 ].map((tab) => (
                   <button key={tab.id} className={`p-3 rounded-2xl border flex flex-col items-center justify-center text-center gap-1.5 transition-all ${activeAdminTab === tab.id ? 'bg-[var(--color-primary)] text-white border-transparent' : 'bg-white dark:bg-slate-800 border-slate-200 text-slate-600'}`} onClick={() => setActiveAdminTab(tab.id)}>
@@ -3263,6 +3307,39 @@ export default function App() {
                 </div>
               )}
 
+              {/* Tab: Pajak & Keuangan */}
+              {activeAdminTab === 'pajak' && (
+                <div className="bg-white dark:bg-slate-800 p-5 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-6">
+                  <div>
+                    <h3 className="text-sm font-black text-slate-800 dark:text-white uppercase tracking-wider mb-1">Simulasi Pajak UMKM &amp; PPN</h3>
+                    <p className="text-xs text-slate-400">Ringkasan kewajiban PPN (11%) dan PPh Final UMKM (0.5%) dari total omset toko.</p>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div className="bg-slate-50 dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800">
+                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Total Omset Bruto</p>
+                      <p className="text-xl font-black text-slate-800 dark:text-white mt-1">{fCur(adminReports?.omset || 0)}</p>
+                    </div>
+                    <div className="bg-slate-50 dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800">
+                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Estimasi PPh Final UMKM (0.5%)</p>
+                      <p className="text-xl font-black text-amber-600 dark:text-amber-400 mt-1">{fCur((adminReports?.omset || 0) * 0.005)}</p>
+                    </div>
+                    <div className="bg-slate-50 dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800">
+                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Total PPN Terkumpul</p>
+                      <p className="text-xl font-black text-emerald-600 dark:text-emerald-400 mt-1">{fCur(adminReports?.ppnCollected || 0)}</p>
+                    </div>
+                  </div>
+
+                  <div className="bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800/40 p-4 rounded-2xl flex items-start gap-3">
+                    <i className="fa-solid fa-circle-info text-amber-500 text-lg mt-0.5"></i>
+                    <div className="text-xs font-bold text-amber-800 dark:text-amber-300 space-y-1">
+                      <p className="font-black uppercase">Pengaturan PPN Toko</p>
+                      <p>Sistem PPN Toko: <span className="underline">{appData.store.ppnEnabled ? `Aktif (${appData.store.ppnRate || 11}%)` : 'Nonaktif'}</span>. Anda dapat mengaktifkan/mengubah tarif PPN di <button className="font-black underline text-amber-900 dark:text-amber-200" onClick={() => setActiveAdminTab('settings')}>Menu Pengaturan</button>.</p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
               {/* Tab: Settings */}
               {activeAdminTab === 'settings' && (
                 <div className="bg-white dark:bg-slate-800 p-5 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-6">
@@ -3394,29 +3471,39 @@ export default function App() {
                             <p className="text-[10px] text-slate-400 font-bold">Harga: {fCur(p.price)} • Stok: {p.stock}</p>
                           </div>
                         </div>
-                        <div className="flex gap-2">
-                          <button className="p-2 bg-blue-50 text-blue-600 rounded-xl hover:bg-blue-100 text-xs" onClick={() => {
-                            setAdminFormType('products');
-                            setAdminFormItem(p);
-                            setTempWholesale(p.wholesale || []);
-                            setTempVariants(p.variants || []);
-                            setAdminModalOpen(true);
-                          }}><i className="fa-solid fa-pen"></i></button>
-                          <button className="p-2 bg-emerald-50 text-emerald-600 rounded-xl hover:bg-emerald-100 text-xs" title="Duplikat Produk" onClick={async () => {
-                            showToast('Menduplikat produk...', 'loading');
-                            try {
-                              const newId = Date.now();
-                              const duplicate = { ...p, id: newId, name: p.name + ' (Copy)', sku: (p.sku || '') + '-COPY-' + newId, stock: p.stock || 0 };
-                              const newProducts = [duplicate, ...appData.products];
-                              setAppData(prev => ({ ...prev, products: newProducts }));
-                              await db.collection('freshmart').doc('cms_data').collection('products').doc(String(newId)).set(duplicate);
-                              await db.collection('freshmart').doc('cms_data').update({ lastUpdate: firebase.firestore.FieldValue.increment(1) });
-                              localStorage.setItem('freshmart_products', JSON.stringify(newProducts));
-                              showToast('Produk berhasil diduplikat!', 'success');
-                            } catch(e) { showToast('Gagal duplikat: ' + e.message, 'error'); }
-                          }}><i className="fa-solid fa-copy"></i></button>
-                          <button className="p-2 bg-rose-50 text-rose-600 rounded-xl hover:bg-rose-100 text-xs" onClick={() => handleAdminDelete('products', p)}><i className="fa-solid fa-trash-can"></i></button>
-                        </div>
+                          <div className="flex gap-1.5 flex-wrap justify-end">
+                            <button className="p-2 bg-amber-50 text-amber-600 rounded-xl hover:bg-amber-100 text-xs font-black flex items-center gap-1" title="Restock Cepat" onClick={() => {
+                              const addStk = window.prompt(`Tambah stok untuk ${p.name} (Stok saat ini: ${p.stock}):`, "10");
+                              if (addStk && !isNaN(parseFloat(addStk))) {
+                                const newStk = (parseFloat(p.stock) || 0) + parseFloat(addStk);
+                                showToast("Memperbarui stok...", "loading");
+                                db.collection('freshmart').doc('cms_data').collection('products').doc(String(p.id)).update({ stock: newStk }).then(() => {
+                                  showToast(`Stok ${p.name} diperbarui menjadi ${newStk}!`, "success");
+                                }).catch(e => showToast("Gagal restock: " + e.message, "error"));
+                              }
+                            }}><i className="fa-solid fa-boxes-stacked"></i> <span className="hidden sm:inline">Restock</span></button>
+                            <button className="p-2 bg-blue-50 text-blue-600 rounded-xl hover:bg-blue-100 text-xs" title="Edit Produk" onClick={() => {
+                              setAdminFormType('products');
+                              setAdminFormItem(p);
+                              setTempWholesale(p.wholesale || []);
+                              setTempVariants(p.variants || []);
+                              setAdminModalOpen(true);
+                            }}><i className="fa-solid fa-pen"></i></button>
+                            <button className="p-2 bg-emerald-50 text-emerald-600 rounded-xl hover:bg-emerald-100 text-xs" title="Duplikat Produk" onClick={async () => {
+                              showToast('Menduplikat produk...', 'loading');
+                              try {
+                                const newId = Date.now();
+                                const duplicate = { ...p, id: newId, name: p.name + ' (Copy)', sku: (p.sku || '') + '-COPY-' + newId, stock: p.stock || 0 };
+                                const newProducts = [duplicate, ...appData.products];
+                                setAppData(prev => ({ ...prev, products: newProducts }));
+                                await db.collection('freshmart').doc('cms_data').collection('products').doc(String(newId)).set(duplicate);
+                                await db.collection('freshmart').doc('cms_data').update({ lastUpdate: firebase.firestore.FieldValue.increment(1) });
+                                localStorage.setItem('freshmart_products', JSON.stringify(newProducts));
+                                showToast('Produk berhasil diduplikat!', 'success');
+                              } catch(e) { showToast('Gagal duplikat: ' + e.message, 'error'); }
+                            }}><i className="fa-solid fa-copy"></i></button>
+                            <button className="p-2 bg-rose-50 text-rose-600 rounded-xl hover:bg-rose-100 text-xs" title="Hapus Produk" onClick={() => handleAdminDelete('products', p)}><i className="fa-solid fa-trash-can"></i></button>
+                          </div>
                       </div>
                     ))}
                   </div>
@@ -3565,6 +3652,14 @@ export default function App() {
                                 updated[idx].name = e.target.value;
                                 setTempVariants(updated);
                               }} className="admin-input" required />
+                            </div>
+                            <div>
+                              <label className="block font-black text-slate-500 mb-1">Barcode / SKU Varian</label>
+                              <input placeholder="Scan / Kode Barcode Varian" value={v.sku || ''} onChange={e => {
+                                const updated = [...tempVariants];
+                                updated[idx].sku = e.target.value;
+                                setTempVariants(updated);
+                              }} className="admin-input" />
                             </div>
                             <div>
                               <label className="block font-black text-slate-500 mb-1">Harga Jual</label>
@@ -3874,8 +3969,29 @@ export default function App() {
                     <input className="admin-input" value={adminFormItem.wa || ''} onChange={e => setAdminFormItem({ ...adminFormItem, wa: e.target.value })} />
                   </div>
                   <div>
-                    <label className="block text-[10px] font-black uppercase text-slate-500 mb-1">Alamat Toko</label>
-                    <textarea className="admin-input resize-none" value={adminFormItem.address || ''} onChange={e => setAdminFormItem({ ...adminFormItem, address: e.target.value })} rows="3"></textarea>
+                    <label className="block text-[10px] font-black uppercase text-slate-500 mb-1">Alamat Fisik Toko</label>
+                    <textarea className="admin-input resize-none" value={adminFormItem.address || ''} onChange={e => setAdminFormItem({ ...adminFormItem, address: e.target.value })} rows="2"></textarea>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-[10px] font-black uppercase text-slate-500 mb-1">Latitude Toko</label>
+                      <input className="admin-input" value={adminFormItem.lat || ''} onChange={e => setAdminFormItem({ ...adminFormItem, lat: e.target.value })} placeholder="-6.12345" />
+                    </div>
+                    <div>
+                      <label className="block text-[10px] font-black uppercase text-slate-500 mb-1">Longitude Toko</label>
+                      <input className="admin-input" value={adminFormItem.lng || ''} onChange={e => setAdminFormItem({ ...adminFormItem, lng: e.target.value })} placeholder="106.12345" />
+                    </div>
+                  </div>
+                  <div>
+                    <button type="button" className="w-full py-2.5 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold rounded-xl text-xs flex items-center justify-center gap-2 border border-slate-200 dark:border-slate-600 hover:bg-slate-200" onClick={() => {
+                      showToast("Mengakses GPS Toko...", "loading");
+                      if (navigator.geolocation) {
+                        navigator.geolocation.getCurrentPosition((pos) => {
+                          setAdminFormItem(prev => ({ ...prev, lat: pos.coords.latitude.toString(), lng: pos.coords.longitude.toString() }));
+                          showToast("Koordinat Toko berhasil diambil!", "success");
+                        }, () => showToast("Gagal mengambil posisi GPS toko.", "error"));
+                      }
+                    }}><i className="fa-solid fa-location-crosshairs text-emerald-500"></i> Ambil Koordinat GPS Toko Saat Ini</button>
                   </div>
                   <div>
                     <label className="block text-[10px] font-black uppercase text-slate-500 mb-1">Logo Toko (URL)</label>
