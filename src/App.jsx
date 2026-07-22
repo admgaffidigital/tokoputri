@@ -2079,13 +2079,13 @@ export default function App() {
                         {/* Badges */}
                         <div className="flex flex-wrap gap-1.5 items-center mb-2.5 overflow-hidden shrink-0">
                           {/* Discount tag */}
-                          {p.priceNormal && p.priceNormal > p.price && (
+                          {Boolean(p.priceNormal && parseFloat(p.priceNormal) > parseFloat(p.price)) && (
                             <span className="bg-rose-500 text-white px-2 py-0.5 rounded-full text-[8px] font-black flex items-center gap-1 whitespace-nowrap uppercase tracking-wider shadow-sm">
                               <i className="fa-solid fa-tags"></i> -{Math.round(((p.priceNormal - p.price) / p.priceNormal) * 100)}%
                             </span>
                           )}
                           {/* PO Pill */}
-                          {p.poTime && (
+                          {Boolean(p.poTime) && (
                             <span className="bg-amber-500 text-white px-2 py-0.5 rounded-full text-[8px] font-black flex items-center gap-1 whitespace-nowrap uppercase tracking-wider shadow-sm">
                               <i className="fa-solid fa-clock"></i> PO {p.poTime}
                             </span>
@@ -2117,7 +2117,7 @@ export default function App() {
                             ) : null;
                           })()}
                           {/* Tag */}
-                          {p.tag && (
+                          {Boolean(p.tag) && (
                             <span className="bg-[var(--color-primary-light)] text-[var(--color-primary-dark)] dark:bg-[var(--color-primary-dark)]/50 dark:text-[var(--color-primary)] px-2 py-0.5 rounded-full text-[8px] font-black flex items-center gap-1 whitespace-nowrap uppercase tracking-wider">
                               <i className="fa-solid fa-hashtag"></i> {p.tag}
                             </span>
@@ -2125,7 +2125,7 @@ export default function App() {
                           {/* Official Store Badge */}
                           <span className="bg-indigo-100 text-indigo-700 dark:bg-indigo-900/50 dark:text-indigo-400 px-2 py-0.5 rounded-full text-[8px] font-black flex items-center gap-1 whitespace-nowrap uppercase tracking-wider"><i className="fa-solid fa-circle-check"></i> Official</span>
                           {/* Brand badge */}
-                          {p.brand && (
+                          {Boolean(p.brand) && (
                             <span className="bg-slate-200 text-slate-700 dark:bg-slate-700 dark:text-slate-300 px-2 py-0.5 rounded-full text-[8px] font-black flex items-center gap-1 whitespace-nowrap uppercase tracking-wider"><i className="fa-solid fa-tag"></i> {p.brand}</span>
                           )}
                           {/* Wholesale badge */}
@@ -2138,7 +2138,7 @@ export default function App() {
 
                         <div className="flex items-end justify-between mt-auto pt-1">
                           <div>
-                            {p.priceNormal && p.priceNormal > p.price && (
+                            {Boolean(p.priceNormal && parseFloat(p.priceNormal) > parseFloat(p.price) && (!p.variants || p.variants.length === 0)) && (
                               <p className="text-[10px] text-rose-500 font-bold line-through">{fCur(p.priceNormal)}</p>
                             )}
                             <p className="text-[var(--color-primary)] font-black text-sm leading-none tracking-tight">
