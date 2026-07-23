@@ -1086,8 +1086,8 @@ window.showConfirm = (t, m, cb, btnText="Ya, Hapus", isDanger=true) => {
             el('confirm-icon-box').className = 'w-16 h-16 bg-rose-50 dark:bg-rose-900/30 text-rose-500 dark:text-rose-400 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-5 border border-rose-200 dark:border-rose-800';
             el('confirm-icon').className = 'fa-solid fa-triangle-exclamation';
         } else {
-            b.className = 'flex-1 py-3.5 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 active:scale-95 transition-all text-sm shadow-md shadow-blue-500/30';
-            el('confirm-icon-box').className = 'w-16 h-16 bg-blue-50 dark:bg-blue-900/30 text-blue-500 dark:text-blue-400 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-5 border border-blue-200 dark:border-blue-800';
+            b.className = 'flex-1 py-3.5 bg-emerald-600 text-white font-bold rounded-xl hover:bg-emerald-700 active:scale-95 transition-all text-sm shadow-sm';
+            el('confirm-icon-box').className = 'w-16 h-16 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-500 dark:text-emerald-400 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-5 border border-emerald-200 dark:border-emerald-800';
             el('confirm-icon').className = 'fa-solid fa-copy';
         }
     }
@@ -1533,7 +1533,7 @@ window.rCat = () => {
     
     if (backBtnContainer) {
         if (isFiltered) {
-            let filterLabel = "Menampilkan"; let filterValue = ""; let filterIcon = "fa-filter"; let iconColor = "text-indigo-500 bg-indigo-50 dark:bg-indigo-900/30";
+            let filterLabel = "Menampilkan"; let filterValue = ""; let filterIcon = "fa-filter"; let iconColor = "text-[var(--color-primary)] bg-[var(--color-primary-light)] dark:bg-[var(--color-primary-dark)]/30";
             if (sQ !== '') { filterLabel = "Hasil Pencarian"; filterValue = `"${sQ}"`; filterIcon = "fa-magnifying-glass"; iconColor = "text-rose-500 bg-rose-50 dark:bg-rose-900/30"; } 
             else if (aCat !== 'Semua Produk') { filterLabel = "Kategori Pilihan"; filterValue = aCat; filterIcon = "fa-layer-group"; iconColor = "text-[var(--color-primary)] bg-[var(--color-primary-light)] dark:bg-[var(--color-primary-dark)]/30"; } 
             else if (aBrand !== 'Semua Merek') { filterLabel = "Merek Pilihan"; filterValue = aBrand; filterIcon = "fa-tag"; iconColor = "text-[var(--color-primary)] bg-[var(--color-primary-light)] dark:bg-[var(--color-primary-dark)]/30"; }
@@ -1650,7 +1650,7 @@ window.rCat = () => {
             ${poinBadge}
             ${soldBadge}
             ${p.tag ? `<span class="bg-[var(--color-primary-light)] text-[var(--color-primary-dark)] dark:bg-[var(--color-primary-dark)]/50 dark:text-[var(--color-primary)] px-2 py-0.5 rounded-full text-[8px] font-bold flex items-center gap-1 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-hashtag"></i> ${esc(p.tag)}</span>` : ''}
-            <span class="bg-indigo-100 text-indigo-700 dark:bg-indigo-900/50 dark:text-indigo-400 px-2 py-0.5 rounded-full text-[8px] font-bold flex items-center gap-1 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-circle-check"></i> Official</span>
+            <span class="bg-emerald-100 text-emerald-700 dark:bg-emerald-900/50 dark:text-emerald-400 px-2 py-0.5 rounded-full text-[8px] font-bold flex items-center gap-1 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-circle-check"></i> Official</span>
             ${p.brand ? `<span class="bg-slate-200 text-slate-700 dark:bg-slate-700 dark:text-slate-300 px-2 py-0.5 rounded-full text-[8px] font-bold flex items-center gap-1 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-tag"></i> ${esc(p.brand)}</span>` : ''}
             ${(p.wholesale?.length && !p.variants?.length) ? `<span class="bg-amber-100 text-amber-700 dark:bg-amber-900/50 dark:text-amber-400 px-2 py-0.5 rounded-full text-[8px] font-bold flex items-center gap-1 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-layer-group"></i> Grosir</span>` : ''}
         </div>`;
@@ -1937,7 +1937,7 @@ const rProdMod = () => {
     if (p.sku) bH += `<span class="bg-slate-200 text-slate-600 dark:bg-slate-800 dark:text-slate-400 px-2.5 py-1 rounded-full text-[9px] font-bold flex items-center gap-1.5 whitespace-nowrap tracking-wider"><i class="fa-solid fa-barcode"></i> ${esc(p.sku)}</span>`;
     if (p.tag) bH += `<span class="bg-emerald-100 text-emerald-700 dark:bg-emerald-900/50 dark:text-emerald-400 px-2.5 py-1 rounded-full text-[9px] font-bold flex items-center gap-1.5 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-hashtag"></i> ${esc(p.tag)}</span>`;
     
-    bH += `<span class="bg-indigo-100 text-indigo-700 dark:bg-indigo-900/50 dark:text-indigo-400 px-2.5 py-1 rounded-full text-[9px] font-bold flex items-center gap-1.5 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-circle-check"></i> Official</span>`;
+    bH += `<span class="bg-emerald-100 text-emerald-700 dark:bg-emerald-900/50 dark:text-emerald-400 px-2.5 py-1 rounded-full text-[9px] font-bold flex items-center gap-1.5 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-circle-check"></i> Official</span>`;
     
     if (p.brand) bH += `<span class="bg-slate-200 text-slate-700 dark:bg-slate-800 dark:text-slate-300 px-2.5 py-1 rounded-full text-[9px] font-bold flex items-center gap-1.5 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-tag"></i> ${esc(p.brand)}</span>`;
     
@@ -1996,7 +1996,7 @@ const rProdMod = () => {
                         const s = parseFloat(vr.stock)||0;
                         return `<div class="flex justify-between items-center text-[11px] font-bold bg-white dark:bg-slate-900 p-2 rounded-xl border border-slate-200 dark:border-slate-700">
                             <span class="text-slate-500 flex items-center gap-1.5">${vr.colorCode?`<span class="w-3 h-3 rounded-full inline-block" style="background:${esc(vr.colorCode)}"></span>`:''}${esc(vr.name)}</span>
-                            <span class="${s===0?'text-rose-500':s<=5?'text-amber-500':'text-blue-500'} font-bold">${s} ${esc(vr.unit||p.unit||'pcs')}</span>
+                            <span class="${s===0?'text-rose-500':s<=5?'text-amber-500':'text-emerald-500'} font-bold">${s} ${esc(vr.unit||p.unit||'pcs')}</span>
                         </div>`;
                     }).join('')}</div>`;
                 } else {
@@ -2277,7 +2277,7 @@ window.renderMyOrders = async () => {
         
         let bC = "text-slate-500 border-slate-200", iC = "fa-clock";
         if(o.status==='Baru') { bC="text-rose-500 border-rose-200 bg-rose-50 dark:bg-rose-900/20 dark:border-rose-800"; iC="fa-asterisk"; }
-        else if(o.status==='Diproses') { bC="text-blue-500 border-blue-200 bg-blue-50 dark:bg-blue-900/20 dark:border-blue-800"; iC="fa-spinner fa-spin"; }
+        else if(o.status==='Diproses') { bC="text-emerald-500 border-emerald-200 bg-emerald-50 dark:bg-emerald-900/20 dark:border-emerald-800"; iC="fa-spinner fa-spin"; }
         else if(o.status==='Selesai') { bC="text-emerald-500 border-emerald-200 bg-emerald-50 dark:bg-emerald-900/20 dark:border-emerald-800"; iC="fa-check-double"; }
         else if(o.status==='Dibatalkan') { bC="text-slate-400 border-slate-200 bg-slate-50 dark:bg-slate-800 dark:border-slate-700"; iC="fa-xmark"; }
 
@@ -2303,7 +2303,7 @@ window.renderMyOrders = async () => {
                 </div>
                 <div class="flex gap-2">
                     <!-- TOMBOL DETAIL BARU -->
-                    <button onclick="openCustomerOrderDetail('${o.orderId}')" class="h-8 px-4 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:hover:bg-blue-900/50 dark:text-blue-400 border border-blue-200 dark:border-blue-800 text-[10px] font-bold transition-colors active:scale-95 shadow-sm flex items-center gap-1.5"><i class="fa-solid fa-file-invoice"></i> Detail</button>
+                    <button onclick="openCustomerOrderDetail('${o.orderId}')" class="h-8 px-4 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30 dark:hover:bg-emerald-900/50 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 text-[10px] font-bold transition-colors active:scale-95 shadow-sm flex items-center gap-1.5"><i class="fa-solid fa-file-invoice"></i> Detail</button>
                     
                     <button onclick="checkOrderStatus('${o.orderId}', ${x})" class="h-8 px-4 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 dark:bg-slate-700 dark:hover:bg-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-600 text-[10px] font-bold transition-colors active:scale-95 shadow-sm flex items-center gap-1.5"><i class="fa-solid fa-rotate"></i> Status</button>
                 </div>
@@ -2489,8 +2489,8 @@ try {
                     </div>
 
                     <div class="space-y-3">
-                        <div class="bg-blue-50 dark:bg-blue-900/10 p-3 rounded-xl border border-blue-100 dark:border-blue-900/30">
-                            <p class="text-[9px] font-bold text-blue-400 dark:text-blue-500 uppercase tracking-widest mb-1">Alamat Tujuan</p>
+                        <div class="bg-emerald-50 dark:bg-emerald-900/10 p-3 rounded-xl border border-emerald-100 dark:border-emerald-900/30">
+                            <p class="text-[9px] font-bold text-emerald-400 dark:text-emerald-500 uppercase tracking-widest mb-1">Alamat Tujuan</p>
                             <p class="text-xs font-medium text-slate-700 dark:text-slate-300 leading-relaxed">${cAddr}</p>
                         </div>
                         ${dNotes ? `<div class="bg-amber-50 dark:bg-amber-900/10 p-3 rounded-xl border border-amber-100 dark:border-amber-900/30"><p class="text-[9px] font-bold text-amber-400 dark:text-amber-500 uppercase tracking-widest mb-1">Catatan Pembeli</p><p class="text-xs font-medium text-slate-700 dark:text-slate-300 italic">"${dNotes}"</p></div>` : ''}
@@ -4617,10 +4617,10 @@ window.rAdmPiutang = async () => {
                     </button>
                 </div>
                 <div class="flex gap-2">
-                    <button onclick="payTempoInstallment('${o.orderId}')" class="flex-1 bg-indigo-500 hover:bg-indigo-600 text-white rounded-xl py-2.5 flex items-center justify-center gap-1.5 text-[10px] font-bold uppercase tracking-widest shadow-sm shadow-indigo-500/30 transition-all">
+                    <button onclick="payTempoInstallment('${o.orderId}')" class="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl py-2.5 flex items-center justify-center gap-1.5 text-[10px] font-bold uppercase tracking-widest shadow-sm transition-all">
                         <i class="fa-solid fa-money-bill-wave"></i> Cicil
                     </button>
-                    <button onclick="markTempoPaid('${o.orderId}')" class="flex-1 bg-blue-500 hover:bg-blue-600 text-white rounded-xl py-2.5 flex items-center justify-center gap-1.5 text-[10px] font-bold uppercase tracking-widest shadow-sm shadow-blue-500/30 transition-all">
+                    <button onclick="markTempoPaid('${o.orderId}')" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl py-2.5 flex items-center justify-center gap-1.5 text-[10px] font-bold uppercase tracking-widest shadow-sm transition-all">
                         <i class="fa-solid fa-check-double"></i> Lunas
                     </button>
                 </div>
@@ -4828,8 +4828,8 @@ window.exportOrdersToExcel = async () => {
                     iC="fa-asterisk"; boxBg="bg-rose-500"; boxText="text-white shadow-md shadow-rose-500/30";
                 }
                 else if(o.status==='Diproses'){
-                    bC="text-blue-500 border-blue-200 bg-blue-50 dark:bg-blue-900/20 dark:border-blue-800"; 
-                    iC="fa-spinner fa-spin"; boxBg="bg-blue-500"; boxText="text-white shadow-md shadow-blue-500/30";
+                    bC="text-emerald-500 border-emerald-200 bg-emerald-50 dark:bg-emerald-900/20 dark:border-emerald-800"; 
+                    iC="fa-spinner fa-spin"; boxBg="bg-emerald-500"; boxText="text-white shadow-sm";
                 }
                 else if(o.status==='Selesai'){
                     bC="text-emerald-500 border-emerald-200 bg-emerald-50 dark:bg-emerald-900/20 dark:border-emerald-800"; 
@@ -4842,7 +4842,7 @@ window.exportOrdersToExcel = async () => {
                 
                 // Styling Icon Metode Bayar
                 let pI="fa-wallet text-slate-400"; let method=o.payment?.method||'';
-                if(method==='transfer') pI="fa-building-columns text-blue-500"; 
+                if(method==='transfer') pI="fa-building-columns text-emerald-500"; 
                 else if(method==='qris') pI="fa-qrcode text-purple-500"; 
                 else if(method==='cod') pI="fa-hand-holding-dollar text-emerald-500"; 
                 else if(method==='cashier') pI="fa-cash-register text-amber-500";
@@ -4875,7 +4875,7 @@ window.exportOrdersToExcel = async () => {
                                 <p class="text-xs font-bold text-slate-600 dark:text-slate-300 truncate max-w-[120px] sm:max-w-xs"><i class="fa-solid fa-user text-slate-400 mr-1"></i> ${esc(o.customer?.name||'Anonim')}</p>
                                 <span class="w-1 h-1 rounded-full bg-slate-300 dark:bg-slate-600 shrink-0"></span>
                                 <span class="text-[9px] font-bold text-slate-500 bg-slate-100 dark:bg-slate-900 px-2 py-0.5 rounded-xl border border-slate-200 dark:border-slate-700 uppercase tracking-widest shrink-0">${itemCount} Item</span>
-                                ${o.customer?.lat ? `<span class="text-[9px] font-bold text-blue-500 bg-blue-50 dark:bg-blue-900/20 px-1.5 py-0.5 rounded-xl border border-blue-100 dark:border-blue-800 uppercase tracking-widest shrink-0"><i class="fa-solid fa-location-dot"></i> GPS</span>` : ''}
+                                ${o.customer?.lat ? `<span class="text-[9px] font-bold text-emerald-500 bg-emerald-50 dark:bg-emerald-900/20 px-1.5 py-0.5 rounded-xl border border-emerald-100 dark:border-emerald-800 uppercase tracking-widest shrink-0"><i class="fa-solid fa-location-dot"></i> GPS</span>` : ''}
                                 ${o.buktiPayment ? `<span class="text-[9px] font-bold text-violet-500 bg-violet-50 dark:bg-violet-900/20 px-1.5 py-0.5 rounded-xl border border-violet-100 dark:border-violet-800 uppercase tracking-widest shrink-0"><i class="fa-solid fa-image"></i></span>` : ''}
                             </div>
                         </div>
