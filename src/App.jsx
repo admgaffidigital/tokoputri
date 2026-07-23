@@ -3005,20 +3005,26 @@ export default function App() {
           <div className="glass-header shrink-0 px-4 flex items-center justify-center z-30 sticky top-0 pb-3">
             <div className="flex items-center justify-between w-full max-w-[1200px] mx-auto px-4 lg:px-10">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-[var(--color-primary)] text-white flex items-center justify-center shadow-md shrink-0"><i className="fa-solid fa-layer-group text-sm"></i></div>
+                <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-dark)] text-white flex items-center justify-center shadow-glow shrink-0 border border-white/20">
+                  <i className="fa-solid fa-store-slash text-base"></i>
+                </div>
                 <div>
-                  <h1 className="text-sm font-black tracking-tight text-slate-900 dark:text-white leading-none">CMS Toko</h1>
-                  <span className="text-[9px] font-black text-[var(--color-primary)] uppercase tracking-widest bg-[rgba(var(--color-primary-rgb),0.1)] px-1.5 py-0.5 rounded-xl inline-block mt-0.5 leading-none">Superadmin</span>
+                  <h1 className="text-base font-black tracking-tight text-slate-900 dark:text-white leading-none">DASHBOARD ADMIN</h1>
+                  <span className="text-[9px] font-black text-[var(--color-primary)] uppercase tracking-widest bg-[rgba(var(--color-primary-rgb),0.12)] px-2 py-0.5 rounded-full border border-[rgba(var(--color-primary-rgb),0.2)] inline-block mt-1 leading-none">Superadmin Portal</span>
                 </div>
               </div>
-              <div className="flex items-center gap-1.5">
-                <button className="h-8 px-3 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 rounded-xl text-[11px] font-black" onClick={() => setCurrentView('catalog')}><i className="fa-solid fa-eye text-blue-500 mr-1"></i> Preview</button>
-                <button className="h-8 px-3 bg-rose-50 dark:bg-rose-900/20 border border-rose-200 dark:border-rose-800 text-rose-600 dark:text-rose-400 rounded-xl text-[11px] font-black" onClick={async () => {
+              <div className="flex items-center gap-2">
+                <button className="h-9 px-3.5 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:border-[var(--color-primary)] rounded-xl text-[11px] font-black flex items-center gap-1.5 transition-all shadow-sm active:scale-95" onClick={() => setCurrentView('catalog')}>
+                  <i className="fa-solid fa-store text-emerald-500"></i> <span className="hidden sm:inline">Preview Toko</span>
+                </button>
+                <button className="h-9 px-3.5 bg-rose-50 dark:bg-rose-900/20 border border-rose-200 dark:border-rose-800 text-rose-600 dark:text-rose-400 hover:bg-rose-100 rounded-xl text-[11px] font-black flex items-center gap-1.5 transition-all shadow-sm active:scale-95" onClick={async () => {
                   await auth.signOut();
                   setIsAdmin(false);
                   setCurrentView('catalog');
-                  showToast("Logout Berhasil!");
-                }}><i className="fa-solid fa-power-off mr-1"></i> Keluar</button>
+                  showToast("Logout Admin Berhasil!");
+                }}>
+                  <i className="fa-solid fa-power-off"></i> <span className="hidden sm:inline">Keluar</span>
+                </button>
               </div>
             </div>
           </div>
@@ -3026,40 +3032,75 @@ export default function App() {
           <div className="scroll-content flex-1 overflow-y-auto w-full pb-[calc(5rem+env(safe-area-inset-bottom))]">
             <div className="max-w-[1200px] mx-auto pt-6 px-4 w-full">
               {/* Dashboard Report Periods */}
-              <div className="bg-white dark:bg-slate-800 rounded-3xl border border-slate-200 dark:border-slate-700 p-6 mb-7 shadow-sm">
-                <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-                  <div>
-                    <h2 className="text-xl font-black text-slate-800 dark:text-white leading-none">Laporan Toko</h2>
-                    <p className="text-xs text-slate-400 mt-1 font-bold">Ringkasan penjualan dan margin terkini.</p>
+              <div className="bg-white dark:bg-slate-800 rounded-[1.5rem] border border-slate-200 dark:border-slate-700 p-5 sm:p-7 mb-7 shadow-sm">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-5 border-b border-slate-100 dark:border-slate-700/60">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-2xl bg-emerald-50 dark:bg-emerald-900/30 text-[var(--color-primary)] flex items-center justify-center text-lg border border-emerald-100 dark:border-emerald-800">
+                      <i className="fa-solid fa-chart-line"></i>
+                    </div>
+                    <div>
+                      <h2 className="text-lg sm:text-xl font-black text-slate-800 dark:text-white leading-tight uppercase tracking-tight">Ringkasan Laporan & Keuangan</h2>
+                      <p className="text-[11px] text-slate-400 font-semibold mt-0.5">Analisis performa penjualan, omset, dan laba kotor toko.</p>
+                    </div>
                   </div>
-                  <div className="flex gap-1 bg-slate-100 dark:bg-slate-900 p-1 rounded-xl">
-                    {['today', 'week', 'month', 'all'].map((p) => (
-                      <button key={p} className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest ${adminReportPeriod === p ? 'bg-[var(--color-primary)] text-white' : 'text-slate-500'}`} onClick={() => loadAdminReport(p)}>{p === 'today' ? 'Hari Ini' : p === 'week' ? 'Mgu Ini' : p === 'month' ? 'Bln Ini' : 'Semua'}</button>
+                  <div className="flex gap-1.5 bg-slate-100 dark:bg-slate-900 p-1.5 rounded-2xl border border-slate-200/60 dark:border-slate-700/60 w-full sm:w-auto">
+                    {[
+                      { id: 'today', label: 'Hari Ini' },
+                      { id: 'week', label: 'Minggu Ini' },
+                      { id: 'month', label: 'Bulan Ini' },
+                      { id: 'all', label: 'Semua' }
+                    ].map((p) => (
+                      <button
+                        key={p.id}
+                        className={`flex-1 sm:flex-none px-3.5 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${
+                          adminReportPeriod === p.id
+                            ? 'bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-primary-dark)] text-white shadow-glow'
+                            : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
+                        }`}
+                        onClick={() => loadAdminReport(p.id)}
+                      >
+                        {p.label}
+                      </button>
                     ))}
                   </div>
                 </div>
 
                 {adminReports ? (
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
-                    <div className="bg-slate-50 dark:bg-slate-900 p-4 rounded-2xl border border-slate-100">
-                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Omset Penjualan</p>
-                      <p className="text-xl font-black text-emerald-600 dark:text-emerald-400 mt-1">{fCur(adminReports.omset)}</p>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mt-6">
+                    <div className="bg-emerald-50/50 dark:bg-emerald-950/20 p-4 sm:p-5 rounded-2xl border border-emerald-100 dark:border-emerald-900/40 relative overflow-hidden group">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-[10px] font-black text-emerald-800 dark:text-emerald-400 uppercase tracking-widest">Omset Penjualan</span>
+                        <div className="w-7 h-7 rounded-lg bg-emerald-500 text-white flex items-center justify-center text-xs shadow-sm"><i className="fa-solid fa-wallet"></i></div>
+                      </div>
+                      <p className="text-xl sm:text-2xl font-black text-emerald-600 dark:text-emerald-400 tracking-tight">{fCur(adminReports.omset)}</p>
                     </div>
-                    <div className="bg-slate-50 dark:bg-slate-900 p-4 rounded-2xl border border-slate-100">
-                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Laba Bersih</p>
-                      <p className="text-xl font-black text-blue-600 dark:text-blue-400 mt-1">{fCur(adminReports.profit)}</p>
+
+                    <div className="bg-blue-50/50 dark:bg-blue-950/20 p-4 sm:p-5 rounded-2xl border border-blue-100 dark:border-blue-900/40 relative overflow-hidden group">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-[10px] font-black text-blue-800 dark:text-blue-400 uppercase tracking-widest">Estimasi Laba</span>
+                        <div className="w-7 h-7 rounded-lg bg-blue-500 text-white flex items-center justify-center text-xs shadow-sm"><i className="fa-solid fa-coins"></i></div>
+                      </div>
+                      <p className="text-xl sm:text-2xl font-black text-blue-600 dark:text-blue-400 tracking-tight">{fCur(adminReports.profit)}</p>
                     </div>
-                    <div className="bg-slate-50 dark:bg-slate-900 p-4 rounded-2xl border border-slate-100">
-                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Modal Aset</p>
-                      <p className="text-xl font-black text-slate-700 dark:text-slate-300 mt-1">{fCur(adminReports.assetHpp)}</p>
+
+                    <div className="bg-slate-50 dark:bg-slate-900/60 p-4 sm:p-5 rounded-2xl border border-slate-200 dark:border-slate-700/60 relative overflow-hidden group">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest">Aset Produk (HPP)</span>
+                        <div className="w-7 h-7 rounded-lg bg-slate-500 text-white flex items-center justify-center text-xs shadow-sm"><i className="fa-solid fa-boxes-stacked"></i></div>
+                      </div>
+                      <p className="text-xl sm:text-2xl font-black text-slate-800 dark:text-slate-200 tracking-tight">{fCur(adminReports.assetHpp)}</p>
                     </div>
-                    <div className="bg-slate-50 dark:bg-slate-900 p-4 rounded-2xl border border-slate-100">
-                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Total Transaksi</p>
-                      <p className="text-xl font-black text-slate-800 dark:text-white mt-1">{adminReports.successCount} Pesanan</p>
+
+                    <div className="bg-amber-50/50 dark:bg-amber-950/20 p-4 sm:p-5 rounded-2xl border border-amber-100 dark:border-amber-900/40 relative overflow-hidden group">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-[10px] font-black text-amber-800 dark:text-amber-400 uppercase tracking-widest">Pesanan Sukses</span>
+                        <div className="w-7 h-7 rounded-lg bg-amber-500 text-white flex items-center justify-center text-xs shadow-sm"><i className="fa-solid fa-circle-check"></i></div>
+                      </div>
+                      <p className="text-xl sm:text-2xl font-black text-amber-600 dark:text-amber-400 tracking-tight">{adminReports.successCount} Transaksi</p>
                     </div>
                   </div>
                 ) : (
-                  <div className="text-center py-6"><i className="fa-solid fa-spinner fa-spin text-xl text-slate-300"></i></div>
+                  <div className="text-center py-8"><i className="fa-solid fa-spinner fa-spin text-2xl text-[var(--color-primary)]"></i></div>
                 )}
               </div>
 
