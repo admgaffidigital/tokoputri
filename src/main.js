@@ -83,9 +83,20 @@ window.DOMPurify = DOMPurify;
             m.setAttribute('content', cachedHeaderColor);
         })();
 
-        // Deteksi Dark Mode Otomatis
+        // Deteksi Dark Mode Otomatis & Sinkronkan Ikon
+        const initThemeIcon = () => {
+            const isDark = document.documentElement.classList.contains('dark');
+            const icon = document.getElementById('icon-theme') || document.getElementById('theme-toggle-icon');
+            if (icon) icon.className = isDark ? 'fa-solid fa-sun text-sm text-amber-400' : 'fa-solid fa-moon text-sm text-slate-600 dark:text-slate-300';
+        };
+
         if (localStorage.getItem('freshmart_theme') === 'dark' || (!('freshmart_theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) { 
             document.documentElement.classList.add('dark'); 
+        }
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initThemeIcon);
+        } else {
+            initThemeIcon();
         }
 
 
@@ -994,8 +1005,8 @@ window.hideToast = () => { clearTimeout(toastT); const t = el('toast'); if(t) t.
 window.toggleTheme = () => {
     const isDark = document.documentElement.classList.toggle('dark');
     localStorage.setItem('freshmart_theme', isDark ? 'dark' : 'light');
-    const icon = document.getElementById('icon-theme');
-    if (icon) icon.className = isDark ? 'fa-solid fa-sun text-sm text-amber-500' : 'fa-solid fa-moon text-sm';
+    const icon = document.getElementById('icon-theme') || document.getElementById('theme-toggle-icon');
+    if (icon) icon.className = isDark ? 'fa-solid fa-sun text-sm text-amber-400' : 'fa-solid fa-moon text-sm text-slate-600 dark:text-slate-300';
 };
 
 // FIX NAVIGASI: simpan posisi scroll tiap view supaya saat tombol back ditekan,
