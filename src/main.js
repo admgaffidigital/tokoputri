@@ -1116,7 +1116,7 @@ window.openCategoryModal = () => {
         <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-xl ${isActiveAll ? 'bg-emerald-500 text-white border-none' : 'bg-white text-slate-400 border border-slate-200 dark:border-slate-600 group-hover:text-emerald-500'} flex items-center justify-center shadow-sm shrink-0 overflow-hidden transition-colors">
             <i class="fa-solid fa-layer-group text-base sm:text-lg"></i>
         </div>
-        <span class="text-xs sm:text-sm font-black uppercase tracking-widest text-left flex-1 ${isActiveAll ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-600 dark:text-slate-300'}">SEMUA</span>
+        <span class="text-xs sm:text-sm font-bold uppercase tracking-widest text-left flex-1 ${isActiveAll ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-600 dark:text-slate-300'}">SEMUA</span>
         <i class="fa-solid fa-circle-check text-base ${isActiveAll ? 'text-emerald-500' : 'text-slate-300 dark:text-slate-600'}"></i>
     </button>`;
 
@@ -1129,7 +1129,7 @@ window.openCategoryModal = () => {
             <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-white dark:bg-slate-800 flex items-center justify-center shadow-sm shrink-0 text-slate-400 group-hover:text-emerald-500 overflow-hidden border border-slate-200 dark:border-slate-600">
                 ${imgH}
             </div>
-            <span class="text-xs sm:text-sm font-black uppercase tracking-widest text-left flex-1 line-clamp-1 ${isActive ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-600 dark:text-slate-300'}">${esc(c.name)}</span>
+            <span class="text-xs sm:text-sm font-bold uppercase tracking-widest text-left flex-1 line-clamp-1 ${isActive ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-600 dark:text-slate-300'}">${esc(c.name)}</span>
             <i class="fa-solid fa-circle-check text-base ${isActive ? 'text-emerald-500' : 'text-slate-300 dark:text-slate-600'}"></i>
         </button>`;
     });
@@ -1154,7 +1154,7 @@ window.openBrandModal = () => {
         <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-full ${isActiveAll ? 'bg-blue-500 text-white border-none' : 'bg-white text-slate-400 border border-slate-200 dark:border-slate-600 group-hover:text-blue-500'} flex items-center justify-center shadow-sm mb-2.5 transition-colors shrink-0">
             <i class="fa-solid fa-copyright text-lg sm:text-xl"></i>
         </div>
-        <span class="text-[9px] font-black uppercase tracking-widest text-center leading-tight line-clamp-2 w-full break-words ${isActiveAll ? 'text-blue-600 dark:text-blue-400' : 'text-slate-600 dark:text-slate-300'}">SEMUA MEREK</span>
+        <span class="text-[9px] font-bold uppercase tracking-widest text-center leading-tight line-clamp-2 w-full break-words ${isActiveAll ? 'text-blue-600 dark:text-blue-400' : 'text-slate-600 dark:text-slate-300'}">SEMUA MEREK</span>
     </button>`;
 
     appData.brands.forEach(b => {
@@ -1165,7 +1165,7 @@ window.openBrandModal = () => {
             <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-white flex items-center justify-center shadow-sm mb-2.5 text-slate-400 group-hover:text-blue-500 overflow-hidden shrink-0 border border-slate-200 dark:border-slate-600">
                 ${imgH}
             </div>
-            <span class="text-[9px] font-black uppercase tracking-widest text-center leading-tight line-clamp-2 w-full break-words ${isActive ? 'text-blue-600 dark:text-blue-400' : 'text-slate-600 dark:text-slate-300'}">${esc(b.name)}</span>
+            <span class="text-[9px] font-bold uppercase tracking-widest text-center leading-tight line-clamp-2 w-full break-words ${isActive ? 'text-blue-600 dark:text-blue-400' : 'text-slate-600 dark:text-slate-300'}">${esc(b.name)}</span>
         </button>`;
     });
     
@@ -1369,10 +1369,10 @@ window.rDyn = () => {
             <div class="absolute -left-12 top-10 w-24 h-24 bg-gradient-to-tr from-white/5 to-white/20 rounded-full backdrop-blur-sm border border-white/10 pointer-events-none transform -rotate-12 shadow-inner"></div>
             <div class="flex flex-1 w-full relative z-10">
                 <div class="w-[60%] p-5 sm:p-6 md:p-7 lg:p-8 flex flex-col justify-center z-20">
-                    <span class="inline-block px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-white text-[9px] sm:text-[10px] font-black uppercase tracking-widest w-max mb-2.5 border border-white/30 shadow-sm"><i class="fa-solid fa-star text-yellow-300 mr-1 animate-pulse"></i> Promo</span>
-                    <h2 class="text-[15px] sm:text-xl font-black text-white leading-snug mb-1.5 drop-shadow-md line-clamp-3">${esc(b.title || 'Penawaran Spesial')}</h2>
+                    <span class="inline-block px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-white text-[9px] sm:text-[10px] font-bold uppercase tracking-widest w-max mb-2.5 border border-white/30 shadow-sm"><i class="fa-solid fa-star text-yellow-300 mr-1 animate-pulse"></i> Promo</span>
+                    <h2 class="text-[15px] sm:text-xl font-bold text-white leading-snug mb-1.5 drop-shadow-md line-clamp-3">${esc(b.title || 'Penawaran Spesial')}</h2>
                     <p class="text-[10px] sm:text-[11px] text-white/90 font-medium line-clamp-3 leading-relaxed mb-3">${esc(b.desc || 'Belanja sekarang dan dapatkan penawaran terbaik.')}</p>
-                    ${b.link ? `<button class="mt-auto bg-white dark:bg-slate-800 text-[var(--color-primary-dark)] dark:text-white text-[9px] sm:text-[11px] font-black py-2 px-4 rounded-full w-max hover:bg-slate-100 active:scale-95 transition-all shadow-lg flex items-center gap-2 group-hover:pr-4">Beli Sekarang <i class="fa-solid fa-arrow-right transition-transform group-hover:translate-x-1"></i></button>` : ''}
+                    ${b.link ? `<button class="mt-auto bg-white dark:bg-slate-800 text-[var(--color-primary-dark)] dark:text-white text-[9px] sm:text-[11px] font-bold py-2 px-4 rounded-full w-max hover:bg-slate-100 active:scale-95 transition-all shadow-lg flex items-center gap-2 group-hover:pr-4">Beli Sekarang <i class="fa-solid fa-arrow-right transition-transform group-hover:translate-x-1"></i></button>` : ''}
                 </div>
                 <div class="w-[40%] relative z-10 flex items-center justify-center p-2 sm:p-4 pr-4 sm:pr-6">
                     <div class="absolute inset-0 bg-gradient-to-l from-black/10 to-transparent pointer-events-none"></div>
@@ -1392,7 +1392,7 @@ window.rDyn = () => {
         vC.classList.remove('hidden');
         let vHTML = `
         <div class="flex items-center justify-between mb-4">
-            <h3 class="font-black text-slate-800 dark:text-white text-sm sm:text-base tracking-tight flex items-center gap-2">
+            <h3 class="font-bold text-slate-800 dark:text-white text-sm sm:text-base tracking-tight flex items-center gap-2">
                 <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-dark)] flex items-center justify-center text-white shadow-md">
                     <i class="fa-solid fa-ticket-simple text-sm -rotate-45"></i>
                 </div> VOUCHER TOKO
@@ -1414,10 +1414,10 @@ window.rDyn = () => {
                         <div class="absolute -left-4 -bottom-4 w-16 h-16 bg-black/10 rounded-full blur-lg pointer-events-none"></div>
                         <div class="absolute inset-0 opacity-20 pointer-events-none" style="background-image: radial-gradient(circle, #ffffff 1px, transparent 1px); background-size: 12px 12px;"></div>
                         <div class="flex-1 px-5 py-3 flex flex-col justify-center relative z-10">
-                            <h4 class="font-black text-white text-sm sm:text-base leading-tight mb-1 drop-shadow-md line-clamp-1">${desc}</h4>
+                            <h4 class="font-bold text-white text-sm sm:text-base leading-tight mb-1 drop-shadow-md line-clamp-1">${desc}</h4>
                             <p class="text-[8px] sm:text-[9px] font-bold text-white/90 flex items-center gap-1.5 mb-2.5 drop-shadow-sm uppercase tracking-wider"><i class="fa-solid fa-circle-info text-white/80"></i> ${termsStr}</p>
                             <div class="inline-flex">
-                                <span class="bg-black/20 backdrop-blur-md text-white text-[10px] sm:text-xs font-black px-3 py-1.5 rounded-xl uppercase tracking-widest border border-white/30 shadow-inner flex items-center gap-2">
+                                <span class="bg-black/20 backdrop-blur-md text-white text-[10px] sm:text-xs font-bold px-3 py-1.5 rounded-xl uppercase tracking-widest border border-white/30 shadow-inner flex items-center gap-2">
                                     <i class="fa-solid fa-ticket text-white/60"></i> ${esc(v.code)}
                                 </span>
                             </div>
@@ -1427,7 +1427,7 @@ window.rDyn = () => {
                             <div class="w-10 h-10 rounded-full bg-white dark:bg-slate-800 text-slate-800 dark:text-white flex items-center justify-center mb-2 shadow-lg group-hover:scale-110 group-hover:text-[var(--color-primary)] transition-all duration-300">
                                 <i class="fa-regular fa-copy text-sm"></i>
                             </div>
-                            <span class="text-[9px] font-black uppercase tracking-widest text-white drop-shadow-md">Salin</span>
+                            <span class="text-[9px] font-bold uppercase tracking-widest text-white drop-shadow-md">Salin</span>
                         </div>
                     </div>
                 </div>`;
@@ -1447,9 +1447,9 @@ window.rDyn = () => {
     setH('dynamic-categories-container', cLHorizontal.map(c => {
         const isSel = aCat === c.name; const nameSafe = decodeURIComponent(encodeURIComponent(c.name).replace(/'/g,"%27"));
         if(appData.store.categoryStyle === 'text' || !appData.store.categoryStyle) {
-            return `<div onclick="filterCategory('${nameSafe}')" class="cursor-pointer shrink-0 snap-start group py-1"><div class="px-5 py-2.5 rounded-[1.25rem] border-2 transition-all duration-300 flex items-center gap-3 ${isSel ? 'bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-primary-dark)] border-transparent text-white shadow-md' : 'bg-white dark:bg-slate-800 border-slate-100 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-[var(--color-primary)] hover:shadow-md hover:-translate-y-1'}"><div class="w-6 h-6 rounded-full flex items-center justify-center ${isSel ? 'bg-white/20 text-white shadow-inner' : 'bg-slate-50 dark:bg-slate-700 text-slate-400 group-hover:bg-[var(--color-primary-light)] group-hover:text-[var(--color-primary)]'} transition-all duration-300"><i class="fa-solid fa-layer-group text-[10px]"></i></div><span class="font-black text-[11px] sm:text-xs uppercase tracking-widest pr-2">${esc(c.name)}</span></div></div>`;
+            return `<div onclick="filterCategory('${nameSafe}')" class="cursor-pointer shrink-0 snap-start group py-1"><div class="px-5 py-2.5 rounded-[1.25rem] border-2 transition-all duration-300 flex items-center gap-3 ${isSel ? 'bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-primary-dark)] border-transparent text-white shadow-md' : 'bg-white dark:bg-slate-800 border-slate-100 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-[var(--color-primary)] hover:shadow-md hover:-translate-y-1'}"><div class="w-6 h-6 rounded-full flex items-center justify-center ${isSel ? 'bg-white/20 text-white shadow-inner' : 'bg-slate-50 dark:bg-slate-700 text-slate-400 group-hover:bg-[var(--color-primary-light)] group-hover:text-[var(--color-primary)]'} transition-all duration-300"><i class="fa-solid fa-layer-group text-[10px]"></i></div><span class="font-bold text-[11px] sm:text-xs uppercase tracking-widest pr-2">${esc(c.name)}</span></div></div>`;
         } else {
-            return `<div onclick="filterCategory('${nameSafe}')" class="flex flex-col items-center gap-3 cursor-pointer shrink-0 w-[80px] sm:w-[95px] group snap-start py-1"><div class="relative w-16 h-16 sm:w-[72px] sm:h-[72px] rounded-[1.25rem] bg-slate-50 dark:bg-slate-800 flex items-center justify-center p-2 transition-all duration-300 ${isSel ? 'bg-[var(--color-primary-light)] border-2 border-[var(--color-primary)] shadow-glow dark:bg-[var(--color-primary-dark)]/20' : 'border border-slate-200 dark:border-slate-700 shadow-sm group-hover:border-[var(--color-primary)] group-hover:shadow-lg group-hover:-translate-y-1.5'} overflow-hidden"><img loading="lazy" src="${esc(getOptImg(c.img, 'w150-rw'))}" alt="${esc(c.name)}" onerror="this.onerror=null;this.src='https://placehold.co/150/10b981/ffffff?text=Cat'" class="w-full h-full object-cover rounded-xl transition-transform duration-500 group-hover:scale-110"></i></div><span class="text-[9px] sm:text-[10px] text-center w-full line-clamp-2 leading-tight px-1 ${isSel ? 'font-black text-[var(--color-primary)]' : 'font-bold text-slate-600 dark:text-slate-300 group-hover:text-[var(--color-primary)]'} uppercase tracking-widest transition-colors">${esc(c.name)}</span></div>`;
+            return `<div onclick="filterCategory('${nameSafe}')" class="flex flex-col items-center gap-3 cursor-pointer shrink-0 w-[80px] sm:w-[95px] group snap-start py-1"><div class="relative w-16 h-16 sm:w-[72px] sm:h-[72px] rounded-[1.25rem] bg-slate-50 dark:bg-slate-800 flex items-center justify-center p-2 transition-all duration-300 ${isSel ? 'bg-[var(--color-primary-light)] border-2 border-[var(--color-primary)] shadow-glow dark:bg-[var(--color-primary-dark)]/20' : 'border border-slate-200 dark:border-slate-700 shadow-sm group-hover:border-[var(--color-primary)] group-hover:shadow-lg group-hover:-translate-y-1.5'} overflow-hidden"><img loading="lazy" src="${esc(getOptImg(c.img, 'w150-rw'))}" alt="${esc(c.name)}" onerror="this.onerror=null;this.src='https://placehold.co/150/10b981/ffffff?text=Cat'" class="w-full h-full object-cover rounded-xl transition-transform duration-500 group-hover:scale-110"></i></div><span class="text-[9px] sm:text-[10px] text-center w-full line-clamp-2 leading-tight px-1 ${isSel ? 'font-bold text-[var(--color-primary)]' : 'font-bold text-slate-600 dark:text-slate-300 group-hover:text-[var(--color-primary)]'} uppercase tracking-widest transition-colors">${esc(c.name)}</span></div>`;
         }
     }).join(''));
     
@@ -1459,15 +1459,15 @@ window.rDyn = () => {
     setH('dynamic-brands-container', bLHorizontal.map(b => {
         const isSel = aBrand === b.name; const nameSafe = decodeURIComponent(encodeURIComponent(b.name).replace(/'/g,"%27"));
         if(appData.store.brandStyle === 'text') {
-            return `<div onclick="filterBrand('${nameSafe}')" class="cursor-pointer shrink-0 snap-start group py-1"><div class="px-5 py-2.5 rounded-[1.25rem] border-2 transition-all duration-300 flex items-center gap-3 ${isSel ? 'bg-gradient-to-r from-blue-500 to-indigo-500 border-transparent text-white shadow-md' : 'bg-white dark:bg-slate-800 border-slate-100 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-blue-300 hover:shadow-md hover:-translate-y-1'}"><div class="w-6 h-6 rounded-full flex items-center justify-center ${isSel ? 'bg-white/20 text-white shadow-inner' : 'bg-slate-50 dark:bg-slate-700 text-slate-400 group-hover:bg-blue-50 group-hover:text-blue-500'} transition-all duration-300"><i class="fa-solid fa-copyright text-[10px]"></i></div><span class="font-black text-[11px] sm:text-xs uppercase tracking-widest pr-2">${esc(b.name)}</span></div></div>`;
+            return `<div onclick="filterBrand('${nameSafe}')" class="cursor-pointer shrink-0 snap-start group py-1"><div class="px-5 py-2.5 rounded-[1.25rem] border-2 transition-all duration-300 flex items-center gap-3 ${isSel ? 'bg-gradient-to-r from-blue-500 to-indigo-500 border-transparent text-white shadow-md' : 'bg-white dark:bg-slate-800 border-slate-100 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-blue-300 hover:shadow-md hover:-translate-y-1'}"><div class="w-6 h-6 rounded-full flex items-center justify-center ${isSel ? 'bg-white/20 text-white shadow-inner' : 'bg-slate-50 dark:bg-slate-700 text-slate-400 group-hover:bg-blue-50 group-hover:text-blue-500'} transition-all duration-300"><i class="fa-solid fa-copyright text-[10px]"></i></div><span class="font-bold text-[11px] sm:text-xs uppercase tracking-widest pr-2">${esc(b.name)}</span></div></div>`;
         } else {
-            return `<div onclick="filterBrand('${nameSafe}')" class="flex flex-col items-center gap-3 cursor-pointer shrink-0 w-[75px] sm:w-[85px] group snap-start py-1"><div class="relative w-16 h-16 sm:w-[68px] sm:h-[68px] rounded-full bg-white flex items-center justify-center overflow-hidden p-2 transition-all duration-500 ${isSel ? 'ring-4 ring-blue-500 ring-offset-2 ring-offset-slate-50 dark:ring-offset-slate-800 shadow-lg shadow-blue-500/30' : 'border border-slate-200 dark:border-slate-700 shadow-sm group-hover:border-blue-400 group-hover:shadow-lg group-hover:-translate-y-1.5'}"><img loading="lazy" src="${esc(getOptImg(b.img, 'w150-rw'))}" alt="${esc(b.name)}" onerror="this.onerror=null;this.src='https://placehold.co/150/3b82f6/ffffff?text=Brand'" class="w-full h-full object-contain drop-shadow-sm transition-transform duration-500 group-hover:scale-110"></i></div><span class="text-[9px] sm:text-[10px] text-center w-full line-clamp-2 leading-tight px-1 ${isSel ? 'font-black text-blue-600 dark:text-blue-400' : 'font-bold text-slate-600 dark:text-slate-300 group-hover:text-blue-600'} uppercase tracking-widest transition-colors">${esc(b.name)}</span></div>`;
+            return `<div onclick="filterBrand('${nameSafe}')" class="flex flex-col items-center gap-3 cursor-pointer shrink-0 w-[75px] sm:w-[85px] group snap-start py-1"><div class="relative w-16 h-16 sm:w-[68px] sm:h-[68px] rounded-full bg-white flex items-center justify-center overflow-hidden p-2 transition-all duration-500 ${isSel ? 'ring-4 ring-blue-500 ring-offset-2 ring-offset-slate-50 dark:ring-offset-slate-800 shadow-lg shadow-blue-500/30' : 'border border-slate-200 dark:border-slate-700 shadow-sm group-hover:border-blue-400 group-hover:shadow-lg group-hover:-translate-y-1.5'}"><img loading="lazy" src="${esc(getOptImg(b.img, 'w150-rw'))}" alt="${esc(b.name)}" onerror="this.onerror=null;this.src='https://placehold.co/150/3b82f6/ffffff?text=Brand'" class="w-full h-full object-contain drop-shadow-sm transition-transform duration-500 group-hover:scale-110"></i></div><span class="text-[9px] sm:text-[10px] text-center w-full line-clamp-2 leading-tight px-1 ${isSel ? 'font-bold text-blue-600 dark:text-blue-400' : 'font-bold text-slate-600 dark:text-slate-300 group-hover:text-blue-600'} uppercase tracking-widest transition-colors">${esc(b.name)}</span></div>`;
         }
     }).join(''));
     
     setH('modal-brand-grid', bLModal.map(b => {
         const isSel = aBrand === b.name; const nameSafe = decodeURIComponent(encodeURIComponent(b.name).replace(/'/g,"%27"));
-        return `<button onclick="filterBrand('${nameSafe}'); closeBrandModal();" class="flex flex-col items-center gap-3 p-4 rounded-[1.25rem] border ${isSel?'border-blue-500 bg-blue-50 dark:bg-blue-900/20 shadow-md':'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-blue-300 hover:shadow-sm'} transition-all active:scale-[0.96]"><div class="w-14 h-14 rounded-full flex items-center justify-center bg-white border border-slate-100 dark:border-slate-600 shadow-inner overflow-hidden p-1.5"><img loading="lazy" src="${esc(getOptImg(b.img, 'w150-rw'))}" alt="${esc(b.name)}" class="w-full h-full object-contain" onerror="this.src='https://placehold.co/100?text=Brand'"></div> <span class="text-[10px] sm:text-xs font-black ${isSel?'text-blue-700 dark:text-blue-400':'text-slate-700 dark:text-slate-300'} text-center leading-tight line-clamp-2 uppercase tracking-widest">${esc(b.name)}</span></button>`;
+        return `<button onclick="filterBrand('${nameSafe}'); closeBrandModal();" class="flex flex-col items-center gap-3 p-4 rounded-[1.25rem] border ${isSel?'border-blue-500 bg-blue-50 dark:bg-blue-900/20 shadow-md':'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-blue-300 hover:shadow-sm'} transition-all active:scale-[0.96]"><div class="w-14 h-14 rounded-full flex items-center justify-center bg-white border border-slate-100 dark:border-slate-600 shadow-inner overflow-hidden p-1.5"><img loading="lazy" src="${esc(getOptImg(b.img, 'w150-rw'))}" alt="${esc(b.name)}" class="w-full h-full object-contain" onerror="this.src='https://placehold.co/100?text=Brand'"></div> <span class="text-[10px] sm:text-xs font-bold ${isSel?'text-blue-700 dark:text-blue-400':'text-slate-700 dark:text-slate-300'} text-center leading-tight line-clamp-2 uppercase tracking-widest">${esc(b.name)}</span></button>`;
     }).join(''));
 
     if(el('dyn-qris-img') && appData.payment) el('dyn-qris-img').src = appData.payment.qrisUrl;
@@ -1531,10 +1531,10 @@ window.rCat = () => {
                     <div class="w-10 h-10 rounded-xl ${iconColor} flex items-center justify-center shrink-0"><i class="fa-solid ${filterIcon} text-lg"></i></div>
                     <div class="flex flex-col min-w-0 pr-2">
                         <span class="text-[10px] text-slate-600 dark:text-slate-400 font-bold uppercase tracking-widest">${filterLabel}</span>
-                        <span class="text-sm font-black text-slate-800 dark:text-white truncate leading-tight mt-0.5">${esc(filterValue)}</span>
+                        <span class="text-sm font-bold text-slate-800 dark:text-white truncate leading-tight mt-0.5">${esc(filterValue)}</span>
                     </div>
                 </div>
-                <button onclick="resetSemuaFilter()" class="shrink-0 bg-slate-50 dark:bg-slate-900 text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-700 w-10 h-10 flex items-center justify-center rounded-xl font-black shadow-sm hover:bg-rose-50 hover:text-rose-500 hover:border-rose-200 transition-all active:scale-95 group"><i class="fa-solid fa-xmark text-lg group-hover:rotate-90 transition-transform duration-300"></i></button>
+                <button onclick="resetSemuaFilter()" class="shrink-0 bg-slate-50 dark:bg-slate-900 text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-700 w-10 h-10 flex items-center justify-center rounded-xl font-bold shadow-sm hover:bg-rose-50 hover:text-rose-500 hover:border-rose-200 transition-all active:scale-95 group"><i class="fa-solid fa-xmark text-lg group-hover:rotate-90 transition-transform duration-300"></i></button>
             </div>`;
             backBtnContainer.classList.remove('hidden');
         } else { backBtnContainer.innerHTML = ''; backBtnContainer.classList.add('hidden'); }
@@ -1569,7 +1569,7 @@ window.rCat = () => {
         let a = p.isActive !== 'false' && p.isActive !== false;
         
         // nH adalah tampilan "HABIS" menutupi gambar (tidak diubah)
-        let nH = !a ? `<div class="absolute inset-0 bg-white/60 dark:bg-slate-900/60 backdrop-blur-[2px] z-20 flex items-center justify-center rounded-[1.25rem]"><span class="bg-slate-800 text-white text-[10px] font-black px-3 py-1.5 rounded-xl shadow-lg uppercase tracking-widest"><i class="fa-solid fa-ban mr-1"></i> HABIS</span></div>` : '';
+        let nH = !a ? `<div class="absolute inset-0 bg-white/60 dark:bg-slate-900/60 backdrop-blur-[2px] z-20 flex items-center justify-center rounded-[1.25rem]"><span class="bg-slate-800 text-white text-[10px] font-bold px-3 py-1.5 rounded-xl shadow-lg uppercase tracking-widest"><i class="fa-solid fa-ban mr-1"></i> HABIS</span></div>` : '';
         
         // Badge stok (hanya jika manajemen stok aktif)
         const useStk = appData.store.useStock === true || appData.store.useStock === 'true';
@@ -1579,13 +1579,13 @@ window.rCat = () => {
                 ? p.variants.filter(v => v.isActive !== false && v.isActive !== 'false').reduce((s,v) => s + (parseFloat(v.stock)||0), 0)
                 : parseFloat(p.stock) || 0;
             if (totalStock <= 0) {
-                nH = `<div class="absolute inset-0 bg-white/60 dark:bg-slate-900/60 backdrop-blur-[2px] z-20 flex items-center justify-center rounded-[1.25rem]"><span class="bg-slate-800 text-white text-[10px] font-black px-3 py-1.5 rounded-xl shadow-lg uppercase tracking-widest"><i class="fa-solid fa-ban mr-1"></i> HABIS</span></div>`;
+                nH = `<div class="absolute inset-0 bg-white/60 dark:bg-slate-900/60 backdrop-blur-[2px] z-20 flex items-center justify-center rounded-[1.25rem]"><span class="bg-slate-800 text-white text-[10px] font-bold px-3 py-1.5 rounded-xl shadow-lg uppercase tracking-widest"><i class="fa-solid fa-ban mr-1"></i> HABIS</span></div>`;
             } else if (totalStock <= 5) {
                 // FIX BUG: dulu stok HANYA tampil kalau menipis (≤5) -- di luar itu tidak
                 // tampil sama sekali di card, membuat pelanggan tidak tahu ada berapa stok.
-                stockBadge = `<span class="absolute top-2 left-2 z-10 bg-rose-500 text-white text-[8px] font-black px-2 py-1 rounded-xl shadow uppercase tracking-wider"><i class="fa-solid fa-fire mr-0.5"></i> SISA ${totalStock}</span>`;
+                stockBadge = `<span class="absolute top-2 left-2 z-10 bg-rose-500 text-white text-[8px] font-bold px-2 py-1 rounded-xl shadow uppercase tracking-wider"><i class="fa-solid fa-fire mr-0.5"></i> SISA ${totalStock}</span>`;
             } else {
-                stockBadge = `<span class="absolute top-2 left-2 z-10 bg-slate-800/80 text-white text-[8px] font-black px-2 py-1 rounded-xl shadow uppercase tracking-wider backdrop-blur-sm"><i class="fa-solid fa-box mr-0.5"></i> Stok ${totalStock}</span>`;
+                stockBadge = `<span class="absolute top-2 left-2 z-10 bg-slate-800/80 text-white text-[8px] font-bold px-2 py-1 rounded-xl shadow uppercase tracking-wider backdrop-blur-sm"><i class="fa-solid fa-box mr-0.5"></i> Stok ${totalStock}</span>`;
             }
         }
         
@@ -1601,12 +1601,12 @@ window.rCat = () => {
         let priceNormalHtml = '';
         if (p.priceNormal && p.priceNormal > p.price) {
             let pct = Math.round(((p.priceNormal - p.price) / p.priceNormal) * 100);
-            discPill = `<span class="bg-rose-500 text-white px-2 py-0.5 rounded-full text-[8px] font-black flex items-center gap-1 whitespace-nowrap uppercase tracking-wider shadow-sm"><i class="fa-solid fa-tags"></i> -${pct}%</span>`;
+            discPill = `<span class="bg-rose-500 text-white px-2 py-0.5 rounded-full text-[8px] font-bold flex items-center gap-1 whitespace-nowrap uppercase tracking-wider shadow-sm"><i class="fa-solid fa-tags"></i> -${pct}%</span>`;
             priceNormalHtml = `<p class="text-[10px] text-slate-600 dark:text-slate-400 line-through mb-0.5 font-bold">${fCur(p.priceNormal)}</p>`;
         }
 
         // LOGIKA PO PILL (PINDAH KE BAWAH, SEJAJAR DENGAN LABEL OFFICIAL)
-        let poPill = p.poTime ? `<span class="bg-amber-500 text-white px-2 py-0.5 rounded-full text-[8px] font-black flex items-center gap-1 whitespace-nowrap uppercase tracking-wider shadow-sm"><i class="fa-solid fa-clock"></i> PO ${esc(p.poTime)}</span>` : '';
+        let poPill = p.poTime ? `<span class="bg-amber-500 text-white px-2 py-0.5 rounded-full text-[8px] font-bold flex items-center gap-1 whitespace-nowrap uppercase tracking-wider shadow-sm"><i class="fa-solid fa-clock"></i> PO ${esc(p.poTime)}</span>` : '';
 
         // FITUR BARU: badge "Dapat Poin" di katalog untuk produk/varian yang punya poin member
         let poinBadge = '';
@@ -1615,11 +1615,11 @@ window.rCat = () => {
             if (poinVals.length) {
                 const uniq = [...new Set(poinVals)];
                 poinBadge = uniq.length === 1
-                    ? `<span class="bg-violet-100 text-violet-700 dark:bg-violet-900/40 dark:text-violet-400 px-2 py-0.5 rounded-full text-[8px] font-black flex items-center gap-1 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-star"></i> +${uniq[0]} Poin</span>`
-                    : `<span class="bg-violet-100 text-violet-700 dark:bg-violet-900/40 dark:text-violet-400 px-2 py-0.5 rounded-full text-[8px] font-black flex items-center gap-1 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-star"></i> Dapat Poin</span>`;
+                    ? `<span class="bg-violet-100 text-violet-700 dark:bg-violet-900/40 dark:text-violet-400 px-2 py-0.5 rounded-full text-[8px] font-bold flex items-center gap-1 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-star"></i> +${uniq[0]} Poin</span>`
+                    : `<span class="bg-violet-100 text-violet-700 dark:bg-violet-900/40 dark:text-violet-400 px-2 py-0.5 rounded-full text-[8px] font-bold flex items-center gap-1 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-star"></i> Dapat Poin</span>`;
             }
         } else if (parseFloat(p.poin) > 0) {
-            poinBadge = `<span class="bg-violet-100 text-violet-700 dark:bg-violet-900/40 dark:text-violet-400 px-2 py-0.5 rounded-full text-[8px] font-black flex items-center gap-1 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-star"></i> +${parseFloat(p.poin)} Poin</span>`;
+            poinBadge = `<span class="bg-violet-100 text-violet-700 dark:bg-violet-900/40 dark:text-violet-400 px-2 py-0.5 rounded-full text-[8px] font-bold flex items-center gap-1 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-star"></i> +${parseFloat(p.poin)} Poin</span>`;
         }
 
         // FITUR BARU: badge total terjual di card katalog
@@ -1627,7 +1627,7 @@ window.rCat = () => {
             ? p.variants.reduce((s,vv) => s + (parseFloat(vv.totalSold)||0), 0)
             : (parseFloat(p.totalSold) || 0);
         const soldBadge = totalSoldCard > 0
-            ? `<span class="bg-slate-200 text-slate-700 dark:bg-slate-700 dark:text-slate-300 px-2 py-0.5 rounded-full text-[8px] font-black flex items-center gap-1 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-fire-flame-curved text-orange-400"></i> ${totalSoldCard} Terjual</span>`
+            ? `<span class="bg-slate-200 text-slate-700 dark:bg-slate-700 dark:text-slate-300 px-2 py-0.5 rounded-full text-[8px] font-bold flex items-center gap-1 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-fire-flame-curved text-orange-400"></i> ${totalSoldCard} Terjual</span>`
             : '';
 
         // Kumpulkan semua badge menjadi satu baris sejajar
@@ -1636,10 +1636,10 @@ window.rCat = () => {
             ${poPill}
             ${poinBadge}
             ${soldBadge}
-            ${p.tag ? `<span class="bg-[var(--color-primary-light)] text-[var(--color-primary-dark)] dark:bg-[var(--color-primary-dark)]/50 dark:text-[var(--color-primary)] px-2 py-0.5 rounded-full text-[8px] font-black flex items-center gap-1 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-hashtag"></i> ${esc(p.tag)}</span>` : ''}
-            <span class="bg-indigo-100 text-indigo-700 dark:bg-indigo-900/50 dark:text-indigo-400 px-2 py-0.5 rounded-full text-[8px] font-black flex items-center gap-1 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-circle-check"></i> Official</span>
-            ${p.brand ? `<span class="bg-slate-200 text-slate-700 dark:bg-slate-700 dark:text-slate-300 px-2 py-0.5 rounded-full text-[8px] font-black flex items-center gap-1 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-tag"></i> ${esc(p.brand)}</span>` : ''}
-            ${(p.wholesale?.length && !p.variants?.length) ? `<span class="bg-amber-100 text-amber-700 dark:bg-amber-900/50 dark:text-amber-400 px-2 py-0.5 rounded-full text-[8px] font-black flex items-center gap-1 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-layer-group"></i> Grosir</span>` : ''}
+            ${p.tag ? `<span class="bg-[var(--color-primary-light)] text-[var(--color-primary-dark)] dark:bg-[var(--color-primary-dark)]/50 dark:text-[var(--color-primary)] px-2 py-0.5 rounded-full text-[8px] font-bold flex items-center gap-1 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-hashtag"></i> ${esc(p.tag)}</span>` : ''}
+            <span class="bg-indigo-100 text-indigo-700 dark:bg-indigo-900/50 dark:text-indigo-400 px-2 py-0.5 rounded-full text-[8px] font-bold flex items-center gap-1 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-circle-check"></i> Official</span>
+            ${p.brand ? `<span class="bg-slate-200 text-slate-700 dark:bg-slate-700 dark:text-slate-300 px-2 py-0.5 rounded-full text-[8px] font-bold flex items-center gap-1 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-tag"></i> ${esc(p.brand)}</span>` : ''}
+            ${(p.wholesale?.length && !p.variants?.length) ? `<span class="bg-amber-100 text-amber-700 dark:bg-amber-900/50 dark:text-amber-400 px-2 py-0.5 rounded-full text-[8px] font-bold flex items-center gap-1 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-layer-group"></i> Grosir</span>` : ''}
         </div>`;
         
         let unt = `<span class="text-[9px] text-slate-600 dark:text-slate-400 font-bold ml-0.5 mb-0.5 uppercase tracking-wide">/${esc(p.unit||'PCS')}</span>`;
@@ -1658,7 +1658,7 @@ window.rCat = () => {
                     <div class="flex items-end justify-between mt-auto pt-1">
                         <div>
                             ${p.variants && p.variants.length > 0 ? '' : priceNormalHtml}
-                            <p class="text-[var(--color-primary)] font-black text-sm sm:text-[15px] leading-none tracking-tight">
+                            <p class="text-[var(--color-primary)] font-bold text-sm sm:text-[15px] leading-none tracking-tight">
                                 ${p.variants && p.variants.length > 0 ? '<span class="text-[10px] sm:text-xs text-slate-600 dark:text-slate-400 font-bold uppercase tracking-wider">PILIH VARIAN</span>' : fCur(p.price)}
                             </p>
                             ${p.variants && p.variants.length > 0 ? '' : unt}
@@ -1683,7 +1683,7 @@ window.rCat = () => {
                     <div class="flex items-end justify-between mt-auto pt-1">
                         <div>
                             ${p.variants && p.variants.length > 0 ? '' : priceNormalHtml}
-                            <p class="text-[var(--color-primary)] font-black text-sm sm:text-[15px] leading-none tracking-tight">
+                            <p class="text-[var(--color-primary)] font-bold text-sm sm:text-[15px] leading-none tracking-tight">
                                 ${p.variants && p.variants.length > 0 ? '<span class="text-[10px] sm:text-xs text-slate-600 dark:text-slate-400 font-bold uppercase tracking-wider">PILIH VARIAN</span>' : fCur(p.price)}
                             </p>
                             ${p.variants && p.variants.length > 0 ? '' : unt}
@@ -1894,7 +1894,7 @@ const rProdMod = () => {
         let pHtml = '';
         if (actNormal && actNormal > actPrice) {
             let pct = Math.round(((actNormal - actPrice) / actNormal) * 100);
-            pHtml = `<div class="flex flex-col"><span class="text-[11px] text-rose-500 font-black line-through mb-0.5 tracking-wide">${fCur(actNormal)} <span class="bg-rose-100 text-rose-600 px-1.5 py-0.5 rounded ml-1 text-[9px] no-underline tracking-widest border border-rose-200">-${pct}%</span></span><span>${fCur(actPrice)}</span></div>`;
+            pHtml = `<div class="flex flex-col"><span class="text-[11px] text-rose-500 font-bold line-through mb-0.5 tracking-wide">${fCur(actNormal)} <span class="bg-rose-100 text-rose-600 px-1.5 py-0.5 rounded ml-1 text-[9px] no-underline tracking-widest border border-rose-200">-${pct}%</span></span><span>${fCur(actPrice)}</span></div>`;
         } else {
             pHtml = fCur(actPrice);
         }
@@ -1902,7 +1902,7 @@ const rProdMod = () => {
     }
     const descEl = el('product-modal-desc');
     if(descEl) {
-        descEl.className = 'text-[13px] text-slate-600 dark:text-slate-400 font-medium leading-relaxed [&_ol]:list-decimal [&_ol]:pl-5 [&_ul]:list-disc [&_ul]:pl-5 [&_b]:font-black [&_strong]:font-black [&_img]:max-w-full [&_img]:rounded-xl [&_img]:my-2 [&_div]:my-1';
+        descEl.className = 'text-[13px] text-slate-600 dark:text-slate-400 font-medium leading-relaxed [&_ol]:list-decimal [&_ol]:pl-5 [&_ul]:list-disc [&_ul]:pl-5 [&_b]:font-bold [&_strong]:font-bold [&_img]:max-w-full [&_img]:rounded-xl [&_img]:my-2 [&_div]:my-1';
         // SECURITY PATCH: Sanitasi konten HTML dari database sebelum dirender (Anti XSS)
         const rawDesc = p.desc || '-';
         descEl.innerHTML = (typeof DOMPurify !== 'undefined')
@@ -1921,19 +1921,19 @@ const rProdMod = () => {
     
     // Header Badge Premium
     let bH = ``;
-    if (p.sku) bH += `<span class="bg-slate-200 text-slate-600 dark:bg-slate-800 dark:text-slate-400 px-2.5 py-1 rounded-full text-[9px] font-black flex items-center gap-1.5 whitespace-nowrap tracking-wider"><i class="fa-solid fa-barcode"></i> ${esc(p.sku)}</span>`;
-    if (p.tag) bH += `<span class="bg-emerald-100 text-emerald-700 dark:bg-emerald-900/50 dark:text-emerald-400 px-2.5 py-1 rounded-full text-[9px] font-black flex items-center gap-1.5 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-hashtag"></i> ${esc(p.tag)}</span>`;
+    if (p.sku) bH += `<span class="bg-slate-200 text-slate-600 dark:bg-slate-800 dark:text-slate-400 px-2.5 py-1 rounded-full text-[9px] font-bold flex items-center gap-1.5 whitespace-nowrap tracking-wider"><i class="fa-solid fa-barcode"></i> ${esc(p.sku)}</span>`;
+    if (p.tag) bH += `<span class="bg-emerald-100 text-emerald-700 dark:bg-emerald-900/50 dark:text-emerald-400 px-2.5 py-1 rounded-full text-[9px] font-bold flex items-center gap-1.5 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-hashtag"></i> ${esc(p.tag)}</span>`;
     
-    bH += `<span class="bg-indigo-100 text-indigo-700 dark:bg-indigo-900/50 dark:text-indigo-400 px-2.5 py-1 rounded-full text-[9px] font-black flex items-center gap-1.5 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-circle-check"></i> Official</span>`;
+    bH += `<span class="bg-indigo-100 text-indigo-700 dark:bg-indigo-900/50 dark:text-indigo-400 px-2.5 py-1 rounded-full text-[9px] font-bold flex items-center gap-1.5 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-circle-check"></i> Official</span>`;
     
-    if (p.brand) bH += `<span class="bg-slate-200 text-slate-700 dark:bg-slate-800 dark:text-slate-300 px-2.5 py-1 rounded-full text-[9px] font-black flex items-center gap-1.5 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-tag"></i> ${esc(p.brand)}</span>`;
+    if (p.brand) bH += `<span class="bg-slate-200 text-slate-700 dark:bg-slate-800 dark:text-slate-300 px-2.5 py-1 rounded-full text-[9px] font-bold flex items-center gap-1.5 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-tag"></i> ${esc(p.brand)}</span>`;
     
-    if (p.poTime) bH += `<span class="bg-amber-500 text-white px-2.5 py-1 rounded-full text-[9px] font-black flex items-center gap-1.5 whitespace-nowrap uppercase tracking-wider shadow-sm"><i class="fa-solid fa-clock"></i> PO ${esc(p.poTime)}</span>`;
+    if (p.poTime) bH += `<span class="bg-amber-500 text-white px-2.5 py-1 rounded-full text-[9px] font-bold flex items-center gap-1.5 whitespace-nowrap uppercase tracking-wider shadow-sm"><i class="fa-solid fa-clock"></i> PO ${esc(p.poTime)}</span>`;
 
     // FITUR BARU: badge poin member, ikut varian yang sedang dipilih (kalau ada)
     const activePoin = parseFloat(v ? v.poin : p.poin) || 0;
     if (activePoin > 0 && (!hV || cVar !== null)) {
-        bH += `<span class="bg-violet-500 text-white px-2.5 py-1 rounded-full text-[9px] font-black flex items-center gap-1.5 whitespace-nowrap uppercase tracking-wider shadow-sm"><i class="fa-solid fa-star"></i> +${activePoin} Poin</span>`;
+        bH += `<span class="bg-violet-500 text-white px-2.5 py-1 rounded-full text-[9px] font-bold flex items-center gap-1.5 whitespace-nowrap uppercase tracking-wider shadow-sm"><i class="fa-solid fa-star"></i> +${activePoin} Poin</span>`;
     }
 
     // FITUR BARU: total terjual -- jumlah keseluruhan varian kalau tidak ada varian dipilih,
@@ -1942,7 +1942,7 @@ const rProdMod = () => {
         ? (parseFloat(v ? v.totalSold : 0) || 0)
         : (hV ? p.variants.reduce((s,vv) => s + (parseFloat(vv.totalSold)||0), 0) : (parseFloat(p.totalSold) || 0));
     if (totalSoldDisplay > 0) {
-        bH += `<span class="bg-slate-200 text-slate-600 dark:bg-slate-800 dark:text-slate-400 px-2.5 py-1 rounded-full text-[9px] font-black flex items-center gap-1.5 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-fire-flame-curved text-orange-400"></i> ${totalSoldDisplay} Terjual</span>`;
+        bH += `<span class="bg-slate-200 text-slate-600 dark:bg-slate-800 dark:text-slate-400 px-2.5 py-1 rounded-full text-[9px] font-bold flex items-center gap-1.5 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-fire-flame-curved text-orange-400"></i> ${totalSoldDisplay} Terjual</span>`;
     }
 
     setH('product-modal-badges', bH);
@@ -1953,11 +1953,11 @@ const rProdMod = () => {
     // pembelian varian (lihat fix di getEffP) — mencegah info yang menyesatkan.
     setH('product-modal-wholesale-container', (p.wholesale?.length && !p.variants?.length) ? `
         <div class="mb-6 bg-amber-50 dark:bg-amber-900/10 rounded-2xl p-4 border border-amber-200 dark:border-amber-800/50 shadow-inner">
-            <p class="text-[10px] font-black text-amber-600 dark:text-amber-500 mb-3 uppercase tracking-widest flex items-center gap-1.5"><i class="fa-solid fa-layer-group"></i> Harga Grosir</p>
+            <p class="text-[10px] font-bold text-amber-600 dark:text-amber-500 mb-3 uppercase tracking-widest flex items-center gap-1.5"><i class="fa-solid fa-layer-group"></i> Harga Grosir</p>
             <div class="space-y-2">${p.wholesale.slice().sort((a,b)=>a.minQty-b.minQty).map(w=>`
                 <div class="flex justify-between items-center text-sm font-bold bg-white dark:bg-slate-800 p-2.5 rounded-xl border border-amber-100 dark:border-slate-700 shadow-sm">
                     <span class="text-slate-600 dark:text-slate-300">≥ ${parseFloat(w.minQty)} <span class="text-[10px] uppercase tracking-wider">${esc(unt)}</span></span>
-                    <span class="text-emerald-600 dark:text-emerald-400 font-black">${fCur(w.price)}</span>
+                    <span class="text-emerald-600 dark:text-emerald-400 font-bold">${fCur(w.price)}</span>
                 </div>`).join('')}
             </div>
         </div>` : '');
@@ -1983,30 +1983,30 @@ const rProdMod = () => {
                         const s = parseFloat(vr.stock)||0;
                         return `<div class="flex justify-between items-center text-[11px] font-bold bg-white dark:bg-slate-900 p-2 rounded-xl border border-slate-200 dark:border-slate-700">
                             <span class="text-slate-500 flex items-center gap-1.5">${vr.colorCode?`<span class="w-3 h-3 rounded-full inline-block" style="background:${esc(vr.colorCode)}"></span>`:''}${esc(vr.name)}</span>
-                            <span class="${s===0?'text-rose-500':s<=5?'text-amber-500':'text-blue-500'} font-black">${s} ${esc(vr.unit||p.unit||'pcs')}</span>
+                            <span class="${s===0?'text-rose-500':s<=5?'text-amber-500':'text-blue-500'} font-bold">${s} ${esc(vr.unit||p.unit||'pcs')}</span>
                         </div>`;
                     }).join('')}</div>`;
                 } else {
                     const s = parseFloat(p.stock)||0;
-                    stockRows = `<div class="flex flex-col gap-1"><p class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Sisa Stok</p><p class="font-black text-xl ${s===0?'text-rose-500':s<=5?'text-amber-500':'text-blue-500'}">${s} <span class="text-sm font-bold">${esc(p.unit||'pcs')}</span></p></div>`;
+                    stockRows = `<div class="flex flex-col gap-1"><p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Sisa Stok</p><p class="font-bold text-xl ${s===0?'text-rose-500':s<=5?'text-amber-500':'text-blue-500'}">${s} <span class="text-sm font-bold">${esc(p.unit||'pcs')}</span></p></div>`;
                 }
             }
             
             adminInfoEl.innerHTML = `
             <div class="mb-6 bg-violet-50 dark:bg-violet-900/10 rounded-2xl p-4 border border-violet-200 dark:border-violet-800/50">
-                <p class="text-[10px] font-black text-violet-600 dark:text-violet-400 mb-3 uppercase tracking-widest flex items-center gap-1.5"><i class="fa-solid fa-lock"></i> Info Admin</p>
+                <p class="text-[10px] font-bold text-violet-600 dark:text-violet-400 mb-3 uppercase tracking-widest flex items-center gap-1.5"><i class="fa-solid fa-lock"></i> Info Admin</p>
                 <div class="grid grid-cols-2 gap-3">
                     <div class="flex flex-col gap-1">
-                        <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest">HPP / Modal</p>
-                        <p class="font-black text-lg text-amber-500">${fCur(currHpp)}</p>
+                        <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">HPP / Modal</p>
+                        <p class="font-bold text-lg text-amber-500">${fCur(currHpp)}</p>
                     </div>
                     <div class="flex flex-col gap-1">
-                        <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Margin</p>
-                        <p class="font-black text-lg ${margin === null ? 'text-slate-400' : margin >= 30 ? 'text-emerald-500' : margin >= 10 ? 'text-amber-500' : 'text-rose-500'}">${margin !== null ? margin + '%' : '—'}</p>
+                        <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Margin</p>
+                        <p class="font-bold text-lg ${margin === null ? 'text-slate-400' : margin >= 30 ? 'text-emerald-500' : margin >= 10 ? 'text-amber-500' : 'text-rose-500'}">${margin !== null ? margin + '%' : '—'}</p>
                     </div>
                     ${stockRows}
                 </div>
-                <button onclick="closeProductModal(); setTimeout(()=>{ openAdminTab('products'); setTimeout(()=>oAEd('products',${p.id}),200); }, 400);" class="mt-3 w-full py-2.5 rounded-xl border border-violet-200 dark:border-violet-800 bg-white dark:bg-slate-800 text-violet-600 font-black text-[11px] uppercase tracking-widest hover:bg-violet-600 hover:text-white transition-all flex items-center justify-center gap-2">
+                <button onclick="closeProductModal(); setTimeout(()=>{ openAdminTab('products'); setTimeout(()=>oAEd('products',${p.id}),200); }, 400);" class="mt-3 w-full py-2.5 rounded-xl border border-violet-200 dark:border-violet-800 bg-white dark:bg-slate-800 text-violet-600 font-bold text-[11px] uppercase tracking-widest hover:bg-violet-600 hover:text-white transition-all flex items-center justify-center gap-2">
                     <i class="fa-solid fa-pen-to-square"></i> Edit Produk
                 </button>
             </div>`;
@@ -2055,10 +2055,10 @@ const rProdMod = () => {
                 }
 
                 // Desain tombol Flex Column (Atas ke Bawah)
-                return `<button ${!isVarSelectable ? 'disabled' : ''} class="p-2.5 sm:p-3 rounded-xl text-[10px] sm:text-[11px] font-black uppercase tracking-wide border-2 transition-all active:scale-95 flex flex-col items-center justify-start text-center h-full ${btnClass}" ${isVarSelectable ? `onclick="selectVariant(${x})"` : ''}>
+                return `<button ${!isVarSelectable ? 'disabled' : ''} class="p-2.5 sm:p-3 rounded-xl text-[10px] sm:text-[11px] font-bold uppercase tracking-wide border-2 transition-all active:scale-95 flex flex-col items-center justify-start text-center h-full ${btnClass}" ${isVarSelectable ? `onclick="selectVariant(${x})"` : ''}>
                     ${colorCircle} 
                     <span class="${!isVarSelectable ? 'line-through' : ''} leading-snug break-words w-full ${!r.colorCode ? 'my-auto' : ''}">${esc(r.name)}</span>
-                    ${isVarOutOfStock && isVarActive ? '<span class="text-[8px] font-black text-rose-500 normal-case mt-0.5">Stok Habis</span>' : ''}
+                    ${isVarOutOfStock && isVarActive ? '<span class="text-[8px] font-bold text-rose-500 normal-case mt-0.5">Stok Habis</span>' : ''}
                 </button>`;
             }).join('');
             
@@ -2272,27 +2272,27 @@ window.renderMyOrders = async () => {
         <div class="bg-white dark:bg-slate-800 p-4 rounded-[1.25rem] border border-slate-200 dark:border-slate-700 shadow-sm relative overflow-hidden group min-w-0">
             <div class="flex justify-between items-start mb-3 border-b border-slate-100 dark:border-slate-700/50 pb-3">
                 <div>
-                    <span class="font-black text-sm text-slate-800 dark:text-white tracking-tight">#${o.orderId.split('-').pop()}</span>
+                    <span class="font-bold text-sm text-slate-800 dark:text-white tracking-tight">#${o.orderId.split('-').pop()}</span>
                     <p class="text-[10px] font-bold text-slate-500 mt-0.5">${dStr}</p>
                 </div>
-                <span class="text-[9px] font-black px-2 py-1 rounded border ${bC} uppercase tracking-widest flex items-center"><i class="fa-solid ${iC} mr-1"></i> ${esc(o.status)}</span>
+                <span class="text-[9px] font-bold px-2 py-1 rounded border ${bC} uppercase tracking-widest flex items-center"><i class="fa-solid ${iC} mr-1"></i> ${esc(o.status)}</span>
             </div>
             ${(o.pointsEarned > 0 || o.claimedReward) ? `
             <div class="flex flex-wrap gap-1.5 mb-3">
-                ${o.pointsEarned > 0 ? `<span class="text-[9px] font-black px-2 py-1 rounded-xl bg-amber-50 text-amber-600 border border-amber-200 dark:bg-amber-900/20 dark:border-amber-800 dark:text-amber-400"><i class="fa-solid fa-star mr-1"></i>+${o.pointsEarned} Poin</span>` : ''}
-                ${o.claimedReward ? `<span class="text-[9px] font-black px-2 py-1 rounded-xl bg-violet-50 text-violet-600 border border-violet-200 dark:bg-violet-900/20 dark:border-violet-800 dark:text-violet-400"><i class="fa-solid fa-gift mr-1"></i>Hadiah: ${esc(o.claimedReward.name)} ${rewardStatusLabel(o.claimedReward)}</span>` : ''}
-                ${(o.claimedReward && o.finalMemberPoints !== undefined && o.finalMemberPoints !== null) ? `<span class="text-[9px] font-black px-2 py-1 rounded-xl bg-slate-100 text-slate-500 border border-slate-200 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-400"><i class="fa-solid fa-wallet mr-1"></i>Sisa Poin: ${o.finalMemberPoints}</span>` : ''}
+                ${o.pointsEarned > 0 ? `<span class="text-[9px] font-bold px-2 py-1 rounded-xl bg-amber-50 text-amber-600 border border-amber-200 dark:bg-amber-900/20 dark:border-amber-800 dark:text-amber-400"><i class="fa-solid fa-star mr-1"></i>+${o.pointsEarned} Poin</span>` : ''}
+                ${o.claimedReward ? `<span class="text-[9px] font-bold px-2 py-1 rounded-xl bg-violet-50 text-violet-600 border border-violet-200 dark:bg-violet-900/20 dark:border-violet-800 dark:text-violet-400"><i class="fa-solid fa-gift mr-1"></i>Hadiah: ${esc(o.claimedReward.name)} ${rewardStatusLabel(o.claimedReward)}</span>` : ''}
+                ${(o.claimedReward && o.finalMemberPoints !== undefined && o.finalMemberPoints !== null) ? `<span class="text-[9px] font-bold px-2 py-1 rounded-xl bg-slate-100 text-slate-500 border border-slate-200 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-400"><i class="fa-solid fa-wallet mr-1"></i>Sisa Poin: ${o.finalMemberPoints}</span>` : ''}
             </div>` : ''}
             <div class="flex justify-between items-end mt-2">
                 <div>
                     <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-0.5">Total Tagihan</p>
-                    <p class="text-emerald-600 dark:text-emerald-400 font-black text-base tracking-tight">${fCur(o.total)} <span class="text-[10px] text-slate-500 font-bold ml-1">(${o.itemCount} Item)</span></p>
+                    <p class="text-emerald-600 dark:text-emerald-400 font-bold text-base tracking-tight">${fCur(o.total)} <span class="text-[10px] text-slate-500 font-bold ml-1">(${o.itemCount} Item)</span></p>
                 </div>
                 <div class="flex gap-2">
                     <!-- TOMBOL DETAIL BARU -->
-                    <button onclick="openCustomerOrderDetail('${o.orderId}')" class="h-8 px-4 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:hover:bg-blue-900/50 dark:text-blue-400 border border-blue-200 dark:border-blue-800 text-[10px] font-black transition-colors active:scale-95 shadow-sm flex items-center gap-1.5"><i class="fa-solid fa-file-invoice"></i> Detail</button>
+                    <button onclick="openCustomerOrderDetail('${o.orderId}')" class="h-8 px-4 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:hover:bg-blue-900/50 dark:text-blue-400 border border-blue-200 dark:border-blue-800 text-[10px] font-bold transition-colors active:scale-95 shadow-sm flex items-center gap-1.5"><i class="fa-solid fa-file-invoice"></i> Detail</button>
                     
-                    <button onclick="checkOrderStatus('${o.orderId}', ${x})" class="h-8 px-4 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 dark:bg-slate-700 dark:hover:bg-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-600 text-[10px] font-black transition-colors active:scale-95 shadow-sm flex items-center gap-1.5"><i class="fa-solid fa-rotate"></i> Status</button>
+                    <button onclick="checkOrderStatus('${o.orderId}', ${x})" class="h-8 px-4 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 dark:bg-slate-700 dark:hover:bg-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-600 text-[10px] font-bold transition-colors active:scale-95 shadow-sm flex items-center gap-1.5"><i class="fa-solid fa-rotate"></i> Status</button>
                 </div>
             </div>
         </div>`;
@@ -2397,10 +2397,10 @@ window.renderOrderDetailModal = (orderId, d, reviewedKeys) => {
                 <div class="flex-1 min-w-0">
                     <p class="text-xs font-bold text-slate-800 dark:text-white truncate">${esc(i.name)} ${i.variantName ? `<span class="bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-1.5 py-0.5 rounded-xl text-[9px] ml-1.5">${esc(i.variantName)}</span>` : ''}${poBadge}</p>
                     <p class="text-[10px] text-slate-500">${qty} ${esc(i.unit || 'pcs')} x ${fCur(price)}</p>
-                    ${canReview ? `<button type="button" onclick="openReviewModal('${orderId}',${i.id},'${esc(i.variantName||'').replace(/'/g,"\\'")}','${esc(i.name).replace(/'/g,"\\'")}','${cName.replace(/'/g,"\\'")}')" class="mt-1.5 text-[10px] font-black text-amber-500 hover:text-amber-600 flex items-center gap-1"><i class="fa-solid fa-star"></i> Berikan Ulasan</button>` : ''}
+                    ${canReview ? `<button type="button" onclick="openReviewModal('${orderId}',${i.id},'${esc(i.variantName||'').replace(/'/g,"\\'")}','${esc(i.name).replace(/'/g,"\\'")}','${cName.replace(/'/g,"\\'")}')" class="mt-1.5 text-[10px] font-bold text-amber-500 hover:text-amber-600 flex items-center gap-1"><i class="fa-solid fa-star"></i> Berikan Ulasan</button>` : ''}
                 </div>
                 <div class="text-right shrink-0">
-                    <p class="text-xs font-black text-slate-800 dark:text-emerald-400">${fCur(itemTotal)}</p>
+                    <p class="text-xs font-bold text-slate-800 dark:text-emerald-400">${fCur(itemTotal)}</p>
                 </div>
             </div>
             `;
@@ -2439,7 +2439,7 @@ try {
                 
                 <div class="p-5 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center shrink-0 bg-slate-50/50 dark:bg-slate-800/50 rounded-t-[2rem]">
                     <div>
-                        <h3 class="font-black text-slate-800 dark:text-white text-base">Rincian Pesanan</h3>
+                        <h3 class="font-bold text-slate-800 dark:text-white text-base">Rincian Pesanan</h3>
                         <p class="text-[10px] font-bold text-slate-500 mt-0.5">ID: #${orderId.split('-').pop()}</p>
                     </div>
                     <button onclick="closeCustomerOrderDetailModal()" class="w-8 h-8 flex items-center justify-center rounded-full bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-rose-100 hover:text-rose-500 transition-colors active:scale-95"><i class="fa-solid fa-xmark"></i></button>
@@ -2448,18 +2448,18 @@ try {
                 <div class="p-5 overflow-y-auto flex-1 space-y-6 custom-scrollbar text-sm">
                     <div class="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 flex justify-between items-center">
                         <div>
-                            <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Status</p>
-                            <span class="text-xs font-black px-2 py-1 rounded bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300">${esc(d.status || 'Baru')}</span>
+                            <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1">Status</p>
+                            <span class="text-xs font-bold px-2 py-1 rounded bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300">${esc(d.status || 'Baru')}</span>
                         </div>
                         <div class="text-right">
-                            <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Waktu Pembelian</p>
+                            <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1">Waktu Pembelian</p>
                             <p class="text-[11px] font-bold text-slate-700 dark:text-slate-300">${dStr}</p>
                         </div>
                     </div>
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                         <div>
-                            <h4 class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3 flex items-center gap-1.5"><i class="fa-solid fa-user text-slate-300"></i> Info Pelanggan</h4>
+                            <h4 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3 flex items-center gap-1.5"><i class="fa-solid fa-user text-slate-300"></i> Info Pelanggan</h4>
                             <div class="space-y-1.5 text-xs">
                                 <p class="font-bold text-slate-800 dark:text-slate-200">${cName}</p>
                                 ${(d.customer && d.customer.wa) ? `<a href="https://wa.me/${cWa}" target="_blank" class="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-bold hover:underline"><i class="fa-brands fa-whatsapp"></i> +${cWa}</a>` : ''}
@@ -2467,7 +2467,7 @@ try {
                             </div>
                         </div>
                         <div>
-                            <h4 class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3 flex items-center gap-1.5"><i class="fa-solid fa-truck text-slate-300"></i> Kirim & Bayar</h4>
+                            <h4 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3 flex items-center gap-1.5"><i class="fa-solid fa-truck text-slate-300"></i> Kirim & Bayar</h4>
                             <div class="space-y-1.5 text-xs">
                                 <p><span class="text-slate-500 inline-block w-16">Metode</span> <span class="font-bold text-slate-800 dark:text-slate-200">: ${dMethod}</span></p>
                                 <p><span class="text-slate-500 inline-block w-16">Bayar</span> <span class="font-bold text-slate-800 dark:text-slate-200">: ${pMethod.toUpperCase()}</span></p>
@@ -2477,23 +2477,23 @@ try {
 
                     <div class="space-y-3">
                         <div class="bg-blue-50 dark:bg-blue-900/10 p-3 rounded-xl border border-blue-100 dark:border-blue-900/30">
-                            <p class="text-[9px] font-black text-blue-400 dark:text-blue-500 uppercase tracking-widest mb-1">Alamat Tujuan</p>
+                            <p class="text-[9px] font-bold text-blue-400 dark:text-blue-500 uppercase tracking-widest mb-1">Alamat Tujuan</p>
                             <p class="text-xs font-medium text-slate-700 dark:text-slate-300 leading-relaxed">${cAddr}</p>
                         </div>
-                        ${dNotes ? `<div class="bg-amber-50 dark:bg-amber-900/10 p-3 rounded-xl border border-amber-100 dark:border-amber-900/30"><p class="text-[9px] font-black text-amber-400 dark:text-amber-500 uppercase tracking-widest mb-1">Catatan Pembeli</p><p class="text-xs font-medium text-slate-700 dark:text-slate-300 italic">"${dNotes}"</p></div>` : ''}
+                        ${dNotes ? `<div class="bg-amber-50 dark:bg-amber-900/10 p-3 rounded-xl border border-amber-100 dark:border-amber-900/30"><p class="text-[9px] font-bold text-amber-400 dark:text-amber-500 uppercase tracking-widest mb-1">Catatan Pembeli</p><p class="text-xs font-medium text-slate-700 dark:text-slate-300 italic">"${dNotes}"</p></div>` : ''}
                     </div>
 
                     ${d.buktiPayment ? `
                     <div>
-                        <h4 class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3 flex items-center gap-1.5"><i class="fa-solid fa-image text-violet-400"></i> Bukti Pembayaran</h4>
+                        <h4 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3 flex items-center gap-1.5"><i class="fa-solid fa-image text-violet-400"></i> Bukti Pembayaran</h4>
                         <a href="${esc(d.buktiPayment)}" target="_blank" class="block rounded-2xl overflow-hidden border-2 border-violet-200 dark:border-violet-800 hover:border-violet-400 transition-colors shadow-sm">
                             <img src="${esc(d.buktiPayment)}" alt="Bukti Pembayaran" class="w-full max-h-56 object-cover" onerror="this.style.display='none'" loading="lazy"></i>
-                            <div class="bg-violet-50 dark:bg-violet-900/20 p-2 flex items-center justify-center gap-1.5 text-[10px] font-black text-violet-600 dark:text-violet-400"><i class="fa-solid fa-arrow-up-right-from-square"></i> Tap untuk buka full screen</div>
+                            <div class="bg-violet-50 dark:bg-violet-900/20 p-2 flex items-center justify-center gap-1.5 text-[10px] font-bold text-violet-600 dark:text-violet-400"><i class="fa-solid fa-arrow-up-right-from-square"></i> Tap untuk buka full screen</div>
                         </a>
                     </div>` : ''}
                     
                     <div>
-                        <h4 class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3 flex items-center gap-1.5"><i class="fa-solid fa-basket-shopping text-slate-300"></i> Daftar Belanja</h4>
+                        <h4 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3 flex items-center gap-1.5"><i class="fa-solid fa-basket-shopping text-slate-300"></i> Daftar Belanja</h4>
                         <div class="bg-slate-50 dark:bg-slate-800/30 rounded-2xl px-3 py-1 border border-slate-200 dark:border-slate-700/80">
                             ${itemsHtml}
                         </div>
@@ -2524,8 +2524,8 @@ try {
                         ${discount > 0 ? `<div class="flex justify-between text-rose-500"><p>Diskon Promo</p><p class="font-bold">-${fCur(discount)}</p></div>` : ''}
                         ${ppnAmt > 0 ? `<div class="flex justify-between text-amber-500"><p>PPN (${ppnRt}%)</p><p class="font-bold">+${fCur(ppnAmt)}</p></div>` : ''}
                         <div class="flex justify-between items-center border-t border-dashed border-slate-300 dark:border-slate-600 pt-3 mt-2">
-                            <p class="font-black text-slate-800 dark:text-white uppercase tracking-widest">Total Bayar</p>
-                            <p class="text-lg font-black text-emerald-500">${fCur(grandTotal)}</p>
+                            <p class="font-bold text-slate-800 dark:text-white uppercase tracking-widest">Total Bayar</p>
+                            <p class="text-lg font-bold text-emerald-500">${fCur(grandTotal)}</p>
                         </div>
                     </div>
                 </div>
@@ -2582,13 +2582,13 @@ window.renderWish = () => {
             <div class="flex-1 flex flex-col min-w-0 relative">
                 <button onclick="rmWish(${x})" class="absolute top-0 right-0 w-8 h-8 flex items-center justify-center rounded-full bg-slate-50 hover:bg-rose-50 dark:bg-slate-700/50 dark:hover:bg-rose-900/30 text-slate-400 hover:text-rose-500 transition-all active:scale-90 border border-slate-100 dark:border-slate-600 shadow-sm z-10"><i class="fa-solid fa-xmark text-sm"></i></button>
                 
-                <h4 class="text-[13px] sm:text-sm font-black text-slate-800 dark:text-white leading-snug line-clamp-2 mb-1.5 pr-10 uppercase tracking-wide">${esc(i.name)}</h4>
+                <h4 class="text-[13px] sm:text-sm font-bold text-slate-800 dark:text-white leading-snug line-clamp-2 mb-1.5 pr-10 uppercase tracking-wide">${esc(i.name)}</h4>
                 
                 ${i.variantName?`<div class="mb-2 flex items-center gap-1.5">${colorIndicator}<span class="bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300 px-2.5 py-1 rounded-full text-[9px] font-bold border border-slate-200 dark:border-slate-600 uppercase tracking-wide">${esc(i.variantName)}</span></div>`:''}
                 
                 <div class="flex justify-between items-end mt-auto pt-1">
-                    <p class="text-emerald-600 dark:text-emerald-400 font-black text-base sm:text-lg leading-none tracking-tight">${fCur(i.price)}</p>
-                    <button onclick="moveWish(${x})" class="h-9 px-5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white dark:bg-emerald-600 dark:hover:bg-emerald-500 border border-emerald-600 text-xs font-black transition-colors active:scale-95 shadow-glow flex items-center gap-1.5"><i class="fa-solid fa-cart-plus"></i> Beli</button>
+                    <p class="text-emerald-600 dark:text-emerald-400 font-bold text-base sm:text-lg leading-none tracking-tight">${fCur(i.price)}</p>
+                    <button onclick="moveWish(${x})" class="h-9 px-5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white dark:bg-emerald-600 dark:hover:bg-emerald-500 border border-emerald-600 text-xs font-bold transition-colors active:scale-95 shadow-glow flex items-center gap-1.5"><i class="fa-solid fa-cart-plus"></i> Beli</button>
                 </div>
             </div>
         </div>`;
@@ -2617,10 +2617,10 @@ window.renderCart = () => {
             <div class="flex-1 flex flex-col min-w-0 relative">
                 <button onclick="rmCart(${x})" class="absolute top-0 right-0 w-8 h-8 flex items-center justify-center rounded-full bg-slate-50 hover:bg-rose-50 dark:bg-slate-700/50 dark:hover:bg-rose-900/30 text-slate-400 hover:text-rose-500 transition-all active:scale-90 border border-slate-100 dark:border-slate-600 shadow-sm z-10"><i class="fa-solid fa-xmark text-sm"></i></button>
                 
-                <h4 class="text-[13px] sm:text-sm font-black text-slate-800 dark:text-white leading-snug line-clamp-2 mb-1.5 pr-10 uppercase tracking-wide">${esc(i.name)}</h4>
+                <h4 class="text-[13px] sm:text-sm font-bold text-slate-800 dark:text-white leading-snug line-clamp-2 mb-1.5 pr-10 uppercase tracking-wide">${esc(i.name)}</h4>
                 
                 <div class="flex flex-wrap items-center gap-1.5 mb-2.5">
-                    ${w?`<span class="bg-gradient-to-r from-amber-400 to-amber-500 text-white px-2.5 py-0.5 rounded-full text-[9px] font-black shadow-sm flex items-center gap-1 uppercase tracking-wide"><i class="fa-solid fa-layer-group"></i> Grosir</span>`:''}
+                    ${w?`<span class="bg-gradient-to-r from-amber-400 to-amber-500 text-white px-2.5 py-0.5 rounded-full text-[9px] font-bold shadow-sm flex items-center gap-1 uppercase tracking-wide"><i class="fa-solid fa-layer-group"></i> Grosir</span>`:''}
                     ${colorIndicator}
                     ${i.variantName?`<span class="bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300 px-2 py-0.5 rounded-full text-[9px] font-bold border border-slate-200 dark:border-slate-600 uppercase tracking-wide">${esc(i.variantName)}</span>`:''}
                     ${i.poTime?`<span class="bg-amber-50 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400 px-2 py-0.5 rounded-full text-[9px] font-bold border border-amber-200 dark:border-amber-800 flex items-center uppercase tracking-wide"><i class="fa-solid fa-clock mr-1"></i> PO ${esc(i.poTime)}</span>`:''}
@@ -2630,15 +2630,15 @@ window.renderCart = () => {
                     <div>
                         ${w?`<p class="text-[10px] line-through text-slate-400 font-bold mb-0.5">${fCur(i.price)}</p>`:''}
                         <div class="flex items-baseline gap-1">
-                            <p class="text-emerald-600 dark:text-emerald-400 font-black text-base sm:text-lg leading-none tracking-tight">${fCur(e)}</p>
+                            <p class="text-emerald-600 dark:text-emerald-400 font-bold text-base sm:text-lg leading-none tracking-tight">${fCur(e)}</p>
                             <p class="text-[9px] text-slate-400 font-bold uppercase tracking-widest">/${esc(i.unit||'pcs')}</p>
                         </div>
                     </div>
                     
                     <div class="flex bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden shrink-0 shadow-sm h-9">
-                        <button onclick="updCQty(${x},-1)" class="w-9 h-full flex items-center justify-center text-slate-500 hover:text-slate-700 hover:bg-slate-200 dark:text-slate-400 dark:hover:text-white dark:hover:bg-slate-700 font-black transition-colors active:bg-slate-100"><i class="fa-solid fa-minus text-xs"></i></button>
-                        <input type="number" step="0.01" class="w-10 h-full text-center text-xs font-black bg-transparent text-slate-800 dark:text-white focus:outline-none border-x border-slate-200 dark:border-slate-700" value="${q}" onchange="setCQty(${x}, this.value)" ></i>
-                        <button onclick="updCQty(${x},1)" class="w-9 h-full flex items-center justify-center text-slate-500 hover:text-emerald-600 hover:bg-emerald-50 dark:text-slate-400 dark:hover:text-emerald-400 dark:hover:bg-emerald-900/30 font-black transition-colors active:bg-slate-100"><i class="fa-solid fa-plus text-xs"></i></button>
+                        <button onclick="updCQty(${x},-1)" class="w-9 h-full flex items-center justify-center text-slate-500 hover:text-slate-700 hover:bg-slate-200 dark:text-slate-400 dark:hover:text-white dark:hover:bg-slate-700 font-bold transition-colors active:bg-slate-100"><i class="fa-solid fa-minus text-xs"></i></button>
+                        <input type="number" step="0.01" class="w-10 h-full text-center text-xs font-bold bg-transparent text-slate-800 dark:text-white focus:outline-none border-x border-slate-200 dark:border-slate-700" value="${q}" onchange="setCQty(${x}, this.value)" ></i>
+                        <button onclick="updCQty(${x},1)" class="w-9 h-full flex items-center justify-center text-slate-500 hover:text-emerald-600 hover:bg-emerald-50 dark:text-slate-400 dark:hover:text-emerald-400 dark:hover:bg-emerald-900/30 font-bold transition-colors active:bg-slate-100"><i class="fa-solid fa-plus text-xs"></i></button>
                     </div>
                 </div>
             </div>
@@ -2737,22 +2737,22 @@ window.applyVoucher = () => {
         if(f.targetProduct && f.targetProduct !== '' && !hasTarget) {
             vouch = null;
             setH('voucher-msg', `<i class="fa-solid fa-box mr-1"></i> Khusus Produk Tertentu!`);
-            el('voucher-msg').className = "text-sm font-black text-rose-500 dark:text-rose-400";
+            el('voucher-msg').className = "text-sm font-bold text-rose-500 dark:text-rose-400";
         }
         else if (f.minPurchase && parseFloat(f.minPurchase) > 0 && currentSubtotal < parseFloat(f.minPurchase)) {
             vouch = null;
             setH('voucher-msg', `<i class="fa-solid fa-circle-exclamation mr-1"></i> Minimal belanja ${fCur(f.minPurchase)}`);
-            el('voucher-msg').className = "text-sm font-black text-amber-500 dark:text-amber-400";
+            el('voucher-msg').className = "text-sm font-bold text-amber-500 dark:text-amber-400";
         } 
         else if (f.type.includes('shipping') && cust.deliveryMethod !== 'delivery') {
             vouch = null;
             setH('voucher-msg', `<i class="fa-solid fa-motorcycle mr-1"></i> Khusus pesanan dikirim kurir!`);
-            el('voucher-msg').className = "text-sm font-black text-rose-500 dark:text-rose-400";
+            el('voucher-msg').className = "text-sm font-bold text-rose-500 dark:text-rose-400";
         }
         else {
             vouch = f;
             setH('voucher-msg', `<i class="fa-solid fa-check-circle mr-1"></i> Voucher Diterapkan!`);
-            el('voucher-msg').className = "text-sm font-black text-emerald-600 dark:text-emerald-400";
+            el('voucher-msg').className = "text-sm font-bold text-emerald-600 dark:text-emerald-400";
         }
     } else if(i === ''){
         vouch = null; hide('voucher-msg-container');
@@ -2760,7 +2760,7 @@ window.applyVoucher = () => {
     } else {
         vouch = null;
         setH('voucher-msg', `<i class="fa-solid fa-times-circle mr-1"></i> Kode Tidak Valid`);
-        el('voucher-msg').className = "text-sm font-black text-rose-500 dark:text-rose-400";
+        el('voucher-msg').className = "text-sm font-bold text-rose-500 dark:text-rose-400";
     }
     rPay();
 };
@@ -2807,7 +2807,7 @@ window.checkMemberStatus = () => {
             if (doc.exists) {
                 currentMember = doc.data();
                 banner.className = 'mt-3 p-4 rounded-2xl border border-emerald-200 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-900/20 flex items-center justify-between gap-3';
-                banner.innerHTML = `<p class="text-[11px] font-bold text-emerald-700 dark:text-emerald-400 leading-snug"><i class="fa-solid fa-circle-check mr-1"></i>Nomor Anda terdaftar sebagai pelanggan toko kami!</p><button type="button" onclick="openMemberModal()" class="shrink-0 bg-emerald-500 hover:bg-emerald-600 text-white text-[10px] font-black uppercase tracking-widest px-3.5 py-2.5 rounded-xl shadow-sm active:scale-95 transition-all whitespace-nowrap">Lihat Data Saya</button>`;
+                banner.innerHTML = `<p class="text-[11px] font-bold text-emerald-700 dark:text-emerald-400 leading-snug"><i class="fa-solid fa-circle-check mr-1"></i>Nomor Anda terdaftar sebagai pelanggan toko kami!</p><button type="button" onclick="openMemberModal()" class="shrink-0 bg-emerald-500 hover:bg-emerald-600 text-white text-[10px] font-bold uppercase tracking-widest px-3.5 py-2.5 rounded-xl shadow-sm active:scale-95 transition-all whitespace-nowrap">Lihat Data Saya</button>`;
                 show(banner); show('payment-option-tempo');
             } else {
                 currentMember = null; selectedReward = null; hide(banner); hide('payment-option-tempo');
@@ -2829,7 +2829,7 @@ window.openMemberModal = () => {
     m.innerHTML = `
         <div class="bg-white dark:bg-slate-900 w-full max-w-lg rounded-t-[2rem] sm:rounded-[2rem] max-h-[85vh] flex flex-col shadow-2xl border border-slate-200 dark:border-slate-700">
             <div class="p-5 sm:p-6 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center shrink-0">
-                <h3 class="font-black text-slate-800 dark:text-white text-base flex items-center gap-2"><i class="fa-solid fa-crown text-amber-400"></i> Data Member Saya</h3>
+                <h3 class="font-bold text-slate-800 dark:text-white text-base flex items-center gap-2"><i class="fa-solid fa-crown text-amber-400"></i> Data Member Saya</h3>
                 <button onclick="closeMemberModal()" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:bg-rose-100 hover:text-rose-500 flex items-center justify-center transition-all"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <div class="p-5 sm:p-6 overflow-y-auto flex-1 space-y-5" id="member-modal-body"></div>
@@ -2851,30 +2851,30 @@ window.rMemberModalBody = () => {
         <div class="flex items-center gap-3 p-4 rounded-[1.25rem] border ${isSelected ? 'border-violet-400 bg-violet-50 dark:bg-violet-900/20' : 'border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50'}">
             ${r.img ? `<img src="${esc(r.img)}" class="w-14 h-14 rounded-xl object-cover border border-slate-200 dark:border-slate-700 shrink-0" onerror="this.style.display='none'" loading="lazy"></i>` : `<div class="w-14 h-14 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-300 shrink-0"><i class="fa-solid fa-gift text-xl"></i></div>`}
             <div class="min-w-0 flex-1">
-                <p class="text-xs font-black text-slate-800 dark:text-white truncate">${esc(r.name)}</p>
-                <p class="text-[11px] font-black text-violet-500 mt-0.5"><i class="fa-solid fa-star mr-1"></i>${parseFloat(r.pointsCost)||0} Poin</p>
+                <p class="text-xs font-bold text-slate-800 dark:text-white truncate">${esc(r.name)}</p>
+                <p class="text-[11px] font-bold text-violet-500 mt-0.5"><i class="fa-solid fa-star mr-1"></i>${parseFloat(r.pointsCost)||0} Poin</p>
                 ${!stockOk ? `<p class="text-[10px] font-bold text-rose-500 mt-0.5">Stok hadiah kosong</p>` : ''}
             </div>
             ${isSelected
-                ? `<button type="button" onclick="deselectReward()" class="shrink-0 bg-rose-500 hover:bg-rose-600 text-white text-[10px] font-black uppercase px-3 py-2.5 rounded-xl active:scale-95 transition-all whitespace-nowrap">Batal</button>`
-                : `<button type="button" ${canClaim?'':'disabled'} onclick="selectReward(${r.id})" class="shrink-0 ${canClaim ? 'bg-violet-500 hover:bg-violet-600 text-white active:scale-95' : 'bg-slate-200 dark:bg-slate-700 text-slate-400 cursor-not-allowed'} text-[10px] font-black uppercase px-3 py-2.5 rounded-xl transition-all whitespace-nowrap">Pilih</button>`}
+                ? `<button type="button" onclick="deselectReward()" class="shrink-0 bg-rose-500 hover:bg-rose-600 text-white text-[10px] font-bold uppercase px-3 py-2.5 rounded-xl active:scale-95 transition-all whitespace-nowrap">Batal</button>`
+                : `<button type="button" ${canClaim?'':'disabled'} onclick="selectReward(${r.id})" class="shrink-0 ${canClaim ? 'bg-violet-500 hover:bg-violet-600 text-white active:scale-95' : 'bg-slate-200 dark:bg-slate-700 text-slate-400 cursor-not-allowed'} text-[10px] font-bold uppercase px-3 py-2.5 rounded-xl transition-all whitespace-nowrap">Pilih</button>`}
         </div>`;
     }).join('') : `<p class="text-[11px] font-bold text-slate-400 text-center py-3">Belum ada program hadiah yang tersedia.</p>`;
 
     setH('member-modal-body', `
         <div class="bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-[1.5rem] p-5 text-white shadow-lg">
             <p class="text-[10px] font-bold uppercase tracking-widest opacity-80">Nama</p>
-            <p class="text-base font-black mb-3">${esc(currentMember.name)}</p>
+            <p class="text-base font-bold mb-3">${esc(currentMember.name)}</p>
             <p class="text-[10px] font-bold uppercase tracking-widest opacity-80">No. WhatsApp</p>
             <p class="text-sm font-bold mb-3">+${esc(currentMember.phone)}</p>
             <div class="flex items-center gap-2 bg-white/15 rounded-xl px-4 py-3 mt-2">
                 <i class="fa-solid fa-star text-amber-300 text-lg"></i>
-                <p class="text-xl font-black">${pts}</p>
+                <p class="text-xl font-bold">${pts}</p>
                 <p class="text-[11px] font-bold opacity-90">Poin Terkumpul</p>
             </div>
         </div>
         <div>
-            <p class="text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-2.5">Tukar Poin dengan Hadiah</p>
+            <p class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-2.5">Tukar Poin dengan Hadiah</p>
             <div class="space-y-2.5">${rewardsHtml}</div>
         </div>
         ${selectedReward ? `<div class="bg-violet-50 dark:bg-violet-900/20 border border-violet-200 dark:border-violet-800 rounded-xl p-3.5 text-[11px] font-bold text-violet-600 dark:text-violet-400"><i class="fa-solid fa-circle-info mr-1"></i>Hadiah "<b>${esc(selectedReward.name)}</b>" akan otomatis ditukar (poin dipotong) saat pesanan ini Anda buat.</div>` : ''}
@@ -2924,30 +2924,30 @@ window.openReviewModal = (orderId, productId, variantName, productName, customer
         <div class="bg-white dark:bg-slate-900 w-full max-w-lg rounded-t-[2rem] sm:rounded-[2rem] max-h-[85vh] flex flex-col shadow-2xl border border-slate-200 dark:border-slate-700">
             <div class="p-5 sm:p-6 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center shrink-0">
                 <div class="min-w-0">
-                    <h3 class="font-black text-slate-800 dark:text-white text-base flex items-center gap-2"><i class="fa-solid fa-star text-amber-400"></i> Berikan Ulasan</h3>
+                    <h3 class="font-bold text-slate-800 dark:text-white text-base flex items-center gap-2"><i class="fa-solid fa-star text-amber-400"></i> Berikan Ulasan</h3>
                     <p class="text-[10px] font-bold text-slate-500 mt-0.5 uppercase tracking-widest truncate">${esc(productName)}</p>
                 </div>
                 <button onclick="closeReviewModal()" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:bg-rose-100 hover:text-rose-500 flex items-center justify-center transition-all shrink-0"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <div class="p-5 sm:p-6 overflow-y-auto flex-1 space-y-5">
                 <div class="text-center">
-                    <p class="text-[11px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-3">Beri Bintang</p>
+                    <p class="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-3">Beri Bintang</p>
                     <div class="flex items-center justify-center gap-2" id="review-star-picker">
                         ${[1,2,3,4,5].map(n => `<button type="button" onclick="setReviewRating(${n})" class="review-star text-3xl text-slate-300 dark:text-slate-600 transition-all hover:scale-110" data-star="${n}"><i class="fa-solid fa-star"></i></button>`).join('')}
                     </div>
                 </div>
                 <div>
-                    <label class="block text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Ceritakan Pengalaman Anda</label>
+                    <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Ceritakan Pengalaman Anda</label>
                     <textarea id="review-text" rows="4" placeholder="Bagaimana kualitas produknya?" class="admin-input !py-3 bg-slate-50 dark:bg-slate-900 shadow-inner"></textarea>
                 </div>
                 <div>
-                    <label class="block text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Unggah Foto (Opsional)</label>
+                    <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Unggah Foto (Opsional)</label>
                     <input type="file" accept="image/*" id="review-photo-input" onchange="handleReviewPhotoSelect(event)" class="hidden"></i>
                     <div id="review-photo-preview-wrap" class="hidden mb-2.5 relative w-24 h-24">
                         <img id="review-photo-preview" class="w-24 h-24 rounded-xl object-cover border border-slate-200 dark:border-slate-700" loading="lazy"></i>
                         <button type="button" onclick="removeReviewPhoto()" class="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-rose-500 text-white flex items-center justify-center text-[10px] shadow"><i class="fa-solid fa-xmark"></i></button>
                     </div>
-                    <button type="button" onclick="document.getElementById('review-photo-input').click()" id="review-photo-btn" class="w-full py-3 rounded-xl border-2 border-dashed border-slate-300 dark:border-slate-700 text-slate-400 text-[11px] font-black uppercase tracking-widest flex items-center justify-center gap-2 hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] transition-all"><i class="fa-solid fa-camera"></i> Tambah Foto Bukti</button>
+                    <button type="button" onclick="document.getElementById('review-photo-input').click()" id="review-photo-btn" class="w-full py-3 rounded-xl border-2 border-dashed border-slate-300 dark:border-slate-700 text-slate-400 text-[11px] font-bold uppercase tracking-widest flex items-center justify-center gap-2 hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] transition-all"><i class="fa-solid fa-camera"></i> Tambah Foto Bukti</button>
                 </div>
             </div>
             <div class="p-5 border-t border-slate-100 dark:border-slate-800 shrink-0">
@@ -3065,8 +3065,8 @@ window.loadProductReviews = async (productId) => {
 
         let header = `
             <div class="flex items-center justify-between mb-4">
-                <h4 class="font-black text-slate-800 dark:text-white text-sm flex items-center gap-2"><i class="fa-solid fa-comment-dots text-amber-400"></i> Ulasan Pelanggan</h4>
-                ${reviews.length ? `<div class="flex items-center gap-1.5"><span class="flex text-xs">${starRow(avgRating)}</span><span class="text-xs font-black text-slate-600 dark:text-slate-300">${avgRating.toFixed(1)}</span><span class="text-[10px] font-bold text-slate-400">(${reviews.length})</span></div>` : ''}
+                <h4 class="font-bold text-slate-800 dark:text-white text-sm flex items-center gap-2"><i class="fa-solid fa-comment-dots text-amber-400"></i> Ulasan Pelanggan</h4>
+                ${reviews.length ? `<div class="flex items-center gap-1.5"><span class="flex text-xs">${starRow(avgRating)}</span><span class="text-xs font-bold text-slate-600 dark:text-slate-300">${avgRating.toFixed(1)}</span><span class="text-[10px] font-bold text-slate-400">(${reviews.length})</span></div>` : ''}
             </div>`;
 
         if (!reviews.length) {
@@ -3080,14 +3080,14 @@ window.loadProductReviews = async (productId) => {
             return `
             <div class="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl border border-slate-100 dark:border-slate-700/60">
                 <div class="flex items-center justify-between mb-1.5">
-                    <p class="text-xs font-black text-slate-800 dark:text-white">${esc(r.customerName || 'Pelanggan')}</p>
+                    <p class="text-xs font-bold text-slate-800 dark:text-white">${esc(r.customerName || 'Pelanggan')}</p>
                     <span class="text-[9px] font-bold text-slate-400">${dateStr}</span>
                 </div>
                 <div class="flex text-[11px] mb-2">${starRow(r.rating)}</div>
                 ${r.variantName ? `<p class="text-[10px] font-bold text-slate-400 mb-1.5">Varian: ${esc(r.variantName)}</p>` : ''}
                 ${r.text ? `<p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed mb-2">${esc(r.text)}</p>` : ''}
                 ${r.photoUrl ? `<img src="${esc(r.photoUrl)}" onclick="window.open('${esc(r.photoUrl)}','_blank')" class="w-20 h-20 rounded-xl object-cover border border-slate-200 dark:border-slate-700 cursor-pointer mb-2" onerror="this.style.display='none'" loading="lazy"></i>` : ''}
-                ${r.adminReply ? `<div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl p-3 mt-2"><p class="text-[9px] font-black text-[var(--color-primary)] uppercase tracking-widest mb-1"><i class="fa-solid fa-store mr-1"></i>Balasan Toko</p><p class="text-[11px] text-slate-600 dark:text-slate-300">${esc(r.adminReply)}</p></div>` : ''}
+                ${r.adminReply ? `<div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl p-3 mt-2"><p class="text-[9px] font-bold text-[var(--color-primary)] uppercase tracking-widest mb-1"><i class="fa-solid fa-store mr-1"></i>Balasan Toko</p><p class="text-[11px] text-slate-600 dark:text-slate-300">${esc(r.adminReply)}</p></div>` : ''}
             </div>`;
         }).join('');
 
@@ -3434,8 +3434,8 @@ const rPay = () => {
     if(discRow) {
         if(productDisc > 0 || shippingDisc > 0) {
             discRow.classList.remove('hidden'); let txtHtml = '';
-            if(productDisc > 0) txtHtml += `<div class="flex justify-between items-center w-full mt-1.5"><p class="text-xs font-bold text-slate-500">Diskon Promo</p><p class="text-[13px] font-black text-rose-500">-${fCur(productDisc)}</p></div>`;
-            if(shippingDisc > 0) txtHtml += `<div class="flex justify-between items-center w-full mt-1.5"><p class="text-xs font-bold text-slate-500">Diskon Ongkir</p><p class="text-[13px] font-black text-rose-500">-${fCur(shippingDisc)}</p></div>`;
+            if(productDisc > 0) txtHtml += `<div class="flex justify-between items-center w-full mt-1.5"><p class="text-xs font-bold text-slate-500">Diskon Promo</p><p class="text-[13px] font-bold text-rose-500">-${fCur(productDisc)}</p></div>`;
+            if(shippingDisc > 0) txtHtml += `<div class="flex justify-between items-center w-full mt-1.5"><p class="text-xs font-bold text-slate-500">Diskon Ongkir</p><p class="text-[13px] font-bold text-rose-500">-${fCur(shippingDisc)}</p></div>`;
             discRow.innerHTML = txtHtml;
         } else { discRow.classList.add('hidden'); }
     }
@@ -3462,12 +3462,12 @@ const rPay = () => {
     setIn('payment-cust-method', cust.deliveryMethod === 'delivery' ? `Kurir (${cust.distance.toFixed(1)}km)` : 'Ambil di Toko');
     setIn('payment-cust-address', cust.address || '-');
     
-    setH('payment-items-preview', cart.map(i => `<div class="flex justify-between items-center bg-white dark:bg-slate-800 p-4 rounded-[1.25rem] border border-slate-200 dark:border-slate-700 shadow-sm min-w-0"><div class="flex items-center gap-3.5 min-w-0"><img loading="lazy" src="${esc(i.img)}" alt="${esc(i.name)}" class="w-12 h-12 rounded-xl object-cover border border-slate-200 dark:border-slate-700 shrink-0" onerror="this.onerror=null;this.src='https://placehold.co/400?text=No+Image'"></i><div class="min-w-0"><p class="text-sm font-black text-slate-800 dark:text-white truncate">${esc(i.name)}${i.variantName?` (${esc(i.variantName)})`:''}${i.poTime?`<span class="bg-amber-100 dark:bg-amber-900/50 text-amber-600 dark:text-amber-400 px-1.5 py-0.5 rounded-xl text-[8px] font-bold border border-amber-200 dark:border-amber-800 uppercase ml-1.5 whitespace-nowrap">PO ${esc(i.poTime)}</span>`:''}</p><p class="text-[11px] text-[var(--color-primary)] font-bold mt-1">${parseFloat(i.qty)} ${esc(i.unit||'pcs')} x ${fCur(getEffP(i))}</p></div></div><div class="text-sm font-black text-slate-900 dark:text-white whitespace-nowrap ml-3 shrink-0">${fCur(getEffP(i)*parseFloat(i.qty))}</div></div>`).join('')
-        + (selectedReward ? `<div class="flex justify-between items-center bg-violet-50 dark:bg-violet-900/20 p-4 rounded-[1.25rem] border border-violet-200 dark:border-violet-800 shadow-sm min-w-0"><div class="flex items-center gap-3.5 min-w-0"><div class="w-12 h-12 rounded-xl bg-violet-500 text-white flex items-center justify-center shrink-0"><i class="fa-solid fa-gift"></i></div><div class="min-w-0"><p class="text-sm font-black text-violet-700 dark:text-violet-300 truncate">${esc(selectedReward.name)}</p><p class="text-[11px] text-violet-500 font-bold mt-1"><i class="fa-solid fa-star mr-1"></i>Tukar ${selectedReward.pointsCost} Poin (Gratis)</p></div></div><button type="button" onclick="deselectReward(); rPay();" class="text-[10px] font-black text-rose-500 uppercase shrink-0 ml-3">Batal</button></div>` : ''));
+    setH('payment-items-preview', cart.map(i => `<div class="flex justify-between items-center bg-white dark:bg-slate-800 p-4 rounded-[1.25rem] border border-slate-200 dark:border-slate-700 shadow-sm min-w-0"><div class="flex items-center gap-3.5 min-w-0"><img loading="lazy" src="${esc(i.img)}" alt="${esc(i.name)}" class="w-12 h-12 rounded-xl object-cover border border-slate-200 dark:border-slate-700 shrink-0" onerror="this.onerror=null;this.src='https://placehold.co/400?text=No+Image'"></i><div class="min-w-0"><p class="text-sm font-bold text-slate-800 dark:text-white truncate">${esc(i.name)}${i.variantName?` (${esc(i.variantName)})`:''}${i.poTime?`<span class="bg-amber-100 dark:bg-amber-900/50 text-amber-600 dark:text-amber-400 px-1.5 py-0.5 rounded-xl text-[8px] font-bold border border-amber-200 dark:border-amber-800 uppercase ml-1.5 whitespace-nowrap">PO ${esc(i.poTime)}</span>`:''}</p><p class="text-[11px] text-[var(--color-primary)] font-bold mt-1">${parseFloat(i.qty)} ${esc(i.unit||'pcs')} x ${fCur(getEffP(i))}</p></div></div><div class="text-sm font-bold text-slate-900 dark:text-white whitespace-nowrap ml-3 shrink-0">${fCur(getEffP(i)*parseFloat(i.qty))}</div></div>`).join('')
+        + (selectedReward ? `<div class="flex justify-between items-center bg-violet-50 dark:bg-violet-900/20 p-4 rounded-[1.25rem] border border-violet-200 dark:border-violet-800 shadow-sm min-w-0"><div class="flex items-center gap-3.5 min-w-0"><div class="w-12 h-12 rounded-xl bg-violet-500 text-white flex items-center justify-center shrink-0"><i class="fa-solid fa-gift"></i></div><div class="min-w-0"><p class="text-sm font-bold text-violet-700 dark:text-violet-300 truncate">${esc(selectedReward.name)}</p><p class="text-[11px] text-violet-500 font-bold mt-1"><i class="fa-solid fa-star mr-1"></i>Tukar ${selectedReward.pointsCost} Poin (Gratis)</p></div></div><button type="button" onclick="deselectReward(); rPay();" class="text-[10px] font-bold text-rose-500 uppercase shrink-0 ml-3">Batal</button></div>` : ''));
         
     if(cust.note){ setIn('payment-note-text', `"${esc(cust.note)}"`); show('payment-note-preview'); } else hide('payment-note-preview');
     
-    setH('dynamic-banks-container', appData.banks?.length ? appData.banks.map(b => `<div class="bg-white dark:bg-slate-800 p-4 rounded-[1.25rem] border border-slate-200 dark:border-slate-700 shadow-sm"><p class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Bank ${esc(b.bankName)}</p><p class="text-lg font-black text-[var(--color-primary)] tracking-wide">${esc(b.bankAccount)}</p><p class="text-xs text-slate-500 dark:text-slate-400 font-medium mt-1.5">a.n <span class="font-bold text-slate-700 dark:text-white">${esc(b.bankOwner)}</span></p></div>`).join('') : '<div class="bg-rose-50 dark:bg-rose-900/20 border border-rose-200 p-4 rounded-[1.25rem] text-center"><p class="text-sm text-rose-500 dark:text-rose-400 font-bold">Rekening belum diatur.</p></div>');
+    setH('dynamic-banks-container', appData.banks?.length ? appData.banks.map(b => `<div class="bg-white dark:bg-slate-800 p-4 rounded-[1.25rem] border border-slate-200 dark:border-slate-700 shadow-sm"><p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Bank ${esc(b.bankName)}</p><p class="text-lg font-bold text-[var(--color-primary)] tracking-wide">${esc(b.bankAccount)}</p><p class="text-xs text-slate-500 dark:text-slate-400 font-medium mt-1.5">a.n <span class="font-bold text-slate-700 dark:text-white">${esc(b.bankOwner)}</span></p></div>`).join('') : '<div class="bg-rose-50 dark:bg-rose-900/20 border border-rose-200 p-4 rounded-[1.25rem] text-center"><p class="text-sm text-rose-500 dark:text-rose-400 font-bold">Rekening belum diatur.</p></div>');
     
     const co = el('payment-option-cashier'), cc = el('payment-option-cod');
     if (co && cc) {
@@ -4117,23 +4117,23 @@ window.loadAdminReport = async (period) => {
     setH('admin-report-container', `
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
             <div class="card-modern p-5 sm:p-5">
-                <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Total Penjualan (${periodLabel})</p>
-                <p class="text-lg sm:text-xl font-black text-slate-800 dark:text-white truncate">${fCur(totalPenjualan)}</p>
+                <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Total Penjualan (${periodLabel})</p>
+                <p class="text-lg sm:text-xl font-bold text-slate-800 dark:text-white truncate">${fCur(totalPenjualan)}</p>
                 <p class="text-[10px] font-bold text-slate-400 mt-1">${orderCount} pesanan${truncated ? ' (≥3000, dibatasi)' : ''}</p>
             </div>
             <div class="card-modern p-5 sm:p-5">
-                <p class="text-[9px] font-black text-emerald-500 uppercase tracking-widest mb-1.5"><i class="fa-solid fa-arrow-trend-up mr-1"></i>Laba Kotor</p>
-                <p class="text-lg sm:text-xl font-black text-emerald-600 truncate">${fCur(labaKotor)}</p>
+                <p class="text-[9px] font-bold text-emerald-500 uppercase tracking-widest mb-1.5"><i class="fa-solid fa-arrow-trend-up mr-1"></i>Laba Kotor</p>
+                <p class="text-lg sm:text-xl font-bold text-emerald-600 truncate">${fCur(labaKotor)}</p>
                 <p class="text-[10px] font-bold text-slate-400 mt-1">Penjualan − HPP Terjual</p>
             </div>
             <div class="card-modern p-5 sm:p-5">
-                <p class="text-[9px] font-black text-[var(--color-primary)] uppercase tracking-widest mb-1.5"><i class="fa-solid fa-sack-dollar mr-1"></i>Laba Bersih</p>
-                <p class="text-lg sm:text-xl font-black truncate" style="color:var(--color-primary)">${fCur(labaBersih)}</p>
+                <p class="text-[9px] font-bold text-[var(--color-primary)] uppercase tracking-widest mb-1.5"><i class="fa-solid fa-sack-dollar mr-1"></i>Laba Bersih</p>
+                <p class="text-lg sm:text-xl font-bold truncate" style="color:var(--color-primary)">${fCur(labaBersih)}</p>
                 <p class="text-[10px] font-bold text-slate-400 mt-1">Laba Kotor − Diskon Produk</p>
             </div>
             <div class="card-modern p-5 sm:p-5">
-                <p class="text-[9px] font-black text-rose-500 uppercase tracking-widest mb-1.5"><i class="fa-solid fa-tag mr-1"></i>Total HPP Terjual</p>
-                <p class="text-lg sm:text-xl font-black text-rose-500 truncate">${fCur(totalHppTerjual)}</p>
+                <p class="text-[9px] font-bold text-rose-500 uppercase tracking-widest mb-1.5"><i class="fa-solid fa-tag mr-1"></i>Total HPP Terjual</p>
+                <p class="text-lg sm:text-xl font-bold text-rose-500 truncate">${fCur(totalHppTerjual)}</p>
                 <p class="text-[10px] font-bold text-slate-400 mt-1">Modal barang yang laku</p>
             </div>
         </div>
@@ -4224,8 +4224,8 @@ window.customPrompt = (title, defaultVal, callback) => {
     div.className = 'fixed inset-0 z-[9999] bg-slate-900/80 flex items-center justify-center p-4 backdrop-blur-sm opacity-0 transition-opacity duration-300';
     div.innerHTML = `
         <div class="bg-white dark:bg-slate-800 rounded-[2rem] w-full max-w-[320px] p-6 shadow-2xl border border-slate-200 dark:border-slate-700 relative transform scale-95 transition-all duration-300 flex flex-col text-center">
-            <h3 class="font-black text-slate-900 dark:text-white text-lg mb-4">${title}</h3>
-            <input type="text" id="prompt-input" value="${defaultVal}" class="w-full px-4 py-3.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-700 dark:text-slate-300 mb-6 focus:ring-2 focus:ring-emerald-500 outline-none text-center font-black text-xl tracking-wider" autocomplete="off" />
+            <h3 class="font-bold text-slate-900 dark:text-white text-lg mb-4">${title}</h3>
+            <input type="text" id="prompt-input" value="${defaultVal}" class="w-full px-4 py-3.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-700 dark:text-slate-300 mb-6 focus:ring-2 focus:ring-emerald-500 outline-none text-center font-bold text-xl tracking-wider" autocomplete="off" />
             <div class="flex gap-3">
                 <button id="prompt-cancel" class="flex-1 py-3.5 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold rounded-xl hover:bg-slate-200 dark:hover:bg-slate-600 active:scale-95 transition-all text-sm">Batal</button>
                 <button id="prompt-ok" class="flex-1 py-3.5 bg-emerald-600 text-white font-bold rounded-xl hover:bg-emerald-700 active:scale-95 transition-all text-sm shadow-md shadow-emerald-500/30">Simpan</button>
@@ -4493,13 +4493,13 @@ window.rAdmPiutang = async () => {
             <div class="flex items-center gap-4">
                 <div class="w-12 h-12 bg-pink-50 dark:bg-pink-900/30 text-pink-600 rounded-xl flex items-center justify-center"><i class="fa-solid fa-hand-holding-dollar text-xl"></i></div>
                 <div>
-                    <h2 class="font-black text-slate-800 dark:text-slate-100 uppercase tracking-widest text-sm">Tagihan Tempo</h2>
+                    <h2 class="font-bold text-slate-800 dark:text-slate-100 uppercase tracking-widest text-sm">Tagihan Tempo</h2>
                     <p class="text-[10px] font-bold text-slate-400 mt-1">Daftar pelanggan VIP yang belum lunas</p>
                 </div>
             </div>
             <div class="text-right">
-                <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Total Piutang Berjalan</p>
-                <p class="text-xl font-black text-rose-500" id="total-piutang-header">Rp 0</p>
+                <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Total Piutang Berjalan</p>
+                <p class="text-xl font-bold text-rose-500" id="total-piutang-header">Rp 0</p>
             </div>
         </div>
     `;
@@ -4507,7 +4507,7 @@ window.rAdmPiutang = async () => {
     if (piutangOrders.length === 0) {
         h += `<div class="bg-white dark:bg-slate-800 p-8 text-center rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
                 <div class="w-20 h-20 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-500 rounded-full flex items-center justify-center mx-auto mb-4"><i class="fa-solid fa-check-double text-4xl"></i></div>
-                <h3 class="font-black text-slate-700 dark:text-slate-200 text-lg uppercase tracking-widest">Luar Biasa!</h3>
+                <h3 class="font-bold text-slate-700 dark:text-slate-200 text-lg uppercase tracking-widest">Luar Biasa!</h3>
                 <p class="text-slate-500 mt-2 text-xs font-bold">Semua tagihan pelanggan telah lunas. Tidak ada piutang tertunda.</p>
               </div>`;
     } else {
@@ -4541,12 +4541,12 @@ window.rAdmPiutang = async () => {
             
             h += `
             <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border ${isLate ? 'border-rose-300 dark:border-rose-700 shadow-[0_0_15px_rgba(225,29,72,0.1)]' : 'border-slate-200 dark:border-slate-700 shadow-sm'} relative overflow-hidden group hover:-translate-y-1 transition-all">
-                ${isLate ? `<div class="absolute -right-6 top-4 ${isStopped ? 'bg-slate-500' : 'bg-rose-500'} text-white text-[9px] font-black uppercase tracking-widest px-8 py-1 rotate-45 shadow-sm">TERLAMBAT ${daysLate} HARI</div>` : ''}
+                ${isLate ? `<div class="absolute -right-6 top-4 ${isStopped ? 'bg-slate-500' : 'bg-rose-500'} text-white text-[9px] font-bold uppercase tracking-widest px-8 py-1 rotate-45 shadow-sm">TERLAMBAT ${daysLate} HARI</div>` : ''}
                 
                 <div class="flex justify-between items-start mb-4 pr-12">
                     <div>
                         <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Pesanan #${o.orderId.substring(4, 10)}</p>
-                        <h3 class="font-black text-slate-800 dark:text-slate-200 mt-1 uppercase">${esc(o.customer?.name || 'Anonim')}</h3>
+                        <h3 class="font-bold text-slate-800 dark:text-slate-200 mt-1 uppercase">${esc(o.customer?.name || 'Anonim')}</h3>
                         <p class="text-[10px] font-bold text-slate-500 flex items-center gap-1 mt-0.5"><i class="fa-brands fa-whatsapp text-emerald-500"></i> ${esc(o.customer?.wa || '-')}</p>
                     </div>
                 </div>
@@ -4554,36 +4554,36 @@ window.rAdmPiutang = async () => {
                 <div class="space-y-2 mb-4 bg-slate-50 dark:bg-slate-900/50 p-3.5 rounded-xl border border-slate-100 dark:border-slate-700/50">
                     <div class="flex justify-between items-center text-xs">
                         <span class="font-bold text-slate-500">Jatuh Tempo</span>
-                        <span class="font-black ${isLate ? 'text-rose-600' : 'text-slate-700 dark:text-slate-300'}">${new Date(dueDate).toLocaleDateString('id-ID')}</span>
+                        <span class="font-bold ${isLate ? 'text-rose-600' : 'text-slate-700 dark:text-slate-300'}">${new Date(dueDate).toLocaleDateString('id-ID')}</span>
                     </div>
                     <div class="flex justify-between items-center text-xs">
                         <span class="font-bold text-slate-500">Sisa Pokok</span>
-                        <span class="font-black text-slate-700 dark:text-slate-300 font-mono">${fCur(sisa)}</span>
+                        <span class="font-bold text-slate-700 dark:text-slate-300 font-mono">${fCur(sisa)}</span>
                     </div>
                     ${isLate ? `
                     <div class="flex justify-between items-center text-xs ${isStopped ? 'text-slate-500' : 'text-rose-600'}">
                         <span class="font-bold">Denda (${rate}%/hari) ${isStopped ? '<span class="text-[9px] bg-slate-200 dark:bg-slate-700 px-1 py-0.5 rounded ml-1">STOPPED</span>' : ''}</span>
-                        <span class="font-black font-mono">+${fCur(latePenalty)}</span>
+                        <span class="font-bold font-mono">+${fCur(latePenalty)}</span>
                     </div>` : ''}
                 </div>
                 
                 <div class="flex justify-between items-center bg-rose-50 text-rose-600 dark:bg-rose-900/20 dark:text-rose-400 p-3.5 rounded-xl border border-rose-100 dark:border-rose-900/30 mb-3">
-                    <span class="text-[10px] font-black uppercase tracking-widest">Total Tagihan</span>
-                    <span class="text-sm font-black font-mono tracking-tight">${fCur(totalAkhir)}</span>
+                    <span class="text-[10px] font-bold uppercase tracking-widest">Total Tagihan</span>
+                    <span class="text-sm font-bold font-mono tracking-tight">${fCur(totalAkhir)}</span>
                 </div>
                 
                 <div class="flex gap-2 mb-3">
-                    <button onclick="editTempoPenalty('${o.orderId}', ${rate})" class="flex-1 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-300 rounded-xl py-2 flex items-center justify-center gap-1.5 text-[10px] font-black uppercase tracking-widest transition-all">
+                    <button onclick="editTempoPenalty('${o.orderId}', ${rate})" class="flex-1 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-300 rounded-xl py-2 flex items-center justify-center gap-1.5 text-[10px] font-bold uppercase tracking-widest transition-all">
                         <i class="fa-solid fa-percent"></i> Edit Denda
                     </button>
-                    <button onclick="stopTempoPenalty('${o.orderId}', ${latePenalty}, ${isStopped})" class="flex-1 ${isStopped ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-200' : 'bg-rose-100 dark:bg-rose-900/30 text-rose-600 dark:text-rose-400 hover:bg-rose-200'} rounded-xl py-2 flex items-center justify-center gap-1.5 text-[10px] font-black uppercase tracking-widest transition-all">
+                    <button onclick="stopTempoPenalty('${o.orderId}', ${latePenalty}, ${isStopped})" class="flex-1 ${isStopped ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-200' : 'bg-rose-100 dark:bg-rose-900/30 text-rose-600 dark:text-rose-400 hover:bg-rose-200'} rounded-xl py-2 flex items-center justify-center gap-1.5 text-[10px] font-bold uppercase tracking-widest transition-all">
                         <i class="fa-solid ${isStopped ? 'fa-play' : 'fa-stop'}"></i> ${isStopped ? 'Lanjut Denda' : 'Stop Denda'}
                     </button>
                 </div>
                 
                 ${o.payment?.installments && o.payment.installments.length > 0 ? `
                 <div class="mb-3 space-y-1.5 bg-slate-50 dark:bg-slate-900/30 p-3 rounded-xl border border-slate-100 dark:border-slate-800">
-                    <div class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2 flex justify-between">
+                    <div class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-2 flex justify-between">
                         <span>Riwayat Cicilan</span>
                         <span>Total: ${fCur(o.payment.installments.reduce((sum, ins) => sum + (parseFloat(ins.amount)||0), 0))}</span>
                     </div>
@@ -4596,18 +4596,18 @@ window.rAdmPiutang = async () => {
                 </div>` : ''}
                 
                 <div class="flex gap-2 mb-2">
-                    <a href="https://wa.me/${waNum}?text=Halo%20kak%20${esc(o.customer?.name||'')},%20mengingatkan%20bahwa%20sisa%20tagihan%20Tempo%20untuk%20pesanan%20${o.orderId}%20sebesar%20${fCur(totalAkhir)}%20sudah%20jatuh%20tempo.%20Mohon%20segera%20dilunasi." target="_blank" class="flex-1 bg-emerald-50 dark:bg-emerald-900/30 hover:bg-emerald-100 dark:hover:bg-emerald-900/50 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 rounded-xl py-2 flex items-center justify-center gap-1.5 text-[10px] font-black uppercase tracking-widest transition-all">
+                    <a href="https://wa.me/${waNum}?text=Halo%20kak%20${esc(o.customer?.name||'')},%20mengingatkan%20bahwa%20sisa%20tagihan%20Tempo%20untuk%20pesanan%20${o.orderId}%20sebesar%20${fCur(totalAkhir)}%20sudah%20jatuh%20tempo.%20Mohon%20segera%20dilunasi." target="_blank" class="flex-1 bg-emerald-50 dark:bg-emerald-900/30 hover:bg-emerald-100 dark:hover:bg-emerald-900/50 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 rounded-xl py-2 flex items-center justify-center gap-1.5 text-[10px] font-bold uppercase tracking-widest transition-all">
                         <i class="fa-brands fa-whatsapp text-sm"></i> Tagih
                     </a>
-                    <button onclick="previewTempoReceipt('${o.orderId}')" class="flex-1 bg-amber-500 hover:bg-amber-600 text-white rounded-xl py-2 flex items-center justify-center gap-1.5 text-[10px] font-black uppercase tracking-widest shadow-sm shadow-amber-500/30 transition-all">
+                    <button onclick="previewTempoReceipt('${o.orderId}')" class="flex-1 bg-amber-500 hover:bg-amber-600 text-white rounded-xl py-2 flex items-center justify-center gap-1.5 text-[10px] font-bold uppercase tracking-widest shadow-sm shadow-amber-500/30 transition-all">
                         <i class="fa-solid fa-print"></i> Struk
                     </button>
                 </div>
                 <div class="flex gap-2">
-                    <button onclick="payTempoInstallment('${o.orderId}')" class="flex-1 bg-indigo-500 hover:bg-indigo-600 text-white rounded-xl py-2.5 flex items-center justify-center gap-1.5 text-[10px] font-black uppercase tracking-widest shadow-sm shadow-indigo-500/30 transition-all">
+                    <button onclick="payTempoInstallment('${o.orderId}')" class="flex-1 bg-indigo-500 hover:bg-indigo-600 text-white rounded-xl py-2.5 flex items-center justify-center gap-1.5 text-[10px] font-bold uppercase tracking-widest shadow-sm shadow-indigo-500/30 transition-all">
                         <i class="fa-solid fa-money-bill-wave"></i> Cicil
                     </button>
-                    <button onclick="markTempoPaid('${o.orderId}')" class="flex-1 bg-blue-500 hover:bg-blue-600 text-white rounded-xl py-2.5 flex items-center justify-center gap-1.5 text-[10px] font-black uppercase tracking-widest shadow-sm shadow-blue-500/30 transition-all">
+                    <button onclick="markTempoPaid('${o.orderId}')" class="flex-1 bg-blue-500 hover:bg-blue-600 text-white rounded-xl py-2.5 flex items-center justify-center gap-1.5 text-[10px] font-bold uppercase tracking-widest shadow-sm shadow-blue-500/30 transition-all">
                         <i class="fa-solid fa-check-double"></i> Lunas
                     </button>
                 </div>
@@ -4746,11 +4746,11 @@ window.exportOrdersToExcel = async () => {
                     <i class="fa-solid fa-satellite-dish animate-pulse text-base"></i>
                 </div>
                 <div>
-                    <h2 class="font-black text-sm text-slate-800 dark:text-slate-100 uppercase tracking-widest leading-tight">Live Orders</h2>
+                    <h2 class="font-bold text-sm text-slate-800 dark:text-slate-100 uppercase tracking-widest leading-tight">Live Orders</h2>
                     <p class="text-[9px] font-bold text-slate-500 mt-0.5">Pantau pesanan masuk secara realtime</p>
                 </div>
             </div>
-            <button onclick="exportOrdersToExcel()" class="h-9 px-4 rounded-xl text-xs font-black flex items-center gap-1.5 shadow-sm border transition-all active:scale-95 hover:text-white hover:border-[var(--color-primary)] text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-slate-700 border-slate-200 dark:border-slate-600" style="--tw-shadow-color: rgba(var(--color-primary-rgb),0.2)" onmouseover="this.style.background='var(--color-primary)'" onmouseout="this.style.background=''">
+            <button onclick="exportOrdersToExcel()" class="h-9 px-4 rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-sm border transition-all active:scale-95 hover:text-white hover:border-[var(--color-primary)] text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-slate-700 border-slate-200 dark:border-slate-600" style="--tw-shadow-color: rgba(var(--color-primary-rgb),0.2)" onmouseover="this.style.background='var(--color-primary)'" onmouseout="this.style.background=''">
                 <i class="fa-solid fa-file-csv"></i> <span class="hidden sm:inline">Export Excel</span>
             </button>
         </div>
@@ -4852,8 +4852,8 @@ window.exportOrdersToExcel = async () => {
                         <div class="flex-1 min-w-0">
                             <div class="flex justify-between items-start mb-1">
                                 <div class="flex items-center gap-2">
-                                    <span class="font-black text-sm sm:text-base text-slate-800 dark:text-slate-100 tracking-tight">#${shortId}</span>
-                                    <span class="text-[9px] font-black px-2 py-0.5 rounded border ${bC} uppercase tracking-widest flex items-center"><i class="fa-solid ${iC} mr-1"></i> ${esc(o.status)}</span>
+                                    <span class="font-bold text-sm sm:text-base text-slate-800 dark:text-slate-100 tracking-tight">#${shortId}</span>
+                                    <span class="text-[9px] font-bold px-2 py-0.5 rounded border ${bC} uppercase tracking-widest flex items-center"><i class="fa-solid ${iC} mr-1"></i> ${esc(o.status)}</span>
                                 </div>
                                 <span class="text-[10px] font-bold text-slate-400 flex items-center gap-1.5 whitespace-nowrap"><i class="fa-regular fa-calendar"></i> <span class="hidden sm:inline">${dStr}</span></span>
                             </div>
@@ -4861,9 +4861,9 @@ window.exportOrdersToExcel = async () => {
                             <div class="flex items-center gap-2 mt-1.5">
                                 <p class="text-xs font-bold text-slate-600 dark:text-slate-300 truncate max-w-[120px] sm:max-w-xs"><i class="fa-solid fa-user text-slate-400 mr-1"></i> ${esc(o.customer?.name||'Anonim')}</p>
                                 <span class="w-1 h-1 rounded-full bg-slate-300 dark:bg-slate-600 shrink-0"></span>
-                                <span class="text-[9px] font-black text-slate-500 bg-slate-100 dark:bg-slate-900 px-2 py-0.5 rounded-xl border border-slate-200 dark:border-slate-700 uppercase tracking-widest shrink-0">${itemCount} Item</span>
-                                ${o.customer?.lat ? `<span class="text-[9px] font-black text-blue-500 bg-blue-50 dark:bg-blue-900/20 px-1.5 py-0.5 rounded-xl border border-blue-100 dark:border-blue-800 uppercase tracking-widest shrink-0"><i class="fa-solid fa-location-dot"></i> GPS</span>` : ''}
-                                ${o.buktiPayment ? `<span class="text-[9px] font-black text-violet-500 bg-violet-50 dark:bg-violet-900/20 px-1.5 py-0.5 rounded-xl border border-violet-100 dark:border-violet-800 uppercase tracking-widest shrink-0"><i class="fa-solid fa-image"></i></span>` : ''}
+                                <span class="text-[9px] font-bold text-slate-500 bg-slate-100 dark:bg-slate-900 px-2 py-0.5 rounded-xl border border-slate-200 dark:border-slate-700 uppercase tracking-widest shrink-0">${itemCount} Item</span>
+                                ${o.customer?.lat ? `<span class="text-[9px] font-bold text-blue-500 bg-blue-50 dark:bg-blue-900/20 px-1.5 py-0.5 rounded-xl border border-blue-100 dark:border-blue-800 uppercase tracking-widest shrink-0"><i class="fa-solid fa-location-dot"></i> GPS</span>` : ''}
+                                ${o.buktiPayment ? `<span class="text-[9px] font-bold text-violet-500 bg-violet-50 dark:bg-violet-900/20 px-1.5 py-0.5 rounded-xl border border-violet-100 dark:border-violet-800 uppercase tracking-widest shrink-0"><i class="fa-solid fa-image"></i></span>` : ''}
                             </div>
                         </div>
                         
@@ -4876,12 +4876,12 @@ window.exportOrdersToExcel = async () => {
 
                     <div class="flex items-center justify-between">
                         <div class="flex items-center gap-2">
-                            <span class="font-black text-emerald-600 dark:text-emerald-400 text-lg sm:text-xl tracking-tight">${fCur(o.payment?.grandTotal)}</span>
-                            ${o.payment?.ppnAmount ? `<span class="text-[8px] font-black bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400 px-1.5 py-0.5 rounded border border-amber-200 dark:border-amber-800 uppercase tracking-widest">PPN ${o.payment.ppnRate||11}%</span>` : ''}
+                            <span class="font-bold text-emerald-600 dark:text-emerald-400 text-lg sm:text-xl tracking-tight">${fCur(o.payment?.grandTotal)}</span>
+                            ${o.payment?.ppnAmount ? `<span class="text-[8px] font-bold bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400 px-1.5 py-0.5 rounded border border-amber-200 dark:border-amber-800 uppercase tracking-widest">PPN ${o.payment.ppnRate||11}%</span>` : ''}
                         </div>
                         <div class="flex items-center gap-2 bg-slate-50 dark:bg-slate-900 px-3 py-1.5 rounded-xl border border-slate-100 dark:border-slate-700">
                             <i class="fa-solid ${pI} text-xs"></i>
-                            <span class="text-[9px] font-black text-slate-600 dark:text-slate-300 uppercase tracking-widest">${esc(method)}</span>
+                            <span class="text-[9px] font-bold text-slate-600 dark:text-slate-300 uppercase tracking-widest">${esc(method)}</span>
                         </div>
                     </div>
                 </div>`;
@@ -4895,19 +4895,19 @@ window.openOrderDetail = i => {
     if (!o) return; cVOrd = i;
     
     // Desain Dropdown Status Presisi seperti Gambar
-    let sSel = `<div class="relative w-full sm:w-40 mt-1"><select onchange="updateOrderStatus('${o.orderId}', this.value)" class="w-full text-sm font-black ${o.status==='Baru'?'text-rose-600 bg-rose-50 border-rose-200':o.status==='Diproses'?'text-blue-600 bg-blue-50 border-blue-200':o.status==='Selesai'?'text-emerald-600 bg-emerald-50 border-emerald-200':'text-slate-500 bg-slate-50 border-slate-200'} border px-4 py-2.5 rounded-xl focus:outline-none appearance-none cursor-pointer transition-colors shadow-sm"><option value="Baru" ${o.status==='Baru'?'selected':''} class="text-slate-800">Baru (Pending)</option><option value="Diproses" ${o.status==='Diproses'?'selected':''} class="text-slate-800">Diproses</option><option value="Selesai" ${o.status==='Selesai'?'selected':''} class="text-slate-800">Selesai</option><option value="Dibatalkan" ${o.status==='Dibatalkan'?'selected':''} class="text-slate-800">Dibatalkan</option></select><i class="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 ${o.status==='Baru'?'text-rose-400':o.status==='Diproses'?'text-blue-400':o.status==='Selesai'?'text-emerald-400':'text-slate-400'} pointer-events-none text-xs"></i></div>`;
+    let sSel = `<div class="relative w-full sm:w-40 mt-1"><select onchange="updateOrderStatus('${o.orderId}', this.value)" class="w-full text-sm font-bold ${o.status==='Baru'?'text-rose-600 bg-rose-50 border-rose-200':o.status==='Diproses'?'text-blue-600 bg-blue-50 border-blue-200':o.status==='Selesai'?'text-emerald-600 bg-emerald-50 border-emerald-200':'text-slate-500 bg-slate-50 border-slate-200'} border px-4 py-2.5 rounded-xl focus:outline-none appearance-none cursor-pointer transition-colors shadow-sm"><option value="Baru" ${o.status==='Baru'?'selected':''} class="text-slate-800">Baru (Pending)</option><option value="Diproses" ${o.status==='Diproses'?'selected':''} class="text-slate-800">Diproses</option><option value="Selesai" ${o.status==='Selesai'?'selected':''} class="text-slate-800">Selesai</option><option value="Dibatalkan" ${o.status==='Dibatalkan'?'selected':''} class="text-slate-800">Dibatalkan</option></select><i class="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 ${o.status==='Baru'?'text-rose-400':o.status==='Diproses'?'text-blue-400':o.status==='Selesai'?'text-emerald-400':'text-slate-400'} pointer-events-none text-xs"></i></div>`;
     
     setH('admin-order-modal-content', `
         <div class="flex flex-col gap-4 text-sm pb-2">
             
             <div class="bg-white dark:bg-slate-800 p-5 sm:p-6 rounded-[1.5rem] border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col sm:flex-row justify-between gap-5 sm:items-center">
                 <div class="flex-1">
-                    <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-1.5"><i class="fa-solid fa-crosshairs text-emerald-500"></i> Status</p>
+                    <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest flex items-center gap-1.5"><i class="fa-solid fa-crosshairs text-emerald-500"></i> Status</p>
                     ${sSel}
                 </div>
                 <div class="text-left sm:text-right flex flex-col justify-center">
-                    <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5">ID Pesanan</p>
-                    <p class="text-sm sm:text-base font-black text-slate-900 dark:text-white break-all tracking-wide">#${o.orderId}</p>
+                    <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1.5">ID Pesanan</p>
+                    <p class="text-sm sm:text-base font-bold text-slate-900 dark:text-white break-all tracking-wide">#${o.orderId}</p>
                     <p class="text-[10px] font-bold text-slate-400 mt-1.5">${o.dateString?new Date(o.dateString).toLocaleString('id-ID'):''}</p>
                 </div>
             </div>
@@ -4916,18 +4916,18 @@ window.openOrderDetail = i => {
             <div class="flex flex-col gap-4">
 
             <div class="bg-white dark:bg-slate-800 p-5 sm:p-6 rounded-[1.5rem] border border-slate-200 dark:border-slate-700 shadow-sm">
-                <h4 class="font-black text-slate-900 dark:text-white text-sm border-b border-slate-100 dark:border-slate-700 pb-4 mb-4 flex items-center gap-3"><div class="w-8 h-8 rounded-xl bg-blue-50 dark:bg-blue-900/30 text-blue-500 flex items-center justify-center border border-blue-100 dark:border-blue-800"><i class="fa-solid fa-user"></i></div> Data Pemesan</h4>
+                <h4 class="font-bold text-slate-900 dark:text-white text-sm border-b border-slate-100 dark:border-slate-700 pb-4 mb-4 flex items-center gap-3"><div class="w-8 h-8 rounded-xl bg-blue-50 dark:bg-blue-900/30 text-blue-500 flex items-center justify-center border border-blue-100 dark:border-blue-800"><i class="fa-solid fa-user"></i></div> Data Pemesan</h4>
                 <div class="space-y-4">
-                    <div class="flex justify-between items-center"><span class="text-slate-500 dark:text-slate-400 font-bold">Nama</span><span class="font-black text-slate-900 dark:text-white text-base">${esc(o.customer?.name||'-')}</span></div>
-                    ${o.customer?.wa ? `<div class="flex justify-between items-center"><span class="text-slate-500 dark:text-slate-400 font-bold flex items-center gap-1.5"><i class="fa-brands fa-whatsapp text-green-500"></i> WhatsApp</span><a href="https://wa.me/${esc(o.customer.wa)}" target="_blank" class="font-black text-green-600 dark:text-green-400 hover:underline">+${esc(o.customer.wa)}</a></div>` : ''}
-                    ${o.customer?.wa ? `<button type="button" onclick="saveOrderCustomerToDB('${esc(o.customer.name||'')}','${esc(o.customer.wa)}')" class="w-full py-2.5 rounded-xl bg-teal-50 dark:bg-teal-900/20 border border-teal-200 dark:border-teal-800 text-teal-600 dark:text-teal-400 text-[11px] font-black uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-teal-100 transition-all active:scale-95"><i class="fa-solid fa-address-book"></i> Simpan ke Database Pelanggan</button>` : ''}
+                    <div class="flex justify-between items-center"><span class="text-slate-500 dark:text-slate-400 font-bold">Nama</span><span class="font-bold text-slate-900 dark:text-white text-base">${esc(o.customer?.name||'-')}</span></div>
+                    ${o.customer?.wa ? `<div class="flex justify-between items-center"><span class="text-slate-500 dark:text-slate-400 font-bold flex items-center gap-1.5"><i class="fa-brands fa-whatsapp text-green-500"></i> WhatsApp</span><a href="https://wa.me/${esc(o.customer.wa)}" target="_blank" class="font-bold text-green-600 dark:text-green-400 hover:underline">+${esc(o.customer.wa)}</a></div>` : ''}
+                    ${o.customer?.wa ? `<button type="button" onclick="saveOrderCustomerToDB('${esc(o.customer.name||'')}','${esc(o.customer.wa)}')" class="w-full py-2.5 rounded-xl bg-teal-50 dark:bg-teal-900/20 border border-teal-200 dark:border-teal-800 text-teal-600 dark:text-teal-400 text-[11px] font-bold uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-teal-100 transition-all active:scale-95"><i class="fa-solid fa-address-book"></i> Simpan ke Database Pelanggan</button>` : ''}
                     <div class="border-t border-dashed border-slate-200 dark:border-slate-700 pt-4">
                         <span class="text-slate-500 dark:text-slate-400 font-bold flex items-center gap-2 mb-2.5"><i class="fa-solid fa-map-location-dot"></i> Alamat (${o.customer?.deliveryMethod==='delivery'?'Kurir':'Ambil Sendiri'})</span>
                         <div class="bg-slate-50 dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-700 font-bold text-slate-700 dark:text-slate-300 leading-relaxed shadow-inner text-sm">${esc(o.customer?.address||'-')}</div>
-                        ${o.customer?.lat && o.customer?.deliveryMethod === 'delivery' ? `<a href="https://www.google.com/maps?q=${esc(o.customer.lat)},${esc(o.customer.lng)}" target="_blank" class="mt-3 flex items-center justify-center gap-2 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-800 font-black text-xs py-2.5 px-4 rounded-xl hover:bg-blue-100 transition-colors"><i class="fa-solid fa-location-dot"></i> Buka Lokasi di Google Maps</a>` : ''}
+                        ${o.customer?.lat && o.customer?.deliveryMethod === 'delivery' ? `<a href="https://www.google.com/maps?q=${esc(o.customer.lat)},${esc(o.customer.lng)}" target="_blank" class="mt-3 flex items-center justify-center gap-2 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-800 font-bold text-xs py-2.5 px-4 rounded-xl hover:bg-blue-100 transition-colors"><i class="fa-solid fa-location-dot"></i> Buka Lokasi di Google Maps</a>` : ''}
                     </div>
-                    ${o.customer?.note?`<div class="bg-amber-50 dark:bg-amber-900/20 p-4 rounded-xl border border-amber-200 dark:border-amber-800 mt-2"><p class="text-[10px] font-black text-amber-600 uppercase tracking-widest mb-1.5"><i class="fa-solid fa-note-sticky"></i> Catatan Pembeli</p><p class="text-sm text-amber-900 dark:text-amber-100 font-bold">${esc(o.customer.note)}</p></div>`:''}
-                    ${o.buktiPayment ? `<div class="bg-violet-50 dark:bg-violet-900/20 p-4 rounded-xl border border-violet-200 dark:border-violet-800 mt-2"><p class="text-[10px] font-black text-violet-600 dark:text-violet-400 uppercase tracking-widest mb-2.5"><i class="fa-solid fa-image"></i> Bukti Pembayaran</p><a href="${esc(o.buktiPayment)}" target="_blank" class="block rounded-xl overflow-hidden border border-violet-200 dark:border-violet-800"><img src="${esc(o.buktiPayment)}" alt="Bukti Pembayaran" class="w-full max-h-48 object-cover" onerror="this.style.display='none'" loading="lazy"></i><div class="bg-violet-100 dark:bg-violet-900/40 py-2 text-center text-[10px] font-black text-violet-600 dark:text-violet-400"><i class="fa-solid fa-arrow-up-right-from-square mr-1"></i> Tap untuk buka</div></a></div>` : ''}
+                    ${o.customer?.note?`<div class="bg-amber-50 dark:bg-amber-900/20 p-4 rounded-xl border border-amber-200 dark:border-amber-800 mt-2"><p class="text-[10px] font-bold text-amber-600 uppercase tracking-widest mb-1.5"><i class="fa-solid fa-note-sticky"></i> Catatan Pembeli</p><p class="text-sm text-amber-900 dark:text-amber-100 font-bold">${esc(o.customer.note)}</p></div>`:''}
+                    ${o.buktiPayment ? `<div class="bg-violet-50 dark:bg-violet-900/20 p-4 rounded-xl border border-violet-200 dark:border-violet-800 mt-2"><p class="text-[10px] font-bold text-violet-600 dark:text-violet-400 uppercase tracking-widest mb-2.5"><i class="fa-solid fa-image"></i> Bukti Pembayaran</p><a href="${esc(o.buktiPayment)}" target="_blank" class="block rounded-xl overflow-hidden border border-violet-200 dark:border-violet-800"><img src="${esc(o.buktiPayment)}" alt="Bukti Pembayaran" class="w-full max-h-48 object-cover" onerror="this.style.display='none'" loading="lazy"></i><div class="bg-violet-100 dark:bg-violet-900/40 py-2 text-center text-[10px] font-bold text-violet-600 dark:text-violet-400"><i class="fa-solid fa-arrow-up-right-from-square mr-1"></i> Tap untuk buka</div></a></div>` : ''}
                 </div>
             </div>
 
@@ -4936,32 +4936,32 @@ window.openOrderDetail = i => {
             <div class="flex flex-col gap-4">
 
             <div class="bg-white dark:bg-slate-800 p-5 sm:p-6 rounded-[1.5rem] border border-slate-200 dark:border-slate-700 shadow-sm">
-                <h4 class="font-black text-slate-900 dark:text-white text-sm border-b border-slate-100 dark:border-slate-700 pb-4 mb-4 flex items-center gap-3"><div class="w-8 h-8 rounded-xl bg-emerald-50 dark:bg-emerald-900/30 text-emerald-500 flex items-center justify-center border border-emerald-100 dark:border-emerald-800"><i class="fa-solid fa-box-open"></i></div> Rincian Item</h4>
+                <h4 class="font-bold text-slate-900 dark:text-white text-sm border-b border-slate-100 dark:border-slate-700 pb-4 mb-4 flex items-center gap-3"><div class="w-8 h-8 rounded-xl bg-emerald-50 dark:bg-emerald-900/30 text-emerald-500 flex items-center justify-center border border-emerald-100 dark:border-emerald-800"><i class="fa-solid fa-box-open"></i></div> Rincian Item</h4>
                 <div class="space-y-3">${o.items.map(t=>`
                     <div class="flex justify-between items-center bg-slate-50 dark:bg-slate-900 p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
                         <div class="flex items-center gap-3">
                             <div class="w-10 h-10 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 flex items-center justify-center text-slate-500 dark:text-slate-400 shrink-0"><i class="fa-solid fa-tag text-sm"></i></div>
                             <div>
-                                <p class="font-black text-sm text-slate-900 dark:text-white">${esc(t.name)} ${t.variantName?`<span class="bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-1.5 py-0.5 rounded-xl border border-slate-300 dark:border-slate-600 text-[9px] ml-1.5">${esc(t.variantName)}</span>`:''}${t.poTime?`<span class="bg-amber-100 dark:bg-amber-900/50 text-amber-600 dark:text-amber-400 px-1.5 py-0.5 rounded-xl text-[8px] font-bold border border-amber-200 dark:border-amber-800 uppercase ml-1.5 whitespace-nowrap">PO ${esc(t.poTime)}</span>`:''}</p>
+                                <p class="font-bold text-sm text-slate-900 dark:text-white">${esc(t.name)} ${t.variantName?`<span class="bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-1.5 py-0.5 rounded-xl border border-slate-300 dark:border-slate-600 text-[9px] ml-1.5">${esc(t.variantName)}</span>`:''}${t.poTime?`<span class="bg-amber-100 dark:bg-amber-900/50 text-amber-600 dark:text-amber-400 px-1.5 py-0.5 rounded-xl text-[8px] font-bold border border-amber-200 dark:border-amber-800 uppercase ml-1.5 whitespace-nowrap">PO ${esc(t.poTime)}</span>`:''}</p>
                                 <p class="text-[11px] text-slate-500 dark:text-slate-400 font-bold mt-1">${parseFloat(t.qty)} ${esc(t.unit||'pcs')} x ${fCur(t.effectivePrice)}</p>
                             </div>
                         </div>
-                        <div class="font-black text-sm text-slate-900 dark:text-white ml-3">${fCur(t.effectivePrice*parseFloat(t.qty))}</div>
+                        <div class="font-bold text-sm text-slate-900 dark:text-white ml-3">${fCur(t.effectivePrice*parseFloat(t.qty))}</div>
                     </div>`).join('')}
                 </div>
             </div>
 
             ${o.claimedReward ? `
             <div class="bg-violet-50 dark:bg-violet-900/10 p-5 sm:p-6 rounded-[1.5rem] border border-violet-200 dark:border-violet-800 shadow-sm">
-                <h4 class="font-black text-violet-700 dark:text-violet-400 text-sm border-b border-violet-200 dark:border-violet-800 pb-4 mb-4 flex items-center gap-3"><div class="w-8 h-8 rounded-xl bg-violet-100 dark:bg-violet-900/40 text-violet-500 flex items-center justify-center border border-violet-200 dark:border-violet-800"><i class="fa-solid fa-gift"></i></div> Klaim Hadiah</h4>
+                <h4 class="font-bold text-violet-700 dark:text-violet-400 text-sm border-b border-violet-200 dark:border-violet-800 pb-4 mb-4 flex items-center gap-3"><div class="w-8 h-8 rounded-xl bg-violet-100 dark:bg-violet-900/40 text-violet-500 flex items-center justify-center border border-violet-200 dark:border-violet-800"><i class="fa-solid fa-gift"></i></div> Klaim Hadiah</h4>
                 <div class="space-y-3">
-                    <div class="flex justify-between items-center"><span class="text-slate-500 dark:text-slate-400 font-bold text-xs">Hadiah</span><span class="font-black text-violet-700 dark:text-violet-400 text-sm">${esc(o.claimedReward.name)}</span></div>
-                    <div class="flex justify-between items-center"><span class="text-slate-500 dark:text-slate-400 font-bold text-xs">Poin Ditukar</span><span class="font-black text-slate-800 dark:text-white text-sm">${o.claimedReward.pointsCost} Poin</span></div>
-                    <div class="flex justify-between items-center"><span class="text-slate-500 dark:text-slate-400 font-bold text-xs">Status</span><span class="font-black text-xs px-2 py-1 rounded-xl ${o.claimedReward.status==='ready'?'bg-emerald-100 text-emerald-600':o.claimedReward.status==='waiting_stock'?'bg-amber-100 text-amber-600':'bg-slate-200 text-slate-600'}">${window.rewardStatusLabel(o.claimedReward)}</span></div>
+                    <div class="flex justify-between items-center"><span class="text-slate-500 dark:text-slate-400 font-bold text-xs">Hadiah</span><span class="font-bold text-violet-700 dark:text-violet-400 text-sm">${esc(o.claimedReward.name)}</span></div>
+                    <div class="flex justify-between items-center"><span class="text-slate-500 dark:text-slate-400 font-bold text-xs">Poin Ditukar</span><span class="font-bold text-slate-800 dark:text-white text-sm">${o.claimedReward.pointsCost} Poin</span></div>
+                    <div class="flex justify-between items-center"><span class="text-slate-500 dark:text-slate-400 font-bold text-xs">Status</span><span class="font-bold text-xs px-2 py-1 rounded-xl ${o.claimedReward.status==='ready'?'bg-emerald-100 text-emerald-600':o.claimedReward.status==='waiting_stock'?'bg-amber-100 text-amber-600':'bg-slate-200 text-slate-600'}">${window.rewardStatusLabel(o.claimedReward)}</span></div>
                     ${o.claimedReward.note ? `<div class="bg-white/70 dark:bg-slate-900/40 p-2.5 rounded-xl text-[11px] italic text-violet-600 dark:text-violet-400">"${esc(o.claimedReward.note)}"</div>` : ''}
                     <div class="border-t border-dashed border-violet-200 dark:border-violet-800 pt-3.5 mt-1 space-y-2.5">
-                        <button type="button" onclick="ackRewardClaim('${o.orderId}','ready')" class="w-full py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white text-[11px] font-black uppercase tracking-widest flex items-center justify-center gap-2 active:scale-95 transition-all"><i class="fa-solid fa-check"></i> Stok Ada — Kirim Bersama Pesanan</button>
-                        <button type="button" onclick="ackRewardClaim('${o.orderId}','waiting_stock')" class="w-full py-2.5 rounded-xl bg-amber-100 dark:bg-amber-900/30 hover:bg-amber-200 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-800 text-[11px] font-black uppercase tracking-widest flex items-center justify-center gap-2 active:scale-95 transition-all"><i class="fa-solid fa-clock"></i> Stok Kosong — Tunda Pengiriman</button>
+                        <button type="button" onclick="ackRewardClaim('${o.orderId}','ready')" class="w-full py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white text-[11px] font-bold uppercase tracking-widest flex items-center justify-center gap-2 active:scale-95 transition-all"><i class="fa-solid fa-check"></i> Stok Ada — Kirim Bersama Pesanan</button>
+                        <button type="button" onclick="ackRewardClaim('${o.orderId}','waiting_stock')" class="w-full py-2.5 rounded-xl bg-amber-100 dark:bg-amber-900/30 hover:bg-amber-200 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-800 text-[11px] font-bold uppercase tracking-widest flex items-center justify-center gap-2 active:scale-95 transition-all"><i class="fa-solid fa-clock"></i> Stok Kosong — Tunda Pengiriman</button>
                     </div>
                 </div>
             </div>` : ''}
@@ -4971,8 +4971,8 @@ window.openOrderDetail = i => {
                 <div class="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-emerald-900/20 to-transparent pointer-events-none"></div>
                 
                 <div class="flex justify-between items-center border-b border-slate-700/80 pb-4 mb-4 relative z-10">
-                    <h4 class="font-black text-[11px] uppercase tracking-widest text-slate-300 flex items-center gap-2.5"><i class="fa-solid fa-wallet text-emerald-400 text-sm"></i> Ringkasan Bayar</h4>
-                    <span class="bg-white/10 backdrop-blur-md px-3 py-1 rounded-xl text-[10px] font-black tracking-widest border border-white/10 uppercase shadow-inner text-white">${esc(o.payment?.method||'').toUpperCase()}</span>
+                    <h4 class="font-bold text-[11px] uppercase tracking-widest text-slate-300 flex items-center gap-2.5"><i class="fa-solid fa-wallet text-emerald-400 text-sm"></i> Ringkasan Bayar</h4>
+                    <span class="bg-white/10 backdrop-blur-md px-3 py-1 rounded-xl text-[10px] font-bold tracking-widest border border-white/10 uppercase shadow-inner text-white">${esc(o.payment?.method||'').toUpperCase()}</span>
                 </div>
                 
                 <div class="space-y-3 font-medium text-sm text-slate-300 relative z-10">
@@ -4986,8 +4986,8 @@ window.openOrderDetail = i => {
                 <div class="border-t border-dashed border-slate-600/60 my-5 relative z-10"></div>
                 
                 <div class="flex justify-between items-end relative z-10">
-                    <span class="text-sm font-black text-slate-400 uppercase tracking-widest mb-1">Total Tagihan</span>
-                    <span class="text-3xl font-black bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-primary-dark)] bg-clip-text text-transparent tracking-tight drop-shadow-md">${fCur(o.payment?.grandTotal)}</span>
+                    <span class="text-sm font-bold text-slate-400 uppercase tracking-widest mb-1">Total Tagihan</span>
+                    <span class="text-3xl font-bold bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-primary-dark)] bg-clip-text text-transparent tracking-tight drop-shadow-md">${fCur(o.payment?.grandTotal)}</span>
                 </div>
             </div>
 
@@ -5232,7 +5232,7 @@ window.rAdmSet = () => {
                     <i class="fa-solid fa-sliders text-base"></i>
                 </div>
                 <div>
-                    <h2 class="font-black text-sm text-slate-800 dark:text-slate-100 uppercase tracking-widest leading-tight">Pengaturan Toko</h2>
+                    <h2 class="font-bold text-sm text-slate-800 dark:text-slate-100 uppercase tracking-widest leading-tight">Pengaturan Toko</h2>
                     <p class="text-[9px] font-bold text-slate-500 mt-0.5">Pilih menu konfigurasi di bawah</p>
                 </div>
             </div>
@@ -5241,35 +5241,35 @@ window.rAdmSet = () => {
         <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 sm:gap-6 lg:gap-8 mb-6">
             <button onclick="openSettingForm('profile')" class="card-modern p-5 flex flex-col items-center justify-center text-center gap-2.5 hover:-translate-y-1.5 hover:border-[rgba(var(--color-primary-rgb),0.4)] hover:shadow-xl transition-all duration-300 group relative overflow-hidden">
                 <div class="w-12 h-12 rounded-2xl flex items-center justify-center shadow-inner group-hover:scale-110 group-hover:text-white transition-all duration-300 z-10" style="background: rgba(var(--color-primary-rgb),0.1); color: var(--color-primary)" onmouseover="this.style.background='var(--color-primary)'" onmouseout="this.style.background='rgba(var(--color-primary-rgb),0.1)'"><i class="fa-solid fa-store text-xl"></i></div>
-                <span class="font-black text-slate-700 dark:text-slate-200 uppercase tracking-widest text-[9px] sm:text-[10px] z-10">Profil Toko</span>
+                <span class="font-bold text-slate-700 dark:text-slate-200 uppercase tracking-widest text-[9px] sm:text-[10px] z-10">Profil Toko</span>
             </button>
             <button onclick="openSettingForm('catalog')" class="card-modern p-5 flex flex-col items-center justify-center text-center gap-2.5 hover:-translate-y-1.5 hover:border-blue-300 dark:hover:border-blue-600 hover:shadow-xl transition-all duration-300 group relative overflow-hidden">
                 <div class="w-12 h-12 rounded-2xl bg-blue-50 dark:bg-blue-900/30 text-blue-500 flex items-center justify-center shadow-inner group-hover:scale-110 group-hover:bg-blue-500 group-hover:text-white transition-all duration-300 z-10"><i class="fa-solid fa-palette text-xl"></i></div>
-                <span class="font-black text-slate-700 dark:text-slate-200 uppercase tracking-widest text-[9px] sm:text-[10px] z-10">Kategori UI UX</span>
+                <span class="font-bold text-slate-700 dark:text-slate-200 uppercase tracking-widest text-[9px] sm:text-[10px] z-10">Kategori UI UX</span>
             </button>
             <button onclick="openSettingForm('shipping')" class="card-modern p-5 flex flex-col items-center justify-center text-center gap-2.5 hover:-translate-y-1.5 hover:border-amber-300 dark:hover:border-amber-600 hover:shadow-xl transition-all duration-300 group relative overflow-hidden">
                 <div class="w-12 h-12 rounded-2xl bg-amber-50 dark:bg-amber-900/30 text-amber-500 flex items-center justify-center shadow-inner group-hover:scale-110 group-hover:bg-amber-500 group-hover:text-white transition-all duration-300 z-10"><i class="fa-solid fa-motorcycle text-xl"></i></div>
-                <span class="font-black text-slate-700 dark:text-slate-200 uppercase tracking-widest text-[9px] sm:text-[10px] z-10">Pengiriman</span>
+                <span class="font-bold text-slate-700 dark:text-slate-200 uppercase tracking-widest text-[9px] sm:text-[10px] z-10">Pengiriman</span>
             </button>
             <button onclick="openSettingForm('payment')" class="card-modern p-5 flex flex-col items-center justify-center text-center gap-2.5 hover:-translate-y-1.5 hover:border-indigo-300 dark:hover:border-indigo-600 hover:shadow-xl transition-all duration-300 group relative overflow-hidden">
                 <div class="w-12 h-12 rounded-2xl bg-indigo-50 dark:bg-indigo-900/30 text-indigo-500 flex items-center justify-center shadow-inner group-hover:scale-110 group-hover:bg-indigo-500 group-hover:text-white transition-all duration-300 z-10"><i class="fa-solid fa-qrcode text-xl"></i></div>
-                <span class="font-black text-slate-700 dark:text-slate-200 uppercase tracking-widest text-[9px] sm:text-[10px] z-10">QRIS Pay</span>
+                <span class="font-bold text-slate-700 dark:text-slate-200 uppercase tracking-widest text-[9px] sm:text-[10px] z-10">QRIS Pay</span>
             </button>
             <button onclick="openSettingForm('config')" class="card-modern p-5 flex flex-col items-center justify-center text-center gap-2.5 hover:-translate-y-1.5 hover:border-rose-300 dark:hover:border-rose-600 hover:shadow-xl transition-all duration-300 group relative overflow-hidden">
                 <div class="w-12 h-12 rounded-2xl bg-rose-50 dark:bg-rose-900/30 text-rose-500 flex items-center justify-center shadow-inner group-hover:scale-110 group-hover:bg-rose-500 group-hover:text-white transition-all duration-300 z-10"><i class="fa-solid fa-laptop-code text-xl"></i></div>
-                <span class="font-black text-slate-700 dark:text-slate-200 uppercase tracking-widest text-[9px] sm:text-[10px] z-10">Sistem & API</span>
+                <span class="font-bold text-slate-700 dark:text-slate-200 uppercase tracking-widest text-[9px] sm:text-[10px] z-10">Sistem & API</span>
             </button>
             <button onclick="openSettingForm('operasional')" class="card-modern p-5 flex flex-col items-center justify-center text-center gap-2.5 hover:-translate-y-1.5 hover:border-violet-300 dark:hover:border-violet-600 hover:shadow-xl transition-all duration-300 group relative overflow-hidden">
                 <div class="w-12 h-12 rounded-2xl bg-violet-50 dark:bg-violet-900/30 text-violet-500 flex items-center justify-center shadow-inner group-hover:scale-110 group-hover:bg-violet-500 group-hover:text-white transition-all duration-300 z-10"><i class="fa-solid fa-sliders text-xl"></i></div>
-                <span class="font-black text-slate-700 dark:text-slate-200 uppercase tracking-widest text-[9px] sm:text-[10px] z-10">Operasional</span>
+                <span class="font-bold text-slate-700 dark:text-slate-200 uppercase tracking-widest text-[9px] sm:text-[10px] z-10">Operasional</span>
             </button>
         </div>
 
         <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
-            <h3 class="font-black text-slate-700 dark:text-white mb-4 text-[10px] uppercase tracking-widest flex items-center gap-2"><i class="fa-solid fa-database" style="color: var(--color-primary)"></i> Pencadangan Data</h3>
+            <h3 class="font-bold text-slate-700 dark:text-white mb-4 text-[10px] uppercase tracking-widest flex items-center gap-2"><i class="fa-solid fa-database" style="color: var(--color-primary)"></i> Pencadangan Data</h3>
             <div class="flex flex-col sm:flex-row gap-3">
-                <button onclick="backupData()" class="flex-1 bg-slate-900 dark:bg-slate-950 text-white font-black py-3.5 rounded-xl transition-all text-xs flex items-center justify-center gap-2 border border-slate-800 shadow-sm active:scale-95 hover:opacity-90"><i class="fa-solid fa-download"></i> Backup Lokal (.json)</button>
-                <button onclick="el('restore-file').click()" class="flex-1 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-slate-700 dark:text-slate-300 font-black py-3.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-600 transition-all text-xs flex items-center justify-center gap-2 shadow-sm active:scale-95"><i class="fa-solid fa-upload"></i> Restore Data</button>
+                <button onclick="backupData()" class="flex-1 bg-slate-900 dark:bg-slate-950 text-white font-bold py-3.5 rounded-xl transition-all text-xs flex items-center justify-center gap-2 border border-slate-800 shadow-sm active:scale-95 hover:opacity-90"><i class="fa-solid fa-download"></i> Backup Lokal (.json)</button>
+                <button onclick="el('restore-file').click()" class="flex-1 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-slate-700 dark:text-slate-300 font-bold py-3.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-600 transition-all text-xs flex items-center justify-center gap-2 shadow-sm active:scale-95"><i class="fa-solid fa-upload"></i> Restore Data</button>
             </div>
         </div>
     </div>
@@ -5285,10 +5285,10 @@ window.openSettingForm = (type) => {
         title = "Profil Toko & Tampilan"; icon = "fa-store"; 
         colorTheme = { line: "bg-[var(--color-primary)]", box: "bg-[rgba(var(--color-primary-rgb),0.08)] text-[var(--color-primary)]" };
         formContent = `
-            <div><label class="block text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Nama Toko (Nama Aplikasi)</label><input autocomplete='off' id="set-name" value="${esc(appData.store.name)}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm"></div>
+            <div><label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Nama Toko (Nama Aplikasi)</label><input autocomplete='off' id="set-name" value="${esc(appData.store.name)}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm"></div>
             
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                <div><label class="block text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Warna Tema UI Web</label>
+                <div><label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Warna Tema UI Web</label>
                     <div class="relative">
                         <select id="set-ui-theme" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm cursor-pointer appearance-none pr-10">
                             <option value="emerald" ${(appData.store.uiTheme||'emerald')==='emerald'?'selected':''}>Hijau Emerald (Default)</option>
@@ -5315,7 +5315,7 @@ window.openSettingForm = (type) => {
                     </div>
                 </div>
 
-                <div><label class="block text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Warna Header App (PWA)</label>
+                <div><label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Warna Header App (PWA)</label>
                     <div class="flex gap-3">
                         <input type="color" id="set-theme-color-picker" value="${esc(appData.store.themeColor || '#10b981')}" class="w-14 h-12 rounded-xl cursor-pointer shadow-sm border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-1" oninput="document.getElementById('set-theme-color').value = this.value">
                         <input autocomplete='off' id="set-theme-color" value="${esc(appData.store.themeColor || '#10b981')}" class="admin-input !py-3.5 uppercase font-mono flex-1 shadow-sm bg-slate-50 dark:bg-slate-900" oninput="document.getElementById('set-theme-color-picker').value = this.value" placeholder="#10b981">
@@ -5323,15 +5323,15 @@ window.openSettingForm = (type) => {
                 </div>
             </div>
 
-            <div><label class="block text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Slogan Toko</label><input autocomplete='off' id="set-slogan" value="${esc(appData.store.slogan)}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm"></div>
+            <div><label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Slogan Toko</label><input autocomplete='off' id="set-slogan" value="${esc(appData.store.slogan)}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm"></div>
             <div>
-                <label class="block text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Logo Toko (Ikon Aplikasi)</label>
+                <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Logo Toko (Ikon Aplikasi)</label>
                 <div class="flex gap-3">
                     <input autocomplete='off' id="set-logo" value="${esc(appData.store.logo)}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 flex-1 shadow-sm" placeholder="URL Gambar / fa-icon">
                     <label class="bg-white hover:bg-slate-50 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-300 rounded-xl px-5 flex items-center justify-center cursor-pointer transition-all shrink-0 active:scale-95 shadow-sm font-bold"><i class="fa-solid fa-cloud-arrow-up sm:mr-2"></i> <span class="hidden sm:inline">Upload</span><input type="file" accept="image/*" class="hidden" onchange="handleImageUpload(this, 'set-logo')"></label>
                 </div>
             </div>
-            <div><label class="block text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Deskripsi Usaha (Footer)</label><textarea autocomplete='off' id="set-description" class="admin-input resize-none !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm" rows="3" placeholder="Deskripsi untuk footer...">${esc(appData.store.description || '')}</textarea></div>
+            <div><label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Deskripsi Usaha (Footer)</label><textarea autocomplete='off' id="set-description" class="admin-input resize-none !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm" rows="3" placeholder="Deskripsi untuk footer...">${esc(appData.store.description || '')}</textarea></div>
         `;
     } 
     else if (type === 'catalog') {
@@ -5339,22 +5339,22 @@ window.openSettingForm = (type) => {
         colorTheme = { line: "bg-blue-500", box: "bg-blue-50 text-blue-500 dark:bg-blue-900/30" };
         formContent = `
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                <div><label class="block text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Fitur Kategori</label><div class="relative"><select id="set-show-categories" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm cursor-pointer appearance-none pr-10"><option value="true" ${appData.store.showCategories!==false?'selected':''}>Tampilkan</option><option value="false" ${appData.store.showCategories===false?'selected':''}>Sembunyikan</option></select><i class="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-[10px]"></i></div></div>
-                <div><label class="block text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Fitur Merek</label><div class="relative"><select id="set-show-brands" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm cursor-pointer appearance-none pr-10"><option value="true" ${appData.store.showBrands!==false?'selected':''}>Tampilkan</option><option value="false" ${appData.store.showBrands===false?'selected':''}>Sembunyikan</option></select><i class="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-[10px]"></i></div></div>
+                <div><label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Fitur Kategori</label><div class="relative"><select id="set-show-categories" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm cursor-pointer appearance-none pr-10"><option value="true" ${appData.store.showCategories!==false?'selected':''}>Tampilkan</option><option value="false" ${appData.store.showCategories===false?'selected':''}>Sembunyikan</option></select><i class="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-[10px]"></i></div></div>
+                <div><label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Fitur Merek</label><div class="relative"><select id="set-show-brands" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm cursor-pointer appearance-none pr-10"><option value="true" ${appData.store.showBrands!==false?'selected':''}>Tampilkan</option><option value="false" ${appData.store.showBrands===false?'selected':''}>Sembunyikan</option></select><i class="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-[10px]"></i></div></div>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                <div><label class="block text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Gaya Kategori</label><div class="relative"><select id="set-category-style" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm cursor-pointer appearance-none pr-10"><option value="image" ${appData.store.categoryStyle!=='text'?'selected':''}>Kartu Gambar</option><option value="text" ${appData.store.categoryStyle==='text'?'selected':''}>Pill Text</option></select><i class="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-[10px]"></i></div></div>
-                <div><label class="block text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Gaya Merek</label><div class="relative"><select id="set-brand-style" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm cursor-pointer appearance-none pr-10"><option value="image" ${(appData.store.brandStyle||'image')==='image'?'selected':''}>Kartu Gambar</option><option value="text" ${appData.store.brandStyle==='text'?'selected':''}>Pill Text</option></select><i class="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-[10px]"></i></div></div>
+                <div><label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Gaya Kategori</label><div class="relative"><select id="set-category-style" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm cursor-pointer appearance-none pr-10"><option value="image" ${appData.store.categoryStyle!=='text'?'selected':''}>Kartu Gambar</option><option value="text" ${appData.store.categoryStyle==='text'?'selected':''}>Pill Text</option></select><i class="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-[10px]"></i></div></div>
+                <div><label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Gaya Merek</label><div class="relative"><select id="set-brand-style" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm cursor-pointer appearance-none pr-10"><option value="image" ${(appData.store.brandStyle||'image')==='image'?'selected':''}>Kartu Gambar</option><option value="text" ${appData.store.brandStyle==='text'?'selected':''}>Pill Text</option></select><i class="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-[10px]"></i></div></div>
             </div>
             <div>
-                <label class="block text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Ikon "Semua Produk"</label>
+                <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Ikon "Semua Produk"</label>
                 <div class="flex gap-3">
                     <input autocomplete='off' id="set-all-cat-icon" value="${esc(appData.store.allProductsIcon||'')}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 flex-1 shadow-sm" placeholder="Kosongkan utk Auto...">
                     <label class="bg-white hover:bg-slate-50 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-300 rounded-xl px-5 flex items-center justify-center cursor-pointer transition-all shrink-0 active:scale-95 shadow-sm font-bold"><i class="fa-solid fa-cloud-arrow-up sm:mr-2"></i> <span class="hidden sm:inline">Upload</span><input type="file" accept="image/*" class="hidden" onchange="handleImageUpload(this, 'set-all-cat-icon')"></label>
                 </div>
             </div>
             <div>
-                <label class="block text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Ikon "Semua Merek"</label>
+                <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Ikon "Semua Merek"</label>
                 <div class="flex gap-3">
                     <input autocomplete='off' id="set-all-brand-icon" value="${esc(appData.store.allBrandsIcon||'')}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 flex-1 shadow-sm" placeholder="Kosongkan utk Auto...">
                     <label class="bg-white hover:bg-slate-50 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-300 rounded-xl px-5 flex items-center justify-center cursor-pointer transition-all shrink-0 active:scale-95 shadow-sm font-bold"><i class="fa-solid fa-cloud-arrow-up sm:mr-2"></i> <span class="hidden sm:inline">Upload</span><input type="file" accept="image/*" class="hidden" onchange="handleImageUpload(this, 'set-all-brand-icon')"></label>
@@ -5367,16 +5367,16 @@ window.openSettingForm = (type) => {
         colorTheme = { line: "bg-amber-500", box: "bg-amber-50 text-amber-500 dark:bg-amber-900/30" };
         formContent = `
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                <div><label class="block text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Nomor WhatsApp Admin</label><input autocomplete='off' id="set-wa" value="${esc(appData.store.wa)}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm" placeholder="Contoh: 0812..."></div>
-                <div><label class="block text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Tarif Ongkir per KM (Rp)</label><input autocomplete='off' type="number" id="set-cost" value="${appData.store.costPerKm||0}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm"></div>
+                <div><label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Nomor WhatsApp Admin</label><input autocomplete='off' id="set-wa" value="${esc(appData.store.wa)}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm" placeholder="Contoh: 0812..."></div>
+                <div><label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Tarif Ongkir per KM (Rp)</label><input autocomplete='off' type="number" id="set-cost" value="${appData.store.costPerKm||0}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm"></div>
             </div>
-            <div><label class="block text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Alamat Fisik Toko</label><textarea autocomplete='off' id="set-address" class="admin-input !py-3.5 resize-none bg-slate-50 dark:bg-slate-900 shadow-sm" rows="2">${esc(appData.store.address)}</textarea></div>
+            <div><label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Alamat Fisik Toko</label><textarea autocomplete='off' id="set-address" class="admin-input !py-3.5 resize-none bg-slate-50 dark:bg-slate-900 shadow-sm" rows="2">${esc(appData.store.address)}</textarea></div>
             <div class="grid grid-cols-2 gap-5">
-                <div><label class="block text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Sistem Kurir</label><div class="relative"><select id="set-delivery-enabled" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm cursor-pointer appearance-none pr-10"><option value="true" ${appData.store.isDeliveryEnabled!==false?'selected':''}>Aktif</option><option value="false" ${appData.store.isDeliveryEnabled===false?'selected':''}>Nonaktif</option></select><i class="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-[10px]"></i></div></div>
-                <div><label class="block text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Ambil Sendiri</label><div class="relative"><select id="set-pickup-enabled" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm cursor-pointer appearance-none pr-10"><option value="true" ${appData.store.isPickupEnabled!==false?'selected':''}>Aktif</option><option value="false" ${appData.store.isPickupEnabled===false?'selected':''}>Nonaktif</option></select><i class="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-[10px]"></i></div></div>
+                <div><label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Sistem Kurir</label><div class="relative"><select id="set-delivery-enabled" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm cursor-pointer appearance-none pr-10"><option value="true" ${appData.store.isDeliveryEnabled!==false?'selected':''}>Aktif</option><option value="false" ${appData.store.isDeliveryEnabled===false?'selected':''}>Nonaktif</option></select><i class="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-[10px]"></i></div></div>
+                <div><label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Ambil Sendiri</label><div class="relative"><select id="set-pickup-enabled" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm cursor-pointer appearance-none pr-10"><option value="true" ${appData.store.isPickupEnabled!==false?'selected':''}>Aktif</option><option value="false" ${appData.store.isPickupEnabled===false?'selected':''}>Nonaktif</option></select><i class="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-[10px]"></i></div></div>
             </div>
             <div>
-                <label class="block text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest"><i class="fa-solid fa-map-pin mr-1"></i> Titik Koordinat Toko (GPS)</label>
+                <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest"><i class="fa-solid fa-map-pin mr-1"></i> Titik Koordinat Toko (GPS)</label>
                 <input autocomplete='off' id="set-coords" onchange="autoParseCoords(this)" class="admin-input !py-3.5 mb-3 bg-slate-50 dark:bg-slate-900 shadow-sm" placeholder="Paste Lat,Lng dari Google Maps...">
                 <div class="flex gap-3">
                     <input autocomplete='off' id="set-lat" value="${appData.store.lat}" class="admin-input !py-3.5 flex-1 text-xs font-mono bg-slate-100/50 dark:bg-slate-800/50 shadow-inner" readonly="readonly" placeholder="Latitude">
@@ -5390,7 +5390,7 @@ window.openSettingForm = (type) => {
         colorTheme = { line: "bg-indigo-500", box: "bg-indigo-50 text-indigo-500 dark:bg-indigo-900/30" };
         formContent = `
             <div>
-                <label class="block text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Gambar QR Code Standar Nasional</label>
+                <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Gambar QR Code Standar Nasional</label>
                 <div class="flex gap-3 mb-5">
                     <input autocomplete='off' id="set-qris-url" value="${esc(appData.payment.qrisUrl)}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 flex-1 shadow-sm" placeholder="URL QRIS...">
                     <label class="bg-white hover:bg-slate-50 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-300 rounded-xl px-5 flex items-center justify-center cursor-pointer transition-all shrink-0 active:scale-95 shadow-sm font-bold"><i class="fa-solid fa-cloud-arrow-up sm:mr-2"></i> <span class="hidden sm:inline">Upload</span><input type="file" accept="image/*" class="hidden" onchange="handleImageUpload(this, 'set-qris-url')"></label>
@@ -5413,24 +5413,24 @@ window.openSettingForm = (type) => {
             </div>
             
             <div>
-                <label class="block text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">URL Google Apps Script (GS URL)</label>
+                <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">URL Google Apps Script (GS URL)</label>
                 <input autocomplete='off' id="set-gas-url" value="${esc(savedGas)}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm font-mono text-[11px]" placeholder="https://script.google.com/macros/s/.../exec">
                 <p class="text-[9px] font-bold text-slate-400 mt-1.5">* Digunakan sebagai endpoint untuk sistem upload gambar.</p>
             </div>
 
             <div class="border-t border-dashed border-slate-200 dark:border-slate-700 my-6"></div>
             
-            <h4 class="font-black text-slate-800 dark:text-white mb-4 text-[11px] uppercase tracking-widest flex items-center gap-2"><i class="fa-solid fa-fire text-amber-500"></i> Firebase Configuration</h4>
+            <h4 class="font-bold text-slate-800 dark:text-white mb-4 text-[11px] uppercase tracking-widest flex items-center gap-2"><i class="fa-solid fa-fire text-amber-500"></i> Firebase Configuration</h4>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                <div><label class="block text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">API Key</label><input id="set-fb-apikey" value="${esc(fbC.apiKey)}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm text-xs font-mono"></div>
-                <div><label class="block text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Auth Domain</label><input id="set-fb-auth" value="${esc(fbC.authDomain)}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm text-xs font-mono"></div>
-                <div class="sm:col-span-2"><label class="block text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Database URL</label><input id="set-fb-db" value="${esc(fbC.databaseURL)}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm text-xs font-mono"></div>
-                <div><label class="block text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Project ID</label><input id="set-fb-pid" value="${esc(fbC.projectId)}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm text-xs font-mono"></div>
-                <div><label class="block text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Storage Bucket</label><input id="set-fb-storage" value="${esc(fbC.storageBucket)}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm text-xs font-mono"></div>
-                <div><label class="block text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Messaging Sender ID</label><input id="set-fb-msg" value="${esc(fbC.messagingSenderId)}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm text-xs font-mono"></div>
-                <div><label class="block text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">App ID</label><input id="set-fb-app" value="${esc(fbC.appId)}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm text-xs font-mono"></div>
-                <div class="sm:col-span-2"><label class="block text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Measurement ID</label><input id="set-fb-measure" value="${esc(fbC.measurementId)}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm text-xs font-mono"></div>
+                <div><label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">API Key</label><input id="set-fb-apikey" value="${esc(fbC.apiKey)}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm text-xs font-mono"></div>
+                <div><label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Auth Domain</label><input id="set-fb-auth" value="${esc(fbC.authDomain)}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm text-xs font-mono"></div>
+                <div class="sm:col-span-2"><label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Database URL</label><input id="set-fb-db" value="${esc(fbC.databaseURL)}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm text-xs font-mono"></div>
+                <div><label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Project ID</label><input id="set-fb-pid" value="${esc(fbC.projectId)}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm text-xs font-mono"></div>
+                <div><label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Storage Bucket</label><input id="set-fb-storage" value="${esc(fbC.storageBucket)}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm text-xs font-mono"></div>
+                <div><label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Messaging Sender ID</label><input id="set-fb-msg" value="${esc(fbC.messagingSenderId)}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm text-xs font-mono"></div>
+                <div><label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">App ID</label><input id="set-fb-app" value="${esc(fbC.appId)}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm text-xs font-mono"></div>
+                <div class="sm:col-span-2"><label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Measurement ID</label><input id="set-fb-measure" value="${esc(fbC.measurementId)}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm text-xs font-mono"></div>
             </div>
         `;
     }
@@ -5446,7 +5446,7 @@ window.openSettingForm = (type) => {
             <div class="space-y-8">
                 <!-- Stok -->
                 <div>
-                    <h4 class="font-black text-slate-800 dark:text-white text-[11px] uppercase tracking-widest mb-4 flex items-center gap-2"><i class="fa-solid fa-boxes-stacked text-blue-500"></i> Manajemen Stok</h4>
+                    <h4 class="font-bold text-slate-800 dark:text-white text-[11px] uppercase tracking-widest mb-4 flex items-center gap-2"><i class="fa-solid fa-boxes-stacked text-blue-500"></i> Manajemen Stok</h4>
                     <div class="relative mb-3"><select id="set-use-stock" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm cursor-pointer appearance-none pr-10">
                         <option value="true" ${useStockCur?'selected':''}>Aktif — Stok divalidasi dan dikurangi tiap order</option>
                         <option value="false" ${!useStockCur?'selected':''}>Nonaktif — Produk bebas dibeli tanpa cek stok</option>
@@ -5458,17 +5458,17 @@ window.openSettingForm = (type) => {
 
                 <!-- PPN -->
                 <div>
-                    <h4 class="font-black text-slate-800 dark:text-white text-[11px] uppercase tracking-widest mb-4 flex items-center gap-2"><i class="fa-solid fa-percent text-amber-500"></i> Pajak PPN</h4>
+                    <h4 class="font-bold text-slate-800 dark:text-white text-[11px] uppercase tracking-widest mb-4 flex items-center gap-2"><i class="fa-solid fa-percent text-amber-500"></i> Pajak PPN</h4>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-3">
                         <div>
-                            <label class="block text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Status PPN</label>
+                            <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Status PPN</label>
                             <div class="relative"><select id="set-ppn-enabled" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm cursor-pointer appearance-none pr-10">
                                 <option value="true" ${ppnOnCur?'selected':''}>Aktif</option>
                                 <option value="false" ${!ppnOnCur?'selected':''}>Nonaktif</option>
                             </select><i class="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-[10px]"></i></div>
                         </div>
                         <div>
-                            <label class="block text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Persentase PPN (%)</label>
+                            <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Persentase PPN (%)</label>
                             <input autocomplete='off' type="number" id="set-ppn-rate" min="0" max="100" step="0.1" value="${ppnRateCur}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm" placeholder="11">
                         </div>
                     </div>
@@ -5490,7 +5490,7 @@ window.openSettingForm = (type) => {
         <div class="bg-white dark:bg-slate-800 rounded-[1.5rem] border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden flex flex-col relative mb-6">
             <div class="absolute top-0 left-0 w-full h-1.5 ${colorTheme.line}"></div>
             <div class="p-6 sm:p-8 flex-1 mt-2">
-                <h3 class="font-black text-slate-800 dark:text-white mb-6 flex items-center gap-3">
+                <h3 class="font-bold text-slate-800 dark:text-white mb-6 flex items-center gap-3">
                     <div class="w-10 h-10 rounded-xl ${colorTheme.box} flex items-center justify-center"><i class="fa-solid ${icon}"></i></div> 
                     ${title}
                 </h3>
@@ -5617,7 +5617,7 @@ window.rAdmL = t => {
                     <input autocomplete='off' id="admin-search-input" name='cari_admin_q' placeholder="Cari..." oninput="aSq=this.value.toLowerCase();rAdmItms('${t}')" class="w-full bg-white dark:bg-slate-800 border-[1.5px] border-slate-200 dark:border-slate-700 rounded-2xl py-3.5 pl-11 pr-12 text-sm font-bold text-slate-700 dark:text-slate-200 focus:outline-none focus:border-[var(--color-primary)] focus:shadow-[0_0_0_3px_rgba(var(--color-primary-rgb),0.12)] shadow-sm transition-all" ></i>
                     <button onclick="openCameraScanner('admin-search-input')" class="absolute right-2.5 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center text-slate-400 hover:text-[var(--color-primary)] hover:bg-[rgba(var(--color-primary-rgb),0.08)] rounded-xl transition-all" title="Scan Barcode"><i class="fa-solid fa-qrcode text-sm"></i></button>
                 </div>
-                <button onclick="oAAdd()" class="h-[46px] px-5 rounded-2xl text-white font-black text-sm flex items-center gap-2 shadow-glow active:scale-95 transition-all shrink-0" style="background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark))"><i class="fa-solid fa-plus text-xs"></i> Tambah</button>
+                <button onclick="oAAdd()" class="h-[46px] px-5 rounded-2xl text-white font-bold text-sm flex items-center gap-2 shadow-glow active:scale-95 transition-all shrink-0" style="background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark))"><i class="fa-solid fa-plus text-xs"></i> Tambah</button>
             </div>
         </div>
         <div id="admin-list-container" class="space-y-3 pb-12"></div>
@@ -5643,20 +5643,20 @@ window.rAdmItms = t => {
         setH('admin-product-stats', `
             <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
                 <div class="card-modern p-5 sm:p-5">
-                    <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1.5"><i class="fa-solid fa-box mr-1"></i>Produk Aktif</p>
-                    <p class="text-lg sm:text-xl font-black text-slate-800 dark:text-white">${st.activeProd}</p>
+                    <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1.5"><i class="fa-solid fa-box mr-1"></i>Produk Aktif</p>
+                    <p class="text-lg sm:text-xl font-bold text-slate-800 dark:text-white">${st.activeProd}</p>
                 </div>
                 <div class="card-modern p-5 sm:p-5">
-                    <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1.5"><i class="fa-solid fa-layer-group mr-1"></i>Varian Aktif</p>
-                    <p class="text-lg sm:text-xl font-black text-slate-800 dark:text-white">${st.activeVar}</p>
+                    <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1.5"><i class="fa-solid fa-layer-group mr-1"></i>Varian Aktif</p>
+                    <p class="text-lg sm:text-xl font-bold text-slate-800 dark:text-white">${st.activeVar}</p>
                 </div>
                 <div class="card-modern p-5 sm:p-5">
-                    <p class="text-[9px] font-black text-amber-500 uppercase tracking-widest mb-1.5"><i class="fa-solid fa-triangle-exclamation mr-1"></i>Kosong / Nonaktif</p>
-                    <p class="text-lg sm:text-xl font-black text-amber-500">${st.inactiveProd + st.inactiveVar}</p>
+                    <p class="text-[9px] font-bold text-amber-500 uppercase tracking-widest mb-1.5"><i class="fa-solid fa-triangle-exclamation mr-1"></i>Kosong / Nonaktif</p>
+                    <p class="text-lg sm:text-xl font-bold text-amber-500">${st.inactiveProd + st.inactiveVar}</p>
                     <p class="text-[10px] font-bold text-slate-400 mt-1">${st.inactiveProd} produk, ${st.inactiveVar} varian</p>
                 </div>
                 <div class="card-modern p-5 sm:p-5 bg-slate-50 dark:bg-slate-800/40">
-                    <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1.5"><i class="fa-solid fa-warehouse mr-1"></i>Total Aset Gudang</p>
+                    <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1.5"><i class="fa-solid fa-warehouse mr-1"></i>Total Aset Gudang</p>
                     <p class="text-[10px] font-bold text-slate-500 dark:text-slate-400">Modal (HPP): <b class="text-slate-700 dark:text-slate-200">${fCur(st.assetHpp)}</b></p>
                     <p class="text-[10px] font-bold text-slate-500 dark:text-slate-400 mt-0.5">Harga Jual: <b class="text-slate-700 dark:text-slate-200">${fCur(st.assetJual)}</b></p>
                 </div>
@@ -5711,16 +5711,16 @@ window.rAdmItms = t => {
             <div class="flex items-start sm:items-center gap-4 min-w-0 w-full">
                 ${img}
                 <div class="min-w-0 flex flex-col justify-center py-1">
-                    <p class="text-xs sm:text-sm font-black ${tC} line-clamp-2 uppercase tracking-wide leading-snug mb-1.5">${esc(x.name||x.title||x.bankName||x.code||'Item')}</p>
-                    ${isP ? `<p class="text-sm sm:text-base font-black text-emerald-600 dark:text-emerald-400 tracking-tight">${fCur(x.price)}</p>` : ''}
+                    <p class="text-xs sm:text-sm font-bold ${tC} line-clamp-2 uppercase tracking-wide leading-snug mb-1.5">${esc(x.name||x.title||x.bankName||x.code||'Item')}</p>
+                    ${isP ? `<p class="text-sm sm:text-base font-bold text-emerald-600 dark:text-emerald-400 tracking-tight">${fCur(x.price)}</p>` : ''}
                     ${isP && window.isAdm && useStockEnabled ? `<p class="text-[10px] font-bold mt-1 ${(x.variants&&x.variants.length?x.variants.reduce((s,v)=>s+(parseFloat(v.stock)||0),0):parseFloat(x.stock)||0) === 0 ? 'text-rose-500 animate-pulse' : 'text-blue-500'}"><i class="fa-solid fa-boxes-stacked mr-1"></i>Stok: ${x.variants&&x.variants.length ? x.variants.reduce((s,v)=>s+(parseFloat(v.stock)||0),0).toFixed(2).replace(/\.?0+$/,'') : (parseFloat(x.stock)||0)}</p>` : ''}
                     ${isP && window.isAdm && x.hpp ? `<p class="text-[10px] font-bold text-amber-500 mt-0.5"><i class="fa-solid fa-coins mr-1"></i>HPP: ${fCur(x.hpp)}</p>` : ''}
                     ${isP ? (() => {
                         const sold = x.variants && x.variants.length ? x.variants.reduce((s,vv)=>s+(parseFloat(vv.totalSold)||0),0) : (parseFloat(x.totalSold)||0);
                         return sold > 0 ? `<p class="text-[10px] font-bold text-orange-400 mt-0.5"><i class="fa-solid fa-fire-flame-curved mr-1"></i>Terjual: ${sold}</p>` : '';
                     })() : ''}
-                    ${t==='customers' ? `<p class="text-xs font-bold text-slate-500 dark:text-slate-400"><i class="fa-brands fa-whatsapp text-emerald-500 mr-1"></i>+${esc(x.phone)}</p><p class="text-[11px] font-black text-violet-500 mt-0.5"><i class="fa-solid fa-star mr-1"></i>${(parseFloat(x.points)||0)} Poin</p>` : ''}
-                    ${t==='rewards' ? `<p class="text-sm font-black text-violet-500"><i class="fa-solid fa-star mr-1"></i>${(parseFloat(x.pointsCost)||0)} Poin</p><p class="text-[10px] font-bold text-slate-500 mt-0.5"><i class="fa-solid fa-boxes-stacked mr-1"></i>Stok: ${parseFloat(x.stock)||0}</p>` : ''}
+                    ${t==='customers' ? `<p class="text-xs font-bold text-slate-500 dark:text-slate-400"><i class="fa-brands fa-whatsapp text-emerald-500 mr-1"></i>+${esc(x.phone)}</p><p class="text-[11px] font-bold text-violet-500 mt-0.5"><i class="fa-solid fa-star mr-1"></i>${(parseFloat(x.points)||0)} Poin</p>` : ''}
+                    ${t==='rewards' ? `<p class="text-sm font-bold text-violet-500"><i class="fa-solid fa-star mr-1"></i>${(parseFloat(x.pointsCost)||0)} Poin</p><p class="text-[10px] font-bold text-slate-500 mt-0.5"><i class="fa-solid fa-boxes-stacked mr-1"></i>Stok: ${parseFloat(x.stock)||0}</p>` : ''}
                 </div>
             </div>
             <div class="flex gap-2.5 shrink-0 self-end sm:self-center pt-3 sm:pt-0 border-t border-slate-100 sm:border-0 dark:border-slate-700/50 w-full sm:w-auto justify-end">
@@ -5756,7 +5756,7 @@ window.rAdmReviews = () => {
     const filterTabs = `
         <div class="flex gap-1.5 bg-slate-100 dark:bg-slate-800 p-1 rounded-xl mb-5 w-fit">
             ${[{k:'all',l:'Semua'},{k:'visible',l:'Ditampilkan'},{k:'hidden',l:'Disembunyikan'}].map(f => `
-                <button onclick="filterReviews('${f.k}')" class="px-3.5 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${reviewFilterMode===f.k ? 'shadow-sm' : 'text-slate-500 dark:text-slate-400'}" style="${reviewFilterMode===f.k ? 'background:var(--color-primary);color:#fff' : ''}">${f.l}</button>
+                <button onclick="filterReviews('${f.k}')" class="px-3.5 py-1.5 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all ${reviewFilterMode===f.k ? 'shadow-sm' : 'text-slate-500 dark:text-slate-400'}" style="${reviewFilterMode===f.k ? 'background:var(--color-primary);color:#fff' : ''}">${f.l}</button>
             `).join('')}
         </div>`;
 
@@ -5775,7 +5775,7 @@ window.rAdmReviews = () => {
         <div class="p-4 sm:p-5 md:p-6 lg:p-8 rounded-[1.5rem] border shadow-sm ${hidden ? 'border-rose-200 bg-rose-50/40 dark:border-rose-900/40 dark:bg-rose-900/10' : 'border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-800'} mb-3">
             <div class="flex items-start justify-between gap-3 mb-2">
                 <div class="min-w-0">
-                    <p class="text-sm font-black text-slate-800 dark:text-white truncate">${esc(r.customerName || 'Pelanggan')}</p>
+                    <p class="text-sm font-bold text-slate-800 dark:text-white truncate">${esc(r.customerName || 'Pelanggan')}</p>
                     <p class="text-[10px] font-bold text-slate-500 mt-0.5">${esc(r.productName || '')}${r.variantName ? ' · ' + esc(r.variantName) : ''}</p>
                 </div>
                 <span class="text-[9px] font-bold text-slate-400 whitespace-nowrap">${dateStr}</span>
@@ -5783,11 +5783,11 @@ window.rAdmReviews = () => {
             <div class="flex text-xs mb-2.5">${starRow(r.rating)}</div>
             ${r.text ? `<p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed mb-2.5">${esc(r.text)}</p>` : ''}
             ${r.photoUrl ? `<img src="${esc(r.photoUrl)}" onclick="window.open('${esc(r.photoUrl)}','_blank')" class="w-20 h-20 rounded-xl object-cover border border-slate-200 dark:border-slate-700 cursor-pointer mb-2.5" onerror="this.style.display='none'" loading="lazy"></i>` : ''}
-            ${r.adminReply ? `<div class="bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-xl p-3 mb-2.5"><p class="text-[9px] font-black text-[var(--color-primary)] uppercase tracking-widest mb-1"><i class="fa-solid fa-store mr-1"></i>Balasan Anda</p><p class="text-[11px] text-slate-600 dark:text-slate-300">${esc(r.adminReply)}</p></div>` : ''}
+            ${r.adminReply ? `<div class="bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-xl p-3 mb-2.5"><p class="text-[9px] font-bold text-[var(--color-primary)] uppercase tracking-widest mb-1"><i class="fa-solid fa-store mr-1"></i>Balasan Anda</p><p class="text-[11px] text-slate-600 dark:text-slate-300">${esc(r.adminReply)}</p></div>` : ''}
             <div class="flex flex-wrap gap-2 pt-2 border-t border-slate-100 dark:border-slate-700/60">
-                <button onclick="replyToReview(${r.id})" class="px-3 py-2 rounded-xl bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 text-[10px] font-black uppercase tracking-widest flex items-center gap-1.5 hover:bg-blue-100 transition-all"><i class="fa-solid fa-reply"></i> ${r.adminReply ? 'Edit Balasan' : 'Balas'}</button>
-                <button onclick="toggleReviewVisibility(${r.id})" class="px-3 py-2 rounded-xl ${hidden ? 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-100' : 'bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400 hover:bg-amber-100'} text-[10px] font-black uppercase tracking-widest flex items-center gap-1.5 transition-all"><i class="fa-solid ${hidden ? 'fa-eye' : 'fa-eye-slash'}"></i> ${hidden ? 'Tampilkan' : 'Sembunyikan'}</button>
-                <button onclick="deleteReview(${r.id})" class="px-3 py-2 rounded-xl bg-rose-50 dark:bg-rose-900/20 text-rose-500 text-[10px] font-black uppercase tracking-widest flex items-center gap-1.5 hover:bg-rose-100 transition-all"><i class="fa-solid fa-trash"></i> Hapus</button>
+                <button onclick="replyToReview(${r.id})" class="px-3 py-2 rounded-xl bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 text-[10px] font-bold uppercase tracking-widest flex items-center gap-1.5 hover:bg-blue-100 transition-all"><i class="fa-solid fa-reply"></i> ${r.adminReply ? 'Edit Balasan' : 'Balas'}</button>
+                <button onclick="toggleReviewVisibility(${r.id})" class="px-3 py-2 rounded-xl ${hidden ? 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-100' : 'bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400 hover:bg-amber-100'} text-[10px] font-bold uppercase tracking-widest flex items-center gap-1.5 transition-all"><i class="fa-solid ${hidden ? 'fa-eye' : 'fa-eye-slash'}"></i> ${hidden ? 'Tampilkan' : 'Sembunyikan'}</button>
+                <button onclick="deleteReview(${r.id})" class="px-3 py-2 rounded-xl bg-rose-50 dark:bg-rose-900/20 text-rose-500 text-[10px] font-bold uppercase tracking-widest flex items-center gap-1.5 hover:bg-rose-100 transition-all"><i class="fa-solid fa-trash"></i> Hapus</button>
             </div>
         </div>`;
     }).join('');
@@ -5926,7 +5926,7 @@ window.rTaxRenderShell = () => {
                           <i class="fa-solid ${t.i}"></i>
                       </div>
                       <div>
-                          <h4 class="font-black text-slate-800 dark:text-white text-xs sm:text-sm uppercase tracking-widest mb-1 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">${t.l}</h4>
+                          <h4 class="font-bold text-slate-800 dark:text-white text-xs sm:text-sm uppercase tracking-widest mb-1 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">${t.l}</h4>
                           <p class="text-[10px] font-medium text-slate-400 leading-tight">${t.desc}</p>
                       </div>
                   </button>
@@ -5942,7 +5942,7 @@ window.rTaxRenderShell = () => {
                        <i class="fa-solid fa-arrow-left"></i>
                    </button>
                    <div>
-                       <h3 class="font-black text-slate-800 dark:text-white text-xs sm:text-sm uppercase tracking-widest leading-none">${activeTabInfo.l}</h3>
+                       <h3 class="font-bold text-slate-800 dark:text-white text-xs sm:text-sm uppercase tracking-widest leading-none">${activeTabInfo.l}</h3>
                        <p class="text-[10px] text-slate-400 font-medium mt-1 hidden sm:block">Data Pajak & Keuangan</p>
                    </div>
                </div>
@@ -6007,7 +6007,7 @@ window.rTaxSummary = () => {
         return `<tr class="${isActiveRow ? 'bg-[rgba(var(--color-primary-rgb),0.06)]' : ''} border-b border-slate-100 dark:border-slate-700/50 last:border-0">
             <td class="py-2.5 px-3 text-xs font-bold text-slate-600 dark:text-slate-300">${MONTH_NAMES[m-1]}</td>
             <td class="py-2.5 px-3 text-xs font-bold text-slate-700 dark:text-slate-200 text-right">${fCur(d.omset)}</td>
-            <td class="py-2.5 px-3 text-xs font-black text-amber-600 text-right">${fCur(d.ppn)}</td>
+            <td class="py-2.5 px-3 text-xs font-bold text-amber-600 text-right">${fCur(d.ppn)}</td>
             <td class="py-2.5 px-3 text-[11px] font-bold text-slate-400 text-right">${d.orderCount}</td>
         </tr>`;
     }).join('');
@@ -6015,32 +6015,32 @@ window.rTaxSummary = () => {
     setH('tax-content', `
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-5">
             <div class="card-modern p-5 sm:p-5">
-                <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Omset Bruto (${periodLabel})</p>
-                <p class="text-lg sm:text-xl font-black text-slate-800 dark:text-white truncate">${fCur(t.omset)}</p>
+                <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Omset Bruto (${periodLabel})</p>
+                <p class="text-lg sm:text-xl font-bold text-slate-800 dark:text-white truncate">${fCur(t.omset)}</p>
                 <p class="text-[10px] font-bold text-slate-400 mt-1">${t.orderCount} pesanan</p>
             </div>
             <div class="card-modern p-5 sm:p-5">
-                <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1.5"><i class="fa-solid fa-minus mr-1"></i>Diskon Produk</p>
-                <p class="text-lg sm:text-xl font-black text-rose-500 truncate">${fCur(t.disc)}</p>
+                <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1.5"><i class="fa-solid fa-minus mr-1"></i>Diskon Produk</p>
+                <p class="text-lg sm:text-xl font-bold text-rose-500 truncate">${fCur(t.disc)}</p>
             </div>
             <div class="card-modern p-5 sm:p-5">
-                <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1.5">DPP (Dasar Pengenaan Pajak)</p>
-                <p class="text-lg sm:text-xl font-black text-slate-800 dark:text-white truncate">${fCur(dpp)}</p>
+                <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">DPP (Dasar Pengenaan Pajak)</p>
+                <p class="text-lg sm:text-xl font-bold text-slate-800 dark:text-white truncate">${fCur(dpp)}</p>
             </div>
             <div class="card-modern p-5 sm:p-5 border-amber-200 dark:border-amber-700 relative overflow-hidden" style="background: linear-gradient(135deg, rgba(245,158,11,0.1), rgba(245,158,11,0.02))"><div class="absolute -right-4 -bottom-4 w-24 h-24 bg-amber-500/20 rounded-full blur-xl pointer-events-none"></div>
-                <p class="text-[9px] font-black text-amber-600 uppercase tracking-widest mb-1.5"><i class="fa-solid fa-file-invoice-dollar mr-1"></i>PPN Keluaran</p>
-                <p class="text-lg sm:text-xl font-black text-amber-600 truncate">${fCur(t.ppn)}</p>
+                <p class="text-[9px] font-bold text-amber-600 uppercase tracking-widest mb-1.5"><i class="fa-solid fa-file-invoice-dollar mr-1"></i>PPN Keluaran</p>
+                <p class="text-lg sm:text-xl font-bold text-amber-600 truncate">${fCur(t.ppn)}</p>
                 <p class="text-[10px] font-bold text-amber-500/80 mt-1">Wajib disetor ke negara</p>
             </div>
         </div>
         <div class="card-modern overflow-hidden">
             <div class="p-4 sm:p-5 md:p-6 lg:p-8 border-b border-slate-100 dark:border-slate-700 flex items-center justify-between">
-                <h4 class="font-black text-slate-700 dark:text-slate-200 text-xs uppercase tracking-widest">Rincian Per Bulan — ${taxYear}</h4>
-                <button onclick="openTaxDocPreview('summary')" class="text-[10px] font-black text-slate-400 hover:text-[var(--color-primary)] flex items-center gap-1.5"><i class="fa-solid fa-eye"></i> Preview &amp; Cetak</button>
+                <h4 class="font-bold text-slate-700 dark:text-slate-200 text-xs uppercase tracking-widest">Rincian Per Bulan — ${taxYear}</h4>
+                <button onclick="openTaxDocPreview('summary')" class="text-[10px] font-bold text-slate-400 hover:text-[var(--color-primary)] flex items-center gap-1.5"><i class="fa-solid fa-eye"></i> Preview &amp; Cetak</button>
             </div>
             <div class="overflow-x-auto">
                 <table class="w-full">
-                    <thead><tr class="bg-slate-50 dark:bg-slate-900/40 text-left"><th class="py-2.5 px-3 text-[9px] font-black text-slate-400 uppercase">Bulan</th><th class="py-2.5 px-3 text-[9px] font-black text-slate-400 uppercase text-right">Omset</th><th class="py-2.5 px-3 text-[9px] font-black text-slate-400 uppercase text-right">PPN Keluaran</th><th class="py-2.5 px-3 text-[9px] font-black text-slate-400 uppercase text-right">Pesanan</th></tr></thead>
+                    <thead><tr class="bg-slate-50 dark:bg-slate-900/40 text-left"><th class="py-2.5 px-3 text-[9px] font-bold text-slate-400 uppercase">Bulan</th><th class="py-2.5 px-3 text-[9px] font-bold text-slate-400 uppercase text-right">Omset</th><th class="py-2.5 px-3 text-[9px] font-bold text-slate-400 uppercase text-right">PPN Keluaran</th><th class="py-2.5 px-3 text-[9px] font-bold text-slate-400 uppercase text-right">Pesanan</th></tr></thead>
                     <tbody>${monthRows}</tbody>
                 </table>
             </div>
@@ -6087,22 +6087,22 @@ window.rTaxIncome = () => {
     setH('tax-content', `
         <div class="card-modern p-5 sm:p-6 md:p-7 lg:p-8 w-full mx-auto">
             <div class="flex items-center justify-between mb-6 pb-4 border-b border-slate-100 dark:border-slate-700">
-                <h4 class="font-black text-slate-800 dark:text-white text-sm uppercase tracking-widest">Laporan Laba Rugi — ${periodLabel}</h4>
-                <button onclick="openTaxDocPreview('income')" class="text-[10px] font-black text-slate-400 hover:text-[var(--color-primary)] flex items-center gap-1.5"><i class="fa-solid fa-eye"></i> Preview &amp; Cetak</button>
+                <h4 class="font-bold text-slate-800 dark:text-white text-sm uppercase tracking-widest">Laporan Laba Rugi — ${periodLabel}</h4>
+                <button onclick="openTaxDocPreview('income')" class="text-[10px] font-bold text-slate-400 hover:text-[var(--color-primary)] flex items-center gap-1.5"><i class="fa-solid fa-eye"></i> Preview &amp; Cetak</button>
             </div>
             <div class="space-y-2.5 text-sm">
-                <div class="flex justify-between"><span class="font-bold text-slate-500 dark:text-slate-400">Omset Bruto</span><span class="font-black text-slate-800 dark:text-white">${fCur(t.omset)}</span></div>
+                <div class="flex justify-between"><span class="font-bold text-slate-500 dark:text-slate-400">Omset Bruto</span><span class="font-bold text-slate-800 dark:text-white">${fCur(t.omset)}</span></div>
                 <div class="flex justify-between"><span class="font-bold text-slate-500 dark:text-slate-400">(−) Diskon Produk</span><span class="font-bold text-rose-500">-${fCur(t.disc)}</span></div>
                 <div class="flex justify-between"><span class="font-bold text-slate-500 dark:text-slate-400">(−) HPP (Harga Pokok Penjualan)</span><span class="font-bold text-rose-500">-${fCur(t.hpp)}</span></div>
-                <div class="flex justify-between pt-2.5 border-t border-slate-200 dark:border-slate-700"><span class="font-black text-slate-700 dark:text-slate-200">Laba Kotor</span><span class="font-black text-emerald-600">${fCur(labaKotor)}</span></div>
+                <div class="flex justify-between pt-2.5 border-t border-slate-200 dark:border-slate-700"><span class="font-bold text-slate-700 dark:text-slate-200">Laba Kotor</span><span class="font-bold text-emerald-600">${fCur(labaKotor)}</span></div>
                 <div class="flex justify-between"><span class="font-bold text-slate-500 dark:text-slate-400">(−) Biaya Operasional</span><span class="font-bold text-rose-500">-${fCur(totalExpense)}</span></div>
-                <div class="flex justify-between pt-2.5 border-t border-slate-200 dark:border-slate-700"><span class="font-black text-slate-700 dark:text-slate-200">Laba Bersih Sebelum Pajak</span><span class="font-black" style="color:var(--color-primary)">${fCur(labaBersih)}</span></div>
+                <div class="flex justify-between pt-2.5 border-t border-slate-200 dark:border-slate-700"><span class="font-bold text-slate-700 dark:text-slate-200">Laba Bersih Sebelum Pajak</span><span class="font-bold" style="color:var(--color-primary)">${fCur(labaBersih)}</span></div>
                 <div class="flex justify-between"><span class="font-bold text-slate-500 dark:text-slate-400">(−) Estimasi ${taxLabel}</span><span class="font-bold text-rose-500">-${fCur(estimasiPajak)}</span></div>
-                <div class="flex justify-between pt-3 border-t-2 border-slate-800 dark:border-slate-200"><span class="font-black text-slate-900 dark:text-white text-base">Laba Bersih Setelah Pajak (Estimasi)</span><span class="font-black text-base" style="color:var(--color-primary)">${fCur(labaSetelahPajak)}</span></div>
+                <div class="flex justify-between pt-3 border-t-2 border-slate-800 dark:border-slate-200"><span class="font-bold text-slate-900 dark:text-white text-base">Laba Bersih Setelah Pajak (Estimasi)</span><span class="font-bold text-base" style="color:var(--color-primary)">${fCur(labaSetelahPajak)}</span></div>
             </div>
 
             <div class="mt-7 pt-5 border-t border-dashed border-slate-200 dark:border-slate-700">
-                <h5 class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3"><i class="fa-solid fa-pen mr-1"></i>Input Biaya Operasional (Manual)</h5>
+                <h5 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3"><i class="fa-solid fa-pen mr-1"></i>Input Biaya Operasional (Manual)</h5>
                 <p class="text-[10px] font-bold text-slate-400 mb-3">Contoh: sewa, gaji, listrik, internet, dll. Sistem tidak melacak ini otomatis.</p>
                 ${expenseInputs}
             </div>
@@ -6133,26 +6133,26 @@ window.rTaxBalance = () => {
     setH('tax-content', `
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 sm:gap-6 w-full mx-auto">
             <div class="card-modern p-5 sm:p-6 relative overflow-hidden shadow-lg border-emerald-100 dark:border-emerald-900/30" style="background: linear-gradient(135deg, rgba(16,185,129,0.05), transparent)"><div class="absolute -top-10 -right-10 w-32 h-32 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none"></div>
-                <h4 class="font-black text-slate-800 dark:text-white text-xs uppercase tracking-widest mb-4 pb-3 border-b border-slate-100 dark:border-slate-700"><i class="fa-solid fa-arrow-down-wide-short mr-1.5 text-emerald-500"></i>ASET</h4>
+                <h4 class="font-bold text-slate-800 dark:text-white text-xs uppercase tracking-widest mb-4 pb-3 border-b border-slate-100 dark:border-slate-700"><i class="fa-solid fa-arrow-down-wide-short mr-1.5 text-emerald-500"></i>ASET</h4>
                 <div class="space-y-3">
                     <div class="flex items-center justify-between gap-2"><span class="text-xs font-bold text-slate-500 dark:text-slate-400">Kas &amp; Bank (manual)</span><input type="number" min="0" value="${bs.kas||0}" onchange="saveBalanceField('kas', this.value)" class="admin-input !py-2 !px-3 text-xs w-32 text-right bg-slate-50 dark:bg-slate-900/50"></i></div>
                     <div class="flex items-center justify-between gap-2"><span class="text-xs font-bold text-slate-500 dark:text-slate-400">Piutang Usaha (manual)</span><input type="number" min="0" value="${bs.piutang||0}" onchange="saveBalanceField('piutang', this.value)" class="admin-input !py-2 !px-3 text-xs w-32 text-right bg-slate-50 dark:bg-slate-900/50"></i></div>
-                    <div class="flex items-center justify-between gap-2 py-2 bg-emerald-50 dark:bg-emerald-900/10 rounded-xl px-3"><span class="text-xs font-bold text-emerald-600">Persediaan Barang (Otomatis)</span><span class="text-xs font-black text-emerald-600">${fCur(st.assetHpp)}</span></div>
-                    <div class="flex justify-between pt-3 border-t-2 border-slate-800 dark:border-slate-200"><span class="font-black text-slate-900 dark:text-white text-sm">Total Aset</span><span class="font-black text-sm" style="color:var(--color-primary)">${fCur(totalAset)}</span></div>
+                    <div class="flex items-center justify-between gap-2 py-2 bg-emerald-50 dark:bg-emerald-900/10 rounded-xl px-3"><span class="text-xs font-bold text-emerald-600">Persediaan Barang (Otomatis)</span><span class="text-xs font-bold text-emerald-600">${fCur(st.assetHpp)}</span></div>
+                    <div class="flex justify-between pt-3 border-t-2 border-slate-800 dark:border-slate-200"><span class="font-bold text-slate-900 dark:text-white text-sm">Total Aset</span><span class="font-bold text-sm" style="color:var(--color-primary)">${fCur(totalAset)}</span></div>
                 </div>
             </div>
             <div class="card-modern p-5 sm:p-6 relative overflow-hidden shadow-lg border-rose-100 dark:border-rose-900/30" style="background: linear-gradient(135deg, rgba(244,63,94,0.05), transparent)"><div class="absolute -top-10 -right-10 w-32 h-32 bg-rose-500/10 rounded-full blur-2xl pointer-events-none"></div>
-                <h4 class="font-black text-slate-800 dark:text-white text-xs uppercase tracking-widest mb-4 pb-3 border-b border-slate-100 dark:border-slate-700"><i class="fa-solid fa-arrow-up-wide-short mr-1.5 text-rose-500"></i>KEWAJIBAN &amp; MODAL</h4>
+                <h4 class="font-bold text-slate-800 dark:text-white text-xs uppercase tracking-widest mb-4 pb-3 border-b border-slate-100 dark:border-slate-700"><i class="fa-solid fa-arrow-up-wide-short mr-1.5 text-rose-500"></i>KEWAJIBAN &amp; MODAL</h4>
                 <div class="space-y-3">
                     <div class="flex items-center justify-between gap-2"><span class="text-xs font-bold text-slate-500 dark:text-slate-400">Hutang Usaha (manual)</span><input type="number" min="0" value="${bs.hutang||0}" onchange="saveBalanceField('hutang', this.value)" class="admin-input !py-2 !px-3 text-xs w-32 text-right bg-slate-50 dark:bg-slate-900/50"></i></div>
-                    <div class="flex items-center justify-between gap-2 py-2 bg-slate-50 dark:bg-slate-900/40 rounded-xl px-3"><span class="text-xs font-bold text-slate-600 dark:text-slate-300">Modal &amp; Laba Ditahan</span><span class="text-xs font-black text-slate-700 dark:text-slate-200">${fCur(modalDanLaba)}</span></div>
+                    <div class="flex items-center justify-between gap-2 py-2 bg-slate-50 dark:bg-slate-900/40 rounded-xl px-3"><span class="text-xs font-bold text-slate-600 dark:text-slate-300">Modal &amp; Laba Ditahan</span><span class="text-xs font-bold text-slate-700 dark:text-slate-200">${fCur(modalDanLaba)}</span></div>
                     <p class="text-[10px] font-bold text-slate-400 leading-relaxed px-1">Angka Modal &amp; Laba Ditahan dihitung otomatis (Total Aset − Hutang) supaya neraca tetap seimbang. Kalau Anda tahu persis modal disetor awal, isi manual di Pengaturan.</p>
-                    <div class="flex justify-between pt-3 border-t-2 border-slate-800 dark:border-slate-200"><span class="font-black text-slate-900 dark:text-white text-sm">Total Kewajiban + Modal</span><span class="font-black text-sm" style="color:var(--color-primary)">${fCur(totalKewajiban + modalDanLaba)}</span></div>
+                    <div class="flex justify-between pt-3 border-t-2 border-slate-800 dark:border-slate-200"><span class="font-bold text-slate-900 dark:text-white text-sm">Total Kewajiban + Modal</span><span class="font-bold text-sm" style="color:var(--color-primary)">${fCur(totalKewajiban + modalDanLaba)}</span></div>
                 </div>
             </div>
         </div>
         <div class="max-w-7xl mx-auto mt-6 text-center">
-            <button onclick="openTaxDocPreview('balance')" class="text-[10px] font-black text-slate-400 hover:text-[var(--color-primary)] inline-flex items-center gap-1.5"><i class="fa-solid fa-eye"></i> Preview &amp; Cetak Neraca</button>
+            <button onclick="openTaxDocPreview('balance')" class="text-[10px] font-bold text-slate-400 hover:text-[var(--color-primary)] inline-flex items-center gap-1.5"><i class="fa-solid fa-eye"></i> Preview &amp; Cetak Neraca</button>
         </div>
     `);
 };
@@ -6173,15 +6173,15 @@ window.rTaxSettingsPanel = () => {
     setH('tax-content', `
         <div class="card-modern p-5 sm:p-6 md:p-7 lg:p-8 w-full max-w-3xl mx-auto space-y-5">
             <div>
-                <label class="block text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Nama Badan Usaha</label>
+                <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Nama Badan Usaha</label>
                 <input id="tax-company-name" type="text" value="${esc(ts.companyName||'')}" placeholder="Cth: PT/CV Restu Karya Utama" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-inner"></i>
             </div>
             <div>
-                <label class="block text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">NPWP</label>
+                <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">NPWP</label>
                 <input id="tax-npwp" type="text" value="${esc(ts.npwp||'')}" placeholder="XX.XXX.XXX.X-XXX.XXX" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-inner"></i>
             </div>
             <div>
-                <label class="block text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Skema Perhitungan PPh</label>
+                <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Skema Perhitungan PPh</label>
                 <select id="tax-scheme" onchange="toggleCustomTaxRateInput(this.value)" class="admin-input !py-3.5 bg-white dark:bg-slate-800 shadow-sm cursor-pointer">
                     <option value="umkm_final" ${ts.taxScheme==='umkm_final'?'selected':''}>PPh Final UMKM — 0,5% dari Omset (PP 23/2018)</option>
                     <option value="badan_normal" ${ts.taxScheme==='badan_normal'?'selected':''}>PPh Badan Normal — 22% dari Laba Bersih</option>
@@ -6189,7 +6189,7 @@ window.rTaxSettingsPanel = () => {
                 </select>
             </div>
             <div id="tax-custom-rate-wrap" class="${ts.taxScheme==='custom'?'':'hidden'}">
-                <label class="block text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Tarif Custom (% dari Laba Bersih)</label>
+                <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Tarif Custom (% dari Laba Bersih)</label>
                 <input id="tax-custom-rate" type="number" min="0" max="100" step="0.1" value="${ts.customTaxRate||0.5}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-inner"></i>
             </div>
             <button onclick="saveTaxSettingsPanel()" class="btn-primary py-3.5 text-sm shadow-glow !rounded-xl flex items-center justify-center gap-2 w-full"><i class="fa-solid fa-save"></i> Simpan Pengaturan Pajak</button>
@@ -6236,13 +6236,13 @@ window.openTaxDocPreview = (reportType) => {
         <div class="flex items-center gap-4">
             ${logoHTML}
             <div>
-                <h1 class="font-black text-xl tracking-tight text-slate-900 uppercase">${esc(ts.companyName || appData.store.name)}</h1>
+                <h1 class="font-bold text-xl tracking-tight text-slate-900 uppercase">${esc(ts.companyName || appData.store.name)}</h1>
                 ${ts.npwp ? `<p class="text-xs font-bold text-slate-500 mt-1">NPWP: ${esc(ts.npwp)}</p>` : ''}
                 <p class="text-xs font-medium text-slate-500 mt-1 max-w-sm leading-snug">${esc(appData.store.address || '')}</p>
             </div>
         </div>
         <div class="text-right">
-            <h2 class="font-black text-2xl tracking-widest text-slate-700 uppercase">${title}</h2>
+            <h2 class="font-bold text-2xl tracking-widest text-slate-700 uppercase">${title}</h2>
             <p class="text-sm font-bold text-slate-600 mt-2">Periode: ${periodLabel}</p>
             <p class="text-xs font-semibold text-slate-400 mt-1">Dicetak: ${today}</p>
         </div>
@@ -6258,16 +6258,16 @@ window.openTaxDocPreview = (reportType) => {
         const dpp = t.omset - t.disc;
         const rows = Array.from({length:12}, (_,i) => i+1).map(m => {
             const d = gTaxMonthly[m];
-            return `<tr class="border-b border-slate-200"><td class="py-2.5 px-3 font-bold text-slate-700">${MONTH_NAMES[m-1]} ${taxYear}</td><td class="py-2.5 px-3 text-right font-bold text-slate-700">${fCur(d.omset)}</td><td class="py-2.5 px-3 text-right font-black text-slate-900">${fCur(d.ppn)}</td><td class="py-2.5 px-3 text-right font-bold text-slate-500">${d.orderCount}</td></tr>`;
+            return `<tr class="border-b border-slate-200"><td class="py-2.5 px-3 font-bold text-slate-700">${MONTH_NAMES[m-1]} ${taxYear}</td><td class="py-2.5 px-3 text-right font-bold text-slate-700">${fCur(d.omset)}</td><td class="py-2.5 px-3 text-right font-bold text-slate-900">${fCur(d.ppn)}</td><td class="py-2.5 px-3 text-right font-bold text-slate-500">${d.orderCount}</td></tr>`;
         }).join('');
         bodyHtml = `
         <div class="grid grid-cols-4 gap-4 mb-8">
-            <div class="bg-slate-50 border border-slate-200 rounded-xl p-4"><p class="text-[9px] font-black text-slate-400 uppercase mb-1">Omset Bruto</p><p class="font-black text-slate-900">${fCur(t.omset)}</p></div>
-            <div class="bg-slate-50 border border-slate-200 rounded-xl p-4"><p class="text-[9px] font-black text-slate-400 uppercase mb-1">Diskon</p><p class="font-black text-rose-600">${fCur(t.disc)}</p></div>
-            <div class="bg-slate-50 border border-slate-200 rounded-xl p-4"><p class="text-[9px] font-black text-slate-400 uppercase mb-1">DPP</p><p class="font-black text-slate-900">${fCur(dpp)}</p></div>
-            <div class="bg-amber-50 border border-amber-200 rounded-xl p-4"><p class="text-[9px] font-black text-amber-600 uppercase mb-1">PPN Keluaran</p><p class="font-black text-amber-700">${fCur(t.ppn)}</p></div>
+            <div class="bg-slate-50 border border-slate-200 rounded-xl p-4"><p class="text-[9px] font-bold text-slate-400 uppercase mb-1">Omset Bruto</p><p class="font-bold text-slate-900">${fCur(t.omset)}</p></div>
+            <div class="bg-slate-50 border border-slate-200 rounded-xl p-4"><p class="text-[9px] font-bold text-slate-400 uppercase mb-1">Diskon</p><p class="font-bold text-rose-600">${fCur(t.disc)}</p></div>
+            <div class="bg-slate-50 border border-slate-200 rounded-xl p-4"><p class="text-[9px] font-bold text-slate-400 uppercase mb-1">DPP</p><p class="font-bold text-slate-900">${fCur(dpp)}</p></div>
+            <div class="bg-amber-50 border border-amber-200 rounded-xl p-4"><p class="text-[9px] font-bold text-amber-600 uppercase mb-1">PPN Keluaran</p><p class="font-bold text-amber-700">${fCur(t.ppn)}</p></div>
         </div>
-        <table class="w-full text-xs"><thead><tr class="bg-slate-100 text-left"><th class="py-2.5 px-3 font-black text-slate-500 uppercase text-[9px]">Bulan</th><th class="py-2.5 px-3 font-black text-slate-500 uppercase text-[9px] text-right">Omset</th><th class="py-2.5 px-3 font-black text-slate-500 uppercase text-[9px] text-right">PPN Keluaran</th><th class="py-2.5 px-3 font-black text-slate-500 uppercase text-[9px] text-right">Pesanan</th></tr></thead><tbody>${rows}</tbody></table>`;
+        <table class="w-full text-xs"><thead><tr class="bg-slate-100 text-left"><th class="py-2.5 px-3 font-bold text-slate-500 uppercase text-[9px]">Bulan</th><th class="py-2.5 px-3 font-bold text-slate-500 uppercase text-[9px] text-right">Omset</th><th class="py-2.5 px-3 font-bold text-slate-500 uppercase text-[9px] text-right">PPN Keluaran</th><th class="py-2.5 px-3 font-bold text-slate-500 uppercase text-[9px] text-right">Pesanan</th></tr></thead><tbody>${rows}</tbody></table>`;
     } else if (reportType === 'income') {
         const t = window.getTaxPeriodTotals();
         const labaKotor = t.omset - t.disc - t.hpp;
@@ -6280,7 +6280,7 @@ window.openTaxDocPreview = (reportType) => {
         else { taxRate = parseFloat(ts.customTaxRate) || 0; taxBase = Math.max(0, labaBersih); taxLabel = `PPh Custom (${taxRate}% × Laba Bersih)`; }
         const estimasiPajak = taxBase * (taxRate / 100);
         const labaSetelahPajak = labaBersih - estimasiPajak;
-        const row = (label, val, bold, color) => `<div class="flex justify-between py-2 ${bold?'border-t-2 border-slate-800 mt-1 pt-3':'border-b border-slate-100'}"><span class="${bold?'font-black text-slate-900':'font-bold text-slate-600'}">${label}</span><span class="font-black ${color||'text-slate-900'}">${val}</span></div>`;
+        const row = (label, val, bold, color) => `<div class="flex justify-between py-2 ${bold?'border-t-2 border-slate-800 mt-1 pt-3':'border-b border-slate-100'}"><span class="${bold?'font-bold text-slate-900':'font-bold text-slate-600'}">${label}</span><span class="font-bold ${color||'text-slate-900'}">${val}</span></div>`;
         bodyHtml = `<div class="max-w-xl">
             ${row('Omset Bruto', fCur(t.omset))}
             ${row('(−) Diskon Produk', '-'+fCur(t.disc), false, 'text-rose-600')}
@@ -6300,17 +6300,17 @@ window.openTaxDocPreview = (reportType) => {
         bodyHtml = `
         <div class="grid grid-cols-2 gap-8">
             <div>
-                <h3 class="font-black text-slate-800 uppercase text-xs tracking-widest mb-3 pb-2 border-b-2 border-slate-800">Aset</h3>
-                <div class="flex justify-between py-2 border-b border-slate-100"><span class="font-bold text-slate-600">Kas &amp; Bank</span><span class="font-black text-slate-900">${fCur(bs.kas||0)}</span></div>
-                <div class="flex justify-between py-2 border-b border-slate-100"><span class="font-bold text-slate-600">Piutang Usaha</span><span class="font-black text-slate-900">${fCur(bs.piutang||0)}</span></div>
-                <div class="flex justify-between py-2 border-b border-slate-100"><span class="font-bold text-slate-600">Persediaan Barang</span><span class="font-black text-slate-900">${fCur(st.assetHpp)}</span></div>
-                <div class="flex justify-between py-2.5 border-t-2 border-slate-800 mt-1"><span class="font-black text-slate-900">Total Aset</span><span class="font-black text-slate-900">${fCur(totalAset)}</span></div>
+                <h3 class="font-bold text-slate-800 uppercase text-xs tracking-widest mb-3 pb-2 border-b-2 border-slate-800">Aset</h3>
+                <div class="flex justify-between py-2 border-b border-slate-100"><span class="font-bold text-slate-600">Kas &amp; Bank</span><span class="font-bold text-slate-900">${fCur(bs.kas||0)}</span></div>
+                <div class="flex justify-between py-2 border-b border-slate-100"><span class="font-bold text-slate-600">Piutang Usaha</span><span class="font-bold text-slate-900">${fCur(bs.piutang||0)}</span></div>
+                <div class="flex justify-between py-2 border-b border-slate-100"><span class="font-bold text-slate-600">Persediaan Barang</span><span class="font-bold text-slate-900">${fCur(st.assetHpp)}</span></div>
+                <div class="flex justify-between py-2.5 border-t-2 border-slate-800 mt-1"><span class="font-bold text-slate-900">Total Aset</span><span class="font-bold text-slate-900">${fCur(totalAset)}</span></div>
             </div>
             <div>
-                <h3 class="font-black text-slate-800 uppercase text-xs tracking-widest mb-3 pb-2 border-b-2 border-slate-800">Kewajiban &amp; Modal</h3>
-                <div class="flex justify-between py-2 border-b border-slate-100"><span class="font-bold text-slate-600">Hutang Usaha</span><span class="font-black text-slate-900">${fCur(totalKewajiban)}</span></div>
-                <div class="flex justify-between py-2 border-b border-slate-100"><span class="font-bold text-slate-600">Modal &amp; Laba Ditahan</span><span class="font-black text-slate-900">${fCur(modalDanLaba)}</span></div>
-                <div class="flex justify-between py-2.5 border-t-2 border-slate-800 mt-1"><span class="font-black text-slate-900">Total Kewajiban + Modal</span><span class="font-black text-slate-900">${fCur(totalKewajiban + modalDanLaba)}</span></div>
+                <h3 class="font-bold text-slate-800 uppercase text-xs tracking-widest mb-3 pb-2 border-b-2 border-slate-800">Kewajiban &amp; Modal</h3>
+                <div class="flex justify-between py-2 border-b border-slate-100"><span class="font-bold text-slate-600">Hutang Usaha</span><span class="font-bold text-slate-900">${fCur(totalKewajiban)}</span></div>
+                <div class="flex justify-between py-2 border-b border-slate-100"><span class="font-bold text-slate-600">Modal &amp; Laba Ditahan</span><span class="font-bold text-slate-900">${fCur(modalDanLaba)}</span></div>
+                <div class="flex justify-between py-2.5 border-t-2 border-slate-800 mt-1"><span class="font-bold text-slate-900">Total Kewajiban + Modal</span><span class="font-bold text-slate-900">${fCur(totalKewajiban + modalDanLaba)}</span></div>
             </div>
         </div>`;
     }
@@ -6346,7 +6346,7 @@ window.oAEd = (t, id) => {
     f.forEach(k => {
         let v = d ? (k.type === 'number' && d[k.key] !== undefined ? d[k.key] : (d[k.key]||'')) : '';
         const spanClass = isFullWidth(k) ? 'lg:col-span-2' : '';
-        h += `<div class="flex flex-col gap-1.5 ${spanClass}"><label class="block text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest flex items-center gap-1.5">${k.label}</label>`;
+        h += `<div class="flex flex-col gap-1.5 ${spanClass}"><label class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest flex items-center gap-1.5">${k.label}</label>`;
         if(k.type === 'textarea') {
             h += `<textarea autocomplete='off' id="af-${k.key}" class="admin-input resize-none shadow-sm bg-slate-50 dark:bg-slate-900" rows="3">${esc(v)}</textarea>`;
         } else if(k.type === 'select') {
@@ -6377,7 +6377,7 @@ window.oAEd = (t, id) => {
             h += `
             <div class="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden shadow-sm bg-white dark:bg-slate-900">
                 <div class="bg-slate-100 dark:bg-slate-800 p-2 border-b border-slate-200 dark:border-slate-700 flex gap-1 flex-wrap items-center">
-                    <button type="button" onclick="document.execCommand('bold',false,null)" class="w-8 h-8 rounded hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-black transition-colors" title="Cetak Tebal">B</button>
+                    <button type="button" onclick="document.execCommand('bold',false,null)" class="w-8 h-8 rounded hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold transition-colors" title="Cetak Tebal">B</button>
                     <button type="button" onclick="document.execCommand('insertOrderedList',false,null)" class="w-8 h-8 rounded hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition-colors" title="Daftar Angka"><i class="fa-solid fa-list-ol"></i></button>
                     <button type="button" onclick="document.execCommand('insertUnorderedList',false,null)" class="w-8 h-8 rounded hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition-colors" title="Daftar Titik"><i class="fa-solid fa-list-ul"></i></button>
                     <div class="w-px h-5 bg-slate-300 dark:bg-slate-600 mx-1"></div>
@@ -6389,7 +6389,7 @@ window.oAEd = (t, id) => {
                         <input type="file" accept="image/*" class="hidden" onchange="handleRTEditorImage(this, 'af-${k.key}-editor')" ></i>
                     </label>
                 </div>
-                <div id="af-${k.key}-editor" contenteditable="true" class="p-4 min-h-[150px] max-h-[350px] overflow-y-auto outline-none text-sm text-slate-800 dark:text-slate-200 leading-relaxed [&_ol]:list-decimal [&_ol]:pl-5 [&_ul]:list-disc [&_ul]:pl-5 [&_b]:font-black [&_strong]:font-black [&_img]:max-w-full [&_img]:rounded-xl [&_img]:my-2">
+                <div id="af-${k.key}-editor" contenteditable="true" class="p-4 min-h-[150px] max-h-[350px] overflow-y-auto outline-none text-sm text-slate-800 dark:text-slate-200 leading-relaxed [&_ol]:list-decimal [&_ol]:pl-5 [&_ul]:list-disc [&_ul]:pl-5 [&_b]:font-bold [&_strong]:font-bold [&_img]:max-w-full [&_img]:rounded-xl [&_img]:my-2">
                     ${v}
                 </div>
             </div>`;
@@ -6424,31 +6424,31 @@ window.rVarsB = () => {
             <!-- Header varian: nomor + tombol hapus selalu terlihat -->
             <div class="flex items-center justify-between mb-5 pb-4 border-b border-slate-200 dark:border-slate-700">
                 <div class="flex items-center gap-2.5">
-                    <div class="w-7 h-7 rounded-xl bg-emerald-500 text-white text-[11px] font-black flex items-center justify-center shadow-sm">${i+1}</div>
-                    <span class="text-xs font-black text-slate-700 dark:text-slate-200 uppercase tracking-widest">${v.name || 'Varian Baru'}</span>
+                    <div class="w-7 h-7 rounded-xl bg-emerald-500 text-white text-[11px] font-bold flex items-center justify-center shadow-sm">${i+1}</div>
+                    <span class="text-xs font-bold text-slate-700 dark:text-slate-200 uppercase tracking-widest">${v.name || 'Varian Baru'}</span>
                 </div>
                 <button onclick="rmVar(${i})" class="w-8 h-8 rounded-xl bg-rose-50 border border-rose-200 text-rose-500 hover:bg-rose-500 hover:text-white dark:bg-rose-900/30 dark:border-rose-800 transition-all flex items-center justify-center shadow-sm active:scale-95" title="Hapus Varian"><i class="fa-solid fa-trash text-xs"></i></button>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-6 lg:gap-7">
                 <div>
-                    <label class="block text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Nama Varian (Warna/Ukuran)</label>
+                    <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Nama Varian (Warna/Ukuran)</label>
                     <input autocomplete='off' placeholder="Cth: Hijau Tosca" class="admin-input !text-sm !py-3.5 bg-white dark:bg-slate-800 shadow-sm" value="${esc(v.name)}" onchange="uVar(${i},'name',this.value)"></i>
                 </div>
                 <div>
-                    <label class="block text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Satuan / Unit</label>
+                    <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Satuan / Unit</label>
                     <input autocomplete='off' placeholder="Cth: Pcs / Liter" class="admin-input !text-sm !py-3.5 bg-white dark:bg-slate-800 shadow-sm" value="${esc(v.unit||'')}" onchange="uVar(${i},'unit',this.value)"></i>
                 </div>
                 <div>
-                    <label class="block text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Harga Promo / Jual (Rp)</label>
+                    <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Harga Promo / Jual (Rp)</label>
                     <input autocomplete='off' placeholder="0" type="number" class="admin-input !text-sm !py-3.5 bg-white dark:bg-slate-800 shadow-sm" value="${v.price}" onchange="uVar(${i},'price',this.value)"></i>
                 </div>
                 <div>
-                    <label class="block text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Harga Coret (Opsional)</label>
+                    <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Harga Coret (Opsional)</label>
                     <input autocomplete='off' placeholder="0" type="number" class="admin-input !text-sm !py-3.5 bg-white dark:bg-slate-800 shadow-sm" value="${v.priceNormal||''}" onchange="uVar(${i},'priceNormal',this.value)"></i>
                 </div>
                 <div>
-                    <label class="block text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Kode Warna (Khusus Cat)</label>
+                    <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Kode Warna (Khusus Cat)</label>
                     <div class="flex gap-3 items-center bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-2 shadow-sm">
                         <div class="relative shrink-0">
                             <input type="color" class="w-11 h-11 rounded-xl cursor-pointer border-2 border-slate-200 dark:border-slate-600 p-0.5 bg-white dark:bg-slate-700 shadow-inner" value="${v.colorCode || '#ffffff'}" 
@@ -6458,13 +6458,13 @@ window.rVarsB = () => {
                         </div>
                         <div class="flex-1 min-w-0">
                             <p class="text-[9px] font-bold text-slate-400 mb-0.5 uppercase tracking-widest">Kode HEX</p>
-                            <input autocomplete='off' id="var-hex-${i}" placeholder="#RRGGBB (opsional)" class="w-full bg-transparent text-sm font-mono font-black focus:outline-none dark:text-white uppercase" value="${esc(v.colorCode||'')}" onchange="uVar(${i},'colorCode',this.value)"></i>
+                            <input autocomplete='off' id="var-hex-${i}" placeholder="#RRGGBB (opsional)" class="w-full bg-transparent text-sm font-mono font-bold focus:outline-none dark:text-white uppercase" value="${esc(v.colorCode||'')}" onchange="uVar(${i},'colorCode',this.value)"></i>
                         </div>
                         ${v.colorCode ? `<div class="w-6 h-6 rounded-full border-2 border-white shadow-md shrink-0" style="background:${esc(v.colorCode)}"></div>` : ''}
                     </div>
                 </div>
                 <div>
-                    <label class="block text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Gambar Khusus Varian</label>
+                    <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Gambar Khusus Varian</label>
                     <div class="flex gap-2.5 items-center">
                         ${v.img ? `<img src="${esc(v.img)}" class="w-11 h-11 rounded-xl object-cover border-2 border-slate-200 dark:border-slate-600 shrink-0 shadow-sm" onerror="this.style.display='none'" loading="lazy"></i>` : ''}
                         <input autocomplete='off' id="var-img-${i}" placeholder="URL Gambar Varian" class="admin-input !text-sm flex-1 bg-white dark:bg-slate-800 shadow-sm" value="${esc(v.img||'')}" onchange="uVar(${i},'img',fixD(this.value))"></i>
@@ -6473,34 +6473,34 @@ window.rVarsB = () => {
                     </div>
                 </div>
                 <div>
-                    <label class="block text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">SKU / Barcode</label>
+                    <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">SKU / Barcode</label>
                     <div class="relative h-[48px]">
                         <input autocomplete='off' id="var-sku-${i}" placeholder="Auto (Bisa Kosong)" class="admin-input !text-sm h-full bg-white dark:bg-slate-800 shadow-sm !pr-12" value="${esc(v.sku||'')}" onchange="uVar(${i},'sku',this.value)"></i>
                         <button type="button" onclick="openCameraScanner('var-sku-${i}')" class="absolute right-1.5 top-1/2 -translate-y-1/2 w-9 h-9 flex items-center justify-center text-slate-400 hover:text-emerald-500 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-xl transition-all"><i class="fa-solid fa-qrcode text-lg"></i></button>
                     </div>
                 </div>
                 <div>
-                    <label class="block text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Status Stok Varian</label>
-                    <button type="button" onclick="tVars[${i}].isActive = ${!isAct}; rVarsB();" class="w-full py-3.5 px-4 rounded-xl text-[13px] font-black uppercase tracking-wider transition-all shadow-sm flex items-center justify-center gap-2.5 border-2 active:scale-95 ${isAct ? 'bg-emerald-500 text-white border-emerald-600 hover:bg-emerald-600 shadow-emerald-500/30 shadow-md' : 'bg-slate-100 text-rose-500 border-rose-200 hover:bg-rose-50 dark:bg-slate-800 dark:border-rose-800'}">
+                    <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Status Stok Varian</label>
+                    <button type="button" onclick="tVars[${i}].isActive = ${!isAct}; rVarsB();" class="w-full py-3.5 px-4 rounded-xl text-[13px] font-bold uppercase tracking-wider transition-all shadow-sm flex items-center justify-center gap-2.5 border-2 active:scale-95 ${isAct ? 'bg-emerald-500 text-white border-emerald-600 hover:bg-emerald-600 shadow-emerald-500/30 shadow-md' : 'bg-slate-100 text-rose-500 border-rose-200 hover:bg-rose-50 dark:bg-slate-800 dark:border-rose-800'}">
                         ${isAct ? '<i class="fa-solid fa-circle-check text-base"></i> STOK TERSEDIA' : '<i class="fa-solid fa-ban text-base"></i> STOK HABIS'}
                     </button>
                 </div>
                 <div>
-                    <label class="block text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Harga Modal / HPP (Rp)</label>
+                    <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Harga Modal / HPP (Rp)</label>
                     <input autocomplete='off' placeholder="0" type="number" class="admin-input !text-sm !py-3.5 bg-white dark:bg-slate-800 shadow-sm" value="${v.hpp||0}" onchange="uVar(${i},'hpp',this.value)"></i>
                 </div>
                 <div>
-                    <label class="block text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Stok Varian (Qty)</label>
+                    <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Stok Varian (Qty)</label>
                     <input autocomplete='off' placeholder="0" type="number" class="admin-input !text-sm !py-3.5 bg-white dark:bg-slate-800 shadow-sm" value="${v.stock !== undefined ? v.stock : ''}" onchange="uVar(${i},'stock',this.value)"></i>
                 </div>
                 <div>
-                    <label class="block text-[11px] font-black text-violet-500 mb-2 uppercase tracking-widest"><i class="fa-solid fa-star mr-1"></i>Poin Member (per unit terjual)</label>
+                    <label class="block text-[11px] font-bold text-violet-500 mb-2 uppercase tracking-widest"><i class="fa-solid fa-star mr-1"></i>Poin Member (per unit terjual)</label>
                     <input autocomplete='off' placeholder="0" type="number" min="0" class="admin-input !text-sm !py-3.5 bg-white dark:bg-slate-800 shadow-sm" value="${v.poin||0}" onchange="uVar(${i},'poin',this.value)"></i>
                 </div>
             </div>
         </div>`;
     }).join('')}</div>
-    <button onclick="addVar()" class="w-full py-3.5 text-white font-black rounded-2xl text-sm border border-[rgba(var(--color-primary-rgb),0.3)] transition-all flex items-center justify-center gap-2 active:scale-95 shadow-glow" style="background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark))"><i class="fa-solid fa-plus-circle text-base"></i> Tambah Varian Baru</button>`;
+    <button onclick="addVar()" class="w-full py-3.5 text-white font-bold rounded-2xl text-sm border border-[rgba(var(--color-primary-rgb),0.3)] transition-all flex items-center justify-center gap-2 active:scale-95 shadow-glow" style="background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark))"><i class="fa-solid fa-plus-circle text-base"></i> Tambah Varian Baru</button>`;
     setH('variants-builder-container', h);
 };
 
@@ -6515,16 +6515,16 @@ window.rWholB = () => {
             <button onclick="rmWhol(${i})" class="absolute -top-3 -right-3 w-8 h-8 rounded-full bg-rose-50 border border-rose-200 text-rose-500 hover:bg-rose-500 hover:text-white dark:bg-rose-900/30 dark:border-rose-800 transition-all flex items-center justify-center opacity-0 group-hover:opacity-100 shadow-md z-10"><i class="fa-solid fa-trash text-xs"></i></button>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-6 lg:gap-7">
                 <div>
-                    <label class="block text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Minimal Pembelian (Qty)</label>
+                    <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Minimal Pembelian (Qty)</label>
                     <input autocomplete='off' type="number" step="0.01" placeholder="Cth: 12" class="admin-input !text-sm !py-3.5 bg-white dark:bg-slate-800 shadow-sm" value="${w.minQty}" onchange="uWhol(${i},'minQty',this.value)"></i>
                 </div>
                 <div>
-                    <label class="block text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Harga Satuan Spesial (Rp)</label>
+                    <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Harga Satuan Spesial (Rp)</label>
                     <input autocomplete='off' type="number" placeholder="Cth: 15000" class="admin-input !text-sm !py-3.5 bg-white dark:bg-slate-800 shadow-sm" value="${w.price}" onchange="uWhol(${i},'price',this.value)"></i>
                 </div>
             </div>
         </div>`).join('')}</div>
-        <button onclick="addWhol()" class="w-full py-4 bg-amber-50 dark:bg-amber-900/20 text-amber-600 font-black rounded-[1.5rem] text-sm border-2 border-amber-200 border-dashed hover:bg-amber-100 transition-all flex items-center justify-center gap-2 active:scale-95 shadow-sm"><i class="fa-solid fa-tags"></i> Tambah Tingkatan Grosir</button>`;
+        <button onclick="addWhol()" class="w-full py-4 bg-amber-50 dark:bg-amber-900/20 text-amber-600 font-bold rounded-[1.5rem] text-sm border-2 border-amber-200 border-dashed hover:bg-amber-100 transition-all flex items-center justify-center gap-2 active:scale-95 shadow-sm"><i class="fa-solid fa-tags"></i> Tambah Tingkatan Grosir</button>`;
     setH('wholesale-builder-container', h);
 };
 
@@ -6702,8 +6702,8 @@ window.openRestockModal = (id) => {
                 <div class="flex items-center gap-3 min-w-0 flex-1">
                     ${v.colorCode ? `<span class="w-5 h-5 rounded-full shrink-0 shadow-sm border border-slate-300" style="background-color:${esc(v.colorCode)}"></span>` : ''}
                     <div class="min-w-0 flex-1">
-                        <p class="text-xs font-black text-slate-800 dark:text-white truncate">${esc(v.name)}</p>
-                        <p class="text-[10px] font-bold text-slate-500 mt-0.5">Stok saat ini: <span class="text-blue-500 font-black">${parseFloat(v.stock)||0}</span></p>
+                        <p class="text-xs font-bold text-slate-800 dark:text-white truncate">${esc(v.name)}</p>
+                        <p class="text-[10px] font-bold text-slate-500 mt-0.5">Stok saat ini: <span class="text-blue-500 font-bold">${parseFloat(v.stock)||0}</span></p>
                     </div>
                 </div>
                 <input type="number" id="restock-var-${i}" min="0" placeholder="Tambah" class="admin-input !py-2.5 !px-3 !w-28 text-center text-sm bg-white dark:bg-slate-800 shadow-sm shrink-0" value="">
@@ -6713,8 +6713,8 @@ window.openRestockModal = (id) => {
         variantsHtml = `
             <div class="flex items-center justify-between gap-3 bg-slate-50 dark:bg-slate-900/50 p-4 rounded-[1.25rem] border border-slate-200 dark:border-slate-700">
                 <div class="min-w-0 flex-1">
-                    <p class="text-xs font-black text-slate-800 dark:text-white truncate">${esc(p.name)}</p>
-                    <p class="text-[10px] font-bold text-slate-500 mt-0.5">Stok saat ini: <span class="text-blue-500 font-black">${parseFloat(p.stock)||0}</span></p>
+                    <p class="text-xs font-bold text-slate-800 dark:text-white truncate">${esc(p.name)}</p>
+                    <p class="text-[10px] font-bold text-slate-500 mt-0.5">Stok saat ini: <span class="text-blue-500 font-bold">${parseFloat(p.stock)||0}</span></p>
                 </div>
                 <input type="number" id="restock-main" min="0" placeholder="Tambah" class="admin-input !py-2.5 !px-3 !w-28 text-center text-sm bg-white dark:bg-slate-800 shadow-sm shrink-0" value="">
             </div>`;
@@ -6733,7 +6733,7 @@ window.openRestockModal = (id) => {
         <div class="bg-white dark:bg-slate-900 w-full max-w-lg rounded-t-[2rem] sm:rounded-[2rem] max-h-[85vh] flex flex-col shadow-2xl border border-slate-200 dark:border-slate-700">
             <div class="p-5 sm:p-6 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center shrink-0">
                 <div>
-                    <h3 class="font-black text-slate-800 dark:text-white text-base flex items-center gap-2"><i class="fa-solid fa-boxes-stacked text-indigo-500"></i> Restock Produk</h3>
+                    <h3 class="font-bold text-slate-800 dark:text-white text-base flex items-center gap-2"><i class="fa-solid fa-boxes-stacked text-indigo-500"></i> Restock Produk</h3>
                     <p class="text-[10px] font-bold text-slate-500 mt-0.5 uppercase tracking-widest">${esc(p.name)}</p>
                 </div>
                 <button onclick="closeRestockModal()" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:bg-rose-100 hover:text-rose-500 flex items-center justify-center transition-all"><i class="fa-solid fa-xmark"></i></button>
@@ -6902,28 +6902,28 @@ window.openQuickPriceModal = (id) => {
             <div class="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-[1.25rem] border border-slate-200 dark:border-slate-700 space-y-3">
                 <div class="flex items-center gap-2.5 min-w-0">
                     ${v.colorCode ? `<span class="w-4 h-4 rounded-full shrink-0 shadow-sm border border-slate-300" style="background-color:${esc(v.colorCode)}"></span>` : ''}
-                    <p class="text-xs font-black text-slate-800 dark:text-white truncate">${esc(v.name)}</p>
+                    <p class="text-xs font-bold text-slate-800 dark:text-white truncate">${esc(v.name)}</p>
                 </div>
                 <div class="grid grid-cols-4 gap-2.5">
-                    <div><label class="block text-[9px] font-black text-amber-500 mb-1 uppercase tracking-widest">HPP</label><input type="number" id="qp-var-hpp-${i}" value="${v.hpp||0}" class="admin-input !py-2.5 !px-2.5 text-xs text-center bg-white dark:bg-slate-800"></i></div>
-                    <div><label class="block text-[9px] font-black text-emerald-500 mb-1 uppercase tracking-widest">Jual</label><input type="number" id="qp-var-price-${i}" value="${v.price||0}" class="admin-input !py-2.5 !px-2.5 text-xs text-center bg-white dark:bg-slate-800"></i></div>
-                    <div><label class="block text-[9px] font-black text-slate-400 mb-1 uppercase tracking-widest">Coret</label><input type="number" id="qp-var-normal-${i}" value="${v.priceNormal||0}" class="admin-input !py-2.5 !px-2.5 text-xs text-center bg-white dark:bg-slate-800"></i></div>
-                    <div><label class="block text-[9px] font-black text-violet-500 mb-1 uppercase tracking-widest"><i class="fa-solid fa-star"></i> Poin</label><input type="number" min="0" id="qp-var-poin-${i}" value="${v.poin||0}" class="admin-input !py-2.5 !px-2.5 text-xs text-center bg-white dark:bg-slate-800"></i></div>
+                    <div><label class="block text-[9px] font-bold text-amber-500 mb-1 uppercase tracking-widest">HPP</label><input type="number" id="qp-var-hpp-${i}" value="${v.hpp||0}" class="admin-input !py-2.5 !px-2.5 text-xs text-center bg-white dark:bg-slate-800"></i></div>
+                    <div><label class="block text-[9px] font-bold text-emerald-500 mb-1 uppercase tracking-widest">Jual</label><input type="number" id="qp-var-price-${i}" value="${v.price||0}" class="admin-input !py-2.5 !px-2.5 text-xs text-center bg-white dark:bg-slate-800"></i></div>
+                    <div><label class="block text-[9px] font-bold text-slate-400 mb-1 uppercase tracking-widest">Coret</label><input type="number" id="qp-var-normal-${i}" value="${v.priceNormal||0}" class="admin-input !py-2.5 !px-2.5 text-xs text-center bg-white dark:bg-slate-800"></i></div>
+                    <div><label class="block text-[9px] font-bold text-violet-500 mb-1 uppercase tracking-widest"><i class="fa-solid fa-star"></i> Poin</label><input type="number" min="0" id="qp-var-poin-${i}" value="${v.poin||0}" class="admin-input !py-2.5 !px-2.5 text-xs text-center bg-white dark:bg-slate-800"></i></div>
                 </div>
             </div>`
         ).join('');
     } else {
         body = `
             <div class="grid grid-cols-4 gap-2.5">
-                <div><label class="block text-[9px] font-black text-amber-500 mb-1 uppercase tracking-widest">HPP / Modal</label><input type="number" id="qp-hpp" value="${p.hpp||0}" class="admin-input !py-2.5 !px-2.5 text-xs text-center bg-white dark:bg-slate-800"></i></div>
-                <div><label class="block text-[9px] font-black text-emerald-500 mb-1 uppercase tracking-widest">Harga Jual</label><input type="number" id="qp-price" value="${p.price||0}" class="admin-input !py-2.5 !px-2.5 text-xs text-center bg-white dark:bg-slate-800"></i></div>
-                <div><label class="block text-[9px] font-black text-slate-400 mb-1 uppercase tracking-widest">Harga Coret</label><input type="number" id="qp-normal" value="${p.priceNormal||0}" class="admin-input !py-2.5 !px-2.5 text-xs text-center bg-white dark:bg-slate-800"></i></div>
-                <div><label class="block text-[9px] font-black text-violet-500 mb-1 uppercase tracking-widest"><i class="fa-solid fa-star"></i> Poin</label><input type="number" min="0" id="qp-poin" value="${p.poin||0}" class="admin-input !py-2.5 !px-2.5 text-xs text-center bg-white dark:bg-slate-800"></i></div>
+                <div><label class="block text-[9px] font-bold text-amber-500 mb-1 uppercase tracking-widest">HPP / Modal</label><input type="number" id="qp-hpp" value="${p.hpp||0}" class="admin-input !py-2.5 !px-2.5 text-xs text-center bg-white dark:bg-slate-800"></i></div>
+                <div><label class="block text-[9px] font-bold text-emerald-500 mb-1 uppercase tracking-widest">Harga Jual</label><input type="number" id="qp-price" value="${p.price||0}" class="admin-input !py-2.5 !px-2.5 text-xs text-center bg-white dark:bg-slate-800"></i></div>
+                <div><label class="block text-[9px] font-bold text-slate-400 mb-1 uppercase tracking-widest">Harga Coret</label><input type="number" id="qp-normal" value="${p.priceNormal||0}" class="admin-input !py-2.5 !px-2.5 text-xs text-center bg-white dark:bg-slate-800"></i></div>
+                <div><label class="block text-[9px] font-bold text-violet-500 mb-1 uppercase tracking-widest"><i class="fa-solid fa-star"></i> Poin</label><input type="number" min="0" id="qp-poin" value="${p.poin||0}" class="admin-input !py-2.5 !px-2.5 text-xs text-center bg-white dark:bg-slate-800"></i></div>
             </div>
             <div class="pt-2">
                 <div class="flex justify-between items-center mb-2.5">
-                    <label class="block text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest">Harga Grosir</label>
-                    <button type="button" onclick="qpAddWhol()" class="text-[10px] font-black text-emerald-500 hover:text-emerald-600 flex items-center gap-1"><i class="fa-solid fa-plus"></i> Tambah</button>
+                    <label class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">Harga Grosir</label>
+                    <button type="button" onclick="qpAddWhol()" class="text-[10px] font-bold text-emerald-500 hover:text-emerald-600 flex items-center gap-1"><i class="fa-solid fa-plus"></i> Tambah</button>
                 </div>
                 <div id="qp-whol-container" class="space-y-2"></div>
             </div>`;
@@ -6941,7 +6941,7 @@ window.openQuickPriceModal = (id) => {
         <div class="bg-white dark:bg-slate-900 w-full max-w-lg rounded-t-[2rem] sm:rounded-[2rem] max-h-[85vh] flex flex-col shadow-2xl border border-slate-200 dark:border-slate-700">
             <div class="p-5 sm:p-6 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center shrink-0">
                 <div>
-                    <h3 class="font-black text-slate-800 dark:text-white text-base flex items-center gap-2"><i class="fa-solid fa-tags text-emerald-500"></i> Edit Cepat Harga</h3>
+                    <h3 class="font-bold text-slate-800 dark:text-white text-base flex items-center gap-2"><i class="fa-solid fa-tags text-emerald-500"></i> Edit Cepat Harga</h3>
                     <p class="text-[10px] font-bold text-slate-500 mt-0.5 uppercase tracking-widest">${esc(p.name)}</p>
                 </div>
                 <button onclick="closeQuickPriceModal()" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:bg-rose-100 hover:text-rose-500 flex items-center justify-center transition-all"><i class="fa-solid fa-xmark"></i></button>
@@ -7252,14 +7252,14 @@ window.openDocPreview = (type) => {
         <div class="flex items-center gap-4">
             ${logoHTML}
             <div>
-                <h1 class="font-black text-2xl tracking-tight text-slate-900 uppercase">${esc(appData.store.name)}</h1>
+                <h1 class="font-bold text-2xl tracking-tight text-slate-900 uppercase">${esc(appData.store.name)}</h1>
                 <p class="text-sm font-bold text-slate-500 mt-1 uppercase tracking-widest">${esc(appData.store.slogan || 'General Supplier')}</p>
                 <p class="text-xs font-medium text-slate-500 mt-1 max-w-sm leading-snug">${esc(appData.store.address || 'Alamat fisik toko belum diatur.')}</p>
                 <p class="text-xs font-medium text-slate-500 mt-0.5"><i class="fa-brands fa-whatsapp text-emerald-500"></i> ${esc(appData.store.wa || '-')}</p>
             </div>
         </div>
         <div class="text-right">
-            <h2 class="font-black text-3xl tracking-widest ${type === 'invoice' ? 'text-blue-600' : 'text-amber-600'} uppercase">${type === 'invoice' ? (o.payment?.method === 'tempo' ? 'PROFORMA INVOICE' : 'INVOICE') : 'SURAT JALAN'}</h2>
+            <h2 class="font-bold text-3xl tracking-widest ${type === 'invoice' ? 'text-blue-600' : 'text-amber-600'} uppercase">${type === 'invoice' ? (o.payment?.method === 'tempo' ? 'PROFORMA INVOICE' : 'INVOICE') : 'SURAT JALAN'}</h2>
             <p class="text-sm font-bold text-slate-600 mt-2 font-mono">#${o.orderId}</p>
             <p class="text-xs font-semibold text-slate-500 mt-1">Tanggal: ${d}</p>
         </div>
@@ -7267,8 +7267,8 @@ window.openDocPreview = (type) => {
 
     <div class="grid grid-cols-2 gap-8 mb-8">
         <div class="bg-slate-50 p-5 rounded-xl border border-slate-200">
-            <h3 class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3 border-b border-slate-200 pb-2">Ditagihkan / Dikirim Kepada:</h3>
-            <p class="font-black text-base text-slate-900 uppercase mb-1">${esc(o.customer?.name || 'Guest')}</p>
+            <h3 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3 border-b border-slate-200 pb-2">Ditagihkan / Dikirim Kepada:</h3>
+            <p class="font-bold text-base text-slate-900 uppercase mb-1">${esc(o.customer?.name || 'Guest')}</p>
             <p class="text-sm font-medium text-slate-700 leading-relaxed mb-3">${esc(o.customer?.address || '-')}</p>
             ${o.customer?.note ? `<p class="text-xs font-semibold text-amber-700 bg-amber-50 p-2.5 rounded-xl border border-amber-200"><i class="fa-solid fa-note-sticky"></i> Catatan: ${esc(o.customer.note)}</p>` : ''}
         </div>
@@ -7276,15 +7276,15 @@ window.openDocPreview = (type) => {
         <div class="bg-slate-50 p-5 rounded-xl border border-slate-200 flex flex-col justify-center space-y-3">
             <div class="flex justify-between items-center border-b border-slate-200 pb-2">
                 <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Metode Pengiriman</span>
-                <span class="text-sm font-black text-slate-800 uppercase">${esc(o.customer?.deliveryMethod === 'delivery' ? 'Kurir Toko' : 'Ambil Sendiri')}</span>
+                <span class="text-sm font-bold text-slate-800 uppercase">${esc(o.customer?.deliveryMethod === 'delivery' ? 'Kurir Toko' : 'Ambil Sendiri')}</span>
             </div>
             <div class="flex justify-between items-center border-b border-slate-200 pb-2">
                 <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Sistem Pembayaran</span>
-                <span class="text-sm font-black text-slate-800 uppercase">${esc(o.payment?.method || 'cash')}</span>
+                <span class="text-sm font-bold text-slate-800 uppercase">${esc(o.payment?.method || 'cash')}</span>
             </div>
             <div class="flex justify-between items-center pb-1">
                 <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Status Bayar</span>
-                <span class="text-sm font-black ${o.status==='Selesai'?'text-emerald-600':'text-rose-600'} uppercase">${o.status==='Selesai'?'LUNAS':'BELUM LUNAS'}</span>
+                <span class="text-sm font-bold ${o.status==='Selesai'?'text-emerald-600':'text-rose-600'} uppercase">${o.status==='Selesai'?'LUNAS':'BELUM LUNAS'}</span>
             </div>
         </div>
     </div>
@@ -7311,9 +7311,9 @@ window.openDocPreview = (type) => {
                         ${item.variantName ? `<span class="bg-slate-100 text-slate-600 px-2 py-0.5 rounded text-[10px] border border-slate-200 whitespace-nowrap ml-1">${esc(item.variantName)}</span> ${item.colorCode ? `<span class="inline-block w-4 h-4 rounded-full border border-slate-300 shadow-sm" style="background-color: ${esc(item.colorCode)};"></span>` : ''}` : ''}
                         ${item.poTime ? `<span class="bg-amber-100 text-amber-700 px-2 py-0.5 rounded text-[10px] font-bold border border-amber-200 whitespace-nowrap ml-1">PO ${esc(item.poTime)}</span>` : ''}
                     </td>
-                    <td class="py-4 px-4 text-center font-black text-slate-700">${parseFloat(item.qty)} <span class="text-[10px] font-bold text-slate-400 uppercase">${esc(item.unit||'pcs')}</span></td>
+                    <td class="py-4 px-4 text-center font-bold text-slate-700">${parseFloat(item.qty)} <span class="text-[10px] font-bold text-slate-400 uppercase">${esc(item.unit||'pcs')}</span></td>
                     <td class="py-4 px-4 text-right font-mono font-medium">${fCur(item.effectivePrice)}</td>
-                    <td class="py-4 px-4 text-right font-mono font-black">${fCur(item.effectivePrice * parseFloat(item.qty))}</td>
+                    <td class="py-4 px-4 text-right font-mono font-bold">${fCur(item.effectivePrice * parseFloat(item.qty))}</td>
                 </tr>`).join('')}
             </tbody>
         </table>
@@ -7327,14 +7327,14 @@ window.openDocPreview = (type) => {
                 ${o.payment?.ppnAmount ? `<div class="flex justify-between px-4 text-amber-600"><span>PPN (${o.payment.ppnRate||11}%)</span><span class="font-mono">+${fCur(o.payment.ppnAmount)}</span></div>` : ''}
                 
                 <div class="flex justify-between items-center bg-slate-800 text-white p-4 rounded-xl mt-4 shadow-md">
-                    <span class="font-black text-base uppercase tracking-widest">Grand Total</span>
-                    <span class="font-mono text-xl text-emerald-400 font-black tracking-tight">${fCur(o.payment?.grandTotal)}</span>
+                    <span class="font-bold text-base uppercase tracking-widest">Grand Total</span>
+                    <span class="font-mono text-xl text-emerald-400 font-bold tracking-tight">${fCur(o.payment?.grandTotal)}</span>
                 </div>
                 ${o.payment?.method === 'tempo' ? `
                 <div class="flex justify-between px-4 mt-4 text-emerald-600"><span>Uang Muka (DP)</span><span class="font-mono">${fCur(o.payment?.tempoDp || 0)}</span></div>
                 <div class="flex justify-between items-center bg-rose-50 text-rose-700 p-4 rounded-xl mt-2 border border-rose-200">
-                    <span class="font-black text-base uppercase tracking-widest">Sisa Tagihan</span>
-                    <span class="font-mono text-xl font-black tracking-tight">${fCur(o.payment?.tempoBalance || 0)}</span>
+                    <span class="font-bold text-base uppercase tracking-widest">Sisa Tagihan</span>
+                    <span class="font-mono text-xl font-bold tracking-tight">${fCur(o.payment?.tempoBalance || 0)}</span>
                 </div>
                 ` : ''}
             </div>
@@ -7361,7 +7361,7 @@ window.openDocPreview = (type) => {
                         ${item.variantName ? `<span class="bg-slate-100 text-slate-600 px-2 py-0.5 rounded text-[10px] border border-slate-200 whitespace-nowrap ml-1">${esc(item.variantName)}</span> ${item.colorCode ? `<span class="inline-block w-4 h-4 rounded-full border border-slate-300 shadow-sm" style="background-color: ${esc(item.colorCode)};"></span>` : ''}` : ''}
                         ${item.poTime ? `<span class="bg-amber-100 text-amber-700 px-2 py-0.5 rounded text-[10px] font-bold border border-amber-200 whitespace-nowrap ml-1">PO ${esc(item.poTime)}</span>` : ''}
                     </td>
-                    <td class="py-4 px-4 text-center font-black text-lg text-slate-800">${parseFloat(item.qty)}</td>
+                    <td class="py-4 px-4 text-center font-bold text-lg text-slate-800">${parseFloat(item.qty)}</td>
                     <td class="py-4 px-4 text-center text-slate-500 font-bold uppercase text-xs">${esc(item.unit || 'pcs')}</td>
                     <td class="py-4 px-4 text-center"><div class="w-5 h-5 border-2 border-slate-300 mx-auto rounded shadow-inner"></div></td>
                 </tr>`).join('')}
@@ -7375,8 +7375,8 @@ window.openDocPreview = (type) => {
         h += `
         <div class="bg-amber-50 border border-amber-200 rounded-xl p-5 mb-5 flex items-center gap-6">
             <div class="w-10 h-10 rounded-xl bg-amber-400 text-white flex items-center justify-center shrink-0"><i class="fa-solid fa-star"></i></div>
-            ${o.pointsEarned > 0 ? `<div><p class="text-[10px] font-black text-amber-500 uppercase tracking-widest">Poin Didapat</p><p class="font-black text-lg text-amber-700">+${o.pointsEarned}</p></div>` : ''}
-            ${(o.finalMemberPoints !== undefined && o.finalMemberPoints !== null) ? `<div><p class="text-[10px] font-black text-amber-500 uppercase tracking-widest">Saldo Poin Terkumpul</p><p class="font-black text-lg text-amber-700">${o.finalMemberPoints}</p></div>` : ''}
+            ${o.pointsEarned > 0 ? `<div><p class="text-[10px] font-bold text-amber-500 uppercase tracking-widest">Poin Didapat</p><p class="font-bold text-lg text-amber-700">+${o.pointsEarned}</p></div>` : ''}
+            ${(o.finalMemberPoints !== undefined && o.finalMemberPoints !== null) ? `<div><p class="text-[10px] font-bold text-amber-500 uppercase tracking-widest">Saldo Poin Terkumpul</p><p class="font-bold text-lg text-amber-700">${o.finalMemberPoints}</p></div>` : ''}
         </div>`;
     }
 
@@ -7390,19 +7390,19 @@ window.openDocPreview = (type) => {
             <div class="flex items-center gap-3">
                 <div class="w-10 h-10 rounded-xl bg-violet-500 text-white flex items-center justify-center shrink-0"><i class="fa-solid fa-gift"></i></div>
                 <div>
-                    <p class="text-[10px] font-black text-violet-500 uppercase tracking-widest">Klaim Hadiah Member (${o.claimedReward.pointsCost} Poin)</p>
-                    <p class="font-black text-base text-violet-800 uppercase">${esc(o.claimedReward.name)}</p>
+                    <p class="text-[10px] font-bold text-violet-500 uppercase tracking-widest">Klaim Hadiah Member (${o.claimedReward.pointsCost} Poin)</p>
+                    <p class="font-bold text-base text-violet-800 uppercase">${esc(o.claimedReward.name)}</p>
                     ${o.claimedReward.note ? `<p class="text-xs italic text-violet-600 mt-1">"${esc(o.claimedReward.note)}"</p>` : ''}
                 </div>
             </div>
-            <span class="text-[10px] font-black px-3 py-2 rounded-xl bg-violet-600 text-white uppercase tracking-widest text-center shrink-0">${statusTxt}</span>
+            <span class="text-[10px] font-bold px-3 py-2 rounded-xl bg-violet-600 text-white uppercase tracking-widest text-center shrink-0">${statusTxt}</span>
         </div>`;
     }
 
     if (o.payment?.method === 'tempo') {
         h += `
         <div class="mt-6 mb-8 border border-pink-200 bg-pink-50 p-4 rounded-xl text-left">
-            <h4 class="font-black text-pink-700 text-xs uppercase tracking-widest mb-1"><i class="fa-solid fa-clock-rotate-left mr-1"></i> Syarat & Ketentuan Pembayaran Tempo</h4>
+            <h4 class="font-bold text-pink-700 text-xs uppercase tracking-widest mb-1"><i class="fa-solid fa-clock-rotate-left mr-1"></i> Syarat & Ketentuan Pembayaran Tempo</h4>
             <p class="text-[10px] text-pink-600 font-bold leading-relaxed">Maksimal pembayaran sisa tagihan adalah 30 hari (Jatuh Tempo: ${o.payment.tempoDueDate ? new Date(o.payment.tempoDueDate).toLocaleDateString('id-ID') : '-'}). Keterlambatan pembayaran akan dikenakan denda sebesar 1% dari sisa tagihan untuk setiap harinya.</p>
         </div>`;
     }
@@ -7414,7 +7414,7 @@ window.openDocPreview = (type) => {
         <div class="mt-6 mb-8 border border-amber-200 bg-amber-50 p-4 rounded-xl text-left flex gap-3 items-start">
             <i class="fa-solid fa-clock text-amber-500 mt-0.5 animate-pulse"></i>
             <div>
-                <h4 class="font-black text-amber-700 text-xs uppercase tracking-widest mb-1">Informasi Produk Pre-Order (PO)</h4>
+                <h4 class="font-bold text-amber-700 text-xs uppercase tracking-widest mb-1">Informasi Produk Pre-Order (PO)</h4>
                 <p class="text-[10px] text-amber-600 font-bold leading-relaxed">Pesanan ini mengandung produk Pre-Order (PO). Khusus untuk produk berlabel PO akan dikirimkan menyusul (estimasi sesuai label) tanpa dikenakan biaya tambahan.</p>
             </div>
         </div>`;
@@ -7426,17 +7426,17 @@ window.openDocPreview = (type) => {
         <div class="flex flex-col items-center">
             <span class="font-bold text-slate-500 mb-20 uppercase tracking-widest text-[10px]">Penerima / Klien</span>
             <div class="w-48 border-b-2 border-slate-800 mb-2"></div>
-            <span class="font-black text-slate-900">${esc(o.customer?.name || 'Nama Terang & TTD')}</span>
+            <span class="font-bold text-slate-900">${esc(o.customer?.name || 'Nama Terang & TTD')}</span>
         </div>
         <div class="flex flex-col items-center">
             <span class="font-bold text-slate-500 mb-20 uppercase tracking-widest text-[10px]">Sopir / Pengantar</span>
             <div class="w-48 border-b-2 border-slate-800 mb-2"></div>
-            <span class="font-black text-slate-900">Nama Terang & TTD</span>
+            <span class="font-bold text-slate-900">Nama Terang & TTD</span>
         </div>
         <div class="flex flex-col items-center">
             <span class="font-bold text-slate-500 mb-20 uppercase tracking-widest text-[10px]">Hormat Kami,</span>
             <div class="w-48 border-b-2 border-slate-800 mb-2"></div>
-            <span class="font-black text-slate-900 uppercase">${esc(appData.store.name)}</span>
+            <span class="font-bold text-slate-900 uppercase">${esc(appData.store.name)}</span>
         </div>
     </div>
     `;
@@ -7500,7 +7500,7 @@ window.printDocA4 = () => {
             <script src="https://cdn.tailwindcss.com"><` + `/script>
             <style>
                 @page { size: A4 portrait; margin: 10mm; }
-                body { font-family: 'Arial', sans-serif; background: #fff; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+                body { font-family: 'Plus Jakarta Sans', system-ui, sans-serif; background: #fff; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
             </style>
         </head>
         <body onload="setTimeout(() => { window.print(); }, 800)">
