@@ -3001,61 +3001,71 @@ export default function App() {
 
       {/* Admin Panel Dashboard */}
       {currentView === 'admin' && isAdmin && (
-        <div className="view-section flex flex-col fade-in bg-slate-50 dark:bg-slate-900 z-50">
+        <div className="view-section flex flex-col fade-in bg-[#f8fafc] dark:bg-slate-900 z-50">
+          {/* Header CMS ADMIN */}
           <div className="glass-header shrink-0 px-4 flex items-center justify-center z-30 sticky top-0 pb-3">
-            <div className="flex items-center justify-between w-full max-w-[1200px] mx-auto px-4 lg:px-10">
+            <div className="flex items-center justify-between w-full max-w-[1200px] mx-auto px-4 lg:px-8">
               <div className="flex items-center gap-3">
-                <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-dark)] text-white flex items-center justify-center shadow-glow shrink-0 border border-white/20">
-                  <i className="fa-solid fa-store-slash text-base"></i>
+                <div className="w-12 h-12 rounded-2xl bg-indigo-600 text-white flex items-center justify-center shadow-lg shadow-indigo-500/30 shrink-0">
+                  <i className="fa-solid fa-layer-group text-xl"></i>
                 </div>
-                <div>
-                  <h1 className="text-base font-black tracking-tight text-slate-900 dark:text-white leading-none">DASHBOARD ADMIN</h1>
-                  <span className="text-[9px] font-black text-[var(--color-primary)] uppercase tracking-widest bg-[rgba(var(--color-primary-rgb),0.12)] px-2 py-0.5 rounded-full border border-[rgba(var(--color-primary-rgb),0.2)] inline-block mt-1 leading-none">Superadmin Portal</span>
+                <div className="flex items-center gap-2">
+                  <h1 className="text-lg font-black tracking-tight text-slate-900 dark:text-white leading-none">CMS ADMIN</h1>
+                  <span className="text-[9px] font-black bg-amber-400 text-slate-900 px-2 py-0.5 rounded-md uppercase tracking-wider font-sans flex items-center gap-1 shadow-sm">
+                    👑 PRO
+                  </span>
+                  <span className="text-[9px] font-black text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/40 px-2 py-0.5 rounded-md uppercase tracking-wider hidden sm:inline-block border border-indigo-100 dark:border-indigo-800">
+                    SUPERADMIN
+                  </span>
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                <button className="h-9 px-3.5 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:border-[var(--color-primary)] rounded-xl text-[11px] font-black flex items-center gap-1.5 transition-all shadow-sm active:scale-95" onClick={() => setCurrentView('catalog')}>
-                  <i className="fa-solid fa-store text-emerald-500"></i> <span className="hidden sm:inline">Preview Toko</span>
+                <button
+                  className="h-9 px-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:border-indigo-400 rounded-full text-xs font-bold flex items-center gap-1.5 transition-all shadow-sm active:scale-95"
+                  onClick={() => setCurrentView('catalog')}
+                >
+                  <i className="fa-regular fa-eye text-indigo-500"></i> Preview
                 </button>
-                <button className="h-9 px-3.5 bg-rose-50 dark:bg-rose-900/20 border border-rose-200 dark:border-rose-800 text-rose-600 dark:text-rose-400 hover:bg-rose-100 rounded-xl text-[11px] font-black flex items-center gap-1.5 transition-all shadow-sm active:scale-95" onClick={async () => {
-                  await auth.signOut();
-                  setIsAdmin(false);
-                  setCurrentView('catalog');
-                  showToast("Logout Admin Berhasil!");
-                }}>
-                  <i className="fa-solid fa-power-off"></i> <span className="hidden sm:inline">Keluar</span>
+                <button
+                  className="h-9 px-4 bg-rose-50 dark:bg-rose-900/20 border border-rose-100 dark:border-rose-800 text-rose-500 hover:bg-rose-100 rounded-full text-xs font-bold flex items-center gap-1.5 transition-all shadow-sm active:scale-95"
+                  onClick={async () => {
+                    await auth.signOut();
+                    setIsAdmin(false);
+                    setCurrentView('catalog');
+                    showToast("Logout Admin Berhasil!");
+                  }}
+                >
+                  <i className="fa-solid fa-power-off text-rose-500"></i> Keluar
                 </button>
               </div>
             </div>
           </div>
 
           <div className="scroll-content flex-1 overflow-y-auto w-full pb-[calc(5rem+env(safe-area-inset-bottom))]">
-            <div className="max-w-[1200px] mx-auto pt-6 px-4 w-full">
-              {/* Dashboard Report Periods */}
-              <div className="bg-white dark:bg-slate-800 rounded-[1.5rem] border border-slate-200 dark:border-slate-700 p-5 sm:p-7 mb-7 shadow-sm">
-                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-5 border-b border-slate-100 dark:border-slate-700/60">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-2xl bg-emerald-50 dark:bg-emerald-900/30 text-[var(--color-primary)] flex items-center justify-center text-lg border border-emerald-100 dark:border-emerald-800">
-                      <i className="fa-solid fa-chart-line"></i>
+            <div className="max-w-[1200px] mx-auto pt-6 px-4 lg:px-8 w-full space-y-8">
+              
+              {/* Section 1: LAPORAN TOKO */}
+              <div className="space-y-4">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-8 h-8 rounded-xl bg-indigo-50 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-sm font-bold">
+                      <i className="fa-solid fa-compass"></i>
                     </div>
-                    <div>
-                      <h2 className="text-lg sm:text-xl font-black text-slate-800 dark:text-white leading-tight uppercase tracking-tight">Ringkasan Laporan & Keuangan</h2>
-                      <p className="text-[11px] text-slate-400 font-semibold mt-0.5">Analisis performa penjualan, omset, dan laba kotor toko.</p>
-                    </div>
+                    <h2 className="text-xs font-black text-slate-800 dark:text-slate-200 uppercase tracking-widest">LAPORAN TOKO</h2>
                   </div>
-                  <div className="flex gap-1.5 bg-slate-100 dark:bg-slate-900 p-1.5 rounded-2xl border border-slate-200/60 dark:border-slate-700/60 w-full sm:w-auto">
+                  <div className="flex gap-1.5 bg-slate-100 dark:bg-slate-800/80 p-1.5 rounded-2xl border border-slate-200/60 dark:border-slate-700/60 w-full sm:w-auto">
                     {[
-                      { id: 'today', label: 'Hari Ini' },
-                      { id: 'week', label: 'Minggu Ini' },
-                      { id: 'month', label: 'Bulan Ini' },
-                      { id: 'all', label: 'Semua' }
+                      { id: 'today', label: 'HARI INI' },
+                      { id: 'week', label: 'MINGGU INI' },
+                      { id: 'month', label: 'BULAN INI' },
+                      { id: 'all', label: 'SEMUA' }
                     ].map((p) => (
                       <button
                         key={p.id}
-                        className={`flex-1 sm:flex-none px-3.5 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${
+                        className={`flex-1 sm:flex-none px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${
                           adminReportPeriod === p.id
-                            ? 'bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-primary-dark)] text-white shadow-glow'
-                            : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
+                            ? 'bg-indigo-600 text-white shadow-md shadow-indigo-500/30'
+                            : 'text-slate-400 hover:text-slate-700 dark:hover:text-white'
                         }`}
                         onClick={() => loadAdminReport(p.id)}
                       >
@@ -3065,108 +3075,140 @@ export default function App() {
                   </div>
                 </div>
 
+                {/* 4 Cards Laporan Toko */}
                 {adminReports ? (
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mt-6">
-                    <div className="bg-emerald-50/50 dark:bg-emerald-950/20 p-4 sm:p-5 rounded-2xl border border-emerald-100 dark:border-emerald-900/40 relative overflow-hidden group">
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="text-[10px] font-black text-emerald-800 dark:text-emerald-400 uppercase tracking-widest">Omset Penjualan</span>
-                        <div className="w-7 h-7 rounded-lg bg-emerald-500 text-white flex items-center justify-center text-xs shadow-sm"><i className="fa-solid fa-wallet"></i></div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    {/* Card 1: Total Penjualan */}
+                    <div className="bg-white dark:bg-slate-800 p-6 rounded-[2rem] border border-slate-100 dark:border-slate-700/60 shadow-sm flex flex-col justify-between min-h-[130px]">
+                      <div>
+                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider block mb-2">
+                          TOTAL PENJUALAN ({adminReportPeriod === 'today' ? 'HARI INI' : adminReportPeriod === 'week' ? 'MINGGU INI' : adminReportPeriod === 'month' ? 'BULAN INI' : 'SEMUA'})
+                        </span>
+                        <p className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">{fCur(adminReports.omset)}</p>
                       </div>
-                      <p className="text-xl sm:text-2xl font-black text-emerald-600 dark:text-emerald-400 tracking-tight">{fCur(adminReports.omset)}</p>
+                      <p className="text-xs text-slate-400 font-semibold mt-3">{adminReports.successCount} pesanan</p>
                     </div>
 
-                    <div className="bg-blue-50/50 dark:bg-blue-950/20 p-4 sm:p-5 rounded-2xl border border-blue-100 dark:border-blue-900/40 relative overflow-hidden group">
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="text-[10px] font-black text-blue-800 dark:text-blue-400 uppercase tracking-widest">Estimasi Laba</span>
-                        <div className="w-7 h-7 rounded-lg bg-blue-500 text-white flex items-center justify-center text-xs shadow-sm"><i className="fa-solid fa-coins"></i></div>
+                    {/* Card 2: Laba Kotor */}
+                    <div className="bg-white dark:bg-slate-800 p-6 rounded-[2rem] border border-slate-100 dark:border-slate-700/60 shadow-sm flex flex-col justify-between min-h-[130px]">
+                      <div>
+                        <span className="text-[10px] font-black text-indigo-600 dark:text-indigo-400 uppercase tracking-wider flex items-center gap-1.5 mb-2">
+                          <i className="fa-solid fa-chart-line text-xs"></i> LABA KOTOR
+                        </span>
+                        <p className="text-2xl sm:text-3xl font-black text-indigo-600 dark:text-indigo-400 tracking-tight">{fCur(adminReports.omset - (adminReports.assetHpp || 0))}</p>
                       </div>
-                      <p className="text-xl sm:text-2xl font-black text-blue-600 dark:text-blue-400 tracking-tight">{fCur(adminReports.profit)}</p>
+                      <p className="text-xs text-slate-400 font-semibold mt-3">Penjualan - HPP Terjual</p>
                     </div>
 
-                    <div className="bg-slate-50 dark:bg-slate-900/60 p-4 sm:p-5 rounded-2xl border border-slate-200 dark:border-slate-700/60 relative overflow-hidden group">
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest">Aset Produk (HPP)</span>
-                        <div className="w-7 h-7 rounded-lg bg-slate-500 text-white flex items-center justify-center text-xs shadow-sm"><i className="fa-solid fa-boxes-stacked"></i></div>
+                    {/* Card 3: Laba Bersih */}
+                    <div className="bg-white dark:bg-slate-800 p-6 rounded-[2rem] border border-slate-100 dark:border-slate-700/60 shadow-sm flex flex-col justify-between min-h-[130px]">
+                      <div>
+                        <span className="text-[10px] font-black text-indigo-600 dark:text-indigo-400 uppercase tracking-wider flex items-center gap-1.5 mb-2">
+                          <i className="fa-solid fa-sack-dollar text-xs"></i> LABA BERSIH
+                        </span>
+                        <p className="text-2xl sm:text-3xl font-black text-indigo-600 dark:text-indigo-400 tracking-tight">{fCur(adminReports.profit)}</p>
                       </div>
-                      <p className="text-xl sm:text-2xl font-black text-slate-800 dark:text-slate-200 tracking-tight">{fCur(adminReports.assetHpp)}</p>
+                      <p className="text-xs text-slate-400 font-semibold mt-3">Laba Kotor - Diskon Produk</p>
                     </div>
 
-                    <div className="bg-amber-50/50 dark:bg-amber-950/20 p-4 sm:p-5 rounded-2xl border border-amber-100 dark:border-amber-900/40 relative overflow-hidden group">
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="text-[10px] font-black text-amber-800 dark:text-amber-400 uppercase tracking-widest">Pesanan Sukses</span>
-                        <div className="w-7 h-7 rounded-lg bg-amber-500 text-white flex items-center justify-center text-xs shadow-sm"><i className="fa-solid fa-circle-check"></i></div>
+                    {/* Card 4: Total HPP Terjual */}
+                    <div className="bg-white dark:bg-slate-800 p-6 rounded-[2rem] border border-slate-100 dark:border-slate-700/60 shadow-sm flex flex-col justify-between min-h-[130px]">
+                      <div>
+                        <span className="text-[10px] font-black text-rose-500 uppercase tracking-wider flex items-center gap-1.5 mb-2">
+                          <i className="fa-solid fa-tag text-xs"></i> TOTAL HPP TERJUAL
+                        </span>
+                        <p className="text-2xl sm:text-3xl font-black text-rose-500 tracking-tight">{fCur(adminReports.assetHpp || 0)}</p>
                       </div>
-                      <p className="text-xl sm:text-2xl font-black text-amber-600 dark:text-amber-400 tracking-tight">{adminReports.successCount} Transaksi</p>
+                      <p className="text-xs text-slate-400 font-semibold mt-3">Modal barang yang laku</p>
                     </div>
                   </div>
                 ) : (
-                  <div className="text-center py-8"><i className="fa-solid fa-spinner fa-spin text-2xl text-[var(--color-primary)]"></i></div>
+                  <div className="text-center py-8"><i className="fa-solid fa-spinner fa-spin text-2xl text-indigo-600"></i></div>
                 )}
               </div>
 
-              {/* Admin Section Tabs Navigation */}
-              <div className="grid grid-cols-3 sm:grid-cols-6 lg:grid-cols-7 gap-2.5 mb-6">
-                {[
-                  { id: 'orders', name: 'Orders', icon: 'fa-receipt' },
-                  { id: 'products', name: 'Produk', icon: 'fa-box-open' },
-                  { id: 'categories', name: 'Kategori', icon: 'fa-tags' },
-                  { id: 'brands', name: 'Merek', icon: 'fa-copyright' },
-                  { id: 'vouchers', name: 'Voucher', icon: 'fa-ticket-simple' },
-                  { id: 'banks', name: 'Rekening', icon: 'fa-building-columns' },
-                  { id: 'banners', name: 'Banner', icon: 'fa-images' },
-                  { id: 'rewards', name: 'Hadiah', icon: 'fa-gift' },
-                  { id: 'customers', name: 'Pelanggan', icon: 'fa-address-book' },
-                  { id: 'reviews', name: 'Ulasan', icon: 'fa-star' },
-                  { id: 'piutang', name: 'Piutang', icon: 'fa-clock-rotate-left' },
-                  { id: 'pajak', name: 'Pajak & Keuangan', icon: 'fa-calculator' },
-                  { id: 'settings', name: 'Pengaturan', icon: 'fa-gear' },
-                ].map((tab) => {
-                  const isActive = activeAdminTab === tab.id;
-                  return (
-                    <button
-                      key={tab.id}
-                      className={`p-3.5 rounded-2xl border flex flex-col items-center justify-center text-center gap-1.5 transition-all duration-200 active:scale-95 ${
-                        isActive
-                          ? 'bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-dark)] text-white border-transparent shadow-glow -translate-y-0.5'
-                          : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-[var(--color-primary)] hover:shadow-sm'
-                      }`}
-                      onClick={() => setActiveAdminTab(tab.id)}
-                    >
-                      <i className={`fa-solid ${tab.icon} text-lg ${isActive ? 'text-white' : 'text-slate-500 dark:text-slate-400'}`}></i>
-                      <span className="text-[9px] font-black uppercase tracking-wider leading-tight">{tab.name}</span>
-                    </button>
-                  );
-                })}
+              {/* Section 2: MENU NAVIGASI UTAMA */}
+              <div className="space-y-4">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-xl bg-indigo-50 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-sm font-bold">
+                    <i className="fa-solid fa-compass"></i>
+                  </div>
+                  <h2 className="text-xs font-black text-slate-800 dark:text-slate-200 uppercase tracking-widest">MENU NAVIGASI UTAMA</h2>
+                </div>
+
+                {/* Grid Navigation Cards (Large Rounded White Cards with Colorful Icon Boxes) */}
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+                  {[
+                    { id: 'orders', title: 'PESANAN', desc: 'Kelola Transaksi', icon: 'fa-receipt', bg: 'bg-indigo-600' },
+                    { id: 'products', title: 'PRODUK', desc: 'Katalog Barang', icon: 'fa-box', bg: 'bg-blue-500' },
+                    { id: 'settings', title: 'PENGATURAN', desc: 'Sistem Toko', icon: 'fa-gear', bg: 'bg-slate-800' },
+                    { id: 'categories', title: 'KATEGORI', desc: 'Grup Etalase', icon: 'fa-tags', bg: 'bg-amber-500' },
+                    { id: 'brands', title: 'MEREK', desc: 'Brand Ternama', icon: 'fa-copyright', bg: 'bg-indigo-500' },
+                    { id: 'vouchers', title: 'VOUCHER', desc: 'Diskon & Promo', icon: 'fa-ticket-simple', bg: 'bg-fuchsia-600' },
+                    { id: 'banks', title: 'REKENING', desc: 'Metode Transfer', icon: 'fa-building-columns', bg: 'bg-cyan-500' },
+                    { id: 'banners', title: 'BANNER', desc: 'Slider Promosi', icon: 'fa-images', bg: 'bg-rose-500' },
+                    { id: 'rewards', title: 'HADIAH', desc: 'Klaim Poin Member', icon: 'fa-gift', bg: 'bg-violet-600' },
+                    { id: 'customers', title: 'PELANGGAN', desc: 'Database Member', icon: 'fa-users', bg: 'bg-emerald-500' },
+                    { id: 'reviews', title: 'ULASAN', desc: 'Moderasi Review', icon: 'fa-star', bg: 'bg-amber-400 text-slate-900' },
+                    { id: 'pajak', title: 'PAJAK & KEUANGAN', desc: 'Laporan Pajak', icon: 'fa-calculator', bg: 'bg-blue-700' },
+                  ].map((item) => {
+                    const isActive = activeAdminTab === item.id;
+                    return (
+                      <button
+                        key={item.id}
+                        className={`bg-white dark:bg-slate-800 p-6 rounded-[2rem] border transition-all duration-200 flex flex-col items-center justify-center text-center cursor-pointer active:scale-95 shadow-sm hover:shadow-md ${
+                          isActive
+                            ? 'border-indigo-500 ring-2 ring-indigo-500/20 shadow-md'
+                            : 'border-slate-100 dark:border-slate-700/60 hover:border-indigo-300'
+                        }`}
+                        onClick={() => setActiveAdminTab(item.id)}
+                      >
+                        <div className={`w-14 h-14 rounded-2xl ${item.bg} text-white flex items-center justify-center text-2xl shadow-md mb-4`}>
+                          <i className={`fa-solid ${item.icon}`}></i>
+                        </div>
+                        <h3 className="text-sm font-black text-slate-900 dark:text-white uppercase tracking-wider mb-0.5">{item.title}</h3>
+                        <p className="text-[11px] font-bold text-slate-400">{item.desc}</p>
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
 
-              {/* Tab: Orders List */}
-              {activeAdminTab === 'orders' && (
-                <div className="bg-white dark:bg-slate-800 p-5 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm">
-                  <div className="flex justify-between items-center mb-4">
-                    <h3 className="text-sm font-black text-slate-800 dark:text-white uppercase tracking-wider">Daftar Transaksi</h3>
-                    <button className="px-4 py-2 border border-slate-200 rounded-xl text-xs font-bold" onClick={exportDataJson}><i className="fa-solid fa-download mr-1"></i> Backup JSON</button>
+              {/* Detail Content Section per Tab */}
+              <div className="mt-8">
+                {activeAdminTab === 'orders' && (
+                  <div className="bg-white dark:bg-slate-800 p-6 rounded-[2rem] border border-slate-100 dark:border-slate-700/60 shadow-sm space-y-4">
+                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 pb-4 border-b border-slate-100 dark:border-slate-700/60">
+                      <h3 className="text-base font-black text-slate-900 dark:text-white uppercase tracking-wider flex items-center gap-2">
+                        <i className="fa-solid fa-receipt text-indigo-600"></i> Kelola Transaksi & Pesanan
+                      </h3>
+                      <button className="px-4 py-2.5 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-xl text-xs font-bold hover:bg-slate-200 transition-all" onClick={exportDataJson}>
+                        <i className="fa-solid fa-download mr-1.5"></i> Backup JSON
+                      </button>
+                    </div>
+                    <div className="space-y-3">
+                      {adminOrders.length === 0 ? (
+                        <p className="text-center py-8 text-slate-400 font-bold text-sm">Belum ada transaksi.</p>
+                      ) : (
+                        adminOrders.map((o, idx) => (
+                          <div key={idx} className="p-4 bg-slate-50 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800 rounded-2xl flex items-center justify-between hover:border-indigo-300 transition-all cursor-pointer" onClick={() => {
+                            setSelectedAdminOrder(o);
+                            setAdminOrderModalOpen(true);
+                          }}>
+                            <div>
+                              <p className="font-black text-sm text-slate-900 dark:text-white">#{o.orderId.split('-').pop()}</p>
+                              <p className="text-[11px] text-slate-400 font-bold mt-0.5">{o.customer.name} • {o.payment.method.toUpperCase()}</p>
+                            </div>
+                            <div className="text-right">
+                              <p className="font-black text-sm text-indigo-600 dark:text-indigo-400">{fCur(o.payment.grandTotal)}</p>
+                              <span className={`text-[9px] font-black px-2.5 py-0.5 rounded-full uppercase inline-block mt-1 ${o.status === 'Baru' ? 'bg-rose-100 text-rose-600' : o.status === 'Diproses' ? 'bg-blue-100 text-blue-600' : 'bg-emerald-100 text-emerald-600'}`}>{o.status}</span>
+                            </div>
+                          </div>
+                        ))
+                      )}
+                    </div>
                   </div>
-                  <div className="space-y-3">
-                    {adminOrders.map((o, idx) => (
-                      <div key={idx} className="p-4 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl flex items-center justify-between" onClick={() => {
-                        setSelectedAdminOrder(o);
-                        setAdminOrderModalOpen(true);
-                      }}>
-                        <div>
-                          <p className="font-black text-sm text-slate-800 dark:text-white">#{o.orderId.split('-').pop()}</p>
-                          <p className="text-[10px] text-slate-400 font-bold">{o.customer.name} • {o.payment.method.toUpperCase()}</p>
-                        </div>
-                        <div className="text-right">
-                          <p className="font-black text-sm text-emerald-600">{fCur(o.payment.grandTotal)}</p>
-                          <span className={`text-[8px] font-black px-2 py-0.5 rounded uppercase ${o.status === 'Baru' ? 'bg-rose-100 text-rose-600' : o.status === 'Diproses' ? 'bg-blue-100 text-blue-600' : 'bg-emerald-100 text-emerald-600'}`}>{o.status}</span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Tab: Categories */}
+                )}
               {activeAdminTab === 'categories' && (
                 <div className="bg-white dark:bg-slate-800 p-5 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm">
                   <div className="flex justify-between items-center mb-4">
@@ -3746,6 +3788,7 @@ export default function App() {
                   </div>
                 </div>
               )}
+              </div>
             </div>
           </div>
         </div>
