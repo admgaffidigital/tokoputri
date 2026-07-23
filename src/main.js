@@ -29,14 +29,14 @@ window.DOMPurify = DOMPurify;
             'fuchsia' : { 50: '#fdf4ff', 100: '#fae8ff', 200: '#f5d0fe', 300: '#f0abfc', 400: '#e879f9', 500: '#d946ef', 600: '#c026d3', 700: '#a21caf', 800: '#86198f', 900: '#701a75' },
             'pink'    : { 50: '#fdf2f8', 100: '#fce7f3', 200: '#fbcfe8', 300: '#f9a8d4', 400: '#f472b6', 500: '#ec4899', 600: '#db2777', 700: '#be185d', 800: '#9d174d', 900: '#831843' },
             'rose'    : { 50: '#fff1f2', 100: '#ffe4e6', 200: '#fecdd3', 300: '#fda4af', 400: '#fb7185', 500: '#f43f5e', 600: '#e11d48', 700: '#be123c', 800: '#9f1239', 900: '#881337' },
-            'red'     : { 50: '#fef2f2', 100: '#fee2e2', 200: '#fecaca', 300: '#fca5a5', 400: '#f87171', 500: '#ef4444', 600: '#dc2626', 700: '#b91c1c', 800: '#991b1b', 900: '#7f1d1d' },
-            'orange'  : { 50: '#fff7ed', 100: '#ffedd5', 200: '#fed7aa', 300: '#fdba74', 400: '#fb923c', 500: '#f97316', 600: '#ea580c', 700: '#c2410c', 800: '#9a3412', 900: '#7c2d12' },
-            'amber'   : { 50: '#fffbeb', 100: '#fef3c7', 200: '#fde68a', 300: '#fcd34d', 400: '#fbbf24', 500: '#f59e0b', 600: '#d97706', 700: '#b45309', 800: '#92400e', 900: '#78350f' },
-            'yellow'  : { 50: '#fefce8', 100: '#fef9c3', 200: '#fef08a', 300: '#fde047', 400: '#facc15', 500: '#eab308', 600: '#ca8a04', 700: '#a16207', 800: '#854d0e', 900: '#713f12' },
-            'lime'    : { 50: '#f7fee7', 100: '#ecfccb', 200: '#d9f99d', 300: '#bef264', 400: '#a3e635', 500: '#84cc16', 600: '#65a30d', 700: '#4d7c0f', 800: '#3f6212', 900: '#365314' },
-            'green'   : { 50: '#f0fdf4', 100: '#dcfce7', 200: '#bbf7d0', 300: '#86efac', 400: '#4ade80', 500: '#22c55e', 600: '#16a34a', 700: '#15803d', 800: '#166534', 900: '#14532d' },
-            'slate'   : { 50: '#f8fafc', 100: '#f1f5f9', 200: '#e2e8f0', 300: '#cbd5e1', 400: '#94a3b8', 500: '#64748b', 600: '#475569', 700: '#334155', 800: '#1e293b', 900: '#0f172a' },
-            'stone'   : { 50: '#fafaf9', 100: '#f5f5f4', 200: '#e7e5e4', 300: '#d6d3d1', 400: '#a8a29e', 500: '#78716c', 600: '#57534e', 700: '#44403c', 800: '#292524', 900: '#1c1917' }
+            'red'     : { 50: '#fef2f2', 100: '#fee2e2', 200: '#fecaca', 300: '#fca5a5', 400: '#f87171', 500: '#dc2626', 600: '#b91c1c', 700: '#991b1b', 800: '#7f1d1d', 900: '#450a0a' },
+            'orange'  : { 50: '#fff7ed', 100: '#ffedd5', 200: '#fed7aa', 300: '#fdba74', 400: '#fb923c', 500: '#ea580c', 600: '#c2410c', 700: '#9a3412', 800: '#7c2d12', 900: '#431407' },
+            'amber'   : { 50: '#fffbeb', 100: '#fef3c7', 200: '#fde68a', 300: '#fcd34d', 400: '#fbbf24', 500: '#d97706', 600: '#b45309', 700: '#92400e', 800: '#78350f', 900: '#451a03' },
+            'yellow'  : { 50: '#fefce8', 100: '#fef9c3', 200: '#fef08a', 300: '#fde047', 400: '#eab308', 500: '#d97706', 600: '#b45309', 700: '#854d0e', 800: '#713f12', 900: '#3f1d0b' },
+            'lime'    : { 50: '#f7fee7', 100: '#ecfccb', 200: '#d9f99d', 300: '#bef264', 400: '#a3e635', 500: '#65a30d', 600: '#4d7c0f', 700: '#3f6212', 800: '#365314', 900: '#1a2e05' },
+            'green'   : { 50: '#f0fdf4', 100: '#dcfce7', 200: '#bbf7d0', 300: '#86efac', 400: '#4ade80', 500: '#16a34a', 600: '#15803d', 700: '#166534', 800: '#14532d', 900: '#052e16' },
+            'slate'   : { 50: '#f8fafc', 100: '#f1f5f9', 200: '#e2e8f0', 300: '#cbd5e1', 400: '#94a3b8', 500: '#475569', 600: '#334155', 700: '#1e293b', 800: '#0f172a', 900: '#020617' },
+            'stone'   : { 50: '#fafaf9', 100: '#f5f5f4', 200: '#e7e5e4', 300: '#d6d3d1', 400: '#a8a29e', 500: '#57534e', 600: '#44403c', 700: '#292524', 800: '#1c1917', 900: '#0c0a09' }
         };
         
         // Ubah kode warna HEX menjadi RGB (dipakai untuk efek bayangan/glow transparan)
@@ -1380,21 +1380,21 @@ window.rDyn = () => {
     let bHTML = (appData.banners && appData.banners.length) ? `<div id="banner-slider" class="flex overflow-x-auto gap-4 sm:gap-6 pb-6 pt-2 snap-x hide-scrollbar scroll-smooth" ontouchstart="clearInterval(bannerTmr)" ontouchend="setTimeout(startBannerAutoSlide, 3000)" onmouseenter="clearInterval(bannerTmr)" onmouseleave="startBannerAutoSlide()">${appData.banners.map((b,i)=>{
         const linkAction = b.link ? `onclick="window.open('${esc(b.link)}', '_self')"` : '';
         return `
-        <div ${linkAction} class="w-[88vw] sm:w-[480px] min-h-[180px] sm:min-h-[220px] snap-center shrink-0 rounded-[2rem] relative overflow-hidden group cursor-pointer bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-dark)] shadow-glow hover:-translate-y-1.5 transition-all duration-300 border border-white/20 flex flex-col">
-            <div class="absolute inset-0 opacity-20 pointer-events-none" style="background-image: radial-gradient(circle, #ffffff 1px, transparent 1px); background-size: 14px 14px;"></div>
-            <div class="absolute -right-10 -top-10 w-40 h-40 border-[24px] border-white/10 rounded-full pointer-events-none"></div>
-            <div class="absolute right-20 -bottom-12 w-32 h-32 bg-white/20 rounded-full blur-2xl pointer-events-none"></div>
-            <div class="absolute -left-12 top-10 w-24 h-24 bg-gradient-to-tr from-white/5 to-white/20 rounded-full backdrop-blur-sm border border-white/10 pointer-events-none transform -rotate-12 shadow-inner"></div>
+        <div ${linkAction} class="w-[88vw] sm:w-[480px] min-h-[180px] sm:min-h-[220px] snap-center shrink-0 rounded-[2rem] relative overflow-hidden group cursor-pointer bg-slate-900 text-white shadow-xl hover:-translate-y-1.5 transition-all duration-300 border border-slate-800 flex flex-col">
+            <div class="absolute inset-0 bg-gradient-to-br from-[var(--color-primary)]/40 via-slate-900 to-slate-950 pointer-events-none"></div>
+            <div class="absolute inset-0 opacity-15 pointer-events-none" style="background-image: radial-gradient(circle, #ffffff 1px, transparent 1px); background-size: 14px 14px;"></div>
+            <div class="absolute -right-10 -top-10 w-40 h-40 border-[24px] border-white/5 rounded-full pointer-events-none"></div>
+            <div class="absolute right-20 -bottom-12 w-32 h-32 bg-[var(--color-primary)]/20 rounded-full blur-2xl pointer-events-none"></div>
+            <div class="absolute -left-12 top-10 w-24 h-24 bg-gradient-to-tr from-white/5 to-white/10 rounded-full backdrop-blur-sm border border-white/10 pointer-events-none transform -rotate-12 shadow-inner"></div>
             <div class="flex flex-1 w-full relative z-10">
                 <div class="w-[60%] p-5 sm:p-6 md:p-7 lg:p-8 flex flex-col justify-center z-20">
-                    <span class="inline-block px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-white text-[9px] sm:text-[10px] font-bold uppercase tracking-widest w-max mb-2.5 border border-white/30 shadow-sm"><i class="fa-solid fa-star text-yellow-300 mr-1 animate-pulse"></i> Promo</span>
+                    <span class="inline-block px-3 py-1 bg-white/10 backdrop-blur-md rounded-full text-white text-[9px] sm:text-[10px] font-bold uppercase tracking-widest w-max mb-2.5 border border-white/20 shadow-sm"><i class="fa-solid fa-star text-amber-400 mr-1 animate-pulse"></i> Promo</span>
                     <h2 class="text-[15px] sm:text-xl font-bold text-white leading-snug mb-1.5 drop-shadow-md line-clamp-3">${esc(b.title || 'Penawaran Spesial')}</h2>
-                    <p class="text-[10px] sm:text-[11px] text-white/90 font-medium line-clamp-3 leading-relaxed mb-3">${esc(b.desc || 'Belanja sekarang dan dapatkan penawaran terbaik.')}</p>
-                    ${b.link ? `<button class="mt-auto bg-white dark:bg-slate-800 text-[var(--color-primary-dark)] dark:text-white text-[9px] sm:text-[11px] font-bold py-2 px-4 rounded-full w-max hover:bg-slate-100 active:scale-95 transition-all shadow-lg flex items-center gap-2 group-hover:pr-4">Beli Sekarang <i class="fa-solid fa-arrow-right transition-transform group-hover:translate-x-1"></i></button>` : ''}
+                    <p class="text-[10px] sm:text-[11px] text-slate-300 font-medium line-clamp-3 leading-relaxed mb-3">${esc(b.desc || 'Belanja sekarang dan dapatkan penawaran terbaik.')}</p>
+                    ${b.link ? `<button class="mt-auto bg-[var(--color-primary)] text-white text-[9px] sm:text-[11px] font-bold py-2 px-4 rounded-full w-max hover:brightness-110 active:scale-95 transition-all shadow-lg flex items-center gap-2 group-hover:pr-4">Beli Sekarang <i class="fa-solid fa-arrow-right transition-transform group-hover:translate-x-1"></i></button>` : ''}
                 </div>
                 <div class="w-[40%] relative z-10 flex items-center justify-center p-2 sm:p-4 pr-4 sm:pr-6">
-                    <div class="absolute inset-0 bg-gradient-to-l from-black/10 to-transparent pointer-events-none"></div>
-                    ${b.img ? `<img loading="lazy" src="${esc(getOptImg(b.img, 'w800-rw'))}" alt="${esc(b.title || 'Promo Banner')}" class="w-full h-full object-contain drop-shadow-2xl transition-transform duration-700 group-hover:scale-125 group-hover:-translate-y-2 group-hover:-rotate-3" onerror="this.style.display='none'"></i>` : `<i class="fa-solid fa-gift text-6xl text-white/50 group-hover:scale-110 transition-transform"></i>`}
+                    ${b.img ? `<img loading="lazy" src="${esc(getOptImg(b.img, 'w800-rw'))}" alt="${esc(b.title || 'Promo Banner')}" class="w-full h-full object-contain drop-shadow-2xl transition-transform duration-700 group-hover:scale-125 group-hover:-translate-y-2 group-hover:-rotate-3" onerror="this.style.display='none'">` : `<i class="fa-solid fa-gift text-6xl text-white/40 group-hover:scale-110 transition-transform"></i>`}
                 </div>
             </div>
         </div>`;
@@ -1411,7 +1411,7 @@ window.rDyn = () => {
         let vHTML = `
         <div class="flex items-center justify-between mb-4">
             <h3 class="font-bold text-slate-800 dark:text-white text-sm sm:text-base tracking-tight flex items-center gap-2">
-                <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-dark)] flex items-center justify-center text-white shadow-md">
+                <div class="w-8 h-8 rounded-xl bg-[var(--color-primary)] flex items-center justify-center text-white shadow-md">
                     <i class="fa-solid fa-ticket-simple text-sm -rotate-45"></i>
                 </div> VOUCHER TOKO
             </h3>
@@ -1427,25 +1427,24 @@ window.rDyn = () => {
                 
                 return `
                 <div class="w-[280px] sm:w-[320px] shrink-0 snap-start relative group cursor-pointer active:scale-95 transition-transform duration-300" onclick="copyVoucher('${esc(v.code)}')">
-                    <div class="w-full h-[110px] bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-dark)] rounded-[1.25rem] shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex relative overflow-hidden border border-white/20">
-                        <div class="absolute -right-4 -top-4 w-24 h-24 bg-white/20 rounded-full blur-2xl pointer-events-none"></div>
-                        <div class="absolute -left-4 -bottom-4 w-16 h-16 bg-black/10 rounded-full blur-lg pointer-events-none"></div>
-                        <div class="absolute inset-0 opacity-20 pointer-events-none" style="background-image: radial-gradient(circle, #ffffff 1px, transparent 1px); background-size: 12px 12px;"></div>
+                    <div class="w-full h-[110px] bg-slate-900 dark:bg-slate-800 rounded-[1.25rem] shadow-md hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 flex relative overflow-hidden border border-slate-800 dark:border-slate-700">
+                        <div class="absolute inset-0 bg-gradient-to-br from-[var(--color-primary)]/30 via-slate-900 to-black/50 pointer-events-none"></div>
+                        <div class="absolute -right-4 -top-4 w-24 h-24 bg-[var(--color-primary)]/20 rounded-full blur-2xl pointer-events-none"></div>
                         <div class="flex-1 px-5 py-3 flex flex-col justify-center relative z-10">
                             <h4 class="font-bold text-white text-sm sm:text-base leading-tight mb-1 drop-shadow-md line-clamp-1">${desc}</h4>
-                            <p class="text-[8px] sm:text-[9px] font-bold text-white/90 flex items-center gap-1.5 mb-2.5 drop-shadow-sm uppercase tracking-wider"><i class="fa-solid fa-circle-info text-white/80"></i> ${termsStr}</p>
+                            <p class="text-[8px] sm:text-[9px] font-bold text-slate-300 flex items-center gap-1.5 mb-2.5 uppercase tracking-wider"><i class="fa-solid fa-circle-info text-[var(--color-primary)]"></i> ${termsStr}</p>
                             <div class="inline-flex">
-                                <span class="bg-black/20 backdrop-blur-md text-white text-[10px] sm:text-xs font-bold px-3 py-1.5 rounded-xl uppercase tracking-widest border border-white/30 shadow-inner flex items-center gap-2">
-                                    <i class="fa-solid fa-ticket text-white/60"></i> ${esc(v.code)}
+                                <span class="bg-white/10 backdrop-blur-md text-white text-[10px] sm:text-xs font-bold px-3 py-1.5 rounded-xl uppercase tracking-widest border border-white/20 shadow-inner flex items-center gap-2">
+                                    <i class="fa-solid fa-ticket text-[var(--color-primary)]"></i> ${esc(v.code)}
                                 </span>
                             </div>
                         </div>
-                        <div class="w-0 border-l-[2px] border-dashed border-white/40 relative z-10 my-3"></div>
+                        <div class="w-0 border-l-[2px] border-dashed border-slate-700 relative z-10 my-3"></div>
                         <div class="w-[28%] flex flex-col items-center justify-center relative z-10 bg-white/5 backdrop-blur-sm group-hover:bg-white/10 transition-colors">
-                            <div class="w-10 h-10 rounded-full bg-white dark:bg-slate-800 text-slate-800 dark:text-white flex items-center justify-center mb-2 shadow-lg group-hover:scale-110 group-hover:text-[var(--color-primary)] transition-all duration-300">
+                            <div class="w-10 h-10 rounded-full bg-[var(--color-primary)] text-white flex items-center justify-center mb-2 shadow-lg group-hover:scale-110 transition-all duration-300">
                                 <i class="fa-regular fa-copy text-sm"></i>
                             </div>
-                            <span class="text-[9px] font-bold uppercase tracking-widest text-white drop-shadow-md">Salin</span>
+                            <span class="text-[9px] font-bold uppercase tracking-widest text-slate-200">Salin</span>
                         </div>
                     </div>
                 </div>`;
