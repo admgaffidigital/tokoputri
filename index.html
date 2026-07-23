@@ -85,69 +85,50 @@
         </div>
         <button id='toast-close' onclick="clearTimeout(toastT); document.getElementById('toast').style.top='-160px'"><i class='fa-solid fa-xmark'></i></button>
         <div id='toast-progress'></div>
-    </div>    <div class='fixed inset-0 z-[9999] flex flex-col items-center justify-center overflow-hidden' id='global-loader'>
-        <!-- Keyframes & theme-aware CSS (must be first so animations work before Tailwind) -->
+    <div class='fixed inset-0 z-[9999] flex flex-col items-center justify-center overflow-hidden transition-opacity duration-300' id='global-loader'>
+        <!-- Minimalist & theme-aware splash screen styles -->
         <style>
-            #global-loader { background: linear-gradient(135deg, var(--color-primary-light, #f0fdf4) 0%, #ffffff 100%) !important; }
-            .dark #global-loader { background: linear-gradient(135deg, #020617 0%, #0f172a 100%) !important; }
+            #global-loader { background: #ffffff !important; }
+            .dark #global-loader { background: #0f172a !important; }
             #loader-store-name { color: #0f172a; }
-            .dark #loader-store-name { color: #f1f5f9 !important; }
-            #loader-text { color: #475569; }
+            .dark #loader-store-name { color: #f8fafc !important; }
+            #loader-text { color: #64748b; }
             .dark #loader-text { color: #94a3b8 !important; }
-            #loader-badge-text { color: #94a3b8; }
-            @keyframes blobMove1{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(30px,20px) scale(1.05)}}
-            @keyframes blobMove2{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-20px,-30px) scale(1.08)}}
-            @keyframes blobMove3{0%,100%{transform:translate(0,0)}50%{transform:translate(15px,-20px)}}
-            @keyframes floatUp{0%,100%{transform:translateY(0) scale(1);opacity:0.4}50%{transform:translateY(-30px) scale(1.2);opacity:0.2}}
-            @keyframes spinRing{to{transform:rotate(360deg)}}
-            @keyframes glowPulse{0%,100%{opacity:0.5;transform:scale(1)}50%{opacity:1;transform:scale(1.1)}}
-            @keyframes logoFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
-            @keyframes orbitDot{to{transform:rotate(360deg)}}
-            @keyframes shimmerBar{0%{background-position:200% 0}100%{background-position:-200% 0}}
-            @keyframes dotBounce{0%,100%{transform:translateY(0);opacity:1}50%{transform:translateY(-10px);opacity:0.5}}
+            @keyframes pulseRing { 0%, 100% { transform: scale(1); opacity: 0.25; } 50% { transform: scale(1.18); opacity: 0.08; } }
+            @keyframes slideTrack { 0% { transform: translateX(-100%); } 100% { transform: translateX(200%); } }
         </style>
 
         <!-- Main content -->
-        <div style='position:relative;z-index:10;display:flex;flex-direction:column;align-items:center'>
-            <!-- Logo ring -->
-            <div style='position:relative;width:120px;height:120px;margin-bottom:28px;display:flex;align-items:center;justify-content:center'>
-                <div style='position:absolute;inset:0;border-radius:50%;border:2px solid rgba(var(--color-primary-rgb,16,185,129),0.2);animation:spinRing 8s linear infinite'></div>
-                <div style='position:absolute;inset:8px;border-radius:50%;border:2px dashed rgba(var(--color-primary-rgb,16,185,129),0.3);animation:spinRing 5s linear infinite reverse'></div>
-                <div style='position:absolute;inset:16px;border-radius:50%;background:radial-gradient(circle,rgba(var(--color-primary-rgb,16,185,129),0.1) 0%,transparent 70%);animation:glowPulse 2s ease-in-out infinite'></div>
-                <!-- Logo box -->
-                <div id='loader-logo-box' style='position:relative;width:68px;height:68px;border-radius:20px;background:linear-gradient(135deg,var(--color-primary,#10b981),var(--color-primary-dark,#059669));display:flex;align-items:center;justify-content:center;box-shadow:0 0 40px rgba(var(--color-primary-rgb,16,185,129),0.4),0 8px 32px rgba(var(--color-primary-rgb,16,185,129),0.3);animation:logoFloat 3s ease-in-out infinite;overflow:hidden;'>
-                    <i class='fa-solid fa-store' id='loader-logo-icon' style='font-size:28px;color:white'></i>
-                    <img id='loader-logo-img' style='display:none;width:100%;height:100%;object-fit:cover;' src='' alt='Logo' onerror='this.style.display="none";document.getElementById("loader-logo-icon").style.display="block";'/>
+        <div class="flex flex-col items-center justify-center p-6 text-center z-10">
+            <!-- Minimalist Logo Icon Box with soft pulse ring -->
+            <div class="relative w-20 h-20 mb-6 flex items-center justify-center">
+                <div class="absolute inset-0 rounded-3xl bg-[var(--color-primary)]" style="animation: pulseRing 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;"></div>
+                <div id="loader-logo-box" class="relative w-16 h-16 rounded-2xl bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-dark,#059669)] text-white flex items-center justify-center shadow-lg shadow-[var(--color-primary)]/20 overflow-hidden">
+                    <i class="fa-solid fa-store text-2xl text-white" id="loader-logo-icon"></i>
+                    <img id="loader-logo-img" class="w-full h-full object-cover hidden" src="" alt="Logo" onerror="this.style.display='none';document.getElementById('loader-logo-icon').style.display='block';"/>
                 </div>
-                <!-- Orbit dot -->
-                <div style='position:absolute;width:10px;height:10px;border-radius:50%;background:var(--color-primary,#10b981);box-shadow:0 0 8px var(--color-primary,#10b981);animation:orbitDot 3s linear infinite;top:5px;left:50%;margin-left:-5px;transform-origin:5px 55px'></div>
             </div>
-            <!-- Store name (diisi dari JS setelah data dimuat) -->
-            <div style='text-align:center;margin-bottom:6px'>
-                <h1 id='loader-store-name' style='font-size:22px;font-weight:900;letter-spacing:0.15em;text-transform:uppercase;margin:0;line-height:1'></h1>
-                <p id='loader-tagline' style='font-size:9px;font-weight:700;letter-spacing:0.3em;color:var(--color-primary,#10b981);text-transform:uppercase;margin:6px 0 0'></p>
+
+            <!-- Store Name & Tagline -->
+            <h1 id="loader-store-name" class="text-lg sm:text-xl font-bold tracking-wider uppercase mb-1 leading-tight"></h1>
+            <p id="loader-tagline" class="text-[10px] font-bold tracking-[0.25em] text-[var(--color-primary)] uppercase mb-6 min-h-[14px]"></p>
+
+            <!-- Sleek Minimalist Loading Progress Track -->
+            <div class="w-36 h-1 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden relative mb-3">
+                <div class="h-full w-1/2 bg-[var(--color-primary)] rounded-full absolute" style="animation: slideTrack 1.4s ease-in-out infinite;"></div>
             </div>
-            <!-- Divider -->
-            <div style='width:60px;height:2px;background:linear-gradient(90deg,transparent,var(--color-primary,#10b981),transparent);margin:16px 0;border-radius:2px'></div>
-            <!-- Loading text -->
-            <p id='loader-text' style='font-size:11px;font-weight:800;letter-spacing:0.2em;text-transform:uppercase;margin:0 0 20px;min-height:16px'>Memuat Data...</p>
-            <!-- Progress bar -->
-            <div style='width:200px;height:4px;background:rgba(var(--color-primary-rgb,16,185,129),0.15);border-radius:99px;overflow:hidden;margin-bottom:20px'>
-                <div style='height:100%;width:40%;background:linear-gradient(90deg,var(--color-primary-dark,#059669),var(--color-primary,#10b981),var(--color-primary-dark,#059669));border-radius:99px;animation:shimmerBar 1.5s ease-in-out infinite;background-size:200% 100%'></div>
-            </div>
-            <!-- Dots -->
-            <div style='display:flex;gap:8px;align-items:center'>
-                <div style='width:8px;height:8px;border-radius:50%;background:var(--color-primary,#10b981);animation:dotBounce 1.2s 0s ease-in-out infinite'></div>
-                <div style='width:8px;height:8px;border-radius:50%;background:var(--color-primary,#10b981);opacity:0.7;animation:dotBounce 1.2s 0.2s ease-in-out infinite'></div>
-                <div style='width:8px;height:8px;border-radius:50%;background:var(--color-primary,#10b981);opacity:0.4;animation:dotBounce 1.2s 0.4s ease-in-out infinite'></div>
-            </div>
+
+            <!-- Soft status text -->
+            <p id="loader-text" class="text-[11px] font-semibold tracking-wider uppercase min-h-[16px]">Memuat Data...</p>
         </div>
-        <!-- Bottom badge -->
-        <div style='position:absolute;bottom:32px;left:0;right:0;text-align:center;z-index:10'>
-            <span id='loader-badge-text' style='font-size:9px;font-weight:700;letter-spacing:0.25em;text-transform:uppercase;display:inline-flex;align-items:center;gap:6px'>
-                <i class='fa-solid fa-shield-halved' style='color:var(--color-primary,#10b981);font-size:10px'></i> Secure Connection
+
+        <!-- Clean Footer Credit -->
+        <div class="absolute bottom-6 left-0 right-0 text-center z-10">
+            <span id="loader-badge-text" class="text-[9px] font-bold tracking-widest uppercase text-slate-400 dark:text-slate-500 inline-flex items-center gap-1.5">
+                <i class="fa-solid fa-shield-halved text-[var(--color-primary)] text-[10px]"></i> Secure Connection
             </span>
         </div>
+    </div>
         <script>
             (function() {
                 try {
