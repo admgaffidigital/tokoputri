@@ -3156,13 +3156,24 @@ export default function App() {
                     return (
                       <button
                         key={item.id}
-                        className={`bg-white dark:bg-slate-800 p-6 rounded-[2rem] border transition-all duration-200 flex flex-col items-center justify-center text-center cursor-pointer active:scale-95 shadow-sm hover:shadow-md ${
+                        className={`bg-white dark:bg-slate-800 p-6 rounded-[2rem] border transition-all duration-200 flex flex-col items-center justify-center text-center cursor-pointer active:scale-95 shadow-sm hover:shadow-md relative overflow-hidden ${
                           isActive
-                            ? 'border-indigo-500 ring-2 ring-indigo-500/20 shadow-md'
+                            ? 'border-indigo-500 ring-4 ring-indigo-500/20 shadow-lg scale-[1.02]'
                             : 'border-slate-100 dark:border-slate-700/60 hover:border-indigo-300'
                         }`}
-                        onClick={() => setActiveAdminTab(item.id)}
+                        onClick={() => {
+                          setActiveAdminTab(item.id);
+                          setTimeout(() => {
+                            const el = document.getElementById('admin-active-content-section');
+                            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                          }, 50);
+                        }}
                       >
+                        {isActive && (
+                          <span className="absolute top-3 right-3 bg-indigo-600 text-white text-[8px] font-black px-2 py-0.5 rounded-full uppercase tracking-wider shadow-sm">
+                            AKTIF
+                          </span>
+                        )}
                         <div className={`w-14 h-14 rounded-2xl ${item.bg} text-white flex items-center justify-center text-2xl shadow-md mb-4`}>
                           <i className={`fa-solid ${item.icon}`}></i>
                         </div>
@@ -3175,7 +3186,7 @@ export default function App() {
               </div>
 
               {/* Detail Content Section per Tab */}
-              <div className="mt-8">
+              <div className="mt-8 scroll-mt-24" id="admin-active-content-section">
                 {activeAdminTab === 'orders' && (
                   <div className="bg-white dark:bg-slate-800 p-6 rounded-[2rem] border border-slate-100 dark:border-slate-700/60 shadow-sm space-y-4">
                     <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 pb-4 border-b border-slate-100 dark:border-slate-700/60">
