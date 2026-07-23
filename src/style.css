@@ -132,7 +132,7 @@ body {
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
     z-index: 30; 
-    border-bottom: 1px solid rgba(226, 232, 240, 0.6); 
+    border-bottom: 1.5px solid rgba(203, 213, 225, 0.9); 
     box-shadow: 0 2px 20px -4px rgba(15, 23, 42, 0.06); 
     padding-top: max(0.75rem, env(safe-area-inset-top)); 
 }
@@ -141,7 +141,7 @@ body {
     background: rgba(255, 255, 255, 0.97); 
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
-    border-top: 1px solid rgba(226, 232, 240, 0.6); 
+    border-top: 1.5px solid rgba(203, 213, 225, 0.9); 
     box-shadow: 0 -8px 24px -8px rgba(15, 23, 42, 0.06); 
     padding-bottom: max(1.25rem, env(safe-area-inset-bottom)); 
 }
@@ -149,7 +149,7 @@ body {
 .admin-input { 
     width: 100%; 
     background-color: #fff; 
-    border: 1.5px solid #e2e8f0; 
+    border: 2px solid #cbd5e1; 
     border-radius: 10px; 
     padding: 0.875rem 1rem; 
     font-size: 13px; 
@@ -165,12 +165,12 @@ body {
     box-shadow: 0 0 0 3px rgba(var(--color-primary-rgb), 0.12), inset 0 1px 3px rgba(15, 23, 42, 0.04); 
 }
 .admin-input::placeholder { font-weight: 500; color: #94a3b8; }
-html.dark .admin-input::placeholder { color: #94a3b8; }
+.admin-input::placeholder { color: #94a3b8; }
 
 .card-modern { 
     background: #fff; 
     border-radius: 10px; 
-    border: 1px solid rgba(226, 232, 240, 0.7); 
+    border: 1.5px solid rgba(203, 213, 225, 0.8); 
     box-shadow: 0 2px 12px -2px rgba(15, 23, 42, 0.05), 0 0 0 0 rgba(var(--color-primary-rgb), 0); 
     transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.25s ease, box-shadow 0.25s ease; 
     box-sizing: border-box; 
@@ -178,7 +178,7 @@ html.dark .admin-input::placeholder { color: #94a3b8; }
 .card-modern:hover { 
     transform: translateY(-3px); 
     box-shadow: 0 12px 28px -6px rgba(15, 23, 42, 0.10); 
-    border-color: rgba(var(--color-primary-rgb), 0.3); 
+    border-color: rgba(var(--color-primary-rgb), 0.45); 
 }
 
 .custom-radio:checked + div { 
@@ -363,16 +363,14 @@ html.dark .admin-input::placeholder { color: #94a3b8; }
     width: 100%;
 }
 
-.border-2 { border-width: 1px !important; }
-
 /* === 5. DARK MODE OVERRIDES === */
 html.dark body { background-color: #020617; color: #f8fafc; }
-html.dark #app-container { background-color: #0f172a; border-color: rgba(51, 65, 85, 0.5); }
-html.dark .glass-header { background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom-color: rgba(30, 41, 59, 0.8); box-shadow: 0 4px 20px -4px rgba(0, 0, 0, 0.4); }
-html.dark .glass-nav { background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-top-color: rgba(30, 41, 59, 0.8); box-shadow: 0 -8px 24px -8px rgba(0, 0, 0, 0.5); padding-bottom: max(1.25rem, env(safe-area-inset-bottom)); }
-html.dark .card-modern { background-color: #1e293b !important; border-color: rgba(51, 65, 85, 0.6) !important; box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.3); }
-html.dark .card-modern:hover { border-color: rgba(var(--color-primary-rgb), 0.4) !important; box-shadow: 0 12px 28px -6px rgba(0, 0, 0, 0.5); }
-html.dark .admin-input { background-color: #0f172a !important; border-color: #334155 !important; color: #f1f5f9 !important; box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3); }
+html.dark #app-container { background-color: #0f172a; border-color: rgba(51, 65, 85, 0.7); }
+html.dark .glass-header { background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom-color: rgba(51, 65, 85, 0.8) !important; border-bottom-width: 1.5px !important; box-shadow: 0 4px 20px -4px rgba(0, 0, 0, 0.4); }
+html.dark .glass-nav { background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-top-color: rgba(51, 65, 85, 0.8) !important; border-top-width: 1.5px !important; box-shadow: 0 -8px 24px -8px rgba(0, 0, 0, 0.5); padding-bottom: max(1.25rem, env(safe-area-inset-bottom)); }
+html.dark .card-modern { background-color: #1e293b !important; border-color: rgba(71, 85, 105, 0.7) !important; border-width: 1.5px !important; box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.3); }
+html.dark .card-modern:hover { border-color: rgba(var(--color-primary-rgb), 0.5) !important; box-shadow: 0 12px 28px -6px rgba(0, 0, 0, 0.5); }
+html.dark .admin-input { background-color: #0f172a !important; border-color: #475569 !important; color: #f1f5f9 !important; box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3); }
 html.dark .admin-input:focus { border-color: var(--color-primary) !important; box-shadow: 0 0 0 3px rgba(var(--color-primary-rgb), 0.2), inset 0 1px 3px rgba(0, 0, 0, 0.3) !important; }
 html.dark .admin-input::placeholder { color: #64748b !important; }
 html.dark .custom-radio:checked + div { background-color: rgba(var(--color-primary-rgb), 0.12); border-color: var(--color-primary); }
