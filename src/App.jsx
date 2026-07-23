@@ -3788,6 +3788,82 @@ export default function App() {
                   </div>
                 </div>
               )}
+               {/* Tab: Settings (Pengaturan Toko) */}
+               {activeAdminTab === 'settings' && (
+                 <div className="bg-white dark:bg-slate-800 p-6 rounded-[2rem] border border-slate-100 dark:border-slate-700/60 shadow-sm space-y-6">
+                   <div className="flex justify-between items-center pb-4 border-b border-slate-100 dark:border-slate-700/60">
+                     <h3 className="text-base font-black text-slate-900 dark:text-white uppercase tracking-wider flex items-center gap-2">
+                       <i className="fa-solid fa-gear text-slate-800 dark:text-white"></i> Pengaturan Informasi & Fitur Toko
+                     </h3>
+                     <button className="btn-primary !w-auto px-6 py-2.5 text-xs shadow-glow rounded-xl" onClick={() => {
+                       showToast("Menyimpan pengaturan toko...", "loading");
+                       db.collection('freshmart').doc('cms_data').collection('store').doc('config').set(appData.store, { merge: true }).then(() => {
+                         localStorage.setItem('freshmart_cms_data', JSON.stringify(appData));
+                         showToast("Pengaturan toko berhasil disimpan!", "success");
+                       }).catch(e => showToast("Gagal menyimpan: " + e.message, "error"));
+                     }}><i className="fa-solid fa-floppy-disk mr-1.5"></i> Simpan Pengaturan</button>
+                   </div>
+
+                   <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                     <div>
+                       <label className="block text-[10px] font-black uppercase text-slate-400 dark:text-slate-500 mb-1.5 tracking-widest">Nama Toko / Usaha</label>
+                       <input className="admin-input" value={appData.store?.name || ''} onChange={e => setAppData(prev => ({ ...prev, store: { ...prev.store, name: e.target.value } }))} placeholder="Contoh: CV. RESTU KARYA UTAMA" />
+                     </div>
+                     <div>
+                       <label className="block text-[10px] font-black uppercase text-slate-400 dark:text-slate-500 mb-1.5 tracking-widest">Slogan Toko</label>
+                       <input className="admin-input" value={appData.store?.slogan || ''} onChange={e => setAppData(prev => ({ ...prev, store: { ...prev.store, slogan: e.target.value } }))} placeholder="Solusi Grosir & Alat Teknik" />
+                     </div>
+                     <div>
+                       <label className="block text-[10px] font-black uppercase text-slate-400 dark:text-slate-500 mb-1.5 tracking-widest">Nomor WhatsApp Admin CS</label>
+                       <input className="admin-input" value={appData.store?.wa || ''} onChange={e => setAppData(prev => ({ ...prev, store: { ...prev.store, wa: e.target.value } }))} placeholder="6281234567890" />
+                     </div>
+                     <div>
+                       <label className="block text-[10px] font-black uppercase text-slate-400 dark:text-slate-500 mb-1.5 tracking-widest">Tarif Ongkir per KM (Rp)</label>
+                       <input className="admin-input" type="number" value={appData.store?.costPerKm || 0} onChange={e => setAppData(prev => ({ ...prev, store: { ...prev.store, costPerKm: parseFloat(e.target.value) || 0 } }))} placeholder="5000" />
+                     </div>
+                     <div className="md:col-span-2">
+                       <label className="block text-[10px] font-black uppercase text-slate-400 dark:text-slate-500 mb-1.5 tracking-widest">Alamat Lengkap Toko</label>
+                       <textarea className="admin-input resize-none" rows="2" value={appData.store?.address || ''} onChange={e => setAppData(prev => ({ ...prev, store: { ...prev.store, address: e.target.value } }))} placeholder="Alamat fisik toko / gudang..." />
+                     </div>
+                   </div>
+
+                   <div className="pt-4 border-t border-slate-100 dark:border-slate-700/60 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                     <label className="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl cursor-pointer">
+                       <span className="font-black text-xs text-slate-800 dark:text-white uppercase">Aktifkan Pengiriman Kurir</span>
+                       <input type="checkbox" className="w-5 h-5 rounded accent-indigo-600 cursor-pointer" checked={appData.store?.isDeliveryEnabled !== false} onChange={e => setAppData(prev => ({ ...prev, store: { ...prev.store, isDeliveryEnabled: e.target.checked } }))} />
+                     </label>
+                     <label className="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl cursor-pointer">
+                       <span className="font-black text-xs text-slate-800 dark:text-white uppercase">Aktifkan Ambil di Toko</span>
+                       <input type="checkbox" className="w-5 h-5 rounded accent-indigo-600 cursor-pointer" checked={appData.store?.isPickupEnabled !== false} onChange={e => setAppData(prev => ({ ...prev, store: { ...prev.store, isPickupEnabled: e.target.checked } }))} />
+                     </label>
+                   </div>
+                 </div>
+               )}
+
+               {/* Tab: Pajak & Keuangan */}
+               {activeAdminTab === 'pajak' && (
+                 <div className="bg-white dark:bg-slate-800 p-6 rounded-[2rem] border border-slate-100 dark:border-slate-700/60 shadow-sm space-y-6">
+                   <div className="flex justify-between items-center pb-4 border-b border-slate-100 dark:border-slate-700/60">
+                     <h3 className="text-base font-black text-slate-900 dark:text-white uppercase tracking-wider flex items-center gap-2">
+                       <i className="fa-solid fa-calculator text-blue-600"></i> Laporan Laba Rugi & Laporan Pajak UMKM (PP 55 0.5%)
+                     </h3>
+                   </div>
+                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                     <div className="bg-slate-50 dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800">
+                       <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-1">Total Omset Kotor</span>
+                       <p className="text-xl font-black text-slate-800 dark:text-white">{fCur(adminReports?.omset || 0)}</p>
+                     </div>
+                     <div className="bg-slate-50 dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800">
+                       <span className="text-[10px] font-black text-blue-600 uppercase tracking-widest block mb-1">Pajak UMKM 0.5% (Final)</span>
+                       <p className="text-xl font-black text-blue-600">{fCur((adminReports?.omset || 0) * 0.005)}</p>
+                     </div>
+                     <div className="bg-slate-50 dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800">
+                       <span className="text-[10px] font-black text-emerald-600 uppercase tracking-widest block mb-1">Laba Bersih Setelah Pajak</span>
+                       <p className="text-xl font-black text-emerald-600">{fCur((adminReports?.profit || 0) - ((adminReports?.omset || 0) * 0.005))}</p>
+                     </div>
+                   </div>
+                 </div>
+               )}
               </div>
             </div>
           </div>
