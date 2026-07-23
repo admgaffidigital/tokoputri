@@ -35,7 +35,7 @@ const uiPalettes = {
 
 const defApp = { 
   store: { 
-    name: "Toko Putri", slogan: "Solusi Grosir & Alat Teknik", logo: "fa-store", 
+    name: "CV.RESTU KARYA UTAMA", slogan: "Solusi Grosir & Alat Teknik", logo: "fa-store", 
     wa: "", address: "", lat: "", lng: "", costPerKm: 0, 
     isDeliveryEnabled: true, isPickupEnabled: true, 
     allProductsIcon: "", allBrandsIcon: "", 

@@ -7,17 +7,6 @@ export default {
   darkMode: 'class',
   theme: {
     extend: {
-      borderRadius: {
-        'none': '0px',
-        'sm': '4px',
-        'DEFAULT': '10px',
-        'md': '10px',
-        'lg': '10px',
-        'xl': '10px',
-        '2xl': '10px',
-        '3xl': '10px',
-        'full': '9999px',
-      },
       boxShadow: {
         'soft': '0 4px 20px -2px rgba(15, 23, 42, 0.05)',
         'glow': '0 6px 22px -4px rgba(var(--color-primary-rgb), 0.45)',
@@ -41,3 +30,4 @@ export default {
   },
   plugins: [],
 }
+
