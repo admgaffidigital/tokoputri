@@ -49,28 +49,46 @@ window.DOMPurify = DOMPurify;
         // FIX: sebelumnya logika ini cuma dijalankan sekali saat load awal. Sekarang dibungkus
         // jadi fungsi reusable (window.applyUITheme) agar bisa dipanggil ULANG tanpa reload
         // halaman saat data toko selesai disinkronkan dari server (lihat syncAppMeta()).
-        window.applyUITheme = (themeName) => {
-            const colors = window.uiPalettes[themeName] || window.uiPalettes['emerald'];
-
-            // Menanamkan CSS Variabel secara dinamis ke root HTML
+        window.applyUITheme = (themeName, customHex) => {
+            const uiTheme = themeName || localStorage.getItem('freshmart_ui_theme') || 'emerald';
+            const colors = window.uiPalettes[uiTheme] || window.uiPalettes['emerald'];
             
-
-            // Memaksa Tailwind menggunakan warna pilihan Admin
+            if (themeName) localStorage.setItem('freshmart_ui_theme', uiTheme);
             
-            // Update CSS variables for compiled Tailwind theme
+            const hex = customHex || localStorage.getItem('freshmart_theme_color') || colors[500];
+            if (customHex) localStorage.setItem('freshmart_theme_color', hex);
+
+            const hexToRgb = window.hexToRgb || (h => {
+                let bigint = parseInt(h.replace('#', ''), 16);
+                return ((bigint >> 16) & 255) + ',' + ((bigint >> 8) & 255) + ',' + (bigint & 255);
+            });
+
+            const primaryRgb = hexToRgb(hex);
+
+            // Update Tailwind palette variables
             Object.keys(colors).forEach(shade => {
                 document.documentElement.style.setProperty(`--color-emerald-${shade}`, colors[shade]);
             });
-            // Update primary RGB color variable
-            document.documentElement.style.setProperty('--color-primary', colors[500]);
-            document.documentElement.style.setProperty('--color-primary-dark', colors[600]);
-            document.documentElement.style.setProperty('--color-primary-light', colors[50]);
-            document.documentElement.style.setProperty('--color-primary-rgb', window.hexToRgb(colors[500]));
+
+            // Update primary theme CSS variables (used across app and #global-loader)
+            document.documentElement.style.setProperty('--color-primary', hex);
+            document.documentElement.style.setProperty('--color-primary-dark', colors[600] || hex);
+            document.documentElement.style.setProperty('--color-primary-light', colors[50] || '#f0fdf4');
+            document.documentElement.style.setProperty('--color-primary-rgb', primaryRgb);
+
+            // Update status bar meta theme-color tag
+            let m = document.querySelector('meta[name="theme-color"]');
+            if (!m) { 
+                m = document.createElement('meta'); 
+                m.setAttribute('name', 'theme-color'); 
+                document.head.appendChild(m); 
+            }
+            m.setAttribute('content', hex);
 
             return colors;
         };
 
-        let activeColors = window.applyUITheme(savedUITheme);
+        let activeColors = window.applyUITheme(savedUITheme, localStorage.getItem('freshmart_theme_color'));
 
         // FIX: warna header/status-bar (meta theme-color) sebelumnya BARU dipasang ~2 detik
         // setelah halaman terbuka (menunggu data toko dari server), jadi selalu "putih dulu"
@@ -5290,7 +5308,7 @@ window.openSettingForm = (type) => {
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 <div><label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Warna Tema UI Web</label>
                     <div class="relative">
-                        <select id="set-ui-theme" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm cursor-pointer appearance-none pr-10">
+                        <select id="set-ui-theme" onchange="if(typeof window.applyUITheme==='function') window.applyUITheme(this.value, document.getElementById('set-theme-color').value)" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm cursor-pointer appearance-none pr-10">
                             <option value="emerald" ${(appData.store.uiTheme||'emerald')==='emerald'?'selected':''}>Hijau Emerald (Default)</option>
                             <option value="teal" ${appData.store.uiTheme==='teal'?'selected':''}>Hijau Tosca (Teal)</option>
                             <option value="lime" ${appData.store.uiTheme==='lime'?'selected':''}>Hijau Lemon (Lime)</option>
@@ -5317,8 +5335,8 @@ window.openSettingForm = (type) => {
 
                 <div><label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Warna Header App (PWA)</label>
                     <div class="flex gap-3">
-                        <input type="color" id="set-theme-color-picker" value="${esc(appData.store.themeColor || '#10b981')}" class="w-14 h-12 rounded-xl cursor-pointer shadow-sm border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-1" oninput="document.getElementById('set-theme-color').value = this.value">
-                        <input autocomplete='off' id="set-theme-color" value="${esc(appData.store.themeColor || '#10b981')}" class="admin-input !py-3.5 uppercase font-mono flex-1 shadow-sm bg-slate-50 dark:bg-slate-900" oninput="document.getElementById('set-theme-color-picker').value = this.value" placeholder="#10b981">
+                        <input type="color" id="set-theme-color-picker" value="${esc(appData.store.themeColor || '#10b981')}" class="w-14 h-12 rounded-xl cursor-pointer shadow-sm border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-1" oninput="document.getElementById('set-theme-color').value = this.value; if(typeof window.applyUITheme==='function') window.applyUITheme(document.getElementById('set-ui-theme').value, this.value)">
+                        <input autocomplete='off' id="set-theme-color" value="${esc(appData.store.themeColor || '#10b981')}" class="admin-input !py-3.5 uppercase font-mono flex-1 shadow-sm bg-slate-50 dark:bg-slate-900" oninput="document.getElementById('set-theme-color-picker').value = this.value; if(typeof window.applyUITheme==='function') window.applyUITheme(document.getElementById('set-ui-theme').value, this.value)" placeholder="#10b981">
                     </div>
                 </div>
             </div>
@@ -5515,11 +5533,12 @@ window.saveAdminSettings = async (type) => {
             appData.store.logo = fixD(getV('set-logo')); 
             appData.store.description = getV('set-description'); 
             appData.store.themeColor = getV('set-theme-color'); 
-            localStorage.setItem('freshmart_theme_color', appData.store.themeColor); // FIX: ikut di-cache, sama seperti uiTheme
-            
-            // Simpan warna baru ke Database dan Cache!
             appData.store.uiTheme = getV('set-ui-theme');
+            localStorage.setItem('freshmart_theme_color', appData.store.themeColor);
             localStorage.setItem('freshmart_ui_theme', appData.store.uiTheme);
+            if (typeof window.applyUITheme === 'function') {
+                window.applyUITheme(appData.store.uiTheme, appData.store.themeColor);
+            }
         } 
         else if (type === 'catalog') {
             appData.store.categoryStyle = getV('set-category-style'); 
