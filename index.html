@@ -3,7 +3,6 @@
 <head>
     <!-- Resource hints -->
     <link rel="preconnect" href="https://www.gstatic.com" crossorigin/>
-    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin/>
     <link rel="dns-prefetch" href="https://firestore.googleapis.com"/>
     <link rel="dns-prefetch" href="https://identitytoolkit.googleapis.com"/>
     <meta charset='UTF-8'/>
@@ -22,8 +21,7 @@
         <link rel="stylesheet"
               href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&display=swap"/>
     </noscript>
-    <link crossorigin='anonymous' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css' integrity='sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==' referrerpolicy='no-referrer' rel='stylesheet' media='print' onload="this.media='all'"/>
-    <noscript><link crossorigin='anonymous' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css' rel='stylesheet'/></noscript>
+
     <!-- Vite entry point -->
     <script type="module" src="/src/main.js"></script>
     <!-- Initialize theme color CSS variables & dark mode instantly to avoid FOUC/flash -->
@@ -453,58 +451,59 @@
                     </div>
                     <div class='mt-8 mb-2 hidden overflow-hidden rounded-2xl' id='ad-slot-catalog-end'></div>
                 </div> 
-<div class='w-full mt-12 border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 relative overflow-hidden pb-24 sm:pb-12 shadow-[0_-10px_40px_-15px_rgba(0,0,0,0.05)] dark:shadow-none'>
-    <div class='absolute top-0 left-0 w-full h-0.5 bg-[var(--color-primary)]'></div>
+<div class='w-full mt-12 border-t border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-950/80 backdrop-blur-md relative overflow-hidden pb-24 sm:pb-12 shadow-[0_-10px_40px_-15px_rgba(0,0,0,0.03)]'>
+    <div class='absolute top-0 left-0 w-full h-[3px] bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-primary-dark)]'></div>
     <div class='w-full xl:max-w-[1200px] mx-auto px-5 sm:px-6 lg:px-8 pt-12 pb-8 relative z-10'>
-        <div class='grid grid-cols-1 md:grid-cols-12 gap-10 lg:gap-12 text-center md:text-left'>            <div class='md:col-span-6 lg:col-span-6 flex flex-col items-center md:items-start'>
+        <div class='grid grid-cols-1 md:grid-cols-12 gap-10 lg:gap-12 text-center md:text-left'>
+            <div class='md:col-span-6 lg:col-span-6 flex flex-col items-center md:items-start'>
                 <div class='flex flex-col sm:flex-row items-center gap-4 mb-6'>
-                    <div class='w-14 h-14 bg-slate-50 dark:bg-slate-800 rounded-2xl flex items-center justify-center p-2.5 border border-slate-100 dark:border-slate-700 shadow-sm shrink-0 overflow-hidden'>
+                    <div class='w-14 h-14 bg-white dark:bg-slate-900 rounded-2xl flex items-center justify-center p-2.5 border border-slate-200/60 dark:border-slate-800 shadow-soft shrink-0 overflow-hidden hover:scale-105 transition-transform duration-300'>
                         <img alt='Logo' class='w-full h-full object-contain hidden' id='footer-store-logo-img' loading='lazy' src='data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'></i>
                         <i class='fa-solid fa-store text-3xl text-[var(--color-primary)]' id='footer-store-logo-icon'></i>
                     </div>
                     <div class='flex flex-col justify-center items-center sm:items-start mt-2 sm:mt-0'>
-                        <h3 class='font-bold text-xl text-slate-800 dark:text-white leading-tight mb-1.5' id='footer-store-name'>Memuat...</h3>
+                        <h3 class='font-extrabold text-xl text-slate-800 dark:text-white leading-tight mb-1.5' id='footer-store-name'>Memuat...</h3>
                         <span class='inline-flex px-2.5 py-0.5 bg-indigo-50 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400 text-[9px] font-bold rounded border border-indigo-100 dark:border-indigo-800/50 uppercase tracking-widest w-max items-center gap-1.5'><i class='fa-solid fa-circle-check'></i> Official Store</span>
                     </div>
                 </div>
                 <p class='text-sm text-slate-500 dark:text-slate-400 leading-relaxed mb-8 font-medium pr-0 lg:pr-6 max-w-sm md:max-w-none mx-auto md:mx-0' id='footer-store-desc'>Deskripsi Usaha</p>
-                <div class='mt-auto pt-5 border-t border-slate-100 dark:border-slate-800/80 w-full'>
-                    <p class='text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-4'>Mendukung Pembayaran &amp; Pengiriman</p>
-                    <div class='flex flex-wrap justify-center md:justify-start gap-4 text-2xl text-slate-300 dark:text-slate-600'>
-                        <i class='fa-brands fa-cc-visa hover:text-blue-500 transition-colors cursor-pointer' title='Visa'></i>
-                        <i class='fa-brands fa-cc-mastercard hover:text-orange-500 transition-colors cursor-pointer' title='Mastercard'></i>
-                        <i class='fa-solid fa-qrcode hover:text-rose-500 transition-colors cursor-pointer' title='QRIS'></i>
-                        <div class='hidden md:block w-px h-6 bg-slate-200 dark:bg-slate-700 mx-1'></div>
-                        <i class='fa-solid fa-truck-fast hover:text-emerald-500 transition-colors cursor-pointer' title='Ekspedisi Cepat'></i>
-                        <i class='fa-solid fa-box hover:text-amber-500 transition-colors cursor-pointer' title='Kargo'></i>
+                <div class='mt-auto pt-5 border-t border-slate-250/60 dark:border-slate-800/80 w-full'>
+                    <p class='text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-4'>Mendukung Pembayaran &amp; Pengiriman</p>
+                    <div class='flex flex-wrap justify-center md:justify-start items-center gap-3'>
+                        <div class='w-9 h-6 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 flex items-center justify-center text-lg hover:scale-105 transition-transform cursor-pointer text-slate-400 hover:text-blue-500 shadow-sm' title='Visa'><i class='fa-brands fa-cc-visa'></i></div>
+                        <div class='w-9 h-6 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 flex items-center justify-center text-lg hover:scale-105 transition-transform cursor-pointer text-slate-400 hover:text-orange-500 shadow-sm' title='Mastercard'><i class='fa-brands fa-cc-mastercard'></i></div>
+                        <div class='w-9 h-6 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 flex items-center justify-center text-lg hover:scale-105 transition-transform cursor-pointer text-slate-400 hover:text-rose-500 shadow-sm' title='QRIS'><i class='fa-solid fa-qrcode text-base'></i></div>
+                        <div class='w-px h-6 bg-slate-250 dark:bg-slate-800 mx-1'></div>
+                        <div class='w-9 h-6 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 flex items-center justify-center text-lg hover:scale-105 transition-transform cursor-pointer text-slate-400 hover:text-emerald-500 shadow-sm' title='Ekspedisi Cepat'><i class='fa-solid fa-truck-fast text-base'></i></div>
+                        <div class='w-9 h-6 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 flex items-center justify-center text-lg hover:scale-105 transition-transform cursor-pointer text-slate-400 hover:text-amber-500 shadow-sm' title='Kargo'><i class='fa-solid fa-box text-base'></i></div>
                     </div>
                 </div>
             </div>
 
             <div class='md:col-span-6 lg:col-span-6 flex flex-col items-center md:items-start'>
-                <h4 class='font-bold text-slate-800 dark:text-white mb-5 uppercase tracking-widest text-sm flex items-center justify-center md:justify-start gap-3 pb-4 border-b border-slate-100 dark:border-slate-800 w-full'>
-                    <div class='w-7 h-7 rounded-xl primary-light-icon-box flex items-center justify-center'><i class='fa-solid fa-headset text-xs'></i></div> Hubungi Kami
+                <h4 class='font-extrabold text-slate-800 dark:text-white mb-5 uppercase tracking-widest text-sm flex items-center justify-center md:justify-start gap-3 pb-4 border-b border-slate-200/60 dark:border-slate-800 w-full'>
+                    <div class='w-7 h-7 rounded-xl bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-dark)] flex items-center justify-center text-white shadow-sm'><i class='fa-solid fa-headset text-xs'></i></div> Hubungi Kami
                 </h4>
                 <div class='space-y-4 w-full max-w-sm md:max-w-none'>
-                    <a id='footer-wa-link' class='flex flex-col sm:flex-row items-center sm:items-start justify-center md:justify-start gap-4 p-4 rounded-2xl accent-box transition-all group cursor-pointer shadow-sm' href='#' target='_blank' onclick="event.preventDefault(); if(appData.store.wa) window.open('https://wa.me/'+appData.store.wa, '_blank')">
+                    <a id='footer-wa-link' class='flex flex-col sm:flex-row items-center sm:items-start justify-center md:justify-start gap-4 p-4 rounded-2xl accent-box hover:scale-[1.02] transition-all group cursor-pointer shadow-soft' href='#' target='_blank' onclick="event.preventDefault(); if(appData.store.wa) window.open('https://wa.me/'+appData.store.wa, '_blank')">
                         <div class='w-12 h-12 bg-emerald-500 text-white rounded-xl flex items-center justify-center shadow-md group-hover:scale-110 group-hover:rotate-6 transition-transform duration-300 shrink-0'>
                             <i class='fa-brands fa-whatsapp text-2xl'></i>
                         </div>
                         <div class='min-w-0 text-center sm:text-left'>
-                            <p class='text-[10px] font-bold text-emerald-700 dark:text-emerald-400 uppercase tracking-widest mb-0.5'>Customer Service</p>
-                            <p class='text-sm font-bold text-slate-900 dark:text-slate-100 truncate'>Konsultasi via WhatsApp</p>
+                            <p class='text-[10px] font-bold text-[var(--color-primary-dark)] dark:text-[var(--color-primary)] uppercase tracking-widest mb-0.5'>Customer Service</p>
+                            <p class='text-sm font-extrabold text-slate-800 dark:text-white truncate'>Konsultasi via WhatsApp</p>
                         </div>
                     </a>
-                    <div class='bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl border border-slate-100 dark:border-slate-700/50 space-y-4 shadow-sm'>
-                        <div class='flex flex-col sm:flex-row items-center sm:items-start justify-center md:justify-start gap-3.5 text-sm text-slate-500 dark:text-slate-400'>
-                            <div class='w-9 h-9 rounded-full bg-white dark:bg-slate-800 flex items-center justify-center shrink-0 shadow-sm border border-slate-100 dark:border-slate-700'><i class='fa-solid fa-envelope text-slate-400'></i></div>
-                            <span class='font-bold truncate tracking-wide mt-1 sm:mt-1.5'>support@restukaryautama.com</span>
+                    <div class='bg-white dark:bg-slate-900/60 p-4 rounded-2xl border border-slate-200/60 dark:border-slate-800 space-y-4 shadow-soft'>
+                        <div class='flex flex-col sm:flex-row items-center sm:items-start justify-center md:justify-start gap-3.5 text-slate-700 dark:text-slate-200'>
+                            <div class='w-9 h-9 rounded-xl bg-slate-50 dark:bg-slate-800 flex items-center justify-center shrink-0 shadow-sm border border-slate-250/60 dark:border-slate-700'><i class='fa-solid fa-envelope text-slate-400'></i></div>
+                            <span class='font-bold truncate tracking-wide mt-2 text-xs sm:text-sm'>support@restukaryautama.com</span>
                         </div>
-                        <div class='flex flex-col sm:flex-row items-center sm:items-start justify-center md:justify-start gap-3.5 text-sm text-slate-500 dark:text-slate-400'>
-                            <div class='w-9 h-9 rounded-full bg-white dark:bg-slate-800 flex items-center justify-center shrink-0 shadow-sm border border-slate-100 dark:border-slate-700'><i class='fa-solid fa-clock text-slate-400'></i></div>
-                            <div class='min-w-0 text-center sm:text-left mt-1 sm:mt-0'>
-                                <span class='inline-block px-2 py-0.5 bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 text-[9px] font-bold rounded border border-amber-200 dark:border-amber-800 uppercase tracking-widest mb-1.5'>Operasional</span>
-                                <p class='font-bold text-slate-600 dark:text-slate-300 truncate tracking-wide'>Buka Setiap Hari (08:00 - 17:00)</p>
+                        <div class='flex flex-col sm:flex-row items-center sm:items-start justify-center md:justify-start gap-3.5 text-slate-700 dark:text-slate-200'>
+                            <div class='w-9 h-9 rounded-xl bg-slate-50 dark:bg-slate-800 flex items-center justify-center shrink-0 shadow-sm border border-slate-250/60 dark:border-slate-700'><i class='fa-solid fa-clock text-slate-400'></i></div>
+                            <div class='min-w-0 text-center sm:text-left mt-0.5'>
+                                <span class='inline-block px-2.5 py-0.5 bg-amber-50 text-amber-600 dark:bg-amber-900/20 dark:text-amber-400 text-[9px] font-bold rounded border border-amber-200 dark:border-amber-800/50 uppercase tracking-widest mb-1.5'>Operasional</span>
+                                <p class='font-bold text-slate-700 dark:text-slate-200 truncate tracking-wide text-xs sm:text-sm'>Buka Setiap Hari (08:00 - 17:00)</p>
                             </div>
                         </div>
                     </div>
@@ -512,7 +511,7 @@
             </div>
         </div>
     </div>
-    <div class='border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/80'>
+    <div class='border-t border-slate-250/60 dark:border-slate-800 bg-slate-100/50 dark:bg-slate-950'>
         <div class='w-full xl:max-w-[1200px] mx-auto px-5 sm:px-6 lg:px-8 py-5 flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left'>
             <p class='text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider'>
                 &#169; <span id='footer-year'>2026</span> <span class='font-bold text-slate-700 dark:text-slate-200' id='footer-brand'>Toko</span>. All rights reserved.
