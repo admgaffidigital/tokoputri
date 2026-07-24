@@ -372,7 +372,9 @@ window.attachMyOrdersRealtime = () => {
             }
             if (changed) {
                 ssL('freshmart_my_orders', JSON.stringify(myOrders));
-                renderMyOrders();
+                setTimeout(() => {
+                    renderMyOrders();
+                }, 0);
                 if (notifMsg) showToast(notifMsg);
             }
         }, err => { console.error('Realtime status gagal:', err); });
