@@ -4186,7 +4186,7 @@ window.processAdminLogin = async () => {
         
         // Status PRO otomatis dicek & diperbarui oleh auth.onAuthStateChanged
         
-        history.replaceState({view: 'view-admin', tab: cTab}, '', window.location.href);
+        history.replaceState({view: 'view-admin'}, '', window.location.href);
         changeView('view-admin', true); 
         openAdminMenu();
         showToast("Login Berhasil!");
