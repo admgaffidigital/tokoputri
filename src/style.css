@@ -567,16 +567,16 @@ html.dark .amber-badge {
     border: 1px solid rgba(245, 158, 11, 0.3) !important;
 }
 /* === 7. SOFT LIGHT MODE GLARE REDUCTION === */
-#sec-categories > div,
-#sec-brands > div,
-.bg-white.dark\:bg-slate-800 {
+html:not(.dark) #sec-categories > div,
+html:not(.dark) #sec-brands > div,
+html:not(.dark) .bg-white.dark\:bg-slate-800 {
     background-color: #f8fafc !important; /* Soft off-white instead of pure white */
 }
 
 /* Inactive controls/inputs inside cards get white backgrounds for contrast */
-#sec-categories .bg-slate-50,
-#sec-brands .bg-slate-50,
-.card-modern .bg-slate-50,
-.card-modern select {
+html:not(.dark) #sec-categories .bg-slate-50,
+html:not(.dark) #sec-brands .bg-slate-50,
+html:not(.dark) .card-modern .bg-slate-50,
+html:not(.dark) .card-modern select {
     background-color: #ffffff !important;
 }
