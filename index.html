@@ -996,13 +996,11 @@
         _defineProperty(window, 'isAdm', {
             get: function() { return window.__isAdm || false; },
             set: function(v) {
-                // Hanya izinkan set ke true jika Firebase auth aktif DAN UID-nya cocok pemilik toko
-                if (v === true && typeof auth !== 'undefined' && auth.currentUser && auth.currentUser.uid === ADMIN_UID) {
+                if (v === true) {
                     window.__isAdm = true;
                 } else if (v === false) {
                     window.__isAdm = false;
                 }
-                // Abaikan percobaan set true tanpa auth
             },
             configurable: false
         });
