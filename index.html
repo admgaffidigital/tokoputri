@@ -497,19 +497,10 @@
     </div>
 </div>
 </div> <!-- PENUTUP SCROLL-CONTENT -->
-            <div class='absolute left-1/2 transform -translate-x-1/2 w-[calc(100%-2rem)] max-w-md z-40 pointer-events-none' style='bottom: calc(max(1.25rem, env(safe-area-inset-bottom)) + 0.5rem)'>
-                <button class='w-full bg-slate-900 dark:bg-slate-800 text-white px-4 py-3 rounded-[1.25rem] shadow-[0_8px_32px_-8px_rgba(0,0,0,0.5)] flex justify-between items-center transition-all duration-200 pointer-events-auto border border-white/8 hover:border-emerald-500/30 group active:scale-[0.97]' onclick="changeView('view-cart')">
-                    <div class='flex items-center gap-3.5'>
-                        <div class='relative bg-emerald-500 w-11 h-11 rounded-xl flex items-center justify-center shadow-lg shrink-0'>
-                            <i class='fa-solid fa-bag-shopping text-white text-base'></i>
-                            <span class='absolute -top-1.5 -right-1.5 bg-rose-500 text-white text-[9px] min-w-[18px] h-[18px] px-1 flex items-center justify-center rounded-full font-bold border-2 border-slate-900 transform scale-0 transition-transform shadow-sm' id='cart-badge'>0</span>
-                        </div>
-                        <div class='text-left'>
-                            <p class='text-[9px] text-emerald-400 font-bold uppercase tracking-widest mb-0.5'>Keranjang Belanja</p>
-                            <span class='font-bold text-sm text-white' id='cart-total-preview'>Rp 0</span>
-                        </div>
-                    </div>
-                    <div class='w-9 h-9 rounded-xl border border-white/10 flex items-center justify-center text-sm text-slate-400 group-hover:text-white group-hover:bg-emerald-500 group-hover:border-emerald-500 transition-all bg-white/5 shrink-0'><i class='fa-solid fa-arrow-right text-xs'></i></div>
+            <div id='floating-cart-container' class='absolute right-6 z-40 transition-all duration-300 transform scale-0 pointer-events-none' style='bottom: calc(max(1.25rem, env(safe-area-inset-bottom)) + 0.75rem)'>
+                <button class='w-14 h-14 rounded-full text-white flex items-center justify-center shadow-lg shadow-glow hover:scale-110 active:scale-95 transition-all duration-200 cursor-pointer border border-white/10 relative' style='background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark))' onclick="changeView('view-cart')">
+                    <i class='fa-solid fa-bag-shopping text-xl'></i>
+                    <span class='absolute -top-1 -right-1 bg-rose-500 text-white text-[9px] min-w-[18px] h-[18px] px-1 flex items-center justify-center rounded-full font-bold border-2 border-white dark:border-[#0b1121] shadow-sm transition-all' id='cart-badge'>0</span>
                 </button>
             </div>
         </div>

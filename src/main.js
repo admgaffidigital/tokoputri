@@ -2224,6 +2224,18 @@ window.updCart = () => {
     setIn('cart-total-preview', fCur(a));
     const b = el('cart-badge');
     if(b) b.classList.toggle('scale-0', q <= 0);
+    
+    // Tampilkan/sembunyikan floating FAB secara dinamis
+    const fc = el('floating-cart-container');
+    if(fc) {
+        if(q > 0) {
+            fc.classList.remove('scale-0', 'pointer-events-none');
+            fc.classList.add('scale-100', 'pointer-events-auto');
+        } else {
+            fc.classList.remove('scale-100', 'pointer-events-auto');
+            fc.classList.add('scale-0', 'pointer-events-none');
+        }
+    }
 };
 
 window.rmWish = i => { wishlist.splice(i,1); ssL('freshmart_wishlist',JSON.stringify(wishlist)); updWish(); renderWish(); };
