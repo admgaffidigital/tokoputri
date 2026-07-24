@@ -58,7 +58,7 @@
 */
 
 body { 
-    font-family: 'Plus Jakarta Sans', sans-serif; 
+    font-family: 'Barlow', sans-serif; 
     background-color: #f1f5f9; 
     margin: 0; 
     padding: 0; 
@@ -128,9 +128,7 @@ body {
 
 /* === 4. UI COMPONENTS === */
 .glass-header { 
-    background: rgba(255, 255, 255, 0.97); 
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
+    background: #ffffff; 
     z-index: 30; 
     border-bottom: 1.5px solid rgba(203, 213, 225, 0.9); 
     box-shadow: 0 2px 20px -4px rgba(15, 23, 42, 0.06); 
@@ -138,9 +136,7 @@ body {
 }
 
 .glass-nav { 
-    background: rgba(255, 255, 255, 0.97); 
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
+    background: #ffffff; 
     border-top: 1.5px solid rgba(203, 213, 225, 0.9); 
     box-shadow: 0 -8px 24px -8px rgba(15, 23, 42, 0.06); 
     padding-bottom: max(1.25rem, env(safe-area-inset-bottom)); 
@@ -150,7 +146,7 @@ body {
     width: 100%; 
     background-color: #fff; 
     border: 2px solid #cbd5e1; 
-    border-radius: 10px; 
+    border-radius: 8px; 
     padding: 0.875rem 1rem; 
     font-size: 13px; 
     font-weight: 600; 
@@ -169,7 +165,7 @@ body {
 
 .card-modern { 
     background: #fff; 
-    border-radius: 10px; 
+    border-radius: 8px; 
     border: 1.5px solid rgba(203, 213, 225, 0.8); 
     box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05); 
     transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.25s ease, box-shadow 0.25s ease; 
@@ -199,7 +195,7 @@ body {
     background: var(--color-primary); 
     color: #fff; 
     padding: 0.9375rem 1.5rem; 
-    border-radius: 10px; 
+    border-radius: 8px; 
     font-weight: 800; 
     font-size: 0.875rem; 
     letter-spacing: 0.01em;
@@ -240,7 +236,7 @@ body {
     background: var(--color-primary);
     color: #fff; 
     padding: 1rem 1.5rem; 
-    border-radius: 10px; 
+    border-radius: 8px; 
     font-weight: 900; 
     font-size: 0.875rem; 
     text-transform: uppercase; 
@@ -264,7 +260,7 @@ body {
 .btn-solid:hover { box-shadow: 0 4px 12px rgba(var(--color-primary-rgb), 0.3); transform: translateY(-1px); }
 .btn-solid:active { transform: scale(0.97); }
 
-.modal-bottom-sheet { border-top-left-radius: 10px; border-top-right-radius: 10px; }
+.modal-bottom-sheet { border-top-left-radius: 8px; border-top-right-radius: 8px; }
 .pull-indicator { width: 48px; height: 4px; background-color: #e2e8f0; border-radius: 99px; margin: 12px auto 20px; transition: background 0.2s; }
 .modal-bottom-sheet:hover .pull-indicator { background-color: #cbd5e1; }
 
@@ -280,7 +276,7 @@ body {
     align-items: center;
     gap: 12px;
     padding: 12px 14px 12px 12px;
-    border-radius: 10px;
+    border-radius: 8px;
     min-width: 240px;
     max-width: calc(100vw - 2rem);
     /* --toast-bg, --toast-border, --toast-accent di-set oleh JS */
@@ -295,7 +291,7 @@ body {
 }
 #toast-icon-wrap {
     width: 36px; height: 36px;
-    border-radius: 10px;
+    border-radius: 8px;
     display: flex; align-items: center; justify-content: center;
     flex-shrink: 0;
     background: var(--toast-icon-bg, rgba(var(--color-primary-rgb), 0.18));
@@ -344,7 +340,7 @@ body {
     position: absolute;
     bottom: 0; left: 0;
     height: 3px;
-    border-radius: 0 0 10px 10px;
+    border-radius: 0 0 8px 8px;
     background: var(--toast-accent, var(--color-primary));
     opacity: 0.75;
     transition: width linear;
@@ -354,8 +350,8 @@ body {
 /* === 5. DARK MODE OVERRIDES === */
 html.dark body { background-color: #020617; color: #f8fafc; }
 html.dark #app-container { background-color: #0f172a; border-color: rgba(51, 65, 85, 0.7); }
-html.dark .glass-header { background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom-color: rgba(51, 65, 85, 0.8) !important; border-bottom-width: 1.5px !important; box-shadow: 0 4px 20px -4px rgba(0, 0, 0, 0.4); }
-html.dark .glass-nav { background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-top-color: rgba(51, 65, 85, 0.8) !important; border-top-width: 1.5px !important; box-shadow: 0 -8px 24px -8px rgba(0, 0, 0, 0.5); padding-bottom: max(1.25rem, env(safe-area-inset-bottom)); }
+html.dark .glass-header { background: #0f172a !important; border-bottom-color: rgba(51, 65, 85, 0.8) !important; border-bottom-width: 1.5px !important; box-shadow: 0 4px 20px -4px rgba(0, 0, 0, 0.4); }
+html.dark .glass-nav { background: #0f172a !important; border-top-color: rgba(51, 65, 85, 0.8) !important; border-top-width: 1.5px !important; box-shadow: 0 -8px 24px -8px rgba(0, 0, 0, 0.5); padding-bottom: max(1.25rem, env(safe-area-inset-bottom)); }
 html.dark .card-modern { background-color: #1e293b !important; border-color: rgba(71, 85, 105, 0.7) !important; border-width: 1.5px !important; box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.3); }
 html.dark .card-modern:hover { border-color: rgba(var(--color-primary-rgb), 0.5) !important; box-shadow: 0 12px 28px -6px rgba(0, 0, 0, 0.5); }
 html.dark .admin-input { background-color: #0f172a !important; border-color: #475569 !important; color: #f1f5f9 !important; box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3); }
@@ -411,4 +407,58 @@ html.dark ::-webkit-scrollbar-thumb:hover { background: #475569; }
         -webkit-print-color-adjust: exact !important; 
         print-color-adjust: exact !important; 
     }
+}
+
+/* === BORDER RADIUS GLOBAL OVERRIDES (TAMPILAN LEBIH TEGAS / KURANG MELENGKUNG) === */
+.rounded-\[2rem\] { border-radius: 12px !important; }
+.rounded-t-\[2rem\] { border-top-left-radius: 12px !important; border-top-right-radius: 12px !important; }
+.rounded-b-\[2rem\] { border-bottom-left-radius: 12px !important; border-bottom-right-radius: 12px !important; }
+
+.rounded-\[1\.5rem\] { border-radius: 10px !important; }
+.rounded-t-\[1\.5rem\] { border-top-left-radius: 10px !important; border-top-right-radius: 10px !important; }
+.rounded-b-\[1\.5rem\] { border-bottom-left-radius: 10px !important; border-bottom-right-radius: 10px !important; }
+
+.rounded-\[1\.25rem\] { border-radius: 8px !important; }
+.rounded-t-\[1\.25rem\] { border-top-left-radius: 8px !important; border-top-right-radius: 8px !important; }
+.rounded-b-\[1\.25rem\] { border-bottom-left-radius: 8px !important; border-bottom-right-radius: 8px !important; }
+
+/* Override default Tailwind border-radius utilities to be less rounded */
+.rounded-3xl { border-radius: 12px !important; }
+.rounded-2xl { border-radius: 8px !important; }
+.rounded-xl { border-radius: 6px !important; }
+.rounded-lg { border-radius: 4px !important; }
+
+/* === FONT WEIGHT OVERRIDES (PENCEGAHAN TEKS TERLALU TEBAL) === */
+body {
+    font-family: 'Barlow', sans-serif !important;
+}
+.font-black, .font-extrabold {
+    font-weight: 700 !important; /* Batasi teks super tebal menjadi bold standar */
+}
+
+/* === NONAKTIFKAN EFEK GLASSMORPHISM & BACKDROP BLUR === */
+.backdrop-blur,
+.backdrop-blur-sm,
+.backdrop-blur-md,
+.backdrop-blur-lg,
+.backdrop-blur-xl,
+.backdrop-blur-2xl,
+.backdrop-blur-3xl {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+}
+
+/* Penyesuaian agar latar belakang elemen eks-glassmorphism tetap kontras & solid */
+#view-admin-login .bg-white\/8 {
+    background-color: rgba(30, 41, 59, 0.96) !important;
+    border-color: rgba(255, 255, 255, 0.15) !important;
+}
+.bg-white\/10 {
+    background-color: rgba(255, 255, 255, 0.25) !important;
+}
+.bg-black\/15 {
+    background-color: rgba(0, 0, 0, 0.35) !important;
+}
+.bg-white\/5 {
+    background-color: rgba(255, 255, 255, 0.15) !important;
 }
