@@ -4646,7 +4646,20 @@ window.rAdmPiutang = async () => {
 window.openAdminTab = (t, fH=false) => {
     const adminScroll = document.querySelector('#view-admin .scroll-content');
     if (adminScroll) adminScroll.scrollTop = 0;
-    cTab=t; aSq=''; if(!fH) history.pushState({view:'view-admin',tab:t}, '', window.location.href);
+    cTab=t; aSq='';
+    if (!fH) {
+        // FIX BACK BUTTON: jika sudah di dalam konten tab (bukan dashboard), GANTI state
+        // (replaceState) alih-alih menumpuk state baru (pushState). Dengan ini, pindah
+        // dari Tab A → Tab B tidak menambah entri ke history stack, sehingga menekan
+        // tombol back dari tab manapun SELALU kembali ke dashboard admin — bukan ke tab
+        // sebelumnya. pushState hanya dipakai saat PERTAMA kali masuk tab dari dashboard.
+        const curState = history.state;
+        if (curState && curState.view === 'view-admin' && curState.tab) {
+            history.replaceState({view:'view-admin', tab:t}, '', window.location.href);
+        } else {
+            history.pushState({view:'view-admin', tab:t}, '', window.location.href);
+        }
+    }
 
     hide('admin-dashboard-view'); show('admin-content-view'); show('btn-admin-back'); hide('admin-logo-box');
     const titles = {'orders':'Pesanan', 'settings':'Toko', 'products':'Produk', 'categories':'Kategori', 'brands':'Merek', 'banks':'Rekening', 'banners':'Banner', 'vouchers':'Voucher', 'customers':'Database Pelanggan', 'rewards':'Program Hadiah', 'reviews':'Ulasan Pelanggan', 'tax':'Pajak & Keuangan', 'piutang':'Piutang Tempo'};
@@ -7226,7 +7239,10 @@ window.addEventListener('DOMContentLoaded', async () => {
         // 3. MASUK KE DASHBOARD ADMIN
         let loginView = document.getElementById('view-admin-login');
         if (loginView && !loginView.classList.contains('hidden')) {
-            history.replaceState({view: 'view-admin', tab: cTab}, '', window.location.href);
+            // FIX BACK BUTTON: jangan sertakan `tab` di state awal — kalau ada tab di sini,
+            // history stack langsung "kotor" sebelum user klik apapun, sehingga back dari
+            // dashboard admin malah masuk ke tab (bukan ke katalog/konfirmasi logout).
+            history.replaceState({view: 'view-admin'}, '', window.location.href);
             changeView('view-admin', true); 
             openAdminMenu();
             showToast("Sesi Dipulihkan! Selamat Datang.");
