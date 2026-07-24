@@ -1661,8 +1661,8 @@ window.rCat = () => {
         // Pengecekan utamanya ada di dalam openProductModal() sendiri (satu sumber kebenaran,
         // berlaku juga untuk deep-link URL) — di sini cuma untuk styling kursor/hover saja.
         const canOpen = !nH;
-        const cardCursorCls = canOpen ? 'cursor-pointer hover:shadow-xl hover:-translate-y-1.5 hover:border-[var(--color-primary-dark)]' : 'cursor-not-allowed';
-        const cardCursorClsList = canOpen ? 'cursor-pointer hover:shadow-xl hover:-translate-y-1 hover:border-[var(--color-primary-dark)]' : 'cursor-not-allowed';
+        const cardCursorCls = canOpen ? 'cursor-pointer hover:shadow-md hover:-translate-y-1.5 hover:border-[var(--color-primary)]/40' : 'cursor-not-allowed';
+        const cardCursorClsList = canOpen ? 'cursor-pointer hover:shadow-md hover:-translate-y-1 hover:border-[var(--color-primary)]/40' : 'cursor-not-allowed';
 
         // LOGIKA HARGA CORET (DISKON DI LUAR GAMBAR)
         let discPill = '';
@@ -1714,7 +1714,7 @@ window.rCat = () => {
         
         if (cView === 'grid') {
             return `
-            <div class="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700/80 rounded-[1.25rem] shadow-sm ${cardCursorCls} transition-all duration-300 flex flex-col group relative overflow-hidden" onclick="openProductModal(${p.id})">
+            <div class="w-full bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700/50 rounded-[1.5rem] shadow-soft ${cardCursorCls} transition-all duration-300 flex flex-col group relative overflow-hidden" onclick="openProductModal(${p.id})">
                 ${nH}
                 <div class="relative aspect-square w-full bg-white flex items-center justify-center shrink-0 border-b border-slate-100 dark:border-slate-700/50">
                       ${stockBadge}
@@ -1731,7 +1731,7 @@ window.rCat = () => {
                             </p>
                             ${p.variants && p.variants.length > 0 ? '' : unt}
                         </div>
-                        <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-full primary-light-icon-box flex items-center justify-center transition-colors shadow-sm">
+                        <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[rgba(var(--color-primary-rgb),0.08)] text-[var(--color-primary)] border border-[rgba(var(--color-primary-rgb),0.15)] flex items-center justify-center transition-all group-hover:bg-[var(--color-primary)] group-hover:text-white group-hover:scale-110 active:scale-90 shadow-sm">
                             <i class="fa-solid fa-plus text-xs sm:text-sm"></i>
                         </div>
                     </div>
@@ -1739,9 +1739,9 @@ window.rCat = () => {
             </div>`;
         } else {
             return `
-            <div class="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700/80 rounded-[1.25rem] shadow-sm ${cardCursorClsList} transition-all duration-300 flex items-stretch p-2.5 sm:p-3 gap-3 sm:gap-4 group relative overflow-hidden" onclick="openProductModal(${p.id})">
+            <div class="w-full bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700/50 rounded-[1.5rem] shadow-soft ${cardCursorClsList} transition-all duration-300 flex items-stretch p-2.5 sm:p-3 gap-3 sm:gap-4 group relative overflow-hidden" onclick="openProductModal(${p.id})">
                 ${nH}
-                <div class="relative w-24 h-24 sm:w-28 sm:h-28 shrink-0 bg-white rounded-xl flex items-center justify-center p-2 border border-slate-100 dark:border-slate-700/50 overflow-hidden">
+                <div class="relative w-24 h-24 sm:w-28 sm:h-28 shrink-0 bg-white dark:bg-slate-900 rounded-xl flex items-center justify-center p-2 border border-slate-100 dark:border-slate-700/50 overflow-hidden">
                     ${stockBadge}
                     <img loading="lazy" src="${esc(getOptImg(p.img, 'w300-rw'))}" onerror="this.onerror=null;this.src='https://placehold.co/400?text=No+Image'" class="max-w-full max-h-full object-contain transition-transform duration-500 group-hover:scale-105 ${!a?'grayscale opacity-50':''}"></i>
                 </div>
@@ -1756,7 +1756,7 @@ window.rCat = () => {
                             </p>
                             ${p.variants && p.variants.length > 0 ? '' : unt}
                         </div>
-                        <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-full primary-light-icon-box flex items-center justify-center transition-colors shadow-sm mr-1">
+                        <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[rgba(var(--color-primary-rgb),0.08)] text-[var(--color-primary)] border border-[rgba(var(--color-primary-rgb),0.15)] flex items-center justify-center transition-all group-hover:bg-[var(--color-primary)] group-hover:text-white group-hover:scale-110 active:scale-90 shadow-sm mr-1">
                             <i class="fa-solid fa-plus text-xs sm:text-sm"></i>
                         </div>
                     </div>
