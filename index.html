@@ -357,7 +357,7 @@
             <div class='sticky top-0 bg-white dark:bg-slate-800 px-5 py-4 border-b border-slate-200 flex justify-between items-center z-20 dark:border-slate-700 shadow-sm'>
                 <div>
                     <h3 class='font-bold text-slate-900 dark:text-white text-base' id='doc-modal-title'>Preview Dokumen</h3>
-                    <p class='text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-0.5'>Format Kertas Standar A4</p>
+                    <p class='text-[10px] text-white/90 font-bold uppercase tracking-widest mt-0.5 drop-shadow-sm'>Format Kertas Standar A4</p>
                 </div>
                 <button class='w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-500 hover:text-rose-500 flex items-center justify-center transition-all shrink-0' onclick="closeDocPreviewModal()"><i class='fa-solid fa-xmark'></i></button>
             </div>
@@ -382,16 +382,16 @@
                     <div class='flex items-center gap-3 flex-1 min-w-0'>
                         <div class='w-12 h-12 bg-gradient-to-br from-slate-50 to-white rounded-2xl flex items-center justify-center shadow-soft border border-slate-200 dark:border-slate-700 overflow-hidden shrink-0 cursor-pointer select-none transition-transform active:scale-95' ondblclick="checkAdminAccess()" title='Ketuk 2x untuk Login Seller'>
                             <img alt='Logo' class='w-full h-full object-cover hidden' id='dyn-store-logo-img' loading='lazy' src='data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'></i>
-                            <i class='fa-solid fa-store text-xl text-emerald-500' id='dyn-store-logo-icon'></i>
+                            <i class='fa-solid fa-store text-xl text-[var(--color-primary)]' id='dyn-store-logo-icon'></i>
                         </div>
                         <div class='flex flex-col min-w-0 flex-1 justify-center'>
-                            <h1 class='text-sm sm:text-base font-bold text-slate-900 dark:text-white tracking-tight leading-tight whitespace-normal break-words' id='dyn-store-name'>Memuat...</h1>
-                            <p class='text-[9px] sm:text-[10px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-widest whitespace-normal break-words leading-snug mt-0.5' id='dyn-store-slogan'>Slogan</p>
+                            <h1 class='text-sm sm:text-base font-bold text-white drop-shadow-sm tracking-tight leading-tight whitespace-normal break-words' id='dyn-store-name'>Memuat...</h1>
+                            <p class='text-[9px] sm:text-[10px] font-semibold text-white/90 drop-shadow-sm uppercase tracking-widest whitespace-normal break-words leading-snug mt-0.5' id='dyn-store-slogan'>Slogan</p>
                         </div>
                     </div>
                     <div class='flex gap-2 items-center shrink-0'>
-                        <button aria-label="Toggle Dark Mode" class="w-10 h-10 bg-slate-100 dark:bg-slate-800/90 border border-slate-200/80 dark:border-slate-700/80 shadow-sm text-slate-600 dark:text-slate-300 rounded-full flex items-center justify-center hover:bg-slate-200 dark:hover:bg-slate-700 active:scale-95 transition-all" id="btn-theme-toggle" onclick="toggleTheme()"><i class="fa-solid fa-moon text-sm" id="icon-theme"></i></button>
-                        <button class='w-10 h-10 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm text-slate-600 dark:text-slate-300 rounded-full flex items-center justify-center hover:text-[var(--color-primary)] active:scale-95 relative transition-all' onclick="openQuickMenuModal()" title="Tautan Cepat">
+                        <button aria-label="Toggle Dark Mode" class="w-10 h-10 bg-white/20 dark:bg-slate-800/90 border border-white/30 dark:border-slate-700/80 shadow-sm text-white dark:text-slate-300 rounded-full flex items-center justify-center hover:bg-white/30 dark:hover:bg-slate-700 active:scale-95 transition-all backdrop-blur-sm" id="btn-theme-toggle" onclick="toggleTheme()"><i class="fa-solid fa-moon text-sm" id="icon-theme"></i></button>
+                        <button class='w-10 h-10 bg-white/20 dark:bg-slate-800 border border-white/30 dark:border-slate-700 shadow-sm text-white dark:text-slate-300 rounded-full flex items-center justify-center hover:bg-white/30 active:scale-95 relative transition-all backdrop-blur-sm' onclick="openQuickMenuModal()" title="Tautan Cepat">
                             <i class='fa-solid fa-bars text-sm'></i>
                         </button>
                     </div>
@@ -533,8 +533,8 @@
         <div class='view-section flex flex-col fade-in bg-slate-50 dark:bg-slate-900 hidden' id='view-cart'>
             <div class='glass-header shrink-0 px-5 flex justify-center z-30 sticky top-0 pb-3'>
                 <div class='flex items-center justify-between w-full max-w-full xl:max-w-[1200px] mx-auto px-4 lg:px-10'>
-                    <button class='w-10 h-10 flex items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 active:scale-95 transition-all shadow-sm' onclick="history.back()"><i class='fa-solid fa-arrow-left text-sm'></i></button>
-                    <h1 class='text-base font-bold text-slate-900 dark:text-white tracking-tight'>Keranjang Belanja</h1>
+                    <button class='w-10 h-10 flex items-center justify-center rounded-full bg-white/20 dark:bg-slate-800 border border-white/30 dark:border-slate-700 text-white dark:text-slate-300 hover:bg-white/30 active:scale-95 transition-all shadow-sm backdrop-blur-sm' onclick="history.back()"><i class='fa-solid fa-arrow-left text-sm'></i></button>
+                    <h1 class='text-base font-bold text-white tracking-tight drop-shadow-sm'>Keranjang Belanja</h1>
                     <button class='w-10 h-10 flex items-center justify-center rounded-full bg-rose-50 border border-rose-200 text-rose-500 hover:bg-rose-100 active:scale-95 transition-all shadow-sm hidden dark:bg-rose-900/20 dark:border-rose-800' id='btn-clear-cart' onclick="clearCart()"><i class='fa-solid fa-trash-can text-sm'></i></button>
                     <div class='w-10 hidden' id='spacer-cart'></div>
                 </div>
@@ -562,10 +562,10 @@
 <div class='view-section flex flex-col fade-in bg-slate-50 dark:bg-slate-900 hidden' id='view-checkout'>
             <div class='glass-header shrink-0 px-5 flex justify-center z-30 sticky top-0 pb-3'>
                 <div class='flex items-center justify-between w-full max-w-full xl:max-w-[1200px] mx-auto px-4 lg:px-10'>
-                    <button class='w-10 h-10 flex items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 active:scale-95 transition-all shadow-sm' onclick="history.back()"><i class='fa-solid fa-arrow-left text-sm'></i></button>
+                    <button class='w-10 h-10 flex items-center justify-center rounded-full bg-white/20 dark:bg-slate-800 border border-white/30 dark:border-slate-700 text-white dark:text-slate-300 hover:bg-white/30 active:scale-95 transition-all shadow-sm backdrop-blur-sm' onclick="history.back()"><i class='fa-solid fa-arrow-left text-sm'></i></button>
                     <div class='text-center'>
-                        <h1 class='text-base font-bold text-slate-900 dark:text-white tracking-tight leading-tight'>Pengiriman</h1>
-                        <p class='text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-0.5'>Lengkapi Data Pesanan</p>
+                        <h1 class='text-base font-bold text-white tracking-tight leading-tight drop-shadow-sm'>Pengiriman</h1>
+                        <p class='text-[10px] text-white/90 font-bold uppercase tracking-widest mt-0.5 drop-shadow-sm'>Lengkapi Data Pesanan</p>
                     </div>
                     <div class='w-10'></div>
                 </div>
@@ -643,10 +643,10 @@
 <div class='view-section flex flex-col fade-in bg-slate-50 dark:bg-slate-900 hidden' id='view-payment'>
             <div class='glass-header shrink-0 px-5 flex justify-center z-30 sticky top-0 pb-3'>
                 <div class='flex items-center justify-between w-full max-w-full xl:max-w-[1200px] mx-auto px-4 lg:px-10'>
-                    <button class='w-10 h-10 flex items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 active:scale-95 transition-all shadow-sm' onclick="history.back()"><i class='fa-solid fa-arrow-left text-sm'></i></button>
+                    <button class='w-10 h-10 flex items-center justify-center rounded-full bg-white/20 dark:bg-slate-800 border border-white/30 dark:border-slate-700 text-white dark:text-slate-300 hover:bg-white/30 active:scale-95 transition-all shadow-sm backdrop-blur-sm' onclick="history.back()"><i class='fa-solid fa-arrow-left text-sm'></i></button>
                     <div class='text-center'>
-                        <h1 class='text-base font-bold text-slate-900 dark:text-white tracking-tight leading-tight'>Pembayaran</h1>
-                        <p class='text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-0.5'>Langkah Terakhir</p>
+                        <h1 class='text-base font-bold text-white tracking-tight leading-tight drop-shadow-sm'>Pembayaran</h1>
+                        <p class='text-[10px] text-white/90 font-bold uppercase tracking-widest mt-0.5 drop-shadow-sm'>Langkah Terakhir</p>
                     </div>
                     <div class='w-10'></div>
                 </div>
@@ -814,8 +814,8 @@
      <div class='view-section flex flex-col fade-in bg-slate-50 dark:bg-slate-900 hidden' id='view-orders'>
             <div class='glass-header shrink-0 px-5 flex justify-center z-30 sticky top-0 pb-3'>
                 <div class='flex items-center justify-between w-full max-w-full xl:max-w-[1200px] mx-auto px-4 lg:px-10'>
-                    <button class='w-10 h-10 flex items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 active:scale-95 transition-all shadow-sm' onclick="history.back()"><i class='fa-solid fa-arrow-left text-sm'></i></button>
-                    <h1 class='text-base font-bold text-slate-900 dark:text-white tracking-tight'>Riwayat Pesanan</h1>
+                    <button class='w-10 h-10 flex items-center justify-center rounded-full bg-white/20 dark:bg-slate-800 border border-white/30 dark:border-slate-700 text-white dark:text-slate-300 hover:bg-white/30 active:scale-95 transition-all shadow-sm backdrop-blur-sm' onclick="history.back()"><i class='fa-solid fa-arrow-left text-sm'></i></button>
+                    <h1 class='text-base font-bold text-white tracking-tight drop-shadow-sm'>Riwayat Pesanan</h1>
                     <button class='w-10 h-10 flex items-center justify-center rounded-full bg-rose-50 border border-rose-200 text-rose-500 hover:bg-rose-100 active:scale-95 transition-all shadow-sm hidden dark:bg-rose-900/20 dark:border-rose-800' id='btn-clear-orders' onclick="clearMyOrders()"><i class='fa-solid fa-trash-can text-sm'></i></button>
                     <div class='w-10 hidden' id='spacer-orders'></div>
                 </div>
@@ -832,8 +832,8 @@
 <div class='view-section flex flex-col fade-in bg-slate-50 dark:bg-slate-900 hidden' id='view-wishlist'>
             <div class='glass-header shrink-0 px-5 flex justify-center z-30 sticky top-0 pb-3'>
                 <div class='flex items-center justify-between w-full max-w-full xl:max-w-[1200px] mx-auto px-4 lg:px-10'>
-                    <button class='w-10 h-10 flex items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 active:scale-95 transition-all shadow-sm' onclick="history.back()"><i class='fa-solid fa-arrow-left text-sm'></i></button>
-                    <h1 class='text-base font-bold text-slate-900 dark:text-white tracking-tight'>Favorit Saya</h1>
+                    <button class='w-10 h-10 flex items-center justify-center rounded-full bg-white/20 dark:bg-slate-800 border border-white/30 dark:border-slate-700 text-white dark:text-slate-300 hover:bg-white/30 active:scale-95 transition-all shadow-sm backdrop-blur-sm' onclick="history.back()"><i class='fa-solid fa-arrow-left text-sm'></i></button>
+                    <h1 class='text-base font-bold text-white tracking-tight drop-shadow-sm'>Favorit Saya</h1>
                     <button class='w-10 h-10 flex items-center justify-center rounded-full bg-rose-50 border border-rose-200 text-rose-500 hover:bg-rose-100 active:scale-95 transition-all shadow-sm hidden dark:bg-rose-900/20 dark:border-rose-800' id='btn-clear-wishlist' onclick="clearWishlist()"><i class='fa-solid fa-trash-can text-sm'></i></button>
                     <div class='w-10 hidden' id='spacer-wishlist'></div>
                 </div>
@@ -876,13 +876,13 @@
             <div class='glass-header shrink-0 px-4 flex items-center justify-center z-30 sticky top-0 pb-3'>
                 <div class='flex items-center justify-between w-full max-w-full xl:max-w-[1200px] mx-auto px-4 lg:px-10'>
                     <div class='flex items-center gap-3'>
-                        <button class='hidden w-9 h-9 items-center justify-center rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700 active:scale-95 transition-all shadow-sm' id='btn-admin-back' onclick="history.back()"><i class='fa-solid fa-arrow-left text-xs'></i></button>
+                        <button class='hidden w-9 h-9 items-center justify-center rounded-xl bg-white/20 dark:bg-slate-800 border border-white/30 dark:border-slate-700 text-white dark:text-slate-300 hover:bg-white/30 dark:hover:bg-slate-700 active:scale-95 transition-all shadow-sm backdrop-blur-sm' id='btn-admin-back' onclick="history.back()"><i class='fa-solid fa-arrow-left text-xs'></i></button>
                         <div class='w-10 h-10 rounded-xl bg-[var(--color-primary)] text-white flex items-center justify-center shadow-md shrink-0 border border-[rgba(var(--color-primary-rgb),0.3)]' id='admin-logo-box'><i class='fa-solid fa-layer-group text-sm'></i></div>
                         <div>
                             <div class='flex items-center gap-2'>
-                                <h1 class='text-sm font-bold tracking-tight text-slate-900 dark:text-white leading-none' id='admin-header-title'>CMS TOKO</h1>
+                                <h1 class='text-sm font-bold tracking-tight text-white leading-none drop-shadow-sm' id='admin-header-title'>CMS TOKO</h1>
                             </div>
-                            <span class='text-[9px] font-bold text-[var(--color-primary)] uppercase tracking-widest bg-[rgba(var(--color-primary-rgb),0.1)] px-1.5 py-0.5 rounded-xl inline-block mt-0.5 leading-none'>Seller</span>
+                            <span class='text-[9px] font-bold text-white uppercase tracking-widest bg-white/20 px-1.5 py-0.5 rounded-xl inline-block mt-0.5 leading-none drop-shadow-sm backdrop-blur-sm'>Seller</span>
                         </div>
                     </div>
                     <div class='flex items-center gap-1.5'>

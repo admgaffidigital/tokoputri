@@ -130,10 +130,11 @@ body {
 
 /* === 4. UI COMPONENTS === */
 .glass-header { 
-    background: #ffffff; 
+    background: var(--color-primary);
+    background-image: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
     z-index: 30; 
-    border-bottom: 1.5px solid rgba(203, 213, 225, 0.9); 
-    box-shadow: 0 2px 20px -4px rgba(15, 23, 42, 0.06); 
+    border-bottom: 0; 
+    box-shadow: 0 4px 20px -2px rgba(var(--color-primary-rgb), 0.35); 
     padding-top: max(0.75rem, env(safe-area-inset-top)); 
 }
 
