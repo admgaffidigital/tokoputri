@@ -5315,47 +5315,79 @@ window.rAdmSet = () => {
 window.openSettingForm = (type) => {
     let title, icon, colorTheme, formContent;
 
+    // Helper: Memilih Preset Tema secara Visual
+    window.selectPresetTheme = (themeName) => {
+        const hex = window.uiPalettes[themeName][500];
+        document.getElementById('set-ui-theme').value = themeName;
+        document.getElementById('set-theme-color').value = hex;
+        document.getElementById('set-theme-color-picker').value = hex;
+        
+        // Reset status ring & icon pada semua chip
+        document.querySelectorAll('.preset-color-chip').forEach(el => {
+            el.classList.remove('ring-4', 'ring-offset-2', 'ring-slate-400', 'dark:ring-slate-500', 'scale-110');
+            el.querySelector('.check-icon')?.classList.add('hidden');
+        });
+        
+        // Beri ring aktif & tunjukkan icon check pada chip terpilih
+        const activeChip = document.getElementById(`preset-chip-${themeName}`);
+        if (activeChip) {
+            activeChip.classList.add('ring-4', 'ring-offset-2', 'ring-slate-400', 'dark:ring-slate-500', 'scale-110');
+            activeChip.querySelector('.check-icon')?.classList.remove('hidden');
+        }
+        
+        if (typeof window.applyUITheme === 'function') {
+            window.applyUITheme(themeName, hex);
+        }
+    };
+
     if (type === 'profile') {
         title = "Profil Toko & Tampilan"; icon = "fa-store"; 
         colorTheme = { line: "bg-[var(--color-primary)]", box: "bg-[rgba(var(--color-primary-rgb),0.08)] text-[var(--color-primary)]" };
+        
+        const currentTheme = appData.store.uiTheme || 'emerald';
+        const presetNames = {
+            emerald: "Emerald", teal: "Teal", lime: "Lime", cyan: "Cyan", sky: "Sky",
+            blue: "Blue", indigo: "Indigo", violet: "Violet", purple: "Purple",
+            fuchsia: "Fuchsia", pink: "Pink", rose: "Rose", red: "Red",
+            orange: "Orange", amber: "Amber", yellow: "Yellow", green: "Green",
+            slate: "Slate", stone: "Stone"
+        };
+        
+        const presetHtml = Object.keys(window.uiPalettes).map(key => {
+            const hex = window.uiPalettes[key][500];
+            const name = presetNames[key] || key;
+            const isActive = currentTheme === key;
+            const ringCls = isActive ? 'ring-4 ring-offset-2 ring-slate-400 dark:ring-slate-500 scale-110' : '';
+            const checkCls = isActive ? '' : 'hidden';
+            return `
+                <button type="button" id="preset-chip-${key}" onclick="selectPresetTheme('${key}')" 
+                        class="preset-color-chip w-10 h-10 rounded-full cursor-pointer transition-all duration-200 relative flex items-center justify-center shadow-sm hover:scale-105 ${ringCls}" 
+                        style="background-color: ${hex}; border: 1.5px solid rgba(0,0,0,0.08)" 
+                        title="${name}">
+                    <i class="check-icon fa-solid fa-check text-white text-[11px] font-bold drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)] ${checkCls}"></i>
+                </button>
+            `;
+        }).join('');
+
         formContent = `
             <div><label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Nama Toko (Nama Aplikasi)</label><input autocomplete='off' id="set-name" value="${esc(appData.store.name)}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm"></div>
             
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                <div><label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Warna Tema Utama (Preset)</label>
-                    <div class="relative">
-                        <select id="set-ui-theme" onchange="const val = this.value; const hex = window.uiPalettes[val][500]; document.getElementById('set-theme-color').value = hex; document.getElementById('set-theme-color-picker').value = hex; if(typeof window.applyUITheme==='function') window.applyUITheme(val, hex)" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm cursor-pointer appearance-none pr-10">
-                            <option value="emerald" ${(appData.store.uiTheme||'emerald')==='emerald'?'selected':''}>Hijau Emerald (Default)</option>
-                            <option value="teal" ${appData.store.uiTheme==='teal'?'selected':''}>Hijau Tosca (Teal)</option>
-                            <option value="lime" ${appData.store.uiTheme==='lime'?'selected':''}>Hijau Lemon (Lime)</option>
-                            <option value="cyan" ${appData.store.uiTheme==='cyan'?'selected':''}>Biru Muda (Cyan)</option>
-                            <option value="sky" ${appData.store.uiTheme==='sky'?'selected':''}>Biru Langit (Sky)</option>
-                            <option value="blue" ${appData.store.uiTheme==='blue'?'selected':''}>Biru (BCA / Traveloka)</option>
-                            <option value="indigo" ${appData.store.uiTheme==='indigo'?'selected':''}>Indigo (Nila)</option>
-                            <option value="violet" ${appData.store.uiTheme==='violet'?'selected':''}>Ungu Ke-biruan (Violet)</option>
-                            <option value="purple" ${appData.store.uiTheme==='purple'?'selected':''}>Ungu (Tokopedia)</option>
-                            <option value="fuchsia" ${appData.store.uiTheme==='fuchsia'?'selected':''}>Magenta (Fuchsia)</option>
-                            <option value="pink" ${appData.store.uiTheme==='pink'?'selected':''}>Pink (Merah Jambu)</option>
-                            <option value="rose" ${appData.store.uiTheme==='rose'?'selected':''}>Merah Muda (Rose)</option>
-                            <option value="red" ${appData.store.uiTheme==='red'?'selected':''}>Merah Menyala (Red)</option>
-                            <option value="orange" ${appData.store.uiTheme==='orange'?'selected':''}>Oranye (Orange)</option>
-                            <option value="amber" ${appData.store.uiTheme==='amber'?'selected':''}>Kuning Oranye (Shopee)</option>
-                            <option value="yellow" ${appData.store.uiTheme==='yellow'?'selected':''}>Kuning Cerah (Yellow)</option>
-                            <option value="green" ${appData.store.uiTheme==='green'?'selected':''}>Hijau Daun (Green)</option>
-                            <option value="slate" ${appData.store.uiTheme==='slate'?'selected':''}>Abu-abu Monokrom (Slate)</option>
-                            <option value="stone" ${appData.store.uiTheme==='stone'?'selected':''}>Coklat Batu (Stone)</option>
-                        </select>
-                        <i class="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-[10px]"></i>
+            <div class="grid grid-cols-1 gap-6">
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-3 uppercase tracking-widest">Pilihan Palet Warna Tema (Preset)</label>
+                    <input type="hidden" id="set-ui-theme" value="${currentTheme}">
+                    <div class="flex flex-wrap gap-3.5 p-4 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700/80 rounded-2xl">
+                        ${presetHtml}
                     </div>
-                    <p class="text-[9px] font-bold text-slate-400 mt-1.5">* Memilih tema di sini otomatis mengubah warna PWA di kanan.</p>
                 </div>
 
-                <div><label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Warna Kustom &amp; Header PWA</label>
-                    <div class="flex gap-3">
-                        <input type="color" id="set-theme-color-picker" value="${esc(appData.store.themeColor || '#10b981')}" class="w-14 h-12 rounded-xl cursor-pointer shadow-sm border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-1" oninput="document.getElementById('set-theme-color').value = this.value; if(typeof window.applyUITheme==='function') window.applyUITheme(document.getElementById('set-ui-theme').value, this.value)">
-                        <input autocomplete='off' id="set-theme-color" value="${esc(appData.store.themeColor || '#10b981')}" class="admin-input !py-3.5 uppercase font-mono flex-1 shadow-sm bg-slate-50 dark:bg-slate-900" oninput="document.getElementById('set-theme-color-picker').value = this.value; if(typeof window.applyUITheme==='function') window.applyUITheme(document.getElementById('set-ui-theme').value, this.value)" placeholder="#10b981">
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Atur Warna Kustom &amp; Header PWA (Sesuai Selera)</label>
+                    <div class="flex gap-3 max-w-sm">
+                        <input type="color" id="set-theme-color-picker" value="${esc(appData.store.themeColor || '#10b981')}" class="w-14 h-12 rounded-xl cursor-pointer shadow-sm border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-1" oninput="document.getElementById('set-theme-color').value = this.value; document.querySelectorAll('.preset-color-chip').forEach(el => { el.classList.remove('ring-4', 'ring-offset-2', 'ring-slate-400', 'dark:ring-slate-500', 'scale-110'); el.querySelector('.check-icon')?.classList.add('hidden'); }); if(typeof window.applyUITheme==='function') window.applyUITheme(document.getElementById('set-ui-theme').value, this.value)">
+                        <input autocomplete='off' id="set-theme-color" value="${esc(appData.store.themeColor || '#10b981')}" class="admin-input !py-3.5 uppercase font-mono flex-1 shadow-sm bg-slate-50 dark:bg-slate-900" oninput="document.getElementById('set-theme-color-picker').value = this.value; document.querySelectorAll('.preset-color-chip').forEach(el => { el.classList.remove('ring-4', 'ring-offset-2', 'ring-slate-400', 'dark:ring-slate-500', 'scale-110'); el.querySelector('.check-icon')?.classList.add('hidden'); }); if(typeof window.applyUITheme==='function') window.applyUITheme(document.getElementById('set-ui-theme').value, this.value)" placeholder="#10b981">
                     </div>
-                    <p class="text-[9px] font-bold text-slate-400 mt-1.5">* Gunakan pemilih warna kustom untuk mengubah warna secara detail.</p>
+                    <p class="text-[9px] font-bold text-slate-400 mt-1.5">* Anda dapat memilih dari palet preset di atas atau menggunakan pemilih warna kustom ini untuk warna spesifik.</p>
                 </div>
             </div>
 
