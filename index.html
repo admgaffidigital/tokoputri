@@ -455,8 +455,7 @@
 <div class='w-full mt-12 border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 relative overflow-hidden pb-24 sm:pb-12 shadow-[0_-10px_40px_-15px_rgba(0,0,0,0.05)] dark:shadow-none'>
     <div class='absolute top-0 left-0 w-full h-0.5 bg-[var(--color-primary)]'></div>
     <div class='w-full xl:max-w-[1200px] mx-auto px-5 sm:px-6 lg:px-8 pt-12 pb-8 relative z-10'>
-        <div class='grid grid-cols-1 md:grid-cols-12 gap-10 lg:gap-12 text-center md:text-left'>
-            <div class='md:col-span-12 lg:col-span-5 flex flex-col items-center md:items-start'>
+        <div class='grid grid-cols-1 md:grid-cols-12 gap-10 lg:gap-12 text-center md:text-left'>            <div class='md:col-span-6 lg:col-span-6 flex flex-col items-center md:items-start'>
                 <div class='flex flex-col sm:flex-row items-center gap-4 mb-6'>
                     <div class='w-14 h-14 bg-slate-50 dark:bg-slate-800 rounded-2xl flex items-center justify-center p-2.5 border border-slate-100 dark:border-slate-700 shadow-sm shrink-0 overflow-hidden'>
                         <img alt='Logo' class='w-full h-full object-contain hidden' id='footer-store-logo-img' loading='lazy' src='data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'></i>
@@ -480,29 +479,8 @@
                     </div>
                 </div>
             </div>
-            <div class='md:col-span-5 lg:col-span-3 flex flex-col items-center md:items-start'>
-                <h4 class='font-bold text-slate-800 dark:text-white mb-5 uppercase tracking-widest text-sm flex items-center justify-center md:justify-start gap-3 pb-4 border-b border-slate-100 dark:border-slate-800 w-full'>
-                    <div class='w-7 h-7 rounded-xl primary-light-icon-box flex items-center justify-center'><i class='fa-solid fa-link text-xs'></i></div> Tautan Cepat
-                </h4>
-                <ul class='space-y-1.5 w-full max-w-[200px] md:max-w-none'>
-                    <li><a class='text-sm font-bold text-slate-500 dark:text-slate-400 hover:text-[var(--color-primary)] dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800/50 px-3 py-2.5 md:-ml-3 rounded-xl flex items-center justify-center md:justify-start gap-3 group transition-all cursor-pointer' href='#catalog' onclick="event.preventDefault(); changeView('view-catalog')">
-                        <i class='fa-solid fa-chevron-right text-[10px] text-slate-300 dark:text-slate-600 group-hover:text-[var(--color-primary)] transition-colors hidden md:block'></i> Halaman Utama
-                    </a></li>
-                    <li><a class='text-sm font-bold text-slate-500 dark:text-slate-400 hover:text-[var(--color-primary)] dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800/50 px-3 py-2.5 md:-ml-3 rounded-xl flex items-center justify-center md:justify-start gap-3 group transition-all cursor-pointer' href='#cart' onclick="event.preventDefault(); changeView('view-cart')">
-                        <i class='fa-solid fa-chevron-right text-[10px] text-slate-300 dark:text-slate-600 group-hover:text-[var(--color-primary)] transition-colors hidden md:block'></i> Keranjang Belanja
-                    </a></li>
-                    <li><a class='text-sm font-bold text-slate-500 dark:text-slate-400 hover:text-[var(--color-primary)] dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800/50 px-3 py-2.5 md:-ml-3 rounded-xl flex items-center justify-center md:justify-start gap-3 group transition-all cursor-pointer' href='#wishlist' onclick="event.preventDefault(); changeView('view-wishlist')">                      
-                      <i class='fa-solid fa-chevron-right text-[10px] text-slate-300 dark:text-slate-600 group-hover:text-[var(--color-primary)] transition-colors hidden md:block'></i> Produk Favorit
-                    </a></li>
-                    <li><a class='text-sm font-bold text-slate-500 dark:text-slate-400 hover:text-[var(--color-primary)] dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800/50 px-3 py-2.5 md:-ml-3 rounded-xl flex items-center justify-center md:justify-start gap-3 group transition-all cursor-pointer' href='#orders' onclick="event.preventDefault(); changeView('view-orders')">                     
-                        <i class='fa-solid fa-chevron-right text-[10px] text-slate-300 dark:text-slate-600 group-hover:text-[var(--color-primary)] transition-colors hidden md:block'></i> Riwayat Pesanan
-                    </a></li>
-                    <li><a class='text-sm font-bold text-slate-500 dark:text-slate-400 hover:text-[var(--color-primary)] dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800/50 px-3 py-2.5 md:-ml-3 rounded-xl flex items-center justify-center md:justify-start gap-3 group transition-all cursor-pointer' href='#admin' onclick="event.preventDefault(); checkAdminAccess()">
-                        <i class='fa-solid fa-shield-halved text-[10px] text-slate-300 dark:text-slate-600 group-hover:text-[var(--color-primary)] transition-colors hidden md:block'></i> Akses Admin
-                    </a></li>
-                </ul>
-            </div>
-            <div class='md:col-span-7 lg:col-span-4 flex flex-col items-center md:items-start'>
+
+            <div class='md:col-span-6 lg:col-span-6 flex flex-col items-center md:items-start'>
                 <h4 class='font-bold text-slate-800 dark:text-white mb-5 uppercase tracking-widest text-sm flex items-center justify-center md:justify-start gap-3 pb-4 border-b border-slate-100 dark:border-slate-800 w-full'>
                     <div class='w-7 h-7 rounded-xl primary-light-icon-box flex items-center justify-center'><i class='fa-solid fa-headset text-xs'></i></div> Hubungi Kami
                 </h4>
