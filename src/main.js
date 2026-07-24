@@ -2445,20 +2445,23 @@ window.renderOrderDetailModal = (orderId, d, reviewedKeys) => {
         const cartData = d.items || [];
         const hasPO = cartData.some(i => i.poTime && i.poTime !== '');
         const itemsHtml = cartData.map((i, itemIdx) => {
-            // Mencegah error perhitungan
             const qty = parseFloat(i.qty) || 0;
             const price = parseFloat(i.effectivePrice || i.price) || 0;
             const itemTotal = qty * price;
-            // FITUR BARU: tombol "Berikan Ulasan" -- hanya untuk pesanan SELESAI & item yang belum diulas
             const reviewKey = `${i.id}::${i.variantName || ''}`;
             const canReview = d.status === 'Selesai' && !reviewedKeys.includes(reviewKey) && i.id !== undefined && i.id !== null;
-            const poBadge = i.poTime ? `<span class="amber-badge px-1.5 py-0.5 rounded-xl text-[8px] font-bold uppercase ml-1.5 whitespace-nowrap">PO ${esc(i.poTime)}</span>` : '';
 
             return `
             <div class="flex gap-3 items-center border-b border-slate-100 dark:border-slate-700/50 py-3 last:border-0">
                 <div class="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 bg-cover bg-center shrink-0 border border-slate-200 dark:border-slate-700" style="background-image:url('${esc(i.img || (appData && appData.store ? appData.store.logo : ''))}')"></div>
                 <div class="flex-1 min-w-0">
-                    <p class="text-xs font-bold text-slate-800 dark:text-white truncate">${esc(i.name)} ${i.variantName ? `<span class="bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-1.5 py-0.5 rounded-xl text-[9px] ml-1.5">${esc(i.variantName)}</span>` : ''}${poBadge}</p>
+                    <p class="text-xs font-bold text-slate-800 dark:text-white truncate mb-1" title="${esc(i.name)}">${esc(i.name)}</p>
+                    ${(i.variantName || i.poTime) ? `
+                    <div class="flex flex-wrap gap-1 mb-1">
+                        ${i.variantName ? `<span class="bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-1.5 py-0.5 rounded-lg text-[9px] font-bold">${esc(i.variantName)}</span>` : ''}
+                        ${i.poTime ? `<span class="amber-badge px-1.5 py-0.5 rounded-lg text-[8px] font-bold uppercase">PO ${esc(i.poTime)}</span>` : ''}
+                    </div>
+                    ` : ''}
                     <p class="text-[10px] text-slate-500">${qty} ${esc(i.unit || 'pcs')} x ${fCur(price)}</p>
                     ${canReview ? `<button type="button" onclick="openReviewModal('${orderId}',${i.id},'${esc(i.variantName||'').replace(/'/g,"\\'")}','${esc(i.name).replace(/'/g,"\\'")}','${cName.replace(/'/g,"\\'")}')" class="mt-1.5 text-[10px] font-bold text-amber-500 hover:text-amber-600 flex items-center gap-1"><i class="fa-solid fa-star"></i> Berikan Ulasan</button>` : ''}
                 </div>
@@ -3525,7 +3528,28 @@ const rPay = () => {
     setIn('payment-cust-method', cust.deliveryMethod === 'delivery' ? `Kurir (${cust.distance.toFixed(1)}km)` : 'Ambil di Toko');
     setIn('payment-cust-address', cust.address || '-');
     
-    setH('payment-items-preview', cart.map(i => `<div class="flex justify-between items-center bg-white dark:bg-slate-800 p-4 rounded-[1.25rem] border border-slate-200 dark:border-slate-700 shadow-sm min-w-0"><div class="flex items-center gap-3.5 min-w-0"><img loading="lazy" src="${esc(i.img)}" alt="${esc(i.name)}" class="w-12 h-12 rounded-xl object-cover border border-slate-200 dark:border-slate-700 shrink-0" onerror="this.onerror=null;this.src='https://placehold.co/400?text=No+Image'"></i><div class="min-w-0"><p class="text-sm font-bold text-slate-800 dark:text-white truncate">${esc(i.name)}${i.variantName?` (${esc(i.variantName)})`:''}${i.poTime?`<span class="amber-badge px-1.5 py-0.5 rounded-xl text-[8px] font-bold uppercase ml-1.5 whitespace-nowrap">PO ${esc(i.poTime)}</span>`:''}</p><p class="text-[11px] text-[var(--color-primary)] font-bold mt-1">${parseFloat(i.qty)} ${esc(i.unit||'pcs')} x ${fCur(getEffP(i))}</p></div></div><div class="text-sm font-bold text-slate-900 dark:text-white whitespace-nowrap ml-3 shrink-0">${fCur(getEffP(i)*parseFloat(i.qty))}</div></div>`).join('')
+    setH('payment-items-preview', cart.map(i => {
+        const variantText = i.variantName ? `<span class="bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-1.5 py-0.5 rounded-lg text-[9px] font-bold">${esc(i.variantName)}</span>` : '';
+        const poText = i.poTime ? `<span class="amber-badge px-1.5 py-0.5 rounded-lg text-[8px] font-bold uppercase">PO ${esc(i.poTime)}</span>` : '';
+        return `
+        <div class="flex justify-between items-center bg-white dark:bg-slate-800 p-4 rounded-[1.25rem] border border-slate-200 dark:border-slate-700 shadow-sm min-w-0">
+            <div class="flex items-center gap-3.5 min-w-0">
+                <img loading="lazy" src="${esc(i.img)}" alt="${esc(i.name)}" class="w-12 h-12 rounded-xl object-cover border border-slate-200 dark:border-slate-700 shrink-0" onerror="this.onerror=null;this.src='https://placehold.co/400?text=No+Image'">
+                <div class="min-w-0">
+                    <p class="text-sm font-bold text-slate-800 dark:text-white truncate mb-1" title="${esc(i.name)}">${esc(i.name)}</p>
+                    ${(i.variantName || i.poTime) ? `
+                    <div class="flex flex-wrap gap-1 mb-1">
+                        ${variantText}
+                        ${poText}
+                    </div>
+                    ` : ''}
+                    <p class="text-[11px] text-[var(--color-primary)] font-bold">${parseFloat(i.qty)} ${esc(i.unit||'pcs')} x ${fCur(getEffP(i))}</p>
+                </div>
+            </div>
+            <div class="text-sm font-bold text-slate-900 dark:text-white whitespace-nowrap ml-3 shrink-0">${fCur(getEffP(i)*parseFloat(i.qty))}</div>
+        </div>
+        `;
+    }).join('')
         + (selectedReward ? `<div class="flex justify-between items-center bg-violet-50 dark:bg-violet-900/20 p-4 rounded-[1.25rem] border border-violet-200 dark:border-violet-800 shadow-sm min-w-0"><div class="flex items-center gap-3.5 min-w-0"><div class="w-12 h-12 rounded-xl bg-violet-500 text-white flex items-center justify-center shrink-0"><i class="fa-solid fa-gift"></i></div><div class="min-w-0"><p class="text-sm font-bold text-violet-700 dark:text-violet-300 truncate">${esc(selectedReward.name)}</p><p class="text-[11px] text-violet-500 font-bold mt-1"><i class="fa-solid fa-star mr-1"></i>Tukar ${selectedReward.pointsCost} Poin (Gratis)</p></div></div><button type="button" onclick="deselectReward(); rPay();" class="text-[10px] font-bold text-rose-500 uppercase shrink-0 ml-3">Batal</button></div>` : ''));
         
     if(cust.note){ setIn('payment-note-text', `"${esc(cust.note)}"`); show('payment-note-preview'); } else hide('payment-note-preview');
@@ -5017,15 +5041,21 @@ window.openOrderDetail = i => {
             <div class="bg-white dark:bg-slate-800 p-5 sm:p-6 rounded-[1.5rem] border border-slate-200 dark:border-slate-700 shadow-sm">
                 <h4 class="font-bold text-slate-900 dark:text-white text-sm border-b border-slate-100 dark:border-slate-700 pb-4 mb-4 flex items-center gap-3"><div class="w-8 h-8 rounded-xl primary-light-icon-box flex items-center justify-center border border-slate-200 dark:border-slate-700"><i class="fa-solid fa-box-open"></i></div> Rincian Item</h4>
                 <div class="space-y-3">${o.items.map(t=>`
-                    <div class="flex justify-between items-center bg-slate-50 dark:bg-slate-900 p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
-                        <div class="flex items-center gap-3">
+                    <div class="flex justify-between items-center bg-slate-50 dark:bg-slate-900 p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm min-w-0">
+                        <div class="flex items-center gap-3 min-w-0">
                             <div class="w-10 h-10 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 flex items-center justify-center text-slate-500 dark:text-slate-400 shrink-0"><i class="fa-solid fa-tag text-sm"></i></div>
-                            <div>
-                                <p class="font-bold text-sm text-slate-900 dark:text-white">${esc(t.name)} ${t.variantName?`<span class="bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-1.5 py-0.5 rounded-xl border border-slate-300 dark:border-slate-600 text-[9px] ml-1.5">${esc(t.variantName)}</span>`:''}${t.poTime?`<span class="amber-badge px-1.5 py-0.5 rounded-xl text-[8px] font-bold uppercase ml-1.5 whitespace-nowrap">PO ${esc(t.poTime)}</span>`:''}</p>
-                                <p class="text-[11px] text-slate-500 dark:text-slate-400 font-bold mt-1">${parseFloat(t.qty)} ${esc(t.unit||'pcs')} x ${fCur(t.effectivePrice)}</p>
+                            <div class="min-w-0">
+                                <p class="font-bold text-sm text-slate-900 dark:text-white truncate mb-1" title="${esc(t.name)}">${esc(t.name)}</p>
+                                ${(t.variantName || t.poTime) ? `
+                                <div class="flex flex-wrap gap-1 mb-1">
+                                    ${t.variantName ? `<span class="bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-1.5 py-0.5 rounded-lg border border-slate-300 dark:border-slate-600 text-[9px] font-bold">${esc(t.variantName)}</span>` : ''}
+                                    ${t.poTime ? `<span class="amber-badge px-1.5 py-0.5 rounded-lg text-[8px] font-bold uppercase">PO ${esc(t.poTime)}</span>` : ''}
+                                </div>
+                                ` : ''}
+                                <p class="text-[11px] text-slate-500 dark:text-slate-400 font-bold">${parseFloat(t.qty)} ${esc(t.unit||'pcs')} x ${fCur(t.effectivePrice)}</p>
                             </div>
                         </div>
-                        <div class="font-bold text-sm text-slate-900 dark:text-white ml-3">${fCur(t.effectivePrice*parseFloat(t.qty))}</div>
+                        <div class="font-bold text-sm text-slate-900 dark:text-white ml-3 shrink-0">${fCur(t.effectivePrice*parseFloat(t.qty))}</div>
                     </div>`).join('')}
                 </div>
             </div>
