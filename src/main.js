@@ -2031,7 +2031,7 @@ const rProdMod = () => {
             
             adminInfoEl.innerHTML = `
             <div class="mb-6 bg-violet-50 dark:bg-violet-900/10 rounded-2xl p-4 border border-violet-200 dark:border-violet-800/50">
-                <p class="text-[10px] font-bold text-violet-600 dark:text-violet-400 mb-3 uppercase tracking-widest flex items-center gap-1.5"><i class="fa-solid fa-lock"></i> Info Admin</p>
+                <p class="text-[10px] font-bold text-violet-600 dark:text-violet-400 mb-3 uppercase tracking-widest flex items-center gap-1.5"><i class="fa-solid fa-lock"></i> Info Seller</p>
                 <div class="grid grid-cols-2 gap-3">
                     <div class="flex flex-col gap-1">
                         <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">HPP / Modal</p>
@@ -2742,7 +2742,7 @@ window.validateCartToCheckout = () => {
     if (window.isAdm) {
         showConfirm(
             "Akses Ditolak",
-            "Anda sedang login sebagai Admin. Silakan logout terlebih dahulu untuk membuat pesanan sebagai pelanggan.",
+            "Anda sedang login sebagai Seller. Silakan logout terlebih dahulu untuk membuat pesanan sebagai pelanggan.",
             () => { logoutAdmin(); },
             "Logout Sekarang",
             false
@@ -3545,7 +3545,7 @@ window.processOrder = async () => {
 
     // PATCH: blokir admin yang sedang login — lapisan kedua (defence in depth)
     if (window.isAdm) {
-        return showToast("Anda login sebagai Admin. Logout dulu untuk membuat pesanan.");
+        return showToast("Anda login sebagai Seller. Logout dulu untuk membuat pesanan.");
     }
 
     const lO = sL('freshmart_last_order');
@@ -4000,7 +4000,7 @@ const aF = {
         {key:'name', label:'Nama Produk', type:'text'}, {key:'sku', label:'Barcode / SKU (Kosongkan utk Auto)', type:'text'},
         {key:'price', label:'Harga Jual Promo (Rp)', type:'number'}, 
         {key:'priceNormal', label:'Harga Coret / Normal (Rp) - Opsional', type:'number'}, 
-        {key:'hpp', label:'Harga Modal / HPP (Rp) — Hanya Admin', type:'number'},
+        {key:'hpp', label:'Harga Modal / HPP (Rp) — Hanya Seller', type:'number'},
         {key:'poin', label:'Poin Member (per unit terjual, Produk Tanpa Varian)', type:'number'},
         {key:'stock', label:'Stok Awal (Qty) — Aktif jika Manajemen Stok ON', type:'number'},
         {key:'unit', label:'Satuan Dasar (Cth: Pcs, Kg)', type:'text'},
@@ -4062,7 +4062,7 @@ window.checkAdminAccess = () => {
 window.openAdminMenu = () => { 
     const adminScroll = document.querySelector('#view-admin .scroll-content');
     if (adminScroll) adminScroll.scrollTop = 0;
-    show('admin-dashboard-view'); hide('admin-content-view'); hide('btn-admin-back'); show('admin-logo-box'); setIn('admin-header-title','CMS ADMIN'); if(aOrdLst){ aOrdLst(); aOrdLst=null; } if(aCustLst){ aCustLst(); aCustLst=null; } if(aRevLst){ aRevLst(); aRevLst=null; } loadAdminReport(lastReportPeriod); toggleTaxMenuVisibility(); 
+    show('admin-dashboard-view'); hide('admin-content-view'); hide('btn-admin-back'); show('admin-logo-box'); setIn('admin-header-title','CMS SELLER'); if(aOrdLst){ aOrdLst(); aOrdLst=null; } if(aCustLst){ aCustLst(); aCustLst=null; } if(aRevLst){ aRevLst(); aRevLst=null; } loadAdminReport(lastReportPeriod); toggleTaxMenuVisibility(); 
 };
 
 // FITUR BARU: tombol menu Pajak HANYA tampil kalau PPN sedang aktif di Pengaturan Toko
@@ -4259,8 +4259,8 @@ window.logoutAdmin = async () => {
 
 window.confirmLogoutAdmin = () => {
     showConfirm(
-        "Keluar Admin",
-        "Apakah anda akan keluar dari dashboard admin?",
+        "Keluar Seller",
+        "Apakah anda akan keluar dari dashboard seller?",
         () => { logoutAdmin(); },
         "Ya, Keluar",
         true
@@ -5466,7 +5466,7 @@ window.openSettingForm = (type) => {
         colorTheme = { line: "bg-amber-500", box: "bg-amber-50 text-amber-500 dark:bg-amber-900/30" };
         formContent = `
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                <div><label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Nomor WhatsApp Admin</label><input autocomplete='off' id="set-wa" value="${esc(appData.store.wa)}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm" placeholder="Contoh: 0812..."></div>
+                <div><label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Nomor WhatsApp Seller</label><input autocomplete='off' id="set-wa" value="${esc(appData.store.wa)}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm" placeholder="Contoh: 0812..."></div>
                 <div><label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Tarif Ongkir per KM (Rp)</label><input autocomplete='off' type="number" id="set-cost" value="${appData.store.costPerKm||0}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm"></div>
             </div>
             <div><label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Alamat Fisik Toko</label><textarea autocomplete='off' id="set-address" class="admin-input !py-3.5 resize-none bg-slate-50 dark:bg-slate-900 shadow-sm" rows="2">${esc(appData.store.address)}</textarea></div>
@@ -7263,8 +7263,8 @@ window.addEventListener('popstate', e => {
                 history.pushState({view: 'view-admin'}, '', window.location.href);
                 
                 showConfirm(
-                    "Keluar Admin",
-                    "Apakah anda akan keluar dari dashboard admin?",
+                    "Keluar Seller",
+                    "Apakah anda akan keluar dari dashboard seller?",
                     () => { logoutAdmin(); },
                     "Ya, Keluar",
                     true

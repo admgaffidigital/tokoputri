@@ -216,7 +216,7 @@
                 <button class='w-full flex items-center gap-4 p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 hover:bg-emerald-50 dark:hover:bg-emerald-950/20 hover:text-emerald-500 dark:hover:text-emerald-400 text-slate-700 dark:text-slate-200 transition-all border border-slate-100 dark:border-slate-800 font-bold active:scale-[0.98] text-left' onclick="closeQuickMenuModal(); checkAdminAccess()">
                     <div class='w-10 h-10 rounded-xl bg-slate-850 dark:bg-slate-800 text-white flex items-center justify-center shadow-md'><i class='fa-solid fa-shield-halved text-sm'></i></div>
                     <div>
-                        <h4 class='text-sm leading-tight'>Akses Admin</h4>
+                        <h4 class='text-sm leading-tight'>Akses Seller</h4>
                         <p class='text-[9px] font-semibold text-slate-400 dark:text-slate-500 mt-0.5'>Kelola produk, pesanan, &amp; toko</p>
                     </div>
                 </button>
@@ -381,7 +381,7 @@
             <div class='glass-header shrink-0 px-5 flex items-center justify-center sticky top-0 pb-3 z-30'>
                 <div class='flex items-center justify-between w-full xl:max-w-[1200px] mx-auto px-4 lg:px-10 gap-4'>
                     <div class='flex items-center gap-3 flex-1 min-w-0'>
-                        <div class='w-12 h-12 bg-gradient-to-br from-slate-50 to-white rounded-2xl flex items-center justify-center shadow-soft border border-slate-200 dark:border-slate-700 overflow-hidden shrink-0 cursor-pointer select-none transition-transform active:scale-95' ondblclick="checkAdminAccess()" title='Ketuk 2x untuk Login Admin'>
+                        <div class='w-12 h-12 bg-gradient-to-br from-slate-50 to-white rounded-2xl flex items-center justify-center shadow-soft border border-slate-200 dark:border-slate-700 overflow-hidden shrink-0 cursor-pointer select-none transition-transform active:scale-95' ondblclick="checkAdminAccess()" title='Ketuk 2x untuk Login Seller'>
                             <img alt='Logo' class='w-full h-full object-cover hidden' id='dyn-store-logo-img' loading='lazy' src='data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'></i>
                             <i class='fa-solid fa-store text-xl text-emerald-500' id='dyn-store-logo-icon'></i>
                         </div>
@@ -772,7 +772,7 @@
                         </div>
                         <div class='hidden mt-3 items-center gap-2 text-rose-500 dark:text-rose-400' id='bukti-gdrive-error'>
                             <i class='fa-solid fa-triangle-exclamation'></i>
-                            <span class='text-xs font-bold'>Koneksi Google Drive gagal. <button class='underline' onclick="retryBuktiUpload()">Coba lagi</button> atau hubungi admin.</span>
+                            <span class='text-xs font-bold'>Koneksi Google Drive gagal. <button class='underline' onclick="retryBuktiUpload()">Coba lagi</button> atau hubungi seller.</span>
                         </div>
                     </div>
                     <div class='bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 p-5 rounded-[1.5rem] shadow-sm relative overflow-hidden'>
@@ -854,12 +854,12 @@
                 <div class='bg-white/8 dark:bg-slate-800/50 backdrop-blur-xl rounded-[2rem] border border-white/15 dark:border-slate-700/50 p-8 shadow-2xl relative flex flex-col items-center text-center'>
                     <button class='absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-xl bg-white/10 hover:bg-rose-500 text-white transition-all' onclick="history.back()"><i class='fa-solid fa-xmark text-xs'></i></button>
                     <div class='w-18 h-18 w-[72px] h-[72px] text-white rounded-2xl flex items-center justify-center mb-5 text-3xl border border-white/15 shadow-lg' style='background-color: var(--color-primary)'><i class='fa-solid fa-shield-halved'></i></div>
-                    <h2 class='text-2xl font-bold tracking-tight text-white mb-1'>Admin Panel</h2>
-                    <p class='text-[10px] font-bold text-slate-500 dark:text-slate-400 mb-7 uppercase tracking-widest'>Otorisasi Superadmin</p>
+                    <h2 class='text-2xl font-bold tracking-tight text-white mb-1'>Seller Panel</h2>
+                    <p class='text-[10px] font-bold text-slate-500 dark:text-slate-400 mb-7 uppercase tracking-widest'>Otorisasi Seller</p>
                     <form autocomplete='off' class='space-y-3 w-full text-left' onsubmit="return false;">
                         <div class='relative'>
                             <i class='fa-solid fa-envelope absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm'></i>
-                            <input autocomplete='off' class='w-full bg-black/20 border border-white/10 rounded-xl py-3.5 pl-10 pr-4 text-white placeholder:text-slate-400 dark:placeholder:text-slate-400 text-sm font-semibold focus:outline-none focus:border-[rgba(var(--color-primary-rgb),0.7)] focus:bg-black/30 transition-all shadow-inner' id='login-username' name='x_panel_id_7k2' placeholder='Email Admin' type='email'></i>
+                            <input autocomplete='off' class='w-full bg-black/20 border border-white/10 rounded-xl py-3.5 pl-10 pr-4 text-white placeholder:text-slate-400 dark:placeholder:text-slate-400 text-sm font-semibold focus:outline-none focus:border-[rgba(var(--color-primary-rgb),0.7)] focus:bg-black/30 transition-all shadow-inner' id='login-username' name='x_panel_id_7k2' placeholder='Email Seller' type='email'></i>
                         </div>
                         <div class='relative'>
                             <i class='fa-solid fa-lock absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm'></i>
@@ -882,7 +882,7 @@
                             <div class='flex items-center gap-2'>
                                 <h1 class='text-sm font-bold tracking-tight text-slate-900 dark:text-white leading-none' id='admin-header-title'>CMS TOKO</h1>
                             </div>
-                            <span class='text-[9px] font-bold text-[var(--color-primary)] uppercase tracking-widest bg-[rgba(var(--color-primary-rgb),0.1)] px-1.5 py-0.5 rounded-xl inline-block mt-0.5 leading-none'>Superadmin</span>
+                            <span class='text-[9px] font-bold text-[var(--color-primary)] uppercase tracking-widest bg-[rgba(var(--color-primary-rgb),0.1)] px-1.5 py-0.5 rounded-xl inline-block mt-0.5 leading-none'>Seller</span>
                         </div>
                     </div>
                     <div class='flex items-center gap-1.5'>
@@ -901,7 +901,7 @@
                             <div class='relative z-10 flex items-center justify-between gap-4'>
                                 <div>
                                     <p class='text-[10px] font-bold uppercase tracking-widest mb-2 opacity-60 text-white'>Panel Kontrol</p>
-                                    <h2 class='text-xl sm:text-2xl font-bold text-white mb-1.5 tracking-tight leading-tight'>Selamat Datang, Admin! 👋</h2>
+                                    <h2 class='text-xl sm:text-2xl font-bold text-white mb-1.5 tracking-tight leading-tight'>Selamat Datang, Seller! 👋</h2>
                                     <p class='text-xs font-medium text-slate-300 dark:text-slate-400 max-w-sm'>Kelola produk, pesanan, dan seluruh operasional toko dari satu tempat.</p>
                                 </div>
                                 <div class='w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg shrink-0 border border-white/10' style='background: rgba(var(--color-primary-rgb),0.2)'>
