@@ -1242,6 +1242,20 @@ window.closeQuickMenuModal = (fH=false) => {
     }
 };
 
+window.navigateFromQuickMenu = (targetViewOrAction) => {
+    closeQuickMenuModal(true);
+    const idx = oMods.indexOf('quickmenu');
+    if (idx > -1) oMods.splice(idx, 1);
+    
+    if (typeof targetViewOrAction === 'function') {
+        history.replaceState({view: curViewName}, '', window.location.href);
+        targetViewOrAction();
+    } else {
+        history.replaceState({view: targetViewOrAction}, '', window.location.href);
+        changeView(targetViewOrAction, true);
+    }
+};
+
 // --- 7. UPLOAD GAMBAR ---
 // SECURITY: Token untuk autentikasi ke GAS script
 // GANTI dengan token yang sama persis di GAS script Anda
