@@ -430,6 +430,9 @@ const loadAppData = async () => {
         
         if (d.exists) {
             const f = d.data();
+            // Simpan cache cms_data ke local storage agar splashscreen bisa membaca data terbaru secara instan
+            ssL('freshmart_cms_data', JSON.stringify(f));
+
             // Merge Data Setting
             appData = { ...defApp, ...f };
             appData.store = { ...defApp.store, ...(f.store || {}) };
