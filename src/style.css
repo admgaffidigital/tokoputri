@@ -489,3 +489,42 @@ html.dark .dark\:border-slate-800\/80 {
 html.dark .card-modern { 
     border-color: #475569 !important; 
 }
+
+/* === DYNAMIC THEME OPACITY BUG FIXES (ACCENT BOXES & BADGES) === */
+.accent-box {
+    background-color: var(--color-primary-light) !important;
+    border: 1px solid rgba(var(--color-primary-rgb), 0.25) !important;
+}
+.accent-box:hover {
+    background-color: rgba(var(--color-primary-rgb), 0.12) !important;
+    border-color: rgba(var(--color-primary-rgb), 0.35) !important;
+}
+html.dark .accent-box {
+    background-color: rgba(var(--color-primary-rgb), 0.15) !important;
+    border: 1px solid rgba(var(--color-primary-rgb), 0.35) !important;
+}
+html.dark .accent-box:hover {
+    background-color: rgba(var(--color-primary-rgb), 0.22) !important;
+    border-color: rgba(var(--color-primary-rgb), 0.5) !important;
+}
+
+.accent-badge {
+    background-color: var(--color-primary-light) !important;
+    border: 1px solid rgba(var(--color-primary-rgb), 0.25) !important;
+    color: var(--color-primary) !important;
+}
+html.dark .accent-badge {
+    background-color: rgba(var(--color-primary-rgb), 0.18) !important;
+    border: 1px solid rgba(var(--color-primary-rgb), 0.4) !important;
+    color: var(--color-emerald-400) !important;
+}
+
+.primary-light-icon-box {
+    background-color: var(--color-primary-light) !important;
+    color: var(--color-primary) !important;
+}
+html.dark .primary-light-icon-box {
+    background-color: rgba(var(--color-primary-rgb), 0.25) !important;
+    color: var(--color-emerald-400) !important;
+}
+

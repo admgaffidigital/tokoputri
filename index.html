@@ -236,14 +236,14 @@
                 <div class='pt-5 mt-1 border-t border-slate-100 dark:border-slate-800/60'>
                     <div class='space-y-4' id='modal-active-controls'>
                         <div class='flex items-center justify-between'>
-                            <span class='text-xs font-bold text-slate-500 dark:text-slate-400 flex items-center'>Jumlah <span class='text-[9px] font-bold text-emerald-600 bg-emerald-50 dark:bg-emerald-900/40 dark:text-emerald-400 px-1.5 py-0.5 rounded ml-1.5 uppercase tracking-widest border border-emerald-200 dark:border-emerald-800' id='modal-unit-label'>Pcs</span></span>
+                            <span class='text-xs font-bold text-slate-500 dark:text-slate-400 flex items-center'>Jumlah <span class='text-[9px] font-bold accent-badge px-1.5 py-0.5 rounded ml-1.5 uppercase tracking-widest' id='modal-unit-label'>Pcs</span></span>
                             <div class='flex items-center bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl h-11 overflow-hidden shadow-sm'>
                                 <button class='w-11 h-full flex items-center justify-center font-bold text-slate-500 hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors' onclick="updateModalQty(-1)"><i class='fa-solid fa-minus text-xs'></i></button>
                                 <input class='w-14 text-center text-sm font-bold bg-transparent focus:outline-none dark:text-white border-x border-slate-200 dark:border-slate-700' id='modal-qty-input' min='0.01' onchange="handleModalQtyChange(this.value)" step='0.01' type='number' value='1'></i>
                                 <button class='w-11 h-full flex items-center justify-center font-bold text-slate-500 hover:text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/30 transition-colors' onclick="updateModalQty(1)"><i class='fa-solid fa-plus text-xs'></i></button>
                             </div>
                         </div>
-                        <div class='flex items-center justify-between bg-emerald-50 dark:bg-emerald-900/20 p-4 rounded-2xl border border-emerald-100 dark:border-emerald-800/50 shadow-inner'>
+                        <div class='flex items-center justify-between accent-box p-4 rounded-2xl shadow-inner'>
                             <span class='text-[10px] font-bold text-emerald-800 dark:text-emerald-400 uppercase tracking-widest'>Subtotal</span>
                             <span class='text-xl font-bold text-emerald-600 dark:text-emerald-400 tracking-tight' id='btn-modal-price-preview'>Rp 0</span>
                         </div>
@@ -434,7 +434,7 @@
             </div>
             <div class='md:col-span-5 lg:col-span-3 flex flex-col items-center md:items-start'>
                 <h4 class='font-bold text-slate-800 dark:text-white mb-5 uppercase tracking-widest text-sm flex items-center justify-center md:justify-start gap-3 pb-4 border-b border-slate-100 dark:border-slate-800 w-full'>
-                    <div class='w-7 h-7 rounded-xl bg-[var(--color-primary-light)] text-[var(--color-primary)] dark:bg-[var(--color-primary-dark)]/30 flex items-center justify-center'><i class='fa-solid fa-link text-xs'></i></div> Tautan Cepat
+                    <div class='w-7 h-7 rounded-xl primary-light-icon-box flex items-center justify-center'><i class='fa-solid fa-link text-xs'></i></div> Tautan Cepat
                 </h4>
                 <ul class='space-y-1.5 w-full max-w-[200px] md:max-w-none'>
                     <li><a class='text-sm font-bold text-slate-500 dark:text-slate-400 hover:text-[var(--color-primary)] dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800/50 px-3 py-2.5 md:-ml-3 rounded-xl flex items-center justify-center md:justify-start gap-3 group transition-all cursor-pointer' href='#catalog' onclick="event.preventDefault(); changeView('view-catalog')">
@@ -456,10 +456,10 @@
             </div>
             <div class='md:col-span-7 lg:col-span-4 flex flex-col items-center md:items-start'>
                 <h4 class='font-bold text-slate-800 dark:text-white mb-5 uppercase tracking-widest text-sm flex items-center justify-center md:justify-start gap-3 pb-4 border-b border-slate-100 dark:border-slate-800 w-full'>
-                    <div class='w-7 h-7 rounded-xl bg-[var(--color-primary-light)] text-[var(--color-primary)] dark:bg-[var(--color-primary-dark)]/30 flex items-center justify-center'><i class='fa-solid fa-headset text-xs'></i></div> Hubungi Kami
+                    <div class='w-7 h-7 rounded-xl primary-light-icon-box flex items-center justify-center'><i class='fa-solid fa-headset text-xs'></i></div> Hubungi Kami
                 </h4>
                 <div class='space-y-4 w-full max-w-sm md:max-w-none'>
-                    <a id='footer-wa-link' class='flex flex-col sm:flex-row items-center sm:items-start justify-center md:justify-start gap-4 p-4 rounded-2xl bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-700 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 transition-all group cursor-pointer shadow-sm' href='#' target='_blank' onclick="event.preventDefault(); if(appData.store.wa) window.open('https://wa.me/'+appData.store.wa, '_blank')">
+                    <a id='footer-wa-link' class='flex flex-col sm:flex-row items-center sm:items-start justify-center md:justify-start gap-4 p-4 rounded-2xl accent-box transition-all group cursor-pointer shadow-sm' href='#' target='_blank' onclick="event.preventDefault(); if(appData.store.wa) window.open('https://wa.me/'+appData.store.wa, '_blank')">
                         <div class='w-12 h-12 bg-emerald-500 text-white rounded-xl flex items-center justify-center shadow-md group-hover:scale-110 group-hover:rotate-6 transition-transform duration-300 shrink-0'>
                             <i class='fa-brands fa-whatsapp text-2xl'></i>
                         </div>
