@@ -349,11 +349,11 @@ body {
 
 /* === 5. DARK MODE OVERRIDES === */
 html.dark body { background-color: #020617; color: #f8fafc; }
-html.dark #app-container { background-color: #0f172a; border-color: rgba(51, 65, 85, 0.7); }
-html.dark .glass-header { background: #0f172a !important; border-bottom-color: rgba(51, 65, 85, 0.8) !important; border-bottom-width: 1.5px !important; box-shadow: 0 4px 20px -4px rgba(0, 0, 0, 0.4); }
-html.dark .glass-nav { background: #0f172a !important; border-top-color: rgba(51, 65, 85, 0.8) !important; border-top-width: 1.5px !important; box-shadow: 0 -8px 24px -8px rgba(0, 0, 0, 0.5); padding-bottom: max(1.25rem, env(safe-area-inset-bottom)); }
-html.dark .card-modern { background-color: #1e293b !important; border-color: rgba(71, 85, 105, 0.7) !important; border-width: 1.5px !important; box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.3); }
-html.dark .card-modern:hover { border-color: rgba(var(--color-primary-rgb), 0.5) !important; box-shadow: 0 12px 28px -6px rgba(0, 0, 0, 0.5); }
+html.dark #app-container { background-color: #0f172a; border-color: #334155; }
+html.dark .glass-header { background: #0f172a !important; border-bottom-color: #334155 !important; border-bottom-width: 1.5px !important; box-shadow: 0 4px 20px -4px rgba(0, 0, 0, 0.4); }
+html.dark .glass-nav { background: #0f172a !important; border-top-color: #334155 !important; border-top-width: 1.5px !important; box-shadow: 0 -8px 24px -8px rgba(0, 0, 0, 0.5); padding-bottom: max(1.25rem, env(safe-area-inset-bottom)); }
+html.dark .card-modern { background-color: #1e293b !important; border-color: #475569 !important; border-width: 1.5px !important; box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.3); }
+html.dark .card-modern:hover { border-color: var(--color-primary) !important; box-shadow: 0 12px 28px -6px rgba(0, 0, 0, 0.5); }
 html.dark .admin-input { background-color: #0f172a !important; border-color: #475569 !important; color: #f1f5f9 !important; box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3); }
 html.dark .admin-input:focus { border-color: var(--color-primary) !important; box-shadow: 0 0 0 3px rgba(var(--color-primary-rgb), 0.2), inset 0 1px 3px rgba(0, 0, 0, 0.3) !important; }
 html.dark .admin-input::placeholder { color: #64748b !important; }
@@ -461,4 +461,31 @@ body {
 }
 .bg-white\/5 {
     background-color: rgba(255, 255, 255, 0.15) !important;
+}
+
+/* === BORDER STRENGTHEN OVERRIDES (PERTEGAS GARIS / FRAME STOREFRONT) === */
+.border-slate-200, 
+.border-slate-200\/80 { 
+    border-color: #cbd5e1 !important; /* Dari slate-200 (#e2e8f0) dinaikkan ke slate-300 (#cbd5e1) */
+}
+.border-slate-100, 
+.border-slate-100\/80 { 
+    border-color: #cbd5e1 !important; /* Dipertegas agar lebih terlihat */
+}
+.card-modern {
+    border: 1.5px solid #cbd5e1 !important; /* Pertegas border form input & card */
+}
+
+/* Mempertegas warna garis/border di mode gelap (dark mode) */
+html.dark .dark\:border-slate-700, 
+html.dark .dark\:border-slate-700\/80 { 
+    border-color: #475569 !important; /* Dari slate-700 (#334155) dinaikkan ke slate-600 (#475569) */
+}
+html.dark .dark\:border-slate-800, 
+html.dark .dark\:border-slate-800\/60,
+html.dark .dark\:border-slate-800\/80 { 
+    border-color: #334155 !important; /* Dari slate-800 (#1e293b) dinaikkan ke slate-700 (#334155) */
+}
+html.dark .card-modern { 
+    border-color: #475569 !important; 
 }
