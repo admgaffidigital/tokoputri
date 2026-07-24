@@ -522,9 +522,27 @@ html.dark .accent-badge {
 .primary-light-icon-box {
     background-color: var(--color-primary-light) !important;
     color: var(--color-primary) !important;
+    transition: background-color 0.2s, color 0.2s;
 }
 html.dark .primary-light-icon-box {
     background-color: rgba(var(--color-primary-rgb), 0.25) !important;
     color: var(--color-emerald-400) !important;
 }
+/* Hover effect when inside a card group (like product card plus button) */
+.group:hover .primary-light-icon-box {
+    background-color: var(--color-primary) !important;
+    color: #ffffff !important;
+}
+
+.amber-badge {
+    background-color: #fef3c7 !important; /* amber-100 */
+    color: #b45309 !important; /* amber-700 */
+    border: 1px solid #fde68a !important; /* amber-200 */
+}
+html.dark .amber-badge {
+    background-color: rgba(245, 158, 11, 0.15) !important; /* 15% amber-500 */
+    color: #fcd34d !important; /* amber-300 */
+    border: 1px solid rgba(245, 158, 11, 0.3) !important;
+}
+
 

@@ -1655,9 +1655,9 @@ window.rCat = () => {
             ${poinBadge}
             ${soldBadge}
             ${p.tag ? `<span class="bg-[var(--color-primary-light)] text-[var(--color-primary-dark)] dark:bg-[var(--color-primary-dark)]/50 dark:text-[var(--color-primary)] px-2 py-0.5 rounded-full text-[8px] font-bold flex items-center gap-1 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-hashtag"></i> ${esc(p.tag)}</span>` : ''}
-            <span class="bg-emerald-100 text-emerald-700 dark:bg-emerald-900/50 dark:text-emerald-400 px-2 py-0.5 rounded-full text-[8px] font-bold flex items-center gap-1 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-circle-check"></i> Official</span>
+            <span class="accent-badge px-2 py-0.5 rounded-full text-[8px] font-bold flex items-center gap-1 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-circle-check"></i> Official</span>
             ${p.brand ? `<span class="bg-slate-200 text-slate-700 dark:bg-slate-700 dark:text-slate-300 px-2 py-0.5 rounded-full text-[8px] font-bold flex items-center gap-1 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-tag"></i> ${esc(p.brand)}</span>` : ''}
-            ${(p.wholesale?.length && !p.variants?.length) ? `<span class="bg-amber-100 text-amber-700 dark:bg-amber-900/50 dark:text-amber-400 px-2 py-0.5 rounded-full text-[8px] font-bold flex items-center gap-1 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-layer-group"></i> Grosir</span>` : ''}
+            ${(p.wholesale?.length && !p.variants?.length) ? `<span class="amber-badge px-2 py-0.5 rounded-full text-[8px] font-bold flex items-center gap-1 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-layer-group"></i> Grosir</span>` : ''}
         </div>`;
         
         let unt = `<span class="text-[9px] text-slate-600 dark:text-slate-400 font-bold ml-0.5 mb-0.5 uppercase tracking-wide">/${esc(p.unit||'PCS')}</span>`;
@@ -1681,7 +1681,7 @@ window.rCat = () => {
                             </p>
                             ${p.variants && p.variants.length > 0 ? '' : unt}
                         </div>
-                        <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[var(--color-primary-light)] text-[var(--color-primary)] flex items-center justify-center group-hover:bg-[var(--color-primary)] group-hover:text-white transition-colors shadow-sm dark:bg-[var(--color-primary-dark)]/30">
+                        <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-full primary-light-icon-box flex items-center justify-center transition-colors shadow-sm">
                             <i class="fa-solid fa-plus text-xs sm:text-sm"></i>
                         </div>
                     </div>
@@ -1706,7 +1706,7 @@ window.rCat = () => {
                             </p>
                             ${p.variants && p.variants.length > 0 ? '' : unt}
                         </div>
-                        <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[var(--color-primary-light)] text-[var(--color-primary)] flex items-center justify-center group-hover:bg-[var(--color-primary)] group-hover:text-white transition-colors shadow-sm mr-1 dark:bg-[var(--color-primary-dark)]/30">
+                        <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-full primary-light-icon-box flex items-center justify-center transition-colors shadow-sm mr-1">
                             <i class="fa-solid fa-plus text-xs sm:text-sm"></i>
                         </div>
                     </div>
@@ -1940,9 +1940,9 @@ const rProdMod = () => {
     // Header Badge Premium
     let bH = ``;
     if (p.sku) bH += `<span class="bg-slate-200 text-slate-600 dark:bg-slate-800 dark:text-slate-400 px-2.5 py-1 rounded-full text-[9px] font-bold flex items-center gap-1.5 whitespace-nowrap tracking-wider"><i class="fa-solid fa-barcode"></i> ${esc(p.sku)}</span>`;
-    if (p.tag) bH += `<span class="bg-emerald-100 text-emerald-700 dark:bg-emerald-900/50 dark:text-emerald-400 px-2.5 py-1 rounded-full text-[9px] font-bold flex items-center gap-1.5 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-hashtag"></i> ${esc(p.tag)}</span>`;
+    if (p.tag) bH += `<span class="accent-badge px-2.5 py-1 rounded-full text-[9px] font-bold flex items-center gap-1.5 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-hashtag"></i> ${esc(p.tag)}</span>`;
     
-    bH += `<span class="bg-emerald-100 text-emerald-700 dark:bg-emerald-900/50 dark:text-emerald-400 px-2.5 py-1 rounded-full text-[9px] font-bold flex items-center gap-1.5 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-circle-check"></i> Official</span>`;
+    bH += `<span class="accent-badge px-2.5 py-1 rounded-full text-[9px] font-bold flex items-center gap-1.5 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-circle-check"></i> Official</span>`;
     
     if (p.brand) bH += `<span class="bg-slate-200 text-slate-700 dark:bg-slate-800 dark:text-slate-300 px-2.5 py-1 rounded-full text-[9px] font-bold flex items-center gap-1.5 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-tag"></i> ${esc(p.brand)}</span>`;
     
@@ -2407,7 +2407,7 @@ window.renderOrderDetailModal = (orderId, d, reviewedKeys) => {
             // FITUR BARU: tombol "Berikan Ulasan" -- hanya untuk pesanan SELESAI & item yang belum diulas
             const reviewKey = `${i.id}::${i.variantName || ''}`;
             const canReview = d.status === 'Selesai' && !reviewedKeys.includes(reviewKey) && i.id !== undefined && i.id !== null;
-            const poBadge = i.poTime ? `<span class="bg-amber-100 dark:bg-amber-900/50 text-amber-600 dark:text-amber-400 px-1.5 py-0.5 rounded-xl text-[8px] font-bold border border-amber-200 dark:border-amber-800 uppercase ml-1.5 whitespace-nowrap">PO ${esc(i.poTime)}</span>` : '';
+            const poBadge = i.poTime ? `<span class="amber-badge px-1.5 py-0.5 rounded-xl text-[8px] font-bold uppercase ml-1.5 whitespace-nowrap">PO ${esc(i.poTime)}</span>` : '';
 
             return `
             <div class="flex gap-3 items-center border-b border-slate-100 dark:border-slate-700/50 py-3 last:border-0">
@@ -2641,7 +2641,7 @@ window.renderCart = () => {
                     ${w?`<span class="bg-gradient-to-r from-amber-400 to-amber-500 text-white px-2.5 py-0.5 rounded-full text-[9px] font-bold shadow-sm flex items-center gap-1 uppercase tracking-wide"><i class="fa-solid fa-layer-group"></i> Grosir</span>`:''}
                     ${colorIndicator}
                     ${i.variantName?`<span class="bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300 px-2 py-0.5 rounded-full text-[9px] font-bold border border-slate-200 dark:border-slate-600 uppercase tracking-wide">${esc(i.variantName)}</span>`:''}
-                    ${i.poTime?`<span class="bg-amber-50 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400 px-2 py-0.5 rounded-full text-[9px] font-bold border border-amber-200 dark:border-amber-800 flex items-center uppercase tracking-wide"><i class="fa-solid fa-clock mr-1"></i> PO ${esc(i.poTime)}</span>`:''}
+                    ${i.poTime?`<span class="amber-badge px-2 py-0.5 rounded-full text-[9px] font-bold flex items-center uppercase tracking-wide"><i class="fa-solid fa-clock mr-1"></i> PO ${esc(i.poTime)}</span>`:''}
                 </div>
                 
                 <div class="flex justify-between items-end mt-auto pt-1">
@@ -3480,7 +3480,7 @@ const rPay = () => {
     setIn('payment-cust-method', cust.deliveryMethod === 'delivery' ? `Kurir (${cust.distance.toFixed(1)}km)` : 'Ambil di Toko');
     setIn('payment-cust-address', cust.address || '-');
     
-    setH('payment-items-preview', cart.map(i => `<div class="flex justify-between items-center bg-white dark:bg-slate-800 p-4 rounded-[1.25rem] border border-slate-200 dark:border-slate-700 shadow-sm min-w-0"><div class="flex items-center gap-3.5 min-w-0"><img loading="lazy" src="${esc(i.img)}" alt="${esc(i.name)}" class="w-12 h-12 rounded-xl object-cover border border-slate-200 dark:border-slate-700 shrink-0" onerror="this.onerror=null;this.src='https://placehold.co/400?text=No+Image'"></i><div class="min-w-0"><p class="text-sm font-bold text-slate-800 dark:text-white truncate">${esc(i.name)}${i.variantName?` (${esc(i.variantName)})`:''}${i.poTime?`<span class="bg-amber-100 dark:bg-amber-900/50 text-amber-600 dark:text-amber-400 px-1.5 py-0.5 rounded-xl text-[8px] font-bold border border-amber-200 dark:border-amber-800 uppercase ml-1.5 whitespace-nowrap">PO ${esc(i.poTime)}</span>`:''}</p><p class="text-[11px] text-[var(--color-primary)] font-bold mt-1">${parseFloat(i.qty)} ${esc(i.unit||'pcs')} x ${fCur(getEffP(i))}</p></div></div><div class="text-sm font-bold text-slate-900 dark:text-white whitespace-nowrap ml-3 shrink-0">${fCur(getEffP(i)*parseFloat(i.qty))}</div></div>`).join('')
+    setH('payment-items-preview', cart.map(i => `<div class="flex justify-between items-center bg-white dark:bg-slate-800 p-4 rounded-[1.25rem] border border-slate-200 dark:border-slate-700 shadow-sm min-w-0"><div class="flex items-center gap-3.5 min-w-0"><img loading="lazy" src="${esc(i.img)}" alt="${esc(i.name)}" class="w-12 h-12 rounded-xl object-cover border border-slate-200 dark:border-slate-700 shrink-0" onerror="this.onerror=null;this.src='https://placehold.co/400?text=No+Image'"></i><div class="min-w-0"><p class="text-sm font-bold text-slate-800 dark:text-white truncate">${esc(i.name)}${i.variantName?` (${esc(i.variantName)})`:''}${i.poTime?`<span class="amber-badge px-1.5 py-0.5 rounded-xl text-[8px] font-bold uppercase ml-1.5 whitespace-nowrap">PO ${esc(i.poTime)}</span>`:''}</p><p class="text-[11px] text-[var(--color-primary)] font-bold mt-1">${parseFloat(i.qty)} ${esc(i.unit||'pcs')} x ${fCur(getEffP(i))}</p></div></div><div class="text-sm font-bold text-slate-900 dark:text-white whitespace-nowrap ml-3 shrink-0">${fCur(getEffP(i)*parseFloat(i.qty))}</div></div>`).join('')
         + (selectedReward ? `<div class="flex justify-between items-center bg-violet-50 dark:bg-violet-900/20 p-4 rounded-[1.25rem] border border-violet-200 dark:border-violet-800 shadow-sm min-w-0"><div class="flex items-center gap-3.5 min-w-0"><div class="w-12 h-12 rounded-xl bg-violet-500 text-white flex items-center justify-center shrink-0"><i class="fa-solid fa-gift"></i></div><div class="min-w-0"><p class="text-sm font-bold text-violet-700 dark:text-violet-300 truncate">${esc(selectedReward.name)}</p><p class="text-[11px] text-violet-500 font-bold mt-1"><i class="fa-solid fa-star mr-1"></i>Tukar ${selectedReward.pointsCost} Poin (Gratis)</p></div></div><button type="button" onclick="deselectReward(); rPay();" class="text-[10px] font-bold text-rose-500 uppercase shrink-0 ml-3">Batal</button></div>` : ''));
         
     if(cust.note){ setIn('payment-note-text', `"${esc(cust.note)}"`); show('payment-note-preview'); } else hide('payment-note-preview');
@@ -4970,13 +4970,13 @@ window.openOrderDetail = i => {
             <div class="flex flex-col gap-4">
 
             <div class="bg-white dark:bg-slate-800 p-5 sm:p-6 rounded-[1.5rem] border border-slate-200 dark:border-slate-700 shadow-sm">
-                <h4 class="font-bold text-slate-900 dark:text-white text-sm border-b border-slate-100 dark:border-slate-700 pb-4 mb-4 flex items-center gap-3"><div class="w-8 h-8 rounded-xl bg-emerald-50 dark:bg-emerald-900/30 text-emerald-500 flex items-center justify-center border border-emerald-100 dark:border-emerald-800"><i class="fa-solid fa-box-open"></i></div> Rincian Item</h4>
+                <h4 class="font-bold text-slate-900 dark:text-white text-sm border-b border-slate-100 dark:border-slate-700 pb-4 mb-4 flex items-center gap-3"><div class="w-8 h-8 rounded-xl primary-light-icon-box flex items-center justify-center border border-slate-200 dark:border-slate-700"><i class="fa-solid fa-box-open"></i></div> Rincian Item</h4>
                 <div class="space-y-3">${o.items.map(t=>`
                     <div class="flex justify-between items-center bg-slate-50 dark:bg-slate-900 p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
                         <div class="flex items-center gap-3">
                             <div class="w-10 h-10 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 flex items-center justify-center text-slate-500 dark:text-slate-400 shrink-0"><i class="fa-solid fa-tag text-sm"></i></div>
                             <div>
-                                <p class="font-bold text-sm text-slate-900 dark:text-white">${esc(t.name)} ${t.variantName?`<span class="bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-1.5 py-0.5 rounded-xl border border-slate-300 dark:border-slate-600 text-[9px] ml-1.5">${esc(t.variantName)}</span>`:''}${t.poTime?`<span class="bg-amber-100 dark:bg-amber-900/50 text-amber-600 dark:text-amber-400 px-1.5 py-0.5 rounded-xl text-[8px] font-bold border border-amber-200 dark:border-amber-800 uppercase ml-1.5 whitespace-nowrap">PO ${esc(t.poTime)}</span>`:''}</p>
+                                <p class="font-bold text-sm text-slate-900 dark:text-white">${esc(t.name)} ${t.variantName?`<span class="bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-1.5 py-0.5 rounded-xl border border-slate-300 dark:border-slate-600 text-[9px] ml-1.5">${esc(t.variantName)}</span>`:''}${t.poTime?`<span class="amber-badge px-1.5 py-0.5 rounded-xl text-[8px] font-bold uppercase ml-1.5 whitespace-nowrap">PO ${esc(t.poTime)}</span>`:''}</p>
                                 <p class="text-[11px] text-slate-500 dark:text-slate-400 font-bold mt-1">${parseFloat(t.qty)} ${esc(t.unit||'pcs')} x ${fCur(t.effectivePrice)}</p>
                             </div>
                         </div>
