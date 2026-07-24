@@ -1223,6 +1223,25 @@ window.closeBrandModal = (fH=false) => {
     }
 };
 
+window.openQuickMenuModal = () => {
+    const m = el('quickmenu-modal'), c = el('quickmenu-modal-content');
+    if(m && c){
+        if (m.classList.contains('hidden')) pushModalHistory('quickmenu');
+        show('quickmenu-modal');
+        setTimeout(() => { m.classList.remove('opacity-0'); c.classList.remove('translate-y-full','sm:translate-y-10'); }, 10);
+    }
+};
+
+window.closeQuickMenuModal = (fH=false) => {
+    const m = el('quickmenu-modal'), c = el('quickmenu-modal-content');
+    if (m && c) {
+        requestCloseModal('quickmenu', fH, () => {
+            m.classList.add('opacity-0'); c.classList.add('translate-y-full','sm:translate-y-10');
+            setTimeout(() => hide('quickmenu-modal'), 300);
+        });
+    }
+};
+
 // --- 7. UPLOAD GAMBAR ---
 // SECURITY: Token untuk autentikasi ke GAS script
 // GANTI dengan token yang sama persis di GAS script Anda
@@ -7225,6 +7244,7 @@ window.addEventListener('popstate', e => {
         else if (m === 'member') closeMemberModal(true); // FITUR BARU: back button tutup modal data member
         else if (m === 'prompt' && typeof window.closePrompt === 'function') window.closePrompt(true);
         else if (m === 'review') closeReviewModal(true); // FITUR BARU: back button tutup modal ulasan
+        else if (m === 'quickmenu') closeQuickMenuModal(true);
     } else {
         const state = e.state || {};
         const v = state.view || null;
