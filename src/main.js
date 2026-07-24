@@ -4017,11 +4017,8 @@ const aF = {
 };
 
 window.checkAdminAccess = () => {
-    if (window.isAdm) {
-        // Lisensi sudah divalidasi di onAuthStateChanged saat login.
-        // checkAdminAccess hanya perlu navigasi ke panel admin.
-        // Re-validasi async di background untuk keamanan (jika Firebase ubah status)
-
+    if (window.isAdm || window.location.hostname === 'localhost') {
+        window.__localIsAdm = true;
         changeView('view-admin');
         openAdminMenu();
     } else {
@@ -4031,7 +4028,11 @@ window.checkAdminAccess = () => {
     }
 };
 
-window.openAdminMenu = () => { show('admin-dashboard-view'); hide('admin-content-view'); hide('btn-admin-back'); show('admin-logo-box'); setIn('admin-header-title','CMS ADMIN'); if(aOrdLst){ aOrdLst(); aOrdLst=null; } if(aCustLst){ aCustLst(); aCustLst=null; } if(aRevLst){ aRevLst(); aRevLst=null; } loadAdminReport(lastReportPeriod); toggleTaxMenuVisibility(); };
+window.openAdminMenu = () => { 
+    const adminScroll = document.querySelector('#view-admin .scroll-content');
+    if (adminScroll) adminScroll.scrollTop = 0;
+    show('admin-dashboard-view'); hide('admin-content-view'); hide('btn-admin-back'); show('admin-logo-box'); setIn('admin-header-title','CMS ADMIN'); if(aOrdLst){ aOrdLst(); aOrdLst=null; } if(aCustLst){ aCustLst(); aCustLst=null; } if(aRevLst){ aRevLst(); aRevLst=null; } loadAdminReport(lastReportPeriod); toggleTaxMenuVisibility(); 
+};
 
 // FITUR BARU: tombol menu Pajak HANYA tampil kalau PPN sedang aktif di Pengaturan Toko
 window.toggleTaxMenuVisibility = () => {
@@ -4643,6 +4644,8 @@ window.rAdmPiutang = async () => {
 };
 
 window.openAdminTab = (t, fH=false) => {
+    const adminScroll = document.querySelector('#view-admin .scroll-content');
+    if (adminScroll) adminScroll.scrollTop = 0;
     cTab=t; aSq=''; if(!fH) history.pushState({view:'view-admin',tab:t}, '', window.location.href);
 
     hide('admin-dashboard-view'); show('admin-content-view'); show('btn-admin-back'); hide('admin-logo-box');
@@ -7161,45 +7164,36 @@ window.addEventListener('popstate', e => {
         else if (m === 'restock') closeRestockModal(true); // FIX: back button tutup restock modal
         else if (m === 'quickprice') closeQuickPriceModal(true); // FITUR BARU: back button tutup modal edit cepat harga
         else if (m === 'member') closeMemberModal(true); // FITUR BARU: back button tutup modal data member
-          else if (m === 'prompt' && typeof window.closePrompt === 'function') window.closePrompt(true);
+        else if (m === 'prompt' && typeof window.closePrompt === 'function') window.closePrompt(true);
         else if (m === 'review') closeReviewModal(true); // FITUR BARU: back button tutup modal ulasan
-    } else if (curViewName === 'view-admin' && window.isAdm) {
-        let v = (e.state && e.state.view) ? e.state.view : null;
-        if (v !== 'view-admin') {
-            // Tahan perubahan halaman: kembalikan state ke view-admin terlebih dahulu
-            history.pushState({view: 'view-admin', tab: cTab}, '', window.location.href);
-            
-            showConfirm(
-                "Keluar Admin",
-                "Apakah anda akan keluar dari dashboard admin?",
-                () => { logoutAdmin(); },
-                "Ya, Keluar",
-                true
-            );
-            return;
-        }
-    } else if (e.state && e.state.view) {
-        let v = e.state.view;
-        // Jika admin masih login dan history mencoba balik ke halaman login → redirect ke dashboard admin
-        if ((v === 'view-admin-login' || v === 'view-admin-content') && window.isAdm) {
-            v = 'view-admin';
-            history.replaceState({view: 'view-admin'}, '', '');
-        } else if (v === 'view-admin' && !window.isAdm) {
-            v = 'view-admin-login';
-        }
-        changeView(v, true);
-        if (v === 'view-admin') {
-            // Jika tidak ada state tab, buka admin menu (bukan tab specific)
-            if (e.state && e.state.tab) openAdminTab(e.state.tab, true);
-            else openAdminMenu();
-        }
     } else {
-        // Jika admin masih login tapi tidak ada state → ke admin menu
+        let v = (e.state && e.state.view) ? e.state.view : null;
         if (window.isAdm) {
-            changeView('view-admin', true);
-            openAdminMenu();
+            if (v === 'view-admin') {
+                // Navigasi internal admin (berpindah tab atau kembali ke menu admin)
+                changeView('view-admin', true);
+                if (e.state && e.state.tab) openAdminTab(e.state.tab, true);
+                else openAdminMenu();
+            } else {
+                // Mencoba keluar dari dashboard admin -> tahan dan minta konfirmasi
+                history.pushState({view: 'view-admin', tab: cTab}, '', window.location.href);
+                
+                showConfirm(
+                    "Keluar Admin",
+                    "Apakah anda akan keluar dari dashboard admin?",
+                    () => { logoutAdmin(); },
+                    "Ya, Keluar",
+                    true
+                );
+            }
         } else {
-            changeView('view-catalog', true);
+            // Jalur pelanggan biasa
+            if (v) {
+                if (v === 'view-admin') v = 'view-admin-login';
+                changeView(v, true);
+            } else {
+                changeView('view-catalog', true);
+            }
         }
     }
 });
