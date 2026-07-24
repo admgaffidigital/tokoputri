@@ -583,3 +583,17 @@ html:not(.dark) .card-modern .bg-slate-50,
 html:not(.dark) .card-modern select {
     background-color: #ffffff !important;
 }
+
+/* === 8. THEMED FOOTER === */
+.themed-footer {
+    background: var(--color-primary);
+    background-image: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+    border-top: 0 !important;
+    box-shadow: 0 -10px 40px -15px rgba(var(--color-primary-rgb), 0.35);
+}
+html.dark .themed-footer {
+    background: #0b1121 !important;
+    background-image: none !important;
+    border-top: 1px solid #1e293b !important;
+    box-shadow: none !important;
+}
