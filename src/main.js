@@ -5322,9 +5322,9 @@ window.openSettingForm = (type) => {
             <div><label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Nama Toko (Nama Aplikasi)</label><input autocomplete='off' id="set-name" value="${esc(appData.store.name)}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm"></div>
             
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                <div><label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Warna Tema UI Web</label>
+                <div><label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Warna Tema Utama (Preset)</label>
                     <div class="relative">
-                        <select id="set-ui-theme" onchange="if(typeof window.applyUITheme==='function') window.applyUITheme(this.value, document.getElementById('set-theme-color').value)" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm cursor-pointer appearance-none pr-10">
+                        <select id="set-ui-theme" onchange="const val = this.value; const hex = window.uiPalettes[val][500]; document.getElementById('set-theme-color').value = hex; document.getElementById('set-theme-color-picker').value = hex; if(typeof window.applyUITheme==='function') window.applyUITheme(val, hex)" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm cursor-pointer appearance-none pr-10">
                             <option value="emerald" ${(appData.store.uiTheme||'emerald')==='emerald'?'selected':''}>Hijau Emerald (Default)</option>
                             <option value="teal" ${appData.store.uiTheme==='teal'?'selected':''}>Hijau Tosca (Teal)</option>
                             <option value="lime" ${appData.store.uiTheme==='lime'?'selected':''}>Hijau Lemon (Lime)</option>
@@ -5347,13 +5347,15 @@ window.openSettingForm = (type) => {
                         </select>
                         <i class="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-[10px]"></i>
                     </div>
+                    <p class="text-[9px] font-bold text-slate-400 mt-1.5">* Memilih tema di sini otomatis mengubah warna PWA di kanan.</p>
                 </div>
 
-                <div><label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Warna Header App (PWA)</label>
+                <div><label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Warna Kustom &amp; Header PWA</label>
                     <div class="flex gap-3">
                         <input type="color" id="set-theme-color-picker" value="${esc(appData.store.themeColor || '#10b981')}" class="w-14 h-12 rounded-xl cursor-pointer shadow-sm border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-1" oninput="document.getElementById('set-theme-color').value = this.value; if(typeof window.applyUITheme==='function') window.applyUITheme(document.getElementById('set-ui-theme').value, this.value)">
                         <input autocomplete='off' id="set-theme-color" value="${esc(appData.store.themeColor || '#10b981')}" class="admin-input !py-3.5 uppercase font-mono flex-1 shadow-sm bg-slate-50 dark:bg-slate-900" oninput="document.getElementById('set-theme-color-picker').value = this.value; if(typeof window.applyUITheme==='function') window.applyUITheme(document.getElementById('set-ui-theme').value, this.value)" placeholder="#10b981">
                     </div>
+                    <p class="text-[9px] font-bold text-slate-400 mt-1.5">* Gunakan pemilih warna kustom untuk mengubah warna secara detail.</p>
                 </div>
             </div>
 
