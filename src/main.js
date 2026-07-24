@@ -4205,12 +4205,12 @@ window.processAdminLogin = async () => {
     }
 };
 
-// --- FUNGSI LOGOUT FIREBASE (DIUPDATE) ---
 window.logoutAdmin = async () => { 
     sLoad('Keluar...');
     try {
         await auth.signOut();
         window.isAdm=false; 
+        window.__localIsAdm=false;
         window.isPro=false; 
         if (window.updateProBadge) window.updateProBadge();
         if(aOrdLst){ aOrdLst(); aOrdLst=null; } 
@@ -7180,16 +7180,21 @@ window.addEventListener('popstate', e => {
         else if (m === 'prompt' && typeof window.closePrompt === 'function') window.closePrompt(true);
         else if (m === 'review') closeReviewModal(true); // FITUR BARU: back button tutup modal ulasan
     } else {
-        let v = (e.state && e.state.view) ? e.state.view : null;
-        if (window.isAdm) {
+        const state = e.state || {};
+        const v = state.view || null;
+        const isAdminLoggedIn = window.isAdm || window.__localIsAdm;
+
+        if (isAdminLoggedIn) {
             if (v === 'view-admin') {
                 // Navigasi internal admin (berpindah tab atau kembali ke menu admin)
                 changeView('view-admin', true);
-                if (e.state && e.state.tab) openAdminTab(e.state.tab, true);
+                if (state.tab) openAdminTab(state.tab, true);
                 else openAdminMenu();
             } else {
                 // Mencoba keluar dari dashboard admin -> tahan dan minta konfirmasi
-                history.pushState({view: 'view-admin', tab: cTab}, '', window.location.href);
+                // PENTING: push state dashboard bersih {view: 'view-admin'} (tanpa tab)
+                // agar jika batal keluar, state tidak kotor dan next back kembali normal.
+                history.pushState({view: 'view-admin'}, '', window.location.href);
                 
                 showConfirm(
                     "Keluar Admin",
@@ -7202,8 +7207,9 @@ window.addEventListener('popstate', e => {
         } else {
             // Jalur pelanggan biasa
             if (v) {
-                if (v === 'view-admin') v = 'view-admin-login';
-                changeView(v, true);
+                let targetView = v;
+                if (v === 'view-admin') targetView = 'view-admin-login';
+                changeView(targetView, true);
             } else {
                 changeView('view-catalog', true);
             }
