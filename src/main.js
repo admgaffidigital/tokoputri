@@ -140,6 +140,35 @@ window.addEventListener("unhandledrejection", function(e) {
 });
 
 // --- 2. UTILITY FUNCTIONS ---
+window.updateSEO = (title, desc, image, url) => {
+    document.title = title || "Toko Putri";
+    const setMeta = (name, content, isProperty = false) => {
+        const attr = isProperty ? 'property' : 'name';
+        let el = document.querySelector(`meta[${attr}="${name}"]`);
+        if (!el) {
+            el = document.createElement('meta');
+            el.setAttribute(attr, name);
+            document.head.appendChild(el);
+        }
+        el.setAttribute('content', content);
+    };
+    if (desc) setMeta('description', desc);
+    if (title) setMeta('og:title', title, true);
+    if (desc) setMeta('og:description', desc, true);
+    if (image) setMeta('og:image', image, true);
+    if (url) setMeta('og:url', url, true);
+};
+
+window.injectJSONLD = (id, data) => {
+    let script = document.getElementById(id);
+    if (!script) {
+        script = document.createElement('script');
+        script.id = id;
+        script.type = 'application/ld+json';
+        document.head.appendChild(script);
+    }
+    script.textContent = JSON.stringify(data);
+};
 const el = id => document.getElementById(id);
 const show = id => { const e = el(id); if(e) e.classList.remove('hidden'); };
 const hide = id => { const e = el(id); if(e) e.classList.add('hidden'); };
@@ -602,18 +631,41 @@ const loadAppData = async () => {
     } catch(e) { console.error("Manifest Error: ", e); }
     // ---------------------------------------------------
     
-    // Logic untuk Direct Link Produk (Otomatis Bersihkan URL)
+    // FITUR SEO: Inject Homepage Structured Data
+    window.injectJSONLD('seo-website', {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "Toko Putri",
+        "url": window.location.origin
+    });
+    window.injectJSONLD('seo-localbusiness', {
+        "@context": "https://schema.org",
+        "@type": "HardwareStore",
+        "name": "Toko Putri",
+        "image": getOptImg(appData.store.logo, 'w300-rw'),
+        "description": "Solusi grosir dan e-commerce terpercaya untuk alat teknik, perkakas, dan perlengkapan pertukangan berkualitas.",
+        "url": window.location.origin,
+        "telephone": appData.store.phone || '',
+        "address": {
+            "@type": "PostalAddress",
+            "streetAddress": appData.store.address || '',
+            "addressCountry": "ID"
+        }
+    });
+
+    // Logic untuk Direct Link Produk (SEO Friendly URL)
     const urlParams = new URLSearchParams(window.location.search);
     const pid = urlParams.get('p');
     
     if(pid && appData.products.find(x => x.id == parseInt(pid))) {
+        // Kita ganti state saat ini dengan URL beranda (tanpa ?p=)
+        const cleanUrlParams = new URLSearchParams(window.location.search);
+        cleanUrlParams.delete('p');
+        let homeUrl = window.location.pathname;
+        if (cleanUrlParams.toString()) homeUrl += '?' + cleanUrlParams.toString();
+        window.history.replaceState({}, document.title, homeUrl);
+
         setTimeout(() => openProductModal(parseInt(pid)), 600);
-        
-        // Hapus jejak parameter '?p=' dari URL tanpa memuat ulang halaman
-        urlParams.delete('p');
-        let newUrl = window.location.pathname;
-        if (urlParams.toString()) newUrl += '?' + urlParams.toString();
-        window.history.replaceState({}, document.title, newUrl);
     }
     
     hLoad();
@@ -1714,11 +1766,11 @@ window.rCat = () => {
         
         if (cView === 'grid') {
             return `
-            <div class="w-full bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700/50 rounded-[1.5rem] shadow-soft ${cardCursorCls} transition-all duration-300 flex flex-col group relative overflow-hidden" onclick="openProductModal(${p.id})">
+            <a href="?p=${p.id}" class="w-full bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700/50 rounded-[1.5rem] shadow-soft ${cardCursorCls} transition-all duration-300 flex flex-col group relative overflow-hidden text-left" onclick="event.preventDefault(); openProductModal(${p.id})">
                 ${nH}
                 <div class="relative aspect-square w-full bg-white flex items-center justify-center shrink-0 border-b border-slate-100 dark:border-slate-700/50">
                       ${stockBadge}
-                      <img loading="lazy" src="${esc(getOptImg(p.img, 'w300-rw'))}" onerror="this.onerror=null;this.src='https://placehold.co/400?text=No+Image'" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 ${!a?'grayscale opacity-50':''}"></i>
+                      <img loading="lazy" src="${esc(getOptImg(p.img, 'w300-rw'))}" onerror="this.onerror=null;this.src='https://placehold.co/400?text=No+Image'" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 ${!a?'grayscale opacity-50':''}">
                 </div>
                 <div class="flex-1 flex flex-col p-3 sm:p-4 min-w-0 bg-white dark:bg-slate-800 relative z-10">
                     ${bH}
@@ -1736,14 +1788,14 @@ window.rCat = () => {
                         </div>
                     </div>
                 </div>
-            </div>`;
+            </a>`;
         } else {
             return `
-            <div class="w-full bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700/50 rounded-[1.5rem] shadow-soft ${cardCursorClsList} transition-all duration-300 flex items-stretch p-2.5 sm:p-3 gap-3 sm:gap-4 group relative overflow-hidden" onclick="openProductModal(${p.id})">
+            <a href="?p=${p.id}" class="w-full bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700/50 rounded-[1.5rem] shadow-soft ${cardCursorClsList} transition-all duration-300 flex items-stretch p-2.5 sm:p-3 gap-3 sm:gap-4 group relative overflow-hidden text-left" onclick="event.preventDefault(); openProductModal(${p.id})">
                 ${nH}
                 <div class="relative w-24 h-24 sm:w-28 sm:h-28 shrink-0 bg-white dark:bg-slate-900 rounded-xl flex items-center justify-center p-2 border border-slate-100 dark:border-slate-700/50 overflow-hidden">
                     ${stockBadge}
-                    <img loading="lazy" src="${esc(getOptImg(p.img, 'w300-rw'))}" onerror="this.onerror=null;this.src='https://placehold.co/400?text=No+Image'" class="max-w-full max-h-full object-contain transition-transform duration-500 group-hover:scale-105 ${!a?'grayscale opacity-50':''}"></i>
+                    <img loading="lazy" src="${esc(getOptImg(p.img, 'w300-rw'))}" onerror="this.onerror=null;this.src='https://placehold.co/400?text=No+Image'" class="max-w-full max-h-full object-contain transition-transform duration-500 group-hover:scale-105 ${!a?'grayscale opacity-50':''}">
                 </div>
                 <div class="flex-1 min-w-0 py-1 flex flex-col justify-center h-full relative z-10 pr-2">
                     ${bH}
@@ -1761,7 +1813,7 @@ window.rCat = () => {
                         </div>
                     </div>
                 </div>
-            </div>`;
+            </a>`;
         }
     }).join('');
     
@@ -1828,6 +1880,55 @@ window.openProductModal = i => {
     
     setV('modal-qty-input', 1);
     rProdMod();
+
+    // FITUR SEO: Update Title dan Meta description & OpenGraph
+    const pDesc = p.desc ? p.desc.replace(/<[^>]*>/g, '').substring(0, 160) : `Beli ${p.name} berkualitas dengan harga terbaik hanya di Toko Putri.`;
+    const prodUrl = window.location.origin + window.location.pathname + "?p=" + p.id;
+    window.updateSEO(`${p.name} - Toko Putri`, pDesc, getOptImg(p.img, 'w500-rw'), prodUrl);
+
+    // Inject Product JSON-LD
+    const offerPrice = (p.variants && p.variants.length > 0) 
+        ? Math.min(...p.variants.map(v => parseFloat(v.price) || p.price))
+        : p.price;
+    const isAvail = totalAvail > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock";
+    
+    const prodJSON = {
+        "@context": "https://schema.org",
+        "@type": "Product",
+        "name": p.name,
+        "image": [
+            getOptImg(p.img, 'w500-rw')
+        ],
+        "description": pDesc,
+        "sku": `PROD-${p.id}`,
+        "category": p.category || '',
+        "brand": {
+            "@type": "Brand",
+            "name": p.brand || "Toko Putri"
+        },
+        "offers": {
+            "@type": "Offer",
+            "url": prodUrl,
+            "priceCurrency": "IDR",
+            "price": offerPrice,
+            "itemCondition": "https://schema.org/NewCondition",
+            "availability": isAvail,
+            "priceValidUntil": "2030-12-31"
+        }
+    };
+    
+    if (p.variants && p.variants.length > 0) {
+        prodJSON.offers = p.variants.map(v => ({
+            "@type": "Offer",
+            "name": v.name,
+            "priceCurrency": "IDR",
+            "price": parseFloat(v.price) || p.price,
+            "itemCondition": "https://schema.org/NewCondition",
+            "availability": (parseFloat(v.stock) || 0) > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock"
+        }));
+    }
+    
+    window.injectJSONLD('seo-product', prodJSON);
     
     // FITUR BARU: Iklan in-article di dalam modal produk (sekali per buka modal, sesuai pengaturan toko)
     // FIX: dibungkus try/catch agar masalah pada skrip iklan tidak pernah menggagalkan/mengunci modal produk
@@ -1852,7 +1953,15 @@ window.openProductModal = i => {
     
     const m = el('product-modal'), c = el('product-modal-content');
     if (m && c) {
-        if (m.classList.contains('hidden')) pushModalHistory('product');
+        if (m.classList.contains('hidden')) {
+            // FITUR SEO: Update URL & Dynamic Meta Tags
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('p') !== String(p.id)) {
+                urlParams.set('p', p.id);
+                window.history.pushState({modal: 'product'}, p.name, window.location.pathname + '?' + urlParams.toString());
+                oMods.push('product');
+            }
+        }
         show('product-modal');
         c.scrollTo(0,0); // reset scroll setiap ganti produk (sekarang seluruh kotak modal yang scroll, jadi cukup reset di sini)
         setTimeout(() => { m.classList.remove('opacity-0'); c.classList.remove('translate-y-full','sm:translate-y-10'); }, 10);
@@ -1870,6 +1979,25 @@ window.closeProductModal = (fH=false) => {
                 vc.innerHTML = '';
                 vc.classList.add('hidden');
             }
+
+            // FITUR SEO: Restore URL, Meta Tags, & JSON-LD
+            const urlParams = new URLSearchParams(window.location.search);
+            urlParams.delete('p');
+            let newUrl = window.location.pathname;
+            if (urlParams.toString()) newUrl += '?' + urlParams.toString();
+            window.history.replaceState({}, "Toko Putri", newUrl);
+            
+            // Revert meta tags ke beranda
+            window.updateSEO(
+                "Toko Putri", 
+                "Toko Putri - Solusi grosir dan e-commerce terpercaya untuk alat teknik, perkakas, dan perlengkapan pertukangan berkualitas dengan harga terbaik.",
+                getOptImg(appData.store.logo, 'w300-rw'),
+                window.location.origin + newUrl
+            );
+            
+            // Hapus JSON-LD product
+            const pScript = document.getElementById('seo-product');
+            if (pScript) pScript.remove();
         });
     }
 };
