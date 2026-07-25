@@ -4397,6 +4397,12 @@ window.checkAdminAccess = () => {
 };
 
 window.openAdminMenu = () => { 
+    const vAdmin = el('view-admin');
+    if (vAdmin) {
+        vAdmin.classList.remove('hidden');
+        vAdmin.classList.add('flex');
+        vAdmin.style.display = 'flex';
+    }
     const adminScroll = document.querySelector('#view-admin .scroll-content');
     if (adminScroll) adminScroll.scrollTop = 0;
     show('admin-dashboard-view'); hide('admin-content-view'); hide('btn-admin-back'); show('admin-logo-box'); setIn('admin-header-title','CMS SELLER'); if(aOrdLst){ aOrdLst(); aOrdLst=null; } if(aCustLst){ aCustLst(); aCustLst=null; } if(aRevLst){ aRevLst(); aRevLst=null; } loadAdminReport(lastReportPeriod); toggleTaxMenuVisibility(); 
