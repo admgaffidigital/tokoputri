@@ -1118,12 +1118,14 @@ window.changeView = (v, fH=false) => {
     document.querySelectorAll('.view-section').forEach(e => {
         e.classList.add('hidden');
         e.classList.remove('flex');
+        e.style.display = 'none';
     });
     
     const t = el(v);
     if (t) {
         t.classList.remove('hidden');
         t.classList.add('flex');
+        t.style.display = 'flex';
         
         const r = {'view-cart': renderCart, 'view-checkout': rChck, 'view-payment': rPay, 'view-wishlist': renderWish, 'view-orders': renderMyOrders};
         if (r[v]) r[v]();
