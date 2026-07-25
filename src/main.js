@@ -1995,6 +1995,32 @@ const rProdMod = () => {
     let a = p.isActive !== 'false' && p.isActive !== false;
     let hV = p.variants?.length > 0;
     
+    // Check if interior/exterior wall paint product to show return warning
+    const nameLower = (p.name || '').toLowerCase();
+    const catLower = (p.category || '').toLowerCase();
+    const tagLower = (p.tag || '').toLowerCase();
+    const isPaint = (
+        nameLower.includes('cat') && (
+            nameLower.includes('tembok') || 
+            nameLower.includes('interior') || 
+            nameLower.includes('eksterior') || 
+            nameLower.includes('exterior')
+        )
+    ) || (
+        catLower.includes('cat') || catLower.includes('paint')
+    ) || (
+        tagLower.includes('cat') || tagLower.includes('paint')
+    );
+
+    const warnEl = el('product-modal-paint-warning');
+    if (warnEl) {
+        if (isPaint) {
+            warnEl.classList.remove('hidden');
+        } else {
+            warnEl.classList.add('hidden');
+        }
+    }
+    
     // Ambil data varian HANYA jika pembeli sudah menekan salah satu warna
     let v = (hV && cVar !== null) ? p.variants[cVar] : null;
     let unt = v?.unit || p.unit || 'Pcs';
