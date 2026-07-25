@@ -4373,11 +4373,12 @@ const aF = {
 };
 
 window.checkAdminAccess = () => {
-    if (window.isAdm || window.location.hostname === 'localhost') {
-        window.__localIsAdm = true;
+    if (window.isAdm) {
+        // Sudah login -> langsung buka dashboard
         changeView('view-admin');
         openAdminMenu();
     } else {
+        // Belum login -> tampilkan form login seller
         setV('login-username','');
         setV('login-password','');
         changeView('view-admin-login');
@@ -7647,15 +7648,17 @@ window.addEventListener('DOMContentLoaded', async () => {
         if (window.updateProBadge) window.updateProBadge();
 
         // 3. MASUK KE DASHBOARD ADMIN
-        let loginView = document.getElementById('view-admin-login');
-        if (loginView && !loginView.classList.contains('hidden')) {
-            // FIX BACK BUTTON: jangan sertakan `tab` di state awal — kalau ada tab di sini,
-            // history stack langsung "kotor" sebelum user klik apapun, sehingga back dari
-            // dashboard admin malah masuk ke tab (bukan ke katalog/konfirmasi logout).
+        const curView = document.querySelector('.view-section:not(.hidden)');
+        const curId = curView ? curView.id : '';
+        // Jika sedang di halaman login atau admin, arahkan ke dashboard
+        if (curId === 'view-admin-login' || curId === 'view-admin') {
             history.replaceState({view: 'view-admin'}, '', window.location.href);
-            changeView('view-admin', true); 
+            changeView('view-admin', true);
             openAdminMenu();
-            showToast("Sesi Dipulihkan! Selamat Datang.");
+            showToast("Selamat Datang, Seller! 👋");
+        } else if (curId !== 'view-admin') {
+            // Sesi tersimpan, tapi user di halaman lain - jangan paksa redirect
+            // (biarkan user browsing, isAdm sudah true)
         }
     } else {
         // JIKA LOGOUT ATAU SESI HABIS
