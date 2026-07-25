@@ -1450,6 +1450,14 @@ window.rDyn = () => {
     setIn('dyn-store-slogan', appData.store.slogan || 'Slogan Toko');
     setIn('footer-store-name', appData.store.name || 'Nama Toko Anda');
     setIn('footer-store-desc', appData.store.description || appData.store.slogan || 'Selamat datang di toko kami. Selamat berbelanja!');
+    setIn('footer-store-email', appData.store.email || 'support@restukaryautama.com');
+    setIn('footer-store-hours', appData.store.operationalHours || 'Buka Setiap Hari (08:00 - 17:00)');
+    if (appData.store.footerCredit) {
+        setIn('footer-credit', appData.store.footerCredit);
+    } else {
+        const fcEl = el('footer-credit');
+        if (fcEl) fcEl.innerHTML = `POWERED BY <i class="fa-solid fa-bolt text-white"></i> BLOGGER PWA SYSTEM`;
+    }
     setIn('footer-brand', appData.store.name || 'Nama Toko Anda');
     const fY = el('footer-year'); if(fY) fY.innerText = new Date().getFullYear();
 
@@ -5760,6 +5768,9 @@ window.openSettingForm = (type) => {
                 </div>
             </div>
             <div><label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Deskripsi Usaha (Footer)</label><textarea autocomplete='off' id="set-description" class="admin-input resize-none !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm" rows="3" placeholder="Deskripsi untuk footer...">${esc(appData.store.description || '')}</textarea></div>
+            <div><label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Email Layanan Pelanggan (Footer)</label><input autocomplete='off' id="set-email" value="${esc(appData.store.email || 'support@restukaryautama.com')}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm" placeholder="support@restukaryautama.com"></div>
+            <div><label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Jam Operasional Toko (Footer)</label><input autocomplete='off' id="set-hours" value="${esc(appData.store.operationalHours || 'Buka Setiap Hari (08:00 - 17:00)')}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm" placeholder="Buka Setiap Hari (08:00 - 17:00)"></div>
+            <div><label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Teks Footer Credit (Powered By)</label><input autocomplete='off' id="set-credit" value="${esc(appData.store.footerCredit || 'POWERED BY BLOGGER PWA SYSTEM')}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm" placeholder="POWERED BY BLOGGER PWA SYSTEM"></div>
         `;
     } 
     else if (type === 'catalog') {
@@ -5942,6 +5953,9 @@ window.saveAdminSettings = async (type) => {
             appData.store.slogan = getV('set-slogan'); 
             appData.store.logo = fixD(getV('set-logo')); 
             appData.store.description = getV('set-description'); 
+            appData.store.email = getV('set-email');
+            appData.store.operationalHours = getV('set-hours');
+            appData.store.footerCredit = getV('set-credit');
             appData.store.themeColor = getV('set-theme-color'); 
             appData.store.uiTheme = getV('set-ui-theme');
             localStorage.setItem('freshmart_theme_color', appData.store.themeColor);
