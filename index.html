@@ -937,23 +937,23 @@
           <div class="mx-auto w-full max-w-full space-y-4 px-4 lg:px-8 xl:max-w-[1200px]" id="wishlist-items-container"></div>
         </div>
       </div>
-      <div class="view-section fade-in z-50 flex hidden flex-col items-center justify-center overflow-hidden bg-slate-900 dark:bg-slate-900" id="view-admin-login">
-        <div class="pointer-events-none absolute -left-20 -top-20 h-72 w-72 rounded-full opacity-25 blur-[80px]" style="background: var(--color-primary)"></div>
-        <div class="pointer-events-none absolute -bottom-20 -right-20 h-64 w-64 rounded-full opacity-15 blur-[80px]" style="background: var(--color-primary-dark)"></div>
+      <div class="view-section fade-in z-50 flex hidden flex-col items-center justify-center overflow-hidden" id="view-admin-login" style="background:#0f172a">
+        <div class="pointer-events-none absolute -left-20 -top-20 h-72 w-72 rounded-full opacity-20" style="background:var(--color-primary);filter:blur(80px)"></div>
+        <div class="pointer-events-none absolute -bottom-20 -right-20 h-64 w-64 rounded-full opacity-10" style="background:var(--color-primary-dark);filter:blur(80px)"></div>
         <div class="relative z-10 mx-auto w-full max-w-sm p-5">
-          <div class="bg-white/8 relative flex flex-col items-center rounded-[2rem] border border-white/15 p-8 text-center shadow-2xl backdrop-blur-xl dark:border-slate-700/50 dark:bg-slate-800/50">
-            <button class="absolute right-4 top-4 flex h-8 w-8 items-center justify-center rounded-xl bg-white/10 text-white transition-all hover:bg-rose-500" onclick="history.back()"><i class="fa-solid fa-xmark text-xs"></i></button>
-            <div class="w-18 h-18 mb-5 flex h-[72px] w-[72px] items-center justify-center rounded-2xl border border-white/15 text-3xl text-white shadow-lg" style="background-color: var(--color-primary)"><i class="fa-solid fa-shield-halved"></i></div>
+          <div class="relative flex flex-col items-center rounded-xl border p-8 text-center shadow-2xl" style="background:#1e293b;border-color:rgba(255,255,255,0.12)">
+            <button class="absolute right-4 top-4 flex h-8 w-8 items-center justify-center rounded-xl text-white transition-all hover:bg-rose-500" style="background:rgba(255,255,255,0.1)" onclick="history.back()"><i class="fa-solid fa-xmark text-xs"></i></button>
+            <div class="mb-5 flex h-[72px] w-[72px] items-center justify-center rounded-2xl text-3xl text-white shadow-lg" style="background-color:var(--color-primary)"><i class="fa-solid fa-shield-halved"></i></div>
             <h2 class="mb-1 text-2xl font-bold tracking-tight text-white">Seller Panel</h2>
-            <p class="mb-7 text-[10px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">Otorisasi Seller</p>
+            <p class="mb-7 text-[10px] font-bold uppercase tracking-widest" style="color:#64748b">Otorisasi Seller</p>
             <form autocomplete="off" class="w-full space-y-3 text-left" onsubmit="return false;">
               <div class="relative">
-                <i class="fa-solid fa-envelope absolute left-3.5 top-1/2 -translate-y-1/2 text-sm text-slate-400"></i>
-                <input autocomplete="off" class="w-full rounded-xl border border-white/10 bg-black/20 py-3.5 pl-10 pr-4 text-sm font-semibold text-white shadow-inner transition-all placeholder:text-slate-400 focus:border-[rgba(var(--color-primary-rgb),0.7)] focus:bg-black/30 focus:outline-none dark:placeholder:text-slate-400" id="login-username" name="x_panel_id_7k2" placeholder="Email Seller" type="email" />
+                <i class="fa-solid fa-envelope absolute left-3.5 top-1/2 -translate-y-1/2 text-sm" style="color:#64748b"></i>
+                <input autocomplete="off" class="w-full rounded-xl py-3.5 pl-10 pr-4 text-sm font-semibold text-white" style="background:#0f172a;border:1.5px solid #334155;outline:none" id="login-username" name="x_panel_id_7k2" placeholder="Email Seller" type="email" onfocus="this.style.borderColor='var(--color-primary)'" onblur="this.style.borderColor='#334155'" />
               </div>
               <div class="relative">
-                <i class="fa-solid fa-lock absolute left-3.5 top-1/2 -translate-y-1/2 text-sm text-slate-400"></i>
-                <input autocomplete="off" class="w-full rounded-xl border border-white/10 bg-black/20 py-3.5 pl-10 pr-4 text-sm font-semibold text-white shadow-inner transition-all placeholder:text-slate-400 focus:border-[rgba(var(--color-primary-rgb),0.7)] focus:bg-black/30 focus:outline-none dark:placeholder:text-slate-400" id="login-password" name="x_panel_pw_9m4" placeholder="Password" type="password" />
+                <i class="fa-solid fa-lock absolute left-3.5 top-1/2 -translate-y-1/2 text-sm" style="color:#64748b"></i>
+                <input autocomplete="off" class="w-full rounded-xl py-3.5 pl-10 pr-4 text-sm font-semibold text-white" style="background:#0f172a;border:1.5px solid #334155;outline:none" id="login-password" name="x_panel_pw_9m4" placeholder="Password" type="password" onfocus="this.style.borderColor='var(--color-primary)'" onblur="this.style.borderColor='#334155'" />
               </div>
               <div class="pt-3">
                 <button class="btn-solid shadow-glow" onclick="processAdminLogin()" type="button">Masuk Sebagai Seller <i class="fa-solid fa-arrow-right-to-bracket"></i></button>
