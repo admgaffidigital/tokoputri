@@ -1450,6 +1450,8 @@ window.rDyn = () => {
     setIn('dyn-store-slogan', appData.store.slogan || 'Slogan Toko');
     setIn('footer-store-name', appData.store.name || 'Nama Toko Anda');
     setIn('footer-store-desc', appData.store.description || appData.store.slogan || 'Selamat datang di toko kami. Selamat berbelanja!');
+    setIn('footer-store-email', appData.store.email || 'support@restukaryautama.com');
+    setIn('footer-store-hours', appData.store.operationalHours || 'Buka Setiap Hari (08:00 - 17:00)');
     setIn('footer-brand', appData.store.name || 'Nama Toko Anda');
     const fY = el('footer-year'); if(fY) fY.innerText = new Date().getFullYear();
 
@@ -5760,6 +5762,10 @@ window.openSettingForm = (type) => {
                 </div>
             </div>
             <div><label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Deskripsi Usaha (Footer)</label><textarea autocomplete='off' id="set-description" class="admin-input resize-none !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm" rows="3" placeholder="Deskripsi untuk footer...">${esc(appData.store.description || '')}</textarea></div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                <div><label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Email Layanan Pelanggan</label><input autocomplete='off' type="email" id="set-email" value="${esc(appData.store.email || '')}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm" placeholder="support@restukaryautama.com"></div>
+                <div><label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Jam Operasional Toko</label><input autocomplete='off' id="set-hours" value="${esc(appData.store.operationalHours || '')}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm" placeholder="Buka Setiap Hari (08:00 - 17:00)"></div>
+            </div>
         `;
     } 
     else if (type === 'catalog') {
@@ -5942,6 +5948,8 @@ window.saveAdminSettings = async (type) => {
             appData.store.slogan = getV('set-slogan'); 
             appData.store.logo = fixD(getV('set-logo')); 
             appData.store.description = getV('set-description'); 
+            appData.store.email = getV('set-email');
+            appData.store.operationalHours = getV('set-hours');
             appData.store.themeColor = getV('set-theme-color'); 
             appData.store.uiTheme = getV('set-ui-theme');
             localStorage.setItem('freshmart_theme_color', appData.store.themeColor);
