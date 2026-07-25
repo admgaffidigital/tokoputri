@@ -1874,6 +1874,111 @@ window.closeProductModal = (fH=false) => {
     }
 };
 
+window.previewVariant = (idx) => {
+    if (!cProd || !cProd.variants || !cProd.variants[idx]) return;
+    const v = cProd.variants[idx];
+    const m = el('variant-preview-modal');
+    const c = el('variant-preview-content');
+    if (!m || !c) return;
+
+    let html = '';
+    const nameStr = `${esc(cProd.name)} - ${esc(v.name)}`;
+    const priceStr = fCur(v.price || cProd.price);
+
+    if (v.img) {
+        html = `
+            <div class="relative w-full aspect-square bg-white rounded-3xl overflow-hidden shadow-2xl border border-slate-200 dark:border-slate-800 flex items-center justify-center">
+                <img class="w-full h-full object-contain" src="${getOptImg(v.img, 'w800-rw')}" alt="${esc(v.name)}">
+                ${v.colorCode ? `<div class="absolute top-4 left-4 w-12 h-12 rounded-full border-4 border-white shadow-lg" style="background-color: ${esc(v.colorCode)};"></div>` : ''}
+            </div>
+            <div class="mt-5 text-center px-4 w-full">
+                <h4 class="text-white font-extrabold text-lg md:text-xl tracking-wide uppercase break-words leading-tight">${esc(v.name)}</h4>
+                <p class="text-emerald-400 font-extrabold text-lg mt-1 tracking-tight">${priceStr}</p>
+                <p class="text-slate-400 font-semibold text-[11px] md:text-xs mt-1 uppercase tracking-widest break-words">${esc(cProd.name)}</p>
+            </div>
+        `;
+    } else if (v.colorCode) {
+        html = `
+            <div class="w-full aspect-square rounded-3xl shadow-2xl border-4 border-white/20 flex flex-col items-center justify-center p-6 relative overflow-hidden" style="background-color: ${esc(v.colorCode)};">
+                <div class="absolute bottom-0 inset-x-0 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md p-6 flex flex-col items-center justify-center text-center border-t border-slate-200/50 dark:border-slate-800/50">
+                    <span class="text-slate-905 dark:text-white font-extrabold text-lg uppercase tracking-wider break-words leading-tight">${esc(v.name)}</span>
+                    <span class="text-slate-500 dark:text-slate-400 font-mono text-xs font-bold mt-1 uppercase">${esc(v.colorCode)}</span>
+                    <span class="text-emerald-600 dark:text-emerald-400 font-extrabold text-lg mt-1">${priceStr}</span>
+                </div>
+            </div>
+            <div class="mt-5 text-center px-4 w-full">
+                <p class="text-slate-400 font-semibold text-[11px] md:text-xs mt-1 uppercase tracking-widest break-words">${esc(cProd.name)}</p>
+            </div>
+        `;
+    } else {
+        html = `
+            <div class="relative w-full aspect-square bg-white rounded-3xl overflow-hidden shadow-2xl border border-slate-200 dark:border-slate-800 flex items-center justify-center">
+                <img class="w-full h-full object-contain" src="${getOptImg(cProd.img || '', 'w800-rw')}" alt="${esc(cProd.name)}">
+            </div>
+            <div class="mt-5 text-center px-4 w-full">
+                <h4 class="text-white font-extrabold text-lg md:text-xl tracking-wide uppercase break-words leading-tight">${esc(v.name)}</h4>
+                <p class="text-emerald-400 font-extrabold text-lg mt-1 tracking-tight">${priceStr}</p>
+                <p class="text-slate-400 font-semibold text-[11px] md:text-xs mt-1 uppercase tracking-widest break-words">${esc(cProd.name)}</p>
+            </div>
+        `;
+    }
+
+    c.innerHTML = html;
+    if (m.classList.contains('hidden')) pushModalHistory('variantPreview');
+    show('variant-preview-modal');
+    setTimeout(() => {
+        m.classList.remove('opacity-0');
+        c.classList.remove('scale-95');
+    }, 10);
+};
+
+window.previewProductImage = () => {
+    if (!cProd) return;
+    const m = el('variant-preview-modal');
+    const c = el('variant-preview-content');
+    if (!m || !c) return;
+
+    const v = (cProd.variants && cVar !== null) ? cProd.variants[cVar] : null;
+    const imgSrc = v?.img || cProd.img || '';
+    const titleStr = v ? `${esc(cProd.name)} - ${esc(v.name)}` : esc(cProd.name);
+    const priceStr = fCur(v?.price ?? cProd.price);
+
+    let html = `
+        <div class="relative w-full aspect-square bg-white rounded-3xl overflow-hidden shadow-2xl border border-slate-200 dark:border-slate-800 flex items-center justify-center">
+            <img class="w-full h-full object-contain" src="${getOptImg(imgSrc, 'w800-rw')}" alt="${titleStr}">
+            ${v?.colorCode ? `<div class="absolute top-4 left-4 w-12 h-12 rounded-full border-4 border-white shadow-lg" style="background-color: ${esc(v.colorCode)};"></div>` : ''}
+        </div>
+        <div class="mt-5 text-center px-4 w-full">
+            <h4 class="text-white font-extrabold text-lg md:text-xl tracking-wide uppercase break-words leading-tight">${esc(cProd.name)}</h4>
+            ${v ? `<p class="text-slate-300 font-bold text-sm mt-1 uppercase tracking-wide">Varian: ${esc(v.name)}</p>` : ''}
+            <p class="text-emerald-400 font-extrabold text-lg mt-1 tracking-tight">${priceStr}</p>
+        </div>
+    `;
+
+    c.innerHTML = html;
+    if (m.classList.contains('hidden')) pushModalHistory('variantPreview');
+    show('variant-preview-modal');
+    setTimeout(() => {
+        m.classList.remove('opacity-0');
+        c.classList.remove('scale-95');
+    }, 10);
+};
+
+window.closeVariantPreviewModal = (fH=false) => {
+    const m = el('variant-preview-modal');
+    const c = el('variant-preview-content');
+    if (m && c) {
+        requestCloseModal('variantPreview', fH, () => {
+            m.classList.add('opacity-0');
+            c.classList.add('scale-95');
+            setTimeout(() => {
+                hide('variant-preview-modal');
+                c.innerHTML = '';
+            }, 300);
+        });
+    }
+};
+
 window.changeSlide = (dir) => {
     let p = cProd;
     let yId = getYouTubeId(p?.video);
@@ -1922,6 +2027,8 @@ const rProdMod = () => {
                     vc.innerHTML = `<iframe class="w-full h-full pointer-events-none" src="https://www.youtube.com/embed/${yId}?autoplay=1&mute=1&loop=1&playlist=${yId}&enablejsapi=1&modestbranding=1&controls=0&rel=0&showinfo=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; compute-pressure" allowfullscreen></iframe>`;
                 }
             }
+            const zoomInd = el('zoom-indicator');
+            if (zoomInd) zoomInd.classList.add('hidden');
         } else {
             if (vc) vc.classList.add('hidden');
             if (i) {
@@ -1929,6 +2036,8 @@ const rProdMod = () => {
                 i.src = getOptImg(v?.img || p.img || '', 'w600-rw');
                 i.style.opacity = 1;
             }
+            const zoomInd = el('zoom-indicator');
+            if (zoomInd) zoomInd.classList.remove('hidden');
         }
     } else {
         if (btnPrev) btnPrev.classList.add('hidden');
@@ -1944,6 +2053,8 @@ const rProdMod = () => {
             i.style.opacity = 0;
             setTimeout(() => { i.src = getOptImg(v?.img || p.img || '', 'w600-rw'); i.style.opacity = 1; }, 150);
         }
+        const zoomInd = el('zoom-indicator');
+        if (zoomInd) zoomInd.classList.remove('hidden');
     }
     
     // Setel Harga dan info lain
@@ -2122,8 +2233,11 @@ const rProdMod = () => {
                     btnClass = "bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:border-emerald-300 hover:shadow-sm";
                 }
 
+                const zoomBtn = isVarSelectable && (r.colorCode || r.img) ? `<span onclick="event.stopPropagation(); previewVariant(${x})" class="absolute top-1.5 right-1.5 w-5 h-5 rounded-full bg-white/90 dark:bg-slate-700/90 shadow-sm flex items-center justify-center text-slate-500 hover:text-emerald-600 hover:scale-110 active:scale-90 transition-all border border-slate-200/50 dark:border-slate-600/50" title="Perbesar"><i class="fa-solid fa-magnifying-glass-plus text-[9px]"></i></span>` : '';
+
                 // Desain tombol Flex Column (Atas ke Bawah)
-                return `<button ${!isVarSelectable ? 'disabled' : ''} class="p-2.5 sm:p-3 rounded-xl text-[10px] sm:text-[11px] font-bold uppercase tracking-wide border-2 transition-all active:scale-95 flex flex-col items-center justify-start text-center h-full ${btnClass}" ${isVarSelectable ? `onclick="selectVariant(${x})"` : ''}>
+                return `<button ${!isVarSelectable ? 'disabled' : ''} class="relative p-2.5 sm:p-3 rounded-xl text-[10px] sm:text-[11px] font-bold uppercase tracking-wide border-2 transition-all active:scale-95 flex flex-col items-center justify-start text-center h-full ${btnClass}" ${isVarSelectable ? `onclick="selectVariant(${x})"` : ''}>
+                    ${zoomBtn}
                     ${colorCircle} 
                     <span class="${!isVarSelectable ? 'line-through' : ''} leading-snug break-words w-full ${!r.colorCode ? 'my-auto' : ''}">${esc(r.name)}</span>
                     ${isVarOutOfStock && isVarActive ? '<span class="text-[8px] font-bold text-rose-500 normal-case mt-0.5">Stok Habis</span>' : ''}
@@ -7306,6 +7420,7 @@ window.addEventListener('popstate', e => {
         else if (m === 'prompt' && typeof window.closePrompt === 'function') window.closePrompt(true);
         else if (m === 'review') closeReviewModal(true); // FITUR BARU: back button tutup modal ulasan
         else if (m === 'quickmenu') closeQuickMenuModal(true);
+        else if (m === 'variantPreview') closeVariantPreviewModal(true);
     } else {
         const state = e.state || {};
         const v = state.view || null;
