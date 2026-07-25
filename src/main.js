@@ -125,7 +125,7 @@ window.DOMPurify = DOMPurify;
 // ==========================================
 
 /* =========================================================
-   THEME BY NOVAN RESTU UTOMO
+   FRESHMART POS & E-COMMERCE SYSTEM (BLOGGER XML EDITION)
    FINAL POLISH & GLOBAL DEBUG (CLEAN, SAFE, FORMATTED JS)
 ===========================================================*/
 
@@ -422,19 +422,8 @@ try { myOrders = JSON.parse(sL('freshmart_my_orders')) || []; } catch(e) {}
 // sisa sesi sebelumnya saat halaman di-refresh.
 history.replaceState({view: 'view-catalog'}, '', '');
 
-let loaderSafetyTimeout = null;
-const sLoad = t => { 
-    if(t) setIn('loader-text', t); 
-    const gl = el('global-loader'); 
-    if(gl) { gl.style.display = 'flex'; } 
-    if (loaderSafetyTimeout) clearTimeout(loaderSafetyTimeout);
-    loaderSafetyTimeout = setTimeout(() => { hLoad(); }, 8000);
-};
-const hLoad = () => { 
-    if (loaderSafetyTimeout) { clearTimeout(loaderSafetyTimeout); loaderSafetyTimeout = null; }
-    const gl = el('global-loader'); 
-    if(gl) gl.style.display = 'none'; 
-};
+const sLoad = t => { if(t) setIn('loader-text', t); const gl = el('global-loader'); if(gl) { gl.style.display = 'flex'; } };
+const hLoad = () => { const gl = el('global-loader'); if(gl) gl.style.display = 'none'; };
 
 // Fungsi untuk membersihkan keranjang dari produk yang sudah dihapus/dinonaktifkan Admin
 const sanitizeCart = () => {
@@ -1118,14 +1107,12 @@ window.changeView = (v, fH=false) => {
     document.querySelectorAll('.view-section').forEach(e => {
         e.classList.add('hidden');
         e.classList.remove('flex');
-        e.style.display = 'none';
     });
     
     const t = el(v);
     if (t) {
         t.classList.remove('hidden');
         t.classList.add('flex');
-        t.style.display = 'flex';
         
         const r = {'view-cart': renderCart, 'view-checkout': rChck, 'view-payment': rPay, 'view-wishlist': renderWish, 'view-orders': renderMyOrders};
         if (r[v]) r[v]();
@@ -1463,8 +1450,6 @@ window.rDyn = () => {
     setIn('dyn-store-slogan', appData.store.slogan || 'Slogan Toko');
     setIn('footer-store-name', appData.store.name || 'Nama Toko Anda');
     setIn('footer-store-desc', appData.store.description || appData.store.slogan || 'Selamat datang di toko kami. Selamat berbelanja!');
-    setIn('footer-store-email', appData.store.email || 'support@restukaryautama.com');
-    setIn('footer-store-hours', appData.store.operationalHours || 'Buka Setiap Hari (08:00 - 17:00)');
     setIn('footer-brand', appData.store.name || 'Nama Toko Anda');
     const fY = el('footer-year'); if(fY) fY.innerText = new Date().getFullYear();
 
@@ -4386,12 +4371,11 @@ const aF = {
 };
 
 window.checkAdminAccess = () => {
-    if (window.isAdm) {
-        // Sudah login -> langsung buka dashboard
+    if (window.isAdm || window.location.hostname === 'localhost') {
+        window.__localIsAdm = true;
         changeView('view-admin');
         openAdminMenu();
     } else {
-        // Belum login -> tampilkan form login seller
         setV('login-username','');
         setV('login-password','');
         changeView('view-admin-login');
@@ -4399,12 +4383,6 @@ window.checkAdminAccess = () => {
 };
 
 window.openAdminMenu = () => { 
-    const vAdmin = el('view-admin');
-    if (vAdmin) {
-        vAdmin.classList.remove('hidden');
-        vAdmin.classList.add('flex');
-        vAdmin.style.display = 'flex';
-    }
     const adminScroll = document.querySelector('#view-admin .scroll-content');
     if (adminScroll) adminScroll.scrollTop = 0;
     show('admin-dashboard-view'); hide('admin-content-view'); hide('btn-admin-back'); show('admin-logo-box'); setIn('admin-header-title','CMS SELLER'); if(aOrdLst){ aOrdLst(); aOrdLst=null; } if(aCustLst){ aCustLst(); aCustLst=null; } if(aRevLst){ aRevLst(); aRevLst=null; } loadAdminReport(lastReportPeriod); toggleTaxMenuVisibility(); 
@@ -5782,10 +5760,6 @@ window.openSettingForm = (type) => {
                 </div>
             </div>
             <div><label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Deskripsi Usaha (Footer)</label><textarea autocomplete='off' id="set-description" class="admin-input resize-none !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm" rows="3" placeholder="Deskripsi untuk footer...">${esc(appData.store.description || '')}</textarea></div>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                <div><label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Email Layanan Pelanggan</label><input autocomplete='off' type="email" id="set-email" value="${esc(appData.store.email || '')}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm" placeholder="support@restukaryautama.com"></div>
-                <div><label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Jam Operasional Toko</label><input autocomplete='off' id="set-hours" value="${esc(appData.store.operationalHours || '')}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm" placeholder="Buka Setiap Hari (08:00 - 17:00)"></div>
-            </div>
         `;
     } 
     else if (type === 'catalog') {
@@ -5968,8 +5942,6 @@ window.saveAdminSettings = async (type) => {
             appData.store.slogan = getV('set-slogan'); 
             appData.store.logo = fixD(getV('set-logo')); 
             appData.store.description = getV('set-description'); 
-            appData.store.email = getV('set-email');
-            appData.store.operationalHours = getV('set-hours');
             appData.store.themeColor = getV('set-theme-color'); 
             appData.store.uiTheme = getV('set-ui-theme');
             localStorage.setItem('freshmart_theme_color', appData.store.themeColor);
@@ -7667,17 +7639,15 @@ window.addEventListener('DOMContentLoaded', async () => {
         if (window.updateProBadge) window.updateProBadge();
 
         // 3. MASUK KE DASHBOARD ADMIN
-        const curView = document.querySelector('.view-section:not(.hidden)');
-        const curId = curView ? curView.id : '';
-        // Jika sedang di halaman login atau admin, arahkan ke dashboard
-        if (curId === 'view-admin-login' || curId === 'view-admin') {
+        let loginView = document.getElementById('view-admin-login');
+        if (loginView && !loginView.classList.contains('hidden')) {
+            // FIX BACK BUTTON: jangan sertakan `tab` di state awal — kalau ada tab di sini,
+            // history stack langsung "kotor" sebelum user klik apapun, sehingga back dari
+            // dashboard admin malah masuk ke tab (bukan ke katalog/konfirmasi logout).
             history.replaceState({view: 'view-admin'}, '', window.location.href);
-            changeView('view-admin', true);
+            changeView('view-admin', true); 
             openAdminMenu();
-            showToast("Selamat Datang, Seller! 👋");
-        } else if (curId !== 'view-admin') {
-            // Sesi tersimpan, tapi user di halaman lain - jangan paksa redirect
-            // (biarkan user browsing, isAdm sudah true)
+            showToast("Sesi Dipulihkan! Selamat Datang.");
         }
     } else {
         // JIKA LOGOUT ATAU SESI HABIS

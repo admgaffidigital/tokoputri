@@ -459,7 +459,7 @@
         <div class="glass-header sticky top-0 z-30 flex shrink-0 items-center justify-center px-5 pb-3">
           <div class="mx-auto flex w-full items-center justify-between gap-4 px-4 lg:px-10 xl:max-w-[1200px]">
             <div class="flex min-w-0 flex-1 items-center gap-3">
-              <div class="flex h-12 w-12 shrink-0 cursor-pointer select-none items-center justify-center overflow-hidden rounded-2xl border border-slate-200 bg-gradient-to-br from-slate-50 to-white shadow-soft transition-transform active:scale-95 dark:border-slate-700" onclick="checkAdminAccess()" title="Klik untuk Login Seller">
+              <div class="flex h-12 w-12 shrink-0 cursor-pointer select-none items-center justify-center overflow-hidden rounded-2xl border border-slate-200 bg-gradient-to-br from-slate-50 to-white shadow-soft transition-transform active:scale-95 dark:border-slate-700" ondblclick="checkAdminAccess()" title="Ketuk 2x untuk Login Seller">
                 <img alt="Logo" class="hidden h-full w-full object-cover" id="dyn-store-logo-img" loading="lazy" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" />
                 <i class="fa-solid fa-store text-xl text-[var(--color-primary)]" id="dyn-store-logo-icon"></i>
               </div>
@@ -588,13 +588,13 @@
                     <div class="dark:border-slate-850 space-y-4 rounded-2xl border border-white/10 bg-white p-4 shadow-md dark:bg-slate-900">
                       <div class="flex flex-col items-center justify-center gap-3.5 text-slate-700 dark:text-slate-200 sm:flex-row sm:items-start md:justify-start">
                         <div class="dark:border-slate-750 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-slate-200/60 bg-slate-50 shadow-sm dark:bg-slate-800"><i class="fa-solid fa-envelope text-slate-400"></i></div>
-                        <span class="mt-2 truncate text-xs font-bold tracking-wide sm:text-sm" id="footer-store-email">support@restukaryautama.com</span>
+                        <span class="mt-2 truncate text-xs font-bold tracking-wide sm:text-sm">support@restukaryautama.com</span>
                       </div>
                       <div class="flex flex-col items-center justify-center gap-3.5 text-slate-700 dark:text-slate-200 sm:flex-row sm:items-start md:justify-start">
                         <div class="dark:border-slate-750 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-slate-200/60 bg-slate-50 shadow-sm dark:bg-slate-800"><i class="fa-solid fa-clock text-slate-400"></i></div>
                         <div class="mt-0.5 min-w-0 text-center sm:text-left">
                           <span class="mb-1.5 inline-block rounded border border-amber-200/55 bg-amber-50 px-2.5 py-0.5 text-[9px] font-bold uppercase tracking-widest text-amber-600 dark:border-amber-800/50 dark:bg-amber-900/20 dark:text-amber-400">Operasional</span>
-                          <p class="truncate text-xs font-bold tracking-wide text-slate-700 dark:text-slate-200 sm:text-sm" id="footer-store-hours">Buka Setiap Hari (08:00 - 17:00)</p>
+                          <p class="truncate text-xs font-bold tracking-wide text-slate-700 dark:text-slate-200 sm:text-sm">Buka Setiap Hari (08:00 - 17:00)</p>
                         </div>
                       </div>
                     </div>
@@ -605,12 +605,11 @@
             <div class="border-t border-white/10 bg-black/10 dark:border-slate-800/80 dark:bg-black/30">
               <div class="mx-auto flex w-full flex-col items-center justify-between gap-4 px-5 py-5 text-center sm:px-6 md:flex-row md:text-left lg:px-8 xl:max-w-[1200px]">
                 <p class="text-[11px] font-bold uppercase tracking-wider text-white/70 dark:text-slate-400 sm:text-xs">&#169; <span id="footer-year">2026</span> <span class="font-bold text-white dark:text-slate-200" id="footer-brand">Toko</span>. All rights reserved.</p>
-                <div class="flex items-center gap-3">
-                  <p class="flex items-center justify-center gap-1.5 text-[9px] font-bold uppercase tracking-wider text-white/50 dark:text-slate-500">THEME BY NOVAN RESTU UTOMO</p>
-                  <button type="button" onclick="checkAdminAccess()" class="rounded-lg bg-white/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-white/70 hover:bg-white/20 hover:text-white transition-all"><i class="fa-solid fa-lock text-[9px] mr-1"></i> Login Seller</button>
-                </div>
+                <p class="flex items-center justify-center gap-1.5 text-[9px] font-bold uppercase tracking-widest text-white/70 dark:text-slate-400 sm:text-[10px]">Powered by <i class="fa-solid fa-bolt text-white"></i> Blogger PWA System</p>
               </div>
             </div>
+          </div>
+        </div>
         <!-- PENUTUP SCROLL-CONTENT -->
         <div id="floating-cart-container" class="pointer-events-none absolute right-6 z-40 scale-0 transform transition-all duration-300" style="bottom: calc(max(1.25rem, env(safe-area-inset-bottom)) + 0.75rem)">
           <button class="relative flex h-14 w-14 cursor-pointer items-center justify-center rounded-full border border-white/10 text-white shadow-glow shadow-lg transition-all duration-200 hover:scale-110 active:scale-95" style="background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark))" onclick="changeView('view-cart')">
@@ -940,32 +939,32 @@
           <div class="mx-auto w-full max-w-full space-y-4 px-4 lg:px-8 xl:max-w-[1200px]" id="wishlist-items-container"></div>
         </div>
       </div>
-      <div class="view-section fade-in z-50 flex hidden flex-col items-center justify-center overflow-hidden" id="view-admin-login" style="background:#0f172a">
-        <div class="pointer-events-none absolute -left-20 -top-20 h-72 w-72 rounded-full opacity-20" style="background:var(--color-primary);filter:blur(80px)"></div>
-        <div class="pointer-events-none absolute -bottom-20 -right-20 h-64 w-64 rounded-full opacity-10" style="background:var(--color-primary-dark);filter:blur(80px)"></div>
+      <div class="view-section fade-in relative z-50 flex hidden items-center justify-center overflow-hidden bg-slate-900 dark:bg-[#0b1121]" id="view-admin-login">
+        <div class="pointer-events-none absolute -left-20 -top-20 h-72 w-72 rounded-full opacity-25 blur-[80px]" style="background: var(--color-primary)"></div>
+        <div class="pointer-events-none absolute -bottom-20 -right-20 h-64 w-64 rounded-full opacity-15 blur-[80px]" style="background: var(--color-primary-dark)"></div>
         <div class="relative z-10 mx-auto w-full max-w-sm p-5">
-          <div class="relative flex flex-col items-center rounded-xl border p-8 text-center shadow-2xl" style="background:#1e293b;border-color:rgba(255,255,255,0.12)">
-            <button class="absolute right-4 top-4 flex h-8 w-8 items-center justify-center rounded-xl text-white transition-all hover:bg-rose-500" style="background:rgba(255,255,255,0.1)" onclick="history.back()"><i class="fa-solid fa-xmark text-xs"></i></button>
-            <div class="mb-5 flex h-[72px] w-[72px] items-center justify-center rounded-2xl text-3xl text-white shadow-lg" style="background-color:var(--color-primary)"><i class="fa-solid fa-shield-halved"></i></div>
+          <div class="bg-white/8 relative flex flex-col items-center rounded-[2rem] border border-white/15 p-8 text-center shadow-2xl backdrop-blur-xl dark:border-slate-700/50 dark:bg-slate-800/50">
+            <button class="absolute right-4 top-4 flex h-8 w-8 items-center justify-center rounded-xl bg-white/10 text-white transition-all hover:bg-rose-500" onclick="history.back()"><i class="fa-solid fa-xmark text-xs"></i></button>
+            <div class="w-18 h-18 mb-5 flex h-[72px] w-[72px] items-center justify-center rounded-2xl border border-white/15 text-3xl text-white shadow-lg" style="background-color: var(--color-primary)"><i class="fa-solid fa-shield-halved"></i></div>
             <h2 class="mb-1 text-2xl font-bold tracking-tight text-white">Seller Panel</h2>
-            <p class="mb-7 text-[10px] font-bold uppercase tracking-widest" style="color:#64748b">Otorisasi Seller</p>
+            <p class="mb-7 text-[10px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">Otorisasi Seller</p>
             <form autocomplete="off" class="w-full space-y-3 text-left" onsubmit="return false;">
               <div class="relative">
-                <i class="fa-solid fa-envelope absolute left-3.5 top-1/2 -translate-y-1/2 text-sm" style="color:#64748b"></i>
-                <input autocomplete="off" class="w-full rounded-xl py-3.5 pl-10 pr-4 text-sm font-semibold text-white" style="background:#0f172a;border:1.5px solid #334155;outline:none" id="login-username" name="x_panel_id_7k2" placeholder="Email Seller" type="email" onfocus="this.style.borderColor='var(--color-primary)'" onblur="this.style.borderColor='#334155'" />
+                <i class="fa-solid fa-envelope absolute left-3.5 top-1/2 -translate-y-1/2 text-sm text-slate-400"></i>
+                <input autocomplete="off" class="w-full rounded-xl border border-white/10 bg-black/20 py-3.5 pl-10 pr-4 text-sm font-semibold text-white shadow-inner transition-all placeholder:text-slate-400 focus:border-[rgba(var(--color-primary-rgb),0.7)] focus:bg-black/30 focus:outline-none dark:placeholder:text-slate-400" id="login-username" name="x_panel_id_7k2" placeholder="Email Seller" type="email" />
               </div>
               <div class="relative">
-                <i class="fa-solid fa-lock absolute left-3.5 top-1/2 -translate-y-1/2 text-sm" style="color:#64748b"></i>
-                <input autocomplete="off" class="w-full rounded-xl py-3.5 pl-10 pr-4 text-sm font-semibold text-white" style="background:#0f172a;border:1.5px solid #334155;outline:none" id="login-password" name="x_panel_pw_9m4" placeholder="Password" type="password" onfocus="this.style.borderColor='var(--color-primary)'" onblur="this.style.borderColor='#334155'" />
+                <i class="fa-solid fa-lock absolute left-3.5 top-1/2 -translate-y-1/2 text-sm text-slate-400"></i>
+                <input autocomplete="off" class="w-full rounded-xl border border-white/10 bg-black/20 py-3.5 pl-10 pr-4 text-sm font-semibold text-white shadow-inner transition-all placeholder:text-slate-400 focus:border-[rgba(var(--color-primary-rgb),0.7)] focus:bg-black/30 focus:outline-none dark:placeholder:text-slate-400" id="login-password" name="x_panel_pw_9m4" placeholder="Password" type="password" />
               </div>
               <div class="pt-3">
-                <button class="btn-solid shadow-glow" onclick="processAdminLogin()" type="button">Masuk Sebagai Seller <i class="fa-solid fa-arrow-right-to-bracket"></i></button>
+                <button class="btn-solid shadow-glow" onclick="processAdminLogin()" type="button">Masuk Sekarang <i class="fa-solid fa-arrow-right-to-bracket"></i></button>
               </div>
             </form>
           </div>
         </div>
       </div>
-      <div class="view-section fade-in z-50 flex hidden flex-col bg-slate-50 dark:bg-slate-900" id="view-admin" style="min-height: 100vh;">
+      <div class="view-section fade-in z-50 flex hidden flex-col bg-slate-50 dark:bg-slate-900" id="view-admin">
         <div class="glass-header sticky top-0 z-30 flex shrink-0 items-center justify-center px-4 pb-3">
           <div class="mx-auto flex w-full max-w-full items-center justify-between px-4 lg:px-10 xl:max-w-[1200px]">
             <div class="flex items-center gap-3">
@@ -973,7 +972,7 @@
               <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[rgba(var(--color-primary-rgb),0.3)] bg-[var(--color-primary)] text-white shadow-md" id="admin-logo-box"><i class="fa-solid fa-layer-group text-sm"></i></div>
               <div>
                 <div class="flex items-center gap-2">
-                  <h1 class="text-sm font-bold leading-none tracking-tight text-white drop-shadow-sm" id="admin-header-title">Dashboard Seller</h1>
+                  <h1 class="text-sm font-bold leading-none tracking-tight text-white drop-shadow-sm" id="admin-header-title">CMS TOKO</h1>
                 </div>
                 <span class="mt-0.5 inline-block rounded-xl bg-white/20 px-1.5 py-0.5 text-[9px] font-bold uppercase leading-none tracking-widest text-white drop-shadow-sm backdrop-blur-sm">Seller</span>
               </div>
