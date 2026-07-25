@@ -8,6 +8,16 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     minify: 'esbuild',
-    sourcemap: false
+    sourcemap: false,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'vendor-firebase-core': ['firebase/compat/app', 'firebase/compat/auth'],
+          'vendor-firebase-db': ['firebase/compat/firestore'],
+          'vendor-firebase-analytics': ['firebase/compat/analytics'],
+          'vendor-utils': ['dompurify']
+        }
+      }
+    }
   }
 })
