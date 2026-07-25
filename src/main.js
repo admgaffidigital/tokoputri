@@ -125,8 +125,7 @@ window.DOMPurify = DOMPurify;
 // ==========================================
 
 /* =========================================================
-   THEME TOKO ONLINE BAHAN BANGUNAN & PERKAKAS
-   BY NOVAN RESTU UTOMO COPYRIGHT TAHUN 2026
+   THEME BY NOVAN RESTU UTOMO
    FINAL POLISH & GLOBAL DEBUG (CLEAN, SAFE, FORMATTED JS)
 ===========================================================*/
 
