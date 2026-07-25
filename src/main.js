@@ -5062,7 +5062,7 @@ window.exportOrdersToExcel = async () => {
             }
             isInitial = false;
 
-            if(p.empty){ setH('admin-orders-list', `<div class="text-center py-20 text-slate-400 font-bold bg-white dark:bg-slate-800 rounded-[1.5rem] border border-slate-200 dark:border-slate-700 shadow-sm"><i class="fa-solid fa-receipt text-5xl mb-4 opacity-30 block"></i>Belum ada pesanan</div>`); setIn('stat-orders',0); return; }
+            if(p.empty){ setH('admin-orders-list', `<div class="flex flex-col items-center justify-center py-20 text-slate-400 font-bold bg-white dark:bg-slate-800 rounded-[1.5rem] border border-slate-200 dark:border-slate-700 shadow-sm text-center"><i class="fa-solid fa-receipt text-5xl mb-4 opacity-30"></i>Belum ada pesanan</div>`); setIn('stat-orders',0); return; }
             setIn('stat-orders', p.size+(p.size===100?'+':''));
             
             setH('admin-orders-list', p.docs.map(d => {
@@ -5972,7 +5972,7 @@ window.rAdmItms = t => {
         return m;
     });
     
-    if(!i.length){ return setH('admin-list-container', `<div class="text-center py-20 text-slate-400 font-bold bg-white dark:bg-slate-800 rounded-[1.5rem] border border-slate-200 dark:border-slate-700 shadow-sm"><i class="fa-solid fa-folder-open text-5xl mb-4 opacity-30 block"></i>Data kosong</div>`); }
+    if(!i.length){ return setH('admin-list-container', `<div class="flex flex-col items-center justify-center py-20 text-slate-400 font-bold bg-white dark:bg-slate-800 rounded-[1.5rem] border border-slate-200 dark:border-slate-700 shadow-sm text-center"><i class="fa-solid fa-folder-open text-5xl mb-4 opacity-30"></i>Data kosong</div>`); }
     
     setH('admin-list-container', i.map(x => {
         let isP = t==='products', isOff = isP && (x.isActive==='false'||x.isActive===false);
@@ -6062,7 +6062,7 @@ window.rAdmReviews = () => {
         </div>`;
 
     if (!filtered.length) {
-        setH('admin-content', filterTabs + `<div class="text-center py-20 text-slate-400 font-bold bg-white dark:bg-slate-800 rounded-[1.5rem] border border-slate-200 dark:border-slate-700 shadow-sm"><i class="fa-solid fa-comment-slash text-5xl mb-4 opacity-30 block"></i>Belum ada ulasan</div>`);
+        setH('admin-content', filterTabs + `<div class="flex flex-col items-center justify-center py-20 text-slate-400 font-bold bg-white dark:bg-slate-800 rounded-[1.5rem] border border-slate-200 dark:border-slate-700 shadow-sm text-center"><i class="fa-solid fa-comment-slash text-5xl mb-4 opacity-30"></i>Belum ada ulasan</div>`);
         return;
     }
 
