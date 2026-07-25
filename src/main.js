@@ -125,7 +125,8 @@ window.DOMPurify = DOMPurify;
 // ==========================================
 
 /* =========================================================
-   FRESHMART POS & E-COMMERCE SYSTEM (BLOGGER XML EDITION)
+   THEME TOKO ONLINE BAHAN BANGUNAN & PERKAKAS
+   BY NOVAN RESTU UTOMO COPYRIGHT TAHUN 2026
    FINAL POLISH & GLOBAL DEBUG (CLEAN, SAFE, FORMATTED JS)
 ===========================================================*/
 
