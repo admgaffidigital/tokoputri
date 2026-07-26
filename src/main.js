@@ -6091,10 +6091,16 @@ window.rAdmL = t => {
     // FITUR BARU: laporan produk/varian/aset khusus ditaruh di sini (tab Produk saja),
     // tepat di atas kolom cari -- lebih relevan di tempat pengelolaan produknya langsung.
     const statsContainer = t === 'products' ? `<div id="admin-product-stats" class="mb-5"></div>` : '';
+    // FITUR BARU: tombol khusus untuk tab Database Warna
+    const colorActions = t === 'colors' ? `
+        <div class="flex gap-2 mb-4 flex-wrap">
+            <button onclick="openImportFromProductsModal()" class="flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-600 dark:bg-emerald-900/30 dark:border-emerald-800 font-bold text-[11px] uppercase tracking-widest hover:bg-emerald-100 transition-all active:scale-95 shadow-sm"><i class="fa-solid fa-box-archive"></i> Impor dari Semua Produk</button>
+        </div>` : '';
     setH('admin-content', `
         <div class="max-w-5xl mx-auto">
         ${statsContainer}
         <div class="mb-6">
+            ${colorActions}
             <div class="flex gap-2 items-center mb-4">
                 <div class="relative flex-1">
                     <i class="fa-solid fa-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
@@ -6912,7 +6918,10 @@ window.rVarsB = () => {
                     <div class="w-7 h-7 rounded-xl bg-emerald-500 text-white text-[11px] font-bold flex items-center justify-center shadow-sm">${i+1}</div>
                     <span class="text-xs font-bold text-slate-700 dark:text-slate-200 uppercase tracking-widest">${v.name || 'Varian Baru'}</span>
                 </div>
-                <button onclick="rmVar(${i})" class="w-8 h-8 rounded-xl bg-rose-50 border border-rose-200 text-rose-500 hover:bg-rose-500 hover:text-white dark:bg-rose-900/30 dark:border-rose-800 transition-all flex items-center justify-center shadow-sm active:scale-95" title="Hapus Varian"><i class="fa-solid fa-trash text-xs"></i></button>
+                <div class="flex items-center gap-2">
+                    <button type="button" onclick="exportVariantToColorDB(${i})" class="w-8 h-8 rounded-xl bg-pink-50 border border-pink-200 text-pink-500 hover:bg-pink-500 hover:text-white dark:bg-pink-900/30 dark:border-pink-800 transition-all flex items-center justify-center shadow-sm active:scale-95" title="Simpan ke Database Warna"><i class="fa-solid fa-database text-xs"></i></button>
+                    <button type="button" onclick="rmVar(${i})" class="w-8 h-8 rounded-xl bg-rose-50 border border-rose-200 text-rose-500 hover:bg-rose-500 hover:text-white dark:bg-rose-900/30 dark:border-rose-800 transition-all flex items-center justify-center shadow-sm active:scale-95" title="Hapus Varian"><i class="fa-solid fa-trash text-xs"></i></button>
+                </div>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-6 lg:gap-7">
@@ -6985,9 +6994,10 @@ window.rVarsB = () => {
             </div>
         </div>`;
     }).join('')}</div>
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
-        <button type="button" onclick="openColorImportModal()" class="w-full py-3 text-pink-600 font-bold rounded-2xl text-sm border-2 border-pink-200 bg-pink-50 hover:bg-pink-100 dark:bg-pink-900/30 dark:border-pink-800 transition-all flex items-center justify-center gap-2 active:scale-95 shadow-sm"><i class="fa-solid fa-swatchbook"></i> Impor dari Database Warna</button>
-        <button type="button" onclick="addVar()" class="w-full py-3 text-white font-bold rounded-2xl text-sm border border-[rgba(var(--color-primary-rgb),0.3)] transition-all flex items-center justify-center gap-2 active:scale-95 shadow-glow" style="background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark))"><i class="fa-solid fa-plus-circle text-base"></i> Tambah Varian Baru</button>
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-4">
+        <button type="button" onclick="openColorImportModal()" class="py-3 text-pink-600 font-bold rounded-2xl text-sm border-2 border-pink-200 bg-pink-50 hover:bg-pink-100 dark:bg-pink-900/30 dark:border-pink-800 transition-all flex items-center justify-center gap-2 active:scale-95 shadow-sm"><i class="fa-solid fa-swatchbook"></i> Impor dari DB Warna</button>
+        <button type="button" onclick="exportAllVariantsToColorDB()" class="py-3 text-violet-600 font-bold rounded-2xl text-sm border-2 border-violet-200 bg-violet-50 hover:bg-violet-100 dark:bg-violet-900/30 dark:border-violet-800 transition-all flex items-center justify-center gap-2 active:scale-95 shadow-sm"><i class="fa-solid fa-upload"></i> Ekspor Semua ke DB</button>
+        <button type="button" onclick="addVar()" class="py-3 text-white font-bold rounded-2xl text-sm border border-[rgba(var(--color-primary-rgb),0.3)] transition-all flex items-center justify-center gap-2 active:scale-95 shadow-glow" style="background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark))"><i class="fa-solid fa-plus-circle text-base"></i> Tambah Varian Baru</button>
     </div>`;
     setH('variants-builder-container', h);
 };
@@ -7055,6 +7065,186 @@ window.importColorToVariant = (name, hex) => {
     rVarsB();
     closePrompt(true);
     showToast("Warna ditambahkan!");
+};
+
+// FITUR BARU: Ekspor varian (per-item) ke Database Warna
+window.exportVariantToColorDB = async (idx) => {
+    const v = tVars[idx];
+    if (!v || !v.name.trim()) { showToast('Nama varian kosong!'); return; }
+    const existing = (appData.colors||[]).find(c => c.name.toLowerCase() === v.name.trim().toLowerCase());
+    if (existing) { showToast(`"${v.name}" sudah ada di Database Warna.`); return; }
+    
+    // Prompt untuk pilih katalog
+    const catalogs = [...new Set((appData.colors||[]).map(c => c.catalog).filter(Boolean))];
+    let catalogOpts = catalogs.map(cat => `<option value="${esc(cat)}">${esc(cat)}</option>`).join('');
+    
+    const cm = document.getElementById('confirm-modal');
+    if (!cm) return;
+    document.getElementById('confirm-box').innerHTML = `
+        <div class="p-6">
+            <h3 class="text-lg font-bold text-slate-800 dark:text-white mb-5 flex items-center gap-2"><i class="fa-solid fa-database text-pink-500"></i> Simpan ke Database Warna</h3>
+            <div class="space-y-4">
+                <div><label class="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-1.5">Nama Warna</label>
+                    <input id="exp-name" class="admin-input" value="${esc(v.name)}"></div>
+                <div><label class="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-1.5">Kode Warna (Hex)</label>
+                    <div class="flex gap-3 items-center">
+                        <input type="color" id="exp-hex-picker" value="${esc(v.colorCode||'#ffffff')}" class="w-10 h-10 rounded-xl cursor-pointer" onchange="document.getElementById('exp-hex').value=this.value">
+                        <input id="exp-hex" class="admin-input flex-1" placeholder="#FFFFFF (opsional)" value="${esc(v.colorCode||'')}">
+                    </div></div>
+                <div><label class="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-1.5">Katalog / Merek</label>
+                    <input id="exp-catalog" list="exp-catalog-list" class="admin-input" placeholder="Cth: No Drop, Boyo, dll">
+                    <datalist id="exp-catalog-list">${catalogOpts}</datalist>
+                </div>
+            </div>
+            <div class="flex gap-3 mt-6">
+                <button onclick="closePrompt(true)" class="flex-1 py-3 rounded-xl border border-slate-200 font-bold text-slate-500 text-sm hover:bg-slate-50 transition-all">Batal</button>
+                <button onclick="confirmExportVariantToColorDB()" class="flex-1 py-3 rounded-xl bg-pink-500 text-white font-bold text-sm hover:bg-pink-600 transition-all active:scale-95"><i class="fa-solid fa-floppy-disk mr-2"></i>Simpan</button>
+            </div>
+        </div>`;
+    cm.classList.remove('hidden');
+    setTimeout(() => { cm.classList.remove('opacity-0'); document.getElementById('confirm-box').classList.remove('scale-95'); }, 10);
+};
+
+window.confirmExportVariantToColorDB = async () => {
+    const name = (document.getElementById('exp-name')?.value || '').trim();
+    const hex  = (document.getElementById('exp-hex')?.value  || '').trim();
+    const catalog = (document.getElementById('exp-catalog')?.value || '').trim();
+    if (!name) { showToast('Nama warna wajib diisi!'); return; }
+    const newColor = { id: Date.now(), name, hex, catalog };
+    if (!appData.colors) appData.colors = [];
+    appData.colors.push(newColor);
+    closePrompt(true);
+    sLoad('Menyimpan ke Database Warna...');
+    try {
+        await saveApp(['colors']);
+        showToast(`"${name}" berhasil disimpan ke Database Warna! 🎨`);
+    } catch(e) { showToast('Gagal menyimpan!'); }
+    finally { hLoad(); }
+};
+
+// FITUR BARU: Ekspor SEMUA varian yang punya nama ke Database Warna (skip duplikat)
+window.exportAllVariantsToColorDB = async () => {
+    const toExport = tVars.filter(v => v.name.trim());
+    if (!toExport.length) { showToast('Tidak ada varian untuk diekspor!'); return; }
+    if (!appData.colors) appData.colors = [];
+    const existingNames = new Set(appData.colors.map(c => c.name.toLowerCase()));
+    
+    const catalogs = [...new Set(appData.colors.map(c => c.catalog).filter(Boolean))];
+    let catalogOpts = catalogs.map(cat => `<option value="${esc(cat)}">${esc(cat)}</option>`).join('');
+    
+    const cm = document.getElementById('confirm-modal');
+    if (!cm) return;
+    document.getElementById('confirm-box').innerHTML = `
+        <div class="p-6">
+            <h3 class="text-lg font-bold text-slate-800 dark:text-white mb-2 flex items-center gap-2"><i class="fa-solid fa-upload text-violet-500"></i> Ekspor Semua Varian</h3>
+            <p class="text-xs text-slate-500 mb-5">${toExport.length} varian akan diekspor ke Database Warna. Nama yang sudah ada di database akan dilewati.</p>
+            <div><label class="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-1.5">Katalog / Merek (berlaku untuk semua)</label>
+                <input id="expall-catalog" list="expall-catalog-list" class="admin-input" placeholder="Cth: No Drop, Boyo, dll">
+                <datalist id="expall-catalog-list">${catalogOpts}</datalist>
+            </div>
+            <div class="flex gap-3 mt-6">
+                <button onclick="closePrompt(true)" class="flex-1 py-3 rounded-xl border border-slate-200 font-bold text-slate-500 text-sm hover:bg-slate-50 transition-all">Batal</button>
+                <button onclick="confirmExportAllVariants()" class="flex-1 py-3 rounded-xl bg-violet-500 text-white font-bold text-sm hover:bg-violet-600 transition-all active:scale-95"><i class="fa-solid fa-upload mr-2"></i>Ekspor</button>
+            </div>
+        </div>`;
+    cm.classList.remove('hidden');
+    setTimeout(() => { cm.classList.remove('opacity-0'); document.getElementById('confirm-box').classList.remove('scale-95'); }, 10);
+};
+
+window.confirmExportAllVariants = async () => {
+    const catalog = (document.getElementById('expall-catalog')?.value || '').trim();
+    const toExport = tVars.filter(v => v.name.trim());
+    if (!appData.colors) appData.colors = [];
+    const existingNames = new Set(appData.colors.map(c => c.name.toLowerCase()));
+    let added = 0;
+    toExport.forEach(v => {
+        if (!existingNames.has(v.name.trim().toLowerCase())) {
+            appData.colors.push({ id: Date.now() + added, name: v.name.trim(), hex: v.colorCode||'', catalog });
+            existingNames.add(v.name.trim().toLowerCase());
+            added++;
+        }
+    });
+    closePrompt(true);
+    if (!added) { showToast('Semua varian sudah ada di Database Warna!'); return; }
+    sLoad('Menyimpan...');
+    try {
+        await saveApp(['colors']);
+        showToast(`${added} warna berhasil diekspor ke Database Warna! 🎨`);
+    } catch(e) { showToast('Gagal menyimpan!'); }
+    finally { hLoad(); }
+};
+
+// FITUR BARU: Panel impor warna dari semua varian produk yang ada (di tab Database Warna)
+window.openImportFromProductsModal = async () => {
+    const allVariants = [];
+    (appData.products||[]).forEach(p => {
+        (p.variants||[]).forEach(v => {
+            if (v.name && v.name.trim()) {
+                allVariants.push({ varName: v.name.trim(), hex: v.colorCode||'', prodName: p.name||'' });
+            }
+        });
+    });
+    if (!allVariants.length) { showToast('Tidak ada varian produk yang ditemukan!'); return; }
+    const existingNames = new Set((appData.colors||[]).map(c => c.name.toLowerCase()));
+    const newOnes = allVariants.filter(v => !existingNames.has(v.varName.toLowerCase()));
+    
+    if (!newOnes.length) { showToast('Semua varian produk sudah ada di Database Warna!'); return; }
+    
+    const catalogs = [...new Set((appData.colors||[]).map(c => c.catalog).filter(Boolean))];
+    let catalogOpts = catalogs.map(cat => `<option value="${esc(cat)}">${esc(cat)}</option>`).join('');
+    
+    const cm = document.getElementById('confirm-modal');
+    if (!cm) return;
+    document.getElementById('confirm-box').innerHTML = `
+        <div class="p-6">
+            <h3 class="text-lg font-bold text-slate-800 dark:text-white mb-2 flex items-center gap-2"><i class="fa-solid fa-box-archive text-emerald-500"></i> Impor dari Semua Produk</h3>
+            <p class="text-xs text-slate-500 mb-4">${newOnes.length} nama varian baru ditemukan (yang sudah ada di database dilewati).</p>
+            <div class="max-h-48 overflow-y-auto mb-4 space-y-2">
+                ${newOnes.map((v,i) => `
+                    <label class="flex items-center gap-3 p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 cursor-pointer hover:border-emerald-300 transition-all">
+                        <input type="checkbox" id="imp-chk-${i}" checked class="w-4 h-4 rounded accent-emerald-500">
+                        <div class="w-5 h-5 rounded-full border border-slate-200 dark:border-slate-600 shrink-0" style="background-color:${esc(v.hex||'transparent')}"></div>
+                        <div class="min-w-0">
+                            <p class="text-xs font-bold text-slate-700 dark:text-slate-200 truncate">${esc(v.varName)}</p>
+                            <p class="text-[10px] text-slate-400 truncate">dari: ${esc(v.prodName)}</p>
+                        </div>
+                    </label>`).join('')}
+            </div>
+            <div><label class="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-1.5">Katalog / Merek</label>
+                <input id="impprod-catalog" list="impprod-cat-list" class="admin-input" placeholder="Cth: No Drop, Boyo, dll (opsional)">
+                <datalist id="impprod-cat-list">${catalogOpts}</datalist>
+            </div>
+            <div class="flex gap-3 mt-5">
+                <button onclick="closePrompt(true)" class="flex-1 py-3 rounded-xl border border-slate-200 font-bold text-slate-500 text-sm hover:bg-slate-50 transition-all">Batal</button>
+                <button onclick="confirmImportFromProducts(${JSON.stringify(newOnes).replace(/"/g,'&quot;')})" class="flex-1 py-3 rounded-xl bg-emerald-500 text-white font-bold text-sm hover:bg-emerald-600 transition-all active:scale-95"><i class="fa-solid fa-download mr-2"></i>Impor</button>
+            </div>
+        </div>`;
+    cm.classList.remove('hidden');
+    setTimeout(() => { cm.classList.remove('opacity-0'); document.getElementById('confirm-box').classList.remove('scale-95'); }, 10);
+};
+
+window.confirmImportFromProducts = async (variants) => {
+    const catalog = (document.getElementById('impprod-catalog')?.value||'').trim();
+    if (!appData.colors) appData.colors = [];
+    const existingNames = new Set(appData.colors.map(c => c.name.toLowerCase()));
+    let added = 0;
+    variants.forEach((v, i) => {
+        const chk = document.getElementById(`imp-chk-${i}`);
+        if (chk && chk.checked && !existingNames.has(v.varName.toLowerCase())) {
+            appData.colors.push({ id: Date.now() + added, name: v.varName, hex: v.hex||'', catalog });
+            existingNames.add(v.varName.toLowerCase());
+            added++;
+        }
+    });
+    closePrompt(true);
+    if (!added) { showToast('Tidak ada warna baru yang ditambahkan!'); return; }
+    sLoad('Menyimpan...');
+    try {
+        await saveApp(['colors']);
+        showToast(`${added} warna berhasil diimpor ke Database Warna! 🎨`);
+        if (cTab === 'colors') rAdmItms('colors');
+    } catch(e) { showToast('Gagal menyimpan!'); }
+    finally { hLoad(); }
 };
 
 // --- RENDER GROSIR (SUPER LEGA 2 KOLOM) ---
