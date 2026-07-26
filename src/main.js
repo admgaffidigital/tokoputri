@@ -278,7 +278,7 @@ const defApp = {
     // auth field dihapus: login admin sudah pakai Firebase Authentication (signInWithEmailAndPassword), bukan field ini 
     payment: { qrisUrl: "" }, 
     config: { gasUrl: "" }, // FITUR BARU
-    banks: [], banners: [], categories: [], brands: [], products: [], vouchers: [],
+    banks: [], banners: [], categories: [], brands: [], products: [], vouchers: [], colors: [],
     rewards: [], // FITUR BARU: katalog hadiah (publik, sinkron realtime seperti kategori/voucher)
     customers: [], // FITUR BARU: database pelanggan (privat, HANYA dimuat saat admin membuka tab-nya)
     // FITUR BARU: Menu Pajak -- pengaturan & data pelengkap laporan pajak/keuangan.
@@ -805,7 +805,7 @@ window.attachRealtimeStockSync = () => {
                 // sampai stok produk habis SAAT admin sedang membuka tab Produk, tampilannya TIDAK ikut
                 // berubah jadi "Habis" secara langsung (harus pindah tab dulu baru kelihatan). Sekarang
                 // tab Produk ikut disegarkan otomatis juga.
-                if (window.isAdm && cTab && ['categories','vouchers','banners','brands','banks','products'].includes(cTab) && typeof window.rAdmItms === 'function') {
+                if (window.isAdm && cTab && ['categories','vouchers','banners','brands','banks','products','colors'].includes(cTab) && typeof window.rAdmItms === 'function') {
                     window.rAdmItms(cTab);
                 }
 
@@ -4378,6 +4378,11 @@ const aF = {
         {key:'tag', label:'Label/Tag', type:'text'}, {key:'isActive', label:'Status', type:'select', options:[{val:'true',text:'Tersedia'},{val:'false',text:'Habis'}]},
         {key:'desc', label:'Deskripsi Lengkap', type:'richtext'}, {key:'wholesale', label:'Grosir', type:'wholesale_builder'}, {key:'variants', label:'Varian', type:'variants_builder'}
     ],
+    colors: [
+        {key:'name', label:'Nama Warna', type:'text'},
+        {key:'hex', label:'Kode Warna (Hex) - Opsional', type:'text'},
+        {key:'catalog', label:'Katalog / Merek (Contoh: No Drop)', type:'text'}
+    ],
     categories: [{key:'name', label:'Kategori', type:'text'}, {key:'img', label:'URL Ikon', type:'text'}],
     brands: [{key:'name', label:'Nama Merek', type:'text'}, {key:'img', label:'URL Logo Merek', type:'text'}],
     banks: [{key:'bankName', label:'Nama Bank', type:'text'}, {key:'bankAccount', label:'No. Rekening', type:'text'}, {key:'bankOwner', label:'Atas Nama', type:'text'}],
@@ -5060,7 +5065,7 @@ window.openAdminTab = (t, fH=false) => {
     }
 
     hide('admin-dashboard-view'); show('admin-content-view'); show('btn-admin-back'); hide('admin-logo-box');
-    const titles = {'orders':'Pesanan', 'settings':'Toko', 'products':'Produk', 'categories':'Kategori', 'brands':'Merek', 'banks':'Rekening', 'banners':'Banner', 'vouchers':'Voucher', 'customers':'Database Pelanggan', 'rewards':'Program Hadiah', 'reviews':'Ulasan Pelanggan', 'tax':'Pajak & Keuangan', 'piutang':'Piutang Tempo'};
+    const titles = {'orders':'Pesanan', 'settings':'Toko', 'products':'Produk', 'categories':'Kategori', 'brands':'Merek', 'banks':'Rekening', 'banners':'Banner', 'vouchers':'Voucher', 'customers':'Database Pelanggan', 'rewards':'Program Hadiah', 'reviews':'Ulasan Pelanggan', 'tax':'Pajak & Keuangan', 'piutang':'Piutang Tempo', 'colors':'Database Warna'};
     setIn('admin-header-title', titles[t]||'CMS');
     if(t !== 'orders' && aOrdLst){ aOrdLst(); aOrdLst=null; }
     // FIX BUG: tab Database Pelanggan dulu cuma ambil data SEKALI (snapshot),
@@ -6198,6 +6203,7 @@ window.rAdmItms = t => {
                         const sold = x.variants && x.variants.length ? x.variants.reduce((s,vv)=>s+(parseFloat(vv.totalSold)||0),0) : (parseFloat(x.totalSold)||0);
                         return sold > 0 ? `<p class="text-[10px] font-bold text-orange-400 mt-0.5"><i class="fa-solid fa-fire-flame-curved mr-1"></i>Terjual: ${sold}</p>` : '';
                     })() : ''}
+                    ${t==='colors' ? `<div class="flex items-center gap-2 mt-1"><div class="w-4 h-4 rounded-full border border-slate-200 dark:border-slate-600 shadow-sm" style="background-color: ${esc(x.hex||'transparent')}"></div><p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest"><i class="fa-solid fa-swatchbook mr-1"></i>${esc(x.catalog||'Tanpa Katalog')}</p></div>` : ''}
                     ${t==='customers' ? `<p class="text-xs font-bold text-slate-500 dark:text-slate-400"><i class="fa-brands fa-whatsapp text-emerald-500 mr-1"></i>+${esc(x.phone)}</p><p class="text-[11px] font-bold text-violet-500 mt-0.5"><i class="fa-solid fa-star mr-1"></i>${(parseFloat(x.points)||0)} Poin</p>` : ''}
                     ${t==='rewards' ? `<p class="text-sm font-bold text-violet-500"><i class="fa-solid fa-star mr-1"></i>${(parseFloat(x.pointsCost)||0)} Poin</p><p class="text-[10px] font-bold text-slate-500 mt-0.5"><i class="fa-solid fa-boxes-stacked mr-1"></i>Stok: ${parseFloat(x.stock)||0}</p>` : ''}
                 </div>
@@ -6979,13 +6985,77 @@ window.rVarsB = () => {
             </div>
         </div>`;
     }).join('')}</div>
-    <button onclick="addVar()" class="w-full py-3.5 text-white font-bold rounded-2xl text-sm border border-[rgba(var(--color-primary-rgb),0.3)] transition-all flex items-center justify-center gap-2 active:scale-95 shadow-glow" style="background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark))"><i class="fa-solid fa-plus-circle text-base"></i> Tambah Varian Baru</button>`;
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
+        <button type="button" onclick="openColorImportModal()" class="w-full py-3 text-pink-600 font-bold rounded-2xl text-sm border-2 border-pink-200 bg-pink-50 hover:bg-pink-100 dark:bg-pink-900/30 dark:border-pink-800 transition-all flex items-center justify-center gap-2 active:scale-95 shadow-sm"><i class="fa-solid fa-swatchbook"></i> Impor dari Database Warna</button>
+        <button type="button" onclick="addVar()" class="w-full py-3 text-white font-bold rounded-2xl text-sm border border-[rgba(var(--color-primary-rgb),0.3)] transition-all flex items-center justify-center gap-2 active:scale-95 shadow-glow" style="background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark))"><i class="fa-solid fa-plus-circle text-base"></i> Tambah Varian Baru</button>
+    </div>`;
     setH('variants-builder-container', h);
 };
 
 window.addVar = () => { tVars.push({name:'', price:0, priceNormal:0, hpp:0, stock:0, sku:'', img:'', unit:'', colorCode:'', poin:0, isActive: true}); rVarsB(); };
 window.rmVar = i => { tVars.splice(i,1); rVarsB(); };
 window.uVar = (i,k,v) => { tVars[i][k] = (k==='price' || k==='priceNormal' || k==='hpp' || k==='stock' || k==='poin') ? parseFloat(v)||0 : (k==='img' ? fixD(v) : v); };
+
+// FITUR BARU: Impor dari Database Warna
+window.openColorImportModal = () => {
+    let colors = appData.colors || [];
+    if (!colors.length) {
+        showToast("Database Warna masih kosong!");
+        return;
+    }
+    // Kelompokkan berdasarkan katalog
+    let grouped = {};
+    colors.forEach(c => {
+        let cat = c.catalog || 'Tanpa Katalog';
+        if (!grouped[cat]) grouped[cat] = [];
+        grouped[cat].push(c);
+    });
+    
+    let html = `<div class="p-6">
+        <div class="flex justify-between items-center mb-6">
+            <h3 class="text-lg font-bold text-slate-800 dark:text-white flex items-center gap-2"><i class="fa-solid fa-swatchbook text-pink-500"></i> Pilih Warna</h3>
+            <button type="button" onclick="closePrompt(true)" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-500 flex items-center justify-center transition-all"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="space-y-6 max-h-[60vh] overflow-y-auto pr-2">
+    `;
+    
+    for (let cat in grouped) {
+        html += `<div>
+            <h4 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3 pb-2 border-b border-slate-100 dark:border-slate-800">${esc(cat)}</h4>
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                ${grouped[cat].map(c => `
+                    <button type="button" onclick="importColorToVariant('${esc(c.name)}', '${esc(c.hex||'')}')" class="flex items-center gap-3 p-3 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-pink-300 dark:hover:border-pink-600 hover:-translate-y-1 hover:shadow-md transition-all text-left bg-white dark:bg-slate-800">
+                        <div class="w-8 h-8 rounded-full border-2 border-slate-100 dark:border-slate-600 shadow-sm shrink-0" style="background-color: ${esc(c.hex||'transparent')}"></div>
+                        <span class="text-xs font-bold text-slate-700 dark:text-slate-200 line-clamp-2">${esc(c.name)}</span>
+                    </button>
+                `).join('')}
+            </div>
+        </div>`;
+    }
+    html += `</div></div>`;
+    
+    // Gunakan confirm-modal sebagai penampung
+    const cm = document.getElementById('confirm-modal');
+    if(cm) {
+        document.getElementById('confirm-box').innerHTML = html;
+        cm.classList.remove('hidden');
+        setTimeout(() => {
+            cm.classList.remove('opacity-0');
+            document.getElementById('confirm-box').classList.remove('scale-95');
+        }, 10);
+    }
+};
+
+window.importColorToVariant = (name, hex) => {
+    tVars.push({
+        name: name,
+        price: 0, priceNormal: 0, hpp: 0, stock: 0, sku: '', img: '', unit: '',
+        colorCode: hex || '', poin: 0, isActive: true
+    });
+    rVarsB();
+    closePrompt(true);
+    showToast("Warna ditambahkan!");
+};
 
 // --- RENDER GROSIR (SUPER LEGA 2 KOLOM) ---
 window.rWholB = () => {
