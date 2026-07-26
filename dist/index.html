@@ -19,7 +19,7 @@
       <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&display=swap" />
     </noscript>
 
-    <!-- Vite entry point -->
+    <!-- Vite entry point dipindah ke body agar tidak render-blocking -->
     <!-- Initialize theme color CSS variables & dark mode instantly to avoid FOUC/flash -->
     <script>
       (function () {
@@ -83,12 +83,11 @@
         }
       }
     </style>
-    <script type="module" crossorigin src="/assets/index-oEM1rYqS.js"></script>
-    <link rel="modulepreload" crossorigin href="/assets/vendor-firebase-core-BQNTUsNh.js">
-    <link rel="modulepreload" crossorigin href="/assets/vendor-firebase-db-BPL8XBZ1.js">
-    <link rel="modulepreload" crossorigin href="/assets/vendor-firebase-analytics-DKLoP2g-.js">
+    <script type="module" crossorigin src="/assets/index-WfY6Zvld.js"></script>
+    <link rel="modulepreload" crossorigin href="/assets/vendor-firebase-core-D2OF5R23.js">
+    <link rel="modulepreload" crossorigin href="/assets/vendor-firebase-db-BIUZcnOd.js">
     <link rel="modulepreload" crossorigin href="/assets/vendor-utils-bRchjNq8.js">
-    <link rel="stylesheet" crossorigin href="/assets/index-B9qoOTh6.css">
+    <link rel="stylesheet" crossorigin href="/assets/index-Cgpta_OK.css">
   </head>
   <body>
     <!-- UI Components Global -->
@@ -1152,5 +1151,8 @@
       })();
       //]]>
     </script>
+
+    <!-- Vite entry point: diletakkan SEBELUM </body> agar tidak render-blocking.
+         Browser selesai parse & render HTML+loader LEBIH DULU, baru load JS. -->
   </body>
 </html>

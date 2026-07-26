@@ -1,4 +1,8 @@
-@import '@fortawesome/fontawesome-free/css/all.min.css';
+/* Font Awesome: hanya muat subset yang dipakai (solid + brands) agar tidak memuat
+   semua ~400KB all.min.css. Regular/light/thin tidak dipakai di app ini. */
+@import '@fortawesome/fontawesome-free/css/fontawesome.min.css';
+@import '@fortawesome/fontawesome-free/css/solid.min.css';
+@import '@fortawesome/fontawesome-free/css/brands.min.css';
 
 @tailwind base;
 @tailwind components;

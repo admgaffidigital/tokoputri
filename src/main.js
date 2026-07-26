@@ -2,7 +2,7 @@ import './style.css';
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/firestore';
 import 'firebase/compat/auth';
-import 'firebase/compat/analytics';
+// firebase/compat/analytics: diload LAZY setelah halaman siap (bukan di render path kritis)
 import DOMPurify from 'dompurify';
 
 window.firebase = firebase;
@@ -301,9 +301,23 @@ const defApp = {
 
 // --- 3. STATE & INISIALISASI FIREBASE ---
 firebase.initializeApp(fbC);
-const analytics = firebase.analytics();
 const db = firebase.firestore();
 const auth = firebase.auth();
+
+// Analytics diload LAZY setelah browser idle agar tidak memperlambat render awal.
+// Dengan dynamic import, chunk firebase-analytics tidak masuk bundle kritis.
+let analytics = null;
+const loadAnalytics = () => {
+    import('firebase/compat/analytics').then(() => {
+        try { analytics = firebase.analytics(); } catch(e) {}
+    }).catch(() => {});
+};
+if (typeof requestIdleCallback !== 'undefined') {
+    requestIdleCallback(loadAnalytics, { timeout: 5000 });
+} else {
+    setTimeout(loadAnalytics, 3000);
+}
+
 
 // FIX KEAMANAN: hanya 1 akun (UID) ini yang boleh jadi admin.
 // Sebelumnya SIAPA SAJA yang berhasil login via Firebase Auth otomatis jadi admin

@@ -19,8 +19,7 @@
       <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&display=swap" />
     </noscript>
 
-    <!-- Vite entry point -->
-    <script type="module" src="/src/main.js"></script>
+    <!-- Vite entry point dipindah ke body agar tidak render-blocking -->
     <!-- Initialize theme color CSS variables & dark mode instantly to avoid FOUC/flash -->
     <script>
       (function () {
@@ -1147,5 +1146,9 @@
       })();
       //]]>
     </script>
+
+    <!-- Vite entry point: diletakkan SEBELUM </body> agar tidak render-blocking.
+         Browser selesai parse & render HTML+loader LEBIH DULU, baru load JS. -->
+    <script type="module" src="/src/main.js"></script>
   </body>
 </html>
