@@ -2149,11 +2149,24 @@ const rProdMod = () => {
     const nameLower = (p.name || '').toLowerCase();
     const catLower = (p.category || '').toLowerCase();
     const tagLower = (p.tag || '').toLowerCase();
-    const isPaint = (
+
+    // Kata kunci yang mengindikasikan produk cat (warna cat tembok, dll)
+    const PAINT_COLOR_KEYWORDS = [
+        'cat', 'paint', 'warna', 'colour', 'color',
+        // Nama warna umum yang sering jadi nama varian cat tembok
+        'putih', 'hitam', 'merah', 'biru', 'hijau', 'kuning', 'orange', 'abu',
+        'coklat', 'cream', 'krem', 'beige', 'ivory', 'mocca', 'rose', 'tosca',
+        'lavender', 'salmon', 'broken white', 'off white', 'natural', 'magnolia',
+        'primer', 'dasar', 'eksterior', 'exterior', 'interior', 'tembok',
+        'duco', 'gloss', 'matte', 'satin', 'semi gloss'
+    ];
+
+    // Cek nama/kategori/tag produk
+    const isPaintByProduct = (
         nameLower.includes('cat') && (
-            nameLower.includes('tembok') || 
-            nameLower.includes('interior') || 
-            nameLower.includes('eksterior') || 
+            nameLower.includes('tembok') ||
+            nameLower.includes('interior') ||
+            nameLower.includes('eksterior') ||
             nameLower.includes('exterior')
         )
     ) || (
@@ -2161,6 +2174,15 @@ const rProdMod = () => {
     ) || (
         tagLower.includes('cat') || tagLower.includes('paint')
     );
+
+    // Cek nama varian — jika ada varian yang mengandung kata kunci cat/warna
+    const isPaintByVariant = hV && p.variants.some(v => {
+        const vName = (v.name || '').toLowerCase();
+        return PAINT_COLOR_KEYWORDS.some(kw => vName.includes(kw));
+    });
+
+    const isPaint = isPaintByProduct || isPaintByVariant;
+
 
     const warnEl = el('product-modal-paint-warning');
     if (warnEl) {
