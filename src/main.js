@@ -6841,19 +6841,19 @@ window.oAEd = (t, id) => {
         if(k.type === 'textarea') {
             h += `<textarea autocomplete='off' id="af-${k.key}" class="admin-input resize-none shadow-sm bg-slate-50 dark:bg-slate-900" rows="3">${esc(v)}</textarea>`;
         } else if(k.type === 'select') {
-            h += `<div class="relative"><select id="af-${k.key}" class="admin-input shadow-sm cursor-pointer appearance-none pr-10 bg-slate-50 dark:bg-slate-900">`;
+            h += `<div class="relative"><select id="af-${k.key}" class="admin-input shadow-sm cursor-pointer appearance-none pr-10 bg-slate-50 dark:bg-slate-900" onchange="if(window.rVarsB) window.rVarsB();">`;
             k.options.forEach(o => { h += `<option value="${o.val}" ${v==o.val||(v==='true'&&o.val==='true')||(v==='false'&&o.val==='false')?'selected':''} class="font-bold">${o.text}</option>`; });
             h += `</select><i class="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-[10px]"></i></div>`;
         } else if(k.type === 'dynamic_select_category') {
-            h += `<div class="relative"><select id="af-${k.key}" class="admin-input shadow-sm cursor-pointer appearance-none pr-10 bg-slate-50 dark:bg-slate-900"><option value="" class="font-bold">Pilih Kategori</option>`;
+            h += `<div class="relative"><select id="af-${k.key}" class="admin-input shadow-sm cursor-pointer appearance-none pr-10 bg-slate-50 dark:bg-slate-900" onchange="if(window.rVarsB) window.rVarsB();"><option value="" class="font-bold">Pilih Kategori</option>`;
             appData.categories.forEach(c => { h += `<option value="${esc(c.name)}" ${v===c.name?'selected':''} class="font-bold">${esc(c.name)}</option>`; });
             h += `</select><i class="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-[10px]"></i></div>`;
         } else if(k.type === 'dynamic_select_brand') {
-            h += `<div class="relative"><select id="af-${k.key}" class="admin-input shadow-sm cursor-pointer appearance-none pr-10 bg-slate-50 dark:bg-slate-900"><option value="" class="font-bold">Tanpa Merek</option>`;
+            h += `<div class="relative"><select id="af-${k.key}" class="admin-input shadow-sm cursor-pointer appearance-none pr-10 bg-slate-50 dark:bg-slate-900" onchange="if(window.rVarsB) window.rVarsB();"><option value="" class="font-bold">Tanpa Merek</option>`;
             (appData.brands||[]).forEach(c => { h += `<option value="${esc(c.name)}" ${v===c.name?'selected':''} class="font-bold">${esc(c.name)}</option>`; });
             h += `</select><i class="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-[10px]"></i></div>`;
         } else if(k.type === 'dynamic_select_products') {
-            h += `<div class="relative"><select id="af-${k.key}" class="admin-input shadow-sm cursor-pointer appearance-none pr-10 bg-slate-50 dark:bg-slate-900"><option value="" class="font-bold text-emerald-600">-- Semua Produk (Tanpa Batasan) --</option>`;
+            h += `<div class="relative"><select id="af-${k.key}" class="admin-input shadow-sm cursor-pointer appearance-none pr-10 bg-slate-50 dark:bg-slate-900" onchange="if(window.rVarsB) window.rVarsB();"><option value="" class="font-bold text-emerald-600">-- Semua Produk (Tanpa Batasan) --</option>`;
             (appData.products||[]).forEach(p => { h += `<option value="${p.id}" ${v==p.id?'selected':''} class="font-bold">${esc(p.name)}</option>`; });
             h += `</select><i class="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-[10px]"></i></div>`;
         } else if(k.type === 'variants_builder') {
@@ -6907,6 +6907,8 @@ window.oAEd = (t, id) => {
 };
 
 window.rVarsB = () => {
+    const catEl = document.getElementById('af-category');
+    const isCatCategory = catEl ? /\bcat\b/i.test(catEl.value) : false;
     let h = `<div class="space-y-5 mb-5">${tVars.map((v,i) => {
         let isAct = v.isActive !== false && v.isActive !== 'false';
         return `
@@ -6958,6 +6960,18 @@ window.rVarsB = () => {
                     </div>
                 </div>
                 
+                ${!isCatCategory ? `
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Gambar Khusus Varian</label>
+                    <div class="flex gap-2.5 items-center">
+                        ${v.img ? `<img src="${esc(v.img)}" class="w-11 h-11 rounded-xl object-cover border-2 border-slate-200 dark:border-slate-600 shrink-0 shadow-sm" onerror="this.style.display='none'" loading="lazy"></i>` : ''}
+                        <input autocomplete='off' id="var-img-${i}" placeholder="URL Gambar Varian" class="admin-input !text-sm flex-1 bg-white dark:bg-slate-800 shadow-sm" value="${esc(v.img||'')}" onchange="uVar(${i},'img',fixD(this.value))"></i>
+                        <label class="bg-emerald-50 dark:bg-emerald-900/30 border border-emerald-200 dark:border-emerald-800 text-emerald-600 dark:text-emerald-400 rounded-xl w-11 h-11 flex items-center justify-center cursor-pointer hover:bg-emerald-100 transition-all shrink-0 active:scale-95 shadow-sm" title="Upload dari Galeri"><i class="fa-solid fa-upload text-sm"></i><input type="file" accept="image/*" class="hidden" onchange="handleImageUpload(this, 'var-img-${i}')" ></i></label>
+                        <label class="bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 text-blue-600 dark:text-blue-400 rounded-xl w-11 h-11 flex items-center justify-center cursor-pointer hover:bg-blue-100 transition-all shrink-0 active:scale-95 shadow-sm" title="Ambil Foto Langsung"><i class="fa-solid fa-camera text-sm"></i><input type="file" accept="image/*" capture="environment" class="hidden" onchange="handleImageUpload(this, 'var-img-${i}')" ></i></label>
+                    </div>
+                </div>
+                ` : ''}
+
                 <div>
                     <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">SKU / Barcode</label>
                     <div class="relative h-[48px]">
@@ -8819,6 +8833,8 @@ try {
         configurable: true
     });
 } catch(e) {}
+
+
 
 
 
