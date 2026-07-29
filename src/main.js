@@ -1667,7 +1667,7 @@ window.renderRewardCatalog = () => {
             <div class="w-[140px] sm:w-[160px] shrink-0 snap-start relative group cursor-pointer active:scale-95 transition-all duration-300 bg-white dark:bg-slate-800 rounded-[1.25rem] shadow-sm border border-slate-200 dark:border-slate-700 p-3 hover:shadow-md hover:-translate-y-1 hover:border-[var(--color-primary)] dark:hover:border-[var(--color-primary-dark)]" onclick="openAdminTab('rewards'); window.location.hash='#cart'; window.dispatchEvent(new Event('hashchange'));">
                 <div class="w-full aspect-square rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-700/50 flex items-center justify-center overflow-hidden mb-3 relative">
                     <img loading="lazy" src="${esc(r.img)}" alt="${esc(r.name)}" class="w-full h-full object-contain transition-transform duration-500 group-hover:scale-110 p-2" onerror="this.onerror=null;this.src='https://placehold.co/400?text=Hadiah'">
-                    <div class="absolute top-2 right-2 bg-[var(--color-primary)] text-white text-[9px] font-bold px-2 py-0.5 rounded-full shadow-sm">${parseFloat(r.pointsCost)||0} Poin</div>
+                    <div class="absolute top-2 left-2 bg-rose-500 text-white text-[9px] font-bold px-2 py-0.5 rounded-full shadow-sm uppercase tracking-widest"><i class="fa-solid fa-gift mr-1"></i>Gratis</div><div class="absolute top-2 right-2 bg-[var(--color-primary)] text-white text-[9px] font-bold px-2 py-0.5 rounded-full shadow-sm">${parseFloat(r.pointsCost)||0} Poin</div>
                 </div>
                 <h4 class="text-[11px] sm:text-xs font-bold text-slate-800 dark:text-white leading-tight line-clamp-2 uppercase tracking-widest text-center">${esc(r.name)}</h4>
             </div>`;
@@ -8878,6 +8878,7 @@ try {
         configurable: true
     });
 } catch(e) {}
+
 
 
 
