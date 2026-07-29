@@ -52,9 +52,10 @@ window.DOMPurify = DOMPurify;
         window.applyUITheme = (themeName, customHex) => {
             const uiTheme = themeName || localStorage.getItem('freshmart_ui_theme') || 'emerald';
             const colors = window.uiPalettes[uiTheme] || window.uiPalettes['emerald'];
-            
+
             if (themeName) localStorage.setItem('freshmart_ui_theme', uiTheme);
-            
+
+            // Jika ada customHex pakai itu, kalau tidak ambil dari palette atau cache
             const hex = customHex || localStorage.getItem('freshmart_theme_color') || colors[500];
             if (customHex) localStorage.setItem('freshmart_theme_color', hex);
 
@@ -63,26 +64,28 @@ window.DOMPurify = DOMPurify;
                 return ((bigint >> 16) & 255) + ',' + ((bigint >> 8) & 255) + ',' + (bigint & 255);
             });
 
+            // Helper: gelapkan/terangkan warna hex secara matematis dari hex saja
+            const adjustHex = (h, amt) => {
+                let r = parseInt(h.slice(1,3),16), g = parseInt(h.slice(3,5),16), b = parseInt(h.slice(5,7),16);
+                r = Math.max(0, Math.min(255, r + amt));
+                g = Math.max(0, Math.min(255, g + amt));
+                b = Math.max(0, Math.min(255, b + amt));
+                return '#' + [r,g,b].map(v => v.toString(16).padStart(2,'0')).join('');
+            };
+
             const primaryRgb = hexToRgb(hex);
+            // Turunkan SEMUA warna dari 1 hex saja — tidak ada lagi named palette
+            const darkHex  = adjustHex(hex, -30);   // lebih gelap ~12%
+            const lightHex = adjustHex(hex, 150);   // sangat terang untuk background subtle
 
-            // Update Tailwind palette variables
-            Object.keys(colors).forEach(shade => {
-                document.documentElement.style.setProperty(`--color-emerald-${shade}`, colors[shade]);
-            });
+            document.documentElement.style.setProperty('--color-primary',       hex);
+            document.documentElement.style.setProperty('--color-primary-dark',  darkHex);
+            document.documentElement.style.setProperty('--color-primary-light', lightHex);
+            document.documentElement.style.setProperty('--color-primary-rgb',   primaryRgb);
 
-            // Update primary theme CSS variables (used across app and #global-loader)
-            document.documentElement.style.setProperty('--color-primary', hex);
-            document.documentElement.style.setProperty('--color-primary-dark', colors[600] || hex);
-            document.documentElement.style.setProperty('--color-primary-light', colors[50] || '#f0fdf4');
-            document.documentElement.style.setProperty('--color-primary-rgb', primaryRgb);
-
-            // Update status bar meta theme-color tag
+            // Update PWA/browser header color
             let m = document.querySelector('meta[name="theme-color"]');
-            if (!m) { 
-                m = document.createElement('meta'); 
-                m.setAttribute('name', 'theme-color'); 
-                document.head.appendChild(m); 
-            }
+            if (!m) { m = document.createElement('meta'); m.setAttribute('name', 'theme-color'); document.head.appendChild(m); }
             m.setAttribute('content', hex);
 
             return colors;
@@ -1493,7 +1496,7 @@ window.rDyn = () => {
     let bHTML = (appData.banners && appData.banners.length) ? `<div id="banner-slider" class="flex overflow-x-auto gap-4 sm:gap-6 pb-6 pt-2 snap-x hide-scrollbar scroll-smooth" ontouchstart="clearInterval(bannerTmr)" ontouchend="setTimeout(startBannerAutoSlide, 3000)" onmouseenter="clearInterval(bannerTmr)" onmouseleave="startBannerAutoSlide()">${appData.banners.map((b,i)=>{
         const linkAction = b.link ? `onclick="window.open('${esc(b.link)}', '_self')"` : '';
         return `
-        <div ${linkAction} class="w-[88vw] sm:w-[480px] min-h-[180px] sm:min-h-[220px] snap-center shrink-0 rounded-[2rem] relative overflow-hidden group cursor-pointer bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-dark)] text-white shadow-md hover:-translate-y-1.5 hover:scale-[1.02] hover:shadow-[0_20px_40px_-10px_rgba(var(--color-primary-rgb),0.35)] transition-all duration-300 border border-white/15 flex flex-col">
+        <div ${linkAction} class="w-[88vw] sm:w-[480px] min-h-[180px] sm:min-h-[220px] snap-center shrink-0 rounded-[2rem] relative overflow-hidden group cursor-pointer bg-[var(--color-primary)] text-white shadow-md hover:-translate-y-1.5 hover:scale-[1.02] hover:shadow-[0_12px_32px_-8px_rgba(var(--color-primary-rgb),0.4)] transition-all duration-300 border border-white/15 flex flex-col">
             <!-- Dynamic Background Shapes -->
             <div class="absolute -right-10 -top-10 w-40 h-40 border-[24px] border-white/10 rounded-full pointer-events-none group-hover:scale-110 transition-transform duration-500"></div>
             <div class="absolute -left-12 top-10 w-24 h-24 bg-white/10 rounded-full border border-white/5 pointer-events-none transform -rotate-12 shadow-inner group-hover:-translate-x-2 transition-transform duration-500"></div>
@@ -1543,7 +1546,7 @@ window.rDyn = () => {
                 
                 return `
                 <div class="w-[280px] sm:w-[320px] shrink-0 snap-start relative group cursor-pointer active:scale-95 transition-all duration-300" onclick="copyVoucher('${esc(v.code)}')">
-                    <div class="w-full h-[110px] bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-dark)] rounded-[1.25rem] shadow-md hover:shadow-[0_15px_30px_-5px_rgba(var(--color-primary-rgb),0.3)] hover:-translate-y-1.5 hover:scale-[1.02] transition-all duration-300 flex relative overflow-hidden border border-white/20 text-white">
+                    <div class="w-full h-[110px] bg-[var(--color-primary)] rounded-[1.25rem] shadow-md hover:shadow-[0_12px_28px_-6px_rgba(var(--color-primary-rgb),0.4)] hover:-translate-y-1.5 hover:scale-[1.02] transition-all duration-300 flex relative overflow-hidden border border-white/20 text-white">
                         <!-- Glow decorative circle -->
                         <div class="absolute -right-4 -top-4 w-24 h-24 bg-white/10 rounded-full blur-xl pointer-events-none"></div>
                         
@@ -1590,7 +1593,7 @@ window.rDyn = () => {
     setH('dynamic-categories-container', cLHorizontal.map(c => {
         const isSel = aCat === c.name; const nameSafe = decodeURIComponent(encodeURIComponent(c.name).replace(/'/g,"%27"));
         if(appData.store.categoryStyle === 'text' || !appData.store.categoryStyle) {
-            return `<div onclick="filterCategory('${nameSafe}')" class="cursor-pointer shrink-0 snap-start group py-1"><div class="px-5 py-2.5 rounded-[1.25rem] border-2 transition-all duration-300 flex items-center gap-3 ${isSel ? 'bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-primary-dark)] border-transparent text-white shadow-md' : 'bg-white dark:bg-slate-800 border-slate-100 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-[var(--color-primary)] hover:shadow-md hover:-translate-y-1'}"><div class="w-6 h-6 rounded-full flex items-center justify-center ${isSel ? 'bg-white/20 text-white shadow-inner' : 'bg-slate-50 dark:bg-slate-700 text-slate-400 group-hover:bg-[var(--color-primary-light)] group-hover:text-[var(--color-primary)]'} transition-all duration-300"><i class="fa-solid fa-layer-group text-[10px]"></i></div><span class="font-bold text-[11px] sm:text-xs uppercase tracking-widest pr-2">${esc(c.name)}</span></div></div>`;
+            return `<div onclick="filterCategory('${nameSafe}')" class="cursor-pointer shrink-0 snap-start group py-1"><div class="px-5 py-2.5 rounded-[1.25rem] border-2 transition-all duration-300 flex items-center gap-3 ${isSel ? 'bg-[var(--color-primary)] border-transparent text-white shadow-md' : 'bg-white dark:bg-slate-800 border-slate-100 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-[var(--color-primary)] hover:shadow-md hover:-translate-y-1'}"><div class="w-6 h-6 rounded-full flex items-center justify-center ${isSel ? 'bg-white/20 text-white shadow-inner' : 'bg-slate-50 dark:bg-slate-700 text-slate-400 group-hover:bg-[var(--color-primary-light)] group-hover:text-[var(--color-primary)]'} transition-all duration-300"><i class="fa-solid fa-layer-group text-[10px]"></i></div><span class="font-bold text-[11px] sm:text-xs uppercase tracking-widest pr-2">${esc(c.name)}</span></div></div>`;
         } else {
             return `<div onclick="filterCategory('${nameSafe}')" class="flex flex-col items-center gap-3 cursor-pointer shrink-0 w-[80px] sm:w-[95px] group snap-start py-1"><div class="relative w-16 h-16 sm:w-[72px] sm:h-[72px] rounded-[1.25rem] bg-slate-50 dark:bg-slate-800 flex items-center justify-center p-2 transition-all duration-300 ${isSel ? 'bg-[var(--color-primary-light)] border-2 border-[var(--color-primary)] shadow-glow dark:bg-[var(--color-primary-dark)]/20' : 'border border-slate-200 dark:border-slate-700 shadow-sm group-hover:border-[var(--color-primary)] group-hover:shadow-lg group-hover:-translate-y-1.5'} overflow-hidden"><img loading="lazy" src="${esc(getOptImg(c.img, 'w150-rw'))}" alt="${esc(c.name)}" onerror="this.onerror=null;this.src='https://placehold.co/150/10b981/ffffff?text=Cat'" class="w-full h-full object-cover rounded-xl transition-transform duration-500 group-hover:scale-110"></i></div><span class="text-[9px] sm:text-[10px] text-center w-full line-clamp-2 leading-tight px-1 ${isSel ? 'font-bold text-[var(--color-primary)]' : 'font-bold text-slate-600 dark:text-slate-300 group-hover:text-[var(--color-primary)]'} uppercase tracking-widest transition-colors">${esc(c.name)}</span></div>`;
         }
@@ -1665,7 +1668,7 @@ window.renderRewardCatalog = () => {
         ${activeRewards.map((r) => {
             return `
             <div class="w-[140px] sm:w-[160px] shrink-0 snap-start relative group cursor-pointer active:scale-95 transition-all duration-300" onclick="openAdminTab('rewards'); window.location.hash='#cart'; window.dispatchEvent(new Event('hashchange'));">
-                <div class="w-full bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-dark)] rounded-[1.25rem] shadow-md hover:shadow-[0_15px_30px_-5px_rgba(var(--color-primary-rgb),0.3)] hover:-translate-y-1.5 hover:scale-[1.02] transition-all duration-300 flex flex-col relative overflow-hidden border border-white/20 text-white p-2">
+                <div class="w-full bg-[var(--color-primary)] rounded-[1.25rem] shadow-md hover:shadow-[0_12px_28px_-6px_rgba(var(--color-primary-rgb),0.4)] hover:-translate-y-1.5 hover:scale-[1.02] transition-all duration-300 flex flex-col relative overflow-hidden border border-white/20 text-white p-2">
                     <div class="absolute -right-4 -top-4 w-24 h-24 bg-white/20 rounded-full blur-xl pointer-events-none"></div>
                     <div class="absolute bottom-11 -left-3 w-6 h-6 rounded-full bg-[#f1f5f9] dark:bg-[#0b1121] border-r border-white/20 z-20 pointer-events-none transition-colors duration-400 shadow-inner"></div>
                     <div class="absolute bottom-11 -right-3 w-6 h-6 rounded-full bg-[#f1f5f9] dark:bg-[#0b1121] border-l border-white/20 z-20 pointer-events-none transition-colors duration-400 shadow-inner"></div>
@@ -3080,7 +3083,7 @@ window.renderCart = () => {
                     <div class="flex bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden shrink-0 shadow-sm h-9">
                         <button onclick="updCQty(${x},-1)" class="w-9 h-full flex items-center justify-center text-slate-500 hover:text-slate-700 hover:bg-slate-200 dark:text-slate-400 dark:hover:text-white dark:hover:bg-slate-700 font-bold transition-colors active:bg-slate-100"><i class="fa-solid fa-minus text-xs"></i></button>
                         <input type="number" step="0.01" class="w-10 h-full text-center text-xs font-bold bg-transparent text-slate-800 dark:text-white focus:outline-none border-x border-slate-200 dark:border-slate-700" value="${q}" onchange="setCQty(${x}, this.value)" ></i>
-                        <button onclick="updCQty(${x},1)" class="w-9 h-full flex items-center justify-center text-slate-500 hover:text-emerald-600 hover:bg-emerald-50 dark:text-slate-400 dark:hover:text-emerald-400 dark:hover:bg-emerald-900/30 font-bold transition-colors active:bg-slate-100"><i class="fa-solid fa-plus text-xs"></i></button>
+                        <button onclick="updCQty(${x},1)" class="w-9 h-full flex items-center justify-center text-slate-500 hover:text-[var(--color-primary)] hover:bg-[rgba(var(--color-primary-rgb),0.08)] dark:text-slate-400 dark:hover:text-[var(--color-primary)] dark:hover:bg-[rgba(var(--color-primary-rgb),0.12)] font-bold transition-colors active:bg-slate-100"><i class="fa-solid fa-plus text-xs"></i></button>
                     </div>
                 </div>
             </div>
@@ -3248,8 +3251,8 @@ window.checkMemberStatus = () => {
             const doc = await db.collection("freshmart").doc("cms_data").collection("customers").doc(waNum).get();
             if (doc.exists) {
                 currentMember = doc.data();
-                banner.className = 'mt-3 p-4 rounded-2xl border border-emerald-200 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-900/20 flex items-center justify-between gap-3';
-                banner.innerHTML = `<p class="text-[11px] font-bold text-emerald-700 dark:text-emerald-400 leading-snug"><i class="fa-solid fa-circle-check mr-1"></i>Nomor Anda terdaftar sebagai pelanggan toko kami!</p><button type="button" onclick="openMemberModal()" class="shrink-0 bg-emerald-500 hover:bg-emerald-600 text-white text-[10px] font-bold uppercase tracking-widest px-3.5 py-2.5 rounded-xl shadow-sm active:scale-95 transition-all whitespace-nowrap">Lihat Data Saya</button>`;
+                banner.className = 'mt-3 p-4 rounded-2xl border border-[var(--color-primary)]/30 bg-[rgba(var(--color-primary-rgb),0.06)] dark:bg-[rgba(var(--color-primary-rgb),0.12)] flex items-center justify-between gap-3';
+                banner.innerHTML = `<p class="text-[11px] font-bold text-[var(--color-primary)] leading-snug"><i class="fa-solid fa-circle-check mr-1"></i>Nomor Anda terdaftar sebagai pelanggan toko kami!</p><button type="button" onclick="openMemberModal()" class="shrink-0 bg-[var(--color-primary)] hover:opacity-90 text-white text-[10px] font-bold uppercase tracking-widest px-3.5 py-2.5 rounded-xl shadow-sm active:scale-95 transition-all whitespace-nowrap">Lihat Data Saya</button>`;
                 show(banner); show('payment-option-tempo');
             } else {
                 currentMember = null; selectedReward = null; hide(banner); hide('payment-option-tempo');
@@ -3290,7 +3293,7 @@ window.rMemberModalBody = () => {
         const canClaim = pts >= (parseFloat(r.pointsCost)||0) && stockOk;
         const isSelected = selectedReward && selectedReward.id === r.id;
         return `
-        <div class="flex items-center gap-3 p-4 rounded-[1.25rem] border ${isSelected ? 'border-violet-400 bg-violet-50 dark:bg-violet-900/20' : 'border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50'}">
+        <div class="flex items-center gap-3 p-4 rounded-[1.25rem] border ${isSelected ? 'border-[var(--color-primary)] bg-[rgba(var(--color-primary-rgb),0.06)] dark:bg-[rgba(var(--color-primary-rgb),0.12)]' : 'border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50'}">
             ${r.img ? `<img src="${esc(r.img)}" class="w-14 h-14 rounded-xl object-cover border border-slate-200 dark:border-slate-700 shrink-0" onerror="this.style.display='none'" loading="lazy"></i>` : `<div class="w-14 h-14 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-300 shrink-0"><i class="fa-solid fa-gift text-xl"></i></div>`}
             <div class="min-w-0 flex-1">
                 <p class="text-xs font-bold text-slate-800 dark:text-white truncate">${esc(r.name)}</p>
@@ -3299,12 +3302,12 @@ window.rMemberModalBody = () => {
             </div>
             ${isSelected
                 ? `<button type="button" onclick="deselectReward()" class="shrink-0 bg-rose-500 hover:bg-rose-600 text-white text-[10px] font-bold uppercase px-3 py-2.5 rounded-xl active:scale-95 transition-all whitespace-nowrap">Batal</button>`
-                : `<button type="button" ${canClaim?'':'disabled'} onclick="selectReward(${r.id})" class="shrink-0 ${canClaim ? 'bg-violet-500 hover:bg-violet-600 text-white active:scale-95' : 'bg-slate-200 dark:bg-slate-700 text-slate-400 cursor-not-allowed'} text-[10px] font-bold uppercase px-3 py-2.5 rounded-xl transition-all whitespace-nowrap">Pilih</button>`}
+                : `<button type="button" ${canClaim?'':'disabled'} onclick="selectReward(${r.id})" class="shrink-0 ${canClaim ? 'bg-[var(--color-primary)] hover:opacity-90 text-white active:scale-95' : 'bg-slate-200 dark:bg-slate-700 text-slate-400 cursor-not-allowed'} text-[10px] font-bold uppercase px-3 py-2.5 rounded-xl transition-all whitespace-nowrap">Pilih</button>`}
         </div>`;
     }).join('') : `<p class="text-[11px] font-bold text-slate-400 text-center py-3">Belum ada program hadiah yang tersedia.</p>`;
 
     setH('member-modal-body', `
-        <div class="bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-[1.5rem] p-5 text-white shadow-lg">
+        <div class="bg-[var(--color-primary)] rounded-[1.5rem] p-5 text-white shadow-lg">
             <p class="text-[10px] font-bold uppercase tracking-widest opacity-80">Nama</p>
             <p class="text-base font-bold mb-3">${esc(currentMember.name)}</p>
             <p class="text-[10px] font-bold uppercase tracking-widest opacity-80">No. WhatsApp</p>
@@ -3319,7 +3322,7 @@ window.rMemberModalBody = () => {
             <p class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-2.5">Tukar Poin dengan Hadiah</p>
             <div class="space-y-2.5">${rewardsHtml}</div>
         </div>
-        ${selectedReward ? `<div class="bg-violet-50 dark:bg-violet-900/20 border border-violet-200 dark:border-violet-800 rounded-xl p-3.5 text-[11px] font-bold text-violet-600 dark:text-violet-400"><i class="fa-solid fa-circle-info mr-1"></i>Hadiah "<b>${esc(selectedReward.name)}</b>" akan otomatis ditukar (poin dipotong) saat pesanan ini Anda buat.</div>` : ''}
+        ${selectedReward ? `<div class="bg-[rgba(var(--color-primary-rgb),0.06)] dark:bg-[rgba(var(--color-primary-rgb),0.12)] border border-[var(--color-primary)]/30 rounded-xl p-3.5 text-[11px] font-bold text-[var(--color-primary)]"><i class="fa-solid fa-circle-info mr-1"></i>Hadiah "<b>${esc(selectedReward.name)}</b>" akan otomatis ditukar (poin dipotong) saat pesanan ini Anda buat.</div>` : ''}
     `);
 };
 
@@ -3926,7 +3929,7 @@ const rPay = () => {
         </div>
         `;
     }).join('')
-        + (selectedReward ? `<div class="flex justify-between items-center bg-violet-50 dark:bg-violet-900/20 p-4 rounded-[1.25rem] border border-violet-200 dark:border-violet-800 shadow-sm min-w-0"><div class="flex items-center gap-3.5 min-w-0"><div class="w-12 h-12 rounded-xl bg-violet-500 text-white flex items-center justify-center shrink-0"><i class="fa-solid fa-gift"></i></div><div class="min-w-0"><p class="text-sm font-bold text-violet-700 dark:text-violet-300 truncate">${esc(selectedReward.name)}</p><p class="text-[11px] text-violet-500 font-bold mt-1"><i class="fa-solid fa-star mr-1"></i>Tukar ${selectedReward.pointsCost} Poin (Gratis)</p></div></div><button type="button" onclick="deselectReward(); rPay();" class="text-[10px] font-bold text-rose-500 uppercase shrink-0 ml-3">Batal</button></div>` : ''));
+        + (selectedReward ? `<div class="flex justify-between items-center bg-[rgba(var(--color-primary-rgb),0.06)] dark:bg-[rgba(var(--color-primary-rgb),0.12)] p-4 rounded-[1.25rem] border border-[var(--color-primary)]/30 shadow-sm min-w-0"><div class="flex items-center gap-3.5 min-w-0"><div class="w-12 h-12 rounded-xl bg-[var(--color-primary)] text-white flex items-center justify-center shrink-0"><i class="fa-solid fa-gift"></i></div><div class="min-w-0"><p class="text-sm font-bold text-[var(--color-primary)] truncate">${esc(selectedReward.name)}</p><p class="text-[11px] text-[var(--color-primary)] font-bold mt-1"><i class="fa-solid fa-star mr-1"></i>Tukar ${selectedReward.pointsCost} Poin (Gratis)</p></div></div><button type="button" onclick="deselectReward(); rPay();" class="text-[10px] font-bold text-rose-500 uppercase shrink-0 ml-3">Batal</button></div>` : ''));
         
     if(cust.note){ setIn('payment-note-text', `"${esc(cust.note)}"`); show('payment-note-preview'); } else hide('payment-note-preview');
     
@@ -4697,7 +4700,7 @@ window.customPrompt = (title, defaultVal, callback) => {
             <input type="text" id="prompt-input" value="${defaultVal}" class="w-full px-4 py-3.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-700 dark:text-slate-300 mb-6 focus:ring-2 focus:ring-emerald-500 outline-none text-center font-bold text-xl tracking-wider" autocomplete="off" />
             <div class="flex gap-3">
                 <button id="prompt-cancel" class="flex-1 py-3.5 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold rounded-xl hover:bg-slate-200 dark:hover:bg-slate-600 active:scale-95 transition-all text-sm">Batal</button>
-                <button id="prompt-ok" class="flex-1 py-3.5 bg-emerald-600 text-white font-bold rounded-xl hover:bg-emerald-700 active:scale-95 transition-all text-sm shadow-md shadow-emerald-500/30">Simpan</button>
+                <button id="prompt-ok" class="flex-1 py-3.5 bg-[var(--color-primary)] text-white font-bold rounded-xl hover:opacity-90 active:scale-95 transition-all text-sm shadow-md">Simpan</button>
             </div>
         </div>
     `;
@@ -5477,7 +5480,7 @@ window.openOrderDetail = i => {
                 
                 <div class="flex justify-between items-end relative z-10">
                     <span class="text-sm font-bold text-slate-400 uppercase tracking-widest mb-1">Total Tagihan</span>
-                    <span class="text-3xl font-bold bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-primary-dark)] bg-clip-text text-transparent tracking-tight drop-shadow-md">${fCur(o.payment?.grandTotal)}</span>
+                    <span class="text-3xl font-bold text-[var(--color-primary)] tracking-tight font-extrabold">${fCur(o.payment?.grandTotal)}</span>
                 </div>
             </div>
 
@@ -8922,6 +8925,8 @@ try {
         configurable: true
     });
 } catch(e) {}
+
+
 
 
 
