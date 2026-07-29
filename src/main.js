@@ -5778,17 +5778,25 @@ window.openSettingForm = (type) => {
         document.getElementById('set-theme-color').value = hex;
         document.getElementById('set-theme-color-picker').value = hex;
         
-        // Reset status ring & icon pada semua chip
+        // Reset semua chip preset
         document.querySelectorAll('.preset-color-chip').forEach(el => {
             el.classList.remove('ring-4', 'ring-offset-2', 'ring-slate-400', 'dark:ring-slate-500', 'scale-110');
             el.querySelector('.check-icon')?.classList.add('hidden');
         });
         
-        // Beri ring aktif & tunjukkan icon check pada chip terpilih
+        // Aktifkan ring pada chip preset yang dipilih
         const activeChip = document.getElementById(`preset-chip-${themeName}`);
         if (activeChip) {
             activeChip.classList.add('ring-4', 'ring-offset-2', 'ring-slate-400', 'dark:ring-slate-500', 'scale-110');
             activeChip.querySelector('.check-icon')?.classList.remove('hidden');
+        }
+
+        // Reset custom color chip ke tampilan default (pensil)
+        const customChip = document.getElementById('custom-color-chip');
+        if (customChip) {
+            customChip.style.background = '';
+            const icon = customChip.querySelector('i');
+            if (icon) icon.style.color = '';
         }
         
         if (typeof window.applyUITheme === 'function') {
@@ -5828,22 +5836,36 @@ window.openSettingForm = (type) => {
         formContent = `
             <div><label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Nama Toko (Nama Aplikasi)</label><input autocomplete='off' id="set-name" value="${esc(appData.store.name)}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm"></div>
             
-            <div class="grid grid-cols-1 gap-6">
+            <div class="grid grid-cols-1 gap-3">
                 <div>
-                    <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-3 uppercase tracking-widest">Pilihan Palet Warna Tema (Preset)</label>
+                    <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-3 uppercase tracking-widest flex items-center gap-2">
+                        <i class="fa-solid fa-palette" style="color:var(--color-primary)"></i> Warna Tema &amp; Header PWA
+                    </label>
                     <input type="hidden" id="set-ui-theme" value="${currentTheme}">
-                    <div class="flex flex-wrap gap-3.5 p-4 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700/80 rounded-2xl">
+                    <input type="hidden" id="set-theme-color" value="${esc(appData.store.themeColor || '#10b981')}">
+                    <div class="flex flex-wrap gap-3 p-4 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700/80 rounded-2xl">
                         ${presetHtml}
+                        <!-- Chip Warna Kustom -->
+                        <div class="relative" title="Warna Kustom (Klik untuk pilih warna bebas)">
+                            <label for="set-theme-color-picker" class="w-10 h-10 rounded-full cursor-pointer transition-all duration-200 relative flex items-center justify-center shadow-sm hover:scale-105 border-2 border-dashed border-slate-400 dark:border-slate-500 bg-white dark:bg-slate-800 hover:border-[var(--color-primary)]" id="custom-color-chip">
+                                <i class="fa-solid fa-pen text-slate-500 dark:text-slate-400 text-[11px]"></i>
+                            </label>
+                            <input type="color" id="set-theme-color-picker" value="${esc(appData.store.themeColor || '#10b981')}" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer rounded-full"
+                                oninput="
+                                    const hex = this.value;
+                                    document.getElementById('set-theme-color').value = hex;
+                                    document.getElementById('custom-color-chip').style.background = hex;
+                                    document.getElementById('custom-color-chip').querySelector('i').style.color = '#fff';
+                                    document.querySelectorAll('.preset-color-chip').forEach(el => {
+                                        el.classList.remove('ring-4','ring-offset-2','ring-slate-400','dark:ring-slate-500','scale-110');
+                                        el.querySelector('.check-icon')?.classList.add('hidden');
+                                    });
+                                    document.getElementById('set-ui-theme').value = 'custom';
+                                    if(typeof window.applyUITheme==='function') window.applyUITheme('custom', hex);
+                                ">
+                        </div>
                     </div>
-                </div>
-
-                <div>
-                    <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Atur Warna Kustom &amp; Header PWA (Sesuai Selera)</label>
-                    <div class="flex gap-3 max-w-sm">
-                        <input type="color" id="set-theme-color-picker" value="${esc(appData.store.themeColor || '#10b981')}" class="w-14 h-12 rounded-xl cursor-pointer shadow-sm border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-1" oninput="document.getElementById('set-theme-color').value = this.value; document.querySelectorAll('.preset-color-chip').forEach(el => { el.classList.remove('ring-4', 'ring-offset-2', 'ring-slate-400', 'dark:ring-slate-500', 'scale-110'); el.querySelector('.check-icon')?.classList.add('hidden'); }); if(typeof window.applyUITheme==='function') window.applyUITheme(document.getElementById('set-ui-theme').value, this.value)">
-                        <input autocomplete='off' id="set-theme-color" value="${esc(appData.store.themeColor || '#10b981')}" class="admin-input !py-3.5 uppercase font-mono flex-1 shadow-sm bg-slate-50 dark:bg-slate-900" oninput="document.getElementById('set-theme-color-picker').value = this.value; document.querySelectorAll('.preset-color-chip').forEach(el => { el.classList.remove('ring-4', 'ring-offset-2', 'ring-slate-400', 'dark:ring-slate-500', 'scale-110'); el.querySelector('.check-icon')?.classList.add('hidden'); }); if(typeof window.applyUITheme==='function') window.applyUITheme(document.getElementById('set-ui-theme').value, this.value)" placeholder="#10b981">
-                    </div>
-                    <p class="text-[9px] font-bold text-slate-400 mt-1.5">* Anda dapat memilih dari palet preset di atas atau menggunakan pemilih warna kustom ini untuk warna spesifik.</p>
+                    <p class="text-[9px] font-bold text-slate-400 mt-2">* Klik salah satu warna preset, atau klik ikon <i class="fa-solid fa-pen"></i> untuk pilih warna bebas. Warna ini juga digunakan sebagai Header PWA.</p>
                 </div>
             </div>
 
@@ -6037,6 +6059,18 @@ window.openSettingForm = (type) => {
     </div>
     `;
     setH('admin-content', h);
+    // Init chip warna kustom setelah form ter-render
+    if (type === 'profile') {
+        const savedTheme = appData.store.uiTheme || '';
+        const savedColor = appData.store.themeColor || '#10b981';
+        const isCustom = savedTheme === 'custom' || !window.uiPalettes?.[savedTheme];
+        if (isCustom) {
+            setTimeout(() => {
+                const chip = document.getElementById('custom-color-chip');
+                if (chip) { chip.style.background = savedColor; const ic = chip.querySelector('i'); if(ic) ic.style.color='#fff'; }
+            }, 50);
+        }
+    }
 };
 
 // Menyimpan Data & Trigger Reload Otomatis
@@ -8888,6 +8922,7 @@ try {
         configurable: true
     });
 } catch(e) {}
+
 
 
 
