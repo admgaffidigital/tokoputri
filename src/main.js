@@ -1656,7 +1656,7 @@ window.renderRewardCatalog = () => {
     let rHTML = `
     <div class="flex items-center justify-between mb-4">
         <h3 class="font-bold text-slate-800 dark:text-white text-sm sm:text-base tracking-tight flex items-center gap-2">
-            <div class="w-8 h-8 rounded-xl bg-violet-500 flex items-center justify-center text-white shadow-sm">
+            <div class="w-8 h-8 rounded-xl bg-[var(--color-primary)] flex items-center justify-center text-white shadow-sm">
                 <i class="fa-solid fa-gift text-sm"></i>
             </div> KATALOG HADIAH
         </h3>
@@ -1664,10 +1664,10 @@ window.renderRewardCatalog = () => {
     <div class="flex gap-4 overflow-x-auto hide-scrollbar snap-x pb-6 pt-2">
         ${activeRewards.map((r) => {
             return `
-            <div class="w-[140px] sm:w-[160px] shrink-0 snap-start relative group cursor-pointer active:scale-95 transition-all duration-300 bg-white dark:bg-slate-800 rounded-[1.25rem] shadow-sm border border-slate-200 dark:border-slate-700 p-3 hover:shadow-md hover:-translate-y-1 hover:border-violet-300 dark:hover:border-violet-600" onclick="openAdminTab('rewards'); window.location.hash='#cart'; window.dispatchEvent(new Event('hashchange'));">
+            <div class="w-[140px] sm:w-[160px] shrink-0 snap-start relative group cursor-pointer active:scale-95 transition-all duration-300 bg-white dark:bg-slate-800 rounded-[1.25rem] shadow-sm border border-slate-200 dark:border-slate-700 p-3 hover:shadow-md hover:-translate-y-1 hover:border-[var(--color-primary)] dark:hover:border-[var(--color-primary-dark)]" onclick="openAdminTab('rewards'); window.location.hash='#cart'; window.dispatchEvent(new Event('hashchange'));">
                 <div class="w-full aspect-square rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-700/50 flex items-center justify-center overflow-hidden mb-3 relative">
                     <img loading="lazy" src="${esc(r.img)}" alt="${esc(r.name)}" class="w-full h-full object-contain transition-transform duration-500 group-hover:scale-110 p-2" onerror="this.onerror=null;this.src='https://placehold.co/400?text=Hadiah'">
-                    <div class="absolute top-2 right-2 bg-violet-500 text-white text-[9px] font-bold px-2 py-0.5 rounded-full shadow-sm">${r.points} Poin</div>
+                    <div class="absolute top-2 right-2 bg-[var(--color-primary)] text-white text-[9px] font-bold px-2 py-0.5 rounded-full shadow-sm">${parseFloat(r.pointsCost)||0} Poin</div>
                 </div>
                 <h4 class="text-[11px] sm:text-xs font-bold text-slate-800 dark:text-white leading-tight line-clamp-2 uppercase tracking-widest text-center">${esc(r.name)}</h4>
             </div>`;
@@ -5739,7 +5739,7 @@ window.rAdmSet = () => {
                 <div class="w-12 h-12 rounded-2xl bg-rose-50 dark:bg-rose-900/30 text-rose-500 flex items-center justify-center shadow-inner group-hover:scale-110 group-hover:bg-rose-500 group-hover:text-white transition-all duration-300 z-10"><i class="fa-solid fa-laptop-code text-xl"></i></div>
                 <span class="font-bold text-slate-700 dark:text-slate-200 uppercase tracking-widest text-[9px] sm:text-[10px] z-10">Sistem & API</span>
             </button>
-            <button onclick="openSettingForm('operasional')" class="card-modern p-5 flex flex-col items-center justify-center text-center gap-2.5 hover:-translate-y-1.5 hover:border-violet-300 dark:hover:border-violet-600 hover:shadow-xl transition-all duration-300 group relative overflow-hidden">
+            <button onclick="openSettingForm('operasional')" class="card-modern p-5 flex flex-col items-center justify-center text-center gap-2.5 hover:-translate-y-1.5 hover:border-[var(--color-primary)] dark:hover:border-[var(--color-primary-dark)] hover:shadow-xl transition-all duration-300 group relative overflow-hidden">
                 <div class="w-12 h-12 rounded-2xl bg-violet-50 dark:bg-violet-900/30 text-violet-500 flex items-center justify-center shadow-inner group-hover:scale-110 group-hover:bg-violet-500 group-hover:text-white transition-all duration-300 z-10"><i class="fa-solid fa-sliders text-xl"></i></div>
                 <span class="font-bold text-slate-700 dark:text-slate-200 uppercase tracking-widest text-[9px] sm:text-[10px] z-10">Operasional</span>
             </button>
@@ -8878,6 +8878,8 @@ try {
         configurable: true
     });
 } catch(e) {}
+
+
 
 
 
