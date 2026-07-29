@@ -228,7 +228,7 @@ const ssL = (k, v) => { try { localStorage.setItem(k, v); } catch(e) {} };
 
 
 // Konfigurasi Default Bawaan Script
-const defaultFbC = { 
+const defaultFbC = window.FIREBASE_CONFIG || { 
     apiKey: "AIzaSyCOjrhMP52TGbiOyQLY92NDYE26N6d9hJM",
     authDomain: "restu-karya-utama.firebaseapp.com",
     databaseURL: "https://restu-karya-utama-default-rtdb.asia-southeast1.firebasedatabase.app",
@@ -8925,6 +8925,7 @@ try {
         configurable: true
     });
 } catch(e) {}
+
 
 
 

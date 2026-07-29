@@ -44,3 +44,4 @@ db.settings({
 });
 
 export { firebase };
+
