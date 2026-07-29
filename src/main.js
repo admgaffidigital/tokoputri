@@ -7193,6 +7193,9 @@ window.openImportFromProductsModal = async () => {
     const catalogs = [...new Set((appData.colors||[]).map(c => c.catalog).filter(Boolean))];
     let catalogOpts = catalogs.map(cat => `<option value="${esc(cat)}">${esc(cat)}</option>`).join('');
     
+    // FIX: Simpan newOnes ke variabel window agar tidak perlu di-serialize ke HTML (menghindari bug karakter khusus)
+    window._pendingImportVariants = newOnes;
+    
     const cm = document.getElementById('confirm-modal');
     if (!cm) return;
     document.getElementById('confirm-box').innerHTML = `
@@ -7216,14 +7219,17 @@ window.openImportFromProductsModal = async () => {
             </div>
             <div class="flex gap-3 mt-5">
                 <button onclick="closePrompt(true)" class="flex-1 py-3 rounded-xl border border-slate-200 font-bold text-slate-500 text-sm hover:bg-slate-50 transition-all">Batal</button>
-                <button onclick="confirmImportFromProducts(${JSON.stringify(newOnes).replace(/"/g,'&quot;')})" class="flex-1 py-3 rounded-xl bg-emerald-500 text-white font-bold text-sm hover:bg-emerald-600 transition-all active:scale-95"><i class="fa-solid fa-download mr-2"></i>Impor</button>
+                <button onclick="confirmImportFromProducts()" class="flex-1 py-3 rounded-xl bg-emerald-500 text-white font-bold text-sm hover:bg-emerald-600 transition-all active:scale-95"><i class="fa-solid fa-download mr-2"></i>Impor</button>
             </div>
         </div>`;
     cm.classList.remove('hidden');
     setTimeout(() => { cm.classList.remove('opacity-0'); document.getElementById('confirm-box').classList.remove('scale-95'); }, 10);
 };
 
-window.confirmImportFromProducts = async (variants) => {
+window.confirmImportFromProducts = async () => {
+    // FIX: Baca data dari variabel sementara (bukan dari parameter HTML yang bisa rusak karena karakter khusus)
+    const variants = window._pendingImportVariants || [];
+    window._pendingImportVariants = null;
     const catalog = (document.getElementById('impprod-catalog')?.value||'').trim();
     if (!appData.colors) appData.colors = [];
     const existingNames = new Set(appData.colors.map(c => c.name.toLowerCase()));
