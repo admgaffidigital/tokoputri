@@ -7021,28 +7021,28 @@ window.openColorImportModal = () => {
         grouped[cat].push(c);
     });
     
-    let html = <div class="p-6">
+    let html = `<div class="p-6">
         <div class="flex justify-between items-center mb-6">
             <h3 class="text-lg font-bold text-slate-800 dark:text-white flex items-center gap-2"><i class="fa-solid fa-swatchbook text-pink-500"></i> Pilih Warna</h3>
             <button type="button" onclick="_closeColorFloatModal()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-500 flex items-center justify-center transition-all"><i class="fa-solid fa-xmark"></i></button>
         </div>
         <div class="space-y-6 max-h-[60vh] overflow-y-auto pr-2">
-    ;
+    `;
     
     for (let cat in grouped) {
-        html += <div>
+        html += `<div>
             <h4 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3 pb-2 border-b border-slate-100 dark:border-slate-800">${esc(cat)}</h4>
             <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                ${grouped[cat].map(c => 
+                ${grouped[cat].map(c => `
                     <button type="button" onclick="importColorToVariant('${esc(c.name)}', '${esc(c.hex||'')}')" class="flex items-center gap-3 p-3 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-pink-300 dark:hover:border-pink-600 hover:-translate-y-1 hover:shadow-md transition-all text-left bg-white dark:bg-slate-800">
                         <div class="w-8 h-8 rounded-full border-2 border-slate-100 dark:border-slate-600 shadow-sm shrink-0" style="background-color: ${esc(c.hex||'transparent')}"></div>
                         <span class="text-xs font-bold text-slate-700 dark:text-slate-200 line-clamp-2">${esc(c.name)}</span>
                     </button>
-                ).join('')}
+                `).join('')}
             </div>
-        </div>;
+        </div>`;
     }
-    html += </div></div>;
+    html += `</div></div>`;
     
     _openColorFloatModal(html);
 };
@@ -7095,13 +7095,13 @@ window.exportVariantToColorDB = async (idx) => {
     const v = tVars[idx];
     if (!v || !v.name.trim()) { showToast('Nama varian kosong!'); return; }
     const existing = (appData.colors||[]).find(c => c.name.toLowerCase() === v.name.trim().toLowerCase());
-    if (existing) { showToast("" sudah ada di Database Warna.); return; }
+    if (existing) { showToast(`"${v.name}" sudah ada di Database Warna.`); return; }
     
     // Prompt untuk pilih katalog
     const catalogs = [...new Set((appData.colors||[]).map(c => c.catalog).filter(Boolean))];
-    let catalogOpts = catalogs.map(cat => <option value="${esc(cat)}">${esc(cat)}</option>).join('');
+    let catalogOpts = catalogs.map(cat => `<option value="${esc(cat)}">${esc(cat)}</option>`).join('');
     
-    _openColorFloatModal(
+    _openColorFloatModal(`
         <div class="p-6">
             <h3 class="text-lg font-bold text-slate-800 dark:text-white mb-5 flex items-center gap-2"><i class="fa-solid fa-database text-pink-500"></i> Simpan ke Database Warna</h3>
             <div class="space-y-4">
@@ -7121,7 +7121,7 @@ window.exportVariantToColorDB = async (idx) => {
                 <button onclick="_closeColorFloatModal()" class="flex-1 py-3 rounded-xl border border-slate-200 font-bold text-slate-500 text-sm hover:bg-slate-50 transition-all">Batal</button>
                 <button onclick="confirmExportVariantToColorDB()" class="flex-1 py-3 rounded-xl bg-pink-500 text-white font-bold text-sm hover:bg-pink-600 transition-all active:scale-95"><i class="fa-solid fa-floppy-disk mr-2"></i>Simpan</button>
             </div>
-        </div>);
+        </div>`);
 };
 
 window.confirmExportVariantToColorDB = async () => {
@@ -7136,7 +7136,7 @@ window.confirmExportVariantToColorDB = async () => {
     sLoad('Menyimpan ke Database Warna...');
     try {
         await saveApp(['colors']);
-        showToast("" berhasil disimpan ke Database Warna! ??);
+        showToast(`"${name}" berhasil disimpan ke Database Warna! 🎨`);
     } catch(e) { showToast('Gagal menyimpan!'); }
     finally { hLoad(); }
 };
@@ -7149,9 +7149,9 @@ window.exportAllVariantsToColorDB = async () => {
     const existingNames = new Set(appData.colors.map(c => c.name.toLowerCase()));
     
     const catalogs = [...new Set(appData.colors.map(c => c.catalog).filter(Boolean))];
-    let catalogOpts = catalogs.map(cat => <option value="${esc(cat)}">${esc(cat)}</option>).join('');
+    let catalogOpts = catalogs.map(cat => `<option value="${esc(cat)}">${esc(cat)}</option>`).join('');
     
-    _openColorFloatModal(
+    _openColorFloatModal(`
         <div class="p-6">
             <h3 class="text-lg font-bold text-slate-800 dark:text-white mb-2 flex items-center gap-2"><i class="fa-solid fa-upload text-violet-500"></i> Ekspor Semua Varian</h3>
             <p class="text-xs text-slate-500 mb-5">${toExport.length} varian akan diekspor ke Database Warna. Nama yang sudah ada di database akan dilewati.</p>
@@ -7163,7 +7163,7 @@ window.exportAllVariantsToColorDB = async () => {
                 <button onclick="_closeColorFloatModal()" class="flex-1 py-3 rounded-xl border border-slate-200 font-bold text-slate-500 text-sm hover:bg-slate-50 transition-all">Batal</button>
                 <button onclick="confirmExportAllVariants()" class="flex-1 py-3 rounded-xl bg-violet-500 text-white font-bold text-sm hover:bg-violet-600 transition-all active:scale-95"><i class="fa-solid fa-upload mr-2"></i>Ekspor</button>
             </div>
-        </div>);
+        </div>`);
 };
 
 window.confirmExportAllVariants = async () => {
@@ -7184,7 +7184,7 @@ window.confirmExportAllVariants = async () => {
     sLoad('Menyimpan...');
     try {
         await saveApp(['colors']);
-        showToast(${added} warna berhasil diekspor ke Database Warna! ??);
+        showToast(`${added} warna berhasil diekspor ke Database Warna! 🎨`);
     } catch(e) { showToast('Gagal menyimpan!'); }
     finally { hLoad(); }
 };
@@ -7206,26 +7206,26 @@ window.openImportFromProductsModal = async () => {
     if (!newOnes.length) { showToast('Semua varian produk sudah ada di Database Warna!'); return; }
     
     const catalogs = [...new Set((appData.colors||[]).map(c => c.catalog).filter(Boolean))];
-    let catalogOpts = catalogs.map(cat => <option value="${esc(cat)}">${esc(cat)}</option>).join('');
+    let catalogOpts = catalogs.map(cat => `<option value="${esc(cat)}">${esc(cat)}</option>`).join('');
     
     // Simpan newOnes ke variabel window agar tidak perlu di-serialize ke HTML
     window._pendingImportVariants = newOnes;
     
-    _openColorFloatModal(
+    _openColorFloatModal(`
         <div class="p-6">
             <h3 class="text-lg font-bold text-slate-800 dark:text-white mb-2 flex items-center gap-2"><i class="fa-solid fa-box-archive text-emerald-500"></i> Impor dari Semua Produk</h3>
             <p class="text-xs text-slate-500 mb-4">${newOnes.length} nama varian baru ditemukan (yang sudah ada di database dilewati).</p>
             <div class="max-h-48 overflow-y-auto mb-4 space-y-2">
-                ${newOnes.map((v,i) => 
+                ${newOnes.map((v,i) => `
                     <label class="flex items-center gap-3 p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 cursor-pointer hover:border-emerald-300 transition-all">
-                        <input type="checkbox" id="imp-chk-" checked class="w-4 h-4 rounded accent-emerald-500">
+                        <input type="checkbox" id="imp-chk-${i}" checked class="w-4 h-4 rounded accent-emerald-500">
                         <div class="w-5 h-5 rounded-full border border-slate-200 dark:border-slate-600 shrink-0" style="background-color:${esc(v.hex||'transparent')}"></div>
                         <div class="min-w-0">
                             <p class="text-xs font-bold text-slate-700 dark:text-slate-200 truncate">${esc(v.varName)}</p>
                             <p class="text-[10px] text-slate-400 truncate">dari: ${esc(v.prodName)}</p>
                         </div>
                     </label>
-                ).join('')}
+                `).join('')}
             </div>
             <div><label class="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-1.5">Katalog / Merek</label>
                 <input id="impprod-catalog" list="impprod-cat-list" class="admin-input" placeholder="Cth: No Drop, Boyo, dll (opsional)">
@@ -7235,7 +7235,7 @@ window.openImportFromProductsModal = async () => {
                 <button onclick="_closeColorFloatModal()" class="flex-1 py-3 rounded-xl border border-slate-200 font-bold text-slate-500 text-sm hover:bg-slate-50 transition-all">Batal</button>
                 <button onclick="confirmImportFromProducts()" class="flex-1 py-3 rounded-xl bg-emerald-500 text-white font-bold text-sm hover:bg-emerald-600 transition-all active:scale-95"><i class="fa-solid fa-download mr-2"></i>Impor</button>
             </div>
-        </div>);
+        </div>`);
 };
 
 window.confirmImportFromProducts = async () => {
@@ -7247,7 +7247,7 @@ window.confirmImportFromProducts = async () => {
     const existingNames = new Set(appData.colors.map(c => c.name.toLowerCase()));
     let added = 0;
     variants.forEach((v, i) => {
-        const chk = document.getElementById(imp-chk-${i});
+        const chk = document.getElementById(`imp-chk-${i}`);
         if (chk && chk.checked && !existingNames.has(v.varName.toLowerCase())) {
             appData.colors.push({ id: Date.now() + added, name: v.varName, hex: v.hex||'', catalog });
             existingNames.add(v.varName.toLowerCase());
@@ -7259,11 +7259,12 @@ window.confirmImportFromProducts = async () => {
     sLoad('Menyimpan...');
     try {
         await saveApp(['colors']);
-        showToast(" warna berhasil diimpor ke Database Warna! ??);
-        if (cTab === 'colors') rAdmItms('colors');
+        showToast(`${added} warna berhasil diimpor ke Database Warna! 🎨`);
+        if (typeof cTab !== 'undefined' && cTab === 'colors') rAdmItms('colors');
     } catch(e) { showToast('Gagal menyimpan!'); }
     finally { hLoad(); }
 };
+
 
 // --- RENDER GROSIR (SUPER LEGA 2 KOLOM) ---
 window.rWholB = () => {
