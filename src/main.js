@@ -1161,8 +1161,8 @@ window.showConfirm = (t, m, cb, btnText="Ya, Hapus", isDanger=true) => {
             el('confirm-icon-box').className = 'w-16 h-16 bg-rose-50 dark:bg-rose-900/30 text-rose-500 dark:text-rose-400 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-5 border border-rose-200 dark:border-rose-800';
             el('confirm-icon').className = 'fa-solid fa-triangle-exclamation';
         } else {
-            b.className = 'flex-1 py-3.5 bg-emerald-600 text-white font-bold rounded-xl hover:bg-emerald-700 active:scale-95 transition-all text-sm shadow-sm';
-            el('confirm-icon-box').className = 'w-16 h-16 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-500 dark:text-emerald-400 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-5 border border-emerald-200 dark:border-emerald-800';
+            b.className = 'flex-1 py-3.5 bg-[var(--color-primary)] text-white font-bold rounded-xl hover:opacity-90 active:scale-95 transition-all text-sm shadow-sm';
+            el('confirm-icon-box').className = 'w-16 h-16 bg-[rgba(var(--color-primary-rgb),0.08)] dark:bg-[rgba(var(--color-primary-rgb),0.15)] text-[var(--color-primary)] rounded-2xl flex items-center justify-center text-3xl mx-auto mb-5 border border-[var(--color-primary)]/20';
             el('confirm-icon').className = 'fa-solid fa-copy';
         }
     }
@@ -1205,12 +1205,12 @@ window.openCategoryModal = () => {
     // FIX TAMPILAN: kategori sekarang daftar list ke bawah (1 baris penuh per kategori),
     // bukan grid kotak-kotak lagi. Logo merek (openBrandModal di bawah) TIDAK diubah, tetap grid.
     h += `
-    <button onclick="setCat('Semua Produk'); closeCategoryModal()" class="w-full flex items-center gap-3.5 p-3 sm:p-3.5 rounded-2xl border transition-all active:scale-[0.98] ${isActiveAll ? 'bg-emerald-50/80 border-emerald-500 dark:bg-emerald-900/30 dark:border-emerald-500 shadow-[0_0_0_1px_rgba(var(--color-primary-rgb),0.2)]' : 'bg-slate-50 border-slate-200 dark:bg-slate-800/50 dark:border-slate-700 hover:border-emerald-300 dark:hover:border-emerald-600'} group">
-        <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-xl ${isActiveAll ? 'bg-emerald-500 text-white border-none' : 'bg-white text-slate-400 border border-slate-200 dark:border-slate-600 group-hover:text-emerald-500'} flex items-center justify-center shadow-sm shrink-0 overflow-hidden transition-colors">
+    <button onclick="setCat('Semua Produk'); closeCategoryModal()" class="w-full flex items-center gap-3.5 p-3 sm:p-3.5 rounded-2xl border transition-all active:scale-[0.98] ${isActiveAll ? 'bg-[rgba(var(--color-primary-rgb),0.08)] border-[var(--color-primary)] dark:bg-[rgba(var(--color-primary-rgb),0.12)] dark:border-[var(--color-primary)] shadow-[0_0_0_1px_rgba(var(--color-primary-rgb),0.2)]' : 'bg-slate-50 border-slate-200 dark:bg-slate-800/50 dark:border-slate-700 hover:border-[var(--color-primary)]/40 dark:hover:border-[var(--color-primary)]/40'} group">
+        <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-xl ${isActiveAll ? 'bg-[var(--color-primary)] text-white border-none' : 'bg-white text-slate-400 border border-slate-200 dark:border-slate-600 group-hover:text-[var(--color-primary)]'} flex items-center justify-center shadow-sm shrink-0 overflow-hidden transition-colors">
             <i class="fa-solid fa-layer-group text-base sm:text-lg"></i>
         </div>
-        <span class="text-xs sm:text-sm font-bold uppercase tracking-widest text-left flex-1 ${isActiveAll ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-600 dark:text-slate-300'}">SEMUA</span>
-        <i class="fa-solid fa-circle-check text-base ${isActiveAll ? 'text-emerald-500' : 'text-slate-300 dark:text-slate-600'}"></i>
+        <span class="text-xs sm:text-sm font-bold uppercase tracking-widest text-left flex-1 ${isActiveAll ? 'text-[var(--color-primary)]' : 'text-slate-600 dark:text-slate-300'}">SEMUA</span>
+        <i class="fa-solid fa-circle-check text-base ${isActiveAll ? 'text-[var(--color-primary)]' : 'text-slate-300 dark:text-slate-600'}"></i>
     </button>`;
 
     appData.categories.forEach(c => {
@@ -1218,12 +1218,12 @@ window.openCategoryModal = () => {
         // Ikon kategori tetap bisa diganti gambar custom (di Pengaturan > Kategori); kalau kosong, fallback ke ikon default
         let imgH = c.img ? `<img loading="lazy" src="${esc(c.img)}" alt="${esc(c.name)}" class="w-full h-full object-cover" onerror="this.onerror=null;this.src='https://placehold.co/100?text=Cat'"></i>` : `<i class="fa-solid fa-box text-base sm:text-lg"></i>`;
         h += `
-        <button onclick="setCat('${esc(c.name)}'); closeCategoryModal()" class="w-full flex items-center gap-3.5 p-3 sm:p-3.5 rounded-2xl border transition-all active:scale-[0.98] ${isActive ? 'bg-emerald-50/80 border-emerald-500 dark:bg-emerald-900/30 dark:border-emerald-500 shadow-[0_0_0_1px_rgba(var(--color-primary-rgb),0.2)]' : 'bg-slate-50 border-slate-200 dark:bg-slate-800/50 dark:border-slate-700 hover:border-emerald-300 dark:hover:border-emerald-600'} group">
-            <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-white dark:bg-slate-800 flex items-center justify-center shadow-sm shrink-0 text-slate-400 group-hover:text-emerald-500 overflow-hidden border border-slate-200 dark:border-slate-600">
+        <button onclick="setCat('${esc(c.name)}'); closeCategoryModal()" class="w-full flex items-center gap-3.5 p-3 sm:p-3.5 rounded-2xl border transition-all active:scale-[0.98] ${isActive ? 'bg-[rgba(var(--color-primary-rgb),0.08)] border-[var(--color-primary)] dark:bg-[rgba(var(--color-primary-rgb),0.12)] dark:border-[var(--color-primary)] shadow-[0_0_0_1px_rgba(var(--color-primary-rgb),0.2)]' : 'bg-slate-50 border-slate-200 dark:bg-slate-800/50 dark:border-slate-700 hover:border-[var(--color-primary)]/40 dark:hover:border-[var(--color-primary)]/40'} group">
+            <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-white dark:bg-slate-800 flex items-center justify-center shadow-sm shrink-0 text-slate-400 group-hover:text-[var(--color-primary)] overflow-hidden border border-slate-200 dark:border-slate-600">
                 ${imgH}
             </div>
-            <span class="text-xs sm:text-sm font-bold uppercase tracking-widest text-left flex-1 line-clamp-1 ${isActive ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-600 dark:text-slate-300'}">${esc(c.name)}</span>
-            <i class="fa-solid fa-circle-check text-base ${isActive ? 'text-emerald-500' : 'text-slate-300 dark:text-slate-600'}"></i>
+            <span class="text-xs sm:text-sm font-bold uppercase tracking-widest text-left flex-1 line-clamp-1 ${isActive ? 'text-[var(--color-primary)]' : 'text-slate-600 dark:text-slate-300'}">${esc(c.name)}</span>
+            <i class="fa-solid fa-circle-check text-base ${isActive ? 'text-[var(--color-primary)]' : 'text-slate-300 dark:text-slate-600'}"></i>
         </button>`;
     });
     
@@ -1243,22 +1243,22 @@ window.openBrandModal = () => {
     let isActiveAll = aBrand === 'Semua Merek';
     
     h += `
-    <button onclick="setBrand('Semua Merek'); closeBrandModal()" class="flex flex-col items-center justify-start p-2.5 sm:p-3.5 rounded-[1.25rem] border transition-all ${isActiveAll ? 'bg-emerald-50/80 border-emerald-500 dark:bg-emerald-900/30 dark:border-emerald-500 shadow-[0_0_0_1px_rgba(var(--color-primary-rgb),0.2)]' : 'bg-slate-50 border-slate-200 dark:bg-slate-800/50 dark:border-slate-700 hover:border-emerald-300 dark:hover:border-emerald-600'} group">
-        <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl ${isActiveAll ? 'bg-emerald-500 text-white border-none' : 'bg-white text-slate-400 border border-slate-200 dark:border-slate-600 group-hover:text-emerald-500'} flex items-center justify-center shadow-sm mb-2.5 transition-colors shrink-0">
+    <button onclick="setBrand('Semua Merek'); closeBrandModal()" class="flex flex-col items-center justify-start p-2.5 sm:p-3.5 rounded-[1.25rem] border transition-all ${isActiveAll ? 'bg-[rgba(var(--color-primary-rgb),0.08)] border-[var(--color-primary)] dark:bg-[rgba(var(--color-primary-rgb),0.12)] dark:border-[var(--color-primary)] shadow-[0_0_0_1px_rgba(var(--color-primary-rgb),0.2)]' : 'bg-slate-50 border-slate-200 dark:bg-slate-800/50 dark:border-slate-700 hover:border-[var(--color-primary)]/40 dark:hover:border-[var(--color-primary)]/40'} group">
+        <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl ${isActiveAll ? 'bg-[var(--color-primary)] text-white border-none' : 'bg-white text-slate-400 border border-slate-200 dark:border-slate-600 group-hover:text-[var(--color-primary)]'} flex items-center justify-center shadow-sm mb-2.5 transition-colors shrink-0">
             <i class="fa-solid fa-copyright text-lg sm:text-xl"></i>
         </div>
-        <span class="text-[9px] font-bold uppercase tracking-widest text-center leading-tight line-clamp-2 w-full break-words ${isActiveAll ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-600 dark:text-slate-300'}">SEMUA MEREK</span>
+        <span class="text-[9px] font-bold uppercase tracking-widest text-center leading-tight line-clamp-2 w-full break-words ${isActiveAll ? 'text-[var(--color-primary)]' : 'text-slate-600 dark:text-slate-300'}">SEMUA MEREK</span>
     </button>`;
 
     appData.brands.forEach(b => {
         let isActive = aBrand === b.name;
         let imgH = b.img ? `<img loading="lazy" src="${esc(b.img)}" alt="${esc(b.name)}" class="w-full h-full object-contain p-1.5" ></i>` : `<i class="fa-solid fa-tag text-lg sm:text-xl"></i>`;
         h += `
-        <button onclick="setBrand('${esc(b.name)}'); closeBrandModal()" class="flex flex-col items-center justify-start p-2.5 sm:p-3.5 rounded-[1.25rem] border transition-all ${isActive ? 'bg-emerald-50/80 border-emerald-500 dark:bg-emerald-900/30 dark:border-emerald-500 shadow-[0_0_0_1px_rgba(var(--color-primary-rgb),0.2)]' : 'bg-slate-50 border-slate-200 dark:bg-slate-800/50 dark:border-slate-700 hover:border-emerald-300 dark:hover:border-emerald-600'} group">
-            <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-white flex items-center justify-center shadow-sm mb-2.5 text-slate-400 group-hover:text-emerald-500 overflow-hidden shrink-0 border border-slate-200 dark:border-slate-600">
+        <button onclick="setBrand('${esc(b.name)}'); closeBrandModal()" class="flex flex-col items-center justify-start p-2.5 sm:p-3.5 rounded-[1.25rem] border transition-all ${isActive ? 'bg-[rgba(var(--color-primary-rgb),0.08)] border-[var(--color-primary)] dark:bg-[rgba(var(--color-primary-rgb),0.12)] dark:border-[var(--color-primary)] shadow-[0_0_0_1px_rgba(var(--color-primary-rgb),0.2)]' : 'bg-slate-50 border-slate-200 dark:bg-slate-800/50 dark:border-slate-700 hover:border-[var(--color-primary)]/40 dark:hover:border-[var(--color-primary)]/40'} group">
+            <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-white flex items-center justify-center shadow-sm mb-2.5 text-slate-400 group-hover:text-[var(--color-primary)] overflow-hidden shrink-0 border border-slate-200 dark:border-slate-600">
                 ${imgH}
             </div>
-            <span class="text-[9px] font-bold uppercase tracking-widest text-center leading-tight line-clamp-2 w-full break-words ${isActive ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-600 dark:text-slate-300'}">${esc(b.name)}</span>
+            <span class="text-[9px] font-bold uppercase tracking-widest text-center leading-tight line-clamp-2 w-full break-words ${isActive ? 'text-[var(--color-primary)]' : 'text-slate-600 dark:text-slate-300'}">${esc(b.name)}</span>
         </button>`;
     });
     
@@ -1605,15 +1605,15 @@ window.rDyn = () => {
     setH('dynamic-brands-container', bLHorizontal.map(b => {
         const isSel = aBrand === b.name; const nameSafe = decodeURIComponent(encodeURIComponent(b.name).replace(/'/g,"%27"));
         if(appData.store.brandStyle === 'text') {
-            return `<div onclick="filterBrand('${nameSafe}')" class="cursor-pointer shrink-0 snap-start group py-1"><div class="px-5 py-2.5 rounded-[1.25rem] border-2 transition-all duration-300 flex items-center gap-3 ${isSel ? 'bg-emerald-500 border-transparent text-white shadow-sm' : 'bg-white dark:bg-slate-800 border-slate-100 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-emerald-300 hover:shadow-md hover:-translate-y-1'}"><div class="w-6 h-6 rounded-full flex items-center justify-center ${isSel ? 'bg-white/20 text-white shadow-inner' : 'bg-slate-50 dark:bg-slate-700 text-slate-400 group-hover:bg-emerald-50 group-hover:text-emerald-500'} transition-all duration-300"><i class="fa-solid fa-copyright text-[10px]"></i></div><span class="font-bold text-[11px] sm:text-xs uppercase tracking-widest pr-2">${esc(b.name)}</span></div></div>`;
+            return `<div onclick="filterBrand('${nameSafe}')" class="cursor-pointer shrink-0 snap-start group py-1"><div class="px-5 py-2.5 rounded-[1.25rem] border-2 transition-all duration-300 flex items-center gap-3 ${isSel ? 'bg-[var(--color-primary)] border-transparent text-white shadow-sm' : 'bg-white dark:bg-slate-800 border-slate-100 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-[var(--color-primary)]/40 hover:shadow-md hover:-translate-y-1'}"><div class="w-6 h-6 rounded-full flex items-center justify-center ${isSel ? 'bg-white/20 text-white shadow-inner' : 'bg-slate-50 dark:bg-slate-700 text-slate-400 group-hover:bg-[rgba(var(--color-primary-rgb),0.08)] group-hover:text-[var(--color-primary)]'} transition-all duration-300"><i class="fa-solid fa-copyright text-[10px]"></i></div><span class="font-bold text-[11px] sm:text-xs uppercase tracking-widest pr-2">${esc(b.name)}</span></div></div>`;
         } else {
-            return `<div onclick="filterBrand('${nameSafe}')" class="flex flex-col items-center gap-3 cursor-pointer shrink-0 w-[75px] sm:w-[85px] group snap-start py-1"><div class="relative w-16 h-16 sm:w-[68px] sm:h-[68px] rounded-2xl bg-white flex items-center justify-center overflow-hidden p-2 transition-all duration-500 ${isSel ? 'ring-4 ring-emerald-500 ring-offset-2 ring-offset-slate-50 dark:ring-offset-slate-800 shadow-md shadow-emerald-500/20' : 'border border-slate-200 dark:border-slate-700 shadow-sm group-hover:border-emerald-400 group-hover:shadow-md group-hover:-translate-y-1.5'}"><img loading="lazy" src="${esc(getOptImg(b.img, 'w150-rw'))}" alt="${esc(b.name)}" onerror="this.onerror=null;this.src='https://placehold.co/150/10b981/ffffff?text=Brand'" class="w-full h-full object-contain drop-shadow-sm transition-transform duration-500 group-hover:scale-110"></i></div><span class="text-[9px] sm:text-[10px] text-center w-full line-clamp-2 leading-tight px-1 ${isSel ? 'font-bold text-emerald-600 dark:text-emerald-400' : 'font-bold text-slate-600 dark:text-slate-300 group-hover:text-emerald-600'} uppercase tracking-widest transition-colors">${esc(b.name)}</span></div>`;
+            return `<div onclick="filterBrand('${nameSafe}')" class="flex flex-col items-center gap-3 cursor-pointer shrink-0 w-[75px] sm:w-[85px] group snap-start py-1"><div class="relative w-16 h-16 sm:w-[68px] sm:h-[68px] rounded-2xl bg-white flex items-center justify-center overflow-hidden p-2 transition-all duration-500 ${isSel ? 'ring-4 ring-[var(--color-primary)] ring-offset-2 ring-offset-slate-50 dark:ring-offset-slate-800 shadow-md shadow-[rgba(var(--color-primary-rgb),0.25)]' : 'border border-slate-200 dark:border-slate-700 shadow-sm group-hover:border-[var(--color-primary)]/50 group-hover:shadow-md group-hover:-translate-y-1.5'}"><img loading="lazy" src="${esc(getOptImg(b.img, 'w150-rw'))}" alt="${esc(b.name)}" onerror="this.onerror=null;this.src='https://placehold.co/150/10b981/ffffff?text=Brand'" class="w-full h-full object-contain drop-shadow-sm transition-transform duration-500 group-hover:scale-110"></i></div><span class="text-[9px] sm:text-[10px] text-center w-full line-clamp-2 leading-tight px-1 ${isSel ? 'font-bold text-[var(--color-primary)]' : 'font-bold text-slate-600 dark:text-slate-300 group-hover:text-[var(--color-primary)]'} uppercase tracking-widest transition-colors">${esc(b.name)}</span></div>`;
         }
     }).join(''));
     
     setH('modal-brand-grid', bLModal.map(b => {
         const isSel = aBrand === b.name; const nameSafe = decodeURIComponent(encodeURIComponent(b.name).replace(/'/g,"%27"));
-        return `<button onclick="filterBrand('${nameSafe}'); closeBrandModal();" class="flex flex-col items-center gap-3 p-4 rounded-[1.25rem] border ${isSel?'border-emerald-500 bg-emerald-50 dark:bg-emerald-900/20 shadow-sm':'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-emerald-300 hover:shadow-sm'} transition-all active:scale-[0.96]"><div class="w-14 h-14 rounded-2xl flex items-center justify-center bg-white border border-slate-100 dark:border-slate-600 shadow-inner overflow-hidden p-1.5"><img loading="lazy" src="${esc(getOptImg(b.img, 'w150-rw'))}" alt="${esc(b.name)}" class="w-full h-full object-contain" onerror="this.src='https://placehold.co/100?text=Brand'"></div> <span class="text-[10px] sm:text-xs font-bold ${isSel?'text-emerald-700 dark:text-emerald-400':'text-slate-700 dark:text-slate-300'} text-center leading-tight line-clamp-2 uppercase tracking-widest">${esc(b.name)}</span></button>`;
+        return `<button onclick="filterBrand('${nameSafe}'); closeBrandModal();" class="flex flex-col items-center gap-3 p-4 rounded-[1.25rem] border ${isSel?'border-[var(--color-primary)] bg-[rgba(var(--color-primary-rgb),0.07)] dark:bg-[rgba(var(--color-primary-rgb),0.12)] shadow-sm':'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-[var(--color-primary)]/40 hover:shadow-sm'} transition-all active:scale-[0.96]"><div class="w-14 h-14 rounded-2xl flex items-center justify-center bg-white border border-slate-100 dark:border-slate-600 shadow-inner overflow-hidden p-1.5"><img loading="lazy" src="${esc(getOptImg(b.img, 'w150-rw'))}" alt="${esc(b.name)}" class="w-full h-full object-contain" onerror="this.src='https://placehold.co/100?text=Brand'"></div> <span class="text-[10px] sm:text-xs font-bold ${isSel?'text-[var(--color-primary)]':'text-slate-700 dark:text-slate-300'} text-center leading-tight line-clamp-2 uppercase tracking-widest">${esc(b.name)}</span></button>`;
     }).join(''));
 
     if(el('dyn-qris-img') && appData.payment) el('dyn-qris-img').src = appData.payment.qrisUrl;
@@ -1807,11 +1807,11 @@ window.rCat = () => {
             if (poinVals.length) {
                 const uniq = [...new Set(poinVals)];
                 poinBadge = uniq.length === 1
-                    ? `<span class="bg-violet-100 text-violet-700 dark:bg-violet-900/40 dark:text-violet-400 px-2 py-0.5 rounded-full text-[8px] font-bold flex items-center gap-1 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-star"></i> +${uniq[0]} Poin</span>`
-                    : `<span class="bg-violet-100 text-violet-700 dark:bg-violet-900/40 dark:text-violet-400 px-2 py-0.5 rounded-full text-[8px] font-bold flex items-center gap-1 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-star"></i> Dapat Poin</span>`;
+                    ? `<span class="bg-[rgba(var(--color-primary-rgb),0.1)] text-[var(--color-primary)] px-2 py-0.5 rounded-full text-[8px] font-bold flex items-center gap-1 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-star"></i> +${uniq[0]} Poin</span>`
+                    : `<span class="bg-[rgba(var(--color-primary-rgb),0.1)] text-[var(--color-primary)] px-2 py-0.5 rounded-full text-[8px] font-bold flex items-center gap-1 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-star"></i> Dapat Poin</span>`;
             }
         } else if (parseFloat(p.poin) > 0) {
-            poinBadge = `<span class="bg-violet-100 text-violet-700 dark:bg-violet-900/40 dark:text-violet-400 px-2 py-0.5 rounded-full text-[8px] font-bold flex items-center gap-1 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-star"></i> +${parseFloat(p.poin)} Poin</span>`;
+            poinBadge = `<span class="bg-[rgba(var(--color-primary-rgb),0.1)] text-[var(--color-primary)] px-2 py-0.5 rounded-full text-[8px] font-bold flex items-center gap-1 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-star"></i> +${parseFloat(p.poin)} Poin</span>`;
         }
 
         // FITUR BARU: badge total terjual di card katalog
@@ -2093,7 +2093,7 @@ window.previewVariant = (idx) => {
             </div>
             <div class="mt-5 text-center px-4 w-full">
                 <h4 class="text-white font-extrabold text-lg md:text-xl tracking-wide uppercase break-words leading-tight">${esc(v.name)}</h4>
-                <p class="text-emerald-400 font-extrabold text-lg mt-1 tracking-tight">${priceStr}</p>
+                <p class="text-[var(--color-primary)] font-extrabold text-lg mt-1 tracking-tight">${priceStr}</p>
                 <p class="text-slate-400 font-semibold text-[11px] md:text-xs mt-1 uppercase tracking-widest break-words">${esc(cProd.name)}</p>
             </div>
         `;
@@ -2103,7 +2103,7 @@ window.previewVariant = (idx) => {
                 <div class="absolute bottom-0 inset-x-0 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md p-6 flex flex-col items-center justify-center text-center border-t border-slate-200/50 dark:border-slate-800/50">
                     <span class="text-slate-905 dark:text-white font-extrabold text-lg uppercase tracking-wider break-words leading-tight">${esc(v.name)}</span>
                     <span class="text-slate-500 dark:text-slate-400 font-mono text-xs font-bold mt-1 uppercase">${esc(v.colorCode)}</span>
-                    <span class="text-emerald-600 dark:text-emerald-400 font-extrabold text-lg mt-1">${priceStr}</span>
+                    <span class="text-[var(--color-primary)] font-extrabold text-lg mt-1">${priceStr}</span>
                 </div>
             </div>
             <div class="mt-5 text-center px-4 w-full">
@@ -2117,7 +2117,7 @@ window.previewVariant = (idx) => {
             </div>
             <div class="mt-5 text-center px-4 w-full">
                 <h4 class="text-white font-extrabold text-lg md:text-xl tracking-wide uppercase break-words leading-tight">${esc(v.name)}</h4>
-                <p class="text-emerald-400 font-extrabold text-lg mt-1 tracking-tight">${priceStr}</p>
+                <p class="text-[var(--color-primary)] font-extrabold text-lg mt-1 tracking-tight">${priceStr}</p>
                 <p class="text-slate-400 font-semibold text-[11px] md:text-xs mt-1 uppercase tracking-widest break-words">${esc(cProd.name)}</p>
             </div>
         `;
@@ -2151,7 +2151,7 @@ window.previewProductImage = () => {
         <div class="mt-5 text-center px-4 w-full">
             <h4 class="text-white font-extrabold text-lg md:text-xl tracking-wide uppercase break-words leading-tight">${esc(cProd.name)}</h4>
             ${v ? `<p class="text-slate-300 font-bold text-sm mt-1 uppercase tracking-wide">Varian: ${esc(v.name)}</p>` : ''}
-            <p class="text-emerald-400 font-extrabold text-lg mt-1 tracking-tight">${priceStr}</p>
+            <p class="text-[var(--color-primary)] font-extrabold text-lg mt-1 tracking-tight">${priceStr}</p>
         </div>
     `;
 
@@ -2262,8 +2262,8 @@ const rProdMod = () => {
         if (dotsContainer) {
             dotsContainer.classList.remove('hidden');
             dotsContainer.innerHTML = `
-                <div class="w-2 h-2 rounded-full ${window.cSlideIdx === 0 ? 'bg-emerald-500 scale-125' : 'bg-slate-300 dark:bg-slate-600'} transition-all cursor-pointer shadow-sm" onclick="window.cSlideIdx=0; rProdMod()"></div>
-                <div class="w-2 h-2 rounded-full ${window.cSlideIdx === 1 ? 'bg-emerald-500 scale-125' : 'bg-slate-300 dark:bg-slate-600'} transition-all cursor-pointer shadow-sm" onclick="window.cSlideIdx=1; rProdMod()"></div>
+                <div class="w-2 h-2 rounded-full ${window.cSlideIdx === 0 ? 'bg-[var(--color-primary)] scale-125' : 'bg-slate-300 dark:bg-slate-600'} transition-all cursor-pointer shadow-sm" onclick="window.cSlideIdx=0; rProdMod()"></div>
+                <div class="w-2 h-2 rounded-full ${window.cSlideIdx === 1 ? 'bg-[var(--color-primary)] scale-125' : 'bg-slate-300 dark:bg-slate-600'} transition-all cursor-pointer shadow-sm" onclick="window.cSlideIdx=1; rProdMod()"></div>
             `;
         }
 
@@ -2360,7 +2360,7 @@ const rProdMod = () => {
     // FITUR BARU: badge poin member, ikut varian yang sedang dipilih (kalau ada)
     const activePoin = parseFloat(v ? v.poin : p.poin) || 0;
     if (activePoin > 0 && (!hV || cVar !== null)) {
-        bH += `<span class="bg-violet-500 text-white px-2.5 py-1 rounded-full text-[9px] font-bold flex items-center gap-1.5 whitespace-nowrap uppercase tracking-wider shadow-sm"><i class="fa-solid fa-star"></i> +${activePoin} Poin</span>`;
+        bH += `<span class="bg-[var(--color-primary)] text-white px-2.5 py-1 rounded-full text-[9px] font-bold flex items-center gap-1.5 whitespace-nowrap uppercase tracking-wider shadow-sm"><i class="fa-solid fa-star"></i> +${activePoin} Poin</span>`;
     }
 
     // FITUR BARU: total terjual -- jumlah keseluruhan varian kalau tidak ada varian dipilih,
@@ -2384,7 +2384,7 @@ const rProdMod = () => {
             <div class="space-y-2">${p.wholesale.slice().sort((a,b)=>a.minQty-b.minQty).map(w=>`
                 <div class="flex justify-between items-center text-sm font-bold bg-white dark:bg-slate-800 p-2.5 rounded-xl border border-amber-100 dark:border-slate-700 shadow-sm">
                     <span class="text-slate-600 dark:text-slate-300">≥ ${parseFloat(w.minQty)} <span class="text-[10px] uppercase tracking-wider">${esc(unt)}</span></span>
-                    <span class="text-emerald-600 dark:text-emerald-400 font-bold">${fCur(w.price)}</span>
+                    <span class="text-[var(--color-primary)] font-bold">${fCur(w.price)}</span>
                 </div>`).join('')}
             </div>
         </div>` : '');
@@ -2420,8 +2420,8 @@ const rProdMod = () => {
             }
             
             adminInfoEl.innerHTML = `
-            <div class="mb-6 bg-violet-50 dark:bg-violet-900/10 rounded-2xl p-4 border border-violet-200 dark:border-violet-800/50">
-                <p class="text-[10px] font-bold text-violet-600 dark:text-violet-400 mb-3 uppercase tracking-widest flex items-center gap-1.5"><i class="fa-solid fa-lock"></i> Info Seller</p>
+            <div class="mb-6 bg-[rgba(var(--color-primary-rgb),0.05)] dark:bg-[rgba(var(--color-primary-rgb),0.08)] rounded-2xl p-4 border border-[var(--color-primary)]/20">
+                <p class="text-[10px] font-bold text-[var(--color-primary)] mb-3 uppercase tracking-widest flex items-center gap-1.5"><i class="fa-solid fa-lock"></i> Info Seller</p>
                 <div class="grid grid-cols-2 gap-3">
                     <div class="flex flex-col gap-1">
                         <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">HPP / Modal</p>
@@ -2433,7 +2433,7 @@ const rProdMod = () => {
                     </div>
                     ${stockRows}
                 </div>
-                <button onclick="closeProductModal(); setTimeout(()=>{ openAdminTab('products'); setTimeout(()=>oAEd('products',${p.id}),200); }, 400);" class="mt-3 w-full py-2.5 rounded-xl border border-violet-200 dark:border-violet-800 bg-white dark:bg-slate-800 text-violet-600 font-bold text-[11px] uppercase tracking-widest hover:bg-violet-600 hover:text-white transition-all flex items-center justify-center gap-2">
+                <button onclick="closeProductModal(); setTimeout(()=>{ openAdminTab('products'); setTimeout(()=>oAEd('products',${p.id}),200); }, 400);" class="mt-3 w-full py-2.5 rounded-xl border border-violet-200 dark:border-[var(--color-primary)]/40 bg-white dark:bg-slate-800 text-[var(--color-primary)] font-bold text-[11px] uppercase tracking-widest hover:bg-[var(--color-primary)] hover:text-white transition-all flex items-center justify-center gap-2">
                     <i class="fa-solid fa-pen-to-square"></i> Edit Produk
                 </button>
             </div>`;
@@ -2476,12 +2476,12 @@ const rProdMod = () => {
                 if (!isVarSelectable) {
                     btnClass = "bg-slate-100 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 opacity-60 cursor-not-allowed";
                 } else if (x === cVar) {
-                    btnClass = "bg-emerald-50 border-emerald-500 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400 shadow-sm";
+                    btnClass = "bg-[rgba(var(--color-primary-rgb),0.08)] border-[var(--color-primary)] text-[var(--color-primary)] dark:bg-[rgba(var(--color-primary-rgb),0.12)] dark:text-[var(--color-primary)] shadow-sm";
                 } else {
-                    btnClass = "bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:border-emerald-300 hover:shadow-sm";
+                    btnClass = "bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:border-[var(--color-primary)]/40 hover:shadow-sm";
                 }
 
-                const zoomBtn = isVarSelectable && (r.colorCode || r.img) ? `<span onclick="event.stopPropagation(); previewVariant(${x})" class="absolute top-1.5 right-1.5 w-5 h-5 rounded-full bg-white/90 dark:bg-slate-700/90 shadow-sm flex items-center justify-center text-slate-500 hover:text-emerald-600 hover:scale-110 active:scale-90 transition-all border border-slate-200/50 dark:border-slate-600/50" title="Perbesar"><i class="fa-solid fa-magnifying-glass-plus text-[9px]"></i></span>` : '';
+                const zoomBtn = isVarSelectable && (r.colorCode || r.img) ? `<span onclick="event.stopPropagation(); previewVariant(${x})" class="absolute top-1.5 right-1.5 w-5 h-5 rounded-full bg-white/90 dark:bg-slate-700/90 shadow-sm flex items-center justify-center text-slate-500 hover:text-[var(--color-primary)] hover:scale-110 active:scale-90 transition-all border border-slate-200/50 dark:border-slate-600/50" title="Perbesar"><i class="fa-solid fa-magnifying-glass-plus text-[9px]"></i></span>` : '';
 
                 // Desain tombol Flex Column (Atas ke Bawah)
                 return `<button ${!isVarSelectable ? 'disabled' : ''} class="relative p-2.5 sm:p-3 rounded-xl text-[10px] sm:text-[11px] font-bold uppercase tracking-wide border-2 transition-all active:scale-95 flex flex-col items-center justify-start text-center h-full ${btnClass}" ${isVarSelectable ? `onclick="selectVariant(${x})"` : ''}>
@@ -2706,8 +2706,8 @@ window.renderMyOrders = async () => {
         
         let bC = "text-slate-500 border-slate-200", iC = "fa-clock";
         if(o.status==='Baru') { bC="text-rose-500 border-rose-200 bg-rose-50 dark:bg-rose-900/20 dark:border-rose-800"; iC="fa-asterisk"; }
-        else if(o.status==='Diproses') { bC="text-emerald-500 border-emerald-200 bg-emerald-50 dark:bg-emerald-900/20 dark:border-emerald-800"; iC="fa-spinner fa-spin"; }
-        else if(o.status==='Selesai') { bC="text-emerald-500 border-emerald-200 bg-emerald-50 dark:bg-emerald-900/20 dark:border-emerald-800"; iC="fa-check-double"; }
+        else if(o.status==='Diproses') { bC="text-[var(--color-primary)] border-[var(--color-primary)]/30 bg-[rgba(var(--color-primary-rgb),0.06)] dark:bg-[rgba(var(--color-primary-rgb),0.10)] dark:border-[var(--color-primary)]/30"; iC="fa-spinner fa-spin"; }
+        else if(o.status==='Selesai') { bC="text-[var(--color-primary)] border-[var(--color-primary)]/30 bg-[rgba(var(--color-primary-rgb),0.06)] dark:bg-[rgba(var(--color-primary-rgb),0.10)] dark:border-[var(--color-primary)]/30"; iC="fa-check-double"; }
         else if(o.status==='Dibatalkan') { bC="text-slate-400 border-slate-200 bg-slate-50 dark:bg-slate-800 dark:border-slate-700"; iC="fa-xmark"; }
 
         return `
@@ -2722,13 +2722,13 @@ window.renderMyOrders = async () => {
             ${(o.pointsEarned > 0 || o.claimedReward) ? `
             <div class="flex flex-wrap gap-1.5 mb-3">
                 ${o.pointsEarned > 0 ? `<span class="text-[9px] font-bold px-2 py-1 rounded-xl bg-amber-50 text-amber-600 border border-amber-200 dark:bg-amber-900/20 dark:border-amber-800 dark:text-amber-400"><i class="fa-solid fa-star mr-1"></i>+${o.pointsEarned} Poin</span>` : ''}
-                ${o.claimedReward ? `<span class="text-[9px] font-bold px-2 py-1 rounded-xl bg-violet-50 text-violet-600 border border-violet-200 dark:bg-violet-900/20 dark:border-violet-800 dark:text-violet-400"><i class="fa-solid fa-gift mr-1"></i>Hadiah: ${esc(o.claimedReward.name)} ${rewardStatusLabel(o.claimedReward)}</span>` : ''}
+                ${o.claimedReward ? `<span class="text-[9px] font-bold px-2 py-1 rounded-xl bg-[rgba(var(--color-primary-rgb),0.08)] text-[var(--color-primary)] border border-[var(--color-primary)]/30 dark:bg-[rgba(var(--color-primary-rgb),0.12)] dark:border-[var(--color-primary)]/40 dark:text-[var(--color-primary)]"><i class="fa-solid fa-gift mr-1"></i>Hadiah: ${esc(o.claimedReward.name)} ${rewardStatusLabel(o.claimedReward)}</span>` : ''}
                 ${(o.claimedReward && o.finalMemberPoints !== undefined && o.finalMemberPoints !== null) ? `<span class="text-[9px] font-bold px-2 py-1 rounded-xl bg-slate-100 text-slate-500 border border-slate-200 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-400"><i class="fa-solid fa-wallet mr-1"></i>Sisa Poin: ${o.finalMemberPoints}</span>` : ''}
             </div>` : ''}
             <div class="flex justify-between items-end mt-2">
                 <div>
                     <p class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-0.5">Total Tagihan</p>
-                    <p class="text-emerald-600 dark:text-emerald-400 font-bold text-base tracking-tight">${fCur(o.total)} <span class="text-[10px] text-slate-500 dark:text-slate-400 font-bold ml-1">(${o.itemCount} Item)</span></p>
+                    <p class="text-[var(--color-primary)] font-bold text-base tracking-tight">${fCur(o.total)} <span class="text-[10px] text-slate-500 dark:text-slate-400 font-bold ml-1">(${o.itemCount} Item)</span></p>
                 </div>
                 <div class="flex gap-2">
                     <!-- TOMBOL DETAIL BARU -->
@@ -2845,7 +2845,7 @@ window.renderOrderDetailModal = (orderId, d, reviewedKeys) => {
                     ${canReview ? `<button type="button" onclick="openReviewModal('${orderId}',${i.id},'${esc(i.variantName||'').replace(/'/g,"\\'")}','${esc(i.name).replace(/'/g,"\\'")}','${cName.replace(/'/g,"\\'")}')" class="mt-1.5 text-[10px] font-bold text-amber-500 hover:text-amber-600 flex items-center gap-1"><i class="fa-solid fa-star"></i> Berikan Ulasan</button>` : ''}
                 </div>
                 <div class="text-right shrink-0">
-                    <p class="text-xs font-bold text-slate-800 dark:text-emerald-400">${fCur(itemTotal)}</p>
+                    <p class="text-xs font-bold text-slate-800 dark:text-[var(--color-primary)]">${fCur(itemTotal)}</p>
                 </div>
             </div>
             `;
@@ -2907,7 +2907,7 @@ try {
                             <h4 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3 flex items-center gap-1.5"><i class="fa-solid fa-user text-slate-300"></i> Info Pelanggan</h4>
                             <div class="space-y-1.5 text-xs">
                                 <p class="font-bold text-slate-800 dark:text-slate-200">${cName}</p>
-                                ${(d.customer && d.customer.wa) ? `<a href="https://wa.me/${cWa}" target="_blank" class="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-bold hover:underline"><i class="fa-brands fa-whatsapp"></i> +${cWa}</a>` : ''}
+                                ${(d.customer && d.customer.wa) ? `<a href="https://wa.me/${cWa}" target="_blank" class="flex items-center gap-1.5 text-[var(--color-primary)] font-bold hover:underline"><i class="fa-brands fa-whatsapp"></i> +${cWa}</a>` : ''}
                                 ${(d.customer && d.customer.lat && d.customer.deliveryMethod === 'delivery') ? `<a href="https://www.google.com/maps?q=${esc(d.customer.lat)},${esc(d.customer.lng)}" target="_blank" class="flex items-center gap-1.5 text-blue-600 dark:text-blue-400 font-bold hover:underline"><i class="fa-solid fa-location-dot"></i> Lihat di Peta</a>` : ''}
                             </div>
                         </div>
@@ -2930,10 +2930,10 @@ try {
 
                     ${d.buktiPayment ? `
                     <div>
-                        <h4 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3 flex items-center gap-1.5"><i class="fa-solid fa-image text-violet-400"></i> Bukti Pembayaran</h4>
-                        <a href="${esc(d.buktiPayment)}" target="_blank" class="block rounded-2xl overflow-hidden border-2 border-violet-200 dark:border-violet-800 hover:border-violet-400 transition-colors shadow-sm">
+                        <h4 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3 flex items-center gap-1.5"><i class="fa-solid fa-image text-[var(--color-primary)]"></i> Bukti Pembayaran</h4>
+                        <a href="${esc(d.buktiPayment)}" target="_blank" class="block rounded-2xl overflow-hidden border-2 border-[var(--color-primary)]/30 dark:border-[var(--color-primary)]/40 hover:border-[var(--color-primary)] transition-colors shadow-sm">
                             <img src="${esc(d.buktiPayment)}" alt="Bukti Pembayaran" class="w-full max-h-56 object-cover" onerror="this.style.display='none'" loading="lazy"></i>
-                            <div class="bg-violet-50 dark:bg-violet-900/20 p-2 flex items-center justify-center gap-1.5 text-[10px] font-bold text-violet-600 dark:text-violet-400"><i class="fa-solid fa-arrow-up-right-from-square"></i> Tap untuk buka full screen</div>
+                            <div class="bg-[rgba(var(--color-primary-rgb),0.06)] p-2 flex items-center justify-center gap-1.5 text-[10px] font-bold text-[var(--color-primary)]"><i class="fa-solid fa-arrow-up-right-from-square"></i> Tap untuk buka full screen</div>
                         </a>
                     </div>` : ''}
                     
@@ -2955,22 +2955,22 @@ try {
                         ${d.pointsEarned > 0 ? `<div class="bg-amber-50 dark:bg-amber-900/10 p-3.5 rounded-xl border border-amber-100 dark:border-amber-900/30 flex items-center gap-2.5"><i class="fa-solid fa-star text-amber-400 text-lg"></i><p class="text-xs font-bold text-amber-700 dark:text-amber-400">Anda mendapat <b>+${d.pointsEarned} Poin</b> dari pesanan ini!</p></div>` : ''}
                         ${(d.finalMemberPoints !== undefined && d.finalMemberPoints !== null) ? `<div class="bg-slate-50 dark:bg-slate-800/50 p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 flex items-center gap-2.5"><i class="fa-solid fa-wallet text-slate-400 text-lg"></i><p class="text-xs font-bold text-slate-600 dark:text-slate-300">Saldo Poin Anda saat ini: <b>${d.finalMemberPoints}</b></p></div>` : ''}
                         ${d.claimedReward ? `
-                        <div class="bg-violet-50 dark:bg-violet-900/10 p-3.5 rounded-xl border border-violet-100 dark:border-violet-900/30">
-                            <div class="flex items-center gap-2.5"><i class="fa-solid fa-gift text-violet-400 text-lg"></i><p class="text-xs font-bold text-violet-700 dark:text-violet-400">Klaim Hadiah: <b>${esc(d.claimedReward.name)}</b> (${d.claimedReward.pointsCost} Poin)</p></div>
-                            <p class="text-[11px] font-bold text-violet-500 mt-1.5 ml-6">${window.rewardStatusLabel(d.claimedReward)}</p>
-                            ${d.claimedReward.note ? `<p class="text-[11px] text-violet-500/80 italic mt-0.5 ml-6">"${esc(d.claimedReward.note)}"</p>` : ''}
+                        <div class="bg-[rgba(var(--color-primary-rgb),0.06)] p-3.5 rounded-xl border border-[var(--color-primary)]/15">
+                            <div class="flex items-center gap-2.5"><i class="fa-solid fa-gift text-[var(--color-primary)] text-lg"></i><p class="text-xs font-bold text-[var(--color-primary)]">Klaim Hadiah: <b>${esc(d.claimedReward.name)}</b> (${d.claimedReward.pointsCost} Poin)</p></div>
+                            <p class="text-[11px] font-bold text-[var(--color-primary)] mt-1.5 ml-6">${window.rewardStatusLabel(d.claimedReward)}</p>
+                            ${d.claimedReward.note ? `<p class="text-[11px] text-[var(--color-primary)]/70 italic mt-0.5 ml-6">"${esc(d.claimedReward.note)}"</p>` : ''}
                         </div>` : ''}
                     </div>` : ''}
 
                     <div class="bg-slate-100 dark:bg-slate-800 p-4 rounded-2xl space-y-2 text-xs">
                         <div class="flex justify-between text-slate-500 dark:text-slate-400"><p>Subtotal Produk</p><p class="font-bold">${fCur(subtotal)}</p></div>
                         <div class="flex justify-between text-slate-500 dark:text-slate-400"><p>Ongkos Kirim</p><p class="font-bold">${fCur(shipping)}</p></div>
-                        ${shippingDiscount > 0 ? `<div class="flex justify-between text-emerald-500"><p>Diskon Ongkir</p><p class="font-bold">-${fCur(shippingDiscount)}</p></div>` : ''}
+                        ${shippingDiscount > 0 ? `<div class="flex justify-between text-[var(--color-primary)]"><p>Diskon Ongkir</p><p class="font-bold">-${fCur(shippingDiscount)}</p></div>` : ''}
                         ${discount > 0 ? `<div class="flex justify-between text-rose-500"><p>Diskon Promo</p><p class="font-bold">-${fCur(discount)}</p></div>` : ''}
                         ${ppnAmt > 0 ? `<div class="flex justify-between text-amber-500"><p>PPN (${ppnRt}%)</p><p class="font-bold">+${fCur(ppnAmt)}</p></div>` : ''}
                         <div class="flex justify-between items-center border-t border-dashed border-slate-300 dark:border-slate-600 pt-3 mt-2">
                             <p class="font-bold text-slate-800 dark:text-white uppercase tracking-widest">Total Bayar</p>
-                            <p class="text-lg font-bold text-emerald-500">${fCur(grandTotal)}</p>
+                            <p class="text-lg font-bold text-[var(--color-primary)]">${fCur(grandTotal)}</p>
                         </div>
                     </div>
                 </div>
@@ -3032,8 +3032,8 @@ window.renderWish = () => {
                 ${i.variantName?`<div class="mb-2 flex items-center gap-1.5">${colorIndicator}<span class="bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300 px-2.5 py-1 rounded-full text-[9px] font-bold border border-slate-200 dark:border-slate-600 uppercase tracking-wide">${esc(i.variantName)}</span></div>`:''}
                 
                 <div class="flex justify-between items-end mt-auto pt-1">
-                    <p class="text-emerald-600 dark:text-emerald-400 font-bold text-base sm:text-lg leading-none tracking-tight">${fCur(i.price)}</p>
-                    <button onclick="moveWish(${x})" class="h-9 px-5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white dark:bg-emerald-600 dark:hover:bg-emerald-500 border border-emerald-600 text-xs font-bold transition-colors active:scale-95 shadow-glow flex items-center gap-1.5"><i class="fa-solid fa-cart-plus"></i> Beli</button>
+                    <p class="text-[var(--color-primary)] font-bold text-base sm:text-lg leading-none tracking-tight">${fCur(i.price)}</p>
+                    <button onclick="moveWish(${x})" class="h-9 px-5 rounded-xl bg-[var(--color-primary)] hover:opacity-90 text-white border border-[var(--color-primary)] text-xs font-bold transition-colors active:scale-95 shadow-glow flex items-center gap-1.5"><i class="fa-solid fa-cart-plus"></i> Beli</button>
                 </div>
             </div>
         </div>`;
@@ -3053,7 +3053,7 @@ window.renderCart = () => {
         let colorIndicator = i.colorCode ? `<span class="w-3.5 h-3.5 rounded-full shadow-inner border border-slate-300 dark:border-slate-600 shrink-0" style="background-color: ${esc(i.colorCode)};"></span>` : '';
 
         return `
-        <div class="bg-white dark:bg-slate-800 p-4 rounded-[1.25rem] border border-slate-200 dark:border-slate-700 shadow-sm flex gap-4 relative overflow-hidden group min-w-0 hover:shadow-md hover:-translate-y-1 hover:border-emerald-300 dark:hover:border-emerald-600 transition-all duration-300">
+        <div class="bg-white dark:bg-slate-800 p-4 rounded-[1.25rem] border border-slate-200 dark:border-slate-700 shadow-sm flex gap-4 relative overflow-hidden group min-w-0 hover:shadow-md hover:-translate-y-1 hover:border-[var(--color-primary)]/40 dark:hover:border-[var(--color-primary)]/40 transition-all duration-300">
             
             <div class="relative w-20 h-20 sm:w-24 sm:h-24 shrink-0 rounded-2xl bg-white border border-slate-100 dark:border-slate-700/50 p-2 flex items-center justify-center overflow-hidden">
                 <img loading="lazy" src="${esc(i.img)}" alt="${esc(i.name)}" class="w-full h-full object-contain transition-transform duration-500 group-hover:scale-110" onerror="this.onerror=null;this.src='https://placehold.co/400?text=No+Image'"></i>
@@ -3075,7 +3075,7 @@ window.renderCart = () => {
                     <div>
                         ${w?`<p class="text-[10px] line-through text-slate-400 font-bold mb-0.5">${fCur(i.price)}</p>`:''}
                         <div class="flex items-baseline gap-1">
-                            <p class="text-emerald-600 dark:text-emerald-400 font-bold text-base sm:text-lg leading-none tracking-tight">${fCur(e)}</p>
+                            <p class="text-[var(--color-primary)] font-bold text-base sm:text-lg leading-none tracking-tight">${fCur(e)}</p>
                             <p class="text-[9px] text-slate-400 font-bold uppercase tracking-widest">/${esc(i.unit||'pcs')}</p>
                         </div>
                     </div>
@@ -3158,7 +3158,7 @@ window.getLocation = () => {
         hide('btn-location'); show('location-status'); el('location-status').classList.add('flex');
         showToast("GPS Didapatkan");
     }, e => {
-        el('btn-location').innerHTML = `<i class="fa-solid fa-location-crosshairs text-emerald-400"></i> Set GPS Maps`;
+        el('btn-location').innerHTML = `<i class="fa-solid fa-location-crosshairs text-[var(--color-primary)]"></i> Set GPS Maps`;
         showToast("Gagal akses GPS");
     }, {enableHighAccuracy: true, timeout: 15000});
 };
@@ -3197,7 +3197,7 @@ window.applyVoucher = () => {
         else {
             vouch = f;
             setH('voucher-msg', `<i class="fa-solid fa-check-circle mr-1"></i> Voucher Diterapkan!`);
-            el('voucher-msg').className = "text-sm font-bold text-emerald-600 dark:text-emerald-400";
+            el('voucher-msg').className = "text-sm font-bold text-[var(--color-primary)]";
         }
     } else if(i === ''){
         vouch = null; hide('voucher-msg-container');
@@ -3297,7 +3297,7 @@ window.rMemberModalBody = () => {
             ${r.img ? `<img src="${esc(r.img)}" class="w-14 h-14 rounded-xl object-cover border border-slate-200 dark:border-slate-700 shrink-0" onerror="this.style.display='none'" loading="lazy"></i>` : `<div class="w-14 h-14 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-300 shrink-0"><i class="fa-solid fa-gift text-xl"></i></div>`}
             <div class="min-w-0 flex-1">
                 <p class="text-xs font-bold text-slate-800 dark:text-white truncate">${esc(r.name)}</p>
-                <p class="text-[11px] font-bold text-violet-500 mt-0.5"><i class="fa-solid fa-star mr-1"></i>${parseFloat(r.pointsCost)||0} Poin</p>
+                <p class="text-[11px] font-bold text-[var(--color-primary)] mt-0.5"><i class="fa-solid fa-star mr-1"></i>${parseFloat(r.pointsCost)||0} Poin</p>
                 ${!stockOk ? `<p class="text-[10px] font-bold text-rose-500 mt-0.5">Stok hadiah kosong</p>` : ''}
             </div>
             ${isSelected
@@ -4594,8 +4594,8 @@ window.loadAdminReport = async (period) => {
                 <p class="text-[10px] font-bold text-slate-400 mt-1">${orderCount} pesanan${truncated ? ' (≥3000, dibatasi)' : ''}</p>
             </div>
             <div class="card-modern p-5 sm:p-5">
-                <p class="text-[9px] font-bold text-emerald-500 uppercase tracking-widest mb-1.5"><i class="fa-solid fa-arrow-trend-up mr-1"></i>Laba Kotor</p>
-                <p class="text-lg sm:text-xl font-bold text-emerald-600 truncate">${fCur(labaKotor)}</p>
+                <p class="text-[9px] font-bold text-[var(--color-primary)] uppercase tracking-widest mb-1.5"><i class="fa-solid fa-arrow-trend-up mr-1"></i>Laba Kotor</p>
+                <p class="text-lg sm:text-xl font-bold text-[var(--color-primary)] truncate">${fCur(labaKotor)}</p>
                 <p class="text-[10px] font-bold text-slate-400 mt-1">Penjualan − HPP Terjual</p>
             </div>
             <div class="card-modern p-5 sm:p-5">
@@ -4697,7 +4697,7 @@ window.customPrompt = (title, defaultVal, callback) => {
     div.innerHTML = `
         <div class="bg-white dark:bg-slate-800 rounded-[2rem] w-full max-w-[320px] p-6 shadow-2xl border border-slate-200 dark:border-slate-700 relative transform scale-95 transition-all duration-300 flex flex-col text-center">
             <h3 class="font-bold text-slate-900 dark:text-white text-lg mb-4">${title}</h3>
-            <input type="text" id="prompt-input" value="${defaultVal}" class="w-full px-4 py-3.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-700 dark:text-slate-300 mb-6 focus:ring-2 focus:ring-emerald-500 outline-none text-center font-bold text-xl tracking-wider" autocomplete="off" />
+            <input type="text" id="prompt-input" value="${defaultVal}" class="w-full px-4 py-3.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-700 dark:text-slate-300 mb-6 focus:ring-2 focus:ring-[var(--color-primary)] outline-none text-center font-bold text-xl tracking-wider" autocomplete="off" />
             <div class="flex gap-3">
                 <button id="prompt-cancel" class="flex-1 py-3.5 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold rounded-xl hover:bg-slate-200 dark:hover:bg-slate-600 active:scale-95 transition-all text-sm">Batal</button>
                 <button id="prompt-ok" class="flex-1 py-3.5 bg-[var(--color-primary)] text-white font-bold rounded-xl hover:opacity-90 active:scale-95 transition-all text-sm shadow-md">Simpan</button>
@@ -4978,7 +4978,7 @@ window.rAdmPiutang = async () => {
 
     if (piutangOrders.length === 0) {
         h += `<div class="bg-white dark:bg-slate-800 p-8 text-center rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
-                <div class="w-20 h-20 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-500 rounded-full flex items-center justify-center mx-auto mb-4"><i class="fa-solid fa-check-double text-4xl"></i></div>
+                <div class="w-20 h-20 bg-[rgba(var(--color-primary-rgb),0.08)] dark:bg-[rgba(var(--color-primary-rgb),0.15)] text-[var(--color-primary)] rounded-full flex items-center justify-center mx-auto mb-4"><i class="fa-solid fa-check-double text-4xl"></i></div>
                 <h3 class="font-bold text-slate-700 dark:text-slate-200 text-lg uppercase tracking-widest">Luar Biasa!</h3>
                 <p class="text-slate-500 mt-2 text-xs font-bold">Semua tagihan pelanggan telah lunas. Tidak ada piutang tertunda.</p>
               </div>`;
@@ -5048,7 +5048,7 @@ window.rAdmPiutang = async () => {
                     <button onclick="editTempoPenalty('${o.orderId}', ${rate})" class="flex-1 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-300 rounded-xl py-2 flex items-center justify-center gap-1.5 text-[10px] font-bold uppercase tracking-widest transition-all">
                         <i class="fa-solid fa-percent"></i> Edit Denda
                     </button>
-                    <button onclick="stopTempoPenalty('${o.orderId}', ${latePenalty}, ${isStopped})" class="flex-1 ${isStopped ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-200' : 'bg-rose-100 dark:bg-rose-900/30 text-rose-600 dark:text-rose-400 hover:bg-rose-200'} rounded-xl py-2 flex items-center justify-center gap-1.5 text-[10px] font-bold uppercase tracking-widest transition-all">
+                    <button onclick="stopTempoPenalty('${o.orderId}', ${latePenalty}, ${isStopped})" class="flex-1 ${isStopped ? 'bg-[rgba(var(--color-primary-rgb),0.08)] dark:bg-[rgba(var(--color-primary-rgb),0.12)] text-[var(--color-primary)] hover:bg-[rgba(var(--color-primary-rgb),0.15)]' : 'bg-rose-100 dark:bg-rose-900/30 text-rose-600 dark:text-rose-400 hover:bg-rose-200'} rounded-xl py-2 flex items-center justify-center gap-1.5 text-[10px] font-bold uppercase tracking-widest transition-all">
                         <i class="fa-solid ${isStopped ? 'fa-play' : 'fa-stop'}"></i> ${isStopped ? 'Lanjut Denda' : 'Stop Denda'}
                     </button>
                 </div>
@@ -5062,13 +5062,13 @@ window.rAdmPiutang = async () => {
                     ${o.payment.installments.map((ins) => `
                     <div class="flex justify-between items-center text-[10px]">
                         <span class="text-slate-500 dark:text-slate-400">${new Date(ins.date).toLocaleDateString('id-ID')}</span>
-                        <span class="font-bold text-emerald-600 dark:text-emerald-400 font-mono">+${fCur(ins.amount)}</span>
+                        <span class="font-bold text-[var(--color-primary)] font-mono">+${fCur(ins.amount)}</span>
                     </div>
                     `).join('')}
                 </div>` : ''}
                 
                 <div class="flex gap-2 mb-2">
-                    <a href="https://wa.me/${waNum}?text=Halo%20kak%20${esc(o.customer?.name||'')},%20mengingatkan%20bahwa%20sisa%20tagihan%20Tempo%20untuk%20pesanan%20${o.orderId}%20sebesar%20${fCur(totalAkhir)}%20sudah%20jatuh%20tempo.%20Mohon%20segera%20dilunasi." target="_blank" class="flex-1 bg-emerald-50 dark:bg-emerald-900/30 hover:bg-emerald-100 dark:hover:bg-emerald-900/50 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 rounded-xl py-2 flex items-center justify-center gap-1.5 text-[10px] font-bold uppercase tracking-widest transition-all">
+                    <a href="https://wa.me/${waNum}?text=Halo%20kak%20${esc(o.customer?.name||'')},%20mengingatkan%20bahwa%20sisa%20tagihan%20Tempo%20untuk%20pesanan%20${o.orderId}%20sebesar%20${fCur(totalAkhir)}%20sudah%20jatuh%20tempo.%20Mohon%20segera%20dilunasi." target="_blank" class="flex-1 bg-[rgba(var(--color-primary-rgb),0.06)] dark:bg-[rgba(var(--color-primary-rgb),0.10)] hover:bg-[rgba(var(--color-primary-rgb),0.12)] dark:hover:bg-[rgba(var(--color-primary-rgb),0.16)] text-[var(--color-primary)] border border-[var(--color-primary)]/25 rounded-xl py-2 flex items-center justify-center gap-1.5 text-[10px] font-bold uppercase tracking-widest transition-all">
                         <i class="fa-brands fa-whatsapp text-sm"></i> Tagih
                     </a>
                     <button onclick="previewTempoReceipt('${o.orderId}')" class="flex-1 bg-amber-500 hover:bg-amber-600 text-white rounded-xl py-2 flex items-center justify-center gap-1.5 text-[10px] font-bold uppercase tracking-widest shadow-sm shadow-amber-500/30 transition-all">
@@ -5076,10 +5076,10 @@ window.rAdmPiutang = async () => {
                     </button>
                 </div>
                 <div class="flex gap-2">
-                    <button onclick="payTempoInstallment('${o.orderId}')" class="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl py-2.5 flex items-center justify-center gap-1.5 text-[10px] font-bold uppercase tracking-widest shadow-sm transition-all">
+                    <button onclick="payTempoInstallment('${o.orderId}')" class="flex-1 bg-[var(--color-primary)] hover:opacity-90 text-white rounded-xl py-2.5 flex items-center justify-center gap-1.5 text-[10px] font-bold uppercase tracking-widest shadow-sm transition-all">
                         <i class="fa-solid fa-money-bill-wave"></i> Cicil
                     </button>
-                    <button onclick="markTempoPaid('${o.orderId}')" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl py-2.5 flex items-center justify-center gap-1.5 text-[10px] font-bold uppercase tracking-widest shadow-sm transition-all">
+                    <button onclick="markTempoPaid('${o.orderId}')" class="flex-1 bg-[var(--color-primary)] hover:opacity-90 text-white rounded-xl py-2.5 flex items-center justify-center gap-1.5 text-[10px] font-bold uppercase tracking-widest shadow-sm transition-all">
                         <i class="fa-solid fa-check-double"></i> Lunas
                     </button>
                 </div>
@@ -5241,7 +5241,7 @@ window.exportOrdersToExcel = async () => {
                 <i class="fa-solid fa-file-csv"></i> <span class="hidden sm:inline">Export Excel</span>
             </button>
         </div>
-        <div id="admin-orders-list" class="space-y-4"><div class="text-center py-16"><div class="w-12 h-12 border-4 border-emerald-500/20 border-t-emerald-500 rounded-full animate-spin mx-auto"></div></div></div>
+        <div id="admin-orders-list" class="space-y-4"><div class="text-center py-16"><div class="w-12 h-12 border-4 border-[rgba(var(--color-primary-rgb),0.2)] border-t-[var(--color-primary)] rounded-full animate-spin mx-auto"></div></div></div>
     `);
     
     const s = () => {
@@ -5302,11 +5302,11 @@ window.exportOrdersToExcel = async () => {
                     iC="fa-asterisk"; boxBg="bg-rose-500"; boxText="text-white shadow-md shadow-rose-500/30";
                 }
                 else if(o.status==='Diproses'){
-                    bC="text-emerald-500 border-emerald-200 bg-emerald-50 dark:bg-emerald-900/20 dark:border-emerald-800"; 
+                    bC="text-[var(--color-primary)] border-[var(--color-primary)]/30 bg-[rgba(var(--color-primary-rgb),0.06)] dark:bg-[rgba(var(--color-primary-rgb),0.10)] dark:border-[var(--color-primary)]/30"; 
                     iC="fa-spinner fa-spin"; boxBg="bg-emerald-500"; boxText="text-white shadow-sm";
                 }
                 else if(o.status==='Selesai'){
-                    bC="text-emerald-500 border-emerald-200 bg-emerald-50 dark:bg-emerald-900/20 dark:border-emerald-800"; 
+                    bC="text-[var(--color-primary)] border-[var(--color-primary)]/30 bg-[rgba(var(--color-primary-rgb),0.06)] dark:bg-[rgba(var(--color-primary-rgb),0.10)] dark:border-[var(--color-primary)]/30"; 
                     iC="fa-check-double"; boxBg="bg-emerald-50 dark:bg-emerald-900/30"; boxText="text-emerald-500";
                 }
                 else if(o.status==='Dibatalkan'){
@@ -5363,7 +5363,7 @@ window.exportOrdersToExcel = async () => {
 
                     <div class="flex items-center justify-between">
                         <div class="flex items-center gap-2">
-                            <span class="font-bold text-emerald-600 dark:text-emerald-400 text-lg sm:text-xl tracking-tight">${fCur(o.payment?.grandTotal)}</span>
+                            <span class="font-bold text-[var(--color-primary)] text-lg sm:text-xl tracking-tight">${fCur(o.payment?.grandTotal)}</span>
                             ${o.payment?.ppnAmount ? `<span class="text-[8px] font-bold bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400 px-1.5 py-0.5 rounded border border-amber-200 dark:border-amber-800 uppercase tracking-widest">PPN ${o.payment.ppnRate||11}%</span>` : ''}
                         </div>
                         <div class="flex items-center gap-2 bg-slate-50 dark:bg-slate-900 px-3 py-1.5 rounded-xl border border-slate-100 dark:border-slate-700">
@@ -6289,12 +6289,12 @@ window.rAdmItms = t => {
         let delBtn = `<button class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-rose-50 border border-rose-200 text-rose-500 flex items-center justify-center hover:bg-rose-500 hover:text-white dark:bg-rose-900/30 dark:border-rose-800 transition-all active:scale-95 shadow-sm" onclick="event.stopPropagation(); oADel('${t}',${x.id})" title="Hapus Permanen"><i class="fa-solid fa-trash text-xs sm:text-sm"></i></button>`;
 
         return `
-        <div class="p-4 sm:p-5 md:p-6 lg:p-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-[1.5rem] border shadow-sm cursor-pointer hover:shadow-md hover:-translate-y-1 hover:border-emerald-300 dark:hover:border-emerald-600 transition-all duration-300 ${bC}" onclick="oAEd('${t}',${x.id})">
+        <div class="p-4 sm:p-5 md:p-6 lg:p-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-[1.5rem] border shadow-sm cursor-pointer hover:shadow-md hover:-translate-y-1 hover:border-[var(--color-primary)]/40 dark:hover:border-[var(--color-primary)]/40 transition-all duration-300 ${bC}" onclick="oAEd('${t}',${x.id})">
             <div class="flex items-start sm:items-center gap-4 min-w-0 w-full">
                 ${img}
                 <div class="min-w-0 flex flex-col justify-center py-1">
                     <p class="text-xs sm:text-sm font-bold ${tC} line-clamp-2 uppercase tracking-wide leading-snug mb-1.5">${esc(x.name||x.title||x.bankName||x.code||'Item')}</p>
-                    ${isP ? `<p class="text-sm sm:text-base font-bold text-emerald-600 dark:text-emerald-400 tracking-tight">${fCur(x.price)}</p>` : ''}
+                    ${isP ? `<p class="text-sm sm:text-base font-bold text-[var(--color-primary)] tracking-tight">${fCur(x.price)}</p>` : ''}
                     ${isP && window.isAdm && useStockEnabled ? `<p class="text-[10px] font-bold mt-1 ${(x.variants&&x.variants.length?x.variants.reduce((s,v)=>s+(parseFloat(v.stock)||0),0):parseFloat(x.stock)||0) === 0 ? 'text-rose-500 animate-pulse' : 'text-blue-500'}"><i class="fa-solid fa-boxes-stacked mr-1"></i>Stok: ${x.variants&&x.variants.length ? x.variants.reduce((s,v)=>s+(parseFloat(v.stock)||0),0).toFixed(2).replace(/\.?0+$/,'') : (parseFloat(x.stock)||0)}</p>` : ''}
                     ${isP && window.isAdm && x.hpp ? `<p class="text-[10px] font-bold text-amber-500 mt-0.5"><i class="fa-solid fa-coins mr-1"></i>HPP: ${fCur(x.hpp)}</p>` : ''}
                     ${isP ? (() => {
@@ -6302,7 +6302,7 @@ window.rAdmItms = t => {
                         return sold > 0 ? `<p class="text-[10px] font-bold text-orange-400 mt-0.5"><i class="fa-solid fa-fire-flame-curved mr-1"></i>Terjual: ${sold}</p>` : '';
                     })() : ''}
                     ${t==='colors' ? `<div class="flex items-center gap-2 mt-1"><div class="w-4 h-4 rounded-full border border-slate-200 dark:border-slate-600 shadow-sm" style="background-color: ${esc(x.hex||'transparent')}"></div><p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest"><i class="fa-solid fa-swatchbook mr-1"></i>${esc(x.catalog||'Tanpa Katalog')}</p></div>` : ''}
-                    ${t==='customers' ? `<p class="text-xs font-bold text-slate-500 dark:text-slate-400"><i class="fa-brands fa-whatsapp text-emerald-500 mr-1"></i>+${esc(x.phone)}</p><p class="text-[11px] font-bold text-violet-500 mt-0.5"><i class="fa-solid fa-star mr-1"></i>${(parseFloat(x.points)||0)} Poin</p>` : ''}
+                    ${t==='customers' ? `<p class="text-xs font-bold text-slate-500 dark:text-slate-400"><i class="fa-brands fa-whatsapp text-emerald-500 mr-1"></i>+${esc(x.phone)}</p><p class="text-[11px] font-bold text-[var(--color-primary)] mt-0.5"><i class="fa-solid fa-star mr-1"></i>${(parseFloat(x.points)||0)} Poin</p>` : ''}
                     ${t==='rewards' ? `<p class="text-sm font-bold text-violet-500"><i class="fa-solid fa-star mr-1"></i>${(parseFloat(x.pointsCost)||0)} Poin</p><p class="text-[10px] font-bold text-slate-500 mt-0.5"><i class="fa-solid fa-boxes-stacked mr-1"></i>Stok: ${parseFloat(x.stock)||0}</p>` : ''}
                 </div>
             </div>
@@ -6369,7 +6369,7 @@ window.rAdmReviews = () => {
             ${r.adminReply ? `<div class="bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-xl p-3 mb-2.5"><p class="text-[9px] font-bold text-[var(--color-primary)] uppercase tracking-widest mb-1"><i class="fa-solid fa-store mr-1"></i>Balasan Anda</p><p class="text-[11px] text-slate-600 dark:text-slate-300">${esc(r.adminReply)}</p></div>` : ''}
             <div class="flex flex-wrap gap-2 pt-2 border-t border-slate-100 dark:border-slate-700/60">
                 <button onclick="replyToReview(${r.id})" class="px-3 py-2 rounded-xl bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 text-[10px] font-bold uppercase tracking-widest flex items-center gap-1.5 hover:bg-blue-100 transition-all"><i class="fa-solid fa-reply"></i> ${r.adminReply ? 'Edit Balasan' : 'Balas'}</button>
-                <button onclick="toggleReviewVisibility(${r.id})" class="px-3 py-2 rounded-xl ${hidden ? 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-100' : 'bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400 hover:bg-amber-100'} text-[10px] font-bold uppercase tracking-widest flex items-center gap-1.5 transition-all"><i class="fa-solid ${hidden ? 'fa-eye' : 'fa-eye-slash'}"></i> ${hidden ? 'Tampilkan' : 'Sembunyikan'}</button>
+                <button onclick="toggleReviewVisibility(${r.id})" class="px-3 py-2 rounded-xl ${hidden ? 'bg-emerald-50 dark:bg-emerald-900/20 text-[var(--color-primary)] hover:bg-emerald-100' : 'bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400 hover:bg-amber-100'} text-[10px] font-bold uppercase tracking-widest flex items-center gap-1.5 transition-all"><i class="fa-solid ${hidden ? 'fa-eye' : 'fa-eye-slash'}"></i> ${hidden ? 'Tampilkan' : 'Sembunyikan'}</button>
                 <button onclick="deleteReview(${r.id})" class="px-3 py-2 rounded-xl bg-rose-50 dark:bg-rose-900/20 text-rose-500 text-[10px] font-bold uppercase tracking-widest flex items-center gap-1.5 hover:bg-rose-100 transition-all"><i class="fa-solid fa-trash"></i> Hapus</button>
             </div>
         </div>`;
@@ -6504,12 +6504,12 @@ window.rTaxRenderShell = () => {
            headerHTML = `
            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-5">
               ${tabs.map(t => `
-                  <button onclick="switchTaxTab('${t.k}')" class="flex flex-col items-start gap-3 p-4 sm:p-5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl hover:-translate-y-1 hover:shadow-md hover:border-emerald-300 dark:hover:border-emerald-600 transition-all text-left group">
+                  <button onclick="switchTaxTab('${t.k}')" class="flex flex-col items-start gap-3 p-4 sm:p-5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl hover:-translate-y-1 hover:shadow-md hover:border-[var(--color-primary)]/40 dark:hover:border-[var(--color-primary)]/40 transition-all text-left group">
                       <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-emerald-50 dark:bg-emerald-900/30 text-emerald-500 flex items-center justify-center text-lg sm:text-xl group-hover:scale-110 transition-transform">
                           <i class="fa-solid ${t.i}"></i>
                       </div>
                       <div>
-                          <h4 class="font-bold text-slate-800 dark:text-white text-xs sm:text-sm uppercase tracking-widest mb-1 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">${t.l}</h4>
+                          <h4 class="font-bold text-slate-800 dark:text-white text-xs sm:text-sm uppercase tracking-widest mb-1 group-hover:text-[var(--color-primary)] dark:group-hover:text-emerald-400 transition-colors">${t.l}</h4>
                           <p class="text-[10px] font-medium text-slate-400 leading-tight">${t.desc}</p>
                       </div>
                   </button>
@@ -6955,7 +6955,7 @@ window.oAEd = (t, id) => {
         } else if(k.key === 'sku') {
             h += `<div class="relative flex items-center"><input autocomplete='off' type="${k.type}" id="af-${k.key}" value="${esc(v)}" class="admin-input shadow-sm bg-slate-50 dark:bg-slate-900 !pr-12" placeholder="Scan atau ketik..." ></i><button type="button" onclick="openCameraScanner('af-${k.key}')" class="absolute right-2 w-9 h-9 flex items-center justify-center text-slate-400 hover:bg-slate-200 hover:text-emerald-500 rounded-xl transition-all" title="Scan Barcode via HP"><i class="fa-solid fa-qrcode text-lg"></i></button></div>`;
         } else if(k.key === 'img') {
-            h += `<div class="flex gap-3"><input autocomplete='off' type="text" id="af-${k.key}" value="${esc(v)}" class="admin-input shadow-sm flex-1 bg-slate-50 dark:bg-slate-900" placeholder="URL Gambar" ></i><label class="bg-emerald-50 dark:bg-emerald-900/30 border border-emerald-200 dark:border-emerald-800 text-emerald-600 dark:text-emerald-400 font-bold rounded-xl px-5 flex items-center justify-center cursor-pointer hover:bg-emerald-100 transition-all shrink-0 active:scale-95 shadow-sm" title="Upload dari Galeri"><i class="fa-solid fa-cloud-arrow-up sm:mr-2"></i><span class="hidden sm:inline">Upload</span><input type="file" accept="image/*" class="hidden" onchange="handleImageUpload(this, 'af-${k.key}')" ></i></label><label class="bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 text-blue-600 dark:text-blue-400 font-bold rounded-xl px-5 flex items-center justify-center cursor-pointer hover:bg-blue-100 transition-all shrink-0 active:scale-95 shadow-sm" title="Ambil Foto Langsung"><i class="fa-solid fa-camera"></i><input type="file" accept="image/*" capture="environment" class="hidden" onchange="handleImageUpload(this, 'af-${k.key}')" ></i></label></div>`;
+            h += `<div class="flex gap-3"><input autocomplete='off' type="text" id="af-${k.key}" value="${esc(v)}" class="admin-input shadow-sm flex-1 bg-slate-50 dark:bg-slate-900" placeholder="URL Gambar" ></i><label class="bg-emerald-50 dark:bg-emerald-900/30 border border-emerald-200 dark:border-emerald-800 text-[var(--color-primary)] font-bold rounded-xl px-5 flex items-center justify-center cursor-pointer hover:bg-emerald-100 transition-all shrink-0 active:scale-95 shadow-sm" title="Upload dari Galeri"><i class="fa-solid fa-cloud-arrow-up sm:mr-2"></i><span class="hidden sm:inline">Upload</span><input type="file" accept="image/*" class="hidden" onchange="handleImageUpload(this, 'af-${k.key}')" ></i></label><label class="bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 text-blue-600 dark:text-blue-400 font-bold rounded-xl px-5 flex items-center justify-center cursor-pointer hover:bg-blue-100 transition-all shrink-0 active:scale-95 shadow-sm" title="Ambil Foto Langsung"><i class="fa-solid fa-camera"></i><input type="file" accept="image/*" capture="environment" class="hidden" onchange="handleImageUpload(this, 'af-${k.key}')" ></i></label></div>`;
         } else if(k.type === 'richtext') {
             h += `
             <div class="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden shadow-sm bg-white dark:bg-slate-900">
@@ -7004,7 +7004,7 @@ window.rVarsB = () => {
     let h = `<div class="space-y-5 mb-5">${tVars.map((v,i) => {
         let isAct = v.isActive !== false && v.isActive !== 'false';
         return `
-        <div class="bg-slate-50 dark:bg-slate-900/50 p-5 sm:p-6 md:p-7 lg:p-8 rounded-[1.5rem] border border-slate-200 dark:border-slate-700 shadow-sm relative transition-all duration-300 hover:border-emerald-300 dark:hover:border-emerald-600 hover:shadow-md">
+        <div class="bg-slate-50 dark:bg-slate-900/50 p-5 sm:p-6 md:p-7 lg:p-8 rounded-[1.5rem] border border-slate-200 dark:border-slate-700 shadow-sm relative transition-all duration-300 hover:border-[var(--color-primary)]/40 dark:hover:border-[var(--color-primary)]/40 hover:shadow-md">
             
             <!-- Header varian: nomor + tombol hapus selalu terlihat -->
             <div class="flex items-center justify-between mb-5 pb-4 border-b border-slate-200 dark:border-slate-700">
@@ -7058,7 +7058,7 @@ window.rVarsB = () => {
                     <div class="flex gap-2.5 items-center">
                         ${v.img ? `<img src="${esc(v.img)}" class="w-11 h-11 rounded-xl object-cover border-2 border-slate-200 dark:border-slate-600 shrink-0 shadow-sm" onerror="this.style.display='none'" loading="lazy"></i>` : ''}
                         <input autocomplete='off' id="var-img-${i}" placeholder="URL Gambar Varian" class="admin-input !text-sm flex-1 bg-white dark:bg-slate-800 shadow-sm" value="${esc(v.img||'')}" onchange="uVar(${i},'img',fixD(this.value))"></i>
-                        <label class="bg-emerald-50 dark:bg-emerald-900/30 border border-emerald-200 dark:border-emerald-800 text-emerald-600 dark:text-emerald-400 rounded-xl w-11 h-11 flex items-center justify-center cursor-pointer hover:bg-emerald-100 transition-all shrink-0 active:scale-95 shadow-sm" title="Upload dari Galeri"><i class="fa-solid fa-upload text-sm"></i><input type="file" accept="image/*" class="hidden" onchange="handleImageUpload(this, 'var-img-${i}')" ></i></label>
+                        <label class="bg-emerald-50 dark:bg-emerald-900/30 border border-emerald-200 dark:border-emerald-800 text-[var(--color-primary)] rounded-xl w-11 h-11 flex items-center justify-center cursor-pointer hover:bg-emerald-100 transition-all shrink-0 active:scale-95 shadow-sm" title="Upload dari Galeri"><i class="fa-solid fa-upload text-sm"></i><input type="file" accept="image/*" class="hidden" onchange="handleImageUpload(this, 'var-img-${i}')" ></i></label>
                         <label class="bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 text-blue-600 dark:text-blue-400 rounded-xl w-11 h-11 flex items-center justify-center cursor-pointer hover:bg-blue-100 transition-all shrink-0 active:scale-95 shadow-sm" title="Ambil Foto Langsung"><i class="fa-solid fa-camera text-sm"></i><input type="file" accept="image/*" capture="environment" class="hidden" onchange="handleImageUpload(this, 'var-img-${i}')" ></i></label>
                     </div>
                 </div>
@@ -8925,6 +8925,9 @@ try {
         configurable: true
     });
 } catch(e) {}
+
+
+
 
 
 
