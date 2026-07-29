@@ -1658,7 +1658,7 @@ window.renderRewardCatalog = () => {
         <h3 class="font-bold text-slate-800 dark:text-white text-sm sm:text-base tracking-tight flex items-center gap-2">
             <div class="w-8 h-8 rounded-xl bg-[var(--color-primary)] flex items-center justify-center text-white shadow-sm">
                 <i class="fa-solid fa-gift text-sm"></i>
-            </div> KATALOG HADIAH
+            </div> KATALOG HADIAH POIN PELANGGAN
         </h3>
     </div>
     <div class="flex gap-4 overflow-x-auto hide-scrollbar snap-x pb-6 pt-2">
@@ -8878,6 +8878,7 @@ try {
         configurable: true
     });
 } catch(e) {}
+
 
 
 
