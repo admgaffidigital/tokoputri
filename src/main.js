@@ -1662,15 +1662,15 @@ window.renderRewardCatalog = () => {
         </h3>
     </div>
     <div class="flex gap-4 overflow-x-auto hide-scrollbar snap-x pb-6 pt-2">
-        \${activeRewards.map((r) => {
-            return \`
+        ${activeRewards.map((r) => {
+            return `
             <div class="w-[140px] sm:w-[160px] shrink-0 snap-start relative group cursor-pointer active:scale-95 transition-all duration-300 bg-white dark:bg-slate-800 rounded-[1.25rem] shadow-sm border border-slate-200 dark:border-slate-700 p-3 hover:shadow-md hover:-translate-y-1 hover:border-violet-300 dark:hover:border-violet-600" onclick="openAdminTab('rewards'); window.location.hash='#cart'; window.dispatchEvent(new Event('hashchange'));">
                 <div class="w-full aspect-square rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-700/50 flex items-center justify-center overflow-hidden mb-3 relative">
-                    <img loading="lazy" src="\${esc(r.img)}" alt="\${esc(r.name)}" class="w-full h-full object-contain transition-transform duration-500 group-hover:scale-110 p-2" onerror="this.onerror=null;this.src='https://placehold.co/400?text=Hadiah'">
-                    <div class="absolute top-2 right-2 bg-violet-500 text-white text-[9px] font-bold px-2 py-0.5 rounded-full shadow-sm">\${r.points} Poin</div>
+                    <img loading="lazy" src="${esc(r.img)}" alt="${esc(r.name)}" class="w-full h-full object-contain transition-transform duration-500 group-hover:scale-110 p-2" onerror="this.onerror=null;this.src='https://placehold.co/400?text=Hadiah'">
+                    <div class="absolute top-2 right-2 bg-violet-500 text-white text-[9px] font-bold px-2 py-0.5 rounded-full shadow-sm">${r.points} Poin</div>
                 </div>
-                <h4 class="text-[11px] sm:text-xs font-bold text-slate-800 dark:text-white leading-tight line-clamp-2 uppercase tracking-widest text-center">\${esc(r.name)}</h4>
-            </div>\`;
+                <h4 class="text-[11px] sm:text-xs font-bold text-slate-800 dark:text-white leading-tight line-clamp-2 uppercase tracking-widest text-center">${esc(r.name)}</h4>
+            </div>`;
         }).join('')}
     </div>`;
     rcC.innerHTML = rHTML;
@@ -5846,12 +5846,12 @@ window.openSettingForm = (type) => {
                 </div>
             </div>
             <div><label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Deskripsi Usaha (Footer)</label><textarea autocomplete='off' id="set-description" class="admin-input resize-none !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm" rows="3" placeholder="Deskripsi untuk footer...">${esc(appData.store.description || '')}</textarea></div>
-            <div><label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Email Layanan Pelanggan (Footer)</label><input autocomplete='off' id="set-email" value="\${esc(appData.store.email || 'support@restukaryautama.com')}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm" placeholder="support@restukaryautama.com"></div>
+            <div><label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Email Layanan Pelanggan (Footer)</label><input autocomplete='off' id="set-email" value="${esc(appData.store.email || 'support@restukaryautama.com')}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm" placeholder="support@restukaryautama.com"></div>
             <div>
                 <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Tampilkan Katalog Hadiah</label>
                 <div class="relative"><select id="set-show-reward-catalog" class="admin-input shadow-sm cursor-pointer appearance-none pr-10 bg-slate-50 dark:bg-slate-900">
-                    <option value="true" \${appData.store.showRewardCatalog === true || appData.store.showRewardCatalog === 'true' ? 'selected' : ''} class="font-bold">Aktifkan (Tampilkan di Beranda)</option>
-                    <option value="false" \${appData.store.showRewardCatalog === false || appData.store.showRewardCatalog === 'false' || appData.store.showRewardCatalog === undefined ? 'selected' : ''} class="font-bold">Nonaktifkan (Sembunyikan)</option>
+                    <option value="true" ${appData.store.showRewardCatalog === true || appData.store.showRewardCatalog === 'true' ? 'selected' : ''} class="font-bold">Aktifkan (Tampilkan di Beranda)</option>
+                    <option value="false" ${appData.store.showRewardCatalog === false || appData.store.showRewardCatalog === 'false' || appData.store.showRewardCatalog === undefined ? 'selected' : ''} class="font-bold">Nonaktifkan (Sembunyikan)</option>
                 </select><i class="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-[10px]"></i></div>
             </div>
             <div><label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Jam Operasional Toko (Footer)</label><input autocomplete='off' id="set-hours" value="${esc(appData.store.operationalHours || 'Buka Setiap Hari (08:00 - 17:00)')}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm" placeholder="Buka Setiap Hari (08:00 - 17:00)"></div>
@@ -8878,6 +8878,7 @@ try {
         configurable: true
     });
 } catch(e) {}
+
 
 
 
