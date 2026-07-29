@@ -87,6 +87,13 @@
   <body>
     <!-- UI Components Global -->
     <!-- Toast Notification -->
+        <div id="landscape-blocker" class="fixed inset-0 z-[99999] hidden flex-col items-center justify-center bg-slate-900 text-white p-6 text-center">
+      <div class="w-20 h-20 bg-[rgba(var(--color-primary-rgb),0.1)] rounded-full flex items-center justify-center mb-6">
+        <i class="fa-solid fa-mobile-screen text-4xl text-[var(--color-primary)] -rotate-90 animate-pulse"></i>
+      </div>
+      <h2 class="text-lg font-bold mb-2 uppercase tracking-widest">Putar Perangkat Anda</h2>
+      <p class="text-xs font-medium text-slate-400 max-w-[280px] leading-relaxed">Aplikasi ini dirancang khusus untuk tampilan layar berdiri (Portrait) demi pengalaman yang maksimal.</p>
+    </div>
     <div id="toast">
       <div id="toast-icon-wrap"><i class="fa-solid fa-bell" id="toast-icon"></i></div>
       <div id="toast-body">
@@ -1158,4 +1165,5 @@
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>
+
 

@@ -599,3 +599,10 @@ html.dark .themed-footer {
     border-top: 1px solid #1e293b !important;
     box-shadow: none !important;
 }
+
+/* === LANDSCAPE BLOCKER === */
+@media screen and (max-height: 600px) and (orientation: landscape) {
+    #landscape-blocker {
+        display: flex !important;
+    }
+}
