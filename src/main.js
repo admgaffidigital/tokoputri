@@ -629,7 +629,7 @@ const loadAppData = async () => {
             dir: 'ltr',
             display: 'standalone',
             display_override: ['standalone', 'minimal-ui'],
-            orientation: 'any',
+            orientation: 'portrait',
             categories: ['shopping', 'business'],
             background_color: tColor, 
             theme_color: brandColor,
