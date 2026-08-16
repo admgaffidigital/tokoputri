@@ -301,6 +301,26 @@ const defApp = {
     }
 };
 
+// HELPER: Kalkulasi PPN & DPP berdasarkan mode Inklusif / Eksklusif
+window.calcTaxDetails = (baseAmount) => {
+    const ppnEnabled = appData.store.ppnEnabled === true || appData.store.ppnEnabled === 'true';
+    const ppnRate = parseFloat(appData.store.ppnRate) || 11;
+    const ppnType = appData.store.ppnType || 'exclusive';
+
+    if (!ppnEnabled || baseAmount <= 0) {
+        return { ppnEnabled: false, ppnRate: 0, ppnType, ppnAmount: 0, dppAmount: Math.max(0, baseAmount), grandTotalAdd: 0 };
+    }
+
+    if (ppnType === 'inclusive') {
+        const dpp = Math.round((baseAmount * 100) / (100 + ppnRate));
+        const ppn = baseAmount - dpp;
+        return { ppnEnabled: true, ppnRate, ppnType: 'inclusive', ppnAmount: ppn, dppAmount: dpp, grandTotalAdd: 0 };
+    } else {
+        const ppn = Math.round((baseAmount * ppnRate) / 100);
+        return { ppnEnabled: true, ppnRate, ppnType: 'exclusive', ppnAmount: ppn, dppAmount: Math.max(0, baseAmount), grandTotalAdd: ppn };
+    }
+};
+
 /* ================================================= */
 
 
