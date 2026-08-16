@@ -901,6 +901,22 @@ window.getEffHpp = i => {
     return parseFloat(p.hpp) || 0;
 };
 
+// FITUR BARU: ambil Poin Member produk/varian saat ini dengan fallback cerdas
+// jika varian tidak memiliki poin khusus (> 0), otomatis gunakan poin produk utama
+window.getEffPoin = i => {
+    if (!i) return 0;
+    const p = appData.products.find(x => x.id === i.id);
+    if (!p) return parseFloat(i.poin) || 0;
+    if (i.variantName && p.variants) {
+        const v = p.variants.find(vv => vv.name === i.variantName);
+        if (v && v.poin !== undefined && v.poin !== null && v.poin !== '') {
+            const vPoin = parseFloat(v.poin);
+            if (!isNaN(vPoin) && vPoin > 0) return vPoin;
+        }
+    }
+    return parseFloat(p.poin) || 0;
+};
+
 window.getDist = (lat1, lon1, lat2, lon2) => {
     if (!lat1 || !lon1 || !lat2 || !lon2) return 0;
     const R = 6371; 
@@ -2435,7 +2451,7 @@ const rProdMod = () => {
     if (p.poTime) bH += `<span class="bg-amber-500 text-white px-2.5 py-1 rounded-full text-[9px] font-bold flex items-center gap-1.5 whitespace-nowrap uppercase tracking-wider shadow-sm"><i class="fa-solid fa-clock"></i> PO ${esc(p.poTime)}</span>`;
 
     // FITUR BARU: badge poin member, ikut varian yang sedang dipilih (kalau ada)
-    const activePoin = parseFloat(v ? v.poin : p.poin) || 0;
+    const activePoin = (v && parseFloat(v.poin) > 0) ? parseFloat(v.poin) : (parseFloat(p.poin) || 0);
     if (activePoin > 0 && (!hV || cVar !== null)) {
         bH += `<span class="bg-[var(--color-primary)] text-white px-2.5 py-1 rounded-full text-[9px] font-bold flex items-center gap-1.5 whitespace-nowrap uppercase tracking-wider shadow-sm"><i class="fa-solid fa-star"></i> +${activePoin} Poin</span>`;
     }
@@ -2644,7 +2660,8 @@ window.confirmAddProductToCart = () => {
     if (e) {
         e.qty = parseFloat((e.qty + cQty).toFixed(2)); e.unit = unt;
     } else {
-        cart.push({id:cProd.id, name:cProd.name, variantName:vN, price:v?.price??cProd.price, img:v?.img||cProd.img, qty:cQty, unit:unt, poTime:cProd.poTime||'', colorCode:v?.colorCode||'', poin:parseFloat(v?.poin??cProd.poin)||0});
+        const itemPoin = (v && parseFloat(v.poin) > 0) ? parseFloat(v.poin) : (parseFloat(cProd.poin) || 0);
+        cart.push({id:cProd.id, name:cProd.name, variantName:vN, price:v?.price??cProd.price, img:v?.img||cProd.img, qty:cQty, unit:unt, poTime:cProd.poTime||'', colorCode:v?.colorCode||'', poin:itemPoin});
     }
     updCart();
     if(typeof analytics!=='undefined') analytics.logEvent('add_to_cart',{item_id:cProd.id,item_name:cProd.name,quantity:cQty});
@@ -2757,11 +2774,12 @@ window.moveWish = i => {
         // bukan langsung menyalin data lama dari wishlist yang bisa sudah usang
         // (mis. wishlist disimpan sebelum fitur Poin Member ada, jadi field 'poin'
         // tidak pernah ada di situ) -- sama seperti alur addToCart yang normal.
+        const itemPoin = (v && parseFloat(v.poin) > 0) ? parseFloat(v.poin) : (parseFloat(p.poin) || 0);
         cart.push({
             id: p.id, name: p.name, variantName: it.variantName || '',
             price: v ? v.price : p.price, img: v?.img || p.img, qty: 1,
             unit: p.unit || 'pcs', poTime: p.poTime || '', colorCode: v?.colorCode || '',
-            poin: parseFloat(v ? v.poin : p.poin) || 0
+            poin: itemPoin
         });
     }
     updCart(); showToast("Ke Keranjang!");
@@ -4060,6 +4078,8 @@ window.processOrder = async () => {
             cartItem.price = serverPrice;
             priceWasTampered = true;
         }
+        // FIX BUG POIN VARIAN: selalu sinkronkan poin per item dari data server produk & varian
+        cartItem.poin = getEffPoin(cartItem);
     });
     if (priceWasTampered) {
         ssL('freshmart_cart', JSON.stringify(cart));
@@ -4181,7 +4201,7 @@ window.processOrder = async () => {
         
         const oD = {
             orderId: oI, timestamp: firebase.firestore.FieldValue.serverTimestamp(), dateString: new Date().toISOString(),
-            customer: cust, items: cart.map(i => ({...i, qty: parseFloat(i.qty), effectivePrice: getEffP(i), poTime: i.poTime||'', hpp: getEffHpp(i)})),
+            customer: cust, items: cart.map(i => ({...i, qty: parseFloat(i.qty), effectivePrice: getEffP(i), poTime: i.poTime||'', hpp: getEffHpp(i), poin: getEffPoin(i)})),
             payment: { method: m, subtotal: sub, shippingCost: sC, shippingDiscount: shippingDisc, productDiscount: productDisc, ppnAmount: ppnAmount, ppnRate: ppnEnabled ? ppnRate : 0, grandTotal: tot },
             status: 'Baru',
             buktiPayment: window.buktiPaymentUrl || null
@@ -4219,8 +4239,8 @@ window.processOrder = async () => {
         // SEMUANYA dibatalkan (rollback) — tidak ada lagi pesanan "nyangkut"
         // tanpa stok terpotong.
         // FITUR BARU: hitung total poin yang didapat dari transaksi ini berdasarkan
-        // field 'poin' di tiap item keranjang (sudah dibawa sejak addToCart).
-        const pointsEarnedThisOrder = cart.reduce((s,i) => s + ((parseFloat(i.poin)||0) * (parseFloat(i.qty)||0)), 0);
+        // field 'poin' di tiap item keranjang (sudah divalidasi getEffPoin).
+        const pointsEarnedThisOrder = cart.reduce((s,i) => s + (getEffPoin(i) * (parseFloat(i.qty)||0)), 0);
         const cmsDataRef = db.collection("freshmart").doc("cms_data");
         const memberRef = cust.wa ? cmsDataRef.collection("customers").doc(cust.wa) : null;
         const wantsRewardClaim = !!selectedReward;
