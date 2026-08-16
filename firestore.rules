@@ -1,0 +1,88 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isAdmin() {
+      return request.auth != null && request.auth.uid == 'K2ijSERTT2dg27yYGTEgn6XHSnW2';
+    }
+    
+    // Dokumen utama toko (settings, banner, dll di root 'cms_data')
+    match /freshmart/{docId} {
+      allow read: if true;
+      // Admin boleh apapun. Selain admin (pelanggan saat checkout),
+      // HANYA boleh mengubah field 'lastUpdate' saja -- dipakai untuk
+      // memicu sinkronisasi realtime setelah stok berkurang.
+      allow write: if isAdmin() ||
+        (resource != null &&
+         request.resource.data.diff(resource.data).affectedKeys().hasOnly(['lastUpdate']));
+
+      match /products/{productId} {
+        allow read: if true;
+        // Admin boleh apapun (tambah/edit/hapus produk).
+        // Pelanggan (saat checkout, transaction potong stok) HANYA boleh
+        // mengubah field stock/isActive/variants/totalSold -- TIDAK BOLEH
+        // mengubah price, name, img, dsb -- dan stok utama hanya boleh
+        // berkurang, tidak boleh bertambah (mencegah orang "restock" sendiri
+        // lewat API).
+        // FIX BUG KRITIS: field 'totalSold' (total terjual) termasuk di daftar
+        // yang diizinkan agar transaksi checkout berhasil tanpa permission-denied.
+        allow write: if isAdmin() || (
+          resource != null &&
+          request.resource.data.diff(resource.data).affectedKeys().hasOnly(['stock','isActive','variants','totalSold']) &&
+          (
+            !('stock' in request.resource.data) ||
+            !('stock' in resource.data) ||
+            request.resource.data.stock <= resource.data.stock
+          )
+        );
+      }
+
+      // Database Pelanggan (member) -- berisi nama & nomor WA (data pribadi)
+      match /customers/{phone} {
+        allow get: if true;
+        allow list: if isAdmin();
+        allow create, delete: if isAdmin();
+        allow update: if isAdmin() ||
+          (resource != null &&
+           request.resource.data.diff(resource.data).affectedKeys().hasOnly(['points']));
+      }
+
+      // Program Hadiah (katalog publik, stok dikelola mirip produk)
+      match /rewards/{rewardId} {
+        allow read: if true;
+        // Admin boleh apapun. Pelanggan (saat klaim hadiah di checkout) HANYA
+        // boleh mengubah field 'stock', dan stoknya cuma boleh BERKURANG --
+        // persis pola yang sama dengan potong stok produk di atas.
+        allow write: if isAdmin() || (
+          resource != null &&
+          request.resource.data.diff(resource.data).affectedKeys().hasOnly(['stock']) &&
+          (
+            !('stock' in request.resource.data) ||
+            !('stock' in resource.data) ||
+            request.resource.data.stock <= resource.data.stock
+          )
+        );
+      }
+
+      // Ulasan Pelanggan (testimoni publik di halaman produk)
+      match /reviews/{reviewId} {
+        allow list, get: if true;
+        allow create: if true;
+        allow update, delete: if isAdmin();
+      }
+    }
+
+    // Pesanan: pelanggan boleh checkout & cek pesanan sendiri (by ID),
+    // tapi tidak bisa lihat daftar SEMUA pesanan orang lain
+    match /freshmart_orders/{orderId} {
+      allow get: if true;
+      allow list: if isAdmin();
+      allow create: if true;
+      allow update, delete: if isAdmin();
+    }
+
+    // Lisensi PRO -- murni urusan admin
+    match /freshmart_licenses/{licenseId} {
+      allow read, write: if isAdmin();
+    }
+  }
+}
