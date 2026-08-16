@@ -159,7 +159,7 @@
         <!-- Minimalist Logo Icon Box with soft pulse ring -->
         <div class="relative mb-6 flex h-20 w-20 items-center justify-center">
           <div class="absolute inset-0 rounded-3xl bg-[var(--color-primary)]" style="animation: pulseRing 2s cubic-bezier(0.4, 0, 0.6, 1) infinite"></div>
-          <div id="loader-logo-box" class="shadow-[var(--color-primary)]/20 relative flex h-16 w-16 items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-dark,#059669)] text-white shadow-lg">
+          <div id="loader-logo-box" class="shadow-[var(--color-primary)]/20 relative flex h-16 w-16 items-center justify-center overflow-hidden rounded-2xl bg-[var(--color-primary)] text-white shadow-lg">
             <i class="fa-solid fa-store text-2xl text-white" id="loader-logo-icon"></i>
             <img
               id="loader-logo-img"
@@ -235,7 +235,7 @@
     <div class="fixed inset-0 z-[9999] hidden flex-col items-center justify-center bg-slate-900/90 p-4 opacity-0 transition-opacity duration-300" id="scanner-modal" onclick="if (event.target === this) closeCameraScanner();">
       <div class="relative flex w-full max-w-md flex-col overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-2xl dark:border-slate-700 dark:bg-slate-800">
         <div class="flex items-center justify-between border-b border-slate-100 p-5 dark:border-slate-700">
-          <h3 class="flex items-center gap-2 text-sm font-bold text-slate-900 dark:text-white"><i class="fa-solid fa-qrcode text-emerald-500"></i> Scan Barcode</h3>
+          <h3 class="flex items-center gap-2 text-sm font-bold text-slate-900 dark:text-white"><i class="fa-solid fa-qrcode primary-text"></i> Scan Barcode</h3>
           <button class="flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-slate-500 transition-all hover:bg-rose-50 hover:text-rose-600 dark:bg-slate-700" onclick="closeCameraScanner()"><i class="fa-solid fa-xmark"></i></button>
         </div>
         <div class="bg-slate-900 p-4 dark:bg-[#020617]"><div class="w-full overflow-hidden rounded-2xl bg-slate-900 text-white" id="reader" style="min-height: 250px"></div></div>
@@ -248,55 +248,55 @@
         <div class="mx-auto mb-1 mt-4 h-1.5 w-12 rounded-full bg-slate-200 dark:bg-slate-700 sm:hidden"></div>
         <div class="flex shrink-0 items-center justify-between border-b border-slate-100 px-6 pb-4 pt-2 dark:border-slate-800/60 sm:pt-5">
           <h3 class="flex items-center gap-3 text-base font-bold text-slate-900 dark:text-white">
-            <div class="dark:bg-emerald-900/30 flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-50 text-emerald-500"><i class="fa-solid fa-link text-sm"></i></div>
+            <div class="primary-bg-soft primary-text flex h-8 w-8 items-center justify-center rounded-xl"><i class="fa-solid fa-link text-sm"></i></div>
             TAUTAN CEPAT
           </h3>
           <button class="flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-slate-500 transition-all hover:bg-rose-50 hover:text-rose-500 dark:bg-slate-700 dark:hover:bg-rose-900/30" onclick="closeQuickMenuModal()"><i class="fa-solid fa-xmark"></i></button>
         </div>
         <div class="space-y-3.5 overflow-y-auto bg-white p-5 dark:bg-[#0b1121]">
-          <button class="flex w-full items-center gap-4 rounded-2xl border border-slate-100 bg-slate-50 p-4 text-left font-bold text-slate-700 transition-all hover:bg-emerald-50 hover:text-emerald-500 active:scale-[0.98] dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-emerald-950/20 dark:hover:text-emerald-400" onclick="navigateFromQuickMenu('view-catalog')">
-            <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500 text-white shadow-md"><i class="fa-solid fa-house text-sm"></i></div>
+          <button class="flex w-full items-center gap-4 rounded-2xl border border-slate-100 bg-slate-50 p-4 text-left font-bold text-slate-700 transition-all hover:bg-[rgba(var(--color-primary-rgb),0.08)] hover:text-[var(--color-primary)] active:scale-[0.98] dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-[rgba(var(--color-primary-rgb),0.15)]" onclick="navigateFromQuickMenu('view-catalog')">
+            <div class="flex h-10 w-10 items-center justify-center rounded-xl primary-bg text-white shadow-md"><i class="fa-solid fa-house text-sm"></i></div>
             <div>
               <h4 class="text-sm leading-tight">Halaman Utama</h4>
               <p class="mt-0.5 text-[9px] font-semibold text-slate-400 dark:text-slate-500">Kembali ke beranda toko</p>
             </div>
           </button>
-          <button class="flex w-full items-center gap-4 rounded-2xl border border-slate-100 bg-slate-50 p-4 text-left font-bold text-slate-700 transition-all hover:bg-emerald-50 hover:text-emerald-500 active:scale-[0.98] dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-emerald-950/20 dark:hover:text-emerald-400" onclick="navigateFromQuickMenu('view-cart')">
-            <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500 text-white shadow-md"><i class="fa-solid fa-bag-shopping text-sm"></i></div>
+          <button class="flex w-full items-center gap-4 rounded-2xl border border-slate-100 bg-slate-50 p-4 text-left font-bold text-slate-700 transition-all hover:bg-[rgba(var(--color-primary-rgb),0.08)] hover:text-[var(--color-primary)] active:scale-[0.98] dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-[rgba(var(--color-primary-rgb),0.15)]" onclick="navigateFromQuickMenu('view-cart')">
+            <div class="flex h-10 w-10 items-center justify-center rounded-xl primary-bg text-white shadow-md"><i class="fa-solid fa-bag-shopping text-sm"></i></div>
             <div>
               <h4 class="text-sm leading-tight">Keranjang Belanja</h4>
               <p class="mt-0.5 text-[9px] font-semibold text-slate-400 dark:text-slate-500">Lihat daftar belanjaan Anda</p>
             </div>
           </button>
-          <button class="flex w-full items-center gap-4 rounded-2xl border border-slate-100 bg-slate-50 p-4 text-left font-bold text-slate-700 transition-all hover:bg-emerald-50 hover:text-emerald-500 active:scale-[0.98] dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-emerald-950/20 dark:hover:text-emerald-400" onclick="navigateFromQuickMenu('view-wishlist')">
+          <button class="flex w-full items-center gap-4 rounded-2xl border border-slate-100 bg-slate-50 p-4 text-left font-bold text-slate-700 transition-all hover:bg-[rgba(var(--color-primary-rgb),0.08)] hover:text-[var(--color-primary)] active:scale-[0.98] dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-[rgba(var(--color-primary-rgb),0.15)]" onclick="navigateFromQuickMenu('view-wishlist')">
             <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-rose-500 text-white shadow-md"><i class="fa-solid fa-heart text-sm"></i></div>
             <div>
               <h4 class="text-sm leading-tight">Produk Favorit</h4>
               <p class="mt-0.5 text-[9px] font-semibold text-slate-400 dark:text-slate-500">Produk yang Anda sukai</p>
             </div>
           </button>
-          <button class="flex w-full items-center gap-4 rounded-2xl border border-slate-100 bg-slate-50 p-4 text-left font-bold text-slate-700 transition-all hover:bg-emerald-50 hover:text-emerald-500 active:scale-[0.98] dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-emerald-950/20 dark:hover:text-emerald-400" onclick="navigateFromQuickMenu('view-orders')">
+          <button class="flex w-full items-center gap-4 rounded-2xl border border-slate-100 bg-slate-50 p-4 text-left font-bold text-slate-700 transition-all hover:bg-[rgba(var(--color-primary-rgb),0.08)] hover:text-[var(--color-primary)] active:scale-[0.98] dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-[rgba(var(--color-primary-rgb),0.15)]" onclick="navigateFromQuickMenu('view-orders')">
             <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-500 text-white shadow-md"><i class="fa-solid fa-receipt text-sm"></i></div>
             <div>
               <h4 class="text-sm leading-tight">Riwayat Pesanan</h4>
               <p class="mt-0.5 text-[9px] font-semibold text-slate-400 dark:text-slate-500">Lacak status pesanan Anda</p>
             </div>
           </button>
-          <button class="flex w-full items-center gap-4 rounded-2xl border border-slate-100 bg-slate-50 p-4 text-left font-bold text-slate-700 transition-all hover:bg-emerald-50 hover:text-emerald-500 active:scale-[0.98] dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-emerald-950/20 dark:hover:text-emerald-400" onclick="navigateFromQuickMenu(checkAdminAccess)">
+          <button class="flex w-full items-center gap-4 rounded-2xl border border-slate-100 bg-slate-50 p-4 text-left font-bold text-slate-700 transition-all hover:bg-[rgba(var(--color-primary-rgb),0.08)] hover:text-[var(--color-primary)] active:scale-[0.98] dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-[rgba(var(--color-primary-rgb),0.15)]" onclick="navigateFromQuickMenu(checkAdminAccess)">
             <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-800 text-white shadow-md dark:bg-slate-700"><i class="fa-solid fa-shield-halved text-sm"></i></div>
             <div>
               <h4 class="text-sm leading-tight">Akses Seller</h4>
               <p class="mt-0.5 text-[9px] font-semibold text-slate-400 dark:text-slate-500">Kelola produk, pesanan, &amp; toko</p>
             </div>
           </button>
-          <button class="flex w-full items-center gap-4 rounded-2xl border border-slate-100 bg-slate-50 p-4 text-left font-bold text-slate-700 transition-all hover:bg-emerald-50 hover:text-emerald-500 active:scale-[0.98] dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-emerald-950/20 dark:hover:text-emerald-400" onclick="navigateFromQuickMenu(openTermsModal)">
+          <button class="flex w-full items-center gap-4 rounded-2xl border border-slate-100 bg-slate-50 p-4 text-left font-bold text-slate-700 transition-all hover:bg-[rgba(var(--color-primary-rgb),0.08)] hover:text-[var(--color-primary)] active:scale-[0.98] dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-[rgba(var(--color-primary-rgb),0.15)]" onclick="navigateFromQuickMenu(openTermsModal)">
             <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-500 text-white shadow-md"><i class="fa-solid fa-file-contract text-sm"></i></div>
             <div>
               <h4 class="text-sm leading-tight">Syarat &amp; Ketentuan</h4>
               <p class="mt-0.5 text-[9px] font-semibold text-slate-400 dark:text-slate-500">Ketentuan penggunaan layanan toko</p>
             </div>
           </button>
-          <button class="flex w-full items-center gap-4 rounded-2xl border border-slate-100 bg-slate-50 p-4 text-left font-bold text-slate-700 transition-all hover:bg-emerald-50 hover:text-emerald-500 active:scale-[0.98] dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-emerald-950/20 dark:hover:text-emerald-400" onclick="navigateFromQuickMenu(openPrivacyModal)">
+          <button class="flex w-full items-center gap-4 rounded-2xl border border-slate-100 bg-slate-50 p-4 text-left font-bold text-slate-700 transition-all hover:bg-[rgba(var(--color-primary-rgb),0.08)] hover:text-[var(--color-primary)] active:scale-[0.98] dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-[rgba(var(--color-primary-rgb),0.15)]" onclick="navigateFromQuickMenu(openPrivacyModal)">
             <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-violet-500 text-white shadow-md"><i class="fa-solid fa-user-shield text-sm"></i></div>
             <div>
               <h4 class="text-sm leading-tight">Kebijakan Privasi</h4>
@@ -372,7 +372,7 @@
         <div class="mx-auto mb-1 mt-4 h-1.5 w-12 rounded-full bg-slate-200 dark:bg-slate-700 sm:hidden"></div>
         <div class="flex shrink-0 items-center justify-between border-b border-slate-100 px-6 pb-4 pt-2 dark:border-slate-800/60 sm:pt-5">
           <h3 class="flex items-center gap-3 text-base font-bold text-slate-900 dark:text-white">
-            <div class="dark:bg-emerald-900/30 flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-50 text-emerald-500"><i class="fa-solid fa-layer-group text-sm"></i></div>
+            <div class="primary-bg-soft primary-text flex h-8 w-8 items-center justify-center rounded-xl"><i class="fa-solid fa-layer-group text-sm"></i></div>
             KATEGORI PRODUK
           </h3>
           <button class="flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-slate-500 transition-all hover:bg-rose-50 hover:text-rose-500 dark:bg-slate-800 dark:hover:bg-rose-900/30" onclick="closeCategoryModal()"><i class="fa-solid fa-xmark"></i></button>
@@ -399,27 +399,27 @@
       <div class="modal-bottom-sheet hide-scrollbar relative flex max-h-[92dvh] w-full max-w-md translate-y-full transform flex-col overflow-y-auto border-t border-slate-200 bg-white shadow-2xl transition-transform duration-300 dark:border-slate-800 dark:bg-[#0f172a] sm:translate-y-10 sm:rounded-[2rem] sm:border" id="product-modal-content">
         <div class="absolute left-1/2 top-3 z-30 h-1.5 w-12 -translate-x-1/2 transform rounded-full bg-slate-200 dark:bg-slate-700 sm:hidden"></div>
         <div class="absolute right-3 top-3 z-20 flex gap-1.5">
-          <button class="flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 bg-white/90 text-slate-600 shadow-sm backdrop-blur-sm transition-all hover:border-emerald-500 hover:bg-emerald-500 hover:text-white active:scale-90 dark:border-slate-700 dark:bg-slate-800/90 dark:text-slate-300" onclick="shareProduct()"><i class="fa-solid fa-share-nodes text-xs"></i></button>
+          <button class="flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 bg-white/90 text-slate-600 shadow-sm backdrop-blur-sm transition-all hover:border-[var(--color-primary)] hover:bg-[var(--color-primary)] hover:text-white active:scale-90 dark:border-slate-700 dark:bg-slate-800/90 dark:text-slate-300" onclick="shareProduct()"><i class="fa-solid fa-share-nodes text-xs"></i></button>
           <button class="flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 bg-white/90 text-slate-600 shadow-sm backdrop-blur-sm transition-all hover:border-rose-500 hover:bg-rose-500 hover:text-white active:scale-90 dark:border-slate-700 dark:bg-slate-800/90 dark:text-slate-300" onclick="closeProductModal()"><i class="fa-solid fa-xmark text-sm"></i></button>
         </div>
         <div class="group relative flex aspect-square w-full shrink-0 items-center justify-center overflow-hidden border-b border-slate-100 bg-white p-8 dark:border-slate-800/60 sm:rounded-t-[2rem] sm:p-10">
           <img alt="Product" class="h-full w-full cursor-zoom-in object-cover transition-transform duration-500 hover:scale-105" id="product-modal-img" loading="lazy" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onclick="previewProductImage()" />
           <div class="pointer-events-none absolute bottom-3 right-3 z-10 flex items-center gap-1 rounded-lg bg-black/50 px-2 py-1 text-[9px] font-bold text-white opacity-70 shadow-sm backdrop-blur-sm transition-opacity group-hover:opacity-100 dark:bg-slate-900/60 sm:opacity-0" id="zoom-indicator"><i class="fa-solid fa-magnifying-glass-plus"></i> Perbesar</div>
           <div id="product-modal-video-container" class="absolute inset-0 flex hidden items-center justify-center bg-black"></div>
-          <button id="slide-prev" class="absolute left-3 top-1/2 z-10 hidden h-8 w-8 -translate-y-1/2 transform items-center justify-center rounded-full bg-white/80 text-slate-600 shadow backdrop-blur transition-all hover:bg-emerald-500 hover:text-white active:scale-95 dark:bg-slate-800/80 dark:text-slate-200" onclick="changeSlide(-1)"><i class="fa-solid fa-chevron-left text-xs"></i></button>
-          <button id="slide-next" class="absolute right-3 top-1/2 z-10 hidden h-8 w-8 -translate-y-1/2 transform items-center justify-center rounded-full bg-white/80 text-slate-600 shadow backdrop-blur transition-all hover:bg-emerald-500 hover:text-white active:scale-95 dark:bg-slate-800/80 dark:text-slate-200" onclick="changeSlide(1)"><i class="fa-solid fa-chevron-right text-xs"></i></button>
+          <button id="slide-prev" class="absolute left-3 top-1/2 z-10 hidden h-8 w-8 -translate-y-1/2 transform items-center justify-center rounded-full bg-white/80 text-slate-600 shadow backdrop-blur transition-all hover:bg-[var(--color-primary)] hover:text-white active:scale-95 dark:bg-slate-800/80 dark:text-slate-200" onclick="changeSlide(-1)"><i class="fa-solid fa-chevron-left text-xs"></i></button>
+          <button id="slide-next" class="absolute right-3 top-1/2 z-10 hidden h-8 w-8 -translate-y-1/2 transform items-center justify-center rounded-full bg-white/80 text-slate-600 shadow backdrop-blur transition-all hover:bg-[var(--color-primary)] hover:text-white active:scale-95 dark:bg-slate-800/80 dark:text-slate-200" onclick="changeSlide(1)"><i class="fa-solid fa-chevron-right text-xs"></i></button>
           <div id="slide-dots" class="absolute bottom-3 left-1/2 z-10 flex hidden -translate-x-1/2 transform gap-1.5"></div>
         </div>
         <div class="flex-1 bg-white p-6 dark:bg-[#0f172a] sm:p-7">
           <div class="mb-3 flex flex-wrap gap-1.5" id="product-modal-badges"></div>
           <h3 class="mb-2 break-words text-lg font-bold uppercase leading-tight text-slate-900 dark:text-white sm:text-xl" id="product-modal-title">Nama Produk</h3>
           <div class="mb-6 flex items-end gap-3 border-b border-slate-100 pb-6 dark:border-slate-800/60">
-            <span class="text-3xl font-bold tracking-tight text-emerald-600 dark:text-emerald-400" id="product-modal-price">Rp 0</span>
+            <span class="text-3xl font-bold tracking-tight primary-text" id="product-modal-price">Rp 0</span>
             <span class="accent-badge mb-1.5 rounded-full px-2 py-1 text-[9px] font-bold uppercase tracking-widest">Harga Terbaik</span>
           </div>
           <div class="mb-6 rounded-2xl border border-slate-100 bg-slate-50 p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900/50">
             <div class="mb-3 flex items-center gap-2 border-b border-slate-200 pb-2 dark:border-slate-700/50">
-              <i class="fa-solid fa-circle-info text-sm text-emerald-500"></i>
+              <i class="fa-solid fa-circle-info text-sm primary-text"></i>
               <h4 class="text-[10px] font-bold uppercase tracking-widest text-slate-800 dark:text-slate-200">Informasi &amp; Deskripsi</h4>
             </div>
             <p class="whitespace-pre-wrap text-[13px] font-medium leading-relaxed text-slate-600 dark:text-slate-400" id="product-modal-desc">Deskripsi</p>
@@ -449,12 +449,12 @@
                 <div class="flex h-11 items-center overflow-hidden rounded-xl border border-slate-200 bg-slate-50 shadow-sm dark:border-slate-700 dark:bg-slate-900">
                   <button class="flex h-full w-11 items-center justify-center font-bold text-slate-500 transition-colors hover:bg-slate-200 dark:hover:bg-slate-800" onclick="updateModalQty(-1)"><i class="fa-solid fa-minus text-xs"></i></button>
                   <input class="w-14 border-x border-slate-200 bg-transparent text-center text-sm font-bold focus:outline-none dark:border-slate-700 dark:text-white" id="modal-qty-input" min="0.01" onchange="handleModalQtyChange(this.value)" step="0.01" type="number" value="1" />
-                  <button class="dark:hover:bg-emerald-900/30 flex h-full w-11 items-center justify-center font-bold text-slate-500 transition-colors hover:bg-emerald-50 hover:text-emerald-600" onclick="updateModalQty(1)"><i class="fa-solid fa-plus text-xs"></i></button>
+                  <button class="hover:bg-[rgba(var(--color-primary-rgb),0.1)] hover:text-[var(--color-primary)] flex h-full w-11 items-center justify-center font-bold text-slate-500 transition-colors" onclick="updateModalQty(1)"><i class="fa-solid fa-plus text-xs"></i></button>
                 </div>
               </div>
               <div class="accent-box flex items-center justify-between rounded-2xl p-4 shadow-inner">
-                <span class="text-[10px] font-bold uppercase tracking-widest text-emerald-800 dark:text-emerald-400">Subtotal</span>
-                <span class="text-xl font-bold tracking-tight text-emerald-600 dark:text-emerald-400" id="btn-modal-price-preview">Rp 0</span>
+                <span class="text-[10px] font-bold uppercase tracking-widest primary-text">Subtotal</span>
+                <span class="text-xl font-bold tracking-tight primary-text" id="btn-modal-price-preview">Rp 0</span>
               </div>
               <div class="mt-2 flex gap-3">
                 <button class="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border border-slate-200 bg-white text-slate-400 shadow-sm transition-all hover:border-rose-200 hover:bg-rose-50 hover:text-rose-500 active:scale-95 dark:border-slate-700 dark:bg-slate-800" onclick="confirmAddToWishlist()"><i class="fa-solid fa-heart text-xl"></i></button>
@@ -482,13 +482,13 @@
     <div class="fixed inset-0 z-[100] flex hidden items-center justify-center bg-slate-900/80 p-3 opacity-0 transition-all duration-300" id="admin-order-modal" onclick="if (event.target === this) closeOrderDetailModal();">
       <div class="hide-scrollbar relative flex max-h-[92dvh] w-full max-w-md scale-95 transform flex-col overflow-y-auto rounded-[2rem] border border-slate-200 bg-white shadow-2xl transition-all duration-300 dark:border-slate-700 dark:bg-slate-800 sm:max-w-lg md:max-w-3xl lg:max-w-4xl" id="admin-order-modal-box">
         <div class="sticky top-0 z-20 flex items-center justify-between rounded-t-[2rem] border-b border-slate-200 bg-white px-6 py-4 dark:border-slate-700 dark:bg-slate-800">
-          <h3 class="flex items-center gap-2 text-base font-bold text-slate-900 dark:text-white"><i class="fa-solid fa-file-invoice text-emerald-500"></i> Detail Pesanan</h3>
+          <h3 class="flex items-center gap-2 text-base font-bold text-slate-900 dark:text-white"><i class="fa-solid fa-file-invoice primary-text"></i> Detail Pesanan</h3>
           <button class="flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-slate-500 transition-all hover:text-rose-500 dark:bg-slate-700" onclick="closeOrderDetailModal()"><i class="fa-solid fa-xmark"></i></button>
         </div>
         <div class="flex-1 space-y-4 bg-slate-50 p-5 dark:bg-slate-900 sm:p-6 lg:p-8" id="admin-order-modal-content"></div>
         <div class="sticky bottom-0 z-20 flex flex-col gap-3 rounded-b-[2rem] border-t border-slate-100 bg-white p-5 shadow-[0_-15px_25px_-5px_rgba(0,0,0,0.05)] dark:border-slate-700/50 dark:bg-slate-800 lg:px-8">
           <div class="flex w-full gap-2.5">
-            <button class="dark:bg-emerald-900/20 flex flex-1 items-center justify-center gap-1.5 rounded-xl border border-emerald-100 bg-emerald-50 py-3 text-xs font-bold text-emerald-600 shadow-sm transition-all hover:bg-emerald-100 active:scale-95 dark:border-emerald-800" onclick="checkProPrint()"><i class="fa-solid fa-print"></i> Struk</button>
+            <button class="primary-bg-soft primary-border primary-text flex flex-1 items-center justify-center gap-1.5 rounded-xl border py-3 text-xs font-bold shadow-sm transition-all hover:opacity-90 active:scale-95" onclick="checkProPrint()"><i class="fa-solid fa-print"></i> Struk</button>
             <button class="flex flex-1 items-center justify-center gap-1.5 rounded-xl border border-blue-100 bg-blue-50 py-3 text-xs font-bold text-blue-600 shadow-sm transition-all hover:bg-blue-100 active:scale-95 dark:border-blue-800 dark:bg-blue-900/20" onclick="openDocPreview('invoice')"><i class="fa-solid fa-file-invoice-dollar"></i> Invoice</button>
             <button class="flex flex-1 items-center justify-center gap-1.5 rounded-xl border border-amber-100 bg-amber-50 py-3 text-xs font-bold text-amber-600 shadow-sm transition-all hover:bg-amber-100 active:scale-95 dark:border-amber-800 dark:bg-amber-900/20" onclick="openDocPreview('surat_jalan')"><i class="fa-solid fa-truck-ramp-box"></i> Srt Jalan</button>
           </div>
@@ -530,7 +530,7 @@
         <div class="z-20 grid grid-cols-3 gap-3 border-t border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-800 sm:p-5 md:p-6 lg:p-8">
           <button class="flex items-center justify-center gap-2 rounded-xl bg-blue-600 py-3 text-[10px] font-bold text-white shadow-md shadow-blue-500/20 transition-all hover:bg-blue-700 active:scale-95 sm:text-xs" onclick="exportDocFile('image')"><i class="fa-solid fa-image text-sm sm:text-base"></i> <span class="hidden sm:inline">Simpan Gambar</span></button>
           <button class="flex items-center justify-center gap-2 rounded-xl bg-rose-600 py-3 text-[10px] font-bold text-white shadow-md shadow-rose-500/20 transition-all hover:bg-rose-700 active:scale-95 sm:text-xs" onclick="exportDocFile('pdf')"><i class="fa-solid fa-file-pdf text-sm sm:text-base"></i> <span class="hidden sm:inline">Cetak PDF</span></button>
-          <button class="shadow-emerald-500/20 flex items-center justify-center gap-2 rounded-xl bg-emerald-600 py-3 text-[10px] font-bold text-white shadow-md transition-all hover:bg-emerald-700 active:scale-95 sm:text-xs" onclick="printDocA4()"><i class="fa-solid fa-print text-sm sm:text-base"></i> <span class="hidden sm:inline">Print Langsung</span></button>
+          <button class="primary-bg flex items-center justify-center gap-2 rounded-xl py-3 text-[10px] font-bold text-white shadow-md transition-all active:scale-95 sm:text-xs" onclick="printDocA4()"><i class="fa-solid fa-print text-sm sm:text-base"></i> <span class="hidden sm:inline">Print Langsung</span></button>
         </div>
       </div>
     </div>
@@ -638,7 +638,7 @@
                       <div class="flex h-6 w-9 cursor-pointer items-center justify-center rounded border border-slate-200 bg-white text-lg text-slate-400 shadow-sm transition-transform hover:scale-105 hover:text-orange-500 dark:border-slate-800 dark:bg-slate-900" title="Mastercard"><i class="fa-brands fa-cc-mastercard"></i></div>
                       <div class="flex h-6 w-9 cursor-pointer items-center justify-center rounded border border-slate-200 bg-white text-lg text-slate-400 shadow-sm transition-transform hover:scale-105 hover:text-rose-500 dark:border-slate-800 dark:bg-slate-900" title="QRIS"><i class="fa-solid fa-qrcode text-base"></i></div>
                       <div class="mx-1 h-6 w-px bg-white/20 dark:bg-slate-800"></div>
-                      <div class="flex h-6 w-9 cursor-pointer items-center justify-center rounded border border-slate-200 bg-white text-lg text-slate-400 shadow-sm transition-transform hover:scale-105 hover:text-emerald-500 dark:border-slate-800 dark:bg-slate-900" title="Ekspedisi Cepat"><i class="fa-solid fa-truck-fast text-base"></i></div>
+                      <div class="flex h-6 w-9 cursor-pointer items-center justify-center rounded border border-slate-200 bg-white text-lg text-slate-400 shadow-sm transition-transform hover:scale-105 hover:text-[var(--color-primary)] dark:border-slate-800 dark:bg-slate-900" title="Ekspedisi Cepat"><i class="fa-solid fa-truck-fast text-base"></i></div>
                       <div class="flex h-6 w-9 cursor-pointer items-center justify-center rounded border border-slate-200 bg-white text-lg text-slate-400 shadow-sm transition-transform hover:scale-105 hover:text-amber-500 dark:border-slate-800 dark:bg-slate-900" title="Kargo"><i class="fa-solid fa-box text-base"></i></div>
                     </div>
                   </div>
@@ -660,11 +660,11 @@
                         if (appData.store.wa) window.open('https://wa.me/' + appData.store.wa, '_blank');
                       "
                     >
-                      <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-emerald-500 text-white shadow-md transition-transform duration-300 group-hover:rotate-6 group-hover:scale-110">
+                      <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl primary-bg text-white shadow-md transition-transform duration-300 group-hover:rotate-6 group-hover:scale-110">
                         <i class="fa-brands fa-whatsapp text-2xl"></i>
                       </div>
                       <div class="min-w-0 text-center sm:text-left">
-                        <p class="mb-0.5 text-[10px] font-bold uppercase tracking-widest text-emerald-600 dark:text-emerald-400">Customer Service</p>
+                        <p class="mb-0.5 text-[10px] font-bold uppercase tracking-widest primary-text">Customer Service</p>
                         <p class="truncate text-sm font-extrabold text-slate-800 dark:text-white">Konsultasi via WhatsApp</p>
                       </div>
                     </a>
@@ -695,7 +695,7 @@
         </div>
         <!-- PENUTUP SCROLL-CONTENT -->
         <div id="floating-cart-container" class="pointer-events-none absolute right-6 z-40 scale-0 transform transition-all duration-300" style="bottom: calc(max(1.25rem, env(safe-area-inset-bottom)) + 0.75rem)">
-          <button class="relative flex h-14 w-14 cursor-pointer items-center justify-center rounded-full border border-white/10 text-white shadow-glow shadow-lg transition-all duration-200 hover:scale-110 active:scale-95" style="background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark))" onclick="changeView('view-cart')">
+          <button class="relative flex h-14 w-14 cursor-pointer items-center justify-center rounded-full border border-white/10 primary-bg text-white shadow-glow shadow-lg transition-all duration-200 hover:scale-110 active:scale-95" onclick="changeView('view-cart')">
             <i class="fa-solid fa-bag-shopping text-xl"></i>
             <span class="absolute -right-1 -top-1 flex h-[18px] min-w-[18px] items-center justify-center rounded-full border-2 border-white bg-rose-500 px-1 text-[9px] font-bold text-white shadow-sm transition-all dark:border-[#0b1121]" id="cart-badge">0</span>
           </button>
@@ -756,15 +756,15 @@
                 </label>
                 <label class="relative cursor-pointer" id="pickup-option-container">
                   <input class="custom-radio peer sr-only" name="delivery-method" onchange="toggleDeliveryMethod()" type="radio" value="pickup" />
-                  <div class="dark:peer-checked:bg-emerald-900/20 flex flex-col items-center gap-2 rounded-2xl border border-slate-200 bg-slate-50 p-4 text-center transition-all hover:border-emerald-300 peer-checked:border-emerald-500 peer-checked:bg-emerald-50 peer-checked:shadow-[0_0_0_2px_rgba(var(--color-primary-rgb),0.2)] dark:border-slate-700 dark:bg-slate-900">
-                    <div class="mb-1 flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-sm dark:bg-slate-800"><i class="fa-solid fa-store radio-icon text-lg text-slate-400 transition-colors peer-checked:text-emerald-500"></i></div>
-                    <span class="text-[11px] font-bold uppercase tracking-wide text-slate-600 peer-checked:text-emerald-600 dark:text-slate-300 dark:peer-checked:text-emerald-400">Ambil di Toko</span>
+                  <div class="primary-bg-soft flex flex-col items-center gap-2 rounded-2xl border border-slate-200 bg-slate-50 p-4 text-center transition-all hover:border-[var(--color-primary)] peer-checked:border-[var(--color-primary)] peer-checked:bg-white peer-checked:shadow-[0_0_0_2px_rgba(var(--color-primary-rgb),0.2)] dark:border-slate-700 dark:bg-slate-900">
+                    <div class="mb-1 flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-sm dark:bg-slate-800"><i class="fa-solid fa-store radio-icon text-lg text-slate-400 transition-colors peer-checked:text-[var(--color-primary)]"></i></div>
+                    <span class="text-[11px] font-bold uppercase tracking-wide text-slate-600 peer-checked:text-[var(--color-primary)] dark:text-slate-300">Ambil di Toko</span>
                   </div>
                 </label>
               </div>
             </div>
             <div class="rounded-[1.5rem] border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-800 sm:p-6">
-              <h3 class="mb-4 flex items-center gap-2 border-b border-slate-100 pb-3 text-xs font-bold uppercase tracking-wider text-slate-900 dark:border-slate-700 dark:text-white"><i class="fa-solid fa-address-card text-emerald-500"></i> Informasi Kontak</h3>
+              <h3 class="mb-4 flex items-center gap-2 border-b border-slate-100 pb-3 text-xs font-bold uppercase tracking-wider text-slate-900 dark:border-slate-700 dark:text-white"><i class="fa-solid fa-address-card primary-text"></i> Informasi Kontak</h3>
               <div class="space-y-4">
                 <div>
                   <label class="mb-2 block text-[10px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">Nama Lengkap</label>
@@ -796,9 +796,9 @@
                   <label class="mb-2 block text-[10px] font-bold uppercase tracking-widest text-amber-800 dark:text-amber-400"><i class="fa-solid fa-satellite-dish mr-1"></i> Akurasi Ongkir via GPS</label>
                   <p class="mb-3.5 text-[11px] font-medium leading-relaxed text-amber-700 dark:text-amber-500/90">Sematkan koordinat lokasi Anda agar kalkulasi ongkos kirim otomatis akurat.</p>
                   <button class="flex w-full items-center justify-center gap-2 rounded-xl border border-amber-300 bg-white py-3.5 text-xs font-bold text-amber-700 shadow-sm transition-all hover:bg-amber-100 active:scale-95 dark:border-amber-700 dark:bg-slate-800 dark:text-amber-400" id="btn-location" onclick="getLocation()"><i class="fa-solid fa-location-crosshairs text-sm text-amber-500"></i> <span id="text-get-location">Sematkan Titik Lokasi</span></button>
-                  <div class="dark:bg-emerald-900/40 mt-3 flex hidden items-center gap-2 rounded-xl border border-emerald-300 bg-emerald-100 p-3 dark:border-emerald-800" id="location-status">
-                    <i class="fa-solid fa-circle-check shrink-0 text-lg text-emerald-600 dark:text-emerald-400"></i>
-                    <span class="text-[10px] font-bold uppercase leading-tight tracking-wide text-emerald-700 dark:text-emerald-300">Koordinat berhasil diamankan!</span>
+                  <div class="primary-bg-soft primary-border mt-3 flex hidden items-center gap-2 rounded-xl border p-3" id="location-status">
+                    <i class="fa-solid fa-circle-check shrink-0 text-lg primary-text"></i>
+                    <span class="text-[10px] font-bold uppercase leading-tight tracking-wide primary-text">Koordinat berhasil diamankan!</span>
                   </div>
                 </div>
               </div>
@@ -843,9 +843,9 @@
                 </label>
                 <label class="relative block hidden cursor-pointer" id="payment-option-cod">
                   <input class="custom-radio peer sr-only" name="payment" onchange="togglePaymentDetails()" type="radio" value="cod" />
-                  <div class="dark:peer-checked:bg-emerald-900/20 flex flex-col items-center gap-2 rounded-2xl border border-slate-200 bg-slate-50 p-3.5 text-center transition-all hover:border-emerald-300 peer-checked:border-emerald-500 peer-checked:bg-emerald-50 peer-checked:shadow-[0_0_0_2px_rgba(var(--color-primary-rgb),0.2)] dark:border-slate-700 dark:bg-slate-900">
-                    <div class="mb-1 flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-sm dark:bg-slate-800"><i class="fa-solid fa-hand-holding-dollar text-lg text-slate-400 transition-colors peer-checked:text-emerald-500"></i></div>
-                    <span class="text-[11px] font-bold uppercase tracking-wide text-slate-600 peer-checked:text-emerald-600 dark:text-slate-300 dark:peer-checked:text-emerald-400">COD</span>
+                  <div class="primary-bg-soft flex flex-col items-center gap-2 rounded-2xl border border-slate-200 bg-slate-50 p-3.5 text-center transition-all hover:border-[var(--color-primary)] peer-checked:border-[var(--color-primary)] peer-checked:bg-white peer-checked:shadow-[0_0_0_2px_rgba(var(--color-primary-rgb),0.2)] dark:border-slate-700 dark:bg-slate-900">
+                    <div class="mb-1 flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-sm dark:bg-slate-800"><i class="fa-solid fa-hand-holding-dollar text-lg text-slate-400 transition-colors peer-checked:text-[var(--color-primary)]"></i></div>
+                    <span class="text-[11px] font-bold uppercase tracking-wide text-slate-600 peer-checked:text-[var(--color-primary)] dark:text-slate-300">COD</span>
                   </div>
                 </label>
                 <label class="relative block hidden cursor-pointer" id="payment-option-cashier">
@@ -895,7 +895,7 @@
               </div>
             </div>
             <div class="rounded-[1.5rem] border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-800 sm:p-6">
-              <h3 class="mb-4 flex items-center gap-2 border-b border-slate-100 pb-3 text-xs font-bold uppercase tracking-wider text-slate-900 dark:border-slate-700 dark:text-white"><i class="fa-solid fa-clipboard-list text-emerald-500"></i> Data Pengiriman</h3>
+              <h3 class="mb-4 flex items-center gap-2 border-b border-slate-100 pb-3 text-xs font-bold uppercase tracking-wider text-slate-900 dark:border-slate-700 dark:text-white"><i class="fa-solid fa-clipboard-list primary-text"></i> Data Pengiriman</h3>
               <div class="space-y-3 text-sm">
                 <div class="flex items-center justify-between"><span class="text-[10px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">Nama</span><span class="font-bold text-slate-800 dark:text-slate-200" id="payment-cust-name">-</span></div>
                 <div class="flex items-center justify-between">
@@ -938,7 +938,7 @@
                 <i class="fa-solid fa-spinner animate-spin"></i>
                 <span class="text-xs font-bold" id="bukti-uploading-text">Mengupload ke Google Drive...</span>
               </div>
-              <div class="mt-3 hidden items-center gap-2 text-emerald-600 dark:text-emerald-400" id="bukti-success">
+              <div class="mt-3 hidden items-center gap-2 primary-text" id="bukti-success">
                 <i class="fa-solid fa-circle-check"></i>
                 <span class="text-xs font-bold" id="bukti-success-text">Bukti siap dikirim!</span>
                 <span class="ml-1 text-[10px] font-bold text-slate-400" id="bukti-storage-info">(akan diupload ke Google Drive)</span>
@@ -948,29 +948,29 @@
                 <span class="text-xs font-bold">Koneksi Google Drive gagal. <button class="underline" onclick="retryBuktiUpload()">Coba lagi</button> atau hubungi seller.</span>
               </div>
             </div>
-            <div class="dark:bg-emerald-900/20 relative overflow-hidden rounded-[1.5rem] border border-emerald-200 bg-emerald-50 p-5 shadow-sm dark:border-emerald-800">
-              <h3 class="mb-3 flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-emerald-800 dark:text-emerald-400"><i class="fa-solid fa-ticket text-emerald-500"></i> Voucher Ongkir</h3>
+            <div class="primary-bg-soft primary-border relative overflow-hidden rounded-[1.5rem] border p-5 shadow-sm">
+              <h3 class="mb-3 flex items-center gap-2 text-xs font-bold uppercase tracking-widest primary-text"><i class="fa-solid fa-ticket primary-text"></i> Voucher Ongkir</h3>
               <div class="relative z-10 flex gap-3">
-                <input autocomplete="off" class="admin-input flex-1 border-emerald-200 bg-white !py-3.5 text-sm font-bold uppercase shadow-inner dark:border-emerald-700 dark:bg-slate-900" id="voucher-input" placeholder="Kode Promo..." type="text" />
-                <button class="shadow-emerald-500/20 rounded-xl bg-emerald-500 px-6 text-sm font-bold text-white shadow-md transition-all hover:bg-emerald-600 active:scale-95" onclick="applyVoucher()">Klaim</button>
+                <input autocomplete="off" class="admin-input flex-1 primary-border bg-white !py-3.5 text-sm font-bold uppercase shadow-inner dark:bg-slate-900" id="voucher-input" placeholder="Kode Promo..." type="text" />
+                <button class="primary-bg rounded-xl px-6 text-sm font-bold text-white shadow-md transition-all active:scale-95" onclick="applyVoucher()">Klaim</button>
               </div>
               <div class="mt-3 hidden" id="voucher-msg-container"><p class="text-[11px] font-bold uppercase tracking-widest" id="voucher-msg" /></div>
             </div>
             <div class="relative mt-2 overflow-hidden rounded-[1.5rem] border border-slate-700/60 bg-slate-900 p-6 text-white shadow-xl shadow-slate-900/20 sm:p-7">
-              <div class="bg-emerald-500/20 pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full blur-3xl"></div>
-              <h3 class="relative z-10 mb-5 flex items-center gap-2 border-b border-slate-700 pb-3 text-[11px] font-bold uppercase tracking-widest text-slate-300"><i class="fa-solid fa-receipt text-sm text-emerald-400"></i> Ringkasan Belanja</h3>
+              <div class="primary-blur-orb pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full blur-3xl"></div>
+              <h3 class="relative z-10 mb-5 flex items-center gap-2 border-b border-slate-700 pb-3 text-[11px] font-bold uppercase tracking-widest text-slate-300"><i class="fa-solid fa-receipt text-sm primary-text"></i> Ringkasan Belanja</h3>
               <div class="relative z-10 space-y-3.5 text-sm font-medium text-slate-300">
                 <div class="flex items-center justify-between"><span>Subtotal Produk</span><span class="text-base font-bold text-white" id="summary-subtotal">Rp 0</span></div>
                 <div class="flex hidden items-center justify-between" id="summary-shipping-row">
                   <span>Ongkir <span class="ml-1 rounded border border-slate-700 bg-slate-800 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-widest text-slate-400" id="summary-distance"></span></span><span class="text-base font-bold text-white" id="summary-shipping">Rp 0</span>
                 </div>
-                <div class="bg-emerald-900/20 border-emerald-800/30 -mx-2 flex hidden items-center justify-between rounded-xl border px-2 py-1.5 text-emerald-400" id="summary-discount-row"><span>Diskon Ongkir</span><span class="font-bold" id="summary-discount">- Rp 0</span></div>
+                <div class="primary-bg-soft -mx-2 flex hidden items-center justify-between rounded-xl border border-[rgba(var(--color-primary-rgb),0.3)] px-2 py-1.5 primary-text" id="summary-discount-row"><span>Diskon Ongkir</span><span class="font-bold" id="summary-discount">- Rp 0</span></div>
                 <div class="-mx-2 flex hidden items-center justify-between rounded-xl border border-amber-800/30 bg-amber-900/20 px-2 py-1.5 text-amber-400" id="summary-ppn-row"><span id="summary-ppn-label">PPN (11%)</span><span class="font-bold" id="summary-ppn">Rp 0</span></div>
               </div>
               <div class="relative z-10 my-5 border-t border-dashed border-slate-600/60"></div>
               <div class="relative z-10 flex items-end justify-between">
                 <span class="mb-1 text-sm font-bold uppercase tracking-widest text-slate-300">Total Tagihan</span>
-                <span class="text-3xl font-bold tracking-tight text-emerald-400 drop-shadow-md" id="summary-total">Rp 0</span>
+                <span class="text-3xl font-bold tracking-tight primary-text drop-shadow-md" id="summary-total">Rp 0</span>
               </div>
             </div>
           </div>
@@ -979,7 +979,7 @@
           <div class="mx-auto flex max-w-full flex-col gap-2.5 px-4 lg:px-10 xl:max-w-[1200px]">
             <label class="flex cursor-pointer items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 p-3 dark:border-slate-700 dark:bg-slate-800/80">
               <input class="peer sr-only" id="tnc-checkbox" onchange="toggleOrderButton()" type="checkbox" />
-              <div class="flex h-5 w-5 shrink-0 items-center justify-center rounded-xl border-2 border-slate-300 bg-white transition-all peer-checked:border-emerald-500 peer-checked:bg-emerald-500 dark:border-slate-600 dark:bg-slate-900"><i class="fa-solid fa-check text-[10px] text-white opacity-0 transition-opacity peer-checked:opacity-100"></i></div>
+              <div class="flex h-5 w-5 shrink-0 items-center justify-center rounded-xl border-2 border-slate-300 bg-white transition-all peer-checked:border-[var(--color-primary)] peer-checked:bg-[var(--color-primary)] dark:border-slate-600 dark:bg-slate-900"><i class="fa-solid fa-check text-[10px] text-white opacity-0 transition-opacity peer-checked:opacity-100"></i></div>
               <span class="text-[11px] font-bold leading-snug text-slate-600 dark:text-slate-400">Saya setuju dan memastikan pesanan sudah benar.</span>
             </label>
             <button class="btn-primary btn-disabled flex w-full items-center justify-center gap-2 rounded-2xl py-4 text-sm font-bold uppercase tracking-wider shadow-glow active:scale-[0.98]" id="btn-process-order" onclick="processOrder()"><i class="fa-solid fa-paper-plane"></i> Proses Pesanan</button>

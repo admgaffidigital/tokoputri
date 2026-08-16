@@ -1019,16 +1019,12 @@ window.showToast = (m, type, title, duration) => {
         const r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
         return `rgba(${Math.round(r*0.18)},${Math.round(g*0.18)},${Math.round(b*0.18)},${a})`;
     };
-    const darkBg2 = (hex, a=0.97) => {
-        const r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
-        return `rgba(${Math.round(r*0.10)},${Math.round(g*0.10)},${Math.round(b*0.10)},${a})`;
-    };
-
-    // Konfigurasi per tipe
+    
+    // Konfigurasi per tipe (Warna solid, tanpa gradasi)
     const cfg = {
-        // Sukses, info, loading → ikut warna tema
+        // Sukses, info, loading → ikut warna tema (Warna Solid)
         success: {
-            bg:      `linear-gradient(135deg, ${darkBg(pDark.replace(/[^#\w]/g,'') || '#047857')} 0%, ${darkBg2(pMain.replace(/[^#\w]/g,'') || '#10b981')} 100%)`,
+            bg:      darkBg(pDark.replace(/[^#\w]/g,'') || '#047857'),
             border:  `rgba(${pRgb}, 0.28)`,
             accent:  pMain,
             iconBg:  `rgba(${pRgb}, 0.18)`,
@@ -1036,7 +1032,7 @@ window.showToast = (m, type, title, duration) => {
             label:   'Berhasil',
         },
         info: {
-            bg:      `linear-gradient(135deg, ${darkBg(pDark.replace(/[^#\w]/g,'') || '#047857')} 0%, ${darkBg2(pMain.replace(/[^#\w]/g,'') || '#10b981')} 100%)`,
+            bg:      darkBg(pDark.replace(/[^#\w]/g,'') || '#047857'),
             border:  `rgba(${pRgb}, 0.2)`,
             accent:  pMain,
             iconBg:  `rgba(${pRgb}, 0.15)`,
@@ -1044,16 +1040,16 @@ window.showToast = (m, type, title, duration) => {
             label:   'Informasi',
         },
         loading: {
-            bg:      `linear-gradient(135deg, ${darkBg(pDark.replace(/[^#\w]/g,'') || '#047857')} 0%, ${darkBg2(pMain.replace(/[^#\w]/g,'') || '#10b981')} 100%)`,
+            bg:      darkBg(pDark.replace(/[^#\w]/g,'') || '#047857'),
             border:  `rgba(${pRgb}, 0.15)`,
             accent:  pMain,
             iconBg:  `rgba(${pRgb}, 0.12)`,
             icon:    'fa-spinner fa-spin',
             label:   'Memproses...',
         },
-        // Error & warning → warna semantik (tidak berubah ikut tema)
+        // Error & warning → warna semantik solid
         error: {
-            bg:      'linear-gradient(135deg, #3f0a14 0%, #1c0008 100%)',
+            bg:      '#1f080c',
             border:  'rgba(251,113,133,0.22)',
             accent:  '#fda4af',
             iconBg:  'rgba(251,113,133,0.15)',
@@ -1061,7 +1057,7 @@ window.showToast = (m, type, title, duration) => {
             label:   'Terjadi Kesalahan',
         },
         warning: {
-            bg:      'linear-gradient(135deg, #3a1500 0%, #1c0a00 100%)',
+            bg:      '#1f1400',
             border:  'rgba(251,191,36,0.22)',
             accent:  '#fcd34d',
             iconBg:  'rgba(251,191,36,0.15)',
@@ -3160,7 +3156,7 @@ window.renderCart = () => {
                 <h4 class="text-[13px] sm:text-sm font-bold text-slate-800 dark:text-white leading-snug line-clamp-2 mb-1.5 pr-10 uppercase tracking-wide">${esc(i.name)}</h4>
                 
                 <div class="flex flex-wrap items-center gap-1.5 mb-2.5">
-                    ${w?`<span class="bg-gradient-to-r from-amber-400 to-amber-500 text-white px-2.5 py-0.5 rounded-full text-[9px] font-bold shadow-sm flex items-center gap-1 uppercase tracking-wide"><i class="fa-solid fa-layer-group"></i> Grosir</span>`:''}
+                    ${w?`<span class="bg-amber-500 text-white px-2.5 py-0.5 rounded-full text-[9px] font-bold shadow-sm flex items-center gap-1 uppercase tracking-wide"><i class="fa-solid fa-layer-group"></i> Grosir</span>`:''}
                     ${colorIndicator}
                     ${i.variantName?`<span class="bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300 px-2 py-0.5 rounded-full text-[9px] font-bold border border-slate-200 dark:border-slate-600 uppercase tracking-wide">${esc(i.variantName)}</span>`:''}
                     ${i.poTime?`<span class="amber-badge px-2 py-0.5 rounded-full text-[9px] font-bold flex items-center uppercase tracking-wide"><i class="fa-solid fa-clock mr-1"></i> PO ${esc(i.poTime)}</span>`:''}
@@ -5575,9 +5571,8 @@ window.openOrderDetail = i => {
                 </div>
             </div>` : ''}
 
-            <div class="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-950 p-6 sm:p-7 rounded-[1.5rem] text-white shadow-xl shadow-slate-900/20 border border-slate-700/60 relative overflow-hidden group mt-2">
+            <div class="bg-slate-900 p-6 sm:p-7 rounded-[1.5rem] text-white shadow-xl shadow-slate-900/20 border border-slate-700/60 relative overflow-hidden group mt-2">
                 <div class="absolute -top-10 -right-10 w-32 h-32 primary-blur-orb rounded-full blur-3xl pointer-events-none transition-all duration-700"></div>
-                <div class="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-emerald-900/20 to-transparent pointer-events-none"></div>
                 
                 <div class="flex justify-between items-center border-b border-slate-700/80 pb-4 mb-4 relative z-10">
                     <h4 class="font-bold text-[11px] uppercase tracking-widest text-slate-300 flex items-center gap-2.5"><i class="fa-solid fa-wallet text-emerald-400 text-sm"></i> Ringkasan Bayar</h4>
@@ -6319,7 +6314,7 @@ window.rAdmL = t => {
                     <input autocomplete='off' id="admin-search-input" name='cari_admin_q' placeholder="Cari..." oninput="aSq=this.value.toLowerCase();rAdmItms('${t}')" class="w-full bg-white dark:bg-slate-800 border-[1.5px] border-slate-200 dark:border-slate-700 rounded-2xl py-3.5 pl-11 pr-12 text-sm font-bold text-slate-700 dark:text-slate-200 focus:outline-none focus:border-[var(--color-primary)] focus:shadow-[0_0_0_3px_rgba(var(--color-primary-rgb),0.12)] shadow-sm transition-all" ></i>
                     <button onclick="openCameraScanner('admin-search-input')" class="absolute right-2.5 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center text-slate-400 hover:text-[var(--color-primary)] hover:bg-[rgba(var(--color-primary-rgb),0.08)] rounded-xl transition-all" title="Scan Barcode"><i class="fa-solid fa-qrcode text-sm"></i></button>
                 </div>
-                <button onclick="oAAdd()" class="h-[46px] px-5 rounded-2xl text-white font-bold text-sm flex items-center gap-2 shadow-glow active:scale-95 transition-all shrink-0" style="background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark))"><i class="fa-solid fa-plus text-xs"></i> Tambah</button>
+                <button onclick="oAAdd()" class="h-[46px] px-5 rounded-2xl primary-bg font-bold text-sm flex items-center gap-2 shadow-glow active:scale-95 transition-all shrink-0"><i class="fa-solid fa-plus text-xs"></i> Tambah</button>
             </div>
         </div>
         <div id="admin-list-container" class="space-y-3 pb-12"></div>
@@ -6730,7 +6725,7 @@ window.rTaxSummary = () => {
                 <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">DPP (Dasar Pengenaan Pajak)</p>
                 <p class="text-lg sm:text-xl font-bold text-slate-800 dark:text-white truncate">${fCur(dpp)}</p>
             </div>
-            <div class="card-modern p-5 sm:p-5 border-amber-200 dark:border-amber-700 relative overflow-hidden" style="background: linear-gradient(135deg, rgba(245,158,11,0.1), rgba(245,158,11,0.02))"><div class="absolute -right-4 -bottom-4 w-24 h-24 bg-amber-500/20 rounded-full blur-xl pointer-events-none"></div>
+            <div class="card-modern p-5 sm:p-5 border-amber-200 dark:border-amber-700 bg-amber-50 dark:bg-amber-900/10 relative overflow-hidden"><div class="absolute -right-4 -bottom-4 w-24 h-24 bg-amber-500/20 rounded-full blur-xl pointer-events-none"></div>
                 <p class="text-[9px] font-bold text-amber-600 uppercase tracking-widest mb-1.5"><i class="fa-solid fa-file-invoice-dollar mr-1"></i>PPN Keluaran</p>
                 <p class="text-lg sm:text-xl font-bold text-amber-600 truncate">${fCur(t.ppn)}</p>
                 <p class="text-[10px] font-bold text-amber-500/80 mt-1">Wajib disetor ke negara</p>
@@ -6836,15 +6831,15 @@ window.rTaxBalance = () => {
     setH('tax-content', `
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 sm:gap-6 w-full mx-auto">
             <div class="card-modern p-5 sm:p-6 relative overflow-hidden shadow-lg primary-gradient-card primary-gradient-card-border"><div class="absolute -top-10 -right-10 w-32 h-32 primary-blur-orb rounded-full blur-2xl pointer-events-none"></div>
-                <h4 class="font-bold text-slate-800 dark:text-white text-xs uppercase tracking-widest mb-4 pb-3 border-b border-slate-100 dark:border-slate-700"><i class="fa-solid fa-arrow-down-wide-short mr-1.5 text-emerald-500"></i>ASET</h4>
+                <h4 class="font-bold text-slate-800 dark:text-white text-xs uppercase tracking-widest mb-4 pb-3 border-b border-slate-100 dark:border-slate-700"><i class="fa-solid fa-arrow-down-wide-short mr-1.5 primary-text"></i>ASET</h4>
                 <div class="space-y-3">
                     <div class="flex items-center justify-between gap-2"><span class="text-xs font-bold text-slate-500 dark:text-slate-400">Kas &amp; Bank (manual)</span><input type="number" min="0" value="${bs.kas||0}" onchange="saveBalanceField('kas', this.value)" class="admin-input !py-2 !px-3 text-xs w-32 text-right bg-slate-50 dark:bg-slate-900/50"></i></div>
                     <div class="flex items-center justify-between gap-2"><span class="text-xs font-bold text-slate-500 dark:text-slate-400">Piutang Usaha (manual)</span><input type="number" min="0" value="${bs.piutang||0}" onchange="saveBalanceField('piutang', this.value)" class="admin-input !py-2 !px-3 text-xs w-32 text-right bg-slate-50 dark:bg-slate-900/50"></i></div>
-                    <div class="flex items-center justify-between gap-2 py-2 bg-emerald-50 dark:bg-emerald-900/10 rounded-xl px-3"><span class="text-xs font-bold text-emerald-600">Persediaan Barang (Otomatis)</span><span class="text-xs font-bold text-emerald-600">${fCur(st.assetHpp)}</span></div>
+                    <div class="flex items-center justify-between gap-2 py-2 primary-bg-soft rounded-xl px-3"><span class="text-xs font-bold primary-text">Persediaan Barang (Otomatis)</span><span class="text-xs font-bold primary-text">${fCur(st.assetHpp)}</span></div>
                     <div class="flex justify-between pt-3 border-t-2 border-slate-800 dark:border-slate-200"><span class="font-bold text-slate-900 dark:text-white text-sm">Total Aset</span><span class="font-bold text-sm" style="color:var(--color-primary)">${fCur(totalAset)}</span></div>
                 </div>
             </div>
-            <div class="card-modern p-5 sm:p-6 relative overflow-hidden shadow-lg border-rose-100 dark:border-rose-900/30" style="background: linear-gradient(135deg, rgba(244,63,94,0.05), transparent)"><div class="absolute -top-10 -right-10 w-32 h-32 bg-rose-500/10 rounded-full blur-2xl pointer-events-none"></div>
+            <div class="card-modern p-5 sm:p-6 relative overflow-hidden shadow-lg border-rose-100 dark:border-rose-900/30 bg-rose-50/50 dark:bg-rose-900/10"><div class="absolute -top-10 -right-10 w-32 h-32 bg-rose-500/10 rounded-full blur-2xl pointer-events-none"></div>
                 <h4 class="font-bold text-slate-800 dark:text-white text-xs uppercase tracking-widest mb-4 pb-3 border-b border-slate-100 dark:border-slate-700"><i class="fa-solid fa-arrow-up-wide-short mr-1.5 text-rose-500"></i>KEWAJIBAN &amp; MODAL</h4>
                 <div class="space-y-3">
                     <div class="flex items-center justify-between gap-2"><span class="text-xs font-bold text-slate-500 dark:text-slate-400">Hutang Usaha (manual)</span><input type="number" min="0" value="${bs.hutang||0}" onchange="saveBalanceField('hutang', this.value)" class="admin-input !py-2 !px-3 text-xs w-32 text-right bg-slate-50 dark:bg-slate-900/50"></i></div>
@@ -7215,7 +7210,7 @@ window.rVarsB = () => {
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-4">
         <button type="button" onclick="openColorImportModal()" class="py-3 text-pink-600 font-bold rounded-2xl text-sm border-2 border-pink-200 bg-pink-50 hover:bg-pink-100 dark:bg-pink-900/30 dark:border-pink-800 transition-all flex items-center justify-center gap-2 active:scale-95 shadow-sm"><i class="fa-solid fa-swatchbook"></i> Impor dari DB Warna</button>
         <button type="button" onclick="exportAllVariantsToColorDB()" class="py-3 text-violet-600 font-bold rounded-2xl text-sm border-2 border-violet-200 bg-violet-50 hover:bg-violet-100 dark:bg-violet-900/30 dark:border-violet-800 transition-all flex items-center justify-center gap-2 active:scale-95 shadow-sm"><i class="fa-solid fa-upload"></i> Ekspor Semua ke DB</button>
-        <button type="button" onclick="addVar()" class="py-3 text-white font-bold rounded-2xl text-sm border border-[rgba(var(--color-primary-rgb),0.3)] transition-all flex items-center justify-center gap-2 active:scale-95 shadow-glow" style="background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark))"><i class="fa-solid fa-plus-circle text-base"></i> Tambah Varian Baru</button>
+        <button type="button" onclick="addVar()" class="py-3 primary-bg font-bold rounded-2xl text-sm border border-[rgba(var(--color-primary-rgb),0.3)] transition-all flex items-center justify-center gap-2 active:scale-95 shadow-glow"><i class="fa-solid fa-plus-circle text-base"></i> Tambah Varian Baru</button>
     </div>`;
     setH('variants-builder-container', h);
 };

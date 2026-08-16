@@ -670,15 +670,24 @@ html.dark .primary-icon-btn:hover {
     color: #ffffff !important;
 }
 
-/* Gradient lembut berbasis tema untuk card highlight/aksen */
+/* Card highlight/aksen berbasis warna solid tema (tanpa gradasi) */
+.primary-solid-card {
+    background-color: var(--color-primary-light) !important;
+}
+html.dark .primary-solid-card {
+    background-color: rgba(var(--color-primary-rgb), 0.08) !important;
+}
 .primary-gradient-card {
-    background: linear-gradient(135deg, rgba(var(--color-primary-rgb), 0.05), transparent) !important;
+    background-color: var(--color-primary-light) !important;
+}
+html.dark .primary-gradient-card {
+    background-color: rgba(var(--color-primary-rgb), 0.08) !important;
 }
 .primary-gradient-card-border {
-    border-color: rgba(var(--color-primary-rgb), 0.15) !important;
+    border-color: rgba(var(--color-primary-rgb), 0.2) !important;
 }
 html.dark .primary-gradient-card-border {
-    border-color: rgba(var(--color-primary-rgb), 0.25) !important;
+    border-color: rgba(var(--color-primary-rgb), 0.3) !important;
 }
 
 /* Dekorasi blur bulat di sudut card */
