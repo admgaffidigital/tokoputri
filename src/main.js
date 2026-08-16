@@ -3982,6 +3982,8 @@ const rPay = () => {
     }
     
     setIn('summary-total', fCur(t));
+    if (el('btn-total-preview')) setIn('btn-total-preview', fCur(t));
+    
     // PPN row
     const ppnRow = el('summary-ppn-row');
     if (ppnRow) {
@@ -4035,10 +4037,17 @@ const rPay = () => {
     if (co && cc) {
         if(cust.deliveryMethod === 'pickup'){
             show('payment-option-cashier'); hide('payment-option-cod');
-            if((document.querySelector('input[name="payment"]:checked')||{}).value === 'cod') document.querySelector('input[value="cashier"]').checked = true;
+            if((document.querySelector('input[name="payment"]:checked')||{}).value === 'cod') {
+                const cashierEl = document.querySelector('input[value="cashier"]');
+                if (cashierEl) cashierEl.checked = true;
+            }
         } else {
             hide('payment-option-cashier'); show('payment-option-cod');
-            if((document.querySelector('input[name="payment"]:checked')||{}).value === 'cashier') document.querySelector('input[value="transfer"]').checked = true;
+            const checkedVal = (document.querySelector('input[name="payment"]:checked')||{}).value;
+            if (checkedVal === 'cashier' || !checkedVal) {
+                const codEl = document.querySelector('input[value="cod"]');
+                if (codEl) codEl.checked = true;
+            }
         }
         togglePaymentDetails();
     }
