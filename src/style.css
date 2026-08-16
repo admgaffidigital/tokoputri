@@ -606,3 +606,86 @@ html.dark .themed-footer {
         display: flex !important;
     }
 }
+
+/* === 9. TEMA-AWARE UTILITY CLASSES ===
+   Kelas-kelas ini menggantikan Tailwind 'bg-emerald-*' / 'text-emerald-*' yang
+   hardcode, agar semua elemen UI CMS Admin otomatis mengikuti warna tema dinamis
+   yang dipilih oleh Admin dari menu Pengaturan Toko.
+   
+   CARA PEMAKAIAN:
+     primary-bg        → background warna primer penuh (untuk tombol isi, badge, dll)
+     primary-bg-soft   → background lembut warna primer (untuk bg panel, hover ringan)
+     primary-text      → teks warna primer
+     primary-border    → border warna primer transparan
+     primary-hover     → background primer saat di-hover (untuk tombol interaktif)
+     primary-icon-btn  → tombol ikon dengan hover primer (mengganti pola emerald-50 + hover:bg-emerald-500)
+*/
+.primary-bg {
+    background-color: var(--color-primary) !important;
+    color: #ffffff !important;
+}
+.primary-bg:hover {
+    background-color: var(--color-primary-dark) !important;
+}
+
+.primary-bg-soft {
+    background-color: var(--color-primary-light) !important;
+}
+html.dark .primary-bg-soft {
+    background-color: rgba(var(--color-primary-rgb), 0.15) !important;
+}
+
+.primary-text {
+    color: var(--color-primary) !important;
+}
+html.dark .primary-text {
+    color: var(--color-emerald-400) !important; /* lighter shade for dark mode contrast */
+}
+
+.primary-border {
+    border-color: rgba(var(--color-primary-rgb), 0.3) !important;
+}
+html.dark .primary-border {
+    border-color: rgba(var(--color-primary-rgb), 0.4) !important;
+}
+
+/* Tombol ikon kecil: latar soft lalu solid saat hover — pola paling umum di CMS */
+.primary-icon-btn {
+    background-color: var(--color-primary-light) !important;
+    color: var(--color-primary) !important;
+    border-color: rgba(var(--color-primary-rgb), 0.25) !important;
+    transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+}
+.primary-icon-btn:hover {
+    background-color: var(--color-primary) !important;
+    color: #ffffff !important;
+    border-color: var(--color-primary-dark) !important;
+}
+html.dark .primary-icon-btn {
+    background-color: rgba(var(--color-primary-rgb), 0.15) !important;
+    border-color: rgba(var(--color-primary-rgb), 0.35) !important;
+}
+html.dark .primary-icon-btn:hover {
+    background-color: var(--color-primary) !important;
+    color: #ffffff !important;
+}
+
+/* Gradient lembut berbasis tema untuk card highlight/aksen */
+.primary-gradient-card {
+    background: linear-gradient(135deg, rgba(var(--color-primary-rgb), 0.05), transparent) !important;
+}
+.primary-gradient-card-border {
+    border-color: rgba(var(--color-primary-rgb), 0.15) !important;
+}
+html.dark .primary-gradient-card-border {
+    border-color: rgba(var(--color-primary-rgb), 0.25) !important;
+}
+
+/* Dekorasi blur bulat di sudut card */
+.primary-blur-orb {
+    background-color: rgba(var(--color-primary-rgb), 0.1) !important;
+}
+.primary-blur-orb-hover:hover .primary-blur-orb {
+    background-color: rgba(var(--color-primary-rgb), 0.2) !important;
+}
+

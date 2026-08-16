@@ -5380,11 +5380,11 @@ window.exportOrdersToExcel = async () => {
                 }
                 else if(o.status==='Diproses'){
                     bC="text-[var(--color-primary)] border-[var(--color-primary)]/30 bg-[rgba(var(--color-primary-rgb),0.06)] dark:bg-[rgba(var(--color-primary-rgb),0.10)] dark:border-[var(--color-primary)]/30"; 
-                    iC="fa-spinner fa-spin"; boxBg="bg-emerald-500"; boxText="text-white shadow-sm";
+                    iC="fa-spinner fa-spin"; boxBg="primary-bg"; boxText="shadow-sm";
                 }
                 else if(o.status==='Selesai'){
                     bC="text-[var(--color-primary)] border-[var(--color-primary)]/30 bg-[rgba(var(--color-primary-rgb),0.06)] dark:bg-[rgba(var(--color-primary-rgb),0.10)] dark:border-[var(--color-primary)]/30"; 
-                    iC="fa-check-double"; boxBg="bg-emerald-50 dark:bg-emerald-900/30"; boxText="text-emerald-500";
+                    iC="fa-check-double"; boxBg="primary-bg-soft"; boxText="primary-text";
                 }
                 else if(o.status==='Dibatalkan'){
                     bC="text-slate-400 border-slate-200 bg-slate-50 dark:bg-slate-800 dark:border-slate-700"; 
@@ -5431,7 +5431,7 @@ window.exportOrdersToExcel = async () => {
                             </div>
                         </div>
                         
-                        <div class="w-8 h-8 rounded-full bg-slate-50 dark:bg-slate-700 flex items-center justify-center text-slate-400 group-hover:bg-emerald-500 group-hover:text-white transition-all shrink-0">
+                        <div class="w-8 h-8 rounded-full bg-slate-50 dark:bg-slate-700 flex items-center justify-center text-slate-400 group-hover:primary-bg transition-all shrink-0" style="transition: background-color 0.2s, color 0.2s">
                             <i class="fa-solid fa-chevron-right text-sm"></i>
                         </div>
                     </div>
@@ -5530,14 +5530,14 @@ window.openOrderDetail = i => {
                     <div class="flex justify-between items-center"><span class="text-slate-500 dark:text-slate-400 font-bold text-xs">Status</span><span class="font-bold text-xs px-2 py-1 rounded-xl ${o.claimedReward.status==='ready'?'bg-emerald-100 text-emerald-600':o.claimedReward.status==='waiting_stock'?'bg-amber-100 text-amber-600':'bg-slate-200 text-slate-600'}">${window.rewardStatusLabel(o.claimedReward)}</span></div>
                     ${o.claimedReward.note ? `<div class="bg-white/70 dark:bg-slate-900/40 p-2.5 rounded-xl text-[11px] italic text-violet-600 dark:text-violet-400">"${esc(o.claimedReward.note)}"</div>` : ''}
                     <div class="border-t border-dashed border-violet-200 dark:border-violet-800 pt-3.5 mt-1 space-y-2.5">
-                        <button type="button" onclick="ackRewardClaim('${o.orderId}','ready')" class="w-full py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white text-[11px] font-bold uppercase tracking-widest flex items-center justify-center gap-2 active:scale-95 transition-all"><i class="fa-solid fa-check"></i> Stok Ada — Kirim Bersama Pesanan</button>
+                        <button type="button" onclick="ackRewardClaim('${o.orderId}','ready')" class="w-full py-2.5 rounded-xl primary-bg text-[11px] font-bold uppercase tracking-widest flex items-center justify-center gap-2 active:scale-95 transition-all"><i class="fa-solid fa-check"></i> Stok Ada — Kirim Bersama Pesanan</button>
                         <button type="button" onclick="ackRewardClaim('${o.orderId}','waiting_stock')" class="w-full py-2.5 rounded-xl bg-amber-100 dark:bg-amber-900/30 hover:bg-amber-200 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-800 text-[11px] font-bold uppercase tracking-widest flex items-center justify-center gap-2 active:scale-95 transition-all"><i class="fa-solid fa-clock"></i> Stok Kosong — Tunda Pengiriman</button>
                     </div>
                 </div>
             </div>` : ''}
 
             <div class="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-950 p-6 sm:p-7 rounded-[1.5rem] text-white shadow-xl shadow-slate-900/20 border border-slate-700/60 relative overflow-hidden group mt-2">
-                <div class="absolute -top-10 -right-10 w-32 h-32 bg-emerald-500/20 rounded-full blur-3xl pointer-events-none group-hover:bg-emerald-500/30 transition-all duration-700"></div>
+                <div class="absolute -top-10 -right-10 w-32 h-32 primary-blur-orb rounded-full blur-3xl pointer-events-none transition-all duration-700"></div>
                 <div class="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-emerald-900/20 to-transparent pointer-events-none"></div>
                 
                 <div class="flex justify-between items-center border-b border-slate-700/80 pb-4 mb-4 relative z-10">
@@ -6346,7 +6346,7 @@ window.rAdmItms = t => {
             : `<div class="w-16 h-16 sm:w-20 sm:h-20 shrink-0 bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700/60 rounded-2xl flex items-center justify-center text-slate-300 dark:text-slate-600"><i class="fa-solid fa-image text-2xl"></i></div>`;
         
         let tglBtn = isP ? (isOff 
-            ? `<button class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-500 flex items-center justify-center hover:bg-emerald-500 hover:text-white dark:bg-emerald-900/30 dark:border-emerald-800 transition-all active:scale-95 shadow-sm" onclick="event.stopPropagation(); toggleProductStatus(${x.id}, true)" title="Aktifkan Stok"><i class="fa-solid fa-check text-xs sm:text-sm"></i></button>`
+            ? `<button class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl primary-icon-btn border flex items-center justify-center transition-all active:scale-95 shadow-sm" onclick="event.stopPropagation(); toggleProductStatus(${x.id}, true)" title="Aktifkan Stok"><i class="fa-solid fa-check text-xs sm:text-sm"></i></button>`
             : `<button class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-amber-50 border border-amber-200 text-amber-500 flex items-center justify-center hover:bg-amber-500 hover:text-white dark:bg-amber-900/30 dark:border-amber-800 transition-all active:scale-95 shadow-sm" onclick="event.stopPropagation(); toggleProductStatus(${x.id}, false)" title="Nonaktifkan (Habis)"><i class="fa-solid fa-ban text-xs sm:text-sm"></i></button>`
         ) : '';
         
@@ -6362,7 +6362,7 @@ window.rAdmItms = t => {
 
         // FITUR BARU: tombol Edit Cepat Harga (HPP, harga jual, harga coret, grosir, varian)
         let qPriceBtn = isP
-            ? `<button class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-500 flex items-center justify-center hover:bg-emerald-500 hover:text-white dark:bg-emerald-900/30 dark:border-emerald-800 transition-all active:scale-95 shadow-sm" onclick="event.stopPropagation(); openQuickPriceModal(${x.id})" title="Edit Cepat Harga"><i class="fa-solid fa-tags text-xs sm:text-sm"></i></button>`
+            ? `<button class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl primary-icon-btn border flex items-center justify-center transition-all active:scale-95 shadow-sm" onclick="event.stopPropagation(); openQuickPriceModal(${x.id})" title="Edit Cepat Harga"><i class="fa-solid fa-tags text-xs sm:text-sm"></i></button>`
             : '';
 
         let editBtn = `<button class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-slate-50 border border-slate-200 text-slate-500 flex items-center justify-center hover:bg-slate-500 hover:text-white dark:bg-slate-700 dark:border-slate-600 dark:text-slate-300 transition-all active:scale-95 shadow-sm" onclick="event.stopPropagation(); oAEd('${t}',${x.id})" title="Edit Data"><i class="fa-solid fa-pen text-xs sm:text-sm"></i></button>`;
@@ -6796,7 +6796,7 @@ window.rTaxBalance = () => {
 
     setH('tax-content', `
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 sm:gap-6 w-full mx-auto">
-            <div class="card-modern p-5 sm:p-6 relative overflow-hidden shadow-lg border-emerald-100 dark:border-emerald-900/30" style="background: linear-gradient(135deg, rgba(16,185,129,0.05), transparent)"><div class="absolute -top-10 -right-10 w-32 h-32 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none"></div>
+            <div class="card-modern p-5 sm:p-6 relative overflow-hidden shadow-lg primary-gradient-card primary-gradient-card-border"><div class="absolute -top-10 -right-10 w-32 h-32 primary-blur-orb rounded-full blur-2xl pointer-events-none"></div>
                 <h4 class="font-bold text-slate-800 dark:text-white text-xs uppercase tracking-widest mb-4 pb-3 border-b border-slate-100 dark:border-slate-700"><i class="fa-solid fa-arrow-down-wide-short mr-1.5 text-emerald-500"></i>ASET</h4>
                 <div class="space-y-3">
                     <div class="flex items-center justify-between gap-2"><span class="text-xs font-bold text-slate-500 dark:text-slate-400">Kas &amp; Bank (manual)</span><input type="number" min="0" value="${bs.kas||0}" onchange="saveBalanceField('kas', this.value)" class="admin-input !py-2 !px-3 text-xs w-32 text-right bg-slate-50 dark:bg-slate-900/50"></i></div>
@@ -7090,7 +7090,7 @@ window.rVarsB = () => {
             <!-- Header varian: nomor + tombol hapus selalu terlihat -->
             <div class="flex items-center justify-between mb-5 pb-4 border-b border-slate-200 dark:border-slate-700">
                 <div class="flex items-center gap-2.5">
-                    <div class="w-7 h-7 rounded-xl bg-emerald-500 text-white text-[11px] font-bold flex items-center justify-center shadow-sm">${i+1}</div>
+                    <div class="w-7 h-7 rounded-xl primary-bg text-[11px] font-bold flex items-center justify-center shadow-sm">${i+1}</div>
                     <span class="text-xs font-bold text-slate-700 dark:text-slate-200 uppercase tracking-widest">${v.name || 'Varian Baru'}</span>
                 </div>
                 <div class="flex items-center gap-2">
@@ -7139,7 +7139,7 @@ window.rVarsB = () => {
                     <div class="flex gap-2.5 items-center">
                         ${v.img ? `<img src="${esc(v.img)}" class="w-11 h-11 rounded-xl object-cover border-2 border-slate-200 dark:border-slate-600 shrink-0 shadow-sm" onerror="this.style.display='none'" loading="lazy"></i>` : ''}
                         <input autocomplete='off' id="var-img-${i}" placeholder="URL Gambar Varian" class="admin-input !text-sm flex-1 bg-white dark:bg-slate-800 shadow-sm" value="${esc(v.img||'')}" onchange="uVar(${i},'img',fixD(this.value))"></i>
-                        <label class="bg-emerald-50 dark:bg-emerald-900/30 border border-emerald-200 dark:border-emerald-800 text-[var(--color-primary)] rounded-xl w-11 h-11 flex items-center justify-center cursor-pointer hover:bg-emerald-100 transition-all shrink-0 active:scale-95 shadow-sm" title="Upload dari Galeri"><i class="fa-solid fa-upload text-sm"></i><input type="file" accept="image/*" class="hidden" onchange="handleImageUpload(this, 'var-img-${i}')" ></i></label>
+                        <label class="primary-icon-btn border rounded-xl w-11 h-11 flex items-center justify-center cursor-pointer transition-all shrink-0 active:scale-95 shadow-sm" title="Upload dari Galeri"><i class="fa-solid fa-upload text-sm"></i><input type="file" accept="image/*" class="hidden" onchange="handleImageUpload(this, 'var-img-${i}')" ></i></label>
                         <label class="bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 text-blue-600 dark:text-blue-400 rounded-xl w-11 h-11 flex items-center justify-center cursor-pointer hover:bg-blue-100 transition-all shrink-0 active:scale-95 shadow-sm" title="Ambil Foto Langsung"><i class="fa-solid fa-camera text-sm"></i><input type="file" accept="image/*" capture="environment" class="hidden" onchange="handleImageUpload(this, 'var-img-${i}')" ></i></label>
                     </div>
                 </div>
@@ -7154,7 +7154,7 @@ window.rVarsB = () => {
                 </div>
                 <div>
                     <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Status Stok Varian</label>
-                    <button type="button" onclick="tVars[${i}].isActive = ${!isAct}; rVarsB();" class="w-full py-3.5 px-4 rounded-xl text-[13px] font-bold uppercase tracking-wider transition-all shadow-sm flex items-center justify-center gap-2.5 border-2 active:scale-95 ${isAct ? 'bg-emerald-500 text-white border-emerald-600 hover:bg-emerald-600 shadow-emerald-500/30 shadow-md' : 'bg-slate-100 text-rose-500 border-rose-200 hover:bg-rose-50 dark:bg-slate-800 dark:border-rose-800'}">
+                    <button type="button" onclick="tVars[${i}].isActive = ${!isAct}; rVarsB();" class="w-full py-3.5 px-4 rounded-xl text-[13px] font-bold uppercase tracking-wider transition-all shadow-sm flex items-center justify-center gap-2.5 border-2 active:scale-95 ${isAct ? 'primary-bg border-[var(--color-primary-dark)] shadow-md' : 'bg-slate-100 text-rose-500 border-rose-200 hover:bg-rose-50 dark:bg-slate-800 dark:border-rose-800'}">
                         ${isAct ? '<i class="fa-solid fa-circle-check text-base"></i> STOK TERSEDIA' : '<i class="fa-solid fa-ban text-base"></i> STOK HABIS'}
                     </button>
                 </div>
@@ -7412,7 +7412,7 @@ window.openImportFromProductsModal = async () => {
             </div>
             <div class="flex gap-3 mt-5">
                 <button onclick="_closeColorFloatModal()" class="flex-1 py-3 rounded-xl border border-slate-200 font-bold text-slate-500 text-sm hover:bg-slate-50 transition-all">Batal</button>
-                <button onclick="confirmImportFromProducts()" class="flex-1 py-3 rounded-xl bg-emerald-500 text-white font-bold text-sm hover:bg-emerald-600 transition-all active:scale-95"><i class="fa-solid fa-download mr-2"></i>Impor</button>
+                <button onclick="confirmImportFromProducts()" class="flex-1 py-3 rounded-xl primary-bg font-bold text-sm transition-all active:scale-95"><i class="fa-solid fa-download mr-2"></i>Impor</button>
             </div>
         </div>`);
 };
@@ -8185,7 +8185,7 @@ window.openDocPreview = (type) => {
     if (appData.store.logo && (appData.store.logo.includes('http') || appData.store.logo.includes('data:'))) {
         logoHTML = `<img loading="eager" src="${esc(appData.store.logo)}" class="w-16 h-16 object-contain"></i>`;
     } else {
-        logoHTML = `<div class="w-16 h-16 bg-emerald-500 text-white flex items-center justify-center rounded-xl"><i class="fa-solid fa-store text-3xl"></i></div>`;
+        logoHTML = `<div class="w-16 h-16 primary-bg flex items-center justify-center rounded-xl"><i class="fa-solid fa-store text-3xl"></i></div>`;
     }
 
     let h = `
@@ -8441,7 +8441,7 @@ window.printDocA4 = () => {
             <script src="https://cdn.tailwindcss.com"><` + `/script>
             <style>
                 @page { size: A4 portrait; margin: 10mm; }
-                body { font-family: 'Plus Jakarta Sans', system-ui, sans-serif; background: #fff; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+                body { font-family: 'Barlow', system-ui, sans-serif; background: #fff; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
             </style>
         </head>
         <body onload="setTimeout(() => { window.print(); }, 800)">
