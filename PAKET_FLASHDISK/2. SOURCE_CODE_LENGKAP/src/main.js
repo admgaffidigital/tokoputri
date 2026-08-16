@@ -1585,7 +1585,7 @@ window.rDyn = () => {
     let bHTML = (appData.banners && appData.banners.length) ? `<div id="banner-slider" class="flex overflow-x-auto gap-4 sm:gap-6 pb-6 pt-2 snap-x hide-scrollbar scroll-smooth" ontouchstart="clearInterval(bannerTmr)" ontouchend="setTimeout(startBannerAutoSlide, 3000)" onmouseenter="clearInterval(bannerTmr)" onmouseleave="startBannerAutoSlide()">${appData.banners.map((b,i)=>{
         const linkAction = b.link ? `onclick="window.open('${esc(b.link)}', '_self')"` : '';
         return `
-        <div ${linkAction} class="w-[88vw] sm:w-[480px] min-h-[180px] sm:min-h-[220px] snap-center shrink-0 rounded-[2rem] relative overflow-hidden group cursor-pointer bg-[var(--color-primary)] text-white shadow-md hover:-translate-y-1.5 hover:scale-[1.02] hover:shadow-[0_12px_32px_-8px_rgba(var(--color-primary-rgb),0.4)] transition-all duration-300 border border-white/15 flex flex-col">
+        <div ${linkAction} class="w-[88vw] sm:w-[480px] min-h-[180px] sm:min-h-[220px] snap-center shrink-0 rounded-[2rem] relative overflow-hidden group cursor-pointer bg-[var(--color-primary)] text-white shadow-md hover:-translate-y-1 hover:scale-[1.01] hover:shadow-lg transition-all duration-300 border border-white/15 flex flex-col">
             <!-- Dynamic Background Shapes -->
             <div class="absolute -right-10 -top-10 w-40 h-40 border-[24px] border-white/10 rounded-full pointer-events-none group-hover:scale-110 transition-transform duration-500"></div>
             <div class="absolute -left-12 top-10 w-24 h-24 bg-white/10 rounded-full border border-white/5 pointer-events-none transform -rotate-12 shadow-inner group-hover:-translate-x-2 transition-transform duration-500"></div>
@@ -1635,7 +1635,7 @@ window.rDyn = () => {
                 
                 return `
                 <div class="w-[280px] sm:w-[320px] shrink-0 snap-start relative group cursor-pointer active:scale-95 transition-all duration-300" onclick="copyVoucher('${esc(v.code)}')">
-                    <div class="w-full h-[110px] bg-[var(--color-primary)] rounded-[1.25rem] shadow-md hover:shadow-[0_12px_28px_-6px_rgba(var(--color-primary-rgb),0.4)] hover:-translate-y-1.5 hover:scale-[1.02] transition-all duration-300 flex relative overflow-hidden border border-white/20 text-white">
+                    <div class="w-full h-[110px] bg-[var(--color-primary)] rounded-[1.25rem] shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 flex relative overflow-hidden border border-white/20 text-white">
                         <!-- Glow decorative circle -->
                         <div class="absolute -right-4 -top-4 w-24 h-24 bg-white/10 rounded-full blur-xl pointer-events-none"></div>
                         
