@@ -8083,6 +8083,8 @@ window.addEventListener('popstate', e => {
         else if (m === 'review') closeReviewModal(true); // FITUR BARU: back button tutup modal ulasan
         else if (m === 'quickmenu') closeQuickMenuModal(true);
         else if (m === 'variantPreview') closeVariantPreviewModal(true);
+        else if (m === 'terms') closeTermsModal(true);
+        else if (m === 'privacy') closePrivacyModal(true);
     } else {
         const state = e.state || {};
         const v = state.view || null;
