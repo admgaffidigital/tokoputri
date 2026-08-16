@@ -276,7 +276,8 @@ const defApp = {
         useStock: false,   // Manajemen stok aktif/nonaktif
         ppnEnabled: false, // PPN aktif/nonaktif
         ppnRate: 11,        // Persentase PPN (default 11%)
-
+        terms: "",          // Syarat & Ketentuan
+        privacy: ""         // Kebijakan Privasi
     }, 
     // auth field dihapus: login admin sudah pakai Firebase Authentication (signInWithEmailAndPassword), bukan field ini 
     payment: { qrisUrl: "" }, 
@@ -1299,6 +1300,82 @@ window.openQuickMenuModal = () => {
         if (m.classList.contains('hidden')) pushModalHistory('quickmenu');
         show('quickmenu-modal');
         setTimeout(() => { m.classList.remove('opacity-0'); c.classList.remove('translate-y-full','sm:translate-y-10'); }, 10);
+    }
+};
+
+window.openTermsModal = () => {
+    const defaultTerms = `
+      <div>
+        <h4 class="font-bold text-slate-800 dark:text-white mb-1.5 uppercase tracking-wider text-[10px] text-amber-500">1. Ketentuan Umum</h4>
+        <p class="leading-relaxed">Layanan website Toko Putri diperuntukkan bagi pelanggan yang ingin memesan perkakas, alat teknik, dan perlengkapan pertukangan secara online.</p>
+      </div>
+      <div>
+        <h4 class="font-bold text-slate-800 dark:text-white mb-1.5 uppercase tracking-wider text-[10px] text-amber-500">2. Pemesanan &amp; Hubungi Admin</h4>
+        <p class="leading-relaxed">Setiap pesanan yang dibuat melalui keranjang belanja akan diteruskan secara otomatis ke nomor WhatsApp admin untuk konfirmasi akhir dan pengiriman.</p>
+      </div>
+      <div>
+        <h4 class="font-bold text-slate-800 dark:text-white mb-1.5 uppercase tracking-wider text-[10px] text-amber-500">3. Kebijakan Pembayaran</h4>
+        <p class="leading-relaxed">Kami mendukung pembayaran Tunai (Cash), COD, Transfer Bank, QRIS, dan sistem Tempo (Kredit) untuk pelanggan dengan limit piutang aktif.</p>
+      </div>
+      <div>
+        <h4 class="font-bold text-slate-800 dark:text-white mb-1.5 uppercase tracking-wider text-[10px] text-amber-500">4. Kebijakan Retur &amp; Barang PO</h4>
+        <p class="leading-relaxed">Barang Pre-Order (PO) dikirim sesuai estimasi. Khusus produk cat bangunan yang dicampur (tinting) tidak dapat dibatalkan atau diretur.</p>
+      </div>
+    `;
+    const terms = appData.store.terms || defaultTerms;
+    setH('terms-modal-content-body', terms.replace(/\n/g, '<br>'));
+    
+    const m = el('terms-modal'), c = el('terms-modal-content');
+    if (m && c) {
+        if (m.classList.contains('hidden')) pushModalHistory('terms');
+        show('terms-modal');
+        setTimeout(() => { m.classList.remove('opacity-0'); c.classList.remove('translate-y-full','sm:translate-y-10'); }, 10);
+    }
+};
+
+window.closeTermsModal = (fH=false) => {
+    const m = el('terms-modal'), c = el('terms-modal-content');
+    if (m && c) {
+        requestCloseModal('terms', fH, () => {
+            m.classList.add('opacity-0'); c.classList.add('translate-y-full','sm:translate-y-10');
+            setTimeout(() => hide('terms-modal'), 300);
+        });
+    }
+};
+
+window.openPrivacyModal = () => {
+    const defaultPrivacy = `
+      <div>
+        <h4 class="font-bold text-slate-800 dark:text-white mb-1.5 uppercase tracking-wider text-[10px] text-violet-500">1. Data Yang Kami Kumpulkan</h4>
+        <p class="leading-relaxed">Kami mengumpulkan data berupa Nama, Nomor WhatsApp, dan Alamat Pengiriman Anda saat membuat pesanan untuk keperluan pengantaran barang.</p>
+      </div>
+      <div>
+        <h4 class="font-bold text-slate-800 dark:text-white mb-1.5 uppercase tracking-wider text-[10px] text-violet-500">2. Kerahasiaan Data</h4>
+        <p class="leading-relaxed">Toko Putri berkomitmen penuh untuk menjaga kerahasiaan data pribadi pelanggan dan tidak akan membagikannya ke pihak ketiga manapun.</p>
+      </div>
+      <div>
+        <h4 class="font-bold text-slate-800 dark:text-white mb-1.5 uppercase tracking-wider text-[10px] text-violet-500">3. Keamanan Data Transaksi</h4>
+        <p class="leading-relaxed">Semua file bukti pembayaran yang diunggah diproses melalui server terenkripsi yang aman untuk mencegah kebocoran data sensitif.</p>
+      </div>
+    `;
+    const privacy = appData.store.privacy || defaultPrivacy;
+    setH('privacy-modal-content-body', privacy.replace(/\n/g, '<br>'));
+    
+    const m = el('privacy-modal'), c = el('privacy-modal-content');
+    if (m && c) {
+        if (m.classList.contains('hidden')) pushModalHistory('privacy');
+        show('privacy-modal');
+        setTimeout(() => { m.classList.remove('opacity-0'); c.classList.remove('translate-y-full','sm:translate-y-10'); }, 10);
+    }
+};
+
+window.closePrivacyModal = (fH=false) => {
+    const m = el('privacy-modal'), c = el('privacy-modal-content');
+    if (m && c) {
+        requestCloseModal('privacy', fH, () => {
+            m.classList.add('opacity-0'); c.classList.add('translate-y-full','sm:translate-y-10');
+            setTimeout(() => hide('privacy-modal'), 300);
+        });
     }
 };
 
@@ -5891,6 +5968,8 @@ window.openSettingForm = (type) => {
             </div>
             <div><label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Jam Operasional Toko (Footer)</label><input autocomplete='off' id="set-hours" value="${esc(appData.store.operationalHours || 'Buka Setiap Hari (08:00 - 17:00)')}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm" placeholder="Buka Setiap Hari (08:00 - 17:00)"></div>
             <div><label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Teks Footer Credit (Powered By)</label><input autocomplete='off' id="set-credit" value="${esc(appData.store.footerCredit || 'POWERED BY BLOGGER PWA SYSTEM')}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm" placeholder="POWERED BY BLOGGER PWA SYSTEM"></div>
+            <div><label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Syarat &amp; Ketentuan</label><textarea autocomplete='off' id="set-terms" class="admin-input resize-y !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm" rows="4" placeholder="Masukkan Syarat &amp; Ketentuan...">${esc(appData.store.terms || '')}</textarea></div>
+            <div><label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Kebijakan Privasi</label><textarea autocomplete='off' id="set-privacy" class="admin-input resize-y !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm" rows="4" placeholder="Masukkan Kebijakan Privasi...">${esc(appData.store.privacy || '')}</textarea></div>
         `;
     } 
     else if (type === 'catalog') {
@@ -6091,6 +6170,8 @@ window.saveAdminSettings = async (type) => {
             appData.store.footerCredit = getV('set-credit');
             appData.store.themeColor = getV('set-theme-color'); 
             appData.store.uiTheme = getV('set-ui-theme');
+            appData.store.terms = getV('set-terms');
+            appData.store.privacy = getV('set-privacy');
             localStorage.setItem('freshmart_theme_color', appData.store.themeColor);
             localStorage.setItem('freshmart_ui_theme', appData.store.uiTheme);
             if (typeof window.applyUITheme === 'function') {

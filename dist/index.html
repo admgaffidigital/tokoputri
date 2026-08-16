@@ -84,11 +84,11 @@
         }
       }
     </style>
-    <script type="module" crossorigin src="/assets/index-CmkmIdcA.js"></script>
+    <script type="module" crossorigin src="/assets/index-B_FlsuTc.js"></script>
     <link rel="modulepreload" crossorigin href="/assets/vendor-firebase-core-D2OF5R23.js">
     <link rel="modulepreload" crossorigin href="/assets/vendor-firebase-db-BIUZcnOd.js">
     <link rel="modulepreload" crossorigin href="/assets/vendor-utils-bRchjNq8.js">
-    <link rel="stylesheet" crossorigin href="/assets/index-6o8wMcwC.css">
+    <link rel="stylesheet" crossorigin href="/assets/index-tkvEWyLv.css">
   </head>
   <body>
     <!-- UI Components Global -->
@@ -294,6 +294,80 @@
               <p class="mt-0.5 text-[9px] font-semibold text-slate-400 dark:text-slate-500">Kelola produk, pesanan, &amp; toko</p>
             </div>
           </button>
+          <button class="flex w-full items-center gap-4 rounded-2xl border border-slate-100 bg-slate-50 p-4 text-left font-bold text-slate-700 transition-all hover:bg-emerald-50 hover:text-emerald-500 active:scale-[0.98] dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-emerald-950/20 dark:hover:text-emerald-400" onclick="navigateFromQuickMenu(openTermsModal)">
+            <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-500 text-white shadow-md"><i class="fa-solid fa-file-contract text-sm"></i></div>
+            <div>
+              <h4 class="text-sm leading-tight">Syarat &amp; Ketentuan</h4>
+              <p class="mt-0.5 text-[9px] font-semibold text-slate-400 dark:text-slate-500">Ketentuan penggunaan layanan toko</p>
+            </div>
+          </button>
+          <button class="flex w-full items-center gap-4 rounded-2xl border border-slate-100 bg-slate-50 p-4 text-left font-bold text-slate-700 transition-all hover:bg-emerald-50 hover:text-emerald-500 active:scale-[0.98] dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-emerald-950/20 dark:hover:text-emerald-400" onclick="navigateFromQuickMenu(openPrivacyModal)">
+            <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-violet-500 text-white shadow-md"><i class="fa-solid fa-user-shield text-sm"></i></div>
+            <div>
+              <h4 class="text-sm leading-tight">Kebijakan Privasi</h4>
+              <p class="mt-0.5 text-[9px] font-semibold text-slate-400 dark:text-slate-500">Kebijakan privasi &amp; perlindungan data</p>
+            </div>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Terms & Conditions Modal -->
+    <div class="fixed inset-0 z-[115] flex hidden items-end justify-center bg-slate-900/80 p-0 opacity-0 transition-opacity duration-300 sm:items-center sm:p-5" id="terms-modal" onclick="if (event.target === this) closeTermsModal();">
+      <div class="relative flex max-h-[85dvh] w-full max-w-sm translate-y-full transform flex-col overflow-hidden rounded-t-[2rem] border-t border-slate-200 bg-white shadow-2xl transition-transform duration-300 dark:border-slate-800 dark:bg-[#0b1121] sm:translate-y-10 sm:rounded-[2rem] sm:border" id="terms-modal-content">
+        <div class="mx-auto mb-1 mt-4 h-1.5 w-12 rounded-full bg-slate-200 dark:bg-slate-700 sm:hidden"></div>
+        <div class="flex shrink-0 items-center justify-between border-b border-slate-100 px-6 pb-4 pt-2 dark:border-slate-800/60 sm:pt-5">
+          <h3 class="flex items-center gap-3 text-base font-bold text-slate-900 dark:text-white">
+            <div class="flex h-8 w-8 items-center justify-center rounded-xl bg-amber-50 text-amber-500 dark:bg-amber-900/30"><i class="fa-solid fa-file-contract text-sm"></i></div>
+            Syarat &amp; Ketentuan
+          </h3>
+          <button class="flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-slate-500 transition-all hover:bg-rose-50 hover:text-rose-500 dark:bg-slate-800 dark:hover:bg-rose-900/30" onclick="closeTermsModal()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div id="terms-modal-content-body" class="hide-scrollbar flex-1 overflow-y-auto bg-white p-5 dark:bg-[#0b1121] text-xs sm:text-sm text-slate-600 dark:text-slate-300 space-y-4">
+          <div>
+            <h4 class="font-bold text-slate-800 dark:text-white mb-1.5 uppercase tracking-wider text-[10px] text-amber-500">1. Ketentuan Umum</h4>
+            <p class="leading-relaxed">Layanan website Toko Putri diperuntukkan bagi pelanggan yang ingin memesan perkakas, alat teknik, dan perlengkapan pertukangan secara online.</p>
+          </div>
+          <div>
+            <h4 class="font-bold text-slate-800 dark:text-white mb-1.5 uppercase tracking-wider text-[10px] text-amber-500">2. Pemesanan &amp; Hubungi Admin</h4>
+            <p class="leading-relaxed">Setiap pesanan yang dibuat melalui keranjang belanja akan diteruskan secara otomatis ke nomor WhatsApp admin untuk konfirmasi akhir dan pengiriman.</p>
+          </div>
+          <div>
+            <h4 class="font-bold text-slate-800 dark:text-white mb-1.5 uppercase tracking-wider text-[10px] text-amber-500">3. Kebijakan Pembayaran</h4>
+            <p class="leading-relaxed">Kami mendukung pembayaran Tunai (Cash), COD, Transfer Bank, QRIS, dan sistem Tempo (Kredit) untuk pelanggan dengan limit piutang aktif.</p>
+          </div>
+          <div>
+            <h4 class="font-bold text-slate-800 dark:text-white mb-1.5 uppercase tracking-wider text-[10px] text-amber-500">4. Kebijakan Retur &amp; Barang PO</h4>
+            <p class="leading-relaxed">Barang Pre-Order (PO) dikirim sesuai estimasi. Khusus produk cat bangunan yang dicampur (tinting) tidak dapat dibatalkan atau diretur.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Privacy Policy Modal -->
+    <div class="fixed inset-0 z-[115] flex hidden items-end justify-center bg-slate-900/80 p-0 opacity-0 transition-opacity duration-300 sm:items-center sm:p-5" id="privacy-modal" onclick="if (event.target === this) closePrivacyModal();">
+      <div class="relative flex max-h-[85dvh] w-full max-w-sm translate-y-full transform flex-col overflow-hidden rounded-t-[2rem] border-t border-slate-200 bg-white shadow-2xl transition-transform duration-300 dark:border-slate-800 dark:bg-[#0b1121] sm:translate-y-10 sm:rounded-[2rem] sm:border" id="privacy-modal-content">
+        <div class="mx-auto mb-1 mt-4 h-1.5 w-12 rounded-full bg-slate-200 dark:bg-slate-700 sm:hidden"></div>
+        <div class="flex shrink-0 items-center justify-between border-b border-slate-100 px-6 pb-4 pt-2 dark:border-slate-800/60 sm:pt-5">
+          <h3 class="flex items-center gap-3 text-base font-bold text-slate-900 dark:text-white">
+            <div class="flex h-8 w-8 items-center justify-center rounded-xl bg-violet-50 text-violet-500 dark:bg-violet-900/30"><i class="fa-solid fa-user-shield text-sm"></i></div>
+            Kebijakan Privasi
+          </h3>
+          <button class="flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-slate-500 transition-all hover:bg-rose-50 hover:text-rose-500 dark:bg-slate-800 dark:hover:bg-rose-900/30" onclick="closePrivacyModal()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div id="privacy-modal-content-body" class="hide-scrollbar flex-1 overflow-y-auto bg-white p-5 dark:bg-[#0b1121] text-xs sm:text-sm text-slate-600 dark:text-slate-300 space-y-4">
+          <div>
+            <h4 class="font-bold text-slate-800 dark:text-white mb-1.5 uppercase tracking-wider text-[10px] text-violet-500">1. Data Yang Kami Kumpulkan</h4>
+            <p class="leading-relaxed">Kami mengumpulkan data berupa Nama, Nomor WhatsApp, dan Alamat Pengiriman Anda saat membuat pesanan untuk keperluan pengantaran barang.</p>
+          </div>
+          <div>
+            <h4 class="font-bold text-slate-800 dark:text-white mb-1.5 uppercase tracking-wider text-[10px] text-violet-500">2. Kerahasiaan Data</h4>
+            <p class="leading-relaxed">Toko Putri berkomitmen penuh untuk menjaga kerahasiaan data pribadi pelanggan dan tidak akan membagikannya ke pihak ketiga manapun.</p>
+          </div>
+          <div>
+            <h4 class="font-bold text-slate-800 dark:text-white mb-1.5 uppercase tracking-wider text-[10px] text-violet-500">3. Keamanan Data Transaksi</h4>
+            <p class="leading-relaxed">Semua file bukti pembayaran yang diunggah diproses melalui server terenkripsi yang aman untuk mencegah kebocoran data sensitif.</p>
+          </div>
         </div>
       </div>
     </div>
