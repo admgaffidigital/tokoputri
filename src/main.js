@@ -3920,6 +3920,16 @@ window.calculateTempoBalance = () => {
 };
 
 const rPay = () => {
+    if (!cart.length) {
+        showToast("Keranjang belanja kosong!");
+        changeView('view-catalog', true);
+        return;
+    }
+    if (!cust.name) {
+        showToast("Lengkapi data pengiriman terlebih dahulu!");
+        changeView('view-checkout', true);
+        return;
+    }
     const sub = cart.reduce((s,i) => s + (parseFloat(getEffP(i))||0) * (parseFloat(i.qty)||0), 0);
     let sC = 0, shippingDisc = 0, productDisc = 0;
     
