@@ -271,10 +271,11 @@ const defApp = {
         isDeliveryEnabled: true, isPickupEnabled: true, 
         allProductsIcon: "", allBrandsIcon: "", 
         categoryStyle: "text", brandStyle: "image",
-        showCategories: true, showBrands: true,
+        showCategories: true, showBrands: true,        
         themeColor: "#10b981", uiTheme: "emerald", // FIX: default eksplisit, supaya tidak ada nilai undefined yang nyelip
         useStock: false,   // Manajemen stok aktif/nonaktif
         ppnEnabled: false, // PPN aktif/nonaktif
+        ppnType: "exclusive", // "exclusive" (Pajak Ditambah di Checkout) | "inclusive" (Harga Produk Sudah Inc. PPN)
         ppnRate: 11,        // Persentase PPN (default 11%)
         terms: "",          // Syarat & Ketentuan
         privacy: ""         // Kebijakan Privasi
@@ -2407,12 +2408,15 @@ const rProdMod = () => {
         let actPrice = v?.price ?? p.price;
         let actNormal = v?.priceNormal ?? p.priceNormal;
         
+        const isIncPpn = (appData.store.ppnEnabled === true || appData.store.ppnEnabled === 'true') && appData.store.ppnType === 'inclusive';
+        const ppnBadge = isIncPpn ? `<span class="text-[9px] font-bold text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/30 px-1.5 py-0.5 rounded border border-amber-200 dark:border-amber-800 uppercase tracking-widest ml-2 align-middle inline-block">Inc. PPN</span>` : '';
+        
         let pHtml = '';
         if (actNormal && actNormal > actPrice) {
             let pct = Math.round(((actNormal - actPrice) / actNormal) * 100);
-            pHtml = `<div class="flex flex-col"><span class="text-[11px] text-rose-500 font-bold line-through mb-0.5 tracking-wide">${fCur(actNormal)} <span class="bg-rose-100 text-rose-600 px-1.5 py-0.5 rounded ml-1 text-[9px] no-underline tracking-widest border border-rose-200">-${pct}%</span></span><span>${fCur(actPrice)}</span></div>`;
+            pHtml = `<div class="flex flex-col"><span class="text-[11px] text-rose-500 font-bold line-through mb-0.5 tracking-wide">${fCur(actNormal)} <span class="bg-rose-100 text-rose-600 px-1.5 py-0.5 rounded ml-1 text-[9px] no-underline tracking-widest border border-rose-200">-${pct}%</span></span><span>${fCur(actPrice)} ${ppnBadge}</span></div>`;
         } else {
-            pHtml = fCur(actPrice);
+            pHtml = `<span>${fCur(actPrice)} ${ppnBadge}</span>`;
         }
         setH('product-modal-price', pHtml);
     }
@@ -3900,16 +3904,13 @@ window.calculateTempoBalance = () => {
     }
     let subAfterDisc = Math.max(0, total - productDisc);
     let shippingAfterDisc = Math.max(0, sC - shippingDisc);
-    let ppnAmount = 0;
-    if (appData.store.ppnEnabled === 'true' || appData.store.ppnEnabled === true) {
-        let ppnRate = parseFloat(appData.store.ppnRate) || 0;
-        ppnAmount = (subAfterDisc + shippingAfterDisc) * (ppnRate/100);
-    }
+    const taxInfo = window.calcTaxDetails(subAfterDisc + shippingAfterDisc);
+    let ppnAmount = taxInfo.ppnAmount;
     let pointsDisc = 0;
     if (window.useMemberPoints && currentMember) {
-        pointsDisc = Math.min(subAfterDisc + shippingAfterDisc + ppnAmount, parseFloat(currentMember.points) || 0);
+        pointsDisc = Math.min(subAfterDisc + shippingAfterDisc + taxInfo.grandTotalAdd, parseFloat(currentMember.points) || 0);
     }
-    let grandTotal = subAfterDisc + shippingAfterDisc + ppnAmount - pointsDisc;
+    let grandTotal = subAfterDisc + shippingAfterDisc + taxInfo.grandTotalAdd - pointsDisc;
     if (dp > grandTotal) {
         dp = grandTotal;
         document.getElementById('tempo-dp-input').value = dp;
@@ -3957,11 +3958,10 @@ const rPay = () => {
     productDisc = Math.min(productDisc, sub);
     
     // --- PPN CALCULATION ---
-    const ppnEnabled = appData.store.ppnEnabled === true || appData.store.ppnEnabled === 'true';
-    const ppnRate = parseFloat(appData.store.ppnRate) || 11;
     const baseAfterDisc = Math.max(0, (sub - productDisc) + (sC - shippingDisc));
-    const ppnAmount = ppnEnabled ? Math.round(baseAfterDisc * ppnRate / 100) : 0;
-    const t = baseAfterDisc + ppnAmount;
+    const taxInfo = window.calcTaxDetails(baseAfterDisc);
+    const ppnAmount = taxInfo.ppnAmount;
+    const t = baseAfterDisc + taxInfo.grandTotalAdd;
     
     setIn('summary-subtotal', fCur(sub));
     toggleCls('summary-shipping-row', 'hidden', cust.deliveryMethod !== 'delivery');
@@ -3985,10 +3985,15 @@ const rPay = () => {
     // PPN row
     const ppnRow = el('summary-ppn-row');
     if (ppnRow) {
-        if (ppnEnabled && ppnAmount > 0) {
+        if (taxInfo.ppnEnabled && ppnAmount > 0) {
             ppnRow.classList.remove('hidden');
-            setIn('summary-ppn-label', `PPN (${ppnRate}%)`);
-            setIn('summary-ppn', fCur(ppnAmount));
+            if (taxInfo.ppnType === 'inclusive') {
+                setIn('summary-ppn-label', `Termasuk PPN (${taxInfo.ppnRate}%)`);
+                setIn('summary-ppn', fCur(ppnAmount));
+            } else {
+                setIn('summary-ppn-label', `PPN (${taxInfo.ppnRate}%)`);
+                setIn('summary-ppn', `+${fCur(ppnAmount)}`);
+            }
         } else {
             ppnRow.classList.add('hidden');
         }
@@ -4151,11 +4156,11 @@ window.processOrder = async () => {
         productDisc = Math.min(productDisc, sub);
         
         // PPN
-        const ppnEnabled = appData.store.ppnEnabled === true || appData.store.ppnEnabled === 'true';
-        const ppnRate = parseFloat(appData.store.ppnRate) || 11;
         const baseAfterDisc = Math.max(0, (sub - productDisc) + (sC - shippingDisc));
-        const ppnAmount = ppnEnabled ? Math.round(baseAfterDisc * ppnRate / 100) : 0;
-        const tot = baseAfterDisc + ppnAmount;
+        const taxInfo = window.calcTaxDetails(baseAfterDisc);
+        const ppnAmount = taxInfo.ppnAmount;
+        const dppAmount = taxInfo.dppAmount;
+        const tot = baseAfterDisc + taxInfo.grandTotalAdd;
         
         const m = (document.querySelector('input[name="payment"]:checked')||{}).value;
         
@@ -4198,7 +4203,7 @@ window.processOrder = async () => {
         const oD = {
             orderId: oI, timestamp: firebase.firestore.FieldValue.serverTimestamp(), dateString: new Date().toISOString(),
             customer: cust, items: cart.map(i => ({...i, qty: parseFloat(i.qty), effectivePrice: getEffP(i), poTime: i.poTime||'', hpp: getEffHpp(i), poin: getEffPoin(i)})),
-            payment: { method: m, subtotal: sub, shippingCost: sC, shippingDiscount: shippingDisc, productDiscount: productDisc, ppnAmount: ppnAmount, ppnRate: ppnEnabled ? ppnRate : 0, grandTotal: tot },
+            payment: { method: m, subtotal: sub, shippingCost: sC, shippingDiscount: shippingDisc, productDiscount: productDisc, ppnAmount: ppnAmount, dppAmount: dppAmount, ppnRate: taxInfo.ppnEnabled ? taxInfo.ppnRate : 0, ppnType: taxInfo.ppnEnabled ? taxInfo.ppnType : 'exclusive', grandTotal: tot },
             status: 'Baru',
             buktiPayment: window.buktiPaymentUrl || null
         };
@@ -5584,7 +5589,7 @@ window.openOrderDetail = i => {
                     ${o.customer?.deliveryMethod==='delivery'?`<div class="flex justify-between items-center"><span>Ongkos Kirim</span><span class="font-bold text-white">${fCur(o.payment?.shippingCost)}</span></div>`:''}
                     ${o.payment?.shippingDiscount?`<div class="flex justify-between items-center text-emerald-400 bg-emerald-900/20 px-2 py-1 -mx-2 rounded-xl"><span>Diskon Ongkir</span><span class="font-bold">-${fCur(o.payment.shippingDiscount)}</span></div>`:''}
                     ${o.payment?.productDiscount?`<div class="flex justify-between items-center text-rose-400 bg-rose-900/20 px-2 py-1 -mx-2 rounded-xl"><span>Diskon Promo</span><span class="font-bold">-${fCur(o.payment.productDiscount)}</span></div>`:''}
-                    ${o.payment?.ppnAmount?`<div class="flex justify-between items-center text-amber-400 bg-amber-900/20 px-2 py-1 -mx-2 rounded-xl"><span>PPN (${o.payment.ppnRate||11}%)</span><span class="font-bold">+${fCur(o.payment.ppnAmount)}</span></div>`:''}
+                    ${o.payment?.ppnAmount?`<div class="flex justify-between items-center text-amber-400 bg-amber-900/20 px-2 py-1 -mx-2 rounded-xl"><span>${o.payment.ppnType==='inclusive'?'Termasuk PPN':'PPN'} (${o.payment.ppnRate||11}%)</span><span class="font-bold">${o.payment.ppnType==='inclusive'?'':'+'}${fCur(o.payment.ppnAmount)}</span></div>`:''}
                 </div>
                 
                 <div class="border-t border-dashed border-slate-600/60 my-5 relative z-10"></div>
@@ -5746,7 +5751,10 @@ window.openReceiptPreview = () => {
     if(o.customer?.deliveryMethod === 'delivery') h += `<div style="white-space:pre;">${pL('Ongkir',(o.payment?.shippingCost||0).toLocaleString('id-ID'))}</div>`;
     if(o.payment?.shippingDiscount) h += `<div style="white-space:pre;">${pL('Pot.Ongkir',`-${o.payment.shippingDiscount.toLocaleString('id-ID')}`)}</div>`;
     if(o.payment?.productDiscount) h += `<div style="white-space:pre;">${pL('Pot.Harga',`-${o.payment.productDiscount.toLocaleString('id-ID')}`)}</div>`;
-    if(o.payment?.ppnAmount && o.payment.ppnAmount > 0) h += `<div style="white-space:pre;">${pL(`PPN(${o.payment.ppnRate||11}%)`,(o.payment.ppnAmount||0).toLocaleString('id-ID'))}</div>`;
+    if(o.payment?.ppnAmount && o.payment.ppnAmount > 0) {
+        const isInc = o.payment.ppnType === 'inclusive';
+        h += `<div style="white-space:pre;">${pL(`${isInc?'Inc.PPN':'PPN'}(${o.payment.ppnRate||11}%)`,(o.payment.ppnAmount||0).toLocaleString('id-ID'))}</div>`;
+    }
     h += `<div class="border-b border-dashed border-black my-2"></div><div style="white-space:pre;font-weight:bold;font-size:12px;">${pL('TOTAL','Rp '+(o.payment?.grandTotal||0).toLocaleString('id-ID'))}</div><div style="white-space:pre;">${pL('Bayar:',String(o.payment?.method||'').toUpperCase())}</div>`;
     // FITUR BARU: cantumkan poin didapat, saldo poin, & info klaim hadiah di struk
     if (o.pointsEarned > 0 || o.finalMemberPoints !== undefined) {
@@ -6112,6 +6120,7 @@ window.openSettingForm = (type) => {
         colorTheme = { line: "bg-violet-500", box: "bg-violet-50 text-violet-500 dark:bg-violet-900/30" };
         const useStockCur = appData.store.useStock === true || appData.store.useStock === 'true';
         const ppnOnCur = appData.store.ppnEnabled === true || appData.store.ppnEnabled === 'true';
+        const ppnTypeCur = appData.store.ppnType || 'exclusive';
         const ppnRateCur = parseFloat(appData.store.ppnRate) || 11;
 
         formContent = `
@@ -6131,12 +6140,19 @@ window.openSettingForm = (type) => {
                 <!-- PPN -->
                 <div>
                     <h4 class="font-bold text-slate-800 dark:text-white text-[11px] uppercase tracking-widest mb-4 flex items-center gap-2"><i class="fa-solid fa-percent text-amber-500"></i> Pajak PPN</h4>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-3">
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-3">
                         <div>
                             <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Status PPN</label>
                             <div class="relative"><select id="set-ppn-enabled" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm cursor-pointer appearance-none pr-10">
                                 <option value="true" ${ppnOnCur?'selected':''}>Aktif</option>
                                 <option value="false" ${!ppnOnCur?'selected':''}>Nonaktif</option>
+                            </select><i class="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-[10px]"></i></div>
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Tipe PPN</label>
+                            <div class="relative"><select id="set-ppn-type" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm cursor-pointer appearance-none pr-10">
+                                <option value="exclusive" ${ppnTypeCur==='exclusive'?'selected':''}>Eksklusif (Belum Inc. PPN)</option>
+                                <option value="inclusive" ${ppnTypeCur==='inclusive'?'selected':''}>Inklusif (Sudah Inc. PPN)</option>
                             </select><i class="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-[10px]"></i></div>
                         </div>
                         <div>
@@ -6246,8 +6262,9 @@ window.saveAdminSettings = async (type) => {
             showToast("Pengaturan GAS URL tersimpan. Untuk ganti Firebase Project, edit langsung defaultFbC di file tema (Edit HTML) agar berlaku di semua perangkat.");
         }
         else if (type === 'operasional') {
-            appData.store.useStock  = getV('set-use-stock') === 'true';
+            appData.store.useStock   = getV('set-use-stock') === 'true';
             appData.store.ppnEnabled = getV('set-ppn-enabled') === 'true';
+            appData.store.ppnType    = getV('set-ppn-type') || 'exclusive';
             appData.store.ppnRate    = parseFloat(getV('set-ppn-rate')) || 11;
 
             toggleTaxMenuVisibility(); // FITUR BARU: tombol menu Pajak langsung muncul/hilang begitu PPN diaktif/nonaktifkan
@@ -6565,8 +6582,8 @@ window.fetchTaxPeriodData = async (year) => {
             const o = doc.data();
             if (o.status === 'Dibatalkan') return;
             if (!o.timestamp || !o.timestamp.toDate) return;
-            const m = o.timestamp.toDate().getMonth() + 1;
-            monthly[m].omset += parseFloat(o.payment?.subtotal) || 0;
+            const dppVal = (o.payment?.dppAmount !== undefined && o.payment?.dppAmount !== null) ? parseFloat(o.payment.dppAmount) : (parseFloat(o.payment?.subtotal) || 0);
+            monthly[m].omset += dppVal;
             monthly[m].ppn += parseFloat(o.payment?.ppnAmount) || 0;
             monthly[m].disc += parseFloat(o.payment?.productDiscount) || 0;
             monthly[m].orderCount++;
