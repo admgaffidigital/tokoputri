@@ -1,0 +1,26 @@
+
+PANDUAN INSTALASI APLIKASI TOKO ONLINE
+======================================
+
+Aplikasi ini sangat mudah diinstal dan digunakan. Anda tidak perlu mengerti bahasa pemrograman.
+
+LANGKAH 1: SIAPKAN DATABASE FIREBASE (GRATIS)
+1. Buka https://firebase.google.com dan login dengan akun Google/Gmail Anda.
+2. Klik 'Go to console' dan buat Project baru (Beri nama toko Anda).
+3. Di dalam project, buat 'Realtime Database' (Pilih Lokasi Asia / Singapore).
+4. Di bagian Rules/Aturan Realtime Database, ubah menjadi 'true' (read: true, write: true) lalu Publish.
+5. Buka menu 'Project Settings' (Ikon Gir), tambahkan aplikasi 'Web' (ikon </>)
+6. Copy kode konfigurasi yang diberikan oleh Firebase.
+
+LANGKAH 2: HUBUNGKAN APLIKASI KE DATABASE
+1. Buka folder '1. FILE_SIAP_PAKAI' di dalam Flashdisk ini.
+2. Cari file bernama 'config.js'.
+3. Klik kanan file tersebut, lalu pilih 'Open with' -> 'Notepad'.
+4. Ganti teks 'ISI_API_KEY_ANDA_DISINI' dan baris lainnya dengan kode yang Anda dapatkan dari Firebase di Langkah 1.
+5. Simpan (Save) file tersebut.
+
+LANGKAH 3: ONLINE-KAN WEBSITE ANDA
+1. Buka website https://app.netlify.com/drop (Gratis).
+2. Seret (Drag) dan lepas (Drop) SELURUH isi folder '1. FILE_SIAP_PAKAI' ke dalam lingkaran di halaman Netlify tersebut.
+3. Tunggu 1 menit, dan website toko online Anda sudah siap digunakan!
+
