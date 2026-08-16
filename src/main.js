@@ -4550,7 +4550,18 @@ window.checkAdminAccess = () => {
     if (window.isAdm || window.location.hostname === 'localhost') {
         window.__localIsAdm = true;
         changeView('view-admin');
-        openAdminMenu();
+        // GUARD: tunggu auth state selesai sebelum buka admin menu.
+        // Di localhost bypass, auth.currentUser mungkin masih null (belum selesai load).
+        // Kalau langsung panggil openAdminMenu(), loadAdminReport() akan gagal permission-denied.
+        if (auth.currentUser) {
+            openAdminMenu();
+        } else {
+            // Tampilkan loading sementara, lalu panggil setelah auth selesai
+            const unsub = auth.onAuthStateChanged((user) => {
+                unsub(); // unsubscribe setelah panggilan pertama
+                openAdminMenu();
+            });
+        }
     } else {
         setV('login-username','');
         setV('login-password','');
@@ -4638,6 +4649,14 @@ window.loadAdminReport = async (period) => {
 
     let totalPenjualan = 0, totalHppTerjual = 0, totalDiskonProduk = 0, orderCount = 0, truncated = false;
     try {
+        // GUARD: query freshmart_orders hanya bisa dilakukan jika admin sudah terautentikasi.
+        // Di localhost, user bisa masuk admin tanpa login sehingga auth.currentUser = null,
+        // yang menyebabkan Firestore menolak dengan 'Missing or insufficient permissions'.
+        // Jika belum auth, tampilkan ringkasan kosong (0 semua) tanpa error di console.
+        if (!auth.currentUser) {
+            setH('admin-report-container', `<div class="text-center py-10 text-slate-400"><i class="fa-solid fa-lock text-2xl mb-3"></i><p class="text-xs font-bold">Login terlebih dahulu untuk melihat laporan.</p></div>`);
+            return;
+        }
         let q = db.collection("freshmart_orders");
         if (startDate) q = q.where('timestamp', '>=', firebase.firestore.Timestamp.fromDate(startDate));
         const snap = await q.limit(3000).get();
