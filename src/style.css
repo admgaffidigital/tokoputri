@@ -697,61 +697,61 @@ html.dark .primary-gradient-card-border {
     background-color: rgba(var(--color-primary-rgb), 0.2) !important;
 }
 
-/* Background Aurora & Floating Shape Animations (High-End Aesthetic) */
+/* Background Aurora & Floating Shape Animations (Vibrant & Rich Aesthetic) */
 @keyframes auroraGlow {
     0%, 100% {
         transform: translate(-50%, 0) scale(1);
-        opacity: 0.22;
+        opacity: 0.50;
     }
     50% {
-        transform: translate(-45%, 18px) scale(1.08);
-        opacity: 0.38;
+        transform: translate(-45%, 20px) scale(1.10);
+        opacity: 0.70;
     }
 }
 
 @keyframes floatOrb1 {
     0%, 100% {
         transform: translate(0, 0) scale(1);
-        opacity: 0.18;
+        opacity: 0.40;
     }
     50% {
-        transform: translate(-35px, 45px) scale(1.18);
-        opacity: 0.28;
+        transform: translate(-35px, 45px) scale(1.20);
+        opacity: 0.60;
     }
 }
 
 @keyframes floatOrb2 {
     0%, 100% {
         transform: translate(0, 0) scale(1);
-        opacity: 0.15;
+        opacity: 0.35;
     }
     50% {
-        transform: translate(45px, -40px) scale(1.22);
-        opacity: 0.26;
+        transform: translate(45px, -40px) scale(1.25);
+        opacity: 0.55;
     }
 }
 
 .animate-aurora-glow {
-    animation: auroraGlow 16s ease-in-out infinite;
+    animation: auroraGlow 14s ease-in-out infinite;
 }
 
 .animate-float-orb-1 {
-    animation: floatOrb1 20s ease-in-out infinite;
+    animation: floatOrb1 18s ease-in-out infinite;
 }
 
 .animate-float-orb-2 {
-    animation: floatOrb2 24s ease-in-out infinite;
+    animation: floatOrb2 22s ease-in-out infinite;
 }
 
-/* Pattern Overlay: Subtle Dynamic Dot Grid */
+/* Pattern Overlay: Dynamic Dot Grid */
 .bg-grid-dots {
-    background-image: radial-gradient(rgba(var(--color-primary-rgb), 0.12) 1.2px, transparent 1.2px);
-    background-size: 28px 28px;
-    mask-image: radial-gradient(ellipse at center, black 40%, transparent 80%);
-    -webkit-mask-image: radial-gradient(ellipse at center, black 40%, transparent 80%);
+    background-image: radial-gradient(rgba(var(--color-primary-rgb), 0.22) 1.5px, transparent 1.5px);
+    background-size: 26px 26px;
+    mask-image: radial-gradient(ellipse at center, black 50%, transparent 85%);
+    -webkit-mask-image: radial-gradient(ellipse at center, black 50%, transparent 85%);
 }
 html.dark .bg-grid-dots {
-    background-image: radial-gradient(rgba(var(--color-primary-rgb), 0.18) 1.2px, transparent 1.2px);
+    background-image: radial-gradient(rgba(var(--color-primary-rgb), 0.30) 1.5px, transparent 1.5px);
 }
 
 
