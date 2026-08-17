@@ -4794,7 +4794,7 @@ window.loadAdminReport = async (period) => {
     document.querySelectorAll('.report-period-btn').forEach(b => {
         const active = b.dataset.period === period;
         b.style.background = active ? 'var(--color-primary)' : 'transparent';
-        b.style.color = active ? '#fff' : '';
+        b.style.color = active ? 'var(--color-primary-contrast, #fff)' : '';
         b.style.boxShadow = active ? '0 2px 8px rgba(var(--color-primary-rgb),0.35)' : 'none';
     });
     const container = el('admin-report-container');
@@ -9488,17 +9488,18 @@ window.submitCustomerQuestion = async () => {
         await db.collection("freshmart").doc("cms_data").collection("faqs").doc(faqId).set(faqDoc);
         saved = true;
     } catch (e) {
-        console.warn('Penulisan sub-koleksi faqs dibatasi:', e);
+        console.warn('Penulisan sub-koleksi faqs dibatasi, mencoba fallback cms_data.faqs:', e);
     }
 
-    if (!saved && window.isAdm) {
+    // Fallback: simpan ke array faqs di dokumen cms_data (berlaku untuk semua pengguna, termasuk pelanggan)
+    if (!saved) {
         try {
             const updatedFaqs = [faqDoc, ...(appData.faqs || []).filter(x => x.id !== faqId)];
             await db.collection("freshmart").doc("cms_data").set({ faqs: updatedFaqs }, { merge: true });
             appData.faqs = updatedFaqs;
             saved = true;
         } catch (err2) {
-            console.warn('Update cms_data.faqs gagal:', err2);
+            console.warn('Fallback cms_data.faqs juga gagal:', err2);
         }
     }
 
