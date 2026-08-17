@@ -1024,12 +1024,12 @@ window.pushModalHistory = (name) => {
 };
 window.requestCloseModal = (name, fH, doClose) => {
     if (!fH) {
-        // Ditutup lewat aksi user di UI (klik X / klik area luar / tombol Batal, dst).
-        // Selalu serahkan ke history.back() agar proses penutupan tetap melalui satu
-        // jalur yang sama dengan tombol back fisik (popstate) -> tidak ada duplikasi logic.
+        // Ditutup lewat aksi user di UI (klik X / tombol Batal / area luar) -> tutup visual LANGSUNG tanpa tunda
         const idx = oMods.lastIndexOf(name);
-        if (idx === oMods.length - 1) { history.back(); return; }
-        else if (idx > -1) { oMods.splice(idx, 1); } // stack tidak sinkron (kasus langka) -> bersihkan saja
+        if (idx > -1) {
+            oMods.splice(idx, 1);
+            try { history.back(); } catch(e) {}
+        }
     }
     doClose();
 };
@@ -8362,6 +8362,8 @@ window.addEventListener('popstate', e => {
         else if (m === 'variantPreview') closeVariantPreviewModal(true);
         else if (m === 'terms') closeTermsModal(true);
         else if (m === 'privacy') closePrivacyModal(true);
+        else if (m === 'askQuestion') closeAskQuestionModal(true);
+        else if (m === 'adminFAQ') closeAdminFAQModal(true);
     } else {
         const state = e.state || {};
         const v = state.view || null;
