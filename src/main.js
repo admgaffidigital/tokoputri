@@ -349,12 +349,14 @@ if (typeof requestIdleCallback !== 'undefined') {
 // (asal punya akun di project ini). Sekarang dibatasi ke UID spesifik milik pemilik toko.
 const ADMIN_UID = 'K2ijSERTT2dg27yYGTEgn6XHSnW2';
 
-// FIX BUG: 'merge' bukan opsi yang valid untuk db.settings().
-// merge hanya berlaku sebagai opsi di .set(data, { merge: true }).
-// Menghapus opsi ini mencegah Firebase membuang warning di console.
+// CATATAN: merge:true di db.settings() adalah opsi VALID Firebase — artinya
+// "gabungkan settings ini dengan settings yang sudah ada" (bukan override penuh).
+// Ini berbeda dengan merge di .set(data,{merge:true}). Tanpa ini Firebase
+// akan mengeluarkan warning di console.
 db.settings({
     ignoreUndefinedProperties: true,
     cacheSizeBytes: firebase.firestore.CACHE_SIZE_UNLIMITED,
+    merge: true,
     // FIX: di jaringan yang tidak stabil (WiFi publik goyah, proxy kantor, VPN),
     // koneksi realtime Firestore lewat QUIC sering gagal berulang kali (muncul
     // sebagai banyak "ERR_QUIC_PROTOCOL_ERROR" di console). SDK tetap otomatis
@@ -6678,14 +6680,20 @@ window.fetchTaxPeriodData = async (year) => {
             const o = doc.data();
             if (o.status === 'Dibatalkan') return;
             if (!o.timestamp || !o.timestamp.toDate) return;
+            // FIX BUG KRITIS: sebelumnya memakai variabel 'm' dari for-loop di luar
+            // scope ini — setelah diminify oleh Vite, 'm' di-rename sehingga tidak
+            // terdefinisi di dalam callback (ReferenceError: m is not defined).
+            // Seharusnya bulan diambil dari TIMESTAMP ORDER itu sendiri.
+            const monthKey = o.timestamp.toDate().getMonth() + 1; // 1-12
+            if (!monthly[monthKey]) return; // abaikan jika di luar tahun yang dimaksud
             const dppVal = (o.payment?.dppAmount !== undefined && o.payment?.dppAmount !== null) ? parseFloat(o.payment.dppAmount) : (parseFloat(o.payment?.subtotal) || 0);
-            monthly[m].omset += dppVal;
-            monthly[m].ppn += parseFloat(o.payment?.ppnAmount) || 0;
-            monthly[m].disc += parseFloat(o.payment?.productDiscount) || 0;
-            monthly[m].orderCount++;
+            monthly[monthKey].omset += dppVal;
+            monthly[monthKey].ppn += parseFloat(o.payment?.ppnAmount) || 0;
+            monthly[monthKey].disc += parseFloat(o.payment?.productDiscount) || 0;
+            monthly[monthKey].orderCount++;
             (o.items || []).forEach(it => {
                 const hppItem = (it.hpp !== undefined && it.hpp !== null) ? parseFloat(it.hpp) : getEffHpp(it);
-                monthly[m].hpp += (parseFloat(hppItem) || 0) * (parseFloat(it.qty) || 0);
+                monthly[monthKey].hpp += (parseFloat(hppItem) || 0) * (parseFloat(it.qty) || 0);
             });
         });
     } catch(e) { console.error('Gagal memuat data pajak:', e); showToast('Gagal memuat data periode ini!'); }
