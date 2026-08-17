@@ -1973,7 +1973,7 @@ Kami akan segera memproses pesanan Anda. Terima kasih! 🙏`;window.open(`https:
             </button>
             <div class="hidden border-t border-slate-100 dark:border-slate-700/70 p-4.5 sm:p-5 bg-slate-50/70 dark:bg-slate-900/50 text-xs sm:text-sm font-medium text-slate-700 dark:text-slate-200 leading-relaxed" id="faq-body-${o.id}">
                 <div class="flex items-start gap-3">
-                    <div class="w-8 h-8 rounded-xl bg-emerald-500 text-white flex items-center justify-center font-bold text-xs shrink-0 mt-0.5 shadow-sm">A</div>
+                    <div class="w-8 h-8 rounded-xl primary-bg text-white flex items-center justify-center font-bold text-xs shrink-0 mt-0.5 shadow-sm">A</div>
                     <div class="flex-1 whitespace-pre-wrap pt-0.5">${c(o.answer||"Belum ada jawaban.")}</div>
                 </div>
             </div>
@@ -1983,7 +1983,7 @@ Kami akan segera memproses pesanan Anda. Terima kasih! 🙏`;window.open(`https:
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white dark:bg-slate-800 p-5 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm">
                 <div>
                     <h2 class="text-lg font-bold text-slate-800 dark:text-white flex items-center gap-2">
-                        <i class="fa-solid fa-circle-question text-amber-500"></i> Kelola Tanya Jawab (Q&A / FAQ)
+                        <i class="fa-solid fa-circle-question primary-text"></i> Kelola Tanya Jawab (Q&A / FAQ)
                     </h2>
                     <p class="text-xs font-medium text-slate-500 mt-1">Sunting FAQ toko & jawab pertanyaan yang diajukan pelanggan.</p>
                 </div>
@@ -1997,11 +1997,11 @@ Kami akan segera memproses pesanan Anda. Terima kasih! 🙏`;window.open(`https:
                 <button onclick="setAdminFAQFilter('all')" class="px-4 py-2 rounded-xl text-xs font-bold transition-all ${ze==="all"?"primary-bg text-white shadow-md":"bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200"}">
                     Semua (${e.length})
                 </button>
-                <button onclick="setAdminFAQFilter('pending')" class="px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${ze==="pending"?"bg-amber-500 text-white shadow-md":"bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200"}">
+                <button onclick="setAdminFAQFilter('pending')" class="px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${ze==="pending"?"primary-bg text-white shadow-md":"bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200"}">
                     <span>Belum Dijawab</span>
                     ${a>0?`<span class="bg-rose-500 text-white text-[9px] px-1.5 py-0.5 rounded-full font-bold">${a}</span>`:""}
                 </button>
-                <button onclick="setAdminFAQFilter('published')" class="px-4 py-2 rounded-xl text-xs font-bold transition-all ${ze==="published"?"bg-emerald-600 text-white shadow-md":"bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200"}">
+                <button onclick="setAdminFAQFilter('published')" class="px-4 py-2 rounded-xl text-xs font-bold transition-all ${ze==="published"?"primary-bg text-white shadow-md":"bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200"}">
                     Terpublikasi
                 </button>
             </div>
