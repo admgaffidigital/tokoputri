@@ -269,8 +269,11 @@
             </div>
           </button>
           <button class="flex w-full items-center gap-4 rounded-2xl border border-slate-100 bg-slate-50 p-4 text-left font-bold text-slate-700 transition-all hover:bg-[rgba(var(--color-primary-rgb),0.08)] hover:text-[var(--color-primary)] active:scale-[0.98] dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-[rgba(var(--color-primary-rgb),0.15)]" onclick="navigateFromQuickMenu('view-wishlist')">
-            <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-rose-500 text-white shadow-md"><i class="fa-solid fa-heart text-sm"></i></div>
-            <div>
+            <div class="relative flex h-10 w-10 items-center justify-center rounded-xl bg-rose-500 text-white shadow-md">
+              <i class="fa-solid fa-heart text-sm"></i>
+              <span id="wishlist-badge" class="absolute -top-1 -right-1 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-slate-900 px-1 text-[9px] font-bold text-white scale-0 transition-transform dark:bg-white dark:text-slate-900">0</span>
+            </div>
+            <div class="flex-1">
               <h4 class="text-sm leading-tight">Produk Favorit</h4>
               <p class="mt-0.5 text-[9px] font-semibold text-slate-400 dark:text-slate-500">Produk yang Anda sukai</p>
             </div>
