@@ -743,15 +743,4 @@ html.dark .primary-gradient-card-border {
     animation: floatOrb2 22s ease-in-out infinite;
 }
 
-/* Pattern Overlay: Dynamic Dot Grid */
-.bg-grid-dots {
-    background-image: radial-gradient(rgba(var(--color-primary-rgb), 0.22) 1.5px, transparent 1.5px);
-    background-size: 26px 26px;
-    mask-image: radial-gradient(ellipse at center, black 50%, transparent 85%);
-    -webkit-mask-image: radial-gradient(ellipse at center, black 50%, transparent 85%);
-}
-html.dark .bg-grid-dots {
-    background-image: radial-gradient(rgba(var(--color-primary-rgb), 0.30) 1.5px, transparent 1.5px);
-}
-
 
