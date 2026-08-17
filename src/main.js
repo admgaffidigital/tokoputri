@@ -6734,57 +6734,58 @@ window.rTaxRenderShell = () => {
           {k:'balance', l:'Neraca', i:'fa-scale-balanced', desc:'Informasi aset & kewajiban'},
           {k:'settings', l:'Pengaturan', i:'fa-gear', desc:'Konfigurasi tarif & data pajak'}
       ];
+
+      if (taxActiveTab === 'menu') taxActiveTab = 'summary';
       
-      let headerHTML = '';
-      if(taxActiveTab === 'menu') {
-           headerHTML = `
-           <div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-5">
-              ${tabs.map(t => `
-                  <button onclick="switchTaxTab('${t.k}')" class="flex flex-col items-start gap-3 p-4 sm:p-5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl hover:-translate-y-1 hover:shadow-md hover:border-[var(--color-primary)]/40 dark:hover:border-[var(--color-primary)]/40 transition-all text-left group">
-                      <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-emerald-50 dark:bg-emerald-900/30 text-emerald-500 flex items-center justify-center text-lg sm:text-xl group-hover:scale-110 transition-transform">
-                          <i class="fa-solid ${t.i}"></i>
-                      </div>
-                      <div>
-                          <h4 class="font-bold text-slate-800 dark:text-white text-xs sm:text-sm uppercase tracking-widest mb-1 group-hover:text-[var(--color-primary)] dark:group-hover:text-emerald-400 transition-colors">${t.l}</h4>
-                          <p class="text-[10px] font-medium text-slate-400 leading-tight">${t.desc}</p>
-                      </div>
-                  </button>
-              `).join('')}
-           </div>
-           `;
-      } else {
-           const activeTabInfo = tabs.find(t => t.k === taxActiveTab) || tabs[0];
-           headerHTML = `
-           <div class="flex flex-wrap items-center justify-between gap-3 mb-5 bg-white dark:bg-slate-800 p-3 sm:p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
-               <div class="flex items-center gap-3">
-                   <button onclick="switchTaxTab('menu')" class="w-9 h-9 flex items-center justify-center rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-500 hover:text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/30 transition-all shrink-0">
-                       <i class="fa-solid fa-arrow-left"></i>
-                   </button>
-                   <div>
-                       <h3 class="font-bold text-slate-800 dark:text-white text-xs sm:text-sm uppercase tracking-widest leading-none">${activeTabInfo.l}</h3>
-                       <p class="text-[10px] text-slate-400 font-medium mt-1 hidden sm:block">Data Pajak & Keuangan</p>
-                   </div>
-               </div>
-               
-               ${taxActiveTab === 'settings' ? '' : `
-               <div class="flex gap-2 items-center">
-                  <select id="tax-year-select" onchange="changeTaxYear(this.value)" class="admin-input !py-2 !px-3 text-xs font-bold bg-slate-50 dark:bg-slate-900 w-24 border-slate-200 dark:border-slate-700">
-                      ${yearOptions.map(y => `<option value="${y}" ${y===taxYear?'selected':''}>${y}</option>`).join('')}
-                  </select>
-                  <select id="tax-month-select" onchange="changeTaxMonth(this.value)" class="admin-input !py-2 !px-3 text-xs font-bold bg-slate-50 dark:bg-slate-900 w-32 sm:w-36 border-slate-200 dark:border-slate-700">
-                      <option value="0" ${taxMonth===0?'selected':''}>Setahun Penuh</option>
-                      ${MONTH_NAMES.map((n,idx) => `<option value="${idx+1}" ${taxMonth===idx+1?'selected':''}>${n} ${taxYear}</option>`).join('')}
-                  </select>
+      const headerHTML = `
+      <div class="mb-5 bg-white dark:bg-slate-800 p-4 sm:p-5 rounded-2xl border border-slate-200 dark:border-slate-700/80 shadow-sm flex flex-col gap-4">
+          <!-- Top Header: Title & Period Filters -->
+          <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-700/60 pb-4">
+              <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl flex items-center justify-center shrink-0 shadow-inner" style="background: rgba(var(--color-primary-rgb),0.1); color: var(--color-primary)">
+                      <i class="fa-solid fa-scale-balanced text-lg sm:text-xl"></i>
+                  </div>
+                  <div>
+                      <h3 class="font-extrabold text-slate-800 dark:text-white text-sm sm:text-base uppercase tracking-wider leading-tight">Pajak &amp; Keuangan</h3>
+                      <p class="text-[10px] font-bold text-slate-400 mt-0.5">Rekap Omset, PPN, Laba Rugi, &amp; Neraca Toko</p>
+                  </div>
               </div>
-               `}
-           </div>
-           `;
-      }
+              
+              ${taxActiveTab === 'settings' ? '' : `
+              <div class="flex items-center gap-2">
+                  <div class="relative">
+                      <select id="tax-year-select" onchange="changeTaxYear(this.value)" class="admin-input !py-2 !px-3 text-xs font-bold bg-slate-50 dark:bg-slate-900/80 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 rounded-xl focus:border-[var(--color-primary)] cursor-pointer pr-7">
+                          ${yearOptions.map(y => `<option value="${y}" ${y===taxYear?'selected':''}>${y}</option>`).join('')}
+                      </select>
+                  </div>
+                  <div class="relative">
+                      <select id="tax-month-select" onchange="changeTaxMonth(this.value)" class="admin-input !py-2 !px-3 text-xs font-bold bg-slate-50 dark:bg-slate-900/80 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 rounded-xl focus:border-[var(--color-primary)] cursor-pointer pr-7">
+                          <option value="0" ${taxMonth===0?'selected':''}>Setahun Penuh</option>
+                          ${MONTH_NAMES.map((n,idx) => `<option value="${idx+1}" ${taxMonth===idx+1?'selected':''}>${n} ${taxYear}</option>`).join('')}
+                      </select>
+                  </div>
+              </div>
+              `}
+          </div>
+
+          <!-- Sub-Tab Navigation Bar -->
+          <div class="flex items-center gap-2 overflow-x-auto hide-scrollbar pb-1">
+              ${tabs.map(t => {
+                  const isActive = taxActiveTab === t.k;
+                  return `
+                  <button onclick="switchTaxTab('${t.k}')" class="px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all duration-200 shrink-0 flex items-center gap-2 ${isActive ? 'bg-[var(--color-primary)] text-white shadow-sm scale-[1.02]' : 'bg-slate-50 dark:bg-slate-900/60 text-slate-600 dark:text-slate-300 border border-slate-200/80 dark:border-slate-700/60 hover:text-[var(--color-primary)] hover:border-[var(--color-primary)]/40 hover:bg-[rgba(var(--color-primary-rgb),0.06)]'}">
+                      <i class="fa-solid ${t.i} text-xs"></i>
+                      <span>${t.l}</span>
+                  </button>`;
+              }).join('')}
+          </div>
+      </div>
+      `;
       
       setH('admin-content', `<div class="fade-in-scale">
-          <div class="bg-amber-50 dark:bg-amber-900/10 border border-amber-200 dark:border-amber-800 rounded-2xl p-4 mb-5 flex items-start gap-3">
-              <i class="fa-solid fa-triangle-exclamation text-amber-500 mt-0.5"></i>
-              <p class="text-[11px] font-bold text-amber-700 dark:text-amber-400 leading-relaxed">Halaman ini adalah <b>alat bantu rekap</b> Omset, PPN, Laba Rugi, dan Neraca dari data transaksi toko. Bukan pengganti konsultan pajak/akuntan � validasi kembali angkanya sebelum digunakan untuk lapor SPT resmi.</p>
+          <div class="bg-amber-50/90 dark:bg-amber-950/30 border border-amber-200/80 dark:border-amber-800/40 rounded-2xl p-3.5 sm:p-4 mb-5 flex items-start gap-3 shadow-xs">
+              <i class="fa-solid fa-triangle-exclamation text-amber-500 text-sm mt-0.5 shrink-0"></i>
+              <p class="text-[11px] font-semibold text-amber-800 dark:text-amber-300 leading-relaxed">Halaman ini adalah <b>alat bantu rekap internal</b> Omset, PPN, Laba Rugi, dan Neraca dari data transaksi toko. Bukan pengganti konsultan pajak/akuntan — validasi kembali angkanya sebelum digunakan untuk laporan SPT resmi.</p>
           </div>
   
           ${headerHTML}
@@ -6823,43 +6824,55 @@ window.rTaxSummary = () => {
     const monthRows = Array.from({length:12}, (_,i) => i+1).map(m => {
         const d = gTaxMonthly[m];
         const isActiveRow = taxMonth === m;
-        return `<tr class="${isActiveRow ? 'bg-[rgba(var(--color-primary-rgb),0.06)]' : ''} border-b border-slate-100 dark:border-slate-700/50 last:border-0">
-            <td class="py-2.5 px-3 text-xs font-bold text-slate-600 dark:text-slate-300">${MONTH_NAMES[m-1]}</td>
-            <td class="py-2.5 px-3 text-xs font-bold text-slate-700 dark:text-slate-200 text-right">${fCur(d.omset)}</td>
-            <td class="py-2.5 px-3 text-xs font-bold text-amber-600 text-right">${fCur(d.ppn)}</td>
-            <td class="py-2.5 px-3 text-[11px] font-bold text-slate-400 text-right">${d.orderCount}</td>
+        return `<tr class="${isActiveRow ? 'bg-[rgba(var(--color-primary-rgb),0.08)] dark:bg-[rgba(var(--color-primary-rgb),0.14)] font-bold' : 'hover:bg-slate-50 dark:hover:bg-slate-700/30'} border-b border-slate-100 dark:border-slate-700/50 last:border-0 transition-colors">
+            <td class="py-3 px-4 text-xs font-bold text-slate-700 dark:text-slate-200">${MONTH_NAMES[m-1]}</td>
+            <td class="py-3 px-4 text-xs font-bold text-slate-800 dark:text-white text-right">${fCur(d.omset)}</td>
+            <td class="py-3 px-4 text-xs font-bold text-right" style="color:var(--color-primary)">${fCur(d.ppn)}</td>
+            <td class="py-3 px-4 text-xs font-bold text-slate-500 dark:text-slate-400 text-right">${d.orderCount}</td>
         </tr>`;
     }).join('');
 
     setH('tax-content', `
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-5">
-            <div class="card-modern p-5 sm:p-5">
-                <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Omset Bruto (${periodLabel})</p>
-                <p class="text-lg sm:text-xl font-bold text-slate-800 dark:text-white truncate">${fCur(t.omset)}</p>
+            <div class="bg-white dark:bg-slate-800 p-4 sm:p-5 rounded-2xl border border-slate-200 dark:border-slate-700/80 shadow-sm flex flex-col justify-between">
+                <p class="text-[9px] sm:text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Omset Bruto (${periodLabel})</p>
+                <p class="text-base sm:text-xl font-extrabold text-slate-800 dark:text-white truncate">${fCur(t.omset)}</p>
                 <p class="text-[10px] font-bold text-slate-400 mt-1">${t.orderCount} pesanan</p>
             </div>
-            <div class="card-modern p-5 sm:p-5">
-                <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1.5"><i class="fa-solid fa-minus mr-1"></i>Diskon Produk</p>
-                <p class="text-lg sm:text-xl font-bold text-rose-500 truncate">${fCur(t.disc)}</p>
+            <div class="bg-white dark:bg-slate-800 p-4 sm:p-5 rounded-2xl border border-slate-200 dark:border-slate-700/80 shadow-sm flex flex-col justify-between">
+                <p class="text-[9px] sm:text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5"><i class="fa-solid fa-minus mr-1"></i>Diskon Produk</p>
+                <p class="text-base sm:text-xl font-extrabold text-rose-500 truncate">${fCur(t.disc)}</p>
+                <p class="text-[10px] font-bold text-slate-400 mt-1">Potongan diskon</p>
             </div>
-            <div class="card-modern p-5 sm:p-5">
-                <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">DPP (Dasar Pengenaan Pajak)</p>
-                <p class="text-lg sm:text-xl font-bold text-slate-800 dark:text-white truncate">${fCur(dpp)}</p>
+            <div class="bg-white dark:bg-slate-800 p-4 sm:p-5 rounded-2xl border border-slate-200 dark:border-slate-700/80 shadow-sm flex flex-col justify-between">
+                <p class="text-[9px] sm:text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">DPP (Dasar Pengenaan Pajak)</p>
+                <p class="text-base sm:text-xl font-extrabold text-slate-800 dark:text-white truncate">${fCur(dpp)}</p>
+                <p class="text-[10px] font-bold text-slate-400 mt-1">Omset bersih</p>
             </div>
-            <div class="card-modern p-5 sm:p-5 border-amber-200 dark:border-amber-700 bg-amber-50 dark:bg-amber-900/10 relative overflow-hidden"><div class="absolute -right-4 -bottom-4 w-24 h-24 bg-amber-500/20 rounded-full blur-xl pointer-events-none"></div>
-                <p class="text-[9px] font-bold text-amber-600 uppercase tracking-widest mb-1.5"><i class="fa-solid fa-file-invoice-dollar mr-1"></i>PPN Keluaran</p>
-                <p class="text-lg sm:text-xl font-bold text-amber-600 truncate">${fCur(t.ppn)}</p>
-                <p class="text-[10px] font-bold text-amber-500/80 mt-1">Wajib disetor ke negara</p>
+            <div class="bg-white dark:bg-slate-800 p-4 sm:p-5 rounded-2xl border border-[var(--color-primary)]/30 shadow-sm relative overflow-hidden flex flex-col justify-between" style="background: rgba(var(--color-primary-rgb),0.05)">
+                <div class="absolute -right-4 -bottom-4 w-20 h-20 rounded-full blur-xl pointer-events-none" style="background: rgba(var(--color-primary-rgb),0.2)"></div>
+                <p class="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider mb-1.5" style="color:var(--color-primary)"><i class="fa-solid fa-file-invoice-dollar mr-1"></i>PPN Keluaran</p>
+                <p class="text-base sm:text-xl font-extrabold truncate" style="color:var(--color-primary)">${fCur(t.ppn)}</p>
+                <p class="text-[10px] font-bold mt-1 opacity-80" style="color:var(--color-primary)">Wajib disetor ke negara</p>
             </div>
         </div>
-        <div class="card-modern overflow-hidden">
-            <div class="p-4 sm:p-5 md:p-6 lg:p-8 border-b border-slate-100 dark:border-slate-700 flex items-center justify-between">
-                <h4 class="font-bold text-slate-700 dark:text-slate-200 text-xs uppercase tracking-widest">Rincian Per Bulan — ${taxYear}</h4>
-                <button onclick="openTaxDocPreview('summary')" class="text-[10px] font-bold text-slate-400 hover:text-[var(--color-primary)] flex items-center gap-1.5"><i class="fa-solid fa-eye"></i> Preview &amp; Cetak</button>
+        <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700/80 shadow-sm overflow-hidden">
+            <div class="p-4 sm:p-5 border-b border-slate-100 dark:border-slate-700/70 flex items-center justify-between">
+                <h4 class="font-extrabold text-slate-800 dark:text-slate-100 text-xs sm:text-sm uppercase tracking-wider">Rincian Per Bulan — ${taxYear}</h4>
+                <button onclick="openTaxDocPreview('summary')" class="px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-700/60 text-slate-600 dark:text-slate-300 text-[10px] font-bold hover:text-[var(--color-primary)] hover:bg-[rgba(var(--color-primary-rgb),0.1)] transition-all flex items-center gap-1.5">
+                    <i class="fa-solid fa-print"></i> Preview &amp; Cetak
+                </button>
             </div>
             <div class="overflow-x-auto">
-                <table class="w-full">
-                    <thead><tr class="bg-slate-50 dark:bg-slate-900/40 text-left"><th class="py-2.5 px-3 text-[9px] font-bold text-slate-400 uppercase">Bulan</th><th class="py-2.5 px-3 text-[9px] font-bold text-slate-400 uppercase text-right">Omset</th><th class="py-2.5 px-3 text-[9px] font-bold text-slate-400 uppercase text-right">PPN Keluaran</th><th class="py-2.5 px-3 text-[9px] font-bold text-slate-400 uppercase text-right">Pesanan</th></tr></thead>
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-slate-50 dark:bg-slate-900/60 border-b border-slate-200/80 dark:border-slate-700/70">
+                            <th class="py-3 px-4 text-[9px] sm:text-[10px] font-bold text-slate-400 uppercase tracking-wider">Bulan</th>
+                            <th class="py-3 px-4 text-[9px] sm:text-[10px] font-bold text-slate-400 uppercase tracking-wider text-right">Omset</th>
+                            <th class="py-3 px-4 text-[9px] sm:text-[10px] font-bold text-slate-400 uppercase tracking-wider text-right">PPN Keluaran</th>
+                            <th class="py-3 px-4 text-[9px] sm:text-[10px] font-bold text-slate-400 uppercase tracking-wider text-right">Pesanan</th>
+                        </tr>
+                    </thead>
                     <tbody>${monthRows}</tbody>
                 </table>
             </div>
@@ -6891,39 +6904,46 @@ window.rTaxIncome = () => {
             const key = `${taxYear}-${m}`;
             const val = (appData.taxSettings.monthlyExpenses || {})[key] || 0;
             return `<div class="flex items-center justify-between gap-2 py-2 border-b border-slate-100 dark:border-slate-700/50 last:border-0">
-                <span class="text-xs font-bold text-slate-500 dark:text-slate-400">${MONTH_NAMES[m-1]} ${taxYear}</span>
-                <input type="number" min="0" value="${val}" onchange="saveMonthlyExpense('${key}', this.value)" class="admin-input !py-2 !px-3 text-xs w-36 text-right bg-slate-50 dark:bg-slate-900/50"></i>
+                <span class="text-xs font-bold text-slate-600 dark:text-slate-300">${MONTH_NAMES[m-1]} ${taxYear}</span>
+                <input type="number" min="0" value="${val}" onchange="saveMonthlyExpense('${key}', this.value)" class="admin-input !py-2 !px-3 text-xs w-36 text-right font-bold bg-slate-50 dark:bg-slate-900/60 text-slate-800 dark:text-white border border-slate-200 dark:border-slate-700 rounded-xl focus:border-[var(--color-primary)]">
             </div>`;
         }).join('');
     } else {
         const val = (appData.taxSettings.monthlyExpenses || {})[expenseKey] || 0;
         expenseInputs = `<div class="flex items-center justify-between gap-2 py-2">
-            <span class="text-xs font-bold text-slate-500 dark:text-slate-400">${MONTH_NAMES[taxMonth-1]} ${taxYear}</span>
-            <input type="number" min="0" value="${val}" onchange="saveMonthlyExpense('${expenseKey}', this.value)" class="admin-input !py-2 !px-3 text-xs w-36 text-right bg-slate-50 dark:bg-slate-900/50"></i>
+            <span class="text-xs font-bold text-slate-600 dark:text-slate-300">${MONTH_NAMES[taxMonth-1]} ${taxYear}</span>
+            <input type="number" min="0" value="${val}" onchange="saveMonthlyExpense('${expenseKey}', this.value)" class="admin-input !py-2 !px-3 text-xs w-36 text-right font-bold bg-slate-50 dark:bg-slate-900/60 text-slate-800 dark:text-white border border-slate-200 dark:border-slate-700 rounded-xl focus:border-[var(--color-primary)]">
         </div>`;
     }
 
     setH('tax-content', `
-        <div class="card-modern p-5 sm:p-6 md:p-7 lg:p-8 w-full mx-auto">
-            <div class="flex items-center justify-between mb-6 pb-4 border-b border-slate-100 dark:border-slate-700">
-                <h4 class="font-bold text-slate-800 dark:text-white text-sm uppercase tracking-widest">Laporan Laba Rugi — ${periodLabel}</h4>
-                <button onclick="openTaxDocPreview('income')" class="text-[10px] font-bold text-slate-400 hover:text-[var(--color-primary)] flex items-center gap-1.5"><i class="fa-solid fa-eye"></i> Preview &amp; Cetak</button>
+        <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700/80 rounded-2xl sm:rounded-3xl p-5 sm:p-7 shadow-sm w-full mx-auto">
+            <div class="flex items-center justify-between mb-6 pb-4 border-b border-slate-100 dark:border-slate-700/70">
+                <div>
+                    <h4 class="font-extrabold text-slate-800 dark:text-white text-sm sm:text-base uppercase tracking-wider">Laporan Laba Rugi — ${periodLabel}</h4>
+                    <p class="text-[10px] font-bold text-slate-400 mt-0.5">Estimasi pendapatan &amp; beban usaha</p>
+                </div>
+                <button onclick="openTaxDocPreview('income')" class="px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-700/60 text-slate-600 dark:text-slate-300 text-[10px] font-bold hover:text-[var(--color-primary)] hover:bg-[rgba(var(--color-primary-rgb),0.1)] transition-all flex items-center gap-1.5">
+                    <i class="fa-solid fa-print"></i> Preview &amp; Cetak
+                </button>
             </div>
-            <div class="space-y-2.5 text-sm">
-                <div class="flex justify-between"><span class="font-bold text-slate-500 dark:text-slate-400">Omset Bruto</span><span class="font-bold text-slate-800 dark:text-white">${fCur(t.omset)}</span></div>
-                <div class="flex justify-between"><span class="font-bold text-slate-500 dark:text-slate-400">(−) Diskon Produk</span><span class="font-bold text-rose-500">-${fCur(t.disc)}</span></div>
-                <div class="flex justify-between"><span class="font-bold text-slate-500 dark:text-slate-400">(−) HPP (Harga Pokok Penjualan)</span><span class="font-bold text-rose-500">-${fCur(t.hpp)}</span></div>
-                <div class="flex justify-between pt-2.5 border-t border-slate-200 dark:border-slate-700"><span class="font-bold text-slate-700 dark:text-slate-200">Laba Kotor</span><span class="font-bold text-emerald-600">${fCur(labaKotor)}</span></div>
-                <div class="flex justify-between"><span class="font-bold text-slate-500 dark:text-slate-400">(−) Biaya Operasional</span><span class="font-bold text-rose-500">-${fCur(totalExpense)}</span></div>
-                <div class="flex justify-between pt-2.5 border-t border-slate-200 dark:border-slate-700"><span class="font-bold text-slate-700 dark:text-slate-200">Laba Bersih Sebelum Pajak</span><span class="font-bold" style="color:var(--color-primary)">${fCur(labaBersih)}</span></div>
-                <div class="flex justify-between"><span class="font-bold text-slate-500 dark:text-slate-400">(−) Estimasi ${taxLabel}</span><span class="font-bold text-rose-500">-${fCur(estimasiPajak)}</span></div>
-                <div class="flex justify-between pt-3 border-t-2 border-slate-800 dark:border-slate-200"><span class="font-bold text-slate-900 dark:text-white text-base">Laba Bersih Setelah Pajak (Estimasi)</span><span class="font-bold text-base" style="color:var(--color-primary)">${fCur(labaSetelahPajak)}</span></div>
+            <div class="space-y-3 text-xs sm:text-sm">
+                <div class="flex justify-between py-1"><span class="font-bold text-slate-500 dark:text-slate-400">Omset Bruto</span><span class="font-extrabold text-slate-800 dark:text-white">${fCur(t.omset)}</span></div>
+                <div class="flex justify-between py-1"><span class="font-bold text-slate-500 dark:text-slate-400">(−) Diskon Produk</span><span class="font-extrabold text-rose-500">-${fCur(t.disc)}</span></div>
+                <div class="flex justify-between py-1"><span class="font-bold text-slate-500 dark:text-slate-400">(−) HPP (Harga Pokok Penjualan)</span><span class="font-extrabold text-rose-500">-${fCur(t.hpp)}</span></div>
+                <div class="flex justify-between py-2.5 border-t border-slate-200 dark:border-slate-700/70"><span class="font-extrabold text-slate-700 dark:text-slate-200">Laba Kotor</span><span class="font-extrabold text-emerald-600 dark:text-emerald-400">${fCur(labaKotor)}</span></div>
+                <div class="flex justify-between py-1"><span class="font-bold text-slate-500 dark:text-slate-400">(−) Biaya Operasional</span><span class="font-extrabold text-rose-500">-${fCur(totalExpense)}</span></div>
+                <div class="flex justify-between py-2.5 border-t border-slate-200 dark:border-slate-700/70"><span class="font-extrabold text-slate-700 dark:text-slate-200">Laba Bersih Sebelum Pajak</span><span class="font-extrabold" style="color:var(--color-primary)">${fCur(labaBersih)}</span></div>
+                <div class="flex justify-between py-1"><span class="font-bold text-slate-500 dark:text-slate-400">(−) Estimasi ${taxLabel}</span><span class="font-extrabold text-rose-500">-${fCur(estimasiPajak)}</span></div>
+                <div class="flex justify-between py-3 border-t-2 border-slate-800 dark:border-slate-200 mt-2"><span class="font-extrabold text-slate-900 dark:text-white text-sm sm:text-base">Laba Bersih Setelah Pajak (Estimasi)</span><span class="font-extrabold text-sm sm:text-base" style="color:var(--color-primary)">${fCur(labaSetelahPajak)}</span></div>
             </div>
 
-            <div class="mt-7 pt-5 border-t border-dashed border-slate-200 dark:border-slate-700">
-                <h5 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3"><i class="fa-solid fa-pen mr-1"></i>Input Biaya Operasional (Manual)</h5>
-                <p class="text-[10px] font-bold text-slate-400 mb-3">Contoh: sewa, gaji, listrik, internet, dll. Sistem tidak melacak ini otomatis.</p>
-                ${expenseInputs}
+            <div class="mt-8 pt-5 border-t border-dashed border-slate-200 dark:border-slate-700/70">
+                <h5 class="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider mb-1 flex items-center gap-1.5"><i class="fa-solid fa-pen text-[var(--color-primary)]"></i>Input Biaya Operasional (Manual)</h5>
+                <p class="text-[10px] font-bold text-slate-400 mb-4">Contoh: sewa tempat, gaji karyawan, listrik, internet, dll. Sistem tidak melacak biaya ini otomatis.</p>
+                <div class="bg-slate-50 dark:bg-slate-900/40 p-4 rounded-2xl border border-slate-200/80 dark:border-slate-700/60">
+                    ${expenseInputs}
+                </div>
             </div>
         </div>
     `);
@@ -6951,27 +6971,67 @@ window.rTaxBalance = () => {
 
     setH('tax-content', `
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 sm:gap-6 w-full mx-auto">
-            <div class="card-modern p-5 sm:p-6 relative overflow-hidden shadow-lg primary-gradient-card primary-gradient-card-border"><div class="absolute -top-10 -right-10 w-32 h-32 primary-blur-orb rounded-full blur-2xl pointer-events-none"></div>
-                <h4 class="font-bold text-slate-800 dark:text-white text-xs uppercase tracking-widest mb-4 pb-3 border-b border-slate-100 dark:border-slate-700"><i class="fa-solid fa-arrow-down-wide-short mr-1.5 primary-text"></i>ASET</h4>
+            <!-- ASET CARD -->
+            <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700/80 rounded-2xl sm:rounded-3xl p-5 sm:p-6 shadow-sm relative overflow-hidden">
+                <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-100 dark:border-slate-700/70">
+                    <h4 class="font-extrabold text-slate-800 dark:text-white text-xs uppercase tracking-wider flex items-center gap-2">
+                        <div class="w-7 h-7 rounded-lg flex items-center justify-center shrink-0" style="background: rgba(var(--color-primary-rgb),0.1); color: var(--color-primary)">
+                            <i class="fa-solid fa-arrow-down-wide-short text-xs"></i>
+                        </div>
+                        <span>ASET (Aktiva)</span>
+                    </h4>
+                </div>
                 <div class="space-y-3">
-                    <div class="flex items-center justify-between gap-2"><span class="text-xs font-bold text-slate-500 dark:text-slate-400">Kas &amp; Bank (manual)</span><input type="number" min="0" value="${bs.kas||0}" onchange="saveBalanceField('kas', this.value)" class="admin-input !py-2 !px-3 text-xs w-32 text-right bg-slate-50 dark:bg-slate-900/50"></i></div>
-                    <div class="flex items-center justify-between gap-2"><span class="text-xs font-bold text-slate-500 dark:text-slate-400">Piutang Usaha (manual)</span><input type="number" min="0" value="${bs.piutang||0}" onchange="saveBalanceField('piutang', this.value)" class="admin-input !py-2 !px-3 text-xs w-32 text-right bg-slate-50 dark:bg-slate-900/50"></i></div>
-                    <div class="flex items-center justify-between gap-2 py-2 primary-bg-soft rounded-xl px-3"><span class="text-xs font-bold primary-text">Persediaan Barang (Otomatis)</span><span class="text-xs font-bold primary-text">${fCur(st.assetHpp)}</span></div>
-                    <div class="flex justify-between pt-3 border-t-2 border-slate-800 dark:border-slate-200"><span class="font-bold text-slate-900 dark:text-white text-sm">Total Aset</span><span class="font-bold text-sm" style="color:var(--color-primary)">${fCur(totalAset)}</span></div>
+                    <div class="flex items-center justify-between gap-2 py-1">
+                        <span class="text-xs font-bold text-slate-600 dark:text-slate-300">Kas &amp; Bank (manual)</span>
+                        <input type="number" min="0" value="${bs.kas||0}" onchange="saveBalanceField('kas', this.value)" class="admin-input !py-2 !px-3 text-xs w-32 sm:w-36 text-right font-bold bg-slate-50 dark:bg-slate-900/60 text-slate-800 dark:text-white border border-slate-200 dark:border-slate-700 rounded-xl focus:border-[var(--color-primary)]">
+                    </div>
+                    <div class="flex items-center justify-between gap-2 py-1">
+                        <span class="text-xs font-bold text-slate-600 dark:text-slate-300">Piutang Usaha (manual)</span>
+                        <input type="number" min="0" value="${bs.piutang||0}" onchange="saveBalanceField('piutang', this.value)" class="admin-input !py-2 !px-3 text-xs w-32 sm:w-36 text-right font-bold bg-slate-50 dark:bg-slate-900/60 text-slate-800 dark:text-white border border-slate-200 dark:border-slate-700 rounded-xl focus:border-[var(--color-primary)]">
+                    </div>
+                    <div class="flex items-center justify-between gap-2 py-2.5 rounded-xl px-3 border border-[var(--color-primary)]/20" style="background: rgba(var(--color-primary-rgb),0.06)">
+                        <span class="text-xs font-extrabold" style="color:var(--color-primary)">Persediaan Barang (Otomatis)</span>
+                        <span class="text-xs font-extrabold" style="color:var(--color-primary)">${fCur(st.assetHpp)}</span>
+                    </div>
+                    <div class="flex justify-between pt-3 border-t-2 border-slate-800 dark:border-slate-200 mt-2">
+                        <span class="font-extrabold text-slate-900 dark:text-white text-xs sm:text-sm uppercase tracking-wider">Total Aset</span>
+                        <span class="font-extrabold text-xs sm:text-sm" style="color:var(--color-primary)">${fCur(totalAset)}</span>
+                    </div>
                 </div>
             </div>
-            <div class="card-modern p-5 sm:p-6 relative overflow-hidden shadow-lg border-rose-100 dark:border-rose-900/30 bg-rose-50/50 dark:bg-rose-900/10"><div class="absolute -top-10 -right-10 w-32 h-32 bg-rose-500/10 rounded-full blur-2xl pointer-events-none"></div>
-                <h4 class="font-bold text-slate-800 dark:text-white text-xs uppercase tracking-widest mb-4 pb-3 border-b border-slate-100 dark:border-slate-700"><i class="fa-solid fa-arrow-up-wide-short mr-1.5 text-rose-500"></i>KEWAJIBAN &amp; MODAL</h4>
+
+            <!-- KEWAJIBAN & MODAL CARD -->
+            <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700/80 rounded-2xl sm:rounded-3xl p-5 sm:p-6 shadow-sm relative overflow-hidden">
+                <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-100 dark:border-slate-700/70">
+                    <h4 class="font-extrabold text-slate-800 dark:text-white text-xs uppercase tracking-wider flex items-center gap-2">
+                        <div class="w-7 h-7 rounded-lg bg-rose-50 dark:bg-rose-900/30 text-rose-500 flex items-center justify-center shrink-0">
+                            <i class="fa-solid fa-arrow-up-wide-short text-xs"></i>
+                        </div>
+                        <span>KEWAJIBAN &amp; MODAL (Pasiva)</span>
+                    </h4>
+                </div>
                 <div class="space-y-3">
-                    <div class="flex items-center justify-between gap-2"><span class="text-xs font-bold text-slate-500 dark:text-slate-400">Hutang Usaha (manual)</span><input type="number" min="0" value="${bs.hutang||0}" onchange="saveBalanceField('hutang', this.value)" class="admin-input !py-2 !px-3 text-xs w-32 text-right bg-slate-50 dark:bg-slate-900/50"></i></div>
-                    <div class="flex items-center justify-between gap-2 py-2 bg-slate-50 dark:bg-slate-900/40 rounded-xl px-3"><span class="text-xs font-bold text-slate-600 dark:text-slate-300">Modal &amp; Laba Ditahan</span><span class="text-xs font-bold text-slate-700 dark:text-slate-200">${fCur(modalDanLaba)}</span></div>
-                    <p class="text-[10px] font-bold text-slate-400 leading-relaxed px-1">Angka Modal &amp; Laba Ditahan dihitung otomatis (Total Aset − Hutang) supaya neraca tetap seimbang. Kalau Anda tahu persis modal disetor awal, isi manual di Pengaturan.</p>
-                    <div class="flex justify-between pt-3 border-t-2 border-slate-800 dark:border-slate-200"><span class="font-bold text-slate-900 dark:text-white text-sm">Total Kewajiban + Modal</span><span class="font-bold text-sm" style="color:var(--color-primary)">${fCur(totalKewajiban + modalDanLaba)}</span></div>
+                    <div class="flex items-center justify-between gap-2 py-1">
+                        <span class="text-xs font-bold text-slate-600 dark:text-slate-300">Hutang Usaha (manual)</span>
+                        <input type="number" min="0" value="${bs.hutang||0}" onchange="saveBalanceField('hutang', this.value)" class="admin-input !py-2 !px-3 text-xs w-32 sm:w-36 text-right font-bold bg-slate-50 dark:bg-slate-900/60 text-slate-800 dark:text-white border border-slate-200 dark:border-slate-700 rounded-xl focus:border-[var(--color-primary)]">
+                    </div>
+                    <div class="flex items-center justify-between gap-2 py-2.5 rounded-xl px-3 bg-slate-50 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-700/60">
+                        <span class="text-xs font-bold text-slate-600 dark:text-slate-300">Modal &amp; Laba Ditahan</span>
+                        <span class="text-xs font-extrabold text-slate-800 dark:text-white">${fCur(modalDanLaba)}</span>
+                    </div>
+                    <p class="text-[10px] font-semibold text-slate-400 leading-relaxed px-1">Angka Modal &amp; Laba Ditahan dihitung otomatis (Total Aset − Hutang) agar neraca seimbang.</p>
+                    <div class="flex justify-between pt-3 border-t-2 border-slate-800 dark:border-slate-200 mt-2">
+                        <span class="font-extrabold text-slate-900 dark:text-white text-xs sm:text-sm uppercase tracking-wider">Total Kewajiban + Modal</span>
+                        <span class="font-extrabold text-xs sm:text-sm" style="color:var(--color-primary)">${fCur(totalKewajiban + modalDanLaba)}</span>
+                    </div>
                 </div>
             </div>
         </div>
         <div class="max-w-7xl mx-auto mt-6 text-center">
-            <button onclick="openTaxDocPreview('balance')" class="text-[10px] font-bold text-slate-400 hover:text-[var(--color-primary)] inline-flex items-center gap-1.5"><i class="fa-solid fa-eye"></i> Preview &amp; Cetak Neraca</button>
+            <button onclick="openTaxDocPreview('balance')" class="px-4 py-2 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 text-xs font-bold hover:text-[var(--color-primary)] hover:border-[var(--color-primary)]/40 transition-all inline-flex items-center gap-2 shadow-xs">
+                <i class="fa-solid fa-print"></i> Preview &amp; Cetak Neraca
+            </button>
         </div>
     `);
 };
@@ -6990,28 +7050,30 @@ window.saveBalanceField = async (key, value) => {
 window.rTaxSettingsPanel = () => {
     const ts = appData.taxSettings;
     setH('tax-content', `
-        <div class="card-modern p-5 sm:p-6 md:p-7 lg:p-8 w-full max-w-3xl mx-auto space-y-5">
+        <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700/80 rounded-2xl sm:rounded-3xl p-5 sm:p-7 shadow-sm w-full max-w-3xl mx-auto space-y-5">
             <div>
-                <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Nama Badan Usaha</label>
-                <input id="tax-company-name" type="text" value="${esc(ts.companyName||'')}" placeholder="Cth: PT/CV Restu Karya Utama" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-inner"></i>
+                <label class="block text-[11px] font-extrabold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-wider">Nama Badan Usaha / Toko</label>
+                <input id="tax-company-name" type="text" value="${esc(ts.companyName||'')}" placeholder="Cth: PT/CV Restu Karya Utama" class="admin-input !py-3 bg-slate-50 dark:bg-slate-900/60 text-slate-800 dark:text-white border border-slate-200 dark:border-slate-700 rounded-xl focus:border-[var(--color-primary)]">
             </div>
             <div>
-                <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">NPWP</label>
-                <input id="tax-npwp" type="text" value="${esc(ts.npwp||'')}" placeholder="XX.XXX.XXX.X-XXX.XXX" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-inner"></i>
+                <label class="block text-[11px] font-extrabold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-wider">NPWP (Nomor Pokok Wajib Pajak)</label>
+                <input id="tax-npwp" type="text" value="${esc(ts.npwp||'')}" placeholder="XX.XXX.XXX.X-XXX.XXX" class="admin-input !py-3 bg-slate-50 dark:bg-slate-900/60 text-slate-800 dark:text-white border border-slate-200 dark:border-slate-700 rounded-xl focus:border-[var(--color-primary)]">
             </div>
             <div>
-                <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Skema Perhitungan PPh</label>
-                <select id="tax-scheme" onchange="toggleCustomTaxRateInput(this.value)" class="admin-input !py-3.5 bg-white dark:bg-slate-800 shadow-sm cursor-pointer">
+                <label class="block text-[11px] font-extrabold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-wider">Skema Perhitungan PPh</label>
+                <select id="tax-scheme" onchange="toggleCustomTaxRateInput(this.value)" class="admin-input !py-3 bg-slate-50 dark:bg-slate-900/60 text-slate-800 dark:text-white border border-slate-200 dark:border-slate-700 rounded-xl cursor-pointer font-bold focus:border-[var(--color-primary)]">
                     <option value="umkm_final" ${ts.taxScheme==='umkm_final'?'selected':''}>PPh Final UMKM — 0,5% dari Omset (PP 23/2018)</option>
                     <option value="badan_normal" ${ts.taxScheme==='badan_normal'?'selected':''}>PPh Badan Normal — 22% dari Laba Bersih</option>
                     <option value="custom" ${ts.taxScheme==='custom'?'selected':''}>Custom (isi tarif sendiri)</option>
                 </select>
             </div>
             <div id="tax-custom-rate-wrap" class="${ts.taxScheme==='custom'?'':'hidden'}">
-                <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Tarif Custom (% dari Laba Bersih)</label>
-                <input id="tax-custom-rate" type="number" min="0" max="100" step="0.1" value="${ts.customTaxRate||0.5}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-inner"></i>
+                <label class="block text-[11px] font-extrabold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-wider">Tarif Custom (% dari Laba Bersih)</label>
+                <input id="tax-custom-rate" type="number" min="0" max="100" step="0.1" value="${ts.customTaxRate||0.5}" class="admin-input !py-3 bg-slate-50 dark:bg-slate-900/60 text-slate-800 dark:text-white border border-slate-200 dark:border-slate-700 rounded-xl focus:border-[var(--color-primary)]">
             </div>
-            <button onclick="saveTaxSettingsPanel()" class="btn-primary py-3.5 text-sm shadow-glow !rounded-xl flex items-center justify-center gap-2 w-full"><i class="fa-solid fa-save"></i> Simpan Pengaturan Pajak</button>
+            <button onclick="saveTaxSettingsPanel()" class="btn-primary py-3.5 text-xs sm:text-sm font-extrabold shadow-glow rounded-xl flex items-center justify-center gap-2 w-full uppercase tracking-wider">
+                <i class="fa-solid fa-floppy-disk"></i> Simpan Pengaturan Pajak
+            </button>
         </div>
     `);
 };
@@ -7042,7 +7104,7 @@ window.openTaxDocPreview = (reportType) => {
 
     let logoHTML = '';
     if (appData.store.logo && (appData.store.logo.includes('http') || appData.store.logo.includes('data:'))) {
-        logoHTML = `<img loading="eager" src="${esc(appData.store.logo)}" class="w-16 h-16 object-contain"></i>`;
+        logoHTML = `<img loading="eager" src="${esc(appData.store.logo)}" class="w-16 h-16 object-contain">`;
     } else {
         logoHTML = `<div class="w-16 h-16 bg-slate-700 text-white flex items-center justify-center rounded-xl"><i class="fa-solid fa-store text-3xl"></i></div>`;
     }
