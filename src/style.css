@@ -697,42 +697,23 @@ html.dark .primary-gradient-card-border {
     background-color: rgba(var(--color-primary-rgb), 0.2) !important;
 }
 
-/* Background Aurora & Floating Shape Animations (Vibrant & Rich Aesthetic) */
-@keyframes auroraGlow {
-    0%, 100% {
-        transform: translate(-50%, 0) scale(1);
-        opacity: 0.50;
-    }
-    50% {
-        transform: translate(-45%, 20px) scale(1.10);
-        opacity: 0.70;
-    }
-}
-
+/* Background Vector Shapes Animations (Sharp, Clean, Crisp Vector Shapes) */
 @keyframes floatOrb1 {
     0%, 100% {
         transform: translate(0, 0) scale(1);
-        opacity: 0.40;
     }
     50% {
-        transform: translate(-35px, 45px) scale(1.20);
-        opacity: 0.60;
+        transform: translate(-30px, 35px) scale(1.08);
     }
 }
 
 @keyframes floatOrb2 {
     0%, 100% {
         transform: translate(0, 0) scale(1);
-        opacity: 0.35;
     }
     50% {
-        transform: translate(45px, -40px) scale(1.25);
-        opacity: 0.55;
+        transform: translate(35px, -30px) scale(1.10);
     }
-}
-
-.animate-aurora-glow {
-    animation: auroraGlow 14s ease-in-out infinite;
 }
 
 .animate-float-orb-1 {
