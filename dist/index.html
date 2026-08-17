@@ -84,11 +84,11 @@
         }
       }
     </style>
-    <script type="module" crossorigin src="/assets/index-DzGyH2pW.js"></script>
+    <script type="module" crossorigin src="/assets/index-CB224dQz.js"></script>
     <link rel="modulepreload" crossorigin href="/assets/vendor-firebase-core-D2OF5R23.js">
     <link rel="modulepreload" crossorigin href="/assets/vendor-firebase-db-BIUZcnOd.js">
     <link rel="modulepreload" crossorigin href="/assets/vendor-utils-bRchjNq8.js">
-    <link rel="stylesheet" crossorigin href="/assets/index-BXdB7Cd6.css">
+    <link rel="stylesheet" crossorigin href="/assets/index-CsVQzZ0u.css">
   </head>
   <body>
     <!-- UI Components Global -->
@@ -551,16 +551,26 @@
     </div>
     <div id="thermal-print-section"></div>
     <div class="relative w-full bg-slate-50 dark:bg-[#0b1120] overflow-hidden min-h-screen" id="app-container">
-      <!-- DEKORASI BACKGROUND SHAPES & WAVES DINAMIS (Aksen Aplikasi Mewah) -->
+      <!-- DEKORASI BACKGROUND SHAPES & WAVES DINAMIS (Aksen Aplikasi Mewah & Animasi Aurora) -->
       <div class="pointer-events-none fixed inset-0 z-0 overflow-hidden">
-        <!-- Curved Ambient Top Glow -->
-        <div class="absolute left-1/2 -top-36 h-[22rem] w-[140%] -translate-x-1/2 rounded-[50%] opacity-20 blur-3xl transition-all duration-700 pointer-events-none" style="background: linear-gradient(180deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);"></div>
-        <!-- Ambient Glowing Blobs -->
-        <div class="absolute -right-24 top-1/4 h-80 w-80 rounded-full opacity-15 blur-[110px] transition-all duration-700 pointer-events-none" style="background: var(--color-primary);"></div>
-        <div class="absolute -left-28 top-2/3 h-96 w-96 rounded-full opacity-15 blur-[120px] transition-all duration-700 pointer-events-none" style="background: var(--color-primary-dark);"></div>
-        <!-- Subtle Curved Wave SVG Accent -->
-        <svg class="absolute top-0 left-0 w-full opacity-[0.04] dark:opacity-[0.07] pointer-events-none" viewBox="0 0 1440 320" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Subtle Dynamic Dot Grid Overlay -->
+        <div class="absolute inset-0 bg-grid-dots opacity-40 dark:opacity-60 pointer-events-none"></div>
+
+        <!-- Animated Curved Ambient Top Glow (Aurora Effect) -->
+        <div class="animate-aurora-glow absolute left-1/2 -top-36 h-[24rem] w-[150%] -translate-x-1/2 rounded-[50%] opacity-25 blur-3xl transition-all duration-700 pointer-events-none" style="background: linear-gradient(180deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);"></div>
+
+        <!-- Animated Ambient Glowing Blobs -->
+        <div class="animate-float-orb-1 absolute -right-24 top-1/4 h-80 w-80 rounded-full opacity-20 blur-[110px] transition-all duration-700 pointer-events-none" style="background: var(--color-primary);"></div>
+        <div class="animate-float-orb-2 absolute -left-28 top-2/3 h-96 w-96 rounded-full opacity-20 blur-[120px] transition-all duration-700 pointer-events-none" style="background: var(--color-primary-dark);"></div>
+
+        <!-- Subtle Curved Wave SVG Accent (Top) -->
+        <svg class="absolute top-0 left-0 w-full opacity-[0.05] dark:opacity-[0.08] pointer-events-none" viewBox="0 0 1440 320" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M0,160L48,176C96,192,192,224,288,213.3C384,203,480,149,576,144C672,139,768,181,864,186.7C960,192,1056,160,1152,149.3C1248,139,1344,149,1392,154.7L1440,160L1440,0L1392,0C1344,0,1248,0,1152,0C1056,0,960,0,864,0C768,0,672,0,576,0C480,0,384,0,288,0C192,0,96,0,48,0L0,0Z" fill="currentColor" class="text-[var(--color-primary)]"></path>
+        </svg>
+
+        <!-- Subtle Curved Wave SVG Accent (Bottom) -->
+        <svg class="absolute bottom-0 left-0 w-full opacity-[0.03] dark:opacity-[0.06] pointer-events-none rotate-180" viewBox="0 0 1440 320" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M0,160L48,176C96,192,192,224,288,213.3C384,203,480,149,576,144C672,139,768,181,864,186.7C960,192,1056,160,1152,149.3C1248,139,1344,149,1392,154.7L1440,160L1440,0L1392,0C1344,0,1248,0,1152,0C1056,0,960,0,864,0C768,0,672,0,576,0C480,0,384,0,288,0C192,0,96,0,48,0L0,0Z" fill="currentColor" class="text-[var(--color-primary-dark)]"></path>
         </svg>
       </div>
       <div class="view-section fade-in flex flex-col relative z-10" id="view-catalog">

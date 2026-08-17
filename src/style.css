@@ -697,3 +697,61 @@ html.dark .primary-gradient-card-border {
     background-color: rgba(var(--color-primary-rgb), 0.2) !important;
 }
 
+/* Background Aurora & Floating Shape Animations (High-End Aesthetic) */
+@keyframes auroraGlow {
+    0%, 100% {
+        transform: translate(-50%, 0) scale(1);
+        opacity: 0.22;
+    }
+    50% {
+        transform: translate(-45%, 18px) scale(1.08);
+        opacity: 0.38;
+    }
+}
+
+@keyframes floatOrb1 {
+    0%, 100% {
+        transform: translate(0, 0) scale(1);
+        opacity: 0.18;
+    }
+    50% {
+        transform: translate(-35px, 45px) scale(1.18);
+        opacity: 0.28;
+    }
+}
+
+@keyframes floatOrb2 {
+    0%, 100% {
+        transform: translate(0, 0) scale(1);
+        opacity: 0.15;
+    }
+    50% {
+        transform: translate(45px, -40px) scale(1.22);
+        opacity: 0.26;
+    }
+}
+
+.animate-aurora-glow {
+    animation: auroraGlow 16s ease-in-out infinite;
+}
+
+.animate-float-orb-1 {
+    animation: floatOrb1 20s ease-in-out infinite;
+}
+
+.animate-float-orb-2 {
+    animation: floatOrb2 24s ease-in-out infinite;
+}
+
+/* Pattern Overlay: Subtle Dynamic Dot Grid */
+.bg-grid-dots {
+    background-image: radial-gradient(rgba(var(--color-primary-rgb), 0.12) 1.2px, transparent 1.2px);
+    background-size: 28px 28px;
+    mask-image: radial-gradient(ellipse at center, black 40%, transparent 80%);
+    -webkit-mask-image: radial-gradient(ellipse at center, black 40%, transparent 80%);
+}
+html.dark .bg-grid-dots {
+    background-image: radial-gradient(rgba(var(--color-primary-rgb), 0.18) 1.2px, transparent 1.2px);
+}
+
+
