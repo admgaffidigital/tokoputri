@@ -63,6 +63,19 @@
      text-xs/sm/base/lg/xl/2xl/3xl -> mengikuti skala Tailwind standar
 */
 
+* {
+    -webkit-tap-highlight-color: transparent;
+}
+
+input, textarea, select, [contenteditable="true"] {
+    -webkit-user-select: text;
+    user-select: text;
+}
+
+.overflow-y-auto, .overflow-x-auto, .scroll-content {
+    -webkit-overflow-scrolling: touch;
+}
+
 body { 
     font-family: 'Barlow', sans-serif; 
     background-color: #f1f5f9; 

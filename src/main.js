@@ -3034,16 +3034,22 @@ window.renderOrderDetailModal = (orderId, d, reviewedKeys) => {
         let dStr = "Tanggal Tidak Tersedia";
 try {
     let dateObj;
-    // Cek jika data dari Firestore (object .toDate())
     if (d.timestamp && typeof d.timestamp.toDate === 'function') {
         dateObj = d.timestamp.toDate();
     } else {
-        // Cek jika angka (timestamp miliseconds) atau string
-        dateObj = new Date(Number(d.timestamp || d.dateString || Date.now()));
+        const rawDate = d.timestamp || d.dateString || Date.now();
+        if (typeof rawDate === 'number') {
+            dateObj = new Date(rawDate);
+        } else if (!isNaN(Number(rawDate)) && String(rawDate).trim() !== '') {
+            dateObj = new Date(Number(rawDate));
+        } else {
+            const safeIso = String(rawDate).replace(/-/g, '/').replace('T', ' ').replace(/\..*$/, '');
+            dateObj = new Date(rawDate);
+            if (isNaN(dateObj.getTime())) dateObj = new Date(safeIso);
+        }
     }
     
-    // Pastikan valid
-    if (!isNaN(dateObj.getTime())) {
+    if (dateObj && !isNaN(dateObj.getTime())) {
         dStr = dateObj.toLocaleString('id-ID', {day:'numeric',month:'short',year:'numeric', hour:'2-digit', minute:'2-digit'});
     }
 } catch(e) {
