@@ -3145,7 +3145,17 @@ try {
                         <div class="flex justify-between text-slate-500 dark:text-slate-400"><p>Ongkos Kirim</p><p class="font-bold">${fCur(shipping)}</p></div>
                         ${shippingDiscount > 0 ? `<div class="flex justify-between text-[var(--color-primary)]"><p>Diskon Ongkir</p><p class="font-bold">-${fCur(shippingDiscount)}</p></div>` : ''}
                         ${discount > 0 ? `<div class="flex justify-between text-rose-500"><p>Diskon Promo</p><p class="font-bold">-${fCur(discount)}</p></div>` : ''}
-                        ${ppnAmt > 0 ? `<div class="flex justify-between text-amber-500"><p>PPN (${ppnRt}%)</p><p class="font-bold">+${fCur(ppnAmt)}</p></div>` : ''}
+                        ${(() => {
+                            if (ppnAmt <= 0) return '';
+                            const isInc = d.payment?.ppnType === 'inclusive';
+                            const baseBeforeTax = (subtotal - discount) + (shipping - shippingDiscount);
+                            const dppAmt = d.payment?.dppAmount || (isInc ? Math.round((baseBeforeTax * 100) / (100 + ppnRt)) : Math.max(0, baseBeforeTax));
+
+                            return `
+                            <div class="flex justify-between text-slate-500 dark:text-slate-400"><p>DPP (Dasar Pengenaan Pajak)</p><p class="font-bold">${fCur(dppAmt)}</p></div>
+                            <div class="flex justify-between text-amber-500"><p>${isInc ? 'Termasuk PPN' : 'PPN'} (${ppnRt}%)</p><p class="font-bold">${isInc ? '' : '+'}${fCur(ppnAmt)}</p></div>
+                            `;
+                        })()}
                         <div class="flex justify-between items-center border-t border-dashed border-slate-300 dark:border-slate-600 pt-3 mt-2">
                             <p class="font-bold text-slate-800 dark:text-white uppercase tracking-widest">Total Bayar</p>
                             <p class="text-lg font-bold text-[var(--color-primary)]">${fCur(grandTotal)}</p>
@@ -5727,7 +5737,19 @@ window.openOrderDetail = i => {
                     ${o.customer?.deliveryMethod==='delivery'?`<div class="flex justify-between items-center"><span>Ongkos Kirim</span><span class="font-bold text-white">${fCur(o.payment?.shippingCost)}</span></div>`:''}
                     ${o.payment?.shippingDiscount?`<div class="flex justify-between items-center text-emerald-400 bg-emerald-900/20 px-2 py-1 -mx-2 rounded-xl"><span>Diskon Ongkir</span><span class="font-bold">-${fCur(o.payment.shippingDiscount)}</span></div>`:''}
                     ${o.payment?.productDiscount?`<div class="flex justify-between items-center text-rose-400 bg-rose-900/20 px-2 py-1 -mx-2 rounded-xl"><span>Diskon Promo</span><span class="font-bold">-${fCur(o.payment.productDiscount)}</span></div>`:''}
-                    ${o.payment?.ppnAmount?`<div class="flex justify-between items-center text-amber-400 bg-amber-900/20 px-2 py-1 -mx-2 rounded-xl"><span>${o.payment.ppnType==='inclusive'?'Termasuk PPN':'PPN'} (${o.payment.ppnRate||11}%)</span><span class="font-bold">${o.payment.ppnType==='inclusive'?'':'+'}${fCur(o.payment.ppnAmount)}</span></div>`:''}
+                    ${(() => {
+                        if (!o.payment?.ppnAmount || o.payment.ppnAmount <= 0) return '';
+                        const isInc = o.payment.ppnType === 'inclusive';
+                        const ppnRate = o.payment.ppnRate || 11;
+                        const ppnAmt = o.payment.ppnAmount;
+                        const baseBeforeTax = (o.payment.subtotal || 0) - (o.payment.productDiscount || 0) + (o.payment.shippingCost || 0) - (o.payment.shippingDiscount || 0);
+                        const dppAmt = o.payment.dppAmount || (isInc ? Math.round((baseBeforeTax * 100) / (100 + ppnRate)) : Math.max(0, baseBeforeTax));
+
+                        return `
+                        <div class="flex justify-between items-center text-slate-400"><span>DPP (Dasar Pengenaan Pajak)</span><span class="font-bold text-white">${fCur(dppAmt)}</span></div>
+                        <div class="flex justify-between items-center text-amber-400 bg-amber-900/20 px-2 py-1 -mx-2 rounded-xl"><span>${isInc ? 'Termasuk PPN' : 'PPN'} (${ppnRate}%)</span><span class="font-bold">${isInc ? '' : '+'}${fCur(ppnAmt)}</span></div>
+                        `;
+                    })()}
                 </div>
                 
                 <div class="border-t border-dashed border-slate-600/60 my-5 relative z-10"></div>
@@ -5891,7 +5913,13 @@ window.openReceiptPreview = () => {
     if(o.payment?.productDiscount) h += `<div style="white-space:pre;">${pL('Pot.Harga',`-${o.payment.productDiscount.toLocaleString('id-ID')}`)}</div>`;
     if(o.payment?.ppnAmount && o.payment.ppnAmount > 0) {
         const isInc = o.payment.ppnType === 'inclusive';
-        h += `<div style="white-space:pre;">${pL(`${isInc?'Inc.PPN':'PPN'}(${o.payment.ppnRate||11}%)`,(o.payment.ppnAmount||0).toLocaleString('id-ID'))}</div>`;
+        const ppnRate = o.payment.ppnRate || 11;
+        const ppnAmt = o.payment.ppnAmount || 0;
+        const baseBeforeTax = (o.payment.subtotal || 0) - (o.payment.productDiscount || 0) + (o.payment.shippingCost || 0) - (o.payment.shippingDiscount || 0);
+        const dppAmt = o.payment.dppAmount || (isInc ? Math.round((baseBeforeTax * 100) / (100 + ppnRate)) : Math.max(0, baseBeforeTax));
+
+        h += `<div style="white-space:pre;">${pL('DPP', dppAmt.toLocaleString('id-ID'))}</div>`;
+        h += `<div style="white-space:pre;">${pL(`${isInc ? 'Inc. PPN' : 'PPN'} (${ppnRate}%)`, (isInc ? '' : '+') + ppnAmt.toLocaleString('id-ID'))}</div>`;
     }
     h += `<div class="border-b border-dashed border-black my-2"></div><div style="white-space:pre;font-weight:bold;font-size:12px;">${pL('TOTAL','Rp '+(o.payment?.grandTotal||0).toLocaleString('id-ID'))}</div><div style="white-space:pre;">${pL('Bayar:',String(o.payment?.method||'').toUpperCase())}</div>`;
     // FITUR BARU: cantumkan poin didapat, saldo poin, & info klaim hadiah di struk
@@ -8516,7 +8544,19 @@ window.openDocPreview = (type) => {
                 ${o.payment?.shippingCost ? `<div class="flex justify-between px-4"><span>Ongkos Kirim</span><span class="font-mono">${fCur(o.payment.shippingCost)}</span></div>` : ''}
                 ${o.payment?.shippingDiscount ? `<div class="flex justify-between px-4 text-emerald-600"><span>Diskon Ongkir</span><span class="font-mono">-${fCur(o.payment.shippingDiscount)}</span></div>` : ''}
                 ${o.payment?.productDiscount ? `<div class="flex justify-between px-4 text-rose-600"><span>Diskon Produk</span><span class="font-mono">-${fCur(o.payment.productDiscount)}</span></div>` : ''}
-                ${o.payment?.ppnAmount ? `<div class="flex justify-between px-4 text-amber-600"><span>PPN (${o.payment.ppnRate||11}%)</span><span class="font-mono">+${fCur(o.payment.ppnAmount)}</span></div>` : ''}
+                ${(() => {
+                    if (!o.payment?.ppnAmount || o.payment.ppnAmount <= 0) return '';
+                    const isInc = o.payment.ppnType === 'inclusive';
+                    const ppnRate = o.payment.ppnRate || 11;
+                    const ppnAmt = o.payment.ppnAmount;
+                    const baseBeforeTax = (o.payment.subtotal || 0) - (o.payment.productDiscount || 0) + (o.payment.shippingCost || 0) - (o.payment.shippingDiscount || 0);
+                    const dppAmt = o.payment.dppAmount || (isInc ? Math.round((baseBeforeTax * 100) / (100 + ppnRate)) : Math.max(0, baseBeforeTax));
+
+                    return `
+                    <div class="flex justify-between px-4 text-slate-600"><span>DPP (Dasar Pengenaan Pajak)</span><span class="font-mono">${fCur(dppAmt)}</span></div>
+                    <div class="flex justify-between px-4 text-amber-600"><span>${isInc ? 'Termasuk PPN' : 'PPN'} (${ppnRate}%)</span><span class="font-mono">${isInc ? '' : '+'}${fCur(ppnAmt)}</span></div>
+                    `;
+                })()}
                 
                 <div class="flex justify-between items-center bg-slate-800 text-white p-4 rounded-xl mt-4 shadow-md">
                     <span class="font-bold text-base uppercase tracking-widest">Grand Total</span>
