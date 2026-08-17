@@ -9403,10 +9403,19 @@ window.renderStorefrontFAQ = () => {
                     <i class="fa-solid fa-chevron-down text-xs"></i>
                 </div>
             </button>
-            <div class="hidden border-t border-slate-100 dark:border-slate-700/70 p-4.5 sm:p-5 bg-slate-50/70 dark:bg-slate-900/50 text-xs sm:text-sm font-medium text-slate-700 dark:text-slate-200 leading-relaxed" id="faq-body-${f.id}">
-                <div class="flex items-start gap-3">
-                    <div class="w-8 h-8 rounded-xl primary-bg text-white flex items-center justify-center font-bold text-xs shrink-0 mt-0.5 shadow-sm">A</div>
-                    <div class="flex-1 whitespace-pre-wrap pt-0.5">${esc(f.answer || 'Belum ada jawaban.')}</div>
+            <div class="hidden border-t border-slate-100 dark:border-slate-700/70 p-3.5 sm:p-5 primary-bg-soft dark:bg-slate-900/60 text-xs sm:text-sm font-medium leading-relaxed" id="faq-body-${f.id}">
+                <div class="flex items-start gap-3 bg-white/90 dark:bg-slate-800/90 p-3.5 sm:p-4 rounded-2xl border primary-border shadow-sm">
+                    <div class="w-8 h-8 rounded-xl primary-bg text-white flex items-center justify-center font-bold text-xs shrink-0 mt-0.5 shadow-sm shadow-[rgba(var(--color-primary-rgb),0.25)]">
+                        <i class="fa-solid fa-reply text-xs"></i>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center justify-between gap-2 mb-1">
+                            <span class="text-[10px] font-extrabold uppercase tracking-wider primary-text flex items-center gap-1">
+                                <i class="fa-solid fa-user-shield text-[10px]"></i> Jawaban Tim Admin Toko
+                            </span>
+                        </div>
+                        <div class="text-slate-800 dark:text-slate-100 font-semibold leading-relaxed whitespace-pre-wrap break-words">${esc(f.answer || 'Belum ada jawaban.')}</div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -9575,9 +9584,11 @@ window.rAdmFAQ = () => {
                             </div>
                         </div>
 
-                        <div class="bg-slate-50 dark:bg-slate-900/50 p-3.5 rounded-xl border border-slate-100 dark:border-slate-700 text-xs font-medium text-slate-700 dark:text-slate-300">
-                            <span class="font-bold text-slate-900 dark:text-white block mb-1">Jawaban:</span>
-                            <div class="whitespace-pre-wrap leading-relaxed">${f.answer ? esc(f.answer) : '<span class="text-rose-500 italic font-semibold">Belum dijawab. Klik "Edit / Jawab" untuk memberikan jawaban.</span>'}</div>
+                        <div class="primary-bg-soft dark:bg-slate-900/50 p-4 rounded-2xl border primary-border text-xs font-medium text-slate-800 dark:text-slate-200">
+                            <span class="font-extrabold primary-text uppercase text-[10px] tracking-wider flex items-center gap-1.5 mb-1.5">
+                                <i class="fa-solid fa-user-shield"></i> Jawaban Admin Toko:
+                            </span>
+                            <div class="whitespace-pre-wrap leading-relaxed font-semibold">${f.answer ? esc(f.answer) : '<span class="text-rose-500 italic font-semibold">Belum dijawab. Klik "Edit / Jawab" untuk memberikan jawaban.</span>'}</div>
                         </div>
                     </div>
                 `).join('')}
