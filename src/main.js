@@ -3977,22 +3977,40 @@ window.togglePaymentDetails = () => {
 };
 
 window.calculateTempoBalance = () => {
-    let dp = parseFloat(document.getElementById('tempo-dp-input').value) || 0;
-    let total = cart.reduce((s,i) => s + (parseFloat(getEffP(i))||0) * (parseFloat(i.qty)||0), 0);
+    const dpInput = document.getElementById('tempo-dp-input');
+    let dp = parseFloat(dpInput?.value) || 0;
+    if (dp < 0) { dp = 0; if (dpInput) dpInput.value = 0; }
+    let sub = cart.reduce((s,i) => s + (parseFloat(getEffP(i))||0) * (parseFloat(i.qty)||0), 0);
     let sC = 0, productDisc = 0, shippingDisc = 0;
     if (cust.deliveryMethod === 'delivery') {
         sC = Math.ceil((parseFloat(cust.distance)||0) * (parseFloat(appData.store.costPerKm)||0) / 500) * 500;
     }
     if (vouch) {
-        if (vouch.type === 'product_nominal') productDisc = parseFloat(vouch.discount);
-        else if (vouch.type === 'product_percent') productDisc = total * parseFloat(vouch.discount)/100;
-        else if (vouch.type === 'shipping_nominal') shippingDisc = Math.min(sC, parseFloat(vouch.discount));
-        else if (vouch.type === 'shipping_percent') shippingDisc = Math.min(sC, sC * parseFloat(vouch.discount)/100);
+        let eligibleSubtotal = sub;
+        if(vouch.targetProduct && vouch.targetProduct !== '') {
+            const targetId = parseInt(vouch.targetProduct);
+            const eligibleItems = cart.filter(i => i.id === targetId);
+            eligibleSubtotal = eligibleItems.reduce((s,i) => s + (parseFloat(getEffP(i))||0) * (parseFloat(i.qty)||0), 0);
+        }
+        if(vouch.type === 'shipping_free') {
+            shippingDisc = sC;
+        } else if(vouch.type === 'shipping_flat') {
+            shippingDisc = parseFloat(vouch.value)||0;
+        } else if(vouch.type === 'percent') {
+            let calcDisc = eligibleSubtotal * ((parseFloat(vouch.value)||0) / 100);
+            if(vouch.maxDiscount && parseFloat(vouch.maxDiscount) > 0) calcDisc = Math.min(calcDisc, parseFloat(vouch.maxDiscount));
+            productDisc = calcDisc;
+        } else {
+            productDisc = parseFloat(vouch.value)||0;
+            productDisc = Math.min(productDisc, eligibleSubtotal);
+        }
     }
-    let subAfterDisc = Math.max(0, total - productDisc);
+    shippingDisc = Math.min(shippingDisc, sC);
+    productDisc = Math.min(productDisc, sub);
+
+    let subAfterDisc = Math.max(0, sub - productDisc);
     let shippingAfterDisc = Math.max(0, sC - shippingDisc);
     const taxInfo = window.calcTaxDetails(subAfterDisc + shippingAfterDisc);
-    let ppnAmount = taxInfo.ppnAmount;
     let pointsDisc = 0;
     if (window.useMemberPoints && currentMember) {
         pointsDisc = Math.min(subAfterDisc + shippingAfterDisc + taxInfo.grandTotalAdd, parseFloat(currentMember.points) || 0);
@@ -4000,10 +4018,11 @@ window.calculateTempoBalance = () => {
     let grandTotal = subAfterDisc + shippingAfterDisc + taxInfo.grandTotalAdd - pointsDisc;
     if (dp > grandTotal) {
         dp = grandTotal;
-        document.getElementById('tempo-dp-input').value = dp;
+        if (dpInput) dpInput.value = dp;
     }
     let balance = grandTotal - dp;
-    document.getElementById('tempo-balance-display').innerText = fCur(balance);
+    const disp = document.getElementById('tempo-balance-display');
+    if (disp) disp.innerText = fCur(balance);
 };
 
 const rPay = () => {
@@ -4022,6 +4041,19 @@ const rPay = () => {
     
     if (cust.deliveryMethod === 'delivery') {
         sC = Math.ceil((parseFloat(cust.distance)||0) * (parseFloat(appData.store.costPerKm)||0) / 500) * 500;
+    }
+
+    // Re-validasi voucher jika barang dihapus / subtotal berkurang
+    if (vouch) {
+        if (vouch.minPurchase && parseFloat(vouch.minPurchase) > 0 && sub < parseFloat(vouch.minPurchase)) {
+            vouch = null;
+            hide('voucher-msg-container');
+            showToast(`Voucher dibatalkan (min. belanja ${fCur(vouch.minPurchase)})`);
+        } else if (vouch.targetProduct && !cart.some(i => i.id === parseInt(vouch.targetProduct))) {
+            vouch = null;
+            hide('voucher-msg-container');
+            showToast("Voucher dibatalkan (produk khusus dihapus)");
+        }
     }
     
     if(vouch){
