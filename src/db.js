@@ -27,7 +27,9 @@ export const setGasUploadUrl = (url) => {
 };
 
 // Inisialisasi Firebase
-firebase.initializeApp(fbC);
+if (!firebase.apps.length) {
+    firebase.initializeApp(fbC);
+}
 
 export const analytics = firebase.analytics();
 export const db = firebase.firestore();
@@ -40,8 +42,6 @@ export const ADMIN_UID = 'K2ijSERTT2dg27yYGTEgn6XHSnW2';
 db.settings({
     ignoreUndefinedProperties: true,
     cacheSizeBytes: firebase.firestore.CACHE_SIZE_UNLIMITED,
-    merge: true,
 });
 
 export { firebase };
-

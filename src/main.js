@@ -349,10 +349,12 @@ if (typeof requestIdleCallback !== 'undefined') {
 // (asal punya akun di project ini). Sekarang dibatasi ke UID spesifik milik pemilik toko.
 const ADMIN_UID = 'K2ijSERTT2dg27yYGTEgn6XHSnW2';
 
+// FIX BUG: 'merge' bukan opsi yang valid untuk db.settings().
+// merge hanya berlaku sebagai opsi di .set(data, { merge: true }).
+// Menghapus opsi ini mencegah Firebase membuang warning di console.
 db.settings({
     ignoreUndefinedProperties: true,
     cacheSizeBytes: firebase.firestore.CACHE_SIZE_UNLIMITED,
-    merge: true,
     // FIX: di jaringan yang tidak stabil (WiFi publik goyah, proxy kantor, VPN),
     // koneksi realtime Firestore lewat QUIC sering gagal berulang kali (muncul
     // sebagai banyak "ERR_QUIC_PROTOCOL_ERROR" di console). SDK tetap otomatis
@@ -414,8 +416,15 @@ window.attachMyOrdersRealtime = () => {
     // console). Sekarang dibatasi HANYA ke 15 pesanan TERBARU -- itu paling
     // relevan untuk dipantau live; pesanan lama tetap bisa dicek manual.
     const MAX_LIVE_ORDERS = 15;
-    myOrders.slice(0, MAX_LIVE_ORDERS).forEach((o, idx) => {
-        const unsub = db.collection("freshmart_orders").doc(o.orderId).onSnapshot(doc => {
+    myOrders.slice(0, MAX_LIVE_ORDERS).forEach((o) => {
+        // FIX BUG: sebelumnya menggunakan idx (index array) sebagai kunci untuk
+        // mengakses myOrders[idx] di dalam callback onSnapshot. Jika myOrders
+        // berubah (ditambah/dihapus) setelah listener dipasang tapi sebelum
+        // snapshot datang, idx bisa menunjuk ke pesanan yang BERBEDA.
+        // Sekarang: selalu cari berdasarkan orderId (identifier unik) sehingga
+        // update status selalu tepat sasaran, tidak peduli perubahan array.
+        const targetOrderId = o.orderId;
+        const unsub = db.collection("freshmart_orders").doc(targetOrderId).onSnapshot(doc => {
             if (!doc.exists) return;
             const data = doc.data();
             const newStatus = data.status;
@@ -423,20 +432,24 @@ window.attachMyOrdersRealtime = () => {
             const newRewardNote = data.claimedReward ? (data.claimedReward.note || '') : '';
             let changed = false, notifMsg = '';
 
-            if (newStatus && myOrders[idx] && myOrders[idx].status !== newStatus) {
-                const oldStatus = myOrders[idx].status;
-                myOrders[idx].status = newStatus;
+            // Cari pesanan berdasarkan orderId, bukan idx
+            const orderEntry = myOrders.find(mo => mo.orderId === targetOrderId);
+            if (!orderEntry) return;
+
+            if (newStatus && orderEntry.status !== newStatus) {
+                const oldStatus = orderEntry.status;
+                orderEntry.status = newStatus;
                 changed = true;
-                if (oldStatus !== undefined) notifMsg = `Pesanan #${o.orderId.split('-').pop()} kini: ${newStatus}`;
+                if (oldStatus !== undefined) notifMsg = `Pesanan #${targetOrderId.split('-').pop()} kini: ${newStatus}`;
             }
             // FITUR BARU: sinkron status klaim hadiah (mis. admin ubah dari "Diproses" ke "Stok Kembali Ada")
-            if (myOrders[idx] && myOrders[idx].claimedReward && newRewardStatus &&
-                (myOrders[idx].claimedReward.status !== newRewardStatus || myOrders[idx].claimedReward.note !== newRewardNote)) {
-                const firstUpdate = myOrders[idx].claimedReward.status === undefined;
-                myOrders[idx].claimedReward.status = newRewardStatus;
-                myOrders[idx].claimedReward.note = newRewardNote;
+            if (orderEntry.claimedReward && newRewardStatus &&
+                (orderEntry.claimedReward.status !== newRewardStatus || orderEntry.claimedReward.note !== newRewardNote)) {
+                const firstUpdate = orderEntry.claimedReward.status === undefined;
+                orderEntry.claimedReward.status = newRewardStatus;
+                orderEntry.claimedReward.note = newRewardNote;
                 changed = true;
-                if (!firstUpdate && !notifMsg) notifMsg = `Update hadiah "${myOrders[idx].claimedReward.name}" pada pesanan #${o.orderId.split('-').pop()}`;
+                if (!firstUpdate && !notifMsg) notifMsg = `Update hadiah "${orderEntry.claimedReward.name}" pada pesanan #${targetOrderId.split('-').pop()}`;
             }
             if (changed) {
                 ssL('freshmart_my_orders', JSON.stringify(myOrders));
@@ -786,81 +799,104 @@ const saveApp = async (changedKeys = null) => {
 // terbaru — tanpa perlu reload halaman sama sekali.
 // =====================================================================
 let isSyncingRealtime = false;
+// FIX RACE CONDITION: flag pendingSync mencatat apakah ada snapshot Firestore
+// yang datang SAAT fetch sedang berjalan. Sebelumnya snapshot seperti itu
+// langsung dibuang (early return) — menyebabkan update stok terlewat.
+// Sekarang: snapshot tetap dicatat, dan langsung diproses ulang setelah
+// fetch pertama selesai.
+let pendingSyncUpdate = false;
 window.attachRealtimeStockSync = () => {
     if (window.unsubCmsRealtime) return; // jangan pasang dobel
-    window.unsubCmsRealtime = db.collection("freshmart").doc("cms_data")
-        .onSnapshot(async (doc) => {
-            if (!doc.exists || isSyncingRealtime) return;
-            const f = doc.data();
-            const serverUpdate = f.lastUpdate || 0;
-            const localUpdate = parseInt(sL('freshmart_last_update') || '0');
-            if (serverUpdate <= localUpdate) return; // data sudah versi terbaru, tidak perlu apa-apa
 
-            isSyncingRealtime = true;
-            try {
-                const pSnap = await db.collection("freshmart").doc("cms_data").collection("products").get();
-                appData.products = pSnap.docs.map(d => d.data()).sort((a,b) => (b.id||0) - (a.id||0));
-                appData.products.forEach(p => {
-                    if (p.img) p.img = fixD(p.img);
-                    if (p.variants) p.variants.forEach(v => { if (v.img) v.img = fixD(v.img); });
-                });
+    const doSync = async (doc) => {
+        if (!doc.exists) return;
+        const f = doc.data();
+        const serverUpdate = f.lastUpdate || 0;
+        const localUpdate = parseInt(sL('freshmart_last_update') || '0');
+        if (serverUpdate <= localUpdate) return; // data sudah versi terbaru, tidak perlu apa-apa
 
-                // Sinkronkan juga pengaturan toko (ongkir, status manajemen stok, dll)
-                appData.store = { ...defApp.store, ...(f.store || {}) };
-                // FIX: sinkronkan juga field lain yang bisa diubah dari tab/perangkat admin manapun,
-                // supaya appData di memori tab ini tidak pernah basi (mencegah bug data hilang saat menyimpan).
-                if (f.categories) appData.categories = f.categories;
-                if (f.vouchers) appData.vouchers = f.vouchers;
-                if (f.banners) appData.banners = f.banners;
-                if (f.brands) appData.brands = f.brands;
-                if (f.banks) appData.banks = f.banks;
-                // CATATAN: 'rewards' TIDAK lagi disinkron di sini -- sudah punya listener
-                // realtime tersendiri (lihat attachRewardsRealtime), karena sekarang hadiah
-                // disimpan sebagai sub-collection sendiri (bukan field di dokumen ini).
-                appData.payment = { ...defApp.payment, ...(f.payment || {}) };
-                appData.config = { ...defApp.config, ...(f.config || {}) };
-                appData.taxSettings = { ...defApp.taxSettings, ...(f.taxSettings || {}) }; // FITUR BARU: Menu Pajak
-                if (appData.config && appData.config.gasUrl) GAS_UPLOAD_URL = appData.config.gasUrl;
-                if (appData.banners) appData.banners.forEach(b => { if(b.img) b.img = fixD(b.img); });
-                if (appData.categories) appData.categories.forEach(c => { if(c.img) c.img = fixD(c.img); });
-                if (appData.brands) appData.brands.forEach(b => { if(b.img) b.img = fixD(b.img); });
+        isSyncingRealtime = true;
+        try {
+            const pSnap = await db.collection("freshmart").doc("cms_data").collection("products").get();
+            appData.products = pSnap.docs.map(d => d.data()).sort((a,b) => (b.id||0) - (a.id||0));
+            appData.products.forEach(p => {
+                if (p.img) p.img = fixD(p.img);
+                if (p.variants) p.variants.forEach(v => { if (v.img) v.img = fixD(v.img); });
+            });
 
-                // Jika admin sedang membuka tab yang datanya baru saja berubah, segarkan tampilan listnya juga
-                // FIX BUG: 'products' dulu TIDAK ada di daftar ini -- jadi kalau ada pelanggan checkout
-                // sampai stok produk habis SAAT admin sedang membuka tab Produk, tampilannya TIDAK ikut
-                // berubah jadi "Habis" secara langsung (harus pindah tab dulu baru kelihatan). Sekarang
-                // tab Produk ikut disegarkan otomatis juga.
-                if (window.isAdm && cTab && ['categories','vouchers','banners','brands','banks','products','colors'].includes(cTab) && typeof window.rAdmItms === 'function') {
-                    window.rAdmItms(cTab);
-                }
+            // Sinkronkan juga pengaturan toko (ongkir, status manajemen stok, dll)
+            appData.store = { ...defApp.store, ...(f.store || {}) };
+            // FIX: sinkronkan juga field lain yang bisa diubah dari tab/perangkat admin manapun,
+            // supaya appData di memori tab ini tidak pernah basi (mencegah bug data hilang saat menyimpan).
+            if (f.categories) appData.categories = f.categories;
+            if (f.vouchers) appData.vouchers = f.vouchers;
+            if (f.banners) appData.banners = f.banners;
+            if (f.brands) appData.brands = f.brands;
+            if (f.banks) appData.banks = f.banks;
+            // CATATAN: 'rewards' TIDAK lagi disinkron di sini -- sudah punya listener
+            // realtime tersendiri (lihat attachRewardsRealtime), karena sekarang hadiah
+            // disimpan sebagai sub-collection sendiri (bukan field di dokumen ini).
+            appData.payment = { ...defApp.payment, ...(f.payment || {}) };
+            appData.config = { ...defApp.config, ...(f.config || {}) };
+            appData.taxSettings = { ...defApp.taxSettings, ...(f.taxSettings || {}) }; // FITUR BARU: Menu Pajak
+            if (appData.config && appData.config.gasUrl) GAS_UPLOAD_URL = appData.config.gasUrl;
+            if (appData.banners) appData.banners.forEach(b => { if(b.img) b.img = fixD(b.img); });
+            if (appData.categories) appData.categories.forEach(c => { if(c.img) c.img = fixD(c.img); });
+            if (appData.brands) appData.brands.forEach(b => { if(b.img) b.img = fixD(b.img); });
 
-                ssL('freshmart_products', JSON.stringify(appData.products));
-                ssL('freshmart_last_update', serverUpdate.toString());
+            // Jika admin sedang membuka tab yang datanya baru saja berubah, segarkan tampilan listnya juga
+            // FIX BUG: 'products' dulu TIDAK ada di daftar ini -- jadi kalau ada pelanggan checkout
+            // sampai stok produk habis SAAT admin sedang membuka tab Produk, tampilannya TIDAK ikut
+            // berubah jadi "Habis" secara langsung (harus pindah tab dulu baru kelihatan). Sekarang
+            // tab Produk ikut disegarkan otomatis juga.
+            if (window.isAdm && cTab && ['categories','vouchers','banners','brands','banks','products','colors'].includes(cTab) && typeof window.rAdmItms === 'function') {
+                window.rAdmItms(cTab);
+            }
 
-                sanitizeCart();   // buang dari keranjang produk yang baru jadi habis/nonaktif
-                updCart();
-                if (typeof window.rDyn === 'function') window.rDyn();
-                if (typeof window.rCat === 'function') window.rCat();
+            ssL('freshmart_products', JSON.stringify(appData.products));
+            ssL('freshmart_last_update', serverUpdate.toString());
 
-                // Kalau produk yang modalnya sedang terbuka ikut berubah stoknya, segarkan juga
-                if (cProd) {
-                    const fresh = appData.products.find(p => p.id === cProd.id);
-                    if (fresh) {
-                        cProd = fresh;
-                        // FIX: render ulang modal agar stok terbaru tampil di UI
-                        if (typeof window.rProdMod === 'function') {
-                            const modalEl = document.getElementById('product-modal');
-                            if (modalEl && !modalEl.classList.contains('hidden') && !modalEl.classList.contains('opacity-0')) {
-                                window.rProdMod();
-                            }
+            sanitizeCart();   // buang dari keranjang produk yang baru jadi habis/nonaktif
+            updCart();
+            if (typeof window.rDyn === 'function') window.rDyn();
+            if (typeof window.rCat === 'function') window.rCat();
+
+            // Kalau produk yang modalnya sedang terbuka ikut berubah stoknya, segarkan juga
+            if (cProd) {
+                const fresh = appData.products.find(p => p.id === cProd.id);
+                if (fresh) {
+                    cProd = fresh;
+                    // FIX: render ulang modal agar stok terbaru tampil di UI
+                    if (typeof window.rProdMod === 'function') {
+                        const modalEl = document.getElementById('product-modal');
+                        if (modalEl && !modalEl.classList.contains('hidden') && !modalEl.classList.contains('opacity-0')) {
+                            window.rProdMod();
                         }
                     }
                 }
-            } catch (e) {
-                console.warn('Gagal sinkron realtime stok:', e);
-            } finally {
-                isSyncingRealtime = false;
             }
+        } catch (e) {
+            console.warn('Gagal sinkron realtime stok:', e);
+        } finally {
+            isSyncingRealtime = false;
+            // FIX RACE CONDITION: jika ada snapshot yang datang SAAT fetch di atas berjalan,
+            // langsung proses sekarang menggunakan snapshot Firestore terbaru.
+            if (pendingSyncUpdate) {
+                pendingSyncUpdate = false;
+                db.collection("freshmart").doc("cms_data").get().then(d => doSync(d)).catch(() => {});
+            }
+        }
+    };
+
+    window.unsubCmsRealtime = db.collection("freshmart").doc("cms_data")
+        .onSnapshot(async (doc) => {
+            if (isSyncingRealtime) {
+                // Catat bahwa ada update yang masuk saat fetch sedang berjalan
+                // agar tidak terlewat saat fetch selesai (lihat finally di atas)
+                pendingSyncUpdate = true;
+                return;
+            }
+            await doSync(doc);
         }, (err) => {
             console.warn('Realtime listener error:', err);
         });
@@ -1437,8 +1473,17 @@ window.navigateFromQuickMenu = (targetViewOrAction) => {
 };
 
 // --- 7. UPLOAD GAMBAR ---
-// SECURITY: Token untuk autentikasi ke GAS script
-// GANTI dengan token yang sama persis di GAS script Anda
+// ⚠️  PERINGATAN KEAMANAN: Token di bawah ini TERBACA di browser (DevTools > Sources)
+// karena JavaScript client-side tidak bisa menyembunyikan nilai apapun dari user teknis.
+// Token ini memberikan perlindungan dasar (bukan nol keamanan), tapi bukan solusi mutlak.
+//
+// MITIGASI yang WAJIB dilakukan di GAS script Anda (untuk meminimalkan penyalahgunaan):
+//   1. Validasi tipe file: tolak selain image/jpeg, image/png, image/webp
+//   2. Batasi ukuran file: tolak file > 5MB
+//   3. Rate limiting: tolak jika > N upload per jam dari IP yang sama
+//   4. Whitelist referrer: tolak jika request bukan dari domain toko Anda
+//
+// Ganti nilai token di bawah ini SESUAI dengan yang dikonfigurasi di GAS script Anda.
 const GAS_SECRET_TOKEN = "B7qgwFQqtYLpBqdaK69HgtCfR7s5t67p";
 
 window.handleImageUpload = async (inputElement, targetInputId, varIndex=null) => {
@@ -1647,12 +1692,12 @@ window.rDyn = () => {
         </div>
         <div class="flex gap-4 overflow-x-auto hide-scrollbar snap-x pb-6 pt-2">
             ${activeVouchers.map((v) => {
-                let desc = v.type === 'shipping_free' ? 'Gratis Ongkir' : (v.type === 'percent' ? `Diskon ${v.value}%` : `Diskon ${fCur(v.value)}`);
+                let desc = v.type === 'shipping_free' ? 'Gratis Ongkir' : (v.type === 'percent' ? `Diskon ${esc(String(parseFloat(v.value)||0))}%` : `Diskon ${fCur(v.value)}`);
                 let terms = [];
                 if(v.minPurchase > 0) terms.push(`Min. Blj ${fCur(v.minPurchase)}`);
                 if(v.maxDiscount > 0) terms.push(`Maks. ptg ${fCur(v.maxDiscount)}`);
                 if(v.targetProduct) terms.push(`Produk Khusus`);
-                let termsStr = terms.length > 0 ? terms.join(' &bull; ') : 'Tanpa minimal belanja';
+                let termsStr = terms.length > 0 ? esc(terms.join(' • ')) : 'Tanpa minimal belanja';
                 
                 return `
                 <div class="w-[280px] sm:w-[320px] shrink-0 snap-start relative group cursor-pointer active:scale-95 transition-all duration-300" onclick="copyVoucher('${esc(v.code)}')">
@@ -1705,7 +1750,7 @@ window.rDyn = () => {
         if(appData.store.categoryStyle === 'text' || !appData.store.categoryStyle) {
             return `<div onclick="filterCategory('${nameSafe}')" class="cursor-pointer shrink-0 snap-start group py-1"><div class="px-5 py-2.5 rounded-[1.25rem] border-2 transition-all duration-300 flex items-center gap-3 ${isSel ? 'bg-[var(--color-primary)] border-transparent text-white shadow-md' : 'bg-white dark:bg-slate-800 border-slate-100 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-[var(--color-primary)] hover:shadow-md hover:-translate-y-1'}"><div class="w-6 h-6 rounded-full flex items-center justify-center ${isSel ? 'bg-white/20 text-white shadow-inner' : 'bg-slate-50 dark:bg-slate-700 text-slate-400 group-hover:bg-[var(--color-primary-light)] group-hover:text-[var(--color-primary)]'} transition-all duration-300"><i class="fa-solid fa-layer-group text-[10px]"></i></div><span class="font-bold text-[11px] sm:text-xs uppercase tracking-widest pr-2">${esc(c.name)}</span></div></div>`;
         } else {
-            return `<div onclick="filterCategory('${nameSafe}')" class="flex flex-col items-center gap-3 cursor-pointer shrink-0 w-[80px] sm:w-[95px] group snap-start py-1"><div class="relative w-16 h-16 sm:w-[72px] sm:h-[72px] rounded-[1.25rem] bg-slate-50 dark:bg-slate-800 flex items-center justify-center p-2 transition-all duration-300 ${isSel ? 'bg-[var(--color-primary-light)] border-2 border-[var(--color-primary)] shadow-glow dark:bg-[var(--color-primary-dark)]/20' : 'border border-slate-200 dark:border-slate-700 shadow-sm group-hover:border-[var(--color-primary)] group-hover:shadow-lg group-hover:-translate-y-1.5'} overflow-hidden"><img loading="lazy" src="${esc(getOptImg(c.img, 'w150-rw'))}" alt="${esc(c.name)}" onerror="this.onerror=null;this.src='https://placehold.co/150/10b981/ffffff?text=Cat'" class="w-full h-full object-cover rounded-xl transition-transform duration-500 group-hover:scale-110"></i></div><span class="text-[9px] sm:text-[10px] text-center w-full line-clamp-2 leading-tight px-1 ${isSel ? 'font-bold text-[var(--color-primary)]' : 'font-bold text-slate-600 dark:text-slate-300 group-hover:text-[var(--color-primary)]'} uppercase tracking-widest transition-colors">${esc(c.name)}</span></div>`;
+            return `<div onclick="filterCategory('${nameSafe}')" class="flex flex-col items-center gap-3 cursor-pointer shrink-0 w-[80px] sm:w-[95px] group snap-start py-1"><div class="relative w-16 h-16 sm:w-[72px] sm:h-[72px] rounded-[1.25rem] bg-slate-50 dark:bg-slate-800 flex items-center justify-center p-2 transition-all duration-300 ${isSel ? 'bg-[var(--color-primary-light)] border-2 border-[var(--color-primary)] shadow-glow dark:bg-[var(--color-primary-dark)]/20' : 'border border-slate-200 dark:border-slate-700 shadow-sm group-hover:border-[var(--color-primary)] group-hover:shadow-lg group-hover:-translate-y-1.5'} overflow-hidden"><img loading="lazy" src="${esc(getOptImg(c.img, 'w150-rw'))}" alt="${esc(c.name)}" onerror="this.onerror=null;this.src='https://placehold.co/150/10b981/ffffff?text=Cat'" class="w-full h-full object-cover rounded-xl transition-transform duration-500 group-hover:scale-110"></div><span class="text-[9px] sm:text-[10px] text-center w-full line-clamp-2 leading-tight px-1 ${isSel ? 'font-bold text-[var(--color-primary)]' : 'font-bold text-slate-600 dark:text-slate-300 group-hover:text-[var(--color-primary)]'} uppercase tracking-widest transition-colors">${esc(c.name)}</span></div>`;
         }
     }).join(''));
     
@@ -1717,7 +1762,7 @@ window.rDyn = () => {
         if(appData.store.brandStyle === 'text') {
             return `<div onclick="filterBrand('${nameSafe}')" class="cursor-pointer shrink-0 snap-start group py-1"><div class="px-5 py-2.5 rounded-[1.25rem] border-2 transition-all duration-300 flex items-center gap-3 ${isSel ? 'bg-[var(--color-primary)] border-transparent text-white shadow-sm' : 'bg-white dark:bg-slate-800 border-slate-100 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-[var(--color-primary)]/40 hover:shadow-md hover:-translate-y-1'}"><div class="w-6 h-6 rounded-full flex items-center justify-center ${isSel ? 'bg-white/20 text-white shadow-inner' : 'bg-slate-50 dark:bg-slate-700 text-slate-400 group-hover:bg-[rgba(var(--color-primary-rgb),0.08)] group-hover:text-[var(--color-primary)]'} transition-all duration-300"><i class="fa-solid fa-copyright text-[10px]"></i></div><span class="font-bold text-[11px] sm:text-xs uppercase tracking-widest pr-2">${esc(b.name)}</span></div></div>`;
         } else {
-            return `<div onclick="filterBrand('${nameSafe}')" class="flex flex-col items-center gap-3 cursor-pointer shrink-0 w-[75px] sm:w-[85px] group snap-start py-1"><div class="relative w-16 h-16 sm:w-[68px] sm:h-[68px] rounded-2xl bg-white flex items-center justify-center overflow-hidden p-2 transition-all duration-500 ${isSel ? 'ring-4 ring-[var(--color-primary)] ring-offset-2 ring-offset-slate-50 dark:ring-offset-slate-800 shadow-md shadow-[rgba(var(--color-primary-rgb),0.25)]' : 'border border-slate-200 dark:border-slate-700 shadow-sm group-hover:border-[var(--color-primary)]/50 group-hover:shadow-md group-hover:-translate-y-1.5'}"><img loading="lazy" src="${esc(getOptImg(b.img, 'w150-rw'))}" alt="${esc(b.name)}" onerror="this.onerror=null;this.src='https://placehold.co/150/10b981/ffffff?text=Brand'" class="w-full h-full object-contain drop-shadow-sm transition-transform duration-500 group-hover:scale-110"></i></div><span class="text-[9px] sm:text-[10px] text-center w-full line-clamp-2 leading-tight px-1 ${isSel ? 'font-bold text-[var(--color-primary)]' : 'font-bold text-slate-600 dark:text-slate-300 group-hover:text-[var(--color-primary)]'} uppercase tracking-widest transition-colors">${esc(b.name)}</span></div>`;
+            return `<div onclick="filterBrand('${nameSafe}')" class="flex flex-col items-center gap-3 cursor-pointer shrink-0 w-[75px] sm:w-[85px] group snap-start py-1"><div class="relative w-16 h-16 sm:w-[68px] sm:h-[68px] rounded-2xl bg-white flex items-center justify-center overflow-hidden p-2 transition-all duration-500 ${isSel ? 'ring-4 ring-[var(--color-primary)] ring-offset-2 ring-offset-slate-50 dark:ring-offset-slate-800 shadow-md shadow-[rgba(var(--color-primary-rgb),0.25)]' : 'border border-slate-200 dark:border-slate-700 shadow-sm group-hover:border-[var(--color-primary)]/50 group-hover:shadow-md group-hover:-translate-y-1.5'}"><img loading="lazy" src="${esc(getOptImg(b.img, 'w150-rw'))}" alt="${esc(b.name)}" onerror="this.onerror=null;this.src='https://placehold.co/150/10b981/ffffff?text=Brand'" class="w-full h-full object-contain drop-shadow-sm transition-transform duration-500 group-hover:scale-110"></div><span class="text-[9px] sm:text-[10px] text-center w-full line-clamp-2 leading-tight px-1 ${isSel ? 'font-bold text-[var(--color-primary)]' : 'font-bold text-slate-600 dark:text-slate-300 group-hover:text-[var(--color-primary)]'} uppercase tracking-widest transition-colors">${esc(b.name)}</span></div>`;
         }
     }).join(''));
     
@@ -2629,7 +2674,19 @@ const uMPP = () => {
     let v = (cProd.variants || [])[cVar];
     let p = v?.price ?? cProd.price;
     let e = p;
-    let eQ = parseFloat(cart.find(c => c.id === cProd.id)?.qty || 0);
+    // FIX BUG: sebelumnya tidak memfilter berdasarkan variantName, sehingga
+    // kalau produk yang sama punya beberapa varian di keranjang, qty mereka
+    // semua dijumlah — padahal grosir seharusnya dihitung per-varian.
+    // Sekarang: kalau ada varian aktif, cari jumlah qty KHUSUS varian itu di keranjang.
+    const vN = v?.name || null;
+    let eQ = 0;
+    if (vN) {
+        // Produk dengan varian: qty hanya dari varian yang sama
+        eQ = parseFloat(cart.find(c => c.id === cProd.id && c.variantName === vN)?.qty || 0);
+    } else {
+        // Produk tanpa varian: jumlahkan semua qty produk ini di keranjang
+        eQ = cart.filter(c => c.id === cProd.id).reduce((s, c) => s + (parseFloat(c.qty) || 0), 0);
+    }
     let tQ = cQty + eQ;
     if (cProd.wholesale?.length) {
         for (let w of cProd.wholesale.slice().sort((a,b) => b.minQty - a.minQty)){
