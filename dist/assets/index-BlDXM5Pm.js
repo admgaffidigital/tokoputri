@@ -1955,26 +1955,26 @@ Kami akan segera memproses pesanan Anda. Terima kasih! 🙏`;window.open(`https:
                 <button onclick="openAskQuestionModal()" class="mt-4 primary-bg text-white px-5 py-2.5 rounded-xl text-xs font-bold shadow-md active:scale-95 transition-all">Ajukan Pertanyaan Sekarang</button>
             </div>
         `;return}e.innerHTML=n.map(o=>`
-        <div class="bg-white dark:bg-slate-800/90 rounded-2xl border border-slate-200 dark:border-slate-700/80 shadow-sm overflow-hidden transition-all">
-            <button onclick="toggleFAQAccordion('${o.id}')" class="w-full p-4.5 text-left flex items-start justify-between gap-3 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
-                <div class="flex items-start gap-3">
-                    <div class="w-8 h-8 rounded-xl primary-bg-soft primary-text flex items-center justify-center shrink-0 mt-0.5"><i class="fa-solid fa-q text-xs font-bold"></i></div>
-                    <div>
-                        <div class="flex items-center gap-2 mb-1">
-                            <span class="text-[9px] font-bold uppercase tracking-wider bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-2 py-0.5 rounded border border-slate-200 dark:border-slate-600">${c(o.category||"Umum")}</span>
-                            ${o.authorName?`<span class="text-[9px] font-medium text-slate-400">Oleh ${c(o.authorName)}</span>`:""}
+        <div class="bg-white dark:bg-slate-800/95 rounded-[1.5rem] border border-slate-200/80 dark:border-slate-700/80 shadow-soft transition-all duration-200 hover:shadow-md overflow-hidden">
+            <button onclick="toggleFAQAccordion('${o.id}')" class="w-full p-4 sm:p-5 text-left flex items-start justify-between gap-3.5 hover:bg-slate-50/80 dark:hover:bg-slate-800/60 transition-colors">
+                <div class="flex items-start gap-3.5 min-w-0">
+                    <div class="w-9 h-9 rounded-xl primary-bg text-white flex items-center justify-center shrink-0 mt-0.5 shadow-sm"><i class="fa-solid fa-question text-xs font-bold"></i></div>
+                    <div class="min-w-0">
+                        <div class="flex flex-wrap items-center gap-2 mb-1.5">
+                            <span class="text-[9px] font-bold uppercase tracking-wider primary-bg-soft primary-text primary-border px-2.5 py-0.5 rounded-lg border">${c(o.category||"Umum")}</span>
+                            ${o.authorName?`<span class="text-[10px] font-medium text-slate-400">Oleh: ${c(o.authorName)}</span>`:""}
                         </div>
-                        <h4 class="font-bold text-sm text-slate-800 dark:text-white leading-snug">${c(o.question)}</h4>
+                        <h4 class="font-bold text-sm sm:text-base text-slate-900 dark:text-white leading-snug break-words">${c(o.question)}</h4>
                     </div>
                 </div>
-                <div class="w-7 h-7 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center text-slate-400 shrink-0 transition-transform duration-300" id="faq-icon-${c(o.id)}">
+                <div class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-700/80 flex items-center justify-center text-slate-400 shrink-0 transition-transform duration-300" id="faq-icon-${o.id}">
                     <i class="fa-solid fa-chevron-down text-xs"></i>
                 </div>
             </button>
-            <div class="hidden border-t border-slate-100 dark:border-slate-700/70 p-4.5 bg-slate-50/50 dark:bg-slate-900/40 text-xs font-medium text-slate-600 dark:text-slate-300 leading-relaxed" id="faq-body-${c(o.id)}">
+            <div class="hidden border-t border-slate-100 dark:border-slate-700/70 p-4.5 sm:p-5 bg-slate-50/70 dark:bg-slate-900/50 text-xs sm:text-sm font-medium text-slate-700 dark:text-slate-200 leading-relaxed" id="faq-body-${o.id}">
                 <div class="flex items-start gap-3">
-                    <div class="w-7 h-7 rounded-lg bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">A</div>
-                    <div class="flex-1 whitespace-pre-wrap">${c(o.answer||"Belum ada jawaban.")}</div>
+                    <div class="w-8 h-8 rounded-xl bg-emerald-500 text-white flex items-center justify-center font-bold text-xs shrink-0 mt-0.5 shadow-sm">A</div>
+                    <div class="flex-1 whitespace-pre-wrap pt-0.5">${c(o.answer||"Belum ada jawaban.")}</div>
                 </div>
             </div>
         </div>

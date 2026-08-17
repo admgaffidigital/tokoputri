@@ -84,11 +84,11 @@
         }
       }
     </style>
-    <script type="module" crossorigin src="/assets/index-B7-zfm1Y.js"></script>
+    <script type="module" crossorigin src="/assets/index-BlDXM5Pm.js"></script>
     <link rel="modulepreload" crossorigin href="/assets/vendor-firebase-core-D2OF5R23.js">
     <link rel="modulepreload" crossorigin href="/assets/vendor-firebase-db-BIUZcnOd.js">
     <link rel="modulepreload" crossorigin href="/assets/vendor-utils-bRchjNq8.js">
-    <link rel="stylesheet" crossorigin href="/assets/index-Cu36eBYR.css">
+    <link rel="stylesheet" crossorigin href="/assets/index-7ifjjVcj.css">
   </head>
   <body>
     <!-- UI Components Global -->
@@ -1049,16 +1049,19 @@
         </div>
         <div class="scroll-content z-10 flex-1 overflow-y-auto pb-[calc(5rem+env(safe-area-inset-bottom))] pt-5">
           <div class="mx-auto w-full max-w-full space-y-5 px-4 lg:px-8 xl:max-w-[1000px]">
-            <!-- Header Banner Q&A -->
-            <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-6 text-white shadow-xl dark:border dark:border-slate-800">
-              <div class="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full opacity-20 blur-2xl" style="background: var(--color-primary)"></div>
-              <div class="relative z-10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                <div>
-                  <span class="inline-block rounded-xl bg-white/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest text-amber-400 backdrop-blur-sm">Pusat Bantuan &amp; FAQ</span>
-                  <h2 class="mt-2 text-xl font-bold tracking-tight text-white sm:text-2xl">Ada Pertanyaan Mengenai Toko Kami?</h2>
-                  <p class="mt-1 text-xs font-medium text-slate-300 max-w-md">Temukan jawaban cepat atau ajukan pertanyaan langsung kepada tim admin kami.</p>
+            <!-- Header Banner Q&A (Harmonis dengan Tema Toko) -->
+            <div class="relative overflow-hidden rounded-[1.75rem] bg-gradient-to-br from-[var(--color-primary)] via-[var(--color-primary-dark)] to-[var(--color-primary-dark)] p-6 sm:p-7 text-white shadow-lg shadow-[rgba(var(--color-primary-rgb),0.25)]">
+              <div class="pointer-events-none absolute -right-8 -top-8 h-44 w-44 rounded-full bg-white/10 blur-2xl"></div>
+              <div class="pointer-events-none absolute -left-8 -bottom-8 h-36 w-36 rounded-full bg-black/10 blur-2xl"></div>
+              <div class="relative z-10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5">
+                <div class="space-y-1.5">
+                  <span class="inline-flex items-center gap-1.5 rounded-xl bg-white/20 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-white backdrop-blur-md border border-white/20">
+                    <i class="fa-solid fa-circle-question text-amber-300"></i> Pusat Bantuan &amp; FAQ
+                  </span>
+                  <h2 class="text-xl font-extrabold tracking-tight text-white drop-shadow-sm sm:text-2xl">Ada Pertanyaan Mengenai Toko Kami?</h2>
+                  <p class="text-xs font-medium text-white/90 max-w-md leading-relaxed">Temukan jawaban cepat atau ajukan pertanyaan langsung kepada tim admin kami.</p>
                 </div>
-                <button class="primary-bg text-white shadow-glow px-4 py-3 rounded-2xl font-bold text-xs flex items-center justify-center gap-2 active:scale-95 transition-all shrink-0" onclick="openAskQuestionModal()"><i class="fa-solid fa-paper-plane"></i> Ajukan Pertanyaan</button>
+                <button class="flex items-center justify-center gap-2 rounded-2xl bg-white px-5 py-3.5 text-xs font-bold text-[var(--color-primary-dark)] shadow-md transition-all hover:bg-slate-50 active:scale-95 shrink-0" onclick="openAskQuestionModal()"><i class="fa-solid fa-paper-plane"></i> Ajukan Pertanyaan</button>
               </div>
             </div>
 
