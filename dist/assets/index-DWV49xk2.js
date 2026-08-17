@@ -1988,29 +1988,30 @@ Kami akan segera memproses pesanan Anda. Terima kasih! 🙏`;window.open(`https:
             </div>
         </div>
     `).join("")};window.selectFAQCategory=e=>{it=e,window.renderStorefrontFAQ()};window.filterStorefrontFAQ=()=>{window.renderStorefrontFAQ()};window.toggleFAQAccordion=e=>{const t=document.getElementById(`faq-body-${e}`),a=document.getElementById(`faq-icon-${e}`);if(!t||!a)return;t.classList.contains("hidden")?(t.classList.remove("hidden"),a.classList.add("rotate-180")):(t.classList.add("hidden"),a.classList.remove("rotate-180"))};window.openAskQuestionModal=()=>{const e=u("modal-ask-question");e&&(e.classList.contains("hidden")&&pushModalHistory("askQuestion"),F("modal-ask-question"),setTimeout(()=>{u("modal-ask-question").classList.remove("opacity-0"),u("modal-ask-question-box").classList.remove("translate-y-full")},10))};window.closeAskQuestionModal=(e=!1)=>{requestCloseModal("askQuestion",e,()=>{u("modal-ask-question").classList.add("opacity-0"),u("modal-ask-question-box").classList.add("translate-y-full"),setTimeout(()=>v("modal-ask-question"),300)})};window.submitCustomerQuestion=async()=>{const e=(L("ask-author-name")||"").trim()||"Pelanggan",t=L("ask-category")||"Pemesanan",a=(L("ask-question-text")||"").trim();if(!a)return showToast("Tuliskan pertanyaan Anda terlebih dahulu!");_("Mengirim pertanyaan...");const r="faq-"+Date.now().toString(36),s={id:r,question:a,answer:"",category:t,authorName:e,status:"pending_answer",createdAt:new Date().toISOString()};let n=!1;try{await T.collection("freshmart").doc("cms_data").collection("faqs").doc(r).set(s),n=!0}catch(o){console.warn("Penulisan sub-koleksi faqs dibatasi, mencoba fallback cms_data.faqs:",o)}if(!n)try{const o=[s,...(i.faqs||[]).filter(l=>l.id!==r)];await T.collection("freshmart").doc("cms_data").set({faqs:o},{merge:!0}),i.faqs=o,n=!0}catch(o){console.warn("Fallback cms_data.faqs juga gagal:",o)}j(),n?(closeAskQuestionModal(),se("ask-question-text",""),showToast("Pertanyaan terkirim! Admin akan menjawabnya segera."),window.renderStorefrontFAQ()):showToast("Gagal mengirim pertanyaan. Coba lagi!")};let ze="all";window.rAdmFAQ=()=>{window.attachFAQRealtime();const e=i.faqs||[],t=e.filter(s=>ze==="pending"?s.status==="pending_answer":ze==="published"?s.status==="published":!0),a=e.filter(s=>s.status==="pending_answer").length;let r=`
-        <div class="space-y-6">
-            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white dark:bg-slate-800 p-5 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm">
+        <div class="space-y-5 pb-12">
+            <!-- Header Card -->
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3.5 bg-white dark:bg-slate-800 p-4 sm:p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
                 <div>
-                    <h2 class="text-lg font-bold text-slate-800 dark:text-white flex items-center gap-2">
-                        <i class="fa-solid fa-circle-question primary-text"></i> Kelola Tanya Jawab (Q&A / FAQ)
+                    <h2 class="text-base sm:text-lg font-bold text-slate-800 dark:text-white flex items-center gap-2">
+                        <i class="fa-solid fa-circle-question primary-text text-lg"></i> Kelola Tanya Jawab (Q&A / FAQ)
                     </h2>
-                    <p class="text-xs font-medium text-slate-500 mt-1">Sunting FAQ toko & jawab pertanyaan yang diajukan pelanggan.</p>
+                    <p class="text-xs font-medium text-slate-500 mt-0.5">Sunting FAQ toko & jawab pertanyaan yang diajukan pelanggan.</p>
                 </div>
-                <button onclick="openFAQModal('')" class="primary-bg text-white shadow-glow px-4 py-2.5 rounded-xl font-bold text-xs flex items-center gap-2 active:scale-95 transition-all">
+                <button onclick="openFAQModal('')" class="w-full sm:w-auto primary-bg text-white shadow-glow px-4 py-2.5 rounded-xl font-bold text-xs flex items-center justify-center gap-2 active:scale-95 transition-all">
                     <i class="fa-solid fa-plus"></i> Tambah Q&A Baru
                 </button>
             </div>
 
-            <!-- Filter Tabs -->
-            <div class="flex gap-2 border-b border-slate-200 dark:border-slate-700 pb-3">
-                <button onclick="setAdminFAQFilter('all')" class="px-4 py-2 rounded-xl text-xs font-bold transition-all ${ze==="all"?"primary-bg text-white shadow-md":"bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200"}">
+            <!-- Filter Tabs (Scrollable Mobile) -->
+            <div class="flex items-center gap-2 overflow-x-auto pb-1.5 hide-scrollbar border-b border-slate-200 dark:border-slate-700">
+                <button onclick="setAdminFAQFilter('all')" class="shrink-0 px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${ze==="all"?"primary-bg text-white shadow-md":"bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200"}">
                     Semua (${e.length})
                 </button>
-                <button onclick="setAdminFAQFilter('pending')" class="px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${ze==="pending"?"primary-bg text-white shadow-md":"bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200"}">
+                <button onclick="setAdminFAQFilter('pending')" class="shrink-0 px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${ze==="pending"?"primary-bg text-white shadow-md":"bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200"}">
                     <span>Belum Dijawab</span>
                     ${a>0?`<span class="bg-rose-500 text-white text-[9px] px-1.5 py-0.5 rounded-full font-bold">${a}</span>`:""}
                 </button>
-                <button onclick="setAdminFAQFilter('published')" class="px-4 py-2 rounded-xl text-xs font-bold transition-all ${ze==="published"?"primary-bg text-white shadow-md":"bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200"}">
+                <button onclick="setAdminFAQFilter('published')" class="shrink-0 px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${ze==="published"?"primary-bg text-white shadow-md":"bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200"}">
                     Terpublikasi
                 </button>
             </div>
@@ -2018,39 +2019,43 @@ Kami akan segera memproses pesanan Anda. Terima kasih! 🙏`;window.open(`https:
             <!-- List Q&A Admin -->
             <div class="space-y-4">
                 ${t.length?t.map(s=>`
-                    <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border ${s.status==="pending_answer"?"border-amber-400 bg-amber-50/20 dark:bg-amber-900/10":"border-slate-200 dark:border-slate-700"} shadow-sm space-y-3">
-                        <div class="flex items-start justify-between gap-3">
-                            <div class="space-y-1">
-                                <div class="flex items-center gap-2">
-                                    <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded ${s.status==="published"?"bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400":s.status==="pending_answer"?"bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400":"bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-400"}">
-                                        ${s.status==="published"?"Terpublikasi":s.status==="pending_answer"?"Menunggu Jawaban":"Disembunyikan"}
-                                    </span>
-                                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">${c(s.category||"Umum")}</span>
-                                    ${s.authorName?`<span class="text-[10px] text-slate-500 dark:text-slate-400 italic">Oleh: ${c(s.authorName)}</span>`:""}
-                                </div>
-                                <h3 class="font-bold text-sm text-slate-900 dark:text-white">${c(s.question)}</h3>
+                    <div class="bg-white dark:bg-slate-800 p-4 sm:p-5 rounded-2xl border ${s.status==="pending_answer"?"border-amber-300/80 bg-amber-50/20 dark:bg-amber-900/10":"border-slate-200/80 dark:border-slate-700/80"} shadow-sm space-y-3">
+                        <!-- Top Header Meta & Action Buttons -->
+                        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-700/60 pb-2.5">
+                            <div class="flex flex-wrap items-center gap-1.5 min-w-0">
+                                <span class="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-lg ${s.status==="published"?"bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400":s.status==="pending_answer"?"bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400":"bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-400"}">
+                                    ${s.status==="published"?"Terpublikasi":s.status==="pending_answer"?"Menunggu Jawaban":"Disembunyikan"}
+                                </span>
+                                <span class="text-[9px] sm:text-[10px] font-bold text-slate-400 uppercase tracking-wider px-2 py-0.5 rounded-lg bg-slate-100 dark:bg-slate-700/50">${c(s.category||"Umum")}</span>
+                                ${s.authorName?`<span class="text-[10px] text-slate-400 italic">Oleh: ${c(s.authorName)}</span>`:""}
                             </div>
-                            <div class="flex items-center gap-2 shrink-0">
-                                <button onclick="openFAQModal('${s.id}')" class="px-3 py-1.5 rounded-xl bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400 font-bold text-xs hover:bg-blue-100 transition-colors flex items-center gap-1">
+                            <div class="flex items-center gap-1.5 shrink-0 ml-auto">
+                                <button onclick="openFAQModal('${s.id}')" class="px-2.5 py-1.5 rounded-xl bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400 font-bold text-xs hover:bg-blue-100 transition-colors flex items-center gap-1 active:scale-95">
                                     <i class="fa-solid fa-pen-to-square"></i> Edit / Jawab
                                 </button>
-                                <button onclick="deleteAdminFAQ('${s.id}')" class="px-3 py-1.5 rounded-xl bg-rose-50 text-rose-600 dark:bg-rose-900/20 dark:text-rose-400 font-bold text-xs hover:bg-rose-100 transition-colors">
+                                <button onclick="deleteAdminFAQ('${s.id}')" class="px-2.5 py-1.5 rounded-xl bg-rose-50 text-rose-600 dark:bg-rose-900/20 dark:text-rose-400 font-bold text-xs hover:bg-rose-100 transition-colors active:scale-95" title="Hapus Q&A">
                                     <i class="fa-solid fa-trash"></i>
                                 </button>
                             </div>
                         </div>
 
-                        <div class="primary-bg-soft dark:bg-slate-900/50 p-4 rounded-2xl border primary-border text-xs font-medium text-slate-800 dark:text-slate-200">
-                            <span class="font-extrabold primary-text uppercase text-[10px] tracking-wider flex items-center gap-1.5 mb-1.5">
-                                <i class="fa-solid fa-user-shield"></i> Jawaban Admin Toko:
+                        <!-- Question Text -->
+                        <div>
+                            <h3 class="font-bold text-sm sm:text-base text-slate-900 dark:text-white leading-snug break-words">${c(s.question)}</h3>
+                        </div>
+
+                        <!-- Answer Container -->
+                        <div class="primary-bg-soft dark:bg-slate-900/60 p-3.5 sm:p-4 rounded-xl border primary-border text-xs font-medium text-slate-800 dark:text-slate-200">
+                            <span class="font-extrabold primary-text uppercase text-[10px] tracking-wider flex items-center gap-1.5 mb-1">
+                                <i class="fa-solid fa-user-shield text-[10px]"></i> Jawaban Admin Toko:
                             </span>
-                            <div class="whitespace-pre-wrap leading-relaxed font-semibold">${s.answer?c(s.answer):'<span class="text-rose-500 italic font-semibold">Belum dijawab. Klik "Edit / Jawab" untuk memberikan jawaban.</span>'}</div>
+                            <div class="whitespace-pre-wrap leading-relaxed font-semibold break-words">${s.answer?c(s.answer):'<span class="text-rose-500 italic font-semibold">Belum dijawab. Klik "Edit / Jawab" untuk memberikan jawaban.</span>'}</div>
                         </div>
                     </div>
                 `).join(""):`
-                    <div class="text-center py-12 bg-white dark:bg-slate-800 rounded-3xl border border-slate-200 dark:border-slate-700 p-6">
-                        <i class="fa-solid fa-inbox text-4xl text-slate-300 mb-3"></i>
-                        <p class="text-sm font-bold text-slate-600 dark:text-slate-300">Tidak ada Q&A ditemukan pada kategori filter ini.</p>
+                    <div class="text-center py-10 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-6">
+                        <i class="fa-solid fa-inbox text-3xl text-slate-300 mb-2"></i>
+                        <p class="text-xs font-bold text-slate-600 dark:text-slate-300">Tidak ada Q&A ditemukan pada kategori filter ini.</p>
                     </div>
                 `}
             </div>
