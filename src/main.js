@@ -2996,7 +2996,7 @@ window.renderOrderDetailModal = (orderId, d, reviewedKeys) => {
         const cWa = esc((d.customer && d.customer.wa) ? d.customer.wa : '-');
         const cAddr = esc((d.customer && d.customer.address) ? d.customer.address : '-');
         
-        const dMethod = (d.customer && d.customer.deliveryMethod === 'delivery') ? 'Kurir Toko' : 'Ambil Sendiri';
+        const dMethod = (d.customer && d.customer.deliveryMethod === 'delivery') ? 'Dikirim' : 'Ambil di Toko';
         const dNotes = esc((d.customer && d.customer.note) ? d.customer.note : '');
         const pMethod = esc((d.payment && d.payment.method) ? d.payment.method : 'Cash / COD');
         
@@ -4143,7 +4143,7 @@ const rPay = () => {
     }
     setIn('payment-cust-name', cust.name || '-');
     if(el('payment-cust-wa')) el('payment-cust-wa').textContent = cust.wa ? '+' + cust.wa : '-';
-    setIn('payment-cust-method', cust.deliveryMethod === 'delivery' ? `Kurir (${cust.distance.toFixed(1)}km)` : 'Ambil di Toko');
+    setIn('payment-cust-method', cust.deliveryMethod === 'delivery' ? `Dikirim (${cust.distance.toFixed(1)}km)` : 'Ambil di Toko');
     setIn('payment-cust-address', cust.address || '-');
     
     setH('payment-items-preview', cart.map(i => {
@@ -5447,7 +5447,7 @@ window.exportOrdersToExcel = async () => {
     gOrds.forEach((o, index) => {
         let date = o.dateString ? new Date(o.dateString).toLocaleString('id-ID') : '-';
         let custName = o.customer?.name || 'Anonim';
-        let method = o.customer?.deliveryMethod === 'delivery' ? 'Kurir' : 'Ambil Sendiri';
+        let method = o.customer?.deliveryMethod === 'delivery' ? 'Dikirim' : 'Ambil di Toko';
         let status = o.status || '-';
         let totalItem = o.items ? o.items.reduce((sum, i) => sum + (parseFloat(i.qty)||0), 0) : 0;
         let totalHarga = o.payment?.grandTotal || 0;
@@ -5673,7 +5673,7 @@ window.openOrderDetail = i => {
                     ${o.customer?.wa ? `<div class="flex justify-between items-center"><span class="text-slate-500 dark:text-slate-400 font-bold flex items-center gap-1.5"><i class="fa-brands fa-whatsapp text-green-500"></i> WhatsApp</span><a href="https://wa.me/${esc(o.customer.wa)}" target="_blank" class="font-bold text-green-600 dark:text-green-400 hover:underline">+${esc(o.customer.wa)}</a></div>` : ''}
                     ${o.customer?.wa ? `<button type="button" onclick="saveOrderCustomerToDB('${esc(o.customer.name||'')}','${esc(o.customer.wa)}')" class="w-full py-2.5 rounded-xl bg-teal-50 dark:bg-teal-900/20 border border-teal-200 dark:border-teal-800 text-teal-600 dark:text-teal-400 text-[11px] font-bold uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-teal-100 transition-all active:scale-95"><i class="fa-solid fa-address-book"></i> Simpan ke Database Pelanggan</button>` : ''}
                     <div class="border-t border-dashed border-slate-200 dark:border-slate-700 pt-4">
-                        <span class="text-slate-500 dark:text-slate-400 font-bold flex items-center gap-2 mb-2.5"><i class="fa-solid fa-map-location-dot"></i> Alamat (${o.customer?.deliveryMethod==='delivery'?'Kurir':'Ambil Sendiri'})</span>
+                        <span class="text-slate-500 dark:text-slate-400 font-bold flex items-center gap-2 mb-2.5"><i class="fa-solid fa-map-location-dot"></i> Alamat (${o.customer?.deliveryMethod==='delivery'?'Dikirim':'Ambil di Toko'})</span>
                         <div class="bg-slate-50 dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-700 font-bold text-slate-700 dark:text-slate-300 leading-relaxed shadow-inner text-sm">${esc(o.customer?.address||'-')}</div>
                         ${o.customer?.lat && o.customer?.deliveryMethod === 'delivery' ? `<a href="https://www.google.com/maps?q=${esc(o.customer.lat)},${esc(o.customer.lng)}" target="_blank" class="mt-3 flex items-center justify-center gap-2 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-800 font-bold text-xs py-2.5 px-4 rounded-xl hover:bg-blue-100 transition-colors"><i class="fa-solid fa-location-dot"></i> Buka Lokasi di Google Maps</a>` : ''}
                     </div>
@@ -5891,7 +5891,7 @@ window.openReceiptPreview = () => {
     
     let h = `<div class="text-center font-bold" style="font-size:13px;margin-bottom:2px;">${esc(sN)}</div>`;
     if(sW) h += `<div class="text-center" style="margin-bottom:4px;">WA: ${esc(sW)}</div>`;
-    h += `<div class="border-b border-dashed border-black my-2"></div><div style="white-space:pre;">Order: #${o.orderId}</div><div style="white-space:pre;">Tgl  : ${d}</div><div style="white-space:pre;">Plg  : ${esc(o.customer.name||'Guest').substring(0,20)}</div><div style="white-space:pre;">Tipe : ${o.customer.deliveryMethod==='delivery'?'Kurir':'Toko'}</div><div class="border-b border-dashed border-black my-2"></div>`;
+    h += `<div class="border-b border-dashed border-black my-2"></div><div style="white-space:pre;">Order: #${o.orderId}</div><div style="white-space:pre;">Tgl  : ${d}</div><div style="white-space:pre;">Plg  : ${esc(o.customer.name||'Guest').substring(0,20)}</div><div style="white-space:pre;">Tipe : ${o.customer.deliveryMethod==='delivery'?'Dikirim':'Ambil di Toko'}</div><div class="border-b border-dashed border-black my-2"></div>`;
     if(o.customer.note) { h += `<div style="white-space:pre-wrap;word-break:break-all;">Cat: ${esc(o.customer.note)}</div><div class="border-b border-dashed border-black my-2"></div>`; }
     
     // MODIFIKASI: Cetak Teks Hex Code di Printer Thermal
@@ -6217,8 +6217,8 @@ window.openSettingForm = (type) => {
             </div>
             <div><label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Alamat Fisik Toko</label><textarea autocomplete='off' id="set-address" class="admin-input !py-3.5 resize-none bg-slate-50 dark:bg-slate-900 shadow-sm" rows="2">${esc(appData.store.address)}</textarea></div>
             <div class="grid grid-cols-2 gap-5">
-                <div><label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Sistem Kurir</label><div class="relative"><select id="set-delivery-enabled" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm cursor-pointer appearance-none pr-10"><option value="true" ${appData.store.isDeliveryEnabled!==false?'selected':''}>Aktif</option><option value="false" ${appData.store.isDeliveryEnabled===false?'selected':''}>Nonaktif</option></select><i class="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-[10px]"></i></div></div>
-                <div><label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Ambil Sendiri</label><div class="relative"><select id="set-pickup-enabled" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm cursor-pointer appearance-none pr-10"><option value="true" ${appData.store.isPickupEnabled!==false?'selected':''}>Aktif</option><option value="false" ${appData.store.isPickupEnabled===false?'selected':''}>Nonaktif</option></select><i class="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-[10px]"></i></div></div>
+                <div><label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Opsi Dikirim</label><div class="relative"><select id="set-delivery-enabled" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm cursor-pointer appearance-none pr-10"><option value="true" ${appData.store.isDeliveryEnabled!==false?'selected':''}>Aktif</option><option value="false" ${appData.store.isDeliveryEnabled===false?'selected':''}>Nonaktif</option></select><i class="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-[10px]"></i></div></div>
+                <div><label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Ambil di Toko</label><div class="relative"><select id="set-pickup-enabled" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm cursor-pointer appearance-none pr-10"><option value="true" ${appData.store.isPickupEnabled!==false?'selected':''}>Aktif</option><option value="false" ${appData.store.isPickupEnabled===false?'selected':''}>Nonaktif</option></select><i class="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-[10px]"></i></div></div>
             </div>
             <div>
                 <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest"><i class="fa-solid fa-map-pin mr-1"></i> Titik Koordinat Toko (GPS)</label>
@@ -8497,7 +8497,7 @@ window.openDocPreview = (type) => {
         <div class="bg-slate-50 p-5 rounded-xl border border-slate-200 flex flex-col justify-center space-y-3">
             <div class="flex justify-between items-center border-b border-slate-200 pb-2">
                 <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Metode Pengiriman</span>
-                <span class="text-sm font-bold text-slate-800 uppercase">${esc(o.customer?.deliveryMethod === 'delivery' ? 'Kurir Toko' : 'Ambil Sendiri')}</span>
+                <span class="text-sm font-bold text-slate-800 uppercase">${esc(o.customer?.deliveryMethod === 'delivery' ? 'Dikirim' : 'Ambil di Toko')}</span>
             </div>
             <div class="flex justify-between items-center border-b border-slate-200 pb-2">
                 <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Sistem Pembayaran</span>
