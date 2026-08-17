@@ -285,6 +285,7 @@ const defApp = {
     config: { gasUrl: "" }, // FITUR BARU
     banks: [], banners: [], categories: [], brands: [], products: [], vouchers: [], colors: [],
     rewards: [], // FITUR BARU: katalog hadiah (publik, sinkron realtime seperti kategori/voucher)
+    faqs: [], // FITUR BARU: Q&A / FAQ interaktif storefront & admin
     customers: [], // FITUR BARU: database pelanggan (privat, HANYA dimuat saat admin membuka tab-nya)
     // FITUR BARU: Menu Pajak -- pengaturan & data pelengkap laporan pajak/keuangan.
     // 'monthlyExpenses' & 'balanceSheet' diisi MANUAL oleh admin (sistem tidak melacak
@@ -1204,7 +1205,7 @@ window.changeView = (v, fH=false) => {
         t.classList.remove('hidden');
         t.classList.add('flex');
         
-        const r = {'view-cart': renderCart, 'view-checkout': rChck, 'view-payment': rPay, 'view-wishlist': renderWish, 'view-orders': renderMyOrders};
+        const r = {'view-cart': renderCart, 'view-checkout': rChck, 'view-payment': rPay, 'view-wishlist': renderWish, 'view-orders': renderMyOrders, 'view-faq': window.renderStorefrontFAQ};
         if (r[v]) r[v]();
         
         const s = t.querySelector('.scroll-content');
@@ -5370,7 +5371,6 @@ window.openAdminTab = (t, fH=false) => {
         // (replaceState) alih-alih menumpuk state baru (pushState). Dengan ini, pindah
         // dari Tab A → Tab B tidak menambah entri ke history stack, sehingga menekan
         // tombol back dari tab manapun SELALU kembali ke dashboard admin — bukan ke tab
-        // sebelumnya. pushState hanya dipakai saat PERTAMA kali masuk tab dari dashboard.
         const curState = history.state;
         if (curState && curState.view === 'view-admin' && curState.tab) {
             history.replaceState({view:'view-admin', tab:t}, '', window.location.href);
@@ -5380,12 +5380,9 @@ window.openAdminTab = (t, fH=false) => {
     }
 
     hide('admin-dashboard-view'); show('admin-content-view'); show('btn-admin-back'); hide('admin-logo-box');
-    const titles = {'orders':'Pesanan', 'settings':'Toko', 'products':'Produk', 'categories':'Kategori', 'brands':'Merek', 'banks':'Rekening', 'banners':'Banner', 'vouchers':'Voucher', 'customers':'Database Pelanggan', 'rewards':'Program Hadiah', 'reviews':'Ulasan Pelanggan', 'tax':'Pajak & Keuangan', 'piutang':'Piutang Tempo', 'colors':'Database Warna'};
+    const titles = {'orders':'Pesanan', 'settings':'Toko', 'products':'Produk', 'categories':'Kategori', 'brands':'Merek', 'banks':'Rekening', 'banners':'Banner', 'vouchers':'Voucher', 'customers':'Database Pelanggan', 'rewards':'Program Hadiah', 'reviews':'Ulasan Pelanggan', 'faqs':'Tanya Jawab / Q&A', 'tax':'Pajak & Keuangan', 'piutang':'Piutang Tempo', 'colors':'Database Warna'};
     setIn('admin-header-title', titles[t]||'CMS');
     if(t !== 'orders' && aOrdLst){ aOrdLst(); aOrdLst=null; }
-    // FIX BUG: tab Database Pelanggan dulu cuma ambil data SEKALI (snapshot),
-    // jadi kalau ada poin bertambah/berkurang (mis. klaim hadiah) SAAT tab ini
-    // sedang terbuka, angkanya tidak ikut ter-update sampai tab dibuka ulang.
     // Sekarang dipasang listener realtime selama tab ini aktif, dilepas begitu
     // admin pindah ke tab lain (tetap sesuai prinsip privasi: tidak dimuat sejak awal).
     if (t !== 'customers' && aCustLst) { aCustLst(); aCustLst = null; }
@@ -9321,3 +9318,327 @@ try {
 
 
 
+// ==========================================
+// FITUR BARU: TANYA JAWAB (Q&A / FAQ) STOREFRONT & ADMIN
+// ==========================================
+let unsubFAQRealtime = null;
+window.attachFAQRealtime = () => {
+    if (unsubFAQRealtime) return;
+    unsubFAQRealtime = db.collection("freshmart").doc("cms_data").collection("faqs")
+        .onSnapshot(snap => {
+            appData.faqs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+            if (typeof curViewName !== 'undefined' && curViewName === 'view-faq') window.renderStorefrontFAQ();
+            if (window.isAdm && typeof cTab !== 'undefined' && cTab === 'faqs' && typeof window.rAdmFAQ === 'function') window.rAdmFAQ();
+        }, err => { console.error('Gagal sync Q&A:', err); });
+};
+
+let currentFAQCategory = 'Semua';
+
+window.renderStorefrontFAQ = () => {
+    window.attachFAQRealtime();
+    const container = document.getElementById('storefront-faq-container');
+    const pillsContainer = document.getElementById('faq-category-pills');
+    if (!container) return;
+
+    const allFaqs = (appData.faqs || []).filter(f => f.status === 'published');
+    const categories = ['Semua', 'Pemesanan', 'Pengiriman', 'Pembayaran', 'Garansi', 'Lainnya'];
+
+    if (pillsContainer) {
+        pillsContainer.innerHTML = categories.map(cat => `
+            <button onclick="selectFAQCategory('${cat}')" class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${currentFAQCategory === cat ? 'primary-bg text-white shadow-md' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-slate-100'}">
+                ${cat}
+            </button>
+        `).join('');
+    }
+
+    const searchQuery = (document.getElementById('faq-search-input')?.value || '').toLowerCase().trim();
+    const filtered = allFaqs.filter(f => {
+        const matchCat = (currentFAQCategory === 'Semua' || f.category === currentFAQCategory);
+        const matchSearch = !searchQuery || (f.question || '').toLowerCase().includes(searchQuery) || (f.answer || '').toLowerCase().includes(searchQuery);
+        return matchCat && matchSearch;
+    });
+
+    if (!filtered.length) {
+        container.innerHTML = `
+            <div class="text-center py-12 bg-white dark:bg-slate-800 rounded-3xl border border-slate-200 dark:border-slate-700 p-6 shadow-sm">
+                <div class="w-16 h-16 rounded-full bg-amber-50 dark:bg-amber-900/20 text-amber-500 mx-auto flex items-center justify-center mb-3">
+                    <i class="fa-solid fa-circle-question text-3xl"></i>
+                </div>
+                <h3 class="font-bold text-slate-800 dark:text-white text-base">Belum Ada Q&A Ditemukan</h3>
+                <p class="text-xs text-slate-500 mt-1 max-w-sm mx-auto">Punya pertanyaan lain? Silakan gunakan tombol <b>Ajukan Pertanyaan</b> untuk bertanya ke admin.</p>
+                <button onclick="openAskQuestionModal()" class="mt-4 primary-bg text-white px-5 py-2.5 rounded-xl text-xs font-bold shadow-md active:scale-95 transition-all">Ajukan Pertanyaan Sekarang</button>
+            </div>
+        `;
+        return;
+    }
+
+    container.innerHTML = filtered.map(f => `
+        <div class="bg-white dark:bg-slate-800/90 rounded-2xl border border-slate-200 dark:border-slate-700/80 shadow-sm overflow-hidden transition-all">
+            <button onclick="toggleFAQAccordion('${esc(f.id)}')" class="w-full p-4.5 text-left flex items-start justify-between gap-3 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+                <div class="flex items-start gap-3">
+                    <div class="w-8 h-8 rounded-xl primary-bg-soft primary-text flex items-center justify-center shrink-0 mt-0.5"><i class="fa-solid fa-q text-xs font-bold"></i></div>
+                    <div>
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="text-[9px] font-bold uppercase tracking-wider bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-2 py-0.5 rounded border border-slate-200 dark:border-slate-600">${esc(f.category || 'Umum')}</span>
+                            ${f.authorName ? `<span class="text-[9px] font-medium text-slate-400">Oleh ${esc(f.authorName)}</span>` : ''}
+                        </div>
+                        <h4 class="font-bold text-sm text-slate-800 dark:text-white leading-snug">${esc(f.question)}</h4>
+                    </div>
+                </div>
+                <div class="w-7 h-7 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center text-slate-400 shrink-0 transition-transform duration-300" id="faq-icon-${esc(f.id)}">
+                    <i class="fa-solid fa-chevron-down text-xs"></i>
+                </div>
+            </button>
+            <div class="hidden border-t border-slate-100 dark:border-slate-700/70 p-4.5 bg-slate-50/50 dark:bg-slate-900/40 text-xs font-medium text-slate-600 dark:text-slate-300 leading-relaxed" id="faq-body-${esc(f.id)}">
+                <div class="flex items-start gap-3">
+                    <div class="w-7 h-7 rounded-lg bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">A</div>
+                    <div class="flex-1 whitespace-pre-wrap">${esc(f.answer || 'Belum ada jawaban.')}</div>
+                </div>
+            </div>
+        </div>
+    `).join('');
+};
+
+window.selectFAQCategory = (cat) => {
+    currentFAQCategory = cat;
+    window.renderStorefrontFAQ();
+};
+
+window.filterStorefrontFAQ = () => {
+    window.renderStorefrontFAQ();
+};
+
+window.toggleFAQAccordion = (id) => {
+    const body = document.getElementById(`faq-body-${id}`);
+    const icon = document.getElementById(`faq-icon-${id}`);
+    if (!body || !icon) return;
+    const isHidden = body.classList.contains('hidden');
+    if (isHidden) {
+        body.classList.remove('hidden');
+        icon.classList.add('rotate-180');
+    } else {
+        body.classList.add('hidden');
+        icon.classList.remove('rotate-180');
+    }
+};
+
+window.openAskQuestionModal = () => {
+    const m = el('modal-ask-question');
+    if (!m) return;
+    if (m.classList.contains('hidden')) pushModalHistory('askQuestion');
+    show('modal-ask-question');
+    setTimeout(() => {
+        el('modal-ask-question').classList.remove('opacity-0');
+        el('modal-ask-question-box').classList.remove('translate-y-full');
+    }, 10);
+};
+
+window.closeAskQuestionModal = (fH=false) => {
+    requestCloseModal('askQuestion', fH, () => {
+        el('modal-ask-question').classList.add('opacity-0');
+        el('modal-ask-question-box').classList.add('translate-y-full');
+        setTimeout(() => hide('modal-ask-question'), 300);
+    });
+};
+
+window.submitCustomerQuestion = async () => {
+    const name = (getV('ask-author-name') || '').trim() || 'Pelanggan';
+    const category = getV('ask-category') || 'Pemesanan';
+    const question = (getV('ask-question-text') || '').trim();
+
+    if (!question) return showToast('Tuliskan pertanyaan Anda terlebih dahulu!');
+
+    sLoad('Mengirim pertanyaan...');
+    try {
+        const faqId = 'faq-' + Date.now().toString(36);
+        const faqDoc = {
+            id: faqId,
+            question: question,
+            answer: '',
+            category: category,
+            authorName: name,
+            status: 'pending_answer',
+            createdAt: new Date().toISOString()
+        };
+        await db.collection("freshmart").doc("cms_data").collection("faqs").doc(faqId).set(faqDoc);
+        hLoad();
+        closeAskQuestionModal();
+        setV('ask-question-text', '');
+        showToast('Pertanyaan terkirim! Admin akan menjawabnya segera.');
+        window.renderStorefrontFAQ();
+    } catch (e) {
+        hLoad();
+        console.error('Submit Q&A gagal:', e);
+        showToast('Gagal mengirim pertanyaan. Coba lagi!');
+    }
+};
+
+let adminFAQFilter = 'all';
+
+window.rAdmFAQ = () => {
+    window.attachFAQRealtime();
+    const faqs = appData.faqs || [];
+    const filtered = faqs.filter(f => {
+        if (adminFAQFilter === 'pending') return f.status === 'pending_answer';
+        if (adminFAQFilter === 'published') return f.status === 'published';
+        return true;
+    });
+
+    const pendingCount = faqs.filter(f => f.status === 'pending_answer').length;
+
+    let h = `
+        <div class="space-y-6">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white dark:bg-slate-800 p-5 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm">
+                <div>
+                    <h2 class="text-lg font-bold text-slate-800 dark:text-white flex items-center gap-2">
+                        <i class="fa-solid fa-circle-question text-amber-500"></i> Kelola Tanya Jawab (Q&A / FAQ)
+                    </h2>
+                    <p class="text-xs font-medium text-slate-500 mt-1">Sunting FAQ toko & jawab pertanyaan yang diajukan pelanggan.</p>
+                </div>
+                <button onclick="openFAQModal('')" class="primary-bg text-white shadow-glow px-4 py-2.5 rounded-xl font-bold text-xs flex items-center gap-2 active:scale-95 transition-all">
+                    <i class="fa-solid fa-plus"></i> Tambah Q&A Baru
+                </button>
+            </div>
+
+            <!-- Filter Tabs -->
+            <div class="flex gap-2 border-b border-slate-200 dark:border-slate-700 pb-3">
+                <button onclick="setAdminFAQFilter('all')" class="px-4 py-2 rounded-xl text-xs font-bold transition-all ${adminFAQFilter === 'all' ? 'primary-bg text-white shadow-md' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200'}">
+                    Semua (${faqs.length})
+                </button>
+                <button onclick="setAdminFAQFilter('pending')" class="px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${adminFAQFilter === 'pending' ? 'bg-amber-500 text-white shadow-md' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200'}">
+                    <span>Belum Dijawab</span>
+                    ${pendingCount > 0 ? `<span class="bg-rose-500 text-white text-[9px] px-1.5 py-0.5 rounded-full font-bold">${pendingCount}</span>` : ''}
+                </button>
+                <button onclick="setAdminFAQFilter('published')" class="px-4 py-2 rounded-xl text-xs font-bold transition-all ${adminFAQFilter === 'published' ? 'bg-emerald-600 text-white shadow-md' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200'}">
+                    Terpublikasi
+                </button>
+            </div>
+
+            <!-- List Q&A Admin -->
+            <div class="space-y-4">
+                ${!filtered.length ? `
+                    <div class="text-center py-12 bg-white dark:bg-slate-800 rounded-3xl border border-slate-200 dark:border-slate-700 p-6">
+                        <i class="fa-solid fa-inbox text-4xl text-slate-300 mb-3"></i>
+                        <p class="text-sm font-bold text-slate-600 dark:text-slate-300">Tidak ada Q&A ditemukan pada kategori filter ini.</p>
+                    </div>
+                ` : filtered.map(f => `
+                    <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border ${f.status === 'pending_answer' ? 'border-amber-400 bg-amber-50/20 dark:bg-amber-900/10' : 'border-slate-200 dark:border-slate-700'} shadow-sm space-y-3">
+                        <div class="flex items-start justify-between gap-3">
+                            <div class="space-y-1">
+                                <div class="flex items-center gap-2">
+                                    <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded ${f.status === 'published' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400' : f.status === 'pending_answer' ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400' : 'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-400'}">
+                                        ${f.status === 'published' ? 'Terpublikasi' : f.status === 'pending_answer' ? 'Menunggu Jawaban' : 'Disembunyikan'}
+                                    </span>
+                                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">${esc(f.category || 'Umum')}</span>
+                                    ${f.authorName ? `<span class="text-[10px] text-slate-500 dark:text-slate-400 italic">Oleh: ${esc(f.authorName)}</span>` : ''}
+                                </div>
+                                <h3 class="font-bold text-sm text-slate-900 dark:text-white">${esc(f.question)}</h3>
+                            </div>
+                            <div class="flex items-center gap-2 shrink-0">
+                                <button onclick="openFAQModal('${esc(f.id)}')" class="px-3 py-1.5 rounded-xl bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400 font-bold text-xs hover:bg-blue-100 transition-colors flex items-center gap-1">
+                                    <i class="fa-solid fa-pen-to-square"></i> Edit / Jawab
+                                </button>
+                                <button onclick="deleteAdminFAQ('${esc(f.id)}')" class="px-3 py-1.5 rounded-xl bg-rose-50 text-rose-600 dark:bg-rose-900/20 dark:text-rose-400 font-bold text-xs hover:bg-rose-100 transition-colors">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-50 dark:bg-slate-900/50 p-3.5 rounded-xl border border-slate-100 dark:border-slate-700 text-xs font-medium text-slate-700 dark:text-slate-300">
+                            <span class="font-bold text-slate-900 dark:text-white block mb-1">Jawaban:</span>
+                            <div class="whitespace-pre-wrap leading-relaxed">${f.answer ? esc(f.answer) : '<span class="text-rose-500 italic font-semibold">Belum dijawab. Klik "Edit / Jawab" untuk memberikan jawaban.</span>'}</div>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+    `;
+
+    setH('admin-content', h);
+};
+
+window.setAdminFAQFilter = (status) => {
+    adminFAQFilter = status;
+    window.rAdmFAQ();
+};
+
+window.openFAQModal = (id) => {
+    const f = (appData.faqs || []).find(x => x.id === id) || {
+        id: '', question: '', answer: '', category: 'Pemesanan', authorName: 'Admin', status: 'published'
+    };
+
+    setV('admin-faq-id', f.id);
+    setV('admin-faq-category', f.category || 'Pemesanan');
+    setV('admin-faq-author', f.authorName || 'Admin');
+    setV('admin-faq-question', f.question || '');
+    setV('admin-faq-answer', f.answer || '');
+    setV('admin-faq-status', f.status || 'published');
+    setIn('admin-faq-modal-title', id ? 'Edit Q&A' : 'Tambah Q&A Baru');
+
+    const m = el('modal-admin-faq');
+    if (!m) return;
+    if (m.classList.contains('hidden')) pushModalHistory('adminFAQ');
+    show('modal-admin-faq');
+    setTimeout(() => {
+        el('modal-admin-faq').classList.remove('opacity-0');
+        el('modal-admin-faq-box').classList.remove('translate-y-full');
+    }, 10);
+};
+
+window.closeAdminFAQModal = (fH=false) => {
+    requestCloseModal('adminFAQ', fH, () => {
+        el('modal-admin-faq').classList.add('opacity-0');
+        el('modal-admin-faq-box').classList.add('translate-y-full');
+        setTimeout(() => hide('modal-admin-faq'), 300);
+    });
+};
+
+window.saveAdminFAQ = async () => {
+    const id = getV('admin-faq-id') || ('faq-' + Date.now().toString(36));
+    const category = getV('admin-faq-category');
+    const authorName = (getV('admin-faq-author') || '').trim() || 'Admin';
+    const question = (getV('admin-faq-question') || '').trim();
+    const answer = (getV('admin-faq-answer') || '').trim();
+    let status = getV('admin-faq-status');
+
+    if (!question) return showToast('Pertanyaan tidak boleh kosong!');
+    if (answer && status === 'pending_answer') status = 'published';
+
+    sLoad('Menyimpan Q&A...');
+    try {
+        const faqDoc = {
+            id,
+            question,
+            answer,
+            category,
+            authorName,
+            status,
+            updatedAt: new Date().toISOString()
+        };
+        await db.collection("freshmart").doc("cms_data").collection("faqs").doc(id).set(faqDoc, { merge: true });
+        hLoad();
+        closeAdminFAQModal();
+        showToast('Q&A Berhasil Disimpan!');
+        window.rAdmFAQ();
+    } catch (e) {
+        hLoad();
+        console.error('Simpan FAQ gagal:', e);
+        showToast('Gagal menyimpan Q&A!');
+    }
+};
+
+window.deleteAdminFAQ = (id) => {
+    showConfirm("Hapus Q&A", "Yakin ingin menghapus pertanyaan ini?", async () => {
+        sLoad('Menghapus Q&A...');
+        try {
+            await db.collection("freshmart").doc("cms_data").collection("faqs").doc(id).delete();
+            hLoad();
+            showToast('Q&A Berhasil Dihapus!');
+            window.rAdmFAQ();
+        } catch (e) {
+            hLoad();
+            console.error('Hapus FAQ gagal:', e);
+            showToast('Gagal menghapus Q&A!');
+        }
+    });
+};
