@@ -3016,7 +3016,7 @@ window.renderOrderDetailModal = (orderId, d, reviewedKeys) => {
                     </div>
                     ` : ''}
                     <p class="text-[10px] text-slate-500">${qty} ${esc(i.unit || 'pcs')} x ${fCur(price)}</p>
-                    ${canReview ? `<button type="button" onclick="openReviewModal('${orderId}',${i.id},'${esc(i.variantName||'').replace(/'/g,"\\'")}','${esc(i.name).replace(/'/g,"\\'")}','${cName.replace(/'/g,"\\'")}')" class="mt-1.5 text-[10px] font-bold text-amber-500 hover:text-amber-600 flex items-center gap-1"><i class="fa-solid fa-star"></i> Berikan Ulasan</button>` : ''}
+                    ${canReview ? `<button type="button" onclick="openReviewModal('${orderId}',${i.id},'${encodeURIComponent(i.variantName||'')}','${encodeURIComponent(i.name||'')}','${encodeURIComponent(d.customer?.name||'')}')" class="mt-1.5 text-[10px] font-bold text-amber-500 hover:text-amber-600 flex items-center gap-1"><i class="fa-solid fa-star"></i> Berikan Ulasan</button>` : ''}
                 </div>
                 <div class="text-right shrink-0">
                     <p class="text-xs font-bold text-slate-800 dark:text-[var(--color-primary)]">${fCur(itemTotal)}</p>
@@ -3468,7 +3468,7 @@ window.rMemberModalBody = () => {
         const isSelected = selectedReward && selectedReward.id === r.id;
         return `
         <div class="flex items-center gap-3 p-4 rounded-[1.25rem] border ${isSelected ? 'border-[var(--color-primary)] bg-[rgba(var(--color-primary-rgb),0.06)] dark:bg-[rgba(var(--color-primary-rgb),0.12)]' : 'border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50'}">
-            ${r.img ? `<img src="${esc(r.img)}" class="w-14 h-14 rounded-xl object-cover border border-slate-200 dark:border-slate-700 shrink-0" onerror="this.style.display='none'" loading="lazy"></i>` : `<div class="w-14 h-14 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-300 shrink-0"><i class="fa-solid fa-gift text-xl"></i></div>`}
+            ${r.img ? `<img src="${esc(r.img)}" class="w-14 h-14 rounded-xl object-cover border border-slate-200 dark:border-slate-700 shrink-0" onerror="this.style.display='none'" loading="lazy">` : `<div class="w-14 h-14 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-300 shrink-0"><i class="fa-solid fa-gift text-xl"></i></div>`}
             <div class="min-w-0 flex-1">
                 <p class="text-xs font-bold text-slate-800 dark:text-white truncate">${esc(r.name)}</p>
                 <p class="text-[11px] font-bold text-[var(--color-primary)] mt-0.5"><i class="fa-solid fa-star mr-1"></i>${parseFloat(r.pointsCost)||0} Poin</p>
@@ -3528,7 +3528,11 @@ window.closeMemberModal = (fH=false) => {
 window.reviewPhotoFile = null;
 window.reviewRating = 0;
 
-window.openReviewModal = (orderId, productId, variantName, productName, customerName) => {
+window.openReviewModal = (orderId, productId, encVName, encPName, encCName) => {
+    const variantName = decodeURIComponent(encVName || '');
+    const productName = decodeURIComponent(encPName || '');
+    const customerName = decodeURIComponent(encCName || '');
+
     let m = document.getElementById('review-modal');
     if (!m) {
         m = document.createElement('div');
@@ -3561,9 +3565,9 @@ window.openReviewModal = (orderId, productId, variantName, productName, customer
                 </div>
                 <div>
                     <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Unggah Foto (Opsional)</label>
-                    <input type="file" accept="image/*" id="review-photo-input" onchange="handleReviewPhotoSelect(event)" class="hidden"></i>
+                    <input type="file" accept="image/*" id="review-photo-input" onchange="handleReviewPhotoSelect(event)" class="hidden">
                     <div id="review-photo-preview-wrap" class="hidden mb-2.5 relative w-24 h-24">
-                        <img id="review-photo-preview" class="w-24 h-24 rounded-xl object-cover border border-slate-200 dark:border-slate-700" loading="lazy"></i>
+                        <img id="review-photo-preview" class="w-24 h-24 rounded-xl object-cover border border-slate-200 dark:border-slate-700" loading="lazy">
                         <button type="button" onclick="removeReviewPhoto()" class="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-rose-500 text-white flex items-center justify-center text-[10px] shadow"><i class="fa-solid fa-xmark"></i></button>
                     </div>
                     <button type="button" onclick="document.getElementById('review-photo-input').click()" id="review-photo-btn" class="w-full py-3 rounded-xl border-2 border-dashed border-slate-300 dark:border-slate-700 text-slate-400 text-[11px] font-bold uppercase tracking-widest flex items-center justify-center gap-2 hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] transition-all"><i class="fa-solid fa-camera"></i> Tambah Foto Bukti</button>
@@ -3705,7 +3709,7 @@ window.loadProductReviews = async (productId) => {
                 <div class="flex text-[11px] mb-2">${starRow(r.rating)}</div>
                 ${r.variantName ? `<p class="text-[10px] font-bold text-slate-400 mb-1.5">Varian: ${esc(r.variantName)}</p>` : ''}
                 ${r.text ? `<p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed mb-2">${esc(r.text)}</p>` : ''}
-                ${r.photoUrl ? `<img src="${esc(r.photoUrl)}" onclick="window.open('${esc(r.photoUrl)}','_blank')" class="w-20 h-20 rounded-xl object-cover border border-slate-200 dark:border-slate-700 cursor-pointer mb-2" onerror="this.style.display='none'" loading="lazy"></i>` : ''}
+                ${r.photoUrl ? `<img src="${esc(r.photoUrl)}" onclick="window.open('${esc(r.photoUrl)}','_blank')" class="w-20 h-20 rounded-xl object-cover border border-slate-200 dark:border-slate-700 cursor-pointer mb-2" onerror="this.style.display='none'" loading="lazy">` : ''}
                 ${r.adminReply ? `<div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl p-3 mt-2"><p class="text-[9px] font-bold text-[var(--color-primary)] uppercase tracking-widest mb-1"><i class="fa-solid fa-store mr-1"></i>Balasan Toko</p><p class="text-[11px] text-slate-600 dark:text-slate-300">${esc(r.adminReply)}</p></div>` : ''}
             </div>`;
         }).join('');
@@ -6595,7 +6599,7 @@ window.rAdmReviews = () => {
             </div>
             <div class="flex text-xs mb-2.5">${starRow(r.rating)}</div>
             ${r.text ? `<p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed mb-2.5">${esc(r.text)}</p>` : ''}
-            ${r.photoUrl ? `<img src="${esc(r.photoUrl)}" onclick="window.open('${esc(r.photoUrl)}','_blank')" class="w-20 h-20 rounded-xl object-cover border border-slate-200 dark:border-slate-700 cursor-pointer mb-2.5" onerror="this.style.display='none'" loading="lazy"></i>` : ''}
+            ${r.photoUrl ? `<img src="${esc(r.photoUrl)}" onclick="window.open('${esc(r.photoUrl)}','_blank')" class="w-20 h-20 rounded-xl object-cover border border-slate-200 dark:border-slate-700 cursor-pointer mb-2.5" onerror="this.style.display='none'" loading="lazy">` : ''}
             ${r.adminReply ? `<div class="bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-xl p-3 mb-2.5"><p class="text-[9px] font-bold text-[var(--color-primary)] uppercase tracking-widest mb-1"><i class="fa-solid fa-store mr-1"></i>Balasan Anda</p><p class="text-[11px] text-slate-600 dark:text-slate-300">${esc(r.adminReply)}</p></div>` : ''}
             <div class="flex flex-wrap gap-2 pt-2 border-t border-slate-100 dark:border-slate-700/60">
                 <button onclick="replyToReview(${r.id})" class="px-3 py-2 rounded-xl bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 text-[10px] font-bold uppercase tracking-widest flex items-center gap-1.5 hover:bg-blue-100 transition-all"><i class="fa-solid fa-reply"></i> ${r.adminReply ? 'Edit Balasan' : 'Balas'}</button>
