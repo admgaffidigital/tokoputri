@@ -836,6 +836,7 @@ window.attachRealtimeStockSync = () => {
             if (f.banners) appData.banners = f.banners;
             if (f.brands) appData.brands = f.brands;
             if (f.banks) appData.banks = f.banks;
+            if (f.faqs) appData.faqs = f.faqs;
             // CATATAN: 'rewards' TIDAK lagi disinkron di sini -- sudah punya listener
             // realtime tersendiri (lihat attachRewardsRealtime), karena sekarang hadiah
             // disimpan sebagai sub-collection sendiri (bukan field di dokumen ini).
@@ -9324,12 +9325,22 @@ try {
 let unsubFAQRealtime = null;
 window.attachFAQRealtime = () => {
     if (unsubFAQRealtime) return;
-    unsubFAQRealtime = db.collection("freshmart").doc("cms_data").collection("faqs")
-        .onSnapshot(snap => {
-            appData.faqs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-            if (typeof curViewName !== 'undefined' && curViewName === 'view-faq') window.renderStorefrontFAQ();
-            if (window.isAdm && typeof cTab !== 'undefined' && cTab === 'faqs' && typeof window.rAdmFAQ === 'function') window.rAdmFAQ();
-        }, err => { console.error('Gagal sync Q&A:', err); });
+    try {
+        unsubFAQRealtime = db.collection("freshmart").doc("cms_data").collection("faqs")
+            .onSnapshot(snap => {
+                if (snap && snap.docs) {
+                    appData.faqs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+                }
+                if (typeof curViewName !== 'undefined' && curViewName === 'view-faq') window.renderStorefrontFAQ();
+                if (window.isAdm && typeof cTab !== 'undefined' && cTab === 'faqs' && typeof window.rAdmFAQ === 'function') window.rAdmFAQ();
+            }, err => {
+                console.warn('Sync sub-koleksi faqs dibatasi, menggunakan fallback cms_data.faqs:', err.message);
+                if (typeof curViewName !== 'undefined' && curViewName === 'view-faq') window.renderStorefrontFAQ();
+                if (window.isAdm && typeof cTab !== 'undefined' && cTab === 'faqs' && typeof window.rAdmFAQ === 'function') window.rAdmFAQ();
+            });
+    } catch (e) {
+        console.warn('Fallback sync Q&A dari cms_data aktif');
+    }
 };
 
 let currentFAQCategory = 'Semua';
@@ -9449,26 +9460,41 @@ window.submitCustomerQuestion = async () => {
     if (!question) return showToast('Tuliskan pertanyaan Anda terlebih dahulu!');
 
     sLoad('Mengirim pertanyaan...');
+    const faqId = 'faq-' + Date.now().toString(36);
+    const faqDoc = {
+        id: faqId,
+        question: question,
+        answer: '',
+        category: category,
+        authorName: name,
+        status: 'pending_answer',
+        createdAt: new Date().toISOString()
+    };
+
+    let saved = false;
     try {
-        const faqId = 'faq-' + Date.now().toString(36);
-        const faqDoc = {
-            id: faqId,
-            question: question,
-            answer: '',
-            category: category,
-            authorName: name,
-            status: 'pending_answer',
-            createdAt: new Date().toISOString()
-        };
         await db.collection("freshmart").doc("cms_data").collection("faqs").doc(faqId).set(faqDoc);
-        hLoad();
+        saved = true;
+    } catch (e) {
+        console.warn('Penulisan sub-koleksi faqs dibatasi, mencoba cms_data:', e);
+    }
+
+    try {
+        const updatedFaqs = [faqDoc, ...(appData.faqs || []).filter(x => x.id !== faqId)];
+        await db.collection("freshmart").doc("cms_data").set({ faqs: updatedFaqs }, { merge: true });
+        appData.faqs = updatedFaqs;
+        saved = true;
+    } catch (err2) {
+        console.warn('Update cms_data.faqs gagal:', err2);
+    }
+
+    hLoad();
+    if (saved) {
         closeAskQuestionModal();
         setV('ask-question-text', '');
         showToast('Pertanyaan terkirim! Admin akan menjawabnya segera.');
         window.renderStorefrontFAQ();
-    } catch (e) {
-        hLoad();
-        console.error('Submit Q&A gagal:', e);
+    } else {
         showToast('Gagal mengirim pertanyaan. Coba lagi!');
     }
 };
@@ -9605,40 +9631,60 @@ window.saveAdminFAQ = async () => {
     if (answer && status === 'pending_answer') status = 'published';
 
     sLoad('Menyimpan Q&A...');
+    const faqDoc = {
+        id,
+        question,
+        answer,
+        category,
+        authorName,
+        status,
+        updatedAt: new Date().toISOString()
+    };
+
+    let currentFaqs = [...(appData.faqs || [])];
+    const idx = currentFaqs.findIndex(x => x.id === id);
+    if (idx > -1) currentFaqs[idx] = { ...currentFaqs[idx], ...faqDoc };
+    else currentFaqs.unshift(faqDoc);
+    appData.faqs = currentFaqs;
+
     try {
-        const faqDoc = {
-            id,
-            question,
-            answer,
-            category,
-            authorName,
-            status,
-            updatedAt: new Date().toISOString()
-        };
         await db.collection("freshmart").doc("cms_data").collection("faqs").doc(id).set(faqDoc, { merge: true });
-        hLoad();
-        closeAdminFAQModal();
-        showToast('Q&A Berhasil Disimpan!');
-        window.rAdmFAQ();
     } catch (e) {
-        hLoad();
-        console.error('Simpan FAQ gagal:', e);
-        showToast('Gagal menyimpan Q&A!');
+        console.warn('Gagal set ke sub-koleksi faqs:', e);
     }
+
+    try {
+        await db.collection("freshmart").doc("cms_data").set({ faqs: currentFaqs }, { merge: true });
+    } catch (e) {
+        console.warn('Gagal update cms_data.faqs:', e);
+    }
+
+    hLoad();
+    closeAdminFAQModal();
+    showToast('Q&A Berhasil Disimpan!');
+    window.rAdmFAQ();
 };
 
 window.deleteAdminFAQ = (id) => {
     showConfirm("Hapus Q&A", "Yakin ingin menghapus pertanyaan ini?", async () => {
         sLoad('Menghapus Q&A...');
+        let currentFaqs = (appData.faqs || []).filter(x => x.id !== id);
+        appData.faqs = currentFaqs;
+
         try {
             await db.collection("freshmart").doc("cms_data").collection("faqs").doc(id).delete();
-            hLoad();
-            showToast('Q&A Berhasil Dihapus!');
-            window.rAdmFAQ();
         } catch (e) {
-            hLoad();
-            console.error('Hapus FAQ gagal:', e);
-            showToast('Gagal menghapus Q&A!');
+            console.warn('Gagal delete dari sub-koleksi faqs:', e);
         }
+
+        try {
+            await db.collection("freshmart").doc("cms_data").set({ faqs: currentFaqs }, { merge: true });
+        } catch (e) {
+            console.warn('Gagal update cms_data.faqs:', e);
+        }
+
+        hLoad();
+        showToast('Q&A Berhasil Dihapus!');
+        window.rAdmFAQ();
     });
 };

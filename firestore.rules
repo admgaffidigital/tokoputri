@@ -72,7 +72,7 @@ service cloud.firestore {
 
       // Tanya Jawab / Q&A Pelanggan & Admin
       match /faqs/{faqId} {
-        allow list, get: if true;
+        allow read: if true;
         allow create: if true;
         allow update, delete: if isAdmin();
       }
