@@ -290,8 +290,6 @@ body {
     border: 1px solid var(--toast-border, rgba(var(--color-primary-rgb), 0.25));
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
     color: #fff;
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
     overflow: hidden;
 }
 #toast-icon-wrap {
