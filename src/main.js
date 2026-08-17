@@ -5419,6 +5419,7 @@ window.openAdminTab = (t, fH=false) => {
                 rAdmReviews();
             }, () => { showToast("Gagal memuat ulasan!"); });
     }
+    else if (t === 'faqs') { window.rAdmFAQ(); }
     else rAdmL(t);
 };
 
@@ -9387,7 +9388,7 @@ window.renderStorefrontFAQ = () => {
 
     container.innerHTML = filtered.map(f => `
         <div class="bg-white dark:bg-slate-800/90 rounded-2xl border border-slate-200 dark:border-slate-700/80 shadow-sm overflow-hidden transition-all">
-            <button onclick="toggleFAQAccordion('${esc(f.id)}')" class="w-full p-4.5 text-left flex items-start justify-between gap-3 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+            <button onclick="toggleFAQAccordion('${f.id}')" class="w-full p-4.5 text-left flex items-start justify-between gap-3 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
                 <div class="flex items-start gap-3">
                     <div class="w-8 h-8 rounded-xl primary-bg-soft primary-text flex items-center justify-center shrink-0 mt-0.5"><i class="fa-solid fa-q text-xs font-bold"></i></div>
                     <div>
@@ -9478,16 +9479,18 @@ window.submitCustomerQuestion = async () => {
         await db.collection("freshmart").doc("cms_data").collection("faqs").doc(faqId).set(faqDoc);
         saved = true;
     } catch (e) {
-        console.warn('Penulisan sub-koleksi faqs dibatasi, mencoba cms_data:', e);
+        console.warn('Penulisan sub-koleksi faqs dibatasi:', e);
     }
 
-    try {
-        const updatedFaqs = [faqDoc, ...(appData.faqs || []).filter(x => x.id !== faqId)];
-        await db.collection("freshmart").doc("cms_data").set({ faqs: updatedFaqs }, { merge: true });
-        appData.faqs = updatedFaqs;
-        saved = true;
-    } catch (err2) {
-        console.warn('Update cms_data.faqs gagal:', err2);
+    if (!saved && window.isAdm) {
+        try {
+            const updatedFaqs = [faqDoc, ...(appData.faqs || []).filter(x => x.id !== faqId)];
+            await db.collection("freshmart").doc("cms_data").set({ faqs: updatedFaqs }, { merge: true });
+            appData.faqs = updatedFaqs;
+            saved = true;
+        } catch (err2) {
+            console.warn('Update cms_data.faqs gagal:', err2);
+        }
     }
 
     hLoad();
@@ -9563,10 +9566,10 @@ window.rAdmFAQ = () => {
                                 <h3 class="font-bold text-sm text-slate-900 dark:text-white">${esc(f.question)}</h3>
                             </div>
                             <div class="flex items-center gap-2 shrink-0">
-                                <button onclick="openFAQModal('${esc(f.id)}')" class="px-3 py-1.5 rounded-xl bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400 font-bold text-xs hover:bg-blue-100 transition-colors flex items-center gap-1">
+                                <button onclick="openFAQModal('${f.id}')" class="px-3 py-1.5 rounded-xl bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400 font-bold text-xs hover:bg-blue-100 transition-colors flex items-center gap-1">
                                     <i class="fa-solid fa-pen-to-square"></i> Edit / Jawab
                                 </button>
-                                <button onclick="deleteAdminFAQ('${esc(f.id)}')" class="px-3 py-1.5 rounded-xl bg-rose-50 text-rose-600 dark:bg-rose-900/20 dark:text-rose-400 font-bold text-xs hover:bg-rose-100 transition-colors">
+                                <button onclick="deleteAdminFAQ('${f.id}')" class="px-3 py-1.5 rounded-xl bg-rose-50 text-rose-600 dark:bg-rose-900/20 dark:text-rose-400 font-bold text-xs hover:bg-rose-100 transition-colors">
                                     <i class="fa-solid fa-trash"></i>
                                 </button>
                             </div>
