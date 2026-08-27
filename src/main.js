@@ -1726,7 +1726,7 @@ window.startBannerAutoSlide = () => {
     const s = el('banner-slider');
     if (!s || !appData.banners || appData.banners.length <= 1) return;
 
-    // Helper: kontrol playback video (play yang aktif, pause yang tersembunyi)
+    // Helper: kontrol playback video (pastikan video HTML5 terputar terus)
     const syncBannerVideos = () => {
         const sl = el('banner-slider');
         if (!sl) return;
@@ -1740,22 +1740,6 @@ window.startBannerAutoSlide = () => {
                 if (vid.paused) vid.play().catch(() => {});
             } else {
                 if (!vid.paused) vid.pause();
-            }
-        });
-
-        // Control iframe fallbacks
-        document.querySelectorAll('#banner-slider iframe.banner-video-iframe').forEach(iframe => {
-            if (iframe.style.display === 'none') return;
-            const rect = iframe.getBoundingClientRect();
-            const isVisible = rect.left >= slRect.left - 100 && rect.right <= slRect.right + 100;
-            const src = iframe.getAttribute('data-src') || iframe.src;
-            if (isVisible) {
-                if (!iframe.src && src) iframe.src = src;
-            } else {
-                if (iframe.src) {
-                    iframe.setAttribute('data-src', iframe.src);
-                    iframe.src = '';
-                }
             }
         });
     };
