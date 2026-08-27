@@ -204,6 +204,16 @@ const fixD = v => {
     return m ? `https://lh3.googleusercontent.com/d/${m[1]}` : v;
 };
 
+// Konversi URL Google Drive ke format embed iframe (khusus video)
+// Drive share URL: https://drive.google.com/file/d/FILE_ID/view
+// → Embed URL:     https://drive.google.com/file/d/FILE_ID/preview
+const fixDriveVideo = v => {
+    if (typeof v !== 'string') return v;
+    const m = v.match(/drive\.google\.com.*(?:id=|\/d\/)([a-zA-Z0-9_-]+)/);
+    return m ? `https://drive.google.com/file/d/${m[1]}/preview` : v;
+};
+window.fixDriveVideo = fixDriveVideo;
+
 // Optimizer Google User Content Image (Ukuran & Format WebP)
 const getOptImg = (url, sizeOpt) => {
     if (typeof url !== 'string') return url;
@@ -1555,6 +1565,79 @@ window.handleImageUpload = async (inputElement, targetInputId, varIndex=null) =>
     reader.onerror = () => { showToast("Gagal membaca file!"); hLoad(); inputElement.value=''; };
 };
 
+// ============================================================
+// FITUR BARU: Upload Video ke Google Drive lewat GAS
+// Mendukung: mp4, webm, mov, avi — max 50MB
+// Setelah upload, URL embed Drive diisi ke input target
+// ============================================================
+const VIDEO_MAX_SIZE_BYTES = 50 * 1024 * 1024; // 50MB
+const ALLOWED_VIDEO_MIMES  = ['video/mp4','video/webm','video/quicktime','video/x-msvideo','video/3gpp'];
+
+window.handleVideoUpload = async (inputElement, targetInputId) => {
+    const file = inputElement.files[0];
+    if (!file) return;
+
+    if (!ALLOWED_VIDEO_MIMES.includes(file.type)) {
+        inputElement.value = '';
+        return showToast('Hanya file MP4, WEBM, MOV, atau AVI yang diizinkan!');
+    }
+    if (file.size > VIDEO_MAX_SIZE_BYTES) {
+        inputElement.value = '';
+        return showToast('Video terlalu besar! Maksimal 50MB.');
+    }
+    if (!GAS_UPLOAD_URL || GAS_UPLOAD_URL.includes('ISI_DENGAN')) {
+        inputElement.value = '';
+        return showToast('URL Script Google belum diisi di Pengaturan!');
+    }
+
+    sLoad('Upload Video... (harap tunggu)');
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+
+    reader.onload = async () => {
+        try {
+            const base64Data = reader.result.split(',')[1];
+            const safeName = file.name.replace(/[^a-zA-Z0-9.]/g, '_');
+            const payload = {
+                name: 'VID_' + Date.now() + '_' + safeName,
+                mimeType: file.type,
+                data: base64Data,
+                token: GAS_SECRET_TOKEN
+            };
+
+            const res = await fetch(GAS_UPLOAD_URL, {
+                method: 'POST',
+                body: JSON.stringify(payload),
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                redirect: 'follow'
+            });
+            const textRes = await res.text();
+            let responseData;
+            try { responseData = JSON.parse(textRes); } catch(e) { return showToast('Error Server GAS!'); }
+
+            if (responseData.status === 'success') {
+                // Konversi ke URL embed iframe Drive
+                const embedUrl = fixDriveVideo('https://drive.google.com/file/d/' + responseData.fileId + '/view');
+                const targetInput = el(targetInputId);
+                if (targetInput) {
+                    targetInput.value = embedUrl;
+                    targetInput.dispatchEvent(new Event('input',  { bubbles: true }));
+                    targetInput.dispatchEvent(new Event('change', { bubbles: true }));
+                    showToast('Video berhasil diupload ke Drive!');
+                }
+            } else {
+                showToast('Gagal upload: ' + (responseData.message || 'Error'));
+            }
+        } catch(e) {
+            showToast('Koneksi terputus saat upload video.');
+        } finally {
+            hLoad();
+            inputElement.value = '';
+        }
+    };
+    reader.onerror = () => { showToast('Gagal membaca file video!'); hLoad(); inputElement.value = ''; };
+};
+
 // FITUR BARU: Fungsi Upload Gambar Khusus ke Dalam Editor Deskripsi
 window.handleRTEditorImage = async (inputElement, editorId) => {
     const file = inputElement.files[0];
@@ -1603,14 +1686,39 @@ window.startBannerAutoSlide = () => {
     clearInterval(bannerTmr);
     const s = el('banner-slider');
     if (!s || !appData.banners || appData.banners.length <= 1) return;
-    
+
+    // Helper: pause semua iframe video di banner (reset src agar video berhenti)
+    const pauseAllBannerVideos = () => {
+        document.querySelectorAll('#banner-slider iframe.banner-video-iframe').forEach(iframe => {
+            const src = iframe.getAttribute('data-src') || iframe.src;
+            iframe.setAttribute('data-src', src);
+            iframe.src = '';
+        });
+    };
+    // Helper: play iframe video yang sedang terlihat (masuk viewport)
+    const resumeVisibleBannerVideos = () => {
+        const sl = el('banner-slider');
+        if (!sl) return;
+        document.querySelectorAll('#banner-slider iframe.banner-video-iframe').forEach(iframe => {
+            const rect = iframe.getBoundingClientRect();
+            const slRect = sl.getBoundingClientRect();
+            const isVisible = rect.left >= slRect.left - 50 && rect.right <= slRect.right + 50;
+            if (isVisible) {
+                const src = iframe.getAttribute('data-src');
+                if (src && !iframe.src) iframe.src = src;
+            }
+        });
+    };
+
     bannerTmr = setInterval(() => {
         const sl = el('banner-slider');
         if (!sl) return clearInterval(bannerTmr);
+        pauseAllBannerVideos();
         const m = sl.scrollWidth - sl.clientWidth;
         if (sl.scrollLeft >= m - 10) sl.scrollTo({left:0, behavior:'smooth'});
         else sl.scrollBy({left:sl.clientWidth, behavior:'smooth'});
-    }, 3500);
+        setTimeout(resumeVisibleBannerVideos, 600);
+    }, 5000); // sedikit lebih lama (5 detik) agar video sempat diputar
 };
 
 window.rDyn = () => {
@@ -1651,9 +1759,42 @@ window.rDyn = () => {
         }
     }
 
-    // --- RENDER BANNER 3D PREMIUM ---
+    // --- RENDER BANNER 3D PREMIUM (mendukung tipe gambar & video) ---
     let bHTML = (appData.banners && appData.banners.length) ? `<div id="banner-slider" class="flex overflow-x-auto gap-4 sm:gap-6 pb-6 pt-2 snap-x hide-scrollbar scroll-smooth" ontouchstart="clearInterval(bannerTmr)" ontouchend="setTimeout(startBannerAutoSlide, 3000)" onmouseenter="clearInterval(bannerTmr)" onmouseleave="startBannerAutoSlide()">${appData.banners.map((b,i)=>{
-        const linkAction = b.link ? `onclick="window.open('${esc(b.link)}', '_self')"` : '';
+        const isVideo = b.type === 'video' && b.videoUrl;
+        const linkAction = (!isVideo && b.link) ? `onclick="window.open('${esc(b.link)}', '_self')"` : '';
+
+        if (isVideo) {
+            // ── SLIDE VIDEO ──────────────────────────────────────────────────
+            const embedUrl = esc(fixDriveVideo(b.videoUrl));
+            return `
+            <div class="w-[88vw] sm:w-[520px] min-h-[200px] sm:min-h-[260px] snap-center shrink-0 rounded-[2rem] relative overflow-hidden group bg-black shadow-xl border border-white/10 flex flex-col">
+                <!-- iframe video Drive (muted tidak bisa via iframe, tapi autoplay didukung Drive) -->
+                <iframe
+                    class="banner-video-iframe w-full h-full absolute inset-0"
+                    src="${embedUrl}"
+                    data-src="${embedUrl}"
+                    frameborder="0"
+                    allow="autoplay; fullscreen"
+                    allowfullscreen
+                    loading="lazy"
+                    style="min-height:200px;"
+                ></iframe>
+                <!-- Overlay bawah: judul banner di atas video -->
+                <div class="absolute bottom-0 left-0 right-0 z-10 bg-gradient-to-t from-black/80 via-black/40 to-transparent px-5 py-4 flex items-end justify-between">
+                    <div class="flex-1 min-w-0">
+                        ${b.title ? `<p class="text-white font-extrabold text-sm sm:text-base drop-shadow-lg line-clamp-1">${esc(b.title)}</p>` : ''}
+                        ${b.desc  ? `<p class="text-white/75 text-[10px] sm:text-xs font-medium line-clamp-1 mt-0.5">${esc(b.desc)}</p>` : ''}
+                    </div>
+                    <span class="ml-3 shrink-0 inline-flex items-center gap-1 px-3 py-1 bg-white/15 backdrop-blur-md rounded-full text-white text-[9px] font-bold border border-white/25">
+                        <i class="fa-solid fa-play text-[8px]"></i> Video
+                    </span>
+                </div>
+                ${b.link ? `<a href="${esc(b.link)}" target="_self" class="absolute inset-0 z-20" aria-label="${esc(b.title||'Lihat Promo')}"></a>` : ''}
+            </div>`;
+        }
+
+        // ── SLIDE GAMBAR (default) ────────────────────────────────────────
         return `
         <div ${linkAction} class="w-[88vw] sm:w-[480px] min-h-[180px] sm:min-h-[220px] snap-center shrink-0 rounded-[2rem] relative overflow-hidden group cursor-pointer bg-[var(--color-primary)] text-white shadow-md hover:-translate-y-1 hover:scale-[1.01] hover:shadow-lg transition-all duration-300 border border-white/15 flex flex-col">
             <!-- Dynamic Background Shapes -->
@@ -4706,10 +4847,12 @@ const aF = {
         {key:'isActive', label:'Status', type:'select', options:[{val:'true',text:'Aktif (Bisa Ditukar)'},{val:'false',text:'Nonaktif'}]}
     ],
     banners: [
-     {key:'title', label:'Judul Banner', type:'text'}, 
-     {key:'desc', label:'Deskripsi Pendek', type:'textarea'}, 
-     {key:'img', label:'URL Gambar (PNG Transparan disarankan)', type:'text'},
-     {key:'link', label:'Link Tujuan (Contoh: https://wa.me/62... atau link produk)', type:'text'}
+     {key:'title',    label:'Judul Banner',    type:'text'},
+     {key:'desc',     label:'Deskripsi Pendek (Opsional)', type:'textarea'},
+     {key:'type',     label:'Tipe Banner', type:'select', options:[{val:'image',text:'🖼 Gambar (Default)'},{val:'video',text:'🎬 Video Google Drive'}]},
+     {key:'img',      label:'URL Gambar (jika Tipe = Gambar)', type:'text'},
+     {key:'videoUrl', label:'URL / Link Video Google Drive (jika Tipe = Video)', type:'text'},
+     {key:'link',     label:'Link Tujuan Klik (Opsional)', type:'text'}
  ],
 
     vouchers: [
@@ -7321,6 +7464,19 @@ window.oAEd = (t, id) => {
             h += `<div class="relative flex items-center"><input autocomplete='off' type="${k.type}" id="af-${k.key}" value="${esc(v)}" class="admin-input shadow-sm bg-slate-50 dark:bg-slate-900 !pr-12" placeholder="Scan atau ketik..." ></i><button type="button" onclick="openCameraScanner('af-${k.key}')" class="absolute right-2 w-9 h-9 flex items-center justify-center text-slate-400 hover:bg-slate-200 hover:text-emerald-500 rounded-xl transition-all" title="Scan Barcode via HP"><i class="fa-solid fa-qrcode text-lg"></i></button></div>`;
         } else if(k.key === 'img') {
             h += `<div class="flex gap-3"><input autocomplete='off' type="text" id="af-${k.key}" value="${esc(v)}" class="admin-input shadow-sm flex-1 bg-slate-50 dark:bg-slate-900" placeholder="URL Gambar" ></i><label class="bg-emerald-50 dark:bg-emerald-900/30 border border-emerald-200 dark:border-emerald-800 text-[var(--color-primary)] font-bold rounded-xl px-5 flex items-center justify-center cursor-pointer hover:bg-emerald-100 transition-all shrink-0 active:scale-95 shadow-sm" title="Upload dari Galeri"><i class="fa-solid fa-cloud-arrow-up sm:mr-2"></i><span class="hidden sm:inline">Upload</span><input type="file" accept="image/*" class="hidden" onchange="handleImageUpload(this, 'af-${k.key}')" ></i></label><label class="bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 text-blue-600 dark:text-blue-400 font-bold rounded-xl px-5 flex items-center justify-center cursor-pointer hover:bg-blue-100 transition-all shrink-0 active:scale-95 shadow-sm" title="Ambil Foto Langsung"><i class="fa-solid fa-camera"></i><input type="file" accept="image/*" capture="environment" class="hidden" onchange="handleImageUpload(this, 'af-${k.key}')" ></i></label></div>`;
+        } else if(k.key === 'videoUrl') {
+            // FITUR BARU: tombol upload video ke Google Drive via GAS
+            h += `<div class="flex flex-col gap-2">
+                <div class="flex gap-3">
+                    <input autocomplete='off' type="text" id="af-${k.key}" value="${esc(v)}" class="admin-input shadow-sm flex-1 bg-slate-50 dark:bg-slate-900" placeholder="Paste URL Drive atau upload video di bawah">
+                    <label class="bg-violet-50 dark:bg-violet-900/30 border border-violet-200 dark:border-violet-800 text-violet-600 dark:text-violet-400 font-bold rounded-xl px-4 flex items-center justify-center cursor-pointer hover:bg-violet-100 transition-all shrink-0 active:scale-95 shadow-sm gap-2" title="Upload Video ke Google Drive">
+                        <i class="fa-solid fa-film"></i><span class="hidden sm:inline text-[11px]">Upload Video</span>
+                        <input type="file" accept="video/mp4,video/webm,video/quicktime,video/x-msvideo,video/3gpp" class="hidden" onchange="handleVideoUpload(this, 'af-${k.key}')">
+                    </label>
+                </div>
+                <p class="text-[10px] font-bold text-slate-400 flex items-center gap-1.5"><i class="fa-solid fa-circle-info text-violet-400"></i>Upload video MP4/WEBM/MOV max 50MB, atau paste link Google Drive langsung.</p>
+                ${v ? `<div class="rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700 bg-black aspect-video w-full max-w-xs"><iframe src="${esc(fixDriveVideo(v))}" class="w-full h-full" frameborder="0" allow="autoplay; fullscreen" allowfullscreen loading="lazy"></iframe></div>` : ''}
+            </div>`;
         } else if(k.type === 'richtext') {
             h += `
             <div class="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden shadow-sm bg-white dark:bg-slate-900">
