@@ -708,6 +708,13 @@ html.dark .primary-gradient-card-border {
     background-color: rgba(var(--color-primary-rgb), 0.2) !important;
 }
 
-/* Background Vector Shapes (Statis, Tajam, Bersih) */
-
-
+/* Sembunyikan kontrol native play/pause pada video banner agar tampilan bersih */
+video.banner-video-element::-webkit-media-controls,
+video.banner-video-element::-webkit-media-controls-enclosure,
+video.banner-video-element::-webkit-media-controls-panel,
+video.banner-video-element::-webkit-media-controls-play-button,
+video.banner-video-element::-webkit-media-controls-start-playback-button {
+    display: none !important;
+    -webkit-appearance: none !important;
+    opacity: 0 !important;
+}

@@ -2004,7 +2004,7 @@ window.rDyn = () => {
             if (vInfo.type === 'youtube') {
                 videoMediaHtml = `
                 <iframe
-                    class="banner-video-iframe w-[114%] h-[142%] -top-[19%] -left-[7%] absolute z-0 border-0"
+                    class="banner-video-iframe w-[114%] h-[142%] -top-[19%] -left-[7%] absolute z-0 border-0 pointer-events-none select-none"
                     src="${esc(vInfo.embedUrl)}"
                     data-src="${esc(vInfo.embedUrl)}"
                     frameborder="0"
@@ -2015,7 +2015,7 @@ window.rDyn = () => {
                 videoMediaHtml = `
                 <!-- Google Drive Official Preview Player (Cropped Rapi, Tanpa Scrollbar & Header Bar) -->
                 <iframe
-                    class="banner-video-iframe w-[114%] h-[142%] -top-[19%] -left-[7%] absolute z-0 border-0"
+                    class="banner-video-iframe w-[114%] h-[142%] -top-[19%] -left-[7%] absolute z-0 border-0 pointer-events-none select-none"
                     src="${esc(vInfo.embedUrl)}"
                     data-src="${esc(vInfo.embedUrl)}"
                     frameborder="0"
@@ -2028,7 +2028,7 @@ window.rDyn = () => {
             } else {
                 videoMediaHtml = `
                 <video
-                    class="banner-video-element w-full h-full object-cover absolute inset-0 z-0"
+                    class="banner-video-element w-full h-full object-cover absolute inset-0 z-0 pointer-events-none select-none"
                     src="${esc(vInfo.directUrl)}"
                     autoplay
                     loop

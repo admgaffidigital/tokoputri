@@ -60,7 +60,7 @@ import{f as me}from"./vendor-firebase-core-D2OF5R23.js";import"./vendor-firebase
         <div id="banner-slider" class="flex overflow-x-auto gap-4 sm:gap-6 pb-4 pt-2 snap-x hide-scrollbar scroll-smooth" ontouchstart="clearInterval(bannerTmr)" ontouchend="setTimeout(startBannerAutoSlide, 8000)" onmouseenter="clearInterval(bannerTmr)" onmouseleave="startBannerAutoSlide()" onscroll="window.onBannerScroll && window.onBannerScroll()">
             ${l.banners.map((d,p)=>{const m=d.type==="video"&&d.videoUrl,b=!m&&d.link?`onclick="window.open('${c(d.link)}', '_self')"`:"";if(m){const f=gt(d.videoUrl)||{type:"direct",directUrl:it(d.videoUrl),embedUrl:Ct(d.videoUrl)};let g="";return f.type==="youtube"?g=`
                 <iframe
-                    class="banner-video-iframe w-[114%] h-[142%] -top-[19%] -left-[7%] absolute z-0 border-0"
+                    class="banner-video-iframe w-[114%] h-[142%] -top-[19%] -left-[7%] absolute z-0 border-0 pointer-events-none select-none"
                     src="${c(f.embedUrl)}"
                     data-src="${c(f.embedUrl)}"
                     frameborder="0"
@@ -69,7 +69,7 @@ import{f as me}from"./vendor-firebase-core-D2OF5R23.js";import"./vendor-firebase
                 ></iframe>`:f.type==="gdrive"?g=`
                 <!-- Google Drive Official Preview Player (Cropped Rapi, Tanpa Scrollbar & Header Bar) -->
                 <iframe
-                    class="banner-video-iframe w-[114%] h-[142%] -top-[19%] -left-[7%] absolute z-0 border-0"
+                    class="banner-video-iframe w-[114%] h-[142%] -top-[19%] -left-[7%] absolute z-0 border-0 pointer-events-none select-none"
                     src="${c(f.embedUrl)}"
                     data-src="${c(f.embedUrl)}"
                     frameborder="0"
@@ -80,7 +80,7 @@ import{f as me}from"./vendor-firebase-core-D2OF5R23.js";import"./vendor-firebase
                     style="min-height:200px;"
                 ></iframe>`:g=`
                 <video
-                    class="banner-video-element w-full h-full object-cover absolute inset-0 z-0"
+                    class="banner-video-element w-full h-full object-cover absolute inset-0 z-0 pointer-events-none select-none"
                     src="${c(f.directUrl)}"
                     autoplay
                     loop
