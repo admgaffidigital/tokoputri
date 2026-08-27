@@ -1836,7 +1836,18 @@ window.rDyn = () => {
                 ></iframe>`;
             } else if (vInfo.type === 'gdrive') {
                 videoMediaHtml = `
-                <!-- Google Drive Official Preview Player (Cropped Rapi Tanpa Scrollbar & Header Bar) -->
+                <!-- 1. HTML5 Direct Stream (Autoplay Instan & Loop Terus-menerus tanpa klik) -->
+                <video
+                    class="banner-video-element w-full h-full object-cover absolute inset-0 z-0"
+                    src="https://drive.google.com/uc?export=download&id=${vInfo.id}"
+                    autoplay
+                    loop
+                    muted
+                    playsinline
+                    onended="this.currentTime=0; this.play();"
+                    onerror="this.style.display='none'; const iframe=this.nextElementSibling; if(iframe){iframe.style.display='block';}"
+                ></video>
+                <!-- 2. Fallback Iframe Google Drive (Cropped Rapi Tanpa Scrollbar & Header Bar) -->
                 <iframe
                     class="banner-video-iframe w-[114%] h-[142%] -top-[19%] -left-[7%] absolute z-0 border-0"
                     src="${esc(vInfo.embedUrl)}"
@@ -1845,7 +1856,7 @@ window.rDyn = () => {
                     scrolling="no"
                     allow="autoplay; fullscreen"
                     loading="lazy"
-                    style="min-height:200px;"
+                    style="display:none; min-height:200px;"
                 ></iframe>`;
             } else {
                 videoMediaHtml = `
@@ -7557,7 +7568,7 @@ window.oAEd = (t, id) => {
                         <input type="file" accept="video/mp4,video/webm,video/quicktime,video/x-msvideo,video/3gpp" class="hidden" onchange="handleVideoUpload(this, 'af-${k.key}')">
                     </label>
                 </div>
-                <p class="text-[10px] font-bold text-slate-400 flex items-center gap-1.5"><i class="fa-solid fa-circle-info text-violet-400"></i>Upload file MP4 (max 20MB) atau paste link Google Drive / YouTube langsung.</p>
+                <p class="text-[10px] font-bold text-slate-400 flex items-center gap-1.5"><i class="fa-solid fa-circle-info text-violet-400"></i><b>Tips Autoplay:</b> Untuk video 100% otomatis play & loop tanpa klik, gunakan link <b>YouTube / Shorts</b> atau <b>Direct MP4</b>. Upload Drive/HP juga didukung.</p>
                 ${v ? `<div class="rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700 bg-black aspect-video w-full max-w-xs"><iframe src="${esc(fixDriveVideo(v))}" class="w-full h-full" frameborder="0" allow="autoplay; fullscreen" loading="lazy"></iframe></div>` : ''}
             </div>`;
         } else if(k.type === 'richtext') {
