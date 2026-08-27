@@ -220,14 +220,14 @@ const parseVideoUrl = (url) => {
         };
     }
 
-    // 2. Google Drive Video
-    const driveMatch = u.match(/drive\.google\.com.*(?:id=|\/d\/)([a-zA-Z0-9_-]+)/);
+    // 2. Google Drive Video (matches drive.google.com ATAU googleusercontent.com/d/)
+    const driveMatch = u.match(/(?:drive\.google\.com.*(?:id=|\/d\/)|googleusercontent\.com\/d\/)([a-zA-Z0-9_-]+)/);
     if (driveMatch && driveMatch[1]) {
         const id = driveMatch[1];
         return {
             type: 'gdrive',
             id: id,
-            directUrl: `https://lh3.googleusercontent.com/d/${id}`,
+            directUrl: `https://drive.google.com/file/d/${id}/preview`,
             embedUrl: `https://drive.google.com/file/d/${id}/preview`
         };
     }
@@ -243,7 +243,7 @@ window.parseVideoUrl = parseVideoUrl;
 
 const fixDriveVideo = v => {
     const parsed = parseVideoUrl(v);
-    return parsed ? (parsed.directUrl || parsed.embedUrl) : v;
+    return parsed ? parsed.embedUrl : v;
 };
 window.fixDriveVideo = fixDriveVideo;
 
@@ -1655,8 +1655,8 @@ window.handleVideoUpload = async (inputElement, targetInputId) => {
             try { responseData = JSON.parse(textRes); } catch(e) { return showToast('Error Server GAS!'); }
 
             if (responseData.status === 'success') {
-                // Konversi ke URL embed iframe Drive
-                const embedUrl = fixDriveVideo('https://drive.google.com/file/d/' + responseData.fileId + '/view');
+                // Konversi ke URL embed iframe Drive (/preview)
+                const embedUrl = 'https://drive.google.com/file/d/' + responseData.fileId + '/preview';
                 const targetInput = el(targetInputId);
                 if (targetInput) {
                     targetInput.value = embedUrl;
@@ -1830,26 +1830,16 @@ window.rDyn = () => {
                 ></iframe>`;
             } else if (vInfo.type === 'gdrive') {
                 videoMediaHtml = `
-                <!-- 1. Native HTML5 Video (lh3 direct stream) -->
-                <video
-                    class="banner-video-element w-full h-full object-cover absolute inset-0 z-0"
-                    src="${esc(vInfo.directUrl)}"
-                    autoplay
-                    loop
-                    muted
-                    playsinline
-                    onerror="this.style.display='none'; const iframe=this.nextElementSibling; if(iframe){iframe.style.display='block'; if(!iframe.src) iframe.src=iframe.getAttribute('data-src');}"
-                ></video>
-                <!-- 2. Fallback iframe Google Drive (Cropped rapi tanpa scrollbar/header bar) -->
+                <!-- Iframe Google Drive Cropped Rapi (Tanpa Scrollbar & Header Bar) -->
                 <iframe
-                    class="banner-video-iframe w-[110%] h-[135%] -top-[16%] -left-[5%] absolute z-0 pointer-events-none border-0"
+                    class="banner-video-iframe w-[114%] h-[142%] -top-[19%] -left-[7%] absolute z-0 border-0"
                     src="${esc(vInfo.embedUrl)}"
                     data-src="${esc(vInfo.embedUrl)}"
                     frameborder="0"
                     scrolling="no"
                     allow="autoplay; fullscreen"
                     loading="lazy"
-                    style="display:none; min-height:200px;"
+                    style="min-height:200px;"
                 ></iframe>`;
             } else {
                 videoMediaHtml = `
