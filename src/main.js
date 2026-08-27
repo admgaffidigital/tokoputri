@@ -1720,6 +1720,22 @@ window.handleRTEditorImage = async (inputElement, editorId) => {
     reader.onerror = () => { showToast("Gagal membaca file!"); hLoad(); inputElement.value=''; };
 };
 
+// Pastikan video langsung diputar otomatis saat halaman dibuka / tab aktif kembali
+const forcePlayBannerVideos = () => {
+    document.querySelectorAll('#banner-slider video.banner-video-element').forEach(vid => {
+        vid.muted = true;
+        vid.play().catch(() => {});
+    });
+};
+window.forcePlayBannerVideos = forcePlayBannerVideos;
+
+if (typeof window !== 'undefined') {
+    window.addEventListener('visibilitychange', () => { if (!document.hidden) forcePlayBannerVideos(); });
+    window.addEventListener('focus', forcePlayBannerVideos);
+    document.addEventListener('touchstart', forcePlayBannerVideos, { once: true, passive: true });
+    document.addEventListener('click', forcePlayBannerVideos, { once: true, passive: true });
+}
+
 // --- 8. RENDERER HALAMAN UTAMA (KATALOG) ---
 window.startBannerAutoSlide = () => {
     clearInterval(bannerTmr);
@@ -1743,6 +1759,10 @@ window.startBannerAutoSlide = () => {
             }
         });
     };
+
+    // Jalankan pemutaran video langsung saat banner dirender/dibuka
+    syncBannerVideos();
+    forcePlayBannerVideos();
 
     bannerTmr = setInterval(() => {
         const sl = el('banner-slider');
