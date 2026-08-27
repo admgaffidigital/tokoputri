@@ -204,19 +204,52 @@ const fixD = v => {
     return m ? `https://lh3.googleusercontent.com/d/${m[1]}` : v;
 };
 
-// Konversi URL Google Drive ke format direct stream (khusus HTML5 video tag)
+// Parser pintar URL Video (Google Drive, YouTube/Shorts, atau Direct MP4)
+const parseVideoUrl = (url) => {
+    if (typeof url !== 'string' || !url.trim()) return null;
+    const u = url.trim();
+
+    // 1. YouTube Video / Shorts
+    const ytMatch = u.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?|shorts)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/);
+    if (ytMatch && ytMatch[1]) {
+        const id = ytMatch[1];
+        return {
+            type: 'youtube',
+            id: id,
+            embedUrl: `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&mute=1&loop=1&playlist=${id}&controls=0&modestbranding=1&rel=0&enablejsapi=1`
+        };
+    }
+
+    // 2. Google Drive Video
+    const driveMatch = u.match(/drive\.google\.com.*(?:id=|\/d\/)([a-zA-Z0-9_-]+)/);
+    if (driveMatch && driveMatch[1]) {
+        const id = driveMatch[1];
+        return {
+            type: 'gdrive',
+            id: id,
+            directUrl: `https://lh3.googleusercontent.com/d/${id}`,
+            embedUrl: `https://drive.google.com/file/d/${id}/preview`
+        };
+    }
+
+    // 3. Direct Video File (MP4, WebM, MOV, dll)
+    return {
+        type: 'direct',
+        directUrl: u,
+        embedUrl: u
+    };
+};
+window.parseVideoUrl = parseVideoUrl;
+
 const fixDriveVideo = v => {
-    if (typeof v !== 'string') return v;
-    const m = v.match(/drive\.google\.com.*(?:id=|\/d\/)([a-zA-Z0-9_-]+)/);
-    return m ? `https://lh3.googleusercontent.com/d/${m[1]}` : v;
+    const parsed = parseVideoUrl(v);
+    return parsed ? (parsed.directUrl || parsed.embedUrl) : v;
 };
 window.fixDriveVideo = fixDriveVideo;
 
-// Konversi URL Google Drive ke format embed iframe preview (fallback)
 const fixDriveVideoPreview = v => {
-    if (typeof v !== 'string') return v;
-    const m = v.match(/drive\.google\.com.*(?:id=|\/d\/)([a-zA-Z0-9_-]+)/);
-    return m ? `https://drive.google.com/file/d/${m[1]}/preview` : v;
+    const parsed = parseVideoUrl(v);
+    return parsed ? parsed.embedUrl : v;
 };
 window.fixDriveVideoPreview = fixDriveVideoPreview;
 
@@ -1781,31 +1814,58 @@ window.rDyn = () => {
         const linkAction = (!isVideo && b.link) ? `onclick="window.open('${esc(b.link)}', '_self')"` : '';
 
         if (isVideo) {
-            // ── SLIDE VIDEO ──────────────────────────────────────────────────
-            const directVideoUrl = esc(fixDriveVideo(b.videoUrl));
-            const embedUrl = esc(fixDriveVideoPreview(b.videoUrl));
-            return `
-            <div class="w-[88vw] sm:w-[520px] min-h-[200px] sm:min-h-[260px] snap-center shrink-0 rounded-[2rem] relative overflow-hidden group bg-black shadow-xl border border-white/10 flex flex-col">
-                <!-- 1. Native HTML5 Video (Autoplay, muted, loop, playsinline) -->
+            // ── SLIDE VIDEO (Google Drive, YouTube/Shorts, atau Direct MP4) ──
+            const vInfo = parseVideoUrl(b.videoUrl) || { type: 'direct', directUrl: fixDriveVideo(b.videoUrl), embedUrl: fixDriveVideoPreview(b.videoUrl) };
+            
+            let videoMediaHtml = '';
+            if (vInfo.type === 'youtube') {
+                videoMediaHtml = `
+                <iframe
+                    class="banner-video-iframe w-[110%] h-[140%] -top-[20%] -left-[5%] absolute z-0 pointer-events-none border-0"
+                    src="${esc(vInfo.embedUrl)}"
+                    data-src="${esc(vInfo.embedUrl)}"
+                    frameborder="0"
+                    scrolling="no"
+                    allow="autoplay; fullscreen; encrypted-media"
+                ></iframe>`;
+            } else if (vInfo.type === 'gdrive') {
+                videoMediaHtml = `
+                <!-- 1. Native HTML5 Video (lh3 direct stream) -->
                 <video
                     class="banner-video-element w-full h-full object-cover absolute inset-0 z-0"
-                    src="${directVideoUrl}"
+                    src="${esc(vInfo.directUrl)}"
                     autoplay
                     loop
                     muted
                     playsinline
                     onerror="this.style.display='none'; const iframe=this.nextElementSibling; if(iframe){iframe.style.display='block'; if(!iframe.src) iframe.src=iframe.getAttribute('data-src');}"
                 ></video>
-                <!-- 2. Secondary Fallback iframe preview jika HTML5 video gagal -->
+                <!-- 2. Fallback iframe Google Drive (Cropped rapi tanpa scrollbar/header bar) -->
                 <iframe
-                    class="banner-video-iframe w-full h-full absolute inset-0 z-0"
-                    src="${embedUrl}"
-                    data-src="${embedUrl}"
+                    class="banner-video-iframe w-[110%] h-[135%] -top-[16%] -left-[5%] absolute z-0 pointer-events-none border-0"
+                    src="${esc(vInfo.embedUrl)}"
+                    data-src="${esc(vInfo.embedUrl)}"
                     frameborder="0"
+                    scrolling="no"
                     allow="autoplay; fullscreen"
                     loading="lazy"
                     style="display:none; min-height:200px;"
-                ></iframe>
+                ></iframe>`;
+            } else {
+                videoMediaHtml = `
+                <video
+                    class="banner-video-element w-full h-full object-cover absolute inset-0 z-0"
+                    src="${esc(vInfo.directUrl)}"
+                    autoplay
+                    loop
+                    muted
+                    playsinline
+                ></video>`;
+            }
+
+            return `
+            <div class="w-[88vw] sm:w-[520px] min-h-[200px] sm:min-h-[260px] snap-center shrink-0 rounded-[2rem] relative overflow-hidden group bg-black shadow-xl border border-white/10 flex flex-col">
+                ${videoMediaHtml}
                 <!-- Overlay bawah: judul banner di atas video -->
                 <div class="absolute bottom-0 left-0 right-0 z-10 bg-gradient-to-t from-black/80 via-black/40 to-transparent px-5 py-4 flex items-end justify-between pointer-events-none">
                     <div class="flex-1 min-w-0">
@@ -4875,9 +4935,9 @@ const aF = {
     banners: [
      {key:'title',    label:'Judul Banner',    type:'text'},
      {key:'desc',     label:'Deskripsi Pendek (Opsional)', type:'textarea'},
-     {key:'type',     label:'Tipe Banner', type:'select', options:[{val:'image',text:'🖼 Gambar (Default)'},{val:'video',text:'🎬 Video Google Drive'}]},
+     {key:'type',     label:'Tipe Banner', type:'select', options:[{val:'image',text:'🖼 Gambar (Default)'},{val:'video',text:'🎬 Video (Drive / YouTube / MP4)'}]},
      {key:'img',      label:'URL Gambar (jika Tipe = Gambar)', type:'text'},
-     {key:'videoUrl', label:'URL / Link Video Google Drive (jika Tipe = Video)', type:'text'},
+     {key:'videoUrl', label:'URL / Link Video (Google Drive, YouTube, atau MP4)', type:'text'},
      {key:'link',     label:'Link Tujuan Klik (Opsional)', type:'text'}
  ],
 
@@ -7500,7 +7560,7 @@ window.oAEd = (t, id) => {
                         <input type="file" accept="video/mp4,video/webm,video/quicktime,video/x-msvideo,video/3gpp" class="hidden" onchange="handleVideoUpload(this, 'af-${k.key}')">
                     </label>
                 </div>
-                <p class="text-[10px] font-bold text-slate-400 flex items-center gap-1.5"><i class="fa-solid fa-circle-info text-violet-400"></i>Upload video MP4/WEBM/MOV max 20MB, atau paste link Google Drive langsung.</p>
+                <p class="text-[10px] font-bold text-slate-400 flex items-center gap-1.5"><i class="fa-solid fa-circle-info text-violet-400"></i>Upload file MP4 (max 20MB) atau paste link Google Drive / YouTube langsung.</p>
                 ${v ? `<div class="rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700 bg-black aspect-video w-full max-w-xs"><iframe src="${esc(fixDriveVideo(v))}" class="w-full h-full" frameborder="0" allow="autoplay; fullscreen" loading="lazy"></iframe></div>` : ''}
             </div>`;
         } else if(k.type === 'richtext') {
