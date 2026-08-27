@@ -719,19 +719,3 @@ video.banner-video-element::-webkit-media-controls-start-playback-button {
     opacity: 0 !important;
 }
 
-/* Penyamar transparan tombol kontrol player di tengah video */
-.banner-center-mask {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 250px;
-    height: 110px;
-    border-radius: 9999px;
-    background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0.35) 60%, transparent 100%);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    z-index: 12;
-    pointer-events: none;
-}
-

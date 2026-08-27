@@ -2047,8 +2047,6 @@ window.rDyn = () => {
                 ${videoMediaHtml}
                 <!-- Top Masking Gradient: Menutup nama channel / header title video agar tampilan bersih -->
                 <div class="absolute top-0 left-0 right-0 h-14 bg-gradient-to-b from-black/80 via-black/30 to-transparent z-10 pointer-events-none"></div>
-                <!-- Center Mask: Menyamarkan dan membuat tombol pause/play/maju/mundur di tengah menjadi transparan/tertutup -->
-                <div class="banner-center-mask"></div>
                 <!-- Shield Transparan: Mencegah klik/tap pada video agar video tidak bisa di-klik/di-pause -->
                 <div class="absolute inset-0 z-15 bg-transparent pointer-events-auto cursor-default" onclick="event.preventDefault(); event.stopPropagation();"></div>
                 <!-- Overlay bawah: judul banner di atas video -->
