@@ -1549,6 +1549,69 @@ window.handleRTEditorImage = async (inputElement, editorId) => {
     reader.onerror = () => { showToast("Gagal membaca file!"); hLoad(); inputElement.value=''; };
 };
 
+// Fitur Toggle Suara Video Banner (Mute / Unmute)
+window.toggleBannerVideoSound = (btn, slideIdx) => {
+    const slide = el(`banner-slide-${slideIdx}`) || (btn && btn.closest('.banner-slide-item'));
+    if (!slide) return;
+
+    // 1. Cek HTML5 <video>
+    const vid = slide.querySelector('video.banner-video-element');
+    if (vid) {
+        if (vid.muted) {
+            vid.muted = false;
+            vid.volume = 1.0;
+            vid.dataset.userUnmuted = "true";
+            vid.play().catch(() => {});
+            if (btn) {
+                btn.innerHTML = `<i class="fa-solid fa-volume-high text-xs"></i> <span>Suara On</span>`;
+                btn.className = 'banner-sound-toggle inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white text-[10px] sm:text-xs font-bold rounded-full shadow-lg border border-white/20 active:scale-95 transition-all cursor-pointer';
+            }
+        } else {
+            vid.muted = true;
+            vid.dataset.userUnmuted = "false";
+            if (btn) {
+                btn.innerHTML = `<i class="fa-solid fa-volume-xmark text-xs"></i> <span>Aktifkan Suara</span>`;
+                btn.className = 'banner-sound-toggle inline-flex items-center gap-1.5 px-3 py-1.5 bg-rose-600 hover:bg-rose-500 text-white text-[10px] sm:text-xs font-bold rounded-full shadow-lg border border-white/20 active:scale-95 transition-all cursor-pointer';
+            }
+        }
+        return;
+    }
+
+    // 2. Cek YouTube / Drive iframe
+    const iframe = slide.querySelector('iframe.banner-video-iframe');
+    if (iframe) {
+        const isMuted = iframe.dataset.soundMuted !== 'false';
+        if (isMuted) {
+            try {
+                iframe.contentWindow.postMessage('{"event":"command","func":"unMute","args":""}', '*');
+                iframe.contentWindow.postMessage('{"event":"command","func":"setVolume","args":[100]}', '*');
+            } catch(e) {}
+            let src = iframe.src || iframe.getAttribute('src');
+            if (src && src.includes('mute=1')) {
+                iframe.src = src.replace('mute=1', 'mute=0').replace('muted=1', 'muted=0');
+            }
+            iframe.dataset.soundMuted = 'false';
+            if (btn) {
+                btn.innerHTML = `<i class="fa-solid fa-volume-high text-xs"></i> <span>Suara On</span>`;
+                btn.className = 'banner-sound-toggle inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white text-[10px] sm:text-xs font-bold rounded-full shadow-lg border border-white/20 active:scale-95 transition-all cursor-pointer';
+            }
+        } else {
+            try {
+                iframe.contentWindow.postMessage('{"event":"command","func":"mute","args":""}', '*');
+            } catch(e) {}
+            let src = iframe.src || iframe.getAttribute('src');
+            if (src && src.includes('mute=0')) {
+                iframe.src = src.replace('mute=0', 'mute=1').replace('muted=0', 'muted=1');
+            }
+            iframe.dataset.soundMuted = 'true';
+            if (btn) {
+                btn.innerHTML = `<i class="fa-solid fa-volume-xmark text-xs"></i> <span>Aktifkan Suara</span>`;
+                btn.className = 'banner-sound-toggle inline-flex items-center gap-1.5 px-3 py-1.5 bg-rose-600 hover:bg-rose-500 text-white text-[10px] sm:text-xs font-bold rounded-full shadow-lg border border-white/20 active:scale-95 transition-all cursor-pointer';
+            }
+        }
+    }
+};
+
 // --- 8. RENDERER HALAMAN UTAMA (KATALOG) ---
 let bannerScrollDebounce = null;
 window.updateBannerDots = (activeIdx) => {

@@ -1732,13 +1732,15 @@ window.handleRTEditorImage = async (inputElement, editorId) => {
 // Pastikan video langsung diputar otomatis saat halaman dibuka & mengulang dari awal ketika habis
 const forcePlayBannerVideos = () => {
     document.querySelectorAll('#banner-slider video.banner-video-element').forEach(vid => {
-        vid.muted = true;
-        vid.loop = true;
-        vid.playsInline = true;
-        vid.setAttribute('playsinline', '');
-        vid.setAttribute('muted', '');
-        vid.setAttribute('loop', '');
-        vid.setAttribute('autoplay', '');
+        if (!vid.dataset.init) {
+            vid.dataset.init = "true";
+            vid.muted = true;
+            vid.loop = true;
+            vid.playsInline = true;
+            vid.setAttribute('playsinline', '');
+            vid.setAttribute('loop', '');
+            vid.setAttribute('autoplay', '');
+        }
         
         if (!vid.dataset.loopAttached) {
             vid.dataset.loopAttached = "true";
@@ -1748,10 +1750,78 @@ const forcePlayBannerVideos = () => {
             });
         }
         
+        // Jangan memaksa vid.muted = true jika user sudah mengaktifkan suara
+        if (vid.dataset.userUnmuted === "true") {
+            vid.muted = false;
+        }
+        
         vid.play().catch(() => {});
     });
 };
 window.forcePlayBannerVideos = forcePlayBannerVideos;
+
+// Fitur Toggle Suara Video Banner (Mute / Unmute)
+window.toggleBannerVideoSound = (btn, slideIdx) => {
+    const slide = el(`banner-slide-${slideIdx}`) || (btn && btn.closest('.banner-slide-item'));
+    if (!slide) return;
+
+    // 1. Cek HTML5 <video>
+    const vid = slide.querySelector('video.banner-video-element');
+    if (vid) {
+        if (vid.muted) {
+            vid.muted = false;
+            vid.volume = 1.0;
+            vid.dataset.userUnmuted = "true";
+            vid.play().catch(() => {});
+            if (btn) {
+                btn.innerHTML = `<i class="fa-solid fa-volume-high text-xs"></i> <span>Suara On</span>`;
+                btn.className = 'banner-sound-toggle inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white text-[10px] sm:text-xs font-bold rounded-full shadow-lg border border-white/20 active:scale-95 transition-all cursor-pointer';
+            }
+        } else {
+            vid.muted = true;
+            vid.dataset.userUnmuted = "false";
+            if (btn) {
+                btn.innerHTML = `<i class="fa-solid fa-volume-xmark text-xs"></i> <span>Aktifkan Suara</span>`;
+                btn.className = 'banner-sound-toggle inline-flex items-center gap-1.5 px-3 py-1.5 bg-rose-600 hover:bg-rose-500 text-white text-[10px] sm:text-xs font-bold rounded-full shadow-lg border border-white/20 active:scale-95 transition-all cursor-pointer';
+            }
+        }
+        return;
+    }
+
+    // 2. Cek YouTube / Drive iframe
+    const iframe = slide.querySelector('iframe.banner-video-iframe');
+    if (iframe) {
+        const isMuted = iframe.dataset.soundMuted !== 'false';
+        if (isMuted) {
+            try {
+                iframe.contentWindow.postMessage('{"event":"command","func":"unMute","args":""}', '*');
+                iframe.contentWindow.postMessage('{"event":"command","func":"setVolume","args":[100]}', '*');
+            } catch(e) {}
+            let src = iframe.src || iframe.getAttribute('src');
+            if (src && src.includes('mute=1')) {
+                iframe.src = src.replace('mute=1', 'mute=0').replace('muted=1', 'muted=0');
+            }
+            iframe.dataset.soundMuted = 'false';
+            if (btn) {
+                btn.innerHTML = `<i class="fa-solid fa-volume-high text-xs"></i> <span>Suara On</span>`;
+                btn.className = 'banner-sound-toggle inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white text-[10px] sm:text-xs font-bold rounded-full shadow-lg border border-white/20 active:scale-95 transition-all cursor-pointer';
+            }
+        } else {
+            try {
+                iframe.contentWindow.postMessage('{"event":"command","func":"mute","args":""}', '*');
+            } catch(e) {}
+            let src = iframe.src || iframe.getAttribute('src');
+            if (src && src.includes('mute=0')) {
+                iframe.src = src.replace('mute=0', 'mute=1').replace('muted=0', 'muted=1');
+            }
+            iframe.dataset.soundMuted = 'true';
+            if (btn) {
+                btn.innerHTML = `<i class="fa-solid fa-volume-xmark text-xs"></i> <span>Aktifkan Suara</span>`;
+                btn.className = 'banner-sound-toggle inline-flex items-center gap-1.5 px-3 py-1.5 bg-rose-600 hover:bg-rose-500 text-white text-[10px] sm:text-xs font-bold rounded-full shadow-lg border border-white/20 active:scale-95 transition-all cursor-pointer';
+            }
+        }
+    }
+};
 
 if (typeof window !== 'undefined') {
     window.addEventListener('visibilitychange', () => { if (!document.hidden) forcePlayBannerVideos(); });
@@ -1969,7 +2039,7 @@ window.rDyn = () => {
             }
 
             return `
-            <div class="banner-slide-item w-[88vw] sm:w-[520px] min-h-[200px] sm:min-h-[260px] snap-center shrink-0 rounded-[2rem] relative overflow-hidden group bg-black shadow-xl border border-white/10 flex flex-col">
+            <div id="banner-slide-${i}" class="banner-slide-item w-[88vw] sm:w-[520px] min-h-[200px] sm:min-h-[260px] snap-center shrink-0 rounded-[2rem] relative overflow-hidden group bg-black shadow-xl border border-white/10 flex flex-col">
                 ${videoMediaHtml}
                 <!-- Overlay bawah: judul banner di atas video -->
                 <div class="absolute bottom-0 left-0 right-0 z-10 bg-gradient-to-t from-black/80 via-black/40 to-transparent px-5 py-4 flex items-end justify-between pointer-events-none">
@@ -1977,9 +2047,11 @@ window.rDyn = () => {
                         ${b.title ? `<p class="text-white font-extrabold text-sm sm:text-base drop-shadow-lg line-clamp-1">${esc(b.title)}</p>` : ''}
                         ${b.desc  ? `<p class="text-white/75 text-[10px] sm:text-xs font-medium line-clamp-1 mt-0.5">${esc(b.desc)}</p>` : ''}
                     </div>
-                    <span class="ml-3 shrink-0 inline-flex items-center gap-1 px-3 py-1 bg-white/15 backdrop-blur-md rounded-full text-white text-[9px] font-bold border border-white/25">
-                        <i class="fa-solid fa-play text-[8px]"></i> Video
-                    </span>
+                    <div class="ml-3 shrink-0 flex items-center gap-2 pointer-events-auto">
+                        <button onclick="window.toggleBannerVideoSound(this, ${i})" type="button" aria-label="Aktifkan Suara Video" class="banner-sound-toggle inline-flex items-center gap-1.5 px-3 py-1.5 bg-rose-600 hover:bg-rose-500 text-white text-[10px] sm:text-xs font-bold rounded-full shadow-lg border border-white/20 active:scale-95 transition-all cursor-pointer">
+                            <i class="fa-solid fa-volume-xmark text-xs"></i> <span>Aktifkan Suara</span>
+                        </button>
+                    </div>
                 </div>
                 ${b.link ? `<a href="${esc(b.link)}" target="_self" class="absolute inset-0 z-20" aria-label="${esc(b.title||'Lihat Promo')}"></a>` : ''}
             </div>`;
