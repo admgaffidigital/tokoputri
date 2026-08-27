@@ -64,21 +64,7 @@ import{f as me}from"./vendor-firebase-core-D2OF5R23.js";import"./vendor-firebase
                     scrolling="no"
                     allow="autoplay; fullscreen; encrypted-media"
                 ></iframe>`:f.type==="gdrive"?g=`
-                <!-- 1. HTML5 Video Stream (Multi-Source untuk Autoplay Instan & Loop Terus-Menerus) -->
-                <video
-                    class="banner-video-element w-full h-full object-cover absolute inset-0 z-0"
-                    autoplay
-                    loop
-                    muted
-                    playsinline
-                    onended="this.currentTime=0; this.play();"
-                    onerror="this.style.display='none'; const iframe=this.nextElementSibling; if(iframe){iframe.style.display='block';}"
-                >
-                    <source src="https://lh3.googleusercontent.com/d/${f.id}" type="video/mp4" />
-                    <source src="https://drive.google.com/uc?export=download&id=${f.id}" type="video/mp4" />
-                    <source src="https://drive.google.com/uc?export=open&id=${f.id}" type="video/mp4" />
-                </video>
-                <!-- 2. Fallback Iframe Cropped Rapi (Tanpa Scrollbar & Header Bar) -->
+                <!-- Google Drive Official Preview Player (Cropped Rapi Tanpa Scrollbar & Header Bar) -->
                 <iframe
                     class="banner-video-iframe w-[114%] h-[142%] -top-[19%] -left-[7%] absolute z-0 border-0"
                     src="${c(f.embedUrl)}"
@@ -87,7 +73,7 @@ import{f as me}from"./vendor-firebase-core-D2OF5R23.js";import"./vendor-firebase
                     scrolling="no"
                     allow="autoplay; fullscreen"
                     loading="lazy"
-                    style="display:none; min-height:200px;"
+                    style="min-height:200px;"
                 ></iframe>`:g=`
                 <video
                     class="banner-video-element w-full h-full object-cover absolute inset-0 z-0"
@@ -96,6 +82,7 @@ import{f as me}from"./vendor-firebase-core-D2OF5R23.js";import"./vendor-firebase
                     loop
                     muted
                     playsinline
+                    onended="this.currentTime=0; this.play();"
                 ></video>`,`
             <div class="w-[88vw] sm:w-[520px] min-h-[200px] sm:min-h-[260px] snap-center shrink-0 rounded-[2rem] relative overflow-hidden group bg-black shadow-xl border border-white/10 flex flex-col">
                 ${g}

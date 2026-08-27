@@ -1836,21 +1836,7 @@ window.rDyn = () => {
                 ></iframe>`;
             } else if (vInfo.type === 'gdrive') {
                 videoMediaHtml = `
-                <!-- 1. HTML5 Video Stream (Multi-Source untuk Autoplay Instan & Loop Terus-Menerus) -->
-                <video
-                    class="banner-video-element w-full h-full object-cover absolute inset-0 z-0"
-                    autoplay
-                    loop
-                    muted
-                    playsinline
-                    onended="this.currentTime=0; this.play();"
-                    onerror="this.style.display='none'; const iframe=this.nextElementSibling; if(iframe){iframe.style.display='block';}"
-                >
-                    <source src="https://lh3.googleusercontent.com/d/${vInfo.id}" type="video/mp4" />
-                    <source src="https://drive.google.com/uc?export=download&id=${vInfo.id}" type="video/mp4" />
-                    <source src="https://drive.google.com/uc?export=open&id=${vInfo.id}" type="video/mp4" />
-                </video>
-                <!-- 2. Fallback Iframe Cropped Rapi (Tanpa Scrollbar & Header Bar) -->
+                <!-- Google Drive Official Preview Player (Cropped Rapi Tanpa Scrollbar & Header Bar) -->
                 <iframe
                     class="banner-video-iframe w-[114%] h-[142%] -top-[19%] -left-[7%] absolute z-0 border-0"
                     src="${esc(vInfo.embedUrl)}"
@@ -1859,7 +1845,7 @@ window.rDyn = () => {
                     scrolling="no"
                     allow="autoplay; fullscreen"
                     loading="lazy"
-                    style="display:none; min-height:200px;"
+                    style="min-height:200px;"
                 ></iframe>`;
             } else {
                 videoMediaHtml = `
@@ -1870,6 +1856,7 @@ window.rDyn = () => {
                     loop
                     muted
                     playsinline
+                    onended="this.currentTime=0; this.play();"
                 ></video>`;
             }
 
