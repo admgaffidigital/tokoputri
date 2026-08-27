@@ -2045,15 +2045,13 @@ window.rDyn = () => {
             return `
             <div id="banner-slide-${i}" class="banner-slide-item w-[88vw] sm:w-[520px] min-h-[200px] sm:min-h-[260px] snap-center shrink-0 rounded-[2rem] relative overflow-hidden group bg-black shadow-none border border-white/10 flex flex-col select-none">
                 ${videoMediaHtml}
-                <!-- Top Masking Gradient: Menutup nama channel / header title video agar tampilan bersih -->
-                <div class="absolute top-0 left-0 right-0 h-14 bg-gradient-to-b from-black/80 via-black/30 to-transparent z-10 pointer-events-none"></div>
                 <!-- Shield Transparan: Mencegah klik/tap pada video agar video tidak bisa di-klik/di-pause -->
                 <div class="absolute inset-0 z-15 bg-transparent pointer-events-auto cursor-default" onclick="event.preventDefault(); event.stopPropagation();"></div>
-                <!-- Overlay bawah: judul banner di atas video -->
-                <div class="absolute bottom-0 left-0 right-0 z-20 bg-gradient-to-t from-black/80 via-black/40 to-transparent px-5 py-4 flex items-end justify-between pointer-events-none">
+                <!-- Konten bawah: judul & tombol suara murni transparan tanpa shadow gradient -->
+                <div class="absolute bottom-0 left-0 right-0 z-20 bg-transparent px-5 py-4 flex items-end justify-between pointer-events-none">
                     <div class="flex-1 min-w-0 pointer-events-none">
-                        ${b.title ? `<p class="text-white font-extrabold text-sm sm:text-base drop-shadow-lg line-clamp-1">${esc(b.title)}</p>` : ''}
-                        ${b.desc  ? `<p class="text-white/75 text-[10px] sm:text-xs font-medium line-clamp-1 mt-0.5">${esc(b.desc)}</p>` : ''}
+                        ${b.title ? `<p class="text-white font-extrabold text-sm sm:text-base line-clamp-1">${esc(b.title)}</p>` : ''}
+                        ${b.desc  ? `<p class="text-white/80 text-[10px] sm:text-xs font-medium line-clamp-1 mt-0.5">${esc(b.desc)}</p>` : ''}
                     </div>
                     <div class="ml-3 shrink-0 flex items-center gap-2 pointer-events-auto">
                         <button onclick="event.stopPropagation(); window.toggleBannerVideoSound(this, ${i});" type="button" aria-label="Aktifkan Suara Video" class="banner-sound-toggle inline-flex items-center gap-1.5 px-3 py-1.5 bg-rose-600 hover:bg-rose-500 text-white text-[10px] sm:text-xs font-bold rounded-full shadow-none border border-white/20 active:scale-95 transition-all cursor-pointer">
