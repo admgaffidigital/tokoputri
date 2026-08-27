@@ -236,7 +236,8 @@ const parseVideoUrl = (url) => {
         return {
             type: 'gdrive',
             id: id,
-            directUrl: `https://drive.google.com/file/d/${id}/preview`,
+            streamUrl: `https://lh3.googleusercontent.com/d/${id}`,
+            directUrl: `https://drive.google.com/uc?export=download&id=${id}`,
             embedUrl: `https://drive.google.com/file/d/${id}/preview`
         };
     }
@@ -2012,19 +2013,19 @@ window.rDyn = () => {
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                 ></iframe>`;
             } else if (vInfo.type === 'gdrive') {
+                const streamSrc = vInfo.streamUrl || `https://lh3.googleusercontent.com/d/${vInfo.id}`;
                 videoMediaHtml = `
-                <!-- Google Drive Official Preview Player (Cropped Rapi, Tanpa Scrollbar & Header Bar) -->
-                <iframe
-                    class="banner-video-iframe w-[114%] h-[142%] -top-[19%] -left-[7%] absolute z-0 border-0 pointer-events-none select-none"
-                    src="${esc(vInfo.embedUrl)}"
-                    data-src="${esc(vInfo.embedUrl)}"
-                    frameborder="0"
-                    scrolling="no"
-                    allow="autoplay; fullscreen"
-                    sandbox="allow-scripts allow-same-origin allow-forms allow-presentation allow-popups"
-                    loading="lazy"
-                    style="min-height:200px;"
-                ></iframe>`;
+                <video
+                    class="banner-video-element w-full h-full object-cover absolute inset-0 z-0 pointer-events-none select-none"
+                    src="${esc(streamSrc)}"
+                    autoplay
+                    loop
+                    muted
+                    playsinline
+                    webkit-playsinline
+                    onended="this.currentTime=0; this.play();"
+                    onerror="this.onerror=null; this.outerHTML='<iframe class=\'banner-video-iframe w-[114%] h-[142%] -top-[19%] -left-[7%] absolute z-0 border-0 pointer-events-none select-none\' src=\'${esc(vInfo.embedUrl)}\' frameborder=\'0\' allow=\'autoplay\'></iframe>';"
+                ></video>`;
             } else {
                 videoMediaHtml = `
                 <video
@@ -2034,6 +2035,7 @@ window.rDyn = () => {
                     loop
                     muted
                     playsinline
+                    webkit-playsinline
                     onended="this.currentTime=0; this.play();"
                 ></video>`;
             }
