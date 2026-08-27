@@ -2006,7 +2006,7 @@ window.rDyn = () => {
             if (vInfo.type === 'youtube') {
                 videoMediaHtml = `
                 <iframe
-                    class="banner-video-iframe w-[114%] h-[142%] -top-[19%] -left-[7%] absolute z-0 border-0 pointer-events-none select-none"
+                    class="banner-video-iframe w-[140%] h-[165%] -top-[32.5%] -left-[20%] absolute z-0 border-0 pointer-events-none select-none scale-110"
                     src="${esc(vInfo.embedUrl)}"
                     data-src="${esc(vInfo.embedUrl)}"
                     frameborder="0"
@@ -2045,8 +2045,10 @@ window.rDyn = () => {
             return `
             <div id="banner-slide-${i}" class="banner-slide-item w-[88vw] sm:w-[520px] min-h-[200px] sm:min-h-[260px] snap-center shrink-0 rounded-[2rem] relative overflow-hidden group bg-black shadow-xl border border-white/10 flex flex-col select-none">
                 ${videoMediaHtml}
+                <!-- Top Masking Gradient: Menutup nama channel / header title video agar tampilan bersih -->
+                <div class="absolute top-0 left-0 right-0 h-14 bg-gradient-to-b from-black/80 via-black/30 to-transparent z-10 pointer-events-none"></div>
                 <!-- Shield Transparan: Mencegah klik/tap pada video agar video tidak bisa di-klik/di-pause -->
-                <div class="absolute inset-0 z-10 bg-transparent pointer-events-auto cursor-default" onclick="event.preventDefault(); event.stopPropagation();"></div>
+                <div class="absolute inset-0 z-15 bg-transparent pointer-events-auto cursor-default" onclick="event.preventDefault(); event.stopPropagation();"></div>
                 <!-- Overlay bawah: judul banner di atas video -->
                 <div class="absolute bottom-0 left-0 right-0 z-20 bg-gradient-to-t from-black/80 via-black/40 to-transparent px-5 py-4 flex items-end justify-between pointer-events-none">
                     <div class="flex-1 min-w-0 pointer-events-none">
