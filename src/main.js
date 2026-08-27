@@ -236,9 +236,10 @@ const parseVideoUrl = (url) => {
         return {
             type: 'gdrive',
             id: id,
-            streamUrl: `https://lh3.googleusercontent.com/d/${id}`,
+            streamUrl: `https://drive.google.com/uc?export=download&id=${id}`,
+            streamUrl2: `https://docs.google.com/uc?export=download&id=${id}`,
             directUrl: `https://drive.google.com/uc?export=download&id=${id}`,
-            embedUrl: `https://drive.google.com/file/d/${id}/preview`
+            embedUrl: `https://drive.google.com/file/d/${id}/preview?autoplay=1`
         };
     }
 
@@ -2013,18 +2014,19 @@ window.rDyn = () => {
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                 ></iframe>`;
             } else if (vInfo.type === 'gdrive') {
-                const streamSrc = vInfo.streamUrl || `https://lh3.googleusercontent.com/d/${vInfo.id}`;
+                const s1 = vInfo.streamUrl;
+                const s2 = vInfo.streamUrl2;
                 videoMediaHtml = `
                 <video
                     class="banner-video-element w-full h-full object-cover absolute inset-0 z-0 pointer-events-none select-none"
-                    src="${esc(streamSrc)}"
+                    src="${esc(s1)}"
                     autoplay
                     loop
                     muted
                     playsinline
                     webkit-playsinline
                     onended="this.currentTime=0; this.play();"
-                    onerror="this.onerror=null; this.outerHTML='<iframe class=\'banner-video-iframe w-[114%] h-[142%] -top-[19%] -left-[7%] absolute z-0 border-0 pointer-events-none select-none\' src=\'${esc(vInfo.embedUrl)}\' frameborder=\'0\' allow=\'autoplay\'></iframe>';"
+                    onerror="if(this.src!=='${esc(s2)}'){ this.src='${esc(s2)}'; } else { this.onerror=null; this.outerHTML='<iframe class=\\'banner-video-iframe w-[140%] h-[165%] -top-[32.5%] -left-[20%] absolute z-0 border-0 pointer-events-none select-none scale-110\\' src=\\'${esc(vInfo.embedUrl)}\\' frameborder=\\'0\\' allow=\\'autoplay; fullscreen\\'></iframe>'; }"
                 ></video>`;
             } else {
                 videoMediaHtml = `
