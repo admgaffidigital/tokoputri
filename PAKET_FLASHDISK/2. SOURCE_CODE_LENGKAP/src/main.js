@@ -1550,6 +1550,85 @@ window.handleRTEditorImage = async (inputElement, editorId) => {
 };
 
 // --- 8. RENDERER HALAMAN UTAMA (KATALOG) ---
+let bannerScrollDebounce = null;
+window.updateBannerDots = (activeIdx) => {
+    const dotsContainer = el('banner-dots-container');
+    if (!dotsContainer) return;
+    const dots = dotsContainer.querySelectorAll('.banner-dot-item');
+    dots.forEach((dot, idx) => {
+        if (idx === activeIdx) {
+            dot.className = 'banner-dot-item h-2.5 rounded-full transition-all duration-300 bg-[var(--color-primary)] w-7 shadow-sm';
+        } else {
+            dot.className = 'banner-dot-item w-2.5 h-2.5 rounded-full transition-all duration-300 bg-slate-300 dark:bg-slate-700 hover:bg-slate-400';
+        }
+    });
+};
+
+window.onBannerScroll = () => {
+    if (bannerScrollDebounce) clearTimeout(bannerScrollDebounce);
+    bannerScrollDebounce = setTimeout(() => {
+        const sl = el('banner-slider');
+        if (!sl) return;
+        const items = sl.querySelectorAll('.banner-slide-item');
+        if (!items || !items.length) return;
+        let currentIndex = 0;
+        let minDiff = Infinity;
+        items.forEach((item, idx) => {
+            const diff = Math.abs(item.offsetLeft - sl.scrollLeft);
+            if (diff < minDiff) { minDiff = diff; currentIndex = idx; }
+        });
+        window.updateBannerDots(currentIndex);
+    }, 100);
+};
+
+window.scrollToBanner = (index) => {
+    clearInterval(bannerTmr);
+    const sl = el('banner-slider');
+    if (!sl) return;
+    const items = sl.querySelectorAll('.banner-slide-item');
+    if (items && items[index]) {
+        sl.scrollTo({ left: items[index].offsetLeft - sl.offsetLeft, behavior: 'smooth' });
+        window.updateBannerDots(index);
+    }
+    setTimeout(startBannerAutoSlide, 8000);
+};
+
+window.scrollBannerPrev = () => {
+    clearInterval(bannerTmr);
+    const sl = el('banner-slider');
+    if (!sl) return;
+    const items = sl.querySelectorAll('.banner-slide-item');
+    if (!items || !items.length) return;
+    let currentIndex = 0;
+    let minDiff = Infinity;
+    items.forEach((item, idx) => {
+        const diff = Math.abs(item.offsetLeft - sl.scrollLeft);
+        if (diff < minDiff) { minDiff = diff; currentIndex = idx; }
+    });
+    const prevIndex = (currentIndex - 1 + items.length) % items.length;
+    sl.scrollTo({ left: items[prevIndex].offsetLeft - sl.offsetLeft, behavior: 'smooth' });
+    window.updateBannerDots(prevIndex);
+    setTimeout(startBannerAutoSlide, 8000);
+};
+
+window.scrollBannerNext = () => {
+    clearInterval(bannerTmr);
+    const sl = el('banner-slider');
+    if (!sl) return;
+    const items = sl.querySelectorAll('.banner-slide-item');
+    if (!items || !items.length) return;
+    let currentIndex = 0;
+    let minDiff = Infinity;
+    items.forEach((item, idx) => {
+        const diff = Math.abs(item.offsetLeft - sl.scrollLeft);
+        if (diff < minDiff) { minDiff = diff; currentIndex = idx; }
+    });
+    const nextIndex = (currentIndex + 1) % items.length;
+    sl.scrollTo({ left: items[nextIndex].offsetLeft - sl.offsetLeft, behavior: 'smooth' });
+    window.updateBannerDots(nextIndex);
+    setTimeout(startBannerAutoSlide, 8000);
+};
+
 window.startBannerAutoSlide = () => {
     clearInterval(bannerTmr);
     const s = el('banner-slider');
@@ -1558,10 +1637,27 @@ window.startBannerAutoSlide = () => {
     bannerTmr = setInterval(() => {
         const sl = el('banner-slider');
         if (!sl) return clearInterval(bannerTmr);
-        const m = sl.scrollWidth - sl.clientWidth;
-        if (sl.scrollLeft >= m - 10) sl.scrollTo({left:0, behavior:'smooth'});
-        else sl.scrollBy({left:sl.clientWidth, behavior:'smooth'});
-    }, 3500);
+        const items = sl.querySelectorAll('.banner-slide-item');
+        if (!items || items.length <= 1) {
+            const m = sl.scrollWidth - sl.clientWidth;
+            if (sl.scrollLeft >= m - 10) sl.scrollTo({left:0, behavior:'smooth'});
+            else sl.scrollBy({left:sl.clientWidth, behavior:'smooth'});
+        } else {
+            let currentIndex = 0;
+            let minDiff = Infinity;
+            items.forEach((item, idx) => {
+                const diff = Math.abs(item.offsetLeft - sl.scrollLeft);
+                if (diff < minDiff) {
+                    minDiff = diff;
+                    currentIndex = idx;
+                }
+            });
+            const nextIndex = (currentIndex + 1) % items.length;
+            const targetItem = items[nextIndex];
+            sl.scrollTo({ left: targetItem.offsetLeft - sl.offsetLeft, behavior: 'smooth' });
+            window.updateBannerDots(nextIndex);
+        }
+    }, 8000);
 };
 
 window.rDyn = () => {
@@ -1603,10 +1699,13 @@ window.rDyn = () => {
     }
 
     // --- RENDER BANNER 3D PREMIUM ---
-    let bHTML = (appData.banners && appData.banners.length) ? `<div id="banner-slider" class="flex overflow-x-auto gap-4 sm:gap-6 pb-6 pt-2 snap-x hide-scrollbar scroll-smooth" ontouchstart="clearInterval(bannerTmr)" ontouchend="setTimeout(startBannerAutoSlide, 3000)" onmouseenter="clearInterval(bannerTmr)" onmouseleave="startBannerAutoSlide()">${appData.banners.map((b,i)=>{
+    let bHTML = (appData.banners && appData.banners.length) ? `
+    <div class="relative group/banner-wrapper w-full">
+        <div id="banner-slider" class="flex overflow-x-auto gap-4 sm:gap-6 pb-4 pt-2 snap-x hide-scrollbar scroll-smooth" ontouchstart="clearInterval(bannerTmr)" ontouchend="setTimeout(startBannerAutoSlide, 8000)" onmouseenter="clearInterval(bannerTmr)" onmouseleave="startBannerAutoSlide()" onscroll="window.onBannerScroll && window.onBannerScroll()">
+            ${appData.banners.map((b,i)=>{
         const linkAction = b.link ? `onclick="window.open('${esc(b.link)}', '_self')"` : '';
         return `
-        <div ${linkAction} class="w-[88vw] sm:w-[480px] min-h-[180px] sm:min-h-[220px] snap-center shrink-0 rounded-[2rem] relative overflow-hidden group cursor-pointer bg-[var(--color-primary)] text-white shadow-md hover:-translate-y-1 hover:scale-[1.01] hover:shadow-lg transition-all duration-300 border border-white/15 flex flex-col">
+        <div ${linkAction} class="banner-slide-item w-[88vw] sm:w-[480px] min-h-[180px] sm:min-h-[220px] snap-center shrink-0 rounded-[2rem] relative overflow-hidden group cursor-pointer bg-[var(--color-primary)] text-white shadow-md hover:-translate-y-1 hover:scale-[1.01] hover:shadow-lg transition-all duration-300 border border-white/15 flex flex-col">
             <!-- Dynamic Background Shapes -->
             <div class="absolute -right-10 -top-10 w-40 h-40 border-[24px] border-white/10 rounded-full pointer-events-none group-hover:scale-110 transition-transform duration-500"></div>
             <div class="absolute -left-12 top-10 w-24 h-24 bg-white/10 rounded-full border border-white/5 pointer-events-none transform -rotate-12 shadow-inner group-hover:-translate-x-2 transition-transform duration-500"></div>
@@ -1627,7 +1726,25 @@ window.rDyn = () => {
                 </div>
             </div>
         </div>`;
-    }).join('')}</div>` : '';
+    }).join('')}
+        </div>
+        ${appData.banners.length > 1 ? `
+        <!-- Navigation Arrows (Desktop) -->
+        <button onclick="window.scrollBannerPrev()" type="button" aria-label="Banner Sebelumnya" class="hidden sm:flex absolute left-1 top-1/2 -translate-y-1/2 z-30 w-10 h-10 rounded-full bg-slate-900/60 hover:bg-slate-900/80 text-white backdrop-blur-md items-center justify-center border border-white/20 transition-all opacity-0 group-hover/banner-wrapper:opacity-100 shadow-xl active:scale-95">
+            <i class="fa-solid fa-chevron-left text-sm"></i>
+        </button>
+        <button onclick="window.scrollBannerNext()" type="button" aria-label="Banner Selanjutnya" class="hidden sm:flex absolute right-1 top-1/2 -translate-y-1/2 z-30 w-10 h-10 rounded-full bg-slate-900/60 hover:bg-slate-900/80 text-white backdrop-blur-md items-center justify-center border border-white/20 transition-all opacity-0 group-hover/banner-wrapper:opacity-100 shadow-xl active:scale-95">
+            <i class="fa-solid fa-chevron-right text-sm"></i>
+        </button>
+
+        <!-- Dots Indicator Navigation -->
+        <div id="banner-dots-container" class="flex items-center justify-center gap-1.5 mt-2">
+            ${appData.banners.map((_, idx) => `
+                <button onclick="window.scrollToBanner(${idx})" type="button" aria-label="Slide ${idx+1}" class="banner-dot-item ${idx === 0 ? 'h-2.5 rounded-full transition-all duration-300 bg-[var(--color-primary)] w-7 shadow-sm' : 'w-2.5 h-2.5 rounded-full transition-all duration-300 bg-slate-300 dark:bg-slate-700 hover:bg-slate-400'}" data-index="${idx}"></button>
+            `).join('')}
+        </div>
+        ` : ''}
+    </div>` : '';
 
     setH('dynamic-banners-container', bHTML);
     setTimeout(startBannerAutoSlide, 500);
