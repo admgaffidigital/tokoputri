@@ -204,19 +204,28 @@ const fixD = v => {
     return m ? `https://lh3.googleusercontent.com/d/${m[1]}` : v;
 };
 
+// Extractor ID YouTube (Mendukung YouTube Biasa, Shorts, youtu.be, embed, dll)
+const getYouTubeId = (url) => {
+    if (!url || typeof url !== 'string') return null;
+    const u = url.trim();
+    if (/^[a-zA-Z0-9_-]{11}$/.test(u)) return u;
+    const match = u.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?|shorts)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i);
+    return match ? match[1] : null;
+};
+window.getYouTubeId = getYouTubeId;
+
 // Parser pintar URL Video (Google Drive, YouTube/Shorts, atau Direct MP4)
 const parseVideoUrl = (url) => {
     if (typeof url !== 'string' || !url.trim()) return null;
     const u = url.trim();
 
-    // 1. YouTube Video / Shorts
-    const ytMatch = u.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?|shorts)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/);
-    if (ytMatch && ytMatch[1]) {
-        const id = ytMatch[1];
+    // 1. YouTube Video / Shorts / Share Links
+    const ytId = getYouTubeId(u);
+    if (ytId) {
         return {
             type: 'youtube',
-            id: id,
-            embedUrl: `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&mute=1&loop=1&playlist=${id}&controls=0&modestbranding=1&rel=0&enablejsapi=1`
+            id: ytId,
+            embedUrl: `https://www.youtube-nocookie.com/embed/${ytId}?autoplay=1&mute=1&loop=1&playlist=${ytId}&controls=0&modestbranding=1&rel=0&enablejsapi=1`
         };
     }
 
