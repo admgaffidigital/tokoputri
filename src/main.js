@@ -1845,16 +1845,17 @@ window.rDyn = () => {
                 ></iframe>`;
             } else if (vInfo.type === 'gdrive') {
                 videoMediaHtml = `
-                <!-- HTML5 Native Direct Stream (lh3 CDN - Tanpa Iframe, Bebas Error frame-ancestors, Autoplay Instan & Loop Terus Menerus) -->
-                <video
-                    class="banner-video-element w-full h-full object-cover absolute inset-0 z-0"
-                    src="https://lh3.googleusercontent.com/d/${vInfo.id}"
-                    autoplay
-                    loop
-                    muted
-                    playsinline
-                    onended="this.currentTime=0; this.play();"
-                ></video>`;
+                <!-- Google Drive Official Preview Player (Cropped Rapi, Tanpa Scrollbar & Header Bar) -->
+                <iframe
+                    class="banner-video-iframe w-[114%] h-[142%] -top-[19%] -left-[7%] absolute z-0 border-0"
+                    src="${esc(vInfo.embedUrl)}"
+                    data-src="${esc(vInfo.embedUrl)}"
+                    frameborder="0"
+                    scrolling="no"
+                    allow="autoplay; fullscreen"
+                    loading="lazy"
+                    style="min-height:200px;"
+                ></iframe>`;
             } else {
                 videoMediaHtml = `
                 <video
