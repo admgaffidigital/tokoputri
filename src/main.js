@@ -204,15 +204,21 @@ const fixD = v => {
     return m ? `https://lh3.googleusercontent.com/d/${m[1]}` : v;
 };
 
-// Konversi URL Google Drive ke format embed iframe (khusus video)
-// Drive share URL: https://drive.google.com/file/d/FILE_ID/view
-// → Embed URL:     https://drive.google.com/file/d/FILE_ID/preview
+// Konversi URL Google Drive ke format direct stream (khusus HTML5 video tag)
 const fixDriveVideo = v => {
+    if (typeof v !== 'string') return v;
+    const m = v.match(/drive\.google\.com.*(?:id=|\/d\/)([a-zA-Z0-9_-]+)/);
+    return m ? `https://lh3.googleusercontent.com/d/${m[1]}` : v;
+};
+window.fixDriveVideo = fixDriveVideo;
+
+// Konversi URL Google Drive ke format embed iframe preview (fallback)
+const fixDriveVideoPreview = v => {
     if (typeof v !== 'string') return v;
     const m = v.match(/drive\.google\.com.*(?:id=|\/d\/)([a-zA-Z0-9_-]+)/);
     return m ? `https://drive.google.com/file/d/${m[1]}/preview` : v;
 };
-window.fixDriveVideo = fixDriveVideo;
+window.fixDriveVideoPreview = fixDriveVideoPreview;
 
 // Optimizer Google User Content Image (Ukuran & Format WebP)
 const getOptImg = (url, sizeOpt) => {
@@ -1687,25 +1693,36 @@ window.startBannerAutoSlide = () => {
     const s = el('banner-slider');
     if (!s || !appData.banners || appData.banners.length <= 1) return;
 
-    // Helper: pause semua iframe video di banner (reset src agar video berhenti)
-    const pauseAllBannerVideos = () => {
-        document.querySelectorAll('#banner-slider iframe.banner-video-iframe').forEach(iframe => {
-            const src = iframe.getAttribute('data-src') || iframe.src;
-            iframe.setAttribute('data-src', src);
-            iframe.src = '';
-        });
-    };
-    // Helper: play iframe video yang sedang terlihat (masuk viewport)
-    const resumeVisibleBannerVideos = () => {
+    // Helper: kontrol playback video (play yang aktif, pause yang tersembunyi)
+    const syncBannerVideos = () => {
         const sl = el('banner-slider');
         if (!sl) return;
-        document.querySelectorAll('#banner-slider iframe.banner-video-iframe').forEach(iframe => {
-            const rect = iframe.getBoundingClientRect();
-            const slRect = sl.getBoundingClientRect();
-            const isVisible = rect.left >= slRect.left - 50 && rect.right <= slRect.right + 50;
+        const slRect = sl.getBoundingClientRect();
+
+        // Control HTML5 <video> elements
+        document.querySelectorAll('#banner-slider video.banner-video-element').forEach(vid => {
+            const rect = vid.getBoundingClientRect();
+            const isVisible = rect.left >= slRect.left - 100 && rect.right <= slRect.right + 100;
             if (isVisible) {
-                const src = iframe.getAttribute('data-src');
-                if (src && !iframe.src) iframe.src = src;
+                if (vid.paused) vid.play().catch(() => {});
+            } else {
+                if (!vid.paused) vid.pause();
+            }
+        });
+
+        // Control iframe fallbacks
+        document.querySelectorAll('#banner-slider iframe.banner-video-iframe').forEach(iframe => {
+            if (iframe.style.display === 'none') return;
+            const rect = iframe.getBoundingClientRect();
+            const isVisible = rect.left >= slRect.left - 100 && rect.right <= slRect.right + 100;
+            const src = iframe.getAttribute('data-src') || iframe.src;
+            if (isVisible) {
+                if (!iframe.src && src) iframe.src = src;
+            } else {
+                if (iframe.src) {
+                    iframe.setAttribute('data-src', iframe.src);
+                    iframe.src = '';
+                }
             }
         });
     };
@@ -1713,12 +1730,11 @@ window.startBannerAutoSlide = () => {
     bannerTmr = setInterval(() => {
         const sl = el('banner-slider');
         if (!sl) return clearInterval(bannerTmr);
-        pauseAllBannerVideos();
         const m = sl.scrollWidth - sl.clientWidth;
         if (sl.scrollLeft >= m - 10) sl.scrollTo({left:0, behavior:'smooth'});
         else sl.scrollBy({left:sl.clientWidth, behavior:'smooth'});
-        setTimeout(resumeVisibleBannerVideos, 600);
-    }, 5000); // sedikit lebih lama (5 detik) agar video sempat diputar
+        setTimeout(syncBannerVideos, 400);
+    }, 5000); // 5 detik per slide
 };
 
 window.rDyn = () => {
@@ -1766,22 +1782,33 @@ window.rDyn = () => {
 
         if (isVideo) {
             // ── SLIDE VIDEO ──────────────────────────────────────────────────
-            const embedUrl = esc(fixDriveVideo(b.videoUrl));
+            const directVideoUrl = esc(fixDriveVideo(b.videoUrl));
+            const embedUrl = esc(fixDriveVideoPreview(b.videoUrl));
             return `
             <div class="w-[88vw] sm:w-[520px] min-h-[200px] sm:min-h-[260px] snap-center shrink-0 rounded-[2rem] relative overflow-hidden group bg-black shadow-xl border border-white/10 flex flex-col">
-                <!-- iframe video Drive (muted tidak bisa via iframe, tapi autoplay didukung Drive) -->
+                <!-- 1. Native HTML5 Video (Autoplay, muted, loop, playsinline) -->
+                <video
+                    class="banner-video-element w-full h-full object-cover absolute inset-0 z-0"
+                    src="${directVideoUrl}"
+                    autoplay
+                    loop
+                    muted
+                    playsinline
+                    onerror="this.style.display='none'; const iframe=this.nextElementSibling; if(iframe){iframe.style.display='block'; if(!iframe.src) iframe.src=iframe.getAttribute('data-src');}"
+                ></video>
+                <!-- 2. Secondary Fallback iframe preview jika HTML5 video gagal -->
                 <iframe
-                    class="banner-video-iframe w-full h-full absolute inset-0"
+                    class="banner-video-iframe w-full h-full absolute inset-0 z-0"
                     src="${embedUrl}"
                     data-src="${embedUrl}"
                     frameborder="0"
                     allow="autoplay; fullscreen"
                     allowfullscreen
                     loading="lazy"
-                    style="min-height:200px;"
+                    style="display:none; min-height:200px;"
                 ></iframe>
                 <!-- Overlay bawah: judul banner di atas video -->
-                <div class="absolute bottom-0 left-0 right-0 z-10 bg-gradient-to-t from-black/80 via-black/40 to-transparent px-5 py-4 flex items-end justify-between">
+                <div class="absolute bottom-0 left-0 right-0 z-10 bg-gradient-to-t from-black/80 via-black/40 to-transparent px-5 py-4 flex items-end justify-between pointer-events-none">
                     <div class="flex-1 min-w-0">
                         ${b.title ? `<p class="text-white font-extrabold text-sm sm:text-base drop-shadow-lg line-clamp-1">${esc(b.title)}</p>` : ''}
                         ${b.desc  ? `<p class="text-white/75 text-[10px] sm:text-xs font-medium line-clamp-1 mt-0.5">${esc(b.desc)}</p>` : ''}
