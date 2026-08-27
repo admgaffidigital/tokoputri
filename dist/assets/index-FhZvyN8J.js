@@ -88,21 +88,22 @@ import{f as me}from"./vendor-firebase-core-D2OF5R23.js";import"./vendor-firebase
                     playsinline
                     onended="this.currentTime=0; this.play();"
                 ></video>`,`
-            <div id="banner-slide-${p}" class="banner-slide-item w-[88vw] sm:w-[520px] min-h-[200px] sm:min-h-[260px] snap-center shrink-0 rounded-[2rem] relative overflow-hidden group bg-black shadow-xl border border-white/10 flex flex-col">
+            <div id="banner-slide-${p}" class="banner-slide-item w-[88vw] sm:w-[520px] min-h-[200px] sm:min-h-[260px] snap-center shrink-0 rounded-[2rem] relative overflow-hidden group bg-black shadow-xl border border-white/10 flex flex-col select-none">
                 ${g}
+                <!-- Shield Transparan: Mencegah klik/tap pada video agar video tidak bisa di-klik/di-pause -->
+                <div class="absolute inset-0 z-10 bg-transparent pointer-events-auto cursor-default" onclick="event.preventDefault(); event.stopPropagation();"></div>
                 <!-- Overlay bawah: judul banner di atas video -->
-                <div class="absolute bottom-0 left-0 right-0 z-10 bg-gradient-to-t from-black/80 via-black/40 to-transparent px-5 py-4 flex items-end justify-between pointer-events-none">
-                    <div class="flex-1 min-w-0">
+                <div class="absolute bottom-0 left-0 right-0 z-20 bg-gradient-to-t from-black/80 via-black/40 to-transparent px-5 py-4 flex items-end justify-between pointer-events-none">
+                    <div class="flex-1 min-w-0 pointer-events-none">
                         ${d.title?`<p class="text-white font-extrabold text-sm sm:text-base drop-shadow-lg line-clamp-1">${c(d.title)}</p>`:""}
                         ${d.desc?`<p class="text-white/75 text-[10px] sm:text-xs font-medium line-clamp-1 mt-0.5">${c(d.desc)}</p>`:""}
                     </div>
                     <div class="ml-3 shrink-0 flex items-center gap-2 pointer-events-auto">
-                        <button onclick="window.toggleBannerVideoSound(this, ${p})" type="button" aria-label="Aktifkan Suara Video" class="banner-sound-toggle inline-flex items-center gap-1.5 px-3 py-1.5 bg-rose-600 hover:bg-rose-500 text-white text-[10px] sm:text-xs font-bold rounded-full shadow-lg border border-white/20 active:scale-95 transition-all cursor-pointer">
+                        <button onclick="event.stopPropagation(); window.toggleBannerVideoSound(this, ${p});" type="button" aria-label="Aktifkan Suara Video" class="banner-sound-toggle inline-flex items-center gap-1.5 px-3 py-1.5 bg-rose-600 hover:bg-rose-500 text-white text-[10px] sm:text-xs font-bold rounded-full shadow-lg border border-white/20 active:scale-95 transition-all cursor-pointer">
                             <i class="fa-solid fa-volume-xmark text-xs"></i> <span>Aktifkan Suara</span>
                         </button>
                     </div>
                 </div>
-                ${d.link?`<a href="${c(d.link)}" target="_self" class="absolute inset-0 z-20" aria-label="${c(d.title||"Lihat Promo")}"></a>`:""}
             </div>`}return`
         <div ${b} class="banner-slide-item w-[88vw] sm:w-[480px] min-h-[180px] sm:min-h-[220px] snap-center shrink-0 rounded-[2rem] relative overflow-hidden group cursor-pointer bg-[var(--color-primary)] text-white shadow-md hover:-translate-y-1 hover:scale-[1.01] hover:shadow-lg transition-all duration-300 border border-white/15 flex flex-col">
             <!-- Dynamic Background Shapes -->
