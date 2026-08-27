@@ -1720,10 +1720,25 @@ window.handleRTEditorImage = async (inputElement, editorId) => {
     reader.onerror = () => { showToast("Gagal membaca file!"); hLoad(); inputElement.value=''; };
 };
 
-// Pastikan video langsung diputar otomatis saat halaman dibuka / tab aktif kembali
+// Pastikan video langsung diputar otomatis saat halaman dibuka & mengulang dari awal ketika habis
 const forcePlayBannerVideos = () => {
     document.querySelectorAll('#banner-slider video.banner-video-element').forEach(vid => {
         vid.muted = true;
+        vid.loop = true;
+        vid.playsInline = true;
+        vid.setAttribute('playsinline', '');
+        vid.setAttribute('muted', '');
+        vid.setAttribute('loop', '');
+        vid.setAttribute('autoplay', '');
+        
+        if (!vid.dataset.loopAttached) {
+            vid.dataset.loopAttached = "true";
+            vid.addEventListener('ended', () => {
+                vid.currentTime = 0;
+                vid.play().catch(() => {});
+            });
+        }
+        
         vid.play().catch(() => {});
     });
 };
@@ -1744,20 +1759,7 @@ window.startBannerAutoSlide = () => {
 
     // Helper: kontrol playback video (pastikan video HTML5 terputar terus)
     const syncBannerVideos = () => {
-        const sl = el('banner-slider');
-        if (!sl) return;
-        const slRect = sl.getBoundingClientRect();
-
-        // Control HTML5 <video> elements
-        document.querySelectorAll('#banner-slider video.banner-video-element').forEach(vid => {
-            const rect = vid.getBoundingClientRect();
-            const isVisible = rect.left >= slRect.left - 100 && rect.right <= slRect.right + 100;
-            if (isVisible) {
-                if (vid.paused) vid.play().catch(() => {});
-            } else {
-                if (!vid.paused) vid.pause();
-            }
-        });
+        forcePlayBannerVideos();
     };
 
     // Jalankan pemutaran video langsung saat banner dirender/dibuka
@@ -1834,7 +1836,21 @@ window.rDyn = () => {
                 ></iframe>`;
             } else if (vInfo.type === 'gdrive') {
                 videoMediaHtml = `
-                <!-- Iframe Google Drive Cropped Rapi (Tanpa Scrollbar & Header Bar) -->
+                <!-- 1. HTML5 Video Stream (Multi-Source untuk Autoplay Instan & Loop Terus-Menerus) -->
+                <video
+                    class="banner-video-element w-full h-full object-cover absolute inset-0 z-0"
+                    autoplay
+                    loop
+                    muted
+                    playsinline
+                    onended="this.currentTime=0; this.play();"
+                    onerror="this.style.display='none'; const iframe=this.nextElementSibling; if(iframe){iframe.style.display='block';}"
+                >
+                    <source src="https://lh3.googleusercontent.com/d/${vInfo.id}" type="video/mp4" />
+                    <source src="https://drive.google.com/uc?export=download&id=${vInfo.id}" type="video/mp4" />
+                    <source src="https://drive.google.com/uc?export=open&id=${vInfo.id}" type="video/mp4" />
+                </video>
+                <!-- 2. Fallback Iframe Cropped Rapi (Tanpa Scrollbar & Header Bar) -->
                 <iframe
                     class="banner-video-iframe w-[114%] h-[142%] -top-[19%] -left-[7%] absolute z-0 border-0"
                     src="${esc(vInfo.embedUrl)}"
@@ -1843,7 +1859,7 @@ window.rDyn = () => {
                     scrolling="no"
                     allow="autoplay; fullscreen"
                     loading="lazy"
-                    style="min-height:200px;"
+                    style="display:none; min-height:200px;"
                 ></iframe>`;
             } else {
                 videoMediaHtml = `
