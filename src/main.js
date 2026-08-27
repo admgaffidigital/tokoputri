@@ -1853,6 +1853,7 @@ window.rDyn = () => {
                     frameborder="0"
                     scrolling="no"
                     allow="autoplay; fullscreen"
+                    sandbox="allow-scripts allow-same-origin allow-forms allow-presentation allow-popups"
                     loading="lazy"
                     style="min-height:200px;"
                 ></iframe>`;
