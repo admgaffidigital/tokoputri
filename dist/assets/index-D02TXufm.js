@@ -76,7 +76,7 @@ import{f as me}from"./vendor-firebase-core-D2OF5R23.js";import"./vendor-firebase
                     playsinline
                     webkit-playsinline
                     onended="this.currentTime=0; this.play();"
-                    onerror="if(this.src!=='${c(k)}'){ this.src='${c(k)}'; } else { this.onerror=null; this.outerHTML='<iframe class=\\'banner-video-iframe w-[140%] h-[165%] -top-[32.5%] -left-[20%] absolute z-0 border-0 pointer-events-none select-none scale-110\\' src=\\'${c(f.embedUrl)}\\' frameborder=\\'0\\' allow=\\'autoplay; fullscreen\\'></iframe>'; }"
+                    onerror="if(this.src!=='${c(k)}'){ this.src='${c(k)}'; } else { this.onerror=null; this.outerHTML='<iframe class=\\'banner-video-iframe w-[320%] h-[340%] -top-[120%] -left-[110%] absolute z-0 border-0 pointer-events-none select-none transform scale-[0.3125] origin-top-left\\' src=\\'${c(f.embedUrl)}\\' frameborder=\\'0\\' allow=\\'autoplay; fullscreen\\'></iframe>'; }"
                 ></video>`}else g=`
                 <video
                     class="banner-video-element w-full h-full object-cover absolute inset-0 z-0 pointer-events-none select-none"

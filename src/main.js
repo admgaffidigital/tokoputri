@@ -2026,7 +2026,7 @@ window.rDyn = () => {
                     playsinline
                     webkit-playsinline
                     onended="this.currentTime=0; this.play();"
-                    onerror="if(this.src!=='${esc(s2)}'){ this.src='${esc(s2)}'; } else { this.onerror=null; this.outerHTML='<iframe class=\\'banner-video-iframe w-[140%] h-[165%] -top-[32.5%] -left-[20%] absolute z-0 border-0 pointer-events-none select-none scale-110\\' src=\\'${esc(vInfo.embedUrl)}\\' frameborder=\\'0\\' allow=\\'autoplay; fullscreen\\'></iframe>'; }"
+                    onerror="if(this.src!=='${esc(s2)}'){ this.src='${esc(s2)}'; } else { this.onerror=null; this.outerHTML='<iframe class=\\'banner-video-iframe w-[320%] h-[340%] -top-[120%] -left-[110%] absolute z-0 border-0 pointer-events-none select-none transform scale-[0.3125] origin-top-left\\' src=\\'${esc(vInfo.embedUrl)}\\' frameborder=\\'0\\' allow=\\'autoplay; fullscreen\\'></iframe>'; }"
                 ></video>`;
             } else {
                 videoMediaHtml = `
