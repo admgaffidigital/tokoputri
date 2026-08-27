@@ -1836,7 +1836,7 @@ window.rDyn = () => {
             if (vInfo.type === 'youtube') {
                 videoMediaHtml = `
                 <iframe
-                    class="banner-video-iframe w-[114%] h-[142%] -top-[19%] -left-[7%] absolute z-0 pointer-events-none border-0"
+                    class="banner-video-iframe w-[114%] h-[142%] -top-[19%] -left-[7%] absolute z-0 border-0"
                     src="${esc(vInfo.embedUrl)}"
                     data-src="${esc(vInfo.embedUrl)}"
                     frameborder="0"
