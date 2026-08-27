@@ -1803,7 +1803,6 @@ window.rDyn = () => {
                     data-src="${embedUrl}"
                     frameborder="0"
                     allow="autoplay; fullscreen"
-                    allowfullscreen
                     loading="lazy"
                     style="display:none; min-height:200px;"
                 ></iframe>
@@ -2603,7 +2602,7 @@ const rProdMod = () => {
             if (vc) {
                 vc.classList.remove('hidden');
                 if (!vc.innerHTML) {
-                    vc.innerHTML = `<iframe class="w-full h-full pointer-events-none" src="https://www.youtube.com/embed/${yId}?autoplay=1&mute=1&loop=1&playlist=${yId}&enablejsapi=1&modestbranding=1&controls=0&rel=0&showinfo=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; compute-pressure" allowfullscreen></iframe>`;
+                    vc.innerHTML = `<iframe class="w-full h-full pointer-events-none" src="https://www.youtube.com/embed/${yId}?autoplay=1&mute=1&loop=1&playlist=${yId}&enablejsapi=1&modestbranding=1&controls=0&rel=0&showinfo=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; compute-pressure"></iframe>`;
                 }
             }
             const zoomInd = el('zoom-indicator');
@@ -7502,7 +7501,7 @@ window.oAEd = (t, id) => {
                     </label>
                 </div>
                 <p class="text-[10px] font-bold text-slate-400 flex items-center gap-1.5"><i class="fa-solid fa-circle-info text-violet-400"></i>Upload video MP4/WEBM/MOV max 20MB, atau paste link Google Drive langsung.</p>
-                ${v ? `<div class="rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700 bg-black aspect-video w-full max-w-xs"><iframe src="${esc(fixDriveVideo(v))}" class="w-full h-full" frameborder="0" allow="autoplay; fullscreen" allowfullscreen loading="lazy"></iframe></div>` : ''}
+                ${v ? `<div class="rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700 bg-black aspect-video w-full max-w-xs"><iframe src="${esc(fixDriveVideo(v))}" class="w-full h-full" frameborder="0" allow="autoplay; fullscreen" loading="lazy"></iframe></div>` : ''}
             </div>`;
         } else if(k.type === 'richtext') {
             h += `
