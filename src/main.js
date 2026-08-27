@@ -2043,7 +2043,7 @@ window.rDyn = () => {
             }
 
             return `
-            <div id="banner-slide-${i}" class="banner-slide-item w-[88vw] sm:w-[520px] min-h-[200px] sm:min-h-[260px] snap-center shrink-0 rounded-[2rem] relative overflow-hidden group bg-black shadow-xl border border-white/10 flex flex-col select-none">
+            <div id="banner-slide-${i}" class="banner-slide-item w-[88vw] sm:w-[520px] min-h-[200px] sm:min-h-[260px] snap-center shrink-0 rounded-[2rem] relative overflow-hidden group bg-black shadow-none border border-white/10 flex flex-col select-none">
                 ${videoMediaHtml}
                 <!-- Top Masking Gradient: Menutup nama channel / header title video agar tampilan bersih -->
                 <div class="absolute top-0 left-0 right-0 h-14 bg-gradient-to-b from-black/80 via-black/30 to-transparent z-10 pointer-events-none"></div>
@@ -2056,7 +2056,7 @@ window.rDyn = () => {
                         ${b.desc  ? `<p class="text-white/75 text-[10px] sm:text-xs font-medium line-clamp-1 mt-0.5">${esc(b.desc)}</p>` : ''}
                     </div>
                     <div class="ml-3 shrink-0 flex items-center gap-2 pointer-events-auto">
-                        <button onclick="event.stopPropagation(); window.toggleBannerVideoSound(this, ${i});" type="button" aria-label="Aktifkan Suara Video" class="banner-sound-toggle inline-flex items-center gap-1.5 px-3 py-1.5 bg-rose-600 hover:bg-rose-500 text-white text-[10px] sm:text-xs font-bold rounded-full shadow-lg border border-white/20 active:scale-95 transition-all cursor-pointer">
+                        <button onclick="event.stopPropagation(); window.toggleBannerVideoSound(this, ${i});" type="button" aria-label="Aktifkan Suara Video" class="banner-sound-toggle inline-flex items-center gap-1.5 px-3 py-1.5 bg-rose-600 hover:bg-rose-500 text-white text-[10px] sm:text-xs font-bold rounded-full shadow-none border border-white/20 active:scale-95 transition-all cursor-pointer">
                             <i class="fa-solid fa-volume-xmark text-xs"></i> <span>Aktifkan Suara</span>
                         </button>
                     </div>
@@ -2066,7 +2066,7 @@ window.rDyn = () => {
 
         // ── SLIDE GAMBAR (default) ────────────────────────────────────────
         return `
-        <div ${linkAction} class="banner-slide-item w-[88vw] sm:w-[480px] min-h-[180px] sm:min-h-[220px] snap-center shrink-0 rounded-[2rem] relative overflow-hidden group cursor-pointer bg-[var(--color-primary)] text-white shadow-md hover:-translate-y-1 hover:scale-[1.01] hover:shadow-lg transition-all duration-300 border border-white/15 flex flex-col">
+        <div ${linkAction} class="banner-slide-item w-[88vw] sm:w-[480px] min-h-[180px] sm:min-h-[220px] snap-center shrink-0 rounded-[2rem] relative overflow-hidden group cursor-pointer bg-[var(--color-primary)] text-white shadow-none hover:-translate-y-1 hover:scale-[1.01] hover:shadow-none transition-all duration-300 border border-white/15 flex flex-col">
             <!-- Dynamic Background Shapes -->
             <div class="absolute -right-10 -top-10 w-40 h-40 border-[24px] border-white/10 rounded-full pointer-events-none group-hover:scale-110 transition-transform duration-500"></div>
             <div class="absolute -left-12 top-10 w-24 h-24 bg-white/10 rounded-full border border-white/5 pointer-events-none transform -rotate-12 shadow-inner group-hover:-translate-x-2 transition-transform duration-500"></div>
