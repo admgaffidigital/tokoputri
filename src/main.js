@@ -1845,28 +1845,16 @@ window.rDyn = () => {
                 ></iframe>`;
             } else if (vInfo.type === 'gdrive') {
                 videoMediaHtml = `
-                <!-- 1. HTML5 Direct Stream (Autoplay Instan & Loop Terus-menerus tanpa klik) -->
+                <!-- HTML5 Native Direct Stream (lh3 CDN - Tanpa Iframe, Bebas Error frame-ancestors, Autoplay Instan & Loop Terus Menerus) -->
                 <video
                     class="banner-video-element w-full h-full object-cover absolute inset-0 z-0"
-                    src="https://drive.google.com/uc?export=download&id=${vInfo.id}"
+                    src="https://lh3.googleusercontent.com/d/${vInfo.id}"
                     autoplay
                     loop
                     muted
                     playsinline
                     onended="this.currentTime=0; this.play();"
-                    onerror="this.style.display='none'; const iframe=this.nextElementSibling; if(iframe){iframe.style.display='block';}"
-                ></video>
-                <!-- 2. Fallback Iframe Google Drive (Cropped Rapi Tanpa Scrollbar & Header Bar) -->
-                <iframe
-                    class="banner-video-iframe w-[114%] h-[142%] -top-[19%] -left-[7%] absolute z-0 border-0"
-                    src="${esc(vInfo.embedUrl)}"
-                    data-src="${esc(vInfo.embedUrl)}"
-                    frameborder="0"
-                    scrolling="no"
-                    allow="autoplay; fullscreen"
-                    loading="lazy"
-                    style="display:none; min-height:200px;"
-                ></iframe>`;
+                ></video>`;
             } else {
                 videoMediaHtml = `
                 <video
