@@ -593,7 +593,7 @@ const loadAppData = async () => {
         if(p.img) p.img = fixD(p.img); 
         if(p.variants) p.variants.forEach(v => { if(v.img) v.img = fixD(v.img); }); 
     });
-    if(appData.banners) appData.banners.forEach(b => { if(b.img) b.img = fixD(b.img); });
+    if(appData.banners) appData.banners.forEach(b => { if(b.img) b.img = fixD(b.img); if(b.videoUrl) b.videoUrl = fixDriveVideo(b.videoUrl); });
     if(appData.categories) appData.categories.forEach(c => { if(c.img) c.img = fixD(c.img); });
     if(appData.brands) appData.brands.forEach(b => { if(b.img) b.img = fixD(b.img); });
     if(appData.store.logo) appData.store.logo = fixD(appData.store.logo);
@@ -854,7 +854,7 @@ window.attachRealtimeStockSync = () => {
             appData.config = { ...defApp.config, ...(f.config || {}) };
             appData.taxSettings = { ...defApp.taxSettings, ...(f.taxSettings || {}) }; // FITUR BARU: Menu Pajak
             if (appData.config && appData.config.gasUrl) GAS_UPLOAD_URL = appData.config.gasUrl;
-            if (appData.banners) appData.banners.forEach(b => { if(b.img) b.img = fixD(b.img); });
+            if (appData.banners) appData.banners.forEach(b => { if(b.img) b.img = fixD(b.img); if(b.videoUrl) b.videoUrl = fixDriveVideo(b.videoUrl); });
             if (appData.categories) appData.categories.forEach(c => { if(c.img) c.img = fixD(c.img); });
             if (appData.brands) appData.brands.forEach(b => { if(b.img) b.img = fixD(b.img); });
 
@@ -1570,7 +1570,7 @@ window.handleImageUpload = async (inputElement, targetInputId, varIndex=null) =>
 // Mendukung: mp4, webm, mov, avi — max 50MB
 // Setelah upload, URL embed Drive diisi ke input target
 // ============================================================
-const VIDEO_MAX_SIZE_BYTES = 50 * 1024 * 1024; // 50MB
+const VIDEO_MAX_SIZE_BYTES = 20 * 1024 * 1024; // 20MB (sesuai batas GAS v4.0)
 const ALLOWED_VIDEO_MIMES  = ['video/mp4','video/webm','video/quicktime','video/x-msvideo','video/3gpp'];
 
 window.handleVideoUpload = async (inputElement, targetInputId) => {
@@ -7474,7 +7474,7 @@ window.oAEd = (t, id) => {
                         <input type="file" accept="video/mp4,video/webm,video/quicktime,video/x-msvideo,video/3gpp" class="hidden" onchange="handleVideoUpload(this, 'af-${k.key}')">
                     </label>
                 </div>
-                <p class="text-[10px] font-bold text-slate-400 flex items-center gap-1.5"><i class="fa-solid fa-circle-info text-violet-400"></i>Upload video MP4/WEBM/MOV max 50MB, atau paste link Google Drive langsung.</p>
+                <p class="text-[10px] font-bold text-slate-400 flex items-center gap-1.5"><i class="fa-solid fa-circle-info text-violet-400"></i>Upload video MP4/WEBM/MOV max 20MB, atau paste link Google Drive langsung.</p>
                 ${v ? `<div class="rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700 bg-black aspect-video w-full max-w-xs"><iframe src="${esc(fixDriveVideo(v))}" class="w-full h-full" frameborder="0" allow="autoplay; fullscreen" allowfullscreen loading="lazy"></iframe></div>` : ''}
             </div>`;
         } else if(k.type === 'richtext') {
