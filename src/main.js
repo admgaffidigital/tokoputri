@@ -225,7 +225,7 @@ const parseVideoUrl = (url) => {
         return {
             type: 'youtube',
             id: ytId,
-            embedUrl: `https://www.youtube-nocookie.com/embed/${ytId}?autoplay=1&mute=1&loop=1&playlist=${ytId}&controls=0&modestbranding=1&rel=0&enablejsapi=1`
+            embedUrl: `https://www.youtube.com/embed/${ytId}?autoplay=1&mute=1&muted=1&loop=1&playlist=${ytId}&controls=0&modestbranding=1&rel=0&enablejsapi=1&playsinline=1`
         };
     }
 
@@ -1836,12 +1836,12 @@ window.rDyn = () => {
             if (vInfo.type === 'youtube') {
                 videoMediaHtml = `
                 <iframe
-                    class="banner-video-iframe w-[110%] h-[140%] -top-[20%] -left-[5%] absolute z-0 pointer-events-none border-0"
+                    class="banner-video-iframe w-[114%] h-[142%] -top-[19%] -left-[7%] absolute z-0 pointer-events-none border-0"
                     src="${esc(vInfo.embedUrl)}"
                     data-src="${esc(vInfo.embedUrl)}"
                     frameborder="0"
                     scrolling="no"
-                    allow="autoplay; fullscreen; encrypted-media"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                 ></iframe>`;
             } else if (vInfo.type === 'gdrive') {
                 videoMediaHtml = `
