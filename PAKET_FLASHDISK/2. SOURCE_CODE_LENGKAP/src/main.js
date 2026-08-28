@@ -2428,13 +2428,13 @@ window.rCat = () => {
         
         let unt = `<span class="text-[9px] text-slate-600 dark:text-slate-400 font-bold ml-0.5 mb-0.5 uppercase tracking-wide">/${esc(p.unit||'PCS')}</span>`;
         
-        if (cView === 'grid') {
+                if (cView === 'grid') {
             return `
             <a href="?p=${p.id}" class="w-full bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700/50 rounded-[1.5rem] shadow-soft ${cardCursorCls} transition-all duration-300 flex flex-col group relative overflow-hidden text-left" onclick="event.preventDefault(); openProductModal(${p.id})">
                 ${nH}
                 <div class="relative aspect-square w-full bg-white flex items-center justify-center shrink-0 border-b border-slate-100 dark:border-slate-700/50">
                       ${stockBadge}
-                      <img loading="lazy" src="${esc(getOptImg(p.img, 'w300-rw'))}" onerror="this.onerror=null;this.src='https://placehold.co/400?text=No+Image'" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 ${!a?'grayscale opacity-50':''}">
+                      <img loading="lazy" src="${esc(getOptImg(p.img, 'w300-rw'))}" onerror="this.onerror=null;this.src='https://placehold.co/400?text=No+Image'" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 ${nH ? 'grayscale opacity-50' : ''}">
                 </div>
                 <div class="flex-1 flex flex-col p-3 sm:p-4 min-w-0 bg-white dark:bg-slate-800 relative z-10">
                     ${bH}
@@ -2459,7 +2459,7 @@ window.rCat = () => {
                 ${nH}
                 <div class="relative w-24 h-24 sm:w-28 sm:h-28 shrink-0 bg-white dark:bg-slate-900 rounded-xl flex items-center justify-center p-2 border border-slate-100 dark:border-slate-700/50 overflow-hidden">
                     ${stockBadge}
-                    <img loading="lazy" src="${esc(getOptImg(p.img, 'w300-rw'))}" onerror="this.onerror=null;this.src='https://placehold.co/400?text=No+Image'" class="max-w-full max-h-full object-contain transition-transform duration-500 group-hover:scale-105 ${!a?'grayscale opacity-50':''}">
+                    <img loading="lazy" src="${esc(getOptImg(p.img, 'w300-rw'))}" onerror="this.onerror=null;this.src='https://placehold.co/400?text=No+Image'" class="max-w-full max-h-full object-contain transition-transform duration-500 group-hover:scale-105 ${nH ? 'grayscale opacity-50' : ''}">
                 </div>
                 <div class="flex-1 min-w-0 py-1 flex flex-col justify-center h-full relative z-10 pr-2">
                     ${bH}
