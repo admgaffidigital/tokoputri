@@ -560,104 +560,101 @@ const sanitizeCart = () => {
     ssL('freshmart_cart', JSON.stringify(cart));
 };
 
-// --- 4. LOGIKA LOAD & SAVE DATA UTAMA ---
+// --- 4. LOGIKA LOAD & SAVE DATA UTAMA (OPTIMASI HIGH PERFORMANCE & INSTANT PAINT) ---
 const loadAppData = async () => {
     if(document.documentElement.classList.contains('dark')){
         const icon = el('icon-theme');
         if(icon) icon.className = 'fa-solid fa-sun text-sm text-amber-500';
     }
-    sLoad('Sinkron Data...');
+
+    // Helper sanitasi & normalisasi URL aset
+    const prepareAppData = () => {
+        appData.products = appData.products || [];
+        appData.categories = appData.categories || [];
+        appData.brands = appData.brands || [];
+        appData.vouchers = appData.vouchers || [];
+        appData.products.forEach(p => { 
+            if(p.img) p.img = fixD(p.img); 
+            if(p.variants) p.variants.forEach(v => { if(v.img) v.img = fixD(v.img); }); 
+        });
+        if(appData.banners) appData.banners.forEach(b => { if(b.img) b.img = fixD(b.img); if(b.videoUrl) b.videoUrl = fixDriveVideo(b.videoUrl); });
+        if(appData.categories) appData.categories.forEach(c => { if(c.img) c.img = fixD(c.img); });
+        if(appData.brands) appData.brands.forEach(b => { if(b.img) b.img = fixD(b.img); });
+        if(appData.store.logo) appData.store.logo = fixD(appData.store.logo);
+        if(appData.store.allProductsIcon) appData.store.allProductsIcon = fixD(appData.store.allProductsIcon);
+        if(appData.store.allBrandsIcon) appData.store.allBrandsIcon = fixD(appData.store.allBrandsIcon);
+        if(appData.payment.qrisUrl) appData.payment.qrisUrl = fixD(appData.payment.qrisUrl);
+        
+        cart.forEach(i => { if(i.img) i.img = fixD(i.img); });
+        wishlist.forEach(i => { if(i.img) i.img = fixD(i.img); });
+    };
+
+    // 1. INSTANT HYDRATION: Render langsung dari cache lokal dalam 0ms (tanpa tunggu jaringan)
+    let localCms = JSON.parse(sL('freshmart_cms_data') || 'null');
+    let localProducts = JSON.parse(sL('freshmart_products') || 'null');
+    let localUpdate = parseInt(sL('freshmart_last_update') || '0');
+    let hasRenderedCached = false;
+
+    if (localCms) {
+        appData = { ...defApp, ...localCms };
+        appData.store = { ...defApp.store, ...(localCms.store || {}) };
+        appData.payment = { ...defApp.payment, ...(localCms.payment || {}) };
+        appData.config = { ...defApp.config, ...(localCms.config || {}) };
+        if (appData.config && appData.config.gasUrl) GAS_UPLOAD_URL = appData.config.gasUrl;
+        if (localProducts) appData.products = localProducts;
+        prepareAppData();
+        sanitizeCart();
+        updCart();
+        updWish();
+        rDyn();
+        setIn('stat-products', appData.products.filter(p => p.isActive !== 'false' && p.isActive !== false).length);
+        hLoad(); // Langsung buka antarmuka tanpa jeda
+        hasRenderedCached = true;
+    } else {
+        sLoad('Memuat Toko...');
+    }
+
+    // 2. BACKGROUND REVALIDATION: Sinkronkan update terbaru dari server secara mulus di latar belakang
     try {
         const d = await db.collection("freshmart").doc("cms_data").get();
-        let localProducts = JSON.parse(sL('freshmart_products') || 'null');
-        let localUpdate = parseInt(sL('freshmart_last_update') || '0');
-        
         if (d.exists) {
             const f = d.data();
-            // Simpan cache cms_data ke local storage agar splashscreen bisa membaca data terbaru secara instan
-            ssL('freshmart_cms_data', JSON.stringify(f));
-
-            // Merge Data Setting
-            appData = { ...defApp, ...f };
-            appData.store = { ...defApp.store, ...(f.store || {}) };
-            appData.payment = { ...defApp.payment, ...(f.payment || {}) };
-            // PATCH B1+B2: deep-merge config setelah data server dimuat,
-            // dan terapkan GAS URL di sini (bukan sebelum data ada).
-            appData.config = { ...defApp.config, ...(f.config || {}) };
-            if (appData.config && appData.config.gasUrl) GAS_UPLOAD_URL = appData.config.gasUrl;
-            
             const serverUpdate = f.lastUpdate || 0;
             
-            // Migrasi Produk (Jika masih di array lama, pindah ke Collection Sub)
-            if (f.products && f.products.length > 0) {
-                const batch = db.batch();
-                f.products.forEach(p => {
-                    batch.set(db.collection("freshmart").doc("cms_data").collection("products").doc(p.id.toString()), p);
-                });
-                await batch.commit();
-                await db.collection("freshmart").doc("cms_data").update({ 
-                    products: firebase.firestore.FieldValue.delete(), 
-                    lastUpdate: firebase.firestore.FieldValue.increment(1)
-                });
-                
-                appData.products = f.products.sort((a,b) => (b.id||0) - (a.id||0));
-                ssL('freshmart_products', JSON.stringify(appData.products));
-            } else {
-                // Ambil Produk (Bandingkan versi lokal dengan server agar irit bandwidth)
-                if (localProducts && localUpdate >= serverUpdate) {
-                    appData.products = localProducts;
+            // Perbarui hanya jika server memiliki versi baru atau belum pernah render dari cache
+            if (!hasRenderedCached || serverUpdate > localUpdate) {
+                ssL('freshmart_cms_data', JSON.stringify(f));
+                appData = { ...defApp, ...f };
+                appData.store = { ...defApp.store, ...(f.store || {}) };
+                appData.payment = { ...defApp.payment, ...(f.payment || {}) };
+                appData.config = { ...defApp.config, ...(f.config || {}) };
+                if (appData.config && appData.config.gasUrl) GAS_UPLOAD_URL = appData.config.gasUrl;
+
+                if (f.products && f.products.length > 0) {
+                    appData.products = f.products.sort((a,b) => (b.id||0) - (a.id||0));
+                    ssL('freshmart_products', JSON.stringify(appData.products));
                 } else {
                     const pSnap = await db.collection("freshmart").doc("cms_data").collection("products").get();
                     appData.products = pSnap.docs.map(doc => doc.data()).sort((a,b) => (b.id||0) - (a.id||0));
                     ssL('freshmart_products', JSON.stringify(appData.products));
                     ssL('freshmart_last_update', serverUpdate.toString());
                 }
+                
+                prepareAppData();
+                sanitizeCart();
+                updCart();
+                updWish();
+                rDyn();
+                setIn('stat-products', appData.products.filter(p => p.isActive !== 'false' && p.isActive !== false).length);
             }
         }
     } catch(e) {
-        // Fallback jika Offline
-        const l = JSON.parse(sL('freshmart_cms_data') || 'null');
-        const lp = JSON.parse(sL('freshmart_products') || 'null');
-        if (l) {
-            appData = { ...defApp, ...l };
-            appData.store = { ...defApp.store, ...(l.store || {}) };
-            appData.payment = { ...defApp.payment, ...(l.payment || {}) };
-            // PATCH B7: deep-merge config dari cache offline juga
-            appData.config = { ...defApp.config, ...(l.config || {}) };
-            if (appData.config && appData.config.gasUrl) GAS_UPLOAD_URL = appData.config.gasUrl;
+        if (!hasRenderedCached) {
+            showToast("Mode Offline (Data Lokal)");
         }
-        if (lp) { appData.products = lp; }
-        showToast("Mode Offline (Data Lokal)");
+    } finally {
+        hLoad();
     }
-    
-    // Pastikan array selalu ada
-    appData.products = appData.products || [];
-    appData.categories = appData.categories || [];
-    appData.brands = appData.brands || [];
-    appData.vouchers = appData.vouchers || [];
-    
-
-
-    // Perbaikan URL Drive
-    appData.products.forEach(p => { 
-        if(p.img) p.img = fixD(p.img); 
-        if(p.variants) p.variants.forEach(v => { if(v.img) v.img = fixD(v.img); }); 
-    });
-    if(appData.banners) appData.banners.forEach(b => { if(b.img) b.img = fixD(b.img); if(b.videoUrl) b.videoUrl = fixDriveVideo(b.videoUrl); });
-    if(appData.categories) appData.categories.forEach(c => { if(c.img) c.img = fixD(c.img); });
-    if(appData.brands) appData.brands.forEach(b => { if(b.img) b.img = fixD(b.img); });
-    if(appData.store.logo) appData.store.logo = fixD(appData.store.logo);
-    if(appData.store.allProductsIcon) appData.store.allProductsIcon = fixD(appData.store.allProductsIcon);
-    if(appData.store.allBrandsIcon) appData.store.allBrandsIcon = fixD(appData.store.allBrandsIcon);
-    if(appData.payment.qrisUrl) appData.payment.qrisUrl = fixD(appData.payment.qrisUrl);
-    
-    cart.forEach(i => { if(i.img) i.img = fixD(i.img); });
-    wishlist.forEach(i => { if(i.img) i.img = fixD(i.img); });
-    
-    sanitizeCart();
-    updCart();
-    updWish();
-    rDyn();
     // FITUR BARU: render slot iklan SECARA TERPISAH dari jalur kritis loading.
     // FIX BUG KRITIS: sebelumnya dipanggil langsung di sini — kalau skrip AdSense
     // bermasalah (lambat, diblokir ad-blocker, dsb) dan melempar error, eksekusi

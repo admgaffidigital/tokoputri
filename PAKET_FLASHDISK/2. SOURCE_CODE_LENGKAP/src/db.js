@@ -41,6 +41,17 @@ export const ADMIN_UID = 'K2ijSERTT2dg27yYGTEgn6XHSnW2';
 // CATATAN: merge:true di db.settings() adalah opsi VALID Firebase — artinya
 // "gabungkan settings ini dengan settings yang sudah ada" (bukan override penuh).
 // Tanpa ini Firebase mengeluarkan warning "You are overriding the original host" di console.
+// Aktifkan IndexedDB Persistence dengan sinkronisasi multi-tab untuk load data super cepat & offline
+try {
+    db.enablePersistence({ synchronizeTabs: true }).catch((err) => {
+        if (err.code === 'failed-precondition') {
+            console.info('Firestore persistence: multi-tab active.');
+        } else if (err.code === 'unimplemented') {
+            console.info('Firestore persistence: browser not supported.');
+        }
+    });
+} catch(e) {}
+
 db.settings({
     ignoreUndefinedProperties: true,
     cacheSizeBytes: firebase.firestore.CACHE_SIZE_UNLIMITED,
