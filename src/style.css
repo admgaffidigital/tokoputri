@@ -719,3 +719,35 @@ video.banner-video-element::-webkit-media-controls-start-playback-button {
     opacity: 0 !important;
 }
 
+/* === TABEL SPESIFIKASI PRODUK === */
+.spec-product-table {
+    border-collapse: collapse;
+    width: 100%;
+}
+.spec-product-table tbody tr {
+    transition: background 0.15s;
+}
+.spec-product-table tbody tr:hover td {
+    background-color: rgba(var(--color-primary-rgb), 0.04);
+}
+.spec-product-table tbody tr td {
+    line-height: 1.5;
+    vertical-align: top;
+}
+.spec-product-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Dark mode adjustments */
+@media (prefers-color-scheme: dark) {
+    .spec-product-table tbody tr:hover td {
+        background-color: rgba(var(--color-primary-rgb), 0.08);
+    }
+}
+
+/* Admin spec-table-builder: input baris terlihat jelas saat focus */
+#spec-table-builder-container input:focus {
+    background-color: rgba(var(--color-primary-rgb), 0.04);
+    border-radius: 6px;
+    outline: none;
+}

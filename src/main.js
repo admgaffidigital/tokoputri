@@ -445,7 +445,7 @@ let memberCheckTimer = null;
 let aCat = 'Semua Produk', aBrand = 'Semua Merek', sQ = '', cSort = 'newest', cView = 'grid', cPage = 1, iPP = 12;
 let cTab = 'orders', aSq = '', eId = null;
 window.isAdm = false; window.isPro = true; // FIX: dulu 'let' lokal (bisa di-bypass via console), sekarang properti window agar dijaga oleh Security Block
-let cProd = null, cVar = 0, tVars = [], tWhol = [], cQty = 1, oMods = [];
+let cProd = null, cVar = 0, tVars = [], tWhol = [], tSpec = [], cQty = 1, oMods = [];
 let aOrdLst = null, aCustLst = null, aRevLst = null, gOrds = [], gReviews = [], cVOrd = null, vouch = null, toastT, isSaving = false, bannerTmr = null;
 let reviewFilterMode = 'all'; // FITUR BARU: filter tampilan ulasan di admin (all/visible/hidden)
 let lastReportPeriod = 'today'; // FITUR BARU: ingat filter periode laporan terakhir dipilih admin
@@ -2936,7 +2936,37 @@ const rProdMod = () => {
               })
             : rawDesc;
     }
+    
+    // FITUR BARU: Render tabel spesifikasi produk (jika ada)
+    const specTableEl = el('product-modal-spec-table');
+    if (specTableEl) {
+        if (p.specTable && p.specTable.length > 0) {
+            let specHtml = `
+            <div class="mt-5">
+                <p class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest flex items-center gap-2 mb-3">
+                    <i class="fa-solid fa-table-cells-large text-[var(--color-primary)] opacity-80"></i> Spesifikasi Produk
+                </p>
+                <div class="overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
+                    <table class="w-full text-[13px] spec-product-table">
+                        <tbody>`;
+            p.specTable.forEach((row, idx) => {
+                const isOdd = idx % 2 === 0;
+                const rowBg = isOdd ? 'bg-white dark:bg-slate-900' : 'bg-slate-50/80 dark:bg-slate-800/60';
+                specHtml += `<tr class="${rowBg}">
+                    <td class="py-2.5 px-4 font-semibold text-slate-600 dark:text-slate-300 w-5/12 border-r border-slate-100 dark:border-slate-700/60 align-top">${esc(row.key)}</td>
+                    <td class="py-2.5 px-4 text-slate-700 dark:text-slate-200 align-top">${esc(row.val)}</td>
+                </tr>`;
+            });
+            specHtml += `</tbody></table></div></div>`;
+            specTableEl.innerHTML = specHtml;
+            specTableEl.style.display = '';
+        } else {
+            specTableEl.innerHTML = '';
+            specTableEl.style.display = 'none';
+        }
+    }
     setIn('modal-unit-label', unt);
+
     
     // Header Badge Premium
     let bH = ``;
@@ -5106,7 +5136,7 @@ const aF = {
         {key:'img', label:'URL Gambar', type:'text'},
         {key:'category', label:'Kategori', type:'dynamic_select_category'}, {key:'brand', label:'Merek', type:'dynamic_select_brand'},
         {key:'tag', label:'Label/Tag', type:'text'}, {key:'isActive', label:'Status', type:'select', options:[{val:'true',text:'Tersedia'},{val:'false',text:'Habis'}]},
-        {key:'desc', label:'Deskripsi Lengkap', type:'richtext'}, {key:'wholesale', label:'Grosir', type:'wholesale_builder'}, {key:'variants', label:'Varian', type:'variants_builder'}
+        {key:'desc', label:'Deskripsi Lengkap', type:'richtext'}, {key:'specTable', label:'Tabel Spesifikasi (Opsional)', type:'spec_table_builder'}, {key:'wholesale', label:'Grosir', type:'wholesale_builder'}, {key:'variants', label:'Varian', type:'variants_builder'}
     ],
     colors: [
         {key:'name', label:'Nama Warna', type:'text'},
@@ -7712,10 +7742,11 @@ window.oAEd = (t, id) => {
     if(t==='products'){
         tVars = d&&d.variants ? JSON.parse(JSON.stringify(d.variants)) : [];
         tWhol = d&&d.wholesale ? JSON.parse(JSON.stringify(d.wholesale)) : [];
+        tSpec = d&&d.specTable ? JSON.parse(JSON.stringify(d.specTable)) : [];
     }
     
     // REDESIGN: Kelompokkan field produk dalam grid 2-kolom di lg
-    const FULL_WIDTH_TYPES = ['textarea','richtext','variants_builder','wholesale_builder'];
+    const FULL_WIDTH_TYPES = ['textarea','richtext','variants_builder','wholesale_builder','spec_table_builder'];
     const FULL_WIDTH_KEYS  = ['img','desc','name','isActive','tag','poTime','video'];
     const isFullWidth = k => FULL_WIDTH_TYPES.includes(k.type) || FULL_WIDTH_KEYS.includes(k.key);
 
@@ -7745,6 +7776,8 @@ window.oAEd = (t, id) => {
             h += `<div id="variants-builder-container" class="bg-slate-50/50 dark:bg-slate-900/30 p-4 sm:p-5 md:p-6 lg:p-8 lg:p-6 rounded-[1.5rem] border border-slate-200 dark:border-slate-700 shadow-inner min-h-[60px]"></div>`;
         } else if(k.type === 'wholesale_builder') {
             h += `<div id="wholesale-builder-container" class="bg-slate-50/50 dark:bg-slate-900/30 p-4 sm:p-5 md:p-6 lg:p-8 lg:p-6 rounded-[1.5rem] border border-slate-200 dark:border-slate-700 shadow-inner min-h-[60px]"></div>`;
+        } else if(k.type === 'spec_table_builder') {
+            h += `<div id="spec-table-builder-container" class="bg-slate-50/50 dark:bg-slate-900/30 p-4 sm:p-5 md:p-6 rounded-[1.5rem] border border-slate-200 dark:border-slate-700 shadow-inner min-h-[60px]"></div>`;
         } else if(k.key === 'sku') {
             h += `<div class="relative flex items-center"><input autocomplete='off' type="${k.type}" id="af-${k.key}" value="${esc(v)}" class="admin-input shadow-sm bg-slate-50 dark:bg-slate-900 !pr-12" placeholder="Scan atau ketik..." ></i><button type="button" onclick="openCameraScanner('af-${k.key}')" class="absolute right-2 w-9 h-9 flex items-center justify-center text-slate-400 hover:bg-slate-200 hover:text-emerald-500 rounded-xl transition-all" title="Scan Barcode via HP"><i class="fa-solid fa-qrcode text-lg"></i></button></div>`;
         } else if(k.key === 'img') {
@@ -7796,7 +7829,7 @@ window.oAEd = (t, id) => {
     h = `<div class="grid grid-cols-1 lg:grid-cols-2 gap-x-5 gap-y-5 items-start">${h}</div>`;
     
     setH('admin-modal-form', h);
-    if(t==='products') { rVarsB(); rWholB(); }
+    if(t==='products') { rVarsB(); rWholB(); rSpecB(); }
     
     const mAd = el('admin-modal');
     if (mAd && mAd.classList.contains('hidden')) pushModalHistory('admin');
@@ -8194,7 +8227,48 @@ window.addWhol = () => { tWhol.push({minQty:2, price:0}); rWholB(); };
 window.rmWhol = i => { tWhol.splice(i,1); rWholB(); };
 window.uWhol = (i,k,v) => { tWhol[i][k] = parseFloat(v) || 0; };
 
-// --- FUNGSI ADMIN CRUD ---
+// FITUR BARU: Spec Table Builder — Tabel Spesifikasi Produk
+window.rSpecB = () => {
+    const container = el('spec-table-builder-container');
+    if (!container) return;
+    let h = '';
+    if (tSpec.length > 0) {
+        h += `<div class="overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm mb-4">
+            <table class="w-full text-sm">
+                <thead>
+                    <tr class="bg-slate-100 dark:bg-slate-800">
+                        <th class="py-2.5 px-4 text-left text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest w-5/12">Nama Spesifikasi</th>
+                        <th class="py-2.5 px-4 text-left text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">Nilai / Keterangan</th>
+                        <th class="py-2.5 px-2 w-10"></th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+                    ${tSpec.map((s,i) => `
+                    <tr class="bg-white dark:bg-slate-900 group">
+                        <td class="py-2 px-3">
+                            <input autocomplete='off' placeholder="Cth: Berat" class="w-full bg-transparent text-[13px] font-semibold text-slate-700 dark:text-slate-200 focus:outline-none placeholder:text-slate-300" value="${esc(s.key)}" onchange="uSpec(${i},'key',this.value)" oninput="uSpec(${i},'key',this.value)">
+                        </td>
+                        <td class="py-2 px-3">
+                            <input autocomplete='off' placeholder="Cth: 2.5 kg" class="w-full bg-transparent text-[13px] text-slate-600 dark:text-slate-300 focus:outline-none placeholder:text-slate-300" value="${esc(s.val)}" onchange="uSpec(${i},'val',this.value)" oninput="uSpec(${i},'val',this.value)">
+                        </td>
+                        <td class="py-2 px-2 text-center">
+                            <button type="button" onclick="rmSpec(${i})" class="w-7 h-7 rounded-lg bg-rose-50 border border-rose-200 text-rose-400 hover:bg-rose-500 hover:text-white dark:bg-rose-900/30 dark:border-rose-800 transition-all flex items-center justify-center opacity-60 group-hover:opacity-100 active:scale-95" title="Hapus Baris"><i class="fa-solid fa-trash text-[10px]"></i></button>
+                        </td>
+                    </tr>`).join('')}
+                </tbody>
+            </table>
+        </div>`;
+    } else {
+        h += `<div class="text-center py-6 text-slate-400 dark:text-slate-600 text-[12px] font-medium"><i class="fa-solid fa-table-cells-large text-2xl mb-2 block opacity-30"></i>Belum ada spesifikasi. Klik tombol di bawah untuk menambahkan.</div>`;
+    }
+    h += `<button type="button" onclick="addSpec()" class="w-full py-4 bg-cyan-50 dark:bg-cyan-900/20 text-cyan-600 dark:text-cyan-400 font-bold rounded-[1.5rem] text-sm border-2 border-cyan-200 dark:border-cyan-800 border-dashed hover:bg-cyan-100 dark:hover:bg-cyan-900/30 transition-all flex items-center justify-center gap-2 active:scale-95 shadow-sm"><i class="fa-solid fa-plus-circle"></i> Tambah Baris Spesifikasi</button>`;
+    setH('spec-table-builder-container', h);
+};
+
+window.addSpec = () => { tSpec.push({key:'', val:''}); rSpecB(); };
+window.rmSpec = i => { tSpec.splice(i,1); rSpecB(); };
+window.uSpec = (i,field,v) => { if(tSpec[i]) tSpec[i][field] = v; };
+
 window.submitAdminForm = async () => {
     if(isSaving) return; isSaving = true;
     let d = {}, f = aF[cTab] || [];
@@ -8203,6 +8277,8 @@ window.submitAdminForm = async () => {
             d.variants = tVars.filter(v => v.name.trim() !== '');
         } else if (k.type === 'wholesale_builder') {
             d.wholesale = tWhol.filter(w => parseFloat(w.minQty) > 0.01 && w.price > 0);
+        } else if (k.type === 'spec_table_builder') {
+            d.specTable = tSpec.filter(s => s.key.trim() !== '');
         } else {
             let v = '';
             if (k.type === 'richtext') {
