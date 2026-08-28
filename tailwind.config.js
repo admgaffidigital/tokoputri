@@ -5,6 +5,17 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   darkMode: 'class',
+  safelist: [
+    // Kelas dinamis di banner video (digunakan via JS string template)
+    'aspect-video',
+    // Kelas dinamis sound toggle button
+    'bg-emerald-600', 'hover:bg-emerald-500',
+    'bg-rose-600', 'hover:bg-rose-500',
+    // Kelas animasi/transisi yang diinjeksi via JS
+    'animate-pulse', 'animate-spin', 'animate-bounce',
+    // Scale dinamis
+    'scale-125', 'scale-110', 'scale-108',
+  ],
   theme: {
     extend: {
       fontFamily: {
@@ -33,3 +44,4 @@ export default {
   },
   plugins: [],
 }
+
