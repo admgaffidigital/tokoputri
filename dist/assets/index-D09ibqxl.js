@@ -60,7 +60,7 @@ import{f as me}from"./vendor-firebase-core-D2OF5R23.js";import"./vendor-firebase
         <div id="banner-slider" class="flex overflow-x-auto gap-4 sm:gap-6 pb-4 pt-2 snap-x hide-scrollbar scroll-smooth" ontouchstart="clearInterval(bannerTmr)" ontouchend="setTimeout(startBannerAutoSlide, 8000)" onmouseenter="clearInterval(bannerTmr)" onmouseleave="startBannerAutoSlide()" onscroll="window.onBannerScroll && window.onBannerScroll()">
             ${l.banners.map((d,p)=>{const m=d.type==="video"&&d.videoUrl,b=!m&&d.link?`onclick="window.open('${c(d.link)}', '_self')"`:"";if(m){const f=gt(d.videoUrl)||{type:"direct",directUrl:it(d.videoUrl),embedUrl:jt(d.videoUrl)};let g="";return f.type==="youtube"?g=`
                 <iframe
-                    class="banner-video-iframe w-[140%] h-[165%] -top-[32.5%] -left-[20%] absolute z-0 border-0 pointer-events-none select-none scale-110"
+                    class="banner-video-iframe w-full h-full absolute inset-0 z-0 border-0 pointer-events-none select-none"
                     src="${c(f.embedUrl)}"
                     data-src="${c(f.embedUrl)}"
                     frameborder="0"
@@ -84,7 +84,7 @@ import{f as me}from"./vendor-firebase-core-D2OF5R23.js";import"./vendor-firebase
                     webkit-playsinline
                     onended="this.currentTime=0; this.play();"
                 ></video>`,`
-            <div id="banner-slide-${p}" class="banner-slide-item w-[88vw] sm:w-[520px] min-h-[200px] sm:min-h-[260px] snap-center shrink-0 rounded-[2rem] relative overflow-hidden group bg-black shadow-none border border-white/10 flex flex-col select-none">
+            <div id="banner-slide-${p}" class="banner-slide-item w-[88vw] sm:w-[520px] aspect-video snap-center shrink-0 rounded-[2rem] relative overflow-hidden group bg-black shadow-none border border-white/10 flex flex-col select-none">
                 ${g}
                 <!-- Shield Transparan: Mencegah klik/tap pada video agar video tidak bisa di-klik/di-pause -->
                 <div class="absolute inset-0 z-15 bg-transparent pointer-events-auto cursor-default" onclick="event.preventDefault(); event.stopPropagation();"></div>

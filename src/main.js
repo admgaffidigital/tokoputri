@@ -2006,7 +2006,7 @@ window.rDyn = () => {
             if (vInfo.type === 'youtube') {
                 videoMediaHtml = `
                 <iframe
-                    class="banner-video-iframe w-[140%] h-[165%] -top-[32.5%] -left-[20%] absolute z-0 border-0 pointer-events-none select-none scale-110"
+                    class="banner-video-iframe w-full h-full absolute inset-0 z-0 border-0 pointer-events-none select-none"
                     src="${esc(vInfo.embedUrl)}"
                     data-src="${esc(vInfo.embedUrl)}"
                     frameborder="0"
@@ -2041,7 +2041,7 @@ window.rDyn = () => {
             }
 
             return `
-            <div id="banner-slide-${i}" class="banner-slide-item w-[88vw] sm:w-[520px] min-h-[200px] sm:min-h-[260px] snap-center shrink-0 rounded-[2rem] relative overflow-hidden group bg-black shadow-none border border-white/10 flex flex-col select-none">
+            <div id="banner-slide-${i}" class="banner-slide-item w-[88vw] sm:w-[520px] aspect-video snap-center shrink-0 rounded-[2rem] relative overflow-hidden group bg-black shadow-none border border-white/10 flex flex-col select-none">
                 ${videoMediaHtml}
                 <!-- Shield Transparan: Mencegah klik/tap pada video agar video tidak bisa di-klik/di-pause -->
                 <div class="absolute inset-0 z-15 bg-transparent pointer-events-auto cursor-default" onclick="event.preventDefault(); event.stopPropagation();"></div>
