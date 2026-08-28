@@ -101,7 +101,7 @@ import{f as me}from"./vendor-firebase-core-D2OF5R23.js";import"./vendor-firebase
                     </div>
                 </div>
                 <!-- Overlay atas: gradient gelap memudar — menyembunyikan nama channel YouTube secara elegan -->
-                <div class="absolute top-0 left-0 right-0 z-20 pointer-events-none" style="height:28%;background:linear-gradient(to bottom,rgba(0,0,0,0.82) 0%,transparent 100%);"></div>
+                <div class="absolute top-0 left-0 right-0 z-20 pointer-events-none" style="height:45%;background:linear-gradient(to bottom,rgba(0,0,0,0.95) 0%,rgba(0,0,0,0.60) 40%,transparent 100%);"></div>
             </div>`}return`
         <div ${b} class="banner-slide-item w-[88vw] sm:w-[480px] min-h-[180px] sm:min-h-[220px] snap-center shrink-0 rounded-[2rem] relative overflow-hidden group cursor-pointer bg-[var(--color-primary)] text-white shadow-none hover:-translate-y-1 hover:scale-[1.01] hover:shadow-none transition-all duration-300 border border-white/15 flex flex-col">
             <!-- Dynamic Background Shapes -->
