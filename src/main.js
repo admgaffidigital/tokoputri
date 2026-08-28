@@ -2014,20 +2014,18 @@ window.rDyn = () => {
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                 ></iframe>`;
             } else if (vInfo.type === 'gdrive') {
-                const s1 = vInfo.streamUrl;
-                const s2 = vInfo.streamUrl2;
+                // Langsung pakai iframe /preview — Google Drive tidak mengizinkan
+                // streaming <video> langsung (CORS + redirect blocked), sehingga
+                // <video src="uc?export=download"> selalu blank hitam.
+                // iframe /preview adalah satu-satunya cara yang andal untuk Drive.
                 videoMediaHtml = `
-                <video
-                    class="banner-video-element w-full h-full object-cover absolute inset-0 z-0 pointer-events-none select-none"
-                    src="${esc(s1)}"
-                    autoplay
-                    loop
-                    muted
-                    playsinline
-                    webkit-playsinline
-                    onended="this.currentTime=0; this.play();"
-                    onerror="if(this.src!=='${esc(s2)}'){ this.src='${esc(s2)}'; } else { this.onerror=null; this.outerHTML='<iframe class=\\'banner-video-iframe w-[320%] h-[340%] -top-[120%] -left-[110%] absolute z-0 border-0 pointer-events-none select-none transform scale-[0.3125] origin-top-left\\' src=\\'${esc(vInfo.embedUrl)}\\' frameborder=\\'0\\' allow=\\'autoplay; fullscreen\\'></iframe>'; }"
-                ></video>`;
+                <iframe
+                    class="banner-video-iframe absolute z-0 border-0 pointer-events-none select-none"
+                    src="${esc(vInfo.embedUrl)}"
+                    frameborder="0"
+                    allow="autoplay; fullscreen"
+                    style="width:180%; height:210%; top:-55%; left:-40%; transform:scale(1); object-fit:cover;"
+                ></iframe>`;
             } else {
                 videoMediaHtml = `
                 <video
