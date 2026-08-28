@@ -2057,6 +2057,8 @@ window.rDyn = () => {
                         </button>
                     </div>
                 </div>
+                <!-- Overlay pojok kiri atas: menyembunyikan nama channel YouTube yang muncul sementara -->
+                <div class="absolute top-0 left-0 z-20 bg-black pointer-events-none" style="width:60%;height:18%;border-radius:0 0 8px 0;"></div>
             </div>`;
         }
 
