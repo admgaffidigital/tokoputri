@@ -7,7 +7,7 @@
     <link rel="dns-prefetch" href="https://identitytoolkit.googleapis.com" />
     <meta charset="UTF-8" />
     <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
-    <meta content="default-src 'self' blob:; script-src 'self' 'unsafe-inline' https://vercel.live https://cdn.tailwindcss.com https://cdnjs.cloudflare.com https://www.gstatic.com https://cdn.sheetjs.com https://apis.google.com https://www.blogger.com https://www.googletagmanager.com https://www.google-analytics.com; connect-src 'self' https://vercel.live https://*.googleapis.com https://*.firebaseio.com https://firestore.googleapis.com https://identitytoolkit.googleapis.com https://script.google.com https://script.googleusercontent.com https://wa.me https://www.google-analytics.com https://analytics.google.com https://cdnjs.cloudflare.com https://*.gstatic.com; img-src 'self' data: https: blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; manifest-src 'self' blob:; frame-src https://www.blogger.com https://www.google.com https://www.youtube.com https://youtube.com https://restu-karya-utama.firebaseapp.com https://apis.google.com https://vercel.live; object-src 'none'" http-equiv="Content-Security-Policy" />
+    <meta content="default-src 'self' blob:; script-src 'self' 'unsafe-inline' https://vercel.live https://cdn.tailwindcss.com https://cdnjs.cloudflare.com https://www.gstatic.com https://cdn.sheetjs.com https://apis.google.com https://www.blogger.com https://www.googletagmanager.com https://www.google-analytics.com; connect-src 'self' https://vercel.live https://*.googleapis.com https://*.googleusercontent.com https://*.firebaseio.com https://firestore.googleapis.com https://identitytoolkit.googleapis.com https://script.google.com https://script.googleusercontent.com https://wa.me https://www.google-analytics.com https://analytics.google.com https://cdnjs.cloudflare.com https://*.gstatic.com; img-src 'self' data: https: blob:; media-src 'self' https: blob: data:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; manifest-src 'self' blob:; frame-src 'self' https://www.blogger.com https://www.google.com https://*.google.com https://accounts.google.com https://drive.google.com https://*.googleusercontent.com https://www.youtube.com https://youtube.com https://restu-karya-utama.firebaseapp.com https://apis.google.com https://vercel.live; object-src 'none'" http-equiv="Content-Security-Policy" />
     <script src="/config.js"></script>
     <title>Toko Putri</title>
     <meta name="description" content="Toko Putri - Solusi grosir dan e-commerce terpercaya untuk alat teknik, perkakas, dan perlengkapan pertukangan berkualitas dengan harga terbaik." />
@@ -269,8 +269,11 @@
             </div>
           </button>
           <button class="flex w-full items-center gap-4 rounded-2xl border border-slate-100 bg-slate-50 p-4 text-left font-bold text-slate-700 transition-all hover:bg-[rgba(var(--color-primary-rgb),0.08)] hover:text-[var(--color-primary)] active:scale-[0.98] dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-[rgba(var(--color-primary-rgb),0.15)]" onclick="navigateFromQuickMenu('view-wishlist')">
-            <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-rose-500 text-white shadow-md"><i class="fa-solid fa-heart text-sm"></i></div>
-            <div>
+            <div class="relative flex h-10 w-10 items-center justify-center rounded-xl bg-rose-500 text-white shadow-md">
+              <i class="fa-solid fa-heart text-sm"></i>
+              <span id="wishlist-badge" class="absolute -top-1 -right-1 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-slate-900 px-1 text-[9px] font-bold text-white scale-0 transition-transform dark:bg-white dark:text-slate-900">0</span>
+            </div>
+            <div class="flex-1">
               <h4 class="text-sm leading-tight">Produk Favorit</h4>
               <p class="mt-0.5 text-[9px] font-semibold text-slate-400 dark:text-slate-500">Produk yang Anda sukai</p>
             </div>
@@ -280,6 +283,13 @@
             <div>
               <h4 class="text-sm leading-tight">Riwayat Pesanan</h4>
               <p class="mt-0.5 text-[9px] font-semibold text-slate-400 dark:text-slate-500">Lacak status pesanan Anda</p>
+            </div>
+          </button>
+          <button class="flex w-full items-center gap-4 rounded-2xl border border-slate-100 bg-slate-50 p-4 text-left font-bold text-slate-700 transition-all hover:bg-[rgba(var(--color-primary-rgb),0.08)] hover:text-[var(--color-primary)] active:scale-[0.98] dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-[rgba(var(--color-primary-rgb),0.15)]" onclick="navigateFromQuickMenu('view-faq')">
+            <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-500 text-white shadow-md"><i class="fa-solid fa-circle-question text-sm"></i></div>
+            <div>
+              <h4 class="text-sm leading-tight">Tanya Jawab / Q&amp;A</h4>
+              <p class="mt-0.5 text-[9px] font-semibold text-slate-400 dark:text-slate-500">Pusat bantuan &amp; FAQ toko</p>
             </div>
           </button>
           <button class="flex w-full items-center gap-4 rounded-2xl border border-slate-100 bg-slate-50 p-4 text-left font-bold text-slate-700 transition-all hover:bg-[rgba(var(--color-primary-rgb),0.08)] hover:text-[var(--color-primary)] active:scale-[0.98] dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-[rgba(var(--color-primary-rgb),0.15)]" onclick="navigateFromQuickMenu(checkAdminAccess)">
@@ -423,6 +433,8 @@
               <h4 class="text-[10px] font-bold uppercase tracking-widest text-slate-800 dark:text-slate-200">Informasi &amp; Deskripsi</h4>
             </div>
             <p class="whitespace-pre-wrap text-[13px] font-medium leading-relaxed text-slate-600 dark:text-slate-400" id="product-modal-desc">Deskripsi</p>
+            <!-- FITUR: Tabel Spesifikasi Produk (diisi dinamis oleh JS jika produk punya specTable) -->
+            <div id="product-modal-spec-table" style="display:none"></div>
           </div>
           <div class="mb-6 hidden overflow-hidden rounded-2xl" id="product-modal-ad-container"></div>
           <div id="product-modal-wholesale-container"></div>
@@ -535,8 +547,26 @@
       </div>
     </div>
     <div id="thermal-print-section"></div>
-    <div class="relative w-full bg-slate-100 dark:bg-[#0f172a]" id="app-container">
-      <div class="view-section fade-in flex flex-col" id="view-catalog">
+    <div class="relative w-full bg-slate-50 dark:bg-[#0b1120] overflow-hidden min-h-screen" id="app-container">
+      <!-- DEKORASI BACKGROUND SHAPES & WAVES DINAMIS (Sharp Crisp Vector Shapes - TANPA BLUR) -->
+      <div class="pointer-events-none fixed inset-0 z-0 overflow-hidden">
+        <!-- Static Vector Circle Accent 1 (Crisp & Clean) -->
+        <div class="absolute -right-20 top-1/6 h-96 w-96 rounded-full border border-[rgba(var(--color-primary-rgb),0.12)] bg-[rgba(var(--color-primary-rgb),0.06)] dark:bg-[rgba(var(--color-primary-rgb),0.08)] pointer-events-none"></div>
+
+        <!-- Static Vector Circle Accent 2 (Crisp & Clean) -->
+        <div class="absolute -left-24 top-1/2 h-[26rem] w-[26rem] rounded-full border border-[rgba(var(--color-primary-rgb),0.10)] bg-[rgba(var(--color-primary-rgb),0.05)] dark:bg-[rgba(var(--color-primary-rgb),0.07)] pointer-events-none"></div>
+
+        <!-- Curved Wave SVG Accent Top (Tajam & Jelas) -->
+        <svg class="absolute top-0 left-0 w-full opacity-15 dark:opacity-20 pointer-events-none" viewBox="0 0 1440 320" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M0,160L48,176C96,192,192,224,288,213.3C384,203,480,149,576,144C672,139,768,181,864,186.7C960,192,1056,160,1152,149.3C1248,139,1344,149,1392,154.7L1440,160L1440,0L1392,0C1344,0,1248,0,1152,0C1056,0,960,0,864,0C768,0,672,0,576,0C480,0,384,0,288,0C192,0,96,0,48,0L0,0Z" fill="currentColor" class="text-[var(--color-primary)]"></path>
+        </svg>
+
+        <!-- Curved Wave SVG Accent Bottom (Tajam & Jelas) -->
+        <svg class="absolute bottom-0 left-0 w-full opacity-12 dark:opacity-18 pointer-events-none rotate-180" viewBox="0 0 1440 320" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M0,160L48,176C96,192,192,224,288,213.3C384,203,480,149,576,144C672,139,768,181,864,186.7C960,192,1056,160,1152,149.3C1248,139,1344,149,1392,154.7L1440,160L1440,0L1392,0C1344,0,1248,0,1152,0C1056,0,960,0,864,0C768,0,672,0,576,0C480,0,384,0,288,0C192,0,96,0,48,0L0,0Z" fill="currentColor" class="text-[var(--color-primary-dark)]"></path>
+        </svg>
+      </div>
+      <div class="view-section fade-in flex flex-col relative z-10" id="view-catalog">
         <div class="glass-header sticky top-0 z-30 flex shrink-0 items-center justify-center px-5 pb-3">
           <div class="mx-auto flex w-full items-center justify-between gap-4 px-4 lg:px-10 xl:max-w-[1200px]">
             <div class="flex min-w-0 flex-1 items-center gap-3">
@@ -751,7 +781,7 @@
                   <input checked="checked" class="custom-radio peer sr-only" name="delivery-method" onchange="toggleDeliveryMethod()" type="radio" value="delivery" />
                   <div class="flex flex-col items-center gap-2 rounded-2xl border border-slate-200 bg-slate-50 p-4 text-center transition-all hover:border-blue-300 peer-checked:border-blue-500 peer-checked:bg-blue-50 peer-checked:shadow-[0_0_0_2px_rgba(59,130,246,0.2)] dark:border-slate-700 dark:bg-slate-900 dark:peer-checked:bg-blue-900/20">
                     <div class="mb-1 flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-sm dark:bg-slate-800"><i class="fa-solid fa-motorcycle radio-icon text-lg text-slate-400 transition-colors peer-checked:text-blue-500"></i></div>
-                    <span class="text-[11px] font-bold uppercase tracking-wide text-slate-600 peer-checked:text-blue-600 dark:text-slate-300 dark:peer-checked:text-blue-400">Diantar Kurir</span>
+                    <span class="text-[11px] font-bold uppercase tracking-wide text-slate-600 peer-checked:text-blue-600 dark:text-slate-300 dark:peer-checked:text-blue-400">Dikirim</span>
                   </div>
                 </label>
                 <label class="relative cursor-pointer" id="pickup-option-container">
@@ -957,7 +987,7 @@
               <div class="mt-3 hidden" id="voucher-msg-container"><p class="text-[11px] font-bold uppercase tracking-widest" id="voucher-msg" /></div>
             </div>
             <div class="relative mt-2 overflow-hidden rounded-[1.5rem] border border-slate-700/60 bg-slate-900 p-6 text-white shadow-xl shadow-slate-900/20 sm:p-7">
-              <div class="primary-blur-orb pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full blur-3xl"></div>
+              <div class="primary-blur-orb pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full border border-white/10 opacity-40"></div>
               <h3 class="relative z-10 mb-5 flex items-center gap-2 border-b border-slate-700 pb-3 text-[11px] font-bold uppercase tracking-widest text-slate-300"><i class="fa-solid fa-receipt text-sm primary-text"></i> Ringkasan Belanja</h3>
               <div class="relative z-10 space-y-3.5 text-sm font-medium text-slate-300">
                 <div class="flex items-center justify-between"><span>Subtotal Produk</span><span class="text-base font-bold text-white" id="summary-subtotal">Rp 0</span></div>
@@ -1022,11 +1052,55 @@
           <div class="mx-auto w-full max-w-full space-y-4 px-4 lg:px-8 xl:max-w-[1200px]" id="wishlist-items-container"></div>
         </div>
       </div>
+
+      <!-- VIEW Q&A STOREFRONT -->
+      <div class="view-section fade-in flex hidden flex-col bg-slate-50 dark:bg-slate-900" id="view-faq">
+        <div class="glass-header sticky top-0 z-30 flex shrink-0 justify-center px-5 pb-3">
+          <div class="mx-auto flex w-full max-w-full items-center justify-between px-4 lg:px-10 xl:max-w-[1200px]">
+            <button class="flex h-10 w-10 items-center justify-center rounded-full border border-white/30 bg-white/20 text-white shadow-sm backdrop-blur-sm transition-all hover:bg-white/30 active:scale-95 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300" onclick="history.back()"><i class="fa-solid fa-arrow-left text-sm"></i></button>
+            <h1 class="text-base font-bold tracking-tight text-white drop-shadow-sm">Tanya Jawab (Q&amp;A)</h1>
+            <button class="flex h-9 items-center gap-1.5 rounded-full border border-white/30 bg-white/20 px-3 text-xs font-bold text-white shadow-sm backdrop-blur-sm transition-all hover:bg-white/30 active:scale-95" onclick="openAskQuestionModal()"><i class="fa-solid fa-circle-question text-amber-300"></i> Tanya</button>
+          </div>
+        </div>
+        <div class="scroll-content z-10 flex-1 overflow-y-auto pb-[calc(5rem+env(safe-area-inset-bottom))] pt-5">
+          <div class="mx-auto w-full max-w-full space-y-5 px-4 lg:px-8 xl:max-w-[1000px]">
+            <!-- Header Banner Q&A (Harmonis dengan Tema Toko) -->
+            <div class="relative overflow-hidden rounded-[1.75rem] bg-gradient-to-br from-[var(--color-primary)] via-[var(--color-primary-dark)] to-[var(--color-primary-dark)] p-6 sm:p-7 text-white shadow-lg shadow-[rgba(var(--color-primary-rgb),0.25)]">
+              <div class="pointer-events-none absolute -right-8 -top-8 h-44 w-44 rounded-full bg-white/10 blur-2xl"></div>
+              <div class="pointer-events-none absolute -left-8 -bottom-8 h-36 w-36 rounded-full bg-black/10 blur-2xl"></div>
+              <div class="relative z-10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5">
+                <div class="space-y-1.5">
+                  <span class="inline-flex items-center gap-1.5 rounded-xl bg-white/20 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-white backdrop-blur-md border border-white/20">
+                    <i class="fa-solid fa-circle-question text-amber-300"></i> Pusat Bantuan &amp; FAQ
+                  </span>
+                  <h2 class="text-xl font-extrabold tracking-tight text-white drop-shadow-sm sm:text-2xl">Ada Pertanyaan Mengenai Toko Kami?</h2>
+                  <p class="text-xs font-medium text-white/90 max-w-md leading-relaxed">Temukan jawaban cepat atau ajukan pertanyaan langsung kepada tim admin kami.</p>
+                </div>
+                <button class="flex items-center justify-center gap-2 rounded-2xl bg-white px-5 py-3.5 text-xs font-bold text-[var(--color-primary-dark)] shadow-md transition-all hover:bg-slate-50 active:scale-95 shrink-0" onclick="openAskQuestionModal()"><i class="fa-solid fa-paper-plane"></i> Ajukan Pertanyaan</button>
+              </div>
+            </div>
+
+            <!-- Search & Filter Q&A -->
+            <div class="flex flex-col sm:flex-row items-center gap-3">
+              <div class="relative w-full flex-1">
+                <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-sm text-slate-400"></i>
+                <input type="text" id="faq-search-input" oninput="filterStorefrontFAQ()" placeholder="Cari topik pertanyaan..." class="w-full rounded-2xl border border-slate-200 bg-white py-3 pl-11 pr-4 text-xs font-semibold text-slate-800 shadow-sm focus:border-[var(--color-primary)] focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-white" />
+              </div>
+              <div class="flex items-center gap-2 overflow-x-auto w-full sm:w-auto pb-1 hide-scrollbar shrink-0" id="faq-category-pills">
+                <!-- Pills kategori diisi JS -->
+              </div>
+            </div>
+
+            <!-- Container List Accordion FAQ -->
+            <div class="space-y-3" id="storefront-faq-container"></div>
+          </div>
+        </div>
+      </div>
       <div class="view-section fade-in relative z-50 flex hidden items-center justify-center overflow-hidden bg-slate-900 dark:bg-[#0b1121]" id="view-admin-login">
-        <div class="pointer-events-none absolute -left-20 -top-20 h-72 w-72 rounded-full opacity-25 blur-[80px]" style="background: var(--color-primary)"></div>
-        <div class="pointer-events-none absolute -bottom-20 -right-20 h-64 w-64 rounded-full opacity-15 blur-[80px]" style="background: var(--color-primary-dark)"></div>
+        <div class="pointer-events-none absolute -left-20 -top-20 h-72 w-72 rounded-full border border-white/10 bg-white/5 opacity-25"></div>
+        <div class="pointer-events-none absolute -bottom-20 -right-20 h-64 w-64 rounded-full border border-white/10 bg-white/5 opacity-15"></div>
         <div class="relative z-10 mx-auto w-full max-w-sm p-5">
-          <div class="bg-white/8 relative flex flex-col items-center rounded-[2rem] border border-white/15 p-8 text-center shadow-2xl backdrop-blur-xl dark:border-slate-700/50 dark:bg-slate-800/50">
+          <div class="bg-white/8 relative flex flex-col items-center rounded-[2rem] border border-white/15 p-8 text-center shadow-2xl dark:border-slate-700/50 dark:bg-slate-800/50">
             <button class="absolute right-4 top-4 flex h-8 w-8 items-center justify-center rounded-xl bg-white/10 text-white transition-all hover:bg-rose-500" onclick="history.back()"><i class="fa-solid fa-xmark text-xs"></i></button>
             <div class="w-18 h-18 mb-5 flex h-[72px] w-[72px] items-center justify-center rounded-2xl border border-white/15 text-3xl text-white shadow-lg" style="background-color: var(--color-primary)"><i class="fa-solid fa-shield-halved"></i></div>
             <h2 class="mb-1 text-2xl font-bold tracking-tight text-white">Seller Panel</h2>
@@ -1051,13 +1125,13 @@
         <div class="glass-header sticky top-0 z-30 flex shrink-0 items-center justify-center px-4 pb-3">
           <div class="mx-auto flex w-full max-w-full items-center justify-between px-4 lg:px-10 xl:max-w-[1200px]">
             <div class="flex items-center gap-3">
-              <button class="hidden h-9 w-9 items-center justify-center rounded-xl border border-white/30 bg-white/20 text-white shadow-sm backdrop-blur-sm transition-all hover:bg-white/30 active:scale-95 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700" id="btn-admin-back" onclick="history.back()"><i class="fa-solid fa-arrow-left text-xs"></i></button>
+              <button class="hidden h-9 w-9 items-center justify-center rounded-xl border border-white/30 bg-white/20 text-white shadow-sm transition-all hover:bg-white/30 active:scale-95 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700" id="btn-admin-back" onclick="history.back()"><i class="fa-solid fa-arrow-left text-xs"></i></button>
               <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[rgba(var(--color-primary-rgb),0.3)] bg-[var(--color-primary)] text-white shadow-md" id="admin-logo-box"><i class="fa-solid fa-layer-group text-sm"></i></div>
               <div>
                 <div class="flex items-center gap-2">
                   <h1 class="text-sm font-bold leading-none tracking-tight text-white drop-shadow-sm" id="admin-header-title">CMS TOKO</h1>
                 </div>
-                <span class="mt-0.5 inline-block rounded-xl bg-white/20 px-1.5 py-0.5 text-[9px] font-bold uppercase leading-none tracking-widest text-white drop-shadow-sm backdrop-blur-sm">Seller</span>
+                <span class="mt-0.5 inline-block rounded-xl bg-white/20 px-1.5 py-0.5 text-[9px] font-bold uppercase leading-none tracking-widest text-white drop-shadow-sm">Seller</span>
               </div>
             </div>
             <div class="flex items-center gap-1.5">
@@ -1071,8 +1145,8 @@
             <div class="fade-in-scale mx-auto block w-full max-w-5xl" id="admin-dashboard-view">
               <!-- Welcome Banner -->
               <div class="relative mb-7 overflow-hidden rounded-[1.5rem] border border-slate-700/60 bg-slate-900 p-6 shadow-xl dark:bg-slate-800 sm:p-8">
-                <div class="pointer-events-none absolute -right-8 -top-8 h-48 w-48 rounded-full opacity-30 blur-3xl" style="background: var(--color-primary)"></div>
-                <div class="pointer-events-none absolute -bottom-6 -left-6 h-36 w-36 rounded-full opacity-20 blur-3xl" style="background: var(--color-primary-dark)"></div>
+                <div class="pointer-events-none absolute -right-8 -top-8 h-48 w-48 rounded-full border border-white/10 bg-white/5 opacity-30"></div>
+                <div class="pointer-events-none absolute -bottom-6 -left-6 h-36 w-36 rounded-full border border-white/10 bg-white/5 opacity-20"></div>
                 <div class="relative z-10 flex items-center justify-between gap-4">
                   <div>
                     <p class="mb-2 text-[10px] font-bold uppercase tracking-widest text-white opacity-60">Panel Kontrol</p>
@@ -1155,6 +1229,10 @@
                   <div class="relative z-10 flex h-12 w-12 items-center justify-center rounded-2xl bg-amber-500 text-white shadow-md transition-all duration-300 group-hover:scale-110 sm:h-14 sm:w-14"><i class="fa-solid fa-star text-xl sm:text-2xl"></i></div>
                   <div class="relative z-10"><span class="block text-[10px] font-bold uppercase leading-tight tracking-widest text-slate-800 dark:text-white sm:text-[11px]">Ulasan</span><span class="mt-0.5 block text-[9px] font-bold text-slate-500">Testimoni Pelanggan</span></div>
                 </button>
+                <button class="card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-4 text-center transition-all duration-300 hover:-translate-y-1.5 hover:border-amber-300 hover:bg-slate-50 hover:shadow-xl dark:hover:border-amber-600 dark:hover:bg-slate-800/40 sm:p-5 md:p-6 lg:p-8" onclick="openAdminTab('faqs')">
+                  <div class="relative z-10 flex h-12 w-12 items-center justify-center rounded-2xl bg-amber-500 text-white shadow-md transition-all duration-300 group-hover:scale-110 sm:h-14 sm:w-14"><i class="fa-solid fa-circle-question text-xl sm:text-2xl"></i></div>
+                  <div class="relative z-10"><span class="block text-[10px] font-bold uppercase leading-tight tracking-widest text-slate-800 dark:text-white sm:text-[11px]">Q&amp;A / FAQ</span><span class="mt-0.5 block text-[9px] font-bold text-slate-500">Kelola Tanya Jawab</span></div>
+                </button>
                 <button class="card-modern group relative hidden flex-col items-center justify-center gap-3 overflow-hidden p-4 text-center transition-all duration-300 hover:-translate-y-1.5 hover:border-red-300 hover:bg-slate-50 hover:shadow-xl dark:hover:border-red-600 dark:hover:bg-slate-800/40 sm:p-5 md:p-6 lg:p-8" id="admin-menu-tax-btn" onclick="openAdminTab('tax')">
                   <div class="relative z-10 flex h-12 w-12 items-center justify-center rounded-2xl bg-rose-500 text-white shadow-md transition-all duration-300 group-hover:scale-110 sm:h-14 sm:w-14"><i class="fa-solid fa-file-invoice-dollar text-xl sm:text-2xl"></i></div>
                   <div class="relative z-10"><span class="block text-[10px] font-bold uppercase leading-tight tracking-widest text-slate-800 dark:text-white sm:text-[11px]">Pajak</span><span class="mt-0.5 block text-[9px] font-bold text-slate-500">PPN, Laba Rugi, Neraca</span></div>
@@ -1171,6 +1249,95 @@
       </div>
     </div>
     <input accept=".json" class="hidden" id="restore-file" onchange="restoreData(event)" type="file" />
+
+    <!-- Modal Customer Ask Question -->
+    <div class="fixed inset-0 z-[120] flex hidden items-end justify-center bg-slate-900/80 p-0 opacity-0 transition-opacity duration-300 sm:items-center sm:p-5" id="modal-ask-question" onclick="if(event.target===this) closeAskQuestionModal();">
+      <div class="relative flex max-h-[90dvh] w-full max-w-md translate-y-full transform flex-col overflow-hidden rounded-t-[2rem] border-t border-slate-200 bg-white shadow-2xl transition-transform duration-300 dark:border-slate-800 dark:bg-[#0b1121] sm:translate-y-10 sm:rounded-[2rem] sm:border" id="modal-ask-question-box">
+        <div class="flex shrink-0 items-center justify-between border-b border-slate-100 p-5 dark:border-slate-800">
+          <div class="flex items-center gap-3">
+            <div class="flex h-10 w-10 items-center justify-center rounded-2xl primary-bg text-white shadow-md"><i class="fa-solid fa-circle-question text-lg"></i></div>
+            <div>
+              <h3 class="text-base font-bold text-slate-900 dark:text-white">Ajukan Pertanyaan</h3>
+              <p class="text-[10px] font-bold text-slate-400">Tim admin kami akan menjawabnya segera</p>
+            </div>
+          </div>
+          <button class="flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-slate-500 hover:bg-rose-50 hover:text-rose-500 dark:bg-slate-800 dark:text-slate-300" onclick="closeAskQuestionModal()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="space-y-4 overflow-y-auto p-6">
+          <div>
+            <label class="mb-1.5 block text-xs font-bold text-slate-700 dark:text-slate-300">Nama Anda / Panggilan</label>
+            <input type="text" id="ask-author-name" placeholder="Misal: Budi / Pelanggan" class="w-full rounded-xl border border-slate-200 bg-slate-50 p-3 text-xs font-semibold text-slate-800 focus:border-[var(--color-primary)] focus:outline-none dark:border-slate-700 dark:bg-slate-900 dark:text-white" />
+          </div>
+          <div>
+            <label class="mb-1.5 block text-xs font-bold text-slate-700 dark:text-slate-300">Kategori Pertanyaan</label>
+            <select id="ask-category" class="w-full rounded-xl border border-slate-200 bg-slate-50 p-3 text-xs font-semibold text-slate-800 focus:border-[var(--color-primary)] focus:outline-none dark:border-slate-700 dark:bg-slate-900 dark:text-white">
+              <option value="Pemesanan">Pemesanan &amp; Stok</option>
+              <option value="Pengiriman">Pengiriman &amp; Kurir</option>
+              <option value="Pembayaran">Pembayaran &amp; PPN</option>
+              <option value="Garansi">Garansi &amp; Retur</option>
+              <option value="Lainnya">Lainnya</option>
+            </select>
+          </div>
+          <div>
+            <label class="mb-1.5 block text-xs font-bold text-slate-700 dark:text-slate-300">Pertanyaan Anda</label>
+            <textarea id="ask-question-text" rows="4" placeholder="Tuliskan pertanyaan Anda mengenai produk atau toko..." class="w-full rounded-xl border border-slate-200 bg-slate-50 p-3 text-xs font-semibold text-slate-800 focus:border-[var(--color-primary)] focus:outline-none dark:border-slate-700 dark:bg-slate-900 dark:text-white"></textarea>
+          </div>
+          <button class="primary-bg text-white shadow-glow w-full py-3.5 rounded-xl font-bold text-xs flex items-center justify-center gap-2 active:scale-95 transition-all" onclick="submitCustomerQuestion()"><i class="fa-solid fa-paper-plane"></i> Kirim Pertanyaan</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Admin Q&A Editor -->
+    <div class="fixed inset-0 z-[120] flex hidden items-end justify-center bg-slate-900/80 p-0 opacity-0 transition-opacity duration-300 sm:items-center sm:p-5" id="modal-admin-faq" onclick="if(event.target===this) closeAdminFAQModal();">
+      <div class="relative flex max-h-[90dvh] w-full max-w-lg translate-y-full transform flex-col overflow-hidden rounded-t-[2rem] border-t border-slate-200 bg-white shadow-2xl transition-transform duration-300 dark:border-slate-800 dark:bg-[#0b1121] sm:translate-y-10 sm:rounded-[2rem] sm:border" id="modal-admin-faq-box">
+        <div class="flex shrink-0 items-center justify-between border-b border-slate-100 p-5 dark:border-slate-800">
+          <div class="flex items-center gap-3">
+            <div class="flex h-10 w-10 items-center justify-center rounded-2xl primary-bg text-white shadow-md"><i class="fa-solid fa-pen-to-square text-lg"></i></div>
+            <div>
+              <h3 class="text-base font-bold text-slate-900 dark:text-white" id="admin-faq-modal-title">Kelola Q&amp;A</h3>
+              <p class="text-[10px] font-bold text-slate-400">Sunting pertanyaan &amp; jawaban publik</p>
+            </div>
+          </div>
+          <button class="flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-slate-500 hover:bg-rose-50 hover:text-rose-500 dark:bg-slate-800 dark:text-slate-300" onclick="closeAdminFAQModal()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="space-y-4 overflow-y-auto p-6">
+          <input type="hidden" id="admin-faq-id" value="" />
+          <div>
+            <label class="mb-1.5 block text-xs font-bold text-slate-700 dark:text-slate-300">Kategori</label>
+            <select id="admin-faq-category" class="w-full rounded-xl border border-slate-200 bg-slate-50 p-3 text-xs font-semibold text-slate-800 focus:border-[var(--color-primary)] focus:outline-none dark:border-slate-700 dark:bg-slate-900 dark:text-white">
+              <option value="Pemesanan">Pemesanan &amp; Stok</option>
+              <option value="Pengiriman">Pengiriman &amp; Kurir</option>
+              <option value="Pembayaran">Pembayaran &amp; PPN</option>
+              <option value="Garansi">Garansi &amp; Retur</option>
+              <option value="Lainnya">Lainnya</option>
+            </select>
+          </div>
+          <div>
+            <label class="mb-1.5 block text-xs font-bold text-slate-700 dark:text-slate-300">Penanya / Penulis</label>
+            <input type="text" id="admin-faq-author" placeholder="Admin / Nama Pelanggan" class="w-full rounded-xl border border-slate-200 bg-slate-50 p-3 text-xs font-semibold text-slate-800 focus:border-[var(--color-primary)] focus:outline-none dark:border-slate-700 dark:bg-slate-900 dark:text-white" />
+          </div>
+          <div>
+            <label class="mb-1.5 block text-xs font-bold text-slate-700 dark:text-slate-300">Pertanyaan</label>
+            <textarea id="admin-faq-question" rows="3" placeholder="Pertanyaan..." class="w-full rounded-xl border border-slate-200 bg-slate-50 p-3 text-xs font-semibold text-slate-800 focus:border-[var(--color-primary)] focus:outline-none dark:border-slate-700 dark:bg-slate-900 dark:text-white"></textarea>
+          </div>
+          <div>
+            <label class="mb-1.5 block text-xs font-bold text-slate-700 dark:text-slate-300">Jawaban Admin</label>
+            <textarea id="admin-faq-answer" rows="4" placeholder="Tuliskan jawaban lengkap..." class="w-full rounded-xl border border-slate-200 bg-slate-50 p-3 text-xs font-semibold text-slate-800 focus:border-[var(--color-primary)] focus:outline-none dark:border-slate-700 dark:bg-slate-900 dark:text-white"></textarea>
+          </div>
+          <div>
+            <label class="mb-1.5 block text-xs font-bold text-slate-700 dark:text-slate-300">Status Publikasi</label>
+            <select id="admin-faq-status" class="w-full rounded-xl border border-slate-200 bg-slate-50 p-3 text-xs font-semibold text-slate-800 focus:border-[var(--color-primary)] focus:outline-none dark:border-slate-700 dark:bg-slate-900 dark:text-white">
+              <option value="published">Terpublikasi (Tampil di Storefront)</option>
+              <option value="pending_answer">Pending (Menunggu Jawaban)</option>
+              <option value="hidden">Disembunyikan</option>
+            </select>
+          </div>
+          <div class="pt-2 flex gap-3">
+            <button class="primary-bg text-white shadow-glow flex-1 py-3.5 rounded-xl font-bold text-xs flex items-center justify-center gap-2 active:scale-95 transition-all" onclick="saveAdminFAQ()"><i class="fa-solid fa-floppy-disk"></i> Simpan Q&amp;A</button>
+          </div>
+        </div>
+      </div>
+    </div>
     <script type="text/javascript">
       //<![CDATA[
       // ================================================================

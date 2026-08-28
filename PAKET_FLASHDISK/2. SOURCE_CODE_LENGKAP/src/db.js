@@ -27,7 +27,9 @@ export const setGasUploadUrl = (url) => {
 };
 
 // Inisialisasi Firebase
-firebase.initializeApp(fbC);
+if (!firebase.apps.length) {
+    firebase.initializeApp(fbC);
+}
 
 export const analytics = firebase.analytics();
 export const db = firebase.firestore();
@@ -36,12 +38,14 @@ export const auth = firebase.auth();
 // FIX KEAMANAN: hanya 1 akun (UID) ini yang boleh jadi admin.
 export const ADMIN_UID = 'K2ijSERTT2dg27yYGTEgn6XHSnW2';
 
-// Set settings
+// CATATAN: merge:true di db.settings() adalah opsi VALID Firebase — artinya
+// "gabungkan settings ini dengan settings yang sudah ada" (bukan override penuh).
+// Tanpa ini Firebase mengeluarkan warning "You are overriding the original host" di console.
 db.settings({
     ignoreUndefinedProperties: true,
     cacheSizeBytes: firebase.firestore.CACHE_SIZE_UNLIMITED,
     merge: true,
+    experimentalAutoDetectLongPolling: true,
 });
 
 export { firebase };
-

@@ -204,6 +204,66 @@ const fixD = v => {
     return m ? `https://lh3.googleusercontent.com/d/${m[1]}` : v;
 };
 
+// Extractor ID YouTube (Mendukung YouTube Biasa, Shorts, youtu.be, embed, dll)
+const getYouTubeId = (url) => {
+    if (!url || typeof url !== 'string') return null;
+    const u = url.trim();
+    if (/^[a-zA-Z0-9_-]{11}$/.test(u)) return u;
+    const match = u.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?|shorts)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i);
+    return match ? match[1] : null;
+};
+window.getYouTubeId = getYouTubeId;
+
+// Parser pintar URL Video (Google Drive, YouTube/Shorts, atau Direct MP4)
+const parseVideoUrl = (url) => {
+    if (typeof url !== 'string' || !url.trim()) return null;
+    const u = url.trim();
+
+    // 1. YouTube Video / Shorts / Share Links
+    const ytId = getYouTubeId(u);
+    if (ytId) {
+        return {
+            type: 'youtube',
+            id: ytId,
+            embedUrl: `https://www.youtube.com/embed/${ytId}?autoplay=1&mute=1&muted=1&loop=1&playlist=${ytId}&controls=0&modestbranding=1&rel=0&enablejsapi=1&playsinline=1`
+        };
+    }
+
+    // 2. Google Drive Video (matches drive.google.com ATAU googleusercontent.com/d/)
+    const driveMatch = u.match(/(?:drive\.google\.com.*(?:id=|\/d\/)|googleusercontent\.com\/d\/)([a-zA-Z0-9_-]+)/);
+    if (driveMatch && driveMatch[1]) {
+        const id = driveMatch[1];
+        return {
+            type: 'gdrive',
+            id: id,
+            streamUrl: `https://drive.google.com/uc?export=download&id=${id}`,
+            streamUrl2: `https://docs.google.com/uc?export=download&id=${id}`,
+            directUrl: `https://drive.google.com/uc?export=download&id=${id}`,
+            embedUrl: `https://drive.google.com/file/d/${id}/preview?autoplay=1`
+        };
+    }
+
+    // 3. Direct Video File (MP4, WebM, MOV, dll)
+    return {
+        type: 'direct',
+        directUrl: u,
+        embedUrl: u
+    };
+};
+window.parseVideoUrl = parseVideoUrl;
+
+const fixDriveVideo = v => {
+    const parsed = parseVideoUrl(v);
+    return parsed ? parsed.embedUrl : v;
+};
+window.fixDriveVideo = fixDriveVideo;
+
+const fixDriveVideoPreview = v => {
+    const parsed = parseVideoUrl(v);
+    return parsed ? parsed.embedUrl : v;
+};
+window.fixDriveVideoPreview = fixDriveVideoPreview;
+
 // Optimizer Google User Content Image (Ukuran & Format WebP)
 const getOptImg = (url, sizeOpt) => {
     if (typeof url !== 'string') return url;
@@ -285,6 +345,7 @@ const defApp = {
     config: { gasUrl: "" }, // FITUR BARU
     banks: [], banners: [], categories: [], brands: [], products: [], vouchers: [], colors: [],
     rewards: [], // FITUR BARU: katalog hadiah (publik, sinkron realtime seperti kategori/voucher)
+    faqs: [], // FITUR BARU: Q&A / FAQ interaktif storefront & admin
     customers: [], // FITUR BARU: database pelanggan (privat, HANYA dimuat saat admin membuka tab-nya)
     // FITUR BARU: Menu Pajak -- pengaturan & data pelengkap laporan pajak/keuangan.
     // 'monthlyExpenses' & 'balanceSheet' diisi MANUAL oleh admin (sistem tidak melacak
@@ -349,6 +410,10 @@ if (typeof requestIdleCallback !== 'undefined') {
 // (asal punya akun di project ini). Sekarang dibatasi ke UID spesifik milik pemilik toko.
 const ADMIN_UID = 'K2ijSERTT2dg27yYGTEgn6XHSnW2';
 
+// CATATAN: merge:true di db.settings() adalah opsi VALID Firebase — artinya
+// "gabungkan settings ini dengan settings yang sudah ada" (bukan override penuh).
+// Ini berbeda dengan merge di .set(data,{merge:true}). Tanpa ini Firebase
+// akan mengeluarkan warning di console.
 db.settings({
     ignoreUndefinedProperties: true,
     cacheSizeBytes: firebase.firestore.CACHE_SIZE_UNLIMITED,
@@ -380,7 +445,7 @@ let memberCheckTimer = null;
 let aCat = 'Semua Produk', aBrand = 'Semua Merek', sQ = '', cSort = 'newest', cView = 'grid', cPage = 1, iPP = 12;
 let cTab = 'orders', aSq = '', eId = null;
 window.isAdm = false; window.isPro = true; // FIX: dulu 'let' lokal (bisa di-bypass via console), sekarang properti window agar dijaga oleh Security Block
-let cProd = null, cVar = 0, tVars = [], tWhol = [], cQty = 1, oMods = [];
+let cProd = null, cVar = 0, tVars = [], tWhol = [], tSpec = [], cQty = 1, oMods = [];
 let aOrdLst = null, aCustLst = null, aRevLst = null, gOrds = [], gReviews = [], cVOrd = null, vouch = null, toastT, isSaving = false, bannerTmr = null;
 let reviewFilterMode = 'all'; // FITUR BARU: filter tampilan ulasan di admin (all/visible/hidden)
 let lastReportPeriod = 'today'; // FITUR BARU: ingat filter periode laporan terakhir dipilih admin
@@ -414,8 +479,15 @@ window.attachMyOrdersRealtime = () => {
     // console). Sekarang dibatasi HANYA ke 15 pesanan TERBARU -- itu paling
     // relevan untuk dipantau live; pesanan lama tetap bisa dicek manual.
     const MAX_LIVE_ORDERS = 15;
-    myOrders.slice(0, MAX_LIVE_ORDERS).forEach((o, idx) => {
-        const unsub = db.collection("freshmart_orders").doc(o.orderId).onSnapshot(doc => {
+    myOrders.slice(0, MAX_LIVE_ORDERS).forEach((o) => {
+        // FIX BUG: sebelumnya menggunakan idx (index array) sebagai kunci untuk
+        // mengakses myOrders[idx] di dalam callback onSnapshot. Jika myOrders
+        // berubah (ditambah/dihapus) setelah listener dipasang tapi sebelum
+        // snapshot datang, idx bisa menunjuk ke pesanan yang BERBEDA.
+        // Sekarang: selalu cari berdasarkan orderId (identifier unik) sehingga
+        // update status selalu tepat sasaran, tidak peduli perubahan array.
+        const targetOrderId = o.orderId;
+        const unsub = db.collection("freshmart_orders").doc(targetOrderId).onSnapshot(doc => {
             if (!doc.exists) return;
             const data = doc.data();
             const newStatus = data.status;
@@ -423,20 +495,24 @@ window.attachMyOrdersRealtime = () => {
             const newRewardNote = data.claimedReward ? (data.claimedReward.note || '') : '';
             let changed = false, notifMsg = '';
 
-            if (newStatus && myOrders[idx] && myOrders[idx].status !== newStatus) {
-                const oldStatus = myOrders[idx].status;
-                myOrders[idx].status = newStatus;
+            // Cari pesanan berdasarkan orderId, bukan idx
+            const orderEntry = myOrders.find(mo => mo.orderId === targetOrderId);
+            if (!orderEntry) return;
+
+            if (newStatus && orderEntry.status !== newStatus) {
+                const oldStatus = orderEntry.status;
+                orderEntry.status = newStatus;
                 changed = true;
-                if (oldStatus !== undefined) notifMsg = `Pesanan #${o.orderId.split('-').pop()} kini: ${newStatus}`;
+                if (oldStatus !== undefined) notifMsg = `Pesanan #${targetOrderId.split('-').pop()} kini: ${newStatus}`;
             }
             // FITUR BARU: sinkron status klaim hadiah (mis. admin ubah dari "Diproses" ke "Stok Kembali Ada")
-            if (myOrders[idx] && myOrders[idx].claimedReward && newRewardStatus &&
-                (myOrders[idx].claimedReward.status !== newRewardStatus || myOrders[idx].claimedReward.note !== newRewardNote)) {
-                const firstUpdate = myOrders[idx].claimedReward.status === undefined;
-                myOrders[idx].claimedReward.status = newRewardStatus;
-                myOrders[idx].claimedReward.note = newRewardNote;
+            if (orderEntry.claimedReward && newRewardStatus &&
+                (orderEntry.claimedReward.status !== newRewardStatus || orderEntry.claimedReward.note !== newRewardNote)) {
+                const firstUpdate = orderEntry.claimedReward.status === undefined;
+                orderEntry.claimedReward.status = newRewardStatus;
+                orderEntry.claimedReward.note = newRewardNote;
                 changed = true;
-                if (!firstUpdate && !notifMsg) notifMsg = `Update hadiah "${myOrders[idx].claimedReward.name}" pada pesanan #${o.orderId.split('-').pop()}`;
+                if (!firstUpdate && !notifMsg) notifMsg = `Update hadiah "${orderEntry.claimedReward.name}" pada pesanan #${targetOrderId.split('-').pop()}`;
             }
             if (changed) {
                 ssL('freshmart_my_orders', JSON.stringify(myOrders));
@@ -567,7 +643,7 @@ const loadAppData = async () => {
         if(p.img) p.img = fixD(p.img); 
         if(p.variants) p.variants.forEach(v => { if(v.img) v.img = fixD(v.img); }); 
     });
-    if(appData.banners) appData.banners.forEach(b => { if(b.img) b.img = fixD(b.img); });
+    if(appData.banners) appData.banners.forEach(b => { if(b.img) b.img = fixD(b.img); if(b.videoUrl) b.videoUrl = fixDriveVideo(b.videoUrl); });
     if(appData.categories) appData.categories.forEach(c => { if(c.img) c.img = fixD(c.img); });
     if(appData.brands) appData.brands.forEach(b => { if(b.img) b.img = fixD(b.img); });
     if(appData.store.logo) appData.store.logo = fixD(appData.store.logo);
@@ -786,81 +862,105 @@ const saveApp = async (changedKeys = null) => {
 // terbaru — tanpa perlu reload halaman sama sekali.
 // =====================================================================
 let isSyncingRealtime = false;
+// FIX RACE CONDITION: flag pendingSync mencatat apakah ada snapshot Firestore
+// yang datang SAAT fetch sedang berjalan. Sebelumnya snapshot seperti itu
+// langsung dibuang (early return) — menyebabkan update stok terlewat.
+// Sekarang: snapshot tetap dicatat, dan langsung diproses ulang setelah
+// fetch pertama selesai.
+let pendingSyncUpdate = false;
 window.attachRealtimeStockSync = () => {
     if (window.unsubCmsRealtime) return; // jangan pasang dobel
-    window.unsubCmsRealtime = db.collection("freshmart").doc("cms_data")
-        .onSnapshot(async (doc) => {
-            if (!doc.exists || isSyncingRealtime) return;
-            const f = doc.data();
-            const serverUpdate = f.lastUpdate || 0;
-            const localUpdate = parseInt(sL('freshmart_last_update') || '0');
-            if (serverUpdate <= localUpdate) return; // data sudah versi terbaru, tidak perlu apa-apa
 
-            isSyncingRealtime = true;
-            try {
-                const pSnap = await db.collection("freshmart").doc("cms_data").collection("products").get();
-                appData.products = pSnap.docs.map(d => d.data()).sort((a,b) => (b.id||0) - (a.id||0));
-                appData.products.forEach(p => {
-                    if (p.img) p.img = fixD(p.img);
-                    if (p.variants) p.variants.forEach(v => { if (v.img) v.img = fixD(v.img); });
-                });
+    const doSync = async (doc) => {
+        if (!doc.exists) return;
+        const f = doc.data();
+        const serverUpdate = f.lastUpdate || 0;
+        const localUpdate = parseInt(sL('freshmart_last_update') || '0');
+        if (serverUpdate <= localUpdate) return; // data sudah versi terbaru, tidak perlu apa-apa
 
-                // Sinkronkan juga pengaturan toko (ongkir, status manajemen stok, dll)
-                appData.store = { ...defApp.store, ...(f.store || {}) };
-                // FIX: sinkronkan juga field lain yang bisa diubah dari tab/perangkat admin manapun,
-                // supaya appData di memori tab ini tidak pernah basi (mencegah bug data hilang saat menyimpan).
-                if (f.categories) appData.categories = f.categories;
-                if (f.vouchers) appData.vouchers = f.vouchers;
-                if (f.banners) appData.banners = f.banners;
-                if (f.brands) appData.brands = f.brands;
-                if (f.banks) appData.banks = f.banks;
-                // CATATAN: 'rewards' TIDAK lagi disinkron di sini -- sudah punya listener
-                // realtime tersendiri (lihat attachRewardsRealtime), karena sekarang hadiah
-                // disimpan sebagai sub-collection sendiri (bukan field di dokumen ini).
-                appData.payment = { ...defApp.payment, ...(f.payment || {}) };
-                appData.config = { ...defApp.config, ...(f.config || {}) };
-                appData.taxSettings = { ...defApp.taxSettings, ...(f.taxSettings || {}) }; // FITUR BARU: Menu Pajak
-                if (appData.config && appData.config.gasUrl) GAS_UPLOAD_URL = appData.config.gasUrl;
-                if (appData.banners) appData.banners.forEach(b => { if(b.img) b.img = fixD(b.img); });
-                if (appData.categories) appData.categories.forEach(c => { if(c.img) c.img = fixD(c.img); });
-                if (appData.brands) appData.brands.forEach(b => { if(b.img) b.img = fixD(b.img); });
+        isSyncingRealtime = true;
+        try {
+            const pSnap = await db.collection("freshmart").doc("cms_data").collection("products").get();
+            appData.products = pSnap.docs.map(d => d.data()).sort((a,b) => (b.id||0) - (a.id||0));
+            appData.products.forEach(p => {
+                if (p.img) p.img = fixD(p.img);
+                if (p.variants) p.variants.forEach(v => { if (v.img) v.img = fixD(v.img); });
+            });
 
-                // Jika admin sedang membuka tab yang datanya baru saja berubah, segarkan tampilan listnya juga
-                // FIX BUG: 'products' dulu TIDAK ada di daftar ini -- jadi kalau ada pelanggan checkout
-                // sampai stok produk habis SAAT admin sedang membuka tab Produk, tampilannya TIDAK ikut
-                // berubah jadi "Habis" secara langsung (harus pindah tab dulu baru kelihatan). Sekarang
-                // tab Produk ikut disegarkan otomatis juga.
-                if (window.isAdm && cTab && ['categories','vouchers','banners','brands','banks','products','colors'].includes(cTab) && typeof window.rAdmItms === 'function') {
-                    window.rAdmItms(cTab);
-                }
+            // Sinkronkan juga pengaturan toko (ongkir, status manajemen stok, dll)
+            appData.store = { ...defApp.store, ...(f.store || {}) };
+            // FIX: sinkronkan juga field lain yang bisa diubah dari tab/perangkat admin manapun,
+            // supaya appData di memori tab ini tidak pernah basi (mencegah bug data hilang saat menyimpan).
+            if (f.categories) appData.categories = f.categories;
+            if (f.vouchers) appData.vouchers = f.vouchers;
+            if (f.banners) appData.banners = f.banners;
+            if (f.brands) appData.brands = f.brands;
+            if (f.banks) appData.banks = f.banks;
+            if (f.faqs) appData.faqs = f.faqs;
+            // CATATAN: 'rewards' TIDAK lagi disinkron di sini -- sudah punya listener
+            // realtime tersendiri (lihat attachRewardsRealtime), karena sekarang hadiah
+            // disimpan sebagai sub-collection sendiri (bukan field di dokumen ini).
+            appData.payment = { ...defApp.payment, ...(f.payment || {}) };
+            appData.config = { ...defApp.config, ...(f.config || {}) };
+            appData.taxSettings = { ...defApp.taxSettings, ...(f.taxSettings || {}) }; // FITUR BARU: Menu Pajak
+            if (appData.config && appData.config.gasUrl) GAS_UPLOAD_URL = appData.config.gasUrl;
+            if (appData.banners) appData.banners.forEach(b => { if(b.img) b.img = fixD(b.img); if(b.videoUrl) b.videoUrl = fixDriveVideo(b.videoUrl); });
+            if (appData.categories) appData.categories.forEach(c => { if(c.img) c.img = fixD(c.img); });
+            if (appData.brands) appData.brands.forEach(b => { if(b.img) b.img = fixD(b.img); });
 
-                ssL('freshmart_products', JSON.stringify(appData.products));
-                ssL('freshmart_last_update', serverUpdate.toString());
+            // Jika admin sedang membuka tab yang datanya baru saja berubah, segarkan tampilan listnya juga
+            // FIX BUG: 'products' dulu TIDAK ada di daftar ini -- jadi kalau ada pelanggan checkout
+            // sampai stok produk habis SAAT admin sedang membuka tab Produk, tampilannya TIDAK ikut
+            // berubah jadi "Habis" secara langsung (harus pindah tab dulu baru kelihatan). Sekarang
+            // tab Produk ikut disegarkan otomatis juga.
+            if (window.isAdm && cTab && ['categories','vouchers','banners','brands','banks','products','colors'].includes(cTab) && typeof window.rAdmItms === 'function') {
+                window.rAdmItms(cTab);
+            }
 
-                sanitizeCart();   // buang dari keranjang produk yang baru jadi habis/nonaktif
-                updCart();
-                if (typeof window.rDyn === 'function') window.rDyn();
-                if (typeof window.rCat === 'function') window.rCat();
+            ssL('freshmart_products', JSON.stringify(appData.products));
+            ssL('freshmart_last_update', serverUpdate.toString());
 
-                // Kalau produk yang modalnya sedang terbuka ikut berubah stoknya, segarkan juga
-                if (cProd) {
-                    const fresh = appData.products.find(p => p.id === cProd.id);
-                    if (fresh) {
-                        cProd = fresh;
-                        // FIX: render ulang modal agar stok terbaru tampil di UI
-                        if (typeof window.rProdMod === 'function') {
-                            const modalEl = document.getElementById('product-modal');
-                            if (modalEl && !modalEl.classList.contains('hidden') && !modalEl.classList.contains('opacity-0')) {
-                                window.rProdMod();
-                            }
+            sanitizeCart();   // buang dari keranjang produk yang baru jadi habis/nonaktif
+            updCart();
+            if (typeof window.rDyn === 'function') window.rDyn();
+            if (typeof window.rCat === 'function') window.rCat();
+
+            // Kalau produk yang modalnya sedang terbuka ikut berubah stoknya, segarkan juga
+            if (cProd) {
+                const fresh = appData.products.find(p => p.id === cProd.id);
+                if (fresh) {
+                    cProd = fresh;
+                    // FIX: render ulang modal agar stok terbaru tampil di UI
+                    if (typeof window.rProdMod === 'function') {
+                        const modalEl = document.getElementById('product-modal');
+                        if (modalEl && !modalEl.classList.contains('hidden') && !modalEl.classList.contains('opacity-0')) {
+                            window.rProdMod();
                         }
                     }
                 }
-            } catch (e) {
-                console.warn('Gagal sinkron realtime stok:', e);
-            } finally {
-                isSyncingRealtime = false;
             }
+        } catch (e) {
+            console.warn('Gagal sinkron realtime stok:', e);
+        } finally {
+            isSyncingRealtime = false;
+            // FIX RACE CONDITION: jika ada snapshot yang datang SAAT fetch di atas berjalan,
+            // langsung proses sekarang menggunakan snapshot Firestore terbaru.
+            if (pendingSyncUpdate) {
+                pendingSyncUpdate = false;
+                db.collection("freshmart").doc("cms_data").get().then(d => doSync(d)).catch(() => {});
+            }
+        }
+    };
+
+    window.unsubCmsRealtime = db.collection("freshmart").doc("cms_data")
+        .onSnapshot(async (doc) => {
+            if (isSyncingRealtime) {
+                // Catat bahwa ada update yang masuk saat fetch sedang berjalan
+                // agar tidak terlewat saat fetch selesai (lihat finally di atas)
+                pendingSyncUpdate = true;
+                return;
+            }
+            await doSync(doc);
         }, (err) => {
             console.warn('Realtime listener error:', err);
         });
@@ -984,12 +1084,12 @@ window.pushModalHistory = (name) => {
 };
 window.requestCloseModal = (name, fH, doClose) => {
     if (!fH) {
-        // Ditutup lewat aksi user di UI (klik X / klik area luar / tombol Batal, dst).
-        // Selalu serahkan ke history.back() agar proses penutupan tetap melalui satu
-        // jalur yang sama dengan tombol back fisik (popstate) -> tidak ada duplikasi logic.
+        // Ditutup lewat aksi user di UI (klik X / tombol Batal / area luar) -> tutup visual LANGSUNG tanpa tunda
         const idx = oMods.lastIndexOf(name);
-        if (idx === oMods.length - 1) { history.back(); return; }
-        else if (idx > -1) { oMods.splice(idx, 1); } // stack tidak sinkron (kasus langka) -> bersihkan saja
+        if (idx > -1) {
+            oMods.splice(idx, 1);
+            try { history.back(); } catch(e) {}
+        }
     }
     doClose();
 };
@@ -1166,7 +1266,7 @@ window.changeView = (v, fH=false) => {
         t.classList.remove('hidden');
         t.classList.add('flex');
         
-        const r = {'view-cart': renderCart, 'view-checkout': rChck, 'view-payment': rPay, 'view-wishlist': renderWish, 'view-orders': renderMyOrders};
+        const r = {'view-cart': renderCart, 'view-checkout': rChck, 'view-payment': rPay, 'view-wishlist': renderWish, 'view-orders': renderMyOrders, 'view-faq': window.renderStorefrontFAQ};
         if (r[v]) r[v]();
         
         const s = t.querySelector('.scroll-content');
@@ -1250,7 +1350,7 @@ window.openCategoryModal = () => {
     appData.categories.forEach(c => {
         let isActive = aCat === c.name;
         // Ikon kategori tetap bisa diganti gambar custom (di Pengaturan > Kategori); kalau kosong, fallback ke ikon default
-        let imgH = c.img ? `<img loading="lazy" src="${esc(c.img)}" alt="${esc(c.name)}" class="w-full h-full object-cover" onerror="this.onerror=null;this.src='https://placehold.co/100?text=Cat'"></i>` : `<i class="fa-solid fa-box text-base sm:text-lg"></i>`;
+        let imgH = c.img ? `<img loading="lazy" src="${esc(c.img)}" alt="${esc(c.name)}" class="w-full h-full object-cover" onerror="this.onerror=null;this.src='https://placehold.co/100?text=Cat'">` : `<i class="fa-solid fa-box text-base sm:text-lg"></i>`;
         h += `
         <button onclick="setCat('${esc(c.name)}'); closeCategoryModal()" class="w-full flex items-center gap-3.5 p-3 sm:p-3.5 rounded-2xl border transition-all active:scale-[0.98] ${isActive ? 'bg-[rgba(var(--color-primary-rgb),0.08)] border-[var(--color-primary)] dark:bg-[rgba(var(--color-primary-rgb),0.12)] dark:border-[var(--color-primary)] shadow-[0_0_0_1px_rgba(var(--color-primary-rgb),0.2)]' : 'bg-slate-50 border-slate-200 dark:bg-slate-800/50 dark:border-slate-700 hover:border-[var(--color-primary)]/40 dark:hover:border-[var(--color-primary)]/40'} group">
             <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-white dark:bg-slate-800 flex items-center justify-center shadow-sm shrink-0 text-slate-400 group-hover:text-[var(--color-primary)] overflow-hidden border border-slate-200 dark:border-slate-600">
@@ -1286,7 +1386,7 @@ window.openBrandModal = () => {
 
     appData.brands.forEach(b => {
         let isActive = aBrand === b.name;
-        let imgH = b.img ? `<img loading="lazy" src="${esc(b.img)}" alt="${esc(b.name)}" class="w-full h-full object-contain p-1.5" ></i>` : `<i class="fa-solid fa-tag text-lg sm:text-xl"></i>`;
+        let imgH = b.img ? `<img loading="lazy" src="${esc(b.img)}" alt="${esc(b.name)}" class="w-full h-full object-contain p-1.5" >` : `<i class="fa-solid fa-tag text-lg sm:text-xl"></i>`;
         h += `
         <button onclick="setBrand('${esc(b.name)}'); closeBrandModal()" class="flex flex-col items-center justify-start p-2.5 sm:p-3.5 rounded-[1.25rem] border transition-all ${isActive ? 'bg-[rgba(var(--color-primary-rgb),0.08)] border-[var(--color-primary)] dark:bg-[rgba(var(--color-primary-rgb),0.12)] dark:border-[var(--color-primary)] shadow-[0_0_0_1px_rgba(var(--color-primary-rgb),0.2)]' : 'bg-slate-50 border-slate-200 dark:bg-slate-800/50 dark:border-slate-700 hover:border-[var(--color-primary)]/40 dark:hover:border-[var(--color-primary)]/40'} group">
             <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-white flex items-center justify-center shadow-sm mb-2.5 text-slate-400 group-hover:text-[var(--color-primary)] overflow-hidden shrink-0 border border-slate-200 dark:border-slate-600">
@@ -1437,8 +1537,17 @@ window.navigateFromQuickMenu = (targetViewOrAction) => {
 };
 
 // --- 7. UPLOAD GAMBAR ---
-// SECURITY: Token untuk autentikasi ke GAS script
-// GANTI dengan token yang sama persis di GAS script Anda
+// ⚠️  PERINGATAN KEAMANAN: Token di bawah ini TERBACA di browser (DevTools > Sources)
+// karena JavaScript client-side tidak bisa menyembunyikan nilai apapun dari user teknis.
+// Token ini memberikan perlindungan dasar (bukan nol keamanan), tapi bukan solusi mutlak.
+//
+// MITIGASI yang WAJIB dilakukan di GAS script Anda (untuk meminimalkan penyalahgunaan):
+//   1. Validasi tipe file: tolak selain image/jpeg, image/png, image/webp
+//   2. Batasi ukuran file: tolak file > 5MB
+//   3. Rate limiting: tolak jika > N upload per jam dari IP yang sama
+//   4. Whitelist referrer: tolak jika request bukan dari domain toko Anda
+//
+// Ganti nilai token di bawah ini SESUAI dengan yang dikonfigurasi di GAS script Anda.
 const GAS_SECRET_TOKEN = "B7qgwFQqtYLpBqdaK69HgtCfR7s5t67p";
 
 window.handleImageUpload = async (inputElement, targetInputId, varIndex=null) => {
@@ -1506,6 +1615,79 @@ window.handleImageUpload = async (inputElement, targetInputId, varIndex=null) =>
     reader.onerror = () => { showToast("Gagal membaca file!"); hLoad(); inputElement.value=''; };
 };
 
+// ============================================================
+// FITUR BARU: Upload Video ke Google Drive lewat GAS
+// Mendukung: mp4, webm, mov, avi — max 50MB
+// Setelah upload, URL embed Drive diisi ke input target
+// ============================================================
+const VIDEO_MAX_SIZE_BYTES = 20 * 1024 * 1024; // 20MB (sesuai batas GAS v4.0)
+const ALLOWED_VIDEO_MIMES  = ['video/mp4','video/webm','video/quicktime','video/x-msvideo','video/3gpp'];
+
+window.handleVideoUpload = async (inputElement, targetInputId) => {
+    const file = inputElement.files[0];
+    if (!file) return;
+
+    if (!ALLOWED_VIDEO_MIMES.includes(file.type)) {
+        inputElement.value = '';
+        return showToast('Hanya file MP4, WEBM, MOV, atau AVI yang diizinkan!');
+    }
+    if (file.size > VIDEO_MAX_SIZE_BYTES) {
+        inputElement.value = '';
+        return showToast('Video terlalu besar! Maksimal 50MB.');
+    }
+    if (!GAS_UPLOAD_URL || GAS_UPLOAD_URL.includes('ISI_DENGAN')) {
+        inputElement.value = '';
+        return showToast('URL Script Google belum diisi di Pengaturan!');
+    }
+
+    sLoad('Upload Video... (harap tunggu)');
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+
+    reader.onload = async () => {
+        try {
+            const base64Data = reader.result.split(',')[1];
+            const safeName = file.name.replace(/[^a-zA-Z0-9.]/g, '_');
+            const payload = {
+                name: 'VID_' + Date.now() + '_' + safeName,
+                mimeType: file.type,
+                data: base64Data,
+                token: GAS_SECRET_TOKEN
+            };
+
+            const res = await fetch(GAS_UPLOAD_URL, {
+                method: 'POST',
+                body: JSON.stringify(payload),
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                redirect: 'follow'
+            });
+            const textRes = await res.text();
+            let responseData;
+            try { responseData = JSON.parse(textRes); } catch(e) { return showToast('Error Server GAS!'); }
+
+            if (responseData.status === 'success') {
+                // Konversi ke URL embed iframe Drive (/preview)
+                const embedUrl = 'https://drive.google.com/file/d/' + responseData.fileId + '/preview';
+                const targetInput = el(targetInputId);
+                if (targetInput) {
+                    targetInput.value = embedUrl;
+                    targetInput.dispatchEvent(new Event('input',  { bubbles: true }));
+                    targetInput.dispatchEvent(new Event('change', { bubbles: true }));
+                    showToast('Video berhasil diupload ke Drive!');
+                }
+            } else {
+                showToast('Gagal upload: ' + (responseData.message || 'Error'));
+            }
+        } catch(e) {
+            showToast('Koneksi terputus saat upload video.');
+        } finally {
+            hLoad();
+            inputElement.value = '';
+        }
+    };
+    reader.onerror = () => { showToast('Gagal membaca file video!'); hLoad(); inputElement.value = ''; };
+};
+
 // FITUR BARU: Fungsi Upload Gambar Khusus ke Dalam Editor Deskripsi
 window.handleRTEditorImage = async (inputElement, editorId) => {
     const file = inputElement.files[0];
@@ -1539,7 +1721,7 @@ window.handleRTEditorImage = async (inputElement, editorId) => {
                 if(ed) {
                     ed.focus();
                     // Menyisipkan HTML gambar tepat di posisi kursor editor
-                    document.execCommand('insertHTML', false, `<br><img loading="lazy" src="${finalUrl}" style="max-width:100%; border-radius:12px; margin: 10px 0; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);" ></i><br>`);
+                    document.execCommand('insertHTML', false, `<br><img loading="lazy" src="${finalUrl}" style="max-width:100%; border-radius:12px; margin: 10px 0; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);" ><br>`);
                 }
                 showToast("Gambar berhasil disisipkan!");
             } else showToast("Gagal upload gambar.");
@@ -1548,6 +1730,37 @@ window.handleRTEditorImage = async (inputElement, editorId) => {
     };
     reader.onerror = () => { showToast("Gagal membaca file!"); hLoad(); inputElement.value=''; };
 };
+
+// Pastikan video langsung diputar otomatis saat halaman dibuka & mengulang dari awal ketika habis
+const forcePlayBannerVideos = () => {
+    document.querySelectorAll('#banner-slider video.banner-video-element').forEach(vid => {
+        if (!vid.dataset.init) {
+            vid.dataset.init = "true";
+            vid.muted = true;
+            vid.loop = true;
+            vid.playsInline = true;
+            vid.setAttribute('playsinline', '');
+            vid.setAttribute('loop', '');
+            vid.setAttribute('autoplay', '');
+        }
+        
+        if (!vid.dataset.loopAttached) {
+            vid.dataset.loopAttached = "true";
+            vid.addEventListener('ended', () => {
+                vid.currentTime = 0;
+                vid.play().catch(() => {});
+            });
+        }
+        
+        // Jangan memaksa vid.muted = true jika user sudah mengaktifkan suara
+        if (vid.dataset.userUnmuted === "true") {
+            vid.muted = false;
+        }
+        
+        vid.play().catch(() => {});
+    });
+};
+window.forcePlayBannerVideos = forcePlayBannerVideos;
 
 // Fitur Toggle Suara Video Banner (Mute / Unmute)
 window.toggleBannerVideoSound = (btn, slideIdx) => {
@@ -1612,7 +1825,12 @@ window.toggleBannerVideoSound = (btn, slideIdx) => {
     }
 };
 
-// --- 8. RENDERER HALAMAN UTAMA (KATALOG) ---
+if (typeof window !== 'undefined') {
+    window.addEventListener('visibilitychange', () => { if (!document.hidden) forcePlayBannerVideos(); });
+    window.addEventListener('focus', forcePlayBannerVideos);
+    document.addEventListener('touchstart', forcePlayBannerVideos, { once: true, passive: true });
+    document.addEventListener('click', forcePlayBannerVideos, { once: true, passive: true });
+}
 let bannerScrollDebounce = null;
 window.updateBannerDots = (activeIdx) => {
     const dotsContainer = el('banner-dots-container');
@@ -1696,7 +1914,17 @@ window.startBannerAutoSlide = () => {
     clearInterval(bannerTmr);
     const s = el('banner-slider');
     if (!s || !appData.banners || appData.banners.length <= 1) return;
-    
+
+    // Helper: kontrol playback video (pastikan video HTML5 terputar terus)
+    const syncBannerVideos = () => {
+        forcePlayBannerVideos();
+    };
+
+    // Jalankan pemutaran video langsung saat banner dirender/dibuka
+    syncBannerVideos();
+    forcePlayBannerVideos();
+
+    // Durasi perpindahan slide disetel ke 8000 ms (8 detik) agar santai & mudah dibaca
     bannerTmr = setInterval(() => {
         const sl = el('banner-slider');
         if (!sl) return clearInterval(bannerTmr);
@@ -1720,6 +1948,7 @@ window.startBannerAutoSlide = () => {
             sl.scrollTo({ left: targetItem.offsetLeft - sl.offsetLeft, behavior: 'smooth' });
             window.updateBannerDots(nextIndex);
         }
+        setTimeout(syncBannerVideos, 400);
     }, 8000);
 };
 
@@ -1761,14 +1990,80 @@ window.rDyn = () => {
         }
     }
 
-    // --- RENDER BANNER 3D PREMIUM ---
+    // --- RENDER BANNER 3D PREMIUM (mendukung tipe gambar & video) ---
     let bHTML = (appData.banners && appData.banners.length) ? `
     <div class="relative group/banner-wrapper w-full">
         <div id="banner-slider" class="flex overflow-x-auto gap-4 sm:gap-6 pb-4 pt-2 snap-x hide-scrollbar scroll-smooth" ontouchstart="clearInterval(bannerTmr)" ontouchend="setTimeout(startBannerAutoSlide, 8000)" onmouseenter="clearInterval(bannerTmr)" onmouseleave="startBannerAutoSlide()" onscroll="window.onBannerScroll && window.onBannerScroll()">
             ${appData.banners.map((b,i)=>{
-        const linkAction = b.link ? `onclick="window.open('${esc(b.link)}', '_self')"` : '';
+        const isVideo = b.type === 'video' && b.videoUrl;
+        const linkAction = (!isVideo && b.link) ? `onclick="window.open('${esc(b.link)}', '_self')"` : '';
+
+        if (isVideo) {
+            // ── SLIDE VIDEO (Google Drive, YouTube/Shorts, atau Direct MP4) ──
+            const vInfo = parseVideoUrl(b.videoUrl) || { type: 'direct', directUrl: fixDriveVideo(b.videoUrl), embedUrl: fixDriveVideoPreview(b.videoUrl) };
+            
+            let videoMediaHtml = '';
+            if (vInfo.type === 'youtube') {
+                videoMediaHtml = `
+                <iframe
+                    class="banner-video-iframe w-full h-full absolute inset-0 z-0 border-0 pointer-events-none select-none"
+                    src="${esc(vInfo.embedUrl)}"
+                    data-src="${esc(vInfo.embedUrl)}"
+                    frameborder="0"
+                    scrolling="no"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                ></iframe>`;
+            } else if (vInfo.type === 'gdrive') {
+                // Langsung pakai iframe /preview — Google Drive tidak mengizinkan
+                // streaming <video> langsung (CORS + redirect blocked), sehingga
+                // <video src="uc?export=download"> selalu blank hitam.
+                // iframe /preview adalah satu-satunya cara yang andal untuk Drive.
+                videoMediaHtml = `
+                <iframe
+                    class="banner-video-iframe absolute z-0 border-0 pointer-events-none select-none"
+                    src="${esc(vInfo.embedUrl)}"
+                    frameborder="0"
+                    allow="autoplay; fullscreen"
+                    style="width:180%; height:210%; top:-55%; left:-40%; transform:scale(1); object-fit:cover;"
+                ></iframe>`;
+            } else {
+                videoMediaHtml = `
+                <video
+                    class="banner-video-element w-full h-full object-cover absolute inset-0 z-0 pointer-events-none select-none"
+                    src="${esc(vInfo.directUrl)}"
+                    autoplay
+                    loop
+                    muted
+                    playsinline
+                    webkit-playsinline
+                    onended="this.currentTime=0; this.play();"
+                ></video>`;
+            }
+
+            return `
+            <div id="banner-slide-${i}" class="banner-slide-item w-[88vw] sm:w-[520px] aspect-video snap-center shrink-0 rounded-[2rem] relative overflow-hidden group bg-black shadow-none border border-white/10 flex flex-col select-none">
+                ${videoMediaHtml}
+                <!-- Shield Transparan: Mencegah klik/tap pada video agar video tidak bisa di-klik/di-pause -->
+                <div class="absolute inset-0 z-15 bg-transparent pointer-events-auto cursor-default" onclick="event.preventDefault(); event.stopPropagation();"></div>
+                <!-- Konten bawah: judul & tombol suara murni transparan tanpa shadow gradient -->
+                <div class="absolute bottom-0 left-0 right-0 z-20 bg-transparent px-5 py-4 flex items-end justify-between pointer-events-none">
+                    <div class="flex-1 min-w-0 pointer-events-none">
+                        ${b.title ? `<p class="text-white font-extrabold text-sm sm:text-base line-clamp-1">${esc(b.title)}</p>` : ''}
+                        ${b.desc  ? `<p class="text-white/80 text-[10px] sm:text-xs font-medium line-clamp-1 mt-0.5">${esc(b.desc)}</p>` : ''}
+                    </div>
+                    <div class="ml-3 shrink-0 flex items-center gap-2 pointer-events-auto">
+                        <button onclick="event.stopPropagation(); window.toggleBannerVideoSound(this, ${i});" type="button" aria-label="Aktifkan Suara Video" class="banner-sound-toggle inline-flex items-center gap-1.5 px-3 py-1.5 bg-rose-600 hover:bg-rose-500 text-white text-[10px] sm:text-xs font-bold rounded-full shadow-none border border-white/20 active:scale-95 transition-all cursor-pointer">
+                            <i class="fa-solid fa-volume-xmark text-xs"></i> <span>Aktifkan Suara</span>
+                        </button>
+                    </div>
+                </div>
+
+            </div>`;
+        }
+
+        // ── SLIDE GAMBAR (default) ────────────────────────────────────────
         return `
-        <div ${linkAction} class="banner-slide-item w-[88vw] sm:w-[480px] min-h-[180px] sm:min-h-[220px] snap-center shrink-0 rounded-[2rem] relative overflow-hidden group cursor-pointer bg-[var(--color-primary)] text-white shadow-md hover:-translate-y-1 hover:scale-[1.01] hover:shadow-lg transition-all duration-300 border border-white/15 flex flex-col">
+        <div ${linkAction} class="banner-slide-item w-[88vw] sm:w-[480px] min-h-[180px] sm:min-h-[220px] snap-center shrink-0 rounded-[2rem] relative overflow-hidden group cursor-pointer bg-[var(--color-primary)] text-white shadow-none hover:-translate-y-1 hover:scale-[1.01] hover:shadow-none transition-all duration-300 border border-white/15 flex flex-col">
             <!-- Dynamic Background Shapes -->
             <div class="absolute -right-10 -top-10 w-40 h-40 border-[24px] border-white/10 rounded-full pointer-events-none group-hover:scale-110 transition-transform duration-500"></div>
             <div class="absolute -left-12 top-10 w-24 h-24 bg-white/10 rounded-full border border-white/5 pointer-events-none transform -rotate-12 shadow-inner group-hover:-translate-x-2 transition-transform duration-500"></div>
@@ -1827,12 +2122,12 @@ window.rDyn = () => {
         </div>
         <div class="flex gap-4 overflow-x-auto hide-scrollbar snap-x pb-6 pt-2">
             ${activeVouchers.map((v) => {
-                let desc = v.type === 'shipping_free' ? 'Gratis Ongkir' : (v.type === 'percent' ? `Diskon ${v.value}%` : `Diskon ${fCur(v.value)}`);
+                let desc = v.type === 'shipping_free' ? 'Gratis Ongkir' : (v.type === 'percent' ? `Diskon ${esc(String(parseFloat(v.value)||0))}%` : `Diskon ${fCur(v.value)}`);
                 let terms = [];
                 if(v.minPurchase > 0) terms.push(`Min. Blj ${fCur(v.minPurchase)}`);
                 if(v.maxDiscount > 0) terms.push(`Maks. ptg ${fCur(v.maxDiscount)}`);
                 if(v.targetProduct) terms.push(`Produk Khusus`);
-                let termsStr = terms.length > 0 ? terms.join(' &bull; ') : 'Tanpa minimal belanja';
+                let termsStr = terms.length > 0 ? esc(terms.join(' • ')) : 'Tanpa minimal belanja';
                 
                 return `
                 <div class="w-[280px] sm:w-[320px] shrink-0 snap-start relative group cursor-pointer active:scale-95 transition-all duration-300" onclick="copyVoucher('${esc(v.code)}')">
@@ -1885,7 +2180,7 @@ window.rDyn = () => {
         if(appData.store.categoryStyle === 'text' || !appData.store.categoryStyle) {
             return `<div onclick="filterCategory('${nameSafe}')" class="cursor-pointer shrink-0 snap-start group py-1"><div class="px-5 py-2.5 rounded-[1.25rem] border-2 transition-all duration-300 flex items-center gap-3 ${isSel ? 'bg-[var(--color-primary)] border-transparent text-white shadow-md' : 'bg-white dark:bg-slate-800 border-slate-100 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-[var(--color-primary)] hover:shadow-md hover:-translate-y-1'}"><div class="w-6 h-6 rounded-full flex items-center justify-center ${isSel ? 'bg-white/20 text-white shadow-inner' : 'bg-slate-50 dark:bg-slate-700 text-slate-400 group-hover:bg-[var(--color-primary-light)] group-hover:text-[var(--color-primary)]'} transition-all duration-300"><i class="fa-solid fa-layer-group text-[10px]"></i></div><span class="font-bold text-[11px] sm:text-xs uppercase tracking-widest pr-2">${esc(c.name)}</span></div></div>`;
         } else {
-            return `<div onclick="filterCategory('${nameSafe}')" class="flex flex-col items-center gap-3 cursor-pointer shrink-0 w-[80px] sm:w-[95px] group snap-start py-1"><div class="relative w-16 h-16 sm:w-[72px] sm:h-[72px] rounded-[1.25rem] bg-slate-50 dark:bg-slate-800 flex items-center justify-center p-2 transition-all duration-300 ${isSel ? 'bg-[var(--color-primary-light)] border-2 border-[var(--color-primary)] shadow-glow dark:bg-[var(--color-primary-dark)]/20' : 'border border-slate-200 dark:border-slate-700 shadow-sm group-hover:border-[var(--color-primary)] group-hover:shadow-lg group-hover:-translate-y-1.5'} overflow-hidden"><img loading="lazy" src="${esc(getOptImg(c.img, 'w150-rw'))}" alt="${esc(c.name)}" onerror="this.onerror=null;this.src='https://placehold.co/150/10b981/ffffff?text=Cat'" class="w-full h-full object-cover rounded-xl transition-transform duration-500 group-hover:scale-110"></i></div><span class="text-[9px] sm:text-[10px] text-center w-full line-clamp-2 leading-tight px-1 ${isSel ? 'font-bold text-[var(--color-primary)]' : 'font-bold text-slate-600 dark:text-slate-300 group-hover:text-[var(--color-primary)]'} uppercase tracking-widest transition-colors">${esc(c.name)}</span></div>`;
+            return `<div onclick="filterCategory('${nameSafe}')" class="flex flex-col items-center gap-3 cursor-pointer shrink-0 w-[80px] sm:w-[95px] group snap-start py-1"><div class="relative w-16 h-16 sm:w-[72px] sm:h-[72px] rounded-[1.25rem] bg-slate-50 dark:bg-slate-800 flex items-center justify-center p-2 transition-all duration-300 ${isSel ? 'bg-[var(--color-primary-light)] border-2 border-[var(--color-primary)] shadow-glow dark:bg-[var(--color-primary-dark)]/20' : 'border border-slate-200 dark:border-slate-700 shadow-sm group-hover:border-[var(--color-primary)] group-hover:shadow-lg group-hover:-translate-y-1.5'} overflow-hidden"><img loading="lazy" src="${esc(getOptImg(c.img, 'w150-rw'))}" alt="${esc(c.name)}" onerror="this.onerror=null;this.src='https://placehold.co/150/10b981/ffffff?text=Cat'" class="w-full h-full object-cover rounded-xl transition-transform duration-500 group-hover:scale-110"></div><span class="text-[9px] sm:text-[10px] text-center w-full line-clamp-2 leading-tight px-1 ${isSel ? 'font-bold text-[var(--color-primary)]' : 'font-bold text-slate-600 dark:text-slate-300 group-hover:text-[var(--color-primary)]'} uppercase tracking-widest transition-colors">${esc(c.name)}</span></div>`;
         }
     }).join(''));
     
@@ -1897,7 +2192,7 @@ window.rDyn = () => {
         if(appData.store.brandStyle === 'text') {
             return `<div onclick="filterBrand('${nameSafe}')" class="cursor-pointer shrink-0 snap-start group py-1"><div class="px-5 py-2.5 rounded-[1.25rem] border-2 transition-all duration-300 flex items-center gap-3 ${isSel ? 'bg-[var(--color-primary)] border-transparent text-white shadow-sm' : 'bg-white dark:bg-slate-800 border-slate-100 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-[var(--color-primary)]/40 hover:shadow-md hover:-translate-y-1'}"><div class="w-6 h-6 rounded-full flex items-center justify-center ${isSel ? 'bg-white/20 text-white shadow-inner' : 'bg-slate-50 dark:bg-slate-700 text-slate-400 group-hover:bg-[rgba(var(--color-primary-rgb),0.08)] group-hover:text-[var(--color-primary)]'} transition-all duration-300"><i class="fa-solid fa-copyright text-[10px]"></i></div><span class="font-bold text-[11px] sm:text-xs uppercase tracking-widest pr-2">${esc(b.name)}</span></div></div>`;
         } else {
-            return `<div onclick="filterBrand('${nameSafe}')" class="flex flex-col items-center gap-3 cursor-pointer shrink-0 w-[75px] sm:w-[85px] group snap-start py-1"><div class="relative w-16 h-16 sm:w-[68px] sm:h-[68px] rounded-2xl bg-white flex items-center justify-center overflow-hidden p-2 transition-all duration-500 ${isSel ? 'ring-4 ring-[var(--color-primary)] ring-offset-2 ring-offset-slate-50 dark:ring-offset-slate-800 shadow-md shadow-[rgba(var(--color-primary-rgb),0.25)]' : 'border border-slate-200 dark:border-slate-700 shadow-sm group-hover:border-[var(--color-primary)]/50 group-hover:shadow-md group-hover:-translate-y-1.5'}"><img loading="lazy" src="${esc(getOptImg(b.img, 'w150-rw'))}" alt="${esc(b.name)}" onerror="this.onerror=null;this.src='https://placehold.co/150/10b981/ffffff?text=Brand'" class="w-full h-full object-contain drop-shadow-sm transition-transform duration-500 group-hover:scale-110"></i></div><span class="text-[9px] sm:text-[10px] text-center w-full line-clamp-2 leading-tight px-1 ${isSel ? 'font-bold text-[var(--color-primary)]' : 'font-bold text-slate-600 dark:text-slate-300 group-hover:text-[var(--color-primary)]'} uppercase tracking-widest transition-colors">${esc(b.name)}</span></div>`;
+            return `<div onclick="filterBrand('${nameSafe}')" class="flex flex-col items-center gap-3 cursor-pointer shrink-0 w-[75px] sm:w-[85px] group snap-start py-1"><div class="relative w-16 h-16 sm:w-[68px] sm:h-[68px] rounded-2xl bg-white flex items-center justify-center overflow-hidden p-2 transition-all duration-500 ${isSel ? 'ring-4 ring-[var(--color-primary)] ring-offset-2 ring-offset-slate-50 dark:ring-offset-slate-800 shadow-md shadow-[rgba(var(--color-primary-rgb),0.25)]' : 'border border-slate-200 dark:border-slate-700 shadow-sm group-hover:border-[var(--color-primary)]/50 group-hover:shadow-md group-hover:-translate-y-1.5'}"><img loading="lazy" src="${esc(getOptImg(b.img, 'w150-rw'))}" alt="${esc(b.name)}" onerror="this.onerror=null;this.src='https://placehold.co/150/10b981/ffffff?text=Brand'" class="w-full h-full object-contain drop-shadow-sm transition-transform duration-500 group-hover:scale-110"></div><span class="text-[9px] sm:text-[10px] text-center w-full line-clamp-2 leading-tight px-1 ${isSel ? 'font-bold text-[var(--color-primary)]' : 'font-bold text-slate-600 dark:text-slate-300 group-hover:text-[var(--color-primary)]'} uppercase tracking-widest transition-colors">${esc(b.name)}</span></div>`;
         }
     }).join(''));
     
@@ -2027,7 +2322,11 @@ window.rCat = () => {
         if(aBrand !== 'Semua Merek' && p.brand !== aBrand) return false;
         if(!sQ) return true;
         let q = sQ.toLowerCase();
-        return (p.name||'').toLowerCase().includes(q) || ((p.sku||'').toLowerCase().includes(q)) || (p.variants && p.variants.some(v=>(v.sku||'').toLowerCase().includes(q)));
+        return (p.name||'').toLowerCase().includes(q) || 
+               (p.sku||'').toLowerCase().includes(q) || 
+               (p.category||'').toLowerCase().includes(q) || 
+               (p.brand||'').toLowerCase().includes(q) || 
+               (p.variants && p.variants.some(v=>(v.name||'').toLowerCase().includes(q) || (v.sku||'').toLowerCase().includes(q)));
     }).sort((a,b) => {
         if(cSort === 'cheapest') return (a.price||0) - (b.price||0);
         if(cSort === 'expensive') return (b.price||0) - (a.price||0);
@@ -2562,7 +2861,7 @@ const rProdMod = () => {
             if (vc) {
                 vc.classList.remove('hidden');
                 if (!vc.innerHTML) {
-                    vc.innerHTML = `<iframe class="w-full h-full pointer-events-none" src="https://www.youtube.com/embed/${yId}?autoplay=1&mute=1&loop=1&playlist=${yId}&enablejsapi=1&modestbranding=1&controls=0&rel=0&showinfo=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; compute-pressure" allowfullscreen></iframe>`;
+                    vc.innerHTML = `<iframe class="w-full h-full pointer-events-none" src="https://www.youtube.com/embed/${yId}?autoplay=1&mute=1&loop=1&playlist=${yId}&enablejsapi=1&modestbranding=1&controls=0&rel=0&showinfo=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; compute-pressure"></iframe>`;
                 }
             }
             const zoomInd = el('zoom-indicator');
@@ -2637,7 +2936,37 @@ const rProdMod = () => {
               })
             : rawDesc;
     }
+    
+    // FITUR BARU: Render tabel spesifikasi produk (jika ada)
+    const specTableEl = el('product-modal-spec-table');
+    if (specTableEl) {
+        if (p.specTable && p.specTable.length > 0) {
+            let specHtml = `
+            <div class="mt-5">
+                <p class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest flex items-center gap-2 mb-3">
+                    <i class="fa-solid fa-table-cells-large text-[var(--color-primary)] opacity-80"></i> Spesifikasi Produk
+                </p>
+                <div class="overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
+                    <table class="w-full text-[13px] spec-product-table">
+                        <tbody>`;
+            p.specTable.forEach((row, idx) => {
+                const isOdd = idx % 2 === 0;
+                const rowBg = isOdd ? 'bg-white dark:bg-slate-900' : 'bg-slate-50/80 dark:bg-slate-800/60';
+                specHtml += `<tr class="${rowBg}">
+                    <td class="py-2.5 px-4 font-semibold text-slate-600 dark:text-slate-300 w-5/12 border-r border-slate-100 dark:border-slate-700/60 align-top">${esc(row.key)}</td>
+                    <td class="py-2.5 px-4 text-slate-700 dark:text-slate-200 align-top">${esc(row.val)}</td>
+                </tr>`;
+            });
+            specHtml += `</tbody></table></div></div>`;
+            specTableEl.innerHTML = specHtml;
+            specTableEl.style.display = '';
+        } else {
+            specTableEl.innerHTML = '';
+            specTableEl.style.display = 'none';
+        }
+    }
     setIn('modal-unit-label', unt);
+
     
     // Header Badge Premium
     let bH = ``;
@@ -2809,7 +3138,19 @@ const uMPP = () => {
     let v = (cProd.variants || [])[cVar];
     let p = v?.price ?? cProd.price;
     let e = p;
-    let eQ = parseFloat(cart.find(c => c.id === cProd.id)?.qty || 0);
+    // FIX BUG: sebelumnya tidak memfilter berdasarkan variantName, sehingga
+    // kalau produk yang sama punya beberapa varian di keranjang, qty mereka
+    // semua dijumlah — padahal grosir seharusnya dihitung per-varian.
+    // Sekarang: kalau ada varian aktif, cari jumlah qty KHUSUS varian itu di keranjang.
+    const vN = v?.name || null;
+    let eQ = 0;
+    if (vN) {
+        // Produk dengan varian: qty hanya dari varian yang sama
+        eQ = parseFloat(cart.find(c => c.id === cProd.id && c.variantName === vN)?.qty || 0);
+    } else {
+        // Produk tanpa varian: jumlahkan semua qty produk ini di keranjang
+        eQ = cart.filter(c => c.id === cProd.id).reduce((s, c) => s + (parseFloat(c.qty) || 0), 0);
+    }
     let tQ = cQty + eQ;
     if (cProd.wholesale?.length) {
         for (let w of cProd.wholesale.slice().sort((a,b) => b.minQty - a.minQty)){
@@ -3111,7 +3452,7 @@ window.renderOrderDetailModal = (orderId, d, reviewedKeys) => {
         const cWa = esc((d.customer && d.customer.wa) ? d.customer.wa : '-');
         const cAddr = esc((d.customer && d.customer.address) ? d.customer.address : '-');
         
-        const dMethod = (d.customer && d.customer.deliveryMethod === 'delivery') ? 'Kurir Toko' : 'Ambil Sendiri';
+        const dMethod = (d.customer && d.customer.deliveryMethod === 'delivery') ? 'Dikirim' : 'Ambil di Toko';
         const dNotes = esc((d.customer && d.customer.note) ? d.customer.note : '');
         const pMethod = esc((d.payment && d.payment.method) ? d.payment.method : 'Cash / COD');
         
@@ -3137,7 +3478,7 @@ window.renderOrderDetailModal = (orderId, d, reviewedKeys) => {
                     </div>
                     ` : ''}
                     <p class="text-[10px] text-slate-500">${qty} ${esc(i.unit || 'pcs')} x ${fCur(price)}</p>
-                    ${canReview ? `<button type="button" onclick="openReviewModal('${orderId}',${i.id},'${esc(i.variantName||'').replace(/'/g,"\\'")}','${esc(i.name).replace(/'/g,"\\'")}','${cName.replace(/'/g,"\\'")}')" class="mt-1.5 text-[10px] font-bold text-amber-500 hover:text-amber-600 flex items-center gap-1"><i class="fa-solid fa-star"></i> Berikan Ulasan</button>` : ''}
+                    ${canReview ? `<button type="button" onclick="openReviewModal('${orderId}',${i.id},'${encodeURIComponent(i.variantName||'')}','${encodeURIComponent(i.name||'')}','${encodeURIComponent(d.customer?.name||'')}')" class="mt-1.5 text-[10px] font-bold text-amber-500 hover:text-amber-600 flex items-center gap-1"><i class="fa-solid fa-star"></i> Berikan Ulasan</button>` : ''}
                 </div>
                 <div class="text-right shrink-0">
                     <p class="text-xs font-bold text-slate-800 dark:text-[var(--color-primary)]">${fCur(itemTotal)}</p>
@@ -3149,16 +3490,22 @@ window.renderOrderDetailModal = (orderId, d, reviewedKeys) => {
         let dStr = "Tanggal Tidak Tersedia";
 try {
     let dateObj;
-    // Cek jika data dari Firestore (object .toDate())
     if (d.timestamp && typeof d.timestamp.toDate === 'function') {
         dateObj = d.timestamp.toDate();
     } else {
-        // Cek jika angka (timestamp miliseconds) atau string
-        dateObj = new Date(Number(d.timestamp || d.dateString || Date.now()));
+        const rawDate = d.timestamp || d.dateString || Date.now();
+        if (typeof rawDate === 'number') {
+            dateObj = new Date(rawDate);
+        } else if (!isNaN(Number(rawDate)) && String(rawDate).trim() !== '') {
+            dateObj = new Date(Number(rawDate));
+        } else {
+            const safeIso = String(rawDate).replace(/-/g, '/').replace('T', ' ').replace(/\..*$/, '');
+            dateObj = new Date(rawDate);
+            if (isNaN(dateObj.getTime())) dateObj = new Date(safeIso);
+        }
     }
     
-    // Pastikan valid
-    if (!isNaN(dateObj.getTime())) {
+    if (dateObj && !isNaN(dateObj.getTime())) {
         dStr = dateObj.toLocaleString('id-ID', {day:'numeric',month:'short',year:'numeric', hour:'2-digit', minute:'2-digit'});
     }
 } catch(e) {
@@ -3227,7 +3574,7 @@ try {
                     <div>
                         <h4 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3 flex items-center gap-1.5"><i class="fa-solid fa-image text-[var(--color-primary)]"></i> Bukti Pembayaran</h4>
                         <a href="${esc(d.buktiPayment)}" target="_blank" class="block rounded-2xl overflow-hidden border-2 border-[var(--color-primary)]/30 dark:border-[var(--color-primary)]/40 hover:border-[var(--color-primary)] transition-colors shadow-sm">
-                            <img src="${esc(d.buktiPayment)}" alt="Bukti Pembayaran" class="w-full max-h-56 object-cover" onerror="this.style.display='none'" loading="lazy"></i>
+                            <img src="${esc(d.buktiPayment)}" alt="Bukti Pembayaran" class="w-full max-h-56 object-cover" onerror="this.style.display='none'" loading="lazy">
                             <div class="bg-[rgba(var(--color-primary-rgb),0.06)] p-2 flex items-center justify-center gap-1.5 text-[10px] font-bold text-[var(--color-primary)]"><i class="fa-solid fa-arrow-up-right-from-square"></i> Tap untuk buka full screen</div>
                         </a>
                     </div>` : ''}
@@ -3262,7 +3609,17 @@ try {
                         <div class="flex justify-between text-slate-500 dark:text-slate-400"><p>Ongkos Kirim</p><p class="font-bold">${fCur(shipping)}</p></div>
                         ${shippingDiscount > 0 ? `<div class="flex justify-between text-[var(--color-primary)]"><p>Diskon Ongkir</p><p class="font-bold">-${fCur(shippingDiscount)}</p></div>` : ''}
                         ${discount > 0 ? `<div class="flex justify-between text-rose-500"><p>Diskon Promo</p><p class="font-bold">-${fCur(discount)}</p></div>` : ''}
-                        ${ppnAmt > 0 ? `<div class="flex justify-between text-amber-500"><p>PPN (${ppnRt}%)</p><p class="font-bold">+${fCur(ppnAmt)}</p></div>` : ''}
+                        ${(() => {
+                            if (ppnAmt <= 0) return '';
+                            const isInc = d.payment?.ppnType === 'inclusive';
+                            const baseBeforeTax = (subtotal - discount) + (shipping - shippingDiscount);
+                            const dppAmt = d.payment?.dppAmount || (isInc ? Math.round((baseBeforeTax * 100) / (100 + ppnRt)) : Math.max(0, baseBeforeTax));
+
+                            return `
+                            <div class="flex justify-between text-slate-500 dark:text-slate-400"><p>DPP (Dasar Pengenaan Pajak)</p><p class="font-bold">${fCur(dppAmt)}</p></div>
+                            <div class="flex justify-between text-amber-500"><p>${isInc ? 'Termasuk PPN' : 'PPN'} (${ppnRt}%)</p><p class="font-bold">${isInc ? '' : '+'}${fCur(ppnAmt)}</p></div>
+                            `;
+                        })()}
                         <div class="flex justify-between items-center border-t border-dashed border-slate-300 dark:border-slate-600 pt-3 mt-2">
                             <p class="font-bold text-slate-800 dark:text-white uppercase tracking-widest">Total Bayar</p>
                             <p class="text-lg font-bold text-[var(--color-primary)]">${fCur(grandTotal)}</p>
@@ -3316,7 +3673,7 @@ window.renderWish = () => {
         <div class="bg-white dark:bg-slate-800 p-4 rounded-[1.25rem] border border-slate-200 dark:border-slate-700 shadow-sm flex gap-4 relative overflow-hidden group min-w-0 hover:shadow-md hover:-translate-y-1 hover:border-rose-300 dark:hover:border-rose-600 transition-all duration-300">
             
             <div class="relative w-20 h-20 sm:w-24 sm:h-24 shrink-0 rounded-2xl bg-white border border-slate-100 dark:border-slate-700/50 p-2 flex items-center justify-center overflow-hidden">
-                <img loading="lazy" src="${esc(i.img)}" alt="${esc(i.name)}" class="w-full h-full object-contain transition-transform duration-500 group-hover:scale-110" onerror="this.onerror=null;this.src='https://placehold.co/400?text=No+Image'"></i>
+                <img loading="lazy" src="${esc(i.img)}" alt="${esc(i.name)}" class="w-full h-full object-contain transition-transform duration-500 group-hover:scale-110" onerror="this.onerror=null;this.src='https://placehold.co/400?text=No+Image'">
             </div>
             
             <div class="flex-1 flex flex-col min-w-0 relative">
@@ -3351,7 +3708,7 @@ window.renderCart = () => {
         <div class="bg-white dark:bg-slate-800 p-4 rounded-[1.25rem] border border-slate-200 dark:border-slate-700 shadow-sm flex gap-4 relative overflow-hidden group min-w-0 hover:shadow-md hover:-translate-y-1 hover:border-[var(--color-primary)]/40 dark:hover:border-[var(--color-primary)]/40 transition-all duration-300">
             
             <div class="relative w-20 h-20 sm:w-24 sm:h-24 shrink-0 rounded-2xl bg-white border border-slate-100 dark:border-slate-700/50 p-2 flex items-center justify-center overflow-hidden">
-                <img loading="lazy" src="${esc(i.img)}" alt="${esc(i.name)}" class="w-full h-full object-contain transition-transform duration-500 group-hover:scale-110" onerror="this.onerror=null;this.src='https://placehold.co/400?text=No+Image'"></i>
+                <img loading="lazy" src="${esc(i.img)}" alt="${esc(i.name)}" class="w-full h-full object-contain transition-transform duration-500 group-hover:scale-110" onerror="this.onerror=null;this.src='https://placehold.co/400?text=No+Image'">
             </div>
             
             <div class="flex-1 flex flex-col min-w-0 relative">
@@ -3589,7 +3946,7 @@ window.rMemberModalBody = () => {
         const isSelected = selectedReward && selectedReward.id === r.id;
         return `
         <div class="flex items-center gap-3 p-4 rounded-[1.25rem] border ${isSelected ? 'border-[var(--color-primary)] bg-[rgba(var(--color-primary-rgb),0.06)] dark:bg-[rgba(var(--color-primary-rgb),0.12)]' : 'border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50'}">
-            ${r.img ? `<img src="${esc(r.img)}" class="w-14 h-14 rounded-xl object-cover border border-slate-200 dark:border-slate-700 shrink-0" onerror="this.style.display='none'" loading="lazy"></i>` : `<div class="w-14 h-14 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-300 shrink-0"><i class="fa-solid fa-gift text-xl"></i></div>`}
+            ${r.img ? `<img src="${esc(r.img)}" class="w-14 h-14 rounded-xl object-cover border border-slate-200 dark:border-slate-700 shrink-0" onerror="this.style.display='none'" loading="lazy">` : `<div class="w-14 h-14 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-300 shrink-0"><i class="fa-solid fa-gift text-xl"></i></div>`}
             <div class="min-w-0 flex-1">
                 <p class="text-xs font-bold text-slate-800 dark:text-white truncate">${esc(r.name)}</p>
                 <p class="text-[11px] font-bold text-[var(--color-primary)] mt-0.5"><i class="fa-solid fa-star mr-1"></i>${parseFloat(r.pointsCost)||0} Poin</p>
@@ -3649,7 +4006,11 @@ window.closeMemberModal = (fH=false) => {
 window.reviewPhotoFile = null;
 window.reviewRating = 0;
 
-window.openReviewModal = (orderId, productId, variantName, productName, customerName) => {
+window.openReviewModal = (orderId, productId, encVName, encPName, encCName) => {
+    const variantName = decodeURIComponent(encVName || '');
+    const productName = decodeURIComponent(encPName || '');
+    const customerName = decodeURIComponent(encCName || '');
+
     let m = document.getElementById('review-modal');
     if (!m) {
         m = document.createElement('div');
@@ -3682,9 +4043,9 @@ window.openReviewModal = (orderId, productId, variantName, productName, customer
                 </div>
                 <div>
                     <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Unggah Foto (Opsional)</label>
-                    <input type="file" accept="image/*" id="review-photo-input" onchange="handleReviewPhotoSelect(event)" class="hidden"></i>
+                    <input type="file" accept="image/*" id="review-photo-input" onchange="handleReviewPhotoSelect(event)" class="hidden">
                     <div id="review-photo-preview-wrap" class="hidden mb-2.5 relative w-24 h-24">
-                        <img id="review-photo-preview" class="w-24 h-24 rounded-xl object-cover border border-slate-200 dark:border-slate-700" loading="lazy"></i>
+                        <img id="review-photo-preview" class="w-24 h-24 rounded-xl object-cover border border-slate-200 dark:border-slate-700" loading="lazy">
                         <button type="button" onclick="removeReviewPhoto()" class="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-rose-500 text-white flex items-center justify-center text-[10px] shadow"><i class="fa-solid fa-xmark"></i></button>
                     </div>
                     <button type="button" onclick="document.getElementById('review-photo-input').click()" id="review-photo-btn" class="w-full py-3 rounded-xl border-2 border-dashed border-slate-300 dark:border-slate-700 text-slate-400 text-[11px] font-bold uppercase tracking-widest flex items-center justify-center gap-2 hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] transition-all"><i class="fa-solid fa-camera"></i> Tambah Foto Bukti</button>
@@ -3826,7 +4187,7 @@ window.loadProductReviews = async (productId) => {
                 <div class="flex text-[11px] mb-2">${starRow(r.rating)}</div>
                 ${r.variantName ? `<p class="text-[10px] font-bold text-slate-400 mb-1.5">Varian: ${esc(r.variantName)}</p>` : ''}
                 ${r.text ? `<p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed mb-2">${esc(r.text)}</p>` : ''}
-                ${r.photoUrl ? `<img src="${esc(r.photoUrl)}" onclick="window.open('${esc(r.photoUrl)}','_blank')" class="w-20 h-20 rounded-xl object-cover border border-slate-200 dark:border-slate-700 cursor-pointer mb-2" onerror="this.style.display='none'" loading="lazy"></i>` : ''}
+                ${r.photoUrl ? `<img src="${esc(r.photoUrl)}" onclick="window.open('${esc(r.photoUrl)}','_blank')" class="w-20 h-20 rounded-xl object-cover border border-slate-200 dark:border-slate-700 cursor-pointer mb-2" onerror="this.style.display='none'" loading="lazy">` : ''}
                 ${r.adminReply ? `<div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl p-3 mt-2"><p class="text-[9px] font-bold text-[var(--color-primary)] uppercase tracking-widest mb-1"><i class="fa-solid fa-store mr-1"></i>Balasan Toko</p><p class="text-[11px] text-slate-600 dark:text-slate-300">${esc(r.adminReply)}</p></div>` : ''}
             </div>`;
         }).join('');
@@ -4090,22 +4451,40 @@ window.togglePaymentDetails = () => {
 };
 
 window.calculateTempoBalance = () => {
-    let dp = parseFloat(document.getElementById('tempo-dp-input').value) || 0;
-    let total = cart.reduce((s,i) => s + (parseFloat(getEffP(i))||0) * (parseFloat(i.qty)||0), 0);
+    const dpInput = document.getElementById('tempo-dp-input');
+    let dp = parseFloat(dpInput?.value) || 0;
+    if (dp < 0) { dp = 0; if (dpInput) dpInput.value = 0; }
+    let sub = cart.reduce((s,i) => s + (parseFloat(getEffP(i))||0) * (parseFloat(i.qty)||0), 0);
     let sC = 0, productDisc = 0, shippingDisc = 0;
     if (cust.deliveryMethod === 'delivery') {
         sC = Math.ceil((parseFloat(cust.distance)||0) * (parseFloat(appData.store.costPerKm)||0) / 500) * 500;
     }
     if (vouch) {
-        if (vouch.type === 'product_nominal') productDisc = parseFloat(vouch.discount);
-        else if (vouch.type === 'product_percent') productDisc = total * parseFloat(vouch.discount)/100;
-        else if (vouch.type === 'shipping_nominal') shippingDisc = Math.min(sC, parseFloat(vouch.discount));
-        else if (vouch.type === 'shipping_percent') shippingDisc = Math.min(sC, sC * parseFloat(vouch.discount)/100);
+        let eligibleSubtotal = sub;
+        if(vouch.targetProduct && vouch.targetProduct !== '') {
+            const targetId = parseInt(vouch.targetProduct);
+            const eligibleItems = cart.filter(i => i.id === targetId);
+            eligibleSubtotal = eligibleItems.reduce((s,i) => s + (parseFloat(getEffP(i))||0) * (parseFloat(i.qty)||0), 0);
+        }
+        if(vouch.type === 'shipping_free') {
+            shippingDisc = sC;
+        } else if(vouch.type === 'shipping_flat') {
+            shippingDisc = parseFloat(vouch.value)||0;
+        } else if(vouch.type === 'percent') {
+            let calcDisc = eligibleSubtotal * ((parseFloat(vouch.value)||0) / 100);
+            if(vouch.maxDiscount && parseFloat(vouch.maxDiscount) > 0) calcDisc = Math.min(calcDisc, parseFloat(vouch.maxDiscount));
+            productDisc = calcDisc;
+        } else {
+            productDisc = parseFloat(vouch.value)||0;
+            productDisc = Math.min(productDisc, eligibleSubtotal);
+        }
     }
-    let subAfterDisc = Math.max(0, total - productDisc);
+    shippingDisc = Math.min(shippingDisc, sC);
+    productDisc = Math.min(productDisc, sub);
+
+    let subAfterDisc = Math.max(0, sub - productDisc);
     let shippingAfterDisc = Math.max(0, sC - shippingDisc);
     const taxInfo = window.calcTaxDetails(subAfterDisc + shippingAfterDisc);
-    let ppnAmount = taxInfo.ppnAmount;
     let pointsDisc = 0;
     if (window.useMemberPoints && currentMember) {
         pointsDisc = Math.min(subAfterDisc + shippingAfterDisc + taxInfo.grandTotalAdd, parseFloat(currentMember.points) || 0);
@@ -4113,10 +4492,11 @@ window.calculateTempoBalance = () => {
     let grandTotal = subAfterDisc + shippingAfterDisc + taxInfo.grandTotalAdd - pointsDisc;
     if (dp > grandTotal) {
         dp = grandTotal;
-        document.getElementById('tempo-dp-input').value = dp;
+        if (dpInput) dpInput.value = dp;
     }
     let balance = grandTotal - dp;
-    document.getElementById('tempo-balance-display').innerText = fCur(balance);
+    const disp = document.getElementById('tempo-balance-display');
+    if (disp) disp.innerText = fCur(balance);
 };
 
 const rPay = () => {
@@ -4135,6 +4515,19 @@ const rPay = () => {
     
     if (cust.deliveryMethod === 'delivery') {
         sC = Math.ceil((parseFloat(cust.distance)||0) * (parseFloat(appData.store.costPerKm)||0) / 500) * 500;
+    }
+
+    // Re-validasi voucher jika barang dihapus / subtotal berkurang
+    if (vouch) {
+        if (vouch.minPurchase && parseFloat(vouch.minPurchase) > 0 && sub < parseFloat(vouch.minPurchase)) {
+            vouch = null;
+            hide('voucher-msg-container');
+            showToast(`Voucher dibatalkan (min. belanja ${fCur(vouch.minPurchase)})`);
+        } else if (vouch.targetProduct && !cart.some(i => i.id === parseInt(vouch.targetProduct))) {
+            vouch = null;
+            hide('voucher-msg-container');
+            showToast("Voucher dibatalkan (produk khusus dihapus)");
+        }
     }
     
     if(vouch){
@@ -4212,7 +4605,7 @@ const rPay = () => {
     }
     setIn('payment-cust-name', cust.name || '-');
     if(el('payment-cust-wa')) el('payment-cust-wa').textContent = cust.wa ? '+' + cust.wa : '-';
-    setIn('payment-cust-method', cust.deliveryMethod === 'delivery' ? `Kurir (${cust.distance.toFixed(1)}km)` : 'Ambil di Toko');
+    setIn('payment-cust-method', cust.deliveryMethod === 'delivery' ? `Dikirim (${cust.distance.toFixed(1)}km)` : 'Ambil di Toko');
     setIn('payment-cust-address', cust.address || '-');
     
     setH('payment-items-preview', cart.map(i => {
@@ -4743,7 +5136,7 @@ const aF = {
         {key:'img', label:'URL Gambar', type:'text'},
         {key:'category', label:'Kategori', type:'dynamic_select_category'}, {key:'brand', label:'Merek', type:'dynamic_select_brand'},
         {key:'tag', label:'Label/Tag', type:'text'}, {key:'isActive', label:'Status', type:'select', options:[{val:'true',text:'Tersedia'},{val:'false',text:'Habis'}]},
-        {key:'desc', label:'Deskripsi Lengkap', type:'richtext'}, {key:'wholesale', label:'Grosir', type:'wholesale_builder'}, {key:'variants', label:'Varian', type:'variants_builder'}
+        {key:'desc', label:'Deskripsi Lengkap', type:'richtext'}, {key:'specTable', label:'Tabel Spesifikasi (Opsional)', type:'spec_table_builder'}, {key:'wholesale', label:'Grosir', type:'wholesale_builder'}, {key:'variants', label:'Varian', type:'variants_builder'}
     ],
     colors: [
         {key:'name', label:'Nama Warna', type:'text'},
@@ -4769,10 +5162,12 @@ const aF = {
         {key:'isActive', label:'Status', type:'select', options:[{val:'true',text:'Aktif (Bisa Ditukar)'},{val:'false',text:'Nonaktif'}]}
     ],
     banners: [
-     {key:'title', label:'Judul Banner', type:'text'}, 
-     {key:'desc', label:'Deskripsi Pendek', type:'textarea'}, 
-     {key:'img', label:'URL Gambar (PNG Transparan disarankan)', type:'text'},
-     {key:'link', label:'Link Tujuan (Contoh: https://wa.me/62... atau link produk)', type:'text'}
+     {key:'title',    label:'Judul Banner',    type:'text'},
+     {key:'desc',     label:'Deskripsi Pendek (Opsional)', type:'textarea'},
+     {key:'type',     label:'Tipe Banner', type:'select', options:[{val:'image',text:'🖼 Gambar (Default)'},{val:'video',text:'🎬 Video (Drive / YouTube / MP4)'}]},
+     {key:'img',      label:'URL Gambar (jika Tipe = Gambar)', type:'text'},
+     {key:'videoUrl', label:'URL / Link Video (Google Drive, YouTube, atau MP4)', type:'text'},
+     {key:'link',     label:'Link Tujuan Klik (Opsional)', type:'text'}
  ],
 
     vouchers: [
@@ -4863,7 +5258,7 @@ window.loadAdminReport = async (period) => {
     document.querySelectorAll('.report-period-btn').forEach(b => {
         const active = b.dataset.period === period;
         b.style.background = active ? 'var(--color-primary)' : 'transparent';
-        b.style.color = active ? '#fff' : '';
+        b.style.color = active ? 'var(--color-primary-contrast, #fff)' : '';
         b.style.boxShadow = active ? '0 2px 8px rgba(var(--color-primary-rgb),0.35)' : 'none';
     });
     const container = el('admin-report-container');
@@ -5441,7 +5836,6 @@ window.openAdminTab = (t, fH=false) => {
         // (replaceState) alih-alih menumpuk state baru (pushState). Dengan ini, pindah
         // dari Tab A → Tab B tidak menambah entri ke history stack, sehingga menekan
         // tombol back dari tab manapun SELALU kembali ke dashboard admin — bukan ke tab
-        // sebelumnya. pushState hanya dipakai saat PERTAMA kali masuk tab dari dashboard.
         const curState = history.state;
         if (curState && curState.view === 'view-admin' && curState.tab) {
             history.replaceState({view:'view-admin', tab:t}, '', window.location.href);
@@ -5451,12 +5845,9 @@ window.openAdminTab = (t, fH=false) => {
     }
 
     hide('admin-dashboard-view'); show('admin-content-view'); show('btn-admin-back'); hide('admin-logo-box');
-    const titles = {'orders':'Pesanan', 'settings':'Toko', 'products':'Produk', 'categories':'Kategori', 'brands':'Merek', 'banks':'Rekening', 'banners':'Banner', 'vouchers':'Voucher', 'customers':'Database Pelanggan', 'rewards':'Program Hadiah', 'reviews':'Ulasan Pelanggan', 'tax':'Pajak & Keuangan', 'piutang':'Piutang Tempo', 'colors':'Database Warna'};
+    const titles = {'orders':'Pesanan', 'settings':'Toko', 'products':'Produk', 'categories':'Kategori', 'brands':'Merek', 'banks':'Rekening', 'banners':'Banner', 'vouchers':'Voucher', 'customers':'Database Pelanggan', 'rewards':'Program Hadiah', 'reviews':'Ulasan Pelanggan', 'faqs':'Tanya Jawab / Q&A', 'tax':'Pajak & Keuangan', 'piutang':'Piutang Tempo', 'colors':'Database Warna'};
     setIn('admin-header-title', titles[t]||'CMS');
     if(t !== 'orders' && aOrdLst){ aOrdLst(); aOrdLst=null; }
-    // FIX BUG: tab Database Pelanggan dulu cuma ambil data SEKALI (snapshot),
-    // jadi kalau ada poin bertambah/berkurang (mis. klaim hadiah) SAAT tab ini
-    // sedang terbuka, angkanya tidak ikut ter-update sampai tab dibuka ulang.
     // Sekarang dipasang listener realtime selama tab ini aktif, dilepas begitu
     // admin pindah ke tab lain (tetap sesuai prinsip privasi: tidak dimuat sejak awal).
     if (t !== 'customers' && aCustLst) { aCustLst(); aCustLst = null; }
@@ -5492,6 +5883,7 @@ window.openAdminTab = (t, fH=false) => {
                 rAdmReviews();
             }, () => { showToast("Gagal memuat ulasan!"); });
     }
+    else if (t === 'faqs') { window.rAdmFAQ(); }
     else rAdmL(t);
 };
 
@@ -5519,7 +5911,7 @@ window.exportOrdersToExcel = async () => {
     gOrds.forEach((o, index) => {
         let date = o.dateString ? new Date(o.dateString).toLocaleString('id-ID') : '-';
         let custName = o.customer?.name || 'Anonim';
-        let method = o.customer?.deliveryMethod === 'delivery' ? 'Kurir' : 'Ambil Sendiri';
+        let method = o.customer?.deliveryMethod === 'delivery' ? 'Dikirim' : 'Ambil di Toko';
         let status = o.status || '-';
         let totalItem = o.items ? o.items.reduce((sum, i) => sum + (parseFloat(i.qty)||0), 0) : 0;
         let totalHarga = o.payment?.grandTotal || 0;
@@ -5745,12 +6137,12 @@ window.openOrderDetail = i => {
                     ${o.customer?.wa ? `<div class="flex justify-between items-center"><span class="text-slate-500 dark:text-slate-400 font-bold flex items-center gap-1.5"><i class="fa-brands fa-whatsapp text-green-500"></i> WhatsApp</span><a href="https://wa.me/${esc(o.customer.wa)}" target="_blank" class="font-bold text-green-600 dark:text-green-400 hover:underline">+${esc(o.customer.wa)}</a></div>` : ''}
                     ${o.customer?.wa ? `<button type="button" onclick="saveOrderCustomerToDB('${esc(o.customer.name||'')}','${esc(o.customer.wa)}')" class="w-full py-2.5 rounded-xl bg-teal-50 dark:bg-teal-900/20 border border-teal-200 dark:border-teal-800 text-teal-600 dark:text-teal-400 text-[11px] font-bold uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-teal-100 transition-all active:scale-95"><i class="fa-solid fa-address-book"></i> Simpan ke Database Pelanggan</button>` : ''}
                     <div class="border-t border-dashed border-slate-200 dark:border-slate-700 pt-4">
-                        <span class="text-slate-500 dark:text-slate-400 font-bold flex items-center gap-2 mb-2.5"><i class="fa-solid fa-map-location-dot"></i> Alamat (${o.customer?.deliveryMethod==='delivery'?'Kurir':'Ambil Sendiri'})</span>
+                        <span class="text-slate-500 dark:text-slate-400 font-bold flex items-center gap-2 mb-2.5"><i class="fa-solid fa-map-location-dot"></i> Alamat (${o.customer?.deliveryMethod==='delivery'?'Dikirim':'Ambil di Toko'})</span>
                         <div class="bg-slate-50 dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-700 font-bold text-slate-700 dark:text-slate-300 leading-relaxed shadow-inner text-sm">${esc(o.customer?.address||'-')}</div>
                         ${o.customer?.lat && o.customer?.deliveryMethod === 'delivery' ? `<a href="https://www.google.com/maps?q=${esc(o.customer.lat)},${esc(o.customer.lng)}" target="_blank" class="mt-3 flex items-center justify-center gap-2 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-800 font-bold text-xs py-2.5 px-4 rounded-xl hover:bg-blue-100 transition-colors"><i class="fa-solid fa-location-dot"></i> Buka Lokasi di Google Maps</a>` : ''}
                     </div>
                     ${o.customer?.note?`<div class="bg-amber-50 dark:bg-amber-900/20 p-4 rounded-xl border border-amber-200 dark:border-amber-800 mt-2"><p class="text-[10px] font-bold text-amber-600 uppercase tracking-widest mb-1.5"><i class="fa-solid fa-note-sticky"></i> Catatan Pembeli</p><p class="text-sm text-amber-900 dark:text-amber-100 font-bold">${esc(o.customer.note)}</p></div>`:''}
-                    ${o.buktiPayment ? `<div class="bg-violet-50 dark:bg-violet-900/20 p-4 rounded-xl border border-violet-200 dark:border-violet-800 mt-2"><p class="text-[10px] font-bold text-violet-600 dark:text-violet-400 uppercase tracking-widest mb-2.5"><i class="fa-solid fa-image"></i> Bukti Pembayaran</p><a href="${esc(o.buktiPayment)}" target="_blank" class="block rounded-xl overflow-hidden border border-violet-200 dark:border-violet-800"><img src="${esc(o.buktiPayment)}" alt="Bukti Pembayaran" class="w-full max-h-48 object-cover" onerror="this.style.display='none'" loading="lazy"></i><div class="bg-violet-100 dark:bg-violet-900/40 py-2 text-center text-[10px] font-bold text-violet-600 dark:text-violet-400"><i class="fa-solid fa-arrow-up-right-from-square mr-1"></i> Tap untuk buka</div></a></div>` : ''}
+                    ${o.buktiPayment ? `<div class="bg-violet-50 dark:bg-violet-900/20 p-4 rounded-xl border border-violet-200 dark:border-violet-800 mt-2"><p class="text-[10px] font-bold text-violet-600 dark:text-violet-400 uppercase tracking-widest mb-2.5"><i class="fa-solid fa-image"></i> Bukti Pembayaran</p><a href="${esc(o.buktiPayment)}" target="_blank" class="block rounded-xl overflow-hidden border border-violet-200 dark:border-violet-800"><img src="${esc(o.buktiPayment)}" alt="Bukti Pembayaran" class="w-full max-h-48 object-cover" onerror="this.style.display='none'" loading="lazy"><div class="bg-violet-100 dark:bg-violet-900/40 py-2 text-center text-[10px] font-bold text-violet-600 dark:text-violet-400"><i class="fa-solid fa-arrow-up-right-from-square mr-1"></i> Tap untuk buka</div></a></div>` : ''}
                 </div>
             </div>
 
@@ -5808,7 +6200,19 @@ window.openOrderDetail = i => {
                     ${o.customer?.deliveryMethod==='delivery'?`<div class="flex justify-between items-center"><span>Ongkos Kirim</span><span class="font-bold text-white">${fCur(o.payment?.shippingCost)}</span></div>`:''}
                     ${o.payment?.shippingDiscount?`<div class="flex justify-between items-center text-emerald-400 bg-emerald-900/20 px-2 py-1 -mx-2 rounded-xl"><span>Diskon Ongkir</span><span class="font-bold">-${fCur(o.payment.shippingDiscount)}</span></div>`:''}
                     ${o.payment?.productDiscount?`<div class="flex justify-between items-center text-rose-400 bg-rose-900/20 px-2 py-1 -mx-2 rounded-xl"><span>Diskon Promo</span><span class="font-bold">-${fCur(o.payment.productDiscount)}</span></div>`:''}
-                    ${o.payment?.ppnAmount?`<div class="flex justify-between items-center text-amber-400 bg-amber-900/20 px-2 py-1 -mx-2 rounded-xl"><span>${o.payment.ppnType==='inclusive'?'Termasuk PPN':'PPN'} (${o.payment.ppnRate||11}%)</span><span class="font-bold">${o.payment.ppnType==='inclusive'?'':'+'}${fCur(o.payment.ppnAmount)}</span></div>`:''}
+                    ${(() => {
+                        if (!o.payment?.ppnAmount || o.payment.ppnAmount <= 0) return '';
+                        const isInc = o.payment.ppnType === 'inclusive';
+                        const ppnRate = o.payment.ppnRate || 11;
+                        const ppnAmt = o.payment.ppnAmount;
+                        const baseBeforeTax = (o.payment.subtotal || 0) - (o.payment.productDiscount || 0) + (o.payment.shippingCost || 0) - (o.payment.shippingDiscount || 0);
+                        const dppAmt = o.payment.dppAmount || (isInc ? Math.round((baseBeforeTax * 100) / (100 + ppnRate)) : Math.max(0, baseBeforeTax));
+
+                        return `
+                        <div class="flex justify-between items-center text-slate-400"><span>DPP (Dasar Pengenaan Pajak)</span><span class="font-bold text-white">${fCur(dppAmt)}</span></div>
+                        <div class="flex justify-between items-center text-amber-400 bg-amber-900/20 px-2 py-1 -mx-2 rounded-xl"><span>${isInc ? 'Termasuk PPN' : 'PPN'} (${ppnRate}%)</span><span class="font-bold">${isInc ? '' : '+'}${fCur(ppnAmt)}</span></div>
+                        `;
+                    })()}
                 </div>
                 
                 <div class="border-t border-dashed border-slate-600/60 my-5 relative z-10"></div>
@@ -5951,7 +6355,7 @@ window.openReceiptPreview = () => {
     
     let h = `<div class="text-center font-bold" style="font-size:13px;margin-bottom:2px;">${esc(sN)}</div>`;
     if(sW) h += `<div class="text-center" style="margin-bottom:4px;">WA: ${esc(sW)}</div>`;
-    h += `<div class="border-b border-dashed border-black my-2"></div><div style="white-space:pre;">Order: #${o.orderId}</div><div style="white-space:pre;">Tgl  : ${d}</div><div style="white-space:pre;">Plg  : ${esc(o.customer.name||'Guest').substring(0,20)}</div><div style="white-space:pre;">Tipe : ${o.customer.deliveryMethod==='delivery'?'Kurir':'Toko'}</div><div class="border-b border-dashed border-black my-2"></div>`;
+    h += `<div class="border-b border-dashed border-black my-2"></div><div style="white-space:pre;">Order: #${o.orderId}</div><div style="white-space:pre;">Tgl  : ${d}</div><div style="white-space:pre;">Plg  : ${esc(o.customer.name||'Guest').substring(0,20)}</div><div style="white-space:pre;">Tipe : ${o.customer.deliveryMethod==='delivery'?'Dikirim':'Ambil di Toko'}</div><div class="border-b border-dashed border-black my-2"></div>`;
     if(o.customer.note) { h += `<div style="white-space:pre-wrap;word-break:break-all;">Cat: ${esc(o.customer.note)}</div><div class="border-b border-dashed border-black my-2"></div>`; }
     
     // MODIFIKASI: Cetak Teks Hex Code di Printer Thermal
@@ -5972,7 +6376,13 @@ window.openReceiptPreview = () => {
     if(o.payment?.productDiscount) h += `<div style="white-space:pre;">${pL('Pot.Harga',`-${o.payment.productDiscount.toLocaleString('id-ID')}`)}</div>`;
     if(o.payment?.ppnAmount && o.payment.ppnAmount > 0) {
         const isInc = o.payment.ppnType === 'inclusive';
-        h += `<div style="white-space:pre;">${pL(`${isInc?'Inc.PPN':'PPN'}(${o.payment.ppnRate||11}%)`,(o.payment.ppnAmount||0).toLocaleString('id-ID'))}</div>`;
+        const ppnRate = o.payment.ppnRate || 11;
+        const ppnAmt = o.payment.ppnAmount || 0;
+        const baseBeforeTax = (o.payment.subtotal || 0) - (o.payment.productDiscount || 0) + (o.payment.shippingCost || 0) - (o.payment.shippingDiscount || 0);
+        const dppAmt = o.payment.dppAmount || (isInc ? Math.round((baseBeforeTax * 100) / (100 + ppnRate)) : Math.max(0, baseBeforeTax));
+
+        h += `<div style="white-space:pre;">${pL('DPP', dppAmt.toLocaleString('id-ID'))}</div>`;
+        h += `<div style="white-space:pre;">${pL(`${isInc ? 'Inc. PPN' : 'PPN'} (${ppnRate}%)`, (isInc ? '' : '+') + ppnAmt.toLocaleString('id-ID'))}</div>`;
     }
     h += `<div class="border-b border-dashed border-black my-2"></div><div style="white-space:pre;font-weight:bold;font-size:12px;">${pL('TOTAL','Rp '+(o.payment?.grandTotal||0).toLocaleString('id-ID'))}</div><div style="white-space:pre;">${pL('Bayar:',String(o.payment?.method||'').toUpperCase())}</div>`;
     // FITUR BARU: cantumkan poin didapat, saldo poin, & info klaim hadiah di struk
@@ -6271,8 +6681,8 @@ window.openSettingForm = (type) => {
             </div>
             <div><label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Alamat Fisik Toko</label><textarea autocomplete='off' id="set-address" class="admin-input !py-3.5 resize-none bg-slate-50 dark:bg-slate-900 shadow-sm" rows="2">${esc(appData.store.address)}</textarea></div>
             <div class="grid grid-cols-2 gap-5">
-                <div><label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Sistem Kurir</label><div class="relative"><select id="set-delivery-enabled" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm cursor-pointer appearance-none pr-10"><option value="true" ${appData.store.isDeliveryEnabled!==false?'selected':''}>Aktif</option><option value="false" ${appData.store.isDeliveryEnabled===false?'selected':''}>Nonaktif</option></select><i class="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-[10px]"></i></div></div>
-                <div><label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Ambil Sendiri</label><div class="relative"><select id="set-pickup-enabled" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm cursor-pointer appearance-none pr-10"><option value="true" ${appData.store.isPickupEnabled!==false?'selected':''}>Aktif</option><option value="false" ${appData.store.isPickupEnabled===false?'selected':''}>Nonaktif</option></select><i class="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-[10px]"></i></div></div>
+                <div><label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Opsi Dikirim</label><div class="relative"><select id="set-delivery-enabled" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm cursor-pointer appearance-none pr-10"><option value="true" ${appData.store.isDeliveryEnabled!==false?'selected':''}>Aktif</option><option value="false" ${appData.store.isDeliveryEnabled===false?'selected':''}>Nonaktif</option></select><i class="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-[10px]"></i></div></div>
+                <div><label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Ambil di Toko</label><div class="relative"><select id="set-pickup-enabled" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm cursor-pointer appearance-none pr-10"><option value="true" ${appData.store.isPickupEnabled!==false?'selected':''}>Aktif</option><option value="false" ${appData.store.isPickupEnabled===false?'selected':''}>Nonaktif</option></select><i class="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-[10px]"></i></div></div>
             </div>
             <div>
                 <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest"><i class="fa-solid fa-map-pin mr-1"></i> Titik Koordinat Toko (GPS)</label>
@@ -6612,7 +7022,7 @@ window.rAdmItms = t => {
         let tC = isOff ? 'text-slate-500 dark:text-slate-400 line-through' : 'text-slate-800 dark:text-slate-100';
         
         let img = x.img 
-            ? `<div class="w-16 h-16 sm:w-20 sm:h-20 shrink-0 bg-white border border-slate-100 dark:border-slate-700/60 rounded-2xl p-1.5 flex items-center justify-center overflow-hidden"><img loading="lazy" src="${esc(x.img)}" alt="${esc(x.name)}" onerror="this.onerror=null;this.src='https://placehold.co/100?text=Img'" class="w-full h-full object-contain ${isOff?'grayscale opacity-50':''}"></i></div>`
+            ? `<div class="w-16 h-16 sm:w-20 sm:h-20 shrink-0 bg-white border border-slate-100 dark:border-slate-700/60 rounded-2xl p-1.5 flex items-center justify-center overflow-hidden"><img loading="lazy" src="${esc(x.img)}" alt="${esc(x.name)}" onerror="this.onerror=null;this.src='https://placehold.co/100?text=Img'" class="w-full h-full object-contain ${isOff?'grayscale opacity-50':''}"></div>`
             : `<div class="w-16 h-16 sm:w-20 sm:h-20 shrink-0 bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700/60 rounded-2xl flex items-center justify-center text-slate-300 dark:text-slate-600"><i class="fa-solid fa-image text-2xl"></i></div>`;
         
         let tglBtn = isP ? (isOff 
@@ -6716,7 +7126,7 @@ window.rAdmReviews = () => {
             </div>
             <div class="flex text-xs mb-2.5">${starRow(r.rating)}</div>
             ${r.text ? `<p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed mb-2.5">${esc(r.text)}</p>` : ''}
-            ${r.photoUrl ? `<img src="${esc(r.photoUrl)}" onclick="window.open('${esc(r.photoUrl)}','_blank')" class="w-20 h-20 rounded-xl object-cover border border-slate-200 dark:border-slate-700 cursor-pointer mb-2.5" onerror="this.style.display='none'" loading="lazy"></i>` : ''}
+            ${r.photoUrl ? `<img src="${esc(r.photoUrl)}" onclick="window.open('${esc(r.photoUrl)}','_blank')" class="w-20 h-20 rounded-xl object-cover border border-slate-200 dark:border-slate-700 cursor-pointer mb-2.5" onerror="this.style.display='none'" loading="lazy">` : ''}
             ${r.adminReply ? `<div class="bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-xl p-3 mb-2.5"><p class="text-[9px] font-bold text-[var(--color-primary)] uppercase tracking-widest mb-1"><i class="fa-solid fa-store mr-1"></i>Balasan Anda</p><p class="text-[11px] text-slate-600 dark:text-slate-300">${esc(r.adminReply)}</p></div>` : ''}
             <div class="flex flex-wrap gap-2 pt-2 border-t border-slate-100 dark:border-slate-700/60">
                 <button onclick="replyToReview(${r.id})" class="px-3 py-2 rounded-xl bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 text-[10px] font-bold uppercase tracking-widest flex items-center gap-1.5 hover:bg-blue-100 transition-all"><i class="fa-solid fa-reply"></i> ${r.adminReply ? 'Edit Balasan' : 'Balas'}</button>
@@ -6801,14 +7211,20 @@ window.fetchTaxPeriodData = async (year) => {
             const o = doc.data();
             if (o.status === 'Dibatalkan') return;
             if (!o.timestamp || !o.timestamp.toDate) return;
+            // FIX BUG KRITIS: sebelumnya memakai variabel 'm' dari for-loop di luar
+            // scope ini — setelah diminify oleh Vite, 'm' di-rename sehingga tidak
+            // terdefinisi di dalam callback (ReferenceError: m is not defined).
+            // Seharusnya bulan diambil dari TIMESTAMP ORDER itu sendiri.
+            const monthKey = o.timestamp.toDate().getMonth() + 1; // 1-12
+            if (!monthly[monthKey]) return; // abaikan jika di luar tahun yang dimaksud
             const dppVal = (o.payment?.dppAmount !== undefined && o.payment?.dppAmount !== null) ? parseFloat(o.payment.dppAmount) : (parseFloat(o.payment?.subtotal) || 0);
-            monthly[m].omset += dppVal;
-            monthly[m].ppn += parseFloat(o.payment?.ppnAmount) || 0;
-            monthly[m].disc += parseFloat(o.payment?.productDiscount) || 0;
-            monthly[m].orderCount++;
+            monthly[monthKey].omset += dppVal;
+            monthly[monthKey].ppn += parseFloat(o.payment?.ppnAmount) || 0;
+            monthly[monthKey].disc += parseFloat(o.payment?.productDiscount) || 0;
+            monthly[monthKey].orderCount++;
             (o.items || []).forEach(it => {
                 const hppItem = (it.hpp !== undefined && it.hpp !== null) ? parseFloat(it.hpp) : getEffHpp(it);
-                monthly[m].hpp += (parseFloat(hppItem) || 0) * (parseFloat(it.qty) || 0);
+                monthly[monthKey].hpp += (parseFloat(hppItem) || 0) * (parseFloat(it.qty) || 0);
             });
         });
     } catch(e) { console.error('Gagal memuat data pajak:', e); showToast('Gagal memuat data periode ini!'); }
@@ -6844,62 +7260,57 @@ window.rTaxPanel = async () => {
 window.rTaxRenderShell = () => {
       const yearOptions = Array.from({length:6}, (_,i) => new Date().getFullYear() - 4 + i);
       const tabs = [
-          {k:'summary', l:'Ringkasan PPN', i:'fa-receipt', desc:'Laporan pajak pertambahan nilai'},
-          {k:'income', l:'Laba Rugi', i:'fa-chart-pie', desc:'Laporan keuangan laba & rugi'},
-          {k:'balance', l:'Neraca', i:'fa-scale-balanced', desc:'Informasi aset & kewajiban'},
-          {k:'settings', l:'Pengaturan', i:'fa-gear', desc:'Konfigurasi tarif & data pajak'}
+          {k:'summary', l:'Ringkasan PPN', i:'fa-receipt'},
+          {k:'income', l:'Laba Rugi', i:'fa-chart-pie'},
+          {k:'balance', l:'Neraca', i:'fa-scale-balanced'},
+          {k:'settings', l:'Pengaturan', i:'fa-gear'}
       ];
+
+      if (taxActiveTab === 'menu') taxActiveTab = 'summary';
       
-      let headerHTML = '';
-      if(taxActiveTab === 'menu') {
-           headerHTML = `
-           <div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-5">
-              ${tabs.map(t => `
-                  <button onclick="switchTaxTab('${t.k}')" class="flex flex-col items-start gap-3 p-4 sm:p-5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl hover:-translate-y-1 hover:shadow-md hover:border-[var(--color-primary)]/40 dark:hover:border-[var(--color-primary)]/40 transition-all text-left group">
-                      <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-emerald-50 dark:bg-emerald-900/30 text-emerald-500 flex items-center justify-center text-lg sm:text-xl group-hover:scale-110 transition-transform">
-                          <i class="fa-solid ${t.i}"></i>
-                      </div>
-                      <div>
-                          <h4 class="font-bold text-slate-800 dark:text-white text-xs sm:text-sm uppercase tracking-widest mb-1 group-hover:text-[var(--color-primary)] dark:group-hover:text-emerald-400 transition-colors">${t.l}</h4>
-                          <p class="text-[10px] font-medium text-slate-400 leading-tight">${t.desc}</p>
-                      </div>
-                  </button>
-              `).join('')}
-           </div>
-           `;
-      } else {
-           const activeTabInfo = tabs.find(t => t.k === taxActiveTab) || tabs[0];
-           headerHTML = `
-           <div class="flex flex-wrap items-center justify-between gap-3 mb-5 bg-white dark:bg-slate-800 p-3 sm:p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
-               <div class="flex items-center gap-3">
-                   <button onclick="switchTaxTab('menu')" class="w-9 h-9 flex items-center justify-center rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-500 hover:text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/30 transition-all shrink-0">
-                       <i class="fa-solid fa-arrow-left"></i>
-                   </button>
-                   <div>
-                       <h3 class="font-bold text-slate-800 dark:text-white text-xs sm:text-sm uppercase tracking-widest leading-none">${activeTabInfo.l}</h3>
-                       <p class="text-[10px] text-slate-400 font-medium mt-1 hidden sm:block">Data Pajak & Keuangan</p>
-                   </div>
-               </div>
-               
-               ${taxActiveTab === 'settings' ? '' : `
-               <div class="flex gap-2 items-center">
-                  <select id="tax-year-select" onchange="changeTaxYear(this.value)" class="admin-input !py-2 !px-3 text-xs font-bold bg-slate-50 dark:bg-slate-900 w-24 border-slate-200 dark:border-slate-700">
-                      ${yearOptions.map(y => `<option value="${y}" ${y===taxYear?'selected':''}>${y}</option>`).join('')}
-                  </select>
-                  <select id="tax-month-select" onchange="changeTaxMonth(this.value)" class="admin-input !py-2 !px-3 text-xs font-bold bg-slate-50 dark:bg-slate-900 w-32 sm:w-36 border-slate-200 dark:border-slate-700">
-                      <option value="0" ${taxMonth===0?'selected':''}>Setahun Penuh</option>
-                      ${MONTH_NAMES.map((n,idx) => `<option value="${idx+1}" ${taxMonth===idx+1?'selected':''}>${n} ${taxYear}</option>`).join('')}
-                  </select>
+      const headerHTML = `
+      <div class="mb-5 flex flex-wrap items-center justify-between gap-3 bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
+          <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style="background: rgba(var(--color-primary-rgb),0.1); color: var(--color-primary)">
+                  <i class="fa-solid fa-file-invoice-dollar text-base"></i>
               </div>
-               `}
-           </div>
-           `;
-      }
+              <div>
+                  <h2 class="font-bold text-sm text-slate-800 dark:text-slate-100 uppercase tracking-widest leading-tight">Pajak &amp; Keuangan</h2>
+                  <p class="text-[9px] font-bold text-slate-500 mt-0.5">Rekap Omset, PPN, Laba Rugi, &amp; Neraca Toko</p>
+              </div>
+          </div>
+          
+          ${taxActiveTab === 'settings' ? '' : `
+          <div class="flex items-center gap-2">
+              <select id="tax-year-select" onchange="changeTaxYear(this.value)" class="admin-input !py-2 !px-3 text-xs font-bold bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 border border-slate-200 dark:border-slate-700 rounded-xl focus:border-[var(--color-primary)] cursor-pointer">
+                  ${yearOptions.map(y => `<option value="${y}" ${y===taxYear?'selected':''}>${y}</option>`).join('')}
+              </select>
+              <select id="tax-month-select" onchange="changeTaxMonth(this.value)" class="admin-input !py-2 !px-3 text-xs font-bold bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 border border-slate-200 dark:border-slate-700 rounded-xl focus:border-[var(--color-primary)] cursor-pointer">
+                  <option value="0" ${taxMonth===0?'selected':''}>Setahun Penuh</option>
+                  ${MONTH_NAMES.map((n,idx) => `<option value="${idx+1}" ${taxMonth===idx+1?'selected':''}>${n} ${taxYear}</option>`).join('')}
+              </select>
+          </div>
+          `}
+      </div>
+
+      <!-- Sub-Tab Navigation Bar (Matching Admin Pill Design) -->
+      <div class="flex items-center gap-2 mb-5 overflow-x-auto hide-scrollbar pb-1">
+          ${tabs.map(t => {
+              const isActive = taxActiveTab === t.k;
+              return `
+              <button onclick="switchTaxTab('${t.k}')" class="px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-widest transition-all active:scale-95 flex items-center gap-2 shrink-0 ${isActive ? 'primary-bg text-white shadow-glow' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-[rgba(var(--color-primary-rgb),0.4)]'}">
+                  <i class="fa-solid ${t.i} text-xs"></i>
+                  <span>${t.l}</span>
+              </button>`;
+          }).join('')}
+      </div>
+      `;
       
-      setH('admin-content', `<div class="fade-in-scale">
-          <div class="bg-amber-50 dark:bg-amber-900/10 border border-amber-200 dark:border-amber-800 rounded-2xl p-4 mb-5 flex items-start gap-3">
-              <i class="fa-solid fa-triangle-exclamation text-amber-500 mt-0.5"></i>
-              <p class="text-[11px] font-bold text-amber-700 dark:text-amber-400 leading-relaxed">Halaman ini adalah <b>alat bantu rekap</b> Omset, PPN, Laba Rugi, dan Neraca dari data transaksi toko. Bukan pengganti konsultan pajak/akuntan � validasi kembali angkanya sebelum digunakan untuk lapor SPT resmi.</p>
+      setH('admin-content', `
+      <div class="max-w-5xl mx-auto pb-10 text-sm fade-in-scale">
+          <div class="mb-5 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800/60 rounded-2xl p-4 flex items-start gap-3 text-xs font-semibold text-amber-800 dark:text-amber-300 shadow-xs">
+              <i class="fa-solid fa-circle-info text-amber-500 text-base shrink-0 mt-0.5"></i>
+              <span class="leading-relaxed">Halaman ini adalah <b>alat bantu rekap internal</b> Omset, PPN, Laba Rugi, dan Neraca dari data transaksi toko. Bukan pengganti konsultan pajak/akuntan — validasi kembali angkanya sebelum digunakan untuk pelaporan SPT resmi.</span>
           </div>
   
           ${headerHTML}
@@ -6938,43 +7349,55 @@ window.rTaxSummary = () => {
     const monthRows = Array.from({length:12}, (_,i) => i+1).map(m => {
         const d = gTaxMonthly[m];
         const isActiveRow = taxMonth === m;
-        return `<tr class="${isActiveRow ? 'bg-[rgba(var(--color-primary-rgb),0.06)]' : ''} border-b border-slate-100 dark:border-slate-700/50 last:border-0">
-            <td class="py-2.5 px-3 text-xs font-bold text-slate-600 dark:text-slate-300">${MONTH_NAMES[m-1]}</td>
-            <td class="py-2.5 px-3 text-xs font-bold text-slate-700 dark:text-slate-200 text-right">${fCur(d.omset)}</td>
-            <td class="py-2.5 px-3 text-xs font-bold text-amber-600 text-right">${fCur(d.ppn)}</td>
-            <td class="py-2.5 px-3 text-[11px] font-bold text-slate-400 text-right">${d.orderCount}</td>
+        return `<tr class="${isActiveRow ? 'bg-[rgba(var(--color-primary-rgb),0.08)] dark:bg-[rgba(var(--color-primary-rgb),0.14)] font-bold' : 'hover:bg-slate-50 dark:hover:bg-slate-700/30'} border-b border-slate-100 dark:border-slate-700/50 last:border-0 transition-colors">
+            <td class="py-3 px-4 text-xs font-bold text-slate-700 dark:text-slate-200">${MONTH_NAMES[m-1]}</td>
+            <td class="py-3 px-4 text-xs font-bold text-slate-800 dark:text-white text-right">${fCur(d.omset)}</td>
+            <td class="py-3 px-4 text-xs font-bold text-right" style="color:var(--color-primary)">${fCur(d.ppn)}</td>
+            <td class="py-3 px-4 text-xs font-bold text-slate-500 dark:text-slate-400 text-right">${d.orderCount}</td>
         </tr>`;
     }).join('');
 
     setH('tax-content', `
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-5">
-            <div class="card-modern p-5 sm:p-5">
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <div class="card-modern p-5 flex flex-col justify-between">
                 <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Omset Bruto (${periodLabel})</p>
-                <p class="text-lg sm:text-xl font-bold text-slate-800 dark:text-white truncate">${fCur(t.omset)}</p>
+                <p class="text-base sm:text-xl font-bold text-slate-800 dark:text-white truncate">${fCur(t.omset)}</p>
                 <p class="text-[10px] font-bold text-slate-400 mt-1">${t.orderCount} pesanan</p>
             </div>
-            <div class="card-modern p-5 sm:p-5">
+            <div class="card-modern p-5 flex flex-col justify-between">
                 <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1.5"><i class="fa-solid fa-minus mr-1"></i>Diskon Produk</p>
-                <p class="text-lg sm:text-xl font-bold text-rose-500 truncate">${fCur(t.disc)}</p>
+                <p class="text-base sm:text-xl font-bold text-rose-500 truncate">${fCur(t.disc)}</p>
+                <p class="text-[10px] font-bold text-slate-400 mt-1">Potongan diskon</p>
             </div>
-            <div class="card-modern p-5 sm:p-5">
+            <div class="card-modern p-5 flex flex-col justify-between">
                 <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">DPP (Dasar Pengenaan Pajak)</p>
-                <p class="text-lg sm:text-xl font-bold text-slate-800 dark:text-white truncate">${fCur(dpp)}</p>
+                <p class="text-base sm:text-xl font-bold text-slate-800 dark:text-white truncate">${fCur(dpp)}</p>
+                <p class="text-[10px] font-bold text-slate-400 mt-1">Omset bersih</p>
             </div>
-            <div class="card-modern p-5 sm:p-5 border-amber-200 dark:border-amber-700 bg-amber-50 dark:bg-amber-900/10 relative overflow-hidden"><div class="absolute -right-4 -bottom-4 w-24 h-24 bg-amber-500/20 rounded-full blur-xl pointer-events-none"></div>
-                <p class="text-[9px] font-bold text-amber-600 uppercase tracking-widest mb-1.5"><i class="fa-solid fa-file-invoice-dollar mr-1"></i>PPN Keluaran</p>
-                <p class="text-lg sm:text-xl font-bold text-amber-600 truncate">${fCur(t.ppn)}</p>
-                <p class="text-[10px] font-bold text-amber-500/80 mt-1">Wajib disetor ke negara</p>
+            <div class="card-modern p-5 flex flex-col justify-between border-[rgba(var(--color-primary-rgb),0.4)] relative overflow-hidden" style="background: rgba(var(--color-primary-rgb),0.04)">
+                <div class="absolute -right-4 -bottom-4 w-20 h-20 rounded-full blur-xl pointer-events-none" style="background: rgba(var(--color-primary-rgb),0.15)"></div>
+                <p class="text-[9px] font-bold uppercase tracking-widest mb-1.5" style="color:var(--color-primary)"><i class="fa-solid fa-file-invoice-dollar mr-1"></i>PPN Keluaran</p>
+                <p class="text-base sm:text-xl font-bold truncate" style="color:var(--color-primary)">${fCur(t.ppn)}</p>
+                <p class="text-[10px] font-bold mt-1 opacity-80" style="color:var(--color-primary)">Wajib disetor ke negara</p>
             </div>
         </div>
         <div class="card-modern overflow-hidden">
-            <div class="p-4 sm:p-5 md:p-6 lg:p-8 border-b border-slate-100 dark:border-slate-700 flex items-center justify-between">
-                <h4 class="font-bold text-slate-700 dark:text-slate-200 text-xs uppercase tracking-widest">Rincian Per Bulan — ${taxYear}</h4>
-                <button onclick="openTaxDocPreview('summary')" class="text-[10px] font-bold text-slate-400 hover:text-[var(--color-primary)] flex items-center gap-1.5"><i class="fa-solid fa-eye"></i> Preview &amp; Cetak</button>
+            <div class="p-4 sm:p-5 border-b border-slate-100 dark:border-slate-700/70 flex items-center justify-between">
+                <h4 class="font-bold text-slate-800 dark:text-slate-100 text-xs uppercase tracking-widest">Rincian Per Bulan — ${taxYear}</h4>
+                <button onclick="openTaxDocPreview('summary')" class="px-3.5 py-1.5 rounded-xl bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-300 text-[10px] font-bold hover:text-[var(--color-primary)] hover:border-[var(--color-primary)] transition-all flex items-center gap-1.5 active:scale-95">
+                    <i class="fa-solid fa-print"></i> Preview &amp; Cetak
+                </button>
             </div>
             <div class="overflow-x-auto">
-                <table class="w-full">
-                    <thead><tr class="bg-slate-50 dark:bg-slate-900/40 text-left"><th class="py-2.5 px-3 text-[9px] font-bold text-slate-400 uppercase">Bulan</th><th class="py-2.5 px-3 text-[9px] font-bold text-slate-400 uppercase text-right">Omset</th><th class="py-2.5 px-3 text-[9px] font-bold text-slate-400 uppercase text-right">PPN Keluaran</th><th class="py-2.5 px-3 text-[9px] font-bold text-slate-400 uppercase text-right">Pesanan</th></tr></thead>
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-slate-50 dark:bg-slate-900/60 border-b border-slate-200/80 dark:border-slate-700/70">
+                            <th class="py-3 px-4 text-[9px] font-bold text-slate-400 uppercase tracking-widest">Bulan</th>
+                            <th class="py-3 px-4 text-[9px] font-bold text-slate-400 uppercase tracking-widest text-right">Omset</th>
+                            <th class="py-3 px-4 text-[9px] font-bold text-slate-400 uppercase tracking-widest text-right">PPN Keluaran</th>
+                            <th class="py-3 px-4 text-[9px] font-bold text-slate-400 uppercase tracking-widest text-right">Pesanan</th>
+                        </tr>
+                    </thead>
                     <tbody>${monthRows}</tbody>
                 </table>
             </div>
@@ -7006,39 +7429,46 @@ window.rTaxIncome = () => {
             const key = `${taxYear}-${m}`;
             const val = (appData.taxSettings.monthlyExpenses || {})[key] || 0;
             return `<div class="flex items-center justify-between gap-2 py-2 border-b border-slate-100 dark:border-slate-700/50 last:border-0">
-                <span class="text-xs font-bold text-slate-500 dark:text-slate-400">${MONTH_NAMES[m-1]} ${taxYear}</span>
-                <input type="number" min="0" value="${val}" onchange="saveMonthlyExpense('${key}', this.value)" class="admin-input !py-2 !px-3 text-xs w-36 text-right bg-slate-50 dark:bg-slate-900/50"></i>
+                <span class="text-xs font-bold text-slate-600 dark:text-slate-300">${MONTH_NAMES[m-1]} ${taxYear}</span>
+                <input type="number" min="0" value="${val}" onchange="saveMonthlyExpense('${key}', this.value)" class="admin-input !py-2 !px-3 text-xs w-36 text-right font-bold bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 border border-slate-200 dark:border-slate-700 rounded-xl focus:border-[var(--color-primary)]">
             </div>`;
         }).join('');
     } else {
         const val = (appData.taxSettings.monthlyExpenses || {})[expenseKey] || 0;
         expenseInputs = `<div class="flex items-center justify-between gap-2 py-2">
-            <span class="text-xs font-bold text-slate-500 dark:text-slate-400">${MONTH_NAMES[taxMonth-1]} ${taxYear}</span>
-            <input type="number" min="0" value="${val}" onchange="saveMonthlyExpense('${expenseKey}', this.value)" class="admin-input !py-2 !px-3 text-xs w-36 text-right bg-slate-50 dark:bg-slate-900/50"></i>
+            <span class="text-xs font-bold text-slate-600 dark:text-slate-300">${MONTH_NAMES[taxMonth-1]} ${taxYear}</span>
+            <input type="number" min="0" value="${val}" onchange="saveMonthlyExpense('${expenseKey}', this.value)" class="admin-input !py-2 !px-3 text-xs w-36 text-right font-bold bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 border border-slate-200 dark:border-slate-700 rounded-xl focus:border-[var(--color-primary)]">
         </div>`;
     }
 
     setH('tax-content', `
-        <div class="card-modern p-5 sm:p-6 md:p-7 lg:p-8 w-full mx-auto">
-            <div class="flex items-center justify-between mb-6 pb-4 border-b border-slate-100 dark:border-slate-700">
-                <h4 class="font-bold text-slate-800 dark:text-white text-sm uppercase tracking-widest">Laporan Laba Rugi — ${periodLabel}</h4>
-                <button onclick="openTaxDocPreview('income')" class="text-[10px] font-bold text-slate-400 hover:text-[var(--color-primary)] flex items-center gap-1.5"><i class="fa-solid fa-eye"></i> Preview &amp; Cetak</button>
+        <div class="card-modern p-6 sm:p-8 space-y-4">
+            <div class="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-700">
+                <div>
+                    <h4 class="font-bold text-slate-800 dark:text-slate-100 text-xs sm:text-sm uppercase tracking-widest">Laporan Laba Rugi — ${periodLabel}</h4>
+                    <p class="text-[10px] font-bold text-slate-400 mt-0.5">Estimasi pendapatan &amp; beban usaha</p>
+                </div>
+                <button onclick="openTaxDocPreview('income')" class="px-3.5 py-1.5 rounded-xl bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-300 text-[10px] font-bold hover:text-[var(--color-primary)] hover:border-[var(--color-primary)] transition-all flex items-center gap-1.5 active:scale-95">
+                    <i class="fa-solid fa-print"></i> Preview &amp; Cetak
+                </button>
             </div>
-            <div class="space-y-2.5 text-sm">
-                <div class="flex justify-between"><span class="font-bold text-slate-500 dark:text-slate-400">Omset Bruto</span><span class="font-bold text-slate-800 dark:text-white">${fCur(t.omset)}</span></div>
-                <div class="flex justify-between"><span class="font-bold text-slate-500 dark:text-slate-400">(−) Diskon Produk</span><span class="font-bold text-rose-500">-${fCur(t.disc)}</span></div>
-                <div class="flex justify-between"><span class="font-bold text-slate-500 dark:text-slate-400">(−) HPP (Harga Pokok Penjualan)</span><span class="font-bold text-rose-500">-${fCur(t.hpp)}</span></div>
-                <div class="flex justify-between pt-2.5 border-t border-slate-200 dark:border-slate-700"><span class="font-bold text-slate-700 dark:text-slate-200">Laba Kotor</span><span class="font-bold text-emerald-600">${fCur(labaKotor)}</span></div>
-                <div class="flex justify-between"><span class="font-bold text-slate-500 dark:text-slate-400">(−) Biaya Operasional</span><span class="font-bold text-rose-500">-${fCur(totalExpense)}</span></div>
-                <div class="flex justify-between pt-2.5 border-t border-slate-200 dark:border-slate-700"><span class="font-bold text-slate-700 dark:text-slate-200">Laba Bersih Sebelum Pajak</span><span class="font-bold" style="color:var(--color-primary)">${fCur(labaBersih)}</span></div>
-                <div class="flex justify-between"><span class="font-bold text-slate-500 dark:text-slate-400">(−) Estimasi ${taxLabel}</span><span class="font-bold text-rose-500">-${fCur(estimasiPajak)}</span></div>
-                <div class="flex justify-between pt-3 border-t-2 border-slate-800 dark:border-slate-200"><span class="font-bold text-slate-900 dark:text-white text-base">Laba Bersih Setelah Pajak (Estimasi)</span><span class="font-bold text-base" style="color:var(--color-primary)">${fCur(labaSetelahPajak)}</span></div>
+            <div class="space-y-3 text-xs sm:text-sm">
+                <div class="flex justify-between py-1"><span class="font-bold text-slate-500 dark:text-slate-400">Omset Bruto</span><span class="font-bold text-slate-800 dark:text-slate-100">${fCur(t.omset)}</span></div>
+                <div class="flex justify-between py-1"><span class="font-bold text-slate-500 dark:text-slate-400">(−) Diskon Produk</span><span class="font-bold text-rose-500">-${fCur(t.disc)}</span></div>
+                <div class="flex justify-between py-1"><span class="font-bold text-slate-500 dark:text-slate-400">(−) HPP (Harga Pokok Penjualan)</span><span class="font-bold text-rose-500">-${fCur(t.hpp)}</span></div>
+                <div class="flex justify-between py-2.5 border-t border-slate-200 dark:border-slate-700"><span class="font-bold text-slate-700 dark:text-slate-200">Laba Kotor</span><span class="font-bold text-emerald-500">${fCur(labaKotor)}</span></div>
+                <div class="flex justify-between py-1"><span class="font-bold text-slate-500 dark:text-slate-400">(−) Biaya Operasional</span><span class="font-bold text-rose-500">-${fCur(totalExpense)}</span></div>
+                <div class="flex justify-between py-2.5 border-t border-slate-200 dark:border-slate-700"><span class="font-bold text-slate-700 dark:text-slate-200">Laba Bersih Sebelum Pajak</span><span class="font-bold" style="color:var(--color-primary)">${fCur(labaBersih)}</span></div>
+                <div class="flex justify-between py-1"><span class="font-bold text-slate-500 dark:text-slate-400">(−) Estimasi ${taxLabel}</span><span class="font-bold text-rose-500">-${fCur(estimasiPajak)}</span></div>
+                <div class="flex justify-between py-3 border-t-2 border-slate-800 dark:border-slate-200 mt-2"><span class="font-bold text-slate-900 dark:text-white text-sm sm:text-base">Laba Bersih Setelah Pajak (Estimasi)</span><span class="font-extrabold text-sm sm:text-base" style="color:var(--color-primary)">${fCur(labaSetelahPajak)}</span></div>
             </div>
 
-            <div class="mt-7 pt-5 border-t border-dashed border-slate-200 dark:border-slate-700">
-                <h5 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3"><i class="fa-solid fa-pen mr-1"></i>Input Biaya Operasional (Manual)</h5>
-                <p class="text-[10px] font-bold text-slate-400 mb-3">Contoh: sewa, gaji, listrik, internet, dll. Sistem tidak melacak ini otomatis.</p>
-                ${expenseInputs}
+            <div class="mt-8 pt-5 border-t border-dashed border-slate-200 dark:border-slate-700">
+                <h5 class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-1 flex items-center gap-1.5"><i class="fa-solid fa-pen" style="color:var(--color-primary)"></i> Input Biaya Operasional (Manual)</h5>
+                <p class="text-[10px] font-bold text-slate-400 mb-4">Contoh: sewa tempat, gaji karyawan, listrik, internet, dll. Sistem tidak melacak biaya ini otomatis.</p>
+                <div class="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-2xl border border-slate-200 dark:border-slate-700">
+                    ${expenseInputs}
+                </div>
             </div>
         </div>
     `);
@@ -7065,28 +7495,68 @@ window.rTaxBalance = () => {
     const modalDanLaba = totalAset - totalKewajiban; // supaya neraca tetap balance, modal+laba ditahan = sisa dari aset-kewajiban
 
     setH('tax-content', `
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 sm:gap-6 w-full mx-auto">
-            <div class="card-modern p-5 sm:p-6 relative overflow-hidden shadow-lg primary-gradient-card primary-gradient-card-border"><div class="absolute -top-10 -right-10 w-32 h-32 primary-blur-orb rounded-full blur-2xl pointer-events-none"></div>
-                <h4 class="font-bold text-slate-800 dark:text-white text-xs uppercase tracking-widest mb-4 pb-3 border-b border-slate-100 dark:border-slate-700"><i class="fa-solid fa-arrow-down-wide-short mr-1.5 primary-text"></i>ASET</h4>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- ASET CARD -->
+            <div class="card-modern p-6 space-y-3 relative overflow-hidden">
+                <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-700">
+                    <h4 class="font-bold text-slate-800 dark:text-white text-xs uppercase tracking-widest flex items-center gap-2">
+                        <div class="w-8 h-8 rounded-xl flex items-center justify-center shrink-0" style="background: rgba(var(--color-primary-rgb),0.1); color: var(--color-primary)">
+                            <i class="fa-solid fa-arrow-down-wide-short text-xs"></i>
+                        </div>
+                        <span>ASET (Aktiva)</span>
+                    </h4>
+                </div>
                 <div class="space-y-3">
-                    <div class="flex items-center justify-between gap-2"><span class="text-xs font-bold text-slate-500 dark:text-slate-400">Kas &amp; Bank (manual)</span><input type="number" min="0" value="${bs.kas||0}" onchange="saveBalanceField('kas', this.value)" class="admin-input !py-2 !px-3 text-xs w-32 text-right bg-slate-50 dark:bg-slate-900/50"></i></div>
-                    <div class="flex items-center justify-between gap-2"><span class="text-xs font-bold text-slate-500 dark:text-slate-400">Piutang Usaha (manual)</span><input type="number" min="0" value="${bs.piutang||0}" onchange="saveBalanceField('piutang', this.value)" class="admin-input !py-2 !px-3 text-xs w-32 text-right bg-slate-50 dark:bg-slate-900/50"></i></div>
-                    <div class="flex items-center justify-between gap-2 py-2 primary-bg-soft rounded-xl px-3"><span class="text-xs font-bold primary-text">Persediaan Barang (Otomatis)</span><span class="text-xs font-bold primary-text">${fCur(st.assetHpp)}</span></div>
-                    <div class="flex justify-between pt-3 border-t-2 border-slate-800 dark:border-slate-200"><span class="font-bold text-slate-900 dark:text-white text-sm">Total Aset</span><span class="font-bold text-sm" style="color:var(--color-primary)">${fCur(totalAset)}</span></div>
+                    <div class="flex items-center justify-between gap-2 py-1">
+                        <span class="text-xs font-bold text-slate-600 dark:text-slate-300">Kas &amp; Bank (manual)</span>
+                        <input type="number" min="0" value="${bs.kas||0}" onchange="saveBalanceField('kas', this.value)" class="admin-input !py-2 !px-3 text-xs w-36 text-right font-bold bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 border border-slate-200 dark:border-slate-700 rounded-xl focus:border-[var(--color-primary)]">
+                    </div>
+                    <div class="flex items-center justify-between gap-2 py-1">
+                        <span class="text-xs font-bold text-slate-600 dark:text-slate-300">Piutang Usaha (manual)</span>
+                        <input type="number" min="0" value="${bs.piutang||0}" onchange="saveBalanceField('piutang', this.value)" class="admin-input !py-2 !px-3 text-xs w-36 text-right font-bold bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 border border-slate-200 dark:border-slate-700 rounded-xl focus:border-[var(--color-primary)]">
+                    </div>
+                    <div class="flex items-center justify-between gap-2 py-2.5 rounded-xl px-3 border border-[rgba(var(--color-primary-rgb),0.3)]" style="background: rgba(var(--color-primary-rgb),0.06)">
+                        <span class="text-xs font-bold" style="color:var(--color-primary)">Persediaan Barang (Otomatis)</span>
+                        <span class="text-xs font-bold" style="color:var(--color-primary)">${fCur(st.assetHpp)}</span>
+                    </div>
+                    <div class="flex justify-between pt-3 border-t-2 border-slate-800 dark:border-slate-200 mt-2">
+                        <span class="font-bold text-slate-900 dark:text-white text-xs sm:text-sm uppercase tracking-widest">Total Aset</span>
+                        <span class="font-bold text-xs sm:text-sm" style="color:var(--color-primary)">${fCur(totalAset)}</span>
+                    </div>
                 </div>
             </div>
-            <div class="card-modern p-5 sm:p-6 relative overflow-hidden shadow-lg border-rose-100 dark:border-rose-900/30 bg-rose-50/50 dark:bg-rose-900/10"><div class="absolute -top-10 -right-10 w-32 h-32 bg-rose-500/10 rounded-full blur-2xl pointer-events-none"></div>
-                <h4 class="font-bold text-slate-800 dark:text-white text-xs uppercase tracking-widest mb-4 pb-3 border-b border-slate-100 dark:border-slate-700"><i class="fa-solid fa-arrow-up-wide-short mr-1.5 text-rose-500"></i>KEWAJIBAN &amp; MODAL</h4>
+
+            <!-- KEWAJIBAN & MODAL CARD -->
+            <div class="card-modern p-6 space-y-3 relative overflow-hidden">
+                <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-700">
+                    <h4 class="font-bold text-slate-800 dark:text-white text-xs uppercase tracking-widest flex items-center gap-2">
+                        <div class="w-8 h-8 rounded-xl bg-rose-50 dark:bg-rose-900/30 text-rose-500 flex items-center justify-center shrink-0">
+                            <i class="fa-solid fa-arrow-up-wide-short text-xs"></i>
+                        </div>
+                        <span>KEWAJIBAN &amp; MODAL (Pasiva)</span>
+                    </h4>
+                </div>
                 <div class="space-y-3">
-                    <div class="flex items-center justify-between gap-2"><span class="text-xs font-bold text-slate-500 dark:text-slate-400">Hutang Usaha (manual)</span><input type="number" min="0" value="${bs.hutang||0}" onchange="saveBalanceField('hutang', this.value)" class="admin-input !py-2 !px-3 text-xs w-32 text-right bg-slate-50 dark:bg-slate-900/50"></i></div>
-                    <div class="flex items-center justify-between gap-2 py-2 bg-slate-50 dark:bg-slate-900/40 rounded-xl px-3"><span class="text-xs font-bold text-slate-600 dark:text-slate-300">Modal &amp; Laba Ditahan</span><span class="text-xs font-bold text-slate-700 dark:text-slate-200">${fCur(modalDanLaba)}</span></div>
-                    <p class="text-[10px] font-bold text-slate-400 leading-relaxed px-1">Angka Modal &amp; Laba Ditahan dihitung otomatis (Total Aset − Hutang) supaya neraca tetap seimbang. Kalau Anda tahu persis modal disetor awal, isi manual di Pengaturan.</p>
-                    <div class="flex justify-between pt-3 border-t-2 border-slate-800 dark:border-slate-200"><span class="font-bold text-slate-900 dark:text-white text-sm">Total Kewajiban + Modal</span><span class="font-bold text-sm" style="color:var(--color-primary)">${fCur(totalKewajiban + modalDanLaba)}</span></div>
+                    <div class="flex items-center justify-between gap-2 py-1">
+                        <span class="text-xs font-bold text-slate-600 dark:text-slate-300">Hutang Usaha (manual)</span>
+                        <input type="number" min="0" value="${bs.hutang||0}" onchange="saveBalanceField('hutang', this.value)" class="admin-input !py-2 !px-3 text-xs w-36 text-right font-bold bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 border border-slate-200 dark:border-slate-700 rounded-xl focus:border-[var(--color-primary)]">
+                    </div>
+                    <div class="flex items-center justify-between gap-2 py-2.5 rounded-xl px-3 bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700">
+                        <span class="text-xs font-bold text-slate-600 dark:text-slate-300">Modal &amp; Laba Ditahan</span>
+                        <span class="text-xs font-bold text-slate-800 dark:text-slate-100">${fCur(modalDanLaba)}</span>
+                    </div>
+                    <p class="text-[10px] font-semibold text-slate-400 leading-relaxed px-1">Angka Modal &amp; Laba Ditahan dihitung otomatis (Total Aset − Hutang) agar neraca seimbang.</p>
+                    <div class="flex justify-between pt-3 border-t-2 border-slate-800 dark:border-slate-200 mt-2">
+                        <span class="font-bold text-slate-900 dark:text-white text-xs sm:text-sm uppercase tracking-widest">Total Kewajiban + Modal</span>
+                        <span class="font-bold text-xs sm:text-sm" style="color:var(--color-primary)">${fCur(totalKewajiban + modalDanLaba)}</span>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="max-w-7xl mx-auto mt-6 text-center">
-            <button onclick="openTaxDocPreview('balance')" class="text-[10px] font-bold text-slate-400 hover:text-[var(--color-primary)] inline-flex items-center gap-1.5"><i class="fa-solid fa-eye"></i> Preview &amp; Cetak Neraca</button>
+        <div class="mt-6 text-center">
+            <button onclick="openTaxDocPreview('balance')" class="px-4 py-2 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 text-xs font-bold hover:text-[var(--color-primary)] hover:border-[var(--color-primary)] transition-all inline-flex items-center gap-2 shadow-xs active:scale-95">
+                <i class="fa-solid fa-print"></i> Preview &amp; Cetak Neraca
+            </button>
         </div>
     `);
 };
@@ -7105,28 +7575,30 @@ window.saveBalanceField = async (key, value) => {
 window.rTaxSettingsPanel = () => {
     const ts = appData.taxSettings;
     setH('tax-content', `
-        <div class="card-modern p-5 sm:p-6 md:p-7 lg:p-8 w-full max-w-3xl mx-auto space-y-5">
+        <div class="card-modern p-6 sm:p-8 max-w-2xl mx-auto space-y-5">
             <div>
-                <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Nama Badan Usaha</label>
-                <input id="tax-company-name" type="text" value="${esc(ts.companyName||'')}" placeholder="Cth: PT/CV Restu Karya Utama" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-inner"></i>
+                <label class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Nama Badan Usaha / Toko</label>
+                <input id="tax-company-name" type="text" value="${esc(ts.companyName||'')}" placeholder="Cth: PT/CV Restu Karya Utama" class="admin-input !py-3 bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 border border-slate-200 dark:border-slate-700 rounded-xl focus:border-[var(--color-primary)]">
             </div>
             <div>
-                <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">NPWP</label>
-                <input id="tax-npwp" type="text" value="${esc(ts.npwp||'')}" placeholder="XX.XXX.XXX.X-XXX.XXX" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-inner"></i>
+                <label class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">NPWP (Nomor Pokok Wajib Pajak)</label>
+                <input id="tax-npwp" type="text" value="${esc(ts.npwp||'')}" placeholder="XX.XXX.XXX.X-XXX.XXX" class="admin-input !py-3 bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 border border-slate-200 dark:border-slate-700 rounded-xl focus:border-[var(--color-primary)]">
             </div>
             <div>
-                <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Skema Perhitungan PPh</label>
-                <select id="tax-scheme" onchange="toggleCustomTaxRateInput(this.value)" class="admin-input !py-3.5 bg-white dark:bg-slate-800 shadow-sm cursor-pointer">
+                <label class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Skema Perhitungan PPh</label>
+                <select id="tax-scheme" onchange="toggleCustomTaxRateInput(this.value)" class="admin-input !py-3 bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 border border-slate-200 dark:border-slate-700 rounded-xl cursor-pointer font-bold focus:border-[var(--color-primary)]">
                     <option value="umkm_final" ${ts.taxScheme==='umkm_final'?'selected':''}>PPh Final UMKM — 0,5% dari Omset (PP 23/2018)</option>
                     <option value="badan_normal" ${ts.taxScheme==='badan_normal'?'selected':''}>PPh Badan Normal — 22% dari Laba Bersih</option>
                     <option value="custom" ${ts.taxScheme==='custom'?'selected':''}>Custom (isi tarif sendiri)</option>
                 </select>
             </div>
             <div id="tax-custom-rate-wrap" class="${ts.taxScheme==='custom'?'':'hidden'}">
-                <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Tarif Custom (% dari Laba Bersih)</label>
-                <input id="tax-custom-rate" type="number" min="0" max="100" step="0.1" value="${ts.customTaxRate||0.5}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-inner"></i>
+                <label class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Tarif Custom (% dari Laba Bersih)</label>
+                <input id="tax-custom-rate" type="number" min="0" max="100" step="0.1" value="${ts.customTaxRate||0.5}" class="admin-input !py-3 bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 border border-slate-200 dark:border-slate-700 rounded-xl focus:border-[var(--color-primary)]">
             </div>
-            <button onclick="saveTaxSettingsPanel()" class="btn-primary py-3.5 text-sm shadow-glow !rounded-xl flex items-center justify-center gap-2 w-full"><i class="fa-solid fa-save"></i> Simpan Pengaturan Pajak</button>
+            <button onclick="saveTaxSettingsPanel()" class="primary-bg py-3.5 text-xs sm:text-sm font-bold shadow-glow rounded-xl flex items-center justify-center gap-2 w-full uppercase tracking-widest text-white active:scale-95 transition-all">
+                <i class="fa-solid fa-floppy-disk"></i> Simpan Pengaturan Pajak
+            </button>
         </div>
     `);
 };
@@ -7157,7 +7629,7 @@ window.openTaxDocPreview = (reportType) => {
 
     let logoHTML = '';
     if (appData.store.logo && (appData.store.logo.includes('http') || appData.store.logo.includes('data:'))) {
-        logoHTML = `<img loading="eager" src="${esc(appData.store.logo)}" class="w-16 h-16 object-contain"></i>`;
+        logoHTML = `<img loading="eager" src="${esc(appData.store.logo)}" class="w-16 h-16 object-contain">`;
     } else {
         logoHTML = `<div class="w-16 h-16 bg-slate-700 text-white flex items-center justify-center rounded-xl"><i class="fa-solid fa-store text-3xl"></i></div>`;
     }
@@ -7270,10 +7742,11 @@ window.oAEd = (t, id) => {
     if(t==='products'){
         tVars = d&&d.variants ? JSON.parse(JSON.stringify(d.variants)) : [];
         tWhol = d&&d.wholesale ? JSON.parse(JSON.stringify(d.wholesale)) : [];
+        tSpec = d&&d.specTable ? JSON.parse(JSON.stringify(d.specTable)) : [];
     }
     
     // REDESIGN: Kelompokkan field produk dalam grid 2-kolom di lg
-    const FULL_WIDTH_TYPES = ['textarea','richtext','variants_builder','wholesale_builder'];
+    const FULL_WIDTH_TYPES = ['textarea','richtext','variants_builder','wholesale_builder','spec_table_builder'];
     const FULL_WIDTH_KEYS  = ['img','desc','name','isActive','tag','poTime','video'];
     const isFullWidth = k => FULL_WIDTH_TYPES.includes(k.type) || FULL_WIDTH_KEYS.includes(k.key);
 
@@ -7303,10 +7776,25 @@ window.oAEd = (t, id) => {
             h += `<div id="variants-builder-container" class="bg-slate-50/50 dark:bg-slate-900/30 p-4 sm:p-5 md:p-6 lg:p-8 lg:p-6 rounded-[1.5rem] border border-slate-200 dark:border-slate-700 shadow-inner min-h-[60px]"></div>`;
         } else if(k.type === 'wholesale_builder') {
             h += `<div id="wholesale-builder-container" class="bg-slate-50/50 dark:bg-slate-900/30 p-4 sm:p-5 md:p-6 lg:p-8 lg:p-6 rounded-[1.5rem] border border-slate-200 dark:border-slate-700 shadow-inner min-h-[60px]"></div>`;
+        } else if(k.type === 'spec_table_builder') {
+            h += `<div id="spec-table-builder-container" class="bg-slate-50/50 dark:bg-slate-900/30 p-4 sm:p-5 md:p-6 rounded-[1.5rem] border border-slate-200 dark:border-slate-700 shadow-inner min-h-[60px]"></div>`;
         } else if(k.key === 'sku') {
             h += `<div class="relative flex items-center"><input autocomplete='off' type="${k.type}" id="af-${k.key}" value="${esc(v)}" class="admin-input shadow-sm bg-slate-50 dark:bg-slate-900 !pr-12" placeholder="Scan atau ketik..." ></i><button type="button" onclick="openCameraScanner('af-${k.key}')" class="absolute right-2 w-9 h-9 flex items-center justify-center text-slate-400 hover:bg-slate-200 hover:text-emerald-500 rounded-xl transition-all" title="Scan Barcode via HP"><i class="fa-solid fa-qrcode text-lg"></i></button></div>`;
         } else if(k.key === 'img') {
             h += `<div class="flex gap-3"><input autocomplete='off' type="text" id="af-${k.key}" value="${esc(v)}" class="admin-input shadow-sm flex-1 bg-slate-50 dark:bg-slate-900" placeholder="URL Gambar" ></i><label class="bg-emerald-50 dark:bg-emerald-900/30 border border-emerald-200 dark:border-emerald-800 text-[var(--color-primary)] font-bold rounded-xl px-5 flex items-center justify-center cursor-pointer hover:bg-emerald-100 transition-all shrink-0 active:scale-95 shadow-sm" title="Upload dari Galeri"><i class="fa-solid fa-cloud-arrow-up sm:mr-2"></i><span class="hidden sm:inline">Upload</span><input type="file" accept="image/*" class="hidden" onchange="handleImageUpload(this, 'af-${k.key}')" ></i></label><label class="bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 text-blue-600 dark:text-blue-400 font-bold rounded-xl px-5 flex items-center justify-center cursor-pointer hover:bg-blue-100 transition-all shrink-0 active:scale-95 shadow-sm" title="Ambil Foto Langsung"><i class="fa-solid fa-camera"></i><input type="file" accept="image/*" capture="environment" class="hidden" onchange="handleImageUpload(this, 'af-${k.key}')" ></i></label></div>`;
+        } else if(k.key === 'videoUrl') {
+            // FITUR BARU: tombol upload video ke Google Drive via GAS
+            h += `<div class="flex flex-col gap-2">
+                <div class="flex gap-3">
+                    <input autocomplete='off' type="text" id="af-${k.key}" value="${esc(v)}" class="admin-input shadow-sm flex-1 bg-slate-50 dark:bg-slate-900" placeholder="Paste URL Drive atau upload video di bawah">
+                    <label class="bg-violet-50 dark:bg-violet-900/30 border border-violet-200 dark:border-violet-800 text-violet-600 dark:text-violet-400 font-bold rounded-xl px-4 flex items-center justify-center cursor-pointer hover:bg-violet-100 transition-all shrink-0 active:scale-95 shadow-sm gap-2" title="Upload Video ke Google Drive">
+                        <i class="fa-solid fa-film"></i><span class="hidden sm:inline text-[11px]">Upload Video</span>
+                        <input type="file" accept="video/mp4,video/webm,video/quicktime,video/x-msvideo,video/3gpp" class="hidden" onchange="handleVideoUpload(this, 'af-${k.key}')">
+                    </label>
+                </div>
+                <p class="text-[10px] font-bold text-slate-400 flex items-center gap-1.5"><i class="fa-solid fa-circle-info text-violet-400"></i><b>Tips Autoplay:</b> Untuk video 100% otomatis play & loop tanpa klik, gunakan link <b>YouTube / Shorts</b> atau <b>Direct MP4</b>. Upload Drive/HP juga didukung.</p>
+                ${v ? `<div class="rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700 bg-black aspect-video w-full max-w-xs"><iframe src="${esc(fixDriveVideo(v))}" class="w-full h-full" frameborder="0" allow="autoplay; fullscreen" loading="lazy"></iframe></div>` : ''}
+            </div>`;
         } else if(k.type === 'richtext') {
             h += `
             <div class="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden shadow-sm bg-white dark:bg-slate-900">
@@ -7341,7 +7829,7 @@ window.oAEd = (t, id) => {
     h = `<div class="grid grid-cols-1 lg:grid-cols-2 gap-x-5 gap-y-5 items-start">${h}</div>`;
     
     setH('admin-modal-form', h);
-    if(t==='products') { rVarsB(); rWholB(); }
+    if(t==='products') { rVarsB(); rWholB(); rSpecB(); }
     
     const mAd = el('admin-modal');
     if (mAd && mAd.classList.contains('hidden')) pushModalHistory('admin');
@@ -7407,10 +7895,10 @@ window.rVarsB = () => {
                 <div>
                     <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Gambar Khusus Varian</label>
                     <div class="flex gap-2.5 items-center">
-                        ${v.img ? `<img src="${esc(v.img)}" class="w-11 h-11 rounded-xl object-cover border-2 border-slate-200 dark:border-slate-600 shrink-0 shadow-sm" onerror="this.style.display='none'" loading="lazy"></i>` : ''}
-                        <input autocomplete='off' id="var-img-${i}" placeholder="URL Gambar Varian" class="admin-input !text-sm flex-1 bg-white dark:bg-slate-800 shadow-sm" value="${esc(v.img||'')}" onchange="uVar(${i},'img',fixD(this.value))"></i>
-                        <label class="primary-icon-btn border rounded-xl w-11 h-11 flex items-center justify-center cursor-pointer transition-all shrink-0 active:scale-95 shadow-sm" title="Upload dari Galeri"><i class="fa-solid fa-upload text-sm"></i><input type="file" accept="image/*" class="hidden" onchange="handleImageUpload(this, 'var-img-${i}')" ></i></label>
-                        <label class="bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 text-blue-600 dark:text-blue-400 rounded-xl w-11 h-11 flex items-center justify-center cursor-pointer hover:bg-blue-100 transition-all shrink-0 active:scale-95 shadow-sm" title="Ambil Foto Langsung"><i class="fa-solid fa-camera text-sm"></i><input type="file" accept="image/*" capture="environment" class="hidden" onchange="handleImageUpload(this, 'var-img-${i}')" ></i></label>
+                        ${v.img ? `<img src="${esc(v.img)}" class="w-11 h-11 rounded-xl object-cover border-2 border-slate-200 dark:border-slate-600 shrink-0 shadow-sm" onerror="this.style.display='none'" loading="lazy">` : ''}
+                        <input autocomplete='off' id="var-img-${i}" placeholder="URL Gambar Varian" class="admin-input !text-sm flex-1 bg-white dark:bg-slate-800 shadow-sm" value="${esc(v.img||'')}" onchange="uVar(${i},'img',fixD(this.value))">
+                        <label class="primary-icon-btn border rounded-xl w-11 h-11 flex items-center justify-center cursor-pointer transition-all shrink-0 active:scale-95 shadow-sm" title="Upload dari Galeri"><i class="fa-solid fa-upload text-sm"></i><input type="file" accept="image/*" class="hidden" onchange="handleImageUpload(this, 'var-img-${i}')"></label>
+                        <label class="bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 text-blue-600 dark:text-blue-400 rounded-xl w-11 h-11 flex items-center justify-center cursor-pointer hover:bg-blue-100 transition-all shrink-0 active:scale-95 shadow-sm" title="Ambil Foto Langsung"><i class="fa-solid fa-camera text-sm"></i><input type="file" accept="image/*" capture="environment" class="hidden" onchange="handleImageUpload(this, 'var-img-${i}')"></label>
                     </div>
                 </div>
                 ` : ''}
@@ -7739,7 +8227,48 @@ window.addWhol = () => { tWhol.push({minQty:2, price:0}); rWholB(); };
 window.rmWhol = i => { tWhol.splice(i,1); rWholB(); };
 window.uWhol = (i,k,v) => { tWhol[i][k] = parseFloat(v) || 0; };
 
-// --- FUNGSI ADMIN CRUD ---
+// FITUR BARU: Spec Table Builder — Tabel Spesifikasi Produk
+window.rSpecB = () => {
+    const container = el('spec-table-builder-container');
+    if (!container) return;
+    let h = '';
+    if (tSpec.length > 0) {
+        h += `<div class="overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm mb-4">
+            <table class="w-full text-sm">
+                <thead>
+                    <tr class="bg-slate-100 dark:bg-slate-800">
+                        <th class="py-2.5 px-4 text-left text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest w-5/12">Nama Spesifikasi</th>
+                        <th class="py-2.5 px-4 text-left text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">Nilai / Keterangan</th>
+                        <th class="py-2.5 px-2 w-10"></th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+                    ${tSpec.map((s,i) => `
+                    <tr class="bg-white dark:bg-slate-900 group">
+                        <td class="py-2 px-3">
+                            <input autocomplete='off' placeholder="Cth: Berat" class="w-full bg-transparent text-[13px] font-semibold text-slate-700 dark:text-slate-200 focus:outline-none placeholder:text-slate-300" value="${esc(s.key)}" onchange="uSpec(${i},'key',this.value)" oninput="uSpec(${i},'key',this.value)">
+                        </td>
+                        <td class="py-2 px-3">
+                            <input autocomplete='off' placeholder="Cth: 2.5 kg" class="w-full bg-transparent text-[13px] text-slate-600 dark:text-slate-300 focus:outline-none placeholder:text-slate-300" value="${esc(s.val)}" onchange="uSpec(${i},'val',this.value)" oninput="uSpec(${i},'val',this.value)">
+                        </td>
+                        <td class="py-2 px-2 text-center">
+                            <button type="button" onclick="rmSpec(${i})" class="w-7 h-7 rounded-lg bg-rose-50 border border-rose-200 text-rose-400 hover:bg-rose-500 hover:text-white dark:bg-rose-900/30 dark:border-rose-800 transition-all flex items-center justify-center opacity-60 group-hover:opacity-100 active:scale-95" title="Hapus Baris"><i class="fa-solid fa-trash text-[10px]"></i></button>
+                        </td>
+                    </tr>`).join('')}
+                </tbody>
+            </table>
+        </div>`;
+    } else {
+        h += `<div class="text-center py-6 text-slate-400 dark:text-slate-600 text-[12px] font-medium"><i class="fa-solid fa-table-cells-large text-2xl mb-2 block opacity-30"></i>Belum ada spesifikasi. Klik tombol di bawah untuk menambahkan.</div>`;
+    }
+    h += `<button type="button" onclick="addSpec()" class="w-full py-4 bg-cyan-50 dark:bg-cyan-900/20 text-cyan-600 dark:text-cyan-400 font-bold rounded-[1.5rem] text-sm border-2 border-cyan-200 dark:border-cyan-800 border-dashed hover:bg-cyan-100 dark:hover:bg-cyan-900/30 transition-all flex items-center justify-center gap-2 active:scale-95 shadow-sm"><i class="fa-solid fa-plus-circle"></i> Tambah Baris Spesifikasi</button>`;
+    setH('spec-table-builder-container', h);
+};
+
+window.addSpec = () => { tSpec.push({key:'', val:''}); rSpecB(); };
+window.rmSpec = i => { tSpec.splice(i,1); rSpecB(); };
+window.uSpec = (i,field,v) => { if(tSpec[i]) tSpec[i][field] = v; };
+
 window.submitAdminForm = async () => {
     if(isSaving) return; isSaving = true;
     let d = {}, f = aF[cTab] || [];
@@ -7748,6 +8277,8 @@ window.submitAdminForm = async () => {
             d.variants = tVars.filter(v => v.name.trim() !== '');
         } else if (k.type === 'wholesale_builder') {
             d.wholesale = tWhol.filter(w => parseFloat(w.minQty) > 0.01 && w.price > 0);
+        } else if (k.type === 'spec_table_builder') {
+            d.specTable = tSpec.filter(s => s.key.trim() !== '');
         } else {
             let v = '';
             if (k.type === 'richtext') {
@@ -8355,6 +8886,8 @@ window.addEventListener('popstate', e => {
         else if (m === 'variantPreview') closeVariantPreviewModal(true);
         else if (m === 'terms') closeTermsModal(true);
         else if (m === 'privacy') closePrivacyModal(true);
+        else if (m === 'askQuestion') closeAskQuestionModal(true);
+        else if (m === 'adminFAQ') closeAdminFAQModal(true);
     } else {
         const state = e.state || {};
         const v = state.view || null;
@@ -8453,7 +8986,7 @@ window.openDocPreview = (type) => {
     
     let logoHTML = '';
     if (appData.store.logo && (appData.store.logo.includes('http') || appData.store.logo.includes('data:'))) {
-        logoHTML = `<img loading="eager" src="${esc(appData.store.logo)}" class="w-16 h-16 object-contain"></i>`;
+        logoHTML = `<img loading="eager" src="${esc(appData.store.logo)}" class="w-16 h-16 object-contain">`;
     } else {
         logoHTML = `<div class="w-16 h-16 primary-bg flex items-center justify-center rounded-xl"><i class="fa-solid fa-store text-3xl"></i></div>`;
     }
@@ -8487,7 +9020,7 @@ window.openDocPreview = (type) => {
         <div class="bg-slate-50 p-5 rounded-xl border border-slate-200 flex flex-col justify-center space-y-3">
             <div class="flex justify-between items-center border-b border-slate-200 pb-2">
                 <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Metode Pengiriman</span>
-                <span class="text-sm font-bold text-slate-800 uppercase">${esc(o.customer?.deliveryMethod === 'delivery' ? 'Kurir Toko' : 'Ambil Sendiri')}</span>
+                <span class="text-sm font-bold text-slate-800 uppercase">${esc(o.customer?.deliveryMethod === 'delivery' ? 'Dikirim' : 'Ambil di Toko')}</span>
             </div>
             <div class="flex justify-between items-center border-b border-slate-200 pb-2">
                 <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Sistem Pembayaran</span>
@@ -8535,7 +9068,19 @@ window.openDocPreview = (type) => {
                 ${o.payment?.shippingCost ? `<div class="flex justify-between px-4"><span>Ongkos Kirim</span><span class="font-mono">${fCur(o.payment.shippingCost)}</span></div>` : ''}
                 ${o.payment?.shippingDiscount ? `<div class="flex justify-between px-4 text-emerald-600"><span>Diskon Ongkir</span><span class="font-mono">-${fCur(o.payment.shippingDiscount)}</span></div>` : ''}
                 ${o.payment?.productDiscount ? `<div class="flex justify-between px-4 text-rose-600"><span>Diskon Produk</span><span class="font-mono">-${fCur(o.payment.productDiscount)}</span></div>` : ''}
-                ${o.payment?.ppnAmount ? `<div class="flex justify-between px-4 text-amber-600"><span>PPN (${o.payment.ppnRate||11}%)</span><span class="font-mono">+${fCur(o.payment.ppnAmount)}</span></div>` : ''}
+                ${(() => {
+                    if (!o.payment?.ppnAmount || o.payment.ppnAmount <= 0) return '';
+                    const isInc = o.payment.ppnType === 'inclusive';
+                    const ppnRate = o.payment.ppnRate || 11;
+                    const ppnAmt = o.payment.ppnAmount;
+                    const baseBeforeTax = (o.payment.subtotal || 0) - (o.payment.productDiscount || 0) + (o.payment.shippingCost || 0) - (o.payment.shippingDiscount || 0);
+                    const dppAmt = o.payment.dppAmount || (isInc ? Math.round((baseBeforeTax * 100) / (100 + ppnRate)) : Math.max(0, baseBeforeTax));
+
+                    return `
+                    <div class="flex justify-between px-4 text-slate-600"><span>DPP (Dasar Pengenaan Pajak)</span><span class="font-mono">${fCur(dppAmt)}</span></div>
+                    <div class="flex justify-between px-4 text-amber-600"><span>${isInc ? 'Termasuk PPN' : 'PPN'} (${ppnRate}%)</span><span class="font-mono">${isInc ? '' : '+'}${fCur(ppnAmt)}</span></div>
+                    `;
+                })()}
                 
                 <div class="flex justify-between items-center bg-slate-800 text-white p-4 rounded-xl mt-4 shadow-md">
                     <span class="font-bold text-base uppercase tracking-widest">Grand Total</span>
@@ -9300,3 +9845,391 @@ try {
 
 
 
+// ==========================================
+// FITUR BARU: TANYA JAWAB (Q&A / FAQ) STOREFRONT & ADMIN
+// ==========================================
+let unsubFAQRealtime = null;
+window.attachFAQRealtime = () => {
+    if (unsubFAQRealtime) return;
+    try {
+        unsubFAQRealtime = db.collection("freshmart").doc("cms_data").collection("faqs")
+            .onSnapshot(snap => {
+                if (snap && snap.docs) {
+                    appData.faqs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+                }
+                if (typeof curViewName !== 'undefined' && curViewName === 'view-faq') window.renderStorefrontFAQ();
+                if (window.isAdm && typeof cTab !== 'undefined' && cTab === 'faqs' && typeof window.rAdmFAQ === 'function') window.rAdmFAQ();
+            }, err => {
+                console.warn('Sync sub-koleksi faqs dibatasi, menggunakan fallback cms_data.faqs:', err.message);
+                if (typeof curViewName !== 'undefined' && curViewName === 'view-faq') window.renderStorefrontFAQ();
+                if (window.isAdm && typeof cTab !== 'undefined' && cTab === 'faqs' && typeof window.rAdmFAQ === 'function') window.rAdmFAQ();
+            });
+    } catch (e) {
+        console.warn('Fallback sync Q&A dari cms_data aktif');
+    }
+};
+
+let currentFAQCategory = 'Semua';
+
+window.renderStorefrontFAQ = () => {
+    window.attachFAQRealtime();
+    const container = document.getElementById('storefront-faq-container');
+    const pillsContainer = document.getElementById('faq-category-pills');
+    if (!container) return;
+
+    const allFaqs = (appData.faqs || []).filter(f => f.status === 'published');
+    const categories = ['Semua', 'Pemesanan', 'Pengiriman', 'Pembayaran', 'Garansi', 'Lainnya'];
+
+    if (pillsContainer) {
+        pillsContainer.innerHTML = categories.map(cat => `
+            <button onclick="selectFAQCategory('${cat}')" class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${currentFAQCategory === cat ? 'primary-bg text-white shadow-md' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-slate-100'}">
+                ${cat}
+            </button>
+        `).join('');
+    }
+
+    const searchQuery = (document.getElementById('faq-search-input')?.value || '').toLowerCase().trim();
+    const filtered = allFaqs.filter(f => {
+        const matchCat = (currentFAQCategory === 'Semua' || f.category === currentFAQCategory);
+        const matchSearch = !searchQuery || (f.question || '').toLowerCase().includes(searchQuery) || (f.answer || '').toLowerCase().includes(searchQuery);
+        return matchCat && matchSearch;
+    });
+
+    if (!filtered.length) {
+        container.innerHTML = `
+            <div class="text-center py-12 bg-white dark:bg-slate-800 rounded-3xl border border-slate-200 dark:border-slate-700 p-6 shadow-sm">
+                <div class="w-16 h-16 rounded-full bg-amber-50 dark:bg-amber-900/20 text-amber-500 mx-auto flex items-center justify-center mb-3">
+                    <i class="fa-solid fa-circle-question text-3xl"></i>
+                </div>
+                <h3 class="font-bold text-slate-800 dark:text-white text-base">Belum Ada Q&A Ditemukan</h3>
+                <p class="text-xs text-slate-500 mt-1 max-w-sm mx-auto">Punya pertanyaan lain? Silakan gunakan tombol <b>Ajukan Pertanyaan</b> untuk bertanya ke admin.</p>
+                <button onclick="openAskQuestionModal()" class="mt-4 primary-bg text-white px-5 py-2.5 rounded-xl text-xs font-bold shadow-md active:scale-95 transition-all">Ajukan Pertanyaan Sekarang</button>
+            </div>
+        `;
+        return;
+    }
+
+    container.innerHTML = filtered.map(f => `
+        <div class="bg-white dark:bg-slate-800/95 rounded-[1.5rem] border border-slate-200/80 dark:border-slate-700/80 shadow-soft transition-all duration-200 hover:shadow-md overflow-hidden">
+            <button onclick="toggleFAQAccordion('${f.id}')" class="w-full p-4 sm:p-5 text-left flex items-start justify-between gap-3.5 hover:bg-slate-50/80 dark:hover:bg-slate-800/60 transition-colors">
+                <div class="flex items-start gap-3.5 min-w-0">
+                    <div class="w-9 h-9 rounded-xl primary-bg text-white flex items-center justify-center shrink-0 mt-0.5 shadow-sm"><i class="fa-solid fa-question text-xs font-bold"></i></div>
+                    <div class="min-w-0">
+                        <div class="flex flex-wrap items-center gap-2 mb-1.5">
+                            <span class="text-[9px] font-bold uppercase tracking-wider primary-bg-soft primary-text primary-border px-2.5 py-0.5 rounded-lg border">${esc(f.category || 'Umum')}</span>
+                            ${f.authorName ? `<span class="text-[10px] font-medium text-slate-400">Oleh: ${esc(f.authorName)}</span>` : ''}
+                        </div>
+                        <h4 class="font-bold text-sm sm:text-base text-slate-900 dark:text-white leading-snug break-words">${esc(f.question)}</h4>
+                    </div>
+                </div>
+                <div class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-700/80 flex items-center justify-center text-slate-400 shrink-0 transition-transform duration-300" id="faq-icon-${f.id}">
+                    <i class="fa-solid fa-chevron-down text-xs"></i>
+                </div>
+            </button>
+            <div class="hidden border-t border-slate-100 dark:border-slate-700/70 p-3.5 sm:p-5 primary-bg-soft dark:bg-slate-900/60 text-xs sm:text-sm font-medium leading-relaxed" id="faq-body-${f.id}">
+                <div class="flex items-start gap-3 bg-white/90 dark:bg-slate-800/90 p-3.5 sm:p-4 rounded-2xl border primary-border shadow-sm">
+                    <div class="w-8 h-8 rounded-xl primary-bg text-white flex items-center justify-center font-bold text-xs shrink-0 mt-0.5 shadow-sm shadow-[rgba(var(--color-primary-rgb),0.25)]">
+                        <i class="fa-solid fa-reply text-xs"></i>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center justify-between gap-2 mb-1">
+                            <span class="text-[10px] font-extrabold uppercase tracking-wider primary-text flex items-center gap-1">
+                                <i class="fa-solid fa-user-shield text-[10px]"></i> Jawaban Tim Admin Toko
+                            </span>
+                        </div>
+                        <div class="text-slate-800 dark:text-slate-100 font-semibold leading-relaxed whitespace-pre-wrap break-words">${esc(f.answer || 'Belum ada jawaban.')}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `).join('');
+};
+
+window.selectFAQCategory = (cat) => {
+    currentFAQCategory = cat;
+    window.renderStorefrontFAQ();
+};
+
+window.filterStorefrontFAQ = () => {
+    window.renderStorefrontFAQ();
+};
+
+window.toggleFAQAccordion = (id) => {
+    const body = document.getElementById(`faq-body-${id}`);
+    const icon = document.getElementById(`faq-icon-${id}`);
+    if (!body || !icon) return;
+    const isHidden = body.classList.contains('hidden');
+    if (isHidden) {
+        body.classList.remove('hidden');
+        icon.classList.add('rotate-180');
+    } else {
+        body.classList.add('hidden');
+        icon.classList.remove('rotate-180');
+    }
+};
+
+window.openAskQuestionModal = () => {
+    const m = el('modal-ask-question');
+    if (!m) return;
+    if (m.classList.contains('hidden')) pushModalHistory('askQuestion');
+    show('modal-ask-question');
+    setTimeout(() => {
+        el('modal-ask-question').classList.remove('opacity-0');
+        el('modal-ask-question-box').classList.remove('translate-y-full');
+    }, 10);
+};
+
+window.closeAskQuestionModal = (fH=false) => {
+    requestCloseModal('askQuestion', fH, () => {
+        el('modal-ask-question').classList.add('opacity-0');
+        el('modal-ask-question-box').classList.add('translate-y-full');
+        setTimeout(() => hide('modal-ask-question'), 300);
+    });
+};
+
+window.submitCustomerQuestion = async () => {
+    const name = (getV('ask-author-name') || '').trim() || 'Pelanggan';
+    const category = getV('ask-category') || 'Pemesanan';
+    const question = (getV('ask-question-text') || '').trim();
+
+    if (!question) return showToast('Tuliskan pertanyaan Anda terlebih dahulu!');
+
+    sLoad('Mengirim pertanyaan...');
+    const faqId = 'faq-' + Date.now().toString(36);
+    const faqDoc = {
+        id: faqId,
+        question: question,
+        answer: '',
+        category: category,
+        authorName: name,
+        status: 'pending_answer',
+        createdAt: new Date().toISOString()
+    };
+
+    let saved = false;
+    try {
+        await db.collection("freshmart").doc("cms_data").collection("faqs").doc(faqId).set(faqDoc);
+        saved = true;
+    } catch (e) {
+        console.warn('Penulisan sub-koleksi faqs dibatasi, mencoba fallback cms_data.faqs:', e);
+    }
+
+    // Fallback: simpan ke array faqs di dokumen cms_data (berlaku untuk semua pengguna, termasuk pelanggan)
+    if (!saved) {
+        try {
+            const updatedFaqs = [faqDoc, ...(appData.faqs || []).filter(x => x.id !== faqId)];
+            await db.collection("freshmart").doc("cms_data").set({ faqs: updatedFaqs }, { merge: true });
+            appData.faqs = updatedFaqs;
+            saved = true;
+        } catch (err2) {
+            console.warn('Fallback cms_data.faqs juga gagal:', err2);
+        }
+    }
+
+    hLoad();
+    if (saved) {
+        closeAskQuestionModal();
+        setV('ask-question-text', '');
+        showToast('Pertanyaan terkirim! Admin akan menjawabnya segera.');
+        window.renderStorefrontFAQ();
+    } else {
+        showToast('Gagal mengirim pertanyaan. Coba lagi!');
+    }
+};
+
+let adminFAQFilter = 'all';
+
+window.rAdmFAQ = () => {
+    window.attachFAQRealtime();
+    const faqs = appData.faqs || [];
+    const filtered = faqs.filter(f => {
+        if (adminFAQFilter === 'pending') return f.status === 'pending_answer';
+        if (adminFAQFilter === 'published') return f.status === 'published';
+        return true;
+    });
+
+    const pendingCount = faqs.filter(f => f.status === 'pending_answer').length;
+
+    let h = `
+        <div class="space-y-5 pb-12">
+            <!-- Header Card -->
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3.5 bg-white dark:bg-slate-800 p-4 sm:p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
+                <div>
+                    <h2 class="text-base sm:text-lg font-bold text-slate-800 dark:text-white flex items-center gap-2">
+                        <i class="fa-solid fa-circle-question primary-text text-lg"></i> Kelola Tanya Jawab (Q&A / FAQ)
+                    </h2>
+                    <p class="text-xs font-medium text-slate-500 mt-0.5">Sunting FAQ toko & jawab pertanyaan yang diajukan pelanggan.</p>
+                </div>
+                <button onclick="openFAQModal('')" class="w-full sm:w-auto primary-bg text-white shadow-glow px-4 py-2.5 rounded-xl font-bold text-xs flex items-center justify-center gap-2 active:scale-95 transition-all">
+                    <i class="fa-solid fa-plus"></i> Tambah Q&A Baru
+                </button>
+            </div>
+
+            <!-- Filter Tabs (Scrollable Mobile) -->
+            <div class="flex items-center gap-2 overflow-x-auto pb-1.5 hide-scrollbar border-b border-slate-200 dark:border-slate-700">
+                <button onclick="setAdminFAQFilter('all')" class="shrink-0 px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${adminFAQFilter === 'all' ? 'primary-bg text-white shadow-md' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200'}">
+                    Semua (${faqs.length})
+                </button>
+                <button onclick="setAdminFAQFilter('pending')" class="shrink-0 px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${adminFAQFilter === 'pending' ? 'primary-bg text-white shadow-md' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200'}">
+                    <span>Belum Dijawab</span>
+                    ${pendingCount > 0 ? `<span class="bg-rose-500 text-white text-[9px] px-1.5 py-0.5 rounded-full font-bold">${pendingCount}</span>` : ''}
+                </button>
+                <button onclick="setAdminFAQFilter('published')" class="shrink-0 px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${adminFAQFilter === 'published' ? 'primary-bg text-white shadow-md' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200'}">
+                    Terpublikasi
+                </button>
+            </div>
+
+            <!-- List Q&A Admin -->
+            <div class="space-y-4">
+                ${!filtered.length ? `
+                    <div class="text-center py-10 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-6">
+                        <i class="fa-solid fa-inbox text-3xl text-slate-300 mb-2"></i>
+                        <p class="text-xs font-bold text-slate-600 dark:text-slate-300">Tidak ada Q&A ditemukan pada kategori filter ini.</p>
+                    </div>
+                ` : filtered.map(f => `
+                    <div class="bg-white dark:bg-slate-800 p-4 sm:p-5 rounded-2xl border ${f.status === 'pending_answer' ? 'border-amber-300/80 bg-amber-50/20 dark:bg-amber-900/10' : 'border-slate-200/80 dark:border-slate-700/80'} shadow-sm space-y-3">
+                        <!-- Top Header Meta & Action Buttons -->
+                        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-700/60 pb-2.5">
+                            <div class="flex flex-wrap items-center gap-1.5 min-w-0">
+                                <span class="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-lg ${f.status === 'published' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400' : f.status === 'pending_answer' ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400' : 'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-400'}">
+                                    ${f.status === 'published' ? 'Terpublikasi' : f.status === 'pending_answer' ? 'Menunggu Jawaban' : 'Disembunyikan'}
+                                </span>
+                                <span class="text-[9px] sm:text-[10px] font-bold text-slate-400 uppercase tracking-wider px-2 py-0.5 rounded-lg bg-slate-100 dark:bg-slate-700/50">${esc(f.category || 'Umum')}</span>
+                                ${f.authorName ? `<span class="text-[10px] text-slate-400 italic">Oleh: ${esc(f.authorName)}</span>` : ''}
+                            </div>
+                            <div class="flex items-center gap-1.5 shrink-0 ml-auto">
+                                <button onclick="openFAQModal('${f.id}')" class="px-2.5 py-1.5 rounded-xl bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400 font-bold text-xs hover:bg-blue-100 transition-colors flex items-center gap-1 active:scale-95">
+                                    <i class="fa-solid fa-pen-to-square"></i> Edit / Jawab
+                                </button>
+                                <button onclick="deleteAdminFAQ('${f.id}')" class="px-2.5 py-1.5 rounded-xl bg-rose-50 text-rose-600 dark:bg-rose-900/20 dark:text-rose-400 font-bold text-xs hover:bg-rose-100 transition-colors active:scale-95" title="Hapus Q&A">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Question Text -->
+                        <div>
+                            <h3 class="font-bold text-sm sm:text-base text-slate-900 dark:text-white leading-snug break-words">${esc(f.question)}</h3>
+                        </div>
+
+                        <!-- Answer Container -->
+                        <div class="primary-bg-soft dark:bg-slate-900/60 p-3.5 sm:p-4 rounded-xl border primary-border text-xs font-medium text-slate-800 dark:text-slate-200">
+                            <span class="font-extrabold primary-text uppercase text-[10px] tracking-wider flex items-center gap-1.5 mb-1">
+                                <i class="fa-solid fa-user-shield text-[10px]"></i> Jawaban Admin Toko:
+                            </span>
+                            <div class="whitespace-pre-wrap leading-relaxed font-semibold break-words">${f.answer ? esc(f.answer) : '<span class="text-rose-500 italic font-semibold">Belum dijawab. Klik "Edit / Jawab" untuk memberikan jawaban.</span>'}</div>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+    `;
+
+    setH('admin-content', h);
+};
+
+window.setAdminFAQFilter = (status) => {
+    adminFAQFilter = status;
+    window.rAdmFAQ();
+};
+
+window.openFAQModal = (id) => {
+    const f = (appData.faqs || []).find(x => x.id === id) || {
+        id: '', question: '', answer: '', category: 'Pemesanan', authorName: 'Admin', status: 'published'
+    };
+
+    setV('admin-faq-id', f.id);
+    setV('admin-faq-category', f.category || 'Pemesanan');
+    setV('admin-faq-author', f.authorName || 'Admin');
+    setV('admin-faq-question', f.question || '');
+    setV('admin-faq-answer', f.answer || '');
+    setV('admin-faq-status', f.status || 'published');
+    setIn('admin-faq-modal-title', id ? 'Edit Q&A' : 'Tambah Q&A Baru');
+
+    const m = el('modal-admin-faq');
+    if (!m) return;
+    if (m.classList.contains('hidden')) pushModalHistory('adminFAQ');
+    show('modal-admin-faq');
+    setTimeout(() => {
+        el('modal-admin-faq').classList.remove('opacity-0');
+        el('modal-admin-faq-box').classList.remove('translate-y-full');
+    }, 10);
+};
+
+window.closeAdminFAQModal = (fH=false) => {
+    requestCloseModal('adminFAQ', fH, () => {
+        el('modal-admin-faq').classList.add('opacity-0');
+        el('modal-admin-faq-box').classList.add('translate-y-full');
+        setTimeout(() => hide('modal-admin-faq'), 300);
+    });
+};
+
+window.saveAdminFAQ = async () => {
+    const id = getV('admin-faq-id') || ('faq-' + Date.now().toString(36));
+    const category = getV('admin-faq-category');
+    const authorName = (getV('admin-faq-author') || '').trim() || 'Admin';
+    const question = (getV('admin-faq-question') || '').trim();
+    const answer = (getV('admin-faq-answer') || '').trim();
+    let status = getV('admin-faq-status');
+
+    if (!question) return showToast('Pertanyaan tidak boleh kosong!');
+    if (answer && status === 'pending_answer') status = 'published';
+
+    sLoad('Menyimpan Q&A...');
+    const faqDoc = {
+        id,
+        question,
+        answer,
+        category,
+        authorName,
+        status,
+        updatedAt: new Date().toISOString()
+    };
+
+    let currentFaqs = [...(appData.faqs || [])];
+    const idx = currentFaqs.findIndex(x => x.id === id);
+    if (idx > -1) currentFaqs[idx] = { ...currentFaqs[idx], ...faqDoc };
+    else currentFaqs.unshift(faqDoc);
+    appData.faqs = currentFaqs;
+
+    try {
+        await db.collection("freshmart").doc("cms_data").collection("faqs").doc(id).set(faqDoc, { merge: true });
+    } catch (e) {
+        console.warn('Gagal set ke sub-koleksi faqs:', e);
+    }
+
+    try {
+        await db.collection("freshmart").doc("cms_data").set({ faqs: currentFaqs }, { merge: true });
+    } catch (e) {
+        console.warn('Gagal update cms_data.faqs:', e);
+    }
+
+    hLoad();
+    closeAdminFAQModal();
+    showToast('Q&A Berhasil Disimpan!');
+    window.rAdmFAQ();
+};
+
+window.deleteAdminFAQ = (id) => {
+    showConfirm("Hapus Q&A", "Yakin ingin menghapus pertanyaan ini?", async () => {
+        sLoad('Menghapus Q&A...');
+        let currentFaqs = (appData.faqs || []).filter(x => x.id !== id);
+        appData.faqs = currentFaqs;
+
+        try {
+            await db.collection("freshmart").doc("cms_data").collection("faqs").doc(id).delete();
+        } catch (e) {
+            console.warn('Gagal delete dari sub-koleksi faqs:', e);
+        }
+
+        try {
+            await db.collection("freshmart").doc("cms_data").set({ faqs: currentFaqs }, { merge: true });
+        } catch (e) {
+            console.warn('Gagal update cms_data.faqs:', e);
+        }
+
+        hLoad();
+        showToast('Q&A Berhasil Dihapus!');
+        window.rAdmFAQ();
+    });
+};

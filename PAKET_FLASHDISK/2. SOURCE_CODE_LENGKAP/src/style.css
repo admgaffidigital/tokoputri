@@ -63,6 +63,19 @@
      text-xs/sm/base/lg/xl/2xl/3xl -> mengikuti skala Tailwind standar
 */
 
+* {
+    -webkit-tap-highlight-color: transparent;
+}
+
+input, textarea, select, [contenteditable="true"] {
+    -webkit-user-select: text;
+    user-select: text;
+}
+
+.overflow-y-auto, .overflow-x-auto, .scroll-content {
+    -webkit-overflow-scrolling: touch;
+}
+
 body { 
     font-family: 'Barlow', sans-serif; 
     background-color: #f1f5f9; 
@@ -290,8 +303,6 @@ body {
     border: 1px solid var(--toast-border, rgba(var(--color-primary-rgb), 0.25));
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
     color: #fff;
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
     overflow: hidden;
 }
 #toast-icon-wrap {
@@ -697,3 +708,46 @@ html.dark .primary-gradient-card-border {
     background-color: rgba(var(--color-primary-rgb), 0.2) !important;
 }
 
+/* Sembunyikan kontrol native play/pause pada video banner agar tampilan bersih */
+video.banner-video-element::-webkit-media-controls,
+video.banner-video-element::-webkit-media-controls-enclosure,
+video.banner-video-element::-webkit-media-controls-panel,
+video.banner-video-element::-webkit-media-controls-play-button,
+video.banner-video-element::-webkit-media-controls-start-playback-button {
+    display: none !important;
+    -webkit-appearance: none !important;
+    opacity: 0 !important;
+}
+
+/* === TABEL SPESIFIKASI PRODUK === */
+.spec-product-table {
+    border-collapse: collapse;
+    width: 100%;
+}
+.spec-product-table tbody tr {
+    transition: background 0.15s;
+}
+.spec-product-table tbody tr:hover td {
+    background-color: rgba(var(--color-primary-rgb), 0.04);
+}
+.spec-product-table tbody tr td {
+    line-height: 1.5;
+    vertical-align: top;
+}
+.spec-product-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Dark mode adjustments */
+@media (prefers-color-scheme: dark) {
+    .spec-product-table tbody tr:hover td {
+        background-color: rgba(var(--color-primary-rgb), 0.08);
+    }
+}
+
+/* Admin spec-table-builder: input baris terlihat jelas saat focus */
+#spec-table-builder-container input:focus {
+    background-color: rgba(var(--color-primary-rgb), 0.04);
+    border-radius: 6px;
+    outline: none;
+}
