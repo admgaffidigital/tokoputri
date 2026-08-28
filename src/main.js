@@ -2057,8 +2057,7 @@ window.rDyn = () => {
                         </button>
                     </div>
                 </div>
-                <!-- Overlay atas: gradient gelap memudar — menyembunyikan nama channel YouTube secara elegan -->
-                <div class="absolute top-0 left-0 right-0 z-20 pointer-events-none" style="height:45%;background:linear-gradient(to bottom,rgba(0,0,0,0.95) 0%,rgba(0,0,0,0.60) 40%,transparent 100%);"></div>
+
             </div>`;
         }
 
