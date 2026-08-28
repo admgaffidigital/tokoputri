@@ -2318,6 +2318,10 @@ window.rCat = () => {
     }
 
     let f = appData.products.filter(p => {
+        // LOGIKA UTAMA: produk yang dinonaktifkan admin (isActive=false) TIDAK tampil
+        // di storefront sama sekali. Berbeda dengan produk aktif yang stoknya habis
+        // (isActive=true + stock=0) yang tetap tampil dengan label "HABIS".
+        if (p.isActive === false || p.isActive === 'false') return false;
         if(aCat !== 'Semua Produk' && p.category !== aCat) return false;
         if(aBrand !== 'Semua Merek' && p.brand !== aBrand) return false;
         if(!sQ) return true;
@@ -2347,15 +2351,14 @@ window.rCat = () => {
     
     const v = f.slice(0, cPage * iPP);
     c.innerHTML = v.map(p => {
-        let a = p.isActive !== 'false' && p.isActive !== false;
-        
-        // nH adalah tampilan "HABIS" menutupi gambar (tidak diubah)
-        let nH = !a ? `<div class="absolute inset-0 bg-white/60 dark:bg-slate-900/60 backdrop-blur-[2px] z-20 flex items-center justify-center rounded-[1.25rem]"><span class="bg-slate-800 text-white text-[10px] font-bold px-3 py-1.5 rounded-xl shadow-lg uppercase tracking-widest"><i class="fa-solid fa-ban mr-1"></i> HABIS</span></div>` : '';
+        // Semua produk di sini sudah PASTI isActive=true (sudah difilter di atas).
+        // nH hanya untuk overlay "HABIS" karena stok habis (bukan nonaktif).
+        let nH = ''; // default: produk normal, tidak ada overlay
         
         // Badge stok (hanya jika manajemen stok aktif)
         const useStk = appData.store.useStock === true || appData.store.useStock === 'true';
         let stockBadge = '';
-        if (useStk && a) {
+        if (useStk) {
             const totalStock = p.variants && p.variants.length
                 ? p.variants.filter(v => v.isActive !== false && v.isActive !== 'false').reduce((s,v) => s + (parseFloat(v.stock)||0), 0)
                 : parseFloat(p.stock) || 0;
@@ -2523,7 +2526,11 @@ window.openProductModal = i => {
             ? p.variants.filter(v => v.isActive !== false && v.isActive !== 'false').reduce((s,v) => s + (parseFloat(v.stock)||0), 0)
             : (parseFloat(p.stock) || 0);
     }
-    if (!pActive || (useStk && totalAvail <= 0)) {
+    if (!pActive) {
+        showToast('Produk ini sedang tidak tersedia');
+        return;
+    }
+    if (useStk && totalAvail <= 0) {
         showToast('Maaf, stok produk ini sedang kosong');
         return;
     }
