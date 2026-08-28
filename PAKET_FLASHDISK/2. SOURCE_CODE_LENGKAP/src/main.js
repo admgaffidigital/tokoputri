@@ -2950,15 +2950,20 @@ const rProdMod = () => {
                     <table class="w-full text-[13px] spec-product-table">
                         <tbody>`;
             p.specTable.forEach((row, idx) => {
-                const isOdd = idx % 2 === 0;
-                const rowBg = isOdd ? 'bg-white dark:bg-slate-900' : 'bg-slate-50/80 dark:bg-slate-800/60';
+                const rowBg = idx % 2 === 0 ? 'bg-white dark:bg-slate-900' : 'bg-slate-50/80 dark:bg-slate-800/60';
                 specHtml += `<tr class="${rowBg}">
                     <td class="py-2.5 px-4 font-semibold text-slate-600 dark:text-slate-300 w-5/12 border-r border-slate-100 dark:border-slate-700/60 align-top">${esc(row.key)}</td>
                     <td class="py-2.5 px-4 text-slate-700 dark:text-slate-200 align-top">${esc(row.val)}</td>
                 </tr>`;
             });
             specHtml += `</tbody></table></div></div>`;
-            specTableEl.innerHTML = specHtml;
+            // SECURITY: sanitasi HTML tabel sebelum dirender (konsisten dengan desc)
+            specTableEl.innerHTML = (typeof DOMPurify !== 'undefined')
+                ? DOMPurify.sanitize(specHtml, {
+                    ALLOWED_TAGS: ['div','p','i','table','tbody','tr','td','th','thead','br','span'],
+                    ALLOWED_ATTR: ['class','style']
+                  })
+                : specHtml;
             specTableEl.style.display = '';
         } else {
             specTableEl.innerHTML = '';
@@ -2966,7 +2971,6 @@ const rProdMod = () => {
         }
     }
     setIn('modal-unit-label', unt);
-
     
     // Header Badge Premium
     let bH = ``;
@@ -8246,10 +8250,10 @@ window.rSpecB = () => {
                     ${tSpec.map((s,i) => `
                     <tr class="bg-white dark:bg-slate-900 group">
                         <td class="py-2 px-3">
-                            <input autocomplete='off' placeholder="Cth: Berat" class="w-full bg-transparent text-[13px] font-semibold text-slate-700 dark:text-slate-200 focus:outline-none placeholder:text-slate-300" value="${esc(s.key)}" onchange="uSpec(${i},'key',this.value)" oninput="uSpec(${i},'key',this.value)">
+                            <input autocomplete='off' placeholder="Cth: Berat" class="w-full bg-transparent text-[13px] font-semibold text-slate-700 dark:text-slate-200 focus:outline-none placeholder:text-slate-300" value="${esc(s.key)}" oninput="uSpec(${i},'key',this.value)">
                         </td>
                         <td class="py-2 px-3">
-                            <input autocomplete='off' placeholder="Cth: 2.5 kg" class="w-full bg-transparent text-[13px] text-slate-600 dark:text-slate-300 focus:outline-none placeholder:text-slate-300" value="${esc(s.val)}" onchange="uSpec(${i},'val',this.value)" oninput="uSpec(${i},'val',this.value)">
+                            <input autocomplete='off' placeholder="Cth: 2.5 kg" class="w-full bg-transparent text-[13px] text-slate-600 dark:text-slate-300 focus:outline-none placeholder:text-slate-300" value="${esc(s.val)}" oninput="uSpec(${i},'val',this.value)">
                         </td>
                         <td class="py-2 px-2 text-center">
                             <button type="button" onclick="rmSpec(${i})" class="w-7 h-7 rounded-lg bg-rose-50 border border-rose-200 text-rose-400 hover:bg-rose-500 hover:text-white dark:bg-rose-900/30 dark:border-rose-800 transition-all flex items-center justify-center opacity-60 group-hover:opacity-100 active:scale-95" title="Hapus Baris"><i class="fa-solid fa-trash text-[10px]"></i></button>
