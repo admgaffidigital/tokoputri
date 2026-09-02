@@ -8,6 +8,7 @@
 
 import { appData, aCat, aBrand, setACat, setABrand, setCPage, oMods } from '../../core/state.js';
 import { el, show, hide, setH, esc } from '../../core/utils.js';
+import { curViewName, changeView } from '../../core/router.js';
 
 // Fungsi Filter Global untuk Kategori dan Merek
 window.setCat = c => { setACat(c); setCPage(1); if (typeof window.rCat === 'function') window.rCat(); };

@@ -150,3 +150,10 @@ window.pushModalHistory = pushModalHistory;
 window.requestCloseModal = requestCloseModal;
 window.changeView = changeView;
 window.setupHistoryRouter = setupHistoryRouter;
+try {
+    Object.defineProperty(window, 'curViewName', {
+        get: () => curViewName,
+        set: (v) => { curViewName = v; },
+        configurable: true
+    });
+} catch(e) {}

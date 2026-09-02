@@ -181,11 +181,12 @@ export const openSettingForm = (type) => {
     let title, icon, colorTheme, formContent;
 
     if (type === 'profile') {
-        title = "Profil Toko & Tampilan"; 
+        title = "Profil Toko & Tampilan Visual"; 
         icon = "fa-store"; 
         colorTheme = { line: "bg-[var(--color-primary)]", box: "bg-[rgba(var(--color-primary-rgb),0.08)] text-[var(--color-primary)]" };
         
         const currentTheme = appData.store.uiTheme || 'emerald';
+        const currentBgStyle = appData.store.bgStyle || localStorage.getItem('freshmart_bg_style') || 'hero_arch';
         const presetNames = {
             emerald: "Emerald", teal: "Teal", lime: "Lime", cyan: "Cyan", sky: "Sky",
             blue: "Blue", indigo: "Indigo", violet: "Violet", purple: "Purple",
@@ -211,16 +212,26 @@ export const openSettingForm = (type) => {
         }).join('');
 
         formContent = `
-            <div><label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Nama Toko (Nama Aplikasi)</label><input autocomplete='off' id="set-name" value="${esc(appData.store.name)}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm"></div>
-            
-            <div class="grid grid-cols-1 gap-3">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <div>
+                    <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Nama Toko (Nama Aplikasi)</label>
+                    <input autocomplete='off' id="set-name" value="${esc(appData.store.name)}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm w-full">
+                </div>
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Slogan Toko</label>
+                    <input autocomplete='off' id="set-slogan" value="${esc(appData.store.slogan)}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm w-full">
+                </div>
+            </div>
+            
+            <!-- Warna Tema Toko -->
+            <div class="grid grid-cols-1 gap-3">
+                <div class="p-5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700/80 rounded-2xl">
                     <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-3 uppercase tracking-widest flex items-center gap-2">
                         <i class="fa-solid fa-palette" style="color:var(--color-primary)"></i> Warna Tema &amp; Header PWA
                     </label>
                     <input type="hidden" id="set-ui-theme" value="${currentTheme}">
                     <input type="hidden" id="set-theme-color" value="${esc(appData.store.themeColor || '#10b981')}">
-                    <div class="flex flex-wrap gap-3 p-4 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700/80 rounded-2xl">
+                    <div class="flex flex-wrap gap-3">
                         ${presetHtml}
                         <div class="relative" title="Warna Kustom (Klik untuk pilih warna bebas)">
                             <label for="set-theme-color-picker" class="w-10 h-10 rounded-full cursor-pointer transition-all duration-200 relative flex items-center justify-center shadow-sm hover:scale-105 border-2 border-dashed border-slate-400 dark:border-slate-500 bg-white dark:bg-slate-800 hover:border-[var(--color-primary)]" id="custom-color-chip">
@@ -244,21 +255,124 @@ export const openSettingForm = (type) => {
                 </div>
             </div>
 
-            <div><label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Slogan Toko</label><input autocomplete='off' id="set-slogan" value="${esc(appData.store.slogan)}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm"></div>
-            <div>
-                <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">URL Logo Toko</label>
-                <div class="flex gap-2">
-                    <input autocomplete='off' id="set-logo" value="${esc(appData.store.logo)}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm flex-1">
-                    <button type="button" onclick="openMediaManager('set-logo')" class="px-4 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-xl text-xs font-bold transition-all"><i class="fa-solid fa-photo-film mr-1"></i> Media</button>
+            <!-- Model Gaya Visual Background Toko & Wallpaper Kustom -->
+            <div class="grid grid-cols-1 gap-3">
+                <div class="p-5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700/80 rounded-2xl">
+                    <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-3 uppercase tracking-widest flex items-center gap-2">
+                        <i class="fa-solid fa-shapes" style="color:var(--color-primary)"></i> MODEL GAYA VISUAL BACKGROUND TOKO
+                    </label>
+                    <input type="hidden" id="set-bg-style" value="${currentBgStyle}">
+                    
+                    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-5">
+                        <!-- 1. Hero Arch -->
+                        <button type="button" onclick="selectBgStyle('hero_arch')" id="bg-opt-hero_arch"
+                                class="bg-style-card flex flex-col items-center justify-center text-center p-3.5 rounded-xl border-2 transition-all duration-200 cursor-pointer ${currentBgStyle === 'hero_arch' ? 'border-[var(--color-primary)] bg-white dark:bg-slate-800 shadow-md ring-2 ring-[var(--color-primary)]/20' : 'border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 hover:border-slate-300 dark:hover:border-slate-600'}">
+                            <div class="bg-icon-wrap w-10 h-10 rounded-xl flex items-center justify-center mb-2 text-base transition-transform ${currentBgStyle === 'hero_arch' ? 'bg-[var(--color-primary)] text-white shadow-sm' : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300'}">
+                                <i class="fa-solid fa-circle-half-stroke"></i>
+                            </div>
+                            <span class="text-xs font-bold text-slate-800 dark:text-slate-100 mb-0.5">Hero Arch</span>
+                            <span class="text-[9px] text-slate-500 dark:text-slate-400 leading-tight">Header lengkung solid</span>
+                        </button>
+
+                        <!-- 2. Geometris 3D -->
+                        <button type="button" onclick="selectBgStyle('geometric_3d')" id="bg-opt-geometric_3d"
+                                class="bg-style-card flex flex-col items-center justify-center text-center p-3.5 rounded-xl border-2 transition-all duration-200 cursor-pointer ${currentBgStyle === 'geometric_3d' ? 'border-[var(--color-primary)] bg-white dark:bg-slate-800 shadow-md ring-2 ring-[var(--color-primary)]/20' : 'border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 hover:border-slate-300 dark:hover:border-slate-600'}">
+                            <div class="bg-icon-wrap w-10 h-10 rounded-xl flex items-center justify-center mb-2 text-base transition-transform ${currentBgStyle === 'geometric_3d' ? 'bg-[var(--color-primary)] text-white shadow-sm' : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300'}">
+                                <i class="fa-solid fa-cube"></i>
+                            </div>
+                            <span class="text-xs font-bold text-slate-800 dark:text-slate-100 mb-0.5">Geometris 3D</span>
+                            <span class="text-[9px] text-slate-500 dark:text-slate-400 leading-tight">Vektor sudut presisi</span>
+                        </button>
+
+                        <!-- 3. Diagonal Skew -->
+                        <button type="button" onclick="selectBgStyle('diagonal_skew')" id="bg-opt-diagonal_skew"
+                                class="bg-style-card flex flex-col items-center justify-center text-center p-3.5 rounded-xl border-2 transition-all duration-200 cursor-pointer ${currentBgStyle === 'diagonal_skew' ? 'border-[var(--color-primary)] bg-white dark:bg-slate-800 shadow-md ring-2 ring-[var(--color-primary)]/20' : 'border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 hover:border-slate-300 dark:hover:border-slate-600'}">
+                            <div class="bg-icon-wrap w-10 h-10 rounded-xl flex items-center justify-center mb-2 text-base transition-transform ${currentBgStyle === 'diagonal_skew' ? 'bg-[var(--color-primary)] text-white shadow-sm' : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300'}">
+                                <i class="fa-solid fa-slash"></i>
+                            </div>
+                            <span class="text-xs font-bold text-slate-800 dark:text-slate-100 mb-0.5">Diagonal Skew</span>
+                            <span class="text-[9px] text-slate-500 dark:text-slate-400 leading-tight">Aksen garis tegas</span>
+                        </button>
+
+                        <!-- 4. Dual-Tone -->
+                        <button type="button" onclick="selectBgStyle('dual_tone')" id="bg-opt-dual_tone"
+                                class="bg-style-card flex flex-col items-center justify-center text-center p-3.5 rounded-xl border-2 transition-all duration-200 cursor-pointer ${currentBgStyle === 'dual_tone' ? 'border-[var(--color-primary)] bg-white dark:bg-slate-800 shadow-md ring-2 ring-[var(--color-primary)]/20' : 'border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 hover:border-slate-300 dark:hover:border-slate-600'}">
+                            <div class="bg-icon-wrap w-10 h-10 rounded-xl flex items-center justify-center mb-2 text-base transition-transform ${currentBgStyle === 'dual_tone' ? 'bg-[var(--color-primary)] text-white shadow-sm' : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300'}">
+                                <i class="fa-solid fa-layer-group"></i>
+                            </div>
+                            <span class="text-xs font-bold text-slate-800 dark:text-slate-100 mb-0.5">Dual-Tone</span>
+                            <span class="text-[9px] text-slate-500 dark:text-slate-400 leading-tight">Header solid 2 warna</span>
+                        </button>
+
+                        <!-- 5. Minimalis -->
+                        <button type="button" onclick="selectBgStyle('minimalist')" id="bg-opt-minimalist"
+                                class="bg-style-card flex flex-col items-center justify-center text-center p-3.5 rounded-xl border-2 transition-all duration-200 cursor-pointer col-span-2 sm:col-span-1 ${currentBgStyle === 'minimalist' ? 'border-[var(--color-primary)] bg-white dark:bg-slate-800 shadow-md ring-2 ring-[var(--color-primary)]/20' : 'border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 hover:border-slate-300 dark:hover:border-slate-600'}">
+                            <div class="bg-icon-wrap w-10 h-10 rounded-xl flex items-center justify-center mb-2 text-base transition-transform ${currentBgStyle === 'minimalist' ? 'bg-[var(--color-primary)] text-white shadow-sm' : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300'}">
+                                <i class="fa-solid fa-square"></i>
+                            </div>
+                            <span class="text-xs font-bold text-slate-800 dark:text-slate-100 mb-0.5">Minimalis</span>
+                            <span class="text-[9px] text-slate-500 dark:text-slate-400 leading-tight">Polos bersih elegan</span>
+                        </button>
+                    </div>
+
+                    <!-- Gambar / Wallpaper Background Kustom (Opsional) -->
+                    <div class="pt-4 border-t border-slate-200 dark:border-slate-700/80">
+                        <label class="block text-[11px] font-bold text-slate-700 dark:text-slate-200 uppercase tracking-widest mb-2 flex items-center gap-2">
+                            <i class="fa-solid fa-image" style="color:var(--color-primary)"></i> GAMBAR / WALLPAPER BACKGROUND KUSTOM (OPSIONAL)
+                        </label>
+                        <div class="flex gap-3">
+                            <input autocomplete="off" id="set-bg-custom-url" value="${esc(appData.store.bgCustomUrl || '')}"
+                                   class="admin-input !py-3.5 bg-white dark:bg-slate-800 flex-1 shadow-sm"
+                                   placeholder="URL Gambar Background (Opsional, contoh: https://...)"
+                                   oninput="if(typeof window.applyBackgroundStyle==='function') window.applyBackgroundStyle(document.getElementById('set-bg-style').value, this.value)">
+                            <label class="bg-white hover:bg-slate-50 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-300 rounded-xl px-5 flex items-center justify-center cursor-pointer transition-all shrink-0 active:scale-95 shadow-sm font-bold">
+                                <i class="fa-solid fa-cloud-arrow-up sm:mr-2"></i> <span class="hidden sm:inline">Upload</span>
+                                <input type="file" accept="image/*" class="hidden" onchange="handleImageUpload(this, 'set-bg-custom-url')">
+                            </label>
+                        </div>
+                        <p class="text-[9px] text-slate-500 dark:text-slate-400 mt-2 font-medium">
+                            Jika diisi, gambar akan otomatis terpasang tajam dan jernih sebagai wallpaper latar belakang toko dan CMS.
+                        </p>
+                    </div>
                 </div>
             </div>
-            <div><label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Deskripsi Toko</label><textarea id="set-description" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm" rows="3">${esc(appData.store.description)}</textarea></div>
-            <div><label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Email Toko</label><input autocomplete='off' id="set-email" value="${esc(appData.store.email || '')}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm"></div>
-            <div><label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Jam Operasional</label><input autocomplete='off' id="set-hours" value="${esc(appData.store.operationalHours || '')}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm"></div>
-            <div><label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Teks Hak Cipta Footer</label><input autocomplete='off' id="set-credit" value="${esc(appData.store.footerCredit || '')}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm"></div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Logo Toko (Ikon Aplikasi)</label>
+                    <div class="flex gap-2">
+                        <input autocomplete='off' id="set-logo" value="${esc(appData.store.logo)}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm flex-1">
+                        <label class="bg-white hover:bg-slate-50 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-300 rounded-xl px-4 flex items-center justify-center cursor-pointer transition-all shrink-0 active:scale-95 shadow-sm font-bold text-xs">
+                            <i class="fa-solid fa-cloud-arrow-up mr-1.5"></i> Upload
+                            <input type="file" accept="image/*" class="hidden" onchange="handleImageUpload(this, 'set-logo')">
+                        </label>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Email Toko</label>
+                    <input autocomplete='off' id="set-email" value="${esc(appData.store.email || '')}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm w-full">
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Deskripsi Toko</label>
+                <textarea id="set-description" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm w-full" rows="3">${esc(appData.store.description)}</textarea>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Jam Operasional</label>
+                    <input autocomplete='off' id="set-hours" value="${esc(appData.store.operationalHours || '')}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm w-full">
+                </div>
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Teks Hak Cipta Footer</label>
+                    <input autocomplete='off' id="set-credit" value="${esc(appData.store.footerCredit || '')}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm w-full">
+                </div>
+            </div>
+
             <div>
                 <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Tampilkan Katalog Tukar Hadiah di Beranda</label>
-                <select id="set-show-reward-catalog" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm">
+                <select id="set-show-reward-catalog" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm w-full">
                     <option value="true" ${appData.store.showRewardCatalog !== false ? 'selected' : ''}>Ya, Tampilkan Hadiah</option>
                     <option value="false" ${appData.store.showRewardCatalog === false ? 'selected' : ''}>Sembunyikan</option>
                 </select>
@@ -269,26 +383,35 @@ export const openSettingForm = (type) => {
         icon = "fa-palette"; 
         colorTheme = { line: "bg-blue-500", box: "bg-blue-50 text-blue-500" };
         formContent = `
-            <div>
-                <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Gaya Tampilan Kategori</label>
-                <select id="set-category-style" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm">
-                    <option value="grid" ${appData.store.categoryStyle === 'grid' ? 'selected' : ''}>Grid Ikon</option>
-                    <option value="pill" ${appData.store.categoryStyle === 'pill' ? 'selected' : ''}>Pill Horizontal Scroll</option>
-                </select>
-            </div>
-            <div>
-                <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Tampilkan Slider Kategori di Beranda</label>
-                <select id="set-show-categories" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm">
-                    <option value="true" ${appData.store.showCategories !== false ? 'selected' : ''}>Tampilkan</option>
-                    <option value="false" ${appData.store.showCategories === false ? 'selected' : ''}>Sembunyikan</option>
-                </select>
-            </div>
-            <div>
-                <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Tampilkan Slider Merek di Beranda</label>
-                <select id="set-show-brands" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm">
-                    <option value="true" ${appData.store.showBrands !== false ? 'selected' : ''}>Tampilkan</option>
-                    <option value="false" ${appData.store.showBrands === false ? 'selected' : ''}>Sembunyikan</option>
-                </select>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Gaya Tampilan Kategori</label>
+                    <select id="set-category-style" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm w-full">
+                        <option value="grid" ${appData.store.categoryStyle === 'grid' ? 'selected' : ''}>Grid Ikon</option>
+                        <option value="pill" ${appData.store.categoryStyle === 'pill' ? 'selected' : ''}>Pill Horizontal Scroll</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Gaya Tampilan Merek</label>
+                    <select id="set-brand-style" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm w-full">
+                        <option value="logo" ${appData.store.brandStyle === 'logo' || !appData.store.brandStyle ? 'selected' : ''}>Logo Kotak (Grid)</option>
+                        <option value="text" ${appData.store.brandStyle === 'text' ? 'selected' : ''}>Pill Horizontal Scroll</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Tampilkan Slider Kategori di Beranda</label>
+                    <select id="set-show-categories" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm w-full">
+                        <option value="true" ${appData.store.showCategories !== false ? 'selected' : ''}>Tampilkan</option>
+                        <option value="false" ${appData.store.showCategories === false ? 'selected' : ''}>Sembunyikan</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Tampilkan Slider Merek di Beranda</label>
+                    <select id="set-show-brands" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm w-full">
+                        <option value="true" ${appData.store.showBrands !== false ? 'selected' : ''}>Tampilkan</option>
+                        <option value="false" ${appData.store.showBrands === false ? 'selected' : ''}>Sembunyikan</option>
+                    </select>
+                </div>
             </div>
         `;
     } else if (type === 'shipping') {
@@ -296,28 +419,45 @@ export const openSettingForm = (type) => {
         icon = "fa-motorcycle"; 
         colorTheme = { line: "bg-amber-500", box: "bg-amber-50 text-amber-500" };
         formContent = `
-            <div><label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Nomor WhatsApp Admin</label><input autocomplete='off' id="set-wa" value="${esc(appData.store.wa || '')}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm"></div>
-            <div><label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Alamat Lengkap Toko</label><textarea id="set-address" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm" rows="3">${esc(appData.store.address || '')}</textarea></div>
-            <div><label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Ongkir per Kilometer (Rp)</label><input autocomplete='off' type="number" id="set-cost" value="${esc(appData.store.costPerKm || 0)}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm"></div>
-            <div class="grid grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Nomor WhatsApp Admin</label>
+                    <input autocomplete='off' id="set-wa" value="${esc(appData.store.wa || '')}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm w-full" placeholder="Contoh: 08123456789">
+                </div>
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Ongkir per Kilometer (Rp)</label>
+                    <input autocomplete='off' type="number" id="set-cost" value="${esc(appData.store.costPerKm || 0)}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm w-full">
+                </div>
+            </div>
+            <div>
+                <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Alamat Lengkap Toko</label>
+                <textarea id="set-address" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm w-full" rows="3">${esc(appData.store.address || '')}</textarea>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <div>
                     <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Opsi Kirim ke Alamat</label>
-                    <select id="set-delivery-enabled" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm">
+                    <select id="set-delivery-enabled" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm w-full">
                         <option value="true" ${appData.store.isDeliveryEnabled !== false ? 'selected' : ''}>Aktif</option>
                         <option value="false" ${appData.store.isDeliveryEnabled === false ? 'selected' : ''}>Nonaktif</option>
                     </select>
                 </div>
                 <div>
                     <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Opsi Ambil di Toko</label>
-                    <select id="set-pickup-enabled" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm">
+                    <select id="set-pickup-enabled" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm w-full">
                         <option value="true" ${appData.store.isPickupEnabled !== false ? 'selected' : ''}>Aktif</option>
                         <option value="false" ${appData.store.isPickupEnabled === false ? 'selected' : ''}>Nonaktif</option>
                     </select>
                 </div>
             </div>
-            <div class="grid grid-cols-2 gap-4">
-                <div><label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Latitude Toko (GPS)</label><input autocomplete='off' id="set-lat" value="${esc(appData.store.lat || '')}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm"></div>
-                <div><label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Longitude Toko (GPS)</label><input autocomplete='off' id="set-lng" value="${esc(appData.store.lng || '')}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm"></div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Latitude Toko (GPS)</label>
+                    <input autocomplete='off' id="set-lat" value="${esc(appData.store.lat || '')}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm w-full">
+                </div>
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Longitude Toko (GPS)</label>
+                    <input autocomplete='off' id="set-lng" value="${esc(appData.store.lng || '')}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm w-full">
+                </div>
             </div>
         `;
     } else if (type === 'payment') {
@@ -328,9 +468,21 @@ export const openSettingForm = (type) => {
             <div>
                 <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">URL Gambar Barcode QRIS</label>
                 <div class="flex gap-2">
-                    <input autocomplete='off' id="set-qris-url" value="${esc(appData.payment?.qrisUrl || '')}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm flex-1">
-                    <button type="button" onclick="openMediaManager('set-qris-url')" class="px-4 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-xl text-xs font-bold transition-all"><i class="fa-solid fa-photo-film mr-1"></i> Media</button>
+                    <input autocomplete='off' id="set-qris-url" value="${esc(appData.payment?.qrisUrl || '')}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm flex-1" placeholder="URL QRIS Image (atau klik Upload)">
+                    <label class="bg-white hover:bg-slate-50 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-300 rounded-xl px-4 flex items-center justify-center cursor-pointer transition-all shrink-0 active:scale-95 shadow-sm font-bold text-xs">
+                        <i class="fa-solid fa-cloud-arrow-up mr-1.5"></i> Upload QRIS
+                        <input type="file" accept="image/*" class="hidden" onchange="handleImageUpload(this, 'set-qris-url')">
+                    </label>
                 </div>
+                ${appData.payment?.qrisUrl ? `
+                    <div class="mt-4 p-4 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl flex items-center gap-4">
+                        <img src="${esc(appData.payment.qrisUrl)}" alt="Preview QRIS" class="w-20 h-20 object-contain rounded-xl bg-white border border-slate-200 dark:border-slate-600 p-1">
+                        <div>
+                            <span class="text-xs font-bold text-slate-700 dark:text-slate-200 block">Preview Barcode QRIS Aktif</span>
+                            <span class="text-[10px] text-slate-400">Gambar ini akan tampil otomatis saat pelanggan checkout menggunakan QRIS.</span>
+                        </div>
+                    </div>
+                ` : ''}
             </div>
         `;
     } else if (type === 'config') {
@@ -338,51 +490,57 @@ export const openSettingForm = (type) => {
         icon = "fa-laptop-code"; 
         colorTheme = { line: "bg-rose-500", box: "bg-rose-50 text-rose-500" };
         formContent = `
-            <div><label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Google Apps Script URL (Media Drive)</label><input autocomplete='off' id="set-gas-url" value="${esc(appData.config?.gasUrl || '')}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm"></div>
+            <div>
+                <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Google Apps Script URL (Media Drive)</label>
+                <input autocomplete='off' id="set-gas-url" value="${esc(appData.config?.gasUrl || '')}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm w-full" placeholder="https://script.google.com/macros/s/.../exec">
+                <p class="text-[9px] text-slate-500 dark:text-slate-400 mt-2">Digunakan untuk upload gambar produk & video promosi langsung ke Google Drive.</p>
+            </div>
         `;
     } else if (type === 'operasional') {
         title = "Operasional & Pajak"; 
         icon = "fa-sliders"; 
         colorTheme = { line: "bg-violet-500", box: "bg-violet-50 text-violet-500" };
         formContent = `
-            <div>
-                <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Manajemen Stok Produk</label>
-                <select id="set-use-stock" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm">
-                    <option value="true" ${appData.store.useStock === true ? 'selected' : ''}>Aktif (Produk otomatis habis jika stok 0)</option>
-                    <option value="false" ${appData.store.useStock !== true ? 'selected' : ''}>Nonaktif (Stok tak terbatas)</option>
-                </select>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Manajemen Stok Produk</label>
+                    <select id="set-use-stock" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm w-full">
+                        <option value="true" ${appData.store.useStock === true ? 'selected' : ''}>Aktif (Produk otomatis habis jika stok 0)</option>
+                        <option value="false" ${appData.store.useStock !== true ? 'selected' : ''}>Nonaktif (Stok tak terbatas)</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Perhitungan Pajak PPN</label>
+                    <select id="set-ppn-enabled" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm w-full">
+                        <option value="true" ${appData.store.ppnEnabled === true ? 'selected' : ''}>Aktif</option>
+                        <option value="false" ${appData.store.ppnEnabled !== true ? 'selected' : ''}>Nonaktif</option>
+                    </select>
+                </div>
             </div>
-            <div>
-                <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Perhitungan Pajak PPN</label>
-                <select id="set-ppn-enabled" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm">
-                    <option value="true" ${appData.store.ppnEnabled === true ? 'selected' : ''}>Aktif</option>
-                    <option value="false" ${appData.store.ppnEnabled !== true ? 'selected' : ''}>Nonaktif</option>
-                </select>
-            </div>
-            <div class="grid grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <div>
                     <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Tipe PPN</label>
-                    <select id="set-ppn-type" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm">
+                    <select id="set-ppn-type" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm w-full">
                         <option value="exclusive" ${appData.store.ppnType !== 'inclusive' ? 'selected' : ''}>Eksklusif (Ditambah di checkout)</option>
                         <option value="inclusive" ${appData.store.ppnType === 'inclusive' ? 'selected' : ''}>Inklusif (Sudah termasuk di harga)</option>
                     </select>
                 </div>
                 <div>
                     <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Tarif PPN (%)</label>
-                    <input autocomplete='off' type="number" id="set-ppn-rate" value="${esc(appData.store.ppnRate || 11)}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm">
+                    <input autocomplete='off' type="number" id="set-ppn-rate" value="${esc(appData.store.ppnRate || 11)}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm w-full">
                 </div>
             </div>
         `;
     }
 
     let h = `
-    <div class="max-w-2xl mx-auto pb-10 text-sm fade-in-scale">
+    <div class="w-full max-w-5xl mx-auto pb-10 text-sm fade-in-scale">
         <button onclick="rAdmSet()" class="mb-5 flex items-center justify-center w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 transition-all shadow-sm"><i class="fa-solid fa-arrow-left"></i></button>
         <div class="bg-white dark:bg-slate-800 rounded-[2rem] border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden mb-6 relative">
             <div class="absolute top-0 left-0 w-full h-1.5 ${colorTheme.line}"></div>
             <div class="p-6 sm:p-8 flex-1 mt-2">
-                <h3 class="font-bold text-slate-800 dark:text-white mb-6 flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-xl ${colorTheme.box} flex items-center justify-center"><i class="fa-solid ${icon}"></i></div> 
+                <h3 class="font-bold text-slate-800 dark:text-white mb-6 flex items-center gap-3 text-base">
+                    <div class="w-10 h-10 rounded-xl ${colorTheme.box} flex items-center justify-center shrink-0"><i class="fa-solid ${icon}"></i></div> 
                     ${title}
                 </h3>
                 <div class="space-y-5">
@@ -412,9 +570,6 @@ export const openSettingForm = (type) => {
     }
 };
 
-/**
- * Simpan data pengaturan toko ke Firestore & localStorage
- */
 export const saveAdminSettings = async (type) => {
     if (isSaving) return; 
     setIsSaving(true); 
