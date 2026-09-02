@@ -7,7 +7,7 @@
  * ============================================================
  */
 
-import { appData } from '../../core/state.js';
+import { appData, aCat, aBrand } from '../../core/state.js';
 import { 
     el, show, hide, setIn, setH, esc, fCur, 
     parseVideoUrl, fixDriveVideo, fixDriveVideoPreview, getOptImg 

@@ -9,15 +9,14 @@
 import { appData, aCat, aBrand, setACat, setABrand, setCPage, oMods } from '../../core/state.js';
 import { el, show, hide, setH, esc } from '../../core/utils.js';
 
-
 // Fungsi Filter Global untuk Kategori dan Merek
-window.setCat = c => { aCat = c; cPage = 1; rCat(); };
-window.setBrand = b => { aBrand = b; cPage = 1; rCat(); };
+window.setCat = c => { setACat(c); setCPage(1); if (typeof window.rCat === 'function') window.rCat(); };
+window.setBrand = b => { setABrand(b); setCPage(1); if (typeof window.rCat === 'function') window.rCat(); };
 
-window.openCategoryModal = () => {
+export const openCategoryModal = () => {
     let h = ``;
     let isActiveAll = aCat === 'Semua Produk';
-    
+
     // FIX TAMPILAN: kategori sekarang daftar list ke bawah (1 baris penuh per kategori),
     // bukan grid kotak-kotak lagi. Logo merek (openBrandModal di bawah) TIDAK diubah, tetap grid.
     h += `

@@ -179,7 +179,8 @@ export const showConfirm = (t, m, y, n) => {
     }
 };
 
-const loadedScripts = {};
+export const loadedScripts = {};
+window.loadedScripts = loadedScripts;
 export const ensureScriptLoaded = (src, checkFn) => {
     if (checkFn && checkFn()) return Promise.resolve();
     if (loadedScripts[src]) return loadedScripts[src];
