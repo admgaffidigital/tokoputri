@@ -5,362 +5,86 @@ import 'firebase/compat/auth';
 // firebase/compat/analytics: diload LAZY setelah halaman siap (bukan di render path kritis)
 import DOMPurify from 'dompurify';
 
-window.firebase = firebase;
-window.DOMPurify = DOMPurify;
-
-// ==========================================
-// 1. THEME COLOR & COLOR PALETTE
-// ==========================================
-
-        // ==========================================
-        // WARNA (MAGIC COLOR INJECTOR)
-        // ==========================================
-        let savedUITheme = localStorage.getItem('freshmart_ui_theme') || 'emerald';
-        
-        window.uiPalettes = {
-            'emerald' : { 50: '#ecfdf5', 100: '#d1fae5', 200: '#a7f3d0', 300: '#6ee7b7', 400: '#34d399', 500: '#10b981', 600: '#059669', 700: '#047857', 800: '#065f46', 900: '#064e3b' },
-            'teal'    : { 50: '#f0fdfa', 100: '#ccfbf1', 200: '#99f6e4', 300: '#5eead4', 400: '#2dd4bf', 500: '#14b8a6', 600: '#0d9488', 700: '#0f766e', 800: '#115e59', 900: '#134e4a' },
-            'cyan'    : { 50: '#ecfeff', 100: '#cffafe', 200: '#a5f3fc', 300: '#67e8f9', 400: '#22d3ee', 500: '#06b6d4', 600: '#0891b2', 700: '#0e7490', 800: '#155e75', 900: '#164e63' },
-            'sky'     : { 50: '#f0f9ff', 100: '#e0f2fe', 200: '#bae6fd', 300: '#7dd3fc', 400: '#38bdf8', 500: '#0ea5e9', 600: '#0284c7', 700: '#0369a1', 800: '#075985', 900: '#0c4a6e' },
-            'blue'    : { 50: '#eff6ff', 100: '#dbeafe', 200: '#bfdbfe', 300: '#93c5fd', 400: '#60a5fa', 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8', 800: '#1e40af', 900: '#1e3a8a' },
-            'indigo'  : { 50: '#eef2ff', 100: '#e0e7ff', 200: '#c7d2fe', 300: '#a5b4fc', 400: '#818cf8', 500: '#6366f1', 600: '#4f46e5', 700: '#4338ca', 800: '#3730a3', 900: '#312e81' },
-            'violet'  : { 50: '#f5f3ff', 100: '#ede9fe', 200: '#ddd6fe', 300: '#c4b5fd', 400: '#a78bfa', 500: '#8b5cf6', 600: '#7c3aed', 700: '#6d28d9', 800: '#5b21b6', 900: '#4c1d95' },
-            'purple'  : { 50: '#faf5ff', 100: '#f3e8ff', 200: '#e9d5ff', 300: '#d8b4fe', 400: '#c084fc', 500: '#a855f7', 600: '#9333ea', 700: '#7e22ce', 800: '#6b21a8', 900: '#581c87' },
-            'fuchsia' : { 50: '#fdf4ff', 100: '#fae8ff', 200: '#f5d0fe', 300: '#f0abfc', 400: '#e879f9', 500: '#d946ef', 600: '#c026d3', 700: '#a21caf', 800: '#86198f', 900: '#701a75' },
-            'pink'    : { 50: '#fdf2f8', 100: '#fce7f3', 200: '#fbcfe8', 300: '#f9a8d4', 400: '#f472b6', 500: '#ec4899', 600: '#db2777', 700: '#be185d', 800: '#9d174d', 900: '#831843' },
-            'rose'    : { 50: '#fff1f2', 100: '#ffe4e6', 200: '#fecdd3', 300: '#fda4af', 400: '#fb7185', 500: '#f43f5e', 600: '#e11d48', 700: '#be123c', 800: '#9f1239', 900: '#881337' },
-            'red'     : { 50: '#fef2f2', 100: '#fee2e2', 200: '#fecaca', 300: '#fca5a5', 400: '#f87171', 500: '#dc2626', 600: '#b91c1c', 700: '#991b1b', 800: '#7f1d1d', 900: '#450a0a' },
-            'orange'  : { 50: '#fff7ed', 100: '#ffedd5', 200: '#fed7aa', 300: '#fdba74', 400: '#fb923c', 500: '#ea580c', 600: '#c2410c', 700: '#9a3412', 800: '#7c2d12', 900: '#431407' },
-            'amber'   : { 50: '#fffbeb', 100: '#fef3c7', 200: '#fde68a', 300: '#fcd34d', 400: '#fbbf24', 500: '#d97706', 600: '#b45309', 700: '#92400e', 800: '#78350f', 900: '#451a03' },
-            'yellow'  : { 50: '#fefce8', 100: '#fef9c3', 200: '#fef08a', 300: '#fde047', 400: '#eab308', 500: '#d97706', 600: '#b45309', 700: '#854d0e', 800: '#713f12', 900: '#3f1d0b' },
-            'lime'    : { 50: '#f7fee7', 100: '#ecfccb', 200: '#d9f99d', 300: '#bef264', 400: '#a3e635', 500: '#65a30d', 600: '#4d7c0f', 700: '#3f6212', 800: '#365314', 900: '#1a2e05' },
-            'green'   : { 50: '#f0fdf4', 100: '#dcfce7', 200: '#bbf7d0', 300: '#86efac', 400: '#4ade80', 500: '#16a34a', 600: '#15803d', 700: '#166534', 800: '#14532d', 900: '#052e16' },
-            'slate'   : { 50: '#f8fafc', 100: '#f1f5f9', 200: '#e2e8f0', 300: '#cbd5e1', 400: '#94a3b8', 500: '#475569', 600: '#334155', 700: '#1e293b', 800: '#0f172a', 900: '#020617' },
-            'stone'   : { 50: '#fafaf9', 100: '#f5f5f4', 200: '#e7e5e4', 300: '#d6d3d1', 400: '#a8a29e', 500: '#57534e', 600: '#44403c', 700: '#292524', 800: '#1c1917', 900: '#0c0a09' }
-        };
-        
-        // Ubah kode warna HEX menjadi RGB (dipakai untuk efek bayangan/glow transparan)
-        window.hexToRgb = hex => {
-            let bigint = parseInt(hex.replace('#', ''), 16);
-            return ((bigint >> 16) & 255) + ',' + ((bigint >> 8) & 255) + ',' + (bigint & 255);
-        };
-
-        // FUNGSI UTAMA: menerapkan tema warna (CSS variable + Tailwind config).
-        // FIX: sebelumnya logika ini cuma dijalankan sekali saat load awal. Sekarang dibungkus
-        // jadi fungsi reusable (window.applyUITheme) agar bisa dipanggil ULANG tanpa reload
-        // halaman saat data toko selesai disinkronkan dari server (lihat syncAppMeta()).
-        window.applyUITheme = (themeName, customHex) => {
-            const uiTheme = themeName || localStorage.getItem('freshmart_ui_theme') || 'emerald';
-            const colors = window.uiPalettes[uiTheme] || window.uiPalettes['emerald'];
-
-            if (themeName) localStorage.setItem('freshmart_ui_theme', uiTheme);
-
-            // Jika ada customHex pakai itu, kalau tidak ambil dari palette atau cache
-            const hex = customHex || localStorage.getItem('freshmart_theme_color') || colors[500];
-            if (customHex) localStorage.setItem('freshmart_theme_color', hex);
-
-            const hexToRgb = window.hexToRgb || (h => {
-                let bigint = parseInt(h.replace('#', ''), 16);
-                return ((bigint >> 16) & 255) + ',' + ((bigint >> 8) & 255) + ',' + (bigint & 255);
-            });
-
-            // Helper: gelapkan/terangkan warna hex secara matematis dari hex saja
-            const adjustHex = (h, amt) => {
-                let r = parseInt(h.slice(1,3),16), g = parseInt(h.slice(3,5),16), b = parseInt(h.slice(5,7),16);
-                r = Math.max(0, Math.min(255, r + amt));
-                g = Math.max(0, Math.min(255, g + amt));
-                b = Math.max(0, Math.min(255, b + amt));
-                return '#' + [r,g,b].map(v => v.toString(16).padStart(2,'0')).join('');
-            };
-
-            const primaryRgb = hexToRgb(hex);
-            // Turunkan SEMUA warna dari 1 hex saja — tidak ada lagi named palette
-            const darkHex  = adjustHex(hex, -30);   // lebih gelap ~12%
-            const lightHex = adjustHex(hex, 150);   // sangat terang untuk background subtle
-
-            document.documentElement.style.setProperty('--color-primary',       hex);
-            document.documentElement.style.setProperty('--color-primary-dark',  darkHex);
-            document.documentElement.style.setProperty('--color-primary-light', lightHex);
-            document.documentElement.style.setProperty('--color-primary-rgb',   primaryRgb);
-
-            // Update PWA/browser header color
-            let m = document.querySelector('meta[name="theme-color"]');
-            if (!m) { m = document.createElement('meta'); m.setAttribute('name', 'theme-color'); document.head.appendChild(m); }
-            m.setAttribute('content', hex);
-
-            return colors;
-        };
-
-        let activeColors = window.applyUITheme(savedUITheme, localStorage.getItem('freshmart_theme_color'));
-
-        // FIX: warna header/status-bar (meta theme-color) sebelumnya BARU dipasang ~2 detik
-        // setelah halaman terbuka (menunggu data toko dari server), jadi selalu "putih dulu"
-        // baru berubah warna. Sekarang dipasang dari cache lokal sesaat saat halaman dibuka,
-        // lalu disegarkan lagi begitu data toko selesai dimuat (lihat syncAppMeta()).
-        (function applyCachedHeaderColor(){
-            const cachedHeaderColor = localStorage.getItem('freshmart_theme_color') || activeColors[500];
-            let m = document.querySelector('meta[name="theme-color"]');
-            if(!m){ m = document.createElement('meta'); m.setAttribute('name', 'theme-color'); document.head.appendChild(m); }
-            m.setAttribute('content', cachedHeaderColor);
-        })();
-
-        // Deteksi Dark Mode Otomatis & Sinkronkan Ikon
-        const initThemeIcon = () => {
-            const isDark = document.documentElement.classList.contains('dark');
-            const icon = document.getElementById('icon-theme') || document.getElementById('theme-toggle-icon');
-            if (icon) icon.className = isDark ? 'fa-solid fa-sun text-sm text-amber-400' : 'fa-solid fa-moon text-sm text-slate-600 dark:text-slate-300';
-        };
-
-        if (localStorage.getItem('freshmart_theme') === 'dark' || (!('freshmart_theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) { 
-            document.documentElement.classList.add('dark'); 
-        }
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initThemeIcon);
-        } else {
-            initThemeIcon();
-        }
+// ─── Import Modul Internal ──────────────────────────────────────────────────────
+// Config & Firebase (inisialisasi Firebase, db, auth, analytics)
+import { db, auth, ADMIN_UID, loadAnalytics } from './config/firebase.js';
+// Core: Theme Engine (color palettes, dark mode, CSS variables)
+import { uiPalettes, hexToRgb, applyUITheme, initDarkMode, toggleTheme as _toggleTheme, initThemeIcon } from './core/theme.js';
+// Core: Utilities (helper functions stateless)
+import { el, show, hide, toggleCls, setIn, setH, setV, getV, sL, ssL, esc, fCur, fixD, getYouTubeId, parseVideoUrl, fixDriveVideo, fixDriveVideoPreview, getOptImg, rewardStatusLabel, updateSEO, injectJSONLD } from './core/utils.js';
+// Core: State (struktur data default)
+import { defApp as _defApp } from './core/state.js';
+// Services: GAS URL
+import { GAS_UPLOAD_URL as _GAS_URL } from './services/gas.js';
 
 
-    
+// ─── Expose ke window (untuk kompatibilitas kode inline di index.html) ──────────
+window.firebase   = firebase;
+window.DOMPurify  = DOMPurify;
 
-// ==========================================
-// 2. MAIN APP LOGIC
-// ==========================================
+// ─── THEME ENGINE ───────────────────────────────────────────────────────────────
+// Expose fungsi tema ke window agar bisa dipanggil dari HTML inline
+window.uiPalettes  = uiPalettes;
+window.hexToRgb    = hexToRgb;
+window.applyUITheme = applyUITheme;
+window.toggleTheme = _toggleTheme;
+
+// Inisialisasi tema dari localStorage/preferensi OS
+initDarkMode();
+const savedUITheme = localStorage.getItem('freshmart_ui_theme') || 'emerald';
+let activeColors   = applyUITheme(savedUITheme, localStorage.getItem('freshmart_theme_color'));
+
+// Sinkronkan ikon dark mode
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initThemeIcon);
+} else {
+    initThemeIcon();
+}
+
+// ─── SECTION 1: MAIN APP LOGIC ─────────────────────────────────────────────────
+
+
+// ─── SECTION 2: GLOBAL ERROR HANDLING ─────────────────────────────────────────
 
 /* =========================================================
-   FRESHMART POS & E-COMMERCE SYSTEM (BLOGGER XML EDITION)
-   FINAL POLISH & GLOBAL DEBUG (CLEAN, SAFE, FORMATTED JS)
+   FRESHMART POS & E-COMMERCE SYSTEM
+   Sistem POS & E-Commerce untuk Toko Putri
 ===========================================================*/
 
-// --- 1. GLOBAL ERROR & PROMISE HANDLING ---
-window.onerror = function(msg, url, line, col, error) { 
-    console.error("Global Error Caught:", msg, "at", line, ":", col); 
-    if(typeof showToast === 'function') showToast("Ops, ada kendala sistem."); 
-    return false; 
+window.onerror = function(msg, url, line, col, error) {
+    console.error("Global Error Caught:", msg, "at", line, ":", col);
+    if(typeof showToast === 'function') showToast("Ops, ada kendala sistem.");
+    return false;
 };
-window.addEventListener("unhandledrejection", function(e) { 
-    console.warn("Promise Rejection Sentinel:", e.reason); 
+window.addEventListener("unhandledrejection", function(e) {
+    console.warn("Promise Rejection Sentinel:", e.reason);
 });
 
-// --- 2. UTILITY FUNCTIONS ---
-window.updateSEO = (title, desc, image, url) => {
-    document.title = title || "Toko Putri";
-    const setMeta = (name, content, isProperty = false) => {
-        const attr = isProperty ? 'property' : 'name';
-        let el = document.querySelector(`meta[${attr}="${name}"]`);
-        if (!el) {
-            el = document.createElement('meta');
-            el.setAttribute(attr, name);
-            document.head.appendChild(el);
-        }
-        el.setAttribute('content', content);
-    };
-    if (desc) setMeta('description', desc);
-    if (title) setMeta('og:title', title, true);
-    if (desc) setMeta('og:description', desc, true);
-    if (image) setMeta('og:image', image, true);
-    if (url) setMeta('og:url', url, true);
-};
-
-window.injectJSONLD = (id, data) => {
-    let script = document.getElementById(id);
-    if (!script) {
-        script = document.createElement('script');
-        script.id = id;
-        script.type = 'application/ld+json';
-        document.head.appendChild(script);
-    }
-    script.textContent = JSON.stringify(data);
-};
-const el = id => document.getElementById(id);
-const show = id => { const e = el(id); if(e) e.classList.remove('hidden'); };
-const hide = id => { const e = el(id); if(e) e.classList.add('hidden'); };
-const toggleCls = (id, c, f) => { const e = el(id); if(e) e.classList.toggle(c, f); };
-const setIn = (id, t) => { const e = el(id); if(e) e.innerText = t; };
-const setH = (id, h) => { const e = el(id); if(e) e.innerHTML = h; };
-const setV = (id, v) => { const e = el(id); if(e) e.value = v; };
-const getV = id => { const e = el(id); return e ? e.value : ''; };
-
-// XSS Sanitizer: Proteksi ketat terhadap string kosong, null, atau undefined
-// FITUR BARU: label singkat status klaim hadiah, dipakai di riwayat pesanan pelanggan
-window.rewardStatusLabel = (cr) => {
-    if (!cr) return '';
-    if (cr.status === 'ready') return '(Dikirim Bersama Pesanan)';
-    if (cr.status === 'waiting_stock') return '(Stok Kosong - Ditunda)';
-    return '(Menunggu Konfirmasi)';
-};
-
-const esc = s => {
-    if (s === null || s === undefined) return '';
-    return s.toString().replace(/[&<>'"]/g, t => ({
-        '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
-    }[t]));
-};
-
-// Auto-fix Google Drive Links (Untuk Rendering Langsung)
-const fixD = v => {
-    if (typeof v !== 'string') return v;
-    const m = v.match(/drive\.google\.com.*(?:id=|\/d\/)([a-zA-Z0-9_-]+)/);
-    return m ? `https://lh3.googleusercontent.com/d/${m[1]}` : v;
-};
-
-// Extractor ID YouTube (Mendukung YouTube Biasa, Shorts, youtu.be, embed, dll)
-const getYouTubeId = (url) => {
-    if (!url || typeof url !== 'string') return null;
-    const u = url.trim();
-    if (/^[a-zA-Z0-9_-]{11}$/.test(u)) return u;
-    const match = u.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?|shorts)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i);
-    return match ? match[1] : null;
-};
-window.getYouTubeId = getYouTubeId;
-
-// Parser pintar URL Video (Google Drive, YouTube/Shorts, atau Direct MP4)
-const parseVideoUrl = (url) => {
-    if (typeof url !== 'string' || !url.trim()) return null;
-    const u = url.trim();
-
-    // 1. YouTube Video / Shorts / Share Links
-    const ytId = getYouTubeId(u);
-    if (ytId) {
-        return {
-            type: 'youtube',
-            id: ytId,
-            embedUrl: `https://www.youtube.com/embed/${ytId}?autoplay=1&mute=1&muted=1&loop=1&playlist=${ytId}&controls=0&modestbranding=1&rel=0&enablejsapi=1&playsinline=1`
-        };
-    }
-
-    // 2. Google Drive Video (matches drive.google.com ATAU googleusercontent.com/d/)
-    const driveMatch = u.match(/(?:drive\.google\.com.*(?:id=|\/d\/)|googleusercontent\.com\/d\/)([a-zA-Z0-9_-]+)/);
-    if (driveMatch && driveMatch[1]) {
-        const id = driveMatch[1];
-        return {
-            type: 'gdrive',
-            id: id,
-            streamUrl: `https://drive.google.com/uc?export=download&id=${id}`,
-            streamUrl2: `https://docs.google.com/uc?export=download&id=${id}`,
-            directUrl: `https://drive.google.com/uc?export=download&id=${id}`,
-            embedUrl: `https://drive.google.com/file/d/${id}/preview?autoplay=1`
-        };
-    }
-
-    // 3. Direct Video File (MP4, WebM, MOV, dll)
-    return {
-        type: 'direct',
-        directUrl: u,
-        embedUrl: u
-    };
-};
-window.parseVideoUrl = parseVideoUrl;
-
-const fixDriveVideo = v => {
-    const parsed = parseVideoUrl(v);
-    return parsed ? parsed.embedUrl : v;
-};
-window.fixDriveVideo = fixDriveVideo;
-
-const fixDriveVideoPreview = v => {
-    const parsed = parseVideoUrl(v);
-    return parsed ? parsed.embedUrl : v;
-};
+// ─── SECTION 3: EXPOSE UTILS & SEO KE WINDOW ───────────────────────────────────
+// Fungsi-fungsi berikut sudah diimport dari core/utils.js (atas),
+// di-expose ke window agar bisa dipanggil dari kode inline di index.html
+window.updateSEO       = updateSEO;
+window.injectJSONLD    = injectJSONLD;
+window.rewardStatusLabel = rewardStatusLabel;
+window.getYouTubeId   = getYouTubeId;
+window.parseVideoUrl   = parseVideoUrl;
+window.fixDriveVideo   = fixDriveVideo;
 window.fixDriveVideoPreview = fixDriveVideoPreview;
 
-// Optimizer Google User Content Image (Ukuran & Format WebP)
-const getOptImg = (url, sizeOpt) => {
-    if (typeof url !== 'string') return url;
-    if (url.includes('lh3.googleusercontent.com/d/')) {
-        const cleanUrl = url.split('=')[0];
-        return `${cleanUrl}=${sizeOpt}`;
-    }
-    return url;
-};
 
-// Format Currency Rupiah
-const fCur = a => {
-    const n = Number(a);
-    return (isNaN(n) || a === null) ? 'Rp 0' : new Intl.NumberFormat('id-ID', {
-        style: 'currency', currency: 'IDR', minimumFractionDigits: 0
-    }).format(Math.abs(n)).replace(/^/, n < 0 ? '-' : '');
-};
+// ─── SECTION 4: FIREBASE, GAS & APP DATA ───────────────────────────────────────
+// Firebase sudah diinisialisasi di src/config/firebase.js (diimport di atas).
+// Di sini kita hanya mendefinisikan ulang referensi lokal yang dipakai oleh closure
+// di bawah (karena banyak fungsi masih memakai variabel lokal, bukan import).
 
-// LocalStorage Wrappers
-const sL = k => { try { return localStorage.getItem(k); } catch(e) { return null; } };
-const ssL = (k, v) => { try { localStorage.setItem(k, v); } catch(e) {} };
+// GAS URL: diimpor dari services/gas.js, tapi diduplikat sebagai let lokal
+// agar bisa di-override di sini tanpa mengubah modul terpisah.
+let GAS_UPLOAD_URL = _GAS_URL;
 
-
-// Konfigurasi Default Bawaan Script
-const defaultFbC = window.FIREBASE_CONFIG || { 
-    apiKey: "AIzaSyCOjrhMP52TGbiOyQLY92NDYE26N6d9hJM",
-    authDomain: "restu-karya-utama.firebaseapp.com",
-    databaseURL: "https://restu-karya-utama-default-rtdb.asia-southeast1.firebasedatabase.app",
-    projectId: "restu-karya-utama",
-    storageBucket: "restu-karya-utama.firebasestorage.app",
-    messagingSenderId: "858310421352",
-    appId: "1:858310421352:web:e20a833875e8d5c19944dd",
-    measurementId: "G-PHDG2LJ8PM"
-};
-
-// =====================================================================
-// FIX BUG: SEBAGIAN PERANGKAT MASIH TAMPIL FIREBASE/DATA LAMA PADAHAL SUDAH DIGANTI BARU
-// Sebelumnya, config Firebase (API Key, Project ID, dst) bisa disimpan
-// per-perangkat ke localStorage lewat form "Pengaturan > Config", dan
-// localStorage itu SELALU MENANG dibanding config bawaan di file tema.
-// Akibatnya: perangkat manapun yang PERNAH menyimpan form itu (misal
-// dulu waktu masih pakai Firebase lama) akan TERUS memakai config lama
-// itu SELAMANYA -- walaupun file tema di Blogger sudah diganti ke
-// Firebase baru. Setiap perangkat jadi bisa nyambung ke database yang
-// BERBEDA-BEDA tanpa disadari.
-//
-// Sekarang: config Firebase HANYA diambil dari file tema yang di-deploy
-// (satu sumber kebenaran untuk SEMUA perangkat, sama seperti maksud
-// awal supaya semua pelanggan lihat data yang sama). Baris di bawah ini
-// juga otomatis MENGHAPUS override lama yang mungkin masih nyangkut di
-// localStorage perangkat manapun yang memuat kode ini, supaya semua
-// perangkat "sembuh sendiri" tanpa perlu hapus cache manual satu-satu.
-// =====================================================================
-try { localStorage.removeItem('freshmart_fb_config'); } catch(e) {}
-const fbC = defaultFbC;
-
-// GAS URL diubah menjadi let agar bisa di-override
-let GAS_UPLOAD_URL = "https://script.google.com/macros/s/AKfycbx3dW9rHcdoKNYjSOJ8PoH2k6fABe7XlBD9teNHsBlCBqJquq8jd4UvnfXZVsfKdFsC/exec";
-
-// Struktur data default ditambah parameter 'config'
-const defApp = { 
-    store: { 
-        name: "Nama Toko Anda", slogan: "Slogan Toko", logo: "fa-store", 
-        wa: "", address: "", lat: "", lng: "", costPerKm: 0, 
-        isDeliveryEnabled: true, isPickupEnabled: true, 
-        allProductsIcon: "", allBrandsIcon: "", 
-        categoryStyle: "text", brandStyle: "image",
-        showCategories: true, showBrands: true,        
-        themeColor: "#10b981", uiTheme: "emerald", // FIX: default eksplisit, supaya tidak ada nilai undefined yang nyelip
-        useStock: false,   // Manajemen stok aktif/nonaktif
-        ppnEnabled: false, // PPN aktif/nonaktif
-        ppnType: "exclusive", // "exclusive" (Pajak Ditambah di Checkout) | "inclusive" (Harga Produk Sudah Inc. PPN)
-        ppnRate: 11,        // Persentase PPN (default 11%)
-        terms: "",          // Syarat & Ketentuan
-        privacy: ""         // Kebijakan Privasi
-    }, 
-    // auth field dihapus: login admin sudah pakai Firebase Authentication (signInWithEmailAndPassword), bukan field ini 
-    payment: { qrisUrl: "" }, 
-    config: { gasUrl: "" }, // FITUR BARU
-    banks: [], banners: [], categories: [], brands: [], products: [], vouchers: [], colors: [],
-    rewards: [], // FITUR BARU: katalog hadiah (publik, sinkron realtime seperti kategori/voucher)
-    faqs: [], // FITUR BARU: Q&A / FAQ interaktif storefront & admin
-    customers: [], // FITUR BARU: database pelanggan (privat, HANYA dimuat saat admin membuka tab-nya)
-    // FITUR BARU: Menu Pajak -- pengaturan & data pelengkap laporan pajak/keuangan.
-    // 'monthlyExpenses' & 'balanceSheet' diisi MANUAL oleh admin (sistem tidak melacak
-    // kas/bank/piutang/hutang/biaya operasional secara otomatis), sisanya (omset, PPN,
-    // HPP) dihitung OTOMATIS dari data transaksi yang sudah ada.
-    taxSettings: {
-        companyName: "", npwp: "",
-        taxScheme: "umkm_final", // 'umkm_final' (PPh Final 0.5% dari Omset) atau 'badan_normal' (PPh Badan 22% dari Laba Bersih) atau 'custom'
-        customTaxRate: 0.5,
-        // key format: "YYYY-M" (contoh "2026-7" utk Juli 2026) -> nominal biaya operasional bulan itu
-        monthlyExpenses: {},
-        // Neraca sederhana -- diisi manual, disimpan sebagai snapshot per tanggal input terakhir
-        balanceSheet: { kas: 0, piutang: 0, hutang: 0, modalDisetor: 0 }
-    }
-};
+// defApp: struktur data default toko. Lihat src/core/state.js untuk versi
+// yang sudah dimodularisasi. Di sini dipertahankan sebagai const lokal
+// karena masih banyak digunakan oleh closure di bawah ini.
+const defApp = _defApp;
 
 // HELPER: Kalkulasi PPN & DPP berdasarkan mode Inklusif / Eksklusif
 window.calcTaxDetails = (baseAmount) => {
@@ -382,54 +106,17 @@ window.calcTaxDetails = (baseAmount) => {
     }
 };
 
-/* ================================================= */
-
-
-// --- 3. STATE & INISIALISASI FIREBASE ---
-firebase.initializeApp(fbC);
-const db = firebase.firestore();
-const auth = firebase.auth();
-
-// Analytics diload LAZY setelah browser idle agar tidak memperlambat render awal.
-// Dengan dynamic import, chunk firebase-analytics tidak masuk bundle kritis.
-let analytics = null;
-const loadAnalytics = () => {
-    import('firebase/compat/analytics').then(() => {
-        try { analytics = firebase.analytics(); } catch(e) {}
-    }).catch(() => {});
-};
+// ─── SECTION 5: STATE & VARIABEL GLOBAL ──────────────────────────────────────
+// Firebase (db, auth, ADMIN_UID) sudah diimport dari src/config/firebase.js di atas.
+// Analytics diload lazy saat browser idle.
 if (typeof requestIdleCallback !== 'undefined') {
     requestIdleCallback(loadAnalytics, { timeout: 5000 });
 } else {
     setTimeout(loadAnalytics, 3000);
 }
 
-
-// FIX KEAMANAN: hanya 1 akun (UID) ini yang boleh jadi admin.
-// Sebelumnya SIAPA SAJA yang berhasil login via Firebase Auth otomatis jadi admin
-// (asal punya akun di project ini). Sekarang dibatasi ke UID spesifik milik pemilik toko.
-const ADMIN_UID = 'K2ijSERTT2dg27yYGTEgn6XHSnW2';
-
-// CATATAN: merge:true di db.settings() adalah opsi VALID Firebase — artinya
-// "gabungkan settings ini dengan settings yang sudah ada" (bukan override penuh).
-// Ini berbeda dengan merge di .set(data,{merge:true}). Tanpa ini Firebase
-// akan mengeluarkan warning di console.
-db.settings({
-    ignoreUndefinedProperties: true,
-    cacheSizeBytes: firebase.firestore.CACHE_SIZE_UNLIMITED,
-    merge: true,
-    // FIX: di jaringan yang tidak stabil (WiFi publik goyah, proxy kantor, VPN),
-    // koneksi realtime Firestore lewat QUIC sering gagal berulang kali (muncul
-    // sebagai banyak "ERR_QUIC_PROTOCOL_ERROR" di console). SDK tetap otomatis
-    // pulih ke long-polling, tapi butuh beberapa kali gagal dulu -- opsi ini
-    // membiarkan SDK MENDETEKSI OTOMATIS kondisi tersebut lebih awal dan langsung
-    // pakai transport yang lebih stabil, memangkas log error/retry di jaringan
-    // seperti itu. Tidak memaksa long-polling terus-menerus (tetap pakai WebChannel
-    // normal kalau jaringan baik-baik saja), jadi tidak memperlambat di kondisi normal.
-    experimentalAutoDetectLongPolling: true
-});
-
-// State Variables
+// State Variables — didefinisikan sebagai let lokal (bukan dari state.js)
+// karena banyak fungsi di bawah menggunakan closure ke variabel ini.
 let confirmCb = null;
 let appData = JSON.parse(JSON.stringify(defApp));
 
@@ -437,18 +124,19 @@ window.updateProBadge = () => {};
 
 let cart = [], wishlist = [], myOrders = [];
 let cust = { name:'', address:'', lat:null, lng:null, deliveryMethod:'delivery', distance:0, note:'', wa:'' };
-// FITUR BARU: state program loyalitas member (dicek ulang tiap kali nomor WA di form checkout berubah)
-let currentMember = null; // {id, name, phone, points} jika nomor WA cocok dengan Database Pelanggan, null jika tidak
-let selectedReward = null; // hadiah yang dipilih pelanggan untuk ditukar poin (dipotong SAAT pesanan dibuat, bukan saat dipilih)
+// Program loyalitas member
+let currentMember = null; // { id, name, phone, points } | null
+let selectedReward = null;
 let memberCheckTimer = null;
 
 let aCat = 'Semua Produk', aBrand = 'Semua Merek', sQ = '', cSort = 'newest', cView = 'grid', cPage = 1, iPP = 12;
 let cTab = 'orders', aSq = '', eId = null;
-window.isAdm = false; window.isPro = true; // FIX: dulu 'let' lokal (bisa di-bypass via console), sekarang properti window agar dijaga oleh Security Block
+window.isAdm = false; window.isPro = true;
 let cProd = null, cVar = 0, tVars = [], tWhol = [], tSpec = [], cQty = 1, oMods = [];
 let aOrdLst = null, aCustLst = null, aRevLst = null, gOrds = [], gReviews = [], cVOrd = null, vouch = null, toastT, isSaving = false, bannerTmr = null;
-let reviewFilterMode = 'all'; // FITUR BARU: filter tampilan ulasan di admin (all/visible/hidden)
-let lastReportPeriod = 'today'; // FITUR BARU: ingat filter periode laporan terakhir dipilih admin
+let reviewFilterMode = 'all';
+let lastReportPeriod = 'today';
+
 
 // =====================================================================
 // FIX: STATUS PESANAN PELANGGAN SEKARANG REALTIME OTOMATIS
