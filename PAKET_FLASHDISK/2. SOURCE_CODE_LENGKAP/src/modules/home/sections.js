@@ -7,7 +7,7 @@
  * ============================================================
  */
 
-import { appData, aCat, aBrand } from '../../core/state.js';
+import { appData, aCat, aBrand, setCPage } from '../../core/state.js';
 import { 
     el, show, hide, setIn, setH, esc, fCur, 
     parseVideoUrl, fixDriveVideo, fixDriveVideoPreview, getOptImg 
@@ -264,7 +264,8 @@ export const rDyn = () => {
     if (typeof window.applyBackgroundStyle === 'function') {
         window.applyBackgroundStyle(appData.store.bgStyle, appData.store.bgCustomUrl);
     }
-    cPage = 1; window.rCat();
+    setCPage(1);
+    if (typeof window.rCat === 'function') window.rCat();
 };
 
 

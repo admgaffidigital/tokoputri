@@ -27,46 +27,28 @@ window.getLocation = () => {
     }, {enableHighAccuracy: true, timeout: 15000});
 };
 
-// Note: applyVoucher telah dipindahkan ke modul: src/modules/member/voucher.js
-
-
-// Note: validateAndGoToPayment dan toggleDeliveryMethod telah dipindahkan ke modul: src/modules/cart/checkout.js
-
-
-// Note: Logika loyalitas member (checkMemberStatus, openMemberModal, rMemberModalBody, selectReward, deselectReward, closeMemberModal)
-// telah dipindahkan ke modul: src/modules/member/reward.js
-
-
-// Note: Logika ulasan dan testimoni produk (openReviewModal, closeReviewModal, setReviewRating, handleReviewPhotoSelect, removeReviewPhoto, submitReview, loadProductReviews)
-// telah dipindahkan ke modul: src/modules/orders/reviews.js
-
-
-const rChck = () => {
+export const rChck = () => {
     const d = appData.store.isDeliveryEnabled !== false, p = appData.store.isPickupEnabled !== false;
-    toggleCls('delivery-option-container', 'hidden', !d); toggleCls('pickup-option-container', 'hidden', !p);
-    toggleCls('no-delivery-warning', 'hidden', d||p); toggleCls('delivery-methods-grid', 'hidden', !(d||p));
-    const b = el('btn-checkout-next');
+    toggleCls("delivery-option-container", "hidden", !d); toggleCls("pickup-option-container", "hidden", !p);
+    toggleCls("no-delivery-warning", "hidden", d||p); toggleCls("delivery-methods-grid", "hidden", !(d||p));
+    const b = el("btn-checkout-next");
     if (b) {
         if(d||p){
-            b.removeAttribute('disabled'); b.classList.remove('opacity-50');
-            // FIX: pilih radio sesuai cust.deliveryMethod yang tersimpan (bukan selalu reset ke delivery)
-            const preferredMethod = cust.deliveryMethod || 'delivery';
-            const targetMethod = (preferredMethod === 'pickup' && p) ? 'pickup' : (d ? 'delivery' : 'pickup');
-            const targetRadio = document.querySelector('input[value="' + targetMethod + '"]');
+            b.removeAttribute("disabled"); b.classList.remove("opacity-50");
+            const preferredMethod = cust.deliveryMethod || "delivery";
+            const targetMethod = (preferredMethod === "pickup" && p) ? "pickup" : (d ? "delivery" : "pickup");
+            const targetRadio = document.querySelector(`input[value="${targetMethod}"]`);
             if (targetRadio) targetRadio.checked = true;
-        } else { b.setAttribute('disabled','true'); b.classList.add('opacity-50'); }
+        } else { b.setAttribute("disabled","true"); b.classList.add("opacity-50"); }
     }
     toggleDeliveryMethod();
 };
+window.rChck = rChck;
 
 window.buktiPaymentUrl = null;
 window.buktiPaymentFile = null;
-window.buktiGDriveUploaded = false; // FLAG: true = sudah upload GDrive, false = masih pending
+window.buktiGDriveUploaded = false;
 
-// ============================================================
-// COMPRESS gambar sebelum upload agar hemat kuota & cepat
-// Kualitas 0.82 menghasilkan file ~3–5x lebih kecil dari original
-// ============================================================
 window.compressImageForUpload = (file, maxSizePx = 1600, quality = 0.82) => {
     return new Promise((resolve) => {
         const reader = new FileReader();
