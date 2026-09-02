@@ -192,7 +192,12 @@ export const ensureScriptLoaded = (src, checkFn) => {
     });
     return loadedScripts[src];
 };
-
-
-
+export const normalizeWA = (raw) => {
+    let n = (raw || '').toString().replace(/\D/g, '');
+    if (!n) return '';
+    if (n.startsWith('0')) n = '62' + n.substring(1);
+    else if (!n.startsWith('62')) n = '62' + n;
+    return n;
+};
+window.normalizeWA = normalizeWA;
 

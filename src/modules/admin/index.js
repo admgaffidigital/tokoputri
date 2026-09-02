@@ -12,3 +12,4 @@ export * from './finance.js';
 export * from './tempo.js';
 export * from './reviews.js';
 export * from './products.js';
+export * from './router.js';
