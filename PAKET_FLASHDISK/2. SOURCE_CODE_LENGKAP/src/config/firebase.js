@@ -48,9 +48,8 @@ db.settings({
     ignoreUndefinedProperties: true,
     cacheSizeBytes: firebase.firestore.CACHE_SIZE_UNLIMITED,
     merge: true,
-    // FIX: Gunakan experimentalForceLongPolling untuk mencegah ERR_QUIC_PROTOCOL_ERROR
-    // pada jaringan ISP/WiFi/VPN dan saat perangkat standby/bangun dari sleep.
     experimentalForceLongPolling: true,
+    experimentalAutoDetectLongPolling: false,
 });
 
 // Aktifkan IndexedDB Persistence untuk load data super cepat & offline

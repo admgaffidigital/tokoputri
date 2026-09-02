@@ -57,6 +57,7 @@ db.settings({
     cacheSizeBytes: firebase.firestore.CACHE_SIZE_UNLIMITED,
     merge: true,
     experimentalForceLongPolling: true,
+    experimentalAutoDetectLongPolling: false,
 });
 
 export { firebase };
