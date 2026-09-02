@@ -7,7 +7,7 @@ import DOMPurify from 'dompurify';
 
 // ─── Import Modul Internal ──────────────────────────────────────────────────────
 // Config & Firebase (inisialisasi Firebase, db, auth, analytics)
-import { db, auth, ADMIN_UID, loadAnalytics } from './config/firebase.js';
+import { db, auth, ADMIN_UID, loadAnalytics, firebaseConfig } from './config/firebase.js';
 // Core: Theme Engine (color palettes, dark mode, CSS variables)
 import { uiPalettes, hexToRgb, applyUITheme, initDarkMode, toggleTheme as _toggleTheme, initThemeIcon } from './core/theme.js';
 // Core: Utilities (helper functions stateless)
@@ -9150,8 +9150,9 @@ window.fixD = fixD;
 window.fCur = fCur;
 window.sL = sL;
 window.ssL = ssL;
-window.defaultFbC = defaultFbC;
-window.fbC = fbC;
+// defaultFbC & fbC sudah diimport dari src/config/firebase.js sebagai 'firebaseConfig'
+window.defaultFbC = firebaseConfig;
+window.fbC = firebaseConfig;
 window.defApp = defApp;
 window.ADMIN_UID = ADMIN_UID;
 window.sLoad = sLoad;
