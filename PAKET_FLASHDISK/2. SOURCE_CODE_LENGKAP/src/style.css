@@ -498,10 +498,11 @@ body {
 .blur-lg,
 .blur-xl,
 .blur-2xl,
-.blur-3xl,
-[class*="blur-"],
-.primary-blur-orb {
+.blur-3xl {
     filter: none !important;
+}
+
+.primary-blur-orb {
     display: none !important;
 }
 
