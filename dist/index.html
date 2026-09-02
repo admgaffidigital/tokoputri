@@ -88,11 +88,11 @@
         }
       }
     </style>
-    <script type="module" crossorigin src="/assets/index-C9oi_O-T.js"></script>
+    <script type="module" crossorigin src="/assets/index-CBvTtFsQ.js"></script>
     <link rel="modulepreload" crossorigin href="/assets/vendor-firebase-core-D2OF5R23.js">
     <link rel="modulepreload" crossorigin href="/assets/vendor-firebase-db-BIUZcnOd.js">
     <link rel="modulepreload" crossorigin href="/assets/vendor-utils-bRchjNq8.js">
-    <link rel="stylesheet" crossorigin href="/assets/index-H1BV0dgf.css">
+    <link rel="stylesheet" crossorigin href="/assets/index-8kvjv5jk.css">
   </head>
   <body>
     <!-- UI Components Global -->
@@ -738,82 +738,170 @@
               </div>
             </div>
           </div>
-          <div class="themed-footer relative mt-12 w-full overflow-hidden pb-[calc(6rem+env(safe-area-inset-bottom))] sm:pb-[calc(3rem+env(safe-area-inset-bottom))]">
-            <div class="relative z-10 mx-auto w-full px-5 pb-8 pt-12 sm:px-6 lg:px-8 xl:max-w-[1200px]">
-              <div class="grid grid-cols-1 gap-10 text-center md:grid-cols-12 md:text-left lg:gap-12">
-                <div class="flex flex-col items-center md:col-span-6 md:items-start lg:col-span-6">
-                  <div class="mb-6 flex flex-col items-center gap-4 sm:flex-row">
-                    <div class="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-slate-200/60 bg-white p-2.5 shadow-soft transition-transform duration-300 hover:scale-105 dark:border-slate-800 dark:bg-slate-900">
+          <!-- ================= MODERN SOLID 4-COLUMN FOOTER ================= -->
+          <footer class="relative mt-14 w-full bg-slate-900 text-slate-300 border-t-4 border-[var(--color-primary)] rounded-t-[2.5rem] shadow-2xl overflow-hidden pb-[calc(6rem+env(safe-area-inset-bottom))] sm:pb-[calc(3rem+env(safe-area-inset-bottom))]">
+            
+            <!-- Value Proposition Bar (Pita Keunggulan Toko) -->
+            <div class="border-b border-slate-800 bg-slate-950/60 py-4 px-5">
+              <div class="mx-auto grid grid-cols-2 md:grid-cols-4 gap-4 max-w-[1200px] text-center md:text-left">
+                <div class="flex items-center justify-center md:justify-start gap-3">
+                  <div class="w-8 h-8 rounded-xl bg-[var(--color-primary)]/15 border border-[var(--color-primary)]/30 text-[var(--color-primary)] flex items-center justify-center shrink-0">
+                    <i class="fa-solid fa-shield-halved text-sm"></i>
+                  </div>
+                  <div>
+                    <h5 class="text-[11px] font-extrabold text-white uppercase tracking-wider">100% Produk Asli</h5>
+                    <p class="text-[9px] font-medium text-slate-400">Jaminan Mutu Terverifikasi</p>
+                  </div>
+                </div>
+                <div class="flex items-center justify-center md:justify-start gap-3">
+                  <div class="w-8 h-8 rounded-xl bg-[var(--color-primary)]/15 border border-[var(--color-primary)]/30 text-[var(--color-primary)] flex items-center justify-center shrink-0">
+                    <i class="fa-solid fa-truck-fast text-sm"></i>
+                  </div>
+                  <div>
+                    <h5 class="text-[11px] font-extrabold text-white uppercase tracking-wider">Pengiriman Cepat</h5>
+                    <p class="text-[9px] font-medium text-slate-400">Langsung Diproses Hari Ini</p>
+                  </div>
+                </div>
+                <div class="flex items-center justify-center md:justify-start gap-3">
+                  <div class="w-8 h-8 rounded-xl bg-[var(--color-primary)]/15 border border-[var(--color-primary)]/30 text-[var(--color-primary)] flex items-center justify-center shrink-0">
+                    <i class="fa-brands fa-whatsapp text-sm"></i>
+                  </div>
+                  <div>
+                    <h5 class="text-[11px] font-extrabold text-white uppercase tracking-wider">Konsultasi Ramah</h5>
+                    <p class="text-[9px] font-medium text-slate-400">Admin Siap Membantu</p>
+                  </div>
+                </div>
+                <div class="flex items-center justify-center md:justify-start gap-3">
+                  <div class="w-8 h-8 rounded-xl bg-[var(--color-primary)]/15 border border-[var(--color-primary)]/30 text-[var(--color-primary)] flex items-center justify-center shrink-0">
+                    <i class="fa-solid fa-store text-sm"></i>
+                  </div>
+                  <div>
+                    <h5 class="text-[11px] font-extrabold text-white uppercase tracking-wider">Ambil di Toko</h5>
+                    <p class="text-[9px] font-medium text-slate-400">Bisa Ambil Langsung / Kirim</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Main 4-Column Content -->
+            <div class="mx-auto w-full px-5 py-10 sm:px-6 lg:px-8 xl:max-w-[1200px]">
+              <div class="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-10">
+                
+                <!-- Kolom 1: Profil & Identitas Toko (md:col-span-4) -->
+                <div class="md:col-span-4 flex flex-col items-center md:items-start text-center md:text-left">
+                  <div class="flex items-center gap-3.5 mb-4">
+                    <div class="w-13 h-13 rounded-2xl bg-white p-2 flex items-center justify-center border-2 border-slate-700 shadow-md shrink-0">
                       <img alt="Logo" class="hidden h-full w-full object-contain" id="footer-store-logo-img" loading="lazy" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" />
-                      <i class="fa-solid fa-store text-3xl text-[var(--color-primary)]" id="footer-store-logo-icon"></i>
+                      <i class="fa-solid fa-store text-2xl text-[var(--color-primary)]" id="footer-store-logo-icon"></i>
                     </div>
-                    <div class="mt-2 flex flex-col items-center justify-center sm:mt-0 sm:items-start">
-                      <h3 class="mb-1.5 text-xl font-extrabold leading-tight text-white drop-shadow-sm" id="footer-store-name">Memuat...</h3>
-                      <span class="inline-flex w-max items-center gap-1.5 rounded border border-white/20 bg-white/20 px-2.5 py-0.5 text-[9px] font-bold uppercase tracking-widest text-white backdrop-blur-sm dark:border-indigo-800/50 dark:bg-indigo-900/30 dark:text-indigo-400"><i class="fa-solid fa-circle-check"></i> Official Store</span>
+                    <div>
+                      <h3 class="text-lg font-extrabold text-white leading-tight" id="footer-store-name">Memuat...</h3>
+                      <span class="inline-flex items-center gap-1.5 mt-1 rounded-full bg-[var(--color-primary)]/15 border border-[var(--color-primary)]/30 px-2.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-[var(--color-primary)]">
+                        <i class="fa-solid fa-circle-check"></i> Official Store
+                      </span>
                     </div>
                   </div>
-                  <p class="dark:text-slate-350 mx-auto mb-8 max-w-sm pr-0 text-sm font-medium leading-relaxed text-white/85 drop-shadow-sm md:mx-0 md:max-w-none lg:pr-6" id="footer-store-desc">Deskripsi Usaha</p>
-                  <div class="mt-auto w-full border-t border-white/10 pt-5 dark:border-slate-800/80">
-                    <p class="mb-4 text-[10px] font-bold uppercase tracking-widest text-white/70 dark:text-slate-500">Mendukung Pembayaran &amp; Pengiriman</p>
-                    <div class="flex flex-wrap items-center justify-center gap-3 md:justify-start">
-                      <div class="flex h-6 w-9 cursor-pointer items-center justify-center rounded border border-slate-200 bg-white text-lg text-slate-400 shadow-sm transition-transform hover:scale-105 hover:text-blue-500 dark:border-slate-800 dark:bg-slate-900" title="Visa"><i class="fa-brands fa-cc-visa"></i></div>
-                      <div class="flex h-6 w-9 cursor-pointer items-center justify-center rounded border border-slate-200 bg-white text-lg text-slate-400 shadow-sm transition-transform hover:scale-105 hover:text-orange-500 dark:border-slate-800 dark:bg-slate-900" title="Mastercard"><i class="fa-brands fa-cc-mastercard"></i></div>
-                      <div class="flex h-6 w-9 cursor-pointer items-center justify-center rounded border border-slate-200 bg-white text-lg text-slate-400 shadow-sm transition-transform hover:scale-105 hover:text-rose-500 dark:border-slate-800 dark:bg-slate-900" title="QRIS"><i class="fa-solid fa-qrcode text-base"></i></div>
-                      <div class="mx-1 h-6 w-px bg-white/20 dark:bg-slate-800"></div>
-                      <div class="flex h-6 w-9 cursor-pointer items-center justify-center rounded border border-slate-200 bg-white text-lg text-slate-400 shadow-sm transition-transform hover:scale-105 hover:text-[var(--color-primary)] dark:border-slate-800 dark:bg-slate-900" title="Ekspedisi Cepat"><i class="fa-solid fa-truck-fast text-base"></i></div>
-                      <div class="flex h-6 w-9 cursor-pointer items-center justify-center rounded border border-slate-200 bg-white text-lg text-slate-400 shadow-sm transition-transform hover:scale-105 hover:text-amber-500 dark:border-slate-800 dark:bg-slate-900" title="Kargo"><i class="fa-solid fa-box text-base"></i></div>
+                  <p class="text-xs font-medium leading-relaxed text-slate-400 mb-6 max-w-sm md:max-w-none" id="footer-store-desc">
+                    Selamat datang di toko resmi kami. Melayani kebutuhan produk berkualitas dengan harga terbaik dan jaminan pelayanan terpercaya.
+                  </p>
+                  <div class="flex items-center gap-2">
+                    <span class="inline-block w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                    <span class="text-[11px] font-bold text-emerald-400 uppercase tracking-wider">Sistem Aktif & Terverifikasi</span>
+                  </div>
+                </div>
+
+                <!-- Kolom 2: Jelajah Toko / Quick Links (md:col-span-2) -->
+                <div class="md:col-span-2 flex flex-col items-center md:items-start text-center md:text-left">
+                  <h4 class="text-xs font-extrabold text-white uppercase tracking-widest mb-4 pb-2 border-b-2 border-[var(--color-primary)] inline-block">
+                    Jelajah Toko
+                  </h4>
+                  <ul class="space-y-2.5 text-xs font-semibold text-slate-400">
+                    <li><a href="#" onclick="event.preventDefault(); setCat('Semua Produk'); changeView('view-catalog');" class="hover:text-white hover:translate-x-1 transition-all inline-flex items-center gap-2"><i class="fa-solid fa-chevron-right text-[9px] text-[var(--color-primary)]"></i> Katalog Utama</a></li>
+                    <li><a href="#" onclick="event.preventDefault(); openCategoryModal();" class="hover:text-white hover:translate-x-1 transition-all inline-flex items-center gap-2"><i class="fa-solid fa-chevron-right text-[9px] text-[var(--color-primary)]"></i> Kategori Produk</a></li>
+                    <li><a href="#" onclick="event.preventDefault(); changeView('view-orders');" class="hover:text-white hover:translate-x-1 transition-all inline-flex items-center gap-2"><i class="fa-solid fa-chevron-right text-[9px] text-[var(--color-primary)]"></i> Riwayat Pesanan</a></li>
+                    <li><a href="#" onclick="event.preventDefault(); openMemberModal();" class="hover:text-white hover:translate-x-1 transition-all inline-flex items-center gap-2"><i class="fa-solid fa-chevron-right text-[9px] text-[var(--color-primary)]"></i> Poin & Hadiah</a></li>
+                  </ul>
+                </div>
+
+                <!-- Kolom 3: Pusat Bantuan & Kontak (md:col-span-3) -->
+                <div class="md:col-span-3 flex flex-col items-center md:items-start text-center md:text-left">
+                  <h4 class="text-xs font-extrabold text-white uppercase tracking-widest mb-4 pb-2 border-b-2 border-[var(--color-primary)] inline-block">
+                    Pusat Bantuan
+                  </h4>
+                  <div class="w-full space-y-3">
+                    <a
+                      id="footer-wa-link"
+                      href="#"
+                      target="_blank"
+                      class="flex items-center gap-3 p-3 rounded-xl bg-slate-800 hover:bg-slate-750 border border-slate-700 hover:border-emerald-500/50 transition-all group cursor-pointer shadow-sm"
+                      onclick="event.preventDefault(); if (appData.store.wa) window.open('https://wa.me/' + appData.store.wa, '_blank');"
+                    >
+                      <div class="w-10 h-10 rounded-lg bg-emerald-500 text-white flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform shadow-md">
+                        <i class="fa-brands fa-whatsapp text-xl"></i>
+                      </div>
+                      <div class="min-w-0 text-left">
+                        <p class="text-[9px] font-bold uppercase tracking-wider text-emerald-400">Customer Service</p>
+                        <p class="text-xs font-extrabold text-white truncate">Chat WhatsApp</p>
+                      </div>
+                    </a>
+                    
+                    <div class="flex items-center gap-2.5 text-xs text-slate-400">
+                      <div class="w-7 h-7 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300 shrink-0">
+                        <i class="fa-solid fa-envelope text-[11px]"></i>
+                      </div>
+                      <span class="truncate font-medium" id="footer-store-email">support@restukaryautama.com</span>
+                    </div>
+
+                    <div class="flex items-center gap-2.5 text-xs text-slate-400">
+                      <div class="w-7 h-7 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300 shrink-0">
+                        <i class="fa-solid fa-clock text-[11px]"></i>
+                      </div>
+                      <span class="truncate font-medium" id="footer-store-hours">Buka Setiap Hari (08:00 - 17:00)</span>
                     </div>
                   </div>
                 </div>
 
-                <div class="flex flex-col items-center md:col-span-6 md:items-start lg:col-span-6">
-                  <h4 class="mb-5 flex w-full items-center justify-center gap-3 border-b border-white/10 pb-4 text-sm font-extrabold uppercase tracking-widest text-white dark:border-slate-800 md:justify-start">
-                    <div class="flex h-7 w-7 items-center justify-center rounded-xl bg-white text-[var(--color-primary)] shadow-sm"><i class="fa-solid fa-headset text-xs"></i></div>
-                    Hubungi Kami
+                <!-- Kolom 4: Pembayaran & Ekspedisi (md:col-span-3) -->
+                <div class="md:col-span-3 flex flex-col items-center md:items-start text-center md:text-left">
+                  <h4 class="text-xs font-extrabold text-white uppercase tracking-widest mb-4 pb-2 border-b-2 border-[var(--color-primary)] inline-block">
+                    Pembayaran & Kurir
                   </h4>
-                  <div class="w-full max-w-sm space-y-4 md:max-w-none">
-                    <a
-                      id="footer-wa-link"
-                      class="group flex cursor-pointer flex-col items-center justify-center gap-4 rounded-2xl bg-white p-4 shadow-md transition-all hover:scale-[1.02] dark:bg-slate-900 sm:flex-row sm:items-start md:justify-start"
-                      href="#"
-                      target="_blank"
-                      onclick="
-                        event.preventDefault();
-                        if (appData.store.wa) window.open('https://wa.me/' + appData.store.wa, '_blank');
-                      "
-                    >
-                      <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl primary-bg text-white shadow-md transition-transform duration-300 group-hover:rotate-6 group-hover:scale-110">
-                        <i class="fa-brands fa-whatsapp text-2xl"></i>
-                      </div>
-                      <div class="min-w-0 text-center sm:text-left">
-                        <p class="mb-0.5 text-[10px] font-bold uppercase tracking-widest primary-text">Customer Service</p>
-                        <p class="truncate text-sm font-extrabold text-slate-800 dark:text-white">Konsultasi via WhatsApp</p>
-                      </div>
-                    </a>
-                    <div class="dark:border-slate-850 space-y-4 rounded-2xl border border-white/10 bg-white p-4 shadow-md dark:bg-slate-900">
-                      <div class="flex flex-col items-center justify-center gap-3.5 text-slate-700 dark:text-slate-200 sm:flex-row sm:items-start md:justify-start">
-                        <div class="dark:border-slate-750 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-slate-200/60 bg-slate-50 shadow-sm dark:bg-slate-800"><i class="fa-solid fa-envelope text-slate-400"></i></div>
-                        <span class="mt-2 truncate text-xs font-bold tracking-wide sm:text-sm" id="footer-store-email">support@restukaryautama.com</span>
-                      </div>
-                      <div class="flex flex-col items-center justify-center gap-3.5 text-slate-700 dark:text-slate-200 sm:flex-row sm:items-start md:justify-start">
-                        <div class="dark:border-slate-750 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-slate-200/60 bg-slate-50 shadow-sm dark:bg-slate-800"><i class="fa-solid fa-clock text-slate-400"></i></div>
-                        <div class="mt-0.5 min-w-0 text-center sm:text-left">
-                          <span class="mb-1.5 inline-block rounded border border-amber-200/55 bg-amber-50 px-2.5 py-0.5 text-[9px] font-bold uppercase tracking-widest text-amber-600 dark:border-amber-800/50 dark:bg-amber-900/20 dark:text-amber-400">Operasional</span>
-                          <p class="truncate text-xs font-bold tracking-wide text-slate-700 dark:text-slate-200 sm:text-sm" id="footer-store-hours">Buka Setiap Hari (08:00 - 17:00)</p>
-                        </div>
-                      </div>
-                    </div>
+                  
+                  <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-2">Metode Pembayaran</p>
+                  <div class="flex flex-wrap items-center justify-center md:justify-start gap-1.5 mb-4">
+                    <span class="px-2.5 py-1 rounded bg-white text-slate-800 text-[10px] font-extrabold border border-slate-200 shadow-xs">QRIS</span>
+                    <span class="px-2.5 py-1 rounded bg-white text-blue-800 text-[10px] font-extrabold border border-slate-200 shadow-xs">BCA</span>
+                    <span class="px-2.5 py-1 rounded bg-white text-blue-900 text-[10px] font-extrabold border border-slate-200 shadow-xs">BRI</span>
+                    <span class="px-2.5 py-1 rounded bg-white text-amber-700 text-[10px] font-extrabold border border-slate-200 shadow-xs">MANDIRI</span>
+                    <span class="px-2.5 py-1 rounded bg-white text-emerald-800 text-[10px] font-extrabold border border-slate-200 shadow-xs">TUNAI</span>
                   </div>
+
+                  <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-2">Pilihan Pengiriman</p>
+                  <div class="flex flex-wrap items-center justify-center md:justify-start gap-1.5">
+                    <span class="px-2 py-1 rounded bg-slate-800 border border-slate-700 text-[10px] font-bold text-slate-300 flex items-center gap-1.5"><i class="fa-solid fa-truck text-[9px] text-[var(--color-primary)]"></i> Kurir Toko</span>
+                    <span class="px-2 py-1 rounded bg-slate-800 border border-slate-700 text-[10px] font-bold text-slate-300 flex items-center gap-1.5"><i class="fa-solid fa-box text-[9px] text-[var(--color-primary)]"></i> Ekspedisi</span>
+                    <span class="px-2 py-1 rounded bg-slate-800 border border-slate-700 text-[10px] font-bold text-slate-300 flex items-center gap-1.5"><i class="fa-solid fa-person-walking text-[9px] text-[var(--color-primary)]"></i> Ambil Sendiri</span>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- Bottom Copyright & Back to Top Bar -->
+            <div class="border-t border-slate-800 bg-slate-950 py-4 px-5">
+              <div class="mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left max-w-[1200px]">
+                <p class="text-[11px] font-medium text-slate-400">
+                  &copy; <span id="footer-year">2026</span> <strong class="text-white font-bold" id="footer-brand">Toko</strong>. Seluruh Hak Cipta Dilindungi.
+                </p>
+                <div class="flex items-center gap-4">
+                  <span class="text-[9px] font-bold uppercase tracking-widest text-slate-500" id="footer-credit">POWERED BY BLOGGER PWA SYSTEM</span>
+                  <button onclick="const sc=document.querySelector('#view-catalog .scroll-content'); if(sc) sc.scrollTo({top:0,behavior:'smooth'});" type="button" class="flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-800 hover:bg-[var(--color-primary)] hover:text-white text-slate-300 text-[10px] font-bold border border-slate-700 active:scale-95 transition-all cursor-pointer shadow-xs">
+                    <i class="fa-solid fa-arrow-up text-[9px]"></i> Ke Atas
+                  </button>
                 </div>
               </div>
             </div>
-            <div class="border-t border-white/10 bg-black/10 dark:border-slate-800/80 dark:bg-black/30">
-              <div class="mx-auto flex w-full flex-col items-center justify-between gap-4 px-5 py-5 text-center sm:px-6 md:flex-row md:text-left lg:px-8 xl:max-w-[1200px]">
-                <p class="text-[11px] font-bold uppercase tracking-wider text-white/70 dark:text-slate-400 sm:text-xs">&#169; <span id="footer-year">2026</span> <span class="font-bold text-white dark:text-slate-200" id="footer-brand">Toko</span>. All rights reserved.</p>
-                <p class="flex items-center justify-center gap-1.5 text-[9px] font-bold uppercase tracking-widest text-white/70 dark:text-slate-400 sm:text-[10px]" id="footer-credit">POWERED BY <i class="fa-solid fa-bolt text-white"></i> BLOGGER PWA SYSTEM</p>
-              </div>
-            </div>
-          </div>
+          </footer>
         </div>
         <!-- PENUTUP SCROLL-CONTENT -->
         <div id="floating-cart-container" class="pointer-events-none absolute right-6 z-40 scale-0 transform transition-all duration-300" style="bottom: calc(max(1.25rem, env(safe-area-inset-bottom)) + 0.75rem)">
