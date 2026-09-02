@@ -124,3 +124,93 @@ export const initThemeIcon = () => {
         ? 'fa-solid fa-sun text-sm text-amber-400'
         : 'fa-solid fa-moon text-sm text-slate-600 dark:text-slate-300';
 };
+
+// ─── Background Style Engine ─────────────────────────────────
+/**
+ * Terapkan gaya visual latar belakang toko & CMS (Tajam & Nyata, Non-Blur).
+ * Mendukung 5 preset (hero_arch, geometric_3d, diagonal_skew, dual_tone, minimalist)
+ * dan wallpaper gambar kustom.
+ *
+ * @param {string} bgStyle - 'hero_arch' | 'geometric_3d' | 'diagonal_skew' | 'dual_tone' | 'minimalist'
+ * @param {string} customBgUrl - URL gambar wallpaper kustom opsional
+ */
+export const applyBackgroundStyle = (bgStyle = 'hero_arch', customBgUrl = '') => {
+    const container = document.getElementById('dynamic-bg-container');
+    if (!container) return;
+
+    if (bgStyle) localStorage.setItem('freshmart_bg_style', bgStyle);
+    if (customBgUrl !== undefined && customBgUrl !== null) {
+        localStorage.setItem('freshmart_bg_custom_url', customBgUrl);
+    }
+
+    const style = bgStyle || localStorage.getItem('freshmart_bg_style') || 'hero_arch';
+    const bgUrl = customBgUrl !== undefined && customBgUrl !== null
+        ? customBgUrl
+        : (localStorage.getItem('freshmart_bg_custom_url') || '');
+
+    // Kosongkan container lama
+    container.innerHTML = '';
+    container.className = "pointer-events-none fixed inset-0 z-0 overflow-hidden transition-all duration-500";
+
+    // 1. Wallpaper Gambar Kustom jika diisi
+    if (bgUrl && typeof bgUrl === 'string' && bgUrl.trim()) {
+        const customImgDiv = document.createElement('div');
+        customImgDiv.className = "absolute inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-25 dark:opacity-20 pointer-events-none transition-opacity duration-300";
+        customImgDiv.style.backgroundImage = `url('${bgUrl.trim()}')`;
+        container.appendChild(customImgDiv);
+
+        const overlay = document.createElement('div');
+        overlay.className = "absolute inset-0 z-0 bg-gradient-to-b from-slate-50/70 via-transparent to-slate-50/90 dark:from-[#0b1120]/80 dark:via-transparent dark:to-[#0b1120]/95 pointer-events-none";
+        container.appendChild(overlay);
+    }
+
+    // 2. Vector Shapes sesuai Preset yang Dipilih (Non-Blur, Tajam, Ringan)
+    let shapesHtml = '';
+
+    if (style === 'hero_arch') {
+        // Hero Arch: Header lengkung solid presisi di bagian atas + 2 lingkaran vektor aksen
+        shapesHtml = `
+            <div class="absolute -top-12 left-1/2 -translate-x-1/2 w-[140%] max-w-[1600px] h-72 md:h-96 rounded-b-[100%] bg-gradient-to-b from-[rgba(var(--color-primary-rgb),0.18)] to-transparent dark:from-[rgba(var(--color-primary-rgb),0.22)] border-b border-[rgba(var(--color-primary-rgb),0.25)] pointer-events-none"></div>
+            <div class="absolute -right-20 top-1/4 h-80 w-80 rounded-full border border-[rgba(var(--color-primary-rgb),0.15)] bg-[rgba(var(--color-primary-rgb),0.05)] pointer-events-none"></div>
+            <div class="absolute -left-20 top-2/3 h-96 w-96 rounded-full border border-[rgba(var(--color-primary-rgb),0.12)] bg-[rgba(var(--color-primary-rgb),0.04)] pointer-events-none"></div>
+            <svg class="absolute bottom-0 left-0 w-full opacity-15 dark:opacity-20 pointer-events-none rotate-180" viewBox="0 0 1440 320" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M0,160L48,176C96,192,192,224,288,213.3C384,203,480,149,576,144C672,139,768,181,864,186.7C960,192,1056,160,1152,149.3C1248,139,1344,149,1392,154.7L1440,160L1440,0L1392,0C1344,0,1248,0,1152,0C1056,0,960,0,864,0C768,0,672,0,576,0C480,0,384,0,288,0C192,0,96,0,48,0L0,0Z" fill="currentColor" class="text-[var(--color-primary)]"></path>
+            </svg>
+        `;
+    } else if (style === 'geometric_3d') {
+        // Geometris 3D: Pola isometric polygonal & micro grid sudut presisi
+        shapesHtml = `
+            <div class="absolute -top-16 -right-16 w-96 h-96 border-2 border-[rgba(var(--color-primary-rgb),0.2)] bg-[rgba(var(--color-primary-rgb),0.06)] transform rotate-45 rounded-3xl pointer-events-none"></div>
+            <div class="absolute top-24 right-20 w-48 h-48 border border-[rgba(var(--color-primary-rgb),0.25)] bg-[rgba(var(--color-primary-rgb),0.08)] transform rotate-12 rounded-2xl pointer-events-none"></div>
+            <div class="absolute top-1/3 -left-20 w-80 h-80 border-2 border-[rgba(var(--color-primary-rgb),0.18)] bg-[rgba(var(--color-primary-rgb),0.05)] transform -rotate-12 rounded-3xl pointer-events-none"></div>
+            <div class="absolute inset-0 opacity-15 dark:opacity-20 pointer-events-none" style="background-image: radial-gradient(rgba(var(--color-primary-rgb),0.4) 1.5px, transparent 1.5px); background-size: 28px 28px;"></div>
+            <div class="absolute -bottom-20 -right-10 w-96 h-96 border-2 border-[rgba(var(--color-primary-rgb),0.15)] bg-[rgba(var(--color-primary-rgb),0.05)] transform rotate-45 rounded-3xl pointer-events-none"></div>
+        `;
+    } else if (style === 'diagonal_skew') {
+        // Diagonal Skew: Header & aksen garis tegas sudut miring tajam
+        shapesHtml = `
+            <div class="absolute -top-24 left-0 w-full h-80 bg-gradient-to-br from-[rgba(var(--color-primary-rgb),0.2)] via-[rgba(var(--color-primary-rgb),0.1)] to-transparent border-b-2 border-[rgba(var(--color-primary-rgb),0.3)] transform -skew-y-3 origin-top-left pointer-events-none"></div>
+            <div class="absolute top-1/2 -left-20 w-[120%] h-24 bg-[rgba(var(--color-primary-rgb),0.04)] border-y border-[rgba(var(--color-primary-rgb),0.15)] transform skew-y-6 pointer-events-none"></div>
+            <div class="absolute -bottom-16 right-0 w-full h-64 bg-gradient-to-tl from-[rgba(var(--color-primary-rgb),0.15)] to-transparent border-t-2 border-[rgba(var(--color-primary-rgb),0.25)] transform -skew-y-3 origin-bottom-right pointer-events-none"></div>
+        `;
+    } else if (style === 'dual_tone') {
+        // Dual-Tone: Header solid bertingkat 2 warna kontras
+        shapesHtml = `
+            <div class="absolute top-0 left-0 w-full h-56 bg-gradient-to-b from-[rgba(var(--color-primary-rgb),0.22)] to-transparent border-b border-[rgba(var(--color-primary-rgb),0.2)] pointer-events-none"></div>
+            <div class="absolute top-16 right-0 w-2/3 md:w-1/2 h-64 bg-gradient-to-l from-[rgba(var(--color-primary-rgb),0.15)] to-transparent border-l border-b border-[rgba(var(--color-primary-rgb),0.25)] rounded-bl-3xl pointer-events-none"></div>
+            <div class="absolute bottom-0 left-0 w-2/3 md:w-1/2 h-56 bg-gradient-to-r from-[rgba(var(--color-primary-rgb),0.12)] to-transparent border-r border-t border-[rgba(var(--color-primary-rgb),0.2)] rounded-tr-3xl pointer-events-none"></div>
+        `;
+    } else {
+        // Minimalis: Polos bersih elegan dengan micro dot matrix subtle
+        shapesHtml = `
+            <div class="absolute inset-0 opacity-10 dark:opacity-15 pointer-events-none" style="background-image: radial-gradient(rgba(var(--color-primary-rgb),0.35) 1px, transparent 1px); background-size: 32px 32px;"></div>
+            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[var(--color-primary)] to-transparent opacity-40"></div>
+        `;
+    }
+
+    const vectorDiv = document.createElement('div');
+    vectorDiv.className = "absolute inset-0 z-0 pointer-events-none";
+    vectorDiv.innerHTML = shapesHtml;
+    container.appendChild(vectorDiv);
+};
+

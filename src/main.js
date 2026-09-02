@@ -8,8 +8,8 @@ import DOMPurify from 'dompurify';
 // ─── Import Modul Internal ──────────────────────────────────────────────────────
 // Config & Firebase (inisialisasi Firebase, db, auth, analytics)
 import { db, auth, ADMIN_UID, loadAnalytics, firebaseConfig } from './config/firebase.js';
-// Core: Theme Engine (color palettes, dark mode, CSS variables)
-import { uiPalettes, hexToRgb, applyUITheme, initDarkMode, toggleTheme as _toggleTheme, initThemeIcon } from './core/theme.js';
+// Core: Theme Engine (color palettes, dark mode, CSS variables, background style)
+import { uiPalettes, hexToRgb, applyUITheme, initDarkMode, toggleTheme as _toggleTheme, initThemeIcon, applyBackgroundStyle } from './core/theme.js';
 // Core: Utilities (helper functions stateless)
 import { el, show, hide, toggleCls, setIn, setH, setV, getV, sL, ssL, esc, fCur, fixD, getYouTubeId, parseVideoUrl, fixDriveVideo, fixDriveVideoPreview, getOptImg, rewardStatusLabel, updateSEO, injectJSONLD } from './core/utils.js';
 // Core: State (struktur data default)
@@ -22,23 +22,31 @@ import { GAS_UPLOAD_URL as _GAS_URL } from './services/gas.js';
 window.firebase   = firebase;
 window.DOMPurify  = DOMPurify;
 
-// ─── THEME ENGINE ───────────────────────────────────────────────────────────────
-// Expose fungsi tema ke window agar bisa dipanggil dari HTML inline
+// ─── THEME & BACKGROUND ENGINE ──────────────────────────────────────────────────
+// Expose fungsi tema & background ke window agar bisa dipanggil dari HTML inline
 window.uiPalettes  = uiPalettes;
 window.hexToRgb    = hexToRgb;
 window.applyUITheme = applyUITheme;
 window.toggleTheme = _toggleTheme;
+window.applyBackgroundStyle = applyBackgroundStyle;
 
 // Inisialisasi tema dari localStorage/preferensi OS
 initDarkMode();
 const savedUITheme = localStorage.getItem('freshmart_ui_theme') || 'emerald';
 let activeColors   = applyUITheme(savedUITheme, localStorage.getItem('freshmart_theme_color'));
 
-// Sinkronkan ikon dark mode
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initThemeIcon);
-} else {
+// Inisialisasi gaya background dari cache lokal
+const initBg = () => {
     initThemeIcon();
+    const savedBgStyle = localStorage.getItem('freshmart_bg_style') || 'hero_arch';
+    const savedBgUrl = localStorage.getItem('freshmart_bg_custom_url') || '';
+    applyBackgroundStyle(savedBgStyle, savedBgUrl);
+};
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initBg);
+} else {
+    initBg();
 }
 
 // ─── SECTION 1: MAIN APP LOGIC ─────────────────────────────────────────────────
@@ -1888,6 +1896,9 @@ window.rDyn = () => {
 
     if(el('dyn-qris-img') && appData.payment) el('dyn-qris-img').src = appData.payment.qrisUrl;
     if (typeof window.renderRewardCatalog === 'function') window.renderRewardCatalog();
+    if (typeof window.applyBackgroundStyle === 'function') {
+        window.applyBackgroundStyle(appData.store.bgStyle, appData.store.bgCustomUrl);
+    }
     cPage = 1; window.rCat();
 };
 
@@ -6153,6 +6164,13 @@ window.syncAppMeta = () => {
         localStorage.setItem('freshmart_ui_theme', appData.store.uiTheme);
         if (typeof window.applyUITheme === 'function') window.applyUITheme(appData.store.uiTheme);
     }
+
+    // Sinkronisasi Gaya Background Toko & CMS
+    const sBgStyle = appData.store.bgStyle || localStorage.getItem('freshmart_bg_style') || 'hero_arch';
+    const sBgCustom = appData.store.bgCustomUrl !== undefined ? appData.store.bgCustomUrl : (localStorage.getItem('freshmart_bg_custom_url') || '');
+    if (typeof window.applyBackgroundStyle === 'function') {
+        window.applyBackgroundStyle(sBgStyle, sBgCustom);
+    }
 };
 
 // FIX: sebelumnya dipanggil lewat setTimeout(2000ms) yang cuma menebak waktu, tidak benar-benar
@@ -6251,11 +6269,46 @@ window.openSettingForm = (type) => {
         }
     };
 
+    // Helper: Memilih Gaya Background secara Visual
+    window.selectBgStyle = (styleName) => {
+        const input = document.getElementById('set-bg-style');
+        if (input) input.value = styleName;
+
+        const customUrl = document.getElementById('set-bg-custom-url')?.value || '';
+
+        // Reset semua kartu gaya background
+        document.querySelectorAll('.bg-style-card').forEach(card => {
+            card.classList.remove('border-[var(--color-primary)]', 'shadow-md', 'ring-2', 'ring-[var(--color-primary)]/20');
+            card.classList.add('border-slate-200', 'dark:border-slate-700');
+            const iconWrap = card.querySelector('.bg-icon-wrap');
+            if (iconWrap) {
+                iconWrap.className = 'bg-icon-wrap w-10 h-10 rounded-xl flex items-center justify-center mb-2 text-base transition-transform bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300';
+            }
+        });
+
+        // Aktifkan kartu yang dipilih
+        const activeCard = document.getElementById(`bg-opt-${styleName}`);
+        if (activeCard) {
+            activeCard.classList.add('border-[var(--color-primary)]', 'shadow-md', 'ring-2', 'ring-[var(--color-primary)]/20');
+            activeCard.classList.remove('border-slate-200', 'dark:border-slate-700');
+            const iconWrap = activeCard.querySelector('.bg-icon-wrap');
+            if (iconWrap) {
+                iconWrap.className = 'bg-icon-wrap w-10 h-10 rounded-xl flex items-center justify-center mb-2 text-base transition-transform bg-[var(--color-primary)] text-white shadow-sm';
+            }
+        }
+
+        // Live preview background langsung
+        if (typeof window.applyBackgroundStyle === 'function') {
+            window.applyBackgroundStyle(styleName, customUrl);
+        }
+    };
+
     if (type === 'profile') {
         title = "Profil Toko & Tampilan"; icon = "fa-store"; 
         colorTheme = { line: "bg-[var(--color-primary)]", box: "bg-[rgba(var(--color-primary-rgb),0.08)] text-[var(--color-primary)]" };
         
         const currentTheme = appData.store.uiTheme || 'emerald';
+        const currentBgStyle = appData.store.bgStyle || 'hero_arch';
         const presetNames = {
             emerald: "Emerald", teal: "Teal", lime: "Lime", cyan: "Cyan", sky: "Sky",
             blue: "Blue", indigo: "Indigo", violet: "Violet", purple: "Purple",
@@ -6313,6 +6366,96 @@ window.openSettingForm = (type) => {
                         </div>
                     </div>
                     <p class="text-[9px] font-bold text-slate-400 mt-2">* Klik salah satu warna preset, atau klik ikon <i class="fa-solid fa-pen"></i> untuk pilih warna bebas. Warna ini juga digunakan sebagai Header PWA.</p>
+                </div>
+
+                <!-- GAYA BACKGROUND TOKO & CMS (TAJAM & NYATA) -->
+                <div class="mt-2 border border-slate-200 dark:border-slate-700/80 rounded-2xl p-4 sm:p-5 bg-slate-50 dark:bg-slate-900">
+                    <div class="flex items-center justify-between gap-2 mb-1.5">
+                        <label class="block text-[11px] font-bold text-slate-700 dark:text-slate-200 uppercase tracking-widest flex items-center gap-2">
+                            <i class="fa-solid fa-shapes" style="color:var(--color-primary)"></i> GAYA BACKGROUND TOKO &amp; CMS (TAJAM &amp; NYATA)
+                        </label>
+                        <span class="px-2.5 py-0.5 rounded-full text-[9px] font-extrabold uppercase tracking-widest bg-emerald-100 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800">
+                            NON-BLUR
+                        </span>
+                    </div>
+                    <p class="text-[10px] text-slate-500 dark:text-slate-400 mb-4 leading-relaxed font-medium">
+                        Pilih gaya visual background yang tegas, tajam, dan tidak blur agar toko dan CMS terlihat berkelas seperti aplikasi profesional.
+                    </p>
+
+                    <input type="hidden" id="set-bg-style" value="${currentBgStyle}">
+
+                    <!-- 5 Pilihan Gaya Visual -->
+                    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-5">
+                        <!-- 1. Hero Arch -->
+                        <button type="button" onclick="selectBgStyle('hero_arch')" id="bg-opt-hero_arch"
+                                class="bg-style-card flex flex-col items-center justify-center text-center p-3.5 rounded-xl border-2 transition-all duration-200 cursor-pointer ${currentBgStyle === 'hero_arch' ? 'border-[var(--color-primary)] bg-white dark:bg-slate-800 shadow-md ring-2 ring-[var(--color-primary)]/20' : 'border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 hover:border-slate-300 dark:hover:border-slate-600'}">
+                            <div class="bg-icon-wrap w-10 h-10 rounded-xl flex items-center justify-center mb-2 text-base transition-transform ${currentBgStyle === 'hero_arch' ? 'bg-[var(--color-primary)] text-white shadow-sm' : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300'}">
+                                <i class="fa-solid fa-cloud"></i>
+                            </div>
+                            <span class="text-xs font-bold text-slate-800 dark:text-slate-100 mb-0.5">Hero Arch</span>
+                            <span class="text-[9px] text-slate-500 dark:text-slate-400 leading-tight">Header lengkung solid</span>
+                        </button>
+
+                        <!-- 2. Geometris 3D -->
+                        <button type="button" onclick="selectBgStyle('geometric_3d')" id="bg-opt-geometric_3d"
+                                class="bg-style-card flex flex-col items-center justify-center text-center p-3.5 rounded-xl border-2 transition-all duration-200 cursor-pointer ${currentBgStyle === 'geometric_3d' ? 'border-[var(--color-primary)] bg-white dark:bg-slate-800 shadow-md ring-2 ring-[var(--color-primary)]/20' : 'border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 hover:border-slate-300 dark:hover:border-slate-600'}">
+                            <div class="bg-icon-wrap w-10 h-10 rounded-xl flex items-center justify-center mb-2 text-base transition-transform ${currentBgStyle === 'geometric_3d' ? 'bg-[var(--color-primary)] text-white shadow-sm' : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300'}">
+                                <i class="fa-solid fa-cube"></i>
+                            </div>
+                            <span class="text-xs font-bold text-slate-800 dark:text-slate-100 mb-0.5">Geometris 3D</span>
+                            <span class="text-[9px] text-slate-500 dark:text-slate-400 leading-tight">Vektor sudut presisi</span>
+                        </button>
+
+                        <!-- 3. Diagonal Skew -->
+                        <button type="button" onclick="selectBgStyle('diagonal_skew')" id="bg-opt-diagonal_skew"
+                                class="bg-style-card flex flex-col items-center justify-center text-center p-3.5 rounded-xl border-2 transition-all duration-200 cursor-pointer ${currentBgStyle === 'diagonal_skew' ? 'border-[var(--color-primary)] bg-white dark:bg-slate-800 shadow-md ring-2 ring-[var(--color-primary)]/20' : 'border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 hover:border-slate-300 dark:hover:border-slate-600'}">
+                            <div class="bg-icon-wrap w-10 h-10 rounded-xl flex items-center justify-center mb-2 text-base transition-transform ${currentBgStyle === 'diagonal_skew' ? 'bg-[var(--color-primary)] text-white shadow-sm' : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300'}">
+                                <i class="fa-solid fa-slash"></i>
+                            </div>
+                            <span class="text-xs font-bold text-slate-800 dark:text-slate-100 mb-0.5">Diagonal Skew</span>
+                            <span class="text-[9px] text-slate-500 dark:text-slate-400 leading-tight">Aksen garis tegas</span>
+                        </button>
+
+                        <!-- 4. Dual-Tone -->
+                        <button type="button" onclick="selectBgStyle('dual_tone')" id="bg-opt-dual_tone"
+                                class="bg-style-card flex flex-col items-center justify-center text-center p-3.5 rounded-xl border-2 transition-all duration-200 cursor-pointer ${currentBgStyle === 'dual_tone' ? 'border-[var(--color-primary)] bg-white dark:bg-slate-800 shadow-md ring-2 ring-[var(--color-primary)]/20' : 'border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 hover:border-slate-300 dark:hover:border-slate-600'}">
+                            <div class="bg-icon-wrap w-10 h-10 rounded-xl flex items-center justify-center mb-2 text-base transition-transform ${currentBgStyle === 'dual_tone' ? 'bg-[var(--color-primary)] text-white shadow-sm' : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300'}">
+                                <i class="fa-solid fa-layer-group"></i>
+                            </div>
+                            <span class="text-xs font-bold text-slate-800 dark:text-slate-100 mb-0.5">Dual-Tone</span>
+                            <span class="text-[9px] text-slate-500 dark:text-slate-400 leading-tight">Header solid 2 warna</span>
+                        </button>
+
+                        <!-- 5. Minimalis -->
+                        <button type="button" onclick="selectBgStyle('minimalist')" id="bg-opt-minimalist"
+                                class="bg-style-card flex flex-col items-center justify-center text-center p-3.5 rounded-xl border-2 transition-all duration-200 cursor-pointer col-span-2 sm:col-span-1 ${currentBgStyle === 'minimalist' ? 'border-[var(--color-primary)] bg-white dark:bg-slate-800 shadow-md ring-2 ring-[var(--color-primary)]/20' : 'border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 hover:border-slate-300 dark:hover:border-slate-600'}">
+                            <div class="bg-icon-wrap w-10 h-10 rounded-xl flex items-center justify-center mb-2 text-base transition-transform ${currentBgStyle === 'minimalist' ? 'bg-[var(--color-primary)] text-white shadow-sm' : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300'}">
+                                <i class="fa-solid fa-square"></i>
+                            </div>
+                            <span class="text-xs font-bold text-slate-800 dark:text-slate-100 mb-0.5">Minimalis</span>
+                            <span class="text-[9px] text-slate-500 dark:text-slate-400 leading-tight">Polos bersih elegan</span>
+                        </button>
+                    </div>
+
+                    <!-- Gambar / Wallpaper Background Kustom (Opsional) -->
+                    <div class="pt-4 border-t border-slate-200 dark:border-slate-700/80">
+                        <label class="block text-[11px] font-bold text-slate-700 dark:text-slate-200 uppercase tracking-widest mb-2 flex items-center gap-2">
+                            <i class="fa-solid fa-image" style="color:var(--color-primary)"></i> GAMBAR / WALLPAPER BACKGROUND KUSTOM (OPSIONAL)
+                        </label>
+                        <div class="flex gap-3">
+                            <input autocomplete="off" id="set-bg-custom-url" value="${esc(appData.store.bgCustomUrl || '')}"
+                                   class="admin-input !py-3.5 bg-white dark:bg-slate-800 flex-1 shadow-sm"
+                                   placeholder="URL Gambar Background (Opsional, contoh: https://...)"
+                                   oninput="if(typeof window.applyBackgroundStyle==='function') window.applyBackgroundStyle(document.getElementById('set-bg-style').value, this.value)">
+                            <label class="bg-white hover:bg-slate-50 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-300 rounded-xl px-5 flex items-center justify-center cursor-pointer transition-all shrink-0 active:scale-95 shadow-sm font-bold">
+                                <i class="fa-solid fa-cloud-arrow-up sm:mr-2"></i> <span class="hidden sm:inline">Upload</span>
+                                <input type="file" accept="image/*" class="hidden" onchange="handleImageUpload(this, 'set-bg-custom-url')">
+                            </label>
+                        </div>
+                        <p class="text-[9px] text-slate-500 dark:text-slate-400 mt-2 font-medium">
+                            Jika diisi, gambar akan otomatis terpasang tajam dan jernih sebagai wallpaper latar belakang toko dan CMS.
+                        </p>
+                    </div>
                 </div>
             </div>
 
@@ -6545,12 +6688,19 @@ window.saveAdminSettings = async (type) => {
             appData.store.footerCredit = getV('set-credit');
             appData.store.themeColor = getV('set-theme-color'); 
             appData.store.uiTheme = getV('set-ui-theme');
+            appData.store.bgStyle = getV('set-bg-style') || 'hero_arch';
+            appData.store.bgCustomUrl = fixD(getV('set-bg-custom-url'));
             appData.store.terms = getV('set-terms');
             appData.store.privacy = getV('set-privacy');
             localStorage.setItem('freshmart_theme_color', appData.store.themeColor);
             localStorage.setItem('freshmart_ui_theme', appData.store.uiTheme);
+            localStorage.setItem('freshmart_bg_style', appData.store.bgStyle);
+            localStorage.setItem('freshmart_bg_custom_url', appData.store.bgCustomUrl || '');
             if (typeof window.applyUITheme === 'function') {
                 window.applyUITheme(appData.store.uiTheme, appData.store.themeColor);
+            }
+            if (typeof window.applyBackgroundStyle === 'function') {
+                window.applyBackgroundStyle(appData.store.bgStyle, appData.store.bgCustomUrl);
             }
         } 
         else if (type === 'catalog') {
