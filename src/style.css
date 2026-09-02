@@ -368,7 +368,7 @@ html.dark body { background-color: #0b1121; color: #f8fafc; }
 html.dark #app-container { background-color: #0b1121; border-color: #1e293b; }
 html.dark #view-admin, 
 html.dark #view-admin-login { background-color: #0b1121 !important; }
-html.dark .glass-header { background: #0b1121 !important; border-bottom-color: #1e293b !important; border-bottom-width: 1.5px !important; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2); }
+html.dark .glass-header { background: var(--color-primary) !important; color: #ffffff !important; border-bottom: none !important; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25) !important; }
 html.dark .glass-nav { background: #0b1121 !important; border-top-color: #1e293b !important; border-top-width: 1.5px !important; box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.2); padding-bottom: max(1.25rem, env(safe-area-inset-bottom)); }
 
 /* Card & Wrapper Backgrounds */
@@ -474,16 +474,35 @@ body {
     font-weight: 600 !important; /* Cegah teks terlalu tebal — semibold adalah maksimum */
 }
 
-/* === NONAKTIFKAN EFEK GLASSMORPHISM & BACKDROP BLUR === */
+/* === NONAKTIFKAN TOTAL SEMUA EFEK BLUR & KACA (100% SOLID & TAJAM) === */
+*, *::before, *::after {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+}
+
 .backdrop-blur,
 .backdrop-blur-sm,
 .backdrop-blur-md,
 .backdrop-blur-lg,
 .backdrop-blur-xl,
 .backdrop-blur-2xl,
-.backdrop-blur-3xl {
+.backdrop-blur-3xl,
+[class*="backdrop-blur"] {
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
+}
+
+.blur,
+.blur-sm,
+.blur-md,
+.blur-lg,
+.blur-xl,
+.blur-2xl,
+.blur-3xl,
+[class*="blur-"],
+.primary-blur-orb {
+    filter: none !important;
+    display: none !important;
 }
 
 /* Penyesuaian agar latar belakang elemen eks-glassmorphism tetap kontras & solid */

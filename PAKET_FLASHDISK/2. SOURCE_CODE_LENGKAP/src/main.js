@@ -1757,22 +1757,21 @@ window.rDyn = () => {
         // ── SLIDE GAMBAR (default) ────────────────────────────────────────
         return `
         <div ${linkAction} class="banner-slide-item w-[88vw] sm:w-[480px] min-h-[180px] sm:min-h-[220px] snap-center shrink-0 rounded-[2rem] relative overflow-hidden group cursor-pointer bg-[var(--color-primary)] text-white shadow-none hover:-translate-y-1 hover:scale-[1.01] hover:shadow-none transition-all duration-300 border border-white/15 flex flex-col">
-            <!-- Dynamic Background Shapes -->
-            <div class="absolute -right-10 -top-10 w-40 h-40 border-[24px] border-white/10 rounded-full pointer-events-none group-hover:scale-110 transition-transform duration-500"></div>
-            <div class="absolute -left-12 top-10 w-24 h-24 bg-white/10 rounded-full border border-white/5 pointer-events-none transform -rotate-12 shadow-inner group-hover:-translate-x-2 transition-transform duration-500"></div>
-            <div class="absolute right-12 bottom-4 w-16 h-16 bg-white/5 rounded-full blur-md pointer-events-none"></div>
+            <!-- Dynamic Solid Header Shapes -->
+            <div class="absolute -right-10 -top-10 w-40 h-40 border-[16px] border-white/10 rounded-full pointer-events-none group-hover:scale-105 transition-transform duration-500"></div>
+            <div class="absolute -left-12 top-10 w-24 h-24 bg-white/10 rounded-full border border-white/10 pointer-events-none transform -rotate-12 group-hover:-translate-x-1 transition-transform duration-500"></div>
             
             <div class="flex flex-1 w-full relative z-10">
                 <div class="w-[60%] p-5 sm:p-6 md:p-7 flex flex-col justify-center z-20">
-                    <span class="inline-block px-3 py-1 bg-white/15 backdrop-blur-md rounded-full text-white text-[9px] sm:text-[10px] font-bold uppercase tracking-widest w-max mb-3 border border-white/25 shadow-sm"><i class="fa-solid fa-star text-amber-300 mr-1 animate-pulse"></i> Promo</span>
-                    <h2 class="text-[15px] sm:text-lg md:text-xl font-extrabold text-white leading-snug mb-2 drop-shadow-md line-clamp-2 tracking-tight">${esc(b.title || 'Penawaran Spesial')}</h2>
-                    <p class="text-[10px] sm:text-[11px] text-white/85 font-medium line-clamp-3 leading-relaxed mb-3">${esc(b.desc || 'Belanja sekarang dan dapatkan penawaran terbaik.')}</p>
+                    <span class="inline-block px-3 py-1 bg-black/25 rounded-full text-white text-[9px] sm:text-[10px] font-bold uppercase tracking-widest w-max mb-3 border border-white/20 shadow-sm"><i class="fa-solid fa-star text-amber-300 mr-1 animate-pulse"></i> Promo</span>
+                    <h2 class="text-[15px] sm:text-lg md:text-xl font-extrabold text-white leading-snug mb-2 drop-shadow-sm line-clamp-2 tracking-tight">${esc(b.title || 'Penawaran Spesial')}</h2>
+                    <p class="text-[10px] sm:text-[11px] text-white/90 font-medium line-clamp-3 leading-relaxed mb-3">${esc(b.desc || 'Belanja sekarang dan dapatkan penawaran terbaik.')}</p>
                     ${b.link ? `<button class="mt-auto bg-white text-slate-900 text-[9px] sm:text-[10px] uppercase tracking-wider font-extrabold py-2.5 px-4.5 rounded-full w-max hover:bg-slate-100 active:scale-95 transition-all shadow-md flex items-center gap-2 group-hover:pr-5">Beli Sekarang <i class="fa-solid fa-arrow-right transition-transform group-hover:translate-x-1"></i></button>` : ''}
                 </div>
                 <div class="w-[40%] relative z-10 flex items-center justify-center p-2 sm:p-4 pr-4 sm:pr-6">
-                    ${b.img ? `<img loading="lazy" src="${esc(getOptImg(b.img, 'w800-rw'))}" alt="${esc(b.title || 'Promo Banner')}" class="w-full h-full object-contain drop-shadow-2xl transition-transform duration-700 group-hover:scale-108" onerror="this.style.display='none'">` : `
-                    <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-3xl bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center shadow-lg group-hover:rotate-12 transition-all duration-500">
-                        <i class="fa-solid fa-gift text-4xl sm:text-5xl text-white drop-shadow-md"></i>
+                    ${b.img ? `<img loading="lazy" src="${esc(getOptImg(b.img, 'w800-rw'))}" alt="${esc(b.title || 'Promo Banner')}" class="w-full h-full object-contain drop-shadow-md transition-transform duration-500 group-hover:scale-105" onerror="this.style.display='none'">` : `
+                    <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-white/20 border-2 border-white/30 flex items-center justify-center shadow-md group-hover:scale-105 transition-all duration-300">
+                        <i class="fa-solid fa-gift text-4xl sm:text-5xl text-white"></i>
                     </div>`}
                 </div>
             </div>
@@ -1781,10 +1780,10 @@ window.rDyn = () => {
         </div>
         ${appData.banners.length > 1 ? `
         <!-- Navigation Arrows (Desktop) -->
-        <button onclick="window.scrollBannerPrev()" type="button" aria-label="Banner Sebelumnya" class="hidden sm:flex absolute left-1 top-1/2 -translate-y-1/2 z-30 w-10 h-10 rounded-full bg-slate-900/60 hover:bg-slate-900/80 text-white backdrop-blur-md items-center justify-center border border-white/20 transition-all opacity-0 group-hover/banner-wrapper:opacity-100 shadow-xl active:scale-95">
+        <button onclick="window.scrollBannerPrev()" type="button" aria-label="Banner Sebelumnya" class="hidden sm:flex absolute left-1 top-1/2 -translate-y-1/2 z-30 w-10 h-10 rounded-full bg-slate-900 hover:bg-slate-800 text-white items-center justify-center border border-slate-700 transition-all opacity-0 group-hover/banner-wrapper:opacity-100 shadow-xl active:scale-95">
             <i class="fa-solid fa-chevron-left text-sm"></i>
         </button>
-        <button onclick="window.scrollBannerNext()" type="button" aria-label="Banner Selanjutnya" class="hidden sm:flex absolute right-1 top-1/2 -translate-y-1/2 z-30 w-10 h-10 rounded-full bg-slate-900/60 hover:bg-slate-900/80 text-white backdrop-blur-md items-center justify-center border border-white/20 transition-all opacity-0 group-hover/banner-wrapper:opacity-100 shadow-xl active:scale-95">
+        <button onclick="window.scrollBannerNext()" type="button" aria-label="Banner Selanjutnya" class="hidden sm:flex absolute right-1 top-1/2 -translate-y-1/2 z-30 w-10 h-10 rounded-full bg-slate-900 hover:bg-slate-800 text-white items-center justify-center border border-slate-700 transition-all opacity-0 group-hover/banner-wrapper:opacity-100 shadow-xl active:scale-95">
             <i class="fa-solid fa-chevron-right text-sm"></i>
         </button>
 
@@ -1825,19 +1824,16 @@ window.rDyn = () => {
                 return `
                 <div class="w-[280px] sm:w-[320px] shrink-0 snap-start relative group cursor-pointer active:scale-95 transition-all duration-300" onclick="copyVoucher('${esc(v.code)}')">
                     <div class="w-full h-[110px] bg-[var(--color-primary)] rounded-[1.25rem] shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 flex relative overflow-hidden border border-white/20 text-white">
-                        <!-- Glow decorative circle -->
-                        <div class="absolute -right-4 -top-4 w-24 h-24 bg-white/10 rounded-full blur-xl pointer-events-none"></div>
-                        
                         <!-- Left/Right Ticket Punch Holes (Biting into the sides) -->
                         <div class="absolute -top-2.5 right-[28%] w-5 h-5 rounded-full bg-[#f1f5f9] dark:bg-[#0b1121] border-b border-white/10 z-20 pointer-events-none transform translate-x-1/2 transition-colors duration-400"></div>
                         <div class="absolute -bottom-2.5 right-[28%] w-5 h-5 rounded-full bg-[#f1f5f9] dark:bg-[#0b1121] border-t border-white/10 z-20 pointer-events-none transform translate-x-1/2 transition-colors duration-400"></div>
                         
                         <!-- Main Details (Left Side) -->
                         <div class="flex-1 px-5 py-3 flex flex-col justify-center relative z-10">
-                            <h4 class="font-extrabold text-white text-base leading-tight mb-1 drop-shadow-md line-clamp-1">${desc}</h4>
-                            <p class="text-[8px] sm:text-[9px] font-bold text-white/80 flex items-center gap-1.5 mb-2.5 uppercase tracking-wider"><i class="fa-solid fa-circle-info text-white/60"></i> ${termsStr}</p>
+                            <h4 class="font-extrabold text-white text-base leading-tight mb-1 drop-shadow-sm line-clamp-1">${desc}</h4>
+                            <p class="text-[8px] sm:text-[9px] font-bold text-white/90 flex items-center gap-1.5 mb-2.5 uppercase tracking-wider"><i class="fa-solid fa-circle-info text-white/70"></i> ${termsStr}</p>
                             <div class="inline-flex">
-                                <span class="bg-black/20 backdrop-blur-md text-white text-[10px] sm:text-xs font-bold px-3 py-1.5 rounded-xl uppercase tracking-widest border border-white/15 shadow-inner flex items-center gap-2 font-mono">
+                                <span class="bg-black/35 text-white text-[10px] sm:text-xs font-bold px-3 py-1.5 rounded-xl uppercase tracking-widest border border-white/20 shadow-inner flex items-center gap-2 font-mono">
                                     <i class="fa-solid fa-ticket text-amber-300"></i> ${esc(v.code)}
                                 </span>
                             </div>
@@ -1847,8 +1843,8 @@ window.rDyn = () => {
                         <div class="w-0 border-l-[2px] border-dashed border-white/30 relative z-10 my-3"></div>
                         
                         <!-- Action Area (Right Side) -->
-                        <div class="w-[28%] flex flex-col items-center justify-center relative z-10 bg-white/10 backdrop-blur-sm group-hover:bg-white/20 transition-all duration-300">
-                            <div class="w-9 h-9 rounded-full bg-white/20 backdrop-blur-md border border-white/25 text-white flex items-center justify-center mb-1.5 shadow-sm group-hover:bg-white group-hover:text-slate-900 group-hover:scale-110 transition-all duration-300">
+                        <div class="w-[28%] flex flex-col items-center justify-center relative z-10 bg-black/15 group-hover:bg-black/25 transition-all duration-300">
+                            <div class="w-9 h-9 rounded-full bg-white text-[var(--color-primary)] font-bold flex items-center justify-center mb-1.5 shadow-sm group-hover:scale-110 transition-all duration-300">
                                 <i class="fa-regular fa-copy text-sm"></i>
                             </div>
                             <span class="text-[9px] font-bold uppercase tracking-wider text-white drop-shadow-sm group-hover:scale-105 transition-transform">Salin</span>
