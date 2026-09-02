@@ -1,9 +1,7 @@
 /**
  * ============================================================
- * MODUL KERANJANG & CHECKOUT (BARREL EXPORT)
+ * MODUL FAQ (BARREL EXPORT)
  * ============================================================
  */
 
-export * from './cart.js';
-export * from './checkout.js';
-export * from './wishlist.js';
+export * from './faq.js';
