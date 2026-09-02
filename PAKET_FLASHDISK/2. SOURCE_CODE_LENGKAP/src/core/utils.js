@@ -167,3 +167,37 @@ export const injectJSONLD = (id, data) => {
 export const sLoad = t => { if(t) setIn('loader-text', t); const gl = el('global-loader'); if(gl) { gl.style.display = 'flex'; } };
 export const hLoad = () => { const gl = el('global-loader'); if(gl) gl.style.display = 'none'; };
 
+export const showToast = (m, type, title, duration) => {
+    if (typeof window.showToast === 'function') {
+        window.showToast(m, type, title, duration);
+    }
+};
+
+export const showConfirm = (t, m, y, n) => {
+    if (typeof window.showConfirm === 'function') {
+        window.showConfirm(t, m, y, n);
+    }
+};
+
+const loadedScripts = {};
+export const ensureScriptLoaded = (src, checkFn) => {
+    if (checkFn && checkFn()) return Promise.resolve();
+    if (loadedScripts[src]) return loadedScripts[src];
+    loadedScripts[src] = new Promise((resolve, reject) => {
+        const s = document.createElement('script');
+        s.src = src;
+        s.onload = () => resolve();
+        s.onerror = () => { delete loadedScripts[src]; reject(new Error('Gagal memuat: ' + src)); };
+        document.head.appendChild(s);
+    });
+    return loadedScripts[src];
+};
+export const normalizeWA = (raw) => {
+    let n = (raw || '').toString().replace(/\D/g, '');
+    if (!n) return '';
+    if (n.startsWith('0')) n = '62' + n.substring(1);
+    else if (!n.startsWith('62')) n = '62' + n;
+    return n;
+};
+window.normalizeWA = normalizeWA;
+

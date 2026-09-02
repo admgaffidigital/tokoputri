@@ -142,3 +142,7 @@ export const setIsSaving      = v => { isSaving = v; };
 export const setToastT        = v => { toastT = v; };
 export const setReviewFilterMode  = v => { reviewFilterMode = v; };
 export const setLastReportPeriod  = v => { lastReportPeriod = v; };
+export const setAOrdLst       = v => { aOrdLst = v; };
+export const setACustLst      = v => { aCustLst = v; };
+export const setARevLst       = v => { aRevLst = v; };
+
