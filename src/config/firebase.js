@@ -48,19 +48,18 @@ db.settings({
     ignoreUndefinedProperties: true,
     cacheSizeBytes: firebase.firestore.CACHE_SIZE_UNLIMITED,
     merge: true,
-    // FIX: di jaringan tidak stabil (WiFi publik, proxy, VPN), koneksi QUIC sering gagal.
-    // Opsi ini membiarkan SDK mendeteksi otomatis dan langsung pakai transport lebih stabil,
-    // tanpa memaksa long-polling terus-menerus di jaringan normal.
-    experimentalAutoDetectLongPolling: true,
+    // FIX: Gunakan experimentalForceLongPolling untuk mencegah ERR_QUIC_PROTOCOL_ERROR
+    // pada jaringan ISP/WiFi/VPN dan saat perangkat standby/bangun dari sleep.
+    experimentalForceLongPolling: true,
 });
 
 // Aktifkan IndexedDB Persistence untuk load data super cepat & offline
 try {
     db.enablePersistence({ synchronizeTabs: true }).catch((err) => {
         if (err.code === 'failed-precondition') {
-            console.info('Firestore persistence: multi-tab active.');
+            // Multi-tab active
         } else if (err.code === 'unimplemented') {
-            console.info('Firestore persistence: browser not supported.');
+            // Browser not supported
         }
     });
 } catch(e) {}

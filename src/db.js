@@ -45,9 +45,9 @@ export const ADMIN_UID = 'K2ijSERTT2dg27yYGTEgn6XHSnW2';
 try {
     db.enablePersistence({ synchronizeTabs: true }).catch((err) => {
         if (err.code === 'failed-precondition') {
-            console.info('Firestore persistence: multi-tab active.');
+            // Multi-tab active
         } else if (err.code === 'unimplemented') {
-            console.info('Firestore persistence: browser not supported.');
+            // Browser not supported
         }
     });
 } catch(e) {}
@@ -56,7 +56,7 @@ db.settings({
     ignoreUndefinedProperties: true,
     cacheSizeBytes: firebase.firestore.CACHE_SIZE_UNLIMITED,
     merge: true,
-    experimentalAutoDetectLongPolling: true,
+    experimentalForceLongPolling: true,
 });
 
 export { firebase };
