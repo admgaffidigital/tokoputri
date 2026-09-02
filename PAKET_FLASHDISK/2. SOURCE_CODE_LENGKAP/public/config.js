@@ -1,14 +1,14 @@
-
 // KONFIGURASI DATABASE FIREBASE
-// Edit file ini untuk menghubungkan aplikasi ke database toko Anda sendiri.
-window.FIREBASE_CONFIG = {
-    apiKey: 'ISI_API_KEY_ANDA_DISINI',
-    authDomain: 'ISI_AUTH_DOMAIN_ANDA_DISINI',
-    databaseURL: 'ISI_DATABASE_URL_ANDA_DISINI',
-    projectId: 'ISI_PROJECT_ID_ANDA_DISINI',
-    storageBucket: 'ISI_STORAGE_BUCKET_ANDA_DISINI',
-    messagingSenderId: 'ISI_SENDER_ID_ANDA_DISINI',
-    appId: 'ISI_APP_ID_ANDA_DISINI',
-    measurementId: 'ISI_MEASUREMENT_ID_ANDA_DISINI'
-};
+// Edit file ini untuk menghubungkan aplikasi ke database toko yang berbeda.
+// Anda TIDAK PERLU melakukan build ulang (npm run build) setelah mengedit file ini.
 
+window.FIREBASE_CONFIG = {
+    apiKey: "AIzaSyCOjrhMP52TGbiOyQLY92NDYE26N6d9hJM",
+    authDomain: "restu-karya-utama.firebaseapp.com",
+    databaseURL: "https://restu-karya-utama-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "restu-karya-utama",
+    storageBucket: "restu-karya-utama.firebasestorage.app",
+    messagingSenderId: "858310421352",
+    appId: "1:858310421352:web:e20a833875e8d5c19944dd",
+    measurementId: "G-PHDG2LJ8PM"
+};
