@@ -17,7 +17,7 @@ export const renderRewardCatalog = () => {
     const rcC = el('reward-catalog-container');
     if (!rcC) return;
     
-    const isShow = appData.store.showRewardCatalog === true || appData.store.showRewardCatalog === 'true';
+    const isShow = appData.store.showRewardCatalog !== false && appData.store.showRewardCatalog !== 'false';
     const activeRewards = (appData.rewards || []).filter(r => r.isActive !== 'false' && r.isActive !== false);
     
     if (!isShow || activeRewards.length === 0) {
@@ -37,7 +37,7 @@ export const renderRewardCatalog = () => {
     <div class="flex gap-4 overflow-x-auto hide-scrollbar snap-x pb-6 pt-2">
         ${activeRewards.map((r) => {
             return `
-            <div class="w-[140px] sm:w-[160px] shrink-0 snap-start relative group cursor-pointer active:scale-95 transition-all duration-300" onclick="if(typeof openAdminTab==='function') openAdminTab('rewards'); window.location.hash='#cart'; window.dispatchEvent(new Event('hashchange'));">
+            <div class="w-[140px] sm:w-[160px] shrink-0 snap-start relative group cursor-pointer active:scale-95 transition-all duration-300" onclick="if(typeof window.showToast==='function') window.showToast('Tukarkan hadiah ini saat checkout menggunakan poin belanja Anda!'); if(typeof window.changeView==='function') window.changeView('view-cart');">
                 <div class="w-full bg-[var(--color-primary)] rounded-[1.25rem] shadow-md hover:shadow-[0_12px_28px_-6px_rgba(var(--color-primary-rgb),0.4)] hover:-translate-y-1.5 hover:scale-[1.02] transition-all duration-300 flex flex-col relative overflow-hidden border border-white/20 text-white p-2">
                     <div class="absolute -right-4 -top-4 w-24 h-24 bg-white/20 rounded-full blur-xl pointer-events-none"></div>
                     <div class="absolute bottom-11 -left-3 w-6 h-6 rounded-full bg-[#f1f5f9] dark:bg-[#0b1121] border-r border-white/20 z-20 pointer-events-none transition-colors duration-400 shadow-inner"></div>

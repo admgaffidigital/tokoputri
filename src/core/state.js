@@ -23,6 +23,7 @@ export const defApp = {
         themeColor: "#10b981", uiTheme: "emerald",
         bgStyle: "hero_arch",   // "hero_arch" | "geometric_3d" | "diagonal_skew" | "dual_tone" | "minimalist"
         bgCustomUrl: "",        // URL gambar wallpaper kustom (opsional)
+        showRewardCatalog: true,
         useStock: false,
         ppnEnabled: false,
         ppnType: "exclusive",   // "exclusive" | "inclusive"

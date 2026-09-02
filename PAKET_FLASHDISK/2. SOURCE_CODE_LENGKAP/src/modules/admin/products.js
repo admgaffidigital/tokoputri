@@ -26,10 +26,10 @@ let tWhol = [];
 let tSpec = [];
 
 window.rAdmL = t => {
-    // FITUR BARU: laporan produk/varian/aset khusus ditaruh di sini (tab Produk saja),
-    // tepat di atas kolom cari -- lebih relevan di tempat pengelolaan produknya langsung.
+    cTab = t;
+    if (typeof window.setCTab === 'function') window.setCTab(t);
+    window.cTab = t;
     const statsContainer = t === 'products' ? `<div id="admin-product-stats" class="mb-5"></div>` : '';
-    // FITUR BARU: tombol khusus untuk tab Database Warna
     const colorActions = t === 'colors' ? `
         <div class="flex gap-2 mb-4 flex-wrap">
             <button onclick="openImportFromProductsModal()" class="flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-600 dark:bg-emerald-900/30 dark:border-emerald-800 font-bold text-[11px] uppercase tracking-widest hover:bg-emerald-100 transition-all active:scale-95 shadow-sm"><i class="fa-solid fa-box-archive"></i> Impor dari Semua Produk</button>
@@ -55,17 +55,15 @@ window.rAdmL = t => {
 };
 
 window.rAdmItms = t => {
-    // FIX: simpan posisi scroll SEBELUM daftar dirender ulang, lalu kembalikan setelahnya.
-    // Sebelumnya, tiap kali ada update (restock, realtime sync, dst), daftar di-render ulang
-    // dan scroll otomatis lompat ke atas -- membuat produk yang baru saja diubah terasa
-    // "hilang" dari layar padahal cuma tertutup scroll-reset, bukan hilang sungguhan.
+    if (t) {
+        cTab = t;
+        if (typeof window.setCTab === 'function') window.setCTab(t);
+        window.cTab = t;
+    }
     const listContainerForScroll = el('admin-list-container');
     const scrollParent = listContainerForScroll ? listContainerForScroll.closest('.scroll-content') : null;
     const savedScrollTop = scrollParent ? scrollParent.scrollTop : 0;
 
-    // FITUR BARU: render ulang laporan produk/varian/aset tiap kali daftar produk disegarkan
-    // (restock, edit, realtime sync, dst) -- HANYA update kontainernya sendiri, TIDAK
-    // menyentuh riwayat modal/back-button sama sekali, jadi tombol back tetap aman.
     if (t === 'products' && el('admin-product-stats')) {
         const st = computeInventoryStats();
         setH('admin-product-stats', `
@@ -179,9 +177,15 @@ const rAdmReviews = () => window.rAdmReviews();
 // telah dipindahkan ke modul: src/modules/admin/finance.js
 const rTaxPanel = () => window.rTaxPanel();
 
-window.oAAdd = () => { oAEd(cTab, null); };
+window.oAAdd = () => { oAEd(cTab || window.cTab || 'products', null); };
 window.oAEd = (t, id) => {
-    eId = id; let d = id ? appData[t].find(x=>x.id===id) : null;
+    cTab = t;
+    if (typeof window.setCTab === 'function') window.setCTab(t);
+    window.cTab = t;
+    eId = id;
+    if (typeof window.setEId === 'function') window.setEId(id);
+    window.eId = id;
+    let d = id ? (appData[t] || []).find(x=>x.id===id) : null;
     setIn('admin-modal-title', id ? 'Edit Data' : 'Tambah Data');
     let f = aF[t]||[], h = '';
     
@@ -717,7 +721,8 @@ window.uSpec = (i,field,v) => { if(tSpec[i]) tSpec[i][field] = v; };
 
 window.submitAdminForm = async () => {
     if(isSaving) return; isSaving = true;
-    let d = {}, f = aF[cTab] || [];
+    const curTab = cTab || window.cTab || 'products';
+    let d = {}, f = aF[curTab] || [];
     for (let k of f) {
         if (k.type === 'variants_builder') {
             d.variants = tVars.filter(v => v.name.trim() !== '');
@@ -742,22 +747,20 @@ window.submitAdminForm = async () => {
     }
     
     if (!d.name && !d.title && !d.bankName && !d.code) { isSaving = false; return showToast("Judul/Nama/Kode wajib diisi!"); }
-    if (cTab === 'products' && !d.sku) d.sku = 'SKU' + Date.now().toString().slice(-6);
+    if (curTab === 'products' && !d.sku) d.sku = 'SKU' + Date.now().toString().slice(-6);
 
     // FITUR BARU: validasi & normalisasi khusus data pelanggan (member)
-    if (cTab === 'customers') {
-        const normPhone = window.normalizeWA(d.phone);
+    if (curTab === 'customers') {
+        const normPhone = window.normalizeWA ? window.normalizeWA(d.phone) : (d.phone || '').replace(/\D/g, '').replace(/^0/, '62');
         if (!normPhone || normPhone.length < 10) { isSaving = false; return showToast("Nomor WhatsApp tidak valid!"); }
         d.phone = normPhone;
         d.points = parseFloat(d.points) || 0;
-        // id numerik (dari digit nomor WA) supaya kompatibel dengan sistem admin generik (oAEd/oADel/dst)
         d.id = parseInt(normPhone, 10);
     }
     
-    let oldCustomerId = null; // dipakai untuk migrasi jika nomor WA pelanggan diubah saat edit
-    if (cTab === 'customers') {
-        // Untuk data pelanggan, ID SELALU mengikuti nomor WA (bukan eId/Date.now()),
-        // karena dokumen di Firestore memang disimpan dengan key nomor WA.
+    let oldCustomerId = null;
+    if (curTab === 'customers') {
+        if (!appData.customers) appData.customers = [];
         if (eId) {
             oldCustomerId = eId;
             let i = appData.customers.findIndex(x => x.id === eId);
@@ -765,23 +768,16 @@ window.submitAdminForm = async () => {
         } else {
             appData.customers.unshift(d);
         }
-    } else if (cTab === 'rewards') {
-        // FITUR BARU (REFACTOR KEAMANAN): hadiah disimpan sebagai sub-collection
-        // TERSENDIRI (persis seperti produk), BUKAN sebagai array di dalam dokumen
-        // utama -- supaya rule keamanan Firestore bisa memvalidasi field 'stock'
-        // per-hadiah secara individual (sama seperti pola stok produk).
+    } else if (curTab === 'rewards') {
+        if (!appData.rewards) appData.rewards = [];
         if (eId) { d.id = eId; let i = appData.rewards.findIndex(x => x.id === eId); if(i > -1) appData.rewards[i] = d; }
         else { d.id = Date.now(); appData.rewards.unshift(d); }
     } else if (eId) {
         d.id = eId;
-        let i = appData[cTab].findIndex(x => x.id === eId);
-        // FIX BUG: field yang TIDAK ada di form edit (seperti 'totalSold' -- total
-        // terjual) akan HILANG kalau tidak sengaja dipertahankan di sini, karena
-        // penyimpanan produk pakai .set() yang MENIMPA SELURUH dokumen, bukan
-        // menggabungkan. Jadi field-field "system" (bukan input form) WAJIB
-        // disalin dulu dari data lama sebelum ditimpa.
-        if (cTab === 'products' && i > -1) {
-            const oldProd = appData[cTab][i];
+        if (!appData[curTab]) appData[curTab] = [];
+        let i = appData[curTab].findIndex(x => x.id === eId);
+        if (curTab === 'products' && i > -1) {
+            const oldProd = appData[curTab][i];
             d.totalSold = oldProd.totalSold || 0;
             if (d.variants && d.variants.length && oldProd.variants) {
                 d.variants.forEach(nv => {
@@ -790,35 +786,35 @@ window.submitAdminForm = async () => {
                 });
             }
         }
-        if(i > -1) appData[cTab][i] = d;
+        if(i > -1) appData[curTab][i] = d;
     } else {
         d.id = Date.now();
-        appData[cTab].unshift(d);
+        if (!appData[curTab]) appData[curTab] = [];
+        appData[curTab].unshift(d);
     }
     
     sLoad('Menyimpan...');
     try {
-        if (cTab === 'products') {
+        if (curTab === 'products') {
             await db.collection("freshmart").doc("cms_data").collection("products").doc(d.id.toString()).set(d);
-            await saveApp([]); // lastUpdate otomatis dihitung server (lihat definisi saveApp) // FIX: produk sudah tersimpan di sub-collection sendiri, cukup bump lastUpdate saja, jangan timpa field lain
-        } else if (cTab === 'customers') {
+            await saveApp([]);
+        } else if (curTab === 'customers') {
             const custCol = db.collection("freshmart").doc("cms_data").collection("customers");
-            // Kalau nomor WA diganti saat edit, dokumen lama (key = nomor lama) dihapus,
-            // lalu dibuat dokumen baru dengan key nomor yang baru -- supaya lookup checkout tetap akurat.
             if (oldCustomerId !== null && oldCustomerId !== d.id) {
                 const oldPhoneStr = oldCustomerId.toString();
                 await custCol.doc(oldPhoneStr).delete().catch(()=>{});
             }
             await custCol.doc(d.phone).set(d, { merge: true });
-            // Data pelanggan TIDAK ikut termuat untuk semua pengunjung (privasi), jadi tidak perlu saveApp([])
-        } else if (cTab === 'rewards') {
+        } else if (curTab === 'rewards') {
             await db.collection("freshmart").doc("cms_data").collection("rewards").doc(d.id.toString()).set(d);
-            // Katalog hadiah publik & realtime lewat listener sendiri (lihat attachRewardsRealtime) -- tidak perlu saveApp([])
         } else {
-            await saveApp([cTab]); // FIX: hanya kirim field yang benar-benar berubah (categories/vouchers/banners/brands/banks)
+            await saveApp([curTab]);
         }
-        closeAdminModal(); rAdmItms(cTab); showToast("Tersimpan!");
-    } catch(e) { showToast("Gagal menyimpan!"); }
+        closeAdminModal(); rAdmItms(curTab); showToast("Tersimpan!");
+    } catch(e) { 
+        console.error("Gagal simpan admin data:", e);
+        showToast("Gagal menyimpan: " + (e.message || '')); 
+    }
     finally { isSaving = false; hLoad(); }
 };
 
