@@ -162,3 +162,8 @@ export const injectJSONLD = (id, data) => {
     }
     script.textContent = JSON.stringify(data);
 };
+
+// ─── Loading Overlay Helpers ─────────────────────────────────
+export const sLoad = t => { if(t) setIn('loader-text', t); const gl = el('global-loader'); if(gl) { gl.style.display = 'flex'; } };
+export const hLoad = () => { const gl = el('global-loader'); if(gl) gl.style.display = 'none'; };
+
