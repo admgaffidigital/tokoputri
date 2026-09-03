@@ -617,30 +617,19 @@ html:not(.dark) .card-modern select {
     background-color: #ffffff !important;
 }
 
-/* === 8. THEMED FOOTER (MENYATU DENGAN TEMA WARNA TOKO) === */
+/* === 8. THEMED FOOTER (WARNA SOLID, BEBAS SHADOW & GRADIENT) === */
 .themed-footer {
     position: relative;
-    background: radial-gradient(130% 120% at 50% -10%, rgba(255, 255, 255, 0.18) 0%, rgba(0, 0, 0, 0.28) 100%), linear-gradient(180deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+    background: var(--color-primary);
     border-top: 1px solid rgba(255, 255, 255, 0.2) !important;
-    box-shadow: 0 -15px 40px -10px rgba(0, 0, 0, 0.35);
+    box-shadow: none !important;
     color: #ffffff;
 }
-.themed-footer::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.6) 50%, transparent 100%);
-    pointer-events: none;
-    z-index: 1;
-}
 html.dark .themed-footer {
-    background: radial-gradient(130% 120% at 50% -10%, rgba(var(--color-primary-rgb), 0.35) 0%, rgba(0, 0, 0, 0.8) 100%), #110708 !important;
-    border-top: 1px solid rgba(var(--color-primary-rgb), 0.35) !important;
-    box-shadow: 0 -15px 40px -10px rgba(0, 0, 0, 0.5) !important;
-    color: #f1f5f9;
+    background: #0f172a !important;
+    border-top: 1px solid #1e293b !important;
+    box-shadow: none !important;
+    color: #f8fafc;
 }
 
 .footer-link-item {
@@ -650,24 +639,23 @@ html.dark .themed-footer {
     color: rgba(255, 255, 255, 0.85);
     font-size: 0.8125rem;
     font-weight: 600;
-    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: color 0.2s ease, transform 0.2s ease;
     cursor: pointer;
     text-decoration: none;
 }
 .footer-link-item:hover {
     color: #ffffff;
-    transform: translateX(4px);
-    text-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
+    transform: translateX(3px);
 }
 .footer-link-item i {
     font-size: 0.625rem;
-    opacity: 0.65;
-    transition: transform 0.25s ease, opacity 0.25s ease;
+    opacity: 0.7;
+    transition: transform 0.2s ease;
 }
 .footer-link-item:hover i {
     opacity: 1;
     transform: translateX(2px);
-    color: #fde047;
+    color: #ffffff;
 }
 
 .footer-badge-pill {
@@ -675,20 +663,18 @@ html.dark .themed-footer {
     align-items: center;
     gap: 0.45rem;
     padding: 0.375rem 0.75rem;
-    border-radius: 0.875rem;
-    background: rgba(255, 255, 255, 0.14);
-    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: 0.5rem;
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     color: #ffffff;
     font-size: 0.6875rem;
     font-weight: 700;
-    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-    backdrop-filter: blur(10px);
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+    box-shadow: none !important;
 }
 .footer-badge-pill:hover {
-    background: rgba(255, 255, 255, 0.24);
-    border-color: rgba(255, 255, 255, 0.45);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.35);
 }
 
 /* === LANDSCAPE BLOCKER === */
