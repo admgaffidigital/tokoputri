@@ -271,7 +271,7 @@ const loadAppData = async () => {
 // dijamin selalu naik secara berurutan, jadi tidak ada lagi perangkat yang
 // "terkunci" gara-gara jam salah.
 // =====================================================================
-const saveApp = async (changedKeys = null) => {
+export const saveApp = async (changedKeys = null) => {
     try {
         if (Array.isArray(changedKeys)) {
             const partial = { lastUpdate: firebase.firestore.FieldValue.increment(1) };

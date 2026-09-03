@@ -10,6 +10,7 @@
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/firestore';
 import 'firebase/compat/auth';
+import { persistentLocalCache, persistentMultipleTabManager } from 'firebase/firestore';
 
 // Konfigurasi Firebase: diambil dari public/config.js (window.FIREBASE_CONFIG)
 // yang di-inject sebelum bundle JS dimuat, agar bisa diganti tanpa build ulang.
@@ -41,27 +42,33 @@ export const db      = firebase.firestore();
 export const auth    = firebase.auth();
 export { firebase };
 
-// Konfigurasi Firestore
-// CATATAN: merge:true artinya "gabungkan settings ini dengan yang sudah ada",
-// BUKAN override penuh. Tanpa ini Firebase mengeluarkan warning di console.
-db.settings({
-    ignoreUndefinedProperties: true,
-    cacheSizeBytes: firebase.firestore.CACHE_SIZE_UNLIMITED,
-    merge: true,
-    experimentalForceLongPolling: true,
-    experimentalAutoDetectLongPolling: false,
-});
+// Expose ke window sesegera mungkin agar selalu tersedia di scope manapun
+if (typeof window !== 'undefined') {
+    window.firebase = firebase;
+    window.db = db;
+    window.auth = auth;
+}
 
-// Aktifkan IndexedDB Persistence untuk load data super cepat & offline
+// Konfigurasi Firestore dengan LocalCache modern & multi-tab persistence
+// Menghilangkan peringatan deprecation enableMultiTabIndexedDbPersistence
 try {
-    db.enablePersistence({ synchronizeTabs: true }).catch((err) => {
-        if (err.code === 'failed-precondition') {
-            // Multi-tab active
-        } else if (err.code === 'unimplemented') {
-            // Browser not supported
-        }
+    db.settings({
+        localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() }),
+        ignoreUndefinedProperties: true,
+        merge: true,
+        experimentalForceLongPolling: true,
+        experimentalAutoDetectLongPolling: false,
     });
-} catch(e) {}
+} catch(e) {
+    try {
+        db.settings({
+            ignoreUndefinedProperties: true,
+            merge: true,
+            experimentalForceLongPolling: true,
+            experimentalAutoDetectLongPolling: false,
+        });
+    } catch(err) {}
+}
 
 // Analytics diload LAZY setelah browser idle agar tidak memperlambat render awal.
 // Gunakan loadAnalytics() untuk mengaktifkannya.

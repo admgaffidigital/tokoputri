@@ -21,7 +21,7 @@ export default defineConfig({
           // Bundle kritis: core + auth (perlu saat inisialisasi awal)
           'vendor-firebase-core': ['firebase/compat/app', 'firebase/compat/auth'],
           // Firestore: dimuat sesaat setelah app init
-          'vendor-firebase-db': ['firebase/compat/firestore'],
+          'vendor-firebase-db': ['firebase/compat/firestore', 'firebase/firestore'],
           // Analytics: DIPISAH jadi chunk sendiri — akan dimuat lazy via dynamic import
           // sehingga TIDAK masuk bundle kritis dan tidak memperlambat First Load.
           'vendor-firebase-analytics': ['firebase/compat/analytics'],

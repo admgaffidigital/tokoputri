@@ -47,9 +47,9 @@ import './core/ui.js';
 import { setupHistoryRouter } from './core/router.js';
 setupHistoryRouter();
 
-
 // ─── Expose ke window (untuk kompatibilitas kode inline di index.html) ──────────
 window.firebase   = firebase;
+window.db         = db;
 window.DOMPurify  = DOMPurify;
 
 // ─── THEME & BACKGROUND ENGINE ──────────────────────────────────────────────────

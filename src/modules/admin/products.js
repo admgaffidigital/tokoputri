@@ -7,6 +7,8 @@
  * ============================================================
  */
 
+import { db } from '../../config/firebase.js';
+import { saveApp } from '../../services/storage.js';
 import { 
     appData 
 } from '../../core/state.js';
@@ -795,20 +797,24 @@ window.submitAdminForm = async () => {
     
     sLoad('Menyimpan...');
     try {
+        const _db = (typeof db !== 'undefined' && db) ? db : window.db;
+        const _save = typeof saveApp === 'function' ? saveApp : (window.saveApp || (async () => {}));
+        if (!_db) throw new Error("Database Firebase belum terhubung");
+
         if (curTab === 'products') {
-            await db.collection("freshmart").doc("cms_data").collection("products").doc(d.id.toString()).set(d);
-            await saveApp([]);
+            await _db.collection("freshmart").doc("cms_data").collection("products").doc(d.id.toString()).set(d);
+            await _save([]);
         } else if (curTab === 'customers') {
-            const custCol = db.collection("freshmart").doc("cms_data").collection("customers");
+            const custCol = _db.collection("freshmart").doc("cms_data").collection("customers");
             if (oldCustomerId !== null && oldCustomerId !== d.id) {
                 const oldPhoneStr = oldCustomerId.toString();
                 await custCol.doc(oldPhoneStr).delete().catch(()=>{});
             }
             await custCol.doc(d.phone).set(d, { merge: true });
         } else if (curTab === 'rewards') {
-            await db.collection("freshmart").doc("cms_data").collection("rewards").doc(d.id.toString()).set(d);
+            await _db.collection("freshmart").doc("cms_data").collection("rewards").doc(d.id.toString()).set(d);
         } else {
-            await saveApp([curTab]);
+            await _save([curTab]);
         }
         closeAdminModal(); rAdmItms(curTab); showToast("Tersimpan!");
     } catch(e) { 
@@ -821,21 +827,24 @@ window.submitAdminForm = async () => {
 window.oADel = async (t, id) => {
     showConfirm("Hapus Data", "Data yang dihapus tidak bisa dikembalikan lagi.", async () => {
         if (isSaving) return; isSaving = true;
+        const _db = (typeof db !== 'undefined' && db) ? db : window.db;
+        const _save = typeof saveApp === 'function' ? saveApp : (window.saveApp || (async () => {}));
         const target = appData[t] && appData[t].find(x => x.id === id);
         appData[t] = appData[t].filter(x => x.id !== id);
         sLoad('Menghapus...');
         try {
+            if (!_db) throw new Error("Database Firebase belum terhubung");
             if (t === 'products') {
-                await db.collection("freshmart").doc("cms_data").collection("products").doc(id.toString()).delete();
-                await saveApp([]); // lastUpdate otomatis dihitung server (lihat definisi saveApp)
+                await _db.collection("freshmart").doc("cms_data").collection("products").doc(id.toString()).delete();
+                await _save([]); // lastUpdate otomatis dihitung server (lihat definisi saveApp)
             } else if (t === 'customers') {
                 const phoneKey = target ? target.phone : id.toString();
-                await db.collection("freshmart").doc("cms_data").collection("customers").doc(phoneKey).delete();
+                await _db.collection("freshmart").doc("cms_data").collection("customers").doc(phoneKey).delete();
             } else if (t === 'rewards') {
-                await db.collection("freshmart").doc("cms_data").collection("rewards").doc(id.toString()).delete();
-            } else { await saveApp([t]); }
+                await _db.collection("freshmart").doc("cms_data").collection("rewards").doc(id.toString()).delete();
+            } else { await _save([t]); }
             rAdmItms(t); showToast("Berhasil Dihapus!");
-        } catch(e) { showToast("Gagal menghapus!"); }
+        } catch(e) { showToast("Gagal menghapus: " + (e.message || '')); }
         finally { isSaving = false; hLoad(); }
     });
 };
@@ -843,6 +852,8 @@ window.oADel = async (t, id) => {
 window.duplicateProduct = async (id) => {
     showConfirm("Duplikat Produk", "Menyalin data produk ini ke item baru?", async () => {
         if(isSaving) return; isSaving = true;
+        const _db = (typeof db !== 'undefined' && db) ? db : window.db;
+        const _save = typeof saveApp === 'function' ? saveApp : (window.saveApp || (async () => {}));
         const original = appData.products.find(x => x.id === id);
         if(!original) { isSaving = false; return; }
         
@@ -858,10 +869,11 @@ window.duplicateProduct = async (id) => {
         
         sLoad('Menyalin...');
         try {
-            await db.collection("freshmart").doc("cms_data").collection("products").doc(duplicated.id.toString()).set(duplicated);
-            await saveApp([]); // lastUpdate otomatis dihitung server (lihat definisi saveApp)
+            if (!_db) throw new Error("Database Firebase belum terhubung");
+            await _db.collection("freshmart").doc("cms_data").collection("products").doc(duplicated.id.toString()).set(duplicated);
+            await _save([]); // lastUpdate otomatis dihitung server (lihat definisi saveApp)
             rAdmItms('products'); showToast("Produk berhasil disalin!");
-        } catch(e) { showToast("Gagal menyalin!"); }
+        } catch(e) { showToast("Gagal menyalin: " + (e.message || '')); }
         finally { isSaving = false; hLoad(); }
     }, "Ya, Salin", false);
 };
@@ -992,12 +1004,16 @@ window.processRestock = async (id) => {
     
     sLoad('Menyimpan Restock...');
     try {
+        const _db = (typeof db !== 'undefined' && db) ? db : window.db;
+        const _save = typeof saveApp === 'function' ? saveApp : (window.saveApp || (async () => {}));
+        if (!_db) throw new Error("Database Firebase belum terhubung");
+
         // FIX RACE CONDITION: gunakan Firestore transaction agar dua admin
         // yang restock bersamaan tidak saling menimpa — stok dibaca LANGSUNG
         // dari server lalu ditambah atomically, bukan dari cache lokal.
-        const prodRef = db.collection("freshmart").doc("cms_data").collection("products").doc(id.toString());
+        const prodRef = _db.collection("freshmart").doc("cms_data").collection("products").doc(id.toString());
         let finalStock = 0;
-        await db.runTransaction(async (transaction) => {
+        await _db.runTransaction(async (transaction) => {
             const docSnap = await transaction.get(prodRef);
             if (!docSnap.exists) throw new Error("Produk tidak ditemukan di server");
             const serverProd = JSON.parse(JSON.stringify(docSnap.data()));
@@ -1036,7 +1052,7 @@ window.processRestock = async (id) => {
             Object.assign(updated, serverProd);
         });
         appData.products[idx] = updated;
-        await saveApp([]); // lastUpdate otomatis dihitung server (lihat definisi saveApp)
+        await _save([]); // lastUpdate otomatis dihitung server (lihat definisi saveApp)
         closeRestockModal();
         rAdmItms('products');
         setIn('stat-products', appData.products.filter(p => p.isActive !== 'false' && p.isActive !== false).length);
@@ -1172,9 +1188,13 @@ window.processQuickPrice = async (id) => {
 
     sLoad('Menyimpan Harga...');
     try {
-        const prodRef = db.collection("freshmart").doc("cms_data").collection("products").doc(id.toString());
+        const _db = (typeof db !== 'undefined' && db) ? db : window.db;
+        const _save = typeof saveApp === 'function' ? saveApp : (window.saveApp || (async () => {}));
+        if (!_db) throw new Error("Database Firebase belum terhubung");
+
+        const prodRef = _db.collection("freshmart").doc("cms_data").collection("products").doc(id.toString());
         let updated = null;
-        await db.runTransaction(async (transaction) => {
+        await _db.runTransaction(async (transaction) => {
             const docSnap = await transaction.get(prodRef);
             if (!docSnap.exists) throw new Error("Produk tidak ditemukan di server");
             const serverProd = JSON.parse(JSON.stringify(docSnap.data()));
@@ -1205,7 +1225,7 @@ window.processQuickPrice = async (id) => {
             updated = serverProd;
         });
         appData.products[idx] = updated;
-        await saveApp([]); // lastUpdate otomatis dihitung server (lihat definisi saveApp)
+        await _save([]); // lastUpdate otomatis dihitung server (lihat definisi saveApp)
         closeQuickPriceModal();
         rAdmItms('products');
         showToast("✅ Harga berhasil diperbarui!");
@@ -1291,11 +1311,14 @@ window.toggleProductStatus = async (id, toActive) => {
         appData.products[i].isActive = toActive ? 'true' : 'false';
         sLoad(toActive ? 'Mengaktifkan...' : 'Menonaktifkan...');
         try {
-            await db.collection("freshmart").doc("cms_data").collection("products").doc(id.toString()).update({isActive: toActive ? 'true' : 'false'});
-            await saveApp([]); // lastUpdate otomatis dihitung server (lihat definisi saveApp) rAdmItms('products');
+            const _db = (typeof db !== 'undefined' && db) ? db : window.db;
+            const _save = typeof saveApp === 'function' ? saveApp : (window.saveApp || (async () => {}));
+            if (!_db) throw new Error("Database Firebase belum terhubung");
+            await _db.collection("freshmart").doc("cms_data").collection("products").doc(id.toString()).update({isActive: toActive ? 'true' : 'false'});
+            await _save([]); // lastUpdate otomatis dihitung server (lihat definisi saveApp) rAdmItms('products');
             setIn('stat-products', appData.products.filter(p => p.isActive !== 'false' && p.isActive !== false).length); // FIX: sync badge
-        showToast(toActive ? "Produk Aktif!" : "Stok Dikosongkan!");
-        } catch(e) { showToast("Gagal update status!"); }
+            showToast(toActive ? "Produk Aktif!" : "Stok Dikosongkan!");
+        } catch(e) { showToast("Gagal update status: " + (e.message || '')); }
         finally { isSaving = false; hLoad(); }
     }
 };
