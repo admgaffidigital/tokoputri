@@ -18,30 +18,55 @@ Aplikasi e-commerce dan manajemen kasir point-of-sales (POS) modern berkinerja t
 
 ---
 
-## 📁 Struktur Kode & Direktori Projek
+## 📁 Struktur Kode & Arsitektur Modular Projek
 
-Untuk mempermudah pemeliharaan (*maintenance*), pelacakan bug (*debugging*), dan penambahan fitur baru oleh pengembang atau agen AI Antigravity di masa depan, berikut adalah peta berkas penting dalam projek ini:
+Projek ini telah dirancang dengan **arsitektur modular bersih** untuk menjaga kode tetap rapi, mudah dirawat, dan cepat saat pengembangan. Pengembang maupun agen AI Antigravity **WAJIB bekerja pada modul masing-masing di `src/modules/`**, bukan menumpuk markup monolitik di `index.html`.
 
 ```
-├── dist/                  # Folder hasil kompilasi produksi (siap dideploy ke hosting)
-├── node_modules/          # Pustaka/dependencies Node.js (diabaikan oleh Git)
+├── dist/                          # Hasil kompilasi produksi Vite (siap deploy)
+├── 1. HASIL_BUILD_SIAP_PAKE/      # Salinan build produksi bersih
+├── PAKET_FLASHDISK/               # Paket distribusi untuk klien/pembeli
+│   ├── 1. FILE_SIAP_PAKAI/        # File build siap pakai (drag & drop Netlify)
+│   ├── 2. SOURCE_CODE_LENGKAP/    # Salinan source code lengkap
+│   └── 3. PANDUAN_DAN_TUTORIAL/   # Panduan instalasi dan tutorial pemakaian
 ├── src/
-│   ├── db.js              # Inisialisasi Firebase App dan modul Firestore
-│   ├── main.js            # Inti logika aplikasi (event handler, state management, render view, POS logic)
-│   └── style.css          # Kustomisasi CSS Tailwind dan override styling visual
-├── _scripts/              # Skrip bantu & utilitas migrasi database (git-ignored)
-├── index.html             # Dokumen HTML utama (kerangka UI, modal-modal, dan script tag entry point)
-├── tailwind.config.js     # Konfigurasi utility classes Tailwind CSS
-├── vite.config.js         # Konfigurasi bundler Vite (port server dev: 3000)
-├── postcss.config.js      # Konfigurasi pemrosesan CSS
-├── package.json           # Definisi dependencies & script CLI projek
-└── README.md              # Dokumentasi teknis & kredit pengembang (berkas ini)
+│   ├── config/                    # Inisialisasi & konfigurasi (Firebase, db, auth, analytics)
+│   │   └── firebase.js
+│   ├── core/                      # Fondasi state, tema, router, dan utilitas global
+│   │   ├── state.js               # Reactive app state & store defaults
+│   │   ├── theme.js               # Palet tema dinamis, mode gelap, & background engine
+│   │   ├── router.js              # SPA router & history navigation
+│   │   ├── ui.js                  # Dialog UI (toast, confirm, prompt)
+│   │   ├── pricing.js             # Logika hitung harga, diskon, & kalkulator ongkir
+│   │   └── utils.js               # Helper functions stateless
+│   ├── modules/                   # Komponen fitur modular independen
+│   │   ├── home/                  # Beranda (banner slider, dynamic sections, footer component)
+│   │   ├── catalog/               # Katalog produk, filter, sorting, & modal detail produk
+│   │   ├── cart/                  # Keranjang belanja, wishlist, & checkout pesanan
+│   │   ├── orders/                # Riwayat pesanan, lacak status, & ulasan produk
+│   │   ├── member/                # Poin loyalitas, klaim reward, & voucher promo
+│   │   ├── admin/                 # CMS Seller (produk, pesanan, tempo/piutang, keuangan, settings)
+│   │   ├── faq/                   # Tanya jawab interaktif pelanggan & moderasi admin
+│   │   ├── print/                 # Cetak thermal POS, invoice A4, & surat jalan
+│   │   └── storefront/            # Modal cepat (kategori, brand, quick menu, syarat ketentuan)
+│   ├── services/                  # Komunikasi data eksternal
+│   │   ├── storage.js             # Cache IndexedDB, delta sync, & penghemat kuota Firestore
+│   │   ├── upload.js              # Unggah media produk & bukti bayar (Google Apps Script / Drive)
+│   │   └── gas.js                 # Endpoint Google Apps Script
+│   ├── main.js                    # Entry point aplikasi (orquestrator modul & startup)
+│   └── style.css                  # Desain CSS Tailwind & styling tema solid
+├── index.html                     # Root mount shell (wadah mount point aplikasi SPA)
+├── tailwind.config.js             # Konfigurasi utility classes Tailwind CSS
+├── vite.config.js                 # Konfigurasi bundler Vite (port server dev: 3000)
+├── postcss.config.js              # Konfigurasi pemrosesan CSS
+├── package.json                   # Definisi dependencies & script CLI projek
+└── README.md                      # Dokumentasi teknis & kredit pengembang (berkas ini)
 ```
 
-### Penjelasan Komponen Utama:
-1. **`index.html`**: Berisi seluruh markup halaman utama, layout kasir, panel pengaturan admin, modal ulasan, struk belanja thermal, modal rincian transaksi tempo, serta preview A4 invoice/surat jalan.
-2. **`src/main.js`**: Menyimpan seluruh state aplikasi (`appData.store`, `cart`, dll.), integrasi database Firestore, logika transaksi kasir & POS, aturan validasi pembayaran bukti transfer/tempo, penghitungan pajak/diskon member, serta form Kategori UI UX.
-3. **`src/db.js`**: Mengonfigurasi koneksi ke database Firestore koleksi `freshmart` (untuk produk/kategori) dan `freshmart_orders` (untuk pesanan).
+### ⚠️ Aturan Penting Pengembang:
+1. **`index.html` adalah Root Shell**: File `index.html` hanya berfungsi sebagai wadah mount point (misalnya `<div id="storefront-footer-container"></div>` atau `<div id="product-container"></div>`). **Dilarang keras menumpuk markup HTML monolitik ratusan baris di dalam `index.html`**.
+2. **Bekerja pada Modul yang Tepat**: Seluruh logika, templat rendering, dan handler fitur harus dikerjakan di dalam sub-folder `src/modules/` yang bersesuaian.
+3. **Penyimpanan Data & Quota-Friendly**: Gunakan `src/services/storage.js` untuk interaksi data Firestore agar kuota tetap hemat dan tidak boros get/read.
 
 ---
 
