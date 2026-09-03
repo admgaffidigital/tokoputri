@@ -68,7 +68,7 @@ let activeColors   = applyUITheme(savedUITheme, localStorage.getItem('freshmart_
 // Inisialisasi gaya background dari cache lokal
 const initBg = () => {
     initThemeIcon();
-    const savedBgStyle = localStorage.getItem('freshmart_bg_style') || 'hero_arch';
+    const savedBgStyle = localStorage.getItem('freshmart_bg_style') || 'minimalist';
     const savedBgUrl = localStorage.getItem('freshmart_bg_custom_url') || '';
     applyBackgroundStyle(savedBgStyle, savedBgUrl);
 };

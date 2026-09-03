@@ -127,15 +127,14 @@ export const initThemeIcon = () => {
 
 // ─── Background Style Engine ─────────────────────────────────
 /**
- * Terapkan gaya visual latar belakang toko & CMS (Tajam & Nyata, Non-Blur).
- * Mendukung 5 preset (hero_arch, geometric_3d, diagonal_skew, dual_tone, minimalist)
- * dan wallpaper gambar kustom yang menyatu ke seluruh elemen website.
+ * Terapkan gaya visual latar belakang toko & CMS.
+ * Default ke 'minimalist' (polos bersih elegan solid tanpa corak ramai).
  *
- * @param {string} bgStyle - 'hero_arch' | 'geometric_3d' | 'diagonal_skew' | 'dual_tone' | 'minimalist'
+ * @param {string} bgStyle - 'minimalist' | 'hero_arch' | 'geometric_3d' | 'diagonal_skew' | 'dual_tone'
  * @param {string} customBgUrl - URL gambar wallpaper kustom opsional
  */
-export const applyBackgroundStyle = (bgStyle = 'hero_arch', customBgUrl = '') => {
-    const style = bgStyle || localStorage.getItem('freshmart_bg_style') || 'hero_arch';
+export const applyBackgroundStyle = (bgStyle = 'minimalist', customBgUrl = '') => {
+    const style = bgStyle || localStorage.getItem('freshmart_bg_style') || 'minimalist';
     const bgUrl = customBgUrl !== undefined && customBgUrl !== null
         ? customBgUrl
         : (localStorage.getItem('freshmart_bg_custom_url') || '');
@@ -156,87 +155,53 @@ export const applyBackgroundStyle = (bgStyle = 'hero_arch', customBgUrl = '') =>
 
     // Kosongkan container lama
     container.innerHTML = '';
-    container.className = "pointer-events-none fixed inset-0 z-0 overflow-hidden transition-all duration-500";
+    container.className = "pointer-events-none fixed inset-0 z-0 overflow-hidden";
 
     // 1. Wallpaper Gambar Kustom jika diisi
     if (bgUrl && typeof bgUrl === 'string' && bgUrl.trim()) {
         const customImgDiv = document.createElement('div');
-        customImgDiv.className = "absolute inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-35 dark:opacity-25 pointer-events-none transition-opacity duration-300";
+        customImgDiv.className = "absolute inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-20 dark:opacity-15 pointer-events-none";
         customImgDiv.style.backgroundImage = `url('${bgUrl.trim()}')`;
         container.appendChild(customImgDiv);
 
         const overlay = document.createElement('div');
-        overlay.className = "absolute inset-0 z-0 bg-gradient-to-b from-slate-50/60 via-transparent to-slate-50/80 dark:from-[#0b1120]/75 dark:via-transparent dark:to-[#0b1120]/90 pointer-events-none";
+        overlay.className = "absolute inset-0 z-0 bg-slate-50/70 dark:bg-[#0b1120]/80 pointer-events-none";
         container.appendChild(overlay);
     }
 
-    // 2. Vector Shapes sesuai Preset yang Dipilih (Non-Blur, Tajam, Ringan & Nyata)
+    // 2. Vector Shapes (Bersih, Halus, Bebas Shadow & Tidak Bikin Pusing)
     let shapesHtml = '';
 
     if (style === 'hero_arch') {
-        // Hero Arch: Kubah lengkung solid anggun di area atas + lingkaran aksen presisi + wave bawah
         shapesHtml = `
-            <!-- Top Hero Arch Solid Dome Frame -->
-            <div class="absolute -top-16 left-1/2 -translate-x-1/2 w-[140%] max-w-[1500px] h-80 md:h-[26rem] rounded-b-[100%] bg-gradient-to-b from-[rgba(var(--color-primary-rgb),0.20)] via-[rgba(var(--color-primary-rgb),0.08)] to-transparent dark:from-[rgba(var(--color-primary-rgb),0.28)] dark:via-[rgba(var(--color-primary-rgb),0.10)] border-b-2 border-[rgba(var(--color-primary-rgb),0.3)] pointer-events-none"></div>
-            <!-- Concentric Arch Rings -->
-            <div class="absolute -top-24 left-1/2 -translate-x-1/2 w-[115%] max-w-[1250px] h-64 md:h-80 rounded-b-[100%] border-b border-dashed border-[rgba(var(--color-primary-rgb),0.22)] pointer-events-none"></div>
-            <!-- Crisp Vector Accent Circles -->
-            <div class="absolute -right-16 top-1/4 h-80 w-80 rounded-full border-2 border-[rgba(var(--color-primary-rgb),0.2)] bg-[rgba(var(--color-primary-rgb),0.06)] dark:bg-[rgba(var(--color-primary-rgb),0.09)] pointer-events-none"></div>
-            <div class="absolute -left-20 top-3/5 h-96 w-96 rounded-full border-2 border-[rgba(var(--color-primary-rgb),0.18)] bg-[rgba(var(--color-primary-rgb),0.05)] dark:bg-[rgba(var(--color-primary-rgb),0.08)] pointer-events-none"></div>
-            <!-- Bottom Curved Wave Accent -->
-            <svg class="absolute bottom-0 left-0 w-full opacity-20 dark:opacity-25 pointer-events-none rotate-180" viewBox="0 0 1440 320" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M0,160L48,176C96,192,192,224,288,213.3C384,203,480,149,576,144C672,139,768,181,864,186.7C960,192,1056,160,1152,149.3C1248,139,1344,149,1392,154.7L1440,160L1440,0L1392,0C1344,0,1248,0,1152,0C1056,0,960,0,864,0C768,0,672,0,576,0C480,0,384,0,288,0C192,0,96,0,48,0L0,0Z" fill="currentColor" class="text-[var(--color-primary)]"></path>
-            </svg>
+            <!-- Soft Minimal Arch Header Line -->
+            <div class="absolute -top-24 left-1/2 -translate-x-1/2 w-[120%] max-w-[1400px] h-64 rounded-b-[100%] border-b border-[rgba(var(--color-primary-rgb),0.12)] pointer-events-none"></div>
         `;
     } else if (style === 'geometric_3d') {
-        // Geometris 3D: Pola isometric polygonal, kubus 3D berlapis, dan micro tech grid
         shapesHtml = `
-            <!-- Tech Isometric Grid Matrix -->
-            <div class="absolute inset-0 opacity-20 dark:opacity-25 pointer-events-none" style="background-image: radial-gradient(rgba(var(--color-primary-rgb),0.5) 1.5px, transparent 1.5px); background-size: 24px 24px;"></div>
-            <!-- Large Isometric Rhombus Top Right -->
-            <div class="absolute -top-12 -right-12 w-80 h-80 border-2 border-[rgba(var(--color-primary-rgb),0.3)] bg-[rgba(var(--color-primary-rgb),0.08)] transform rotate-45 rounded-3xl pointer-events-none shadow-sm"></div>
-            <div class="absolute top-16 right-16 w-44 h-44 border-2 border-[rgba(var(--color-primary-rgb),0.35)] bg-[rgba(var(--color-primary-rgb),0.10)] transform rotate-12 rounded-2xl pointer-events-none"></div>
-            <!-- Isometric Polygon Mid Left -->
-            <div class="absolute top-1/3 -left-20 w-80 h-80 border-2 border-[rgba(var(--color-primary-rgb),0.25)] bg-[rgba(var(--color-primary-rgb),0.07)] transform -rotate-12 rounded-3xl pointer-events-none"></div>
-            <!-- Hexagonal Node Bottom Left -->
-            <div class="absolute bottom-16 -left-12 w-64 h-64 border-2 border-dashed border-[rgba(var(--color-primary-rgb),0.25)] transform rotate-45 rounded-2xl pointer-events-none"></div>
-            <!-- Isometric Diamond Bottom Right -->
-            <div class="absolute -bottom-16 -right-12 w-88 h-88 border-2 border-[rgba(var(--color-primary-rgb),0.25)] bg-[rgba(var(--color-primary-rgb),0.07)] transform rotate-45 rounded-3xl pointer-events-none"></div>
+            <!-- Subtle Micro Grid Matrix -->
+            <div class="absolute inset-0 opacity-10 dark:opacity-15 pointer-events-none" style="background-image: radial-gradient(rgba(var(--color-primary-rgb),0.4) 1px, transparent 1px); background-size: 24px 24px;"></div>
         `;
     } else if (style === 'diagonal_skew') {
-        // Diagonal Skew: Header dinamis sudut miring tajam & striping garis kecepatan presisi
         shapesHtml = `
-            <!-- Top Diagonal Skew Banner Block -->
-            <div class="absolute -top-20 left-0 w-full h-80 bg-gradient-to-br from-[rgba(var(--color-primary-rgb),0.25)] via-[rgba(var(--color-primary-rgb),0.12)] to-transparent border-b-2 border-[rgba(var(--color-primary-rgb),0.35)] transform -skew-y-3 origin-top-left pointer-events-none"></div>
-            <!-- Parallel Dynamic Stripes -->
-            <div class="absolute top-1/4 -left-10 w-[125%] h-16 bg-[rgba(var(--color-primary-rgb),0.05)] border-y border-[rgba(var(--color-primary-rgb),0.18)] transform skew-y-6 pointer-events-none"></div>
-            <div class="absolute top-2/3 -left-10 w-[125%] h-24 bg-[rgba(var(--color-primary-rgb),0.06)] border-y border-[rgba(var(--color-primary-rgb),0.2)] transform -skew-y-6 pointer-events-none"></div>
-            <!-- Bottom Corner Dynamic Cut -->
-            <div class="absolute -bottom-16 right-0 w-full h-64 bg-gradient-to-tl from-[rgba(var(--color-primary-rgb),0.18)] to-transparent border-t-2 border-[rgba(var(--color-primary-rgb),0.3)] transform -skew-y-3 origin-bottom-right pointer-events-none"></div>
+            <!-- Soft Clean Diagonal Divider Line -->
+            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[rgba(var(--color-primary-rgb),0.3)] to-transparent pointer-events-none"></div>
         `;
     } else if (style === 'dual_tone') {
-        // Dual-Tone: Blok solid bertingkat 2 warna kontras yang tegas
         shapesHtml = `
-            <!-- Upper Solid Layer Contrast Block -->
-            <div class="absolute top-0 left-0 w-full h-60 bg-gradient-to-b from-[rgba(var(--color-primary-rgb),0.25)] via-[rgba(var(--color-primary-rgb),0.10)] to-transparent border-b-2 border-[rgba(var(--color-primary-rgb),0.3)] pointer-events-none"></div>
-            <!-- Stepped Right Block -->
-            <div class="absolute top-16 right-0 w-3/4 md:w-1/2 h-72 bg-gradient-to-l from-[rgba(var(--color-primary-rgb),0.18)] via-[rgba(var(--color-primary-rgb),0.08)] to-transparent border-l-2 border-b-2 border-[rgba(var(--color-primary-rgb),0.3)] rounded-bl-3xl pointer-events-none"></div>
-            <!-- Stepped Left Block Bottom -->
-            <div class="absolute bottom-0 left-0 w-3/4 md:w-1/2 h-64 bg-gradient-to-r from-[rgba(var(--color-primary-rgb),0.16)] via-[rgba(var(--color-primary-rgb),0.06)] to-transparent border-r-2 border-t-2 border-[rgba(var(--color-primary-rgb),0.25)] rounded-tr-3xl pointer-events-none"></div>
+            <!-- Subtle Top Boundary Strip -->
+            <div class="absolute top-0 left-0 w-full h-1 bg-[rgba(var(--color-primary-rgb),0.15)] pointer-events-none"></div>
         `;
     } else {
-        // Minimalis: Polos bersih elegan dengan micro dot matrix subtle & aksen strip emas/primary halus
-        shapesHtml = `
-            <!-- Crisp Micro Dot Pattern -->
-            <div class="absolute inset-0 opacity-15 dark:opacity-20 pointer-events-none" style="background-image: radial-gradient(rgba(var(--color-primary-rgb),0.4) 1px, transparent 1px); background-size: 28px 28px;"></div>
-            <!-- Subtle Top Accent Glow Line -->
-            <div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-transparent via-[var(--color-primary)] to-transparent opacity-60"></div>
-        `;
+        // Minimalis: Polos bersih, elegan, solid, bebas corak ramai atau bayangan
+        shapesHtml = ``;
     }
 
-    const vectorDiv = document.createElement('div');
-    vectorDiv.className = "absolute inset-0 z-0 pointer-events-none";
-    vectorDiv.innerHTML = shapesHtml;
-    container.appendChild(vectorDiv);
+    if (shapesHtml) {
+        const vectorDiv = document.createElement('div');
+        vectorDiv.className = "absolute inset-0 z-0 pointer-events-none";
+        vectorDiv.innerHTML = shapesHtml;
+        container.appendChild(vectorDiv);
+    }
 };
 

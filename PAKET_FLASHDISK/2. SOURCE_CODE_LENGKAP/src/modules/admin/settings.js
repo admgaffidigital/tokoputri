@@ -48,7 +48,7 @@ export const syncAppMeta = () => {
         applyUITheme(appData.store.uiTheme);
     }
 
-    const sBgStyle = appData.store.bgStyle || localStorage.getItem('freshmart_bg_style') || 'hero_arch';
+    const sBgStyle = appData.store.bgStyle || localStorage.getItem('freshmart_bg_style') || 'minimalist';
     const sBgCustom = appData.store.bgCustomUrl !== undefined ? appData.store.bgCustomUrl : (localStorage.getItem('freshmart_bg_custom_url') || '');
     applyBackgroundStyle(sBgStyle, sBgCustom);
 };
@@ -186,7 +186,7 @@ export const openSettingForm = (type) => {
         colorTheme = { line: "bg-[var(--color-primary)]", box: "bg-[rgba(var(--color-primary-rgb),0.08)] text-[var(--color-primary)]" };
         
         const currentTheme = appData.store.uiTheme || 'emerald';
-        const currentBgStyle = appData.store.bgStyle || localStorage.getItem('freshmart_bg_style') || 'hero_arch';
+        const currentBgStyle = appData.store.bgStyle || localStorage.getItem('freshmart_bg_style') || 'minimalist';
         const presetNames = {
             emerald: "Emerald", teal: "Teal", lime: "Lime", cyan: "Cyan", sky: "Sky",
             blue: "Blue", indigo: "Indigo", violet: "Violet", purple: "Purple",

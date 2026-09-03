@@ -569,24 +569,8 @@
     </div>
     <div id="thermal-print-section"></div>
     <div class="relative w-full bg-slate-50 dark:bg-[#0b1120] overflow-hidden min-h-screen" id="app-container">
-      <!-- DEKORASI BACKGROUND SHAPES & WAVES DINAMIS (Sharp Crisp Vector Shapes - TANPA BLUR) -->
-      <div id="dynamic-bg-container" class="pointer-events-none fixed inset-0 z-0 overflow-hidden">
-        <!-- Static Vector Circle Accent 1 (Crisp & Clean) -->
-        <div class="absolute -right-20 top-1/6 h-96 w-96 rounded-full border border-[rgba(var(--color-primary-rgb),0.12)] bg-[rgba(var(--color-primary-rgb),0.06)] dark:bg-[rgba(var(--color-primary-rgb),0.08)] pointer-events-none"></div>
-
-        <!-- Static Vector Circle Accent 2 (Crisp & Clean) -->
-        <div class="absolute -left-24 top-1/2 h-[26rem] w-[26rem] rounded-full border border-[rgba(var(--color-primary-rgb),0.10)] bg-[rgba(var(--color-primary-rgb),0.05)] dark:bg-[rgba(var(--color-primary-rgb),0.07)] pointer-events-none"></div>
-
-        <!-- Curved Wave SVG Accent Top (Tajam & Jelas) -->
-        <svg class="absolute top-0 left-0 w-full opacity-15 dark:opacity-20 pointer-events-none" viewBox="0 0 1440 320" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M0,160L48,176C96,192,192,224,288,213.3C384,203,480,149,576,144C672,139,768,181,864,186.7C960,192,1056,160,1152,149.3C1248,139,1344,149,1392,154.7L1440,160L1440,0L1392,0C1344,0,1248,0,1152,0C1056,0,960,0,864,0C768,0,672,0,576,0C480,0,384,0,288,0C192,0,96,0,48,0L0,0Z" fill="currentColor" class="text-[var(--color-primary)]"></path>
-        </svg>
-
-        <!-- Curved Wave SVG Accent Bottom (Tajam & Jelas) -->
-        <svg class="absolute bottom-0 left-0 w-full opacity-12 dark:opacity-18 pointer-events-none rotate-180" viewBox="0 0 1440 320" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M0,160L48,176C96,192,192,224,288,213.3C384,203,480,149,576,144C672,139,768,181,864,186.7C960,192,1056,160,1152,149.3C1248,139,1344,149,1392,154.7L1440,160L1440,0L1392,0C1344,0,1248,0,1152,0C1056,0,960,0,864,0C768,0,672,0,576,0C480,0,384,0,288,0C192,0,96,0,48,0L0,0Z" fill="currentColor" class="text-[var(--color-primary-dark)]"></path>
-        </svg>
-      </div>
+      <!-- DEKORASI BACKGROUND (BERSIH, SOLID & BEBAS CORAK YANG MENGGANGGU) -->
+      <div id="dynamic-bg-container" class="pointer-events-none fixed inset-0 z-0 overflow-hidden"></div>
       <div class="view-section fade-in flex flex-col relative z-10" id="view-catalog">
         <div class="glass-header sticky top-0 z-30 flex shrink-0 items-center justify-center px-5 pb-3">
           <div class="mx-auto flex w-full items-center justify-between gap-4 px-4 lg:px-10 xl:max-w-[1200px]">
@@ -666,110 +650,187 @@
               <button class="inline-flex items-center gap-2 rounded-2xl border border-slate-200 bg-white px-8 py-3.5 text-xs font-bold text-slate-600 shadow-sm transition-all hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] hover:shadow-md active:scale-95 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300" onclick="loadMoreProducts()">Muat Lebih Banyak <i class="fa-solid fa-chevron-down text-[10px]"></i></button>
             </div>
             <div class="mb-2 mt-8 hidden overflow-hidden rounded-2xl" id="ad-slot-catalog-end"></div>
-          <!-- ================= FOOTER TOKO RESMI (MINIMALIS, BERSIH, SOLID & BEBAS SHADOW) ================= -->
-          <footer class="themed-footer relative mt-12 w-full pb-[calc(6.5rem+env(safe-area-inset-bottom))] sm:pb-[calc(3.5rem+env(safe-area-inset-bottom))]">
-            <div class="mx-auto w-full px-5 py-10 sm:px-6 lg:px-8 xl:max-w-[1200px]">
-              <div class="grid grid-cols-1 gap-8 md:grid-cols-12 lg:gap-10">
-                <!-- Kolom 1: Profil & Identitas Toko -->
-                <div class="flex flex-col items-start text-left md:col-span-6 lg:col-span-5">
-                  <div class="mb-3 flex items-center gap-3">
-                    <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white p-2">
-                      <img alt="Logo Toko" class="hidden h-full w-full max-h-9 max-w-9 object-contain" id="footer-store-logo-img" loading="lazy" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" />
+          <!-- ================= FOOTER TOKO RESMI (MODERN 4-KOLOM, SOLID THEMED, RESPONSIF) ================= -->
+          <footer class="themed-footer relative mt-14 w-full overflow-hidden pb-[calc(6.5rem+env(safe-area-inset-bottom))] sm:pb-[calc(3.5rem+env(safe-area-inset-bottom))]">
+            <div class="relative z-10 mx-auto w-full px-4 sm:px-6 lg:px-8 xl:max-w-[1240px] pt-10 sm:pt-12 pb-8">
+              <!-- Responsive Grid:
+                   - HP: 1 col stack (Profil, Belanja & Bantuan side-by-side, Hubungi Kami)
+                   - Tablet: 2 col balanced (md:grid-cols-12)
+                   - Desktop: 4 col clean layout (4 - 2 - 2 - 4)
+              -->
+              <div class="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-10">
+                <!-- Kolom 1: Profil Perusahaan & Brand -->
+                <div class="flex flex-col items-start text-left md:col-span-6 lg:col-span-4">
+                  <div class="mb-4 flex items-center gap-3">
+                    <div class="flex h-12 w-12 sm:h-13 sm:w-13 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-white/30 bg-white p-2">
+                      <img alt="Logo Toko" class="hidden h-full w-full max-h-10 max-w-10 object-contain" id="footer-store-logo-img" loading="lazy" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" />
                       <i class="fa-solid fa-store text-2xl text-[var(--color-primary)]" id="footer-store-logo-icon"></i>
                     </div>
-                    <div>
-                      <h3 class="text-lg font-black tracking-tight text-white leading-tight" id="footer-store-name">CV RESTU KARYA UTAMA</h3>
-                      <p class="text-[10px] font-bold uppercase tracking-wider text-white/75">Official Store</p>
+                    <div class="flex flex-col items-start min-w-0">
+                      <h3 class="text-base sm:text-lg font-black tracking-tight text-white leading-tight truncate max-w-full" id="footer-store-name">CV RESTU KARYA UTAMA</h3>
+                      <span class="mt-1 inline-flex items-center gap-1 rounded border border-white/30 bg-white/20 px-2 py-0.5 text-[9px] font-bold uppercase tracking-widest text-white">
+                        <i class="fa-solid fa-circle-check text-emerald-300"></i> Verified Official Store
+                      </span>
                     </div>
                   </div>
 
-                  <p class="mb-4 max-w-md text-xs font-normal leading-relaxed text-white/85" id="footer-store-desc">
+                  <p class="mb-4 max-w-md text-xs font-normal leading-relaxed text-white/90" id="footer-store-desc">
                     Toko Bahan Material Bangunan dan Perkakas Tukang. Melayani Pembelian secara Online dan Offline dengan jaminan kualitas terbaik.
                   </p>
 
-                  <!-- Alamat Toko Fisik -->
-                  <div id="footer-store-address-wrap" class="hidden text-xs text-white/85 flex items-start gap-2 max-w-md mb-2">
-                    <i class="fa-solid fa-location-dot text-white/70 mt-0.5 shrink-0 text-xs"></i>
+                  <!-- Live Operating Status Pill -->
+                  <div class="mb-3 inline-flex items-center gap-2 rounded-lg border border-white/20 bg-white/10 px-2.5 py-1 text-[10px] font-semibold text-white">
+                    <span class="relative flex h-2 w-2">
+                      <span class="relative inline-flex h-2 w-2 rounded-full bg-emerald-300"></span>
+                    </span>
+                    Melayani Pembelian Online &amp; Pengiriman Kargo
+                  </div>
+
+                  <!-- Store Address (if configured) -->
+                  <div id="footer-store-address-wrap" class="hidden text-xs text-white/90 flex items-start gap-2 max-w-md">
+                    <i class="fa-solid fa-location-dot text-amber-300 mt-0.5 shrink-0 text-sm"></i>
                     <span id="footer-store-address" class="leading-relaxed">Alamat Toko</span>
                   </div>
                 </div>
 
-                <!-- Kolom 2: Navigasi Cepat -->
-                <div class="flex flex-col items-start text-left md:col-span-3 lg:col-span-3">
-                  <h4 class="mb-3 text-xs font-black uppercase tracking-wider text-white">
-                    Navigasi
-                  </h4>
-                  <ul class="space-y-2 text-xs font-semibold text-white/85">
-                    <li><a class="hover:text-white transition-colors" href="javascript:void(0)" onclick="changeView('view-catalog')">Katalog Produk</a></li>
-                    <li><a class="hover:text-white transition-colors" href="javascript:void(0)" onclick="changeView('view-cart')">Keranjang Belanja</a></li>
-                    <li><a class="hover:text-white transition-colors" href="javascript:void(0)" onclick="changeView('view-orders')">Lacak Pesanan</a></li>
-                    <li><a class="hover:text-white transition-colors" href="javascript:void(0)" onclick="changeView('view-faq')">Panduan &amp; FAQ</a></li>
-                    <li><a class="text-white/60 hover:text-white transition-colors" href="javascript:void(0)" onclick="changeView('view-admin-login')">Portal Admin</a></li>
-                  </ul>
+                <!-- Wrapper Kolom 2 & 3:
+                     On Mobile: side by side (grid-cols-2)
+                     On Tablet/Desktop: contents (expands into 12-col grid)
+                -->
+                <div class="grid grid-cols-2 gap-4 md:contents">
+                  <!-- Kolom 2: Navigasi Belanja Cepat -->
+                  <div class="flex flex-col items-start text-left md:col-span-3 lg:col-span-2">
+                    <h4 class="mb-3 text-[11px] font-black uppercase tracking-wider text-white border-b border-white/20 pb-2 w-full">
+                      Belanja Cepat
+                    </h4>
+                    <ul class="space-y-2.5 w-full text-xs font-semibold text-white/85">
+                      <li><a class="flex items-center gap-1.5 hover:text-white transition-colors" href="javascript:void(0)" onclick="changeView('view-catalog')"><i class="fa-solid fa-chevron-right text-[9px] opacity-70"></i> Katalog Produk</a></li>
+                      <li><a class="flex items-center gap-1.5 hover:text-white transition-colors" href="javascript:void(0)" onclick="changeView('view-cart')"><i class="fa-solid fa-chevron-right text-[9px] opacity-70"></i> Keranjang</a></li>
+                      <li><a class="flex items-center gap-1.5 hover:text-white transition-colors" href="javascript:void(0)" onclick="changeView('view-wishlist')"><i class="fa-solid fa-chevron-right text-[9px] opacity-70"></i> Produk Favorit</a></li>
+                      <li><a class="flex items-center gap-1.5 hover:text-white transition-colors" href="javascript:void(0)" onclick="if(typeof window.openVoucherModal==='function') window.openVoucherModal(); else if(typeof window.showToast==='function') window.showToast('Gunakan kupon saat checkout!');"><i class="fa-solid fa-chevron-right text-[9px] opacity-70"></i> Kupon Promo</a></li>
+                      <li><a class="flex items-center gap-1.5 hover:text-white transition-colors" href="javascript:void(0)" onclick="if(typeof window.openMemberModal==='function') window.openMemberModal();"><i class="fa-solid fa-chevron-right text-[9px] opacity-70"></i> Poin Member</a></li>
+                    </ul>
+                  </div>
+
+                  <!-- Kolom 3: Layanan & Informasi -->
+                  <div class="flex flex-col items-start text-left md:col-span-3 lg:col-span-2">
+                    <h4 class="mb-3 text-[11px] font-black uppercase tracking-wider text-white border-b border-white/20 pb-2 w-full">
+                      Bantuan
+                    </h4>
+                    <ul class="space-y-2.5 w-full text-xs font-semibold text-white/85">
+                      <li><a class="flex items-center gap-1.5 hover:text-white transition-colors" href="javascript:void(0)" onclick="changeView('view-orders')"><i class="fa-solid fa-chevron-right text-[9px] opacity-70"></i> Lacak Pesanan</a></li>
+                      <li><a class="flex items-center gap-1.5 hover:text-white transition-colors" href="javascript:void(0)" onclick="changeView('view-faq')"><i class="fa-solid fa-chevron-right text-[9px] opacity-70"></i> Panduan &amp; FAQ</a></li>
+                      <li><a class="flex items-center gap-1.5 hover:text-white transition-colors" href="javascript:void(0)" onclick="if(typeof window.showToast==='function') window.showToast('Produk 100% original bergaransi resmi toko.');"><i class="fa-solid fa-chevron-right text-[9px] opacity-70"></i> Jaminan Mutu</a></li>
+                      <li><a class="flex items-center gap-1.5 hover:text-white transition-colors" href="javascript:void(0)" onclick="if(typeof window.showToast==='function') window.showToast('Seluruh transaksi terenkripsi aman.');"><i class="fa-solid fa-chevron-right text-[9px] opacity-70"></i> Keamanan</a></li>
+                      <li><a class="flex items-center gap-1.5 text-white/70 hover:text-white transition-colors" href="javascript:void(0)" onclick="changeView('view-admin-login')"><i class="fa-solid fa-lock text-[8px] opacity-70"></i> Portal Admin</a></li>
+                    </ul>
+                  </div>
                 </div>
 
-                <!-- Kolom 3: Hubungi Kami & Jam Operasional -->
-                <div class="flex flex-col items-start text-left md:col-span-3 lg:col-span-4">
-                  <h4 class="mb-3 text-xs font-black uppercase tracking-wider text-white">
+                <!-- Kolom 4: Hubungi Kami & Jam Kerja -->
+                <div class="flex flex-col items-start text-left md:col-span-6 lg:col-span-4">
+                  <h4 class="mb-3 text-[11px] font-black uppercase tracking-wider text-white border-b border-white/20 pb-2 w-full">
                     Hubungi Kami
                   </h4>
-                  <div class="space-y-3 w-full">
-                    <!-- WhatsApp Button -->
-                    <div>
-                      <a
-                        id="footer-wa-link"
-                        class="inline-flex items-center gap-2 rounded-lg bg-white px-4 py-2 text-xs font-bold text-slate-800 transition-colors hover:bg-slate-100 active:bg-slate-200"
-                        href="#"
-                        target="_blank"
-                        onclick="
-                          event.preventDefault();
-                          if (appData.store.wa) window.open('https://wa.me/' + appData.store.wa, '_blank');
-                        "
-                      >
-                        <i class="fa-brands fa-whatsapp text-emerald-600 text-base"></i>
-                        <span>Chat via WhatsApp</span>
-                      </a>
-                    </div>
+                  <div class="w-full space-y-2.5">
+                    <!-- WhatsApp CTA Card (Flat Solid White Card) -->
+                    <a
+                      id="footer-wa-link"
+                      class="flex cursor-pointer items-center gap-3 rounded-xl border border-white/30 bg-white p-3 text-slate-800 transition-colors hover:bg-slate-100 active:bg-slate-200"
+                      href="#"
+                      target="_blank"
+                      onclick="
+                        event.preventDefault();
+                        if (appData.store.wa) window.open('https://wa.me/' + appData.store.wa, '_blank');
+                      "
+                    >
+                      <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-emerald-600 text-white text-xl">
+                        <i class="fa-brands fa-whatsapp"></i>
+                      </div>
+                      <div class="min-w-0 text-left">
+                        <div class="flex items-center gap-1.5">
+                          <span class="h-1.5 w-1.5 rounded-full bg-emerald-600"></span>
+                          <p class="text-[9px] font-extrabold uppercase tracking-widest text-emerald-700">Customer Support</p>
+                        </div>
+                        <p class="truncate text-xs font-black text-slate-900">Konsultasi via WhatsApp</p>
+                        <p class="text-[9px] font-medium text-slate-500">Respon Cepat &amp; Ramah</p>
+                      </div>
+                    </a>
 
-                    <!-- Email -->
-                    <div class="flex items-center gap-2 text-xs text-white/85">
-                      <i class="fa-solid fa-envelope text-white/70"></i>
-                      <a id="footer-email-link" href="mailto:support@restukaryautama.com" class="hover:underline">
-                        <span id="footer-store-email">support@restukaryautama.com</span>
+                    <!-- Email & Hours Card (Flat Solid Translucent) -->
+                    <div class="rounded-xl border border-white/20 bg-white/10 p-3 space-y-2.5 text-white">
+                      <!-- Email -->
+                      <a id="footer-email-link" href="mailto:support@restukaryautama.com" class="flex items-center gap-2.5 text-white hover:text-amber-200 transition-colors">
+                        <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-white/20 bg-white/10 text-white">
+                          <i class="fa-solid fa-envelope text-xs"></i>
+                        </div>
+                        <span class="truncate text-xs font-bold text-white tracking-wide" id="footer-store-email">support@restukaryautama.com</span>
                       </a>
-                    </div>
 
-                    <!-- Operating Hours -->
-                    <div class="flex items-center gap-2 text-xs text-white/85">
-                      <i class="fa-solid fa-clock text-white/70"></i>
-                      <span id="footer-store-hours">Buka Setiap Hari (08:00 - 17:00)</span>
+                      <!-- Operating Hours -->
+                      <div class="flex items-center gap-2.5 text-white">
+                        <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-white/20 bg-white/10 text-white">
+                          <i class="fa-solid fa-clock text-xs text-amber-300"></i>
+                        </div>
+                        <div class="min-w-0 text-left">
+                          <p class="truncate text-xs font-bold text-white tracking-wide" id="footer-store-hours">Buka Setiap Hari (08:00 - 17:00)</p>
+                          <p class="text-[9px] font-medium text-white/75">Pemesanan online 24 jam</p>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
 
-              <!-- Baris Metode Pembayaran & Pengiriman (Subtle & Clean) -->
-              <div class="mt-8 border-t border-white/15 pt-5 text-xs text-white/75 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-                <div class="flex flex-wrap items-center gap-2">
-                  <span class="font-bold text-white/90">Pembayaran:</span>
-                  <span>QRIS • BCA • Mandiri • BRI • Kartu • Kasir Toko</span>
-                </div>
-                <div class="flex flex-wrap items-center gap-2">
-                  <span class="font-bold text-white/90">Pengiriman:</span>
-                  <span>Ekspedisi • Kargo Material • Kurir Instan</span>
+              <!-- Payment & Shipping Badges Row (Solid Flat Badges) -->
+              <div class="mt-8 border-t border-white/20 pt-6">
+                <div class="grid grid-cols-1 gap-6 md:grid-cols-2 md:gap-8 items-start">
+                  <!-- Payment -->
+                  <div class="flex flex-col items-start">
+                    <p class="mb-2.5 text-[10px] font-black uppercase tracking-wider text-white">
+                      <i class="fa-solid fa-credit-card mr-1 text-amber-300"></i> Metode Pembayaran Resmi
+                    </p>
+                    <div class="flex flex-wrap items-center gap-1.5 sm:gap-2">
+                      <span class="inline-flex items-center gap-1.5 rounded-lg border border-white/25 bg-white/15 px-2.5 py-1 text-[11px] font-bold text-white" title="QRIS Standar Nasional"><i class="fa-solid fa-qrcode text-rose-300"></i> QRIS</span>
+                      <span class="inline-flex items-center gap-1.5 rounded-lg border border-white/25 bg-white/15 px-2.5 py-1 text-[11px] font-bold text-white" title="Transfer Bank BCA"><i class="fa-solid fa-building-columns text-blue-300"></i> BCA</span>
+                      <span class="inline-flex items-center gap-1.5 rounded-lg border border-white/25 bg-white/15 px-2.5 py-1 text-[11px] font-bold text-white" title="Transfer Bank Mandiri"><i class="fa-solid fa-building-columns text-amber-300"></i> Mandiri</span>
+                      <span class="inline-flex items-center gap-1.5 rounded-lg border border-white/25 bg-white/15 px-2.5 py-1 text-[11px] font-bold text-white" title="Transfer Bank BRI"><i class="fa-solid fa-building-columns text-sky-300"></i> BRI</span>
+                      <span class="inline-flex items-center gap-1.5 rounded-lg border border-white/25 bg-white/15 px-2.5 py-1 text-[11px] font-bold text-white" title="Visa & Mastercard"><i class="fa-brands fa-cc-visa text-indigo-300"></i> <i class="fa-brands fa-cc-mastercard text-orange-300"></i> Kartu</span>
+                      <span class="inline-flex items-center gap-1.5 rounded-lg border border-white/25 bg-white/15 px-2.5 py-1 text-[11px] font-bold text-white" title="Bayar di Kasir"><i class="fa-solid fa-cash-register text-emerald-300"></i> Kasir Toko</span>
+                    </div>
+                  </div>
+
+                  <!-- Shipping -->
+                  <div class="flex flex-col items-start">
+                    <p class="mb-2.5 text-[10px] font-black uppercase tracking-wider text-white">
+                      <i class="fa-solid fa-truck-fast mr-1 text-amber-300"></i> Jasa Pengiriman &amp; Logistik
+                    </p>
+                    <div class="flex flex-wrap items-center gap-1.5 sm:gap-2">
+                      <span class="inline-flex items-center gap-1.5 rounded-lg border border-white/25 bg-white/15 px-2.5 py-1 text-[11px] font-bold text-white" title="Kirim Cepat Ekspedisi"><i class="fa-solid fa-truck-fast text-white"></i> Ekspedisi Cepat</span>
+                      <span class="inline-flex items-center gap-1.5 rounded-lg border border-white/25 bg-white/15 px-2.5 py-1 text-[11px] font-bold text-white" title="Kargo Truk & Partai Besar"><i class="fa-solid fa-truck-ramp-box text-amber-300"></i> Kargo Material</span>
+                      <span class="inline-flex items-center gap-1.5 rounded-lg border border-white/25 bg-white/15 px-2.5 py-1 text-[11px] font-bold text-white" title="Kurir Instan & Same Day"><i class="fa-solid fa-motorcycle text-emerald-300"></i> Kurir Instan</span>
+                      <span class="inline-flex items-center gap-1.5 rounded-lg border border-white/25 bg-white/15 px-2.5 py-1 text-[11px] font-bold text-white" title="Ambil di Toko Fisik"><i class="fa-solid fa-store text-sky-300"></i> Ambil Sendiri</span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
 
-            <!-- Sub-Footer Bottom Bar -->
-            <div class="border-t border-white/15 bg-black/15 py-3">
-              <div class="mx-auto flex w-full flex-col items-center justify-between gap-2 px-5 text-center sm:px-6 md:flex-row md:text-left lg:px-8 xl:max-w-[1200px]">
-                <p class="text-[11px] font-medium text-white/85">
-                  &#169; <span id="footer-year">2026</span> <span class="font-bold text-white" id="footer-brand">CV RESTU KARYA UTAMA</span>. <span id="footer-credit">Seluruh hak cipta dilindungi.</span>
+            <!-- Sub-Footer Bottom Bar (Clean Solid Bar) -->
+            <div class="border-t border-white/15 bg-black/20 py-3.5">
+              <div class="mx-auto flex w-full flex-col items-center justify-between gap-3 px-4 sm:px-6 md:flex-row lg:px-8 xl:max-w-[1240px]">
+                <p class="text-[11px] font-medium text-white/90 text-center sm:text-left">
+                  &#169; <span id="footer-year">2026</span> <span class="font-extrabold text-white" id="footer-brand">CV RESTU KARYA UTAMA</span>. <span id="footer-credit">Seluruh hak cipta dilindungi undang-undang.</span>
                 </p>
-                <button type="button" onclick="const c = document.querySelector('#view-catalog .scroll-content'); if (c) c.scrollTo({ top: 0, behavior: 'smooth' }); else window.scrollTo({ top: 0, behavior: 'smooth' });" class="inline-flex items-center gap-1 text-[11px] text-white/85 hover:text-white transition-colors cursor-pointer font-semibold">
-                  Kembali ke Atas <i class="fa-solid fa-arrow-up text-[9px]"></i>
-                </button>
+                <div class="flex flex-wrap items-center justify-center gap-3 text-[10px] font-bold text-white">
+                  <span class="flex items-center gap-1 text-emerald-300 font-bold">
+                    <i class="fa-solid fa-lock"></i> SSL Secured
+                  </span>
+                  <span class="text-white/30">•</span>
+                  <button type="button" onclick="const c = document.querySelector('#view-catalog .scroll-content'); if (c) c.scrollTo({ top: 0, behavior: 'smooth' }); else window.scrollTo({ top: 0, behavior: 'smooth' });" class="inline-flex items-center gap-1 text-white hover:underline cursor-pointer active:scale-95 font-bold">
+                    Kembali ke Atas <i class="fa-solid fa-arrow-up text-[9px]"></i>
+                  </button>
+                </div>
               </div>
             </div>
           </footer>
