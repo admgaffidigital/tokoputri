@@ -247,12 +247,14 @@ export const loadProductReviews = async (productId) => {
     }
 };
 
+export const submitProductReview = submitReview;
+
 // ─── Expose ke window untuk onclick di HTML ───────────────
 window.openReviewModal = openReviewModal;
 window.setReviewRating = setReviewRating;
 window.handleReviewPhotoSelect = handleReviewPhotoSelect;
 window.removeReviewPhoto = removeReviewPhoto;
 window.closeReviewModal = closeReviewModal;
-window.submitReview = submitProductReview;
-window.submitProductReview = submitProductReview;
+window.submitReview = submitReview;
+window.submitProductReview = submitReview;
 window.loadProductReviews = loadProductReviews;
