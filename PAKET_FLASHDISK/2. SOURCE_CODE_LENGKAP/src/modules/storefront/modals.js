@@ -53,6 +53,7 @@ export const openCategoryModal = () => {
         setTimeout(() => { m.classList.remove('opacity-0'); c.classList.remove('translate-y-full','sm:translate-y-10'); }, 10);
     }
 };
+window.openCategoryModal = openCategoryModal;
 
 window.openBrandModal = () => {
     let h = ``;

@@ -20,8 +20,8 @@ export const rDyn = () => {
     renderFooter();
 
     // 2. Binding data toko ke header
-    setIn('dyn-store-name', appData.store.name || 'Nama Toko Anda');
-    setIn('dyn-store-slogan', appData.store.slogan || 'Slogan Toko');
+    setIn('dyn-store-name', appData.store.name || 'Toko Putri');
+    setIn('dyn-store-slogan', appData.store.slogan || 'Toko Online & Kasir Resmi');
 
     if (appData.store.logo) {
         const i = el('dyn-store-logo-img'), c = el('dyn-store-logo-icon');

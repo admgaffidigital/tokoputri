@@ -35,7 +35,8 @@ import './modules/faq/index.js';
 import './services/upload.js';
 // Services: Penyimpanan Data & Realtime Sync (Firestore / Cache)
 import './services/storage.js';
-// Modules: Beranda & Banner Slider
+// Modules: Beranda, Banner Slider & Footer
+import { renderFooter } from './modules/home/footer.js';
 import './modules/home/index.js';
 // Modules: Storefront Modals (Kategori, Brand, Quick Menu, Terms, Privacy)
 import './modules/storefront/index.js';
@@ -66,8 +67,6 @@ const savedUITheme = localStorage.getItem('freshmart_ui_theme') || 'emerald';
 let activeColors   = applyUITheme(savedUITheme, localStorage.getItem('freshmart_theme_color'));
 
 // Inisialisasi gaya background dari cache lokal & render awal komponen footer
-import { renderFooter } from './modules/home/footer.js';
-
 const initBg = () => {
     initThemeIcon();
     const savedBgStyle = localStorage.getItem('freshmart_bg_style') || 'minimalist';

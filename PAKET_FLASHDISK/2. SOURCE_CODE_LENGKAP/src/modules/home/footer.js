@@ -17,20 +17,20 @@ export const renderFooter = () => {
     if (!container) return;
 
     const store = appData.store || {};
-    const storeName = store.name || 'CV RESTU KARYA UTAMA';
-    const storeDesc = store.description || store.slogan || 'Toko Bahan Material Bangunan dan Perkakas Tukang. Melayani Pembelian secara Online dan Offline dengan jaminan kualitas terbaik.';
-    const storeEmail = store.email || 'support@restukaryautama.com';
+    const storeName = store.name || 'Toko Putri';
+    const storeDesc = store.description || store.slogan || 'Selamat datang di toko kami. Melayani pembelian online dan offline dengan kualitas terbaik.';
+    const storeEmail = store.email || '';
     const storeHours = store.operationalHours || 'Buka Setiap Hari (08:00 - 17:00)';
     const storeAddress = store.address || '';
     const storeWa = store.wa || '';
-    const footerCredit = store.footerCredit || 'POWERED BY NOVAN RESTU UTOMO';
+    const footerCredit = store.footerCredit || 'Seluruh hak cipta dilindungi undang-undang.';
     const currentYear = new Date().getFullYear();
 
     // Logo rendering (gambar atau ikon)
     let logoHtml = `<i class="fa-solid fa-store text-2xl text-[var(--color-primary)]"></i>`;
     if (store.logo) {
         if (store.logo.includes('http') || store.logo.includes('data:')) {
-            logoHtml = `<img src="${esc(store.logo)}" alt="Logo Toko" class="h-full w-full max-h-10 max-w-10 object-contain" onerror="this.outerHTML='<i class=\\'fa-solid fa-store text-2xl text-[var(--color-primary)]\\'></i>'">`;
+            logoHtml = `<img src="${esc(store.logo)}" alt="${esc(storeName)}" class="h-full w-full max-h-10 max-w-10 object-contain" onerror="this.outerHTML='<i class=\\'fa-solid fa-store text-2xl text-[var(--color-primary)]\\'></i>'">`;
         } else {
             logoHtml = `<i class="fa-solid ${esc(store.logo)} text-2xl text-[var(--color-primary)]"></i>`;
         }
@@ -74,7 +74,7 @@ export const renderFooter = () => {
               <span class="relative flex h-2 w-2">
                 <span class="relative inline-flex h-2 w-2 rounded-full bg-emerald-300"></span>
               </span>
-              Melayani Pembelian Online &amp; Pengiriman Kargo
+              Melayani Pembelian Online &amp; Offline
             </div>
 
             <!-- Store Address (if configured) -->
@@ -146,13 +146,14 @@ export const renderFooter = () => {
 
               <!-- Email & Hours Card (Flat Solid Translucent) -->
               <div class="rounded-xl border border-white/20 bg-white/10 p-3 space-y-2.5 text-white shadow-none">
-                <!-- Email -->
+                <!-- Email (if configured) -->
+                ${storeEmail ? `
                 <a href="mailto:${esc(storeEmail)}" class="flex items-center gap-2.5 text-white hover:text-amber-200 transition-colors">
                   <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-white/20 bg-white/10 text-white">
                     <i class="fa-solid fa-envelope text-xs"></i>
                   </div>
                   <span class="truncate text-xs font-bold text-white tracking-wide">${esc(storeEmail)}</span>
-                </a>
+                </a>` : ''}
 
                 <!-- Operating Hours -->
                 <div class="flex items-center gap-2.5 text-white">
@@ -194,7 +195,7 @@ export const renderFooter = () => {
               </p>
               <div class="flex flex-wrap items-center gap-1.5 sm:gap-2">
                 <span class="inline-flex items-center gap-1.5 rounded-lg border border-white/25 bg-white/15 px-2.5 py-1 text-[11px] font-bold text-white shadow-none" title="Kirim Cepat Ekspedisi"><i class="fa-solid fa-truck-fast text-white"></i> Ekspedisi Cepat</span>
-                <span class="inline-flex items-center gap-1.5 rounded-lg border border-white/25 bg-white/15 px-2.5 py-1 text-[11px] font-bold text-white shadow-none" title="Kargo Truk & Partai Besar"><i class="fa-solid fa-truck-ramp-box text-amber-300"></i> Kargo Material</span>
+                <span class="inline-flex items-center gap-1.5 rounded-lg border border-white/25 bg-white/15 px-2.5 py-1 text-[11px] font-bold text-white shadow-none" title="Kargo Truk & Partai Besar"><i class="fa-solid fa-truck-ramp-box text-amber-300"></i> Kargo &amp; Ekspedisi</span>
                 <span class="inline-flex items-center gap-1.5 rounded-lg border border-white/25 bg-white/15 px-2.5 py-1 text-[11px] font-bold text-white shadow-none" title="Kurir Instan & Same Day"><i class="fa-solid fa-motorcycle text-emerald-300"></i> Kurir Instan</span>
                 <span class="inline-flex items-center gap-1.5 rounded-lg border border-white/25 bg-white/15 px-2.5 py-1 text-[11px] font-bold text-white shadow-none" title="Ambil di Toko Fisik"><i class="fa-solid fa-store text-sky-300"></i> Ambil Sendiri</span>
               </div>

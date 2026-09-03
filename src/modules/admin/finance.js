@@ -449,7 +449,7 @@ export const rTaxSettingsPanel = () => {
         <div class="card-modern p-6 sm:p-8 max-w-2xl mx-auto space-y-5">
             <div>
                 <label class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Nama Badan Usaha / Toko</label>
-                <input id="tax-company-name" type="text" value="${esc(ts.companyName || '')}" placeholder="Cth: PT/CV Restu Karya Utama" class="admin-input !py-3 bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 border border-slate-200 dark:border-slate-700 rounded-xl focus:border-[var(--color-primary)]">
+                <input id="tax-company-name" type="text" value="${esc(ts.companyName || '')}" placeholder="Cth: Toko Putri" class="admin-input !py-3 bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 border border-slate-200 dark:border-slate-700 rounded-xl focus:border-[var(--color-primary)]">
             </div>
             <div>
                 <label class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">NPWP (Nomor Pokok Wajib Pajak)</label>

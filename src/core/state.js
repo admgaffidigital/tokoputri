@@ -14,14 +14,14 @@
  */
 export const defApp = {
     store: {
-        name: "Nama Toko Anda", slogan: "Slogan Toko", logo: "fa-store",
+        name: "Toko Putri", slogan: "Toko Online & Kasir Resmi", logo: "fa-store",
         wa: "", address: "", lat: "", lng: "", costPerKm: 0,
         isDeliveryEnabled: true, isPickupEnabled: true,
         allProductsIcon: "", allBrandsIcon: "",
         categoryStyle: "text", brandStyle: "image",
         showCategories: true, showBrands: true,
         themeColor: "#10b981", uiTheme: "emerald",
-        bgStyle: "hero_arch",   // "hero_arch" | "geometric_3d" | "diagonal_skew" | "dual_tone" | "minimalist"
+        bgStyle: "minimalist",   // "minimalist" | "hero_arch" | "geometric_3d" | "diagonal_skew" | "dual_tone"
         bgCustomUrl: "",        // URL gambar wallpaper kustom (opsional)
         showRewardCatalog: true,
         useStock: false,

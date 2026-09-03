@@ -1,11 +1,11 @@
-# WEBSITE TOKO BANGUNAN
+# TOKO PUTRI - APLIKASI WEB & POS E-COMMERCE
 
-Aplikasi e-commerce dan manajemen kasir point-of-sales (POS) modern berkinerja tinggi, dirancang khusus dengan antarmuka yang dinamis, kaya estetika, serta fitur lengkap (katalog, keranjang belanja, ulasan produk, sistem member poin/reward, nota kasir thermal, nota tempo/piutang, surat jalan, dan invoice A4).
+Aplikasi e-commerce dan manajemen kasir point-of-sales (POS) modern berkinerja tinggi untuk Toko Putri, dirancang khusus dengan antarmuka yang dinamis, kaya estetika, serta fitur lengkap (katalog produk, keranjang belanja, ulasan produk, sistem member poin/reward, nota kasir thermal, nota tempo/piutang, surat jalan, dan invoice A4).
 
 ---
 
 ## 🛠️ Informasi Pengembang & Hak Cipta
-* **Nama Tema**: WEBSITE TOKO BANGUNAN
+* **Nama Projek**: TOKO PUTRI
 * **Dikembangkan & Ditandatangani Oleh**: **Novan Restu Utomo** (Selaku Pengembang Utama dan Developer Asli)
 
 ---
