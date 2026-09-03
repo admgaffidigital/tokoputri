@@ -13,59 +13,22 @@ import {
     parseVideoUrl, fixDriveVideo, fixDriveVideoPreview, getOptImg 
 } from '../../core/utils.js';
 import { startBannerAutoSlide, forcePlayBannerVideos } from './banner.js';
+import { renderFooter } from './footer.js';
 
 export const rDyn = () => {
-    const waLink = el('footer-wa-link');
-    if (waLink) {
-        if (appData.store.wa) {
-            waLink.href = `https://wa.me/${appData.store.wa}`;
-            waLink.removeAttribute('onclick');
-        } else {
-            waLink.href = '#';
-        }
-    }
+    // 1. Render komponen footer storefront secara modular & reaktif
+    renderFooter();
+
+    // 2. Binding data toko ke header
     setIn('dyn-store-name', appData.store.name || 'Nama Toko Anda');
     setIn('dyn-store-slogan', appData.store.slogan || 'Slogan Toko');
-    setIn('footer-store-name', appData.store.name || 'Nama Toko Anda');
-    setIn('footer-store-desc', appData.store.description || appData.store.slogan || 'Selamat datang di toko kami. Melayani pembelian online dan offline dengan jaminan kualitas terbaik.');
-    setIn('footer-store-email', appData.store.email || 'support@restukaryautama.com');
-    const fEmailLink = el('footer-email-link');
-    if (fEmailLink && appData.store.email) {
-        fEmailLink.href = `mailto:${appData.store.email}`;
-    }
-    setIn('footer-store-hours', appData.store.operationalHours || 'Buka Setiap Hari (08:00 - 17:00)');
-    
-    const fAddr = el('footer-store-address');
-    if (fAddr) {
-        if (appData.store.address) {
-            fAddr.textContent = appData.store.address;
-            const fAddrWrap = el('footer-store-address-wrap');
-            if (fAddrWrap) fAddrWrap.classList.remove('hidden');
-        } else {
-            const fAddrWrap = el('footer-store-address-wrap');
-            if (fAddrWrap) fAddrWrap.classList.add('hidden');
-        }
-    }
-
-    if (appData.store.footerCredit) {
-        setIn('footer-credit', appData.store.footerCredit);
-    } else {
-        const fcEl = el('footer-credit');
-        if (fcEl) fcEl.innerHTML = `POWERED BY <i class="fa-solid fa-bolt text-white"></i> BLOGGER PWA SYSTEM`;
-    }
-    setIn('footer-brand', appData.store.name || 'Nama Toko Anda');
-    const fY = el('footer-year'); if(fY) fY.innerText = new Date().getFullYear();
 
     if (appData.store.logo) {
         const i = el('dyn-store-logo-img'), c = el('dyn-store-logo-icon');
-        const fi = el('footer-store-logo-img'), fc = el('footer-store-logo-icon'); 
-        
         if (appData.store.logo.includes('http') || appData.store.logo.includes('data:')) {
             if(i) { i.src = appData.store.logo; i.onerror = () => { i.onerror=null; i.src='https://placehold.co/100?text=Logo'; }; show('dyn-store-logo-img'); hide('dyn-store-logo-icon'); }
-            if(fi && fc) { fi.src = appData.store.logo; fi.onerror = () => { fi.onerror=null; fi.src='https://placehold.co/100?text=Logo'; }; show('footer-store-logo-img'); hide('footer-store-logo-icon'); }
         } else {
             if(c) { c.className = `fa-solid ${esc(appData.store.logo)} text-xl text-[var(--color-primary)]`; show('dyn-store-logo-icon'); hide('dyn-store-logo-img'); }
-            if(fi && fc) { fc.className = `fa-solid ${esc(appData.store.logo)} text-3xl text-[var(--color-primary)]`; show('footer-store-logo-icon'); hide('footer-store-logo-img'); }
         }
     }
 

@@ -65,12 +65,15 @@ initDarkMode();
 const savedUITheme = localStorage.getItem('freshmart_ui_theme') || 'emerald';
 let activeColors   = applyUITheme(savedUITheme, localStorage.getItem('freshmart_theme_color'));
 
-// Inisialisasi gaya background dari cache lokal
+// Inisialisasi gaya background dari cache lokal & render awal komponen footer
+import { renderFooter } from './modules/home/footer.js';
+
 const initBg = () => {
     initThemeIcon();
     const savedBgStyle = localStorage.getItem('freshmart_bg_style') || 'minimalist';
     const savedBgUrl = localStorage.getItem('freshmart_bg_custom_url') || '';
     applyBackgroundStyle(savedBgStyle, savedBgUrl);
+    renderFooter();
 };
 
 if (document.readyState === 'loading') {

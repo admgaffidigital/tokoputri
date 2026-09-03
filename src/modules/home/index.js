@@ -6,3 +6,4 @@
 
 export * from './banner.js';
 export * from './sections.js';
+export * from './footer.js';
