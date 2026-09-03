@@ -619,15 +619,74 @@ html:not(.dark) .card-modern select {
 
 /* === 8. THEMED FOOTER === */
 .themed-footer {
-    background: var(--color-primary);
-    border-top: 0 !important;
-    box-shadow: 0 -10px 40px -15px rgba(var(--color-primary-rgb), 0.35);
+    position: relative;
+    background: radial-gradient(120% 120% at 50% 0%, rgba(var(--color-primary-rgb), 0.2) 0%, rgba(15, 23, 42, 0.7) 45%, #080d19 100%), #080d19;
+    border-top: 1px solid rgba(var(--color-primary-rgb), 0.35) !important;
+    box-shadow: 0 -20px 60px -15px rgba(0, 0, 0, 0.65);
+    color: #cbd5e1;
+}
+.themed-footer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent 0%, rgba(var(--color-primary-rgb), 0.9) 50%, transparent 100%);
+    pointer-events: none;
+    z-index: 1;
 }
 html.dark .themed-footer {
-    background: #0b1121 !important;
-    background-image: none !important;
-    border-top: 1px solid #1e293b !important;
+    background: radial-gradient(120% 120% at 50% 0%, rgba(var(--color-primary-rgb), 0.16) 0%, rgba(8, 13, 25, 0.8) 45%, #050811 100%), #050811 !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
     box-shadow: none !important;
+}
+
+.footer-link-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #94a3b8;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    text-decoration: none;
+}
+.footer-link-item:hover {
+    color: #ffffff;
+    transform: translateX(4px);
+}
+.footer-link-item i {
+    font-size: 0.625rem;
+    opacity: 0.5;
+    transition: transform 0.25s ease, color 0.25s ease;
+}
+.footer-link-item:hover i {
+    opacity: 1;
+    transform: translateX(2px);
+    color: var(--color-primary);
+}
+
+.footer-badge-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.375rem 0.75rem;
+    border-radius: 0.875rem;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: #e2e8f0;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    backdrop-filter: blur(8px);
+}
+.footer-badge-pill:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(var(--color-primary-rgb), 0.6);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
 }
 
 /* === LANDSCAPE BLOCKER === */

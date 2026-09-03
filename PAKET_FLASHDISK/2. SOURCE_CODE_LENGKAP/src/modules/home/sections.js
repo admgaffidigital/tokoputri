@@ -27,9 +27,26 @@ export const rDyn = () => {
     setIn('dyn-store-name', appData.store.name || 'Nama Toko Anda');
     setIn('dyn-store-slogan', appData.store.slogan || 'Slogan Toko');
     setIn('footer-store-name', appData.store.name || 'Nama Toko Anda');
-    setIn('footer-store-desc', appData.store.description || appData.store.slogan || 'Selamat datang di toko kami. Selamat berbelanja!');
+    setIn('footer-store-desc', appData.store.description || appData.store.slogan || 'Selamat datang di toko kami. Melayani pembelian online dan offline dengan jaminan kualitas terbaik.');
     setIn('footer-store-email', appData.store.email || 'support@restukaryautama.com');
+    const fEmailLink = el('footer-email-link');
+    if (fEmailLink && appData.store.email) {
+        fEmailLink.href = `mailto:${appData.store.email}`;
+    }
     setIn('footer-store-hours', appData.store.operationalHours || 'Buka Setiap Hari (08:00 - 17:00)');
+    
+    const fAddr = el('footer-store-address');
+    if (fAddr) {
+        if (appData.store.address) {
+            fAddr.textContent = appData.store.address;
+            const fAddrWrap = el('footer-store-address-wrap');
+            if (fAddrWrap) fAddrWrap.classList.remove('hidden');
+        } else {
+            const fAddrWrap = el('footer-store-address-wrap');
+            if (fAddrWrap) fAddrWrap.classList.add('hidden');
+        }
+    }
+
     if (appData.store.footerCredit) {
         setIn('footer-credit', appData.store.footerCredit);
     } else {
