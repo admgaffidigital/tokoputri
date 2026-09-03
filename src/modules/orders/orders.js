@@ -32,8 +32,16 @@ export const detachMyOrdersRealtime = () => {
  */
 export const attachMyOrdersRealtime = () => {
     detachMyOrdersRealtime();
-    const MAX_LIVE_ORDERS = 15;
-    myOrders.slice(0, MAX_LIVE_ORDERS).forEach((o) => {
+    const MAX_LIVE_ORDERS = 10;
+    // OPTIMASI KUOTA FIRESTORE: Hanya pantau pesanan yang masih berjalan (Baru, Diproses, Dikirim).
+    // Pesanan yang sudah 'Selesai' atau 'Dibatalkan' statusnya bersifat permanen dan tidak akan berubah lagi.
+    const activeOrders = myOrders.filter(o => {
+        const isFinished = o.status === 'Selesai' || o.status === 'Dibatalkan';
+        const hasPendingReward = o.claimedReward && (o.claimedReward.status === 'Menunggu Persetujuan' || !o.claimedReward.status);
+        return !isFinished || hasPendingReward;
+    }).slice(0, MAX_LIVE_ORDERS);
+
+    activeOrders.forEach((o) => {
         const targetOrderId = o.orderId;
         const unsub = db.collection("freshmart_orders").doc(targetOrderId).onSnapshot(doc => {
             if (!doc.exists) return;

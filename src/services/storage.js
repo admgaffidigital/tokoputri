@@ -48,6 +48,7 @@ const loadAppData = async () => {
     // 1. INSTANT HYDRATION: Render langsung dari cache lokal dalam 0ms (tanpa tunggu jaringan)
     let localCms = JSON.parse(sL('freshmart_cms_data') || 'null');
     let localProducts = JSON.parse(sL('freshmart_products') || 'null');
+    let localRewards = JSON.parse(sL('freshmart_rewards') || 'null');
     let localUpdate = parseInt(sL('freshmart_last_update') || '0');
     let hasRenderedCached = false;
 
@@ -58,6 +59,7 @@ const loadAppData = async () => {
         appData.config = { ...defApp.config, ...(localCms.config || {}) };
         if (appData.config && appData.config.gasUrl) window.GAS_UPLOAD_URL = appData.config.gasUrl;
         if (localProducts) appData.products = localProducts;
+        if (localRewards) appData.rewards = localRewards;
         prepareAppData();
         sanitizeCart();
         updCart();
@@ -70,15 +72,17 @@ const loadAppData = async () => {
         sLoad('Memuat Toko...');
     }
 
-    // 2. BACKGROUND REVALIDATION: Sinkronkan update terbaru dari server secara mulus di latar belakang
-    try {
-        const d = await db.collection("freshmart").doc("cms_data").get();
-        if (d.exists) {
-            const f = d.data();
-            const serverUpdate = f.lastUpdate || 0;
-            
-            // Perbarui hanya jika server memiliki versi baru atau belum pernah render dari cache
-            if (!hasRenderedCached || serverUpdate > localUpdate) {
+    // 2. BACKGROUND REVALIDATION: Sinkronkan update server
+    // OPTIMASI KUOTA FIRESTORE: Jika sudah ada cache lokal, jangan panggil get() manual lagi
+    // karena listener realtime onSnapshot di attachRealtimeStockSync() akan langsung dipasang
+    // tepat setelah ini dan memeriksa serverUpdate > localUpdate. Ini menghemat 1 read cms_data
+    // pada SETIAP kali halaman dibuka oleh pengunjung!
+    if (!hasRenderedCached) {
+        try {
+            const d = await db.collection("freshmart").doc("cms_data").get();
+            if (d.exists) {
+                const f = d.data();
+                const serverUpdate = f.lastUpdate || 0;
                 ssL('freshmart_cms_data', JSON.stringify(f));
                 Object.assign(appData, defApp, f);
                 appData.store = { ...defApp.store, ...(f.store || {}) };
@@ -86,16 +90,11 @@ const loadAppData = async () => {
                 appData.config = { ...defApp.config, ...(f.config || {}) };
                 if (appData.config && appData.config.gasUrl) window.GAS_UPLOAD_URL = appData.config.gasUrl;
 
-                if (f.products && f.products.length > 0) {
-                    appData.products = f.products.sort((a,b) => (b.id||0) - (a.id||0));
-                    ssL('freshmart_products', JSON.stringify(appData.products));
-                } else {
-                    const pSnap = await db.collection("freshmart").doc("cms_data").collection("products").get();
-                    appData.products = pSnap.docs.map(doc => doc.data()).sort((a,b) => (b.id||0) - (a.id||0));
-                    ssL('freshmart_products', JSON.stringify(appData.products));
-                    ssL('freshmart_last_update', serverUpdate.toString());
-                }
-                
+                const pSnap = await db.collection("freshmart").doc("cms_data").collection("products").get();
+                appData.products = pSnap.docs.map(doc => doc.data()).sort((a,b) => (b.id||0) - (a.id||0));
+                ssL('freshmart_products', JSON.stringify(appData.products));
+                ssL('freshmart_last_update', serverUpdate.toString());
+
                 prepareAppData();
                 sanitizeCart();
                 updCart();
@@ -103,13 +102,11 @@ const loadAppData = async () => {
                 rDyn();
                 setIn('stat-products', appData.products.filter(p => p.isActive !== 'false' && p.isActive !== false).length);
             }
-        }
-    } catch(e) {
-        if (!hasRenderedCached) {
+        } catch(e) {
             showToast("Mode Offline (Data Lokal)");
+        } finally {
+            hLoad();
         }
-    } finally {
-        hLoad();
     }
     // FITUR BARU: render slot iklan SECARA TERPISAH dari jalur kritis loading.
     // FIX BUG KRITIS: sebelumnya dipanggil langsung di sini — kalau skrip AdSense
@@ -271,10 +268,15 @@ const loadAppData = async () => {
 // dijamin selalu naik secara berurutan, jadi tidak ada lagi perangkat yang
 // "terkunci" gara-gara jam salah.
 // =====================================================================
-export const saveApp = async (changedKeys = null) => {
+export const saveApp = async (changedKeys = null, updateMeta = null) => {
     try {
         if (Array.isArray(changedKeys)) {
-            const partial = { lastUpdate: firebase.firestore.FieldValue.increment(1) };
+            const partial = { 
+                lastUpdate: firebase.firestore.FieldValue.increment(1),
+                updateType: updateMeta?.updateType || (changedKeys.length ? 'settings_change' : 'full'),
+                changedKeys: changedKeys
+            };
+            if (updateMeta?.updatedProductIds) partial.updatedProductIds = updateMeta.updatedProductIds;
             changedKeys.forEach(k => { if (k) partial[k] = appData[k]; });
             await db.collection("freshmart").doc("cms_data").set(partial, { merge: true });
         } else {
@@ -283,6 +285,7 @@ export const saveApp = async (changedKeys = null) => {
             delete copyData.products; // Jangan simpan produk ke dokumen utama
             delete copyData.auth; // Jangan simpan field auth legacy (password plaintext) ke Firestore
             copyData.lastUpdate = firebase.firestore.FieldValue.increment(1);
+            copyData.updateType = 'full';
             await db.collection("freshmart").doc("cms_data").set(copyData);
         }
         // Tebakan optimis untuk cache lokal saja (akan otomatis dikoreksi oleh listener
@@ -299,28 +302,35 @@ export const saveApp = async (changedKeys = null) => {
 };
 
 // =====================================================================
-// FIX BUG UTAMA (STOK TIDAK SINKRON REALTIME ANTAR PERANGKAT):
-// Sebelumnya data produk (termasuk stok) hanya diambil SEKALI saat
-// halaman pertama kali dibuka (loadAppData), tidak ada listener realtime
-// sama sekali. Jadi kalau ada pesanan baru masuk atau admin mengubah stok
-// dari perangkat lain, pelanggan yang SEDANG membuka katalog di perangkat
-// lain TIDAK AKAN TAHU sampai mereka me-refresh manual halamannya.
-//
-// Sekarang dipasang listener realtime Firestore (onSnapshot) ke dokumen
-// freshmart/cms_data. Field 'lastUpdate' di dokumen itu berfungsi sebagai
-// "lonceng": setiap kali ada perubahan stok/produk dari perangkat manapun
-// (checkout pelanggan ATAU edit admin), field ini ikut di-update, lalu
-// SEMUA perangkat yang sedang online otomatis menerima notifikasi
-// realtime dari Firestore dan langsung mengambil ulang data produk yang
-// terbaru — tanpa perlu reload halaman sama sekali.
+// OPTIMASI KUOTA & REALTIME SYNC (GRANULAR DELTA SYNC & BACKGROUND THROTTLING):
+// Mencegah banjir baca data Firestore saat ada transaksi atau perubahan setting.
+// 1. Jika hanya setting berubah (updateType === 'settings_change'):
+//    Update langsung dari dokumen cms_data TANPA menyentuh subkoleksi produk (0 reads produk!).
+// 2. Jika ada pesanan checkout atau admin edit produk (updateType === 'stock_change' / 'product_single'):
+//    Ambil HANYA produk yang berubah berdasarkan updatedProductIds (hanya 1-2 reads, bukan 200+ reads!).
+// 3. Tab Visibility Optimization: Jika tab di-minimize atau tidak aktif, tunda sinkronisasi berat.
 // =====================================================================
 let isSyncingRealtime = false;
-// FIX RACE CONDITION: flag pendingSync mencatat apakah ada snapshot Firestore
-// yang datang SAAT fetch sedang berjalan. Sebelumnya snapshot seperti itu
-// langsung dibuang (early return) — menyebabkan update stok terlewat.
-// Sekarang: snapshot tetap dicatat, dan langsung diproses ulang setelah
-// fetch pertama selesai.
-let pendingSyncUpdate = false;
+let pendingSyncDoc = null;
+let lastFullProductFetchTime = 0;
+const FULL_FETCH_MIN_INTERVAL = 10000; // 10 detik minimum interval antar fetch koleksi penuh
+let isTabHidden = typeof document !== 'undefined' ? document.hidden : false;
+let hasDeferredSync = false;
+
+if (typeof document !== 'undefined') {
+    document.addEventListener('visibilitychange', () => {
+        isTabHidden = document.hidden;
+        if (!isTabHidden && hasDeferredSync && pendingSyncDoc) {
+            hasDeferredSync = false;
+            const docToSync = pendingSyncDoc;
+            pendingSyncDoc = null;
+            if (typeof window._doSyncCmsData === 'function') {
+                window._doSyncCmsData(docToSync);
+            }
+        }
+    });
+}
+
 window.attachRealtimeStockSync = () => {
     if (window.unsubCmsRealtime) return; // jangan pasang dobel
 
@@ -329,61 +339,97 @@ window.attachRealtimeStockSync = () => {
         const f = doc.data();
         const serverUpdate = f.lastUpdate || 0;
         const localUpdate = parseInt(sL('freshmart_last_update') || '0');
-        if (serverUpdate <= localUpdate) return; // data sudah versi terbaru, tidak perlu apa-apa
+
+        // Jika tab sedang di latar belakang/diminimalkan, tunda penarikan data berat sampai tab aktif lagi
+        if (isTabHidden) {
+            pendingSyncDoc = doc;
+            hasDeferredSync = true;
+            return;
+        }
+
+        // Jika nomor versi server tidak lebih tinggi dan kita sudah punya data produk, tidak perlu query apapun
+        if (serverUpdate <= localUpdate && (appData.products && appData.products.length > 0)) {
+            return;
+        }
 
         isSyncingRealtime = true;
         try {
-            const pSnap = await db.collection("freshmart").doc("cms_data").collection("products").get();
-            appData.products = pSnap.docs.map(d => d.data()).sort((a,b) => (b.id||0) - (a.id||0));
-            appData.products.forEach(p => {
-                if (p.img) p.img = fixD(p.img);
-                if (p.variants) p.variants.forEach(v => { if (v.img) v.img = fixD(v.img); });
-            });
+            const updateType = f.updateType || 'full';
+            const updatedProductIds = Array.isArray(f.updatedProductIds) ? f.updatedProductIds.map(String) : [];
 
-            // Sinkronkan juga pengaturan toko (ongkir, status manajemen stok, dll)
+            // 1. SINKRONISASI PENGATURAN TOKO (BANNERS, VOUCHERS, TOKO, KATEGORI, DLL)
+            // Diambil langsung dari dokumen f tanpa query ekstra ke koleksi lain (HEMAT 100% READS)
             appData.store = { ...defApp.store, ...(f.store || {}) };
-            // FIX: sinkronkan juga field lain yang bisa diubah dari tab/perangkat admin manapun,
-            // supaya appData di memori tab ini tidak pernah basi (mencegah bug data hilang saat menyimpan).
             if (f.categories) appData.categories = f.categories;
             if (f.vouchers) appData.vouchers = f.vouchers;
             if (f.banners) appData.banners = f.banners;
             if (f.brands) appData.brands = f.brands;
             if (f.banks) appData.banks = f.banks;
             if (f.faqs) appData.faqs = f.faqs;
-            // CATATAN: 'rewards' TIDAK lagi disinkron di sini -- sudah punya listener
-            // realtime tersendiri (lihat attachRewardsRealtime), karena sekarang hadiah
-            // disimpan sebagai sub-collection sendiri (bukan field di dokumen ini).
             appData.payment = { ...defApp.payment, ...(f.payment || {}) };
             appData.config = { ...defApp.config, ...(f.config || {}) };
-            appData.taxSettings = { ...defApp.taxSettings, ...(f.taxSettings || {}) }; // FITUR BARU: Menu Pajak
+            appData.taxSettings = { ...defApp.taxSettings, ...(f.taxSettings || {}) };
             if (appData.config && appData.config.gasUrl) window.GAS_UPLOAD_URL = appData.config.gasUrl;
             if (appData.banners) appData.banners.forEach(b => { if(b.img) b.img = fixD(b.img); if(b.videoUrl) b.videoUrl = fixDriveVideo(b.videoUrl); });
             if (appData.categories) appData.categories.forEach(c => { if(c.img) c.img = fixD(c.img); });
             if (appData.brands) appData.brands.forEach(b => { if(b.img) b.img = fixD(b.img); });
 
-            // Jika admin sedang membuka tab yang datanya baru saja berubah, segarkan tampilan listnya juga
-            // FIX BUG: 'products' dulu TIDAK ada di daftar ini -- jadi kalau ada pelanggan checkout
-            // sampai stok produk habis SAAT admin sedang membuka tab Produk, tampilannya TIDAK ikut
-            // berubah jadi "Habis" secara langsung (harus pindah tab dulu baru kelihatan). Sekarang
-            // tab Produk ikut disegarkan otomatis juga.
+            // 2. SINKRONISASI PRODUK GRANULAR (HEMAT KUOTA BESAR)
+            if (updateType === 'settings_change' && appData.products && appData.products.length > 0) {
+                // Hanya setting yang berubah. TIDAK PERLU mengambil ulang subkoleksi produk! Hemat 100% reads produk.
+            } else if ((updateType === 'stock_change' || updateType === 'product_single') && updatedProductIds.length > 0 && appData.products && appData.products.length > 0) {
+                // Hanya beberapa produk yang berubah (misal dari checkout atau admin edit produk tunggal).
+                // Ambil HANYA dokumen yang berubah, bukan mengunduh seluruh katalog!
+                const fetchedDocs = await Promise.all(
+                    updatedProductIds.map(pId => db.collection("freshmart").doc("cms_data").collection("products").doc(pId).get().catch(() => null))
+                );
+                fetchedDocs.forEach(pDoc => {
+                    if (pDoc && pDoc.exists) {
+                        const freshProd = pDoc.data();
+                        if (freshProd.img) freshProd.img = fixD(freshProd.img);
+                        if (freshProd.variants) freshProd.variants.forEach(v => { if (v.img) v.img = fixD(v.img); });
+                        const pIdx = appData.products.findIndex(p => p.id.toString() === pDoc.id);
+                        if (pIdx > -1) {
+                            appData.products[pIdx] = freshProd;
+                        } else {
+                            appData.products.unshift(freshProd);
+                        }
+                    }
+                });
+                ssL('freshmart_products', JSON.stringify(appData.products));
+            } else {
+                // Penarikan penuh produk (hanya jika belum punya produk atau dipaksa update massal)
+                const now = Date.now();
+                if (now - lastFullProductFetchTime < FULL_FETCH_MIN_INTERVAL && appData.products && appData.products.length > 0) {
+                    // Batasi agar tidak terjadi banjir fetch beruntun
+                    return;
+                }
+                lastFullProductFetchTime = now;
+                const pSnap = await db.collection("freshmart").doc("cms_data").collection("products").get();
+                appData.products = pSnap.docs.map(d => d.data()).sort((a,b) => (b.id||0) - (a.id||0));
+                appData.products.forEach(p => {
+                    if (p.img) p.img = fixD(p.img);
+                    if (p.variants) p.variants.forEach(v => { if (v.img) v.img = fixD(v.img); });
+                });
+                ssL('freshmart_products', JSON.stringify(appData.products));
+            }
+
+            ssL('freshmart_cms_data', JSON.stringify(f));
+            ssL('freshmart_last_update', serverUpdate.toString());
+
             if (window.isAdm && cTab && ['categories','vouchers','banners','brands','banks','products','colors'].includes(cTab) && typeof window.rAdmItms === 'function') {
                 window.rAdmItms(cTab);
             }
 
-            ssL('freshmart_products', JSON.stringify(appData.products));
-            ssL('freshmart_last_update', serverUpdate.toString());
-
-            sanitizeCart();   // buang dari keranjang produk yang baru jadi habis/nonaktif
+            sanitizeCart();
             updCart();
             if (typeof window.rDyn === 'function') window.rDyn();
             if (typeof window.rCat === 'function') window.rCat();
 
-            // Kalau produk yang modalnya sedang terbuka ikut berubah stoknya, segarkan juga
             if (cProd) {
                 const fresh = appData.products.find(p => p.id === cProd.id);
                 if (fresh) {
                     cProd = fresh;
-                    // FIX: render ulang modal agar stok terbaru tampil di UI
                     if (typeof window.rProdMod === 'function') {
                         const modalEl = document.getElementById('product-modal');
                         if (modalEl && !modalEl.classList.contains('hidden') && !modalEl.classList.contains('opacity-0')) {
@@ -396,21 +442,20 @@ window.attachRealtimeStockSync = () => {
             console.warn('Gagal sinkron realtime stok:', e);
         } finally {
             isSyncingRealtime = false;
-            // FIX RACE CONDITION: jika ada snapshot yang datang SAAT fetch di atas berjalan,
-            // langsung proses sekarang menggunakan snapshot Firestore terbaru.
-            if (pendingSyncUpdate) {
-                pendingSyncUpdate = false;
-                db.collection("freshmart").doc("cms_data").get().then(d => doSync(d)).catch(() => {});
+            if (pendingSyncDoc) {
+                const nextDoc = pendingSyncDoc;
+                pendingSyncDoc = null;
+                doSync(nextDoc);
             }
         }
     };
 
+    window._doSyncCmsData = doSync;
+
     window.unsubCmsRealtime = db.collection("freshmart").doc("cms_data")
         .onSnapshot(async (doc) => {
             if (isSyncingRealtime) {
-                // Catat bahwa ada update yang masuk saat fetch sedang berjalan
-                // agar tidak terlewat saat fetch selesai (lihat finally di atas)
-                pendingSyncUpdate = true;
+                pendingSyncDoc = doc;
                 return;
             }
             await doSync(doc);
@@ -419,16 +464,26 @@ window.attachRealtimeStockSync = () => {
         });
 };
 
-// FITUR BARU (REFACTOR KEAMANAN): katalog hadiah sekarang sub-collection tersendiri
-// (freshmart/cms_data/rewards), jadi cukup listener realtime langsung di collection
-// ini -- jauh lebih simpel dari produk, karena Firestore otomatis memberi tahu setiap
-// ada dokumen ditambah/diubah/dihapus, tanpa perlu triggr lastUpdate segala.
+// FITUR BARU (REFACTOR KEAMANAN & HEMAT KUOTA): katalog hadiah dengan cache lokal
 window.attachRewardsRealtime = () => {
     if (window.unsubRewardsRealtime) return; // jangan pasang dobel
+
+    // Muat hadiah dari cache lokal segera agar tampilan instan 0ms
+    if (!appData.rewards || !appData.rewards.length) {
+        try {
+            const cachedRewards = JSON.parse(sL('freshmart_rewards') || 'null');
+            if (cachedRewards && Array.isArray(cachedRewards)) {
+                appData.rewards = cachedRewards;
+                appData.rewards.forEach(r => { if (r.img) r.img = fixD(r.img); });
+            }
+        } catch(e) {}
+    }
+
     window.unsubRewardsRealtime = db.collection("freshmart").doc("cms_data").collection("rewards")
         .onSnapshot(snap => {
             appData.rewards = snap.docs.map(d => d.data()).sort((a,b) => (b.id||0) - (a.id||0));
             appData.rewards.forEach(r => { if (r.img) r.img = fixD(r.img); });
+            ssL('freshmart_rewards', JSON.stringify(appData.rewards));
             // Kalau admin sedang buka tab Hadiah, atau pelanggan sedang buka modal Data Member, segarkan tampilannya
             if (window.isAdm && cTab === 'rewards' && typeof window.rAdmItms === 'function') window.rAdmItms('rewards');
             if (typeof window.renderRewardCatalog === 'function') window.renderRewardCatalog();

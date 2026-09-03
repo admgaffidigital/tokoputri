@@ -106,7 +106,13 @@ export const computeInventoryStats = () => {
 /**
  * Muat ringkasan omset penjualan & laba bersih sesuai periode
  */
-export const loadAdminReport = async (period) => {
+const adminReportCache = new Map();
+const ADMIN_REPORT_CACHE_TTL = 2 * 60 * 1000; // 2 menit
+
+/**
+ * Muat ringkasan omset penjualan & laba bersih sesuai periode
+ */
+export const loadAdminReport = async (period = 'month') => {
     setLastReportPeriod(period);
     document.querySelectorAll('.report-period-btn').forEach(b => {
         const active = b.dataset.period === period;
@@ -116,6 +122,45 @@ export const loadAdminReport = async (period) => {
     });
     const container = el('admin-report-container');
     if (!container) return;
+
+    const renderReportUI = ({ totalPenjualan, totalHppTerjual, totalDiskonProduk, orderCount, truncated }) => {
+        const labaKotor = totalPenjualan - totalHppTerjual;
+        const labaBersih = labaKotor - totalDiskonProduk;
+        const periodLabel = { today: 'Hari Ini', week: 'Minggu Ini', month: 'Bulan Ini', all: 'Sepanjang Waktu' }[period] || '';
+
+        setH('admin-report-container', `
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+                <div class="card-modern p-5 sm:p-5">
+                    <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Total Penjualan (${periodLabel})</p>
+                    <p class="text-lg sm:text-xl font-bold text-slate-800 dark:text-white truncate">${fCur(totalPenjualan)}</p>
+                    <p class="text-[10px] font-bold text-slate-400 mt-1">${orderCount} pesanan${truncated ? ' (≥3000, dibatasi)' : ''}</p>
+                </div>
+                <div class="card-modern p-5 sm:p-5">
+                    <p class="text-[9px] font-bold text-[var(--color-primary)] uppercase tracking-widest mb-1.5"><i class="fa-solid fa-arrow-trend-up mr-1"></i>Laba Kotor</p>
+                    <p class="text-lg sm:text-xl font-bold text-[var(--color-primary)] truncate">${fCur(labaKotor)}</p>
+                    <p class="text-[10px] font-bold text-slate-400 mt-1">Penjualan − HPP Terjual</p>
+                </div>
+                <div class="card-modern p-5 sm:p-5">
+                    <p class="text-[9px] font-bold text-rose-500 uppercase tracking-widest mb-1.5"><i class="fa-solid fa-tag mr-1"></i>Total HPP Terjual</p>
+                    <p class="text-lg sm:text-xl font-bold text-rose-500 truncate">${fCur(totalHppTerjual)}</p>
+                    <p class="text-[10px] font-bold text-slate-400 mt-1">Modal barang yang laku</p>
+                </div>
+                <div class="card-modern p-5 sm:p-5">
+                    <p class="text-[9px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest mb-1.5"><i class="fa-solid fa-sack-dollar mr-1"></i>Laba Bersih</p>
+                    <p class="text-lg sm:text-xl font-bold truncate" style="color:var(--color-primary)">${fCur(labaBersih)}</p>
+                    <p class="text-[10px] font-bold text-slate-400 mt-1">Laba Kotor − Diskon</p>
+                </div>
+            </div>
+        `);
+    };
+
+    // 1. Cek in-memory cache
+    const cached = adminReportCache.get(period);
+    if (cached && (Date.now() - cached.timestamp < ADMIN_REPORT_CACHE_TTL)) {
+        renderReportUI(cached.data);
+        return;
+    }
+
     setH('admin-report-container', `<div class="text-center py-10"><i class="fa-solid fa-spinner fa-spin text-2xl text-slate-300"></i></div>`);
 
     let startDate = null;
@@ -153,38 +198,13 @@ export const loadAdminReport = async (period) => {
                 totalHppTerjual += (parseFloat(hppItem) || 0) * (parseFloat(it.qty) || 0);
             });
         });
+
+        const reportData = { totalPenjualan, totalHppTerjual, totalDiskonProduk, orderCount, truncated };
+        adminReportCache.set(period, { data: reportData, timestamp: Date.now() });
+        renderReportUI(reportData);
     } catch(e) { 
         console.error('Gagal memuat laporan penjualan:', e); 
     }
-
-    const labaKotor = totalPenjualan - totalHppTerjual;
-    const labaBersih = labaKotor - totalDiskonProduk;
-    const periodLabel = { today: 'Hari Ini', week: 'Minggu Ini', month: 'Bulan Ini', all: 'Sepanjang Waktu' }[period] || '';
-
-    setH('admin-report-container', `
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-            <div class="card-modern p-5 sm:p-5">
-                <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Total Penjualan (${periodLabel})</p>
-                <p class="text-lg sm:text-xl font-bold text-slate-800 dark:text-white truncate">${fCur(totalPenjualan)}</p>
-                <p class="text-[10px] font-bold text-slate-400 mt-1">${orderCount} pesanan${truncated ? ' (≥3000, dibatasi)' : ''}</p>
-            </div>
-            <div class="card-modern p-5 sm:p-5">
-                <p class="text-[9px] font-bold text-[var(--color-primary)] uppercase tracking-widest mb-1.5"><i class="fa-solid fa-arrow-trend-up mr-1"></i>Laba Kotor</p>
-                <p class="text-lg sm:text-xl font-bold text-[var(--color-primary)] truncate">${fCur(labaKotor)}</p>
-                <p class="text-[10px] font-bold text-slate-400 mt-1">Penjualan − HPP Terjual</p>
-            </div>
-            <div class="card-modern p-5 sm:p-5">
-                <p class="text-[9px] font-bold text-[var(--color-primary)] uppercase tracking-widest mb-1.5"><i class="fa-solid fa-sack-dollar mr-1"></i>Laba Bersih</p>
-                <p class="text-lg sm:text-xl font-bold truncate" style="color:var(--color-primary)">${fCur(labaBersih)}</p>
-                <p class="text-[10px] font-bold text-slate-400 mt-1">Laba Kotor − Diskon Produk</p>
-            </div>
-            <div class="card-modern p-5 sm:p-5">
-                <p class="text-[9px] font-bold text-rose-500 uppercase tracking-widest mb-1.5"><i class="fa-solid fa-tag mr-1"></i>Total HPP Terjual</p>
-                <p class="text-lg sm:text-xl font-bold text-rose-500 truncate">${fCur(totalHppTerjual)}</p>
-                <p class="text-[10px] font-bold text-slate-400 mt-1">Modal barang yang laku</p>
-            </div>
-        </div>
-    `);
 };
 
 /**

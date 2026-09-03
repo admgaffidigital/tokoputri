@@ -154,6 +154,7 @@ export const submitReview = async (orderId, productId, variantName, productName,
             createdAt: firebase.firestore.FieldValue.serverTimestamp()
         };
         await db.collection("freshmart").doc("cms_data").collection("reviews").doc(reviewId.toString()).set(reviewDoc);
+        reviewsCache.delete(productId); // Invalidate cache agar ulasan baru segera terlihat
         closeReviewModal();
         showToast('✅ Terima kasih atas ulasan Anda!');
         if (typeof window.openCustomerOrderDetail === 'function') {
@@ -168,22 +169,17 @@ export const submitReview = async (orderId, productId, variantName, productName,
     }
 };
 
+const reviewsCache = new Map();
+const REVIEWS_CACHE_TTL = 5 * 60 * 1000; // 5 menit
+
 /**
- * Muat dan tampilkan ulasan pelanggan di modal detail produk
+ * Muat dan tampilkan ulasan pelanggan di modal detail produk (dengan cache in-memory)
  */
 export const loadProductReviews = async (productId) => {
     const container = el('product-modal-reviews-container');
     if (!container) return;
-    setH('product-modal-reviews-container', `<div class="text-center py-6"><i class="fa-solid fa-spinner fa-spin text-xl text-slate-300"></i></div>`);
-    try {
-        const snap = await db.collection("freshmart").doc("cms_data").collection("reviews").where("productId", "==", productId).get();
-        let reviews = snap.docs.map(d => d.data()).filter(r => r.isVisible !== false);
-        reviews.sort((a, b) => {
-            const ta = a.createdAt && a.createdAt.toMillis ? a.createdAt.toMillis() : 0;
-            const tb = b.createdAt && b.createdAt.toMillis ? b.createdAt.toMillis() : 0;
-            return tb - ta;
-        });
 
+    const renderReviewList = (reviews) => {
         const avgRating = reviews.length ? (reviews.reduce((s, r) => s + (parseFloat(r.rating) || 0), 0) / reviews.length) : 0;
         const starRow = (n) => Array.from({ length: 5 }, (_, idx) => `<i class="fa-solid fa-star ${idx < Math.round(n) ? 'text-amber-400' : 'text-slate-200 dark:text-slate-700'}"></i>`).join('');
 
@@ -194,7 +190,7 @@ export const loadProductReviews = async (productId) => {
             </div>`;
 
         if (!reviews.length) {
-            setH('product-modal-reviews-container', header + `<p class="text-[11px] font-bold text-slate-400 text-center py-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl">Belum ada ulasan untuk produk ini. Jadilah yang pertama memberi ulasan setelah pesanan Anda selesai!</p>`);
+            setH('product-modal-reviews-container', header + `<p class="text-[11px] font-bold text-slate-400 text-center py-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl">Belum ada ulasan untuk produk ini.</p>`);
             return;
         }
 
@@ -213,16 +209,41 @@ export const loadProductReviews = async (productId) => {
                 </div>
                 <div class="flex text-[11px] mb-2">${starRow(r.rating)}</div>
                 ${r.variantName ? `<p class="text-[10px] font-bold text-slate-400 mb-1.5">Varian: ${esc(r.variantName)}</p>` : ''}
-                ${r.text ? `<p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed mb-2">${esc(r.text)}</p>` : ''}
-                ${r.photoUrl ? `<img src="${esc(r.photoUrl)}" onclick="window.open('${esc(r.photoUrl)}','_blank')" class="w-20 h-20 rounded-xl object-cover border border-slate-200 dark:border-slate-700 cursor-pointer mb-2" onerror="this.style.display='none'" loading="lazy">` : ''}
-                ${r.adminReply ? `<div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl p-3 mt-2"><p class="text-[9px] font-bold text-[var(--color-primary)] uppercase tracking-widest mb-1"><i class="fa-solid fa-store mr-1"></i>Balasan Toko</p><p class="text-[11px] text-slate-600 dark:text-slate-300">${esc(r.adminReply)}</p></div>` : ''}
+                ${r.text ? `<p class="text-xs text-slate-600 dark:text-slate-300 mb-3">${esc(r.text)}</p>` : ''}
+                ${r.photoUrl ? `<div class="w-16 h-16 rounded-xl overflow-hidden mb-3 border border-slate-200 dark:border-slate-700"><img src="${esc(r.photoUrl)}" class="w-full h-full object-cover cursor-pointer" onclick="window.open('${esc(r.photoUrl)}','_blank')" alt="Foto ulasan"></div>` : ''}
+                ${r.adminReply ? `
+                <div class="mt-2.5 p-3 bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-100 dark:border-emerald-800/50 rounded-xl">
+                    <p class="text-[10px] font-bold text-emerald-700 dark:text-emerald-400 mb-1 flex items-center gap-1"><i class="fa-solid fa-reply"></i> Balasan Penjual</p>
+                    <p class="text-xs text-slate-600 dark:text-slate-300">${esc(r.adminReply)}</p>
+                </div>` : ''}
             </div>`;
         }).join('');
 
         setH('product-modal-reviews-container', header + `<div class="space-y-3">${list}</div>`);
+    };
+
+    // 1. Cek in-memory cache (hemat kuota pembacaan Firestore)
+    const cached = reviewsCache.get(productId);
+    if (cached && (Date.now() - cached.timestamp < REVIEWS_CACHE_TTL)) {
+        renderReviewList(cached.data);
+        return;
+    }
+
+    setH('product-modal-reviews-container', `<div class="text-center py-6"><i class="fa-solid fa-spinner fa-spin text-xl text-slate-300"></i></div>`);
+    try {
+        const snap = await db.collection("freshmart").doc("cms_data").collection("reviews").where("productId", "==", productId).get();
+        let reviews = snap.docs.map(d => d.data()).filter(r => r.isVisible !== false);
+        reviews.sort((a, b) => {
+            const ta = a.createdAt && a.createdAt.toMillis ? a.createdAt.toMillis() : 0;
+            const tb = b.createdAt && b.createdAt.toMillis ? b.createdAt.toMillis() : 0;
+            return tb - ta;
+        });
+
+        reviewsCache.set(productId, { data: reviews, timestamp: Date.now() });
+        renderReviewList(reviews);
     } catch(e) {
-        console.error('Gagal memuat ulasan:', e);
-        setH('product-modal-reviews-container', '');
+        console.warn('Gagal memuat ulasan:', e);
+        setH('product-modal-reviews-container', `<p class="text-[11px] text-slate-400 text-center py-4">Belum ada ulasan yang dapat dimuat.</p>`);
     }
 };
 
@@ -232,5 +253,6 @@ window.setReviewRating = setReviewRating;
 window.handleReviewPhotoSelect = handleReviewPhotoSelect;
 window.removeReviewPhoto = removeReviewPhoto;
 window.closeReviewModal = closeReviewModal;
-window.submitReview = submitReview;
+window.submitReview = submitProductReview;
+window.submitProductReview = submitProductReview;
 window.loadProductReviews = loadProductReviews;

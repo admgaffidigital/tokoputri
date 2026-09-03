@@ -551,7 +551,11 @@ export const processOrder = async () => {
                     transaction.set(rewardRef, { stock: rewardStockUpdated }, { merge: true });
                 }
 
-                transaction.update(cmsDataRef, { lastUpdate: firebase.firestore.FieldValue.increment(1) });
+                transaction.update(cmsDataRef, { 
+                    lastUpdate: firebase.firestore.FieldValue.increment(1),
+                    updateType: 'stock_change',
+                    updatedProductIds: pIds
+                });
             });
 
             appData.lastUpdate = (parseInt(sL('freshmart_last_update')) || appData.lastUpdate || 0) + 1;

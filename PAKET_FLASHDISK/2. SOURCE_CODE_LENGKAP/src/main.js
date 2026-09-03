@@ -232,7 +232,7 @@ window.addEventListener('DOMContentLoaded', async () => {
     await loadAppData();
     syncAppMeta(); // FIX: dipanggil tepat setelah data toko selesai sinkron (lihat catatan di atas)
     attachRealtimeStockSync(); // FIX BUG: pasang listener realtime agar stok & data produk sinkron otomatis antar perangkat
-    attachRewardsRealtime(); // FITUR BARU: katalog hadiah publik & realtime (sub-collection tersendiri, bukan field di cms_data)
+    // attachRewardsRealtime sekarang lazy-loaded saat katalog hadiah / modal member dibuka (hemat kuota)
 
 // --- FITUR AUTO-LOGIN (Sesi Permanen Firebase) ---
     auth.onAuthStateChanged(async (user) => {

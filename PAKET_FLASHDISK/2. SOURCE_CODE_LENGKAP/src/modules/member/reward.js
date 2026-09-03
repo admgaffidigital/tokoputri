@@ -10,6 +10,9 @@ import { appData, currentMember, setCurrentMember, selectedReward, setSelectedRe
 import { el, show, hide, getV, setH, esc } from '../../core/utils.js';
 import { db } from '../../config/firebase.js';
 
+const memberCache = new Map();
+const MEMBER_CACHE_TTL = 3 * 60 * 1000; // 3 menit cache poin/member
+
 /**
  * Render slider katalog hadiah di halaman depan toko
  */
@@ -23,6 +26,11 @@ export const renderRewardCatalog = () => {
     if (!isShow || activeRewards.length === 0) {
         rcC.classList.add('hidden');
         return;
+    }
+
+    // Lazy attach realtime listener hadiah hanya jika katalog aktif & ditampilkan
+    if (typeof window.attachRewardsRealtime === 'function' && !window.unsubRewardsRealtime) {
+        window.attachRewardsRealtime();
     }
     
     rcC.classList.remove('hidden');
@@ -46,7 +54,7 @@ export const renderRewardCatalog = () => {
                     <div class="w-full aspect-square rounded-xl bg-white flex items-center justify-center overflow-hidden relative shadow-inner z-0">
                         <img loading="lazy" src="${esc(r.img)}" alt="${esc(r.name)}" class="w-full h-full object-contain transition-transform duration-500 group-hover:scale-110 p-2" onerror="this.onerror=null;this.src='https://placehold.co/400?text=Hadiah'">
                         <div class="absolute top-1.5 left-1.5 bg-rose-500 text-white text-[8px] sm:text-[9px] font-bold px-2 py-0.5 rounded-full shadow-sm uppercase tracking-widest"><i class="fa-solid fa-gift mr-1"></i>Gratis</div>
-                        <div class="absolute top-1.5 right-1.5 bg-[var(--color-primary)] text-white text-[8px] sm:text-[9px] font-bold px-2 py-0.5 rounded-full shadow-sm border border-white/20">${parseFloat(r.pointsCost) || 0} Poin</div>
+                        <div class="absolute top-1.5 right-1.5 bg-[var(--color-primary)] text-white text-[8px] sm:text-[9px] font-bold px-2 py-0.5 rounded-full shadow-sm border border-white/20">${parseFloat(r.pointsCost || r.pointsRequired) || 0} Poin</div>
                     </div>
                     <div class="w-full h-6 shrink-0"></div>
                     <div class="h-8 w-full px-1 flex flex-col justify-center items-center relative z-0 shrink-0 mb-1">
@@ -78,16 +86,37 @@ export const checkMemberStatus = () => {
             setSelectedReward(null); 
             return; 
         }
-        
-        try {
-            const doc = await db.collection("freshmart").doc("cms_data").collection("customers").doc(waNum).get();
-            if (doc.exists) {
-                setCurrentMember(doc.data());
+
+        // Cek in-memory cache untuk memotong query berulang ke Firestore
+        const cached = memberCache.get(waNum);
+        if (cached && (Date.now() - cached.timestamp < MEMBER_CACHE_TTL)) {
+            if (cached.data) {
+                setCurrentMember(cached.data);
                 banner.className = 'mt-3 p-4 rounded-2xl border border-[var(--color-primary)]/30 bg-[rgba(var(--color-primary-rgb),0.06)] dark:bg-[rgba(var(--color-primary-rgb),0.12)] flex items-center justify-between gap-3';
                 banner.innerHTML = `<p class="text-[11px] font-bold text-[var(--color-primary)] leading-snug"><i class="fa-solid fa-circle-check mr-1"></i>Nomor Anda terdaftar sebagai pelanggan toko kami!</p><button type="button" onclick="openMemberModal()" class="shrink-0 bg-[var(--color-primary)] hover:opacity-90 text-white text-[10px] font-bold uppercase tracking-widest px-3.5 py-2.5 rounded-xl shadow-sm active:scale-95 transition-all whitespace-nowrap">Lihat Data Saya</button>`;
                 show(banner); 
                 show('payment-option-tempo');
             } else {
+                setCurrentMember(null); 
+                setSelectedReward(null); 
+                hide(banner); 
+                hide('payment-option-tempo');
+            }
+            return;
+        }
+        
+        try {
+            const doc = await db.collection("freshmart").doc("cms_data").collection("customers").doc(waNum).get();
+            if (doc.exists) {
+                const mData = doc.data();
+                memberCache.set(waNum, { data: mData, timestamp: Date.now() });
+                setCurrentMember(mData);
+                banner.className = 'mt-3 p-4 rounded-2xl border border-[var(--color-primary)]/30 bg-[rgba(var(--color-primary-rgb),0.06)] dark:bg-[rgba(var(--color-primary-rgb),0.12)] flex items-center justify-between gap-3';
+                banner.innerHTML = `<p class="text-[11px] font-bold text-[var(--color-primary)] leading-snug"><i class="fa-solid fa-circle-check mr-1"></i>Nomor Anda terdaftar sebagai pelanggan toko kami!</p><button type="button" onclick="openMemberModal()" class="shrink-0 bg-[var(--color-primary)] hover:opacity-90 text-white text-[10px] font-bold uppercase tracking-widest px-3.5 py-2.5 rounded-xl shadow-sm active:scale-95 transition-all whitespace-nowrap">Lihat Data Saya</button>`;
+                show(banner); 
+                show('payment-option-tempo');
+            } else {
+                memberCache.set(waNum, { data: null, timestamp: Date.now() });
                 setCurrentMember(null); 
                 setSelectedReward(null); 
                 hide(banner); 
@@ -104,6 +133,9 @@ export const checkMemberStatus = () => {
  */
 export const openMemberModal = () => {
     if (!currentMember) return;
+    if (typeof window.attachRewardsRealtime === 'function' && !window.unsubRewardsRealtime) {
+        window.attachRewardsRealtime();
+    }
     let m = document.getElementById('member-modal');
     if (!m) {
         m = document.createElement('div');

@@ -36,10 +36,18 @@ export const getEffHpp = (item) => {
     return parseFloat(p.hpp) || 0;
 };
 
+const taxPeriodCache = new Map();
+const TAX_PERIOD_CACHE_TTL = 2 * 60 * 1000; // 2 menit
+
 /**
  * Tarik data transaksi pesanan per periode dari Firestore
  */
 export const fetchTaxPeriodData = async (year) => {
+    const cached = taxPeriodCache.get(year);
+    if (cached && (Date.now() - cached.timestamp < TAX_PERIOD_CACHE_TTL)) {
+        return cached.data;
+    }
+
     const monthly = {};
     for (let m = 1; m <= 12; m++) monthly[m] = { omset: 0, ppn: 0, hpp: 0, disc: 0, orderCount: 0 };
     try {
@@ -73,6 +81,7 @@ export const fetchTaxPeriodData = async (year) => {
         console.error('Gagal memuat data pajak:', e); 
         showToast('Gagal memuat data periode ini!'); 
     }
+    taxPeriodCache.set(year, { data: monthly, timestamp: Date.now() });
     return monthly;
 };
 
