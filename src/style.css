@@ -856,7 +856,7 @@ html.dark #app-container[data-has-custom-bg="true"] {
 /* ─── CARD STYLING KONSISTEN ─── */
 .card-modern,
 .product-card-hover {
-    border-radius: 1rem;
+    border-radius: 1.25rem;
     border: 1px solid rgba(226, 232, 240, 0.9);
     transition: all 0.25s ease;
 }
@@ -864,4 +864,93 @@ html.dark .card-modern,
 html.dark .product-card-hover {
     border: 1px solid rgba(51, 65, 85, 0.8);
 }
+
+/* ─── SOLID STEP INDICATOR (ALUR CHECKOUT) ─── */
+.step-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #94a3b8;
+    transition: all 0.2s ease;
+}
+.step-item.active {
+    color: var(--color-primary);
+}
+.step-item.completed {
+    color: #64748b;
+}
+.step-num {
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 9999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    font-weight: 800;
+    background-color: #e2e8f0;
+    color: #64748b;
+    transition: all 0.2s ease;
+}
+html.dark .step-num {
+    background-color: #334155;
+    color: #94a3b8;
+}
+.step-item.active .step-num {
+    background-color: var(--color-primary);
+    color: #ffffff;
+    box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.35);
+}
+.step-item.completed .step-num {
+    background-color: var(--color-primary-dark);
+    color: #ffffff;
+}
+.step-line {
+    flex: 1;
+    height: 2px;
+    background-color: #e2e8f0;
+    transition: all 0.2s ease;
+}
+html.dark .step-line {
+    background-color: #334155;
+}
+.step-line.active {
+    background-color: var(--color-primary);
+}
+
+/* ─── SKELETON SHIMMER (LOADING STATE HALUS & SOLID) ─── */
+@keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+.skeleton-shimmer {
+    background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+}
+html.dark .skeleton-shimmer {
+    background: linear-gradient(90deg, #1e293b 25%, #334155 50%, #1e293b 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+}
+
+/* ─── FLOATING PILL CART (PENGALAMAN MOBILE ELEGAN) ─── */
+.floating-pill-cart {
+    background-color: var(--color-primary);
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 10px 25px -5px rgba(var(--color-primary-rgb), 0.45);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.floating-pill-cart:hover {
+    background-color: var(--color-primary-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 14px 28px -5px rgba(var(--color-primary-rgb), 0.55);
+}
+.floating-pill-cart:active {
+    transform: scale(0.96);
+}
+
 
