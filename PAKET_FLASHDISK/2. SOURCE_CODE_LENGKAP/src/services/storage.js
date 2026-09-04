@@ -17,6 +17,7 @@ import { sanitizeCart, updCart } from '../modules/cart/cart.js';
 import { updWish } from '../modules/cart/wishlist.js';
 import { rDyn } from '../modules/home/sections.js';
 import { rCat } from '../modules/catalog/catalog.js';
+import { applyUITheme, applyBackgroundStyle } from '../core/theme.js';
 
 const loadAppData = async () => {
     if(document.documentElement.classList.contains('dark')){
@@ -62,6 +63,10 @@ const loadAppData = async () => {
         if (localProducts) appData.products = localProducts;
         if (localRewards) appData.rewards = localRewards;
         prepareAppData();
+        if (appData.store) {
+            applyUITheme(appData.store.uiTheme, appData.store.themeColor);
+            applyBackgroundStyle(appData.store.bgStyle, appData.store.bgCustomUrl);
+        }
         sanitizeCart();
         updCart();
         updWish();
@@ -98,6 +103,10 @@ const loadAppData = async () => {
                 ssL('freshmart_last_update', serverUpdate.toString());
 
                 prepareAppData();
+                if (appData.store) {
+                    applyUITheme(appData.store.uiTheme, appData.store.themeColor);
+                    applyBackgroundStyle(appData.store.bgStyle, appData.store.bgCustomUrl);
+                }
                 sanitizeCart();
                 updCart();
                 updWish();
@@ -139,64 +148,7 @@ const loadAppData = async () => {
     }
 
     // --- PWA DYNAMIC MANIFEST & SPLASH SCREEN ENGINE ---
-    try {
-        const sName = appData.store.name || 'Toko Saya';
-        // FIX BUG: logo default toko adalah "fa-store" (sentinel internal untuk
-        // menampilkan ikon <i class="fa-solid fa-store"> di katalog saat admin belum
-        // upload logo asli) -- BUKAN url gambar. Sebelumnya nilai ini ikut disetel
-        // sebagai favicon/apple-touch-icon/manifest icon mentah-mentah, menyebabkan
-        // request ke "/fa-store" (404) dan error "Manifest: property 'src' invalid"
-        // karena manifest dimuat lewat blob: URL yang tidak bisa resolve path relatif.
-        // Sekarang: kalau bukan URL gambar yang valid (http/https/data:), pakai placeholder.
-        const rawLogo = appData.store.logo || '';
-        const sLogo = /^(https?:|data:)/i.test(rawLogo) ? rawLogo : 'https://placehold.co/192x192?text=Logo';
-        const tColor = document.documentElement.classList.contains('dark') ? '#0f172a' : '#ffffff';
-        // FIX BUG UTAMA: theme_color manifest sebelumnya SELALU hardcode putih/gelap (var tColor),
-        // jadi mengabaikan warna header yang dipilih admin di Pengaturan > Profil Toko.
-        // Akibatnya status bar & address bar aplikasi PWA yang sudah di-install TIDAK PERNAH
-        // mengikuti warna toko, walau meta theme-color di tab browser biasa sudah benar.
-        const brandColor = appData.store.themeColor || localStorage.getItem('freshmart_theme_color') || '#10b981';
-        
-        let mLink = document.getElementById('dynamic-manifest');
-        if(!mLink) { mLink = document.createElement('link'); mLink.id = 'dynamic-manifest'; mLink.rel = 'manifest'; document.head.appendChild(mLink); }
-        
-        let aIcon = document.getElementById('dynamic-apple-icon');
-        if(!aIcon) { aIcon = document.createElement('link'); aIcon.id = 'dynamic-apple-icon'; aIcon.rel = 'apple-touch-icon'; document.head.appendChild(aIcon); }
-        aIcon.href = sLogo;
-        
-        let fIcon = document.getElementById('dynamic-favicon');
-        if(!fIcon) { fIcon = document.createElement('link'); fIcon.id = 'dynamic-favicon'; fIcon.rel = 'icon'; document.head.appendChild(fIcon); }
-        fIcon.href = sLogo;
-        
-        const manifestObj = {
-            id: window.location.origin + "/",
-            name: sName, 
-            short_name: sName, 
-            description: appData.store.slogan || (sName + ' - Belanja online lebih mudah'),
-            // MODIFIKASI: Menggunakan URL Absolut agar Valid di semua Browser
-            start_url: window.location.origin + "/", 
-            scope: window.location.origin + "/",
-            lang: 'id',
-            dir: 'ltr',
-            display: 'standalone',
-            display_override: ['standalone', 'minimal-ui'],
-            orientation: 'portrait',
-            categories: ['shopping', 'business'],
-            background_color: tColor, 
-            theme_color: brandColor,
-            icons: [
-                // FIX TAMPILAN PWA: purpose HANYA 'any' (bukan 'any maskable').
-                // Logo diupload bebas oleh admin, TIDAK didesain dengan "safe zone"
-                // khusus untuk maskable icon. Kalau ditandai 'maskable', Android akan
-                // memotong logo jadi bentuk bulat/squircle secara paksa -- logo kotak/
-                // lebar bisa kepotong pinggirnya. Dengan 'any', Android tetap menaruh
-                // lingkaran latar di belakang ikon (tanpa memotong isi logo).
-                { src: sLogo, sizes: '192x192', type: 'image/png', purpose: 'any' },
-                { src: sLogo, sizes: '512x512', type: 'image/png', purpose: 'any' }
-            ]
-        };
-        mLink.href = URL.createObjectURL(new Blob([JSON.stringify(manifestObj)], {type: 'application/manifest+json'}));
-    } catch(e) { console.error("Manifest Error: ", e); }
+    updatePwaManifest();
     // ---------------------------------------------------
     
     // FITUR SEO: Inject Homepage Structured Data
@@ -420,6 +372,12 @@ window.attachRealtimeStockSync = () => {
             ssL('freshmart_cms_data', JSON.stringify(f));
             ssL('freshmart_last_update', serverUpdate.toString());
 
+            if (appData.store) {
+                applyUITheme(appData.store.uiTheme, appData.store.themeColor);
+                applyBackgroundStyle(appData.store.bgStyle, appData.store.bgCustomUrl);
+            }
+            updatePwaManifest();
+
             if (window.isAdm && cTab && ['categories','vouchers','banners','brands','banks','products','colors'].includes(cTab) && typeof window.rAdmItms === 'function') {
                 window.rAdmItms(cTab);
             }
@@ -575,9 +533,79 @@ window.autoParseCoords = (input) => {
     showToast("Format salah! Coba: Lat, Lng");
 };
 
+/**
+ * Generate dan update dynamic Web App Manifest blob secara realtime
+ * agar PWA standalone header/status bar langsung mengikuti warna toko
+ * @param {string} customThemeColor - warna HEX kustom opsional
+ */
+export const updatePwaManifest = (customThemeColor) => {
+    try {
+        const sName = appData.store?.name || 'Toko Putri';
+        const rawLogo = appData.store?.logo || '';
+        const sLogo = /^(https?:|data:)/i.test(rawLogo) ? rawLogo : 'https://placehold.co/192x192?text=Logo';
+        const tColor = document.documentElement.classList.contains('dark') ? '#0b1120' : '#ffffff';
+        const brandColor = customThemeColor || appData.store?.themeColor || localStorage.getItem('freshmart_theme_color') || '#10b981';
 
+        let mLink = document.getElementById('dynamic-manifest');
+        if(!mLink) { 
+            mLink = document.createElement('link'); 
+            mLink.id = 'dynamic-manifest'; 
+            mLink.rel = 'manifest'; 
+            document.head.appendChild(mLink); 
+        }
+        
+        let aIcon = document.getElementById('dynamic-apple-icon');
+        if(!aIcon) { 
+            aIcon = document.createElement('link'); 
+            aIcon.id = 'dynamic-apple-icon'; 
+            aIcon.rel = 'apple-touch-icon'; 
+            document.head.appendChild(aIcon); 
+        }
+        aIcon.href = sLogo;
+        
+        let fIcon = document.getElementById('dynamic-favicon');
+        if(!fIcon) { 
+            fIcon = document.createElement('link'); 
+            fIcon.id = 'dynamic-favicon'; 
+            fIcon.rel = 'icon'; 
+            document.head.appendChild(fIcon); 
+        }
+        fIcon.href = sLogo;
+        
+        const manifestObj = {
+            id: window.location.origin + "/",
+            name: sName, 
+            short_name: sName, 
+            description: appData.store?.slogan || (sName + ' - Belanja online lebih mudah'),
+            start_url: window.location.origin + "/", 
+            scope: window.location.origin + "/",
+            lang: 'id',
+            dir: 'ltr',
+            display: 'standalone',
+            display_override: ['standalone', 'minimal-ui'],
+            orientation: 'portrait',
+            categories: ['shopping', 'business'],
+            background_color: tColor, 
+            theme_color: brandColor,
+            icons: [
+                { src: sLogo, sizes: '192x192', type: 'image/png', purpose: 'any' },
+                { src: sLogo, sizes: '512x512', type: 'image/png', purpose: 'any' }
+            ]
+        };
+        
+        if (mLink.dataset.blobUrl) {
+            try { URL.revokeObjectURL(mLink.dataset.blobUrl); } catch {}
+        }
+        const blobUrl = URL.createObjectURL(new Blob([JSON.stringify(manifestObj)], {type: 'application/manifest+json'}));
+        mLink.dataset.blobUrl = blobUrl;
+        mLink.href = blobUrl;
+    } catch(e) { 
+        console.error("PWA Manifest Update Error: ", e); 
+    }
+};
 
 // ─── Expose ke window untuk atribut global ──────
 window.loadAppData = loadAppData;
 window.saveApp = saveApp;
 window.attachRealtimeStockSync = attachRealtimeStockSync;
+window.updatePwaManifest = updatePwaManifest;
