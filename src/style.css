@@ -632,12 +632,6 @@ html.dark .themed-footer {
     color: #f8fafc;
 }
 
-/* === LANDSCAPE BLOCKER === */
-@media screen and (max-height: 600px) and (orientation: landscape) {
-    #landscape-blocker {
-        display: flex !important;
-    }
-}
 
 /* === 9. TEMA-AWARE UTILITY CLASSES ===
    Kelas-kelas ini menggantikan Tailwind 'bg-emerald-*' / 'text-emerald-*' yang
