@@ -86,28 +86,28 @@ export const openVoucherModal = () => {
         else if (v.type === 'shipping_flat') discText = `Diskon Ongkir ${fCur(v.value)}`;
         else discText = `Potongan ${fCur(v.value)}`;
 
-        const minText = v.minPurchase && parseFloat(v.minPurchase) > 0 ? `Min. Belanja ${fCur(v.minPurchase)}` : 'Tanpa Min. Belanja';
+        const minText = v.minPurchase && parseFloat(v.minPurchase) > 0 ? `Min. belanja ${fCur(v.minPurchase)}` : 'Tanpa minimal belanja';
 
         return `
-        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-4 rounded-2xl border-2 border-dashed border-[var(--color-primary)]/40 bg-[rgba(var(--color-primary-rgb),0.04)] dark:bg-[rgba(var(--color-primary-rgb),0.08)]">
-            <div class="flex items-center gap-3.5 min-w-0">
-                <div class="w-12 h-12 rounded-xl bg-[var(--color-primary)] text-white flex items-center justify-center text-xl shrink-0 shadow-sm">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/80 hover:border-[var(--color-primary)] transition-all shadow-xs">
+            <div class="flex items-start gap-3.5 min-w-0">
+                <div class="w-11 h-11 rounded-xl bg-[var(--color-primary)] text-white flex items-center justify-center text-lg shrink-0 shadow-sm mt-0.5">
                     <i class="fa-solid fa-ticket"></i>
                 </div>
                 <div class="min-w-0">
-                    <div class="flex items-center gap-2 mb-1">
-                        <span class="font-extrabold text-sm text-slate-800 dark:text-white tracking-wide">${esc(v.code)}</span>
-                        <span class="bg-[var(--color-primary)] text-white text-[9px] font-bold px-2 py-0.5 rounded-full uppercase tracking-widest">${discText}</span>
+                    <div class="flex flex-wrap items-center gap-2 mb-1.5">
+                        <span class="font-extrabold text-sm font-mono tracking-wider text-slate-800 dark:text-white bg-white dark:bg-slate-900 px-2.5 py-0.5 rounded-lg border border-slate-200 dark:border-slate-700 select-all">${esc(v.code)}</span>
+                        <span class="primary-bg text-white text-[10px] font-bold px-2 py-0.5 rounded-md uppercase whitespace-nowrap shadow-2xs">${discText}</span>
                     </div>
-                    <p class="text-[11px] font-medium text-slate-500 dark:text-slate-400"><i class="fa-solid fa-bag-shopping mr-1"></i>${minText}</p>
+                    <p class="text-[11px] font-medium text-slate-500 dark:text-slate-400 flex items-center gap-1.5"><i class="fa-solid fa-circle-check text-[var(--color-primary)] text-xs"></i> ${minText}</p>
                 </div>
             </div>
-            <div class="flex items-center gap-2 w-full sm:w-auto shrink-0 mt-2 sm:mt-0">
-                <button type="button" onclick="copyVoucherCode('${esc(v.code)}')" class="flex-1 sm:flex-initial primary-bg-soft border primary-border primary-text text-[11px] font-bold uppercase tracking-wider px-3.5 py-2.5 rounded-xl hover:bg-[rgba(var(--color-primary-rgb),0.2)] transition-all active:scale-95 flex items-center justify-center gap-1.5 shadow-xs">
+            <div class="flex items-center gap-2 shrink-0 pt-2 md:pt-0 border-t md:border-t-0 border-slate-200 dark:border-slate-700">
+                <button type="button" onclick="copyVoucherCode('${esc(v.code)}')" class="flex-1 md:flex-initial bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] text-xs font-bold uppercase tracking-wider px-3.5 py-2 rounded-xl transition-all active:scale-95 flex items-center justify-center gap-1.5 shadow-2xs">
                     <i class="fa-regular fa-copy"></i> Salin
                 </button>
-                <button type="button" onclick="useVoucherCode('${esc(v.code)}')" class="flex-1 sm:flex-initial primary-bg text-white text-[11px] font-bold uppercase tracking-wider px-3.5 py-2.5 rounded-xl transition-all active:scale-95 flex items-center justify-center gap-1.5 shadow-xs">
-                    Gunakan
+                <button type="button" onclick="useVoucherCode('${esc(v.code)}')" class="flex-1 md:flex-initial primary-bg text-white text-xs font-bold uppercase tracking-wider px-4 py-2 rounded-xl transition-all active:scale-95 flex items-center justify-center gap-1.5 shadow-sm">
+                    Gunakan <i class="fa-solid fa-arrow-right text-[10px]"></i>
                 </button>
             </div>
         </div>`;
