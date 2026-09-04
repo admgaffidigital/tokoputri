@@ -16,6 +16,12 @@
     <title>Toko Putri</title>
     <meta name="description" content="Toko Putri - Solusi grosir dan e-commerce terpercaya untuk alat teknik, perkakas, dan perlengkapan pertukangan berkualitas dengan harga terbaik." />
     <link rel="icon" id="dynamic-favicon" href="data:image/x-icon;base64,AA" />
+    <meta name="theme-color" content="#10b981" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="msapplication-navbutton-color" content="#10b981" />
+    <meta name="msapplication-TileColor" content="#10b981" />
     <!-- Google Fonts — non-blocking (preconnect + media trick) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -25,7 +31,7 @@
     </noscript>
 
     <!-- Vite entry point dipindah ke body agar tidak render-blocking -->
-    <!-- Initialize theme color CSS variables & dark mode instantly to avoid FOUC/flash -->
+    <!-- Initialize theme color CSS variables, PWA header meta, & dark mode instantly to avoid FOUC/flash -->
     <script>
       (function () {
         // Dark Mode
@@ -39,6 +45,9 @@
 
         const palettes = {
           emerald: { 50: "#f0fdf4", 500: "#10b981", 600: "#059669" },
+          teal: { 50: "#f0fdfa", 500: "#14b8a6", 600: "#0d9488" },
+          cyan: { 50: "#ecfeff", 500: "#06b6d4", 600: "#0891b2" },
+          sky: { 50: "#f0f9ff", 500: "#0ea5e9", 600: "#0284c7" },
           blue: { 50: "#eff6ff", 500: "#3b82f6", 600: "#2563eb" },
           indigo: { 50: "#eef2ff", 500: "#6366f1", 600: "#4f46e5" },
           violet: { 50: "#f5f3ff", 500: "#8b5cf6", 600: "#7c3aed" },
@@ -68,6 +77,22 @@
         document.documentElement.style.setProperty("--color-primary-dark", colors[600]);
         document.documentElement.style.setProperty("--color-primary-light", colors[50]);
         document.documentElement.style.setProperty("--color-primary-rgb", hexToRgb(hex));
+
+        // Sync meta tags for PWA status bar & header instantly
+        const metaTags = [
+          { name: "theme-color", content: hex },
+          { name: "msapplication-navbutton-color", content: hex },
+          { name: "msapplication-TileColor", content: hex }
+        ];
+        metaTags.forEach(function(item) {
+          let el = document.querySelector('meta[name="' + item.name + '"]');
+          if (!el) {
+            el = document.createElement("meta");
+            el.setAttribute("name", item.name);
+            document.head.appendChild(el);
+          }
+          el.setAttribute("content", item.content);
+        });
       })();
     </script>
     <!-- Critical CSS: loader tampil langsung sebelum Tailwind dimuat, mencegah FOUC -->
@@ -88,7 +113,7 @@
         }
       }
     </style>
-    <script type="module" crossorigin src="/assets/index-BCN807LC.js"></script>
+    <script type="module" crossorigin src="/assets/index-CT1NJyCO.js"></script>
     <link rel="modulepreload" crossorigin href="/assets/vendor-firebase-core-D2OF5R23.js">
     <link rel="modulepreload" crossorigin href="/assets/vendor-firebase-db-BHlQMNP0.js">
     <link rel="modulepreload" crossorigin href="/assets/vendor-utils-bRchjNq8.js">

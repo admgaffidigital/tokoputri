@@ -62,6 +62,70 @@ export const adjustHex = (h, amt) => {
  * @param {string} customHex - warna HEX kustom (opsional, override palet)
  * @returns {object} - objek colors palet yang aktif
  */
+/**
+ * Sinkronkan seluruh tag meta PWA dan status bar browser ke warna tema aktif
+ * @param {string} hex - warna HEX utama
+ */
+export const updatePwaThemeMeta = (hex) => {
+    if (!hex) return;
+    
+    // 1. Meta theme-color (Browser standar & PWA Android/Windows)
+    let m = document.querySelector('meta[name="theme-color"]');
+    if (!m) { 
+        m = document.createElement('meta'); 
+        m.setAttribute('name', 'theme-color'); 
+        document.head.appendChild(m); 
+    }
+    m.setAttribute('content', hex);
+
+    // 2. Windows Phone / IE / Edge navbutton & Tile color
+    let msNav = document.querySelector('meta[name="msapplication-navbutton-color"]');
+    if (!msNav) {
+        msNav = document.createElement('meta');
+        msNav.setAttribute('name', 'msapplication-navbutton-color');
+        document.head.appendChild(msNav);
+    }
+    msNav.setAttribute('content', hex);
+
+    let msTile = document.querySelector('meta[name="msapplication-TileColor"]');
+    if (!msTile) {
+        msTile = document.createElement('meta');
+        msTile.setAttribute('name', 'msapplication-TileColor');
+        document.head.appendChild(msTile);
+    }
+    msTile.setAttribute('content', hex);
+
+    // 3. Apple iOS Web App Status Bar
+    let appleCapable = document.querySelector('meta[name="apple-mobile-web-app-capable"]');
+    if (!appleCapable) {
+        appleCapable = document.createElement('meta');
+        appleCapable.setAttribute('name', 'apple-mobile-web-app-capable');
+        document.head.appendChild(appleCapable);
+    }
+    appleCapable.setAttribute('content', 'yes');
+
+    let mobileCapable = document.querySelector('meta[name="mobile-web-app-capable"]');
+    if (!mobileCapable) {
+        mobileCapable = document.createElement('meta');
+        mobileCapable.setAttribute('name', 'mobile-web-app-capable');
+        document.head.appendChild(mobileCapable);
+    }
+    mobileCapable.setAttribute('content', 'yes');
+
+    let appleStatus = document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]');
+    if (!appleStatus) {
+        appleStatus = document.createElement('meta');
+        appleStatus.setAttribute('name', 'apple-mobile-web-app-status-bar-style');
+        document.head.appendChild(appleStatus);
+    }
+    appleStatus.setAttribute('content', 'default');
+
+    // 4. Update Dynamic Web App Manifest Blob jika sudah tersedia
+    if (typeof window.updatePwaManifest === 'function') {
+        window.updatePwaManifest(hex);
+    }
+};
+
 export const applyUITheme = (themeName, customHex) => {
     const uiTheme = themeName || localStorage.getItem('freshmart_ui_theme') || 'emerald';
     const colors  = uiPalettes[uiTheme] || uiPalettes['emerald'];
@@ -81,10 +145,8 @@ export const applyUITheme = (themeName, customHex) => {
     document.documentElement.style.setProperty('--color-primary-light', lightHex);
     document.documentElement.style.setProperty('--color-primary-rgb',   primaryRgb);
 
-    // Update warna header browser / PWA status bar
-    let m = document.querySelector('meta[name="theme-color"]');
-    if (!m) { m = document.createElement('meta'); m.setAttribute('name', 'theme-color'); document.head.appendChild(m); }
-    m.setAttribute('content', hex);
+    // Update warna header browser, status bar PWA, dan Dynamic Manifest Blob
+    updatePwaThemeMeta(hex);
 
     return colors;
 };
