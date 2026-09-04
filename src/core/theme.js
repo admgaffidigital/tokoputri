@@ -70,30 +70,32 @@ export const updatePwaThemeMeta = (hex) => {
     if (!hex) return;
     
     // 1. Meta theme-color (Browser standar & PWA Android/Windows)
-    let m = document.querySelector('meta[name="theme-color"]');
-    if (!m) { 
-        m = document.createElement('meta'); 
-        m.setAttribute('name', 'theme-color'); 
-        document.head.appendChild(m); 
-    }
+    // Hapus dan buat baru untuk memicu repaint di Chromium WebAPK & iOS Safari
+    try {
+        const oldThemes = document.querySelectorAll('meta[name="theme-color"]');
+        oldThemes.forEach(el => el.remove());
+    } catch {}
+
+    const m = document.createElement('meta');
+    m.setAttribute('name', 'theme-color');
     m.setAttribute('content', hex);
+    document.head.appendChild(m);
 
     // 2. Windows Phone / IE / Edge navbutton & Tile color
-    let msNav = document.querySelector('meta[name="msapplication-navbutton-color"]');
-    if (!msNav) {
-        msNav = document.createElement('meta');
-        msNav.setAttribute('name', 'msapplication-navbutton-color');
-        document.head.appendChild(msNav);
-    }
-    msNav.setAttribute('content', hex);
+    try {
+        const oldNavs = document.querySelectorAll('meta[name="msapplication-navbutton-color"], meta[name="msapplication-TileColor"]');
+        oldNavs.forEach(el => el.remove());
+    } catch {}
 
-    let msTile = document.querySelector('meta[name="msapplication-TileColor"]');
-    if (!msTile) {
-        msTile = document.createElement('meta');
-        msTile.setAttribute('name', 'msapplication-TileColor');
-        document.head.appendChild(msTile);
-    }
+    const msNav = document.createElement('meta');
+    msNav.setAttribute('name', 'msapplication-navbutton-color');
+    msNav.setAttribute('content', hex);
+    document.head.appendChild(msNav);
+
+    const msTile = document.createElement('meta');
+    msTile.setAttribute('name', 'msapplication-TileColor');
     msTile.setAttribute('content', hex);
+    document.head.appendChild(msTile);
 
     // 3. Apple iOS Web App Status Bar
     let appleCapable = document.querySelector('meta[name="apple-mobile-web-app-capable"]');

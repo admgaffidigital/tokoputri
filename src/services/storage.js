@@ -17,6 +17,7 @@ import { sanitizeCart, updCart } from '../modules/cart/cart.js';
 import { updWish } from '../modules/cart/wishlist.js';
 import { rDyn } from '../modules/home/sections.js';
 import { rCat } from '../modules/catalog/catalog.js';
+import { applyUITheme, applyBackgroundStyle } from '../core/theme.js';
 
 const loadAppData = async () => {
     if(document.documentElement.classList.contains('dark')){
@@ -62,6 +63,10 @@ const loadAppData = async () => {
         if (localProducts) appData.products = localProducts;
         if (localRewards) appData.rewards = localRewards;
         prepareAppData();
+        if (appData.store) {
+            applyUITheme(appData.store.uiTheme, appData.store.themeColor);
+            applyBackgroundStyle(appData.store.bgStyle, appData.store.bgCustomUrl);
+        }
         sanitizeCart();
         updCart();
         updWish();
@@ -98,6 +103,10 @@ const loadAppData = async () => {
                 ssL('freshmart_last_update', serverUpdate.toString());
 
                 prepareAppData();
+                if (appData.store) {
+                    applyUITheme(appData.store.uiTheme, appData.store.themeColor);
+                    applyBackgroundStyle(appData.store.bgStyle, appData.store.bgCustomUrl);
+                }
                 sanitizeCart();
                 updCart();
                 updWish();
@@ -362,6 +371,12 @@ window.attachRealtimeStockSync = () => {
 
             ssL('freshmart_cms_data', JSON.stringify(f));
             ssL('freshmart_last_update', serverUpdate.toString());
+
+            if (appData.store) {
+                applyUITheme(appData.store.uiTheme, appData.store.themeColor);
+                applyBackgroundStyle(appData.store.bgStyle, appData.store.bgCustomUrl);
+            }
+            updatePwaManifest();
 
             if (window.isAdm && cTab && ['categories','vouchers','banners','brands','banks','products','colors'].includes(cTab) && typeof window.rAdmItms === 'function') {
                 window.rAdmItms(cTab);
