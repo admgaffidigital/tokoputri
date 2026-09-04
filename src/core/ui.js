@@ -57,42 +57,59 @@ export const showToast = (m, type, title, duration) => {
     const pDark = style.getPropertyValue('--color-primary-dark').trim() || '#047857';
 
     const cfg = {
-        success: { icon: 'fa-circle-check',   label: 'Berhasil',   accent: pMain,     iconBg: `rgba(${pRgb},0.12)`,   border: `rgba(${pRgb},0.35)` },
-        error:   { icon: 'fa-circle-xmark',   label: 'Gagal',      accent: '#ef4444', iconBg: 'rgba(239,68,68,0.12)', border: 'rgba(239,68,68,0.35)' },
-        warning: { icon: 'fa-triangle-exclamation', label: 'Perhatian', accent: '#f59e0b', iconBg: 'rgba(245,158,11,0.12)', border: 'rgba(245,158,11,0.35)' },
-        loading: { icon: 'fa-spinner fa-spin',label: 'Memproses', accent: pDark,     iconBg: `rgba(${pRgb},0.12)`,   border: `rgba(${pRgb},0.35)` },
-        info:    { icon: 'fa-circle-info',    label: 'Informasi',  accent: '#3b82f6', iconBg: 'rgba(59,130,246,0.12)', border: 'rgba(59,130,246,0.35)' }
+        success: { icon: 'fa-circle-check',         label: 'Berhasil',   accent: pMain,     iconBg: `rgba(${pRgb},0.12)`,   border: `rgba(${pRgb},0.35)` },
+        error:   { icon: 'fa-circle-xmark',         label: 'Gagal',      accent: '#ef4444', iconBg: 'rgba(239,68,68,0.12)', border: 'rgba(239,68,68,0.35)' },
+        warning: { icon: 'fa-triangle-exclamation', label: 'Perhatian',  accent: '#f59e0b', iconBg: 'rgba(245,158,11,0.12)', border: 'rgba(245,158,11,0.35)' },
+        loading: { icon: 'fa-spinner fa-spin',      label: 'Memproses',  accent: pMain,     iconBg: `rgba(${pRgb},0.12)`,   border: `rgba(${pRgb},0.35)` },
+        info:    { icon: 'fa-circle-info',          label: 'Informasi',  accent: pMain,     iconBg: `rgba(${pRgb},0.12)`,   border: `rgba(${pRgb},0.35)` }
     };
     const c = cfg[type] || cfg.info;
 
     const iconEl = el('toast-icon');
     if (iconEl) iconEl.className = 'fa-solid ' + c.icon;
     const titleEl = el('toast-title');
-    if (titleEl) { titleEl.textContent = title || c.label; titleEl.style.display = 'block'; titleEl.style.color = c.accent; }
+    if (titleEl) { 
+        titleEl.textContent = title || c.label; 
+        titleEl.style.display = 'block'; 
+        titleEl.style.color = c.accent; 
+    }
     const iconWrap = el('toast-icon-wrap');
-    if (iconWrap) { iconWrap.style.background = c.iconBg; iconWrap.style.color = c.accent; }
+    if (iconWrap) { 
+        iconWrap.style.background = c.iconBg; 
+        iconWrap.style.color = c.accent; 
+    }
     setIn('toast-message', m.replace(/^[✅❌⚠️🎉🔔]\s*/, ''));
 
     let prog = el('toast-progress');
-    if (!prog) { prog = document.createElement('div'); prog.id = 'toast-progress'; t.appendChild(prog); }
+    if (!prog) { 
+        prog = document.createElement('div'); 
+        prog.id = 'toast-progress'; 
+        t.appendChild(prog); 
+    }
     prog.style.background  = c.accent;
     prog.style.transition  = 'none';
     prog.style.width       = '100%';
-    prog.style.opacity     = '0.7';
+    prog.style.opacity     = '0.85';
 
     clearTimeout(toastT);
-    t.style.top = 'calc(max(env(safe-area-inset-top), 16px) + 8px)';
+    t.classList.add('toast-show');
 
     const dur = duration || (type === 'loading' ? 8000 : type === 'error' ? 4500 : 3000);
     requestAnimationFrame(() => requestAnimationFrame(() => {
         prog.style.transition = `width ${dur}ms linear`;
         prog.style.width = '0%';
     }));
-    toastT = setTimeout(() => { t.style.top = '-160px'; }, dur);
+    toastT = setTimeout(() => { 
+        t.classList.remove('toast-show'); 
+    }, dur);
 };
 
 export const showToastLoading = (m) => showToast(m, 'loading', 'Memproses...', 8000);
-export const hideToast = () => { clearTimeout(toastT); const t = el('toast'); if(t) t.style.top = '-160px'; };
+export const hideToast = () => { 
+    clearTimeout(toastT); 
+    const t = el('toast'); 
+    if(t) t.classList.remove('toast-show'); 
+};
 
 /**
  * Toggle Tema Gelap / Terang (Dark Mode)

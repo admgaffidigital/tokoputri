@@ -88,11 +88,11 @@
         }
       }
     </style>
-    <script type="module" crossorigin src="/assets/index-pCHw_wSP.js"></script>
+    <script type="module" crossorigin src="/assets/index-DdXazMoo.js"></script>
     <link rel="modulepreload" crossorigin href="/assets/vendor-firebase-core-D2OF5R23.js">
     <link rel="modulepreload" crossorigin href="/assets/vendor-firebase-db-BHlQMNP0.js">
     <link rel="modulepreload" crossorigin href="/assets/vendor-utils-bRchjNq8.js">
-    <link rel="stylesheet" crossorigin href="/assets/index-Hdfvqfcv.css">
+    <link rel="stylesheet" crossorigin href="/assets/index-Bt5By2Ka.css">
   </head>
   <body>
     <!-- UI Components Global -->
@@ -104,13 +104,7 @@
         <span id="toast-title"></span>
         <span id="toast-message">Notifikasi</span>
       </div>
-      <button
-        id="toast-close"
-        onclick="
-          clearTimeout(toastT);
-          document.getElementById('toast').style.top = '-160px';
-        "
-      >
+      <button id="toast-close" onclick="hideToast()" aria-label="Tutup Notifikasi">
         <i class="fa-solid fa-xmark"></i>
       </button>
       <div id="toast-progress"></div>

@@ -99,13 +99,7 @@
         <span id="toast-title"></span>
         <span id="toast-message">Notifikasi</span>
       </div>
-      <button
-        id="toast-close"
-        onclick="
-          clearTimeout(toastT);
-          document.getElementById('toast').style.top = '-160px';
-        "
-      >
+      <button id="toast-close" onclick="hideToast()" aria-label="Tutup Notifikasi">
         <i class="fa-solid fa-xmark"></i>
       </button>
       <div id="toast-progress"></div>
