@@ -61,7 +61,7 @@ export const toggleBannerVideoSound = (btn, slideIdx) => {
             vid.play().catch(() => {});
             if (btn) {
                 btn.innerHTML = `<i class="fa-solid fa-volume-high text-xs"></i> <span>Suara On</span>`;
-                btn.className = 'banner-sound-toggle inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white text-[10px] sm:text-xs font-bold rounded-full shadow-lg border border-white/20 active:scale-95 transition-all cursor-pointer';
+                btn.className = 'banner-sound-toggle inline-flex items-center gap-1.5 px-3 py-1.5 primary-bg text-white text-[10px] sm:text-xs font-bold rounded-full shadow-lg border border-white/20 active:scale-95 transition-all cursor-pointer';
             }
         } else {
             vid.muted = true;
@@ -84,7 +84,7 @@ export const toggleBannerVideoSound = (btn, slideIdx) => {
             ytIframe.contentWindow?.postMessage('{"event":"command","func":"setVolume","args":[100]}', '*');
             if (btn) {
                 btn.innerHTML = `<i class="fa-solid fa-volume-high text-xs"></i> <span>Suara On</span>`;
-                btn.className = 'banner-sound-toggle inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white text-[10px] sm:text-xs font-bold rounded-full shadow-lg border border-white/20 active:scale-95 transition-all cursor-pointer';
+                btn.className = 'banner-sound-toggle inline-flex items-center gap-1.5 px-3 py-1.5 primary-bg text-white text-[10px] sm:text-xs font-bold rounded-full shadow-lg border border-white/20 active:scale-95 transition-all cursor-pointer';
             }
         } else {
             ytIframe.dataset.muted = "true";

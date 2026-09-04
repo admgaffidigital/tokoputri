@@ -45,11 +45,12 @@ export const renderFooter = () => {
     <!-- ================= FOOTER TOKO RESMI (MODERN 4-KOLOM, SOLID THEMED, RESPONSIF) ================= -->
     <footer class="themed-footer relative mt-14 w-full overflow-hidden pb-[calc(6.5rem+env(safe-area-inset-bottom))] sm:pb-[calc(3.5rem+env(safe-area-inset-bottom))]">
       <div class="relative z-10 mx-auto w-full px-4 sm:px-6 lg:px-8 xl:max-w-[1240px] pt-10 sm:pt-12 pb-8">
-        <!-- Responsive Grid:
-             - Mobile: 1 col stack (Profil, Belanja & Bantuan side-by-side, Hubungi Kami)
-             - Tablet: 2 col balanced (md:grid-cols-12)
-             - Desktop: 4 col clean layout (4 - 2 - 2 - 4)
-        -->
+        <!--
+             Responsive columns:
+              - Mobile: 1 col (stacked)
+              - Tablet: 2 col balanced (md:grid-cols-12)
+              - Desktop: 4 col clean layout (4 - 2 - 2 - 4)
+         -->
         <div class="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-10">
           <!-- Kolom 1: Profil Perusahaan & Brand -->
           <div class="flex flex-col items-start text-left md:col-span-6 lg:col-span-4">
@@ -60,7 +61,7 @@ export const renderFooter = () => {
               <div class="flex flex-col items-start min-w-0">
                 <h3 class="text-base sm:text-lg font-black tracking-tight text-white leading-tight truncate max-w-full">${esc(storeName)}</h3>
                 <span class="mt-1 inline-flex items-center gap-1 rounded border border-white/30 bg-white/20 px-2 py-0.5 text-[9px] font-bold uppercase tracking-widest text-white shadow-none">
-                  <i class="fa-solid fa-circle-check text-emerald-300"></i> Verified Official Store
+                  <i class="fa-solid fa-circle-check text-[var(--color-primary)]"></i> Verified Official Store
                 </span>
               </div>
             </div>
@@ -72,7 +73,7 @@ export const renderFooter = () => {
             <!-- Live Operating Status Pill -->
             <div class="mb-3 inline-flex items-center gap-2 rounded-lg border border-white/20 bg-white/10 px-2.5 py-1 text-[10px] font-semibold text-white shadow-none">
               <span class="relative flex h-2 w-2">
-                <span class="relative inline-flex h-2 w-2 rounded-full bg-emerald-300"></span>
+                <span class="relative inline-flex h-2 w-2 rounded-full bg-[var(--color-primary)]"></span>
               </span>
               Melayani Pembelian Online &amp; Offline
             </div>
@@ -80,7 +81,7 @@ export const renderFooter = () => {
             <!-- Store Address (if configured) -->
             ${storeAddress ? `
             <div class="text-xs text-white/90 flex items-start gap-2 max-w-md">
-              <i class="fa-solid fa-location-dot text-amber-300 mt-0.5 shrink-0 text-sm"></i>
+              <i class="fa-solid fa-location-dot text-[var(--color-primary)] mt-0.5 shrink-0 text-sm"></i>
               <span class="leading-relaxed">${esc(storeAddress)}</span>
             </div>` : ''}
           </div>
@@ -131,13 +132,13 @@ export const renderFooter = () => {
                 href="javascript:void(0)"
                 onclick="${waOnClick}"
               >
-                <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-emerald-600 text-white text-xl">
+                <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#25D366] text-white text-xl">
                   <i class="fa-brands fa-whatsapp"></i>
                 </div>
                 <div class="min-w-0 text-left">
                   <div class="flex items-center gap-1.5">
-                    <span class="h-1.5 w-1.5 rounded-full bg-emerald-600"></span>
-                    <p class="text-[9px] font-extrabold uppercase tracking-widest text-emerald-700">Customer Support</p>
+                    <span class="h-1.5 w-1.5 rounded-full bg-[var(--color-primary)]"></span>
+                    <p class="text-[9px] font-extrabold uppercase tracking-widest text-[var(--color-primary-dark)]">Customer Support</p>
                   </div>
                   <p class="truncate text-xs font-black text-slate-900">Konsultasi via WhatsApp</p>
                   <p class="text-[9px] font-medium text-slate-500">Respon Cepat &amp; Ramah</p>
@@ -148,7 +149,7 @@ export const renderFooter = () => {
               <div class="rounded-xl border border-white/20 bg-white/10 p-3 space-y-2.5 text-white shadow-none">
                 <!-- Email (if configured) -->
                 ${storeEmail ? `
-                <a href="mailto:${esc(storeEmail)}" class="flex items-center gap-2.5 text-white hover:text-amber-200 transition-colors">
+                <a href="mailto:${esc(storeEmail)}" class="flex items-center gap-2.5 text-white hover:text-white/80 transition-colors">
                   <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-white/20 bg-white/10 text-white">
                     <i class="fa-solid fa-envelope text-xs"></i>
                   </div>
@@ -158,7 +159,7 @@ export const renderFooter = () => {
                 <!-- Operating Hours -->
                 <div class="flex items-center gap-2.5 text-white">
                   <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-white/20 bg-white/10 text-white">
-                    <i class="fa-solid fa-clock text-xs text-amber-300"></i>
+                    <i class="fa-solid fa-clock text-xs text-[var(--color-primary)]"></i>
                   </div>
                   <div class="min-w-0 text-left">
                     <p class="truncate text-xs font-bold text-white tracking-wide">${esc(storeHours)}</p>
@@ -176,7 +177,7 @@ export const renderFooter = () => {
             <!-- Payment -->
             <div class="flex flex-col items-start">
               <p class="mb-2.5 text-[10px] font-black uppercase tracking-wider text-white">
-                <i class="fa-solid fa-credit-card mr-1 text-amber-300"></i> Metode Pembayaran Resmi
+                <i class="fa-solid fa-credit-card mr-1 text-[var(--color-primary)]"></i> Metode Pembayaran Resmi
               </p>
               <div class="flex flex-wrap items-center gap-1.5 sm:gap-2">
                 <span class="inline-flex items-center gap-1.5 rounded-lg border border-white/25 bg-white/15 px-2.5 py-1 text-[11px] font-bold text-white shadow-none" title="QRIS Standar Nasional"><i class="fa-solid fa-qrcode text-rose-300"></i> QRIS</span>
@@ -184,19 +185,19 @@ export const renderFooter = () => {
                 <span class="inline-flex items-center gap-1.5 rounded-lg border border-white/25 bg-white/15 px-2.5 py-1 text-[11px] font-bold text-white shadow-none" title="Transfer Bank Mandiri"><i class="fa-solid fa-building-columns text-amber-300"></i> Mandiri</span>
                 <span class="inline-flex items-center gap-1.5 rounded-lg border border-white/25 bg-white/15 px-2.5 py-1 text-[11px] font-bold text-white shadow-none" title="Transfer Bank BRI"><i class="fa-solid fa-building-columns text-sky-300"></i> BRI</span>
                 <span class="inline-flex items-center gap-1.5 rounded-lg border border-white/25 bg-white/15 px-2.5 py-1 text-[11px] font-bold text-white shadow-none" title="Visa & Mastercard"><i class="fa-brands fa-cc-visa text-indigo-300"></i> <i class="fa-brands fa-cc-mastercard text-orange-300"></i> Kartu</span>
-                <span class="inline-flex items-center gap-1.5 rounded-lg border border-white/25 bg-white/15 px-2.5 py-1 text-[11px] font-bold text-white shadow-none" title="Bayar di Kasir"><i class="fa-solid fa-cash-register text-emerald-300"></i> Kasir Toko</span>
+                <span class="inline-flex items-center gap-1.5 rounded-lg border border-white/25 bg-white/15 px-2.5 py-1 text-[11px] font-bold text-white shadow-none" title="Bayar di Kasir"><i class="fa-solid fa-cash-register text-[var(--color-primary)]"></i> Kasir Toko</span>
               </div>
             </div>
 
             <!-- Shipping -->
             <div class="flex flex-col items-start">
               <p class="mb-2.5 text-[10px] font-black uppercase tracking-wider text-white">
-                <i class="fa-solid fa-truck-fast mr-1 text-amber-300"></i> Jasa Pengiriman &amp; Logistik
+                <i class="fa-solid fa-truck-fast mr-1 text-[var(--color-primary)]"></i> Jasa Pengiriman &amp; Logistik
               </p>
               <div class="flex flex-wrap items-center gap-1.5 sm:gap-2">
                 <span class="inline-flex items-center gap-1.5 rounded-lg border border-white/25 bg-white/15 px-2.5 py-1 text-[11px] font-bold text-white shadow-none" title="Kirim Cepat Ekspedisi"><i class="fa-solid fa-truck-fast text-white"></i> Ekspedisi Cepat</span>
                 <span class="inline-flex items-center gap-1.5 rounded-lg border border-white/25 bg-white/15 px-2.5 py-1 text-[11px] font-bold text-white shadow-none" title="Kargo Truk & Partai Besar"><i class="fa-solid fa-truck-ramp-box text-amber-300"></i> Kargo &amp; Ekspedisi</span>
-                <span class="inline-flex items-center gap-1.5 rounded-lg border border-white/25 bg-white/15 px-2.5 py-1 text-[11px] font-bold text-white shadow-none" title="Kurir Instan & Same Day"><i class="fa-solid fa-motorcycle text-emerald-300"></i> Kurir Instan</span>
+                <span class="inline-flex items-center gap-1.5 rounded-lg border border-white/25 bg-white/15 px-2.5 py-1 text-[11px] font-bold text-white shadow-none" title="Kurir Instan & Same Day"><i class="fa-solid fa-motorcycle text-[var(--color-primary)]"></i> Kurir Instan</span>
                 <span class="inline-flex items-center gap-1.5 rounded-lg border border-white/25 bg-white/15 px-2.5 py-1 text-[11px] font-bold text-white shadow-none" title="Ambil di Toko Fisik"><i class="fa-solid fa-store text-sky-300"></i> Ambil Sendiri</span>
               </div>
             </div>
@@ -211,7 +212,7 @@ export const renderFooter = () => {
             &#169; <span>${currentYear}</span> <span class="font-extrabold text-white">${esc(storeName)}</span>. <span>${esc(footerCredit)}</span>
           </p>
           <div class="flex flex-wrap items-center justify-center gap-3 text-[10px] font-bold text-white">
-            <span class="flex items-center gap-1 text-emerald-300 font-bold">
+            <span class="flex items-center gap-1 text-[var(--color-primary)] font-bold">
               <i class="fa-solid fa-lock"></i> SSL Secured
             </span>
             <span class="text-white/30">•</span>

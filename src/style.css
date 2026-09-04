@@ -574,7 +574,7 @@ html.dark .accent-box:hover {
 html.dark .accent-badge {
     background-color: rgba(var(--color-primary-rgb), 0.18) !important;
     border: 1px solid rgba(var(--color-primary-rgb), 0.4) !important;
-    color: var(--color-emerald-400) !important;
+    color: var(--color-primary) !important;
 }
 
 .primary-light-icon-box {
@@ -584,7 +584,7 @@ html.dark .accent-badge {
 }
 html.dark .primary-light-icon-box {
     background-color: rgba(var(--color-primary-rgb), 0.25) !important;
-    color: var(--color-emerald-400) !important;
+    color: var(--color-primary) !important;
 }
 /* Hover effect when inside a card group (like product card plus button) */
 .group:hover .primary-light-icon-box {
@@ -671,7 +671,7 @@ html.dark .primary-bg-soft {
     color: var(--color-primary) !important;
 }
 html.dark .primary-text {
-    color: var(--color-emerald-400) !important; /* lighter shade for dark mode contrast */
+    color: var(--color-primary) !important;
 }
 
 .primary-border {
