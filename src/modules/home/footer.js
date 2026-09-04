@@ -26,6 +26,11 @@ export const renderFooter = () => {
     const footerCredit = store.footerCredit || 'Seluruh hak cipta dilindungi undang-undang.';
     const currentYear = new Date().getFullYear();
 
+    // Format nomor WhatsApp aman (standar internasional 62...)
+    let cleanWa = (storeWa || '').replace(/\D/g, '');
+    if (cleanWa.startsWith('0')) cleanWa = '62' + cleanWa.slice(1);
+    else if (!cleanWa.startsWith('62') && cleanWa.length > 0) cleanWa = '62' + cleanWa;
+
     // Logo rendering (gambar atau ikon)
     let logoHtml = `<i class="fa-solid fa-store text-2xl text-[var(--color-primary)]"></i>`;
     if (store.logo) {
@@ -37,20 +42,14 @@ export const renderFooter = () => {
     }
 
     // WhatsApp action
-    const waOnClick = storeWa 
-        ? `window.open('https://wa.me/${esc(storeWa)}', '_blank')`
+    const waOnClick = cleanWa 
+        ? `window.open('https://wa.me/${esc(cleanWa)}', '_blank')`
         : `if(typeof window.showToast==='function') window.showToast('Nomor WhatsApp belum dikonfigurasi admin.');`;
 
     container.innerHTML = `
     <!-- ================= FOOTER TOKO RESMI (MODERN 4-KOLOM, SOLID THEMED, RESPONSIF) ================= -->
     <footer class="themed-footer relative mt-14 w-full overflow-hidden pb-[calc(6.5rem+env(safe-area-inset-bottom))] sm:pb-[calc(3.5rem+env(safe-area-inset-bottom))]">
       <div class="relative z-10 mx-auto w-full px-4 sm:px-6 lg:px-8 xl:max-w-[1240px] pt-10 sm:pt-12 pb-8">
-        <!--
-             Responsive columns:
-              - Mobile: 1 col (stacked)
-              - Tablet: 2 col balanced (md:grid-cols-12)
-              - Desktop: 4 col clean layout (4 - 2 - 2 - 4)
-         -->
         <div class="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-10">
           <!-- Kolom 1: Profil Perusahaan & Brand -->
           <div class="flex flex-col items-start text-left md:col-span-6 lg:col-span-4">
@@ -97,11 +96,11 @@ export const renderFooter = () => {
                 Belanja Cepat
               </h4>
               <ul class="space-y-2.5 w-full text-xs font-semibold text-white/85">
-                <li><a class="flex items-center gap-1.5 hover:text-white transition-colors" href="javascript:void(0)" onclick="changeView('view-catalog')"><i class="fa-solid fa-chevron-right text-[9px] opacity-70"></i> Katalog Produk</a></li>
-                <li><a class="flex items-center gap-1.5 hover:text-white transition-colors" href="javascript:void(0)" onclick="changeView('view-cart')"><i class="fa-solid fa-chevron-right text-[9px] opacity-70"></i> Keranjang</a></li>
-                <li><a class="flex items-center gap-1.5 hover:text-white transition-colors" href="javascript:void(0)" onclick="changeView('view-wishlist')"><i class="fa-solid fa-chevron-right text-[9px] opacity-70"></i> Produk Favorit</a></li>
-                <li><a class="flex items-center gap-1.5 hover:text-white transition-colors" href="javascript:void(0)" onclick="if(typeof window.openVoucherModal==='function') window.openVoucherModal(); else if(typeof window.showToast==='function') window.showToast('Gunakan kupon saat checkout!');"><i class="fa-solid fa-chevron-right text-[9px] opacity-70"></i> Kupon Promo</a></li>
-                <li><a class="flex items-center gap-1.5 hover:text-white transition-colors" href="javascript:void(0)" onclick="if(typeof window.openMemberModal==='function') window.openMemberModal();"><i class="fa-solid fa-chevron-right text-[9px] opacity-70"></i> Poin Member</a></li>
+                <li><a class="flex items-center gap-1.5 hover:text-white transition-colors cursor-pointer" onclick="changeView('view-catalog')"><i class="fa-solid fa-chevron-right text-[9px] opacity-70"></i> Katalog Produk</a></li>
+                <li><a class="flex items-center gap-1.5 hover:text-white transition-colors cursor-pointer" onclick="changeView('view-cart')"><i class="fa-solid fa-chevron-right text-[9px] opacity-70"></i> Keranjang</a></li>
+                <li><a class="flex items-center gap-1.5 hover:text-white transition-colors cursor-pointer" onclick="changeView('view-wishlist')"><i class="fa-solid fa-chevron-right text-[9px] opacity-70"></i> Produk Favorit</a></li>
+                <li><a class="flex items-center gap-1.5 hover:text-white transition-colors cursor-pointer" onclick="if(typeof window.openVoucherModal==='function') window.openVoucherModal();"><i class="fa-solid fa-chevron-right text-[9px] opacity-70"></i> Kupon Promo</a></li>
+                <li><a class="flex items-center gap-1.5 hover:text-white transition-colors cursor-pointer" onclick="if(typeof window.openMemberModal==='function') window.openMemberModal();"><i class="fa-solid fa-chevron-right text-[9px] opacity-70"></i> Poin Member</a></li>
               </ul>
             </div>
 
@@ -111,11 +110,11 @@ export const renderFooter = () => {
                 Bantuan
               </h4>
               <ul class="space-y-2.5 w-full text-xs font-semibold text-white/85">
-                <li><a class="flex items-center gap-1.5 hover:text-white transition-colors" href="javascript:void(0)" onclick="changeView('view-orders')"><i class="fa-solid fa-chevron-right text-[9px] opacity-70"></i> Lacak Pesanan</a></li>
-                <li><a class="flex items-center gap-1.5 hover:text-white transition-colors" href="javascript:void(0)" onclick="changeView('view-faq')"><i class="fa-solid fa-chevron-right text-[9px] opacity-70"></i> Panduan &amp; FAQ</a></li>
-                <li><a class="flex items-center gap-1.5 hover:text-white transition-colors" href="javascript:void(0)" onclick="if(typeof window.showToast==='function') window.showToast('Produk 100% original bergaransi resmi toko.');"><i class="fa-solid fa-chevron-right text-[9px] opacity-70"></i> Jaminan Mutu</a></li>
-                <li><a class="flex items-center gap-1.5 hover:text-white transition-colors" href="javascript:void(0)" onclick="if(typeof window.showToast==='function') window.showToast('Seluruh transaksi terenkripsi aman.');"><i class="fa-solid fa-chevron-right text-[9px] opacity-70"></i> Keamanan</a></li>
-                <li><a class="flex items-center gap-1.5 text-white/70 hover:text-white transition-colors" href="javascript:void(0)" onclick="changeView('view-admin-login')"><i class="fa-solid fa-lock text-[8px] opacity-70"></i> Portal Admin</a></li>
+                <li><a class="flex items-center gap-1.5 hover:text-white transition-colors cursor-pointer" onclick="changeView('view-orders')"><i class="fa-solid fa-chevron-right text-[9px] opacity-70"></i> Lacak Pesanan</a></li>
+                <li><a class="flex items-center gap-1.5 hover:text-white transition-colors cursor-pointer" onclick="changeView('view-faq')"><i class="fa-solid fa-chevron-right text-[9px] opacity-70"></i> Panduan &amp; FAQ</a></li>
+                <li><a class="flex items-center gap-1.5 hover:text-white transition-colors cursor-pointer" onclick="openQualityGuaranteeModal()"><i class="fa-solid fa-chevron-right text-[9px] opacity-70"></i> Jaminan Mutu</a></li>
+                <li><a class="flex items-center gap-1.5 hover:text-white transition-colors cursor-pointer" onclick="openSecurityModal()"><i class="fa-solid fa-chevron-right text-[9px] opacity-70"></i> Keamanan</a></li>
+                <li><a class="flex items-center gap-1.5 text-white/70 hover:text-white transition-colors cursor-pointer" onclick="changeView('view-admin-login')"><i class="fa-solid fa-lock text-[8px] opacity-70"></i> Portal Admin</a></li>
               </ul>
             </div>
           </div>
@@ -226,5 +225,147 @@ export const renderFooter = () => {
     `;
 };
 
+/**
+ * Modal Jaminan Mutu
+ */
+export const openQualityGuaranteeModal = () => {
+    let m = document.getElementById('guarantee-modal');
+    if (!m) {
+        m = document.createElement('div');
+        m.id = 'guarantee-modal';
+        m.className = 'fixed inset-0 z-[115] bg-slate-900/70 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-5';
+        m.onclick = (e) => { if (e.target === m) closeQualityGuaranteeModal(); };
+        document.body.appendChild(m);
+    }
+    m.innerHTML = `
+        <div class="bg-white dark:bg-slate-900 w-full max-w-md rounded-t-[2rem] sm:rounded-[2rem] p-6 shadow-2xl border border-slate-200 dark:border-slate-700 space-y-4">
+            <div class="flex justify-between items-center border-b border-slate-100 dark:border-slate-800 pb-4">
+                <h3 class="font-bold text-slate-800 dark:text-white text-base flex items-center gap-2">
+                    <i class="fa-solid fa-shield-halved text-[var(--color-primary)]"></i> Jaminan Mutu &amp; Kualitas
+                </h3>
+                <button onclick="closeQualityGuaranteeModal()" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:bg-rose-100 hover:text-rose-500 flex items-center justify-center transition-all">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="space-y-3.5 text-xs text-slate-600 dark:text-slate-300 font-medium leading-relaxed">
+                <div class="flex items-start gap-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+                    <i class="fa-solid fa-certificate text-[var(--color-primary)] text-lg shrink-0 mt-0.5"></i>
+                    <div>
+                        <p class="font-bold text-slate-800 dark:text-white mb-0.5">100% Produk Berkualitas Resmi</p>
+                        <p class="text-[11px] text-slate-500 dark:text-slate-400">Seluruh produk yang kami sediakan terjamin keasliannya dan telah melalui proses sortir mutu terbaik.</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+                    <i class="fa-solid fa-arrows-rotate text-[var(--color-primary)] text-lg shrink-0 mt-0.5"></i>
+                    <div>
+                        <p class="font-bold text-slate-800 dark:text-white mb-0.5">Garansi Toko Terpercaya</p>
+                        <p class="text-[11px] text-slate-500 dark:text-slate-400">Jika produk yang diterima tidak sesuai atau mengalami kendala, hubungi kami via WhatsApp untuk solusi penggantian cepat.</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+                    <i class="fa-solid fa-headset text-[var(--color-primary)] text-lg shrink-0 mt-0.5"></i>
+                    <div>
+                        <p class="font-bold text-slate-800 dark:text-white mb-0.5">Layanan Purna Jual Responsif</p>
+                        <p class="text-[11px] text-slate-500 dark:text-slate-400">Customer service kami siap membantu Anda dengan ramah dan solutif setiap hari operasional.</p>
+                    </div>
+                </div>
+            </div>
+            <button onclick="closeQualityGuaranteeModal()" class="w-full primary-bg text-white py-3 rounded-xl text-xs font-bold uppercase tracking-wider transition-all active:scale-95 shadow-sm">
+                Tutup
+            </button>
+        </div>`;
+    m.style.opacity = '0';
+    m.style.display = 'flex';
+    requestAnimationFrame(() => {
+        m.style.transition = 'opacity 0.25s ease';
+        m.style.opacity = '1';
+    });
+};
+
+export const closeQualityGuaranteeModal = () => {
+    const m = document.getElementById('guarantee-modal');
+    if (!m || m.style.display === 'none') return;
+    m.style.opacity = '0';
+    m.style.transition = 'opacity 0.25s ease';
+    setTimeout(() => {
+        m.style.display = 'none';
+        m.style.opacity = '';
+        m.style.transition = '';
+    }, 250);
+};
+
+/**
+ * Modal Keamanan
+ */
+export const openSecurityModal = () => {
+    let m = document.getElementById('security-modal');
+    if (!m) {
+        m = document.createElement('div');
+        m.id = 'security-modal';
+        m.className = 'fixed inset-0 z-[115] bg-slate-900/70 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-5';
+        m.onclick = (e) => { if (e.target === m) closeSecurityModal(); };
+        document.body.appendChild(m);
+    }
+    m.innerHTML = `
+        <div class="bg-white dark:bg-slate-900 w-full max-w-md rounded-t-[2rem] sm:rounded-[2rem] p-6 shadow-2xl border border-slate-200 dark:border-slate-700 space-y-4">
+            <div class="flex justify-between items-center border-b border-slate-100 dark:border-slate-800 pb-4">
+                <h3 class="font-bold text-slate-800 dark:text-white text-base flex items-center gap-2">
+                    <i class="fa-solid fa-lock text-[var(--color-primary)]"></i> Keamanan &amp; Privasi
+                </h3>
+                <button onclick="closeSecurityModal()" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:bg-rose-100 hover:text-rose-500 flex items-center justify-center transition-all">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="space-y-3.5 text-xs text-slate-600 dark:text-slate-300 font-medium leading-relaxed">
+                <div class="flex items-start gap-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+                    <i class="fa-solid fa-shield-check text-[var(--color-primary)] text-lg shrink-0 mt-0.5"></i>
+                    <div>
+                        <p class="font-bold text-slate-800 dark:text-white mb-0.5">Enkripsi SSL 256-Bit</p>
+                        <p class="text-[11px] text-slate-500 dark:text-slate-400">Seluruh lalu lintas data transaksi dan kontak Anda dilindungi enkripsi standar industri internasional.</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+                    <i class="fa-solid fa-user-shield text-[var(--color-primary)] text-lg shrink-0 mt-0.5"></i>
+                    <div>
+                        <p class="font-bold text-slate-800 dark:text-white mb-0.5">Privasi Data Pelanggan Terlindungi</p>
+                        <p class="text-[11px] text-slate-500 dark:text-slate-400">Nomor WhatsApp dan riwayat pesanan Anda hanya digunakan untuk kebutuhan pemrosesan pesanan dan poin loyalitas.</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+                    <i class="fa-solid fa-qrcode text-[var(--color-primary)] text-lg shrink-0 mt-0.5"></i>
+                    <div>
+                        <p class="font-bold text-slate-800 dark:text-white mb-0.5">Pembayaran Resmi &amp; Terverifikasi</p>
+                        <p class="text-[11px] text-slate-500 dark:text-slate-400">Kanal QRIS Nasional dan transfer bank toko resmi tanpa perantara pihak ketiga yang meragukan.</p>
+                    </div>
+                </div>
+            </div>
+            <button onclick="closeSecurityModal()" class="w-full primary-bg text-white py-3 rounded-xl text-xs font-bold uppercase tracking-wider transition-all active:scale-95 shadow-sm">
+                Tutup
+            </button>
+        </div>`;
+    m.style.opacity = '0';
+    m.style.display = 'flex';
+    requestAnimationFrame(() => {
+        m.style.transition = 'opacity 0.25s ease';
+        m.style.opacity = '1';
+    });
+};
+
+export const closeSecurityModal = () => {
+    const m = document.getElementById('security-modal');
+    if (!m || m.style.display === 'none') return;
+    m.style.opacity = '0';
+    m.style.transition = 'opacity 0.25s ease';
+    setTimeout(() => {
+        m.style.display = 'none';
+        m.style.opacity = '';
+        m.style.transition = '';
+    }, 250);
+};
+
 // Export ke window untuk kemudahan panggil
 window.renderStorefrontFooter = renderFooter;
+window.openQualityGuaranteeModal = openQualityGuaranteeModal;
+window.closeQualityGuaranteeModal = closeQualityGuaranteeModal;
+window.openSecurityModal = openSecurityModal;
+window.closeSecurityModal = closeSecurityModal;
