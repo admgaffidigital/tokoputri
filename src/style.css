@@ -617,17 +617,17 @@ html:not(.dark) .card-modern select {
     background-color: #ffffff !important;
 }
 
-/* === 8. THEMED FOOTER (MINIMALIS, WARNA SOLID, BEBAS SHADOW & GRADIENT) === */
+/* === 8. THEMED FOOTER (ELEGAN SLATE DARK DENGAN AKSEN BORDER TEMA) === */
 .themed-footer {
     position: relative;
-    background: var(--color-primary);
-    border-top: 1px solid rgba(255, 255, 255, 0.15) !important;
-    box-shadow: none !important;
-    color: #ffffff;
+    background: #0f172a;
+    border-top: 2px solid var(--color-primary) !important;
+    box-shadow: 0 -10px 25px -10px rgba(0, 0, 0, 0.15) !important;
+    color: #f8fafc;
 }
 html.dark .themed-footer {
-    background: #0f172a !important;
-    border-top: 1px solid #1e293b !important;
+    background: #020617 !important;
+    border-top: 2px solid var(--color-primary) !important;
     box-shadow: none !important;
     color: #f8fafc;
 }

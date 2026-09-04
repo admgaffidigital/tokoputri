@@ -14,6 +14,7 @@ import {
 } from '../../core/utils.js';
 import { startBannerAutoSlide, forcePlayBannerVideos } from './banner.js';
 import { renderFooter } from './footer.js';
+import { rCat } from '../catalog/catalog.js';
 
 export const rDyn = () => {
     // 1. Render komponen footer storefront secara modular & reaktif
@@ -245,7 +246,7 @@ export const rDyn = () => {
         window.applyBackgroundStyle(appData.store.bgStyle, appData.store.bgCustomUrl);
     }
     setCPage(1);
-    if (typeof window.rCat === 'function') window.rCat();
+    rCat();
 };
 
 
