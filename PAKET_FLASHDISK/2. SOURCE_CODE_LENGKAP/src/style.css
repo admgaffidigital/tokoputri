@@ -574,7 +574,7 @@ html.dark .accent-box:hover {
 html.dark .accent-badge {
     background-color: rgba(var(--color-primary-rgb), 0.18) !important;
     border: 1px solid rgba(var(--color-primary-rgb), 0.4) !important;
-    color: var(--color-emerald-400) !important;
+    color: var(--color-primary) !important;
 }
 
 .primary-light-icon-box {
@@ -584,7 +584,7 @@ html.dark .accent-badge {
 }
 html.dark .primary-light-icon-box {
     background-color: rgba(var(--color-primary-rgb), 0.25) !important;
-    color: var(--color-emerald-400) !important;
+    color: var(--color-primary) !important;
 }
 /* Hover effect when inside a card group (like product card plus button) */
 .group:hover .primary-light-icon-box {
@@ -617,17 +617,17 @@ html:not(.dark) .card-modern select {
     background-color: #ffffff !important;
 }
 
-/* === 8. THEMED FOOTER (MINIMALIS, WARNA SOLID, BEBAS SHADOW & GRADIENT) === */
+/* === 8. THEMED FOOTER (ELEGAN SLATE DARK DENGAN AKSEN BORDER TEMA) === */
 .themed-footer {
     position: relative;
-    background: var(--color-primary);
-    border-top: 1px solid rgba(255, 255, 255, 0.15) !important;
-    box-shadow: none !important;
-    color: #ffffff;
+    background: #0f172a;
+    border-top: 2px solid var(--color-primary) !important;
+    box-shadow: 0 -10px 25px -10px rgba(0, 0, 0, 0.15) !important;
+    color: #f8fafc;
 }
 html.dark .themed-footer {
-    background: #0f172a !important;
-    border-top: 1px solid #1e293b !important;
+    background: #020617 !important;
+    border-top: 2px solid var(--color-primary) !important;
     box-shadow: none !important;
     color: #f8fafc;
 }
@@ -671,7 +671,7 @@ html.dark .primary-bg-soft {
     color: var(--color-primary) !important;
 }
 html.dark .primary-text {
-    color: var(--color-emerald-400) !important; /* lighter shade for dark mode contrast */
+    color: var(--color-primary) !important;
 }
 
 .primary-border {
@@ -680,6 +680,118 @@ html.dark .primary-text {
 html.dark .primary-border {
     border-color: rgba(var(--color-primary-rgb), 0.4) !important;
 }
+
+/* === BUTTON UTILITIES === */
+.btn-primary {
+    background-color: var(--color-primary);
+    color: #ffffff;
+    font-weight: 700;
+    transition: all 0.2s ease;
+    border: none;
+    cursor: pointer;
+}
+.btn-primary:hover:not(.btn-disabled):not(:disabled) {
+    background-color: var(--color-primary-dark);
+}
+.btn-disabled, button:disabled {
+    opacity: 0.45 !important;
+    cursor: not-allowed !important;
+    pointer-events: none !important;
+    box-shadow: none !important;
+    transform: none !important;
+}
+
+/* === SELECTABLE OPTION CARDS (DELIVERY & PAYMENT) === */
+.option-select-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    border-radius: 1rem;
+    border: 2px solid #e2e8f0;
+    background-color: #f8fafc;
+    padding: 1rem 0.75rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    user-select: none;
+    position: relative;
+}
+
+html.dark .option-select-card {
+    border-color: #334155;
+    background-color: #0f172a;
+}
+
+.option-select-card:hover {
+    border-color: #cbd5e1;
+    background-color: #ffffff;
+}
+
+html.dark .option-select-card:hover {
+    border-color: #475569;
+    background-color: #1e293b;
+}
+
+.option-select-card .radio-icon-box {
+    width: 2.75rem;
+    height: 2.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9999px;
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    color: #64748b;
+    font-size: 1.125rem;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    transition: all 0.2s ease;
+}
+
+html.dark .option-select-card .radio-icon-box {
+    background-color: #1e293b;
+    border-color: #334155;
+    color: #94a3b8;
+}
+
+.option-select-card .radio-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #475569;
+    transition: color 0.2s ease;
+}
+
+html.dark .option-select-card .radio-label {
+    color: #cbd5e1;
+}
+
+/* Checked State - Solid and Highlighted */
+.custom-radio:checked + .option-select-card {
+    border-color: var(--color-primary) !important;
+    background-color: #ffffff !important;
+    box-shadow: 0 0 0 1.5px var(--color-primary), 0 4px 12px rgba(0,0,0,0.05) !important;
+}
+
+html.dark .custom-radio:checked + .option-select-card {
+    border-color: var(--color-primary) !important;
+    background-color: #1e293b !important;
+    box-shadow: 0 0 0 1.5px var(--color-primary) !important;
+}
+
+.custom-radio:checked + .option-select-card .radio-icon-box {
+    background-color: var(--color-primary) !important;
+    border-color: var(--color-primary) !important;
+    color: #ffffff !important;
+    transform: scale(1.06);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+}
+
+.custom-radio:checked + .option-select-card .radio-label {
+    color: var(--color-primary) !important;
+}
+
 
 /* Tombol ikon kecil: latar soft lalu solid saat hover — pola paling umum di CMS */
 .primary-icon-btn {
@@ -780,40 +892,177 @@ video.banner-video-element::-webkit-media-controls-start-playback-button {
    Header, Container, Card Produk, dan Latar Belakang.
    ============================================================ */
 
-/* ─── STYLE PRESETS (SEMUA MINIMALIS, SOLID, BEBAS GRADIENT & BEBAS SHADOW) ─── */
-.glass-header,
-[data-bg-style] .glass-header {
-    background: var(--color-primary) !important;
-    border-radius: 0 !important;
-    clip-path: none !important;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.15) !important;
-    box-shadow: none !important;
+/* ─── BASE HEADER & CONTAINER ─── */
+.glass-header {
+    background: var(--color-primary);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    transition: all 0.3s ease;
 }
 
-#app-container,
-[data-bg-style] #app-container {
-    background-color: #f8fafc !important;
-    background-image: none !important;
+#app-container {
+    background-color: #f8fafc;
+    transition: background-color 0.4s ease;
 }
-html.dark #app-container,
-html.dark [data-bg-style] #app-container {
-    background-color: #0b1120 !important;
-    background-image: none !important;
+html.dark #app-container {
+    background-color: #0b1120;
 }
 
+/* Transparansi lembut saat ada wallpaper kustom */
+#app-container[data-has-custom-bg="true"] {
+    background-color: rgba(248, 250, 252, 0.88) !important;
+}
+html.dark #app-container[data-has-custom-bg="true"] {
+    background-color: rgba(11, 17, 32, 0.88) !important;
+}
+
+/* ─── 1. HERO ARCH (Header lengkung solid) ─── */
+[data-bg-style="hero_arch"] .glass-header {
+    background: var(--color-primary);
+    border-radius: 0 0 1.75rem 1.75rem;
+    padding-bottom: 1.25rem;
+    box-shadow: 0 10px 25px -5px rgba(var(--color-primary-rgb), 0.35);
+    border-bottom: none;
+}
+
+/* ─── 2. GEOMETRIS 3D (Vektor sudut presisi) ─── */
+[data-bg-style="geometric_3d"] .glass-header {
+    background-color: var(--color-primary);
+    background-image: 
+        linear-gradient(135deg, rgba(255, 255, 255, 0.12) 25%, transparent 25%),
+        linear-gradient(225deg, rgba(255, 255, 255, 0.12) 25%, transparent 25%),
+        linear-gradient(45deg, rgba(255, 255, 255, 0.12) 25%, transparent 25%),
+        linear-gradient(315deg, rgba(255, 255, 255, 0.12) 25%, transparent 25%);
+    background-position: 12px 0, 12px 0, 0 0, 0 0;
+    background-size: 24px 24px;
+    border-radius: 0 0 1rem 1rem;
+    box-shadow: 0 8px 24px -4px rgba(var(--color-primary-rgb), 0.4);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* ─── 3. DIAGONAL SKEW (Aksen garis tegas) ─── */
+[data-bg-style="diagonal_skew"] .glass-header {
+    background: var(--color-primary);
+    clip-path: polygon(0 0, 100% 0, 100% calc(100% - 14px), 0 100%);
+    padding-bottom: 1.5rem;
+    box-shadow: 0 10px 20px -5px rgba(var(--color-primary-rgb), 0.3);
+    border-bottom: none;
+}
+
+/* ─── 4. DUAL-TONE (Header solid 2 warna) ─── */
+[data-bg-style="dual_tone"] .glass-header {
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary) 58%, var(--color-primary-dark) 58%, var(--color-primary-dark) 100%);
+    border-radius: 0 0 1.25rem 1.25rem;
+    box-shadow: 0 8px 24px -4px rgba(var(--color-primary-rgb), 0.35);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* ─── 5. MINIMALIS (Polos bersih elegan) ─── */
+[data-bg-style="minimalist"] .glass-header {
+    background: var(--color-primary);
+    border-radius: 0;
+    clip-path: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+/* ─── CARD STYLING KONSISTEN ─── */
 .card-modern,
-.product-card-hover,
-[data-bg-style] .card-modern,
-[data-bg-style] .product-card-hover {
-    border-radius: 14px !important;
-    border: 1px solid rgba(226, 232, 240, 0.9) !important;
-    box-shadow: none !important;
+.product-card-hover {
+    border-radius: 1.25rem;
+    border: 1px solid rgba(226, 232, 240, 0.9);
+    transition: all 0.25s ease;
 }
 html.dark .card-modern,
-html.dark .product-card-hover,
-html.dark [data-bg-style] .card-modern,
-html.dark [data-bg-style] .product-card-hover {
-    border: 1px solid rgba(51, 65, 85, 0.8) !important;
-    box-shadow: none !important;
+html.dark .product-card-hover {
+    border: 1px solid rgba(51, 65, 85, 0.8);
 }
+
+/* ─── SOLID STEP INDICATOR (ALUR CHECKOUT) ─── */
+.step-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #94a3b8;
+    transition: all 0.2s ease;
+}
+.step-item.active {
+    color: var(--color-primary);
+}
+.step-item.completed {
+    color: #64748b;
+}
+.step-num {
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 9999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    font-weight: 800;
+    background-color: #e2e8f0;
+    color: #64748b;
+    transition: all 0.2s ease;
+}
+html.dark .step-num {
+    background-color: #334155;
+    color: #94a3b8;
+}
+.step-item.active .step-num {
+    background-color: var(--color-primary);
+    color: #ffffff;
+    box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.35);
+}
+.step-item.completed .step-num {
+    background-color: var(--color-primary-dark);
+    color: #ffffff;
+}
+.step-line {
+    flex: 1;
+    height: 2px;
+    background-color: #e2e8f0;
+    transition: all 0.2s ease;
+}
+html.dark .step-line {
+    background-color: #334155;
+}
+.step-line.active {
+    background-color: var(--color-primary);
+}
+
+/* ─── SKELETON SHIMMER (LOADING STATE HALUS & SOLID) ─── */
+@keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+.skeleton-shimmer {
+    background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+}
+html.dark .skeleton-shimmer {
+    background: linear-gradient(90deg, #1e293b 25%, #334155 50%, #1e293b 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+}
+
+/* ─── FLOATING PILL CART (PENGALAMAN MOBILE ELEGAN) ─── */
+.floating-pill-cart {
+    background-color: var(--color-primary);
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 10px 25px -5px rgba(var(--color-primary-rgb), 0.45);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.floating-pill-cart:hover {
+    background-color: var(--color-primary-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 14px 28px -5px rgba(var(--color-primary-rgb), 0.55);
+}
+.floating-pill-cart:active {
+    transform: scale(0.96);
+}
+
 

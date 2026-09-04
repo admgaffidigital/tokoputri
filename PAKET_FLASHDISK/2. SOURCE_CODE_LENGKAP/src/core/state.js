@@ -53,6 +53,21 @@ export let cart      = [];
 export let wishlist  = [];
 export let myOrders  = [];
 
+try {
+    const _c = localStorage.getItem('freshmart_cart');
+    if (_c) cart = JSON.parse(_c) || [];
+} catch(e) {}
+
+try {
+    const _w = localStorage.getItem('freshmart_wishlist');
+    if (_w) wishlist = JSON.parse(_w) || [];
+} catch(e) {}
+
+try {
+    const _o = localStorage.getItem('freshmart_my_orders');
+    if (_o) myOrders = JSON.parse(_o) || [];
+} catch(e) {}
+
 // Informasi pelanggan saat checkout
 export let cust = {
     name: '', address: '', lat: null, lng: null,

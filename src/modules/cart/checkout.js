@@ -6,7 +6,7 @@
  * ============================================================
  */
 
-import { appData, cart, setCart, cust, setCust, vouch, setVouch, myOrders, currentMember, setCurrentMember, selectedReward, setSelectedReward, isSaving, setIsSaving } from '../../core/state.js';
+import { appData, cart, setCart, cust, setCust, vouch, setVouch, myOrders, setMyOrders, currentMember, setCurrentMember, selectedReward, setSelectedReward, isSaving, setIsSaving } from '../../core/state.js';
 import { el, show, hide, toggleCls, getV, setV, setIn, setH, esc, fCur, sL, ssL, sLoad, hLoad } from '../../core/utils.js';
 import { db, firebase } from '../../config/firebase.js';
 
@@ -617,8 +617,11 @@ export const processOrder = async () => {
             claimedReward: oD.claimedReward || null,
             finalMemberPoints: finalMemberPoints
         });
-        ssL('freshmart_my_orders', JSON.stringify(myOrders));
-        ssL('freshmart_last_order', Date.now().toString());
+        setMyOrders(myOrders);
+        try {
+            localStorage.setItem('freshmart_my_orders', JSON.stringify(myOrders));
+            localStorage.setItem('freshmart_last_order', Date.now().toString());
+        } catch(e) {}
         
         if (typeof analytics !== 'undefined') analytics.logEvent('purchase', { transaction_id: oI, value: tot, currency: 'IDR' });
         

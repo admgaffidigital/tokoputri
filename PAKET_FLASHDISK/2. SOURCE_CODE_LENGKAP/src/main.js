@@ -13,8 +13,8 @@ import { uiPalettes, hexToRgb, applyUITheme, initDarkMode, toggleTheme as _toggl
 // Core: Utilities (helper functions stateless)
 import { el, show, hide, toggleCls, setIn, setH, setV, getV, sL, ssL, esc, fCur, fixD, getYouTubeId, parseVideoUrl, fixDriveVideo, fixDriveVideoPreview, getOptImg, rewardStatusLabel, updateSEO, injectJSONLD, ensureScriptLoaded } from './core/utils.js';
 
-// Core: State (struktur data default)
-import { defApp as _defApp } from './core/state.js';
+// Core: State (struktur data default & global state)
+import { defApp as _defApp, setCart as _setCart, setWishlist as _setWishlist, setMyOrders as _setMyOrders } from './core/state.js';
 // Services: GAS URL
 import { GAS_UPLOAD_URL as _GAS_URL } from './services/gas.js';
 // Modules: Print & Dokumen (Thermal Struk, Invoice & Surat Jalan A4)
@@ -197,10 +197,10 @@ let lastReportPeriod = 'today';
 // telah dipindahkan ke modul: src/modules/orders/orders.js
 
 
-// Coba muat state keranjang & wishlist dari LocalStorage
-try { cart = JSON.parse(sL('freshmart_cart')) || []; } catch(e) {}
-try { wishlist = JSON.parse(sL('freshmart_wishlist')) || []; } catch(e) {}
-try { myOrders = JSON.parse(sL('freshmart_my_orders')) || []; } catch(e) {}
+// Coba muat state keranjang & wishlist & riwayat pesanan dari LocalStorage
+try { cart = JSON.parse(sL('freshmart_cart')) || []; _setCart(cart); } catch(e) {}
+try { wishlist = JSON.parse(sL('freshmart_wishlist')) || []; _setWishlist(wishlist); } catch(e) {}
+try { myOrders = JSON.parse(sL('freshmart_my_orders')) || []; _setMyOrders(myOrders); } catch(e) {}
 
 // Setup History API (Untuk Tombol Back)
 // FIX: selalu di-reset (bukan hanya jika kosong) supaya state history selalu sinkron dengan
@@ -322,9 +322,9 @@ const bindProp = (name, getter, setter) => {
 bindProp('GAS_UPLOAD_URL', () => GAS_UPLOAD_URL, v => { GAS_UPLOAD_URL = v; });
 bindProp('confirmCb', () => confirmCb, v => { confirmCb = v; });
 bindProp('appData', () => appData, v => { appData = v; });
-bindProp('cart', () => cart, v => { cart = v; });
-bindProp('wishlist', () => wishlist, v => { wishlist = v; });
-bindProp('myOrders', () => myOrders, v => { myOrders = v; });
+bindProp('cart', () => cart, v => { cart = v; _setCart(v); });
+bindProp('wishlist', () => wishlist, v => { wishlist = v; _setWishlist(v); });
+bindProp('myOrders', () => myOrders, v => { myOrders = v; _setMyOrders(v); });
 bindProp('cust', () => cust, v => { cust = v; });
 bindProp('currentMember', () => currentMember, v => { currentMember = v; });
 bindProp('selectedReward', () => selectedReward, v => { selectedReward = v; });

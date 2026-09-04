@@ -586,7 +586,7 @@ export const saveAdminSettings = async (type) => {
             appData.store.footerCredit = getV('set-credit');
             appData.store.themeColor = getV('set-theme-color'); 
             appData.store.uiTheme = getV('set-ui-theme');
-            appData.store.bgStyle = getV('set-bg-style') || 'hero_arch';
+            appData.store.bgStyle = getV('set-bg-style') || 'minimalist';
             appData.store.bgCustomUrl = fixD(getV('set-bg-custom-url'));
             
             localStorage.setItem('freshmart_theme_color', appData.store.themeColor);

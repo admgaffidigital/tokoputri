@@ -183,9 +183,9 @@ export const rAdmOrd = () => {
                 
                 let pI = "fa-wallet text-slate-400"; 
                 let method = o.payment?.method || '';
-                if (method === 'transfer') pI = "fa-building-columns text-emerald-500"; 
+                if (method === 'transfer') pI = "fa-building-columns text-[var(--color-primary)]"; 
                 else if (method === 'qris') pI = "fa-qrcode text-purple-500"; 
-                else if (method === 'cod') pI = "fa-hand-holding-dollar text-emerald-500"; 
+                else if (method === 'cod') pI = "fa-hand-holding-dollar text-[var(--color-primary)]"; 
                 else if (method === 'cashier') pI = "fa-cash-register text-amber-500";
                 
                 let itemCount = o.items ? parseFloat(o.items.reduce((sum, item) => sum + (parseFloat(item.qty) || 0), 0).toFixed(2)) : 0;
@@ -193,7 +193,7 @@ export const rAdmOrd = () => {
                 const shortId = (o.orderId || '').split('-').pop();
                 
                 return `
-                <div class="bg-white dark:bg-slate-800 p-4 sm:p-5 md:p-6 lg:p-8 rounded-[1.5rem] border border-slate-200 dark:border-slate-700 shadow-sm relative overflow-hidden group cursor-pointer hover:shadow-lg hover:-translate-y-1 hover:border-emerald-400 dark:hover:border-emerald-500 transition-all duration-300" onclick="openOrderDetail('${o.orderId}')">
+                <div class="bg-white dark:bg-slate-800 p-4 sm:p-5 md:p-6 lg:p-8 rounded-[1.5rem] border border-slate-200 dark:border-slate-700 shadow-sm relative overflow-hidden group cursor-pointer hover:shadow-lg hover:-translate-y-1 hover:border-[var(--color-primary)] transition-all duration-300" onclick="openOrderDetail('${o.orderId}')">
                     <div class="flex items-center gap-4">
                         <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl ${boxBg} ${boxText} flex items-center justify-center shrink-0 transition-colors">
                             <i class="fa-solid fa-receipt text-xl sm:text-2xl"></i>
@@ -210,7 +210,7 @@ export const rAdmOrd = () => {
                                 <p class="text-xs font-bold text-slate-600 dark:text-slate-300 truncate max-w-[120px] sm:max-w-xs"><i class="fa-solid fa-user text-slate-400 mr-1"></i> ${esc(o.customer?.name || 'Anonim')}</p>
                                 <span class="w-1 h-1 rounded-full bg-slate-300 dark:bg-slate-600 shrink-0"></span>
                                 <span class="text-[9px] font-bold text-slate-500 bg-slate-100 dark:bg-slate-900 px-2 py-0.5 rounded-xl border border-slate-200 dark:border-slate-700 uppercase tracking-widest shrink-0">${itemCount} Item</span>
-                                ${o.customer?.lat ? `<span class="text-[9px] font-bold text-emerald-500 bg-emerald-50 dark:bg-emerald-900/20 px-1.5 py-0.5 rounded-xl border border-emerald-100 dark:border-emerald-800 uppercase tracking-widest shrink-0"><i class="fa-solid fa-location-dot"></i> GPS</span>` : ''}
+                                ${o.customer?.lat ? `<span class="text-[9px] font-bold text-[var(--color-primary)] bg-[rgba(var(--color-primary-rgb),0.1)] px-1.5 py-0.5 rounded-xl border border-[rgba(var(--color-primary-rgb),0.2)] uppercase tracking-widest shrink-0"><i class="fa-solid fa-location-dot"></i> GPS</span>` : ''}
                                 ${o.buktiPayment ? `<span class="text-[9px] font-bold text-violet-500 bg-violet-50 dark:bg-violet-900/20 px-1.5 py-0.5 rounded-xl border border-violet-100 dark:border-violet-800 uppercase tracking-widest shrink-0"><i class="fa-solid fa-image"></i></span>` : ''}
                             </div>
                         </div>
@@ -255,7 +255,7 @@ export const openOrderDetail = (i) => {
         <div class="flex flex-col gap-4 text-sm pb-2">
             <div class="bg-white dark:bg-slate-800 p-5 sm:p-6 rounded-[1.5rem] border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col sm:flex-row justify-between gap-5 sm:items-center">
                 <div class="flex-1">
-                    <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest flex items-center gap-1.5"><i class="fa-solid fa-crosshairs text-emerald-500"></i> Status</p>
+                    <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest flex items-center gap-1.5"><i class="fa-solid fa-crosshairs text-[var(--color-primary)]"></i> Status</p>
                     ${sSel}
                 </div>
                 <div class="text-left sm:text-right flex flex-col justify-center">
@@ -329,14 +329,14 @@ export const openOrderDetail = (i) => {
                 <div class="absolute -top-10 -right-10 w-32 h-32 primary-blur-orb rounded-full blur-3xl pointer-events-none transition-all duration-700"></div>
                 
                 <div class="flex justify-between items-center border-b border-slate-700/80 pb-4 mb-4 relative z-10">
-                    <h4 class="font-bold text-[11px] uppercase tracking-widest text-slate-300 flex items-center gap-2.5"><i class="fa-solid fa-wallet text-emerald-400 text-sm"></i> Ringkasan Bayar</h4>
+                    <h4 class="font-bold text-[11px] uppercase tracking-widest text-slate-300 flex items-center gap-2.5"><i class="fa-solid fa-wallet text-[var(--color-primary)] text-sm"></i> Ringkasan Bayar</h4>
                     <span class="bg-white/10 backdrop-blur-md px-3 py-1 rounded-xl text-[10px] font-bold tracking-widest border border-white/10 uppercase shadow-inner text-white">${esc(o.payment?.method || '').toUpperCase()}</span>
                 </div>
                 
                 <div class="space-y-3 font-medium text-sm text-slate-300 relative z-10">
                     <div class="flex justify-between items-center"><span>Subtotal Produk</span><span class="font-bold text-white">${fCur(o.payment?.subtotal)}</span></div>
                     ${o.customer?.deliveryMethod === 'delivery' ? `<div class="flex justify-between items-center"><span>Ongkos Kirim</span><span class="font-bold text-white">${fCur(o.payment?.shippingCost)}</span></div>` : ''}
-                    ${o.payment?.shippingDiscount ? `<div class="flex justify-between items-center text-emerald-400 bg-emerald-900/20 px-2 py-1 -mx-2 rounded-xl"><span>Diskon Ongkir</span><span class="font-bold">-${fCur(o.payment.shippingDiscount)}</span></div>` : ''}
+                    ${o.payment?.shippingDiscount ? `<div class="flex justify-between items-center text-[var(--color-primary)] bg-[rgba(var(--color-primary-rgb),0.15)] px-2 py-1 -mx-2 rounded-xl"><span>Diskon Ongkir</span><span class="font-bold">-${fCur(o.payment.shippingDiscount)}</span></div>` : ''}
                     ${o.payment?.productDiscount ? `<div class="flex justify-between items-center text-rose-400 bg-rose-900/20 px-2 py-1 -mx-2 rounded-xl"><span>Diskon Promo</span><span class="font-bold">-${fCur(o.payment.productDiscount)}</span></div>` : ''}
                     ${(() => {
                         if (!o.payment?.ppnAmount || o.payment.ppnAmount <= 0) return '';

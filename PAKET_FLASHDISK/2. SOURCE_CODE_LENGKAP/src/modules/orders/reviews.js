@@ -212,8 +212,8 @@ export const loadProductReviews = async (productId) => {
                 ${r.text ? `<p class="text-xs text-slate-600 dark:text-slate-300 mb-3">${esc(r.text)}</p>` : ''}
                 ${r.photoUrl ? `<div class="w-16 h-16 rounded-xl overflow-hidden mb-3 border border-slate-200 dark:border-slate-700"><img src="${esc(r.photoUrl)}" class="w-full h-full object-cover cursor-pointer" onclick="window.open('${esc(r.photoUrl)}','_blank')" alt="Foto ulasan"></div>` : ''}
                 ${r.adminReply ? `
-                <div class="mt-2.5 p-3 bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-100 dark:border-emerald-800/50 rounded-xl">
-                    <p class="text-[10px] font-bold text-emerald-700 dark:text-emerald-400 mb-1 flex items-center gap-1"><i class="fa-solid fa-reply"></i> Balasan Penjual</p>
+                <div class="mt-2.5 p-3 bg-[rgba(var(--color-primary-rgb),0.08)] dark:bg-[rgba(var(--color-primary-rgb),0.15)] border border-[rgba(var(--color-primary-rgb),0.2)] rounded-xl">
+                    <p class="text-[10px] font-bold text-[var(--color-primary-dark)] dark:text-[var(--color-primary)] mb-1 flex items-center gap-1"><i class="fa-solid fa-reply"></i> Balasan Penjual</p>
                     <p class="text-xs text-slate-600 dark:text-slate-300">${esc(r.adminReply)}</p>
                 </div>` : ''}
             </div>`;

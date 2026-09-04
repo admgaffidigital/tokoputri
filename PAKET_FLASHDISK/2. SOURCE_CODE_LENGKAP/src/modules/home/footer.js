@@ -26,6 +26,11 @@ export const renderFooter = () => {
     const footerCredit = store.footerCredit || 'Seluruh hak cipta dilindungi undang-undang.';
     const currentYear = new Date().getFullYear();
 
+    // Format nomor WhatsApp aman (standar internasional 62...)
+    let cleanWa = (storeWa || '').replace(/\D/g, '');
+    if (cleanWa.startsWith('0')) cleanWa = '62' + cleanWa.slice(1);
+    else if (!cleanWa.startsWith('62') && cleanWa.length > 0) cleanWa = '62' + cleanWa;
+
     // Logo rendering (gambar atau ikon)
     let logoHtml = `<i class="fa-solid fa-store text-2xl text-[var(--color-primary)]"></i>`;
     if (store.logo) {
@@ -37,19 +42,14 @@ export const renderFooter = () => {
     }
 
     // WhatsApp action
-    const waOnClick = storeWa 
-        ? `window.open('https://wa.me/${esc(storeWa)}', '_blank')`
+    const waOnClick = cleanWa 
+        ? `window.open('https://wa.me/${esc(cleanWa)}', '_blank')`
         : `if(typeof window.showToast==='function') window.showToast('Nomor WhatsApp belum dikonfigurasi admin.');`;
 
     container.innerHTML = `
     <!-- ================= FOOTER TOKO RESMI (MODERN 4-KOLOM, SOLID THEMED, RESPONSIF) ================= -->
     <footer class="themed-footer relative mt-14 w-full overflow-hidden pb-[calc(6.5rem+env(safe-area-inset-bottom))] sm:pb-[calc(3.5rem+env(safe-area-inset-bottom))]">
       <div class="relative z-10 mx-auto w-full px-4 sm:px-6 lg:px-8 xl:max-w-[1240px] pt-10 sm:pt-12 pb-8">
-        <!-- Responsive Grid:
-             - Mobile: 1 col stack (Profil, Belanja & Bantuan side-by-side, Hubungi Kami)
-             - Tablet: 2 col balanced (md:grid-cols-12)
-             - Desktop: 4 col clean layout (4 - 2 - 2 - 4)
-        -->
         <div class="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-10">
           <!-- Kolom 1: Profil Perusahaan & Brand -->
           <div class="flex flex-col items-start text-left md:col-span-6 lg:col-span-4">
@@ -60,7 +60,7 @@ export const renderFooter = () => {
               <div class="flex flex-col items-start min-w-0">
                 <h3 class="text-base sm:text-lg font-black tracking-tight text-white leading-tight truncate max-w-full">${esc(storeName)}</h3>
                 <span class="mt-1 inline-flex items-center gap-1 rounded border border-white/30 bg-white/20 px-2 py-0.5 text-[9px] font-bold uppercase tracking-widest text-white shadow-none">
-                  <i class="fa-solid fa-circle-check text-emerald-300"></i> Verified Official Store
+                  <i class="fa-solid fa-circle-check text-[var(--color-primary)]"></i> Verified Official Store
                 </span>
               </div>
             </div>
@@ -72,7 +72,7 @@ export const renderFooter = () => {
             <!-- Live Operating Status Pill -->
             <div class="mb-3 inline-flex items-center gap-2 rounded-lg border border-white/20 bg-white/10 px-2.5 py-1 text-[10px] font-semibold text-white shadow-none">
               <span class="relative flex h-2 w-2">
-                <span class="relative inline-flex h-2 w-2 rounded-full bg-emerald-300"></span>
+                <span class="relative inline-flex h-2 w-2 rounded-full bg-[var(--color-primary)]"></span>
               </span>
               Melayani Pembelian Online &amp; Offline
             </div>
@@ -80,7 +80,7 @@ export const renderFooter = () => {
             <!-- Store Address (if configured) -->
             ${storeAddress ? `
             <div class="text-xs text-white/90 flex items-start gap-2 max-w-md">
-              <i class="fa-solid fa-location-dot text-amber-300 mt-0.5 shrink-0 text-sm"></i>
+              <i class="fa-solid fa-location-dot text-[var(--color-primary)] mt-0.5 shrink-0 text-sm"></i>
               <span class="leading-relaxed">${esc(storeAddress)}</span>
             </div>` : ''}
           </div>
@@ -96,11 +96,11 @@ export const renderFooter = () => {
                 Belanja Cepat
               </h4>
               <ul class="space-y-2.5 w-full text-xs font-semibold text-white/85">
-                <li><a class="flex items-center gap-1.5 hover:text-white transition-colors" href="javascript:void(0)" onclick="changeView('view-catalog')"><i class="fa-solid fa-chevron-right text-[9px] opacity-70"></i> Katalog Produk</a></li>
-                <li><a class="flex items-center gap-1.5 hover:text-white transition-colors" href="javascript:void(0)" onclick="changeView('view-cart')"><i class="fa-solid fa-chevron-right text-[9px] opacity-70"></i> Keranjang</a></li>
-                <li><a class="flex items-center gap-1.5 hover:text-white transition-colors" href="javascript:void(0)" onclick="changeView('view-wishlist')"><i class="fa-solid fa-chevron-right text-[9px] opacity-70"></i> Produk Favorit</a></li>
-                <li><a class="flex items-center gap-1.5 hover:text-white transition-colors" href="javascript:void(0)" onclick="if(typeof window.openVoucherModal==='function') window.openVoucherModal(); else if(typeof window.showToast==='function') window.showToast('Gunakan kupon saat checkout!');"><i class="fa-solid fa-chevron-right text-[9px] opacity-70"></i> Kupon Promo</a></li>
-                <li><a class="flex items-center gap-1.5 hover:text-white transition-colors" href="javascript:void(0)" onclick="if(typeof window.openMemberModal==='function') window.openMemberModal();"><i class="fa-solid fa-chevron-right text-[9px] opacity-70"></i> Poin Member</a></li>
+                <li><a class="flex items-center gap-1.5 hover:text-white transition-colors cursor-pointer" onclick="changeView('view-catalog')"><i class="fa-solid fa-chevron-right text-[9px] opacity-70"></i> Katalog Produk</a></li>
+                <li><a class="flex items-center gap-1.5 hover:text-white transition-colors cursor-pointer" onclick="changeView('view-cart')"><i class="fa-solid fa-chevron-right text-[9px] opacity-70"></i> Keranjang</a></li>
+                <li><a class="flex items-center gap-1.5 hover:text-white transition-colors cursor-pointer" onclick="changeView('view-wishlist')"><i class="fa-solid fa-chevron-right text-[9px] opacity-70"></i> Produk Favorit</a></li>
+                <li><a class="flex items-center gap-1.5 hover:text-white transition-colors cursor-pointer" onclick="if(typeof window.openVoucherModal==='function') window.openVoucherModal();"><i class="fa-solid fa-chevron-right text-[9px] opacity-70"></i> Kupon Promo</a></li>
+                <li><a class="flex items-center gap-1.5 hover:text-white transition-colors cursor-pointer" onclick="if(typeof window.openMemberModal==='function') window.openMemberModal();"><i class="fa-solid fa-chevron-right text-[9px] opacity-70"></i> Poin Member</a></li>
               </ul>
             </div>
 
@@ -110,11 +110,11 @@ export const renderFooter = () => {
                 Bantuan
               </h4>
               <ul class="space-y-2.5 w-full text-xs font-semibold text-white/85">
-                <li><a class="flex items-center gap-1.5 hover:text-white transition-colors" href="javascript:void(0)" onclick="changeView('view-orders')"><i class="fa-solid fa-chevron-right text-[9px] opacity-70"></i> Lacak Pesanan</a></li>
-                <li><a class="flex items-center gap-1.5 hover:text-white transition-colors" href="javascript:void(0)" onclick="changeView('view-faq')"><i class="fa-solid fa-chevron-right text-[9px] opacity-70"></i> Panduan &amp; FAQ</a></li>
-                <li><a class="flex items-center gap-1.5 hover:text-white transition-colors" href="javascript:void(0)" onclick="if(typeof window.showToast==='function') window.showToast('Produk 100% original bergaransi resmi toko.');"><i class="fa-solid fa-chevron-right text-[9px] opacity-70"></i> Jaminan Mutu</a></li>
-                <li><a class="flex items-center gap-1.5 hover:text-white transition-colors" href="javascript:void(0)" onclick="if(typeof window.showToast==='function') window.showToast('Seluruh transaksi terenkripsi aman.');"><i class="fa-solid fa-chevron-right text-[9px] opacity-70"></i> Keamanan</a></li>
-                <li><a class="flex items-center gap-1.5 text-white/70 hover:text-white transition-colors" href="javascript:void(0)" onclick="changeView('view-admin-login')"><i class="fa-solid fa-lock text-[8px] opacity-70"></i> Portal Admin</a></li>
+                <li><a class="flex items-center gap-1.5 hover:text-white transition-colors cursor-pointer" onclick="changeView('view-orders')"><i class="fa-solid fa-chevron-right text-[9px] opacity-70"></i> Lacak Pesanan</a></li>
+                <li><a class="flex items-center gap-1.5 hover:text-white transition-colors cursor-pointer" onclick="changeView('view-faq')"><i class="fa-solid fa-chevron-right text-[9px] opacity-70"></i> Panduan &amp; FAQ</a></li>
+                <li><a class="flex items-center gap-1.5 hover:text-white transition-colors cursor-pointer" onclick="openQualityGuaranteeModal()"><i class="fa-solid fa-chevron-right text-[9px] opacity-70"></i> Jaminan Mutu</a></li>
+                <li><a class="flex items-center gap-1.5 hover:text-white transition-colors cursor-pointer" onclick="openSecurityModal()"><i class="fa-solid fa-chevron-right text-[9px] opacity-70"></i> Keamanan</a></li>
+                <li><a class="flex items-center gap-1.5 text-white/70 hover:text-white transition-colors cursor-pointer" onclick="changeView('view-admin-login')"><i class="fa-solid fa-lock text-[8px] opacity-70"></i> Portal Admin</a></li>
               </ul>
             </div>
           </div>
@@ -131,13 +131,13 @@ export const renderFooter = () => {
                 href="javascript:void(0)"
                 onclick="${waOnClick}"
               >
-                <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-emerald-600 text-white text-xl">
+                <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#25D366] text-white text-xl">
                   <i class="fa-brands fa-whatsapp"></i>
                 </div>
                 <div class="min-w-0 text-left">
                   <div class="flex items-center gap-1.5">
-                    <span class="h-1.5 w-1.5 rounded-full bg-emerald-600"></span>
-                    <p class="text-[9px] font-extrabold uppercase tracking-widest text-emerald-700">Customer Support</p>
+                    <span class="h-1.5 w-1.5 rounded-full bg-[var(--color-primary)]"></span>
+                    <p class="text-[9px] font-extrabold uppercase tracking-widest text-[var(--color-primary-dark)]">Customer Support</p>
                   </div>
                   <p class="truncate text-xs font-black text-slate-900">Konsultasi via WhatsApp</p>
                   <p class="text-[9px] font-medium text-slate-500">Respon Cepat &amp; Ramah</p>
@@ -148,7 +148,7 @@ export const renderFooter = () => {
               <div class="rounded-xl border border-white/20 bg-white/10 p-3 space-y-2.5 text-white shadow-none">
                 <!-- Email (if configured) -->
                 ${storeEmail ? `
-                <a href="mailto:${esc(storeEmail)}" class="flex items-center gap-2.5 text-white hover:text-amber-200 transition-colors">
+                <a href="mailto:${esc(storeEmail)}" class="flex items-center gap-2.5 text-white hover:text-white/80 transition-colors">
                   <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-white/20 bg-white/10 text-white">
                     <i class="fa-solid fa-envelope text-xs"></i>
                   </div>
@@ -158,7 +158,7 @@ export const renderFooter = () => {
                 <!-- Operating Hours -->
                 <div class="flex items-center gap-2.5 text-white">
                   <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-white/20 bg-white/10 text-white">
-                    <i class="fa-solid fa-clock text-xs text-amber-300"></i>
+                    <i class="fa-solid fa-clock text-xs text-[var(--color-primary)]"></i>
                   </div>
                   <div class="min-w-0 text-left">
                     <p class="truncate text-xs font-bold text-white tracking-wide">${esc(storeHours)}</p>
@@ -176,7 +176,7 @@ export const renderFooter = () => {
             <!-- Payment -->
             <div class="flex flex-col items-start">
               <p class="mb-2.5 text-[10px] font-black uppercase tracking-wider text-white">
-                <i class="fa-solid fa-credit-card mr-1 text-amber-300"></i> Metode Pembayaran Resmi
+                <i class="fa-solid fa-credit-card mr-1 text-[var(--color-primary)]"></i> Metode Pembayaran Resmi
               </p>
               <div class="flex flex-wrap items-center gap-1.5 sm:gap-2">
                 <span class="inline-flex items-center gap-1.5 rounded-lg border border-white/25 bg-white/15 px-2.5 py-1 text-[11px] font-bold text-white shadow-none" title="QRIS Standar Nasional"><i class="fa-solid fa-qrcode text-rose-300"></i> QRIS</span>
@@ -184,19 +184,19 @@ export const renderFooter = () => {
                 <span class="inline-flex items-center gap-1.5 rounded-lg border border-white/25 bg-white/15 px-2.5 py-1 text-[11px] font-bold text-white shadow-none" title="Transfer Bank Mandiri"><i class="fa-solid fa-building-columns text-amber-300"></i> Mandiri</span>
                 <span class="inline-flex items-center gap-1.5 rounded-lg border border-white/25 bg-white/15 px-2.5 py-1 text-[11px] font-bold text-white shadow-none" title="Transfer Bank BRI"><i class="fa-solid fa-building-columns text-sky-300"></i> BRI</span>
                 <span class="inline-flex items-center gap-1.5 rounded-lg border border-white/25 bg-white/15 px-2.5 py-1 text-[11px] font-bold text-white shadow-none" title="Visa & Mastercard"><i class="fa-brands fa-cc-visa text-indigo-300"></i> <i class="fa-brands fa-cc-mastercard text-orange-300"></i> Kartu</span>
-                <span class="inline-flex items-center gap-1.5 rounded-lg border border-white/25 bg-white/15 px-2.5 py-1 text-[11px] font-bold text-white shadow-none" title="Bayar di Kasir"><i class="fa-solid fa-cash-register text-emerald-300"></i> Kasir Toko</span>
+                <span class="inline-flex items-center gap-1.5 rounded-lg border border-white/25 bg-white/15 px-2.5 py-1 text-[11px] font-bold text-white shadow-none" title="Bayar di Kasir"><i class="fa-solid fa-cash-register text-[var(--color-primary)]"></i> Kasir Toko</span>
               </div>
             </div>
 
             <!-- Shipping -->
             <div class="flex flex-col items-start">
               <p class="mb-2.5 text-[10px] font-black uppercase tracking-wider text-white">
-                <i class="fa-solid fa-truck-fast mr-1 text-amber-300"></i> Jasa Pengiriman &amp; Logistik
+                <i class="fa-solid fa-truck-fast mr-1 text-[var(--color-primary)]"></i> Jasa Pengiriman &amp; Logistik
               </p>
               <div class="flex flex-wrap items-center gap-1.5 sm:gap-2">
                 <span class="inline-flex items-center gap-1.5 rounded-lg border border-white/25 bg-white/15 px-2.5 py-1 text-[11px] font-bold text-white shadow-none" title="Kirim Cepat Ekspedisi"><i class="fa-solid fa-truck-fast text-white"></i> Ekspedisi Cepat</span>
                 <span class="inline-flex items-center gap-1.5 rounded-lg border border-white/25 bg-white/15 px-2.5 py-1 text-[11px] font-bold text-white shadow-none" title="Kargo Truk & Partai Besar"><i class="fa-solid fa-truck-ramp-box text-amber-300"></i> Kargo &amp; Ekspedisi</span>
-                <span class="inline-flex items-center gap-1.5 rounded-lg border border-white/25 bg-white/15 px-2.5 py-1 text-[11px] font-bold text-white shadow-none" title="Kurir Instan & Same Day"><i class="fa-solid fa-motorcycle text-emerald-300"></i> Kurir Instan</span>
+                <span class="inline-flex items-center gap-1.5 rounded-lg border border-white/25 bg-white/15 px-2.5 py-1 text-[11px] font-bold text-white shadow-none" title="Kurir Instan & Same Day"><i class="fa-solid fa-motorcycle text-[var(--color-primary)]"></i> Kurir Instan</span>
                 <span class="inline-flex items-center gap-1.5 rounded-lg border border-white/25 bg-white/15 px-2.5 py-1 text-[11px] font-bold text-white shadow-none" title="Ambil di Toko Fisik"><i class="fa-solid fa-store text-sky-300"></i> Ambil Sendiri</span>
               </div>
             </div>
@@ -211,7 +211,7 @@ export const renderFooter = () => {
             &#169; <span>${currentYear}</span> <span class="font-extrabold text-white">${esc(storeName)}</span>. <span>${esc(footerCredit)}</span>
           </p>
           <div class="flex flex-wrap items-center justify-center gap-3 text-[10px] font-bold text-white">
-            <span class="flex items-center gap-1 text-emerald-300 font-bold">
+            <span class="flex items-center gap-1 text-[var(--color-primary)] font-bold">
               <i class="fa-solid fa-lock"></i> SSL Secured
             </span>
             <span class="text-white/30">•</span>
@@ -225,5 +225,147 @@ export const renderFooter = () => {
     `;
 };
 
+/**
+ * Modal Jaminan Mutu
+ */
+export const openQualityGuaranteeModal = () => {
+    let m = document.getElementById('guarantee-modal');
+    if (!m) {
+        m = document.createElement('div');
+        m.id = 'guarantee-modal';
+        m.className = 'fixed inset-0 z-[115] bg-slate-900/70 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-5';
+        m.onclick = (e) => { if (e.target === m) closeQualityGuaranteeModal(); };
+        document.body.appendChild(m);
+    }
+    m.innerHTML = `
+        <div class="bg-white dark:bg-slate-900 w-full max-w-md rounded-t-[2rem] sm:rounded-[2rem] p-6 shadow-2xl border border-slate-200 dark:border-slate-700 space-y-4">
+            <div class="flex justify-between items-center border-b border-slate-100 dark:border-slate-800 pb-4">
+                <h3 class="font-bold text-slate-800 dark:text-white text-base flex items-center gap-2">
+                    <i class="fa-solid fa-shield-halved text-[var(--color-primary)]"></i> Jaminan Mutu &amp; Kualitas
+                </h3>
+                <button onclick="closeQualityGuaranteeModal()" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:bg-rose-100 hover:text-rose-500 flex items-center justify-center transition-all">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="space-y-3.5 text-xs text-slate-600 dark:text-slate-300 font-medium leading-relaxed">
+                <div class="flex items-start gap-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+                    <i class="fa-solid fa-certificate text-[var(--color-primary)] text-lg shrink-0 mt-0.5"></i>
+                    <div>
+                        <p class="font-bold text-slate-800 dark:text-white mb-0.5">100% Produk Berkualitas Resmi</p>
+                        <p class="text-[11px] text-slate-500 dark:text-slate-400">Seluruh produk yang kami sediakan terjamin keasliannya dan telah melalui proses sortir mutu terbaik.</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+                    <i class="fa-solid fa-arrows-rotate text-[var(--color-primary)] text-lg shrink-0 mt-0.5"></i>
+                    <div>
+                        <p class="font-bold text-slate-800 dark:text-white mb-0.5">Garansi Toko Terpercaya</p>
+                        <p class="text-[11px] text-slate-500 dark:text-slate-400">Jika produk yang diterima tidak sesuai atau mengalami kendala, hubungi kami via WhatsApp untuk solusi penggantian cepat.</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+                    <i class="fa-solid fa-headset text-[var(--color-primary)] text-lg shrink-0 mt-0.5"></i>
+                    <div>
+                        <p class="font-bold text-slate-800 dark:text-white mb-0.5">Layanan Purna Jual Responsif</p>
+                        <p class="text-[11px] text-slate-500 dark:text-slate-400">Customer service kami siap membantu Anda dengan ramah dan solutif setiap hari operasional.</p>
+                    </div>
+                </div>
+            </div>
+            <button onclick="closeQualityGuaranteeModal()" class="w-full primary-bg text-white py-3 rounded-xl text-xs font-bold uppercase tracking-wider transition-all active:scale-95 shadow-sm">
+                Tutup
+            </button>
+        </div>`;
+    m.style.opacity = '0';
+    m.style.display = 'flex';
+    requestAnimationFrame(() => {
+        m.style.transition = 'opacity 0.25s ease';
+        m.style.opacity = '1';
+    });
+};
+
+export const closeQualityGuaranteeModal = () => {
+    const m = document.getElementById('guarantee-modal');
+    if (!m || m.style.display === 'none') return;
+    m.style.opacity = '0';
+    m.style.transition = 'opacity 0.25s ease';
+    setTimeout(() => {
+        m.style.display = 'none';
+        m.style.opacity = '';
+        m.style.transition = '';
+    }, 250);
+};
+
+/**
+ * Modal Keamanan
+ */
+export const openSecurityModal = () => {
+    let m = document.getElementById('security-modal');
+    if (!m) {
+        m = document.createElement('div');
+        m.id = 'security-modal';
+        m.className = 'fixed inset-0 z-[115] bg-slate-900/70 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-5';
+        m.onclick = (e) => { if (e.target === m) closeSecurityModal(); };
+        document.body.appendChild(m);
+    }
+    m.innerHTML = `
+        <div class="bg-white dark:bg-slate-900 w-full max-w-md rounded-t-[2rem] sm:rounded-[2rem] p-6 shadow-2xl border border-slate-200 dark:border-slate-700 space-y-4">
+            <div class="flex justify-between items-center border-b border-slate-100 dark:border-slate-800 pb-4">
+                <h3 class="font-bold text-slate-800 dark:text-white text-base flex items-center gap-2">
+                    <i class="fa-solid fa-lock text-[var(--color-primary)]"></i> Keamanan &amp; Privasi
+                </h3>
+                <button onclick="closeSecurityModal()" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:bg-rose-100 hover:text-rose-500 flex items-center justify-center transition-all">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="space-y-3.5 text-xs text-slate-600 dark:text-slate-300 font-medium leading-relaxed">
+                <div class="flex items-start gap-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+                    <i class="fa-solid fa-shield-check text-[var(--color-primary)] text-lg shrink-0 mt-0.5"></i>
+                    <div>
+                        <p class="font-bold text-slate-800 dark:text-white mb-0.5">Enkripsi SSL 256-Bit</p>
+                        <p class="text-[11px] text-slate-500 dark:text-slate-400">Seluruh lalu lintas data transaksi dan kontak Anda dilindungi enkripsi standar industri internasional.</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+                    <i class="fa-solid fa-user-shield text-[var(--color-primary)] text-lg shrink-0 mt-0.5"></i>
+                    <div>
+                        <p class="font-bold text-slate-800 dark:text-white mb-0.5">Privasi Data Pelanggan Terlindungi</p>
+                        <p class="text-[11px] text-slate-500 dark:text-slate-400">Nomor WhatsApp dan riwayat pesanan Anda hanya digunakan untuk kebutuhan pemrosesan pesanan dan poin loyalitas.</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+                    <i class="fa-solid fa-qrcode text-[var(--color-primary)] text-lg shrink-0 mt-0.5"></i>
+                    <div>
+                        <p class="font-bold text-slate-800 dark:text-white mb-0.5">Pembayaran Resmi &amp; Terverifikasi</p>
+                        <p class="text-[11px] text-slate-500 dark:text-slate-400">Kanal QRIS Nasional dan transfer bank toko resmi tanpa perantara pihak ketiga yang meragukan.</p>
+                    </div>
+                </div>
+            </div>
+            <button onclick="closeSecurityModal()" class="w-full primary-bg text-white py-3 rounded-xl text-xs font-bold uppercase tracking-wider transition-all active:scale-95 shadow-sm">
+                Tutup
+            </button>
+        </div>`;
+    m.style.opacity = '0';
+    m.style.display = 'flex';
+    requestAnimationFrame(() => {
+        m.style.transition = 'opacity 0.25s ease';
+        m.style.opacity = '1';
+    });
+};
+
+export const closeSecurityModal = () => {
+    const m = document.getElementById('security-modal');
+    if (!m || m.style.display === 'none') return;
+    m.style.opacity = '0';
+    m.style.transition = 'opacity 0.25s ease';
+    setTimeout(() => {
+        m.style.display = 'none';
+        m.style.opacity = '';
+        m.style.transition = '';
+    }, 250);
+};
+
 // Export ke window untuk kemudahan panggil
 window.renderStorefrontFooter = renderFooter;
+window.openQualityGuaranteeModal = openQualityGuaranteeModal;
+window.closeQualityGuaranteeModal = closeQualityGuaranteeModal;
+window.openSecurityModal = openSecurityModal;
+window.closeSecurityModal = closeSecurityModal;

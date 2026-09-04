@@ -6,7 +6,7 @@
  * ============================================================
  */
 
-import { appData, cart, setCart, cust, setCust, vouch, setVouch, myOrders, currentMember, setCurrentMember, selectedReward, setSelectedReward, isSaving, setIsSaving } from '../../core/state.js';
+import { appData, cart, setCart, cust, setCust, vouch, setVouch, myOrders, setMyOrders, currentMember, setCurrentMember, selectedReward, setSelectedReward, isSaving, setIsSaving } from '../../core/state.js';
 import { el, show, hide, toggleCls, getV, setV, setIn, setH, esc, fCur, sL, ssL, sLoad, hLoad } from '../../core/utils.js';
 import { db, firebase } from '../../config/firebase.js';
 
@@ -521,24 +521,33 @@ export const processOrder = async () => {
                     const need = qtyMap[pId];
                     const prod = JSON.parse(JSON.stringify(docSnap.data()));
 
+                    const updatePayload = {};
                     if (need.main > 0) {
                         prod.stock = Math.max(0, (parseFloat(prod.stock) || 0) - need.main);
-                        if (prod.stock === 0) prod.isActive = 'false';
-                        prod.totalSold = (parseFloat(prod.totalSold) || 0) + need.main;
-                    }
-                    Object.keys(need.variants).forEach(vName => {
-                        const vIdx = (prod.variants || []).findIndex(v => v.name === vName);
-                        if (vIdx > -1) {
-                            prod.variants[vIdx].stock = Math.max(0, (parseFloat(prod.variants[vIdx].stock) || 0) - need.variants[vName]);
-                            if (prod.variants[vIdx].stock === 0) prod.variants[vIdx].isActive = false;
-                            prod.variants[vIdx].totalSold = (parseFloat(prod.variants[vIdx].totalSold) || 0) + need.variants[vName];
+                        updatePayload.stock = prod.stock;
+                        if (prod.stock === 0) {
+                            prod.isActive = 'false';
+                            updatePayload.isActive = 'false';
                         }
-                    });
+                        prod.totalSold = (parseFloat(prod.totalSold) || 0) + need.main;
+                        updatePayload.totalSold = prod.totalSold;
+                    }
+                    if (Object.keys(need.variants).length > 0 && prod.variants) {
+                        Object.keys(need.variants).forEach(vName => {
+                            const vIdx = (prod.variants || []).findIndex(v => v.name === vName);
+                            if (vIdx > -1) {
+                                prod.variants[vIdx].stock = Math.max(0, (parseFloat(prod.variants[vIdx].stock) || 0) - need.variants[vName]);
+                                if (prod.variants[vIdx].stock === 0) prod.variants[vIdx].isActive = false;
+                                prod.variants[vIdx].totalSold = (parseFloat(prod.variants[vIdx].totalSold) || 0) + need.variants[vName];
+                            }
+                        });
+                        updatePayload.variants = prod.variants;
+                    }
 
                     const localIdx = appData.products.findIndex(p => p.id.toString() === pId);
                     if (localIdx > -1) appData.products[localIdx] = prod;
 
-                    transaction.set(refs[idx], prod);
+                    transaction.update(refs[idx], updatePayload);
                 });
 
                 transaction.set(orderRef, oD);
@@ -608,8 +617,11 @@ export const processOrder = async () => {
             claimedReward: oD.claimedReward || null,
             finalMemberPoints: finalMemberPoints
         });
-        ssL('freshmart_my_orders', JSON.stringify(myOrders));
-        ssL('freshmart_last_order', Date.now().toString());
+        setMyOrders(myOrders);
+        try {
+            localStorage.setItem('freshmart_my_orders', JSON.stringify(myOrders));
+            localStorage.setItem('freshmart_last_order', Date.now().toString());
+        } catch(e) {}
         
         if (typeof analytics !== 'undefined') analytics.logEvent('purchase', { transaction_id: oI, value: tot, currency: 'IDR' });
         

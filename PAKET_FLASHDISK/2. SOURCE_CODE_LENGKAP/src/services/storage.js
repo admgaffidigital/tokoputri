@@ -16,6 +16,7 @@ import {
 import { sanitizeCart, updCart } from '../modules/cart/cart.js';
 import { updWish } from '../modules/cart/wishlist.js';
 import { rDyn } from '../modules/home/sections.js';
+import { rCat } from '../modules/catalog/catalog.js';
 
 const loadAppData = async () => {
     if(document.documentElement.classList.contains('dark')){
@@ -65,6 +66,7 @@ const loadAppData = async () => {
         updCart();
         updWish();
         rDyn();
+        rCat();
         setIn('stat-products', appData.products.filter(p => p.isActive !== 'false' && p.isActive !== false).length);
         hLoad(); // Langsung buka antarmuka tanpa jeda
         hasRenderedCached = true;
@@ -100,6 +102,7 @@ const loadAppData = async () => {
                 updCart();
                 updWish();
                 rDyn();
+                rCat();
                 setIn('stat-products', appData.products.filter(p => p.isActive !== 'false' && p.isActive !== false).length);
             }
         } catch(e) {

@@ -135,20 +135,36 @@ export const initThemeIcon = () => {
  */
 export const applyBackgroundStyle = (bgStyle = 'minimalist', customBgUrl = '') => {
     const style = bgStyle || localStorage.getItem('freshmart_bg_style') || 'minimalist';
-    const bgUrl = customBgUrl !== undefined && customBgUrl !== null
+    const rawBgUrl = customBgUrl !== undefined && customBgUrl !== null
         ? customBgUrl
         : (localStorage.getItem('freshmart_bg_custom_url') || '');
 
     if (bgStyle) localStorage.setItem('freshmart_bg_style', style);
     if (customBgUrl !== undefined && customBgUrl !== null) {
-        localStorage.setItem('freshmart_bg_custom_url', bgUrl);
+        localStorage.setItem('freshmart_bg_custom_url', rawBgUrl);
     }
+
+    // Helper konversi URL Google Drive ke direct streamable image URL
+    const fixDUrl = (url) => {
+        if (!url || typeof url !== 'string') return '';
+        const m = url.match(/drive\.google\.com.*(?:id=|\/d\/)([a-zA-Z0-9_-]+)/);
+        return m ? `https://lh3.googleusercontent.com/d/${m[1]}` : url.trim();
+    };
+
+    const finalBgUrl = fixDUrl(rawBgUrl);
 
     // Set attribute data-bg-style ke HTML root & app container agar CSS aktif serentak di seluruh website
     document.documentElement.setAttribute('data-bg-style', style);
     document.body?.setAttribute('data-bg-style', style);
     const appCont = document.getElementById('app-container');
-    if (appCont) appCont.setAttribute('data-bg-style', style);
+    if (appCont) {
+        appCont.setAttribute('data-bg-style', style);
+        if (finalBgUrl) {
+            appCont.setAttribute('data-has-custom-bg', 'true');
+        } else {
+            appCont.removeAttribute('data-has-custom-bg');
+        }
+    }
 
     const container = document.getElementById('dynamic-bg-container');
     if (!container) return;
@@ -158,42 +174,47 @@ export const applyBackgroundStyle = (bgStyle = 'minimalist', customBgUrl = '') =
     container.className = "pointer-events-none fixed inset-0 z-0 overflow-hidden";
 
     // 1. Wallpaper Gambar Kustom jika diisi
-    if (bgUrl && typeof bgUrl === 'string' && bgUrl.trim()) {
+    if (finalBgUrl) {
         const customImgDiv = document.createElement('div');
-        customImgDiv.className = "absolute inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-20 dark:opacity-15 pointer-events-none";
-        customImgDiv.style.backgroundImage = `url('${bgUrl.trim()}')`;
+        customImgDiv.className = "absolute inset-0 z-0 bg-cover bg-center bg-no-repeat bg-fixed opacity-35 dark:opacity-25 pointer-events-none transition-all duration-500";
+        customImgDiv.style.backgroundImage = `url('${finalBgUrl}')`;
         container.appendChild(customImgDiv);
 
         const overlay = document.createElement('div');
-        overlay.className = "absolute inset-0 z-0 bg-slate-50/70 dark:bg-[#0b1120]/80 pointer-events-none";
+        overlay.className = "absolute inset-0 z-0 bg-slate-50/70 dark:bg-[#0b1120]/80 pointer-events-none backdrop-blur-[0.5px]";
         container.appendChild(overlay);
     }
 
-    // 2. Vector Shapes (Bersih, Halus, Bebas Shadow & Tidak Bikin Pusing)
+    // 2. Vector Shapes sesuai Model Gaya Visual
     let shapesHtml = '';
 
     if (style === 'hero_arch') {
         shapesHtml = `
-            <!-- Soft Minimal Arch Header Line -->
-            <div class="absolute -top-24 left-1/2 -translate-x-1/2 w-[120%] max-w-[1400px] h-64 rounded-b-[100%] border-b border-[rgba(var(--color-primary-rgb),0.12)] pointer-events-none"></div>
+            <!-- Hero Arch Glow & Vector Curve -->
+            <div class="absolute -top-20 left-1/2 -translate-x-1/2 w-[140%] max-w-[1500px] h-80 rounded-b-[100%] bg-gradient-to-b from-[rgba(var(--color-primary-rgb),0.18)] to-transparent pointer-events-none blur-sm"></div>
+            <div class="absolute top-28 left-1/2 -translate-x-1/2 w-[110%] max-w-[1300px] h-52 rounded-b-[100%] border-b-2 border-[rgba(var(--color-primary-rgb),0.2)] pointer-events-none"></div>
         `;
     } else if (style === 'geometric_3d') {
         shapesHtml = `
-            <!-- Subtle Micro Grid Matrix -->
-            <div class="absolute inset-0 opacity-10 dark:opacity-15 pointer-events-none" style="background-image: radial-gradient(rgba(var(--color-primary-rgb),0.4) 1px, transparent 1px); background-size: 24px 24px;"></div>
+            <!-- Geometris 3D Matrix Grid & Isometric Vector -->
+            <div class="absolute inset-0 pointer-events-none opacity-30 dark:opacity-20" style="background-image: linear-gradient(30deg, rgba(var(--color-primary-rgb),0.15) 12%, transparent 12.5%, transparent 87%, rgba(var(--color-primary-rgb),0.15) 87.5%, rgba(var(--color-primary-rgb),0.15)), linear-gradient(150deg, rgba(var(--color-primary-rgb),0.15) 12%, transparent 12.5%, transparent 87%, rgba(var(--color-primary-rgb),0.15) 87.5%, rgba(var(--color-primary-rgb),0.15)), linear-gradient(30deg, rgba(var(--color-primary-rgb),0.15) 12%, transparent 12.5%, transparent 87%, rgba(var(--color-primary-rgb),0.15) 87.5%, rgba(var(--color-primary-rgb),0.15)), linear-gradient(150deg, rgba(var(--color-primary-rgb),0.15) 12%, transparent 12.5%, transparent 87%, rgba(var(--color-primary-rgb),0.15) 87.5%, rgba(var(--color-primary-rgb),0.15)), linear-gradient(60deg, rgba(var(--color-primary-rgb),0.2) 25%, transparent 25.5%, transparent 75%, rgba(var(--color-primary-rgb),0.2) 75%, rgba(var(--color-primary-rgb),0.2)), linear-gradient(60deg, rgba(var(--color-primary-rgb),0.2) 25%, transparent 25.5%, transparent 75%, rgba(var(--color-primary-rgb),0.2) 75%, rgba(var(--color-primary-rgb),0.2)); background-size: 40px 70px; background-position: 0 0, 0 0, 20px 35px, 20px 35px, 0 0, 20px 35px;"></div>
+            <div class="absolute -top-24 -left-24 w-96 h-96 bg-[rgba(var(--color-primary-rgb),0.15)] rounded-full blur-3xl pointer-events-none"></div>
+            <div class="absolute top-1/3 -right-24 w-96 h-96 bg-[rgba(var(--color-primary-rgb),0.1)] rounded-full blur-3xl pointer-events-none"></div>
         `;
     } else if (style === 'diagonal_skew') {
         shapesHtml = `
-            <!-- Soft Clean Diagonal Divider Line -->
-            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[rgba(var(--color-primary-rgb),0.3)] to-transparent pointer-events-none"></div>
+            <!-- Diagonal Skew Linear Grid & Glow -->
+            <div class="absolute inset-0 pointer-events-none opacity-25 dark:opacity-20" style="background: repeating-linear-gradient(45deg, rgba(var(--color-primary-rgb),0.12), rgba(var(--color-primary-rgb),0.12) 2px, transparent 2px, transparent 24px);"></div>
+            <div class="absolute -top-20 -right-20 w-96 h-96 bg-gradient-to-br from-[rgba(var(--color-primary-rgb),0.2)] to-transparent rounded-full blur-3xl pointer-events-none"></div>
         `;
     } else if (style === 'dual_tone') {
         shapesHtml = `
-            <!-- Subtle Top Boundary Strip -->
-            <div class="absolute top-0 left-0 w-full h-1 bg-[rgba(var(--color-primary-rgb),0.15)] pointer-events-none"></div>
+            <!-- Dual-Tone Split Atmosphere -->
+            <div class="absolute top-0 left-0 right-0 h-96 bg-gradient-to-b from-[rgba(var(--color-primary-rgb),0.16)] via-[rgba(var(--color-primary-rgb),0.05)] to-transparent pointer-events-none"></div>
+            <div class="absolute top-0 right-0 w-2/3 h-80 bg-[rgba(var(--color-primary-rgb),0.08)] -skew-y-6 pointer-events-none blur-2xl"></div>
         `;
     } else {
-        // Minimalis: Polos bersih, elegan, solid, bebas corak ramai atau bayangan
+        // Minimalis: Polos bersih, elegan, solid
         shapesHtml = ``;
     }
 
