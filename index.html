@@ -284,6 +284,13 @@
               <p class="mt-0.5 text-[9px] font-semibold text-slate-400 dark:text-slate-500">Pusat bantuan &amp; FAQ toko</p>
             </div>
           </button>
+          <button class="flex w-full items-center gap-4 rounded-2xl border border-slate-100 bg-slate-50 p-4 text-left font-bold text-slate-700 transition-all hover:bg-[rgba(var(--color-primary-rgb),0.08)] hover:text-[var(--color-primary)] active:scale-[0.98] dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-[rgba(var(--color-primary-rgb),0.15)]" onclick="navigateFromQuickMenu(openShoppingGuideModal)">
+            <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-teal-500 text-white shadow-md"><i class="fa-solid fa-book-open-reader text-sm"></i></div>
+            <div>
+              <h4 class="text-sm leading-tight">Panduan Cara Pesan</h4>
+              <p class="mt-0.5 text-[9px] font-semibold text-slate-400 dark:text-slate-500">Panduan lengkap langkah belanja &amp; lacak</p>
+            </div>
+          </button>
           <button class="flex w-full items-center gap-4 rounded-2xl border border-slate-100 bg-slate-50 p-4 text-left font-bold text-slate-700 transition-all hover:bg-[rgba(var(--color-primary-rgb),0.08)] hover:text-[var(--color-primary)] active:scale-[0.98] dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-[rgba(var(--color-primary-rgb),0.15)]" onclick="navigateFromQuickMenu(checkAdminAccess)">
             <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-800 text-white shadow-md dark:bg-slate-700"><i class="fa-solid fa-shield-halved text-sm"></i></div>
             <div>
@@ -304,6 +311,138 @@
               <h4 class="text-sm leading-tight">Kebijakan Privasi</h4>
               <p class="mt-0.5 text-[9px] font-semibold text-slate-400 dark:text-slate-500">Kebijakan privasi &amp; perlindungan data</p>
             </div>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Shopping Guide Modal (Panduan Belanja & Cara Pesan Lengkap) -->
+    <div class="fixed inset-0 z-[115] flex hidden items-end justify-center bg-slate-900/80 p-0 opacity-0 transition-opacity duration-300 sm:items-center sm:p-5" id="shopping-guide-modal" onclick="if (event.target === this) closeShoppingGuideModal();">
+      <div class="relative flex max-h-[88dvh] w-full max-w-sm sm:max-w-xl md:max-w-2xl lg:max-w-3xl translate-y-full transform flex-col overflow-hidden rounded-t-[2rem] border-t border-slate-200 bg-white shadow-xl transition-transform duration-300 dark:border-slate-800 dark:bg-[#0b1121] sm:translate-y-10 sm:rounded-[2rem] sm:border" id="shopping-guide-modal-content">
+        <div class="mx-auto mb-1 mt-4 h-1.5 w-12 rounded-full bg-slate-200 dark:bg-slate-700 sm:hidden"></div>
+        <div class="flex shrink-0 items-center justify-between border-b border-slate-100 px-6 pb-4 pt-2 dark:border-slate-800/60 sm:pt-5 bg-slate-50 dark:bg-slate-800/60">
+          <div class="flex items-center gap-3">
+            <div class="primary-bg text-white flex h-10 w-10 items-center justify-center rounded-xl shadow-xs"><i class="fa-solid fa-book-open-reader text-base"></i></div>
+            <div>
+              <h3 class="text-base font-bold text-slate-900 dark:text-white leading-tight">Panduan Cara Memesan</h3>
+              <p class="text-[11px] font-semibold text-slate-500 dark:text-slate-400 mt-0.5">Langkah mudah berbelanja online di Toko Putri</p>
+            </div>
+          </div>
+          <button class="flex h-8 w-8 items-center justify-center rounded-full bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 transition-all hover:bg-rose-50 hover:text-rose-500 dark:hover:bg-rose-900/30 active:scale-95" onclick="closeShoppingGuideModal()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+
+        <div class="hide-scrollbar flex-1 overflow-y-auto bg-white p-5 sm:p-6 dark:bg-[#0b1121] text-xs sm:text-sm text-slate-600 dark:text-slate-300 space-y-4">
+          <!-- Intro Banner -->
+          <div class="p-4 rounded-2xl bg-[rgba(var(--color-primary-rgb),0.06)] border border-[rgba(var(--color-primary-rgb),0.2)] flex items-start gap-3">
+            <i class="fa-solid fa-circle-info text-[var(--color-primary)] text-lg shrink-0 mt-0.5"></i>
+            <p class="text-xs leading-relaxed text-slate-700 dark:text-slate-200 font-medium">
+              Selamat datang di <b>Toko Putri</b>! Kami menyediakan sistem pemesanan online yang cepat, transparan, dan terhubung langsung ke WhatsApp serta status realtime toko. Ikuti langkah mudah di bawah ini:
+            </p>
+          </div>
+
+          <!-- Step 1 -->
+          <div class="p-4 rounded-2xl border border-slate-200 dark:border-slate-700/80 bg-slate-50/50 dark:bg-slate-800/40 space-y-2">
+            <div class="flex items-center gap-2.5">
+              <span class="w-6 h-6 rounded-lg primary-bg text-white text-xs font-black flex items-center justify-center shrink-0">1</span>
+              <h4 class="font-bold text-slate-800 dark:text-white text-sm">Pilih Produk &amp; Tentukan Varian</h4>
+            </div>
+            <p class="text-xs leading-relaxed pl-8">
+              Jelajahi katalog melalui <b>Pencarian / Scan Barcode</b>, filter Kategori atau Brand. Klik produk untuk melihat detail spesifikasi, harga grosir, dan stok. Pilih varian warna/ukuran, tentukan jumlah (qty), lalu klik <b>"Tambah ke Keranjang"</b>.
+            </p>
+            <div class="pl-8 pt-1 flex flex-wrap gap-1.5">
+              <span class="text-[9px] font-bold px-2 py-0.5 rounded bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400"><i class="fa-solid fa-clock mr-1"></i>Label PO: Dikirim menyusul sesuai estimasi</span>
+              <span class="text-[9px] font-bold px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400"><i class="fa-solid fa-star mr-1"></i>Dapatkan Poin Belanja Member</span>
+            </div>
+          </div>
+
+          <!-- Step 2 -->
+          <div class="p-4 rounded-2xl border border-slate-200 dark:border-slate-700/80 bg-slate-50/50 dark:bg-slate-800/40 space-y-2">
+            <div class="flex items-center gap-2.5">
+              <span class="w-6 h-6 rounded-lg primary-bg text-white text-xs font-black flex items-center justify-center shrink-0">2</span>
+              <h4 class="font-bold text-slate-800 dark:text-white text-sm">Periksa Keranjang &amp; Pasang Voucher Promo</h4>
+            </div>
+            <p class="text-xs leading-relaxed pl-8">
+              Buka menu <b>Keranjang Belanja</b> (ikon tas). Anda dapat menyesuaikan kuantitas produk, memasukkan <b>Kupon Voucher Diskon</b>, atau menukarkan <b>Poin Hadiah Member</b>. Jika sudah sesuai, klik tombol <b>"Checkout"</b>.
+            </p>
+          </div>
+
+          <!-- Step 3 -->
+          <div class="p-4 rounded-2xl border border-slate-200 dark:border-slate-700/80 bg-slate-50/50 dark:bg-slate-800/40 space-y-2">
+            <div class="flex items-center gap-2.5">
+              <span class="w-6 h-6 rounded-lg primary-bg text-white text-xs font-black flex items-center justify-center shrink-0">3</span>
+              <h4 class="font-bold text-slate-800 dark:text-white text-sm">Pilih Metode Pengiriman &amp; Kontak</h4>
+            </div>
+            <p class="text-xs leading-relaxed pl-8">
+              Pilih opsi pengiriman:
+            </p>
+            <ul class="text-xs pl-12 space-y-1 list-disc">
+              <li><b>Dikirim ke Alamat</b>: Barang diantar langsung ke lokasi Anda. Gunakan fitur <b>GPS Lokasi</b> agar perhitungan ongkos kirim otomatis akurat.</li>
+              <li><b>Ambil di Toko (Pickup)</b>: Ambil sendiri pesanan langsung di gerai fisik toko tanpa ongkir.</li>
+            </ul>
+            <p class="text-xs leading-relaxed pl-8 text-slate-500 dark:text-slate-400 italic">
+              *Pastikan Nomor WhatsApp yang Anda masukkan aktif karena nota dan status pesanan otomatis dikirim ke nomor tersebut.
+            </p>
+          </div>
+
+          <!-- Step 4 -->
+          <div class="p-4 rounded-2xl border border-slate-200 dark:border-slate-700/80 bg-slate-50/50 dark:bg-slate-800/40 space-y-2">
+            <div class="flex items-center gap-2.5">
+              <span class="w-6 h-6 rounded-lg primary-bg text-white text-xs font-black flex items-center justify-center shrink-0">4</span>
+              <h4 class="font-bold text-slate-800 dark:text-white text-sm">Pilih Metode Pembayaran</h4>
+            </div>
+            <p class="text-xs leading-relaxed pl-8">
+              Tersedia pilihan metode pembayaran yang lengkap:
+            </p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pl-8 pt-1">
+              <div class="p-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-medium">
+                <b class="text-slate-800 dark:text-white block mb-0.5"><i class="fa-solid fa-money-bill-wave text-emerald-500 mr-1"></i> Cash / COD</b>
+                Bayar tunai di tempat saat barang tiba atau saat ambil di toko.
+              </div>
+              <div class="p-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-medium">
+                <b class="text-slate-800 dark:text-white block mb-0.5"><i class="fa-solid fa-building-columns text-blue-500 mr-1"></i> Transfer Bank</b>
+                Transfer ke rekening bank resmi toko (BCA, Mandiri, BRI, BNI).
+              </div>
+              <div class="p-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-medium">
+                <b class="text-slate-800 dark:text-white block mb-0.5"><i class="fa-solid fa-qrcode text-rose-500 mr-1"></i> QRIS Instan</b>
+                Scan QRIS dari e-Wallet (GoPay, OVO, Dana, ShopeePay) atau m-Banking.
+              </div>
+              <div class="p-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-medium">
+                <b class="text-slate-800 dark:text-white block mb-0.5"><i class="fa-solid fa-calendar-check text-amber-500 mr-1"></i> Tempo (Kredit)</b>
+                Sistem tempo khusus bagi pelanggan rekanan dengan limit piutang aktif.
+              </div>
+            </div>
+            <p class="text-xs leading-relaxed pl-8 text-slate-500 dark:text-slate-400">
+              *Untuk Transfer Bank / QRIS, Anda dapat melampirkan foto struk bukti transfer yang otomatis tersimpan aman di Google Drive toko.
+            </p>
+          </div>
+
+          <!-- Step 5 -->
+          <div class="p-4 rounded-2xl border border-slate-200 dark:border-slate-700/80 bg-slate-50/50 dark:bg-slate-800/40 space-y-2">
+            <div class="flex items-center gap-2.5">
+              <span class="w-6 h-6 rounded-lg primary-bg text-white text-xs font-black flex items-center justify-center shrink-0">5</span>
+              <h4 class="font-bold text-slate-800 dark:text-white text-sm">Konfirmasi Pesanan ke WhatsApp Toko</h4>
+            </div>
+            <p class="text-xs leading-relaxed pl-8">
+              Klik <b>"Proses Pesanan"</b>. Sistem akan otomatis membuat format rincian belanja dan mengarahkan ke WhatsApp toko. Anda cukup menekan tombol <b>Kirim</b> agar admin segera memproses pesanan Anda.
+            </p>
+          </div>
+
+          <!-- Step 6 -->
+          <div class="p-4 rounded-2xl border border-slate-200 dark:border-slate-700/80 bg-slate-50/50 dark:bg-slate-800/40 space-y-2">
+            <div class="flex items-center gap-2.5">
+              <span class="w-6 h-6 rounded-lg primary-bg text-white text-xs font-black flex items-center justify-center shrink-0">6</span>
+              <h4 class="font-bold text-slate-800 dark:text-white text-sm">Lacak Status Pesanan Realtime &amp; Berikan Ulasan</h4>
+            </div>
+            <p class="text-xs leading-relaxed pl-8">
+              Buka menu <b>Riwayat Pesanan</b> kapan saja untuk memantau status pesanan (<i>Baru ➔ Diproses ➔ Selesai</i>) secara realtime. Anda juga bisa melacak dari perangkat lain dengan memasukkan <b>ID Pesanan (ORD-...)</b>. Setelah pesanan selesai, Anda bisa memberikan ulasan bintang 5 pada produk yang dibeli!
+            </p>
+          </div>
+        </div>
+
+        <div class="p-4 sm:p-5 border-t border-slate-100 dark:border-slate-800/80 bg-slate-50 dark:bg-slate-900/50 flex justify-between items-center shrink-0 gap-3">
+          <p class="text-[11px] font-semibold text-slate-500 dark:text-slate-400 hidden sm:block">Siap untuk mulai berbelanja?</p>
+          <button onclick="closeShoppingGuideModal(); changeView('view-catalog')" class="w-full sm:w-auto primary-bg text-white font-bold text-xs py-3 px-6 rounded-xl shadow-xs active:scale-95 transition-all flex items-center justify-center gap-2">
+            <i class="fa-solid fa-bag-shopping"></i> Mulai Belanja Sekarang
           </button>
         </div>
       </div>
@@ -659,8 +798,10 @@
           <div class="mx-auto flex w-full max-w-full items-center justify-between px-4 lg:px-10 xl:max-w-[1200px]">
             <button class="flex h-10 w-10 items-center justify-center rounded-full border border-white/30 bg-white/20 text-white shadow-sm backdrop-blur-sm transition-all hover:bg-white/30 active:scale-95 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300" onclick="history.back()"><i class="fa-solid fa-arrow-left text-sm"></i></button>
             <h1 class="text-base font-bold tracking-tight text-white drop-shadow-sm">Keranjang Belanja</h1>
-            <button class="flex hidden h-10 w-10 items-center justify-center rounded-full border border-rose-200 bg-rose-50 text-rose-500 shadow-sm transition-all hover:bg-rose-100 active:scale-95 dark:border-rose-800 dark:bg-rose-900/20" id="btn-clear-cart" onclick="clearCart()"><i class="fa-solid fa-trash-can text-sm"></i></button>
-            <div class="hidden w-10" id="spacer-cart"></div>
+            <div class="flex items-center gap-1.5">
+              <button class="flex h-10 w-10 items-center justify-center rounded-full border border-white/30 bg-white/20 text-white shadow-sm backdrop-blur-sm transition-all hover:bg-white/30 active:scale-95" onclick="openShoppingGuideModal()" title="Panduan Belanja"><i class="fa-solid fa-circle-question text-sm"></i></button>
+              <button class="flex hidden h-10 w-10 items-center justify-center rounded-full border border-rose-200 bg-rose-50 text-rose-500 shadow-sm transition-all hover:bg-rose-100 active:scale-95 dark:border-rose-800 dark:bg-rose-900/20" id="btn-clear-cart" onclick="clearCart()"><i class="fa-solid fa-trash-can text-sm"></i></button>
+            </div>
           </div>
         </div>
         <!-- STEP INDICATOR: STEP 1 (KERANJANG) -->
@@ -710,7 +851,7 @@
               <h1 class="text-base font-bold leading-tight tracking-tight text-white drop-shadow-sm">Pengiriman</h1>
               <p class="mt-0.5 text-[10px] font-bold uppercase tracking-widest text-white/90 drop-shadow-sm">Langkah 2 dari 3</p>
             </div>
-            <div class="w-10"></div>
+            <button class="flex h-10 w-10 items-center justify-center rounded-full border border-white/30 bg-white/20 text-white shadow-sm backdrop-blur-sm transition-all hover:bg-white/30 active:scale-95" onclick="openShoppingGuideModal()" title="Panduan Belanja"><i class="fa-solid fa-circle-question text-sm"></i></button>
           </div>
         </div>
         <!-- STEP INDICATOR: STEP 2 (PENGIRIMAN) -->
@@ -810,7 +951,7 @@
               <h1 class="text-base font-bold leading-tight tracking-tight text-white drop-shadow-sm">Pembayaran</h1>
               <p class="mt-0.5 text-[10px] font-bold uppercase tracking-widest text-white/90 drop-shadow-sm">Langkah 3 dari 3</p>
             </div>
-            <div class="w-10"></div>
+            <button class="flex h-10 w-10 items-center justify-center rounded-full border border-white/30 bg-white/20 text-white shadow-sm backdrop-blur-sm transition-all hover:bg-white/30 active:scale-95" onclick="openShoppingGuideModal()" title="Panduan Belanja"><i class="fa-solid fa-circle-question text-sm"></i></button>
           </div>
         </div>
         <!-- STEP INDICATOR: STEP 3 (PEMBAYARAN) -->
@@ -1081,6 +1222,22 @@
                 </div>
                 <button class="flex items-center justify-center gap-2 rounded-2xl bg-white px-5 py-3.5 text-xs font-bold text-[var(--color-primary-dark)] shadow-md transition-all hover:bg-slate-50 active:scale-95 shrink-0" onclick="openAskQuestionModal()"><i class="fa-solid fa-paper-plane"></i> Ajukan Pertanyaan</button>
               </div>
+            </div>
+
+            <!-- Interactive Card: Panduan Belanja & Cara Memesan -->
+            <div class="rounded-2xl border border-[rgba(var(--color-primary-rgb),0.2)] bg-[rgba(var(--color-primary-rgb),0.05)] p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-all hover:bg-[rgba(var(--color-primary-rgb),0.08)]">
+              <div class="flex items-center gap-3.5">
+                <div class="w-11 h-11 rounded-xl primary-bg text-white flex items-center justify-center shrink-0 shadow-sm">
+                  <i class="fa-solid fa-book-open-reader text-lg"></i>
+                </div>
+                <div>
+                  <h3 class="text-sm font-bold text-slate-800 dark:text-white">Panduan Lengkap Cara Memesan</h3>
+                  <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Pelajari 6 langkah mudah mulai dari memilih produk, opsi pengiriman, metode pembayaran, hingga lacak status pesanan.</p>
+                </div>
+              </div>
+              <button onclick="openShoppingGuideModal()" class="primary-bg text-white font-bold text-xs px-4 py-2.5 rounded-xl shadow-xs active:scale-95 transition-all shrink-0 flex items-center justify-center gap-2">
+                <i class="fa-solid fa-eye"></i> Buka Panduan
+              </button>
             </div>
 
             <!-- Search & Filter Q&A -->

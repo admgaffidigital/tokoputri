@@ -205,6 +205,29 @@ window.closeQuickMenuModal = (fH=false) => {
     }
 };
 
+window.openShoppingGuideModal = () => {
+    const m = el('shopping-guide-modal'), c = el('shopping-guide-modal-content');
+    if (m && c) {
+        if (m.classList.contains('hidden')) pushModalHistory('guide');
+        show('shopping-guide-modal');
+        setTimeout(() => { 
+            m.classList.remove('opacity-0'); 
+            c.classList.remove('translate-y-full','sm:translate-y-10'); 
+        }, 10);
+    }
+};
+
+window.closeShoppingGuideModal = (fH=false) => {
+    const m = el('shopping-guide-modal'), c = el('shopping-guide-modal-content');
+    if (m && c) {
+        requestCloseModal('guide', fH, () => {
+            m.classList.add('opacity-0'); 
+            c.classList.add('translate-y-full','sm:translate-y-10');
+            setTimeout(() => hide('shopping-guide-modal'), 300);
+        });
+    }
+};
+
 window.navigateFromQuickMenu = (targetViewOrAction) => {
     closeQuickMenuModal(true);
     const idx = oMods.indexOf('quickmenu');
@@ -218,4 +241,5 @@ window.navigateFromQuickMenu = (targetViewOrAction) => {
         changeView(targetViewOrAction, true);
     }
 };
+
 
