@@ -9,11 +9,11 @@ service cloud.firestore {
     match /freshmart/{docId} {
       allow read: if true;
       // Admin boleh apapun. Selain admin (pelanggan saat checkout),
-      // HANYA boleh mengubah field 'lastUpdate' saja -- dipakai untuk
-      // memicu sinkronisasi realtime setelah stok berkurang.
+      // HANYA boleh mengubah field 'lastUpdate', 'updateType', dan 'updatedProductIds' --
+      // dipakai untuk memicu sinkronisasi realtime setelah stok berkurang.
       allow write: if isAdmin() ||
         (resource != null &&
-         request.resource.data.diff(resource.data).affectedKeys().hasOnly(['lastUpdate']));
+         request.resource.data.diff(resource.data).affectedKeys().hasOnly(['lastUpdate', 'updateType', 'updatedProductIds']));
 
       match /products/{productId} {
         allow read: if true;
