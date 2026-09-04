@@ -780,40 +780,88 @@ video.banner-video-element::-webkit-media-controls-start-playback-button {
    Header, Container, Card Produk, dan Latar Belakang.
    ============================================================ */
 
-/* ─── STYLE PRESETS (SEMUA MINIMALIS, SOLID, BEBAS GRADIENT & BEBAS SHADOW) ─── */
-.glass-header,
-[data-bg-style] .glass-header {
-    background: var(--color-primary) !important;
-    border-radius: 0 !important;
-    clip-path: none !important;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.15) !important;
-    box-shadow: none !important;
+/* ─── BASE HEADER & CONTAINER ─── */
+.glass-header {
+    background: var(--color-primary);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    transition: all 0.3s ease;
 }
 
-#app-container,
-[data-bg-style] #app-container {
-    background-color: #f8fafc !important;
-    background-image: none !important;
+#app-container {
+    background-color: #f8fafc;
+    transition: background-color 0.4s ease;
 }
-html.dark #app-container,
-html.dark [data-bg-style] #app-container {
-    background-color: #0b1120 !important;
-    background-image: none !important;
+html.dark #app-container {
+    background-color: #0b1120;
 }
 
+/* Transparansi lembut saat ada wallpaper kustom */
+#app-container[data-has-custom-bg="true"] {
+    background-color: rgba(248, 250, 252, 0.88) !important;
+}
+html.dark #app-container[data-has-custom-bg="true"] {
+    background-color: rgba(11, 17, 32, 0.88) !important;
+}
+
+/* ─── 1. HERO ARCH (Header lengkung solid) ─── */
+[data-bg-style="hero_arch"] .glass-header {
+    background: var(--color-primary);
+    border-radius: 0 0 1.75rem 1.75rem;
+    padding-bottom: 1.25rem;
+    box-shadow: 0 10px 25px -5px rgba(var(--color-primary-rgb), 0.35);
+    border-bottom: none;
+}
+
+/* ─── 2. GEOMETRIS 3D (Vektor sudut presisi) ─── */
+[data-bg-style="geometric_3d"] .glass-header {
+    background-color: var(--color-primary);
+    background-image: 
+        linear-gradient(135deg, rgba(255, 255, 255, 0.12) 25%, transparent 25%),
+        linear-gradient(225deg, rgba(255, 255, 255, 0.12) 25%, transparent 25%),
+        linear-gradient(45deg, rgba(255, 255, 255, 0.12) 25%, transparent 25%),
+        linear-gradient(315deg, rgba(255, 255, 255, 0.12) 25%, transparent 25%);
+    background-position: 12px 0, 12px 0, 0 0, 0 0;
+    background-size: 24px 24px;
+    border-radius: 0 0 1rem 1rem;
+    box-shadow: 0 8px 24px -4px rgba(var(--color-primary-rgb), 0.4);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* ─── 3. DIAGONAL SKEW (Aksen garis tegas) ─── */
+[data-bg-style="diagonal_skew"] .glass-header {
+    background: var(--color-primary);
+    clip-path: polygon(0 0, 100% 0, 100% calc(100% - 14px), 0 100%);
+    padding-bottom: 1.5rem;
+    box-shadow: 0 10px 20px -5px rgba(var(--color-primary-rgb), 0.3);
+    border-bottom: none;
+}
+
+/* ─── 4. DUAL-TONE (Header solid 2 warna) ─── */
+[data-bg-style="dual_tone"] .glass-header {
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary) 58%, var(--color-primary-dark) 58%, var(--color-primary-dark) 100%);
+    border-radius: 0 0 1.25rem 1.25rem;
+    box-shadow: 0 8px 24px -4px rgba(var(--color-primary-rgb), 0.35);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* ─── 5. MINIMALIS (Polos bersih elegan) ─── */
+[data-bg-style="minimalist"] .glass-header {
+    background: var(--color-primary);
+    border-radius: 0;
+    clip-path: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+/* ─── CARD STYLING KONSISTEN ─── */
 .card-modern,
-.product-card-hover,
-[data-bg-style] .card-modern,
-[data-bg-style] .product-card-hover {
-    border-radius: 14px !important;
-    border: 1px solid rgba(226, 232, 240, 0.9) !important;
-    box-shadow: none !important;
+.product-card-hover {
+    border-radius: 1rem;
+    border: 1px solid rgba(226, 232, 240, 0.9);
+    transition: all 0.25s ease;
 }
 html.dark .card-modern,
-html.dark .product-card-hover,
-html.dark [data-bg-style] .card-modern,
-html.dark [data-bg-style] .product-card-hover {
-    border: 1px solid rgba(51, 65, 85, 0.8) !important;
-    box-shadow: none !important;
+html.dark .product-card-hover {
+    border: 1px solid rgba(51, 65, 85, 0.8);
 }
 
