@@ -45,6 +45,10 @@ export const updCart = () => {
     setIn('cart-total-preview', fCur(a));
     const b = el('cart-badge');
     if (b) b.classList.toggle('scale-0', q <= 0);
+    document.querySelectorAll('.desktop-cart-badge').forEach(badge => {
+        badge.textContent = q.toString();
+        badge.classList.toggle('hidden', q <= 0);
+    });
     
     // Tampilkan / sembunyikan floating FAB secara dinamis
     const fc = el('floating-cart-container');

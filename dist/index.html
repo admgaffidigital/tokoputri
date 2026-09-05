@@ -132,11 +132,11 @@
         }
       }
     </style>
-    <script type="module" crossorigin src="/assets/index-ClRNFL1u.js"></script>
+    <script type="module" crossorigin src="/assets/index-BCsSL7ZZ.js"></script>
     <link rel="modulepreload" crossorigin href="/assets/vendor-firebase-core-D2OF5R23.js">
     <link rel="modulepreload" crossorigin href="/assets/vendor-firebase-db-BHlQMNP0.js">
     <link rel="modulepreload" crossorigin href="/assets/vendor-utils-bRchjNq8.js">
-    <link rel="stylesheet" crossorigin href="/assets/index-BXKO_OvG.css">
+    <link rel="stylesheet" crossorigin href="/assets/index-DCy60Czi.css">
   </head>
   <body>
     <!-- UI Components Global -->
@@ -760,6 +760,25 @@
                 <p class="mt-0.5 whitespace-normal break-words text-[9px] font-semibold uppercase leading-snug tracking-widest text-white/90 sm:text-[10px]" id="dyn-store-slogan">Slogan</p>
               </div>
             </div>
+            <!-- DESKTOP NAVBAR LINKS (Tampil di Tablet & PC: md:flex) -->
+            <nav class="hidden md:flex items-center gap-1.5 lg:gap-2">
+              <button onclick="changeView('view-catalog')" class="px-3.5 py-2 rounded-xl text-xs font-bold text-white/90 hover:text-white hover:bg-white/15 transition-all flex items-center gap-1.5 active:scale-95">
+                <i class="fa-solid fa-store text-xs"></i> <span>Katalog</span>
+              </button>
+              <button onclick="changeView('view-wishlist')" class="px-3.5 py-2 rounded-xl text-xs font-bold text-white/90 hover:text-white hover:bg-white/15 transition-all flex items-center gap-1.5 active:scale-95">
+                <i class="fa-solid fa-heart text-xs text-rose-300"></i> <span>Favorit</span>
+              </button>
+              <button onclick="changeView('view-orders')" class="px-3.5 py-2 rounded-xl text-xs font-bold text-white/90 hover:text-white hover:bg-white/15 transition-all flex items-center gap-1.5 active:scale-95">
+                <i class="fa-solid fa-receipt text-xs text-amber-300"></i> <span>Pesanan</span>
+              </button>
+              <button onclick="changeView('view-faq')" class="px-3.5 py-2 rounded-xl text-xs font-bold text-white/90 hover:text-white hover:bg-white/15 transition-all flex items-center gap-1.5 active:scale-95">
+                <i class="fa-solid fa-circle-question text-xs text-sky-300"></i> <span>Bantuan</span>
+              </button>
+              <button onclick="changeView('view-cart')" class="ml-1 px-4 py-2 rounded-xl bg-white/20 hover:bg-white/30 border border-white/25 text-xs font-bold text-white shadow-sm transition-all flex items-center gap-2 active:scale-95">
+                <i class="fa-solid fa-bag-shopping text-xs"></i> <span>Keranjang</span>
+                <span class="desktop-cart-badge px-1.5 py-0.5 rounded-full bg-rose-500 text-[10px] font-black text-white leading-none">0</span>
+              </button>
+            </nav>
             <div class="flex shrink-0 items-center gap-2">
               <button aria-label="Toggle Dark Mode" class="flex h-10 w-10 items-center justify-center rounded-full border-2 border-white/40 bg-black/20 text-white transition-all hover:bg-black/30 active:scale-95" id="btn-theme-toggle" onclick="toggleTheme()"><i class="fa-solid fa-moon text-sm" id="icon-theme"></i></button>
               <button class="relative flex h-10 w-10 items-center justify-center rounded-full border-2 border-white/40 bg-black/20 text-white transition-all hover:bg-black/30 active:scale-95" onclick="openQuickMenuModal()" title="Tautan Cepat">
