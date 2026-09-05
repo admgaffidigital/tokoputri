@@ -49,6 +49,15 @@ import './core/ui.js';
 import { setupHistoryRouter } from './core/router.js';
 // Cart: sanitizeCart diimport langsung supaya window.sanitizeCart tidak circular
 import { sanitizeCart } from './modules/cart/cart.js';
+
+// Cegah mobile browser merestorasi scroll position lama yang menggeser layout
+if (typeof history !== 'undefined' && 'scrollRestoration' in history) {
+    history.scrollRestoration = 'manual';
+}
+window.scrollTo(0, 0);
+if (document.documentElement) document.documentElement.scrollTop = 0;
+if (document.body) document.body.scrollTop = 0;
+
 setupHistoryRouter();
 
 // ─── Expose ke window (untuk kompatibilitas kode inline di index.html) ──────────
