@@ -33,6 +33,23 @@
     </noscript>
 
     <!-- Vite entry point dipindah ke body agar tidak render-blocking -->
+    <!-- Otomatis bersihkan service worker / cache lama agar semua perangkat selalu mengambil update live -->
+    <script>
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.getRegistrations().then(function (registrations) {
+          for (var reg of registrations) {
+            reg.unregister();
+          }
+        }).catch(function () {});
+      }
+      if ('caches' in window) {
+        caches.keys().then(function (names) {
+          for (var name of names) {
+            caches.delete(name);
+          }
+        }).catch(function () {});
+      }
+    </script>
     <!-- Initialize theme color CSS variables, PWA header meta, & dark mode instantly to avoid FOUC/flash -->
     <script>
       (function () {
@@ -115,7 +132,7 @@
         }
       }
     </style>
-    <script type="module" crossorigin src="/assets/index-BSKZ1Wzi.js"></script>
+    <script type="module" crossorigin src="/assets/index-8ebmpDLY.js"></script>
     <link rel="modulepreload" crossorigin href="/assets/vendor-firebase-core-D2OF5R23.js">
     <link rel="modulepreload" crossorigin href="/assets/vendor-firebase-db-BHlQMNP0.js">
     <link rel="modulepreload" crossorigin href="/assets/vendor-utils-bRchjNq8.js">

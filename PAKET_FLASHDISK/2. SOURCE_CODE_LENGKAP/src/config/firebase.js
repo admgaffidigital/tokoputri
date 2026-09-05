@@ -56,16 +56,14 @@ try {
         localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() }),
         ignoreUndefinedProperties: true,
         merge: true,
-        experimentalForceLongPolling: true,
-        experimentalAutoDetectLongPolling: false,
+        experimentalAutoDetectLongPolling: true,
     });
 } catch(e) {
     try {
         db.settings({
             ignoreUndefinedProperties: true,
             merge: true,
-            experimentalForceLongPolling: true,
-            experimentalAutoDetectLongPolling: false,
+            experimentalAutoDetectLongPolling: true,
         });
     } catch(err) {}
 }
