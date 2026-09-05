@@ -36,11 +36,24 @@ const loadAppData = async () => {
             if(p.variants) p.variants.forEach(v => { if(v.img) v.img = fixD(v.img); }); 
         });
         if(appData.banners) appData.banners.forEach(b => { if(b.img) b.img = fixD(b.img); if(b.videoUrl) b.videoUrl = fixDriveVideo(b.videoUrl); });
-        if(appData.categories) appData.categories.forEach(c => { if(c.img) c.img = fixD(c.img); });
-        if(appData.brands) appData.brands.forEach(b => { if(b.img) b.img = fixD(b.img); });
+        if(appData.categories) appData.categories.forEach(c => { 
+            if(c.img) {
+                c.img = fixD(c.img);
+                if (c.img.includes('10b981')) c.img = 'https://placehold.co/150/f1f5f9/64748b?text=Cat';
+            }
+        });
+        if(appData.brands) appData.brands.forEach(b => { 
+            if(b.img) {
+                b.img = fixD(b.img);
+                if (b.img.includes('10b981')) b.img = 'https://placehold.co/150/f1f5f9/64748b?text=Brand';
+            }
+        });
         if(appData.store.logo) appData.store.logo = fixD(appData.store.logo);
         if(appData.store.allProductsIcon) appData.store.allProductsIcon = fixD(appData.store.allProductsIcon);
-        if(appData.store.allBrandsIcon) appData.store.allBrandsIcon = fixD(appData.store.allBrandsIcon);
+        if(appData.store.allBrandsIcon) {
+            appData.store.allBrandsIcon = fixD(appData.store.allBrandsIcon);
+            if (appData.store.allBrandsIcon.includes('10b981')) appData.store.allBrandsIcon = 'https://placehold.co/150/f1f5f9/475569?text=Semua+Merek';
+        }
         if(appData.payment.qrisUrl) appData.payment.qrisUrl = fixD(appData.payment.qrisUrl);
         
         cart.forEach(i => { if(i.img) i.img = fixD(i.img); });
@@ -326,8 +339,18 @@ window.attachRealtimeStockSync = () => {
             appData.taxSettings = { ...defApp.taxSettings, ...(f.taxSettings || {}) };
             if (appData.config && appData.config.gasUrl) window.GAS_UPLOAD_URL = appData.config.gasUrl;
             if (appData.banners) appData.banners.forEach(b => { if(b.img) b.img = fixD(b.img); if(b.videoUrl) b.videoUrl = fixDriveVideo(b.videoUrl); });
-            if (appData.categories) appData.categories.forEach(c => { if(c.img) c.img = fixD(c.img); });
-            if (appData.brands) appData.brands.forEach(b => { if(b.img) b.img = fixD(b.img); });
+            if (appData.categories) appData.categories.forEach(c => { 
+                if(c.img) {
+                    c.img = fixD(c.img);
+                    if (c.img.includes('10b981')) c.img = 'https://placehold.co/150/f1f5f9/64748b?text=Cat';
+                }
+            });
+            if (appData.brands) appData.brands.forEach(b => { 
+                if(b.img) {
+                    b.img = fixD(b.img);
+                    if (b.img.includes('10b981')) b.img = 'https://placehold.co/150/f1f5f9/64748b?text=Brand';
+                }
+            });
 
             // 2. SINKRONISASI PRODUK GRANULAR (HEMAT KUOTA BESAR)
             if (updateType === 'settings_change' && appData.products && appData.products.length > 0) {

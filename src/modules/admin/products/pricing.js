@@ -30,7 +30,7 @@ window.openQuickPriceModal = (id) => {
     let body = '';
     if (hasVariants) {
         body = p.variants.map((v, i) => `
-            <div class="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-[1.25rem] border border-slate-200 dark:border-slate-700 space-y-3">
+            <div class="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 space-y-3">
                 <div class="flex items-center gap-2.5 min-w-0">
                     ${v.colorCode ? `<span class="w-4 h-4 rounded-full shrink-0 shadow-sm border border-slate-300" style="background-color:${esc(v.colorCode)}"></span>` : ''}
                     <p class="text-xs font-bold text-slate-800 dark:text-white truncate">${esc(v.name)}</p>

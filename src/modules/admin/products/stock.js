@@ -27,7 +27,7 @@ window.openRestockModal = (id) => {
 
     if (hasVariants) {
         variantsHtml = p.variants.map((v, i) => `
-            <div class="flex items-center justify-between gap-3 bg-slate-50 dark:bg-slate-900/50 p-4 rounded-[1.25rem] border border-slate-200 dark:border-slate-700">
+            <div class="flex items-center justify-between gap-3 bg-slate-50 dark:bg-slate-900/50 p-4 rounded-2xl border border-slate-200 dark:border-slate-700">
                 <div class="flex items-center gap-3 min-w-0 flex-1">
                     ${v.colorCode ? `<span class="w-5 h-5 rounded-full shrink-0 shadow-sm border border-slate-300" style="background-color:${esc(v.colorCode)}"></span>` : ''}
                     <div class="min-w-0 flex-1">
@@ -40,7 +40,7 @@ window.openRestockModal = (id) => {
         ).join('');
     } else {
         variantsHtml = `
-            <div class="flex items-center justify-between gap-3 bg-slate-50 dark:bg-slate-900/50 p-4 rounded-[1.25rem] border border-slate-200 dark:border-slate-700">
+            <div class="flex items-center justify-between gap-3 bg-slate-50 dark:bg-slate-900/50 p-4 rounded-2xl border border-slate-200 dark:border-slate-700">
                 <div class="min-w-0 flex-1">
                     <p class="text-xs font-bold text-slate-800 dark:text-white truncate">${esc(p.name)}</p>
                     <p class="text-[10px] font-bold text-slate-500 mt-0.5">Stok saat ini: <span class="text-blue-500 font-bold">${parseFloat(p.stock)||0}</span></p>
