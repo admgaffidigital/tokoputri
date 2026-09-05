@@ -14,7 +14,8 @@ import { uiPalettes, hexToRgb, applyUITheme, initDarkMode, toggleTheme as _toggl
 import { el, show, hide, toggleCls, setIn, setH, setV, getV, sL, ssL, esc, fCur, fixD, getYouTubeId, parseVideoUrl, fixDriveVideo, fixDriveVideoPreview, getOptImg, rewardStatusLabel, updateSEO, injectJSONLD, ensureScriptLoaded } from './core/utils.js';
 
 // Core: State (struktur data default & global state)
-import { defApp as _defApp, setCart as _setCart, setWishlist as _setWishlist, setMyOrders as _setMyOrders } from './core/state.js';
+import * as state from './core/state.js';
+import { defApp } from './core/state.js';
 // Services: GAS URL
 import { GAS_UPLOAD_URL as _GAS_URL } from './services/gas.js';
 // Modules: Print & Dokumen (Thermal Struk, Invoice & Surat Jalan A4)
@@ -121,16 +122,12 @@ window.fixDriveVideoPreview = fixDriveVideoPreview;
 // agar bisa di-override di sini tanpa mengubah modul terpisah.
 let GAS_UPLOAD_URL = _GAS_URL;
 
-// defApp: struktur data default toko. Lihat src/core/state.js untuk versi
-// yang sudah dimodularisasi. Di sini dipertahankan sebagai const lokal
-// karena masih banyak digunakan oleh closure di bawah ini.
-const defApp = _defApp;
-
 // HELPER: Kalkulasi PPN & DPP berdasarkan mode Inklusif / Eksklusif
 window.calcTaxDetails = (baseAmount) => {
-    const ppnEnabled = appData.store.ppnEnabled === true || appData.store.ppnEnabled === 'true';
-    const ppnRate = parseFloat(appData.store.ppnRate) || 11;
-    const ppnType = appData.store.ppnType || 'exclusive';
+    const store = state.appData?.store || {};
+    const ppnEnabled = store.ppnEnabled === true || store.ppnEnabled === 'true';
+    const ppnRate = parseFloat(store.ppnRate) || 11;
+    const ppnType = store.ppnType || 'exclusive';
 
     if (!ppnEnabled || baseAmount <= 0) {
         return { ppnEnabled: false, ppnRate: 0, ppnType, ppnAmount: 0, dppAmount: Math.max(0, baseAmount), grandTotalAdd: 0 };
@@ -155,27 +152,9 @@ if (typeof requestIdleCallback !== 'undefined') {
     setTimeout(loadAnalytics, 3000);
 }
 
-// State Variables — didefinisikan sebagai let lokal (bukan dari state.js)
-// karena banyak fungsi di bawah menggunakan closure ke variabel ini.
-let confirmCb = null;
-let appData = JSON.parse(JSON.stringify(defApp));
-
 window.updateProBadge = () => {};
-
-let cart = [], wishlist = [], myOrders = [];
-let cust = { name:'', address:'', lat:null, lng:null, deliveryMethod:'delivery', distance:0, note:'', wa:'' };
-// Program loyalitas member
-let currentMember = null; // { id, name, phone, points } | null
-let selectedReward = null;
-let memberCheckTimer = null;
-
-let aCat = 'Semua Produk', aBrand = 'Semua Merek', sQ = '', cSort = 'newest', cView = 'grid', cPage = 1, iPP = 12;
-let cTab = 'orders', aSq = '', eId = null;
-window.isAdm = false; window.isPro = true;
-let cProd = null, cVar = 0, tVars = [], tWhol = [], tSpec = [], cQty = 1, oMods = [];
-let aOrdLst = null, aCustLst = null, aRevLst = null, gOrds = [], gReviews = [], cVOrd = null, vouch = null, toastT, isSaving = false, bannerTmr = null;
-let reviewFilterMode = 'all';
-let lastReportPeriod = 'today';
+window.isAdm = false; 
+window.isPro = true;
 
 
 // =====================================================================
@@ -320,41 +299,41 @@ const bindProp = (name, getter, setter) => {
 };
 
 bindProp('GAS_UPLOAD_URL', () => GAS_UPLOAD_URL, v => { GAS_UPLOAD_URL = v; });
-bindProp('confirmCb', () => confirmCb, v => { confirmCb = v; });
-bindProp('appData', () => appData, v => { appData = v; });
-bindProp('cart', () => cart, v => { cart = v; _setCart(v); });
-bindProp('wishlist', () => wishlist, v => { wishlist = v; _setWishlist(v); });
-bindProp('myOrders', () => myOrders, v => { myOrders = v; _setMyOrders(v); });
-bindProp('cust', () => cust, v => { cust = v; });
-bindProp('currentMember', () => currentMember, v => { currentMember = v; });
-bindProp('selectedReward', () => selectedReward, v => { selectedReward = v; });
-bindProp('memberCheckTimer', () => memberCheckTimer, v => { memberCheckTimer = v; });
-bindProp('aCat', () => aCat, v => { aCat = v; });
-bindProp('aBrand', () => aBrand, v => { aBrand = v; });
-bindProp('sQ', () => sQ, v => { sQ = v; });
-bindProp('cSort', () => cSort, v => { cSort = v; });
-bindProp('cView', () => cView, v => { cView = v; });
-bindProp('cPage', () => cPage, v => { cPage = v; });
-bindProp('iPP', () => iPP, v => { iPP = v; });
-bindProp('cTab', () => cTab, v => { cTab = v; });
-bindProp('aSq', () => aSq, v => { aSq = v; });
-bindProp('eId', () => eId, v => { eId = v; });
-bindProp('cProd', () => cProd, v => { cProd = v; });
-bindProp('cVar', () => cVar, v => { cVar = v; });
-bindProp('tVars', () => tVars, v => { tVars = v; });
-bindProp('tWhol', () => tWhol, v => { tWhol = v; });
-bindProp('tSpec', () => tSpec, v => { tSpec = v; });
-bindProp('cQty', () => cQty, v => { cQty = v; });
-bindProp('oMods', () => oMods, v => { oMods = v; });
-bindProp('aOrdLst', () => aOrdLst, v => { aOrdLst = v; });
-bindProp('aCustLst', () => aCustLst, v => { aCustLst = v; });
-bindProp('aRevLst', () => aRevLst, v => { aRevLst = v; });
-bindProp('gOrds', () => gOrds, v => { gOrds = v; });
-bindProp('gReviews', () => gReviews, v => { gReviews = v; });
-bindProp('cVOrd', () => cVOrd, v => { cVOrd = v; });
-bindProp('vouch', () => vouch, v => { vouch = v; });
-bindProp('toastT', () => toastT, v => { toastT = v; });
-bindProp('isSaving', () => isSaving, v => { isSaving = v; });
-bindProp('bannerTmr', () => bannerTmr, v => { bannerTmr = v; });
-bindProp('reviewFilterMode', () => reviewFilterMode, v => { reviewFilterMode = v; });
-bindProp('lastReportPeriod', () => lastReportPeriod, v => { lastReportPeriod = v; });
+bindProp('confirmCb', () => state.confirmCb, v => { state.setConfirmCb(v); });
+bindProp('appData', () => state.appData, v => { state.setAppData(v); });
+bindProp('cart', () => state.cart, v => { state.setCart(v); });
+bindProp('wishlist', () => state.wishlist, v => { state.setWishlist(v); });
+bindProp('myOrders', () => state.myOrders, v => { state.setMyOrders(v); });
+bindProp('cust', () => state.cust, v => { state.setCust(v); });
+bindProp('currentMember', () => state.currentMember, v => { state.setCurrentMember(v); });
+bindProp('selectedReward', () => state.selectedReward, v => { state.setSelectedReward(v); });
+bindProp('memberCheckTimer', () => state.memberCheckTimer, v => { state.setMemberCheckTimer(v); });
+bindProp('aCat', () => state.aCat, v => { state.setACat(v); });
+bindProp('aBrand', () => state.aBrand, v => { state.setABrand(v); });
+bindProp('sQ', () => state.sQ, v => { state.setSQ(v); });
+bindProp('cSort', () => state.cSort, v => { state.setCSort(v); });
+bindProp('cView', () => state.cView, v => { state.setCView(v); });
+bindProp('cPage', () => state.cPage, v => { state.setCPage(v); });
+bindProp('iPP', () => state.iPP, v => { state.setIPP(v); });
+bindProp('cTab', () => state.cTab, v => { state.setCTab(v); });
+bindProp('aSq', () => state.aSq, v => { state.setASq(v); });
+bindProp('eId', () => state.eId, v => { state.setEId(v); });
+bindProp('cProd', () => state.cProd, v => { state.setCProd(v); });
+bindProp('cVar', () => state.cVar, v => { state.setCVar(v); });
+bindProp('tVars', () => state.tVars, v => { state.setTVars(v); });
+bindProp('tWhol', () => state.tWhol, v => { state.setTWhol(v); });
+bindProp('tSpec', () => state.tSpec, v => { state.setTSpec(v); });
+bindProp('cQty', () => state.cQty, v => { state.setCQty(v); });
+bindProp('oMods', () => state.oMods, v => { state.setOMods(v); });
+bindProp('aOrdLst', () => state.aOrdLst, v => { state.setAOrdLst(v); });
+bindProp('aCustLst', () => state.aCustLst, v => { state.setACustLst(v); });
+bindProp('aRevLst', () => state.aRevLst, v => { state.setARevLst(v); });
+bindProp('gOrds', () => state.gOrds, v => { state.setGOrds(v); });
+bindProp('gReviews', () => state.gReviews, v => { state.setGReviews(v); });
+bindProp('cVOrd', () => state.cVOrd, v => { state.setCVOrd(v); });
+bindProp('vouch', () => state.vouch, v => { state.setVouch(v); });
+bindProp('toastT', () => state.toastT, v => { state.setToastT(v); });
+bindProp('isSaving', () => state.isSaving, v => { state.setIsSaving(v); });
+bindProp('bannerTmr', () => state.bannerTmr, v => { state.setBannerTmr(v); });
+bindProp('reviewFilterMode', () => state.reviewFilterMode, v => { state.setReviewFilterMode(v); });
+bindProp('lastReportPeriod', () => state.lastReportPeriod, v => { state.setLastReportPeriod(v); });

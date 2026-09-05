@@ -120,6 +120,9 @@ export let reviewFilterMode = 'all';
 // Filter periode laporan terakhir dipilih admin
 export let lastReportPeriod = 'today';
 
+// Callback confirm modal
+export let confirmCb = null;
+
 // Timer toast
 export let toastT = null;
 
@@ -127,6 +130,7 @@ export let toastT = null;
 // Fungsi-fungsi ini diperlukan karena ES Module mengekspor referensi,
 // bukan binding langsung (let tidak bisa diassign dari luar file).
 
+export const setConfirmCb     = v => { confirmCb = v; };
 export const setAppData       = v => { appData = v; };
 export const setCart          = v => { cart = v; };
 export const setWishlist      = v => { wishlist = v; };
@@ -134,12 +138,14 @@ export const setMyOrders      = v => { myOrders = v; };
 export const setCust          = v => { cust = v; };
 export const setCurrentMember = v => { currentMember = v; };
 export const setSelectedReward= v => { selectedReward = v; };
+export const setMemberCheckTimer = v => { memberCheckTimer = v; };
 export const setACat          = v => { aCat = v; };
 export const setABrand        = v => { aBrand = v; };
 export const setSQ            = v => { sQ = v; };
 export const setCSort         = v => { cSort = v; };
 export const setCView         = v => { cView = v; };
 export const setCPage         = v => { cPage = v; };
+export const setIPP           = v => { iPP = v; };
 export const setCTab          = v => { cTab = v; };
 export const setASq           = v => { aSq = v; };
 export const setEId           = v => { eId = v; };
@@ -155,6 +161,7 @@ export const setGReviews      = v => { gReviews = v; };
 export const setCVOrd         = v => { cVOrd = v; };
 export const setVouch         = v => { vouch = v; };
 export const setIsSaving      = v => { isSaving = v; };
+export const setBannerTmr     = v => { bannerTmr = v; };
 export const setToastT        = v => { toastT = v; };
 export const setReviewFilterMode  = v => { reviewFilterMode = v; };
 export const setLastReportPeriod  = v => { lastReportPeriod = v; };
