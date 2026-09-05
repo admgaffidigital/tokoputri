@@ -33,6 +33,23 @@
     </noscript>
 
     <!-- Vite entry point dipindah ke body agar tidak render-blocking -->
+    <!-- Otomatis bersihkan service worker / cache lama agar semua perangkat selalu mengambil update live -->
+    <script>
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.getRegistrations().then(function (registrations) {
+          for (var reg of registrations) {
+            reg.unregister();
+          }
+        }).catch(function () {});
+      }
+      if ('caches' in window) {
+        caches.keys().then(function (names) {
+          for (var name of names) {
+            caches.delete(name);
+          }
+        }).catch(function () {});
+      }
+    </script>
     <!-- Initialize theme color CSS variables, PWA header meta, & dark mode instantly to avoid FOUC/flash -->
     <script>
       (function () {
