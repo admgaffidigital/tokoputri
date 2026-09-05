@@ -11,7 +11,7 @@ import { db, auth, ADMIN_UID, loadAnalytics, firebaseConfig } from './config/fir
 // Core: Theme Engine (color palettes, dark mode, CSS variables, background style)
 import { uiPalettes, hexToRgb, applyUITheme, initDarkMode, toggleTheme as _toggleTheme, initThemeIcon, applyBackgroundStyle } from './core/theme.js';
 // Core: Utilities (helper functions stateless)
-import { el, show, hide, toggleCls, setIn, setH, setV, getV, sL, ssL, esc, fCur, fixD, getYouTubeId, parseVideoUrl, fixDriveVideo, fixDriveVideoPreview, getOptImg, rewardStatusLabel, updateSEO, injectJSONLD, ensureScriptLoaded } from './core/utils.js';
+import { el, show, hide, toggleCls, setIn, setH, setV, getV, sL, ssL, esc, fCur, fixD, getYouTubeId, parseVideoUrl, fixDriveVideo, fixDriveVideoPreview, getOptImg, rewardStatusLabel, updateSEO, injectJSONLD, ensureScriptLoaded, sLoad, hLoad } from './core/utils.js';
 
 // Core: State (struktur data default & global state)
 import * as state from './core/state.js';
@@ -339,6 +339,7 @@ bindProp('cVOrd', () => state.cVOrd, v => { state.setCVOrd(v); });
 bindProp('vouch', () => state.vouch, v => { state.setVouch(v); });
 bindProp('toastT', () => state.toastT, v => { state.setToastT(v); });
 bindProp('isSaving', () => state.isSaving, v => { state.setIsSaving(v); });
-bindProp('bannerTmr', () => state.bannerTmr, v => { state.setBannerTmr(v); });
+// bannerTmr sekarang dikelola langsung via window.bannerTmr di src/modules/home/banner.js
+// (tidak lagi via bindProp, agar tidak konflik dengan Object.defineProperty saat setInterval di-assign)
 bindProp('reviewFilterMode', () => state.reviewFilterMode, v => { state.setReviewFilterMode(v); });
 bindProp('lastReportPeriod', () => state.lastReportPeriod, v => { state.setLastReportPeriod(v); });

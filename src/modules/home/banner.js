@@ -10,7 +10,9 @@
 import { appData } from '../../core/state.js';
 import { el } from '../../core/utils.js';
 
-export let bannerTmr = null;
+// bannerTmr disimpan di window agar bisa diakses dari atribut HTML inline
+// (onmouseenter="clearInterval(bannerTmr)" dll) dan dari modul ini secara serentak.
+if (typeof window.bannerTmr === 'undefined') window.bannerTmr = null;
 export let bannerScrollDebounce = null;
 
 /**
@@ -134,7 +136,7 @@ export const onBannerScroll = () => {
 };
 
 export const scrollToBanner = (index) => {
-    clearInterval(bannerTmr);
+    clearInterval(window.bannerTmr);
     const sl = el('banner-slider');
     if (!sl) return;
     const items = sl.querySelectorAll('.banner-slide-item');
@@ -146,7 +148,7 @@ export const scrollToBanner = (index) => {
 };
 
 export const scrollBannerPrev = () => {
-    clearInterval(bannerTmr);
+    clearInterval(window.bannerTmr);
     const sl = el('banner-slider');
     if (!sl) return;
     const items = sl.querySelectorAll('.banner-slide-item');
@@ -164,7 +166,7 @@ export const scrollBannerPrev = () => {
 };
 
 export const scrollBannerNext = () => {
-    clearInterval(bannerTmr);
+    clearInterval(window.bannerTmr);
     const sl = el('banner-slider');
     if (!sl) return;
     const items = sl.querySelectorAll('.banner-slide-item');
@@ -182,7 +184,7 @@ export const scrollBannerNext = () => {
 };
 
 export const startBannerAutoSlide = () => {
-    clearInterval(bannerTmr);
+    clearInterval(window.bannerTmr);
     const s = el('banner-slider');
     if (!s || !appData.banners || appData.banners.length <= 1) return;
 
@@ -193,9 +195,9 @@ export const startBannerAutoSlide = () => {
     syncBannerVideos();
     forcePlayBannerVideos();
 
-    bannerTmr = setInterval(() => {
+    window.bannerTmr = setInterval(() => {
         const sl = el('banner-slider');
-        if (!sl) return clearInterval(bannerTmr);
+        if (!sl) return clearInterval(window.bannerTmr);
         const items = sl.querySelectorAll('.banner-slide-item');
         if (!items || items.length <= 1) {
             const m = sl.scrollWidth - sl.clientWidth;
