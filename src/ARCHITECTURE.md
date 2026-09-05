@@ -27,7 +27,15 @@ src/
 ├── modules/
 │   ├── admin/
 │   │   ├── index.js        ← Entry point admin (inisialisasi semua tab)
-│   │   ├── products.js     ← CMS produk (⚠️ 93 KB, kandidat dipecah)
+│   │   ├── products/       ← CMS produk (terpecah per fitur)
+│   │   │   ├── index.js    ← Entry point & shared state
+│   │   │   ├── table.js    ← Tabel daftar produk & list item
+│   │   │   ├── form.js     ← Form tambah/edit, simpan, hapus, duplikat
+│   │   │   ├── variants.js ← Varian produk, spec builder, database warna
+│   │   │   ├── stock.js    ← Restock cepat & toggle status stok
+│   │   │   ├── scanner.js  ← Barcode scanner kamera (HTML5-QRCode)
+│   │   │   └── pricing.js  ← Edit cepat harga & grosir builder
+│   │   ├── products.js     ← Re-export shim untuk backward compatibility
 │   │   ├── orders.js       ← Manajemen pesanan admin
 │   │   ├── settings.js     ← Pengaturan toko, tema, bank, voucher
 │   │   ├── finance.js      ← Laporan keuangan & pajak
@@ -130,7 +138,7 @@ Browser Buka Halaman
 | `window.rDyn` | `modules/home/sections.js` | Render ulang beranda |
 | `window.rCat` | `modules/catalog/catalog.js` | Render ulang katalog |
 | `window.openProductModal` | `modules/catalog/product-modal.js` | Buka modal produk |
-| `window.rAdmItms` | `modules/admin/products.js` | Render ulang tabel admin |
+| `window.rAdmItms` | `modules/admin/products/table.js` | Render ulang tabel admin |
 | `window.sanitizeCart` | `modules/cart/cart.js` | Bersihkan item keranjang |
 | `window.applyUITheme` | `core/theme.js` | Ganti tema warna |
 | `window.applyBackgroundStyle` | `core/theme.js` | Ganti gaya background |
