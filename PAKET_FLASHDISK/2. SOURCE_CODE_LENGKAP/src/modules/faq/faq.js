@@ -79,7 +79,7 @@ export const renderStorefrontFAQ = () => {
     if (!filtered.length) {
         container.innerHTML = `
             <div class="text-center py-12 bg-white dark:bg-slate-800 rounded-3xl border border-slate-200 dark:border-slate-700 p-6 shadow-sm">
-                <div class="w-16 h-16 rounded-full bg-amber-50 dark:bg-amber-900/20 text-amber-500 mx-auto flex items-center justify-center mb-3">
+                <div class="w-16 h-16 rounded-full primary-bg-soft primary-text mx-auto flex items-center justify-center mb-3">
                     <i class="fa-solid fa-circle-question text-3xl"></i>
                 </div>
                 <h3 class="font-bold text-slate-800 dark:text-white text-base">Belum Ada Q&A Ditemukan</h3>
@@ -282,7 +282,7 @@ export const rAdmFAQ = () => {
                     <div class="bg-white dark:bg-slate-800 p-4 sm:p-5 rounded-2xl border ${f.status === 'pending_answer' ? 'border-amber-300/80 bg-amber-50/20 dark:bg-amber-900/10' : 'border-slate-200/80 dark:border-slate-700/80'} shadow-sm space-y-3">
                         <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-700/60 pb-2.5">
                             <div class="flex flex-wrap items-center gap-1.5 min-w-0">
-                                <span class="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-lg ${f.status === 'published' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400' : f.status === 'pending_answer' ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400' : 'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-400'}">
+                                <span class="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-lg ${f.status === 'published' ? 'primary-bg-soft primary-text border primary-border' : f.status === 'pending_answer' ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400' : 'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-400'}">
                                     ${f.status === 'published' ? 'Terpublikasi' : f.status === 'pending_answer' ? 'Menunggu Jawaban' : 'Disembunyikan'}
                                 </span>
                                 <span class="text-[9px] sm:text-[10px] font-bold text-slate-400 uppercase tracking-wider px-2 py-0.5 rounded-lg bg-slate-100 dark:bg-slate-700/50">${esc(f.category || 'Umum')}</span>

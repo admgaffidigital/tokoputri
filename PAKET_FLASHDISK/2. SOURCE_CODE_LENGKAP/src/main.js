@@ -11,7 +11,7 @@ import { db, auth, ADMIN_UID, loadAnalytics, firebaseConfig } from './config/fir
 // Core: Theme Engine (color palettes, dark mode, CSS variables, background style)
 import { uiPalettes, hexToRgb, applyUITheme, initDarkMode, toggleTheme as _toggleTheme, initThemeIcon, applyBackgroundStyle } from './core/theme.js';
 // Core: Utilities (helper functions stateless)
-import { el, show, hide, toggleCls, setIn, setH, setV, getV, sL, ssL, esc, fCur, fixD, getYouTubeId, parseVideoUrl, fixDriveVideo, fixDriveVideoPreview, getOptImg, rewardStatusLabel, updateSEO, injectJSONLD, ensureScriptLoaded } from './core/utils.js';
+import { el, show, hide, toggleCls, setIn, setH, setV, getV, sL, ssL, esc, fCur, fixD, getYouTubeId, parseVideoUrl, fixDriveVideo, fixDriveVideoPreview, getOptImg, rewardStatusLabel, updateSEO, injectJSONLD, ensureScriptLoaded, sLoad, hLoad } from './core/utils.js';
 
 // Core: State (struktur data default & global state)
 import * as state from './core/state.js';
@@ -47,6 +47,17 @@ import './core/pricing.js';
 import './core/ui.js';
 // Core: Router & History Navigation
 import { setupHistoryRouter } from './core/router.js';
+// Cart: sanitizeCart diimport langsung supaya window.sanitizeCart tidak circular
+import { sanitizeCart } from './modules/cart/cart.js';
+
+// Cegah mobile browser merestorasi scroll position lama yang menggeser layout
+if (typeof history !== 'undefined' && 'scrollRestoration' in history) {
+    history.scrollRestoration = 'manual';
+}
+window.scrollTo(0, 0);
+if (document.documentElement) document.documentElement.scrollTop = 0;
+if (document.body) document.body.scrollTop = 0;
+
 setupHistoryRouter();
 
 // ─── Expose ke window (untuk kompatibilitas kode inline di index.html) ──────────
@@ -176,10 +187,10 @@ window.isPro = true;
 // telah dipindahkan ke modul: src/modules/orders/orders.js
 
 
-// Coba muat state keranjang & wishlist & riwayat pesanan dari LocalStorage
-try { cart = JSON.parse(sL('freshmart_cart')) || []; _setCart(cart); } catch(e) {}
-try { wishlist = JSON.parse(sL('freshmart_wishlist')) || []; _setWishlist(wishlist); } catch(e) {}
-try { myOrders = JSON.parse(sL('freshmart_my_orders')) || []; _setMyOrders(myOrders); } catch(e) {}
+// NOTE: state cart/wishlist/myOrders sudah di-load dari localStorage di src/core/state.js
+// saat module pertama kali diimport. Tidak perlu dimuat ulang di sini.
+// bindProp() di bawah sudah menjamin window.cart / window.wishlist / window.myOrders
+// selalu terhubung ke state module tersebut secara transparan.
 
 // Setup History API (Untuk Tombol Back)
 // FIX: selalu di-reset (bukan hanya jika kosong) supaya state history selalu sinkron dengan
@@ -187,11 +198,11 @@ try { myOrders = JSON.parse(sL('freshmart_my_orders')) || []; _setMyOrders(myOrd
 // sisa sesi sebelumnya saat halaman di-refresh.
 history.replaceState({view: 'view-catalog'}, '', '');
 
-const sLoad = t => { if(t) setIn('loader-text', t); const gl = el('global-loader'); if(gl) { gl.style.display = 'flex'; } };
-const hLoad = () => { const gl = el('global-loader'); if(gl) gl.style.display = 'none'; };
+// NOTE: sLoad & hLoad sudah diimport dari src/core/utils.js di bagian atas file.
+// Tidak perlu didefinisikan ulang di sini.
 
-// Note: sanitizeCart telah dipindahkan ke modul: src/modules/cart/cart.js
-const sanitizeCart = () => window.sanitizeCart();
+// NOTE: sanitizeCart sudah di-expose ke window oleh src/modules/cart/cart.js.
+// Tidak perlu wrapper di sini.
 
 
 // =====================================================================
@@ -284,8 +295,11 @@ window.defaultFbC = firebaseConfig;
 window.fbC = firebaseConfig;
 window.defApp = defApp;
 window.ADMIN_UID = ADMIN_UID;
+// sLoad & hLoad: sudah diimport dari src/core/utils.js → expose ke window agar kode inline HTML bisa memakainya
 window.sLoad = sLoad;
 window.hLoad = hLoad;
+// sanitizeCart: diimport dari src/modules/cart/cart.js (cart.js juga expose ini, tapi kita
+// pastikan tersedia sejak awal di sini sebelum modul cart selesai diinisialisasi)
 window.sanitizeCart = sanitizeCart;
 
 const bindProp = (name, getter, setter) => {
@@ -334,6 +348,7 @@ bindProp('cVOrd', () => state.cVOrd, v => { state.setCVOrd(v); });
 bindProp('vouch', () => state.vouch, v => { state.setVouch(v); });
 bindProp('toastT', () => state.toastT, v => { state.setToastT(v); });
 bindProp('isSaving', () => state.isSaving, v => { state.setIsSaving(v); });
-bindProp('bannerTmr', () => state.bannerTmr, v => { state.setBannerTmr(v); });
+// bannerTmr sekarang dikelola langsung via window.bannerTmr di src/modules/home/banner.js
+// (tidak lagi via bindProp, agar tidak konflik dengan Object.defineProperty saat setInterval di-assign)
 bindProp('reviewFilterMode', () => state.reviewFilterMode, v => { state.setReviewFilterMode(v); });
 bindProp('lastReportPeriod', () => state.lastReportPeriod, v => { state.setLastReportPeriod(v); });

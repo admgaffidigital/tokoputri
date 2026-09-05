@@ -201,4 +201,18 @@ export const normalizeWA = (raw) => {
     return n;
 };
 window.normalizeWA = normalizeWA;
-
+window.sLoad = sLoad;
+window.hLoad = hLoad;
+window.el = el;
+window.show = show;
+window.hide = hide;
+window.toggleCls = toggleCls;
+window.setIn = setIn;
+window.setH = setH;
+window.setV = setV;
+window.getV = getV;
+window.esc = esc;
+window.fixD = fixD;
+window.fCur = fCur;
+window.sL = sL;
+window.ssL = ssL;
