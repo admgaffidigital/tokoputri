@@ -454,85 +454,10 @@ window.attachRewardsRealtime = () => {
         }, err => { console.warn('Realtime hadiah gagal:', err); });
 };
 
-// --- 12. WELCOME POPUP: DIHAPUS atas permintaan, agar website lebih ringan & cepat ---
-
-// --- 5. LOGIKA HARGA & JARAK GPS ---
-window.getEffP = i => {
-    const p = appData.products.find(x => x.id === i.id);
-    // FIX: pakai harga varian sebagai harga dasar jika item punya variantName
-    let basePrice = i.price || 0;
-    if (i.variantName && p && p.variants) {
-        const v = p.variants.find(vv => vv.name === i.variantName);
-        if (v && v.price != null) basePrice = v.price;
-    }
-    // FIX BUG (Grosir + Varian): harga grosir didefinisikan di level produk dasar,
-    // sedangkan harga tiap varian bisa berbeda jauh. Kalau grosir tetap dipaksakan
-    // ke item yang punya varian, customer bisa kena harga grosir varian lain yang
-    // tidak sesuai (toko berpotensi rugi). Maka: grosir HANYA berlaku untuk
-    // pembelian TANPA varian. Produk dengan varian tetap pakai harga varian apa adanya.
-    if (i.variantName) return basePrice;
-    if (!p || !p.wholesale || !p.wholesale.length) return basePrice;
-    const t = cart.filter(c => c.id === i.id).reduce((s,c) => s + (parseFloat(c.qty) || 0), 0);
-    for (let w of p.wholesale.slice().sort((a,b) => b.minQty - a.minQty)){
-        if (t >= parseFloat(w.minQty)) return w.price;
-    }
-    return basePrice;
-};
-
-// FITUR BARU: ambil HPP (harga modal) produk/varian saat ini, dipakai untuk
-// merekam biaya modal ke setiap item pesanan -- supaya laporan laba akurat
-// dan tidak berubah walau HPP produk diedit admin di kemudian hari.
-window.getEffHpp = i => {
-    const p = appData.products.find(x => x.id === i.id);
-    if (!p) return 0;
-    if (i.variantName && p.variants) {
-        const v = p.variants.find(vv => vv.name === i.variantName);
-        if (v && v.hpp != null) return parseFloat(v.hpp) || 0;
-    }
-    return parseFloat(p.hpp) || 0;
-};
-
-// FITUR BARU: ambil Poin Member produk/varian saat ini dengan fallback cerdas
-// jika varian tidak memiliki poin khusus (> 0), otomatis gunakan poin produk utama
-window.getEffPoin = i => {
-    if (!i) return 0;
-    const p = appData.products.find(x => x.id === i.id);
-    if (!p) return parseFloat(i.poin) || 0;
-    if (i.variantName && p.variants) {
-        const v = p.variants.find(vv => vv.name === i.variantName);
-        if (v && v.poin !== undefined && v.poin !== null && v.poin !== '') {
-            const vPoin = parseFloat(v.poin);
-            if (!isNaN(vPoin) && vPoin > 0) return vPoin;
-        }
-    }
-    return parseFloat(p.poin) || 0;
-};
-
-window.getDist = (lat1, lon1, lat2, lon2) => {
-    if (!lat1 || !lon1 || !lat2 || !lon2) return 0;
-    const R = 6371; 
-    const dLat = (lat2-lat1)*Math.PI/180;
-    const dLon = (lon2-lon1)*Math.PI/180;
-    const a = Math.sin(dLat/2)*Math.sin(dLat/2) + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLon/2)*Math.sin(dLon/2);
-    const c = 2*Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-    return R*c;
-};
-
-window.autoParseCoords = (input) => {
-    const val = input.value.trim();
-    const coords = val.split(',');
-    if (coords.length >= 2){
-        const lat = parseFloat(coords[0].trim());
-        const lng = parseFloat(coords[1].trim());
-        if (!isNaN(lat) && !isNaN(lng)){
-            setV('set-lat', lat);
-            setV('set-lng', lng);
-            showToast("Koordinat tersalin!");
-            return;
-        }
-    }
-    showToast("Format salah! Coba: Lat, Lng");
-};
+// ─── Logika Harga & Jarak GPS ────────────────────────────────────────────────
+// getEffP, getEffHpp, getEffPoin, getDist, autoParseCoords
+// telah dipindahkan ke: src/core/pricing.js
+// (expose ke window.* sudah dilakukan dari sana — tidak perlu duplikasi di sini)
 
 /**
  * Generate dan update dynamic Web App Manifest blob secara realtime
