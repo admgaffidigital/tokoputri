@@ -36,7 +36,7 @@ export const rDyn = () => {
     // --- RENDER BANNER 3D PREMIUM (mendukung tipe gambar & video) ---
     let bHTML = (appData.banners && appData.banners.length) ? `
     <div class="relative group/banner-wrapper w-full">
-        <div id="banner-slider" class="flex overflow-x-auto gap-4 sm:gap-6 pb-4 pt-2 snap-x hide-scrollbar scroll-smooth" ontouchstart="clearInterval(bannerTmr)" ontouchend="setTimeout(startBannerAutoSlide, 8000)" onmouseenter="clearInterval(bannerTmr)" onmouseleave="startBannerAutoSlide()" onscroll="window.onBannerScroll && window.onBannerScroll()">
+        <div id="banner-slider" class="flex overflow-x-auto gap-4 sm:gap-6 pb-4 pt-2 snap-x hide-scrollbar scroll-smooth" ontouchstart="clearInterval(window.bannerTmr)" ontouchend="setTimeout(() => window.startBannerAutoSlide?.(), 8000)" onmouseenter="clearInterval(window.bannerTmr)" onmouseleave="window.startBannerAutoSlide?.()" onscroll="window.onBannerScroll && window.onBannerScroll()">
             ${appData.banners.map((b,i)=>{
         const isVideo = b.type === 'video' && b.videoUrl;
         const linkAction = (!isVideo && b.link) ? `onclick="window.open('${esc(b.link)}', '_self')"` : '';
