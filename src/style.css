@@ -151,7 +151,13 @@ body {
     z-index: 30; 
     border-bottom: 0; 
     box-shadow: none !important; 
-    padding-top: max(0.75rem, env(safe-area-inset-top)); 
+    box-sizing: border-box;
+    width: 100%;
+    /* iOS Notch, Dynamic Island, & Mobile Status Bar safe padding */
+    padding-top: 0.75rem; /* Fallback for browsers without env() */
+    padding-top: calc(env(safe-area-inset-top, 0px) + 0.65rem); 
+    padding-left: max(0.75rem, env(safe-area-inset-left, 0px));
+    padding-right: max(0.75rem, env(safe-area-inset-right, 0px));
 }
 
 .glass-nav { 
