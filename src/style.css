@@ -134,13 +134,14 @@ body {
     overflow: hidden; 
 }
 
-.view-section.hidden {
-    display: none !important;
-}
-
 .view-section.flex {
     display: flex !important;
     flex-direction: column !important;
+}
+
+/* PENTING: .hidden harus ditulis SETELAH .flex agar menang saat elemen punya kedua kelas */
+.view-section.hidden {
+    display: none !important;
 }
 
 .scroll-content { 
