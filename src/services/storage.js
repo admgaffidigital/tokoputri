@@ -302,8 +302,8 @@ window.attachRealtimeStockSync = () => {
             return;
         }
 
-        // Jika nomor versi server tidak lebih tinggi dan kita sudah punya data produk, tidak perlu query apapun
-        if (serverUpdate <= localUpdate && (appData.products && appData.products.length > 0)) {
+        // Jika nomor versi server SAMA PERSIS dengan lokal (> 0) dan data produk sudah ada, tidak perlu fetch ulang
+        if (serverUpdate === localUpdate && serverUpdate > 0 && (appData.products && appData.products.length > 0)) {
             return;
         }
 
@@ -331,14 +331,14 @@ window.attachRealtimeStockSync = () => {
 
             // 2. SINKRONISASI PRODUK GRANULAR (HEMAT KUOTA BESAR)
             if (updateType === 'settings_change' && appData.products && appData.products.length > 0) {
-                // Hanya setting yang berubah. TIDAK PERLU mengambil ulang subkoleksi produk! Hemat 100% reads produk.
+                // Hanya setting yang berubah. TIDAK PERLU mengambil ulang subkoleksi produk!
             } else if ((updateType === 'stock_change' || updateType === 'product_single') && updatedProductIds.length > 0 && appData.products && appData.products.length > 0) {
                 // Hanya beberapa produk yang berubah (misal dari checkout atau admin edit produk tunggal).
-                // Ambil HANYA dokumen yang berubah, bukan mengunduh seluruh katalog!
                 const fetchedDocs = await Promise.all(
                     updatedProductIds.map(pId => db.collection("freshmart").doc("cms_data").collection("products").doc(pId).get().catch(() => null))
                 );
-                fetchedDocs.forEach(pDoc => {
+                fetchedDocs.forEach((pDoc, idx) => {
+                    const targetId = updatedProductIds[idx];
                     if (pDoc && pDoc.exists) {
                         const freshProd = pDoc.data();
                         if (freshProd.img) freshProd.img = fixD(freshProd.img);
@@ -349,17 +349,14 @@ window.attachRealtimeStockSync = () => {
                         } else {
                             appData.products.unshift(freshProd);
                         }
+                    } else if (pDoc && !pDoc.exists && targetId) {
+                        const pIdx = appData.products.findIndex(p => p.id.toString() === targetId);
+                        if (pIdx > -1) appData.products.splice(pIdx, 1);
                     }
                 });
                 ssL('freshmart_products', JSON.stringify(appData.products));
             } else {
-                // Penarikan penuh produk (hanya jika belum punya produk atau dipaksa update massal)
-                const now = Date.now();
-                if (now - lastFullProductFetchTime < FULL_FETCH_MIN_INTERVAL && appData.products && appData.products.length > 0) {
-                    // Batasi agar tidak terjadi banjir fetch beruntun
-                    return;
-                }
-                lastFullProductFetchTime = now;
+                // Penarikan penuh produk (hanya jika belum punya produk atau pembaruan massal)
                 const pSnap = await db.collection("freshmart").doc("cms_data").collection("products").get();
                 appData.products = pSnap.docs.map(d => d.data()).sort((a,b) => (b.id||0) - (a.id||0));
                 appData.products.forEach(p => {
