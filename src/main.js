@@ -47,6 +47,8 @@ import './core/pricing.js';
 import './core/ui.js';
 // Core: Router & History Navigation
 import { setupHistoryRouter } from './core/router.js';
+// Cart: sanitizeCart diimport langsung supaya window.sanitizeCart tidak circular
+import { sanitizeCart } from './modules/cart/cart.js';
 setupHistoryRouter();
 
 // ─── Expose ke window (untuk kompatibilitas kode inline di index.html) ──────────
@@ -176,10 +178,10 @@ window.isPro = true;
 // telah dipindahkan ke modul: src/modules/orders/orders.js
 
 
-// Coba muat state keranjang & wishlist & riwayat pesanan dari LocalStorage
-try { cart = JSON.parse(sL('freshmart_cart')) || []; _setCart(cart); } catch(e) {}
-try { wishlist = JSON.parse(sL('freshmart_wishlist')) || []; _setWishlist(wishlist); } catch(e) {}
-try { myOrders = JSON.parse(sL('freshmart_my_orders')) || []; _setMyOrders(myOrders); } catch(e) {}
+// NOTE: state cart/wishlist/myOrders sudah di-load dari localStorage di src/core/state.js
+// saat module pertama kali diimport. Tidak perlu dimuat ulang di sini.
+// bindProp() di bawah sudah menjamin window.cart / window.wishlist / window.myOrders
+// selalu terhubung ke state module tersebut secara transparan.
 
 // Setup History API (Untuk Tombol Back)
 // FIX: selalu di-reset (bukan hanya jika kosong) supaya state history selalu sinkron dengan
@@ -187,11 +189,11 @@ try { myOrders = JSON.parse(sL('freshmart_my_orders')) || []; _setMyOrders(myOrd
 // sisa sesi sebelumnya saat halaman di-refresh.
 history.replaceState({view: 'view-catalog'}, '', '');
 
-const sLoad = t => { if(t) setIn('loader-text', t); const gl = el('global-loader'); if(gl) { gl.style.display = 'flex'; } };
-const hLoad = () => { const gl = el('global-loader'); if(gl) gl.style.display = 'none'; };
+// NOTE: sLoad & hLoad sudah diimport dari src/core/utils.js di bagian atas file.
+// Tidak perlu didefinisikan ulang di sini.
 
-// Note: sanitizeCart telah dipindahkan ke modul: src/modules/cart/cart.js
-const sanitizeCart = () => window.sanitizeCart();
+// NOTE: sanitizeCart sudah di-expose ke window oleh src/modules/cart/cart.js.
+// Tidak perlu wrapper di sini.
 
 
 // =====================================================================
@@ -284,8 +286,11 @@ window.defaultFbC = firebaseConfig;
 window.fbC = firebaseConfig;
 window.defApp = defApp;
 window.ADMIN_UID = ADMIN_UID;
+// sLoad & hLoad: sudah diimport dari src/core/utils.js → expose ke window agar kode inline HTML bisa memakainya
 window.sLoad = sLoad;
 window.hLoad = hLoad;
+// sanitizeCart: diimport dari src/modules/cart/cart.js (cart.js juga expose ini, tapi kita
+// pastikan tersedia sejak awal di sini sebelum modul cart selesai diinisialisasi)
 window.sanitizeCart = sanitizeCart;
 
 const bindProp = (name, getter, setter) => {

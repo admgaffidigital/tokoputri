@@ -447,7 +447,7 @@ window.attachRewardsRealtime = () => {
             appData.rewards.forEach(r => { if (r.img) r.img = fixD(r.img); });
             ssL('freshmart_rewards', JSON.stringify(appData.rewards));
             // Kalau admin sedang buka tab Hadiah, atau pelanggan sedang buka modal Data Member, segarkan tampilannya
-            if (window.isAdm && cTab === 'rewards' && typeof window.rAdmItms === 'function') window.rAdmItms('rewards');
+            if (window.isAdm && window.cTab === 'rewards' && typeof window.rAdmItms === 'function') window.rAdmItms('rewards');
             if (typeof window.renderRewardCatalog === 'function') window.renderRewardCatalog();
             const memberModal = document.getElementById('member-modal');
             if (memberModal && memberModal.style.display === 'flex' && currentMember && typeof window.rMemberModalBody === 'function') window.rMemberModalBody();
