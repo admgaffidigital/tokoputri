@@ -375,19 +375,23 @@ window.attachRealtimeStockSync = () => {
             }
             updatePwaManifest();
 
-            if (window.isAdm && cTab && ['categories','vouchers','banners','brands','banks','products','colors'].includes(cTab) && typeof window.rAdmItms === 'function') {
-                window.rAdmItms(cTab);
+            const curTab = window.cTab || 'products';
+            if (window.isAdm && curTab && ['categories','vouchers','banners','brands','banks','products','colors'].includes(curTab) && typeof window.rAdmItms === 'function') {
+                window.rAdmItms(curTab);
             }
+
+            setIn('stat-products', appData.products.filter(p => p.isActive !== 'false' && p.isActive !== false).length);
 
             sanitizeCart();
             updCart();
             if (typeof window.rDyn === 'function') window.rDyn();
             if (typeof window.rCat === 'function') window.rCat();
 
-            if (cProd) {
-                const fresh = appData.products.find(p => p.id === cProd.id);
+            const curProd = window.cProd;
+            if (curProd) {
+                const fresh = appData.products.find(p => p.id === curProd.id);
                 if (fresh) {
-                    cProd = fresh;
+                    window.cProd = fresh;
                     if (typeof window.rProdMod === 'function') {
                         const modalEl = document.getElementById('product-modal');
                         if (modalEl && !modalEl.classList.contains('hidden') && !modalEl.classList.contains('opacity-0')) {
@@ -397,7 +401,7 @@ window.attachRealtimeStockSync = () => {
                 }
             }
         } catch (e) {
-            console.warn('Gagal sinkron realtime stok:', e);
+            console.error('Gagal sinkron realtime stok:', e);
         } finally {
             isSyncingRealtime = false;
             if (pendingSyncDoc) {
