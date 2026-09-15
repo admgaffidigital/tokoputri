@@ -10,7 +10,9 @@
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/firestore';
 import 'firebase/compat/auth';
-import { persistentLocalCache, persistentMultipleTabManager } from 'firebase/firestore';
+// CATATAN: persistentLocalCache dihapus karena menyebabkan onSnapshot mengembalikan data STALE
+// dari IndexedDB lokal alih-alih data server terbaru. Ini penyebab utama realtime sync tidak bekerja
+// antar perangkat: perangkat B membaca cache IndexedDB lama meski Firestore sudah di-update dari perangkat A.
 
 // Konfigurasi Firebase: diambil dari public/config.js (window.FIREBASE_CONFIG)
 // yang di-inject sebelum bundle JS dimuat, agar bisa diganti tanpa build ulang.
@@ -49,24 +51,15 @@ if (typeof window !== 'undefined') {
     window.auth = auth;
 }
 
-// Konfigurasi Firestore dengan LocalCache modern & multi-tab persistence
-// Menghilangkan peringatan deprecation enableMultiTabIndexedDbPersistence
+// Konfigurasi Firestore: nonaktifkan offline persistence agar onSnapshot SELALU
+// mendapatkan data terbaru dari server, bukan data lama dari IndexedDB.
+// Ini KRITIS untuk realtime sync antar perangkat yang benar.
 try {
     db.settings({
-        localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() }),
         ignoreUndefinedProperties: true,
-        merge: true,
         experimentalAutoDetectLongPolling: true,
     });
-} catch(e) {
-    try {
-        db.settings({
-            ignoreUndefinedProperties: true,
-            merge: true,
-            experimentalAutoDetectLongPolling: true,
-        });
-    } catch(err) {}
-}
+} catch(e) {}
 
 // Analytics diload LAZY setelah browser idle agar tidak memperlambat render awal.
 // Gunakan loadAnalytics() untuk mengaktifkannya.
