@@ -26,9 +26,25 @@ export default defineConfig({
           // sehingga TIDAK masuk bundle kritis dan tidak memperlambat First Load.
           'vendor-firebase-analytics': ['firebase/compat/analytics'],
           // Utilitas DOM sanitizer
-          'vendor-utils': ['dompurify']
+          'vendor-utils': ['dompurify'],
+          // Modul Admin & CMS Toko Putri (dipisah agar first load storefront lebih cepat)
+          'module-admin': [
+            './src/modules/admin/index.js',
+            './src/modules/admin/products/index.js',
+            './src/modules/admin/orders.js',
+            './src/modules/admin/finance.js',
+            './src/modules/admin/settings.js',
+            './src/modules/admin/tempo.js',
+            './src/modules/admin/reviews.js'
+          ],
+          // Modul Cetak Dokumen Struk Thermal & Invoice A4
+          'module-print': [
+            './src/modules/print/index.js',
+            './src/modules/print/documents.js'
+          ]
         }
       }
-    }
+    },
+    chunkSizeWarningLimit: 600
   }
 })

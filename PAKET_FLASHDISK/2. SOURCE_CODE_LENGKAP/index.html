@@ -231,6 +231,17 @@
     <script>
       (function () {
         try {
+          const cfg = window.FIREBASE_CONFIG || {};
+          const activeProj = cfg.projectId || "restu-karya-utama";
+          const cachedProj = localStorage.getItem("freshmart_active_project");
+          if (cachedProj && cachedProj !== activeProj) {
+            localStorage.removeItem("freshmart_cms_data");
+            localStorage.removeItem("freshmart_products");
+            localStorage.removeItem("freshmart_rewards");
+            localStorage.removeItem("freshmart_last_update");
+          }
+          localStorage.setItem("freshmart_active_project", activeProj);
+
           const cached = JSON.parse(localStorage.getItem("freshmart_cms_data") || "null");
           const name = cached && cached.store && cached.store.name ? cached.store.name : "TOKO PUTRI";
           const tagline = cached && cached.store ? cached.store.tagline || cached.store.desc || "Solusi Teknik & Perkakas" : "Solusi Teknik & Perkakas";

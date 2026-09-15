@@ -7,7 +7,7 @@
  * ============================================================
  */
 
-import { db, firebase } from '../config/firebase.js';
+import { db, firebase, firebaseConfig } from '../config/firebase.js';
 import { appData, defApp, cart, wishlist } from '../core/state.js';
 import { 
     sL, ssL, fixD, fixDriveVideo, setIn, showToast, 
@@ -59,6 +59,22 @@ const loadAppData = async () => {
         cart.forEach(i => { if(i.img) i.img = fixD(i.img); });
         wishlist.forEach(i => { if(i.img) i.img = fixD(i.img); });
     };
+
+    // Isolasi Cache Multi-Projek: Deteksi jika cache lokal berasal dari proyek toko lain
+    // (misalnya saat pengembang menguji toko lain di localhost atau domain yang sama).
+    const activeProject = firebaseConfig?.projectId || 'default';
+    const cachedProject = sL('freshmart_active_project');
+    if (cachedProject && cachedProject !== activeProject) {
+        try {
+            localStorage.removeItem('freshmart_cms_data');
+            localStorage.removeItem('freshmart_products');
+            localStorage.removeItem('freshmart_rewards');
+            localStorage.removeItem('freshmart_last_update');
+            localStorage.removeItem('freshmart_cart');
+            localStorage.removeItem('freshmart_wishlist');
+        } catch(e) {}
+    }
+    ssL('freshmart_active_project', activeProject);
 
     // 1. INSTANT HYDRATION: Render langsung dari cache lokal dalam 0ms (tanpa tunggu jaringan)
     let localCms = JSON.parse(sL('freshmart_cms_data') || 'null');
