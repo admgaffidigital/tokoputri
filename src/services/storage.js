@@ -19,7 +19,7 @@ import { rDyn } from '../modules/home/sections.js';
 import { rCat } from '../modules/catalog/catalog.js';
 import { applyUITheme, applyBackgroundStyle } from '../core/theme.js';
 
-const loadAppData = async () => {
+export const loadAppData = async () => {
     if(document.documentElement.classList.contains('dark')){
         const icon = el('icon-theme');
         if(icon) icon.className = 'fa-solid fa-sun text-sm text-amber-500';
@@ -329,7 +329,12 @@ if (typeof document !== 'undefined') {
     });
 }
 
-window.attachRealtimeStockSync = () => {
+// BUG FATAL DIPERBAIKI: Sebelumnya dideklarasikan langsung sebagai 'window.attachRealtimeStockSync = () => {...}'
+// lalu di baris akhir file ditimpa oleh 'window.attachRealtimeStockSync = attachRealtimeStockSync' yang bernilai
+// undefined (karena variabel lokal 'attachRealtimeStockSync' tidak pernah ada). Akibatnya listener TIDAK PERNAH
+// terpasang dan realtime sync sama sekali tidak bekerja di perangkat manapun.
+// Sekarang dideklarasikan sebagai const lokal sehingga bisa di-export dan di-assign ke window dengan benar.
+export const attachRealtimeStockSync = () => {
     if (window.unsubCmsRealtime) return; // jangan pasang dobel
 
     const doSync = async (doc) => {
@@ -501,7 +506,7 @@ window.attachRealtimeStockSync = () => {
 };
 
 // FITUR BARU (REFACTOR KEAMANAN & HEMAT KUOTA): katalog hadiah dengan cache lokal
-window.attachRewardsRealtime = () => {
+export const attachRewardsRealtime = () => {
     if (window.unsubRewardsRealtime) return; // jangan pasang dobel
 
     // Muat hadiah dari cache lokal segera agar tampilan instan 0ms
@@ -605,7 +610,9 @@ export const updatePwaManifest = (customThemeColor) => {
 };
 
 // ─── Expose ke window untuk atribut global ──────
+// PENTING: assign SETELAH deklarasi const di atas — urutan ini menjamin tidak ada nilai undefined.
 window.loadAppData = loadAppData;
 window.saveApp = saveApp;
 window.attachRealtimeStockSync = attachRealtimeStockSync;
+window.attachRewardsRealtime = attachRewardsRealtime;
 window.updatePwaManifest = updatePwaManifest;

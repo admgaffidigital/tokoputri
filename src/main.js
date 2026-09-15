@@ -38,7 +38,9 @@ import './modules/changelog/admin.js';
 // Services: Upload Media (GAS Drive Integration)
 import './services/upload.js';
 // Services: Penyimpanan Data & Realtime Sync (Firestore / Cache)
-import './services/storage.js';
+import { loadAppData, attachRealtimeStockSync, attachRewardsRealtime } from './services/storage.js';
+// NOTE: loadAppData dan attachRealtimeStockSync diimport eksplisit agar pemanggilan di DOMContentLoaded
+// tidak bergantung pada window.* yang bisa undefined akibat urutan inisialisasi modul.
 // Modules: Beranda, Banner Slider & Footer
 import { renderFooter } from './modules/home/footer.js';
 import './modules/home/index.js';
@@ -226,8 +228,9 @@ history.replaceState({view: 'view-catalog'}, '', '');
 window.addEventListener('DOMContentLoaded', async () => {
     await loadAppData();
     syncAppMeta(); // FIX: dipanggil tepat setelah data toko selesai sinkron (lihat catatan di atas)
-    attachRealtimeStockSync(); // FIX BUG: pasang listener realtime agar stok & data produk sinkron otomatis antar perangkat
-    // attachRewardsRealtime sekarang lazy-loaded saat katalog hadiah / modal member dibuka (hemat kuota)
+    attachRealtimeStockSync(); // Pasang listener realtime agar stok & data produk sinkron otomatis antar perangkat
+    // attachRewardsRealtime: expose ke window agar bisa dipanggil lazy saat katalog hadiah / modal member dibuka
+    window.attachRewardsRealtime = attachRewardsRealtime;
 
 // --- FITUR AUTO-LOGIN (Sesi Permanen Firebase) ---
     auth.onAuthStateChanged(async (user) => {
