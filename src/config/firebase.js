@@ -54,10 +54,12 @@ if (typeof window !== 'undefined') {
 // Konfigurasi Firestore: nonaktifkan offline persistence agar onSnapshot SELALU
 // mendapatkan data terbaru dari server, bukan data lama dari IndexedDB.
 // Ini KRITIS untuk realtime sync antar perangkat yang benar.
+// PENTING: merge:true agar tidak menimpa host/config internal Firebase yang sudah ada.
 try {
     db.settings({
         ignoreUndefinedProperties: true,
         experimentalAutoDetectLongPolling: true,
+        merge: true,
     });
 } catch(e) {}
 
