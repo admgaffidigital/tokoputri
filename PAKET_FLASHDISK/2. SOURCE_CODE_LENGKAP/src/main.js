@@ -38,7 +38,9 @@ import './modules/changelog/admin.js';
 // Services: Upload Media (GAS Drive Integration)
 import './services/upload.js';
 // Services: Penyimpanan Data & Realtime Sync (Firestore / Cache)
-import './services/storage.js';
+import { loadAppData, attachRealtimeStockSync, attachRewardsRealtime } from './services/storage.js';
+// NOTE: loadAppData dan attachRealtimeStockSync diimport eksplisit agar pemanggilan di DOMContentLoaded
+// tidak bergantung pada window.* yang bisa undefined akibat urutan inisialisasi modul.
 // Modules: Beranda, Banner Slider & Footer
 import { renderFooter } from './modules/home/footer.js';
 import './modules/home/index.js';
@@ -52,6 +54,11 @@ import './core/ui.js';
 import { setupHistoryRouter } from './core/router.js';
 // Cart: sanitizeCart diimport langsung supaya window.sanitizeCart tidak circular
 import { sanitizeCart } from './modules/cart/cart.js';
+// FIX BUG KRITIS: syncAppMeta HARUS diimport eksplisit dari settings.js.
+// Sebelumnya dipanggil sebagai fungsi biasa di DOMContentLoaded tanpa import,
+// menyebabkan ReferenceError yang menghentikan eksekusi SEBELUM attachRealtimeStockSync()
+// sempat dipanggil — sehingga listener Firestore tidak pernah terpasang di perangkat manapun.
+import { syncAppMeta } from './modules/admin/settings.js';
 
 // Cegah mobile browser merestorasi scroll position lama yang menggeser layout
 if (typeof history !== 'undefined' && 'scrollRestoration' in history) {
@@ -225,9 +232,18 @@ history.replaceState({view: 'view-catalog'}, '', '');
 // Booting Aplikasi Saat DOM Dimuat (Hanya Trigger Sekali)
 window.addEventListener('DOMContentLoaded', async () => {
     await loadAppData();
-    syncAppMeta(); // FIX: dipanggil tepat setelah data toko selesai sinkron (lihat catatan di atas)
-    attachRealtimeStockSync(); // FIX BUG: pasang listener realtime agar stok & data produk sinkron otomatis antar perangkat
-    // attachRewardsRealtime sekarang lazy-loaded saat katalog hadiah / modal member dibuka (hemat kuota)
+
+    // FIX BUG KRITIS: Setiap panggilan di sini dibungkus try/catch TERPISAH.
+    // Sebelumnya, jika syncAppMeta() melempar error (karena tidak pernah di-import),
+    // eksekusi berhenti dan attachRealtimeStockSync() TIDAK PERNAH terpanggil.
+    // Akibatnya listener Firestore tidak ada dan realtime sync tidak bekerja sama sekali.
+    try { syncAppMeta(); } catch(e) { console.warn('[syncAppMeta] Error:', e); }
+
+    // Pasang listener realtime — HARUS jalan apapun yang terjadi di atas
+    attachRealtimeStockSync();
+
+    // Expose attachRewardsRealtime ke window untuk lazy-load saat katalog hadiah dibuka
+    window.attachRewardsRealtime = attachRewardsRealtime;
 
 // --- FITUR AUTO-LOGIN (Sesi Permanen Firebase) ---
     auth.onAuthStateChanged(async (user) => {

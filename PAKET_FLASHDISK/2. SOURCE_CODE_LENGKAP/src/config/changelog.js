@@ -8,6 +8,22 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-3-0',
+        version: 'v1.3.0',
+        date: '2026-09-15',
+        title: 'Hotfix Realtime Sync Multi-Perangkat, Eliminasi Stale Cache & Granular Sync',
+        category: 'bugfix',
+        badge: 'Realtime Sync & Hotfix',
+        items: [
+            'Perbaikan bug fatal inisialisasi syncAppMeta() dan listener Firestore onSnapshot sehingga perubahan status produk (aktif/nonaktif/stok) di Admin Desktop seketika terupdate live di HP tanpa reload.',
+            'Penonaktifan persistentLocalCache IndexedDB yang menyebabkan data produk usang (stale) menolak pembaruan server Firestore.',
+            'Optimasi granular sync: penambahan penanganan event product_delete dan pengiriman updatedProductIds pada saveApp() sehingga hemat kuota Firestore hingga 95%.',
+            'Penyegaran antarmuka instan pada tombol toggle status aktif/habis produk di tabel admin.',
+            'Integrasi konfigurasi Firestore db.settings({ merge: true }) guna mencegah host override warning.',
+            'Pembaruan log pembaruan sistem dan sinkronisasi seluruh paket distribusi flashdisk & build siap pakai.'
+        ]
+    },
+    {
         id: 'log-1-2-0',
         version: 'v1.2.0',
         date: '2026-09-15',
