@@ -161,10 +161,10 @@ export const filterChangelog = (category) => {
         const cat = btn.getAttribute('data-category');
         const icon = btn.querySelector('i');
         if (cat === category) {
-            btn.className = 'btn-changelog-filter flex items-center gap-1.5 px-3 sm:px-3.5 py-1.5 rounded-xl text-[10px] sm:text-xs font-bold primary-bg text-white shadow-xs transition-all cursor-pointer border border-transparent';
+            btn.className = 'btn-changelog-filter shrink-0 whitespace-nowrap flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-[10px] sm:text-xs font-bold primary-bg text-white shadow-xs transition-all cursor-pointer border border-transparent';
             if (icon) icon.className = icon.className.replace(/text-\[[^\]]+\]/g, '').trim() + ' text-white';
         } else {
-            btn.className = 'btn-changelog-filter flex items-center gap-1.5 px-3 sm:px-3.5 py-1.5 rounded-xl text-[10px] sm:text-xs font-bold bg-white dark:bg-slate-800/90 hover:bg-slate-100 dark:hover:bg-slate-700/80 border border-slate-200/80 dark:border-slate-700/80 text-slate-700 dark:text-slate-300 transition-all cursor-pointer';
+            btn.className = 'btn-changelog-filter shrink-0 whitespace-nowrap flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-[10px] sm:text-xs font-bold bg-white dark:bg-slate-800/90 hover:bg-slate-100 dark:hover:bg-slate-700/80 border border-slate-200/80 dark:border-slate-700/80 text-slate-700 dark:text-slate-300 transition-all cursor-pointer';
             if (icon && cat !== 'all') icon.className = icon.className.replace(/\btext-white\b/g, '').trim() + ' text-[var(--color-primary)]';
             else if (icon && cat === 'all') icon.className = icon.className.replace(/\btext-white\b/g, '').trim() + ' text-slate-400';
         }
@@ -213,23 +213,23 @@ export const openChangelogModal = (initialCategory = 'all') => {
 
             <!-- Filter Kategori Kancing (Horizontal Scroll) -->
             <div class="px-4 sm:px-5 py-2.5 border-b border-slate-100 dark:border-slate-800/60 flex items-center gap-1.5 sm:gap-2 overflow-x-auto hide-scrollbar shrink-0 bg-slate-50/60 dark:bg-slate-900/40">
-                <button onclick="window.filterChangelog('all')" data-category="all" class="btn-changelog-filter flex items-center gap-1.5 px-3 sm:px-3.5 py-1.5 rounded-xl text-[10px] sm:text-xs font-bold primary-bg text-white shadow-xs transition-all cursor-pointer border border-transparent">
+                <button onclick="window.filterChangelog('all')" data-category="all" class="btn-changelog-filter shrink-0 whitespace-nowrap flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-[10px] sm:text-xs font-bold primary-bg text-white shadow-xs transition-all cursor-pointer border border-transparent">
                     <i class="fa-solid fa-list-check text-[10px]"></i>
                     <span>Semua</span>
                 </button>
-                <button onclick="window.filterChangelog('feature')" data-category="feature" class="btn-changelog-filter flex items-center gap-1.5 px-3 sm:px-3.5 py-1.5 rounded-xl text-[10px] sm:text-xs font-bold bg-white dark:bg-slate-800/90 hover:bg-slate-100 dark:hover:bg-slate-700/80 border border-slate-200/80 dark:border-slate-700/80 text-slate-700 dark:text-slate-300 transition-all cursor-pointer">
+                <button onclick="window.filterChangelog('feature')" data-category="feature" class="btn-changelog-filter shrink-0 whitespace-nowrap flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-[10px] sm:text-xs font-bold bg-white dark:bg-slate-800/90 hover:bg-slate-100 dark:hover:bg-slate-700/80 border border-slate-200/80 dark:border-slate-700/80 text-slate-700 dark:text-slate-300 transition-all cursor-pointer">
                     <i class="fa-solid fa-rocket text-[10px] text-[var(--color-primary)]"></i>
                     <span>Fitur Baru</span>
                 </button>
-                <button onclick="window.filterChangelog('optimization')" data-category="optimization" class="btn-changelog-filter flex items-center gap-1.5 px-3 sm:px-3.5 py-1.5 rounded-xl text-[10px] sm:text-xs font-bold bg-white dark:bg-slate-800/90 hover:bg-slate-100 dark:hover:bg-slate-700/80 border border-slate-200/80 dark:border-slate-700/80 text-slate-700 dark:text-slate-300 transition-all cursor-pointer">
+                <button onclick="window.filterChangelog('optimization')" data-category="optimization" class="btn-changelog-filter shrink-0 whitespace-nowrap flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-[10px] sm:text-xs font-bold bg-white dark:bg-slate-800/90 hover:bg-slate-100 dark:hover:bg-slate-700/80 border border-slate-200/80 dark:border-slate-700/80 text-slate-700 dark:text-slate-300 transition-all cursor-pointer">
                     <i class="fa-solid fa-bolt-lightning text-[10px] text-[var(--color-primary)]"></i>
                     <span>Optimasi</span>
                 </button>
-                <button onclick="window.filterChangelog('maintenance')" data-category="maintenance" class="btn-changelog-filter flex items-center gap-1.5 px-3 sm:px-3.5 py-1.5 rounded-xl text-[10px] sm:text-xs font-bold bg-white dark:bg-slate-800/90 hover:bg-slate-100 dark:hover:bg-slate-700/80 border border-slate-200/80 dark:border-slate-700/80 text-slate-700 dark:text-slate-300 transition-all cursor-pointer">
+                <button onclick="window.filterChangelog('maintenance')" data-category="maintenance" class="btn-changelog-filter shrink-0 whitespace-nowrap flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-[10px] sm:text-xs font-bold bg-white dark:bg-slate-800/90 hover:bg-slate-100 dark:hover:bg-slate-700/80 border border-slate-200/80 dark:border-slate-700/80 text-slate-700 dark:text-slate-300 transition-all cursor-pointer">
                     <i class="fa-solid fa-wrench text-[10px] text-[var(--color-primary)]"></i>
                     <span>Maintenance</span>
                 </button>
-                <button onclick="window.filterChangelog('bugfix')" data-category="bugfix" class="btn-changelog-filter flex items-center gap-1.5 px-3 sm:px-3.5 py-1.5 rounded-xl text-[10px] sm:text-xs font-bold bg-white dark:bg-slate-800/90 hover:bg-slate-100 dark:hover:bg-slate-700/80 border border-slate-200/80 dark:border-slate-700/80 text-slate-700 dark:text-slate-300 transition-all cursor-pointer">
+                <button onclick="window.filterChangelog('bugfix')" data-category="bugfix" class="btn-changelog-filter shrink-0 whitespace-nowrap flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-[10px] sm:text-xs font-bold bg-white dark:bg-slate-800/90 hover:bg-slate-100 dark:hover:bg-slate-700/80 border border-slate-200/80 dark:border-slate-700/80 text-slate-700 dark:text-slate-300 transition-all cursor-pointer">
                     <i class="fa-solid fa-bug-slash text-[10px] text-[var(--color-primary)]"></i>
                     <span>Perbaikan</span>
                 </button>
