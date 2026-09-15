@@ -72,24 +72,19 @@ export const rAdmChangelog = () => {
                 </li>
             `).join('');
 
-            let catColor = 'bg-blue-50 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400 border-blue-200 dark:border-blue-800';
             let catLabel = 'Update';
             let catIcon = 'fa-tag';
 
             if (log.category === 'feature') {
-                catColor = 'bg-emerald-50 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800';
                 catLabel = 'Fitur Baru';
                 catIcon = 'fa-rocket';
             } else if (log.category === 'optimization') {
-                catColor = 'bg-blue-50 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400 border-blue-200 dark:border-blue-800';
                 catLabel = 'Optimasi';
-                catIcon = 'fa-bolt';
+                catIcon = 'fa-bolt-lightning';
             } else if (log.category === 'maintenance') {
-                catColor = 'bg-amber-50 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400 border-amber-200 dark:border-amber-800';
                 catLabel = 'Maintenance';
                 catIcon = 'fa-wrench';
             } else if (log.category === 'bugfix') {
-                catColor = 'bg-rose-50 text-rose-600 dark:bg-rose-900/30 dark:text-rose-400 border-rose-200 dark:border-rose-800';
                 catLabel = 'Perbaikan';
                 catIcon = 'fa-bug-slash';
             }
@@ -101,11 +96,11 @@ export const rAdmChangelog = () => {
                         <span class="px-2.5 py-1 rounded-lg text-xs font-black tracking-wider uppercase ${isLatest ? 'bg-[var(--color-primary)] text-white shadow-xs' : 'bg-slate-800 text-white dark:bg-slate-700'}">
                             ${esc(log.version)}
                         </span>
-                        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md border text-[10px] font-bold ${catColor}">
-                            <i class="fa-solid ${catIcon} text-[9px]"></i> ${esc(catLabel)}
+                        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md border border-slate-200/80 dark:border-slate-700/80 bg-slate-100 dark:bg-slate-800 text-[10px] font-bold text-slate-700 dark:text-slate-300">
+                            <i class="fa-solid ${catIcon} text-[9px] text-[var(--color-primary)]"></i> ${esc(catLabel)}
                         </span>
-                        ${isLatest ? '<span class="px-2 py-0.5 rounded-md bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 text-[9px] font-extrabold uppercase">Versi Aktif</span>' : ''}
-                        ${!isDynamic ? '<span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-500 text-[9px] font-bold">Sistem Bawaan</span>' : '<span class="px-2 py-0.5 rounded-md bg-purple-50 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 text-[9px] font-bold">Kustom Toko</span>'}
+                        ${isLatest ? '<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-[rgba(var(--color-primary-rgb),0.1)] text-[var(--color-primary)] border border-[rgba(var(--color-primary-rgb),0.25)] text-[9px] font-extrabold uppercase"><span class="w-1.5 h-1.5 rounded-full bg-[var(--color-primary)] animate-pulse"></span> Versi Aktif</span>' : ''}
+                        ${!isDynamic ? '<span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-500 text-[9px] font-bold">Sistem Bawaan</span>' : '<span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-[var(--color-primary)] border border-[rgba(var(--color-primary-rgb),0.2)] text-[9px] font-bold">Kustom Toko</span>'}
                     </div>
                     <div class="flex items-center gap-2">
                         <span class="text-[10px] font-bold text-slate-400 dark:text-slate-500">
@@ -139,7 +134,7 @@ export const rAdmChangelog = () => {
         <!-- Top Action Card -->
         <div class="flex flex-wrap items-center justify-between gap-4 p-4 sm:p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs">
             <div class="flex items-center gap-3">
-                <div class="w-12 h-12 rounded-2xl primary-bg-soft text-[var(--color-primary)] flex items-center justify-center text-xl shadow-xs">
+                <div class="w-12 h-12 rounded-2xl bg-[rgba(var(--color-primary-rgb),0.12)] border border-[rgba(var(--color-primary-rgb),0.22)] text-[var(--color-primary)] flex items-center justify-center text-xl shadow-2xs shrink-0">
                     <i class="fa-solid fa-clock-rotate-left"></i>
                 </div>
                 <div>
@@ -185,10 +180,10 @@ export const rAdmChangelog = () => {
                 <div>
                     <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Kategori Update</label>
                     <select id="form-log-category" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs font-bold text-slate-800 dark:text-white focus:border-[var(--color-primary)] focus:outline-none">
-                        <option value="feature">🚀 Fitur Baru (Feature)</option>
-                        <option value="optimization">⚡ Optimasi Performa (Optimization)</option>
-                        <option value="maintenance">🛠️ Pemeliharaan & Maintenance</option>
-                        <option value="bugfix">🐛 Perbaikan Bug (Bugfix)</option>
+                        <option value="feature">Fitur Baru (Feature)</option>
+                        <option value="optimization">Optimasi Performa (Optimization)</option>
+                        <option value="maintenance">Pemeliharaan &amp; Maintenance</option>
+                        <option value="bugfix">Perbaikan Bug (Bugfix)</option>
                     </select>
                 </div>
                 <div>

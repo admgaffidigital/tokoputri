@@ -38,31 +38,36 @@ const getCategoryMeta = (cat) => {
             return {
                 label: 'Fitur Baru',
                 icon: 'fa-rocket',
-                colorClass: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30'
+                colorClass: 'bg-slate-100 dark:bg-slate-800/90 text-slate-700 dark:text-slate-300 border-slate-200/80 dark:border-slate-700/80',
+                iconColor: 'text-[var(--color-primary)]'
             };
         case 'optimization':
             return {
                 label: 'Optimasi',
-                icon: 'fa-bolt',
-                colorClass: 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/30'
+                icon: 'fa-bolt-lightning',
+                colorClass: 'bg-slate-100 dark:bg-slate-800/90 text-slate-700 dark:text-slate-300 border-slate-200/80 dark:border-slate-700/80',
+                iconColor: 'text-[var(--color-primary)]'
             };
         case 'maintenance':
             return {
                 label: 'Maintenance',
                 icon: 'fa-wrench',
-                colorClass: 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/30'
+                colorClass: 'bg-slate-100 dark:bg-slate-800/90 text-slate-700 dark:text-slate-300 border-slate-200/80 dark:border-slate-700/80',
+                iconColor: 'text-[var(--color-primary)]'
             };
         case 'bugfix':
             return {
                 label: 'Perbaikan',
                 icon: 'fa-bug-slash',
-                colorClass: 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/30'
+                colorClass: 'bg-slate-100 dark:bg-slate-800/90 text-slate-700 dark:text-slate-300 border-slate-200/80 dark:border-slate-700/80',
+                iconColor: 'text-[var(--color-primary)]'
             };
         default:
             return {
                 label: 'Update',
                 icon: 'fa-tag',
-                colorClass: 'bg-slate-500/10 text-slate-600 dark:text-slate-400 border-slate-500/30'
+                colorClass: 'bg-slate-100 dark:bg-slate-800/90 text-slate-700 dark:text-slate-300 border-slate-200/80 dark:border-slate-700/80',
+                iconColor: 'text-[var(--color-primary)]'
             };
     }
 };
@@ -119,11 +124,11 @@ export const renderChangelogList = () => {
                             ${esc(log.version || 'v1.0.0')}
                         </span>
                         <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md border text-[10px] font-bold ${meta.colorClass}">
-                            <i class="fa-solid ${meta.icon} text-[9px]"></i> ${esc(meta.label)}
+                            <i class="fa-solid ${meta.icon} text-[9px] ${meta.iconColor}"></i> ${esc(meta.label)}
                         </span>
                         ${isLatest ? `
-                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 text-[9px] font-black uppercase tracking-wider">
-                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> Versi Terbaru
+                        <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-[rgba(var(--color-primary-rgb),0.1)] text-[var(--color-primary)] border border-[rgba(var(--color-primary-rgb),0.25)] text-[9px] font-black uppercase tracking-wider">
+                            <span class="w-1.5 h-1.5 rounded-full bg-[var(--color-primary)] animate-pulse"></span> Versi Terbaru
                         </span>` : ''}
                     </div>
                     <span class="text-[10px] font-bold text-slate-400 dark:text-slate-500 flex items-center gap-1">
@@ -154,10 +159,14 @@ export const filterChangelog = (category) => {
     // Update tombol filter UI
     document.querySelectorAll('.btn-changelog-filter').forEach(btn => {
         const cat = btn.getAttribute('data-category');
+        const icon = btn.querySelector('i');
         if (cat === category) {
-            btn.className = 'btn-changelog-filter px-3 py-1.5 rounded-xl text-[10px] sm:text-xs font-bold primary-bg text-white shadow-xs transition-all cursor-pointer';
+            btn.className = 'btn-changelog-filter flex items-center gap-1.5 px-3 sm:px-3.5 py-1.5 rounded-xl text-[10px] sm:text-xs font-bold primary-bg text-white shadow-xs transition-all cursor-pointer border border-transparent';
+            if (icon) icon.className = icon.className.replace(/text-\[[^\]]+\]/g, '').trim() + ' text-white';
         } else {
-            btn.className = 'btn-changelog-filter px-3 py-1.5 rounded-xl text-[10px] sm:text-xs font-bold bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition-all cursor-pointer';
+            btn.className = 'btn-changelog-filter flex items-center gap-1.5 px-3 sm:px-3.5 py-1.5 rounded-xl text-[10px] sm:text-xs font-bold bg-white dark:bg-slate-800/90 hover:bg-slate-100 dark:hover:bg-slate-700/80 border border-slate-200/80 dark:border-slate-700/80 text-slate-700 dark:text-slate-300 transition-all cursor-pointer';
+            if (icon && cat !== 'all') icon.className = icon.className.replace(/\btext-white\b/g, '').trim() + ' text-[var(--color-primary)]';
+            else if (icon && cat === 'all') icon.className = icon.className.replace(/\btext-white\b/g, '').trim() + ' text-slate-400';
         }
     });
 
@@ -180,7 +189,7 @@ export const openChangelogModal = (initialCategory = 'all') => {
             <!-- Header Modal -->
             <div class="p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800/80 flex items-center justify-between shrink-0 bg-white/80 dark:bg-[#0b1121]/80 backdrop-blur-md">
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-2xl primary-bg-soft text-[var(--color-primary)] flex items-center justify-center text-lg shadow-sm">
+                    <div class="w-10 h-10 rounded-2xl bg-[rgba(var(--color-primary-rgb),0.12)] border border-[rgba(var(--color-primary-rgb),0.22)] text-[var(--color-primary)] flex items-center justify-center text-base sm:text-lg shadow-2xs shrink-0">
                         <i class="fa-solid fa-clock-rotate-left"></i>
                     </div>
                     <div>
@@ -189,7 +198,7 @@ export const openChangelogModal = (initialCategory = 'all') => {
                                 Log Pembaruan Sistem
                             </h3>
                             <span id="changelog-header-ver" class="px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider primary-bg text-white">
-                                v1.2.0
+                                v1.3.0
                             </span>
                         </div>
                         <p class="text-[10px] sm:text-[11px] font-semibold text-slate-400 dark:text-slate-500 mt-0.5">
@@ -203,21 +212,26 @@ export const openChangelogModal = (initialCategory = 'all') => {
             </div>
 
             <!-- Filter Kategori Kancing (Horizontal Scroll) -->
-            <div class="px-4 sm:px-5 py-2.5 border-b border-slate-100 dark:border-slate-800/60 flex items-center gap-1.5 overflow-x-auto hide-scrollbar shrink-0 bg-slate-50/50 dark:bg-slate-900/30">
-                <button onclick="window.filterChangelog('all')" data-category="all" class="btn-changelog-filter px-3 py-1.5 rounded-xl text-[10px] sm:text-xs font-bold primary-bg text-white shadow-xs transition-all cursor-pointer">
-                    Semua
+            <div class="px-4 sm:px-5 py-2.5 border-b border-slate-100 dark:border-slate-800/60 flex items-center gap-1.5 sm:gap-2 overflow-x-auto hide-scrollbar shrink-0 bg-slate-50/60 dark:bg-slate-900/40">
+                <button onclick="window.filterChangelog('all')" data-category="all" class="btn-changelog-filter flex items-center gap-1.5 px-3 sm:px-3.5 py-1.5 rounded-xl text-[10px] sm:text-xs font-bold primary-bg text-white shadow-xs transition-all cursor-pointer border border-transparent">
+                    <i class="fa-solid fa-list-check text-[10px]"></i>
+                    <span>Semua</span>
                 </button>
-                <button onclick="window.filterChangelog('feature')" data-category="feature" class="btn-changelog-filter px-3 py-1.5 rounded-xl text-[10px] sm:text-xs font-bold bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition-all cursor-pointer">
-                    🚀 Fitur Baru
+                <button onclick="window.filterChangelog('feature')" data-category="feature" class="btn-changelog-filter flex items-center gap-1.5 px-3 sm:px-3.5 py-1.5 rounded-xl text-[10px] sm:text-xs font-bold bg-white dark:bg-slate-800/90 hover:bg-slate-100 dark:hover:bg-slate-700/80 border border-slate-200/80 dark:border-slate-700/80 text-slate-700 dark:text-slate-300 transition-all cursor-pointer">
+                    <i class="fa-solid fa-rocket text-[10px] text-[var(--color-primary)]"></i>
+                    <span>Fitur Baru</span>
                 </button>
-                <button onclick="window.filterChangelog('optimization')" data-category="optimization" class="btn-changelog-filter px-3 py-1.5 rounded-xl text-[10px] sm:text-xs font-bold bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition-all cursor-pointer">
-                    ⚡ Optimasi
+                <button onclick="window.filterChangelog('optimization')" data-category="optimization" class="btn-changelog-filter flex items-center gap-1.5 px-3 sm:px-3.5 py-1.5 rounded-xl text-[10px] sm:text-xs font-bold bg-white dark:bg-slate-800/90 hover:bg-slate-100 dark:hover:bg-slate-700/80 border border-slate-200/80 dark:border-slate-700/80 text-slate-700 dark:text-slate-300 transition-all cursor-pointer">
+                    <i class="fa-solid fa-bolt-lightning text-[10px] text-[var(--color-primary)]"></i>
+                    <span>Optimasi</span>
                 </button>
-                <button onclick="window.filterChangelog('maintenance')" data-category="maintenance" class="btn-changelog-filter px-3 py-1.5 rounded-xl text-[10px] sm:text-xs font-bold bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition-all cursor-pointer">
-                    🛠️ Maintenance
+                <button onclick="window.filterChangelog('maintenance')" data-category="maintenance" class="btn-changelog-filter flex items-center gap-1.5 px-3 sm:px-3.5 py-1.5 rounded-xl text-[10px] sm:text-xs font-bold bg-white dark:bg-slate-800/90 hover:bg-slate-100 dark:hover:bg-slate-700/80 border border-slate-200/80 dark:border-slate-700/80 text-slate-700 dark:text-slate-300 transition-all cursor-pointer">
+                    <i class="fa-solid fa-wrench text-[10px] text-[var(--color-primary)]"></i>
+                    <span>Maintenance</span>
                 </button>
-                <button onclick="window.filterChangelog('bugfix')" data-category="bugfix" class="btn-changelog-filter px-3 py-1.5 rounded-xl text-[10px] sm:text-xs font-bold bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition-all cursor-pointer">
-                    🐛 Perbaikan
+                <button onclick="window.filterChangelog('bugfix')" data-category="bugfix" class="btn-changelog-filter flex items-center gap-1.5 px-3 sm:px-3.5 py-1.5 rounded-xl text-[10px] sm:text-xs font-bold bg-white dark:bg-slate-800/90 hover:bg-slate-100 dark:hover:bg-slate-700/80 border border-slate-200/80 dark:border-slate-700/80 text-slate-700 dark:text-slate-300 transition-all cursor-pointer">
+                    <i class="fa-solid fa-bug-slash text-[10px] text-[var(--color-primary)]"></i>
+                    <span>Perbaikan</span>
                 </button>
             </div>
 
@@ -228,8 +242,8 @@ export const openChangelogModal = (initialCategory = 'all') => {
 
             <!-- Footer Modal -->
             <div class="p-3.5 sm:p-4 border-t border-slate-100 dark:border-slate-800/80 bg-slate-50/80 dark:bg-[#0b1121]/90 flex items-center justify-between shrink-0">
-                <div class="flex items-center gap-1.5 text-[10px] font-bold text-slate-400">
-                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                <div class="flex items-center gap-2 text-[10px] font-bold text-slate-400 dark:text-slate-500">
+                    <span class="w-2 h-2 rounded-full bg-[var(--color-primary)] animate-pulse"></span>
                     <span>Real-Time Sync Active</span>
                 </div>
                 <button onclick="closeChangelogModal()" class="px-5 py-2 rounded-xl primary-bg text-white text-xs font-bold uppercase tracking-wider hover:opacity-90 active:scale-95 transition-all cursor-pointer shadow-sm">
