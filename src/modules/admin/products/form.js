@@ -260,7 +260,10 @@ window.oADel = async (t, id) => {
             if (!_db) throw new Error("Database Firebase belum terhubung");
             if (t === 'products') {
                 await _db.collection("freshmart").doc("cms_data").collection("products").doc(id.toString()).delete();
-                await _save([]);
+                // FIX BUG SINKRONISASI: Kirim 'product_delete' + updatedProductIds agar semua
+                // perangkat langsung tahu produk mana yang dihapus dan bisa menghapusnya dari
+                // array lokal tanpa harus melakukan full fetch ulang seluruh koleksi produk.
+                await _save([], { updateType: 'product_delete', updatedProductIds: [id.toString()] });
             } else if (t === 'customers') {
                 const phoneKey = target ? target.phone : id.toString();
                 await _db.collection("freshmart").doc("cms_data").collection("customers").doc(phoneKey).delete();
