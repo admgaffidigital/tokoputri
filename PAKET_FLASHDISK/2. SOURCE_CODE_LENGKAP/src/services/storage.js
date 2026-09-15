@@ -31,6 +31,7 @@ const loadAppData = async () => {
         appData.categories = appData.categories || [];
         appData.brands = appData.brands || [];
         appData.vouchers = appData.vouchers || [];
+        appData.changelog = appData.changelog || [];
         appData.products.forEach(p => { 
             if(p.img) p.img = fixD(p.img); 
             if(p.variants) p.variants.forEach(v => { if(v.img) v.img = fixD(v.img); }); 

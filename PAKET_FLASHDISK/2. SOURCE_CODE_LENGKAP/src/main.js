@@ -32,6 +32,9 @@ import './modules/orders/index.js';
 import './modules/admin/index.js';
 // Modules: Tanya Jawab (Q&A / FAQ) Storefront & Admin
 import './modules/faq/index.js';
+// Modules: Log Pembaruan Sistem (Changelog) Storefront & Admin
+import './modules/changelog/index.js';
+import './modules/changelog/admin.js';
 // Services: Upload Media (GAS Drive Integration)
 import './services/upload.js';
 // Services: Penyimpanan Data & Realtime Sync (Firestore / Cache)

@@ -35,7 +35,8 @@ export default defineConfig({
             './src/modules/admin/finance.js',
             './src/modules/admin/settings.js',
             './src/modules/admin/tempo.js',
-            './src/modules/admin/reviews.js'
+            './src/modules/admin/reviews.js',
+            './src/modules/changelog/admin.js'
           ],
           // Modul Cetak Dokumen Struk Thermal & Invoice A4
           'module-print': [

@@ -51,7 +51,8 @@ export const openAdminTab = (t, fH = false) => {
         'faqs': 'Tanya Jawab / Q&A',
         'tax': 'Pajak & Keuangan',
         'piutang': 'Piutang Tempo',
-        'colors': 'Database Warna'
+        'colors': 'Database Warna',
+        'changelog': 'Log Pembaruan Sistem'
     };
     
     setIn('admin-header-title', titles[t] || 'CMS');
@@ -97,6 +98,8 @@ export const openAdminTab = (t, fH = false) => {
         setARevLst(unsubRev);
     } else if (t === 'faqs') {
         if (typeof window.rAdmFAQ === 'function') window.rAdmFAQ();
+    } else if (t === 'changelog') {
+        if (typeof window.rAdmChangelog === 'function') window.rAdmChangelog();
     } else {
         if (typeof window.rAdmL === 'function') window.rAdmL(t);
     }

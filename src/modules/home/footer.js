@@ -8,6 +8,7 @@
 
 import { appData } from '../../core/state.js';
 import { esc } from '../../core/utils.js';
+import { getLatestVersion } from '../../config/changelog.js';
 
 /**
  * Render footer toko resmi ke container #storefront-footer-container
@@ -25,6 +26,7 @@ export const renderFooter = () => {
     const storeWa = store.wa || '';
     const footerCredit = store.footerCredit || 'Seluruh hak cipta dilindungi undang-undang.';
     const currentYear = new Date().getFullYear();
+    const latestVer = getLatestVersion(appData);
 
     // Format nomor WhatsApp aman (standar internasional 62...)
     let cleanWa = (storeWa || '').replace(/\D/g, '');
@@ -113,6 +115,7 @@ export const renderFooter = () => {
                 <li><a class="flex items-center gap-1.5 hover:text-white transition-colors cursor-pointer" onclick="openShoppingGuideModal()"><i class="fa-solid fa-chevron-right text-[9px] opacity-70"></i> Cara Memesan</a></li>
                 <li><a class="flex items-center gap-1.5 hover:text-white transition-colors cursor-pointer" onclick="changeView('view-orders')"><i class="fa-solid fa-chevron-right text-[9px] opacity-70"></i> Lacak Pesanan</a></li>
                 <li><a class="flex items-center gap-1.5 hover:text-white transition-colors cursor-pointer" onclick="changeView('view-faq')"><i class="fa-solid fa-chevron-right text-[9px] opacity-70"></i> Pusat Bantuan &amp; FAQ</a></li>
+                <li><a class="flex items-center gap-1.5 hover:text-white transition-colors cursor-pointer" onclick="if(typeof window.openChangelogModal==='function') window.openChangelogModal();"><i class="fa-solid fa-clock-rotate-left text-[9px] text-amber-300"></i> Log Pembaruan &amp; Versi</a></li>
                 <li><a class="flex items-center gap-1.5 hover:text-white transition-colors cursor-pointer" onclick="openQualityGuaranteeModal()"><i class="fa-solid fa-chevron-right text-[9px] opacity-70"></i> Jaminan Mutu</a></li>
                 <li><a class="flex items-center gap-1.5 hover:text-white transition-colors cursor-pointer" onclick="openSecurityModal()"><i class="fa-solid fa-chevron-right text-[9px] opacity-70"></i> Keamanan</a></li>
                 <li><a class="flex items-center gap-1.5 text-white/70 hover:text-white transition-colors cursor-pointer" onclick="changeView('view-admin-login')"><i class="fa-solid fa-lock text-[8px] opacity-70"></i> Portal Admin</a></li>
@@ -211,7 +214,12 @@ export const renderFooter = () => {
           <p class="text-[11px] font-medium text-white/90 text-center sm:text-left">
             &#169; <span>${currentYear}</span> <span class="font-extrabold text-white">${esc(storeName)}</span>. <span>${esc(footerCredit)}</span>
           </p>
-          <div class="flex flex-wrap items-center justify-center gap-3 text-[10px] font-bold text-white">
+          <div class="flex flex-wrap items-center justify-center gap-2.5 sm:gap-3 text-[10px] font-bold text-white">
+            <button type="button" onclick="if(typeof window.openChangelogModal==='function') window.openChangelogModal();" class="inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/10 px-2.5 py-0.5 text-[9px] font-extrabold uppercase tracking-wider text-white hover:bg-white/20 transition-all active:scale-95 cursor-pointer" title="Lihat Catatan Pembaruan & Versi">
+              <span class="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span>${esc(latestVer)}</span> • Changelog
+            </button>
+            <span class="text-white/30">•</span>
             <span class="flex items-center gap-1 text-[var(--color-primary)] font-bold">
               <i class="fa-solid fa-lock"></i> SSL Secured
             </span>
