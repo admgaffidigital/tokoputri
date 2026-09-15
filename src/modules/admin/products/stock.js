@@ -189,6 +189,7 @@ window.toggleProductStatus = async (id, toActive) => {
             await _db.collection("freshmart").doc("cms_data").collection("products").doc(id.toString()).update({isActive: toActive ? 'true' : 'false'});
             await _save([], { updateType: 'stock_change', updatedProductIds: [id.toString()] });
             setIn('stat-products', appData.products.filter(p => p.isActive !== 'false' && p.isActive !== false).length);
+            window.rAdmItms?.('products');
             showToast(toActive ? "Produk Aktif!" : "Stok Dikosongkan!");
         } catch(e) { showToast("Gagal update status: " + (e.message || '')); }
         finally { setIsSaving(false); hLoad(); }
