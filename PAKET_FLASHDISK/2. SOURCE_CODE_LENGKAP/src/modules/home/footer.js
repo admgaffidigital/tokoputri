@@ -60,7 +60,7 @@ export const renderFooter = () => {
                 ${logoHtml}
               </div>
               <div class="flex flex-col items-start min-w-0">
-                <h3 class="text-base sm:text-lg font-black tracking-tight text-white leading-tight truncate max-w-full">${esc(storeName)}</h3>
+                <h3 class="text-base sm:text-lg font-black tracking-tight text-white leading-tight break-words max-w-full">${esc(storeName)}</h3>
                 <span class="mt-1 inline-flex items-center gap-1 rounded border border-white/30 bg-white/20 px-2 py-0.5 text-[9px] font-bold uppercase tracking-widest text-white shadow-none">
                   <i class="fa-solid fa-circle-check text-[var(--color-primary)]"></i> Verified Official Store
                 </span>
