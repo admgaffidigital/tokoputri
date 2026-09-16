@@ -31,7 +31,7 @@ window.cSlideIdx = 0;
  */
 export const openProductModal = i => {
     window.cSlideIdx = 0;
-    const p = appData.products.find(x => x.id === i);
+    const p = appData.products.find(x => x && x.id != null && String(x.id) === String(i));
     if (!p) return;
     
     // Validasi produk aktif dan stok tersedia

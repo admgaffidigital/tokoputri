@@ -15,7 +15,7 @@ import { el, show, hide, setIn, setH, esc, fCur, ssL } from '../../core/utils.js
 export const sanitizeCart = () => {
     const useStk = appData.store.useStock === true || appData.store.useStock === 'true';
     const cleanCart = cart.filter(c => {
-        const p = appData.products.find(x => x.id === c.id);
+        const p = appData.products.find(x => x && x.id != null && String(x.id) === String(c.id));
         if (!p || p.isActive === 'false' || p.isActive === false) return false;
         
         if (c.variantName) {
@@ -266,7 +266,7 @@ export const setCQty = (i, v) => {
         const useStk = appData.store.useStock === true || appData.store.useStock === 'true';
         if (useStk) {
             const ci = cart[i];
-            const p = appData.products.find(x => x.id === ci.id);
+            const p = appData.products.find(x => x && x.id != null && String(x.id) === String(ci.id));
             if (p) {
                 const avail = ci.variantName
                     ? (parseFloat(((p.variants || []).find(vv => vv.name === ci.variantName) || {}).stock) || 0)
@@ -294,7 +294,7 @@ export const updCQty = (i, c) => {
         const useStk = appData.store.useStock === true || appData.store.useStock === 'true';
         if (useStk && c > 0) {
             const ci = cart[i];
-            const p = appData.products.find(x => x.id === ci.id);
+            const p = appData.products.find(x => x && x.id != null && String(x.id) === String(ci.id));
             if (p) {
                 const avail = ci.variantName
                     ? (parseFloat(((p.variants || []).find(vv => vv.name === ci.variantName) || {}).stock) || 0)

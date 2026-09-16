@@ -75,6 +75,7 @@ setupHistoryRouter();
 window.firebase   = firebase;
 window.db         = db;
 window.DOMPurify  = DOMPurify;
+window.ensureScriptLoaded = ensureScriptLoaded;
 
 // ─── THEME & BACKGROUND ENGINE ──────────────────────────────────────────────────
 // Expose fungsi tema & background ke window agar bisa dipanggil dari HTML inline

@@ -27,7 +27,7 @@ export const MONTH_NAMES = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep
  */
 export const getEffHpp = (item) => {
     if (typeof window.getEffHpp === 'function') return window.getEffHpp(item);
-    const p = appData.products?.find(x => x.id === item.id);
+    const p = appData.products?.find(x => x && x.id != null && String(x.id) === String(item.id));
     if (!p) return 0;
     if (item.variantName && p.variants) {
         const v = p.variants.find(vv => vv.name === item.variantName);

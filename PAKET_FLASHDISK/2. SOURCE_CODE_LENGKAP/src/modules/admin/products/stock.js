@@ -19,7 +19,7 @@ const requestCloseModal = (id, fH, cb) => window.requestCloseModal?.(id, fH, cb)
 // ─── Restock Produk ───────────────────────────────────────────────────────────
 
 window.openRestockModal = (id) => {
-    const p = appData.products.find(x => x.id === id);
+    const p = appData.products.find(x => x && x.id != null && String(x.id) === String(id));
     if (!p) return;
 
     const hasVariants = p.variants && p.variants.length > 0;
@@ -96,7 +96,7 @@ window.closeRestockModal = (fH=false) => {
 
 window.processRestock = async (id) => {
     if (isSaving) return; setIsSaving(true);
-    const idx = appData.products.findIndex(x => x.id === id);
+    const idx = appData.products.findIndex(x => x && x.id != null && String(x.id) === String(id));
     if (idx < 0) { setIsSaving(false); return; }
 
     const p = appData.products[idx];

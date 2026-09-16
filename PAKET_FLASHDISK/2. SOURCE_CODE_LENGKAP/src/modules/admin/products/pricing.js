@@ -22,7 +22,7 @@ let qpWhol = [];
 // ─── Modal Edit Cepat Harga ───────────────────────────────────────────────────
 
 window.openQuickPriceModal = (id) => {
-    const p = appData.products.find(x => x.id === id);
+    const p = appData.products.find(x => x && x.id != null && String(x.id) === String(id));
     if (!p) return;
     const hasVariants = p.variants && p.variants.length > 0;
     qpWhol = (!hasVariants && p.wholesale) ? JSON.parse(JSON.stringify(p.wholesale)) : [];
@@ -111,7 +111,7 @@ window.closeQuickPriceModal = (fH=false) => {
 
 window.processQuickPrice = async (id) => {
     if (isSaving) return; setIsSaving(true);
-    const idx = appData.products.findIndex(x => x.id === id);
+    const idx = appData.products.findIndex(x => x && x.id != null && String(x.id) === String(id));
     if (idx < 0) { setIsSaving(false); return; }
     const p = appData.products[idx];
     const hasVariants = p.variants && p.variants.length > 0;
