@@ -11,6 +11,18 @@ import { db, auth, firebase } from '../../config/firebase.js';
 
 let unsubAdminSession = null;
 let isBeingKickedOut = false;
+let isLoggingInState = false;
+
+export const setLoggingIn = (val) => {
+    isLoggingInState = !!val;
+    if (typeof window !== 'undefined') {
+        window.__isLoggingIn = isLoggingInState;
+    }
+};
+
+export const isLoggingIn = () => {
+    return isLoggingInState || (typeof window !== 'undefined' && !!window.__isLoggingIn);
+};
 
 /**
  * Mendapatkan label perangkat yang mudah dibaca pengguna
@@ -41,11 +53,11 @@ export const getDeviceLabel = () => {
  * Mengklaim sesi admin aktif di Firestore saat login berhasil.
  * Menghasilkan Session ID baru yang akan memicu kick-out di perangkat lama.
  */
-export const claimAdminSession = async () => {
+export const claimAdminSession = async (existingSessionId = null) => {
     const _db = (typeof db !== 'undefined' && db) ? db : window.db;
     if (!_db) return null;
 
-    const mySessionId = 'sess_' + Date.now() + '_' + Math.random().toString(36).substring(2, 9);
+    const mySessionId = existingSessionId || localStorage.getItem('freshmart_admin_session_id') || ('sess_' + Date.now() + '_' + Math.random().toString(36).substring(2, 9));
     const deviceName = getDeviceLabel();
 
     try {
@@ -180,11 +192,21 @@ export const detachAdminSessionGuard = () => {
  * Memvalidasi apakah sesi lokal saat ini masih merupakan sesi aktif di server
  */
 export const isCurrentSessionActive = async () => {
+    if (isLoggingIn()) return true;
+
     const _db = (typeof db !== 'undefined' && db) ? db : window.db;
     if (!_db) return true;
 
     const mySessionId = localStorage.getItem('freshmart_admin_session_id');
-    if (!mySessionId) return false;
+    if (!mySessionId) {
+        try {
+            const doc = await _db.collection("freshmart").doc("cms_data").collection("admin_session").doc("active").get();
+            if (!doc.exists) return true;
+            return false;
+        } catch (e) {
+            return true;
+        }
+    }
 
     try {
         const doc = await _db.collection("freshmart").doc("cms_data").collection("admin_session").doc("active").get();
@@ -201,4 +223,6 @@ if (typeof window !== 'undefined') {
     window.attachAdminSessionGuard = attachAdminSessionGuard;
     window.detachAdminSessionGuard = detachAdminSessionGuard;
     window.isCurrentSessionActive = isCurrentSessionActive;
+    window.setLoggingIn = setLoggingIn;
+    window.isLoggingIn = isLoggingIn;
 }

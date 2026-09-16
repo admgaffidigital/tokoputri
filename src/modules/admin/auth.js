@@ -19,7 +19,8 @@ import {
     claimAdminSession, 
     attachAdminSessionGuard, 
     detachAdminSessionGuard, 
-    isCurrentSessionActive 
+    isCurrentSessionActive,
+    setLoggingIn 
 } from './session.js';
 
 
@@ -237,17 +238,24 @@ export const processAdminLogin = async () => {
     const p = getV('login-password');
     if (!u || !p) return showToast("Email & Password wajib diisi!");
     
+    setLoggingIn(true);
     sLoad('Verifikasi Login...');
     try {
-        await auth.signInWithEmailAndPassword(u, p);
-        if (!auth.currentUser || auth.currentUser.uid !== ADMIN_UID) {
-            const currentUid = auth.currentUser ? auth.currentUser.uid : 'null';
+        // Buat Session ID baru untuk perangkat ini
+        const mySessionId = 'sess_' + Date.now() + '_' + Math.random().toString(36).substring(2, 9);
+        localStorage.setItem('freshmart_admin_session_id', mySessionId);
+
+        const cred = await auth.signInWithEmailAndPassword(u, p);
+        const loggedInUser = cred.user || auth.currentUser;
+        if (!loggedInUser || loggedInUser.uid !== ADMIN_UID) {
+            const currentUid = loggedInUser ? loggedInUser.uid : 'null';
             await auth.signOut();
+            localStorage.removeItem('freshmart_admin_session_id');
             throw new Error('UID_MISMATCH: ' + currentUid);
         }
 
         // Klaim sesi aktif admin di Firestore (otomatis menendang perangkat lama jika ada)
-        await claimAdminSession();
+        await claimAdminSession(mySessionId);
         attachAdminSessionGuard();
 
         window.isAdm = true; 
@@ -257,6 +265,7 @@ export const processAdminLogin = async () => {
         showToast("Login Berhasil!");
     } catch(error) {
         console.error(error);
+        localStorage.removeItem('freshmart_admin_session_id');
         if (error.message && error.message.startsWith('UID_MISMATCH:')) {
             const uidStr = error.message.replace('UID_MISMATCH: ', '');
             showToast("Login Ditolak: UID Anda (" + uidStr + ") tidak cocok dengan ADMIN_UID!");
@@ -264,6 +273,7 @@ export const processAdminLogin = async () => {
             showToast("Login Ditolak: Email atau Password salah!");
         }
     } finally {
+        setLoggingIn(false);
         hLoad();
     }
 };

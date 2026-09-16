@@ -30,7 +30,7 @@ import './modules/catalog/index.js';
 import './modules/orders/index.js';
 // Modules: Manajemen Admin & CMS Seller
 import './modules/admin/index.js';
-import { attachAdminSessionGuard, detachAdminSessionGuard, isCurrentSessionActive } from './modules/admin/session.js';
+import { attachAdminSessionGuard, detachAdminSessionGuard, isCurrentSessionActive, isLoggingIn } from './modules/admin/session.js';
 // Modules: Tanya Jawab (Q&A / FAQ) Storefront & Admin
 import './modules/faq/index.js';
 // Modules: Log Pembaruan Sistem (Changelog) Storefront & Admin
@@ -252,6 +252,11 @@ window.addEventListener('DOMContentLoaded', async () => {
 
 // --- FITUR AUTO-LOGIN (Sesi Permanen Firebase) ---
     auth.onAuthStateChanged(async (user) => {
+    // Jika sedang dalam proses submit login manual di form login, serahkan ke processAdminLogin
+    if (isLoggingIn()) {
+        return;
+    }
+
     // FIX KEAMANAN: kalau ada sesi tersimpan tapi UID-nya bukan pemilik toko,
     // anggap seperti tidak login sama sekali — paksa logout, jangan masuk dashboard.
     if (user && user.uid !== ADMIN_UID) {
