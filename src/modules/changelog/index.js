@@ -198,7 +198,7 @@ export const openChangelogModal = (initialCategory = 'all') => {
                                 Log Pembaruan Sistem
                             </h3>
                             <span id="changelog-header-ver" class="px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider primary-bg text-white">
-                                v1.3.0
+                                v1.3.1
                             </span>
                         </div>
                         <p class="text-[10px] sm:text-[11px] font-semibold text-slate-400 dark:text-slate-500 mt-0.5">
