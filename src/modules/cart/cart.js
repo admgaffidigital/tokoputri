@@ -68,6 +68,7 @@ export const updCart = () => {
  */
 export const renderCart = () => {
     const fsEl = el('cart-free-shipping-bar');
+    const lpEl = el('cart-loyalty-points-bar');
 
     if (!cart.length) { 
         show('cart-empty-state'); 
@@ -78,6 +79,10 @@ export const renderCart = () => {
         if (fsEl) {
             fsEl.classList.add('hidden');
             fsEl.innerHTML = '';
+        }
+        if (lpEl) {
+            lpEl.classList.add('hidden');
+            lpEl.innerHTML = '';
         }
         return; 
     }
@@ -181,6 +186,71 @@ export const renderCart = () => {
         } else {
             fsEl.classList.add('hidden');
             fsEl.innerHTML = '';
+        }
+    }
+
+    // Render Program Poin Belanja & Loyalitas Member Bar
+    if (lpEl) {
+        const calcPoints = typeof window.calculateCartPoints === 'function' 
+            ? window.calculateCartPoints(cart, appData.store) 
+            : { totalPoints: 0, directPoints: 0, spendPoints: 0, nonPointSpend: 0, threshold: 100000, pointsPerThreshold: 1, isSpendPointsActive: false, remainingToNextPoint: 0, progressPercent: 0 };
+
+        const { totalPoints, directPoints, spendPoints, nonPointSpend, threshold, pointsPerThreshold, isSpendPointsActive, remainingToNextPoint, progressPercent } = calcPoints;
+
+        if (totalPoints > 0 || (isSpendPointsActive && nonPointSpend > 0)) {
+            lpEl.classList.remove('hidden');
+
+            let pointsSummaryText = '';
+            if (directPoints > 0 && spendPoints > 0) {
+                pointsSummaryText = `+${totalPoints} Poin didapat (${directPoints} dari produk, ${spendPoints} dari belanja)`;
+            } else if (directPoints > 0) {
+                pointsSummaryText = `+${totalPoints} Poin didapat dari produk pilihan`;
+            } else if (spendPoints > 0) {
+                pointsSummaryText = `+${totalPoints} Poin didapat dari kelipatan belanja!`;
+            } else {
+                pointsSummaryText = `Kumpulkan poin belanja member`;
+            }
+
+            let subtext = '';
+            if (isSpendPointsActive && remainingToNextPoint > 0 && remainingToNextPoint < threshold) {
+                subtext = `Belanja <span class="text-amber-600 dark:text-amber-400 font-extrabold">${fCur(remainingToNextPoint)}</span> lagi untuk dapat +${pointsPerThreshold} poin berikutnya!`;
+            } else if (totalPoints > 0) {
+                subtext = `Poin otomatis ditambahkan ke saldo member Anda setelah pesanan dikonfirmasi.`;
+            } else {
+                subtext = `Belanja minimal ${fCur(threshold)} untuk produk tanpa poin agar mendapatkan +${pointsPerThreshold} poin.`;
+            }
+
+            lpEl.innerHTML = `
+            <div class="p-4 rounded-2xl border transition-all duration-300 ${totalPoints > 0 
+                ? 'bg-gradient-to-r from-amber-500/10 via-amber-400/5 to-amber-500/10 border-amber-200 dark:border-amber-700/60 dark:bg-amber-950/20' 
+                : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 shadow-sm'}">
+                <div class="flex items-center justify-between gap-3 mb-2">
+                    <div class="flex items-center gap-2.5 min-w-0">
+                        <span class="w-8 h-8 rounded-xl flex items-center justify-center text-sm shrink-0 bg-amber-500 text-white shadow-sm shadow-amber-500/20">
+                            <i class="fa-solid fa-coins"></i>
+                        </span>
+                        <div class="min-w-0">
+                            <p class="text-xs font-bold leading-tight text-slate-800 dark:text-slate-100">
+                                ${pointsSummaryText}
+                            </p>
+                            <p class="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">
+                                ${subtext}
+                            </p>
+                        </div>
+                    </div>
+                    <span class="text-[11px] font-black shrink-0 px-2.5 py-1 rounded-full bg-amber-50 dark:bg-amber-950/80 text-amber-600 dark:text-amber-400 border border-amber-200 dark:border-amber-800">
+                        <i class="fa-solid fa-star text-[10px] mr-1"></i>${totalPoints} Poin
+                    </span>
+                </div>
+                ${(isSpendPointsActive && remainingToNextPoint > 0 && remainingToNextPoint < threshold) ? `
+                <div class="w-full h-1.5 rounded-full overflow-hidden bg-slate-100 dark:bg-slate-700/60 mt-2">
+                    <div class="h-full rounded-full transition-all duration-500 bg-gradient-to-r from-amber-400 to-amber-500" style="width: ${progressPercent}%"></div>
+                </div>
+                ` : ''}
+            </div>`;
+        } else {
+            lpEl.classList.add('hidden');
+            lpEl.innerHTML = '';
         }
     }
 };

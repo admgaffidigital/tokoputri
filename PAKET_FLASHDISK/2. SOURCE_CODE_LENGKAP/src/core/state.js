@@ -30,6 +30,9 @@ export const defApp = {
         ppnEnabled: false,
         ppnType: "exclusive",   // "exclusive" | "inclusive"
         ppnRate: 11,
+        spendPointsEnabled: false,
+        spendPointsThreshold: 100000,
+        spendPointsPerThreshold: 1,
         terms: "",
         privacy: ""
     },

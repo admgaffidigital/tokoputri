@@ -143,10 +143,77 @@ export const autoParseCoords = (input) => {
     return null;
 };
 
+/**
+ * Kalkulator Poin Belanja Hibrida:
+ * 1. Poin Produk Langsung (Direct Points): untuk item dengan getEffPoin(item) > 0.
+ * 2. Poin Minimal Belanja (Spend Threshold Points): untuk item reguler non-poin (getEffPoin == 0).
+ *    Subtotal produk non-poin dihitung, jika mencapai threshold (misal kelipatan Rp 100.000),
+ *    maka dihadiahi poin belanja (berlaku kelipatan).
+ */
+export const calculateCartPoints = (cartItems = cart, store = appData.store) => {
+    if (!cartItems || !cartItems.length) {
+        return {
+            totalPoints: 0,
+            directPoints: 0,
+            spendPoints: 0,
+            nonPointSpend: 0,
+            threshold: 100000,
+            pointsPerThreshold: 1,
+            isSpendPointsActive: false,
+            remainingToNextPoint: 0,
+            progressPercent: 0
+        };
+    }
+
+    let directPoints = 0;
+    let nonPointSpend = 0;
+
+    cartItems.forEach(item => {
+        const itemPoin = getEffPoin(item);
+        const qty = parseFloat(item.qty) || 0;
+        if (itemPoin > 0) {
+            directPoints += (itemPoin * qty);
+        } else {
+            const price = getEffP(item);
+            nonPointSpend += (price * qty);
+        }
+    });
+
+    let spendPoints = 0;
+    let remainingToNextPoint = 0;
+    let progressPercent = 0;
+
+    const isSpendPointsActive = store ? (store.spendPointsEnabled === true || store.spendPointsEnabled === 'true') : false;
+    const threshold = Math.max(1, parseFloat(store?.spendPointsThreshold) || 100000);
+    const pointsPerThreshold = Math.max(1, parseFloat(store?.spendPointsPerThreshold) || 1);
+
+    if (isSpendPointsActive && nonPointSpend > 0) {
+        const multiplier = Math.floor(nonPointSpend / threshold);
+        spendPoints = multiplier * pointsPerThreshold;
+        const remainder = nonPointSpend % threshold;
+        remainingToNextPoint = remainder > 0 ? (threshold - remainder) : threshold;
+        progressPercent = Math.min(100, Math.round(((remainder || (multiplier > 0 ? threshold : 0)) / threshold) * 100));
+    }
+
+    return {
+        totalPoints: directPoints + spendPoints,
+        directPoints,
+        spendPoints,
+        nonPointSpend,
+        threshold,
+        pointsPerThreshold,
+        isSpendPointsActive,
+        remainingToNextPoint,
+        progressPercent
+    };
+};
+
 // ─── Expose ke window untuk atribut onclick di HTML ──────
 window.getEffP = getEffP;
 window.getEffHpp = getEffHpp;
 window.getEffPoin = getEffPoin;
+window.calculateCartPoints = calculateCartPoints;
 window.getDist = getDist;
 window.parseGeoCoordinates = parseGeoCoordinates;
 window.autoParseCoords = autoParseCoords;
+

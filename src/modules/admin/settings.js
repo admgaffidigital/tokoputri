@@ -111,7 +111,7 @@ export const rAdmSet = () => {
                 <div class="w-12 h-12 rounded-2xl bg-violet-50 dark:bg-violet-900/30 text-violet-500 flex items-center justify-center shadow-inner group-hover:scale-110 group-hover:bg-violet-500 group-hover:text-white transition-all duration-300 z-10"><i class="fa-solid fa-sliders text-xl"></i></div>
                 <div class="z-10">
                     <span class="font-bold text-slate-800 dark:text-slate-100 uppercase tracking-widest text-[10px] block">Operasional</span>
-                    <span class="text-[9px] text-slate-400 block mt-0.5 font-medium">Stok & Pajak PPN</span>
+                    <span class="text-[9px] text-slate-400 block mt-0.5 font-medium">Stok, Pajak & Poin</span>
                 </div>
             </button>
         </div>
@@ -753,7 +753,7 @@ export const openSettingForm = (type) => {
         `;
     } else if (type === 'operasional') {
         title = "Operasional & Perpajakan"; 
-        subtitle = "Konfigurasi pembatasan inventaris stok produk otomatis serta skema kalkulasi PPN transaksi";
+        subtitle = "Konfigurasi pembatasan inventaris stok produk otomatis, skema kalkulasi PPN transaksi, dan program poin loyalitas member";
         icon = "fa-sliders"; 
         colorTheme = { line: "bg-violet-500", box: "bg-violet-50 dark:bg-violet-900/30 text-violet-500" };
         formContent = `
@@ -819,6 +819,42 @@ export const openSettingForm = (type) => {
                 <div class="p-3 bg-purple-50/60 dark:bg-purple-950/20 border border-purple-100 dark:border-purple-900/40 rounded-xl text-[11px] text-purple-700 dark:text-purple-300 flex items-start gap-2">
                     <i class="fa-solid fa-file-invoice-dollar text-purple-500 mt-0.5"></i>
                     <span><b>Penjelasan Skema:</b> <i>Eksklusif</i> akan menambahkan nilai pajak di atas subtotal belanja pelanggan. <i>Inklusif</i> akan menguraikan nilai pajak tanpa menambah total yang harus dibayar pembeli.</span>
+                </div>
+            </div>
+
+            <!-- KARTU 3: PROGRAM POIN BELANJA & LOYALITAS MEMBER -->
+            <div class="p-4 sm:p-5 bg-amber-50/70 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/60 rounded-2xl shadow-sm space-y-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-xl bg-amber-500 text-white flex items-center justify-center text-sm shadow-sm shrink-0">
+                        <i class="fa-solid fa-coins"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-xs font-bold text-amber-900 dark:text-amber-300 uppercase tracking-wider">Program Poin Belanja &amp; Loyalitas Member</h4>
+                        <p class="text-[10px] text-amber-700 dark:text-amber-400">Berikan poin belanja otomatis pada produk yang tidak memiliki poin langsung dengan kelipatan nominal belanja</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-700 dark:text-slate-300 mb-1.5 uppercase tracking-wider">Status Program Poin</label>
+                        <select id="set-spend-points-enabled" class="admin-input !py-3 bg-white dark:bg-slate-900 shadow-sm w-full text-xs">
+                            <option value="true" ${(appData.store.spendPointsEnabled === true || appData.store.spendPointsEnabled === 'true') ? 'selected' : ''}>Aktif (Poin Dihitung)</option>
+                            <option value="false" ${(appData.store.spendPointsEnabled !== true && appData.store.spendPointsEnabled !== 'true') ? 'selected' : ''}>Nonaktif</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-700 dark:text-slate-300 mb-1.5 uppercase tracking-wider">Minimal Belanja (Kelipatan Rp)</label>
+                        <input autocomplete='off' type="number" id="set-spend-points-threshold" value="${esc(appData.store.spendPointsThreshold || 100000)}" min="1000" step="1000" class="admin-input !py-3 bg-white dark:bg-slate-900 shadow-sm w-full text-xs" placeholder="100000">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-700 dark:text-slate-300 mb-1.5 uppercase tracking-wider">Perolehan Poin per Kelipatan</label>
+                        <input autocomplete='off' type="number" id="set-spend-points-per-threshold" value="${esc(appData.store.spendPointsPerThreshold || 1)}" min="1" step="1" class="admin-input !py-3 bg-white dark:bg-slate-900 shadow-sm w-full text-xs" placeholder="1">
+                    </div>
+                </div>
+
+                <div class="p-3 bg-white/80 dark:bg-slate-900/80 border border-amber-200/80 dark:border-amber-800/40 rounded-xl text-[11px] text-amber-800 dark:text-amber-200 flex items-start gap-2">
+                    <i class="fa-solid fa-circle-info text-amber-500 mt-0.5 shrink-0"></i>
+                    <span><b>Sistem Hibrida Cerdas:</b> Produk yang sudah memiliki poin reward langsung akan tetap memberikan poin per item. Untuk produk tanpa poin, nilai total belanjanya akan diakumulasikan dan dihitung poinnya sesuai kelipatan minimal belanja di atas (contoh: Belanja Rp 100.000 = 1 poin, Rp 200.000 = 2 poin).</span>
                 </div>
             </div>
         `;
@@ -942,6 +978,9 @@ export const saveAdminSettings = async (type) => {
             appData.store.ppnEnabled = getV('set-ppn-enabled') === 'true';
             appData.store.ppnType    = getV('set-ppn-type') || 'exclusive';
             appData.store.ppnRate    = parseFloat(getV('set-ppn-rate')) || 11;
+            appData.store.spendPointsEnabled = getV('set-spend-points-enabled') === 'true';
+            appData.store.spendPointsThreshold = Math.max(1, parseFloat(getV('set-spend-points-threshold')) || 100000);
+            appData.store.spendPointsPerThreshold = Math.max(1, parseFloat(getV('set-spend-points-per-threshold')) || 1);
             toggleTaxMenuVisibility();
         }
         

@@ -480,7 +480,15 @@ export const processOrder = async () => {
         }
 
         const orderRef = db.collection("freshmart_orders").doc(oI);
-        const pointsEarnedThisOrder = cart.reduce((s, i) => s + (getEffPoin(i) * (parseFloat(i.qty) || 0)), 0);
+        const calcPoints = typeof window.calculateCartPoints === 'function' 
+            ? window.calculateCartPoints(cart, appData.store) 
+            : { totalPoints: 0, directPoints: 0, spendPoints: 0 };
+        const pointsEarnedThisOrder = calcPoints.totalPoints;
+        oD.pointsEarned = pointsEarnedThisOrder;
+        oD.pointsBreakdown = {
+            direct: calcPoints.directPoints,
+            spend: calcPoints.spendPoints
+        };
         const cmsDataRef = db.collection("freshmart").doc("cms_data");
         const memberRef = cust.wa ? cmsDataRef.collection("customers").doc(cust.wa) : null;
         const wantsRewardClaim = !!selectedReward;
