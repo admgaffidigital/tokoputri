@@ -67,12 +67,18 @@ export const updCart = () => {
  * Render halaman tampilan keranjang belanja
  */
 export const renderCart = () => {
+    const fsEl = el('cart-free-shipping-bar');
+
     if (!cart.length) { 
         show('cart-empty-state'); 
         hide('cart-bottom-bar'); 
         hide('btn-clear-cart'); 
         show('spacer-cart'); 
         setH('cart-items-container', ''); 
+        if (fsEl) {
+            fsEl.classList.add('hidden');
+            fsEl.innerHTML = '';
+        }
         return; 
     }
     
@@ -132,6 +138,51 @@ export const renderCart = () => {
     }).join(''));
     
     setIn('cart-subtotal', fCur(s));
+
+    // Render Promo Gratis Ongkir Progress Bar
+    const isFsEnabled = appData.store.freeShippingMinSpendEnabled === true || appData.store.freeShippingMinSpendEnabled === 'true';
+    const fsMinSpend = parseFloat(appData.store.freeShippingMinSpendAmount) || 0;
+
+    if (fsEl) {
+        if (isFsEnabled && fsMinSpend > 0) {
+            fsEl.classList.remove('hidden');
+            const progress = Math.min(100, Math.round((s / fsMinSpend) * 100));
+            const remaining = Math.max(0, fsMinSpend - s);
+            const isQualified = s >= fsMinSpend;
+
+            fsEl.innerHTML = `
+            <div class="p-4 rounded-2xl border transition-all duration-300 ${isQualified 
+                ? 'bg-gradient-to-r from-emerald-500 via-teal-600 to-emerald-600 text-white border-emerald-400/50 shadow-md shadow-emerald-500/10' 
+                : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 shadow-sm text-slate-800 dark:text-slate-100'}">
+                <div class="flex items-center justify-between gap-3 mb-2.5">
+                    <div class="flex items-center gap-2.5 min-w-0">
+                        <span class="w-8 h-8 rounded-xl flex items-center justify-center text-sm shrink-0 ${isQualified ? 'bg-white/20 text-white' : 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-800/50'}">
+                            <i class="fa-solid ${isQualified ? 'fa-circle-check text-base' : 'fa-truck-fast'}"></i>
+                        </span>
+                        <div class="min-w-0">
+                            <p class="text-xs font-bold leading-tight ${isQualified ? 'text-white' : 'text-slate-800 dark:text-slate-100'}">
+                                ${isQualified 
+                                    ? 'Hore! Anda berhak mendapatkan <span class="underline decoration-wavy decoration-emerald-200 font-extrabold">Gratis Ongkir Otomatis</span>' 
+                                    : `Belanja <span class="text-emerald-600 dark:text-emerald-400 font-extrabold">${fCur(remaining)}</span> lagi untuk <b>Gratis Ongkir</b>!`}
+                            </p>
+                            <p class="text-[10px] ${isQualified ? 'text-white/80' : 'text-slate-400 dark:text-slate-500'} mt-0.5">
+                                ${isQualified ? 'Ongkos kirim otomatis dipotong Rp 0 saat checkout.' : `Min. belanja ${fCur(fsMinSpend)} untuk pengiriman ke alamat.`}
+                            </p>
+                        </div>
+                    </div>
+                    <span class="text-[11px] font-black shrink-0 px-2.5 py-1 rounded-full ${isQualified ? 'bg-white text-emerald-700 shadow-sm' : 'bg-emerald-50 dark:bg-emerald-950/80 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800'}">
+                        ${progress}%
+                    </span>
+                </div>
+                <div class="w-full h-2 rounded-full overflow-hidden ${isQualified ? 'bg-black/20' : 'bg-slate-100 dark:bg-slate-700/60'}">
+                    <div class="h-full rounded-full transition-all duration-500 ${isQualified ? 'bg-white shadow-sm' : 'bg-gradient-to-r from-emerald-500 to-teal-500'}" style="width: ${progress}%"></div>
+                </div>
+            </div>`;
+        } else {
+            fsEl.classList.add('hidden');
+            fsEl.innerHTML = '';
+        }
+    }
 };
 
 /**

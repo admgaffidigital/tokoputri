@@ -136,6 +136,16 @@ export const rPay = () => {
         }
     }
     
+    // Auto Free Shipping jika memenuhi minimal belanja promo
+    const isFsPromo = (appData.store.freeShippingMinSpendEnabled === true || appData.store.freeShippingMinSpendEnabled === 'true')
+        && (parseFloat(appData.store.freeShippingMinSpendAmount) || 0) > 0
+        && sub >= (parseFloat(appData.store.freeShippingMinSpendAmount) || 0)
+        && cust.deliveryMethod === 'delivery';
+
+    if (isFsPromo) {
+        shippingDisc = sC;
+    }
+    
     shippingDisc = Math.min(shippingDisc, sC);
     productDisc = Math.min(productDisc, sub);
     
@@ -155,7 +165,10 @@ export const rPay = () => {
             discRow.classList.remove('hidden'); 
             let txtHtml = '';
             if (productDisc > 0) txtHtml += `<div class="flex justify-between items-center w-full mt-1.5"><p class="text-xs font-bold text-slate-500">Diskon Promo</p><p class="text-[13px] font-bold text-rose-500">-${fCur(productDisc)}</p></div>`;
-            if (shippingDisc > 0) txtHtml += `<div class="flex justify-between items-center w-full mt-1.5"><p class="text-xs font-bold text-slate-500">Diskon Ongkir</p><p class="text-[13px] font-bold text-rose-500">-${fCur(shippingDisc)}</p></div>`;
+            if (shippingDisc > 0) {
+                const sLabel = isFsPromo ? 'Gratis Ongkir (Promo Belanja)' : 'Diskon Ongkir';
+                txtHtml += `<div class="flex justify-between items-center w-full mt-1.5"><p class="text-xs font-bold text-slate-500">${sLabel}</p><p class="text-[13px] font-bold text-rose-500">-${fCur(shippingDisc)}</p></div>`;
+            }
             discRow.innerHTML = txtHtml;
         } else { 
             discRow.classList.add('hidden'); 
@@ -361,6 +374,16 @@ export const processOrder = async () => {
             }
         }
         
+        // Auto Free Shipping jika memenuhi minimal belanja promo
+        const isFsPromo = (appData.store.freeShippingMinSpendEnabled === true || appData.store.freeShippingMinSpendEnabled === 'true')
+            && (parseFloat(appData.store.freeShippingMinSpendAmount) || 0) > 0
+            && sub >= (parseFloat(appData.store.freeShippingMinSpendAmount) || 0)
+            && cust.deliveryMethod === 'delivery';
+
+        if (isFsPromo) {
+            shippingDisc = sC;
+        }
+
         shippingDisc = Math.min(shippingDisc, sC);
         productDisc = Math.min(productDisc, sub);
         
@@ -433,7 +456,8 @@ export const processOrder = async () => {
                 dppAmount: dppAmount, 
                 ppnRate: taxInfo.ppnEnabled ? taxInfo.ppnRate : 0, 
                 ppnType: taxInfo.ppnEnabled ? taxInfo.ppnType : 'exclusive', 
-                grandTotal: tot 
+                grandTotal: tot,
+                isFreeShippingPromo: isFsPromo || false
             },
             status: 'Baru',
             buktiPayment: window.buktiPaymentUrl || null

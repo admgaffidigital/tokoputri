@@ -449,6 +449,33 @@ export const openSettingForm = (type) => {
                     </select>
                 </div>
             </div>
+            
+            <!-- PROMO GRATIS ONGKIR MINIMAL BELANJA -->
+            <div class="p-4 bg-emerald-50/70 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800/60 rounded-2xl">
+                <div class="flex items-center gap-2 mb-3">
+                    <div class="w-8 h-8 rounded-xl bg-emerald-500 text-white flex items-center justify-center text-xs shadow-sm">
+                        <i class="fa-solid fa-truck-fast"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-xs font-bold text-emerald-900 dark:text-emerald-300 uppercase tracking-wider">Promo Gratis Ongkir Otomatis</h4>
+                        <p class="text-[10px] text-emerald-700 dark:text-emerald-400">Otomatis bebas ongkir saat total belanja pelanggan mencapai nominal minimal</p>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-600 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Status Promo</label>
+                        <select id="set-free-shipping-enabled" class="admin-input !py-3 bg-white dark:bg-slate-900 shadow-sm w-full">
+                            <option value="true" ${(appData.store.freeShippingMinSpendEnabled === true || appData.store.freeShippingMinSpendEnabled === 'true') ? 'selected' : ''}>Aktif</option>
+                            <option value="false" ${(appData.store.freeShippingMinSpendEnabled !== true && appData.store.freeShippingMinSpendEnabled !== 'true') ? 'selected' : ''}>Nonaktif</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-600 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Minimal Belanja (Rp)</label>
+                        <input autocomplete='off' type="number" id="set-free-shipping-amount" value="${esc(appData.store.freeShippingMinSpendAmount || 0)}" min="0" step="1000" placeholder="Contoh: 1000000" class="admin-input !py-3 bg-white dark:bg-slate-900 shadow-sm w-full">
+                        <span class="text-[10px] text-slate-500 dark:text-slate-400 mt-1 block">Contoh: 1000000 (Rp 1.000.000). Otomatis ongkir jadi Rp 0 saat checkout.</span>
+                    </div>
+                </div>
+            </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <div>
                     <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Latitude Toko (GPS)</label>
@@ -607,6 +634,8 @@ export const saveAdminSettings = async (type) => {
             appData.store.costPerKm = getV('set-cost'); 
             appData.store.isDeliveryEnabled = getV('set-delivery-enabled') === 'true'; 
             appData.store.isPickupEnabled = getV('set-pickup-enabled') === 'true'; 
+            appData.store.freeShippingMinSpendEnabled = getV('set-free-shipping-enabled') === 'true';
+            appData.store.freeShippingMinSpendAmount = Math.max(0, parseFloat(getV('set-free-shipping-amount')) || 0);
             appData.store.lat = getV('set-lat'); 
             appData.store.lng = getV('set-lng'); 
         } else if (type === 'payment') {

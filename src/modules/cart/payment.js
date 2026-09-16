@@ -303,6 +303,17 @@ window.calculateTempoBalance = () => {
             productDisc = Math.min(productDisc, eligibleSubtotal);
         }
     }
+
+    // Auto Free Shipping jika memenuhi minimal belanja promo
+    const isFsPromo = (appData.store.freeShippingMinSpendEnabled === true || appData.store.freeShippingMinSpendEnabled === 'true')
+        && (parseFloat(appData.store.freeShippingMinSpendAmount) || 0) > 0
+        && sub >= (parseFloat(appData.store.freeShippingMinSpendAmount) || 0)
+        && cust.deliveryMethod === 'delivery';
+
+    if (isFsPromo) {
+        shippingDisc = sC;
+    }
+
     shippingDisc = Math.min(shippingDisc, sC);
     productDisc = Math.min(productDisc, sub);
 
