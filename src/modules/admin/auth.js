@@ -15,15 +15,36 @@ import {
     el, show, hide, setIn, setH, setV, getV, 
     fCur, showToast, showConfirm, sLoad, hLoad 
 } from '../../core/utils.js';
+import { 
+    claimAdminSession, 
+    attachAdminSessionGuard, 
+    detachAdminSessionGuard, 
+    isCurrentSessionActive 
+} from './session.js';
 
 
 /**
  * Cek akses admin atau redirect ke halaman login
  */
-export const checkAdminAccess = () => {
+export const checkAdminAccess = async () => {
     if (window.isAdm || window.location.hostname === 'localhost') {
+        const active = await isCurrentSessionActive();
+        if (!active && auth.currentUser) {
+            detachAdminSessionGuard();
+            localStorage.removeItem('freshmart_admin_session_id');
+            await auth.signOut();
+            window.isAdm = false;
+            window.__localIsAdm = false;
+            showToast("Sesi Admin telah diambil alih oleh perangkat lain.");
+            setV('login-username', '');
+            setV('login-password', '');
+            if (typeof window.changeView === 'function') window.changeView('view-admin-login');
+            return;
+        }
+
         window.__localIsAdm = true;
         if (typeof window.changeView === 'function') window.changeView('view-admin');
+        attachAdminSessionGuard();
         if (auth.currentUser) {
             openAdminMenu();
         } else {
@@ -43,6 +64,7 @@ export const checkAdminAccess = () => {
  * Buka menu beranda admin CMS seller
  */
 export const openAdminMenu = () => { 
+    attachAdminSessionGuard();
     const adminScroll = document.querySelector('#view-admin .scroll-content');
     if (adminScroll) adminScroll.scrollTop = 0;
     show('admin-dashboard-view'); 
@@ -224,6 +246,10 @@ export const processAdminLogin = async () => {
             throw new Error('UID_MISMATCH: ' + currentUid);
         }
 
+        // Klaim sesi aktif admin di Firestore (otomatis menendang perangkat lama jika ada)
+        await claimAdminSession();
+        attachAdminSessionGuard();
+
         window.isAdm = true; 
         history.replaceState({ view: 'view-admin' }, '', window.location.href);
         if (typeof window.changeView === 'function') window.changeView('view-admin', true); 
@@ -248,6 +274,8 @@ export const processAdminLogin = async () => {
 export const logoutAdmin = async () => { 
     sLoad('Keluar...');
     try {
+        detachAdminSessionGuard();
+        localStorage.removeItem('freshmart_admin_session_id');
         await auth.signOut();
         window.isAdm = false; 
         window.__localIsAdm = false;

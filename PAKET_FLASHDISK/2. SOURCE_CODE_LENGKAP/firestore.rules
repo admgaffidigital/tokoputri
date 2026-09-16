@@ -65,6 +65,12 @@ service cloud.firestore {
         allow create: if true;
         allow update, delete: if isAdmin();
       }
+
+      // Sesi Admin Tunggal (Single Active Session / Kick-out Otomatis Antar Perangkat)
+      match /admin_session/{sessionId} {
+        allow read: if true;
+        allow write: if isAdmin();
+      }
     }
 
     // Pesanan (Pelanggan boleh membuat pesanan baru & membaca detail pesanannya via ID)

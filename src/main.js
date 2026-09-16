@@ -30,6 +30,7 @@ import './modules/catalog/index.js';
 import './modules/orders/index.js';
 // Modules: Manajemen Admin & CMS Seller
 import './modules/admin/index.js';
+import { attachAdminSessionGuard, detachAdminSessionGuard, isCurrentSessionActive } from './modules/admin/session.js';
 // Modules: Tanya Jawab (Q&A / FAQ) Storefront & Admin
 import './modules/faq/index.js';
 // Modules: Log Pembaruan Sistem (Changelog) Storefront & Admin
@@ -258,6 +259,21 @@ window.addEventListener('DOMContentLoaded', async () => {
         return;
     }
     if (user) {
+        // Validasi apakah sesi admin di perangkat ini masih aktif atau sudah diambil alih perangkat lain
+        const isSessionValid = await isCurrentSessionActive();
+        if (!isSessionValid) {
+            console.log('[Auth] Sesi admin lokal sudah tidak aktif (diambil alih perangkat lain).');
+            detachAdminSessionGuard();
+            localStorage.removeItem('freshmart_admin_session_id');
+            window.isAdm = false;
+            window.__localIsAdm = false;
+            window.isPro = false;
+            if (window.updateProBadge) window.updateProBadge();
+            await auth.signOut();
+            return;
+        }
+
+        attachAdminSessionGuard();
         window.isAdm = true;
 
         window.isPro = true;
@@ -280,7 +296,10 @@ window.addEventListener('DOMContentLoaded', async () => {
         }
     } else {
         // JIKA LOGOUT ATAU SESI HABIS
+        detachAdminSessionGuard();
+        localStorage.removeItem('freshmart_admin_session_id');
         window.isAdm = false;
+        window.__localIsAdm = false;
         window.isPro = false;
         if (window.updateProBadge) window.updateProBadge();
         localStorage.removeItem("isFreshmartPro");
