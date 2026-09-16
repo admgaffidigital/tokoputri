@@ -345,8 +345,9 @@ const refreshProdUI = () => {
     updCart();
     if (typeof rDyn === 'function') rDyn(); else if (typeof window.rDyn === 'function') window.rDyn();
     if (typeof rCat === 'function') rCat(); else if (typeof window.rCat === 'function') window.rCat();
-    const isAdminActive = window.isAdm || window.__localIsAdm;
-    if (isAdminActive && typeof window.rAdmItms === 'function') {
+    // Refresh tabel admin jika container tabel admin sedang aktif di layar (tanpa memandang status login)
+    const adminListEl = document.getElementById('admin-list-container');
+    if (adminListEl && typeof window.rAdmItms === 'function') {
         const curTab = window.cTab || 'products';
         if (['products','colors'].includes(curTab)) {
             window.rAdmItms(curTab);
@@ -507,17 +508,16 @@ export const attachRealtimeProductsSync = () => {
 
     window.unsubProductsRealtime = db.collection("freshmart").doc("cms_data").collection("products")
         .onSnapshot((snap) => {
-            // Lewati snapshot pertama saat page load (data sudah dimuat via loadAppData)
-            // untuk menghindari render ganda. Tandai sesi sudah sinkron dengan server.
+            // Snapshot pertama saat listener terhubung (initial load):
+            // WAJIB langsung rekonsiliasi data dari server Firestore ke appData.products & cache lokal!
+            // Jangan skip! Jika di-skip, browser yang memiliki cache lokal lama akan terus menampilkan
+            // data usang yang berbeda dengan browser lain sampai ada yang mengedit produk tersebut lagi.
             if (isInitialLoad) {
                 isInitialLoad = false;
                 hasSessionSyncedProducts = true;
-                // Jika produk belum ada (bootstrap), isi dari snapshot ini
-                if (!appData.products || appData.products.length === 0) {
-                    appData.products = snap.docs.map(d => normalizeProd(d.data())).sort((a,b) => (b.id||0) - (a.id||0));
-                    ssL('freshmart_products', JSON.stringify(appData.products));
-                    refreshProdUI();
-                }
+                appData.products = snap.docs.map(d => normalizeProd(d.data())).sort((a,b) => (b.id||0) - (a.id||0));
+                ssL('freshmart_products', JSON.stringify(appData.products));
+                refreshProdUI();
                 return;
             }
 
