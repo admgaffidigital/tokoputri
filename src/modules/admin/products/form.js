@@ -42,7 +42,9 @@ window.oAEd = (t, id) => {
     setEId(id);
     if (typeof window.setEId === 'function') window.setEId(id);
     window.eId = id;
-    let d = id ? (appData[t] || []).find(x => x.id === id) : null;
+    let d = (id !== null && id !== undefined && id !== '') 
+        ? (appData[t] || []).find(x => x && x.id != null && String(x.id) === String(id)) 
+        : null;
     setIn('admin-modal-title', id ? 'Edit Data' : 'Tambah Data');
     let f = aF[t]||[], h = '';
 
@@ -65,7 +67,10 @@ window.oAEd = (t, id) => {
             h += `<textarea autocomplete='off' id="af-${k.key}" class="admin-input resize-none shadow-sm bg-slate-50 dark:bg-slate-900" rows="3">${esc(v)}</textarea>`;
         } else if(k.type === 'select') {
             h += `<div class="relative"><select id="af-${k.key}" class="admin-input shadow-sm cursor-pointer appearance-none pr-10 bg-slate-50 dark:bg-slate-900" onchange="if(window.rVarsB) window.rVarsB();">`;
-            k.options.forEach(o => { h += `<option value="${o.val}" ${v==o.val||(v==='true'&&o.val==='true')||(v==='false'&&o.val==='false')?'selected':''} class="font-bold">${o.text}</option>`; });
+            k.options.forEach(o => { 
+                const isSelected = String(v) === String(o.val);
+                h += `<option value="${o.val}" ${isSelected ? 'selected' : ''} class="font-bold">${o.text}</option>`; 
+            });
             h += `</select><i class="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-[10px]"></i></div>`;
         } else if(k.type === 'dynamic_select_category') {
             h += `<div class="relative"><select id="af-${k.key}" class="admin-input shadow-sm cursor-pointer appearance-none pr-10 bg-slate-50 dark:bg-slate-900" onchange="if(window.rVarsB) window.rVarsB();"><option value="" class="font-bold">Pilih Kategori</option>`;
@@ -188,30 +193,45 @@ window.submitAdminForm = async () => {
         if (!appData.customers) appData.customers = [];
         if (eId) {
             oldCustomerId = eId;
-            let i = appData.customers.findIndex(x => x.id === eId);
+            let i = appData.customers.findIndex(x => x && x.id != null && String(x.id) === String(eId));
             if (i > -1) appData.customers[i] = d; else appData.customers.unshift(d);
         } else {
             appData.customers.unshift(d);
         }
     } else if (curTab === 'rewards') {
         if (!appData.rewards) appData.rewards = [];
-        if (eId) { d.id = eId; let i = appData.rewards.findIndex(x => x.id === eId); if(i > -1) appData.rewards[i] = d; }
-        else { d.id = Date.now(); appData.rewards.unshift(d); }
-    } else if (eId) {
-        d.id = eId;
-        if (!appData[curTab]) appData[curTab] = [];
-        let i = appData[curTab].findIndex(x => x.id === eId);
-        if (curTab === 'products' && i > -1) {
-            const oldProd = appData[curTab][i];
-            d.totalSold = oldProd.totalSold || 0;
-            if (d.variants && d.variants.length && oldProd.variants) {
-                d.variants.forEach(nv => {
-                    const oldVar = oldProd.variants.find(ov => ov.name === nv.name);
-                    if (oldVar && oldVar.totalSold) nv.totalSold = oldVar.totalSold;
-                });
+        if (eId) { 
+            let i = appData.rewards.findIndex(x => x && x.id != null && String(x.id) === String(eId)); 
+            if(i > -1) {
+                d.id = appData.rewards[i].id;
+                appData.rewards[i] = d;
+            } else {
+                d.id = eId;
             }
+        } else { 
+            d.id = Date.now(); 
+            appData.rewards.unshift(d); 
         }
-        if(i > -1) appData[curTab][i] = d;
+    } else if (eId) {
+        if (!appData[curTab]) appData[curTab] = [];
+        let i = appData[curTab].findIndex(x => x && x.id != null && String(x.id) === String(eId));
+        if (i > -1) {
+            d.id = appData[curTab][i].id;
+            if (curTab === 'products') {
+                const oldProd = appData[curTab][i];
+                d.totalSold = oldProd.totalSold || 0;
+                if (d.variants && d.variants.length && oldProd.variants) {
+                    d.variants.forEach(nv => {
+                        const oldVar = oldProd.variants.find(ov => ov.name === nv.name);
+                        if (oldVar && oldVar.totalSold) nv.totalSold = oldVar.totalSold;
+                    });
+                }
+            }
+            appData[curTab][i] = d;
+        } else {
+            d.id = eId;
+            appData[curTab].push(d);
+        }
     } else {
         d.id = Date.now();
         if (!appData[curTab]) appData[curTab] = [];
@@ -253,8 +273,8 @@ window.oADel = async (t, id) => {
         if (isSaving) return; setIsSaving(true);
         const _db = (typeof db !== 'undefined' && db) ? db : window.db;
         const _save = typeof saveApp === 'function' ? saveApp : (window.saveApp || (async () => {}));
-        const target = appData[t] && appData[t].find(x => x.id === id);
-        appData[t] = appData[t].filter(x => x.id !== id);
+        const target = appData[t] && appData[t].find(x => x && x.id != null && String(x.id) === String(id));
+        appData[t] = (appData[t] || []).filter(x => !x || x.id == null || String(x.id) !== String(id));
         sLoad('Menghapus...');
         try {
             if (!_db) throw new Error("Database Firebase belum terhubung");
@@ -283,7 +303,7 @@ window.duplicateProduct = async (id) => {
         if(isSaving) return; setIsSaving(true);
         const _db = (typeof db !== 'undefined' && db) ? db : window.db;
         const _save = typeof saveApp === 'function' ? saveApp : (window.saveApp || (async () => {}));
-        const original = appData.products.find(x => x.id === id);
+        const original = appData.products.find(x => x && x.id != null && String(x.id) === String(id));
         if(!original) { setIsSaving(false); return; }
 
         let duplicated = JSON.parse(JSON.stringify(original));

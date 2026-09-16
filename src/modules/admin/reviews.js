@@ -79,7 +79,7 @@ export const rAdmReviews = () => {
  * Balas ulasan pelanggan
  */
 export const replyToReview = async (reviewId) => {
-    const r = (gReviews || []).find(x => x.id === reviewId);
+    const r = (gReviews || []).find(x => x && x.id != null && String(x.id) === String(reviewId));
     if (!r) return;
     
     if (typeof window.customPrompt === 'function') {
@@ -101,7 +101,7 @@ export const replyToReview = async (reviewId) => {
  * Sembunyikan atau tampilkan ulasan di storefront
  */
 export const toggleReviewVisibility = async (reviewId) => {
-    const r = (gReviews || []).find(x => x.id === reviewId);
+    const r = (gReviews || []).find(x => x && x.id != null && String(x.id) === String(reviewId));
     if (!r) return;
     const newVisible = r.isVisible === false ? true : false;
     sLoad('Menyimpan...');

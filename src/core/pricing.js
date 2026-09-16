@@ -14,7 +14,7 @@ import { setV, showToast } from './utils.js';
  * Ambil harga jual efektif produk/varian saat ini (memperhitungkan grosir)
  */
 export const getEffP = (i) => {
-    const p = appData.products?.find(x => x.id === i.id);
+    const p = appData.products?.find(x => x && x.id != null && String(x.id) === String(i.id));
     let basePrice = i.price || 0;
     if (i.variantName && p && p.variants) {
         const v = p.variants.find(vv => vv.name === i.variantName);
@@ -23,7 +23,7 @@ export const getEffP = (i) => {
     // Grosir hanya berlaku untuk item tanpa varian
     if (i.variantName) return basePrice;
     if (!p || !p.wholesale || !p.wholesale.length) return basePrice;
-    const t = cart.filter(c => c.id === i.id).reduce((s, c) => s + (parseFloat(c.qty) || 0), 0);
+    const t = cart.filter(c => c.id != null && String(c.id) === String(i.id)).reduce((s, c) => s + (parseFloat(c.qty) || 0), 0);
     for (let w of p.wholesale.slice().sort((a, b) => b.minQty - a.minQty)) {
         if (t >= parseFloat(w.minQty)) return w.price;
     }
@@ -34,7 +34,7 @@ export const getEffP = (i) => {
  * Ambil HPP (harga modal) produk/varian saat ini
  */
 export const getEffHpp = (i) => {
-    const p = appData.products?.find(x => x.id === i.id);
+    const p = appData.products?.find(x => x && x.id != null && String(x.id) === String(i.id));
     if (!p) return 0;
     if (i.variantName && p.variants) {
         const v = p.variants.find(vv => vv.name === i.variantName);
@@ -48,7 +48,7 @@ export const getEffHpp = (i) => {
  */
 export const getEffPoin = (i) => {
     if (!i) return 0;
-    const p = appData.products?.find(x => x.id === i.id);
+    const p = appData.products?.find(x => x && x.id != null && String(x.id) === String(i.id));
     if (!p) return parseFloat(i.poin) || 0;
     if (i.variantName && p.variants) {
         const v = p.variants.find(vv => vv.name === i.variantName);
