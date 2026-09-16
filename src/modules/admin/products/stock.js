@@ -178,7 +178,7 @@ window.processRestock = async (id) => {
 
 window.toggleProductStatus = async (id, toActive) => {
     if(isSaving) return; setIsSaving(true);
-    const i = appData.products.findIndex(x => x.id === id);
+    const i = appData.products.findIndex(x => x.id != null && x.id.toString() === id.toString());
     if(i > -1){
         appData.products[i].isActive = toActive ? 'true' : 'false';
         sLoad(toActive ? 'Mengaktifkan...' : 'Menonaktifkan...');
@@ -193,6 +193,8 @@ window.toggleProductStatus = async (id, toActive) => {
             showToast(toActive ? "Produk Aktif!" : "Stok Dikosongkan!");
         } catch(e) { showToast("Gagal update status: " + (e.message || '')); }
         finally { setIsSaving(false); hLoad(); }
+    } else {
+        setIsSaving(false);
     }
 };
 

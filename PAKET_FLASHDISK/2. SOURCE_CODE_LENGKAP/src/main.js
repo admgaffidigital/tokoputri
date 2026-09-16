@@ -38,7 +38,7 @@ import './modules/changelog/admin.js';
 // Services: Upload Media (GAS Drive Integration)
 import './services/upload.js';
 // Services: Penyimpanan Data & Realtime Sync (Firestore / Cache)
-import { loadAppData, attachRealtimeStockSync, attachRewardsRealtime } from './services/storage.js';
+import { loadAppData, attachRealtimeStockSync, attachRealtimeProductsSync, attachRewardsRealtime } from './services/storage.js';
 // NOTE: loadAppData dan attachRealtimeStockSync diimport eksplisit agar pemanggilan di DOMContentLoaded
 // tidak bergantung pada window.* yang bisa undefined akibat urutan inisialisasi modul.
 // Modules: Beranda, Banner Slider & Footer
@@ -239,8 +239,12 @@ window.addEventListener('DOMContentLoaded', async () => {
     // Akibatnya listener Firestore tidak ada dan realtime sync tidak bekerja sama sekali.
     try { syncAppMeta(); } catch(e) { console.warn('[syncAppMeta] Error:', e); }
 
-    // Pasang listener realtime — HARUS jalan apapun yang terjadi di atas
+    // Pasang listener realtime:
+    // 1. Listener cms_data — menangani perubahan settings toko
     attachRealtimeStockSync();
+    // 2. Listener sub-koleksi products — inti perbaikan bug sinkronisasi multi-perangkat.
+    //    Setiap perubahan produk (aktif/nonaktif/stok) langsung diterima semua perangkat.
+    attachRealtimeProductsSync();
 
     // Expose attachRewardsRealtime ke window untuk lazy-load saat katalog hadiah dibuka
     window.attachRewardsRealtime = attachRewardsRealtime;

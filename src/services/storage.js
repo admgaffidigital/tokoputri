@@ -295,24 +295,22 @@ export const saveApp = async (changedKeys = null, updateMeta = null) => {
 };
 
 // =====================================================================
-// OPTIMASI KUOTA & REALTIME SYNC (GRANULAR DELTA SYNC & BACKGROUND THROTTLING):
-// Mencegah banjir baca data Firestore saat ada transaksi atau perubahan setting.
-// 1. Jika hanya setting berubah (updateType === 'settings_change'):
-//    Update langsung dari dokumen cms_data TANPA menyentuh subkoleksi produk (0 reads produk!).
-// 2. Jika ada pesanan checkout atau admin edit produk (updateType === 'stock_change' / 'product_single'):
-//    Ambil HANYA produk yang berubah berdasarkan updatedProductIds (hanya 1-2 reads, bukan 200+ reads!).
-// 3. Tab Visibility Optimization: Jika tab di-minimize atau tidak aktif, tunda sinkronisasi berat.
+// PERBAIKAN BUG REALTIME SYNC MULTI-PERANGKAT:
+// Root cause: listener lama hanya memantau dokumen cms_data dan mengandalkan
+// field updatedProductIds sebagai sinyal tidak langsung. Field ini mudah tertimpa
+// saat perangkat lain menyimpan setting bersamaan, sehingga 4 perangkat lain
+// kehilangan informasi produk mana yang berubah dan tidak pernah mengambil update.
+//
+// SOLUSI: Dua listener sejajar yang saling melengkapi:
+// 1. Listener cms_data → menangani perubahan settings toko (banners, vouchers, dll)
+// 2. Listener sub-koleksi products → menangani perubahan data produk secara NATIVE
+//    Firestore secara otomatis mengirimkan hanya dokumen yang benar-benar berubah
+//    (granular change), hemat kuota dan 100% andal tanpa sinyal tidak langsung.
 // =====================================================================
 let isSyncingRealtime = false;
 let pendingSyncDoc = null;
-let lastFullProductFetchTime = 0;
-const FULL_FETCH_MIN_INTERVAL = 10000; // 10 detik minimum interval antar fetch koleksi penuh
 let isTabHidden = typeof document !== 'undefined' ? document.hidden : false;
 let hasDeferredSync = false;
-// FIX BUG #3: Flag untuk melacak apakah sesi ini sudah pernah melakukan sinkronisasi
-// produk dengan server. Diset true setelah sync pertama berhasil.
-// Bail-out hanya berlaku setelah flag ini true, sehingga saat halaman baru dibuka
-// dan belum pernah sync di sesi ini, data pasti diambil dari server meski versinya sama.
 let hasSessionSyncedProducts = false;
 
 if (typeof document !== 'undefined') {
@@ -329,13 +327,48 @@ if (typeof document !== 'undefined') {
     });
 }
 
-// BUG FATAL DIPERBAIKI: Sebelumnya dideklarasikan langsung sebagai 'window.attachRealtimeStockSync = () => {...}'
-// lalu di baris akhir file ditimpa oleh 'window.attachRealtimeStockSync = attachRealtimeStockSync' yang bernilai
-// undefined (karena variabel lokal 'attachRealtimeStockSync' tidak pernah ada). Akibatnya listener TIDAK PERNAH
-// terpasang dan realtime sync sama sekali tidak bekerja di perangkat manapun.
-// Sekarang dideklarasikan sebagai const lokal sehingga bisa di-export dan di-assign ke window dengan benar.
+// ─── Helper: Normalisasi produk dari snapshot Firestore ─────────────────────────
+const normalizeProd = (data) => {
+    if (!data) return data;
+    const p = { ...data };
+    if (p.id == null) p.id = 0;
+    if (typeof p.id === 'string' && !isNaN(p.id)) p.id = Number(p.id);
+    if (p.img) p.img = fixD(p.img);
+    if (p.variants) p.variants.forEach(v => { if (v.img) v.img = fixD(v.img); });
+    return p;
+};
+
+// ─── Helper: Refresh UI setelah ada perubahan produk ───────────────────────────
+const refreshProdUI = () => {
+    setIn('stat-products', appData.products.filter(p => p.isActive !== 'false' && p.isActive !== false).length);
+    sanitizeCart();
+    updCart();
+    if (typeof rDyn === 'function') rDyn(); else if (typeof window.rDyn === 'function') window.rDyn();
+    if (typeof rCat === 'function') rCat(); else if (typeof window.rCat === 'function') window.rCat();
+    const isAdminActive = window.isAdm || window.__localIsAdm;
+    if (isAdminActive && typeof window.rAdmItms === 'function') {
+        const curTab = window.cTab || 'products';
+        if (['products','colors'].includes(curTab)) {
+            window.rAdmItms(curTab);
+        }
+    }
+    const curProd = window.cProd;
+    if (curProd) {
+        const fresh = appData.products.find(p => p.id === curProd.id);
+        if (fresh) {
+            window.cProd = fresh;
+            if (typeof window.rProdMod === 'function') {
+                const modalEl = document.getElementById('product-modal');
+                if (modalEl && !modalEl.classList.contains('hidden') && !modalEl.classList.contains('opacity-0')) {
+                    window.rProdMod();
+                }
+            }
+        }
+    }
+};
+
 export const attachRealtimeStockSync = () => {
-    if (window.unsubCmsRealtime) return; // jangan pasang dobel
+    if (window.unsubCmsRealtime) return;
 
     const doSync = async (doc) => {
         if (!doc.exists) return;
@@ -343,17 +376,12 @@ export const attachRealtimeStockSync = () => {
         const serverUpdate = f.lastUpdate || 0;
         const localUpdate = parseInt(sL('freshmart_last_update') || '0');
 
-        // Jika tab sedang di latar belakang/diminimalkan, tunda penarikan data berat sampai tab aktif lagi
         if (isTabHidden) {
             pendingSyncDoc = doc;
             hasDeferredSync = true;
             return;
         }
 
-        // FIX BUG #3: Bail-out HANYA jika sesi ini sudah pernah sync produk dengan server.
-        // Sebelumnya, kondisi ini terlalu agresif dan bisa melewati update valid saat halaman
-        // baru dimuat (sesi baru) padahal data produk di server sudah berubah sejak last cache.
-        // Sekarang, saat halaman pertama kali dibuka, sync tetap dijalankan minimal 1x.
         if (serverUpdate === localUpdate && serverUpdate > 0 && hasSessionSyncedProducts && (appData.products && appData.products.length > 0)) {
             return;
         }
@@ -363,8 +391,6 @@ export const attachRealtimeStockSync = () => {
             const updateType = f.updateType || 'full';
             const updatedProductIds = Array.isArray(f.updatedProductIds) ? f.updatedProductIds.map(String) : [];
 
-            // 1. SINKRONISASI PENGATURAN TOKO (BANNERS, VOUCHERS, TOKO, KATEGORI, DLL)
-            // Diambil langsung dari dokumen f tanpa query ekstra ke koleksi lain (HEMAT 100% READS)
             appData.store = { ...defApp.store, ...(f.store || {}) };
             if (f.categories) appData.categories = f.categories;
             if (f.vouchers) appData.vouchers = f.vouchers;
@@ -390,54 +416,25 @@ export const attachRealtimeStockSync = () => {
                 }
             });
 
-            // 2. SINKRONISASI PRODUK GRANULAR (HEMAT KUOTA BESAR)
-            if (updateType === 'settings_change' && appData.products && appData.products.length > 0) {
-                // Hanya setting yang berubah. TIDAK PERLU mengambil ulang subkoleksi produk!
-                // Tandai sesi sudah sync agar bail-out bekerja benar di sesi ini
-                hasSessionSyncedProducts = true;
-            } else if (updateType === 'product_delete' && updatedProductIds.length > 0) {
-                // BONUS FIX: Hapus produk langsung dari array lokal tanpa perlu full fetch.
-                // Sebelumnya delete produk tidak punya updateType khusus sehingga semua
-                // klien harus fetch ulang seluruh koleksi — boros kuota dan lambat.
+            // product_delete: hapus dari array lokal segera sebagai optimasi cepat.
+            // Listener products sub-collection (attachRealtimeProductsSync) juga akan
+            // mendeteksi penghapusan ini via change.type === 'removed'.
+            if (updateType === 'product_delete' && updatedProductIds.length > 0) {
                 updatedProductIds.forEach(targetId => {
-                    const pIdx = appData.products.findIndex(p => p.id.toString() === targetId);
+                    const pIdx = appData.products.findIndex(p => (p.id != null ? p.id.toString() : '') === targetId);
                     if (pIdx > -1) appData.products.splice(pIdx, 1);
                 });
                 ssL('freshmart_products', JSON.stringify(appData.products));
                 hasSessionSyncedProducts = true;
-            } else if ((updateType === 'stock_change' || updateType === 'product_single') && updatedProductIds.length > 0 && appData.products && appData.products.length > 0) {
-                // Hanya beberapa produk yang berubah (misal dari checkout atau admin edit produk tunggal).
-                const fetchedDocs = await Promise.all(
-                    updatedProductIds.map(pId => db.collection("freshmart").doc("cms_data").collection("products").doc(pId).get().catch(() => null))
-                );
-                fetchedDocs.forEach((pDoc, idx) => {
-                    const targetId = updatedProductIds[idx];
-                    if (pDoc && pDoc.exists) {
-                        const freshProd = pDoc.data();
-                        if (freshProd.img) freshProd.img = fixD(freshProd.img);
-                        if (freshProd.variants) freshProd.variants.forEach(v => { if (v.img) v.img = fixD(v.img); });
-                        const pIdx = appData.products.findIndex(p => p.id.toString() === pDoc.id);
-                        if (pIdx > -1) {
-                            appData.products[pIdx] = freshProd;
-                        } else {
-                            appData.products.unshift(freshProd);
-                        }
-                    } else if (pDoc && !pDoc.exists && targetId) {
-                        const pIdx = appData.products.findIndex(p => p.id.toString() === targetId);
-                        if (pIdx > -1) appData.products.splice(pIdx, 1);
-                    }
-                });
+                refreshProdUI();
+            } else if (!hasSessionSyncedProducts && (!appData.products || appData.products.length === 0)) {
+                // Sesi pertama, belum ada produk sama sekali — fetch semua sebagai bootstrap
+                const pSnap = await db.collection("freshmart").doc("cms_data").collection("products").get();
+                appData.products = pSnap.docs.map(d => normalizeProd(d.data())).sort((a,b) => (b.id||0) - (a.id||0));
                 ssL('freshmart_products', JSON.stringify(appData.products));
                 hasSessionSyncedProducts = true;
+                refreshProdUI();
             } else {
-                // Penarikan penuh produk (hanya jika belum punya produk atau pembaruan massal)
-                const pSnap = await db.collection("freshmart").doc("cms_data").collection("products").get();
-                appData.products = pSnap.docs.map(d => d.data()).sort((a,b) => (b.id||0) - (a.id||0));
-                appData.products.forEach(p => {
-                    if (p.img) p.img = fixD(p.img);
-                    if (p.variants) p.variants.forEach(v => { if (v.img) v.img = fixD(v.img); });
-                });
-                ssL('freshmart_products', JSON.stringify(appData.products));
                 hasSessionSyncedProducts = true;
             }
 
@@ -450,37 +447,24 @@ export const attachRealtimeStockSync = () => {
             }
             updatePwaManifest();
 
-            const curTab = window.cTab || 'products';
-            if (window.isAdm && curTab && ['categories','vouchers','banners','brands','banks','products','colors'].includes(curTab) && typeof window.rAdmItms === 'function') {
-                window.rAdmItms(curTab);
-            }
-
             setIn('stat-products', appData.products.filter(p => p.isActive !== 'false' && p.isActive !== false).length);
 
-            sanitizeCart();
-            updCart();
-            // FIX BUG #4: Panggil via imported function TERLEBIH DAHULU sebagai prioritas utama.
-            // window.* hanya sebagai fallback untuk kompatibilitas kode inline di HTML.
-            // Sebelumnya hanya via window.*, jika modul belum ter-expose ke window maka
-            // UI storefront tidak pernah diperbarui setelah sinkronisasi selesai.
+            // Refresh storefront dan tabel admin untuk perubahan settings
             if (typeof rDyn === 'function') rDyn(); else if (typeof window.rDyn === 'function') window.rDyn();
             if (typeof rCat === 'function') rCat(); else if (typeof window.rCat === 'function') window.rCat();
+            sanitizeCart();
+            updCart();
 
-            const curProd = window.cProd;
-            if (curProd) {
-                const fresh = appData.products.find(p => p.id === curProd.id);
-                if (fresh) {
-                    window.cProd = fresh;
-                    if (typeof window.rProdMod === 'function') {
-                        const modalEl = document.getElementById('product-modal');
-                        if (modalEl && !modalEl.classList.contains('hidden') && !modalEl.classList.contains('opacity-0')) {
-                            window.rProdMod();
-                        }
-                    }
+            // Refresh tabel admin untuk tab settings (bukan products — itu sudah ditangani refreshProdUI dari listener products)
+            const isAdminActive = window.isAdm || window.__localIsAdm;
+            if (isAdminActive && typeof window.rAdmItms === 'function') {
+                const curTab = window.cTab || 'products';
+                if (['categories','vouchers','banners','brands','banks','colors'].includes(curTab)) {
+                    window.rAdmItms(curTab);
                 }
             }
         } catch (e) {
-            console.error('Gagal sinkron realtime stok:', e);
+            console.error('Gagal sinkron realtime settings:', e);
         } finally {
             isSyncingRealtime = false;
             if (pendingSyncDoc) {
@@ -502,6 +486,78 @@ export const attachRealtimeStockSync = () => {
             await doSync(doc);
         }, (err) => {
             console.warn('Realtime listener error:', err);
+        });
+};
+
+// =====================================================================
+// LISTENER REALTIME LANGSUNG SUB-KOLEKSI PRODUCTS (INTI PERBAIKAN BUG)
+// Sebelumnya tidak ada listener langsung pada koleksi products — sistem
+// mengandalkan sinyal tidak langsung via field updatedProductIds di cms_data
+// yang mudah tertimpa dan menyebabkan 4 perangkat kehilangan update.
+//
+// Sekarang Firestore secara native memantau setiap perubahan di koleksi
+// produk dan mengirimkan HANYA dokumen yang berubah (change type: added,
+// modified, removed) ke semua perangkat terhubung secara realtime (<200ms).
+// Hemat kuota: tidak ada full-fetch, hanya data yang benar-benar berubah.
+// =====================================================================
+export const attachRealtimeProductsSync = () => {
+    if (window.unsubProductsRealtime) return; // jangan pasang dobel
+
+    let isInitialLoad = true;
+
+    window.unsubProductsRealtime = db.collection("freshmart").doc("cms_data").collection("products")
+        .onSnapshot((snap) => {
+            // Lewati snapshot pertama saat page load (data sudah dimuat via loadAppData)
+            // untuk menghindari render ganda. Tandai sesi sudah sinkron dengan server.
+            if (isInitialLoad) {
+                isInitialLoad = false;
+                hasSessionSyncedProducts = true;
+                // Jika produk belum ada (bootstrap), isi dari snapshot ini
+                if (!appData.products || appData.products.length === 0) {
+                    appData.products = snap.docs.map(d => normalizeProd(d.data())).sort((a,b) => (b.id||0) - (a.id||0));
+                    ssL('freshmart_products', JSON.stringify(appData.products));
+                    refreshProdUI();
+                }
+                return;
+            }
+
+            let hasChange = false;
+
+            snap.docChanges().forEach(change => {
+                const prod = normalizeProd(change.doc.data());
+                const docId = change.doc.id; // Firestore doc ID = produk ID (sebagai string)
+
+                if (change.type === 'added' || change.type === 'modified') {
+                    // Produk baru/diperbarui: update atau upsert ke array lokal
+                    const existingIdx = appData.products.findIndex(
+                        p => (p.id != null ? p.id.toString() : '') === docId
+                    );
+                    if (existingIdx > -1) {
+                        appData.products[existingIdx] = prod;
+                    } else {
+                        appData.products.unshift(prod);
+                        appData.products.sort((a,b) => (b.id||0) - (a.id||0));
+                    }
+                    hasChange = true;
+                } else if (change.type === 'removed') {
+                    // Produk dihapus
+                    const pIdx = appData.products.findIndex(
+                        p => (p.id != null ? p.id.toString() : '') === docId
+                    );
+                    if (pIdx > -1) {
+                        appData.products.splice(pIdx, 1);
+                        hasChange = true;
+                    }
+                }
+            });
+
+            if (hasChange) {
+                // Simpan ke cache lokal dan segarkan semua UI (storefront + admin table)
+                ssL('freshmart_products', JSON.stringify(appData.products));
+                refreshProdUI();
+            }
+        }, (err) => {
+            console.warn('Realtime products listener error:', err);
         });
 };
 
@@ -614,5 +670,6 @@ export const updatePwaManifest = (customThemeColor) => {
 window.loadAppData = loadAppData;
 window.saveApp = saveApp;
 window.attachRealtimeStockSync = attachRealtimeStockSync;
+window.attachRealtimeProductsSync = attachRealtimeProductsSync;
 window.attachRewardsRealtime = attachRewardsRealtime;
 window.updatePwaManifest = updatePwaManifest;
