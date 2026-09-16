@@ -476,14 +476,60 @@ export const openSettingForm = (type) => {
                     </div>
                 </div>
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                <div>
-                    <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Latitude Toko (GPS)</label>
-                    <input autocomplete='off' id="set-lat" value="${esc(appData.store.lat || '')}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm w-full">
+            <!-- KOTAK GEOLOKASI GPS CERDAS TOKO -->
+            <div class="p-4 sm:p-5 bg-gradient-to-br from-blue-50/90 via-sky-50/70 to-indigo-50/50 dark:from-blue-950/30 dark:via-sky-950/20 dark:to-indigo-950/20 border border-blue-200 dark:border-blue-800/60 rounded-2xl shadow-sm space-y-4">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-2xl bg-blue-600 text-white flex items-center justify-center text-base shadow-md shadow-blue-500/20 shrink-0">
+                            <i class="fa-solid fa-map-location-dot"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-xs font-bold text-blue-950 dark:text-blue-200 uppercase tracking-wider">Lokasi Toko & Pin Google Maps</h4>
+                            <p class="text-[10px] text-blue-700 dark:text-blue-400">Tinggal tempel link atau angka koordinat dari Google Maps — sistem langsung mengekstrak titik presisi</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button type="button" id="btn-preview-maps" onclick="previewStoreOnMaps()" class="text-[11px] font-bold px-3 py-1.5 rounded-xl bg-white dark:bg-slate-800 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-700 hover:bg-blue-50 dark:hover:bg-slate-700 shadow-sm transition-all flex items-center gap-1.5 active:scale-95" title="Buka dan Cek Titik di Google Maps">
+                            <i class="fa-solid fa-arrow-up-right-from-square"></i> Cek di Maps
+                        </button>
+                        <button type="button" onclick="detectAdminGPS()" class="text-[11px] font-bold px-3 py-1.5 rounded-xl bg-blue-600 text-white hover:bg-blue-700 shadow-sm transition-all flex items-center gap-1.5 active:scale-95" title="Ambil GPS Perangkat Saat Ini">
+                            <i class="fa-solid fa-crosshairs"></i> GPS Saya
+                        </button>
+                    </div>
                 </div>
+
+                <!-- Input Cerdas Tempel Link / Koordinat -->
                 <div>
-                    <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Longitude Toko (GPS)</label>
-                    <input autocomplete='off' id="set-lng" value="${esc(appData.store.lng || '')}" class="admin-input !py-3.5 bg-slate-50 dark:bg-slate-900 shadow-sm w-full">
+                    <label class="block text-[11px] font-bold text-slate-700 dark:text-slate-300 mb-1.5 uppercase tracking-wider flex items-center justify-between">
+                        <span>Tempel Link / Koordinat Google Maps</span>
+                        <span class="text-[9px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest bg-blue-100/70 dark:bg-blue-900/50 px-2 py-0.5 rounded-md">Smart Auto-Extract</span>
+                    </label>
+                    <div class="relative flex items-center">
+                        <input autocomplete='off' id="set-maps-smart-input" 
+                            value="${esc(appData.store.lat && appData.store.lng ? `${appData.store.lat}, ${appData.store.lng}` : '-7.82308507053985, 112.0988374794464')}"
+                            placeholder="Tempel di sini: -7.823085, 112.098837 atau link Google Maps" 
+                            class="admin-input !py-3.5 !pr-24 bg-white dark:bg-slate-900 shadow-sm w-full font-mono text-xs text-slate-800 dark:text-slate-100"
+                            oninput="handleSmartMapsInput(this.value)"
+                            onpaste="setTimeout(() => handleSmartMapsInput(this.value), 50)">
+                        <button type="button" onclick="pasteFromClipboardToMapsInput()" class="absolute right-2 px-3 py-2 text-[10px] font-bold rounded-xl bg-blue-50 dark:bg-blue-900/60 text-blue-600 dark:text-blue-300 border border-blue-200 dark:border-blue-700 hover:bg-blue-100 active:scale-95 transition-all flex items-center gap-1">
+                            <i class="fa-solid fa-paste"></i> Tempel
+                        </button>
+                    </div>
+                    <div id="maps-smart-feedback" class="text-[10px] mt-1.5 font-medium text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
+                        <i class="fa-solid fa-circle-check"></i> <span>Koordinat aktif: Presisi tinggi terhubung ke kalkulator ongkir kurir</span>
+                    </div>
+                </div>
+
+                <!-- Kolom Terpisah Latitude & Longitude Presisi Tinggi -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-3 border-t border-blue-100 dark:border-blue-900/40">
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-600 dark:text-slate-400 mb-1 uppercase tracking-wider">Latitude Toko (Garis Lintang)</label>
+                        <input autocomplete='off' id="set-lat" value="${esc(appData.store.lat || '-7.82308507053985')}" class="admin-input !py-2.5 bg-white dark:bg-slate-900 shadow-sm text-xs font-mono w-full" placeholder="-7.82308507053985" oninput="handleManualCoordChange()">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-600 dark:text-slate-400 mb-1 uppercase tracking-wider">Longitude Toko (Garis Bujur)</label>
+                        <input autocomplete='off' id="set-lng" value="${esc(appData.store.lng || '112.0988374794464')}" class="admin-input !py-2.5 bg-white dark:bg-slate-900 shadow-sm text-xs font-mono w-full" placeholder="112.0988374794464" oninput="handleManualCoordChange()">
+                    </div>
                 </div>
             </div>
         `;
@@ -636,8 +682,24 @@ export const saveAdminSettings = async (type) => {
             appData.store.isPickupEnabled = getV('set-pickup-enabled') === 'true'; 
             appData.store.freeShippingMinSpendEnabled = getV('set-free-shipping-enabled') === 'true';
             appData.store.freeShippingMinSpendAmount = Math.max(0, parseFloat(getV('set-free-shipping-amount')) || 0);
-            appData.store.lat = getV('set-lat'); 
-            appData.store.lng = getV('set-lng'); 
+
+            let latVal = (getV('set-lat') || '').trim();
+            let lngVal = (getV('set-lng') || '').trim();
+            const smartVal = (getV('set-maps-smart-input') || '').trim();
+
+            if (smartVal && typeof window.parseGeoCoordinates === 'function') {
+                const parsed = window.parseGeoCoordinates(smartVal);
+                if (parsed) {
+                    latVal = parsed.lat;
+                    lngVal = parsed.lng;
+                }
+            }
+            if (!latVal || !lngVal) {
+                latVal = "-7.82308507053985";
+                lngVal = "112.0988374794464";
+            }
+            appData.store.lat = latVal; 
+            appData.store.lng = lngVal; 
         } else if (type === 'payment') {
             if (!appData.payment) appData.payment = {};
             appData.payment.qrisUrl = fixD(getV('set-qris-url')); 
@@ -671,6 +733,102 @@ export const saveAdminSettings = async (type) => {
         setIsSaving(false); 
         hLoad(); 
     }
+};
+
+/**
+ * Handler input cerdas tautan / koordinat Google Maps
+ */
+export const handleSmartMapsInput = (val) => {
+    const parseFn = typeof window.parseGeoCoordinates === 'function' ? window.parseGeoCoordinates : null;
+    const result = parseFn ? parseFn(val) : null;
+    const fb = document.getElementById('maps-smart-feedback');
+    const latInp = document.getElementById('set-lat');
+    const lngInp = document.getElementById('set-lng');
+    
+    if (result) {
+        if (latInp) latInp.value = result.lat;
+        if (lngInp) lngInp.value = result.lng;
+        if (fb) {
+            fb.className = "text-[10px] mt-1.5 font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5";
+            fb.innerHTML = `<i class="fa-solid fa-circle-check text-xs"></i> <span>Akurat! Koordinat terdeteksi: <b>${result.lat}, ${result.lng}</b></span>`;
+        }
+    } else if (val && val.trim().length > 3) {
+        if (fb) {
+            fb.className = "text-[10px] mt-1.5 font-medium text-amber-600 dark:text-amber-400 flex items-center gap-1.5";
+            fb.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-xs"></i> <span>Pola belum terbaca. Coba tempel format: <code>-7.823085, 112.098837</code> atau link Google Maps</span>`;
+        }
+    } else {
+        if (fb) {
+            fb.className = "text-[10px] mt-1.5 font-medium text-slate-500 dark:text-slate-400 flex items-center gap-1.5";
+            fb.innerHTML = `<i class="fa-solid fa-circle-info text-blue-500"></i> <span>Tempel tautan Maps atau angka koordinat dari Google Maps</span>`;
+        }
+    }
+};
+
+export const handleManualCoordChange = () => {
+    const latInp = document.getElementById('set-lat');
+    const lngInp = document.getElementById('set-lng');
+    const smartInp = document.getElementById('set-maps-smart-input');
+    if (latInp && lngInp && smartInp && latInp.value && lngInp.value) {
+        smartInp.value = `${latInp.value.trim()}, ${lngInp.value.trim()}`;
+    }
+};
+
+export const pasteFromClipboardToMapsInput = async () => {
+    const smartInp = document.getElementById('set-maps-smart-input');
+    if (!smartInp) return;
+    try {
+        if (navigator.clipboard && navigator.clipboard.readText) {
+            const text = await navigator.clipboard.readText();
+            if (text) {
+                smartInp.value = text;
+                handleSmartMapsInput(text);
+                showToast("Teks berhasil ditempel dari clipboard!");
+                return;
+            }
+        }
+    } catch(e) {}
+    smartInp.focus();
+    showToast("Silakan tekan Ctrl+V atau tahan untuk menempel");
+};
+
+export const previewStoreOnMaps = () => {
+    const latInp = document.getElementById('set-lat');
+    const lngInp = document.getElementById('set-lng');
+    let lat = latInp ? latInp.value.trim() : '';
+    let lng = lngInp ? lngInp.value.trim() : '';
+    
+    if (!lat || !lng) {
+        const smartInp = document.getElementById('set-maps-smart-input');
+        if (smartInp && smartInp.value && typeof window.parseGeoCoordinates === 'function') {
+            const res = window.parseGeoCoordinates(smartInp.value);
+            if (res) { lat = res.lat; lng = res.lng; }
+        }
+    }
+    
+    if (lat && lng) {
+        window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${lat},${lng}`)}`, '_blank');
+    } else {
+        showToast("Masukkan koordinat toko terlebih dahulu");
+    }
+};
+
+export const detectAdminGPS = () => {
+    if (!navigator.geolocation) {
+        showToast("Browser tidak mendukung sensor GPS");
+        return;
+    }
+    showToast("Sedang mendeteksi lokasi GPS...");
+    navigator.geolocation.getCurrentPosition((pos) => {
+        const lat = pos.coords.latitude.toString();
+        const lng = pos.coords.longitude.toString();
+        const smartInp = document.getElementById('set-maps-smart-input');
+        if (smartInp) smartInp.value = `${lat}, ${lng}`;
+        handleSmartMapsInput(`${lat}, ${lng}`);
+        showToast("Lokasi GPS berhasil didapatkan!");
+    }, () => {
+        showToast("Gagal mengambil GPS perangkat. Pastikan izin lokasi aktif.");
+    }, { enableHighAccuracy: true, timeout: 15000 });
 };
 
 /**
@@ -719,3 +877,8 @@ window.openSettingForm = openSettingForm;
 window.saveAdminSettings = saveAdminSettings;
 window.backupData = backupData;
 window.restoreData = restoreData;
+window.handleSmartMapsInput = handleSmartMapsInput;
+window.handleManualCoordChange = handleManualCoordChange;
+window.pasteFromClipboardToMapsInput = pasteFromClipboardToMapsInput;
+window.previewStoreOnMaps = previewStoreOnMaps;
+window.detectAdminGPS = detectAdminGPS;

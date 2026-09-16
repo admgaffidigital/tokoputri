@@ -41,6 +41,12 @@ export const validateAndGoToPayment = () => {
     
     if (m === 'delivery') {
         cust.address = getV('cust-address');
+        if (!cust.lat || !cust.lng) {
+            const mInput = el('cust-maps-input')?.value;
+            if (mInput && typeof window.handleCustomerMapsInput === 'function') {
+                window.handleCustomerMapsInput(mInput);
+            }
+        }
         if (!cust.address || !cust.lat || !cust.lng) {
             if (typeof window.showToast === 'function') window.showToast("Alamat & GPS wajib!");
             return;
@@ -661,6 +667,7 @@ export const processOrder = async () => {
             setCart([]); 
             setV('cust-name', ''); 
             setV('cust-address', ''); 
+            setV('cust-maps-input', ''); 
             setV('cust-note', ''); 
             setV('cust-wa', '');
             window.buktiPaymentUrl = null; 

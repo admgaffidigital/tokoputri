@@ -76,22 +76,71 @@ export const getDist = (lat1, lon1, lat2, lon2) => {
 };
 
 /**
- * Parser koordinat cepat (format 'lat, lng') di form pengaturan toko
+ * Parser koordinat cerdas: mengekstrak latitude & longitude presisi tinggi
+ * dari berbagai format input (koordinat murni, Google Maps URL, share link, DMS, dll).
  */
-export const autoParseCoords = (input) => {
-    const val = input.value.trim();
-    const coords = val.split(',');
-    if (coords.length >= 2) {
-        const lat = parseFloat(coords[0].trim());
-        const lng = parseFloat(coords[1].trim());
-        if (!isNaN(lat) && !isNaN(lng)) {
-            setV('set-lat', lat);
-            setV('set-lng', lng);
-            showToast("Koordinat tersalin!");
-            return;
+export const parseGeoCoordinates = (str) => {
+    if (!str || typeof str !== 'string') return null;
+    let text = str.trim();
+    try { text = decodeURIComponent(text); } catch(e) {}
+
+    // 1. Google Maps @lat,lng pattern (contoh: https://www.google.com/maps/.../@-7.823085,112.098837,17z)
+    const atMatch = text.match(/@(-?\d{1,3}\.\d+)[,\s]+(-?\d{1,3}\.\d+)/);
+    if (atMatch) {
+        const lat = parseFloat(atMatch[1]);
+        const lng = parseFloat(atMatch[2]);
+        if (!isNaN(lat) && !isNaN(lng) && Math.abs(lat) <= 90 && Math.abs(lng) <= 180) {
+            return { lat: atMatch[1], lng: atMatch[2] };
         }
     }
-    showToast("Format salah! Coba: Lat, Lng");
+
+    // 2. Query param ?q=lat,lng atau ?ll=lat,lng atau ?query=lat,lng atau ?loc=lat,lng
+    const queryMatch = text.match(/[?&](?:q|ll|query|loc|center)=(-?\d{1,3}\.\d+)[,\s]+(-?\d{1,3}\.\d+)/i);
+    if (queryMatch) {
+        const lat = parseFloat(queryMatch[1]);
+        const lng = parseFloat(queryMatch[2]);
+        if (!isNaN(lat) && !isNaN(lng) && Math.abs(lat) <= 90 && Math.abs(lng) <= 180) {
+            return { lat: queryMatch[1], lng: queryMatch[2] };
+        }
+    }
+
+    // 3. DMS (Degrees Minutes Seconds) format
+    const dmsMatch = text.match(/(\d+)[°\s]+(\d+)['\s]+([\d.]+)"?\s*([NSns])[,\s]+(\d+)[°\s]+(\d+)['\s]+([\d.]+)"?\s*([EWew])/);
+    if (dmsMatch) {
+        let lat = parseInt(dmsMatch[1], 10) + parseInt(dmsMatch[2], 10)/60 + parseFloat(dmsMatch[3])/3600;
+        if (dmsMatch[4].toUpperCase() === 'S') lat = -lat;
+        let lng = parseInt(dmsMatch[5], 10) + parseInt(dmsMatch[6], 10)/60 + parseFloat(dmsMatch[7])/3600;
+        if (dmsMatch[8].toUpperCase() === 'W') lng = -lng;
+        return { lat: lat.toFixed(8), lng: lng.toFixed(8) };
+    }
+
+    // 4. Standard coordinate string (contoh: "-7.82308507053985, 112.0988374794464" atau "-7.823085 112.098837")
+    const coordMatch = text.match(/(-?\d{1,3}\.\d{3,20})[,\s;\t]+(-?\d{1,3}\.\d{3,20})/);
+    if (coordMatch) {
+        const lat = parseFloat(coordMatch[1]);
+        const lng = parseFloat(coordMatch[2]);
+        if (!isNaN(lat) && !isNaN(lng) && Math.abs(lat) <= 90 && Math.abs(lng) <= 180) {
+            return { lat: coordMatch[1], lng: coordMatch[2] };
+        }
+    }
+
+    return null;
+};
+
+/**
+ * Parser koordinat cepat di form pengaturan toko
+ */
+export const autoParseCoords = (input) => {
+    const val = (typeof input === 'string' ? input : input?.value || '').trim();
+    const result = parseGeoCoordinates(val);
+    if (result) {
+        setV('set-lat', result.lat);
+        setV('set-lng', result.lng);
+        showToast("Koordinat GPS berhasil disalin!");
+        return result;
+    }
+    showToast("Format tidak dikenali! Tempel koordinat: Lat, Lng atau link Google Maps");
+    return null;
 };
 
 // ─── Expose ke window untuk atribut onclick di HTML ──────
@@ -99,4 +148,5 @@ window.getEffP = getEffP;
 window.getEffHpp = getEffHpp;
 window.getEffPoin = getEffPoin;
 window.getDist = getDist;
+window.parseGeoCoordinates = parseGeoCoordinates;
 window.autoParseCoords = autoParseCoords;

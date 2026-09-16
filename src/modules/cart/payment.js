@@ -27,6 +27,50 @@ window.getLocation = () => {
     }, {enableHighAccuracy: true, timeout: 15000});
 };
 
+window.handleCustomerMapsInput = (val) => {
+    const parseFn = typeof window.parseGeoCoordinates === 'function' ? window.parseGeoCoordinates : null;
+    const res = parseFn ? parseFn(val) : null;
+    if (res) {
+        cust.lat = parseFloat(res.lat);
+        cust.lng = parseFloat(res.lng);
+        hide('btn-location'); 
+        show('location-status'); 
+        const st = el('location-status');
+        if (st) {
+            st.classList.add('flex');
+            st.innerHTML = `
+                <i class="fa-solid fa-circle-check shrink-0 text-lg primary-text"></i>
+                <div class="min-w-0">
+                    <span class="text-[10px] font-bold uppercase leading-tight tracking-wide primary-text block">Koordinat Berhasil Disematkan!</span>
+                    <span class="text-[9px] text-slate-500 dark:text-slate-400 font-mono">${res.lat}, ${res.lng}</span>
+                </div>
+            `;
+        }
+        showToast("Titik lokasi Maps pembeli berhasil disematkan!");
+        if (typeof window.rPay === 'function') window.rPay();
+        return true;
+    }
+    return false;
+};
+
+window.pasteCustomerMapsInput = async () => {
+    const input = el('cust-maps-input');
+    if (!input) return;
+    try {
+        if (navigator.clipboard && navigator.clipboard.readText) {
+            const text = await navigator.clipboard.readText();
+            if (text) {
+                input.value = text;
+                const ok = window.handleCustomerMapsInput(text);
+                if (!ok) showToast("Format tidak dikenali! Tempel koordinat: Lat, Lng atau link Maps");
+                return;
+            }
+        }
+    } catch(e) {}
+    input.focus();
+    showToast("Silakan tekan Ctrl+V atau tahan untuk menempel");
+};
+
 export const rChck = () => {
     const d = appData.store.isDeliveryEnabled !== false, p = appData.store.isPickupEnabled !== false;
     toggleCls("delivery-option-container", "hidden", !d); toggleCls("pickup-option-container", "hidden", !p);

@@ -15,7 +15,7 @@
 export const defApp = {
     store: {
         name: "Toko Putri", slogan: "Toko Online & Kasir Resmi", logo: "fa-store",
-        wa: "", address: "", lat: "", lng: "", costPerKm: 0,
+        wa: "", address: "", lat: "-7.82308507053985", lng: "112.0988374794464", costPerKm: 0,
         isDeliveryEnabled: true, isPickupEnabled: true,
         freeShippingMinSpendEnabled: false,
         freeShippingMinSpendAmount: 0,

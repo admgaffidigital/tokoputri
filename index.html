@@ -992,8 +992,22 @@
                 </div>
                 <div class="rounded-2xl border border-amber-200 bg-amber-50 p-4 shadow-sm dark:border-amber-900/50 dark:bg-amber-950/20">
                   <label class="mb-2 block text-[10px] font-bold uppercase tracking-widest text-amber-800 dark:text-amber-400"><i class="fa-solid fa-satellite-dish mr-1"></i> Akurasi Ongkir via GPS</label>
-                  <p class="mb-3.5 text-[11px] font-medium leading-relaxed text-amber-700 dark:text-amber-500/90">Sematkan koordinat lokasi Anda agar kalkulasi ongkos kirim otomatis akurat.</p>
-                  <button class="flex w-full items-center justify-center gap-2 rounded-xl border border-amber-300 bg-white py-3.5 text-xs font-bold text-amber-700 shadow-sm transition-all hover:bg-amber-100 active:scale-95 dark:border-amber-700 dark:bg-slate-800 dark:text-amber-400" id="btn-location" onclick="getLocation()"><i class="fa-solid fa-location-crosshairs text-sm text-amber-500"></i> <span id="text-get-location">Sematkan Titik Lokasi</span></button>
+                  <p class="mb-3 text-[11px] font-medium leading-relaxed text-amber-700 dark:text-amber-500/90">Sematkan lokasi Anda via GPS atau tempel link Google Maps agar kalkulasi ongkir kurir akurat dan presisi.</p>
+                  <button class="flex w-full items-center justify-center gap-2 rounded-xl border border-amber-300 bg-white py-3 text-xs font-bold text-amber-700 shadow-sm transition-all hover:bg-amber-100 active:scale-95 dark:border-amber-700 dark:bg-slate-800 dark:text-amber-400" id="btn-location" onclick="getLocation()"><i class="fa-solid fa-location-crosshairs text-sm text-amber-500"></i> <span id="text-get-location">Sematkan Lokasi GPS Saat Ini</span></button>
+                  
+                  <div class="mt-2.5 pt-2.5 border-t border-amber-200/80 dark:border-amber-900/40">
+                    <label class="block text-[9px] font-bold uppercase tracking-wider text-amber-800 dark:text-amber-400 mb-1.5 flex items-center justify-between">
+                      <span>Atau Tempel Link / Koordinat Maps</span>
+                      <i class="fa-solid fa-map-pin text-[10px]"></i>
+                    </label>
+                    <div class="flex items-center gap-1.5">
+                      <input type="text" id="cust-maps-input" placeholder="Contoh: -7.823085, 112.098837 atau link Maps" class="w-full text-xs bg-white dark:bg-slate-800 border border-amber-300 dark:border-amber-700 rounded-xl px-3 py-2 text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500/30" oninput="handleCustomerMapsInput(this.value)" onpaste="setTimeout(() => handleCustomerMapsInput(this.value), 50)">
+                      <button type="button" onclick="pasteCustomerMapsInput()" class="shrink-0 px-3 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-xl text-xs font-bold shadow-sm transition-all flex items-center gap-1 active:scale-95" title="Tempel dari Clipboard">
+                        <i class="fa-solid fa-paste"></i> <span class="hidden sm:inline">Tempel</span>
+                      </button>
+                    </div>
+                  </div>
+
                   <div class="primary-bg-soft primary-border mt-3 flex hidden items-center gap-2 rounded-xl border p-3" id="location-status">
                     <i class="fa-solid fa-circle-check shrink-0 text-lg primary-text"></i>
                     <span class="text-[10px] font-bold uppercase leading-tight tracking-wide primary-text">Koordinat berhasil diamankan!</span>
