@@ -1157,41 +1157,42 @@ Kami akan segera memproses pesanan Anda. Terima kasih! 🙏`;window.open(`https:
                 ${L}
             </div>
         </div>`}).join("")),a&&requestAnimationFrame(()=>{a.scrollTop=r})};window.rAdmReviews=()=>window.rAdmReviews?.();window.rTaxPanel=()=>window.rTaxPanel?.();typeof window.bannerTmr>"u"&&(window.bannerTmr=null);let Xe=null;const st=()=>{document.querySelectorAll("#banner-slider video.banner-video-element").forEach(e=>{e.dataset.init||(e.dataset.init="true",e.muted=!0,e.loop=!0,e.playsInline=!0,e.setAttribute("playsinline",""),e.setAttribute("loop",""),e.setAttribute("autoplay","")),e.dataset.loopAttached||(e.dataset.loopAttached="true",e.addEventListener("ended",()=>{e.currentTime=0,e.play().catch(()=>{})})),e.dataset.userUnmuted==="true"&&(e.muted=!1),e.play().catch(()=>{})})},ys=(e,t)=>{const a=h(`banner-slide-${t}`)||e&&e.closest(".banner-slide-item");if(!a)return;const r=a.querySelector("video.banner-video-element");if(r){r.muted?(r.muted=!1,r.volume=1,r.dataset.userUnmuted="true",r.play().catch(()=>{}),e&&(e.innerHTML='<i class="fa-solid fa-volume-high text-xs"></i> <span>Suara On</span>',e.className="banner-sound-toggle inline-flex items-center gap-1.5 px-3 py-1.5 primary-bg text-white text-[10px] sm:text-xs font-bold rounded-full shadow-lg border border-white/20 active:scale-95 transition-all cursor-pointer")):(r.muted=!0,r.dataset.userUnmuted="false",e&&(e.innerHTML='<i class="fa-solid fa-volume-xmark text-xs"></i> <span>Muted</span>',e.className="banner-sound-toggle inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-900/80 hover:bg-slate-900 text-white text-[10px] sm:text-xs font-bold rounded-full shadow-lg border border-white/20 active:scale-95 transition-all cursor-pointer"));return}const s=a.querySelector("iframe.banner-video-iframe");s&&(s.dataset.muted!=="false"?(s.dataset.muted="false",s.contentWindow?.postMessage('{"event":"command","func":"unMute","args":""}',"*"),s.contentWindow?.postMessage('{"event":"command","func":"setVolume","args":[100]}',"*"),e&&(e.innerHTML='<i class="fa-solid fa-volume-high text-xs"></i> <span>Suara On</span>',e.className="banner-sound-toggle inline-flex items-center gap-1.5 px-3 py-1.5 primary-bg text-white text-[10px] sm:text-xs font-bold rounded-full shadow-lg border border-white/20 active:scale-95 transition-all cursor-pointer")):(s.dataset.muted="true",s.contentWindow?.postMessage('{"event":"command","func":"mute","args":""}',"*"),e&&(e.innerHTML='<i class="fa-solid fa-volume-xmark text-xs"></i> <span>Muted</span>',e.className="banner-sound-toggle inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-900/80 hover:bg-slate-900 text-white text-[10px] sm:text-xs font-bold rounded-full shadow-lg border border-white/20 active:scale-95 transition-all cursor-pointer")))},Te=e=>{const t=h("banner-dots-container");if(!t)return;t.querySelectorAll(".banner-dot-item").forEach((r,s)=>{s===e?r.className="banner-dot-item h-2.5 rounded-full transition-all duration-300 bg-[var(--color-primary)] w-7 shadow-sm":r.className="banner-dot-item w-2.5 h-2.5 rounded-full transition-all duration-300 bg-slate-300 dark:bg-slate-700 hover:bg-slate-400"})},$s=()=>{Xe&&clearTimeout(Xe),Xe=setTimeout(()=>{const e=h("banner-slider");if(!e)return;const t=e.querySelectorAll(".banner-slide-item");if(!t||!t.length)return;let a=0,r=1/0;t.forEach((s,i)=>{const n=Math.abs(s.offsetLeft-e.scrollLeft);n<r&&(r=n,a=i)}),Te(a)},100)},Ss=e=>{clearInterval(window.bannerTmr);const t=h("banner-slider");if(!t)return;const a=t.querySelectorAll(".banner-slide-item");a&&a[e]&&(t.scrollTo({left:a[e].offsetLeft-t.offsetLeft,behavior:"smooth"}),Te(e)),setTimeout(Fe,8e3)},Ps=()=>{clearInterval(window.bannerTmr);const e=h("banner-slider");if(!e)return;const t=e.querySelectorAll(".banner-slide-item");if(!t||!t.length)return;let a=0,r=1/0;t.forEach((i,n)=>{const l=Math.abs(i.offsetLeft-e.scrollLeft);l<r&&(r=l,a=n)});const s=(a-1+t.length)%t.length;e.scrollTo({left:t[s].offsetLeft-e.offsetLeft,behavior:"smooth"}),Te(s),setTimeout(Fe,8e3)},As=()=>{clearInterval(window.bannerTmr);const e=h("banner-slider");if(!e)return;const t=e.querySelectorAll(".banner-slide-item");if(!t||!t.length)return;let a=0,r=1/0;t.forEach((i,n)=>{const l=Math.abs(i.offsetLeft-e.scrollLeft);l<r&&(r=l,a=n)});const s=(a+1)%t.length;e.scrollTo({left:t[s].offsetLeft-e.offsetLeft,behavior:"smooth"}),Te(s),setTimeout(Fe,8e3)},Fe=()=>{if(clearInterval(window.bannerTmr),!h("banner-slider")||!o.banners||o.banners.length<=1)return;const t=()=>{st()};t(),st(),window.bannerTmr=setInterval(()=>{const a=h("banner-slider");if(!a)return clearInterval(window.bannerTmr);const r=a.querySelectorAll(".banner-slide-item");if(!r||r.length<=1){const s=a.scrollWidth-a.clientWidth;a.scrollLeft>=s-10?a.scrollTo({left:0,behavior:"smooth"}):a.scrollBy({left:a.clientWidth,behavior:"smooth"})}else{let s=0,i=1/0;r.forEach((d,p)=>{const m=Math.abs(d.offsetLeft-a.scrollLeft);m<i&&(i=m,s=p)});const n=(s+1)%r.length,l=r[n];a.scrollTo({left:l.offsetLeft-a.offsetLeft,behavior:"smooth"}),Te(n)}setTimeout(t,400)},8e3)};window.forcePlayBannerVideos=st;window.toggleBannerVideoSound=ys;window.updateBannerDots=Te;window.onBannerScroll=$s;window.scrollToBanner=Ss;window.scrollBannerPrev=Ps;window.scrollBannerNext=As;window.startBannerAutoSlide=Fe;const Ts=[{id:"log-1-4-0",version:"v1.4.0",date:"2026-09-16",title:"Fitur Single Active Admin Session (Auto Kick-out Antar Perangkat) & Firestore Security Rules",category:"feature",badge:"Single Session Security",items:["Sistem Single Concurrent Admin Session: membatasi akses CMS Seller hanya dapat aktif di 1 perangkat/browser dalam satu waktu untuk mencegah tabrakan edit data dan kebocoran akses.","Mekanisme Realtime Auto Kick-out: jika admin login dari perangkat baru (misal laptop/desktop), sesi CMS di perangkat lama (misal HP atau browser lain) secara instan ditendang keluar secara aman (<300ms) disertai modal dialog penjelasan nama perangkat yang mengambil alih.","Deteksi perangkat cerdas (Smartphone Android, iPhone, Laptop Windows, Mac, Linux, dll) untuk identifikasi login yang transparan.","Validasi ganda startup sesi (auto-login guard) untuk memastikan sesi lokal yang telah digantikan perangkat lain tidak dapat membuka dashboard tanpa login ulang.","Pembaruan cloud Firestore Security Rules dengan otorisasi sub-koleksi admin_session khusus untuk ADMIN_UID terverifikasi."]},{id:"log-1-3-1",version:"v1.3.1",date:"2026-09-16",title:"Native Realtime Sync Sub-Koleksi Produk, Rekonsiliasi Multi-Browser & Hardening Rules",category:"bugfix",badge:"Realtime Multi-Device",items:["Pemasangan native listener onSnapshot langsung pada sub-koleksi products Firestore sehingga perubahan status produk (aktif/nonaktif/stok) dari admin desktop langsung terdorong seketika (<200ms) ke seluruh HP & browser aktif tanpa reload.","Rekonsiliasi otomatis data produk dari server saat snapshot pertama tiba (initial load), mengeliminasi bug perbedaan tampilan antar browser akibat cache localStorage yang usang.","Penyegaran antarmuka tabel admin reaktif otomatis via deteksi kontainer DOM tanpa terhambat status sesi login.","Pengamanan perbandingan ID produk dengan konversi string eksplisit (id.toString()) pada pencarian indeks array dan event handler onclick.","Optimasi evaluasi kondisi stok pada firestore.rules untuk mencegah type error dan mempercepat validasi transaksi checkout."]},{id:"log-1-3-0",version:"v1.3.0",date:"2026-09-15",title:"Hotfix Realtime Sync Multi-Perangkat, Eliminasi Stale Cache & Granular Sync",category:"bugfix",badge:"Realtime Sync & Hotfix",items:["Perbaikan bug fatal inisialisasi syncAppMeta() dan listener Firestore onSnapshot sehingga perubahan status produk (aktif/nonaktif/stok) di Admin Desktop seketika terupdate live di HP tanpa reload.","Penonaktifan persistentLocalCache IndexedDB yang menyebabkan data produk usang (stale) menolak pembaruan server Firestore.","Optimasi granular sync: penambahan penanganan event product_delete dan pengiriman updatedProductIds pada saveApp() sehingga hemat kuota Firestore hingga 95%.","Penyegaran antarmuka instan pada tombol toggle status aktif/habis produk di tabel admin.","Integrasi konfigurasi Firestore db.settings({ merge: true }) guna mencegah host override warning.","Pembaruan log pembaruan sistem dan sinkronisasi seluruh paket distribusi flashdisk & build siap pakai."]},{id:"log-1-2-0",version:"v1.2.0",date:"2026-09-15",title:"Maintenance Keamanan, Optimasi Bundle (-68%) & Isolasi Cache Multi-Projek",category:"maintenance",badge:"Maintenance & Optimasi",items:["Pembersihan celah keamanan dependensi melalui audit paket npm.","Optimasi Vite Rollup code-splitting: modul admin dan cetak dokumen dipisah ke chunk tersendiri, memangkas ukuran bundle storefront utama dari 509 kB ke 163 kB (turun 68%).","Isolasi cache multi-projek pada localStorage untuk mencegah data toko tertukar saat pengujian di localhost.","Percepatan First Contentful Paint (FCP) dan eliminasi peringatan batas ukuran bundle.","Pembaruan berkas siap pakai dan paket flashdisk installer."]},{id:"log-1-1-0",version:"v1.1.0",date:"2026-09-10",title:"Harmonisasi Warna Token, Desain Vouchers & Kategori Kompak",category:"optimization",badge:"Peningkatan Visual",items:["Harmonisasi variabel CSS token warna tema (primary, primary-dark, primary-light) di seluruh komponen.","Penyesuaian tata letak kartu voucher, kategori, brand mitra, dan reward agar lebih padat dan hemat ruang di layar ponsel.","Penyempurnaan navigasi header desktop agar lebih bersih dan minimalis.","Perbaikan urutan CSS view-section untuk mencegah auto-redirect saat me-refresh halaman."]},{id:"log-1-0-0",version:"v1.0.0",date:"2026-09-01",title:"Peluncuran Sistem Web & POS Kasir Toko Putri Resmi",category:"feature",badge:"Rilis Perdana",items:["Rilis resmi platform e-commerce dan kasir point-of-sales (POS) Toko Putri.","Katalog produk interaktif dengan varian harga, grosir, dan spesifikasi lengkap.","Keranjang belanja instan terhubung otomatis ke WhatsApp Checkout.","Dukungan metode pembayaran QRIS Nasional dan Transfer Bank.","Modul cetak struk kasir thermal 58mm/80mm, invoice A4, dan surat jalan.","PWA (Progressive Web App) dengan dukungan mode offline dan installable di HP/PC."]}],ht=e=>{const t=e&&Array.isArray(e.changelog)?e.changelog:[],a=new Set(t.map(i=>i.id||i.version)),r=Ts.filter(i=>!a.has(i.id)&&!a.has(i.version));return[...t,...r].sort((i,n)=>{const l=new Date(i.date||"2026-01-01").getTime();return new Date(n.date||"2026-01-01").getTime()-l})},wt=e=>{const t=ht(e);return t.length>0&&t[0].version||"v1.0.0"},zt=()=>{const e=document.getElementById("storefront-footer-container");if(!e)return;const t=o.store||{},a=t.name||"Toko Putri",r=t.description||t.slogan||"Selamat datang di toko kami. Melayani pembelian online dan offline dengan kualitas terbaik.",s=t.email||"",i=t.operationalHours||"Buka Setiap Hari (08:00 - 17:00)",n=t.address||"",l=t.wa||"",d=t.footerCredit||"Seluruh hak cipta dilindungi undang-undang.",p=new Date().getFullYear(),m=wt(o);let b=(l||"").replace(/\D/g,"");b.startsWith("0")?b="62"+b.slice(1):!b.startsWith("62")&&b.length>0&&(b="62"+b);let g='<i class="fa-solid fa-store text-2xl text-[var(--color-primary)]"></i>';t.logo&&(t.logo.includes("http")||t.logo.includes("data:")?g=`<img src="${c(t.logo)}" alt="${c(a)}" class="h-full w-full max-h-10 max-w-10 object-contain" onerror="this.outerHTML='<i class=\\'fa-solid fa-store text-2xl text-[var(--color-primary)]\\'></i>'">`:g=`<i class="fa-solid ${c(t.logo)} text-2xl text-[var(--color-primary)]"></i>`);const w=b?`window.open('https://wa.me/${c(b)}', '_blank')`:"if(typeof window.showToast==='function') window.showToast('Nomor WhatsApp belum dikonfigurasi admin.');";e.innerHTML=`
-    <!-- ================= FOOTER TOKO RESMI (MODERN 4-KOLOM, SOLID THEMED, RESPONSIF) ================= -->
+    <!-- ================= FOOTER TOKO RESMI (MODERN, CLEAN, HARMONIS DENGAN TEMA) ================= -->
     <footer class="themed-footer relative mt-14 w-full overflow-hidden pb-[calc(6.5rem+env(safe-area-inset-bottom))] sm:pb-[calc(3.5rem+env(safe-area-inset-bottom))]">
-      <div class="relative z-10 mx-auto w-full px-4 sm:px-6 lg:px-8 xl:max-w-[1240px] pt-10 sm:pt-12 pb-8">
-        <div class="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-10">
+      <div class="relative z-10 mx-auto w-full px-4 sm:px-6 lg:px-8 xl:max-w-[1240px] pt-10 sm:pt-14 pb-8">
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-12">
           <!-- Kolom 1: Profil Perusahaan & Brand -->
           <div class="flex flex-col items-start text-left md:col-span-6 lg:col-span-4">
-            <div class="mb-4 flex items-center gap-3">
-              <div class="flex h-12 w-12 sm:h-13 sm:w-13 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-white/30 bg-white p-2 shadow-none">
+            <div class="mb-4 flex items-center gap-3.5">
+              <div class="flex h-13 w-13 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-white/20 bg-white p-2.5 shadow-md">
                 ${g}
               </div>
               <div class="flex flex-col items-start min-w-0">
                 <h3 class="text-base sm:text-lg font-black tracking-tight text-white leading-tight break-words max-w-full">${c(a)}</h3>
-                <span class="mt-1 inline-flex items-center gap-1 rounded border border-white/30 bg-white/20 px-2 py-0.5 text-[9px] font-bold uppercase tracking-widest text-white shadow-none">
-                  <i class="fa-solid fa-circle-check text-[var(--color-primary)]"></i> Verified Official Store
+                <span class="mt-1 inline-flex items-center gap-1.5 rounded-lg border border-[var(--color-primary)]/40 bg-[var(--color-primary)]/15 px-2.5 py-0.5 text-[9px] font-extrabold uppercase tracking-widest text-[var(--color-primary)]">
+                  <i class="fa-solid fa-circle-check"></i> Verified Official Store
                 </span>
               </div>
             </div>
 
-            <p class="mb-4 max-w-md text-xs font-normal leading-relaxed text-white/90">
+            <p class="mb-4 max-w-md text-xs font-normal leading-relaxed text-white/80">
               ${c(r)}
             </p>
 
-            <!-- Live Operating Status Pill -->
-            <div class="mb-3 inline-flex items-center gap-2 rounded-lg border border-white/20 bg-white/10 px-2.5 py-1 text-[10px] font-semibold text-white shadow-none">
+            <!-- Value Trust Pill (Tidak mengulang kalimat deskripsi) -->
+            <div class="mb-3.5 inline-flex items-center gap-2 rounded-xl border border-white/15 bg-white/5 px-3 py-1.5 text-[11px] font-semibold text-white/90 shadow-xs">
               <span class="relative flex h-2 w-2">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--color-primary)] opacity-75"></span>
                 <span class="relative inline-flex h-2 w-2 rounded-full bg-[var(--color-primary)]"></span>
               </span>
-              Melayani Pembelian Online &amp; Offline
+              <span>Siap Kirim &amp; Ambil di Toko Fisik</span>
             </div>
 
-            <!-- Store Address (if configured) -->
+            <!-- Store Address (Formatted Card) -->
             ${n?`
-            <div class="text-xs text-white/90 flex items-start gap-2 max-w-md">
+            <div class="text-xs text-white/80 flex items-start gap-2.5 max-w-md bg-white/5 border border-white/10 rounded-xl p-3">
               <i class="fa-solid fa-location-dot text-[var(--color-primary)] mt-0.5 shrink-0 text-sm"></i>
-              <span class="leading-relaxed">${c(n)}</span>
+              <span class="leading-relaxed font-medium">${c(n)}</span>
             </div>`:""}
           </div>
 
@@ -1199,82 +1200,139 @@ Kami akan segera memproses pesanan Anda. Terima kasih! 🙏`;window.open(`https:
                On Mobile: side by side (grid-cols-2)
                On Tablet/Desktop: contents (expands into 12-col grid)
           -->
-          <div class="grid grid-cols-2 gap-4 md:contents">
+          <div class="grid grid-cols-2 gap-6 md:contents">
             <!-- Kolom 2: Navigasi Belanja Cepat -->
             <div class="flex flex-col items-start text-left md:col-span-3 lg:col-span-2">
-              <h4 class="mb-3 text-[11px] font-black uppercase tracking-wider text-white border-b border-white/20 pb-2 w-full">
-                Belanja Cepat
+              <h4 class="mb-4 text-[11px] font-black uppercase tracking-wider text-white border-b border-white/10 pb-2.5 w-full flex items-center gap-2">
+                <span class="w-1.5 h-1.5 rounded-full bg-[var(--color-primary)]"></span> Belanja Cepat
               </h4>
-              <ul class="space-y-2.5 w-full text-xs font-semibold text-white/85">
-                <li><a class="flex items-center gap-1.5 hover:text-white transition-colors cursor-pointer" onclick="changeView('view-catalog')"><i class="fa-solid fa-chevron-right text-[9px] opacity-70"></i> Katalog Produk</a></li>
-                <li><a class="flex items-center gap-1.5 hover:text-white transition-colors cursor-pointer" onclick="changeView('view-cart')"><i class="fa-solid fa-chevron-right text-[9px] opacity-70"></i> Keranjang</a></li>
-                <li><a class="flex items-center gap-1.5 hover:text-white transition-colors cursor-pointer" onclick="changeView('view-wishlist')"><i class="fa-solid fa-chevron-right text-[9px] opacity-70"></i> Produk Favorit</a></li>
-                <li><a class="flex items-center gap-1.5 hover:text-white transition-colors cursor-pointer" onclick="if(typeof window.openVoucherModal==='function') window.openVoucherModal();"><i class="fa-solid fa-chevron-right text-[9px] opacity-70"></i> Kupon Promo</a></li>
-                <li><a class="flex items-center gap-1.5 hover:text-white transition-colors cursor-pointer" onclick="if(typeof window.openMemberModal==='function') window.openMemberModal();"><i class="fa-solid fa-chevron-right text-[9px] opacity-70"></i> Poin Member</a></li>
+              <ul class="space-y-3 w-full text-xs font-semibold">
+                <li>
+                  <a class="group inline-flex items-center gap-2 text-white/75 hover:text-white transition-all duration-200 cursor-pointer hover:translate-x-1" onclick="changeView('view-catalog')">
+                    <span class="h-1.5 w-1.5 rounded-full bg-white/30 group-hover:bg-[var(--color-primary)] transition-colors"></span>
+                    <span>Katalog Produk</span>
+                  </a>
+                </li>
+                <li>
+                  <a class="group inline-flex items-center gap-2 text-white/75 hover:text-white transition-all duration-200 cursor-pointer hover:translate-x-1" onclick="changeView('view-cart')">
+                    <span class="h-1.5 w-1.5 rounded-full bg-white/30 group-hover:bg-[var(--color-primary)] transition-colors"></span>
+                    <span>Keranjang</span>
+                  </a>
+                </li>
+                <li>
+                  <a class="group inline-flex items-center gap-2 text-white/75 hover:text-white transition-all duration-200 cursor-pointer hover:translate-x-1" onclick="changeView('view-wishlist')">
+                    <span class="h-1.5 w-1.5 rounded-full bg-white/30 group-hover:bg-[var(--color-primary)] transition-colors"></span>
+                    <span>Produk Favorit</span>
+                  </a>
+                </li>
+                <li>
+                  <a class="group inline-flex items-center gap-2 text-white/75 hover:text-white transition-all duration-200 cursor-pointer hover:translate-x-1" onclick="if(typeof window.openVoucherModal==='function') window.openVoucherModal();">
+                    <span class="h-1.5 w-1.5 rounded-full bg-white/30 group-hover:bg-[var(--color-primary)] transition-colors"></span>
+                    <span>Kupon Promo</span>
+                  </a>
+                </li>
+                <li>
+                  <a class="group inline-flex items-center gap-2 text-white/75 hover:text-white transition-all duration-200 cursor-pointer hover:translate-x-1" onclick="if(typeof window.openMemberModal==='function') window.openMemberModal();">
+                    <span class="h-1.5 w-1.5 rounded-full bg-white/30 group-hover:bg-[var(--color-primary)] transition-colors"></span>
+                    <span>Poin Member</span>
+                  </a>
+                </li>
               </ul>
             </div>
 
             <!-- Kolom 3: Layanan & Informasi -->
             <div class="flex flex-col items-start text-left md:col-span-3 lg:col-span-2">
-              <h4 class="mb-3 text-[11px] font-black uppercase tracking-wider text-white border-b border-white/20 pb-2 w-full">
-                Bantuan
+              <h4 class="mb-4 text-[11px] font-black uppercase tracking-wider text-white border-b border-white/10 pb-2.5 w-full flex items-center gap-2">
+                <span class="w-1.5 h-1.5 rounded-full bg-[var(--color-primary)]"></span> Bantuan
               </h4>
-              <ul class="space-y-2.5 w-full text-xs font-semibold text-white/85">
-                <li><a class="flex items-center gap-1.5 hover:text-white transition-colors cursor-pointer" onclick="openShoppingGuideModal()"><i class="fa-solid fa-chevron-right text-[9px] opacity-70"></i> Cara Memesan</a></li>
-                <li><a class="flex items-center gap-1.5 hover:text-white transition-colors cursor-pointer" onclick="changeView('view-orders')"><i class="fa-solid fa-chevron-right text-[9px] opacity-70"></i> Lacak Pesanan</a></li>
-                <li><a class="flex items-center gap-1.5 hover:text-white transition-colors cursor-pointer" onclick="changeView('view-faq')"><i class="fa-solid fa-chevron-right text-[9px] opacity-70"></i> Pusat Bantuan &amp; FAQ</a></li>
-                <li><a class="flex items-center gap-1.5 hover:text-white transition-colors cursor-pointer" onclick="if(typeof window.openChangelogModal==='function') window.openChangelogModal();"><i class="fa-solid fa-clock-rotate-left text-[9px] text-[var(--color-primary)]"></i> Log Pembaruan &amp; Versi</a></li>
-                <li><a class="flex items-center gap-1.5 hover:text-white transition-colors cursor-pointer" onclick="openQualityGuaranteeModal()"><i class="fa-solid fa-chevron-right text-[9px] opacity-70"></i> Jaminan Mutu</a></li>
-                <li><a class="flex items-center gap-1.5 hover:text-white transition-colors cursor-pointer" onclick="openSecurityModal()"><i class="fa-solid fa-chevron-right text-[9px] opacity-70"></i> Keamanan</a></li>
-                <li><a class="flex items-center gap-1.5 text-white/70 hover:text-white transition-colors cursor-pointer" onclick="changeView('view-admin-login')"><i class="fa-solid fa-lock text-[8px] opacity-70"></i> Portal Admin</a></li>
+              <ul class="space-y-3 w-full text-xs font-semibold">
+                <li>
+                  <a class="group inline-flex items-center gap-2 text-white/75 hover:text-white transition-all duration-200 cursor-pointer hover:translate-x-1" onclick="openShoppingGuideModal()">
+                    <span class="h-1.5 w-1.5 rounded-full bg-white/30 group-hover:bg-[var(--color-primary)] transition-colors"></span>
+                    <span>Cara Memesan</span>
+                  </a>
+                </li>
+                <li>
+                  <a class="group inline-flex items-center gap-2 text-white/75 hover:text-white transition-all duration-200 cursor-pointer hover:translate-x-1" onclick="changeView('view-orders')">
+                    <span class="h-1.5 w-1.5 rounded-full bg-white/30 group-hover:bg-[var(--color-primary)] transition-colors"></span>
+                    <span>Lacak Pesanan</span>
+                  </a>
+                </li>
+                <li>
+                  <a class="group inline-flex items-center gap-2 text-white/75 hover:text-white transition-all duration-200 cursor-pointer hover:translate-x-1" onclick="changeView('view-faq')">
+                    <span class="h-1.5 w-1.5 rounded-full bg-white/30 group-hover:bg-[var(--color-primary)] transition-colors"></span>
+                    <span>Pusat Bantuan &amp; FAQ</span>
+                  </a>
+                </li>
+                <li>
+                  <a class="group inline-flex items-center gap-2 text-white/75 hover:text-white transition-all duration-200 cursor-pointer hover:translate-x-1" onclick="openQualityGuaranteeModal()">
+                    <span class="h-1.5 w-1.5 rounded-full bg-white/30 group-hover:bg-[var(--color-primary)] transition-colors"></span>
+                    <span>Jaminan Mutu</span>
+                  </a>
+                </li>
+                <li>
+                  <a class="group inline-flex items-center gap-2 text-white/75 hover:text-white transition-all duration-200 cursor-pointer hover:translate-x-1" onclick="openSecurityModal()">
+                    <span class="h-1.5 w-1.5 rounded-full bg-white/30 group-hover:bg-[var(--color-primary)] transition-colors"></span>
+                    <span>Keamanan</span>
+                  </a>
+                </li>
+                <li>
+                  <a class="group inline-flex items-center gap-2 text-white/50 hover:text-white/80 transition-all duration-200 cursor-pointer hover:translate-x-1" onclick="changeView('view-admin-login')">
+                    <i class="fa-solid fa-lock text-[9px] text-amber-400"></i>
+                    <span>Portal Admin</span>
+                  </a>
+                </li>
               </ul>
             </div>
           </div>
 
           <!-- Kolom 4: Hubungi Kami & Jam Kerja -->
           <div class="flex flex-col items-start text-left md:col-span-6 lg:col-span-4">
-            <h4 class="mb-3 text-[11px] font-black uppercase tracking-wider text-white border-b border-white/20 pb-2 w-full">
-              Hubungi Kami
+            <h4 class="mb-4 text-[11px] font-black uppercase tracking-wider text-white border-b border-white/10 pb-2.5 w-full flex items-center gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-[var(--color-primary)]"></span> Hubungi Kami
             </h4>
-            <div class="w-full space-y-2.5">
-              <!-- WhatsApp CTA Card (Flat Solid White Card) -->
+            <div class="w-full space-y-3">
+              <!-- WhatsApp CTA Card (Dark Glassmorphic Card dengan Aksen Hijau Glowing yang Selaras) -->
               <a
-                class="flex cursor-pointer items-center gap-3 rounded-xl border border-white/30 bg-white p-3 text-slate-800 transition-colors hover:bg-slate-100 active:bg-slate-200 shadow-none"
+                class="group flex cursor-pointer items-center gap-3.5 rounded-2xl border border-emerald-500/30 bg-emerald-950/25 hover:bg-emerald-900/35 p-3.5 transition-all duration-200 shadow-sm hover:border-emerald-500/50 hover:shadow-lg hover:shadow-emerald-950/50"
                 href="javascript:void(0)"
                 onclick="${w}"
               >
-                <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#25D366] text-white text-xl">
+                <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#25D366] text-white text-2xl shadow-md shadow-[#25D366]/30 group-hover:scale-105 transition-transform">
                   <i class="fa-brands fa-whatsapp"></i>
                 </div>
                 <div class="min-w-0 text-left">
                   <div class="flex items-center gap-1.5">
-                    <span class="h-1.5 w-1.5 rounded-full bg-[var(--color-primary)]"></span>
-                    <p class="text-[9px] font-extrabold uppercase tracking-widest text-[var(--color-primary-dark)]">Customer Support</p>
+                    <span class="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                    <p class="text-[9px] font-extrabold uppercase tracking-widest text-emerald-400">Customer Support</p>
                   </div>
-                  <p class="truncate text-xs font-black text-slate-900">Konsultasi via WhatsApp</p>
-                  <p class="text-[9px] font-medium text-slate-500">Respon Cepat &amp; Ramah</p>
+                  <p class="truncate text-xs font-black text-white group-hover:text-emerald-300 transition-colors">Konsultasi via WhatsApp</p>
+                  <p class="text-[10px] font-medium text-white/70">Respon Cepat &amp; Ramah</p>
+                </div>
+                <div class="ml-auto text-white/30 group-hover:text-emerald-400 group-hover:translate-x-0.5 transition-all">
+                  <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
                 </div>
               </a>
 
-              <!-- Email & Hours Card (Flat Solid Translucent) -->
-              <div class="rounded-xl border border-white/20 bg-white/10 p-3 space-y-2.5 text-white shadow-none">
+              <!-- Email & Hours Card (Glass Translucent Selaras) -->
+              <div class="rounded-2xl border border-white/10 bg-white/5 p-3.5 space-y-3 text-white shadow-xs">
                 <!-- Email (if configured) -->
                 ${s?`
-                <a href="mailto:${c(s)}" class="flex items-center gap-2.5 text-white hover:text-white/80 transition-colors">
-                  <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-white/20 bg-white/10 text-white">
+                <a href="mailto:${c(s)}" class="flex items-center gap-2.5 text-white/85 hover:text-white transition-colors pb-2.5 border-b border-white/10">
+                  <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-white/15 bg-white/10 text-white">
                     <i class="fa-solid fa-envelope text-xs"></i>
                   </div>
-                  <span class="truncate text-xs font-bold text-white tracking-wide">${c(s)}</span>
+                  <span class="truncate text-xs font-bold tracking-wide">${c(s)}</span>
                 </a>`:""}
 
                 <!-- Operating Hours -->
-                <div class="flex items-center gap-2.5 text-white">
-                  <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-white/20 bg-white/10 text-white">
-                    <i class="fa-solid fa-clock text-xs text-[var(--color-primary)]"></i>
+                <div class="flex items-center gap-2.5 text-white/90">
+                  <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-white/15 bg-white/10 text-[var(--color-primary)]">
+                    <i class="fa-solid fa-clock text-xs"></i>
                   </div>
                   <div class="min-w-0 text-left">
                     <p class="truncate text-xs font-bold text-white tracking-wide">${c(i)}</p>
-                    <p class="text-[9px] font-medium text-white/75">Pemesanan online 24 jam</p>
+                    <p class="text-[10px] font-medium text-white/60">Pemesanan online 24 jam</p>
                   </div>
                 </div>
               </div>
@@ -1282,34 +1340,54 @@ Kami akan segera memproses pesanan Anda. Terima kasih! 🙏`;window.open(`https:
           </div>
         </div>
 
-        <!-- Payment & Shipping Badges Row (Solid Flat Badges) -->
-        <div class="mt-8 border-t border-white/20 pt-6">
-          <div class="grid grid-cols-1 gap-6 md:grid-cols-2 md:gap-8 items-start">
+        <!-- Payment & Shipping Badges Row (Harmonis, Proporsional & Modern) -->
+        <div class="mt-10 border-t border-white/10 pt-7">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-10 items-start">
             <!-- Payment -->
-            <div class="flex flex-col items-start">
-              <p class="mb-2.5 text-[10px] font-black uppercase tracking-wider text-white">
-                <i class="fa-solid fa-credit-card mr-1 text-[var(--color-primary)]"></i> Metode Pembayaran Resmi
+            <div class="flex flex-col items-start w-full">
+              <p class="mb-3 text-[10px] font-black uppercase tracking-wider text-white/90 flex items-center gap-2">
+                <i class="fa-solid fa-credit-card text-[var(--color-primary)]"></i> Metode Pembayaran Resmi
               </p>
-              <div class="flex flex-wrap items-center gap-1.5 sm:gap-2">
-                <span class="inline-flex items-center gap-1.5 rounded-lg border border-white/25 bg-white/15 px-2.5 py-1 text-[11px] font-bold text-white shadow-none" title="QRIS Standar Nasional"><i class="fa-solid fa-qrcode text-rose-300"></i> QRIS</span>
-                <span class="inline-flex items-center gap-1.5 rounded-lg border border-white/25 bg-white/15 px-2.5 py-1 text-[11px] font-bold text-white shadow-none" title="Transfer Bank BCA"><i class="fa-solid fa-building-columns text-blue-300"></i> BCA</span>
-                <span class="inline-flex items-center gap-1.5 rounded-lg border border-white/25 bg-white/15 px-2.5 py-1 text-[11px] font-bold text-white shadow-none" title="Transfer Bank Mandiri"><i class="fa-solid fa-building-columns text-amber-300"></i> Mandiri</span>
-                <span class="inline-flex items-center gap-1.5 rounded-lg border border-white/25 bg-white/15 px-2.5 py-1 text-[11px] font-bold text-white shadow-none" title="Transfer Bank BRI"><i class="fa-solid fa-building-columns text-sky-300"></i> BRI</span>
-                <span class="inline-flex items-center gap-1.5 rounded-lg border border-white/25 bg-white/15 px-2.5 py-1 text-[11px] font-bold text-white shadow-none" title="Visa & Mastercard"><i class="fa-brands fa-cc-visa text-indigo-300"></i> <i class="fa-brands fa-cc-mastercard text-orange-300"></i> Kartu</span>
-                <span class="inline-flex items-center gap-1.5 rounded-lg border border-white/25 bg-white/15 px-2.5 py-1 text-[11px] font-bold text-white shadow-none" title="Bayar di Kasir"><i class="fa-solid fa-cash-register text-[var(--color-primary)]"></i> Kasir Toko</span>
+              <div class="flex flex-wrap items-center gap-2 w-full">
+                <span class="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 px-3 py-1.5 text-[11px] font-semibold text-white/90 transition-colors shadow-xs" title="QRIS Standar Nasional">
+                  <i class="fa-solid fa-qrcode text-rose-300"></i> QRIS
+                </span>
+                <span class="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 px-3 py-1.5 text-[11px] font-semibold text-white/90 transition-colors shadow-xs" title="Transfer Bank BCA">
+                  <i class="fa-solid fa-building-columns text-blue-300"></i> BCA
+                </span>
+                <span class="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 px-3 py-1.5 text-[11px] font-semibold text-white/90 transition-colors shadow-xs" title="Transfer Bank Mandiri">
+                  <i class="fa-solid fa-building-columns text-amber-300"></i> Mandiri
+                </span>
+                <span class="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 px-3 py-1.5 text-[11px] font-semibold text-white/90 transition-colors shadow-xs" title="Transfer Bank BRI">
+                  <i class="fa-solid fa-building-columns text-sky-300"></i> BRI
+                </span>
+                <span class="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 px-3 py-1.5 text-[11px] font-semibold text-white/90 transition-colors shadow-xs" title="Visa & Mastercard">
+                  <i class="fa-brands fa-cc-visa text-indigo-300"></i> <i class="fa-brands fa-cc-mastercard text-orange-300"></i> Kartu
+                </span>
+                <span class="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 px-3 py-1.5 text-[11px] font-semibold text-white/90 transition-colors shadow-xs" title="Bayar di Kasir Toko">
+                  <i class="fa-solid fa-cash-register text-[var(--color-primary)]"></i> Kasir Toko
+                </span>
               </div>
             </div>
 
             <!-- Shipping -->
-            <div class="flex flex-col items-start">
-              <p class="mb-2.5 text-[10px] font-black uppercase tracking-wider text-white">
-                <i class="fa-solid fa-truck-fast mr-1 text-[var(--color-primary)]"></i> Jasa Pengiriman &amp; Logistik
+            <div class="flex flex-col items-start w-full">
+              <p class="mb-3 text-[10px] font-black uppercase tracking-wider text-white/90 flex items-center gap-2">
+                <i class="fa-solid fa-truck-fast text-[var(--color-primary)]"></i> Jasa Pengiriman &amp; Logistik
               </p>
-              <div class="flex flex-wrap items-center gap-1.5 sm:gap-2">
-                <span class="inline-flex items-center gap-1.5 rounded-lg border border-white/25 bg-white/15 px-2.5 py-1 text-[11px] font-bold text-white shadow-none" title="Kirim Cepat Ekspedisi"><i class="fa-solid fa-truck-fast text-white"></i> Ekspedisi Cepat</span>
-                <span class="inline-flex items-center gap-1.5 rounded-lg border border-white/25 bg-white/15 px-2.5 py-1 text-[11px] font-bold text-white shadow-none" title="Kargo Truk & Partai Besar"><i class="fa-solid fa-truck-ramp-box text-amber-300"></i> Kargo &amp; Ekspedisi</span>
-                <span class="inline-flex items-center gap-1.5 rounded-lg border border-white/25 bg-white/15 px-2.5 py-1 text-[11px] font-bold text-white shadow-none" title="Kurir Instan & Same Day"><i class="fa-solid fa-motorcycle text-[var(--color-primary)]"></i> Kurir Instan</span>
-                <span class="inline-flex items-center gap-1.5 rounded-lg border border-white/25 bg-white/15 px-2.5 py-1 text-[11px] font-bold text-white shadow-none" title="Ambil di Toko Fisik"><i class="fa-solid fa-store text-sky-300"></i> Ambil Sendiri</span>
+              <div class="flex flex-wrap items-center gap-2 w-full">
+                <span class="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 px-3 py-1.5 text-[11px] font-semibold text-white/90 transition-colors shadow-xs" title="Kirim Cepat Ekspedisi">
+                  <i class="fa-solid fa-truck-fast text-emerald-300"></i> Ekspedisi Cepat
+                </span>
+                <span class="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 px-3 py-1.5 text-[11px] font-semibold text-white/90 transition-colors shadow-xs" title="Kargo Truk & Partai Besar">
+                  <i class="fa-solid fa-truck-ramp-box text-amber-300"></i> Kargo &amp; Truk
+                </span>
+                <span class="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 px-3 py-1.5 text-[11px] font-semibold text-white/90 transition-colors shadow-xs" title="Kurir Instan & Same Day">
+                  <i class="fa-solid fa-motorcycle text-[var(--color-primary)]"></i> Kurir Instan
+                </span>
+                <span class="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 px-3 py-1.5 text-[11px] font-semibold text-white/90 transition-colors shadow-xs" title="Ambil di Toko Fisik">
+                  <i class="fa-solid fa-store text-sky-300"></i> Ambil Sendiri
+                </span>
               </div>
             </div>
           </div>
@@ -1317,23 +1395,23 @@ Kami akan segera memproses pesanan Anda. Terima kasih! 🙏`;window.open(`https:
       </div>
 
       <!-- Sub-Footer Bottom Bar (Clean Solid Bar) -->
-      <div class="border-t border-white/15 bg-black/20 py-3.5">
+      <div class="border-t border-white/10 bg-black/30 backdrop-blur-sm py-4">
         <div class="mx-auto flex w-full flex-col items-center justify-between gap-3 px-4 sm:px-6 md:flex-row lg:px-8 xl:max-w-[1240px]">
-          <p class="text-[11px] font-medium text-white/90 text-center sm:text-left">
+          <p class="text-[11px] font-medium text-white/80 text-center sm:text-left">
             &#169; <span>${p}</span> <span class="font-extrabold text-white">${c(a)}</span>. <span>${c(d)}</span>
           </p>
-          <div class="flex flex-wrap items-center justify-center gap-2.5 sm:gap-3 text-[10px] font-bold text-white">
-            <button type="button" onclick="if(typeof window.openChangelogModal==='function') window.openChangelogModal();" class="inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/10 px-2.5 py-0.5 text-[9px] font-extrabold uppercase tracking-wider text-white hover:bg-white/20 transition-all active:scale-95 cursor-pointer" title="Lihat Catatan Pembaruan & Versi">
+          <div class="flex flex-wrap items-center justify-center gap-3 text-[10px] font-bold text-white">
+            <button type="button" onclick="if(typeof window.openChangelogModal==='function') window.openChangelogModal();" class="inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/10 px-3 py-1 text-[9px] font-extrabold uppercase tracking-wider text-white hover:bg-white/20 transition-all active:scale-95 cursor-pointer shadow-xs" title="Lihat Catatan Pembaruan & Versi">
               <span class="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
               <span>${c(m)}</span> • Changelog
             </button>
-            <span class="text-white/30">•</span>
+            <span class="text-white/20">•</span>
             <span class="flex items-center gap-1 text-[var(--color-primary)] font-bold">
               <i class="fa-solid fa-lock"></i> SSL Secured
             </span>
-            <span class="text-white/30">•</span>
-            <button type="button" onclick="const c = document.querySelector('#view-catalog .scroll-content'); if (c) c.scrollTo({ top: 0, behavior: 'smooth' }); else window.scrollTo({ top: 0, behavior: 'smooth' });" class="inline-flex items-center gap-1 text-white hover:underline cursor-pointer active:scale-95 font-bold">
-              Kembali ke Atas <i class="fa-solid fa-arrow-up text-[9px]"></i>
+            <span class="text-white/20">•</span>
+            <button type="button" onclick="const c = document.querySelector('#view-catalog .scroll-content'); if (c) c.scrollTo({ top: 0, behavior: 'smooth' }); else window.scrollTo({ top: 0, behavior: 'smooth' });" class="inline-flex items-center gap-1.5 text-white/80 hover:text-white transition-colors cursor-pointer active:scale-95 font-bold">
+              Kembali ke Atas <i class="fa-solid fa-arrow-up text-[9px] text-[var(--color-primary)]"></i>
             </button>
           </div>
         </div>
