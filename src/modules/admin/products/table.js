@@ -155,8 +155,3 @@ window.rAdmItms = t => {
 
     if (scrollParent) requestAnimationFrame(() => { scrollParent.scrollTop = savedScrollTop; });
 };
-
-// ─── Proxy Delegates ──────────────────────────────────────────────────────────
-// Memastikan pemanggilan fungsi antar-modul tetap aman
-window.rAdmReviews = () => window.rAdmReviews?.();
-window.rTaxPanel = () => window.rTaxPanel?.();
