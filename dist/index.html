@@ -132,13 +132,13 @@
         }
       }
     </style>
-    <script type="module" crossorigin src="/assets/index-CRynPUCh.js"></script>
+    <script type="module" crossorigin src="/assets/index-DOM5UknH.js"></script>
     <link rel="modulepreload" crossorigin href="/assets/vendor-firebase-core-D2OF5R23.js">
     <link rel="modulepreload" crossorigin href="/assets/vendor-firebase-db-BIUZcnOd.js">
     <link rel="modulepreload" crossorigin href="/assets/vendor-utils-Bszxp-Ae.js">
-    <link rel="modulepreload" crossorigin href="/assets/module-print-vYYxQdG6.js">
-    <link rel="modulepreload" crossorigin href="/assets/module-admin-DWTjF-2x.js">
-    <link rel="stylesheet" crossorigin href="/assets/index-Ft-RD5Ek.css">
+    <link rel="modulepreload" crossorigin href="/assets/module-print-CQkot418.js">
+    <link rel="modulepreload" crossorigin href="/assets/module-admin-arGEKqFf.js">
+    <link rel="stylesheet" crossorigin href="/assets/index-BNAQqy9F.css">
   </head>
   <body>
     <!-- UI Components Global -->
@@ -679,13 +679,13 @@
       </div>
     </div>
     <div class="fixed inset-0 z-[70] flex hidden items-end justify-center bg-slate-900/80 p-0 opacity-0 transition-opacity duration-300 sm:items-center sm:p-5" id="product-modal" onclick="if (event.target === this) closeProductModal();">
-      <div class="modal-bottom-sheet hide-scrollbar relative flex max-h-[92dvh] w-full max-w-md sm:max-w-lg md:max-w-2xl lg:max-w-3xl translate-y-full transform flex-col overflow-y-auto border-t border-slate-200 bg-white shadow-lg transition-transform duration-300 dark:border-slate-800 dark:bg-[#0f172a] sm:translate-y-10 sm:rounded-[2rem] sm:border" id="product-modal-content">
-        <div class="absolute left-1/2 top-3 z-30 h-1.5 w-12 -translate-x-1/2 transform rounded-full bg-slate-200 dark:bg-slate-700 sm:hidden"></div>
+      <div class="modal-bottom-sheet hide-scrollbar relative flex max-h-[92dvh] w-full max-w-md sm:max-w-lg md:max-w-2xl lg:max-w-3xl translate-y-full transform flex-col overflow-y-auto border-t border-slate-200 bg-white shadow-2xl transition-transform duration-300 dark:border-slate-800 dark:bg-[#0f172a] rounded-t-3xl sm:translate-y-10 sm:rounded-2xl sm:border" id="product-modal-content">
+        <div class="absolute left-1/2 top-2.5 z-30 h-1 w-10 -translate-x-1/2 rounded-full bg-slate-300/80 dark:bg-slate-600 sm:hidden"></div>
         <div class="absolute right-3 top-3 z-20 flex gap-1.5">
           <button class="flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 bg-white/90 text-slate-600 shadow-sm backdrop-blur-sm transition-all hover:border-[var(--color-primary)] hover:bg-[var(--color-primary)] hover:text-white active:scale-90 dark:border-slate-700 dark:bg-slate-800/90 dark:text-slate-300" onclick="shareProduct()"><i class="fa-solid fa-share-nodes text-xs"></i></button>
           <button class="flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 bg-white/90 text-slate-600 shadow-sm backdrop-blur-sm transition-all hover:border-rose-500 hover:bg-rose-500 hover:text-white active:scale-90 dark:border-slate-700 dark:bg-slate-800/90 dark:text-slate-300" onclick="closeProductModal()"><i class="fa-solid fa-xmark text-sm"></i></button>
         </div>
-        <div class="group relative flex aspect-square w-full shrink-0 items-center justify-center overflow-hidden border-b border-slate-100 bg-white p-8 dark:border-slate-800/60 sm:rounded-t-[2rem] sm:p-10">
+        <div class="group relative flex aspect-square w-full shrink-0 items-center justify-center overflow-hidden border-b border-slate-100 bg-white p-8 dark:border-slate-800/60 sm:rounded-t-2xl sm:p-10">
           <img alt="Product" class="h-full w-full cursor-zoom-in object-cover transition-transform duration-500 hover:scale-105" id="product-modal-img" loading="lazy" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onclick="previewProductImage()" />
           <div class="pointer-events-none absolute bottom-3 right-3 z-10 flex items-center gap-1 rounded-lg bg-black/50 px-2 py-1 text-[9px] font-bold text-white opacity-70 shadow-sm backdrop-blur-sm transition-opacity group-hover:opacity-100 dark:bg-slate-900/60 sm:opacity-0" id="zoom-indicator"><i class="fa-solid fa-magnifying-glass-plus"></i> Perbesar</div>
           <div id="product-modal-video-container" class="absolute inset-0 flex hidden items-center justify-center bg-black"></div>
@@ -766,6 +766,8 @@
             <div class="hidden rounded-2xl border border-rose-100 bg-rose-50 p-4 text-center text-sm font-bold text-rose-600 dark:border-rose-800 dark:bg-rose-900/20" id="modal-inactive-controls"><i class="fa-solid fa-box-open mr-2"></i> Stok Sedang Kosong</div>
           </div>
           <div class="mt-7 border-t border-slate-100 pt-6 dark:border-slate-800" id="product-modal-reviews-container"></div>
+          <!-- FITUR: Produk Sejenis & Rekomendasi Terkait -->
+          <div class="mt-7 border-t border-slate-100 pt-6 dark:border-slate-800 hidden" id="product-modal-related-container"></div>
         </div>
       </div>
     </div>

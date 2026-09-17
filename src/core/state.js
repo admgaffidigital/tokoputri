@@ -86,9 +86,10 @@ export let memberCheckTimer = null;
 
 // ─── UI State ────────────────────────────────────────────────
 // Filter & navigasi katalog
-export let aCat   = 'Semua Produk';
-export let aBrand = 'Semua Merek';
-export let sQ     = '';
+export let aCat    = 'Semua Produk';
+export let aSubCat = 'Semua Jenis';
+export let aBrand  = 'Semua Merek';
+export let sQ      = '';
 export let cSort  = 'newest';
 export let cView  = 'grid';
 export let cPage  = 1;
@@ -145,6 +146,7 @@ export const setCurrentMember = v => { currentMember = v; };
 export const setSelectedReward= v => { selectedReward = v; };
 export const setMemberCheckTimer = v => { memberCheckTimer = v; };
 export const setACat          = v => { aCat = v; };
+export const setASubCat       = v => { aSubCat = v; };
 export const setABrand        = v => { aBrand = v; };
 export const setSQ            = v => { sQ = v; };
 export const setCSort         = v => { cSort = v; };

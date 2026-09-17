@@ -139,22 +139,29 @@ export const openProductModal = i => {
         window.loadProductReviews(p.id);
     }
     
+    // Render produk sejenis / alternatif pilihan
+    renderRelatedProducts(p);
+    
     const m = el('product-modal'), c = el('product-modal-content');
     if (m && c) {
-        if (m.classList.contains('hidden')) {
-            const urlParams = new URLSearchParams(window.location.search);
-            if (urlParams.get('p') !== String(p.id)) {
-                urlParams.set('p', p.id);
-                window.history.pushState({modal: 'product'}, p.name, window.location.pathname + '?' + urlParams.toString());
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('p') !== String(p.id)) {
+            urlParams.set('p', p.id);
+            window.history.pushState({modal: 'product'}, p.name, window.location.pathname + '?' + urlParams.toString());
+            if (m.classList.contains('hidden')) {
                 oMods.push('product');
             }
         }
-        show('product-modal');
-        c.scrollTo(0,0);
-        setTimeout(() => { 
-            m.classList.remove('opacity-0'); 
-            c.classList.remove('translate-y-full','sm:translate-y-10'); 
-        }, 10);
+        if (m.classList.contains('hidden')) {
+            show('product-modal');
+            c.scrollTo(0,0);
+            setTimeout(() => { 
+                m.classList.remove('opacity-0'); 
+                c.classList.remove('translate-y-full','sm:translate-y-10'); 
+            }, 10);
+        } else {
+            c.scrollTo({ top: 0, behavior: 'smooth' });
+        }
     }
 };
 
@@ -827,9 +834,100 @@ export const shareProduct = () => {
     }
 };
 
+/**
+ * Render produk sejenis / rekomendasi terkait pada bagian bawah modal produk
+ */
+export const renderRelatedProducts = p => {
+    const container = el('product-modal-related-container');
+    if (!container) return;
+
+    if (!p || !appData.products || !appData.products.length) {
+        container.innerHTML = '';
+        container.classList.add('hidden');
+        return;
+    }
+
+    const currentId = String(p.id);
+    const subCat = (p.subCategory || '').trim().toLowerCase();
+    const cat = (p.category || '').trim().toLowerCase();
+    const brand = (p.brand || '').trim().toLowerCase();
+
+    // Ambil produk aktif selain produk saat ini
+    const candidates = appData.products.filter(item => {
+        if (!item || item.id == null || String(item.id) === currentId) return false;
+        if (item.isActive === false || item.isActive === 'false') return false;
+        return true;
+    });
+
+    // Beri skor relevansi berdasarkan kesamaan sub-kategori, kategori, dan brand
+    const scored = candidates.map(item => {
+        let score = 0;
+        const iSubCat = (item.subCategory || '').trim().toLowerCase();
+        const iCat = (item.category || '').trim().toLowerCase();
+        const iBrand = (item.brand || '').trim().toLowerCase();
+
+        if (subCat && iSubCat && subCat === iSubCat) score += 6;
+        if (cat && iCat && cat === iCat) score += 3;
+        if (brand && iBrand && brand === iBrand) score += 2;
+
+        return { item, score };
+    }).filter(x => x.score > 0);
+
+    scored.sort((a, b) => b.score - a.score || (b.item.id || 0) - (a.item.id || 0));
+    const relatedList = scored.slice(0, 8).map(x => x.item);
+
+    if (!relatedList.length) {
+        container.innerHTML = '';
+        container.classList.add('hidden');
+        return;
+    }
+
+    container.classList.remove('hidden');
+
+    const cardsHtml = relatedList.map(item => {
+        const itemImg = getOptImg(item.img, 'w300-rw');
+        const itemPrice = (item.variants && item.variants.length > 0)
+            ? Math.min(...item.variants.map(v => parseFloat(v.price) || item.price))
+            : (item.price || 0);
+
+        let badgeText = item.subCategory || item.brand || item.category || '';
+
+        return `
+        <div onclick="openProductModal(${item.id})" class="group cursor-pointer shrink-0 w-[145px] sm:w-[165px] bg-slate-50 dark:bg-slate-900/70 hover:bg-white dark:hover:bg-slate-800 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-2.5 flex flex-col transition-all duration-300 hover:shadow-md hover:border-[var(--color-primary)]/40 hover:-translate-y-1 snap-start">
+            <div class="relative aspect-square w-full rounded-xl bg-white overflow-hidden mb-2 border border-slate-100 dark:border-slate-700/50 flex items-center justify-center">
+                <img loading="lazy" decoding="async" src="${esc(itemImg)}" alt="${esc(item.name)}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" onerror="this.onerror=null;this.src='https://placehold.co/300?text=No+Image'">
+                ${badgeText ? `<span class="absolute top-1.5 left-1.5 bg-slate-900/80 backdrop-blur-xs text-white text-[7.5px] sm:text-[8px] font-bold px-1.5 py-0.5 rounded-md truncate max-w-[85%] uppercase tracking-wider">${esc(badgeText)}</span>` : ''}
+            </div>
+            <h5 class="text-[11px] font-bold text-slate-700 dark:text-slate-200 line-clamp-2 leading-tight mb-1.5 group-hover:text-[var(--color-primary)] transition-colors uppercase">${esc(item.name)}</h5>
+            <div class="mt-auto flex items-baseline justify-between pt-1">
+                <span class="text-xs font-extrabold text-[var(--color-primary)] tracking-tight">${fCur(itemPrice)}</span>
+                <span class="text-[9px] font-bold text-slate-400 group-hover:text-[var(--color-primary)] uppercase transition-colors">Lihat <i class="fa-solid fa-arrow-right text-[8px] ml-0.5"></i></span>
+            </div>
+        </div>`;
+    }).join('');
+
+    container.innerHTML = `
+    <div class="flex items-center justify-between mb-3">
+        <div class="flex items-center gap-2.5">
+            <div class="w-8 h-8 rounded-xl bg-[rgba(var(--color-primary-rgb),0.1)] text-[var(--color-primary)] flex items-center justify-center shrink-0">
+                <i class="fa-solid fa-shapes text-sm"></i>
+            </div>
+            <div>
+                <h4 class="text-xs sm:text-sm font-bold uppercase tracking-wider text-slate-800 dark:text-white leading-tight">Produk Sejenis & Alternatif Pilihan</h4>
+                <p class="text-[10px] text-slate-400 dark:text-slate-500 font-medium">Pilihan rekomendasi dengan spesifikasi sejenis</p>
+            </div>
+        </div>
+        <span class="text-[10px] font-bold text-slate-400 dark:text-slate-500 px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800">${relatedList.length} Pilihan</span>
+    </div>
+    <div class="flex gap-2.5 overflow-x-auto pb-2 pt-1 hide-scrollbar -mx-1 px-1 snap-x snap-mandatory">
+        ${cardsHtml}
+    </div>`;
+};
+
 // ─── Expose ke window untuk atribut onclick di HTML ──────
 window.openProductModal = openProductModal;
 window.closeProductModal = closeProductModal;
+window.renderRelatedProducts = renderRelatedProducts;
 window.previewVariant = previewVariant;
 window.previewProductImage = previewProductImage;
 window.closeVariantPreviewModal = closeVariantPreviewModal;
