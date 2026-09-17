@@ -200,20 +200,30 @@ body {
 }
 
 .bnav-item .bnav-icon-wrap {
-    transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    width: 46px;
+    height: 28px;
+    border-radius: 9999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .bnav-item .bnav-icon-wrap i {
-    transition: color 0.2s ease, transform 0.2s ease;
+    transition: color 0.2s ease, transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.bnav-item:active .bnav-icon-wrap {
+    transform: scale(0.92);
 }
 
 .bnav-item.active .bnav-icon-wrap {
-    background: rgba(var(--color-primary-rgb), 0.12);
+    background: rgba(var(--color-primary-rgb), 0.16);
 }
 
 .bnav-item.active .bnav-icon-wrap i {
     color: var(--color-primary) !important;
-    transform: scale(1.1);
+    transform: scale(1.12);
 }
 
 .bnav-item.active .bnav-label {
