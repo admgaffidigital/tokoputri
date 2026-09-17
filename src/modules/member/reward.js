@@ -139,12 +139,12 @@ export const openMemberModal = () => {
     if (!m) {
         m = document.createElement('div');
         m.id = 'member-modal';
-        m.className = 'fixed inset-0 z-[115] bg-slate-900/70 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-5';
+        m.className = 'fixed inset-0 z-[115] bg-slate-900/80 flex items-end sm:items-center justify-center p-0 sm:p-5';
         m.onclick = (e) => { if (e.target === m) closeMemberModal(); };
         document.body.appendChild(m);
     }
     m.innerHTML = `
-        <div class="bg-white dark:bg-slate-900 w-full max-w-lg rounded-t-[2rem] sm:rounded-[2rem] max-h-[85vh] flex flex-col shadow-2xl border border-slate-200 dark:border-slate-700">
+        <div class="bg-white dark:bg-slate-900 w-full max-w-lg rounded-t-3xl sm:rounded-2xl max-h-[85vh] flex flex-col shadow-2xl border border-slate-200 dark:border-slate-700">
             <div class="p-5 sm:p-6 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center shrink-0">
                 <h3 class="font-bold text-slate-800 dark:text-white text-base flex items-center gap-2"><i class="fa-solid fa-crown text-amber-400"></i> Poin &amp; Hadiah Member</h3>
                 <button onclick="closeMemberModal()" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:bg-rose-100 hover:text-rose-500 flex items-center justify-center transition-all"><i class="fa-solid fa-xmark"></i></button>
@@ -188,7 +188,7 @@ export const rMemberModalBody = () => {
 
     if (currentMember) {
         setH('member-modal-body', `
-            <div class="bg-[var(--color-primary)] rounded-[1.5rem] p-5 text-white shadow-lg">
+            <div class="bg-[var(--color-primary)] rounded-2xl p-5 text-white shadow-lg">
                 <div class="flex justify-between items-start mb-2">
                     <div>
                         <p class="text-[10px] font-bold uppercase tracking-widest opacity-80">Nama Pelanggan</p>

@@ -168,7 +168,7 @@ window._openColorFloatModal = (innerHtml) => {
     overlay.onclick = (e) => { if (e.target === overlay) _closeColorFloatModal(); };
     const box = document.createElement('div');
     box.id = 'color-float-box';
-    box.className = 'relative w-full max-w-sm scale-95 transform rounded-[2rem] border border-slate-200 bg-white shadow-2xl transition-all duration-300 dark:border-slate-700 dark:bg-slate-800 overflow-y-auto max-h-[90vh]';
+    box.className = 'relative w-full max-w-sm scale-95 transform rounded-3xl border border-slate-200 bg-white shadow-2xl transition-all duration-300 dark:border-slate-700 dark:bg-slate-800 overflow-y-auto max-h-[90vh]';
     box.innerHTML = innerHtml;
     overlay.appendChild(box);
     document.body.appendChild(overlay);
