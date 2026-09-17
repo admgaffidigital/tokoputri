@@ -191,6 +191,14 @@ body {
 /* === 4B. BOTTOM NAVIGATION BAR (MOBILE NATIVE APP EXPERIENCE) === */
 #bottom-nav-bar {
     padding-bottom: max(0.45rem, env(safe-area-inset-bottom));
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s ease, visibility 0.3s ease;
+}
+
+#bottom-nav-bar.bnav-hidden {
+    transform: translateY(250%) !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    visibility: hidden !important;
 }
 
 .bnav-item {

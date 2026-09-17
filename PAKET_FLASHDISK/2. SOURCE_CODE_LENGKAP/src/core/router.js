@@ -93,13 +93,13 @@ export const updateBottomNav = (v = curViewName) => {
     // Sembunyikan bilah navigasi di view checkout, pembayaran, login admin, dan dashboard admin
     const hiddenViews = ['view-cart', 'view-checkout', 'view-payment', 'view-admin-login', 'view-admin'];
     if (hiddenViews.includes(v)) {
-        bNav.classList.add('translate-y-full', 'pointer-events-none');
-        bNav.classList.remove('translate-y-0');
+        bNav.classList.add('bnav-hidden', 'translate-y-[250%]', 'opacity-0', 'pointer-events-none');
+        bNav.classList.remove('translate-y-0', 'opacity-100');
         return;
     }
 
-    bNav.classList.remove('translate-y-full', 'pointer-events-none');
-    bNav.classList.add('translate-y-0');
+    bNav.classList.remove('bnav-hidden', 'translate-y-[250%]', 'opacity-0', 'pointer-events-none');
+    bNav.classList.add('translate-y-0', 'opacity-100');
 
     // Reset status aktif semua item
     document.querySelectorAll('.bnav-item').forEach(item => item.classList.remove('active'));
