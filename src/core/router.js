@@ -120,6 +120,9 @@ export const updateBottomNav = (v = curViewName) => {
  * Handler aksi klik tombol pada Bottom Navigation Bar
  */
 export const onBottomNavClick = (tab) => {
+    if (typeof window.triggerHaptic === 'function') {
+        window.triggerHaptic(tab === 'home' ? 'medium' : 'light');
+    }
     if (tab === 'home') {
         if (curViewName === 'view-catalog') {
             const sc = document.querySelector('#view-catalog .scroll-content');
@@ -144,9 +147,98 @@ export const onBottomNavClick = (tab) => {
 };
 
 /**
+ * Inisialisasi Native Pull-to-Refresh untuk layar mobile
+ */
+export const initPullToRefresh = () => {
+    const sc = document.querySelector('#view-catalog .scroll-content');
+    const indicator = el('pull-to-refresh-indicator');
+    const icon = el('ptr-icon');
+    const text = el('ptr-text');
+    if (!sc || !indicator) return;
+
+    let startY = 0;
+    let currentY = 0;
+    let isPulling = false;
+    let isRefreshing = false;
+    const threshold = 65;
+
+    sc.addEventListener('touchstart', e => {
+        if (sc.scrollTop <= 5 && !isRefreshing) {
+            startY = e.touches[0].pageY;
+            isPulling = true;
+        }
+    }, { passive: true });
+
+    sc.addEventListener('touchmove', e => {
+        if (!isPulling || isRefreshing) return;
+        currentY = e.touches[0].pageY;
+        const diff = currentY - startY;
+
+        if (diff > 15 && sc.scrollTop <= 5) {
+            indicator.classList.add('visible');
+            const progress = Math.min(diff / threshold, 1.5);
+            if (icon) icon.style.transform = `rotate(${progress * 240}deg)`;
+            if (text) {
+                text.innerText = diff >= threshold ? 'Lepaskan untuk segarkan' : 'Tarik ke bawah untuk refresh';
+            }
+        } else {
+            indicator.classList.remove('visible');
+        }
+    }, { passive: true });
+
+    sc.addEventListener('touchend', async () => {
+        if (!isPulling || isRefreshing) return;
+        isPulling = false;
+        const diff = currentY - startY;
+
+        if (diff >= threshold && sc.scrollTop <= 5) {
+            isRefreshing = true;
+            if (typeof window.triggerHaptic === 'function') window.triggerHaptic('medium');
+            if (icon) {
+                icon.className = 'fa-solid fa-arrows-rotate fa-spin text-[var(--color-primary)]';
+                icon.style.transform = '';
+            }
+            if (text) text.innerText = 'Menyinkronkan katalog...';
+
+            try {
+                if (typeof window.syncAppMeta === 'function') {
+                    await window.syncAppMeta();
+                } else if (typeof window.loadAppData === 'function') {
+                    await window.loadAppData();
+                }
+                if (typeof window.rCat === 'function') window.rCat();
+                if (typeof window.rDyn === 'function') window.rDyn();
+                
+                if (text) text.innerText = 'Katalog Terkini Disinkron!';
+                if (icon) icon.className = 'fa-solid fa-circle-check text-emerald-500';
+                if (typeof window.triggerHaptic === 'function') window.triggerHaptic('success');
+            } catch(e) {
+                if (text) text.innerText = 'Gagal sinkron data';
+            }
+
+            setTimeout(() => {
+                indicator.classList.remove('visible');
+                setTimeout(() => {
+                    isRefreshing = false;
+                    if (icon) {
+                        icon.className = 'fa-solid fa-arrows-rotate text-[var(--color-primary)] transition-transform duration-300';
+                        icon.style.transform = '';
+                    }
+                    if (text) text.innerText = 'Tarik ke bawah untuk refresh';
+                }, 300);
+            }, 600);
+        } else {
+            indicator.classList.remove('visible');
+            if (icon) icon.style.transform = '';
+        }
+    });
+};
+
+/**
  * Pasang router listener popstate
  */
 export const setupHistoryRouter = () => {
+    initPullToRefresh();
     window.addEventListener('popstate', e => {
         if (oMods.length) {
             const m = oMods.pop();
@@ -213,6 +305,7 @@ window.changeView = changeView;
 window.setupHistoryRouter = setupHistoryRouter;
 window.onBottomNavClick = onBottomNavClick;
 window.updateBottomNav = updateBottomNav;
+window.initPullToRefresh = initPullToRefresh;
 try {
     Object.defineProperty(window, 'curViewName', {
         get: () => curViewName,

@@ -679,6 +679,8 @@ export const uMPP = () => {
     
     if (cProd.variants?.length > 0 && cVar === null) {
         setIn('btn-modal-price-preview', 'Rp 0');
+        const stickyEl = el('sticky-modal-price');
+        if (stickyEl) stickyEl.innerText = 'Pilih Varian';
         return;
     }
     
@@ -698,7 +700,10 @@ export const uMPP = () => {
             if (tQ >= parseFloat(w.minQty)) { e = w.price; break; }
         }
     }
-    setIn('btn-modal-price-preview', fCur(e * cQty));
+    const finalSubtotal = fCur(e * cQty);
+    setIn('btn-modal-price-preview', finalSubtotal);
+    const stickyEl = el('sticky-modal-price');
+    if (stickyEl) stickyEl.innerText = finalSubtotal;
 };
 
 export const updateModalQty = c => {
@@ -710,6 +715,7 @@ export const updateModalQty = c => {
     setCQty(newQty);
     setV('modal-qty-input', cQty); 
     uMPP();
+    if (typeof window.triggerHaptic === 'function') window.triggerHaptic('light');
     if (useStk && maxStk !== Infinity && cQty >= maxStk) showToast(`Maks stok: ${maxStk}`);
 };
 
@@ -725,17 +731,19 @@ export const handleModalQtyChange = v => {
     setCQty(newQty);
     setV('modal-qty-input', cQty); 
     uMPP();
+    if (typeof window.triggerHaptic === 'function') window.triggerHaptic('light');
 };
 
 export const selectVariant = i => { 
     setCVar(i); 
     rProdMod(); 
+    if (typeof window.triggerHaptic === 'function') window.triggerHaptic('light');
 };
 
 /**
- * Konfirmasi menambahkan produk dari modal ke keranjang belanja
+ * Konfirmasi menambahkan produk dari modal ke keranjang belanja (dengan animasi terbang & haptic)
  */
-export const confirmAddProductToCart = () => {
+export const confirmAddProductToCart = (sourceEl = null) => {
     if (cProd.variants?.length > 0 && cVar === null) return showToast("Pilih varian / warna terlebih dahulu!");
     
     const useStk = appData.store.useStock === true || appData.store.useStock === 'true';
@@ -751,6 +759,7 @@ export const confirmAddProductToCart = () => {
     }
     
     const v = cProd.variants?.[cVar], vN = v?.name || null, e = cart.find(i => i.id === cProd.id && i.variantName === vN), unt = v?.unit || cProd.unit || 'pcs';
+    const prodImg = v?.img || cProd.img;
     if (e) {
         e.qty = parseFloat((e.qty + cQty).toFixed(2)); 
         e.unit = unt;
@@ -761,7 +770,7 @@ export const confirmAddProductToCart = () => {
             name: cProd.name, 
             variantName: vN, 
             price: v?.price ?? cProd.price, 
-            img: v?.img || cProd.img, 
+            img: prodImg, 
             qty: cQty, 
             unit: unt, 
             poTime: cProd.poTime || '', 
@@ -771,8 +780,82 @@ export const confirmAddProductToCart = () => {
     }
     updCart();
     if (typeof analytics !== 'undefined') analytics.logEvent('add_to_cart', { item_id: cProd.id, item_name: cProd.name, quantity: cQty });
+    
+    // Trigger Animasi Terbang & Haptic
+    const startElem = (sourceEl instanceof HTMLElement) ? sourceEl : (el('product-modal-img') || sourceEl);
+    if (typeof window.flyToCartAnimation === 'function') {
+        window.flyToCartAnimation(startElem, '#bnav-cart', prodImg);
+    } else if (typeof window.triggerHaptic === 'function') {
+        window.triggerHaptic('medium');
+    }
+
     closeProductModal(); 
-    showToast("Berhasil Masuk Keranjang");
+    showToast("Berhasil Masuk Keranjang", "success");
+};
+
+/**
+ * Beli Sekarang langsung (Instan Checkout)
+ */
+export const buyNowProduct = () => {
+    if (cProd.variants?.length > 0 && cVar === null) return showToast("Pilih varian / warna terlebih dahulu!");
+
+    const useStk = appData.store.useStock === true || appData.store.useStock === 'true';
+    if (useStk) {
+        const v2 = cProd.variants?.[cVar];
+        const vN2 = v2?.name || null;
+        const avail = vN2 ? (parseFloat(v2.stock) || 0) : (parseFloat(cProd.stock) || 0);
+        const inCart = cart.find(i => i.id === cProd.id && i.variantName === vN2);
+        const alreadyInCart = inCart ? parseFloat(inCart.qty) || 0 : 0;
+        if (cQty + alreadyInCart > avail) {
+            return showToast(`Stok tidak cukup! Tersisa: ${avail}`);
+        }
+    }
+
+    const v = cProd.variants?.[cVar], vN = v?.name || null, e = cart.find(i => i.id === cProd.id && i.variantName === vN), unt = v?.unit || cProd.unit || 'pcs';
+    const prodImg = v?.img || cProd.img;
+    if (e) {
+        e.qty = parseFloat((e.qty + cQty).toFixed(2)); 
+        e.unit = unt;
+    } else {
+        const itemPoin = (v && parseFloat(v.poin) > 0) ? parseFloat(v.poin) : (parseFloat(cProd.poin) || 0);
+        cart.push({
+            id: cProd.id, 
+            name: cProd.name, 
+            variantName: vN, 
+            price: v?.price ?? cProd.price, 
+            img: prodImg, 
+            qty: cQty, 
+            unit: unt, 
+            poTime: cProd.poTime || '', 
+            colorCode: v?.colorCode || '', 
+            poin: itemPoin
+        });
+    }
+    updCart();
+    if (typeof window.triggerHaptic === 'function') window.triggerHaptic('success');
+    closeProductModal();
+    if (typeof window.changeView === 'function') window.changeView('view-checkout');
+};
+
+/**
+ * Konsultasi produk langsung via WhatsApp
+ */
+export const chatWAAboutProduct = () => {
+    if (!cProd) return;
+    const phone = (appData.store.wa || '').replace(/\D/g, '');
+    if (!phone) return showToast('Nomor WhatsApp toko belum diatur admin.');
+    
+    let targetWa = phone;
+    if (targetWa.startsWith('0')) targetWa = '62' + targetWa.slice(1);
+    else if (!targetWa.startsWith('62')) targetWa = '62' + targetWa;
+
+    const v = cProd.variants?.[cVar];
+    const vN = v?.name ? ` (Varian: ${v.name})` : '';
+    const price = v?.price ?? cProd.price;
+    const msg = `Halo ${appData.store.name || 'Toko Putri'}, saya ingin bertanya tentang produk *${cProd.name}*${vN} seharga ${fCur(price)}. Apakah produk ini siap kirim?`;
+    
+    if (typeof window.triggerHaptic === 'function') window.triggerHaptic('light');
+    window.open(`https://wa.me/${targetWa}?text=${encodeURIComponent(msg)}`, '_blank');
 };
 
 /**
@@ -940,3 +1023,5 @@ window.selectVariant = selectVariant;
 window.confirmAddProductToCart = confirmAddProductToCart;
 window.confirmAddToWishlist = confirmAddToWishlist;
 window.shareProduct = shareProduct;
+window.buyNowProduct = buyNowProduct;
+window.chatWAAboutProduct = chatWAAboutProduct;

@@ -6,8 +6,10 @@
  * ============================================================
  */
 
-import { appData, aCat, setACat, aSubCat, setASubCat, aBrand, setABrand, sQ, setSQ, cSort, setCSort, cView, setCView, cPage, setCPage, iPP } from '../../core/state.js';
-import { el, show, hide, toggleCls, esc, fCur, getOptImg } from '../../core/utils.js';
+import { appData, cart, aCat, setACat, aSubCat, setASubCat, aBrand, setABrand, sQ, setSQ, cSort, setCSort, cView, setCView, cPage, setCPage, iPP } from '../../core/state.js';
+import { el, show, hide, toggleCls, esc, fCur, getOptImg, showToast } from '../../core/utils.js';
+import { updCart } from '../cart/cart.js';
+import { openProductModal } from './product-modal.js';
 
 let searchTmr = null;
 
@@ -243,9 +245,9 @@ export const rCat = () => {
                             </p>
                             ${p.variants && p.variants.length > 0 ? '' : unt}
                         </div>
-                        <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[rgba(var(--color-primary-rgb),0.08)] text-[var(--color-primary)] border border-[rgba(var(--color-primary-rgb),0.15)] flex items-center justify-center transition-all group-hover:bg-[var(--color-primary)] group-hover:text-white group-hover:scale-110 active:scale-90 shadow-sm">
+                        <button type="button" class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[rgba(var(--color-primary-rgb),0.08)] text-[var(--color-primary)] border border-[rgba(var(--color-primary-rgb),0.15)] flex items-center justify-center transition-all group-hover:bg-[var(--color-primary)] group-hover:text-white group-hover:scale-110 active:scale-90 shadow-sm cursor-pointer z-20" onclick="quickAddOrOpenProduct(event, '${esc(p.id)}')" title="Tambah ke Keranjang">
                             <i class="fa-solid fa-plus text-xs sm:text-sm"></i>
-                        </div>
+                        </button>
                     </div>
                 </div>
             </a>`;
@@ -268,9 +270,9 @@ export const rCat = () => {
                             </p>
                             ${p.variants && p.variants.length > 0 ? '' : unt}
                         </div>
-                        <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[rgba(var(--color-primary-rgb),0.08)] text-[var(--color-primary)] border border-[rgba(var(--color-primary-rgb),0.15)] flex items-center justify-center transition-all group-hover:bg-[var(--color-primary)] group-hover:text-white group-hover:scale-110 active:scale-90 shadow-sm mr-1">
+                        <button type="button" class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[rgba(var(--color-primary-rgb),0.08)] text-[var(--color-primary)] border border-[rgba(var(--color-primary-rgb),0.15)] flex items-center justify-center transition-all group-hover:bg-[var(--color-primary)] group-hover:text-white group-hover:scale-110 active:scale-90 shadow-sm mr-1 cursor-pointer z-20" onclick="quickAddOrOpenProduct(event, '${esc(p.id)}')" title="Tambah ke Keranjang">
                             <i class="fa-solid fa-plus text-xs sm:text-sm"></i>
-                        </div>
+                        </button>
                     </div>
                 </div>
             </a>`;
@@ -278,6 +280,91 @@ export const rCat = () => {
     }).join('');
     
     v.length < f.length ? show('load-more-container') : hide('load-more-container');
+};
+
+/**
+ * Quick Add ke Keranjang langsung dari kartu katalog
+ */
+export const quickAddOrOpenProduct = (e, productId) => {
+    if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+    const p = appData.products.find(x => String(x.id) === String(productId));
+    if (!p) return;
+    
+    // Jika punya varian, pembeli wajib membuka modal untuk memilih varian
+    if (p.variants && p.variants.length > 0) {
+        if (typeof window.triggerHaptic === 'function') window.triggerHaptic('light');
+        openProductModal(productId);
+        return;
+    }
+
+    // Validasi stok jika toko mengaktifkan pembatasan stok
+    const useStk = appData.store.useStock === true || appData.store.useStock === 'true';
+    const avail = parseFloat(p.stock) || 0;
+    if (useStk && avail <= 0) {
+        return showToast('Stok produk ini sedang kosong');
+    }
+
+    const existing = cart.find(i => i.id === p.id && !i.variantName);
+    const inCartQty = existing ? parseFloat(existing.qty) || 0 : 0;
+    if (useStk && inCartQty + 1 > avail) {
+        return showToast(`Maksimal stok tercapai: ${avail}`);
+    }
+
+    if (existing) {
+        existing.qty = parseFloat((existing.qty + 1).toFixed(2));
+    } else {
+        const itemPoin = parseFloat(p.poin) > 0 ? parseFloat(p.poin) : 0;
+        cart.push({
+            id: p.id,
+            name: p.name,
+            variantName: null,
+            price: p.price,
+            img: p.img,
+            qty: 1,
+            unit: p.unit || 'pcs',
+            poTime: p.poTime || '',
+            colorCode: '',
+            poin: itemPoin
+        });
+    }
+    updCart();
+    
+    // Trigger Animasi Terbang & Haptic Feedback
+    const btnEl = e?.currentTarget || e?.target;
+    if (typeof window.flyToCartAnimation === 'function') {
+        window.flyToCartAnimation(btnEl, '#bnav-cart', p.img);
+    } else if (typeof window.triggerHaptic === 'function') {
+        window.triggerHaptic('medium');
+    }
+    showToast(`+1 ${p.name} Masuk Keranjang`, 'success');
+};
+
+/**
+ * Tampilkan skeleton placeholder beranimasi shimmer saat memuat data
+ */
+export const renderCatalogSkeleton = () => {
+    const c = el('product-container');
+    if (!c) return;
+    const count = 6;
+    let skeletonCards = '';
+    for (let i = 0; i < count; i++) {
+        skeletonCards += `
+        <div class="w-full bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700/50 rounded-[1.5rem] shadow-soft p-3 sm:p-4 flex flex-col space-y-3 overflow-hidden">
+            <div class="aspect-square w-full rounded-2xl skeleton-shimmer"></div>
+            <div class="h-3 w-16 rounded-full skeleton-shimmer"></div>
+            <div class="h-3.5 w-full rounded-md skeleton-shimmer"></div>
+            <div class="h-3 w-3/4 rounded-md skeleton-shimmer"></div>
+            <div class="mt-auto pt-2 flex items-center justify-between">
+                <div class="h-5 w-20 rounded-md skeleton-shimmer"></div>
+                <div class="w-7 h-7 rounded-full skeleton-shimmer"></div>
+            </div>
+        </div>`;
+    }
+    c.className = 'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-5 2xl:grid-cols-6 gap-4 sm:gap-6 lg:gap-8';
+    c.innerHTML = skeletonCards;
 };
 
 export const filterCategory = c => {
@@ -360,3 +447,5 @@ window.handleSearch = handleSearch;
 window.handleSort = handleSort;
 window.toggleView = toggleView;
 window.loadMoreProducts = loadMoreProducts;
+window.quickAddOrOpenProduct = quickAddOrOpenProduct;
+window.renderCatalogSkeleton = renderCatalogSkeleton;

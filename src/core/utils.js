@@ -200,6 +200,106 @@ export const normalizeWA = (raw) => {
     else if (!n.startsWith('62')) n = '62' + n;
     return n;
 };
+
+// ─── Native App Feel Helpers ─────────────────────────────────
+/**
+ * Haptic Vibration Feedback (Sentuhan Taktil Bergetar)
+ * @param {'light'|'medium'|'success'|'warning'} type
+ */
+export const triggerHaptic = (type = 'light') => {
+    try {
+        if (typeof navigator !== 'undefined' && typeof navigator.vibrate === 'function') {
+            if (type === 'light') navigator.vibrate(10);
+            else if (type === 'medium') navigator.vibrate(25);
+            else if (type === 'success') navigator.vibrate([15, 30, 20]);
+            else if (type === 'warning') navigator.vibrate([30, 40, 30]);
+        }
+    } catch (e) {}
+};
+
+/**
+ * Animasi Terbang Masuk Keranjang (Fly to Cart)
+ * @param {HTMLElement|EventTarget} startEl - Elemen asal tombol / gambar
+ * @param {HTMLElement|string} targetEl - Elemen tujuan (icon keranjang)
+ * @param {string} imgUrl - URL gambar produk
+ */
+export const flyToCartAnimation = (startEl, targetEl = null, imgUrl = null) => {
+    try {
+        const dest = (typeof targetEl === 'string' ? document.querySelector(targetEl) : targetEl) 
+            || document.getElementById('bnav-cart') 
+            || document.getElementById('bottom-nav-tab-cart') 
+            || document.getElementById('floating-cart-container')
+            || document.querySelector('[onclick*="changeView(\'view-cart\')"]');
+            
+        if (!startEl || !dest) return;
+
+        const startRect = startEl.getBoundingClientRect();
+        const destRect = dest.getBoundingClientRect();
+
+        const flyer = document.createElement('div');
+        flyer.className = 'flying-cart-item';
+        
+        if (imgUrl) {
+            flyer.innerHTML = `<img src="${imgUrl}" alt="Product" class="w-full h-full object-cover rounded-full" />`;
+        } else {
+            flyer.innerHTML = `<div class="w-full h-full primary-bg text-white flex items-center justify-center rounded-full text-xs shadow-lg"><i class="fa-solid fa-cart-shopping"></i></div>`;
+        }
+
+        const startX = startRect.left + (startRect.width / 2) - 20;
+        const startY = startRect.top + (startRect.height / 2) - 20;
+        const destX = destRect.left + (destRect.width / 2) - 20;
+        const destY = destRect.top + (destRect.height / 2) - 20;
+
+        flyer.style.cssText = `
+            position: fixed;
+            left: ${startX}px;
+            top: ${startY}px;
+            width: 42px;
+            height: 42px;
+            border-radius: 9999px;
+            z-index: 99999;
+            pointer-events: none;
+            box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.25);
+            border: 2px solid white;
+            transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.5s ease-in, scale 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+            transform: translate3d(0, 0, 0) scale(1);
+            opacity: 1;
+        `;
+
+        document.body.appendChild(flyer);
+
+        requestAnimationFrame(() => {
+            const deltaX = destX - startX;
+            const deltaY = destY - startY;
+            flyer.style.transform = `translate3d(${deltaX}px, ${deltaY}px, 0) scale(0.25) rotate(18deg)`;
+            flyer.style.opacity = '0.4';
+        });
+
+        setTimeout(() => {
+            if (flyer && flyer.parentNode) flyer.parentNode.removeChild(flyer);
+            
+            // Trigger haptic & cart bump
+            triggerHaptic('medium');
+            
+            const badge = document.getElementById('bottom-nav-cart-badge') || dest.querySelector('.cart-count-badge');
+            if (badge) {
+                badge.classList.remove('cart-bounce-pop');
+                void badge.offsetWidth;
+                badge.classList.add('cart-bounce-pop');
+            }
+            dest.classList.remove('cart-bounce-pop');
+            void dest.offsetWidth;
+            dest.classList.add('cart-bounce-pop');
+            setTimeout(() => {
+                if (badge) badge.classList.remove('cart-bounce-pop');
+                dest.classList.remove('cart-bounce-pop');
+            }, 600);
+        }, 500);
+    } catch (e) {
+        console.error('flyToCart error', e);
+    }
+};
+
 window.normalizeWA = normalizeWA;
 window.sLoad = sLoad;
 window.hLoad = hLoad;
@@ -216,3 +316,5 @@ window.fixD = fixD;
 window.fCur = fCur;
 window.sL = sL;
 window.ssL = ssL;
+window.triggerHaptic = triggerHaptic;
+window.flyToCartAnimation = flyToCartAnimation;
