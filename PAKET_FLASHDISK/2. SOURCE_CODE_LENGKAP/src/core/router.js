@@ -262,6 +262,7 @@ export const setupHistoryRouter = () => {
             else if (m === 'terms' && typeof window.closeTermsModal === 'function') window.closeTermsModal(true);
             else if (m === 'privacy' && typeof window.closePrivacyModal === 'function') window.closePrivacyModal(true);
             else if (m === 'askQuestion' && typeof window.closeAskQuestionModal === 'function') window.closeAskQuestionModal(true);
+            else if (m === 'quickVariant' && typeof window.closeQuickVariantSheet === 'function') window.closeQuickVariantSheet(true);
             else if (m === 'adminFAQ' && typeof window.closeAdminFAQModal === 'function') window.closeAdminFAQModal(true);
         } else {
             const state = e.state || {};

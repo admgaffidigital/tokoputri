@@ -1044,6 +1044,9 @@ export const openQuickVariantSheet = (productId) => {
 
     const m = el('quick-variant-modal'), c = el('quick-variant-content');
     if (m && c) {
+        if (m.classList.contains('hidden') && typeof window.pushModalHistory === 'function') {
+            window.pushModalHistory('quickVariant');
+        }
         show('quick-variant-modal');
         setTimeout(() => {
             m.classList.remove('opacity-0');
@@ -1053,12 +1056,19 @@ export const openQuickVariantSheet = (productId) => {
     if (typeof window.triggerHaptic === 'function') window.triggerHaptic('light');
 };
 
-export const closeQuickVariantSheet = () => {
+export const closeQuickVariantSheet = (fH = false) => {
     const m = el('quick-variant-modal'), c = el('quick-variant-content');
     if (m && c) {
-        m.classList.add('opacity-0');
-        c.classList.add('translate-y-full', 'sm:translate-y-10');
-        setTimeout(() => hide('quick-variant-modal'), 300);
+        const doClose = () => {
+            m.classList.add('opacity-0');
+            c.classList.add('translate-y-full', 'sm:translate-y-10');
+            setTimeout(() => hide('quick-variant-modal'), 300);
+        };
+        if (typeof window.requestCloseModal === 'function') {
+            window.requestCloseModal('quickVariant', fH, doClose);
+        } else {
+            doClose();
+        }
     }
 };
 
@@ -1255,7 +1265,7 @@ export const quickVariantBuyNow = () => {
     }
     updCart();
     if (typeof window.triggerHaptic === 'function') window.triggerHaptic('heavy');
-    closeQuickVariantSheet();
+    closeQuickVariantSheet(true);
 
     if (typeof window.changeView === 'function') {
         window.changeView('view-checkout');
