@@ -80,6 +80,67 @@ export const changeView = (v, fH = false) => {
         }
     }
     curViewName = v;
+    updateBottomNav(v);
+};
+
+/**
+ * Perbarui indikator tab aktif dan visibilitas Bottom Navigation Bar
+ */
+export const updateBottomNav = (v = curViewName) => {
+    const bNav = el('bottom-nav-bar');
+    if (!bNav) return;
+
+    // Sembunyikan bilah navigasi di view checkout, pembayaran, login admin, dan dashboard admin
+    const hiddenViews = ['view-cart', 'view-checkout', 'view-payment', 'view-admin-login', 'view-admin'];
+    if (hiddenViews.includes(v)) {
+        bNav.classList.add('translate-y-full', 'pointer-events-none');
+        bNav.classList.remove('translate-y-0');
+        return;
+    }
+
+    bNav.classList.remove('translate-y-full', 'pointer-events-none');
+    bNav.classList.add('translate-y-0');
+
+    // Reset status aktif semua item
+    document.querySelectorAll('.bnav-item').forEach(item => item.classList.remove('active'));
+
+    if (v === 'view-catalog') {
+        const homeTab = el('bnav-home');
+        if (homeTab) homeTab.classList.add('active');
+    } else if (v === 'view-orders') {
+        const ordersTab = el('bnav-orders');
+        if (ordersTab) ordersTab.classList.add('active');
+    } else if (v === 'view-wishlist' || v === 'view-faq') {
+        const menuTab = el('bnav-menu');
+        if (menuTab) menuTab.classList.add('active');
+    }
+};
+
+/**
+ * Handler aksi klik tombol pada Bottom Navigation Bar
+ */
+export const onBottomNavClick = (tab) => {
+    if (tab === 'home') {
+        if (curViewName === 'view-catalog') {
+            const sc = document.querySelector('#view-catalog .scroll-content');
+            if (sc) sc.scrollTo({ top: 0, behavior: 'smooth' });
+            else window.scrollTo({ top: 0, behavior: 'smooth' });
+        } else {
+            changeView('view-catalog');
+        }
+    } else if (tab === 'categories') {
+        if (typeof window.openCategoryModal === 'function') {
+            window.openCategoryModal();
+        }
+    } else if (tab === 'cart') {
+        changeView('view-cart');
+    } else if (tab === 'orders') {
+        changeView('view-orders');
+    } else if (tab === 'menu') {
+        if (typeof window.openQuickMenuModal === 'function') {
+            window.openQuickMenuModal();
+        }
+    }
 };
 
 /**
@@ -150,6 +211,8 @@ window.pushModalHistory = pushModalHistory;
 window.requestCloseModal = requestCloseModal;
 window.changeView = changeView;
 window.setupHistoryRouter = setupHistoryRouter;
+window.onBottomNavClick = onBottomNavClick;
+window.updateBottomNav = updateBottomNav;
 try {
     Object.defineProperty(window, 'curViewName', {
         get: () => curViewName,

@@ -132,13 +132,13 @@
         }
       }
     </style>
-    <script type="module" crossorigin src="/assets/index-DRZGCfrk.js"></script>
+    <script type="module" crossorigin src="/assets/index-BztUxcWf.js"></script>
     <link rel="modulepreload" crossorigin href="/assets/vendor-firebase-core-D2OF5R23.js">
     <link rel="modulepreload" crossorigin href="/assets/vendor-firebase-db-BIUZcnOd.js">
     <link rel="modulepreload" crossorigin href="/assets/vendor-utils-Bszxp-Ae.js">
     <link rel="modulepreload" crossorigin href="/assets/module-print-CQkot418.js">
-    <link rel="modulepreload" crossorigin href="/assets/module-admin-oA2Qc3b7.js">
-    <link rel="stylesheet" crossorigin href="/assets/index-CMPo82MQ.css">
+    <link rel="modulepreload" crossorigin href="/assets/module-admin-BnxkaYyW.js">
+    <link rel="stylesheet" crossorigin href="/assets/index-6Xew-oC_.css">
   </head>
   <body>
     <!-- UI Components Global -->
@@ -873,7 +873,7 @@
             </div>
           </div>
         </div>
-        <div class="scroll-content hide-scrollbar">
+        <div class="scroll-content hide-scrollbar pb-[calc(5.5rem+env(safe-area-inset-bottom))] md:pb-6">
           <div class="mx-auto mt-4 w-full max-w-full px-4 lg:px-10 xl:max-w-[1200px]" id="dynamic-banners-container"></div>
           <!-- FITUR BARU: KATALOG HADIAH SLIDER -->
           <div class="mx-auto mt-3.5 hidden w-full max-w-full px-4 lg:px-10 xl:max-w-[1200px]" id="reward-catalog-container"></div>
@@ -936,7 +936,7 @@
           <div id="storefront-footer-container" class="w-full"></div>
         </div>
         <!-- PENUTUP SCROLL-CONTENT -->
-        <div id="floating-cart-container" class="pointer-events-none fixed bottom-6 right-5 z-40 scale-0 transform transition-all duration-300" style="bottom: calc(max(1.25rem, env(safe-area-inset-bottom)) + 0.75rem)">
+        <div id="floating-cart-container" class="pointer-events-none fixed bottom-6 right-5 z-40 scale-0 transform transition-all duration-300 hidden md:flex" style="bottom: calc(max(1.25rem, env(safe-area-inset-bottom)) + 0.75rem)">
           <button class="floating-pill-cart flex items-center gap-3 rounded-full px-5 py-3.5 shadow-lg active:scale-95 cursor-pointer border border-white/25" onclick="changeView('view-cart')">
             <div class="relative flex items-center justify-center">
               <i class="fa-solid fa-bag-shopping text-base text-white"></i>
@@ -1321,7 +1321,7 @@
             <div class="hidden w-10" id="spacer-orders"></div>
           </div>
         </div>
-        <div class="scroll-content z-10 flex-1 overflow-y-auto pb-[calc(4rem+env(safe-area-inset-bottom))] pt-4">
+        <div class="scroll-content z-10 flex-1 overflow-y-auto pb-[calc(5.5rem+env(safe-area-inset-bottom))] pt-4">
           <!-- Input Lacak Pesanan Manual -->
           <div class="mx-auto w-full max-w-full px-4 mb-4 lg:px-8 xl:max-w-[1200px]">
             <div class="bg-white dark:bg-slate-800 p-3.5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-xs">
@@ -1357,7 +1357,7 @@
             <div class="hidden w-10" id="spacer-wishlist"></div>
           </div>
         </div>
-        <div class="scroll-content z-10 flex-1 overflow-y-auto pb-[calc(4rem+env(safe-area-inset-bottom))] pt-6">
+        <div class="scroll-content z-10 flex-1 overflow-y-auto pb-[calc(5.5rem+env(safe-area-inset-bottom))] pt-6">
           <div class="mx-auto flex hidden h-[50vh] max-w-xs flex-col items-center justify-center px-5 text-center" id="wishlist-empty-state">
             <div class="mb-5 flex h-24 w-24 items-center justify-center rounded-full border border-rose-200 bg-rose-50 text-rose-400 shadow-inner dark:border-rose-800 dark:bg-rose-900/20"><i class="fa-solid fa-heart text-5xl"></i></div>
             <h3 class="mb-2 text-xl font-bold text-slate-800 dark:text-white">Belum Ada Favorit</h3>
@@ -1581,6 +1581,49 @@
           </div>
         </div>
       </div>
+      <!-- ================= BOTTOM NAVIGATION BAR (MOBILE NATIVE APP EXPERIENCE) ================= -->
+      <nav id="bottom-nav-bar" class="fixed bottom-0 left-0 right-0 z-40 flex md:hidden items-center justify-around border-t border-slate-200/80 bg-white/95 px-2 pt-1.5 shadow-[0_-4px_20px_rgba(0,0,0,0.06)] backdrop-blur-lg dark:border-slate-800/80 dark:bg-[#0b1120]/95 transition-transform duration-300" style="padding-bottom: max(0.45rem, env(safe-area-inset-bottom));">
+        <!-- Tab: Beranda -->
+        <button id="bnav-home" type="button" onclick="onBottomNavClick('home')" class="bnav-item group relative flex flex-1 flex-col items-center justify-center py-1 transition-all active:scale-90 active" aria-label="Beranda">
+          <div class="bnav-icon-wrap relative flex h-7 w-7 items-center justify-center rounded-xl transition-all">
+            <i class="fa-solid fa-house text-base transition-colors text-slate-400 group-hover:text-slate-600 dark:text-slate-500"></i>
+          </div>
+          <span class="bnav-label mt-0.5 text-[10px] font-bold tracking-tight text-slate-500 dark:text-slate-400 transition-colors">Beranda</span>
+        </button>
+
+        <!-- Tab: Kategori -->
+        <button id="bnav-categories" type="button" onclick="onBottomNavClick('categories')" class="bnav-item group relative flex flex-1 flex-col items-center justify-center py-1 transition-all active:scale-90" aria-label="Kategori">
+          <div class="bnav-icon-wrap relative flex h-7 w-7 items-center justify-center rounded-xl transition-all">
+            <i class="fa-solid fa-layer-group text-base transition-colors text-slate-400 group-hover:text-slate-600 dark:text-slate-500"></i>
+          </div>
+          <span class="bnav-label mt-0.5 text-[10px] font-bold tracking-tight text-slate-500 dark:text-slate-400 transition-colors">Kategori</span>
+        </button>
+
+        <!-- Tab: Keranjang -->
+        <button id="bnav-cart" type="button" onclick="onBottomNavClick('cart')" class="bnav-item group relative flex flex-1 flex-col items-center justify-center py-1 transition-all active:scale-90" aria-label="Keranjang">
+          <div class="bnav-icon-wrap relative flex h-7 w-7 items-center justify-center rounded-xl transition-all">
+            <i class="fa-solid fa-bag-shopping text-base transition-colors text-slate-400 group-hover:text-slate-600 dark:text-slate-500"></i>
+            <span id="bottom-nav-cart-badge" class="absolute -top-1.5 -right-2 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-rose-500 px-1 text-[9px] font-black text-white shadow-sm scale-0 transition-transform">0</span>
+          </div>
+          <span class="bnav-label mt-0.5 text-[10px] font-bold tracking-tight text-slate-500 dark:text-slate-400 transition-colors">Keranjang</span>
+        </button>
+
+        <!-- Tab: Pesanan -->
+        <button id="bnav-orders" type="button" onclick="onBottomNavClick('orders')" class="bnav-item group relative flex flex-1 flex-col items-center justify-center py-1 transition-all active:scale-90" aria-label="Pesanan">
+          <div class="bnav-icon-wrap relative flex h-7 w-7 items-center justify-center rounded-xl transition-all">
+            <i class="fa-solid fa-receipt text-base transition-colors text-slate-400 group-hover:text-slate-600 dark:text-slate-500"></i>
+          </div>
+          <span class="bnav-label mt-0.5 text-[10px] font-bold tracking-tight text-slate-500 dark:text-slate-400 transition-colors">Pesanan</span>
+        </button>
+
+        <!-- Tab: Menu -->
+        <button id="bnav-menu" type="button" onclick="onBottomNavClick('menu')" class="bnav-item group relative flex flex-1 flex-col items-center justify-center py-1 transition-all active:scale-90" aria-label="Menu">
+          <div class="bnav-icon-wrap relative flex h-7 w-7 items-center justify-center rounded-xl transition-all">
+            <i class="fa-solid fa-compass text-base transition-colors text-slate-400 group-hover:text-slate-600 dark:text-slate-500"></i>
+          </div>
+          <span class="bnav-label mt-0.5 text-[10px] font-bold tracking-tight text-slate-500 dark:text-slate-400 transition-colors">Menu</span>
+        </button>
+      </nav>
     </div>
     <input accept=".json" class="hidden" id="restore-file" onchange="restoreData(event)" type="file" />
 

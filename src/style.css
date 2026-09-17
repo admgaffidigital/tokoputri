@@ -188,6 +188,39 @@ body {
     padding-bottom: max(1.25rem, env(safe-area-inset-bottom)); 
 }
 
+/* === 4B. BOTTOM NAVIGATION BAR (MOBILE NATIVE APP EXPERIENCE) === */
+#bottom-nav-bar {
+    padding-bottom: max(0.45rem, env(safe-area-inset-bottom));
+}
+
+.bnav-item {
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    outline: none;
+}
+
+.bnav-item .bnav-icon-wrap {
+    transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.bnav-item .bnav-icon-wrap i {
+    transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.bnav-item.active .bnav-icon-wrap {
+    background: rgba(var(--color-primary-rgb), 0.12);
+}
+
+.bnav-item.active .bnav-icon-wrap i {
+    color: var(--color-primary) !important;
+    transform: scale(1.1);
+}
+
+.bnav-item.active .bnav-label {
+    color: var(--color-primary) !important;
+    font-weight: 800 !important;
+}
+
 .admin-input { 
     width: 100%; 
     background-color: #fff; 

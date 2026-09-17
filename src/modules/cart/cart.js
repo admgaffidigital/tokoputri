@@ -45,6 +45,14 @@ export const updCart = () => {
     setIn('cart-total-preview', fCur(a));
     const b = el('cart-badge');
     if (b) b.classList.toggle('scale-0', q <= 0);
+
+    // Sinkronisasi badge counter pada Bottom Navigation Bar mobile
+    const bnbBadge = el('bottom-nav-cart-badge');
+    if (bnbBadge) {
+        bnbBadge.textContent = q > 99 ? '99+' : q.toString();
+        bnbBadge.classList.toggle('scale-0', q <= 0);
+    }
+
     document.querySelectorAll('.desktop-cart-badge').forEach(badge => {
         badge.textContent = q.toString();
         badge.classList.toggle('hidden', q <= 0);
