@@ -893,7 +893,7 @@ export const renderRelatedProducts = p => {
         let badgeText = item.subCategory || item.brand || item.category || '';
 
         return `
-        <div onclick="openProductModal(${item.id})" class="group cursor-pointer shrink-0 w-[145px] sm:w-[165px] bg-slate-50 dark:bg-slate-900/70 hover:bg-white dark:hover:bg-slate-800 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-2.5 flex flex-col transition-all duration-300 hover:shadow-md hover:border-[var(--color-primary)]/40 hover:-translate-y-1 snap-start">
+        <div onclick="openProductModal('${esc(item.id)}')" class="group cursor-pointer shrink-0 w-[145px] sm:w-[165px] bg-slate-50 dark:bg-slate-900/70 hover:bg-white dark:hover:bg-slate-800 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-2.5 flex flex-col transition-all duration-300 hover:shadow-md hover:border-[var(--color-primary)]/40 hover:-translate-y-1 snap-start">
             <div class="relative aspect-square w-full rounded-xl bg-white overflow-hidden mb-2 border border-slate-100 dark:border-slate-700/50 flex items-center justify-center">
                 <img loading="lazy" decoding="async" src="${esc(itemImg)}" alt="${esc(item.name)}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" onerror="this.onerror=null;this.src='https://placehold.co/300?text=No+Image'">
                 ${badgeText ? `<span class="absolute top-1.5 left-1.5 bg-slate-900/80 backdrop-blur-xs text-white text-[7.5px] sm:text-[8px] font-bold px-1.5 py-0.5 rounded-md truncate max-w-[85%] uppercase tracking-wider">${esc(badgeText)}</span>` : ''}

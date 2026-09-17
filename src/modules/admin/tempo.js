@@ -13,6 +13,8 @@ import {
     el, setH, esc, fCur, showToast, showConfirm, sLoad, hLoad 
 } from '../../core/utils.js';
 
+const pushModalHistory = (id) => window.pushModalHistory?.(id);
+
 window.editTempoPenalty = (orderId, currentRate) => {
     window.customPrompt('Persentase Denda Baru', currentRate, async (val) => {
         if (!val) return;

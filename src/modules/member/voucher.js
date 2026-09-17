@@ -27,8 +27,7 @@ export const applyVoucher = () => {
         
         // Cek apakah produk yang ditargetkan ada di keranjang
         if (f.targetProduct && f.targetProduct !== '') {
-            const targetId = parseInt(f.targetProduct);
-            hasTarget = cart.some(item => item.id === targetId);
+            hasTarget = cart.some(item => item && String(item.id) === String(f.targetProduct));
         }
 
         if (f.targetProduct && f.targetProduct !== '' && !hasTarget) {
