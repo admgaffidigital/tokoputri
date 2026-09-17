@@ -45,6 +45,14 @@ export const updCart = () => {
     setIn('cart-total-preview', fCur(a));
     const b = el('cart-badge');
     if (b) b.classList.toggle('scale-0', q <= 0);
+
+    // Sinkronisasi badge counter pada Bottom Navigation Bar mobile
+    const bnbBadge = el('bottom-nav-cart-badge');
+    if (bnbBadge) {
+        bnbBadge.textContent = q > 99 ? '99+' : q.toString();
+        bnbBadge.classList.toggle('scale-0', q <= 0);
+    }
+
     document.querySelectorAll('.desktop-cart-badge').forEach(badge => {
         badge.textContent = q.toString();
         badge.classList.toggle('hidden', q <= 0);
@@ -157,30 +165,30 @@ export const renderCart = () => {
 
             fsEl.innerHTML = `
             <div class="p-4 rounded-2xl border transition-all duration-300 ${isQualified 
-                ? 'bg-gradient-to-r from-emerald-500 via-teal-600 to-emerald-600 text-white border-emerald-400/50 shadow-md shadow-emerald-500/10' 
+                ? 'bg-[var(--color-primary)] text-white border-[var(--color-primary)]/40 shadow-md shadow-[rgba(var(--color-primary-rgb),0.2)]' 
                 : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 shadow-sm text-slate-800 dark:text-slate-100'}">
                 <div class="flex items-center justify-between gap-3 mb-2.5">
                     <div class="flex items-center gap-2.5 min-w-0">
-                        <span class="w-8 h-8 rounded-xl flex items-center justify-center text-sm shrink-0 ${isQualified ? 'bg-white/20 text-white' : 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-800/50'}">
+                        <span class="w-8 h-8 rounded-xl flex items-center justify-center text-sm shrink-0 ${isQualified ? 'bg-white/20 text-white' : 'bg-[rgba(var(--color-primary-rgb),0.1)] text-[var(--color-primary)] border border-[rgba(var(--color-primary-rgb),0.2)]'}">
                             <i class="fa-solid ${isQualified ? 'fa-circle-check text-base' : 'fa-truck-fast'}"></i>
                         </span>
                         <div class="min-w-0">
                             <p class="text-xs font-bold leading-tight ${isQualified ? 'text-white' : 'text-slate-800 dark:text-slate-100'}">
                                 ${isQualified 
-                                    ? 'Hore! Anda berhak mendapatkan <span class="underline decoration-wavy decoration-emerald-200 font-extrabold">Gratis Ongkir Otomatis</span>' 
-                                    : `Belanja <span class="text-emerald-600 dark:text-emerald-400 font-extrabold">${fCur(remaining)}</span> lagi untuk <b>Gratis Ongkir</b>!`}
+                                    ? 'Hore! Anda berhak mendapatkan <span class="underline decoration-wavy decoration-white/60 font-extrabold">Gratis Ongkir Otomatis</span>' 
+                                    : `Belanja <span class="text-[var(--color-primary)] font-extrabold">${fCur(remaining)}</span> lagi untuk <b>Gratis Ongkir</b>!`}
                             </p>
-                            <p class="text-[10px] ${isQualified ? 'text-white/80' : 'text-slate-400 dark:text-slate-500'} mt-0.5">
+                            <p class="text-[10px] ${isQualified ? 'text-white/85' : 'text-slate-400 dark:text-slate-500'} mt-0.5">
                                 ${isQualified ? 'Ongkos kirim otomatis dipotong Rp 0 saat checkout.' : `Min. belanja ${fCur(fsMinSpend)} untuk pengiriman ke alamat.`}
                             </p>
                         </div>
                     </div>
-                    <span class="text-[11px] font-black shrink-0 px-2.5 py-1 rounded-full ${isQualified ? 'bg-white text-emerald-700 shadow-sm' : 'bg-emerald-50 dark:bg-emerald-950/80 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800'}">
+                    <span class="text-[11px] font-black shrink-0 px-2.5 py-1 rounded-full ${isQualified ? 'bg-white text-[var(--color-primary)] shadow-sm' : 'bg-[rgba(var(--color-primary-rgb),0.1)] text-[var(--color-primary)] border border-[rgba(var(--color-primary-rgb),0.25)]'}">
                         ${progress}%
                     </span>
                 </div>
                 <div class="w-full h-2 rounded-full overflow-hidden ${isQualified ? 'bg-black/20' : 'bg-slate-100 dark:bg-slate-700/60'}">
-                    <div class="h-full rounded-full transition-all duration-500 ${isQualified ? 'bg-white shadow-sm' : 'bg-gradient-to-r from-emerald-500 to-teal-500'}" style="width: ${progress}%"></div>
+                    <div class="h-full rounded-full transition-all duration-500 ${isQualified ? 'bg-white shadow-sm' : 'bg-[var(--color-primary)]'}" style="width: ${progress}%"></div>
                 </div>
             </div>`;
         } else {

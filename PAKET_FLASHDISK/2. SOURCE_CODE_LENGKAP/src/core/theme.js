@@ -245,7 +245,7 @@ export const applyBackgroundStyle = (bgStyle = 'minimalist', customBgUrl = '') =
         container.appendChild(customImgDiv);
 
         const overlay = document.createElement('div');
-        overlay.className = "absolute inset-0 z-0 bg-slate-50/70 dark:bg-[#0b1120]/80 pointer-events-none backdrop-blur-[0.5px]";
+        overlay.className = "absolute inset-0 z-0 bg-slate-50/70 dark:bg-[#0b1120]/80 pointer-events-none";
         container.appendChild(overlay);
     }
 

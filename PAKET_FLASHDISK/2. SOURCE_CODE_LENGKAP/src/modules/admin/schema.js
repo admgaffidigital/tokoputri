@@ -19,7 +19,7 @@ export const aF = {
         {key:'poTime', label:'Estimasi Pre-Order (Opsional)', type:'text'}, 
         {key:'video', label:'Link Video YouTube (Opsional)', type:'text'},
         {key:'img', label:'URL Gambar', type:'text'},
-        {key:'category', label:'Kategori', type:'dynamic_select_category'}, {key:'brand', label:'Merek', type:'dynamic_select_brand'},
+        {key:'category', label:'Kategori', type:'dynamic_select_category'}, {key:'subCategory', label:'Jenis / Sub-Kategori (Cth: Cat Tembok, Pipa PVC, Power Tools)', type:'text'}, {key:'brand', label:'Merek', type:'dynamic_select_brand'},
         {key:'tag', label:'Label/Tag', type:'text'}, {key:'isActive', label:'Status', type:'select', options:[{val:'true',text:'Tersedia'},{val:'false',text:'Habis'}]},
         {key:'desc', label:'Deskripsi Lengkap', type:'richtext'}, {key:'specTable', label:'Tabel Spesifikasi (Opsional)', type:'spec_table_builder'}, {key:'wholesale', label:'Grosir', type:'wholesale_builder'}, {key:'variants', label:'Varian', type:'variants_builder'}
     ],

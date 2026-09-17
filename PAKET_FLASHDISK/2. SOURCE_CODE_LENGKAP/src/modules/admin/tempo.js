@@ -13,6 +13,8 @@ import {
     el, setH, esc, fCur, showToast, showConfirm, sLoad, hLoad 
 } from '../../core/utils.js';
 
+const pushModalHistory = (id) => window.pushModalHistory?.(id);
+
 window.editTempoPenalty = (orderId, currentRate) => {
     window.customPrompt('Persentase Denda Baru', currentRate, async (val) => {
         if (!val) return;
@@ -242,18 +244,20 @@ window.rAdmPiutang = async () => {
     let totalPiutang = 0;
     
     let h = `
-    <div class="max-w-full pb-10 fade-in text-sm">
-        <div class="mb-5 bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex items-center justify-between">
-            <div class="flex items-center gap-4">
-                <div class="w-12 h-12 bg-pink-50 dark:bg-pink-900/30 text-pink-600 rounded-xl flex items-center justify-center"><i class="fa-solid fa-hand-holding-dollar text-xl"></i></div>
+    <div class="max-w-full pb-10 fade-in-scale text-sm">
+        <div class="mb-5 flex justify-between items-center bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style="background: rgba(var(--color-primary-rgb),0.1); color: var(--color-primary)">
+                    <i class="fa-solid fa-hand-holding-dollar text-base"></i>
+                </div>
                 <div>
-                    <h2 class="font-bold text-slate-800 dark:text-slate-100 uppercase tracking-widest text-sm">Tagihan Tempo</h2>
-                    <p class="text-[10px] font-bold text-slate-400 mt-1">Daftar pelanggan VIP yang belum lunas</p>
+                    <h2 class="font-bold text-sm text-slate-800 dark:text-slate-100 uppercase tracking-widest leading-tight">Tagihan Tempo</h2>
+                    <p class="text-[9px] font-bold text-slate-500 mt-0.5">Daftar piutang pelanggan yang belum lunas</p>
                 </div>
             </div>
             <div class="text-right">
-                <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Total Piutang Berjalan</p>
-                <p class="text-xl font-bold text-rose-500" id="total-piutang-header">Rp 0</p>
+                <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Total Piutang</p>
+                <p class="text-lg font-bold text-rose-500" id="total-piutang-header">Rp 0</p>
             </div>
         </div>
     `;
@@ -358,10 +362,10 @@ window.rAdmPiutang = async () => {
                     </button>
                 </div>
                 <div class="flex gap-2">
-                    <button onclick="payTempoInstallment('${o.orderId}')" class="flex-1 bg-[var(--color-primary)] hover:opacity-90 text-white rounded-xl py-2.5 flex items-center justify-center gap-1.5 text-[10px] font-bold uppercase tracking-widest shadow-sm transition-all">
+                    <button onclick="payTempoInstallment('${o.orderId}')" class="flex-1 bg-white dark:bg-slate-700 border border-[var(--color-primary)] text-[var(--color-primary)] hover:bg-[rgba(var(--color-primary-rgb),0.08)] rounded-xl py-2.5 flex items-center justify-center gap-1.5 text-[10px] font-bold uppercase tracking-widest transition-all active:scale-95">
                         <i class="fa-solid fa-money-bill-wave"></i> Cicil
                     </button>
-                    <button onclick="markTempoPaid('${o.orderId}')" class="flex-1 bg-[var(--color-primary)] hover:opacity-90 text-white rounded-xl py-2.5 flex items-center justify-center gap-1.5 text-[10px] font-bold uppercase tracking-widest shadow-sm transition-all">
+                    <button onclick="markTempoPaid('${o.orderId}')" class="flex-1 primary-bg hover:opacity-90 text-white rounded-xl py-2.5 flex items-center justify-center gap-1.5 text-[10px] font-bold uppercase tracking-widest shadow-sm transition-all active:scale-95">
                         <i class="fa-solid fa-check-double"></i> Lunas
                     </button>
                 </div>

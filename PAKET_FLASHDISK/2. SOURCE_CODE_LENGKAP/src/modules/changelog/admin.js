@@ -53,6 +53,7 @@ export const rAdmChangelog = () => {
     const dynamicLogs = appData.changelog || [];
     const allLogs = getCombinedChangelog(appData);
     const latestVer = getLatestVersion(appData);
+    const deletedCount = (appData.deletedChangelogIds || []).length;
 
     let logsHtml = '';
     if (allLogs.length === 0) {
@@ -107,12 +108,15 @@ export const rAdmChangelog = () => {
                             <i class="fa-regular fa-calendar mr-1"></i> ${esc(formatDateIndo(log.date))}
                         </span>
                         ${isDynamic ? `
-                        <button onclick="window.editChangelogEntry('${esc(log.id)}')" class="w-7 h-7 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300 flex items-center justify-center text-xs transition-all" title="Edit Catatan">
+                        <button onclick="window.editChangelogEntry('${esc(log.id)}')" class="w-7 h-7 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300 flex items-center justify-center text-xs transition-all cursor-pointer" title="Edit Catatan">
                             <i class="fa-solid fa-pen"></i>
                         </button>
-                        <button onclick="window.deleteChangelogEntry('${esc(log.id)}')" class="w-7 h-7 rounded-lg bg-rose-50 hover:bg-rose-100 dark:bg-rose-900/30 text-rose-500 flex items-center justify-center text-xs transition-all" title="Hapus Catatan">
+                        <button onclick="window.deleteChangelogEntry('${esc(log.id)}')" class="w-7 h-7 rounded-lg bg-rose-50 hover:bg-rose-100 dark:bg-rose-900/30 text-rose-500 flex items-center justify-center text-xs transition-all cursor-pointer" title="Hapus Catatan">
                             <i class="fa-solid fa-trash"></i>
-                        </button>` : ''}
+                        </button>` : `
+                        <button onclick="window.deleteChangelogEntry('${esc(log.id || log.version)}')" class="w-7 h-7 rounded-lg bg-slate-100 hover:bg-rose-50 dark:bg-slate-800 dark:hover:bg-rose-900/30 text-slate-400 hover:text-rose-500 flex items-center justify-center text-xs transition-all cursor-pointer" title="Hapus Log Ini dari Sistem">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>`}
                     </div>
                 </div>
 
@@ -217,9 +221,21 @@ export const rAdmChangelog = () => {
 
         <!-- Daftar Riwayat Pembaruan -->
         <div class="space-y-3.5">
-            <h4 class="text-xs font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500 px-1">
-                Riwayat Rilis &amp; Log Perubahan (${allLogs.length} Versi)
-            </h4>
+            <div class="flex flex-wrap items-center justify-between gap-2 px-1">
+                <h4 class="text-xs font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500">
+                    Riwayat Rilis &amp; Log Perubahan (${allLogs.length} Versi)
+                </h4>
+                <div class="flex items-center gap-2">
+                    ${deletedCount > 0 ? `
+                    <button onclick="window.restoreDefaultChangelogs()" class="px-2.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer">
+                        <i class="fa-solid fa-rotate-left text-slate-400"></i> Pulihkan Log (${deletedCount})
+                    </button>` : ''}
+                    ${allLogs.length > 5 ? `
+                    <button onclick="window.pruneOldChangelogs()" class="px-3 py-1.5 rounded-xl bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-900/60 text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer" title="Bersihkan riwayat log terlama agar tidak menumpuk">
+                        <i class="fa-solid fa-broom"></i> Pangkas Log Lama
+                    </button>` : ''}
+                </div>
+            </div>
             <div class="space-y-3">
                 ${logsHtml}
             </div>
@@ -311,8 +327,13 @@ export const saveChangelogEntry = async () => {
         appData.changelog.unshift(logEntry);
     }
 
+    // Hapus dari daftar terhapus jika versi ini sebelumnya pernah dihapus
+    if (appData.deletedChangelogIds && Array.isArray(appData.deletedChangelogIds)) {
+        appData.deletedChangelogIds = appData.deletedChangelogIds.filter(x => x !== logEntry.id && x !== logEntry.version);
+    }
+
     try {
-        await saveApp(['changelog']);
+        await saveApp(['changelog', 'deletedChangelogIds']);
         showToast('Catatan pembaruan berhasil dipublikasikan secara real-time!', 'success');
         isAddingLog = false;
         editingLogId = null;
@@ -325,20 +346,34 @@ export const saveChangelogEntry = async () => {
 };
 
 /**
- * Hapus catatan pembaruan kustom
+ * Hapus catatan pembaruan (baik dinamis maupun bawaan sistem)
  */
 export const deleteChangelogEntry = (id) => {
-    const entry = (appData.changelog || []).find(x => x.id === id);
+    const allLogs = getCombinedChangelog(appData);
+    const entry = allLogs.find(x => x.id === id || x.version === id);
     if (!entry) return;
 
+    const verName = entry.version || entry.title || 'ini';
     showConfirm(
-        `Hapus catatan pembaruan versi "${entry.version}"?`,
+        `Hapus catatan pembaruan versi "${verName}" dari daftar log toko?`,
         async () => {
             sLoad('Menghapus catatan...');
-            appData.changelog = (appData.changelog || []).filter(x => x.id !== id);
             try {
-                await saveApp(['changelog']);
-                showToast('Catatan berhasil dihapus!', 'success');
+                // Hapus dari array dynamic changelog jika ada
+                appData.changelog = (appData.changelog || []).filter(x => x.id !== id && x.version !== id);
+
+                // Tambahkan ID dan versi ke deletedChangelogIds
+                appData.deletedChangelogIds = Array.isArray(appData.deletedChangelogIds) ? appData.deletedChangelogIds : [];
+                const idToExclude = entry.id || id;
+                if (!appData.deletedChangelogIds.includes(idToExclude)) {
+                    appData.deletedChangelogIds.push(idToExclude);
+                }
+                if (entry.version && !appData.deletedChangelogIds.includes(entry.version)) {
+                    appData.deletedChangelogIds.push(entry.version);
+                }
+
+                await saveApp(['changelog', 'deletedChangelogIds']);
+                showToast(`Catatan pembaruan ${verName} berhasil dihapus!`, 'success');
                 rAdmChangelog();
             } catch (e) {
                 showToast('Gagal menghapus catatan: ' + e.message, 'error');
@@ -347,7 +382,84 @@ export const deleteChangelogEntry = (id) => {
             }
         },
         'Ya, Hapus',
-        'Konfirmasi Hapus'
+        'Konfirmasi Hapus Log'
+    );
+};
+
+/**
+ * Pangkas riwayat log lama agar tidak menumpuk spam (hanya simpan 5 rilis terbaru)
+ */
+export const pruneOldChangelogs = () => {
+    const allLogs = getCombinedChangelog(appData);
+    if (allLogs.length <= 5) {
+        return showToast(`Daftar log masih ringkas (${allLogs.length} versi), belum perlu pembersihan.`, 'info');
+    }
+
+    const toRemove = allLogs.slice(5);
+    const countToRemove = toRemove.length;
+
+    showConfirm(
+        `Pangkas ${countToRemove} catatan log pembaruan terlama dan hanya sisakan 5 versi terbaru? Tindakan ini merapikan daftar log toko agar tidak menumpuk spam.`,
+        async () => {
+            sLoad('Memangkas catatan lama...');
+            try {
+                const idsToRemove = new Set();
+                toRemove.forEach(x => {
+                    if (x.id) idsToRemove.add(x.id);
+                    if (x.version) idsToRemove.add(x.version);
+                });
+
+                // Hapus dari log dinamis
+                appData.changelog = (appData.changelog || []).filter(x => !idsToRemove.has(x.id) && !idsToRemove.has(x.version));
+
+                // Tambahkan ke deletedChangelogIds
+                appData.deletedChangelogIds = Array.isArray(appData.deletedChangelogIds) ? appData.deletedChangelogIds : [];
+                idsToRemove.forEach(id => {
+                    if (!appData.deletedChangelogIds.includes(id)) {
+                        appData.deletedChangelogIds.push(id);
+                    }
+                });
+
+                await saveApp(['changelog', 'deletedChangelogIds']);
+                showToast(`Berhasil membersihkan ${countToRemove} log lama! Tersisa 5 versi terbaru.`, 'success');
+                rAdmChangelog();
+            } catch (e) {
+                showToast('Gagal memangkas log: ' + e.message, 'error');
+            } finally {
+                hLoad();
+            }
+        },
+        'Ya, Pangkas Log',
+        'Pangkas Log Terlama'
+    );
+};
+
+/**
+ * Pulihkan kembali catatan log bawaan sistem yang pernah dihapus
+ */
+export const restoreDefaultChangelogs = () => {
+    const deletedCount = (appData.deletedChangelogIds || []).length;
+    if (deletedCount === 0) {
+        return showToast('Tidak ada log bawaan yang terhapus.', 'info');
+    }
+
+    showConfirm(
+        'Pulihkan kembali seluruh catatan log rilis sistem yang pernah dihapus?',
+        async () => {
+            sLoad('Memulihkan catatan log...');
+            try {
+                appData.deletedChangelogIds = [];
+                await saveApp(['deletedChangelogIds']);
+                showToast('Seluruh log pembaruan bawaan berhasil dipulihkan!', 'success');
+                rAdmChangelog();
+            } catch (e) {
+                showToast('Gagal memulihkan catatan: ' + e.message, 'error');
+            } finally {
+                hLoad();
+            }
+        },
+        'Ya, Pulihkan',
+        'Pulihkan Log Bawaan'
     );
 };
 
@@ -357,3 +469,5 @@ window.toggleChangelogForm = toggleChangelogForm;
 window.editChangelogEntry = editChangelogEntry;
 window.saveChangelogEntry = saveChangelogEntry;
 window.deleteChangelogEntry = deleteChangelogEntry;
+window.pruneOldChangelogs = pruneOldChangelogs;
+window.restoreDefaultChangelogs = restoreDefaultChangelogs;

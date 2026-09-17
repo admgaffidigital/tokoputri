@@ -184,9 +184,9 @@ export const renderFooter = () => {
               <span class="w-1.5 h-1.5 rounded-full bg-[var(--color-primary)]"></span> Hubungi Kami
             </h4>
             <div class="w-full space-y-3">
-              <!-- WhatsApp CTA Card (Dark Glassmorphic Card dengan Aksen Hijau Glowing yang Selaras) -->
+              <!-- WhatsApp CTA Card (Themed Dark Card dengan Aksen Warna Tema Toko yang Selaras) -->
               <a
-                class="group flex cursor-pointer items-center gap-3.5 rounded-2xl border border-emerald-500/30 bg-emerald-950/25 hover:bg-emerald-900/35 p-3.5 transition-all duration-200 shadow-sm hover:border-emerald-500/50 hover:shadow-lg hover:shadow-emerald-950/50"
+                class="group flex cursor-pointer items-center gap-3.5 rounded-2xl border border-[rgba(var(--color-primary-rgb),0.35)] bg-[rgba(var(--color-primary-rgb),0.1)] hover:bg-[rgba(var(--color-primary-rgb),0.2)] p-3.5 transition-all duration-200 shadow-sm hover:border-[rgba(var(--color-primary-rgb),0.6)] hover:shadow-md"
                 href="javascript:void(0)"
                 onclick="${waOnClick}"
               >
@@ -195,13 +195,13 @@ export const renderFooter = () => {
                 </div>
                 <div class="min-w-0 text-left">
                   <div class="flex items-center gap-1.5">
-                    <span class="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                    <p class="text-[9px] font-extrabold uppercase tracking-widest text-emerald-400">Customer Support</p>
+                    <span class="h-1.5 w-1.5 rounded-full bg-[var(--color-primary)] animate-pulse"></span>
+                    <p class="text-[9px] font-extrabold uppercase tracking-widest text-[var(--color-primary)]">Customer Support</p>
                   </div>
-                  <p class="truncate text-xs font-black text-white group-hover:text-emerald-300 transition-colors">Konsultasi via WhatsApp</p>
+                  <p class="truncate text-xs font-black text-white group-hover:text-white transition-colors">Konsultasi via WhatsApp</p>
                   <p class="text-[10px] font-medium text-white/70">Respon Cepat &amp; Ramah</p>
                 </div>
-                <div class="ml-auto text-white/30 group-hover:text-emerald-400 group-hover:translate-x-0.5 transition-all">
+                <div class="ml-auto text-white/30 group-hover:text-white group-hover:translate-x-0.5 transition-all">
                   <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
                 </div>
               </a>
@@ -269,7 +269,7 @@ export const renderFooter = () => {
               </p>
               <div class="flex flex-wrap items-center gap-2 w-full">
                 <span class="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 px-3 py-1.5 text-[11px] font-semibold text-white/90 transition-colors shadow-xs" title="Kirim Cepat Ekspedisi">
-                  <i class="fa-solid fa-truck-fast text-emerald-300"></i> Ekspedisi Cepat
+                  <i class="fa-solid fa-truck-fast text-sky-400"></i> Ekspedisi Cepat
                 </span>
                 <span class="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 px-3 py-1.5 text-[11px] font-semibold text-white/90 transition-colors shadow-xs" title="Kargo Truk & Partai Besar">
                   <i class="fa-solid fa-truck-ramp-box text-amber-300"></i> Kargo &amp; Truk
@@ -287,14 +287,14 @@ export const renderFooter = () => {
       </div>
 
       <!-- Sub-Footer Bottom Bar (Clean Solid Bar) -->
-      <div class="border-t border-white/10 bg-black/30 backdrop-blur-sm py-4">
+      <div class="border-t border-white/10 bg-black/40 py-4">
         <div class="mx-auto flex w-full flex-col items-center justify-between gap-3 px-4 sm:px-6 md:flex-row lg:px-8 xl:max-w-[1240px]">
           <p class="text-[11px] font-medium text-white/80 text-center sm:text-left">
             &#169; <span>${currentYear}</span> <span class="font-extrabold text-white">${esc(storeName)}</span>. <span>${esc(footerCredit)}</span>
           </p>
           <div class="flex flex-wrap items-center justify-center gap-3 text-[10px] font-bold text-white">
             <button type="button" onclick="if(typeof window.openChangelogModal==='function') window.openChangelogModal();" class="inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/10 px-3 py-1 text-[9px] font-extrabold uppercase tracking-wider text-white hover:bg-white/20 transition-all active:scale-95 cursor-pointer shadow-xs" title="Lihat Catatan Pembaruan & Versi">
-              <span class="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span class="h-1.5 w-1.5 rounded-full bg-[var(--color-primary)] animate-pulse"></span>
               <span>${esc(latestVer)}</span> • Changelog
             </button>
             <span class="text-white/20">•</span>
@@ -320,12 +320,12 @@ export const openQualityGuaranteeModal = () => {
     if (!m) {
         m = document.createElement('div');
         m.id = 'guarantee-modal';
-        m.className = 'fixed inset-0 z-[115] bg-slate-900/70 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-5';
+        m.className = 'fixed inset-0 z-[115] bg-slate-900/80 flex items-end sm:items-center justify-center p-0 sm:p-5';
         m.onclick = (e) => { if (e.target === m) closeQualityGuaranteeModal(); };
         document.body.appendChild(m);
     }
     m.innerHTML = `
-        <div class="bg-white dark:bg-slate-900 w-full max-w-md rounded-t-[2rem] sm:rounded-[2rem] p-6 shadow-2xl border border-slate-200 dark:border-slate-700 space-y-4">
+        <div class="bg-white dark:bg-slate-900 w-full max-w-md rounded-t-3xl sm:rounded-2xl p-6 shadow-2xl border border-slate-200 dark:border-slate-700 space-y-4">
             <div class="flex justify-between items-center border-b border-slate-100 dark:border-slate-800 pb-4">
                 <h3 class="font-bold text-slate-800 dark:text-white text-base flex items-center gap-2">
                     <i class="fa-solid fa-shield-halved text-[var(--color-primary)]"></i> Jaminan Mutu &amp; Kualitas
@@ -389,12 +389,12 @@ export const openSecurityModal = () => {
     if (!m) {
         m = document.createElement('div');
         m.id = 'security-modal';
-        m.className = 'fixed inset-0 z-[115] bg-slate-900/70 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-5';
+        m.className = 'fixed inset-0 z-[115] bg-slate-900/80 flex items-end sm:items-center justify-center p-0 sm:p-5';
         m.onclick = (e) => { if (e.target === m) closeSecurityModal(); };
         document.body.appendChild(m);
     }
     m.innerHTML = `
-        <div class="bg-white dark:bg-slate-900 w-full max-w-md rounded-t-[2rem] sm:rounded-[2rem] p-6 shadow-2xl border border-slate-200 dark:border-slate-700 space-y-4">
+        <div class="bg-white dark:bg-slate-900 w-full max-w-md rounded-t-3xl sm:rounded-2xl p-6 shadow-2xl border border-slate-200 dark:border-slate-700 space-y-4">
             <div class="flex justify-between items-center border-b border-slate-100 dark:border-slate-800 pb-4">
                 <h3 class="font-bold text-slate-800 dark:text-white text-base flex items-center gap-2">
                     <i class="fa-solid fa-lock text-[var(--color-primary)]"></i> Keamanan &amp; Privasi

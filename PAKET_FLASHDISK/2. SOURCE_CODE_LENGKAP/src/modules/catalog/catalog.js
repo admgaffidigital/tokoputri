@@ -6,8 +6,10 @@
  * ============================================================
  */
 
-import { appData, aCat, setACat, aBrand, setABrand, sQ, setSQ, cSort, setCSort, cView, setCView, cPage, setCPage, iPP } from '../../core/state.js';
-import { el, show, hide, toggleCls, esc, fCur, getOptImg } from '../../core/utils.js';
+import { appData, cart, aCat, setACat, aSubCat, setASubCat, aBrand, setABrand, sQ, setSQ, cSort, setCSort, cView, setCView, cPage, setCPage, iPP } from '../../core/state.js';
+import { el, show, hide, toggleCls, esc, fCur, getOptImg, showToast } from '../../core/utils.js';
+import { updCart } from '../cart/cart.js';
+import { openProductModal, openQuickVariantSheet } from './product-modal.js';
 
 let searchTmr = null;
 
@@ -15,7 +17,7 @@ let searchTmr = null;
  * Render daftar produk katalog utama storefront
  */
 export const rCat = () => {
-    const isFiltered = (aCat !== 'Semua Produk' || aBrand !== 'Semua Merek' || sQ !== '');
+    const isFiltered = (aCat !== 'Semua Produk' || aBrand !== 'Semua Merek' || sQ !== '' || aSubCat !== 'Semua Jenis');
     
     toggleCls('dynamic-banners-container', 'hidden', isFiltered);
     toggleCls('reward-catalog-container', 'hidden', isFiltered);
@@ -52,7 +54,7 @@ export const rCat = () => {
                 iconColor = "text-rose-500 bg-rose-50 dark:bg-rose-900/30"; 
             } else if (aCat !== 'Semua Produk') { 
                 filterLabel = "Kategori Pilihan"; 
-                filterValue = aCat; 
+                filterValue = aCat + (aSubCat !== 'Semua Jenis' ? ` • ${aSubCat}` : ''); 
                 filterIcon = "fa-layer-group"; 
                 iconColor = "text-[var(--color-primary)] bg-[var(--color-primary-light)] dark:bg-[var(--color-primary-dark)]/30"; 
             } else if (aBrand !== 'Semua Merek') { 
@@ -60,18 +62,61 @@ export const rCat = () => {
                 filterValue = aBrand; 
                 filterIcon = "fa-tag"; 
                 iconColor = "text-[var(--color-primary)] bg-[var(--color-primary-light)] dark:bg-[var(--color-primary-dark)]/30"; 
+            } else if (aSubCat !== 'Semua Jenis') {
+                filterLabel = "Sub-Kategori"; 
+                filterValue = aSubCat; 
+                filterIcon = "fa-shapes"; 
+                iconColor = "text-[var(--color-primary)] bg-[var(--color-primary-light)] dark:bg-[var(--color-primary-dark)]/30"; 
+            }
+
+            // Ekstrak sub-kategori unik jika kategori sedang dipilih
+            let subCategoriesHtml = '';
+            if (aCat !== 'Semua Produk') {
+                const productsInCat = appData.products.filter(p => (p.isActive !== false && p.isActive !== 'false') && p.category === aCat);
+                const subCatMap = {};
+                productsInCat.forEach(p => {
+                    const sc = (p.subCategory || '').trim();
+                    if (sc) {
+                        subCatMap[sc] = (subCatMap[sc] || 0) + 1;
+                    }
+                });
+                const subCats = Object.keys(subCatMap).sort().map(name => ({ name, count: subCatMap[name] }));
+                
+                if (subCats.length > 0) {
+                    subCategoriesHtml = `
+                    <div class="pt-2 border-t border-slate-100 dark:border-slate-700/60">
+                        <div class="text-[9px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-1.5 flex items-center gap-1.5">
+                            <i class="fa-solid fa-shapes text-[var(--color-primary)]"></i>
+                            <span>Pilih Jenis / Sub-Kategori:</span>
+                        </div>
+                        <div class="flex items-center gap-1.5 overflow-x-auto pb-1 hide-scrollbar -mx-1 px-1">
+                            <button onclick="filterSubCategory('Semua Jenis')" class="shrink-0 px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all ${aSubCat === 'Semua Jenis' ? 'bg-[var(--color-primary)] text-white shadow-xs' : 'bg-slate-50 dark:bg-slate-900 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-[var(--color-primary)]/50'}">
+                                Semua Jenis
+                            </button>
+                            ${subCats.map(item => `
+                                <button onclick="filterSubCategory('${esc(item.name).replace(/'/g, "\\'")}')" class="shrink-0 px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all flex items-center gap-1.5 ${aSubCat === item.name ? 'bg-[var(--color-primary)] text-white shadow-xs' : 'bg-slate-50 dark:bg-slate-900 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-[var(--color-primary)]/50'}">
+                                    <span>${esc(item.name)}</span>
+                                    <span class="text-[10px] px-1.5 py-0.2 rounded-full ${aSubCat === item.name ? 'bg-white/20 text-white' : 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300'}">${item.count}</span>
+                                </button>
+                            `).join('')}
+                        </div>
+                    </div>`;
+                }
             }
 
             backBtnContainer.innerHTML = `
-            <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-3 flex justify-between items-center mb-5 shadow-sm">
-                <div class="flex items-center gap-3 overflow-hidden">
-                    <div class="w-10 h-10 rounded-xl ${iconColor} flex items-center justify-center shrink-0"><i class="fa-solid ${filterIcon} text-lg"></i></div>
-                    <div class="flex flex-col min-w-0 pr-2">
-                        <span class="text-[10px] text-slate-600 dark:text-slate-400 font-bold uppercase tracking-widest">${filterLabel}</span>
-                        <span class="text-sm font-bold text-slate-800 dark:text-white truncate leading-tight mt-0.5">${esc(filterValue)}</span>
+            <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-3 flex flex-col gap-2.5 mb-5 shadow-sm">
+                <div class="flex justify-between items-center">
+                    <div class="flex items-center gap-3 overflow-hidden">
+                        <div class="w-10 h-10 rounded-xl ${iconColor} flex items-center justify-center shrink-0"><i class="fa-solid ${filterIcon} text-lg"></i></div>
+                        <div class="flex flex-col min-w-0 pr-2">
+                            <span class="text-[10px] text-slate-600 dark:text-slate-400 font-bold uppercase tracking-widest">${filterLabel}</span>
+                            <span class="text-sm font-bold text-slate-800 dark:text-white truncate leading-tight mt-0.5">${esc(filterValue)}</span>
+                        </div>
                     </div>
+                    <button onclick="resetSemuaFilter()" class="shrink-0 bg-slate-50 dark:bg-slate-900 text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-700 w-10 h-10 flex items-center justify-center rounded-xl font-bold shadow-sm hover:bg-rose-50 hover:text-rose-500 hover:border-rose-200 transition-all active:scale-95 group"><i class="fa-solid fa-xmark text-lg group-hover:rotate-90 transition-transform duration-300"></i></button>
                 </div>
-                <button onclick="resetSemuaFilter()" class="shrink-0 bg-slate-50 dark:bg-slate-900 text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-700 w-10 h-10 flex items-center justify-center rounded-xl font-bold shadow-sm hover:bg-rose-50 hover:text-rose-500 hover:border-rose-200 transition-all active:scale-95 group"><i class="fa-solid fa-xmark text-lg group-hover:rotate-90 transition-transform duration-300"></i></button>
+                ${subCategoriesHtml}
             </div>`;
             backBtnContainer.classList.remove('hidden');
         } else { 
@@ -83,18 +128,20 @@ export const rCat = () => {
     let f = appData.products.filter(p => {
         if (p.isActive === false || p.isActive === 'false') return false;
         if (aCat !== 'Semua Produk' && p.category !== aCat) return false;
+        if (aSubCat !== 'Semua Jenis' && p.subCategory !== aSubCat) return false;
         if (aBrand !== 'Semua Merek' && p.brand !== aBrand) return false;
         if (!sQ) return true;
         let q = sQ.toLowerCase();
         return (p.name || '').toLowerCase().includes(q) || 
                (p.sku || '').toLowerCase().includes(q) || 
                (p.category || '').toLowerCase().includes(q) || 
+               (p.subCategory || '').toLowerCase().includes(q) || 
                (p.brand || '').toLowerCase().includes(q) || 
                (p.variants && p.variants.some(v => (v.name || '').toLowerCase().includes(q) || (v.sku || '').toLowerCase().includes(q)));
     }).sort((a, b) => {
         if (cSort === 'cheapest') return (a.price || 0) - (b.price || 0);
         if (cSort === 'expensive') return (b.price || 0) - (a.price || 0);
-        if (cSort === 'az') return (a.name || '').localeCompare(b.name || '');
+        if (cSort === 'az') return (a.name || '').localeCompare(a.name || '');
         if (cSort === 'za') return (b.name || '').localeCompare(a.name || '');
         if (cSort === 'oldest') return (a.id || 0) - (b.id || 0);
         return (b.id || 0) - (a.id || 0);
@@ -123,11 +170,11 @@ export const rCat = () => {
                 ? p.variants.filter(v => v.isActive !== false && v.isActive !== 'false').reduce((s, v) => s + (parseFloat(v.stock) || 0), 0)
                 : parseFloat(p.stock) || 0;
             if (totalStock <= 0) {
-                nH = `<div class="absolute inset-0 bg-white/60 dark:bg-slate-900/60 backdrop-blur-[2px] z-20 flex items-center justify-center rounded-2xl"><span class="bg-slate-800 text-white text-[10px] font-bold px-3 py-1.5 rounded-xl shadow-lg uppercase tracking-widest"><i class="fa-solid fa-ban mr-1"></i> HABIS</span></div>`;
+                nH = `<div class="absolute inset-0 bg-white/75 dark:bg-slate-900/75 z-20 flex items-center justify-center rounded-2xl"><span class="bg-slate-800 text-white text-[10px] font-bold px-3 py-1.5 rounded-xl shadow-lg uppercase tracking-widest"><i class="fa-solid fa-ban mr-1"></i> HABIS</span></div>`;
             } else if (totalStock <= 5) {
                 stockBadge = `<span class="absolute top-2 left-2 z-10 bg-rose-500 text-white text-[8px] font-bold px-2 py-1 rounded-xl shadow uppercase tracking-wider"><i class="fa-solid fa-fire mr-0.5"></i> SISA ${totalStock}</span>`;
             } else {
-                stockBadge = `<span class="absolute top-2 left-2 z-10 bg-slate-800/80 text-white text-[8px] font-bold px-2 py-1 rounded-xl shadow uppercase tracking-wider backdrop-blur-sm"><i class="fa-solid fa-box mr-0.5"></i> Stok ${totalStock}</span>`;
+                stockBadge = `<span class="absolute top-2 left-2 z-10 bg-slate-800/90 text-white text-[8px] font-bold px-2 py-1 rounded-xl shadow uppercase tracking-wider"><i class="fa-solid fa-box mr-0.5"></i> Stok ${totalStock}</span>`;
             }
         }
         
@@ -170,6 +217,7 @@ export const rCat = () => {
             ${poPill}
             ${poinBadge}
             ${soldBadge}
+            ${p.subCategory ? `<span class="bg-[rgba(var(--color-primary-rgb),0.08)] text-[var(--color-primary)] border border-[rgba(var(--color-primary-rgb),0.2)] px-2 py-0.5 rounded-full text-[8px] font-bold flex items-center gap-1 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-shapes"></i> ${esc(p.subCategory)}</span>` : ''}
             ${p.tag ? `<span class="bg-[var(--color-primary-light)] text-[var(--color-primary-dark)] dark:bg-[var(--color-primary-dark)]/50 dark:text-[var(--color-primary)] px-2 py-0.5 rounded-full text-[8px] font-bold flex items-center gap-1 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-hashtag"></i> ${esc(p.tag)}</span>` : ''}
             <span class="accent-badge px-2 py-0.5 rounded-full text-[8px] font-bold flex items-center gap-1 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-circle-check"></i> Official</span>
             ${p.brand ? `<span class="bg-slate-200 text-slate-700 dark:bg-slate-700 dark:text-slate-300 px-2 py-0.5 rounded-full text-[8px] font-bold flex items-center gap-1 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-tag"></i> ${esc(p.brand)}</span>` : ''}
@@ -180,7 +228,7 @@ export const rCat = () => {
         
         if (cView === 'grid') {
             return `
-            <a href="?p=${p.id}" class="w-full bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700/50 rounded-[1.5rem] shadow-soft ${cardCursorCls} transition-all duration-300 flex flex-col group relative overflow-hidden text-left" onclick="event.preventDefault(); openProductModal(${p.id})">
+            <a href="?p=${p.id}" class="w-full bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700/50 rounded-[1.5rem] shadow-soft ${cardCursorCls} transition-all duration-300 flex flex-col group relative overflow-hidden text-left" onclick="event.preventDefault(); openProductModal('${esc(p.id)}')">
                 ${nH}
                 <div class="relative aspect-square w-full bg-white flex items-center justify-center shrink-0 border-b border-slate-100 dark:border-slate-700/50">
                       ${stockBadge}
@@ -197,15 +245,15 @@ export const rCat = () => {
                             </p>
                             ${p.variants && p.variants.length > 0 ? '' : unt}
                         </div>
-                        <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[rgba(var(--color-primary-rgb),0.08)] text-[var(--color-primary)] border border-[rgba(var(--color-primary-rgb),0.15)] flex items-center justify-center transition-all group-hover:bg-[var(--color-primary)] group-hover:text-white group-hover:scale-110 active:scale-90 shadow-sm">
+                        <button type="button" class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[rgba(var(--color-primary-rgb),0.08)] text-[var(--color-primary)] border border-[rgba(var(--color-primary-rgb),0.15)] flex items-center justify-center transition-all group-hover:bg-[var(--color-primary)] group-hover:text-white group-hover:scale-110 active:scale-90 shadow-sm cursor-pointer z-20" onclick="quickAddOrOpenProduct(event, '${esc(p.id)}')" title="Tambah ke Keranjang">
                             <i class="fa-solid fa-plus text-xs sm:text-sm"></i>
-                        </div>
+                        </button>
                     </div>
                 </div>
             </a>`;
         } else {
             return `
-            <a href="?p=${p.id}" class="w-full bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700/50 rounded-[1.5rem] shadow-soft ${cardCursorClsList} transition-all duration-300 flex items-stretch p-2.5 sm:p-3 gap-3 sm:gap-4 group relative overflow-hidden text-left" onclick="event.preventDefault(); openProductModal(${p.id})">
+            <a href="?p=${p.id}" class="w-full bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700/50 rounded-[1.5rem] shadow-soft ${cardCursorClsList} transition-all duration-300 flex items-stretch p-2.5 sm:p-3 gap-3 sm:gap-4 group relative overflow-hidden text-left" onclick="event.preventDefault(); openProductModal('${esc(p.id)}')">
                 ${nH}
                 <div class="relative w-24 h-24 sm:w-28 sm:h-28 shrink-0 bg-white dark:bg-slate-900 rounded-xl flex items-center justify-center p-2 border border-slate-100 dark:border-slate-700/50 overflow-hidden">
                     ${stockBadge}
@@ -222,9 +270,9 @@ export const rCat = () => {
                             </p>
                             ${p.variants && p.variants.length > 0 ? '' : unt}
                         </div>
-                        <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[rgba(var(--color-primary-rgb),0.08)] text-[var(--color-primary)] border border-[rgba(var(--color-primary-rgb),0.15)] flex items-center justify-center transition-all group-hover:bg-[var(--color-primary)] group-hover:text-white group-hover:scale-110 active:scale-90 shadow-sm mr-1">
+                        <button type="button" class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[rgba(var(--color-primary-rgb),0.08)] text-[var(--color-primary)] border border-[rgba(var(--color-primary-rgb),0.15)] flex items-center justify-center transition-all group-hover:bg-[var(--color-primary)] group-hover:text-white group-hover:scale-110 active:scale-90 shadow-sm mr-1 cursor-pointer z-20" onclick="quickAddOrOpenProduct(event, '${esc(p.id)}')" title="Tambah ke Keranjang">
                             <i class="fa-solid fa-plus text-xs sm:text-sm"></i>
-                        </div>
+                        </button>
                     </div>
                 </div>
             </a>`;
@@ -234,12 +282,111 @@ export const rCat = () => {
     v.length < f.length ? show('load-more-container') : hide('load-more-container');
 };
 
+/**
+ * Quick Add ke Keranjang langsung dari kartu katalog
+ */
+export const quickAddOrOpenProduct = (e, productId) => {
+    if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+    const p = appData.products.find(x => String(x.id) === String(productId));
+    if (!p) return;
+    
+    // Jika punya varian, buka Drawer Pilih Varian Cepat (Quick Variant Bottom Sheet)
+    if (p.variants && p.variants.length > 0) {
+        if (typeof openQuickVariantSheet === 'function') {
+            openQuickVariantSheet(productId);
+        } else if (typeof window.openQuickVariantSheet === 'function') {
+            window.openQuickVariantSheet(productId);
+        } else {
+            openProductModal(productId);
+        }
+        return;
+    }
+
+    // Validasi stok jika toko mengaktifkan pembatasan stok
+    const useStk = appData.store.useStock === true || appData.store.useStock === 'true';
+    const avail = parseFloat(p.stock) || 0;
+    if (useStk && avail <= 0) {
+        return showToast('Stok produk ini sedang kosong');
+    }
+
+    const existing = cart.find(i => i.id === p.id && !i.variantName);
+    const inCartQty = existing ? parseFloat(existing.qty) || 0 : 0;
+    if (useStk && inCartQty + 1 > avail) {
+        return showToast(`Maksimal stok tercapai: ${avail}`);
+    }
+
+    if (existing) {
+        existing.qty = parseFloat((existing.qty + 1).toFixed(2));
+    } else {
+        const itemPoin = parseFloat(p.poin) > 0 ? parseFloat(p.poin) : 0;
+        cart.push({
+            id: p.id,
+            name: p.name,
+            variantName: null,
+            price: p.price,
+            img: p.img,
+            qty: 1,
+            unit: p.unit || 'pcs',
+            poTime: p.poTime || '',
+            colorCode: '',
+            poin: itemPoin
+        });
+    }
+    updCart();
+    
+    // Trigger Animasi Terbang & Haptic Feedback
+    const btnEl = e?.currentTarget || e?.target;
+    if (typeof window.flyToCartAnimation === 'function') {
+        window.flyToCartAnimation(btnEl, '#bnav-cart', p.img);
+    } else if (typeof window.triggerHaptic === 'function') {
+        window.triggerHaptic('medium');
+    }
+    showToast(`+1 ${p.name} Masuk Keranjang`, 'success');
+};
+
+/**
+ * Tampilkan skeleton placeholder beranimasi shimmer saat memuat data
+ */
+export const renderCatalogSkeleton = () => {
+    const c = el('product-container');
+    if (!c) return;
+    const count = 6;
+    let skeletonCards = '';
+    for (let i = 0; i < count; i++) {
+        skeletonCards += `
+        <div class="w-full bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700/50 rounded-[1.5rem] shadow-soft p-3 sm:p-4 flex flex-col space-y-3 overflow-hidden">
+            <div class="aspect-square w-full rounded-2xl skeleton-shimmer"></div>
+            <div class="h-3 w-16 rounded-full skeleton-shimmer"></div>
+            <div class="h-3.5 w-full rounded-md skeleton-shimmer"></div>
+            <div class="h-3 w-3/4 rounded-md skeleton-shimmer"></div>
+            <div class="mt-auto pt-2 flex items-center justify-between">
+                <div class="h-5 w-20 rounded-md skeleton-shimmer"></div>
+                <div class="w-7 h-7 rounded-full skeleton-shimmer"></div>
+            </div>
+        </div>`;
+    }
+    c.className = 'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-5 2xl:grid-cols-6 gap-4 sm:gap-6 lg:gap-8';
+    c.innerHTML = skeletonCards;
+};
+
 export const filterCategory = c => {
     setACat((aCat === c && c !== 'Semua Produk') ? 'Semua Produk' : c); 
+    setASubCat('Semua Jenis');
     setCPage(1); 
     if (typeof window.rDyn === 'function') window.rDyn();
     const sc = document.querySelector('#view-catalog .scroll-content'); 
     if (sc) setTimeout(() => sc.scrollTo({ top: 0, behavior: 'smooth' }), 10);
+};
+
+export const filterSubCategory = sc => {
+    setASubCat(aSubCat === sc ? 'Semua Jenis' : sc);
+    setCPage(1);
+    rCat();
+    const scEl = document.querySelector('#view-catalog .scroll-content');
+    if (scEl) setTimeout(() => scEl.scrollTo({ top: 0, behavior: 'smooth' }), 10);
 };
 
 export const filterBrand = b => {
@@ -252,6 +399,7 @@ export const filterBrand = b => {
 
 export const resetSemuaFilter = () => { 
     setACat('Semua Produk'); 
+    setASubCat('Semua Jenis');
     setABrand('Semua Merek'); 
     setSQ(''); 
     setCPage(1); 
@@ -297,9 +445,12 @@ export const loadMoreProducts = () => {
 // ─── Expose ke window untuk atribut onclick di HTML ──────
 window.rCat = rCat;
 window.filterCategory = filterCategory;
+window.filterSubCategory = filterSubCategory;
 window.filterBrand = filterBrand;
 window.resetSemuaFilter = resetSemuaFilter;
 window.handleSearch = handleSearch;
 window.handleSort = handleSort;
 window.toggleView = toggleView;
 window.loadMoreProducts = loadMoreProducts;
+window.quickAddOrOpenProduct = quickAddOrOpenProduct;
+window.renderCatalogSkeleton = renderCatalogSkeleton;

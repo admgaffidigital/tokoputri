@@ -8,7 +8,7 @@
 
 import { appData, aCat, aBrand, setACat, setABrand, setCPage, oMods } from '../../core/state.js';
 import { el, show, hide, setH, esc } from '../../core/utils.js';
-import { curViewName, changeView } from '../../core/router.js';
+import { curViewName, changeView, pushModalHistory, requestCloseModal } from '../../core/router.js';
 
 // Fungsi Filter Global untuk Kategori dan Merek
 window.setCat = c => { setACat(c); setCPage(1); if (typeof window.rCat === 'function') window.rCat(); };
@@ -121,25 +121,60 @@ window.openQuickMenuModal = () => {
 
 window.openTermsModal = () => {
     const defaultTerms = `
-      <div>
-        <h4 class="font-bold mb-1.5 uppercase tracking-wider text-[10px] primary-text">1. Ketentuan Umum</h4>
-        <p class="leading-relaxed">Layanan website Toko Putri diperuntukkan bagi pelanggan yang ingin memesan perkakas, alat teknik, dan perlengkapan pertukangan secara online.</p>
-      </div>
-      <div>
-        <h4 class="font-bold mb-1.5 uppercase tracking-wider text-[10px] primary-text">2. Pemesanan &amp; Hubungi Admin</h4>
-        <p class="leading-relaxed">Setiap pesanan yang dibuat melalui keranjang belanja akan diteruskan secara otomatis ke nomor WhatsApp admin untuk konfirmasi akhir dan pengiriman.</p>
-      </div>
-      <div>
-        <h4 class="font-bold mb-1.5 uppercase tracking-wider text-[10px] primary-text">3. Kebijakan Pembayaran</h4>
-        <p class="leading-relaxed">Kami mendukung pembayaran Tunai (Cash), COD, Transfer Bank, QRIS, dan sistem Tempo (Kredit) untuk pelanggan dengan limit piutang aktif.</p>
-      </div>
-      <div>
-        <h4 class="font-bold mb-1.5 uppercase tracking-wider text-[10px] primary-text">4. Kebijakan Retur &amp; Barang PO</h4>
-        <p class="leading-relaxed">Barang Pre-Order (PO) dikirim sesuai estimasi. Khusus produk cat bangunan yang dicampur (tinting) tidak dapat dibatalkan atau diretur.</p>
+      <div class="space-y-3">
+        <div class="p-3.5 rounded-2xl bg-[rgba(var(--color-primary-rgb),0.06)] border border-[rgba(var(--color-primary-rgb),0.2)] flex items-start gap-3">
+          <i class="fa-solid fa-file-shield text-[var(--color-primary)] text-base shrink-0 mt-0.5"></i>
+          <p class="text-xs leading-relaxed text-slate-700 dark:text-slate-200 font-medium">
+            Dengan mengakses dan bertransaksi di website <b>Toko Putri</b>, Anda menyetujui seluruh syarat dan ketentuan layanan yang berlaku berikut ini:
+          </p>
+        </div>
+
+        <div class="p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/40 space-y-2">
+          <div class="flex items-center gap-2.5">
+            <span class="w-6 h-6 rounded-lg primary-bg text-white text-xs font-black flex items-center justify-center shrink-0">1</span>
+            <h4 class="font-bold text-slate-800 dark:text-white text-sm">Ketentuan Umum</h4>
+          </div>
+          <p class="text-xs leading-relaxed pl-8 text-slate-600 dark:text-slate-300">
+            Layanan website Toko Putri diperuntukkan bagi pelanggan yang ingin memesan perkakas, alat teknik, dan perlengkapan pertukangan secara online.
+          </p>
+        </div>
+
+        <div class="p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/40 space-y-2">
+          <div class="flex items-center gap-2.5">
+            <span class="w-6 h-6 rounded-lg primary-bg text-white text-xs font-black flex items-center justify-center shrink-0">2</span>
+            <h4 class="font-bold text-slate-800 dark:text-white text-sm">Pemesanan &amp; Hubungi Admin</h4>
+          </div>
+          <p class="text-xs leading-relaxed pl-8 text-slate-600 dark:text-slate-300">
+            Setiap pesanan yang dibuat melalui keranjang belanja akan diteruskan secara otomatis ke nomor WhatsApp admin untuk konfirmasi akhir dan pengiriman.
+          </p>
+        </div>
+
+        <div class="p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/40 space-y-2">
+          <div class="flex items-center gap-2.5">
+            <span class="w-6 h-6 rounded-lg primary-bg text-white text-xs font-black flex items-center justify-center shrink-0">3</span>
+            <h4 class="font-bold text-slate-800 dark:text-white text-sm">Kebijakan Pembayaran</h4>
+          </div>
+          <p class="text-xs leading-relaxed pl-8 text-slate-600 dark:text-slate-300">
+            Kami mendukung pembayaran Tunai (Cash), COD, Transfer Bank, QRIS, dan sistem Tempo (Kredit) untuk pelanggan dengan limit piutang aktif.
+          </p>
+        </div>
+
+        <div class="p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/40 space-y-2">
+          <div class="flex items-center gap-2.5">
+            <span class="w-6 h-6 rounded-lg primary-bg text-white text-xs font-black flex items-center justify-center shrink-0">4</span>
+            <h4 class="font-bold text-slate-800 dark:text-white text-sm">Kebijakan Retur &amp; Barang PO</h4>
+          </div>
+          <p class="text-xs leading-relaxed pl-8 text-slate-600 dark:text-slate-300">
+            Barang Pre-Order (PO) dikirim sesuai estimasi. Khusus produk cat bangunan yang dicampur (tinting) tidak dapat dibatalkan atau diretur.
+          </p>
+        </div>
       </div>
     `;
-    const terms = appData.store.terms || defaultTerms;
-    setH('terms-modal-content-body', terms.replace(/\n/g, '<br>'));
+    const rawTerms = appData?.store?.terms;
+    const content = rawTerms 
+        ? (rawTerms.includes('<') ? rawTerms : `<div class="p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/40 leading-relaxed text-xs sm:text-sm text-slate-600 dark:text-slate-300 whitespace-pre-line">${rawTerms}</div>`) 
+        : defaultTerms;
+    setH('terms-modal-content-body', content);
     
     const m = el('terms-modal'), c = el('terms-modal-content');
     if (m && c) {
@@ -161,21 +196,50 @@ window.closeTermsModal = (fH=false) => {
 
 window.openPrivacyModal = () => {
     const defaultPrivacy = `
-      <div>
-        <h4 class="font-bold mb-1.5 uppercase tracking-wider text-[10px] primary-text">1. Data Yang Kami Kumpulkan</h4>
-        <p class="leading-relaxed">Kami mengumpulkan data berupa Nama, Nomor WhatsApp, dan Alamat Pengiriman Anda saat membuat pesanan untuk keperluan pengantaran barang.</p>
-      </div>
-      <div>
-        <h4 class="font-bold mb-1.5 uppercase tracking-wider text-[10px] primary-text">2. Kerahasiaan Data</h4>
-        <p class="leading-relaxed">Toko Putri berkomitmen penuh untuk menjaga kerahasiaan data pribadi pelanggan dan tidak akan membagikannya ke pihak ketiga manapun.</p>
-      </div>
-      <div>
-        <h4 class="font-bold mb-1.5 uppercase tracking-wider text-[10px] primary-text">3. Keamanan Data Transaksi</h4>
-        <p class="leading-relaxed">Semua file bukti pembayaran yang diunggah diproses melalui server terenkripsi yang aman untuk mencegah kebocoran data sensitif.</p>
+      <div class="space-y-3">
+        <div class="p-3.5 rounded-2xl bg-[rgba(var(--color-primary-rgb),0.06)] border border-[rgba(var(--color-primary-rgb),0.2)] flex items-start gap-3">
+          <i class="fa-solid fa-user-shield text-[var(--color-primary)] text-base shrink-0 mt-0.5"></i>
+          <p class="text-xs leading-relaxed text-slate-700 dark:text-slate-200 font-medium">
+            Keamanan data dan privasi Anda adalah prioritas utama kami di <b>Toko Putri</b>. Berikut komitmen perlindungan data pelanggan:
+          </p>
+        </div>
+
+        <div class="p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/40 space-y-2">
+          <div class="flex items-center gap-2.5">
+            <span class="w-6 h-6 rounded-lg primary-bg text-white text-xs font-black flex items-center justify-center shrink-0">1</span>
+            <h4 class="font-bold text-slate-800 dark:text-white text-sm">Data Yang Kami Kumpulkan</h4>
+          </div>
+          <p class="text-xs leading-relaxed pl-8 text-slate-600 dark:text-slate-300">
+            Kami mengumpulkan data berupa Nama, Nomor WhatsApp, dan Alamat Pengiriman Anda saat membuat pesanan untuk keperluan pengantaran barang.
+          </p>
+        </div>
+
+        <div class="p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/40 space-y-2">
+          <div class="flex items-center gap-2.5">
+            <span class="w-6 h-6 rounded-lg primary-bg text-white text-xs font-black flex items-center justify-center shrink-0">2</span>
+            <h4 class="font-bold text-slate-800 dark:text-white text-sm">Kerahasiaan Data</h4>
+          </div>
+          <p class="text-xs leading-relaxed pl-8 text-slate-600 dark:text-slate-300">
+            Toko Putri berkomitmen penuh untuk menjaga kerahasiaan data pribadi pelanggan dan tidak akan membagikannya ke pihak ketiga manapun.
+          </p>
+        </div>
+
+        <div class="p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/40 space-y-2">
+          <div class="flex items-center gap-2.5">
+            <span class="w-6 h-6 rounded-lg primary-bg text-white text-xs font-black flex items-center justify-center shrink-0">3</span>
+            <h4 class="font-bold text-slate-800 dark:text-white text-sm">Keamanan Data Transaksi</h4>
+          </div>
+          <p class="text-xs leading-relaxed pl-8 text-slate-600 dark:text-slate-300">
+            Semua file bukti pembayaran yang diunggah diproses melalui server terenkripsi yang aman untuk mencegah kebocoran data sensitif.
+          </p>
+        </div>
       </div>
     `;
-    const privacy = appData.store.privacy || defaultPrivacy;
-    setH('privacy-modal-content-body', privacy.replace(/\n/g, '<br>'));
+    const rawPrivacy = appData?.store?.privacy;
+    const content = rawPrivacy 
+        ? (rawPrivacy.includes('<') ? rawPrivacy : `<div class="p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/40 leading-relaxed text-xs sm:text-sm text-slate-600 dark:text-slate-300 whitespace-pre-line">${rawPrivacy}</div>`) 
+        : defaultPrivacy;
+    setH('privacy-modal-content-body', content);
     
     const m = el('privacy-modal'), c = el('privacy-modal-content');
     if (m && c) {

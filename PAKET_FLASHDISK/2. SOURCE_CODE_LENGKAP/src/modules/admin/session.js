@@ -86,12 +86,12 @@ export const showSessionKickedModal = (deviceName) => {
     if (!m) {
         m = document.createElement('div');
         m.id = 'session-kicked-modal';
-        m.className = 'fixed inset-0 z-[150] bg-slate-900/80 backdrop-blur-md flex items-center justify-center p-4 transition-opacity duration-300';
+        m.className = 'fixed inset-0 z-[150] bg-slate-900/80 flex items-center justify-center p-4 transition-opacity duration-300';
         document.body.appendChild(m);
     }
 
     m.innerHTML = `
-        <div class="bg-white dark:bg-slate-900 rounded-[2rem] p-6 sm:p-8 max-w-md w-full border border-rose-200 dark:border-rose-900/50 shadow-2xl text-center flex flex-col items-center">
+        <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 max-w-md w-full border border-rose-200 dark:border-rose-900/50 shadow-2xl text-center flex flex-col items-center">
             <div class="w-16 h-16 rounded-full bg-rose-50 dark:bg-rose-900/30 border border-rose-200 dark:border-rose-800 text-rose-500 flex items-center justify-center text-2xl mb-4 shadow-sm animate-bounce">
                 <i class="fa-solid fa-right-from-bracket"></i>
             </div>

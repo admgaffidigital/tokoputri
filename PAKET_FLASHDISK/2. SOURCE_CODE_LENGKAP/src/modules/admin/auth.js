@@ -28,7 +28,8 @@ import {
  * Cek akses admin atau redirect ke halaman login
  */
 export const checkAdminAccess = async () => {
-    if (window.isAdm || window.location.hostname === 'localhost') {
+    const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+    if (window.isAdm || isLocal) {
         const active = await isCurrentSessionActive();
         if (!active && auth.currentUser) {
             detachAdminSessionGuard();

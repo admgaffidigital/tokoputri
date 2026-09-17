@@ -871,7 +871,7 @@ export const openSettingForm = (type) => {
             </button>
         </div>
 
-        <div class="bg-white dark:bg-slate-800 rounded-[2rem] border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden mb-6 relative">
+        <div class="bg-white dark:bg-slate-800 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden mb-6 relative">
             <div class="absolute top-0 left-0 w-full h-1.5 ${colorTheme.line}"></div>
             <div class="p-6 sm:p-8 flex-1 mt-2">
                 <div class="mb-6 flex items-center gap-3.5 pb-4 border-b border-slate-100 dark:border-slate-700/80">

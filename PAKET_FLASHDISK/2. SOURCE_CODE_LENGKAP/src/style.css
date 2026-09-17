@@ -188,6 +188,91 @@ body {
     padding-bottom: max(1.25rem, env(safe-area-inset-bottom)); 
 }
 
+/* === 4B. BOTTOM NAVIGATION BAR (MOBILE NATIVE APP EXPERIENCE) === */
+#bottom-nav-bar {
+    padding-bottom: max(0.45rem, env(safe-area-inset-bottom));
+}
+
+.bnav-item {
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    outline: none;
+}
+
+.bnav-item .bnav-icon-wrap {
+    width: 46px;
+    height: 28px;
+    border-radius: 9999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.bnav-item .bnav-icon-wrap i {
+    transition: color 0.2s ease, transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.bnav-item:active .bnav-icon-wrap {
+    transform: scale(0.92);
+}
+
+.bnav-item.active .bnav-icon-wrap {
+    background: rgba(var(--color-primary-rgb), 0.16);
+}
+
+.bnav-item.active .bnav-icon-wrap i {
+    color: var(--color-primary) !important;
+    transform: scale(1.12);
+}
+
+.bnav-item.active .bnav-label {
+    color: var(--color-primary) !important;
+    font-weight: 800 !important;
+}
+
+/* CENTER HERO HUB BUTTON (BERANDA DI TENGAH ELEGAN) */
+.bnav-center-hub {
+    overflow: visible !important;
+}
+
+.bnav-hero-button {
+    width: 52px;
+    height: 52px;
+    border-radius: 9999px;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.38);
+    transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transform: translateY(-14px);
+    margin-bottom: -10px;
+}
+
+.bnav-center-hub:active .bnav-hero-button {
+    transform: translateY(-11px) scale(0.92);
+}
+
+.bnav-center-hub.active .bnav-hero-button {
+    transform: translateY(-16px) scale(1.06);
+    box-shadow: 0 6px 20px rgba(var(--color-primary-rgb), 0.5);
+}
+
+.bnav-center-hub.active .bnav-hero-button i {
+    transform: scale(1.1);
+}
+
+.bnav-center-hub.active .bnav-label {
+    color: var(--color-primary) !important;
+    font-weight: 800 !important;
+}
+
+.bnav-center-hub:not(.active) .bnav-hero-button {
+    opacity: 0.88;
+}
+
 .admin-input { 
     width: 100%; 
     background-color: #fff; 
@@ -306,7 +391,7 @@ body {
 .btn-solid:hover { box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12); transform: translateY(-1px); }
 .btn-solid:active { transform: scale(0.97); }
 
-.modal-bottom-sheet { border-top-left-radius: 8px; border-top-right-radius: 8px; }
+.modal-bottom-sheet { border-top-left-radius: 1.5rem; border-top-right-radius: 1.5rem; }
 .pull-indicator { width: 48px; height: 4px; background-color: #e2e8f0; border-radius: 99px; margin: 12px auto 20px; transition: background 0.2s; }
 .modal-bottom-sheet:hover .pull-indicator { background-color: #cbd5e1; }
 
@@ -1132,5 +1217,68 @@ html.dark .skeleton-shimmer {
 .floating-pill-cart:active {
     transform: scale(0.96);
 }
+
+/* ─── SUPPRESS VERCEL LIVE FEEDBACK / TOOLBAR OVERLAY ─── */
+vercel-live-feedback,
+#vercel-toolbar,
+[data-vercel-toolbar],
+div[class*="vercel-live-feedback"],
+iframe[src*="vercel.live"] {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+    opacity: 0 !important;
+    width: 0 !important;
+    height: 0 !important;
+}
+
+/* ─── NATIVE MOBILE MICRO-INTERACTIONS ─── */
+@keyframes cartBouncePop {
+    0% { transform: scale(1); }
+    30% { transform: scale(1.35) rotate(-5deg); }
+    60% { transform: scale(0.9) rotate(3deg); }
+    80% { transform: scale(1.1) rotate(0deg); }
+    100% { transform: scale(1); }
+}
+.cart-bounce-pop {
+    animation: cartBouncePop 0.55s cubic-bezier(0.175, 0.885, 0.32, 1.275) both !important;
+}
+
+/* Pull-to-refresh capsule */
+#pull-to-refresh-indicator {
+    transform: translate(-50%, -120%);
+    transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.25s ease;
+    opacity: 0;
+}
+#pull-to-refresh-indicator.visible {
+    transform: translate(-50%, 0);
+    opacity: 1;
+}
+
+/* Product modal sticky action bar for mobile */
+.product-modal-sticky-action-bar {
+    position: sticky;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 40;
+    background-color: rgba(255, 255, 255, 0.98);
+    border-top: 1px solid rgba(226, 232, 240, 0.9);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.05);
+    padding-bottom: max(0.6rem, env(safe-area-inset-bottom));
+}
+html.dark .product-modal-sticky-action-bar {
+    background-color: rgba(15, 23, 42, 0.98);
+    border-top-color: rgba(51, 65, 85, 0.9);
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* Quick variant bottom sheet safe area */
+#quick-variant-content > div:last-child {
+    padding-bottom: max(1rem, env(safe-area-inset-bottom));
+}
+
 
 
