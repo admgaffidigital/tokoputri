@@ -291,14 +291,22 @@
     </div>
     <!-- Quick Menu Modal (Tautan Cepat) -->
     <div class="fixed inset-0 z-[115] flex hidden items-end justify-center bg-slate-900/80 p-0 opacity-0 transition-opacity duration-300 sm:items-center sm:p-5" id="quickmenu-modal" onclick="if (event.target === this) closeQuickMenuModal();">
-      <div class="relative flex max-h-[85dvh] w-full max-w-sm sm:max-w-md translate-y-full transform flex-col overflow-hidden rounded-t-[2rem] border-t border-slate-200 bg-white shadow-lg transition-transform duration-300 dark:border-slate-800 dark:bg-[#0b1121] sm:translate-y-10 sm:rounded-[2rem] sm:border" id="quickmenu-modal-content">
-        <div class="mx-auto mb-1 mt-4 h-1.5 w-12 rounded-full bg-slate-200 dark:bg-slate-700 sm:hidden"></div>
-        <div class="flex shrink-0 items-center justify-between border-b border-slate-100 px-6 pb-4 pt-2 dark:border-slate-800/60 sm:pt-5">
-          <h3 class="flex items-center gap-3 text-base font-bold text-slate-900 dark:text-white">
-            <div class="primary-bg-soft primary-text flex h-8 w-8 items-center justify-center rounded-xl"><i class="fa-solid fa-link text-sm"></i></div>
-            TAUTAN CEPAT
-          </h3>
-          <button class="flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-slate-500 transition-all hover:bg-rose-50 hover:text-rose-500 dark:bg-slate-700 dark:hover:bg-rose-900/30" onclick="closeQuickMenuModal()"><i class="fa-solid fa-xmark"></i></button>
+      <div class="relative flex max-h-[85dvh] w-full max-w-sm sm:max-w-md translate-y-full transform flex-col overflow-hidden rounded-t-3xl sm:rounded-2xl border border-slate-200 bg-white shadow-2xl transition-transform duration-300 dark:border-slate-800 dark:bg-[#0b1121] sm:translate-y-10" id="quickmenu-modal-content">
+        <div class="flex shrink-0 items-center justify-between border-b border-slate-100 p-4 sm:p-5 dark:border-slate-800/80 bg-white dark:bg-[#0b1121]">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-2xl bg-[rgba(var(--color-primary-rgb),0.12)] border border-[rgba(var(--color-primary-rgb),0.22)] text-[var(--color-primary)] flex items-center justify-center text-base sm:text-lg shadow-2xs shrink-0">
+              <i class="fa-solid fa-compass"></i>
+            </div>
+            <div>
+              <h3 class="text-sm sm:text-base font-black text-slate-900 dark:text-white tracking-tight leading-tight">
+                Tautan Cepat
+              </h3>
+              <p class="text-[10px] sm:text-[11px] font-semibold text-slate-400 dark:text-slate-500 mt-0.5">
+                Navigasi pintas ke fitur utama aplikasi
+              </p>
+            </div>
+          </div>
+          <button class="flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-slate-500 transition-all hover:bg-rose-50 hover:text-rose-500 dark:bg-slate-700 dark:hover:bg-rose-900/30 active:scale-95" onclick="closeQuickMenuModal()"><i class="fa-solid fa-xmark"></i></button>
         </div>
         <div class="space-y-3.5 overflow-y-auto bg-white p-5 dark:bg-[#0b1121]">
           <button class="flex w-full items-center gap-4 rounded-2xl border border-slate-100 bg-slate-50 p-4 text-left font-bold text-slate-700 transition-all hover:bg-[rgba(var(--color-primary-rgb),0.08)] hover:text-[var(--color-primary)] active:scale-[0.98] dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-[rgba(var(--color-primary-rgb),0.15)]" onclick="navigateFromQuickMenu('view-catalog')">
@@ -378,22 +386,37 @@
             </div>
           </button>
         </div>
+        <!-- Footer Modal -->
+        <div class="p-3.5 sm:p-4 border-t border-slate-100 dark:border-slate-800/80 bg-slate-50/80 dark:bg-[#0b1121]/90 flex items-center justify-between shrink-0">
+          <div class="flex items-center gap-2 text-[10px] font-bold text-slate-400 dark:text-slate-500">
+            <i class="fa-solid fa-bolt text-[var(--color-primary)] text-xs"></i>
+            <span>Akses Cepat Toko Putri</span>
+          </div>
+          <button onclick="closeQuickMenuModal()" class="px-5 py-2 rounded-xl primary-bg text-white text-xs font-bold uppercase tracking-wider hover:opacity-90 active:scale-95 transition-all cursor-pointer shadow-sm">
+            Tutup
+          </button>
+        </div>
       </div>
     </div>
 
     <!-- Shopping Guide Modal (Panduan Belanja & Cara Pesan Lengkap) -->
     <div class="fixed inset-0 z-[115] flex hidden items-end justify-center bg-slate-900/80 p-0 opacity-0 transition-opacity duration-300 sm:items-center sm:p-5" id="shopping-guide-modal" onclick="if (event.target === this) closeShoppingGuideModal();">
-      <div class="relative flex max-h-[88dvh] w-full max-w-sm sm:max-w-xl md:max-w-2xl lg:max-w-3xl translate-y-full transform flex-col overflow-hidden rounded-t-[2rem] border-t border-slate-200 bg-white shadow-xl transition-transform duration-300 dark:border-slate-800 dark:bg-[#0b1121] sm:translate-y-10 sm:rounded-[2rem] sm:border" id="shopping-guide-modal-content">
-        <div class="mx-auto mb-1 mt-4 h-1.5 w-12 rounded-full bg-slate-200 dark:bg-slate-700 sm:hidden"></div>
-        <div class="flex shrink-0 items-center justify-between border-b border-slate-100 px-6 pb-4 pt-2 dark:border-slate-800/60 sm:pt-5 bg-slate-50 dark:bg-slate-800/60">
+      <div class="relative flex max-h-[88dvh] w-full max-w-sm sm:max-w-xl md:max-w-2xl lg:max-w-3xl translate-y-full transform flex-col overflow-hidden rounded-t-3xl sm:rounded-2xl border border-slate-200 bg-white shadow-2xl transition-transform duration-300 dark:border-slate-800 dark:bg-[#0b1121] sm:translate-y-10" id="shopping-guide-modal-content">
+        <div class="flex shrink-0 items-center justify-between border-b border-slate-100 p-4 sm:p-5 dark:border-slate-800/80 bg-white dark:bg-[#0b1121]">
           <div class="flex items-center gap-3">
-            <div class="primary-bg text-white flex h-10 w-10 items-center justify-center rounded-xl shadow-xs"><i class="fa-solid fa-book-open-reader text-base"></i></div>
+            <div class="w-10 h-10 rounded-2xl bg-[rgba(var(--color-primary-rgb),0.12)] border border-[rgba(var(--color-primary-rgb),0.22)] text-[var(--color-primary)] flex items-center justify-center text-base sm:text-lg shadow-2xs shrink-0">
+              <i class="fa-solid fa-book-open-reader"></i>
+            </div>
             <div>
-              <h3 class="text-base font-bold text-slate-900 dark:text-white leading-tight">Panduan Cara Memesan</h3>
-              <p class="text-[11px] font-semibold text-slate-500 dark:text-slate-400 mt-0.5">Langkah mudah berbelanja online di Toko Putri</p>
+              <h3 class="text-sm sm:text-base font-black text-slate-900 dark:text-white tracking-tight leading-tight">
+                Panduan Cara Memesan
+              </h3>
+              <p class="text-[10px] sm:text-[11px] font-semibold text-slate-400 dark:text-slate-500 mt-0.5">
+                Langkah mudah berbelanja online di Toko Putri
+              </p>
             </div>
           </div>
-          <button class="flex h-8 w-8 items-center justify-center rounded-full bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 transition-all hover:bg-rose-50 hover:text-rose-500 dark:hover:bg-rose-900/30 active:scale-95" onclick="closeShoppingGuideModal()"><i class="fa-solid fa-xmark"></i></button>
+          <button class="flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-slate-500 transition-all hover:bg-rose-50 hover:text-rose-500 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-rose-900/30 active:scale-95" onclick="closeShoppingGuideModal()"><i class="fa-solid fa-xmark"></i></button>
         </div>
 
         <div class="hide-scrollbar flex-1 overflow-y-auto bg-white p-5 sm:p-6 dark:bg-[#0b1121] text-xs sm:text-sm text-slate-600 dark:text-slate-300 space-y-4">
@@ -515,89 +538,136 @@
 
     <!-- Terms & Conditions Modal -->
     <div class="fixed inset-0 z-[115] flex hidden items-end justify-center bg-slate-900/80 p-0 opacity-0 transition-opacity duration-300 sm:items-center sm:p-5" id="terms-modal" onclick="if (event.target === this) closeTermsModal();">
-      <div class="relative flex max-h-[85dvh] w-full max-w-sm sm:max-w-md md:max-w-lg translate-y-full transform flex-col overflow-hidden rounded-t-[2rem] border-t border-slate-200 bg-white shadow-lg transition-transform duration-300 dark:border-slate-800 dark:bg-[#0b1121] sm:translate-y-10 sm:rounded-[2rem] sm:border" id="terms-modal-content">
-        <div class="mx-auto mb-1 mt-4 h-1.5 w-12 rounded-full bg-slate-200 dark:bg-slate-700 sm:hidden"></div>
-        <div class="flex shrink-0 items-center justify-between border-b border-slate-100 px-6 pb-4 pt-2 dark:border-slate-800/60 sm:pt-5">
-          <h3 class="flex items-center gap-3 text-base font-bold text-slate-900 dark:text-white">
-            <div class="primary-bg-soft primary-text flex h-8 w-8 items-center justify-center rounded-xl"><i class="fa-solid fa-file-contract text-sm"></i></div>
-            Syarat &amp; Ketentuan
-          </h3>
-          <button class="flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-slate-500 transition-all hover:bg-rose-50 hover:text-rose-500 dark:bg-slate-800 dark:hover:bg-rose-900/30" onclick="closeTermsModal()"><i class="fa-solid fa-xmark"></i></button>
+      <div class="relative flex max-h-[88dvh] sm:max-h-[85dvh] w-full max-w-sm sm:max-w-md md:max-w-xl translate-y-full transform flex-col overflow-hidden rounded-t-3xl sm:rounded-2xl border border-slate-200 bg-white shadow-2xl transition-transform duration-300 dark:border-slate-800 dark:bg-[#0b1121] sm:translate-y-10" id="terms-modal-content">
+        <div class="flex shrink-0 items-center justify-between border-b border-slate-100 p-4 sm:p-5 dark:border-slate-800/80 bg-white dark:bg-[#0b1121]">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-2xl bg-[rgba(var(--color-primary-rgb),0.12)] border border-[rgba(var(--color-primary-rgb),0.22)] text-[var(--color-primary)] flex items-center justify-center text-base sm:text-lg shadow-2xs shrink-0">
+              <i class="fa-solid fa-file-contract"></i>
+            </div>
+            <div>
+              <h3 class="text-sm sm:text-base font-black text-slate-900 dark:text-white tracking-tight leading-tight">
+                Syarat &amp; Ketentuan
+              </h3>
+              <p class="text-[10px] sm:text-[11px] font-semibold text-slate-400 dark:text-slate-500 mt-0.5">
+                Ketentuan umum &amp; kebijakan layanan toko
+              </p>
+            </div>
+          </div>
+          <button class="flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-slate-500 transition-all hover:bg-rose-50 hover:text-rose-500 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-rose-900/30 active:scale-95" onclick="closeTermsModal()"><i class="fa-solid fa-xmark"></i></button>
         </div>
-        <div id="terms-modal-content-body" class="hide-scrollbar flex-1 overflow-y-auto bg-white p-5 dark:bg-[#0b1121] text-xs sm:text-sm text-slate-600 dark:text-slate-300 space-y-4">
-          <div>
-            <h4 class="font-bold mb-1.5 uppercase tracking-wider text-[10px] primary-text">1. Ketentuan Umum</h4>
-            <p class="leading-relaxed">Layanan website Toko Putri diperuntukkan bagi pelanggan yang ingin memesan perkakas, alat teknik, dan perlengkapan pertukangan secara online.</p>
+        <div id="terms-modal-content-body" class="hide-scrollbar flex-1 overflow-y-auto bg-white p-4 sm:p-6 dark:bg-[#0b1121] text-xs sm:text-sm text-slate-600 dark:text-slate-300">
+        </div>
+        <!-- Footer Modal -->
+        <div class="p-3.5 sm:p-4 border-t border-slate-100 dark:border-slate-800/80 bg-slate-50/80 dark:bg-[#0b1121]/90 flex items-center justify-between shrink-0">
+          <div class="flex items-center gap-2 text-[10px] font-bold text-slate-400 dark:text-slate-500">
+            <i class="fa-solid fa-shield-halved text-[var(--color-primary)] text-xs"></i>
+            <span>Berlaku untuk semua transaksi</span>
           </div>
-          <div>
-            <h4 class="font-bold mb-1.5 uppercase tracking-wider text-[10px] primary-text">2. Pemesanan &amp; Hubungi Admin</h4>
-            <p class="leading-relaxed">Setiap pesanan yang dibuat melalui keranjang belanja akan diteruskan secara otomatis ke nomor WhatsApp admin untuk konfirmasi akhir dan pengiriman.</p>
-          </div>
-          <div>
-            <h4 class="font-bold mb-1.5 uppercase tracking-wider text-[10px] primary-text">3. Kebijakan Pembayaran</h4>
-            <p class="leading-relaxed">Kami mendukung pembayaran Tunai (Cash), COD, Transfer Bank, QRIS, dan sistem Tempo (Kredit) untuk pelanggan dengan limit piutang aktif.</p>
-          </div>
-          <div>
-            <h4 class="font-bold mb-1.5 uppercase tracking-wider text-[10px] primary-text">4. Kebijakan Retur &amp; Barang PO</h4>
-            <p class="leading-relaxed">Barang Pre-Order (PO) dikirim sesuai estimasi. Khusus produk cat bangunan yang dicampur (tinting) tidak dapat dibatalkan atau diretur.</p>
-          </div>
+          <button onclick="closeTermsModal()" class="px-5 py-2 rounded-xl primary-bg text-white text-xs font-bold uppercase tracking-wider hover:opacity-90 active:scale-95 transition-all cursor-pointer shadow-sm">
+            Tutup
+          </button>
         </div>
       </div>
     </div>
 
     <!-- Privacy Policy Modal -->
     <div class="fixed inset-0 z-[115] flex hidden items-end justify-center bg-slate-900/80 p-0 opacity-0 transition-opacity duration-300 sm:items-center sm:p-5" id="privacy-modal" onclick="if (event.target === this) closePrivacyModal();">
-      <div class="relative flex max-h-[85dvh] w-full max-w-sm sm:max-w-md md:max-w-lg translate-y-full transform flex-col overflow-hidden rounded-t-[2rem] border-t border-slate-200 bg-white shadow-lg transition-transform duration-300 dark:border-slate-800 dark:bg-[#0b1121] sm:translate-y-10 sm:rounded-[2rem] sm:border" id="privacy-modal-content">
-        <div class="mx-auto mb-1 mt-4 h-1.5 w-12 rounded-full bg-slate-200 dark:bg-slate-700 sm:hidden"></div>
-        <div class="flex shrink-0 items-center justify-between border-b border-slate-100 px-6 pb-4 pt-2 dark:border-slate-800/60 sm:pt-5">
-          <h3 class="flex items-center gap-3 text-base font-bold text-slate-900 dark:text-white">
-            <div class="primary-bg-soft primary-text flex h-8 w-8 items-center justify-center rounded-xl"><i class="fa-solid fa-user-shield text-sm"></i></div>
-            Kebijakan Privasi
-          </h3>
-          <button class="flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-slate-500 transition-all hover:bg-rose-50 hover:text-rose-500 dark:bg-slate-800 dark:hover:bg-rose-900/30" onclick="closePrivacyModal()"><i class="fa-solid fa-xmark"></i></button>
+      <div class="relative flex max-h-[88dvh] sm:max-h-[85dvh] w-full max-w-sm sm:max-w-md md:max-w-xl translate-y-full transform flex-col overflow-hidden rounded-t-3xl sm:rounded-2xl border border-slate-200 bg-white shadow-2xl transition-transform duration-300 dark:border-slate-800 dark:bg-[#0b1121] sm:translate-y-10" id="privacy-modal-content">
+        <div class="flex shrink-0 items-center justify-between border-b border-slate-100 p-4 sm:p-5 dark:border-slate-800/80 bg-white dark:bg-[#0b1121]">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-2xl bg-[rgba(var(--color-primary-rgb),0.12)] border border-[rgba(var(--color-primary-rgb),0.22)] text-[var(--color-primary)] flex items-center justify-center text-base sm:text-lg shadow-2xs shrink-0">
+              <i class="fa-solid fa-user-shield"></i>
+            </div>
+            <div>
+              <h3 class="text-sm sm:text-base font-black text-slate-900 dark:text-white tracking-tight leading-tight">
+                Kebijakan Privasi
+              </h3>
+              <p class="text-[10px] sm:text-[11px] font-semibold text-slate-400 dark:text-slate-500 mt-0.5">
+                Perlindungan &amp; kerahasiaan data pelanggan
+              </p>
+            </div>
+          </div>
+          <button class="flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-slate-500 transition-all hover:bg-rose-50 hover:text-rose-500 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-rose-900/30 active:scale-95" onclick="closePrivacyModal()"><i class="fa-solid fa-xmark"></i></button>
         </div>
-        <div id="privacy-modal-content-body" class="hide-scrollbar flex-1 overflow-y-auto bg-white p-5 dark:bg-[#0b1121] text-xs sm:text-sm text-slate-600 dark:text-slate-300 space-y-4">
-          <div>
-            <h4 class="font-bold mb-1.5 uppercase tracking-wider text-[10px] primary-text">1. Data Yang Kami Kumpulkan</h4>
-            <p class="leading-relaxed">Kami mengumpulkan data berupa Nama, Nomor WhatsApp, dan Alamat Pengiriman Anda saat membuat pesanan untuk keperluan pengantaran barang.</p>
+        <div id="privacy-modal-content-body" class="hide-scrollbar flex-1 overflow-y-auto bg-white p-4 sm:p-6 dark:bg-[#0b1121] text-xs sm:text-sm text-slate-600 dark:text-slate-300">
+        </div>
+        <!-- Footer Modal -->
+        <div class="p-3.5 sm:p-4 border-t border-slate-100 dark:border-slate-800/80 bg-slate-50/80 dark:bg-[#0b1121]/90 flex items-center justify-between shrink-0">
+          <div class="flex items-center gap-2 text-[10px] font-bold text-slate-400 dark:text-slate-500">
+            <i class="fa-solid fa-lock text-[var(--color-primary)] text-xs"></i>
+            <span>Data Anda Terjamin Aman</span>
           </div>
-          <div>
-            <h4 class="font-bold mb-1.5 uppercase tracking-wider text-[10px] primary-text">2. Kerahasiaan Data</h4>
-            <p class="leading-relaxed">Toko Putri berkomitmen penuh untuk menjaga kerahasiaan data pribadi pelanggan dan tidak akan membagikannya ke pihak ketiga manapun.</p>
-          </div>
-          <div>
-            <h4 class="font-bold mb-1.5 uppercase tracking-wider text-[10px] primary-text">3. Keamanan Data Transaksi</h4>
-            <p class="leading-relaxed">Semua file bukti pembayaran yang diunggah diproses melalui server terenkripsi yang aman untuk mencegah kebocoran data sensitif.</p>
-          </div>
+          <button onclick="closePrivacyModal()" class="px-5 py-2 rounded-xl primary-bg text-white text-xs font-bold uppercase tracking-wider hover:opacity-90 active:scale-95 transition-all cursor-pointer shadow-sm">
+            Tutup
+          </button>
         </div>
       </div>
     </div>
 
+    <!-- Category Modal -->
     <div class="fixed inset-0 z-[75] flex hidden items-end justify-center bg-slate-900/80 p-0 opacity-0 transition-opacity duration-300 sm:items-center sm:p-5" id="category-modal" onclick="if (event.target === this) closeCategoryModal();">
-      <div class="relative flex max-h-[85dvh] w-full max-w-md translate-y-full transform flex-col overflow-hidden rounded-t-[2rem] border-t border-slate-200 bg-white shadow-lg transition-transform duration-300 dark:border-slate-800 dark:bg-[#0f172a] sm:max-w-lg sm:translate-y-10 sm:rounded-[2rem] sm:border md:max-w-xl lg:max-w-2xl" id="category-modal-content">
-        <div class="mx-auto mb-1 mt-4 h-1.5 w-12 rounded-full bg-slate-200 dark:bg-slate-700 sm:hidden"></div>
-        <div class="flex shrink-0 items-center justify-between border-b border-slate-100 px-6 pb-4 pt-2 dark:border-slate-800/60 sm:pt-5">
-          <h3 class="flex items-center gap-3 text-base font-bold text-slate-900 dark:text-white">
-            <div class="primary-bg-soft primary-text flex h-8 w-8 items-center justify-center rounded-xl"><i class="fa-solid fa-layer-group text-sm"></i></div>
-            KATEGORI PRODUK
-          </h3>
-          <button class="flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-slate-500 transition-all hover:bg-rose-50 hover:text-rose-500 dark:bg-slate-800 dark:hover:bg-rose-900/30" onclick="closeCategoryModal()"><i class="fa-solid fa-xmark"></i></button>
+      <div class="relative flex max-h-[85dvh] w-full max-w-md translate-y-full transform flex-col overflow-hidden rounded-t-3xl sm:rounded-2xl border border-slate-200 bg-white shadow-2xl transition-transform duration-300 dark:border-slate-800 dark:bg-[#0f172a] sm:max-w-lg sm:translate-y-10 md:max-w-xl lg:max-w-2xl" id="category-modal-content">
+        <div class="flex shrink-0 items-center justify-between border-b border-slate-100 p-4 sm:p-5 dark:border-slate-800/80 bg-white dark:bg-[#0f172a]">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-2xl bg-[rgba(var(--color-primary-rgb),0.12)] border border-[rgba(var(--color-primary-rgb),0.22)] text-[var(--color-primary)] flex items-center justify-center text-base sm:text-lg shadow-2xs shrink-0">
+              <i class="fa-solid fa-layer-group"></i>
+            </div>
+            <div>
+              <h3 class="text-sm sm:text-base font-black text-slate-900 dark:text-white tracking-tight leading-tight">
+                Kategori Produk
+              </h3>
+              <p class="text-[10px] sm:text-[11px] font-semibold text-slate-400 dark:text-slate-500 mt-0.5">
+                Telusuri koleksi produk berdasarkan kategori
+              </p>
+            </div>
+          </div>
+          <button class="flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-slate-500 transition-all hover:bg-rose-50 hover:text-rose-500 dark:bg-slate-800 dark:hover:bg-rose-900/30 active:scale-95" onclick="closeCategoryModal()"><i class="fa-solid fa-xmark"></i></button>
         </div>
         <div class="hide-scrollbar flex-1 overflow-y-auto bg-white p-5 dark:bg-[#0f172a]" id="modal-category-list"></div>
+        <!-- Footer Modal -->
+        <div class="p-3.5 sm:p-4 border-t border-slate-100 dark:border-slate-800/80 bg-slate-50/80 dark:bg-slate-900/80 flex items-center justify-between shrink-0">
+          <div class="flex items-center gap-2 text-[10px] font-bold text-slate-400 dark:text-slate-500">
+            <i class="fa-solid fa-table-cells-large text-[var(--color-primary)] text-xs"></i>
+            <span>Pilih kategori untuk memfilter</span>
+          </div>
+          <button onclick="closeCategoryModal()" class="px-5 py-2 rounded-xl primary-bg text-white text-xs font-bold uppercase tracking-wider hover:opacity-90 active:scale-95 transition-all cursor-pointer shadow-sm">
+            Tutup
+          </button>
+        </div>
       </div>
     </div>
+
+    <!-- Brand Modal -->
     <div class="fixed inset-0 z-[75] flex hidden items-end justify-center bg-slate-900/80 p-0 opacity-0 transition-opacity duration-300 sm:items-center sm:p-5" id="brand-modal" onclick="if (event.target === this) closeBrandModal();">
-      <div class="relative flex max-h-[85dvh] w-full max-w-md translate-y-full transform flex-col overflow-hidden rounded-t-[2rem] border-t border-slate-200 bg-white shadow-lg transition-transform duration-300 dark:border-slate-800 dark:bg-[#0f172a] sm:max-w-lg sm:translate-y-10 sm:rounded-[2rem] sm:border md:max-w-2xl lg:max-w-3xl xl:max-w-4xl" id="brand-modal-content">
-        <div class="mx-auto mb-1 mt-4 h-1.5 w-12 rounded-full bg-slate-200 dark:bg-slate-700 sm:hidden"></div>
-        <div class="flex shrink-0 items-center justify-between border-b border-slate-100 px-6 pb-4 pt-2 dark:border-slate-800/60 sm:pt-5">
-          <h3 class="flex items-center gap-3 text-base font-bold text-slate-900 dark:text-white">
-            <div class="primary-bg-soft primary-text flex h-8 w-8 items-center justify-center rounded-xl"><i class="fa-solid fa-copyright text-sm"></i></div>
-            BRAND MITRA
-          </h3>
-          <button class="flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-slate-500 transition-all hover:bg-rose-50 hover:text-rose-500 dark:bg-slate-800 dark:hover:bg-rose-900/30" onclick="closeBrandModal()"><i class="fa-solid fa-xmark"></i></button>
+      <div class="relative flex max-h-[85dvh] w-full max-w-md translate-y-full transform flex-col overflow-hidden rounded-t-3xl sm:rounded-2xl border border-slate-200 bg-white shadow-2xl transition-transform duration-300 dark:border-slate-800 dark:bg-[#0f172a] sm:max-w-lg sm:translate-y-10 md:max-w-2xl lg:max-w-3xl xl:max-w-4xl" id="brand-modal-content">
+        <div class="flex shrink-0 items-center justify-between border-b border-slate-100 p-4 sm:p-5 dark:border-slate-800/80 bg-white dark:bg-[#0f172a]">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-2xl bg-[rgba(var(--color-primary-rgb),0.12)] border border-[rgba(var(--color-primary-rgb),0.22)] text-[var(--color-primary)] flex items-center justify-center text-base sm:text-lg shadow-2xs shrink-0">
+              <i class="fa-solid fa-copyright"></i>
+            </div>
+            <div>
+              <h3 class="text-sm sm:text-base font-black text-slate-900 dark:text-white tracking-tight leading-tight">
+                Brand Mitra Resmi
+              </h3>
+              <p class="text-[10px] sm:text-[11px] font-semibold text-slate-400 dark:text-slate-500 mt-0.5">
+                Produk berkualitas dari merk terpercaya
+              </p>
+            </div>
+          </div>
+          <button class="flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-slate-500 transition-all hover:bg-rose-50 hover:text-rose-500 dark:bg-slate-800 dark:hover:bg-rose-900/30 active:scale-95" onclick="closeBrandModal()"><i class="fa-solid fa-xmark"></i></button>
         </div>
         <div class="hide-scrollbar flex-1 overflow-y-auto bg-white p-5 dark:bg-[#0f172a] sm:p-6">
           <div class="grid grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-5 md:gap-4 lg:grid-cols-6" id="modal-brand-grid"></div>
+        </div>
+        <!-- Footer Modal -->
+        <div class="p-3.5 sm:p-4 border-t border-slate-100 dark:border-slate-800/80 bg-slate-50/80 dark:bg-slate-900/80 flex items-center justify-between shrink-0">
+          <div class="flex items-center gap-2 text-[10px] font-bold text-slate-400 dark:text-slate-500">
+            <i class="fa-solid fa-badge-check text-[var(--color-primary)] text-xs"></i>
+            <span>100% Produk Asli Original</span>
+          </div>
+          <button onclick="closeBrandModal()" class="px-5 py-2 rounded-xl primary-bg text-white text-xs font-bold uppercase tracking-wider hover:opacity-90 active:scale-95 transition-all cursor-pointer shadow-sm">
+            Tutup
+          </button>
         </div>
       </div>
     </div>
@@ -1497,7 +1567,7 @@
 
     <!-- Modal Customer Ask Question -->
     <div class="fixed inset-0 z-[120] flex hidden items-end justify-center bg-slate-900/80 p-0 opacity-0 transition-opacity duration-300 sm:items-center sm:p-5" id="modal-ask-question" onclick="if(event.target===this) closeAskQuestionModal();">
-      <div class="relative flex max-h-[90dvh] w-full max-w-md translate-y-full transform flex-col overflow-hidden rounded-t-[2rem] border-t border-slate-200 bg-white shadow-2xl transition-transform duration-300 dark:border-slate-800 dark:bg-[#0b1121] sm:translate-y-10 sm:rounded-[2rem] sm:border" id="modal-ask-question-box">
+      <div class="relative flex max-h-[90dvh] w-full max-w-md translate-y-full transform flex-col overflow-hidden rounded-t-3xl sm:rounded-2xl border border-slate-200 bg-white shadow-2xl transition-transform duration-300 dark:border-slate-800 dark:bg-[#0b1121] sm:translate-y-10" id="modal-ask-question-box">
         <div class="flex shrink-0 items-center justify-between border-b border-slate-100 p-5 dark:border-slate-800">
           <div class="flex items-center gap-3">
             <div class="flex h-10 w-10 items-center justify-center rounded-2xl primary-bg text-white shadow-md"><i class="fa-solid fa-circle-question text-lg"></i></div>
@@ -1534,7 +1604,7 @@
 
     <!-- Modal Admin Q&A Editor -->
     <div class="fixed inset-0 z-[120] flex hidden items-end justify-center bg-slate-900/80 p-0 opacity-0 transition-opacity duration-300 sm:items-center sm:p-5" id="modal-admin-faq" onclick="if(event.target===this) closeAdminFAQModal();">
-      <div class="relative flex max-h-[90dvh] w-full max-w-lg translate-y-full transform flex-col overflow-hidden rounded-t-[2rem] border-t border-slate-200 bg-white shadow-2xl transition-transform duration-300 dark:border-slate-800 dark:bg-[#0b1121] sm:translate-y-10 sm:rounded-[2rem] sm:border" id="modal-admin-faq-box">
+      <div class="relative flex max-h-[90dvh] w-full max-w-lg translate-y-full transform flex-col overflow-hidden rounded-t-3xl sm:rounded-2xl border border-slate-200 bg-white shadow-2xl transition-transform duration-300 dark:border-slate-800 dark:bg-[#0b1121] sm:translate-y-10" id="modal-admin-faq-box">
         <div class="flex shrink-0 items-center justify-between border-b border-slate-100 p-5 dark:border-slate-800">
           <div class="flex items-center gap-3">
             <div class="flex h-10 w-10 items-center justify-center rounded-2xl primary-bg text-white shadow-md"><i class="fa-solid fa-pen-to-square text-lg"></i></div>
