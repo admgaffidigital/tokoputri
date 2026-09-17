@@ -1575,16 +1575,8 @@
         </div>
       </div>
       <!-- ================= BOTTOM NAVIGATION BAR (MOBILE NATIVE APP EXPERIENCE) ================= -->
-      <nav id="bottom-nav-bar" class="fixed bottom-0 left-0 right-0 z-40 flex md:hidden items-center justify-around border-t border-slate-200/90 bg-white px-2 pt-1.5 shadow-[0_-4px_20px_rgba(0,0,0,0.06)] dark:border-slate-800/90 dark:bg-[#0b1120] transition-transform duration-300" style="padding-bottom: max(0.45rem, env(safe-area-inset-bottom));">
-        <!-- Tab: Beranda -->
-        <button id="bnav-home" type="button" onclick="onBottomNavClick('home')" class="bnav-item group relative flex flex-1 flex-col items-center justify-center py-1 transition-all active:scale-90 active" aria-label="Beranda">
-          <div class="bnav-icon-wrap relative flex h-7 w-7 items-center justify-center rounded-xl transition-all">
-            <i class="fa-solid fa-house text-base transition-colors text-slate-400 group-hover:text-slate-600 dark:text-slate-500"></i>
-          </div>
-          <span class="bnav-label mt-0.5 text-[10px] font-bold tracking-tight text-slate-500 dark:text-slate-400 transition-colors">Beranda</span>
-        </button>
-
-        <!-- Tab: Kategori -->
+      <nav id="bottom-nav-bar" class="fixed bottom-0 left-0 right-0 z-40 flex md:hidden items-center justify-around border-t border-slate-200/90 bg-white px-2 pt-1.5 shadow-[0_-4px_24px_rgba(0,0,0,0.07)] dark:border-slate-800/90 dark:bg-[#0b1120] transition-transform duration-300" style="padding-bottom: max(0.45rem, env(safe-area-inset-bottom));">
+        <!-- Tab 1: Kategori -->
         <button id="bnav-categories" type="button" onclick="onBottomNavClick('categories')" class="bnav-item group relative flex flex-1 flex-col items-center justify-center py-1 transition-all active:scale-90" aria-label="Kategori">
           <div class="bnav-icon-wrap relative flex h-7 w-7 items-center justify-center rounded-xl transition-all">
             <i class="fa-solid fa-layer-group text-base transition-colors text-slate-400 group-hover:text-slate-600 dark:text-slate-500"></i>
@@ -1592,7 +1584,7 @@
           <span class="bnav-label mt-0.5 text-[10px] font-bold tracking-tight text-slate-500 dark:text-slate-400 transition-colors">Kategori</span>
         </button>
 
-        <!-- Tab: Keranjang -->
+        <!-- Tab 2: Keranjang -->
         <button id="bnav-cart" type="button" onclick="onBottomNavClick('cart')" class="bnav-item group relative flex flex-1 flex-col items-center justify-center py-1 transition-all active:scale-90" aria-label="Keranjang">
           <div class="bnav-icon-wrap relative flex h-7 w-7 items-center justify-center rounded-xl transition-all">
             <i class="fa-solid fa-bag-shopping text-base transition-colors text-slate-400 group-hover:text-slate-600 dark:text-slate-500"></i>
@@ -1601,7 +1593,15 @@
           <span class="bnav-label mt-0.5 text-[10px] font-bold tracking-tight text-slate-500 dark:text-slate-400 transition-colors">Keranjang</span>
         </button>
 
-        <!-- Tab: Pesanan -->
+        <!-- Tab 3 (CENTER HERO HUB): Beranda -->
+        <button id="bnav-home" type="button" onclick="onBottomNavClick('home')" class="bnav-item bnav-center-hub group relative flex flex-1 flex-col items-center justify-center active" aria-label="Beranda">
+          <div class="bnav-hero-button border-4 border-white dark:border-[#0b1120]">
+            <i class="fa-solid fa-house text-xl text-white transition-transform duration-300 group-hover:scale-110"></i>
+          </div>
+          <span class="bnav-label text-[10px] font-extrabold tracking-tight text-[var(--color-primary)] transition-colors">Beranda</span>
+        </button>
+
+        <!-- Tab 4: Pesanan -->
         <button id="bnav-orders" type="button" onclick="onBottomNavClick('orders')" class="bnav-item group relative flex flex-1 flex-col items-center justify-center py-1 transition-all active:scale-90" aria-label="Pesanan">
           <div class="bnav-icon-wrap relative flex h-7 w-7 items-center justify-center rounded-xl transition-all">
             <i class="fa-solid fa-receipt text-base transition-colors text-slate-400 group-hover:text-slate-600 dark:text-slate-500"></i>
@@ -1609,7 +1609,7 @@
           <span class="bnav-label mt-0.5 text-[10px] font-bold tracking-tight text-slate-500 dark:text-slate-400 transition-colors">Pesanan</span>
         </button>
 
-        <!-- Tab: Menu -->
+        <!-- Tab 5: Menu -->
         <button id="bnav-menu" type="button" onclick="onBottomNavClick('menu')" class="bnav-item group relative flex flex-1 flex-col items-center justify-center py-1 transition-all active:scale-90" aria-label="Menu">
           <div class="bnav-icon-wrap relative flex h-7 w-7 items-center justify-center rounded-xl transition-all">
             <i class="fa-solid fa-compass text-base transition-colors text-slate-400 group-hover:text-slate-600 dark:text-slate-500"></i>
