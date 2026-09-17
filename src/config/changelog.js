@@ -8,6 +8,21 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-7-5',
+        version: 'v1.7.5',
+        date: '2026-09-17',
+        title: 'Desain Navigasi Bawah Modern: Beranda Timbul Melayang di Tengah (Elevated Center Hub) & Tampilan 100% Aplikasi Mobile',
+        category: 'feature',
+        badge: 'Mobile App Navigation v1.7.5',
+        items: [
+            'Navigasi Bawah Mobile Modern (App-Like Bottom Navigation): Menghadirkan bilah navigasi bawah 5 tab simetris (Kategori, Keranjang, Beranda, Pesanan, Menu) yang intuitif untuk kemudahan pengoperasian satu tangan (Golden Thumb Zone) di layar ponsel.',
+            'Tombol Beranda Timbul Melayang di Tengah (Elevated Center Hero Hub): Menempatkan tombol Beranda tepat di tengah dengan lingkaran 52px melayang timbul (offset -top-5) bergradien tema dinamis, ring cutout notch, dan drop-shadow lembut yang elegan.',
+            'Solid Background Anti-Tembus & Bordered Cart Badge: Panel navigasi menggunakan latar belakang 100% solid (bg-white dark:bg-[#0b1120]) tanpa efek tembus pandang/blur residual saat menggulir halaman, dilengkapi badge keranjang belanja dengan outline kontras tinggi.',
+            'Sinkronisasi Routing & Active State Cerdas: Status tab navigasi otomatis menyala aktif secara akurat mengikuti URL hash/halaman yang sedang dibuka (Beranda, Riwayat Pesanan, Kategori Modal, atau Menu Drawer).',
+            'Manajemen Pruning Log Pembaruan di CMS: Administrator toko kini dapat menghapus catatan log pembaruan lama langsung dari panel CMS Admin agar riwayat changelog tetap rapi, ringkas, dan bebas spam seiring berjalannya waktu.'
+        ]
+    },
+    {
         id: 'log-1-7-2',
         version: 'v1.7.2',
         date: '2026-09-17',
@@ -261,12 +276,23 @@ export const DEFAULT_CHANGELOG = [
  */
 export const getCombinedChangelog = (appData) => {
     const dynamicLogs = (appData && Array.isArray(appData.changelog)) ? appData.changelog : [];
+    const deletedIds = new Set((appData && Array.isArray(appData.deletedChangelogIds)) ? appData.deletedChangelogIds : []);
     
-    // Gabungkan dinamis di atas, bawaan di bawah, cegah duplikat id
+    // Gabungkan dinamis di atas, bawaan di bawah, cegah duplikat id & saring log yang telah dihapus
     const dynamicIds = new Set(dynamicLogs.map(l => l.id || l.version));
-    const staticFiltered = DEFAULT_CHANGELOG.filter(l => !dynamicIds.has(l.id) && !dynamicIds.has(l.version));
+    const staticFiltered = DEFAULT_CHANGELOG.filter(l => 
+        !dynamicIds.has(l.id) && 
+        !dynamicIds.has(l.version) && 
+        !deletedIds.has(l.id) && 
+        !deletedIds.has(l.version)
+    );
     
-    const combined = [...dynamicLogs, ...staticFiltered];
+    const activeDynamicLogs = dynamicLogs.filter(l => 
+        !deletedIds.has(l.id) && 
+        !deletedIds.has(l.version)
+    );
+    
+    const combined = [...activeDynamicLogs, ...staticFiltered];
     
     // Urutkan berdasarkan tanggal (terbaru di atas)
     return combined.sort((a, b) => {

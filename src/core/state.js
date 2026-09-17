@@ -39,7 +39,7 @@ export const defApp = {
     payment:  { qrisUrl: "" },
     config:   { gasUrl: "" },
     banks: [], banners: [], categories: [], brands: [], products: [],
-    vouchers: [], colors: [], rewards: [], faqs: [], customers: [], changelog: [],
+    vouchers: [], colors: [], rewards: [], faqs: [], customers: [], changelog: [], deletedChangelogIds: [],
     taxSettings: {
         companyName: "", npwp: "",
         taxScheme: "umkm_final",  // 'umkm_final' | 'badan_normal' | 'custom'
