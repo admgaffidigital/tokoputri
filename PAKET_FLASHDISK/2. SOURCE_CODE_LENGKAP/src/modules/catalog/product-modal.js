@@ -838,7 +838,11 @@ export const buyNowProduct = () => {
     }
     updCart();
     if (typeof window.triggerHaptic === 'function') window.triggerHaptic('success');
-    closeProductModal();
+    // Gunakan fH=true agar modal ditutup paksa tanpa memanggil history.back().
+    // Jika history.back() dipanggil, popstate-nya akan tiba *setelah* changeView('view-checkout')
+    // dan me-reset tampilan kembali ke view-catalog (beranda). Bug terpental ini dihindari
+    // dengan melewati manipulasi History API saat kita langsung berpindah view.
+    closeProductModal(true);
     if (typeof window.changeView === 'function') window.changeView('view-checkout');
 };
 
