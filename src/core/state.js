@@ -23,7 +23,7 @@ export const defApp = {
         categoryStyle: "text", brandStyle: "image",
         showCategories: true, showBrands: true,
         themeColor: "#10b981", uiTheme: "emerald",
-        bgStyle: "minimalist",   // "minimalist" | "hero_arch" | "geometric_3d" | "diagonal_skew" | "dual_tone"
+        bgStyle: "minimalist",   // "minimalist" | "hero_arch" | "aurora_glow" | "tech_grid" | "glass_studio"
         bgCustomUrl: "",        // URL gambar wallpaper kustom (opsional)
         showRewardCatalog: true,
         useStock: false,

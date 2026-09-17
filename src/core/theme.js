@@ -198,7 +198,12 @@ export const initThemeIcon = () => {
  * @param {string} customBgUrl - URL gambar wallpaper kustom opsional
  */
 export const applyBackgroundStyle = (bgStyle = 'minimalist', customBgUrl = '') => {
-    const style = bgStyle || localStorage.getItem('freshmart_bg_style') || 'minimalist';
+    let style = bgStyle || localStorage.getItem('freshmart_bg_style') || 'minimalist';
+    // Normalisasi alias lama ke gaya modern
+    if (style === 'dual_tone') style = 'aurora_glow';
+    if (style === 'geometric_3d') style = 'tech_grid';
+    if (style === 'diagonal_skew') style = 'glass_studio';
+
     const rawBgUrl = customBgUrl !== undefined && customBgUrl !== null
         ? customBgUrl
         : (localStorage.getItem('freshmart_bg_custom_url') || '');
@@ -249,37 +254,44 @@ export const applyBackgroundStyle = (bgStyle = 'minimalist', customBgUrl = '') =
         container.appendChild(overlay);
     }
 
-    // 2. Vector Shapes sesuai Model Gaya Visual
+    // 2. Vector & Atmospheric Shapes sesuai Model Gaya Visual Native App
     let shapesHtml = '';
 
     if (style === 'hero_arch') {
         shapesHtml = `
-            <!-- Hero Arch Glow & Vector Curve -->
-            <div class="absolute -top-20 left-1/2 -translate-x-1/2 w-[140%] max-w-[1500px] h-80 rounded-b-[100%] bg-gradient-to-b from-[rgba(var(--color-primary-rgb),0.18)] to-transparent pointer-events-none blur-sm"></div>
-            <div class="absolute top-28 left-1/2 -translate-x-1/2 w-[110%] max-w-[1300px] h-52 rounded-b-[100%] border-b-2 border-[rgba(var(--color-primary-rgb),0.2)] pointer-events-none"></div>
+            <!-- Hero Arch: Canopy Dome Curve & Radial Ambient Aura -->
+            <div class="absolute -top-32 left-1/2 -translate-x-1/2 w-[160%] max-w-[1700px] h-96 rounded-b-[100%] bg-gradient-to-b from-[rgba(var(--color-primary-rgb),0.22)] via-[rgba(var(--color-primary-rgb),0.08)] to-transparent pointer-events-none blur-sm"></div>
+            <div class="absolute top-24 left-1/2 -translate-x-1/2 w-[120%] max-w-[1400px] h-60 rounded-b-[100%] border-b-2 border-[rgba(var(--color-primary-rgb),0.25)] pointer-events-none"></div>
+            <div class="absolute -top-10 left-1/2 -translate-x-1/2 w-80 h-80 rounded-full bg-[rgba(var(--color-primary-rgb),0.18)] blur-3xl pointer-events-none"></div>
         `;
-    } else if (style === 'geometric_3d') {
+    } else if (style === 'aurora_glow') {
         shapesHtml = `
-            <!-- Geometris 3D Matrix Grid & Isometric Vector -->
-            <div class="absolute inset-0 pointer-events-none opacity-30 dark:opacity-20" style="background-image: linear-gradient(30deg, rgba(var(--color-primary-rgb),0.15) 12%, transparent 12.5%, transparent 87%, rgba(var(--color-primary-rgb),0.15) 87.5%, rgba(var(--color-primary-rgb),0.15)), linear-gradient(150deg, rgba(var(--color-primary-rgb),0.15) 12%, transparent 12.5%, transparent 87%, rgba(var(--color-primary-rgb),0.15) 87.5%, rgba(var(--color-primary-rgb),0.15)), linear-gradient(30deg, rgba(var(--color-primary-rgb),0.15) 12%, transparent 12.5%, transparent 87%, rgba(var(--color-primary-rgb),0.15) 87.5%, rgba(var(--color-primary-rgb),0.15)), linear-gradient(150deg, rgba(var(--color-primary-rgb),0.15) 12%, transparent 12.5%, transparent 87%, rgba(var(--color-primary-rgb),0.15) 87.5%, rgba(var(--color-primary-rgb),0.15)), linear-gradient(60deg, rgba(var(--color-primary-rgb),0.2) 25%, transparent 25.5%, transparent 75%, rgba(var(--color-primary-rgb),0.2) 75%, rgba(var(--color-primary-rgb),0.2)), linear-gradient(60deg, rgba(var(--color-primary-rgb),0.2) 25%, transparent 25.5%, transparent 75%, rgba(var(--color-primary-rgb),0.2) 75%, rgba(var(--color-primary-rgb),0.2)); background-size: 40px 70px; background-position: 0 0, 0 0, 20px 35px, 20px 35px, 0 0, 20px 35px;"></div>
-            <div class="absolute -top-24 -left-24 w-96 h-96 bg-[rgba(var(--color-primary-rgb),0.15)] rounded-full blur-3xl pointer-events-none"></div>
-            <div class="absolute top-1/3 -right-24 w-96 h-96 bg-[rgba(var(--color-primary-rgb),0.1)] rounded-full blur-3xl pointer-events-none"></div>
+            <!-- Aurora Mesh Glow: Dynamic Atmospheric Ambient Orbs -->
+            <div class="absolute -top-24 -left-20 w-[420px] h-[420px] rounded-full bg-gradient-to-br from-[rgba(var(--color-primary-rgb),0.28)] via-[rgba(var(--color-primary-rgb),0.12)] to-transparent blur-[80px] pointer-events-none"></div>
+            <div class="absolute -top-28 -right-20 w-[460px] h-[460px] rounded-full bg-gradient-to-bl from-[rgba(var(--color-primary-rgb),0.24)] via-[rgba(var(--color-primary-rgb),0.1)] to-transparent blur-[90px] pointer-events-none"></div>
+            <div class="absolute top-1/3 left-1/2 -translate-x-1/2 w-full max-w-[900px] h-72 bg-gradient-to-b from-[rgba(var(--color-primary-rgb),0.06)] to-transparent rounded-full blur-[100px] pointer-events-none"></div>
         `;
-    } else if (style === 'diagonal_skew') {
+    } else if (style === 'tech_grid') {
         shapesHtml = `
-            <!-- Diagonal Skew Linear Grid & Glow -->
-            <div class="absolute inset-0 pointer-events-none opacity-25 dark:opacity-20" style="background: repeating-linear-gradient(45deg, rgba(var(--color-primary-rgb),0.12), rgba(var(--color-primary-rgb),0.12) 2px, transparent 2px, transparent 24px);"></div>
-            <div class="absolute -top-20 -right-20 w-96 h-96 bg-gradient-to-br from-[rgba(var(--color-primary-rgb),0.2)] to-transparent rounded-full blur-3xl pointer-events-none"></div>
+            <!-- Tech Grid: Blueprint Dot-Matrix & Precision Architectural Accents -->
+            <div class="absolute inset-0 pointer-events-none opacity-40 dark:opacity-30" style="background-image: radial-gradient(rgba(var(--color-primary-rgb), 0.22) 1.5px, transparent 1.5px); background-size: 24px 24px;"></div>
+            <div class="absolute top-0 left-0 right-0 h-80 bg-gradient-to-b from-[rgba(var(--color-primary-rgb),0.18)] via-[rgba(var(--color-primary-rgb),0.05)] to-transparent pointer-events-none"></div>
+            <div class="absolute top-20 left-10 w-48 h-48 border border-[rgba(var(--color-primary-rgb),0.15)] rounded-2xl pointer-events-none -rotate-6"></div>
+            <div class="absolute top-36 right-12 w-64 h-64 border border-[rgba(var(--color-primary-rgb),0.12)] rounded-3xl pointer-events-none rotate-12"></div>
         `;
-    } else if (style === 'dual_tone') {
+    } else if (style === 'glass_studio') {
         shapesHtml = `
-            <!-- Dual-Tone Split Atmosphere -->
-            <div class="absolute top-0 left-0 right-0 h-96 bg-gradient-to-b from-[rgba(var(--color-primary-rgb),0.16)] via-[rgba(var(--color-primary-rgb),0.05)] to-transparent pointer-events-none"></div>
-            <div class="absolute top-0 right-0 w-2/3 h-80 bg-[rgba(var(--color-primary-rgb),0.08)] -skew-y-6 pointer-events-none blur-2xl"></div>
+            <!-- Glass Studio: Frosted Depth & Diagonal Light Rays -->
+            <div class="absolute -top-36 -right-16 w-[500px] h-[500px] bg-gradient-to-br from-[rgba(var(--color-primary-rgb),0.22)] to-transparent rounded-full blur-3xl pointer-events-none"></div>
+            <div class="absolute inset-0 pointer-events-none opacity-20 dark:opacity-15" style="background: repeating-linear-gradient(135deg, rgba(var(--color-primary-rgb),0.15), rgba(var(--color-primary-rgb),0.15) 1.5px, transparent 1.5px, transparent 28px);"></div>
+            <div class="absolute top-1/4 -left-20 w-80 h-80 bg-[rgba(var(--color-primary-rgb),0.14)] rounded-full blur-3xl pointer-events-none"></div>
         `;
     } else {
-        // Minimalis: Polos bersih, elegan, solid
-        shapesHtml = ``;
+        // Minimalis: Polos bersih, elegan, solid dengan subtle top breath
+        shapesHtml = `
+            <!-- Minimalis Clean Studio: Soft top ambient wash -->
+            <div class="absolute top-0 left-0 right-0 h-48 bg-gradient-to-b from-[rgba(var(--color-primary-rgb),0.08)] to-transparent pointer-events-none"></div>
+        `;
     }
 
     if (shapesHtml) {

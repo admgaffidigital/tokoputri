@@ -1085,35 +1085,36 @@ html.dark #app-container[data-has-custom-bg="true"] {
     border-bottom: none;
 }
 
-/* ─── 2. GEOMETRIS 3D (Vektor sudut presisi) ─── */
-[data-bg-style="geometric_3d"] .glass-header {
-    background-color: var(--color-primary);
-    background-image: 
-        linear-gradient(135deg, rgba(255, 255, 255, 0.12) 25%, transparent 25%),
-        linear-gradient(225deg, rgba(255, 255, 255, 0.12) 25%, transparent 25%),
-        linear-gradient(45deg, rgba(255, 255, 255, 0.12) 25%, transparent 25%),
-        linear-gradient(315deg, rgba(255, 255, 255, 0.12) 25%, transparent 25%);
-    background-position: 12px 0, 12px 0, 0 0, 0 0;
-    background-size: 24px 24px;
-    border-radius: 0 0 1rem 1rem;
-    box-shadow: 0 8px 24px -4px rgba(var(--color-primary-rgb), 0.4);
+/* ─── 2. AURORA GLOW (Atmospheric Mesh Aura) ─── */
+[data-bg-style="aurora_glow"] .glass-header,
+[data-bg-style="dual_tone"] .glass-header {
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+    border-radius: 0 0 1.5rem 1.5rem;
+    padding-bottom: 1.15rem;
+    box-shadow: 0 10px 30px -4px rgba(var(--color-primary-rgb), 0.4);
     border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-/* ─── 3. DIAGONAL SKEW (Aksen garis tegas) ─── */
-[data-bg-style="diagonal_skew"] .glass-header {
-    background: var(--color-primary);
-    clip-path: polygon(0 0, 100% 0, 100% calc(100% - 14px), 0 100%);
-    padding-bottom: 1.5rem;
-    box-shadow: 0 10px 20px -5px rgba(var(--color-primary-rgb), 0.3);
-    border-bottom: none;
+/* ─── 3. TECH GRID (Blueprint Dot-Matrix) ─── */
+[data-bg-style="tech_grid"] .glass-header,
+[data-bg-style="geometric_3d"] .glass-header {
+    background-color: var(--color-primary);
+    background-image: radial-gradient(rgba(255, 255, 255, 0.25) 1.5px, transparent 1.5px);
+    background-size: 16px 16px;
+    border-radius: 0 0 1.25rem 1.25rem;
+    padding-bottom: 1.15rem;
+    box-shadow: 0 8px 24px -4px rgba(var(--color-primary-rgb), 0.4);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.25);
 }
 
-/* ─── 4. DUAL-TONE (Header solid 2 warna) ─── */
-[data-bg-style="dual_tone"] .glass-header {
-    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary) 58%, var(--color-primary-dark) 58%, var(--color-primary-dark) 100%);
+/* ─── 4. GLASS STUDIO (Frosted Depth & Rays) ─── */
+[data-bg-style="glass_studio"] .glass-header,
+[data-bg-style="diagonal_skew"] .glass-header {
+    background: var(--color-primary);
+    background-image: linear-gradient(120deg, rgba(255, 255, 255, 0.18) 0%, transparent 45%, rgba(255, 255, 255, 0.1) 100%);
     border-radius: 0 0 1.25rem 1.25rem;
-    box-shadow: 0 8px 24px -4px rgba(var(--color-primary-rgb), 0.35);
+    padding-bottom: 1.2rem;
+    box-shadow: 0 10px 25px -5px rgba(var(--color-primary-rgb), 0.35);
     border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
 
@@ -1124,6 +1125,141 @@ html.dark #app-container[data-has-custom-bg="true"] {
     clip-path: none;
     border-bottom: 1px solid rgba(255, 255, 255, 0.15);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+/* === MINI SMARTPHONE MOCKUP CARDS (CMS ADMIN PREVIEWS) === */
+.bg-mockup-card {
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    user-select: none;
+    outline: none;
+}
+.bg-mockup-card:hover {
+    transform: translateY(-3px);
+}
+.bg-mockup-card.active {
+    border-color: var(--color-primary) !important;
+    background-color: white !important;
+    box-shadow: 0 8px 25px -4px rgba(var(--color-primary-rgb), 0.35), 0 0 0 2px var(--color-primary) !important;
+}
+html.dark .bg-mockup-card.active {
+    background-color: #1e293b !important;
+}
+
+.mini-phone-frame {
+    width: 68px;
+    height: 98px;
+    border-radius: 13px;
+    background: #0f172a;
+    padding: 3.5px;
+    box-shadow: 0 6px 14px -2px rgba(15, 23, 42, 0.25), inset 0 0 0 1px rgba(255, 255, 255, 0.15);
+    position: relative;
+    overflow: hidden;
+    margin: 0 auto 0.65rem auto;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.bg-mockup-card:hover .mini-phone-frame {
+    transform: scale(1.05);
+}
+
+.mini-phone-screen {
+    width: 100%;
+    height: 100%;
+    border-radius: 9px;
+    background: #f8fafc;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+html.dark .mini-phone-screen {
+    background: #0b1120;
+}
+
+.mini-phone-notch {
+    position: absolute;
+    top: 2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 22px;
+    height: 4px;
+    background: #0f172a;
+    border-radius: 9999px;
+    z-index: 10;
+}
+
+/* Mini visual styles inside phone mockup */
+.mini-preview-header {
+    height: 32px;
+    width: 100%;
+    background: var(--color-primary);
+    position: relative;
+    transition: all 0.2s ease;
+}
+.mini-preview-arch .mini-preview-header {
+    border-radius: 0 0 100% 100% / 0 0 18px 18px;
+    box-shadow: 0 3px 8px rgba(var(--color-primary-rgb), 0.3);
+}
+.mini-preview-aurora .mini-preview-header {
+    background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+    border-radius: 0 0 10px 10px;
+}
+.mini-preview-aurora .mini-aura-orb {
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    border-radius: 9999px;
+    background: var(--color-primary);
+    opacity: 0.55;
+    filter: blur(4px);
+}
+.mini-preview-tech .mini-preview-header {
+    background-image: radial-gradient(rgba(255, 255, 255, 0.45) 1px, transparent 1px);
+    background-size: 6px 6px;
+    border-radius: 0 0 8px 8px;
+}
+.mini-preview-glass .mini-preview-header {
+    background: linear-gradient(135deg, var(--color-primary) 0%, rgba(255,255,255,0.25) 50%, var(--color-primary) 100%);
+    border-radius: 0 0 8px 8px;
+}
+.mini-preview-minimal .mini-preview-header {
+    height: 22px;
+    border-radius: 0;
+}
+
+.mini-dummy-content {
+    padding: 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    flex: 1;
+}
+.mini-dummy-bar {
+    height: 4px;
+    border-radius: 2px;
+    background: rgba(148, 163, 184, 0.35);
+}
+.mini-dummy-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3px;
+    margin-top: 2px;
+}
+.mini-dummy-card {
+    height: 20px;
+    border-radius: 4px;
+    background: white;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+html.dark .mini-dummy-card {
+    background: #1e293b;
+}
+
+/* Tablet & Desktop Ambient Backdrop Glow */
+@media (min-width: 1024px) {
+    #app-container {
+        box-shadow: 0 0 80px -20px rgba(var(--color-primary-rgb), 0.16);
+    }
 }
 
 /* ─── CARD STYLING KONSISTEN ─── */

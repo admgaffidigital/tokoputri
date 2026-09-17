@@ -173,31 +173,32 @@ export const selectPresetTheme = (themeName) => {
  * Pemilihan gaya visual latar belakang
  */
 export const selectBgStyle = (styleName) => {
+    let normalized = styleName;
+    if (normalized === 'dual_tone') normalized = 'aurora_glow';
+    if (normalized === 'geometric_3d') normalized = 'tech_grid';
+    if (normalized === 'diagonal_skew') normalized = 'glass_studio';
+
     const input = document.getElementById('set-bg-style');
-    if (input) input.value = styleName;
+    if (input) input.value = normalized;
 
     const customUrl = document.getElementById('set-bg-custom-url')?.value || '';
 
-    document.querySelectorAll('.bg-style-card').forEach(card => {
-        card.classList.remove('border-[var(--color-primary)]', 'shadow-md', 'ring-2', 'ring-[var(--color-primary)]/20');
-        card.classList.add('border-slate-200', 'dark:border-slate-700');
-        const iconWrap = card.querySelector('.bg-icon-wrap');
-        if (iconWrap) {
-            iconWrap.className = 'bg-icon-wrap w-10 h-10 rounded-xl flex items-center justify-center mb-2 text-base transition-transform bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300';
-        }
+    document.querySelectorAll('.bg-mockup-card').forEach(card => {
+        card.classList.remove('active', 'border-[var(--color-primary)]', 'shadow-md', 'ring-2', 'ring-[var(--color-primary)]/20');
+        card.classList.add('border-slate-200', 'dark:border-slate-700/80');
+        const badge = card.querySelector('.active-check-badge');
+        if (badge) badge.classList.add('hidden');
     });
 
-    const activeCard = document.getElementById(`bg-opt-${styleName}`);
+    const activeCard = document.getElementById(`bg-opt-${normalized}`);
     if (activeCard) {
-        activeCard.classList.add('border-[var(--color-primary)]', 'shadow-md', 'ring-2', 'ring-[var(--color-primary)]/20');
-        activeCard.classList.remove('border-slate-200', 'dark:border-slate-700');
-        const iconWrap = activeCard.querySelector('.bg-icon-wrap');
-        if (iconWrap) {
-            iconWrap.className = 'bg-icon-wrap w-10 h-10 rounded-xl flex items-center justify-center mb-2 text-base transition-transform bg-[var(--color-primary)] text-white shadow-sm';
-        }
+        activeCard.classList.add('active', 'border-[var(--color-primary)]', 'shadow-md', 'ring-2', 'ring-[var(--color-primary)]/20');
+        activeCard.classList.remove('border-slate-200', 'dark:border-slate-700/80');
+        const badge = activeCard.querySelector('.active-check-badge');
+        if (badge) badge.classList.remove('hidden');
     }
 
-    applyBackgroundStyle(styleName, customUrl);
+    applyBackgroundStyle(normalized, customUrl);
 };
 
 /**
@@ -213,7 +214,10 @@ export const openSettingForm = (type) => {
         colorTheme = { line: "bg-[var(--color-primary)]", box: "bg-[rgba(var(--color-primary-rgb),0.1)] text-[var(--color-primary)]" };
         
         const currentTheme = appData.store.uiTheme || 'emerald';
-        const currentBgStyle = appData.store.bgStyle || localStorage.getItem('freshmart_bg_style') || 'minimalist';
+        let currentBgStyle = appData.store.bgStyle || localStorage.getItem('freshmart_bg_style') || 'minimalist';
+        if (currentBgStyle === 'dual_tone') currentBgStyle = 'aurora_glow';
+        if (currentBgStyle === 'geometric_3d') currentBgStyle = 'tech_grid';
+        if (currentBgStyle === 'diagonal_skew') currentBgStyle = 'glass_studio';
         const presetNames = {
             emerald: "Emerald", teal: "Teal", lime: "Lime", cyan: "Cyan", sky: "Sky",
             blue: "Blue", indigo: "Indigo", violet: "Violet", purple: "Purple",
@@ -336,55 +340,138 @@ export const openSettingForm = (type) => {
 
                 <input type="hidden" id="set-bg-style" value="${currentBgStyle}">
                 
-                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-3.5">
                     <!-- 1. Hero Arch -->
                     <button type="button" onclick="selectBgStyle('hero_arch')" id="bg-opt-hero_arch"
-                            class="bg-style-card flex flex-col items-center justify-center text-center p-3.5 rounded-xl border-2 transition-all duration-200 cursor-pointer ${currentBgStyle === 'hero_arch' ? 'border-[var(--color-primary)] bg-white dark:bg-slate-800 shadow-md ring-2 ring-[var(--color-primary)]/20' : 'border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 hover:border-slate-300 dark:hover:border-slate-600'}">
-                        <div class="bg-icon-wrap w-10 h-10 rounded-xl flex items-center justify-center mb-2 text-base transition-transform ${currentBgStyle === 'hero_arch' ? 'bg-[var(--color-primary)] text-white shadow-sm' : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300'}">
-                            <i class="fa-solid fa-circle-half-stroke"></i>
+                            class="bg-mockup-card flex flex-col items-center justify-between text-center p-3 sm:p-3.5 rounded-2xl border-2 transition-all duration-200 cursor-pointer ${currentBgStyle === 'hero_arch' ? 'active border-[var(--color-primary)] bg-white dark:bg-slate-800 shadow-md ring-2 ring-[var(--color-primary)]/20' : 'border-slate-200 dark:border-slate-700/80 bg-white/60 dark:bg-slate-800/60 hover:border-slate-300 dark:hover:border-slate-600'}">
+                        <span class="active-check-badge ${currentBgStyle === 'hero_arch' ? '' : 'hidden'} absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full primary-bg text-white text-[10px] flex items-center justify-center shadow-md z-20">
+                            <i class="fa-solid fa-check"></i>
+                        </span>
+                        <div class="mini-phone-frame">
+                            <div class="mini-phone-screen mini-preview-arch">
+                                <div class="mini-phone-notch"></div>
+                                <div class="mini-preview-header"></div>
+                                <div class="mini-dummy-content">
+                                    <div class="mini-dummy-bar w-3/4"></div>
+                                    <div class="mini-dummy-grid">
+                                        <div class="mini-dummy-card"></div>
+                                        <div class="mini-dummy-card"></div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <span class="text-xs font-bold text-slate-800 dark:text-slate-100 mb-0.5">Hero Arch</span>
-                        <span class="text-[9px] text-slate-500 dark:text-slate-400 leading-tight">Header lengkung solid</span>
+                        <div class="w-full">
+                            <div class="inline-block px-1.5 py-0.5 rounded-md bg-[rgba(var(--color-primary-rgb),0.1)] text-[var(--color-primary)] text-[8px] font-bold mb-1 tracking-wider uppercase">Super-App</div>
+                            <span class="block text-xs font-bold text-slate-800 dark:text-slate-100 mb-0.5">Hero Arch</span>
+                            <span class="block text-[9px] text-slate-500 dark:text-slate-400 leading-tight">Kanopi dome lengkung</span>
+                        </div>
                     </button>
 
-                    <!-- 2. Geometris 3D -->
-                    <button type="button" onclick="selectBgStyle('geometric_3d')" id="bg-opt-geometric_3d"
-                            class="bg-style-card flex flex-col items-center justify-center text-center p-3.5 rounded-xl border-2 transition-all duration-200 cursor-pointer ${currentBgStyle === 'geometric_3d' ? 'border-[var(--color-primary)] bg-white dark:bg-slate-800 shadow-md ring-2 ring-[var(--color-primary)]/20' : 'border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 hover:border-slate-300 dark:hover:border-slate-600'}">
-                        <div class="bg-icon-wrap w-10 h-10 rounded-xl flex items-center justify-center mb-2 text-base transition-transform ${currentBgStyle === 'geometric_3d' ? 'bg-[var(--color-primary)] text-white shadow-sm' : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300'}">
-                            <i class="fa-solid fa-cube"></i>
+                    <!-- 2. Aurora Glow -->
+                    <button type="button" onclick="selectBgStyle('aurora_glow')" id="bg-opt-aurora_glow"
+                            class="bg-mockup-card flex flex-col items-center justify-between text-center p-3 sm:p-3.5 rounded-2xl border-2 transition-all duration-200 cursor-pointer ${currentBgStyle === 'aurora_glow' ? 'active border-[var(--color-primary)] bg-white dark:bg-slate-800 shadow-md ring-2 ring-[var(--color-primary)]/20' : 'border-slate-200 dark:border-slate-700/80 bg-white/60 dark:bg-slate-800/60 hover:border-slate-300 dark:hover:border-slate-600'}">
+                        <span class="active-check-badge ${currentBgStyle === 'aurora_glow' ? '' : 'hidden'} absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full primary-bg text-white text-[10px] flex items-center justify-center shadow-md z-20">
+                            <i class="fa-solid fa-check"></i>
+                        </span>
+                        <div class="mini-phone-frame">
+                            <div class="mini-phone-screen mini-preview-aurora">
+                                <div class="mini-phone-notch"></div>
+                                <div class="mini-preview-header">
+                                    <div class="mini-aura-orb -top-2 -left-2"></div>
+                                    <div class="mini-aura-orb -top-2 -right-2"></div>
+                                </div>
+                                <div class="mini-dummy-content">
+                                    <div class="mini-dummy-bar w-3/4"></div>
+                                    <div class="mini-dummy-grid">
+                                        <div class="mini-dummy-card"></div>
+                                        <div class="mini-dummy-card"></div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <span class="text-xs font-bold text-slate-800 dark:text-slate-100 mb-0.5">Geometris 3D</span>
-                        <span class="text-[9px] text-slate-500 dark:text-slate-400 leading-tight">Vektor sudut presisi</span>
+                        <div class="w-full">
+                            <div class="inline-block px-1.5 py-0.5 rounded-md bg-amber-500/10 text-amber-600 dark:text-amber-400 text-[8px] font-bold mb-1 tracking-wider uppercase">Modern iOS</div>
+                            <span class="block text-xs font-bold text-slate-800 dark:text-slate-100 mb-0.5">Aurora Glow</span>
+                            <span class="block text-[9px] text-slate-500 dark:text-slate-400 leading-tight">Mesh aura dinamis</span>
+                        </div>
                     </button>
 
-                    <!-- 3. Diagonal Skew -->
-                    <button type="button" onclick="selectBgStyle('diagonal_skew')" id="bg-opt-diagonal_skew"
-                            class="bg-style-card flex flex-col items-center justify-center text-center p-3.5 rounded-xl border-2 transition-all duration-200 cursor-pointer ${currentBgStyle === 'diagonal_skew' ? 'border-[var(--color-primary)] bg-white dark:bg-slate-800 shadow-md ring-2 ring-[var(--color-primary)]/20' : 'border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 hover:border-slate-300 dark:hover:border-slate-600'}">
-                        <div class="bg-icon-wrap w-10 h-10 rounded-xl flex items-center justify-center mb-2 text-base transition-transform ${currentBgStyle === 'diagonal_skew' ? 'bg-[var(--color-primary)] text-white shadow-sm' : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300'}">
-                            <i class="fa-solid fa-slash"></i>
+                    <!-- 3. Tech Grid -->
+                    <button type="button" onclick="selectBgStyle('tech_grid')" id="bg-opt-tech_grid"
+                            class="bg-mockup-card flex flex-col items-center justify-between text-center p-3 sm:p-3.5 rounded-2xl border-2 transition-all duration-200 cursor-pointer ${currentBgStyle === 'tech_grid' ? 'active border-[var(--color-primary)] bg-white dark:bg-slate-800 shadow-md ring-2 ring-[var(--color-primary)]/20' : 'border-slate-200 dark:border-slate-700/80 bg-white/60 dark:bg-slate-800/60 hover:border-slate-300 dark:hover:border-slate-600'}">
+                        <span class="active-check-badge ${currentBgStyle === 'tech_grid' ? '' : 'hidden'} absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full primary-bg text-white text-[10px] flex items-center justify-center shadow-md z-20">
+                            <i class="fa-solid fa-check"></i>
+                        </span>
+                        <div class="mini-phone-frame">
+                            <div class="mini-phone-screen mini-preview-tech">
+                                <div class="mini-phone-notch"></div>
+                                <div class="mini-preview-header"></div>
+                                <div class="mini-dummy-content">
+                                    <div class="mini-dummy-bar w-3/4"></div>
+                                    <div class="mini-dummy-grid">
+                                        <div class="mini-dummy-card"></div>
+                                        <div class="mini-dummy-card"></div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <span class="text-xs font-bold text-slate-800 dark:text-slate-100 mb-0.5">Diagonal Skew</span>
-                        <span class="text-[9px] text-slate-500 dark:text-slate-400 leading-tight">Aksen garis tegas</span>
+                        <div class="w-full">
+                            <div class="inline-block px-1.5 py-0.5 rounded-md bg-blue-500/10 text-blue-600 dark:text-blue-400 text-[8px] font-bold mb-1 tracking-wider uppercase">Pro Teknik</div>
+                            <span class="block text-xs font-bold text-slate-800 dark:text-slate-100 mb-0.5">Tech Grid</span>
+                            <span class="block text-[9px] text-slate-500 dark:text-slate-400 leading-tight">Dot-matrix blueprint</span>
+                        </div>
                     </button>
 
-                    <!-- 4. Dual-Tone -->
-                    <button type="button" onclick="selectBgStyle('dual_tone')" id="bg-opt-dual_tone"
-                            class="bg-style-card flex flex-col items-center justify-center text-center p-3.5 rounded-xl border-2 transition-all duration-200 cursor-pointer ${currentBgStyle === 'dual_tone' ? 'border-[var(--color-primary)] bg-white dark:bg-slate-800 shadow-md ring-2 ring-[var(--color-primary)]/20' : 'border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 hover:border-slate-300 dark:hover:border-slate-600'}">
-                        <div class="bg-icon-wrap w-10 h-10 rounded-xl flex items-center justify-center mb-2 text-base transition-transform ${currentBgStyle === 'dual_tone' ? 'bg-[var(--color-primary)] text-white shadow-sm' : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300'}">
-                            <i class="fa-solid fa-layer-group"></i>
+                    <!-- 4. Glass Studio -->
+                    <button type="button" onclick="selectBgStyle('glass_studio')" id="bg-opt-glass_studio"
+                            class="bg-mockup-card flex flex-col items-center justify-between text-center p-3 sm:p-3.5 rounded-2xl border-2 transition-all duration-200 cursor-pointer ${currentBgStyle === 'glass_studio' ? 'active border-[var(--color-primary)] bg-white dark:bg-slate-800 shadow-md ring-2 ring-[var(--color-primary)]/20' : 'border-slate-200 dark:border-slate-700/80 bg-white/60 dark:bg-slate-800/60 hover:border-slate-300 dark:hover:border-slate-600'}">
+                        <span class="active-check-badge ${currentBgStyle === 'glass_studio' ? '' : 'hidden'} absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full primary-bg text-white text-[10px] flex items-center justify-center shadow-md z-20">
+                            <i class="fa-solid fa-check"></i>
+                        </span>
+                        <div class="mini-phone-frame">
+                            <div class="mini-phone-screen mini-preview-glass">
+                                <div class="mini-phone-notch"></div>
+                                <div class="mini-preview-header"></div>
+                                <div class="mini-dummy-content">
+                                    <div class="mini-dummy-bar w-3/4"></div>
+                                    <div class="mini-dummy-grid">
+                                        <div class="mini-dummy-card"></div>
+                                        <div class="mini-dummy-card"></div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <span class="text-xs font-bold text-slate-800 dark:text-slate-100 mb-0.5">Dual-Tone</span>
-                        <span class="text-[9px] text-slate-500 dark:text-slate-400 leading-tight">Header solid 2 warna</span>
+                        <div class="w-full">
+                            <div class="inline-block px-1.5 py-0.5 rounded-md bg-purple-500/10 text-purple-600 dark:text-purple-400 text-[8px] font-bold mb-1 tracking-wider uppercase">Frosted Lux</div>
+                            <span class="block text-xs font-bold text-slate-800 dark:text-slate-100 mb-0.5">Glass Studio</span>
+                            <span class="block text-[9px] text-slate-500 dark:text-slate-400 leading-tight">Kedalaman bias kaca</span>
+                        </div>
                     </button>
 
                     <!-- 5. Minimalis -->
                     <button type="button" onclick="selectBgStyle('minimalist')" id="bg-opt-minimalist"
-                            class="bg-style-card flex flex-col items-center justify-center text-center p-3.5 rounded-xl border-2 transition-all duration-200 cursor-pointer col-span-2 sm:col-span-1 ${currentBgStyle === 'minimalist' ? 'border-[var(--color-primary)] bg-white dark:bg-slate-800 shadow-md ring-2 ring-[var(--color-primary)]/20' : 'border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 hover:border-slate-300 dark:hover:border-slate-600'}">
-                        <div class="bg-icon-wrap w-10 h-10 rounded-xl flex items-center justify-center mb-2 text-base transition-transform ${currentBgStyle === 'minimalist' ? 'bg-[var(--color-primary)] text-white shadow-sm' : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300'}">
-                            <i class="fa-solid fa-square"></i>
+                            class="bg-mockup-card flex flex-col items-center justify-between text-center p-3 sm:p-3.5 rounded-2xl border-2 transition-all duration-200 cursor-pointer col-span-2 sm:col-span-1 ${currentBgStyle === 'minimalist' ? 'active border-[var(--color-primary)] bg-white dark:bg-slate-800 shadow-md ring-2 ring-[var(--color-primary)]/20' : 'border-slate-200 dark:border-slate-700/80 bg-white/60 dark:bg-slate-800/60 hover:border-slate-300 dark:hover:border-slate-600'}">
+                        <span class="active-check-badge ${currentBgStyle === 'minimalist' ? '' : 'hidden'} absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full primary-bg text-white text-[10px] flex items-center justify-center shadow-md z-20">
+                            <i class="fa-solid fa-check"></i>
+                        </span>
+                        <div class="mini-phone-frame">
+                            <div class="mini-phone-screen mini-preview-minimal">
+                                <div class="mini-phone-notch"></div>
+                                <div class="mini-preview-header"></div>
+                                <div class="mini-dummy-content">
+                                    <div class="mini-dummy-bar w-3/4"></div>
+                                    <div class="mini-dummy-grid">
+                                        <div class="mini-dummy-card"></div>
+                                        <div class="mini-dummy-card"></div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <span class="text-xs font-bold text-slate-800 dark:text-slate-100 mb-0.5">Minimalis</span>
-                        <span class="text-[9px] text-slate-500 dark:text-slate-400 leading-tight">Polos bersih elegan</span>
+                        <div class="w-full">
+                            <div class="inline-block px-1.5 py-0.5 rounded-md bg-slate-500/10 text-slate-600 dark:text-slate-400 text-[8px] font-bold mb-1 tracking-wider uppercase">Studio Clean</div>
+                            <span class="block text-xs font-bold text-slate-800 dark:text-slate-100 mb-0.5">Minimalis</span>
+                            <span class="block text-[9px] text-slate-500 dark:text-slate-400 leading-tight">Polos bersih elegan</span>
+                        </div>
                     </button>
                 </div>
 
