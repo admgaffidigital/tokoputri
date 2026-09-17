@@ -9,7 +9,7 @@
 import { appData, cart, aCat, setACat, aSubCat, setASubCat, aBrand, setABrand, sQ, setSQ, cSort, setCSort, cView, setCView, cPage, setCPage, iPP } from '../../core/state.js';
 import { el, show, hide, toggleCls, esc, fCur, getOptImg, showToast } from '../../core/utils.js';
 import { updCart } from '../cart/cart.js';
-import { openProductModal } from './product-modal.js';
+import { openProductModal, openQuickVariantSheet } from './product-modal.js';
 
 let searchTmr = null;
 
@@ -293,10 +293,15 @@ export const quickAddOrOpenProduct = (e, productId) => {
     const p = appData.products.find(x => String(x.id) === String(productId));
     if (!p) return;
     
-    // Jika punya varian, pembeli wajib membuka modal untuk memilih varian
+    // Jika punya varian, buka Drawer Pilih Varian Cepat (Quick Variant Bottom Sheet)
     if (p.variants && p.variants.length > 0) {
-        if (typeof window.triggerHaptic === 'function') window.triggerHaptic('light');
-        openProductModal(productId);
+        if (typeof openQuickVariantSheet === 'function') {
+            openQuickVariantSheet(productId);
+        } else if (typeof window.openQuickVariantSheet === 'function') {
+            window.openQuickVariantSheet(productId);
+        } else {
+            openProductModal(productId);
+        }
         return;
     }
 

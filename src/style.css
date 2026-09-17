@@ -391,7 +391,7 @@ body {
 .btn-solid:hover { box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12); transform: translateY(-1px); }
 .btn-solid:active { transform: scale(0.97); }
 
-.modal-bottom-sheet { border-top-left-radius: 8px; border-top-right-radius: 8px; }
+.modal-bottom-sheet { border-top-left-radius: 1.5rem; border-top-right-radius: 1.5rem; }
 .pull-indicator { width: 48px; height: 4px; background-color: #e2e8f0; border-radius: 99px; margin: 12px auto 20px; transition: background 0.2s; }
 .modal-bottom-sheet:hover .pull-indicator { background-color: #cbd5e1; }
 
@@ -1273,6 +1273,11 @@ html.dark .product-modal-sticky-action-bar {
     background-color: rgba(15, 23, 42, 0.98);
     border-top-color: rgba(51, 65, 85, 0.9);
     box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* Quick variant bottom sheet safe area */
+#quick-variant-content > div:last-child {
+    padding-bottom: max(1rem, env(safe-area-inset-bottom));
 }
 
 

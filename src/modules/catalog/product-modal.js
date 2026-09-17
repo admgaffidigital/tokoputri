@@ -55,9 +55,14 @@ export const openProductModal = i => {
     setCProd(p);
     setCQty(1);
     
-    // Jika punya varian, set varian ke null agar pembeli wajib memilih warna/varian dulu
+    // Jika punya varian, otomatis pilih varian aktif pertama yang memiliki stok (smart auto-select)
     if (p.variants && p.variants.length > 0) {
-        setCVar(null);
+        const found = p.variants.findIndex(v => {
+            const isActive = v.isActive !== false && v.isActive !== 'false';
+            const stock = parseFloat(v.stock) || 0;
+            return isActive && (!useStk || stock > 0);
+        });
+        setCVar(found >= 0 ? found : 0);
     } else {
         setCVar(0);
     }
@@ -1007,6 +1012,252 @@ export const renderRelatedProducts = p => {
     </div>`;
 };
 
+// ─── BOTTOM SHEET PILIH VARIAN CEPAT (QUICK VARIANT DRAWER) ──────
+let qvProd = null;
+let qvVar = 0;
+let qvQty = 1;
+
+export const openQuickVariantSheet = (productId) => {
+    const p = appData.products.find(x => String(x.id) === String(productId));
+    if (!p) return;
+    qvProd = p;
+    qvQty = 1;
+
+    // Smart Auto-Select: Pilih varian aktif pertama yang memiliki stok
+    const useStk = appData.store.useStock === true || appData.store.useStock === 'true';
+    let defaultIdx = 0;
+    if (p.variants && p.variants.length > 0) {
+        const found = p.variants.findIndex(v => {
+            const isActive = v.isActive !== false && v.isActive !== 'false';
+            const stock = parseFloat(v.stock) || 0;
+            return isActive && (!useStk || stock > 0);
+        });
+        defaultIdx = found >= 0 ? found : 0;
+    }
+    qvVar = defaultIdx;
+
+    renderQuickVariantSheet();
+
+    const m = el('quick-variant-modal'), c = el('quick-variant-content');
+    if (m && c) {
+        show('quick-variant-modal');
+        setTimeout(() => {
+            m.classList.remove('opacity-0');
+            c.classList.remove('translate-y-full', 'sm:translate-y-10');
+        }, 10);
+    }
+    if (typeof window.triggerHaptic === 'function') window.triggerHaptic('light');
+};
+
+export const closeQuickVariantSheet = () => {
+    const m = el('quick-variant-modal'), c = el('quick-variant-content');
+    if (m && c) {
+        m.classList.add('opacity-0');
+        c.classList.add('translate-y-full', 'sm:translate-y-10');
+        setTimeout(() => hide('quick-variant-modal'), 300);
+    }
+};
+
+export const selectQuickVariant = (idx) => {
+    if (!qvProd || !qvProd.variants || !qvProd.variants[idx]) return;
+    qvVar = idx;
+    renderQuickVariantSheet();
+    if (typeof window.triggerHaptic === 'function') window.triggerHaptic('light');
+};
+
+export const updateQuickVariantQty = (delta) => {
+    if (!qvProd) return;
+    const useStk = appData.store.useStock === true || appData.store.useStock === 'true';
+    const v = qvProd.variants?.[qvVar];
+    const maxStk = useStk ? (parseFloat(v?.stock) || 0) : Infinity;
+    const newQty = Math.min(maxStk, Math.max(1, qvQty + delta));
+    qvQty = newQty;
+    const input = el('quick-variant-qty-input');
+    if (input) input.value = qvQty;
+    if (typeof window.triggerHaptic === 'function') window.triggerHaptic('light');
+};
+
+export const renderQuickVariantSheet = () => {
+    if (!qvProd) return;
+    const p = qvProd;
+    const v = p.variants?.[qvVar];
+    const useStk = appData.store.useStock === true || appData.store.useStock === 'true';
+
+    // Mini Header Update
+    const imgEl = el('quick-variant-img');
+    if (imgEl) imgEl.src = getOptImg(v?.img || p.img || '', 'w300-rw');
+    setIn('quick-variant-title', p.name);
+
+    const priceVal = v?.price ?? p.price;
+    setIn('quick-variant-price', fCur(priceVal));
+
+    const varStock = parseFloat(v?.stock) || 0;
+    const stockEl = el('quick-variant-stock');
+    if (stockEl) {
+        if (useStk) {
+            stockEl.innerText = varStock > 0 ? `Sisa: ${varStock} ${v?.unit || p.unit || 'pcs'}` : 'Stok Habis';
+            stockEl.className = `text-[10px] font-bold ${varStock > 0 ? 'text-slate-400 dark:text-slate-500' : 'text-rose-500'}`;
+        } else {
+            stockEl.innerText = 'Tersedia';
+            stockEl.className = 'text-[10px] font-bold text-emerald-500';
+        }
+    }
+
+    const selNameEl = el('quick-variant-selected-name');
+    if (selNameEl) {
+        selNameEl.innerText = v ? `Varian: ${v.name}` : 'Pilih Varian';
+    }
+
+    // Input Qty
+    const input = el('quick-variant-qty-input');
+    if (input) input.value = qvQty;
+
+    // Render Options
+    const optContainer = el('quick-variant-options');
+    if (optContainer && p.variants) {
+        optContainer.innerHTML = p.variants.map((r, idx) => {
+            const isVarActive = r.isActive !== false && r.isActive !== 'false';
+            const s = parseFloat(r.stock) || 0;
+            const isOOS = useStk && s <= 0;
+            const isSelectable = isVarActive && !isOOS;
+            const isSelected = idx === qvVar;
+
+            let btnClass = "";
+            if (!isSelectable) {
+                btnClass = "bg-slate-100 dark:bg-slate-800/40 border-slate-200 dark:border-slate-700 text-slate-400 opacity-50 cursor-not-allowed";
+            } else if (isSelected) {
+                btnClass = "bg-[rgba(var(--color-primary-rgb),0.1)] border-[var(--color-primary)] text-[var(--color-primary)] font-black shadow-xs ring-1 ring-[var(--color-primary)]/40";
+            } else {
+                btnClass = "bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:border-[var(--color-primary)]/40";
+            }
+
+            const colorDot = r.colorCode ? `<span class="w-3.5 h-3.5 rounded-full shrink-0 border border-black/10 shadow-xs" style="background-color: ${esc(r.colorCode)}"></span>` : '';
+
+            return `
+                <button ${!isSelectable ? 'disabled' : ''} onclick="selectQuickVariant(${idx})" class="px-3 py-2 rounded-xl text-xs font-bold border transition-all active:scale-95 flex items-center gap-2 cursor-pointer ${btnClass}">
+                    ${colorDot}
+                    <span class="${!isSelectable ? 'line-through' : ''}">${esc(r.name)}</span>
+                    ${isOOS ? '<span class="text-[9px] text-rose-500 font-bold ml-1">Habis</span>' : ''}
+                </button>
+            `;
+        }).join('');
+    }
+
+    // Button states
+    const isOutOfStock = useStk && varStock <= 0;
+    const btnCart = el('quick-variant-btn-cart');
+    const btnBuy = el('quick-variant-btn-buy');
+    if (btnCart && btnBuy) {
+        if (isOutOfStock) {
+            btnCart.disabled = true;
+            btnBuy.disabled = true;
+            btnCart.classList.add('opacity-50', 'cursor-not-allowed');
+            btnBuy.classList.add('opacity-50', 'cursor-not-allowed');
+        } else {
+            btnCart.disabled = false;
+            btnBuy.disabled = false;
+            btnCart.classList.remove('opacity-50', 'cursor-not-allowed');
+            btnBuy.classList.remove('opacity-50', 'cursor-not-allowed');
+        }
+    }
+};
+
+export const quickVariantAddToCart = (btn = null) => {
+    if (!qvProd) return;
+    const p = qvProd;
+    const v = p.variants?.[qvVar];
+    if (!v) return showToast('Pilih varian terlebih dahulu');
+
+    const useStk = appData.store.useStock === true || appData.store.useStock === 'true';
+    const avail = parseFloat(v.stock) || 0;
+    const vN = v.name;
+    const existing = cart.find(i => i.id === p.id && i.variantName === vN);
+    const inCartQty = existing ? parseFloat(existing.qty) || 0 : 0;
+
+    if (useStk && (qvQty + inCartQty) > avail) {
+        return showToast(`Stok tidak cukup! Tersisa: ${avail}`);
+    }
+
+    const unt = v.unit || p.unit || 'pcs';
+    const prodImg = v.img || p.img;
+    if (existing) {
+        existing.qty = parseFloat((existing.qty + qvQty).toFixed(2));
+        existing.unit = unt;
+    } else {
+        const itemPoin = (v && parseFloat(v.poin) > 0) ? parseFloat(v.poin) : (parseFloat(p.poin) || 0);
+        cart.push({
+            id: p.id,
+            name: p.name,
+            variantName: vN,
+            price: v.price || p.price,
+            img: prodImg,
+            qty: qvQty,
+            unit: unt,
+            poTime: p.poTime || '',
+            colorCode: v.colorCode || '',
+            poin: itemPoin
+        });
+    }
+    updCart();
+    if (typeof analytics !== 'undefined') analytics.logEvent('add_to_cart', { item_id: p.id, item_name: p.name, quantity: qvQty });
+
+    // Fly to cart animation
+    const startElem = (btn instanceof HTMLElement) ? btn : el('quick-variant-img');
+    if (typeof window.flyToCartAnimation === 'function') {
+        window.flyToCartAnimation(startElem, '#bnav-cart', prodImg);
+    } else if (typeof window.triggerHaptic === 'function') {
+        window.triggerHaptic('medium');
+    }
+
+    closeQuickVariantSheet();
+    showToast(`"${p.name} (${vN})" masuk ke keranjang`, "success");
+};
+
+export const quickVariantBuyNow = () => {
+    if (!qvProd) return;
+    const p = qvProd;
+    const v = p.variants?.[qvVar];
+    if (!v) return showToast('Pilih varian terlebih dahulu');
+
+    const useStk = appData.store.useStock === true || appData.store.useStock === 'true';
+    const avail = parseFloat(v.stock) || 0;
+    const vN = v.name;
+    const existing = cart.find(i => i.id === p.id && i.variantName === vN);
+    const inCartQty = existing ? parseFloat(existing.qty) || 0 : 0;
+
+    if (useStk && (qvQty + inCartQty) > avail) {
+        return showToast(`Stok tidak cukup! Tersisa: ${avail}`);
+    }
+
+    const unt = v.unit || p.unit || 'pcs';
+    const prodImg = v.img || p.img;
+    if (existing) {
+        existing.qty = parseFloat((existing.qty + qvQty).toFixed(2));
+        existing.unit = unt;
+    } else {
+        const itemPoin = (v && parseFloat(v.poin) > 0) ? parseFloat(v.poin) : (parseFloat(p.poin) || 0);
+        cart.push({
+            id: p.id,
+            name: p.name,
+            variantName: vN,
+            price: v.price || p.price,
+            img: prodImg,
+            qty: qvQty,
+            unit: unt,
+            poTime: p.poTime || '',
+            colorCode: v.colorCode || '',
+            poin: itemPoin
+        });
+    }
+    updCart();
+    if (typeof window.triggerHaptic === 'function') window.triggerHaptic('heavy');
+    closeQuickVariantSheet();
+
+    if (typeof window.changeView === 'function') {
+        window.changeView('view-checkout');
+    }
+};
+
 // ─── Expose ke window untuk atribut onclick di HTML ──────
 window.openProductModal = openProductModal;
 window.closeProductModal = closeProductModal;
@@ -1025,3 +1276,9 @@ window.confirmAddToWishlist = confirmAddToWishlist;
 window.shareProduct = shareProduct;
 window.buyNowProduct = buyNowProduct;
 window.chatWAAboutProduct = chatWAAboutProduct;
+window.openQuickVariantSheet = openQuickVariantSheet;
+window.closeQuickVariantSheet = closeQuickVariantSheet;
+window.selectQuickVariant = selectQuickVariant;
+window.updateQuickVariantQty = updateQuickVariantQty;
+window.quickVariantAddToCart = quickVariantAddToCart;
+window.quickVariantBuyNow = quickVariantBuyNow;
