@@ -30,6 +30,17 @@ export const rAdmReviews = () => {
     });
 
     const filterTabs = `
+        <div class="mb-5 flex justify-between items-center bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style="background: rgba(var(--color-primary-rgb),0.1); color: var(--color-primary)">
+                    <i class="fa-solid fa-comments text-base"></i>
+                </div>
+                <div>
+                    <h2 class="font-bold text-sm text-slate-800 dark:text-slate-100 uppercase tracking-widest leading-tight">Ulasan Pelanggan</h2>
+                    <p class="text-[9px] font-bold text-slate-500 mt-0.5">Moderasi, balas, dan kelola testimoni pembeli</p>
+                </div>
+            </div>
+        </div>
         <div class="flex gap-1.5 bg-slate-100 dark:bg-slate-800 p-1 rounded-xl mb-5 w-fit">
             ${[{k: 'all', l: 'Semua'}, {k: 'visible', l: 'Ditampilkan'}, {k: 'hidden', l: 'Disembunyikan'}].map(f => `
                 <button onclick="filterReviews('${f.k}')" class="px-3.5 py-1.5 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all ${currentFilter === f.k ? 'shadow-sm' : 'text-slate-500 dark:text-slate-400'}" style="${currentFilter === f.k ? 'background:var(--color-primary);color:#fff' : ''}">${f.l}</button>
@@ -37,7 +48,7 @@ export const rAdmReviews = () => {
         </div>`;
 
     if (!filtered.length) {
-        setH('admin-content', filterTabs + `<div class="flex flex-col items-center justify-center py-20 text-slate-400 font-bold bg-white dark:bg-slate-800 rounded-[1.5rem] border border-slate-200 dark:border-slate-700 shadow-sm text-center"><i class="fa-solid fa-comment-slash text-5xl mb-4 opacity-30"></i>Belum ada ulasan</div>`);
+        setH('admin-content', `<div class="max-w-full pb-10 text-sm fade-in-scale">` + filterTabs + `<div class="flex flex-col items-center justify-center py-20 text-slate-400 font-bold bg-white dark:bg-slate-800 rounded-[1.5rem] border border-slate-200 dark:border-slate-700 shadow-sm text-center"><i class="fa-solid fa-comment-slash text-5xl mb-4 opacity-30"></i>Belum ada ulasan</div></div>`);
         return;
     }
 
@@ -72,7 +83,7 @@ export const rAdmReviews = () => {
         </div>`;
     }).join('');
 
-    setH('admin-content', filterTabs + list);
+    setH('admin-content', `<div class="max-w-full pb-10 text-sm fade-in-scale">` + filterTabs + list + `</div>`);
 };
 
 /**
