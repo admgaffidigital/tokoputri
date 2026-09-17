@@ -355,7 +355,8 @@ export const deleteChangelogEntry = (id) => {
 
     const verName = entry.version || entry.title || 'ini';
     showConfirm(
-        `Hapus catatan pembaruan versi "${verName}" dari daftar log toko?`,
+        'Hapus Catatan Log Toko',
+        `Apakah Anda yakin ingin menghapus catatan pembaruan versi "${verName}"? Catatan ini tidak akan ditampilkan lagi di etalase toko maupun panel admin.`,
         async () => {
             sLoad('Menghapus catatan...');
             try {
@@ -381,8 +382,8 @@ export const deleteChangelogEntry = (id) => {
                 hLoad();
             }
         },
-        'Ya, Hapus',
-        'Konfirmasi Hapus Log'
+        'Konfirmasi Hapus Log',
+        true
     );
 };
 
@@ -399,7 +400,8 @@ export const pruneOldChangelogs = () => {
     const countToRemove = toRemove.length;
 
     showConfirm(
-        `Pangkas ${countToRemove} catatan log pembaruan terlama dan hanya sisakan 5 versi terbaru? Tindakan ini merapikan daftar log toko agar tidak menumpuk spam.`,
+        'Pangkas Log Terlama',
+        `Apakah Anda yakin ingin memangkas ${countToRemove} catatan log pembaruan terlama dan hanya menyisakan 5 versi terbaru? Tindakan ini merapikan daftar log toko agar tidak menumpuk spam.`,
         async () => {
             sLoad('Memangkas catatan lama...');
             try {
@@ -429,8 +431,8 @@ export const pruneOldChangelogs = () => {
                 hLoad();
             }
         },
-        'Ya, Pangkas Log',
-        'Pangkas Log Terlama'
+        'Pangkas Log Lama',
+        true
     );
 };
 
@@ -444,7 +446,8 @@ export const restoreDefaultChangelogs = () => {
     }
 
     showConfirm(
-        'Pulihkan kembali seluruh catatan log rilis sistem yang pernah dihapus?',
+        'Pulihkan Log Bawaan',
+        'Apakah Anda yakin ingin memulihkan kembali seluruh catatan log rilis sistem bawaan toko yang pernah dihapus?',
         async () => {
             sLoad('Memulihkan catatan log...');
             try {
@@ -458,8 +461,8 @@ export const restoreDefaultChangelogs = () => {
                 hLoad();
             }
         },
-        'Ya, Pulihkan',
-        'Pulihkan Log Bawaan'
+        'Ya, Pulihkan Semua',
+        false
     );
 };
 
