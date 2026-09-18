@@ -1,0 +1,30 @@
+{
+  "id": "/",
+  "name": "Toko Putri",
+  "short_name": "Toko Putri",
+  "description": "Toko Putri - Grosir dan E-Commerce Resmi Alat Teknik & Perkakas Berkualitas",
+  "start_url": "/",
+  "scope": "/",
+  "lang": "id",
+  "dir": "ltr",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
+  "orientation": "portrait",
+  "categories": ["shopping", "business"],
+  "background_color": "#ffffff",
+  "theme_color": "#10b981",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect width='192' height='192' rx='36' fill='%2310b981'/><path d='M96 48L48 72v12h96V72L96 48zm-40 44v44h16V92H56zm32 0v44h16V92H88zm32 0v44h16V92h-16zm-72 52v8h96v-8H48z' fill='white'/></svg>",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='96' fill='%2310b981'/><path d='M256 128L128 192v32h256v-32L256 128zm-108 116v116h44V244h-44zm86 0v116h44V244h-44zm86 0v116h44V244h-44zm-192 136v20h256v-20H128z' fill='white'/></svg>",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
