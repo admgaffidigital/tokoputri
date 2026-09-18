@@ -404,6 +404,13 @@
               <p class="mt-0.5 text-[9px] font-semibold text-slate-400 dark:text-slate-500">Kelola produk, pesanan, &amp; toko</p>
             </div>
           </button>
+          <button class="flex w-full items-center gap-4 rounded-2xl border border-slate-100 bg-slate-50 p-4 text-left font-bold text-slate-700 transition-all hover:bg-[rgba(var(--color-primary-rgb),0.08)] hover:text-[var(--color-primary)] active:scale-[0.98] dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-[rgba(var(--color-primary-rgb),0.15)]" onclick="if(typeof toggleTheme==='function') toggleTheme();">
+            <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-800 text-amber-400 shadow-md dark:bg-slate-700 dark:text-amber-300"><i class="fa-solid fa-moon text-sm" id="icon-theme"></i></div>
+            <div class="flex-1">
+              <h4 class="text-sm leading-tight">Mode Tampilan (Gelap / Terang)</h4>
+              <p class="mt-0.5 text-[9px] font-semibold text-slate-400 dark:text-slate-500">Ubah kenyamanan kontras layar</p>
+            </div>
+          </button>
           <button class="flex w-full items-center gap-4 rounded-2xl border border-slate-100 bg-slate-50 p-4 text-left font-bold text-slate-700 transition-all hover:bg-[rgba(var(--color-primary-rgb),0.08)] hover:text-[var(--color-primary)] active:scale-[0.98] dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-[rgba(var(--color-primary-rgb),0.15)]" onclick="navigateFromQuickMenu(openTermsModal)">
             <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-500 text-white shadow-md"><i class="fa-solid fa-file-contract text-sm"></i></div>
             <div>
@@ -1138,7 +1145,6 @@
                 <i class="fa-brands fa-google-play text-emerald-400 text-xs sm:text-sm group-hover:scale-110 transition-transform"></i>
                 <span class="hidden xs:inline text-[10px] sm:text-xs font-bold tracking-tight">Unduh App</span>
               </button>
-              <button aria-label="Toggle Dark Mode" class="flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full border-2 border-white/40 bg-black/20 text-white transition-all hover:bg-black/30 active:scale-95" id="btn-theme-toggle" onclick="toggleTheme()"><i class="fa-solid fa-moon text-xs sm:text-sm" id="icon-theme"></i></button>
               <button class="relative flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full border-2 border-white/40 bg-black/20 text-white transition-all hover:bg-black/30 active:scale-95" onclick="openQuickMenuModal()" title="Tautan Cepat">
                 <i class="fa-solid fa-bars text-xs sm:text-sm"></i>
               </button>
