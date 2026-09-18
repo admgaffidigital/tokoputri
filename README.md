@@ -129,6 +129,7 @@ Aturan validasi pengiriman/upload bukti transaksi diatur secara dinamis berdasar
   - 💎 **Platinum VIP** (1000+ Poin)
 * **Simpan ke Galeri HP (Download PNG HD)**: Pelanggan dapat mengunduh kartu member beresolusi tinggi (skala 3x Retina) ke galeri perangkat HP/komputer mereka.
 * **Auto-Deteksi di Checkout**: Saat pelanggan menginput nomor WA di keranjang belanja, sistem otomatis memunculkan miniatur kartu member dengan saldo poin dan tier aktif.
+* **Sinkronisasi Poin Otomatis & Persistensi Sesi**: Setiap pesanan otomatis mengkreditkan poin ke Firestore, memperbarui saldo kartu member seketika, menginvalidasi cache lama, dan memulihkan sesi pelanggan secara persisten.
 
 ---
 
