@@ -543,6 +543,7 @@ export const openMemberModal = () => {
         m.onclick = (e) => { if (e.target === m) closeMemberModal(); };
         document.body.appendChild(m);
     }
+    const isAlreadyOpen = m.style.display !== 'none' && m.style.opacity === '1';
     m.innerHTML = `
         <div class="bg-white dark:bg-slate-900 w-full max-w-lg rounded-t-3xl sm:rounded-3xl max-h-[90vh] flex flex-col shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden">
             <!-- Header Modal -->
@@ -570,7 +571,9 @@ export const openMemberModal = () => {
         m.style.transition = 'opacity 0.25s ease'; 
         m.style.opacity = '1'; 
     });
-    if (typeof window.pushModalHistory === 'function') window.pushModalHistory('member');
+    if (!isAlreadyOpen && typeof window.pushModalHistory === 'function') {
+        window.pushModalHistory('member');
+    }
 };
 
 /**
@@ -607,7 +610,7 @@ export const rMemberModalBody = () => {
             <div>
                 ${renderDigitalMemberCard(currentMember)}
                 
-                <!-- Action Controls: Balik Kartu & Unduh Kartu -->
+                <!-- Action Controls: Balik Kartu, Unduh Kartu & Tutup -->
                 <div class="flex items-center justify-between gap-2 mt-3 max-w-[390px] mx-auto">
                     <button type="button" onclick="flipMemberCard()" class="flex-1 py-2.5 px-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-xs font-bold flex items-center justify-center gap-1.5 hover:bg-slate-100 dark:hover:bg-slate-700 active:scale-95 transition-all shadow-xs cursor-pointer">
                         <i class="fa-solid fa-repeat text-[11px] text-amber-500"></i> Balik Kartu
@@ -615,8 +618,13 @@ export const rMemberModalBody = () => {
                     <button type="button" onclick="downloadMemberCard()" class="flex-1 py-2.5 px-3 rounded-xl border border-amber-400/50 bg-gradient-to-r from-amber-500 to-amber-600 text-white text-xs font-bold flex items-center justify-center gap-1.5 hover:opacity-95 active:scale-95 transition-all shadow-xs cursor-pointer">
                         <i class="fa-solid fa-download text-[11px]"></i> Simpan ke Galeri
                     </button>
-                    <button type="button" onclick="setCurrentMember(null); rMemberModalBody();" class="py-2.5 px-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-500 hover:text-rose-500 text-xs font-bold flex items-center justify-center gap-1 active:scale-95 transition-all cursor-pointer" title="Keluar Akun">
-                        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                    <button type="button" onclick="closeMemberModal()" class="py-2.5 px-3.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-500 hover:text-slate-800 dark:hover:text-white text-xs font-bold flex items-center justify-center gap-1 active:scale-95 transition-all cursor-pointer" title="Tutup">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+                <div class="text-center mt-2">
+                    <button type="button" onclick="setCurrentMember(null); rMemberModalBody();" class="text-[10px] text-slate-400 hover:text-[var(--color-primary)] font-semibold transition-colors cursor-pointer">
+                        <i class="fa-solid fa-user-pen mr-1"></i>Bukan Anda? Cek nomor WhatsApp lain
                     </button>
                 </div>
             </div>
@@ -799,13 +807,22 @@ export const deselectReward = () => {
 export const closeMemberModal = (fH = false) => {
     const m = document.getElementById('member-modal');
     if (!m || m.style.display === 'none') return;
-    m.style.opacity = '0'; 
-    m.style.transition = 'opacity 0.25s ease';
-    setTimeout(() => { 
-        m.style.display = 'none'; 
-        m.style.opacity = ''; 
-        m.style.transition = ''; 
-    }, 250);
+    
+    const doClose = () => {
+        m.style.opacity = '0'; 
+        m.style.transition = 'opacity 0.25s ease';
+        setTimeout(() => { 
+            m.style.display = 'none'; 
+            m.style.opacity = ''; 
+            m.style.transition = ''; 
+        }, 250);
+    };
+
+    if (typeof window.requestCloseModal === 'function') {
+        window.requestCloseModal('member', fH, doClose);
+    } else {
+        doClose();
+    }
 };
 
 // ─── Expose ke window untuk interaksi inline onclick di HTML ──────────
