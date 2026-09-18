@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Toko Putri</string>
+    <string name="title_activity_main">Toko Putri</string>
+    <string name="package_name">com.tokoputri.app</string>
+    <string name="custom_url_scheme">com.tokoputri.app</string>
+</resources>

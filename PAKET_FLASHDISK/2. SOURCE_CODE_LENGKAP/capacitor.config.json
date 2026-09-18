@@ -1,0 +1,13 @@
+{
+  "appId": "com.tokoputri.app",
+  "appName": "Toko Putri",
+  "webDir": "dist",
+  "server": {
+    "androidScheme": "https"
+  },
+  "android": {
+    "allowMixedContent": true,
+    "captureInput": true,
+    "webContentsDebuggingEnabled": false
+  }
+}
