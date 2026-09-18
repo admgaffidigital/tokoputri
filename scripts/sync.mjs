@@ -12,8 +12,14 @@ execSync('npm run build', { stdio: 'inherit' });
 
 // 2. Mirroring dist to distribution folders
 console.log('\n📂 [2/4] Menyinkronkan folder hasil build ke distribusi...');
+if (fs.existsSync('1. HASIL_BUILD_SIAP_PAKE/assets')) {
+  fs.rmSync('1. HASIL_BUILD_SIAP_PAKE/assets', { recursive: true, force: true });
+}
 fs.cpSync('dist', '1. HASIL_BUILD_SIAP_PAKE', { recursive: true, force: true });
 if (fs.existsSync('PAKET_FLASHDISK/1. HASIL_BUILD_SIAP_PAKE')) {
+  if (fs.existsSync('PAKET_FLASHDISK/1. HASIL_BUILD_SIAP_PAKE/assets')) {
+    fs.rmSync('PAKET_FLASHDISK/1. HASIL_BUILD_SIAP_PAKE/assets', { recursive: true, force: true });
+  }
   fs.cpSync('dist', 'PAKET_FLASHDISK/1. HASIL_BUILD_SIAP_PAKE', { recursive: true, force: true });
 }
 

@@ -1,17 +1,390 @@
 /**
  * ============================================================
- * MODUL LOYALITAS MEMBER & REWARD
- * Mengatur katalog hadiah, saldo poin pelanggan,
- * deteksi nomor WhatsApp member saat checkout, dan penukaran reward.
+ * MODUL LOYALITAS MEMBER & REWARD (DIGITAL VIP LOYALTY CARD)
+ * Mengatur katalog hadiah, saldo poin pelanggan, kartu member digital
+ * 3D interaktif (Apple/Google Wallet style), deteksi checkout, dan penukaran reward.
  * ============================================================
  */
 
 import { appData, currentMember, setCurrentMember, selectedReward, setSelectedReward } from '../../core/state.js';
-import { el, show, hide, getV, setH, esc } from '../../core/utils.js';
+import { el, show, hide, getV, setH, esc, ensureScriptLoaded } from '../../core/utils.js';
 import { db } from '../../config/firebase.js';
 
 const memberCache = new Map();
 const MEMBER_CACHE_TTL = 3 * 60 * 1000; // 3 menit cache poin/member
+const OFFICIAL_LOGO_URL = 'https://lh3.googleusercontent.com/d/1KHwsV5sK6aAH3-eP_vTJA4tE5MyRukLo';
+
+/**
+ * Kalkulasi tingkatan (Tier) member berdasarkan saldo poin
+ */
+export const getMemberTier = (pts = 0) => {
+    const p = Math.max(0, parseFloat(pts) || 0);
+    if (p >= 1000) {
+        return {
+            level: 4,
+            name: 'PLATINUM VIP',
+            badge: '💎 PLATINUM VIP',
+            icon: 'fa-gem',
+            gradient: 'from-slate-950 via-zinc-900 to-neutral-950 border-amber-400/40 text-amber-200',
+            cardBg: 'linear-gradient(135deg, #090d16 0%, #171f30 45%, #0d1322 75%, #050811 100%)',
+            accentBg: 'bg-amber-400/20',
+            accentText: 'text-amber-300',
+            accentBorder: 'border-amber-400/40',
+            chipBorder: '#f59e0b',
+            foilClass: 'gold-foil-text',
+            nextTier: null,
+            ptsNeeded: 0,
+            progress: 100,
+            perks: [
+                'Cashback & Poin Belanja Maksimal (2x Lipat)',
+                'Akses Prioritas Antrean Kasir & Pengiriman',
+                'Klaim Semua Hadiah Katalog VIP',
+                'Layanan Konsultasi Khusus via WhatsApp'
+            ]
+        };
+    } else if (p >= 500) {
+        return {
+            level: 3,
+            name: 'GOLD MEMBER',
+            badge: '🥇 GOLD MEMBER',
+            icon: 'fa-crown',
+            gradient: 'from-amber-600 via-yellow-600 to-amber-700 border-yellow-300/40 text-yellow-100',
+            cardBg: 'linear-gradient(135deg, #78350f 0%, #b45309 35%, #d97706 70%, #92400e 100%)',
+            accentBg: 'bg-yellow-400/20',
+            accentText: 'text-amber-200',
+            accentBorder: 'border-yellow-300/40',
+            chipBorder: '#fde047',
+            foilClass: 'gold-foil-text',
+            nextTier: 'Platinum VIP',
+            ptsNeeded: 1000 - p,
+            progress: Math.min(100, Math.round(((p - 500) / 500) * 100)),
+            perks: [
+                'Diskon & Promo Spesial Member Gold',
+                'Kumpulkan Poin di Setiap Transaksi',
+                'Tukar Hadiah Menarik dari Katalog',
+                'Prioritas Penyiapan Pesanan'
+            ]
+        };
+    } else if (p >= 100) {
+        return {
+            level: 2,
+            name: 'SILVER MEMBER',
+            badge: '🥈 SILVER MEMBER',
+            icon: 'fa-medal',
+            gradient: 'from-slate-700 via-slate-600 to-slate-800 border-slate-300/40 text-slate-100',
+            cardBg: 'linear-gradient(135deg, #1e293b 0%, #334155 40%, #475569 70%, #0f172a 100%)',
+            accentBg: 'bg-slate-200/20',
+            accentText: 'text-slate-100',
+            accentBorder: 'border-slate-300/40',
+            chipBorder: '#cbd5e1',
+            foilClass: 'silver-foil-text',
+            nextTier: 'Gold Member',
+            ptsNeeded: 500 - p,
+            progress: Math.min(100, Math.round(((p - 100) / 400) * 100)),
+            perks: [
+                'Kumpulkan Poin di Setiap Transaksi',
+                'Tukar Hadiah Langsung Tanpa Undian',
+                'Penawaran Diskon Tertentu'
+            ]
+        };
+    } else {
+        return {
+            level: 1,
+            name: 'BRONZE MEMBER',
+            badge: '🥉 BRONZE MEMBER',
+            icon: 'fa-award',
+            gradient: 'from-stone-800 via-amber-950 to-stone-900 border-orange-400/30 text-orange-200',
+            cardBg: 'linear-gradient(135deg, #381a10 0%, #632917 40%, #7c2d12 70%, #292524 100%)',
+            accentBg: 'bg-orange-500/20',
+            accentText: 'text-orange-200',
+            accentBorder: 'border-orange-400/40',
+            chipBorder: '#fb923c',
+            foilClass: 'bronze-foil-text',
+            nextTier: 'Silver Member',
+            ptsNeeded: 100 - p,
+            progress: Math.min(100, Math.round((p / 100) * 100)),
+            perks: [
+                'Kumpulkan Poin di Setiap Transaksi Belanja',
+                'Akses Penuh ke Katalog Hadiah Toko'
+            ]
+        };
+    }
+};
+
+/**
+ * Format nomor telepon menjadi nomor kartu VIP (Format: PUTRI • 8123 • 4567 • 8901)
+ */
+export const formatMemberCardNumber = (phone) => {
+    let clean = (phone || '').toString().replace(/\D/g, '');
+    if (clean.startsWith('62')) clean = clean.substring(2);
+    else if (clean.startsWith('0')) clean = clean.substring(1);
+    
+    // Pastikan panjang minimal 8 digit
+    while (clean.length < 8) clean += '0';
+    
+    // Pecah ke kelompok 4 digit
+    const parts = [];
+    for (let i = 0; i < clean.length && parts.length < 3; i += 4) {
+        parts.push(clean.substring(i, i + 4));
+    }
+    return `PUTRI • ${parts.join(' • ')}`;
+};
+
+/**
+ * Generate Barcode SVG Vector untuk kasir fisik (Code128 style)
+ */
+export const generateBarcodeSVG = (code) => {
+    const clean = String(code || '812345678901').replace(/\D/g, '');
+    let bars = '';
+    let x = 8;
+    
+    // Start guard
+    bars += `<rect x="${x}" y="3" width="2.5" height="34" fill="#0f172a"/>`; x += 4;
+    bars += `<rect x="${x}" y="3" width="1.5" height="34" fill="#0f172a"/>`; x += 3.5;
+    bars += `<rect x="${x}" y="3" width="3" height="34" fill="#0f172a"/>`; x += 5;
+    
+    // Encode digits into varying bar pattern
+    for (let i = 0; i < clean.length; i++) {
+        const d = parseInt(clean[i], 10) || 0;
+        const w1 = ((d % 3) + 1) * 1.3;
+        const w2 = (((d + 2) % 4) + 1) * 1.1;
+        const gap = ((d % 2) + 1) * 1.8;
+        bars += `<rect x="${x}" y="3" width="${w1}" height="34" fill="#0f172a"/>`;
+        x += w1 + gap;
+        bars += `<rect x="${x}" y="3" width="${w2}" height="34" fill="#0f172a"/>`;
+        x += w2 + 2;
+    }
+    
+    // Stop guard
+    bars += `<rect x="${x}" y="3" width="3" height="34" fill="#0f172a"/>`; x += 5;
+    bars += `<rect x="${x}" y="3" width="1.5" height="34" fill="#0f172a"/>`; x += 3.5;
+    bars += `<rect x="${x}" y="3" width="2.5" height="34" fill="#0f172a"/>`; x += 4;
+    
+    return `
+    <svg class="w-full h-11 bg-white rounded-lg px-2 py-1 shadow-inner border border-slate-200" viewBox="0 0 ${Math.max(x + 10, 240)} 40" xmlns="http://www.w3.org/2000/svg">
+        ${bars}
+    </svg>`;
+};
+
+/**
+ * Render Kartu Member Digital 3D (Sisi Depan & Sisi Belakang)
+ */
+export const renderDigitalMemberCard = (mData) => {
+    const pts = parseFloat(mData?.points) || 0;
+    const tier = getMemberTier(pts);
+    const storeName = (appData.store?.name || 'Toko Putri').toUpperCase();
+    const logoUrl = appData.store?.logo && appData.store.logo !== 'fa-store' ? appData.store.logo : OFFICIAL_LOGO_URL;
+    const custName = (mData?.name || 'PELANGGAN SETIA').toUpperCase();
+    const rawPhone = (mData?.phone || '81234567890').toString().replace(/\D/g, '');
+    const cardNo = formatMemberCardNumber(rawPhone);
+    const csPhone = appData.store?.wa || rawPhone;
+
+    return `
+    <div class="member-card-scene w-full max-w-[390px] mx-auto select-none my-1">
+        <div id="member-card-inner" class="member-card-inner relative w-full aspect-[1.586/1] cursor-pointer shadow-2xl rounded-2xl sm:rounded-3xl" onclick="flipMemberCard()" title="Klik untuk membalik kartu">
+            
+            <!-- ================= SISI DEPAN (FRONT CARD) ================= -->
+            <div id="member-card-front-export" class="member-card-front absolute inset-0 w-full h-full rounded-2xl sm:rounded-3xl overflow-hidden p-4 sm:p-5 flex flex-col justify-between text-white border border-white/20 shadow-2xl" style="background: ${tier.cardBg};">
+                
+                <!-- Ambient luxury light reflections -->
+                <div class="absolute -right-12 -top-12 w-36 h-36 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
+                <div class="absolute -left-10 -bottom-10 w-32 h-32 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
+                <div class="absolute inset-0 bg-gradient-to-tr from-black/30 via-transparent to-white/15 pointer-events-none"></div>
+
+                <!-- Header Kartu: Logo Toko, Nama Toko, & Gelombang Contactless -->
+                <div class="relative z-10 flex items-center justify-between">
+                    <div class="flex items-center gap-2.5 min-w-0">
+                        <div class="w-8 h-8 rounded-xl bg-white/95 p-1 flex items-center justify-center shadow-md shrink-0 border border-white/40">
+                            <img src="${esc(logoUrl)}" alt="Logo" class="w-full h-full object-contain" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                            <i class="fa-solid fa-store text-slate-800 text-xs hidden"></i>
+                        </div>
+                        <div class="min-w-0">
+                            <h4 class="text-[11px] sm:text-xs font-black tracking-wider text-white uppercase truncate drop-shadow-sm">${esc(storeName)}</h4>
+                            <p class="text-[8px] sm:text-[9px] font-bold tracking-[0.2em] text-white/80 uppercase">VIP Loyalty Pass</p>
+                        </div>
+                    </div>
+                    <!-- Contactless NFC & Tier Pill -->
+                    <div class="flex items-center gap-2 shrink-0">
+                        <span class="text-[8px] sm:text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full ${tier.accentBg} ${tier.accentText} border ${tier.accentBorder} shadow-xs">
+                            ${tier.badge}
+                        </span>
+                        <div class="opacity-80 flex items-center" title="Contactless Member">
+                            <svg class="w-4 h-4 text-white/90" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                                <path d="M8.5 16.5a5 5 0 0 1 0-7"/>
+                                <path d="M12 19a8.5 8.5 0 0 1 0-12"/>
+                                <path d="M15.5 21.5a12 12 0 0 1 0-17"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bagian Tengah: Smart Chip EMV Emas & Hologram Seal -->
+                <div class="relative z-10 flex items-center justify-between my-auto py-1">
+                    <!-- EMV Smart Chip (SVG) -->
+                    <div class="flex items-center gap-3">
+                        <svg class="w-11 h-8 rounded-md shadow-sm border border-amber-300/60 bg-gradient-to-br from-amber-200 via-amber-400 to-yellow-600 p-0.5 shrink-0" viewBox="0 0 50 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="1" y="1" width="48" height="38" rx="5" fill="url(#chipGrad)" stroke="#b45309" stroke-width="0.8"/>
+                            <path d="M1 13H18M1 27H18M32 13H49M32 27H49M18 1V39M32 1V39M18 20H32" stroke="#78350f" stroke-width="1" stroke-linecap="round"/>
+                            <rect x="21" y="14" width="8" height="12" rx="2" fill="#d97706" stroke="#78350f" stroke-width="0.8"/>
+                            <defs>
+                                <linearGradient id="chipGrad" x1="0" y1="0" x2="50" y2="40" gradientUnits="userSpaceOnUse">
+                                    <stop stop-color="#fef08a"/>
+                                    <stop offset="0.5" stop-color="#f59e0b"/>
+                                    <stop offset="1" stop-color="#b45309"/>
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                        <div class="w-7 h-7 rounded-full card-hologram-seal opacity-75 border border-white/30 hidden sm:block" title="Security Seal"></div>
+                    </div>
+                    <!-- Poin Saldo Member -->
+                    <div class="text-right">
+                        <p class="text-[8px] sm:text-[9px] font-bold tracking-widest text-white/70 uppercase">Saldo Poin</p>
+                        <div class="flex items-center justify-end gap-1.5 mt-0.5">
+                            <i class="fa-solid fa-star text-amber-300 text-xs sm:text-sm animate-pulse"></i>
+                            <span class="text-base sm:text-xl font-black tracking-tight text-white drop-shadow-md">${pts}</span>
+                            <span class="text-[9px] font-bold text-white/80">PTS</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bagian Bawah: Nomor Kartu & Nama Pelanggan Embossed -->
+                <div class="relative z-10">
+                    <p class="text-[11px] sm:text-[13px] embossed-text text-white/95 font-mono tracking-[0.18em] mb-1.5 drop-shadow-md">${esc(cardNo)}</p>
+                    <div class="flex items-end justify-between gap-2">
+                        <div class="min-w-0 flex-1">
+                            <p class="text-[7px] sm:text-[8px] font-bold tracking-widest text-white/70 uppercase leading-none mb-0.5">Nama Pelanggan</p>
+                            <p class="text-[11px] sm:text-[13px] font-bold text-white tracking-wider truncate uppercase drop-shadow-sm">${esc(custName)}</p>
+                        </div>
+                        <div class="text-right shrink-0">
+                            <p class="text-[7px] sm:text-[8px] font-bold tracking-widest text-white/70 uppercase leading-none mb-0.5">Status Member</p>
+                            <p class="text-[9px] sm:text-[10px] font-extrabold text-emerald-300 tracking-wider flex items-center justify-end gap-1">
+                                <i class="fa-solid fa-circle-check text-[8px]"></i> AKTIF
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Petunjuk Balik Kartu -->
+                <div class="absolute bottom-1 right-3 text-[7px] text-white/40 tracking-wider font-semibold pointer-events-none flex items-center gap-1">
+                    <i class="fa-solid fa-repeat text-[6px]"></i> Klik untuk balik
+                </div>
+            </div>
+
+            <!-- ================= SISI BELAKANG (BACK CARD) ================= -->
+            <div class="member-card-back absolute inset-0 w-full h-full rounded-2xl sm:rounded-3xl overflow-hidden flex flex-col justify-between text-slate-800 border border-slate-700/60 shadow-2xl bg-[#0f172a]">
+                
+                <!-- Pita Magnetik Hitam (Magnetic Stripe) -->
+                <div class="w-full h-8 sm:h-10 bg-slate-950 mt-4 border-y border-white/10 relative shadow-inner">
+                    <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent"></div>
+                </div>
+
+                <!-- Signature Strip & Keamanan -->
+                <div class="px-4 sm:px-5 py-1">
+                    <div class="flex items-center gap-2">
+                        <div class="flex-1 h-6 bg-white/90 rounded border border-slate-300 px-2 flex items-center justify-between shadow-inner">
+                            <span class="text-[9px] font-mono font-bold text-slate-500 italic truncate">${esc(custName)}</span>
+                            <span class="text-[8px] font-mono font-black text-slate-800 tracking-widest">VERIFIED</span>
+                        </div>
+                        <div class="w-10 h-6 bg-amber-400 text-slate-950 font-black text-[9px] rounded flex items-center justify-center tracking-widest shadow-xs">
+                            VIP
+                        </div>
+                    </div>
+
+                    <!-- Barcode untuk Scanner Kasir Toko -->
+                    <div class="mt-2 text-center">
+                        <p class="text-[8px] font-bold text-slate-400 uppercase tracking-wider mb-1 flex items-center justify-center gap-1">
+                            <i class="fa-solid fa-barcode text-amber-400"></i> Scan Barcode di Kasir POS Toko:
+                        </p>
+                        ${generateBarcodeSVG(rawPhone)}
+                        <p class="text-[9px] font-mono font-bold tracking-[0.2em] text-slate-300 mt-1">*${esc(rawPhone)}*</p>
+                    </div>
+                </div>
+
+                <!-- Footer Sisi Belakang: Kontak & Info -->
+                <div class="p-3 sm:p-4 bg-slate-950/80 border-t border-white/10 text-center">
+                    <p class="text-[7.5px] sm:text-[8px] text-slate-400 leading-tight">
+                        Kartu member digital resmi <b class="text-white">${esc(storeName)}</b>. Tunjukkan saat transaksi untuk poin belanja.
+                    </p>
+                    <p class="text-[8px] font-bold text-amber-300 mt-0.5">
+                        <i class="fa-brands fa-whatsapp mr-1"></i>CS: +${esc(csPhone)}
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </div>`;
+};
+
+/**
+ * Balik kartu member secara 3D (Animasi Flip)
+ */
+export const flipMemberCard = () => {
+    const inner = document.getElementById('member-card-inner');
+    if (!inner) return;
+    inner.classList.toggle('is-flipped');
+};
+
+/**
+ * Download kartu member resolusi tinggi (PNG HD) ke galeri HP / PC
+ */
+export const downloadMemberCard = async () => {
+    // 1. Pastikan kartu menghadap ke depan sebelum capture
+    const inner = document.getElementById('member-card-inner');
+    if (inner && inner.classList.contains('is-flipped')) {
+        inner.classList.remove('is-flipped');
+        await new Promise(r => setTimeout(r, 450));
+    }
+
+    const cardEl = document.getElementById('member-card-front-export');
+    if (!cardEl) return;
+
+    if (typeof window.showToast === 'function') window.showToast("Menyiapkan file gambar Kartu Member HD...");
+
+    try {
+        if (typeof window.ensureScriptLoaded === 'function') {
+            await window.ensureScriptLoaded(
+                'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js',
+                () => typeof html2canvas !== 'undefined'
+            );
+        }
+
+        if (typeof html2canvas === 'undefined') {
+            throw new Error('Modul html2canvas belum siap dimuat.');
+        }
+
+        const canvas = await html2canvas(cardEl, {
+            scale: 3, // Kualitas super tajam untuk layar retina/HP
+            useCORS: true,
+            allowTaint: true,
+            backgroundColor: null
+        });
+
+        const custName = (currentMember?.name || 'Pelanggan').replace(/[^a-zA-Z0-9]/g, '_');
+        const fileName = `Kartu_Member_TokoPutri_${custName}.png`;
+        const dataUrl = canvas.toDataURL('image/png', 1.0);
+
+        // Jika berjalan di dalam aplikasi Android APK, panggil bridge native
+        if (window.AndroidNativeApp && typeof window.AndroidNativeApp.saveOrShareFile === 'function') {
+            window.AndroidNativeApp.saveOrShareFile(dataUrl, fileName, 'image/png');
+        } else {
+            const link = document.createElement('a');
+            link.download = fileName;
+            link.href = dataUrl;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        if (typeof window.showToast === 'function') {
+            window.showToast("Kartu Member Berhasil Disimpan ke Galeri! 🎉");
+        }
+    } catch (err) {
+        console.error("Gagal menyimpan kartu member:", err);
+        if (typeof window.showToast === 'function') {
+            window.showToast("Gagal menyimpan kartu. Silakan coba kembali.");
+        }
+    }
+};
 
 /**
  * Render slider katalog hadiah di halaman depan toko
@@ -44,7 +417,7 @@ export const renderRewardCatalog = () => {
             </div> KATALOG HADIAH POIN PELANGGAN
         </h3>
         <button type="button" onclick="if(typeof window.openMemberModal==='function') window.openMemberModal(); else if(typeof window.showToast==='function') window.showToast('Gunakan poin Anda untuk menukar hadiah menarik!');" class="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg border border-[var(--color-primary)]/30 text-[var(--color-primary)] hover:bg-[var(--color-primary)] hover:text-white transition-all active:scale-95 flex items-center gap-1 cursor-pointer">
-            Lihat Semua <i class="fa-solid fa-chevron-right text-[8px]"></i>
+            Lihat Kartu Member <i class="fa-solid fa-chevron-right text-[8px]"></i>
         </button>
     </div>
     <div class="flex gap-2.5 sm:gap-3 overflow-x-auto hide-scrollbar snap-x pb-3 pt-1">
@@ -92,15 +465,40 @@ export const checkMemberStatus = () => {
             return; 
         }
 
+        const renderCheckoutMiniCard = (mData) => {
+            const pts = parseFloat(mData.points) || 0;
+            const tier = getMemberTier(pts);
+            banner.className = 'mt-3 p-3 sm:p-4 rounded-2xl bg-gradient-to-r from-slate-950 via-slate-900 to-slate-950 text-white border border-amber-400/40 shadow-xl relative overflow-hidden flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3';
+            banner.innerHTML = `
+                <div class="absolute -right-6 -bottom-6 w-28 h-28 bg-amber-400/10 rounded-full blur-xl pointer-events-none"></div>
+                <div class="flex items-center gap-3 relative z-10 min-w-0">
+                    <div class="w-12 h-10 rounded-xl bg-gradient-to-br from-amber-400/20 to-yellow-600/20 border border-amber-400/40 flex items-center justify-center shrink-0 shadow-inner">
+                        <i class="fa-solid fa-id-card text-xl text-amber-300"></i>
+                    </div>
+                    <div class="min-w-0">
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <span class="text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full ${tier.accentBg} ${tier.accentText} border ${tier.accentBorder}">${tier.badge}</span>
+                            <span class="text-[10px] font-bold text-amber-300 flex items-center gap-1"><i class="fa-solid fa-star text-[9px]"></i>${pts} Poin</span>
+                        </div>
+                        <p class="text-xs font-bold text-white mt-0.5 truncate flex items-center gap-1.5">
+                            <span>${esc(mData.name || 'Pelanggan')}</span>
+                            <span class="text-[9px] font-normal text-slate-400">(Member Resmi)</span>
+                        </p>
+                    </div>
+                </div>
+                <button type="button" onclick="openMemberModal()" class="relative z-10 w-full sm:w-auto shrink-0 bg-gradient-to-r from-amber-500 via-amber-400 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-slate-950 text-[10px] font-black uppercase tracking-wider px-3.5 py-2.5 rounded-xl shadow-md active:scale-95 transition-all flex items-center justify-center gap-1.5 cursor-pointer">
+                    <i class="fa-solid fa-wallet"></i> Buka Kartu Member
+                </button>`;
+            show(banner); 
+            show('payment-option-tempo');
+        };
+
         // Cek in-memory cache untuk memotong query berulang ke Firestore
         const cached = memberCache.get(waNum);
         if (cached && (Date.now() - cached.timestamp < MEMBER_CACHE_TTL)) {
             if (cached.data) {
                 setCurrentMember(cached.data);
-                banner.className = 'mt-3 p-4 rounded-2xl border border-[var(--color-primary)]/30 bg-[rgba(var(--color-primary-rgb),0.06)] dark:bg-[rgba(var(--color-primary-rgb),0.12)] flex items-center justify-between gap-3';
-                banner.innerHTML = `<p class="text-[11px] font-bold text-[var(--color-primary)] leading-snug"><i class="fa-solid fa-circle-check mr-1"></i>Nomor Anda terdaftar sebagai pelanggan toko kami!</p><button type="button" onclick="openMemberModal()" class="shrink-0 bg-[var(--color-primary)] hover:opacity-90 text-white text-[10px] font-bold uppercase tracking-widest px-3.5 py-2.5 rounded-xl shadow-sm active:scale-95 transition-all whitespace-nowrap">Lihat Data Saya</button>`;
-                show(banner); 
-                show('payment-option-tempo');
+                renderCheckoutMiniCard(cached.data);
             } else {
                 setCurrentMember(null); 
                 setSelectedReward(null); 
@@ -116,10 +514,7 @@ export const checkMemberStatus = () => {
                 const mData = doc.data();
                 memberCache.set(waNum, { data: mData, timestamp: Date.now() });
                 setCurrentMember(mData);
-                banner.className = 'mt-3 p-4 rounded-2xl border border-[var(--color-primary)]/30 bg-[rgba(var(--color-primary-rgb),0.06)] dark:bg-[rgba(var(--color-primary-rgb),0.12)] flex items-center justify-between gap-3';
-                banner.innerHTML = `<p class="text-[11px] font-bold text-[var(--color-primary)] leading-snug"><i class="fa-solid fa-circle-check mr-1"></i>Nomor Anda terdaftar sebagai pelanggan toko kami!</p><button type="button" onclick="openMemberModal()" class="shrink-0 bg-[var(--color-primary)] hover:opacity-90 text-white text-[10px] font-bold uppercase tracking-widest px-3.5 py-2.5 rounded-xl shadow-sm active:scale-95 transition-all whitespace-nowrap">Lihat Data Saya</button>`;
-                show(banner); 
-                show('payment-option-tempo');
+                renderCheckoutMiniCard(mData);
             } else {
                 memberCache.set(waNum, { data: null, timestamp: Date.now() });
                 setCurrentMember(null); 
@@ -134,7 +529,7 @@ export const checkMemberStatus = () => {
 };
 
 /**
- * Tampilkan modal data member dan poin
+ * Tampilkan modal data member dan kartu loyalitas
  */
 export const openMemberModal = () => {
     if (typeof window.attachRewardsRealtime === 'function' && !window.unsubRewardsRealtime) {
@@ -144,17 +539,29 @@ export const openMemberModal = () => {
     if (!m) {
         m = document.createElement('div');
         m.id = 'member-modal';
-        m.className = 'fixed inset-0 z-[115] bg-slate-900/80 flex items-end sm:items-center justify-center p-0 sm:p-5';
+        m.className = 'fixed inset-0 z-[115] bg-slate-900/80 flex items-end sm:items-center justify-center p-0 sm:p-5 backdrop-blur-xs';
         m.onclick = (e) => { if (e.target === m) closeMemberModal(); };
         document.body.appendChild(m);
     }
     m.innerHTML = `
-        <div class="bg-white dark:bg-slate-900 w-full max-w-lg rounded-t-3xl sm:rounded-2xl max-h-[85vh] flex flex-col shadow-2xl border border-slate-200 dark:border-slate-700">
-            <div class="p-5 sm:p-6 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center shrink-0">
-                <h3 class="font-bold text-slate-800 dark:text-white text-base flex items-center gap-2"><i class="fa-solid fa-crown text-amber-400"></i> Poin &amp; Hadiah Member</h3>
-                <button onclick="closeMemberModal()" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:bg-rose-100 hover:text-rose-500 flex items-center justify-center transition-all"><i class="fa-solid fa-xmark"></i></button>
+        <div class="bg-white dark:bg-slate-900 w-full max-w-lg rounded-t-3xl sm:rounded-3xl max-h-[90vh] flex flex-col shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden">
+            <!-- Header Modal -->
+            <div class="p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center shrink-0 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-white shadow-sm">
+                        <i class="fa-solid fa-id-card text-xs"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-slate-800 dark:text-white text-sm sm:text-base leading-tight">Kartu Member Digital</h3>
+                        <p class="text-[9px] sm:text-[10px] font-semibold text-slate-400">Loyalty Pass &amp; Poin Hadiah Toko Putri</p>
+                    </div>
+                </div>
+                <button onclick="closeMemberModal()" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:bg-rose-100 hover:text-rose-500 flex items-center justify-center transition-all cursor-pointer">
+                    <i class="fa-solid fa-xmark text-sm"></i>
+                </button>
             </div>
-            <div class="p-5 sm:p-6 overflow-y-auto flex-1 space-y-5" id="member-modal-body"></div>
+            <!-- Body Modal -->
+            <div class="p-4 sm:p-6 overflow-y-auto flex-1 space-y-5" id="member-modal-body"></div>
         </div>`;
     rMemberModalBody();
     m.style.opacity = '0'; 
@@ -167,76 +574,153 @@ export const openMemberModal = () => {
 };
 
 /**
- * Render isi modal member
+ * Render isi modal member (Kartu digital + Progress tier + Katalog Hadiah)
  */
 export const rMemberModalBody = () => {
     const activeRewards = (appData.rewards || []).filter(r => r.isActive !== 'false' && r.isActive !== false);
     const pts = currentMember ? (parseFloat(currentMember.points) || 0) : 0;
+    const tier = getMemberTier(pts);
     
     const rewardsHtml = activeRewards.length ? activeRewards.map(r => {
         const stockOk = (parseFloat(r.stock) || 0) > 0;
         const canClaim = currentMember && pts >= (parseFloat(r.pointsCost) || 0) && stockOk;
         const isSelected = selectedReward && selectedReward.id === r.id;
         return `
-        <div class="flex items-center gap-3 p-4 rounded-2xl border ${isSelected ? 'border-[var(--color-primary)] bg-[rgba(var(--color-primary-rgb),0.06)] dark:bg-[rgba(var(--color-primary-rgb),0.12)]' : 'border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50'}">
-            ${r.img ? `<img src="${esc(r.img)}" class="w-14 h-14 rounded-xl object-cover border border-slate-200 dark:border-slate-700 shrink-0" onerror="this.style.display='none'" loading="lazy">` : `<div class="w-14 h-14 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-300 shrink-0"><i class="fa-solid fa-gift text-xl"></i></div>`}
+        <div class="flex items-center gap-3 p-3.5 rounded-2xl border ${isSelected ? 'border-[var(--color-primary)] bg-[rgba(var(--color-primary-rgb),0.06)] dark:bg-[rgba(var(--color-primary-rgb),0.12)] shadow-xs' : 'border-slate-200 dark:border-slate-700/80 bg-slate-50/70 dark:bg-slate-800/40'} transition-all">
+            ${r.img ? `<img src="${esc(r.img)}" class="w-14 h-14 rounded-xl object-contain bg-white p-1 border border-slate-200 dark:border-slate-700 shrink-0" onerror="this.style.display='none'" loading="lazy">` : `<div class="w-14 h-14 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-300 shrink-0"><i class="fa-solid fa-gift text-xl"></i></div>`}
             <div class="min-w-0 flex-1">
                 <p class="text-xs font-bold text-slate-800 dark:text-white truncate">${esc(r.name)}</p>
-                <p class="text-[11px] font-bold text-[var(--color-primary)] mt-0.5"><i class="fa-solid fa-star mr-1"></i>${parseFloat(r.pointsCost) || 0} Poin</p>
-                ${!stockOk ? `<p class="text-[10px] font-bold text-rose-500 mt-0.5">Stok hadiah kosong</p>` : ''}
+                <p class="text-[11px] font-black text-amber-500 dark:text-amber-400 mt-0.5 flex items-center gap-1">
+                    <i class="fa-solid fa-star text-[10px]"></i> ${parseFloat(r.pointsCost) || 0} Poin
+                </p>
+                ${!stockOk ? `<p class="text-[10px] font-bold text-rose-500 mt-0.5">Stok hadiah habis</p>` : ''}
             </div>
             ${currentMember ? (isSelected
-                ? `<button type="button" onclick="deselectReward()" class="shrink-0 bg-rose-500 hover:bg-rose-600 text-white text-[10px] font-bold uppercase px-3 py-2.5 rounded-xl active:scale-95 transition-all whitespace-nowrap">Batal</button>`
-                : `<button type="button" ${canClaim ? '' : 'disabled'} onclick="selectReward(${r.id})" class="shrink-0 ${canClaim ? 'primary-bg hover:opacity-90 text-white active:scale-95' : 'bg-slate-200 dark:bg-slate-700 text-slate-400 cursor-not-allowed'} text-[10px] font-bold uppercase px-3 py-2.5 rounded-xl transition-all whitespace-nowrap">Pilih</button>`) : `<span class="text-[10px] font-bold text-slate-400 uppercase bg-slate-100 dark:bg-slate-800 px-2.5 py-1.5 rounded-lg">${parseFloat(r.pointsCost) || 0} Poin</span>`}
+                ? `<button type="button" onclick="deselectReward()" class="shrink-0 bg-rose-500 hover:bg-rose-600 text-white text-[10px] font-bold uppercase px-3 py-2 rounded-xl active:scale-95 transition-all whitespace-nowrap shadow-xs">Batal</button>`
+                : `<button type="button" ${canClaim ? '' : 'disabled'} onclick="selectReward(${r.id})" class="shrink-0 ${canClaim ? 'primary-bg hover:opacity-90 text-white active:scale-95 shadow-xs' : 'bg-slate-200 dark:bg-slate-700 text-slate-400 cursor-not-allowed'} text-[10px] font-bold uppercase px-3 py-2 rounded-xl transition-all whitespace-nowrap">Pilih Hadiah</button>`) : `<span class="text-[10px] font-bold text-slate-400 uppercase bg-slate-100 dark:bg-slate-800 px-2.5 py-1.5 rounded-lg">${parseFloat(r.pointsCost) || 0} Poin</span>`}
         </div>`;
     }).join('') : `<p class="text-[11px] font-bold text-slate-400 text-center py-3">Belum ada program hadiah yang tersedia.</p>`;
 
     if (currentMember) {
         setH('member-modal-body', `
-            <div class="bg-[var(--color-primary)] rounded-2xl p-5 text-white shadow-lg">
-                <div class="flex justify-between items-start mb-2">
-                    <div>
-                        <p class="text-[10px] font-bold uppercase tracking-widest opacity-80">Nama Pelanggan</p>
-                        <p class="text-base font-bold">${esc(currentMember.name || 'Pelanggan')}</p>
-                    </div>
-                    <button type="button" onclick="setCurrentMember(null); rMemberModalBody();" class="bg-white/20 hover:bg-white/30 text-white text-[10px] font-bold uppercase px-2.5 py-1 rounded-lg transition-all active:scale-95">Keluar</button>
-                </div>
-                <p class="text-[10px] font-bold uppercase tracking-widest opacity-80 mt-2">No. WhatsApp</p>
-                <p class="text-sm font-bold mb-3">+${esc(currentMember.phone || '')}</p>
-                <div class="flex items-center gap-2 bg-white/15 rounded-xl px-4 py-3 mt-2">
-                    <i class="fa-solid fa-star text-amber-300 text-lg"></i>
-                    <p class="text-xl font-bold">${pts}</p>
-                    <p class="text-[11px] font-bold opacity-90">Poin Terkumpul</p>
+            <!-- KARTU MEMBER DIGITAL (3D INTERAKTIF) -->
+            <div>
+                ${renderDigitalMemberCard(currentMember)}
+                
+                <!-- Action Controls: Balik Kartu & Unduh Kartu -->
+                <div class="flex items-center justify-between gap-2 mt-3 max-w-[390px] mx-auto">
+                    <button type="button" onclick="flipMemberCard()" class="flex-1 py-2.5 px-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-xs font-bold flex items-center justify-center gap-1.5 hover:bg-slate-100 dark:hover:bg-slate-700 active:scale-95 transition-all shadow-xs cursor-pointer">
+                        <i class="fa-solid fa-repeat text-[11px] text-amber-500"></i> Balik Kartu
+                    </button>
+                    <button type="button" onclick="downloadMemberCard()" class="flex-1 py-2.5 px-3 rounded-xl border border-amber-400/50 bg-gradient-to-r from-amber-500 to-amber-600 text-white text-xs font-bold flex items-center justify-center gap-1.5 hover:opacity-95 active:scale-95 transition-all shadow-xs cursor-pointer">
+                        <i class="fa-solid fa-download text-[11px]"></i> Simpan ke Galeri
+                    </button>
+                    <button type="button" onclick="setCurrentMember(null); rMemberModalBody();" class="py-2.5 px-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-500 hover:text-rose-500 text-xs font-bold flex items-center justify-center gap-1 active:scale-95 transition-all cursor-pointer" title="Keluar Akun">
+                        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                    </button>
                 </div>
             </div>
+
+            <!-- TIER STATUS & PROGRESS LEVEL -->
+            <div class="p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-800/40 space-y-3">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Level Keanggotaan</p>
+                        <h4 class="text-xs sm:text-sm font-black text-slate-800 dark:text-white flex items-center gap-1.5 mt-0.5">
+                            <i class="fa-solid ${tier.icon} text-amber-500"></i> ${tier.name}
+                        </h4>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Total Saldo</p>
+                        <p class="text-xs sm:text-sm font-black text-amber-500 dark:text-amber-400 mt-0.5">${pts} Poin</p>
+                    </div>
+                </div>
+
+                ${tier.nextTier ? `
+                <div class="space-y-1.5 pt-1">
+                    <div class="flex justify-between text-[10px] font-semibold text-slate-500 dark:text-slate-400">
+                        <span>Menuju <b>${tier.nextTier}</b></span>
+                        <span class="font-bold text-slate-700 dark:text-slate-200">${tier.progress}%</span>
+                    </div>
+                    <div class="w-full h-2 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden">
+                        <div class="h-full rounded-full bg-gradient-to-r from-amber-500 to-yellow-400 transition-all duration-500" style="width: ${tier.progress}%"></div>
+                    </div>
+                    <p class="text-[9px] text-slate-500 dark:text-slate-400 font-medium">
+                        Kumpulkan <b>${tier.ptsNeeded} poin lagi</b> untuk otomatis naik tingkat ke <b>${tier.nextTier}</b>!
+                    </p>
+                </div>` : `
+                <p class="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold flex items-center gap-1">
+                    <i class="fa-solid fa-crown"></i> Anda telah mencapai level member tertinggi Toko Putri!
+                </p>`}
+
+                <!-- Member Privileges Pill -->
+                <div class="pt-2 border-t border-slate-200/60 dark:border-slate-700/60">
+                    <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Hak Istimewa Member Anda:</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
+                        ${tier.perks.map(p => `
+                        <div class="flex items-center gap-1.5 text-[10px] font-semibold text-slate-700 dark:text-slate-300">
+                            <i class="fa-solid fa-check text-emerald-500 text-[9px] shrink-0"></i>
+                            <span class="truncate">${esc(p)}</span>
+                        </div>`).join('')}
+                    </div>
+                </div>
+            </div>
+
+            <!-- KATALOG REWARD / PENUKARAN HADIAH -->
             <div>
-                <p class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-2.5">Katalog Hadiah yang Tersedia</p>
+                <p class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-2.5">Katalog Hadiah yang Dapat Ditukar</p>
                 <div class="space-y-2.5">${rewardsHtml}</div>
             </div>
-            ${selectedReward ? `<div class="bg-[rgba(var(--color-primary-rgb),0.06)] dark:bg-[rgba(var(--color-primary-rgb),0.12)] border border-[var(--color-primary)]/30 rounded-xl p-3.5 text-[11px] font-bold text-[var(--color-primary)]"><i class="fa-solid fa-circle-info mr-1"></i>Hadiah "<b>${esc(selectedReward.name)}</b>" akan otomatis ditukar saat pesanan Anda diproses di checkout.</div>` : ''}
+
+            ${selectedReward ? `<div class="bg-[rgba(var(--color-primary-rgb),0.06)] dark:bg-[rgba(var(--color-primary-rgb),0.12)] border border-[var(--color-primary)]/30 rounded-xl p-3.5 text-[11px] font-bold text-[var(--color-primary)] flex items-center gap-2"><i class="fa-solid fa-gift text-base shrink-0"></i><span>Hadiah "<b>${esc(selectedReward.name)}</b>" telah dipilih dan akan otomatis diproses saat pesanan Anda selesai di checkout.</span></div>` : ''}
         `);
     } else {
         setH('member-modal-body', `
-            <div class="p-5 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/60 space-y-3">
-                <div class="flex items-center gap-2.5 text-slate-800 dark:text-white font-bold text-sm">
-                    <div class="w-8 h-8 rounded-xl bg-[var(--color-primary)] text-white flex items-center justify-center text-sm shrink-0">
-                        <i class="fa-solid fa-search"></i>
+            <!-- PREVIEW KARTU CONTOH (MEMIKAT PELANGGAN) -->
+            <div class="opacity-90">
+                ${renderDigitalMemberCard({
+                    name: 'NAMA ANDA',
+                    phone: '81234567890',
+                    points: 0
+                })}
+            </div>
+
+            <!-- FORM PENCARIAN / CEK KARTU MEMBER -->
+            <div class="p-4 sm:p-5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-800/40 space-y-3">
+                <div class="flex items-center gap-2 text-slate-800 dark:text-white font-bold text-xs sm:text-sm">
+                    <div class="w-7 h-7 rounded-xl primary-bg text-white flex items-center justify-center text-xs shrink-0 shadow-2xs">
+                        <i class="fa-solid fa-magnifying-glass"></i>
                     </div>
-                    <span>Cek Poin &amp; Status Member</span>
+                    <span>Cek Kartu Member &amp; Saldo Poin Anda</span>
                 </div>
-                <p class="text-xs text-slate-500 dark:text-slate-400 font-medium">Masukkan nomor WhatsApp yang pernah Anda gunakan saat berbelanja di toko kami:</p>
+                <p class="text-xs text-slate-500 dark:text-slate-400 font-medium leading-relaxed">
+                    Masukkan nomor WhatsApp yang pernah Anda gunakan saat berbelanja di Toko Putri:
+                </p>
                 <div class="flex gap-2">
                     <div class="relative flex-1">
                         <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400">+62</span>
-                        <input type="tel" id="member-lookup-input" class="w-full rounded-xl border border-slate-200 bg-white py-3 pl-12 pr-3 text-xs font-bold text-slate-800 outline-none focus:border-[var(--color-primary)] dark:border-slate-700 dark:bg-slate-800 dark:text-white" placeholder="81234567890" inputmode="numeric" />
+                        <input type="tel" id="member-lookup-input" class="w-full rounded-xl border border-slate-200 bg-white py-3 pl-12 pr-3 text-xs font-bold text-slate-800 outline-none focus:border-[var(--color-primary)] dark:border-slate-700 dark:bg-slate-900 dark:text-white" placeholder="81234567890" inputmode="numeric" />
                     </div>
-                    <button type="button" onclick="lookupMemberPoints()" class="primary-bg text-white px-4 py-3 rounded-xl text-xs font-bold uppercase tracking-wider shrink-0 transition-all active:scale-95 shadow-sm">
-                        Cek Poin
+                    <button type="button" onclick="lookupMemberPoints()" class="primary-bg text-white px-4 py-3 rounded-xl text-xs font-bold uppercase tracking-wider shrink-0 transition-all active:scale-95 shadow-sm cursor-pointer">
+                        Cek Kartu
                     </button>
                 </div>
                 <div id="member-lookup-result" class="hidden text-xs font-bold mt-2"></div>
             </div>
 
+            <!-- KEUNTUNGAN MENJADI MEMBER -->
+            <div class="p-4 rounded-2xl border border-amber-400/30 bg-amber-50/50 dark:bg-amber-950/20 text-xs space-y-2">
+                <h4 class="font-bold text-amber-800 dark:text-amber-300 flex items-center gap-1.5">
+                    <i class="fa-solid fa-sparkles text-amber-500"></i> Keuntungan Menjadi Member Toko Putri:
+                </h4>
+                <ul class="text-[11px] text-slate-600 dark:text-slate-300 space-y-1 list-disc pl-4">
+                    <li>Otomatis terdaftar menjadi member pada pesanan pertama Anda.</li>
+                    <li>Kumpulkan poin di setiap transaksi belanja untuk ditukar hadiah gratis.</li>
+                    <li>Mendapatkan kartu digital eksklusif yang bisa disimpan di galeri ponsel.</li>
+                </ul>
+            </div>
+
+            <!-- KATALOG HADIAH -->
             <div>
                 <p class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-2.5">Katalog Hadiah yang Dapat Ditukar</p>
                 <div class="space-y-2.5">${rewardsHtml}</div>
@@ -265,19 +749,22 @@ export const lookupMemberPoints = async () => {
     else if (!rawVal.startsWith('62')) rawVal = '62' + rawVal;
 
     resultDiv.className = 'text-xs font-bold text-[var(--color-primary)] p-2.5 primary-bg-soft rounded-xl';
-    resultDiv.textContent = 'Mengecek data member...';
+    resultDiv.textContent = 'Memuat data kartu member...';
     resultDiv.classList.remove('hidden');
 
     try {
         const doc = await db.collection("freshmart").doc("cms_data").collection("customers").doc(rawVal).get();
         if (doc.exists) {
             const mData = doc.data();
+            memberCache.set(rawVal, { data: mData, timestamp: Date.now() });
             setCurrentMember(mData);
             rMemberModalBody();
-            if (typeof window.showToast === 'function') window.showToast(`Selamat datang, ${mData.name || 'Pelanggan'}!`);
+            if (typeof window.showToast === 'function') {
+                window.showToast(`Selamat datang kembali, ${mData.name || 'Pelanggan'}! 💳`);
+            }
         } else {
-            resultDiv.className = 'text-xs font-bold text-amber-600 dark:text-amber-400 p-3 bg-amber-50 dark:bg-amber-900/20 rounded-xl leading-relaxed';
-            resultDiv.innerHTML = `<i class="fa-solid fa-circle-info mr-1"></i> Nomor <b>+${esc(rawVal)}</b> belum terdaftar. Lakukan pesanan pertama Anda untuk otomatis mengumpulkan poin member!`;
+            resultDiv.className = 'text-xs font-bold text-amber-700 dark:text-amber-300 p-3 bg-amber-50 dark:bg-amber-900/20 rounded-xl leading-relaxed border border-amber-200 dark:border-amber-800/40';
+            resultDiv.innerHTML = `<i class="fa-solid fa-circle-info mr-1 text-amber-500"></i> Nomor <b>+${esc(rawVal)}</b> belum terdaftar. Lakukan pesanan pertama Anda untuk otomatis mengumpulkan poin dan mendapatkan Kartu Member VIP!`;
         }
     } catch(err) {
         resultDiv.className = 'text-xs font-bold text-rose-500 p-2.5 bg-rose-50 dark:bg-rose-900/20 rounded-xl';
@@ -321,7 +808,7 @@ export const closeMemberModal = (fH = false) => {
     }, 250);
 };
 
-// ─── Expose ke window untuk interaksi onclick inline ──────────
+// ─── Expose ke window untuk interaksi inline onclick di HTML ──────────
 window.renderRewardCatalog = renderRewardCatalog;
 window.checkMemberStatus = checkMemberStatus;
 window.openMemberModal = openMemberModal;
@@ -330,3 +817,10 @@ window.lookupMemberPoints = lookupMemberPoints;
 window.selectReward = selectReward;
 window.deselectReward = deselectReward;
 window.closeMemberModal = closeMemberModal;
+window.flipMemberCard = flipMemberCard;
+window.downloadMemberCard = downloadMemberCard;
+window.getMemberTier = getMemberTier;
+window.formatMemberCardNumber = formatMemberCardNumber;
+window.generateBarcodeSVG = generateBarcodeSVG;
+window.setCurrentMember = setCurrentMember;
+
