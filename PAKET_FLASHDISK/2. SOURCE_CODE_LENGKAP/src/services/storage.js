@@ -105,7 +105,10 @@ export const loadAppData = async () => {
         rDyn();
         rCat();
         setIn('stat-products', appData.products.filter(p => p.isActive !== 'false' && p.isActive !== false).length);
-        hLoad(); // Langsung buka antarmuka tanpa jeda
+        // Tampilkan splash screen minimal 1.2 detik saat aplikasi dibuka agar logo resmi dan animasi toko terlihat elegan
+        setTimeout(() => {
+            hLoad();
+        }, 1200);
         hasRenderedCached = true;
     } else {
         sLoad('Memuat Toko...');
@@ -158,7 +161,9 @@ export const loadAppData = async () => {
         } catch(e) {
             showToast("Mode Offline (Data Lokal)");
         } finally {
-            hLoad();
+            setTimeout(() => {
+                hLoad();
+            }, 800);
         }
     }
     // FITUR BARU: render slot iklan SECARA TERPISAH dari jalur kritis loading.

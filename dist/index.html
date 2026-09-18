@@ -132,12 +132,12 @@
         }
       }
     </style>
-    <script type="module" crossorigin src="/assets/index-Brv2cf0Z.js"></script>
+    <script type="module" crossorigin src="/assets/index-Beunj1Dz.js"></script>
     <link rel="modulepreload" crossorigin href="/assets/vendor-firebase-core-D2OF5R23.js">
     <link rel="modulepreload" crossorigin href="/assets/vendor-firebase-db-BIUZcnOd.js">
     <link rel="modulepreload" crossorigin href="/assets/vendor-utils-Bszxp-Ae.js">
-    <link rel="modulepreload" crossorigin href="/assets/module-print-C266Op-n.js">
-    <link rel="modulepreload" crossorigin href="/assets/module-admin-H1TU1RSc.js">
+    <link rel="modulepreload" crossorigin href="/assets/module-print-DUz0xeA1.js">
+    <link rel="modulepreload" crossorigin href="/assets/module-admin-CHBwrZQE.js">
     <link rel="stylesheet" crossorigin href="/assets/index-DkWjqpQh.css">
   </head>
   <body>
@@ -255,12 +255,15 @@
           document.getElementById("loader-store-name").textContent = name.toUpperCase();
           document.getElementById("loader-tagline").textContent = tagline;
 
-          const logo = cached && cached.store && cached.store.logo && cached.store.logo !== "fa-store" ? cached.store.logo : "";
+          const logo = (cached && cached.store && cached.store.logo && cached.store.logo !== "fa-store") ? cached.store.logo : "https://lh3.googleusercontent.com/d/1KHwsV5sK6aAH3-eP_vTJA4tE5MyRukLo";
           if (logo) {
-            document.getElementById("loader-logo-icon").style.display = "none";
+            const iconEl = document.getElementById("loader-logo-icon");
+            if (iconEl) iconEl.style.display = "none";
             const img = document.getElementById("loader-logo-img");
-            img.src = logo;
-            img.style.display = "block";
+            if (img) {
+              img.src = logo;
+              img.style.display = "block";
+            }
           }
         } catch (e) {
           document.getElementById("loader-store-name").textContent = "TOKO PUTRI";

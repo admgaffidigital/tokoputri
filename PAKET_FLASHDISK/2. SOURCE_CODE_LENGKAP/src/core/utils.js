@@ -164,8 +164,24 @@ export const injectJSONLD = (id, data) => {
 };
 
 // ─── Loading Overlay Helpers ─────────────────────────────────
-export const sLoad = t => { if(t) setIn('loader-text', t); const gl = el('global-loader'); if(gl) { gl.style.display = 'flex'; } };
-export const hLoad = () => { const gl = el('global-loader'); if(gl) gl.style.display = 'none'; };
+export const sLoad = t => { 
+    if(t) setIn('loader-text', t); 
+    const gl = el('global-loader'); 
+    if(gl) { 
+        gl.style.opacity = '1'; 
+        gl.style.display = 'flex'; 
+    } 
+};
+export const hLoad = () => { 
+    const gl = el('global-loader'); 
+    if(gl) { 
+        gl.style.transition = 'opacity 0.4s ease'; 
+        gl.style.opacity = '0'; 
+        setTimeout(() => { 
+            gl.style.display = 'none'; 
+        }, 400); 
+    } 
+};
 
 export const showToast = (m, type, title, duration) => {
     if (typeof window.showToast === 'function') {
