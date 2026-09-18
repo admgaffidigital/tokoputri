@@ -312,6 +312,19 @@
           <button class="flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-slate-500 transition-all hover:bg-rose-50 hover:text-rose-500 dark:bg-slate-700 dark:hover:bg-rose-900/30 active:scale-95" onclick="closeQuickMenuModal()"><i class="fa-solid fa-xmark"></i></button>
         </div>
         <div class="space-y-3.5 overflow-y-auto bg-white p-5 dark:bg-[#0b1121]">
+          <!-- Item Unduh Aplikasi Android (APK) Play Store Style -->
+          <button class="flex w-full items-center gap-4 rounded-2xl border border-emerald-200/80 bg-gradient-to-r from-emerald-500/10 via-teal-500/5 to-transparent p-4 text-left font-bold text-slate-800 transition-all hover:border-emerald-400 hover:bg-emerald-500/15 active:scale-[0.98] dark:border-emerald-500/30 dark:bg-emerald-950/20 dark:text-white" onclick="navigateFromQuickMenu(openAppDownloadModal)">
+            <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-[#01875f] text-white shadow-md shadow-emerald-500/20 shrink-0">
+              <i class="fa-brands fa-google-play text-base"></i>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-1.5 flex-wrap">
+                <h4 class="text-sm leading-tight text-emerald-950 dark:text-emerald-300 font-extrabold">Unduh Aplikasi Android</h4>
+                <span class="px-1.5 py-0.5 rounded text-[8px] font-black uppercase bg-[#01875f] text-white shadow-xs">APK Resmi</span>
+              </div>
+              <p class="mt-0.5 text-[9px] font-semibold text-slate-500 dark:text-slate-400">Unduh &amp; perbarui aplikasi Toko Putri terbaru</p>
+            </div>
+          </button>
           <button class="flex w-full items-center gap-4 rounded-2xl border border-slate-100 bg-slate-50 p-4 text-left font-bold text-slate-700 transition-all hover:bg-[rgba(var(--color-primary-rgb),0.08)] hover:text-[var(--color-primary)] active:scale-[0.98] dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-[rgba(var(--color-primary-rgb),0.15)]" onclick="navigateFromQuickMenu('view-catalog')">
             <div class="flex h-10 w-10 items-center justify-center rounded-xl primary-bg text-white shadow-md"><i class="fa-solid fa-house text-sm"></i></div>
             <div>
@@ -1114,6 +1127,10 @@
               </div>
             </div>
             <div class="flex shrink-0 items-center gap-1.5 sm:gap-2">
+              <button onclick="if(typeof window.openAppDownloadModal==='function') window.openAppDownloadModal();" class="flex h-9 sm:h-10 items-center gap-1.5 px-2.5 sm:px-3 rounded-full border-2 border-emerald-400/50 bg-emerald-950/50 hover:bg-emerald-900/60 text-white transition-all active:scale-95 text-[11px] font-bold shadow-xs cursor-pointer group" title="Unduh Aplikasi Android Resmi (APK)">
+                <i class="fa-brands fa-google-play text-emerald-400 text-xs sm:text-sm group-hover:scale-110 transition-transform"></i>
+                <span class="hidden xs:inline text-[10px] sm:text-xs font-bold tracking-tight">Unduh App</span>
+              </button>
               <button aria-label="Toggle Dark Mode" class="flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full border-2 border-white/40 bg-black/20 text-white transition-all hover:bg-black/30 active:scale-95" id="btn-theme-toggle" onclick="toggleTheme()"><i class="fa-solid fa-moon text-xs sm:text-sm" id="icon-theme"></i></button>
               <button class="relative flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full border-2 border-white/40 bg-black/20 text-white transition-all hover:bg-black/30 active:scale-95" onclick="openQuickMenuModal()" title="Tautan Cepat">
                 <i class="fa-solid fa-bars text-xs sm:text-sm"></i>

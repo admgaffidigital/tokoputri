@@ -36,6 +36,8 @@ import './modules/faq/index.js';
 // Modules: Log Pembaruan Sistem (Changelog) Storefront & Admin
 import './modules/changelog/index.js';
 import './modules/changelog/admin.js';
+// Modules: Unduh & Pembaruan Aplikasi Resmi (Play Store Style APK Update)
+import './modules/app-update/index.js';
 // Services: Upload Media (GAS Drive Integration)
 import './services/upload.js';
 // Services: Penyimpanan Data & Realtime Sync (Firestore / Cache)

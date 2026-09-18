@@ -262,6 +262,7 @@ export const closeModalByName = (m) => {
     else if (m === 'adminFAQ' && typeof window.closeAdminFAQModal === 'function') window.closeAdminFAQModal(true);
     else if (m === 'printerSettings' && typeof window.closePrinterSettingsModal === 'function') window.closePrinterSettingsModal(true);
     else if (m === 'exitConfirm' && typeof window.closeExitConfirmModal === 'function') window.closeExitConfirmModal(true);
+    else if (m === 'appDownload' && typeof window.closeAppDownloadModal === 'function') window.closeAppDownloadModal(true);
 };
 
 /**

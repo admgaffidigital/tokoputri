@@ -206,6 +206,27 @@ export const renderFooter = () => {
                 </div>
               </a>
 
+              <!-- Download App Card (Google Play Store Styled) -->
+              <div
+                class="group flex cursor-pointer items-center gap-3.5 rounded-2xl border border-emerald-400/40 bg-gradient-to-r from-emerald-500/15 via-teal-500/10 to-transparent hover:bg-emerald-500/25 p-3.5 transition-all duration-200 shadow-sm hover:border-emerald-400 hover:shadow-md"
+                onclick="if(typeof window.openAppDownloadModal==='function') window.openAppDownloadModal();"
+              >
+                <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#01875f] text-white text-xl shadow-md shadow-emerald-500/30 group-hover:scale-105 transition-transform">
+                  <i class="fa-brands fa-google-play"></i>
+                </div>
+                <div class="min-w-0 text-left">
+                  <div class="flex items-center gap-1.5">
+                    <span class="px-1.5 py-0.2 rounded text-[8px] font-black uppercase bg-[#01875f] text-white">APK RESMI</span>
+                    <p class="text-[9px] font-extrabold uppercase tracking-widest text-emerald-300">Android Release</p>
+                  </div>
+                  <p class="truncate text-xs font-black text-white group-hover:text-emerald-200 transition-colors">Unduh Aplikasi Android</p>
+                  <p class="text-[10px] font-medium text-white/70">Versi ${esc(latestVer)} • Update Real-Time</p>
+                </div>
+                <div class="ml-auto text-emerald-400 group-hover:text-white group-hover:translate-x-0.5 transition-all">
+                  <i class="fa-solid fa-arrow-down text-xs"></i>
+                </div>
+              </div>
+
               <!-- Email & Hours Card (Glass Translucent Selaras) -->
               <div class="rounded-2xl border border-white/10 bg-white/5 p-3.5 space-y-3 text-white shadow-xs">
                 <!-- Email (if configured) -->
@@ -293,6 +314,11 @@ export const renderFooter = () => {
             &#169; <span>${currentYear}</span> <span class="font-extrabold text-white">${esc(storeName)}</span>. <span>${esc(footerCredit)}</span>
           </p>
           <div class="flex flex-wrap items-center justify-center gap-3 text-[10px] font-bold text-white">
+            <button type="button" onclick="if(typeof window.openAppDownloadModal==='function') window.openAppDownloadModal();" class="inline-flex items-center gap-1.5 rounded-full border border-emerald-400/40 bg-emerald-500/20 hover:bg-emerald-500/30 px-3 py-1 text-[9px] font-extrabold uppercase tracking-wider text-emerald-300 hover:text-white transition-all active:scale-95 cursor-pointer shadow-xs" title="Unduh Aplikasi Android Toko Putri (APK)">
+              <i class="fa-brands fa-google-play text-emerald-400"></i>
+              <span>Unduh APK (${esc(latestVer)})</span>
+            </button>
+            <span class="text-white/20">•</span>
             <button type="button" onclick="if(typeof window.openChangelogModal==='function') window.openChangelogModal();" class="inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/10 px-3 py-1 text-[9px] font-extrabold uppercase tracking-wider text-white hover:bg-white/20 transition-all active:scale-95 cursor-pointer shadow-xs" title="Lihat Catatan Pembaruan & Versi">
               <span class="h-1.5 w-1.5 rounded-full bg-[var(--color-primary)] animate-pulse"></span>
               <span>${esc(latestVer)}</span> • Changelog
