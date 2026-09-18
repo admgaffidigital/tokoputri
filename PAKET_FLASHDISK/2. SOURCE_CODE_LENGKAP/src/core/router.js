@@ -237,33 +237,138 @@ export const initPullToRefresh = () => {
 /**
  * Pasang router listener popstate
  */
+export const closeModalByName = (m) => {
+    if (m === 'product' && typeof window.closeProductModal === 'function') window.closeProductModal(true);
+    else if (m === 'category' && typeof window.closeCategoryModal === 'function') window.closeCategoryModal(true);
+    else if (m === 'brand' && typeof window.closeBrandModal === 'function') window.closeBrandModal(true);
+    else if (m === 'admin' && typeof window.closeAdminModal === 'function') window.closeAdminModal(true);
+    else if (m === 'adminOrder' && typeof window.closeOrderDetailModal === 'function') window.closeOrderDetailModal(true);
+    else if (m === 'receipt' && typeof window.closeReceiptPreviewModal === 'function') window.closeReceiptPreviewModal(true);
+    else if (m === 'docPreview' && typeof window.closeDocPreviewModal === 'function') window.closeDocPreviewModal(true);
+    else if (m === 'scanner' && typeof window.closeCameraScanner === 'function') window.closeCameraScanner(true);
+    else if (m === 'confirm' && typeof window.closeConfirm === 'function') window.closeConfirm(true);
+    else if (m === 'customerOrder' && typeof window.closeCustomerOrderDetailModal === 'function') window.closeCustomerOrderDetailModal(true);
+    else if (m === 'restock' && typeof window.closeRestockModal === 'function') window.closeRestockModal(true);
+    else if (m === 'quickprice' && typeof window.closeQuickPriceModal === 'function') window.closeQuickPriceModal(true);
+    else if (m === 'member' && typeof window.closeMemberModal === 'function') window.closeMemberModal(true);
+    else if (m === 'prompt' && typeof window.closePrompt === 'function') window.closePrompt(true);
+    else if (m === 'review' && typeof window.closeReviewModal === 'function') window.closeReviewModal(true);
+    else if (m === 'quickmenu' && typeof window.closeQuickMenuModal === 'function') window.closeQuickMenuModal(true);
+    else if (m === 'variantPreview' && typeof window.closeVariantPreviewModal === 'function') window.closeVariantPreviewModal(true);
+    else if (m === 'terms' && typeof window.closeTermsModal === 'function') window.closeTermsModal(true);
+    else if (m === 'privacy' && typeof window.closePrivacyModal === 'function') window.closePrivacyModal(true);
+    else if (m === 'askQuestion' && typeof window.closeAskQuestionModal === 'function') window.closeAskQuestionModal(true);
+    else if (m === 'quickVariant' && typeof window.closeQuickVariantSheet === 'function') window.closeQuickVariantSheet(true);
+    else if (m === 'adminFAQ' && typeof window.closeAdminFAQModal === 'function') window.closeAdminFAQModal(true);
+    else if (m === 'printerSettings' && typeof window.closePrinterSettingsModal === 'function') window.closePrinterSettingsModal(true);
+    else if (m === 'exitConfirm' && typeof window.closeExitConfirmModal === 'function') window.closeExitConfirmModal(true);
+};
+
+/**
+ * Buka Dialog Konfirmasi Keluar Aplikasi (Exit Confirmation Dialog)
+ */
+export const openExitConfirmModal = () => {
+    const m = el('exit-confirm-modal');
+    if (!m) return;
+    if (m.classList.contains('hidden')) {
+        pushModalHistory('exitConfirm');
+    }
+    m.classList.remove('hidden');
+    setTimeout(() => {
+        m.classList.remove('opacity-0');
+        const box = el('exit-confirm-modal-box');
+        if (box) box.classList.remove('scale-95');
+    }, 10);
+    if (typeof window.triggerHaptic === 'function') window.triggerHaptic('light');
+};
+
+/**
+ * Tutup Dialog Konfirmasi Keluar Aplikasi
+ */
+export const closeExitConfirmModal = (fH = false) => {
+    requestCloseModal('exitConfirm', fH, () => {
+        const m = el('exit-confirm-modal');
+        const box = el('exit-confirm-modal-box');
+        if (m) m.classList.add('opacity-0');
+        if (box) box.classList.add('scale-95');
+        setTimeout(() => {
+            if (m) m.classList.add('hidden');
+        }, 250);
+    });
+};
+
+/**
+ * Konfirmasi Keluar Aplikasi Native Android / Browser
+ */
+export const confirmExitApp = () => {
+    closeExitConfirmModal(true);
+    if (window.AndroidNativeApp && typeof window.AndroidNativeApp.exitApp === 'function') {
+        window.AndroidNativeApp.exitApp();
+    } else if (navigator.app && typeof navigator.app.exitApp === 'function') {
+        navigator.app.exitApp();
+    } else {
+        if (typeof window.showToast === 'function') window.showToast('Sampai jumpa kembali di Toko Putri! 🙏');
+        setTimeout(() => {
+            try { window.close(); } catch(e) {}
+        }, 400);
+    }
+};
+
+/**
+ * Penanganan Hardware Back Button Cerdas untuk Android & PWA
+ */
+export const handleAppBackButton = () => {
+    // 1. Jika ada modal yang terbuka di stack oMods, tutup modal teratas
+    if (oMods.length > 0) {
+        try {
+            window.history.back();
+        } catch(e) {
+            const m = oMods.pop();
+            closeModalByName(m);
+        }
+        return;
+    }
+
+    // 2. Jika sedang di dashboard admin, konfirmasi keluar seller
+    const isAdminLoggedIn = window.isAdm || window.__localIsAdm;
+    if (curViewName === 'view-admin') {
+        if (typeof window.showConfirm === 'function') {
+            window.showConfirm(
+                "Keluar Seller",
+                "Apakah anda akan keluar dari dashboard seller?",
+                () => { if (typeof window.logoutAdmin === 'function') window.logoutAdmin(); },
+                "Ya, Keluar",
+                true
+            );
+        }
+        return;
+    }
+
+    // 3. Jika sedang di view selain view-catalog (beranda), kembali ke beranda
+    if (curViewName !== 'view-catalog') {
+        changeView('view-catalog');
+        return;
+    }
+
+    // 4. Pengguna sudah berada di Beranda dan tidak ada modal yang terbuka:
+    // Tampilkan Dialog Konfirmasi Keluar Aplikasi
+    const exitModal = el('exit-confirm-modal');
+    if (exitModal && !exitModal.classList.contains('hidden')) {
+        closeExitConfirmModal();
+    } else {
+        openExitConfirmModal();
+    }
+};
+
+/**
+ * Pasang router listener popstate
+ */
 export const setupHistoryRouter = () => {
     initPullToRefresh();
     window.addEventListener('popstate', e => {
         if (oMods.length) {
             const m = oMods.pop();
-            if (m === 'product' && typeof window.closeProductModal === 'function') window.closeProductModal(true);
-            else if (m === 'category' && typeof window.closeCategoryModal === 'function') window.closeCategoryModal(true);
-            else if (m === 'brand' && typeof window.closeBrandModal === 'function') window.closeBrandModal(true);
-            else if (m === 'admin' && typeof window.closeAdminModal === 'function') window.closeAdminModal(true);
-            else if (m === 'adminOrder' && typeof window.closeOrderDetailModal === 'function') window.closeOrderDetailModal(true);
-            else if (m === 'receipt' && typeof window.closeReceiptPreviewModal === 'function') window.closeReceiptPreviewModal(true);
-            else if (m === 'docPreview' && typeof window.closeDocPreviewModal === 'function') window.closeDocPreviewModal(true);
-            else if (m === 'scanner' && typeof window.closeCameraScanner === 'function') window.closeCameraScanner(true);
-            else if (m === 'confirm' && typeof window.closeConfirm === 'function') window.closeConfirm(true);
-            else if (m === 'customerOrder' && typeof window.closeCustomerOrderDetailModal === 'function') window.closeCustomerOrderDetailModal(true);
-            else if (m === 'restock' && typeof window.closeRestockModal === 'function') window.closeRestockModal(true);
-            else if (m === 'quickprice' && typeof window.closeQuickPriceModal === 'function') window.closeQuickPriceModal(true);
-            else if (m === 'member' && typeof window.closeMemberModal === 'function') window.closeMemberModal(true);
-            else if (m === 'prompt' && typeof window.closePrompt === 'function') window.closePrompt(true);
-            else if (m === 'review' && typeof window.closeReviewModal === 'function') window.closeReviewModal(true);
-            else if (m === 'quickmenu' && typeof window.closeQuickMenuModal === 'function') window.closeQuickMenuModal(true);
-            else if (m === 'variantPreview' && typeof window.closeVariantPreviewModal === 'function') window.closeVariantPreviewModal(true);
-            else if (m === 'terms' && typeof window.closeTermsModal === 'function') window.closeTermsModal(true);
-            else if (m === 'privacy' && typeof window.closePrivacyModal === 'function') window.closePrivacyModal(true);
-            else if (m === 'askQuestion' && typeof window.closeAskQuestionModal === 'function') window.closeAskQuestionModal(true);
-            else if (m === 'quickVariant' && typeof window.closeQuickVariantSheet === 'function') window.closeQuickVariantSheet(true);
-            else if (m === 'adminFAQ' && typeof window.closeAdminFAQModal === 'function') window.closeAdminFAQModal(true);
+            closeModalByName(m);
         } else {
             const state = e.state || {};
             const v = state.view || null;
@@ -307,6 +412,10 @@ window.setupHistoryRouter = setupHistoryRouter;
 window.onBottomNavClick = onBottomNavClick;
 window.updateBottomNav = updateBottomNav;
 window.initPullToRefresh = initPullToRefresh;
+window.handleAppBackButton = handleAppBackButton;
+window.openExitConfirmModal = openExitConfirmModal;
+window.closeExitConfirmModal = closeExitConfirmModal;
+window.confirmExitApp = confirmExitApp;
 try {
     Object.defineProperty(window, 'curViewName', {
         get: () => curViewName,
@@ -314,3 +423,4 @@ try {
         configurable: true
     });
 } catch(e) {}
+

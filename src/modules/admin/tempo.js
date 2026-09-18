@@ -354,9 +354,9 @@ window.rAdmPiutang = async () => {
                 </div>` : ''}
                 
                 <div class="flex gap-2 mb-2">
-                    <a href="https://wa.me/${waNum}?text=Halo%20kak%20${esc(o.customer?.name||'')},%20mengingatkan%20bahwa%20sisa%20tagihan%20Tempo%20untuk%20pesanan%20${o.orderId}%20sebesar%20${fCur(totalAkhir)}%20sudah%20jatuh%20tempo.%20Mohon%20segera%20dilunasi." target="_blank" class="flex-1 bg-[rgba(var(--color-primary-rgb),0.06)] dark:bg-[rgba(var(--color-primary-rgb),0.10)] hover:bg-[rgba(var(--color-primary-rgb),0.12)] dark:hover:bg-[rgba(var(--color-primary-rgb),0.16)] text-[var(--color-primary)] border border-[var(--color-primary)]/25 rounded-xl py-2 flex items-center justify-center gap-1.5 text-[10px] font-bold uppercase tracking-widest transition-all">
+                    <button onclick="if(typeof window.openWhatsApp==='function') window.openWhatsApp('${waNum}', 'Halo kak ${esc(o.customer?.name||'')}, mengingatkan bahwa sisa tagihan Tempo untuk pesanan ${o.orderId} sebesar ${fCur(totalAkhir)} sudah jatuh tempo. Mohon segera dilunasi.');" class="flex-1 bg-[rgba(var(--color-primary-rgb),0.06)] dark:bg-[rgba(var(--color-primary-rgb),0.10)] hover:bg-[rgba(var(--color-primary-rgb),0.12)] dark:hover:bg-[rgba(var(--color-primary-rgb),0.16)] text-[var(--color-primary)] border border-[var(--color-primary)]/25 rounded-xl py-2 flex items-center justify-center gap-1.5 text-[10px] font-bold uppercase tracking-widest transition-all cursor-pointer">
                         <i class="fa-brands fa-whatsapp text-sm"></i> Tagih
-                    </a>
+                    </button>
                     <button onclick="previewTempoReceipt('${o.orderId}')" class="flex-1 bg-amber-500 hover:bg-amber-600 text-white rounded-xl py-2 flex items-center justify-center gap-1.5 text-[10px] font-bold uppercase tracking-widest shadow-sm shadow-amber-500/30 transition-all">
                         <i class="fa-solid fa-print"></i> Struk
                     </button>

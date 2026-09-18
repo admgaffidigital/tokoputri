@@ -132,13 +132,13 @@
         }
       }
     </style>
-    <script type="module" crossorigin src="/assets/index-Beunj1Dz.js"></script>
+    <script type="module" crossorigin src="/assets/index-BuA4heA9.js"></script>
     <link rel="modulepreload" crossorigin href="/assets/vendor-firebase-core-D2OF5R23.js">
     <link rel="modulepreload" crossorigin href="/assets/vendor-firebase-db-BIUZcnOd.js">
     <link rel="modulepreload" crossorigin href="/assets/vendor-utils-Bszxp-Ae.js">
-    <link rel="modulepreload" crossorigin href="/assets/module-print-DUz0xeA1.js">
-    <link rel="modulepreload" crossorigin href="/assets/module-admin-CHBwrZQE.js">
-    <link rel="stylesheet" crossorigin href="/assets/index-DkWjqpQh.css">
+    <link rel="modulepreload" crossorigin href="/assets/module-print-gYWGiX83.js">
+    <link rel="modulepreload" crossorigin href="/assets/module-admin-B6JWPt-D.js">
+    <link rel="stylesheet" crossorigin href="/assets/index-BVvYbWJu.css">
   </head>
   <body>
     <!-- UI Components Global -->
@@ -910,7 +910,10 @@
     <div class="fixed inset-0 z-[110] flex hidden items-center justify-center bg-slate-900/80 p-3 opacity-0 transition-all duration-300" id="receipt-preview-modal" onclick="if (event.target === this) closeReceiptPreviewModal();">
       <div class="relative flex max-h-[92dvh] w-full max-w-[320px] scale-95 transform flex-col overflow-hidden rounded-[2rem] border border-slate-200 bg-slate-50 shadow-lg transition-all duration-300 dark:border-slate-700 dark:bg-slate-800" id="receipt-preview-modal-box">
         <div class="sticky top-0 z-20 flex items-center justify-between border-b border-slate-200 bg-white px-5 py-4 dark:border-slate-700 dark:bg-slate-800">
-          <h3 class="text-sm font-bold text-slate-900 dark:text-white">Preview Struk</h3>
+          <div class="flex items-center gap-2">
+            <h3 class="text-sm font-bold text-slate-900 dark:text-white">Preview Struk</h3>
+            <button class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-bold bg-slate-100 hover:bg-emerald-50 hover:text-emerald-600 text-slate-600 dark:bg-slate-700 dark:text-slate-300 transition-all cursor-pointer" onclick="openPrinterSettingsModal()" title="Pengaturan Printer POS"><i class="fa-solid fa-gear text-xs"></i> Setelan</button>
+          </div>
           <button class="flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-slate-500 transition-all hover:text-rose-500 dark:bg-slate-700" onclick="closeReceiptPreviewModal()"><i class="fa-solid fa-xmark"></i></button>
         </div>
         <div class="hide-scrollbar flex items-start justify-center overflow-y-auto bg-slate-200 p-5 dark:bg-slate-900" style="flex: 1">
@@ -918,6 +921,159 @@
         </div>
         <div class="z-20 border-t border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-800">
           <button class="btn-primary flex w-full items-center justify-center rounded-xl py-4 text-sm shadow-glow" onclick="executePrintReceipt()"><i class="fa-solid fa-print mr-2"></i> Print Thermal</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Pengaturan Perangkat Universal & Printer POS -->
+    <div class="fixed inset-0 z-[120] flex hidden items-center justify-center bg-slate-900/80 p-3 opacity-0 transition-all duration-300" id="printer-settings-modal" onclick="if (event.target === this) closePrinterSettingsModal();">
+      <div class="relative flex max-h-[92dvh] w-full max-w-lg scale-95 transform flex-col overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-xl transition-all duration-300 dark:border-slate-700 dark:bg-slate-800" id="printer-settings-modal-box">
+        <div class="sticky top-0 z-20 flex items-center justify-between border-b border-slate-200 bg-white px-5 py-4 dark:border-slate-700 dark:bg-slate-800">
+          <div class="flex items-center gap-2.5">
+            <div class="w-9 h-9 rounded-xl flex items-center justify-center text-sm shadow-sm" style="background: rgba(var(--color-primary-rgb),0.1); color: var(--color-primary)">
+              <i class="fa-solid fa-print"></i>
+            </div>
+            <div>
+              <h3 class="text-sm font-bold text-slate-900 dark:text-white leading-tight">Pengaturan Perangkat &amp; Printer POS</h3>
+              <p class="text-[10px] text-slate-500 dark:text-slate-400">Koneksi Bluetooth, USB, Driver POS &amp; Ukuran Kertas</p>
+            </div>
+          </div>
+          <button class="flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-slate-500 transition-all hover:text-rose-500 dark:bg-slate-700 active:scale-95 cursor-pointer" onclick="closePrinterSettingsModal()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        
+        <div class="hide-scrollbar flex-1 overflow-y-auto p-5 space-y-5 text-xs">
+          <!-- 1. Pilihan Tipe Koneksi -->
+          <div>
+            <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">Pilih Mode Koneksi Perangkat</label>
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+              <div class="printer-type-card cursor-pointer p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-[var(--color-primary)] transition-all flex flex-col items-center text-center gap-1.5 relative group" data-type="bluetooth" onclick="selectPrinterDeviceTypeUI('bluetooth')">
+                <i class="fa-brands fa-bluetooth-b text-xl text-blue-500 group-hover:scale-110 transition-transform"></i>
+                <span class="font-bold text-[11px] text-slate-800 dark:text-slate-100">Bluetooth POS</span>
+                <span class="text-[9px] text-slate-400">Wireless ESC/POS</span>
+                <div class="printer-check-badge hidden absolute top-1.5 right-1.5 w-4 h-4 rounded-full bg-[var(--color-primary)] text-white text-[8px] flex items-center justify-center"><i class="fa-solid fa-check"></i></div>
+              </div>
+
+              <div class="printer-type-card cursor-pointer p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-[var(--color-primary)] transition-all flex flex-col items-center text-center gap-1.5 relative group" data-type="usb" onclick="selectPrinterDeviceTypeUI('usb')">
+                <i class="fa-solid fa-usb text-xl text-emerald-500 group-hover:scale-110 transition-transform"></i>
+                <span class="font-bold text-[11px] text-slate-800 dark:text-slate-100">USB / OTG</span>
+                <span class="text-[9px] text-slate-400">Kabel Thermal POS</span>
+                <div class="printer-check-badge hidden absolute top-1.5 right-1.5 w-4 h-4 rounded-full bg-[var(--color-primary)] text-white text-[8px] flex items-center justify-center"><i class="fa-solid fa-check"></i></div>
+              </div>
+
+              <div class="printer-type-card cursor-pointer p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-[var(--color-primary)] transition-all flex flex-col items-center text-center gap-1.5 relative group" data-type="system" onclick="selectPrinterDeviceTypeUI('system')">
+                <i class="fa-solid fa-print text-xl text-violet-500 group-hover:scale-110 transition-transform"></i>
+                <span class="font-bold text-[11px] text-slate-800 dark:text-slate-100">System Print</span>
+                <span class="text-[9px] text-slate-400">Android / Windows</span>
+                <div class="printer-check-badge hidden absolute top-1.5 right-1.5 w-4 h-4 rounded-full bg-[var(--color-primary)] text-white text-[8px] flex items-center justify-center"><i class="fa-solid fa-check"></i></div>
+              </div>
+
+              <div class="printer-type-card cursor-pointer p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-[var(--color-primary)] transition-all flex flex-col items-center text-center gap-1.5 relative group" data-type="rawbt" onclick="selectPrinterDeviceTypeUI('rawbt')">
+                <i class="fa-solid fa-bolt text-xl text-amber-500 group-hover:scale-110 transition-transform"></i>
+                <span class="font-bold text-[11px] text-slate-800 dark:text-slate-100">RawBT Driver</span>
+                <span class="text-[9px] text-slate-400">Android Direct POS</span>
+                <div class="printer-check-badge hidden absolute top-1.5 right-1.5 w-4 h-4 rounded-full bg-[var(--color-primary)] text-white text-[8px] flex items-center justify-center"><i class="fa-solid fa-check"></i></div>
+              </div>
+
+              <div class="printer-type-card cursor-pointer p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-[var(--color-primary)] transition-all flex flex-col items-center text-center gap-1.5 relative group col-span-2 sm:col-span-1" data-type="network" onclick="selectPrinterDeviceTypeUI('network')">
+                <i class="fa-solid fa-network-wired text-xl text-indigo-500 group-hover:scale-110 transition-transform"></i>
+                <span class="font-bold text-[11px] text-slate-800 dark:text-slate-100">WiFi / LAN IP</span>
+                <span class="text-[9px] text-slate-400">Network Printer</span>
+                <div class="printer-check-badge hidden absolute top-1.5 right-1.5 w-4 h-4 rounded-full bg-[var(--color-primary)] text-white text-[8px] flex items-center justify-center"><i class="fa-solid fa-check"></i></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tombol Pasangkan / Cari Perangkat -->
+          <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700 flex flex-col sm:flex-row items-center justify-between gap-3">
+            <div class="flex-1 w-full">
+              <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Nama Perangkat Tersimpan</label>
+              <input type="text" id="printer-device-name-display" readonly class="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-xs font-bold text-slate-700 dark:text-slate-200 outline-none" value="Printer Thermal POS (Default)" />
+            </div>
+            <div class="flex gap-2 w-full sm:w-auto self-end">
+              <button type="button" onclick="scanBluetoothPrinter()" class="flex-1 sm:flex-none px-3 py-2 rounded-lg bg-blue-500 hover:bg-blue-600 text-white font-bold text-xs flex items-center justify-center gap-1.5 transition-all shadow-sm active:scale-95 cursor-pointer" title="Cari Printer Bluetooth"><i class="fa-brands fa-bluetooth-b"></i> Scan BT</button>
+              <button type="button" onclick="scanUsbPrinter()" class="flex-1 sm:flex-none px-3 py-2 rounded-lg bg-slate-700 hover:bg-slate-800 text-white font-bold text-xs flex items-center justify-center gap-1.5 transition-all shadow-sm active:scale-95 cursor-pointer" title="Deteksi USB OTG"><i class="fa-solid fa-usb"></i> Scan USB</button>
+            </div>
+          </div>
+
+          <!-- Konfigurasi IP jika mode Network -->
+          <div id="printer-network-box" class="hidden">
+            <label class="block text-[11px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">IP Address Printer Jaringan (Port 9100)</label>
+            <input type="text" id="printer-network-ip" class="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-3 text-xs font-mono font-bold text-slate-800 dark:text-slate-200 outline-none focus:border-[var(--color-primary)]" placeholder="Contoh: 192.168.1.200:9100" value="192.168.1.200:9100" />
+          </div>
+
+          <!-- 2. Ukuran Kertas Struk -->
+          <div>
+            <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">Ukuran Kertas Thermal Struk</label>
+            <select id="printer-paper-size" class="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-3 text-xs font-bold text-slate-800 dark:text-slate-200 outline-none focus:border-[var(--color-primary)]">
+              <option value="58mm">58mm - Mini Thermal Kasir (32 Karakter / Kolom) [Rekomendasi Portable]</option>
+              <option value="80mm">80mm - Desktop POS Thermal (48 Karakter / Kolom) [Kasir Besar]</option>
+            </select>
+          </div>
+
+          <!-- 3. Header & Footer Struk Custom -->
+          <div class="space-y-3">
+            <div>
+              <label class="block text-[11px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">Header Khusus Struk (Opsional)</label>
+              <input type="text" id="printer-header-custom" class="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-3 text-xs text-slate-800 dark:text-slate-200 outline-none focus:border-[var(--color-primary)]" placeholder="Biarkan kosong untuk nama toko default" />
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">Footer / Pesan Penutup Struk</label>
+              <input type="text" id="printer-footer-custom" class="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-3 text-xs text-slate-800 dark:text-slate-200 outline-none focus:border-[var(--color-primary)]" value="Terima kasih atas kunjungan Anda!" />
+            </div>
+          </div>
+
+          <!-- 4. Opsi Cetak Tambahan -->
+          <div>
+            <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2.5">Opsi Fitur Struk Kasir</label>
+            <div class="space-y-2.5">
+              <label class="flex items-center gap-2.5 cursor-pointer">
+                <input type="checkbox" id="printer-opt-points" class="rounded accent-[var(--color-primary)] w-4 h-4" checked />
+                <span class="text-xs text-slate-700 dark:text-slate-300 font-medium">Cetak Saldo Poin &amp; Member Loyalty di Struk</span>
+              </label>
+              <label class="flex items-center gap-2.5 cursor-pointer">
+                <input type="checkbox" id="printer-opt-barcode" class="rounded accent-[var(--color-primary)] w-4 h-4" checked />
+                <span class="text-xs text-slate-700 dark:text-slate-300 font-medium">Cetak Barcode Nomor Pesanan di Bawah Struk</span>
+              </label>
+              <label class="flex items-center gap-2.5 cursor-pointer">
+                <input type="checkbox" id="printer-opt-autocut" class="rounded accent-[var(--color-primary)] w-4 h-4" />
+                <span class="text-xs text-slate-700 dark:text-slate-300 font-medium">Kirim Perintah Potong Kertas Otomatis (Auto Cut)</span>
+              </label>
+              <label class="flex items-center gap-2.5 cursor-pointer">
+                <input type="checkbox" id="printer-opt-drawer" class="rounded accent-[var(--color-primary)] w-4 h-4" />
+                <span class="text-xs text-slate-700 dark:text-slate-300 font-medium">Buka Laci Kasir Otomatis (Cash Drawer Kick)</span>
+              </label>
+              <label class="flex items-center gap-2.5 cursor-pointer">
+                <input type="checkbox" id="printer-opt-autoprint" class="rounded accent-[var(--color-primary)] w-4 h-4" />
+                <span class="text-xs text-slate-700 dark:text-slate-300 font-medium">Auto-Print Struk saat Pesanan Baru Diproses</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="z-20 border-t border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-800 flex gap-2.5">
+          <button type="button" class="flex-1 py-3 px-4 rounded-xl border border-slate-300 dark:border-slate-600 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 text-xs font-bold transition-all active:scale-95 flex items-center justify-center gap-2 cursor-pointer" onclick="executeTestPrint()"><i class="fa-solid fa-receipt"></i> Tes Cetak (Test Print)</button>
+          <button type="button" class="flex-1 py-3 px-4 rounded-xl btn-primary text-xs font-bold shadow-md transition-all active:scale-95 flex items-center justify-center gap-2 cursor-pointer" onclick="savePrinterSettingsFromModal()"><i class="fa-solid fa-check"></i> Simpan Setelan</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Konfirmasi Keluar Aplikasi (Exit Confirmation Dialog) -->
+    <div class="fixed inset-0 z-[150] flex hidden items-center justify-center bg-slate-900/80 p-4 opacity-0 transition-all duration-300" id="exit-confirm-modal" onclick="if (event.target === this) closeExitConfirmModal();">
+      <div class="relative w-full max-w-sm scale-95 transform overflow-hidden rounded-[2rem] border border-slate-200 bg-white p-6 text-center shadow-2xl transition-all duration-300 dark:border-slate-700 dark:bg-slate-800" id="exit-confirm-modal-box">
+        <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl shadow-sm" style="background: rgba(var(--color-primary-rgb),0.1); color: var(--color-primary)">
+          <i class="fa-solid fa-door-open text-2xl"></i>
+        </div>
+        <h3 class="text-base font-bold text-slate-900 dark:text-white">Keluar dari Toko Putri?</h3>
+        <p class="mt-2 text-xs leading-relaxed text-slate-500 dark:text-slate-400">
+          Apakah Anda yakin ingin keluar dari aplikasi? Keranjang belanja, poin member, dan riwayat pesanan Anda tetap tersimpan dengan aman.
+        </p>
+        <div class="mt-6 flex flex-col sm:flex-row gap-2.5">
+          <button type="button" class="btn-primary flex-1 py-3 rounded-xl text-xs font-bold shadow-sm transition-all active:scale-95 cursor-pointer" onclick="closeExitConfirmModal()">
+            <i class="fa-solid fa-bag-shopping mr-1.5"></i> Lanjut Belanja
+          </button>
+          <button type="button" class="flex-1 py-3 rounded-xl border border-slate-200 bg-slate-100 text-slate-700 hover:bg-rose-50 hover:text-rose-600 hover:border-rose-200 dark:border-slate-700 dark:bg-slate-700/60 dark:text-slate-300 dark:hover:bg-rose-900/20 dark:hover:text-rose-400 text-xs font-bold transition-all active:scale-95 cursor-pointer" onclick="confirmExitApp()">
+            <i class="fa-solid fa-power-off mr-1.5"></i> Keluar Aplikasi
+          </button>
         </div>
       </div>
     </div>

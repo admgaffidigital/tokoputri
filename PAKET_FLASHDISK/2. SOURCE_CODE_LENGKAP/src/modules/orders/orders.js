@@ -425,7 +425,7 @@ export const renderOrderDetailModal = (orderId, d, reviewedKeys = []) => {
                             <h4 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2 flex items-center gap-1.5"><i class="fa-solid fa-user text-slate-400"></i> Info Pelanggan</h4>
                             <div class="space-y-1 text-xs">
                                 <p class="font-bold text-slate-800 dark:text-slate-200">${cName}</p>
-                                ${(d.customer && d.customer.wa) ? `<a href="https://wa.me/${cWa}" target="_blank" class="flex items-center gap-1 text-[var(--color-primary)] font-bold hover:underline"><i class="fa-brands fa-whatsapp"></i> +${cWa}</a>` : ''}
+                                ${(d.customer && d.customer.wa) ? `<a href="javascript:void(0)" onclick="if(typeof window.openWhatsApp==='function') window.openWhatsApp('${cWa}'); else window.open('https://wa.me/${cWa}', '_blank', 'noopener,noreferrer');" class="flex items-center gap-1 text-[var(--color-primary)] font-bold hover:underline cursor-pointer"><i class="fa-brands fa-whatsapp"></i> +${cWa}</a>` : ''}
                                 ${(d.customer && d.customer.lat && d.customer.deliveryMethod === 'delivery') ? `<a href="https://www.google.com/maps?q=${esc(d.customer.lat)},${esc(d.customer.lng)}" target="_blank" class="flex items-center gap-1 text-blue-600 dark:text-blue-400 font-bold hover:underline"><i class="fa-solid fa-location-dot"></i> Lihat Peta</a>` : ''}
                             </div>
                         </div>

@@ -217,6 +217,27 @@ export const normalizeWA = (raw) => {
     return n;
 };
 
+/**
+ * Membuka WhatsApp secara aman tanpa me-replace halaman WebView Toko Putri.
+ * Jika di Android Native, menggunakan AndroidNativeApp.openWhatsApp via intent eksternal.
+ * Jika di Web browser biasa, membuka tab baru dengan window.open target '_blank'.
+ */
+export const openWhatsApp = (phone, text = '') => {
+    const cleanPhone = normalizeWA(phone);
+    if (!cleanPhone) {
+        if (typeof window.showToast === 'function') window.showToast('Nomor WhatsApp tidak valid!');
+        return;
+    }
+    const msg = text ? encodeURIComponent(text) : '';
+    const waUrl = `https://wa.me/${cleanPhone}${msg ? `?text=${msg}` : ''}`;
+    
+    if (window.AndroidNativeApp && typeof window.AndroidNativeApp.openWhatsApp === 'function') {
+        window.AndroidNativeApp.openWhatsApp(waUrl);
+    } else {
+        window.open(waUrl, '_blank', 'noopener,noreferrer');
+    }
+};
+
 // ─── Native App Feel Helpers ─────────────────────────────────
 /**
  * Haptic Vibration Feedback (Sentuhan Taktil Bergetar)
@@ -317,6 +338,7 @@ export const flyToCartAnimation = (startEl, targetEl = null, imgUrl = null) => {
 };
 
 window.normalizeWA = normalizeWA;
+window.openWhatsApp = openWhatsApp;
 window.sLoad = sLoad;
 window.hLoad = hLoad;
 window.el = el;

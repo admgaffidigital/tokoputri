@@ -864,7 +864,11 @@ export const chatWAAboutProduct = () => {
     const msg = `Halo ${appData.store.name || 'Toko Putri'}, saya ingin bertanya tentang produk *${cProd.name}*${vN} seharga ${fCur(price)}. Apakah produk ini siap kirim?`;
     
     if (typeof window.triggerHaptic === 'function') window.triggerHaptic('light');
-    window.open(`https://wa.me/${targetWa}?text=${encodeURIComponent(msg)}`, '_blank');
+    if (typeof window.openWhatsApp === 'function') {
+        window.openWhatsApp(targetWa, msg);
+    } else {
+        window.open(`https://wa.me/${targetWa}?text=${encodeURIComponent(msg)}`, '_blank', 'noopener,noreferrer');
+    }
 };
 
 /**

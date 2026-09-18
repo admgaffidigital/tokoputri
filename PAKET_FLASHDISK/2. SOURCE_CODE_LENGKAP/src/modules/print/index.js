@@ -6,3 +6,4 @@
 
 export * from './receipt.js';
 export * from './documents.js';
+export * from './printer-settings.js';

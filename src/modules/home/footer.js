@@ -45,7 +45,7 @@ export const renderFooter = () => {
 
     // WhatsApp action
     const waOnClick = cleanWa 
-        ? `window.open('https://wa.me/${esc(cleanWa)}', '_blank')`
+        ? `if(typeof window.openWhatsApp==='function') window.openWhatsApp('${esc(cleanWa)}'); else window.open('https://wa.me/${esc(cleanWa)}', '_blank', 'noopener,noreferrer');`
         : `if(typeof window.showToast==='function') window.showToast('Nomor WhatsApp belum dikonfigurasi admin.');`;
 
     container.innerHTML = `

@@ -21,8 +21,10 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
+import android.webkit.WebResourceRequest;
 import com.getcapacitor.BridgeActivity;
 import com.getcapacitor.BridgeWebChromeClient;
+import com.getcapacitor.BridgeWebViewClient;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
@@ -36,12 +38,16 @@ public class MainActivity extends BridgeActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // 1. Back button handling (smooth pop modal & back navigation)
+        // 1. Hardware Back Button Handling Cerdas:
+        // Kirim sinyal ke JavaScript (handleAppBackButton) untuk menutup modal atau menampilkan dialog konfirmasi keluar.
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                if (getBridge() != null && getBridge().getWebView() != null && getBridge().getWebView().canGoBack()) {
-                    getBridge().getWebView().goBack();
+                if (getBridge() != null && getBridge().getWebView() != null) {
+                    getBridge().getWebView().evaluateJavascript(
+                        "if (typeof window.handleAppBackButton === 'function') { window.handleAppBackButton(); } else if (window.history.length > 1) { window.history.back(); } else { window.AndroidNativeApp && window.AndroidNativeApp.exitApp ? window.AndroidNativeApp.exitApp() : null; }",
+                        null
+                    );
                 } else {
                     setEnabled(false);
                     getOnBackPressedDispatcher().onBackPressed();
@@ -49,10 +55,10 @@ public class MainActivity extends BridgeActivity {
             }
         });
 
-        // 2. Request essential permissions on startup (Camera, GPS, Media)
+        // 2. Request essential permissions on startup (Camera, GPS, Media, Bluetooth)
         checkAndRequestPermissions();
 
-        // 3. Configure WebView with Geolocation, WebRTC Camera, Print & File Save
+        // 3. Configure WebView with Geolocation, WebRTC Camera, Print, File Save & External Intent Interceptor
         if (getBridge() != null && getBridge().getWebView() != null) {
             WebView webView = getBridge().getWebView();
             webView.getSettings().setGeolocationEnabled(true);
@@ -60,6 +66,35 @@ public class MainActivity extends BridgeActivity {
             webView.getSettings().setDatabaseEnabled(true);
             webView.getSettings().setAllowFileAccess(true);
             webView.getSettings().setAllowContentAccess(true);
+
+            // Intercept URL loading untuk WhatsApp, telepon, email, dan printer RawBT
+            // Mencegah WebView ter-replace saat membuka WhatsApp sehingga saat di-back pengguna tetap di Toko Putri!
+            webView.setWebViewClient(new BridgeWebViewClient(getBridge()) {
+                @Override
+                public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+                    Uri uri = request.getUrl();
+                    String url = uri.toString();
+                    if (url.startsWith("whatsapp:") || url.contains("wa.me") || url.contains("api.whatsapp.com") || url.startsWith("tel:") || url.startsWith("mailto:") || url.startsWith("rawbt:")) {
+                        try {
+                            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(intent);
+                            return true; // Cegah WebView memuat URL ini
+                        } catch (Exception e) {
+                            try {
+                                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                                browserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                startActivity(browserIntent);
+                                return true;
+                            } catch (Exception ex) {
+                                Toast.makeText(MainActivity.this, "Aplikasi tidak ditemukan di perangkat", Toast.LENGTH_SHORT).show();
+                                return true;
+                            }
+                        }
+                    }
+                    return super.shouldOverrideUrlLoading(view, request);
+                }
+            });
 
             // Enhance WebChromeClient for HTML5 Camera & Geolocation
             webView.setWebChromeClient(new BridgeWebChromeClient(getBridge()) {
@@ -76,7 +111,7 @@ public class MainActivity extends BridgeActivity {
                 }
             });
 
-            // Native JS Interface for Print & Save/Share Documents
+            // Native JS Interface for Print, Save/Share Documents, WhatsApp Safe Launch, & Exit App
             webView.addJavascriptInterface(new NativeBridgeInterface(), "AndroidNativeApp");
         }
     }
@@ -113,6 +148,45 @@ public class MainActivity extends BridgeActivity {
         @JavascriptInterface
         public boolean isNativeApp() {
             return true;
+        }
+
+        @JavascriptInterface
+        public void exitApp() {
+            runOnUiThread(() -> {
+                finishAffinity();
+            });
+        }
+
+        @JavascriptInterface
+        public void openWhatsApp(String targetUrl) {
+            runOnUiThread(() -> {
+                try {
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(targetUrl));
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                } catch (Exception e) {
+                    try {
+                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(targetUrl));
+                        browserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(browserIntent);
+                    } catch (Exception ex) {
+                        Toast.makeText(MainActivity.this, "Aplikasi WhatsApp tidak ditemukan", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+        }
+
+        @JavascriptInterface
+        public void printRawBT(String base64Data) {
+            runOnUiThread(() -> {
+                try {
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("rawbt:base64," + base64Data));
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                } catch (Exception e) {
+                    Toast.makeText(MainActivity.this, "Driver RawBT tidak ditemukan di perangkat", Toast.LENGTH_SHORT).show();
+                }
+            });
         }
 
         @JavascriptInterface

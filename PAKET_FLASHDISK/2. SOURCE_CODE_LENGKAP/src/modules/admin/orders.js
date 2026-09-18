@@ -278,7 +278,7 @@ export const openOrderDetail = (i) => {
                 <h4 class="font-bold text-slate-900 dark:text-white text-sm border-b border-slate-100 dark:border-slate-700 pb-4 mb-4 flex items-center gap-3"><div class="w-8 h-8 rounded-xl bg-blue-50 dark:bg-blue-900/30 text-blue-500 flex items-center justify-center border border-blue-100 dark:border-blue-800"><i class="fa-solid fa-user"></i></div> Data Pemesan</h4>
                 <div class="space-y-4">
                     <div class="flex justify-between items-center"><span class="text-slate-500 dark:text-slate-400 font-bold">Nama</span><span class="font-bold text-slate-900 dark:text-white text-base">${esc(o.customer?.name || '-')}</span></div>
-                    ${o.customer?.wa ? `<div class="flex justify-between items-center"><span class="text-slate-500 dark:text-slate-400 font-bold flex items-center gap-1.5"><i class="fa-brands fa-whatsapp text-green-500"></i> WhatsApp</span><a href="https://wa.me/${esc(o.customer.wa)}" target="_blank" class="font-bold text-green-600 dark:text-green-400 hover:underline">+${esc(o.customer.wa)}</a></div>` : ''}
+                    ${o.customer?.wa ? `<div class="flex justify-between items-center"><span class="text-slate-500 dark:text-slate-400 font-bold flex items-center gap-1.5"><i class="fa-brands fa-whatsapp text-green-500"></i> WhatsApp</span><a href="javascript:void(0)" onclick="if(typeof window.openWhatsApp==='function') window.openWhatsApp('${esc(o.customer.wa)}'); else window.open('https://wa.me/${esc(o.customer.wa)}', '_blank', 'noopener,noreferrer');" class="font-bold text-green-600 dark:text-green-400 hover:underline cursor-pointer">+${esc(o.customer.wa)}</a></div>` : ''}
                     ${o.customer?.wa ? `<button type="button" onclick="saveOrderCustomerToDB('${esc(o.customer.name || '')}','${esc(o.customer.wa)}')" class="w-full py-2.5 rounded-xl bg-teal-50 dark:bg-teal-900/20 border border-teal-200 dark:border-teal-800 text-teal-600 dark:text-teal-400 text-[11px] font-bold uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-teal-100 transition-all active:scale-95"><i class="fa-solid fa-address-book"></i> Simpan ke Database Pelanggan</button>` : ''}
                     <div class="border-t border-dashed border-slate-200 dark:border-slate-700 pt-4">
                         <span class="text-slate-500 dark:text-slate-400 font-bold flex items-center gap-2 mb-2.5"><i class="fa-solid fa-map-location-dot"></i> Alamat (${o.customer?.deliveryMethod === 'delivery' ? 'Dikirim' : 'Ambil di Toko'})</span>
@@ -533,7 +533,11 @@ export const konfirmasiKeWA = async (orderId) => {
             + `📦 Status: *${status}*\n\n`
             + `Kami akan segera memproses pesanan Anda. Terima kasih! 🙏`;
         
-        window.open(`https://wa.me/${waNum}?text=${encodeURIComponent(msg)}`, '_blank');
+        if (typeof window.openWhatsApp === 'function') {
+            window.openWhatsApp(waNum, msg);
+        } else {
+            window.open(`https://wa.me/${waNum}?text=${encodeURIComponent(msg)}`, '_blank', 'noopener,noreferrer');
+        }
     } catch(e) {
         hLoad();
         showToast('Gagal memuat data pesanan!');
