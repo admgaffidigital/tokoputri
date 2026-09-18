@@ -1,5 +1,34 @@
 # Dependencies
 node_modules/
 
-# Helper/fix scripts — not needed in production
+# Local Environment & Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# OS Generated Files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+desktop.ini
+
+# IDE & Editor Temporary Files
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Temporary Build / Scratch Files
+build-output/
+*.tmp
+temp/
+apk_temp/
+*.zip
+
+# Helper/scratch scripts — not needed in production
 _scripts/

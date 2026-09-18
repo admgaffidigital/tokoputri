@@ -121,30 +121,48 @@ Aturan validasi pengiriman/upload bukti transaksi diatur secara dinamis berdasar
 
 ---
 
-## 🚀 Perintah CLI Pengembangan
+## 🚀 Perintah CLI Pengembangan & Pemeliharaan
 
-Gunakan perintah Node.js berikut dalam terminal projek untuk menjalankan atau membangun website:
+Gunakan perintah Node.js berikut dalam terminal projek untuk pemeliharaan harian, pengujian, dan rilis:
 
 * **Menjalankan Dev Server (Lokal)**:
   ```bash
   npm run dev
   ```
-  *Membuka aplikasi di browser pada port `3000` (atau port default Vite).*
+  *Membuka server pengembangan lokal di browser.*
 
-* **Melakukan Build Produksi**:
+* **Melakukan Build Produksi Web**:
   ```bash
   npm run build
   ```
-  *Mengompilasi dan meminifikasi semua aset ke dalam folder `/dist` dengan hash baru untuk pencegahan caching.*
+  *Mengompilasi dan meminifikasi semua aset ke dalam folder `/dist`.*
 
-* **Menjalankan Pratinjau Hasil Build**:
+* **Sinkronisasi Total Seluruh Sistem (Rekomendasi Pemeliharaan)**:
   ```bash
-  npm run preview
+  npm run sync
   ```
-  *Menjalankan server pratinjau lokal untuk menguji performa berkas di folder `/dist` sebelum dipublish.*
+  *Perintah otomatis 1-langkah yang menjalankan build web, menyinkronkan folder `dist/` ke `1. HASIL_BUILD_SIAP_PAKE/`, menyinkronkan paket `PAKET_FLASHDISK/`, dan memperbarui platform `android/` secara instan.*
+
+* **Sinkronisasi Platform Android**:
+  ```bash
+  npm run cap:sync
+  ```
+  *Menyinkronkan konfigurasi Capacitor dan aset web terbaru ke dalam proyek Android native.*
+
+---
+
+## 📱 Platform Android Native & Alur Kompilasi Otomatis (CI/CD)
+
+Aplikasi telah dilengkapi dengan fondasi **Capacitor 8 Android Native**:
+* **File Konfigurasi**: [capacitor.config.json](file:///c:/TOKO%20PUTRI/capacitor.config.json)
+* **Paket ID**: `com.tokoputri.app`
+* **Arsitektur**: *Live Cloud Auto-Sync* yang terhubung ke server produksi Vercel (`https://tokoputri-three.vercel.app`).
+* **Kompilasi Cloud Otomatis (.github/workflows/build-apk.yml)**: Setiap kali ada kode yang di-push ke branch `main`, server GitHub Actions (Node.js 22 & Java 21) akan secara otomatis meracik file installer Android terbaru (`TokoPutri.apk`).
+* **Fitur Hardware**: Dilengkapi integrasi kamera barcode scanner, GPS geolokasi, printer kasir thermal POS (RawBT & ESC/POS), serta ekspor/bagikan dokumen PDF.
 
 ---
 
 ## 📝 Catatan Pemeliharaan Agen AI & Developer
-* Selalu jalankan `npm run build` sebelum mem-push perubahan terbaru ke GitHub untuk memastikan tidak ada kesalahan kompilasi JS/CSS.
-* Konfigurasi Firestore bersifat reaktif, pastikan data schema pada dokumen Firestore disesuaikan jika menambah/mengubah struktur properti produk (misal: penambahan properti Pre-Order `poTime`).
+1. **Satu Perintah untuk Semua**: Setiap kali selesai memodifikasi kode atau modul, cukup jalankan `npm run sync` agar seluruh folder distribusi, flashdisk, dan Android langsung tersinkronisasi secara otomatis.
+2. **Kompilasi Bersih**: Selalu pastikan `npm run build` berjalan tanpa eror sebelum melakukan git push.
+3. **Konfigurasi Database Multi-Toko**: Penggantian kredensial Firebase dapat dilakukan langsung melalui `public/config.js` tanpa harus mengompilasi ulang kode sumber.
