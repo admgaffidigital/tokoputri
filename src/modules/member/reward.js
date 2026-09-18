@@ -181,31 +181,29 @@ export const renderDigitalMemberCard = (mData) => {
 
     return `
     <div class="member-card-scene w-full max-w-[390px] mx-auto select-none my-1">
-        <div id="member-card-inner" class="member-card-inner relative w-full aspect-[1.586/1] cursor-pointer shadow-2xl rounded-2xl sm:rounded-3xl" onclick="flipMemberCard()" title="Klik untuk membalik kartu">
+        <div id="member-card-inner" class="member-card-inner relative w-full aspect-[1.586/1] cursor-pointer rounded-2xl sm:rounded-3xl border border-black/10 dark:border-white/10" onclick="flipMemberCard()" title="Klik untuk membalik kartu">
             
             <!-- ================= SISI DEPAN (FRONT CARD) ================= -->
-            <div id="member-card-front-export" class="member-card-front absolute inset-0 w-full h-full rounded-2xl sm:rounded-3xl overflow-hidden p-4 sm:p-5 flex flex-col justify-between text-white border border-white/20 shadow-2xl" style="background: ${tier.cardBg};">
+            <div id="member-card-front-export" class="member-card-front rounded-2xl sm:rounded-3xl overflow-hidden p-4 sm:p-5 flex flex-col justify-between text-white border border-white/20" style="background: ${tier.cardBg};">
                 
-                <!-- Ambient luxury light reflections -->
-                <div class="absolute -right-12 -top-12 w-36 h-36 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
-                <div class="absolute -left-10 -bottom-10 w-32 h-32 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
-                <div class="absolute inset-0 bg-gradient-to-tr from-black/30 via-transparent to-white/15 pointer-events-none"></div>
+                <!-- Ambient luxury light reflections (clean subtle overlay, zero blur spilling) -->
+                <div class="absolute inset-0 bg-gradient-to-tr from-black/25 via-transparent to-white/15 pointer-events-none"></div>
 
                 <!-- Header Kartu: Logo Toko, Nama Toko, & Gelombang Contactless -->
                 <div class="relative z-10 flex items-center justify-between">
                     <div class="flex items-center gap-2.5 min-w-0">
-                        <div class="w-8 h-8 rounded-xl bg-white/95 p-1 flex items-center justify-center shadow-md shrink-0 border border-white/40">
+                        <div class="w-8 h-8 rounded-xl bg-white/95 p-1 flex items-center justify-center shadow-2xs shrink-0 border border-white/40">
                             <img src="${esc(logoUrl)}" alt="Logo" class="w-full h-full object-contain" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
                             <i class="fa-solid fa-store text-slate-800 text-xs hidden"></i>
                         </div>
                         <div class="min-w-0">
-                            <h4 class="text-[11px] sm:text-xs font-black tracking-wider text-white uppercase truncate drop-shadow-sm">${esc(storeName)}</h4>
+                            <h4 class="text-[11px] sm:text-xs font-black tracking-wider text-white uppercase truncate">${esc(storeName)}</h4>
                             <p class="text-[8px] sm:text-[9px] font-bold tracking-[0.2em] text-white/80 uppercase">VIP Loyalty Pass</p>
                         </div>
                     </div>
                     <!-- Contactless NFC & Tier Pill -->
                     <div class="flex items-center gap-2 shrink-0">
-                        <span class="text-[8px] sm:text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full ${tier.accentBg} ${tier.accentText} border ${tier.accentBorder} shadow-xs">
+                        <span class="text-[8px] sm:text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full ${tier.accentBg} ${tier.accentText} border ${tier.accentBorder}">
                             ${tier.badge}
                         </span>
                         <div class="opacity-80 flex items-center" title="Contactless Member">
@@ -222,7 +220,7 @@ export const renderDigitalMemberCard = (mData) => {
                 <div class="relative z-10 flex items-center justify-between my-auto py-1">
                     <!-- EMV Smart Chip (SVG) -->
                     <div class="flex items-center gap-3">
-                        <svg class="w-11 h-8 rounded-md shadow-sm border border-amber-300/60 bg-gradient-to-br from-amber-200 via-amber-400 to-yellow-600 p-0.5 shrink-0" viewBox="0 0 50 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <svg class="w-11 h-8 rounded-md border border-amber-300/60 bg-gradient-to-br from-amber-200 via-amber-400 to-yellow-600 p-0.5 shrink-0" viewBox="0 0 50 40" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <rect x="1" y="1" width="48" height="38" rx="5" fill="url(#chipGrad)" stroke="#b45309" stroke-width="0.8"/>
                             <path d="M1 13H18M1 27H18M32 13H49M32 27H49M18 1V39M32 1V39M18 20H32" stroke="#78350f" stroke-width="1" stroke-linecap="round"/>
                             <rect x="21" y="14" width="8" height="12" rx="2" fill="#d97706" stroke="#78350f" stroke-width="0.8"/>
@@ -241,7 +239,7 @@ export const renderDigitalMemberCard = (mData) => {
                         <p class="text-[8px] sm:text-[9px] font-bold tracking-widest text-white/70 uppercase">Saldo Poin</p>
                         <div class="flex items-center justify-end gap-1.5 mt-0.5">
                             <i class="fa-solid fa-star text-amber-300 text-xs sm:text-sm animate-pulse"></i>
-                            <span class="text-base sm:text-xl font-black tracking-tight text-white drop-shadow-md">${pts}</span>
+                            <span class="text-base sm:text-xl font-black tracking-tight text-white">${pts}</span>
                             <span class="text-[9px] font-bold text-white/80">PTS</span>
                         </div>
                     </div>
@@ -249,11 +247,11 @@ export const renderDigitalMemberCard = (mData) => {
 
                 <!-- Bagian Bawah: Nomor Kartu & Nama Pelanggan Embossed -->
                 <div class="relative z-10">
-                    <p class="text-[11px] sm:text-[13px] embossed-text text-white/95 font-mono tracking-[0.18em] mb-1.5 drop-shadow-md">${esc(cardNo)}</p>
+                    <p class="text-[11px] sm:text-[13px] embossed-text text-white/95 font-mono tracking-[0.18em] mb-1.5">${esc(cardNo)}</p>
                     <div class="flex items-end justify-between gap-2">
                         <div class="min-w-0 flex-1">
                             <p class="text-[7px] sm:text-[8px] font-bold tracking-widest text-white/70 uppercase leading-none mb-0.5">Nama Pelanggan</p>
-                            <p class="text-[11px] sm:text-[13px] font-bold text-white tracking-wider truncate uppercase drop-shadow-sm">${esc(custName)}</p>
+                            <p class="text-[11px] sm:text-[13px] font-bold text-white tracking-wider truncate uppercase">${esc(custName)}</p>
                         </div>
                         <div class="text-right shrink-0">
                             <p class="text-[7px] sm:text-[8px] font-bold tracking-widest text-white/70 uppercase leading-none mb-0.5">Status Member</p>
@@ -271,21 +269,21 @@ export const renderDigitalMemberCard = (mData) => {
             </div>
 
             <!-- ================= SISI BELAKANG (BACK CARD) ================= -->
-            <div class="member-card-back absolute inset-0 w-full h-full rounded-2xl sm:rounded-3xl overflow-hidden flex flex-col justify-between text-slate-800 border border-slate-700/60 shadow-2xl bg-[#0f172a]">
+            <div class="member-card-back rounded-2xl sm:rounded-3xl overflow-hidden flex flex-col justify-between text-slate-800 border border-slate-700/60 bg-[#0f172a]">
                 
                 <!-- Pita Magnetik Hitam (Magnetic Stripe) -->
-                <div class="w-full h-8 sm:h-10 bg-slate-950 mt-4 border-y border-white/10 relative shadow-inner">
+                <div class="w-full h-8 sm:h-10 bg-slate-950 mt-4 border-y border-white/10 relative">
                     <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent"></div>
                 </div>
 
                 <!-- Signature Strip & Keamanan -->
                 <div class="px-4 sm:px-5 py-1">
                     <div class="flex items-center gap-2">
-                        <div class="flex-1 h-6 bg-white/90 rounded border border-slate-300 px-2 flex items-center justify-between shadow-inner">
+                        <div class="flex-1 h-6 bg-white/90 rounded border border-slate-300 px-2 flex items-center justify-between">
                             <span class="text-[9px] font-mono font-bold text-slate-500 italic truncate">${esc(custName)}</span>
                             <span class="text-[8px] font-mono font-black text-slate-800 tracking-widest">VERIFIED</span>
                         </div>
-                        <div class="w-10 h-6 bg-amber-400 text-slate-950 font-black text-[9px] rounded flex items-center justify-center tracking-widest shadow-xs">
+                        <div class="w-10 h-6 bg-amber-400 text-slate-950 font-black text-[9px] rounded flex items-center justify-center tracking-widest">
                             VIP
                         </div>
                     </div>
@@ -539,13 +537,13 @@ export const openMemberModal = () => {
     if (!m) {
         m = document.createElement('div');
         m.id = 'member-modal';
-        m.className = 'fixed inset-0 z-[115] bg-slate-900/80 flex items-end sm:items-center justify-center p-0 sm:p-5 backdrop-blur-xs';
+        m.className = 'fixed inset-0 z-[115] bg-slate-900/60 flex items-end sm:items-center justify-center p-0 sm:p-5 backdrop-blur-xs';
         m.onclick = (e) => { if (e.target === m) closeMemberModal(); };
         document.body.appendChild(m);
     }
     const isAlreadyOpen = m.style.display !== 'none' && m.style.opacity === '1';
     m.innerHTML = `
-        <div class="bg-white dark:bg-slate-900 w-full max-w-lg rounded-t-3xl sm:rounded-3xl max-h-[90vh] flex flex-col shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden">
+        <div class="bg-white dark:bg-slate-900 w-full max-w-lg rounded-t-3xl sm:rounded-3xl max-h-[90vh] flex flex-col shadow-xl border border-slate-200 dark:border-slate-800 overflow-hidden">
             <!-- Header Modal -->
             <div class="p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center shrink-0 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md">
                 <div class="flex items-center gap-2.5">
