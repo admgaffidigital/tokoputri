@@ -36,10 +36,8 @@ service cloud.firestore {
       match /customers/{phone} {
         allow get: if true;
         allow list: if isAdmin();
-        allow create, delete: if isAdmin();
-        allow update: if isAdmin() ||
-          (resource != null &&
-           request.resource.data.diff(resource.data).affectedKeys().hasOnly(['points']));
+        allow create, update: if true;
+        allow delete: if isAdmin();
       }
 
       // Program Hadiah / Rewards (katalog publik, stok berkurang saat klaim)

@@ -15,6 +15,88 @@ const MEMBER_CACHE_TTL = 3 * 60 * 1000; // 3 menit cache poin/member
 const OFFICIAL_LOGO_URL = 'https://lh3.googleusercontent.com/d/1KHwsV5sK6aAH3-eP_vTJA4tE5MyRukLo';
 
 /**
+ * Hapus cache member agar data poin selalu terbaru setelah transaksi
+ */
+export const invalidateMemberCache = (phone) => {
+    if (!phone) {
+        memberCache.clear();
+        return;
+    }
+    const clean = phone.toString().replace(/\D/g, '');
+    let w1 = clean;
+    let w2 = clean.startsWith('0') ? '62' + clean.substring(1) : (clean.startsWith('62') ? clean : '62' + clean);
+    let w3 = clean.startsWith('62') ? '0' + clean.substring(2) : clean;
+    memberCache.delete(clean);
+    memberCache.delete(w1);
+    memberCache.delete(w2);
+    memberCache.delete(w3);
+};
+
+/**
+ * Rekonsiliasi poin otomatis dari riwayat pesanan lokal (myOrders) jika data Firestore sempat tertunda / 0
+ */
+export const reconcilePointsFromOrders = async (phone, custName = '') => {
+    try {
+        let clean = (phone || '').toString().replace(/\D/g, '');
+        if (clean.startsWith('0')) clean = '62' + clean.substring(1);
+        else if (!clean.startsWith('62')) clean = '62' + clean;
+        if (!clean || clean.length < 9) return null;
+
+        let orders = [];
+        try {
+            const rawOrders = localStorage.getItem('freshmart_my_orders');
+            if (rawOrders) orders = JSON.parse(rawOrders) || [];
+        } catch(e) {}
+
+        if (!orders.length) return null;
+
+        // Cari poin tertinggi / terbaru dari riwayat pesanan
+        let calculatedPoints = 0;
+        const latestOrderWithPoints = orders.find(o => o.finalMemberPoints !== undefined && o.finalMemberPoints !== null);
+        if (latestOrderWithPoints) {
+            calculatedPoints = Math.max(0, parseFloat(latestOrderWithPoints.finalMemberPoints) || 0);
+        } else {
+            calculatedPoints = orders.reduce((acc, o) => acc + (parseFloat(o.pointsEarned) || 0), 0);
+        }
+
+        if (calculatedPoints <= 0) return null;
+
+        const custRef = db.collection("freshmart").doc("cms_data").collection("customers").doc(clean);
+        const nameToUse = custName || (currentMember && currentMember.name) || 'Pelanggan Setia';
+        
+        const updateData = {
+            id: clean,
+            phone: clean,
+            name: nameToUse,
+            points: calculatedPoints,
+            updatedAt: new Date().toISOString(),
+            lastOrderAt: new Date().toISOString()
+        };
+
+        try {
+            await custRef.set(updateData, { merge: true });
+        } catch (e) {
+            console.warn('[reconcilePointsFromOrders] Firestore set error:', e);
+        }
+        
+        setCurrentMember(updateData);
+        try {
+            localStorage.setItem('freshmart_current_member', JSON.stringify(updateData));
+            localStorage.setItem('freshmart_member_wa', clean);
+        } catch(e) {}
+        memberCache.set(clean, { data: updateData, timestamp: Date.now() });
+
+        const mBody = document.getElementById('member-modal-body');
+        if (mBody) rMemberModalBody();
+
+        return updateData;
+    } catch(err) {
+        console.warn('[reconcilePointsFromOrders] Error:', err);
+        return null;
+    }
+};
+
+/**
  * Kalkulasi tingkatan (Tier) member berdasarkan saldo poin
  */
 export const getMemberTier = (pts = 0) => {
@@ -514,6 +596,13 @@ export const checkMemberStatus = () => {
                 setCurrentMember(mData);
                 renderCheckoutMiniCard(mData);
             } else {
+                const rec = await reconcilePointsFromOrders(waNum, getV('cust-name'));
+                if (rec) {
+                    memberCache.set(waNum, { data: rec, timestamp: Date.now() });
+                    setCurrentMember(rec);
+                    renderCheckoutMiniCard(rec);
+                    return;
+                }
                 memberCache.set(waNum, { data: null, timestamp: Date.now() });
                 setCurrentMember(null); 
                 setSelectedReward(null); 
@@ -530,6 +619,47 @@ export const checkMemberStatus = () => {
  * Tampilkan modal data member dan kartu loyalitas
  */
 export const openMemberModal = () => {
+    // 1. Pulihkan sesi member dari localStorage jika belum ada di memory
+    if (!currentMember) {
+        try {
+            const savedMember = localStorage.getItem('freshmart_current_member');
+            if (savedMember) {
+                const parsed = JSON.parse(savedMember);
+                if (parsed && (parsed.id || parsed.phone || parsed.name)) {
+                    setCurrentMember(parsed);
+                }
+            }
+        } catch (e) {}
+    }
+
+    // 2. Refresh poin terbaru secara live dari Firestore & lakukan rekonsiliasi jika perlu
+    const targetWa = currentMember?.phone || currentMember?.id || localStorage.getItem('freshmart_member_wa');
+    if (targetWa) {
+        let clean = targetWa.toString().replace(/\D/g, '');
+        if (clean.startsWith('0')) clean = '62' + clean.substring(1);
+        else if (!clean.startsWith('62')) clean = '62' + clean;
+
+        db.collection("freshmart").doc("cms_data").collection("customers").doc(clean).get().then(async (doc) => {
+            if (doc.exists) {
+                let mData = doc.data();
+                if ((parseFloat(mData.points) || 0) === 0) {
+                    const rec = await reconcilePointsFromOrders(clean, mData.name);
+                    if (rec) mData = rec;
+                }
+                memberCache.set(clean, { data: mData, timestamp: Date.now() });
+                setCurrentMember(mData);
+                try {
+                    localStorage.setItem('freshmart_current_member', JSON.stringify(mData));
+                    localStorage.setItem('freshmart_member_wa', clean);
+                } catch(e) {}
+                const mBody = document.getElementById('member-modal-body');
+                if (mBody) rMemberModalBody();
+            } else {
+                await reconcilePointsFromOrders(clean, currentMember?.name);
+            }
+        }).catch(() => {});
+    }
+
     if (typeof window.attachRewardsRealtime === 'function' && !window.unsubRewardsRealtime) {
         window.attachRewardsRealtime();
     }
@@ -621,7 +751,7 @@ export const rMemberModalBody = () => {
                     </button>
                 </div>
                 <div class="text-center mt-2">
-                    <button type="button" onclick="setCurrentMember(null); rMemberModalBody();" class="text-[10px] text-slate-400 hover:text-[var(--color-primary)] font-semibold transition-colors cursor-pointer">
+                    <button type="button" onclick="setCurrentMember(null); try{localStorage.removeItem('freshmart_current_member');localStorage.removeItem('freshmart_member_wa');}catch(e){} rMemberModalBody();" class="text-[10px] text-slate-400 hover:text-[var(--color-primary)] font-semibold transition-colors cursor-pointer">
                         <i class="fa-solid fa-user-pen mr-1"></i>Bukan Anda? Cek nomor WhatsApp lain
                     </button>
                 </div>
@@ -761,14 +891,30 @@ export const lookupMemberPoints = async () => {
     try {
         const doc = await db.collection("freshmart").doc("cms_data").collection("customers").doc(rawVal).get();
         if (doc.exists) {
-            const mData = doc.data();
+            let mData = doc.data();
+            if ((parseFloat(mData.points) || 0) === 0) {
+                const rec = await reconcilePointsFromOrders(rawVal, mData.name);
+                if (rec) mData = rec;
+            }
             memberCache.set(rawVal, { data: mData, timestamp: Date.now() });
             setCurrentMember(mData);
+            try {
+                localStorage.setItem('freshmart_current_member', JSON.stringify(mData));
+                localStorage.setItem('freshmart_member_wa', rawVal);
+            } catch(e) {}
             rMemberModalBody();
             if (typeof window.showToast === 'function') {
                 window.showToast(`Selamat datang kembali, ${mData.name || 'Pelanggan'}! 💳`);
             }
         } else {
+            const reconciled = await reconcilePointsFromOrders(rawVal);
+            if (reconciled) {
+                rMemberModalBody();
+                if (typeof window.showToast === 'function') {
+                    window.showToast(`Kartu Member berhasil diaktifkan dengan ${reconciled.points} poin! 🎉`);
+                }
+                return;
+            }
             resultDiv.className = 'text-xs font-bold text-amber-700 dark:text-amber-300 p-3 bg-amber-50 dark:bg-amber-900/20 rounded-xl leading-relaxed border border-amber-200 dark:border-amber-800/40';
             resultDiv.innerHTML = `<i class="fa-solid fa-circle-info mr-1 text-amber-500"></i> Nomor <b>+${esc(rawVal)}</b> belum terdaftar. Lakukan pesanan pertama Anda untuk otomatis mengumpulkan poin dan mendapatkan Kartu Member VIP!`;
         }
@@ -838,4 +984,6 @@ window.getMemberTier = getMemberTier;
 window.formatMemberCardNumber = formatMemberCardNumber;
 window.generateBarcodeSVG = generateBarcodeSVG;
 window.setCurrentMember = setCurrentMember;
+window.invalidateMemberCache = invalidateMemberCache;
+window.reconcilePointsFromOrders = reconcilePointsFromOrders;
 
