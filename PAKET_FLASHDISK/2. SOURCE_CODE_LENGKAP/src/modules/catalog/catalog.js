@@ -20,7 +20,8 @@ export const rCat = () => {
     const isFiltered = (aCat !== 'Semua Produk' || aBrand !== 'Semua Merek' || sQ !== '' || aSubCat !== 'Semua Jenis');
     
     toggleCls('dynamic-banners-container', 'hidden', isFiltered);
-    toggleCls('reward-catalog-container', 'hidden', isFiltered);
+    const isShowRewards = (appData.store.showRewardCatalog !== false && appData.store.showRewardCatalog !== 'false') && (appData.rewards || []).some(r => r.isActive !== 'false' && r.isActive !== false);
+    toggleCls('reward-catalog-container', 'hidden', isFiltered || !isShowRewards);
     toggleCls('dynamic-vouchers-container', 'hidden', isFiltered);
     toggleCls('dynamic-categories-container', 'hidden', isFiltered);
     toggleCls('dynamic-brands-container', 'hidden', isFiltered);

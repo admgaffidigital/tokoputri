@@ -264,6 +264,8 @@ window.submitAdminForm = async () => {
             await custCol.doc(d.phone).set(d, { merge: true });
         } else if (curTab === 'rewards') {
             await _db.collection("freshmart").doc("cms_data").collection("rewards").doc(d.id.toString()).set(d);
+            try { localStorage.setItem('freshmart_rewards', JSON.stringify(appData.rewards)); } catch(e) {}
+            if (typeof window.renderRewardCatalog === 'function') window.renderRewardCatalog();
         } else {
             await _save([curTab]);
         }
@@ -298,6 +300,8 @@ window.oADel = async (t, id) => {
                 await _db.collection("freshmart").doc("cms_data").collection("customers").doc(phoneKey).delete();
             } else if (t === 'rewards') {
                 await _db.collection("freshmart").doc("cms_data").collection("rewards").doc(id.toString()).delete();
+                try { localStorage.setItem('freshmart_rewards', JSON.stringify(appData.rewards)); } catch(e) {}
+                if (typeof window.renderRewardCatalog === 'function') window.renderRewardCatalog();
             } else { await _save([t]); }
             window.rAdmItms?.(t); showToast("Berhasil Dihapus!");
         } catch(e) { showToast("Gagal menghapus: " + (e.message || '')); }

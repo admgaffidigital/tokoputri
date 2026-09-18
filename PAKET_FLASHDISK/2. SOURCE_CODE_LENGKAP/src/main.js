@@ -247,8 +247,10 @@ window.addEventListener('DOMContentLoaded', async () => {
     // 2. Listener sub-koleksi products — inti perbaikan bug sinkronisasi multi-perangkat.
     //    Setiap perubahan produk (aktif/nonaktif/stok) langsung diterima semua perangkat.
     attachRealtimeProductsSync();
+    // 3. Listener sub-koleksi rewards — sinkronisasi katalog hadiah realtime multi-perangkat (HP, Desktop, Pelanggan)
+    attachRewardsRealtime();
 
-    // Expose attachRewardsRealtime ke window untuk lazy-load saat katalog hadiah dibuka
+    // Expose attachRewardsRealtime ke window untuk kompatibilitas
     window.attachRewardsRealtime = attachRewardsRealtime;
 
 // --- FITUR AUTO-LOGIN (Sesi Permanen Firebase) ---

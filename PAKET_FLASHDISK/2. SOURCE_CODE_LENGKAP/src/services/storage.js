@@ -32,6 +32,8 @@ export const loadAppData = async () => {
         appData.brands = appData.brands || [];
         appData.vouchers = appData.vouchers || [];
         appData.changelog = appData.changelog || [];
+        appData.rewards = appData.rewards || [];
+        if(appData.rewards) appData.rewards.forEach(r => { if(r.img) r.img = fixD(r.img); });
         appData.products.forEach(p => { 
             if(p.img) p.img = fixD(p.img); 
             if(p.variants) p.variants.forEach(v => { if(v.img) v.img = fixD(v.img); }); 
@@ -131,6 +133,15 @@ export const loadAppData = async () => {
                 appData.products = pSnap.docs.map(doc => doc.data()).sort((a,b) => (b.id||0) - (a.id||0));
                 ssL('freshmart_products', JSON.stringify(appData.products));
                 ssL('freshmart_last_update', serverUpdate.toString());
+
+                // Fetch data katalog hadiah awal untuk browser/perangkat baru
+                try {
+                    const rSnap = await db.collection("freshmart").doc("cms_data").collection("rewards").get();
+                    appData.rewards = rSnap.docs.map(doc => doc.data()).sort((a,b) => (b.id||0) - (a.id||0));
+                    ssL('freshmart_rewards', JSON.stringify(appData.rewards));
+                } catch(re) {
+                    console.warn('Initial rewards fetch non-blocking error:', re);
+                }
 
                 prepareAppData();
                 if (appData.store) {
@@ -582,7 +593,8 @@ export const attachRewardsRealtime = () => {
             appData.rewards.forEach(r => { if (r.img) r.img = fixD(r.img); });
             ssL('freshmart_rewards', JSON.stringify(appData.rewards));
             // Kalau admin sedang buka tab Hadiah, atau pelanggan sedang buka modal Data Member, segarkan tampilannya
-            if (window.isAdm && window.cTab === 'rewards' && typeof window.rAdmItms === 'function') window.rAdmItms('rewards');
+            const isAdminActive = window.isAdm || window.__localIsAdm;
+            if (isAdminActive && window.cTab === 'rewards' && typeof window.rAdmItms === 'function') window.rAdmItms('rewards');
             if (typeof window.renderRewardCatalog === 'function') window.renderRewardCatalog();
             const memberModal = document.getElementById('member-modal');
             if (memberModal && memberModal.style.display === 'flex' && currentMember && typeof window.rMemberModalBody === 'function') window.rMemberModalBody();

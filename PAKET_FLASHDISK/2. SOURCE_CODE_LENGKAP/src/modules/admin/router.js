@@ -100,6 +100,9 @@ export const openAdminTab = (t, fH = false) => {
         if (typeof window.rAdmFAQ === 'function') window.rAdmFAQ();
     } else if (t === 'changelog') {
         if (typeof window.rAdmChangelog === 'function') window.rAdmChangelog();
+    } else if (t === 'rewards') {
+        if (typeof window.attachRewardsRealtime === 'function') window.attachRewardsRealtime();
+        if (typeof window.rAdmL === 'function') window.rAdmL('rewards');
     } else {
         if (typeof window.rAdmL === 'function') window.rAdmL(t);
     }

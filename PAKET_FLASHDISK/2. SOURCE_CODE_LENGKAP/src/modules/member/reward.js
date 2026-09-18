@@ -21,16 +21,18 @@ export const renderRewardCatalog = () => {
     if (!rcC) return;
     
     const isShow = appData.store.showRewardCatalog !== false && appData.store.showRewardCatalog !== 'false';
+    
+    // Pastikan listener hadiah realtime selalu terpasang jika katalog diaktifkan admin
+    if (isShow && typeof window.attachRewardsRealtime === 'function' && !window.unsubRewardsRealtime) {
+        window.attachRewardsRealtime();
+    }
+
     const activeRewards = (appData.rewards || []).filter(r => r.isActive !== 'false' && r.isActive !== false);
     
     if (!isShow || activeRewards.length === 0) {
         rcC.classList.add('hidden');
+        rcC.innerHTML = '';
         return;
-    }
-
-    // Lazy attach realtime listener hadiah hanya jika katalog aktif & ditampilkan
-    if (typeof window.attachRewardsRealtime === 'function' && !window.unsubRewardsRealtime) {
-        window.attachRewardsRealtime();
     }
     
     rcC.classList.remove('hidden');
@@ -41,6 +43,9 @@ export const renderRewardCatalog = () => {
                 <i class="fa-solid fa-gift text-xs"></i>
             </div> KATALOG HADIAH POIN PELANGGAN
         </h3>
+        <button type="button" onclick="if(typeof window.openMemberModal==='function') window.openMemberModal(); else if(typeof window.showToast==='function') window.showToast('Gunakan poin Anda untuk menukar hadiah menarik!');" class="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg border border-[var(--color-primary)]/30 text-[var(--color-primary)] hover:bg-[var(--color-primary)] hover:text-white transition-all active:scale-95 flex items-center gap-1 cursor-pointer">
+            Lihat Semua <i class="fa-solid fa-chevron-right text-[8px]"></i>
+        </button>
     </div>
     <div class="flex gap-2.5 sm:gap-3 overflow-x-auto hide-scrollbar snap-x pb-3 pt-1">
         ${activeRewards.map((r) => {
