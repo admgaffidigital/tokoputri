@@ -279,6 +279,12 @@ export const closeDocPreviewModal = (fH = false) => {
 
 export const printDocA4 = () => {
     const p = el('doc-paper-content') ? el('doc-paper-content').innerHTML : '';
+    if (window.AndroidNativeApp && typeof window.AndroidNativeApp.print === 'function') {
+        const t = el('thermal-print-section');
+        if (t) t.innerHTML = p;
+        window.AndroidNativeApp.print();
+        return;
+    }
     const printWindow = window.open('', '_blank');
     
     if (!printWindow) {
@@ -392,10 +398,15 @@ export const exportDocFile = async (mode) => {
         const fileName = `${currentDocType.toUpperCase()}_${cVOrd}`;
         
         if (mode === 'image') {
-            const link = document.createElement('a');
-            link.download = `${fileName}.png`;
-            link.href = canvas.toDataURL('image/png', 1.0);
-            link.click();
+            const dataUrl = canvas.toDataURL('image/png', 1.0);
+            if (window.AndroidNativeApp && typeof window.AndroidNativeApp.saveOrShareFile === 'function') {
+                window.AndroidNativeApp.saveOrShareFile(dataUrl, `${fileName}.png`, 'image/png');
+            } else {
+                const link = document.createElement('a');
+                link.download = `${fileName}.png`;
+                link.href = dataUrl;
+                link.click();
+            }
             if (typeof window.showToast === 'function') window.showToast("Gambar Berhasil Disimpan!");
         } else {
             const imgData = canvas.toDataURL('image/jpeg', 1.0);
@@ -418,7 +429,11 @@ export const exportDocFile = async (mode) => {
             });
             
             pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
-            pdf.save(`${fileName}.pdf`);
+            if (window.AndroidNativeApp && typeof window.AndroidNativeApp.saveOrShareFile === 'function') {
+                window.AndroidNativeApp.saveOrShareFile(pdf.output('datauristring'), `${fileName}.pdf`, 'application/pdf');
+            } else {
+                pdf.save(`${fileName}.pdf`);
+            }
             if (typeof window.showToast === 'function') window.showToast("File PDF Berhasil Disimpan!");
         }
     } catch (err) {

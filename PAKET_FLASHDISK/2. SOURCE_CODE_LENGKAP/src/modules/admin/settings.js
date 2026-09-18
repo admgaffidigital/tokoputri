@@ -1191,14 +1191,21 @@ export const detectAdminGPS = () => {
  * Backup seluruh data JSON toko ke file lokal
  */
 export const backupData = () => { 
-    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appData, null, 2));
-    const a = document.createElement('a'); 
-    a.href = dataStr; 
-    a.download = `backup_freshmart_${new Date().toISOString().slice(0, 10)}.json`; 
-    document.body.appendChild(a); 
-    a.click(); 
-    a.remove(); 
-    showToast("Backup diunduh!"); 
+    const jsonStr = JSON.stringify(appData, null, 2);
+    const fileName = `backup_tokoputri_${new Date().toISOString().slice(0, 10)}.json`; 
+    if (window.AndroidNativeApp && typeof window.AndroidNativeApp.saveOrShareFile === 'function') {
+        const base64Str = btoa(unescape(encodeURIComponent(jsonStr)));
+        window.AndroidNativeApp.saveOrShareFile(base64Str, fileName, 'application/json');
+    } else {
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(jsonStr);
+        const a = document.createElement('a'); 
+        a.href = dataStr; 
+        a.download = fileName; 
+        document.body.appendChild(a); 
+        a.click(); 
+        a.remove(); 
+    }
+    showToast("Backup berhasil disimpan!"); 
 };
 
 /**

@@ -72,7 +72,13 @@ export const exportOrdersToExcel = async () => {
     worksheet['!cols'] = wscols;
 
     const safeDateString = new Date().toISOString().split('T')[0];
-    XLSX.writeFile(workbook, `Laporan_Pesanan_${safeDateString}.xlsx`);
+    const fileName = `Laporan_Pesanan_${safeDateString}.xlsx`;
+    if (window.AndroidNativeApp && typeof window.AndroidNativeApp.saveOrShareFile === 'function') {
+        const wbout = XLSX.write(workbook, { bookType: 'xlsx', type: 'base64' });
+        window.AndroidNativeApp.saveOrShareFile(wbout, fileName, 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    } else {
+        XLSX.writeFile(workbook, fileName);
+    }
     showToast("Laporan Excel (.xlsx) berhasil diunduh!");
 };
 
