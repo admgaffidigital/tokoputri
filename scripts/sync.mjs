@@ -51,8 +51,22 @@ if (fs.existsSync('PAKET_FLASHDISK/2. SOURCE_CODE_LENGKAP')) {
   }
 }
 
-// 4. Capacitor sync for Android
-console.log('📱 [4/4] Menyinkronkan platform Android (Capacitor Sync)...');
+// 4. Sinkronisasi versi Android di build.gradle
+console.log('🤖 [4/5] Menyinkronkan versi Android build.gradle dari package.json...');
+const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+const gradlePath = 'android/app/build.gradle';
+if (fs.existsSync(gradlePath)) {
+  let gradleContent = fs.readFileSync(gradlePath, 'utf8');
+  gradleContent = gradleContent.replace(/versionName\s+"[^"]+"/, `versionName "${pkg.version}"`);
+  const parts = pkg.version.split('.').map(n => parseInt(n, 10) || 0);
+  const vCode = (parts[0] || 1) * 10000 + (parts[1] || 0) * 100 + (parts[2] || 0);
+  gradleContent = gradleContent.replace(/versionCode\s+\d+/, `versionCode ${vCode}`);
+  fs.writeFileSync(gradlePath, gradleContent, 'utf8');
+  console.log(`   -> Android Version Name diset ke: ${pkg.version} (versionCode: ${vCode})`);
+}
+
+// 5. Capacitor sync for Android
+console.log('📱 [5/5] Menyinkronkan platform Android (Capacitor Sync)...');
 execSync('npx cap sync android', { stdio: 'inherit' });
 
 console.log('\n======================================================');

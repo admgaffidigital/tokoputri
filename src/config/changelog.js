@@ -423,6 +423,32 @@ export const DEFAULT_CHANGELOG = [
 ];
 
 /**
+ * Mengurai string versi (misal 'v1.8.5' atau '1.8.5') menjadi tuple [major, minor, patch]
+ * @param {String} vStr 
+ * @returns {Array<number>}
+ */
+export const parseSemver = (vStr) => {
+    if (!vStr) return [0, 0, 0];
+    const match = String(vStr).match(/(\d+)\.(\d+)\.(\d+)/);
+    if (!match) return [0, 0, 0];
+    return [parseInt(match[1], 10), parseInt(match[2], 10), parseInt(match[3], 10)];
+};
+
+/**
+ * Pembanding semver descending untuk sort (versi lebih tinggi di depan)
+ * @param {String} vA 
+ * @param {String} vB 
+ * @returns {number}
+ */
+export const compareSemverDesc = (vA, vB) => {
+    const [majA, minA, patA] = parseSemver(vA);
+    const [majB, minB, patB] = parseSemver(vB);
+    if (majB !== majA) return majB - majA;
+    if (minB !== minA) return minB - minA;
+    return patB - patA;
+};
+
+/**
  * Menggabungkan changelog bawaan dengan changelog kustom dari Firestore
  * @param {Object} appData 
  * @returns {Array} Daftar log terurut dari versi terbaru
@@ -447,20 +473,39 @@ export const getCombinedChangelog = (appData) => {
     
     const combined = [...activeDynamicLogs, ...staticFiltered];
     
-    // Urutkan berdasarkan tanggal (terbaru di atas)
+    // Urutkan berdasarkan tanggal (terbaru di atas).
+    // Jika tanggal sama, urutkan berdasarkan semver versi (versi lebih tinggi selalu di atas).
     return combined.sort((a, b) => {
         const da = new Date(a.date || '2026-01-01').getTime();
         const db = new Date(b.date || '2026-01-01').getTime();
-        return db - da;
+        if (db !== da) return db - da;
+        return compareSemverDesc(a.version, b.version);
     });
 };
 
 /**
  * Mendapatkan nomor versi terbaru yang aktif
+ * Menjamin tidak pernah tertahan pada versi lama meskipun ada log dinamis atau tanggal kembar
  * @param {Object} appData 
- * @returns {String} Contoh: 'v1.2.0'
+ * @returns {String} Contoh: 'v1.8.5'
  */
 export const getLatestVersion = (appData) => {
+    const defaultLatest = DEFAULT_CHANGELOG[0]?.version || 'v1.8.5';
     const logs = getCombinedChangelog(appData);
-    return logs.length > 0 ? (logs[0].version || 'v1.0.0') : 'v1.0.0';
+    if (!logs || logs.length === 0) return defaultLatest;
+    
+    // Cari versi tertinggi secara semver di antara seluruh log aktif
+    let highest = logs[0].version || defaultLatest;
+    for (const log of logs) {
+        if (log.version && compareSemverDesc(log.version, highest) < 0) {
+            highest = log.version;
+        }
+    }
+    
+    // Pastikan versi yang tampil minimal setara dengan rilis bawaan terbaru
+    if (compareSemverDesc(defaultLatest, highest) < 0) {
+        highest = defaultLatest;
+    }
+    return highest;
 };
+
