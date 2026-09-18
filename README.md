@@ -119,6 +119,17 @@ Aturan validasi pengiriman/upload bukti transaksi diatur secara dinamis berdasar
 * **Biaya Pengiriman**: Catatan sistem secara eksplisit menerangkan bahwa produk berlabel PO akan dikirimkan menyusul sesuai estimasi waktu di labelnya, **tanpa dikenakan biaya pengiriman tambahan**.
 * **Integrasi Cetak**: Catatan aturan pengiriman PO ini secara dinamis disisipkan pada struk cetak thermal (`openReceiptPreview`), nota cicilan tempo (`previewTempoReceipt`), invoice A4, dan surat jalan (`openDocPreview`).
 
+### 4. Sistem Kartu Member Digital VIP 3D & Gamifikasi (v1.8.4)
+* **Visual Mewah Layaknya Kartu Fisik**: Dilengkapi EMV Smart Chip emas vektor SVG, logo resmi, efek *embossed text* timbul untuk nama & nomor kartu virtual, serta status keanggotaan aktif.
+* **Animasi 3D Flip Dua Sisi**: Kartu dapat dibalik secara interaktif untuk melihat sisi belakang yang memuat pita magnetik (*magnetic stripe*), strip tanda tangan verifikasi, dan **Barcode Kasir Vektor (Code128)** yang dapat dipindai oleh scanner barcode fisik kasir toko.
+* **Gamifikasi 4 Tingkat Tier**: Sistem otomatis mengelompokkan pelanggan berdasarkan perolehan poin:
+  - 🥉 **Bronze Member** (0 - 99 Poin)
+  - 🥈 **Silver Member** (100 - 499 Poin)
+  - 🥇 **Gold Member** (500 - 999 Poin)
+  - 💎 **Platinum VIP** (1000+ Poin)
+* **Simpan ke Galeri HP (Download PNG HD)**: Pelanggan dapat mengunduh kartu member beresolusi tinggi (skala 3x Retina) ke galeri perangkat HP/komputer mereka.
+* **Auto-Deteksi di Checkout**: Saat pelanggan menginput nomor WA di keranjang belanja, sistem otomatis memunculkan miniatur kartu member dengan saldo poin dan tier aktif.
+
 ---
 
 ## 🚀 Perintah CLI Pengembangan & Pemeliharaan
