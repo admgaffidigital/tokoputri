@@ -3,7 +3,15 @@
   "appName": "Toko Putri",
   "webDir": "dist",
   "server": {
-    "androidScheme": "https"
+    "url": "https://tokoputri-three.vercel.app",
+    "cleartext": false,
+    "androidScheme": "https",
+    "allowNavigation": [
+      "tokoputri-three.vercel.app",
+      "*.vercel.app",
+      "*.firebaseapp.com",
+      "*.googleapis.com"
+    ]
   },
   "android": {
     "allowMixedContent": true,
