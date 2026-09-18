@@ -11,7 +11,7 @@ import { db } from '../../config/firebase.js';
 import { appData } from '../../core/state.js';
 import { 
     el, show, hide, setIn, setV, getV, esc, 
-    showToast, showConfirm, sLoad, hLoad 
+    showToast, showConfirm, sLoad, hLoad, openModalAnim, closeModalAnim 
 } from '../../core/utils.js';
 
 let unsubFAQRealtime = null;
@@ -150,23 +150,17 @@ export const toggleFAQAccordion = (id) => {
 };
 
 export const openAskQuestionModal = () => {
-    const m = el('modal-ask-question');
+    const m = el('modal-ask-question'), c = el('modal-ask-question-box');
     if (!m) return;
     if (m.classList.contains('hidden') && typeof window.pushModalHistory === 'function') {
         window.pushModalHistory('askQuestion');
     }
-    show('modal-ask-question');
-    setTimeout(() => {
-        if (el('modal-ask-question')) el('modal-ask-question').classList.remove('opacity-0');
-        if (el('modal-ask-question-box')) el('modal-ask-question-box').classList.remove('translate-y-full');
-    }, 10);
+    openModalAnim(m, c);
 };
 
 export const closeAskQuestionModal = (fH = false) => {
     const doClose = () => {
-        if (el('modal-ask-question')) el('modal-ask-question').classList.add('opacity-0');
-        if (el('modal-ask-question-box')) el('modal-ask-question-box').classList.add('translate-y-full');
-        setTimeout(() => hide('modal-ask-question'), 300);
+        closeModalAnim('modal-ask-question', 'modal-ask-question-box');
     };
 
     if (typeof window.requestCloseModal === 'function') {
@@ -335,23 +329,17 @@ export const openFAQModal = (id) => {
     setV('admin-faq-status', f.status || 'published');
     setIn('admin-faq-modal-title', id ? 'Edit Q&A' : 'Tambah Q&A Baru');
 
-    const m = el('modal-admin-faq');
+    const m = el('modal-admin-faq'), c = el('modal-admin-faq-box');
     if (!m) return;
     if (m.classList.contains('hidden') && typeof window.pushModalHistory === 'function') {
         window.pushModalHistory('adminFAQ');
     }
-    show('modal-admin-faq');
-    setTimeout(() => {
-        if (el('modal-admin-faq')) el('modal-admin-faq').classList.remove('opacity-0');
-        if (el('modal-admin-faq-box')) el('modal-admin-faq-box').classList.remove('translate-y-full');
-    }, 10);
+    openModalAnim(m, c);
 };
 
 export const closeAdminFAQModal = (fH = false) => {
     const doClose = () => {
-        if (el('modal-admin-faq')) el('modal-admin-faq').classList.add('opacity-0');
-        if (el('modal-admin-faq-box')) el('modal-admin-faq-box').classList.add('translate-y-full');
-        setTimeout(() => hide('modal-admin-faq'), 300);
+        closeModalAnim('modal-admin-faq', 'modal-admin-faq-box');
     };
 
     if (typeof window.requestCloseModal === 'function') {

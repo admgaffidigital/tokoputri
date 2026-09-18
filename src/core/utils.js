@@ -16,6 +16,52 @@ export const setH      = (id, h) => { const e = el(id); if(e) e.innerHTML = h; }
 export const setV      = (id, v) => { const e = el(id); if(e) e.value = v; };
 export const getV      = id => { const e = el(id); return e ? e.value : ''; };
 
+/**
+ * Membuka modal/bottom-sheet dengan animasi mulus tanpa kedip (anti-flicker).
+ * Memaksa browser melakukan reflow synchronous (void m.offsetWidth) sebelum
+ * requestAnimationFrame agar posisi awal (opacity-0 & translate-y-full) selalu dipaint.
+ */
+export const openModalAnim = (modalEl, contentEl) => {
+    const m = typeof modalEl === 'string' ? el(modalEl) : modalEl;
+    const c = typeof contentEl === 'string' ? el(contentEl) : contentEl;
+    if (!m) return;
+    
+    m.classList.remove('hidden');
+    void m.offsetWidth; // Force synchronous browser reflow to commit initial zero frame
+    
+    requestAnimationFrame(() => {
+        m.classList.remove('opacity-0');
+        if (c) {
+            c.classList.remove('translate-y-full', 'sm:translate-y-10', 'sm:translate-y-8', 'scale-95');
+        }
+    });
+};
+
+/**
+ * Menutup modal/bottom-sheet dengan animasi mulus tanpa glitch
+ */
+export const closeModalAnim = (modalEl, contentEl, onClosed) => {
+    const m = typeof modalEl === 'string' ? el(modalEl) : modalEl;
+    const c = typeof contentEl === 'string' ? el(contentEl) : contentEl;
+    if (!m) {
+        if (typeof onClosed === 'function') onClosed();
+        return;
+    }
+    
+    m.classList.add('opacity-0');
+    if (c) {
+        c.classList.add('translate-y-full', 'sm:translate-y-10', 'sm:translate-y-8');
+    }
+    
+    setTimeout(() => {
+        m.classList.add('hidden');
+        if (typeof onClosed === 'function') onClosed();
+    }, 280);
+};
+
+window.openModalAnim = openModalAnim;
+window.closeModalAnim = closeModalAnim;
+
 // ─── LocalStorage Wrappers ───────────────────────────────────
 export const sL  = k      => { try { return localStorage.getItem(k); }    catch(e) { return null; } };
 export const ssL = (k, v) => { try { localStorage.setItem(k, v); }        catch(e) {} };

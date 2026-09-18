@@ -341,8 +341,9 @@ export const openAppDownloadModal = async () => {
     // Daftarkan ke router history stack untuk hardware back button
     pushModalHistory('appDownload');
 
-    // Tampilkan modal dengan animasi lembut
+    // Tampilkan modal dengan animasi lembut tanpa kedip
     m.style.display = 'flex';
+    void m.offsetWidth; // Force synchronous browser reflow
     requestAnimationFrame(() => {
         m.classList.remove('opacity-0');
         const box = el('app-download-modal-box');

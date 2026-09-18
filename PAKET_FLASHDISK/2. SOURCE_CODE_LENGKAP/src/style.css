@@ -129,9 +129,15 @@ body {
     position: absolute; 
     top: 0; 
     left: 0; 
-    right: 0;
-    bottom: 0;
+    right: 0; 
+    bottom: 0; 
     overflow: hidden; 
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    -webkit-transform-style: preserve-3d;
+    transform-style: preserve-3d;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
 }
 
 .view-section.flex {
@@ -142,6 +148,39 @@ body {
 /* PENTING: .hidden harus ditulis SETELAH .flex agar menang saat elemen punya kedua kelas */
 .view-section.hidden {
     display: none !important;
+}
+
+/* Transisi Halus View Tanpa Kedip (Anti-Flicker Tab Switching) */
+.view-section.fade-in {
+    animation: viewFadeIn 0.16s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes viewFadeIn {
+    from { opacity: 0.92; }
+    to { opacity: 1; }
+}
+
+/* === ANTI-FLICKER HARDWARE ACCELERATION (GPU COMPOSITING) === */
+.modal-bottom-sheet,
+[id*="modal-content"],
+[id*="modal-box"],
+[id*="-modal"],
+[id*="modal-"],
+#bottom-nav-bar {
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    -webkit-perspective: 1000px;
+    perspective: 1000px;
+    -webkit-transform-style: preserve-3d;
+    transform-style: preserve-3d;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+}
+
+.modal-bottom-sheet,
+[id*="modal-content"],
+[id*="modal-box"] {
+    will-change: transform, opacity;
 }
 
 .scroll-content { 

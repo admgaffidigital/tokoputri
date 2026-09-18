@@ -19,7 +19,7 @@ import {
 import { 
     el, show, hide, setIn, setH, setV, 
     esc, fCur, getOptImg, showToast, 
-    getYouTubeId, ssL 
+    getYouTubeId, ssL, openModalAnim, closeModalAnim 
 } from '../../core/utils.js';
 
 import { updCart } from '../cart/cart.js';
@@ -158,12 +158,8 @@ export const openProductModal = i => {
             }
         }
         if (m.classList.contains('hidden')) {
-            show('product-modal');
             c.scrollTo(0,0);
-            setTimeout(() => { 
-                m.classList.remove('opacity-0'); 
-                c.classList.remove('translate-y-full','sm:translate-y-10'); 
-            }, 10);
+            openModalAnim(m, c);
         } else {
             c.scrollTo({ top: 0, behavior: 'smooth' });
         }
@@ -177,9 +173,7 @@ export const closeProductModal = (fH = false) => {
     const m = el('product-modal'), c = el('product-modal-content');
     if (m && c) {
         const doClose = () => {
-            m.classList.add('opacity-0'); 
-            c.classList.add('translate-y-full','sm:translate-y-10');
-            setTimeout(() => hide('product-modal'), 300);
+            closeModalAnim(m, c);
             const vc = el('product-modal-video-container');
             if (vc) {
                 vc.innerHTML = '';
@@ -1051,11 +1045,7 @@ export const openQuickVariantSheet = (productId) => {
         if (m.classList.contains('hidden') && typeof window.pushModalHistory === 'function') {
             window.pushModalHistory('quickVariant');
         }
-        show('quick-variant-modal');
-        setTimeout(() => {
-            m.classList.remove('opacity-0');
-            c.classList.remove('translate-y-full', 'sm:translate-y-10');
-        }, 10);
+        openModalAnim(m, c);
     }
     if (typeof window.triggerHaptic === 'function') window.triggerHaptic('light');
 };
@@ -1064,9 +1054,7 @@ export const closeQuickVariantSheet = (fH = false) => {
     const m = el('quick-variant-modal'), c = el('quick-variant-content');
     if (m && c) {
         const doClose = () => {
-            m.classList.add('opacity-0');
-            c.classList.add('translate-y-full', 'sm:translate-y-10');
-            setTimeout(() => hide('quick-variant-modal'), 300);
+            closeModalAnim(m, c);
         };
         if (typeof window.requestCloseModal === 'function') {
             window.requestCloseModal('quickVariant', fH, doClose);

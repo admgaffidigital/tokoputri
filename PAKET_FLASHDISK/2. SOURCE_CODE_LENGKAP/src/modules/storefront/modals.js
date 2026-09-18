@@ -7,7 +7,7 @@
  */
 
 import { appData, aCat, aBrand, setACat, setABrand, setCPage, oMods } from '../../core/state.js';
-import { el, show, hide, setH, esc } from '../../core/utils.js';
+import { el, show, hide, setH, esc, openModalAnim, closeModalAnim } from '../../core/utils.js';
 import { curViewName, changeView, pushModalHistory, requestCloseModal } from '../../core/router.js';
 
 // Fungsi Filter Global untuk Kategori dan Merek
@@ -49,8 +49,7 @@ export const openCategoryModal = () => {
     const m = el('category-modal'), c = el('category-modal-content');
     if (m && c) {
         if (m.classList.contains('hidden')) pushModalHistory('category');
-        show('category-modal');
-        setTimeout(() => { m.classList.remove('opacity-0'); c.classList.remove('translate-y-full','sm:translate-y-10'); }, 10);
+        openModalAnim(m, c);
     }
 };
 window.openCategoryModal = openCategoryModal;
@@ -85,8 +84,7 @@ window.openBrandModal = () => {
     const m = el('brand-modal'), c = el('brand-modal-content');
     if(m && c){
         if (m.classList.contains('hidden')) pushModalHistory('brand');
-        show('brand-modal');
-        setTimeout(() => { m.classList.remove('opacity-0'); c.classList.remove('translate-y-full','sm:translate-y-10'); }, 10);
+        openModalAnim(m, c);
     }
 };
 
@@ -94,8 +92,7 @@ window.closeCategoryModal = (fH=false) => {
     const m = el('category-modal'), c = el('category-modal-content');
     if (m && c) {
         requestCloseModal('category', fH, () => {
-            m.classList.add('opacity-0'); c.classList.add('translate-y-full','sm:translate-y-10');
-            setTimeout(() => hide('category-modal'), 300);
+            closeModalAnim(m, c);
         });
     }
 };
@@ -104,8 +101,7 @@ window.closeBrandModal = (fH=false) => {
     const m = el('brand-modal'), c = el('brand-modal-content');
     if(m && c){
         requestCloseModal('brand', fH, () => {
-            m.classList.add('opacity-0'); c.classList.add('translate-y-full','sm:translate-y-10');
-            setTimeout(() => hide('brand-modal'), 300);
+            closeModalAnim(m, c);
         });
     }
 };
@@ -114,8 +110,7 @@ window.openQuickMenuModal = () => {
     const m = el('quickmenu-modal'), c = el('quickmenu-modal-content');
     if(m && c){
         if (m.classList.contains('hidden')) pushModalHistory('quickmenu');
-        show('quickmenu-modal');
-        setTimeout(() => { m.classList.remove('opacity-0'); c.classList.remove('translate-y-full','sm:translate-y-10'); }, 10);
+        openModalAnim(m, c);
     }
 };
 
@@ -179,8 +174,7 @@ window.openTermsModal = () => {
     const m = el('terms-modal'), c = el('terms-modal-content');
     if (m && c) {
         if (m.classList.contains('hidden')) pushModalHistory('terms');
-        show('terms-modal');
-        setTimeout(() => { m.classList.remove('opacity-0'); c.classList.remove('translate-y-full','sm:translate-y-10'); }, 10);
+        openModalAnim(m, c);
     }
 };
 
@@ -188,8 +182,7 @@ window.closeTermsModal = (fH=false) => {
     const m = el('terms-modal'), c = el('terms-modal-content');
     if (m && c) {
         requestCloseModal('terms', fH, () => {
-            m.classList.add('opacity-0'); c.classList.add('translate-y-full','sm:translate-y-10');
-            setTimeout(() => hide('terms-modal'), 300);
+            closeModalAnim(m, c);
         });
     }
 };
@@ -244,8 +237,7 @@ window.openPrivacyModal = () => {
     const m = el('privacy-modal'), c = el('privacy-modal-content');
     if (m && c) {
         if (m.classList.contains('hidden')) pushModalHistory('privacy');
-        show('privacy-modal');
-        setTimeout(() => { m.classList.remove('opacity-0'); c.classList.remove('translate-y-full','sm:translate-y-10'); }, 10);
+        openModalAnim(m, c);
     }
 };
 
@@ -253,8 +245,7 @@ window.closePrivacyModal = (fH=false) => {
     const m = el('privacy-modal'), c = el('privacy-modal-content');
     if (m && c) {
         requestCloseModal('privacy', fH, () => {
-            m.classList.add('opacity-0'); c.classList.add('translate-y-full','sm:translate-y-10');
-            setTimeout(() => hide('privacy-modal'), 300);
+            closeModalAnim(m, c);
         });
     }
 };
@@ -263,8 +254,7 @@ window.closeQuickMenuModal = (fH=false) => {
     const m = el('quickmenu-modal'), c = el('quickmenu-modal-content');
     if (m && c) {
         requestCloseModal('quickmenu', fH, () => {
-            m.classList.add('opacity-0'); c.classList.add('translate-y-full','sm:translate-y-10');
-            setTimeout(() => hide('quickmenu-modal'), 300);
+            closeModalAnim(m, c);
         });
     }
 };
@@ -273,11 +263,7 @@ window.openShoppingGuideModal = () => {
     const m = el('shopping-guide-modal'), c = el('shopping-guide-modal-content');
     if (m && c) {
         if (m.classList.contains('hidden')) pushModalHistory('guide');
-        show('shopping-guide-modal');
-        setTimeout(() => { 
-            m.classList.remove('opacity-0'); 
-            c.classList.remove('translate-y-full','sm:translate-y-10'); 
-        }, 10);
+        openModalAnim(m, c);
     }
 };
 
@@ -285,9 +271,7 @@ window.closeShoppingGuideModal = (fH=false) => {
     const m = el('shopping-guide-modal'), c = el('shopping-guide-modal-content');
     if (m && c) {
         requestCloseModal('guide', fH, () => {
-            m.classList.add('opacity-0'); 
-            c.classList.add('translate-y-full','sm:translate-y-10');
-            setTimeout(() => hide('shopping-guide-modal'), 300);
+            closeModalAnim(m, c);
         });
     }
 };

@@ -52,16 +52,20 @@ export const changeView = (v, fH = false) => {
         window.detachMyOrdersRealtime();
     }
     
-    document.querySelectorAll('.view-section').forEach(e => {
-        e.classList.add('hidden');
-        e.classList.remove('flex');
-    });
-    
     const t = el(v);
     if (t) {
         t.classList.remove('hidden');
         t.classList.add('flex');
+    }
+    
+    document.querySelectorAll('.view-section').forEach(e => {
+        if (e !== t) {
+            e.classList.add('hidden');
+            e.classList.remove('flex');
+        }
+    });
         
+    if (t) {
         if (v === 'view-cart' && typeof window.renderCart === 'function') window.renderCart();
         else if (v === 'view-checkout' && typeof window.rChck === 'function') window.rChck();
         else if (v === 'view-payment' && typeof window.rPay === 'function') window.rPay();

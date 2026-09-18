@@ -509,13 +509,14 @@ export const renderOrderDetailModal = (orderId, d, reviewedKeys = []) => {
             window.pushModalHistory('customerOrder');
         }
         m.classList.remove('opacity-0', 'pointer-events-none');
-        setTimeout(() => {
+        void m.offsetWidth;
+        requestAnimationFrame(() => {
             const c = document.getElementById('order-detail-content');
             if (c) {
                 c.classList.remove('translate-y-full', 'sm:translate-y-10');
                 c.classList.add('translate-y-0', 'sm:translate-y-0');
             }
-        }, 50);
+        });
 
     } catch (err) {
         console.error("Error Render HTML Modal:", err);

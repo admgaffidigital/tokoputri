@@ -263,8 +263,9 @@ export const openChangelogModal = (initialCategory = 'all') => {
     currentChangelogFilter = initialCategory;
     filterChangelog(initialCategory);
 
-    // Animasi tampil
+    // Animasi tampil tanpa kedip
     m.style.display = 'flex';
+    void m.offsetWidth; // Force synchronous browser reflow
     requestAnimationFrame(() => {
         m.classList.remove('opacity-0');
         const box = el('changelog-modal-box');
