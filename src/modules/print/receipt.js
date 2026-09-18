@@ -105,7 +105,11 @@ export const executePrintReceipt = () => {
     const t = el('thermal-print-section'); 
     if (t) { 
         t.innerHTML = p; 
-        window.print(); 
+        if (window.AndroidNativeApp && typeof window.AndroidNativeApp.print === 'function') {
+            window.AndroidNativeApp.print();
+        } else {
+            window.print(); 
+        }
     } 
 };
 

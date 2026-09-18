@@ -77,6 +77,18 @@ window.db         = db;
 window.DOMPurify  = DOMPurify;
 window.ensureScriptLoaded = ensureScriptLoaded;
 
+// Hook pencetakan native Android (Thermal POS & A4)
+if (typeof window !== 'undefined') {
+    const _nativeOrigPrint = window.print ? window.print.bind(window) : null;
+    window.print = function() {
+        if (window.AndroidNativeApp && typeof window.AndroidNativeApp.print === 'function') {
+            window.AndroidNativeApp.print();
+        } else if (_nativeOrigPrint) {
+            _nativeOrigPrint();
+        }
+    };
+}
+
 // ─── THEME & BACKGROUND ENGINE ──────────────────────────────────────────────────
 // Expose fungsi tema & background ke window agar bisa dipanggil dari HTML inline
 window.uiPalettes  = uiPalettes;
