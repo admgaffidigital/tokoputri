@@ -202,11 +202,11 @@
         <!-- Minimalist Logo Icon Box with soft pulse ring -->
         <div class="relative mb-6 flex h-20 w-20 items-center justify-center">
           <div class="absolute inset-0 rounded-3xl bg-[var(--color-primary)]" style="animation: pulseRing 2s cubic-bezier(0.4, 0, 0.6, 1) infinite"></div>
-          <div id="loader-logo-box" class="shadow-[var(--color-primary)]/20 relative flex h-16 w-16 items-center justify-center overflow-hidden rounded-2xl bg-[var(--color-primary)] text-white shadow-lg">
-            <i class="fa-solid fa-store text-2xl text-white" id="loader-logo-icon"></i>
+          <div id="loader-logo-box" class="relative flex h-16 w-16 items-center justify-center overflow-hidden rounded-full bg-[#0f172a] shadow-lg ring-2 ring-[var(--color-primary)]/40">
+            <i class="fa-solid fa-store text-2xl text-[var(--color-primary)]" id="loader-logo-icon"></i>
             <img
               id="loader-logo-img"
-              class="hidden h-full w-full object-cover"
+              class="hidden h-full w-full object-contain p-0.5"
               src=""
               alt="Logo"
               onerror="
