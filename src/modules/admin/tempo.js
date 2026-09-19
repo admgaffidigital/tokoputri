@@ -417,13 +417,16 @@ const renderTempoCardItem = (o) => {
         
         <div>
             <div class="flex justify-between items-start mb-3 pr-12">
-                <div>
+                <div class="flex-1 min-w-0">
                     <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Pesanan #${o.orderId}</p>
                     <h3 class="font-bold text-slate-800 dark:text-slate-100 mt-1 uppercase text-sm">${esc(o.customer?.name || 'Anonim')}</h3>
-                    <p class="text-[11px] font-bold text-slate-500 flex items-center gap-1.5 mt-0.5">
-                        <i class="fa-brands fa-whatsapp text-emerald-500"></i>
-                        <a href="javascript:void(0)" onclick="window.sendSmartTempoWA('${o.orderId}')" class="hover:underline text-slate-600 dark:text-slate-300 font-mono">+${esc(o.customer?.wa || '-')}</a>
-                    </p>
+                    <div class="flex items-center gap-2 mt-1.5 flex-wrap">
+                        <p class="text-[11px] font-bold text-slate-500 flex items-center gap-1.5">
+                            <i class="fa-brands fa-whatsapp text-emerald-500"></i>
+                            <a href="javascript:void(0)" onclick="window.sendSmartTempoWA('${o.orderId}')" class="hover:underline text-slate-600 dark:text-slate-300 font-mono">+${esc(o.customer?.wa || '-')}</a>
+                        </p>
+                        <span class="text-[9px] font-bold px-2 py-0.5 rounded-xl uppercase tracking-widest border ${o.customerType === 'Member' ? 'text-amber-600 bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800' : 'text-slate-500 bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700'}">${o.customerType === 'Member' ? '<i class="fa-solid fa-star text-amber-400 mr-1"></i>Member' : '<i class="fa-solid fa-user mr-1"></i>Umum'}</span>
+                    </div>
                 </div>
             </div>
             
