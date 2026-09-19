@@ -62,8 +62,8 @@ export const fetchLatestReleaseInfo = async () => {
             const apkAsset = data.assets?.find(a => a.name?.toLowerCase().endsWith('.apk')) || data.assets?.[0];
 
             cachedReleaseInfo = {
-                tagName: data.tag_name || 'v1.8.6',
-                name: data.name || 'Toko Putri v1.8.6',
+                tagName: data.tag_name || 'v1.8.7',
+                name: data.name || 'Toko Putri v1.8.7',
                 publishedAt: formatReleaseDate(data.published_at),
                 fileSize: apkAsset ? formatFileSize(apkAsset.size) : '8.0 MB',
                 downloadUrl: apkAsset?.browser_download_url || GITHUB_LATEST_DOWNLOAD_URL,
@@ -75,7 +75,7 @@ export const fetchLatestReleaseInfo = async () => {
         }
     } catch (err) {
         // Fallback anggun ke konfigurasi changelog internal
-        const fallbackVer = getLatestVersion(appData) || 'v1.8.6';
+        const fallbackVer = getLatestVersion(appData) || 'v1.8.7';
         cachedReleaseInfo = {
             tagName: fallbackVer,
             name: `Toko Putri ${fallbackVer}`,
@@ -209,7 +209,7 @@ const ensureAppDownloadModalDOM = () => {
             <div class="space-y-2">
                 <button id="btn-download-apk-action" onclick="downloadLatestApk()" class="w-full py-3.5 px-6 rounded-2xl bg-[#01875f] hover:bg-[#01704f] active:scale-[0.98] text-white font-extrabold text-sm sm:text-base flex items-center justify-center gap-3 shadow-lg shadow-emerald-600/25 transition-all cursor-pointer group">
                     <i class="fa-solid fa-download group-hover:translate-y-0.5 transition-transform" id="btn-download-apk-icon"></i>
-                    <span id="btn-download-apk-text">Unduh &amp; Pasang APK (<span id="app-modal-version-tag">v1.8.6</span>)</span>
+                    <span id="btn-download-apk-text">Unduh &amp; Pasang APK (<span id="app-modal-version-tag">v1.8.7</span>)</span>
                 </button>
                 <div class="flex items-center justify-between px-1 text-[10px] font-bold text-slate-400 dark:text-slate-500">
                     <span class="flex items-center gap-1.5">
@@ -434,7 +434,7 @@ export const downloadLatestApk = () => {
             icon.className = 'fa-solid fa-circle-check text-white';
         }
         if (text) {
-            const ver = cachedReleaseInfo?.tagName || 'v1.8.6';
+            const ver = cachedReleaseInfo?.tagName || 'v1.8.7';
             text.textContent = `Unduh Ulang APK (${ver})`;
         }
     }, 2500);

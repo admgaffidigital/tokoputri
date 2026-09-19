@@ -470,6 +470,12 @@ export const processOrder = async () => {
         };
 
         if (m === 'tempo') {
+            if (!cust.wa) {
+                setIsSaving(false); 
+                hLoad();
+                if (typeof window.showToast === 'function') window.showToast('Pembayaran Cash Tempo hanya untuk Member Resmi terdaftar!');
+                return;
+            }
             const dpInput = document.getElementById('tempo-dp-input');
             let dp = dpInput ? parseFloat(dpInput.value) || 0 : 0;
             if (dp > tot) dp = tot;
@@ -508,10 +514,11 @@ export const processOrder = async () => {
             const refs = pIds.map(pId => db.collection("freshmart").doc("cms_data").collection("products").doc(pId));
 
             await db.runTransaction(async (transaction) => {
-                const rewardRef = wantsRewardClaim ? db.collection("freshmart").doc("cms_data").collection("rewards").doc(selectedReward.id.toString()) : null;
                 const docs = await Promise.all(refs.map(ref => transaction.get(ref)));
                 const memberDoc = memberRef ? await transaction.get(memberRef) : null;
-                const rewardDoc = (memberDoc && memberDoc.exists && rewardRef) ? await transaction.get(rewardRef) : null;
+                const isRegisteredMember = !!(memberDoc && memberDoc.exists);
+                const rewardRef = (isRegisteredMember && wantsRewardClaim) ? db.collection("freshmart").doc("cms_data").collection("rewards").doc(selectedReward.id.toString()) : null;
+                const rewardDoc = rewardRef ? await transaction.get(rewardRef) : null;
 
                 const kurang = [];
                 docs.forEach((docSnap, idx) => {
@@ -533,23 +540,38 @@ export const processOrder = async () => {
                 }
 
                 let rewardStockUpdated = null, memberPointsUpdated = null;
-                const currentPts = (memberDoc && memberDoc.exists) ? (parseFloat(memberDoc.data().points) || 0) : 0;
-                let newPoints = currentPts;
-                if (wantsRewardClaim) {
-                    if (!memberDoc || !memberDoc.exists) throw new Error('MEMBER_TIDAK_DITEMUKAN');
-                    if (!rewardDoc || !rewardDoc.exists) throw new Error('HADIAH_TIDAK_DITEMUKAN');
-                    const rew = rewardDoc.data();
-                    if (currentPts < (parseFloat(rew.pointsCost) || 0)) throw new Error('POIN_TIDAK_CUKUP');
-                    if ((parseFloat(rew.stock) || 0) <= 0) throw new Error('STOK_HADIAH_HABIS');
-                    rewardStockUpdated = (parseFloat(rew.stock) || 0) - 1;
-                    newPoints -= (parseFloat(rew.pointsCost) || 0);
-                    oD.claimedReward = { id: rew.id, name: rew.name, pointsCost: parseFloat(rew.pointsCost) || 0, status: 'pending', note: '' };
+
+                if (isRegisteredMember) {
+                    const currentPts = parseFloat(memberDoc.data().points) || 0;
+                    let newPoints = currentPts;
+                    if (wantsRewardClaim) {
+                        if (!rewardDoc || !rewardDoc.exists) throw new Error('HADIAH_TIDAK_DITEMUKAN');
+                        const rew = rewardDoc.data();
+                        if (currentPts < (parseFloat(rew.pointsCost) || 0)) throw new Error('POIN_TIDAK_CUKUP');
+                        if ((parseFloat(rew.stock) || 0) <= 0) throw new Error('STOK_HADIAH_HABIS');
+                        rewardStockUpdated = (parseFloat(rew.stock) || 0) - 1;
+                        newPoints -= (parseFloat(rew.pointsCost) || 0);
+                        oD.claimedReward = { id: rew.id, name: rew.name, pointsCost: parseFloat(rew.pointsCost) || 0, status: 'pending', note: '' };
+                    }
+                    newPoints += pointsEarnedThisOrder;
+                    memberPointsUpdated = newPoints;
+                    oD.pointsEarned = pointsEarnedThisOrder;
+                    oD.customerPhone = cust.wa;
+                    oD.finalMemberPoints = memberPointsUpdated;
+                    oD.customerType = 'Member';
+                } else {
+                    // Pelanggan Umum: belum tersimpan di database pelanggan oleh Admin
+                    if (m === 'tempo') {
+                        throw new Error('TEMPO_KHUSUS_MEMBER');
+                    }
+                    if (wantsRewardClaim) {
+                        throw new Error('MEMBER_TIDAK_DITEMUKAN');
+                    }
+                    oD.pointsEarned = 0;
+                    oD.pointsBreakdown = { direct: 0, spend: 0 };
+                    oD.finalMemberPoints = null;
+                    oD.customerType = 'Pelanggan Umum';
                 }
-                newPoints += pointsEarnedThisOrder;
-                memberPointsUpdated = newPoints;
-                oD.pointsEarned = pointsEarnedThisOrder;
-                oD.customerPhone = cust.wa;
-                oD.finalMemberPoints = newPoints;
 
                 docs.forEach((docSnap, idx) => {
                     if (!docSnap.exists) return;
@@ -588,25 +610,14 @@ export const processOrder = async () => {
 
                 transaction.set(orderRef, oD);
 
-                if (memberRef && memberPointsUpdated !== null) {
+                // HANYA update data jika memang Member Resmi terdaftar (JANGAN auto-create!)
+                if (isRegisteredMember && memberRef && memberPointsUpdated !== null) {
                     const memberPayload = {
                         points: memberPointsUpdated,
-                        name: cust.name || (memberDoc && memberDoc.exists ? memberDoc.data().name : 'Pelanggan Setia'),
+                        name: cust.name || (memberDoc.data().name || 'Pelanggan Setia'),
                         lastOrderAt: Date.now()
                     };
-                    if (memberDoc && memberDoc.exists) {
-                        transaction.set(memberRef, memberPayload, { merge: true });
-                    } else {
-                        transaction.set(memberRef, {
-                            id: cust.wa,
-                            phone: cust.wa,
-                            name: cust.name || 'Pelanggan Setia',
-                            points: memberPointsUpdated,
-                            createdAt: Date.now(),
-                            lastOrderAt: Date.now(),
-                            totalOrders: 1
-                        }, { merge: true });
-                    }
+                    transaction.set(memberRef, memberPayload, { merge: true });
                     finalMemberPoints = memberPointsUpdated;
                 }
                 if (rewardStockUpdated !== null) {
@@ -625,54 +636,66 @@ export const processOrder = async () => {
             ssL('freshmart_products', JSON.stringify(appData.products));
         } else if (memberRef) {
             await db.runTransaction(async (transaction) => {
-                const rewardRef = wantsRewardClaim ? db.collection("freshmart").doc("cms_data").collection("rewards").doc(selectedReward.id.toString()) : null;
                 const memberDoc = await transaction.get(memberRef);
-                const rewardDoc = (memberDoc.exists && rewardRef) ? await transaction.get(rewardRef) : null;
+                const isRegisteredMember = memberDoc.exists;
+                const rewardRef = (isRegisteredMember && wantsRewardClaim) ? db.collection("freshmart").doc("cms_data").collection("rewards").doc(selectedReward.id.toString()) : null;
+                const rewardDoc = rewardRef ? await transaction.get(rewardRef) : null;
                 
-                const currentPts = memberDoc.exists ? (parseFloat(memberDoc.data().points) || 0) : 0;
-                let newPoints = currentPts;
                 let rewardStockUpdated = null, memberPointsUpdated = null;
-                if (wantsRewardClaim) {
-                    if (!memberDoc.exists) throw new Error('MEMBER_TIDAK_DITEMUKAN');
-                    if (!rewardDoc || !rewardDoc.exists) throw new Error('HADIAH_TIDAK_DITEMUKAN');
-                    const rew = rewardDoc.data();
-                    if (currentPts < (parseFloat(rew.pointsCost) || 0)) throw new Error('POIN_TIDAK_CUKUP');
-                    if ((parseFloat(rew.stock) || 0) <= 0) throw new Error('STOK_HADIAH_HABIS');
-                    rewardStockUpdated = (parseFloat(rew.stock) || 0) - 1;
-                    newPoints -= (parseFloat(rew.pointsCost) || 0);
-                    oD.claimedReward = { id: rew.id, name: rew.name, pointsCost: parseFloat(rew.pointsCost) || 0, status: 'pending', note: '' };
-                }
-                newPoints += pointsEarnedThisOrder;
-                memberPointsUpdated = newPoints;
-                oD.pointsEarned = pointsEarnedThisOrder;
-                oD.customerPhone = cust.wa;
-                oD.finalMemberPoints = memberPointsUpdated;
-                
-                transaction.set(orderRef, oD);
-                
-                if (memberDoc.exists) {
+
+                if (isRegisteredMember) {
+                    const currentPts = parseFloat(memberDoc.data().points) || 0;
+                    let newPoints = currentPts;
+                    if (wantsRewardClaim) {
+                        if (!rewardDoc || !rewardDoc.exists) throw new Error('HADIAH_TIDAK_DITEMUKAN');
+                        const rew = rewardDoc.data();
+                        if (currentPts < (parseFloat(rew.pointsCost) || 0)) throw new Error('POIN_TIDAK_CUKUP');
+                        if ((parseFloat(rew.stock) || 0) <= 0) throw new Error('STOK_HADIAH_HABIS');
+                        rewardStockUpdated = (parseFloat(rew.stock) || 0) - 1;
+                        newPoints -= (parseFloat(rew.pointsCost) || 0);
+                        oD.claimedReward = { id: rew.id, name: rew.name, pointsCost: parseFloat(rew.pointsCost) || 0, status: 'pending', note: '' };
+                    }
+                    newPoints += pointsEarnedThisOrder;
+                    memberPointsUpdated = newPoints;
+                    oD.pointsEarned = pointsEarnedThisOrder;
+                    oD.customerPhone = cust.wa;
+                    oD.finalMemberPoints = memberPointsUpdated;
+                    oD.customerType = 'Member';
+                    
                     transaction.set(memberRef, { 
                         points: memberPointsUpdated, 
                         name: cust.name || memberDoc.data().name || 'Pelanggan Setia',
                         lastOrderAt: Date.now() 
                     }, { merge: true });
+                    finalMemberPoints = memberPointsUpdated;
+                    
+                    if (rewardStockUpdated !== null) {
+                        transaction.set(rewardRef, { stock: rewardStockUpdated }, { merge: true });
+                    }
                 } else {
-                    transaction.set(memberRef, {
-                        id: cust.wa,
-                        phone: cust.wa,
-                        name: cust.name || 'Pelanggan Setia',
-                        points: memberPointsUpdated,
-                        createdAt: Date.now(),
-                        lastOrderAt: Date.now(),
-                        totalOrders: 1
-                    }, { merge: true });
+                    // Pelanggan Umum: belum tersimpan di database pelanggan oleh Admin
+                    if (m === 'tempo') {
+                        throw new Error('TEMPO_KHUSUS_MEMBER');
+                    }
+                    if (wantsRewardClaim) {
+                        throw new Error('MEMBER_TIDAK_DITEMUKAN');
+                    }
+                    oD.pointsEarned = 0;
+                    oD.pointsBreakdown = { direct: 0, spend: 0 };
+                    oD.finalMemberPoints = null;
+                    oD.customerType = 'Pelanggan Umum';
                 }
-                finalMemberPoints = memberPointsUpdated;
-                if (rewardStockUpdated !== null) {
-                    transaction.set(rewardRef, { stock: rewardStockUpdated }, { merge: true });
-                }
+                
+                transaction.set(orderRef, oD);
             });
         } else {
+            oD.pointsEarned = 0;
+            oD.pointsBreakdown = { direct: 0, spend: 0 };
+            oD.finalMemberPoints = null;
+            oD.customerType = 'Pelanggan Umum';
+            if (m === 'tempo') {
+                throw new Error('TEMPO_KHUSUS_MEMBER');
+            }
             await orderRef.set(oD);
         }
 
@@ -685,7 +708,8 @@ export const processOrder = async () => {
             status: 'Baru',
             pointsEarned: oD.pointsEarned || 0,
             claimedReward: oD.claimedReward || null,
-            finalMemberPoints: finalMemberPoints
+            finalMemberPoints: finalMemberPoints,
+            customerType: oD.customerType || 'Pelanggan Umum'
         });
         setMyOrders(myOrders);
         try {
@@ -695,12 +719,8 @@ export const processOrder = async () => {
         
         if (typeof analytics !== 'undefined') analytics.logEvent('purchase', { transaction_id: oI, value: tot, currency: 'IDR' });
         
-        if (finalMemberPoints === null) {
-            finalMemberPoints = pointsEarnedThisOrder;
-        }
-        
-        // Simpan & aktifkan profil member di state dan localStorage agar kartu member langsung terisi dengan poin terbaru
-        if (cust.wa) {
+        // Simpan & aktifkan profil member di state dan localStorage HANYA jika memang Member Resmi
+        if (cust.wa && finalMemberPoints !== null) {
             const activeMemberObj = {
                 id: cust.wa,
                 phone: cust.wa,
@@ -715,13 +735,20 @@ export const processOrder = async () => {
             if (typeof window.invalidateMemberCache === 'function') {
                 window.invalidateMemberCache(cust.wa);
             }
+        } else {
+            // Pelanggan Umum: JANGAN aktifkan profil member
+            setCurrentMember(null);
+            try {
+                localStorage.removeItem('freshmart_current_member');
+            } catch(e) {}
         }
 
         if (oD.claimedReward && finalMemberPoints !== null) {
             if (typeof window.showToast === 'function') window.showToast(`✅ Hadiah "${oD.claimedReward.name}" berhasil ditukar! Sisa poin Anda: ${finalMemberPoints}`);
+        } else if (finalMemberPoints !== null && pointsEarnedThisOrder > 0) {
+            if (typeof window.showToast === 'function') window.showToast(`✅ Pesanan berhasil dikirim ke admin! (+${pointsEarnedThisOrder} Poin Member didapat!)`);
         } else {
-            const ptMsg = pointsEarnedThisOrder > 0 ? ` (+${pointsEarnedThisOrder} Poin Member didapat!)` : '';
-            if (typeof window.showToast === 'function') window.showToast(`✅ Pesanan berhasil dikirim ke admin!${ptMsg}`);
+            if (typeof window.showToast === 'function') window.showToast("✅ Pesanan berhasil dikirim ke admin!");
         }
         
         setTimeout(() => {
@@ -748,11 +775,11 @@ export const processOrder = async () => {
             
             setCust({ name: '', address: '', lat: null, lng: null, deliveryMethod: 'delivery', distance: 0, note: '', wa: '' }); 
             setVouch(null);
-            // PENTING: Jangan reset currentMember ke null agar kartu member pelanggan tetap aktif dan langsung terbuka dengan poin barunya!
             setSelectedReward(null);
             
             const memBanner = el('member-status-banner'); 
             if (memBanner) hide(memBanner);
+            hide('payment-option-tempo');
             if (el('voucher-input')) el('voucher-input').value = ''; 
             hide('voucher-msg-container'); 
             hide('location-status');
@@ -773,6 +800,8 @@ export const processOrder = async () => {
         const msg = e.message || "Error";
         if (msg.startsWith('STOK_TIDAK_CUKUP:')) {
             if (typeof window.showToast === 'function') window.showToast('Maaf, stok berubah: ' + msg.replace('STOK_TIDAK_CUKUP: ', ''));
+        } else if (msg === 'TEMPO_KHUSUS_MEMBER') {
+            if (typeof window.showToast === 'function') window.showToast('Pembayaran Cash Tempo hanya untuk Member Resmi yang telah didaftarkan Admin!');
         } else if (msg === 'POIN_TIDAK_CUKUP') {
             if (typeof window.showToast === 'function') window.showToast('Maaf, poin Anda ternyata tidak cukup untuk hadiah ini. Silakan cek lagi.');
             setSelectedReward(null);

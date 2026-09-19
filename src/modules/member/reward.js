@@ -62,7 +62,13 @@ export const reconcilePointsFromOrders = async (phone, custName = '') => {
         if (calculatedPoints <= 0) return null;
 
         const custRef = db.collection("freshmart").doc("cms_data").collection("customers").doc(clean);
-        const nameToUse = custName || (currentMember && currentMember.name) || 'Pelanggan Setia';
+        const existingDoc = await custRef.get();
+        if (!existingDoc.exists) {
+            // Pelanggan Umum: Belum didaftarkan oleh Admin, JANGAN buat akun member otomatis!
+            return null;
+        }
+
+        const nameToUse = custName || (currentMember && currentMember.name) || existingDoc.data().name || 'Pelanggan Setia';
         
         const updateData = {
             id: clean,
@@ -542,6 +548,11 @@ export const checkMemberStatus = () => {
             hide('payment-option-tempo'); 
             setCurrentMember(null); 
             setSelectedReward(null); 
+            const tempoRadio = document.querySelector('input[name="payment"][value="tempo"]');
+            if (tempoRadio && tempoRadio.checked) {
+                const fallbackRadio = document.querySelector('input[name="payment"][value="transfer"]') || document.querySelector('input[name="payment"][value="cashier"]');
+                if (fallbackRadio) { fallbackRadio.checked = true; if (typeof window.togglePaymentDetails === 'function') window.togglePaymentDetails(); }
+            }
             return; 
         }
 
@@ -584,6 +595,11 @@ export const checkMemberStatus = () => {
                 setSelectedReward(null); 
                 hide(banner); 
                 hide('payment-option-tempo');
+                const tempoRadio = document.querySelector('input[name="payment"][value="tempo"]');
+                if (tempoRadio && tempoRadio.checked) {
+                    const fallbackRadio = document.querySelector('input[name="payment"][value="transfer"]') || document.querySelector('input[name="payment"][value="cashier"]');
+                    if (fallbackRadio) { fallbackRadio.checked = true; if (typeof window.togglePaymentDetails === 'function') window.togglePaymentDetails(); }
+                }
             }
             return;
         }
@@ -596,18 +612,17 @@ export const checkMemberStatus = () => {
                 setCurrentMember(mData);
                 renderCheckoutMiniCard(mData);
             } else {
-                const rec = await reconcilePointsFromOrders(waNum, getV('cust-name'));
-                if (rec) {
-                    memberCache.set(waNum, { data: rec, timestamp: Date.now() });
-                    setCurrentMember(rec);
-                    renderCheckoutMiniCard(rec);
-                    return;
-                }
+                // Pelanggan Umum: belum tersimpan di database pelanggan oleh Admin
                 memberCache.set(waNum, { data: null, timestamp: Date.now() });
                 setCurrentMember(null); 
                 setSelectedReward(null); 
                 hide(banner); 
                 hide('payment-option-tempo');
+                const tempoRadio = document.querySelector('input[name="payment"][value="tempo"]');
+                if (tempoRadio && tempoRadio.checked) {
+                    const fallbackRadio = document.querySelector('input[name="payment"][value="transfer"]') || document.querySelector('input[name="payment"][value="cashier"]');
+                    if (fallbackRadio) { fallbackRadio.checked = true; if (typeof window.togglePaymentDetails === 'function') window.togglePaymentDetails(); }
+                }
             }
         } catch(e) {
             // Diamkan jika gagal query member (non-blocking)
@@ -655,7 +670,15 @@ export const openMemberModal = () => {
                 const mBody = document.getElementById('member-modal-body');
                 if (mBody) rMemberModalBody();
             } else {
-                await reconcilePointsFromOrders(clean, currentMember?.name);
+                // Dokumen member tidak ada di database: bukan member resmi
+                memberCache.set(clean, { data: null, timestamp: Date.now() });
+                setCurrentMember(null);
+                try {
+                    localStorage.removeItem('freshmart_current_member');
+                    localStorage.removeItem('freshmart_member_wa');
+                } catch(e) {}
+                const mBody = document.getElementById('member-modal-body');
+                if (mBody) rMemberModalBody();
             }
         }).catch(() => {});
     }
@@ -907,16 +930,24 @@ export const lookupMemberPoints = async () => {
                 window.showToast(`Selamat datang kembali, ${mData.name || 'Pelanggan'}! 💳`);
             }
         } else {
-            const reconciled = await reconcilePointsFromOrders(rawVal);
-            if (reconciled) {
-                rMemberModalBody();
-                if (typeof window.showToast === 'function') {
-                    window.showToast(`Kartu Member berhasil diaktifkan dengan ${reconciled.points} poin! 🎉`);
-                }
-                return;
-            }
-            resultDiv.className = 'text-xs font-bold text-amber-700 dark:text-amber-300 p-3 bg-amber-50 dark:bg-amber-900/20 rounded-xl leading-relaxed border border-amber-200 dark:border-amber-800/40';
-            resultDiv.innerHTML = `<i class="fa-solid fa-circle-info mr-1 text-amber-500"></i> Nomor <b>+${esc(rawVal)}</b> belum terdaftar. Lakukan pesanan pertama Anda untuk otomatis mengumpulkan poin dan mendapatkan Kartu Member VIP!`;
+            resultDiv.className = 'text-xs font-bold text-amber-700 dark:text-amber-300 p-3.5 bg-amber-50 dark:bg-amber-900/20 rounded-xl leading-relaxed border border-amber-200 dark:border-amber-800/40 space-y-1.5';
+            const adminWa = ((appData.store && appData.store.wa) || '').replace(/\D/g, '');
+            const waLink = adminWa ? `https://wa.me/${adminWa}?text=Halo%20Admin%20Toko%20Putri,%20saya%20ingin%20mendaftarkan%20nomor%20saya%20(${rawVal})%20sebagai%20Member%20Resmi.` : '#';
+            resultDiv.innerHTML = `
+                <div class="flex items-center gap-1.5 text-amber-800 dark:text-amber-200 font-extrabold text-[11px]">
+                    <i class="fa-solid fa-circle-info text-amber-500"></i>
+                    <span>Nomor Belum Terdaftar sebagai Member Resmi</span>
+                </div>
+                <p class="text-[11px] font-medium text-slate-600 dark:text-slate-300 leading-normal">
+                    Nomor <b>+${esc(rawVal)}</b> saat ini tercatat sebagai <b>Pelanggan Umum</b>. Fitur Poin Hadiah dan fasilitas pembayaran <b>Cash Tempo</b> hanya dapat digunakan setelah nomor Anda dikonfirmasi & disimpan oleh Admin Toko di database CMS.
+                </p>
+                ${adminWa ? `
+                <div class="pt-1">
+                    <a href="${waLink}" target="_blank" class="inline-flex items-center gap-1.5 text-[10px] font-bold text-emerald-600 dark:text-emerald-400 hover:underline">
+                        <i class="fa-brands fa-whatsapp text-emerald-500"></i> Hubungi Admin untuk Pendaftaran Member
+                    </a>
+                </div>` : ''}
+            `;
         }
     } catch(err) {
         resultDiv.className = 'text-xs font-bold text-rose-500 p-2.5 bg-rose-50 dark:bg-rose-900/20 rounded-xl';
