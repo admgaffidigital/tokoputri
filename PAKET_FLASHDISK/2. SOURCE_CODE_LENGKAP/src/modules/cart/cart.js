@@ -82,6 +82,8 @@ export const renderCart = () => {
         show('cart-empty-state'); 
         hide('cart-bottom-bar'); 
         hide('btn-clear-cart'); 
+        hide('btn-cart-sph-header');
+        hide('cart-sph-card');
         show('spacer-cart'); 
         setH('cart-items-container', ''); 
         if (fsEl) {
@@ -98,6 +100,8 @@ export const renderCart = () => {
     hide('cart-empty-state'); 
     show('cart-bottom-bar'); 
     show('btn-clear-cart'); 
+    show('btn-cart-sph-header');
+    show('cart-sph-card');
     hide('spacer-cart');
     
     const getEffP = typeof window.getEffP === 'function' ? window.getEffP : (i => i.price || 0);
