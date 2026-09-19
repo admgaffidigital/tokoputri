@@ -132,13 +132,13 @@
         }
       }
     </style>
-    <script type="module" crossorigin src="/assets/index-BWpWruW0.js"></script>
+    <script type="module" crossorigin src="/assets/index-6sdP70ic.js"></script>
     <link rel="modulepreload" crossorigin href="/assets/vendor-firebase-core-D2OF5R23.js">
     <link rel="modulepreload" crossorigin href="/assets/vendor-firebase-db-BIUZcnOd.js">
     <link rel="modulepreload" crossorigin href="/assets/vendor-utils-Bszxp-Ae.js">
-    <link rel="modulepreload" crossorigin href="/assets/module-print-CjXZkp6R.js">
-    <link rel="modulepreload" crossorigin href="/assets/module-admin-DBZiTYkI.js">
-    <link rel="stylesheet" crossorigin href="/assets/index-BP4x1Vmb.css">
+    <link rel="modulepreload" crossorigin href="/assets/module-print-BWxwv2iR.js">
+    <link rel="modulepreload" crossorigin href="/assets/module-admin-DUWRewx2.js">
+    <link rel="stylesheet" crossorigin href="/assets/index-BDctRNfn.css">
   </head>
   <body>
     <!-- UI Components Global -->
@@ -1268,7 +1268,14 @@
               <p class="mb-0.5 text-[9px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">Total Belanja</p>
               <p class="text-xl font-bold leading-none text-slate-900 dark:text-white" id="cart-subtotal">Rp 0</p>
             </div>
-            <button class="btn-primary !w-auto shrink-0 rounded-2xl px-7 py-3.5 text-sm shadow-glow" onclick="validateCartToCheckout()">Checkout <i class="fa-solid fa-arrow-right ml-1.5 text-xs"></i></button>
+            <div class="flex items-center gap-2 shrink-0">
+              <button type="button" class="flex items-center justify-center gap-1.5 px-4 py-3.5 rounded-2xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-xs font-bold uppercase tracking-wider hover:bg-slate-50 dark:hover:bg-slate-700 shadow-sm transition-all active:scale-95" onclick="if(typeof window.openCartSPHPreview==='function') window.openCartSPHPreview();" title="Cetak Surat Penawaran Harga Proyek (SPH)">
+                <i class="fa-solid fa-file-invoice text-amber-500 text-sm"></i>
+                <span class="hidden sm:inline">Cetak SPH</span>
+                <span class="sm:hidden">SPH</span>
+              </button>
+              <button class="btn-primary !w-auto shrink-0 rounded-2xl px-6 sm:px-7 py-3.5 text-sm shadow-glow" onclick="validateCartToCheckout()">Checkout <i class="fa-solid fa-arrow-right ml-1.5 text-xs"></i></button>
+            </div>
           </div>
         </div>
       </div>

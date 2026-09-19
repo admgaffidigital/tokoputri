@@ -5,7 +5,7 @@
  * ============================================================
  */
 
-import { appData, gOrds, cVOrd, isSaving, setIsSaving } from '../../core/state.js';
+import { appData, gOrds, cVOrd, cart, isSaving, setIsSaving } from '../../core/state.js';
 import { el, show, hide, setIn, setH, esc, fCur, sLoad, hLoad } from '../../core/utils.js';
 
 export let currentDocType = 'invoice';
@@ -243,6 +243,152 @@ export const openDocPreview = (type) => {
     }, 10);
 };
 
+/**
+ * Pratinjau Surat Penawaran Harga (SPH / Quotation Proyek) langsung dari Keranjang Belanja
+ */
+export const openCartSPHPreview = () => {
+    if (!cart || cart.length === 0) {
+        if (typeof window.showToast === 'function') window.showToast('Keranjang belanja masih kosong!');
+        return;
+    }
+    currentDocType = 'sph';
+    const sphNum = 'SPH-' + new Date().toISOString().slice(0,10).replace(/-/g,'') + '-' + Math.floor(1000 + Math.random() * 9000);
+    const issueDate = new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' });
+    const validUntil = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' });
+
+    setIn('doc-modal-title', 'Surat Penawaran Harga (SPH)');
+
+    let logoHTML = '';
+    if (appData.store?.logo && (appData.store.logo.includes('http') || appData.store.logo.includes('data:'))) {
+        logoHTML = `<img loading="eager" src="${esc(appData.store.logo)}" class="w-16 h-16 object-contain">`;
+    } else {
+        logoHTML = `<div class="w-16 h-16 primary-bg flex items-center justify-center rounded-xl text-white"><i class="fa-solid fa-store text-3xl"></i></div>`;
+    }
+
+    const getEffP = typeof window.getEffP === 'function' ? window.getEffP : (i => i.price || 0);
+    let subtotal = 0;
+
+    let h = `
+    <div class="flex justify-between items-start border-b-[3px] border-slate-800 pb-6 mb-6">
+        <div class="flex items-center gap-4">
+            ${logoHTML}
+            <div>
+                <h1 class="font-bold text-2xl tracking-tight text-slate-900 uppercase">${esc(appData.store?.name || 'Toko Putri')}</h1>
+                <p class="text-sm font-bold text-slate-500 mt-1 uppercase tracking-widest">${esc(appData.store?.slogan || 'General Supplier & Alat Teknik')}</p>
+                <p class="text-xs font-medium text-slate-500 mt-1 max-w-sm leading-snug">${esc(appData.store?.address || 'Alamat fisik toko belum diatur.')}</p>
+                <p class="text-xs font-medium text-slate-500 mt-0.5"><i class="fa-brands fa-whatsapp text-emerald-500"></i> ${esc(appData.store?.wa || '-')}</p>
+            </div>
+        </div>
+        <div class="text-right">
+            <h2 class="font-bold text-2xl md:text-3xl tracking-widest text-emerald-600 uppercase">PENAWARAN HARGA</h2>
+            <p class="text-sm font-bold text-slate-600 mt-2 font-mono">#${sphNum}</p>
+            <p class="text-xs font-semibold text-slate-500 mt-1">Tanggal: ${issueDate}</p>
+            <span class="inline-block mt-2 px-2.5 py-1 bg-amber-50 text-amber-700 border border-amber-300 rounded text-[10px] font-bold uppercase tracking-wider">
+                Berlaku s/d: ${validUntil}
+            </span>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-2 gap-8 mb-8">
+        <div class="bg-slate-50 p-5 rounded-xl border border-slate-200">
+            <h3 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3 border-b border-slate-200 pb-2">Ditujukan Kepada:</h3>
+            <p class="font-bold text-base text-slate-900 uppercase mb-1">Kepada Yth. Rekanan / Proyek</p>
+            <p class="text-xs font-medium text-slate-600 leading-relaxed">Pelanggan Terhormat / Departemen Pengadaan</p>
+            <p class="text-xs italic text-slate-400 mt-2">* Surat penawaran harga resmi dapat digunakan sebagai referensi RAB proyek & pengajuan anggaran kantor.</p>
+        </div>
+        <div class="bg-slate-50 p-5 rounded-xl border border-slate-200 flex flex-col justify-center space-y-3">
+            <div class="flex justify-between items-center border-b border-slate-200 pb-2">
+                <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Masa Berlaku</span>
+                <span class="text-sm font-bold text-slate-800">14 Hari Kalender</span>
+            </div>
+            <div class="flex justify-between items-center border-b border-slate-200 pb-2">
+                <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Ketersediaan Stok</span>
+                <span class="text-sm font-bold text-slate-800">Konfirmasi Saat Pemesanan</span>
+            </div>
+            <div class="flex justify-between items-center pb-1">
+                <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Status Dokumen</span>
+                <span class="text-sm font-bold text-emerald-600 uppercase tracking-wider font-mono">OFFICIAL QUOTATION</span>
+            </div>
+        </div>
+    </div>
+
+    <table class="w-full text-left text-sm text-slate-900 border-collapse mb-6">
+        <thead>
+            <tr class="bg-slate-800 text-white font-bold uppercase tracking-wider text-xs">
+                <th class="py-3 px-4 rounded-tl-xl w-10 text-center border-r border-slate-700">No</th>
+                <th class="py-3 px-4 border-r border-slate-700">Deskripsi Barang & Spesifikasi</th>
+                <th class="py-3 px-4 text-center w-24 border-r border-slate-700">Qty</th>
+                <th class="py-3 px-4 text-right w-32 border-r border-slate-700">Harga Satuan</th>
+                <th class="py-3 px-4 rounded-tr-xl text-right w-32">Total Estimasi</th>
+            </tr>
+        </thead>
+        <tbody class="border-b-2 border-slate-800 divide-y divide-slate-200">
+            ${cart.map((item, idx) => {
+                let q = parseFloat(item.qty) || 1;
+                let effPrice = getEffP(item);
+                let lineTot = q * effPrice;
+                subtotal += lineTot;
+                return `
+                <tr class="hover:bg-slate-50 transition-colors">
+                    <td class="py-3.5 px-4 text-center font-mono text-slate-500">${idx + 1}</td>
+                    <td class="py-3.5 px-4 font-bold">
+                        ${esc(item.name)}
+                        ${item.variantName ? `<span class="bg-slate-100 text-slate-600 px-2 py-0.5 rounded text-[10px] border border-slate-200 ml-1 whitespace-nowrap">${esc(item.variantName)}</span>` : ''}
+                    </td>
+                    <td class="py-3.5 px-4 text-center font-bold text-slate-700">${q} <span class="text-[10px] font-bold text-slate-400 uppercase">${esc(item.unit || 'pcs')}</span></td>
+                    <td class="py-3.5 px-4 text-right font-mono font-medium">${fCur(effPrice)}</td>
+                    <td class="py-3.5 px-4 text-right font-mono font-bold">${fCur(lineTot)}</td>
+                </tr>`;
+            }).join('')}
+        </tbody>
+    </table>
+
+    <div class="flex justify-end mb-8">
+        <div class="w-1/2 md:w-[45%] space-y-2 text-sm font-bold text-slate-700">
+            <div class="flex justify-between px-4"><span>Subtotal Estimasi</span><span class="font-mono">${fCur(subtotal)}</span></div>
+            <div class="flex justify-between items-center bg-slate-800 text-white p-4 rounded-xl mt-2 shadow-md">
+                <span class="font-bold text-base uppercase tracking-widest">Total Penawaran</span>
+                <span class="font-mono text-xl text-emerald-400 font-bold tracking-tight">${fCur(subtotal)}</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="border border-slate-200 bg-slate-50 p-4 rounded-xl text-left mb-8">
+        <h4 class="font-bold text-slate-700 text-xs uppercase tracking-widest mb-1"><i class="fa-solid fa-circle-info mr-1 text-[var(--color-primary)]"></i> Syarat & Ketentuan Penawaran:</h4>
+        <ul class="text-[11px] text-slate-600 space-y-1 list-disc list-inside">
+            <li>Harga penawaran berlaku selama <b>14 hari kalender</b> terhitung sejak tanggal dokumen diterbitkan.</li>
+            <li>Ketersediaan dan fluktuasi stok dapat berubah sewaktu-waktu sampai diterbitkannya konfirmasi pesanan (PO) resmi.</li>
+            <li>Biaya pengiriman dan penanganan disesuaikan dengan kuantitas dan jarak tempuh lokasi pengiriman.</li>
+        </ul>
+    </div>
+
+    <div class="grid grid-cols-2 gap-8 text-center text-sm mt-auto pt-4">
+        <div class="flex flex-col items-center">
+            <span class="font-bold text-slate-500 mb-20 uppercase tracking-widest text-[10px]">Menyetujui / Klien Proyek</span>
+            <div class="w-48 border-b-2 border-slate-800 mb-2"></div>
+            <span class="font-bold text-slate-900">Nama Terang & Stempel Perusahaan</span>
+        </div>
+        <div class="flex flex-col items-center">
+            <span class="font-bold text-slate-500 mb-20 uppercase tracking-widest text-[10px]">Hormat Kami,</span>
+            <div class="w-48 border-b-2 border-slate-800 mb-2"></div>
+            <span class="font-bold text-slate-900 uppercase">${esc(appData.store?.name || 'Toko Putri')}</span>
+        </div>
+    </div>
+    `;
+
+    setH('doc-paper-content', h);
+    const mDoc = el('doc-preview-modal');
+    if (mDoc && mDoc.classList.contains('hidden') && typeof window.pushModalHistory === 'function') {
+        window.pushModalHistory('docPreview');
+    }
+    show('doc-preview-modal');
+    setTimeout(() => {
+        if (el('doc-preview-modal')) el('doc-preview-modal').classList.remove('opacity-0');
+        if (el('doc-preview-modal-box')) el('doc-preview-modal-box').classList.remove('scale-95');
+        fitDocPreview();
+    }, 10);
+};
+
 export const fitDocPreview = () => {
     const area = el('doc-paper-scroll-area');
     const content = el('doc-paper-content');
@@ -395,7 +541,8 @@ export const exportDocFile = async (mode) => {
             throw new Error('Gagal menangkap gambar dokumen (canvas kosong).');
         }
 
-        const fileName = `${currentDocType.toUpperCase()}_${cVOrd}`;
+        const docId = cVOrd || Date.now().toString(36).toUpperCase();
+        const fileName = `${currentDocType.toUpperCase()}_${docId}`;
         
         if (mode === 'image') {
             const dataUrl = canvas.toDataURL('image/png', 1.0);
@@ -454,6 +601,7 @@ export const exportDocFile = async (mode) => {
 
 // ─── Expose ke window untuk atribut onclick di HTML ──────
 window.openDocPreview = openDocPreview;
+window.openCartSPHPreview = openCartSPHPreview;
 window.fitDocPreview = fitDocPreview;
 window.closeDocPreviewModal = closeDocPreviewModal;
 window.printDocA4 = printDocA4;
