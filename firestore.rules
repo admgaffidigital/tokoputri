@@ -33,10 +33,17 @@ service cloud.firestore {
       }
 
       // Database Pelanggan / Member (data profil & poin)
+      // SISTEM TERKUNCI: Nama pertama yang didaftarkan tidak bisa diubah kecuali oleh Admin.
       match /customers/{phone} {
         allow get: if true;
         allow list: if isAdmin();
-        allow create, update: if true;
+        // Hanya Admin yang boleh mendaftarkan Member baru lewat CMS
+        allow create: if isAdmin();
+        // Admin bebas update semua field (nama, poin, dll).
+        // Checkout (tanpa auth) hanya boleh update 'points' dan 'lastOrderAt' saja.
+        // Field 'name', 'phone', 'registeredAt' tidak bisa diubah oleh siapapun selain Admin.
+        allow update: if isAdmin() ||
+          request.resource.data.diff(resource.data).affectedKeys().hasOnly(['points', 'lastOrderAt']);
         allow delete: if isAdmin();
       }
 
