@@ -9,7 +9,7 @@
 
 import { appData } from '../../core/state.js';
 import { el, esc } from '../../core/utils.js';
-import { getLatestVersion } from '../../config/changelog.js';
+import { getLatestVersion, compareSemverDesc } from '../../config/changelog.js';
 import { pushModalHistory, requestCloseModal } from '../../core/router.js';
 
 // URL rilis GitHub permanen & API endpoint
@@ -50,6 +50,8 @@ export const fetchLatestReleaseInfo = async () => {
     if (cachedReleaseInfo) return cachedReleaseInfo;
     if (isFetchingRelease) return null;
 
+    const localVer = getLatestVersion(appData) || 'v1.8.7';
+
     isFetchingRelease = true;
     try {
         const res = await fetch(GITHUB_LATEST_API, {
@@ -60,11 +62,17 @@ export const fetchLatestReleaseInfo = async () => {
         if (res.ok) {
             const data = await res.json();
             const apkAsset = data.assets?.find(a => a.name?.toLowerCase().endsWith('.apk')) || data.assets?.[0];
+            const fetchedTag = data.tag_name || localVer;
+
+            // Jika rilis di GitHub API ternyata lebih lama dari versi aplikasi lokal (misal proses build Actions belum rampung),
+            // pertahankan tampilan versi aplikasi terkini (localVer) agar tidak tampak seperti penurunan versi (downgrade).
+            const isGitHubOlder = compareSemverDesc(fetchedTag, localVer) > 0;
+            const effectiveTag = isGitHubOlder ? localVer : fetchedTag;
 
             cachedReleaseInfo = {
-                tagName: data.tag_name || 'v1.8.7',
-                name: data.name || 'Toko Putri v1.8.7',
-                publishedAt: formatReleaseDate(data.published_at),
+                tagName: effectiveTag,
+                name: `Toko Putri ${effectiveTag}`,
+                publishedAt: isGitHubOlder ? '19 Sep 2026' : formatReleaseDate(data.published_at),
                 fileSize: apkAsset ? formatFileSize(apkAsset.size) : '8.0 MB',
                 downloadUrl: apkAsset?.browser_download_url || GITHUB_LATEST_DOWNLOAD_URL,
                 notes: data.body || '',
@@ -79,7 +87,7 @@ export const fetchLatestReleaseInfo = async () => {
         cachedReleaseInfo = {
             tagName: fallbackVer,
             name: `Toko Putri ${fallbackVer}`,
-            publishedAt: 'Rilis Resmi',
+            publishedAt: '19 Sep 2026',
             fileSize: '8.0 MB',
             downloadUrl: GITHUB_LATEST_DOWNLOAD_URL,
             notes: '',
@@ -240,7 +248,7 @@ const ensureAppDownloadModalDOM = () => {
                 </div>
             </div>
 
-            <!-- Apa yang Baru (Highlights Changelog v1.8.5) -->
+            <!-- Apa yang Baru (Highlights Changelog v1.8.7) -->
             <div class="space-y-2.5">
                 <div class="flex items-center justify-between">
                     <h3 class="text-xs sm:text-sm font-black text-slate-900 dark:text-white flex items-center gap-2">
@@ -256,25 +264,25 @@ const ensureAppDownloadModalDOM = () => {
                     <div class="flex items-start gap-2.5 text-slate-700 dark:text-slate-300">
                         <i class="fa-solid fa-circle-check text-emerald-500 mt-0.5 text-[11px] shrink-0"></i>
                         <span class="font-medium text-[11px] leading-relaxed">
-                            <b>Koneksi Perangkat Universal:</b> Pengaturan printer kasir Bluetooth thermal 58mm/80mm, USB OTG, & RawBT.
+                            <b>Pemisahan Pelanggan Umum &amp; Member Resmi:</b> Nomor HP baru berstatus Pelanggan Umum, wajib verifikasi database Admin CMS untuk hak member.
                         </span>
                     </div>
                     <div class="flex items-start gap-2.5 text-slate-700 dark:text-slate-300">
                         <i class="fa-solid fa-circle-check text-emerald-500 mt-0.5 text-[11px] shrink-0"></i>
                         <span class="font-medium text-[11px] leading-relaxed">
-                            <b>Navigasi WhatsApp & Exit Dialog:</b> WhatsApp membuka aplikasi eksternal tanpa reload, tombol Back Android menampilkan dialog keluar elegan.
+                            <b>Proteksi Cash Tempo &amp; Loyalty Points:</b> Opsi tempo disembunyikan dan saldo poin belanja dilindungi khusus untuk member terverifikasi.
                         </span>
                     </div>
                     <div class="flex items-start gap-2.5 text-slate-700 dark:text-slate-300">
                         <i class="fa-solid fa-circle-check text-emerald-500 mt-0.5 text-[11px] shrink-0"></i>
                         <span class="font-medium text-[11px] leading-relaxed">
-                            <b>Splash Screen & Logo HD:</b> Penyempurnaan tampilan pembuka aplikasi dengan tema Dark Slate & lambang emas Toko Putri.
+                            <b>Konfirmasi Member 1-Klik di CMS Admin:</b> Admin toko dapat mendaftarkan nomor pelanggan menjadi member langsung dari detail pesanan.
                         </span>
                     </div>
                     <div class="flex items-start gap-2.5 text-slate-700 dark:text-slate-300">
                         <i class="fa-solid fa-circle-check text-emerald-500 mt-0.5 text-[11px] shrink-0"></i>
                         <span class="font-medium text-[11px] leading-relaxed">
-                            <b>Real-Time Auto-Sync:</b> Pembaruan sistem dan stok otomatis tersinkronisasi langsung dari cloud.
+                            <b>Koneksi Universal POS Printer:</b> Mendukung printer kasir Bluetooth thermal 58mm/80mm, USB OTG, LAN/WiFi, &amp; RawBT.
                         </span>
                     </div>
                 </div>
