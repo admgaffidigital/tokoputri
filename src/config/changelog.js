@@ -8,6 +8,23 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-9-1',
+        version: 'v1.9.1',
+        date: '2026-09-20',
+        title: 'Sistem Proteksi Member Terkunci (Nama Permanen & Anti Duplikasi), Label Pembeda Member vs Umum di CMS & Piutang Tempo, Serta Penguatan Aturan Keamanan Database Firestore',
+        category: 'feature',
+        badge: 'Member Locking & Security Rules v1.9.1',
+        items: [
+            'Sistem Identitas Member Terkunci (Anti Duplikasi Akun): Data nama member resmi yang tersimpan di database terkunci secara permanen. Pelanggan maupun formulir pemesanan tidak dapat mengganti nama member saat bertransaksi dengan nomor HP yang sama, menjamin keaslian data akun member (hanya Admin toko yang dapat mengubah nama di CMS).',
+            'Otomatisasi Nama Terdaftar pada Pesanan: Pesanan baru yang menggunakan nomor HP member secara otomatis disinkronkan ke nama resmi yang terdaftar di database toko, bukan nama acak yang diketik pelanggan saat checkout.',
+            'Pemisahan Cerdas Konfirmasi Member di CMS: Tombol "+ Konfirmasi & Daftarkan Sebagai Member" kini eksklusif hanya muncul untuk Pelanggan Umum. Untuk pelanggan yang sudah terdaftar resmi, sistem langsung menyajikan badge hijau "Member Terdaftar (Terverifikasi)" tanpa tombol konfirmasi berulang.',
+            'Pembeda Visual Label Member vs Umum pada Piutang Tempo: Menambahkan badge status [Member] dan [Umum] pada kartu nota Piutang Tempo dan riwayat pembayaran angsuran, memudahkan kasir/admin memverifikasi hak kelayakan transaksi tempo pelanggan.',
+            'Ekspor Rekap Pesanan Excel Lebih Lengkap: Menambahkan kolom baru "Tipe Pelanggan" (Member Resmi / Pelanggan Umum) dan kolom "No. WhatsApp" pada ekspor berkas Excel (.xlsx) rekap pesanan toko.',
+            'Penguatan Aturan Keamanan Cloud (Firestore Security Rules): Memperketat firestore.rules pada koleksi customers di mana pendaftaran member baru dibatasi khusus hak akses Admin (isAdmin()), sementara hak update saat checkout non-admin dibatasi hanya untuk penambahan saldo poin loyalty dan waktu pesanan terakhir.',
+            'Penyempurnaan Banner Informasi Toko: Menghilangkan badge promo dan pemotongan teks deskripsi (line-clamp) pada banner, menampilkan seluruh teks informasi secara utuh, rapi, dan nyaman dibaca.'
+        ]
+    },
+    {
         id: 'log-1-9-0',
         version: 'v1.9.0',
         date: '2026-09-20',

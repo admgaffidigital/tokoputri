@@ -49,6 +49,8 @@ export const exportOrdersToExcel = async () => {
             "ID Pesanan": o.orderId,
             "Tanggal": date,
             "Nama Pelanggan": custName,
+            "Tipe Pelanggan": o.customerType === 'Member' ? '⭐ Member' : '👤 Pelanggan Umum',
+            "No. WhatsApp": o.customer?.wa ? `+${o.customer.wa}` : '-',
             "Metode Kirim": method,
             "Status": status,
             "Total Item": totalItem,
@@ -65,6 +67,8 @@ export const exportOrdersToExcel = async () => {
         { wch: 25 },
         { wch: 22 },
         { wch: 25 },
+        { wch: 18 },
+        { wch: 18 },
         { wch: 15 },
         { wch: 15 },
         { wch: 12 },
@@ -282,7 +286,8 @@ export const openOrderDetail = (i) => {
                     <div class="flex justify-between items-center"><span class="text-slate-500 dark:text-slate-400 font-bold">Nama</span><span class="font-bold text-slate-900 dark:text-white text-base">${esc(o.customer?.name || '-')}</span></div>
                     ${o.customer?.wa ? `<div class="flex justify-between items-center"><span class="text-slate-500 dark:text-slate-400 font-bold flex items-center gap-1.5"><i class="fa-brands fa-whatsapp text-green-500"></i> WhatsApp</span><a href="javascript:void(0)" onclick="if(typeof window.openWhatsApp==='function') window.openWhatsApp('${esc(o.customer.wa)}'); else window.open('https://wa.me/${esc(o.customer.wa)}', '_blank', 'noopener,noreferrer');" class="font-bold text-green-600 dark:text-green-400 hover:underline cursor-pointer">+${esc(o.customer.wa)}</a></div>` : ''}
                     <div class="flex justify-between items-center"><span class="text-slate-500 dark:text-slate-400 font-bold">Tipe Pemesan</span><span class="text-xs font-bold px-2.5 py-1 rounded-lg ${o.customerType === 'Member' ? 'bg-amber-50 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400 border border-amber-300 dark:border-amber-700' : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400 border border-slate-200 dark:border-slate-700'}">${o.customerType === 'Member' ? '⭐ Member Resmi' : '👤 Pelanggan Umum'}</span></div>
-                    ${o.customer?.wa ? `<button type="button" onclick="saveOrderCustomerToDB('${esc(o.customer.name || '')}','${esc(o.customer.wa)}')" class="w-full py-2.5 rounded-xl ${o.customerType === 'Member' ? 'bg-slate-50 dark:bg-slate-900/30 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400' : 'bg-amber-500 hover:bg-amber-600 text-white shadow-md shadow-amber-500/20'} text-[11px] font-black uppercase tracking-widest flex items-center justify-center gap-2 transition-all active:scale-95"><i class="fa-solid fa-address-book"></i> ${o.customerType === 'Member' ? 'Perbarui Data Member di Database' : '+ Konfirmasi & Daftarkan Sebagai Member'}</button>` : ''}
+                    ${o.customer?.wa && o.customerType !== 'Member' ? `<button type="button" onclick="saveOrderCustomerToDB('${esc(o.customer.name || '')}','${esc(o.customer.wa)}','${esc(o.orderId)}')" class="w-full py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 active:scale-95 text-white shadow-md shadow-amber-500/20 text-[11px] font-black uppercase tracking-widest flex items-center justify-center gap-2 transition-all"><i class="fa-solid fa-address-book"></i> + Konfirmasi &amp; Daftarkan Sebagai Member</button>` : ''}
+                    ${o.customerType === 'Member' ? `<div class="w-full py-2.5 rounded-xl bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-400 text-[11px] font-black uppercase tracking-widest flex items-center justify-center gap-2"><i class="fa-solid fa-circle-check"></i> Terverifikasi — Data Member Terkunci</div>` : ''}
                     <div class="border-t border-dashed border-slate-200 dark:border-slate-700 pt-4">
                         <span class="text-slate-500 dark:text-slate-400 font-bold flex items-center gap-2 mb-2.5"><i class="fa-solid fa-map-location-dot"></i> Alamat Pemesan (${o.customer?.deliveryMethod === 'delivery' ? 'Dikirim' : 'Ambil di Toko'})</span>
                         <div class="bg-slate-50 dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-700 font-bold text-slate-700 dark:text-slate-300 leading-relaxed shadow-inner text-sm">${esc(o.customer?.address || '-')}</div>
@@ -401,7 +406,7 @@ export const openOrderDetail = (i) => {
 /**
  * Simpan data kontak pelanggan dari pesanan ke Database Pelanggan CMS
  */
-export const saveOrderCustomerToDB = async (name, waRaw) => {
+export const saveOrderCustomerToDB = async (name, waRaw, orderId = null) => {
     const normalizeFn = typeof window.normalizeWA === 'function' 
         ? window.normalizeWA 
         : (v) => String(v || '').replace(/\D/g, '').replace(/^0/, '62');
@@ -412,11 +417,30 @@ export const saveOrderCustomerToDB = async (name, waRaw) => {
         const ref = db.collection("freshmart").doc("cms_data").collection("customers").doc(phone);
         const existing = await ref.get();
         if (existing.exists) {
-            await ref.set({ name: name || existing.data().name }, { merge: true });
-            showToast("Data pelanggan sudah ada, nama diperbarui.");
-        } else {
-            await ref.set({ id: parseInt(phone, 10), name: name || '-', phone: phone, points: 0 });
-            showToast("✅ Pelanggan baru disimpan ke database!");
+            // Nomor sudah terdaftar — nama TIDAK BOLEH diubah lewat sini, hanya admin CMS yang bisa edit
+            showToast(`⚠️ Nomor ini sudah terdaftar atas nama: ${existing.data().name}`);
+            hLoad();
+            return;
+        }
+        // Pelanggan baru — simpan dengan nama pertama kali, tidak bisa diubah oleh pelanggan
+        await ref.set({
+            id: parseInt(phone, 10),
+            name: name || '-',
+            phone: phone,
+            points: 0,
+            registeredAt: Date.now()
+        });
+        // Update customerType pesanan ini menjadi 'Member'
+        if (orderId) {
+            await db.collection("freshmart_orders").doc(orderId).update({ customerType: 'Member' });
+            // Update data lokal supaya UI langsung reload
+            const idx = gOrds.findIndex(o => o.orderId === orderId);
+            if (idx !== -1) gOrds[idx].customerType = 'Member';
+        }
+        showToast("✅ Pelanggan berhasil didaftarkan sebagai Member!");
+        // Refresh detail pesanan agar badge langsung berubah
+        if (orderId && typeof window.openOrderDetail === 'function') {
+            setTimeout(() => window.openOrderDetail(orderId), 400);
         }
     } catch(e) { 
         console.error('Gagal simpan pelanggan:', e); 

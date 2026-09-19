@@ -78,15 +78,15 @@ jobs:
             
             Unduh file installer **TokoPutri.apk** di bawah untuk dipasang di smartphone Android.
             
-            **Pembaruan Fitur Terbaru (v1.9.0):**
-            - 📍 **Drop-Point Delivery (Kirim ke Lokasi Berbeda / Proyek)**: Dukungan pemesanan dari rumah/kantor untuk dikirim langsung ke lokasi proyek, tukang, kontraktor, atau mandor di lapangan.
-            - 📐 **Kalkulasi Ongkir Presisi Drop-Point**: Perhitungan tarif ongkir otomatis dihitung akurat dari Toko ke titik koordinat GPS / Google Maps lokasi tujuan proyek.
-            - 💬 **Notifikasi WhatsApp Cerdas Ganda**: Admin dapat mengirim notifikasi konfirmasi ke pembeli sekaligus notifikasi koordinat & status kirim ke nomor WhatsApp penerima di proyek.
-            - 📑 **Dokumen Cetak Resmi (Invoice & Surat Jalan A4)**: Format cetak resmi terpisah antara penanggung jawab tagihan (Pemesan) dan penerima lapangan (Drop-Point) untuk supir/kurir toko.
-            - 💼 **Smart Tempo CRM & Penagihan Otomatis**: Panel analitik piutang jatuh tempo, filter cerdas, dan 1-klik tagih WhatsApp resmi lengkap dengan rincian rekening toko.
-            - 📋 **Surat Penawaran Harga (SPH A4 / PDF)**: Generator SPH resmi langsung dari keranjang belanja untuk kebutuhan RAB dan tender pengadaan proyek.
-            - 🛡️ **Pemisahan Pelanggan Umum & Member Resmi**: Proteksi hak akses member, sistem poin, dan cash tempo.
-            - 🖨️ **Universal POS & Struk Kasir**: Bluetooth Thermal ESC/POS, USB OTG, LAN/WiFi, dan Android Native System Print (58mm & 80mm).
+            **Pembaruan Fitur Terbaru (v1.9.1):**
+            - 🔒 **Sistem Identitas Member Terkunci & Anti Duplikasi**: Nama member resmi tersimpan permanen di database. Pelanggan maupun input form tidak dapat mengubah nama member saat bertransaksi (hanya Admin yang bisa edit di CMS).
+            - 👤 **Otomatisasi Nama Terdaftar pada Pesanan**: Order dari nomor member langsung disinkronkan ke nama terdaftar resmi toko.
+            - 🏷️ **Pembeda Visual Member vs Umum di CMS & Piutang Tempo**: Badge verifikasi hijau untuk Member, badge abu-abu untuk Umum, serta label pembeda pada kartu nota Tempo.
+            - 📊 **Ekspor Excel Rekap Pesanan Lengkap**: Menambahkan kolom Tipe Pelanggan dan Nomor WhatsApp aktif.
+            - 🛡️ **Hardening Cloud Firestore Security Rules**: Proteksi ketat hak create pendaftaran member hanya untuk Admin, dan transaksi checkout hanya boleh mengupdate akumulasi poin loyalty.
+            - 📍 **Drop-Point Delivery (Kirim ke Lokasi Berbeda / Proyek)**: Dukungan pemesanan dari rumah/kantor untuk dikirim langsung ke lokasi proyek, tukang, atau mandor di lapangan.
+            - 💼 **Smart Tempo CRM & Penagihan Otomatis**: Panel analitik piutang jatuh tempo, filter cerdas, dan 1-klik tagih WhatsApp resmi.
+            - 📋 **Surat Penawaran Harga (SPH A4 / PDF)**: Generator SPH resmi langsung dari keranjang belanja untuk kebutuhan RAB proyek.
           files: build-output/TokoPutri.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

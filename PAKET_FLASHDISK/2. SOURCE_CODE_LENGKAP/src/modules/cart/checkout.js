@@ -761,9 +761,12 @@ export const processOrder = async () => {
 
                 // HANYA update data jika memang Member Resmi terdaftar (JANGAN auto-create!)
                 if (isRegisteredMember && memberRef && memberPointsUpdated !== null) {
+                    const registeredName = memberDoc.data().name || cust.name || 'Pelanggan Setia';
+                    // Nama di order selalu pakai nama terdaftar pertama kali
+                    if (oD.customer) oD.customer.name = registeredName;
                     const memberPayload = {
                         points: memberPointsUpdated,
-                        name: cust.name || (memberDoc.data().name || 'Pelanggan Setia'),
+                        name: registeredName,
                         lastOrderAt: Date.now()
                     };
                     transaction.set(memberRef, memberPayload, { merge: true });
@@ -811,9 +814,12 @@ export const processOrder = async () => {
                     oD.finalMemberPoints = memberPointsUpdated;
                     oD.customerType = 'Member';
                     
+                    const registeredName = memberDoc.data().name || cust.name || 'Pelanggan Setia';
+                    // Nama di order selalu pakai nama terdaftar pertama kali
+                    if (oD.customer) oD.customer.name = registeredName;
                     transaction.set(memberRef, { 
                         points: memberPointsUpdated, 
-                        name: cust.name || memberDoc.data().name || 'Pelanggan Setia',
+                        name: registeredName,
                         lastOrderAt: Date.now() 
                     }, { merge: true });
                     finalMemberPoints = memberPointsUpdated;
