@@ -12,6 +12,9 @@ import { el } from './utils.js';
 
 export let viewScrollPos = {};
 export let curViewName = 'view-catalog';
+export let isProgrammaticModalClose = false;
+let programmaticCloseTimer = null;
+export let viewHistoryStack = ['view-catalog'];
 
 /**
  * Mendaftarkan modal yang dibuka ke riwayat browser
@@ -29,7 +32,16 @@ export const requestCloseModal = (name, fH, doClose) => {
         const idx = oMods.lastIndexOf(name);
         if (idx > -1) {
             oMods.splice(idx, 1);
-            try { history.back(); } catch(e) {}
+        }
+        isProgrammaticModalClose = true;
+        if (programmaticCloseTimer) clearTimeout(programmaticCloseTimer);
+        programmaticCloseTimer = setTimeout(() => {
+            isProgrammaticModalClose = false;
+        }, 300);
+        try { 
+            history.back(); 
+        } catch(e) {
+            isProgrammaticModalClose = false;
         }
     }
     doClose();
@@ -39,7 +51,17 @@ export const requestCloseModal = (name, fH, doClose) => {
  * Berpindah tampilan layar (View Switching)
  */
 export const changeView = (v, fH = false) => {
-    if (!fH) history.pushState({ view: v }, '', window.location.href);
+    if (!v) return;
+    if (v === curViewName) return; // Hindari duplikasi ke view yang sama
+    
+    if (!fH) {
+        history.pushState({ view: v }, '', window.location.href);
+        if (v === 'view-catalog') {
+            viewHistoryStack = ['view-catalog'];
+        } else {
+            viewHistoryStack.push(v);
+        }
+    }
     
     // Simpan posisi scroll tampilan sebelumnya
     const prevT = el(curViewName);
@@ -267,6 +289,11 @@ export const closeModalByName = (m) => {
     else if (m === 'printerSettings' && typeof window.closePrinterSettingsModal === 'function') window.closePrinterSettingsModal(true);
     else if (m === 'exitConfirm' && typeof window.closeExitConfirmModal === 'function') window.closeExitConfirmModal(true);
     else if (m === 'appDownload' && typeof window.closeAppDownloadModal === 'function') window.closeAppDownloadModal(true);
+    else if (m === 'voucher' && typeof window.closeVoucherModal === 'function') window.closeVoucherModal(true);
+    else if (m === 'guide' && typeof window.closeShoppingGuideModal === 'function') window.closeShoppingGuideModal(true);
+    else if (m === 'changelog' && typeof window.closeChangelogModal === 'function') window.closeChangelogModal(true);
+    else if (m === 'guarantee' && typeof window.closeQualityGuaranteeModal === 'function') window.closeQualityGuaranteeModal(true);
+    else if (m === 'security' && typeof window.closeSecurityModal === 'function') window.closeSecurityModal(true);
 };
 
 /**
@@ -349,9 +376,17 @@ export const handleAppBackButton = () => {
         return;
     }
 
-    // 3. Jika sedang di view selain view-catalog (beranda), kembali ke beranda
+    // 3. Jika sedang di view selain view-catalog (beranda), kembali berurutan secara terstruktur
     if (curViewName !== 'view-catalog') {
-        changeView('view-catalog');
+        if (window.history.length > 1) {
+            window.history.back();
+        } else {
+            // Fallback jika riwayat browser tidak tersedia: mundur berurutan terstruktur
+            let target = 'view-catalog';
+            if (curViewName === 'view-payment') target = 'view-checkout';
+            else if (curViewName === 'view-checkout') target = 'view-cart';
+            changeView(target);
+        }
         return;
     }
 
@@ -370,40 +405,58 @@ export const handleAppBackButton = () => {
  */
 export const setupHistoryRouter = () => {
     initPullToRefresh();
+    
+    // Pastikan root history entry selalu memiliki state { view: 'view-catalog' }
+    try {
+        if (!history.state || !history.state.view) {
+            history.replaceState({ view: 'view-catalog' }, '', window.location.href);
+        }
+    } catch(e) {}
+
     window.addEventListener('popstate', e => {
-        if (oMods.length) {
+        // Jika penutupan modal dipicu secara terprogram (klik tombol X/backdrop), lewati event popstate
+        if (isProgrammaticModalClose) {
+            isProgrammaticModalClose = false;
+            if (programmaticCloseTimer) clearTimeout(programmaticCloseTimer);
+            return;
+        }
+
+        // 1. Jika ada modal yang terbuka, tutup modal teratas (LIFO)
+        if (oMods.length > 0) {
             const m = oMods.pop();
             closeModalByName(m);
-        } else {
-            const state = e.state || {};
-            const v = state.view || null;
-            const isAdminLoggedIn = window.isAdm || window.__localIsAdm;
+            return;
+        }
 
-            if (isAdminLoggedIn) {
-                if (v === 'view-admin') {
-                    changeView('view-admin', true);
-                    if (state.tab && typeof window.openAdminTab === 'function') window.openAdminTab(state.tab, true);
-                    else if (typeof window.openAdminMenu === 'function') window.openAdminMenu();
-                } else {
-                    history.pushState({ view: 'view-admin' }, '', window.location.href);
-                    if (typeof window.showConfirm === 'function') {
-                        window.showConfirm(
-                            "Keluar Seller",
-                            "Apakah anda akan keluar dari dashboard seller?",
-                            () => { if (typeof window.logoutAdmin === 'function') window.logoutAdmin(); },
-                            "Ya, Keluar",
-                            true
-                        );
-                    }
-                }
+        // 2. Sinkronkan stack view dan navigasi halaman berurutan
+        const state = e.state || {};
+        const v = state.view || null;
+        const isAdminLoggedIn = window.isAdm || window.__localIsAdm;
+
+        if (isAdminLoggedIn) {
+            if (v === 'view-admin') {
+                changeView('view-admin', true);
+                if (state.tab && typeof window.openAdminTab === 'function') window.openAdminTab(state.tab, true);
+                else if (typeof window.openAdminMenu === 'function') window.openAdminMenu();
             } else {
-                if (v) {
-                    let targetView = v;
-                    if (v === 'view-admin') targetView = 'view-admin-login';
-                    changeView(targetView, true);
-                } else {
-                    changeView('view-catalog', true);
+                history.pushState({ view: 'view-admin' }, '', window.location.href);
+                if (typeof window.showConfirm === 'function') {
+                    window.showConfirm(
+                        "Keluar Seller",
+                        "Apakah anda akan keluar dari dashboard seller?",
+                        () => { if (typeof window.logoutAdmin === 'function') window.logoutAdmin(); },
+                        "Ya, Keluar",
+                        true
+                    );
                 }
+            }
+        } else {
+            if (v) {
+                let targetView = v;
+                if (v === 'view-admin') targetView = 'view-admin-login';
+                changeView(targetView, true);
+            } else {
+                changeView('view-catalog', true);
             }
         }
     });
@@ -421,6 +474,8 @@ window.handleAppBackButton = handleAppBackButton;
 window.openExitConfirmModal = openExitConfirmModal;
 window.closeExitConfirmModal = closeExitConfirmModal;
 window.confirmExitApp = confirmExitApp;
+window.isProgrammaticModalClose = isProgrammaticModalClose;
+window.viewHistoryStack = viewHistoryStack;
 try {
     Object.defineProperty(window, 'curViewName', {
         get: () => curViewName,

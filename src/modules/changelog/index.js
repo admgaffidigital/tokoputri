@@ -9,6 +9,7 @@
 import { appData } from '../../core/state.js';
 import { esc, el } from '../../core/utils.js';
 import { getCombinedChangelog, getLatestVersion } from '../../config/changelog.js';
+import { pushModalHistory, requestCloseModal } from '../../core/router.js';
 
 let currentChangelogFilter = 'all';
 
@@ -264,6 +265,9 @@ export const openChangelogModal = (initialCategory = 'all') => {
     filterChangelog(initialCategory);
 
     // Animasi tampil tanpa kedip
+    if (m.style.display !== 'flex') {
+        pushModalHistory('changelog');
+    }
     m.style.display = 'flex';
     void m.offsetWidth; // Force synchronous browser reflow
     requestAnimationFrame(() => {
@@ -276,17 +280,25 @@ export const openChangelogModal = (initialCategory = 'all') => {
 /**
  * Tutup modal catatan rilis
  */
-export const closeChangelogModal = () => {
+export const closeChangelogModal = (fH = false) => {
     const m = el('changelog-modal');
     if (!m || m.style.display === 'none') return;
 
-    m.classList.add('opacity-0');
-    const box = el('changelog-modal-box');
-    if (box) box.classList.add('translate-y-full', 'sm:translate-y-8');
+    const doClose = () => {
+        m.classList.add('opacity-0');
+        const box = el('changelog-modal-box');
+        if (box) box.classList.add('translate-y-full', 'sm:translate-y-8');
 
-    setTimeout(() => {
-        m.style.display = 'none';
-    }, 300);
+        setTimeout(() => {
+            m.style.display = 'none';
+        }, 300);
+    };
+
+    if (typeof requestCloseModal === 'function') {
+        requestCloseModal('changelog', fH, doClose);
+    } else {
+        doClose();
+    }
 };
 
 // Expose ke global window

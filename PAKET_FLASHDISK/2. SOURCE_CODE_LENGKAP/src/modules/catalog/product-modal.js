@@ -23,13 +23,15 @@ import {
 } from '../../core/utils.js';
 
 import { updCart } from '../cart/cart.js';
+import { curViewName } from '../../core/router.js';
 
 window.cSlideIdx = 0;
+let productNavStack = [];
 
 /**
  * Buka modal detail produk berdasarkan ID produk
  */
-export const openProductModal = i => {
+export const openProductModal = (i, isFromNavStack = false) => {
     window.cSlideIdx = 0;
     const p = appData.products.find(x => x && x.id != null && String(x.id) === String(i));
     if (!p) return;
@@ -50,6 +52,20 @@ export const openProductModal = i => {
     if (useStk && totalAvail <= 0) {
         showToast('Maaf, stok produk ini sedang kosong');
         return;
+    }
+
+    const m = el('product-modal'), c = el('product-modal-content');
+    const isModalCurrentlyVisible = m && !m.classList.contains('hidden');
+
+    // Jika berpindah ke produk lain saat modal sudah terbuka (misal klik Produk Sejenis),
+    // simpan produk sebelumnya ke stack navigasi produk agar tombol back dapat kembali berurutan
+    if (!isFromNavStack && isModalCurrentlyVisible && cProd && cProd.id && String(cProd.id) !== String(p.id)) {
+        productNavStack.push(cProd.id);
+        if (typeof window.pushModalHistory === 'function') {
+            window.pushModalHistory('product');
+        } else {
+            oMods.push('product');
+        }
     }
     
     setCProd(p);
@@ -147,14 +163,17 @@ export const openProductModal = i => {
     // Render produk sejenis / alternatif pilihan
     renderRelatedProducts(p);
     
-    const m = el('product-modal'), c = el('product-modal-content');
     if (m && c) {
         const urlParams = new URLSearchParams(window.location.search);
         if (urlParams.get('p') !== String(p.id)) {
             urlParams.set('p', p.id);
-            window.history.pushState({modal: 'product'}, p.name, window.location.pathname + '?' + urlParams.toString());
-            if (m.classList.contains('hidden')) {
-                oMods.push('product');
+            if (!isFromNavStack && !isModalCurrentlyVisible) {
+                window.history.pushState({modal: 'product'}, p.name, window.location.pathname + '?' + urlParams.toString());
+                if (m.classList.contains('hidden')) {
+                    oMods.push('product');
+                }
+            } else {
+                window.history.replaceState({modal: 'product'}, p.name, window.location.pathname + '?' + urlParams.toString());
             }
         }
         if (m.classList.contains('hidden')) {
@@ -171,40 +190,65 @@ export const openProductModal = i => {
  */
 export const closeProductModal = (fH = false) => {
     const m = el('product-modal'), c = el('product-modal-content');
-    if (m && c) {
-        const doClose = () => {
-            closeModalAnim(m, c);
-            const vc = el('product-modal-video-container');
-            if (vc) {
-                vc.innerHTML = '';
-                vc.classList.add('hidden');
-            }
+    if (!m || !c) return;
 
-            // Restore URL, Meta Tags, & JSON-LD
-            const urlParams = new URLSearchParams(window.location.search);
-            urlParams.delete('p');
-            let newUrl = window.location.pathname;
-            if (urlParams.toString()) newUrl += '?' + urlParams.toString();
-            window.history.replaceState({}, "Toko Putri", newUrl);
-            
-            if (typeof window.updateSEO === 'function') {
-                window.updateSEO(
-                    "Toko Putri", 
-                    "Toko Putri - Solusi grosir dan e-commerce terpercaya untuk alat teknik, perkakas, dan perlengkapan pertukangan berkualitas dengan harga terbaik.",
-                    getOptImg(appData.store.logo, 'w300-rw'),
-                    window.location.origin + newUrl
-                );
-            }
-            
-            const pScript = document.getElementById('seo-product');
-            if (pScript) pScript.remove();
-        };
+    // Jika back ditekan dan ada riwayat navigasi produk sejenis (related products stack):
+    // Kembali ke produk sebelumnya secara berurutan
+    if (fH && productNavStack.length > 0) {
+        const prevId = productNavStack.pop();
+        openProductModal(prevId, true);
+        return;
+    }
 
-        if (typeof window.requestCloseModal === 'function') {
-            window.requestCloseModal('product', fH, doClose);
-        } else {
-            doClose();
+    // Jika tombol 'X' ditekan langsung, tutup seluruh stack modal produk secara bersih
+    if (!fH && productNavStack.length > 0) {
+        const extraPops = productNavStack.length;
+        productNavStack = [];
+        for (let i = 0; i < extraPops; i++) {
+            const idx = oMods.lastIndexOf('product');
+            if (idx > -1) oMods.splice(idx, 1);
         }
+    }
+
+    const doClose = () => {
+        closeModalAnim(m, c);
+        const vc = el('product-modal-video-container');
+        if (vc) {
+            vc.innerHTML = '';
+            vc.classList.add('hidden');
+        }
+
+        // Restore URL, Meta Tags, & JSON-LD
+        const urlParams = new URLSearchParams(window.location.search);
+        urlParams.delete('p');
+        let newUrl = window.location.pathname;
+        if (urlParams.toString()) newUrl += '?' + urlParams.toString();
+        
+        // Pertahankan history state aktif agar tidak merusak state view
+        const curState = (window.history.state && typeof window.history.state === 'object') ? { ...window.history.state } : {};
+        delete curState.modal;
+        if (!curState.view) curState.view = curViewName || 'view-catalog';
+        try {
+            window.history.replaceState(curState, "Toko Putri", newUrl);
+        } catch(e) {}
+        
+        if (typeof window.updateSEO === 'function') {
+            window.updateSEO(
+                "Toko Putri", 
+                "Toko Putri - Solusi grosir dan e-commerce terpercaya untuk alat teknik, perkakas, dan perlengkapan pertukangan berkualitas dengan harga terbaik.",
+                getOptImg(appData.store.logo, 'w300-rw'),
+                window.location.origin + newUrl
+            );
+        }
+        
+        const pScript = document.getElementById('seo-product');
+        if (pScript) pScript.remove();
+    };
+
+    if (typeof window.requestCloseModal === 'function') {
+        window.requestCloseModal('product', fH, doClose);
+    } else {
+        doClose();
     }
 };
 
@@ -837,7 +881,12 @@ export const buyNowProduct = () => {
     // dan me-reset tampilan kembali ke view-catalog (beranda). Bug terpental ini dihindari
     // dengan melewati manipulasi History API saat kita langsung berpindah view.
     closeProductModal(true);
-    if (typeof window.changeView === 'function') window.changeView('view-checkout');
+    if (typeof window.changeView === 'function') {
+        try {
+            window.history.replaceState({ view: 'view-checkout' }, '', window.location.pathname);
+        } catch(e) {}
+        window.changeView('view-checkout', true);
+    }
 };
 
 /**
@@ -1260,7 +1309,10 @@ export const quickVariantBuyNow = () => {
     closeQuickVariantSheet(true);
 
     if (typeof window.changeView === 'function') {
-        window.changeView('view-checkout');
+        try {
+            window.history.replaceState({ view: 'view-checkout' }, '', window.location.pathname);
+        } catch(e) {}
+        window.changeView('view-checkout', true);
     }
 };
 

@@ -9,6 +9,7 @@
 import { appData } from '../../core/state.js';
 import { esc } from '../../core/utils.js';
 import { getLatestVersion } from '../../config/changelog.js';
+import { pushModalHistory, requestCloseModal } from '../../core/router.js';
 
 /**
  * Render footer toko resmi ke container #storefront-footer-container
@@ -393,18 +394,27 @@ export const openQualityGuaranteeModal = () => {
         m.style.transition = 'opacity 0.25s ease';
         m.style.opacity = '1';
     });
+    pushModalHistory('guarantee');
 };
 
-export const closeQualityGuaranteeModal = () => {
-    const m = document.getElementById('guarantee-modal');
-    if (!m || m.style.display === 'none') return;
-    m.style.opacity = '0';
-    m.style.transition = 'opacity 0.25s ease';
-    setTimeout(() => {
-        m.style.display = 'none';
-        m.style.opacity = '';
-        m.style.transition = '';
-    }, 250);
+export const closeQualityGuaranteeModal = (fH = false) => {
+    const doClose = () => {
+        const m = document.getElementById('guarantee-modal');
+        if (!m || m.style.display === 'none') return;
+        m.style.opacity = '0';
+        m.style.transition = 'opacity 0.25s ease';
+        setTimeout(() => {
+            m.style.display = 'none';
+            m.style.opacity = '';
+            m.style.transition = '';
+        }, 250);
+    };
+
+    if (typeof requestCloseModal === 'function') {
+        requestCloseModal('guarantee', fH, doClose);
+    } else {
+        doClose();
+    }
 };
 
 /**
@@ -462,18 +472,27 @@ export const openSecurityModal = () => {
         m.style.transition = 'opacity 0.25s ease';
         m.style.opacity = '1';
     });
+    pushModalHistory('security');
 };
 
-export const closeSecurityModal = () => {
-    const m = document.getElementById('security-modal');
-    if (!m || m.style.display === 'none') return;
-    m.style.opacity = '0';
-    m.style.transition = 'opacity 0.25s ease';
-    setTimeout(() => {
-        m.style.display = 'none';
-        m.style.opacity = '';
-        m.style.transition = '';
-    }, 250);
+export const closeSecurityModal = (fH = false) => {
+    const doClose = () => {
+        const m = document.getElementById('security-modal');
+        if (!m || m.style.display === 'none') return;
+        m.style.opacity = '0';
+        m.style.transition = 'opacity 0.25s ease';
+        setTimeout(() => {
+            m.style.display = 'none';
+            m.style.opacity = '';
+            m.style.transition = '';
+        }, 250);
+    };
+
+    if (typeof requestCloseModal === 'function') {
+        requestCloseModal('security', fH, doClose);
+    } else {
+        doClose();
+    }
 };
 
 // Export ke window untuk kemudahan panggil

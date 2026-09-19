@@ -792,7 +792,10 @@ export const processOrder = async () => {
             
             if (typeof window.updCart === 'function') window.updCart();
             if (typeof window.renderCart === 'function') window.renderCart();
-            if (typeof window.changeView === 'function') window.changeView('view-catalog');
+            try {
+                window.history.replaceState({ view: 'view-catalog' }, '', window.location.pathname);
+            } catch(e) {}
+            if (typeof window.changeView === 'function') window.changeView('view-catalog', true);
             if (typeof window.showToast === 'function') window.showToast("Pesanan Dibuat! 🎉");
         }, 2000);
         

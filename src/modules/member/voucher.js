@@ -8,6 +8,7 @@
 
 import { appData, cart, vouch, setVouch, cust } from '../../core/state.js';
 import { el, show, hide, getV, setH, fCur, esc } from '../../core/utils.js';
+import { pushModalHistory, requestCloseModal } from '../../core/router.js';
 
 /**
  * Terapkan kode voucher yang dimasukkan pembeli saat checkout
@@ -177,19 +178,26 @@ export const useVoucherCode = (code) => {
     }
 };
 
-/**
- * Tutup modal voucher
- */
-export const closeVoucherModal = () => {
-    const m = document.getElementById('voucher-modal');
-    if (!m || m.style.display === 'none') return;
-    m.style.opacity = '0';
-    m.style.transition = 'opacity 0.25s ease';
-    setTimeout(() => {
-        m.style.display = 'none';
-        m.style.opacity = '';
-        m.style.transition = '';
-    }, 250);
+export const closeVoucherModal = (fH = false) => {
+    const doClose = () => {
+        const m = document.getElementById('voucher-modal');
+        if (!m || m.style.display === 'none') return;
+        m.style.opacity = '0';
+        m.style.transition = 'opacity 0.25s ease';
+        setTimeout(() => {
+            m.style.display = 'none';
+            m.style.opacity = '';
+            m.style.transition = '';
+        }, 250);
+    };
+
+    if (typeof requestCloseModal === 'function') {
+        requestCloseModal('voucher', fH, doClose);
+    } else if (typeof window.requestCloseModal === 'function') {
+        window.requestCloseModal('voucher', fH, doClose);
+    } else {
+        doClose();
+    }
 };
 
 // ─── Expose ke window ─────────────────────────────────────────

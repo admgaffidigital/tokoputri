@@ -9,6 +9,7 @@
 import { db, firebase } from '../../config/firebase.js';
 import { isSaving, setIsSaving, oMods } from '../../core/state.js';
 import { el, show, hide, setH, getV, esc, showToast, sLoad, hLoad } from '../../core/utils.js';
+import { requestCloseModal } from '../../core/router.js';
 
 window.reviewPhotoFile = null;
 window.reviewRating = 0;
@@ -113,16 +114,26 @@ export const removeReviewPhoto = () => {
 export const closeReviewModal = (fH = false) => {
     const m = document.getElementById('review-modal');
     if (!m || m.style.display === 'none') return;
-    m.style.opacity = '0'; 
-    m.style.transition = 'opacity 0.25s ease';
-    setTimeout(() => { 
-        m.style.display = 'none'; 
-        m.style.opacity = ''; 
-        m.style.transition = ''; 
-    }, 250);
-    if (!fH && oMods.length && oMods[oMods.length - 1] === 'review') { 
-        oMods.pop(); 
-        history.back(); 
+    const doClose = () => {
+        m.style.opacity = '0'; 
+        m.style.transition = 'opacity 0.25s ease';
+        setTimeout(() => { 
+            m.style.display = 'none'; 
+            m.style.opacity = ''; 
+            m.style.transition = ''; 
+        }, 250);
+    };
+
+    if (typeof requestCloseModal === 'function') {
+        requestCloseModal('review', fH, doClose);
+    } else if (typeof window.requestCloseModal === 'function') {
+        window.requestCloseModal('review', fH, doClose);
+    } else {
+        if (!fH && oMods.length && oMods[oMods.length - 1] === 'review') { 
+            oMods.pop(); 
+            try { history.back(); } catch(e) {}
+        }
+        doClose();
     }
 };
 
