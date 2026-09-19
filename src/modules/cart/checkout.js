@@ -11,6 +11,88 @@ import { el, show, hide, toggleCls, getV, setV, setIn, setH, esc, fCur, sL, ssL,
 import { db, firebase } from '../../config/firebase.js';
 
 /**
+ * Toggle tampilan form drop-point (Kirim ke Lokasi Berbeda)
+ */
+export const toggleDropPoint = () => {
+    const toggle = el('toggle-droppoint');
+    const form = el('droppoint-form');
+    if (!toggle || !form) return;
+    if (toggle.checked) {
+        form.classList.remove('hidden');
+    } else {
+        form.classList.add('hidden');
+        // Reset data drop-point jika dinonaktifkan
+        cust.dropPoint = null;
+        const dpLocStatus = el('dp-location-status');
+        if (dpLocStatus) dpLocStatus.classList.add('hidden');
+        const btnDpLoc = el('btn-dp-location');
+        const textDpLoc = el('text-dp-location');
+        if (btnDpLoc) btnDpLoc.innerHTML = '<i class="fa-solid fa-location-crosshairs text-sm text-rose-500"></i> <span id="text-dp-location">Sematkan GPS Lokasi Tujuan</span>';
+    }
+};
+
+/**
+ * Ambil GPS untuk lokasi tujuan (Drop-Point)
+ */
+export const getDPLocation = () => {
+    if (!navigator.geolocation) {
+        if (typeof window.showToast === 'function') window.showToast('GPS tidak didukung');
+        return;
+    }
+    const btn = el('btn-dp-location');
+    if (btn) btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-sm"></i> Mengambil GPS...';
+    navigator.geolocation.getCurrentPosition(
+        (pos) => {
+            if (!cust.dropPoint) cust.dropPoint = {};
+            cust.dropPoint.lat = pos.coords.latitude;
+            cust.dropPoint.lng = pos.coords.longitude;
+            const statusEl = el('dp-location-status');
+            if (statusEl) statusEl.classList.remove('hidden');
+            if (btn) btn.innerHTML = '<i class="fa-solid fa-location-crosshairs text-sm text-rose-500"></i> <span id="text-dp-location">GPS Berhasil! Tap untuk Update</span>';
+            if (typeof window.showToast === 'function') window.showToast('GPS Lokasi Tujuan Berhasil!');
+        },
+        () => {
+            if (btn) btn.innerHTML = '<i class="fa-solid fa-location-crosshairs text-sm text-rose-500"></i> <span id="text-dp-location">Sematkan GPS Lokasi Tujuan</span>';
+            if (typeof window.showToast === 'function') window.showToast('Gagal akses GPS');
+        },
+        { enableHighAccuracy: true, timeout: 15000 }
+    );
+};
+
+/**
+ * Handle input maps (koordinat/link) untuk lokasi tujuan drop-point
+ */
+export const handleDPMapsInput = (val) => {
+    if (!val || val.trim().length < 5) return;
+    const parseGeo = typeof window.parseGeoCoordinates === 'function' ? window.parseGeoCoordinates : null;
+    const coords = parseGeo ? parseGeo(val) : null;
+    if (coords) {
+        if (!cust.dropPoint) cust.dropPoint = {};
+        cust.dropPoint.lat = parseFloat(coords.lat);
+        cust.dropPoint.lng = parseFloat(coords.lng);
+        const statusEl = el('dp-location-status');
+        if (statusEl) statusEl.classList.remove('hidden');
+        if (typeof window.showToast === 'function') window.showToast('Koordinat Lokasi Tujuan berhasil!');
+    }
+};
+
+/**
+ * Paste clipboard ke input maps drop-point
+ */
+export const pasteDPMapsInput = async () => {
+    try {
+        const text = await navigator.clipboard.readText();
+        const inp = el('dp-maps-input');
+        if (inp) {
+            inp.value = text;
+            handleDPMapsInput(text);
+        }
+    } catch(e) {
+        if (typeof window.showToast === 'function') window.showToast('Gagal membaca clipboard');
+    }
+};
+
+/**
  * Validasi form pengiriman dan lanjut ke ringkasan pembayaran
  */
 export const validateAndGoToPayment = () => {
@@ -53,9 +135,55 @@ export const validateAndGoToPayment = () => {
         }
         const getDist = typeof window.getDist === 'function' ? window.getDist : (() => 0);
         cust.distance = getDist(parseFloat(appData.store.lat || 0), parseFloat(appData.store.lng || 0), cust.lat, cust.lng) || 0;
+
+        // ─── LOGIKA DROP-POINT DELIVERY ───────────────────────────────
+        const toggleDP = el('toggle-droppoint');
+        const isDPActive = toggleDP && toggleDP.checked;
+        if (isDPActive) {
+            let dpName = getV('dp-receiver-name').trim();
+            let dpWaRaw = getV('dp-receiver-wa').replace(/\D/g, '');
+            let dpAddr = getV('dp-address').trim();
+            if (!dpName) {
+                if (typeof window.showToast === 'function') window.showToast('Nama penerima di lokasi tujuan wajib diisi!');
+                return;
+            }
+            if (!dpWaRaw || dpWaRaw.length < 9) {
+                if (typeof window.showToast === 'function') window.showToast('Nomor WA penerima di lokasi tujuan wajib diisi (min. 9 digit)!');
+                return;
+            }
+            if (!dpAddr) {
+                if (typeof window.showToast === 'function') window.showToast('Alamat lokasi tujuan wajib diisi!');
+                return;
+            }
+            if (!cust.dropPoint || !cust.dropPoint.lat || !cust.dropPoint.lng) {
+                if (typeof window.showToast === 'function') window.showToast('GPS / Koordinat lokasi tujuan wajib diisi untuk kalkulasi ongkir!');
+                return;
+            }
+            // Format nomor WA penerima
+            if (dpWaRaw.startsWith('0')) dpWaRaw = '62' + dpWaRaw.substring(1);
+            else if (!dpWaRaw.startsWith('62')) dpWaRaw = '62' + dpWaRaw;
+
+            // Simpan data drop-point ke cust
+            cust.dropPoint.name = dpName;
+            cust.dropPoint.wa = dpWaRaw;
+            cust.dropPoint.address = dpAddr;
+
+            // KUNCI: Hitung ongkir dari TOKO ke LOKASI TUJUAN (bukan lokasi pembeli)
+            cust.distance = getDist(
+                parseFloat(appData.store.lat || 0),
+                parseFloat(appData.store.lng || 0),
+                cust.dropPoint.lat,
+                cust.dropPoint.lng
+            ) || 0;
+        } else {
+            // Mode normal: hapus data drop-point jika ada
+            cust.dropPoint = null;
+        }
+        // ─── END LOGIKA DROP-POINT ────────────────────────────────────
     } else {
         cust.address = "Ambil di Toko"; 
         cust.distance = 0;
+        cust.dropPoint = null;
     }
     
     if (vouch && vouch.type && vouch.type.includes('shipping') && m !== 'delivery') {
@@ -208,8 +336,27 @@ export const rPay = () => {
     
     setIn('payment-cust-name', cust.name || '-');
     if (el('payment-cust-wa')) el('payment-cust-wa').textContent = cust.wa ? '+' + cust.wa : '-';
-    setIn('payment-cust-method', cust.deliveryMethod === 'delivery' ? `Dikirim (${cust.distance.toFixed(1)}km)` : 'Ambil di Toko');
+    if (cust.dropPoint && cust.dropPoint.lat) {
+        setIn('payment-cust-method', `Kirim ke Lokasi Berbeda (${cust.distance.toFixed(1)}km dari Toko)`);
+    } else {
+        setIn('payment-cust-method', cust.deliveryMethod === 'delivery' ? `Dikirim (${cust.distance.toFixed(1)}km)` : 'Ambil di Toko');
+    }
     setIn('payment-cust-address', cust.address || '-');
+
+    // ─── TAMPILKAN INFO DROP-POINT DI VIEW-PAYMENT ───────────────
+    const dpInfoEl = el('payment-droppoint-info');
+    if (dpInfoEl) {
+        if (cust.dropPoint && cust.dropPoint.lat && cust.dropPoint.name) {
+            dpInfoEl.classList.remove('hidden');
+            setIn('payment-dp-name', cust.dropPoint.name || '-');
+            const dpWaEl = el('payment-dp-wa');
+            if (dpWaEl) dpWaEl.textContent = cust.dropPoint.wa ? '+' + cust.dropPoint.wa : '-';
+            setIn('payment-dp-address', cust.dropPoint.address || '-');
+        } else {
+            dpInfoEl.classList.add('hidden');
+        }
+    }
+    // ─── END DROP-POINT DISPLAY ───────────────────────────────────
     
     setH('payment-items-preview', cart.map(i => {
         const variantText = i.variantName ? `<span class="bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-1.5 py-0.5 rounded-lg text-[9px] font-bold">${esc(i.variantName)}</span>` : '';
@@ -444,6 +591,8 @@ export const processOrder = async () => {
             timestamp: firebase.firestore.FieldValue.serverTimestamp(), 
             dateString: new Date().toISOString(),
             customer: cust, 
+            isDropPoint: !!(cust.dropPoint && cust.dropPoint.lat && cust.dropPoint.name),
+            dropPoint: (cust.dropPoint && cust.dropPoint.lat && cust.dropPoint.name) ? { ...cust.dropPoint } : null,
             items: cart.map(i => ({
                 ...i, 
                 qty: parseFloat(i.qty), 
@@ -773,10 +922,26 @@ export const processOrder = async () => {
             const bInp = el('bukti-file-input'); 
             if (bInp) bInp.value = '';
             
-            setCust({ name: '', address: '', lat: null, lng: null, deliveryMethod: 'delivery', distance: 0, note: '', wa: '' }); 
+            setCust({ name: '', address: '', lat: null, lng: null, deliveryMethod: 'delivery', distance: 0, note: '', wa: '', dropPoint: null }); 
             setVouch(null);
             setSelectedReward(null);
             
+            // Reset UI drop-point
+            const dpToggle = el('toggle-droppoint');
+            const dpForm = el('droppoint-form');
+            if (dpToggle) dpToggle.checked = false;
+            if (dpForm) dpForm.classList.add('hidden');
+            const dpLocStatus = el('dp-location-status');
+            if (dpLocStatus) dpLocStatus.classList.add('hidden');
+            const dpDpInfo = el('payment-droppoint-info');
+            if (dpDpInfo) dpDpInfo.classList.add('hidden');
+            const dpNameEl = el('dp-receiver-name'); if (dpNameEl) dpNameEl.value = '';
+            const dpWaEl = el('dp-receiver-wa'); if (dpWaEl) dpWaEl.value = '';
+            const dpAddrEl = el('dp-address'); if (dpAddrEl) dpAddrEl.value = '';
+            const dpMapsEl = el('dp-maps-input'); if (dpMapsEl) dpMapsEl.value = '';
+            const btnDpLoc = el('btn-dp-location');
+            if (btnDpLoc) btnDpLoc.innerHTML = '<i class="fa-solid fa-location-crosshairs text-sm text-rose-500"></i> <span id="text-dp-location">Sematkan GPS Lokasi Tujuan</span>';
+
             const memBanner = el('member-status-banner'); 
             if (memBanner) hide(memBanner);
             hide('payment-option-tempo');
@@ -829,6 +994,10 @@ export const processOrder = async () => {
 // ─── Expose ke window untuk kompatibilitas onclick di HTML ──────
 window.validateAndGoToPayment = validateAndGoToPayment;
 window.toggleDeliveryMethod = toggleDeliveryMethod;
+window.toggleDropPoint = toggleDropPoint;
+window.getDPLocation = getDPLocation;
+window.handleDPMapsInput = handleDPMapsInput;
+window.pasteDPMapsInput = pasteDPMapsInput;
 window.toggleOrderButton = toggleOrderButton;
 window.rPay = rPay;
 window.processOrder = processOrder;

@@ -39,6 +39,7 @@ export const exportOrdersToExcel = async () => {
         let date = o.dateString ? new Date(o.dateString).toLocaleString('id-ID') : '-';
         let custName = o.customer?.name || 'Anonim';
         let method = o.customer?.deliveryMethod === 'delivery' ? 'Dikirim' : 'Ambil di Toko';
+        if (o.isDropPoint) method = '📍 Lokasi Berbeda';
         let status = o.status || '-';
         let totalItem = o.items ? o.items.reduce((sum, i) => sum + (parseFloat(i.qty) || 0), 0) : 0;
         let totalHarga = o.payment?.grandTotal || 0;
@@ -283,10 +284,23 @@ export const openOrderDetail = (i) => {
                     <div class="flex justify-between items-center"><span class="text-slate-500 dark:text-slate-400 font-bold">Tipe Pemesan</span><span class="text-xs font-bold px-2.5 py-1 rounded-lg ${o.customerType === 'Member' ? 'bg-amber-50 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400 border border-amber-300 dark:border-amber-700' : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400 border border-slate-200 dark:border-slate-700'}">${o.customerType === 'Member' ? '⭐ Member Resmi' : '👤 Pelanggan Umum'}</span></div>
                     ${o.customer?.wa ? `<button type="button" onclick="saveOrderCustomerToDB('${esc(o.customer.name || '')}','${esc(o.customer.wa)}')" class="w-full py-2.5 rounded-xl ${o.customerType === 'Member' ? 'bg-slate-50 dark:bg-slate-900/30 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400' : 'bg-amber-500 hover:bg-amber-600 text-white shadow-md shadow-amber-500/20'} text-[11px] font-black uppercase tracking-widest flex items-center justify-center gap-2 transition-all active:scale-95"><i class="fa-solid fa-address-book"></i> ${o.customerType === 'Member' ? 'Perbarui Data Member di Database' : '+ Konfirmasi & Daftarkan Sebagai Member'}</button>` : ''}
                     <div class="border-t border-dashed border-slate-200 dark:border-slate-700 pt-4">
-                        <span class="text-slate-500 dark:text-slate-400 font-bold flex items-center gap-2 mb-2.5"><i class="fa-solid fa-map-location-dot"></i> Alamat (${o.customer?.deliveryMethod === 'delivery' ? 'Dikirim' : 'Ambil di Toko'})</span>
+                        <span class="text-slate-500 dark:text-slate-400 font-bold flex items-center gap-2 mb-2.5"><i class="fa-solid fa-map-location-dot"></i> Alamat Pemesan (${o.customer?.deliveryMethod === 'delivery' ? 'Dikirim' : 'Ambil di Toko'})</span>
                         <div class="bg-slate-50 dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-700 font-bold text-slate-700 dark:text-slate-300 leading-relaxed shadow-inner text-sm">${esc(o.customer?.address || '-')}</div>
-                        ${o.customer?.lat && o.customer?.deliveryMethod === 'delivery' ? `<a href="https://www.google.com/maps?q=${esc(o.customer.lat)},${esc(o.customer.lng)}" target="_blank" class="mt-3 flex items-center justify-center gap-2 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-800 font-bold text-xs py-2.5 px-4 rounded-xl hover:bg-blue-100 transition-colors"><i class="fa-solid fa-location-dot"></i> Buka Lokasi di Google Maps</a>` : ''}
+                        ${o.customer?.lat && o.customer?.deliveryMethod === 'delivery' && !o.isDropPoint ? `<a href="https://www.google.com/maps?q=${esc(o.customer.lat)},${esc(o.customer.lng)}" target="_blank" class="mt-3 flex items-center justify-center gap-2 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-800 font-bold text-xs py-2.5 px-4 rounded-xl hover:bg-blue-100 transition-colors"><i class="fa-solid fa-location-dot"></i> Buka Lokasi Pembeli di Google Maps</a>` : ''}
                     </div>
+                    ${o.isDropPoint && o.dropPoint ? `<div class="border-2 border-[var(--color-primary)]/30 bg-[rgba(var(--color-primary-rgb),0.04)] dark:bg-[rgba(var(--color-primary-rgb),0.1)] rounded-xl p-4 mt-2">
+                        <p class="text-[10px] font-bold uppercase tracking-widest text-[var(--color-primary)] mb-3 flex items-center gap-1.5"><i class="fa-solid fa-location-pin-lock"></i> 📍 DIKIRIM KE LOKASI BERBEDA</p>
+                        <div class="space-y-2">
+                            <div class="flex justify-between items-center"><span class="text-slate-500 dark:text-slate-400 font-bold text-xs">Nama Penerima</span><span class="font-bold text-slate-900 dark:text-white">${esc(o.dropPoint.name || '-')}</span></div>
+                            ${o.dropPoint.wa ? `<div class="flex justify-between items-center"><span class="text-slate-500 dark:text-slate-400 font-bold text-xs flex items-center gap-1"><i class="fa-brands fa-whatsapp text-green-500"></i> WA Penerima</span><a href="javascript:void(0)" onclick="if(typeof window.openWhatsApp==='function') window.openWhatsApp('${esc(o.dropPoint.wa)}'); else window.open('https://wa.me/${esc(o.dropPoint.wa)}', '_blank', 'noopener,noreferrer');" class="font-bold text-green-600 dark:text-green-400 hover:underline cursor-pointer">+${esc(o.dropPoint.wa)}</a></div>` : ''}
+                            <div class="border-t border-[var(--color-primary)]/15 pt-2 mt-2">
+                                <span class="text-slate-500 dark:text-slate-400 font-bold text-xs block mb-1.5">Alamat Tujuan Pengiriman</span>
+                                <div class="bg-white dark:bg-slate-800 p-3 rounded-xl border border-[var(--color-primary)]/20 font-bold text-slate-700 dark:text-slate-300 leading-relaxed shadow-inner text-sm">${esc(o.dropPoint.address || '-')}</div>
+                                ${o.dropPoint.lat ? `<a href="https://www.google.com/maps?q=${esc(o.dropPoint.lat)},${esc(o.dropPoint.lng)}" target="_blank" class="mt-2 flex items-center justify-center gap-2 bg-[rgba(var(--color-primary-rgb),0.1)] text-[var(--color-primary)] border border-[var(--color-primary)]/30 font-bold text-xs py-2.5 px-4 rounded-xl hover:bg-[rgba(var(--color-primary-rgb),0.18)] transition-colors"><i class="fa-solid fa-location-dot"></i> Buka Lokasi Tujuan di Google Maps</a>` : ''}
+                                ${o.dropPoint.wa ? `<button type="button" onclick="konfirmasiKeWAPenerima('${o.orderId}')" class="mt-2.5 w-full py-2 bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/40 dark:hover:bg-emerald-900/60 text-emerald-700 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-700 rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer shadow-xs active:scale-95"><i class="fa-brands fa-whatsapp text-sm"></i> Notifikasi Pengiriman ke WA Penerima</button>` : ''}
+                            </div>
+                        </div>
+                    </div>` : ''}
                     ${o.customer?.note ? `<div class="bg-amber-50 dark:bg-amber-900/20 p-4 rounded-xl border border-amber-200 dark:border-amber-800 mt-2"><p class="text-[10px] font-bold text-amber-600 uppercase tracking-widest mb-1.5"><i class="fa-solid fa-note-sticky"></i> Catatan Pembeli</p><p class="text-sm text-amber-900 dark:text-amber-100 font-bold">${esc(o.customer.note)}</p></div>` : ''}
                     ${o.buktiPayment ? `<div class="bg-violet-50 dark:bg-violet-900/20 p-4 rounded-xl border border-violet-200 dark:border-violet-800 mt-2"><p class="text-[10px] font-bold text-violet-600 dark:text-violet-400 uppercase tracking-widest mb-2.5"><i class="fa-solid fa-image"></i> Bukti Pembayaran</p><a href="${esc(o.buktiPayment)}" target="_blank" class="block rounded-xl overflow-hidden border border-violet-200 dark:border-violet-800"><img src="${esc(o.buktiPayment)}" alt="Bukti Pembayaran" class="w-full max-h-48 object-cover" onerror="this.style.display='none'" loading="lazy"><div class="bg-violet-100 dark:bg-violet-900/40 py-2 text-center text-[10px] font-bold text-violet-600 dark:text-violet-400"><i class="fa-solid fa-arrow-up-right-from-square mr-1"></i> Tap untuk buka</div></a></div>` : ''}
                 </div>
@@ -520,25 +534,71 @@ export const konfirmasiKeWA = async (orderId) => {
         const waNum = d.customer && d.customer.wa;
         if (!waNum) return showToast('Nomor WhatsApp pelanggan tidak tersedia!');
         
-        const storeName = (appData && appData.store && appData.store.name) ? appData.store.name : 'Toko Kami';
+        const storeName = (appData && appData.store && appData.store.name) ? appData.store.name : 'Toko Putri';
         const cName = (d.customer && d.customer.name) ? d.customer.name : 'Pelanggan';
         const status = d.status || 'Baru';
         const grandTotal = (d.payment && d.payment.grandTotal) ? fCur(d.payment.grandTotal) : '-';
         const method = (d.payment && d.payment.method) ? d.payment.method.toUpperCase() : '-';
         
+        let dpSection = '';
+        if (d.isDropPoint && d.dropPoint) {
+            dpSection = `\n📍 *Alamat Pengantaran (Drop-Point):*\n`
+                + `👤 Penerima di Lokasi: *${d.dropPoint.name || '-'}* (+${d.dropPoint.wa || '-'})\n`
+                + `🏠 Alamat Tujuan: ${d.dropPoint.address || '-'}\n`;
+        }
+
         const msg = `Halo *${cName}*! 👋\n\n`
             + `Terima kasih telah berbelanja di *${storeName}*. 🛒\n\n`
             + `*Detail Pesanan Anda:*\n`
-            + `📋 ID: *${orderId.split('-').pop()}*\n`
+            + `📋 ID: *#${orderId.split('-').pop()}*\n`
             + `💰 Total: *${grandTotal}*\n`
             + `💳 Pembayaran: *${method}*\n`
-            + `📦 Status: *${status}*\n\n`
+            + `📦 Status: *${status}*\n`
+            + dpSection + `\n`
             + `Kami akan segera memproses pesanan Anda. Terima kasih! 🙏`;
         
         if (typeof window.openWhatsApp === 'function') {
             window.openWhatsApp(waNum, msg);
         } else {
             window.open(`https://wa.me/${waNum}?text=${encodeURIComponent(msg)}`, '_blank', 'noopener,noreferrer');
+        }
+    } catch(e) {
+        hLoad();
+        showToast('Gagal memuat data pesanan!');
+    }
+};
+
+/**
+ * Kirim notifikasi pengiriman ke nomor WhatsApp penerima di lokasi proyek (Drop-Point)
+ */
+export const konfirmasiKeWAPenerima = async (orderId) => {
+    if (!orderId) return showToast('ID pesanan tidak valid!');
+    sLoad('Memuat data...');
+    try {
+        const doc = await db.collection('freshmart_orders').doc(orderId).get();
+        hLoad();
+        if (!doc.exists) return showToast('Data pesanan tidak ditemukan!');
+        const d = doc.data();
+        const dpWa = d.dropPoint && d.dropPoint.wa;
+        if (!dpWa) return showToast('Nomor WhatsApp penerima tujuan tidak tersedia!');
+        
+        const storeName = (appData && appData.store && appData.store.name) ? appData.store.name : 'Toko Putri';
+        const dpName = (d.dropPoint && d.dropPoint.name) ? d.dropPoint.name : 'Penerima';
+        const cName = (d.customer && d.customer.name) ? d.customer.name : 'Pemesan';
+        const dpAddr = (d.dropPoint && d.dropPoint.address) ? d.dropPoint.address : '-';
+        const status = d.status || 'Diproses';
+        
+        const msg = `Halo *${dpName}*! 👋\n\n`
+            + `Kami dari *${storeName}* menginformasikan bahwa ada pesanan barang dari *${cName}* yang akan dikirimkan ke lokasi Anda:\n\n`
+            + `📋 No. Pesanan: *#${orderId.split('-').pop()}*\n`
+            + `🏠 Alamat Tujuan: ${dpAddr}\n`
+            + `📦 Status: *${status}*\n\n`
+            + `Mohon konfirmasi atau pastikan ada yang menerima barang di lokasi tujuan saat kurir tiba. Terima kasih! 🙏`;
+        
+        if (typeof window.openWhatsApp === 'function') {
+            window.openWhatsApp(dpWa, msg);
+        } else {
+            window.open(`https://wa.me/${dpWa}?text=${encodeURIComponent(msg)}`, '_blank', 'noopener,noreferrer');
         }
     } catch(e) {
         hLoad();
@@ -576,4 +636,5 @@ window.ackRewardClaim = ackRewardClaim;
 window.closeOrderDetailModal = closeOrderDetailModal;
 window.updateOrderStatus = updateOrderStatus;
 window.konfirmasiKeWA = konfirmasiKeWA;
+window.konfirmasiKeWAPenerima = konfirmasiKeWAPenerima;
 window.deleteOrder = deleteOrder;

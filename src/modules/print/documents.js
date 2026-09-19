@@ -45,16 +45,25 @@ export const openDocPreview = (type) => {
 
     <div class="grid grid-cols-2 gap-8 mb-8">
         <div class="bg-slate-50 p-5 rounded-xl border border-slate-200">
-            <h3 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3 border-b border-slate-200 pb-2">Ditagihkan / Dikirim Kepada:</h3>
-            <p class="font-bold text-base text-slate-900 uppercase mb-1">${esc(o.customer?.name || 'Guest')}</p>
-            <p class="text-sm font-medium text-slate-700 leading-relaxed mb-3">${esc(o.customer?.address || '-')}</p>
-            ${o.customer?.note ? `<p class="text-xs font-semibold text-amber-700 bg-amber-50 p-2.5 rounded-xl border border-amber-200"><i class="fa-solid fa-note-sticky"></i> Catatan: ${esc(o.customer.note)}</p>` : ''}
+            <h3 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3 border-b border-slate-200 pb-2">Ditagihkan Kepada (Pemesan):</h3>
+            <p class="font-bold text-base text-slate-900 uppercase mb-1">${esc(o.customer?.name || 'Guest')}${o.customer?.wa ? ` <span class="text-xs font-mono font-medium text-slate-500">(+${esc(o.customer.wa)})</span>` : ''}</p>
+            <p class="text-sm font-medium text-slate-700 leading-relaxed mb-2">${esc(o.customer?.address || '-')}</p>
+            ${o.isDropPoint && o.dropPoint ? `
+            <div class="mt-3 pt-3 border-t border-rose-200 bg-rose-50/80 p-3 rounded-xl border border-dashed text-left">
+                <div class="flex items-center gap-1.5 text-rose-700 font-bold text-xs uppercase tracking-wider mb-1">
+                    <i class="fa-solid fa-location-dot"></i> Pengantaran ke Lokasi Berbeda (Drop-Point):
+                </div>
+                <p class="font-bold text-sm text-slate-900 uppercase">${esc(o.dropPoint.name || '-')}${o.dropPoint.wa ? ` <span class="font-mono text-xs font-semibold text-rose-600">(+${esc(o.dropPoint.wa)})</span>` : ''}</p>
+                <p class="text-xs font-medium text-slate-700 mt-0.5 leading-relaxed">${esc(o.dropPoint.address || '-')}</p>
+            </div>
+            ` : ''}
+            ${o.customer?.note ? `<p class="text-xs font-semibold text-amber-700 bg-amber-50 p-2.5 rounded-xl border border-amber-200 mt-2"><i class="fa-solid fa-note-sticky"></i> Catatan: ${esc(o.customer.note)}</p>` : ''}
         </div>
         
         <div class="bg-slate-50 p-5 rounded-xl border border-slate-200 flex flex-col justify-center space-y-3">
             <div class="flex justify-between items-center border-b border-slate-200 pb-2">
                 <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Metode Pengiriman</span>
-                <span class="text-sm font-bold text-slate-800 uppercase">${esc(o.customer?.deliveryMethod === 'delivery' ? 'Dikirim' : 'Ambil di Toko')}</span>
+                <span class="text-sm font-bold text-slate-800 uppercase">${esc(o.isDropPoint ? 'Drop-Point (Lokasi Berbeda)' : (o.customer?.deliveryMethod === 'delivery' ? 'Dikirim' : 'Ambil di Toko'))}</span>
             </div>
             <div class="flex justify-between items-center border-b border-slate-200 pb-2">
                 <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Sistem Pembayaran</span>
