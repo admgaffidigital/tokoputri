@@ -2337,8 +2337,8 @@ Terima kasih telah menjadi pelanggan setia ${o}. 🙏`;typeof window.openWhatsAp
                 <!-- Konten bawah: judul & tombol suara murni transparan tanpa shadow gradient -->
                 <div class="absolute bottom-0 left-0 right-0 z-20 bg-transparent px-5 py-4 flex items-end justify-between pointer-events-none">
                     <div class="flex-1 min-w-0 pointer-events-none">
-                        ${n.title?`<p class="text-white font-extrabold text-sm sm:text-base line-clamp-1">${c(n.title)}</p>`:""}
-                        ${n.desc?`<p class="text-white/80 text-[10px] sm:text-xs font-medium line-clamp-1 mt-0.5">${c(n.desc)}</p>`:""}
+                        ${n.title?`<p class="text-white font-extrabold text-sm sm:text-base line-clamp-2">${c(n.title)}</p>`:""}
+                        ${n.desc?`<p class="text-white/90 text-[11px] sm:text-xs font-medium line-clamp-2 mt-0.5">${c(n.desc)}</p>`:""}
                     </div>
                     <div class="ml-3 shrink-0 flex items-center gap-2 pointer-events-auto">
                         <button onclick="event.stopPropagation(); window.toggleBannerVideoSound(this, ${l});" type="button" aria-label="Aktifkan Suara Video" class="banner-sound-toggle inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-900/80 hover:bg-slate-900 text-white text-[10px] sm:text-xs font-bold rounded-full shadow-lg border border-white/20 active:scale-95 transition-all cursor-pointer">
@@ -2348,20 +2348,19 @@ Terima kasih telah menjadi pelanggan setia ${o}. 🙏`;typeof window.openWhatsAp
                 </div>
 
             </div>`}return`
-        <div ${p} class="banner-slide-item w-[88vw] sm:w-[480px] min-h-[180px] sm:min-h-[220px] snap-center shrink-0 rounded-3xl relative overflow-hidden group cursor-pointer bg-[var(--color-primary)] text-white shadow-none hover:-translate-y-1 hover:scale-[1.01] hover:shadow-none transition-all duration-300 border border-white/15 flex flex-col">
+        <div ${p} class="banner-slide-item w-[88vw] sm:w-[480px] min-h-[190px] sm:min-h-[220px] snap-center shrink-0 rounded-3xl relative overflow-hidden group cursor-pointer bg-[var(--color-primary)] text-white shadow-none hover:-translate-y-1 hover:scale-[1.01] hover:shadow-none transition-all duration-300 border border-white/15 flex flex-col">
             <!-- Dynamic Solid Header Shapes -->
             <div class="absolute -right-10 -top-10 w-40 h-40 border-[16px] border-white/10 rounded-full pointer-events-none group-hover:scale-105 transition-transform duration-500"></div>
             <div class="absolute -left-12 top-10 w-24 h-24 bg-white/10 rounded-full border border-white/10 pointer-events-none transform -rotate-12 group-hover:-translate-x-1 transition-transform duration-500"></div>
             
-            <div class="flex flex-1 w-full relative z-10">
-                <div class="w-[60%] p-5 sm:p-6 md:p-7 flex flex-col justify-center z-20">
-                    <span class="inline-block px-3 py-1 bg-black/25 rounded-full text-white text-[9px] sm:text-[10px] font-bold uppercase tracking-widest w-max mb-3 border border-white/20 shadow-sm"><i class="fa-solid fa-star text-amber-300 mr-1 animate-pulse"></i> Promo</span>
-                    <h2 class="text-[15px] sm:text-lg md:text-xl font-extrabold text-white leading-snug mb-2 drop-shadow-sm line-clamp-2 tracking-tight">${c(n.title||"Penawaran Spesial")}</h2>
-                    <p class="text-[10px] sm:text-[11px] text-white/90 font-medium line-clamp-3 leading-relaxed mb-3">${c(n.desc||"Belanja sekarang dan dapatkan penawaran terbaik.")}</p>
-                    ${n.link?'<button class="mt-auto bg-white text-slate-900 text-[9px] sm:text-[10px] uppercase tracking-wider font-extrabold py-2.5 px-4.5 rounded-full w-max hover:bg-slate-100 active:scale-95 transition-all shadow-md flex items-center gap-2 group-hover:pr-5">Beli Sekarang <i class="fa-solid fa-arrow-right transition-transform group-hover:translate-x-1"></i></button>':""}
+            <div class="flex flex-1 w-full relative z-10 items-center">
+                <div class="w-[62%] sm:w-[65%] p-5 sm:p-6 md:p-7 flex flex-col justify-center z-20">
+                    <h2 class="text-[15px] sm:text-lg md:text-xl font-black text-white leading-snug mb-2 drop-shadow-sm tracking-tight">${c(n.title||"Penawaran Spesial")}</h2>
+                    <p class="text-[11px] sm:text-xs text-white/95 font-medium leading-relaxed mb-2 break-words">${c(n.desc||"Belanja sekarang dan dapatkan penawaran terbaik.")}</p>
+                    ${n.link?'<button class="mt-2 bg-white text-slate-900 text-[9px] sm:text-[10px] uppercase tracking-wider font-extrabold py-2 px-4 rounded-full w-max hover:bg-slate-100 active:scale-95 transition-all shadow-md flex items-center gap-2 group-hover:pr-5">Beli Sekarang <i class="fa-solid fa-arrow-right transition-transform group-hover:translate-x-1"></i></button>':""}
                 </div>
-                <div class="w-[40%] relative z-10 flex items-center justify-center p-2 sm:p-4 pr-4 sm:pr-6">
-                    ${n.img?`<img loading="lazy" src="${c(z(n.img,"w800-rw"))}" alt="${c(n.title||"Promo Banner")}" class="w-full h-full object-contain drop-shadow-md transition-transform duration-500 group-hover:scale-105" onerror="this.style.display='none'">`:`
+                <div class="w-[38%] sm:w-[35%] relative z-10 flex items-center justify-center p-2 sm:p-4 pr-4 sm:pr-6 shrink-0">
+                    ${n.img?`<img loading="lazy" src="${c(z(n.img,"w800-rw"))}" alt="${c(n.title||"Promo Banner")}" class="w-full h-full max-h-[140px] sm:max-h-[170px] object-contain drop-shadow-md transition-transform duration-500 group-hover:scale-105" onerror="this.style.display='none'">`:`
                     <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-white/20 border-2 border-white/30 flex items-center justify-center shadow-md group-hover:scale-105 transition-all duration-300">
                         <i class="fa-solid fa-gift text-4xl sm:text-5xl text-white"></i>
                     </div>`}
