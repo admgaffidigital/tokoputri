@@ -8,7 +8,7 @@
 
 import { auth, db, firebase, ADMIN_UID } from '../../config/firebase.js';
 import { 
-    appData, aOrdLst, setAOrdLst, aCustLst, setACustLst, 
+    appData, setCTab, aOrdLst, setAOrdLst, aCustLst, setACustLst, 
     aRevLst, setARevLst, lastReportPeriod, setLastReportPeriod 
 } from '../../core/state.js';
 import { 
@@ -74,6 +74,14 @@ export const openAdminMenu = () => {
     hide('btn-admin-back'); 
     show('admin-logo-box'); 
     setIn('admin-header-title', 'CMS SELLER'); 
+    
+    setCTab('');
+    window.cTab = '';
+    try {
+        if (history.state && history.state.tab) {
+            history.replaceState({ view: 'view-admin' }, '', window.location.href);
+        }
+    } catch(e) {}
     
     if (aOrdLst) { aOrdLst(); setAOrdLst(null); } 
     if (aCustLst) { aCustLst(); setACustLst(null); } 

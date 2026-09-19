@@ -361,9 +361,37 @@ export const handleAppBackButton = () => {
         return;
     }
 
-    // 2. Jika sedang di dashboard admin, konfirmasi keluar seller
+    // 2. Jika sedang di dashboard admin (view-admin)
     const isAdminLoggedIn = window.isAdm || window.__localIsAdm;
     if (curViewName === 'view-admin') {
+        const adminContentView = el('admin-content-view');
+        const adminDashboardView = el('admin-dashboard-view');
+        const isInsideAdminTab = Boolean(
+            (adminContentView && !adminContentView.classList.contains('hidden')) ||
+            (adminDashboardView && adminDashboardView.classList.contains('hidden')) ||
+            (window.history.state && window.history.state.tab) ||
+            (typeof window.cTab !== 'undefined' && window.cTab)
+        );
+
+        if (isInsideAdminTab) {
+            // Pengguna sedang berada di dalam tab konten (Produk, Pesanan, Kategori, dll).
+            // Kembalikan ke Menu Utama CMS Seller (openAdminMenu):
+            if (window.history.state && window.history.state.tab && window.history.length > 1) {
+                try {
+                    window.history.back();
+                    return;
+                } catch(e) {}
+            }
+            if (typeof window.openAdminMenu === 'function') {
+                window.openAdminMenu();
+            }
+            try {
+                window.history.replaceState({ view: 'view-admin' }, '', window.location.href);
+            } catch(e) {}
+            return;
+        }
+
+        // Pengguna sudah berada di Menu Utama CMS (bukan di dalam tab konten), konfirmasi keluar seller
         if (typeof window.showConfirm === 'function') {
             window.showConfirm(
                 "Keluar Seller",
@@ -439,6 +467,16 @@ export const setupHistoryRouter = () => {
                 if (state.tab && typeof window.openAdminTab === 'function') window.openAdminTab(state.tab, true);
                 else if (typeof window.openAdminMenu === 'function') window.openAdminMenu();
             } else {
+                // Periksa apakah admin sebelumnya sedang membuka tab konten di dalam CMS:
+                // Jika iya, jangan langsung konfirmasi logout, tetapi kembalikan dulu ke Menu Utama CMS!
+                const adminContentView = el('admin-content-view');
+                if (adminContentView && !adminContentView.classList.contains('hidden')) {
+                    history.pushState({ view: 'view-admin' }, '', window.location.href);
+                    changeView('view-admin', true);
+                    if (typeof window.openAdminMenu === 'function') window.openAdminMenu();
+                    return;
+                }
+
                 history.pushState({ view: 'view-admin' }, '', window.location.href);
                 if (typeof window.showConfirm === 'function') {
                     window.showConfirm(
