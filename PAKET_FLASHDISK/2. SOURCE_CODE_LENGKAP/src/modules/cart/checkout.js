@@ -631,7 +631,7 @@ export const processOrder = async () => {
                 
                 const currentPts = memberDoc.exists ? (parseFloat(memberDoc.data().points) || 0) : 0;
                 let newPoints = currentPts;
-                let rewardStockUpdated = null;
+                let rewardStockUpdated = null, memberPointsUpdated = null;
                 if (wantsRewardClaim) {
                     if (!memberDoc.exists) throw new Error('MEMBER_TIDAK_DITEMUKAN');
                     if (!rewardDoc || !rewardDoc.exists) throw new Error('HADIAH_TIDAK_DITEMUKAN');
@@ -646,13 +646,13 @@ export const processOrder = async () => {
                 memberPointsUpdated = newPoints;
                 oD.pointsEarned = pointsEarnedThisOrder;
                 oD.customerPhone = cust.wa;
-                oD.finalMemberPoints = newPoints;
+                oD.finalMemberPoints = memberPointsUpdated;
                 
                 transaction.set(orderRef, oD);
                 
                 if (memberDoc.exists) {
                     transaction.set(memberRef, { 
-                        points: newPoints, 
+                        points: memberPointsUpdated, 
                         name: cust.name || memberDoc.data().name || 'Pelanggan Setia',
                         lastOrderAt: Date.now() 
                     }, { merge: true });
@@ -661,13 +661,13 @@ export const processOrder = async () => {
                         id: cust.wa,
                         phone: cust.wa,
                         name: cust.name || 'Pelanggan Setia',
-                        points: newPoints,
+                        points: memberPointsUpdated,
                         createdAt: Date.now(),
                         lastOrderAt: Date.now(),
                         totalOrders: 1
                     }, { merge: true });
                 }
-                finalMemberPoints = newPoints;
+                finalMemberPoints = memberPointsUpdated;
                 if (rewardStockUpdated !== null) {
                     transaction.set(rewardRef, { stock: rewardStockUpdated }, { merge: true });
                 }
