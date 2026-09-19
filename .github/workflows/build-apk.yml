@@ -78,13 +78,15 @@ jobs:
             
             Unduh file installer **TokoPutri.apk** di bawah untuk dipasang di smartphone Android.
             
-            **Pembaruan Fitur Terbaru:**
-            - 🛡️ **Pemisahan Pelanggan Umum & Member Resmi**: Nomor HP baru berstatus Pelanggan Umum, wajib verifikasi database Admin di CMS untuk mendapatkan hak member.
-            - ⏳ **Proteksi Ketat Pembayaran Cash Tempo**: Metode bayar tempo disembunyikan bagi pelanggan umum dan diverifikasi langsung pada transaksi database cloud.
-            - 🎁 **Proteksi Akumulasi & Diskon Poin Loyalty**: Perolehan dan penukaran poin belanja eksklusif untuk member resmi terverifikasi.
-            - ⚡ **Konfirmasi Member Sekali Klik di CMS**: Admin dapat langsung mendaftarkan pelanggan dari panel detail pesanan.
-            - 🖨️ **Pengaturan Universal POS & Printer Kasir**: Bluetooth Thermal ESC/POS, USB OTG, LAN/WiFi, System Print, dan RawBT (58mm & 80mm).
-            - 🚪 **Dialog Konfirmasi Keluar & Navigasi WhatsApp**: Bebas reload dan terjaga aman saat tombol Back fisik ditekan.
+            **Pembaruan Fitur Terbaru (v1.9.0):**
+            - 📍 **Drop-Point Delivery (Kirim ke Lokasi Berbeda / Proyek)**: Dukungan pemesanan dari rumah/kantor untuk dikirim langsung ke lokasi proyek, tukang, kontraktor, atau mandor di lapangan.
+            - 📐 **Kalkulasi Ongkir Presisi Drop-Point**: Perhitungan tarif ongkir otomatis dihitung akurat dari Toko ke titik koordinat GPS / Google Maps lokasi tujuan proyek.
+            - 💬 **Notifikasi WhatsApp Cerdas Ganda**: Admin dapat mengirim notifikasi konfirmasi ke pembeli sekaligus notifikasi koordinat & status kirim ke nomor WhatsApp penerima di proyek.
+            - 📑 **Dokumen Cetak Resmi (Invoice & Surat Jalan A4)**: Format cetak resmi terpisah antara penanggung jawab tagihan (Pemesan) dan penerima lapangan (Drop-Point) untuk supir/kurir toko.
+            - 💼 **Smart Tempo CRM & Penagihan Otomatis**: Panel analitik piutang jatuh tempo, filter cerdas, dan 1-klik tagih WhatsApp resmi lengkap dengan rincian rekening toko.
+            - 📋 **Surat Penawaran Harga (SPH A4 / PDF)**: Generator SPH resmi langsung dari keranjang belanja untuk kebutuhan RAB dan tender pengadaan proyek.
+            - 🛡️ **Pemisahan Pelanggan Umum & Member Resmi**: Proteksi hak akses member, sistem poin, dan cash tempo.
+            - 🖨️ **Universal POS & Struk Kasir**: Bluetooth Thermal ESC/POS, USB OTG, LAN/WiFi, dan Android Native System Print (58mm & 80mm).
           files: build-output/TokoPutri.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
