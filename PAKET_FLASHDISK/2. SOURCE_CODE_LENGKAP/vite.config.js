@@ -26,6 +26,7 @@ export default defineConfig({
             !dep.includes('module-print') &&
             !dep.includes('module-member') &&
             !dep.includes('module-faq') &&
+            !dep.includes('module-pos') &&
             !dep.includes('vendor-firebase-analytics')
           );
         }
@@ -73,6 +74,12 @@ export default defineConfig({
             './src/modules/faq/index.js',
             './src/modules/faq/faq.js',
             './src/modules/changelog/index.js',
+          ],
+          // Modul Kasir POS: dimuat lazy hanya saat admin membuka tab Kasir
+          'module-pos': [
+            './src/modules/pos/index.js',
+            './src/modules/pos/pos.js',
+            './src/modules/pos/pos-history.js',
           ],
         }
       }

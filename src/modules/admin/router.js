@@ -52,7 +52,8 @@ export const openAdminTab = (t, fH = false) => {
         'tax': 'Pajak & Keuangan',
         'piutang': 'Piutang Tempo',
         'colors': 'Database Warna',
-        'changelog': 'Log Pembaruan Sistem'
+        'changelog': 'Log Pembaruan Sistem',
+        'pos': 'Kasir POS'
     };
     
     setIn('admin-header-title', titles[t] || 'CMS');
@@ -103,6 +104,11 @@ export const openAdminTab = (t, fH = false) => {
     } else if (t === 'rewards') {
         if (typeof window.attachRewardsRealtime === 'function') window.attachRewardsRealtime();
         if (typeof window.rAdmL === 'function') window.rAdmL('rewards');
+    } else if (t === 'pos') {
+        // Lazy load modul POS — hanya dimuat saat kasir dibuka
+        import('../../modules/pos/pos.js').then(m => m.renderPOS()).catch(err => {
+            console.error('[POS] Gagal memuat modul kasir:', err);
+        });
     } else {
         if (typeof window.rAdmL === 'function') window.rAdmL(t);
     }

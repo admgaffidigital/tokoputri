@@ -1,7 +1,7 @@
 {
   "name": "toko-putri",
   "private": true,
-  "version": "1.9.2",
+  "version": "1.9.3",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -39,3 +39,4 @@
     "Safari >= 12"
   ]
 }
+

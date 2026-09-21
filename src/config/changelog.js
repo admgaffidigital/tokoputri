@@ -8,7 +8,30 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-9-3',
+        version: 'v1.9.3',
+        date: '2026-09-22',
+        title: 'Fitur POS Kasir Sungguhan — Transaksi Langsung di Admin CMS (Tanpa Manajemen Stok)',
+        category: 'feature',
+        badge: 'POS Kasir v1.9.3',
+        items: [
+            'Kasir POS Sungguhan di Admin CMS: Admin toko kini dapat memproses transaksi jual-beli langsung dari dalam Admin CMS tanpa keluar ke halaman toko. Kasir mendukung semua produk katalog toko tanpa perlu manajemen stok (bebas pilih, bebas beli seperti di website).',
+            'UI Split-Panel Kasir: Layar kasir terbagi dua panel — panel kiri menampilkan katalog produk grid (foto, nama, harga) yang bisa diklik langsung, panel kanan menampilkan keranjang transaksi aktif secara real-time.',
+            'Scan Barcode via Scanner USB: Kasir mendukung input barcode fisik melalui scanner USB yang otomatis terbaca sebagai keyboard. Produk langsung ditambahkan ke keranjang jika ditemukan di katalog, atau muncul di field pencarian jika tidak ditemukan.',
+            'Diskon Fleksibel Per Item + Global: Kasir dapat memberikan diskon dalam satuan Rupiah per item (misalnya diskon Rp 5.000 untuk semen saja) sekaligus diskon global keseluruhan untuk semua item dalam satu transaksi.',
+            'Pilihan Pelanggan (Umum / Member / Tempo): Kasir dapat memilih tipe pelanggan — Umum (tanpa data), Member (lookup by nomor HP dari database member), atau Tempo (piutang, otomatis masuk modul Piutang Tempo).',
+            'Metode Bayar Lengkap: Transaksi mendukung 4 metode pembayaran — Tunai (input nominal + hitung kembalian otomatis), QRIS (tampil QR code toko), Transfer Bank (pilih rekening dari daftar bank toko), dan Tempo/Piutang (input DP opsional).',
+            'Integrasi Piutang Tempo Otomatis: Jika kasir memilih metode Tempo, transaksi otomatis tercatat sebagai piutang di modul Piutang Tempo CMS (tab terpisah). Jatuh tempo, cicilan, dan tagihan WhatsApp diatur dari sana seperti biasa.',
+            'Cetak Struk Thermal Kasir: Setelah transaksi berhasil, kasir dapat mencetak struk thermal langsung dari browser (kompatibel printer thermal USB/Bluetooth via dialog cetak). Struk mencantumkan nama toko, tanggal, nomor transaksi, item, total, dan kembalian.',
+            'Riwayat & Rekap Transaksi Kasir: Tab Riwayat POS menampilkan semua transaksi hari ini (default) lengkap dengan rekap total omset, jumlah transaksi, breakdown per metode bayar, dan produk terjual. Filter tanggal tersedia untuk melihat hari lain.',
+            'Void Transaksi: Transaksi yang salah dapat di-void (dibatalkan) dari Riwayat POS. Transaksi void tidak dihitung dalam rekap omset dan ditampilkan dengan label VOID.',
+            'Data Terpisah dari Order Online: Semua transaksi kasir tersimpan di koleksi Firestore pos_transactions yang terpisah dari pesanan online (orders), sehingga laporan kasir dan laporan online tidak bercampur.',
+            'Modul Terpisah & Lazy-Loading: Modul Kasir POS dikemas sebagai chunk terpisah (module-pos, 38.89 KB) dan hanya dimuat saat admin membuka tab Kasir — tidak memengaruhi kecepatan storefront pelanggan.'
+        ]
+    },
+    {
         id: 'log-1-9-2',
+
         version: 'v1.9.2',
         date: '2026-09-21',
         title: 'Geser & Atur Urutan Produk (Drag & Drop Reorder), Verifikasi Domain Google, Akselerasi Core Web Vitals, & Optimasi PageSpeed',
