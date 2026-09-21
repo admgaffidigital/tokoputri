@@ -75,7 +75,12 @@ export const loadAppData = async () => {
                 if (b.img.includes('10b981')) b.img = 'https://placehold.co/150/f1f5f9/64748b?text=Brand';
             }
         });
-        if(appData.store.logo) appData.store.logo = fixD(appData.store.logo);
+        if(appData.store.logo) {
+            appData.store.logo = fixD(appData.store.logo);
+            if(appData.store.logo.includes('lh3.googleusercontent.com/d/') && !appData.store.logo.includes('=')) {
+                appData.store.logo += '=w200-rw';
+            }
+        }
         if(appData.store.allProductsIcon) appData.store.allProductsIcon = fixD(appData.store.allProductsIcon);
         if(appData.store.allBrandsIcon) {
             appData.store.allBrandsIcon = fixD(appData.store.allBrandsIcon);
@@ -129,23 +134,25 @@ export const loadAppData = async () => {
         rDyn();
         rCat();
         setIn('stat-products', appData.products.filter(p => p.isActive !== 'false' && p.isActive !== false).length);
-        // Tampilkan splash screen minimal 1.2 detik saat aplikasi dibuka agar logo resmi dan animasi toko terlihat elegan
-        setTimeout(() => {
-            hLoad();
-        }, 1200);
+        // Sembunyikan loader secara instan untuk performa FCP & LCP optimal
+        hLoad();
         hasRenderedCached = true;
     } else {
         sLoad('Memuat Toko...');
     }
 
-    // 2. BACKGROUND REVALIDATION: Sinkronkan update server
-    // OPTIMASI KUOTA FIRESTORE: Jika sudah ada cache lokal, jangan panggil get() manual lagi
-    // karena listener realtime onSnapshot di attachRealtimeStockSync() akan langsung dipasang
-    // tepat setelah ini dan memeriksa serverUpdate > localUpdate. Ini menghemat 1 read cms_data
-    // pada SETIAP kali halaman dibuka oleh pengunjung!
+    // 2. BACKGROUND REVALIDATION: Sinkronkan update server secara paralel (Promise.all)
     if (!hasRenderedCached) {
         try {
-            const d = await db.collection("freshmart").doc("cms_data").get();
+            const [d, pSnap, rSnap] = await Promise.all([
+                db.collection("freshmart").doc("cms_data").get(),
+                db.collection("freshmart").doc("cms_data").collection("products").get(),
+                db.collection("freshmart").doc("cms_data").collection("rewards").get().catch(e => {
+                    console.warn('Initial rewards fetch non-blocking error:', e);
+                    return { docs: [] };
+                })
+            ]);
+
             if (d.exists) {
                 const f = d.data();
                 const serverUpdate = f.lastUpdate || 0;
@@ -156,18 +163,13 @@ export const loadAppData = async () => {
                 appData.config = { ...defApp.config, ...(f.config || {}) };
                 if (appData.config && appData.config.gasUrl) window.GAS_UPLOAD_URL = appData.config.gasUrl;
 
-                const pSnap = await db.collection("freshmart").doc("cms_data").collection("products").get();
                 appData.products = sortProductsByOrder(pSnap.docs.map(doc => doc.data()));
                 ssL('freshmart_products', JSON.stringify(appData.products));
                 ssL('freshmart_last_update', serverUpdate.toString());
 
-                // Fetch data katalog hadiah awal untuk browser/perangkat baru
-                try {
-                    const rSnap = await db.collection("freshmart").doc("cms_data").collection("rewards").get();
+                if (rSnap && rSnap.docs) {
                     appData.rewards = rSnap.docs.map(doc => doc.data()).sort((a,b) => (b.id||0) - (a.id||0));
                     ssL('freshmart_rewards', JSON.stringify(appData.rewards));
-                } catch(re) {
-                    console.warn('Initial rewards fetch non-blocking error:', re);
                 }
 
                 prepareAppData();
@@ -185,9 +187,7 @@ export const loadAppData = async () => {
         } catch(e) {
             showToast("Mode Offline (Data Lokal)");
         } finally {
-            setTimeout(() => {
-                hLoad();
-            }, 800);
+            hLoad();
         }
     }
     // FITUR BARU: render slot iklan SECARA TERPISAH dari jalur kritis loading.
