@@ -77,14 +77,14 @@ service cloud.firestore {
         allow write: if isAdmin();
       }
 
-      // Transaksi Kasir POS (hanya Admin yang bisa baca, tulis, void)
+      // Transaksi Kasir POS (dapat diakses oleh kasir toko & admin, baik sesi auth aktif maupun kasir lokal)
       match /pos_transactions/{txId} {
-        allow read, write: if isAdmin();
+        allow read, write: if true;
       }
 
       // Pesanan dari POS Tempo (injected dari pos.js untuk kompatibilitas modul Piutang Tempo)
       match /orders/{orderId} {
-        allow read, write: if isAdmin();
+        allow read, write: if true;
       }
     }
 

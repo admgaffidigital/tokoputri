@@ -352,12 +352,23 @@ export const processPOSTx = async () => {
         };
         await db.collection('freshmart').doc('cms_data').collection('pos_transactions').doc(txId).set(txData);
         if (posPayMethod === 'tempo') {
-            await db.collection('freshmart').doc('cms_data').collection('orders').doc(txId).set({
+            await db.collection('freshmart_orders').doc(txId).set({
                 orderId: txId, source: 'pos', dateString: new Date().toISOString(),
                 customerName: txData.customer.name, customerPhone: txData.customer.phone,
                 items: posCart.map(i => ({ id: i.id, name: i.name, price: i.price, qty: i.qty })),
-                total: posTotal(), payment: { method: 'tempo', paid: dp, tempoBalance: posTotal() - dp, tempoDueDate: 0, tempoPenaltyRate: 1, tempoPenaltyStopped: false },
-                status: 'processing', isTempo: true,
+                total: posTotal(),
+                payment: {
+                    method: 'tempo',
+                    paymentStatus: 'hutang',
+                    paid: dp,
+                    tempoBalance: posTotal() - dp,
+                    tempoDueDate: Date.now() + 7 * 86400000,
+                    tempoPenaltyRate: 1,
+                    tempoPenaltyStopped: false
+                },
+                status: 'Diproses',
+                isTempo: true,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
             });
         }
         closePayModal();

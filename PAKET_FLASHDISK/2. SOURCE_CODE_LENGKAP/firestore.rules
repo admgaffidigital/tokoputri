@@ -33,13 +33,18 @@ service cloud.firestore {
       }
 
       // Database Pelanggan / Member (data profil & poin)
+      // SISTEM TERKUNCI: Nama pertama yang didaftarkan tidak bisa diubah kecuali oleh Admin.
       match /customers/{phone} {
         allow get: if true;
         allow list: if isAdmin();
-        allow create, delete: if isAdmin();
+        // Hanya Admin yang boleh mendaftarkan Member baru lewat CMS
+        allow create: if isAdmin();
+        // Admin bebas update semua field (nama, poin, dll).
+        // Checkout (tanpa auth) hanya boleh update 'points' dan 'lastOrderAt' saja.
+        // Field 'name', 'phone', 'registeredAt' tidak bisa diubah oleh siapapun selain Admin.
         allow update: if isAdmin() ||
-          (resource != null &&
-           request.resource.data.diff(resource.data).affectedKeys().hasOnly(['points']));
+          request.resource.data.diff(resource.data).affectedKeys().hasOnly(['points', 'lastOrderAt']);
+        allow delete: if isAdmin();
       }
 
       // Program Hadiah / Rewards (katalog publik, stok berkurang saat klaim)
@@ -70,6 +75,16 @@ service cloud.firestore {
       match /admin_session/{sessionId} {
         allow read: if true;
         allow write: if isAdmin();
+      }
+
+      // Transaksi Kasir POS (dapat diakses oleh kasir toko & admin, baik sesi auth aktif maupun kasir lokal)
+      match /pos_transactions/{txId} {
+        allow read, write: if true;
+      }
+
+      // Pesanan dari POS Tempo (injected dari pos.js untuk kompatibilitas modul Piutang Tempo)
+      match /orders/{orderId} {
+        allow read, write: if true;
       }
     }
 

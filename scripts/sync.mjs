@@ -35,7 +35,8 @@ if (fs.existsSync('PAKET_FLASHDISK/2. SOURCE_CODE_LENGKAP')) {
     'tailwind.config.js',
     'vite.config.js',
     'postcss.config.js',
-    'vercel.json'
+    'vercel.json',
+    'firestore.rules'
   ];
   for (const item of syncItems) {
     if (fs.existsSync(item)) {
