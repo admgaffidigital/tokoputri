@@ -30,12 +30,14 @@ const loadPOSHistory = () => {
     histUnsubscribe = db.collection('freshmart').doc('cms_data').collection('pos_transactions')
         .where('dateMs', '>=', start.getTime())
         .where('dateMs', '<=', end.getTime())
-        .orderBy('dateMs', 'desc')
         .onSnapshot(snap => {
-            histTxList = snap.docs.map(d => d.data());
+            // Sort client-side (hindari kebutuhan composite index Firestore)
+            histTxList = snap.docs.map(d => d.data()).sort((a, b) => (b.dateMs || 0) - (a.dateMs || 0));
             renderHistList();
-        }, () => {
+        }, (err) => {
+            console.error('[POS History]', err);
             showToast('Gagal memuat riwayat kasir', 'error');
+            histTxList = [];
             renderHistList();
         });
 };
@@ -114,15 +116,20 @@ const renderHistList = () => {
 };
 
 // ─── Void Transaksi ──────────────────────────────────────────
-export const voidPOSTx = async (txId) => {
-    const confirmed = await showConfirm(`Void transaksi ${txId}?\nTransaksi akan ditandai batal dan tidak dihitung dalam laporan.`, 'Void Transaksi');
-    if (!confirmed) return;
-    try {
-        await db.collection('freshmart').doc('cms_data').collection('pos_transactions').doc(txId).update({ status: 'void' });
-        showToast('Transaksi berhasil divoid', 'success');
-    } catch (e) {
-        showToast('Gagal void transaksi', 'error');
-    }
+export const voidPOSTx = (txId) => {
+    showConfirm(
+        'Void Transaksi',
+        `Void transaksi ${txId}?\nTransaksi akan ditandai batal dan tidak dihitung dalam laporan.`,
+        async () => {
+            try {
+                await db.collection('freshmart').doc('cms_data').collection('pos_transactions').doc(txId).update({ status: 'void' });
+                showToast('Transaksi berhasil divoid', 'success');
+            } catch (e) {
+                showToast('Gagal void transaksi', 'error');
+            }
+        },
+        'Ya, Void'
+    );
 };
 
 // ─── Render Halaman Riwayat ───────────────────────────────────
