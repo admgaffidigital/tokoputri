@@ -118,7 +118,7 @@ export const rDyn = () => {
                     ${b.link ? `<button class="mt-2 bg-white text-slate-900 text-[9px] sm:text-[10px] uppercase tracking-wider font-extrabold py-2 px-4 rounded-full w-max hover:bg-slate-100 active:scale-95 transition-all shadow-md flex items-center gap-2 group-hover:pr-5">Beli Sekarang <i class="fa-solid fa-arrow-right transition-transform group-hover:translate-x-1"></i></button>` : ''}
                 </div>
                 <div class="w-[38%] sm:w-[35%] relative z-10 flex items-center justify-center p-2 sm:p-4 pr-4 sm:pr-6 shrink-0">
-                    ${b.img ? `<img loading="${idx === 0 ? 'eager' : 'lazy'}" fetchpriority="${idx === 0 ? 'high' : 'auto'}" decoding="${idx === 0 ? 'sync' : 'async'}" src="${esc(getOptImg(b.img, 'w600-rw'))}" alt="${esc(b.title || 'Promo Banner')}" class="w-full h-full max-h-[140px] sm:max-h-[170px] object-contain drop-shadow-md transition-transform duration-500 group-hover:scale-105" onerror="this.style.display='none'">` : `
+                    ${b.img ? `<img width="240" height="140" loading="${idx === 0 ? 'eager' : 'lazy'}" fetchpriority="${idx === 0 ? 'high' : 'auto'}" decoding="${idx === 0 ? 'sync' : 'async'}" src="${esc(getOptImg(b.img, 'w600-rw'))}" alt="${esc(b.title || 'Promo Banner')}" class="w-full h-full max-h-[140px] sm:max-h-[170px] object-contain drop-shadow-md transition-transform duration-500 group-hover:scale-105" onerror="this.style.display='none'">` : `
                     <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-white/20 border-2 border-white/30 flex items-center justify-center shadow-md group-hover:scale-105 transition-all duration-300">
                         <i class="fa-solid fa-gift text-4xl sm:text-5xl text-white"></i>
                     </div>`}
@@ -145,8 +145,10 @@ export const rDyn = () => {
         ` : ''}
     </div>` : '';
 
-    setH('dynamic-banners-container', bHTML);
-    setTimeout(startBannerAutoSlide, 500);
+    if (bHTML) {
+        setH('dynamic-banners-container', bHTML);
+        setTimeout(startBannerAutoSlide, 500);
+    }
 
     // --- RENDER VOUCHERS PROMO ---
     const activeVouchers = (appData.vouchers || []).filter(v => v.isShow === 'true' || v.isShow === true);
@@ -213,28 +215,32 @@ export const rDyn = () => {
     // itu kode mati (selalu ketimpa setiap kali openCategoryModal() jalan), sekarang openCategoryModal()
     // yang jadi satu-satunya sumber render daftar kategori di modal (lihat fungsi di atas).
     
-    setH('dynamic-categories-container', cLHorizontal.map(c => {
-        const isSel = aCat === c.name; const nameSafe = decodeURIComponent(encodeURIComponent(c.name).replace(/'/g,"%27"));
-        if(appData.store.categoryStyle === 'text' || !appData.store.categoryStyle) {
-            return `<div onclick="filterCategory('${nameSafe}')" class="cursor-pointer shrink-0 snap-start group py-0.5"><div class="px-3.5 py-1.5 rounded-xl border transition-all duration-200 flex items-center gap-2 ${isSel ? 'bg-[var(--color-primary)] border-transparent text-white shadow-xs' : 'bg-slate-50 dark:bg-slate-800/90 border-slate-200/80 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:border-[var(--color-primary)]/50 hover:bg-white dark:hover:bg-slate-800'}"><div class="w-5 h-5 rounded-md flex items-center justify-center ${isSel ? 'bg-white/20 text-white' : 'bg-white dark:bg-slate-700 text-slate-400 group-hover:text-[var(--color-primary)]'} transition-colors"><i class="fa-solid fa-layer-group text-[9px]"></i></div><span class="font-bold text-[10px] sm:text-[11px] uppercase tracking-wider">${esc(c.name)}</span></div></div>`;
-        } else {
-            const rawCatImg = (c.img && !c.img.includes('10b981')) ? getOptImg(c.img, 'w150-rw') : 'https://placehold.co/150/f1f5f9/64748b?text=Cat';
-            return `<div onclick="filterCategory('${nameSafe}')" class="flex flex-col items-center gap-1.5 cursor-pointer shrink-0 w-[64px] sm:w-[72px] group snap-start py-0.5"><div class="relative w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-slate-50 dark:bg-slate-800 flex items-center justify-center p-1.5 transition-all duration-200 ${isSel ? 'bg-[var(--color-primary-light)] border-2 border-[var(--color-primary)] shadow-xs dark:bg-[var(--color-primary-dark)]/20' : 'border border-slate-200 dark:border-slate-700 shadow-2xs group-hover:border-[var(--color-primary)] group-hover:-translate-y-0.5'} overflow-hidden"><img loading="lazy" src="${esc(rawCatImg)}" alt="${esc(c.name)}" onerror="this.onerror=null;this.src='https://placehold.co/150/f1f5f9/64748b?text=Cat'" class="w-full h-full object-cover rounded-lg transition-transform duration-300 group-hover:scale-105"></div><span class="text-[8.5px] sm:text-[9px] text-center w-full line-clamp-1 leading-tight px-0.5 ${isSel ? 'font-bold text-[var(--color-primary)]' : 'font-semibold text-slate-600 dark:text-slate-300 group-hover:text-[var(--color-primary)]'} uppercase tracking-wider transition-colors">${esc(c.name)}</span></div>`;
-        }
-    }).join(''));
+    if (cLHorizontal.length > 0) {
+        setH('dynamic-categories-container', cLHorizontal.map(c => {
+            const isSel = aCat === c.name; const nameSafe = decodeURIComponent(encodeURIComponent(c.name).replace(/'/g,"%27"));
+            if(appData.store.categoryStyle === 'text' || !appData.store.categoryStyle) {
+                return `<div onclick="filterCategory('${nameSafe}')" class="cursor-pointer shrink-0 snap-start group py-0.5"><div class="px-3.5 py-1.5 rounded-xl border transition-all duration-200 flex items-center gap-2 ${isSel ? 'bg-[var(--color-primary)] border-transparent text-white shadow-xs' : 'bg-slate-50 dark:bg-slate-800/90 border-slate-200/80 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:border-[var(--color-primary)]/50 hover:bg-white dark:hover:bg-slate-800'}"><div class="w-5 h-5 rounded-md flex items-center justify-center ${isSel ? 'bg-white/20 text-white' : 'bg-white dark:bg-slate-700 text-slate-400 group-hover:text-[var(--color-primary)]'} transition-colors"><i class="fa-solid fa-layer-group text-[9px]"></i></div><span class="font-bold text-[10px] sm:text-[11px] uppercase tracking-wider">${esc(c.name)}</span></div></div>`;
+            } else {
+                const rawCatImg = (c.img && !c.img.includes('10b981')) ? getOptImg(c.img, 'w150-rw') : 'https://placehold.co/150/f1f5f9/64748b?text=Cat';
+                return `<div onclick="filterCategory('${nameSafe}')" class="flex flex-col items-center gap-1.5 cursor-pointer shrink-0 w-[64px] sm:w-[72px] group snap-start py-0.5"><div class="relative w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-slate-50 dark:bg-slate-800 flex items-center justify-center p-1.5 transition-all duration-200 ${isSel ? 'bg-[var(--color-primary-light)] border-2 border-[var(--color-primary)] shadow-xs dark:bg-[var(--color-primary-dark)]/20' : 'border border-slate-200 dark:border-slate-700 shadow-2xs group-hover:border-[var(--color-primary)] group-hover:-translate-y-0.5'} overflow-hidden"><img loading="lazy" src="${esc(rawCatImg)}" alt="${esc(c.name)}" onerror="this.onerror=null;this.src='https://placehold.co/150/f1f5f9/64748b?text=Cat'" class="w-full h-full object-cover rounded-lg transition-transform duration-300 group-hover:scale-105"></div><span class="text-[8.5px] sm:text-[9px] text-center w-full line-clamp-1 leading-tight px-0.5 ${isSel ? 'font-bold text-[var(--color-primary)]' : 'font-semibold text-slate-600 dark:text-slate-300 group-hover:text-[var(--color-primary)]'} uppercase tracking-wider transition-colors">${esc(c.name)}</span></div>`;
+            }
+        }).join(''));
+    }
     
     const bLHorizontal = [...(appData.brands || [])];
     const bLModal = [{name:'Semua Merek', img:(appData.store.allBrandsIcon && !appData.store.allBrandsIcon.includes('10b981')) ? appData.store.allBrandsIcon : 'https://placehold.co/150/f1f5f9/475569?text=Semua+Merek'}, ...(appData.brands || [])];
     
-    setH('dynamic-brands-container', bLHorizontal.map(b => {
-        const isSel = aBrand === b.name; const nameSafe = decodeURIComponent(encodeURIComponent(b.name).replace(/'/g,"%27"));
-        if(appData.store.brandStyle === 'text') {
-            return `<div onclick="filterBrand('${nameSafe}')" class="cursor-pointer shrink-0 snap-start group py-0.5"><div class="px-3.5 py-1.5 rounded-xl border transition-all duration-200 flex items-center gap-2 ${isSel ? 'bg-[var(--color-primary)] border-transparent text-white shadow-xs' : 'bg-slate-50 dark:bg-slate-800/90 border-slate-200/80 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:border-[var(--color-primary)]/50 hover:bg-white dark:hover:bg-slate-800'}"><div class="w-5 h-5 rounded-md flex items-center justify-center ${isSel ? 'bg-white/20 text-white' : 'bg-white dark:bg-slate-700 text-slate-400 group-hover:text-[var(--color-primary)]'} transition-colors"><i class="fa-solid fa-copyright text-[9px]"></i></div><span class="font-bold text-[10px] sm:text-[11px] uppercase tracking-wider">${esc(b.name)}</span></div></div>`;
-        } else {
-            const rawBrandImg = (b.img && !b.img.includes('10b981')) ? getOptImg(b.img, 'w150-rw') : 'https://placehold.co/150/f1f5f9/64748b?text=Brand';
-            return `<div onclick="filterBrand('${nameSafe}')" class="flex flex-col items-center gap-1.5 cursor-pointer shrink-0 w-[64px] sm:w-[72px] group snap-start py-0.5"><div class="relative w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-white flex items-center justify-center overflow-hidden p-1.5 transition-all duration-200 ${isSel ? 'ring-2 ring-[var(--color-primary)] ring-offset-1 ring-offset-slate-50 dark:ring-offset-slate-800 shadow-xs' : 'border border-slate-200 dark:border-slate-700 shadow-2xs group-hover:border-[var(--color-primary)]/50 group-hover:-translate-y-0.5'}"><img loading="lazy" src="${esc(rawBrandImg)}" alt="${esc(b.name)}" onerror="this.onerror=null;this.src='https://placehold.co/150/f1f5f9/64748b?text=Brand'" class="w-full h-full object-contain transition-transform duration-300 group-hover:scale-105"></div><span class="text-[8.5px] sm:text-[9px] text-center w-full line-clamp-1 leading-tight px-0.5 ${isSel ? 'font-bold text-[var(--color-primary)]' : 'font-semibold text-slate-600 dark:text-slate-300 group-hover:text-[var(--color-primary)]'} uppercase tracking-wider transition-colors">${esc(b.name)}</span></div>`;
-        }
-    }).join(''));
+    if (bLHorizontal.length > 0) {
+        setH('dynamic-brands-container', bLHorizontal.map(b => {
+            const isSel = aBrand === b.name; const nameSafe = decodeURIComponent(encodeURIComponent(b.name).replace(/'/g,"%27"));
+            if(appData.store.brandStyle === 'text') {
+                return `<div onclick="filterBrand('${nameSafe}')" class="cursor-pointer shrink-0 snap-start group py-0.5"><div class="px-3.5 py-1.5 rounded-xl border transition-all duration-200 flex items-center gap-2 ${isSel ? 'bg-[var(--color-primary)] border-transparent text-white shadow-xs' : 'bg-slate-50 dark:bg-slate-800/90 border-slate-200/80 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:border-[var(--color-primary)]/50 hover:bg-white dark:hover:bg-slate-800'}"><div class="w-5 h-5 rounded-md flex items-center justify-center ${isSel ? 'bg-white/20 text-white' : 'bg-white dark:bg-slate-700 text-slate-400 group-hover:text-[var(--color-primary)]'} transition-colors"><i class="fa-solid fa-copyright text-[9px]"></i></div><span class="font-bold text-[10px] sm:text-[11px] uppercase tracking-wider">${esc(b.name)}</span></div></div>`;
+            } else {
+                const rawBrandImg = (b.img && !b.img.includes('10b981')) ? getOptImg(b.img, 'w150-rw') : 'https://placehold.co/150/f1f5f9/64748b?text=Brand';
+                return `<div onclick="filterBrand('${nameSafe}')" class="flex flex-col items-center gap-1.5 cursor-pointer shrink-0 w-[64px] sm:w-[72px] group snap-start py-0.5"><div class="relative w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-white flex items-center justify-center overflow-hidden p-1.5 transition-all duration-200 ${isSel ? 'ring-2 ring-[var(--color-primary)] ring-offset-1 ring-offset-slate-50 dark:ring-offset-slate-800 shadow-xs' : 'border border-slate-200 dark:border-slate-700 shadow-2xs group-hover:border-[var(--color-primary)]/50 group-hover:-translate-y-0.5'}"><img loading="lazy" src="${esc(rawBrandImg)}" alt="${esc(b.name)}" onerror="this.onerror=null;this.src='https://placehold.co/150/f1f5f9/64748b?text=Brand'" class="w-full h-full object-contain transition-transform duration-300 group-hover:scale-105"></div><span class="text-[8.5px] sm:text-[9px] text-center w-full line-clamp-1 leading-tight px-0.5 ${isSel ? 'font-bold text-[var(--color-primary)]' : 'font-semibold text-slate-600 dark:text-slate-300 group-hover:text-[var(--color-primary)]'} uppercase tracking-wider transition-colors">${esc(b.name)}</span></div>`;
+            }
+        }).join(''));
+    }
     
     setH('modal-brand-grid', bLModal.map(b => {
         const isSel = aBrand === b.name; const nameSafe = decodeURIComponent(encodeURIComponent(b.name).replace(/'/g,"%27"));

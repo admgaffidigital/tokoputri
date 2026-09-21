@@ -4,14 +4,25 @@
 @import '@fortawesome/fontawesome-free/css/solid.min.css';
 @import '@fortawesome/fontawesome-free/css/brands.min.css';
 
-/* Pastikan font awesome tidak memblokir render (font-display: swap) */
+/* Override font-display menjadi swap agar teks/ikon tidak render-blocking dan lolos audit PageSpeed */
 @font-face {
-  font-family: 'Font Awesome 6 Free';
+  font-family: 'Font Awesome 7 Free';
+  font-style: normal;
+  font-weight: 900;
   font-display: swap;
+  src: url('@fortawesome/fontawesome-free/webfonts/fa-solid-900.woff2') format('woff2');
 }
 @font-face {
-  font-family: 'Font Awesome 6 Brands';
+  font-family: 'Font Awesome 7 Brands';
+  font-style: normal;
+  font-weight: 400;
   font-display: swap;
+  src: url('@fortawesome/fontawesome-free/webfonts/fa-brands-400.woff2') format('woff2');
+}
+
+/* Mencegah pergeseran tata letak horizontal akibat kemunculan scrollbar (CLS) */
+html {
+  overflow-y: scroll;
 }
 
 @tailwind base;

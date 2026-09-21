@@ -302,3 +302,48 @@ export const applyBackgroundStyle = (bgStyle = 'minimalist', customBgUrl = '') =
     }
 };
 
+/**
+ * Sinkronisasi metadata aplikasi (PWA theme-color, title, status bar)
+ * Beroperasi mandiri tanpa dependensi ke modul admin seller.
+ */
+import { appData } from './state.js';
+
+export const syncAppMeta = () => {
+    const sName = appData.store?.name || 'Toko Putri';
+    const sColor = appData.store?.themeColor || '#10b981';
+
+    const setM = (n, c, isProp = false) => { 
+        let m = document.querySelector(`meta[${isProp ? 'property' : 'name'}="${n}"]`); 
+        if (!m) { 
+            m = document.createElement('meta'); 
+            isProp ? m.setAttribute('property', n) : m.setAttribute('name', n); 
+            document.head.appendChild(m); 
+        } 
+        m.setAttribute('content', c); 
+    };
+
+    setM('theme-color', sColor); 
+    setM('mobile-web-app-capable', 'yes'); 
+    setM('apple-mobile-web-app-capable', 'yes');
+    setM('apple-mobile-web-app-status-bar-style', 'black-translucent'); 
+    setM('apple-mobile-web-app-title', sName);
+    setM('application-name', sName); 
+    setM('msapplication-TileColor', sColor);
+    document.title = sName;
+
+    localStorage.setItem('freshmart_theme_color', sColor);
+
+    if (appData.store?.uiTheme && appData.store.uiTheme !== localStorage.getItem('freshmart_ui_theme')) {
+        localStorage.setItem('freshmart_ui_theme', appData.store.uiTheme);
+        applyUITheme(appData.store.uiTheme);
+    }
+
+    const sBgStyle = appData.store?.bgStyle || localStorage.getItem('freshmart_bg_style') || 'minimalist';
+    const sBgCustom = appData.store?.bgCustomUrl !== undefined ? appData.store.bgCustomUrl : (localStorage.getItem('freshmart_bg_custom_url') || '');
+    applyBackgroundStyle(sBgStyle, sBgCustom);
+};
+
+if (typeof window !== 'undefined') {
+    window.syncAppMeta = syncAppMeta;
+}
+

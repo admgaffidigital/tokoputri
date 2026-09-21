@@ -323,6 +323,7 @@ export const confirmLogoutAdmin = () => {
 };
 
 // ─── Expose ke window untuk atribut onclick di HTML ──────
+window.__checkAdminAccessReal = checkAdminAccess;
 window.checkAdminAccess = checkAdminAccess;
 window.openAdminMenu = openAdminMenu;
 window.toggleTaxMenuVisibility = toggleTaxMenuVisibility;

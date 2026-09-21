@@ -15,43 +15,7 @@ import {
 import { uiPalettes, applyUITheme, applyBackgroundStyle } from '../../core/theme.js';
 import { toggleTaxMenuVisibility } from './auth.js';
 
-/**
- * Sinkronisasi metadata PWA & title browser
- */
-export const syncAppMeta = () => {
-    const sName = appData.store.name || 'Toko Grosir';
-    const sColor = appData.store.themeColor || '#10b981';
-
-    const setM = (n, c, isProp = false) => { 
-        let m = document.querySelector(`meta[${isProp ? 'property' : 'name'}="${n}"]`); 
-        if (!m) { 
-            m = document.createElement('meta'); 
-            isProp ? m.setAttribute('property', n) : m.setAttribute('name', n); 
-            document.head.appendChild(m); 
-        } 
-        m.setAttribute('content', c); 
-    };
-
-    setM('theme-color', sColor); 
-    setM('mobile-web-app-capable', 'yes'); 
-    setM('apple-mobile-web-app-capable', 'yes');
-    setM('apple-mobile-web-app-status-bar-style', 'black-translucent'); 
-    setM('apple-mobile-web-app-title', sName);
-    setM('application-name', sName); 
-    setM('msapplication-TileColor', sColor);
-    document.title = sName;
-
-    localStorage.setItem('freshmart_theme_color', sColor);
-
-    if (appData.store.uiTheme && appData.store.uiTheme !== localStorage.getItem('freshmart_ui_theme')) {
-        localStorage.setItem('freshmart_ui_theme', appData.store.uiTheme);
-        applyUITheme(appData.store.uiTheme);
-    }
-
-    const sBgStyle = appData.store.bgStyle || localStorage.getItem('freshmart_bg_style') || 'minimalist';
-    const sBgCustom = appData.store.bgCustomUrl !== undefined ? appData.store.bgCustomUrl : (localStorage.getItem('freshmart_bg_custom_url') || '');
-    applyBackgroundStyle(sBgStyle, sBgCustom);
-};
+export { syncAppMeta } from '../../core/theme.js';
 
 /**
  * Render menu grid utama pengaturan toko

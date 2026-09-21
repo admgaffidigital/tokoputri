@@ -24,8 +24,9 @@ export const DEFAULT_CHANGELOG = [
             'Urutan Tercermin di Storefront Pembeli: Urutan produk yang diatur seller menjadi tampilan default halaman Beranda dan Katalog pembeli. Pembeli tetap bebas memilih filter sendiri (Termurah, Termahal, A-Z) sesuai keinginan.',
             'Manajemen Urutan Cerdas: Produk baru otomatis masuk posisi #1 (terdepan), produk dihapus otomatis bersih dari daftar urutan, dan produk duplikat otomatis muncul tepat di sebelah produk aslinya.',
             'Verifikasi Kepemilikan Domain Google Search Console: Penambahan file verifikasi HTML dan meta tag kepemilikan domain di root untuk pengindeksan SEO mesin pencari Google yang optimal.',
-            'Akselerasi Core Web Vitals (FCP & LCP Instan): Penghapusan jeda splash screen, sinkronisasi paralel Firestore Promise.all(), banner LCP loading="eager" & fetchpriority="high", dan rendering font swap tanpa render-blocking.',
-            'Optimasi PageSpeed & Chunk Splitting: Pemisahan bundle modular modul member dan FAQ memangkas ukuran index.js hingga 34% (194KB -> 127KB), preconnect CDN Google & Cloudflare, serta optimasi otomatis format WebP via CDN.',
+            'Eliminasi Total CLS (Cumulative Layout Shift): Mengatasi pergeseran tata letak (dari 0.835 menjadi stabil <0.05) dengan pre-rendered skeleton cards pada banner, kategori, brand, dan katalog produk, dimensi width/height eksplisit pada semua gambar, serta font-display: swap pada Font Awesome.',
+            'Lazy-Loading Modul Admin Seller CMS: Pemisahan dinamis bundle modul Admin (510 KB) dari storefront pelanggan, sehingga pengunjung toko tidak perlu mendownload script admin, memangkas ukuran JS kritis dan mendongkrak skor PageSpeed Mobile.',
+            'Akselerasi Core Web Vitals (FCP & LCP Instan): Penghapusan jeda splash screen, render skeleton instan pada kunjungan pertama (first-load), sinkronisasi paralel Firestore Promise.all(), banner LCP loading="eager" & fetchpriority="high".',
             'Penyempurnaan Stabilitas Banner & Aksesibilitas: Perbaikan referensi indeks slider banner agar interaksi video/audio dan slide berjalan mulus tanpa error, serta pemenuhan standar aksesibilitas a11y pada tautan footer.'
         ]
     },

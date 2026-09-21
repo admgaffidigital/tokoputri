@@ -133,12 +133,15 @@ export const loadAppData = async () => {
         updWish();
         rDyn();
         rCat();
+        window.__isProductsLoaded = true;
         setIn('stat-products', appData.products.filter(p => p.isActive !== 'false' && p.isActive !== false).length);
         // Sembunyikan loader secara instan untuk performa FCP & LCP optimal
         hLoad();
         hasRenderedCached = true;
     } else {
-        sLoad('Memuat Toko...');
+        // PERTAMA KALI / INCOGNITO: Render default storefront & sembunyikan fullscreen loader segera!
+        rDyn();
+        hLoad();
     }
 
     // 2. BACKGROUND REVALIDATION: Sinkronkan update server secara paralel (Promise.all)
@@ -182,6 +185,7 @@ export const loadAppData = async () => {
                 updWish();
                 rDyn();
                 rCat();
+                window.__isProductsLoaded = true;
                 setIn('stat-products', appData.products.filter(p => p.isActive !== 'false' && p.isActive !== false).length);
             }
         } catch(e) {

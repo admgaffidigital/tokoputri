@@ -227,11 +227,12 @@ export const sLoad = t => {
 export const hLoad = () => { 
     const gl = el('global-loader'); 
     if(gl) { 
-        gl.style.transition = 'opacity 0.4s ease'; 
+        gl.style.pointerEvents = 'none';
+        gl.style.transition = 'opacity 0.25s ease'; 
         gl.style.opacity = '0'; 
         setTimeout(() => { 
             gl.style.display = 'none'; 
-        }, 400); 
+        }, 250); 
     } 
 };
 

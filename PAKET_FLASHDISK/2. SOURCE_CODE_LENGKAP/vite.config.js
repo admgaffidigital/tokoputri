@@ -15,6 +15,23 @@ export default defineConfig({
     assetsInlineLimit: 4096,
     // Pisahkan CSS per chunk JS agar hanya CSS yang dibutuhkan halaman yang dimuat
     cssCodeSplit: true,
+    // Optimasi Module Preload: cegah browser mendownload modul admin & modul berat saat storefront load
+    modulePreload: {
+      polyfill: true,
+      resolveDependencies: (url, deps, { hostType }) => {
+        if (hostType === 'html') {
+          // Jangan preload chunk admin, print, member, faq di initial HTML storefront
+          return deps.filter(dep => 
+            !dep.includes('module-admin') &&
+            !dep.includes('module-print') &&
+            !dep.includes('module-member') &&
+            !dep.includes('module-faq') &&
+            !dep.includes('vendor-firebase-analytics')
+          );
+        }
+        return deps;
+      }
+    },
     rollupOptions: {
       output: {
         manualChunks: {

@@ -28,22 +28,18 @@ import './modules/cart/index.js';
 import './modules/catalog/index.js';
 // Modules: Riwayat Pesanan & Ulasan Pelanggan
 import './modules/orders/index.js';
-// Modules: Manajemen Admin & CMS Seller
-import './modules/admin/index.js';
+// Modules: Sesi Admin Seller (Guard ringan)
 import { attachAdminSessionGuard, detachAdminSessionGuard, isCurrentSessionActive, isLoggingIn } from './modules/admin/session.js';
-// Modules: Tanya Jawab (Q&A / FAQ) Storefront & Admin
+// Modules: Tanya Jawab (Q&A / FAQ) Storefront
 import './modules/faq/index.js';
-// Modules: Log Pembaruan Sistem (Changelog) Storefront & Admin
+// Modules: Log Pembaruan Sistem (Changelog) Storefront
 import './modules/changelog/index.js';
-import './modules/changelog/admin.js';
 // Modules: Unduh & Pembaruan Aplikasi Resmi (Play Store Style APK Update)
 import './modules/app-update/index.js';
 // Services: Upload Media (GAS Drive Integration)
 import './services/upload.js';
 // Services: Penyimpanan Data & Realtime Sync (Firestore / Cache)
 import { loadAppData, attachRealtimeStockSync, attachRealtimeProductsSync, attachRewardsRealtime } from './services/storage.js';
-// NOTE: loadAppData dan attachRealtimeStockSync diimport eksplisit agar pemanggilan di DOMContentLoaded
-// tidak bergantung pada window.* yang bisa undefined akibat urutan inisialisasi modul.
 // Modules: Beranda, Banner Slider & Footer
 import { renderFooter } from './modules/home/footer.js';
 import './modules/home/index.js';
@@ -57,11 +53,34 @@ import './core/ui.js';
 import { setupHistoryRouter } from './core/router.js';
 // Cart: sanitizeCart diimport langsung supaya window.sanitizeCart tidak circular
 import { sanitizeCart } from './modules/cart/cart.js';
-// FIX BUG KRITIS: syncAppMeta HARUS diimport eksplisit dari settings.js.
-// Sebelumnya dipanggil sebagai fungsi biasa di DOMContentLoaded tanpa import,
-// menyebabkan ReferenceError yang menghentikan eksekusi SEBELUM attachRealtimeStockSync()
-// sempat dipanggil — sehingga listener Firestore tidak pernah terpasang di perangkat manapun.
-import { syncAppMeta } from './modules/admin/settings.js';
+// Metadata sync dari theme.js (bebas dependensi modul admin berat)
+import { syncAppMeta } from './core/theme.js';
+
+// Lazy loading modul Admin Seller (CMS & Changelog Admin) untuk memangkas bundle kritis storefront
+let adminLoaded = false;
+let adminLoadingPromise = null;
+export const ensureAdminLoaded = async () => {
+    if (adminLoaded) return true;
+    if (adminLoadingPromise) return adminLoadingPromise;
+    adminLoadingPromise = Promise.all([
+        import('./modules/admin/index.js'),
+        import('./modules/changelog/admin.js')
+    ]).then(() => {
+        adminLoaded = true;
+        return true;
+    });
+    return adminLoadingPromise;
+};
+window.ensureAdminLoaded = ensureAdminLoaded;
+
+window.checkAdminAccess = async () => {
+    sLoad('Membuka Akses Seller...');
+    await ensureAdminLoaded();
+    hLoad();
+    if (typeof window.__checkAdminAccessReal === 'function') {
+        return window.__checkAdminAccessReal();
+    }
+};
 
 // Cegah mobile browser merestorasi scroll position lama yang menggeser layout
 if (typeof history !== 'undefined' && 'scrollRestoration' in history) {
@@ -281,6 +300,7 @@ window.addEventListener('DOMContentLoaded', async () => {
         return;
     }
     if (user) {
+        await ensureAdminLoaded();
         // Validasi apakah sesi admin di perangkat ini masih aktif atau sudah diambil alih perangkat lain
         const isSessionValid = await isCurrentSessionActive();
         if (!isSessionValid) {
