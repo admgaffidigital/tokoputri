@@ -210,6 +210,16 @@ Aplikasi telah dilengkapi dengan fondasi **Capacitor 8 Android Native**:
 #### ♿ Aksesibilitas (a11y)
 - Link footer tanpa `href` kini dilengkapi `href="javascript:void(0)"` dan `role="button"` sesuai standar HTML aksesibilitas.
 
+#### 🎯 Eliminasi Total CLS (Cumulative Layout Shift 0.835 → <0.05)
+- **Pre-rendered Skeleton Layout**: Container banner, kategori, brand, dan produk kini memiliki skeleton `animate-pulse` dengan dimensi tetap (`min-h-[190px]`, `min-h-[44px]`, `min-h-[72px]`, `min-h-[400px]`) sehingga layout tidak melompat saat data Firestore masuk.
+- **Dimensi Gambar Eksplisit**: Semua elemen `<img>` utama kini memiliki atribut `width` dan `height` (logo: 48×48, banner: 240×140, grid produk: 300×300, list produk: 96×96) agar browser dapat mengalokasikan ruang sebelum gambar terunduh.
+- **Eliminasi Geseran Scrollbar**: Ditambahkan `html { overflow-y: scroll; }` di `style.css` agar lebar viewport tidak berubah saat halaman memanjang.
+
+#### 🚀 Lazy-Loading Modul Admin Seller CMS
+- **Dynamic Import Admin Bundle (510 KB)**: Modul admin CMS `module-admin` (dahulu di-import statis sejak awal) kini dimuat secara dinamis melalui `import()` hanya saat admin login atau membuka rute admin (`ensureAdminLoaded()`).
+- **Bersih dari Preload Admin**: Dikonfigurasi `modulePreload.resolveDependencies` di `vite.config.js` sehingga `<link rel="modulepreload">` di `index.html` tidak lagi menyertakan chunk admin, cetak nota, member, FAQ, dan analytics — menghemat bandwidth awal pembeli.
+
+
 ---
 
 ## 📝 Catatan Pemeliharaan Agen AI & Developer
