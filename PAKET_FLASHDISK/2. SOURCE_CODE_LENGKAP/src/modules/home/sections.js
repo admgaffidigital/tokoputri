@@ -37,7 +37,7 @@ export const rDyn = () => {
     let bHTML = (appData.banners && appData.banners.length) ? `
     <div class="relative group/banner-wrapper w-full">
         <div id="banner-slider" class="flex overflow-x-auto gap-4 sm:gap-6 pb-4 pt-2 snap-x hide-scrollbar scroll-smooth" ontouchstart="clearInterval(window.bannerTmr)" ontouchend="setTimeout(() => window.startBannerAutoSlide?.(), 8000)" onmouseenter="clearInterval(window.bannerTmr)" onmouseleave="window.startBannerAutoSlide?.()" onscroll="window.onBannerScroll && window.onBannerScroll()">
-            ${appData.banners.map((b,i)=>{
+            ${appData.banners.map((b,idx)=>{
         const isVideo = b.type === 'video' && b.videoUrl;
         const linkAction = (!isVideo && b.link) ? `onclick="window.open('${esc(b.link)}', '_self')"` : '';
 
@@ -84,7 +84,7 @@ export const rDyn = () => {
             }
 
             return `
-            <div id="banner-slide-${i}" class="banner-slide-item w-[88vw] sm:w-[520px] aspect-video snap-center shrink-0 rounded-3xl relative overflow-hidden group bg-black shadow-none border border-white/10 flex flex-col select-none">
+            <div id="banner-slide-${idx}" class="banner-slide-item w-[88vw] sm:w-[520px] aspect-video snap-center shrink-0 rounded-3xl relative overflow-hidden group bg-black shadow-none border border-white/10 flex flex-col select-none">
                 ${videoMediaHtml}
                 <!-- Shield Transparan: Mencegah klik/tap pada video agar video tidak bisa di-klik/di-pause -->
                 <div class="absolute inset-0 z-15 bg-transparent pointer-events-auto cursor-default" onclick="event.preventDefault(); event.stopPropagation();"></div>
@@ -95,7 +95,7 @@ export const rDyn = () => {
                         ${b.desc  ? `<p class="text-white/90 text-[11px] sm:text-xs font-medium line-clamp-2 mt-0.5">${esc(b.desc)}</p>` : ''}
                     </div>
                     <div class="ml-3 shrink-0 flex items-center gap-2 pointer-events-auto">
-                        <button onclick="event.stopPropagation(); window.toggleBannerVideoSound(this, ${i});" type="button" aria-label="Aktifkan Suara Video" class="banner-sound-toggle inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-900/80 hover:bg-slate-900 text-white text-[10px] sm:text-xs font-bold rounded-full shadow-lg border border-white/20 active:scale-95 transition-all cursor-pointer">
+                        <button onclick="event.stopPropagation(); window.toggleBannerVideoSound(this, ${idx});" type="button" aria-label="Aktifkan Suara Video" class="banner-sound-toggle inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-900/80 hover:bg-slate-900 text-white text-[10px] sm:text-xs font-bold rounded-full shadow-lg border border-white/20 active:scale-95 transition-all cursor-pointer">
                             <i class="fa-solid fa-volume-xmark text-xs"></i> <span>Aktifkan Suara</span>
                         </button>
                     </div>

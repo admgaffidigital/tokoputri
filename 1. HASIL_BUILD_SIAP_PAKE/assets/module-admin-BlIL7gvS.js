@@ -2305,7 +2305,7 @@ Terima kasih telah menjadi pelanggan setia ${i}. 🙏`;typeof window.openWhatsAp
                     ${o.link?'<button class="mt-2 bg-white text-slate-900 text-[9px] sm:text-[10px] uppercase tracking-wider font-extrabold py-2 px-4 rounded-full w-max hover:bg-slate-100 active:scale-95 transition-all shadow-md flex items-center gap-2 group-hover:pr-5">Beli Sekarang <i class="fa-solid fa-arrow-right transition-transform group-hover:translate-x-1"></i></button>':""}
                 </div>
                 <div class="w-[38%] sm:w-[35%] relative z-10 flex items-center justify-center p-2 sm:p-4 pr-4 sm:pr-6 shrink-0">
-                    ${o.img?`<img loading="${idx===0?"eager":"lazy"}" fetchpriority="${idx===0?"high":"auto"}" decoding="${idx===0?"sync":"async"}" src="${u(me(o.img,"w600-rw"))}" alt="${u(o.title||"Promo Banner")}" class="w-full h-full max-h-[140px] sm:max-h-[170px] object-contain drop-shadow-md transition-transform duration-500 group-hover:scale-105" onerror="this.style.display='none'">`:`
+                    ${o.img?`<img loading="${l===0?"eager":"lazy"}" fetchpriority="${l===0?"high":"auto"}" decoding="${l===0?"sync":"async"}" src="${u(me(o.img,"w600-rw"))}" alt="${u(o.title||"Promo Banner")}" class="w-full h-full max-h-[140px] sm:max-h-[170px] object-contain drop-shadow-md transition-transform duration-500 group-hover:scale-105" onerror="this.style.display='none'">`:`
                     <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-white/20 border-2 border-white/30 flex items-center justify-center shadow-md group-hover:scale-105 transition-all duration-300">
                         <i class="fa-solid fa-gift text-4xl sm:text-5xl text-white"></i>
                     </div>`}
