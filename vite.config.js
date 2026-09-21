@@ -36,13 +36,27 @@ export default defineConfig({
             './src/modules/admin/settings.js',
             './src/modules/admin/tempo.js',
             './src/modules/admin/reviews.js',
-            './src/modules/changelog/admin.js'
+            './src/modules/changelog/admin.js',
+            // Admin session guard: hanya aktif saat admin login — pisah dari bundle utama
+            './src/modules/admin/session.js',
           ],
           // Modul Cetak Dokumen Struk Thermal & Invoice A4
           'module-print': [
             './src/modules/print/index.js',
             './src/modules/print/documents.js'
-          ]
+          ],
+          // Modul Member, Reward & Gamifikasi: hanya dibutuhkan pelanggan terdaftar
+          'module-member': [
+            './src/modules/member/index.js',
+            './src/modules/member/reward.js',
+            './src/modules/member/voucher.js',
+          ],
+          // Modul FAQ & Changelog: ringan tapi jarang diakses — pisah dari bundle kritis
+          'module-faq': [
+            './src/modules/faq/index.js',
+            './src/modules/faq/faq.js',
+            './src/modules/changelog/index.js',
+          ],
         }
       }
     },

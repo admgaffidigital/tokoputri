@@ -243,7 +243,7 @@ export const rCat = () => {
                 ${nH}
                 <div class="relative aspect-square w-full bg-white flex items-center justify-center shrink-0 border-b border-slate-100 dark:border-slate-700/50">
                       ${stockBadge}
-                      <img loading="lazy" decoding="async" src="${esc(getOptImg(p.img, 'w300-rw'))}" alt="${esc(p.name)}" onerror="this.onerror=null;this.src='https://placehold.co/400?text=No+Image'" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 ${nH ? 'grayscale opacity-50' : ''}">
+                      <img loading="lazy" decoding="async" sizes="(max-width: 640px) 45vw, (max-width: 1024px) 30vw, 20vw" src="${esc(getOptImg(p.img, 'w300-rw'))}" alt="${esc(p.name)}" onerror="this.onerror=null;this.src='https://placehold.co/400?text=No+Image'" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 ${nH ? 'grayscale opacity-50' : ''}">
                 </div>
                 <div class="flex-1 flex flex-col p-3 sm:p-4 min-w-0 bg-white dark:bg-slate-800 relative z-10">
                     ${bH}
@@ -268,7 +268,7 @@ export const rCat = () => {
                 ${nH}
                 <div class="relative w-24 h-24 sm:w-28 sm:h-28 shrink-0 bg-white dark:bg-slate-900 rounded-xl flex items-center justify-center p-2 border border-slate-100 dark:border-slate-700/50 overflow-hidden">
                     ${stockBadge}
-                    <img loading="lazy" decoding="async" src="${esc(getOptImg(p.img, 'w300-rw'))}" alt="${esc(p.name)}" onerror="this.onerror=null;this.src='https://placehold.co/400?text=No+Image'" class="max-w-full max-h-full object-contain transition-transform duration-500 group-hover:scale-105 ${nH ? 'grayscale opacity-50' : ''}">
+                    <img loading="lazy" decoding="async" sizes="96px" src="${esc(getOptImg(p.img, 'w300-rw'))}" alt="${esc(p.name)}" onerror="this.onerror=null;this.src='https://placehold.co/400?text=No+Image'" class="max-w-full max-h-full object-contain transition-transform duration-500 group-hover:scale-105 ${nH ? 'grayscale opacity-50' : ''}">
                 </div>
                 <div class="flex-1 min-w-0 py-1 flex flex-col justify-center h-full relative z-10 pr-2">
                     ${bH}

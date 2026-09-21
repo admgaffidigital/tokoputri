@@ -157,10 +157,16 @@ export const fixDriveVideoPreview = v => { const p = parseVideoUrl(v); return p 
  * @param {string} sizeOpt - misal 'w300-rw', 's400', dll
  */
 export const getOptImg = (url, sizeOpt) => {
-    if (typeof url !== 'string') return url;
+    if (typeof url !== 'string' || !url) return url;
+    // Google Drive CDN (lh3.googleusercontent.com/d/): append size + WebP via rw param
     if (url.includes('lh3.googleusercontent.com/d/')) {
         const cleanUrl = url.split('=')[0];
+        // sizeOpt sudah mengandung -rw (misal: w300-rw) yang memberi hint WebP di CDN Google
         return `${cleanUrl}=${sizeOpt}`;
+    }
+    // Google User Content CDN lainnya (lh1-lh6): append size hint jika belum ada
+    if (url.includes('googleusercontent.com') && !url.includes('=')) {
+        return `${url}=${sizeOpt}`;
     }
     return url;
 };
