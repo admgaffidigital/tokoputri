@@ -174,7 +174,30 @@ Aplikasi telah dilengkapi dengan fondasi **Capacitor 8 Android Native**:
 
 ---
 
+## 📋 Riwayat Pembaruan (Changelog)
+
+### v1.9.2 — Patch Performa & SEO (21 Sep 2026)
+
+#### 🔐 Verifikasi Kepemilikan Domain Google Search Console
+- Ditambahkan file verifikasi HTML `public/google1cca8652526fd3bf.html` di root domain.
+- Ditambahkan meta tag `google-site-verification` di `index.html` sebagai verifikasi cadangan.
+- `vercel.json` diperbarui: URL `google*.html` kini dikecualikan dari SPA rewrite agar dapat diakses langsung sebagai file statis.
+
+#### ⚡ Optimasi Performa Core Web Vitals
+- **FCP/LCP lebih cepat**: Splash screen delay dihapus — `hLoad()` kini dipanggil langsung tanpa `setTimeout`.
+- **Firestore paralel**: `Promise.all()` digunakan untuk memuat `cms_data`, `products`, dan `rewards` secara bersamaan — menghemat waktu roundtrip jaringan.
+- **Font Awesome non-blocking**: Tambah deklarasi `font-display: swap` di `style.css` agar teks tidak terblokir saat font ikon dimuat.
+- **Banner pertama prioritas tinggi**: Banner `idx === 0` kini menggunakan `loading="eager"`, `fetchpriority="high"`, `decoding="sync"`, dan ukuran gambar dioptimalkan ke `w600-rw`.
+- **Logo CDN sizing**: Logo toko dari Google Drive kini auto-append `=w200-rw` untuk penyajian gambar berukuran tepat.
+- Hapus `setTimeout` redundan di blok `finally` Firestore.
+
+#### ♿ Aksesibilitas (a11y)
+- Link footer tanpa `href` kini dilengkapi `href="javascript:void(0)"` dan `role="button"` sesuai standar HTML aksesibilitas.
+
+---
+
 ## 📝 Catatan Pemeliharaan Agen AI & Developer
 1. **Satu Perintah untuk Semua**: Setiap kali selesai memodifikasi kode atau modul, cukup jalankan `npm run sync` agar seluruh folder distribusi, flashdisk, dan Android langsung tersinkronisasi secara otomatis.
 2. **Kompilasi Bersih**: Selalu pastikan `npm run build` berjalan tanpa eror sebelum melakukan git push.
 3. **Konfigurasi Database Multi-Toko**: Penggantian kredensial Firebase dapat dilakukan langsung melalui `public/config.js` tanpa harus mengompilasi ulang kode sumber.
+4. **Verifikasi Domain**: File `public/google1cca8652526fd3bf.html` wajib tetap ada — jangan dihapus atau di-exclude dari `.gitignore`. Diperlukan Google Search Console.
