@@ -176,7 +176,14 @@ Aplikasi telah dilengkapi dengan fondasi **Capacitor 8 Android Native**:
 
 ## 📋 Riwayat Pembaruan (Changelog)
 
-### v1.9.2 — Patch Performa & SEO (21 Sep 2026)
+### v1.9.2 — Geser Urutan Produk, Performa Core Web Vitals & SEO (21 Sep 2026)
+
+#### 🔀 Geser & Atur Urutan Produk (Drag & Drop Reorder)
+- **Geser Kartu Produk Fleksibel**: Admin dapat menahan dan menggeser (drag & drop) kartu produk untuk menentukan posisi tampil di etalase pembeli. Mendukung gesture sentuhan HP maupun mouse PC.
+- **Tombol Naik/Turun ▲▼ & Pindah Cepat**: Setiap produk dilengkapi tombol panah naik/turun instan serta badge urutan yang dapat diklik untuk melompat langsung ke posisi nomor tertentu.
+- **Rapikan per Kategori Otomatis**: Tombol 1-klik untuk mengelompokkan produk sejenis secara berdekatan tanpa perlu digeser manual satu per satu.
+- **Menu Urutkan Cepat**: Pilihan pengurutan otomatis: Nama A-Z, Nama Z-A, Harga Termurah, Harga Termahal, dan Reset Urutan Terbaru.
+- **Sinkronisasi Real-Time**: Perubahan urutan langsung tersimpan di Cloud Firestore dan tercermin ke storefront pembeli secara instan.
 
 #### 🔐 Verifikasi Kepemilikan Domain Google Search Console
 - Ditambahkan file verifikasi HTML `public/google1cca8652526fd3bf.html` di root domain.
@@ -190,6 +197,15 @@ Aplikasi telah dilengkapi dengan fondasi **Capacitor 8 Android Native**:
 - **Banner pertama prioritas tinggi**: Banner `idx === 0` kini menggunakan `loading="eager"`, `fetchpriority="high"`, `decoding="sync"`, dan ukuran gambar dioptimalkan ke `w600-rw`.
 - **Logo CDN sizing**: Logo toko dari Google Drive kini auto-append `=w200-rw` untuk penyajian gambar berukuran tepat.
 - Hapus `setTimeout` redundan di blok `finally` Firestore.
+
+#### 🐛 Perbaikan Bug & Stabilitas Banner
+- **Banner `idx is not defined`**: Memperbaiki `ReferenceError: idx is not defined` pada rendering elemen banner dan kontrol video/audio banner di `src/modules/home/sections.js`.
+
+#### 🚀 Optimasi PageSpeed Lanjutan
+- **Modular Chunk Splitting**: Memisahkan bundle `module-member` (64KB) dan `module-faq` (30KB) secara dinamis, merampingkan ukuran bundle `index.js` dari 194KB menjadi 127KB (−34%).
+- **Dukungan WebP CDN Menyeluruh**: Fungsi `getOptImg` diperluas untuk semua domain `googleusercontent.com` dengan parameter `-rw` untuk konversi format gambar WebP yang lebih ringan.
+- **Preconnect CDN**: Menambahkan directive `preconnect` untuk `cdnjs.cloudflare.com` dan `dns-prefetch` untuk `googleapis.com` pada `index.html` guna mempercepat handshake TLS/DNS.
+- **Responsive Image Sizes**: Gambar produk grid dan list kini dilengkapi atribut `sizes` (`(max-width: 640px) 45vw, 240px` dan `96px`) sehingga browser hanya memuat dimensi gambar sesuai kebutuhan layar.
 
 #### ♿ Aksesibilitas (a11y)
 - Link footer tanpa `href` kini dilengkapi `href="javascript:void(0)"` dan `role="button"` sesuai standar HTML aksesibilitas.

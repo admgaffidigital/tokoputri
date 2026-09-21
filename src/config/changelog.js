@@ -11,9 +11,9 @@ export const DEFAULT_CHANGELOG = [
         id: 'log-1-9-2',
         version: 'v1.9.2',
         date: '2026-09-21',
-        title: 'Geser & Atur Urutan Produk (Drag & Drop Reorder): Susun Tampilan Produk Sesuka Hati, Kelompokkan per Kategori Otomatis, & Sinkronisasi Urutan ke Storefront Pembeli',
+        title: 'Geser & Atur Urutan Produk (Drag & Drop Reorder), Verifikasi Domain Google, Akselerasi Core Web Vitals, & Optimasi PageSpeed',
         category: 'feature',
-        badge: 'Product Drag & Drop Reorder v1.9.2',
+        badge: 'Product Reorder, SEO & Performance v1.9.2',
         items: [
             'Geser Urutan Produk (Drag & Drop): Pemilik toko dapat langsung menahan dan menggeser kartu produk di halaman Admin CMS untuk mengatur urutan tampilan sesuka hati — mendukung sentuhan jari di HP (touch) maupun seret mouse di komputer.',
             'Tombol Panah ▲▼ Geser Cepat: Setiap kartu produk dilengkapi tombol naik/turun untuk menggeser produk satu posisi secara instan tanpa perlu drag jauh, sangat cocok untuk HP layar kecil.',
@@ -22,7 +22,11 @@ export const DEFAULT_CHANGELOG = [
             'Menu Urutkan Cepat: Dropdown "Urutkan Cepat" tersedia dengan pilihan: Nama A-Z, Nama Z-A, Harga Termurah, Harga Termahal, dan Reset ke Urutan Terbaru — semuanya tersimpan permanen ke cloud.',
             'Penyimpanan Otomatis & Sinkronisasi Real-Time: Setiap perubahan urutan langsung tersimpan ke database cloud (Firestore) dan otomatis tersinkron ke semua perangkat tanpa reload.',
             'Urutan Tercermin di Storefront Pembeli: Urutan produk yang diatur seller menjadi tampilan default halaman Beranda dan Katalog pembeli. Pembeli tetap bebas memilih filter sendiri (Termurah, Termahal, A-Z) sesuai keinginan.',
-            'Manajemen Urutan Cerdas: Produk baru otomatis masuk posisi #1 (terdepan), produk dihapus otomatis bersih dari daftar urutan, dan produk duplikat otomatis muncul tepat di sebelah produk aslinya.'
+            'Manajemen Urutan Cerdas: Produk baru otomatis masuk posisi #1 (terdepan), produk dihapus otomatis bersih dari daftar urutan, dan produk duplikat otomatis muncul tepat di sebelah produk aslinya.',
+            'Verifikasi Kepemilikan Domain Google Search Console: Penambahan file verifikasi HTML dan meta tag kepemilikan domain di root untuk pengindeksan SEO mesin pencari Google yang optimal.',
+            'Akselerasi Core Web Vitals (FCP & LCP Instan): Penghapusan jeda splash screen, sinkronisasi paralel Firestore Promise.all(), banner LCP loading="eager" & fetchpriority="high", dan rendering font swap tanpa render-blocking.',
+            'Optimasi PageSpeed & Chunk Splitting: Pemisahan bundle modular modul member dan FAQ memangkas ukuran index.js hingga 34% (194KB -> 127KB), preconnect CDN Google & Cloudflare, serta optimasi otomatis format WebP via CDN.',
+            'Penyempurnaan Stabilitas Banner & Aksesibilitas: Perbaikan referensi indeks slider banner agar interaksi video/audio dan slide berjalan mulus tanpa error, serta pemenuhan standar aksesibilitas a11y pada tautan footer.'
         ]
     },
     {
