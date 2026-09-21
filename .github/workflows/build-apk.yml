@@ -78,15 +78,15 @@ jobs:
             
             Unduh file installer **TokoPutri.apk** di bawah untuk dipasang di smartphone Android.
             
-            **Pembaruan Fitur Terbaru (v1.9.1):**
-            - 🔒 **Sistem Identitas Member Terkunci & Anti Duplikasi**: Nama member resmi tersimpan permanen di database. Pelanggan maupun input form tidak dapat mengubah nama member saat bertransaksi (hanya Admin yang bisa edit di CMS).
-            - 👤 **Otomatisasi Nama Terdaftar pada Pesanan**: Order dari nomor member langsung disinkronkan ke nama terdaftar resmi toko.
-            - 🏷️ **Pembeda Visual Member vs Umum di CMS & Piutang Tempo**: Badge verifikasi hijau untuk Member, badge abu-abu untuk Umum, serta label pembeda pada kartu nota Tempo.
-            - 📊 **Ekspor Excel Rekap Pesanan Lengkap**: Menambahkan kolom Tipe Pelanggan dan Nomor WhatsApp aktif.
-            - 🛡️ **Hardening Cloud Firestore Security Rules**: Proteksi ketat hak create pendaftaran member hanya untuk Admin, dan transaksi checkout hanya boleh mengupdate akumulasi poin loyalty.
-            - 📍 **Drop-Point Delivery (Kirim ke Lokasi Berbeda / Proyek)**: Dukungan pemesanan dari rumah/kantor untuk dikirim langsung ke lokasi proyek, tukang, atau mandor di lapangan.
-            - 💼 **Smart Tempo CRM & Penagihan Otomatis**: Panel analitik piutang jatuh tempo, filter cerdas, dan 1-klik tagih WhatsApp resmi.
-            - 📋 **Surat Penawaran Harga (SPH A4 / PDF)**: Generator SPH resmi langsung dari keranjang belanja untuk kebutuhan RAB proyek.
+            **Pembaruan Fitur Terbaru (v1.9.2):**
+            - 🔀 **Geser & Atur Urutan Produk (Drag & Drop Reorder)**: Seller bisa langsung tahan & geser kartu produk untuk mengatur urutan tampilan di toko — mendukung sentuh jari HP maupun drag mouse di komputer.
+            - ⬆️⬇️ **Tombol Panah Naik/Turun Cepat**: Geser produk satu posisi per klik tanpa perlu drag jauh.
+            - 🔢 **Badge Nomor Urut #1, #2, ... (Klik untuk Pindah)**: Klik badge untuk langsung pindah ke nomor tertentu via dialog.
+            - 📦 **Rapikan per Kategori Otomatis**: Satu klik untuk mengelompokkan produk sejenis (paku, semen, cat) secara otomatis.
+            - ⚡ **Menu Urutkan Cepat**: Pilihan A-Z, Z-A, Harga, Reset ke Terbaru — semuanya tersimpan permanen.
+            - ☁️ **Auto-Save ke Cloud & Sinkron Real-Time**: Urutan langsung tersimpan ke Firestore dan tercermin di tampilan Beranda/Katalog pembeli.
+            - 🔒 **Member Locking & Security (v1.9.1)**: Identitas member terkunci permanen di database, hardening Firestore rules.
+            - 📍 **Drop-Point Delivery (v1.9.0)**: Kirim pesanan ke lokasi proyek/tukang yang berbeda dengan ongkir presisi.
           files: build-output/TokoPutri.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
