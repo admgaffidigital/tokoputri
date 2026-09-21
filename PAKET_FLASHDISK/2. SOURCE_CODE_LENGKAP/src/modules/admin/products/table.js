@@ -1,4 +1,4 @@
-/**
+﻿/**
  * ============================================================
  * ADMIN PRODUCTS — RENDER TABEL & LIST PRODUK (table.js)
  * Mengatur tampilan daftar data produk, warna, pelanggan, reward,
@@ -338,13 +338,13 @@ window.rAdmItms = t => {
         let tC = isOff ? 'text-slate-500 dark:text-slate-400 line-through' : 'text-slate-800 dark:text-slate-100';
         
         let dragHandle = isP ? `
-            <div class="product-drag-handle flex flex-col items-center justify-center w-7 sm:w-8 -my-2 -ml-1 sm:-ml-2 py-3 cursor-grab active:cursor-grabbing text-slate-300 hover:text-[var(--color-primary)] dark:text-slate-600 dark:hover:text-[var(--color-primary)] transition-colors select-none touch-none group/handle shrink-0" onclick="event.stopPropagation();" title="Tahan & geser untuk mengubah urutan">
+            <div class="product-drag-handle flex flex-col items-center justify-center w-7 sm:w-8 -my-2 -ml-1 sm:-ml-2 py-3 cursor-grab active:cursor-grabbing primary-text opacity-25 hover:opacity-90 transition-opacity select-none touch-none group/handle shrink-0" onclick="event.stopPropagation();" title="Tahan & geser untuk mengubah urutan">
                 <i class="fa-solid fa-grip-vertical text-base sm:text-lg group-hover/handle:scale-110 transition-transform"></i>
             </div>
             <div class="flex flex-col items-center justify-center shrink-0 gap-1 mr-1 sm:mr-2 select-none" onclick="event.stopPropagation();">
-                <button class="w-6 h-6 rounded-lg bg-slate-100 hover:bg-[var(--color-primary)] hover:text-white dark:bg-slate-700/60 dark:hover:bg-[var(--color-primary)] text-slate-400 text-[10px] flex items-center justify-center transition-all active:scale-90 shadow-2xs ${idx === 0 ? 'opacity-25 pointer-events-none' : ''}" onclick="window.moveProductOrder('${x.id}', -1)" title="Geser Naik 1 Posisi"><i class="fa-solid fa-chevron-up"></i></button>
-                <button class="text-[9px] font-extrabold px-1.5 py-0.5 rounded-md bg-slate-100 hover:bg-[var(--color-primary)]/10 hover:text-[var(--color-primary)] dark:bg-slate-700/80 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-300 font-mono tracking-tighter transition-all" onclick="window.jumpProductOrder('${x.id}')" title="Klik untuk lompat ke nomor urut tertentu">#${idx + 1}</button>
-                <button class="w-6 h-6 rounded-lg bg-slate-100 hover:bg-[var(--color-primary)] hover:text-white dark:bg-slate-700/60 dark:hover:bg-[var(--color-primary)] text-slate-400 text-[10px] flex items-center justify-center transition-all active:scale-90 shadow-2xs ${idx === i.length - 1 ? 'opacity-25 pointer-events-none' : ''}" onclick="window.moveProductOrder('${x.id}', 1)" title="Geser Turun 1 Posisi"><i class="fa-solid fa-chevron-down"></i></button>
+                <button class="w-6 h-6 rounded-lg primary-bg-soft border primary-border primary-text hover:primary-bg hover:text-white text-[10px] flex items-center justify-center transition-all active:scale-90 shadow-sm ${idx === 0 ? 'opacity-25 pointer-events-none' : ''}" onclick="window.moveProductOrder('${x.id}', -1)" title="Geser Naik 1 Posisi"><i class="fa-solid fa-chevron-up"></i></button>
+                <button class="text-[9px] font-extrabold px-1.5 py-0.5 rounded-md primary-bg-soft border primary-border primary-text hover:primary-bg hover:text-white font-mono tracking-tighter transition-all" onclick="window.jumpProductOrder('${x.id}')" title="Klik untuk lompat ke nomor urut tertentu">#${idx + 1}</button>
+                <button class="w-6 h-6 rounded-lg primary-bg-soft border primary-border primary-text hover:primary-bg hover:text-white text-[10px] flex items-center justify-center transition-all active:scale-90 shadow-sm ${idx === i.length - 1 ? 'opacity-25 pointer-events-none' : ''}" onclick="window.moveProductOrder('${x.id}', 1)" title="Geser Turun 1 Posisi"><i class="fa-solid fa-chevron-down"></i></button>
             </div>
         ` : '';
 
