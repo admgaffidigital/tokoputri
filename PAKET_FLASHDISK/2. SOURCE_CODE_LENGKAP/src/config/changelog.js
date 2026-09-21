@@ -8,6 +8,24 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-9-2',
+        version: 'v1.9.2',
+        date: '2026-09-21',
+        title: 'Geser & Atur Urutan Produk (Drag & Drop Reorder): Susun Tampilan Produk Sesuka Hati, Kelompokkan per Kategori Otomatis, & Sinkronisasi Urutan ke Storefront Pembeli',
+        category: 'feature',
+        badge: 'Product Drag & Drop Reorder v1.9.2',
+        items: [
+            'Geser Urutan Produk (Drag & Drop): Pemilik toko dapat langsung menahan dan menggeser kartu produk di halaman Admin CMS untuk mengatur urutan tampilan sesuka hati — mendukung sentuhan jari di HP (touch) maupun seret mouse di komputer.',
+            'Tombol Panah ▲▼ Geser Cepat: Setiap kartu produk dilengkapi tombol naik/turun untuk menggeser produk satu posisi secara instan tanpa perlu drag jauh, sangat cocok untuk HP layar kecil.',
+            'Badge Nomor Urut #1, #2, ... (Klik untuk Pindah Cepat): Nomor urutan produk ditampilkan di setiap kartu. Klik badge untuk langsung memindahkan produk ke nomor urut tertentu dengan cepat.',
+            'Rapikan per Kategori Otomatis (1 Klik): Tombol "Rapikan per Kategori" mengelompokkan produk sejenis (paku dengan paku, semen dengan semen, cat dengan cat) secara otomatis dalam satu klik tanpa perlu geser manual satu-satu.',
+            'Menu Urutkan Cepat: Dropdown "Urutkan Cepat" tersedia dengan pilihan: Nama A-Z, Nama Z-A, Harga Termurah, Harga Termahal, dan Reset ke Urutan Terbaru — semuanya tersimpan permanen ke cloud.',
+            'Penyimpanan Otomatis & Sinkronisasi Real-Time: Setiap perubahan urutan langsung tersimpan ke database cloud (Firestore) dan otomatis tersinkron ke semua perangkat tanpa reload.',
+            'Urutan Tercermin di Storefront Pembeli: Urutan produk yang diatur seller menjadi tampilan default halaman Beranda dan Katalog pembeli. Pembeli tetap bebas memilih filter sendiri (Termurah, Termahal, A-Z) sesuai keinginan.',
+            'Manajemen Urutan Cerdas: Produk baru otomatis masuk posisi #1 (terdepan), produk dihapus otomatis bersih dari daftar urutan, dan produk duplikat otomatis muncul tepat di sebelah produk aslinya.'
+        ]
+    },
+    {
         id: 'log-1-9-1',
         version: 'v1.9.1',
         date: '2026-09-20',

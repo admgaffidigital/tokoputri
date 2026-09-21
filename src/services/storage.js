@@ -19,6 +19,29 @@ import { rDyn } from '../modules/home/sections.js';
 import { rCat } from '../modules/catalog/catalog.js';
 import { applyUITheme, applyBackgroundStyle } from '../core/theme.js';
 
+// ─── Helper: Urutkan produk berdasarkan susunan kustom (productOrder) ───────────
+export const sortProductsByOrder = (products, productOrder = null) => {
+    if (!Array.isArray(products)) return [];
+    const pOrder = productOrder || appData.productOrder || [];
+    if (!pOrder.length) {
+        return products.sort((a, b) => (b.id || 0) - (a.id || 0));
+    }
+    const orderMap = new Map();
+    pOrder.forEach((id, idx) => orderMap.set(String(id), idx));
+
+    return products.sort((a, b) => {
+        const idA = a && a.id != null ? String(a.id) : '';
+        const idB = b && b.id != null ? String(b.id) : '';
+        const hasA = orderMap.has(idA);
+        const hasB = orderMap.has(idB);
+        if (hasA && hasB) return orderMap.get(idA) - orderMap.get(idB);
+        if (hasA) return -1;
+        if (hasB) return 1;
+        return (b.id || 0) - (a.id || 0);
+    });
+};
+window.sortProductsByOrder = sortProductsByOrder;
+
 export const loadAppData = async () => {
     if(document.documentElement.classList.contains('dark')){
         const icon = el('icon-theme');
@@ -28,6 +51,7 @@ export const loadAppData = async () => {
     // Helper sanitasi & normalisasi URL aset
     const prepareAppData = () => {
         appData.products = appData.products || [];
+        appData.productOrder = Array.isArray(appData.productOrder) ? appData.productOrder : [];
         appData.categories = appData.categories || [];
         appData.brands = appData.brands || [];
         appData.vouchers = appData.vouchers || [];
@@ -92,7 +116,7 @@ export const loadAppData = async () => {
         appData.payment = { ...defApp.payment, ...(localCms.payment || {}) };
         appData.config = { ...defApp.config, ...(localCms.config || {}) };
         if (appData.config && appData.config.gasUrl) window.GAS_UPLOAD_URL = appData.config.gasUrl;
-        if (localProducts) appData.products = localProducts;
+        if (localProducts) appData.products = sortProductsByOrder(localProducts);
         if (localRewards) appData.rewards = localRewards;
         prepareAppData();
         if (appData.store) {
@@ -133,7 +157,7 @@ export const loadAppData = async () => {
                 if (appData.config && appData.config.gasUrl) window.GAS_UPLOAD_URL = appData.config.gasUrl;
 
                 const pSnap = await db.collection("freshmart").doc("cms_data").collection("products").get();
-                appData.products = pSnap.docs.map(doc => doc.data()).sort((a,b) => (b.id||0) - (a.id||0));
+                appData.products = sortProductsByOrder(pSnap.docs.map(doc => doc.data()));
                 ssL('freshmart_products', JSON.stringify(appData.products));
                 ssL('freshmart_last_update', serverUpdate.toString());
 
@@ -409,6 +433,12 @@ export const attachRealtimeStockSync = () => {
             const updatedProductIds = Array.isArray(f.updatedProductIds) ? f.updatedProductIds.map(String) : [];
 
             appData.store = { ...defApp.store, ...(f.store || {}) };
+            if (f.productOrder && Array.isArray(f.productOrder)) {
+                appData.productOrder = f.productOrder;
+                if (appData.products && appData.products.length) {
+                    sortProductsByOrder(appData.products);
+                }
+            }
             if (f.categories) appData.categories = f.categories;
             if (f.vouchers) appData.vouchers = f.vouchers;
             if (f.banners) appData.banners = f.banners;
@@ -447,7 +477,7 @@ export const attachRealtimeStockSync = () => {
             } else if (!hasSessionSyncedProducts && (!appData.products || appData.products.length === 0)) {
                 // Sesi pertama, belum ada produk sama sekali — fetch semua sebagai bootstrap
                 const pSnap = await db.collection("freshmart").doc("cms_data").collection("products").get();
-                appData.products = pSnap.docs.map(d => normalizeProd(d.data())).sort((a,b) => (b.id||0) - (a.id||0));
+                appData.products = sortProductsByOrder(pSnap.docs.map(d => normalizeProd(d.data())));
                 ssL('freshmart_products', JSON.stringify(appData.products));
                 hasSessionSyncedProducts = true;
                 refreshProdUI();
@@ -531,7 +561,7 @@ export const attachRealtimeProductsSync = () => {
             if (isInitialLoad) {
                 isInitialLoad = false;
                 hasSessionSyncedProducts = true;
-                appData.products = snap.docs.map(d => normalizeProd(d.data())).sort((a,b) => (b.id||0) - (a.id||0));
+                appData.products = sortProductsByOrder(snap.docs.map(d => normalizeProd(d.data())));
                 ssL('freshmart_products', JSON.stringify(appData.products));
                 refreshProdUI();
                 return;
@@ -552,7 +582,7 @@ export const attachRealtimeProductsSync = () => {
                         appData.products[existingIdx] = prod;
                     } else {
                         appData.products.unshift(prod);
-                        appData.products.sort((a,b) => (b.id||0) - (a.id||0));
+                        sortProductsByOrder(appData.products);
                     }
                     hasChange = true;
                 } else if (change.type === 'removed') {
@@ -686,6 +716,7 @@ export const updatePwaManifest = (customThemeColor) => {
 // PENTING: assign SETELAH deklarasi const di atas — urutan ini menjamin tidak ada nilai undefined.
 window.loadAppData = loadAppData;
 window.saveApp = saveApp;
+window.sortProductsByOrder = sortProductsByOrder;
 window.attachRealtimeStockSync = attachRealtimeStockSync;
 window.attachRealtimeProductsSync = attachRealtimeProductsSync;
 window.attachRewardsRealtime = attachRewardsRealtime;

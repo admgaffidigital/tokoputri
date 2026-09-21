@@ -142,9 +142,19 @@ export const rCat = () => {
     }).sort((a, b) => {
         if (cSort === 'cheapest') return (a.price || 0) - (b.price || 0);
         if (cSort === 'expensive') return (b.price || 0) - (a.price || 0);
-        if (cSort === 'az') return (a.name || '').localeCompare(a.name || '');
+        if (cSort === 'az') return (a.name || '').localeCompare(b.name || '');
         if (cSort === 'za') return (b.name || '').localeCompare(a.name || '');
         if (cSort === 'oldest') return (a.id || 0) - (b.id || 0);
+        if (appData.productOrder && appData.productOrder.length) {
+            const orderMap = new Map(appData.productOrder.map((id, idx) => [String(id), idx]));
+            const idA = a && a.id != null ? String(a.id) : '';
+            const idB = b && b.id != null ? String(b.id) : '';
+            const hasA = orderMap.has(idA);
+            const hasB = orderMap.has(idB);
+            if (hasA && hasB) return orderMap.get(idA) - orderMap.get(idB);
+            if (hasA) return -1;
+            if (hasB) return 1;
+        }
         return (b.id || 0) - (a.id || 0);
     });
 

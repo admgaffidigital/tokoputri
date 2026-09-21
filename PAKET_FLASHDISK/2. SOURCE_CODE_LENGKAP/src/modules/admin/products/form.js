@@ -245,6 +245,9 @@ window.submitAdminForm = async () => {
         d.id = Date.now();
         if (!appData[curTab]) appData[curTab] = [];
         appData[curTab].unshift(d);
+        if (curTab === 'products') {
+            appData.productOrder = [d.id.toString(), ...(appData.productOrder || []).filter(x => String(x) !== d.id.toString())];
+        }
     }
 
     sLoad('Menyimpan...');
@@ -255,7 +258,7 @@ window.submitAdminForm = async () => {
 
         if (curTab === 'products') {
             await _db.collection("freshmart").doc("cms_data").collection("products").doc(d.id.toString()).set(d);
-            await _save([], { updateType: 'product_single', updatedProductIds: [d.id.toString()] });
+            await _save(['productOrder'], { updateType: 'product_single', updatedProductIds: [d.id.toString()] });
         } else if (curTab === 'customers') {
             const custCol = _db.collection("freshmart").doc("cms_data").collection("customers");
             if (oldCustomerId !== null && oldCustomerId !== d.id) {
@@ -290,11 +293,14 @@ window.oADel = async (t, id) => {
         try {
             if (!_db) throw new Error("Database Firebase belum terhubung");
             if (t === 'products') {
+                if (appData.productOrder) {
+                    appData.productOrder = appData.productOrder.filter(x => String(x) !== String(id));
+                }
                 await _db.collection("freshmart").doc("cms_data").collection("products").doc(id.toString()).delete();
                 // FIX BUG SINKRONISASI: Kirim 'product_delete' + updatedProductIds agar semua
                 // perangkat langsung tahu produk mana yang dihapus dan bisa menghapusnya dari
                 // array lokal tanpa harus melakukan full fetch ulang seluruh koleksi produk.
-                await _save([], { updateType: 'product_delete', updatedProductIds: [id.toString()] });
+                await _save(['productOrder'], { updateType: 'product_delete', updatedProductIds: [id.toString()] });
             } else if (t === 'customers') {
                 const phoneKey = target ? target.phone : id.toString();
                 await _db.collection("freshmart").doc("cms_data").collection("customers").doc(phoneKey).delete();
@@ -328,12 +334,19 @@ window.duplicateProduct = async (id) => {
             duplicated.variants = duplicated.variants.map(v => { v.sku = ""; v.totalSold = 0; return v; });
         }
         appData.products.unshift(duplicated);
+        if (!appData.productOrder) appData.productOrder = [];
+        const origIdx = appData.productOrder.findIndex(x => String(x) === String(id));
+        if (origIdx > -1) {
+            appData.productOrder.splice(origIdx + 1, 0, duplicated.id.toString());
+        } else {
+            appData.productOrder.unshift(duplicated.id.toString());
+        }
 
         sLoad('Menyalin...');
         try {
             if (!_db) throw new Error("Database Firebase belum terhubung");
             await _db.collection("freshmart").doc("cms_data").collection("products").doc(duplicated.id.toString()).set(duplicated);
-            await _save([], { updateType: 'product_single', updatedProductIds: [duplicated.id.toString()] });
+            await _save(['productOrder'], { updateType: 'product_single', updatedProductIds: [duplicated.id.toString()] });
             window.rAdmItms?.('products'); showToast("Produk berhasil disalin!");
         } catch(e) { showToast("Gagal menyalin: " + (e.message || '')); }
         finally { setIsSaving(false); hLoad(); }
