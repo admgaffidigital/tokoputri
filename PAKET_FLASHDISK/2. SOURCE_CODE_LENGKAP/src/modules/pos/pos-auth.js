@@ -236,6 +236,7 @@ export const cashierLogout = async () => {
     } catch (e) {}
 
     clearCashierSession();
+    if (typeof window.destroyBarcodeListener === 'function') window.destroyBarcodeListener();
     showToast('Sesi kasir berakhir. Sampai jumpa! 👋');
 
     // Kembali ke storefront

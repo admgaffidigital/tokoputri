@@ -75,13 +75,29 @@ const genTxId = () => {
 };
 
 // ─── Barcode Scanner (USB) ──────────────────────────────────
+export const destroyBarcodeListener = () => {
+    if (window.__posBarcodeFn) {
+        document.removeEventListener('keydown', window.__posBarcodeFn);
+        window.__posBarcodeFn = null;
+    }
+};
+
 const initBarcodeListener = () => {
-    if (window.__posBarcodeFn) document.removeEventListener('keydown', window.__posBarcodeFn);
+    destroyBarcodeListener();
     window.__posBarcodeFn = (e) => {
+        // Defensive check: pastikan event dan e.key bertipe string
+        if (!e || typeof e.key !== 'string') return;
+
+        // Hanya proses barcode jika sedang berada di layar POS Cashier atau tab POS Admin
+        const curView = window.curViewName || '';
+        const inPos = curView === 'view-pos-cashier' || (curView === 'view-admin' && window.cTab === 'pos');
+        if (!inPos) return;
+
         const tag = document.activeElement?.tagName?.toLowerCase();
         if (tag === 'input' || tag === 'textarea' || tag === 'select') return;
+
         if (e.key === 'Enter') {
-            if (barcodeBuffer.length >= 3) {
+            if (barcodeBuffer && barcodeBuffer.length >= 3) {
                 const c = barcodeBuffer.trim().toLowerCase();
                 const prod = (appData.products || []).find(p =>
                     p && p.isActive !== 'false' && p.isActive !== false &&
@@ -93,14 +109,14 @@ const initBarcodeListener = () => {
                     addToCart(prod.id);
                     showToast(`Ditambahkan: ${prod.name}`, 'success');
                 } else {
-                    const sf = el('pos-search-input-d');
+                    const sf = el('pos-search-input-d') || el('pos-search-input');
                     if (sf) { sf.value = barcodeBuffer; posSearch = barcodeBuffer; renderCatalog(); }
                     showToast('Barcode tidak ditemukan di katalog', 'warning');
                 }
                 barcodeBuffer = '';
             }
-        } else if (e.key.length === 1) {
-            barcodeBuffer += e.key;
+        } else if (e.key && e.key.length === 1) {
+            barcodeBuffer = (barcodeBuffer || '') + e.key;
             clearTimeout(barcodeTimer);
             barcodeTimer = setTimeout(() => { barcodeBuffer = ''; }, 150);
         }
@@ -574,6 +590,7 @@ const exposeToWindow = () => {
     window.posCatFilter           = (c) => { posCatFilterVal = c; renderCatalog(); };
     window.posSearchFn            = (v) => { posSearch = v; renderCatalog(); };
     window.openPOSHistory         = () => import('./pos-history.js').then(m => m.renderPOSHistory());
+    window.destroyBarcodeListener = destroyBarcodeListener;
 };
 
 // ─── POS Storefront Standalone View ─────────────────────────

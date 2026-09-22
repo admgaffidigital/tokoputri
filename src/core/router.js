@@ -73,6 +73,9 @@ export const changeView = (v, fH = false) => {
     if (curViewName === 'view-orders' && v !== 'view-orders' && typeof window.detachMyOrdersRealtime === 'function') {
         window.detachMyOrdersRealtime();
     }
+    if (curViewName === 'view-pos-cashier' && v !== 'view-pos-cashier' && typeof window.destroyBarcodeListener === 'function') {
+        window.destroyBarcodeListener();
+    }
     
     const t = el(v);
     if (t) {
