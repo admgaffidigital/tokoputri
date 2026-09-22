@@ -286,6 +286,12 @@ window.addEventListener('DOMContentLoaded', async () => {
     // Expose attachRewardsRealtime ke window untuk kompatibilitas
     window.attachRewardsRealtime = attachRewardsRealtime;
 
+    // ─── Init POS Auth (Icon kasir di header storefront) ──────────────
+    // Lazy load supaya tidak menambah bundle kritis storefront
+    import('./modules/pos/pos-auth.js').then(m => {
+        if (typeof m.initPOSAuth === 'function') m.initPOSAuth();
+    }).catch(e => console.warn('[POS Auth] Gagal inisialisasi:', e));
+
 // --- FITUR AUTO-LOGIN (Sesi Permanen Firebase) ---
     auth.onAuthStateChanged(async (user) => {
     // Jika sedang dalam proses submit login manual di form login, serahkan ke processAdminLogin
@@ -295,7 +301,17 @@ window.addEventListener('DOMContentLoaded', async () => {
 
     // FIX KEAMANAN: kalau ada sesi tersimpan tapi UID-nya bukan pemilik toko,
     // anggap seperti tidak login sama sekali — paksa logout, jangan masuk dashboard.
+    // EXCEPTION: jika UID adalah akun kasir terdaftar, biarkan (POS auth ditangani pos-auth.js)
     if (user && user.uid !== ADMIN_UID) {
+        // Cek apakah ini akun kasir terdaftar
+        try {
+            const cashierDoc = await db.collection('freshmart').doc('cms_data')
+                .collection('cashier_accounts').doc(user.uid).get();
+            if (cashierDoc.exists && cashierDoc.data().role === 'cashier') {
+                // Kasir login dari storefront — biarkan, jangan force logout
+                return;
+            }
+        } catch(_) {}
         await auth.signOut();
         return;
     }
@@ -377,6 +393,7 @@ window.sL = sL;
 window.ssL = ssL;
 window.defaultFbC = firebaseConfig;
 window.fbC = firebaseConfig;
+window.FIREBASE_CONFIG = firebaseConfig;
 window.defApp = defApp;
 window.ADMIN_UID = ADMIN_UID;
 // sLoad & hLoad: sudah diimport dari src/core/utils.js → expose ke window agar kode inline HTML bisa memakainya

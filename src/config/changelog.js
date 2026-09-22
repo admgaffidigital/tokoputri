@@ -8,6 +8,25 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-9-4',
+        version: 'v1.9.4',
+        date: '2026-09-22',
+        title: 'Mode POS Kasir Mandiri Storefront, Autentikasi Kasir & Manajemen Akun CMS, Dukungan Multivarian & Harga Grosir, serta Desain Responsif Presisi',
+        category: 'feature',
+        badge: 'POS Kasir Storefront & Multi-Varian v1.9.4',
+        items: [
+            'Mode POS Kasir Mandiri di Storefront: Mode POS Kasir dipisahkan secara elegan dari menu pengaturan toko dan ditempatkan langsung di storefront pembeli melalui toggle ikon kasir (cash register) pada header aplikasi.',
+            'Indikator & Visibilitas Otomatis: Ikon kasir di header storefront dilengkapi indikator status aktif (dot hijau berdenyut) dan otomatis tampil jika terdapat akun kasir yang aktif/terdaftar di toko.',
+            'Sistem Autentikasi & Login Kasir Mandiri: Kasir masuk menggunakan modal login khusus kasir (Email/Username & Password). Sesi kasir terisolasi dari admin utama demi privasi dan keamanan sistem toko.',
+            'Manajemen Akun Kasir di CMS Admin: Administrator toko memiliki kontrol penuh untuk membuat, mendaftarkan, mengaktifkan/menonaktifkan, dan menghapus akun akses kasir melalui menu khusus "Akun Kasir" di Admin CMS.',
+            'Dukungan Penuh Multivarian di POS Kasir: Menjual produk dengan varian warna, ukuran, atau tipe kini sangat mudah. Kasir cukup mengklik produk bervarian, dan drawer/sheet pemilihan varian interaktif akan muncul dengan opsi pilihan, foto produk, harga varian dinamis, serta status stok real-time.',
+            'Kalkulasi Harga Grosir Bertingkat Otomatis: Sistem kasir otomatis mendeteksi dan menerapkan potongan harga grosir bertingkat saat kuantitas pembelian di kasir memenuhi syarat minimum grosir, lengkap dengan label hemat harga grosir.',
+            'UI/UX Responsif Presisi (Mobile, Tablet, Desktop): Tampilan kasir dirancang tanpa kompromi (anti-jomplang) — format split-panel leluasa di layar desktop/tablet serta navigasi tab fleksibel (Katalog & Keranjang Kasir) dengan bilah aksi bawah yang ramah sentuhan jempol di smartphone.',
+            'Penguatan Keamanan Firestore Rules: Sub-koleksi cashier_accounts diproteksi ketat hanya bisa ditulis oleh Admin Toko (isAdmin()), dan pencatatan transaksi POS (pos_transactions) divalidasi khusus untuk admin serta kasir resmi yang terautentikasi.',
+            'Arsitektur Kode Modular & Lazy-Loading: Modul pos-auth, pos-variant-sheet, dan pos-cashier-admin dimuat secara efisien (lazy-loading) tanpa membebani kecepatan pemuatan awal storefront bagi pelanggan umum.'
+        ]
+    },
+    {
         id: 'log-1-9-3',
         version: 'v1.9.3',
         date: '2026-09-22',

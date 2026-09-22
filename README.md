@@ -176,6 +176,33 @@ Aplikasi telah dilengkapi dengan fondasi **Capacitor 8 Android Native**:
 
 ## 📋 Riwayat Pembaruan (Changelog)
 
+### v1.9.4 — Mode POS Kasir Storefront Mandiri, Akun Kasir CMS, Multivarian & Harga Grosir (22 Sep 2026)
+
+#### 🏪 Mode Kasir Mandiri di Storefront & Header Toggle
+- **Akses Langsung dari Storefront**: Ikon register kasir (`fa-cash-register`) disematkan di header toko sebelah keranjang belanja dengan status online (dot hijau berdenyut).
+- **Deteksi Akun Otomatis**: Ikon kasir hanya muncul jika terdapat akun kasir yang terdaftar di toko, menjaga antarmuka tetap bersih bagi pembeli biasa.
+- **Sistem Login Kasir Mandiri**: Kasir masuk menggunakan modal dialog login khusus kasir (Email/Username & Password). Sesi kasir mandiri dan terisolasi dari login admin toko.
+
+#### 👥 Manajemen Akun Kasir di Admin CMS
+- **Menu Baru CMS "Akun Kasir"**: Administrator toko dapat menambah, mendaftarkan, mengaktifkan/menonaktifkan, dan menghapus akun akses kasir dengan mudah.
+- **Kontrol Hak Akses**: Admin menentukan nama kasir, email login, dan password yang dienkripsi aman.
+
+#### 🎨 Penjualan Multivarian & Harga Grosir di POS
+- **Sheet Pilih Varian Interaktif**: Produk yang memiliki varian memunculkan drawer pilihan opsi varian lengkap dengan gambar, harga dinamis, status stok, dan tombol tambah cepat.
+- **Kalkulasi Grosir Bertingkat Otomatis**: Sistem kasir otomatis menghitung dan menerapkan potongan harga grosir bertingkat saat kuantitas memenuhi syarat minimal.
+
+#### 📱 UI/UX Responsif Anti-Jomplang (Mobile, Tablet, Desktop)
+- **Split-Panel Layar Lebar**: Panel kiri katalog produk grid dan panel kanan keranjang transaksi aktif untuk monitor komputer & tablet.
+- **Tab Navigasi Mobile Ergonomis**: Tab Katalog dan Tab Keranjang kasir dengan sticky footer yang ramah sentuhan jempol di smartphone.
+- **Keamanan Firestore Rules**: Proteksi ketat sub-koleksi `cashier_accounts` (admin-only write) dan koleksi `pos_transactions` (admin + authenticated cashier).
+
+---
+
+### v1.9.3 — Fitur POS Kasir Terintegrasi (22 Sep 2026)
+- **Modul Kasir POS**: Transaksi langsung, barcode USB scanner, diskon per item & global, pelanggan umum/member/tempo, cetak struk thermal, rekap omset harian, dan void transaksi.
+
+---
+
 ### v1.9.2 — Geser Urutan Produk, Performa Core Web Vitals & SEO (21 Sep 2026)
 
 #### 🔀 Geser & Atur Urutan Produk (Drag & Drop Reorder)

@@ -1,17 +1,25 @@
 /**
  * ============================================================
  * MODUL POS KASIR — TOKO PUTRI
- * Point-of-Sale kasir langsung dari Admin CMS.
- * Fitur: Katalog produk, keranjang kasir, diskon per item +
- * global, pilih pelanggan (umum/member/tempo), metode bayar
- * (tunai/QRIS/transfer/tempo), scan barcode USB, cetak struk,
- * dan simpan transaksi ke Firestore pos_transactions.
+ * Point-of-Sale kasir langsung dari Admin CMS atau Storefront.
+ * Fitur: Katalog produk multi-varian, keranjang kasir, harga
+ * grosir otomatis, diskon per item + global, pilih pelanggan
+ * (umum/member/tempo), metode bayar (tunai/QRIS/transfer/
+ * tempo), scan barcode USB, cetak struk, dan simpan transaksi
+ * ke Firestore pos_transactions.
  * ============================================================
  */
 
 import { db, firebase } from '../../config/firebase.js';
 import { appData } from '../../core/state.js';
 import { el, setH, setIn, esc, fCur, showToast, getOptImg } from '../../core/utils.js';
+
+// ─── Import modul varian POS (lazy agar tidak load di awal) ──
+let _posVariantSheetLoaded = false;
+const ensurePOSVariantSheet = () => {
+    if (_posVariantSheetLoaded) return Promise.resolve();
+    return import('./pos-variant-sheet.js').then(() => { _posVariantSheetLoaded = true; });
+};
 
 // ─── State ──────────────────────────────────────────────────
 let posCart        = [];
@@ -32,7 +40,30 @@ const posSubtotal = () => posCart.reduce((s, i) => s + i.subtotal, 0);
 const posTotal    = () => Math.max(0, posSubtotal() - fNum(posGlobalDisc));
 const posChange   = () => Math.max(0, posPaidAmount - posTotal());
 
+// Hitung harga grosir berdasarkan qty (untuk produk tanpa varian)
+const getWholesalePrice = (product, qty) => {
+    if (!product || !product.wholesale || !product.wholesale.length) return null;
+    const tiers = [...product.wholesale].sort((a, b) => b.minQty - a.minQty);
+    for (const tier of tiers) {
+        if (qty >= parseFloat(tier.minQty)) return parseFloat(tier.price);
+    }
+    return null;
+};
+
 const recalcItem  = (item) => {
+    // Jika bukan varian, hitung harga grosir otomatis
+    if (!item.isVariant) {
+        const p = (appData.products || []).find(x => x && String(x.id) === String(item.id));
+        const wPrice = p ? getWholesalePrice(p, item.qty) : null;
+        if (wPrice !== null) {
+            item.basePrice    = item.basePrice || item.price; // simpan harga asli
+            item.price        = wPrice;
+            item.isWholesale  = true;
+        } else {
+            if (item.basePrice) item.price = item.basePrice; // kembalikan harga asli
+            item.isWholesale = false;
+        }
+    }
     item.subtotal = Math.max(0, item.price * item.qty - fNum(item.discount));
     return item;
 };
@@ -81,31 +112,77 @@ const initBarcodeListener = () => {
 export const addToCart = (productId) => {
     const p = (appData.products || []).find(x => x && String(x.id) === String(productId));
     if (!p) return;
-    const existing = posCart.find(i => String(i.id) === String(productId));
+    const hasVariants = p.variants && p.variants.length > 0;
+    if (hasVariants) {
+        // Produk ber-varian → buka sheet pilih varian
+        ensurePOSVariantSheet().then(() => {
+            if (typeof window.openPOSVariantSheet === 'function') window.openPOSVariantSheet(productId);
+        });
+        return;
+    }
+    const existing = posCart.find(i => String(i.id) === String(productId) && !i.isVariant);
     if (existing) { existing.qty += 1; recalcItem(existing); }
-    else { const price = parseFloat(p.price) || 0; posCart.push(recalcItem({ id: p.id, name: p.name, price, qty: 1, discount: 0, subtotal: price })); }
+    else {
+        const price = parseFloat(p.price) || 0;
+        posCart.push(recalcItem({ id: p.id, name: p.name, price, basePrice: price, qty: 1, discount: 0, subtotal: price, isVariant: false, isWholesale: false }));
+    }
     renderCart();
 };
 
-export const updateQty = (productId, delta) => {
-    const item = posCart.find(i => String(i.id) === String(productId));
+// Tambah produk dengan qty langsung (dipanggil dari variant sheet untuk non-varian)
+export const posAddToCartQty = (productId, qty) => {
+    const p = (appData.products || []).find(x => x && String(x.id) === String(productId));
+    if (!p) return;
+    const existing = posCart.find(i => String(i.id) === String(productId) && !i.isVariant);
+    if (existing) { existing.qty += qty; recalcItem(existing); }
+    else {
+        const price = parseFloat(p.price) || 0;
+        const item  = recalcItem({ id: p.id, name: p.name, price, basePrice: price, qty, discount: 0, subtotal: price * qty, isVariant: false, isWholesale: false });
+        posCart.push(item);
+    }
+    renderCart();
+};
+
+// Tambah produk dengan varian spesifik (dipanggil dari variant sheet)
+export const addToCartWithVariant = (productId, variantName, variantPrice, variantIdx, qty = 1) => {
+    const cartKey = `${productId}__v${variantIdx}`;
+    const existing = posCart.find(i => i.cartKey === cartKey);
+    if (existing) { existing.qty += qty; recalcItem(existing); }
+    else {
+        const p = (appData.products || []).find(x => x && String(x.id) === String(productId));
+        const displayName = `${p?.name || productId} — ${variantName}`;
+        posCart.push(recalcItem({
+            id: productId, cartKey,
+            name: displayName,
+            variantName, variantIdx,
+            price: variantPrice, basePrice: variantPrice,
+            qty, discount: 0, subtotal: variantPrice * qty,
+            isVariant: true, isWholesale: false
+        }));
+    }
+    renderCart();
+};
+
+export const updateQty = (cartKey, delta) => {
+    // cartKey bisa berupa productId atau productId__vN
+    const item = posCart.find(i => (i.cartKey || String(i.id)) === String(cartKey));
     if (!item) return;
     item.qty = Math.max(1, item.qty + delta); recalcItem(item); renderCart();
 };
 
-export const setQty = (productId, val) => {
-    const item = posCart.find(i => String(i.id) === String(productId));
+export const setQty = (cartKey, val) => {
+    const item = posCart.find(i => (i.cartKey || String(i.id)) === String(cartKey));
     if (!item) return;
     item.qty = Math.max(1, fNum(val)); recalcItem(item); renderCart();
 };
 
-export const setItemDisc = (productId, val) => {
-    const item = posCart.find(i => String(i.id) === String(productId));
+export const setItemDisc = (cartKey, val) => {
+    const item = posCart.find(i => (i.cartKey || String(i.id)) === String(cartKey));
     if (!item) return;
     item.discount = Math.min(fNum(val), item.price * item.qty); recalcItem(item); renderCart();
 };
 
-export const removeFromCart = (productId) => { posCart = posCart.filter(i => String(i.id) !== String(productId)); renderCart(); };
+export const removeFromCart = (cartKey) => { posCart = posCart.filter(i => (i.cartKey || String(i.id)) !== String(cartKey)); renderCart(); };
 export const clearCart      = () => { posCart = []; posGlobalDisc = 0; renderCart(); };
 
 // ─── Render Katalog ──────────────────────────────────────────
@@ -132,10 +209,15 @@ const renderCatalog = () => {
         ? `<div class="col-span-full flex flex-col items-center justify-center py-16 text-slate-400 dark:text-slate-600"><i class="fa-solid fa-box-open text-4xl mb-3"></i><p class="font-semibold text-sm">Produk tidak ditemukan</p></div>`
         : products.map(p => {
             const img     = p.img ? getOptImg(p.img, 'w200-rw') : '';
-            const inCart  = posCart.find(i => String(i.id) === String(p.id));
+            const hasVariants = p.variants && p.variants.length > 0;
+            const cartItems   = posCart.filter(i => String(i.id) === String(p.id));
+            const totalQtyInCart = cartItems.reduce((s, i) => s + i.qty, 0);
             const safeId  = esc(String(p.id));
-            return `<button onclick="window.posAddToCart('${safeId}')" class="relative flex flex-col bg-white dark:bg-slate-800 border rounded-2xl p-2.5 text-left transition-all duration-150 hover:-translate-y-0.5 hover:shadow-md active:scale-95 overflow-hidden ${inCart ? 'border-[var(--color-primary)] shadow-sm' : 'border-slate-200 dark:border-slate-700'}">
-                ${inCart ? `<div class="absolute top-1.5 right-1.5 w-5 h-5 rounded-full text-white flex items-center justify-center text-[9px] font-black z-10" style="background:var(--color-primary)">${inCart.qty}</div>` : ''}
+            const hasGrosir = p.wholesale && p.wholesale.length > 0;
+            return `<button onclick="window.posAddToCart('${safeId}')" class="relative flex flex-col bg-white dark:bg-slate-800 border rounded-2xl p-2.5 text-left transition-all duration-150 hover:-translate-y-0.5 hover:shadow-md active:scale-95 overflow-hidden ${totalQtyInCart > 0 ? 'border-[var(--color-primary)] shadow-sm' : 'border-slate-200 dark:border-slate-700'}">
+                ${totalQtyInCart > 0 ? `<div class="absolute top-1.5 right-1.5 w-5 h-5 rounded-full text-white flex items-center justify-center text-[9px] font-black z-10" style="background:var(--color-primary)">${totalQtyInCart}</div>` : ''}
+                ${hasVariants ? `<div class="absolute top-1.5 left-1.5 px-1.5 py-0.5 rounded text-[7px] font-black bg-violet-500 text-white z-10">VARIAN</div>` : ''}
+                ${hasGrosir ? `<div class="absolute ${hasVariants ? 'top-6' : 'top-1.5'} left-1.5 px-1.5 py-0.5 rounded text-[7px] font-black bg-amber-500 text-white z-10">GROSIR</div>` : ''}
                 <div class="w-full aspect-square rounded-xl bg-slate-100 dark:bg-slate-700 mb-2 overflow-hidden flex items-center justify-center">
                     ${img ? `<img loading="lazy" src="${esc(img)}" alt="${esc(p.name)}" class="w-full h-full object-cover" onerror="this.parentElement.innerHTML='<i class=\\'fa-solid fa-box text-slate-300 text-xl\\'></i>'">` : `<i class="fa-solid fa-box text-slate-300 text-xl"></i>`}
                 </div>
@@ -156,26 +238,32 @@ const renderCart = () => {
     const itemsHTML = posCart.length === 0
         ? `<div class="flex flex-col items-center justify-center h-full py-10 text-slate-300 dark:text-slate-600 select-none"><i class="fa-solid fa-cart-shopping text-4xl mb-2"></i><p class="text-sm font-semibold">Keranjang kosong</p><p class="text-xs mt-0.5 text-center px-4">Klik produk untuk menambah</p></div>`
         : posCart.map(item => {
-            const sid = esc(String(item.id));
+            const ckey = esc(String(item.cartKey || item.id));
             return `<div class="flex items-start gap-2 p-2.5 bg-white dark:bg-slate-800 rounded-xl border border-slate-100 dark:border-slate-700 shadow-xs">
                 <div class="flex-1 min-w-0">
-                    <p class="text-[11px] font-bold text-slate-800 dark:text-slate-100 line-clamp-1">${esc(item.name)}</p>
-                    <p class="text-[10px] text-slate-400 mt-0.5">${fRp(item.price)} × ${item.qty}</p>
+                    <div class="flex items-start gap-1 flex-wrap">
+                        <p class="text-[11px] font-bold text-slate-800 dark:text-slate-100 line-clamp-2 flex-1">${esc(item.name)}</p>
+                        ${item.isWholesale ? `<span class="text-[7px] font-black px-1 py-0.5 rounded bg-amber-500 text-white shrink-0">GROSIR</span>` : ''}
+                        ${item.isVariant ? `<span class="text-[7px] font-black px-1 py-0.5 rounded bg-violet-500 text-white shrink-0">VARIAN</span>` : ''}
+                    </div>
+                    <p class="text-[10px] text-slate-400 mt-0.5">
+                        ${item.isWholesale && item.basePrice ? `<span class="line-through text-slate-300">${fRp(item.basePrice)}</span> <span class="text-amber-600 font-bold">${fRp(item.price)}</span>` : fRp(item.price)} × ${item.qty}
+                    </p>
                     <div class="flex items-center gap-1 mt-1">
                         <span class="text-[9px] text-slate-400 shrink-0">Diskon Rp:</span>
-                        <input type="number" min="0" placeholder="0" value="${item.discount||''}" onchange="window.posSetItemDisc('${sid}',this.value)"
+                        <input type="number" min="0" placeholder="0" value="${item.discount||''}" onchange="window.posSetItemDisc('${ckey}',this.value)"
                             class="w-20 text-[10px] font-bold border border-slate-200 dark:border-slate-600 rounded-lg px-1.5 py-0.5 bg-white dark:bg-slate-700 text-right focus:outline-none focus:border-[var(--color-primary)]">
                     </div>
                 </div>
                 <div class="flex flex-col items-center gap-1 shrink-0">
                     <div class="flex items-center gap-0.5 bg-slate-100 dark:bg-slate-700/60 rounded-lg p-0.5">
-                        <button onclick="window.posUpdateQty('${sid}',-1)" class="w-6 h-6 rounded-md text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-600 font-black text-sm transition-all">−</button>
-                        <input type="number" min="1" value="${item.qty}" onchange="window.posSetQty('${sid}',this.value)"
+                        <button onclick="window.posUpdateQty('${ckey}',-1)" class="w-6 h-6 rounded-md text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-600 font-black text-sm transition-all">−</button>
+                        <input type="number" min="1" value="${item.qty}" onchange="window.posSetQty('${ckey}',this.value)"
                             class="w-8 text-center text-[11px] font-black bg-transparent text-slate-800 dark:text-slate-100 focus:outline-none">
-                        <button onclick="window.posUpdateQty('${sid}',1)" class="w-6 h-6 rounded-md text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-600 font-black text-sm transition-all">+</button>
+                        <button onclick="window.posUpdateQty('${ckey}',1)" class="w-6 h-6 rounded-md text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-600 font-black text-sm transition-all">+</button>
                     </div>
                     <p class="text-[10px] font-black" style="color:var(--color-primary)">${fRp(item.subtotal)}</p>
-                    <button onclick="window.posRemoveItem('${sid}')" class="w-6 h-6 rounded-lg bg-red-50 dark:bg-red-900/30 text-red-400 hover:bg-red-500 hover:text-white transition-all text-xs"><i class="fa-solid fa-trash-can"></i></button>
+                    <button onclick="window.posRemoveItem('${ckey}')" class="w-6 h-6 rounded-lg bg-red-50 dark:bg-red-900/30 text-red-400 hover:bg-red-500 hover:text-white transition-all text-xs"><i class="fa-solid fa-trash-can"></i></button>
                 </div>
             </div>`;
         }).join('');
@@ -185,12 +273,25 @@ const renderCart = () => {
     const di = el('pos-global-disc');
     if (di && document.activeElement !== di) di.value = posGlobalDisc || '';
     setIn('pos-total-amount', fRp(posTotal()));
-    const btn = el('pos-pay-btn');
-    if (btn) {
+    // Sync mobile total
+    const totalM = el('pos-total-amount-m');
+    if (totalM) totalM.textContent = fRp(posTotal());
+    // Update semua tombol BAYAR
+    ['pos-pay-btn', 'pos-pay-btn-m'].forEach(btnId => {
+        const btn = el(btnId);
+        if (!btn) return;
         btn.disabled = posCart.length === 0;
         btn.innerHTML = posCart.length > 0 ? `<i class="fa-solid fa-cash-register mr-2"></i>BAYAR — ${fRp(posTotal())}` : `<i class="fa-solid fa-cash-register mr-2"></i>BAYAR`;
+    });
+    // Update cart badge di tab mobile
+    const badge = el('pos-cart-tab-badge');
+    if (badge) {
+        const totalQty = posCart.reduce((s,i) => s + i.qty, 0);
+        badge.textContent = totalQty > 0 ? String(totalQty) : '';
+        badge.classList.toggle('hidden', totalQty === 0);
     }
 };
+
 
 // ─── Modal Bayar ─────────────────────────────────────────────
 export const openPayModal = () => {
@@ -342,11 +443,16 @@ export const processPOSTx = async () => {
 
     try {
         const txId   = genTxId();
+        // Ambil nama kasir dari sesi (storefront) atau admin CMS
+        const cashierSession = typeof window.getCashierSession === 'function' ? window.getCashierSession() : null;
+        const cashierName = cashierSession?.name || appData.store?.name || 'Kasir';
+        const cashierUid  = cashierSession?.uid || window.__currentAdminUid || 'admin';
         const txData = {
             txId, date: firebase.firestore.FieldValue.serverTimestamp(), dateMs: Date.now(),
-            cashier: window.__currentAdminUid || 'admin', cashierName: appData.store?.name || 'Kasir',
+            cashier: cashierUid, cashierName,
             customer: { name: posCustomer.name || 'Pelanggan Umum', phone: posCustomer.phone || '', isMember: posCustomer.isMember || false, memberId: posCustomer.memberId || null },
-            items: posCart.map(i => ({ ...i })), subtotal: posSubtotal(), globalDiscount: fNum(posGlobalDisc), total: posTotal(),
+            items: posCart.map(i => ({ id: i.id, name: i.name, price: i.price, qty: i.qty, discount: i.discount || 0, subtotal: i.subtotal, variantName: i.variantName || '', isVariant: i.isVariant || false, isWholesale: i.isWholesale || false })),
+            subtotal: posSubtotal(), globalDiscount: fNum(posGlobalDisc), total: posTotal(),
             payment: { method: posPayMethod, paid: posPayMethod === 'cash' ? posPaidAmount : (posPayMethod === 'tempo' ? dp : posTotal()), change: posPayMethod === 'cash' ? posChange() : 0, bank: bankName, dp, tempoBalance: posPayMethod === 'tempo' ? posTotal() - dp : 0 },
             status: posPayMethod === 'tempo' ? 'tempo' : 'paid', notes: '', source: 'pos',
         };
@@ -446,7 +552,192 @@ export const printPOSReceipt = (tx) => {
     w.document.close();
 };
 
-// ─── Render POS Utama ────────────────────────────────────────
+// ─── Helper: Expose semua fungsi ke window ───────────────────
+const exposeToWindow = () => {
+    window.posAddToCart           = addToCart;
+    window.posAddToCartQty        = posAddToCartQty;
+    window.addToCartPOSWithVariant = addToCartWithVariant;
+    window.posUpdateQty           = updateQty;
+    window.posSetQty              = setQty;
+    window.posSetItemDisc         = setItemDisc;
+    window.posRemoveItem          = removeFromCart;
+    window.posClearCart           = clearCart;
+    window.openPayModal           = openPayModal;
+    window.closePayModal          = closePayModal;
+    window.setPosCustomerType     = setPosCustomerType;
+    window.setPosPayMethod        = setPosPayMethod;
+    window.updatePosChange        = updatePosChange;
+    window.lookupPosMember        = lookupPosMember;
+    window.processPOSTx           = processPOSTx;
+    window.printPOSReceipt        = printPOSReceipt;
+    window.posSetGlobalDisc       = (v) => { posGlobalDisc = fNum(v); renderCart(); };
+    window.posCatFilter           = (c) => { posCatFilterVal = c; renderCatalog(); };
+    window.posSearchFn            = (v) => { posSearch = v; renderCatalog(); };
+    window.openPOSHistory         = () => import('./pos-history.js').then(m => m.renderPOSHistory());
+};
+
+// ─── POS Storefront Standalone View ─────────────────────────
+// Fungsi ini dipanggil saat kasir login dari header storefront.
+// Render ke #view-pos-cashier, bukan #admin-content.
+export const renderPOSStorefront = () => {
+    posSearch = ''; posCatFilterVal = '';
+    posCart = []; posGlobalDisc = 0;
+
+    const cashierSession = typeof window.getCashierSession === 'function' ? window.getCashierSession() : null;
+    const cashierName = cashierSession?.name || 'Kasir';
+    const storeName   = esc(appData.store?.name || 'Toko Putri');
+
+    // Inject CSS untuk POS view jika belum ada
+    if (!document.getElementById('pos-storefront-css')) {
+        const style = document.createElement('style');
+        style.id = 'pos-storefront-css';
+        style.textContent = `
+        #view-pos-cashier { display:flex; flex-direction:column; height:100dvh; overflow:hidden; }
+        .pos-sf-header { background:var(--color-primary); color:#fff; }
+        @media (max-width:767px) {
+            .pos-sf-split { flex-direction:column; }
+            .pos-sf-catalog { display:flex; flex-direction:column; height:100%; }
+            .pos-sf-cart-panel { display:flex; flex-direction:column; height:100%; }
+        }
+        `;
+        document.head.appendChild(style);
+    }
+
+    const viewEl = el('view-pos-cashier');
+    if (!viewEl) return;
+
+    // Mobile tab state
+    let mobileTab = 'catalog'; // 'catalog' | 'cart'
+    const renderMobileTabs = () => {
+        const catTab  = el('pos-tab-catalog');
+        const cartTab = el('pos-tab-cart');
+        const catPane = el('pos-pane-catalog');
+        const cartPane = el('pos-pane-cart');
+        if (catTab)  catTab.className  = `flex-1 py-2.5 flex items-center justify-center gap-1.5 text-xs font-bold transition-all ${ mobileTab==='catalog' ? 'text-[var(--color-primary)] border-b-2 border-[var(--color-primary)]' : 'text-slate-400'}`;
+        if (cartTab) cartTab.className = `flex-1 py-2.5 flex items-center justify-center gap-1.5 text-xs font-bold transition-all ${ mobileTab==='cart'    ? 'text-[var(--color-primary)] border-b-2 border-[var(--color-primary)]' : 'text-slate-400'}`;
+        if (catPane)  catPane.classList.toggle('hidden',  mobileTab !== 'catalog');
+        if (cartPane) cartPane.classList.toggle('hidden', mobileTab !== 'cart');
+    };
+
+    viewEl.innerHTML = `
+    <!-- POS HEADER -->
+    <div class="pos-sf-header flex items-center gap-3 px-4 py-3 shrink-0 shadow-md">
+        <div class="flex items-center gap-2.5 flex-1 min-w-0">
+            <div class="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center shrink-0 text-lg">
+                <i class="fa-solid fa-cash-register"></i>
+            </div>
+            <div class="min-w-0">
+                <p class="text-xs font-black uppercase tracking-wider leading-none truncate">${storeName}</p>
+                <p class="text-[10px] text-white/75 mt-0.5 truncate">
+                    <i class="fa-solid fa-user-tie mr-1"></i>${esc(cashierName)}
+                </p>
+            </div>
+        </div>
+        <div class="flex items-center gap-1.5 shrink-0">
+            <button onclick="window.openPOSHistory()" class="h-8 px-2.5 rounded-xl bg-white/20 hover:bg-white/30 text-white text-xs font-bold flex items-center gap-1.5 transition-all active:scale-95">
+                <i class="fa-solid fa-clock-rotate-left text-xs"></i>
+                <span class="hidden sm:inline">Riwayat</span>
+            </button>
+            <button onclick="window.cashierLogout()" class="h-8 px-2.5 rounded-xl bg-white/20 hover:bg-rose-500/80 text-white text-xs font-bold flex items-center gap-1.5 transition-all active:scale-95">
+                <i class="fa-solid fa-right-from-bracket text-xs"></i>
+                <span class="hidden sm:inline">Keluar</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- MOBILE TAB TOGGLE (visible hanya di < md) -->
+    <div class="md:hidden flex shrink-0 bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800">
+        <button id="pos-tab-catalog" onclick="window._posSFSwitchTab('catalog')"
+            class="flex-1 py-2.5 flex items-center justify-center gap-1.5 text-xs font-bold text-[var(--color-primary)] border-b-2 border-[var(--color-primary)] transition-all">
+            <i class="fa-solid fa-box-open"></i> Katalog
+        </button>
+        <button id="pos-tab-cart" onclick="window._posSFSwitchTab('cart')"
+            class="flex-1 py-2.5 flex items-center justify-center gap-1.5 text-xs font-bold text-slate-400 transition-all">
+            <i class="fa-solid fa-cart-shopping"></i> Keranjang
+            <span id="pos-cart-tab-badge" class="hidden w-4 h-4 rounded-full bg-rose-500 text-white text-[8px] font-black flex items-center justify-center"></span>
+        </button>
+    </div>
+
+    <!-- SPLIT PANEL: desktop side-by-side, mobile stacked -->
+    <div class="flex flex-1 overflow-hidden pos-sf-split">
+
+        <!-- KATALOG -->
+        <div id="pos-pane-catalog" class="flex flex-col pos-sf-catalog md:w-[60%] md:border-r border-slate-200 dark:border-slate-800 overflow-hidden">
+            <div class="p-3 space-y-2 shrink-0 bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800">
+                <div class="relative">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs pointer-events-none"></i>
+                    <input id="pos-search-input-d" type="text" placeholder="Cari produk / scan barcode..." class="w-full pl-8 pr-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm focus:outline-none focus:border-[var(--color-primary)]" oninput="window.posSearchFn(this.value)">
+                </div>
+                <div id="pos-cat-filter-d" class="flex gap-1.5 overflow-x-auto hide-scrollbar pb-0.5"></div>
+            </div>
+            <div id="pos-catalog-grid-d" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2.5 p-3 overflow-y-auto flex-1 content-start"></div>
+        </div>
+
+        <!-- KERANJANG -->
+        <div id="pos-pane-cart" class="hidden md:flex flex-col pos-sf-cart-panel md:w-[40%] bg-slate-50 dark:bg-slate-950 overflow-hidden">
+            <div class="px-3 pt-3 pb-2 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between shrink-0 bg-white dark:bg-slate-900">
+                <p class="text-[11px] font-black uppercase tracking-wider text-slate-600 dark:text-slate-300 flex items-center gap-1.5">
+                    <i class="fa-solid fa-cart-shopping text-[var(--color-primary)]"></i> Keranjang Kasir
+                </p>
+                <button onclick="window.posClearCart()" class="text-[9px] font-bold text-red-400 hover:text-red-600 transition-colors flex items-center gap-1">
+                    <i class="fa-solid fa-trash-can"></i> Kosongkan
+                </button>
+            </div>
+            <div id="pos-cart-items" class="flex-1 overflow-y-auto p-2.5 space-y-2"></div>
+            <div class="p-3 border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shrink-0 space-y-2">
+                <div class="flex justify-between text-xs">
+                    <span class="text-slate-500">Subtotal</span>
+                    <span id="pos-subtotal" class="font-bold text-slate-700 dark:text-slate-200">Rp 0</span>
+                </div>
+                <div class="flex items-center gap-2 text-xs">
+                    <span class="text-slate-500 shrink-0">Diskon Global Rp</span>
+                    <input type="number" min="0" id="pos-global-disc" placeholder="0" class="flex-1 border border-slate-200 dark:border-slate-700 rounded-lg px-2 py-1 text-right text-xs font-bold bg-white dark:bg-slate-800 focus:outline-none focus:border-[var(--color-primary)]" oninput="window.posSetGlobalDisc(this.value)">
+                </div>
+                <div class="flex justify-between items-center pt-1.5 border-t border-slate-200 dark:border-slate-700">
+                    <span class="text-sm font-black text-slate-800 dark:text-white">TOTAL</span>
+                    <span id="pos-total-amount" class="text-lg font-black" style="color:var(--color-primary)">Rp 0</span>
+                </div>
+                <button id="pos-pay-btn" disabled onclick="window.openPayModal()"
+                    class="w-full py-3.5 rounded-2xl text-white font-black text-sm shadow-lg disabled:opacity-40 disabled:cursor-not-allowed active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+                    style="background:var(--color-primary)">
+                    <i class="fa-solid fa-cash-register"></i> BAYAR
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MOBILE STICKY BOTTOM BAYAR (hanya saat tab keranjang) -->
+    <div id="pos-mobile-pay-bar" class="md:hidden hidden shrink-0 p-3 border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+        <div class="flex justify-between text-sm font-black mb-2">
+            <span class="text-slate-700 dark:text-white">TOTAL</span>
+            <span id="pos-total-amount-m" style="color:var(--color-primary)">Rp 0</span>
+        </div>
+        <button id="pos-pay-btn-m" disabled onclick="window.openPayModal()"
+            class="w-full py-3.5 rounded-2xl text-white font-black text-sm shadow-lg disabled:opacity-40 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+            style="background:var(--color-primary)">
+            <i class="fa-solid fa-cash-register"></i> BAYAR
+        </button>
+    </div>`;
+
+    // Switch tab handler
+    window._posSFSwitchTab = (tab) => {
+        mobileTab = tab;
+        renderMobileTabs();
+        // Show/hide sticky bottom pay bar
+        const payBar = el('pos-mobile-pay-bar');
+        if (payBar) payBar.classList.toggle('hidden', tab !== 'cart');
+        // Sync total mobile
+        const totalM = el('pos-total-amount-m');
+        if (totalM) totalM.textContent = fRp(posTotal());
+    };
+
+    renderCatalog();
+    renderCart();
+    initBarcodeListener();
+    exposeToWindow();
+};
+
+// ─── Render POS di Admin CMS (legacy) ───────────────────────
 export const renderPOS = () => {
     posSearch = ''; posCatFilterVal = '';
 
@@ -501,23 +792,8 @@ export const renderPOS = () => {
     </div>`);
 
     renderCatalog(); renderCart(); initBarcodeListener();
-
-    window.posAddToCart      = addToCart;
-    window.posUpdateQty      = updateQty;
-    window.posSetQty         = setQty;
-    window.posSetItemDisc    = setItemDisc;
-    window.posRemoveItem     = removeFromCart;
-    window.posClearCart      = clearCart;
-    window.openPayModal      = openPayModal;
-    window.closePayModal     = closePayModal;
-    window.setPosCustomerType = setPosCustomerType;
-    window.setPosPayMethod   = setPosPayMethod;
-    window.updatePosChange   = updatePosChange;
-    window.lookupPosMember   = lookupPosMember;
-    window.processPOSTx      = processPOSTx;
-    window.printPOSReceipt   = printPOSReceipt;
-    window.posSetGlobalDisc  = (v) => { posGlobalDisc = fNum(v); renderCart(); };
-    window.posCatFilter      = (c) => { posCatFilterVal = c; renderCatalog(); };
-    window.posSearchFn       = (v) => { posSearch = v; renderCatalog(); };
-    window.openPOSHistory    = () => import('./pos-history.js').then(m => m.renderPOSHistory());
+    exposeToWindow();
 };
+
+// Expose renderPOSStorefront ke window
+window.renderPOSStorefront = renderPOSStorefront;

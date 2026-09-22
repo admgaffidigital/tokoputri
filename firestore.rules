@@ -2,9 +2,19 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     
-    // Fungsi verifikasi Admin Toko berdasarkan UID Firebase Auth
+    // ─── Helper: Verifikasi Admin Toko ─────────────────────
     function isAdmin() {
       return request.auth != null && request.auth.uid == 'K2ijSERTT2dg27yYGTEgn6XHSnW2';
+    }
+
+    // ─── Helper: Verifikasi Kasir Terdaftar ────────────────
+    // Kasir adalah akun Firebase Auth yang UID-nya terdaftar di
+    // freshmart/cms_data/cashier_accounts dengan role == 'cashier' & isActive == true
+    function isCashier() {
+      return request.auth != null &&
+        exists(/databases/$(database)/documents/freshmart/cms_data/cashier_accounts/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/freshmart/cms_data/cashier_accounts/$(request.auth.uid)).data.role == 'cashier' &&
+        get(/databases/$(database)/documents/freshmart/cms_data/cashier_accounts/$(request.auth.uid)).data.isActive == true;
     }
     
     // Dokumen utama toko (pengaturan, banner, kategori, dll di 'cms_data')
@@ -21,8 +31,8 @@ service cloud.firestore {
         allow read: if true;
         // Admin boleh tambah, edit, hapus seluruh produk & varian.
         // Pelanggan saat checkout HANYA boleh mengubah stock, isActive, variants, totalSold.
-        // Jika stok diubah, nilainya hanya boleh berkurang (tidak boleh menambah stok sendiri).
-        allow write: if isAdmin() || (
+        // Kasir POS juga bisa update stok saat transaksi.
+        allow write: if isAdmin() || isCashier() || (
           resource != null &&
           request.resource.data.diff(resource.data).affectedKeys().hasOnly(['stock', 'isActive', 'variants', 'totalSold']) &&
           (
@@ -32,16 +42,21 @@ service cloud.firestore {
         );
       }
 
+      // ─── Akun Kasir (PRIVATE: hanya admin yang bisa buat/edit) ─
+      match /cashier_accounts/{cashierId} {
+        // Admin bisa baca semua. Kasir hanya bisa baca data miliknya sendiri.
+        allow get: if isAdmin() || (request.auth != null && request.auth.uid == cashierId);
+        allow list: if isAdmin();
+        // Hanya admin yang bisa mendaftarkan, mengubah, atau menghapus akun kasir
+        allow create, update, delete: if isAdmin();
+      }
+
       // Database Pelanggan / Member (data profil & poin)
       // SISTEM TERKUNCI: Nama pertama yang didaftarkan tidak bisa diubah kecuali oleh Admin.
       match /customers/{phone} {
         allow get: if true;
         allow list: if isAdmin();
-        // Hanya Admin yang boleh mendaftarkan Member baru lewat CMS
         allow create: if isAdmin();
-        // Admin bebas update semua field (nama, poin, dll).
-        // Checkout (tanpa auth) hanya boleh update 'points' dan 'lastOrderAt' saja.
-        // Field 'name', 'phone', 'registeredAt' tidak bisa diubah oleh siapapun selain Admin.
         allow update: if isAdmin() ||
           request.resource.data.diff(resource.data).affectedKeys().hasOnly(['points', 'lastOrderAt']);
         allow delete: if isAdmin();
@@ -77,14 +92,20 @@ service cloud.firestore {
         allow write: if isAdmin();
       }
 
-      // Transaksi Kasir POS (dapat diakses oleh kasir toko & admin, baik sesi auth aktif maupun kasir lokal)
+      // ─── Transaksi Kasir POS (SECURED) ─────────────────────
+      // Hanya admin atau kasir aktif yang bisa membuat & membaca transaksi POS.
+      // Publik tidak bisa membaca riwayat kasir.
       match /pos_transactions/{txId} {
-        allow read, write: if true;
+        allow read: if isAdmin() || isCashier();
+        allow create: if isAdmin() || isCashier();
+        allow update, delete: if isAdmin();
       }
 
-      // Pesanan dari POS Tempo (injected dari pos.js untuk kompatibilitas modul Piutang Tempo)
+      // Pesanan Tempo POS (kompatibilitas modul Piutang Tempo)
       match /orders/{orderId} {
-        allow read, write: if true;
+        allow read: if isAdmin() || isCashier();
+        allow create: if isAdmin() || isCashier();
+        allow update, delete: if isAdmin();
       }
     }
 

@@ -94,6 +94,12 @@ export const changeView = (v, fH = false) => {
         else if (v === 'view-wishlist' && typeof window.renderWish === 'function') window.renderWish();
         else if (v === 'view-orders' && typeof window.renderMyOrders === 'function') window.renderMyOrders();
         else if (v === 'view-faq' && typeof window.renderStorefrontFAQ === 'function') window.renderStorefrontFAQ();
+        else if (v === 'view-pos-cashier') {
+            // Lazy-load modul POS storefront saat pertama kali dibuka
+            import('../modules/pos/pos.js').then(m => {
+                if (typeof m.renderPOSStorefront === 'function') m.renderPOSStorefront();
+            }).catch(e => console.error('[POS] Gagal memuat storefront:', e));
+        }
         
         const s = t.querySelector('.scroll-content');
         if (s) {
@@ -116,8 +122,8 @@ export const updateBottomNav = (v = curViewName) => {
     const bNav = el('bottom-nav-bar');
     if (!bNav) return;
 
-    // Sembunyikan bilah navigasi di view checkout, pembayaran, login admin, dan dashboard admin
-    const hiddenViews = ['view-cart', 'view-checkout', 'view-payment', 'view-admin-login', 'view-admin'];
+    // Sembunyikan bilah navigasi di view checkout, pembayaran, login admin, dashboard admin, dan POS kasir
+    const hiddenViews = ['view-cart', 'view-checkout', 'view-payment', 'view-admin-login', 'view-admin', 'view-pos-cashier'];
     if (hiddenViews.includes(v)) {
         bNav.classList.add('bnav-hidden', 'translate-y-[250%]', 'opacity-0', 'pointer-events-none');
         bNav.classList.remove('translate-y-0', 'opacity-100');
@@ -294,6 +300,8 @@ export const closeModalByName = (m) => {
     else if (m === 'changelog' && typeof window.closeChangelogModal === 'function') window.closeChangelogModal(true);
     else if (m === 'guarantee' && typeof window.closeQualityGuaranteeModal === 'function') window.closeQualityGuaranteeModal(true);
     else if (m === 'security' && typeof window.closeSecurityModal === 'function') window.closeSecurityModal(true);
+    else if (m === 'posVariantSheet' && typeof window.closePOSVariantSheet === 'function') window.closePOSVariantSheet(true);
+    else if (m === 'posLogin' && typeof window.closePOSLoginModal === 'function') window.closePOSLoginModal(true);
 };
 
 /**
@@ -400,6 +408,25 @@ export const handleAppBackButton = () => {
                 "Ya, Keluar",
                 true
             );
+        }
+        return;
+    }
+
+    // 2b. Jika sedang di mode POS Kasir, konfirmasi keluar mode kasir
+    if (curViewName === 'view-pos-cashier') {
+        if (typeof window.showConfirm === 'function') {
+            window.showConfirm(
+                'Keluar Mode Kasir',
+                'Yakin keluar dari mode POS kasir?',
+                () => {
+                    if (typeof window.exitPOSMode === 'function') window.exitPOSMode();
+                    else changeView('view-catalog');
+                },
+                'Ya, Keluar',
+                true
+            );
+        } else {
+            changeView('view-catalog');
         }
         return;
     }

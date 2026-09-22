@@ -53,7 +53,8 @@ export const openAdminTab = (t, fH = false) => {
         'piutang': 'Piutang Tempo',
         'colors': 'Database Warna',
         'changelog': 'Log Pembaruan Sistem',
-        'pos': 'Kasir POS'
+        'pos': 'Kasir POS',
+        'cashiers': 'Manajemen Akun Kasir'
     };
     
     setIn('admin-header-title', titles[t] || 'CMS');
@@ -108,6 +109,11 @@ export const openAdminTab = (t, fH = false) => {
         // Lazy load modul POS — hanya dimuat saat kasir dibuka
         import('../../modules/pos/pos.js').then(m => m.renderPOS()).catch(err => {
             console.error('[POS] Gagal memuat modul kasir:', err);
+        });
+    } else if (t === 'cashiers') {
+        // Lazy load modul manajemen akun kasir
+        import('../../modules/pos/pos-cashier-admin.js').then(m => m.renderCashierAccounts()).catch(err => {
+            console.error('[CashierAdmin] Gagal memuat modul:', err);
         });
     } else {
         if (typeof window.rAdmL === 'function') window.rAdmL(t);
