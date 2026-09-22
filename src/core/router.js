@@ -305,6 +305,8 @@ export const closeModalByName = (m) => {
     else if (m === 'security' && typeof window.closeSecurityModal === 'function') window.closeSecurityModal(true);
     else if (m === 'posVariantSheet' && typeof window.closePOSVariantSheet === 'function') window.closePOSVariantSheet(true);
     else if (m === 'posLogin' && typeof window.closePOSLoginModal === 'function') window.closePOSLoginModal(true);
+    else if (m === 'posCartDrawer' && typeof window.closePOSCartDrawer === 'function') window.closePOSCartDrawer(true);
+    else if (m === 'posPayment' && typeof window.closePayModal === 'function') window.closePayModal(true);
 };
 
 /**

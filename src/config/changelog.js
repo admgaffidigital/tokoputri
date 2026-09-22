@@ -8,6 +8,24 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-9-5',
+        version: 'v1.9.5',
+        date: '2026-09-22',
+        title: 'Redesain Modern POS Kasir Mobile-First: Floating Cart Bar, Bottom Sheet Keranjang, Quick-Cash Denomination, Audio Feedback Kasir & Integrasi Navigasi Back',
+        category: 'feature',
+        badge: 'Modern Mobile POS Redesign v1.9.5',
+        items: [
+            'Redesain Antarmuka Mobile-First Penuh: Menata ulang tata letak POS Kasir secara menyeluruh untuk kenyamanan layar sentuh smartphone dan tablet — katalog produk 2-kolom lega tanpa layout terjepit 60:40.',
+            'Floating Sticky Cart Bar di HP: Bilah keranjang belanja mengambang di bagian bawah layar smartphone yang otomatis muncul secara mulus saat ada item di keranjang dengan informasi total belanja dan tombol akses 1-sentuhan.',
+            'Bottom Sheet Keranjang (Slide-up Drawer): Membuka keranjang transaksi kasir dalam format lembar geser bawah yang lega, lengkap dengan penyesuaian kuantitas [−] qty [+], diskon per-item, dan tombol pembayaran.',
+            'Tata Letak Desktop Split-Panel Leluasa: Di layar desktop/komputer kasir, layar terbagi proporsional 63% katalog produk dan 37% panel penagihan & keranjang aktif secara berdampingan tanpa scrollbar ganda.',
+            'Tombol Uang Cepat (Quick-Cash Denominations): Tombol pecahan nominal uang tunai cepat (Uang Pas, Rp 10.000, 20.000, 50.000, 100.000, 200.000, 500.000) untuk input pembayaran instan sekali klik.',
+            'Indikator Dinamis Kembalian / Kekurangan: Tampilan visual cerdas status kembalian (hijau jika cukup/kembalian, merah jika masih kurang) dengan proteksi tombol selesai transaksi.',
+            'Audio Beep Sintetis Kasir (Web Audio API): Umpan balik suara beep kasir yang taktil dan responsif saat scan barcode, klik tambah produk, atau penambahan kuantitas tanpa membebani kuota aset eksternal.',
+            'Penyelarasan Navigasi Hardware Back Button: Integrasi riwayat modal router untuk drawer keranjang dan popup pembayaran, sehingga tombol Back Android menutup dialog secara berurutan tanpa keluar dari mode kasir.'
+        ]
+    },
+    {
         id: 'log-1-9-4',
         version: 'v1.9.4',
         date: '2026-09-22',

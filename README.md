@@ -176,6 +176,20 @@ Aplikasi telah dilengkapi dengan fondasi **Capacitor 8 Android Native**:
 
 ## 📋 Riwayat Pembaruan (Changelog)
 
+### v1.9.5 — Redesain Modern POS Kasir Mobile-First: Floating Cart Bar, Bottom Sheet Keranjang, Quick-Cash & Audio Feedback (22 Sep 2026)
+
+#### 📱 Redesain Mobile-First & Pengalaman Layar Sentuh Presisi
+- **Katalog 2-Kolom Lega di Smartphone**: Mengganti tata letak 60:40 yang sempit menjadi katalog grid 2-kolom yang luas di HP (`grid-cols-2`), 3-5 kolom di tablet dan desktop, dengan foto tajam, badge varian/grosir, dan tombol `+` sentuh melingkar.
+- **Floating Sticky Cart Bar di HP**: Bilah keranjang mengambang cerdas di dasar layar HP yang otomatis muncul secara halus saat keranjang berisi barang, menampilkan jumlah item, total belanja, dan tombol akses cepat 1-sentuhan.
+- **Bottom Sheet Keranjang (Slide-up Drawer)**: Membuka keranjang kasir dalam lembar geser bawah yang nyaman diakses jempol satu tangan, lengkap dengan kontrol kuantitas `[−] qty [+]`, input diskon per-item, dan tombol langsung ke proses pembayaran.
+- **Tata Letak Split-Panel Desktop Leluasa**: Di layar desktop (komputer kasir), katalog produk menempati 63% ruang dan panel penagihan/keranjang menempati 37% ruang di samping kanan secara berdampingan tanpa scroll ganda.
+
+#### 💵 Transaksi Cepat Kasir: Quick-Cash & Audio Sintetis
+- **Tombol Uang Cepat (Quick-Cash)**: Tombol instan pecahan uang tunai (`Uang Pas`, `Rp 10.000`, `20.000`, `50.000`, `100.000`, `200.000`, `500.000`) untuk input pembayaran cepat 1-klik tanpa repot mengetik.
+- **Indikator Visual Kembalian Cerdas**: Indikator status kembalian otomatis berubah hijau jika uang mencukupi atau merah jika uang masih kurang, dengan proteksi tombol selesai transaksi.
+- **Audio Beep Sintetis Kasir**: Umpan balik audio beep kasir taktil menggunakan Web Audio API (zero external asset) saat scan barcode scanner USB, tambah produk, atau penambahan kuantitas.
+- **Integrasi Hardware Back Button Android**: Dialog pembayaran dan drawer keranjang terdaftar di sistem riwayat modal, sehingga tombol Back fisik menutup dialog satu per satu secara aman tanpa keluar dari mode kasir.
+
 ### v1.9.4 — Mode POS Kasir Storefront Mandiri, Akun Kasir CMS, Multivarian & Harga Grosir (22 Sep 2026)
 
 #### 🏪 Mode Kasir Mandiri di Storefront & Header Toggle
