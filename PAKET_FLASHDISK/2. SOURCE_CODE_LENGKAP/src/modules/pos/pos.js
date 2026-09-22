@@ -20,9 +20,14 @@ const ensurePOSVariantSheet = () => {
 };
 
 // ─── State ──────────────────────────────────────────────────
-let posCart         = [];
-let posSearch       = '';
-let posCatFilterVal = '';
+let posCart            = [];
+let posSearch          = '';
+let posCatFilterVal    = '';
+let posCatalogViewMode = 'grid'; // 'grid' | 'list'
+try {
+    const savedMode = localStorage.getItem('pos_view_mode');
+    if (savedMode === 'list' || savedMode === 'grid') posCatalogViewMode = savedMode;
+} catch (e) {}
 let posCustomer     = { name: '', phone: '', isMember: false, memberId: null, isNewTempo: false };
 let posPayMethod    = 'cash';
 let posPaidAmount   = 0;
@@ -30,6 +35,27 @@ let posGlobalDisc   = 0;
 let barcodeBuffer   = '';
 let barcodeTimer    = null;
 let clockInterval   = null;
+
+export const setPOSViewMode = (mode) => {
+    posCatalogViewMode = mode;
+    try { localStorage.setItem('pos_view_mode', mode); } catch (e) {}
+    const bGrid = el('pos-view-btn-grid');
+    const bList = el('pos-view-btn-list');
+    if (bGrid && bList) {
+        if (mode === 'grid') {
+            bGrid.style.background = 'var(--color-primary)';
+            bGrid.className = 'w-8 h-8 rounded-lg flex items-center justify-center text-xs transition-all cursor-pointer text-white shadow-xs';
+            bList.style.removeProperty('background');
+            bList.className = 'w-8 h-8 rounded-lg flex items-center justify-center text-xs transition-all cursor-pointer text-slate-500 hover:text-slate-800 dark:text-slate-400';
+        } else {
+            bList.style.background = 'var(--color-primary)';
+            bList.className = 'w-8 h-8 rounded-lg flex items-center justify-center text-xs transition-all cursor-pointer text-white shadow-xs';
+            bGrid.style.removeProperty('background');
+            bGrid.className = 'w-8 h-8 rounded-lg flex items-center justify-center text-xs transition-all cursor-pointer text-slate-500 hover:text-slate-800 dark:text-slate-400';
+        }
+    }
+    renderCatalog();
+};
 
 // ─── Helpers ────────────────────────────────────────────────
 const fNum = (n) => Math.max(0, parseInt(n) || 0);
@@ -292,6 +318,13 @@ export const closePOSCartDrawer = (skipHistory = false) => {
 };
 
 // ─── Render Katalog ──────────────────────────────────────────
+const getItemImg = (item) => {
+    if (item.img && typeof item.img === 'string') return getOptImg(item.img, 'w150-rw');
+    const p = (appData.products || []).find(x => String(x.id) === String(item.id));
+    if (p && p.img && typeof p.img === 'string') return getOptImg(p.img, 'w150-rw');
+    return '';
+};
+
 const renderCatalog = () => {
     const products = (appData.products || []).filter(p => {
         if (!p || p.isActive === 'false' || p.isActive === false) return false;
@@ -320,40 +353,87 @@ const renderCatalog = () => {
              <p class="text-xs text-slate-400 mt-0.5">Coba gunakan kata kunci pencarian atau kategori lain</p>
            </div>`
         : products.map(p => {
-            const img            = p.img ? getOptImg(p.img, 'w300-rw') : '';
+            const hasImg         = Boolean(p.img && typeof p.img === 'string' && p.img.trim());
+            const imgUrl         = hasImg ? getOptImg(p.img, 'w300-rw') : '';
             const hasVariants    = p.variants && p.variants.length > 0;
             const hasGrosir      = p.wholesale && p.wholesale.length > 0;
             const cartItems      = posCart.filter(i => String(i.id) === String(p.id));
             const totalQtyInCart = cartItems.reduce((s, i) => s + i.qty, 0);
             const safeId         = esc(String(p.id));
 
-            return `
-            <div class="group relative flex flex-col bg-white dark:bg-slate-800 border rounded-2xl p-2 sm:p-3 text-left transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg active:scale-[0.98] overflow-hidden ${totalQtyInCart > 0 ? 'border-[var(--color-primary)] ring-1 ring-[var(--color-primary)]/40 shadow-xs' : 'border-slate-200/80 dark:border-slate-700/80 shadow-2xs'}">
-                <!-- Badges -->
-                <div class="absolute top-2 left-2 right-2 flex items-start justify-between z-10 pointer-events-none">
-                    <div class="flex flex-col gap-1">
-                        ${hasVariants ? `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[8px] font-black bg-indigo-600 text-white shadow-xs backdrop-blur-xs"><i class="fa-solid fa-layer-group text-[7px]"></i> VARIAN</span>` : ''}
-                        ${hasGrosir ? `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[8px] font-black bg-amber-500 text-white shadow-xs backdrop-blur-xs"><i class="fa-solid fa-tags text-[7px]"></i> GROSIR</span>` : ''}
+            if (posCatalogViewMode === 'list') {
+                return `
+                <div class="group flex items-center gap-3 p-2.5 sm:p-3 bg-white dark:bg-slate-800 border ${totalQtyInCart > 0 ? 'border-[var(--color-primary)] ring-1 ring-[var(--color-primary)]/40 shadow-xs' : 'border-slate-200/90 dark:border-slate-700/80 shadow-2xs'} rounded-2xl hover:border-[var(--color-primary)] hover:shadow-sm active:scale-[0.99] transition-all cursor-pointer select-none" onclick="window.posAddToCart('${safeId}')">
+                    <!-- 54px Thumbnail -->
+                    <div class="relative w-14 h-14 rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-700/50 shrink-0 border border-slate-100 dark:border-slate-700 flex items-center justify-center">
+                        ${hasImg 
+                            ? `<img width="56" height="56" loading="lazy" decoding="async" src="${esc(imgUrl)}" alt="${esc(p.name)}" onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='flex';" class="w-full h-full object-cover">
+                               <div class="hidden w-full h-full items-center justify-center text-slate-400 bg-slate-100 dark:bg-slate-800"><i class="fa-solid fa-box-open text-base text-slate-300"></i></div>`
+                            : `<div class="w-full h-full flex items-center justify-center text-slate-400 bg-slate-100 dark:bg-slate-800"><i class="fa-solid fa-box-open text-base text-slate-300"></i></div>`}
+                        ${totalQtyInCart > 0 ? `<span class="absolute -top-1 -right-1 min-w-5 h-5 px-1 rounded-full text-white text-[9px] font-black flex items-center justify-center shadow-md border border-white" style="background:var(--color-primary)">${totalQtyInCart}</span>` : ''}
                     </div>
-                    ${totalQtyInCart > 0 ? `<span class="w-6 h-6 rounded-full text-white flex items-center justify-center text-[10px] font-black shadow-md border-2 border-white dark:border-slate-800" style="background:var(--color-primary)">${totalQtyInCart}</span>` : ''}
-                </div>
 
-                <!-- Product Photo -->
-                <div class="w-full aspect-square rounded-xl bg-slate-50 dark:bg-slate-700/50 mb-2 overflow-hidden flex items-center justify-center relative cursor-pointer" onclick="window.posAddToCart('${safeId}')">
-                    ${img ? `<img loading="lazy" src="${esc(img)}" alt="${esc(p.name)}" class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" onerror="this.parentElement.innerHTML='<i class=\\'fa-solid fa-box text-slate-300 text-2xl\\'></i>'">` : `<i class="fa-solid fa-box text-slate-300 text-2xl"></i>`}
+                    <!-- Details -->
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-1.5 mb-0.5 flex-wrap">
+                            ${p.category ? `<span class="text-[9px] uppercase tracking-wider font-bold text-slate-400 truncate">${esc(p.category)}</span>` : ''}
+                            ${hasVariants ? `<span class="inline-flex items-center px-1.5 py-0.2 rounded text-[8px] font-black uppercase bg-indigo-600 text-white">VARIAN</span>` : ''}
+                            ${hasGrosir ? `<span class="inline-flex items-center px-1.5 py-0.2 rounded text-[8px] font-black uppercase bg-amber-500 text-white">GROSIR</span>` : ''}
+                        </div>
+                        <h4 class="text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-100 truncate" title="${esc(p.name)}">${esc(p.name)}</h4>
+                        <p class="text-xs sm:text-sm font-black mt-0.5" style="color:var(--color-primary)">${fRp(parseFloat(p.price)||0)}</p>
+                    </div>
+
+                    <!-- Action -->
+                    <button onclick="event.stopPropagation(); window.posAddToCart('${safeId}')" class="w-8 h-8 rounded-xl flex items-center justify-center text-white shadow-xs hover:scale-110 active:scale-90 transition-all shrink-0 cursor-pointer" style="background:var(--color-primary)" title="Tambah ke keranjang">
+                        <i class="fa-solid fa-plus text-xs"></i>
+                    </button>
+                </div>`;
+            }
+
+            // GRID VIEW (Default)
+            return `
+            <div class="group relative flex flex-col bg-white dark:bg-slate-800 border ${totalQtyInCart > 0 ? 'border-[var(--color-primary)] ring-2 ring-[var(--color-primary)]/30 shadow-md' : 'border-slate-200/90 dark:border-slate-700/80 shadow-2xs'} rounded-2xl p-2 sm:p-2.5 text-left transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg active:scale-[0.98] cursor-pointer select-none overflow-hidden" onclick="window.posAddToCart('${safeId}')">
+                
+                <!-- Guaranteed Image Box (1:1 Ratio + Min Height) -->
+                <div class="relative w-full rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-700/40 flex items-center justify-center shrink-0 mb-2 border border-slate-100 dark:border-slate-700/60" style="aspect-ratio: 1 / 1; min-height: 120px;">
+                    <!-- Badges INSIDE photo container -->
+                    <div class="absolute top-1.5 left-1.5 flex flex-col gap-1 z-10 pointer-events-none">
+                        ${hasVariants ? `<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md text-[8px] font-black uppercase tracking-wider bg-indigo-600 text-white shadow-xs"><i class="fa-solid fa-layer-group text-[7px]"></i> VARIAN</span>` : ''}
+                        ${hasGrosir ? `<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md text-[8px] font-black uppercase tracking-wider bg-amber-500 text-white shadow-xs"><i class="fa-solid fa-tags text-[7px]"></i> GROSIR</span>` : ''}
+                    </div>
+                    ${totalQtyInCart > 0 ? `
+                    <div class="absolute top-1.5 right-1.5 z-10 pointer-events-none">
+                        <span class="w-6 h-6 rounded-full text-white flex items-center justify-center text-[10px] font-black shadow-md border-2 border-white dark:border-slate-800" style="background:var(--color-primary)">${totalQtyInCart}</span>
+                    </div>` : ''}
+
+                    ${hasImg 
+                        ? `<img width="300" height="300" loading="lazy" decoding="async" src="${esc(imgUrl)}" alt="${esc(p.name)}" 
+                             onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='flex';" 
+                             class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105">
+                           <div class="hidden w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-900 text-slate-400 p-2 text-center">
+                             <i class="fa-solid fa-box-open text-2xl text-slate-300 dark:text-slate-600 mb-1"></i>
+                             <span class="text-[8px] font-bold uppercase text-slate-400 dark:text-slate-500 truncate max-w-full">${esc(p.category || 'Toko')}</span>
+                           </div>`
+                        : `<div class="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-800 dark:to-slate-900 text-slate-400 p-2 text-center">
+                             <div class="w-9 h-9 rounded-xl bg-white dark:bg-slate-800 shadow-2xs flex items-center justify-center text-slate-400 dark:text-slate-500 mb-1">
+                               <i class="fa-solid fa-box-open text-base"></i>
+                             </div>
+                             <span class="text-[8px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 truncate max-w-full">${esc(p.category || 'Produk')}</span>
+                           </div>`}
                 </div>
 
                 <!-- Product Details -->
-                <div class="flex-1 flex flex-col justify-between cursor-pointer" onclick="window.posAddToCart('${safeId}')">
+                <div class="flex-1 flex flex-col justify-between min-w-0">
                     <div>
-                        ${p.category ? `<p class="text-[9px] uppercase tracking-wider font-bold text-slate-400 mb-0.5 truncate">${esc(p.category)}</p>` : ''}
-                        <h4 class="text-[11px] sm:text-xs font-bold text-slate-800 dark:text-slate-100 line-clamp-2 leading-tight mb-1" title="${esc(p.name)}">${esc(p.name)}</h4>
+                        ${p.category ? `<p class="text-[9px] uppercase tracking-wider font-bold text-slate-400 dark:text-slate-400 mb-0.5 truncate">${esc(p.category)}</p>` : ''}
+                        <h4 class="text-xs sm:text-[13px] font-bold text-slate-800 dark:text-slate-100 line-clamp-2 leading-snug mb-1.5 min-h-[30px]" title="${esc(p.name)}">${esc(p.name)}</h4>
                     </div>
-                    <div class="flex items-center justify-between pt-1.5 border-t border-slate-100 dark:border-slate-700/60 mt-auto">
-                        <div>
-                            <p class="text-xs sm:text-sm font-black" style="color:var(--color-primary)">${fRp(parseFloat(p.price)||0)}</p>
+                    <div class="flex items-center justify-between pt-1.5 border-t border-slate-100 dark:border-slate-700/60 mt-auto gap-1">
+                        <div class="min-w-0">
+                            <p class="text-xs sm:text-sm font-black truncate" style="color:var(--color-primary)">${fRp(parseFloat(p.price)||0)}</p>
                         </div>
-                        <button onclick="event.stopPropagation(); window.posAddToCart('${safeId}')" class="w-8 h-8 rounded-xl flex items-center justify-center text-white shadow-sm hover:scale-110 active:scale-90 transition-all cursor-pointer shrink-0" style="background:var(--color-primary)" title="Tambah ke keranjang">
+                        <button onclick="event.stopPropagation(); window.posAddToCart('${safeId}')" class="w-7 h-7 sm:w-8 sm:h-8 rounded-xl flex items-center justify-center text-white shadow-xs hover:scale-110 active:scale-90 transition-all cursor-pointer shrink-0" style="background:var(--color-primary)" title="Tambah ke keranjang">
                             <i class="fa-solid fa-plus text-xs"></i>
                         </button>
                     </div>
@@ -364,7 +444,14 @@ const renderCatalog = () => {
     const catEl  = el('pos-cat-filter');
     const gridEl = el('pos-catalog-grid');
     if (catEl)  catEl.innerHTML  = catHTML;
-    if (gridEl) gridEl.innerHTML = prodHTML;
+    if (gridEl) {
+        if (posCatalogViewMode === 'list') {
+            gridEl.className = 'flex flex-col gap-2 p-2.5 sm:p-3 overflow-y-auto flex-1 content-start pb-28 lg:pb-6';
+        } else {
+            gridEl.className = 'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-2.5 sm:gap-3 p-2.5 sm:p-3 overflow-y-auto flex-1 content-start pb-28 lg:pb-6';
+        }
+        gridEl.innerHTML = prodHTML;
+    }
 };
 
 // ─── Render Cart ─────────────────────────────────────────────
@@ -385,32 +472,42 @@ const renderCart = () => {
            </div>`
         : posCart.map(item => {
             const ckey = esc(String(item.cartKey || item.id));
+            const img = getItemImg(item);
             return `
-            <div class="group flex items-start gap-2.5 p-2.5 bg-white dark:bg-slate-800/90 rounded-2xl border border-slate-200/80 dark:border-slate-700/80 shadow-xs hover:border-[var(--color-primary)]/40 transition-all">
+            <div class="group flex items-center gap-2.5 p-2 sm:p-2.5 bg-white dark:bg-slate-800/90 rounded-2xl border border-slate-200/90 dark:border-slate-700/80 shadow-xs hover:border-[var(--color-primary)] transition-all">
+                <!-- 40px Thumbnail -->
+                <div class="w-10 h-10 rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-700 shrink-0 border border-slate-100 dark:border-slate-700 flex items-center justify-center">
+                    ${img 
+                        ? `<img width="40" height="40" loading="lazy" src="${esc(img)}" alt="${esc(item.name)}" onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='flex';" class="w-full h-full object-cover">
+                           <div class="hidden w-full h-full items-center justify-center text-slate-400"><i class="fa-solid fa-box text-xs"></i></div>`
+                        : `<div class="w-full h-full flex items-center justify-center text-slate-400"><i class="fa-solid fa-box text-xs"></i></div>`}
+                </div>
+                <!-- Details -->
                 <div class="flex-1 min-w-0">
-                    <p class="text-xs font-bold text-slate-800 dark:text-slate-100 line-clamp-2 leading-tight">${esc(item.name)}</p>
-                    <div class="flex items-center gap-1.5 mt-1 flex-wrap">
-                        ${item.isWholesale ? `<span class="inline-flex items-center gap-0.5 text-[8px] font-black px-1.5 py-0.5 rounded-md bg-amber-500 text-white shrink-0 shadow-2xs"><i class="fa-solid fa-tags text-[7px]"></i> GROSIR</span>` : ''}
-                        ${item.isVariant ? `<span class="inline-flex items-center gap-0.5 text-[8px] font-black px-1.5 py-0.5 rounded-md bg-indigo-600 text-white shrink-0 shadow-2xs"><i class="fa-solid fa-layer-group text-[7px]"></i> VARIAN</span>` : ''}
+                    <p class="text-xs font-bold text-slate-800 dark:text-slate-100 truncate leading-snug">${esc(item.name)}</p>
+                    <div class="flex items-center gap-1.5 mt-0.5 flex-wrap">
+                        ${item.isWholesale ? `<span class="inline-flex items-center text-[8px] font-black px-1 rounded bg-amber-500 text-white shadow-2xs">GROSIR</span>` : ''}
+                        ${item.isVariant ? `<span class="inline-flex items-center text-[8px] font-black px-1 rounded bg-indigo-600 text-white shadow-2xs">VARIAN</span>` : ''}
                         <span class="text-[10px] text-slate-500 font-medium">
                             ${item.isWholesale && item.basePrice ? `<span class="line-through text-slate-400">${fRp(item.basePrice)}</span> <span class="text-amber-600 font-bold">${fRp(item.price)}</span>` : fRp(item.price)}
                         </span>
                     </div>
-                    <div class="flex items-center gap-1.5 mt-1.5">
-                        <span class="text-[9px] text-slate-400 font-bold uppercase tracking-wider">Diskon:</span>
-                        <input type="number" min="0" placeholder="Rp 0" value="${item.discount || ''}" onchange="window.posSetItemDisc('${ckey}',this.value)"
-                            class="w-20 text-[10px] font-bold border border-slate-200 dark:border-slate-600 rounded-lg px-2 py-0.5 bg-slate-50 dark:bg-slate-700 text-right focus:outline-none focus:border-[var(--color-primary)] focus:bg-white">
+                    <div class="flex items-center gap-1 mt-1">
+                        <span class="text-[9px] text-slate-400 font-bold uppercase">Diskon:</span>
+                        <input type="number" min="0" placeholder="0" value="${item.discount || ''}" onchange="window.posSetItemDisc('${ckey}',this.value)"
+                            class="w-16 text-[10px] font-bold border border-slate-200 dark:border-slate-600 rounded-lg px-1.5 py-0.5 bg-slate-50 dark:bg-slate-700 text-right focus:outline-none focus:border-[var(--color-primary)]">
                     </div>
                 </div>
-                <div class="flex flex-col items-end gap-1.5 shrink-0">
-                    <div class="flex items-center gap-0.5 bg-slate-100 dark:bg-slate-700/80 rounded-xl p-0.5 border border-slate-200/60 dark:border-slate-600/60">
-                        <button onclick="window.posUpdateQty('${ckey}',-1)" class="w-6 h-6 rounded-lg text-slate-600 dark:text-slate-200 hover:bg-white dark:hover:bg-slate-600 font-black text-xs transition-all flex items-center justify-center cursor-pointer active:scale-90">−</button>
+                <!-- Stepper & Subtotal -->
+                <div class="flex flex-col items-end gap-1 shrink-0">
+                    <div class="flex items-center gap-0.5 bg-slate-100 dark:bg-slate-700/80 rounded-lg p-0.5 border border-slate-200 dark:border-slate-600">
+                        <button onclick="window.posUpdateQty('${ckey}',-1)" class="w-5 h-5 rounded text-slate-600 dark:text-slate-200 hover:bg-white dark:hover:bg-slate-600 font-black text-xs flex items-center justify-center cursor-pointer active:scale-90">−</button>
                         <input type="number" min="1" value="${item.qty}" onchange="window.posSetQty('${ckey}',this.value)"
-                            class="w-7 text-center text-xs font-black bg-transparent text-slate-800 dark:text-slate-100 focus:outline-none">
-                        <button onclick="window.posUpdateQty('${ckey}',1)" class="w-6 h-6 rounded-lg text-slate-600 dark:text-slate-200 hover:bg-white dark:hover:bg-slate-600 font-black text-xs transition-all flex items-center justify-center cursor-pointer active:scale-90">+</button>
+                            class="w-6 text-center text-[11px] font-black bg-transparent text-slate-800 dark:text-slate-100 focus:outline-none">
+                        <button onclick="window.posUpdateQty('${ckey}',1)" class="w-5 h-5 rounded text-slate-600 dark:text-slate-200 hover:bg-white dark:hover:bg-slate-600 font-black text-xs flex items-center justify-center cursor-pointer active:scale-90">+</button>
                     </div>
                     <p class="text-xs font-black" style="color:var(--color-primary)">${fRp(item.subtotal)}</p>
-                    <button onclick="window.posRemoveItem('${ckey}')" class="text-slate-400 hover:text-rose-500 text-xs p-1 transition-colors" title="Hapus item">
+                    <button onclick="window.posRemoveItem('${ckey}')" class="text-slate-400 hover:text-rose-500 text-[11px] p-0.5 transition-colors" title="Hapus item">
                         <i class="fa-solid fa-trash-can"></i>
                     </button>
                 </div>
@@ -840,34 +937,34 @@ const buildPOSLayout = ({ isStorefront }) => {
     const headerHTML = isStorefront
         ? `
         <!-- STOREFRONT POS HEADER (52px) -->
-        <header class="h-[52px] shrink-0 bg-slate-900 text-white flex items-center justify-between px-3 sm:px-4 border-b border-slate-800 z-30 shadow-md">
+        <header class="h-[52px] shrink-0 text-white flex items-center justify-between px-3 sm:px-4 z-30 shadow-md" style="background:var(--color-primary)">
             <div class="flex items-center gap-2.5 min-w-0">
-                <button onclick="window.exitPOSMode()" class="w-8 h-8 rounded-xl bg-white/10 hover:bg-white/20 text-white flex items-center justify-center text-xs transition-all active:scale-90" title="Kembali ke Etalase Toko">
+                <button onclick="window.exitPOSMode()" class="w-8 h-8 rounded-xl bg-black/15 hover:bg-black/25 text-white flex items-center justify-center text-xs transition-all active:scale-90 cursor-pointer" title="Kembali ke Etalase Toko">
                     <i class="fa-solid fa-arrow-left"></i>
                 </button>
                 <div class="flex items-center gap-2 min-w-0">
-                    <div class="w-8 h-8 rounded-xl flex items-center justify-center text-white text-sm shrink-0 shadow-xs" style="background:var(--color-primary)">
+                    <div class="w-8 h-8 rounded-xl flex items-center justify-center text-white text-sm shrink-0 shadow-xs bg-black/20">
                         <i class="fa-solid fa-cash-register"></i>
                     </div>
                     <div class="min-w-0">
                         <h1 class="text-xs font-black uppercase tracking-wider leading-none text-white truncate">${storeName}</h1>
                         <div class="flex items-center gap-1.5 mt-1">
-                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                            <span class="text-[10px] text-slate-300 font-medium truncate">${esc(cashierName)}</span>
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-300 animate-pulse"></span>
+                            <span class="text-[10px] text-white/90 font-medium truncate">${esc(cashierName)}</span>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
-                <span id="pos-live-clock" class="hidden sm:inline-block text-[10px] font-mono text-slate-300 px-2.5 py-1 bg-white/5 rounded-lg border border-white/10">--:--:--</span>
-                <span class="hidden md:inline-flex items-center gap-1.5 text-[10px] font-bold text-emerald-400 bg-emerald-950/40 border border-emerald-800/60 px-2.5 py-1 rounded-lg">
+                <span id="pos-live-clock" class="hidden sm:inline-block text-[10px] font-mono text-white/90 px-2.5 py-1 bg-black/15 rounded-lg border border-white/20">--:--:--</span>
+                <span class="hidden md:inline-flex items-center gap-1.5 text-[10px] font-bold text-white bg-black/20 px-2.5 py-1 rounded-lg">
                     <i class="fa-solid fa-barcode text-xs"></i> USB Scanner Aktif
                 </span>
-                <button onclick="window.openPOSHistory()" class="h-8 px-2.5 sm:px-3 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-bold flex items-center gap-1.5 transition-all active:scale-95" title="Riwayat Transaksi">
+                <button onclick="window.openPOSHistory()" class="h-8 px-2.5 sm:px-3 rounded-xl bg-black/15 hover:bg-black/25 text-white text-xs font-bold flex items-center gap-1.5 transition-all active:scale-95 cursor-pointer" title="Riwayat Transaksi">
                     <i class="fa-solid fa-clock-rotate-left text-xs"></i>
                     <span class="hidden sm:inline">Riwayat</span>
                 </button>
-                <button onclick="window.cashierLogout()" class="h-8 px-2.5 sm:px-3 rounded-xl bg-rose-500/80 hover:bg-rose-600 text-white text-xs font-bold flex items-center gap-1.5 transition-all active:scale-95" title="Keluar Mode Kasir">
+                <button onclick="window.cashierLogout()" class="h-8 px-2.5 sm:px-3 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold flex items-center gap-1.5 transition-all active:scale-95 shadow-xs cursor-pointer" title="Keluar Mode Kasir">
                     <i class="fa-solid fa-power-off text-xs"></i>
                     <span class="hidden sm:inline">Keluar</span>
                 </button>
@@ -886,10 +983,10 @@ const buildPOSLayout = ({ isStorefront }) => {
                 <span class="hidden md:inline-flex items-center gap-1 text-[10px] font-bold text-slate-500 dark:text-slate-400">
                     <i class="fa-solid fa-barcode"></i> Scanner Otomatis
                 </span>
-                <button onclick="window.openPOSHistory()" class="px-2.5 py-1 rounded-lg bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-slate-700 dark:text-slate-200 text-[10px] font-bold flex items-center gap-1 hover:bg-slate-50 transition-all">
+                <button onclick="window.openPOSHistory()" class="px-2.5 py-1 rounded-lg bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-slate-700 dark:text-slate-200 text-[10px] font-bold flex items-center gap-1 hover:bg-slate-50 transition-all cursor-pointer">
                     <i class="fa-solid fa-clock-rotate-left"></i> Riwayat
                 </button>
-                <button onclick="window.posClearCart()" class="px-2.5 py-1 rounded-lg bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-rose-500 text-[10px] font-bold flex items-center gap-1 hover:bg-rose-50 dark:hover:bg-rose-950/20 transition-all">
+                <button onclick="window.posClearCart()" class="px-2.5 py-1 rounded-lg bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-rose-500 text-[10px] font-bold flex items-center gap-1 hover:bg-rose-50 dark:hover:bg-rose-950/20 transition-all cursor-pointer">
                     <i class="fa-solid fa-trash-can"></i> Reset
                 </button>
             </div>
@@ -903,23 +1000,34 @@ const buildPOSLayout = ({ isStorefront }) => {
         <div class="flex flex-1 overflow-hidden">
             <!-- PANEL KIRI: KATALOG (Mobile 100%, Desktop 63%-65%) -->
             <div class="flex flex-col flex-1 lg:w-[63%] xl:w-[65%] border-r border-slate-200/80 dark:border-slate-800 overflow-hidden bg-slate-50/50 dark:bg-slate-900/30">
-                <!-- Search & Category Bar -->
+                <!-- Search & Category Bar with View Switcher -->
                 <div class="p-2.5 sm:p-3 bg-white dark:bg-slate-900 border-b border-slate-200/80 dark:border-slate-800 space-y-2 shrink-0 shadow-2xs">
-                    <div class="relative">
-                        <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs pointer-events-none"></i>
-                        <input id="pos-search-input" type="text" placeholder="Cari nama barang, barcode scanner USB, atau SKU..." 
-                            class="w-full pl-9 pr-9 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs sm:text-sm font-medium text-slate-800 dark:text-slate-100 focus:outline-none focus:border-[var(--color-primary)] focus:bg-white dark:focus:bg-slate-900 transition-all"
-                            oninput="window.posSearchFn(this.value)">
-                        <button onclick="el('pos-search-input').value=''; window.posSearchFn('');" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xs p-1" title="Hapus pencarian">
-                            <i class="fa-solid fa-circle-xmark"></i>
-                        </button>
+                    <div class="flex items-center gap-2">
+                        <div class="relative flex-1">
+                            <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs pointer-events-none"></i>
+                            <input id="pos-search-input" type="text" placeholder="Cari nama barang, barcode scanner USB, atau SKU..." 
+                                class="w-full pl-9 pr-9 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs sm:text-sm font-medium text-slate-800 dark:text-slate-100 focus:outline-none focus:border-[var(--color-primary)] focus:bg-white dark:focus:bg-slate-900 transition-all"
+                                oninput="window.posSearchFn(this.value)">
+                            <button onclick="el('pos-search-input').value=''; window.posSearchFn('');" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xs p-1 cursor-pointer" title="Hapus pencarian">
+                                <i class="fa-solid fa-circle-xmark"></i>
+                            </button>
+                        </div>
+                        <!-- View Switcher (Grid vs List) -->
+                        <div class="flex items-center p-0.5 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shrink-0">
+                            <button id="pos-view-btn-grid" onclick="window.setPOSViewMode('grid')" class="w-8 h-8 rounded-lg flex items-center justify-center text-xs transition-all cursor-pointer ${posCatalogViewMode === 'grid' ? 'text-white shadow-xs' : 'text-slate-500 hover:text-slate-800 dark:text-slate-400'}" style="${posCatalogViewMode === 'grid' ? 'background:var(--color-primary)' : ''}" title="Tampilan Grid Foto">
+                                <i class="fa-solid fa-grip"></i>
+                            </button>
+                            <button id="pos-view-btn-list" onclick="window.setPOSViewMode('list')" class="w-8 h-8 rounded-lg flex items-center justify-center text-xs transition-all cursor-pointer ${posCatalogViewMode === 'list' ? 'text-white shadow-xs' : 'text-slate-500 hover:text-slate-800 dark:text-slate-400'}" style="${posCatalogViewMode === 'list' ? 'background:var(--color-primary)' : ''}" title="Tampilan List Baris Kompak">
+                                <i class="fa-solid fa-list-ul"></i>
+                            </button>
+                        </div>
                     </div>
                     <!-- Kategori Chips -->
                     <div id="pos-cat-filter" class="flex gap-1.5 overflow-x-auto hide-scrollbar pb-0.5"></div>
                 </div>
 
-                <!-- Product Grid (Responsive: 2 cols on mobile, 3-5 on desktop) -->
-                <div id="pos-catalog-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-2.5 sm:gap-3.5 p-3 overflow-y-auto flex-1 content-start pb-24 lg:pb-4"></div>
+                <!-- Product Catalog Container -->
+                <div id="pos-catalog-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-2.5 sm:gap-3 p-2.5 sm:p-3 overflow-y-auto flex-1 content-start pb-28 lg:pb-6"></div>
             </div>
 
             <!-- PANEL KANAN: BILLING & KERANJANG (Hanya Desktop >= lg) -->
@@ -1076,6 +1184,7 @@ export const renderPOS = () => {
 
 // ─── Expose ke Window ────────────────────────────────────────
 const exposeToWindow = () => {
+    window.setPOSViewMode          = setPOSViewMode;
     window.posAddToCart            = addToCart;
     window.posAddToCartQty         = posAddToCartQty;
     window.addToCartPOSWithVariant = addToCartWithVariant;
@@ -1104,10 +1213,11 @@ const exposeToWindow = () => {
 };
 
 // Global expose
-window.renderPOSStorefront = renderPOSStorefront;
-window.renderPOS           = renderPOS;
+window.setPOSViewMode         = setPOSViewMode;
+window.renderPOSStorefront    = renderPOSStorefront;
+window.renderPOS              = renderPOS;
 window.destroyBarcodeListener = destroyBarcodeListener;
-window.openPOSCartDrawer   = openPOSCartDrawer;
-window.closePOSCartDrawer  = closePOSCartDrawer;
-window.posSetQuickCash     = posSetQuickCash;
-window.playCashierBeep     = playCashierBeep;
+window.openPOSCartDrawer      = openPOSCartDrawer;
+window.closePOSCartDrawer     = closePOSCartDrawer;
+window.posSetQuickCash        = posSetQuickCash;
+window.playCashierBeep        = playCashierBeep;

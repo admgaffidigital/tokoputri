@@ -8,6 +8,22 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-9-6',
+        version: 'v1.9.6',
+        date: '2026-09-22',
+        title: 'Pembaruan Tampilan Visual POS Kasir: Perbaikan Keruntuhan Kartu Produk, Aspek Rasio Gambar Anti-Gepeng, Mode Tampilan Grid & List, Placeholder Visual & Harmonisasi Tema Emas',
+        category: 'feature',
+        badge: 'Visual POS Kasir Upgrade v1.9.6',
+        items: [
+            'Perbaikan Total Keruntuhan Kartu Produk (Anti-Collapse): Memperbaiki masalah kartu produk yang menciut menjadi pil datar akibat hilangnya aturan aspect-ratio — kini dijamin rasio presisi 1:1 dengan batas ketinggian minimum 120px dan utilitas CSS eksplisit.',
+            'Pemisahan Badge dari Teks & Judul: Badge VARIAN dan GROSIR kini ditempatkan rapi di dalam kotak foto/media dengan efek floating glassmorphism, tidak lagi menumpuk atau menutupi judul barang dan harga.',
+            'Placeholder Visual Produk Tanpa Gambar: Produk tanpa foto (seperti paku, semen, dll) kini menampilkan bingkai placeholder elegan dengan ikon kotak dan kategori produk yang informatif, bukan lagi area kosong atau rusak.',
+            'Pengalih Mode Tampilan (Grid vs List Kompak): Kasir kini dapat beralih antara Tampilan Grid Foto (2–5 kolom) dan Tampilan List Baris Kompak (dengan thumbnail 54px, kategori, harga jelas, dan tombol tambah cepat) yang sangat cepat dan nyaman di HP.',
+            'Harmonisasi Header POS dengan Brand Toko: Menyelaraskan header POS Storefront dari warna gelap kaku ke warna tema keemasan Toko Putri (var(--color-primary)) yang elegan dan konsisten di seluruh aplikasi.',
+            'Thumbnail Visual di Keranjang Kasir: Setiap item di keranjang transaksi kasir kini dilengkapi gambar thumbnail mini 40px untuk verifikasi barang yang lebih cepat dan bebas salah input.'
+        ]
+    },
+    {
         id: 'log-1-9-5',
         version: 'v1.9.5',
         date: '2026-09-22',

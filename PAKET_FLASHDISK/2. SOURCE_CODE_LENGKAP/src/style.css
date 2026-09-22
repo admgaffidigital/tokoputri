@@ -29,6 +29,14 @@ html {
 @tailwind components;
 @tailwind utilities;
 
+/* Explicit Aspect Ratio Utilities (Mencegah keruntuhan gambar di mobile/desktop) */
+.aspect-square {
+    aspect-ratio: 1 / 1 !important;
+}
+.aspect-video {
+    aspect-ratio: 16 / 9 !important;
+}
+
 /* === BASE & DYNAMIC COLOR THEME VARIABLES === */
 :root {
     --sat-bottom: env(safe-area-inset-bottom); 

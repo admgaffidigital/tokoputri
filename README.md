@@ -176,6 +176,24 @@ Aplikasi telah dilengkapi dengan fondasi **Capacitor 8 Android Native**:
 
 ## 📋 Riwayat Pembaruan (Changelog)
 
+### v1.9.6 — Pembaruan Tampilan Visual POS Kasir: Perbaikan Keruntuhan Kartu Produk, Mode Grid & List, Placeholder Visual & Harmonisasi Tema (22 Sep 2026)
+
+#### 🖼️ Perbaikan Visual Total Kartu Produk POS (Anti-Collapse)
+- **Garansi Rasio Gambar Presisi 1:1**: Memperbaiki keruntuhan gambar dan kartu produk yang sebelumnya menciut menjadi kapsul datar tipis — kini dijamin rasio 1:1 (`aspect-ratio: 1 / 1`) dengan batas ketinggian minimum 120px dan utilitas CSS eksplisit di `src/style.css`.
+- **Tata Letak Badge Rapi & Non-Overlapping**: Badge `VARIAN` dan `GROSIR` dipindahkan rapi ke dalam kotak foto dengan posisi floating glassmorphism, tidak lagi menumpuk dan menutupi nama barang atau harga produk.
+- **Placeholder Visual Elegan untuk Produk Tanpa Gambar**: Produk tanpa foto (paku, semen, dll) kini menampilkan bingkai placeholder elegan dengan ikon kotak dan kategori produk yang informatif, bukan area kosong atau rusak.
+
+#### 🎛️ Pengalih Mode Tampilan (Grid Foto vs List Baris Kompak)
+- **Mode Grid Foto (⊞)**: Tampilan visual kartu foto produk lega (2 kolom di mobile, 3-5 di desktop) dengan tombol aksi cepat.
+- **Mode List Baris Kompak (☰)**: Tampilan daftar baris ramping dengan thumbnail 54px, nama produk, kategori, harga jelas, dan tombol tambah cepat — sangat cepat dan efisien untuk kasir saat melayani antrean panjang.
+- **Penyimpanan Preferensi Tampilan**: Pilihan mode Grid/List tersimpan otomatis di `localStorage` per-perangkat.
+
+#### 🎨 Harmonisasi Header POS & Visual Keranjang
+- **Harmonisasi Warna Brand Toko**: Header Storefront POS kini memakai warna tema keemasan Toko Putri (`var(--color-primary)`), selaras dengan tema keseluruhan aplikasi toko.
+- **Thumbnail Visual di Keranjang**: Setiap item di keranjang kasir kini menampilkan gambar thumbnail mini 40px untuk verifikasi barang yang cepat dan akurat.
+
+---
+
 ### v1.9.5 — Redesain Modern POS Kasir Mobile-First: Floating Cart Bar, Bottom Sheet Keranjang, Quick-Cash & Audio Feedback (22 Sep 2026)
 
 #### 📱 Redesain Mobile-First & Pengalaman Layar Sentuh Presisi
