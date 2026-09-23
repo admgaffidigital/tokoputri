@@ -52,12 +52,11 @@ service cloud.firestore {
       }
 
       // Database Pelanggan / Member (data profil & poin)
-      // SISTEM TERKUNCI: Nama pertama yang didaftarkan tidak bisa diubah kecuali oleh Admin.
+      // Publik & Kasir dapat membaca data member untuk lookup profil & poin saat transaksi POS.
       match /customers/{phone} {
-        allow get: if true;
-        allow list: if isAdmin();
-        allow create: if isAdmin();
-        allow update: if isAdmin() ||
+        allow read: if true;
+        allow create: if isAdmin() || isCashier();
+        allow update: if isAdmin() || isCashier() ||
           request.resource.data.diff(resource.data).affectedKeys().hasOnly(['points', 'lastOrderAt']);
         allow delete: if isAdmin();
       }

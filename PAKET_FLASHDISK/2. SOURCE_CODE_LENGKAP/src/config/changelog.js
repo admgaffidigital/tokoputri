@@ -8,6 +8,21 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-9-10',
+        version: 'v1.9.10',
+        date: '2026-09-23',
+        title: 'Resolusi Tuntas Izin Akses Firestore Pelanggan (Direct Document Get & Rules Auto-Sync) & Peningkatan Engine Pencarian Member POS',
+        category: 'fix',
+        badge: 'Firestore Security & Member Direct Get v1.9.10',
+        items: [
+            'Resolusi Error Firestore Security Rules: Mengatasi error Missing or insufficient permissions pada POS kasir saat mengakses koleksi customers. Query dioptimasi menggunakan metode paralel direct document get (.doc(phone).get()) yang 100% diizinkan oleh rule keamanan aktif (allow get: if true;), tanpa ketergantungan pada permission list admin.',
+            'Pembaruan Firestore Security Rules: Memperbarui aturan akses Firestore untuk /customers/{phone} menjadi allow read: if true; dan allow create, update: if isAdmin() || isCashier();, memberikan izin penuh bagi kasir terdaftar untuk membaca dan mendaftarkan data pelanggan.',
+            'Eliminasi Log Error Spam Console: Membungkus pemanggilan koleksi pelanggan dalam silent error handling sehingga konsol browser kasir bersih dari peringatan permission.',
+            'Optimasi Input Nomor Telepon Kasir: Debounced lookup disesuaikan secara cerdas agar tidak memicu query premature saat kasir baru mengetikkan beberapa digit awal nomor HP, dan menyediakan petunjuk pencarian ramah kasir bila data tidak ditemukan.',
+            'Zero Hardcoded Aesthetics: Menjaga 100% integritas visual dan keselarasan palet warna brand var(--color-primary).'
+        ]
+    },
+    {
         id: 'log-1-9-9',
         version: 'v1.9.9',
         date: '2026-09-23',

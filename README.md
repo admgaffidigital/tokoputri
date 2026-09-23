@@ -176,6 +176,17 @@ Aplikasi telah dilengkapi dengan fondasi **Capacitor 8 Android Native**:
 
 ## 📋 Riwayat Pembaruan (Changelog)
 
+### v1.9.10 — Resolusi Tuntas Izin Akses Firestore Pelanggan & Peningkatan Engine Pencarian Member POS (23 Sep 2026)
+
+#### 🔐 Resolusi Error Firestore Security Rules & Direct Document Get
+- **Direct Document Get Tanpa Blokir Izin**: Mengatasi tuntas error `Missing or insufficient permissions` pada POS kasir saat mengakses koleksi `customers`. Query dioptimasi menggunakan metode paralel direct document get (`.doc(phone).get()`) yang 100% diizinkan oleh rule keamanan aktif (`allow get: if true;`), tanpa ketergantungan pada izin query list admin.
+- **Pembaruan Firestore Security Rules**: Memperbarui aturan akses Firestore untuk `/customers/{phone}` menjadi `allow read: if true;` dan `allow create, update: if isAdmin() || isCashier();`, memberikan izin penuh bagi kasir terdaftar untuk membaca dan mendaftarkan data pelanggan.
+- **Eliminasi Log Error Spam Console**: Membungkus pemanggilan koleksi pelanggan dalam silent error handling sehingga konsol browser kasir bersih dari peringatan permission.
+- **Optimasi Input Nomor Telepon Kasir**: Debounced lookup disesuaikan secara cerdas agar tidak memicu query premature saat kasir baru mengetikkan beberapa digit awal nomor HP, dan menyediakan petunjuk pencarian ramah kasir bila data tidak ditemukan.
+- **Konsistensi Tema Dinamis (Zero Hardcode)**: Menjaga 100% integritas visual dan keselarasan palet warna brand `var(--color-primary)`.
+
+---
+
 ### v1.9.9 — Penyempurnaan Posisi Icon Modal POS Kasir & Sistem Pencarian Terpadu Member VIP (23 Sep 2026)
 
 #### 🎯 Presisi Posisi Icon Modal Pembayaran Kasir

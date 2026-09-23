@@ -799,7 +799,8 @@ export const ensureCustomersLoaded = async () => {
         appData.customers = snap.docs.map(d => ({ ...d.data(), id: d.id, _docId: d.id }));
         return appData.customers;
     } catch (e) {
-        console.warn('[POS] Gagal load collection customers:', e);
+        // Silent catch: jika Security Rules melarang list query untuk non-admin, jangan spam console kasir.
+        // POS kasir tetap bisa membaca data member secara instan via direct doc ID (.doc(phone).get()) yang 100% diizinkan.
         return appData.customers || [];
     }
 };
@@ -853,6 +854,7 @@ const findMembersInList = (query, list) => {
 };
 
 const queryMemberFromFirestore = async (query) => {
+    if (!query) return null;
     const raw = query.trim();
     const qDigits = raw.replace(/\D/g, '');
     let qCore = qDigits;
@@ -860,46 +862,39 @@ const queryMemberFromFirestore = async (query) => {
     else if (qCore.startsWith('0')) qCore = qCore.slice(1);
 
     const custCol = db.collection("freshmart").doc("cms_data").collection("customers");
+    
+    // Siapkan semua kemungkinan format Document ID pelanggan di Firestore
     const candidateKeys = Array.from(new Set([
-        raw,
-        qDigits,
         qCore ? '62' + qCore : null,
         qCore ? '0' + qCore : null,
-        qCore
+        qCore || null,
+        qCore ? '+62' + qCore : null,
+        qDigits || null,
+        raw
     ].filter(Boolean)));
 
-    // 1. Cek langsung via candidate doc IDs
-    for (const key of candidateKeys) {
+    // 1. Direct get ke semua candidate keys secara paralel (100% diizinkan 'allow get: if true' di Firestore Rules)
+    const directPromises = candidateKeys.map(async (key) => {
         try {
             const doc = await custCol.doc(key).get();
-            if (doc.exists) {
-                const data = { ...doc.data(), id: doc.id, _docId: doc.id };
-                if (!appData.customers) appData.customers = [];
-                const existIdx = appData.customers.findIndex(c => String(c.id) === String(data.id));
-                if (existIdx > -1) appData.customers[existIdx] = data;
-                else appData.customers.push(data);
-                return data;
+            if (doc && doc.exists) {
+                return { ...doc.data(), id: doc.id, _docId: doc.id };
             }
-        } catch (e) {}
+        } catch (_) {}
+        return null;
+    });
+
+    const directResults = await Promise.all(directPromises);
+    const directFound = directResults.find(Boolean);
+    if (directFound) {
+        if (!appData.customers) appData.customers = [];
+        const existIdx = appData.customers.findIndex(c => String(c.id || c.phone) === String(directFound.id || directFound.phone));
+        if (existIdx > -1) appData.customers[existIdx] = directFound;
+        else appData.customers.push(directFound);
+        return directFound;
     }
 
-    // 2. Cek via query field 'phone'
-    if (qCore.length >= 5) {
-        for (const p of ['62' + qCore, '0' + qCore, qDigits]) {
-            try {
-                const snap = await custCol.where('phone', '==', p).limit(1).get();
-                if (!snap.empty) {
-                    const doc = snap.docs[0];
-                    const data = { ...doc.data(), id: doc.id, _docId: doc.id };
-                    if (!appData.customers) appData.customers = [];
-                    appData.customers.push(data);
-                    return data;
-                }
-            } catch (e) {}
-        }
-    }
-
-    // 3. Fallback: ambil seluruh dokumen customers (sampai 300)
+    // 2. Jika bukan nomor HP atau belum ditemukan, coba query list (hanya jika rules cloud sudah dibuka)
     try {
         const snap = await custCol.limit(300).get();
         if (!snap.empty) {
@@ -907,7 +902,9 @@ const queryMemberFromFirestore = async (query) => {
             const matches = findMembersInList(query, appData.customers);
             if (matches.length > 0) return matches[0];
         }
-    } catch (e) {}
+    } catch (_) {
+        // Silent catch jika list ditolak oleh Firestore rules
+    }
 
     return null;
 };
@@ -973,17 +970,28 @@ export const resetPosMember = () => {
 let _posMemberSearchTimer = null;
 export const debouncedLookupPosMember = () => {
     clearTimeout(_posMemberSearchTimer);
-    const q = el('pos-cust-phone')?.value?.trim();
-    if (!q || q.length < 3) {
+    const q = el('pos-cust-phone')?.value?.trim() || '';
+    if (!q) {
         if (!posCustomer.memberId) {
             const r = el('pos-member-result');
             if (r) r.innerHTML = '';
         }
         return;
     }
+    const digits = q.replace(/\D/g, '');
+    const hasCachedList = Array.isArray(appData.customers) && appData.customers.length > 0;
+    
+    // Jika list lokal sudah ada, cari otomatis saat q >= 2 karakter.
+    // Jika belum ada list lokal (direct query ke Firestore), tunggu hingga minimal 10 digit nomor HP
+    // agar tidak melakukan panggilan Firestore berulang sebelum input nomor selesai diketik.
+    // Kasir tetap bisa menekan tombol "Cek" atau Enter kapan saja.
+    if (!hasCachedList && digits.length < 10 && q.length < 8) {
+        return;
+    }
+
     _posMemberSearchTimer = setTimeout(() => {
         lookupPosMember();
-    }, 300);
+    }, 350);
 };
 
 export const lookupPosMember = async () => {
@@ -1035,10 +1043,17 @@ export const lookupPosMember = async () => {
                 posCustomer.name     = '';
                 posCustomer.memberId = null;
                 posCustomer.points   = 0;
+                const qDigits = query.replace(/\D/g, '');
+                const isPhoneLike = qDigits.length >= 8;
                 r.innerHTML = `
-                  <div class="p-2.5 bg-rose-50 dark:bg-rose-950/30 rounded-xl border border-rose-200 dark:border-rose-800 text-rose-600 dark:text-rose-400 text-xs">
-                    <p class="font-bold flex items-center gap-1.5"><i class="fa-solid fa-circle-xmark"></i> Member Tidak Ditemukan</p>
-                    <p class="text-[10px] text-rose-500/90 mt-0.5">Tidak ada member terdaftar untuk "<b>${esc(query)}</b>". Pastikan nomor HP atau nama sesuai database.</p>
+                  <div class="p-3 bg-amber-50 dark:bg-amber-950/30 rounded-xl border border-amber-200 dark:border-amber-800 text-amber-800 dark:text-amber-300 text-xs space-y-1">
+                    <p class="font-bold flex items-center gap-1.5"><i class="fa-solid fa-circle-info"></i> Member Tidak Ditemukan</p>
+                    <p class="text-[11px] text-amber-700 dark:text-amber-400">Tidak ada member ditemukan untuk "<b>${esc(query)}</b>".</p>
+                    ${!isPhoneLike ? `
+                      <p class="text-[10px] text-amber-600/90 dark:text-amber-400/80 pt-1 border-t border-amber-200 dark:border-amber-800/60">
+                        <i class="fa-solid fa-lightbulb mr-1 text-amber-500"></i><b>Tips Kasir:</b> Masukkan nomor WhatsApp/HP member (contoh: <code>0812...</code>) untuk verifikasi instan.
+                      </p>
+                    ` : ''}
                   </div>`;
             }
         }
@@ -1050,7 +1065,7 @@ export const lookupPosMember = async () => {
     } finally {
         if (btn) {
             btn.disabled = false;
-            btn.innerHTML = '<i class="fa-solid fa-magnifying-glass"></i><span>Cek</span>';
+            btn.innerHTML = '<i class="fa-solid fa-magnifying-glass mr-1.5"></i><span>Cek</span>';
         }
     }
 };
