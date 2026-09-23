@@ -464,10 +464,10 @@ const renderCart = () => {
                 <div class="flex-1 min-w-0">
                     <p class="text-xs font-bold text-slate-800 dark:text-slate-100 truncate leading-snug">${esc(item.name)}</p>
                     <div class="flex items-center gap-1.5 mt-0.5 flex-wrap">
-                        ${item.isWholesale ? `<span class="inline-flex items-center text-[8px] font-black px-1 rounded bg-amber-500 text-white shadow-2xs">GROSIR</span>` : ''}
-                        ${item.isVariant ? `<span class="inline-flex items-center text-[8px] font-black px-1 rounded bg-indigo-600 text-white shadow-2xs">VARIAN</span>` : ''}
+                        ${item.isWholesale ? `<span class="inline-flex items-center text-[8px] font-black px-1.5 py-0.5 rounded text-white shadow-2xs" style="background:var(--color-primary)">GROSIR</span>` : ''}
+                        ${item.isVariant ? `<span class="inline-flex items-center text-[8px] font-black px-1.5 py-0.5 rounded bg-indigo-600 text-white shadow-2xs">VARIAN</span>` : ''}
                         <span class="text-[10px] text-slate-500 font-medium">
-                            ${item.isWholesale && item.basePrice ? `<span class="line-through text-slate-400">${fRp(item.basePrice)}</span> <span class="text-amber-600 font-bold">${fRp(item.price)}</span>` : fRp(item.price)}
+                            ${item.isWholesale && item.basePrice ? `<span class="line-through text-slate-400">${fRp(item.basePrice)}</span> <span class="font-bold" style="color:var(--color-primary)">${fRp(item.price)}</span>` : fRp(item.price)}
                         </span>
                     </div>
                     <div class="flex items-center gap-1 mt-1">
@@ -1101,7 +1101,7 @@ const buildPOSLayout = ({ isStorefront }) => {
                 <div class="pos-cart-items-target flex-1 overflow-y-auto p-3 space-y-2 min-h-[160px]"></div>
 
                 <!-- Footer Summary & Pay -->
-                <div class="p-3.5 border-t border-slate-100 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-950/80 space-y-2 shrink-0">
+                <div class="p-3.5 pb-[calc(1rem+env(safe-area-inset-bottom))] border-t border-slate-100 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-950/80 space-y-2 shrink-0">
                     <div class="flex justify-between text-xs text-slate-500 font-medium">
                         <span>Subtotal Item</span>
                         <span class="pos-subtotal-target font-bold text-slate-700 dark:text-slate-200">Rp 0</span>
