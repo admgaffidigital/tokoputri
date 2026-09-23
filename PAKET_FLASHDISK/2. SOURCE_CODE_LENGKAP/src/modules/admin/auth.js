@@ -67,6 +67,8 @@ export const checkAdminAccess = async () => {
  */
 export const openAdminMenu = () => { 
     attachAdminSessionGuard();
+    const adminView = el('view-admin');
+    if (adminView) adminView.classList.remove('admin-pos-mode');
     const adminScroll = document.querySelector('#view-admin .scroll-content');
     if (adminScroll) adminScroll.scrollTop = 0;
     show('admin-dashboard-view'); 

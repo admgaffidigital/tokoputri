@@ -171,7 +171,7 @@ export const voidPOSTx = (txId) => {
 // ─── Render Halaman Riwayat ───────────────────────────────────
 export const renderPOSHistory = () => {
     setH('admin-content', `
-    <div class="max-w-full pb-10 fade-in-scale">
+    <div class="max-w-full h-full flex flex-col overflow-y-auto p-4 sm:p-6 pb-24 fade-in-scale">
         <!-- Back + Title -->
         <div class="flex items-center gap-3 mb-5">
             <button onclick="window.__openPOSMain?.()" class="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 transition-all text-sm"><i class="fa-solid fa-arrow-left"></i></button>

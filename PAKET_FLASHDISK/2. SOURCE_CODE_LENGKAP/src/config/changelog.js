@@ -8,6 +8,22 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-9-13',
+        version: 'v1.9.13',
+        date: '2026-09-23',
+        title: 'Solusi Definitif Tampilan Kasir POS Admin CMS Terpotong: Arsitektur Viewport Lock (.admin-pos-mode) & Eliminasi Tabrakan Double-Scroll',
+        category: 'fix',
+        badge: 'Admin POS Viewport Engine v1.9.13',
+        items: [
+            'Eliminasi Tabrakan Double-Scroll (Anti-Nested Scroll Collision): Mengatasi akar masalah kartu produk terpotong setengah layar dengan area kosong putih raksasa di bawahnya saat kasir POS dibuka melalui CMS Admin di smartphone. Masalah terjadi karena kontainer luar .scroll-content ikut tergeser saat kasir di-swipe, sehingga search bar dan strip aksi melorot ke balik header.',
+            'Arsitektur Viewport Lock (.admin-pos-mode): Menerapkan mode viewport terisolasi saat tab Kasir POS aktif di CMS Admin, mengunci kontainer luar (#view-admin .scroll-content) ke overflow: hidden, padding: 0, dan tinggi 100% penuh.',
+            'Pencarian & Kategori Tetap Terpaku (Sticky Action Strip & Search): Bilah pencarian nama/SKU/barcode dan chip kategori produk kini tetap terkunci rapi di posisi atas, tidak pernah terdorong hilang atau tertutup header saat kasir menggulir katalog.',
+            'Pengguliran Katalog Internal Mulus: Kontainer katalog produk (#pos-catalog-grid) kini memegang kontrol pengguliran internal penuh dari batas bawah filter hingga dasar layar, memungkinkan kasir melihat seluruh produk hingga baris terakhir dengan lancar tanpa celah kosong.',
+            'Tata Letak Responsif Leluasa (Mobile & Desktop): Pada layar desktop, kontainer POS kini membentang penuh 100% lebar layar (tidak lagi terjepit batas max-w-5xl), menghadirkan pengalaman terminal kasir split-panel 63:37 yang profesional.',
+            'Konsistensi Tema Dinamis (Zero Hardcode): Seluruh elemen aksen, tombol, dan indikator tetap terikat murni pada variabel CSS var(--color-primary).'
+        ]
+    },
+    {
         id: 'log-1-9-12',
         version: 'v1.9.12',
         date: '2026-09-23',

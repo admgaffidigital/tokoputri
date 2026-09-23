@@ -1542,11 +1542,14 @@ export const renderPOS = () => {
     posSearch       = '';
     posCatFilterVal = '';
 
+    const adminView = el('view-admin');
+    if (adminView) adminView.classList.add('admin-pos-mode');
+
     const adminContent = el('admin-content');
     if (!adminContent) return;
 
-    // Pastikan container admin mengambil tinggi penuh layar tanpa scroll ganda
-    setH('admin-content', `<div style="height:calc(100vh - 105px)">${buildPOSLayout({ isStorefront: false })}</div>`);
+    // Kontainer mengambil 100% tinggi penuh flex viewport tanpa scroll ganda
+    setH('admin-content', `<div class="h-full w-full flex flex-col overflow-hidden">${buildPOSLayout({ isStorefront: false })}</div>`);
     renderCatalog();
     renderCart();
     initBarcodeListener();

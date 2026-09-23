@@ -78,6 +78,8 @@ export const changeView = (v, fH = false) => {
         if (typeof window.detachPOSHistoryListener === 'function') window.detachPOSHistoryListener();
     }
     if (curViewName === 'view-admin' && v !== 'view-admin') {
+        const adminView = el('view-admin');
+        if (adminView) adminView.classList.remove('admin-pos-mode');
         if (typeof window.detachPOSHistoryListener === 'function') window.detachPOSHistoryListener();
     }
     

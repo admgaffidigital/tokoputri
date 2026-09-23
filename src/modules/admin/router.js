@@ -19,6 +19,12 @@ export const openAdminTab = (t, fH = false) => {
     const adminScroll = document.querySelector('#view-admin .scroll-content');
     if (adminScroll) adminScroll.scrollTop = 0;
     
+    const adminView = el('view-admin');
+    if (adminView) {
+        if (t === 'pos') adminView.classList.add('admin-pos-mode');
+        else adminView.classList.remove('admin-pos-mode');
+    }
+    
     setCTab(t);
     setASq('');
     

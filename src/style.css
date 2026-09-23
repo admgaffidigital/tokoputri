@@ -44,6 +44,59 @@ html {
    dan TIDAK BISA GEPENG (hard minimum height 220px + aspect-square 125px).
    ============================================================ */
 
+/* ============================================================
+   ADMIN CMS — FULL-VIEWPORT KASIR POS (ANTI DOUBLE-SCROLL)
+   Kunci viewport 100% tinggi saat Kasir POS dibuka di CMS Admin,
+   sehingga tidak ada scroll ganda, header tidak menutupi search bar,
+   dan tidak ada celah putih kosong di bawah layar.
+   ============================================================ */
+#view-admin.admin-pos-mode {
+    overflow: hidden !important;
+}
+
+#view-admin.admin-pos-mode .scroll-content {
+    overflow: hidden !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    height: 100% !important;
+    flex: 1 1 0% !important;
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+#view-admin.admin-pos-mode .scroll-content > div {
+    padding: 0 !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    height: 100% !important;
+    flex: 1 1 0% !important;
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+#view-admin.admin-pos-mode #admin-content-view {
+    max-width: 100% !important;
+    width: 100% !important;
+    height: 100% !important;
+    flex: 1 1 0% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+#view-admin.admin-pos-mode #admin-content {
+    padding: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    flex: 1 1 0% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+}
+
 /* Container grid katalog produk POS (Grid Mode) */
 .pos-catalog-grid-mode {
     display: grid !important;

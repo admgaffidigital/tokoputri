@@ -176,6 +176,18 @@ Aplikasi telah dilengkapi dengan fondasi **Capacitor 8 Android Native**:
 
 ## 📋 Riwayat Pembaruan (Changelog)
 
+### v1.9.13 — Solusi Definitif Tampilan Kasir POS Admin CMS Terpotong: Arsitektur Viewport Lock (.admin-pos-mode) & Eliminasi Tabrakan Double-Scroll (23 Sep 2026)
+
+#### 📱 Eliminasi Tabrakan Double-Scroll (Anti-Nested Scroll Collision)
+- **Akar Masalah Selesai Tuntas**: Mengatasi masalah tampilan kasir POS yang terpotong setengah layar dengan area kosong putih raksasa di bawahnya saat kasir POS dibuka melalui CMS Admin di smartphone. Masalah terjadi akibat konflik kontainer luar `.scroll-content` yang memiliki `overflow-y-auto` dan padding bawah area aman, sehingga gesture swipe menggulir kontainer luar dan mendorong bilah pencarian & chip kategori ke balik sticky header.
+- **Arsitektur Viewport Lock (`.admin-pos-mode`)**: Menerapkan mode viewport terisolasi saat tab Kasir POS aktif di CMS Admin. Kontainer luar (`#view-admin .scroll-content`) dikunci secara ketat ke `overflow: hidden !important`, `padding: 0 !important`, dan tinggi 100% penuh.
+- **Pencarian & Kategori Tetap Terpaku (Sticky Action Strip & Search)**: Bilah pencarian nama/SKU/barcode dan chip kategori produk kini tetap terkunci rapi di posisi atas, tidak pernah terdorong hilang atau tertutup header saat kasir menggulir katalog.
+- **Pengguliran Katalog Internal Mulus**: Kontainer katalog produk (`#pos-catalog-grid`) kini memegang kontrol pengguliran internal penuh dari batas bawah filter hingga dasar layar, memungkinkan kasir melihat seluruh produk hingga baris terakhir dengan lancar tanpa celah kosong.
+- **Tata Letak Responsif Leluasa (Mobile & Desktop)**: Pada layar desktop/komputer kasir, kontainer POS kini membentang penuh 100% lebar layar (tidak lagi terjepit batas `max-w-5xl`), menghadirkan pengalaman terminal kasir split-panel 63:37 yang profesional.
+- **Konsistensi Tema Dinamis (Zero Hardcode)**: Seluruh elemen aksen, tombol, dan indikator tetap terikat murni pada variabel CSS `var(--color-primary)` toko.
+
+---
+
 ### v1.9.12 — Pelepasan Listener Realtime Terkelola Saat Logout & Navigasi (Zero Missing or Insufficient Permissions) (23 Sep 2026)
 
 #### 🛡️ Pelepasan Listener Terkelola (Graceful Listener Teardown)
