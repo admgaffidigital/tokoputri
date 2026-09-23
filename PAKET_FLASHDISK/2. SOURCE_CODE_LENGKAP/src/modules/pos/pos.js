@@ -1518,6 +1518,7 @@ const buildPOSLayout = ({ isStorefront }) => {
 
 // ─── Render Storefront Standalone View ───────────────────────
 export const renderPOSStorefront = () => {
+    if (typeof window.detachPOSHistoryListener === 'function') window.detachPOSHistoryListener();
     posSearch       = '';
     posCatFilterVal = '';
     posCart         = [];
@@ -1537,6 +1538,7 @@ export const renderPOSStorefront = () => {
 
 // ─── Render di Admin CMS ────────────────────────────────────
 export const renderPOS = () => {
+    if (typeof window.detachPOSHistoryListener === 'function') window.detachPOSHistoryListener();
     posSearch       = '';
     posCatFilterVal = '';
 

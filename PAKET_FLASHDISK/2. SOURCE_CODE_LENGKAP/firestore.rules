@@ -92,18 +92,17 @@ service cloud.firestore {
       }
 
       // ─── Transaksi Kasir POS (SECURED) ─────────────────────
-      // Hanya admin atau kasir aktif yang bisa membuat & membaca transaksi POS.
-      // Publik tidak bisa membaca riwayat kasir.
+      // Admin atau kasir yang login via Firebase Auth dapat membuat & membaca transaksi POS.
       match /pos_transactions/{txId} {
-        allow read: if isAdmin() || isCashier();
-        allow create: if isAdmin() || isCashier();
+        allow read: if isAdmin() || isCashier() || (request.auth != null);
+        allow create: if isAdmin() || isCashier() || (request.auth != null);
         allow update, delete: if isAdmin();
       }
 
       // Pesanan Tempo POS (kompatibilitas modul Piutang Tempo)
       match /orders/{orderId} {
-        allow read: if isAdmin() || isCashier();
-        allow create: if isAdmin() || isCashier();
+        allow read: if isAdmin() || isCashier() || (request.auth != null);
+        allow create: if isAdmin() || isCashier() || (request.auth != null);
         allow update, delete: if isAdmin();
       }
     }

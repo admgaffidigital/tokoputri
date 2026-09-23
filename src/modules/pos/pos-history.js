@@ -6,7 +6,7 @@
  * ============================================================
  */
 
-import { db } from '../../config/firebase.js';
+import { db, auth } from '../../config/firebase.js';
 import { appData } from '../../core/state.js';
 import { el, setH, setIn, esc, fCur, showToast, showConfirm, sLoad, hLoad } from '../../core/utils.js';
 
@@ -17,12 +17,37 @@ let histDateFilter = new Date().toISOString().slice(0, 10); // default: hari ini
 let histTxList     = [];
 let histUnsubscribe = null;
 
+// ─── Detach Listener Saat Keluar/Logout ───────────────────────
+export const detachPOSHistoryListener = () => {
+    if (histUnsubscribe) {
+        try { histUnsubscribe(); } catch (_) {}
+        histUnsubscribe = null;
+    }
+};
+window.detachPOSHistoryListener = detachPOSHistoryListener;
+
 // ─── Load Transaksi POS dari Firestore ───────────────────────
 const loadPOSHistory = () => {
     const loadEl = el('pos-hist-list');
     if (loadEl) setH('pos-hist-list', `<div class="flex justify-center py-12"><i class="fa-solid fa-spinner fa-spin text-3xl text-slate-300"></i></div>`);
 
-    if (histUnsubscribe) { histUnsubscribe(); histUnsubscribe = null; }
+    detachPOSHistoryListener();
+
+    // Verifikasi sesi login aktif sebelum menempelkan listener Firestore
+    const isStaffOrAdmin = !!auth.currentUser || window.isAdm || window.__localIsAdm;
+    if (!isStaffOrAdmin) {
+        if (loadEl) {
+            setH('pos-hist-list', `
+                <div class="flex flex-col items-center justify-center py-16 text-slate-400">
+                    <i class="fa-solid fa-lock text-3xl mb-2 text-slate-300 dark:text-slate-600"></i>
+                    <p class="font-bold text-xs">Akses Riwayat Memerlukan Login</p>
+                    <p class="text-[11px] text-slate-400 mt-1">Silakan masuk sebagai Admin atau Kasir untuk melihat riwayat transaksi.</p>
+                </div>
+            `);
+        }
+        setH('pos-hist-rekap', '');
+        return;
+    }
 
     const start = new Date(histDateFilter); start.setHours(0, 0, 0, 0);
     const end   = new Date(histDateFilter); end.setHours(23, 59, 59, 999);
@@ -35,8 +60,19 @@ const loadPOSHistory = () => {
             histTxList = snap.docs.map(d => d.data()).sort((a, b) => (b.dateMs || 0) - (a.dateMs || 0));
             renderHistList();
         }, (err) => {
-            console.error('[POS History]', err);
-            showToast('Gagal memuat riwayat kasir', 'error');
+            // Jika error terjadi karena logout (unauthenticated) atau sesi dibatalkan, tangani dengan bersih
+            if (err?.code === 'permission-denied') {
+                histTxList = [];
+                detachPOSHistoryListener();
+                // Jika sudah logout atau tidak ada user/staf aktif, hentikan diam-diam tanpa peringatan/toast
+                if (!auth.currentUser || (!window.isAdm && !window.__localIsAdm && !window.getCashierSession?.())) {
+                    return;
+                }
+            }
+            console.warn('[POS History] Peringatan akses riwayat:', err);
+            if (auth.currentUser && (window.isAdm || window.__localIsAdm || window.getCashierSession?.())) {
+                showToast('Gagal memuat riwayat kasir', 'error');
+            }
             histTxList = [];
             renderHistList();
         });
@@ -173,7 +209,10 @@ export const renderPOSHistory = () => {
     window.printPOSReceiptFromHist = (tx) => {
         import('./pos.js').then(m => m.printPOSReceipt(tx));
     };
-    window.__openPOSMain = () => import('./pos.js').then(m => m.renderPOS());
+    window.__openPOSMain = () => {
+        detachPOSHistoryListener();
+        import('./pos.js').then(m => m.renderPOS());
+    };
 
     loadPOSHistory();
 };

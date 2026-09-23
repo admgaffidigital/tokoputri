@@ -73,8 +73,12 @@ export const changeView = (v, fH = false) => {
     if (curViewName === 'view-orders' && v !== 'view-orders' && typeof window.detachMyOrdersRealtime === 'function') {
         window.detachMyOrdersRealtime();
     }
-    if (curViewName === 'view-pos-cashier' && v !== 'view-pos-cashier' && typeof window.destroyBarcodeListener === 'function') {
-        window.destroyBarcodeListener();
+    if (curViewName === 'view-pos-cashier' && v !== 'view-pos-cashier') {
+        if (typeof window.destroyBarcodeListener === 'function') window.destroyBarcodeListener();
+        if (typeof window.detachPOSHistoryListener === 'function') window.detachPOSHistoryListener();
+    }
+    if (curViewName === 'view-admin' && v !== 'view-admin') {
+        if (typeof window.detachPOSHistoryListener === 'function') window.detachPOSHistoryListener();
     }
     
     const t = el(v);

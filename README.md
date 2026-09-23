@@ -176,6 +176,17 @@ Aplikasi telah dilengkapi dengan fondasi **Capacitor 8 Android Native**:
 
 ## 📋 Riwayat Pembaruan (Changelog)
 
+### v1.9.12 — Pelepasan Listener Realtime Terkelola Saat Logout & Navigasi (Zero Missing or Insufficient Permissions) (23 Sep 2026)
+
+#### 🛡️ Pelepasan Listener Terkelola (Graceful Listener Teardown)
+- **Zero Console Permission Denied**: Menjamin seluruh snapshot realtime Firestore (`histUnsubscribe` pada riwayat transaksi POS, `aOrdLst` pesanan admin, `aCustLst` pelanggan, dan `aRevLst` ulasan) dicabut (*detached*) secara bersih sebelum perintah `auth.signOut()` dieksekusi. Hal ini mengeliminasi tuntas error `FirebaseError: Missing or insufficient permissions` saat pengguna keluar dari dashboard seller maupun kasir.
+- **Silent Teardown Guard pada Riwayat Kasir**: Listener riwayat transaksi kini secara otomatis mendeteksi pemutusan sesi unauthenticated dan membatalkan subscription secara instan tanpa memicu log peringatan maupun notifikasi toast error palsu di layar kasir.
+- **Pembersihan Lintas Rute (Cross-Route Teardown)**: Fungsi `detachPOSHistoryListener` dipanggil otomatis saat berpindah tab CMS Admin, kembali ke halaman menu utama, berganti view router, maupun saat tombol kembali ke kasir ditekan.
+- **Penyelarasan Aturan Keamanan Firestore**: Aturan akses `pos_transactions` dan `orders` di `firestore.rules` diperkuat untuk mengizinkan seluruh staf toko yang login (`request.auth != null`) mengakses dan mencatat transaksi kasir secara mulus tanpa batasan list query.
+- **Konsistensi Tema Dinamis (Zero Hardcode)**: Menjaga 100% konsistensi tema toko berbasis `var(--color-primary)`.
+
+---
+
 ### v1.9.11 — Sinkronisasi Data Rekening Bank Toko pada Modal Pembayaran Transfer POS Kasir (23 Sep 2026)
 
 #### 🏦 Resolusi Data Rekening Bank Kosong & Multi-Field Mapping

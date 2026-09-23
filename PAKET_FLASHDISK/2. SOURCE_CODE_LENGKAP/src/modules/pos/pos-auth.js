@@ -228,6 +228,10 @@ export const cashierLogout = async () => {
     const session = getCashierSession();
     if (!session) return;
 
+    if (typeof window.detachPOSHistoryListener === 'function') {
+        window.detachPOSHistoryListener();
+    }
+
     try {
         // Sign out dari Firebase Auth HANYA jika tidak ada admin yang login
         if (!window.isAdm && !window.__localIsAdm) {

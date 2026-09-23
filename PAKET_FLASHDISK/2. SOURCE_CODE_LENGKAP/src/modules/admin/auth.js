@@ -83,6 +83,7 @@ export const openAdminMenu = () => {
         }
     } catch(e) {}
     
+    if (typeof window.detachPOSHistoryListener === 'function') window.detachPOSHistoryListener();
     if (aOrdLst) { aOrdLst(); setAOrdLst(null); } 
     if (aCustLst) { aCustLst(); setACustLst(null); } 
     if (aRevLst) { aRevLst(); setARevLst(null); } 
@@ -295,14 +296,18 @@ export const logoutAdmin = async () => {
     try {
         detachAdminSessionGuard();
         localStorage.removeItem('freshmart_admin_session_id');
+        // Detach seluruh Firestore realtime listeners SEBELUM signOut agar tidak terpicu permission-denied
+        if (typeof window.detachPOSHistoryListener === 'function') {
+            window.detachPOSHistoryListener();
+        }
+        if (aOrdLst) { aOrdLst(); setAOrdLst(null); } 
+        if (aCustLst) { aCustLst(); setACustLst(null); }
+        if (aRevLst) { aRevLst(); setARevLst(null); }
         await auth.signOut();
         window.isAdm = false; 
         window.__localIsAdm = false;
         window.isPro = false; 
         if (typeof window.updateProBadge === 'function') window.updateProBadge();
-        if (aOrdLst) { aOrdLst(); setAOrdLst(null); } 
-        if (aCustLst) { aCustLst(); setACustLst(null); }
-        if (aRevLst) { aRevLst(); setARevLst(null); }
         showToast("Berhasil Logout");
         if (typeof window.changeView === 'function') window.changeView('view-catalog');
     } catch(e) {

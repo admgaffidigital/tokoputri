@@ -62,6 +62,9 @@ export const openAdminTab = (t, fH = false) => {
     if (t !== 'orders' && aOrdLst) { aOrdLst(); setAOrdLst(null); }
     if (t !== 'customers' && aCustLst) { aCustLst(); setACustLst(null); }
     if (t !== 'reviews' && aRevLst) { aRevLst(); setARevLst(null); }
+    if (t !== 'pos' && typeof window.detachPOSHistoryListener === 'function') {
+        window.detachPOSHistoryListener();
+    }
 
     if (t === 'settings') {
         if (typeof window.rAdmSet === 'function') window.rAdmSet();

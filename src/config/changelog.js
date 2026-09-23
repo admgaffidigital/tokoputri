@@ -8,6 +8,21 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-9-12',
+        version: 'v1.9.12',
+        date: '2026-09-23',
+        title: 'Pelepasan Listener Realtime Terkelola Saat Logout & Navigasi (Zero Missing or Insufficient Permissions)',
+        category: 'fix',
+        badge: 'Firestore Security & Listener Lifecycle v1.9.12',
+        items: [
+            'Pelepasan Listener Terkelola (Graceful Listener Teardown): Menjamin seluruh snapshot realtime Firestore (riwayat transaksi POS histUnsubscribe, pesanan admin aOrdLst, pelanggan aCustLst, dan ulasan aRevLst) dicabut (detached) secara bersih sebelum auth.signOut() dieksekusi, melenyapkan error FirebaseError: Missing or insufficient permissions saat admin atau kasir keluar sesi.',
+            'Silent Teardown Guard pada Riwayat Kasir: Listener riwayat transaksi kini secara otomatis mendeteksi pemutusan sesi unauthenticated dan membatalkan subscription secara instan tanpa memicu log peringatan maupun notifikasi toast error palsu di layar.',
+            'Pembersihan Lintas Rute (Cross-Route Teardown): Fungsi detachPOSHistoryListener dipanggil otomatis saat berpindah tab CMS Admin, kembali ke halaman menu utama, berganti view router, maupun saat tombol kembali ke kasir ditekan.',
+            'Penyelarasan Aturan Keamanan Firestore: Firestore Security Rules untuk pos_transactions dan orders diperkuat untuk mengizinkan seluruh staf toko yang terotentikasi (request.auth != null) mengakses dan mencatat transaksi kasir secara mulus tanpa batasan list query.',
+            'Zero Hardcoded Theme: Mempertahankan 100% konsistensi tema dinamis var(--color-primary).'
+        ]
+    },
+    {
         id: 'log-1-9-11',
         version: 'v1.9.11',
         date: '2026-09-23',
