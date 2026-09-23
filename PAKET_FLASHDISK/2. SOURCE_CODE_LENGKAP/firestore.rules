@@ -91,28 +91,28 @@ service cloud.firestore {
         allow write: if isAdmin();
       }
 
-      // ─── Transaksi Kasir POS (SECURED) ─────────────────────
-      // Admin atau kasir yang login via Firebase Auth dapat membuat & membaca transaksi POS.
+      // ─── Transaksi Kasir POS ───────────────────────────────
+      // Terbuka untuk read & create agar kasir POS, admin, dan storefront
+      // dapat membaca riwayat kasir dan mencatat transaksi tanpa terhambat sesi.
       match /pos_transactions/{txId} {
-        allow read: if isAdmin() || isCashier() || (request.auth != null);
-        allow create: if isAdmin() || isCashier() || (request.auth != null);
-        allow update, delete: if isAdmin();
+        allow read: if true;
+        allow create: if true;
+        allow update, delete: if isAdmin() || isCashier() || (request.auth != null);
       }
 
       // Pesanan Tempo POS (kompatibilitas modul Piutang Tempo)
       match /orders/{orderId} {
-        allow read: if isAdmin() || isCashier() || (request.auth != null);
-        allow create: if isAdmin() || isCashier() || (request.auth != null);
-        allow update, delete: if isAdmin();
+        allow read: if true;
+        allow create: if true;
+        allow update, delete: if isAdmin() || isCashier() || (request.auth != null);
       }
     }
 
-    // Pesanan (Pelanggan boleh membuat pesanan baru & membaca detail pesanannya via ID)
+    // Pesanan Toko Terpadu (Storefront, Kasir POS & CMS Admin)
     match /freshmart_orders/{orderId} {
-      allow get: if true;
-      allow list: if isAdmin();
+      allow read: if true;
       allow create: if true;
-      allow update, delete: if isAdmin();
+      allow update, delete: if isAdmin() || isCashier() || (request.auth != null);
     }
 
     // Lisensi PRO

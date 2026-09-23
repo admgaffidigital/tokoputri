@@ -1145,43 +1145,117 @@ export const processPOSTx = async () => {
     const btn         = el('pos-process-btn');
     if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Memproses...'; }
 
+    // ── 1. Cek Pengaturan Stok Toko (appData.store.useStock) ────
+    const useStk = appData.store?.useStock === true || appData.store?.useStock === 'true';
+    if (useStk) {
+        for (const ci of posCart) {
+            const p = (appData.products || []).find(x => String(x.id) === String(ci.id));
+            if (!p) continue;
+            const needQty = parseFloat(ci.qty) || 0;
+            if (ci.variantName && p.variants) {
+                const variant = (p.variants || []).find(v => v.name === ci.variantName);
+                const currentStk = parseFloat(variant && variant.stock !== undefined ? variant.stock : 0);
+                if (currentStk < needQty) {
+                    showToast(`Stok ${ci.name} (${ci.variantName}) tidak cukup! Sisa: ${currentStk}`, 'warning');
+                    if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-check-circle mr-2"></i>Selesaikan Transaksi'; }
+                    return;
+                }
+            } else {
+                const currentStk = parseFloat(p.stock !== undefined ? p.stock : 0);
+                if (currentStk < needQty) {
+                    showToast(`Stok ${ci.name} tidak cukup! Sisa: ${currentStk}`, 'warning');
+                    if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-check-circle mr-2"></i>Selesaikan Transaksi'; }
+                    return;
+                }
+            }
+        }
+    }
+
     try {
-        const txId   = genTxId();
+        const txId = genTxId();
         const cashierSession = typeof window.getCashierSession === 'function' ? window.getCashierSession() : null;
         const cashierName = cashierSession?.name || appData.store?.name || 'Kasir';
         const cashierUid  = cashierSession?.uid || window.__currentAdminUid || 'admin';
+        const nowISO = new Date().toISOString();
+        const serverTime = firebase.firestore.FieldValue.serverTimestamp();
+        const orderStatus = posPayMethod === 'tempo' ? 'Diproses' : 'Selesai';
 
-        const txData = {
-            txId, date: firebase.firestore.FieldValue.serverTimestamp(), dateMs: Date.now(),
-            cashier: cashierUid, cashierName,
+        // ── 2. Bangun Data Pesanan Resmi (1 Ekosistem Terpadu Toko) ──
+        const orderData = {
+            orderId: txId,
+            txId,
+            source: 'pos',
+            channel: 'pos',
+            status: orderStatus,
+            timestamp: serverTime,
+            dateString: nowISO,
+            dateMs: Date.now(),
+            cashier: cashierUid,
+            cashierName,
             customer: {
                 name: custName,
                 phone: custPhone,
+                wa: custPhone,
+                address: 'Beli Langsung di Kasir (POS)',
+                deliveryMethod: 'takeaway',
                 isMember: !!posCustomer.isMember,
-                memberId: posCustomer.memberId || null,
-                points: posCustomer.points || 0
+                memberId: posCustomer.memberId || null
             },
-            items: posCart.map(i => ({ id: i.id, name: i.name, price: i.price, qty: i.qty, discount: i.discount || 0, subtotal: i.subtotal, variantName: i.variantName || '', isVariant: i.isVariant || false, isWholesale: i.isWholesale || false })),
-            subtotal: posSubtotal(), globalDiscount: fNum(posGlobalDisc), total: posTotal(),
-            payment: { method: posPayMethod, paid: posPayMethod === 'cash' ? posPaidAmount : (posPayMethod === 'tempo' ? dp : posTotal()), change: posPayMethod === 'cash' ? posChange() : 0, bank: bankName, dp, tempoBalance: posPayMethod === 'tempo' ? posTotal() - dp : 0 },
-            status: posPayMethod === 'tempo' ? 'tempo' : 'paid', notes: '', source: 'pos',
+            customerName: custName,
+            customerPhone: custPhone,
+            customerType: posCustomer.isMember ? 'Member' : 'Pelanggan Umum',
+            items: posCart.map(i => ({
+                id: i.id,
+                name: i.name,
+                price: parseFloat(i.price) || 0,
+                basePrice: parseFloat(i.basePrice || i.price) || 0,
+                qty: parseFloat(i.qty) || 1,
+                discount: parseFloat(i.discount) || 0,
+                subtotal: parseFloat(i.subtotal) || 0,
+                variantName: i.variantName || '',
+                isVariant: !!i.isVariant,
+                isWholesale: !!i.isWholesale,
+                effectivePrice: parseFloat(i.price) || 0
+            })),
+            payment: {
+                method: posPayMethod,
+                subtotal: posSubtotal(),
+                productDiscount: fNum(posGlobalDisc),
+                shippingCost: 0,
+                grandTotal: posTotal(),
+                paid: posPayMethod === 'cash' ? posPaidAmount : (posPayMethod === 'tempo' ? dp : posTotal()),
+                change: posPayMethod === 'cash' ? posChange() : 0,
+                bank: bankName,
+                paymentStatus: posPayMethod === 'tempo' ? 'hutang' : 'lunas',
+                tempoDp: dp,
+                tempoBalance: posPayMethod === 'tempo' ? posTotal() - dp : 0,
+                tempoDueDate: Date.now() + (30 * 24 * 60 * 60 * 1000),
+                tempoPenaltyRate: 1,
+                tempoPenaltyStopped: false
+            },
+            subtotal: posSubtotal(),
+            globalDiscount: fNum(posGlobalDisc),
+            total: posTotal(),
+            isTempo: posPayMethod === 'tempo',
+            pointsEarned: 0,
+            notes: ''
         };
 
-        // Poin Loyalitas Member jika transaksi kasir
+        // ── 3. Hitung & Akumulasi Poin Member jika Member Resmi ───────
         if (posCustomer.isMember && custPhone) {
             const calcPoints = typeof window.calculateCartPoints === 'function'
                 ? window.calculateCartPoints(posCart, appData.store)
                 : { totalPoints: 0 };
             const ptsEarned = calcPoints.totalPoints || 0;
             if (ptsEarned > 0) {
-                txData.pointsEarned = ptsEarned;
+                orderData.pointsEarned = ptsEarned;
                 try {
                     const cleanPhone = custPhone.replace(/\D/g, '');
                     const targetId = String(posCustomer.memberId || cleanPhone);
                     const custRef = db.collection("freshmart").doc("cms_data").collection("customers").doc(targetId);
                     await custRef.set({
                         points: firebase.firestore.FieldValue.increment(ptsEarned),
-                        lastOrderAt: new Date().toISOString()
+                        lastOrderAt: nowISO
                     }, { merge: true });
 
                     if (appData.customers) {
@@ -1194,32 +1268,68 @@ export const processPOSTx = async () => {
             }
         }
 
-        await db.collection('freshmart').doc('cms_data').collection('pos_transactions').doc(txId).set(txData);
+        // ── 4. Simpan ke Database Utama Toko (freshmart_orders) ──────
+        // Transaksi kasir langsung masuk ke daftar Pesanan Admin & Laporan Penjualan
+        await db.collection('freshmart_orders').doc(txId).set(orderData);
 
-        if (posPayMethod === 'tempo') {
-            await db.collection('freshmart_orders').doc(txId).set({
-                orderId: txId, source: 'pos', dateString: new Date().toISOString(),
-                customerName: txData.customer.name, customerPhone: txData.customer.phone,
-                items: posCart.map(i => ({ id: i.id, name: i.name, price: i.price, qty: i.qty })),
-                total: posTotal(),
-                payment: {
-                    method: 'tempo',
-                    paymentStatus: 'hutang',
-                    paid: dp,
-                    tempoBalance: posTotal() - dp,
-                    tempoDueDate: Date.now() + 7 * 86400000,
-                    tempoPenaltyRate: 1,
-                    tempoPenaltyStopped: false
-                },
-                status: 'Diproses',
-                isTempo: true,
-                timestamp: firebase.firestore.FieldValue.serverTimestamp()
-            });
+        // Simpan juga ke sub-koleksi pos_transactions sebagai mirror riwayat
+        try {
+            await db.collection('freshmart').doc('cms_data').collection('pos_transactions').doc(txId).set(orderData);
+        } catch(e) {
+            console.warn('[POS] Mirror pos_transactions notice:', e);
+        }
+
+        // ── 5. Potong Stok Otomatis Jika Fitur Stok Aktif ─────────────
+        if (useStk) {
+            const updatedProductIds = [];
+            for (const ci of posCart) {
+                const pId = String(ci.id);
+                const prod = (appData.products || []).find(p => String(p.id) === pId);
+                if (!prod) continue;
+                const qty = parseFloat(ci.qty) || 0;
+                const updatePayload = {};
+
+                if (ci.variantName && prod.variants) {
+                    const vIdx = prod.variants.findIndex(v => v.name === ci.variantName);
+                    if (vIdx > -1) {
+                        prod.variants[vIdx].stock = Math.max(0, (parseFloat(prod.variants[vIdx].stock) || 0) - qty);
+                        if (prod.variants[vIdx].stock === 0) prod.variants[vIdx].isActive = false;
+                        prod.variants[vIdx].totalSold = (parseFloat(prod.variants[vIdx].totalSold) || 0) + qty;
+                        updatePayload.variants = prod.variants;
+                    }
+                } else {
+                    prod.stock = Math.max(0, (parseFloat(prod.stock) || 0) - qty);
+                    updatePayload.stock = prod.stock;
+                    if (prod.stock === 0) {
+                        prod.isActive = 'false';
+                        updatePayload.isActive = 'false';
+                    }
+                    prod.totalSold = (parseFloat(prod.totalSold) || 0) + qty;
+                    updatePayload.totalSold = prod.totalSold;
+                }
+
+                try {
+                    await db.collection("freshmart").doc("cms_data").collection("products").doc(pId).update(updatePayload);
+                    updatedProductIds.push(pId);
+                } catch(stkErr) {
+                    console.warn('[POS] Gagal update stok produk di Firestore:', pId, stkErr);
+                }
+            }
+
+            if (updatedProductIds.length > 0) {
+                try {
+                    await db.collection("freshmart").doc("cms_data").update({
+                        lastUpdate: firebase.firestore.FieldValue.increment(1),
+                        updateType: 'stock_change',
+                        updatedProductIds
+                    });
+                } catch(e) {}
+            }
         }
 
         closePayModal();
         closePOSCartDrawer(true);
-        const lastTx = { ...txData };
+        const lastTx = { ...orderData };
         posCart = []; posGlobalDisc = 0;
         renderCart(); renderCatalog();
         showPOSSuccess(lastTx);

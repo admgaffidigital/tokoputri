@@ -8,6 +8,21 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-9-15',
+        version: 'v1.9.15',
+        date: '2026-09-24',
+        title: 'Integrasi Ekosistem Tunggal POS Kasir: Sinkronisasi Pesanan Toko (freshmart_orders), Pengaturan Stok Dinamis (useStock), & Resolusi Riwayat Kasir',
+        category: 'feature',
+        badge: 'Unified POS Ecosystem v1.9.15',
+        items: [
+            'Sinkronisasi Pesanan Terpadu (1 Ekosistem Kerja): Mengintegrasikan alur transaksi POS Kasir langsung ke koleksi pesanan utama toko (freshmart_orders). Setiap transaksi kasir (Tunai, QRIS, Bank, maupun Tempo) otomatis tercatat sebagai pesanan resmi dengan label source: "pos", langsung muncul di menu Pesanan CMS Admin, Laporan Penjualan (Dashboard Omset), Pajak & Keuangan, dan Piutang Tempo.',
+            'Dukungan Pengaturan Stok Dinamis (useStock): Alur kasir kini 100% selaras dengan pengaturan toko di CMS. Jika useStock bernilai true, kasir secara cerdas memvalidasi stok produk/varian dan memotong stok otomatis di Firestore serta inventaris lokal. Jika useStock bernilai false, kasir dapat menjual barang tanpa hambatan batas stok (sama persis dengan alur belanja storefront).',
+            'Resolusi Akses Riwayat Transaksi Kasir: Memperbaiki kendala riwayat kasir yang tidak bisa dibuka dengan menghubungkan pembacaan transaksi langsung ke data pesanan kasir di freshmart_orders (dengan fallback sub-koleksi pos_transactions) dan menghilangkan pemblokiran sesi kaku saat dibuka dari dashboard seller.',
+            'Perbaikan Penanggalan Lokal (Timezone-Aware Date Filter): Mengganti generator tanggal UTC (yang meleset mundur 1 hari pada jam malam WIB) dengan penanggalan lokal presisi (getLocalDateStr()), menjamin rekap omset dan transaksi harian kasir selalu akurat.',
+            'Penyelarasan Firestore Security Rules: Memperbarui aturan akses Firestore untuk freshmart_orders dan pos_transactions sehingga staf kasir dan admin toko dapat membaca dan mencatat transaksi secara instan tanpa error permission-denied.'
+        ]
+    },
+    {
         id: 'log-1-9-14',
         version: 'v1.9.14',
         date: '2026-09-24',
