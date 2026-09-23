@@ -176,6 +176,16 @@ Aplikasi telah dilengkapi dengan fondasi **Capacitor 8 Android Native**:
 
 ## 📋 Riwayat Pembaruan (Changelog)
 
+### v1.9.14 — Penyempurnaan Antarmuka Keranjang Kasir POS: Display Varian Informatif, Harmonisasi Tema Warna, & Eliminasi Header Wrapping (24 Sep 2026)
+
+#### 🛒 Penyempurnaan Visual & Estetika Keranjang Transaksi Kasir
+- **Display Varian Informatif (Anti-Clipped Title)**: Mengatasi judul produk ber-varian yang sebelumnya terpotong menjadi elipsis (`NO DROP 4 KG ANTI BOCOR —...`) pada kartu item keranjang belanja. Kini nama utama produk tampil bersih, dan detail varian yang dipilih ditampilkan jelas pada badge khusus dengan ikon layer-group.
+- **Harmonisasi Tema Brand pada Badge Varian (Zero Hardcode)**: Mengganti warna hardcoded indigo (`bg-indigo-600`) pada badge varian keranjang dengan variabel tema dinamis toko `var(--color-primary)`, menjamin keharmonisan visual 100% dengan identitas toko.
+- **Eliminasi Header Wrapping pada Layar Sempit**: Mengoptimasi struktur baris header drawer keranjang mobile (`whitespace-nowrap`, `min-w-0`, dan `shrink-0`), menjamin angka counter item `(1)` tidak melompat ke baris baru dan tombol "Kosongkan" tampil sejajar rapi dengan ikon tong sampah.
+- **Penyelarasan Header Keranjang Desktop**: Menerapkan perataan fleksibel yang sama pada panel keranjang kasir desktop agar tata letak senantiasa presisi di seluruh resolusi layar.
+
+---
+
 ### v1.9.13 — Solusi Definitif Tampilan Kasir POS Admin CMS Terpotong: Arsitektur Viewport Lock (.admin-pos-mode) & Eliminasi Tabrakan Double-Scroll (23 Sep 2026)
 
 #### 📱 Eliminasi Tabrakan Double-Scroll (Anti-Nested Scroll Collision)

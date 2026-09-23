@@ -8,6 +8,20 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-9-14',
+        version: 'v1.9.14',
+        date: '2026-09-24',
+        title: 'Penyempurnaan Antarmuka Keranjang Kasir POS: Display Varian Informatif, Harmonisasi Tema Warna, & Eliminasi Header Wrapping',
+        category: 'polish',
+        badge: 'POS Cart UI & Theme Polish v1.9.14',
+        items: [
+            'Display Varian Informatif (Anti-Clipped Title): Mengatasi judul produk yang terpotong menjadi elipsis (misal: "NO DROP 4 KG ANTI BOCOR —...") pada kartu keranjang transaksi kasir. Nama produk kini tampil bersih, dan detail varian disajikan dalam badge terdedikasi lengkap dengan ikon layer-group.',
+            'Harmonisasi Tema Brand pada Badge Varian (Zero Hardcode): Mengganti warna hardcoded indigo (bg-indigo-600) pada badge varian keranjang dengan variabel tema toko var(--color-primary), memastikan keselarasan visual penuh di seluruh aplikasi.',
+            'Eliminasi Header Wrapping pada Layar Sempit: Mengoptimasi struktur header drawer keranjang mobile (whitespace-nowrap & min-w-0) sehingga counter kuantitas (1) tidak melompat ke baris baru, serta tombol "Kosongkan" tampil sejajar rapi dengan ikon tong sampah.',
+            'Penyelarasan Header Keranjang Desktop: Menerapkan perataan fleksibel yang sama pada panel keranjang kasir desktop untuk tampilan yang konsisten dan profesional.'
+        ]
+    },
+    {
         id: 'log-1-9-13',
         version: 'v1.9.13',
         date: '2026-09-23',
