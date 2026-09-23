@@ -176,6 +176,16 @@ Aplikasi telah dilengkapi dengan fondasi **Capacitor 8 Android Native**:
 
 ## 📋 Riwayat Pembaruan (Changelog)
 
+### v1.9.11 — Sinkronisasi Data Rekening Bank Toko pada Modal Pembayaran Transfer POS Kasir (23 Sep 2026)
+
+#### 🏦 Resolusi Data Rekening Bank Kosong & Multi-Field Mapping
+- **Koreksi Pemetaan Skema Database**: Memperbaiki mapping field rekening bank pada modal pembayaran transfer kasir POS yang sebelumnya mencari properti `b.name`, `b.number`, `b.holder` (sehingga selalu tampil *"Rekening bank belum diatur"*). Kini diselaraskan penuh dengan skema CMS Admin (`b.bankName`, `b.bankAccount`, `b.bankOwner`) serta dilengkapi fallback multi-properti.
+- **Auto-Prefetch & Reactive Bank Loader**: Menambahkan fungsi `ensureBanksLoaded()` yang memuat data rekening toko langsung dari `freshmart/cms_data` Firestore secara reaktif saat modal pembayaran dibuka atau saat metode Bank dipilih, menjamin pilihan rekening selalu muncul instan.
+- **Indikator & Petunjuk Transfer Elegan**: Menambahkan kartu panduan transfer berwarna hijau emerald yang ramah kasir dan peringatan jika data rekening belum diisi di CMS Admin.
+- **Konsistensi Tema Dinamis (Zero Hardcode)**: Seluruh elemen input, select, dan indikator terintegrasi dengan variabel tema toko `var(--color-primary)`.
+
+---
+
 ### v1.9.10 — Resolusi Tuntas Izin Akses Firestore Pelanggan & Peningkatan Engine Pencarian Member POS (23 Sep 2026)
 
 #### 🔐 Resolusi Error Firestore Security Rules & Direct Document Get

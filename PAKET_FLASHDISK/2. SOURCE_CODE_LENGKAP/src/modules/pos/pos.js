@@ -530,6 +530,7 @@ export const openPayModal = () => {
     posPayMethod  = 'cash';
     posPaidAmount = posTotal(); // default: uang pas
     ensureCustomersLoaded(); // Prefetch member di background agar lookup instan
+    ensureBanksLoaded(); // Prefetch data rekening toko di background
 
     document.body.insertAdjacentHTML('beforeend', `
     <div id="pos-pay-modal" class="fixed inset-0 z-[9999] flex items-end sm:items-center justify-center p-0 sm:p-4" style="background:rgba(15,23,42,0.65);backdrop-filter:blur(4px)">
@@ -686,13 +687,41 @@ const renderPayDetail = (method) => {
           ${q ? `<div class="flex flex-col items-center justify-center p-3 bg-slate-50 dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700"><img src="${esc(q)}" class="w-48 h-48 object-contain rounded-xl shadow-xs" alt="QRIS"><p class="text-center text-xs font-bold text-slate-600 dark:text-slate-300 mt-2">Arahkan kamera pembeli untuk memindai QRIS</p></div>` 
              : `<div class="p-4 bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400 text-xs rounded-2xl border border-amber-200 text-center font-bold"><i class="fa-solid fa-triangle-exclamation mr-1.5"></i>QRIS toko belum diatur di menu Pengaturan.</div>`}`;
     } else if (method === 'transfer') {
-        const banks = (appData.banks || []).filter(b => b && b.name);
+        const rawBanks = Array.isArray(appData.banks) ? appData.banks : [];
+        const banks = rawBanks.filter(b => b && (b.bankName || b.name || b.bank));
+        
+        let bankOptionsHtml = '<option value="">Rekening bank belum diatur di CMS Admin</option>';
+        if (banks.length > 0) {
+            bankOptionsHtml = banks.map(b => {
+                const bName = b.bankName || b.name || b.bank || 'Bank';
+                const bNum  = b.bankAccount || b.number || b.noRekening || b.account || '';
+                const bOwn  = b.bankOwner || b.holder || b.atasNama || b.owner || '';
+                const label = `${bName}${bNum ? ' — ' + bNum : ''}${bOwn ? ' a/n ' + bOwn : ''}`;
+                return `<option value="${esc(label)}">${esc(label)}</option>`;
+            }).join('');
+        }
+
         d.innerHTML = `
           ${topRow}
-          <label class="text-[10px] font-black uppercase tracking-wider text-slate-400 block mb-1">Rekening Tujuan Toko</label>
-          <select id="pos-bank-sel" class="w-full border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2.5 text-xs font-bold bg-white dark:bg-slate-800 focus:outline-none">
-            ${banks.length ? banks.map(b => `<option>${esc(b.name)} — ${esc(b.number||'')} a/n ${esc(b.holder||'')}</option>`).join('') : '<option>Rekening bank belum diatur</option>'}
-          </select>`;
+          <div class="space-y-2">
+            <label class="text-[10px] font-black uppercase tracking-wider text-slate-400 block">Rekening Tujuan Toko</label>
+            <div class="relative">
+              <select id="pos-bank-sel" class="w-full border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2.5 text-xs font-bold bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:outline-none focus:border-[var(--color-primary)] transition-all">
+                ${bankOptionsHtml}
+              </select>
+            </div>
+            ${banks.length > 0 ? `
+              <div class="p-2.5 bg-emerald-50/80 dark:bg-emerald-950/30 rounded-xl border border-emerald-200/80 dark:border-emerald-800/60 text-[11px] text-emerald-800 dark:text-emerald-300 flex items-center gap-2">
+                <i class="fa-solid fa-building-columns text-emerald-600 dark:text-emerald-400 shrink-0 text-xs"></i>
+                <span>Pastikan pembeli telah mentransfer sesuai tagihan ke rekening di atas sebelum menyelesaikan transaksi.</span>
+              </div>
+            ` : `
+              <div class="p-2.5 bg-amber-50 dark:bg-amber-950/30 rounded-xl border border-amber-200 dark:border-amber-800 text-[11px] text-amber-800 dark:text-amber-300 flex items-center gap-2">
+                <i class="fa-solid fa-triangle-exclamation text-amber-600 dark:text-amber-400 shrink-0 text-xs"></i>
+                <span>Rekening bank belum diatur di menu CMS Admin > Rekening.</span>
+              </div>
+            `}
+          </div>`;
     } else if (method === 'tempo') {
         d.innerHTML = `
           ${topRow}
@@ -757,6 +786,13 @@ export const setPosPayMethod = (method) => {
     posPayMethod = method;
     setActiveBtn('pos-pay', method, ['cash','qris','transfer','tempo']);
     renderPayDetail(method);
+    if (method === 'transfer' && (!appData.banks || !appData.banks.length)) {
+        ensureBanksLoaded().then((banks) => {
+            if (posPayMethod === 'transfer' && banks && banks.length > 0) {
+                renderPayDetail('transfer');
+            }
+        });
+    }
 };
 
 export const updatePosChange = (val) => {
@@ -789,6 +825,22 @@ export const posSetQuickCash = (val) => {
         updatePosChange(val);
         if (typeof window.triggerHaptic === 'function') window.triggerHaptic('light');
     }
+};
+
+// ─── Manajemen & Sinkronisasi Rekening Bank POS ───────────────
+export const ensureBanksLoaded = async () => {
+    if (Array.isArray(appData.banks) && appData.banks.length > 0) return appData.banks;
+    try {
+        const snap = await db.collection("freshmart").doc("cms_data").get();
+        if (snap.exists) {
+            const data = snap.data();
+            if (Array.isArray(data?.banks) && data.banks.length > 0) {
+                appData.banks = data.banks;
+                return appData.banks;
+            }
+        }
+    } catch (_) {}
+    return appData.banks || [];
 };
 
 // ─── Manajemen & Sinkronisasi Member POS ───────────────────────
@@ -1519,6 +1571,7 @@ const exposeToWindow = () => {
     window.updatePosChange         = updatePosChange;
     window.posSetQuickCash         = posSetQuickCash;
     window.ensureCustomersLoaded   = ensureCustomersLoaded;
+    window.ensureBanksLoaded       = ensureBanksLoaded;
     window.lookupPosMember         = lookupPosMember;
     window.debouncedLookupPosMember= debouncedLookupPosMember;
     window.selectPosMember         = selectPosMember;
@@ -1545,6 +1598,7 @@ window.closePOSCartDrawer      = closePOSCartDrawer;
 window.posSetQuickCash         = posSetQuickCash;
 window.playCashierBeep         = playCashierBeep;
 window.ensureCustomersLoaded   = ensureCustomersLoaded;
+window.ensureBanksLoaded       = ensureBanksLoaded;
 window.lookupPosMember         = lookupPosMember;
 window.debouncedLookupPosMember= debouncedLookupPosMember;
 window.selectPosMember         = selectPosMember;
