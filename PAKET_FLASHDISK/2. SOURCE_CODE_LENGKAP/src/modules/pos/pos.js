@@ -362,79 +362,63 @@ const renderCatalog = () => {
             const safeId         = esc(String(p.id));
 
             if (posCatalogViewMode === 'list') {
+                // ── LIST MODE: baris kompak dengan thumbnail 52px ──
                 return `
-                <div class="group flex items-center gap-3 p-2.5 sm:p-3 bg-white dark:bg-slate-800 border ${totalQtyInCart > 0 ? 'border-[var(--color-primary)] ring-1 ring-[var(--color-primary)]/40 shadow-xs' : 'border-slate-200/90 dark:border-slate-700/80 shadow-2xs'} rounded-2xl hover:border-[var(--color-primary)] hover:shadow-sm active:scale-[0.99] transition-all cursor-pointer select-none" onclick="window.posAddToCart('${safeId}')">
-                    <!-- 54px Thumbnail -->
-                    <div class="relative w-14 h-14 rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-700/50 shrink-0 border border-slate-100 dark:border-slate-700 flex items-center justify-center">
-                        ${hasImg 
-                            ? `<img width="56" height="56" loading="lazy" decoding="async" src="${esc(imgUrl)}" alt="${esc(p.name)}" onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='flex';" class="w-full h-full object-cover">
-                               <div class="hidden w-full h-full items-center justify-center text-slate-400 bg-slate-100 dark:bg-slate-800"><i class="fa-solid fa-box-open text-base text-slate-300"></i></div>`
-                            : `<div class="w-full h-full flex items-center justify-center text-slate-400 bg-slate-100 dark:bg-slate-800"><i class="fa-solid fa-box-open text-base text-slate-300"></i></div>`}
-                        ${totalQtyInCart > 0 ? `<span class="absolute -top-1 -right-1 min-w-5 h-5 px-1 rounded-full text-white text-[9px] font-black flex items-center justify-center shadow-md border border-white" style="background:var(--color-primary)">${totalQtyInCart}</span>` : ''}
+                <div class="pos-list-item${totalQtyInCart > 0 ? ' in-cart' : ''}" onclick="window.posAddToCart('${safeId}')">
+                    <div class="pos-list-thumb">
+                        ${hasImg
+                            ? `<img width="52" height="52" loading="lazy" decoding="async" src="${esc(imgUrl)}" alt="${esc(p.name)}" onerror="this.onerror=null;this.style.display='none';this.nextElementSibling.style.display='flex';">
+                               <div class="pos-img-placeholder" style="display:none;width:100%;height:100%"><i class="fa-solid fa-box" style="font-size:16px;margin:0"></i></div>`
+                            : `<div class="pos-img-placeholder" style="width:100%;height:100%"><i class="fa-solid fa-box" style="font-size:16px;margin:0"></i></div>`}
+                        ${totalQtyInCart > 0 ? `<div class="pos-qty-badge" style="top:2px;right:2px;min-width:18px;height:18px;font-size:9px;border-width:1.5px">${totalQtyInCart}</div>` : ''}
                     </div>
-
-                    <!-- Details -->
-                    <div class="flex-1 min-w-0">
-                        <div class="flex items-center gap-1.5 mb-0.5 flex-wrap">
-                            ${p.category ? `<span class="text-[9px] uppercase tracking-wider font-bold text-slate-400 truncate">${esc(p.category)}</span>` : ''}
-                            ${hasVariants ? `<span class="inline-flex items-center px-1.5 py-0.2 rounded text-[8px] font-black uppercase bg-indigo-600 text-white">VARIAN</span>` : ''}
-                            ${hasGrosir ? `<span class="inline-flex items-center px-1.5 py-0.2 rounded text-[8px] font-black uppercase bg-amber-500 text-white">GROSIR</span>` : ''}
+                    <div style="flex:1;min-width:0">
+                        <div style="display:flex;align-items:center;gap:4px;flex-wrap:wrap;margin-bottom:3px">
+                            ${p.category ? `<span style="font-size:9px;text-transform:uppercase;letter-spacing:0.06em;font-weight:700;color:#94a3b8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:80px">${esc(p.category)}</span>` : ''}
+                            ${hasVariants ? `<span class="pos-badge pos-badge-varian"><i class="fa-solid fa-layer-group" style="font-size:6px"></i> VARIAN</span>` : ''}
+                            ${hasGrosir   ? `<span class="pos-badge pos-badge-grosir"><i class="fa-solid fa-tags" style="font-size:6px"></i> GROSIR</span>` : ''}
                         </div>
-                        <h4 class="text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-100 truncate" title="${esc(p.name)}">${esc(p.name)}</h4>
-                        <p class="text-xs sm:text-sm font-black mt-0.5" style="color:var(--color-primary)">${fRp(parseFloat(p.price)||0)}</p>
+                        <p style="font-size:12px;font-weight:700;color:#1e293b;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${esc(p.name)}">${esc(p.name)}</p>
+                        <p style="font-size:12px;font-weight:900;color:var(--color-primary);margin-top:2px">${fRp(parseFloat(p.price)||0)}</p>
                     </div>
-
-                    <!-- Action -->
-                    <button onclick="event.stopPropagation(); window.posAddToCart('${safeId}')" class="w-8 h-8 rounded-xl flex items-center justify-center text-white shadow-xs hover:scale-110 active:scale-90 transition-all shrink-0 cursor-pointer" style="background:var(--color-primary)" title="Tambah ke keranjang">
-                        <i class="fa-solid fa-plus text-xs"></i>
+                    <button onclick="event.stopPropagation();window.posAddToCart('${safeId}')" class="pos-add-btn" title="Tambah ke keranjang">
+                        <i class="fa-solid fa-plus"></i>
                     </button>
                 </div>`;
             }
 
-            // GRID VIEW (Default)
+            // ── GRID MODE (Default): kartu 1:1 anti-collapse ──
             return `
-            <div class="group relative flex flex-col bg-white dark:bg-slate-800 border ${totalQtyInCart > 0 ? 'border-[var(--color-primary)] ring-2 ring-[var(--color-primary)]/30 shadow-md' : 'border-slate-200/90 dark:border-slate-700/80 shadow-2xs'} rounded-2xl p-2 sm:p-2.5 text-left transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg active:scale-[0.98] cursor-pointer select-none overflow-hidden" onclick="window.posAddToCart('${safeId}')">
-                
-                <!-- Guaranteed Image Box (1:1 Ratio + Min Height) -->
-                <div class="relative w-full rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-700/40 flex items-center justify-center shrink-0 mb-2 border border-slate-100 dark:border-slate-700/60" style="aspect-ratio: 1 / 1; min-height: 120px;">
-                    <!-- Badges INSIDE photo container -->
-                    <div class="absolute top-1.5 left-1.5 flex flex-col gap-1 z-10 pointer-events-none">
-                        ${hasVariants ? `<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md text-[8px] font-black uppercase tracking-wider bg-indigo-600 text-white shadow-xs"><i class="fa-solid fa-layer-group text-[7px]"></i> VARIAN</span>` : ''}
-                        ${hasGrosir ? `<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md text-[8px] font-black uppercase tracking-wider bg-amber-500 text-white shadow-xs"><i class="fa-solid fa-tags text-[7px]"></i> GROSIR</span>` : ''}
+            <div class="pos-product-card${totalQtyInCart > 0 ? ' in-cart' : ''}" onclick="window.posAddToCart('${safeId}')">
+                <!-- Kotak Gambar Rasio 1:1 Anti-Collapse (padding-top:100%) -->
+                <div class="pos-img-box">
+                    <div class="pos-img-badges">
+                        ${hasVariants ? `<span class="pos-badge pos-badge-varian"><i class="fa-solid fa-layer-group" style="font-size:6px"></i> VARIAN</span>` : ''}
+                        ${hasGrosir   ? `<span class="pos-badge pos-badge-grosir"><i class="fa-solid fa-tags" style="font-size:6px"></i> GROSIR</span>` : ''}
                     </div>
-                    ${totalQtyInCart > 0 ? `
-                    <div class="absolute top-1.5 right-1.5 z-10 pointer-events-none">
-                        <span class="w-6 h-6 rounded-full text-white flex items-center justify-center text-[10px] font-black shadow-md border-2 border-white dark:border-slate-800" style="background:var(--color-primary)">${totalQtyInCart}</span>
-                    </div>` : ''}
-
-                    ${hasImg 
-                        ? `<img width="300" height="300" loading="lazy" decoding="async" src="${esc(imgUrl)}" alt="${esc(p.name)}" 
-                             onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='flex';" 
-                             class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105">
-                           <div class="hidden w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-900 text-slate-400 p-2 text-center">
-                             <i class="fa-solid fa-box-open text-2xl text-slate-300 dark:text-slate-600 mb-1"></i>
-                             <span class="text-[8px] font-bold uppercase text-slate-400 dark:text-slate-500 truncate max-w-full">${esc(p.category || 'Toko')}</span>
-                           </div>`
-                        : `<div class="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-800 dark:to-slate-900 text-slate-400 p-2 text-center">
-                             <div class="w-9 h-9 rounded-xl bg-white dark:bg-slate-800 shadow-2xs flex items-center justify-center text-slate-400 dark:text-slate-500 mb-1">
-                               <i class="fa-solid fa-box-open text-base"></i>
-                             </div>
-                             <span class="text-[8px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 truncate max-w-full">${esc(p.category || 'Produk')}</span>
-                           </div>`}
+                    ${totalQtyInCart > 0 ? `<div class="pos-qty-badge">${totalQtyInCart}</div>` : ''}
+                    <div class="pos-img-inner">
+                        ${hasImg
+                            ? `<img width="300" height="300" loading="lazy" decoding="async" src="${esc(imgUrl)}" alt="${esc(p.name)}"
+                                 onerror="this.onerror=null;this.style.display='none';this.nextElementSibling.style.display='flex';">
+                               <div class="pos-img-placeholder" style="display:none">
+                                 <i class="fa-solid fa-box-open"></i>
+                                 <span>${esc(p.category || 'Toko')}</span>
+                               </div>`
+                            : `<div class="pos-img-placeholder">
+                                 <i class="fa-solid fa-box-open"></i>
+                                 <span>${esc(p.category || 'Produk')}</span>
+                               </div>`}
+                    </div>
                 </div>
-
-                <!-- Product Details -->
-                <div class="flex-1 flex flex-col justify-between min-w-0">
-                    <div>
-                        ${p.category ? `<p class="text-[9px] uppercase tracking-wider font-bold text-slate-400 dark:text-slate-400 mb-0.5 truncate">${esc(p.category)}</p>` : ''}
-                        <h4 class="text-xs sm:text-[13px] font-bold text-slate-800 dark:text-slate-100 line-clamp-2 leading-snug mb-1.5 min-h-[30px]" title="${esc(p.name)}">${esc(p.name)}</h4>
-                    </div>
-                    <div class="flex items-center justify-between pt-1.5 border-t border-slate-100 dark:border-slate-700/60 mt-auto gap-1">
-                        <div class="min-w-0">
-                            <p class="text-xs sm:text-sm font-black truncate" style="color:var(--color-primary)">${fRp(parseFloat(p.price)||0)}</p>
-                        </div>
-                        <button onclick="event.stopPropagation(); window.posAddToCart('${safeId}')" class="w-7 h-7 sm:w-8 sm:h-8 rounded-xl flex items-center justify-center text-white shadow-xs hover:scale-110 active:scale-90 transition-all cursor-pointer shrink-0" style="background:var(--color-primary)" title="Tambah ke keranjang">
-                            <i class="fa-solid fa-plus text-xs"></i>
+                <!-- Info Produk -->
+                <div class="pos-card-info">
+                    ${p.category ? `<p class="pos-card-cat">${esc(p.category)}</p>` : ''}
+                    <p class="pos-card-name" title="${esc(p.name)}">${esc(p.name)}</p>
+                    <div class="pos-card-footer">
+                        <span class="pos-card-price">${fRp(parseFloat(p.price)||0)}</span>
+                        <button onclick="event.stopPropagation();window.posAddToCart('${safeId}')" class="pos-add-btn" title="Tambah ke keranjang">
+                            <i class="fa-solid fa-plus"></i>
                         </button>
                     </div>
                 </div>
@@ -448,7 +432,7 @@ const renderCatalog = () => {
         if (posCatalogViewMode === 'list') {
             gridEl.className = 'flex flex-col gap-2 p-2.5 sm:p-3 overflow-y-auto flex-1 content-start pb-28 lg:pb-6';
         } else {
-            gridEl.className = 'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-2.5 sm:gap-3 p-2.5 sm:p-3 overflow-y-auto flex-1 content-start pb-28 lg:pb-6';
+            gridEl.className = 'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-2 sm:gap-2.5 p-2 sm:p-3 overflow-y-auto flex-1 content-start pb-28 lg:pb-6';
         }
         gridEl.innerHTML = prodHTML;
     }

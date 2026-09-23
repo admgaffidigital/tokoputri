@@ -8,6 +8,22 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-9-7',
+        version: 'v1.9.7',
+        date: '2026-09-23',
+        title: 'Penyempurnaan Tampilan Grid POS Kasir: Sistem CSS Anti-Collapse Kotak Gambar, Konsistensi Warna Brand Tema, dan Dark Mode Penuh',
+        category: 'fix',
+        badge: 'POS Grid Fix & Theme Konsistensi v1.9.7',
+        items: [
+            'Perbaikan Definif Kartu Grid Tergencet (Anti-Collapse System): Mengganti strategi aspect-ratio CSS yang tidak stabil dengan teknik padding-top:100% pada pseudo-element ::before — teknik paling robust yang menjamin kotak gambar produk selalu berbentuk kotak sempurna 1:1 tanpa pernah collapse menjadi pil tipis, bahkan saat data gambar belum selesai dimuat.',
+            'CSS Class System Terdedikasi untuk POS Katalog: Seluruh tampilan kartu produk (grid dan list) kini menggunakan sistem class CSS dedicated (.pos-product-card, .pos-img-box, .pos-img-inner, .pos-badge, .pos-card-footer, dll.) di src/style.css — bukan lagi campuran inline Tailwind yang sulit di-debug dan mudah bentrok dengan Purge CSS.',
+            'Konsistensi Warna Brand pada Badge GROSIR: Badge label GROSIR yang sebelumnya hardcode warna amber kini menggunakan var(--color-primary) — otomatis mengikuti tema warna brand toko tanpa perlu diubah manual jika warna toko berganti.',
+            'Dark Mode Penuh pada Komponen Kartu POS: Menambahkan aturan dark mode lengkap (.dark .pos-product-card, .dark .pos-img-box, .dark .pos-img-placeholder, dll.) agar tampilan POS Kasir tetap elegan dan terbaca saat mode gelap diaktifkan.',
+            'Mode List Kompak Lebih Proporsional: Thumbnail 52px di mode list kini memiliki fixed height yang tidak bisa collapse, dengan placeholder fallback yang konsisten ukurannya menggunakan class yang sama (.pos-list-thumb) untuk semua kondisi ada/tidak ada gambar.',
+            'Hover dan Active State Konsisten: Animasi hover (translateY-2px, shadow naik) dan active (scale 0.98) kini didefinisikan di CSS class sehingga konsisten di seluruh kartu dan tidak bergantung pada ketersediaan Tailwind class di bundle produksi.'
+        ]
+    },
+    {
         id: 'log-1-9-6',
         version: 'v1.9.6',
         date: '2026-09-22',

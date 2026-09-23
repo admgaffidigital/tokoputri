@@ -176,6 +176,22 @@ Aplikasi telah dilengkapi dengan fondasi **Capacitor 8 Android Native**:
 
 ## 📋 Riwayat Pembaruan (Changelog)
 
+### v1.9.7 — Penyempurnaan Grid POS Kasir: CSS Anti-Collapse System, Konsistensi Brand Tema, Dark Mode Penuh (23 Sep 2026)
+
+#### 🃏 Sistem CSS Anti-Collapse Kartu Grid (Solusi Definitif)
+- **Teknik `padding-top:100%` Paling Robust**: Mengganti `aspect-ratio: 1/1` inline yang rentan di-override dengan teknik `::before { padding-top: 100% }` — standar industri tertua dan paling kompatibel yang menjamin kotak gambar selalu berbentuk 1:1 tanpa pernah collapse menjadi pil tipis, bahkan saat gambar belum dimuat.
+- **CSS Class System Terdedikasi (`src/style.css`)**: Seluruh komponen kartu produk POS kini menggunakan class CSS dedicated (`.pos-product-card`, `.pos-img-box`, `.pos-img-inner`, `.pos-badge`, `.pos-card-footer`, dll.) — bukan campuran inline Tailwind yang mudah hilang saat Purge CSS.
+- **Mode List Thumbnail Stabil**: Thumbnail 52px di mode list kini menggunakan `.pos-list-thumb` dengan `height: 52px` fixed — tidak bisa collapse dalam kondisi apapun.
+
+#### 🎨 Konsistensi Warna Brand Tema (Zero Hardcode)
+- **Badge GROSIR Pakai `var(--color-primary)`**: Badge GROSIR yang sebelumnya hardcode warna `amber-500` kini otomatis mengikuti warna tema brand toko (`var(--color-primary)`) — jika warna brand toko berganti, badge ikut berubah tanpa perlu edit manual.
+- **Hover, Active, In-Cart State di CSS**: Animasi hover (`translateY(-2px)`, shadow naik) dan active state (`scale(0.98)`) kini terdefinisi di CSS class, tidak bergantung pada Tailwind class yang bisa tidak ter-generate di build produksi.
+
+#### 🌙 Dark Mode Penuh Komponen Kartu POS
+- **Aturan Dark Mode Lengkap**: Ditambahkan `.dark .pos-product-card`, `.dark .pos-img-box`, `.dark .pos-img-placeholder`, `.dark .pos-list-item`, dan seluruh turunannya — tampilan POS Kasir kini sepenuhnya elegan di mode gelap.
+
+---
+
 ### v1.9.6 — Pembaruan Tampilan Visual POS Kasir: Perbaikan Keruntuhan Kartu Produk, Mode Grid & List, Placeholder Visual & Harmonisasi Tema (22 Sep 2026)
 
 #### 🖼️ Perbaikan Visual Total Kartu Produk POS (Anti-Collapse)
