@@ -387,29 +387,27 @@ const renderCatalog = () => {
                 </div>`;
             }
 
-            // ── GRID MODE (Default): kartu 1:1 anti-collapse ──
+            // ── GRID MODE (Default): kartu 1:1 anti-collapse (min-height 220px) ──
             return `
             <div class="pos-product-card${totalQtyInCart > 0 ? ' in-cart' : ''}" onclick="window.posAddToCart('${safeId}')">
-                <!-- Kotak Gambar Rasio 1:1 Anti-Collapse (padding-top:100%) -->
+                <!-- Kotak Gambar Rasio 1:1 Anti-Collapse (aspect-ratio 1:1 + min-height 120px) -->
                 <div class="pos-img-box">
                     <div class="pos-img-badges">
                         ${hasVariants ? `<span class="pos-badge pos-badge-varian"><i class="fa-solid fa-layer-group" style="font-size:6px"></i> VARIAN</span>` : ''}
                         ${hasGrosir   ? `<span class="pos-badge pos-badge-grosir"><i class="fa-solid fa-tags" style="font-size:6px"></i> GROSIR</span>` : ''}
                     </div>
                     ${totalQtyInCart > 0 ? `<div class="pos-qty-badge">${totalQtyInCart}</div>` : ''}
-                    <div class="pos-img-inner">
-                        ${hasImg
-                            ? `<img width="300" height="300" loading="lazy" decoding="async" src="${esc(imgUrl)}" alt="${esc(p.name)}"
-                                 onerror="this.onerror=null;this.style.display='none';this.nextElementSibling.style.display='flex';">
-                               <div class="pos-img-placeholder" style="display:none">
-                                 <i class="fa-solid fa-box-open"></i>
-                                 <span>${esc(p.category || 'Toko')}</span>
-                               </div>`
-                            : `<div class="pos-img-placeholder">
-                                 <i class="fa-solid fa-box-open"></i>
-                                 <span>${esc(p.category || 'Produk')}</span>
-                               </div>`}
-                    </div>
+                    ${hasImg
+                        ? `<img width="300" height="300" loading="lazy" decoding="async" src="${esc(imgUrl)}" alt="${esc(p.name)}"
+                             onerror="this.onerror=null;this.style.display='none';this.nextElementSibling.style.display='flex';">
+                           <div class="pos-img-placeholder" style="display:none">
+                             <i class="fa-solid fa-box-open"></i>
+                             <span>${esc(p.category || 'Toko')}</span>
+                           </div>`
+                        : `<div class="pos-img-placeholder">
+                             <i class="fa-solid fa-box-open"></i>
+                             <span>${esc(p.category || 'Produk')}</span>
+                           </div>`}
                 </div>
                 <!-- Info Produk -->
                 <div class="pos-card-info">
@@ -429,11 +427,7 @@ const renderCatalog = () => {
     const gridEl = el('pos-catalog-grid');
     if (catEl)  catEl.innerHTML  = catHTML;
     if (gridEl) {
-        if (posCatalogViewMode === 'list') {
-            gridEl.className = 'flex flex-col gap-2 p-2.5 sm:p-3 overflow-y-auto flex-1 content-start pb-28 lg:pb-6';
-        } else {
-            gridEl.className = 'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-2 sm:gap-2.5 p-2 sm:p-3 overflow-y-auto flex-1 content-start pb-28 lg:pb-6';
-        }
+        gridEl.className = posCatalogViewMode === 'list' ? 'pos-catalog-list-mode' : 'pos-catalog-grid-mode';
         gridEl.innerHTML = prodHTML;
     }
 };
@@ -1011,7 +1005,7 @@ const buildPOSLayout = ({ isStorefront }) => {
                 </div>
 
                 <!-- Product Catalog Container -->
-                <div id="pos-catalog-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-2.5 sm:gap-3 p-2.5 sm:p-3 overflow-y-auto flex-1 content-start pb-28 lg:pb-6"></div>
+                <div id="pos-catalog-grid" class="${posCatalogViewMode === 'list' ? 'pos-catalog-list-mode' : 'pos-catalog-grid-mode'}"></div>
             </div>
 
             <!-- PANEL KANAN: BILLING & KERANJANG (Hanya Desktop >= lg) -->

@@ -38,26 +38,81 @@ html {
 }
 
 /* ============================================================
-   POS KASIR — CATALOG CARD ANTI-COLLAPSE SYSTEM
-   Teknik padding-top:100% adalah fallback paling robust untuk
-   memastikan kotak gambar 1:1 tidak pernah collapse, bahkan
-   di browser yang tidak support aspect-ratio dengan baik.
+   POS KASIR — CATALOG CARD & GRID ANTI-COLLAPSE SYSTEM
+   Sistem styling mandiri (tanpa ketergantungan purge Tailwind)
+   menjamin kartu produk di HP, tablet & desktop SELALU proporsional
+   dan TIDAK BISA GEPENG (hard minimum height 220px + aspect-square 125px).
    ============================================================ */
 
-/* Container kartu produk POS grid */
+/* Container grid katalog produk POS (Grid Mode) */
+.pos-catalog-grid-mode {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    grid-auto-rows: max-content !important;
+    gap: 10px !important;
+    padding: 10px !important;
+    overflow-y: auto !important;
+    flex: 1 1 0% !important;
+    align-content: start !important;
+    padding-bottom: 7rem !important;
+}
+
+@media (min-width: 640px) {
+    .pos-catalog-grid-mode {
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+        gap: 12px !important;
+        padding: 12px !important;
+    }
+}
+
+@media (min-width: 768px) {
+    .pos-catalog-grid-mode {
+        grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    }
+}
+
+@media (min-width: 1280px) {
+    .pos-catalog-grid-mode {
+        grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+        padding-bottom: 2rem !important;
+    }
+}
+
+/* Container list katalog produk POS (List Mode) */
+.pos-catalog-list-mode {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+    padding: 10px !important;
+    overflow-y: auto !important;
+    flex: 1 1 0% !important;
+    padding-bottom: 7rem !important;
+}
+
+@media (min-width: 1280px) {
+    .pos-catalog-list-mode {
+        padding-bottom: 2rem !important;
+    }
+}
+
+/* Container kartu produk POS grid (Anti-Collapse Hard Floor) */
 .pos-product-card {
-    display: flex;
-    flex-direction: column;
+    display: flex !important;
+    flex-direction: column !important;
     background: #ffffff;
-    border-radius: 10px;
+    border-radius: 14px;
     padding: 8px;
     border: 1.5px solid rgba(203, 213, 225, 0.9);
-    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05);
     cursor: pointer;
     transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
     user-select: none;
     overflow: hidden;
     position: relative;
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 220px !important; /* HARD FLOOR: Tidak pernah bisa gepeng/tergencet */
+    box-sizing: border-box !important;
 }
 
 .pos-product-card:hover {
@@ -74,43 +129,43 @@ html {
     box-shadow: 0 0 0 2px rgba(var(--color-primary-rgb), 0.2), 0 2px 8px rgba(15, 23, 42, 0.06);
 }
 
-/* Kotak gambar dengan teknik padding-top:100% (paling robust) */
+/* Kotak gambar produk: rasio 1:1 langsung & hard min-height */
 .pos-img-box {
-    position: relative;
-    width: 100%;
-    border-radius: 8px;
+    position: relative !important;
+    width: 100% !important;
+    aspect-ratio: 1 / 1 !important;
+    min-height: 120px !important; /* Jaminan fisik: tidak akan pernah 0px */
+    border-radius: 10px;
     overflow: hidden;
     background: #f1f5f9;
-    flex-shrink: 0;
+    flex-shrink: 0 !important;
     margin-bottom: 8px;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
 }
 
-/* Trick: inner div dengan padding-top:100% memaksa tinggi = lebar */
-.pos-img-box::before {
-    content: '';
-    display: block;
-    padding-top: 100%;
-}
-
-/* Konten absolut di dalam kotak gambar */
-.pos-img-inner {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-}
-
-.pos-img-inner img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+/* Gambar langsung di dalam kotak */
+.pos-img-box img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    display: block !important;
     transition: transform 0.3s ease;
 }
 
-.pos-product-card:hover .pos-img-inner img {
+.pos-product-card:hover .pos-img-box img {
     transform: scale(1.05);
+}
+
+/* Fallback inner wrapper jika dipakai */
+.pos-img-inner {
+    width: 100% !important;
+    height: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    overflow: hidden !important;
 }
 
 /* Badge di dalam kotak gambar */
@@ -140,7 +195,7 @@ html {
 }
 
 .pos-badge-varian {
-    background: #4f46e5; /* indigo-600 — identifikasi varian, beda dari brand */
+    background: #4f46e5; /* indigo-600 — identifikasi varian */
 }
 
 .pos-badge-grosir {

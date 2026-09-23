@@ -8,6 +8,21 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-9-8',
+        version: 'v1.9.8',
+        date: '2026-09-23',
+        title: 'Solusi Definitif Anti-Gepeng Grid POS Kasir: Eliminasi Flex-Collapse, Hard Min-Height 220px, & Dedicated Grid Engine',
+        category: 'fix',
+        badge: 'Definitive POS Anti-Collapse v1.9.8',
+        items: [
+            'Solusi Permanen Kartu Gepeng: Mengeliminasi fenomena circular dependency flex-collapse di Android WebView dan browser mobile dengan menerapkan batas tinggi minimum absolut 220px pada seluruh kartu produk POS (.pos-product-card) dan 120px pada kotak gambar (.pos-img-box) sehingga secara matematis tidak mungkin lagi menciut atau gepeng.',
+            'Direct In-Flow Image Architecture: Mengganti trik pseudo-element out-of-flow dengan arsitektur direct in-flow gambar dan placeholder berasio 1:1 murni, memastikan dimensi foto produk terhitung instan oleh engine rendering sejak frame pertama.',
+            'Dedicated POS Grid Engine: Mengganti utility class Tailwind pada kontainer katalog dengan engine CSS Grid terdedikasi (.pos-catalog-grid-mode & .pos-catalog-list-mode) tanpa perata min-content yang berisiko menekan track tinggi kartu.',
+            'Konsistensi Tema Brand Otomatis: Seluruh elemen visual (border aktif keranjang, badge grosir, counter kuantitas, harga, tombol tambah) terhubung otomatis ke variabel tema --color-primary tanpa ada nilai warna hardcoded.',
+            'Sinkronisasi Platform Native Penuh: Menjalankan pipeline build produksi, mirroring distribusi flashdisk dan update versi Android Capacitor demi kesiapan rilis langsung.'
+        ]
+    },
+    {
         id: 'log-1-9-7',
         version: 'v1.9.7',
         date: '2026-09-23',

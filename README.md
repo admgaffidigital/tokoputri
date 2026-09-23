@@ -176,6 +176,17 @@ Aplikasi telah dilengkapi dengan fondasi **Capacitor 8 Android Native**:
 
 ## 📋 Riwayat Pembaruan (Changelog)
 
+### v1.9.8 — Solusi Definitif Anti-Gepeng Grid POS Kasir: Eliminasi Flex-Collapse, Hard Min-Height 220px, & Dedicated Grid Engine (23 Sep 2026)
+
+#### 🛡️ Solusi Definitif Kartu Produk Gepeng (Zero-Collapse Guarantee)
+- **Eliminasi Circular Dependency Flex-Collapse**: Mengatasi akar masalah penyebab kartu produk menciut menjadi kapsul tipis di Android WebView dan browser mobile, di mana flex item kolom dengan kalkulasi `min-content` memaksa tinggi elemen ke angka 0.
+- **Batas Tinggi Minimum Absolut (`min-height: 220px`)**: Menetapkan batas tinggi fisik minimum 220px pada setiap kartu produk (`.pos-product-card`) dan 120px pada kotak gambar (`.pos-img-box`), sehingga secara matematis tidak mungkin lagi menciut menjadi pil datar.
+- **Arsitektur Gambar In-Flow Berasio 1:1 Murni**: Mengganti trik pseudo-element out-of-flow dengan arsitektur direct child `aspect-ratio: 1 / 1` in-flow, menjamin foto produk dan placeholder berdimensi seketika sejak rendering frame pertama.
+- **Dedicated POS Grid Engine**: Kontainer katalog POS kini ditenagai class terdedikasi (`.pos-catalog-grid-mode` & `.pos-catalog-list-mode`) tanpa ketergantungan utility purge Tailwind maupun perata `content-start` yang menekan track tinggi grid.
+- **Konsistensi Tema Dinamis Tanpa Hardcode**: Seluruh warna aksen (border aktif keranjang, badge grosir, counter kuantitas, harga, tombol tambah) terhubung otomatis ke variabel tema `var(--color-primary)` toko.
+
+---
+
 ### v1.9.7 — Penyempurnaan Grid POS Kasir: CSS Anti-Collapse System, Konsistensi Brand Tema, Dark Mode Penuh (23 Sep 2026)
 
 #### 🃏 Sistem CSS Anti-Collapse Kartu Grid (Solusi Definitif)
