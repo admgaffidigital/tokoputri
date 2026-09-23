@@ -529,6 +529,7 @@ export const openPayModal = () => {
     posCustomer   = { name: '', phone: '', isMember: false, memberId: null, isNewTempo: false };
     posPayMethod  = 'cash';
     posPaidAmount = posTotal(); // default: uang pas
+    ensureCustomersLoaded(); // Prefetch member di background agar lookup instan
 
     document.body.insertAdjacentHTML('beforeend', `
     <div id="pos-pay-modal" class="fixed inset-0 z-[9999] flex items-end sm:items-center justify-center p-0 sm:p-4" style="background:rgba(15,23,42,0.65);backdrop-filter:blur(4px)">
@@ -551,9 +552,9 @@ export const openPayModal = () => {
           <div>
             <label class="text-[10px] font-black uppercase tracking-wider text-slate-400 mb-1.5 block">Tipe Pelanggan</label>
             <div class="grid grid-cols-3 gap-2 mb-2.5">
-              <button onclick="window.setPosCustomerType('umum')" id="pos-ctype-umum" type="button" class="py-2 rounded-xl text-[10px] font-black uppercase border transition-all" style="background:var(--color-primary);color:white;border-color:var(--color-primary)"><i class="fa-solid fa-user block text-sm mb-1"></i>Umum</button>
-              <button onclick="window.setPosCustomerType('member')" id="pos-ctype-member" type="button" class="py-2 rounded-xl text-[10px] font-black uppercase border border-slate-200 dark:border-slate-700 text-slate-500 transition-all"><i class="fa-solid fa-id-card block text-sm mb-1"></i>Member</button>
-              <button onclick="window.setPosCustomerType('tempo')" id="pos-ctype-tempo" type="button" class="py-2 rounded-xl text-[10px] font-black uppercase border border-slate-200 dark:border-slate-700 text-slate-500 transition-all"><i class="fa-solid fa-hourglass-half block text-sm mb-1"></i>Tempo</button>
+              <button onclick="window.setPosCustomerType('umum')" id="pos-ctype-umum" type="button" class="flex flex-col items-center justify-center text-center py-2.5 px-2 rounded-xl text-[10px] font-black uppercase border transition-all cursor-pointer shadow-xs" style="background:var(--color-primary);color:white;border-color:var(--color-primary)"><i class="fa-solid fa-user text-base leading-none mb-1 text-center"></i><span>Umum</span></button>
+              <button onclick="window.setPosCustomerType('member')" id="pos-ctype-member" type="button" class="flex flex-col items-center justify-center text-center py-2.5 px-2 rounded-xl text-[10px] font-black uppercase border border-slate-200 dark:border-slate-700 text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 transition-all cursor-pointer"><i class="fa-solid fa-id-card text-base leading-none mb-1 text-center"></i><span>Member</span></button>
+              <button onclick="window.setPosCustomerType('tempo')" id="pos-ctype-tempo" type="button" class="flex flex-col items-center justify-center text-center py-2.5 px-2 rounded-xl text-[10px] font-black uppercase border border-slate-200 dark:border-slate-700 text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 transition-all cursor-pointer"><i class="fa-solid fa-hourglass-half text-base leading-none mb-1 text-center"></i><span>Tempo</span></button>
             </div>
             <div id="pos-customer-fields">
               <input id="pos-cust-name" type="text" placeholder="Nama pembeli (opsional)" class="w-full border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:outline-none focus:border-[var(--color-primary)] focus:bg-white">
@@ -564,10 +565,10 @@ export const openPayModal = () => {
           <div>
             <label class="text-[10px] font-black uppercase tracking-wider text-slate-400 mb-1.5 block">Metode Pembayaran</label>
             <div class="grid grid-cols-4 gap-1.5 mb-3">
-              <button onclick="window.setPosPayMethod('cash')" id="pos-pay-cash" type="button" class="py-2 rounded-xl text-[9px] font-black uppercase border transition-all" style="background:var(--color-primary);color:white;border-color:var(--color-primary)"><i class="fa-solid fa-money-bill-wave block text-sm mb-1"></i>Tunai</button>
-              <button onclick="window.setPosPayMethod('qris')" id="pos-pay-qris" type="button" class="py-2 rounded-xl text-[9px] font-black uppercase border border-slate-200 dark:border-slate-700 text-slate-500 transition-all"><i class="fa-solid fa-qrcode block text-sm mb-1"></i>QRIS</button>
-              <button onclick="window.setPosPayMethod('transfer')" id="pos-pay-transfer" type="button" class="py-2 rounded-xl text-[9px] font-black uppercase border border-slate-200 dark:border-slate-700 text-slate-500 transition-all"><i class="fa-solid fa-building-columns block text-sm mb-1"></i>Bank</button>
-              <button onclick="window.setPosPayMethod('tempo')" id="pos-pay-tempo" type="button" class="py-2 rounded-xl text-[9px] font-black uppercase border border-slate-200 dark:border-slate-700 text-slate-500 transition-all"><i class="fa-solid fa-hourglass-half block text-sm mb-1"></i>Tempo</button>
+              <button onclick="window.setPosPayMethod('cash')" id="pos-pay-cash" type="button" class="flex flex-col items-center justify-center text-center py-2 px-1 rounded-xl text-[9px] font-black uppercase border transition-all cursor-pointer shadow-xs" style="background:var(--color-primary);color:white;border-color:var(--color-primary)"><i class="fa-solid fa-money-bill-wave text-base leading-none mb-1 text-center"></i><span>Tunai</span></button>
+              <button onclick="window.setPosPayMethod('qris')" id="pos-pay-qris" type="button" class="flex flex-col items-center justify-center text-center py-2 px-1 rounded-xl text-[9px] font-black uppercase border border-slate-200 dark:border-slate-700 text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 transition-all cursor-pointer"><i class="fa-solid fa-qrcode text-base leading-none mb-1 text-center"></i><span>QRIS</span></button>
+              <button onclick="window.setPosPayMethod('transfer')" id="pos-pay-transfer" type="button" class="flex flex-col items-center justify-center text-center py-2 px-1 rounded-xl text-[9px] font-black uppercase border border-slate-200 dark:border-slate-700 text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 transition-all cursor-pointer"><i class="fa-solid fa-building-columns text-base leading-none mb-1 text-center"></i><span>Bank</span></button>
+              <button onclick="window.setPosPayMethod('tempo')" id="pos-pay-tempo" type="button" class="flex flex-col items-center justify-center text-center py-2 px-1 rounded-xl text-[9px] font-black uppercase border border-slate-200 dark:border-slate-700 text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 transition-all cursor-pointer"><i class="fa-solid fa-hourglass-half text-base leading-none mb-1 text-center"></i><span>Tempo</span></button>
             </div>
             <div id="pos-pay-detail"></div>
           </div>
@@ -602,8 +603,17 @@ const setActiveBtn = (prefix, active, list) => {
     list.forEach(k => {
         const b = el(`${prefix}-${k}`);
         if (!b) return;
-        if (k === active) { b.style.background = 'var(--color-primary)'; b.style.color = 'white'; b.style.borderColor = 'var(--color-primary)'; }
-        else { b.style.removeProperty('background'); b.style.removeProperty('color'); b.style.removeProperty('border-color'); }
+        if (k === active) {
+            b.style.background = 'var(--color-primary)';
+            b.style.color = 'white';
+            b.style.borderColor = 'var(--color-primary)';
+            b.classList.add('shadow-xs');
+        } else {
+            b.style.removeProperty('background');
+            b.style.removeProperty('color');
+            b.style.removeProperty('border-color');
+            b.classList.remove('shadow-xs');
+        }
     });
 };
 
@@ -702,15 +712,38 @@ export const setPosCustomerType = (type) => {
     const f = el('pos-customer-fields');
     if (!f) return;
     if (type === 'umum') {
+        posCustomer.name     = '';
+        posCustomer.phone    = '';
+        posCustomer.memberId = null;
+        posCustomer.points   = 0;
         f.innerHTML = `<input id="pos-cust-name" type="text" placeholder="Nama pembeli (opsional)" class="w-full border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:outline-none focus:border-[var(--color-primary)] focus:bg-white">`;
     } else if (type === 'member') {
         f.innerHTML = `
-          <div class="flex gap-2">
-            <input id="pos-cust-phone" type="tel" placeholder="No. HP Member Toko" class="flex-1 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:outline-none focus:border-[var(--color-primary)] focus:bg-white">
-            <button onclick="window.lookupPosMember()" type="button" class="px-3.5 py-2 rounded-xl text-white text-xs font-bold" style="background:var(--color-primary)"><i class="fa-solid fa-magnifying-glass mr-1"></i>Cek</button>
-          </div>
-          <div id="pos-member-result" class="mt-2"></div>`;
+          <div class="space-y-2">
+            <div class="flex gap-2">
+              <div class="relative flex-1">
+                <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                <input id="pos-cust-phone" type="text" placeholder="Ketik No. HP / Nama / ID Member..."
+                  value="${posCustomer.isMember ? esc(posCustomer.phone || posCustomer.name || '') : ''}"
+                  class="w-full pl-8 pr-3 py-2 text-xs border border-slate-200 dark:border-slate-700 rounded-xl bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:outline-none focus:border-[var(--color-primary)] focus:bg-white transition-all"
+                  oninput="window.debouncedLookupPosMember()"
+                  onkeydown="if(event.key==='Enter'){event.preventDefault();window.lookupPosMember();}">
+              </div>
+              <button onclick="window.lookupPosMember()" id="pos-member-lookup-btn" type="button"
+                class="px-4 py-2 rounded-xl text-white text-xs font-bold transition-all active:scale-95 flex items-center justify-center gap-1.5 shrink-0 shadow-xs cursor-pointer"
+                style="background:var(--color-primary)">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <span>Cek</span>
+              </button>
+            </div>
+            <div id="pos-member-result"></div>
+          </div>`;
+        ensureCustomersLoaded().then(() => {
+            const val = el('pos-cust-phone')?.value?.trim();
+            if (val) lookupPosMember();
+        });
     } else if (type === 'tempo') {
+        posCustomer.isMember = false;
         setPosPayMethod('tempo');
         f.innerHTML = `
           <div class="space-y-2">
@@ -758,27 +791,280 @@ export const posSetQuickCash = (val) => {
     }
 };
 
-export const lookupPosMember = () => {
-    const phone = el('pos-cust-phone')?.value?.trim();
-    if (!phone) { showToast('Masukkan nomor HP', 'warning'); return; }
-    const norm   = phone.replace(/\D/g, '');
-    const member = (appData.customers || []).find(c => c && c.phone && c.phone.replace(/\D/g, '').endsWith(norm));
+// ─── Manajemen & Sinkronisasi Member POS ───────────────────────
+export const ensureCustomersLoaded = async () => {
+    if (appData.customers && appData.customers.length > 0) return appData.customers;
+    try {
+        const snap = await db.collection("freshmart").doc("cms_data").collection("customers").get();
+        appData.customers = snap.docs.map(d => ({ ...d.data(), id: d.id, _docId: d.id }));
+        return appData.customers;
+    } catch (e) {
+        console.warn('[POS] Gagal load collection customers:', e);
+        return appData.customers || [];
+    }
+};
+
+const findMembersInList = (query, list) => {
+    if (!query || !list || !list.length) return [];
+    const q = query.trim().toLowerCase();
+    const qDigits = q.replace(/\D/g, '');
+    let qCore = qDigits;
+    if (qCore.startsWith('62')) qCore = qCore.slice(2);
+    else if (qCore.startsWith('0')) qCore = qCore.slice(1);
+
+    const results = [];
+    const seen = new Set();
+
+    list.forEach(c => {
+        if (!c) return;
+        const cId = String(c.id || c._docId || c.phone || '');
+        if (seen.has(cId)) return;
+
+        const cPhone = String(c.phone || '').replace(/\D/g, '');
+        let cCore = cPhone;
+        if (cCore.startsWith('62')) cCore = cCore.slice(2);
+        else if (cCore.startsWith('0')) cCore = cCore.slice(1);
+
+        const cName = String(c.name || '').toLowerCase();
+
+        let isMatch = false;
+        // 1. Phone match (exact core, atau endsWith/includes)
+        if (qCore.length >= 4 && cCore) {
+            if (cCore === qCore || cCore.endsWith(qCore) || qCore.endsWith(cCore) || cPhone.includes(qDigits)) {
+                isMatch = true;
+            }
+        }
+        // 2. Direct ID match
+        if (!isMatch && (cId.toLowerCase() === q || cId === qDigits)) {
+            isMatch = true;
+        }
+        // 3. Name match (case-insensitive substring)
+        if (!isMatch && q.length >= 2 && cName.includes(q)) {
+            isMatch = true;
+        }
+
+        if (isMatch) {
+            seen.add(cId);
+            results.push(c);
+        }
+    });
+
+    return results;
+};
+
+const queryMemberFromFirestore = async (query) => {
+    const raw = query.trim();
+    const qDigits = raw.replace(/\D/g, '');
+    let qCore = qDigits;
+    if (qCore.startsWith('62')) qCore = qCore.slice(2);
+    else if (qCore.startsWith('0')) qCore = qCore.slice(1);
+
+    const custCol = db.collection("freshmart").doc("cms_data").collection("customers");
+    const candidateKeys = Array.from(new Set([
+        raw,
+        qDigits,
+        qCore ? '62' + qCore : null,
+        qCore ? '0' + qCore : null,
+        qCore
+    ].filter(Boolean)));
+
+    // 1. Cek langsung via candidate doc IDs
+    for (const key of candidateKeys) {
+        try {
+            const doc = await custCol.doc(key).get();
+            if (doc.exists) {
+                const data = { ...doc.data(), id: doc.id, _docId: doc.id };
+                if (!appData.customers) appData.customers = [];
+                const existIdx = appData.customers.findIndex(c => String(c.id) === String(data.id));
+                if (existIdx > -1) appData.customers[existIdx] = data;
+                else appData.customers.push(data);
+                return data;
+            }
+        } catch (e) {}
+    }
+
+    // 2. Cek via query field 'phone'
+    if (qCore.length >= 5) {
+        for (const p of ['62' + qCore, '0' + qCore, qDigits]) {
+            try {
+                const snap = await custCol.where('phone', '==', p).limit(1).get();
+                if (!snap.empty) {
+                    const doc = snap.docs[0];
+                    const data = { ...doc.data(), id: doc.id, _docId: doc.id };
+                    if (!appData.customers) appData.customers = [];
+                    appData.customers.push(data);
+                    return data;
+                }
+            } catch (e) {}
+        }
+    }
+
+    // 3. Fallback: ambil seluruh dokumen customers (sampai 300)
+    try {
+        const snap = await custCol.limit(300).get();
+        if (!snap.empty) {
+            appData.customers = snap.docs.map(d => ({ ...d.data(), id: d.id, _docId: d.id }));
+            const matches = findMembersInList(query, appData.customers);
+            if (matches.length > 0) return matches[0];
+        }
+    } catch (e) {}
+
+    return null;
+};
+
+export const applyMemberToPos = (member) => {
+    posCustomer.isMember = true;
+    posCustomer.name     = member.name || 'Member Toko';
+    posCustomer.phone    = member.phone || '';
+    posCustomer.memberId = member.id || member._docId || member.phone;
+    posCustomer.points   = parseFloat(member.points) || 0;
+
+    const inp = el('pos-cust-phone');
+    if (inp) inp.value = member.phone || member.name || '';
+
+    const pts = posCustomer.points;
+    const tier = typeof window.getMemberTier === 'function' ? window.getMemberTier(pts) : { badge: 'MEMBER RESMI' };
+
     const r = el('pos-member-result');
-    if (!r) return;
+    if (r) {
+        r.innerHTML = `
+        <div class="p-3 bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-950/40 dark:to-teal-950/30 rounded-2xl border border-emerald-300 dark:border-emerald-700/60 shadow-xs flex items-center justify-between gap-2.5">
+          <div class="flex items-center gap-2.5 min-w-0">
+            <div class="w-10 h-10 rounded-xl bg-emerald-500 text-white flex items-center justify-center shrink-0 shadow-xs">
+              <i class="fa-solid fa-id-card text-base"></i>
+            </div>
+            <div class="min-w-0">
+              <div class="flex items-center gap-1.5 flex-wrap">
+                <span class="text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-900/60 text-emerald-800 dark:text-emerald-200 border border-emerald-300 dark:border-emerald-700">${esc(tier.badge || 'VIP')}</span>
+                <span class="text-[10px] font-black text-amber-600 dark:text-amber-400 flex items-center gap-0.5"><i class="fa-solid fa-star text-[9px]"></i>${pts} Poin</span>
+              </div>
+              <p class="text-xs font-black text-slate-800 dark:text-white truncate mt-0.5">${esc(member.name || 'Pelanggan Setia')}</p>
+              <p class="text-[10px] text-slate-500 dark:text-slate-400 font-mono">${esc(member.phone || '')}</p>
+            </div>
+          </div>
+          <button onclick="window.resetPosMember()" type="button" class="shrink-0 px-2.5 py-1.5 rounded-xl text-[10px] font-bold text-slate-600 hover:text-rose-600 dark:text-slate-300 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 transition-all cursor-pointer" title="Ganti Member">
+            <i class="fa-solid fa-rotate-left mr-1"></i>Ganti
+          </button>
+        </div>`;
+    }
+    showToast(`Member terdeteksi: ${member.name} (${pts} Poin)`, 'success');
+};
+
+export const selectPosMember = (memberId) => {
+    const list = appData.customers || [];
+    const member = list.find(c => c && String(c.id || c._docId || c.phone) === String(memberId));
     if (member) {
-        posCustomer.name     = member.name || '';
-        posCustomer.memberId = member.id || member.phone;
-        r.innerHTML = `<div class="flex items-center gap-2 p-2.5 bg-emerald-50 dark:bg-emerald-900/20 rounded-xl border border-emerald-200"><i class="fa-solid fa-circle-check text-emerald-500"></i><div><p class="text-xs font-bold text-emerald-700">${esc(member.name)}</p><p class="text-[10px] text-emerald-600">Member Terverifikasi ✓</p></div></div>`;
-    } else {
-        r.innerHTML = `<p class="text-xs text-rose-500 font-semibold p-2 bg-rose-50 rounded-xl border border-rose-200"><i class="fa-solid fa-circle-xmark mr-1"></i>Tidak ditemukan di database member</p>`;
+        applyMemberToPos(member);
+    }
+};
+
+export const resetPosMember = () => {
+    posCustomer.isMember = false;
+    posCustomer.name     = '';
+    posCustomer.phone    = '';
+    posCustomer.memberId = null;
+    posCustomer.points   = 0;
+    const inp = el('pos-cust-phone');
+    if (inp) { inp.value = ''; inp.focus(); }
+    const r = el('pos-member-result');
+    if (r) r.innerHTML = '';
+};
+
+let _posMemberSearchTimer = null;
+export const debouncedLookupPosMember = () => {
+    clearTimeout(_posMemberSearchTimer);
+    const q = el('pos-cust-phone')?.value?.trim();
+    if (!q || q.length < 3) {
+        if (!posCustomer.memberId) {
+            const r = el('pos-member-result');
+            if (r) r.innerHTML = '';
+        }
+        return;
+    }
+    _posMemberSearchTimer = setTimeout(() => {
+        lookupPosMember();
+    }, 300);
+};
+
+export const lookupPosMember = async () => {
+    const qInput = el('pos-cust-phone');
+    const query = qInput?.value?.trim() || '';
+    if (!query) {
+        showToast('Masukkan nomor HP atau nama member', 'warning');
+        return;
+    }
+    const r = el('pos-member-result');
+    const btn = el('pos-member-lookup-btn');
+    if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+    }
+    if (r) {
+        r.innerHTML = '<div class="p-2.5 text-center text-xs text-slate-400"><i class="fa-solid fa-spinner fa-spin mr-1.5"></i>Memeriksa database member...</div>';
+    }
+
+    try {
+        await ensureCustomersLoaded();
+        const matches = findMembersInList(query, appData.customers || []);
+
+        if (matches.length === 1) {
+            applyMemberToPos(matches[0]);
+        } else if (matches.length > 1) {
+            r.innerHTML = `
+              <div class="space-y-1.5 max-h-44 overflow-y-auto pr-1">
+                <p class="text-[10px] font-bold text-slate-500 mb-1">Ditemukan ${matches.length} member (klik untuk memilih):</p>
+                ${matches.map(m => `
+                  <button onclick="window.selectPosMember('${esc(m.id || m._docId || m.phone)}')" type="button"
+                    class="w-full text-left p-2 rounded-xl bg-slate-50 dark:bg-slate-800 hover:bg-emerald-50 dark:hover:bg-emerald-950/30 border border-slate-200 dark:border-slate-700 hover:border-emerald-400 transition-all flex items-center justify-between gap-2 cursor-pointer">
+                    <div class="min-w-0">
+                      <p class="text-xs font-bold text-slate-800 dark:text-white truncate">${esc(m.name || 'Member')}</p>
+                      <p class="text-[10px] text-slate-500 dark:text-slate-400 font-mono">${esc(m.phone || '')}</p>
+                    </div>
+                    <span class="text-[10px] font-black text-amber-500 shrink-0"><i class="fa-solid fa-star text-[9px]"></i> ${parseFloat(m.points)||0} Poin</span>
+                  </button>
+                `).join('')}
+              </div>
+            `;
+        } else {
+            // Coba query langsung ke Firestore jika belum ada di list lokal
+            const directMember = await queryMemberFromFirestore(query);
+            if (directMember) {
+                applyMemberToPos(directMember);
+            } else {
+                posCustomer.isMember = false;
+                posCustomer.name     = '';
+                posCustomer.memberId = null;
+                posCustomer.points   = 0;
+                r.innerHTML = `
+                  <div class="p-2.5 bg-rose-50 dark:bg-rose-950/30 rounded-xl border border-rose-200 dark:border-rose-800 text-rose-600 dark:text-rose-400 text-xs">
+                    <p class="font-bold flex items-center gap-1.5"><i class="fa-solid fa-circle-xmark"></i> Member Tidak Ditemukan</p>
+                    <p class="text-[10px] text-rose-500/90 mt-0.5">Tidak ada member terdaftar untuk "<b>${esc(query)}</b>". Pastikan nomor HP atau nama sesuai database.</p>
+                  </div>`;
+            }
+        }
+    } catch (err) {
+        console.error('[POS] Error lookupPosMember:', err);
+        if (r) {
+            r.innerHTML = `<p class="text-xs text-rose-500 p-2">Gagal memeriksa data: ${esc(err.message || 'Koneksi error')}</p>`;
+        }
+    } finally {
+        if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fa-solid fa-magnifying-glass"></i><span>Cek</span>';
+        }
     }
 };
 
 // ─── Proses Transaksi ────────────────────────────────────────
 export const processPOSTx = async () => {
     if (posCart.length === 0) { showToast('Keranjang kosong!', 'warning'); return; }
-    const custName  = el('pos-cust-name')?.value?.trim()  || 'Pelanggan Umum';
-    const custPhone = el('pos-cust-phone')?.value?.trim() || '';
+    const custName = posCustomer.isMember
+        ? (posCustomer.name || 'Member Toko')
+        : (el('pos-cust-name')?.value?.trim() || 'Pelanggan Umum');
+    const custPhone = posCustomer.isMember
+        ? (posCustomer.phone || el('pos-cust-phone')?.value?.trim() || '')
+        : (el('pos-cust-phone')?.value?.trim() || '');
+
     if (posCustomer.isNewTempo && !custPhone) { showToast('No. HP wajib diisi untuk tempo!', 'warning'); return; }
     if (posPayMethod === 'cash') {
         posPaidAmount = fNum(el('pos-paid-input')?.value || 0);
@@ -800,12 +1086,45 @@ export const processPOSTx = async () => {
         const txData = {
             txId, date: firebase.firestore.FieldValue.serverTimestamp(), dateMs: Date.now(),
             cashier: cashierUid, cashierName,
-            customer: { name: posCustomer.name || 'Pelanggan Umum', phone: posCustomer.phone || '', isMember: posCustomer.isMember || false, memberId: posCustomer.memberId || null },
+            customer: {
+                name: custName,
+                phone: custPhone,
+                isMember: !!posCustomer.isMember,
+                memberId: posCustomer.memberId || null,
+                points: posCustomer.points || 0
+            },
             items: posCart.map(i => ({ id: i.id, name: i.name, price: i.price, qty: i.qty, discount: i.discount || 0, subtotal: i.subtotal, variantName: i.variantName || '', isVariant: i.isVariant || false, isWholesale: i.isWholesale || false })),
             subtotal: posSubtotal(), globalDiscount: fNum(posGlobalDisc), total: posTotal(),
             payment: { method: posPayMethod, paid: posPayMethod === 'cash' ? posPaidAmount : (posPayMethod === 'tempo' ? dp : posTotal()), change: posPayMethod === 'cash' ? posChange() : 0, bank: bankName, dp, tempoBalance: posPayMethod === 'tempo' ? posTotal() - dp : 0 },
             status: posPayMethod === 'tempo' ? 'tempo' : 'paid', notes: '', source: 'pos',
         };
+
+        // Poin Loyalitas Member jika transaksi kasir
+        if (posCustomer.isMember && custPhone) {
+            const calcPoints = typeof window.calculateCartPoints === 'function'
+                ? window.calculateCartPoints(posCart, appData.store)
+                : { totalPoints: 0 };
+            const ptsEarned = calcPoints.totalPoints || 0;
+            if (ptsEarned > 0) {
+                txData.pointsEarned = ptsEarned;
+                try {
+                    const cleanPhone = custPhone.replace(/\D/g, '');
+                    const targetId = String(posCustomer.memberId || cleanPhone);
+                    const custRef = db.collection("freshmart").doc("cms_data").collection("customers").doc(targetId);
+                    await custRef.set({
+                        points: firebase.firestore.FieldValue.increment(ptsEarned),
+                        lastOrderAt: new Date().toISOString()
+                    }, { merge: true });
+
+                    if (appData.customers) {
+                        const m = appData.customers.find(c => c && (String(c.id) === targetId || String(c.phone).replace(/\D/g, '') === cleanPhone));
+                        if (m) m.points = (parseFloat(m.points) || 0) + ptsEarned;
+                    }
+                } catch (e) {
+                    console.warn('[POS] Gagal update poin member:', e);
+                }
+            }
+        }
 
         await db.collection('freshmart').doc('cms_data').collection('pos_transactions').doc(txId).set(txData);
 
@@ -859,6 +1178,11 @@ const showPOSSuccess = (tx) => {
           <p class="text-xs text-slate-400 mb-2">${esc(tx.txId)}</p>
           <p class="text-2xl font-black mb-1" style="color:var(--color-primary)">${fRp(tx.total)}</p>
           ${changeInfo}
+          ${tx.pointsEarned > 0 ? `
+          <div class="mt-2.5 p-2 rounded-xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 text-amber-700 dark:text-amber-300 text-xs font-bold flex items-center justify-center gap-1.5">
+            <i class="fa-solid fa-star text-amber-500"></i>
+            <span>+${tx.pointsEarned} Poin Member Didapat!</span>
+          </div>` : ''}
         </div>
         <div class="px-6 pb-6 flex flex-col gap-2">
           <button onclick="window.printPOSReceipt(${txJson})" class="w-full py-3 rounded-2xl text-white font-bold text-sm shadow-md active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer" style="background:var(--color-primary)"><i class="fa-solid fa-print"></i> Cetak Struk Thermal</button>
@@ -1140,6 +1464,7 @@ export const renderPOSStorefront = () => {
     renderCart();
     initBarcodeListener();
     startClock();
+    ensureCustomersLoaded(); // Prefetch member data
     exposeToWindow();
 };
 
@@ -1157,6 +1482,7 @@ export const renderPOS = () => {
     renderCart();
     initBarcodeListener();
     startClock();
+    ensureCustomersLoaded(); // Prefetch member data
     exposeToWindow();
 };
 
@@ -1177,7 +1503,11 @@ const exposeToWindow = () => {
     window.setPosPayMethod         = setPosPayMethod;
     window.updatePosChange         = updatePosChange;
     window.posSetQuickCash         = posSetQuickCash;
+    window.ensureCustomersLoaded   = ensureCustomersLoaded;
     window.lookupPosMember         = lookupPosMember;
+    window.debouncedLookupPosMember= debouncedLookupPosMember;
+    window.selectPosMember         = selectPosMember;
+    window.resetPosMember          = resetPosMember;
     window.processPOSTx            = processPOSTx;
     window.printPOSReceipt         = printPOSReceipt;
     window.posSetGlobalDisc        = (v) => { posGlobalDisc = fNum(v); renderCart(); };
@@ -1191,11 +1521,16 @@ const exposeToWindow = () => {
 };
 
 // Global expose
-window.setPOSViewMode         = setPOSViewMode;
-window.renderPOSStorefront    = renderPOSStorefront;
-window.renderPOS              = renderPOS;
-window.destroyBarcodeListener = destroyBarcodeListener;
-window.openPOSCartDrawer      = openPOSCartDrawer;
-window.closePOSCartDrawer     = closePOSCartDrawer;
-window.posSetQuickCash        = posSetQuickCash;
-window.playCashierBeep        = playCashierBeep;
+window.setPOSViewMode          = setPOSViewMode;
+window.renderPOSStorefront     = renderPOSStorefront;
+window.renderPOS               = renderPOS;
+window.destroyBarcodeListener  = destroyBarcodeListener;
+window.openPOSCartDrawer       = openPOSCartDrawer;
+window.closePOSCartDrawer      = closePOSCartDrawer;
+window.posSetQuickCash         = posSetQuickCash;
+window.playCashierBeep         = playCashierBeep;
+window.ensureCustomersLoaded   = ensureCustomersLoaded;
+window.lookupPosMember         = lookupPosMember;
+window.debouncedLookupPosMember= debouncedLookupPosMember;
+window.selectPosMember         = selectPosMember;
+window.resetPosMember          = resetPosMember;

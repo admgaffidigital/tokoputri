@@ -176,6 +176,20 @@ Aplikasi telah dilengkapi dengan fondasi **Capacitor 8 Android Native**:
 
 ## 📋 Riwayat Pembaruan (Changelog)
 
+### v1.9.9 — Penyempurnaan Posisi Icon Modal POS Kasir & Sistem Pencarian Terpadu Member VIP (23 Sep 2026)
+
+#### 🎯 Presisi Posisi Icon Modal Pembayaran Kasir
+- **Icon Center Rapi & Simetris**: Mengubah struktur tombol Tipe Pelanggan (Umum, Member, Tempo) dan Metode Pembayaran (Tunai, QRIS, Bank, Tempo) menggunakan tata letak `flex flex-col items-center justify-center text-center`, menjamin posisi icon glyph berada tepat di tengah (center) di atas label teks dengan proporsi visual yang rapi dan elegan.
+- **Konsistensi Tema Dinamis (Zero Hardcode)**: Seluruh tombol aktif (`pos-ctype-*` dan `pos-pay-*`) memanfaatkan `var(--color-primary)` toko secara otomatis.
+
+#### 👥 Sistem Pencarian Terpadu Member VIP (Multi-Format HP, Firestore Direct Query & Auto Poin)
+- **Direct Firestore Query Fallback**: Mengatasi kendala pembacaan member pada fitur POS kasir dengan menambahkan mekanisme query langsung ke Firestore (`freshmart/cms_data/customers`) dan prefetch otomatis saat kasir dibuka.
+- **Normalisasi Nomor Telepon Indonesia Cerdas**: Mendukung pencarian nomor HP dalam berbagai format (`08xxx`, `628xxx`, `+62 8xxx`, maupun `8xxx`) melalui pencocokan digit inti (*core digits*), serta pencarian instan berdasarkan Nama Member atau ID Pelanggan.
+- **Deteksi Live & Interactive Multi-Member Picker**: Dilengkapi pencarian otomatis saat mengetik (debounce 300ms) dan daftar pemilih interaktif jika terdapat beberapa member yang sesuai.
+- **Perlindungan Nama & Akumulasi Poin Loyalitas**: Mempertahankan nama asli member terverifikasi pada struk transaksi serta menambahkan poin loyalitas belanja secara otomatis ke saldo member di cloud Firestore.
+
+---
+
 ### v1.9.8 — Solusi Definitif Anti-Gepeng Grid POS Kasir: Eliminasi Flex-Collapse, Hard Min-Height 220px, & Dedicated Grid Engine (23 Sep 2026)
 
 #### 🛡️ Solusi Definitif Kartu Produk Gepeng (Zero-Collapse Guarantee)

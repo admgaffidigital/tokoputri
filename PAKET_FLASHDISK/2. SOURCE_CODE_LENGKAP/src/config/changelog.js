@@ -8,6 +8,22 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-9-9',
+        version: 'v1.9.9',
+        date: '2026-09-23',
+        title: 'Penyempurnaan Posisi Icon Modal POS Kasir & Sistem Pencarian Terpadu Member VIP (Multi-Format HP, Firestore Direct Query, & Auto Poin)',
+        category: 'fix',
+        badge: 'POS Centering & Member VIP Engine v1.9.9',
+        items: [
+            'Presisi Posisi Icon Modal Bayar Kasir: Mengubah struktur tombol Tipe Pelanggan (Umum, Member, Tempo) dan Metode Pembayaran (Tunai, QRIS, Bank, Tempo) dengan flex-col dan items-center sehingga icon berada tepat di tengah (center) di atas teks label, tampil rapi, proporsional, dan elegan.',
+            'Direct Firestore Query Fallback: Memperbaiki kegagalan pembacaan data member pada POS kasir dengan menambahkan mekanisme query langsung ke koleksi Firestore (freshmart/cms_data/customers) jika cache lokal appData.customers belum termuat, sehingga member terdaftar selalu langsung terbaca.',
+            'Pencarian Fleksibel Multi-Format (Indonesian Phone Normalization): Sistem pencarian otomatis mengenali berbagai variasi penulisan nomor HP (08xxx, 628xxx, +62 8xxx, maupun 8xxx) dengan mencocokkan digit inti (core digits), serta mendukung pencarian instan berdasarkan Nama Lengkap maupun ID Member.',
+            'Pencarian Dinamis (Live Debounced & Auto-Picker): Mendukung deteksi live saat mengetik (debounce 300ms) dan tombol Enter/Cek. Jika terdapat beberapa member dengan nama/nomor serupa, sistem menampilkan daftar pemilih interaktif (interactive picker) lengkap dengan saldo poin dan tingkatan VIP.',
+            'Perlindungan Nama Member & Akumulasi Poin Loyalitas Kasir: Memperbaiki nama pembeli pada transaksi kasir agar tetap menyimpan nama asli member (tidak kembali ke Pelanggan Umum), serta secara otomatis menambahkan perolehan poin loyalitas pesanan ke saldo member di Firestore dan menampilkan rincian poin di struk thermal.',
+            'Zero Hardcoded Theme: Seluruh tombol aktif, badge status, dan aksen warna terikat murni ke variabel CSS --color-primary tanpa ada nilai warna statis.'
+        ]
+    },
+    {
         id: 'log-1-9-8',
         version: 'v1.9.8',
         date: '2026-09-23',
