@@ -8,6 +8,20 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-9-18',
+        version: 'v1.9.18',
+        date: '2026-09-24',
+        title: 'Perbaikan Penghapusan Transaksi Tertahan (Parkir) & Harmonisasi Z-Index Konfirmasi Kasir',
+        category: 'fix',
+        badge: 'Held Cart Deletion Fix v1.9.18',
+        items: [
+            'Perbaikan Tombol Hapus Antrean Parkir: Memperbaiki kendala tombol ikon tong sampah pada modal Transaksi Tertahan (Parkir) yang sebelumnya tidak merespon saat diklik akibat dialog konfirmasi global tertutup oleh backdrop modal (z-index mismatch).',
+            'Dialog Konfirmasi Khusus In-Modal (z-[10005]): Menghadirkan dialog konfirmasi hapus antrean khusus dengan prioritas z-index tertinggi yang menampilkan nama label antrean, rincian jumlah item, serta total nominal belanjaan yang akan dihapus secara transparan.',
+            'Sinkronisasi Realtime & Pembaruan Indikator: Penghapusan antrean secara otomatis memperbarui penyimpanan lokal (localStorage), menyegarkan daftar antrean secara instan tanpa tumpukan riwayat browser (history-safe), dan memperbarui lencana indikator antrean di bilah navigasi header kasir.',
+            'Elevasi Z-Index Modal Konfirmasi Global: Menyesuaikan z-index custom-confirm-modal ke z-[10005] agar selalu tampil di lapisan terdepan saat dipanggil dari modal kasir, pemindai barcode, maupun panel admin tingkat tinggi.'
+        ]
+    },
+    {
         id: 'log-1-9-17',
         version: 'v1.9.17',
         date: '2026-09-24',

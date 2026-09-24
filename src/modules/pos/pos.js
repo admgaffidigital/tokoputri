@@ -506,8 +506,8 @@ export const posConfirmHoldCart = () => {
 };
 
 // ─── Modal Daftar Antrean Tertahan (Parkir) ─────────────────
-export const openPOSHeldModal = () => {
-    if (typeof window.pushModalHistory === 'function') window.pushModalHistory('posHeldModal');
+export const openPOSHeldModal = (skipHistory = false) => {
+    if (!skipHistory && typeof window.pushModalHistory === 'function') window.pushModalHistory('posHeldModal');
 
     document.getElementById('pos-held-list-modal')?.remove();
     const count = posHeldCarts.length;
@@ -710,18 +710,37 @@ export const posDeleteHeldCart = (heldId) => {
     const held = posHeldCarts.find(x => x.id === heldId);
     if (!held) return;
 
-    const executeDel = () => {
-        posHeldCarts = posHeldCarts.filter(x => x.id !== heldId);
-        saveHeldCarts();
-        showToast(`Antrean "${held.note}" dihapus.`, 'info');
-        openPOSHeldModal(); // Re-render modal
-    };
+    document.getElementById('pos-delete-confirm-modal')?.remove();
+    document.body.insertAdjacentHTML('beforeend', `
+    <div id="pos-delete-confirm-modal" class="fixed inset-0 z-[10005] flex items-center justify-center p-4" style="background:rgba(15,23,42,0.75);backdrop-filter:blur(4px)">
+        <div class="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl w-full max-w-xs border border-slate-200 dark:border-slate-800 p-6 text-center transform transition-all">
+            <div class="w-14 h-14 rounded-2xl bg-rose-50 dark:bg-rose-950/40 text-rose-500 border border-rose-200 dark:border-rose-900/50 flex items-center justify-center mx-auto mb-3.5 text-2xl shadow-inner">
+                <i class="fa-solid fa-trash-can"></i>
+            </div>
+            <h4 class="font-black text-sm text-slate-900 dark:text-white mb-1.5">Hapus Antrean Ini?</h4>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mb-5 leading-relaxed">
+                Antrean <span class="font-bold text-slate-800 dark:text-slate-200">"${esc(held.note)}"</span> (${held.itemCount} item • ${fRp(held.total)}) akan dihapus permanen.
+            </p>
+            <div class="flex gap-2.5">
+                <button onclick="document.getElementById('pos-delete-confirm-modal')?.remove()" class="flex-1 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all cursor-pointer">
+                    Batal
+                </button>
+                <button onclick="window.posExecuteDeleteHeld('${esc(heldId)}')" class="flex-1 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 active:scale-95 text-xs font-bold text-white shadow-md shadow-rose-600/30 transition-all cursor-pointer flex items-center justify-center gap-1.5">
+                    <i class="fa-solid fa-trash-can text-[11px]"></i>
+                    <span>Ya, Hapus</span>
+                </button>
+            </div>
+        </div>
+    </div>`);
+};
 
-    if (typeof window.showConfirm === 'function') {
-        window.showConfirm('Hapus Antrean', `Yakin ingin menghapus antrean "${held.note}"?`, executeDel, 'Ya, Hapus', true);
-    } else {
-        executeDel();
-    }
+export const posExecuteDeleteHeld = (heldId) => {
+    document.getElementById('pos-delete-confirm-modal')?.remove();
+    const held = posHeldCarts.find(x => x.id === heldId);
+    posHeldCarts = posHeldCarts.filter(x => x.id !== heldId);
+    saveHeldCarts();
+    showToast(`Antrean "${held?.note || ''}" berhasil dihapus.`, 'info');
+    openPOSHeldModal(true);
 };
 
 // ─── Mobile Drawer (Bottom Sheet) ───────────────────────────
@@ -2214,6 +2233,7 @@ const exposeToWindow = () => {
     window.posHoldCurrentAndRecall = posHoldCurrentAndRecall;
     window.posOverwriteAndRecall   = posOverwriteAndRecall;
     window.posDeleteHeldCart       = posDeleteHeldCart;
+    window.posExecuteDeleteHeld    = posExecuteDeleteHeld;
     window.renderHeldBadges        = renderHeldBadges;
 };
 
@@ -2236,6 +2256,7 @@ window.posRecallHeldCart       = posRecallHeldCart;
 window.posHoldCurrentAndRecall = posHoldCurrentAndRecall;
 window.posOverwriteAndRecall   = posOverwriteAndRecall;
 window.posDeleteHeldCart       = posDeleteHeldCart;
+window.posExecuteDeleteHeld    = posExecuteDeleteHeld;
 window.renderHeldBadges        = renderHeldBadges;
 window.ensureCustomersLoaded   = ensureCustomersLoaded;
 window.ensureBanksLoaded       = ensureBanksLoaded;

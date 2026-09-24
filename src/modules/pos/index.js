@@ -14,6 +14,8 @@ export {
     posHoldCurrentCart,
     openPOSHeldModal,
     posRecallHeldCart,
+    posDeleteHeldCart,
+    posExecuteDeleteHeld,
     playCashierChime
 } from './pos.js';
 
