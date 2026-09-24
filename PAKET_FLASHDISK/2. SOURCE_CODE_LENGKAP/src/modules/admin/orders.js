@@ -38,7 +38,8 @@ export const exportOrdersToExcel = async () => {
     gOrds.forEach((o, index) => {
         let date = o.dateString ? new Date(o.dateString).toLocaleString('id-ID') : '-';
         let custName = o.customer?.name || 'Anonim';
-        let method = o.customer?.deliveryMethod === 'delivery' ? 'Dikirim' : 'Ambil di Toko';
+        let isPOS = o.source === 'pos' || o.channel === 'pos';
+        let method = o.customer?.deliveryMethod === 'delivery' ? 'Dikirim' : (isPOS ? 'Beli Langsung di Kasir (Takeaway)' : 'Ambil di Toko');
         if (o.isDropPoint) method = '📍 Lokasi Berbeda';
         let status = o.status || '-';
         let totalItem = o.items ? o.items.reduce((sum, i) => sum + (parseFloat(i.qty) || 0), 0) : 0;
@@ -48,6 +49,7 @@ export const exportOrdersToExcel = async () => {
             "No": index + 1,
             "ID Pesanan": o.orderId,
             "Tanggal": date,
+            "Sumber": isPOS ? `Kasir POS (${o.cashierName || 'Kasir'})` : 'Website Storefront',
             "Nama Pelanggan": custName,
             "Tipe Pelanggan": o.customerType === 'Member' ? '⭐ Member' : '👤 Pelanggan Umum',
             "No. WhatsApp": o.customer?.wa ? `+${o.customer.wa}` : '-',
@@ -66,10 +68,11 @@ export const exportOrdersToExcel = async () => {
         { wch: 5 },
         { wch: 25 },
         { wch: 22 },
+        { wch: 24 },
         { wch: 25 },
         { wch: 18 },
         { wch: 18 },
-        { wch: 15 },
+        { wch: 26 },
         { wch: 15 },
         { wch: 12 },
         { wch: 20 }
@@ -118,22 +121,180 @@ export const playNewOrderSound = () => {
 /**
  * Render Live Orders tab admin dengan Firestore listener real-time
  */
+let orderSourceFilter = 'all'; // 'all' | 'pos' | 'storefront'
+
+export const setOrderSourceFilter = (mode) => {
+    orderSourceFilter = mode;
+    ['all', 'pos', 'storefront'].forEach(k => {
+        const b = el(`btn-ord-filter-${k}`);
+        if (b) {
+            if (k === mode) {
+                b.className = "h-8 px-3.5 rounded-xl text-xs font-bold transition-all cursor-pointer bg-[var(--color-primary)] text-white shadow-sm flex items-center gap-1.5";
+            } else {
+                b.className = "h-8 px-3.5 rounded-xl text-xs font-bold transition-all cursor-pointer bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 flex items-center gap-1.5";
+            }
+        }
+    });
+    renderOrdersList();
+};
+
+export const renderOrdersList = () => {
+    const listEl = el('admin-orders-list');
+    if (!listEl) return;
+
+    if (!gOrds || gOrds.length === 0) {
+        listEl.innerHTML = `<div class="flex flex-col items-center justify-center py-20 text-slate-400 font-bold bg-white dark:bg-slate-800 rounded-[1.5rem] border border-slate-200 dark:border-slate-700 shadow-sm text-center"><i class="fa-solid fa-receipt text-5xl mb-4 opacity-30"></i>Belum ada pesanan</div>`;
+        return;
+    }
+
+    const filtered = gOrds.filter(o => {
+        const isPOS = o.source === 'pos' || o.channel === 'pos';
+        if (orderSourceFilter === 'pos') return isPOS;
+        if (orderSourceFilter === 'storefront') return !isPOS;
+        return true;
+    });
+
+    if (filtered.length === 0) {
+        const emptyLabel = orderSourceFilter === 'pos' 
+            ? 'Belum ada transaksi dari Kasir POS' 
+            : orderSourceFilter === 'storefront' 
+            ? 'Belum ada pesanan dari Website Storefront' 
+            : 'Belum ada pesanan';
+        listEl.innerHTML = `<div class="flex flex-col items-center justify-center py-16 text-slate-400 font-bold bg-white dark:bg-slate-800 rounded-[1.5rem] border border-slate-200 dark:border-slate-700 shadow-sm text-center"><i class="fa-solid fa-filter-circle-xmark text-4xl mb-3 opacity-30"></i>${emptyLabel}</div>`;
+        return;
+    }
+
+    listEl.innerHTML = filtered.map(o => {
+        let bC = "text-slate-500 border-slate-200 dark:border-slate-600", iC = "fa-clock", boxBg = "bg-slate-50 dark:bg-slate-700/50", boxText = "text-slate-400";
+        if (o.status === 'Baru') {
+            bC = "text-rose-500 border-rose-200 bg-rose-50 dark:bg-rose-900/20 dark:border-rose-800 animate-pulse"; 
+            iC = "fa-asterisk"; 
+            boxBg = "bg-rose-500"; 
+            boxText = "text-white shadow-md shadow-rose-500/30";
+        } else if (o.status === 'Diproses') {
+            bC = "text-[var(--color-primary)] border-[var(--color-primary)]/30 bg-[rgba(var(--color-primary-rgb),0.06)] dark:bg-[rgba(var(--color-primary-rgb),0.10)] dark:border-[var(--color-primary)]/30"; 
+            iC = "fa-spinner fa-spin"; 
+            boxBg = "primary-bg"; 
+            boxText = "shadow-sm";
+        } else if (o.status === 'Selesai') {
+            bC = "text-[var(--color-primary)] border-[var(--color-primary)]/30 bg-[rgba(var(--color-primary-rgb),0.06)] dark:bg-[rgba(var(--color-primary-rgb),0.10)] dark:border-[var(--color-primary)]/30"; 
+            iC = "fa-check-double"; 
+            boxBg = "primary-bg-soft"; 
+            boxText = "primary-text";
+        } else if (o.status === 'Dibatalkan') {
+            bC = "text-slate-400 border-slate-200 bg-slate-50 dark:bg-slate-800 dark:border-slate-700"; 
+            iC = "fa-xmark"; 
+            boxBg = "bg-slate-100 dark:bg-slate-800"; 
+            boxText = "text-slate-400";
+        }
+        
+        let pI = "fa-wallet text-slate-400"; 
+        let method = o.payment?.method || '';
+        let methodLabel = method.toUpperCase();
+        const isPOS = o.source === 'pos' || o.channel === 'pos';
+        if (method === 'transfer') {
+            pI = "fa-building-columns text-[var(--color-primary)]"; 
+            methodLabel = 'Transfer';
+        } else if (method === 'qris') {
+            pI = "fa-qrcode text-purple-500"; 
+            methodLabel = 'QRIS';
+        } else if (method === 'cod') {
+            pI = "fa-hand-holding-dollar text-[var(--color-primary)]"; 
+            methodLabel = 'COD';
+        } else if (method === 'cashier' || method === 'cash') {
+            pI = "fa-cash-register text-emerald-500";
+            methodLabel = isPOS ? 'Tunai (Kasir)' : 'Kasir';
+        } else if (method === 'tempo') {
+            pI = "fa-file-invoice-dollar text-amber-500";
+            methodLabel = 'Tempo';
+        }
+        
+        let itemCount = o.items ? parseFloat(o.items.reduce((sum, item) => sum + (parseFloat(item.qty) || 0), 0).toFixed(2)) : 0;
+        const dStr = o.dateString ? new Date(o.dateString).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' }) : '';
+        const shortId = (o.orderId || '').split('-').pop();
+        
+        return `
+        <div class="bg-white dark:bg-slate-800 p-4 sm:p-5 md:p-6 lg:p-8 rounded-[1.5rem] border border-slate-200 dark:border-slate-700 shadow-sm relative overflow-hidden group cursor-pointer hover:shadow-lg hover:-translate-y-1 hover:border-[var(--color-primary)] transition-all duration-300" onclick="openOrderDetail('${o.orderId}')">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl ${boxBg} ${boxText} flex items-center justify-center shrink-0 transition-colors">
+                    <i class="fa-solid fa-receipt text-xl sm:text-2xl"></i>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <div class="flex justify-between items-start mb-1 gap-2">
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <span class="font-bold text-sm sm:text-base text-slate-800 dark:text-slate-100 tracking-tight">#${shortId}</span>
+                            <span class="text-[9px] font-bold px-2 py-0.5 rounded border ${bC} uppercase tracking-widest flex items-center"><i class="fa-solid ${iC} mr-1"></i> ${esc(o.status)}</span>
+                            ${isPOS ? `
+                            <span class="text-[9px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300 uppercase tracking-widest flex items-center gap-1">
+                                <i class="fa-solid fa-cash-register text-[9px]"></i> Kasir: ${esc(o.cashierName || 'POS')}
+                            </span>` : `
+                            <span class="text-[9px] font-bold px-2 py-0.5 rounded-full bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800 text-blue-700 dark:text-blue-300 uppercase tracking-widest flex items-center gap-1">
+                                <i class="fa-solid fa-globe text-[9px]"></i> Storefront
+                            </span>`}
+                        </div>
+                        <span class="text-[10px] font-bold text-slate-400 flex items-center gap-1.5 whitespace-nowrap shrink-0"><i class="fa-regular fa-calendar"></i> <span class="hidden sm:inline">${dStr}</span></span>
+                    </div>
+                    <div class="flex items-center gap-2 mt-1.5 flex-wrap">
+                        <p class="text-xs font-bold text-slate-600 dark:text-slate-300 truncate max-w-[120px] sm:max-w-xs"><i class="fa-solid fa-user text-slate-400 mr-1"></i> ${esc(o.customer?.name || 'Anonim')}</p>
+                        <span class="w-1 h-1 rounded-full bg-slate-300 dark:bg-slate-600 shrink-0"></span>
+                        <span class="text-[9px] font-bold text-slate-500 bg-slate-100 dark:bg-slate-900 px-2 py-0.5 rounded-xl border border-slate-200 dark:border-slate-700 uppercase tracking-widest shrink-0">${itemCount} Item</span>
+                        <span class="text-[9px] font-bold ${o.customerType === 'Member' ? 'text-amber-600 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800' : 'text-slate-500 bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-700'} px-2 py-0.5 rounded-xl uppercase tracking-widest shrink-0">${o.customerType === 'Member' ? '<i class="fa-solid fa-star text-amber-500 mr-1"></i>Member' : 'Umum'}</span>
+                        ${o.customer?.lat ? `<span class="text-[9px] font-bold text-[var(--color-primary)] bg-[rgba(var(--color-primary-rgb),0.1)] px-1.5 py-0.5 rounded-xl border border-[rgba(var(--color-primary-rgb),0.2)] uppercase tracking-widest shrink-0"><i class="fa-solid fa-location-dot"></i> GPS</span>` : ''}
+                        ${o.buktiPayment ? `<span class="text-[9px] font-bold text-violet-500 bg-violet-50 dark:bg-violet-900/20 px-1.5 py-0.5 rounded-xl border border-violet-100 dark:border-violet-800 uppercase tracking-widest shrink-0"><i class="fa-solid fa-image"></i></span>` : ''}
+                    </div>
+                </div>
+                <div class="w-8 h-8 rounded-full bg-slate-50 dark:bg-slate-700 flex items-center justify-center text-slate-400 group-hover:primary-bg transition-all shrink-0" style="transition: background-color 0.2s, color 0.2s">
+                    <i class="fa-solid fa-chevron-right text-sm"></i>
+                </div>
+            </div>
+            <div class="w-full border-t border-dashed border-slate-200 dark:border-slate-700 my-4"></div>
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <span class="font-bold text-[var(--color-primary)] text-lg sm:text-xl tracking-tight">${fCur(o.payment?.grandTotal)}</span>
+                    ${o.payment?.ppnAmount ? `<span class="text-[8px] font-bold bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400 px-1.5 py-0.5 rounded border border-amber-200 dark:border-amber-800 uppercase tracking-widest">PPN ${o.payment.ppnRate || 11}%</span>` : ''}
+                </div>
+                <div class="flex items-center gap-2 bg-slate-50 dark:bg-slate-900 px-3 py-1.5 rounded-xl border border-slate-100 dark:border-slate-700">
+                    <i class="fa-solid ${pI} text-xs"></i>
+                    <span class="text-[9px] font-bold text-slate-600 dark:text-slate-300 uppercase tracking-widest">${esc(methodLabel)}</span>
+                </div>
+            </div>
+        </div>`;
+    }).join('');
+};
+
+/**
+ * Render Live Orders tab admin dengan Firestore listener real-time
+ */
 export const rAdmOrd = () => {
     setH('admin-content', `
-        <div class="mb-5 flex justify-between items-center bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
+        <div class="mb-4 flex flex-wrap items-center justify-between gap-3 bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
             <div class="flex items-center gap-3">
                 <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background: rgba(var(--color-primary-rgb),0.1); color: var(--color-primary)">
                     <i class="fa-solid fa-satellite-dish animate-pulse text-base"></i>
                 </div>
                 <div>
                     <h2 class="font-bold text-sm text-slate-800 dark:text-slate-100 uppercase tracking-widest leading-tight">Live Orders</h2>
-                    <p class="text-[9px] font-bold text-slate-500 mt-0.5">Pantau pesanan masuk secara realtime</p>
+                    <p class="text-[9px] font-bold text-slate-500 mt-0.5">Pusat pesanan terpadu Website Storefront &amp; Kasir POS</p>
                 </div>
             </div>
             <button onclick="exportOrdersToExcel()" class="h-9 px-4 rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-sm border transition-all active:scale-95 hover:text-white hover:border-[var(--color-primary)] text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-slate-700 border-slate-200 dark:border-slate-600" style="--tw-shadow-color: rgba(var(--color-primary-rgb),0.2)" onmouseover="this.style.background='var(--color-primary)'" onmouseout="this.style.background=''">
                 <i class="fa-solid fa-file-csv"></i> <span class="hidden sm:inline">Export Excel</span>
             </button>
         </div>
+
+        <!-- Filter Sumber Pesanan: Semua, Kasir POS, Storefront -->
+        <div class="mb-4 flex items-center gap-2 overflow-x-auto pb-1 hide-scrollbar">
+            <button onclick="setOrderSourceFilter('all')" id="btn-ord-filter-all" class="h-8 px-3.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${orderSourceFilter==='all' ? 'bg-[var(--color-primary)] text-white shadow-sm' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700'}">
+                Semua Pesanan
+            </button>
+            <button onclick="setOrderSourceFilter('pos')" id="btn-ord-filter-pos" class="h-8 px-3.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${orderSourceFilter==='pos' ? 'bg-[var(--color-primary)] text-white shadow-sm' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700'}">
+                <i class="fa-solid fa-cash-register text-[10px]"></i> Kasir POS
+            </button>
+            <button onclick="setOrderSourceFilter('storefront')" id="btn-ord-filter-storefront" class="h-8 px-3.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${orderSourceFilter==='storefront' ? 'bg-[var(--color-primary)] text-white shadow-sm' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700'}">
+                <i class="fa-solid fa-globe text-[10px]"></i> Storefront Web
+            </button>
+        </div>
+
         <div id="admin-orders-list" class="space-y-4"><div class="text-center py-16"><div class="w-12 h-12 border-4 border-[rgba(var(--color-primary-rgb),0.2)] border-t-[var(--color-primary)] rounded-full animate-spin mx-auto"></div></div></div>
     `);
     
@@ -165,85 +326,9 @@ export const rAdmOrd = () => {
             setIn('stat-orders', p.size + (p.size === 100 ? '+' : ''));
             
             const docsList = [];
-            setH('admin-orders-list', p.docs.map(d => {
-                const o = d.data(); 
-                docsList.push(o);
-                
-                let bC = "text-slate-500 border-slate-200 dark:border-slate-600", iC = "fa-clock", boxBg = "bg-slate-50 dark:bg-slate-700/50", boxText = "text-slate-400";
-                if (o.status === 'Baru') {
-                    bC = "text-rose-500 border-rose-200 bg-rose-50 dark:bg-rose-900/20 dark:border-rose-800 animate-pulse"; 
-                    iC = "fa-asterisk"; 
-                    boxBg = "bg-rose-500"; 
-                    boxText = "text-white shadow-md shadow-rose-500/30";
-                } else if (o.status === 'Diproses') {
-                    bC = "text-[var(--color-primary)] border-[var(--color-primary)]/30 bg-[rgba(var(--color-primary-rgb),0.06)] dark:bg-[rgba(var(--color-primary-rgb),0.10)] dark:border-[var(--color-primary)]/30"; 
-                    iC = "fa-spinner fa-spin"; 
-                    boxBg = "primary-bg"; 
-                    boxText = "shadow-sm";
-                } else if (o.status === 'Selesai') {
-                    bC = "text-[var(--color-primary)] border-[var(--color-primary)]/30 bg-[rgba(var(--color-primary-rgb),0.06)] dark:bg-[rgba(var(--color-primary-rgb),0.10)] dark:border-[var(--color-primary)]/30"; 
-                    iC = "fa-check-double"; 
-                    boxBg = "primary-bg-soft"; 
-                    boxText = "primary-text";
-                } else if (o.status === 'Dibatalkan') {
-                    bC = "text-slate-400 border-slate-200 bg-slate-50 dark:bg-slate-800 dark:border-slate-700"; 
-                    iC = "fa-xmark"; 
-                    boxBg = "bg-slate-100 dark:bg-slate-800"; 
-                    boxText = "text-slate-400";
-                }
-                
-                let pI = "fa-wallet text-slate-400"; 
-                let method = o.payment?.method || '';
-                if (method === 'transfer') pI = "fa-building-columns text-[var(--color-primary)]"; 
-                else if (method === 'qris') pI = "fa-qrcode text-purple-500"; 
-                else if (method === 'cod') pI = "fa-hand-holding-dollar text-[var(--color-primary)]"; 
-                else if (method === 'cashier') pI = "fa-cash-register text-amber-500";
-                
-                let itemCount = o.items ? parseFloat(o.items.reduce((sum, item) => sum + (parseFloat(item.qty) || 0), 0).toFixed(2)) : 0;
-                const dStr = o.dateString ? new Date(o.dateString).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' }) : '';
-                const shortId = (o.orderId || '').split('-').pop();
-                
-                return `
-                <div class="bg-white dark:bg-slate-800 p-4 sm:p-5 md:p-6 lg:p-8 rounded-[1.5rem] border border-slate-200 dark:border-slate-700 shadow-sm relative overflow-hidden group cursor-pointer hover:shadow-lg hover:-translate-y-1 hover:border-[var(--color-primary)] transition-all duration-300" onclick="openOrderDetail('${o.orderId}')">
-                    <div class="flex items-center gap-4">
-                        <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl ${boxBg} ${boxText} flex items-center justify-center shrink-0 transition-colors">
-                            <i class="fa-solid fa-receipt text-xl sm:text-2xl"></i>
-                        </div>
-                        <div class="flex-1 min-w-0">
-                            <div class="flex justify-between items-start mb-1">
-                                <div class="flex items-center gap-2">
-                                    <span class="font-bold text-sm sm:text-base text-slate-800 dark:text-slate-100 tracking-tight">#${shortId}</span>
-                                    <span class="text-[9px] font-bold px-2 py-0.5 rounded border ${bC} uppercase tracking-widest flex items-center"><i class="fa-solid ${iC} mr-1"></i> ${esc(o.status)}</span>
-                                </div>
-                                <span class="text-[10px] font-bold text-slate-400 flex items-center gap-1.5 whitespace-nowrap"><i class="fa-regular fa-calendar"></i> <span class="hidden sm:inline">${dStr}</span></span>
-                            </div>
-                            <div class="flex items-center gap-2 mt-1.5">
-                                <p class="text-xs font-bold text-slate-600 dark:text-slate-300 truncate max-w-[120px] sm:max-w-xs"><i class="fa-solid fa-user text-slate-400 mr-1"></i> ${esc(o.customer?.name || 'Anonim')}</p>
-                                <span class="w-1 h-1 rounded-full bg-slate-300 dark:bg-slate-600 shrink-0"></span>
-                                <span class="text-[9px] font-bold text-slate-500 bg-slate-100 dark:bg-slate-900 px-2 py-0.5 rounded-xl border border-slate-200 dark:border-slate-700 uppercase tracking-widest shrink-0">${itemCount} Item</span>
-                                <span class="text-[9px] font-bold ${o.customerType === 'Member' ? 'text-amber-600 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800' : 'text-slate-500 bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-700'} px-2 py-0.5 rounded-xl uppercase tracking-widest shrink-0">${o.customerType === 'Member' ? '<i class="fa-solid fa-star text-amber-500 mr-1"></i>Member' : 'Umum'}</span>
-                                ${o.customer?.lat ? `<span class="text-[9px] font-bold text-[var(--color-primary)] bg-[rgba(var(--color-primary-rgb),0.1)] px-1.5 py-0.5 rounded-xl border border-[rgba(var(--color-primary-rgb),0.2)] uppercase tracking-widest shrink-0"><i class="fa-solid fa-location-dot"></i> GPS</span>` : ''}
-                                ${o.buktiPayment ? `<span class="text-[9px] font-bold text-violet-500 bg-violet-50 dark:bg-violet-900/20 px-1.5 py-0.5 rounded-xl border border-violet-100 dark:border-violet-800 uppercase tracking-widest shrink-0"><i class="fa-solid fa-image"></i></span>` : ''}
-                            </div>
-                        </div>
-                        <div class="w-8 h-8 rounded-full bg-slate-50 dark:bg-slate-700 flex items-center justify-center text-slate-400 group-hover:primary-bg transition-all shrink-0" style="transition: background-color 0.2s, color 0.2s">
-                            <i class="fa-solid fa-chevron-right text-sm"></i>
-                        </div>
-                    </div>
-                    <div class="w-full border-t border-dashed border-slate-200 dark:border-slate-700 my-4"></div>
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center gap-2">
-                            <span class="font-bold text-[var(--color-primary)] text-lg sm:text-xl tracking-tight">${fCur(o.payment?.grandTotal)}</span>
-                            ${o.payment?.ppnAmount ? `<span class="text-[8px] font-bold bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400 px-1.5 py-0.5 rounded border border-amber-200 dark:border-amber-800 uppercase tracking-widest">PPN ${o.payment.ppnRate || 11}%</span>` : ''}
-                        </div>
-                        <div class="flex items-center gap-2 bg-slate-50 dark:bg-slate-900 px-3 py-1.5 rounded-xl border border-slate-100 dark:border-slate-700">
-                            <i class="fa-solid ${pI} text-xs"></i>
-                            <span class="text-[9px] font-bold text-slate-600 dark:text-slate-300 uppercase tracking-widest">${esc(method)}</span>
-                        </div>
-                    </div>
-                </div>`;
-            }).join(''));
+            p.docs.forEach(d => docsList.push(d.data()));
             setGOrds(docsList);
+            renderOrdersList();
         }, () => { 
             setH('admin-orders-list', `<div class="text-center text-rose-500 font-bold">Koneksi terputus. Retrying...</div>`); 
             setTimeout(startListener, 5000); 
@@ -261,6 +346,7 @@ export const openOrderDetail = (i) => {
     if (!o) return; 
     setCVOrd(i);
     
+    const isPOS = o.source === 'pos' || o.channel === 'pos';
     let sSel = `<div class="relative w-full sm:w-40 mt-1"><select onchange="updateOrderStatus('${o.orderId}', this.value)" class="w-full text-sm font-bold ${o.status==='Baru'?'text-rose-600 bg-rose-50 border-rose-200':o.status==='Diproses'?'text-blue-600 bg-blue-50 border-blue-200':o.status==='Selesai'?'text-emerald-600 bg-emerald-50 border-emerald-200':'text-slate-500 bg-slate-50 border-slate-200'} border px-4 py-2.5 rounded-xl focus:outline-none appearance-none cursor-pointer transition-colors shadow-sm"><option value="Baru" ${o.status==='Baru'?'selected':''} class="text-slate-800">Baru (Pending)</option><option value="Diproses" ${o.status==='Diproses'?'selected':''} class="text-slate-800">Diproses</option><option value="Selesai" ${o.status==='Selesai'?'selected':''} class="text-slate-800">Selesai</option><option value="Dibatalkan" ${o.status==='Dibatalkan'?'selected':''} class="text-slate-800">Dibatalkan</option></select><i class="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 ${o.status==='Baru'?'text-rose-400':o.status==='Diproses'?'text-blue-400':o.status==='Selesai'?'text-emerald-400':'text-slate-400'} pointer-events-none text-xs"></i></div>`;
     
     setH('admin-order-modal-content', `
@@ -269,6 +355,15 @@ export const openOrderDetail = (i) => {
                 <div class="flex-1">
                     <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest flex items-center gap-1.5"><i class="fa-solid fa-crosshairs text-[var(--color-primary)]"></i> Status</p>
                     ${sSel}
+                    <div class="mt-2.5 flex items-center gap-1.5 flex-wrap">
+                        ${isPOS ? `
+                        <span class="px-2.5 py-1 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300 text-[11px] font-bold flex items-center gap-1.5">
+                            <i class="fa-solid fa-cash-register text-xs"></i> Sumber: Dibuat di Kasir POS (Petugas: ${esc(o.cashierName || 'Kasir')})
+                        </span>` : `
+                        <span class="px-2.5 py-1 rounded-xl bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800 text-blue-700 dark:text-blue-300 text-[11px] font-bold flex items-center gap-1.5">
+                            <i class="fa-solid fa-globe text-xs"></i> Sumber: Pesanan Online (Website Storefront)
+                        </span>`}
+                    </div>
                 </div>
                 <div class="text-left sm:text-right flex flex-col justify-center">
                     <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1.5">ID Pesanan</p>
@@ -289,7 +384,7 @@ export const openOrderDetail = (i) => {
                     ${o.customer?.wa && o.customerType !== 'Member' ? `<button type="button" onclick="saveOrderCustomerToDB('${esc(o.customer.name || '')}','${esc(o.customer.wa)}','${esc(o.orderId)}')" class="w-full py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 active:scale-95 text-white shadow-md shadow-amber-500/20 text-[11px] font-black uppercase tracking-widest flex items-center justify-center gap-2 transition-all"><i class="fa-solid fa-address-book"></i> + Konfirmasi &amp; Daftarkan Sebagai Member</button>` : ''}
                     ${o.customerType === 'Member' ? `<div class="w-full py-2.5 rounded-xl bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-400 text-[11px] font-black uppercase tracking-widest flex items-center justify-center gap-2"><i class="fa-solid fa-circle-check"></i> Terverifikasi — Data Member Terkunci</div>` : ''}
                     <div class="border-t border-dashed border-slate-200 dark:border-slate-700 pt-4">
-                        <span class="text-slate-500 dark:text-slate-400 font-bold flex items-center gap-2 mb-2.5"><i class="fa-solid fa-map-location-dot"></i> Alamat Pemesan (${o.customer?.deliveryMethod === 'delivery' ? 'Dikirim' : 'Ambil di Toko'})</span>
+                        <span class="text-slate-500 dark:text-slate-400 font-bold flex items-center gap-2 mb-2.5"><i class="fa-solid fa-map-location-dot"></i> Alamat Pemesan (${isPOS ? 'Beli Langsung di Kasir (Takeaway)' : (o.customer?.deliveryMethod === 'delivery' ? 'Dikirim' : 'Ambil di Toko')})</span>
                         <div class="bg-slate-50 dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-700 font-bold text-slate-700 dark:text-slate-300 leading-relaxed shadow-inner text-sm">${esc(o.customer?.address || '-')}</div>
                         ${o.customer?.lat && o.customer?.deliveryMethod === 'delivery' && !o.isDropPoint ? `<a href="https://www.google.com/maps?q=${esc(o.customer.lat)},${esc(o.customer.lng)}" target="_blank" class="mt-3 flex items-center justify-center gap-2 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-800 font-bold text-xs py-2.5 px-4 rounded-xl hover:bg-blue-100 transition-colors"><i class="fa-solid fa-location-dot"></i> Buka Lokasi Pembeli di Google Maps</a>` : ''}
                     </div>
@@ -653,6 +748,7 @@ export const deleteOrder = (i) => {
 
 // ─── Expose ke window untuk atribut onclick di HTML ──────
 window.exportOrdersToExcel = exportOrdersToExcel;
+window.setOrderSourceFilter = setOrderSourceFilter;
 window.rAdmOrd = rAdmOrd;
 window.openOrderDetail = openOrderDetail;
 window.saveOrderCustomerToDB = saveOrderCustomerToDB;

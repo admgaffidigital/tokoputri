@@ -8,6 +8,22 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-9-16',
+        version: 'v1.9.16',
+        date: '2026-09-24',
+        title: 'Sentralisasi Ekosistem Transaksi: Eliminasi Riwayat Terpisah POS Kasir, Otomasi Pemrosesan Pesanan, & Filter Multi-Channel CMS Admin',
+        category: 'feature',
+        badge: 'Centralized Orders Architecture v1.9.16',
+        items: [
+            'Sentralisasi 100% Pesanan ke CMS Admin (Single Source of Truth): Menegaskan CMS Admin sebagai pusat kendali tunggal seluruh pesanan bisnis. Menghapus antarmuka riwayat terpisah di POS Kasir (pos-history) sehingga alur kerja tidak lagi redundant dan membebani antarmuka kasir.',
+            'Otomasi Pemrosesan Transaksi Kasir (Auto-Processed Orders): Transaksi yang dibuat oleh kasir/karyawan di POS langsung otomatis terproses dengan status Selesai (atau Diproses untuk Tempo) dan status bayar Lunas, tanpa perlu verifikasi manual selayaknya order online storefront.',
+            'Pemisahan Peran yang Jelas (Storefront vs POS Kasir): Website Storefront difokuskan khusus untuk pelanggan umum belanja online secara mandiri, sedangkan POS Kasir difokuskan khusus untuk admin/kasir/karyawan melayani transaksi langsung di toko fisik secara cepat dan efisien.',
+            'Filter Sumber Pesanan di CMS Admin: Menyediakan tombol filter instan (Semua Pesanan, Kasir POS, dan Storefront Web) di menu Pesanan CMS Admin serta badge identitas visual (Kasir vs Web Storefront) pada kartu dan detail pesanan.',
+            'Ekspor Laporan Excel Lengkap dengan Sumber Transaksi: Menyertakan kolom Sumber Pesanan (Kasir POS beserta nama kasir vs Website Storefront) pada file unduhan Excel (.xlsx) untuk mempermudah audit dan perbandingan performa penjualan fisik toko vs online.',
+            'Terminal Kasir Lebih Ramping & Cepat: Ukuran bundel modul kasir berkurang signifikan, waktu muat lebih instan, dan antarmuka header kasir tampil lebih bersih dan fokus melayani transaksi pelanggan di meja kasir.'
+        ]
+    },
+    {
         id: 'log-1-9-15',
         version: 'v1.9.15',
         date: '2026-09-24',

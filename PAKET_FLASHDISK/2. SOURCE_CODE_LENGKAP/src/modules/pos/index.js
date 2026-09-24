@@ -1,4 +1,4 @@
-﻿/**
+/**
  * ============================================================
  * MODUL POS KASIR (BARREL EXPORT)
  * Catatan: pos.js dan pos-history.js juga dimuat secara
@@ -7,6 +7,5 @@
  * ============================================================
  */
 
-export { renderPOS, printPOSReceipt } from './pos.js';
-export { renderPOSHistory, voidPOSTx } from './pos-history.js';
+export { renderPOS, renderPOSStorefront, printPOSReceipt } from './pos.js';
 

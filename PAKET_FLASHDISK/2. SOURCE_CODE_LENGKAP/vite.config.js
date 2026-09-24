@@ -79,7 +79,6 @@ export default defineConfig({
           'module-pos': [
             './src/modules/pos/index.js',
             './src/modules/pos/pos.js',
-            './src/modules/pos/pos-history.js',
           ],
         }
       }

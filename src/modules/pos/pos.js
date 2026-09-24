@@ -1269,15 +1269,8 @@ export const processPOSTx = async () => {
         }
 
         // ── 4. Simpan ke Database Utama Toko (freshmart_orders) ──────
-        // Transaksi kasir langsung masuk ke daftar Pesanan Admin & Laporan Penjualan
+        // Transaksi kasir langsung masuk ke daftar Pesanan Admin & Laporan Penjualan Toko
         await db.collection('freshmart_orders').doc(txId).set(orderData);
-
-        // Simpan juga ke sub-koleksi pos_transactions sebagai mirror riwayat
-        try {
-            await db.collection('freshmart').doc('cms_data').collection('pos_transactions').doc(txId).set(orderData);
-        } catch(e) {
-            console.warn('[POS] Mirror pos_transactions notice:', e);
-        }
 
         // ── 5. Potong Stok Otomatis Jika Fitur Stok Aktif ─────────────
         if (useStk) {
@@ -1347,24 +1340,34 @@ const showPOSSuccess = (tx) => {
         : tx.payment.method === 'tempo' ? `<p class="text-sm text-amber-600 font-semibold">⚠️ Dicatat sebagai Piutang Tempo</p>`
         : `<p class="text-sm text-slate-500">Metode: ${tx.payment.method.toUpperCase()}</p>`;
     const txJson = JSON.stringify(tx).replace(/"/g, '&quot;');
+    const isInAdmin = !!document.getElementById('pos-admin-container') || (typeof window.cTab === 'function' && window.cTab() === 'pos');
+
     document.body.insertAdjacentHTML('beforeend', `
     <div id="pos-success-modal" class="fixed inset-0 z-[9999] flex items-center justify-center p-4" style="background:rgba(15,23,42,0.65);backdrop-filter:blur(4px)">
       <div class="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl w-full max-w-sm border border-slate-200/80 dark:border-slate-800">
         <div class="p-6 text-center">
           <div class="w-16 h-16 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center mx-auto mb-4"><i class="fa-solid fa-circle-check text-emerald-500 text-3xl"></i></div>
           <h2 class="font-black text-lg text-slate-900 dark:text-white mb-1">Transaksi Berhasil!</h2>
-          <p class="text-xs text-slate-400 mb-2">${esc(tx.txId)}</p>
+          <p class="text-xs text-slate-400 mb-2">#${esc(tx.txId)}</p>
           <p class="text-2xl font-black mb-1" style="color:var(--color-primary)">${fRp(tx.total)}</p>
           ${changeInfo}
+          <div class="mt-2.5 px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800/80 text-[11px] font-bold text-slate-600 dark:text-slate-300 flex items-center justify-center gap-1.5 border border-slate-200/60 dark:border-slate-700/60">
+            <i class="fa-solid fa-check-double text-emerald-500"></i>
+            <span>Tercatat Resmi di Menu Pesanan CMS</span>
+          </div>
           ${tx.pointsEarned > 0 ? `
-          <div class="mt-2.5 p-2 rounded-xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 text-amber-700 dark:text-amber-300 text-xs font-bold flex items-center justify-center gap-1.5">
+          <div class="mt-2 p-2 rounded-xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 text-amber-700 dark:text-amber-300 text-xs font-bold flex items-center justify-center gap-1.5">
             <i class="fa-solid fa-star text-amber-500"></i>
             <span>+${tx.pointsEarned} Poin Member Didapat!</span>
           </div>` : ''}
         </div>
         <div class="px-6 pb-6 flex flex-col gap-2">
           <button onclick="window.printPOSReceipt(${txJson})" class="w-full py-3 rounded-2xl text-white font-bold text-sm shadow-md active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer" style="background:var(--color-primary)"><i class="fa-solid fa-print"></i> Cetak Struk Thermal</button>
-          <button onclick="document.getElementById('pos-success-modal')?.remove()" class="w-full py-3 rounded-2xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold text-sm hover:bg-slate-50 transition-all cursor-pointer">Transaksi Baru</button>
+          <button onclick="document.getElementById('pos-success-modal')?.remove()" class="w-full py-3 rounded-2xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold text-sm hover:bg-slate-50 dark:hover:bg-slate-800 transition-all cursor-pointer">Transaksi Baru</button>
+          ${isInAdmin ? `
+          <button onclick="document.getElementById('pos-success-modal')?.remove(); if(typeof window.openAdminTab==='function') window.openAdminTab('orders');" class="w-full py-2.5 rounded-xl text-slate-500 dark:text-slate-400 text-xs font-bold hover:text-[var(--color-primary)] transition-all flex items-center justify-center gap-1.5 cursor-pointer">
+            <i class="fa-solid fa-receipt"></i> Buka Menu Pesanan Toko
+          </button>` : ''}
         </div>
       </div>
     </div>`);
@@ -1440,10 +1443,6 @@ const buildPOSLayout = ({ isStorefront }) => {
                 <span class="hidden md:inline-flex items-center gap-1.5 text-[10px] font-bold text-white bg-black/20 px-2.5 py-1 rounded-lg">
                     <i class="fa-solid fa-barcode text-xs"></i> USB Scanner Aktif
                 </span>
-                <button onclick="window.openPOSHistory()" class="h-8 px-2.5 sm:px-3 rounded-xl bg-black/15 hover:bg-black/25 text-white text-xs font-bold flex items-center gap-1.5 transition-all active:scale-95 cursor-pointer" title="Riwayat Transaksi">
-                    <i class="fa-solid fa-clock-rotate-left text-xs"></i>
-                    <span class="hidden sm:inline">Riwayat</span>
-                </button>
                 <button onclick="window.cashierLogout()" class="h-8 px-2.5 sm:px-3 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold flex items-center gap-1.5 transition-all active:scale-95 shadow-xs cursor-pointer" title="Keluar Mode Kasir">
                     <i class="fa-solid fa-power-off text-xs"></i>
                     <span class="hidden sm:inline">Keluar</span>
@@ -1463,9 +1462,6 @@ const buildPOSLayout = ({ isStorefront }) => {
                 <span class="hidden md:inline-flex items-center gap-1 text-[10px] font-bold text-slate-500 dark:text-slate-400">
                     <i class="fa-solid fa-barcode"></i> Scanner Otomatis
                 </span>
-                <button onclick="window.openPOSHistory()" class="px-2.5 py-1 rounded-lg bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-slate-700 dark:text-slate-200 text-[10px] font-bold flex items-center gap-1 hover:bg-slate-50 transition-all cursor-pointer">
-                    <i class="fa-solid fa-clock-rotate-left"></i> Riwayat
-                </button>
                 <button onclick="window.posClearCart()" class="px-2.5 py-1 rounded-lg bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-rose-500 text-[10px] font-bold flex items-center gap-1 hover:bg-rose-50 dark:hover:bg-rose-950/20 transition-all cursor-pointer">
                     <i class="fa-solid fa-trash-can"></i> Reset
                 </button>
@@ -1629,7 +1625,6 @@ const buildPOSLayout = ({ isStorefront }) => {
 
 // ─── Render Storefront Standalone View ───────────────────────
 export const renderPOSStorefront = () => {
-    if (typeof window.detachPOSHistoryListener === 'function') window.detachPOSHistoryListener();
     posSearch       = '';
     posCatFilterVal = '';
     posCart         = [];
@@ -1649,7 +1644,6 @@ export const renderPOSStorefront = () => {
 
 // ─── Render di Admin CMS ────────────────────────────────────
 export const renderPOS = () => {
-    if (typeof window.detachPOSHistoryListener === 'function') window.detachPOSHistoryListener();
     posSearch       = '';
     posCatFilterVal = '';
 
@@ -1700,7 +1694,13 @@ const exposeToWindow = () => {
     window.openPOSCartDrawer       = openPOSCartDrawer;
     window.closePOSCartDrawer      = closePOSCartDrawer;
     window.playCashierBeep         = playCashierBeep;
-    window.openPOSHistory          = () => import('./pos-history.js').then(m => m.renderPOSHistory());
+    window.openPOSHistory          = () => {
+        if (typeof window.openAdminTab === 'function') {
+            window.openAdminTab('orders');
+        } else if (typeof window.showToast === 'function') {
+            window.showToast('Semua transaksi kasir terpusat di menu Pesanan CMS Admin');
+        }
+    };
     window.destroyBarcodeListener  = destroyBarcodeListener;
 };
 
