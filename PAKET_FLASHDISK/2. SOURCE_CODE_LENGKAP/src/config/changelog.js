@@ -8,6 +8,22 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-9-17',
+        version: 'v1.9.17',
+        date: '2026-09-24',
+        title: 'Fitur Parkir Transaksi & Antrean Fleksibel (Hold & Recall Cart), Pintasan Keyboard Kasir F6/F8, & Audio Chime Kasir',
+        category: 'feature',
+        badge: 'Pending Cart Hold & Recall v1.9.17',
+        items: [
+            'Sistem Parkir Transaksi / Hold & Recall Cart: Kasir dapat menahan transaksi belanjaan pembeli sementara saat antrean padat (misal pelanggan hendak mengambil barang tambahan atau dompet tertinggal) tanpa perlu membatalkan atau mengulang scan dari awal.',
+            'Penyimpanan Antrean Persisten & Aman (Multi-Queue): Transaksi tertahan disimpan aman di penyimpanan lokal (pos_held_carts) lengkap dengan varian, harga grosir, diskon item & diskon global, serta data pelanggan, sehingga tidak akan hilang meskipun halaman kasir dimuat ulang atau beralih tab.',
+            'Proteksi Anti Kehilangan Data (Zero Data Loss Protection): Saat kasir memanggil transaksi tertahan sementara keranjang saat ini sedang berisi item, sistem otomatis menawarkan opsi cerdas untuk menyimpan transaksi aktif ke antrean baru sebelum memuat antrean yang dipanggil.',
+            'Indikator Antrean Dinamis (Live Pulsing Badge): Header Kasir Storefront dan Strip Kasir Admin dilengkapi tombol badge antrean interaktif yang berkedip jika terdapat transaksi tertahan yang siap dilanjutkan.',
+            'Pintasan Keyboard Khusus Kasir (Keyboard Shortcuts): Tombol F6 / F7 untuk langsung Tahan Transaksi, dan tombol F8 untuk membuka Daftar Transaksi Tertahan secara instan tanpa perlu menyentuh mouse.',
+            'Umpan Balik Suara Kasir (Synthetic Chime Web Audio API): Dilengkapi nada konfirmasi sintetis yang lembut dan elegan saat transaksi diparkir (ascending chime) dan saat transaksi dipanggil kembali (bright double chime).'
+        ]
+    },
+    {
         id: 'log-1-9-16',
         version: 'v1.9.16',
         date: '2026-09-24',

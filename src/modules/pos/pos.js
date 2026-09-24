@@ -150,6 +150,18 @@ const initBarcodeListener = () => {
         const inPos = curView === 'view-pos-cashier' || (curView === 'view-admin' && window.cTab === 'pos');
         if (!inPos) return;
 
+        // Pintasan Keyboard Kasir (F6/F7 = Tahan Transaksi, F8 = Antrean Tertahan)
+        if (e.key === 'F6' || e.key === 'F7') {
+            e.preventDefault();
+            posHoldCurrentCart();
+            return;
+        }
+        if (e.key === 'F8') {
+            e.preventDefault();
+            openPOSHeldModal();
+            return;
+        }
+
         const tag = document.activeElement?.tagName?.toLowerCase();
         if (tag === 'input' || tag === 'textarea' || tag === 'select') return;
 
@@ -282,6 +294,433 @@ export const clearCart = () => {
         window.showConfirm('Kosongkan Keranjang', 'Hapus semua item dari transaksi saat ini?', executeClear, 'Ya, Kosongkan', true);
     } else {
         executeClear();
+    }
+};
+
+// ─── Sound Chime Sintetis Kasir (Web Audio API) ─────────────
+export const playCashierChime = (type = 'hold') => {
+    try {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtx) return;
+        const ctx = new AudioCtx();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        const now = ctx.currentTime;
+        if (type === 'hold') {
+            osc.frequency.setValueAtTime(659.25, now); // E5
+            osc.frequency.exponentialRampToValueAtTime(880, now + 0.1); // A5
+        } else {
+            osc.frequency.setValueAtTime(880, now); // A5
+            osc.frequency.exponentialRampToValueAtTime(1174.66, now + 0.1); // D6
+        }
+        gain.gain.setValueAtTime(0.08, now);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.16);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(now + 0.16);
+        setTimeout(() => { ctx.close().catch(() => {}); }, 200);
+    } catch (e) {}
+};
+
+// ─── Format Relatif Waktu Antrean ───────────────────────────
+const formatTimeAgo = (ts) => {
+    if (!ts) return '';
+    const diffSec = Math.floor((Date.now() - ts) / 1000);
+    if (diffSec < 45) return 'Baru saja';
+    const diffMin = Math.floor(diffSec / 60);
+    if (diffMin < 60) return `${diffMin} mnt lalu`;
+    const diffHour = Math.floor(diffMin / 60);
+    if (diffHour < 24) return `${diffHour} jam lalu`;
+    return new Date(ts).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+};
+
+// ─── State Transaksi Tertahan (Parkir Antrean) ───────────────
+let posHeldCarts = [];
+try {
+    const savedHeld = localStorage.getItem('pos_held_carts');
+    if (savedHeld) {
+        const parsed = JSON.parse(savedHeld);
+        if (Array.isArray(parsed)) posHeldCarts = parsed;
+    }
+} catch (e) {
+    posHeldCarts = [];
+}
+
+const saveHeldCarts = () => {
+    try {
+        localStorage.setItem('pos_held_carts', JSON.stringify(posHeldCarts));
+    } catch (e) {}
+    renderHeldBadges();
+};
+
+export const renderHeldBadges = () => {
+    const count = posHeldCarts.length;
+    const sfTarget = el('pos-held-btn-storefront');
+    const adTarget = el('pos-held-btn-admin');
+
+    if (sfTarget) {
+        if (count > 0) {
+            sfTarget.innerHTML = `
+            <button onclick="window.openPOSHeldModal()" class="h-8 px-2.5 sm:px-3 rounded-xl bg-amber-500 hover:bg-amber-600 text-white text-xs font-black flex items-center gap-1.5 transition-all active:scale-95 shadow-md cursor-pointer animate-pulse" title="Ada ${count} transaksi antrean tertahan (F8)">
+                <i class="fa-solid fa-hourglass-half text-xs"></i>
+                <span>${count} Parkir</span>
+            </button>`;
+        } else {
+            sfTarget.innerHTML = `
+            <button onclick="window.openPOSHeldModal()" class="h-8 px-2 sm:px-2.5 rounded-xl bg-black/15 hover:bg-black/25 text-white/90 hover:text-white text-xs font-bold flex items-center gap-1.5 transition-all active:scale-95 cursor-pointer" title="Daftar Transaksi Tertahan (F8)">
+                <i class="fa-solid fa-hourglass-half text-xs"></i>
+                <span class="hidden sm:inline">Parkir (0)</span>
+            </button>`;
+        }
+    }
+
+    if (adTarget) {
+        if (count > 0) {
+            adTarget.innerHTML = `
+            <button onclick="window.openPOSHeldModal()" class="px-2.5 py-1 rounded-lg bg-amber-500 hover:bg-amber-600 text-white text-[10px] font-black flex items-center gap-1 shadow-xs transition-all active:scale-95 cursor-pointer animate-pulse" title="Ada ${count} transaksi antrean tertahan (F8)">
+                <i class="fa-solid fa-hourglass-half"></i>
+                <span>${count} Parkir</span>
+            </button>`;
+        } else {
+            adTarget.innerHTML = `
+            <button onclick="window.openPOSHeldModal()" class="px-2 py-1 rounded-lg bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-300 text-[10px] font-bold flex items-center gap-1 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all cursor-pointer" title="Daftar Transaksi Tertahan (F8)">
+                <i class="fa-solid fa-hourglass-half"></i>
+                <span>Parkir</span>
+            </button>`;
+        }
+    }
+};
+
+// ─── Tahan Transaksi Saat Ini (Hold / Parkir) ─────────────────
+export const posHoldCurrentCart = () => {
+    if (posCart.length === 0) {
+        showToast('Keranjang masih kosong, tidak ada transaksi untuk ditahan.', 'warning');
+        return;
+    }
+
+    const defaultNote = posCustomer?.name
+        ? `Antrean #${posHeldCarts.length + 1} — ${posCustomer.name}`
+        : `Antrean #${posHeldCarts.length + 1}`;
+
+    const totalQty = posCart.reduce((s, i) => s + (i.qty || 1), 0);
+    const totalRp = posTotal();
+
+    // Tutup drawer mobile bila terbuka
+    closePOSCartDrawer(true);
+
+    if (typeof window.pushModalHistory === 'function') window.pushModalHistory('posHoldPrompt');
+
+    document.getElementById('pos-hold-prompt-modal')?.remove();
+    document.body.insertAdjacentHTML('beforeend', `
+    <div id="pos-hold-prompt-modal" class="fixed inset-0 z-[9999] flex items-center justify-center p-4" style="background:rgba(15,23,42,0.65);backdrop-filter:blur(4px)">
+        <div class="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl w-full max-w-sm border border-slate-200/80 dark:border-slate-800 overflow-hidden transform transition-all animate-scaleIn">
+            <div class="p-5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/70 dark:bg-slate-800/40">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-8 h-8 rounded-xl bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 flex items-center justify-center text-sm font-bold shadow-2xs">
+                        <i class="fa-solid fa-pause"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-black text-sm text-slate-900 dark:text-white leading-tight">Parkir / Tahan Transaksi</h3>
+                        <p class="text-[10px] text-slate-400">Simpan antrean sementara (F6)</p>
+                    </div>
+                </div>
+                <button onclick="window.closePOSHoldPrompt()" class="w-7 h-7 rounded-lg bg-slate-200/60 dark:bg-slate-700/60 text-slate-500 hover:text-slate-800 dark:hover:text-white text-base flex items-center justify-center transition-all leading-none cursor-pointer">×</button>
+            </div>
+            <div class="p-5 space-y-3.5">
+                <div class="p-3 bg-amber-50/70 dark:bg-amber-950/20 border border-amber-200/60 dark:border-amber-800/40 rounded-2xl flex items-center justify-between text-xs">
+                    <div>
+                        <p class="text-[10px] font-bold text-amber-700 dark:text-amber-300">Total Belanjaan</p>
+                        <p class="font-black text-slate-800 dark:text-slate-100 text-sm mt-0.5">${totalQty} item</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-[10px] font-bold text-amber-700 dark:text-amber-300">Total Tagihan</p>
+                        <p class="font-black text-sm" style="color:var(--color-primary)">${fRp(totalRp)}</p>
+                    </div>
+                </div>
+                <div>
+                    <label class="text-[10px] font-black uppercase tracking-wider text-slate-400 mb-1.5 block">Label / Catatan Antrean Pelanggan</label>
+                    <input id="pos-hold-note-input" type="text" value="${esc(defaultNote)}" placeholder="Contoh: Bpk Budi (ambil barang lagi)..."
+                        class="w-full border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-xs font-bold bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:outline-none focus:border-[var(--color-primary)] focus:bg-white dark:focus:bg-slate-900 transition-all"
+                        onkeydown="if(event.key==='Enter') window.posConfirmHoldCart();">
+                </div>
+            </div>
+            <div class="p-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/40 flex gap-2">
+                <button onclick="window.closePOSHoldPrompt()" class="w-1/3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold text-xs hover:bg-slate-100 dark:hover:bg-slate-800 transition-all cursor-pointer">Batal</button>
+                <button onclick="window.posConfirmHoldCart()" class="w-2/3 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-black text-xs shadow-md active:scale-95 transition-all flex items-center justify-center gap-1.5 cursor-pointer">
+                    <i class="fa-solid fa-pause"></i>
+                    <span>Tahan Transaksi</span>
+                </button>
+            </div>
+        </div>
+    </div>`);
+
+    setTimeout(() => {
+        const inp = el('pos-hold-note-input');
+        if (inp) { inp.focus(); inp.select(); }
+    }, 50);
+};
+
+export const closePOSHoldPrompt = (skipHistory = false) => {
+    const m = el('pos-hold-prompt-modal');
+    if (m) {
+        if (!skipHistory && typeof window.requestCloseModal === 'function') {
+            window.requestCloseModal('posHoldPrompt', false, () => m.remove());
+        } else {
+            m.remove();
+        }
+    }
+};
+
+export const posConfirmHoldCart = () => {
+    if (posCart.length === 0) return;
+    const inp = el('pos-hold-note-input');
+    const note = (inp?.value || '').trim() || `Antrean #${posHeldCarts.length + 1}`;
+
+    const heldItem = {
+        id: `HELD-${Date.now().toString(36).toUpperCase()}`,
+        time: Date.now(),
+        note,
+        cart: JSON.parse(JSON.stringify(posCart)),
+        globalDisc: fNum(posGlobalDisc),
+        customer: { ...posCustomer },
+        total: posTotal(),
+        subtotal: posSubtotal(),
+        itemCount: posCart.reduce((s, i) => s + (i.qty || 1), 0),
+    };
+
+    posHeldCarts.unshift(heldItem);
+    saveHeldCarts();
+
+    // Reset keranjang aktif kasir
+    posCart = [];
+    posGlobalDisc = 0;
+    posCustomer = { name: '', phone: '', isMember: false, memberId: null, isNewTempo: false };
+
+    closePOSHoldPrompt();
+    renderCart();
+    renderCatalog();
+    playCashierChime('hold');
+    showToast(`Antrean "${note}" berhasil diparkir!`, 'success');
+};
+
+// ─── Modal Daftar Antrean Tertahan (Parkir) ─────────────────
+export const openPOSHeldModal = () => {
+    if (typeof window.pushModalHistory === 'function') window.pushModalHistory('posHeldModal');
+
+    document.getElementById('pos-held-list-modal')?.remove();
+    const count = posHeldCarts.length;
+
+    const listHtml = count === 0
+        ? `
+        <div class="py-12 px-4 text-center">
+            <div class="w-14 h-14 rounded-2xl bg-amber-50 dark:bg-amber-950/30 text-amber-500 flex items-center justify-center mx-auto mb-3 text-2xl shadow-inner">
+                <i class="fa-solid fa-hourglass-half"></i>
+            </div>
+            <h4 class="font-bold text-sm text-slate-800 dark:text-slate-200">Tidak Ada Transaksi Tertahan</h4>
+            <p class="text-xs text-slate-400 mt-1 max-w-xs mx-auto leading-relaxed">
+                Gunakan tombol <span class="font-bold text-amber-600 dark:text-amber-400">"Tahan"</span> di keranjang kasir (atau tekan F6) untuk memarkir antrean saat pelanggan mengambil barang tambahan.
+            </p>
+        </div>`
+        : `
+        <div class="divide-y divide-slate-100 dark:divide-slate-800">
+            ${posHeldCarts.map((item, idx) => {
+                const safeId = esc(item.id);
+                const itemsSummary = (item.cart || []).slice(0, 3).map(i => `${esc(i.name)} (${i.qty}x)`).join(', ');
+                const moreCount = (item.cart || []).length > 3 ? ` +${item.cart.length - 3} lainnya` : '';
+                return `
+                <div class="p-3.5 sm:p-4 hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div class="min-w-0 flex-1">
+                        <div class="flex items-center gap-2 mb-1 flex-wrap">
+                            <span class="px-2 py-0.5 rounded-lg bg-amber-100 dark:bg-amber-900/40 text-amber-800 dark:text-amber-300 font-black text-[10px] uppercase">
+                                #${idx + 1}
+                            </span>
+                            <h4 class="font-black text-xs sm:text-sm text-slate-900 dark:text-white truncate" title="${esc(item.note)}">
+                                ${esc(item.note)}
+                            </h4>
+                            <span class="text-[10px] text-slate-400">• ${formatTimeAgo(item.time)}</span>
+                        </div>
+                        <p class="text-[11px] text-slate-500 dark:text-slate-400 truncate mt-0.5">
+                            <i class="fa-solid fa-box-open mr-1 text-[10px] opacity-70"></i>
+                            <span>${itemsSummary}${moreCount}</span>
+                        </p>
+                        <div class="flex items-center gap-3 mt-1.5 text-xs">
+                            <span class="text-slate-500 font-medium">${item.itemCount} item</span>
+                            <span class="text-slate-300 dark:text-slate-700">•</span>
+                            <span class="font-black" style="color:var(--color-primary)">${fRp(item.total)}</span>
+                            ${(item.globalDisc || 0) > 0 ? `<span class="text-[10px] text-rose-500 font-bold">(Disc: ${fRp(item.globalDisc)})</span>` : ''}
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2 shrink-0">
+                        <button onclick="window.posDeleteHeldCart('${safeId}')" class="w-8 h-8 rounded-xl border border-rose-200 dark:border-rose-900/50 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30 flex items-center justify-center text-xs transition-all active:scale-95 cursor-pointer" title="Hapus Antrean">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                        <button onclick="window.posRecallHeldCart('${safeId}')" class="px-3.5 py-2 rounded-xl text-white font-black text-xs shadow-md active:scale-95 transition-all flex items-center gap-1.5 cursor-pointer" style="background:var(--color-primary)">
+                            <i class="fa-solid fa-play text-[10px]"></i>
+                            <span>Panggil Antrean</span>
+                        </button>
+                    </div>
+                </div>`;
+            }).join('')}
+        </div>`;
+
+    document.body.insertAdjacentHTML('beforeend', `
+    <div id="pos-held-list-modal" class="fixed inset-0 z-[9999] flex items-end sm:items-center justify-center p-0 sm:p-4" style="background:rgba(15,23,42,0.65);backdrop-filter:blur(4px)">
+        <div class="bg-white dark:bg-slate-900 rounded-t-3xl sm:rounded-3xl shadow-2xl w-full sm:max-w-lg max-h-[85vh] flex flex-col overflow-hidden border border-slate-200/80 dark:border-slate-800">
+            <div class="p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between shrink-0 bg-slate-50/70 dark:bg-slate-800/40">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-8 h-8 rounded-xl bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 flex items-center justify-center text-sm font-bold shadow-2xs">
+                        <i class="fa-solid fa-hourglass-half"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-black text-sm text-slate-900 dark:text-white leading-tight flex items-center gap-2">
+                            <span>Daftar Transaksi Tertahan (Parkir)</span>
+                            <span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-amber-500 text-white">${count}</span>
+                        </h3>
+                        <p class="text-[10px] text-slate-400">Panggil kembali belanjaan pelanggan yang diparkir (F8)</p>
+                    </div>
+                </div>
+                <button onclick="window.closePOSHeldModal()" class="w-8 h-8 rounded-xl bg-slate-200/60 dark:bg-slate-700/60 text-slate-500 hover:text-slate-800 dark:hover:text-white text-lg flex items-center justify-center transition-all leading-none cursor-pointer">×</button>
+            </div>
+            <div class="overflow-y-auto flex-1 max-h-[55vh]">
+                ${listHtml}
+            </div>
+            <div class="p-3 sm:p-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-800/40 flex justify-between items-center shrink-0">
+                <p class="text-[11px] text-slate-400 font-medium">
+                    <i class="fa-solid fa-keyboard mr-1"></i>Tekan <kbd class="px-1 py-0.5 bg-slate-200 dark:bg-slate-700 rounded text-[9px] font-mono">F6</kbd> Tahan, <kbd class="px-1 py-0.5 bg-slate-200 dark:bg-slate-700 rounded text-[9px] font-mono">F8</kbd> Antrean
+                </p>
+                <button onclick="window.closePOSHeldModal()" class="px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold text-xs hover:bg-slate-100 dark:hover:bg-slate-800 transition-all cursor-pointer">
+                    Tutup
+                </button>
+            </div>
+        </div>
+    </div>`);
+};
+
+export const closePOSHeldModal = (skipHistory = false) => {
+    const m = el('pos-held-list-modal');
+    if (m) {
+        if (!skipHistory && typeof window.requestCloseModal === 'function') {
+            window.requestCloseModal('posHeldModal', false, () => m.remove());
+        } else {
+            m.remove();
+        }
+    }
+};
+
+// ─── Panggil Transaksi Tertahan (Recall) ────────────────────
+export const posRecallHeldCart = (heldId) => {
+    const heldIdx = posHeldCarts.findIndex(x => x.id === heldId);
+    if (heldIdx === -1) {
+        showToast('Transaksi tertahan tidak ditemukan.', 'warning');
+        return;
+    }
+
+    // Jika keranjang aktif saat ini ada isinya, tanyakan konfirmasi proteksi data
+    if (posCart.length > 0) {
+        document.getElementById('pos-recall-confirm-modal')?.remove();
+        document.body.insertAdjacentHTML('beforeend', `
+        <div id="pos-recall-confirm-modal" class="fixed inset-0 z-[10000] flex items-center justify-center p-4" style="background:rgba(15,23,42,0.7);backdrop-filter:blur(4px)">
+            <div class="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl w-full max-w-sm border border-slate-200/80 dark:border-slate-800 overflow-hidden">
+                <div class="p-5 text-center">
+                    <div class="w-14 h-14 rounded-2xl bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 flex items-center justify-center mx-auto mb-3 text-2xl shadow-inner">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                    </div>
+                    <h3 class="font-black text-sm text-slate-900 dark:text-white mb-1">Keranjang Masih Berisi Item</h3>
+                    <p class="text-xs text-slate-500 leading-relaxed mb-4">
+                        Ada <span class="font-bold text-slate-800 dark:text-slate-200">${posCart.length} jenis item</span> di transaksi aktif saat ini. Ingin tahan transaksi aktif ke antrean baru atau menimpa?
+                    </p>
+                    <div class="flex flex-col gap-2">
+                        <button onclick="window.posHoldCurrentAndRecall('${esc(heldId)}')" class="w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-md transition-all cursor-pointer flex items-center justify-center gap-1.5">
+                            <i class="fa-solid fa-floppy-disk"></i>
+                            <span>Tahan Transaksi Aktif & Panggil</span>
+                        </button>
+                        <button onclick="window.posOverwriteAndRecall('${esc(heldId)}')" class="w-full py-2 rounded-xl border border-rose-200 dark:border-rose-900 text-rose-600 dark:text-rose-400 font-bold text-xs hover:bg-rose-50 dark:hover:bg-rose-950/20 transition-all cursor-pointer">
+                            Timpa Transaksi Aktif
+                        </button>
+                        <button onclick="document.getElementById('pos-recall-confirm-modal')?.remove()" class="w-full py-2 rounded-xl text-slate-400 text-xs font-medium hover:text-slate-600 transition-all cursor-pointer">
+                            Batal
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>`);
+        return;
+    }
+
+    _applyRecall(heldIdx);
+};
+
+const _applyRecall = (heldIdx) => {
+    const held = posHeldCarts[heldIdx];
+    if (!held) return;
+
+    posCart       = JSON.parse(JSON.stringify(held.cart || []));
+    posGlobalDisc = fNum(held.globalDisc);
+    posCustomer   = held.customer ? { ...held.customer } : { name: '', phone: '', isMember: false, memberId: null, isNewTempo: false };
+
+    // Hapus dari held list
+    posHeldCarts.splice(heldIdx, 1);
+    saveHeldCarts();
+
+    closePOSHeldModal();
+    renderCart();
+    renderCatalog();
+    playCashierChime('recall');
+    showToast(`Antrean "${held.note}" berhasil dipanggil kembali!`, 'success');
+};
+
+export const posHoldCurrentAndRecall = (heldId) => {
+    document.getElementById('pos-recall-confirm-modal')?.remove();
+    // Tahan transaksi aktif saat ini
+    const note = posCustomer?.name ? `Antrean #${posHeldCarts.length + 1} — ${posCustomer.name}` : `Antrean #${posHeldCarts.length + 1}`;
+    const newHeld = {
+        id: `HELD-${Date.now().toString(36).toUpperCase()}`,
+        time: Date.now(),
+        note,
+        cart: JSON.parse(JSON.stringify(posCart)),
+        globalDisc: fNum(posGlobalDisc),
+        customer: { ...posCustomer },
+        total: posTotal(),
+        subtotal: posSubtotal(),
+        itemCount: posCart.reduce((s, i) => s + (i.qty || 1), 0),
+    };
+    posHeldCarts.unshift(newHeld);
+
+    // Cari index target setelah unshift
+    const targetIdx = posHeldCarts.findIndex(x => x.id === heldId);
+    if (targetIdx !== -1) {
+        _applyRecall(targetIdx);
+    } else {
+        saveHeldCarts();
+        closePOSHeldModal();
+    }
+};
+
+export const posOverwriteAndRecall = (heldId) => {
+    document.getElementById('pos-recall-confirm-modal')?.remove();
+    const targetIdx = posHeldCarts.findIndex(x => x.id === heldId);
+    if (targetIdx !== -1) {
+        _applyRecall(targetIdx);
+    }
+};
+
+export const posDeleteHeldCart = (heldId) => {
+    const held = posHeldCarts.find(x => x.id === heldId);
+    if (!held) return;
+
+    const executeDel = () => {
+        posHeldCarts = posHeldCarts.filter(x => x.id !== heldId);
+        saveHeldCarts();
+        showToast(`Antrean "${held.note}" dihapus.`, 'info');
+        openPOSHeldModal(); // Re-render modal
+    };
+
+    if (typeof window.showConfirm === 'function') {
+        window.showConfirm('Hapus Antrean', `Yakin ingin menghapus antrean "${held.note}"?`, executeDel, 'Ya, Hapus', true);
+    } else {
+        executeDel();
     }
 };
 
@@ -508,6 +947,17 @@ const renderCart = () => {
             textSpan.textContent = posCart.length > 0 ? `BAYAR — ${formattedTotal}` : `PROSES PEMBAYARAN`;
         }
     });
+
+    // Perbarui status tombol Tahan Transaksi
+    document.querySelectorAll('.pos-hold-btn-target').forEach(btn => {
+        btn.disabled = posCart.length === 0;
+        if (posCart.length === 0) {
+            btn.classList.add('opacity-40', 'cursor-not-allowed');
+        } else {
+            btn.classList.remove('opacity-40', 'cursor-not-allowed');
+        }
+    });
+    renderHeldBadges();
 
     // Kontrol visibilitas Floating Cart Bar di Layar HP
     const floatBar = el('pos-mobile-floating-bar');
@@ -1443,6 +1893,7 @@ const buildPOSLayout = ({ isStorefront }) => {
                 <span class="hidden md:inline-flex items-center gap-1.5 text-[10px] font-bold text-white bg-black/20 px-2.5 py-1 rounded-lg">
                     <i class="fa-solid fa-barcode text-xs"></i> USB Scanner Aktif
                 </span>
+                <div id="pos-held-btn-storefront" class="flex items-center"></div>
                 <button onclick="window.cashierLogout()" class="h-8 px-2.5 sm:px-3 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold flex items-center gap-1.5 transition-all active:scale-95 shadow-xs cursor-pointer" title="Keluar Mode Kasir">
                     <i class="fa-solid fa-power-off text-xs"></i>
                     <span class="hidden sm:inline">Keluar</span>
@@ -1462,6 +1913,7 @@ const buildPOSLayout = ({ isStorefront }) => {
                 <span class="hidden md:inline-flex items-center gap-1 text-[10px] font-bold text-slate-500 dark:text-slate-400">
                     <i class="fa-solid fa-barcode"></i> Scanner Otomatis
                 </span>
+                <div id="pos-held-btn-admin" class="flex items-center"></div>
                 <button onclick="window.posClearCart()" class="px-2.5 py-1 rounded-lg bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-rose-500 text-[10px] font-bold flex items-center gap-1 hover:bg-rose-50 dark:hover:bg-rose-950/20 transition-all cursor-pointer">
                     <i class="fa-solid fa-trash-can"></i> Reset
                 </button>
@@ -1518,9 +1970,14 @@ const buildPOSLayout = ({ isStorefront }) => {
                             Keranjang Transaksi (<span class="pos-item-count-target">0</span>)
                         </h3>
                     </div>
-                    <button onclick="window.posClearCart()" class="text-[10px] font-bold text-rose-500 hover:text-rose-600 px-2 py-1 rounded-lg hover:bg-rose-50 dark:hover:bg-rose-950/20 transition-all cursor-pointer flex items-center gap-1 shrink-0 whitespace-nowrap">
-                        <i class="fa-solid fa-trash-can"></i><span>Kosongkan</span>
-                    </button>
+                    <div class="flex items-center gap-1.5 shrink-0">
+                        <button onclick="window.posHoldCurrentCart()" class="pos-hold-btn-target text-[10px] font-bold text-amber-600 dark:text-amber-400 hover:text-amber-700 px-2 py-1 rounded-lg hover:bg-amber-50 dark:hover:bg-amber-950/20 transition-all cursor-pointer flex items-center gap-1 whitespace-nowrap" title="Tahan transaksi sementara (F6)">
+                            <i class="fa-solid fa-pause"></i><span>Tahan</span>
+                        </button>
+                        <button onclick="window.posClearCart()" class="text-[10px] font-bold text-rose-500 hover:text-rose-600 px-2 py-1 rounded-lg hover:bg-rose-50 dark:hover:bg-rose-950/20 transition-all cursor-pointer flex items-center gap-1 shrink-0 whitespace-nowrap">
+                            <i class="fa-solid fa-trash-can"></i><span>Kosongkan</span>
+                        </button>
+                    </div>
                 </div>
 
                 <!-- Items List Desktop -->
@@ -1590,6 +2047,7 @@ const buildPOSLayout = ({ isStorefront }) => {
                         <h3 class="text-xs font-black uppercase tracking-wider text-slate-800 dark:text-white truncate whitespace-nowrap">Keranjang Transaksi (<span class="pos-item-count-target">0</span>)</h3>
                     </div>
                     <div class="flex items-center gap-1.5 shrink-0">
+                        <button onclick="window.posHoldCurrentCart()" class="pos-hold-btn-target text-[10px] font-bold text-amber-600 dark:text-amber-400 hover:text-amber-700 px-2 py-1 rounded-lg hover:bg-amber-50 dark:hover:bg-amber-950/20 transition-all flex items-center gap-1 whitespace-nowrap cursor-pointer" title="Tahan transaksi sementara"><i class="fa-solid fa-pause"></i><span>Tahan</span></button>
                         <button onclick="window.posClearCart()" class="text-[10px] font-bold text-rose-500 hover:text-rose-600 px-2 py-1 rounded-lg hover:bg-rose-50 dark:hover:bg-rose-950/20 transition-all flex items-center gap-1 whitespace-nowrap cursor-pointer"><i class="fa-solid fa-trash-can"></i><span>Kosongkan</span></button>
                         <button onclick="window.closePOSCartDrawer()" class="w-7 h-7 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-slate-700 text-base flex items-center justify-center transition-all leading-none cursor-pointer">×</button>
                     </div>
@@ -1636,6 +2094,7 @@ export const renderPOSStorefront = () => {
     viewEl.innerHTML = buildPOSLayout({ isStorefront: true });
     renderCatalog();
     renderCart();
+    renderHeldBadges();
     initBarcodeListener();
     startClock();
     ensureCustomersLoaded(); // Prefetch member data
@@ -1657,6 +2116,7 @@ export const renderPOS = () => {
     setH('admin-content', `<div class="h-full w-full flex flex-col overflow-hidden">${buildPOSLayout({ isStorefront: false })}</div>`);
     renderCatalog();
     renderCart();
+    renderHeldBadges();
     initBarcodeListener();
     startClock();
     ensureCustomersLoaded(); // Prefetch member data
@@ -1702,6 +2162,17 @@ const exposeToWindow = () => {
         }
     };
     window.destroyBarcodeListener  = destroyBarcodeListener;
+    window.playCashierChime        = playCashierChime;
+    window.posHoldCurrentCart      = posHoldCurrentCart;
+    window.closePOSHoldPrompt      = closePOSHoldPrompt;
+    window.posConfirmHoldCart      = posConfirmHoldCart;
+    window.openPOSHeldModal        = openPOSHeldModal;
+    window.closePOSHeldModal       = closePOSHeldModal;
+    window.posRecallHeldCart       = posRecallHeldCart;
+    window.posHoldCurrentAndRecall = posHoldCurrentAndRecall;
+    window.posOverwriteAndRecall   = posOverwriteAndRecall;
+    window.posDeleteHeldCart       = posDeleteHeldCart;
+    window.renderHeldBadges        = renderHeldBadges;
 };
 
 // Global expose
@@ -1713,6 +2184,17 @@ window.openPOSCartDrawer       = openPOSCartDrawer;
 window.closePOSCartDrawer      = closePOSCartDrawer;
 window.posSetQuickCash         = posSetQuickCash;
 window.playCashierBeep         = playCashierBeep;
+window.playCashierChime        = playCashierChime;
+window.posHoldCurrentCart      = posHoldCurrentCart;
+window.closePOSHoldPrompt      = closePOSHoldPrompt;
+window.posConfirmHoldCart      = posConfirmHoldCart;
+window.openPOSHeldModal        = openPOSHeldModal;
+window.closePOSHeldModal       = closePOSHeldModal;
+window.posRecallHeldCart       = posRecallHeldCart;
+window.posHoldCurrentAndRecall = posHoldCurrentAndRecall;
+window.posOverwriteAndRecall   = posOverwriteAndRecall;
+window.posDeleteHeldCart       = posDeleteHeldCart;
+window.renderHeldBadges        = renderHeldBadges;
 window.ensureCustomersLoaded   = ensureCustomersLoaded;
 window.ensureBanksLoaded       = ensureBanksLoaded;
 window.lookupPosMember         = lookupPosMember;

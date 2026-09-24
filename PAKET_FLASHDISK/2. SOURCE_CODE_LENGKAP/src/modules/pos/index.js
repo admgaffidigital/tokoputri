@@ -7,5 +7,13 @@
  * ============================================================
  */
 
-export { renderPOS, renderPOSStorefront, printPOSReceipt } from './pos.js';
+export {
+    renderPOS,
+    renderPOSStorefront,
+    printPOSReceipt,
+    posHoldCurrentCart,
+    openPOSHeldModal,
+    posRecallHeldCart,
+    playCashierChime
+} from './pos.js';
 
