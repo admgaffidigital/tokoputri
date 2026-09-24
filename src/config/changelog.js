@@ -8,6 +8,21 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-9-20',
+        version: 'v1.9.20',
+        date: '2026-09-24',
+        title: 'Perbaikan Persistensi Toggle Icon POS Kasir Storefront Saat Muat Ulang Halaman (Anti-Disappearance & Zero-Latency Cache)',
+        category: 'fix',
+        badge: 'POS Header Icon Stability & Zero Latency v1.9.20',
+        items: [
+            'Penyelesaian Kendala Ikon Kasir Hilang Saat Reload: Memperbaiki masalah race condition dan pembatasan aturan keamanan Firestore (security rules) yang sebelumnya menyebabkan query akun kasir mengembalikan penolakan izin (permission denied) pada sesi awal reload sehingga tombol kasir disembunyikan secara keliru.',
+            'Arsitektur Multi-Tier Detection & Fast Path 0ms: Pengecekan visibilitas ikon POS kini memanfaatkan cache instan localStorage (pos_has_cashier), sesi kasir aktif (pos_cashier_session), status admin aktif, dan konfigurasi publik cms_data tanpa memblokir perenderan UI.',
+            'Sinkronisasi Otomatis Dokumen Toko (hasCashier): Admin CMS kini otomatis menyinkronkan penanda hasCashier ke dokumen utama cms_data setiap kali kasir ditambah, diubah, atau dihapus, sehingga storefront dapat membaca status secara instan tanpa query berlebih.',
+            'Penghapusan Kelas Hidden Awal & Skrip Proteksi FOUC: Tombol kasir di header kini ditampilkan secara default dan diproteksi skrip inline instan sehingga tidak ada kedipan (flicker) atau hilangnya tombol saat koneksi lambat maupun offline.',
+            'Reaktivasi Listener Auth: updatePOSHeaderIcon kini otomatis dipanggil kembali saat proses autentikasi Firebase selesai dipulihkan (onAuthStateChanged).'
+        ]
+    },
+    {
         id: 'log-1-9-19',
         version: 'v1.9.19',
         date: '2026-09-24',

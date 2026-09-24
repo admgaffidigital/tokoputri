@@ -66,6 +66,11 @@ const loadCashierList = async () => {
             .get();
 
         if (snap.empty) {
+            try {
+                localStorage.setItem('pos_has_cashier', 'false');
+                await db.collection('freshmart').doc('cms_data').set({ hasCashier: false }, { merge: true });
+            } catch (_) {}
+            if (typeof window.updatePOSHeaderIcon === 'function') window.updatePOSHeaderIcon();
             container.innerHTML = `
             <div class="flex flex-col items-center justify-center py-16 text-slate-400 dark:text-slate-600">
                 <i class="fa-solid fa-user-slash text-4xl mb-3"></i>
@@ -74,6 +79,13 @@ const loadCashierList = async () => {
             </div>`;
             return;
         }
+
+        const hasActive = snap.docs.some(doc => doc.data()?.isActive !== false);
+        try {
+            localStorage.setItem('pos_has_cashier', hasActive ? 'true' : 'false');
+            await db.collection('freshmart').doc('cms_data').set({ hasCashier: hasActive }, { merge: true });
+        } catch (_) {}
+        if (typeof window.updatePOSHeaderIcon === 'function') window.updatePOSHeaderIcon();
 
         const listHtml = snap.docs.map(doc => {
             const d = doc.data();
@@ -251,12 +263,18 @@ export const saveCashierAccount = async () => {
             createdBy: auth.currentUser?.uid || 'admin'
         });
 
+        try {
+            localStorage.setItem('pos_has_cashier', 'true');
+            await db.collection('freshmart').doc('cms_data').set({ hasCashier: true }, { merge: true });
+        } catch (_) {}
+
         closeAddCashierModal();
         showToast(`Kasir "${name}" berhasil didaftarkan! ✅`, 'success');
         await loadCashierList();
 
         // Update icon kasir di storefront (jika ada)
-        if (typeof window.initPOSAuth === 'function') window.initPOSAuth();
+        if (typeof window.updatePOSHeaderIcon === 'function') window.updatePOSHeaderIcon();
+        else if (typeof window.initPOSAuth === 'function') window.initPOSAuth();
 
     } catch (err) {
         console.error('[CashierAdmin] Gagal membuat kasir:', err);

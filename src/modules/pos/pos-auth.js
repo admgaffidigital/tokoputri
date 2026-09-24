@@ -9,7 +9,7 @@
  * ============================================================
  */
 
-import { auth, db, firebase } from '../../config/firebase.js';
+import { auth, db, firebase, ADMIN_UID } from '../../config/firebase.js';
 import { appData } from '../../core/state.js';
 import { el, esc, showToast, sLoad, hLoad } from '../../core/utils.js';
 
@@ -45,14 +45,53 @@ export const isCashierLoggedIn = () => !!getCashierSession();
 
 // ─── Cek apakah ada kasir terdaftar di toko ─────────────────
 export const checkCashierExists = async () => {
+    // 1. Sesi kasir aktif -> pasti ada kasir
+    if (getCashierSession()) return true;
+
+    // 2. Admin aktif -> pasti boleh akses POS
+    if (window.isAdm || window.__localIsAdm) return true;
+
+    // 3. Cek flag di appData (dari cms_data yang dipublikasikan dan di-cache di localStorage)
+    if (appData && (appData.hasCashier === true || appData.store?.posEnabled === true)) return true;
+
+    // 4. Cek cache lokal
+    const cached = localStorage.getItem('pos_has_cashier');
+    if (cached === 'true') return true;
+
+    // 5. Cek apakah user adalah admin terverifikasi
+    const isAdminUser = !!(window.isAdm || window.__localIsAdm || (auth.currentUser && auth.currentUser.uid === ADMIN_UID));
+
     try {
-        const snap = await db.collection('freshmart').doc('cms_data')
-            .collection('cashier_accounts')
-            .where('isActive', '==', true)
-            .limit(1).get();
-        return !snap.empty;
+        if (isAdminUser) {
+            // Admin memiliki hak 'allow list' pada sub-koleksi cashier_accounts
+            const snap = await db.collection('freshmart').doc('cms_data')
+                .collection('cashier_accounts')
+                .where('isActive', '==', true)
+                .limit(1).get();
+            const exists = !snap.empty;
+            try {
+                localStorage.setItem('pos_has_cashier', exists ? 'true' : 'false');
+                db.collection('freshmart').doc('cms_data').set({ hasCashier: exists }, { merge: true }).catch(() => {});
+            } catch (_) {}
+            return exists;
+        } else {
+            // Non-admin (storefront / kasir sebelum login): baca dokumen cms_data (public read)
+            const cmsSnap = await db.collection('freshmart').doc('cms_data').get();
+            if (cmsSnap.exists) {
+                const data = cmsSnap.data();
+                if (data.hasCashier !== undefined) {
+                    const hasC = !!data.hasCashier;
+                    try { localStorage.setItem('pos_has_cashier', hasC ? 'true' : 'false'); } catch (_) {}
+                    return hasC;
+                }
+            }
+            // Jika belum ada field hasCashier di cms_data, pertahankan fallback aman agar icon tidak hilang
+            return cached !== 'false';
+        }
     } catch (e) {
-        return false;
+        // PERINGATAN: jika query melempar permission denied (karena aturan firestore) atau offline,
+        // JANGAN sembunyikan icon jika belum pernah secara eksplisit bernilai 'false'
+        return cached !== 'false';
     }
 };
 
@@ -60,15 +99,32 @@ export const checkCashierExists = async () => {
 export const updatePOSHeaderIcon = async () => {
     const btn = el('pos-cashier-header-btn');
     if (!btn) return;
+
+    // FAST PATH (0ms instan): Tampilkan langsung dari cache lokal & sesi tanpa menunggu query jaringan
+    const hasSession = !!getCashierSession();
+    const isAdmin = !!(window.isAdm || window.__localIsAdm);
+    const cached = localStorage.getItem('pos_has_cashier');
+    const appHasCashier = appData ? (appData.hasCashier ?? true) : true;
+
+    if (hasSession || isAdmin || cached === 'true' || (cached === null && appHasCashier !== false)) {
+        btn.classList.remove('hidden');
+    } else if (cached === 'false') {
+        btn.classList.add('hidden');
+    }
+
+    // BACKGROUND VALIDATION: Cek update dari Firestore secara non-blocking
     try {
         const exists = await checkCashierExists();
-        if (exists) {
+        if (exists || hasSession || isAdmin) {
             btn.classList.remove('hidden');
         } else {
             btn.classList.add('hidden');
         }
     } catch (e) {
-        btn.classList.remove('hidden'); // tampilkan saja jika error
+        // Fallback aman jika jaringan offline / timeout: jangan pernah sembunyikan jika ada sesi atau cache bukan false
+        if (hasSession || isAdmin || cached !== 'false') {
+            btn.classList.remove('hidden');
+        }
     }
 };
 
@@ -189,6 +245,8 @@ export const processCashierLogin = async () => {
             email: cashierData.email || email,
             role: 'cashier'
         });
+        try { localStorage.setItem('pos_has_cashier', 'true'); } catch (_) {}
+        updatePOSHeaderIcon();
 
         // Jika admin sedang login, jangan sign out Firebase Auth
         // (gunakan state window.__cashierSession untuk POS, admin tetap pakai window.isAdm)
@@ -264,3 +322,4 @@ window.exitPOSMode         = cashierLogout; // alias untuk router back-button
 window.getCashierSession   = getCashierSession;
 window.isCashierLoggedIn   = isCashierLoggedIn;
 window.initPOSAuth         = initPOSAuth;
+window.updatePOSHeaderIcon = updatePOSHeaderIcon;

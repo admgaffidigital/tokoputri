@@ -121,6 +121,9 @@ export const loadAppData = async () => {
         appData.payment = { ...defApp.payment, ...(localCms.payment || {}) };
         appData.config = { ...defApp.config, ...(localCms.config || {}) };
         if (appData.config && appData.config.gasUrl) window.GAS_UPLOAD_URL = appData.config.gasUrl;
+        if (localCms.hasCashier !== undefined) {
+            try { localStorage.setItem('pos_has_cashier', localCms.hasCashier ? 'true' : 'false'); } catch(_) {}
+        }
         if (localProducts) appData.products = sortProductsByOrder(localProducts);
         if (localRewards) appData.rewards = localRewards;
         prepareAppData();
@@ -165,6 +168,10 @@ export const loadAppData = async () => {
                 appData.payment = { ...defApp.payment, ...(f.payment || {}) };
                 appData.config = { ...defApp.config, ...(f.config || {}) };
                 if (appData.config && appData.config.gasUrl) window.GAS_UPLOAD_URL = appData.config.gasUrl;
+                if (f.hasCashier !== undefined) {
+                    try { localStorage.setItem('pos_has_cashier', f.hasCashier ? 'true' : 'false'); } catch(_) {}
+                    if (typeof window.updatePOSHeaderIcon === 'function') window.updatePOSHeaderIcon();
+                }
 
                 appData.products = sortProductsByOrder(pSnap.docs.map(doc => doc.data()));
                 ssL('freshmart_products', JSON.stringify(appData.products));
@@ -495,6 +502,10 @@ export const attachRealtimeStockSync = () => {
             if (appData.store) {
                 applyUITheme(appData.store.uiTheme, appData.store.themeColor);
                 applyBackgroundStyle(appData.store.bgStyle, appData.store.bgCustomUrl);
+            }
+            if (f.hasCashier !== undefined) {
+                try { localStorage.setItem('pos_has_cashier', f.hasCashier ? 'true' : 'false'); } catch(_) {}
+                if (typeof window.updatePOSHeaderIcon === 'function') window.updatePOSHeaderIcon();
             }
             updatePwaManifest();
 

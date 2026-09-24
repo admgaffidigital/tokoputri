@@ -341,6 +341,13 @@ window.addEventListener('DOMContentLoaded', async () => {
         // Update badge PRO/FREE di UI
         if (window.updateProBadge) window.updateProBadge();
 
+        // Update status toggle icon POS Kasir di header saat auth pulih
+        if (typeof window.updatePOSHeaderIcon === 'function') {
+            window.updatePOSHeaderIcon();
+        } else if (typeof window.initPOSAuth === 'function') {
+            window.initPOSAuth();
+        }
+
         // 3. MASUK KE DASHBOARD ADMIN
         let loginView = document.getElementById('view-admin-login');
         if (loginView && !loginView.classList.contains('hidden')) {
@@ -362,6 +369,7 @@ window.addEventListener('DOMContentLoaded', async () => {
         if (window.updateProBadge) window.updateProBadge();
         localStorage.removeItem("isFreshmartPro");
         localStorage.removeItem("freshmart_license_code");
+        if (typeof window.updatePOSHeaderIcon === 'function') window.updatePOSHeaderIcon();
     }
 });
 });
