@@ -58,12 +58,10 @@ if (typeof window !== 'undefined') {
 try {
     db.settings({
         ignoreUndefinedProperties: true,
-        experimentalForceLongPolling: true,
         experimentalAutoDetectLongPolling: true,
+        merge: true,
     });
-} catch(e) {
-    console.warn('[Firebase] db.settings info:', e?.message || e);
-}
+} catch(e) {}
 
 // Handler adaptif jaringan: sinkronkan status online/offline dengan Firestore
 // agar saat internet drop, Firestore tidak terus-menerus memaksa retry QUIC/UDP.
