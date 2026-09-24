@@ -2248,6 +2248,25 @@
             _log.apply(console, arguments);
           };
         }
+
+        // --- Defensive Shield: Cegah error 'the given Node has no parent' dari Vercel Toolbar / Analytics ---
+        try {
+          if (typeof Range !== "undefined" && Range.prototype.selectNode) {
+            const _origSelectNode = Range.prototype.selectNode;
+            Range.prototype.selectNode = function (node) {
+              if (!node || !node.parentNode) return;
+              return _origSelectNode.call(this, node);
+            };
+          }
+          if (typeof Range !== "undefined" && Range.prototype.selectNodeContents) {
+            const _origSelectNodeContents = Range.prototype.selectNodeContents;
+            Range.prototype.selectNodeContents = function (node) {
+              if (!node) return;
+              return _origSelectNodeContents.call(this, node);
+            };
+          }
+        } catch (_) {}
+
         console.info("%c[FreshMart Security v2.0] Patch aktif.", "color: #10b981; font-weight: bold;");
       })();
       //]]>
