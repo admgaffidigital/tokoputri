@@ -179,6 +179,14 @@ const startClock = () => {
     clockInterval = setInterval(update, 1000);
 };
 
+export const stopClock = () => {
+    if (clockInterval) {
+        clearInterval(clockInterval);
+        clockInterval = null;
+    }
+};
+window.stopPOSClock = stopClock;
+
 // ─── Barcode Scanner (USB) ──────────────────────────────────
 export const destroyBarcodeListener = () => {
     if (window.__posBarcodeFn) {
@@ -889,6 +897,17 @@ const getItemImg = (item) => {
 
 export const renderCatalog = () => {
     try {
+        // Fallback pemulihan produk dari cache lokal jika appData.products belum terisi
+        if (!appData?.products || !appData.products.length) {
+            try {
+                const cached = JSON.parse(localStorage.getItem('freshmart_products') || 'null');
+                if (Array.isArray(cached) && cached.length > 0) {
+                    if (!appData) window.appData = {};
+                    appData.products = cached;
+                }
+            } catch (_) {}
+        }
+
         const prodList = Array.isArray(appData?.products) ? appData.products : [];
         const products = prodList.filter(p => {
             if (!p || p.isActive === 'false' || p.isActive === false) return false;

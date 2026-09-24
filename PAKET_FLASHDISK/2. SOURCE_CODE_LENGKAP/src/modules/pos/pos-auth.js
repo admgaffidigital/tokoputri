@@ -284,7 +284,6 @@ export const processCashierLogin = async () => {
 // ─── Logout Kasir ────────────────────────────────────────────
 export const cashierLogout = async () => {
     const session = getCashierSession();
-    if (!session) return;
 
     if (typeof window.detachPOSHistoryListener === 'function') {
         window.detachPOSHistoryListener();
@@ -298,13 +297,22 @@ export const cashierLogout = async () => {
     } catch (e) {}
 
     clearCashierSession();
+
+    // Bersihkan kontainer DOM POS Kasir storefront secara tuntas agar tidak ada residu ID di DOM
+    const sfView = el('view-pos-cashier');
+    if (sfView) sfView.innerHTML = '';
+
     if (typeof window.destroyBarcodeListener === 'function') window.destroyBarcodeListener();
+    if (typeof window.stopPOSClock === 'function') window.stopPOSClock();
+
     showToast('Sesi kasir berakhir. Sampai jumpa! 👋');
 
     // Kembali ke storefront
     if (typeof window.changeView === 'function') window.changeView('view-catalog');
 
     if (typeof window.triggerHaptic === 'function') window.triggerHaptic('medium');
+
+    if (typeof window.updatePOSHeaderIcon === 'function') window.updatePOSHeaderIcon();
 };
 
 // ─── Inisialisasi: pasang icon POS di header jika ada kasir ──
