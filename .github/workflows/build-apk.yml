@@ -78,15 +78,13 @@ jobs:
             
             Unduh file installer **TokoPutri.apk** di bawah untuk dipasang di smartphone Android.
             
-            **Pembaruan Fitur Terbaru (v1.9.2):**
-            - 🔀 **Geser & Atur Urutan Produk (Drag & Drop Reorder)**: Seller bisa langsung tahan & geser kartu produk untuk mengatur urutan tampilan di toko — mendukung sentuh jari HP maupun drag mouse di komputer.
-            - ⬆️⬇️ **Tombol Panah Naik/Turun Cepat**: Geser produk satu posisi per klik tanpa perlu drag jauh.
-            - 🔢 **Badge Nomor Urut #1, #2, ... (Klik untuk Pindah)**: Klik badge untuk langsung pindah ke nomor tertentu via dialog.
-            - 📦 **Rapikan per Kategori Otomatis**: Satu klik untuk mengelompokkan produk sejenis (paku, semen, cat) secara otomatis.
-            - ⚡ **Menu Urutkan Cepat**: Pilihan A-Z, Z-A, Harga, Reset ke Terbaru — semuanya tersimpan permanen.
-            - ☁️ **Auto-Save ke Cloud & Sinkron Real-Time**: Urutan langsung tersimpan ke Firestore dan tercermin di tampilan Beranda/Katalog pembeli.
-            - 🔒 **Member Locking & Security (v1.9.1)**: Identitas member terkunci permanen di database, hardening Firestore rules.
-            - 📍 **Drop-Point Delivery (v1.9.0)**: Kirim pesanan ke lokasi proyek/tukang yang berbeda dengan ongkir presisi.
+            **Pembaruan Fitur Terbaru (v1.9.20):**
+            - 🛒 **POS Kasir Pintar & Pemindai Barcode Kamera Interaktif**: Scan barcode dan QR via kamera smartphone/tablet/webcam dengan reticle animasi laser scanline, toggle flash/torch, dan audio beep instan.
+            - 🧮 **Kalkulator Diskon Transaksi Cerdas (Rp & %)**: Diskon otomatis dual-mode dengan chips preset instan (5%, 10%, 15%, 20%, 50%, Rp 2rb, 5rb, 10rb, 25rb, 50rb).
+            - 🚦 **Peringatan Stok Menipis & Penanda Habis**: Lencana visual HABIS dan SISA X di katalog kasir dengan validasi kuantitas belanja.
+            - ⏸️ **Parkir Transaksi & Antrean Kasir (Hold & Recall Cart)**: Tahan dan panggil transaksi antrean pelanggan tanpa risiko kehilangan data disertai chime sintetis.
+            - 🖨️ **Integrasi Universal Struk Printer Thermal ESC/POS**: Cetak struk kasir 58mm/80mm, Bluetooth ESC/POS, dan driver RawBT Android.
+            - ⚡ **Persistensi Toggle Icon POS Kasir di Header**: Navigasi kasir 100% stabil saat muat ulang halaman dengan zero-latency local cache dan multi-tier verification.
           files: build-output/TokoPutri.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -50,7 +50,7 @@ export const fetchLatestReleaseInfo = async () => {
     if (cachedReleaseInfo) return cachedReleaseInfo;
     if (isFetchingRelease) return null;
 
-    const localVer = getLatestVersion(appData) || 'v1.8.7';
+    const localVer = getLatestVersion(appData) || 'v1.9.20';
 
     isFetchingRelease = true;
     try {
@@ -72,7 +72,7 @@ export const fetchLatestReleaseInfo = async () => {
             cachedReleaseInfo = {
                 tagName: effectiveTag,
                 name: `Toko Putri ${effectiveTag}`,
-                publishedAt: isGitHubOlder ? '19 Sep 2026' : formatReleaseDate(data.published_at),
+                publishedAt: isGitHubOlder ? '24 Sep 2026' : formatReleaseDate(data.published_at),
                 fileSize: apkAsset ? formatFileSize(apkAsset.size) : '8.0 MB',
                 downloadUrl: apkAsset?.browser_download_url || GITHUB_LATEST_DOWNLOAD_URL,
                 notes: data.body || '',
@@ -83,11 +83,11 @@ export const fetchLatestReleaseInfo = async () => {
         }
     } catch (err) {
         // Fallback anggun ke konfigurasi changelog internal
-        const fallbackVer = getLatestVersion(appData) || 'v1.8.7';
+        const fallbackVer = getLatestVersion(appData) || 'v1.9.20';
         cachedReleaseInfo = {
             tagName: fallbackVer,
             name: `Toko Putri ${fallbackVer}`,
-            publishedAt: '19 Sep 2026',
+            publishedAt: '24 Sep 2026',
             fileSize: '8.0 MB',
             downloadUrl: GITHUB_LATEST_DOWNLOAD_URL,
             notes: '',
@@ -217,14 +217,14 @@ const ensureAppDownloadModalDOM = () => {
             <div class="space-y-2">
                 <button id="btn-download-apk-action" onclick="downloadLatestApk()" class="w-full py-3.5 px-6 rounded-2xl bg-[#01875f] hover:bg-[#01704f] active:scale-[0.98] text-white font-extrabold text-sm sm:text-base flex items-center justify-center gap-3 shadow-lg shadow-emerald-600/25 transition-all cursor-pointer group">
                     <i class="fa-solid fa-download group-hover:translate-y-0.5 transition-transform" id="btn-download-apk-icon"></i>
-                    <span id="btn-download-apk-text">Unduh &amp; Pasang APK (<span id="app-modal-version-tag">v1.8.7</span>)</span>
+                    <span id="btn-download-apk-text">Unduh &amp; Pasang APK (<span id="app-modal-version-tag">v1.9.20</span>)</span>
                 </button>
                 <div class="flex items-center justify-between px-1 text-[10px] font-bold text-slate-400 dark:text-slate-500">
                     <span class="flex items-center gap-1.5">
                         <i class="fa-brands fa-android text-emerald-500 text-xs"></i>
                         <span>Kompatibel: Android 7.0 (Nougat) s/d Android 15</span>
                     </span>
-                    <span id="app-modal-published-date" class="hidden sm:inline">Rilis: 19 Sep 2026</span>
+                    <span id="app-modal-published-date" class="hidden sm:inline">Rilis: 24 Sep 2026</span>
                 </div>
             </div>
 
@@ -248,12 +248,12 @@ const ensureAppDownloadModalDOM = () => {
                 </div>
             </div>
 
-            <!-- Apa yang Baru (Highlights Changelog v1.8.7) -->
+            <!-- Apa yang Baru (Highlights Changelog v1.9.20) -->
             <div class="space-y-2.5">
                 <div class="flex items-center justify-between">
                     <h3 class="text-xs sm:text-sm font-black text-slate-900 dark:text-white flex items-center gap-2">
                         <i class="fa-solid fa-sparkles text-amber-500"></i>
-                        <span>Apa yang Baru</span>
+                        <span>Apa yang Baru di v1.9.20</span>
                     </h3>
                     <button type="button" onclick="closeAppDownloadModal(); if(typeof window.openChangelogModal==='function') window.openChangelogModal();" class="text-[10px] font-bold text-[var(--color-primary)] hover:underline cursor-pointer">
                         Lihat Semua Riwayat
@@ -264,25 +264,25 @@ const ensureAppDownloadModalDOM = () => {
                     <div class="flex items-start gap-2.5 text-slate-700 dark:text-slate-300">
                         <i class="fa-solid fa-circle-check text-emerald-500 mt-0.5 text-[11px] shrink-0"></i>
                         <span class="font-medium text-[11px] leading-relaxed">
-                            <b>Pemisahan Pelanggan Umum &amp; Member Resmi:</b> Nomor HP baru berstatus Pelanggan Umum, wajib verifikasi database Admin CMS untuk hak member.
+                            <b>POS Kasir Pintar &amp; Pemindai Barcode Kamera:</b> Scan barcode via kamera HP/tablet/webcam dengan reticle animasi laser, toggle torch &amp; umpan balik audio beep instan.
                         </span>
                     </div>
                     <div class="flex items-start gap-2.5 text-slate-700 dark:text-slate-300">
                         <i class="fa-solid fa-circle-check text-emerald-500 mt-0.5 text-[11px] shrink-0"></i>
                         <span class="font-medium text-[11px] leading-relaxed">
-                            <b>Proteksi Cash Tempo &amp; Loyalty Points:</b> Opsi tempo disembunyikan dan saldo poin belanja dilindungi khusus untuk member terverifikasi.
+                            <b>Kalkulator Diskon Kasir (Rp / %):</b> Diskon transaksi otomatis real-time dengan preset chips cepat serta validasi stok menipis (HABIS / SISA X).
                         </span>
                     </div>
                     <div class="flex items-start gap-2.5 text-slate-700 dark:text-slate-300">
                         <i class="fa-solid fa-circle-check text-emerald-500 mt-0.5 text-[11px] shrink-0"></i>
                         <span class="font-medium text-[11px] leading-relaxed">
-                            <b>Konfirmasi Member 1-Klik di CMS Admin:</b> Admin toko dapat mendaftarkan nomor pelanggan menjadi member langsung dari detail pesanan.
+                            <b>Parkir Transaksi Kasir (Hold &amp; Recall):</b> Tahan dan panggil antrean pembeli tanpa risiko data hilang disertai audio chime kasir.
                         </span>
                     </div>
                     <div class="flex items-start gap-2.5 text-slate-700 dark:text-slate-300">
                         <i class="fa-solid fa-circle-check text-emerald-500 mt-0.5 text-[11px] shrink-0"></i>
                         <span class="font-medium text-[11px] leading-relaxed">
-                            <b>Koneksi Universal POS Printer:</b> Mendukung printer kasir Bluetooth thermal 58mm/80mm, USB OTG, LAN/WiFi, &amp; RawBT.
+                            <b>Integrasi Universal Printer Thermal POS:</b> Cetak struk kasir 58mm/80mm, Bluetooth ESC/POS, dan RawBT Android driver langsung dari kasir.
                         </span>
                     </div>
                 </div>
@@ -442,7 +442,7 @@ export const downloadLatestApk = () => {
             icon.className = 'fa-solid fa-circle-check text-white';
         }
         if (text) {
-            const ver = cachedReleaseInfo?.tagName || 'v1.8.7';
+            const ver = cachedReleaseInfo?.tagName || getLatestVersion(appData) || 'v1.9.20';
             text.textContent = `Unduh Ulang APK (${ver})`;
         }
     }, 2500);
