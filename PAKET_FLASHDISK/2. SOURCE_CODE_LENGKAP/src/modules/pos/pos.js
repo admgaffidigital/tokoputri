@@ -817,7 +817,7 @@ const renderCatalog = () => {
                             ${hasVariants ? `<span class="pos-badge pos-badge-varian"><i class="fa-solid fa-layer-group" style="font-size:6px"></i> VARIAN</span>` : ''}
                             ${hasGrosir   ? `<span class="pos-badge pos-badge-grosir"><i class="fa-solid fa-tags" style="font-size:6px"></i> GROSIR</span>` : ''}
                         </div>
-                        <p style="font-size:12px;font-weight:700;color:#1e293b;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${esc(p.name)}">${esc(p.name)}</p>
+                        <p class="text-xs font-bold text-slate-800 dark:text-slate-100 truncate" title="${esc(p.name)}">${esc(p.name)}</p>
                         <p style="font-size:12px;font-weight:900;color:var(--color-primary);margin-top:2px">${fRp(parseFloat(p.price)||0)}</p>
                     </div>
                     <button onclick="event.stopPropagation();window.posAddToCart('${safeId}')" class="pos-add-btn" title="Tambah ke keranjang">
@@ -1834,7 +1834,49 @@ export const printPOSReceipt = (tx) => {
         `<tr><td style="padding:2px 0;word-wrap:break-word">${esc(i.name)}</td><td style="text-align:right;padding:2px 4px;white-space:nowrap">${i.qty}x ${fRp(i.price)}</td><td style="text-align:right;padding:2px 0;white-space:nowrap">${fRp(i.subtotal)}</td></tr>`
     ).join('');
     const w = window.open('', '_blank', 'width=420,height=720');
-    if (!w) { showToast('Izinkan popup untuk cetak struk', 'warning'); return; }
+    if (!w) {
+        // Fallback in-page modal jika popup diblokir oleh browser / Capacitor Android
+        document.getElementById('pos-receipt-fallback-modal')?.remove();
+        document.body.insertAdjacentHTML('beforeend', `
+        <div id="pos-receipt-fallback-modal" class="fixed inset-0 z-[10000] flex items-center justify-center p-4" style="background:rgba(15,23,42,0.7);backdrop-filter:blur(4px)">
+            <div class="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl w-full max-w-sm border border-slate-200 dark:border-slate-800 overflow-hidden flex flex-col max-h-[90vh]">
+                <div class="p-4 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center bg-slate-50 dark:bg-slate-800/50">
+                    <span class="font-bold text-xs text-slate-700 dark:text-slate-200 flex items-center gap-1.5"><i class="fa-solid fa-receipt text-amber-500"></i>Struk Transaksi POS</span>
+                    <button onclick="document.getElementById('pos-receipt-fallback-modal')?.remove()" class="w-7 h-7 rounded-lg bg-slate-200/60 dark:bg-slate-700/60 text-slate-600 dark:text-slate-300 text-sm leading-none flex items-center justify-center cursor-pointer">×</button>
+                </div>
+                <div class="p-4 overflow-y-auto flex-1 font-mono text-[11px] bg-slate-50/60 dark:bg-slate-950 text-slate-800 dark:text-slate-200 space-y-2 select-text">
+                    <div class="text-center font-bold text-sm uppercase">${esc(storeName)}</div>
+                    ${storeAddr ? `<div class="text-center text-[10px] text-slate-500">${esc(storeAddr)}</div>` : ''}
+                    ${storeWa ? `<div class="text-center text-[10px] text-slate-500">WA: ${esc(storeWa)}</div>` : ''}
+                    <div class="border-t border-dashed border-slate-300 dark:border-slate-700 my-2"></div>
+                    <div>No: <b>#${esc(tx.txId)}</b></div>
+                    <div>Tgl: ${esc(dateStr)}</div>
+                    <div>Kasir: ${esc(tx.cashierName)}</div>
+                    <div>Pelanggan: ${esc(tx.customer?.name || 'Umum')}</div>
+                    ${tx.customer?.phone ? `<div>HP: ${esc(tx.customer.phone)}</div>` : ''}
+                    <div class="border-t border-dashed border-slate-300 dark:border-slate-700 my-2"></div>
+                    <table class="w-full text-[11px]">
+                        ${(tx.items || []).map(i => `<tr><td class="py-0.5">${esc(i.name)}</td><td class="text-right py-0.5 whitespace-nowrap">${i.qty}x ${fRp(i.price)}</td><td class="text-right py-0.5 whitespace-nowrap font-bold">${fRp(i.subtotal)}</td></tr>`).join('')}
+                    </table>
+                    <div class="border-t border-dashed border-slate-300 dark:border-slate-700 my-2"></div>
+                    <div class="flex justify-between"><span>Subtotal</span><span>${fRp(tx.subtotal)}</span></div>
+                    ${(tx.globalDiscount || 0) > 0 ? `<div class="flex justify-between text-rose-500"><span>Diskon</span><span>- ${fRp(tx.globalDiscount)}</span></div>` : ''}
+                    <div class="flex justify-between font-black text-sm pt-1 border-t border-slate-200 dark:border-slate-700"><span>TOTAL</span><span style="color:var(--color-primary)">${fRp(tx.total)}</span></div>
+                    ${tx.payment.method === 'cash' ? `<div class="flex justify-between"><span>Bayar</span><span>${fRp(tx.payment.paid)}</span></div><div class="flex justify-between font-bold text-emerald-600"><span>Kembalian</span><span>${fRp(tx.payment.change)}</span></div>` : ''}
+                    ${tx.payment.method === 'tempo' ? `<div class="flex justify-between"><span>DP</span><span>${fRp(tx.payment.dp || 0)}</span></div><div class="flex justify-between font-bold text-amber-600"><span>Sisa Piutang</span><span>${fRp(tx.payment.tempoBalance || 0)}</span></div>` : ''}
+                    <div class="flex justify-between"><span>Metode</span><span>${esc(tx.payment.method.toUpperCase())}</span></div>
+                    <div class="border-t border-dashed border-slate-300 dark:border-slate-700 my-2"></div>
+                    <div class="text-center text-[10px] text-slate-400">*** Terima Kasih ***</div>
+                </div>
+                <div class="p-3 border-t border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/40 flex gap-2">
+                    <button onclick="window.print()" class="w-full py-2.5 rounded-xl text-white font-bold text-xs flex items-center justify-center gap-2 cursor-pointer shadow-md" style="background:var(--color-primary)">
+                        <i class="fa-solid fa-print"></i> Cetak Dokumen
+                    </button>
+                </div>
+            </div>
+        </div>`);
+        return;
+    }
     w.document.write(`<!DOCTYPE html><html><head><meta charset="utf-8"><title>Struk POS</title>
     <style>*{box-sizing:border-box}body{font-family:'Courier New',monospace;font-size:12px;max-width:300px;margin:0 auto;padding:12px}
     h2{text-align:center;font-size:14px;font-weight:900;margin:2px 0;text-transform:uppercase}p{margin:1px 0;text-align:center;font-size:11px}.left{text-align:left}
