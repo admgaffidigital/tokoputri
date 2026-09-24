@@ -8,6 +8,22 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-9-19',
+        version: 'v1.9.19',
+        date: '2026-09-24',
+        title: 'Pemindai Barcode Kamera Interaktif, Kalkulator Diskon Kasir Pintar (Rp/%), Alert Stok Menipis & Integrasi Printer Thermal ESC/POS',
+        category: 'feature',
+        badge: 'POS Smart Scanner & Pro Cashier v1.9.19',
+        items: [
+            'Pemindai Barcode Kamera Interaktif Terintegrasi: Kasir dapat memindai barcode atau kode QR produk secara langsung menggunakan kamera HP, tablet, maupun webcam laptop via W3C BarcodeDetector API tanpa memerlukan scanner USB fisik.',
+            'Reticle Pemindai Futuristik & Laser Animasi: Dilengkapi jendela bidik presisi, animasi garis laser pemindai (scanline laser), kontrol lampu senter/flash (torch), tombol putar kamera (depan/belakang), umpan balik audio beep instan, dan mode scan beruntun (continuous) vs sekali.',
+            'Kalkulator Diskon Transaksi Cerdas (Dual Mode: Rp & %): Keranjang kasir kini mendukung pemberian diskon fleksibel baik dalam nominal Rupiah maupun persentase potongan harga dengan kalkulasi otomatis real-time, sinkronisasi desktop & mobile, serta chip preset cepat (5%, 10%, 15%, 20%, 50%, Rp 2rb, 5rb, 10rb, 25rb, 50rb).',
+            'Peringatan Stok Menipis & Penanda Habis (Low Stock & Out of Stock Badges): Katalog kasir kini menampilkan status ketersediaan barang secara visual dengan lencana merah "HABIS" untuk stok 0 dan lencana peringatan oranye "SISA X" jika stok <= 5, disertai proteksi validasi kuantitas di keranjang kasir.',
+            'Integrasi Universal Printer & Struk Thermal POS: Cetak struk kasir kini terhubung langsung ke preferensi printer toko (ukuran kertas 58mm/80mm, driver RawBT di Android, atau Bluetooth ESC/POS), menampilkan rincian diskon, poin member, serta tombol pintas akses cepat Pengaturan Printer.',
+            'Pintasan Keyboard Kasir Lanjutan: Tambahan shortcut F4 untuk fokus langsung ke kolom pencarian katalog dan F9 untuk membuka/menutup pemindai barcode kamera.'
+        ]
+    },
+    {
         id: 'log-1-9-18',
         version: 'v1.9.18',
         date: '2026-09-24',

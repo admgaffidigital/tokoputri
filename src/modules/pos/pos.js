@@ -11,6 +11,7 @@
 import { db, firebase } from '../../config/firebase.js';
 import { appData } from '../../core/state.js';
 import { el, setH, setIn, esc, fCur, showToast, getOptImg } from '../../core/utils.js';
+import { getPrinterConfig, openPrinterSettingsModal } from '../print/printer-settings.js';
 
 // ─── Import modul varian POS (lazy agar tidak load di awal) ──
 let _posVariantSheetLoaded = false;
@@ -32,9 +33,22 @@ let posCustomer     = { name: '', phone: '', isMember: false, memberId: null, is
 let posPayMethod    = 'cash';
 let posPaidAmount   = 0;
 let posGlobalDisc   = 0;
+let posDiscountType = 'rp'; // 'rp' | 'percent'
+let posDiscountVal  = 0;
 let barcodeBuffer   = '';
 let barcodeTimer    = null;
 let clockInterval   = null;
+
+// State Pemindai Barcode Kamera
+let posScannerStream     = null;
+let posScannerDetector   = null;
+let posScannerInterval   = null;
+let posScannerContinuous = true;
+let posScannerFacing     = 'environment'; // 'environment' | 'user'
+let posScannerTorchOn    = false;
+let posScannerTrack      = null;
+let lastScannedCode      = '';
+let lastScannedTime      = 0;
 
 export const setPOSViewMode = (mode) => {
     posCatalogViewMode = mode;
@@ -62,8 +76,36 @@ const fNum = (n) => Math.max(0, parseInt(n) || 0);
 const fRp  = (n) => fCur(n);
 
 const posSubtotal = () => posCart.reduce((s, i) => s + i.subtotal, 0);
-const posTotal    = () => Math.max(0, posSubtotal() - fNum(posGlobalDisc));
+
+export const posDiscountAmount = () => {
+    if (posDiscountType === 'percent') {
+        const pct = Math.min(100, Math.max(0, parseFloat(posDiscountVal) || 0));
+        return Math.round((posSubtotal() * pct) / 100);
+    }
+    return Math.min(posSubtotal(), fNum(posDiscountVal || posGlobalDisc));
+};
+
+const posTotal    = () => Math.max(0, posSubtotal() - posDiscountAmount());
 const posChange   = () => posPaidAmount - posTotal();
+
+// Status dan Ketersediaan Stok Produk Kasir
+export const getProductStockInfo = (p) => {
+    const useStk = appData.store?.useStock !== false;
+    if (!useStk) return { isManaged: false, totalStock: 9999, isOutOfStock: false, isLowStock: false };
+    
+    let total = 0;
+    if (p.variants && p.variants.length > 0) {
+        total = p.variants.reduce((s, v) => s + (parseFloat(v.stock) || 0), 0);
+    } else {
+        total = parseFloat(p.stock) || 0;
+    }
+    return {
+        isManaged: true,
+        totalStock: total,
+        isOutOfStock: total <= 0,
+        isLowStock: total > 0 && total <= 5
+    };
+};
 
 // Audio Beep Sintetis Kasir (Zero-dependency Web Audio API)
 export const playCashierBeep = () => {
@@ -150,7 +192,13 @@ const initBarcodeListener = () => {
         const inPos = curView === 'view-pos-cashier' || (curView === 'view-admin' && window.cTab === 'pos');
         if (!inPos) return;
 
-        // Pintasan Keyboard Kasir (F6/F7 = Tahan Transaksi, F8 = Antrean Tertahan)
+        // Pintasan Keyboard Kasir
+        if (e.key === 'F4') {
+            e.preventDefault();
+            const sf = el('pos-search-input');
+            if (sf) { sf.focus(); sf.select(); }
+            return;
+        }
         if (e.key === 'F6' || e.key === 'F7') {
             e.preventDefault();
             posHoldCurrentCart();
@@ -159,6 +207,12 @@ const initBarcodeListener = () => {
         if (e.key === 'F8') {
             e.preventDefault();
             openPOSHeldModal();
+            return;
+        }
+        if (e.key === 'F9') {
+            e.preventDefault();
+            if (el('pos-camera-scanner-modal')) closePOSCameraScanner();
+            else openPOSCameraScanner();
             return;
         }
 
@@ -206,9 +260,18 @@ export const addToCart = (productId) => {
         });
         return;
     }
+    const sInfo = getProductStockInfo(p);
+    if (sInfo.isManaged && sInfo.isOutOfStock) {
+        showToast(`Peringatan: Stok "${p.name}" habis di etalase/gudang!`, 'warning');
+    }
     const existing = posCart.find(i => String(i.id) === String(productId) && !i.isVariant);
-    if (existing) { existing.qty += 1; recalcItem(existing); }
-    else {
+    if (existing) {
+        if (sInfo.isManaged && existing.qty + 1 > sInfo.totalStock) {
+            showToast(`Stok maksimal "${p.name}" hanya ${sInfo.totalStock} ${p.unit || 'pcs'}`, 'warning');
+            return;
+        }
+        existing.qty += 1; recalcItem(existing);
+    } else {
         const price = parseFloat(p.price) || 0;
         posCart.push(recalcItem({ id: p.id, name: p.name, price, basePrice: price, qty: 1, discount: 0, subtotal: price, isVariant: false, isWholesale: false }));
     }
@@ -220,9 +283,15 @@ export const addToCart = (productId) => {
 export const posAddToCartQty = (productId, qty) => {
     const p = (appData.products || []).find(x => x && String(x.id) === String(productId));
     if (!p) return;
+    const sInfo = getProductStockInfo(p);
     const existing = posCart.find(i => String(i.id) === String(productId) && !i.isVariant);
-    if (existing) { existing.qty += qty; recalcItem(existing); }
-    else {
+    if (existing) {
+        if (sInfo.isManaged && existing.qty + qty > sInfo.totalStock) {
+            showToast(`Stok maksimal "${p.name}" hanya ${sInfo.totalStock} ${p.unit || 'pcs'}`, 'warning');
+            return;
+        }
+        existing.qty += qty; recalcItem(existing);
+    } else {
         const price = parseFloat(p.price) || 0;
         const item  = recalcItem({ id: p.id, name: p.name, price, basePrice: price, qty, discount: 0, subtotal: price * qty, isVariant: false, isWholesale: false });
         posCart.push(item);
@@ -256,6 +325,16 @@ export const addToCartWithVariant = (productId, variantName, variantPrice, varia
 export const updateQty = (cartKey, delta) => {
     const item = posCart.find(i => (i.cartKey || String(i.id)) === String(cartKey));
     if (!item) return;
+    if (delta > 0 && !item.isVariant) {
+        const p = (appData.products || []).find(x => x && String(x.id) === String(item.id));
+        if (p) {
+            const sInfo = getProductStockInfo(p);
+            if (sInfo.isManaged && item.qty + delta > sInfo.totalStock) {
+                showToast(`Stok maksimal tersedia: ${sInfo.totalStock} ${p.unit || 'pcs'}`, 'warning');
+                return;
+            }
+        }
+    }
     item.qty = Math.max(1, item.qty + delta);
     recalcItem(item);
     if (delta > 0) playCashierBeep();
@@ -265,7 +344,18 @@ export const updateQty = (cartKey, delta) => {
 export const setQty = (cartKey, val) => {
     const item = posCart.find(i => (i.cartKey || String(i.id)) === String(cartKey));
     if (!item) return;
-    item.qty = Math.max(1, fNum(val));
+    let targetQty = Math.max(1, fNum(val));
+    if (!item.isVariant) {
+        const p = (appData.products || []).find(x => x && String(x.id) === String(item.id));
+        if (p) {
+            const sInfo = getProductStockInfo(p);
+            if (sInfo.isManaged && targetQty > sInfo.totalStock) {
+                showToast(`Stok maksimal tersedia: ${sInfo.totalStock} ${p.unit || 'pcs'}`, 'warning');
+                targetQty = sInfo.totalStock;
+            }
+        }
+    }
+    item.qty = targetQty;
     recalcItem(item);
     renderCart();
 };
@@ -287,7 +377,7 @@ export const removeFromCart = (cartKey) => {
 export const clearCart = () => {
     if (posCart.length === 0) return;
     const executeClear = () => {
-        posCart = []; posGlobalDisc = 0; renderCart();
+        posCart = []; posGlobalDisc = 0; posDiscountVal = 0; posDiscountType = 'rp'; renderCart();
         showToast('Keranjang kasir dikosongkan.');
     };
     if (typeof window.showConfirm === 'function') {
@@ -483,7 +573,9 @@ export const posConfirmHoldCart = () => {
         time: Date.now(),
         note,
         cart: JSON.parse(JSON.stringify(posCart)),
-        globalDisc: fNum(posGlobalDisc),
+        globalDisc: posDiscountAmount(),
+        discountType: posDiscountType,
+        discountVal: posDiscountVal,
         customer: { ...posCustomer },
         total: posTotal(),
         subtotal: posSubtotal(),
@@ -496,6 +588,8 @@ export const posConfirmHoldCart = () => {
     // Reset keranjang aktif kasir
     posCart = [];
     posGlobalDisc = 0;
+    posDiscountVal = 0;
+    posDiscountType = 'rp';
     posCustomer = { name: '', phone: '', isMember: false, memberId: null, isNewTempo: false };
 
     closePOSHoldPrompt();
@@ -656,9 +750,11 @@ const _applyRecall = (heldIdx) => {
     const held = posHeldCarts[heldIdx];
     if (!held) return;
 
-    posCart       = JSON.parse(JSON.stringify(held.cart || []));
-    posGlobalDisc = fNum(held.globalDisc);
-    posCustomer   = held.customer ? { ...held.customer } : { name: '', phone: '', isMember: false, memberId: null, isNewTempo: false };
+    posCart         = JSON.parse(JSON.stringify(held.cart || []));
+    posDiscountType = held.discountType || 'rp';
+    posDiscountVal  = held.discountVal !== undefined ? held.discountVal : (held.globalDisc || 0);
+    posGlobalDisc   = posDiscountAmount();
+    posCustomer     = held.customer ? { ...held.customer } : { name: '', phone: '', isMember: false, memberId: null, isNewTempo: false };
 
     // Hapus dari held list
     posHeldCarts.splice(heldIdx, 1);
@@ -680,7 +776,9 @@ export const posHoldCurrentAndRecall = (heldId) => {
         time: Date.now(),
         note,
         cart: JSON.parse(JSON.stringify(posCart)),
-        globalDisc: fNum(posGlobalDisc),
+        globalDisc: posDiscountAmount(),
+        discountType: posDiscountType,
+        discountVal: posDiscountVal,
         customer: { ...posCustomer },
         total: posTotal(),
         subtotal: posSubtotal(),
@@ -818,11 +916,12 @@ const renderCatalog = () => {
             const cartItems      = posCart.filter(i => String(i.id) === String(p.id));
             const totalQtyInCart = cartItems.reduce((s, i) => s + i.qty, 0);
             const safeId         = esc(String(p.id));
+            const stockInfo      = getProductStockInfo(p);
 
             if (posCatalogViewMode === 'list') {
                 // ── LIST MODE: baris kompak dengan thumbnail 52px ──
                 return `
-                <div class="pos-list-item${totalQtyInCart > 0 ? ' in-cart' : ''}" onclick="window.posAddToCart('${safeId}')">
+                <div class="pos-list-item${totalQtyInCart > 0 ? ' in-cart' : ''}${stockInfo.isOutOfStock ? ' opacity-75' : ''}" onclick="window.posAddToCart('${safeId}')">
                     <div class="pos-list-thumb">
                         ${hasImg
                             ? `<img width="52" height="52" loading="lazy" decoding="async" src="${esc(imgUrl)}" alt="${esc(p.name)}" onerror="this.onerror=null;this.style.display='none';this.nextElementSibling.style.display='flex';">
@@ -835,6 +934,8 @@ const renderCatalog = () => {
                             ${p.category ? `<span style="font-size:9px;text-transform:uppercase;letter-spacing:0.06em;font-weight:700;color:#94a3b8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:80px">${esc(p.category)}</span>` : ''}
                             ${hasVariants ? `<span class="pos-badge pos-badge-varian"><i class="fa-solid fa-layer-group" style="font-size:6px"></i> VARIAN</span>` : ''}
                             ${hasGrosir   ? `<span class="pos-badge pos-badge-grosir"><i class="fa-solid fa-tags" style="font-size:6px"></i> GROSIR</span>` : ''}
+                            ${stockInfo.isOutOfStock ? `<span class="pos-badge pos-badge-habis"><i class="fa-solid fa-ban" style="font-size:6px"></i> HABIS</span>` : ''}
+                            ${stockInfo.isLowStock ? `<span class="pos-badge pos-badge-low"><i class="fa-solid fa-triangle-exclamation" style="font-size:6px"></i> SISA ${stockInfo.totalStock}</span>` : ''}
                         </div>
                         <p class="text-xs font-bold text-slate-800 dark:text-slate-100 truncate" title="${esc(p.name)}">${esc(p.name)}</p>
                         <p style="font-size:12px;font-weight:900;color:var(--color-primary);margin-top:2px">${fRp(parseFloat(p.price)||0)}</p>
@@ -847,12 +948,14 @@ const renderCatalog = () => {
 
             // ── GRID MODE (Default): kartu 1:1 anti-collapse (min-height 220px) ──
             return `
-            <div class="pos-product-card${totalQtyInCart > 0 ? ' in-cart' : ''}" onclick="window.posAddToCart('${safeId}')">
+            <div class="pos-product-card${totalQtyInCart > 0 ? ' in-cart' : ''}${stockInfo.isOutOfStock ? ' opacity-75' : ''}" onclick="window.posAddToCart('${safeId}')">
                 <!-- Kotak Gambar Rasio 1:1 Anti-Collapse (aspect-ratio 1:1 + min-height 120px) -->
                 <div class="pos-img-box">
                     <div class="pos-img-badges">
                         ${hasVariants ? `<span class="pos-badge pos-badge-varian"><i class="fa-solid fa-layer-group" style="font-size:6px"></i> VARIAN</span>` : ''}
                         ${hasGrosir   ? `<span class="pos-badge pos-badge-grosir"><i class="fa-solid fa-tags" style="font-size:6px"></i> GROSIR</span>` : ''}
+                        ${stockInfo.isOutOfStock ? `<span class="pos-badge pos-badge-habis"><i class="fa-solid fa-ban" style="font-size:6px"></i> HABIS</span>` : ''}
+                        ${stockInfo.isLowStock ? `<span class="pos-badge pos-badge-low"><i class="fa-solid fa-triangle-exclamation" style="font-size:6px"></i> SISA ${stockInfo.totalStock}</span>` : ''}
                     </div>
                     ${totalQtyInCart > 0 ? `<div class="pos-qty-badge">${totalQtyInCart}</div>` : ''}
                     ${hasImg
@@ -956,9 +1059,65 @@ const renderCart = () => {
     document.querySelectorAll('.pos-subtotal-target').forEach(e => e.textContent = formattedSub);
     document.querySelectorAll('.pos-total-target').forEach(e => e.textContent = formattedTotal);
     document.querySelectorAll('.pos-item-count-target').forEach(e => e.textContent = String(totalQty));
-    document.querySelectorAll('.pos-global-disc-target').forEach(e => {
-        if (document.activeElement !== e) e.value = posGlobalDisc || '';
+
+    const discAmt = posDiscountAmount();
+    const formattedDiscAmt = fRp(discAmt);
+
+    // Sync input diskon dan toggle tipe diskon
+    document.querySelectorAll('.pos-disc-val-input').forEach(e => {
+        if (document.activeElement !== e) e.value = posDiscountVal || '';
     });
+    document.querySelectorAll('.pos-global-disc-target').forEach(e => {
+        if (document.activeElement !== e) e.value = posDiscountVal || '';
+    });
+    document.querySelectorAll('.pos-disc-preview-target').forEach(e => {
+        e.textContent = discAmt > 0 ? `- ${formattedDiscAmt}` : 'Rp 0';
+        if (discAmt > 0) {
+            e.classList.remove('text-slate-400');
+            e.classList.add('text-rose-500');
+        } else {
+            e.classList.add('text-slate-400');
+            e.classList.remove('text-rose-500');
+        }
+    });
+    document.querySelectorAll('.pos-disc-type-rp').forEach(btn => {
+        if (posDiscountType === 'rp') {
+            btn.className = 'pos-disc-type-rp px-2 py-0.5 rounded-md transition-all cursor-pointer bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 shadow-xs font-black';
+        } else {
+            btn.className = 'pos-disc-type-rp px-2 py-0.5 rounded-md transition-all cursor-pointer text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 font-bold';
+        }
+    });
+    document.querySelectorAll('.pos-disc-type-pct').forEach(btn => {
+        if (posDiscountType === 'percent') {
+            btn.className = 'pos-disc-type-pct px-2 py-0.5 rounded-md transition-all cursor-pointer bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 shadow-xs font-black';
+        } else {
+            btn.className = 'pos-disc-type-pct px-2 py-0.5 rounded-md transition-all cursor-pointer text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 font-bold';
+        }
+    });
+    document.querySelectorAll('.pos-disc-prefix').forEach(el => {
+        el.textContent = posDiscountType === 'percent' ? '%' : 'Rp';
+    });
+
+    // Render preset chips
+    const chipsHTML = posDiscountType === 'percent'
+        ? `
+        <button onclick="window.posApplyQuickDiscount(5,'percent')" class="px-2 py-0.5 rounded-md bg-slate-200/70 hover:bg-slate-300/80 dark:bg-slate-700 dark:hover:bg-slate-600 text-[9px] font-black text-slate-700 dark:text-slate-200 cursor-pointer transition-all">5%</button>
+        <button onclick="window.posApplyQuickDiscount(10,'percent')" class="px-2 py-0.5 rounded-md bg-slate-200/70 hover:bg-slate-300/80 dark:bg-slate-700 dark:hover:bg-slate-600 text-[9px] font-black text-slate-700 dark:text-slate-200 cursor-pointer transition-all">10%</button>
+        <button onclick="window.posApplyQuickDiscount(15,'percent')" class="px-2 py-0.5 rounded-md bg-slate-200/70 hover:bg-slate-300/80 dark:bg-slate-700 dark:hover:bg-slate-600 text-[9px] font-black text-slate-700 dark:text-slate-200 cursor-pointer transition-all">15%</button>
+        <button onclick="window.posApplyQuickDiscount(20,'percent')" class="px-2 py-0.5 rounded-md bg-slate-200/70 hover:bg-slate-300/80 dark:bg-slate-700 dark:hover:bg-slate-600 text-[9px] font-black text-slate-700 dark:text-slate-200 cursor-pointer transition-all">20%</button>
+        <button onclick="window.posApplyQuickDiscount(50,'percent')" class="px-2 py-0.5 rounded-md bg-slate-200/70 hover:bg-slate-300/80 dark:bg-slate-700 dark:hover:bg-slate-600 text-[9px] font-black text-slate-700 dark:text-slate-200 cursor-pointer transition-all">50%</button>
+        ${posDiscountVal > 0 ? `<button onclick="window.posApplyQuickDiscount(0,'percent')" class="px-2 py-0.5 rounded-md bg-rose-100 hover:bg-rose-200 dark:bg-rose-950/40 text-[9px] font-black text-rose-600 cursor-pointer transition-all">Reset</button>` : ''}
+        `
+        : `
+        <button onclick="window.posApplyQuickDiscount(2000,'rp')" class="px-2 py-0.5 rounded-md bg-slate-200/70 hover:bg-slate-300/80 dark:bg-slate-700 dark:hover:bg-slate-600 text-[9px] font-black text-slate-700 dark:text-slate-200 cursor-pointer transition-all">2rb</button>
+        <button onclick="window.posApplyQuickDiscount(5000,'rp')" class="px-2 py-0.5 rounded-md bg-slate-200/70 hover:bg-slate-300/80 dark:bg-slate-700 dark:hover:bg-slate-600 text-[9px] font-black text-slate-700 dark:text-slate-200 cursor-pointer transition-all">5rb</button>
+        <button onclick="window.posApplyQuickDiscount(10000,'rp')" class="px-2 py-0.5 rounded-md bg-slate-200/70 hover:bg-slate-300/80 dark:bg-slate-700 dark:hover:bg-slate-600 text-[9px] font-black text-slate-700 dark:text-slate-200 cursor-pointer transition-all">10rb</button>
+        <button onclick="window.posApplyQuickDiscount(25000,'rp')" class="px-2 py-0.5 rounded-md bg-slate-200/70 hover:bg-slate-300/80 dark:bg-slate-700 dark:hover:bg-slate-600 text-[9px] font-black text-slate-700 dark:text-slate-200 cursor-pointer transition-all">25rb</button>
+        <button onclick="window.posApplyQuickDiscount(50000,'rp')" class="px-2 py-0.5 rounded-md bg-slate-200/70 hover:bg-slate-300/80 dark:bg-slate-700 dark:hover:bg-slate-600 text-[9px] font-black text-slate-700 dark:text-slate-200 cursor-pointer transition-all">50rb</button>
+        ${posDiscountVal > 0 ? `<button onclick="window.posApplyQuickDiscount(0,'rp')" class="px-2 py-0.5 rounded-md bg-rose-100 hover:bg-rose-200 dark:bg-rose-950/40 text-[9px] font-black text-rose-600 cursor-pointer transition-all">Reset</button>` : ''}
+        `;
+    document.querySelectorAll('.pos-disc-chips-target').forEach(e => e.innerHTML = chipsHTML);
+
     document.querySelectorAll('.pos-pay-btn-target').forEach(btn => {
         btn.disabled = posCart.length === 0;
         const textSpan = btn.querySelector('.btn-text');
@@ -1703,7 +1862,9 @@ export const processPOSTx = async () => {
                 tempoPenaltyStopped: false
             },
             subtotal: posSubtotal(),
-            globalDiscount: fNum(posGlobalDisc),
+            globalDiscount: posDiscountAmount(),
+            discountType: posDiscountType,
+            discountVal: posDiscountVal,
             total: posTotal(),
             isTempo: posPayMethod === 'tempo',
             pointsEarned: 0,
@@ -1792,7 +1953,7 @@ export const processPOSTx = async () => {
         closePayModal();
         closePOSCartDrawer(true);
         const lastTx = { ...orderData };
-        posCart = []; posGlobalDisc = 0;
+        posCart = []; posGlobalDisc = 0; posDiscountVal = 0; posDiscountType = 'rp';
         renderCart(); renderCatalog();
         showPOSSuccess(lastTx);
     } catch (err) {
@@ -1845,81 +2006,111 @@ const showPOSSuccess = (tx) => {
 // ─── Cetak Struk ─────────────────────────────────────────────
 export const printPOSReceipt = (tx) => {
     document.getElementById('pos-success-modal')?.remove();
-    const storeName = appData.store?.name || 'TOKO PUTRI';
+    const config    = typeof getPrinterConfig === 'function' ? getPrinterConfig() : { paperSize: '58mm', deviceType: 'system' };
+    const is80      = config.paperSize === '80mm';
+    const storeName = config.headerText || appData.store?.name || 'TOKO PUTRI';
     const storeWa   = appData.store?.wa || '';
     const storeAddr = appData.store?.address || '';
-    const dateStr   = new Date(tx.dateMs).toLocaleString('id-ID');
+    const footerTxt = config.footerText || 'Terima Kasih Atas Kunjungan Anda!';
+    const dateStr   = new Date(tx.dateMs || Date.now()).toLocaleString('id-ID');
     const itemsHtml = (tx.items || []).map(i =>
-        `<tr><td style="padding:2px 0;word-wrap:break-word">${esc(i.name)}</td><td style="text-align:right;padding:2px 4px;white-space:nowrap">${i.qty}x ${fRp(i.price)}</td><td style="text-align:right;padding:2px 0;white-space:nowrap">${fRp(i.subtotal)}</td></tr>`
+        `<tr><td style="padding:2px 0;word-wrap:break-word">${esc(i.name)}</td><td style="text-align:right;padding:2px 4px;white-space:nowrap">${i.qty}x ${fRp(i.price)}</td><td style="text-align:right;padding:2px 0;white-space:nowrap;font-weight:bold">${fRp(i.subtotal)}</td></tr>`
     ).join('');
-    const w = window.open('', '_blank', 'width=420,height=720');
+
+    const discLabel = tx.discountType === 'percent' && tx.discountVal ? `Diskon (${tx.discountVal}%)` : 'Diskon';
+
+    const w = window.open('', '_blank', `width=${is80 ? 460 : 360},height=720`);
     if (!w) {
         // Fallback in-page modal jika popup diblokir oleh browser / Capacitor Android
         document.getElementById('pos-receipt-fallback-modal')?.remove();
         document.body.insertAdjacentHTML('beforeend', `
-        <div id="pos-receipt-fallback-modal" class="fixed inset-0 z-[10000] flex items-center justify-center p-4" style="background:rgba(15,23,42,0.7);backdrop-filter:blur(4px)">
-            <div class="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl w-full max-w-sm border border-slate-200 dark:border-slate-800 overflow-hidden flex flex-col max-h-[90vh]">
-                <div class="p-4 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center bg-slate-50 dark:bg-slate-800/50">
-                    <span class="font-bold text-xs text-slate-700 dark:text-slate-200 flex items-center gap-1.5"><i class="fa-solid fa-receipt text-amber-500"></i>Struk Transaksi POS</span>
+        <div id="pos-receipt-fallback-modal" class="fixed inset-0 z-[10000] flex items-center justify-center p-3 sm:p-4" style="background:rgba(15,23,42,0.7);backdrop-filter:blur(4px)">
+            <div class="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl w-full ${is80 ? 'max-w-md' : 'max-w-sm'} border border-slate-200 dark:border-slate-800 overflow-hidden flex flex-col max-h-[90vh]">
+                <div class="p-3.5 sm:p-4 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center bg-slate-50 dark:bg-slate-800/50">
+                    <span class="font-bold text-xs text-slate-700 dark:text-slate-200 flex items-center gap-1.5"><i class="fa-solid fa-receipt text-amber-500"></i>Struk Thermal POS (${is80 ? '80mm' : '58mm'})</span>
                     <button onclick="document.getElementById('pos-receipt-fallback-modal')?.remove()" class="w-7 h-7 rounded-lg bg-slate-200/60 dark:bg-slate-700/60 text-slate-600 dark:text-slate-300 text-sm leading-none flex items-center justify-center cursor-pointer">×</button>
                 </div>
-                <div class="p-4 overflow-y-auto flex-1 font-mono text-[11px] bg-slate-50/60 dark:bg-slate-950 text-slate-800 dark:text-slate-200 space-y-2 select-text">
+                <div id="pos-receipt-paper-box" class="p-4 overflow-y-auto flex-1 font-mono text-[11px] bg-slate-50/60 dark:bg-slate-950 text-slate-800 dark:text-slate-200 space-y-2 select-text">
                     <div class="text-center font-bold text-sm uppercase">${esc(storeName)}</div>
                     ${storeAddr ? `<div class="text-center text-[10px] text-slate-500">${esc(storeAddr)}</div>` : ''}
                     ${storeWa ? `<div class="text-center text-[10px] text-slate-500">WA: ${esc(storeWa)}</div>` : ''}
                     <div class="border-t border-dashed border-slate-300 dark:border-slate-700 my-2"></div>
-                    <div>No: <b>#${esc(tx.txId)}</b></div>
+                    <div>No : <b>#${esc(tx.txId)}</b></div>
                     <div>Tgl: ${esc(dateStr)}</div>
-                    <div>Kasir: ${esc(tx.cashierName)}</div>
-                    <div>Pelanggan: ${esc(tx.customer?.name || 'Umum')}</div>
-                    ${tx.customer?.phone ? `<div>HP: ${esc(tx.customer.phone)}</div>` : ''}
+                    <div>Kasir: ${esc(tx.cashierName || 'Kasir')}</div>
+                    <div>Plg : ${esc(tx.customer?.name || 'Umum')}</div>
+                    ${tx.customer?.phone ? `<div>HP  : ${esc(tx.customer.phone)}</div>` : ''}
                     <div class="border-t border-dashed border-slate-300 dark:border-slate-700 my-2"></div>
                     <table class="w-full text-[11px]">
-                        ${(tx.items || []).map(i => `<tr><td class="py-0.5">${esc(i.name)}</td><td class="text-right py-0.5 whitespace-nowrap">${i.qty}x ${fRp(i.price)}</td><td class="text-right py-0.5 whitespace-nowrap font-bold">${fRp(i.subtotal)}</td></tr>`).join('')}
+                        ${itemsHtml}
                     </table>
                     <div class="border-t border-dashed border-slate-300 dark:border-slate-700 my-2"></div>
                     <div class="flex justify-between"><span>Subtotal</span><span>${fRp(tx.subtotal)}</span></div>
-                    ${(tx.globalDiscount || 0) > 0 ? `<div class="flex justify-between text-rose-500"><span>Diskon</span><span>- ${fRp(tx.globalDiscount)}</span></div>` : ''}
+                    ${(tx.globalDiscount || 0) > 0 ? `<div class="flex justify-between text-rose-500 font-bold"><span>${discLabel}</span><span>- ${fRp(tx.globalDiscount)}</span></div>` : ''}
                     <div class="flex justify-between font-black text-sm pt-1 border-t border-slate-200 dark:border-slate-700"><span>TOTAL</span><span style="color:var(--color-primary)">${fRp(tx.total)}</span></div>
                     ${tx.payment.method === 'cash' ? `<div class="flex justify-between"><span>Bayar</span><span>${fRp(tx.payment.paid)}</span></div><div class="flex justify-between font-bold text-emerald-600"><span>Kembalian</span><span>${fRp(tx.payment.change)}</span></div>` : ''}
                     ${tx.payment.method === 'tempo' ? `<div class="flex justify-between"><span>DP</span><span>${fRp(tx.payment.dp || 0)}</span></div><div class="flex justify-between font-bold text-amber-600"><span>Sisa Piutang</span><span>${fRp(tx.payment.tempoBalance || 0)}</span></div>` : ''}
                     <div class="flex justify-between"><span>Metode</span><span>${esc(tx.payment.method.toUpperCase())}</span></div>
+                    ${tx.pointsEarned > 0 ? `
                     <div class="border-t border-dashed border-slate-300 dark:border-slate-700 my-2"></div>
-                    <div class="text-center text-[10px] text-slate-400">*** Terima Kasih ***</div>
+                    <div class="flex justify-between text-amber-600 dark:text-amber-400 font-bold"><span>Poin Member:</span><span>+${tx.pointsEarned} Poin</span></div>` : ''}
+                    <div class="border-t border-dashed border-slate-300 dark:border-slate-700 my-2"></div>
+                    <div class="text-center text-[10px] text-slate-400 my-1">${esc(footerTxt)}</div>
                 </div>
                 <div class="p-3 border-t border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/40 flex gap-2">
-                    <button onclick="window.print()" class="w-full py-2.5 rounded-xl text-white font-bold text-xs flex items-center justify-center gap-2 cursor-pointer shadow-md" style="background:var(--color-primary)">
-                        <i class="fa-solid fa-print"></i> Cetak Dokumen
+                    <button onclick="window.executePOSPrintDirect()" class="flex-1 py-2.5 rounded-xl text-white font-bold text-xs flex items-center justify-center gap-1.5 cursor-pointer shadow-md transition-all active:scale-95" style="background:var(--color-primary)">
+                        <i class="fa-solid fa-print"></i> Cetak Struk
+                    </button>
+                    <button onclick="if(typeof window.openPrinterSettingsModal==='function') window.openPrinterSettingsModal();" class="px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-bold text-xs flex items-center gap-1 cursor-pointer transition-all" title="Pengaturan Printer">
+                        <i class="fa-solid fa-gear"></i>
                     </button>
                 </div>
             </div>
         </div>`);
         return;
     }
+
     w.document.write(`<!DOCTYPE html><html><head><meta charset="utf-8"><title>Struk POS</title>
-    <style>*{box-sizing:border-box}body{font-family:'Courier New',monospace;font-size:12px;max-width:300px;margin:0 auto;padding:12px}
+    <style>*{box-sizing:border-box}body{font-family:'Courier New',monospace;font-size:12px;max-width:${is80 ? '330px' : '260px'};margin:0 auto;padding:12px}
     h2{text-align:center;font-size:14px;font-weight:900;margin:2px 0;text-transform:uppercase}p{margin:1px 0;text-align:center;font-size:11px}.left{text-align:left}
     table{width:100%;border-collapse:collapse}.line{border-top:1px dashed #333;margin:6px 0}.total{font-weight:900;font-size:13px}
     </style></head><body>
     <h2>${storeName}</h2>${storeAddr?`<p>${esc(storeAddr)}</p>`:''}${storeWa?`<p>WA: ${esc(storeWa)}</p>`:''}
     <div class="line"></div>
-    <p class="left">No: <b>${esc(tx.txId)}</b></p><p class="left">Tgl: ${esc(dateStr)}</p>
-    <p class="left">Kasir: ${esc(tx.cashierName)}</p><p class="left">Pelanggan: ${esc(tx.customer?.name||'Umum')}</p>
+    <p class="left">No: <b>#${esc(tx.txId)}</b></p><p class="left">Tgl: ${esc(dateStr)}</p>
+    <p class="left">Kasir: ${esc(tx.cashierName || 'Kasir')}</p><p class="left">Pelanggan: ${esc(tx.customer?.name||'Umum')}</p>
     ${tx.customer?.phone?`<p class="left">HP: ${esc(tx.customer.phone)}</p>`:''}
     <div class="line"></div><table>${itemsHtml}</table><div class="line"></div>
     <table>
     <tr><td>Subtotal</td><td style="text-align:right">${fRp(tx.subtotal)}</td></tr>
-    ${(tx.globalDiscount||0)>0?`<tr><td>Diskon</td><td style="text-align:right">- ${fRp(tx.globalDiscount)}</td></tr>`:''}
+    ${(tx.globalDiscount||0)>0?`<tr><td>${discLabel}</td><td style="text-align:right">- ${fRp(tx.globalDiscount)}</td></tr>`:''}
     <tr class="total"><td>TOTAL</td><td style="text-align:right">${fRp(tx.total)}</td></tr>
     ${tx.payment.method==='cash'?`<tr><td>Bayar</td><td style="text-align:right">${fRp(tx.payment.paid)}</td></tr><tr><td><b>Kembalian</b></td><td style="text-align:right"><b>${fRp(tx.payment.change)}</b></td></tr>`:''}
     ${tx.payment.method==='tempo'?`<tr><td>DP</td><td style="text-align:right">${fRp(tx.payment.dp||0)}</td></tr><tr><td>Sisa Piutang</td><td style="text-align:right">${fRp(tx.payment.tempoBalance||0)}</td></tr>`:''}
     <tr><td>Metode</td><td style="text-align:right">${esc(tx.payment.method.toUpperCase())}</td></tr>
+    ${tx.pointsEarned > 0 ? `<tr><td>Poin Member</td><td style="text-align:right">+${tx.pointsEarned}</td></tr>` : ''}
     </table><div class="line"></div>
-    <p style="text-align:center;font-size:10px">*** Terima Kasih ***</p>
-    <p style="text-align:center;font-size:9px">Barang yang sudah dibeli tidak dapat dikembalikan</p>
+    <p style="text-align:center;font-size:10px">${esc(footerTxt)}</p>
+    <p style="text-align:center;font-size:9px">Barang yang sudah dibeli tidak dapat ditukar/dikembalikan</p>
     <script>window.onload=()=>{window.print();setTimeout(()=>window.close(),800)}<\/script>
     </body></html>`);
     w.document.close();
+};
+
+export const executePOSPrintDirect = () => {
+    const config = typeof getPrinterConfig === 'function' ? getPrinterConfig() : { deviceType: 'system' };
+    const pBox = el('pos-receipt-paper-box');
+    if (!pBox) return;
+
+    if (config.deviceType === 'rawbt' && window.AndroidNativeApp && typeof window.AndroidNativeApp.printRawBT === 'function') {
+        const rawHtml = pBox.innerText;
+        const b64 = btoa(unescape(encodeURIComponent(rawHtml)));
+        window.AndroidNativeApp.printRawBT(b64);
+    } else if (window.AndroidNativeApp && typeof window.AndroidNativeApp.print === 'function') {
+        window.AndroidNativeApp.print();
+    } else {
+        window.print();
+    }
 };
 
 // ─── Layout Generator Terpadu ────────────────────────────────
@@ -1994,13 +2185,18 @@ const buildPOSLayout = ({ isStorefront }) => {
                     <div class="flex items-center gap-2">
                         <div class="relative flex-1">
                             <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs pointer-events-none"></i>
-                            <input id="pos-search-input" type="text" placeholder="Cari nama barang, barcode scanner USB, atau SKU..." 
+                            <input id="pos-search-input" type="text" placeholder="Cari barang, barcode USB, atau SKU (F4)..." 
                                 class="w-full pl-9 pr-9 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs sm:text-sm font-medium text-slate-800 dark:text-slate-100 focus:outline-none focus:border-[var(--color-primary)] focus:bg-white dark:focus:bg-slate-900 transition-all"
                                 oninput="window.posSearchFn(this.value)">
                             <button onclick="el('pos-search-input').value=''; window.posSearchFn('');" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xs p-1 cursor-pointer" title="Hapus pencarian">
                                 <i class="fa-solid fa-circle-xmark"></i>
                             </button>
                         </div>
+                        <!-- Tombol Scan Barcode Kamera HP / Laptop (F9) -->
+                        <button onclick="window.openPOSCameraScanner()" class="h-9 px-2.5 sm:px-3 rounded-xl bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/40 dark:hover:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300 text-xs font-bold flex items-center gap-1.5 transition-all active:scale-95 border border-emerald-200 dark:border-emerald-800/80 shrink-0 cursor-pointer shadow-2xs" title="Scan Barcode Kamera (F9)">
+                            <i class="fa-solid fa-camera text-emerald-600 dark:text-emerald-400 text-xs"></i>
+                            <span class="hidden sm:inline">Scan (F9)</span>
+                        </button>
                         <!-- View Switcher (Grid vs List) -->
                         <div class="flex items-center p-0.5 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shrink-0">
                             <button id="pos-view-btn-grid" onclick="window.setPOSViewMode('grid')" class="w-8 h-8 rounded-lg flex items-center justify-center text-xs transition-all cursor-pointer ${posCatalogViewMode === 'grid' ? 'text-white shadow-xs' : 'text-slate-500 hover:text-slate-800 dark:text-slate-400'}" style="${posCatalogViewMode === 'grid' ? 'background:var(--color-primary)' : ''}" title="Tampilan Grid Foto">
@@ -2050,12 +2246,26 @@ const buildPOSLayout = ({ isStorefront }) => {
                         <span>Subtotal Item</span>
                         <span class="pos-subtotal-target font-bold text-slate-800 dark:text-slate-200">Rp 0</span>
                     </div>
-                    <div class="flex items-center gap-2 text-xs">
-                        <span class="text-slate-500 shrink-0 font-medium">Diskon Global</span>
-                        <div class="flex-1 relative">
-                            <span class="absolute left-2.5 top-1/2 -translate-y-1/2 text-[10px] text-slate-400 font-bold">Rp</span>
-                            <input type="number" min="0" placeholder="0" class="pos-global-disc-target w-full border border-slate-200 dark:border-slate-700 rounded-lg pl-7 pr-2.5 py-1 text-right text-xs font-bold bg-white dark:bg-slate-800 focus:outline-none focus:border-[var(--color-primary)]" oninput="window.posSetGlobalDisc(this.value)">
+                    <!-- Smart Diskon Transaksi Kasir (Rp / %) -->
+                    <div class="space-y-1.5 p-2.5 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200/70 dark:border-slate-700/60 text-xs">
+                        <div class="flex items-center justify-between">
+                            <span class="text-slate-600 dark:text-slate-300 font-bold flex items-center gap-1.5">
+                                <i class="fa-solid fa-tags text-[var(--color-primary)] text-[11px]"></i>
+                                <span>Diskon Transaksi</span>
+                            </span>
+                            <div class="flex items-center bg-slate-200 dark:bg-slate-700 rounded-lg p-0.5 text-[10px]">
+                                <button onclick="window.posSetDiscountType('rp')" class="pos-disc-type-rp px-2 py-0.5 rounded-md transition-all cursor-pointer font-black">Rp</button>
+                                <button onclick="window.posSetDiscountType('percent')" class="pos-disc-type-pct px-2 py-0.5 rounded-md transition-all cursor-pointer font-bold">%</button>
+                            </div>
                         </div>
+                        <div class="flex items-center gap-2">
+                            <div class="flex-1 relative">
+                                <span class="pos-disc-prefix absolute left-2.5 top-1/2 -translate-y-1/2 text-[10px] text-slate-400 font-bold">Rp</span>
+                                <input type="number" min="0" placeholder="0" class="pos-disc-val-input w-full border border-slate-200 dark:border-slate-700 rounded-lg pl-8 pr-2.5 py-1 text-right text-xs font-bold bg-white dark:bg-slate-800 focus:outline-none focus:border-[var(--color-primary)]" oninput="window.posSetDiscountVal(this.value)">
+                            </div>
+                            <div class="pos-disc-preview-target text-[10px] font-black text-rose-500 whitespace-nowrap min-w-[70px] text-right">Rp 0</div>
+                        </div>
+                        <div class="pos-disc-chips-target flex gap-1 overflow-x-auto hide-scrollbar pt-0.5"></div>
                     </div>
                     <div class="flex justify-between items-center pt-2 border-t border-slate-200/80 dark:border-slate-800">
                         <div>
@@ -2123,9 +2333,26 @@ const buildPOSLayout = ({ isStorefront }) => {
                         <span>Subtotal Item</span>
                         <span class="pos-subtotal-target font-bold text-slate-700 dark:text-slate-200">Rp 0</span>
                     </div>
-                    <div class="flex items-center gap-2 text-xs">
-                        <span class="text-slate-500 shrink-0 font-medium">Diskon Global Rp</span>
-                        <input type="number" min="0" placeholder="0" class="pos-global-disc-target flex-1 border border-slate-200 dark:border-slate-700 rounded-lg px-2.5 py-1 text-right text-xs font-bold bg-white dark:bg-slate-800 focus:outline-none focus:border-[var(--color-primary)]" oninput="window.posSetGlobalDisc(this.value)">
+                    <!-- Smart Diskon Transaksi Kasir (Rp / %) di Mobile Drawer -->
+                    <div class="space-y-1.5 p-2 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200/70 dark:border-slate-700/60 text-xs">
+                        <div class="flex items-center justify-between">
+                            <span class="text-slate-600 dark:text-slate-300 font-bold flex items-center gap-1.5">
+                                <i class="fa-solid fa-tags text-[var(--color-primary)] text-[11px]"></i>
+                                <span>Diskon Transaksi</span>
+                            </span>
+                            <div class="flex items-center bg-slate-200 dark:bg-slate-700 rounded-lg p-0.5 text-[10px]">
+                                <button onclick="window.posSetDiscountType('rp')" class="pos-disc-type-rp px-2 py-0.5 rounded-md transition-all cursor-pointer font-black">Rp</button>
+                                <button onclick="window.posSetDiscountType('percent')" class="pos-disc-type-pct px-2 py-0.5 rounded-md transition-all cursor-pointer font-bold">%</button>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <div class="flex-1 relative">
+                                <span class="pos-disc-prefix absolute left-2.5 top-1/2 -translate-y-1/2 text-[10px] text-slate-400 font-bold">Rp</span>
+                                <input type="number" min="0" placeholder="0" class="pos-disc-val-input w-full border border-slate-200 dark:border-slate-700 rounded-lg pl-8 pr-2.5 py-1 text-right text-xs font-bold bg-white dark:bg-slate-800 focus:outline-none focus:border-[var(--color-primary)]" oninput="window.posSetDiscountVal(this.value)">
+                            </div>
+                            <div class="pos-disc-preview-target text-[10px] font-black text-rose-500 whitespace-nowrap min-w-[70px] text-right">Rp 0</div>
+                        </div>
+                        <div class="pos-disc-chips-target flex gap-1 overflow-x-auto hide-scrollbar pt-0.5"></div>
                     </div>
                     <div class="flex justify-between items-center pt-1.5 border-t border-slate-200/80 dark:border-slate-800">
                         <span class="text-xs font-black uppercase tracking-wider text-slate-700 dark:text-white">Total Tagihan</span>
@@ -2209,7 +2436,18 @@ const exposeToWindow = () => {
     window.resetPosMember          = resetPosMember;
     window.processPOSTx            = processPOSTx;
     window.printPOSReceipt         = printPOSReceipt;
-    window.posSetGlobalDisc        = (v) => { posGlobalDisc = fNum(v); renderCart(); };
+    window.posSetGlobalDisc        = (v) => { posSetDiscountVal(v); };
+    window.posSetDiscountType      = posSetDiscountType;
+    window.posSetDiscountVal       = posSetDiscountVal;
+    window.posApplyQuickDiscount   = posApplyQuickDiscount;
+    window.openPOSCameraScanner    = openPOSCameraScanner;
+    window.closePOSCameraScanner   = closePOSCameraScanner;
+    window.togglePOSScannerFacing  = togglePOSScannerFacing;
+    window.togglePOSScannerTorch   = togglePOSScannerTorch;
+    window.togglePOSScannerMode    = togglePOSScannerMode;
+    window.posProcessManualBarcode = posProcessManualBarcode;
+    window.posSearchScannedCode    = posSearchScannedCode;
+    window.executePOSPrintDirect   = executePOSPrintDirect;
     window.posCatFilter            = (c) => { posCatFilterVal = c; renderCatalog(); };
     window.posSearchFn             = (v) => { posSearch = v; renderCatalog(); };
     window.openPOSCartDrawer       = openPOSCartDrawer;
@@ -2235,6 +2473,356 @@ const exposeToWindow = () => {
     window.posDeleteHeldCart       = posDeleteHeldCart;
     window.posExecuteDeleteHeld    = posExecuteDeleteHeld;
     window.renderHeldBadges        = renderHeldBadges;
+};
+
+// ─── Logika Kamera Barcode Scanner & Smart Diskon Kasir ────────
+export const posSetDiscountType = (type) => {
+    posDiscountType = type === 'percent' ? 'percent' : 'rp';
+    posGlobalDisc = posDiscountAmount();
+    renderCart();
+};
+
+export const posSetDiscountVal = (val) => {
+    posDiscountVal = Math.max(0, parseFloat(val) || 0);
+    posGlobalDisc = posDiscountAmount();
+    renderCart();
+};
+
+export const posApplyQuickDiscount = (val, type) => {
+    if (type) posDiscountType = type;
+    posDiscountVal = val;
+    posGlobalDisc = posDiscountAmount();
+    renderCart();
+    playCashierBeep();
+};
+
+export const openPOSCameraScanner = async () => {
+    if (el('pos-camera-scanner-modal')) return;
+    if (typeof window.pushModalHistory === 'function') window.pushModalHistory('posCameraScanner');
+
+    const modalHTML = `
+    <div id="pos-camera-scanner-modal" class="fixed inset-0 z-[10010] flex items-center justify-center p-3 sm:p-4" style="background:rgba(15,23,42,0.85);backdrop-filter:blur(8px)">
+        <div class="bg-slate-900 text-white rounded-3xl shadow-2xl w-full max-w-md border border-slate-700/80 overflow-hidden flex flex-col max-h-[92vh]">
+            <!-- Modal Header -->
+            <div class="p-3.5 sm:p-4 border-b border-slate-800 flex items-center justify-between bg-slate-950/60 shrink-0">
+                <div class="flex items-center gap-2 min-w-0">
+                    <div class="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-sm font-bold shadow-inner">
+                        <i class="fa-solid fa-camera"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-black text-xs sm:text-sm text-white leading-tight">Pemindai Barcode Kamera</h3>
+                        <p class="text-[10px] text-slate-400">Arahkan kamera ke barcode / QR produk</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-1.5 shrink-0">
+                    <!-- Toggle Torch (Flash) -->
+                    <button id="pos-scanner-torch-btn" onclick="window.togglePOSScannerTorch()" class="w-8 h-8 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs flex items-center justify-center transition-all cursor-pointer" title="Lampu Flash / Senter">
+                        <i class="fa-solid fa-bolt"></i>
+                    </button>
+                    <!-- Switch Camera -->
+                    <button onclick="window.togglePOSScannerFacing()" class="w-8 h-8 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs flex items-center justify-center transition-all cursor-pointer" title="Putar Kamera">
+                        <i class="fa-solid fa-camera-rotate"></i>
+                    </button>
+                    <!-- Close -->
+                    <button onclick="window.closePOSCameraScanner()" class="w-8 h-8 rounded-xl bg-slate-800 hover:bg-rose-900/50 text-slate-400 hover:text-rose-400 text-base flex items-center justify-center transition-all leading-none cursor-pointer">×</button>
+                </div>
+            </div>
+
+            <!-- Viewport Kamera -->
+            <div class="relative w-full bg-black flex items-center justify-center overflow-hidden aspect-[4/3] sm:h-72">
+                <video id="pos-camera-video" playsinline autoplay muted class="w-full h-full object-cover"></video>
+                
+                <!-- Reticle Target Aiming Box -->
+                <div id="pos-scanner-reticle" class="absolute w-[72%] max-w-[260px] aspect-[1.3/1] border-2 border-emerald-400/90 rounded-2xl shadow-[0_0_0_9999px_rgba(15,23,42,0.55)] pointer-events-none transition-all duration-200">
+                    <!-- Corner Brackets -->
+                    <span class="absolute -top-1 -left-1 w-4 h-4 border-t-4 border-l-4 border-emerald-400 rounded-tl-lg"></span>
+                    <span class="absolute -top-1 -right-1 w-4 h-4 border-t-4 border-r-4 border-emerald-400 rounded-tr-lg"></span>
+                    <span class="absolute -bottom-1 -left-1 w-4 h-4 border-b-4 border-l-4 border-emerald-400 rounded-bl-lg"></span>
+                    <span class="absolute -bottom-1 -right-1 w-4 h-4 border-b-4 border-r-4 border-emerald-400 rounded-br-lg"></span>
+                    
+                    <!-- Laser Scanline Animation -->
+                    <div class="pos-scanline"></div>
+                </div>
+
+                <!-- Floating Feedback Pill -->
+                <div id="pos-scanner-status-pill" class="absolute bottom-3 px-3 py-1 rounded-full bg-slate-900/80 backdrop-blur-md border border-slate-700/80 text-[10px] font-bold text-slate-300 flex items-center gap-1.5 shadow-md">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                    <span>Menunggu barcode...</span>
+                </div>
+            </div>
+
+            <!-- Action Strip & Options -->
+            <div class="p-3 bg-slate-950/80 border-t border-slate-800 space-y-2.5 shrink-0">
+                <!-- Mode Continuous vs Single -->
+                <div class="flex items-center justify-between text-xs px-1">
+                    <span class="text-slate-400 text-[11px] font-medium flex items-center gap-1.5">
+                        <i class="fa-solid fa-repeat text-emerald-400 text-xs"></i>
+                        Mode Pemindaian:
+                    </span>
+                    <button onclick="window.togglePOSScannerMode()" id="pos-scanner-mode-btn" class="px-2.5 py-1 rounded-lg bg-emerald-950/60 border border-emerald-600/60 text-emerald-400 text-[10px] font-black tracking-wider uppercase transition-all cursor-pointer">
+                        Terus-menerus
+                    </button>
+                </div>
+
+                <!-- Fallback Input Manual Barcode -->
+                <div class="flex items-center gap-1.5">
+                    <div class="relative flex-1">
+                        <i class="fa-solid fa-barcode absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-xs"></i>
+                        <input id="pos-manual-barcode-input" type="text" placeholder="Atau ketik/scan nomor barcode..."
+                            class="w-full pl-8 pr-3 py-2 rounded-xl border border-slate-700 bg-slate-800 text-xs font-mono font-bold text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 transition-all"
+                            onkeydown="if(event.key==='Enter') window.posProcessManualBarcode(this.value)">
+                    </div>
+                    <button onclick="window.posProcessManualBarcode(document.getElementById('pos-manual-barcode-input')?.value)"
+                        class="px-3 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition-all active:scale-95 shadow-md cursor-pointer">
+                        Tambah
+                    </button>
+                </div>
+
+                <!-- Last Scanned Banner -->
+                <div id="pos-last-scanned-banner" class="hidden p-2 rounded-xl bg-emerald-950/40 border border-emerald-800/60 text-[11px] text-emerald-300 flex items-center justify-between">
+                    <div class="flex items-center gap-1.5 min-w-0">
+                        <i class="fa-solid fa-circle-check text-emerald-400 shrink-0"></i>
+                        <span id="pos-last-scanned-text" class="truncate font-bold">-</span>
+                    </div>
+                    <span id="pos-last-scanned-price" class="font-black text-emerald-400 shrink-0 ml-2">-</span>
+                </div>
+            </div>
+        </div>
+    </div>`;
+
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+    await _startPOSCamera();
+};
+
+const _startPOSCamera = async () => {
+    const video = el('pos-camera-video');
+    if (!video) return;
+
+    try {
+        const constraints = {
+            video: {
+                facingMode: { ideal: posScannerFacing },
+                width: { ideal: 1280 },
+                height: { ideal: 720 }
+            },
+            audio: false
+        };
+
+        const stream = await navigator.mediaDevices.getUserMedia(constraints);
+        posScannerStream = stream;
+        video.srcObject = stream;
+        await video.play();
+
+        const tracks = stream.getVideoTracks();
+        if (tracks.length > 0) {
+            posScannerTrack = tracks[0];
+            const cap = posScannerTrack.getCapabilities ? posScannerTrack.getCapabilities() : {};
+            const torchBtn = el('pos-scanner-torch-btn');
+            if (torchBtn) {
+                if (cap.torch) {
+                    torchBtn.classList.remove('hidden');
+                } else {
+                    torchBtn.classList.add('opacity-40');
+                }
+            }
+        }
+
+        if (typeof window.BarcodeDetector !== 'undefined') {
+            try {
+                posScannerDetector = new BarcodeDetector({
+                    formats: ['ean_13', 'ean_8', 'upc_a', 'upc_e', 'code_128', 'code_39', 'code_93', 'qr_code', 'data_matrix']
+                });
+            } catch (e) {
+                posScannerDetector = null;
+            }
+        }
+
+        if (posScannerInterval) clearInterval(posScannerInterval);
+        posScannerInterval = setInterval(async () => {
+            if (!posScannerDetector || !video || video.readyState < 2) return;
+            try {
+                const barcodes = await posScannerDetector.detect(video);
+                if (barcodes && barcodes.length > 0) {
+                    const rawVal = barcodes[0].rawValue?.trim();
+                    if (rawVal) {
+                        _handleBarcodeResult(rawVal);
+                    }
+                }
+            } catch (err) {}
+        }, 180);
+
+    } catch (err) {
+        console.warn('[POS Scanner] Gagal akses kamera:', err);
+        const pill = el('pos-scanner-status-pill');
+        if (pill) {
+            pill.innerHTML = `<span class="text-rose-400 font-bold"><i class="fa-solid fa-triangle-exclamation mr-1"></i>Kamera tidak dapat diakses</span>`;
+        }
+        showToast('Izin kamera ditolak atau kamera sedang digunakan aplikasi lain.', 'warning');
+    }
+};
+
+const _handleBarcodeResult = (code) => {
+    const now = Date.now();
+    if (code === lastScannedCode && (now - lastScannedTime) < 1800) {
+        return; // debounce item ganda dalam waktu singkat
+    }
+    lastScannedCode = code;
+    lastScannedTime = now;
+
+    const c = code.toLowerCase();
+    const prod = (appData.products || []).find(p =>
+        p && p.isActive !== 'false' && p.isActive !== false &&
+        ((p.barcode && p.barcode.toLowerCase() === c) ||
+         (p.sku && p.sku.toLowerCase() === c) ||
+         (p.id && String(p.id).toLowerCase() === c))
+    );
+
+    const reticle = el('pos-scanner-reticle');
+    const pill = el('pos-scanner-status-pill');
+    const banner = el('pos-last-scanned-banner');
+    const bannerTxt = el('pos-last-scanned-text');
+    const bannerPrice = el('pos-last-scanned-price');
+
+    if (prod) {
+        if (reticle) {
+            reticle.classList.add('border-emerald-300', 'scale-105', 'bg-emerald-500/20');
+            setTimeout(() => {
+                reticle.classList.remove('border-emerald-300', 'scale-105', 'bg-emerald-500/20');
+            }, 300);
+        }
+        playCashierBeep();
+
+        const hasVariants = prod.variants && prod.variants.length > 0;
+        if (hasVariants) {
+            if (pill) pill.innerHTML = `<span class="text-amber-300 font-bold">Buka pilihan varian...</span>`;
+            closePOSCameraScanner();
+            ensurePOSVariantSheet().then(() => {
+                if (typeof window.openPOSVariantSheet === 'function') window.openPOSVariantSheet(prod.id);
+            });
+            return;
+        }
+
+        addToCart(prod.id);
+
+        if (banner && bannerTxt && bannerPrice) {
+            bannerTxt.textContent = prod.name;
+            bannerPrice.textContent = fRp(parseFloat(prod.price) || 0);
+            banner.classList.remove('hidden');
+        }
+
+        if (pill) {
+            pill.innerHTML = `<span class="text-emerald-300 font-black"><i class="fa-solid fa-check mr-1"></i>${esc(prod.name)} (+1)</span>`;
+            setTimeout(() => {
+                if (pill) pill.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span><span>Menunggu barcode...</span>`;
+            }, 1500);
+        }
+
+        if (!posScannerContinuous) {
+            closePOSCameraScanner();
+            showToast(`Ditambahkan: ${prod.name}`, 'success');
+        }
+    } else {
+        if (reticle) {
+            reticle.classList.add('border-rose-500', 'bg-rose-500/20');
+            setTimeout(() => {
+                reticle.classList.remove('border-rose-500', 'bg-rose-500/20');
+            }, 400);
+        }
+        if (pill) {
+            pill.innerHTML = `<span class="text-rose-400 font-bold"><i class="fa-solid fa-xmark mr-1"></i>Barcode "${code}" tidak ditemukan</span>`;
+        }
+    }
+};
+
+export const closePOSCameraScanner = (skipHistory = false) => {
+    if (posScannerInterval) {
+        clearInterval(posScannerInterval);
+        posScannerInterval = null;
+    }
+    if (posScannerStream) {
+        try {
+            posScannerStream.getTracks().forEach(t => t.stop());
+        } catch (e) {}
+        posScannerStream = null;
+    }
+    posScannerTrack = null;
+    posScannerTorchOn = false;
+
+    const modal = el('pos-camera-scanner-modal');
+    if (modal) {
+        if (!skipHistory && typeof window.requestCloseModal === 'function') {
+            window.requestCloseModal('posCameraScanner', false, () => modal.remove());
+        } else {
+            modal.remove();
+        }
+    }
+};
+
+export const togglePOSScannerTorch = async () => {
+    if (!posScannerTrack) return;
+    try {
+        const cap = posScannerTrack.getCapabilities ? posScannerTrack.getCapabilities() : {};
+        if (!cap.torch) {
+            showToast('Lampu senter (torch) tidak didukung kamera ini.');
+            return;
+        }
+        posScannerTorchOn = !posScannerTorchOn;
+        await posScannerTrack.applyConstraints({
+            advanced: [{ torch: posScannerTorchOn }]
+        });
+        const btn = el('pos-scanner-torch-btn');
+        if (btn) {
+            if (posScannerTorchOn) {
+                btn.classList.add('bg-amber-500', 'text-white');
+                btn.classList.remove('bg-slate-800', 'text-slate-300');
+            } else {
+                btn.classList.remove('bg-amber-500', 'text-white');
+                btn.classList.add('bg-slate-800', 'text-slate-300');
+            }
+        }
+    } catch (e) {
+        console.warn('Gagal toggle torch:', e);
+    }
+};
+
+export const togglePOSScannerFacing = async () => {
+    posScannerFacing = posScannerFacing === 'environment' ? 'user' : 'environment';
+    if (posScannerStream) {
+        posScannerStream.getTracks().forEach(t => t.stop());
+        posScannerStream = null;
+    }
+    await _startPOSCamera();
+};
+
+export const togglePOSScannerMode = () => {
+    posScannerContinuous = !posScannerContinuous;
+    const btn = el('pos-scanner-mode-btn');
+    if (btn) {
+        if (posScannerContinuous) {
+            btn.textContent = 'Terus-menerus';
+            btn.className = 'px-2.5 py-1 rounded-lg bg-emerald-950/60 border border-emerald-600/60 text-emerald-400 text-[10px] font-black tracking-wider uppercase transition-all cursor-pointer';
+        } else {
+            btn.textContent = 'Scan Sekali';
+            btn.className = 'px-2.5 py-1 rounded-lg bg-slate-800 border border-slate-700 text-slate-300 text-[10px] font-black tracking-wider uppercase transition-all cursor-pointer';
+        }
+    }
+};
+
+export const posProcessManualBarcode = (code) => {
+    if (!code || !code.trim()) return;
+    _handleBarcodeResult(code.trim());
+    const inp = el('pos-manual-barcode-input');
+    if (inp) inp.value = '';
+};
+
+export const posSearchScannedCode = (code) => {
+    closePOSCameraScanner();
+    const sf = el('pos-search-input');
+    if (sf) {
+        sf.value = code;
+        posSearch = code;
+        renderCatalog();
+    }
 };
 
 // Global expose
@@ -2264,3 +2852,14 @@ window.lookupPosMember         = lookupPosMember;
 window.debouncedLookupPosMember= debouncedLookupPosMember;
 window.selectPosMember         = selectPosMember;
 window.resetPosMember          = resetPosMember;
+window.posSetDiscountType      = posSetDiscountType;
+window.posSetDiscountVal       = posSetDiscountVal;
+window.posApplyQuickDiscount   = posApplyQuickDiscount;
+window.openPOSCameraScanner    = openPOSCameraScanner;
+window.closePOSCameraScanner   = closePOSCameraScanner;
+window.togglePOSScannerFacing  = togglePOSScannerFacing;
+window.togglePOSScannerTorch   = togglePOSScannerTorch;
+window.togglePOSScannerMode    = togglePOSScannerMode;
+window.posProcessManualBarcode = posProcessManualBarcode;
+window.posSearchScannedCode    = posSearchScannedCode;
+window.executePOSPrintDirect   = executePOSPrintDirect;

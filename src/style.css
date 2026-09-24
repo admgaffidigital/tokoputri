@@ -256,6 +256,33 @@ html {
     opacity: 0.95;
 }
 
+.pos-badge-habis {
+    background: #dc2626 !important; /* rose-600 — stok habis */
+}
+
+.pos-badge-low {
+    background: #d97706 !important; /* amber-600 — stok menipis */
+}
+
+/* Animasi laser pemindai barcode kamera POS */
+@keyframes posScanline {
+    0% { top: 6%; opacity: 0.85; }
+    50% { top: 90%; opacity: 1; }
+    100% { top: 6%; opacity: 0.85; }
+}
+
+.pos-scanline {
+    position: absolute;
+    left: 5%;
+    right: 5%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #10b981 20%, #34d399 50%, #10b981 80%, transparent);
+    box-shadow: 0 0 14px 3px rgba(52, 211, 153, 0.9);
+    animation: posScanline 2.2s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 20;
+}
+
 /* Badge qty di pojok kanan kotak gambar */
 .pos-qty-badge {
     position: absolute;

@@ -11,11 +11,19 @@ export {
     renderPOS,
     renderPOSStorefront,
     printPOSReceipt,
+    executePOSPrintDirect,
     posHoldCurrentCart,
     openPOSHeldModal,
     posRecallHeldCart,
     posDeleteHeldCart,
     posExecuteDeleteHeld,
-    playCashierChime
+    playCashierChime,
+    openPOSCameraScanner,
+    closePOSCameraScanner,
+    posSetDiscountType,
+    posSetDiscountVal,
+    posApplyQuickDiscount,
+    posDiscountAmount,
+    getProductStockInfo
 } from './pos.js';
 
