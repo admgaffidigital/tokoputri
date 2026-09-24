@@ -59,9 +59,26 @@ try {
     db.settings({
         ignoreUndefinedProperties: true,
         experimentalForceLongPolling: true,
-        merge: true,
+        experimentalAutoDetectLongPolling: true,
     });
-} catch(e) {}
+} catch(e) {
+    console.warn('[Firebase] db.settings info:', e?.message || e);
+}
+
+// Handler adaptif jaringan: sinkronkan status online/offline dengan Firestore
+// agar saat internet drop, Firestore tidak terus-menerus memaksa retry QUIC/UDP.
+if (typeof window !== 'undefined') {
+    window.addEventListener('online', () => {
+        try {
+            db.enableNetwork().catch(() => {});
+        } catch (_) {}
+    });
+    window.addEventListener('offline', () => {
+        try {
+            db.disableNetwork().catch(() => {});
+        } catch (_) {}
+    });
+}
 
 // Analytics diload LAZY setelah browser idle agar tidak memperlambat render awal.
 // Gunakan loadAnalytics() untuk mengaktifkannya.
