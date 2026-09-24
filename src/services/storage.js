@@ -417,6 +417,10 @@ const refreshProdUI = () => {
             }
         }
     }
+    // Refresh katalog Kasir POS jika sedang aktif di layar
+    if (typeof window.refreshPOSCatalog === 'function') {
+        window.refreshPOSCatalog();
+    }
 };
 
 export const attachRealtimeStockSync = () => {

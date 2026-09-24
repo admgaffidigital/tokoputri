@@ -53,21 +53,24 @@ let lastScannedTime      = 0;
 export const setPOSViewMode = (mode) => {
     posCatalogViewMode = mode;
     try { localStorage.setItem('pos_view_mode', mode); } catch (e) {}
-    const bGrid = el('pos-view-btn-grid');
-    const bList = el('pos-view-btn-list');
-    if (bGrid && bList) {
+    document.querySelectorAll('#pos-view-btn-grid').forEach(bGrid => {
         if (mode === 'grid') {
             bGrid.style.background = 'var(--color-primary)';
             bGrid.className = 'w-8 h-8 rounded-lg flex items-center justify-center text-xs transition-all cursor-pointer text-white shadow-xs';
-            bList.style.removeProperty('background');
-            bList.className = 'w-8 h-8 rounded-lg flex items-center justify-center text-xs transition-all cursor-pointer text-slate-500 hover:text-slate-800 dark:text-slate-400';
         } else {
-            bList.style.background = 'var(--color-primary)';
-            bList.className = 'w-8 h-8 rounded-lg flex items-center justify-center text-xs transition-all cursor-pointer text-white shadow-xs';
             bGrid.style.removeProperty('background');
             bGrid.className = 'w-8 h-8 rounded-lg flex items-center justify-center text-xs transition-all cursor-pointer text-slate-500 hover:text-slate-800 dark:text-slate-400';
         }
-    }
+    });
+    document.querySelectorAll('#pos-view-btn-list').forEach(bList => {
+        if (mode === 'list') {
+            bList.style.background = 'var(--color-primary)';
+            bList.className = 'w-8 h-8 rounded-lg flex items-center justify-center text-xs transition-all cursor-pointer text-white shadow-xs';
+        } else {
+            bList.style.removeProperty('background');
+            bList.className = 'w-8 h-8 rounded-lg flex items-center justify-center text-xs transition-all cursor-pointer text-slate-500 hover:text-slate-800 dark:text-slate-400';
+        }
+    });
     renderCatalog();
 };
 
@@ -88,14 +91,15 @@ export const posDiscountAmount = () => {
 const posTotal    = () => Math.max(0, posSubtotal() - posDiscountAmount());
 const posChange   = () => posPaidAmount - posTotal();
 
-// Status dan Ketersediaan Stok Produk Kasir
+// Status dan Ketersediaan Stok Produk Kasir (Aman Null & Array Variant)
 export const getProductStockInfo = (p) => {
-    const useStk = appData.store?.useStock !== false;
+    if (!p) return { isManaged: false, totalStock: 0, isOutOfStock: true, isLowStock: false };
+    const useStk = appData?.store?.useStock !== false;
     if (!useStk) return { isManaged: false, totalStock: 9999, isOutOfStock: false, isLowStock: false };
     
     let total = 0;
-    if (p.variants && p.variants.length > 0) {
-        total = p.variants.reduce((s, v) => s + (parseFloat(v.stock) || 0), 0);
+    if (Array.isArray(p.variants) && p.variants.length > 0) {
+        total = p.variants.reduce((s, v) => s + (v && v.stock != null ? (parseFloat(v.stock) || 0) : 0), 0);
     } else {
         total = parseFloat(p.stock) || 0;
     }
@@ -165,10 +169,11 @@ const genTxId = () => {
 const startClock = () => {
     if (clockInterval) clearInterval(clockInterval);
     const update = () => {
-        const c = el('pos-live-clock');
-        if (!c) return;
         const now = new Date();
-        c.textContent = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) + ' WIB';
+        const timeStr = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) + ' WIB';
+        document.querySelectorAll('#pos-live-clock').forEach(c => {
+            c.textContent = timeStr;
+        });
     };
     update();
     clockInterval = setInterval(update, 1000);
@@ -875,121 +880,149 @@ export const closePOSCartDrawer = (skipHistory = false) => {
 
 // ─── Render Katalog ──────────────────────────────────────────
 const getItemImg = (item) => {
+    if (!item) return '';
     if (item.img && typeof item.img === 'string') return getOptImg(item.img, 'w150-rw');
-    const p = (appData.products || []).find(x => String(x.id) === String(item.id));
+    const p = (appData?.products || []).find(x => x && String(x.id) === String(item.id));
     if (p && p.img && typeof p.img === 'string') return getOptImg(p.img, 'w150-rw');
     return '';
 };
 
-const renderCatalog = () => {
-    const products = (appData.products || []).filter(p => {
-        if (!p || p.isActive === 'false' || p.isActive === false) return false;
-        if (posCatFilterVal && p.category !== posCatFilterVal) return false;
-        if (posSearch) {
-            const q = posSearch.toLowerCase();
-            return (p.name||'').toLowerCase().includes(q) || (p.barcode||'').toLowerCase().includes(q) || (p.sku||'').toLowerCase().includes(q);
-        }
-        return true;
-    });
+export const renderCatalog = () => {
+    try {
+        const prodList = Array.isArray(appData?.products) ? appData.products : [];
+        const products = prodList.filter(p => {
+            if (!p || p.isActive === 'false' || p.isActive === false) return false;
+            if (posCatFilterVal && p.category !== posCatFilterVal) return false;
+            if (posSearch) {
+                const q = String(posSearch).toLowerCase();
+                const name = String(p.name || '').toLowerCase();
+                const barcode = String(p.barcode || '').toLowerCase();
+                const sku = String(p.sku || '').toLowerCase();
+                return name.includes(q) || barcode.includes(q) || sku.includes(q);
+            }
+            return true;
+        });
 
-    const cats = ['Semua', ...[...new Set((appData.products||[]).filter(p => p && p.isActive !== 'false' && p.category).map(p => p.category))]];
+        const activeCats = prodList
+            .filter(p => p && p.isActive !== 'false' && p.isActive !== false && p.category)
+            .map(p => String(p.category).trim())
+            .filter(c => c.length > 0);
+        const cats = ['Semua', ...[...new Set(activeCats)]];
 
-    const catHTML = cats.map(c => {
-        const isAll  = c === 'Semua';
-        const active = isAll ? !posCatFilterVal : posCatFilterVal === c;
-        return `<button onclick="window.posCatFilter('${esc(isAll ? '' : c)}')" class="shrink-0 px-3.5 py-1.5 rounded-xl text-[11px] font-black uppercase tracking-wider border transition-all active:scale-95 shadow-2xs ${active ? 'text-white border-transparent' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-[var(--color-primary)]/50'}" style="${active ? 'background:var(--color-primary)' : ''}">${esc(c)}</button>`;
-    }).join('');
+        const catHTML = cats.map(c => {
+            const isAll  = c === 'Semua';
+            const active = isAll ? !posCatFilterVal : posCatFilterVal === c;
+            return `<button onclick="window.posCatFilter('${esc(isAll ? '' : c)}')" class="shrink-0 px-3.5 py-1.5 rounded-xl text-[11px] font-black uppercase tracking-wider border transition-all active:scale-95 shadow-2xs ${active ? 'text-white border-transparent' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-[var(--color-primary)]/50'}" style="${active ? 'background:var(--color-primary)' : ''}">${esc(c)}</button>`;
+        }).join('');
 
-    const prodHTML = products.length === 0
-        ? `<div class="col-span-full flex flex-col items-center justify-center py-20 text-slate-400 dark:text-slate-600">
-             <div class="w-16 h-16 rounded-3xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400 mb-3 shadow-inner">
-               <i class="fa-solid fa-box-open text-2xl"></i>
-             </div>
-             <p class="font-bold text-sm text-slate-600 dark:text-slate-400">Produk Tidak Ditemukan</p>
-             <p class="text-xs text-slate-400 mt-0.5">Coba gunakan kata kunci pencarian atau kategori lain</p>
-           </div>`
-        : products.map(p => {
-            const hasImg         = Boolean(p.img && typeof p.img === 'string' && p.img.trim());
-            const imgUrl         = hasImg ? getOptImg(p.img, 'w300-rw') : '';
-            const hasVariants    = p.variants && p.variants.length > 0;
-            const hasGrosir      = p.wholesale && p.wholesale.length > 0;
-            const cartItems      = posCart.filter(i => String(i.id) === String(p.id));
-            const totalQtyInCart = cartItems.reduce((s, i) => s + i.qty, 0);
-            const safeId         = esc(String(p.id));
-            const stockInfo      = getProductStockInfo(p);
+        const prodHTML = products.length === 0
+            ? `<div class="col-span-full flex flex-col items-center justify-center py-20 text-slate-400 dark:text-slate-600">
+                 <div class="w-16 h-16 rounded-3xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400 mb-3 shadow-inner">
+                   <i class="fa-solid fa-box-open text-2xl"></i>
+                 </div>
+                 <p class="font-bold text-sm text-slate-600 dark:text-slate-400">Produk Tidak Ditemukan</p>
+                 <p class="text-xs text-slate-400 mt-0.5">Coba gunakan kata kunci pencarian atau kategori lain</p>
+               </div>`
+            : products.map(p => {
+                if (!p) return '';
+                const hasImg         = Boolean(p.img && typeof p.img === 'string' && p.img.trim());
+                const imgUrl         = hasImg ? getOptImg(p.img, 'w300-rw') : '';
+                const hasVariants    = Array.isArray(p.variants) && p.variants.length > 0;
+                const hasGrosir      = Array.isArray(p.wholesale) && p.wholesale.length > 0;
+                const cartItems      = posCart.filter(i => i && String(i.id) === String(p.id));
+                const totalQtyInCart = cartItems.reduce((s, i) => s + (i && i.qty ? i.qty : 0), 0);
+                const safeId         = esc(String(p.id != null ? p.id : ''));
+                const stockInfo      = getProductStockInfo(p);
+                const pName          = esc(String(p.name || 'Produk'));
+                const pCat           = esc(String(p.category || ''));
+                const pPrice         = parseFloat(p.price) || 0;
 
-            if (posCatalogViewMode === 'list') {
-                // ── LIST MODE: baris kompak dengan thumbnail 52px ──
+                if (posCatalogViewMode === 'list') {
+                    // ── LIST MODE: baris kompak dengan thumbnail 52px ──
+                    return `
+                    <div class="pos-list-item${totalQtyInCart > 0 ? ' in-cart' : ''}${stockInfo.isOutOfStock ? ' opacity-75' : ''}" onclick="window.posAddToCart('${safeId}')">
+                        <div class="pos-list-thumb">
+                            ${hasImg
+                                ? `<img width="52" height="52" loading="lazy" decoding="async" src="${esc(imgUrl)}" alt="${pName}" onerror="this.onerror=null;this.style.display='none';this.nextElementSibling.style.display='flex';">
+                                   <div class="pos-img-placeholder" style="display:none;width:100%;height:100%"><i class="fa-solid fa-box" style="font-size:16px;margin:0"></i></div>`
+                                : `<div class="pos-img-placeholder" style="width:100%;height:100%"><i class="fa-solid fa-box" style="font-size:16px;margin:0"></i></div>`}
+                            ${totalQtyInCart > 0 ? `<div class="pos-qty-badge" style="top:2px;right:2px;min-width:18px;height:18px;font-size:9px;border-width:1.5px">${totalQtyInCart}</div>` : ''}
+                        </div>
+                        <div style="flex:1;min-width:0">
+                            <div style="display:flex;align-items:center;gap:4px;flex-wrap:wrap;margin-bottom:3px">
+                                ${pCat ? `<span style="font-size:9px;text-transform:uppercase;letter-spacing:0.06em;font-weight:700;color:#94a3b8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:80px">${pCat}</span>` : ''}
+                                ${hasVariants ? `<span class="pos-badge pos-badge-varian"><i class="fa-solid fa-layer-group" style="font-size:6px"></i> VARIAN</span>` : ''}
+                                ${hasGrosir   ? `<span class="pos-badge pos-badge-grosir"><i class="fa-solid fa-tags" style="font-size:6px"></i> GROSIR</span>` : ''}
+                                ${stockInfo.isOutOfStock ? `<span class="pos-badge pos-badge-habis"><i class="fa-solid fa-ban" style="font-size:6px"></i> HABIS</span>` : ''}
+                                ${stockInfo.isLowStock ? `<span class="pos-badge pos-badge-low"><i class="fa-solid fa-triangle-exclamation" style="font-size:6px"></i> SISA ${stockInfo.totalStock}</span>` : ''}
+                            </div>
+                            <p class="text-xs font-bold text-slate-800 dark:text-slate-100 truncate" title="${pName}">${pName}</p>
+                            <p style="font-size:12px;font-weight:900;color:var(--color-primary);margin-top:2px">${fRp(pPrice)}</p>
+                        </div>
+                        <button onclick="event.stopPropagation();window.posAddToCart('${safeId}')" class="pos-add-btn" title="Tambah ke keranjang">
+                            <i class="fa-solid fa-plus"></i>
+                        </button>
+                    </div>`;
+                }
+
+                // ── GRID MODE (Default): kartu 1:1 anti-collapse (min-height 220px) ──
                 return `
-                <div class="pos-list-item${totalQtyInCart > 0 ? ' in-cart' : ''}${stockInfo.isOutOfStock ? ' opacity-75' : ''}" onclick="window.posAddToCart('${safeId}')">
-                    <div class="pos-list-thumb">
-                        ${hasImg
-                            ? `<img width="52" height="52" loading="lazy" decoding="async" src="${esc(imgUrl)}" alt="${esc(p.name)}" onerror="this.onerror=null;this.style.display='none';this.nextElementSibling.style.display='flex';">
-                               <div class="pos-img-placeholder" style="display:none;width:100%;height:100%"><i class="fa-solid fa-box" style="font-size:16px;margin:0"></i></div>`
-                            : `<div class="pos-img-placeholder" style="width:100%;height:100%"><i class="fa-solid fa-box" style="font-size:16px;margin:0"></i></div>`}
-                        ${totalQtyInCart > 0 ? `<div class="pos-qty-badge" style="top:2px;right:2px;min-width:18px;height:18px;font-size:9px;border-width:1.5px">${totalQtyInCart}</div>` : ''}
-                    </div>
-                    <div style="flex:1;min-width:0">
-                        <div style="display:flex;align-items:center;gap:4px;flex-wrap:wrap;margin-bottom:3px">
-                            ${p.category ? `<span style="font-size:9px;text-transform:uppercase;letter-spacing:0.06em;font-weight:700;color:#94a3b8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:80px">${esc(p.category)}</span>` : ''}
+                <div class="pos-product-card${totalQtyInCart > 0 ? ' in-cart' : ''}${stockInfo.isOutOfStock ? ' opacity-75' : ''}" onclick="window.posAddToCart('${safeId}')">
+                    <!-- Kotak Gambar Rasio 1:1 Anti-Collapse (aspect-ratio 1:1 + min-height 120px) -->
+                    <div class="pos-img-box">
+                        <div class="pos-img-badges">
                             ${hasVariants ? `<span class="pos-badge pos-badge-varian"><i class="fa-solid fa-layer-group" style="font-size:6px"></i> VARIAN</span>` : ''}
                             ${hasGrosir   ? `<span class="pos-badge pos-badge-grosir"><i class="fa-solid fa-tags" style="font-size:6px"></i> GROSIR</span>` : ''}
                             ${stockInfo.isOutOfStock ? `<span class="pos-badge pos-badge-habis"><i class="fa-solid fa-ban" style="font-size:6px"></i> HABIS</span>` : ''}
                             ${stockInfo.isLowStock ? `<span class="pos-badge pos-badge-low"><i class="fa-solid fa-triangle-exclamation" style="font-size:6px"></i> SISA ${stockInfo.totalStock}</span>` : ''}
                         </div>
-                        <p class="text-xs font-bold text-slate-800 dark:text-slate-100 truncate" title="${esc(p.name)}">${esc(p.name)}</p>
-                        <p style="font-size:12px;font-weight:900;color:var(--color-primary);margin-top:2px">${fRp(parseFloat(p.price)||0)}</p>
+                        ${totalQtyInCart > 0 ? `<div class="pos-qty-badge">${totalQtyInCart}</div>` : ''}
+                        ${hasImg
+                            ? `<img width="300" height="300" loading="lazy" decoding="async" src="${esc(imgUrl)}" alt="${pName}"
+                                 onerror="this.onerror=null;this.style.display='none';this.nextElementSibling.style.display='flex';">
+                               <div class="pos-img-placeholder" style="display:none">
+                                 <i class="fa-solid fa-box-open"></i>
+                                 <span>${esc(p.category || 'Toko')}</span>
+                               </div>`
+                            : `<div class="pos-img-placeholder">
+                                 <i class="fa-solid fa-box-open"></i>
+                                 <span>${esc(p.category || 'Produk')}</span>
+                               </div>`}
                     </div>
-                    <button onclick="event.stopPropagation();window.posAddToCart('${safeId}')" class="pos-add-btn" title="Tambah ke keranjang">
-                        <i class="fa-solid fa-plus"></i>
+                    <!-- Info Produk -->
+                    <div class="pos-card-info">
+                        ${pCat ? `<p class="pos-card-cat">${pCat}</p>` : ''}
+                        <p class="pos-card-name" title="${pName}">${pName}</p>
+                        <div class="pos-card-footer">
+                            <span class="pos-card-price">${fRp(pPrice)}</span>
+                            <button onclick="event.stopPropagation();window.posAddToCart('${safeId}')" class="pos-add-btn" title="Tambah ke keranjang">
+                                <i class="fa-solid fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>`;
+            }).join('');
+
+        document.querySelectorAll('#pos-cat-filter').forEach(catEl => {
+            catEl.innerHTML = catHTML;
+        });
+        document.querySelectorAll('#pos-catalog-grid').forEach(gridEl => {
+            gridEl.className = posCatalogViewMode === 'list' ? 'pos-catalog-list-mode' : 'pos-catalog-grid-mode';
+            gridEl.innerHTML = prodHTML;
+        });
+    } catch (err) {
+        console.error('[POS] renderCatalog error:', err);
+        document.querySelectorAll('#pos-catalog-grid').forEach(gridEl => {
+            gridEl.innerHTML = `
+                <div class="col-span-full flex flex-col items-center justify-center py-16 text-slate-500">
+                    <i class="fa-solid fa-triangle-exclamation text-amber-500 text-3xl mb-3"></i>
+                    <p class="font-bold text-sm text-slate-700 dark:text-slate-300">Gagal Memuat Katalog Kasir</p>
+                    <p class="text-xs text-slate-400 mt-1 mb-4">${esc(err.message || 'Terjadi kesalahan')}</p>
+                    <button onclick="window.renderCatalog()" class="px-4 py-2 rounded-xl text-xs font-bold text-white shadow-md active:scale-95 cursor-pointer" style="background:var(--color-primary)">
+                        <i class="fa-solid fa-arrows-rotate mr-1.5"></i> Coba Muat Ulang
                     </button>
                 </div>`;
-            }
-
-            // ── GRID MODE (Default): kartu 1:1 anti-collapse (min-height 220px) ──
-            return `
-            <div class="pos-product-card${totalQtyInCart > 0 ? ' in-cart' : ''}${stockInfo.isOutOfStock ? ' opacity-75' : ''}" onclick="window.posAddToCart('${safeId}')">
-                <!-- Kotak Gambar Rasio 1:1 Anti-Collapse (aspect-ratio 1:1 + min-height 120px) -->
-                <div class="pos-img-box">
-                    <div class="pos-img-badges">
-                        ${hasVariants ? `<span class="pos-badge pos-badge-varian"><i class="fa-solid fa-layer-group" style="font-size:6px"></i> VARIAN</span>` : ''}
-                        ${hasGrosir   ? `<span class="pos-badge pos-badge-grosir"><i class="fa-solid fa-tags" style="font-size:6px"></i> GROSIR</span>` : ''}
-                        ${stockInfo.isOutOfStock ? `<span class="pos-badge pos-badge-habis"><i class="fa-solid fa-ban" style="font-size:6px"></i> HABIS</span>` : ''}
-                        ${stockInfo.isLowStock ? `<span class="pos-badge pos-badge-low"><i class="fa-solid fa-triangle-exclamation" style="font-size:6px"></i> SISA ${stockInfo.totalStock}</span>` : ''}
-                    </div>
-                    ${totalQtyInCart > 0 ? `<div class="pos-qty-badge">${totalQtyInCart}</div>` : ''}
-                    ${hasImg
-                        ? `<img width="300" height="300" loading="lazy" decoding="async" src="${esc(imgUrl)}" alt="${esc(p.name)}"
-                             onerror="this.onerror=null;this.style.display='none';this.nextElementSibling.style.display='flex';">
-                           <div class="pos-img-placeholder" style="display:none">
-                             <i class="fa-solid fa-box-open"></i>
-                             <span>${esc(p.category || 'Toko')}</span>
-                           </div>`
-                        : `<div class="pos-img-placeholder">
-                             <i class="fa-solid fa-box-open"></i>
-                             <span>${esc(p.category || 'Produk')}</span>
-                           </div>`}
-                </div>
-                <!-- Info Produk -->
-                <div class="pos-card-info">
-                    ${p.category ? `<p class="pos-card-cat">${esc(p.category)}</p>` : ''}
-                    <p class="pos-card-name" title="${esc(p.name)}">${esc(p.name)}</p>
-                    <div class="pos-card-footer">
-                        <span class="pos-card-price">${fRp(parseFloat(p.price)||0)}</span>
-                        <button onclick="event.stopPropagation();window.posAddToCart('${safeId}')" class="pos-add-btn" title="Tambah ke keranjang">
-                            <i class="fa-solid fa-plus"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>`;
-        }).join('');
-
-    const catEl  = el('pos-cat-filter');
-    const gridEl = el('pos-catalog-grid');
-    if (catEl)  catEl.innerHTML  = catHTML;
-    if (gridEl) {
-        gridEl.className = posCatalogViewMode === 'list' ? 'pos-catalog-list-mode' : 'pos-catalog-grid-mode';
-        gridEl.innerHTML = prodHTML;
+        });
     }
 };
 
@@ -2188,7 +2221,7 @@ const buildPOSLayout = ({ isStorefront }) => {
                             <input id="pos-search-input" type="text" placeholder="Cari barang, barcode USB, atau SKU (F4)..." 
                                 class="w-full pl-9 pr-9 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs sm:text-sm font-medium text-slate-800 dark:text-slate-100 focus:outline-none focus:border-[var(--color-primary)] focus:bg-white dark:focus:bg-slate-900 transition-all"
                                 oninput="window.posSearchFn(this.value)">
-                            <button onclick="el('pos-search-input').value=''; window.posSearchFn('');" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xs p-1 cursor-pointer" title="Hapus pencarian">
+                            <button onclick="document.querySelectorAll('#pos-search-input').forEach(i => i.value=''); window.posSearchFn('');" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xs p-1 cursor-pointer" title="Hapus pencarian">
                                 <i class="fa-solid fa-circle-xmark"></i>
                             </button>
                         </div>
@@ -2371,44 +2404,77 @@ const buildPOSLayout = ({ isStorefront }) => {
 
 // ─── Render Storefront Standalone View ───────────────────────
 export const renderPOSStorefront = () => {
-    posSearch       = '';
-    posCatFilterVal = '';
-    posCart         = [];
-    posGlobalDisc   = 0;
+    try {
+        posSearch       = '';
+        posCatFilterVal = '';
+        posCart         = [];
+        posGlobalDisc   = 0;
 
-    const viewEl = el('view-pos-cashier');
-    if (!viewEl) return;
+        const viewEl = el('view-pos-cashier');
+        if (!viewEl) return;
 
-    viewEl.innerHTML = buildPOSLayout({ isStorefront: true });
-    renderCatalog();
-    renderCart();
-    renderHeldBadges();
-    initBarcodeListener();
-    startClock();
-    ensureCustomersLoaded(); // Prefetch member data
-    exposeToWindow();
+        // Bersihkan kontainer admin-content jika sebelumnya berada di admin-pos-mode untuk mencegah duplikasi ID
+        const adminContent = el('admin-content');
+        const adminView = el('view-admin');
+        if (adminContent && adminView?.classList.contains('admin-pos-mode')) {
+            adminContent.innerHTML = '';
+            adminView.classList.remove('admin-pos-mode');
+        }
+
+        viewEl.innerHTML = buildPOSLayout({ isStorefront: true });
+        renderCatalog();
+        renderCart();
+        renderHeldBadges();
+        initBarcodeListener();
+        startClock();
+        ensureCustomersLoaded(); // Prefetch member data
+        exposeToWindow();
+    } catch (err) {
+        console.error('Gagal render POS Storefront:', err);
+    }
 };
 
 // ─── Render di Admin CMS ────────────────────────────────────
 export const renderPOS = () => {
-    posSearch       = '';
-    posCatFilterVal = '';
+    try {
+        posSearch       = '';
+        posCatFilterVal = '';
 
-    const adminView = el('view-admin');
-    if (adminView) adminView.classList.add('admin-pos-mode');
+        const adminView = el('view-admin');
+        if (adminView) adminView.classList.add('admin-pos-mode');
 
-    const adminContent = el('admin-content');
-    if (!adminContent) return;
+        // Bersihkan kontainer storefront agar elemen duplikat ID (#pos-catalog-grid, #pos-cat-filter, dll) tidak bertabrakan
+        const sfView = el('view-pos-cashier');
+        if (sfView) sfView.innerHTML = '';
 
-    // Kontainer mengambil 100% tinggi penuh flex viewport tanpa scroll ganda
-    setH('admin-content', `<div class="h-full w-full flex flex-col overflow-hidden">${buildPOSLayout({ isStorefront: false })}</div>`);
-    renderCatalog();
-    renderCart();
-    renderHeldBadges();
-    initBarcodeListener();
-    startClock();
-    ensureCustomersLoaded(); // Prefetch member data
-    exposeToWindow();
+        const adminContent = el('admin-content');
+        if (!adminContent) return;
+
+        // Kontainer mengambil 100% tinggi penuh flex viewport tanpa scroll ganda
+        setH('admin-content', `<div class="h-full w-full flex flex-col overflow-hidden">${buildPOSLayout({ isStorefront: false })}</div>`);
+        renderCatalog();
+        renderCart();
+        renderHeldBadges();
+        initBarcodeListener();
+        startClock();
+        ensureCustomersLoaded(); // Prefetch member data
+        exposeToWindow();
+    } catch (err) {
+        console.error('Gagal render POS Admin:', err);
+        const adminContent = el('admin-content');
+        if (adminContent) {
+            adminContent.innerHTML = `
+                <div class="h-full w-full flex flex-col items-center justify-center p-6 text-center">
+                    <i class="fa-solid fa-triangle-exclamation text-4xl text-amber-500 mb-3"></i>
+                    <h3 class="text-base font-bold text-slate-800 dark:text-white">Gagal Membuka Terminal POS</h3>
+                    <p class="text-xs text-slate-500 mt-1 max-w-sm">Terjadi kendala saat memuat terminal. Silakan coba muat ulang.</p>
+                    <button onclick="window.renderPOS()" class="mt-4 px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-xl text-xs font-bold transition-all shadow-md">
+                        <i class="fa-solid fa-arrows-rotate mr-1.5"></i>Muat Ulang Terminal
+                    </button>
+                </div>
+            `;
+        }
+    }
 };
 
 // ─── Expose ke Window ────────────────────────────────────────
@@ -2449,7 +2515,22 @@ const exposeToWindow = () => {
     window.posSearchScannedCode    = posSearchScannedCode;
     window.executePOSPrintDirect   = executePOSPrintDirect;
     window.posCatFilter            = (c) => { posCatFilterVal = c; renderCatalog(); };
-    window.posSearchFn             = (v) => { posSearch = v; renderCatalog(); };
+    window.posSearchFn             = (v) => { 
+        posSearch = typeof v === 'string' ? v : (v?.value || ''); 
+        document.querySelectorAll('#pos-search-input').forEach(inp => {
+            if (inp.value !== posSearch) inp.value = posSearch;
+        });
+        renderCatalog(); 
+    };
+    window.renderCatalog           = renderCatalog;
+    window.renderCart              = renderCart;
+    window.refreshPOSCatalog       = () => {
+        try {
+            renderCatalog();
+        } catch (e) {
+            console.warn('refreshPOSCatalog error:', e);
+        }
+    };
     window.openPOSCartDrawer       = openPOSCartDrawer;
     window.closePOSCartDrawer      = closePOSCartDrawer;
     window.playCashierBeep         = playCashierBeep;
