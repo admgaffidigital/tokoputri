@@ -8,6 +8,20 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-9-38',
+        version: 'v1.9.38',
+        date: '2026-09-26',
+        title: 'Standarisasi Wajib Preview Sebelum Cetak Universal, Peningkatan Ketahanan Cetak Thermal & Presisi UI/UX Mobile Friendly',
+        category: 'feature',
+        badge: 'Smart Preview & Mobile UI UX v1.9.38',
+        items: [
+            'Wajib Preview Sebelum Cetak (Universal Preview-First Printing): Seluruh sistem pencetakan (Struk Transaksi POS Kasir 58mm/80mm, Slip Rekap Shift X-Report & Z-Report, Faktur Invoice, dan Surat Jalan A4) kini wajib menampilkan modal preview visual in-page interaktif sebelum perintah cetak diteruskan ke printer fisik.',
+            'Auto-Create Thermal Print Section: Penambahan inisialisasi otomatis kontainer DOM #thermal-print-section jika belum tersedia, menjamin seluruh pencetakan thermal kasir selalu terisolasi bersih dan bebas dari elemen latar belakang browser.',
+            'Smart Iframe Fallback Anti-Popup Blocker: Pencetakan dokumen A4 kini dilengkapi fallback cerdas menggunakan hidden iframe tersembunyi yang langsung memicu dialog cetak printer jika pop-up tab baru diblokir oleh browser.',
+            'Presisi Responsivitas Mobile Friendly (Viewport 390x844px): Penataan header kasir anti-wrap, tombol mengambang keranjang kasir (floating cart drawer), touch target nyaman (≥ 44px), dan integrasi safe area notch smartphone.'
+        ]
+    },
+    {
         id: 'log-1-9-37',
         version: 'v1.9.37',
         date: '2026-09-25',
