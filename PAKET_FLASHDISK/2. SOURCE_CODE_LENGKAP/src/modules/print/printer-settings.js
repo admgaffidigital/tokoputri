@@ -292,21 +292,24 @@ export const executeTestPrint = () => {
     `;
 
     // Cetak ke thermal-print-section
-    const t = el('thermal-print-section');
-    if (t) {
-        t.innerHTML = `<div style="width:${is80 ? '80mm' : '58mm'};font-family:'Courier New',Courier,monospace;font-size:11px;line-height:1.2;color:#000;background:#fff;padding:4px;">${h}</div>`;
-        
-        if (config.deviceType === 'rawbt' && window.AndroidNativeApp && typeof window.AndroidNativeApp.printRawBT === 'function') {
-            const rawHtml = t.innerText;
-            const b64 = btoa(unescape(encodeURIComponent(rawHtml)));
-            window.AndroidNativeApp.printRawBT(b64);
-        } else if (window.AndroidNativeApp && typeof window.AndroidNativeApp.print === 'function') {
-            window.AndroidNativeApp.print();
-        } else {
-            window.print();
-        }
-        showToast('Perintah uji cetak berhasil dikirim! 🖨️');
+    let t = el('thermal-print-section');
+    if (!t) {
+        t = document.createElement('div');
+        t.id = 'thermal-print-section';
+        document.body.appendChild(t);
     }
+    t.innerHTML = `<div style="width:${is80 ? '80mm' : '58mm'};font-family:'Courier New',Courier,monospace;font-size:11px;line-height:1.2;color:#000;background:#fff;padding:4px;">${h}</div>`;
+    
+    if (config.deviceType === 'rawbt' && window.AndroidNativeApp && typeof window.AndroidNativeApp.printRawBT === 'function') {
+        const rawHtml = t.innerText;
+        const b64 = btoa(unescape(encodeURIComponent(rawHtml)));
+        window.AndroidNativeApp.printRawBT(b64);
+    } else if (window.AndroidNativeApp && typeof window.AndroidNativeApp.print === 'function') {
+        window.AndroidNativeApp.print();
+    } else {
+        window.print();
+    }
+    showToast('Perintah uji cetak berhasil dikirim! 🖨️');
 };
 
 // ─── Expose ke window untuk HTML onclick ──────

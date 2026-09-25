@@ -123,22 +123,25 @@ export const executePrintReceipt = () => {
     const o = gOrds.find(x => x.orderId === cVOrd); 
     if (!o) return; 
     const p = el('receipt-paper-content') ? el('receipt-paper-content').innerHTML : ''; 
-    const t = el('thermal-print-section'); 
-    if (t) { 
-        const config = typeof getPrinterConfig === 'function' ? getPrinterConfig() : { paperSize: '58mm', deviceType: 'system' };
-        const is80 = config.paperSize === '80mm';
-        t.innerHTML = `<div style="width:${is80 ? '80mm' : '58mm'};font-family:'Courier New',Courier,monospace;font-size:11px;line-height:1.2;color:#000;background:#fff;padding:4px;">${p}</div>`; 
-        
-        if (config.deviceType === 'rawbt' && window.AndroidNativeApp && typeof window.AndroidNativeApp.printRawBT === 'function') {
-            const rawHtml = t.innerText;
-            const b64 = btoa(unescape(encodeURIComponent(rawHtml)));
-            window.AndroidNativeApp.printRawBT(b64);
-        } else if (window.AndroidNativeApp && typeof window.AndroidNativeApp.print === 'function') {
-            window.AndroidNativeApp.print();
-        } else {
-            window.print(); 
-        }
-    } 
+    let t = el('thermal-print-section'); 
+    if (!t) {
+        t = document.createElement('div');
+        t.id = 'thermal-print-section';
+        document.body.appendChild(t);
+    }
+    const config = typeof getPrinterConfig === 'function' ? getPrinterConfig() : { paperSize: '58mm', deviceType: 'system' };
+    const is80 = config.paperSize === '80mm';
+    t.innerHTML = `<div style="width:${is80 ? '80mm' : '58mm'};font-family:'Courier New',Courier,monospace;font-size:11px;line-height:1.2;color:#000;background:#fff;padding:4px;">${p}</div>`; 
+    
+    if (config.deviceType === 'rawbt' && window.AndroidNativeApp && typeof window.AndroidNativeApp.printRawBT === 'function') {
+        const rawHtml = t.innerText;
+        const b64 = btoa(unescape(encodeURIComponent(rawHtml)));
+        window.AndroidNativeApp.printRawBT(b64);
+    } else if (window.AndroidNativeApp && typeof window.AndroidNativeApp.print === 'function') {
+        window.AndroidNativeApp.print();
+    } else {
+        window.print(); 
+    }
 };
 
 // ─── Expose ke window untuk kompatibilitas onclick di HTML ──────

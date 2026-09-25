@@ -435,17 +435,47 @@ export const closeDocPreviewModal = (fH = false) => {
 export const printDocA4 = () => {
     const p = el('doc-paper-content') ? el('doc-paper-content').innerHTML : '';
     if (window.AndroidNativeApp && typeof window.AndroidNativeApp.print === 'function') {
-        const t = el('thermal-print-section');
-        if (t) t.innerHTML = p;
+        let t = el('thermal-print-section');
+        if (!t) {
+            t = document.createElement('div');
+            t.id = 'thermal-print-section';
+            document.body.appendChild(t);
+        }
+        t.innerHTML = p;
         window.AndroidNativeApp.print();
         return;
     }
     const printWindow = window.open('', '_blank');
     
     if (!printWindow) {
-        if (typeof window.showToast === 'function') {
-            window.showToast("Gagal membuka tab baru. Izinkan pop-up di browser Anda!");
+        // Fallback cerdas: Cetak via iframe tersembunyi jika pop-up browser diblokir
+        let printIframe = document.getElementById('a4-print-fallback-iframe');
+        if (!printIframe) {
+            printIframe = document.createElement('iframe');
+            printIframe.id = 'a4-print-fallback-iframe';
+            printIframe.style.position = 'fixed';
+            printIframe.style.right = '0';
+            printIframe.style.bottom = '0';
+            printIframe.style.width = '0';
+            printIframe.style.height = '0';
+            printIframe.style.border = '0';
+            printIframe.style.opacity = '0';
+            document.body.appendChild(printIframe);
         }
+        const doc = printIframe.contentWindow.document;
+        doc.open();
+        doc.write(`<!DOCTYPE html><html><head><title>Cetak Dokumen A4</title>
+        <style>@page{size:A4 portrait;margin:10mm}body{font-family:'Barlow',system-ui,sans-serif;background:#fff;margin:0;padding:16px;color:#0f172a;-webkit-print-color-adjust:exact;print-color-adjust:exact}.w-full{width:100%}</style>
+        </head><body><div style="max-width:794px;margin:0 auto">${p}</div></body></html>`);
+        doc.close();
+        setTimeout(() => {
+            try {
+                printIframe.contentWindow.focus();
+                printIframe.contentWindow.print();
+            } catch (e) {
+                console.warn('[DocPrint] Fallback iframe print error:', e);
+            }
+        }, 500);
         return;
     }
     
