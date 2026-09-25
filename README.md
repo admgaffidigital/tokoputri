@@ -176,6 +176,15 @@ Aplikasi telah dilengkapi dengan fondasi **Capacitor 8 Android Native**:
 
 ## 📋 Riwayat Pembaruan (Changelog)
 
+### v1.9.36 — Arsitektur Single Shift Akun Kasir Terpusat & Sinkronisasi Multi-Perangkat Real-Time: Anti-Double Shift & Auto-Resume Multi-Device (25 Sep 2026)
+- **Arsitektur 1 Akun Kasir 1 Shift Aktif (Single Active Shift per Account)**: Mengunci aturan kerja kasir di mana satu akun kasir (`cashierUid`) hanya dapat membuka 1 shift kerja aktif (`status: 'open'`) di seluruh toko dan tidak dapat diduplikasi.
+- **Auto-Resume Lintas Perangkat Tanpa Buka Kas Baru**: Kasir dapat berpindah secara mulus dari komputer kasir meja (PC) ke smartphone Android atau tablet tanpa harus memasukkan modal awal atau membuka kas baru — sistem otomatis mendeteksi dan melanjutkan sesi shift aktif yang ada.
+- **Proteksi Anti-Double Shift (Cloud Pre-Flight Guard)**: Melindungi kasir dari risiko pembukaan kas ganda secara tidak sengaja melalui tombol "Buka Shift" maupun pintasan keyboard F10 dengan verifikasi instan ke Cloud Firestore sebelum modal awal dibuka.
+- **Sinkronisasi Real-Time Dua Arah (Firestore onSnapshot Listener)**: Transaksi penjualan, total omset, akumulasi kas laci, dan kuantitas item yang diinput pada perangkat kasir A langsung tersinkronisasi secara otomatis dan seketika pada perangkat kasir B yang membuka akun yang sama.
+- **Penutupan Shift Serempak (Global Shift Settlement)**: Saat kasir melakukan tutup shift (Z-Report) di satu perangkat, semua perangkat lain yang terhubung secara otomatis merefleksikan penutupan shift, membersihkan sesi aktif lokal, dan memperbarui lencana indikator header kasir.
+
+---
+
 ### v1.9.35 — Dukungan Kuantitas Desimal POS Kasir (Decimal QTY Support) Terpadu dengan Storefront (25 Sep 2026)
 - **Dukungan Kuantitas Desimal Penuh (Decimal QTY Support)**: Kasir kini dapat memasukkan kuantitas pecahan desimal (seperti `0.5` kg telur, `1.25` meter kabel/pipa, `2.5` liter beras/minyak, dst.) pada transaksi POS kasir persis seperti yang telah didukung pada keranjang belanja *storefront* pelanggan.
 - **Input Stepper Fleksibel & Anti-Truncation**: Memperluas input kuantitas keranjang kasir dengan atribut `step="any"`, `min="0.01"`, serta penyesuaian lebar input (`w-11`) sehingga angka desimal seperti `0.5` atau `1.25` tampil nyaman dan proporsional tanpa terpotong.

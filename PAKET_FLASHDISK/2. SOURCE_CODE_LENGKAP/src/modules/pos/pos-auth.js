@@ -248,6 +248,11 @@ export const processCashierLogin = async () => {
         try { localStorage.setItem('pos_has_cashier', 'true'); } catch (_) {}
         updatePOSHeaderIcon();
 
+        // Segera sinkronkan dan sambungkan shift aktif dari Cloud Firestore
+        if (typeof window.syncActiveShiftFromCloud === 'function') {
+            window.syncActiveShiftFromCloud().catch(() => {});
+        }
+
         // Jika admin sedang login, jangan sign out Firebase Auth
         // (gunakan state window.__cashierSession untuk POS, admin tetap pakai window.isAdm)
         // Note: Firebase Auth akan menunjuk ke akun kasir sekarang,
@@ -322,6 +327,13 @@ export const cashierLogout = async (bypassShiftCheck = false) => {
 
     if (typeof window.detachPOSHistoryListener === 'function') {
         window.detachPOSHistoryListener();
+    }
+
+    if (typeof window.detachActiveShiftListener === 'function') {
+        window.detachActiveShiftListener();
+    }
+    if (typeof window.clearActiveShift === 'function') {
+        window.clearActiveShift();
     }
 
     try {

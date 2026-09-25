@@ -8,6 +8,21 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-9-36',
+        version: 'v1.9.36',
+        date: '2026-09-25',
+        title: 'Arsitektur Single Shift Akun Kasir Terpusat & Sinkronisasi Multi-Perangkat Real-Time: Anti-Double Shift & Auto-Resume Multi-Device',
+        category: 'feature',
+        badge: 'Multi-Device Single Shift POS Kasir v1.9.36',
+        items: [
+            'Arsitektur 1 Akun Kasir 1 Shift Aktif (Single Active Shift per Account): Mengunci aturan kerja kasir di mana satu akun kasir (cashierUid) hanya dapat membuka 1 shift kerja aktif (status open) di seluruh toko dan tidak dapat diduplikasi.',
+            'Auto-Resume Lintas Perangkat Tanpa Buka Kas Baru: Kasir dapat berpindah secara mulus dari komputer kasir meja (PC) ke smartphone Android atau tablet tanpa harus memasukkan modal awal atau membuka kas baru — sistem otomatis mendeteksi dan melanjutkan sesi shift aktif yang ada.',
+            'Proteksi Anti-Double Shift (Cloud Pre-Flight Guard): Melindungi kasir dari risiko pembukaan kas ganda secara tidak sengaja melalui tombol "Buka Shift" maupun pintasan F10 dengan verifikasi instan ke Cloud Firestore sebelum modal awal dibuka.',
+            'Sinkronisasi Real-Time Dua Arah (Firestore onSnapshot Listener): Transaksi penjualan, total omset, akumulasi kas laci, dan kuantitas item yang diinput pada perangkat kasir A langsung tersinkronisasi secara otomatis dan seketika pada perangkat kasir B yang membuka akun yang sama.',
+            'Penutupan Shift Serempak (Global Shift Settlement): Saat kasir melakukan tutup shift (Z-Report) di satu perangkat, semua perangkat lain yang terhubung secara otomatis merefleksikan penutupan shift, membersihkan sesi aktif lokal, dan memperbarui lencana indikator header kasir.'
+        ]
+    },
+    {
         id: 'log-1-9-35',
         version: 'v1.9.35',
         date: '2026-09-25',

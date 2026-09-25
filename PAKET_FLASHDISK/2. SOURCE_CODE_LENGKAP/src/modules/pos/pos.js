@@ -15,6 +15,7 @@ import { getPrinterConfig, openPrinterSettingsModal } from '../print/printer-set
 import {
     getActiveShift,
     isShiftActive,
+    syncActiveShiftFromCloud,
     openPOSOpenShiftModal,
     closePOSOpenShiftModal,
     openShiftSummaryModal,
@@ -254,8 +255,16 @@ const initBarcodeListener = () => {
         }
         if (e.key === 'F10') {
             e.preventDefault();
-            if (isShiftActive()) openShiftSummaryModal();
-            else openPOSOpenShiftModal();
+            if (isShiftActive()) {
+                openShiftSummaryModal();
+            } else if (typeof syncActiveShiftFromCloud === 'function') {
+                syncActiveShiftFromCloud().then(s => {
+                    if (s && s.status === 'open') openShiftSummaryModal();
+                    else openPOSOpenShiftModal();
+                }).catch(() => openPOSOpenShiftModal());
+            } else {
+                openPOSOpenShiftModal();
+            }
             return;
         }
 
@@ -2536,12 +2545,22 @@ export const renderPOSStorefront = () => {
         ensureCustomersLoaded(); // Prefetch member data
         exposeToWindow();
 
-        // Prompt buka shift kasir jika belum ada shift aktif
-        setTimeout(() => {
-            if (!isShiftActive()) {
-                openPOSOpenShiftModal();
-            }
-        }, 350);
+        // Sinkronkan dan periksa shift kasir aktif dari cloud
+        if (typeof syncActiveShiftFromCloud === 'function') {
+            syncActiveShiftFromCloud().then(activeShift => {
+                if (!activeShift || activeShift.status !== 'open') {
+                    openPOSOpenShiftModal();
+                }
+            }).catch(() => {
+                if (!isShiftActive()) openPOSOpenShiftModal();
+            });
+        } else {
+            setTimeout(() => {
+                if (!isShiftActive()) {
+                    openPOSOpenShiftModal();
+                }
+            }, 350);
+        }
     } catch (err) {
         console.error('Gagal render POS Storefront:', err);
     }
@@ -2578,12 +2597,22 @@ export const renderPOS = () => {
         ensureCustomersLoaded(); // Prefetch member data
         exposeToWindow();
 
-        // Prompt buka shift kasir jika belum ada shift aktif
-        setTimeout(() => {
-            if (!isShiftActive()) {
-                openPOSOpenShiftModal();
-            }
-        }, 350);
+        // Sinkronkan dan periksa shift kasir aktif dari cloud
+        if (typeof syncActiveShiftFromCloud === 'function') {
+            syncActiveShiftFromCloud().then(activeShift => {
+                if (!activeShift || activeShift.status !== 'open') {
+                    openPOSOpenShiftModal();
+                }
+            }).catch(() => {
+                if (!isShiftActive()) openPOSOpenShiftModal();
+            });
+        } else {
+            setTimeout(() => {
+                if (!isShiftActive()) {
+                    openPOSOpenShiftModal();
+                }
+            }, 350);
+        }
     } catch (err) {
         console.error('Gagal render POS Admin:', err);
         const adminContent = el('admin-content');
@@ -2643,6 +2672,7 @@ const exposeToWindow = () => {
     window.executePOSPrintDirect   = executePOSPrintDirect;
     window.getActiveShift          = getActiveShift;
     window.isShiftActive           = isShiftActive;
+    window.syncActiveShiftFromCloud= syncActiveShiftFromCloud;
     window.openPOSOpenShiftModal   = openPOSOpenShiftModal;
     window.closePOSOpenShiftModal  = closePOSOpenShiftModal;
     window.openPOSShiftModal       = openShiftSummaryModal;
@@ -3085,6 +3115,7 @@ window.posSearchScannedCode    = posSearchScannedCode;
 window.executePOSPrintDirect   = executePOSPrintDirect;
 window.getActiveShift          = getActiveShift;
 window.isShiftActive           = isShiftActive;
+window.syncActiveShiftFromCloud= syncActiveShiftFromCloud;
 window.openPOSOpenShiftModal   = openPOSOpenShiftModal;
 window.closePOSOpenShiftModal  = closePOSOpenShiftModal;
 window.openPOSShiftModal       = openShiftSummaryModal;

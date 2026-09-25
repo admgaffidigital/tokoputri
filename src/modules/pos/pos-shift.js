@@ -14,7 +14,7 @@
  * ============================================================
  */
 
-import { db, firebase } from '../../config/firebase.js';
+import { db, firebase, auth } from '../../config/firebase.js';
 import { appData } from '../../core/state.js';
 import { el, setH, esc, showToast, showConfirm } from '../../core/utils.js';
 import { getCashierSession } from './pos-auth.js';
@@ -25,11 +25,40 @@ export const fRp = n => 'Rp ' + (Math.round(parseFloat(n) || 0)).toLocaleString(
 export const fNum = n => (Math.round(parseFloat(n) || 0)).toLocaleString('id-ID');
 const formatShiftQty = n => parseFloat((parseFloat(n) || 0).toFixed(3)).toString();
 
-// ─── State Shift Aktif ───────────────────────────────────────
+// ─── State Shift Aktif & Cloud Sync ───────────────────────────
 const SHIFT_STORAGE_KEY = 'pos_active_shift';
 const LAST_CLOSED_SHIFT_KEY = 'pos_last_closed_shift';
 
 let _activeShift = null;
+let _shiftSnapshotUnsub = null;
+
+export const detachActiveShiftListener = () => {
+    if (typeof _shiftSnapshotUnsub === 'function') {
+        try { _shiftSnapshotUnsub(); } catch (e) {}
+        _shiftSnapshotUnsub = null;
+    }
+};
+
+export const getCurrentCashierIdentity = () => {
+    const cashierSession = typeof getCashierSession === 'function' ? getCashierSession() : null;
+    const isAdmUser = !!(window.isAdm || window.__localIsAdm || window.__currentAdminUid);
+    const authUid = auth?.currentUser?.uid;
+    const uid = cashierSession?.uid || (isAdmUser ? (window.__currentAdminUid || authUid || 'admin') : (authUid || 'cashier-anon'));
+    const name = cashierSession?.name || (isAdmUser ? 'Admin Seller' : 'Kasir Toko');
+    const email = cashierSession?.email || (isAdmUser ? (auth?.currentUser?.email || '') : '');
+    return { uid, name, email, isAdm: isAdmUser };
+};
+
+export const isShiftOwnedByCashier = (shiftData, identity = getCurrentCashierIdentity()) => {
+    if (!shiftData) return false;
+    const shiftUid = shiftData.cashierUid;
+    if (shiftUid && identity.uid && shiftUid === identity.uid) return true;
+    if (identity.isAdm) {
+        if (shiftUid === 'admin' || shiftUid === 'ADMIN_UID' || shiftUid === window.__currentAdminUid) return true;
+        if (auth?.currentUser && shiftUid === auth.currentUser.uid) return true;
+    }
+    return false;
+};
 
 export const getActiveShift = () => {
     if (_activeShift) return _activeShift;
@@ -75,6 +104,164 @@ export const saveLastClosedShift = (shift) => {
 export const isShiftActive = () => {
     const s = getActiveShift();
     return !!(s && s.status === 'open');
+};
+
+export const findActiveShiftInCloud = async (cashierUid = null) => {
+    const identity = getCurrentCashierIdentity();
+
+    try {
+        const snap = await db.collection('freshmart').doc('cms_data')
+            .collection('pos_shifts')
+            .where('status', '==', 'open')
+            .get();
+
+        if (!snap.empty) {
+            const matches = [];
+            snap.forEach(doc => {
+                const data = { id: doc.id, ...doc.data() };
+                if (isShiftOwnedByCashier(data, identity)) {
+                    matches.push(data);
+                }
+            });
+
+            if (matches.length > 0) {
+                matches.sort((a, b) => (b.startTime || 0) - (a.startTime || 0));
+                return matches[0];
+            }
+        }
+    } catch (err) {
+        console.warn('[POS Shift] Cek open shift cms_data:', err);
+    }
+
+    try {
+        const rootSnap = await db.collection('pos_shifts')
+            .where('status', '==', 'open')
+            .get();
+
+        if (!rootSnap.empty) {
+            const matches = [];
+            rootSnap.forEach(doc => {
+                const data = { id: doc.id, ...doc.data() };
+                if (isShiftOwnedByCashier(data, identity)) {
+                    matches.push(data);
+                }
+            });
+
+            if (matches.length > 0) {
+                matches.sort((a, b) => (b.startTime || 0) - (a.startTime || 0));
+                return matches[0];
+            }
+        }
+    } catch (err) {
+        console.warn('[POS Shift] Cek open shift root pos_shifts:', err);
+    }
+
+    return null;
+};
+
+export const listenActiveShiftCloud = (shiftId) => {
+    if (!shiftId) return;
+    detachActiveShiftListener();
+
+    try {
+        const docRef = db.collection('freshmart').doc('cms_data').collection('pos_shifts').doc(shiftId);
+        _shiftSnapshotUnsub = docRef.onSnapshot(docSnap => {
+            if (!docSnap.exists) return;
+            const data = { id: docSnap.id, ...docSnap.data() };
+
+            if (data.status === 'closed') {
+                detachActiveShiftListener();
+                clearActiveShift();
+                saveLastClosedShift(data);
+
+                closePOSShiftSummaryModal();
+                closePOSCloseShiftModal();
+                closePOSOpenShiftModal();
+
+                showToast('Shift kasir telah ditutup dari perangkat lain.', 'info');
+                if (typeof window.renderShiftHeaderBadge === 'function') {
+                    window.renderShiftHeaderBadge();
+                }
+                return;
+            }
+
+            if (data.status === 'open') {
+                saveActiveShift(data);
+
+                if (typeof window.renderShiftHeaderBadge === 'function') {
+                    window.renderShiftHeaderBadge();
+                }
+
+                // Jika X-Report (modal summary) sedang aktif di layar, segarkan tampilannya
+                const summaryModal = el('pos-shift-summary-modal');
+                if (summaryModal && !summaryModal.classList.contains('opacity-0')) {
+                    openShiftSummaryModal();
+                }
+            }
+        }, err => {
+            console.warn('[POS Shift] Snapshot listener cms_data error:', err);
+        });
+    } catch (err) {
+        console.warn('[POS Shift] Gagal attach snapshot listener:', err);
+    }
+};
+
+export const syncActiveShiftFromCloud = async () => {
+    const identity = getCurrentCashierIdentity();
+    const localShift = getActiveShift();
+
+    // 1. Jika ada shift lokal, cek apakah masih valid dan sesuai dengan akun ini di cloud
+    if (localShift && localShift.status === 'open' && isShiftOwnedByCashier(localShift, identity)) {
+        try {
+            const checkDoc = await db.collection('freshmart').doc('cms_data')
+                .collection('pos_shifts').doc(localShift.id).get();
+            if (checkDoc.exists) {
+                const cloudData = { id: checkDoc.id, ...checkDoc.data() };
+                if (cloudData.status === 'closed') {
+                    clearActiveShift();
+                    saveLastClosedShift(cloudData);
+                    if (typeof window.renderShiftHeaderBadge === 'function') {
+                        window.renderShiftHeaderBadge();
+                    }
+                } else {
+                    saveActiveShift(cloudData);
+                    listenActiveShiftCloud(cloudData.id);
+                    if (typeof window.renderShiftHeaderBadge === 'function') {
+                        window.renderShiftHeaderBadge();
+                    }
+                    return cloudData;
+                }
+            }
+        } catch (e) {
+            console.warn('[POS Shift] Gagal verifikasi local shift ke cloud:', e);
+            listenActiveShiftCloud(localShift.id);
+            return localShift;
+        }
+    }
+
+    // 2. Jika tidak ada localShift yang open atau sudah ditutup, cari shift open di cloud milik kasir ini
+    try {
+        const cloudShift = await findActiveShiftInCloud(identity.uid);
+        if (cloudShift) {
+            saveActiveShift(cloudShift);
+            listenActiveShiftCloud(cloudShift.id);
+            if (typeof window.renderShiftHeaderBadge === 'function') {
+                window.renderShiftHeaderBadge();
+            }
+            return cloudShift;
+        } else {
+            if (localShift && !isShiftOwnedByCashier(localShift, identity)) {
+                clearActiveShift();
+                if (typeof window.renderShiftHeaderBadge === 'function') {
+                    window.renderShiftHeaderBadge();
+                }
+            }
+        }
+    } catch (e) {
+        console.warn('[POS Shift] Gagal cari shift open di cloud:', e);
+    }
+
+    return getActiveShift();
 };
 
 // ─── Audio Chimes Shift Kasir (Web Audio API) ────────────────
@@ -151,9 +338,35 @@ const generateShiftNumber = () => {
 };
 
 // ─── Buka Shift Baru (Open Shift) ────────────────────────────
-export const openPOSOpenShiftModal = () => {
-    const cashierSession = getCashierSession();
-    const cashierName = cashierSession?.name || (window.isAdm ? 'Admin Seller' : 'Kasir Toko');
+export const openPOSOpenShiftModal = async () => {
+    const identity = getCurrentCashierIdentity();
+
+    // 1. Cek dulu apakah lokal sudah ada shift aktif yang sah
+    const localShift = getActiveShift();
+    if (localShift && localShift.status === 'open' && isShiftOwnedByCashier(localShift, identity)) {
+        showToast(`Shift kasir #${localShift.shiftNo || localShift.id} sedang aktif. Menampilkan ringkasan shift.`, 'info');
+        openShiftSummaryModal();
+        return;
+    }
+
+    // 2. Pre-flight check cloud: siapa tahu akun kasir ini sudah punya shift open di perangkat lain
+    try {
+        const cloudShift = await findActiveShiftInCloud(identity.uid);
+        if (cloudShift) {
+            saveActiveShift(cloudShift);
+            listenActiveShiftCloud(cloudShift.id);
+            if (typeof window.renderShiftHeaderBadge === 'function') {
+                window.renderShiftHeaderBadge();
+            }
+            showToast(`Melanjutkan shift aktif (#${cloudShift.shiftNo || cloudShift.id}) dari perangkat lain! 👋`, 'success');
+            openShiftSummaryModal();
+            return;
+        }
+    } catch (e) {
+        console.warn('[POS Shift] Cek cloud saat buka modal:', e);
+    }
+
+    const cashierName = identity.name;
     const nowStr = new Date().toLocaleString('id-ID', { dateStyle: 'full', timeStyle: 'short' });
 
     // Hapus modal lama jika ada
@@ -304,10 +517,35 @@ export const confirmStartPOSShift = async () => {
     const startingCash = parseFloat(inpCash?.value) || 0;
     const notes = inpNotes?.value?.trim() || '';
 
-    const cashierSession = getCashierSession();
-    const cashierUid = cashierSession?.uid || (window.isAdm ? 'admin' : 'cashier-anon');
-    const cashierName = cashierSession?.name || (window.isAdm ? 'Admin Seller' : 'Kasir Toko');
-    const cashierEmail = cashierSession?.email || '';
+    const identity = getCurrentCashierIdentity();
+    const cashierUid = identity.uid;
+    const cashierName = identity.name;
+    const cashierEmail = identity.email;
+
+    // Loading indicator on modal submit button
+    const submitBtn = document.querySelector('#pos-open-shift-box button[onclick*="confirmStartPOSShift"]');
+    if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1.5"></i><span>Memverifikasi Shift...</span>';
+    }
+
+    // Pre-flight check anti-double shift di Cloud
+    try {
+        const existingCloudShift = await findActiveShiftInCloud(cashierUid);
+        if (existingCloudShift) {
+            closePOSOpenShiftModal();
+            saveActiveShift(existingCloudShift);
+            listenActiveShiftCloud(existingCloudShift.id);
+            if (typeof window.renderShiftHeaderBadge === 'function') {
+                window.renderShiftHeaderBadge();
+            }
+            showToast(`Akun kasir sudah memiliki shift aktif (#${existingCloudShift.shiftNo || existingCloudShift.id}). Melanjutkan shift berjalan.`, 'warning');
+            openShiftSummaryModal();
+            return;
+        }
+    } catch (e) {
+        console.warn('[POS Shift] Pre-flight check error:', e);
+    }
 
     const shiftData = {
         id: 'SHF-' + Date.now(),
@@ -333,11 +571,14 @@ export const confirmStartPOSShift = async () => {
     };
 
     saveActiveShift(shiftData);
+    listenActiveShiftCloud(shiftData.id);
 
-    // Sync ke Firestore secara non-blocking
+    // Sync ke Firestore secara aman (Promise.all)
     try {
-        db.collection('freshmart').doc('cms_data').collection('pos_shifts').doc(shiftData.id).set(shiftData).catch(() => {});
-        db.collection('pos_shifts').doc(shiftData.id).set(shiftData).catch(() => {});
+        await Promise.all([
+            db.collection('freshmart').doc('cms_data').collection('pos_shifts').doc(shiftData.id).set(shiftData),
+            db.collection('pos_shifts').doc(shiftData.id).set(shiftData)
+        ]);
     } catch (_) {}
 
     closePOSOpenShiftModal();
@@ -894,10 +1135,15 @@ export const confirmClosePOSShift = async () => {
         closingNotes
     };
 
+    // Lepas listener realtime
+    detachActiveShiftListener();
+
     // Simpan ke Firestore pos_shifts
     try {
-        await db.collection('freshmart').doc('cms_data').collection('pos_shifts').doc(closedShift.id).set(closedShift, { merge: true });
-        await db.collection('pos_shifts').doc(closedShift.id).set(closedShift, { merge: true });
+        await Promise.all([
+            db.collection('freshmart').doc('cms_data').collection('pos_shifts').doc(closedShift.id).set(closedShift, { merge: true }),
+            db.collection('pos_shifts').doc(closedShift.id).set(closedShift, { merge: true })
+        ]);
     } catch (e) {
         console.warn('[POS Shift] Simpan Firestore:', e);
     }
@@ -1314,6 +1560,12 @@ window.saveActiveShift            = saveActiveShift;
 window.clearActiveShift           = clearActiveShift;
 window.getLastClosedShift         = getLastClosedShift;
 window.isShiftActive              = isShiftActive;
+window.getCurrentCashierIdentity  = getCurrentCashierIdentity;
+window.isShiftOwnedByCashier      = isShiftOwnedByCashier;
+window.findActiveShiftInCloud     = findActiveShiftInCloud;
+window.syncActiveShiftFromCloud   = syncActiveShiftFromCloud;
+window.listenActiveShiftCloud     = listenActiveShiftCloud;
+window.detachActiveShiftListener  = detachActiveShiftListener;
 window.openPOSOpenShiftModal      = openPOSOpenShiftModal;
 window.closePOSOpenShiftModal     = closePOSOpenShiftModal;
 window.posSetStartCashPreset      = posSetStartCashPreset;

@@ -47,6 +47,11 @@ export {
     executeShiftPrintDirect,
     renderShiftHeaderBadge,
     renderAdminShiftReportView,
-    loadAdminShiftReports
+    loadAdminShiftReports,
+    getCurrentCashierIdentity,
+    findActiveShiftInCloud,
+    syncActiveShiftFromCloud,
+    listenActiveShiftCloud,
+    detachActiveShiftListener
 } from './pos-shift.js';
 
