@@ -50,7 +50,7 @@ export const fetchLatestReleaseInfo = async () => {
     if (cachedReleaseInfo) return cachedReleaseInfo;
     if (isFetchingRelease) return null;
 
-    const localVer = getLatestVersion(appData) || 'v1.9.21';
+    const localVer = getLatestVersion(appData) || 'v1.9.36';
 
     isFetchingRelease = true;
     try {
@@ -83,7 +83,7 @@ export const fetchLatestReleaseInfo = async () => {
         }
     } catch (err) {
         // Fallback anggun ke konfigurasi changelog internal
-        const fallbackVer = getLatestVersion(appData) || 'v1.9.21';
+        const fallbackVer = getLatestVersion(appData) || 'v1.9.36';
         cachedReleaseInfo = {
             tagName: fallbackVer,
             name: `Toko Putri ${fallbackVer}`,
@@ -217,7 +217,7 @@ const ensureAppDownloadModalDOM = () => {
             <div class="space-y-2">
                 <button id="btn-download-apk-action" onclick="downloadLatestApk()" class="w-full py-3.5 px-6 rounded-2xl bg-[#01875f] hover:bg-[#01704f] active:scale-[0.98] text-white font-extrabold text-sm sm:text-base flex items-center justify-center gap-3 shadow-lg shadow-emerald-600/25 transition-all cursor-pointer group">
                     <i class="fa-solid fa-download group-hover:translate-y-0.5 transition-transform" id="btn-download-apk-icon"></i>
-                    <span id="btn-download-apk-text">Unduh &amp; Pasang APK (<span id="app-modal-version-tag">v1.9.21</span>)</span>
+                    <span id="btn-download-apk-text">Unduh &amp; Pasang APK (<span id="app-modal-version-tag">v1.9.36</span>)</span>
                 </button>
                 <div class="flex items-center justify-between px-1 text-[10px] font-bold text-slate-400 dark:text-slate-500">
                     <span class="flex items-center gap-1.5">
@@ -248,12 +248,12 @@ const ensureAppDownloadModalDOM = () => {
                 </div>
             </div>
 
-            <!-- Apa yang Baru (Highlights Changelog v1.9.21) -->
+            <!-- Apa yang Baru (Highlights Changelog v1.9.36) -->
             <div class="space-y-2.5">
                 <div class="flex items-center justify-between">
                     <h3 class="text-xs sm:text-sm font-black text-slate-900 dark:text-white flex items-center gap-2">
                         <i class="fa-solid fa-sparkles text-amber-500"></i>
-                        <span>Apa yang Baru di v1.9.21</span>
+                        <span>Apa yang Baru di v1.9.36</span>
                     </h3>
                     <button type="button" onclick="closeAppDownloadModal(); if(typeof window.openChangelogModal==='function') window.openChangelogModal();" class="text-[10px] font-bold text-[var(--color-primary)] hover:underline cursor-pointer">
                         Lihat Semua Riwayat
@@ -264,25 +264,31 @@ const ensureAppDownloadModalDOM = () => {
                     <div class="flex items-start gap-2.5 text-slate-700 dark:text-slate-300">
                         <i class="fa-solid fa-circle-check text-emerald-500 mt-0.5 text-[11px] shrink-0"></i>
                         <span class="font-medium text-[11px] leading-relaxed">
-                            <b>Manajemen Shift Kasir &amp; Rekap Tutup Kasir (Z-Report):</b> Buka shift kasir dengan modal awal (cash float), hitung fisik laci kasir (denominasi), deteksi otomatis selisih kas, dan cetak slip settlement thermal.
+                            <b>Single Shift Akun Kasir &amp; Auto-Resume Multi-Device:</b> 1 akun kasir hanya membuka 1 shift aktif, dapat berpindah bebas antara PC, HP, dan tablet tanpa harus membuka kas baru.
                         </span>
                     </div>
                     <div class="flex items-start gap-2.5 text-slate-700 dark:text-slate-300">
                         <i class="fa-solid fa-circle-check text-emerald-500 mt-0.5 text-[11px] shrink-0"></i>
                         <span class="font-medium text-[11px] leading-relaxed">
-                            <b>Pemindai Barcode Kamera Interaktif:</b> Scan barcode via kamera HP/tablet/webcam dengan reticle laser animasi, toggle lampu flash/torch &amp; suara beep instan.
+                            <b>Sinkronisasi Real-Time Dua Arah:</b> Transaksi penjualan, kas laci, dan kuantitas item otomatis terupdate seketika di semua perangkat kasir yang aktif bersamaan.
                         </span>
                     </div>
                     <div class="flex items-start gap-2.5 text-slate-700 dark:text-slate-300">
                         <i class="fa-solid fa-circle-check text-emerald-500 mt-0.5 text-[11px] shrink-0"></i>
                         <span class="font-medium text-[11px] leading-relaxed">
-                            <b>Kalkulator Diskon Kasir (Rp / %):</b> Diskon transaksi otomatis real-time dengan preset chips cepat serta validasi stok menipis (HABIS / SISA X).
+                            <b>Dukungan Kuantitas Desimal POS Kasir:</b> Mendukung penjualan satuan pecahan desimal (seperti 0.5 kg, 1.25 m, 2.5 L) sinkron dengan keranjang storefront pembeli.
                         </span>
                     </div>
                     <div class="flex items-start gap-2.5 text-slate-700 dark:text-slate-300">
                         <i class="fa-solid fa-circle-check text-emerald-500 mt-0.5 text-[11px] shrink-0"></i>
                         <span class="font-medium text-[11px] leading-relaxed">
-                            <b>Parkir Transaksi Kasir (Hold &amp; Recall):</b> Tahan dan panggil antrean pembeli tanpa risiko data hilang disertai audio chime kasir.
+                            <b>Lembar Keranjang POS Full-Height (Zero-Black-Backdrop):</b> Tampilan keranjang HP leluasa tanpa celah baris hitam di atas header dan anti-pemotongan judul counter.
+                        </span>
+                    </div>
+                    <div class="flex items-start gap-2.5 text-slate-700 dark:text-slate-300">
+                        <i class="fa-solid fa-circle-check text-emerald-500 mt-0.5 text-[11px] shrink-0"></i>
+                        <span class="font-medium text-[11px] leading-relaxed">
+                            <b>Manajemen Shift Kasir &amp; Z-Report:</b> Rekonsiliasi fisik laci laci kasir (denominasi), deteksi selisih kas, dan cetak slip thermal ESC/POS 58mm/80mm.
                         </span>
                     </div>
                     <div class="flex items-start gap-2.5 text-slate-700 dark:text-slate-300">
@@ -448,7 +454,7 @@ export const downloadLatestApk = () => {
             icon.className = 'fa-solid fa-circle-check text-white';
         }
         if (text) {
-            const ver = cachedReleaseInfo?.tagName || getLatestVersion(appData) || 'v1.9.21';
+            const ver = cachedReleaseInfo?.tagName || getLatestVersion(appData) || 'v1.9.36';
             text.textContent = `Unduh Ulang APK (${ver})`;
         }
     }, 2500);
