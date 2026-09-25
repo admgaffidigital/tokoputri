@@ -2202,8 +2202,8 @@ const buildPOSLayout = ({ isStorefront }) => {
 
     const headerHTML = isStorefront
         ? `
-        <!-- STOREFRONT POS HEADER (52px) -->
-        <header class="h-[52px] shrink-0 text-white flex items-center justify-between px-3 sm:px-4 z-30 shadow-md" style="background:var(--color-primary)">
+        <!-- STOREFRONT POS HEADER (52px with safe-area) -->
+        <header class="min-h-[52px] pt-[env(safe-area-inset-top,0px)] shrink-0 text-white flex items-center justify-between px-3 sm:px-4 z-30 shadow-md" style="background:var(--color-primary)">
             <div class="flex items-center gap-2.5 min-w-0">
                 <button onclick="window.exitPOSMode()" class="w-8 h-8 rounded-xl bg-black/15 hover:bg-black/25 text-white flex items-center justify-center text-xs transition-all active:scale-90 cursor-pointer" title="Kembali ke Etalase Toko">
                     <i class="fa-solid fa-arrow-left"></i>
@@ -2365,8 +2365,8 @@ const buildPOSLayout = ({ isStorefront }) => {
             </div>
         </div>
 
-        <!-- FLOATING CART BAR (Khusus Mobile < lg saat keranjang ada isi) -->
-        <div id="pos-mobile-floating-bar" class="lg:hidden fixed bottom-3 left-3 right-3 z-40 transition-all duration-300 transform translate-y-32 opacity-0 pointer-events-none">
+        <!-- FLOATING CART BAR (Khusus Mobile < lg saat keranjang ada isi with safe-area) -->
+        <div id="pos-mobile-floating-bar" class="lg:hidden fixed bottom-[max(0.75rem,env(safe-area-inset-bottom))] left-3 right-3 z-40 transition-all duration-300 transform translate-y-32 opacity-0 pointer-events-none">
             <div class="bg-slate-900/95 dark:bg-slate-950/95 text-white p-3 rounded-2xl shadow-2xl backdrop-blur-md flex items-center justify-between border border-slate-700/80 cursor-pointer active:scale-[0.99] transition-all" onclick="window.openPOSCartDrawer()">
                 <div class="flex items-center gap-2.5">
                     <div class="relative w-10 h-10 rounded-xl flex items-center justify-center text-white text-sm font-bold shadow-md shrink-0" style="background:var(--color-primary)">

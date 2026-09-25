@@ -20,14 +20,14 @@ export const renderCashierAccounts = async () => {
     setH('admin-content', `
     <div class="space-y-4 p-4 sm:p-6">
         <!-- Sub-Nav Tab Switcher -->
-        <div class="flex items-center gap-2 p-1 bg-slate-100 dark:bg-slate-800 rounded-2xl w-fit border border-slate-200/80 dark:border-slate-700">
-            <button id="tab-btn-cashier-accounts" onclick="window.switchCashierTab('accounts')" class="px-4 py-2 rounded-xl text-xs font-black bg-white dark:bg-slate-700 text-slate-800 dark:text-white shadow-xs transition-all flex items-center gap-2 cursor-pointer">
+        <div class="flex items-center gap-1.5 p-1 bg-slate-100 dark:bg-slate-800 rounded-2xl w-full sm:w-fit overflow-x-auto hide-scrollbar border border-slate-200/80 dark:border-slate-700">
+            <button id="tab-btn-cashier-accounts" onclick="window.switchCashierTab('accounts')" class="px-3.5 sm:px-4 py-2 rounded-xl text-xs font-black bg-white dark:bg-slate-700 text-[var(--color-primary)] dark:text-white shadow-xs transition-all flex items-center gap-2 cursor-pointer shrink-0 border border-[rgba(var(--color-primary-rgb),0.2)] dark:border-slate-600">
                 <i class="fa-solid fa-users"></i>
                 <span>Akun Kasir</span>
             </button>
-            <button id="tab-btn-cashier-shifts" onclick="window.switchCashierTab('shifts')" class="px-4 py-2 rounded-xl text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white transition-all flex items-center gap-2 cursor-pointer">
+            <button id="tab-btn-cashier-shifts" onclick="window.switchCashierTab('shifts')" class="px-3.5 sm:px-4 py-2 rounded-xl text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white transition-all flex items-center gap-2 cursor-pointer shrink-0 border border-transparent">
                 <i class="fa-solid fa-file-invoice-dollar"></i>
-                <span>Laporan Shift &amp; Rekap Kas (Z-Report)</span>
+                <span>Laporan Shift <span class="hidden sm:inline">&amp; Rekap Kas (Z-Report)</span></span>
             </button>
         </div>
 
@@ -45,7 +45,7 @@ export const renderCashierAccounts = async () => {
                     </p>
                 </div>
                 <button onclick="window.openAddCashierModal()"
-                    class="flex items-center gap-2 px-4 py-2.5 rounded-xl text-white text-xs font-bold shadow-md active:scale-95 transition-all"
+                    class="flex items-center gap-2 px-4 py-2.5 rounded-xl text-white text-xs font-bold shadow-md active:scale-95 transition-all cursor-pointer hover:opacity-95"
                     style="background:var(--color-primary)">
                     <i class="fa-solid fa-user-plus"></i>
                     Tambah Kasir Baru
@@ -82,10 +82,10 @@ export const switchCashierTab = (tab) => {
 
     if (tab === 'shifts') {
         if (tabAccounts) {
-            tabAccounts.className = 'px-4 py-2 rounded-xl text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white transition-all cursor-pointer';
+            tabAccounts.className = 'px-3.5 sm:px-4 py-2 rounded-xl text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white transition-all cursor-pointer shrink-0 border border-transparent';
         }
         if (tabShifts) {
-            tabShifts.className = 'px-4 py-2 rounded-xl text-xs font-black bg-white dark:bg-slate-700 text-slate-800 dark:text-white shadow-xs transition-all cursor-pointer';
+            tabShifts.className = 'px-3.5 sm:px-4 py-2 rounded-xl text-xs font-black bg-white dark:bg-slate-700 text-[var(--color-primary)] dark:text-white shadow-xs transition-all cursor-pointer shrink-0 border border-[rgba(var(--color-primary-rgb),0.2)] dark:border-slate-600';
         }
         if (panelAccounts) panelAccounts.classList.add('hidden');
         if (panelShifts) {
@@ -94,10 +94,10 @@ export const switchCashierTab = (tab) => {
         }
     } else {
         if (tabAccounts) {
-            tabAccounts.className = 'px-4 py-2 rounded-xl text-xs font-black bg-white dark:bg-slate-700 text-slate-800 dark:text-white shadow-xs transition-all cursor-pointer';
+            tabAccounts.className = 'px-3.5 sm:px-4 py-2 rounded-xl text-xs font-black bg-white dark:bg-slate-700 text-[var(--color-primary)] dark:text-white shadow-xs transition-all cursor-pointer shrink-0 border border-[rgba(var(--color-primary-rgb),0.2)] dark:border-slate-600';
         }
         if (tabShifts) {
-            tabShifts.className = 'px-4 py-2 rounded-xl text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white transition-all cursor-pointer';
+            tabShifts.className = 'px-3.5 sm:px-4 py-2 rounded-xl text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white transition-all cursor-pointer shrink-0 border border-transparent';
         }
         if (panelAccounts) panelAccounts.classList.remove('hidden');
         if (panelShifts) panelShifts.classList.add('hidden');

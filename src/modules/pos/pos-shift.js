@@ -207,15 +207,15 @@ export const openPOSOpenShiftModal = () => {
                         <span class="absolute left-3.5 top-1/2 -translate-y-1/2 font-black text-sm text-slate-400 pointer-events-none">Rp</span>
                         <input id="pos-shift-start-cash-input" type="number" min="0" step="1000" placeholder="0" 
                             class="w-full pl-12 pr-4 py-3 rounded-2xl border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-white font-black text-base focus:outline-none focus:border-[var(--color-primary)] transition-all text-right"
-                            value="100000">
+                            value="100000" oninput="window.posUpdateStartCashChips()">
                     </div>
-                    <!-- Quick Amount Chips -->
-                    <div class="flex items-center gap-1.5 flex-wrap pt-1">
-                        <button type="button" onclick="window.posSetStartCashPreset(0)" class="px-2.5 py-1 rounded-xl text-[10px] font-bold bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition-all cursor-pointer">Rp 0</button>
-                        <button type="button" onclick="window.posSetStartCashPreset(50000)" class="px-2.5 py-1 rounded-xl text-[10px] font-bold bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition-all cursor-pointer">50.000</button>
-                        <button type="button" onclick="window.posSetStartCashPreset(100000)" class="px-2.5 py-1 rounded-xl text-[10px] font-bold bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition-all cursor-pointer border border-emerald-300 text-emerald-700 dark:text-emerald-400">100.000</button>
-                        <button type="button" onclick="window.posSetStartCashPreset(200000)" class="px-2.5 py-1 rounded-xl text-[10px] font-bold bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition-all cursor-pointer">200.000</button>
-                        <button type="button" onclick="window.posSetStartCashPreset(500000)" class="px-2.5 py-1 rounded-xl text-[10px] font-bold bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition-all cursor-pointer">500.000</button>
+                    <!-- Quick Amount Chips (Reactive Theme Sync) -->
+                    <div id="pos-shift-preset-chips" class="flex items-center gap-1.5 flex-wrap pt-1">
+                        <button type="button" data-amount="0" onclick="window.posSetStartCashPreset(0)" class="pos-preset-chip px-2.5 py-1 rounded-xl text-[10px] font-bold border border-slate-200 dark:border-slate-700 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition-all cursor-pointer">Rp 0</button>
+                        <button type="button" data-amount="50000" onclick="window.posSetStartCashPreset(50000)" class="pos-preset-chip px-2.5 py-1 rounded-xl text-[10px] font-bold border border-slate-200 dark:border-slate-700 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition-all cursor-pointer">50.000</button>
+                        <button type="button" data-amount="100000" onclick="window.posSetStartCashPreset(100000)" class="pos-preset-chip px-2.5 py-1 rounded-xl text-[10px] font-black border-2 border-[var(--color-primary)] text-[var(--color-primary)] bg-[rgba(var(--color-primary-rgb),0.1)] shadow-xs transition-all cursor-pointer">100.000</button>
+                        <button type="button" data-amount="200000" onclick="window.posSetStartCashPreset(200000)" class="pos-preset-chip px-2.5 py-1 rounded-xl text-[10px] font-bold border border-slate-200 dark:border-slate-700 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition-all cursor-pointer">200.000</button>
+                        <button type="button" data-amount="500000" onclick="window.posSetStartCashPreset(500000)" class="pos-preset-chip px-2.5 py-1 rounded-xl text-[10px] font-bold border border-slate-200 dark:border-slate-700 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition-all cursor-pointer">500.000</button>
                     </div>
                 </div>
 
@@ -240,7 +240,7 @@ export const openPOSOpenShiftModal = () => {
                 <button onclick="window.closePOSOpenShiftModal()" class="flex-1 py-3 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-bold text-xs hover:bg-slate-100 transition-all cursor-pointer">
                     Batal
                 </button>
-                <button onclick="window.confirmStartPOSShift()" class="flex-[2] py-3 rounded-2xl text-white font-black text-xs uppercase tracking-wider shadow-lg active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer" style="background:var(--color-primary)">
+                <button onclick="window.confirmStartPOSShift()" class="flex-[2] py-3 rounded-2xl text-white font-black text-xs uppercase tracking-wider shadow-lg active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer hover:opacity-95" style="background:var(--color-primary)">
                     <i class="fa-solid fa-check"></i>
                     <span>Buka Shift Sekarang</span>
                 </button>
@@ -275,6 +275,18 @@ export const closePOSOpenShiftModal = () => {
     setTimeout(() => { m.remove(); }, 280);
 };
 
+export const posUpdateStartCashChips = () => {
+    const val = parseFloat(el('pos-shift-start-cash-input')?.value) || 0;
+    document.querySelectorAll('.pos-preset-chip').forEach(chip => {
+        const amt = parseFloat(chip.dataset.amount);
+        if (amt === val) {
+            chip.className = 'pos-preset-chip px-2.5 py-1 rounded-xl text-[10px] font-black border-2 border-[var(--color-primary)] text-[var(--color-primary)] bg-[rgba(var(--color-primary-rgb),0.1)] shadow-xs transition-all cursor-pointer';
+        } else {
+            chip.className = 'pos-preset-chip px-2.5 py-1 rounded-xl text-[10px] font-bold border border-slate-200 dark:border-slate-700 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition-all cursor-pointer';
+        }
+    });
+};
+
 export const posSetStartCashPreset = (amount) => {
     const inp = el('pos-shift-start-cash-input');
     if (inp) {
@@ -282,6 +294,7 @@ export const posSetStartCashPreset = (amount) => {
         inp.focus();
         inp.select();
     }
+    posUpdateStartCashChips();
 };
 
 export const confirmStartPOSShift = async () => {
@@ -468,7 +481,7 @@ export const openShiftSummaryModal = () => {
                 <div class="space-y-2">
                     <div class="flex items-center justify-between text-xs font-bold text-slate-700 dark:text-slate-200 border-b border-slate-100 dark:border-slate-800 pb-1.5">
                         <span class="flex items-center gap-1.5"><i class="fa-solid fa-receipt text-slate-400"></i>Rincian Metode Pembayaran</span>
-                        <span class="text-slate-500 text-[11px]">Total Omset: <b>${fRp(shift.totalSales || 0)}</b></span>
+                        <span class="text-slate-500 text-[11px]">Total Omset: <b style="color:var(--color-primary)">${fRp(shift.totalSales || 0)}</b></span>
                     </div>
 
                     <div class="space-y-1.5 text-xs">
@@ -518,12 +531,13 @@ export const openShiftSummaryModal = () => {
 
             <!-- Footer Action Buttons -->
             <div class="p-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-800/40 flex items-center gap-2">
-                <button onclick="window.printShiftSettlementReceipt(window.getActiveShift(), true)" class="px-3.5 py-3 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-bold text-xs hover:bg-slate-100 transition-all flex items-center gap-1.5 cursor-pointer" title="Cetak Slip Sementara (X-Report)">
+                <button onclick="window.printShiftSettlementReceipt(window.getActiveShift(), true)" class="px-3.5 py-3 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-bold text-xs hover:bg-slate-100 dark:hover:bg-slate-700 transition-all flex items-center gap-1.5 cursor-pointer shadow-xs active:scale-95" title="Cetak Slip Sementara (X-Report)">
                     <i class="fa-solid fa-print"></i>
                     <span class="hidden sm:inline">Cetak X-Report</span>
                 </button>
-                <button onclick="window.closePOSShiftSummaryModal()" class="flex-1 py-3 rounded-2xl bg-slate-200/70 hover:bg-slate-300 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 font-bold text-xs transition-all cursor-pointer">
-                    Lanjut Jaga Kasir
+                <button onclick="window.closePOSShiftSummaryModal()" class="flex-1 py-3 rounded-2xl bg-slate-200/70 hover:bg-slate-300 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 font-bold text-xs transition-all cursor-pointer active:scale-95">
+                    <span class="sm:hidden">Lanjut Shift</span>
+                    <span class="hidden sm:inline">Lanjut Jaga Kasir</span>
                 </button>
                 <button onclick="window.closePOSShiftSummaryModal(); window.openPOSCloseShiftModal();" class="flex-1 py-3 rounded-2xl bg-rose-600 hover:bg-rose-700 text-white font-black text-xs uppercase tracking-wider shadow-lg active:scale-95 transition-all flex items-center justify-center gap-1.5 cursor-pointer">
                     <i class="fa-solid fa-lock"></i>
@@ -628,60 +642,60 @@ export const openPOSCloseShiftModal = () => {
                     <!-- Panel Kalkulator Denominasi -->
                     <div id="pos-count-panel-denom" class="hidden space-y-2 p-3 bg-slate-50 dark:bg-slate-800/40 rounded-2xl border border-slate-200/70 dark:border-slate-700/60">
                         <div class="grid grid-cols-2 gap-2 text-xs">
-                            <div class="flex items-center justify-between bg-white dark:bg-slate-800 px-2.5 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700">
-                                <span class="font-bold text-slate-700 dark:text-slate-200 text-[11px]">Rp 100.000</span>
-                                <div class="flex items-center gap-1">
+                            <div class="flex items-center justify-between bg-white dark:bg-slate-800 px-2 sm:px-2.5 py-1.5 sm:py-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 transition-all">
+                                <span class="font-bold text-slate-700 dark:text-slate-200 text-[10px] sm:text-[11px] whitespace-nowrap">Rp 100.000</span>
+                                <div class="flex items-center gap-1 shrink-0">
                                     <span class="text-[10px] text-slate-400">×</span>
-                                    <input type="number" min="0" id="denom-100k" placeholder="0" class="w-14 px-1.5 py-0.5 text-right font-bold text-xs border border-slate-200 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-900" oninput="window.calcPOSDenominations()">
+                                    <input type="number" min="0" id="denom-100k" placeholder="0" class="w-12 sm:w-16 px-1.5 py-1 text-right font-black text-xs border border-slate-200 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)] transition-all" oninput="window.calcPOSDenominations()">
                                 </div>
                             </div>
-                            <div class="flex items-center justify-between bg-white dark:bg-slate-800 px-2.5 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700">
-                                <span class="font-bold text-slate-700 dark:text-slate-200 text-[11px]">Rp 50.000</span>
-                                <div class="flex items-center gap-1">
+                            <div class="flex items-center justify-between bg-white dark:bg-slate-800 px-2 sm:px-2.5 py-1.5 sm:py-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 transition-all">
+                                <span class="font-bold text-slate-700 dark:text-slate-200 text-[10px] sm:text-[11px] whitespace-nowrap">Rp 50.000</span>
+                                <div class="flex items-center gap-1 shrink-0">
                                     <span class="text-[10px] text-slate-400">×</span>
-                                    <input type="number" min="0" id="denom-50k" placeholder="0" class="w-14 px-1.5 py-0.5 text-right font-bold text-xs border border-slate-200 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-900" oninput="window.calcPOSDenominations()">
+                                    <input type="number" min="0" id="denom-50k" placeholder="0" class="w-12 sm:w-16 px-1.5 py-1 text-right font-black text-xs border border-slate-200 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)] transition-all" oninput="window.calcPOSDenominations()">
                                 </div>
                             </div>
-                            <div class="flex items-center justify-between bg-white dark:bg-slate-800 px-2.5 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700">
-                                <span class="font-bold text-slate-700 dark:text-slate-200 text-[11px]">Rp 20.000</span>
-                                <div class="flex items-center gap-1">
+                            <div class="flex items-center justify-between bg-white dark:bg-slate-800 px-2 sm:px-2.5 py-1.5 sm:py-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 transition-all">
+                                <span class="font-bold text-slate-700 dark:text-slate-200 text-[10px] sm:text-[11px] whitespace-nowrap">Rp 20.000</span>
+                                <div class="flex items-center gap-1 shrink-0">
                                     <span class="text-[10px] text-slate-400">×</span>
-                                    <input type="number" min="0" id="denom-20k" placeholder="0" class="w-14 px-1.5 py-0.5 text-right font-bold text-xs border border-slate-200 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-900" oninput="window.calcPOSDenominations()">
+                                    <input type="number" min="0" id="denom-20k" placeholder="0" class="w-12 sm:w-16 px-1.5 py-1 text-right font-black text-xs border border-slate-200 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)] transition-all" oninput="window.calcPOSDenominations()">
                                 </div>
                             </div>
-                            <div class="flex items-center justify-between bg-white dark:bg-slate-800 px-2.5 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700">
-                                <span class="font-bold text-slate-700 dark:text-slate-200 text-[11px]">Rp 10.000</span>
-                                <div class="flex items-center gap-1">
+                            <div class="flex items-center justify-between bg-white dark:bg-slate-800 px-2 sm:px-2.5 py-1.5 sm:py-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 transition-all">
+                                <span class="font-bold text-slate-700 dark:text-slate-200 text-[10px] sm:text-[11px] whitespace-nowrap">Rp 10.000</span>
+                                <div class="flex items-center gap-1 shrink-0">
                                     <span class="text-[10px] text-slate-400">×</span>
-                                    <input type="number" min="0" id="denom-10k" placeholder="0" class="w-14 px-1.5 py-0.5 text-right font-bold text-xs border border-slate-200 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-900" oninput="window.calcPOSDenominations()">
+                                    <input type="number" min="0" id="denom-10k" placeholder="0" class="w-12 sm:w-16 px-1.5 py-1 text-right font-black text-xs border border-slate-200 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)] transition-all" oninput="window.calcPOSDenominations()">
                                 </div>
                             </div>
-                            <div class="flex items-center justify-between bg-white dark:bg-slate-800 px-2.5 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700">
-                                <span class="font-bold text-slate-700 dark:text-slate-200 text-[11px]">Rp 5.000</span>
-                                <div class="flex items-center gap-1">
+                            <div class="flex items-center justify-between bg-white dark:bg-slate-800 px-2 sm:px-2.5 py-1.5 sm:py-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 transition-all">
+                                <span class="font-bold text-slate-700 dark:text-slate-200 text-[10px] sm:text-[11px] whitespace-nowrap">Rp 5.000</span>
+                                <div class="flex items-center gap-1 shrink-0">
                                     <span class="text-[10px] text-slate-400">×</span>
-                                    <input type="number" min="0" id="denom-5k" placeholder="0" class="w-14 px-1.5 py-0.5 text-right font-bold text-xs border border-slate-200 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-900" oninput="window.calcPOSDenominations()">
+                                    <input type="number" min="0" id="denom-5k" placeholder="0" class="w-12 sm:w-16 px-1.5 py-1 text-right font-black text-xs border border-slate-200 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)] transition-all" oninput="window.calcPOSDenominations()">
                                 </div>
                             </div>
-                            <div class="flex items-center justify-between bg-white dark:bg-slate-800 px-2.5 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700">
-                                <span class="font-bold text-slate-700 dark:text-slate-200 text-[11px]">Rp 2.000</span>
-                                <div class="flex items-center gap-1">
+                            <div class="flex items-center justify-between bg-white dark:bg-slate-800 px-2 sm:px-2.5 py-1.5 sm:py-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 transition-all">
+                                <span class="font-bold text-slate-700 dark:text-slate-200 text-[10px] sm:text-[11px] whitespace-nowrap">Rp 2.000</span>
+                                <div class="flex items-center gap-1 shrink-0">
                                     <span class="text-[10px] text-slate-400">×</span>
-                                    <input type="number" min="0" id="denom-2k" placeholder="0" class="w-14 px-1.5 py-0.5 text-right font-bold text-xs border border-slate-200 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-900" oninput="window.calcPOSDenominations()">
+                                    <input type="number" min="0" id="denom-2k" placeholder="0" class="w-12 sm:w-16 px-1.5 py-1 text-right font-black text-xs border border-slate-200 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)] transition-all" oninput="window.calcPOSDenominations()">
                                 </div>
                             </div>
-                            <div class="flex items-center justify-between bg-white dark:bg-slate-800 px-2.5 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700">
-                                <span class="font-bold text-slate-700 dark:text-slate-200 text-[11px]">Rp 1.000</span>
-                                <div class="flex items-center gap-1">
+                            <div class="flex items-center justify-between bg-white dark:bg-slate-800 px-2 sm:px-2.5 py-1.5 sm:py-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 transition-all">
+                                <span class="font-bold text-slate-700 dark:text-slate-200 text-[10px] sm:text-[11px] whitespace-nowrap">Rp 1.000</span>
+                                <div class="flex items-center gap-1 shrink-0">
                                     <span class="text-[10px] text-slate-400">×</span>
-                                    <input type="number" min="0" id="denom-1k" placeholder="0" class="w-14 px-1.5 py-0.5 text-right font-bold text-xs border border-slate-200 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-900" oninput="window.calcPOSDenominations()">
+                                    <input type="number" min="0" id="denom-1k" placeholder="0" class="w-12 sm:w-16 px-1.5 py-1 text-right font-black text-xs border border-slate-200 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)] transition-all" oninput="window.calcPOSDenominations()">
                                 </div>
                             </div>
-                            <div class="flex items-center justify-between bg-white dark:bg-slate-800 px-2.5 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700">
-                                <span class="font-bold text-slate-700 dark:text-slate-200 text-[11px]">Koin / Receh</span>
-                                <div class="flex items-center gap-1">
+                            <div class="flex items-center justify-between bg-white dark:bg-slate-800 px-2 sm:px-2.5 py-1.5 sm:py-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 transition-all">
+                                <span class="font-bold text-slate-700 dark:text-slate-200 text-[10px] sm:text-[11px] whitespace-nowrap">Koin / Receh</span>
+                                <div class="flex items-center gap-1 shrink-0">
                                     <span class="text-[10px] text-slate-400">Rp</span>
-                                    <input type="number" min="0" id="denom-coin" placeholder="0" class="w-16 px-1.5 py-0.5 text-right font-bold text-xs border border-slate-200 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-900" oninput="window.calcPOSDenominations()">
+                                    <input type="number" min="0" id="denom-coin" placeholder="0" class="w-14 sm:w-20 px-1.5 py-1 text-right font-black text-xs border border-slate-200 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-white focus:outline-none focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)] transition-all" oninput="window.calcPOSDenominations()">
                                 </div>
                             </div>
                         </div>
@@ -762,13 +776,13 @@ export const setPOSCountMode = (mode) => {
     const panelDenom = el('pos-count-panel-denom');
 
     if (mode === 'quick') {
-        if (tabQuick) { tabQuick.className = 'px-2.5 py-1 rounded-lg font-black bg-white dark:bg-slate-700 text-slate-800 dark:text-white shadow-xs transition-all cursor-pointer'; }
-        if (tabDenom) { tabDenom.className = 'px-2.5 py-1 rounded-lg font-bold text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:white transition-all cursor-pointer'; }
+        if (tabQuick) { tabQuick.className = 'px-2.5 py-1 rounded-lg font-black bg-white dark:bg-slate-700 text-[var(--color-primary)] dark:text-white shadow-xs transition-all cursor-pointer border border-[rgba(var(--color-primary-rgb),0.2)] dark:border-slate-600'; }
+        if (tabDenom) { tabDenom.className = 'px-2.5 py-1 rounded-lg font-bold text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white transition-all cursor-pointer border border-transparent'; }
         if (panelQuick) panelQuick.classList.remove('hidden');
         if (panelDenom) panelDenom.classList.add('hidden');
     } else {
-        if (tabQuick) { tabQuick.className = 'px-2.5 py-1 rounded-lg font-bold text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:white transition-all cursor-pointer'; }
-        if (tabDenom) { tabDenom.className = 'px-2.5 py-1 rounded-lg font-black bg-white dark:bg-slate-700 text-slate-800 dark:text-white shadow-xs transition-all cursor-pointer'; }
+        if (tabQuick) { tabQuick.className = 'px-2.5 py-1 rounded-lg font-bold text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white transition-all cursor-pointer border border-transparent'; }
+        if (tabDenom) { tabDenom.className = 'px-2.5 py-1 rounded-lg font-black bg-white dark:bg-slate-700 text-[var(--color-primary)] dark:text-white shadow-xs transition-all cursor-pointer border border-[rgba(var(--color-primary-rgb),0.2)] dark:border-slate-600'; }
         if (panelQuick) panelQuick.classList.add('hidden');
         if (panelDenom) panelDenom.classList.remove('hidden');
         calcPOSDenominations();
@@ -937,13 +951,19 @@ const showClosedShiftSuccessModal = (closedShift) => {
 
             <!-- Action Buttons -->
             <div class="space-y-2 pt-2">
-                <button onclick="window.printShiftSettlementReceipt(window.getLastClosedShift(), false)" class="w-full py-3.5 rounded-2xl text-white font-black text-xs uppercase tracking-wider shadow-lg active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer" style="background:var(--color-primary)">
+                <button onclick="window.printShiftSettlementReceipt(window.getLastClosedShift(), false)" class="w-full py-3.5 rounded-2xl text-white font-black text-xs uppercase tracking-wider shadow-lg active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer hover:opacity-95" style="background:var(--color-primary)">
                     <i class="fa-solid fa-print"></i>
                     <span>Cetak Slip Tutup Shift (Z-Report)</span>
                 </button>
-                <button onclick="document.getElementById('pos-closed-success-modal')?.remove(); if(typeof window.cashierLogout==='function') window.cashierLogout();" class="w-full py-3 rounded-2xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold text-xs transition-all cursor-pointer">
-                    Selesai &amp; Keluar Kasir
-                </button>
+                <div class="flex items-center gap-2">
+                    <button onclick="document.getElementById('pos-closed-success-modal')?.remove(); window.openPOSOpenShiftModal();" class="flex-1 py-3 rounded-2xl bg-[rgba(var(--color-primary-rgb),0.1)] hover:bg-[rgba(var(--color-primary-rgb),0.18)] text-[var(--color-primary)] font-bold text-xs border border-[rgba(var(--color-primary-rgb),0.25)] transition-all cursor-pointer flex items-center justify-center gap-1.5 active:scale-95">
+                        <i class="fa-solid fa-plus-circle"></i>
+                        <span>Buka Shift Baru</span>
+                    </button>
+                    <button onclick="document.getElementById('pos-closed-success-modal')?.remove(); if(typeof window.cashierLogout==='function') window.cashierLogout(true);" class="flex-1 py-3 rounded-2xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold text-xs transition-all cursor-pointer active:scale-95">
+                        Selesai &amp; Keluar
+                    </button>
+                </div>
             </div>
         </div>
     </div>`;
@@ -1134,28 +1154,31 @@ export const renderShiftHeaderBadge = () => {
             const isStorefront = target.id === 'pos-shift-btn-storefront';
             if (isStorefront) {
                 target.innerHTML = `
-                <button onclick="window.openPOSShiftSummaryModal()" class="flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-[10px] font-bold bg-black/15 hover:bg-black/25 text-white border border-white/20 transition-all cursor-pointer shadow-xs active:scale-95" title="Klik untuk lihat ringkasan shift (X-Report)">
-                    <i class="fa-solid fa-cash-register text-emerald-300"></i>
-                    <span>Shift Aktif: <b class="text-white">${fRp(shift.startingCash)}</b></span>
+                <button onclick="window.openPOSShiftSummaryModal()" class="h-8 px-2 sm:px-2.5 rounded-xl bg-black/15 hover:bg-black/25 text-white border border-white/20 transition-all cursor-pointer shadow-xs active:scale-95 flex items-center gap-1.5" title="Klik untuk lihat ringkasan shift (X-Report)">
+                    <i class="fa-solid fa-cash-register text-emerald-300 text-xs"></i>
+                    <span class="hidden sm:inline text-xs font-medium">Shift: </span>
+                    <b class="text-white text-xs">${fRp(shift.startingCash)}</b>
                 </button>`;
             } else {
                 target.innerHTML = `
-                <button onclick="window.openPOSShiftSummaryModal()" class="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[10px] font-bold bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/80 hover:bg-emerald-100 dark:hover:bg-emerald-900/50 transition-all cursor-pointer active:scale-95" title="Klik untuk lihat ringkasan shift (X-Report)">
+                <button onclick="window.openPOSShiftSummaryModal()" class="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-[rgba(var(--color-primary-rgb),0.1)] hover:bg-[rgba(var(--color-primary-rgb),0.18)] text-[var(--color-primary)] border border-[rgba(var(--color-primary-rgb),0.25)] flex items-center gap-1.5 transition-all cursor-pointer active:scale-95" title="Klik untuk lihat ringkasan shift (X-Report)">
                     <i class="fa-solid fa-cash-register"></i>
-                    <span>Shift Aktif: <b>${fRp(shift.startingCash)}</b></span>
+                    <span class="hidden sm:inline">Shift: </span>
+                    <b class="font-black">${fRp(shift.startingCash)}</b>
                 </button>`;
             }
         } else {
             const isStorefront = target.id === 'pos-shift-btn-storefront';
             if (isStorefront) {
                 target.innerHTML = `
-                <button onclick="window.openPOSOpenShiftModal()" class="flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-[10px] font-bold bg-amber-500 hover:bg-amber-600 text-white animate-pulse transition-all cursor-pointer shadow-xs active:scale-95" title="Buka shift kasir baru">
-                    <i class="fa-solid fa-wallet"></i>
-                    <span>Buka Shift</span>
+                <button onclick="window.openPOSOpenShiftModal()" class="h-8 px-2.5 sm:px-3 rounded-xl bg-white/20 hover:bg-white/30 text-white font-bold text-xs flex items-center gap-1.5 transition-all active:scale-95 shadow-xs cursor-pointer border border-white/25 backdrop-blur-xs" title="Buka shift kasir baru">
+                    <span class="w-1.5 h-1.5 rounded-full bg-amber-300 animate-pulse"></span>
+                    <i class="fa-solid fa-wallet text-amber-300 text-xs"></i>
+                    <span class="text-xs font-black">Buka Shift</span>
                 </button>`;
             } else {
                 target.innerHTML = `
-                <button onclick="window.openPOSOpenShiftModal()" class="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[10px] font-bold bg-amber-500 hover:bg-amber-600 text-white animate-pulse transition-all cursor-pointer shadow-xs active:scale-95" title="Buka shift kasir baru">
+                <button onclick="window.openPOSOpenShiftModal()" class="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-amber-50 hover:bg-amber-100 dark:bg-amber-950/40 dark:hover:bg-amber-900/60 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800 flex items-center gap-1.5 transition-all cursor-pointer active:scale-95 animate-pulse" title="Buka shift kasir baru">
                     <i class="fa-solid fa-wallet"></i>
                     <span>Buka Shift</span>
                 </button>`;
@@ -1290,6 +1313,7 @@ window.isShiftActive              = isShiftActive;
 window.openPOSOpenShiftModal      = openPOSOpenShiftModal;
 window.closePOSOpenShiftModal     = closePOSOpenShiftModal;
 window.posSetStartCashPreset      = posSetStartCashPreset;
+window.posUpdateStartCashChips    = posUpdateStartCashChips;
 window.confirmStartPOSShift       = confirmStartPOSShift;
 window.recordTransactionToShift   = recordTransactionToShift;
 window.openPOSShiftModal          = openShiftSummaryModal;
