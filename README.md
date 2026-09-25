@@ -176,6 +176,14 @@ Aplikasi telah dilengkapi dengan fondasi **Capacitor 8 Android Native**:
 
 ## 📋 Riwayat Pembaruan (Changelog)
 
+### v1.9.34 — Pembaruan Lembar Keranjang POS Kasir Mobile Full-Height & Eliminasi Total Background Hitam (25 Sep 2026)
+- **Eliminasi Total Latar Belakang Hitam (Zero-Black-Backdrop)**: Mengubah lembar keranjang mobile (*bottom sheet*) menjadi tampilan lembar penuh (*full-height view*) tepat di bawah header kasir, menghapus tuntas celah overlay gelap (`rgba(15,23,42,0.65)`) yang sebelumnya menampakkan baris hitam di atas keranjang.
+- **Pencegahan Pemotongan Judul Counter (Anti-Truncation Guarantee)**: Menerapkan `shrink-0` dan `tracking-tight` pada judul "Keranjang (X)" sehingga counter jumlah item belanja tidak akan terpotong meskipun diakses pada smartphone berlayar sempit (360px).
+- **Penyempurnaan Ruang Vertikal Keranjang**: Area daftar item belanja kini mendapatkan ruang bernapas vertikal penuh yang lebih leluasa dan nyaman untuk menggulir daftar belanjaan pembeli dalam antrean panjang.
+- **Integrasi Tombol Tutup & Back Button Native**: Menyediakan tombol silang taktil [×] di pojok kanan atas serta registrasi riwayat modal untuk menutup kembali keranjang dengan mulus via tombol Back fisik Android.
+
+---
+
 ### v1.9.33 — Presisi Visual Keranjang POS Kasir Mobile: Eliminasi Gap Judul, Tombol Pill Terpadu & Pembersihan Diskon (25 Sep 2026)
 - **Eliminasi Gap Spasi Judul Keranjang (Anti-Gap Spacing)**: Mengatasi efek flex gap yang memecah teks judul dan kurung (`KERANJANG ( 1 )`) menjadi format alami dan presisi (`KERANJANG (1)`) tanpa spasi berlebih pada counter item belanja.
 - **Harmonisasi Tombol Header Keranjang Terpadu (Clean Unified Pills)**: Menyatukan tombol "Tahan", "Kosongkan", dan "Tutup" ke dalam sistem desain pill bernuansa bersih (`bg-white` / `dark:bg-slate-800` ber-border halus) dengan aksen warna proporsional pada ikonnya, mengeliminasi benturan visual kotak pastel di header keranjang.

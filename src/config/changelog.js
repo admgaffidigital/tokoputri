@@ -8,6 +8,20 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-9-34',
+        version: 'v1.9.34',
+        date: '2026-09-25',
+        title: 'Pembaruan Lembar Keranjang POS Kasir Mobile Full-Height: Eliminasi Total Background Hitam & Pencegahan Truncation Judul Counter',
+        category: 'optimization',
+        badge: 'Zero-Black-Backdrop Full-Height POS Cart v1.9.34',
+        items: [
+            'Eliminasi Total Latar Belakang Hitam (Zero-Black-Backdrop): Mengubah lembar keranjang mobile (bottom sheet) menjadi tampilan lembar penuh (full-height view) tepat di bawah header kasir, menghapus tuntas celah overlay gelap (rgba(15,23,42,0.65)) yang sebelumnya menampakkan baris hitam di atas keranjang.',
+            'Pencegahan Pemotongan Judul Counter (Anti-Truncation Guarantee): Menerapkan shrink-0 dan tracking-tight pada judul "Keranjang (X)" sehingga counter jumlah item belanja tidak akan terpotong meskipun diakses pada smartphone berlayar sempit (360px).',
+            'Penyempurnaan Ruang Vertikal Keranjang: Area daftar item belanja kini mendapatkan ruang bernapas vertikal penuh yang lebih leluasa dan nyaman untuk menggulir daftar belanjaan pembeli dalam antrean panjang.',
+            'Integrasi Tombol Tutup & Back Button Native: Menyediakan tombol silang taktil [×] di pojok kanan atas serta registrasi riwayat modal untuk menutup kembali keranjang dengan mulus via tombol Back fisik Android.'
+        ]
+    },
+    {
         id: 'log-1-9-33',
         version: 'v1.9.33',
         date: '2026-09-25',
