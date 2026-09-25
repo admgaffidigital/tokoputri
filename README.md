@@ -176,6 +176,15 @@ Aplikasi telah dilengkapi dengan fondasi **Capacitor 8 Android Native**:
 
 ## 📋 Riwayat Pembaruan (Changelog)
 
+### v1.9.33 — Presisi Visual Keranjang POS Kasir Mobile: Eliminasi Gap Judul, Tombol Pill Terpadu & Pembersihan Diskon (25 Sep 2026)
+- **Eliminasi Gap Spasi Judul Keranjang (Anti-Gap Spacing)**: Mengatasi efek flex gap yang memecah teks judul dan kurung (`KERANJANG ( 1 )`) menjadi format alami dan presisi (`KERANJANG (1)`) tanpa spasi berlebih pada counter item belanja.
+- **Harmonisasi Tombol Header Keranjang Terpadu (Clean Unified Pills)**: Menyatukan tombol "Tahan", "Kosongkan", dan "Tutup" ke dalam sistem desain pill bernuansa bersih (`bg-white` / `dark:bg-slate-800` ber-border halus) dengan aksen warna proporsional pada ikonnya, mengeliminasi benturan visual kotak pastel di header keranjang.
+- **Pembersihan Tampilan Diskon Transaksi (Zero-Value Cleanup)**: Menyembunyikan preview diskon saat nilai potongan bernilai 0 sehingga tidak memunculkan teks "Rp 0" redundan di samping input nominal kasir.
+- **Penyempurnaan Chips Potongan Cepat Berkualitas Tinggi**: Merombak preset chips potongan harga menjadi pil netral modern (*high-contrast slate*) yang otomatis bertransformasi menjadi solid *brand primary* toko saat aktif.
+- **Interaksi Tutup Lembar Geser Fleksibel (Backdrop Dismiss)**: Menambahkan kemampuan menutup drawer keranjang mobile secara instan cukup dengan mengetuk area redup latar belakang di luar lembar keranjang.
+
+---
+
 ### v1.9.32 — Harmonisasi Visual Keranjang POS Kasir Mobile & Zero Truncation (25 Sep 2026)
 - **Eliminasi Pemotongan Judul Keranjang Mobile (Anti-Truncation)**: Menerapkan teks adaptif (`Keranjang` di mobile, `Keranjang Transaksi` di desktop) sehingga judul tidak lagi terpotong elipsis (`KERANJANG T...`) pada layar ponsel sempit (<= 390px) dan tampil presisi bersama counter jumlah item belanja.
 - **Harmonisasi Tombol Tindakan Header Keranjang (Tahan, Kosongkan & Tutup)**: Merestrukturisasi tombol "Tahan" dan "Kosongkan" menjadi badge pill taktil semi-transparan dengan border lembut (`amber-500/10` dan `rose-500/10`) serta tombol tutup yang proporsional, menggantikan teks raw yang kontras dan tidak selaras.

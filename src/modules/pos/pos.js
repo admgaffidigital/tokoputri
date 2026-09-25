@@ -1086,16 +1086,16 @@ const renderCart = () => {
             const img = getItemImg(item);
             const baseName = item.isVariant && item.variantName ? esc(item.name.replace(` — ${item.variantName}`, '')) : esc(item.name);
             return `
-            <div class="group flex items-center gap-2.5 p-2 sm:p-2.5 bg-white dark:bg-slate-800/90 rounded-2xl border border-slate-200/90 dark:border-slate-700/80 shadow-xs hover:border-[var(--color-primary)] transition-all">
-                <!-- 40px Thumbnail -->
-                <div class="w-10 h-10 rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-700 shrink-0 border border-slate-100 dark:border-slate-700 flex items-center justify-center">
+            <div class="group flex items-start gap-2.5 p-2.5 bg-white dark:bg-slate-800/90 rounded-2xl border border-slate-200/90 dark:border-slate-700/80 shadow-xs hover:border-[var(--color-primary)] transition-all">
+                <!-- 42px Thumbnail -->
+                <div class="w-11 h-11 rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-700 shrink-0 border border-slate-200/60 dark:border-slate-700 flex items-center justify-center">
                     ${img 
-                        ? `<img width="40" height="40" loading="lazy" src="${esc(img)}" alt="${esc(item.name)}" onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='flex';" class="w-full h-full object-cover">
+                        ? `<img width="44" height="44" loading="lazy" src="${esc(img)}" alt="${esc(item.name)}" onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='flex';" class="w-full h-full object-cover">
                            <div class="hidden w-full h-full items-center justify-center text-slate-400"><i class="fa-solid fa-box text-xs"></i></div>`
                         : `<div class="w-full h-full flex items-center justify-center text-slate-400"><i class="fa-solid fa-box text-xs"></i></div>`}
                 </div>
                 <!-- Details -->
-                <div class="flex-1 min-w-0">
+                <div class="flex-1 min-w-0 pr-1">
                     <p class="text-xs font-bold text-slate-800 dark:text-slate-100 truncate leading-snug" title="${esc(item.name)}">${baseName}</p>
                     <div class="flex items-center gap-1.5 mt-0.5 flex-wrap">
                         ${item.isWholesale ? `<span class="inline-flex items-center text-[8px] font-black px-1.5 py-0.5 rounded text-white shadow-2xs" style="background:var(--color-primary)">GROSIR</span>` : ''}
@@ -1104,24 +1104,26 @@ const renderCart = () => {
                             ${item.isWholesale && item.basePrice ? `<span class="line-through text-slate-400">${fRp(item.basePrice)}</span> <span class="font-bold" style="color:var(--color-primary)">${fRp(item.price)}</span>` : fRp(item.price)}
                         </span>
                     </div>
-                    <div class="flex items-center gap-1 mt-1">
-                        <span class="text-[9px] text-slate-400 font-bold uppercase">Diskon:</span>
+                    <div class="flex items-center gap-1.5 mt-1.5">
+                        <span class="text-[9px] text-slate-400 font-bold uppercase tracking-wider">Diskon:</span>
                         <input type="number" min="0" placeholder="0" value="${item.discount || ''}" onchange="window.posSetItemDisc('${ckey}',this.value)"
-                            class="w-16 text-[10px] font-bold border border-slate-200 dark:border-slate-600 rounded-lg px-1.5 py-0.5 bg-slate-50 dark:bg-slate-700 text-right focus:outline-none focus:border-[var(--color-primary)]">
+                            class="w-16 text-[10px] font-mono font-bold border border-slate-200 dark:border-slate-700 rounded-md px-1.5 py-0.5 bg-slate-50 dark:bg-slate-700/60 text-right focus:outline-none focus:border-[var(--color-primary)] transition-all">
                     </div>
                 </div>
                 <!-- Stepper & Subtotal -->
-                <div class="flex flex-col items-end gap-1 shrink-0">
-                    <div class="flex items-center gap-0.5 bg-slate-100 dark:bg-slate-700/80 rounded-lg p-0.5 border border-slate-200 dark:border-slate-600 focus-within:border-[var(--color-primary)] transition-colors">
-                        <button onclick="window.posUpdateQty('${ckey}',-1)" class="w-5 h-5 rounded text-slate-600 dark:text-slate-200 hover:bg-white dark:hover:bg-slate-600 font-black text-xs flex items-center justify-center cursor-pointer active:scale-90 transition-all">−</button>
-                        <input type="number" min="1" value="${item.qty}" onchange="window.posSetQty('${ckey}',this.value)"
-                            class="w-6 text-center text-[11px] font-black bg-transparent text-slate-800 dark:text-slate-100 focus:outline-none">
-                        <button onclick="window.posUpdateQty('${ckey}',1)" class="w-5 h-5 rounded text-slate-600 dark:text-slate-200 hover:bg-white dark:hover:bg-slate-600 font-black text-xs flex items-center justify-center cursor-pointer active:scale-90 transition-all">+</button>
+                <div class="flex flex-col items-end shrink-0">
+                    <div class="flex items-center gap-1">
+                        <div class="flex items-center bg-slate-100 dark:bg-slate-700/80 rounded-lg p-0.5 border border-slate-200 dark:border-slate-600 focus-within:border-[var(--color-primary)] transition-colors">
+                            <button onclick="window.posUpdateQty('${ckey}',-1)" class="w-5 h-5 rounded text-slate-600 dark:text-slate-200 hover:bg-white dark:hover:bg-slate-600 font-black text-xs flex items-center justify-center cursor-pointer active:scale-90 transition-all">−</button>
+                            <input type="number" min="1" value="${item.qty}" onchange="window.posSetQty('${ckey}',this.value)"
+                                class="w-6 text-center text-[11px] font-black bg-transparent text-slate-800 dark:text-slate-100 focus:outline-none">
+                            <button onclick="window.posUpdateQty('${ckey}',1)" class="w-5 h-5 rounded text-slate-600 dark:text-slate-200 hover:bg-white dark:hover:bg-slate-600 font-black text-xs flex items-center justify-center cursor-pointer active:scale-90 transition-all">+</button>
+                        </div>
+                        <button onclick="window.posRemoveItem('${ckey}')" class="w-6 h-6 rounded-lg text-slate-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30 flex items-center justify-center text-xs transition-all cursor-pointer" title="Hapus item">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
                     </div>
-                    <p class="text-xs font-black" style="color:var(--color-primary)">${fRp(item.subtotal)}</p>
-                    <button onclick="window.posRemoveItem('${ckey}')" class="p-1 rounded-md text-slate-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30 text-[11px] transition-all cursor-pointer" title="Hapus item">
-                        <i class="fa-solid fa-trash-can"></i>
-                    </button>
+                    <p class="text-xs font-black mt-1.5" style="color:var(--color-primary)">${fRp(item.subtotal)}</p>
                 </div>
             </div>`;
         }).join('');
@@ -1143,13 +1145,13 @@ const renderCart = () => {
         if (document.activeElement !== e) e.value = posDiscountVal || '';
     });
     document.querySelectorAll('.pos-disc-preview-target').forEach(e => {
-        e.textContent = discAmt > 0 ? `- ${formattedDiscAmt}` : 'Rp 0';
         if (discAmt > 0) {
-            e.classList.remove('text-slate-400');
+            e.textContent = `- ${formattedDiscAmt}`;
+            e.classList.remove('hidden');
             e.classList.add('text-rose-500');
         } else {
-            e.classList.add('text-slate-400');
-            e.classList.remove('text-rose-500');
+            e.textContent = '';
+            e.classList.add('hidden');
         }
     });
     document.querySelectorAll('.pos-disc-type-rp').forEach(btn => {
@@ -1190,24 +1192,20 @@ const renderCart = () => {
         ${percentChips.map(pct => {
             const active = isChipActive(pct, 'percent');
             return `<button onclick="window.posApplyQuickDiscount(${pct},'percent')" 
-                class="px-2 py-0.5 rounded-md text-[9px] font-black cursor-pointer transition-all ${active ? 'shadow-xs text-white' : 'hover:brightness-95'}"
-                style="${active 
-                    ? 'background:var(--color-primary);color:#ffffff;border:1px solid var(--color-primary);' 
-                    : 'background:rgba(var(--color-primary-rgb),0.1);color:var(--color-primary);border:1px solid rgba(var(--color-primary-rgb),0.25);'}">${pct}%</button>`;
+                class="px-2.5 py-1 rounded-lg text-[10px] cursor-pointer transition-all active:scale-95 ${active ? 'text-white shadow-xs font-black' : 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-200/80 dark:border-slate-700 font-bold'}"
+                style="${active ? 'background:var(--color-primary);border:1px solid var(--color-primary);' : ''}">${pct}%</button>`;
         }).join('')}
-        ${posDiscountVal > 0 ? `<button onclick="window.posApplyQuickDiscount(0,'percent')" class="px-2 py-0.5 rounded-md bg-rose-500/10 hover:bg-rose-500/20 text-[9px] font-black text-rose-600 dark:text-rose-400 border border-rose-500/25 cursor-pointer transition-all active:scale-95">Reset</button>` : ''}
+        ${posDiscountVal > 0 ? `<button onclick="window.posApplyQuickDiscount(0,'percent')" class="px-2.5 py-1 rounded-lg bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/40 text-[10px] font-bold text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-800 cursor-pointer transition-all active:scale-95"><i class="fa-solid fa-rotate-left mr-1 text-[9px]"></i>Reset</button>` : ''}
         `
         : `
         ${rpChips.map(rp => {
             const active = isChipActive(rp, 'rp');
             const label = `${rp / 1000}rb`;
             return `<button onclick="window.posApplyQuickDiscount(${rp},'rp')" 
-                class="px-2 py-0.5 rounded-md text-[9px] font-black cursor-pointer transition-all ${active ? 'shadow-xs text-white' : 'hover:brightness-95'}"
-                style="${active 
-                    ? 'background:var(--color-primary);color:#ffffff;border:1px solid var(--color-primary);' 
-                    : 'background:rgba(var(--color-primary-rgb),0.1);color:var(--color-primary);border:1px solid rgba(var(--color-primary-rgb),0.25);'}">${label}</button>`;
+                class="px-2.5 py-1 rounded-lg text-[10px] cursor-pointer transition-all active:scale-95 ${active ? 'text-white shadow-xs font-black' : 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-200/80 dark:border-slate-700 font-bold'}"
+                style="${active ? 'background:var(--color-primary);border:1px solid var(--color-primary);' : ''}">${label}</button>`;
         }).join('')}
-        ${posDiscountVal > 0 ? `<button onclick="window.posApplyQuickDiscount(0,'rp')" class="px-2 py-0.5 rounded-md bg-rose-500/10 hover:bg-rose-500/20 text-[9px] font-black text-rose-600 dark:text-rose-400 border border-rose-500/25 cursor-pointer transition-all active:scale-95">Reset</button>` : ''}
+        ${posDiscountVal > 0 ? `<button onclick="window.posApplyQuickDiscount(0,'rp')" class="px-2.5 py-1 rounded-lg bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/40 text-[10px] font-bold text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-800 cursor-pointer transition-all active:scale-95"><i class="fa-solid fa-rotate-left mr-1 text-[9px]"></i>Reset</button>` : ''}
         `;
     document.querySelectorAll('.pos-disc-chips-target').forEach(e => e.innerHTML = chipsHTML);
 
@@ -2330,16 +2328,16 @@ const buildPOSLayout = ({ isStorefront }) => {
                         <div class="w-7 h-7 rounded-lg flex items-center justify-center text-xs text-white shadow-xs shrink-0" style="background:var(--color-primary)">
                             <i class="fa-solid fa-cart-shopping"></i>
                         </div>
-                        <h3 class="text-xs font-black uppercase tracking-wider text-slate-800 dark:text-white truncate whitespace-nowrap flex items-center gap-1">
-                            <span class="hidden sm:inline">Keranjang Transaksi</span><span class="sm:hidden">Keranjang</span> (<span class="pos-item-count-target">0</span>)
+                        <h3 class="text-xs font-black uppercase tracking-wider text-slate-800 dark:text-white truncate whitespace-nowrap leading-none">
+                            Keranjang (<span class="pos-item-count-target">0</span>)
                         </h3>
                     </div>
                     <div class="flex items-center gap-1.5 shrink-0">
-                        <button onclick="window.posHoldCurrentCart()" class="pos-hold-btn-target text-[10px] font-bold text-amber-700 dark:text-amber-300 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/25 px-2.5 py-1 rounded-lg transition-all cursor-pointer flex items-center gap-1 whitespace-nowrap active:scale-95 shadow-2xs" title="Tahan transaksi sementara (F6)">
-                            <i class="fa-solid fa-pause text-[9px]"></i><span>Tahan</span>
+                        <button onclick="window.posHoldCurrentCart()" class="pos-hold-btn-target text-[10px] font-bold text-slate-700 dark:text-slate-200 bg-white hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 px-2.5 py-1 rounded-lg transition-all cursor-pointer flex items-center gap-1.5 whitespace-nowrap active:scale-95 shadow-2xs" title="Tahan transaksi sementara (F6)">
+                            <i class="fa-solid fa-pause text-amber-500 text-[9px]"></i><span>Tahan</span>
                         </button>
-                        <button onclick="window.posClearCart()" class="text-[10px] font-bold text-rose-600 dark:text-rose-400 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/25 px-2.5 py-1 rounded-lg transition-all cursor-pointer flex items-center gap-1 shrink-0 whitespace-nowrap active:scale-95 shadow-2xs" title="Kosongkan keranjang">
-                            <i class="fa-solid fa-trash-can text-[9px]"></i><span>Kosongkan</span>
+                        <button onclick="window.posClearCart()" class="text-[10px] font-bold text-slate-700 dark:text-slate-200 bg-white hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 px-2.5 py-1 rounded-lg transition-all cursor-pointer flex items-center gap-1.5 shrink-0 whitespace-nowrap active:scale-95 shadow-2xs" title="Kosongkan keranjang">
+                            <i class="fa-solid fa-trash-can text-rose-500 text-[9px]"></i><span>Kosongkan</span>
                         </button>
                     </div>
                 </div>
@@ -2372,7 +2370,7 @@ const buildPOSLayout = ({ isStorefront }) => {
                                 <span class="pos-disc-prefix absolute left-2.5 top-1/2 -translate-y-1/2 text-[10px] font-black" style="color:var(--color-primary)">Rp</span>
                                 <input type="number" min="0" placeholder="0" class="pos-disc-val-input w-full border border-slate-200 dark:border-slate-700 rounded-lg pl-8 pr-2.5 py-1 text-right text-xs font-mono font-bold bg-white dark:bg-slate-800 focus:outline-none focus:border-[var(--color-primary)] transition-all" oninput="window.posSetDiscountVal(this.value)">
                             </div>
-                            <div class="pos-disc-preview-target text-[10px] font-black text-rose-500 whitespace-nowrap min-w-[70px] text-right">Rp 0</div>
+                            <div class="pos-disc-preview-target hidden text-[10px] font-black text-rose-500 whitespace-nowrap min-w-[70px] text-right"></div>
                         </div>
                         <div class="pos-disc-chips-target flex gap-1 overflow-x-auto hide-scrollbar pt-0.5"></div>
                     </div>
@@ -2414,24 +2412,30 @@ const buildPOSLayout = ({ isStorefront }) => {
         </div>
 
         <!-- MOBILE CART DRAWER (Bottom Sheet Slide-up) -->
-        <div id="pos-mobile-cart-drawer" class="lg:hidden fixed inset-0 z-50 transition-all duration-300 opacity-0 pointer-events-none" style="background:rgba(15,23,42,0.65);backdrop-filter:blur(3px)">
+        <div id="pos-mobile-cart-drawer" onclick="if(event.target===this) window.closePOSCartDrawer()" class="lg:hidden fixed inset-0 z-50 transition-all duration-300 opacity-0 pointer-events-none" style="background:rgba(15,23,42,0.65);backdrop-filter:blur(3px)">
             <div id="pos-mobile-cart-sheet" class="absolute bottom-0 left-0 right-0 max-h-[85vh] bg-white dark:bg-slate-900 rounded-t-3xl shadow-2xl flex flex-col transition-transform duration-300 transform translate-y-full overflow-hidden border-t border-slate-200 dark:border-slate-800">
                 <!-- Handle -->
-                <div class="pt-2 pb-1 flex justify-center shrink-0 cursor-pointer" onclick="window.closePOSCartDrawer()">
+                <div class="pt-2.5 pb-1 flex justify-center shrink-0 cursor-pointer" onclick="window.closePOSCartDrawer()">
                     <div class="w-12 h-1.5 rounded-full bg-slate-300 dark:bg-slate-700"></div>
                 </div>
                 <!-- Header -->
                 <div class="px-4 py-2.5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between shrink-0 bg-slate-50/70 dark:bg-slate-800/40">
                     <div class="flex items-center gap-2 min-w-0">
                         <div class="w-7 h-7 rounded-lg flex items-center justify-center text-xs text-white shrink-0 shadow-xs" style="background:var(--color-primary)"><i class="fa-solid fa-cart-shopping"></i></div>
-                        <h3 class="text-xs font-black uppercase tracking-wider text-slate-800 dark:text-white whitespace-nowrap flex items-center gap-1">
-                            <span class="hidden sm:inline">Keranjang Transaksi</span><span class="sm:hidden">Keranjang</span> (<span class="pos-item-count-target">0</span>)
+                        <h3 class="text-xs font-black uppercase tracking-wider text-slate-800 dark:text-white whitespace-nowrap leading-none">
+                            Keranjang (<span class="pos-item-count-target">0</span>)
                         </h3>
                     </div>
                     <div class="flex items-center gap-1.5 shrink-0">
-                        <button onclick="window.posHoldCurrentCart()" class="pos-hold-btn-target text-[10px] font-bold text-amber-700 dark:text-amber-300 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/25 px-2 py-1 rounded-lg transition-all flex items-center gap-1 whitespace-nowrap cursor-pointer active:scale-95 shadow-2xs" title="Tahan transaksi sementara (F6)"><i class="fa-solid fa-pause text-[9px]"></i><span>Tahan</span></button>
-                        <button onclick="window.posClearCart()" class="text-[10px] font-bold text-rose-600 dark:text-rose-400 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/25 px-2 py-1 rounded-lg transition-all flex items-center gap-1 whitespace-nowrap cursor-pointer active:scale-95 shadow-2xs" title="Kosongkan keranjang"><i class="fa-solid fa-trash-can text-[9px]"></i><span>Kosongkan</span></button>
-                        <button onclick="window.closePOSCartDrawer()" class="w-7 h-7 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-500 hover:text-slate-800 dark:hover:text-white text-base font-bold flex items-center justify-center transition-all leading-none cursor-pointer" title="Tutup">×</button>
+                        <button onclick="window.posHoldCurrentCart()" class="pos-hold-btn-target text-[10px] font-bold text-slate-700 dark:text-slate-200 bg-white hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 px-2.5 py-1 rounded-lg transition-all flex items-center gap-1.5 whitespace-nowrap cursor-pointer active:scale-95 shadow-2xs" title="Tahan transaksi sementara (F6)">
+                            <i class="fa-solid fa-pause text-amber-500 text-[9px]"></i><span>Tahan</span>
+                        </button>
+                        <button onclick="window.posClearCart()" class="text-[10px] font-bold text-slate-700 dark:text-slate-200 bg-white hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 px-2.5 py-1 rounded-lg transition-all flex items-center gap-1.5 whitespace-nowrap cursor-pointer active:scale-95 shadow-2xs" title="Kosongkan keranjang">
+                            <i class="fa-solid fa-trash-can text-rose-500 text-[9px]"></i><span>Kosongkan</span>
+                        </button>
+                        <button onclick="window.closePOSCartDrawer()" class="w-7 h-7 rounded-lg bg-white hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-500 hover:text-slate-800 dark:hover:text-white border border-slate-200 dark:border-slate-700 text-xs font-bold flex items-center justify-center transition-all cursor-pointer shadow-2xs" title="Tutup">
+                            <i class="fa-solid fa-xmark text-[11px]"></i>
+                        </button>
                     </div>
                 </div>
 
@@ -2463,7 +2467,7 @@ const buildPOSLayout = ({ isStorefront }) => {
                                 <span class="pos-disc-prefix absolute left-2.5 top-1/2 -translate-y-1/2 text-[10px] font-black" style="color:var(--color-primary)">Rp</span>
                                 <input type="number" min="0" placeholder="0" class="pos-disc-val-input w-full border border-slate-200 dark:border-slate-700 rounded-lg pl-8 pr-2.5 py-1 text-right text-xs font-mono font-bold bg-white dark:bg-slate-800 focus:outline-none focus:border-[var(--color-primary)] transition-all" oninput="window.posSetDiscountVal(this.value)">
                             </div>
-                            <div class="pos-disc-preview-target text-[10px] font-black text-rose-500 whitespace-nowrap min-w-[70px] text-right">Rp 0</div>
+                            <div class="pos-disc-preview-target hidden text-[10px] font-black text-rose-500 whitespace-nowrap min-w-[70px] text-right"></div>
                         </div>
                         <div class="pos-disc-chips-target flex gap-1 overflow-x-auto hide-scrollbar pt-0.5"></div>
                     </div>

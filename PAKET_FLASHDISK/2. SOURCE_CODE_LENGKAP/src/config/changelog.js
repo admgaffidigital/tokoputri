@@ -8,6 +8,21 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-9-33',
+        version: 'v1.9.33',
+        date: '2026-09-25',
+        title: 'Presisi Visual Keranjang POS Kasir Mobile: Eliminasi Gap Judul, Penyelarasan Tombol Header Pill Terpadu, Diskon Bersih & Backdrop Dismiss',
+        category: 'optimization',
+        badge: 'POS Cart Precision & Clean UI v1.9.33',
+        items: [
+            'Eliminasi Gap Spasi Judul Keranjang (Anti-Gap Spacing): Mengatasi efek flex gap yang memecah teks judul dan kurung ("KERANJANG ( 1 )") menjadi format alami dan bersih ("KERANJANG (1)") tanpa spasi berlebih pada counter item belanja.',
+            'Harmonisasi Tombol Header Keranjang Terpadu (Clean Unified Pills): Menyatukan tombol "Tahan", "Kosongkan", dan "Tutup" ke dalam sistem desain pill bernuansa bersih (white / slate-800 border) dengan aksen warna hanya pada ikonnya, mengeliminasi benturan visual kotak warna-warni kontras di header keranjang.',
+            'Pembersihan Tampilan Diskon Transaksi (Zero-Value Cleanup): Menyembunyikan preview diskon saat nilai potongan bernilai 0 sehingga tidak memunculkan teks "Rp 0" yang membingungkan kasir di samping input nominal.',
+            'Penyempurnaan Chips Potongan Cepat Berkualitas Tinggi: Mengganti latar belakang chips kusam menjadi pil netral modern (high-contrast slate) yang otomatis menonjol solid (var(--color-primary)) saat dipilih kasir.',
+            'Interaksi Tutup Lembar Geser Fleksibel (Backdrop Dismiss): Menambahkan kemampuan menutup drawer keranjang mobile secara instan cukup dengan mengetuk area redup latar belakang di luar lembar keranjang.'
+        ]
+    },
+    {
         id: 'log-1-9-32',
         version: 'v1.9.32',
         date: '2026-09-25',
