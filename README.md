@@ -176,6 +176,14 @@ Aplikasi telah dilengkapi dengan fondasi **Capacitor 8 Android Native**:
 
 ## 📋 Riwayat Pembaruan (Changelog)
 
+### v1.9.31 — Harmonisasi Visual Tombol Pilih Berkas Cadangan & Presisi Sempurna Navigasi Header (25 Sep 2026)
+- **Penyelarasan Penuh & Eliminasi Tombol Gepeng**: Mengubah tombol "Pilih Berkas Cadangan" dan "Rollback Data Toko" menjadi grid 2-kolom berdampingan (`grid grid-cols-2 gap-2.5 sm:gap-3`) yang simetris dengan teks label adaptif, mengeliminasi bentangan bilah panjang 1-kolom yang pipih/gepeng (rasio 7:1) menjadi tombol taktil yang proporsional.
+- **Harmonisasi Simetris dengan Baris Snapshot Cepat**: Menyelaraskan tinggi fisik (`h-11 sm:h-12`), radius sudut (`rounded-xl sm:rounded-2xl`), dan padding tombol pemulihan agar 100% selaras dan sejajar sempurna dengan baris tombol Simpan Cepat & Pulihkan di bawahnya.
+- **Presisi Sempurna Tombol Navigasi Header Admin**: Menetapkan `display: flex`, `shrink-0`, dan `aspect-square` pada tombol kembali panah kiri (`#btn-admin-back`), ikon preview, dan tombol keluar, menjamin bentuk bujur sangkar 1:1 yang rapi dan elegan tanpa distorsi melebar/lonjong di layar HP.
+- **Optimalisasi Ruang Kanvas Layar Ponsel (Anti-Squeeze Padding)**: Menghapus padding ganda yang menghimpit kontainer Pusat Data di HP dan memperlebar ruang bernapas bawah (`pb-24`) agar seluruh tombol tindakan tampil utuh dan bebas terpotong.
+
+---
+
 ### v1.9.30 — Optimasi Ketahanan Koneksi Jaringan Cloud Firestore & Eliminasi Error QUIC (25 Sep 2026)
 - **Eliminasi ERR_QUIC_PROTOCOL_ERROR**: Mengaktifkan `experimentalForceLongPolling` pada Firestore SDK untuk memastikan transmisi data menggunakan protokol HTTPS berbasis TCP yang andal dan kebal terhadap packet loss atau pemblokiran UDP pada jaringan seluler (Telkomsel/Indosat/XL) maupun Wi-Fi publik.
 - **Pencegahan Kegagalan Stream Listen Channel**: Menghindari kegagalan kanal sinkronisasi gRPC-Web/QUIC saat koneksi internet mengalami fluktuasi sementara atau timeout DNS (`ERR_NAME_NOT_RESOLVED`).

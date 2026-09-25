@@ -8,6 +8,20 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-9-31',
+        version: 'v1.9.31',
+        date: '2026-09-25',
+        title: 'Harmonisasi Visual Tombol Pilih Berkas Cadangan & Presisi Sempurna Navigasi Header (Anti-Gepeng, Symmetrical 2-Column Grid & 1:1 Aspect-Square)',
+        category: 'optimization',
+        badge: 'Visual Precision & Native Alignment v1.9.31',
+        items: [
+            'Resolusi Tombol Gepeng & Penyelarasan Tombol Pilih Berkas Cadangan: Merestrukturisasi tombol Pilih Berkas Cadangan dan Rollback Data Toko menjadi grid 2-kolom berdampingan yang simetris (grid grid-cols-2 gap-2.5 sm:gap-3) dengan label teks adaptif, mengeliminasi tampilan tombol pipih memanjang selebar layar (gepeng) menjadi tombol taktil yang proporsional.',
+            'Harmonisasi Penuh dengan Baris Snapshot Cepat: Menyelaraskan tinggi fisik (h-11 sm:h-12), radius sudut (rounded-xl sm:rounded-2xl), dan padding tombol pemulihan agar 100% selaras dan sejajar sempurna dengan baris tombol Simpan Cepat & Pulihkan di bawahnya.',
+            'Presisi Sempurna Tombol Navigasi Header Admin: Menetapkan display flex, shrink-0, dan aspect-square pada tombol kembali panah kiri (#btn-admin-back), ikon preview, dan tombol keluar, menjamin bentuk bujur sangkar 1:1 yang rapi dan elegan tanpa distorsi melebar/lonjong di layar HP.',
+            'Optimalisasi Ruang Kanvas Layar Ponsel (Anti-Squeeze Padding): Menghapus padding ganda yang menghimpit kontainer Pusat Data di HP dan memperlebar ruang bernapas bawah (pb-24) agar seluruh tombol tindakan tampil utuh dan bebas terpotong.'
+        ]
+    },
+    {
         id: 'log-1-9-30',
         version: 'v1.9.30',
         date: '2026-09-25',
