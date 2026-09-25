@@ -46,9 +46,9 @@ html {
 
 /* ============================================================
    ADMIN CMS — FULL-VIEWPORT KASIR POS (ANTI DOUBLE-SCROLL)
-   Kunci viewport 100% tinggi saat Kasir POS dibuka di CMS Admin,
-   sehingga tidak ada scroll ganda, header tidak menutupi search bar,
-   dan tidak ada celah putih kosong di bawah layar.
+   Kunci viewport saat tab POS aktif di Admin CMS:
+   Menghadirkan jarak bernapas (breathing room) yang lega di bawah
+   header tanpa tabrakan scroll, menjaga kenyamanan visual mobile.
    ============================================================ */
 #view-admin.admin-pos-mode {
     overflow: hidden !important;
@@ -56,14 +56,24 @@ html {
 
 #view-admin.admin-pos-mode .scroll-content {
     overflow: hidden !important;
-    padding-top: 0 !important;
-    padding-bottom: 0 !important;
-    padding-left: 0 !important;
-    padding-right: 0 !important;
+    padding-top: 0.625rem !important; /* Jarak lega 10px dari header di HP */
+    padding-bottom: 0.5rem !important; /* Jarak bawah 8px */
+    padding-left: 0.625rem !important; /* Jarak samping 10px di HP */
+    padding-right: 0.625rem !important; /* Jarak samping 10px di HP */
     height: 100% !important;
     flex: 1 1 0% !important;
     display: flex !important;
     flex-direction: column !important;
+    box-sizing: border-box !important;
+}
+
+@media (min-width: 640px) {
+    #view-admin.admin-pos-mode .scroll-content {
+        padding-top: 0.75rem !important;
+        padding-bottom: 0.75rem !important;
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+    }
 }
 
 #view-admin.admin-pos-mode .scroll-content > div {
@@ -74,6 +84,7 @@ html {
     flex: 1 1 0% !important;
     display: flex !important;
     flex-direction: column !important;
+    min-height: 0 !important;
 }
 
 #view-admin.admin-pos-mode #admin-content-view {
@@ -85,6 +96,7 @@ html {
     flex-direction: column !important;
     margin: 0 !important;
     padding: 0 !important;
+    min-height: 0 !important;
 }
 
 #view-admin.admin-pos-mode #admin-content {
@@ -95,6 +107,7 @@ html {
     display: flex !important;
     flex-direction: column !important;
     overflow: hidden !important;
+    min-height: 0 !important;
 }
 
 /* Container grid katalog produk POS (Grid Mode) */

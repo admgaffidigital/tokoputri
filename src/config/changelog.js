@@ -8,6 +8,21 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-9-23',
+        version: 'v1.9.23',
+        date: '2026-09-25',
+        title: 'Penyempurnaan Jarak Lega & Presisi Visual Admin POS Kasir Mobile (Floating Card Workspace, Eliminasi Kesan Mepet Header, & Optimasi Viewport HP)',
+        category: 'optimization',
+        badge: 'Mobile POS Breathing Room & Floating Card Workspace v1.9.23',
+        items: [
+            'Jarak Bernapas Lega di Bawah Header (.admin-pos-mode): Mengatasi kendala tampilan kasir yang terlalu mepet dengan header pada layar ponsel (HP) dengan memberikan padding atas (padding-top: 0.625rem / 10px-12px) dan margin samping yang nyaman pada kontainer konten admin.',
+            'Arsitektur Floating Card Workspace: Terminal Kasir POS di CMS Admin kini dibungkus dalam kartu modern ber-rounded halus (rounded-2xl sm:rounded-3xl) dengan border lembut dan bayangan elegan (shadow-md), sehingga tampak melayang terpisah dengan indah dan tidak lagi menempel keras ke header toko.',
+            'Restrukturisasi Action Strip & Search Bar Mobile: Merampingkan tinggi bilah aksi (min-h-[46px] py-1.5) serta search bar dengan latar belakang adaptif (bg-slate-50/80 dark:bg-slate-800/60) sehingga langsung membedakan kontrol kasir dari katalog produk dan menghemat ruang vertikal layar HP.',
+            'Normalisasi Padding Glass Header: Menyeimbangkan kembali padding glass-header admin menjadi pb-2.5 sm:pb-3 agar tidak ada ruang kosong emas berlebih yang memakan area pandang produk pada ponsel.',
+            'Optimalisasi Viewport Katalog HP: Mengakomodasi tampilan produk lebih banyak (hingga 3 baris kartu katalog terlihat langsung tanpa terpotong) dengan scrolling internal yang mulus dan bebas benturan double-scroll.'
+        ]
+    },
+    {
         id: 'log-1-9-22',
         version: 'v1.9.22',
         date: '2026-09-25',

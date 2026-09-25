@@ -2236,9 +2236,9 @@ const buildPOSLayout = ({ isStorefront }) => {
         </header>`
         : `
         <!-- ADMIN POS ACTION STRIP (lega, nyaman, presisi tinggi, anti-wrap di mobile) -->
-        <div class="min-h-[50px] py-2 sm:py-2.5 shrink-0 bg-white dark:bg-slate-900 px-3.5 sm:px-5 flex items-center justify-between border-b border-slate-200/90 dark:border-slate-800 text-xs overflow-hidden gap-2.5 shadow-2xs">
-            <div class="flex items-center gap-2 shrink-0 whitespace-nowrap">
-                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse shrink-0 shadow-xs"></span>
+        <div class="min-h-[46px] sm:min-h-[50px] py-1.5 sm:py-2 px-3 sm:px-4 shrink-0 bg-slate-50/80 dark:bg-slate-800/60 border-b border-slate-200/80 dark:border-slate-800 flex items-center justify-between text-xs overflow-hidden gap-2">
+            <div class="flex items-center gap-1.5 sm:gap-2 shrink-0 whitespace-nowrap">
+                <span class="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-emerald-500 animate-pulse shrink-0 shadow-xs"></span>
                 <span class="text-xs font-black uppercase tracking-wider text-slate-800 dark:text-slate-100 whitespace-nowrap">
                     <span class="hidden sm:inline">Terminal </span>POS
                 </span>
@@ -2251,7 +2251,7 @@ const buildPOSLayout = ({ isStorefront }) => {
                 </span>
                 <div id="pos-shift-btn-admin" class="flex items-center shrink-0"></div>
                 <div id="pos-held-btn-admin" class="flex items-center shrink-0"></div>
-                <button onclick="window.posClearCart()" class="h-8 px-2.5 sm:px-3 rounded-xl bg-slate-50 hover:bg-rose-50 dark:bg-slate-800 dark:hover:bg-rose-950/30 border border-slate-200 dark:border-slate-700 text-rose-500 text-xs font-bold inline-flex items-center gap-1.5 transition-all cursor-pointer whitespace-nowrap shrink-0 shadow-2xs active:scale-95" title="Reset Keranjang Kasir">
+                <button onclick="window.posClearCart()" class="h-8 px-2.5 sm:px-3 rounded-xl bg-white hover:bg-rose-50 dark:bg-slate-800 dark:hover:bg-rose-950/30 border border-slate-200 dark:border-slate-700 text-rose-500 text-xs font-bold inline-flex items-center gap-1.5 transition-all cursor-pointer whitespace-nowrap shrink-0 shadow-2xs active:scale-95" title="Reset Keranjang Kasir">
                     <i class="fa-solid fa-trash-can text-xs"></i>
                     <span class="inline">Reset</span>
                 </button>
@@ -2259,7 +2259,7 @@ const buildPOSLayout = ({ isStorefront }) => {
         </div>`;
 
     return `
-    <div class="flex flex-col h-full w-full overflow-hidden bg-slate-100/70 dark:bg-slate-950">
+    <div class="flex flex-col h-full w-full overflow-hidden bg-slate-50/50 dark:bg-slate-900/40">
         ${headerHTML}
 
         <!-- MAIN SPLIT WORKSPACE: Desktop side-by-side, Mobile full catalog -->
@@ -2267,14 +2267,14 @@ const buildPOSLayout = ({ isStorefront }) => {
             <!-- PANEL KIRI: KATALOG (Mobile 100%, Desktop 63%-65%) -->
             <div class="flex flex-col flex-1 lg:w-[63%] xl:w-[65%] border-r border-slate-200/80 dark:border-slate-800 overflow-hidden bg-slate-50/50 dark:bg-slate-900/30">
                 <!-- Search & Category Bar with View Switcher -->
-                <div class="p-3 sm:p-3.5 bg-white dark:bg-slate-900 border-b border-slate-200/80 dark:border-slate-800 space-y-2.5 shrink-0 shadow-2xs">
+                <div class="p-2.5 sm:p-3.5 bg-white dark:bg-slate-900 border-b border-slate-200/80 dark:border-slate-800 space-y-2 shrink-0 shadow-2xs">
                     <div class="flex items-center gap-2">
-                        <div class="relative flex-1">
-                            <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs pointer-events-none"></i>
-                            <input id="pos-search-input" type="text" placeholder="Cari barang, barcode USB, atau SKU (F4)... [F9: Scan | F10: Shift]" 
-                                class="w-full pl-9 pr-9 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs sm:text-sm font-medium text-slate-800 dark:text-slate-100 focus:outline-none focus:border-[var(--color-primary)] focus:bg-white dark:focus:bg-slate-900 transition-all"
+                        <div class="relative flex-1 min-w-0">
+                            <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs pointer-events-none"></i>
+                            <input id="pos-search-input" type="text" placeholder="Cari barang, barcode USB... (F4)" 
+                                class="w-full pl-8 pr-8 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs sm:text-sm font-medium text-slate-800 dark:text-slate-100 focus:outline-none focus:border-[var(--color-primary)] focus:bg-white dark:focus:bg-slate-900 transition-all"
                                 oninput="window.posSearchFn(this.value)">
-                            <button onclick="document.querySelectorAll('#pos-search-input').forEach(i => i.value=''); window.posSearchFn('');" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xs p-1 cursor-pointer" title="Hapus pencarian">
+                            <button onclick="document.querySelectorAll('#pos-search-input').forEach(i => i.value=''); window.posSearchFn('');" class="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xs p-1 cursor-pointer" title="Hapus pencarian">
                                 <i class="fa-solid fa-circle-xmark"></i>
                             </button>
                         </div>
@@ -2511,8 +2511,12 @@ export const renderPOS = () => {
         const adminContent = el('admin-content');
         if (!adminContent) return;
 
-        // Kontainer mengambil 100% tinggi penuh flex viewport tanpa scroll ganda
-        setH('admin-content', `<div class="h-full w-full flex flex-col overflow-hidden">${buildPOSLayout({ isStorefront: false })}</div>`);
+        // Kontainer mengambil 100% tinggi penuh flex viewport tanpa scroll ganda, ber-rounded dan berspasi lega
+        setH('admin-content', `
+            <div class="h-full w-full flex flex-col overflow-hidden rounded-2xl sm:rounded-3xl border border-slate-200/90 dark:border-slate-800 shadow-md bg-white dark:bg-slate-900 min-h-0">
+                ${buildPOSLayout({ isStorefront: false })}
+            </div>
+        `);
         renderCatalog();
         renderCart();
         renderHeldBadges();
