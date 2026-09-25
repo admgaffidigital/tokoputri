@@ -61,36 +61,36 @@ export const renderBackupSyncView = async () => {
     liveSyncStats.categories = (appData.categories || []).length;
 
     setH('admin-content', `
-    <div class="space-y-5 p-3.5 sm:p-6 fade-in max-w-5xl mx-auto pb-16">
-        <!-- 1. HERO BANNER: CLOUD REAL-TIME STATUS & SINKRONISASI -->
-        <div class="relative overflow-hidden rounded-3xl border border-slate-700/60 bg-gradient-to-br from-slate-900 via-slate-850 to-slate-950 p-5 sm:p-7 text-white shadow-xl">
-            <!-- Dekorasi latar belakang -->
-            <div class="pointer-events-none absolute -right-10 -top-10 h-48 w-48 rounded-full bg-[var(--color-primary)] opacity-15 blur-3xl"></div>
-            <div class="pointer-events-none absolute -bottom-10 -left-10 h-40 w-40 rounded-full bg-emerald-500 opacity-10 blur-2xl"></div>
+    <div class="space-y-5 p-3.5 sm:p-6 fade-in max-w-5xl mx-auto pb-16 pt-3 sm:pt-5">
+        <!-- 1. HERO BANNER: CLOUD REAL-TIME STATUS & SINKRONISASI (SEAMLESS THEME HARMONIZED) -->
+        <div class="backup-sync-hero relative overflow-hidden p-5 sm:p-7 transition-all">
+            <!-- Dekorasi latar belakang lembut bersahabat -->
+            <div class="pointer-events-none absolute -right-10 -top-10 h-48 w-48 rounded-full opacity-10 blur-3xl" style="background: var(--color-primary)"></div>
+            <div class="pointer-events-none absolute -bottom-10 -left-10 h-40 w-40 rounded-full opacity-5 blur-2xl" style="background: var(--color-primary)"></div>
 
             <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-5">
                 <div class="space-y-2">
                     <div class="flex items-center gap-2.5 flex-wrap">
-                        <span id="sync-cloud-pill" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 backdrop-blur-md">
-                            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                        <span id="sync-cloud-pill" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 shadow-2xs">
+                            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
                             Cloud Real-Time Aktif
                         </span>
-                        <span class="text-[11px] text-slate-400 font-mono" id="sync-last-time-label">
+                        <span class="text-[11px] text-slate-500 dark:text-slate-400 font-mono" id="sync-last-time-label">
                             <i class="fa-solid fa-clock-rotate-left mr-1"></i>${formatDateTime(lastSyncTimestamp)}
                         </span>
                     </div>
-                    <h2 class="text-xl sm:text-2xl font-black tracking-tight text-white flex items-center gap-2.5">
-                        <i class="fa-solid fa-cloud-arrow-up text-[var(--color-primary)]"></i>
+                    <h2 class="text-xl sm:text-2xl font-black tracking-tight text-slate-900 dark:text-white flex items-center gap-2.5">
+                        <i class="fa-solid fa-cloud-arrow-up" style="color:var(--color-primary)"></i>
                         Pusat Data &amp; Sinkronisasi Cloud
                     </h2>
-                    <p class="text-xs text-slate-300 max-w-xl leading-relaxed">
+                    <p class="text-xs text-slate-600 dark:text-slate-300 max-w-xl leading-relaxed">
                         Pantau integritas data, lakukan sinkronisasi real-time dua arah, dan cadangkan ekosistem toko secara akurat ke penyimpanan aman.
                     </p>
                 </div>
 
                 <!-- Tombol Tarik Sinkronisasi Cepat -->
                 <div class="flex items-center gap-2 shrink-0">
-                    <button id="btn-force-sync" onclick="window.triggerRealtimeSync()" class="w-full md:w-auto px-5 py-3 rounded-2xl text-xs font-black text-white shadow-lg active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer border border-white/20 hover:opacity-95" style="background:var(--color-primary)">
+                    <button id="btn-force-sync" onclick="window.triggerRealtimeSync()" class="w-full md:w-auto px-5 py-3 rounded-2xl text-xs font-black text-white shadow-sm active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer border border-black/5 dark:border-white/10 hover:opacity-95" style="background:var(--color-primary)">
                         <i id="btn-force-sync-icon" class="fa-solid fa-arrows-rotate text-sm"></i>
                         <span>Tarik Data Cloud Terbaru</span>
                     </button>
@@ -98,36 +98,36 @@ export const renderBackupSyncView = async () => {
             </div>
 
             <!-- GRID STATISTIK EKOSISTEM DATA -->
-            <div class="mt-6 pt-5 border-t border-white/10 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-                <div class="p-3 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xs">
-                    <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Total Produk</p>
-                    <p class="text-lg font-black text-white mt-0.5" id="stat-sync-products">${liveSyncStats.products}</p>
+            <div class="mt-6 pt-5 border-t border-[rgba(var(--color-primary-rgb),0.2)] dark:border-slate-700/60 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+                <div class="p-3 sm:p-3.5 rounded-2xl bg-white/95 dark:bg-slate-800/80 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs backdrop-blur-xs flex flex-col justify-between">
+                    <p class="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Total Produk</p>
+                    <p class="text-lg sm:text-xl font-black text-slate-800 dark:text-white mt-0.5" id="stat-sync-products">${liveSyncStats.products}</p>
                 </div>
-                <div class="p-3 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xs">
-                    <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Kategori</p>
-                    <p class="text-lg font-black text-white mt-0.5" id="stat-sync-categories">${liveSyncStats.categories}</p>
+                <div class="p-3 sm:p-3.5 rounded-2xl bg-white/95 dark:bg-slate-800/80 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs backdrop-blur-xs flex flex-col justify-between">
+                    <p class="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Kategori</p>
+                    <p class="text-lg sm:text-xl font-black text-slate-800 dark:text-white mt-0.5" id="stat-sync-categories">${liveSyncStats.categories}</p>
                 </div>
-                <div class="p-3 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xs">
-                    <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Transaksi</p>
-                    <p class="text-lg font-black text-emerald-400 mt-0.5" id="stat-sync-orders">
+                <div class="p-3 sm:p-3.5 rounded-2xl bg-white/95 dark:bg-slate-800/80 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs backdrop-blur-xs flex flex-col justify-between">
+                    <p class="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Transaksi</p>
+                    <p class="text-lg sm:text-xl font-black text-emerald-600 dark:text-emerald-400 mt-0.5" id="stat-sync-orders">
                         <i class="fa-solid fa-spinner fa-spin text-xs text-slate-400"></i>
                     </p>
                 </div>
-                <div class="p-3 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xs">
-                    <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Pelanggan</p>
-                    <p class="text-lg font-black text-cyan-400 mt-0.5" id="stat-sync-customers">
+                <div class="p-3 sm:p-3.5 rounded-2xl bg-white/95 dark:bg-slate-800/80 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs backdrop-blur-xs flex flex-col justify-between">
+                    <p class="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Pelanggan</p>
+                    <p class="text-lg sm:text-xl font-black text-blue-600 dark:text-blue-400 mt-0.5" id="stat-sync-customers">
                         <i class="fa-solid fa-spinner fa-spin text-xs text-slate-400"></i>
                     </p>
                 </div>
-                <div class="p-3 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xs">
-                    <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Akun Kasir</p>
-                    <p class="text-lg font-black text-amber-400 mt-0.5" id="stat-sync-cashiers">
+                <div class="p-3 sm:p-3.5 rounded-2xl bg-white/95 dark:bg-slate-800/80 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs backdrop-blur-xs flex flex-col justify-between">
+                    <p class="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Akun Kasir</p>
+                    <p class="text-lg sm:text-xl font-black text-amber-600 dark:text-amber-400 mt-0.5" id="stat-sync-cashiers">
                         <i class="fa-solid fa-spinner fa-spin text-xs text-slate-400"></i>
                     </p>
                 </div>
-                <div class="p-3 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xs">
-                    <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Sesi Shift</p>
-                    <p class="text-lg font-black text-purple-400 mt-0.5" id="stat-sync-shifts">
+                <div class="p-3 sm:p-3.5 rounded-2xl bg-white/95 dark:bg-slate-800/80 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs backdrop-blur-xs flex flex-col justify-between">
+                    <p class="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Sesi Shift</p>
+                    <p class="text-lg sm:text-xl font-black text-purple-600 dark:text-purple-400 mt-0.5" id="stat-sync-shifts">
                         <i class="fa-solid fa-spinner fa-spin text-xs text-slate-400"></i>
                     </p>
                 </div>
@@ -138,7 +138,7 @@ export const renderBackupSyncView = async () => {
         <div class="bg-white dark:bg-slate-900 rounded-3xl p-5 sm:p-6 border border-slate-200/90 dark:border-slate-800 shadow-sm space-y-4">
             <div class="flex items-center justify-between gap-3">
                 <div class="flex items-center gap-2.5">
-                    <div class="w-10 h-10 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-lg shadow-xs">
+                    <div class="w-10 h-10 rounded-2xl flex items-center justify-center text-lg shadow-xs" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary)">
                         <i class="fa-solid fa-box-archive"></i>
                     </div>
                     <div>
@@ -156,15 +156,15 @@ export const renderBackupSyncView = async () => {
                 <div class="p-4 rounded-2xl bg-slate-50/80 dark:bg-slate-850/60 border border-slate-200/80 dark:border-slate-800 flex flex-col justify-between space-y-3">
                     <div class="space-y-1">
                         <div class="flex items-center gap-2">
-                            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                            <span class="w-2 h-2 rounded-full" style="background: var(--color-primary)"></span>
                             <h4 class="text-xs font-black uppercase tracking-wider text-slate-800 dark:text-slate-100">Full Database JSON</h4>
                         </div>
                         <p class="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
                             Mencakup seluruh katalog produk, pesanan kasir, piutang, member, akun kasir, shift, dan pengaturan toko.
                         </p>
                     </div>
-                    <button onclick="window.downloadFullBackupJSON()" class="w-full py-2.5 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 dark:bg-slate-800 dark:hover:bg-slate-700 text-white font-black text-xs flex items-center justify-center gap-2 shadow-xs transition-all active:scale-95 cursor-pointer">
-                        <i class="fa-solid fa-file-code text-emerald-400"></i>
+                    <button onclick="window.downloadFullBackupJSON()" class="w-full py-2.5 px-3 rounded-xl text-white font-black text-xs flex items-center justify-center gap-2 shadow-xs transition-all active:scale-95 cursor-pointer hover:opacity-95" style="background:var(--color-primary)">
+                        <i class="fa-solid fa-file-code"></i>
                         <span>Unduh Backup Lengkap (.json)</span>
                     </button>
                 </div>
@@ -209,7 +209,7 @@ export const renderBackupSyncView = async () => {
         <div class="bg-white dark:bg-slate-900 rounded-3xl p-5 sm:p-6 border border-slate-200/90 dark:border-slate-800 shadow-sm space-y-4">
             <div class="flex items-center justify-between gap-3">
                 <div class="flex items-center gap-2.5">
-                    <div class="w-10 h-10 rounded-2xl bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 flex items-center justify-center text-lg shadow-xs">
+                    <div class="w-10 h-10 rounded-2xl bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 flex items-center justify-center text-lg shadow-xs border border-amber-200/60 dark:border-amber-900/60">
                         <i class="fa-solid fa-shield-halved"></i>
                     </div>
                     <div>
@@ -230,13 +230,13 @@ export const renderBackupSyncView = async () => {
                 </div>
 
                 <div class="flex flex-col sm:flex-row items-center gap-3 pt-1">
-                    <label class="w-full sm:w-auto flex-1 flex items-center justify-center gap-2 px-5 py-3 rounded-2xl bg-amber-500 hover:bg-amber-600 text-white font-black text-xs cursor-pointer shadow-md active:scale-95 transition-all">
+                    <label class="w-full sm:w-auto flex-1 flex items-center justify-center gap-2 px-5 py-3 rounded-2xl text-white font-black text-xs cursor-pointer shadow-sm active:scale-95 transition-all hover:opacity-95" style="background:var(--color-primary)">
                         <i class="fa-solid fa-upload"></i>
                         <span>Pilih Berkas Cadangan (.json) untuk Dipulihkan</span>
                         <input type="file" accept=".json,application/json" class="hidden" onchange="window.handleRestoreFileSelect(event)">
                     </label>
 
-                    <button id="btn-safety-rollback" onclick="window.triggerSafetyRollback()" class="w-full sm:w-auto px-4 py-3 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-rose-500 dark:text-rose-400 font-black text-xs flex items-center justify-center gap-2 shadow-2xs hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-all cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed" disabled>
+                    <button id="btn-safety-rollback" onclick="window.triggerSafetyRollback()" class="w-full sm:w-auto px-4 py-3 rounded-2xl bg-white dark:bg-slate-800 border border-rose-200 dark:border-rose-900/60 text-rose-600 dark:text-rose-400 font-black text-xs flex items-center justify-center gap-2 shadow-2xs hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-all cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed" disabled>
                         <i class="fa-solid fa-rotate-left"></i>
                         <span>Rollback ke Data Sebelum Restore</span>
                     </button>
@@ -250,10 +250,10 @@ export const renderBackupSyncView = async () => {
                     <span><b>Snapshot Cepat di Perangkat:</b> Simpan cadangan kilat ke memori browser tanpa unduh file</span>
                 </div>
                 <div class="flex items-center gap-2">
-                    <button onclick="window.saveQuickDeviceSnapshot()" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 font-bold text-slate-700 dark:text-slate-200 transition-all active:scale-95 cursor-pointer">
-                        <i class="fa-solid fa-camera mr-1.5 text-[var(--color-primary)]"></i>Simpan Snapshot
+                    <button onclick="window.saveQuickDeviceSnapshot()" class="px-3.5 py-2 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-[rgba(var(--color-primary-rgb),0.5)] font-bold text-slate-700 dark:text-slate-200 transition-all active:scale-95 cursor-pointer shadow-2xs">
+                        <i class="fa-solid fa-camera mr-1.5" style="color:var(--color-primary)"></i>Simpan Snapshot
                     </button>
-                    <button onclick="window.restoreQuickDeviceSnapshot()" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 font-bold text-slate-700 dark:text-slate-200 transition-all active:scale-95 cursor-pointer">
+                    <button onclick="window.restoreQuickDeviceSnapshot()" class="px-3.5 py-2 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-amber-400 font-bold text-slate-700 dark:text-slate-200 transition-all active:scale-95 cursor-pointer shadow-2xs">
                         <i class="fa-solid fa-clock-rotate-left mr-1.5 text-amber-500"></i>Pulihkan Snapshot
                     </button>
                 </div>

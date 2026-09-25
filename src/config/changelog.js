@@ -8,6 +8,21 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-9-25',
+        version: 'v1.9.25',
+        date: '2026-09-25',
+        title: 'Harmonisasi Visual Total & Keselarasan Tema Pusat Data & Sinkronisasi (Eliminasi Dark Slab, Warm Brand-Tuned Card-Modern, & Headroom Lega)',
+        category: 'optimization',
+        badge: 'Visual & Theme Harmonization v1.9.25',
+        items: [
+            'Harmonisasi Penuh dengan Palet Tema Toko (Eliminasi Black Slate Slab): Merombak kontainer hero Pusat Data & Sinkronisasi dari kotak gradien hitam gelap (slate-900) yang jomplang menjadi kartu modern bergradien lembut hangat (.backup-sync-hero) dengan sentuhan warna identitas toko (var(--color-primary)) dan border elegan.',
+            'Kartu Statistik Metrik Bersih & Kontras Alami: Merestrukturisasi 6 kartu indikator data (Total Produk, Kategori, Transaksi, Pelanggan, Akun Kasir, Sesi Shift) menjadi kartu putih modern (.card-modern) dengan border halus dan angka beraksen warna cerah yang sangat nyaman dibaca baik di mode terang (light mode) maupun mode gelap (dark mode).',
+            'Penyelarasan Komponen Tombol Aksi: Mengganti tombol hitam kaku pada backup database JSON dan pengaturan toko menjadi tombol aksen brand toko yang serasi dengan header emas Toko Putri.',
+            'Jarak Bernapas Lega dari Header (Headroom Optimization): Menambahkan padding vertikal atas (pt-3 sm:pt-5) agar kartu modul tidak menempel rapat dengan header navigasi pada perangkat layar ponsel (HP).',
+            'Dukungan Adaptif Mode Gelap (Dark Mode Continuity): Menyelaraskan kartu dan metrik agar bertransisi secara mulus ke nuansa gelap berkelas tanpa kehilangan kontras teks dan hierarki visual.'
+        ]
+    },
+    {
         id: 'log-1-9-24',
         version: 'v1.9.24',
         date: '2026-09-25',

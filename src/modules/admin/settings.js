@@ -99,7 +99,7 @@ export const rAdmSet = () => {
             </div>
             <div class="flex flex-col sm:flex-row gap-2.5 pt-1">
                 <button onclick="openAdminTab('backup_sync')" class="flex-1 text-white font-bold py-3.5 rounded-xl transition-all text-xs flex items-center justify-center gap-2 shadow-sm active:scale-95 hover:opacity-90 cursor-pointer" style="background:var(--color-primary)"><i class="fa-solid fa-cloud-arrow-up"></i> Buka Pusat Data &amp; Cloud Sync</button>
-                <button onclick="typeof window.downloadFullBackupJSON === 'function' ? window.downloadFullBackupJSON() : backupData()" class="flex-1 bg-slate-900 dark:bg-slate-950 text-white font-bold py-3.5 rounded-xl transition-all text-xs flex items-center justify-center gap-2 border border-slate-800 shadow-sm active:scale-95 hover:opacity-90 cursor-pointer"><i class="fa-solid fa-download text-emerald-400"></i> Backup Ekosistem (.json)</button>
+                <button onclick="typeof window.downloadFullBackupJSON === 'function' ? window.downloadFullBackupJSON() : backupData()" class="flex-1 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 font-bold py-3.5 rounded-xl transition-all text-xs flex items-center justify-center gap-2 border border-slate-300 dark:border-slate-700 shadow-2xs active:scale-95 hover:bg-slate-50 dark:hover:bg-slate-700/50 cursor-pointer"><i class="fa-solid fa-download" style="color:var(--color-primary)"></i> Backup Ekosistem (.json)</button>
             </div>
         </div>
     </div>
