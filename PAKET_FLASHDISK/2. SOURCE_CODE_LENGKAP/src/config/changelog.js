@@ -8,6 +8,19 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-9-26',
+        version: 'v1.9.26',
+        date: '2026-09-25',
+        title: 'Pembersihan Duplikasi Menu & Pemusatan Utilitas Backup ke Pusat Data & Sinkronisasi (Eliminasi Kartu Redundan di Pengaturan Toko)',
+        category: 'optimization',
+        badge: 'Zero Redundancy & Clean Settings v1.9.26',
+        items: [
+            'Pembersihan Duplikasi Menu Pengaturan Toko: Menghapus kartu cadangan data (Backup & Restore) yang redundan di menu Pengaturan Toko agar antarmuka lebih bersih, fokus, dan tidak menimbulkan kebingungan bagi admin.',
+            'Sentralisasi Penuh ke Pusat Data & Sinkronisasi: Seluruh fungsionalitas pencadangan ekosistem (.JSON), ekspor akuntansi (.CSV), sinkronisasi cloud real-time, validasi skema pra-restore, serta auto safety-snapshot kini 100% terpusat di modul mandiri yang canggih dan modern.',
+            'Penyederhanaan Tata Letak Pengaturan Toko: Menjaga konsistensi grid Pengaturan Toko agar berfokus murni pada konfigurasi esensial gerai (Profil Toko, Desain & Katalog, Pengiriman & Radius, Rekening & Pembayaran, Konfigurasi Sistem, Jam Operasional, dan Printer Struk).'
+        ]
+    },
+    {
         id: 'log-1-9-25',
         version: 'v1.9.25',
         date: '2026-09-25',
