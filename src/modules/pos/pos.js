@@ -90,6 +90,16 @@ export const setPOSViewMode = (mode) => {
 
 // ─── Helpers ────────────────────────────────────────────────
 const fNum = (n) => Math.max(0, parseInt(n) || 0);
+const fQty = (n) => {
+    if (n == null) return 0;
+    if (typeof n === 'string') n = n.replace(',', '.').trim();
+    const val = parseFloat(n);
+    return isNaN(val) ? 0 : Math.max(0, parseFloat(val.toFixed(3)));
+};
+export const formatQty = (n) => {
+    const val = parseFloat(n) || 0;
+    return parseFloat(val.toFixed(3)).toString();
+};
 const fRp  = (n) => fCur(n);
 
 const posSubtotal = () => posCart.reduce((s, i) => s + i.subtotal, 0);
@@ -299,11 +309,12 @@ export const addToCart = (productId) => {
     }
     const existing = posCart.find(i => String(i.id) === String(productId) && !i.isVariant);
     if (existing) {
-        if (sInfo.isManaged && existing.qty + 1 > sInfo.totalStock) {
-            showToast(`Stok maksimal "${p.name}" hanya ${sInfo.totalStock} ${p.unit || 'pcs'}`, 'warning');
+        const nextQty = parseFloat((existing.qty + 1).toFixed(3));
+        if (sInfo.isManaged && nextQty > sInfo.totalStock) {
+            showToast(`Stok maksimal "${p.name}" hanya ${formatQty(sInfo.totalStock)} ${p.unit || 'pcs'}`, 'warning');
             return;
         }
-        existing.qty += 1; recalcItem(existing);
+        existing.qty = nextQty; recalcItem(existing);
     } else {
         const price = parseFloat(p.price) || 0;
         posCart.push(recalcItem({ id: p.id, name: p.name, price, basePrice: price, qty: 1, discount: 0, subtotal: price, isVariant: false, isWholesale: false }));
@@ -317,16 +328,18 @@ export const posAddToCartQty = (productId, qty) => {
     const p = (appData.products || []).find(x => x && String(x.id) === String(productId));
     if (!p) return;
     const sInfo = getProductStockInfo(p);
+    const numQty = fQty(qty) || 1;
     const existing = posCart.find(i => String(i.id) === String(productId) && !i.isVariant);
     if (existing) {
-        if (sInfo.isManaged && existing.qty + qty > sInfo.totalStock) {
-            showToast(`Stok maksimal "${p.name}" hanya ${sInfo.totalStock} ${p.unit || 'pcs'}`, 'warning');
+        const nextQty = parseFloat((existing.qty + numQty).toFixed(3));
+        if (sInfo.isManaged && nextQty > sInfo.totalStock) {
+            showToast(`Stok maksimal "${p.name}" hanya ${formatQty(sInfo.totalStock)} ${p.unit || 'pcs'}`, 'warning');
             return;
         }
-        existing.qty += qty; recalcItem(existing);
+        existing.qty = nextQty; recalcItem(existing);
     } else {
         const price = parseFloat(p.price) || 0;
-        const item  = recalcItem({ id: p.id, name: p.name, price, basePrice: price, qty, discount: 0, subtotal: price * qty, isVariant: false, isWholesale: false });
+        const item  = recalcItem({ id: p.id, name: p.name, price, basePrice: price, qty: numQty, discount: 0, subtotal: price * numQty, isVariant: false, isWholesale: false });
         posCart.push(item);
     }
     playCashierBeep();
@@ -336,9 +349,12 @@ export const posAddToCartQty = (productId, qty) => {
 
 export const addToCartWithVariant = (productId, variantName, variantPrice, variantIdx, qty = 1) => {
     const cartKey = `${productId}__v${variantIdx}`;
+    const numQty = fQty(qty) || 1;
     const existing = posCart.find(i => i.cartKey === cartKey);
-    if (existing) { existing.qty += qty; recalcItem(existing); }
-    else {
+    if (existing) {
+        existing.qty = parseFloat((existing.qty + numQty).toFixed(3));
+        recalcItem(existing);
+    } else {
         const p = (appData.products || []).find(x => x && String(x.id) === String(productId));
         const displayName = `${p?.name || productId} — ${variantName}`;
         posCart.push(recalcItem({
@@ -346,7 +362,7 @@ export const addToCartWithVariant = (productId, variantName, variantPrice, varia
             name: displayName,
             variantName, variantIdx,
             price: variantPrice, basePrice: variantPrice,
-            qty, discount: 0, subtotal: variantPrice * qty,
+            qty: numQty, discount: 0, subtotal: variantPrice * numQty,
             isVariant: true, isWholesale: false
         }));
     }
@@ -358,17 +374,22 @@ export const addToCartWithVariant = (productId, variantName, variantPrice, varia
 export const updateQty = (cartKey, delta) => {
     const item = posCart.find(i => (i.cartKey || String(i.id)) === String(cartKey));
     if (!item) return;
+    const nextQty = parseFloat((item.qty + delta).toFixed(3));
+    if (nextQty <= 0) {
+        removeFromCart(cartKey);
+        return;
+    }
     if (delta > 0 && !item.isVariant) {
         const p = (appData.products || []).find(x => x && String(x.id) === String(item.id));
         if (p) {
             const sInfo = getProductStockInfo(p);
-            if (sInfo.isManaged && item.qty + delta > sInfo.totalStock) {
-                showToast(`Stok maksimal tersedia: ${sInfo.totalStock} ${p.unit || 'pcs'}`, 'warning');
+            if (sInfo.isManaged && nextQty > sInfo.totalStock) {
+                showToast(`Stok maksimal tersedia: ${formatQty(sInfo.totalStock)} ${p.unit || 'pcs'}`, 'warning');
                 return;
             }
         }
     }
-    item.qty = Math.max(1, item.qty + delta);
+    item.qty = nextQty;
     recalcItem(item);
     if (delta > 0) playCashierBeep();
     renderCart();
@@ -377,13 +398,17 @@ export const updateQty = (cartKey, delta) => {
 export const setQty = (cartKey, val) => {
     const item = posCart.find(i => (i.cartKey || String(i.id)) === String(cartKey));
     if (!item) return;
-    let targetQty = Math.max(1, fNum(val));
+    let targetQty = fQty(val);
+    if (targetQty <= 0) {
+        removeFromCart(cartKey);
+        return;
+    }
     if (!item.isVariant) {
         const p = (appData.products || []).find(x => x && String(x.id) === String(item.id));
         if (p) {
             const sInfo = getProductStockInfo(p);
             if (sInfo.isManaged && targetQty > sInfo.totalStock) {
-                showToast(`Stok maksimal tersedia: ${sInfo.totalStock} ${p.unit || 'pcs'}`, 'warning');
+                showToast(`Stok maksimal tersedia: ${formatQty(sInfo.totalStock)} ${p.unit || 'pcs'}`, 'warning');
                 targetQty = sInfo.totalStock;
             }
         }
@@ -527,7 +552,7 @@ export const posHoldCurrentCart = () => {
         ? `Antrean #${posHeldCarts.length + 1} — ${posCustomer.name}`
         : `Antrean #${posHeldCarts.length + 1}`;
 
-    const totalQty = posCart.reduce((s, i) => s + (i.qty || 1), 0);
+    const totalQty = parseFloat(posCart.reduce((s, i) => s + (parseFloat(i.qty) || 0), 0).toFixed(3));
     const totalRp = posTotal();
 
     // Tutup drawer mobile bila terbuka
@@ -555,7 +580,7 @@ export const posHoldCurrentCart = () => {
                 <div class="p-3 bg-amber-50/70 dark:bg-amber-950/20 border border-amber-200/60 dark:border-amber-800/40 rounded-2xl flex items-center justify-between text-xs">
                     <div>
                         <p class="text-[10px] font-bold text-amber-700 dark:text-amber-300">Total Belanjaan</p>
-                        <p class="font-black text-slate-800 dark:text-slate-100 text-sm mt-0.5">${totalQty} item</p>
+                        <p class="font-black text-slate-800 dark:text-slate-100 text-sm mt-0.5">${formatQty(totalQty)} item</p>
                     </div>
                     <div class="text-right">
                         <p class="text-[10px] font-bold text-amber-700 dark:text-amber-300">Total Tagihan</p>
@@ -612,7 +637,7 @@ export const posConfirmHoldCart = () => {
         customer: { ...posCustomer },
         total: posTotal(),
         subtotal: posSubtotal(),
-        itemCount: posCart.reduce((s, i) => s + (i.qty || 1), 0),
+        itemCount: parseFloat(posCart.reduce((s, i) => s + (parseFloat(i.qty) || 0), 0).toFixed(3)),
     };
 
     posHeldCarts.unshift(heldItem);
@@ -654,7 +679,7 @@ export const openPOSHeldModal = (skipHistory = false) => {
         <div class="divide-y divide-slate-100 dark:divide-slate-800">
             ${posHeldCarts.map((item, idx) => {
                 const safeId = esc(item.id);
-                const itemsSummary = (item.cart || []).slice(0, 3).map(i => `${esc(i.name)} (${i.qty}x)`).join(', ');
+                const itemsSummary = (item.cart || []).slice(0, 3).map(i => `${esc(i.name)} (${formatQty(i.qty)}x)`).join(', ');
                 const moreCount = (item.cart || []).length > 3 ? ` +${item.cart.length - 3} lainnya` : '';
                 return `
                 <div class="p-3.5 sm:p-4 hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors flex flex-col sm:flex-row sm:items-center justify-between gap-3">
@@ -673,7 +698,7 @@ export const openPOSHeldModal = (skipHistory = false) => {
                             <span>${itemsSummary}${moreCount}</span>
                         </p>
                         <div class="flex items-center gap-3 mt-1.5 text-xs">
-                            <span class="text-slate-500 font-medium">${item.itemCount} item</span>
+                            <span class="text-slate-500 font-medium">${formatQty(item.itemCount)} item</span>
                             <span class="text-slate-300 dark:text-slate-700">•</span>
                             <span class="font-black" style="color:var(--color-primary)">${fRp(item.total)}</span>
                             ${(item.globalDisc || 0) > 0 ? `<span class="text-[10px] text-rose-500 font-bold">(Disc: ${fRp(item.globalDisc)})</span>` : ''}
@@ -815,7 +840,7 @@ export const posHoldCurrentAndRecall = (heldId) => {
         customer: { ...posCustomer },
         total: posTotal(),
         subtotal: posSubtotal(),
-        itemCount: posCart.reduce((s, i) => s + (i.qty || 1), 0),
+        itemCount: parseFloat(posCart.reduce((s, i) => s + (parseFloat(i.qty) || 0), 0).toFixed(3)),
     };
     posHeldCarts.unshift(newHeld);
 
@@ -969,7 +994,7 @@ export const renderCatalog = () => {
                 const hasVariants    = Array.isArray(p.variants) && p.variants.length > 0;
                 const hasGrosir      = Array.isArray(p.wholesale) && p.wholesale.length > 0;
                 const cartItems      = posCart.filter(i => i && String(i.id) === String(p.id));
-                const totalQtyInCart = cartItems.reduce((s, i) => s + (i && i.qty ? i.qty : 0), 0);
+                const totalQtyInCart = parseFloat(cartItems.reduce((s, i) => s + (i && i.qty ? (parseFloat(i.qty) || 0) : 0), 0).toFixed(3));
                 const safeId         = esc(String(p.id != null ? p.id : ''));
                 const stockInfo      = getProductStockInfo(p);
                 const pName          = esc(String(p.name || 'Produk'));
@@ -985,7 +1010,7 @@ export const renderCatalog = () => {
                                 ? `<img width="52" height="52" loading="lazy" decoding="async" src="${esc(imgUrl)}" alt="${pName}" onerror="this.onerror=null;this.style.display='none';this.nextElementSibling.style.display='flex';">
                                    <div class="pos-img-placeholder" style="display:none;width:100%;height:100%"><i class="fa-solid fa-box" style="font-size:16px;margin:0"></i></div>`
                                 : `<div class="pos-img-placeholder" style="width:100%;height:100%"><i class="fa-solid fa-box" style="font-size:16px;margin:0"></i></div>`}
-                            ${totalQtyInCart > 0 ? `<div class="pos-qty-badge" style="top:2px;right:2px;min-width:18px;height:18px;font-size:9px;border-width:1.5px">${totalQtyInCart}</div>` : ''}
+                            ${totalQtyInCart > 0 ? `<div class="pos-qty-badge" style="top:2px;right:2px;min-width:18px;height:18px;font-size:9px;border-width:1.5px">${formatQty(totalQtyInCart)}</div>` : ''}
                         </div>
                         <div style="flex:1;min-width:0">
                             <div style="display:flex;align-items:center;gap:4px;flex-wrap:wrap;margin-bottom:3px">
@@ -993,7 +1018,7 @@ export const renderCatalog = () => {
                                 ${hasVariants ? `<span class="pos-badge pos-badge-varian"><i class="fa-solid fa-layer-group" style="font-size:6px"></i> VARIAN</span>` : ''}
                                 ${hasGrosir   ? `<span class="pos-badge pos-badge-grosir"><i class="fa-solid fa-tags" style="font-size:6px"></i> GROSIR</span>` : ''}
                                 ${stockInfo.isOutOfStock ? `<span class="pos-badge pos-badge-habis"><i class="fa-solid fa-ban" style="font-size:6px"></i> HABIS</span>` : ''}
-                                ${stockInfo.isLowStock ? `<span class="pos-badge pos-badge-low"><i class="fa-solid fa-triangle-exclamation" style="font-size:6px"></i> SISA ${stockInfo.totalStock}</span>` : ''}
+                                ${stockInfo.isLowStock ? `<span class="pos-badge pos-badge-low"><i class="fa-solid fa-triangle-exclamation" style="font-size:6px"></i> SISA ${formatQty(stockInfo.totalStock)}</span>` : ''}
                             </div>
                             <p class="text-xs font-bold text-slate-800 dark:text-slate-100 truncate" title="${pName}">${pName}</p>
                             <p style="font-size:12px;font-weight:900;color:var(--color-primary);margin-top:2px">${fRp(pPrice)}</p>
@@ -1013,9 +1038,9 @@ export const renderCatalog = () => {
                             ${hasVariants ? `<span class="pos-badge pos-badge-varian"><i class="fa-solid fa-layer-group" style="font-size:6px"></i> VARIAN</span>` : ''}
                             ${hasGrosir   ? `<span class="pos-badge pos-badge-grosir"><i class="fa-solid fa-tags" style="font-size:6px"></i> GROSIR</span>` : ''}
                             ${stockInfo.isOutOfStock ? `<span class="pos-badge pos-badge-habis"><i class="fa-solid fa-ban" style="font-size:6px"></i> HABIS</span>` : ''}
-                            ${stockInfo.isLowStock ? `<span class="pos-badge pos-badge-low"><i class="fa-solid fa-triangle-exclamation" style="font-size:6px"></i> SISA ${stockInfo.totalStock}</span>` : ''}
+                            ${stockInfo.isLowStock ? `<span class="pos-badge pos-badge-low"><i class="fa-solid fa-triangle-exclamation" style="font-size:6px"></i> SISA ${formatQty(stockInfo.totalStock)}</span>` : ''}
                         </div>
-                        ${totalQtyInCart > 0 ? `<div class="pos-qty-badge">${totalQtyInCart}</div>` : ''}
+                        ${totalQtyInCart > 0 ? `<div class="pos-qty-badge">${formatQty(totalQtyInCart)}</div>` : ''}
                         ${hasImg
                             ? `<img width="300" height="300" loading="lazy" decoding="async" src="${esc(imgUrl)}" alt="${pName}"
                                  onerror="this.onerror=null;this.style.display='none';this.nextElementSibling.style.display='flex';">
@@ -1067,7 +1092,7 @@ export const renderCatalog = () => {
 
 // ─── Render Cart ─────────────────────────────────────────────
 const renderCart = () => {
-    const totalQty = posCart.reduce((s, i) => s + i.qty, 0);
+    const totalQty = parseFloat(posCart.reduce((s, i) => s + (parseFloat(i.qty) || 0), 0).toFixed(3));
     const subtotal = posSubtotal();
     const total    = posTotal();
     const formattedTotal = fRp(total);
@@ -1115,8 +1140,8 @@ const renderCart = () => {
                     <div class="flex items-center gap-1">
                         <div class="flex items-center bg-slate-100 dark:bg-slate-700/80 rounded-lg p-0.5 border border-slate-200 dark:border-slate-600 focus-within:border-[var(--color-primary)] transition-colors">
                             <button onclick="window.posUpdateQty('${ckey}',-1)" class="w-5 h-5 rounded text-slate-600 dark:text-slate-200 hover:bg-white dark:hover:bg-slate-600 font-black text-xs flex items-center justify-center cursor-pointer active:scale-90 transition-all">−</button>
-                            <input type="number" min="1" value="${item.qty}" onchange="window.posSetQty('${ckey}',this.value)"
-                                class="w-6 text-center text-[11px] font-black bg-transparent text-slate-800 dark:text-slate-100 focus:outline-none">
+                            <input type="number" step="any" min="0.01" value="${formatQty(item.qty)}" onchange="window.posSetQty('${ckey}',this.value)"
+                                class="w-11 text-center text-[11px] font-black bg-transparent text-slate-800 dark:text-slate-100 focus:outline-none px-0.5">
                             <button onclick="window.posUpdateQty('${ckey}',1)" class="w-5 h-5 rounded text-slate-600 dark:text-slate-200 hover:bg-white dark:hover:bg-slate-600 font-black text-xs flex items-center justify-center cursor-pointer active:scale-90 transition-all">+</button>
                         </div>
                         <button onclick="window.posRemoveItem('${ckey}')" class="w-6 h-6 rounded-lg text-slate-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30 flex items-center justify-center text-xs transition-all cursor-pointer" title="Hapus item">
@@ -1132,7 +1157,7 @@ const renderCart = () => {
     document.querySelectorAll('.pos-cart-items-target').forEach(e => e.innerHTML = itemsHTML);
     document.querySelectorAll('.pos-subtotal-target').forEach(e => e.textContent = formattedSub);
     document.querySelectorAll('.pos-total-target').forEach(e => e.textContent = formattedTotal);
-    document.querySelectorAll('.pos-item-count-target').forEach(e => e.textContent = String(totalQty));
+    document.querySelectorAll('.pos-item-count-target').forEach(e => e.textContent = formatQty(totalQty));
 
     const discAmt = posDiscountAmount();
     const formattedDiscAmt = fRp(discAmt);
@@ -2114,7 +2139,7 @@ export const printPOSReceipt = (tx) => {
     const footerTxt = config.footerText || 'Terima Kasih Atas Kunjungan Anda!';
     const dateStr   = new Date(tx.dateMs || Date.now()).toLocaleString('id-ID');
     const itemsHtml = (tx.items || []).map(i =>
-        `<tr><td style="padding:2px 0;word-wrap:break-word">${esc(i.name)}</td><td style="text-align:right;padding:2px 4px;white-space:nowrap">${i.qty}x ${fRp(i.price)}</td><td style="text-align:right;padding:2px 0;white-space:nowrap;font-weight:bold">${fRp(i.subtotal)}</td></tr>`
+        `<tr><td style="padding:2px 0;word-wrap:break-word">${esc(i.name)}</td><td style="text-align:right;padding:2px 4px;white-space:nowrap">${formatQty(i.qty)}x ${fRp(i.price)}</td><td style="text-align:right;padding:2px 0;white-space:nowrap;font-weight:bold">${fRp(i.subtotal)}</td></tr>`
     ).join('');
 
     const discLabel = tx.discountType === 'percent' && tx.discountVal ? `Diskon (${tx.discountVal}%)` : 'Diskon';
@@ -2585,6 +2610,8 @@ const exposeToWindow = () => {
     window.addToCartPOSWithVariant = addToCartWithVariant;
     window.posUpdateQty            = updateQty;
     window.posSetQty               = setQty;
+    window.posFormatQty            = formatQty;
+    window.posFQty                 = fQty;
     window.posSetItemDisc          = setItemDisc;
     window.posRemoveItem           = removeFromCart;
     window.posClearCart            = clearCart;

@@ -8,6 +8,21 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-9-35',
+        version: 'v1.9.35',
+        date: '2026-09-25',
+        title: 'Dukungan Kuantitas Desimal POS Kasir (Decimal QTY Support): Sinkronisasi Penuh dengan Storefront untuk Satuan Berat, Panjang & Volume',
+        category: 'feature',
+        badge: 'Decimal QTY Support POS Kasir v1.9.35',
+        items: [
+            'Dukungan Kuantitas Desimal Penuh (Decimal QTY Support): Kasir kini dapat memasukkan kuantitas pecahan desimal (seperti 0.5 kg telur, 1.25 meter kabel/pipa, 2.5 liter cairan/beras, dst.) pada transaksi POS kasir persis seperti yang telah didukung pada keranjang storefront pelanggan.',
+            'Input Stepper Fleksibel & Anti-Truncation: Memperluas input kuantitas keranjang kasir dengan atribut step="any", min="0.01", serta styling lebar yang leluasa (w-11) sehingga angka desimal seperti "0.5" atau "1.25" tampil nyaman tanpa terpotong.',
+            'Pembersihan Format Angka Desimal (formatQty Helper): Menghilangkan angka nol berlebih di belakang desimal (menampilkan "1.5" bukan "1.500", dan "2" bukan "2.000") pada counter keranjang, badge katalog, daftar antrean parkir, nota struk thermal kasir, dan laporan pergantian shift.',
+            'Dukungan Satuan Desimal pada Lembar Varian POS: Membuka kunci input kuantitas di lembar pemilihan varian (pos-variant-sheet) agar kasir dapat langsung mengetik maupun menambah/mengurangi kuantitas desimal sebelum menambahkan varian ke keranjang.',
+            'Sinkronisasi Otomatis Pemotongan Stok & Tier Grosir: Potongan stok produk/varian di Firestore serta evaluasi harga grosir (wholesale tiers) otomatis beroperasi dengan presisi nilai desimal tinggi tanpa pemotongan (truncation).'
+        ]
+    },
+    {
         id: 'log-1-9-34',
         version: 'v1.9.34',
         date: '2026-09-25',

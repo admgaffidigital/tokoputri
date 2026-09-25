@@ -1,4 +1,4 @@
-import{d as c,a as g}from"./module-member-BoUZpOFv.js";import{e as i,u as y,a2 as m,t as p,a0 as x,i as d,b as A}from"./module-print-C2-MjUR_.js";import{r as C}from"./module-pos-CU44inmG.js";import{f as u}from"./vendor-firebase-core-D2OF5R23.js";import"./vendor-firebase-db-BIUZcnOd.js";const M=async()=>{i("admin-content")&&(A("admin-content",`
+import{d as c,a as g}from"./module-member-CCTfnNON.js";import{e as i,u as y,a2 as m,t as p,a0 as x,i as d,b as A}from"./module-print-C2-MjUR_.js";import{r as C}from"./module-pos-3PITxQfD.js";import{f as u}from"./vendor-firebase-core-D2OF5R23.js";import"./vendor-firebase-db-BIUZcnOd.js";const M=async()=>{i("admin-content")&&(A("admin-content",`
     <div class="space-y-4 p-3.5 sm:p-6 max-w-5xl mx-auto pt-3 sm:pt-5 pb-16">
         <!-- Native App Segmented Control Switcher -->
         <div class="p-1 bg-slate-200/70 dark:bg-slate-800 rounded-2xl max-w-sm w-full grid grid-cols-2 gap-1 border border-slate-300/40 dark:border-slate-700/60 shadow-2xs">

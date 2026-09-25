@@ -23,6 +23,7 @@ import { getPrinterConfig } from '../print/printer-settings.js';
 // Format Rupiah & Angka Helper POS
 export const fRp = n => 'Rp ' + (Math.round(parseFloat(n) || 0)).toLocaleString('id-ID');
 export const fNum = n => (Math.round(parseFloat(n) || 0)).toLocaleString('id-ID');
+const formatShiftQty = n => parseFloat((parseFloat(n) || 0).toFixed(3)).toString();
 
 // ─── State Shift Aktif ───────────────────────────────────────
 const SHIFT_STORAGE_KEY = 'pos_active_shift';
@@ -362,10 +363,10 @@ export const recordTransactionToShift = (orderData) => {
         const discount = parseFloat(orderData.globalDiscount) || 0;
         const points = parseFloat(orderData.pointsEarned) || 0;
 
-        const itemsQty = (orderData.items || []).reduce((acc, i) => acc + (parseFloat(i.qty) || 1), 0);
+        const itemsQty = (orderData.items || []).reduce((acc, i) => acc + (parseFloat(i.qty) || 0), 0);
 
         shift.txCount = (shift.txCount || 0) + 1;
-        shift.itemCount = (shift.itemCount || 0) + itemsQty;
+        shift.itemCount = parseFloat(((shift.itemCount || 0) + itemsQty).toFixed(3));
         shift.totalSales = (shift.totalSales || 0) + total;
         shift.discountTotal = (shift.discountTotal || 0) + discount;
         shift.pointsTotal = (shift.pointsTotal || 0) + points;
@@ -462,7 +463,7 @@ export const openShiftSummaryModal = () => {
                     <div class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/60 dark:border-slate-700/60">
                         <span class="text-[10px] text-slate-400 block font-medium">Durasi Kerja</span>
                         <span class="font-bold text-emerald-600 dark:text-emerald-400 text-xs block">${esc(durationStr)}</span>
-                        <span class="text-[10px] text-slate-500 mt-0.5 block">${shift.txCount || 0} Struk / ${shift.itemCount || 0} Pcs</span>
+                        <span class="text-[10px] text-slate-500 mt-0.5 block">${shift.txCount || 0} Struk / ${formatShiftQty(shift.itemCount || 0)} Item</span>
                     </div>
                 </div>
 
@@ -1028,7 +1029,7 @@ export const printShiftSettlementReceipt = (shift, isXReport = false) => {
                     <div class="border-t border-dashed border-slate-300 dark:border-slate-700 my-2"></div>
                     <div class="font-bold">RINGKASAN PENJUALAN:</div>
                     <div class="flex justify-between"><span>Total Struk</span><span>${shift.txCount || 0} Trx</span></div>
-                    <div class="flex justify-between"><span>Total Barang</span><span>${shift.itemCount || 0} Pcs</span></div>
+                    <div class="flex justify-between"><span>Total Barang</span><span>${formatShiftQty(shift.itemCount || 0)} Item</span></div>
                     <div class="border-t border-dashed border-slate-300 dark:border-slate-700 my-1"></div>
                     <div class="flex justify-between"><span>Tunai (Cash)</span><span>${fRp(shift.cashSales || 0)}</span></div>
                     <div class="flex justify-between"><span>QRIS</span><span>${fRp(shift.qrisSales || 0)}</span></div>
@@ -1094,7 +1095,7 @@ export const printShiftSettlementReceipt = (shift, isXReport = false) => {
     <p class="left" style="font-weight:bold">RINGKASAN PENJUALAN:</p>
     <table>
     <tr><td>Total Struk</td><td style="text-align:right">${shift.txCount || 0} Trx</td></tr>
-    <tr><td>Total Barang</td><td style="text-align:right">${shift.itemCount || 0} Pcs</td></tr>
+    <tr><td>Total Barang</td><td style="text-align:right">${formatShiftQty(shift.itemCount || 0)} Item</td></tr>
     <tr><td colspan="2"><div class="line"></div></td></tr>
     <tr><td>Tunai (Cash)</td><td style="text-align:right">${fRp(shift.cashSales || 0)}</td></tr>
     <tr><td>QRIS</td><td style="text-align:right">${fRp(shift.qrisSales || 0)}</td></tr>

@@ -176,6 +176,15 @@ Aplikasi telah dilengkapi dengan fondasi **Capacitor 8 Android Native**:
 
 ## 📋 Riwayat Pembaruan (Changelog)
 
+### v1.9.35 — Dukungan Kuantitas Desimal POS Kasir (Decimal QTY Support) Terpadu dengan Storefront (25 Sep 2026)
+- **Dukungan Kuantitas Desimal Penuh (Decimal QTY Support)**: Kasir kini dapat memasukkan kuantitas pecahan desimal (seperti `0.5` kg telur, `1.25` meter kabel/pipa, `2.5` liter beras/minyak, dst.) pada transaksi POS kasir persis seperti yang telah didukung pada keranjang belanja *storefront* pelanggan.
+- **Input Stepper Fleksibel & Anti-Truncation**: Memperluas input kuantitas keranjang kasir dengan atribut `step="any"`, `min="0.01"`, serta penyesuaian lebar input (`w-11`) sehingga angka desimal seperti `0.5` atau `1.25` tampil nyaman dan proporsional tanpa terpotong.
+- **Pembersihan Format Angka Desimal (formatQty Helper)**: Menghilangkan angka nol berlebih di belakang desimal (menampilkan `1.5` bukan `1.500`, dan `2` bukan `2.000`) pada counter keranjang, badge katalog, daftar antrean parkir (*held cart*), nota struk thermal kasir, dan laporan pergantian shift kasir.
+- **Dukungan Satuan Desimal pada Lembar Varian POS**: Membuka kunci input kuantitas di lembar pemilihan varian (`pos-variant-sheet`) agar kasir dapat langsung mengetik maupun menambah/mengurangi kuantitas desimal sebelum menambahkan varian ke keranjang.
+- **Sinkronisasi Otomatis Pemotongan Stok & Tier Grosir**: Potongan stok produk/varian di Firestore serta evaluasi harga grosir (*wholesale tiers*) otomatis beroperasi dengan presisi nilai desimal tinggi tanpa pemotongan (*truncation*).
+
+---
+
 ### v1.9.34 — Pembaruan Lembar Keranjang POS Kasir Mobile Full-Height & Eliminasi Total Background Hitam (25 Sep 2026)
 - **Eliminasi Total Latar Belakang Hitam (Zero-Black-Backdrop)**: Mengubah lembar keranjang mobile (*bottom sheet*) menjadi tampilan lembar penuh (*full-height view*) tepat di bawah header kasir, menghapus tuntas celah overlay gelap (`rgba(15,23,42,0.65)`) yang sebelumnya menampakkan baris hitam di atas keranjang.
 - **Pencegahan Pemotongan Judul Counter (Anti-Truncation Guarantee)**: Menerapkan `shrink-0` dan `tracking-tight` pada judul "Keranjang (X)" sehingga counter jumlah item belanja tidak akan terpotong meskipun diakses pada smartphone berlayar sempit (360px).

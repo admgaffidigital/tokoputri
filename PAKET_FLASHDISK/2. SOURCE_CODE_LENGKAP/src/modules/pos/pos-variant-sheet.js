@@ -16,6 +16,16 @@ let _selectedVariantIdx = 0;
 let _selectedQty       = 1;
 
 const fRp = (n) => fCur(n);
+const fQty = (n) => {
+    if (n == null) return 0;
+    if (typeof n === 'string') n = n.replace(',', '.').trim();
+    const val = parseFloat(n);
+    return isNaN(val) ? 0 : Math.max(0, parseFloat(val.toFixed(3)));
+};
+const formatQty = (n) => {
+    const val = parseFloat(n) || 0;
+    return parseFloat(val.toFixed(3)).toString();
+};
 
 // ─── Hitung harga grosir untuk produk non-varian ─────────────
 const getWholesalePrice = (product, qty) => {
@@ -173,13 +183,13 @@ const renderVariantSheetContent = (p) => {
                 ${wholesalePrice !== null ? `<span class="text-[9px] text-amber-600 font-semibold">Harga grosir aktif!</span>` : ''}
             </div>
             <div class="flex h-10 items-center overflow-hidden rounded-xl border border-slate-200 bg-slate-50 shadow-xs dark:border-slate-700 dark:bg-slate-900">
-                <button class="flex h-full w-10 items-center justify-center font-bold text-slate-500 transition-colors hover:bg-slate-200 dark:hover:bg-slate-800 active:scale-90"
+                <button class="flex h-full w-10 items-center justify-center font-bold text-slate-500 transition-colors hover:bg-slate-200 dark:hover:bg-slate-800 active:scale-90 cursor-pointer"
                     onclick="window.updatePOSVariantQty(-1)">
                     <i class="fa-solid fa-minus text-xs"></i>
                 </button>
-                <input id="pos-variant-qty-input" type="number" min="1" value="${_selectedQty}" readonly
-                    class="w-12 border-x border-slate-200 bg-transparent text-center text-sm font-extrabold focus:outline-none dark:border-slate-700 dark:text-white">
-                <button class="flex h-full w-10 items-center justify-center font-bold text-slate-500 transition-colors hover:bg-[rgba(var(--color-primary-rgb),0.1)] hover:text-[var(--color-primary)] active:scale-90"
+                <input id="pos-variant-qty-input" type="number" step="any" min="0.01" value="${formatQty(_selectedQty)}" onchange="window.setPOSVariantQty(this.value)"
+                    class="w-14 border-x border-slate-200 bg-transparent text-center text-sm font-extrabold focus:outline-none dark:border-slate-700 dark:text-white px-1">
+                <button class="flex h-full w-10 items-center justify-center font-bold text-slate-500 transition-colors hover:bg-[rgba(var(--color-primary-rgb),0.1)] hover:text-[var(--color-primary)] active:scale-90 cursor-pointer"
                     onclick="window.updatePOSVariantQty(1)">
                     <i class="fa-solid fa-plus text-xs"></i>
                 </button>
@@ -192,7 +202,7 @@ const renderVariantSheetContent = (p) => {
             <span class="text-sm font-black" style="color:var(--color-primary)">${fRp(subtotal)}</span>
         </div>
         <button onclick="window.confirmPOSVariantAdd()"
-            class="w-full h-12 rounded-2xl text-white font-black text-sm flex items-center justify-center gap-2 active:scale-95 transition-all shadow-md"
+            class="w-full h-12 rounded-2xl text-white font-black text-sm flex items-center justify-center gap-2 active:scale-95 transition-all shadow-md cursor-pointer"
             style="background:var(--color-primary)">
             <i class="fa-solid fa-cart-plus text-base"></i>
             Tambah ke Keranjang Kasir
@@ -213,10 +223,19 @@ export const selectPOSVariant = (idx) => {
 
 // ─── Update Qty ──────────────────────────────────────────────
 export const updatePOSVariantQty = (delta) => {
-    _selectedQty = Math.max(1, _selectedQty + delta);
+    let q = parseFloat((_selectedQty + delta).toFixed(3));
+    _selectedQty = Math.max(0.01, q);
     const p = (appData.products || []).find(x => x && String(x.id) === _currentProductId);
     if (p) renderVariantSheetContent(p);
     if (typeof window.triggerHaptic === 'function') window.triggerHaptic('selection');
+};
+
+export const setPOSVariantQty = (val) => {
+    let q = fQty(val);
+    if (q <= 0) q = 0.01;
+    _selectedQty = q;
+    const p = (appData.products || []).find(x => x && String(x.id) === _currentProductId);
+    if (p) renderVariantSheetContent(p);
 };
 
 // ─── Konfirmasi Tambah ke Keranjang ─────────────────────────
@@ -254,4 +273,5 @@ window.openPOSVariantSheet    = openPOSVariantSheet;
 window.closePOSVariantSheet   = closePOSVariantSheet;
 window.selectPOSVariant       = selectPOSVariant;
 window.updatePOSVariantQty    = updatePOSVariantQty;
+window.setPOSVariantQty       = setPOSVariantQty;
 window.confirmPOSVariantAdd   = confirmPOSVariantAdd;
