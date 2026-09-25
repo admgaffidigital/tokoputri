@@ -18,7 +18,9 @@ export const DEFAULT_CHANGELOG = [
             'Segmented Switcher Tab Sticky (Pinned Sub-Header): Bilah pengalih tab "Akun Kasir" dan "Laporan Shift" kini berposisi sticky tepat di bawah bilah emas CMS Admin dengan efek backdrop-blur elegan, sehingga kasir/admin dapat berpindah tab kapan pun tanpa harus menggulir balik ke atas.',
             'Auto-Reset Scroll Top pada Pergantian Tab: Memastikan scroll container otomatis melompat ke posisi teratas (scrollTop = 0) setiap kali tab "Akun Kasir" atau "Laporan Shift" diklik, mencegah konten terpotong atau tersembunyi di bawah bilah navigasi atas.',
             'Eliminasi Teks Terpotong & Orphan Word (Anti-Clipping Header): Menghapus penumpukan padding ganda dan memangkas subjudul menjadi satu baris bersih dengan utilitas truncate, memastikan teks tidak pernah terputus canggung di batas header mobile.',
-            'Penyelarasan Horizontal Baris Judul & Tombol Segarkan: Tombol "Segarkan Data" kini sejajar rapi di sisi kanan judul "Rekap Shift Kasir (Z-Report)" pada satu baris terpadu, simetris dan konsisten dengan tab Manajemen Kasir.'
+            'Penyelarasan Horizontal Baris Judul & Tombol Segarkan: Tombol "Segarkan Data" kini sejajar rapi di sisi kanan judul "Rekap Shift Kasir (Z-Report)" pada satu baris terpadu, simetris dan konsisten dengan tab Manajemen Kasir.',
+            'Standarisasi Wajib Preview Sebelum Cetak: Mengintegrasikan modal preview in-page interaktif sebelum proses pencetakan fisik pada Struk Transaksi POS Kasir (58mm/80mm), Slip Rekap Shift Kasir (X-Report & Z-Report), Faktur Invoice, dan Surat Jalan A4.',
+            'Sinkronisasi Thermal Print Section & Isolasi Media Cetak: Konten struk dan slip rekap shift otomatis disinkronkan ke elemen #thermal-print-section sehingga hasil cetak printer thermal bersih, tajam, dan tidak terganggu elemen latar belakang antarmuka.'
         ]
     },
     {
