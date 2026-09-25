@@ -176,6 +176,12 @@ Aplikasi telah dilengkapi dengan fondasi **Capacitor 8 Android Native**:
 
 ## 📋 Riwayat Pembaruan (Changelog)
 
+### v1.9.29 — Penyempurnaan Presisi Visual Pemulihan Data & Eliminasi Truncation (25 Sep 2026)
+- **Perbaikan Ikon Proteksi Blank**: Mengganti `fa-shield-check` yang merupakan ikon Font Awesome Pro dengan `fa-shield-halved` standar, memulihkan tampilan lencana perisai keselamatan secara presisi.
+- **Eliminasi Truncation Judul Pemulihan Data**: Menghapus truncation pada judul "Pemulihan Aman & Proteksi Rollback" sehingga teks membungkus alami (*leading-snug*) tanpa terpotong tanda titik-titik ("...") di HP.
+- **Penyederhanaan Label Tombol Rollback**: Mengubah label menjadi "Rollback Data Toko" agar rapi satu baris tanpa patah vertikal.
+- **Anti-Crop Tombol Snapshot Cepat Mobile**: Mengganti label panjang yang terpotong ("Simpan Snap..." & "Pulihkan Sna...") menjadi "Simpan Cepat" dan "Pulihkan" dengan `whitespace-nowrap` yang tampil utuh dan proporsional.
+
 ### v1.9.28 — Audit Presisi UI/UX & Penyempurnaan Menyeluruh Tampilan Natif App (25 Sep 2026)
 - **Anti-Overflow Baris Aksi Produk**: Menambahkan `flex-wrap gap-2` pada baris tombol aksi produk di katalog admin dan memperhalus padding kartu menjadi `p-3.5 sm:p-5`, mencegah overflow horizontal pada smartphone ramping.
 - **Harmonisasi Tombol Modal Swap POS**: Mengganti warna tombol hijau statis pada dialog tukar antrean kasir aktif dengan warna identitas toko (`var(--color-primary)`).

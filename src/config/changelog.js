@@ -8,6 +8,20 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-9-29',
+        version: 'v1.9.29',
+        date: '2026-09-25',
+        title: 'Penyempurnaan Presisi Visual Pemulihan Data & Eliminasi Truncation (Ikon Proteksi Halved, Anti-Crop Judul & Tombol Simpan Cepat Natif)',
+        category: 'optimization',
+        badge: 'Zero Truncation & Visual Precision v1.9.29',
+        items: [
+            'Perbaikan Ikon Proteksi Blank (Font Awesome Free Compatibility): Mengganti fa-shield-check (ikon pro yang sebelumnya gagal tampil dan menyisakan kotak kosong) dengan fa-shield-halved yang didukung penuh bawaan sistem, memulihkan lencana perisai keselamatan secara presisi.',
+            'Eliminasi Truncation Judul Pemulihan Data: Menghapus kelas truncate pada judul "Pemulihan Aman & Proteksi Rollback" dan deskripsinya sehingga teks membungkus alami (leading-snug) tanpa terpotong tanda titik-titik ("...") di layar ponsel.',
+            'Penyederhanaan Label Tombol Rollback: Mengubah label menjadi "Rollback Data Toko" agar tampil rapi satu baris tanpa patah vertikal pada layar mobile sempit.',
+            'Optimasi Tombol Snapshot Cepat Mobile (Anti-Crop): Mengganti label panjang yang terpotong ("Simpan Snap..." & "Pulihkan Sna...") menjadi "Simpan Cepat" dan "Pulihkan" dengan whitespace-nowrap dan font 11px yang tampil utuh dan proporsional.'
+        ]
+    },
+    {
         id: 'log-1-9-28',
         version: 'v1.9.28',
         date: '2026-09-25',

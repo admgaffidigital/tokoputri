@@ -212,9 +212,9 @@ export const renderBackupSyncView = async () => {
                     <div class="w-10 h-10 rounded-2xl flex items-center justify-center text-base shrink-0 shadow-2xs border border-[rgba(var(--color-primary-rgb),0.25)]" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary)">
                         <i class="fa-solid fa-shield-halved"></i>
                     </div>
-                    <div class="min-w-0">
-                        <h3 class="text-sm font-black text-slate-900 dark:text-white truncate">Pemulihan Aman &amp; Proteksi Rollback</h3>
-                        <p class="text-xs text-slate-500 dark:text-slate-400 truncate">Validasi skema ketat &amp; perlindungan snapshot otomatis sebelum eksekusi</p>
+                    <div class="min-w-0 flex-1">
+                        <h3 class="text-sm font-black text-slate-900 dark:text-white leading-snug">Pemulihan Aman &amp; Proteksi Rollback</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 leading-normal mt-0.5">Validasi skema ketat &amp; perlindungan snapshot otomatis sebelum eksekusi</p>
                     </div>
                 </div>
                 <div id="safety-snapshot-badge" class="shrink-0"></div>
@@ -224,7 +224,7 @@ export const renderBackupSyncView = async () => {
             <div class="p-4 sm:p-5 rounded-2xl sm:rounded-3xl bg-slate-50/90 dark:bg-slate-850/70 border border-slate-200/90 dark:border-slate-700/80 space-y-4">
                 <div class="flex items-start gap-3">
                     <div class="w-7 h-7 rounded-xl flex items-center justify-center shrink-0 mt-0.5 shadow-2xs border border-[rgba(var(--color-primary-rgb),0.25)]" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary)">
-                        <i class="fa-solid fa-shield-check text-xs"></i>
+                        <i class="fa-solid fa-shield-halved text-xs"></i>
                     </div>
                     <div class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed min-w-0">
                         <b class="text-slate-900 dark:text-white">Proteksi Keamanan Anti-Kehilangan Data:</b> Sistem otomatis membuat cadangan darurat (<i>Safety Snapshot</i>) dari data toko aktif tepat sebelum berkas cadangan dipulihkan. Anda dapat membatalkan dan mengembalikan data semula seketika dengan 1 klik <b>Rollback</b>.
@@ -240,7 +240,7 @@ export const renderBackupSyncView = async () => {
 
                     <button id="btn-safety-rollback" onclick="window.triggerSafetyRollback()" class="w-full sm:w-auto h-12 px-5 rounded-2xl font-black text-xs flex items-center justify-center gap-2 transition-all cursor-pointer shadow-2xs border disabled:cursor-not-allowed disabled:bg-slate-100 disabled:dark:bg-slate-800/80 disabled:text-slate-400 disabled:dark:text-slate-500 disabled:border-slate-200/80 disabled:dark:border-slate-700/60 disabled:shadow-none bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 border-rose-200 dark:border-rose-900/60 hover:bg-rose-100 dark:hover:bg-rose-900/40 active:scale-95" disabled>
                         <i class="fa-solid fa-rotate-left"></i>
-                        <span>Rollback Data Sebelum Restore</span>
+                        <span>Rollback Data Toko</span>
                     </button>
                 </div>
             </div>
@@ -252,13 +252,13 @@ export const renderBackupSyncView = async () => {
                     <span><b>Snapshot Cepat di Perangkat:</b> Simpan cadangan kilat ke memori browser tanpa unduh file</span>
                 </div>
                 <div class="grid grid-cols-2 gap-2.5">
-                    <button onclick="window.saveQuickDeviceSnapshot()" class="h-11 px-3 rounded-2xl bg-white dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700 hover:border-[rgba(var(--color-primary-rgb),0.5)] font-bold text-xs text-slate-700 dark:text-slate-200 transition-all active:scale-95 cursor-pointer shadow-2xs flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-camera text-xs" style="color:var(--color-primary)"></i>
-                        <span class="truncate">Simpan Snapshot</span>
+                    <button onclick="window.saveQuickDeviceSnapshot()" class="h-11 px-2.5 sm:px-3 rounded-2xl bg-white dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700 hover:border-[rgba(var(--color-primary-rgb),0.5)] text-slate-700 dark:text-slate-200 transition-all active:scale-95 cursor-pointer shadow-2xs flex items-center justify-center gap-1.5 min-w-0">
+                        <i class="fa-solid fa-camera text-xs shrink-0" style="color:var(--color-primary)"></i>
+                        <span class="font-bold text-[11px] sm:text-xs whitespace-nowrap">Simpan Cepat</span>
                     </button>
-                    <button onclick="window.restoreQuickDeviceSnapshot()" class="h-11 px-3 rounded-2xl bg-white dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700 hover:border-amber-400 font-bold text-xs text-slate-700 dark:text-slate-200 transition-all active:scale-95 cursor-pointer shadow-2xs flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-clock-rotate-left text-xs text-amber-500"></i>
-                        <span class="truncate">Pulihkan Snapshot</span>
+                    <button onclick="window.restoreQuickDeviceSnapshot()" class="h-11 px-2.5 sm:px-3 rounded-2xl bg-white dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700 hover:border-amber-400 text-slate-700 dark:text-slate-200 transition-all active:scale-95 cursor-pointer shadow-2xs flex items-center justify-center gap-1.5 min-w-0">
+                        <i class="fa-solid fa-clock-rotate-left text-xs shrink-0 text-amber-500"></i>
+                        <span class="font-bold text-[11px] sm:text-xs whitespace-nowrap">Pulihkan</span>
                     </button>
                 </div>
             </div>
