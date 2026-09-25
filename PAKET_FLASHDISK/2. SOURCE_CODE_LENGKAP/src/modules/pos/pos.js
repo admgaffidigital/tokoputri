@@ -2126,7 +2126,7 @@ const showPOSSuccess = (tx) => {
           </div>` : ''}
         </div>
         <div class="px-6 pb-6 flex flex-col gap-2">
-          <button onclick="window.printPOSReceipt(${txJson})" class="w-full py-3 rounded-2xl text-white font-bold text-sm shadow-md active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer" style="background:var(--color-primary)"><i class="fa-solid fa-print"></i> Cetak Struk Thermal</button>
+          <button onclick="window.previewPOSReceiptThenPrint(${txJson})" class="w-full py-3 rounded-2xl text-white font-bold text-sm shadow-md active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer" style="background:var(--color-primary)"><i class="fa-solid fa-eye mr-1"></i><i class="fa-solid fa-print"></i> Preview & Cetak Struk</button>
           <button onclick="document.getElementById('pos-success-modal')?.remove()" class="w-full py-3 rounded-2xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold text-sm hover:bg-slate-50 dark:hover:bg-slate-800 transition-all cursor-pointer">Transaksi Baru</button>
           ${isInAdmin ? `
           <button onclick="document.getElementById('pos-success-modal')?.remove(); if(typeof window.openAdminTab==='function') window.openAdminTab('orders');" class="w-full py-2.5 rounded-xl text-slate-500 dark:text-slate-400 text-xs font-bold hover:text-[var(--color-primary)] transition-all flex items-center justify-center gap-1.5 cursor-pointer">
@@ -2137,9 +2137,13 @@ const showPOSSuccess = (tx) => {
     </div>`);
 };
 
-// ─── Cetak Struk ─────────────────────────────────────────────
+// ─── Cetak Struk: Selalu Tampilkan Preview Dulu ─────────────
 export const printPOSReceipt = (tx) => {
     document.getElementById('pos-success-modal')?.remove();
+    previewPOSReceiptThenPrint(tx);
+};
+
+export const previewPOSReceiptThenPrint = (tx) => {
     const config    = typeof getPrinterConfig === 'function' ? getPrinterConfig() : { paperSize: '58mm', deviceType: 'system' };
     const is80      = config.paperSize === '80mm';
     const storeName = config.headerText || appData.store?.name || 'TOKO PUTRI';
@@ -2150,91 +2154,69 @@ export const printPOSReceipt = (tx) => {
     const itemsHtml = (tx.items || []).map(i =>
         `<tr><td style="padding:2px 0;word-wrap:break-word">${esc(i.name)}</td><td style="text-align:right;padding:2px 4px;white-space:nowrap">${formatQty(i.qty)}x ${fRp(i.price)}</td><td style="text-align:right;padding:2px 0;white-space:nowrap;font-weight:bold">${fRp(i.subtotal)}</td></tr>`
     ).join('');
-
     const discLabel = tx.discountType === 'percent' && tx.discountVal ? `Diskon (${tx.discountVal}%)` : 'Diskon';
 
-    const w = window.open('', '_blank', `width=${is80 ? 460 : 360},height=720`);
-    if (!w) {
-        // Fallback in-page modal jika popup diblokir oleh browser / Capacitor Android
-        document.getElementById('pos-receipt-fallback-modal')?.remove();
-        document.body.insertAdjacentHTML('beforeend', `
-        <div id="pos-receipt-fallback-modal" class="fixed inset-0 z-[10000] flex items-center justify-center p-3 sm:p-4" style="background:rgba(15,23,42,0.7);backdrop-filter:blur(4px)">
-            <div class="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl w-full ${is80 ? 'max-w-md' : 'max-w-sm'} border border-slate-200 dark:border-slate-800 overflow-hidden flex flex-col max-h-[90vh]">
-                <div class="p-3.5 sm:p-4 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center bg-slate-50 dark:bg-slate-800/50">
-                    <span class="font-bold text-xs text-slate-700 dark:text-slate-200 flex items-center gap-1.5"><i class="fa-solid fa-receipt text-amber-500"></i>Struk Thermal POS (${is80 ? '80mm' : '58mm'})</span>
-                    <button onclick="document.getElementById('pos-receipt-fallback-modal')?.remove()" class="w-7 h-7 rounded-lg bg-slate-200/60 dark:bg-slate-700/60 text-slate-600 dark:text-slate-300 text-sm leading-none flex items-center justify-center cursor-pointer">×</button>
-                </div>
-                <div id="pos-receipt-paper-box" class="p-4 overflow-y-auto flex-1 font-mono text-[11px] bg-slate-50/60 dark:bg-slate-950 text-slate-800 dark:text-slate-200 space-y-2 select-text">
-                    <div class="text-center font-bold text-sm uppercase">${esc(storeName)}</div>
-                    ${storeAddr ? `<div class="text-center text-[10px] text-slate-500">${esc(storeAddr)}</div>` : ''}
-                    ${storeWa ? `<div class="text-center text-[10px] text-slate-500">WA: ${esc(storeWa)}</div>` : ''}
-                    <div class="border-t border-dashed border-slate-300 dark:border-slate-700 my-2"></div>
-                    <div>No : <b>#${esc(tx.txId)}</b></div>
-                    <div>Tgl: ${esc(dateStr)}</div>
-                    <div>Kasir: ${esc(tx.cashierName || 'Kasir')}</div>
-                    <div>Plg : ${esc(tx.customer?.name || 'Umum')}</div>
-                    ${tx.customer?.phone ? `<div>HP  : ${esc(tx.customer.phone)}</div>` : ''}
-                    <div class="border-t border-dashed border-slate-300 dark:border-slate-700 my-2"></div>
-                    <table class="w-full text-[11px]">
-                        ${itemsHtml}
-                    </table>
-                    <div class="border-t border-dashed border-slate-300 dark:border-slate-700 my-2"></div>
-                    <div class="flex justify-between"><span>Subtotal</span><span>${fRp(tx.subtotal)}</span></div>
-                    ${(tx.globalDiscount || 0) > 0 ? `<div class="flex justify-between text-rose-500 font-bold"><span>${discLabel}</span><span>- ${fRp(tx.globalDiscount)}</span></div>` : ''}
-                    <div class="flex justify-between font-black text-sm pt-1 border-t border-slate-200 dark:border-slate-700"><span>TOTAL</span><span style="color:var(--color-primary)">${fRp(tx.total)}</span></div>
-                    ${tx.payment.method === 'cash' ? `<div class="flex justify-between"><span>Bayar</span><span>${fRp(tx.payment.paid)}</span></div><div class="flex justify-between font-bold text-emerald-600"><span>Kembalian</span><span>${fRp(tx.payment.change)}</span></div>` : ''}
-                    ${tx.payment.method === 'tempo' ? `<div class="flex justify-between"><span>DP</span><span>${fRp(tx.payment.dp || 0)}</span></div><div class="flex justify-between font-bold text-amber-600"><span>Sisa Piutang</span><span>${fRp(tx.payment.tempoBalance || 0)}</span></div>` : ''}
-                    <div class="flex justify-between"><span>Metode</span><span>${esc(tx.payment.method.toUpperCase())}</span></div>
-                    ${tx.pointsEarned > 0 ? `
-                    <div class="border-t border-dashed border-slate-300 dark:border-slate-700 my-2"></div>
-                    <div class="flex justify-between text-amber-600 dark:text-amber-400 font-bold"><span>Poin Member:</span><span>+${tx.pointsEarned} Poin</span></div>` : ''}
-                    <div class="border-t border-dashed border-slate-300 dark:border-slate-700 my-2"></div>
-                    <div class="text-center text-[10px] text-slate-400 my-1">${esc(footerTxt)}</div>
-                </div>
-                <div class="p-3 border-t border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/40 flex gap-2">
-                    <button onclick="window.executePOSPrintDirect()" class="flex-1 py-2.5 rounded-xl text-white font-bold text-xs flex items-center justify-center gap-1.5 cursor-pointer shadow-md transition-all active:scale-95" style="background:var(--color-primary)">
-                        <i class="fa-solid fa-print"></i> Cetak Struk
-                    </button>
-                    <button onclick="if(typeof window.openPrinterSettingsModal==='function') window.openPrinterSettingsModal();" class="px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-bold text-xs flex items-center gap-1 cursor-pointer transition-all" title="Pengaturan Printer">
-                        <i class="fa-solid fa-gear"></i>
-                    </button>
-                </div>
+    // Selalu tampilkan preview modal in-page terlebih dahulu
+    document.getElementById('pos-receipt-fallback-modal')?.remove();
+    document.body.insertAdjacentHTML('beforeend', `
+    <div id="pos-receipt-fallback-modal" class="fixed inset-0 z-[10000] flex items-center justify-center p-3 sm:p-4" style="background:rgba(15,23,42,0.7);backdrop-filter:blur(4px)">
+        <div class="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl w-full ${is80 ? 'max-w-md' : 'max-w-sm'} border border-slate-200 dark:border-slate-800 overflow-hidden flex flex-col max-h-[90vh]">
+            <div class="p-3.5 sm:p-4 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center bg-slate-50 dark:bg-slate-800/50">
+                <span class="font-bold text-xs text-slate-700 dark:text-slate-200 flex items-center gap-1.5"><i class="fa-solid fa-receipt text-amber-500"></i>Preview Struk Thermal (${is80 ? '80mm' : '58mm'})</span>
+                <button onclick="document.getElementById('pos-receipt-fallback-modal')?.remove()" class="w-7 h-7 rounded-lg bg-slate-200/60 dark:bg-slate-700/60 text-slate-600 dark:text-slate-300 text-sm leading-none flex items-center justify-center cursor-pointer">×</button>
             </div>
-        </div>`);
-        return;
-    }
-
-    w.document.write(`<!DOCTYPE html><html><head><meta charset="utf-8"><title>Struk POS</title>
-    <style>*{box-sizing:border-box}body{font-family:'Courier New',monospace;font-size:12px;max-width:${is80 ? '330px' : '260px'};margin:0 auto;padding:12px}
-    h2{text-align:center;font-size:14px;font-weight:900;margin:2px 0;text-transform:uppercase}p{margin:1px 0;text-align:center;font-size:11px}.left{text-align:left}
-    table{width:100%;border-collapse:collapse}.line{border-top:1px dashed #333;margin:6px 0}.total{font-weight:900;font-size:13px}
-    </style></head><body>
-    <h2>${storeName}</h2>${storeAddr?`<p>${esc(storeAddr)}</p>`:''}${storeWa?`<p>WA: ${esc(storeWa)}</p>`:''}
-    <div class="line"></div>
-    <p class="left">No: <b>#${esc(tx.txId)}</b></p><p class="left">Tgl: ${esc(dateStr)}</p>
-    <p class="left">Kasir: ${esc(tx.cashierName || 'Kasir')}</p><p class="left">Pelanggan: ${esc(tx.customer?.name||'Umum')}</p>
-    ${tx.customer?.phone?`<p class="left">HP: ${esc(tx.customer.phone)}</p>`:''}
-    <div class="line"></div><table>${itemsHtml}</table><div class="line"></div>
-    <table>
-    <tr><td>Subtotal</td><td style="text-align:right">${fRp(tx.subtotal)}</td></tr>
-    ${(tx.globalDiscount||0)>0?`<tr><td>${discLabel}</td><td style="text-align:right">- ${fRp(tx.globalDiscount)}</td></tr>`:''}
-    <tr class="total"><td>TOTAL</td><td style="text-align:right">${fRp(tx.total)}</td></tr>
-    ${tx.payment.method==='cash'?`<tr><td>Bayar</td><td style="text-align:right">${fRp(tx.payment.paid)}</td></tr><tr><td><b>Kembalian</b></td><td style="text-align:right"><b>${fRp(tx.payment.change)}</b></td></tr>`:''}
-    ${tx.payment.method==='tempo'?`<tr><td>DP</td><td style="text-align:right">${fRp(tx.payment.dp||0)}</td></tr><tr><td>Sisa Piutang</td><td style="text-align:right">${fRp(tx.payment.tempoBalance||0)}</td></tr>`:''}
-    <tr><td>Metode</td><td style="text-align:right">${esc(tx.payment.method.toUpperCase())}</td></tr>
-    ${tx.pointsEarned > 0 ? `<tr><td>Poin Member</td><td style="text-align:right">+${tx.pointsEarned}</td></tr>` : ''}
-    </table><div class="line"></div>
-    <p style="text-align:center;font-size:10px">${esc(footerTxt)}</p>
-    <p style="text-align:center;font-size:9px">Barang yang sudah dibeli tidak dapat ditukar/dikembalikan</p>
-    <script>window.onload=()=>{window.print();setTimeout(()=>window.close(),800)}<\/script>
-    </body></html>`);
-    w.document.close();
+            <div id="pos-receipt-paper-box" class="p-4 overflow-y-auto flex-1 font-mono text-[11px] bg-slate-50/60 dark:bg-slate-950 text-slate-800 dark:text-slate-200 space-y-2 select-text">
+                <div class="text-center font-bold text-sm uppercase">${esc(storeName)}</div>
+                ${storeAddr ? `<div class="text-center text-[10px] text-slate-500">${esc(storeAddr)}</div>` : ''}
+                ${storeWa ? `<div class="text-center text-[10px] text-slate-500">WA: ${esc(storeWa)}</div>` : ''}
+                <div class="border-t border-dashed border-slate-300 dark:border-slate-700 my-2"></div>
+                <div>No : <b>#${esc(tx.txId)}</b></div>
+                <div>Tgl: ${esc(dateStr)}</div>
+                <div>Kasir: ${esc(tx.cashierName || 'Kasir')}</div>
+                <div>Plg : ${esc(tx.customer?.name || 'Umum')}</div>
+                ${tx.customer?.phone ? `<div>HP  : ${esc(tx.customer.phone)}</div>` : ''}
+                <div class="border-t border-dashed border-slate-300 dark:border-slate-700 my-2"></div>
+                <table class="w-full text-[11px]">
+                    ${itemsHtml}
+                </table>
+                <div class="border-t border-dashed border-slate-300 dark:border-slate-700 my-2"></div>
+                <div class="flex justify-between"><span>Subtotal</span><span>${fRp(tx.subtotal)}</span></div>
+                ${(tx.globalDiscount || 0) > 0 ? `<div class="flex justify-between text-rose-500 font-bold"><span>${discLabel}</span><span>- ${fRp(tx.globalDiscount)}</span></div>` : ''}
+                <div class="flex justify-between font-black text-sm pt-1 border-t border-slate-200 dark:border-slate-700"><span>TOTAL</span><span style="color:var(--color-primary)">${fRp(tx.total)}</span></div>
+                ${tx.payment.method === 'cash' ? `<div class="flex justify-between"><span>Bayar</span><span>${fRp(tx.payment.paid)}</span></div><div class="flex justify-between font-bold text-emerald-600"><span>Kembalian</span><span>${fRp(tx.payment.change)}</span></div>` : ''}
+                ${tx.payment.method === 'tempo' ? `<div class="flex justify-between"><span>DP</span><span>${fRp(tx.payment.dp || 0)}</span></div><div class="flex justify-between font-bold text-amber-600"><span>Sisa Piutang</span><span>${fRp(tx.payment.tempoBalance || 0)}</span></div>` : ''}
+                <div class="flex justify-between"><span>Metode</span><span>${esc(tx.payment.method.toUpperCase())}</span></div>
+                ${tx.pointsEarned > 0 ? `
+                <div class="border-t border-dashed border-slate-300 dark:border-slate-700 my-2"></div>
+                <div class="flex justify-between text-amber-600 dark:text-amber-400 font-bold"><span>Poin Member:</span><span>+${tx.pointsEarned} Poin</span></div>` : ''}
+                <div class="border-t border-dashed border-slate-300 dark:border-slate-700 my-2"></div>
+                <div class="text-center text-[10px] text-slate-400 my-1">${esc(footerTxt)}</div>
+            </div>
+            <div class="p-3 border-t border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/40 flex gap-2">
+                <button onclick="window.executePOSPrintDirect()" class="flex-1 py-2.5 rounded-xl text-white font-bold text-xs flex items-center justify-center gap-1.5 cursor-pointer shadow-md transition-all active:scale-95" style="background:var(--color-primary)">
+                    <i class="fa-solid fa-print"></i> Cetak Struk
+                </button>
+                <button onclick="if(typeof window.openPrinterSettingsModal==='function') window.openPrinterSettingsModal();" class="px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-bold text-xs flex items-center gap-1 cursor-pointer transition-all" title="Pengaturan Printer">
+                    <i class="fa-solid fa-gear"></i>
+                </button>
+            </div>
+        </div>
+    </div>`);
 };
 
 export const executePOSPrintDirect = () => {
-    const config = typeof getPrinterConfig === 'function' ? getPrinterConfig() : { deviceType: 'system' };
+    const config = typeof getPrinterConfig === 'function' ? getPrinterConfig() : { paperSize: '58mm', deviceType: 'system' };
     const pBox = el('pos-receipt-paper-box');
     if (!pBox) return;
+
+    let t = el('thermal-print-section');
+    if (!t) {
+        t = document.createElement('div');
+        t.id = 'thermal-print-section';
+        document.body.appendChild(t);
+    }
+    const is80 = config.paperSize === '80mm';
+    t.innerHTML = `<div style="width:${is80 ? '80mm' : '58mm'};font-family:'Courier New',Courier,monospace;font-size:11px;line-height:1.2;color:#000;background:#fff;padding:4px;">${pBox.innerHTML}</div>`;
 
     if (config.deviceType === 'rawbt' && window.AndroidNativeApp && typeof window.AndroidNativeApp.printRawBT === 'function') {
         const rawHtml = pBox.innerText;
@@ -2658,6 +2640,7 @@ const exposeToWindow = () => {
     window.resetPosMember          = resetPosMember;
     window.processPOSTx            = processPOSTx;
     window.printPOSReceipt         = printPOSReceipt;
+    window.previewPOSReceiptThenPrint = previewPOSReceiptThenPrint;
     window.posSetGlobalDisc        = (v) => { posSetDiscountVal(v); };
     window.posSetDiscountType      = posSetDiscountType;
     window.posSetDiscountVal       = posSetDiscountVal;
@@ -3113,6 +3096,7 @@ window.togglePOSScannerMode    = togglePOSScannerMode;
 window.posProcessManualBarcode = posProcessManualBarcode;
 window.posSearchScannedCode    = posSearchScannedCode;
 window.executePOSPrintDirect   = executePOSPrintDirect;
+window.previewPOSReceiptThenPrint = previewPOSReceiptThenPrint;
 window.getActiveShift          = getActiveShift;
 window.isShiftActive           = isShiftActive;
 window.syncActiveShiftFromCloud= syncActiveShiftFromCloud;

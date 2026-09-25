@@ -773,9 +773,10 @@ export const openShiftSummaryModal = () => {
 
             <!-- Footer Action Buttons -->
             <div class="p-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-800/40 flex items-center gap-2">
-                <button onclick="window.printShiftSettlementReceipt(window.getActiveShift(), true)" class="px-3.5 py-3 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-bold text-xs hover:bg-slate-100 dark:hover:bg-slate-700 transition-all flex items-center gap-1.5 cursor-pointer shadow-xs active:scale-95" title="Cetak Slip Sementara (X-Report)">
+                <button onclick="window.printShiftSettlementReceipt(window.getActiveShift(), true)" class="px-3.5 py-3 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-bold text-xs hover:bg-slate-100 dark:hover:bg-slate-700 transition-all flex items-center gap-1.5 cursor-pointer shadow-xs active:scale-95" title="Preview & Cetak Slip Sementara (X-Report)">
+                    <i class="fa-solid fa-eye text-emerald-500"></i>
                     <i class="fa-solid fa-print"></i>
-                    <span class="hidden sm:inline">Cetak X-Report</span>
+                    <span class="hidden sm:inline">Preview X-Report</span>
                 </button>
                 <button onclick="window.closePOSShiftSummaryModal()" class="flex-1 py-3 rounded-2xl bg-slate-200/70 hover:bg-slate-300 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 font-bold text-xs transition-all cursor-pointer active:scale-95">
                     <span class="sm:hidden">Lanjut Shift</span>
@@ -1199,8 +1200,9 @@ const showClosedShiftSuccessModal = (closedShift) => {
             <!-- Action Buttons -->
             <div class="space-y-2 pt-2">
                 <button onclick="window.printShiftSettlementReceipt(window.getLastClosedShift(), false)" class="w-full py-3.5 rounded-2xl text-white font-black text-xs uppercase tracking-wider shadow-lg active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer hover:opacity-95" style="background:var(--color-primary)">
+                    <i class="fa-solid fa-eye"></i>
                     <i class="fa-solid fa-print"></i>
-                    <span>Cetak Slip Tutup Shift (Z-Report)</span>
+                    <span>Preview & Cetak Slip Shift (Z-Report)</span>
                 </button>
                 <div class="flex items-center gap-2">
                     <button onclick="document.getElementById('pos-closed-success-modal')?.remove(); window.openPOSOpenShiftModal();" class="flex-1 py-3 rounded-2xl bg-[rgba(var(--color-primary-rgb),0.1)] hover:bg-[rgba(var(--color-primary-rgb),0.18)] text-[var(--color-primary)] font-bold text-xs border border-[rgba(var(--color-primary-rgb),0.25)] transition-all cursor-pointer flex items-center justify-center gap-1.5 active:scale-95">
@@ -1249,135 +1251,89 @@ export const printShiftSettlementReceipt = (shift, isXReport = false) => {
     const diff = actualCash - expectedCash;
     const diffStatusStr = diff === 0 ? 'SEIMBANG (PAS)' : (diff > 0 ? `LEBIH (+${fRp(diff)})` : `KURANG (-${fRp(Math.abs(diff))})`);
 
-    const w = window.open('', '_blank', `width=${is80 ? 460 : 360},height=740`);
-    if (!w) {
-        // Fallback In-Page Modal
-        document.getElementById('pos-shift-receipt-modal')?.remove();
-        document.body.insertAdjacentHTML('beforeend', `
-        <div id="pos-shift-receipt-modal" class="fixed inset-0 z-[10003] flex items-center justify-center p-3 sm:p-4" style="background:rgba(15,23,42,0.7);backdrop-filter:blur(4px)">
-            <div class="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl w-full ${is80 ? 'max-w-md' : 'max-w-sm'} border border-slate-200 dark:border-slate-800 overflow-hidden flex flex-col max-h-[90vh]">
-                <div class="p-3.5 sm:p-4 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center bg-slate-50 dark:bg-slate-800/50">
-                    <span class="font-bold text-xs text-slate-700 dark:text-slate-200 flex items-center gap-1.5"><i class="fa-solid fa-receipt text-emerald-500"></i>Slip Rekap Shift (${is80 ? '80mm' : '58mm'})</span>
-                    <button onclick="document.getElementById('pos-shift-receipt-modal')?.remove()" class="w-7 h-7 rounded-lg bg-slate-200/60 dark:bg-slate-700/60 text-slate-600 dark:text-slate-300 text-sm leading-none flex items-center justify-center cursor-pointer">×</button>
-                </div>
-                <div id="pos-shift-receipt-paper-box" class="p-4 overflow-y-auto flex-1 font-mono text-[11px] bg-slate-50/60 dark:bg-slate-950 text-slate-800 dark:text-slate-200 space-y-1.5 select-text">
-                    <div class="text-center font-bold text-sm uppercase">${esc(storeName)}</div>
-                    ${storeAddr ? `<div class="text-center text-[10px] text-slate-500">${esc(storeAddr)}</div>` : ''}
-                    ${storeWa ? `<div class="text-center text-[10px] text-slate-500">WA: ${esc(storeWa)}</div>` : ''}
-                    <div class="border-t border-dashed border-slate-300 dark:border-slate-700 my-2"></div>
-                    <div class="text-center font-black text-xs uppercase">${esc(titleStr)}</div>
-                    <div class="border-t border-dashed border-slate-300 dark:border-slate-700 my-2"></div>
-                    <div>No Shift: <b>#${esc(shift.shiftNo || shift.id)}</b></div>
-                    <div>Kasir   : ${esc(shift.cashierName)}</div>
-                    <div>Mulai   : ${esc(startDateStr)}</div>
-                    <div>Selesai : ${esc(endDateStr)}</div>
-                    <div>Durasi  : ${esc(durationStr)}</div>
-                    <div class="border-t border-dashed border-slate-300 dark:border-slate-700 my-2"></div>
-                    <div class="font-bold">RINGKASAN PENJUALAN:</div>
-                    <div class="flex justify-between"><span>Total Struk</span><span>${shift.txCount || 0} Trx</span></div>
-                    <div class="flex justify-between"><span>Total Barang</span><span>${formatShiftQty(shift.itemCount || 0)} Item</span></div>
-                    <div class="border-t border-dashed border-slate-300 dark:border-slate-700 my-1"></div>
-                    <div class="flex justify-between"><span>Tunai (Cash)</span><span>${fRp(shift.cashSales || 0)}</span></div>
-                    <div class="flex justify-between"><span>QRIS</span><span>${fRp(shift.qrisSales || 0)}</span></div>
-                    <div class="flex justify-between"><span>Transfer Bank</span><span>${fRp(shift.bankSales || 0)}</span></div>
-                    <div class="flex justify-between"><span>Tempo (Piutang)</span><span>${fRp(shift.tempoSales || 0)}</span></div>
-                    <div class="border-t border-dashed border-slate-300 dark:border-slate-700 my-1"></div>
-                    <div class="flex justify-between font-black text-xs pt-0.5"><span>TOTAL OMSET</span><span style="color:var(--color-primary)">${fRp(shift.totalSales || 0)}</span></div>
-                    ${(shift.discountTotal || 0) > 0 ? `<div class="flex justify-between text-rose-500"><span>Diskon Toko</span><span>-${fRp(shift.discountTotal)}</span></div>` : ''}
-                    <div class="border-t border-dashed border-slate-300 dark:border-slate-700 my-2"></div>
-                    <div class="font-bold">REKONSILIASI KAS LACI:</div>
-                    <div class="flex justify-between"><span>Modal Awal</span><span>${fRp(shift.startingCash)}</span></div>
-                    <div class="flex justify-between"><span>Penjualan Tunai</span><span>${fRp(shift.cashSales || 0)}</span></div>
-                    <div class="flex justify-between font-bold"><span>Kas Sistem</span><span>${fRp(expectedCash)}</span></div>
-                    ${!isXReport ? `
-                    <div class="flex justify-between font-bold"><span>Kas Fisik Dihitung</span><span>${fRp(actualCash)}</span></div>
-                    <div class="border-t border-dashed border-slate-300 dark:border-slate-700 my-1"></div>
-                    <div class="flex justify-between font-black text-xs ${diff === 0 ? 'text-emerald-600' : (diff > 0 ? 'text-amber-600' : 'text-rose-600')}">
-                        <span>SELISIH KAS</span>
-                        <span>${diffStatusStr}</span>
-                    </div>` : ''}
-                    ${shift.closingNotes ? `
-                    <div class="border-t border-dashed border-slate-300 dark:border-slate-700 my-1.5"></div>
-                    <div class="text-[10px]"><b>Catatan:</b> ${esc(shift.closingNotes)}</div>` : ''}
-                    <div class="border-t border-dashed border-slate-300 dark:border-slate-700 my-2"></div>
-                    <div class="text-center text-[10px] text-slate-400 my-1">${esc(footerTxt)}</div>
-                    <div class="grid grid-cols-2 text-center text-[10px] pt-4 pb-2">
-                        <div>
-                            <div>Kasir Bertugas</div>
-                            <div class="pt-8 font-bold">(${esc(shift.cashierName)})</div>
-                        </div>
-                        <div>
-                            <div>Supervisor / Admin</div>
-                            <div class="pt-8 font-bold">( ................ )</div>
-                        </div>
+    // Wajib selalu tampilkan modal preview in-page terlebih dahulu
+    document.getElementById('pos-shift-receipt-modal')?.remove();
+    document.body.insertAdjacentHTML('beforeend', `
+    <div id="pos-shift-receipt-modal" class="fixed inset-0 z-[10003] flex items-center justify-center p-3 sm:p-4" style="background:rgba(15,23,42,0.7);backdrop-filter:blur(4px)">
+        <div class="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl w-full ${is80 ? 'max-w-md' : 'max-w-sm'} border border-slate-200 dark:border-slate-800 overflow-hidden flex flex-col max-h-[90vh]">
+            <div class="p-3.5 sm:p-4 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center bg-slate-50 dark:bg-slate-800/50">
+                <span class="font-bold text-xs text-slate-700 dark:text-slate-200 flex items-center gap-1.5"><i class="fa-solid fa-receipt text-emerald-500"></i>Preview Slip Rekap Shift (${is80 ? '80mm' : '58mm'})</span>
+                <button onclick="document.getElementById('pos-shift-receipt-modal')?.remove()" class="w-7 h-7 rounded-lg bg-slate-200/60 dark:bg-slate-700/60 text-slate-600 dark:text-slate-300 text-sm leading-none flex items-center justify-center cursor-pointer">×</button>
+            </div>
+            <div id="pos-shift-receipt-paper-box" class="p-4 overflow-y-auto flex-1 font-mono text-[11px] bg-slate-50/60 dark:bg-slate-950 text-slate-800 dark:text-slate-200 space-y-1.5 select-text">
+                <div class="text-center font-bold text-sm uppercase">${esc(storeName)}</div>
+                ${storeAddr ? `<div class="text-center text-[10px] text-slate-500">${esc(storeAddr)}</div>` : ''}
+                ${storeWa ? `<div class="text-center text-[10px] text-slate-500">WA: ${esc(storeWa)}</div>` : ''}
+                <div class="border-t border-dashed border-slate-300 dark:border-slate-700 my-2"></div>
+                <div class="text-center font-black text-xs uppercase">${esc(titleStr)}</div>
+                <div class="border-t border-dashed border-slate-300 dark:border-slate-700 my-2"></div>
+                <div>No Shift: <b>#${esc(shift.shiftNo || shift.id)}</b></div>
+                <div>Kasir   : ${esc(shift.cashierName)}</div>
+                <div>Mulai   : ${esc(startDateStr)}</div>
+                <div>Selesai : ${esc(endDateStr)}</div>
+                <div>Durasi  : ${esc(durationStr)}</div>
+                <div class="border-t border-dashed border-slate-300 dark:border-slate-700 my-2"></div>
+                <div class="font-bold">RINGKASAN PENJUALAN:</div>
+                <div class="flex justify-between"><span>Total Struk</span><span>${shift.txCount || 0} Trx</span></div>
+                <div class="flex justify-between"><span>Total Barang</span><span>${formatShiftQty(shift.itemCount || 0)} Item</span></div>
+                <div class="border-t border-dashed border-slate-300 dark:border-slate-700 my-1"></div>
+                <div class="flex justify-between"><span>Tunai (Cash)</span><span>${fRp(shift.cashSales || 0)}</span></div>
+                <div class="flex justify-between"><span>QRIS</span><span>${fRp(shift.qrisSales || 0)}</span></div>
+                <div class="flex justify-between"><span>Transfer Bank</span><span>${fRp(shift.bankSales || 0)}</span></div>
+                <div class="flex justify-between"><span>Tempo (Piutang)</span><span>${fRp(shift.tempoSales || 0)}</span></div>
+                <div class="border-t border-dashed border-slate-300 dark:border-slate-700 my-1"></div>
+                <div class="flex justify-between font-black text-xs pt-0.5"><span>TOTAL OMSET</span><span style="color:var(--color-primary)">${fRp(shift.totalSales || 0)}</span></div>
+                ${(shift.discountTotal || 0) > 0 ? `<div class="flex justify-between text-rose-500"><span>Diskon Toko</span><span>-${fRp(shift.discountTotal)}</span></div>` : ''}
+                <div class="border-t border-dashed border-slate-300 dark:border-slate-700 my-2"></div>
+                <div class="font-bold">REKONSILIASI KAS LACI:</div>
+                <div class="flex justify-between"><span>Modal Awal</span><span>${fRp(shift.startingCash)}</span></div>
+                <div class="flex justify-between"><span>Penjualan Tunai</span><span>${fRp(shift.cashSales || 0)}</span></div>
+                <div class="flex justify-between font-bold"><span>Kas Sistem</span><span>${fRp(expectedCash)}</span></div>
+                ${!isXReport ? `
+                <div class="flex justify-between font-bold"><span>Kas Fisik Dihitung</span><span>${fRp(actualCash)}</span></div>
+                <div class="border-t border-dashed border-slate-300 dark:border-slate-700 my-1"></div>
+                <div class="flex justify-between font-black text-xs ${diff === 0 ? 'text-emerald-600' : (diff > 0 ? 'text-amber-600' : 'text-rose-600')}">
+                    <span>SELISIH KAS</span>
+                    <span>${diffStatusStr}</span>
+                </div>` : ''}
+                ${shift.closingNotes ? `
+                <div class="border-t border-dashed border-slate-300 dark:border-slate-700 my-1.5"></div>
+                <div class="text-[10px]"><b>Catatan:</b> ${esc(shift.closingNotes)}</div>` : ''}
+                <div class="border-t border-dashed border-slate-300 dark:border-slate-700 my-2"></div>
+                <div class="text-center text-[10px] text-slate-400 my-1">${esc(footerTxt)}</div>
+                <div class="grid grid-cols-2 text-center text-[10px] pt-4 pb-2">
+                    <div>
+                        <div>Kasir Bertugas</div>
+                        <div class="pt-8 font-bold">(${esc(shift.cashierName)})</div>
+                    </div>
+                    <div>
+                        <div>Supervisor / Admin</div>
+                        <div class="pt-8 font-bold">( ................ )</div>
                     </div>
                 </div>
-                <div class="p-3 border-t border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/40 flex gap-2">
-                    <button onclick="window.executeShiftPrintDirect()" class="flex-1 py-2.5 rounded-xl text-white font-bold text-xs flex items-center justify-center gap-1.5 cursor-pointer shadow-md transition-all active:scale-95" style="background:var(--color-primary)">
-                        <i class="fa-solid fa-print"></i> Cetak Sekarang
-                    </button>
-                </div>
             </div>
-        </div>`);
-        return;
-    }
-
-    w.document.write(`<!DOCTYPE html><html><head><meta charset="utf-8"><title>Slip Rekap Shift Kasir</title>
-    <style>*{box-sizing:border-box}body{font-family:'Courier New',monospace;font-size:12px;max-width:${is80 ? '330px' : '260px'};margin:0 auto;padding:12px}
-    h2{text-align:center;font-size:14px;font-weight:900;margin:2px 0;text-transform:uppercase}p{margin:1px 0;text-align:center;font-size:11px}.left{text-align:left}
-    table{width:100%;border-collapse:collapse}.line{border-top:1px dashed #333;margin:6px 0}.total{font-weight:900;font-size:13px}
-    .sig{margin-top:20px;text-align:center;font-size:10px;display:flex;justify-content:space-between}
-    </style></head><body>
-    <h2>${storeName}</h2>${storeAddr?`<p>${esc(storeAddr)}</p>`:''}${storeWa?`<p>WA: ${esc(storeWa)}</p>`:''}
-    <div class="line"></div>
-    <p style="font-weight:900;font-size:12px">${titleStr}</p>
-    <div class="line"></div>
-    <p class="left">No Shift: <b>#${esc(shift.shiftNo || shift.id)}</b></p>
-    <p class="left">Kasir   : ${esc(shift.cashierName)}</p>
-    <p class="left">Mulai   : ${esc(startDateStr)}</p>
-    <p class="left">Selesai : ${esc(endDateStr)}</p>
-    <p class="left">Durasi  : ${esc(durationStr)}</p>
-    <div class="line"></div>
-    <p class="left" style="font-weight:bold">RINGKASAN PENJUALAN:</p>
-    <table>
-    <tr><td>Total Struk</td><td style="text-align:right">${shift.txCount || 0} Trx</td></tr>
-    <tr><td>Total Barang</td><td style="text-align:right">${formatShiftQty(shift.itemCount || 0)} Item</td></tr>
-    <tr><td colspan="2"><div class="line"></div></td></tr>
-    <tr><td>Tunai (Cash)</td><td style="text-align:right">${fRp(shift.cashSales || 0)}</td></tr>
-    <tr><td>QRIS</td><td style="text-align:right">${fRp(shift.qrisSales || 0)}</td></tr>
-    <tr><td>Transfer Bank</td><td style="text-align:right">${fRp(shift.bankSales || 0)}</td></tr>
-    <tr><td>Tempo (Piutang)</td><td style="text-align:right">${fRp(shift.tempoSales || 0)}</td></tr>
-    <tr><td colspan="2"><div class="line"></div></td></tr>
-    <tr class="total"><td>TOTAL OMSET</td><td style="text-align:right">${fRp(shift.totalSales || 0)}</td></tr>
-    ${(shift.discountTotal || 0) > 0 ? `<tr><td>Diskon Toko</td><td style="text-align:right">-${fRp(shift.discountTotal)}</td></tr>` : ''}
-    </table>
-    <div class="line"></div>
-    <p class="left" style="font-weight:bold">REKONSILIASI KAS LACI:</p>
-    <table>
-    <tr><td>Modal Awal</td><td style="text-align:right">${fRp(shift.startingCash)}</td></tr>
-    <tr><td>Penjualan Tunai</td><td style="text-align:right">${fRp(shift.cashSales || 0)}</td></tr>
-    <tr style="font-weight:bold"><td>Kas Sistem</td><td style="text-align:right">${fRp(expectedCash)}</td></tr>
-    ${!isXReport ? `
-    <tr style="font-weight:bold"><td>Kas Fisik Laci</td><td style="text-align:right">${fRp(actualCash)}</td></tr>
-    <tr><td colspan="2"><div class="line"></div></td></tr>
-    <tr style="font-weight:bold"><td>SELISIH KAS</td><td style="text-align:right">${diffStatusStr}</td></tr>` : ''}
-    </table>
-    ${shift.closingNotes ? `<div class="line"></div><p class="left" style="font-size:10px"><b>Catatan:</b> ${esc(shift.closingNotes)}</p>` : ''}
-    <div class="line"></div>
-    <p style="font-size:10px">${esc(footerTxt)}</p>
-    <div class="sig">
-        <div>Kasir<br><br><br><b>(${esc(shift.cashierName)})</b></div>
-        <div>Supervisor / Admin<br><br><br><b>( ................ )</b></div>
-    </div>
-    <script>window.onload=()=>{window.print();setTimeout(()=>window.close(),800)}<\/script>
-    </body></html>`);
-    w.document.close();
+            <div class="p-3 border-t border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/40 flex gap-2">
+                <button onclick="window.executeShiftPrintDirect()" class="flex-1 py-2.5 rounded-xl text-white font-bold text-xs flex items-center justify-center gap-1.5 cursor-pointer shadow-md transition-all active:scale-95" style="background:var(--color-primary)">
+                    <i class="fa-solid fa-print"></i> Cetak Sekarang
+                </button>
+            </div>
+        </div>
+    </div>`);
 };
 
 export const executeShiftPrintDirect = () => {
-    const config = typeof getPrinterConfig === 'function' ? getPrinterConfig() : { deviceType: 'system' };
+    const config = typeof getPrinterConfig === 'function' ? getPrinterConfig() : { paperSize: '58mm', deviceType: 'system' };
     const pBox = el('pos-shift-receipt-paper-box');
     if (!pBox) return;
+
+    let t = el('thermal-print-section');
+    if (!t) {
+        t = document.createElement('div');
+        t.id = 'thermal-print-section';
+        document.body.appendChild(t);
+    }
+    const is80 = config.paperSize === '80mm';
+    t.innerHTML = `<div style="width:${is80 ? '80mm' : '58mm'};font-family:'Courier New',Courier,monospace;font-size:11px;line-height:1.2;color:#000;background:#fff;padding:4px;">${pBox.innerHTML}</div>`;
 
     if (config.deviceType === 'rawbt' && window.AndroidNativeApp && typeof window.AndroidNativeApp.printRawBT === 'function') {
         const rawHtml = pBox.innerText;
@@ -1514,7 +1470,7 @@ export const loadAdminShiftReports = async () => {
                     </div>
                     <div class="flex items-center gap-2 shrink-0">
                         ${diffBadge}
-                        <button onclick="window.printShiftSettlementReceipt(${sJson}, ${!isClosed})" class="w-8 h-8 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-700/80 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-200 text-xs flex items-center justify-center transition-all cursor-pointer shrink-0 shadow-2xs active:scale-95" title="Cetak Slip">
+                        <button onclick="window.printShiftSettlementReceipt(${sJson}, ${!isClosed})" class="w-8 h-8 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-700/80 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-200 text-xs flex items-center justify-center transition-all cursor-pointer shrink-0 shadow-2xs active:scale-95" title="Preview & Cetak Slip">
                             <i class="fa-solid fa-print"></i>
                         </button>
                         <button onclick="window.deleteShiftRecord('${doc.id}', '${esc(s.shiftNo || s.id)}')" class="w-8 h-8 rounded-xl bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/40 dark:hover:bg-rose-900/60 text-rose-500 dark:text-rose-400 text-xs flex items-center justify-center transition-all cursor-pointer shrink-0 shadow-2xs active:scale-95 border border-rose-100 dark:border-rose-900/60" title="Hapus Data Shift">
