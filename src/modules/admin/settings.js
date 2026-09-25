@@ -97,9 +97,9 @@ export const rAdmSet = () => {
                     <p class="text-[10px] text-slate-500 dark:text-slate-400">Amankan database toko ke file lokal .json atau pulihkan data riwayat dari file cadangan</p>
                 </div>
             </div>
-            <div class="flex flex-col sm:flex-row gap-3 pt-1">
-                <button onclick="backupData()" class="flex-1 bg-slate-900 dark:bg-slate-950 text-white font-bold py-3.5 rounded-xl transition-all text-xs flex items-center justify-center gap-2 border border-slate-800 shadow-sm active:scale-95 hover:opacity-90"><i class="fa-solid fa-download"></i> Backup Lokal (.json)</button>
-                <button onclick="el('restore-file').click()" class="flex-1 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-bold py-3.5 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700 transition-all text-xs flex items-center justify-center gap-2 shadow-sm active:scale-95"><i class="fa-solid fa-upload"></i> Restore Data</button>
+            <div class="flex flex-col sm:flex-row gap-2.5 pt-1">
+                <button onclick="openAdminTab('backup_sync')" class="flex-1 text-white font-bold py-3.5 rounded-xl transition-all text-xs flex items-center justify-center gap-2 shadow-sm active:scale-95 hover:opacity-90 cursor-pointer" style="background:var(--color-primary)"><i class="fa-solid fa-cloud-arrow-up"></i> Buka Pusat Data &amp; Cloud Sync</button>
+                <button onclick="typeof window.downloadFullBackupJSON === 'function' ? window.downloadFullBackupJSON() : backupData()" class="flex-1 bg-slate-900 dark:bg-slate-950 text-white font-bold py-3.5 rounded-xl transition-all text-xs flex items-center justify-center gap-2 border border-slate-800 shadow-sm active:scale-95 hover:opacity-90 cursor-pointer"><i class="fa-solid fa-download text-emerald-400"></i> Backup Ekosistem (.json)</button>
             </div>
         </div>
     </div>

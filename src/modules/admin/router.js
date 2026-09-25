@@ -60,7 +60,8 @@ export const openAdminTab = (t, fH = false) => {
         'colors': 'Database Warna',
         'changelog': 'Log Pembaruan Sistem',
         'pos': 'Kasir POS',
-        'cashiers': 'Manajemen Akun Kasir'
+        'cashiers': 'Manajemen Akun Kasir',
+        'backup_sync': 'Pusat Data & Sinkronisasi'
     };
     
     setIn('admin-header-title', titles[t] || 'CMS');
@@ -120,6 +121,11 @@ export const openAdminTab = (t, fH = false) => {
         // Lazy load modul manajemen akun kasir
         import('../../modules/pos/pos-cashier-admin.js').then(m => m.renderCashierAccounts()).catch(err => {
             console.error('[CashierAdmin] Gagal memuat modul:', err);
+        });
+    } else if (t === 'backup_sync') {
+        // Lazy load modul pusat data, backup & sinkronisasi
+        import('./backup-sync.js').then(m => m.renderBackupSyncView()).catch(err => {
+            console.error('[BackupSync] Gagal memuat modul:', err);
         });
     } else {
         if (typeof window.rAdmL === 'function') window.rAdmL(t);

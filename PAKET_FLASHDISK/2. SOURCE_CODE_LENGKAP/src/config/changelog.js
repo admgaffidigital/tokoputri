@@ -8,6 +8,22 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-9-24',
+        version: 'v1.9.24',
+        date: '2026-09-25',
+        title: 'Pusat Data & Sinkronisasi Cloud (Cloud Sync Hub, Mesin Backup Ekosistem .JSON, Ekspor Akuntansi .CSV, & Pemulihan Aman Rollback 1-Klik)',
+        category: 'feature',
+        badge: 'Data Center, Cloud Sync & Safe Restore v1.9.24',
+        items: [
+            'Pusat Data & Sinkronisasi Cloud (Cloud Sync Hub): Tab menu khusus baru di CMS Admin untuk memonitor integritas ekosistem data toko secara real-time, mendeteksi koneksi awan, dan melakukan sinkronisasi paksa (Force Real-time Sync) langsung dari Cloud Firestore.',
+            'Mesin Pencadangan Komprehensif (Full Ecosystem Backup .JSON): Menarik seluruh data lengkap secara paralel (Master Produk, Varian, Kategori, Transaksi Penjualan Kasir, Buku Piutang Tempo, Database Member Pelanggan, Akun Kasir, dan Log Shift Laci Kas) dalam satu berkas terenkripsi berstempel integritas metadata.',
+            'Ekspor Laporan Akuntansi Spreadsheet (.CSV): Menyediakan fitur unduh tabel siap pakai untuk Microsoft Excel dan Google Sheets (Laporan Master Produk & Stok serta Laporan Riwayat Transaksi & Omset Penjualan).',
+            'Inspektur Pra-Pemulihan (Pre-Restore Inspector Modal): Membaca dan memvalidasi berkas cadangan sebelum dieksekusi, menampilkan rincian jumlah produk, transaksi, dan tanggal backup agar tidak ada salah timpa.',
+            'Perlindungan Auto Safety-Snapshot & Rollback 1-Klik: Sebelum berkas restore diterapkan, sistem otomatis membekukan data saat itu ke memori darurat sehingga admin bebas membatalkan pemulihan dan mengembalikan data semula kapan saja tanpa risiko kehilangan data.',
+            'Snapshot Cepat di Perangkat (Instant Device Snapshot): Memungkinkan admin menyimpan dan memulihkan snapshot kilat langsung di memori browser tanpa harus mengunduh file fisik.'
+        ]
+    },
+    {
         id: 'log-1-9-23',
         version: 'v1.9.23',
         date: '2026-09-25',
