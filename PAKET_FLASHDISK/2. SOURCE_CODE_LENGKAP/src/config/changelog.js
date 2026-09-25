@@ -8,6 +8,20 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-9-37',
+        version: 'v1.9.37',
+        date: '2026-09-25',
+        title: 'Penyempurnaan Visual CMS Kasir & Laporan Shift: Segmented Switcher Sticky, Auto-Reset Scroll & Eliminasi Clipping Header',
+        category: 'optimization',
+        badge: 'Admin Cashier & Shift Precision UI v1.9.37',
+        items: [
+            'Segmented Switcher Tab Sticky (Pinned Sub-Header): Bilah pengalih tab "Akun Kasir" dan "Laporan Shift" kini berposisi sticky tepat di bawah bilah emas CMS Admin dengan efek backdrop-blur elegan, sehingga kasir/admin dapat berpindah tab kapan pun tanpa harus menggulir balik ke atas.',
+            'Auto-Reset Scroll Top pada Pergantian Tab: Memastikan scroll container otomatis melompat ke posisi teratas (scrollTop = 0) setiap kali tab "Akun Kasir" atau "Laporan Shift" diklik, mencegah konten terpotong atau tersembunyi di bawah bilah navigasi atas.',
+            'Eliminasi Teks Terpotong & Orphan Word (Anti-Clipping Header): Menghapus penumpukan padding ganda dan memangkas subjudul menjadi satu baris bersih dengan utilitas truncate, memastikan teks tidak pernah terputus canggung di batas header mobile.',
+            'Penyelarasan Horizontal Baris Judul & Tombol Segarkan: Tombol "Segarkan Data" kini sejajar rapi di sisi kanan judul "Rekap Shift Kasir (Z-Report)" pada satu baris terpadu, simetris dan konsisten dengan tab Manajemen Kasir.'
+        ]
+    },
+    {
         id: 'log-1-9-36',
         version: 'v1.9.36',
         date: '2026-09-25',

@@ -17,22 +17,27 @@ export const renderCashierAccounts = async () => {
     const content = el('admin-content');
     if (!content) return;
 
+    const sc = document.querySelector('#view-admin .scroll-content');
+    if (sc) sc.scrollTop = 0;
+
     setH('admin-content', `
-    <div class="space-y-4 p-3.5 sm:p-6 max-w-5xl mx-auto pt-3 sm:pt-5 pb-16">
-        <!-- Native App Segmented Control Switcher -->
-        <div class="p-1 bg-slate-200/70 dark:bg-slate-800 rounded-2xl max-w-sm w-full grid grid-cols-2 gap-1 border border-slate-300/40 dark:border-slate-700/60 shadow-2xs">
-            <button id="tab-btn-cashier-accounts" onclick="window.switchCashierTab('accounts')" class="py-2.5 px-3 rounded-xl text-xs font-black bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-xs transition-all flex items-center justify-center gap-2 cursor-pointer border border-black/5 dark:border-white/10">
-                <i class="fa-solid fa-users" style="color:var(--color-primary)"></i>
-                <span>Akun Kasir</span>
-            </button>
-            <button id="tab-btn-cashier-shifts" onclick="window.switchCashierTab('shifts')" class="py-2.5 px-3 rounded-xl text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white transition-all flex items-center justify-center gap-2 cursor-pointer border border-transparent">
-                <i class="fa-solid fa-file-invoice-dollar"></i>
-                <span>Laporan Shift</span>
-            </button>
+    <div class="space-y-4 max-w-5xl mx-auto pb-16">
+        <!-- Native App Sticky Segmented Control Bar -->
+        <div class="sticky top-0 z-20 -mx-4 lg:-mx-8 px-4 lg:px-8 py-2.5 bg-slate-50/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800/80 shadow-2xs">
+            <div class="p-1 bg-slate-200/80 dark:bg-slate-800 rounded-2xl max-w-sm w-full mx-auto grid grid-cols-2 gap-1 border border-slate-300/50 dark:border-slate-700/60 shadow-2xs">
+                <button id="tab-btn-cashier-accounts" onclick="window.switchCashierTab('accounts')" class="py-2.5 px-3 rounded-xl text-xs font-black bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-xs transition-all flex items-center justify-center gap-2 cursor-pointer border border-black/5 dark:border-white/10">
+                    <i class="fa-solid fa-users" style="color:var(--color-primary)"></i>
+                    <span>Akun Kasir</span>
+                </button>
+                <button id="tab-btn-cashier-shifts" onclick="window.switchCashierTab('shifts')" class="py-2.5 px-3 rounded-xl text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white transition-all flex items-center justify-center gap-2 cursor-pointer border border-transparent">
+                    <i class="fa-solid fa-file-invoice-dollar"></i>
+                    <span>Laporan Shift</span>
+                </button>
+            </div>
         </div>
 
         <!-- Panel 1: Akun Kasir -->
-        <div id="cashier-panel-accounts" class="space-y-4">
+        <div id="cashier-panel-accounts" class="space-y-4 pt-1">
             <!-- Header -->
             <div class="flex items-center justify-between gap-3 pt-1">
                 <div>
@@ -67,13 +72,16 @@ export const renderCashierAccounts = async () => {
         </div>
 
         <!-- Panel 2: Laporan Shift Kasir -->
-        <div id="cashier-panel-shifts" class="hidden"></div>
+        <div id="cashier-panel-shifts" class="hidden pt-1"></div>
     </div>`);
 
     await loadCashierList();
 };
 
 export const switchCashierTab = (tab) => {
+    const sc = document.querySelector('#view-admin .scroll-content');
+    if (sc) sc.scrollTop = 0;
+
     const tabAccounts = el('tab-btn-cashier-accounts');
     const tabShifts   = el('tab-btn-cashier-shifts');
     const panelAccounts = el('cashier-panel-accounts');

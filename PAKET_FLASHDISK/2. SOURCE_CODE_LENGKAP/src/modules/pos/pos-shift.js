@@ -1441,17 +1441,17 @@ export const renderAdminShiftReportView = async (containerEl) => {
 
     c.innerHTML = `
     <div class="space-y-4">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            <div>
-                <h3 class="text-sm font-black text-slate-900 dark:text-white flex items-center gap-2">
+        <div class="flex items-center justify-between gap-3 pt-1">
+            <div class="min-w-0">
+                <h3 class="text-sm sm:text-base font-black text-slate-900 dark:text-white flex items-center gap-2">
                     <span class="w-8 h-8 rounded-xl flex items-center justify-center text-xs shrink-0 shadow-2xs border border-[rgba(var(--color-primary-rgb),0.25)]" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary)">
                         <i class="fa-solid fa-file-invoice-dollar"></i>
                     </span>
-                    <span>Laporan &amp; Rekap Shift Kasir (Z-Report)</span>
+                    <span class="truncate">Laporan Shift Kasir</span>
                 </h3>
-                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Riwayat pembukaan, penutupan laci kasir, dan audit selisih kas</p>
+                <p class="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 mt-0.5 truncate">Rekap Z-Report buka-tutup kasir &amp; selisih laci</p>
             </div>
-            <button onclick="window.loadAdminShiftReports()" class="h-9 px-3.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer self-start sm:self-auto shadow-2xs active:scale-95">
+            <button onclick="window.loadAdminShiftReports()" class="h-9 px-3.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shrink-0 shadow-2xs active:scale-95" title="Segarkan Data Shift">
                 <i class="fa-solid fa-arrows-rotate text-[11px]"></i>
                 <span>Segarkan Data</span>
             </button>
