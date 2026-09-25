@@ -1161,9 +1161,9 @@ export const renderShiftHeaderBadge = () => {
                 </button>`;
             } else {
                 target.innerHTML = `
-                <button onclick="window.openPOSShiftSummaryModal()" class="px-1.5 sm:px-2.5 py-1 rounded-lg text-[10px] font-bold bg-[rgba(var(--color-primary-rgb),0.1)] hover:bg-[rgba(var(--color-primary-rgb),0.18)] text-[var(--color-primary)] border border-[rgba(var(--color-primary-rgb),0.25)] inline-flex items-center gap-1 sm:gap-1.5 transition-all cursor-pointer active:scale-95 whitespace-nowrap shrink-0" title="Klik untuk lihat ringkasan shift (X-Report)">
-                    <i class="fa-solid fa-cash-register text-[10px]"></i>
-                    <span class="hidden sm:inline">Shift: </span>
+                <button onclick="window.openPOSShiftSummaryModal()" class="h-8 px-2.5 sm:px-3 rounded-xl text-xs font-bold bg-[rgba(var(--color-primary-rgb),0.1)] hover:bg-[rgba(var(--color-primary-rgb),0.18)] text-[var(--color-primary)] border border-[rgba(var(--color-primary-rgb),0.25)] inline-flex items-center gap-1.5 transition-all cursor-pointer active:scale-95 whitespace-nowrap shrink-0 shadow-2xs" title="Klik untuk lihat ringkasan shift (X-Report)">
+                    <i class="fa-solid fa-cash-register text-xs"></i>
+                    <span class="hidden sm:inline font-medium">Shift: </span>
                     <b class="font-black whitespace-nowrap">${fRp(shift.startingCash)}</b>
                 </button>`;
             }
@@ -1178,8 +1178,8 @@ export const renderShiftHeaderBadge = () => {
                 </button>`;
             } else {
                 target.innerHTML = `
-                <button onclick="window.openPOSOpenShiftModal()" class="px-2 sm:px-2.5 py-1 rounded-lg text-[10px] font-bold bg-amber-50 hover:bg-amber-100 dark:bg-amber-950/40 dark:hover:bg-amber-900/60 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800 inline-flex items-center gap-1 sm:gap-1.5 transition-all cursor-pointer active:scale-95 animate-pulse whitespace-nowrap shrink-0" title="Buka shift kasir baru">
-                    <i class="fa-solid fa-wallet text-[10px]"></i>
+                <button onclick="window.openPOSOpenShiftModal()" class="h-8 px-2.5 sm:px-3 rounded-xl text-xs font-bold bg-amber-50 hover:bg-amber-100 dark:bg-amber-950/40 dark:hover:bg-amber-900/60 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800 inline-flex items-center gap-1.5 transition-all cursor-pointer active:scale-95 animate-pulse whitespace-nowrap shrink-0 shadow-2xs" title="Buka shift kasir baru">
+                    <i class="fa-solid fa-wallet text-xs"></i>
                     <span class="whitespace-nowrap">Buka Shift</span>
                 </button>`;
             }

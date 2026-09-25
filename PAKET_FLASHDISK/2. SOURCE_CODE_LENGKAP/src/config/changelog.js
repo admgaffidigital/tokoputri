@@ -19,7 +19,8 @@ export const DEFAULT_CHANGELOG = [
             'Harmonisasi Tombol Shift & Parkir Kasir: Memperbarui tombol indikator shift kasir dan badge transaksi parkir (hold cart) agar selalu inline tanpa terpotong (single-line compact) dengan padding dan icon yang pas di semua ukuran layar.',
             'Sinkronisasi Warna Pemindai Kamera (Camera Scanner): Tombol scan barcode kamera F9 kini otomatis mengikuti identitas warna brand toko (var(--color-primary)) menggunakan tint lembut semi-transparan, menggantikan warna hijau statis yang sebelumnya jomplang dari palet tema.',
             'Header CMS Admin Frosted Glass Konsisten: Merombak tombol Preview dan Keluar di header Admin CMS menjadi pill frosted glass semi-transparan yang menyatu elegan dengan background brand toko, mengeliminasi warna abu-abu dan pink kontras yang tidak harmonis.',
-            'Presisi Tipografi & Ruang Pandang Mobile: Mengoptimalkan tata letak header storefront dan admin strip agar tidak ada overflow horizontal maupun vertical clipping pada perangkat mobile.'
+            'Presisi Tipografi & Ruang Pandang Mobile: Mengoptimalkan tata letak header storefront dan admin strip agar tidak ada overflow horizontal maupun vertical clipping pada perangkat mobile.',
+            'Jarak & Ruang Pandang Header Lebih Lega: Meningkatkan padding bawah glass-header (pb-4 sm:pb-5) serta mengelevasi tinggi dan padding Action Strip (min-h-[50px] py-2 sm:py-2.5) dengan tombol h-8 rounded-xl seragam, menciptakan ruang bernapas yang nyaman, elegan, dan bebas dari kesan mepet.'
         ]
     },
     {

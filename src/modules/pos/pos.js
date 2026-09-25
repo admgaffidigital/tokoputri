@@ -502,14 +502,14 @@ export const renderHeldBadges = () => {
     if (adTarget) {
         if (count > 0) {
             adTarget.innerHTML = `
-            <button onclick="window.openPOSHeldModal()" class="px-1.5 sm:px-2 py-1 rounded-lg bg-amber-500 hover:bg-amber-600 text-white text-[10px] font-black inline-flex items-center gap-1 shadow-xs transition-all active:scale-95 cursor-pointer animate-pulse whitespace-nowrap shrink-0" title="Ada ${count} transaksi antrean tertahan (F8)">
-                <i class="fa-solid fa-hourglass-half text-[10px]"></i>
+            <button onclick="window.openPOSHeldModal()" class="h-8 px-2.5 sm:px-3 rounded-xl bg-amber-500 hover:bg-amber-600 text-white text-xs font-black inline-flex items-center gap-1.5 shadow-sm transition-all active:scale-95 cursor-pointer animate-pulse whitespace-nowrap shrink-0" title="Ada ${count} transaksi antrean tertahan (F8)">
+                <i class="fa-solid fa-hourglass-half text-xs"></i>
                 <span class="whitespace-nowrap">${count} Parkir</span>
             </button>`;
         } else {
             adTarget.innerHTML = `
-            <button onclick="window.openPOSHeldModal()" class="px-1.5 sm:px-2 py-1 rounded-lg bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-300 text-[10px] font-bold inline-flex items-center gap-1 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all cursor-pointer whitespace-nowrap shrink-0" title="Daftar Transaksi Tertahan (F8)">
-                <i class="fa-solid fa-hourglass-half text-[10px]"></i>
+            <button onclick="window.openPOSHeldModal()" class="h-8 px-2.5 sm:px-3 rounded-xl bg-slate-50 hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-750 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 text-xs font-bold inline-flex items-center gap-1.5 transition-all cursor-pointer whitespace-nowrap shrink-0 shadow-2xs active:scale-95" title="Daftar Transaksi Tertahan (F8)">
+                <i class="fa-solid fa-hourglass-half text-xs"></i>
                 <span class="whitespace-nowrap">Parkir</span>
             </button>`;
         }
@@ -2235,24 +2235,24 @@ const buildPOSLayout = ({ isStorefront }) => {
             </div>
         </header>`
         : `
-        <!-- ADMIN POS ACTION STRIP (kompak, presisi tinggi, anti-wrap di mobile) -->
-        <div class="h-10 shrink-0 bg-slate-100 dark:bg-slate-800/70 px-2.5 sm:px-4 flex items-center justify-between border-b border-slate-200 dark:border-slate-700/60 text-xs overflow-hidden gap-2">
-            <div class="flex items-center gap-1.5 sm:gap-2 shrink-0 whitespace-nowrap">
-                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0"></span>
-                <span class="text-[11px] font-black uppercase tracking-wider text-slate-700 dark:text-slate-200 whitespace-nowrap">
+        <!-- ADMIN POS ACTION STRIP (lega, nyaman, presisi tinggi, anti-wrap di mobile) -->
+        <div class="min-h-[50px] py-2 sm:py-2.5 shrink-0 bg-white dark:bg-slate-900 px-3.5 sm:px-5 flex items-center justify-between border-b border-slate-200/90 dark:border-slate-800 text-xs overflow-hidden gap-2.5 shadow-2xs">
+            <div class="flex items-center gap-2 shrink-0 whitespace-nowrap">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse shrink-0 shadow-xs"></span>
+                <span class="text-xs font-black uppercase tracking-wider text-slate-800 dark:text-slate-100 whitespace-nowrap">
                     <span class="hidden sm:inline">Terminal </span>POS
                 </span>
-                <span class="hidden sm:inline text-slate-400">•</span>
-                <span id="pos-live-clock" class="hidden sm:inline text-[10px] font-mono text-slate-500 dark:text-slate-400">--:--:--</span>
+                <span class="hidden sm:inline text-slate-300 dark:text-slate-600">•</span>
+                <span id="pos-live-clock" class="hidden sm:inline text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400">--:--:--</span>
             </div>
-            <div class="flex items-center gap-1 sm:gap-1.5 shrink-0 whitespace-nowrap">
-                <span class="hidden md:inline-flex items-center gap-1 text-[10px] font-bold text-slate-500 dark:text-slate-400 whitespace-nowrap">
-                    <i class="fa-solid fa-barcode"></i> Scanner Otomatis
+            <div class="flex items-center gap-1.5 sm:gap-2 shrink-0 whitespace-nowrap">
+                <span class="hidden md:inline-flex items-center gap-1.5 text-[10px] font-bold text-slate-500 dark:text-slate-400 whitespace-nowrap">
+                    <i class="fa-solid fa-barcode text-xs"></i> Scanner Otomatis
                 </span>
                 <div id="pos-shift-btn-admin" class="flex items-center shrink-0"></div>
                 <div id="pos-held-btn-admin" class="flex items-center shrink-0"></div>
-                <button onclick="window.posClearCart()" class="px-2 sm:px-2.5 py-1 rounded-lg bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-rose-500 text-[10px] font-bold inline-flex items-center gap-1 hover:bg-rose-50 dark:hover:bg-rose-950/20 transition-all cursor-pointer whitespace-nowrap shrink-0" title="Reset Keranjang Kasir">
-                    <i class="fa-solid fa-trash-can text-[10px]"></i>
+                <button onclick="window.posClearCart()" class="h-8 px-2.5 sm:px-3 rounded-xl bg-slate-50 hover:bg-rose-50 dark:bg-slate-800 dark:hover:bg-rose-950/30 border border-slate-200 dark:border-slate-700 text-rose-500 text-xs font-bold inline-flex items-center gap-1.5 transition-all cursor-pointer whitespace-nowrap shrink-0 shadow-2xs active:scale-95" title="Reset Keranjang Kasir">
+                    <i class="fa-solid fa-trash-can text-xs"></i>
                     <span class="inline">Reset</span>
                 </button>
             </div>
@@ -2267,7 +2267,7 @@ const buildPOSLayout = ({ isStorefront }) => {
             <!-- PANEL KIRI: KATALOG (Mobile 100%, Desktop 63%-65%) -->
             <div class="flex flex-col flex-1 lg:w-[63%] xl:w-[65%] border-r border-slate-200/80 dark:border-slate-800 overflow-hidden bg-slate-50/50 dark:bg-slate-900/30">
                 <!-- Search & Category Bar with View Switcher -->
-                <div class="p-2.5 sm:p-3 bg-white dark:bg-slate-900 border-b border-slate-200/80 dark:border-slate-800 space-y-2 shrink-0 shadow-2xs">
+                <div class="p-3 sm:p-3.5 bg-white dark:bg-slate-900 border-b border-slate-200/80 dark:border-slate-800 space-y-2.5 shrink-0 shadow-2xs">
                     <div class="flex items-center gap-2">
                         <div class="relative flex-1">
                             <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs pointer-events-none"></i>
