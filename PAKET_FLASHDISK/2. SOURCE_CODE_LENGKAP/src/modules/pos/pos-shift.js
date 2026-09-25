@@ -1517,6 +1517,9 @@ export const loadAdminShiftReports = async () => {
                         <button onclick="window.printShiftSettlementReceipt(${sJson}, ${!isClosed})" class="w-8 h-8 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-700/80 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-200 text-xs flex items-center justify-center transition-all cursor-pointer shrink-0 shadow-2xs active:scale-95" title="Cetak Slip">
                             <i class="fa-solid fa-print"></i>
                         </button>
+                        <button onclick="window.deleteShiftRecord('${doc.id}', '${esc(s.shiftNo || s.id)}')" class="w-8 h-8 rounded-xl bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/40 dark:hover:bg-rose-900/60 text-rose-500 dark:text-rose-400 text-xs flex items-center justify-center transition-all cursor-pointer shrink-0 shadow-2xs active:scale-95 border border-rose-100 dark:border-rose-900/60" title="Hapus Data Shift">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
                     </div>
                 </div>
 
@@ -1554,6 +1557,24 @@ export const loadAdminShiftReports = async () => {
     }
 };
 
+// ─── Hapus Riwayat Shift (Admin Only) ────────────────────────
+const deleteShiftRecord = async (shiftId, shiftNo) => {
+    const confirmed = await showConfirm(
+        `Hapus data shift <b>#${esc(shiftNo)}</b>?<br><span class="text-xs text-slate-400 dark:text-slate-500">Data ini akan dihapus permanen dari cloud dan tidak bisa dikembalikan.</span>`,
+        { confirmText: 'Ya, Hapus', cancelText: 'Batal', danger: true }
+    );
+    if (!confirmed) return;
+
+    try {
+        await db.collection('freshmart').doc('cms_data').collection('pos_shifts').doc(shiftId).delete();
+        showToast('Data shift berhasil dihapus.', 'success');
+        await loadAdminShiftReports();
+    } catch (err) {
+        console.error('[POS Shift] Gagal menghapus shift:', err);
+        showToast('Gagal menghapus: ' + err.message, 'error');
+    }
+};
+
 // ─── Expose ke Global Window ─────────────────────────────────
 window.getActiveShift             = getActiveShift;
 window.saveActiveShift            = saveActiveShift;
@@ -1586,3 +1607,4 @@ window.executeShiftPrintDirect    = executeShiftPrintDirect;
 window.renderShiftHeaderBadge     = renderShiftHeaderBadge;
 window.renderAdminShiftReportView = renderAdminShiftReportView;
 window.loadAdminShiftReports      = loadAdminShiftReports;
+window.deleteShiftRecord          = deleteShiftRecord;
