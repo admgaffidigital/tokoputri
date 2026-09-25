@@ -176,6 +176,15 @@ Aplikasi telah dilengkapi dengan fondasi **Capacitor 8 Android Native**:
 
 ## 📋 Riwayat Pembaruan (Changelog)
 
+### v1.9.32 — Harmonisasi Visual Keranjang POS Kasir Mobile & Zero Truncation (25 Sep 2026)
+- **Eliminasi Pemotongan Judul Keranjang Mobile (Anti-Truncation)**: Menerapkan teks adaptif (`Keranjang` di mobile, `Keranjang Transaksi` di desktop) sehingga judul tidak lagi terpotong elipsis (`KERANJANG T...`) pada layar ponsel sempit (<= 390px) dan tampil presisi bersama counter jumlah item belanja.
+- **Harmonisasi Tombol Tindakan Header Keranjang (Tahan, Kosongkan & Tutup)**: Merestrukturisasi tombol "Tahan" dan "Kosongkan" menjadi badge pill taktil semi-transparan dengan border lembut (`amber-500/10` dan `rose-500/10`) serta tombol tutup yang proporsional, menggantikan teks raw yang kontras dan tidak selaras.
+- **Penyelarasan Penuh Pengalih Diskon Kasir (Rp / %)**: Memberikan aksen warna tema brand toko (`var(--color-primary)`) pada tombol pengalih aktif (`Rp` / `%`) dengan kontras teks putih bersih, menggantikan tombol abu-abu polos.
+- **Preset Chips Diskon Cerdas Beraksen Tema Toko**: Merombak preset chips potongan harga (5%, 10%, 15%, 20%, 50%, Rp 2rb, 5rb, 10rb, 25rb, 50rb) dari tombol slate abu-abu kaku menjadi chips beraksen brand toko dengan indikator status aktif (solid primary) saat dipilih.
+- **Penyempurnaan Stepper Kuantitas & Tombol Bayar Berkilau**: Menambahkan focus border tema pada kontrol kuantitas `[− 1 +]` serta elevasi bayangan bercahaya (*box-shadow glow brand color*) pada tombol Proses Pembayaran.
+
+---
+
 ### v1.9.31 — Harmonisasi Visual Tombol Pilih Berkas Cadangan & Presisi Sempurna Navigasi Header (25 Sep 2026)
 - **Penyelarasan Penuh & Eliminasi Tombol Gepeng**: Mengubah tombol "Pilih Berkas Cadangan" dan "Rollback Data Toko" menjadi grid 2-kolom berdampingan (`grid grid-cols-2 gap-2.5 sm:gap-3`) yang simetris dengan teks label adaptif, mengeliminasi bentangan bilah panjang 1-kolom yang pipih/gepeng (rasio 7:1) menjadi tombol taktil yang proporsional.
 - **Harmonisasi Simetris dengan Baris Snapshot Cepat**: Menyelaraskan tinggi fisik (`h-11 sm:h-12`), radius sudut (`rounded-xl sm:rounded-2xl`), dan padding tombol pemulihan agar 100% selaras dan sejajar sempurna dengan baris tombol Simpan Cepat & Pulihkan di bawahnya.

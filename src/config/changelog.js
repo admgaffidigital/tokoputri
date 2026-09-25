@@ -8,6 +8,21 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-9-32',
+        version: 'v1.9.32',
+        date: '2026-09-25',
+        title: 'Harmonisasi Visual Keranjang POS Kasir Mobile: Eliminasi Pemotongan Judul (Anti-Truncation), Penyelarasan Tombol Tahan/Kosongkan & Preset Chips Bertema Toko',
+        category: 'optimization',
+        badge: 'POS Theme Harmonization & Zero Truncation v1.9.32',
+        items: [
+            'Eliminasi Pemotongan Judul Keranjang Mobile (Anti-Truncation): Menerapkan teks adaptif (Keranjang di mobile, Keranjang Transaksi di desktop) sehingga judul tidak lagi terpotong elipsis ("KERANJANG T...") pada layar ponsel sempit (<= 390px) dan tampil presisi bersama counter jumlah item belanja.',
+            'Harmonisasi Tombol Tindakan Header Keranjang (Tahan, Kosongkan & Tutup): Merestrukturisasi tombol "Tahan" dan "Kosongkan" menjadi badge pill taktil semi-transparan dengan border lembut (amber-500/10 dan rose-500/10) serta tombol tutup yang proporsional, menggantikan teks raw yang kontras dan tidak selaras.',
+            'Penyelarasan Penuh Pengalih Diskon Kasir (Rp / %): Memberikan aksen warna tema brand toko (var(--color-primary)) pada tombol pengalih aktif (Rp / %) dengan kontras teks putih bersih, menggantikan tombol abu-abu polos.',
+            'Preset Chips Diskon Cerdas Beraksen Tema Toko: Merombak preset chips potongan harga (5%, 10%, 15%, 20%, 50%, Rp 2rb, 5rb, 10rb, 25rb, 50rb) dari tombol slate abu-abu kaku menjadi chips beraksen brand toko dengan indikator status aktif (solid primary) saat dipilih.',
+            'Penyempurnaan Stepper Kuantitas & Tombol Bayar Berkilau: Menambahkan focus border tema pada kontrol kuantitas [− 1 +] serta elevasi bayangan bercahaya (box-shadow glow brand color) pada tombol Proses Pembayaran.'
+        ]
+    },
+    {
         id: 'log-1-9-31',
         version: 'v1.9.31',
         date: '2026-09-25',

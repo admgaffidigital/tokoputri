@@ -1112,14 +1112,14 @@ const renderCart = () => {
                 </div>
                 <!-- Stepper & Subtotal -->
                 <div class="flex flex-col items-end gap-1 shrink-0">
-                    <div class="flex items-center gap-0.5 bg-slate-100 dark:bg-slate-700/80 rounded-lg p-0.5 border border-slate-200 dark:border-slate-600">
-                        <button onclick="window.posUpdateQty('${ckey}',-1)" class="w-5 h-5 rounded text-slate-600 dark:text-slate-200 hover:bg-white dark:hover:bg-slate-600 font-black text-xs flex items-center justify-center cursor-pointer active:scale-90">−</button>
+                    <div class="flex items-center gap-0.5 bg-slate-100 dark:bg-slate-700/80 rounded-lg p-0.5 border border-slate-200 dark:border-slate-600 focus-within:border-[var(--color-primary)] transition-colors">
+                        <button onclick="window.posUpdateQty('${ckey}',-1)" class="w-5 h-5 rounded text-slate-600 dark:text-slate-200 hover:bg-white dark:hover:bg-slate-600 font-black text-xs flex items-center justify-center cursor-pointer active:scale-90 transition-all">−</button>
                         <input type="number" min="1" value="${item.qty}" onchange="window.posSetQty('${ckey}',this.value)"
                             class="w-6 text-center text-[11px] font-black bg-transparent text-slate-800 dark:text-slate-100 focus:outline-none">
-                        <button onclick="window.posUpdateQty('${ckey}',1)" class="w-5 h-5 rounded text-slate-600 dark:text-slate-200 hover:bg-white dark:hover:bg-slate-600 font-black text-xs flex items-center justify-center cursor-pointer active:scale-90">+</button>
+                        <button onclick="window.posUpdateQty('${ckey}',1)" class="w-5 h-5 rounded text-slate-600 dark:text-slate-200 hover:bg-white dark:hover:bg-slate-600 font-black text-xs flex items-center justify-center cursor-pointer active:scale-90 transition-all">+</button>
                     </div>
                     <p class="text-xs font-black" style="color:var(--color-primary)">${fRp(item.subtotal)}</p>
-                    <button onclick="window.posRemoveItem('${ckey}')" class="text-slate-400 hover:text-rose-500 text-[11px] p-0.5 transition-colors" title="Hapus item">
+                    <button onclick="window.posRemoveItem('${ckey}')" class="p-1 rounded-md text-slate-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30 text-[11px] transition-all cursor-pointer" title="Hapus item">
                         <i class="fa-solid fa-trash-can"></i>
                     </button>
                 </div>
@@ -1154,39 +1154,60 @@ const renderCart = () => {
     });
     document.querySelectorAll('.pos-disc-type-rp').forEach(btn => {
         if (posDiscountType === 'rp') {
-            btn.className = 'pos-disc-type-rp px-2 py-0.5 rounded-md transition-all cursor-pointer bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 shadow-xs font-black';
+            btn.className = 'pos-disc-type-rp px-2.5 py-0.5 rounded-md transition-all cursor-pointer font-black text-white shadow-xs text-[10px]';
+            btn.style.background = 'var(--color-primary)';
+            btn.style.color = '#ffffff';
         } else {
-            btn.className = 'pos-disc-type-rp px-2 py-0.5 rounded-md transition-all cursor-pointer text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 font-bold';
+            btn.className = 'pos-disc-type-rp px-2.5 py-0.5 rounded-md transition-all cursor-pointer text-slate-600 dark:text-slate-300 hover:text-slate-900 font-bold text-[10px]';
+            btn.style.background = 'transparent';
+            btn.style.color = '';
         }
     });
     document.querySelectorAll('.pos-disc-type-pct').forEach(btn => {
         if (posDiscountType === 'percent') {
-            btn.className = 'pos-disc-type-pct px-2 py-0.5 rounded-md transition-all cursor-pointer bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 shadow-xs font-black';
+            btn.className = 'pos-disc-type-pct px-2.5 py-0.5 rounded-md transition-all cursor-pointer font-black text-white shadow-xs text-[10px]';
+            btn.style.background = 'var(--color-primary)';
+            btn.style.color = '#ffffff';
         } else {
-            btn.className = 'pos-disc-type-pct px-2 py-0.5 rounded-md transition-all cursor-pointer text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 font-bold';
+            btn.className = 'pos-disc-type-pct px-2.5 py-0.5 rounded-md transition-all cursor-pointer text-slate-600 dark:text-slate-300 hover:text-slate-900 font-bold text-[10px]';
+            btn.style.background = 'transparent';
+            btn.style.color = '';
         }
     });
     document.querySelectorAll('.pos-disc-prefix').forEach(el => {
         el.textContent = posDiscountType === 'percent' ? '%' : 'Rp';
+        el.style.color = 'var(--color-primary)';
     });
 
-    // Render preset chips
+    // Render preset chips dengan harmonisasi tema & active state indicator
+    const percentChips = [5, 10, 15, 20, 50];
+    const rpChips      = [2000, 5000, 10000, 25000, 50000];
+
+    const isChipActive = (val, type) => posDiscountType === type && Number(posDiscountVal) === Number(val);
+
     const chipsHTML = posDiscountType === 'percent'
         ? `
-        <button onclick="window.posApplyQuickDiscount(5,'percent')" class="px-2 py-0.5 rounded-md bg-slate-200/70 hover:bg-slate-300/80 dark:bg-slate-700 dark:hover:bg-slate-600 text-[9px] font-black text-slate-700 dark:text-slate-200 cursor-pointer transition-all">5%</button>
-        <button onclick="window.posApplyQuickDiscount(10,'percent')" class="px-2 py-0.5 rounded-md bg-slate-200/70 hover:bg-slate-300/80 dark:bg-slate-700 dark:hover:bg-slate-600 text-[9px] font-black text-slate-700 dark:text-slate-200 cursor-pointer transition-all">10%</button>
-        <button onclick="window.posApplyQuickDiscount(15,'percent')" class="px-2 py-0.5 rounded-md bg-slate-200/70 hover:bg-slate-300/80 dark:bg-slate-700 dark:hover:bg-slate-600 text-[9px] font-black text-slate-700 dark:text-slate-200 cursor-pointer transition-all">15%</button>
-        <button onclick="window.posApplyQuickDiscount(20,'percent')" class="px-2 py-0.5 rounded-md bg-slate-200/70 hover:bg-slate-300/80 dark:bg-slate-700 dark:hover:bg-slate-600 text-[9px] font-black text-slate-700 dark:text-slate-200 cursor-pointer transition-all">20%</button>
-        <button onclick="window.posApplyQuickDiscount(50,'percent')" class="px-2 py-0.5 rounded-md bg-slate-200/70 hover:bg-slate-300/80 dark:bg-slate-700 dark:hover:bg-slate-600 text-[9px] font-black text-slate-700 dark:text-slate-200 cursor-pointer transition-all">50%</button>
-        ${posDiscountVal > 0 ? `<button onclick="window.posApplyQuickDiscount(0,'percent')" class="px-2 py-0.5 rounded-md bg-rose-100 hover:bg-rose-200 dark:bg-rose-950/40 text-[9px] font-black text-rose-600 cursor-pointer transition-all">Reset</button>` : ''}
+        ${percentChips.map(pct => {
+            const active = isChipActive(pct, 'percent');
+            return `<button onclick="window.posApplyQuickDiscount(${pct},'percent')" 
+                class="px-2 py-0.5 rounded-md text-[9px] font-black cursor-pointer transition-all ${active ? 'shadow-xs text-white' : 'hover:brightness-95'}"
+                style="${active 
+                    ? 'background:var(--color-primary);color:#ffffff;border:1px solid var(--color-primary);' 
+                    : 'background:rgba(var(--color-primary-rgb),0.1);color:var(--color-primary);border:1px solid rgba(var(--color-primary-rgb),0.25);'}">${pct}%</button>`;
+        }).join('')}
+        ${posDiscountVal > 0 ? `<button onclick="window.posApplyQuickDiscount(0,'percent')" class="px-2 py-0.5 rounded-md bg-rose-500/10 hover:bg-rose-500/20 text-[9px] font-black text-rose-600 dark:text-rose-400 border border-rose-500/25 cursor-pointer transition-all active:scale-95">Reset</button>` : ''}
         `
         : `
-        <button onclick="window.posApplyQuickDiscount(2000,'rp')" class="px-2 py-0.5 rounded-md bg-slate-200/70 hover:bg-slate-300/80 dark:bg-slate-700 dark:hover:bg-slate-600 text-[9px] font-black text-slate-700 dark:text-slate-200 cursor-pointer transition-all">2rb</button>
-        <button onclick="window.posApplyQuickDiscount(5000,'rp')" class="px-2 py-0.5 rounded-md bg-slate-200/70 hover:bg-slate-300/80 dark:bg-slate-700 dark:hover:bg-slate-600 text-[9px] font-black text-slate-700 dark:text-slate-200 cursor-pointer transition-all">5rb</button>
-        <button onclick="window.posApplyQuickDiscount(10000,'rp')" class="px-2 py-0.5 rounded-md bg-slate-200/70 hover:bg-slate-300/80 dark:bg-slate-700 dark:hover:bg-slate-600 text-[9px] font-black text-slate-700 dark:text-slate-200 cursor-pointer transition-all">10rb</button>
-        <button onclick="window.posApplyQuickDiscount(25000,'rp')" class="px-2 py-0.5 rounded-md bg-slate-200/70 hover:bg-slate-300/80 dark:bg-slate-700 dark:hover:bg-slate-600 text-[9px] font-black text-slate-700 dark:text-slate-200 cursor-pointer transition-all">25rb</button>
-        <button onclick="window.posApplyQuickDiscount(50000,'rp')" class="px-2 py-0.5 rounded-md bg-slate-200/70 hover:bg-slate-300/80 dark:bg-slate-700 dark:hover:bg-slate-600 text-[9px] font-black text-slate-700 dark:text-slate-200 cursor-pointer transition-all">50rb</button>
-        ${posDiscountVal > 0 ? `<button onclick="window.posApplyQuickDiscount(0,'rp')" class="px-2 py-0.5 rounded-md bg-rose-100 hover:bg-rose-200 dark:bg-rose-950/40 text-[9px] font-black text-rose-600 cursor-pointer transition-all">Reset</button>` : ''}
+        ${rpChips.map(rp => {
+            const active = isChipActive(rp, 'rp');
+            const label = `${rp / 1000}rb`;
+            return `<button onclick="window.posApplyQuickDiscount(${rp},'rp')" 
+                class="px-2 py-0.5 rounded-md text-[9px] font-black cursor-pointer transition-all ${active ? 'shadow-xs text-white' : 'hover:brightness-95'}"
+                style="${active 
+                    ? 'background:var(--color-primary);color:#ffffff;border:1px solid var(--color-primary);' 
+                    : 'background:rgba(var(--color-primary-rgb),0.1);color:var(--color-primary);border:1px solid rgba(var(--color-primary-rgb),0.25);'}">${label}</button>`;
+        }).join('')}
+        ${posDiscountVal > 0 ? `<button onclick="window.posApplyQuickDiscount(0,'rp')" class="px-2 py-0.5 rounded-md bg-rose-500/10 hover:bg-rose-500/20 text-[9px] font-black text-rose-600 dark:text-rose-400 border border-rose-500/25 cursor-pointer transition-all active:scale-95">Reset</button>` : ''}
         `;
     document.querySelectorAll('.pos-disc-chips-target').forEach(e => e.innerHTML = chipsHTML);
 
@@ -2309,16 +2330,16 @@ const buildPOSLayout = ({ isStorefront }) => {
                         <div class="w-7 h-7 rounded-lg flex items-center justify-center text-xs text-white shadow-xs shrink-0" style="background:var(--color-primary)">
                             <i class="fa-solid fa-cart-shopping"></i>
                         </div>
-                        <h3 class="text-xs font-black uppercase tracking-wider text-slate-800 dark:text-white truncate whitespace-nowrap">
-                            Keranjang Transaksi (<span class="pos-item-count-target">0</span>)
+                        <h3 class="text-xs font-black uppercase tracking-wider text-slate-800 dark:text-white truncate whitespace-nowrap flex items-center gap-1">
+                            <span class="hidden sm:inline">Keranjang Transaksi</span><span class="sm:hidden">Keranjang</span> (<span class="pos-item-count-target">0</span>)
                         </h3>
                     </div>
                     <div class="flex items-center gap-1.5 shrink-0">
-                        <button onclick="window.posHoldCurrentCart()" class="pos-hold-btn-target text-[10px] font-bold text-amber-600 dark:text-amber-400 hover:text-amber-700 px-2 py-1 rounded-lg hover:bg-amber-50 dark:hover:bg-amber-950/20 transition-all cursor-pointer flex items-center gap-1 whitespace-nowrap" title="Tahan transaksi sementara (F6)">
-                            <i class="fa-solid fa-pause"></i><span>Tahan</span>
+                        <button onclick="window.posHoldCurrentCart()" class="pos-hold-btn-target text-[10px] font-bold text-amber-700 dark:text-amber-300 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/25 px-2.5 py-1 rounded-lg transition-all cursor-pointer flex items-center gap-1 whitespace-nowrap active:scale-95 shadow-2xs" title="Tahan transaksi sementara (F6)">
+                            <i class="fa-solid fa-pause text-[9px]"></i><span>Tahan</span>
                         </button>
-                        <button onclick="window.posClearCart()" class="text-[10px] font-bold text-rose-500 hover:text-rose-600 px-2 py-1 rounded-lg hover:bg-rose-50 dark:hover:bg-rose-950/20 transition-all cursor-pointer flex items-center gap-1 shrink-0 whitespace-nowrap">
-                            <i class="fa-solid fa-trash-can"></i><span>Kosongkan</span>
+                        <button onclick="window.posClearCart()" class="text-[10px] font-bold text-rose-600 dark:text-rose-400 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/25 px-2.5 py-1 rounded-lg transition-all cursor-pointer flex items-center gap-1 shrink-0 whitespace-nowrap active:scale-95 shadow-2xs" title="Kosongkan keranjang">
+                            <i class="fa-solid fa-trash-can text-[9px]"></i><span>Kosongkan</span>
                         </button>
                     </div>
                 </div>
@@ -2333,21 +2354,23 @@ const buildPOSLayout = ({ isStorefront }) => {
                         <span class="pos-subtotal-target font-bold text-slate-800 dark:text-slate-200">Rp 0</span>
                     </div>
                     <!-- Smart Diskon Transaksi Kasir (Rp / %) -->
-                    <div class="space-y-1.5 p-2.5 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200/70 dark:border-slate-700/60 text-xs">
+                    <div class="space-y-1.5 p-2.5 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200/80 dark:border-slate-700/60 text-xs transition-colors" style="border-color:rgba(var(--color-primary-rgb),0.25)">
                         <div class="flex items-center justify-between">
-                            <span class="text-slate-600 dark:text-slate-300 font-bold flex items-center gap-1.5">
-                                <i class="fa-solid fa-tags text-[var(--color-primary)] text-[11px]"></i>
+                            <span class="text-slate-700 dark:text-slate-200 font-bold flex items-center gap-1.5">
+                                <div class="w-5 h-5 rounded-md flex items-center justify-center text-[10px] text-white shrink-0 shadow-2xs" style="background:var(--color-primary)">
+                                    <i class="fa-solid fa-tags"></i>
+                                </div>
                                 <span>Diskon Transaksi</span>
                             </span>
-                            <div class="flex items-center bg-slate-200 dark:bg-slate-700 rounded-lg p-0.5 text-[10px]">
-                                <button onclick="window.posSetDiscountType('rp')" class="pos-disc-type-rp px-2 py-0.5 rounded-md transition-all cursor-pointer font-black">Rp</button>
-                                <button onclick="window.posSetDiscountType('percent')" class="pos-disc-type-pct px-2 py-0.5 rounded-md transition-all cursor-pointer font-bold">%</button>
+                            <div class="flex items-center bg-slate-200/80 dark:bg-slate-700/80 rounded-lg p-0.5 text-[10px]">
+                                <button onclick="window.posSetDiscountType('rp')" class="pos-disc-type-rp px-2.5 py-0.5 rounded-md transition-all cursor-pointer font-black text-white shadow-xs text-[10px]" style="background:var(--color-primary)">Rp</button>
+                                <button onclick="window.posSetDiscountType('percent')" class="pos-disc-type-pct px-2.5 py-0.5 rounded-md transition-all cursor-pointer font-bold text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 text-[10px]">%</button>
                             </div>
                         </div>
                         <div class="flex items-center gap-2">
                             <div class="flex-1 relative">
-                                <span class="pos-disc-prefix absolute left-2.5 top-1/2 -translate-y-1/2 text-[10px] text-slate-400 font-bold">Rp</span>
-                                <input type="number" min="0" placeholder="0" class="pos-disc-val-input w-full border border-slate-200 dark:border-slate-700 rounded-lg pl-8 pr-2.5 py-1 text-right text-xs font-bold bg-white dark:bg-slate-800 focus:outline-none focus:border-[var(--color-primary)]" oninput="window.posSetDiscountVal(this.value)">
+                                <span class="pos-disc-prefix absolute left-2.5 top-1/2 -translate-y-1/2 text-[10px] font-black" style="color:var(--color-primary)">Rp</span>
+                                <input type="number" min="0" placeholder="0" class="pos-disc-val-input w-full border border-slate-200 dark:border-slate-700 rounded-lg pl-8 pr-2.5 py-1 text-right text-xs font-mono font-bold bg-white dark:bg-slate-800 focus:outline-none focus:border-[var(--color-primary)] transition-all" oninput="window.posSetDiscountVal(this.value)">
                             </div>
                             <div class="pos-disc-preview-target text-[10px] font-black text-rose-500 whitespace-nowrap min-w-[70px] text-right">Rp 0</div>
                         </div>
@@ -2358,9 +2381,9 @@ const buildPOSLayout = ({ isStorefront }) => {
                             <p class="text-[9px] uppercase tracking-wider font-bold text-slate-400">Total Akhir</p>
                             <p class="pos-total-target text-xl font-black" style="color:var(--color-primary)">Rp 0</p>
                         </div>
-                        <span class="text-[10px] font-bold px-2 py-1 rounded-md bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 border border-emerald-200/60">Siap Bayar</span>
+                        <span class="text-[10px] font-bold px-2 py-1 rounded-md bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">Siap Bayar</span>
                     </div>
-                    <button onclick="window.openPayModal()" class="pos-pay-btn-target w-full py-3.5 rounded-2xl text-white font-black text-sm shadow-xl disabled:opacity-40 disabled:cursor-not-allowed active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer" style="background:var(--color-primary)">
+                    <button onclick="window.openPayModal()" class="pos-pay-btn-target w-full py-3.5 rounded-2xl text-white font-black text-sm shadow-xl disabled:opacity-40 disabled:cursor-not-allowed active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer" style="background:var(--color-primary);box-shadow:0 4px 14px rgba(var(--color-primary-rgb),0.35)">
                         <i class="fa-solid fa-cash-register"></i>
                         <span class="btn-text">PROSES PEMBAYARAN</span>
                     </button>
@@ -2380,7 +2403,7 @@ const buildPOSLayout = ({ isStorefront }) => {
                         <div class="flex items-center gap-1.5">
                             <span class="text-[11px] font-bold text-slate-300">Total Transaksi</span>
                         </div>
-                        <p class="pos-total-target text-sm font-black text-emerald-400">Rp 0</p>
+                        <p class="pos-total-target text-sm font-black" style="color:var(--color-primary-light,#34d399)">Rp 0</p>
                     </div>
                 </div>
                 <button onclick="event.stopPropagation(); window.openPOSCartDrawer();" class="px-4 py-2.5 rounded-xl font-black text-xs uppercase tracking-wider text-white shadow-lg active:scale-95 transition-all flex items-center gap-1.5 shrink-0" style="background:var(--color-primary)">
@@ -2400,13 +2423,15 @@ const buildPOSLayout = ({ isStorefront }) => {
                 <!-- Header -->
                 <div class="px-4 py-2.5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between shrink-0 bg-slate-50/70 dark:bg-slate-800/40">
                     <div class="flex items-center gap-2 min-w-0">
-                        <div class="w-7 h-7 rounded-lg flex items-center justify-center text-xs text-white shrink-0" style="background:var(--color-primary)"><i class="fa-solid fa-cart-shopping"></i></div>
-                        <h3 class="text-xs font-black uppercase tracking-wider text-slate-800 dark:text-white truncate whitespace-nowrap">Keranjang Transaksi (<span class="pos-item-count-target">0</span>)</h3>
+                        <div class="w-7 h-7 rounded-lg flex items-center justify-center text-xs text-white shrink-0 shadow-xs" style="background:var(--color-primary)"><i class="fa-solid fa-cart-shopping"></i></div>
+                        <h3 class="text-xs font-black uppercase tracking-wider text-slate-800 dark:text-white whitespace-nowrap flex items-center gap-1">
+                            <span class="hidden sm:inline">Keranjang Transaksi</span><span class="sm:hidden">Keranjang</span> (<span class="pos-item-count-target">0</span>)
+                        </h3>
                     </div>
                     <div class="flex items-center gap-1.5 shrink-0">
-                        <button onclick="window.posHoldCurrentCart()" class="pos-hold-btn-target text-[10px] font-bold text-amber-600 dark:text-amber-400 hover:text-amber-700 px-2 py-1 rounded-lg hover:bg-amber-50 dark:hover:bg-amber-950/20 transition-all flex items-center gap-1 whitespace-nowrap cursor-pointer" title="Tahan transaksi sementara"><i class="fa-solid fa-pause"></i><span>Tahan</span></button>
-                        <button onclick="window.posClearCart()" class="text-[10px] font-bold text-rose-500 hover:text-rose-600 px-2 py-1 rounded-lg hover:bg-rose-50 dark:hover:bg-rose-950/20 transition-all flex items-center gap-1 whitespace-nowrap cursor-pointer"><i class="fa-solid fa-trash-can"></i><span>Kosongkan</span></button>
-                        <button onclick="window.closePOSCartDrawer()" class="w-7 h-7 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-slate-700 text-base flex items-center justify-center transition-all leading-none cursor-pointer">×</button>
+                        <button onclick="window.posHoldCurrentCart()" class="pos-hold-btn-target text-[10px] font-bold text-amber-700 dark:text-amber-300 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/25 px-2 py-1 rounded-lg transition-all flex items-center gap-1 whitespace-nowrap cursor-pointer active:scale-95 shadow-2xs" title="Tahan transaksi sementara (F6)"><i class="fa-solid fa-pause text-[9px]"></i><span>Tahan</span></button>
+                        <button onclick="window.posClearCart()" class="text-[10px] font-bold text-rose-600 dark:text-rose-400 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/25 px-2 py-1 rounded-lg transition-all flex items-center gap-1 whitespace-nowrap cursor-pointer active:scale-95 shadow-2xs" title="Kosongkan keranjang"><i class="fa-solid fa-trash-can text-[9px]"></i><span>Kosongkan</span></button>
+                        <button onclick="window.closePOSCartDrawer()" class="w-7 h-7 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-500 hover:text-slate-800 dark:hover:text-white text-base font-bold flex items-center justify-center transition-all leading-none cursor-pointer" title="Tutup">×</button>
                     </div>
                 </div>
 
@@ -2420,21 +2445,23 @@ const buildPOSLayout = ({ isStorefront }) => {
                         <span class="pos-subtotal-target font-bold text-slate-700 dark:text-slate-200">Rp 0</span>
                     </div>
                     <!-- Smart Diskon Transaksi Kasir (Rp / %) di Mobile Drawer -->
-                    <div class="space-y-1.5 p-2 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200/70 dark:border-slate-700/60 text-xs">
+                    <div class="space-y-1.5 p-2 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200/80 dark:border-slate-700/60 text-xs transition-colors" style="border-color:rgba(var(--color-primary-rgb),0.25)">
                         <div class="flex items-center justify-between">
-                            <span class="text-slate-600 dark:text-slate-300 font-bold flex items-center gap-1.5">
-                                <i class="fa-solid fa-tags text-[var(--color-primary)] text-[11px]"></i>
+                            <span class="text-slate-700 dark:text-slate-200 font-bold flex items-center gap-1.5">
+                                <div class="w-5 h-5 rounded-md flex items-center justify-center text-[10px] text-white shrink-0 shadow-2xs" style="background:var(--color-primary)">
+                                    <i class="fa-solid fa-tags"></i>
+                                </div>
                                 <span>Diskon Transaksi</span>
                             </span>
-                            <div class="flex items-center bg-slate-200 dark:bg-slate-700 rounded-lg p-0.5 text-[10px]">
-                                <button onclick="window.posSetDiscountType('rp')" class="pos-disc-type-rp px-2 py-0.5 rounded-md transition-all cursor-pointer font-black">Rp</button>
-                                <button onclick="window.posSetDiscountType('percent')" class="pos-disc-type-pct px-2 py-0.5 rounded-md transition-all cursor-pointer font-bold">%</button>
+                            <div class="flex items-center bg-slate-200/80 dark:bg-slate-700/80 rounded-lg p-0.5 text-[10px]">
+                                <button onclick="window.posSetDiscountType('rp')" class="pos-disc-type-rp px-2.5 py-0.5 rounded-md transition-all cursor-pointer font-black text-white shadow-xs text-[10px]" style="background:var(--color-primary)">Rp</button>
+                                <button onclick="window.posSetDiscountType('percent')" class="pos-disc-type-pct px-2.5 py-0.5 rounded-md transition-all cursor-pointer font-bold text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 text-[10px]">%</button>
                             </div>
                         </div>
                         <div class="flex items-center gap-2">
                             <div class="flex-1 relative">
-                                <span class="pos-disc-prefix absolute left-2.5 top-1/2 -translate-y-1/2 text-[10px] text-slate-400 font-bold">Rp</span>
-                                <input type="number" min="0" placeholder="0" class="pos-disc-val-input w-full border border-slate-200 dark:border-slate-700 rounded-lg pl-8 pr-2.5 py-1 text-right text-xs font-bold bg-white dark:bg-slate-800 focus:outline-none focus:border-[var(--color-primary)]" oninput="window.posSetDiscountVal(this.value)">
+                                <span class="pos-disc-prefix absolute left-2.5 top-1/2 -translate-y-1/2 text-[10px] font-black" style="color:var(--color-primary)">Rp</span>
+                                <input type="number" min="0" placeholder="0" class="pos-disc-val-input w-full border border-slate-200 dark:border-slate-700 rounded-lg pl-8 pr-2.5 py-1 text-right text-xs font-mono font-bold bg-white dark:bg-slate-800 focus:outline-none focus:border-[var(--color-primary)] transition-all" oninput="window.posSetDiscountVal(this.value)">
                             </div>
                             <div class="pos-disc-preview-target text-[10px] font-black text-rose-500 whitespace-nowrap min-w-[70px] text-right">Rp 0</div>
                         </div>
@@ -2442,9 +2469,9 @@ const buildPOSLayout = ({ isStorefront }) => {
                     </div>
                     <div class="flex justify-between items-center pt-1.5 border-t border-slate-200/80 dark:border-slate-800">
                         <span class="text-xs font-black uppercase tracking-wider text-slate-700 dark:text-white">Total Tagihan</span>
-                        <span class="pos-total-target text-base font-black" style="color:var(--color-primary)">Rp 0</span>
+                        <span class="pos-total-target text-base sm:text-lg font-black" style="color:var(--color-primary)">Rp 0</span>
                     </div>
-                    <button onclick="window.closePOSCartDrawer(); window.openPayModal();" class="pos-pay-btn-target w-full py-3.5 rounded-2xl text-white font-black text-xs sm:text-sm shadow-xl disabled:opacity-40 disabled:cursor-not-allowed active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer" style="background:var(--color-primary)">
+                    <button onclick="window.closePOSCartDrawer(); window.openPayModal();" class="pos-pay-btn-target w-full py-3.5 rounded-2xl text-white font-black text-xs sm:text-sm shadow-xl disabled:opacity-40 disabled:cursor-not-allowed active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer" style="background:var(--color-primary);box-shadow:0 4px 14px rgba(var(--color-primary-rgb),0.35)">
                         <i class="fa-solid fa-cash-register"></i>
                         <span class="btn-text">LANJUT KE PEMBAYARAN</span>
                     </button>
