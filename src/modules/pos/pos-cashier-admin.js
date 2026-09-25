@@ -123,10 +123,17 @@ const loadCashierList = async () => {
     if (!container) return;
 
     try {
-        const snap = await db.collection('freshmart').doc('cms_data')
-            .collection('cashier_accounts')
-            .orderBy('createdAt', 'desc')
-            .get();
+        let snap;
+        try {
+            snap = await db.collection('freshmart').doc('cms_data')
+                .collection('cashier_accounts')
+                .orderBy('createdAt', 'desc')
+                .get();
+        } catch (_) {
+            snap = await db.collection('freshmart').doc('cms_data')
+                .collection('cashier_accounts')
+                .get();
+        }
 
         if (snap.empty) {
             try {
@@ -143,14 +150,20 @@ const loadCashierList = async () => {
             return;
         }
 
-        const hasActive = snap.docs.some(doc => doc.data()?.isActive !== false);
+        const sortedDocs = [...snap.docs].sort((a, b) => {
+            const ta = a.data()?.createdAt?.toMillis ? a.data().createdAt.toMillis() : (a.data()?.createdAt ? new Date(a.data().createdAt).getTime() : 0);
+            const tb = b.data()?.createdAt?.toMillis ? b.data().createdAt.toMillis() : (b.data()?.createdAt ? new Date(b.data().createdAt).getTime() : 0);
+            return tb - ta;
+        });
+
+        const hasActive = sortedDocs.some(doc => doc.data()?.isActive !== false);
         try {
             localStorage.setItem('pos_has_cashier', hasActive ? 'true' : 'false');
             await db.collection('freshmart').doc('cms_data').set({ hasCashier: hasActive }, { merge: true });
         } catch (_) {}
         if (typeof window.updatePOSHeaderIcon === 'function') window.updatePOSHeaderIcon();
 
-        const listHtml = snap.docs.map(doc => {
+        const listHtml = sortedDocs.map(doc => {
             const d = doc.data();
             const uid = doc.id;
             const isActive = d.isActive !== false;
@@ -166,7 +179,7 @@ const loadCashierList = async () => {
                         <div class="flex items-center gap-2 flex-wrap">
                             <p class="text-sm font-black text-slate-900 dark:text-white truncate">${esc(d.name || 'Kasir')}</p>
                             <span class="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full ${isActive
-                                ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800'
+                                ? 'bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60'
                                 : 'bg-slate-100 dark:bg-slate-700 text-slate-500 border border-slate-200 dark:border-slate-600'}">
                                 <span class="w-1.5 h-1.5 rounded-full ${isActive ? 'bg-emerald-500 animate-pulse' : 'bg-slate-400'}"></span>
                                 ${isActive ? 'Aktif' : 'Nonaktif'}
@@ -200,11 +213,20 @@ const loadCashierList = async () => {
         }).join('');
 
         container.innerHTML = `<div class="space-y-2.5">${listHtml}</div>
-        <p class="text-center text-[10px] text-slate-400 mt-3">${snap.size} akun kasir terdaftar</p>`;
+        <p class="text-center text-[10px] text-slate-400 mt-3">${sortedDocs.length} akun kasir terdaftar</p>`;
 
     } catch (err) {
         console.error('[CashierAdmin] Gagal memuat daftar kasir:', err);
-        container.innerHTML = `<div class="text-center py-10 text-rose-500 text-sm"><i class="fa-solid fa-triangle-exclamation mr-2"></i>Gagal memuat data kasir</div>`;
+        container.innerHTML = `
+        <div class="text-center py-10 p-4 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-500">
+            <i class="fa-solid fa-triangle-exclamation text-rose-500 text-2xl mb-2 block"></i>
+            <p class="text-xs font-bold text-slate-700 dark:text-slate-300">Gagal memuat data kasir</p>
+            <p class="text-[11px] text-slate-400 mt-0.5">${esc(err.message || 'Periksa koneksi internet atau login admin')}</p>
+            <button onclick="window.loadCashierList()" class="mt-3 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 text-xs font-bold text-slate-700 dark:text-slate-300 transition-all cursor-pointer inline-flex items-center gap-1.5 active:scale-95">
+                <i class="fa-solid fa-arrows-rotate text-[10px]"></i>
+                <span>Coba Lagi</span>
+            </button>
+        </div>`;
     }
 };
 
@@ -500,3 +522,4 @@ window.updateCashierName        = updateCashierName;
 window.toggleCashierActive      = toggleCashierActive;
 window.deleteCashierAccount     = deleteCashierAccount;
 window.toggleCashierPassVisibility = toggleCashierPassVisibility;
+window.loadCashierList          = loadCashierList;
