@@ -1154,33 +1154,33 @@ export const renderShiftHeaderBadge = () => {
             const isStorefront = target.id === 'pos-shift-btn-storefront';
             if (isStorefront) {
                 target.innerHTML = `
-                <button onclick="window.openPOSShiftSummaryModal()" class="h-8 px-2 sm:px-2.5 rounded-xl bg-black/15 hover:bg-black/25 text-white border border-white/20 transition-all cursor-pointer shadow-xs active:scale-95 flex items-center gap-1.5" title="Klik untuk lihat ringkasan shift (X-Report)">
+                <button onclick="window.openPOSShiftSummaryModal()" class="h-8 px-2 sm:px-2.5 rounded-xl bg-black/15 hover:bg-black/25 text-white border border-white/20 transition-all cursor-pointer shadow-xs active:scale-95 inline-flex items-center gap-1 sm:gap-1.5 whitespace-nowrap shrink-0" title="Klik untuk lihat ringkasan shift (X-Report)">
                     <i class="fa-solid fa-cash-register text-emerald-300 text-xs"></i>
                     <span class="hidden sm:inline text-xs font-medium">Shift: </span>
-                    <b class="text-white text-xs">${fRp(shift.startingCash)}</b>
+                    <b class="text-white text-xs whitespace-nowrap">${fRp(shift.startingCash)}</b>
                 </button>`;
             } else {
                 target.innerHTML = `
-                <button onclick="window.openPOSShiftSummaryModal()" class="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-[rgba(var(--color-primary-rgb),0.1)] hover:bg-[rgba(var(--color-primary-rgb),0.18)] text-[var(--color-primary)] border border-[rgba(var(--color-primary-rgb),0.25)] flex items-center gap-1.5 transition-all cursor-pointer active:scale-95" title="Klik untuk lihat ringkasan shift (X-Report)">
-                    <i class="fa-solid fa-cash-register"></i>
+                <button onclick="window.openPOSShiftSummaryModal()" class="px-1.5 sm:px-2.5 py-1 rounded-lg text-[10px] font-bold bg-[rgba(var(--color-primary-rgb),0.1)] hover:bg-[rgba(var(--color-primary-rgb),0.18)] text-[var(--color-primary)] border border-[rgba(var(--color-primary-rgb),0.25)] inline-flex items-center gap-1 sm:gap-1.5 transition-all cursor-pointer active:scale-95 whitespace-nowrap shrink-0" title="Klik untuk lihat ringkasan shift (X-Report)">
+                    <i class="fa-solid fa-cash-register text-[10px]"></i>
                     <span class="hidden sm:inline">Shift: </span>
-                    <b class="font-black">${fRp(shift.startingCash)}</b>
+                    <b class="font-black whitespace-nowrap">${fRp(shift.startingCash)}</b>
                 </button>`;
             }
         } else {
             const isStorefront = target.id === 'pos-shift-btn-storefront';
             if (isStorefront) {
                 target.innerHTML = `
-                <button onclick="window.openPOSOpenShiftModal()" class="h-8 px-2.5 sm:px-3 rounded-xl bg-white/20 hover:bg-white/30 text-white font-bold text-xs flex items-center gap-1.5 transition-all active:scale-95 shadow-xs cursor-pointer border border-white/25 backdrop-blur-xs" title="Buka shift kasir baru">
+                <button onclick="window.openPOSOpenShiftModal()" class="h-8 px-2.5 sm:px-3 rounded-xl bg-white/20 hover:bg-white/30 text-white font-bold text-xs inline-flex items-center gap-1.5 transition-all active:scale-95 shadow-xs cursor-pointer border border-white/25 backdrop-blur-xs whitespace-nowrap shrink-0" title="Buka shift kasir baru">
                     <span class="w-1.5 h-1.5 rounded-full bg-amber-300 animate-pulse"></span>
                     <i class="fa-solid fa-wallet text-amber-300 text-xs"></i>
-                    <span class="text-xs font-black">Buka Shift</span>
+                    <span class="text-xs font-black whitespace-nowrap">Buka Shift</span>
                 </button>`;
             } else {
                 target.innerHTML = `
-                <button onclick="window.openPOSOpenShiftModal()" class="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-amber-50 hover:bg-amber-100 dark:bg-amber-950/40 dark:hover:bg-amber-900/60 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800 flex items-center gap-1.5 transition-all cursor-pointer active:scale-95 animate-pulse" title="Buka shift kasir baru">
-                    <i class="fa-solid fa-wallet"></i>
-                    <span>Buka Shift</span>
+                <button onclick="window.openPOSOpenShiftModal()" class="px-2 sm:px-2.5 py-1 rounded-lg text-[10px] font-bold bg-amber-50 hover:bg-amber-100 dark:bg-amber-950/40 dark:hover:bg-amber-900/60 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800 inline-flex items-center gap-1 sm:gap-1.5 transition-all cursor-pointer active:scale-95 animate-pulse whitespace-nowrap shrink-0" title="Buka shift kasir baru">
+                    <i class="fa-solid fa-wallet text-[10px]"></i>
+                    <span class="whitespace-nowrap">Buka Shift</span>
                 </button>`;
             }
         }

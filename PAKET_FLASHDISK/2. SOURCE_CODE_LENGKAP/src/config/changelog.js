@@ -8,6 +8,21 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-9-22',
+        version: 'v1.9.22',
+        date: '2026-09-25',
+        title: 'Presisi Visual Admin POS Kasir Mobile (Anti-Wrap Action Strip, Tombol Shift & Parkir Responsif), Harmonisasi Tema Warna (Camera Scanner & Frosted Glass Header), & Mobile Precision',
+        category: 'optimization',
+        badge: 'Mobile Visual Precision & Theme Harmonization v1.9.22',
+        items: [
+            'Eliminasi Header Wrapping di Admin POS Action Strip: Mengatasi teks bertumpuk dua baris ("Terminal Kasir POS" dan "Rp 100.000") pada layar ponsel beresolusi sempit (<= 360px) dengan menerapkan whitespace-nowrap, shrink-0, dan label adaptif ("POS" di mobile, "Terminal POS" di desktop).',
+            'Harmonisasi Tombol Shift & Parkir Kasir: Memperbarui tombol indikator shift kasir dan badge transaksi parkir (hold cart) agar selalu inline tanpa terpotong (single-line compact) dengan padding dan icon yang pas di semua ukuran layar.',
+            'Sinkronisasi Warna Pemindai Kamera (Camera Scanner): Tombol scan barcode kamera F9 kini otomatis mengikuti identitas warna brand toko (var(--color-primary)) menggunakan tint lembut semi-transparan, menggantikan warna hijau statis yang sebelumnya jomplang dari palet tema.',
+            'Header CMS Admin Frosted Glass Konsisten: Merombak tombol Preview dan Keluar di header Admin CMS menjadi pill frosted glass semi-transparan yang menyatu elegan dengan background brand toko, mengeliminasi warna abu-abu dan pink kontras yang tidak harmonis.',
+            'Presisi Tipografi & Ruang Pandang Mobile: Mengoptimalkan tata letak header storefront dan admin strip agar tidak ada overflow horizontal maupun vertical clipping pada perangkat mobile.'
+        ]
+    },
+    {
         id: 'log-1-9-21',
         version: 'v1.9.21',
         date: '2026-09-25',

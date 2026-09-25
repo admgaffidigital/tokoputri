@@ -486,15 +486,15 @@ export const renderHeldBadges = () => {
     if (sfTarget) {
         if (count > 0) {
             sfTarget.innerHTML = `
-            <button onclick="window.openPOSHeldModal()" class="h-8 px-2.5 sm:px-3 rounded-xl bg-amber-500 hover:bg-amber-600 text-white text-xs font-black flex items-center gap-1.5 transition-all active:scale-95 shadow-md cursor-pointer animate-pulse" title="Ada ${count} transaksi antrean tertahan (F8)">
+            <button onclick="window.openPOSHeldModal()" class="h-8 px-2.5 sm:px-3 rounded-xl bg-amber-500 hover:bg-amber-600 text-white text-xs font-black inline-flex items-center gap-1.5 transition-all active:scale-95 shadow-md cursor-pointer animate-pulse whitespace-nowrap shrink-0" title="Ada ${count} transaksi antrean tertahan (F8)">
                 <i class="fa-solid fa-hourglass-half text-xs"></i>
-                <span>${count} Parkir</span>
+                <span class="whitespace-nowrap">${count} Parkir</span>
             </button>`;
         } else {
             sfTarget.innerHTML = `
-            <button onclick="window.openPOSHeldModal()" class="h-8 px-2 sm:px-2.5 rounded-xl bg-black/15 hover:bg-black/25 text-white/90 hover:text-white text-xs font-bold flex items-center gap-1.5 transition-all active:scale-95 cursor-pointer" title="Daftar Transaksi Tertahan (F8)">
+            <button onclick="window.openPOSHeldModal()" class="h-8 px-2 sm:px-2.5 rounded-xl bg-black/15 hover:bg-black/25 text-white/90 hover:text-white text-xs font-bold inline-flex items-center gap-1.5 transition-all active:scale-95 cursor-pointer whitespace-nowrap shrink-0" title="Daftar Transaksi Tertahan (F8)">
                 <i class="fa-solid fa-hourglass-half text-xs"></i>
-                <span class="hidden sm:inline">Parkir (0)</span>
+                <span class="hidden sm:inline whitespace-nowrap">Parkir (0)</span>
             </button>`;
         }
     }
@@ -502,15 +502,15 @@ export const renderHeldBadges = () => {
     if (adTarget) {
         if (count > 0) {
             adTarget.innerHTML = `
-            <button onclick="window.openPOSHeldModal()" class="px-2.5 py-1 rounded-lg bg-amber-500 hover:bg-amber-600 text-white text-[10px] font-black flex items-center gap-1 shadow-xs transition-all active:scale-95 cursor-pointer animate-pulse" title="Ada ${count} transaksi antrean tertahan (F8)">
-                <i class="fa-solid fa-hourglass-half"></i>
-                <span>${count} Parkir</span>
+            <button onclick="window.openPOSHeldModal()" class="px-1.5 sm:px-2 py-1 rounded-lg bg-amber-500 hover:bg-amber-600 text-white text-[10px] font-black inline-flex items-center gap-1 shadow-xs transition-all active:scale-95 cursor-pointer animate-pulse whitespace-nowrap shrink-0" title="Ada ${count} transaksi antrean tertahan (F8)">
+                <i class="fa-solid fa-hourglass-half text-[10px]"></i>
+                <span class="whitespace-nowrap">${count} Parkir</span>
             </button>`;
         } else {
             adTarget.innerHTML = `
-            <button onclick="window.openPOSHeldModal()" class="px-2 py-1 rounded-lg bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-300 text-[10px] font-bold flex items-center gap-1 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all cursor-pointer" title="Daftar Transaksi Tertahan (F8)">
-                <i class="fa-solid fa-hourglass-half"></i>
-                <span>Parkir</span>
+            <button onclick="window.openPOSHeldModal()" class="px-1.5 sm:px-2 py-1 rounded-lg bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-300 text-[10px] font-bold inline-flex items-center gap-1 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all cursor-pointer whitespace-nowrap shrink-0" title="Daftar Transaksi Tertahan (F8)">
+                <i class="fa-solid fa-hourglass-half text-[10px]"></i>
+                <span class="whitespace-nowrap">Parkir</span>
             </button>`;
         }
     }
@@ -2221,36 +2221,39 @@ const buildPOSLayout = ({ isStorefront }) => {
                     </div>
                 </div>
             </div>
-            <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
+            <div class="flex items-center gap-1.5 sm:gap-2 shrink-0 whitespace-nowrap">
                 <span id="pos-live-clock" class="hidden sm:inline-block text-[10px] font-mono text-white/90 px-2.5 py-1 bg-black/15 rounded-lg border border-white/20">--:--:--</span>
                 <span class="hidden md:inline-flex items-center gap-1.5 text-[10px] font-bold text-white bg-black/20 px-2.5 py-1 rounded-lg">
                     <i class="fa-solid fa-barcode text-xs"></i> USB Scanner Aktif
                 </span>
-                <div id="pos-shift-btn-storefront" class="flex items-center"></div>
-                <div id="pos-held-btn-storefront" class="flex items-center"></div>
-                <button onclick="window.cashierLogout()" class="h-8 px-2.5 sm:px-3 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold flex items-center gap-1.5 transition-all active:scale-95 shadow-xs cursor-pointer" title="Keluar Mode Kasir">
+                <div id="pos-shift-btn-storefront" class="flex items-center shrink-0"></div>
+                <div id="pos-held-btn-storefront" class="flex items-center shrink-0"></div>
+                <button onclick="window.cashierLogout()" class="h-8 px-2.5 sm:px-3 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold inline-flex items-center gap-1.5 transition-all active:scale-95 shadow-xs cursor-pointer whitespace-nowrap shrink-0" title="Keluar Mode Kasir">
                     <i class="fa-solid fa-power-off text-xs"></i>
                     <span class="hidden sm:inline">Keluar</span>
                 </button>
             </div>
         </header>`
         : `
-        <!-- ADMIN POS ACTION STRIP (kompak & menyatu tanpa double header) -->
-        <div class="h-10 shrink-0 bg-slate-100 dark:bg-slate-800/70 px-3 sm:px-4 flex items-center justify-between border-b border-slate-200 dark:border-slate-700/60 text-xs">
-            <div class="flex items-center gap-2">
-                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                <span class="text-[11px] font-black uppercase tracking-wider text-slate-700 dark:text-slate-200">Terminal Kasir POS</span>
+        <!-- ADMIN POS ACTION STRIP (kompak, presisi tinggi, anti-wrap di mobile) -->
+        <div class="h-10 shrink-0 bg-slate-100 dark:bg-slate-800/70 px-2.5 sm:px-4 flex items-center justify-between border-b border-slate-200 dark:border-slate-700/60 text-xs overflow-hidden gap-2">
+            <div class="flex items-center gap-1.5 sm:gap-2 shrink-0 whitespace-nowrap">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0"></span>
+                <span class="text-[11px] font-black uppercase tracking-wider text-slate-700 dark:text-slate-200 whitespace-nowrap">
+                    <span class="hidden sm:inline">Terminal </span>POS
+                </span>
                 <span class="hidden sm:inline text-slate-400">•</span>
                 <span id="pos-live-clock" class="hidden sm:inline text-[10px] font-mono text-slate-500 dark:text-slate-400">--:--:--</span>
             </div>
-            <div class="flex items-center gap-2">
-                <span class="hidden md:inline-flex items-center gap-1 text-[10px] font-bold text-slate-500 dark:text-slate-400">
+            <div class="flex items-center gap-1 sm:gap-1.5 shrink-0 whitespace-nowrap">
+                <span class="hidden md:inline-flex items-center gap-1 text-[10px] font-bold text-slate-500 dark:text-slate-400 whitespace-nowrap">
                     <i class="fa-solid fa-barcode"></i> Scanner Otomatis
                 </span>
-                <div id="pos-shift-btn-admin" class="flex items-center"></div>
-                <div id="pos-held-btn-admin" class="flex items-center"></div>
-                <button onclick="window.posClearCart()" class="px-2.5 py-1 rounded-lg bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-rose-500 text-[10px] font-bold flex items-center gap-1 hover:bg-rose-50 dark:hover:bg-rose-950/20 transition-all cursor-pointer">
-                    <i class="fa-solid fa-trash-can"></i> Reset
+                <div id="pos-shift-btn-admin" class="flex items-center shrink-0"></div>
+                <div id="pos-held-btn-admin" class="flex items-center shrink-0"></div>
+                <button onclick="window.posClearCart()" class="px-2 sm:px-2.5 py-1 rounded-lg bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-rose-500 text-[10px] font-bold inline-flex items-center gap-1 hover:bg-rose-50 dark:hover:bg-rose-950/20 transition-all cursor-pointer whitespace-nowrap shrink-0" title="Reset Keranjang Kasir">
+                    <i class="fa-solid fa-trash-can text-[10px]"></i>
+                    <span class="inline">Reset</span>
                 </button>
             </div>
         </div>`;
@@ -2276,8 +2279,8 @@ const buildPOSLayout = ({ isStorefront }) => {
                             </button>
                         </div>
                         <!-- Tombol Scan Barcode Kamera HP / Laptop (F9) -->
-                        <button onclick="window.openPOSCameraScanner()" class="h-9 px-2.5 sm:px-3 rounded-xl bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/40 dark:hover:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300 text-xs font-bold flex items-center gap-1.5 transition-all active:scale-95 border border-emerald-200 dark:border-emerald-800/80 shrink-0 cursor-pointer shadow-2xs" title="Scan Barcode Kamera (F9)">
-                            <i class="fa-solid fa-camera text-emerald-600 dark:text-emerald-400 text-xs"></i>
+                        <button onclick="window.openPOSCameraScanner()" class="h-9 px-2.5 sm:px-3 rounded-xl bg-[rgba(var(--color-primary-rgb),0.08)] hover:bg-[rgba(var(--color-primary-rgb),0.15)] text-[var(--color-primary)] text-xs font-bold flex items-center gap-1.5 transition-all active:scale-95 border border-[rgba(var(--color-primary-rgb),0.25)] shrink-0 cursor-pointer shadow-2xs" title="Scan Barcode Kamera (F9)">
+                            <i class="fa-solid fa-camera text-xs"></i>
                             <span class="hidden sm:inline">Scan (F9)</span>
                         </button>
                         <!-- View Switcher (Grid vs List) -->
