@@ -1558,21 +1558,23 @@ export const loadAdminShiftReports = async () => {
 };
 
 // ─── Hapus Riwayat Shift (Admin Only) ────────────────────────
-const deleteShiftRecord = async (shiftId, shiftNo) => {
-    const confirmed = await showConfirm(
-        `Hapus data shift <b>#${esc(shiftNo)}</b>?<br><span class="text-xs text-slate-400 dark:text-slate-500">Data ini akan dihapus permanen dari cloud dan tidak bisa dikembalikan.</span>`,
-        { confirmText: 'Ya, Hapus', cancelText: 'Batal', danger: true }
+const deleteShiftRecord = (shiftId, shiftNo) => {
+    showConfirm(
+        'Hapus Data Shift',
+        `Hapus shift #${shiftNo}? Data akan dihapus permanen dari cloud dan tidak bisa dikembalikan.`,
+        async () => {
+            try {
+                await db.collection('freshmart').doc('cms_data').collection('pos_shifts').doc(shiftId).delete();
+                showToast('Data shift berhasil dihapus.', 'success');
+                await loadAdminShiftReports();
+            } catch (err) {
+                console.error('[POS Shift] Gagal menghapus shift:', err);
+                showToast('Gagal menghapus: ' + err.message, 'error');
+            }
+        },
+        'Ya, Hapus',
+        true
     );
-    if (!confirmed) return;
-
-    try {
-        await db.collection('freshmart').doc('cms_data').collection('pos_shifts').doc(shiftId).delete();
-        showToast('Data shift berhasil dihapus.', 'success');
-        await loadAdminShiftReports();
-    } catch (err) {
-        console.error('[POS Shift] Gagal menghapus shift:', err);
-        showToast('Gagal menghapus: ' + err.message, 'error');
-    }
 };
 
 // ─── Expose ke Global Window ─────────────────────────────────
