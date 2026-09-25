@@ -78,13 +78,13 @@ jobs:
             
             Unduh file installer **TokoPutri.apk** di bawah untuk dipasang di smartphone Android.
             
-            **Pembaruan Fitur Terbaru (v1.9.20):**
-            - 🛒 **POS Kasir Pintar & Pemindai Barcode Kamera Interaktif**: Scan barcode dan QR via kamera smartphone/tablet/webcam dengan reticle animasi laser scanline, toggle flash/torch, dan audio beep instan.
-            - 🧮 **Kalkulator Diskon Transaksi Cerdas (Rp & %)**: Diskon otomatis dual-mode dengan chips preset instan (5%, 10%, 15%, 20%, 50%, Rp 2rb, 5rb, 10rb, 25rb, 50rb).
-            - 🚦 **Peringatan Stok Menipis & Penanda Habis**: Lencana visual HABIS dan SISA X di katalog kasir dengan validasi kuantitas belanja.
-            - ⏸️ **Parkir Transaksi & Antrean Kasir (Hold & Recall Cart)**: Tahan dan panggil transaksi antrean pelanggan tanpa risiko kehilangan data disertai chime sintetis.
-            - 🖨️ **Integrasi Universal Struk Printer Thermal ESC/POS**: Cetak struk kasir 58mm/80mm, Bluetooth ESC/POS, dan driver RawBT Android.
-            - ⚡ **Persistensi Toggle Icon POS Kasir di Header**: Navigasi kasir 100% stabil saat muat ulang halaman dengan zero-latency local cache dan multi-tier verification.
+            **Pembaruan Fitur Terbaru (v1.9.21):**
+            - 💼 **Manajemen Shift Kasir & Modal Awal (Cash Float)**: Buka shift kasir dengan modal awal laci uang kembalian (chip cepat Rp 0, 50rb, 100rb, 200rb, 500rb) dan audio chime Web Audio API yang elegan.
+            - 📊 **Ringkasan Shift Berjalan (X-Report)**: Pantau durasi kerja aktif, rincian omset per metode pembayaran (Tunai, QRIS, Bank, Tempo), diskon toko, poin member, dan uang kas yang seharusnya ada di laci.
+            - 🔒 **Rekonsiliasi Kas Laci & Rekap Tutup Kasir (Z-Report)**: Alur tutup kasir profesional dengan dua mode hitung fisik (Input Cepat & Kalkulator Denominasi Lembaran), deteksi otomatis selisih kas (Pas, Surplus, Defisit), dan proteksi logout kasir.
+            - 🖨️ **Cetak Slip Rekap Shift Thermal POS (58mm / 80mm)**: Cetak bukti settlement shift kasir resmi ke printer thermal (Bluetooth ESC/POS, RawBT, browser) lengkap dengan tanda tangan kasir & supervisor.
+            - 📋 **Laporan Shift Kasir Cloud di CMS Admin**: Tab baru di menu Manajemen Kasir CMS Admin untuk mengaudit riwayat shift seluruh kasir dan mencetak ulang slip rekap kasir kapan saja.
+            - ⌨️ **Pintasan Keyboard Shift (F10)**: Akses cepat modal ringkasan dan buka shift langsung dari keyboard kasir.
           files: build-output/TokoPutri.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
