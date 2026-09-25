@@ -176,6 +176,14 @@ Aplikasi telah dilengkapi dengan fondasi **Capacitor 8 Android Native**:
 
 ## 📋 Riwayat Pembaruan (Changelog)
 
+### v1.9.27 — Harmonisasi Visual UI/UX Total & Penyempurnaan Tampilan Natif App (25 Sep 2026)
+- **Anti-Wrap Laporan Shift Z-Report**: Mengatasi kendala teks nomor shift kasir (`#SHF-20260925-860`) dan badge status (`SEDANG BERJALAN`) yang patah menjadi 2 baris pada layar mobile dengan penerapan `whitespace-nowrap`, `font-mono`, `truncate`, dan `shrink-0`.
+- **Harmonisasi Ikon & Metrik Shift**: Mengganti ikon kasir hijau statis dengan warna identitas tema toko (`var(--color-primary)`) serta merombak metrik Modal Awal, Omset, dan Kas Fisik Laci menjadi kartu pil modern yang bersih.
+- **Segmented Control Natif App**: Mengganti tab navigasi Manajemen Kasir menjadi *native segmented control* 2-kolom bergaya iOS/Pixel (`p-1 bg-slate-200/70`) yang responsif dan ergonomis.
+- **Harmonisasi Spanduk Panduan Kasir**: Mengeliminasi kotak biru bootstrap dan menggantikannya dengan banner aksen hangat bertema toko (`rgba(var(--color-primary-rgb), 0.05)`).
+- **Restrukturisasi Tombol Aksi Kasir**: Menghilangkan tombol kubus warna-warni (kuning, biru, pink) menjadi tombol tindakan berdesain natif app yang seragam (`rounded-xl 36x36px`).
+- **Restyling Total Area Pemulihan Data & Safety Rollback**: Menghilangkan kontainer amber mencolok dan tombol rollback pink pudar, menghadirkan kartu proteksi data natif app dengan tombol rollback berstatus disabled abu-abu netral serta tombol snapshot instan 2-kolom yang nyaman disentuh di HP.
+
 ### v1.9.26 — Pembersihan Duplikasi Menu & Pemusatan Utilitas Backup ke Pusat Data & Sinkronisasi (25 Sep 2026)
 - **Pembersihan Duplikasi Menu di Pengaturan Toko**: Menghapus blok kartu cadangan data (*Backup & Restore*) yang redundan di menu Pengaturan Toko agar tampilan lebih bersih, fokus, dan tidak menimbulkan kebingungan bagi admin.
 - **Sentralisasi Penuh ke Pusat Data & Sinkronisasi**: Seluruh fungsi pencadangan ekosistem (.JSON), ekspor akuntansi (.CSV), sinkronisasi cloud real-time, validasi skema pra-restore, serta auto safety-snapshot kini 100% terpusat di modul mandiri yang canggih dan modern.

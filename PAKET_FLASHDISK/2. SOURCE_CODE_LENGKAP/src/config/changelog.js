@@ -8,6 +8,22 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-9-27',
+        version: 'v1.9.27',
+        date: '2026-09-25',
+        title: 'Harmonisasi Visual UI/UX Total & Penyempurnaan Tampilan Natif App (Anti-Wrap Shift Z-Report, Segmented Control Kasir, & Restyling Pemulihan Data)',
+        category: 'optimization',
+        badge: 'Native Mobile App & Total UI Harmonization v1.9.27',
+        items: [
+            'Eliminasi Masalah Teks Patah/Wrapping pada Laporan Shift Z-Report: Memperbaiki string nomor shift (#SHF-20260925-860) dan lencana status (SEDANG BERJALAN) di layar mobile dengan whitespace-nowrap, font-mono, dan min-w-0 agar tidak lagi terpotong patah menjadi dua baris.',
+            'Harmonisasi Ikon & Palet Tema Shift Kasir: Mengganti warna hijau kaku pada ikon cash register dengan sentuhan warna identitas toko (var(--color-primary)) dan restrukturisasi metrik shift (Modal Awal, Omset, Kas Fisik Laci) menjadi kartu pil modern yang bersih.',
+            'Navigasi Segmented Control Natif App pada Manajemen Kasir: Mengubah tombol tab lama menjadi segmented control bergaya iOS/Pixel murni (grid 2 kolom, bg-slate-200/70, smooth pill transition) yang sangat ergonomis di layar ponsel.',
+            'Penyelarasan Spanduk Info Kasir: Mengganti kotak biru Bootstrap yang jomplang dengan banner bergradien lembut beraksen warna brand toko (rgba(var(--color-primary-rgb), 0.05)) yang menyatu sempurna dengan tema.',
+            'Restrukturisasi Tombol Aksi Kasir: Mengganti tombol kotak-kotak warna-warni (kuning, biru, pink) menjadi tombol tindakan natif app (rounded-xl 36x36px) dengan ikon jelas dan penegasan visual yang tenang.',
+            'Restyling Total Area Pemulihan Data (Restore & Safety Rollback): Menghilangkan kotak amber/kuning kecokelatan yang mencolok dan tombol pink pudar, menggantikannya dengan kartu proteksi data natif app, tombol rollback dengan status disabled abu-abu netral yang bersih, serta tombol snapshot instan 2-kolom yang nyaman ditekan di HP.'
+        ]
+    },
+    {
         id: 'log-1-9-26',
         version: 'v1.9.26',
         date: '2026-09-25',

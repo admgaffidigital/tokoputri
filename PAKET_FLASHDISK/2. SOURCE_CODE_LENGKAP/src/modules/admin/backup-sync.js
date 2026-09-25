@@ -208,53 +208,57 @@ export const renderBackupSyncView = async () => {
         <!-- 3. PILAR TIGA: PEMULIHAN AMAN (ZERO-RISK RESTORE & SAFETY ROLLBACK) -->
         <div class="bg-white dark:bg-slate-900 rounded-3xl p-5 sm:p-6 border border-slate-200/90 dark:border-slate-800 shadow-sm space-y-4">
             <div class="flex items-center justify-between gap-3">
-                <div class="flex items-center gap-2.5">
-                    <div class="w-10 h-10 rounded-2xl bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 flex items-center justify-center text-lg shadow-xs border border-amber-200/60 dark:border-amber-900/60">
+                <div class="flex items-center gap-3 min-w-0">
+                    <div class="w-10 h-10 rounded-2xl flex items-center justify-center text-base shrink-0 shadow-2xs border border-[rgba(var(--color-primary-rgb),0.25)]" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary)">
                         <i class="fa-solid fa-shield-halved"></i>
                     </div>
-                    <div>
-                        <h3 class="text-sm font-black uppercase tracking-wider text-slate-800 dark:text-white">Pemulihan Aman &amp; Proteksi Rollback</h3>
-                        <p class="text-xs text-slate-500 dark:text-slate-400">Pulihkan sistem dengan validasi skema ketat &amp; perlindungan snapshot otomatis sebelum eksekusi</p>
+                    <div class="min-w-0">
+                        <h3 class="text-sm font-black text-slate-900 dark:text-white truncate">Pemulihan Aman &amp; Proteksi Rollback</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 truncate">Validasi skema ketat &amp; perlindungan snapshot otomatis sebelum eksekusi</p>
                     </div>
                 </div>
-                <div id="safety-snapshot-badge" class="hidden sm:inline-flex"></div>
+                <div id="safety-snapshot-badge" class="shrink-0"></div>
             </div>
 
             <!-- Upload Area & Proteksi -->
-            <div class="p-4 sm:p-5 rounded-2xl bg-amber-50/60 dark:bg-amber-950/20 border border-amber-200/80 dark:border-amber-900/60 space-y-4">
+            <div class="p-4 sm:p-5 rounded-2xl sm:rounded-3xl bg-slate-50/90 dark:bg-slate-850/70 border border-slate-200/90 dark:border-slate-700/80 space-y-4">
                 <div class="flex items-start gap-3">
-                    <i class="fa-solid fa-triangle-exclamation text-amber-500 text-base mt-0.5 shrink-0"></i>
-                    <div class="text-xs text-amber-900 dark:text-amber-200 leading-relaxed">
-                        <b>Proteksi Keamanan Anti-Kehilangan Data:</b> Sebelum berkas cadangan dipulihkan ke database toko, sistem akan <b>secara otomatis membuat cadangan darurat (Safety Snapshot)</b> dari data aktif saat ini. Jika Anda salah memilih file, data semula dapat dipulihkan kembali seketika dengan 1 klik tombol <b>Rollback</b>.
+                    <div class="w-7 h-7 rounded-xl flex items-center justify-center shrink-0 mt-0.5 shadow-2xs border border-[rgba(var(--color-primary-rgb),0.25)]" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary)">
+                        <i class="fa-solid fa-shield-check text-xs"></i>
+                    </div>
+                    <div class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed min-w-0">
+                        <b class="text-slate-900 dark:text-white">Proteksi Keamanan Anti-Kehilangan Data:</b> Sistem otomatis membuat cadangan darurat (<i>Safety Snapshot</i>) dari data toko aktif tepat sebelum berkas cadangan dipulihkan. Anda dapat membatalkan dan mengembalikan data semula seketika dengan 1 klik <b>Rollback</b>.
                     </div>
                 </div>
 
                 <div class="flex flex-col sm:flex-row items-center gap-3 pt-1">
-                    <label class="w-full sm:w-auto flex-1 flex items-center justify-center gap-2 px-5 py-3 rounded-2xl text-white font-black text-xs cursor-pointer shadow-sm active:scale-95 transition-all hover:opacity-95" style="background:var(--color-primary)">
-                        <i class="fa-solid fa-upload"></i>
-                        <span>Pilih Berkas Cadangan (.json) untuk Dipulihkan</span>
+                    <label class="w-full sm:w-auto flex-1 h-12 flex items-center justify-center gap-2.5 px-5 rounded-2xl text-white font-black text-xs cursor-pointer shadow-xs active:scale-[0.98] transition-all hover:brightness-105" style="background:var(--color-primary)">
+                        <i class="fa-solid fa-cloud-arrow-up text-sm"></i>
+                        <span>Pilih Berkas Cadangan (.json)</span>
                         <input type="file" accept=".json,application/json" class="hidden" onchange="window.handleRestoreFileSelect(event)">
                     </label>
 
-                    <button id="btn-safety-rollback" onclick="window.triggerSafetyRollback()" class="w-full sm:w-auto px-4 py-3 rounded-2xl bg-white dark:bg-slate-800 border border-rose-200 dark:border-rose-900/60 text-rose-600 dark:text-rose-400 font-black text-xs flex items-center justify-center gap-2 shadow-2xs hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-all cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed" disabled>
+                    <button id="btn-safety-rollback" onclick="window.triggerSafetyRollback()" class="w-full sm:w-auto h-12 px-5 rounded-2xl font-black text-xs flex items-center justify-center gap-2 transition-all cursor-pointer shadow-2xs border disabled:cursor-not-allowed disabled:bg-slate-100 disabled:dark:bg-slate-800/80 disabled:text-slate-400 disabled:dark:text-slate-500 disabled:border-slate-200/80 disabled:dark:border-slate-700/60 disabled:shadow-none bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 border-rose-200 dark:border-rose-900/60 hover:bg-rose-100 dark:hover:bg-rose-900/40 active:scale-95" disabled>
                         <i class="fa-solid fa-rotate-left"></i>
-                        <span>Rollback ke Data Sebelum Restore</span>
+                        <span>Rollback Data Sebelum Restore</span>
                     </button>
                 </div>
             </div>
 
             <!-- 4. QUICK SNAPSHOT LOKAL (INSTANT IN-DEVICE BACKUP) -->
-            <div class="pt-2 border-t border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
-                <div class="flex items-center gap-2 text-slate-600 dark:text-slate-300">
+            <div class="pt-2 border-t border-slate-100 dark:border-slate-800 space-y-2.5">
+                <div class="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-300">
                     <i class="fa-solid fa-floppy-disk text-slate-400"></i>
                     <span><b>Snapshot Cepat di Perangkat:</b> Simpan cadangan kilat ke memori browser tanpa unduh file</span>
                 </div>
-                <div class="flex items-center gap-2">
-                    <button onclick="window.saveQuickDeviceSnapshot()" class="px-3.5 py-2 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-[rgba(var(--color-primary-rgb),0.5)] font-bold text-slate-700 dark:text-slate-200 transition-all active:scale-95 cursor-pointer shadow-2xs">
-                        <i class="fa-solid fa-camera mr-1.5" style="color:var(--color-primary)"></i>Simpan Snapshot
+                <div class="grid grid-cols-2 gap-2.5">
+                    <button onclick="window.saveQuickDeviceSnapshot()" class="h-11 px-3 rounded-2xl bg-white dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700 hover:border-[rgba(var(--color-primary-rgb),0.5)] font-bold text-xs text-slate-700 dark:text-slate-200 transition-all active:scale-95 cursor-pointer shadow-2xs flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-camera text-xs" style="color:var(--color-primary)"></i>
+                        <span class="truncate">Simpan Snapshot</span>
                     </button>
-                    <button onclick="window.restoreQuickDeviceSnapshot()" class="px-3.5 py-2 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-amber-400 font-bold text-slate-700 dark:text-slate-200 transition-all active:scale-95 cursor-pointer shadow-2xs">
-                        <i class="fa-solid fa-clock-rotate-left mr-1.5 text-amber-500"></i>Pulihkan Snapshot
+                    <button onclick="window.restoreQuickDeviceSnapshot()" class="h-11 px-3 rounded-2xl bg-white dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700 hover:border-amber-400 font-bold text-xs text-slate-700 dark:text-slate-200 transition-all active:scale-95 cursor-pointer shadow-2xs flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-clock-rotate-left text-xs text-amber-500"></i>
+                        <span class="truncate">Pulihkan Snapshot</span>
                     </button>
                 </div>
             </div>

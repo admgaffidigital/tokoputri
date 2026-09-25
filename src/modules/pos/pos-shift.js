@@ -1196,14 +1196,17 @@ export const renderAdminShiftReportView = async (containerEl) => {
     <div class="space-y-4">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
-                <h3 class="text-sm font-black text-slate-800 dark:text-white uppercase tracking-wider flex items-center gap-2">
-                    <i class="fa-solid fa-file-invoice-dollar text-[var(--color-primary)]"></i>
+                <h3 class="text-sm font-black text-slate-900 dark:text-white flex items-center gap-2">
+                    <span class="w-8 h-8 rounded-xl flex items-center justify-center text-xs shrink-0 shadow-2xs border border-[rgba(var(--color-primary-rgb),0.25)]" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary)">
+                        <i class="fa-solid fa-file-invoice-dollar"></i>
+                    </span>
                     <span>Laporan &amp; Rekap Shift Kasir (Z-Report)</span>
                 </h3>
-                <p class="text-xs text-slate-500 dark:text-slate-400">Riwayat pembukaan, penutupan laci kasir, dan audit selisih kas</p>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Riwayat pembukaan, penutupan laci kasir, dan audit selisih kas</p>
             </div>
-            <button onclick="window.loadAdminShiftReports()" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer self-start sm:self-auto">
-                <i class="fa-solid fa-arrows-rotate"></i> Segarkan Data
+            <button onclick="window.loadAdminShiftReports()" class="h-9 px-3.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer self-start sm:self-auto shadow-2xs active:scale-95">
+                <i class="fa-solid fa-arrows-rotate text-[11px]"></i>
+                <span>Segarkan Data</span>
             </button>
         </div>
 
@@ -1227,7 +1230,7 @@ export const loadAdminShiftReports = async () => {
 
         if (snap.empty) {
             target.innerHTML = `
-            <div class="text-center py-14 p-6 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 text-slate-400 dark:text-slate-500">
+            <div class="text-center py-14 p-6 rounded-2xl sm:rounded-3xl bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 text-slate-400 dark:text-slate-500">
                 <i class="fa-solid fa-clipboard-list text-3xl mb-2"></i>
                 <p class="font-bold text-xs">Belum ada riwayat shift kasir tercatat</p>
                 <p class="text-[11px] mt-0.5">Shift yang dibuka dan ditutup oleh kasir akan otomatis terarsip di sini.</p>
@@ -1240,56 +1243,56 @@ export const loadAdminShiftReports = async () => {
             const isClosed = s.status === 'closed';
             const diff = s.difference || 0;
             const diffBadge = !isClosed
-                ? `<span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300">SEDANG BERJALAN</span>`
+                ? `<span class="px-2.5 py-1 rounded-full text-[10px] font-black bg-emerald-100 dark:bg-emerald-950/70 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60 whitespace-nowrap shrink-0 tracking-wide">SEDANG BERJALAN</span>`
                 : (diff === 0
-                    ? `<span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300">PAS</span>`
+                    ? `<span class="px-2.5 py-1 rounded-full text-[10px] font-black bg-emerald-100 dark:bg-emerald-950/70 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60 whitespace-nowrap shrink-0">PAS</span>`
                     : (diff > 0
-                        ? `<span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300">+${fRp(diff)}</span>`
-                        : `<span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-rose-100 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300">-${fRp(Math.abs(diff))}</span>`));
+                        ? `<span class="px-2.5 py-1 rounded-full text-[10px] font-black bg-amber-100 dark:bg-amber-950/70 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800/60 whitespace-nowrap shrink-0">+${fRp(diff)}</span>`
+                        : `<span class="px-2.5 py-1 rounded-full text-[10px] font-black bg-rose-100 dark:bg-rose-950/70 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-800/60 whitespace-nowrap shrink-0">-${fRp(Math.abs(diff))}</span>`));
 
             const startDate = new Date(s.startTime).toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' });
             const sJson = JSON.stringify(s).replace(/"/g, '&quot;');
 
             return `
-            <div class="p-4 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 shadow-xs hover:shadow-sm transition-all space-y-3">
-                <div class="flex items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-700/60 pb-2.5">
-                    <div class="flex items-center gap-2.5">
-                        <div class="w-8 h-8 rounded-xl flex items-center justify-center text-xs text-white shrink-0 ${isClosed ? 'bg-slate-700' : 'bg-emerald-600'}">
+            <div class="p-4 sm:p-5 rounded-2xl sm:rounded-3xl bg-white dark:bg-slate-800/95 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs hover:shadow-xs transition-all space-y-3">
+                <div class="flex items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-700/60 pb-3">
+                    <div class="flex items-center gap-2.5 min-w-0">
+                        <div class="w-9 h-9 rounded-2xl flex items-center justify-center text-xs text-white shrink-0 shadow-2xs ${isClosed ? 'bg-slate-700 dark:bg-slate-600' : ''}" style="${!isClosed ? 'background: var(--color-primary)' : ''}">
                             <i class="fa-solid fa-cash-register"></i>
                         </div>
-                        <div>
-                            <span class="font-bold text-xs text-slate-800 dark:text-white">#${esc(s.shiftNo || s.id)}</span>
-                            <span class="text-[10px] text-slate-400 block">${startDate}</span>
+                        <div class="min-w-0">
+                            <span class="font-mono font-black text-xs text-slate-900 dark:text-white whitespace-nowrap block truncate">#${esc(s.shiftNo || s.id)}</span>
+                            <span class="text-[10px] text-slate-400 dark:text-slate-500 whitespace-nowrap block truncate">${startDate}</span>
                         </div>
                     </div>
-                    <div class="flex items-center gap-2">
+                    <div class="flex items-center gap-2 shrink-0">
                         ${diffBadge}
-                        <button onclick="window.printShiftSettlementReceipt(${sJson}, ${!isClosed})" class="w-8 h-8 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-200 text-xs flex items-center justify-center transition-all cursor-pointer" title="Cetak Slip">
+                        <button onclick="window.printShiftSettlementReceipt(${sJson}, ${!isClosed})" class="w-8 h-8 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-700/80 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-200 text-xs flex items-center justify-center transition-all cursor-pointer shrink-0 shadow-2xs active:scale-95" title="Cetak Slip">
                             <i class="fa-solid fa-print"></i>
                         </button>
                     </div>
                 </div>
 
                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
-                    <div class="p-2 rounded-xl bg-slate-50 dark:bg-slate-900/50">
-                        <span class="text-[10px] text-slate-400 block">Kasir</span>
-                        <span class="font-bold text-slate-700 dark:text-slate-200 truncate block">${esc(s.cashierName)}</span>
+                    <div class="p-2.5 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800/70">
+                        <span class="text-[10px] font-bold text-slate-400 dark:text-slate-500 block">Kasir</span>
+                        <span class="font-bold text-slate-800 dark:text-slate-200 truncate block mt-0.5">${esc(s.cashierName)}</span>
                     </div>
-                    <div class="p-2 rounded-xl bg-slate-50 dark:bg-slate-900/50">
-                        <span class="text-[10px] text-slate-400 block">Modal Awal</span>
-                        <span class="font-bold text-slate-700 dark:text-slate-200 block">${fRp(s.startingCash)}</span>
+                    <div class="p-2.5 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800/70">
+                        <span class="text-[10px] font-bold text-slate-400 dark:text-slate-500 block">Modal Awal</span>
+                        <span class="font-bold text-slate-800 dark:text-slate-200 block mt-0.5">${fRp(s.startingCash)}</span>
                     </div>
-                    <div class="p-2 rounded-xl bg-slate-50 dark:bg-slate-900/50">
-                        <span class="text-[10px] text-slate-400 block">Total Omset</span>
-                        <span class="font-black text-emerald-600 dark:text-emerald-400 block">${fRp(s.totalSales || 0)}</span>
+                    <div class="p-2.5 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800/70">
+                        <span class="text-[10px] font-bold text-slate-400 dark:text-slate-500 block">Total Omset</span>
+                        <span class="font-black text-emerald-600 dark:text-emerald-400 block mt-0.5">${fRp(s.totalSales || 0)}</span>
                     </div>
-                    <div class="p-2 rounded-xl bg-slate-50 dark:bg-slate-900/50">
-                        <span class="text-[10px] text-slate-400 block">Kas Fisik Laci</span>
-                        <span class="font-black text-slate-900 dark:text-white block">${fRp(s.actualCash !== undefined ? s.actualCash : ((s.startingCash || 0) + (s.cashSales || 0)))}</span>
+                    <div class="p-2.5 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800/70">
+                        <span class="text-[10px] font-bold text-slate-400 dark:text-slate-500 block">Kas Fisik Laci</span>
+                        <span class="font-black text-slate-900 dark:text-white block mt-0.5">${fRp(s.actualCash !== undefined ? s.actualCash : ((s.startingCash || 0) + (s.cashSales || 0)))}</span>
                     </div>
                 </div>
 
-                ${s.closingNotes ? `<div class="text-[11px] text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-900/40 p-2 rounded-xl border border-slate-100 dark:border-slate-800"><b>Catatan:</b> ${esc(s.closingNotes)}</div>` : ''}
+                ${s.closingNotes ? `<div class="text-[11px] text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-900/40 p-2.5 rounded-2xl border border-slate-100 dark:border-slate-800/70"><b>Catatan:</b> ${esc(s.closingNotes)}</div>` : ''}
             </div>`;
         }).join('');
 
