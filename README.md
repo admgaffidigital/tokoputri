@@ -176,6 +176,48 @@ Aplikasi telah dilengkapi dengan fondasi **Capacitor 8 Android Native**:
 
 ## 📋 Riwayat Pembaruan (Changelog)
 
+### v1.9.26 — Pembersihan Duplikasi Menu & Pemusatan Utilitas Backup ke Pusat Data & Sinkronisasi (25 Sep 2026)
+- **Pembersihan Duplikasi Menu di Pengaturan Toko**: Menghapus blok kartu cadangan data (*Backup & Restore*) yang redundan di menu Pengaturan Toko agar tampilan lebih bersih, fokus, dan tidak menimbulkan kebingungan bagi admin.
+- **Sentralisasi Penuh ke Pusat Data & Sinkronisasi**: Seluruh fungsi pencadangan ekosistem (.JSON), ekspor akuntansi (.CSV), sinkronisasi cloud real-time, validasi skema pra-restore, serta auto safety-snapshot kini 100% terpusat di modul mandiri yang canggih dan modern.
+- **Penyederhanaan Tata Letak Pengaturan Toko**: Menjaga konsistensi grid Pengaturan Toko agar berfokus murni pada konfigurasi esensial gerai (Profil Toko, Desain & Katalog, Pengiriman & Radius, Rekening & Pembayaran, Konfigurasi Sistem, Jam Operasional, dan Printer Struk).
+
+---
+
+### v1.9.25 — Harmonisasi Visual Total & Keselarasan Tema Pusat Data & Sinkronisasi (25 Sep 2026)
+- **Harmonisasi Penuh dengan Palet Tema Toko (Eliminasi Black Slate Slab)**: Merombak kontainer hero Pusat Data & Sinkronisasi dari kotak gradien hitam pekat (`slate-900`) yang jomplang menjadi kartu modern bergradien lembut hangat (`.backup-sync-hero`) dengan sentuhan warna identitas toko (`var(--color-primary)`) dan border elegan.
+- **Kartu Statistik Metrik Bersih & Kontras Alami**: Merestrukturisasi 6 kartu indikator data (Total Produk, Kategori, Transaksi, Pelanggan, Akun Kasir, Sesi Shift) menjadi kartu putih modern (`.card-modern`) dengan border halus dan angka beraksen warna cerah yang nyaman dibaca di mode terang maupun gelap.
+- **Penyelarasan Komponen Tombol Aksi**: Mengganti tombol hitam kaku pada backup database JSON menjadi tombol aksen brand toko yang serasi dengan header emas Toko Putri.
+- **Jarak Bernapas Lega dari Header (*Headroom Optimization*)**: Menambahkan padding vertikal atas (`pt-3 sm:pt-5`) agar kartu modul tidak menempel rapat dengan header navigasi pada perangkat layar ponsel (HP).
+- **Dukungan Adaptif Mode Gelap (*Dark Mode Continuity*)**: Menyelaraskan kartu dan metrik agar bertransisi secara mulus ke nuansa gelap berkelas tanpa kehilangan kontras teks dan hierarki visual.
+
+---
+
+### v1.9.24 — Pusat Data & Sinkronisasi Cloud, Mesin Backup Ekosistem .JSON, Ekspor Akuntansi .CSV & Safe Rollback (25 Sep 2026)
+- **Pusat Data & Sinkronisasi Cloud (Cloud Sync Hub)**: Tab menu khusus baru di CMS Admin untuk memonitor integritas ekosistem data toko secara real-time, mendeteksi koneksi awan, dan melakukan sinkronisasi paksa (Force Real-time Sync) langsung dari Cloud Firestore.
+- **Mesin Pencadangan Komprehensif (Full Ecosystem Backup .JSON)**: Menarik seluruh data lengkap secara paralel (Master Produk, Varian, Kategori, Transaksi Penjualan Kasir, Buku Piutang Tempo, Database Member Pelanggan, Akun Kasir, dan Log Shift Laci Kas) dalam satu berkas terenkripsi berstempel integritas metadata.
+- **Ekspor Laporan Akuntansi Spreadsheet (.CSV)**: Menyediakan fitur unduh tabel siap pakai untuk Microsoft Excel dan Google Sheets (Laporan Master Produk & Stok serta Laporan Riwayat Transaksi & Omset Penjualan).
+- **Inspektur Pra-Pemulihan (Pre-Restore Inspector Modal)**: Membaca dan memvalidasi berkas cadangan sebelum dieksekusi, menampilkan rincian jumlah produk, transaksi, dan tanggal backup agar tidak ada salah timpa.
+- **Perlindungan Auto Safety-Snapshot & Rollback 1-Klik**: Sebelum berkas restore diterapkan, sistem otomatis membekukan data saat itu ke memori darurat sehingga admin bebas membatalkan pemulihan dan mengembalikan data semula kapan saja tanpa risiko kehilangan data.
+- **Snapshot Cepat di Perangkat (Instant Device Snapshot)**: Memungkinkan admin menyimpan dan memulihkan snapshot kilat langsung di memori browser tanpa harus mengunduh file fisik.
+
+---
+
+### v1.9.23 — Penyempurnaan Jarak Lega & Presisi Visual Admin POS Kasir Mobile (25 Sep 2026)
+- **Jarak Bernapas Lega di Bawah Header (.admin-pos-mode)**: Mengatasi kendala tampilan kasir yang terlalu mepet dengan header pada layar ponsel (HP) dengan memberikan padding atas dan margin samping yang nyaman pada kontainer konten admin.
+- **Arsitektur Floating Card Workspace**: Terminal Kasir POS di CMS Admin dibungkus dalam kartu modern ber-rounded halus (`rounded-2xl sm:rounded-3xl`) dengan border lembut dan bayangan elegan (`shadow-md`), sehingga tampak melayang terpisah dengan indah dan tidak lagi menempel keras ke header toko.
+- **Restrukturisasi Action Strip & Search Bar Mobile**: Merampingkan tinggi bilah aksi serta search bar dengan latar belakang adaptif (`bg-slate-50/80 dark:bg-slate-800/60`).
+- **Optimalisasi Viewport Katalog HP**: Mengakomodasi tampilan produk lebih banyak dengan scrolling internal yang mulus dan bebas benturan double-scroll.
+
+---
+
+### v1.9.22 — Presisi Visual Admin POS Kasir Mobile & Harmonisasi Tema Warna (25 Sep 2026)
+- **Eliminasi Header Wrapping di Admin POS Action Strip**: Mengatasi teks bertumpuk dua baris pada layar ponsel beresolusi sempit (<= 360px) dengan menerapkan `whitespace-nowrap`, `shrink-0`, dan label adaptif ("POS" di mobile, "Terminal POS" di desktop).
+- **Harmonisasi Tombol Shift & Parkir Kasir**: Memperbarui tombol status shift kasir dan badge transaksi parkir (hold cart) agar selalu inline tanpa terpotong (single-line compact).
+- **Sinkronisasi Warna Pemindai Kamera (Camera Scanner)**: Tombol scan barcode kamera F9 kini otomatis mengikuti identitas warna brand toko (`var(--color-primary)`).
+- **Header CMS Admin Frosted Glass Konsisten**: Merombak tombol Preview dan Keluar di header Admin CMS menjadi pill frosted glass semi-transparan yang menyatu elegan dengan background brand toko.
+
+---
+
 ### v1.9.21 — Manajemen Shift Kasir & Rekap Tutup Kasir Cerdas (Shift Settlement, Rekonsiliasi Kas Laci, Denominasi, X/Z-Report & Slip Thermal ESC/POS) (25 Sep 2026)
 
 #### 💼 Siklus Kerja Kasir & Rekap Settlement Terpadu
