@@ -882,10 +882,7 @@ export const buyNowProduct = () => {
     // dengan melewati manipulasi History API saat kita langsung berpindah view.
     closeProductModal(true);
     if (typeof window.changeView === 'function') {
-        try {
-            window.history.replaceState({ view: 'view-checkout' }, '', window.location.pathname);
-        } catch(e) {}
-        window.changeView('view-checkout', true);
+        window.changeView('view-checkout');
     }
 };
 
@@ -1309,10 +1306,7 @@ export const quickVariantBuyNow = () => {
     closeQuickVariantSheet(true);
 
     if (typeof window.changeView === 'function') {
-        try {
-            window.history.replaceState({ view: 'view-checkout' }, '', window.location.pathname);
-        } catch(e) {}
-        window.changeView('view-checkout', true);
+        window.changeView('view-checkout');
     }
 };
 

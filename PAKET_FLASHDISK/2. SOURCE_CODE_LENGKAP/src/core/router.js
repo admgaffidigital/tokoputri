@@ -444,14 +444,23 @@ export const handleAppBackButton = () => {
 
     // 3. Jika sedang di view selain view-catalog (beranda), kembali berurutan secara terstruktur
     if (curViewName !== 'view-catalog') {
+        if (curViewName === 'view-payment') {
+            changeView('view-checkout');
+            return;
+        }
+        if (curViewName === 'view-checkout') {
+            changeView('view-cart');
+            return;
+        }
+        if (curViewName === 'view-cart') {
+            changeView('view-catalog');
+            return;
+        }
         if (window.history.length > 1) {
             window.history.back();
         } else {
-            // Fallback jika riwayat browser tidak tersedia: mundur berurutan terstruktur
-            let target = 'view-catalog';
-            if (curViewName === 'view-payment') target = 'view-checkout';
-            else if (curViewName === 'view-checkout') target = 'view-cart';
-            changeView(target);
+            // Fallback jika riwayat browser tidak tersedia: kembali ke beranda
+            changeView('view-catalog');
         }
         return;
     }

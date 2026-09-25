@@ -1091,7 +1091,7 @@ export const renderCatalog = () => {
                     <i class="fa-solid fa-triangle-exclamation text-amber-500 text-3xl mb-3"></i>
                     <p class="font-bold text-sm text-slate-700 dark:text-slate-300">Gagal Memuat Katalog Kasir</p>
                     <p class="text-xs text-slate-400 mt-1 mb-4">${esc(err.message || 'Terjadi kesalahan')}</p>
-                    <button onclick="window.renderCatalog()" class="px-4 py-2 rounded-xl text-xs font-bold text-white shadow-md active:scale-95 cursor-pointer" style="background:var(--color-primary)">
+                    <button onclick="if(typeof window.posRenderCatalog==='function') window.posRenderCatalog(); else if(typeof window.refreshPOSCatalog==='function') window.refreshPOSCatalog();" class="px-4 py-2 rounded-xl text-xs font-bold text-white shadow-md active:scale-95 cursor-pointer" style="background:var(--color-primary)">
                         <i class="fa-solid fa-arrows-rotate mr-1.5"></i> Coba Muat Ulang
                     </button>
                 </div>`;
@@ -2674,8 +2674,8 @@ const exposeToWindow = () => {
         });
         renderCatalog(); 
     };
-    window.renderCatalog           = renderCatalog;
-    window.renderCart              = renderCart;
+    window.posRenderCatalog        = renderCatalog;
+    window.posRenderCart           = renderCart;
     window.refreshPOSCatalog       = () => {
         try {
             renderCatalog();

@@ -8,6 +8,20 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-9-39',
+        version: 'v1.9.39',
+        date: '2026-09-26',
+        title: 'Resolusi Tuntas Keranjang Belanja Beli Cepat: Isolasi Namespace window.renderCart POS, Auto Re-hydration Keranjang & Alur Navigasi Kembali Mulus',
+        category: 'bugfix',
+        badge: 'Instant Cart Sync & Navigation v1.9.39',
+        items: [
+            'Resolusi Konflik Namespace window.renderCart: Mengubah fungsi render internal kasir POS menjadi window.posRenderCart dan window.posRenderCatalog, memastikan fungsi render keranjang storefront pembeli tidak pernah tertimpa lagi oleh modul kasir.',
+            'Auto Re-hydration Keranjang Belanja: Menambahkan pemulihan otomatis data keranjang dari penyimpanan lokal (localStorage) di awal renderCart jika memori sesi belum tersinkronisasi, sehingga isi keranjang selalu muncul seketika tanpa perlu me-reload website.',
+            'Navigasi Bertingkat Alur Belanja Cerdas (Smart Back Navigation): Menata kembali alur tombol kembali dari Checkout ke Keranjang (view-checkout -> view-cart) dan dari Keranjang ke Katalog (view-cart -> view-catalog) secara mulus dan konsisten.',
+            'Perbaikan Beli Cepat (Instant Buy Now): Menghapus manipulasi replaceState paksa pada Beli Sekarang dan Quick Variant Sheet, sehingga perpindahan ke checkout dan navigasi kembali berjalan konsisten 100% responsif di desktop maupun mobile.'
+        ]
+    },
+    {
         id: 'log-1-9-38',
         version: 'v1.9.38',
         date: '2026-09-26',

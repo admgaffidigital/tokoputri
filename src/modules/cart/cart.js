@@ -75,6 +75,22 @@ export const updCart = () => {
  * Render halaman tampilan keranjang belanja
  */
 export const renderCart = () => {
+    // Auto re-hydration: jika cart kosong di memori, coba pulihkan dari localStorage
+    if (!cart.length) {
+        try {
+            const raw = localStorage.getItem('freshmart_cart');
+            if (raw) {
+                const parsed = JSON.parse(raw);
+                if (Array.isArray(parsed) && parsed.length > 0) {
+                    setCart(parsed);
+                    updCart();
+                }
+            }
+        } catch (e) {
+            console.warn('[Cart] Auto-rehydration gagal:', e);
+        }
+    }
+
     const fsEl = el('cart-free-shipping-bar');
     const lpEl = el('cart-loyalty-points-bar');
 
