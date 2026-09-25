@@ -176,6 +176,13 @@ Aplikasi telah dilengkapi dengan fondasi **Capacitor 8 Android Native**:
 
 ## 📋 Riwayat Pembaruan (Changelog)
 
+### v1.9.30 — Optimasi Ketahanan Koneksi Jaringan Cloud Firestore & Eliminasi Error QUIC (25 Sep 2026)
+- **Eliminasi ERR_QUIC_PROTOCOL_ERROR**: Mengaktifkan `experimentalForceLongPolling` pada Firestore SDK untuk memastikan transmisi data menggunakan protokol HTTPS berbasis TCP yang andal dan kebal terhadap packet loss atau pemblokiran UDP pada jaringan seluler (Telkomsel/Indosat/XL) maupun Wi-Fi publik.
+- **Pencegahan Kegagalan Stream Listen Channel**: Menghindari kegagalan kanal sinkronisasi gRPC-Web/QUIC saat koneksi internet mengalami fluktuasi sementara atau timeout DNS (`ERR_NAME_NOT_RESOLVED`).
+- **Peningkatan Keandalan Real-time Sync Antar Perangkat**: Menjamin aliran perubahan data pesanan, katalog produk, dan status shift laci kasir tetap terhubung secara stabil tanpa membanjiri konsol browser dengan error retry QUIC.
+
+---
+
 ### v1.9.29 — Penyempurnaan Presisi Visual Pemulihan Data & Eliminasi Truncation (25 Sep 2026)
 - **Perbaikan Ikon Proteksi Blank**: Mengganti `fa-shield-check` yang merupakan ikon Font Awesome Pro dengan `fa-shield-halved` standar, memulihkan tampilan lencana perisai keselamatan secara presisi.
 - **Eliminasi Truncation Judul Pemulihan Data**: Menghapus truncation pada judul "Pemulihan Aman & Proteksi Rollback" sehingga teks membungkus alami (*leading-snug*) tanpa terpotong tanda titik-titik ("...") di HP.

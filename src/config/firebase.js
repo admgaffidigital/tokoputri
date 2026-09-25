@@ -58,7 +58,7 @@ if (typeof window !== 'undefined') {
 try {
     db.settings({
         ignoreUndefinedProperties: true,
-        experimentalAutoDetectLongPolling: true,
+        experimentalForceLongPolling: true,
         merge: true,
     });
 } catch(e) {}

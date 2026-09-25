@@ -8,6 +8,19 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-9-30',
+        version: 'v1.9.30',
+        date: '2026-09-25',
+        title: 'Optimasi Ketahanan Koneksi Jaringan Cloud Firestore (Eliminasi ERR_QUIC_PROTOCOL_ERROR via Force Long Polling HTTPS)',
+        category: 'optimization',
+        badge: 'Network Resilience & Stable Cloud Sync v1.9.30',
+        items: [
+            'Eliminasi ERR_QUIC_PROTOCOL_ERROR.QUIC_TOO_MANY_RTOS: Mengaktifkan experimentalForceLongPolling pada konfigurasi Firestore SDK untuk memastikan transmisi data menggunakan protokol HTTPS berbasis TCP yang andal dan kebal terhadap packet loss atau pemblokiran UDP pada jaringan seluler (Telkomsel/Indosat/XL) maupun Wi-Fi publik.',
+            'Pencegahan Kegagalan Stream Listen Channel: Menghindari kegagalan kanal sinkronisasi gRPC-Web/QUIC saat koneksi internet mengalami fluktuasi sementara atau timeout DNS (ERR_NAME_NOT_RESOLVED).',
+            'Peningkatan Keandalan Real-time Sync Antar Perangkat: Menjamin aliran perubahan data pesanan, katalog produk, dan status shift laci kasir tetap terhubung secara stabil tanpa membanjiri konsol browser dengan error retry QUIC.'
+        ]
+    },
+    {
         id: 'log-1-9-29',
         version: 'v1.9.29',
         date: '2026-09-25',
