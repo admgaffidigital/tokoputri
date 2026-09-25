@@ -18,7 +18,7 @@ export const renderCashierAccounts = async () => {
     if (!content) return;
 
     setH('admin-content', `
-    <div class="space-y-4 p-4 sm:p-6 max-w-5xl mx-auto">
+    <div class="space-y-4 p-3.5 sm:p-6 max-w-5xl mx-auto pt-3 sm:pt-5 pb-16">
         <!-- Native App Segmented Control Switcher -->
         <div class="p-1 bg-slate-200/70 dark:bg-slate-800 rounded-2xl max-w-sm w-full grid grid-cols-2 gap-1 border border-slate-300/40 dark:border-slate-700/60 shadow-2xs">
             <button id="tab-btn-cashier-accounts" onclick="window.switchCashierTab('accounts')" class="py-2.5 px-3 rounded-xl text-xs font-black bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-xs transition-all flex items-center justify-center gap-2 cursor-pointer border border-black/5 dark:border-white/10">

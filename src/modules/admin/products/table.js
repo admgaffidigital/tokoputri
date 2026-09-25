@@ -1,4 +1,4 @@
-﻿/**
+/**
  * ============================================================
  * ADMIN PRODUCTS — RENDER TABEL & LIST PRODUK (table.js)
  * Mengatur tampilan daftar data produk, warna, pelanggan, reward,
@@ -381,13 +381,13 @@ window.rAdmItms = t => {
         let delBtn = `<button class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-rose-50 border border-rose-200 text-rose-500 flex items-center justify-center hover:bg-rose-500 hover:text-white dark:bg-rose-900/30 dark:border-rose-800 transition-all active:scale-95 shadow-sm" onclick="event.stopPropagation(); oADel('${t}','${x.id}')" title="Hapus Permanen"><i class="fa-solid fa-trash text-xs sm:text-sm"></i></button>`;
 
         return `
-        <div data-id="${x.id}" class="product-admin-card p-4 sm:p-5 md:p-6 lg:p-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-[1.5rem] border shadow-sm cursor-pointer hover:shadow-md hover:-translate-y-0.5 hover:border-[var(--color-primary)]/40 dark:hover:border-[var(--color-primary)]/40 transition-all duration-200 ${bC}" onclick="oAEd('${t}','${x.id}')">
-            <div class="flex items-start sm:items-center gap-2 sm:gap-4 min-w-0 w-full">
+        <div data-id="${x.id}" class="product-admin-card p-3.5 sm:p-5 md:p-6 lg:p-8 flex flex-col sm:flex-row sm:items-center justify-between gap-3.5 sm:gap-4 rounded-2xl sm:rounded-[1.5rem] border shadow-2xs cursor-pointer hover:shadow-md hover:-translate-y-0.5 hover:border-[var(--color-primary)]/40 dark:hover:border-[var(--color-primary)]/40 transition-all duration-200 ${bC}" onclick="oAEd('${t}','${x.id}')">
+            <div class="flex items-start sm:items-center gap-2.5 sm:gap-4 min-w-0 w-full">
                 ${dragHandle}
                 ${img}
-                <div class="min-w-0 flex flex-col justify-center py-1">
+                <div class="min-w-0 flex flex-col justify-center py-0.5">
                     <p class="text-xs sm:text-sm font-bold ${tC} line-clamp-2 uppercase tracking-wide leading-snug mb-1.5">${esc(x.name||x.title||x.bankName||x.code||'Item')}</p>
-                    ${isP ? `<p class="text-sm sm:text-base font-bold text-[var(--color-primary)] tracking-tight">${fCur(x.price)}</p>` : ''}
+                    ${isP ? `<p class="text-sm sm:text-base font-black text-[var(--color-primary)] tracking-tight">${fCur(x.price)}</p>` : ''}
                     ${isP && isAdminActive && useStockEnabled ? `<p class="text-[10px] font-bold mt-1 ${(x.variants&&x.variants.length?x.variants.reduce((s,v)=>s+(parseFloat(v.stock)||0),0):parseFloat(x.stock)||0) === 0 ? 'text-rose-500 animate-pulse' : 'text-blue-500'}"><i class="fa-solid fa-boxes-stacked mr-1"></i>Stok: ${x.variants&&x.variants.length ? x.variants.reduce((s,v)=>s+(parseFloat(v.stock)||0),0).toFixed(2).replace(/\.?0+$/,'') : (parseFloat(x.stock)||0)}</p>` : ''}
                     ${isP && isAdminActive && x.hpp ? `<p class="text-[10px] font-bold text-amber-500 mt-0.5"><i class="fa-solid fa-coins mr-1"></i>HPP: ${fCur(x.hpp)}</p>` : ''}
                     ${isP ? (() => {
@@ -399,7 +399,7 @@ window.rAdmItms = t => {
                     ${t==='rewards' ? `<p class="text-sm font-bold text-violet-500"><i class="fa-solid fa-star mr-1"></i>${(parseFloat(x.pointsCost)||0)} Poin</p><p class="text-[10px] font-bold text-slate-500 mt-0.5"><i class="fa-solid fa-boxes-stacked mr-1"></i>Stok: ${parseFloat(x.stock)||0}</p>` : ''}
                 </div>
             </div>
-            <div class="flex gap-2.5 shrink-0 self-end sm:self-center pt-3 sm:pt-0 border-t border-slate-100 sm:border-0 dark:border-slate-700/50 w-full sm:w-auto justify-end">
+            <div class="flex flex-wrap gap-2 sm:gap-2.5 shrink-0 self-end sm:self-center pt-2.5 sm:pt-0 border-t border-slate-100 sm:border-0 dark:border-slate-700/50 w-full sm:w-auto justify-end">
                 ${tglBtn}
                 ${restockBtn}
                 ${qPriceBtn}

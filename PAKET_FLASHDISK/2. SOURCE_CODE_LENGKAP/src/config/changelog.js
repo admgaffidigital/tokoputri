@@ -8,6 +8,21 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-9-28',
+        version: 'v1.9.28',
+        date: '2026-09-25',
+        title: 'Audit Presisi UI/UX & Penyempurnaan Menyeluruh Tampilan Natif App (Anti-Overflow Aksi Produk, Harmonisasi Tombol POS & Headroom Kasir)',
+        category: 'optimization',
+        badge: 'Universal Native App Experience & Touch Polish v1.9.28',
+        items: [
+            'Audit & Penyempurnaan Responsivitas Kartu Produk Admin: Menerapkan flex-wrap gap-2 pada baris tombol aksi produk (Stok, Restock, Edit Harga, Duplikat, Edit, Hapus) dan padding presisi (p-3.5 sm:p-5) sehingga seluruh tombol tertata rapi tanpa risiko meluber (horizontal overflow) pada smartphone kecil.',
+            'Harmonisasi Tombol Modal Swap POS Kasir: Mengganti warna tombol hijau statis pada konfirmasi tukar transaksi held cart dengan warna brand tema toko (var(--color-primary)) lengkap dengan feedback haptik/active touch.',
+            'Penyelarasan Input & Tombol Tambah Barcode POS: Mengganti tombol hijau dan border focus scanner barcode manual ke identitas brand toko untuk konsistensi visual 100%.',
+            'Optimalisasi Headroom Panel Kasir Admin: Menambahkan padding atas yang lega (pt-3 sm:pt-5 pb-16) pada halaman Manajemen Kasir agar segmented control tidak tertekan mepet di bawah header pada perangkat ponsel.',
+            'Audit Kelancaran Layar Sentuh & Responsivitas Mobile: Memastikan seluruh komponen navigasi bawah (Bottom Nav), dialog konfirmasi, dan modal preview memiliki tap target ergonomis (minimum 40-48px) dan animasi native press yang responsif.'
+        ]
+    },
+    {
         id: 'log-1-9-27',
         version: 'v1.9.27',
         date: '2026-09-25',

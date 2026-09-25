@@ -759,9 +759,9 @@ export const posRecallHeldCart = (heldId) => {
                         Ada <span class="font-bold text-slate-800 dark:text-slate-200">${posCart.length} jenis item</span> di transaksi aktif saat ini. Ingin tahan transaksi aktif ke antrean baru atau menimpa?
                     </p>
                     <div class="flex flex-col gap-2">
-                        <button onclick="window.posHoldCurrentAndRecall('${esc(heldId)}')" class="w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-md transition-all cursor-pointer flex items-center justify-center gap-1.5">
+                        <button onclick="window.posHoldCurrentAndRecall('${esc(heldId)}')" class="w-full py-2.5 rounded-xl text-white font-bold text-xs shadow-md transition-all cursor-pointer flex items-center justify-center gap-1.5 active:scale-95 hover:brightness-105" style="background:var(--color-primary)">
                             <i class="fa-solid fa-floppy-disk"></i>
-                            <span>Tahan Transaksi Aktif & Panggil</span>
+                            <span>Tahan Transaksi Aktif &amp; Panggil</span>
                         </button>
                         <button onclick="window.posOverwriteAndRecall('${esc(heldId)}')" class="w-full py-2 rounded-xl border border-rose-200 dark:border-rose-900 text-rose-600 dark:text-rose-400 font-bold text-xs hover:bg-rose-50 dark:hover:bg-rose-950/20 transition-all cursor-pointer">
                             Timpa Transaksi Aktif
@@ -2735,11 +2735,11 @@ export const openPOSCameraScanner = async () => {
                     <div class="relative flex-1">
                         <i class="fa-solid fa-barcode absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-xs"></i>
                         <input id="pos-manual-barcode-input" type="text" placeholder="Atau ketik/scan nomor barcode..."
-                            class="w-full pl-8 pr-3 py-2 rounded-xl border border-slate-700 bg-slate-800 text-xs font-mono font-bold text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 transition-all"
+                            class="w-full pl-8 pr-3 py-2 rounded-xl border border-slate-700 bg-slate-800 text-xs font-mono font-bold text-white placeholder-slate-500 focus:outline-none focus:border-[var(--color-primary)] transition-all"
                             onkeydown="if(event.key==='Enter') window.posProcessManualBarcode(this.value)">
                     </div>
                     <button onclick="window.posProcessManualBarcode(document.getElementById('pos-manual-barcode-input')?.value)"
-                        class="px-3 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition-all active:scale-95 shadow-md cursor-pointer">
+                        class="px-3.5 py-2 rounded-xl text-white text-xs font-bold transition-all active:scale-95 shadow-md cursor-pointer hover:brightness-105" style="background:var(--color-primary)">
                         Tambah
                     </button>
                 </div>

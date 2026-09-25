@@ -176,6 +176,13 @@ Aplikasi telah dilengkapi dengan fondasi **Capacitor 8 Android Native**:
 
 ## 📋 Riwayat Pembaruan (Changelog)
 
+### v1.9.28 — Audit Presisi UI/UX & Penyempurnaan Menyeluruh Tampilan Natif App (25 Sep 2026)
+- **Anti-Overflow Baris Aksi Produk**: Menambahkan `flex-wrap gap-2` pada baris tombol aksi produk di katalog admin dan memperhalus padding kartu menjadi `p-3.5 sm:p-5`, mencegah overflow horizontal pada smartphone ramping.
+- **Harmonisasi Tombol Modal Swap POS**: Mengganti warna tombol hijau statis pada dialog tukar antrean kasir aktif dengan warna identitas toko (`var(--color-primary)`).
+- **Penyelarasan Input Barcode Manual**: Menyelaraskan border focus dan tombol tambah barcode manual ke palet tema toko.
+- **Headroom Lega Panel Kasir**: Memberikan padding atas `pt-3 sm:pt-5 pb-16` pada halaman Manajemen Kasir agar segmented control tampil proporsional tanpa mepet dengan header pada HP.
+- **Audit Pengalaman Mobile & Layar Sentuh**: Memastikan seluruh kontrol navigasi, modal, dan kartu data memiliki respons sentuhan tactile (`active:scale-95`) yang natural.
+
 ### v1.9.27 — Harmonisasi Visual UI/UX Total & Penyempurnaan Tampilan Natif App (25 Sep 2026)
 - **Anti-Wrap Laporan Shift Z-Report**: Mengatasi kendala teks nomor shift kasir (`#SHF-20260925-860`) dan badge status (`SEDANG BERJALAN`) yang patah menjadi 2 baris pada layar mobile dengan penerapan `whitespace-nowrap`, `font-mono`, `truncate`, dan `shrink-0`.
 - **Harmonisasi Ikon & Metrik Shift**: Mengganti ikon kasir hijau statis dengan warna identitas tema toko (`var(--color-primary)`) serta merombak metrik Modal Awal, Omset, dan Kas Fisik Laci menjadi kartu pil modern yang bersih.
