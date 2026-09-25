@@ -100,12 +100,26 @@ service cloud.firestore {
         allow update, delete: if isAdmin() || isCashier() || (request.auth != null);
       }
 
+      // ─── Shift Kasir POS (Buka/Tutup Kasir, Rekonsiliasi & Settlement) ──
+      match /pos_shifts/{shiftId} {
+        allow read: if true;
+        allow create: if true;
+        allow update, delete: if isAdmin() || isCashier() || (request.auth != null);
+      }
+
       // Pesanan Tempo POS (kompatibilitas modul Piutang Tempo)
       match /orders/{orderId} {
         allow read: if true;
         allow create: if true;
         allow update, delete: if isAdmin() || isCashier() || (request.auth != null);
       }
+    }
+
+    // Shift Kasir POS (Koleksi Root Fallback)
+    match /pos_shifts/{shiftId} {
+      allow read: if true;
+      allow create: if true;
+      allow update, delete: if isAdmin() || isCashier() || (request.auth != null);
     }
 
     // Pesanan Toko Terpadu (Storefront, Kasir POS & CMS Admin)

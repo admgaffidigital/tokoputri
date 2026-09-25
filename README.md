@@ -176,6 +176,36 @@ Aplikasi telah dilengkapi dengan fondasi **Capacitor 8 Android Native**:
 
 ## 📋 Riwayat Pembaruan (Changelog)
 
+### v1.9.21 — Manajemen Shift Kasir & Rekap Tutup Kasir Cerdas (Shift Settlement, Rekonsiliasi Kas Laci, Denominasi, X/Z-Report & Slip Thermal ESC/POS) (25 Sep 2026)
+
+#### 💼 Siklus Kerja Kasir & Rekap Settlement Terpadu
+- **Pembukaan Shift Kasir & Modal Awal (Cash Float)**: Kasir dapat/diwajibkan menginput uang modal awal kembalian di laci kasir saat mulai bertugas dengan chip preset instan (Rp 0, 50rb, 100rb, 200rb, 500rb) dan catatan opsional. Disertai konfirmasi audio chime Web Audio API yang elegan.
+- **Badge Shift Real-Time di Header POS**: Header POS Storefront dan Admin menampilkan badge status shift aktif dengan modal awal kasir dan tombol 1-klik untuk memantau ringkasan shift berjalan.
+- **Ringkasan Shift Berjalan (X-Report)**: Memungkinkan kasir dan admin toko mengecek performa shift yang sedang berlangsung tanpa menutup shift, termasuk durasi kerja aktif, rincian omset per metode bayar (Tunai, QRIS, Bank, Tempo), diskon toko, poin member, dan estimasi uang kas yang seharusnya ada di laci.
+- **Rekonsiliasi Kas Laci & Rekap Tutup Kasir (Z-Report)**: Alur tutup kasir profesional dengan dua mode hitung fisik (Input Cepat atau Kalkulator Denominasi Lembaran: 100rb, 50rb, 20rb, 10rb, 5rb, 2rb, 1rb, koin), deteksi otomatis selisih kas (Pas/Seimbang, Surplus/Lebih, Defisit/Kurang), serta input catatan penutupan.
+- **Cetak Slip Rekap Shift Thermal POS (58mm / 80mm)**: Cetak bukti settlement shift kasir berstandar enterprise ke printer thermal kasir (ESC/POS, Bluetooth, RawBT Android, atau browser print) lengkap dengan ringkasan penjualan, rekonsiliasi kas, dan kolom tanda tangan kasir serta supervisor/owner toko.
+- **Laporan Shift Kasir Cloud di CMS Admin**: Tab baru "Laporan Shift & Rekap Kas" di menu Manajemen Kasir CMS Admin untuk memantau, mengaudit riwayat shift seluruh kasir, dan mencetak ulang slip rekap kasir kapan saja.
+- **Pintasan Keyboard Shift (F10) & Proteksi Logout**: Menambahkan shortcut F10 untuk membuka modal shift langsung dari keyboard kasir serta proteksi konfirmasi cerdas saat kasir logout agar tidak lupa menutup shift.
+
+---
+
+### v1.9.20 — Perbaikan Persistensi Toggle Icon POS Kasir Storefront Saat Muat Ulang Halaman (Anti-Disappearance & Zero-Latency Cache) (24 Sep 2026)
+- **Penyelesaian Kendala Ikon Kasir Hilang Saat Reload**: Memperbaiki masalah race condition dan pembatasan aturan keamanan Firestore (security rules) yang sebelumnya menyebabkan query akun kasir mengembalikan penolakan izin (permission denied) pada sesi awal reload sehingga tombol kasir disembunyikan secara keliru.
+- **Arsitektur Multi-Tier Detection & Fast Path 0ms**: Pengecekan visibilitas ikon POS kini memanfaatkan cache instan localStorage (pos_has_cashier), sesi kasir aktif (pos_cashier_session), status admin aktif, dan konfigurasi publik cms_data tanpa memblokir perenderan UI.
+- **Sinkronisasi Otomatis Dokumen Toko (hasCashier)**: Admin CMS kini otomatis menyinkronkan penanda hasCashier ke dokumen utama cms_data setiap kali kasir ditambah, diubah, atau dihapus, sehingga storefront dapat membaca status secara instan tanpa query berlebih.
+
+---
+
+### v1.9.19 — Pemindai Barcode Kamera Interaktif, Kalkulator Diskon Kasir Pintar (Rp/%), Alert Stok Menipis & Integrasi Printer Thermal ESC/POS (24 Sep 2026)
+- **Pemindai Barcode Kamera Interaktif Terintegrasi**: Kasir dapat memindai barcode atau kode QR produk secara langsung menggunakan kamera HP, tablet, maupun webcam laptop via W3C BarcodeDetector API tanpa memerlukan scanner USB fisik.
+- **Reticle Pemindai Futuristik & Laser Animasi**: Dilengkapi jendela bidik presisi, animasi garis laser pemindai (scanline laser), kontrol lampu senter/flash (torch), tombol putar kamera (depan/belakang), umpan balik audio beep instan, dan mode scan beruntun (continuous) vs sekali.
+- **Kalkulator Diskon Transaksi Cerdas (Dual Mode: Rp & %)**: Keranjang kasir kini mendukung pemberian diskon fleksibel baik dalam nominal Rupiah maupun persentase potongan harga dengan kalkulasi otomatis real-time, sinkronisasi desktop & mobile, serta chip preset cepat (5%, 10%, 15%, 20%, 50%, Rp 2rb, 5rb, 10rb, 25rb, 50rb).
+- **Peringatan Stok Menipis & Penanda Habis (Low Stock & Out of Stock Badges)**: Katalog kasir kini menampilkan status ketersediaan barang secara visual dengan lencana merah "HABIS" untuk stok 0 dan lencana peringatan oranye "SISA X" jika stok <= 5, disertai proteksi validasi kuantitas di keranjang kasir.
+- **Integrasi Universal Printer & Struk Thermal POS**: Cetak struk kasir kini terhubung langsung ke preferensi printer toko (ukuran kertas 58mm/80mm, driver RawBT di Android, atau Bluetooth ESC/POS), menampilkan rincian diskon, poin member, serta tombol pintas akses cepat Pengaturan Printer.
+- **Pintasan Keyboard Kasir Lanjutan**: Tambahan shortcut F4 untuk fokus langsung ke kolom pencarian katalog dan F9 untuk membuka/menutup pemindai barcode kamera.
+
+---
+
 ### v1.9.15 — Integrasi Ekosistem Tunggal POS Kasir: Sinkronisasi Pesanan Toko (freshmart_orders), Pengaturan Stok Dinamis (useStock), & Resolusi Riwayat Kasir (24 Sep 2026)
 
 #### 🌐 Integrasi Ekosistem Tunggal (Storefront, CMS Admin & POS Kasir)

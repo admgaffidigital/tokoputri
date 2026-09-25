@@ -12,6 +12,20 @@ import { db, firebase } from '../../config/firebase.js';
 import { appData } from '../../core/state.js';
 import { el, setH, setIn, esc, fCur, showToast, getOptImg } from '../../core/utils.js';
 import { getPrinterConfig, openPrinterSettingsModal } from '../print/printer-settings.js';
+import {
+    getActiveShift,
+    isShiftActive,
+    openPOSOpenShiftModal,
+    closePOSOpenShiftModal,
+    openShiftSummaryModal,
+    closePOSShiftSummaryModal,
+    openPOSCloseShiftModal,
+    closePOSCloseShiftModal,
+    recordTransactionToShift,
+    renderShiftHeaderBadge,
+    printShiftSettlementReceipt,
+    executeShiftPrintDirect
+} from './pos-shift.js';
 
 // ─── Import modul varian POS (lazy agar tidak load di awal) ──
 let _posVariantSheetLoaded = false;
@@ -226,6 +240,12 @@ const initBarcodeListener = () => {
             e.preventDefault();
             if (el('pos-camera-scanner-modal')) closePOSCameraScanner();
             else openPOSCameraScanner();
+            return;
+        }
+        if (e.key === 'F10') {
+            e.preventDefault();
+            if (isShiftActive()) openShiftSummaryModal();
+            else openPOSOpenShiftModal();
             return;
         }
 
@@ -1860,6 +1880,10 @@ export const processPOSTx = async () => {
         const serverTime = firebase.firestore.FieldValue.serverTimestamp();
         const orderStatus = posPayMethod === 'tempo' ? 'Diproses' : 'Selesai';
 
+        const activeShift = getActiveShift();
+        const shiftId = (activeShift && activeShift.status === 'open') ? activeShift.id : null;
+        const shiftNo = (activeShift && activeShift.status === 'open') ? (activeShift.shiftNo || activeShift.id) : null;
+
         // ── 2. Bangun Data Pesanan Resmi (1 Ekosistem Terpadu Toko) ──
         const orderData = {
             orderId: txId,
@@ -1870,6 +1894,8 @@ export const processPOSTx = async () => {
             timestamp: serverTime,
             dateString: nowISO,
             dateMs: Date.now(),
+            shiftId,
+            shiftNo,
             cashier: cashierUid,
             cashierName,
             customer: {
@@ -1953,6 +1979,9 @@ export const processPOSTx = async () => {
         // ── 4. Simpan ke Database Utama Toko (freshmart_orders) ──────
         // Transaksi kasir langsung masuk ke daftar Pesanan Admin & Laporan Penjualan Toko
         await db.collection('freshmart_orders').doc(txId).set(orderData);
+
+        // Rekam transaksi ke shift kasir aktif
+        recordTransactionToShift(orderData);
 
         // ── 5. Potong Stok Otomatis Jika Fitur Stok Aktif ─────────────
         if (useStk) {
@@ -2197,6 +2226,7 @@ const buildPOSLayout = ({ isStorefront }) => {
                 <span class="hidden md:inline-flex items-center gap-1.5 text-[10px] font-bold text-white bg-black/20 px-2.5 py-1 rounded-lg">
                     <i class="fa-solid fa-barcode text-xs"></i> USB Scanner Aktif
                 </span>
+                <div id="pos-shift-btn-storefront" class="flex items-center"></div>
                 <div id="pos-held-btn-storefront" class="flex items-center"></div>
                 <button onclick="window.cashierLogout()" class="h-8 px-2.5 sm:px-3 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold flex items-center gap-1.5 transition-all active:scale-95 shadow-xs cursor-pointer" title="Keluar Mode Kasir">
                     <i class="fa-solid fa-power-off text-xs"></i>
@@ -2217,6 +2247,7 @@ const buildPOSLayout = ({ isStorefront }) => {
                 <span class="hidden md:inline-flex items-center gap-1 text-[10px] font-bold text-slate-500 dark:text-slate-400">
                     <i class="fa-solid fa-barcode"></i> Scanner Otomatis
                 </span>
+                <div id="pos-shift-btn-admin" class="flex items-center"></div>
                 <div id="pos-held-btn-admin" class="flex items-center"></div>
                 <button onclick="window.posClearCart()" class="px-2.5 py-1 rounded-lg bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-rose-500 text-[10px] font-bold flex items-center gap-1 hover:bg-rose-50 dark:hover:bg-rose-950/20 transition-all cursor-pointer">
                     <i class="fa-solid fa-trash-can"></i> Reset
@@ -2237,7 +2268,7 @@ const buildPOSLayout = ({ isStorefront }) => {
                     <div class="flex items-center gap-2">
                         <div class="relative flex-1">
                             <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs pointer-events-none"></i>
-                            <input id="pos-search-input" type="text" placeholder="Cari barang, barcode USB, atau SKU (F4)..." 
+                            <input id="pos-search-input" type="text" placeholder="Cari barang, barcode USB, atau SKU (F4)... [F9: Scan | F10: Shift]" 
                                 class="w-full pl-9 pr-9 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs sm:text-sm font-medium text-slate-800 dark:text-slate-100 focus:outline-none focus:border-[var(--color-primary)] focus:bg-white dark:focus:bg-slate-900 transition-all"
                                 oninput="window.posSearchFn(this.value)">
                             <button onclick="document.querySelectorAll('#pos-search-input').forEach(i => i.value=''); window.posSearchFn('');" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xs p-1 cursor-pointer" title="Hapus pencarian">
@@ -2444,10 +2475,18 @@ export const renderPOSStorefront = () => {
         renderCatalog();
         renderCart();
         renderHeldBadges();
+        renderShiftHeaderBadge();
         initBarcodeListener();
         startClock();
         ensureCustomersLoaded(); // Prefetch member data
         exposeToWindow();
+
+        // Prompt buka shift kasir jika belum ada shift aktif
+        setTimeout(() => {
+            if (!isShiftActive()) {
+                openPOSOpenShiftModal();
+            }
+        }, 350);
     } catch (err) {
         console.error('Gagal render POS Storefront:', err);
     }
@@ -2474,10 +2513,18 @@ export const renderPOS = () => {
         renderCatalog();
         renderCart();
         renderHeldBadges();
+        renderShiftHeaderBadge();
         initBarcodeListener();
         startClock();
         ensureCustomersLoaded(); // Prefetch member data
         exposeToWindow();
+
+        // Prompt buka shift kasir jika belum ada shift aktif
+        setTimeout(() => {
+            if (!isShiftActive()) {
+                openPOSOpenShiftModal();
+            }
+        }, 350);
     } catch (err) {
         console.error('Gagal render POS Admin:', err);
         const adminContent = el('admin-content');
@@ -2533,6 +2580,18 @@ const exposeToWindow = () => {
     window.posProcessManualBarcode = posProcessManualBarcode;
     window.posSearchScannedCode    = posSearchScannedCode;
     window.executePOSPrintDirect   = executePOSPrintDirect;
+    window.getActiveShift          = getActiveShift;
+    window.isShiftActive           = isShiftActive;
+    window.openPOSOpenShiftModal   = openPOSOpenShiftModal;
+    window.closePOSOpenShiftModal  = closePOSOpenShiftModal;
+    window.openPOSShiftModal       = openShiftSummaryModal;
+    window.openPOSShiftSummaryModal= openShiftSummaryModal;
+    window.closePOSShiftSummaryModal= closePOSShiftSummaryModal;
+    window.openPOSCloseShiftModal  = openPOSCloseShiftModal;
+    window.closePOSCloseShiftModal = closePOSCloseShiftModal;
+    window.renderShiftHeaderBadge  = renderShiftHeaderBadge;
+    window.printShiftSettlementReceipt = printShiftSettlementReceipt;
+    window.executeShiftPrintDirect = executeShiftPrintDirect;
     window.posCatFilter            = (c) => { posCatFilterVal = c; renderCatalog(); };
     window.posSearchFn             = (v) => { 
         posSearch = typeof v === 'string' ? v : (v?.value || ''); 
@@ -2963,3 +3022,15 @@ window.togglePOSScannerMode    = togglePOSScannerMode;
 window.posProcessManualBarcode = posProcessManualBarcode;
 window.posSearchScannedCode    = posSearchScannedCode;
 window.executePOSPrintDirect   = executePOSPrintDirect;
+window.getActiveShift          = getActiveShift;
+window.isShiftActive           = isShiftActive;
+window.openPOSOpenShiftModal   = openPOSOpenShiftModal;
+window.closePOSOpenShiftModal  = closePOSOpenShiftModal;
+window.openPOSShiftModal       = openShiftSummaryModal;
+window.openPOSShiftSummaryModal= openShiftSummaryModal;
+window.closePOSShiftSummaryModal= closePOSShiftSummaryModal;
+window.openPOSCloseShiftModal  = openPOSCloseShiftModal;
+window.closePOSCloseShiftModal = closePOSCloseShiftModal;
+window.renderShiftHeaderBadge  = renderShiftHeaderBadge;
+window.printShiftSettlementReceipt = printShiftSettlementReceipt;
+window.executeShiftPrintDirect = executeShiftPrintDirect;

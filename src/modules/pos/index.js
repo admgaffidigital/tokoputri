@@ -27,3 +27,26 @@ export {
     getProductStockInfo
 } from './pos.js';
 
+export {
+    getActiveShift,
+    saveActiveShift,
+    clearActiveShift,
+    getLastClosedShift,
+    isShiftActive,
+    openPOSOpenShiftModal,
+    closePOSOpenShiftModal,
+    posSetStartCashPreset,
+    confirmStartPOSShift,
+    recordTransactionToShift,
+    openShiftSummaryModal,
+    closePOSShiftSummaryModal,
+    openPOSCloseShiftModal,
+    closePOSCloseShiftModal,
+    confirmClosePOSShift,
+    printShiftSettlementReceipt,
+    executeShiftPrintDirect,
+    renderShiftHeaderBadge,
+    renderAdminShiftReportView,
+    loadAdminShiftReports
+} from './pos-shift.js';
+

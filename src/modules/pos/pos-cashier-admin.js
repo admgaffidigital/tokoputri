@@ -10,6 +10,7 @@
 
 import { auth, db, firebase } from '../../config/firebase.js';
 import { el, setH, esc, showToast, showConfirm, sLoad, hLoad } from '../../core/utils.js';
+import { renderAdminShiftReportView } from './pos-shift.js';
 
 // ─── Render Daftar Kasir ─────────────────────────────────────
 export const renderCashierAccounts = async () => {
@@ -18,41 +19,89 @@ export const renderCashierAccounts = async () => {
 
     setH('admin-content', `
     <div class="space-y-4 p-4 sm:p-6">
-        <!-- Header -->
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            <div>
-                <h2 class="text-base font-black text-slate-900 dark:text-white flex items-center gap-2">
-                    <i class="fa-solid fa-users-gear text-[var(--color-primary)]"></i>
-                    Manajemen Akun Kasir
-                </h2>
-                <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                    Daftarkan dan kelola akun kasir toko Anda
-                </p>
-            </div>
-            <button onclick="window.openAddCashierModal()"
-                class="flex items-center gap-2 px-4 py-2.5 rounded-xl text-white text-xs font-bold shadow-md active:scale-95 transition-all"
-                style="background:var(--color-primary)">
-                <i class="fa-solid fa-user-plus"></i>
-                Tambah Kasir Baru
+        <!-- Sub-Nav Tab Switcher -->
+        <div class="flex items-center gap-2 p-1 bg-slate-100 dark:bg-slate-800 rounded-2xl w-fit border border-slate-200/80 dark:border-slate-700">
+            <button id="tab-btn-cashier-accounts" onclick="window.switchCashierTab('accounts')" class="px-4 py-2 rounded-xl text-xs font-black bg-white dark:bg-slate-700 text-slate-800 dark:text-white shadow-xs transition-all flex items-center gap-2 cursor-pointer">
+                <i class="fa-solid fa-users"></i>
+                <span>Akun Kasir</span>
+            </button>
+            <button id="tab-btn-cashier-shifts" onclick="window.switchCashierTab('shifts')" class="px-4 py-2 rounded-xl text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white transition-all flex items-center gap-2 cursor-pointer">
+                <i class="fa-solid fa-file-invoice-dollar"></i>
+                <span>Laporan Shift &amp; Rekap Kas (Z-Report)</span>
             </button>
         </div>
 
-        <!-- Info Banner -->
-        <div class="p-3.5 rounded-2xl bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 flex gap-3">
-            <i class="fa-solid fa-circle-info text-blue-500 text-sm shrink-0 mt-0.5"></i>
-            <div class="text-xs text-blue-700 dark:text-blue-300 leading-relaxed">
-                <b>Panduan Akun Kasir:</b> Kasir login melalui icon <i class="fa-solid fa-cash-register"></i> di header toko (storefront), bukan di admin CMS.
-                Akun kasir yang dibuat di sini otomatis dapat login ke mode POS kasir dengan email &amp; password yang Anda daftarkan.
+        <!-- Panel 1: Akun Kasir -->
+        <div id="cashier-panel-accounts" class="space-y-4">
+            <!-- Header -->
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div>
+                    <h2 class="text-base font-black text-slate-900 dark:text-white flex items-center gap-2">
+                        <i class="fa-solid fa-users-gear text-[var(--color-primary)]"></i>
+                        Manajemen Akun Kasir
+                    </h2>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                        Daftarkan dan kelola akun kasir toko Anda
+                    </p>
+                </div>
+                <button onclick="window.openAddCashierModal()"
+                    class="flex items-center gap-2 px-4 py-2.5 rounded-xl text-white text-xs font-bold shadow-md active:scale-95 transition-all"
+                    style="background:var(--color-primary)">
+                    <i class="fa-solid fa-user-plus"></i>
+                    Tambah Kasir Baru
+                </button>
+            </div>
+
+            <!-- Info Banner -->
+            <div class="p-3.5 rounded-2xl bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 flex gap-3">
+                <i class="fa-solid fa-circle-info text-blue-500 text-sm shrink-0 mt-0.5"></i>
+                <div class="text-xs text-blue-700 dark:text-blue-300 leading-relaxed">
+                    <b>Panduan Akun Kasir:</b> Kasir login melalui icon <i class="fa-solid fa-cash-register"></i> di header toko (storefront), bukan di admin CMS.
+                    Akun kasir yang dibuat di sini otomatis dapat login ke mode POS kasir dengan email &amp; password yang Anda daftarkan.
+                </div>
+            </div>
+
+            <!-- List Kasir -->
+            <div id="cashier-list-container">
+                <div class="text-center py-16"><i class="fa-solid fa-spinner fa-spin text-3xl text-slate-300"></i></div>
             </div>
         </div>
 
-        <!-- List Kasir -->
-        <div id="cashier-list-container">
-            <div class="text-center py-16"><i class="fa-solid fa-spinner fa-spin text-3xl text-slate-300"></i></div>
-        </div>
+        <!-- Panel 2: Laporan Shift Kasir -->
+        <div id="cashier-panel-shifts" class="hidden"></div>
     </div>`);
 
     await loadCashierList();
+};
+
+export const switchCashierTab = (tab) => {
+    const tabAccounts = el('tab-btn-cashier-accounts');
+    const tabShifts   = el('tab-btn-cashier-shifts');
+    const panelAccounts = el('cashier-panel-accounts');
+    const panelShifts   = el('cashier-panel-shifts');
+
+    if (tab === 'shifts') {
+        if (tabAccounts) {
+            tabAccounts.className = 'px-4 py-2 rounded-xl text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white transition-all cursor-pointer';
+        }
+        if (tabShifts) {
+            tabShifts.className = 'px-4 py-2 rounded-xl text-xs font-black bg-white dark:bg-slate-700 text-slate-800 dark:text-white shadow-xs transition-all cursor-pointer';
+        }
+        if (panelAccounts) panelAccounts.classList.add('hidden');
+        if (panelShifts) {
+            panelShifts.classList.remove('hidden');
+            renderAdminShiftReportView(panelShifts);
+        }
+    } else {
+        if (tabAccounts) {
+            tabAccounts.className = 'px-4 py-2 rounded-xl text-xs font-black bg-white dark:bg-slate-700 text-slate-800 dark:text-white shadow-xs transition-all cursor-pointer';
+        }
+        if (tabShifts) {
+            tabShifts.className = 'px-4 py-2 rounded-xl text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white transition-all cursor-pointer';
+        }
+        if (panelAccounts) panelAccounts.classList.remove('hidden');
+        if (panelShifts) panelShifts.classList.add('hidden');
+    }
 };
 
 const loadCashierList = async () => {
@@ -424,6 +473,7 @@ export const toggleCashierPassVisibility = (inputId) => {
 
 // ─── Expose ke window ────────────────────────────────────────
 window.renderCashierAccounts    = renderCashierAccounts;
+window.switchCashierTab         = switchCashierTab;
 window.openAddCashierModal      = openAddCashierModal;
 window.closeAddCashierModal     = closeAddCashierModal;
 window.saveCashierAccount       = saveCashierAccount;

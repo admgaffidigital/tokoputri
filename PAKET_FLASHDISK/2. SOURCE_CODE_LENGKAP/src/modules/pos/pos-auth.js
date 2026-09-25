@@ -282,7 +282,42 @@ export const processCashierLogin = async () => {
 };
 
 // ─── Logout Kasir ────────────────────────────────────────────
-export const cashierLogout = async () => {
+export const cashierLogout = async (bypassShiftCheck = false) => {
+    // Cek apakah ada shift kasir yang masih aktif
+    if (!bypassShiftCheck && typeof window.getActiveShift === 'function') {
+        const activeShift = window.getActiveShift();
+        if (activeShift && activeShift.status === 'open') {
+            document.getElementById('pos-logout-shift-modal')?.remove();
+            const startCashStr = typeof window.fRp === 'function' ? window.fRp(activeShift.startingCash) : 'Rp ' + activeShift.startingCash;
+            document.body.insertAdjacentHTML('beforeend', `
+            <div id="pos-logout-shift-modal" class="fixed inset-0 z-[10005] flex items-center justify-center p-3 sm:p-4" style="background:rgba(15,23,42,0.75);backdrop-filter:blur(5px)">
+                <div class="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl w-full max-w-sm border border-slate-200 dark:border-slate-800 p-5 text-center space-y-4">
+                    <div class="w-14 h-14 rounded-2xl bg-amber-100 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 flex items-center justify-center text-2xl mx-auto shadow-inner">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-sm font-black text-slate-800 dark:text-white uppercase tracking-wider">Shift Kasir Masih Aktif</h4>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
+                            Shift kasir Anda saat ini masih aktif dengan modal awal <b>${startCashStr}</b>. Apakah Anda ingin menutup shift &amp; merekap uang fisik laci kasir sekarang?
+                        </p>
+                    </div>
+                    <div class="space-y-2 pt-1">
+                        <button onclick="document.getElementById('pos-logout-shift-modal')?.remove(); if(typeof window.openPOSCloseShiftModal==='function') window.openPOSCloseShiftModal();" class="w-full py-3 rounded-2xl bg-rose-600 hover:bg-rose-700 text-white font-black text-xs uppercase tracking-wider shadow-md active:scale-95 transition-all flex items-center justify-center gap-1.5 cursor-pointer">
+                            <i class="fa-solid fa-lock"></i> Tutup Shift Sekarang
+                        </button>
+                        <button onclick="document.getElementById('pos-logout-shift-modal')?.remove(); window.cashierLogout(true);" class="w-full py-2.5 rounded-2xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold text-xs transition-all cursor-pointer">
+                            Tetap Logout (Shift Tetap Berjalan)
+                        </button>
+                        <button onclick="document.getElementById('pos-logout-shift-modal')?.remove();" class="w-full py-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-xs font-semibold cursor-pointer">
+                            Batal
+                        </button>
+                    </div>
+                </div>
+            </div>`);
+            return;
+        }
+    }
+
     const session = getCashierSession();
 
     if (typeof window.detachPOSHistoryListener === 'function') {

@@ -8,6 +8,23 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-9-21',
+        version: 'v1.9.21',
+        date: '2026-09-25',
+        title: 'Manajemen Shift Kasir & Rekap Tutup Kasir Cerdas (Shift Settlement, Rekonsiliasi Kas Laci, Denominasi, X/Z-Report & Slip Thermal ESC/POS)',
+        category: 'feature',
+        badge: 'POS Cashier Shift & Cash Settlement v1.9.21',
+        items: [
+            'Sistem Pembukaan Shift Kasir & Modal Awal (Cash Float): Kasir wajib/dapat mencatat uang modal awal di laci kasir saat mulai bertugas dengan chip preset cepat (Rp 0, 50rb, 100rb, 200rb, 500rb) dan catatan pembukaan shift, lengkap dengan konfirmasi audio chime Web Audio API yang elegan.',
+            'Badge Status Shift Real-Time di Header POS: Header POS Storefront & Admin kini menampilkan indikator status shift aktif dengan modal awal kasir dan tombol akses cepat untuk melihat ringkasan shift berjalan.',
+            'Laporan Shift Berjalan (X-Report): Memungkinkan kasir dan admin toko mengecek performa shift yang sedang berlangsung tanpa menutup shift, termasuk durasi kerja aktif, rincian omset per metode bayar (Tunai, QRIS, Bank, Tempo), diskon toko, poin member, dan estimasi uang kas yang seharusnya ada di laci.',
+            'Rekonsiliasi Kas Laci & Rekap Tutup Kasir (Z-Report): Alur tutup kasir profesional dengan dua mode hitung fisik (Input Cepat atau Kalkulator Denominasi Lembaran: 100rb, 50rb, 20rb, 10rb, 5rb, 2rb, 1rb, koin), deteksi otomatis selisih kas (Pas/Seimbang, Surplus/Lebih, Defisit/Kurang), serta input catatan penutupan.',
+            'Cetak Slip Rekap Shift Thermal POS (58mm / 80mm): Cetak bukti settlement shift kasir berstandar enterprise ke printer thermal kasir (ESC/POS, Bluetooth, RawBT Android, atau browser print) lengkap dengan ringkasan penjualan, rekonsiliasi kas, dan kolom tanda tangan kasir serta supervisor/owner toko.',
+            'Laporan Shift Kasir Cloud di CMS Admin: Tab baru "Laporan Shift & Rekap Kas" di menu Manajemen Kasir CMS Admin untuk memantau, mengaudit riwayat shift seluruh kasir, dan mencetak ulang slip rekap kasir kapan saja.',
+            'Pintasan Keyboard Shift (F10) & Proteksi Logout: Menambahkan shortcut F10 untuk membuka modal shift langsung dari keyboard kasir serta proteksi konfirmasi cerdas saat kasir logout agar tidak lupa menutup shift.'
+        ]
+    },
+    {
         id: 'log-1-9-20',
         version: 'v1.9.20',
         date: '2026-09-24',
