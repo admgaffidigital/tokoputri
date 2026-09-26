@@ -6,7 +6,7 @@ Aplikasi e-commerce dan manajemen kasir point-of-sales (POS) modern berkinerja t
 
 ## 🛠️ Informasi Pengembang & Hak Cipta
 * **Nama Projek**: TOKO PUTRI
-* **Versi Rilis**: **v1.9.48** (Android VersionCode: `10948`)
+* **Versi Rilis**: **v1.9.49** (Android VersionCode: `10949`)
 * **Dikembangkan & Ditandatangani Oleh**: **Novan Restu Utomo** (Selaku Pengembang Utama dan Developer Asli)
 
 ---
@@ -176,6 +176,16 @@ Aplikasi telah dilengkapi dengan fondasi **Capacitor 8 Android Native**:
 ---
 
 ## 📋 Riwayat Pembaruan (Changelog)
+
+### v1.9.49 — Harmonisasi Tema Warna 100% & Adaptive Dual-Mode UX Native App: Item Builder PO, Touch Controls, & Standarisasi Aksi (26 Sep 2026)
+- **Adaptive Dual-Mode PO Item Builder (Mobile Native Cards vs Desktop Table)**: Mengeliminasi total tabel horizontal kaku yang terpotong dan menghasilkan scrollbar buruk di layar ponsel (viewport <640px). Pada mode smartphone, setiap baris barang pesanan otomatis bertransformasi menjadi kartu sentuh native yang lega dengan monogram inisial, pemilih produk intuitif, stepper kuantitas jempol `[-] [ 1 ] [+]`, input harga modal HPP `Rp`, subtotal dinamis seketika, dan tombol hapus cepat. Di layar komputer/tablet, tetap disajikan tabel presisi modern.
+- **Segmented Touch Controls & Preset Duration Chips**: Mengganti dropdown raw `<select>` dengan kontrol sentuh native ala iOS/Android segmented pill (`[ Tunai / Cash ] [ Tempo ] [ Konsinyasi ]`) serta chips preset jatuh tempo instan (`[ 7 Hari ] [ 14 Hari ] [ 30 Hari ] [ 60 Hari ]`).
+- **Harmonisasi Warna Tema Penuh (`var(--color-primary)`)**: Mengeliminasi warna kusam (*muddy tan/grey*) akibat kelas statis `primary-bg-soft` pada tema `stone` dan warna brand lainnya. Seluruh badge status PO, ikon modal header, lencana produk, tab filter, dan tombol utama diselaraskan menggunakan variabel CSS dinamis `var(--color-primary)` dan `rgba(var(--color-primary-rgb), ...)`.
+- **Standarisasi Sticky Action Footer 48px (`h-12 rounded-2xl`)**: Seluruh modal formulir, rincian produk, dan pembayaran pada modul Supplier dan PO kini dilengkapi bilah aksi lengket di bagian bawah layar setinggi 48px (`h-12 rounded-2xl`) dengan padding aman perangkat (`env(safe-area-inset-bottom)`) serta responsivitas sentuhan `active:scale-95`.
+- **Rincian PO & Pembayaran Native Terpadu**: Modal rincian PO (`modal-po-detail`) kini menyajikan kartu rincian produk mobile adaptif, tombol langsung *"+ Terima Barang & Restock"* dan *"+ Bayar Cicilan Hutang"*, sedangkan modal pembayaran cicilan (`modal-po-payment`) dilengkapi tombol cepat *"LUNAS"* tematis.
+- **Sinkronisasi Multi-Channel v1.9.49 (Android VersionCode 10949)**: Disinkronisasikan ke seluruh paket distribusi produksi, Flashdisk, dan Capacitor Android.
+
+---
 
 ### v1.9.48 — Resolusi Tuntas Bottom Sheet Terpotong di Modul Supplier & PO: Mounting Modal ke Root DOM & Animasi Geser Native (26 Sep 2026)
 - **Mounting Modal ke Root DOM (`document.body`)**: Memindahkan seluruh wadah modal Supplier (Detail Profil, Form Pendaftaran) dan Order Kulakan PO (Form PO, Detail PO, Pembayaran Hutang) keluar dari kontainer scroll `#admin-content` langsung ke `document.body`. Mengeliminasi isolasi *stacking context* dan efek samping `transform: translateY(0)` parent yang sebelumnya menjebak modal di dasar scroll dan memotong tampilan form.

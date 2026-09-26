@@ -8,6 +8,22 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-9-49',
+        version: 'v1.9.49',
+        date: '2026-09-26',
+        title: 'Harmonisasi Tema Warna 100% & Adaptive Dual-Mode UX Native App — Item Builder PO, Touch Controls, & Standarisasi Aksi',
+        category: 'optimization',
+        badge: 'Theme & Native UX v1.9.49',
+        items: [
+            'Adaptive Dual-Mode PO Item Builder (Mobile Native Cards vs Desktop Table): Mengeliminasi tabel horizontal kaku yang terpotong/overflow di layar smartphone (<640px). Pada layar sentuh mobile, setiap baris item kulakan kini otomatis menjadi kartu sentuh native yang lega dengan monogram inisial, pemilih produk intuitif, stepper kuantitas sentuh [-] [ 1 ] [+], input harga modal HPP Rp, strip subtotal real-time, dan tombol hapus cepat.',
+            'Segmented Touch Control & Preset Chips Termin Pembayaran: Mengganti dropdown raw <select> dengan kontrol pill sentuh native ([ Tunai / Cash ] [ Tempo ] [ Konsinyasi ]) serta preset chips hari jatuh tempo ([ 7 Hari ] [ 14 Hari ] [ 30 Hari ] [ 60 Hari ]) yang responsif.',
+            'Harmonisasi Warna Tema Penuh (var(--color-primary)): Mengeliminasi warna kusam/muddy akibat kelas statis pada tema tertentu, menyelaraskan ikon header modal, lencana status PO, tombol aksi terima barang, filter status tabs, dan tombol simpan dengan token warna tema dinamis.',
+            'Standarisasi Sticky Action Footer di Seluruh Modal: Semua modal formulir, rincian, dan pembayaran supplier maupun PO kini dilengkapi bilah aksi lengket di bagian bawah setinggi 48px (h-12 rounded-2xl) dengan padding aman safe-area perangkat (env(safe-area-inset-bottom)) dan umpan balik sentuh active:scale-95.',
+            'Rincian PO & Pembayaran Native Terpadu: Modal rincian PO (modal-po-detail) kini menyajikan kartu item mobile responsif, tombol langsung \"+ Terima Barang & Restock\" dan \"+ Bayar Cicilan Hutang\", sedangkan modal pembayaran dilengkapi tombol cepat \"LUNAS\" tematis.',
+            'Sinkronisasi Multi-Channel v1.9.49 (Android VersionCode 10949): Disinkronisasikan ke paket distribusi produksi, Flashdisk, dan Capacitor Android.'
+        ]
+    },
+    {
         id: 'log-1-9-48',
         version: 'v1.9.48',
         date: '2026-09-26',

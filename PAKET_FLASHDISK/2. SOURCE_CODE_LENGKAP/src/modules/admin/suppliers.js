@@ -162,7 +162,7 @@ export const renderSuppliersView = () => {
                 <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div class="space-y-1.5">
                         <div class="flex items-center gap-2">
-                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider primary-bg-soft primary-text border primary-border shadow-2xs">
+                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider border shadow-2xs" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary); border-color: rgba(var(--color-primary-rgb), 0.25);">
                                 <i class="fa-solid fa-truck-field"></i> Mitra Pabrik &amp; Distributor
                             </span>
                         </div>
@@ -179,7 +179,7 @@ export const renderSuppliersView = () => {
                             <i class="fa-solid fa-cart-flatbed" style="color:var(--color-primary)"></i>
                             <span>Order Kulakan</span>
                         </button>
-                        <button onclick="window.openSupplierFormModal()" class="px-5 py-3 rounded-2xl text-xs font-black text-white shadow-glow active:scale-95 transition-all flex items-center gap-2 cursor-pointer primary-bg hover:opacity-95">
+                        <button onclick="window.openSupplierFormModal()" class="px-5 py-3 rounded-2xl text-xs font-black text-white shadow-glow active:scale-95 transition-all flex items-center gap-2 cursor-pointer hover:opacity-95" style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
                             <i class="fa-solid fa-plus text-xs"></i>
                             <span>Tambah Supplier</span>
                         </button>
@@ -191,7 +191,7 @@ export const renderSuppliersView = () => {
                     <div class="p-3.5 sm:p-4 rounded-2xl bg-white/95 dark:bg-slate-800/80 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs backdrop-blur-xs flex flex-col justify-between">
                         <div class="flex items-center justify-between mb-1.5">
                             <span class="text-[9px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">Total Rekanan</span>
-                            <div class="w-7 h-7 rounded-xl primary-bg-soft primary-text flex items-center justify-center text-xs shadow-2xs">
+                            <div class="w-7 h-7 rounded-xl flex items-center justify-center text-xs shadow-2xs" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary);">
                                 <i class="fa-solid fa-truck-field"></i>
                             </div>
                         </div>
@@ -224,7 +224,7 @@ export const renderSuppliersView = () => {
                     <div class="p-3.5 sm:p-4 rounded-2xl bg-white/95 dark:bg-slate-800/80 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs backdrop-blur-xs flex flex-col justify-between">
                         <div class="flex items-center justify-between mb-1.5">
                             <span class="text-[9px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">PO Berjalan</span>
-                            <div class="w-7 h-7 rounded-xl primary-bg-soft primary-text flex items-center justify-center text-xs shadow-2xs">
+                            <div class="w-7 h-7 rounded-xl flex items-center justify-center text-xs shadow-2xs" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary);">
                                 <i class="fa-solid fa-cart-flatbed"></i>
                             </div>
                         </div>
@@ -250,7 +250,8 @@ export const renderSuppliersView = () => {
                     </div>
                     <button 
                         onclick="window.toggleSupplierFilter()" 
-                        class="px-4 py-3 rounded-2xl border text-xs font-bold transition-all flex items-center gap-1.5 shrink-0 ${activeSupplierTab === 'has_debt' ? 'primary-bg text-white shadow-glow' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300'}"
+                        class="px-4 py-3 rounded-2xl border text-xs font-bold transition-all flex items-center gap-1.5 shrink-0 cursor-pointer ${activeSupplierTab === 'has_debt' ? 'text-white shadow-sm' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300'}"
+                        style="${activeSupplierTab === 'has_debt' ? 'background: var(--color-primary); box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.3); border-color: transparent;' : ''}"
                         title="Tampilkan hanya supplier yang ada sisa hutang tempo"
                     >
                         <i class="fa-solid fa-filter text-xs"></i>
@@ -263,12 +264,12 @@ export const renderSuppliersView = () => {
             <div id="supplier-cards-list" class="space-y-3">
                 ${filtered.length === 0 ? `
                     <div class="p-12 text-center flex flex-col items-center justify-center text-slate-400 bg-white/95 dark:bg-slate-800/80 rounded-2xl sm:rounded-3xl border border-slate-200/90 dark:border-slate-700/80">
-                        <div class="w-16 h-16 rounded-2xl primary-bg-soft primary-text flex items-center justify-center text-3xl mb-3 shadow-xs">
+                        <div class="w-16 h-16 rounded-2xl flex items-center justify-center text-3xl mb-3 shadow-xs" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary);">
                             <i class="fa-solid fa-truck-field"></i>
                         </div>
                         <p class="font-bold text-sm text-slate-700 dark:text-slate-200">Belum Ada Data Supplier</p>
                         <p class="text-xs text-slate-400 mt-1 max-w-sm">Daftarkan supplier / distributor rekanan untuk melacak asal-usul barang, mengelola kulakan produk, dan memantau hutang tempo usaha.</p>
-                        <button onclick="window.openSupplierFormModal()" class="mt-4 px-5 py-2.5 rounded-xl primary-bg text-white font-bold text-xs shadow-glow">
+                        <button onclick="window.openSupplierFormModal()" class="mt-4 px-5 py-2.5 rounded-xl text-white font-bold text-xs shadow-glow transition-all active:scale-95 cursor-pointer" style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
                             <i class="fa-solid fa-plus mr-1.5"></i> Tambah Supplier Pertama
                         </button>
                     </div>
@@ -324,7 +325,7 @@ const renderSupplierCardHtml = (s) => {
                         <div class="flex items-center gap-2 flex-wrap">
                             <h4 class="font-black text-sm sm:text-base text-slate-800 dark:text-white truncate tracking-tight">${esc(s.name)}</h4>
                             ${s.code ? `<span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-700/70 text-slate-600 dark:text-slate-300 text-[10px] font-mono font-bold border border-slate-200/60 dark:border-slate-700">${esc(s.code)}</span>` : ''}
-                            <span class="px-2 py-0.5 rounded-md primary-bg-soft primary-text text-[10px] font-bold border primary-border">${esc(termLabelMap[s.defaultTerms] || 'Cash')}</span>
+                            <span class="px-2 py-0.5 rounded-md text-[10px] font-bold border" style="background: rgba(var(--color-primary-rgb), 0.1); color: var(--color-primary); border-color: rgba(var(--color-primary-rgb), 0.25);">${esc(termLabelMap[s.defaultTerms] || 'Cash')}</span>
                         </div>
 
                         <div class="flex items-center gap-3 text-xs text-slate-500 dark:text-slate-400 mt-1 flex-wrap">
@@ -370,7 +371,8 @@ const renderSupplierCardHtml = (s) => {
                         <!-- Tombol Buat PO Langsung untuk Supplier Ini -->
                         <button 
                             onclick="event.stopPropagation(); window.quickCreatePOForSupplier('${s.id}')" 
-                            class="px-3 h-9 rounded-xl primary-bg-soft primary-text border primary-border hover:primary-bg hover:text-white font-bold text-xs flex items-center gap-1.5 transition-all active:scale-95 shadow-2xs cursor-pointer" 
+                            class="px-3 h-9 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all active:scale-95 shadow-2xs cursor-pointer border" 
+                            style="background: rgba(var(--color-primary-rgb), 0.1); color: var(--color-primary); border-color: rgba(var(--color-primary-rgb), 0.25);"
                             title="Buat Order Kulakan Produk ke Supplier Ini"
                         >
                             <i class="fa-solid fa-cart-flatbed text-xs"></i>
@@ -457,9 +459,9 @@ window.openSupplierFormModal = (supplierId = null) => {
         <!-- Pull Indicator for Mobile Bottom Sheet -->
         <div class="pull-indicator sm:hidden"></div>
 
-        <div class="px-5 sm:px-6 pt-3 sm:pt-5 pb-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between shrink-0">
+        <div class="px-5 sm:px-6 pt-3 sm:pt-5 pb-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between shrink-0 bg-slate-50/70 dark:bg-slate-900/60">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-2xl primary-bg-soft primary-text flex items-center justify-center text-lg shrink-0 aspect-square shadow-xs">
+                <div class="w-11 h-11 rounded-2xl flex items-center justify-center text-lg shrink-0 aspect-square shadow-xs" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary); border: 1px solid rgba(var(--color-primary-rgb), 0.25);">
                     <i class="fa-solid ${isEdit ? 'fa-pen-to-square' : 'fa-truck-field'}"></i>
                 </div>
                 <div>
@@ -467,7 +469,7 @@ window.openSupplierFormModal = (supplierId = null) => {
                     <p class="text-xs text-slate-500 dark:text-slate-400">Master database pabrik, distributor, dan rekanan pengadaan barang toko</p>
                 </div>
             </div>
-            <button onclick="window.closeSupplierFormModal()" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:bg-rose-100 hover:text-rose-500 dark:hover:bg-rose-950/40 dark:hover:text-rose-400 flex items-center justify-center transition-all cursor-pointer">
+            <button onclick="window.closeSupplierFormModal()" class="w-9 h-9 rounded-xl bg-slate-100 hover:bg-rose-100 hover:text-rose-500 dark:bg-slate-800 dark:hover:bg-rose-950/40 dark:hover:text-rose-400 text-slate-500 flex items-center justify-center transition-all cursor-pointer">
                 <i class="fa-solid fa-xmark text-sm"></i>
             </button>
         </div>
@@ -548,11 +550,12 @@ window.openSupplierFormModal = (supplierId = null) => {
 
             <!-- Sticky Action Footer on Mobile & Desktop -->
             <div class="p-4 sm:p-5 border-t border-slate-100 dark:border-slate-800 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md shrink-0 flex items-center justify-end gap-2.5" style="padding-bottom: max(1rem, env(safe-area-inset-bottom))">
-                <button type="button" onclick="window.closeSupplierFormModal()" class="px-5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold text-xs hover:bg-slate-100 dark:hover:bg-slate-800 transition-all cursor-pointer">
+                <button type="button" onclick="window.closeSupplierFormModal()" class="h-12 px-5 rounded-2xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold text-xs hover:bg-slate-100 dark:hover:bg-slate-800 transition-all cursor-pointer">
                     Batal
                 </button>
-                <button type="submit" class="px-6 py-2.5 rounded-xl primary-bg text-white font-bold text-xs shadow-glow transition-all active:scale-95 cursor-pointer">
-                    <i class="fa-solid fa-floppy-disk mr-1.5"></i> Simpan Data Supplier
+                <button type="submit" class="h-12 px-6 rounded-2xl text-white font-bold text-xs shadow-glow transition-all active:scale-95 cursor-pointer flex items-center gap-2" style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
+                    <i class="fa-solid fa-floppy-disk"></i>
+                    <span>Simpan Data Supplier</span>
                 </button>
             </div>
         </form>
@@ -773,13 +776,13 @@ const renderSupplierDetailModalContent = (s) => {
 
     setH('modal-supplier-detail-content', `
         <!-- DRAG PULL INDICATOR (NATIVE MOBILE SHEET) -->
-        <div class="pull-indicator"></div>
+        <div class="pull-indicator sm:hidden"></div>
 
         <!-- HEADER MODAL: PROFIL SUPPLIER -->
-        <div class="p-5 sm:p-7 border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/40">
+        <div class="p-5 sm:p-7 border-b border-slate-100 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/60 shrink-0">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div class="flex items-start gap-4">
-                    <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl primary-bg-soft primary-text border primary-border flex items-center justify-center text-xl sm:text-2xl shrink-0 font-black shadow-inner">
+                    <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl flex items-center justify-center text-xl sm:text-2xl shrink-0 font-black shadow-xs" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary); border: 1px solid rgba(var(--color-primary-rgb), 0.25);">
                         ${s.code ? esc(s.code.substring(0, 3).toUpperCase()) : '<i class="fa-solid fa-truck-field"></i>'}
                     </div>
                     <div>
@@ -797,12 +800,12 @@ const renderSupplierDetailModalContent = (s) => {
                 </div>
 
                 <div class="flex items-center gap-2 self-end sm:self-center">
-                    <button onclick="window.quickCreatePOForSupplier('${s.id}')" class="px-4 py-2.5 rounded-xl primary-bg text-white font-bold text-xs flex items-center gap-2 shadow-glow active:scale-95 transition-all">
+                    <button onclick="window.quickCreatePOForSupplier('${s.id}')" class="px-4 py-2.5 rounded-xl text-white font-bold text-xs flex items-center gap-2 shadow-glow active:scale-95 transition-all cursor-pointer" style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
                         <i class="fa-solid fa-plus text-xs"></i>
                         <span>Buat Order (PO)</span>
                     </button>
-                    <button onclick="window.closeSupplierDetailModal()" class="w-9 h-9 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-500 hover:text-slate-800 dark:hover:text-white flex items-center justify-center transition-all cursor-pointer">
-                        <i class="fa-solid fa-xmark"></i>
+                    <button onclick="window.closeSupplierDetailModal()" class="w-9 h-9 rounded-xl bg-slate-100 hover:bg-rose-100 hover:text-rose-500 dark:bg-slate-800 dark:hover:bg-rose-950/40 dark:hover:text-rose-400 text-slate-500 flex items-center justify-center transition-all cursor-pointer">
+                        <i class="fa-solid fa-xmark text-sm"></i>
                     </button>
                 </div>
             </div>
@@ -811,7 +814,8 @@ const renderSupplierDetailModalContent = (s) => {
             <div class="flex items-center gap-2 mt-6 border-b border-slate-200 dark:border-slate-700 overflow-x-auto hide-scrollbar">
                 <button 
                     onclick="window.switchSupplierDetailTab('products')" 
-                    class="px-4 py-2.5 font-bold text-xs border-b-2 transition-all flex items-center gap-2 whitespace-nowrap ${currentDetailModalTab === 'products' ? 'border-[var(--color-primary)] text-[var(--color-primary)]' : 'border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'}"
+                    class="px-4 py-2.5 font-bold text-xs border-b-2 transition-all flex items-center gap-2 whitespace-nowrap cursor-pointer rounded-t-xl"
+                    style="${currentDetailModalTab === 'products' ? 'border-color: var(--color-primary); color: var(--color-primary); background: rgba(var(--color-primary-rgb), 0.08);' : 'border-color: transparent; color: #64748b;'}"
                 >
                     <i class="fa-solid fa-boxes-stacked"></i>
                     <span>Katalog Barang Disuplai (${suppliedProducts.length})</span>
@@ -819,7 +823,8 @@ const renderSupplierDetailModalContent = (s) => {
 
                 <button 
                     onclick="window.switchSupplierDetailTab('orders')" 
-                    class="px-4 py-2.5 font-bold text-xs border-b-2 transition-all flex items-center gap-2 whitespace-nowrap ${currentDetailModalTab === 'orders' ? 'border-[var(--color-primary)] text-[var(--color-primary)]' : 'border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'}"
+                    class="px-4 py-2.5 font-bold text-xs border-b-2 transition-all flex items-center gap-2 whitespace-nowrap cursor-pointer rounded-t-xl"
+                    style="${currentDetailModalTab === 'orders' ? 'border-color: var(--color-primary); color: var(--color-primary); background: rgba(var(--color-primary-rgb), 0.08);' : 'border-color: transparent; color: #64748b;'}"
                 >
                     <i class="fa-solid fa-cart-flatbed"></i>
                     <span>Riwayat Order PO (${supplierPurchases.length})</span>
@@ -827,7 +832,8 @@ const renderSupplierDetailModalContent = (s) => {
 
                 <button 
                     onclick="window.switchSupplierDetailTab('debt')" 
-                    class="px-4 py-2.5 font-bold text-xs border-b-2 transition-all flex items-center gap-2 whitespace-nowrap ${currentDetailModalTab === 'debt' ? 'border-[var(--color-primary)] text-[var(--color-primary)]' : 'border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'}"
+                    class="px-4 py-2.5 font-bold text-xs border-b-2 transition-all flex items-center gap-2 whitespace-nowrap cursor-pointer rounded-t-xl"
+                    style="${currentDetailModalTab === 'debt' ? 'border-color: var(--color-primary); color: var(--color-primary); background: rgba(var(--color-primary-rgb), 0.08);' : 'border-color: transparent; color: #64748b;'}"
                 >
                     <i class="fa-solid fa-file-invoice-dollar"></i>
                     <span>Kartu Hutang Usaha ${totalDebt > 0 ? `<span class="px-1.5 py-0.5 rounded-full bg-amber-500 text-white text-[9px] font-black">${fCur(totalDebt)}</span>` : ''}</span>
@@ -835,11 +841,22 @@ const renderSupplierDetailModalContent = (s) => {
             </div>
         </div>
 
-        <!-- ISI KONTEN TAB -->
-        <div class="p-5 sm:p-6">
+        <!-- ISI KONTEN TAB (SCROLLABLE) -->
+        <div class="p-4 sm:p-6 overflow-y-auto flex-1 hide-scrollbar">
             ${currentDetailModalTab === 'products' ? renderSuppliedProductsTab(suppliedProducts, s) : ''}
             ${currentDetailModalTab === 'orders' ? renderSupplierOrdersTab(supplierPurchases, s) : ''}
             ${currentDetailModalTab === 'debt' ? renderSupplierDebtTab(tempoPurchases, totalDebt, s) : ''}
+        </div>
+
+        <!-- STICKY ACTION FOOTER -->
+        <div class="p-4 sm:p-5 border-t border-slate-100 dark:border-slate-800 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md shrink-0 flex items-center justify-between gap-2.5" style="padding-bottom: max(1rem, env(safe-area-inset-bottom))">
+            <button type="button" onclick="window.closeSupplierDetailModal()" class="h-12 px-5 rounded-2xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold text-xs hover:bg-slate-100 dark:hover:bg-slate-800 transition-all cursor-pointer">
+                Tutup
+            </button>
+            <button type="button" onclick="window.quickCreatePOForSupplier('${s.id}')" class="h-12 px-6 rounded-2xl text-white font-bold text-xs shadow-glow transition-all active:scale-95 cursor-pointer flex items-center gap-2" style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
+                <i class="fa-solid fa-cart-flatbed"></i>
+                <span>Buat Order Kulakan (PO)</span>
+            </button>
         </div>
     `);
 };
@@ -856,7 +873,7 @@ const renderSuppliedProductsTab = (products, s) => {
                 </div>
                 <p class="font-bold text-sm text-slate-700 dark:text-slate-300">Belum Ada Produk yang Dihubungkan</p>
                 <p class="text-xs text-slate-400 mt-1 max-w-md mx-auto">Saat Anda menambahkan atau mengedit produk di menu Katalog Produk, pilih <b>${esc(s.name)}</b> pada field Rekanan/Supplier Asal.</p>
-                <button onclick="window.closeSupplierDetailModal(); if(window.openAdminTab) window.openAdminTab('products');" class="mt-4 px-4 py-2 rounded-xl primary-bg-soft primary-text font-bold text-xs">
+                <button onclick="window.closeSupplierDetailModal(); if(window.openAdminTab) window.openAdminTab('products');" class="mt-4 px-4 py-2 rounded-xl font-bold text-xs cursor-pointer active:scale-95 transition-all" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary);">
                     <i class="fa-solid fa-box-archive mr-1.5"></i> Buka Katalog Produk Toko
                 </button>
             </div>
@@ -867,7 +884,7 @@ const renderSuppliedProductsTab = (products, s) => {
         <div class="space-y-4">
             <div class="flex items-center justify-between">
                 <p class="text-xs font-bold text-slate-500 dark:text-slate-400">Total <b>${products.length}</b> macam produk toko berasal dari supplier ini:</p>
-                <button onclick="window.quickCreatePOForSupplier('${s.id}')" class="px-3 py-1.5 rounded-xl primary-bg text-white font-bold text-xs flex items-center gap-1.5 shadow-2xs">
+                <button onclick="window.quickCreatePOForSupplier('${s.id}')" class="px-3 py-1.5 rounded-xl text-white font-bold text-xs flex items-center gap-1.5 shadow-2xs cursor-pointer active:scale-95 transition-all" style="background: var(--color-primary); box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.3);">
                     <i class="fa-solid fa-cart-plus text-xs"></i>
                     <span>Kulakan Ulang Produk Ini</span>
                 </button>
@@ -941,7 +958,7 @@ const renderSupplierOrdersTab = (purchases, s) => {
                 </div>
                 <p class="font-bold text-sm text-slate-700 dark:text-slate-300">Belum Ada Riwayat Order PO</p>
                 <p class="text-xs text-slate-400 mt-1 max-w-md mx-auto">Mulai buat surat pesanan kulakan (Purchase Order) untuk mencatat barang masuk, harga modal, dan termin pembayaran.</p>
-                <button onclick="window.quickCreatePOForSupplier('${s.id}')" class="mt-4 px-4 py-2 rounded-xl primary-bg text-white font-bold text-xs shadow-glow">
+                <button onclick="window.quickCreatePOForSupplier('${s.id}')" class="mt-4 px-4 py-2 rounded-xl text-white font-bold text-xs shadow-glow transition-all active:scale-95 cursor-pointer" style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
                     <i class="fa-solid fa-cart-flatbed mr-1.5"></i> Buat Order PO Pertama
                 </button>
             </div>
@@ -984,7 +1001,7 @@ const renderSupplierOrdersTab = (purchases, s) => {
                                 <span class="text-sm font-black text-slate-800 dark:text-slate-100">${fCur(po.total)}</span>
                             </div>
 
-                            <button onclick="window.closeSupplierDetailModal(); if(window.openAdminTab) window.openAdminTab('purchases'); setTimeout(() => { window.openPurchaseDetailModal?.('${po.id}'); }, 200);" class="px-3 py-1.5 rounded-xl primary-bg-soft primary-text font-bold text-xs hover:bg-[rgba(var(--color-primary-rgb),0.2)] transition-all">
+                            <button onclick="window.closeSupplierDetailModal(); if(window.openAdminTab) window.openAdminTab('purchases'); setTimeout(() => { window.openPurchaseDetailModal?.('${po.id}'); }, 200);" class="px-3 py-1.5 rounded-xl font-bold text-xs transition-all border cursor-pointer active:scale-95" style="background: rgba(var(--color-primary-rgb), 0.1); color: var(--color-primary); border-color: rgba(var(--color-primary-rgb), 0.25);">
                                 Lihat PO <i class="fa-solid fa-arrow-right text-[10px] ml-1"></i>
                             </button>
                         </div>

@@ -200,30 +200,34 @@ export const renderPurchasesView = () => {
     });
 
     setH('admin-content', `
-        <div class="space-y-5 fade-in max-w-5xl mx-auto pb-24 pt-2">
-            <!-- 0. HERO BANNER PENGADAAN & ORDER KULAKAN (PO) -->
-            <div class="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 p-5 sm:p-7 text-white shadow-xl border border-slate-700/60">
-                <div class="absolute -right-12 -top-12 w-64 h-64 rounded-full blur-3xl pointer-events-none opacity-25" style="background: radial-gradient(circle, var(--color-primary) 0%, transparent 70%);"></div>
-                <div class="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-5">
+        <div class="space-y-4 sm:space-y-5 fade-in max-w-5xl mx-auto pb-24 pt-1 sm:pt-2">
+            <!-- 0. HERO BANNER PENGADAAN & ORDER KULAKAN (PO) — THEME HARMONIZED -->
+            <div class="relative overflow-hidden p-5 sm:p-7 rounded-2xl sm:rounded-3xl border border-[rgba(var(--color-primary-rgb),0.2)] bg-gradient-to-br from-white via-white to-[rgba(var(--color-primary-rgb),0.05)] dark:from-slate-900 dark:via-slate-900/90 dark:to-slate-800 shadow-xs">
+                <!-- Ambient Glow Dekorasi -->
+                <div class="pointer-events-none absolute -right-10 -top-10 h-48 w-48 rounded-full opacity-15 blur-3xl" style="background: var(--color-primary)"></div>
+                <div class="pointer-events-none absolute -bottom-10 -left-10 h-40 w-40 rounded-full opacity-10 blur-2xl" style="background: var(--color-primary)"></div>
+
+                <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div class="space-y-1.5 max-w-xl">
-                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-white/10 backdrop-blur-md border border-white/15">
-                            <i class="fa-solid fa-cart-flatbed" style="color:var(--color-primary)"></i>
-                            <span>Pengadaan &amp; Purchase Order (PO)</span>
+                        <div class="flex items-center gap-2">
+                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider primary-bg-soft primary-text border primary-border shadow-2xs">
+                                <i class="fa-solid fa-cart-flatbed"></i> Pengadaan &amp; Purchase Order (PO)
+                            </span>
                         </div>
-                        <h2 class="text-xl sm:text-2xl font-black tracking-tight text-white">
+                        <h2 class="text-xl sm:text-2xl font-black tracking-tight text-slate-800 dark:text-white flex items-center gap-2.5">
                             Order Kulakan &amp; Restock Barang Toko
                         </h2>
-                        <p class="text-xs sm:text-sm text-slate-300/90 font-medium leading-relaxed">
-                            Kelola pesanan barang kulakan ke supplier rekanan, otomatisasi penerimaan stok masuk, dan pantau jatuh tempo hutang usaha.
+                        <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                            Kelola pesanan barang kulakan ke supplier rekanan, otomatisasi penerimaan stok masuk gudang, dan pantau jatuh tempo hutang usaha.
                         </p>
                     </div>
 
                     <div class="flex items-center gap-2 shrink-0">
-                        <button onclick="if(window.openAdminTab) window.openAdminTab('suppliers');" class="px-4 py-3 rounded-2xl bg-white/10 hover:bg-white/20 text-white border border-white/15 font-bold text-xs shadow-2xs transition-all flex items-center gap-2 cursor-pointer active:scale-95">
+                        <button onclick="if(window.openAdminTab) window.openAdminTab('suppliers');" class="px-4 py-3 rounded-2xl bg-white/90 dark:bg-slate-800/90 text-slate-700 dark:text-slate-200 border border-slate-200/90 dark:border-slate-700/80 font-bold text-xs shadow-2xs hover:bg-white dark:hover:bg-slate-700 transition-all flex items-center gap-2 cursor-pointer active:scale-95">
                             <i class="fa-solid fa-truck-field" style="color:var(--color-primary)"></i>
                             <span>Data Supplier</span>
                         </button>
-                        <button onclick="window.openCreatePOModal()" class="px-5 py-3 rounded-2xl text-xs font-black text-white shadow-glow active:scale-95 transition-all flex items-center gap-2 cursor-pointer primary-bg hover:opacity-95">
+                        <button onclick="window.openCreatePOModal()" class="px-5 py-3 rounded-2xl text-xs font-black text-white shadow-glow active:scale-95 transition-all flex items-center gap-2 cursor-pointer" style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
                             <i class="fa-solid fa-plus text-xs"></i>
                             <span>Buat Order PO</span>
                         </button>
@@ -304,7 +308,8 @@ export const renderPurchasesView = () => {
 
                     <button 
                         onclick="window.openCreatePOModal()" 
-                        class="px-4 sm:px-5 py-3 rounded-2xl primary-bg text-white font-bold text-xs sm:text-sm flex items-center gap-2 shadow-glow hover:opacity-95 transition-all active:scale-95 shrink-0 cursor-pointer"
+                        class="px-4 sm:px-5 py-3 rounded-2xl text-white font-bold text-xs sm:text-sm flex items-center gap-2 shadow-glow transition-all active:scale-95 shrink-0 cursor-pointer"
+                        style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);"
                     >
                         <i class="fa-solid fa-cart-plus text-xs"></i>
                         <span>Buat Order PO</span>
@@ -316,14 +321,16 @@ export const renderPurchasesView = () => {
             <div class="flex items-center gap-2 overflow-x-auto hide-scrollbar pb-1 text-xs font-bold">
                 <button 
                     onclick="window.setPurchaseFilter('all')" 
-                    class="px-4 py-2 rounded-xl transition-all shrink-0 cursor-pointer ${activePOFilter === 'all' ? 'primary-bg text-white shadow-glow' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700'}"
+                    class="px-4 py-2 rounded-xl transition-all shrink-0 cursor-pointer ${activePOFilter === 'all' ? 'text-white shadow-sm' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-[var(--color-primary)]/50'}"
+                    style="${activePOFilter === 'all' ? 'background: var(--color-primary); box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.3); border-color: transparent;' : ''}"
                 >
                     Semua PO (${purchases.length})
                 </button>
 
                 <button 
                     onclick="window.setPurchaseFilter('ordered')" 
-                    class="px-4 py-2 rounded-xl transition-all shrink-0 flex items-center gap-1.5 cursor-pointer ${activePOFilter === 'ordered' ? 'primary-bg text-white shadow-glow' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700'}"
+                    class="px-4 py-2 rounded-xl transition-all shrink-0 flex items-center gap-1.5 cursor-pointer ${activePOFilter === 'ordered' ? 'text-white shadow-sm' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-[var(--color-primary)]/50'}"
+                    style="${activePOFilter === 'ordered' ? 'background: var(--color-primary); box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.3); border-color: transparent;' : ''}"
                 >
                     <i class="fa-solid fa-clock text-[10px]"></i>
                     Dipesan / Dikirim (${purchases.filter(p => p.status === 'ordered').length})
@@ -331,7 +338,8 @@ export const renderPurchasesView = () => {
 
                 <button 
                     onclick="window.setPurchaseFilter('received')" 
-                    class="px-4 py-2 rounded-xl transition-all shrink-0 flex items-center gap-1.5 cursor-pointer ${activePOFilter === 'received' ? 'primary-bg text-white shadow-glow' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700'}"
+                    class="px-4 py-2 rounded-xl transition-all shrink-0 flex items-center gap-1.5 cursor-pointer ${activePOFilter === 'received' ? 'text-white shadow-sm' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-[var(--color-primary)]/50'}"
+                    style="${activePOFilter === 'received' ? 'background: var(--color-primary); box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.3); border-color: transparent;' : ''}"
                 >
                     <i class="fa-solid fa-boxes-stacked text-[10px]"></i>
                     Barang Diterima (${purchases.filter(p => p.status === 'received').length})
@@ -339,7 +347,8 @@ export const renderPurchasesView = () => {
 
                 <button 
                     onclick="window.setPurchaseFilter('unpaid')" 
-                    class="px-4 py-2 rounded-xl transition-all shrink-0 flex items-center gap-1.5 cursor-pointer ${activePOFilter === 'unpaid' ? 'primary-bg text-white shadow-glow' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700'}"
+                    class="px-4 py-2 rounded-xl transition-all shrink-0 flex items-center gap-1.5 cursor-pointer ${activePOFilter === 'unpaid' ? 'text-white shadow-sm' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-[var(--color-primary)]/50'}"
+                    style="${activePOFilter === 'unpaid' ? 'background: var(--color-primary); box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.3); border-color: transparent;' : ''}"
                 >
                     <i class="fa-solid fa-file-invoice-dollar text-[10px]"></i>
                     Hutang Belum Lunas
@@ -347,7 +356,8 @@ export const renderPurchasesView = () => {
 
                 <button 
                     onclick="window.setPurchaseFilter('completed')" 
-                    class="px-4 py-2 rounded-xl transition-all shrink-0 flex items-center gap-1.5 cursor-pointer ${activePOFilter === 'completed' ? 'primary-bg text-white shadow-glow' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700'}"
+                    class="px-4 py-2 rounded-xl transition-all shrink-0 flex items-center gap-1.5 cursor-pointer ${activePOFilter === 'completed' ? 'text-white shadow-sm' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-[var(--color-primary)]/50'}"
+                    style="${activePOFilter === 'completed' ? 'background: var(--color-primary); box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.3); border-color: transparent;' : ''}"
                 >
                     <i class="fa-solid fa-check-double text-[10px]"></i>
                     Selesai / Lunas
@@ -358,12 +368,12 @@ export const renderPurchasesView = () => {
             <div id="purchase-cards-list" class="space-y-3">
                 ${filtered.length === 0 ? `
                     <div class="p-12 text-center flex flex-col items-center justify-center text-slate-400 bg-white/95 dark:bg-slate-800/80 rounded-2xl sm:rounded-3xl border border-slate-200/90 dark:border-slate-700/80">
-                        <div class="w-16 h-16 rounded-2xl primary-bg-soft primary-text flex items-center justify-center text-3xl mb-3 shadow-xs">
+                        <div class="w-16 h-16 rounded-2xl flex items-center justify-center text-3xl mb-3 shadow-xs" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary);">
                             <i class="fa-solid fa-cart-flatbed"></i>
                         </div>
                         <p class="font-bold text-sm text-slate-700 dark:text-slate-200">Belum Ada Order Pembelian (PO)</p>
                         <p class="text-xs text-slate-400 mt-1 max-w-sm">Buat order pembelian kulakan ke supplier untuk mencatat barang masuk, memperbarui stok toko otomatis, dan melacak jatuh tempo hutang.</p>
-                        <button onclick="window.openCreatePOModal()" class="mt-4 px-5 py-2.5 rounded-xl primary-bg text-white font-bold text-xs shadow-glow cursor-pointer">
+                        <button onclick="window.openCreatePOModal()" class="mt-4 px-5 py-2.5 rounded-xl text-white font-bold text-xs shadow-glow cursor-pointer transition-all active:scale-95" style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
                             <i class="fa-solid fa-cart-plus mr-1.5"></i> Buat Order PO Pertama
                         </button>
                     </div>
@@ -461,7 +471,8 @@ const renderPOCardHtml = (po) => {
                         ${po.status === 'ordered' ? `
                             <button 
                                 onclick="event.stopPropagation(); window.receiveAndRestockPO('${po.id}')" 
-                                class="px-3 h-9 rounded-xl bg-teal-500 hover:bg-teal-600 text-white font-bold text-xs flex items-center gap-1.5 shadow-glow active:scale-95 transition-all"
+                                class="px-3 h-9 rounded-xl text-white font-bold text-xs flex items-center gap-1.5 shadow-sm active:scale-95 transition-all cursor-pointer"
+                                style="background: var(--color-primary); box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.3);"
                                 title="Barang Telah Tiba: Tambah Stok ke Gudang &amp; Etalase Otomatis"
                             >
                                 <i class="fa-solid fa-boxes-stacked text-xs"></i>
@@ -473,7 +484,7 @@ const renderPOCardHtml = (po) => {
                         ${po.paymentType === 'tempo' && unpaid > 0 ? `
                             <button 
                                 onclick="event.stopPropagation(); window.openPurchasePaymentModal('${po.id}')" 
-                                class="px-3 h-9 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs flex items-center gap-1.5 shadow-2xs active:scale-95 transition-all"
+                                class="px-3 h-9 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs flex items-center gap-1.5 shadow-2xs active:scale-95 transition-all cursor-pointer"
                                 title="Catat Pembayaran Cicilan Hutang Tempo"
                             >
                                 <i class="fa-solid fa-money-bill-wave text-xs"></i>
@@ -485,7 +496,7 @@ const renderPOCardHtml = (po) => {
                         ${cleanPhone ? `
                             <button 
                                 onclick="event.stopPropagation(); window.sendPOToSupplierWA('${po.id}')" 
-                                class="w-9 h-9 rounded-xl bg-emerald-50 hover:bg-emerald-500 hover:text-white dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 flex items-center justify-center transition-all active:scale-95 shadow-2xs"
+                                class="w-9 h-9 rounded-xl bg-emerald-50 hover:bg-emerald-500 hover:text-white dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 flex items-center justify-center transition-all active:scale-95 shadow-2xs cursor-pointer"
                                 title="Kirim Surat Pesanan PO ke WhatsApp Sales"
                             >
                                 <i class="fa-brands fa-whatsapp text-sm"></i>
@@ -495,7 +506,7 @@ const renderPOCardHtml = (po) => {
                         <!-- AKSI 4: CETAK DOKUMEN PO -->
                         <button 
                             onclick="event.stopPropagation(); window.printPurchaseOrder('${po.id}')" 
-                            class="w-9 h-9 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 flex items-center justify-center transition-all active:scale-95 shadow-2xs"
+                            class="w-9 h-9 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 flex items-center justify-center transition-all active:scale-95 shadow-2xs cursor-pointer"
                             title="Cetak Surat Pesanan (Print / PDF)"
                         >
                             <i class="fa-solid fa-print text-xs"></i>
@@ -504,7 +515,8 @@ const renderPOCardHtml = (po) => {
                         <!-- AKSI 5: DETAIL PO -->
                         <button 
                             onclick="window.openPurchaseDetailModal('${po.id}')" 
-                            class="px-3 h-9 rounded-xl primary-bg-soft border primary-border primary-text font-bold text-xs hover:bg-[rgba(var(--color-primary-rgb),0.2)] transition-all active:scale-95 shadow-2xs"
+                            class="px-3.5 h-9 rounded-xl font-bold text-xs transition-all active:scale-95 shadow-2xs border cursor-pointer"
+                            style="background: rgba(var(--color-primary-rgb), 0.1); color: var(--color-primary); border-color: rgba(var(--color-primary-rgb), 0.3);"
                             title="Buka Rincian Nota &amp; Histori Pembayaran"
                         >
                             Rincian
@@ -702,9 +714,9 @@ const renderPOFormModalContent = (po, isEdit) => {
         <!-- DRAG PULL INDICATOR (NATIVE MOBILE SHEET) -->
         <div class="pull-indicator"></div>
 
-        <div class="p-5 sm:p-6 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-900/40 shrink-0">
+        <div class="p-5 sm:p-6 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-white dark:bg-slate-900 shrink-0">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-2xl primary-bg-soft primary-text border primary-border flex items-center justify-center text-lg shrink-0">
+                <div class="w-10 h-10 rounded-2xl flex items-center justify-center text-lg shrink-0 shadow-xs" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary); border: 1px solid rgba(var(--color-primary-rgb), 0.25);">
                     <i class="fa-solid fa-cart-flatbed"></i>
                 </div>
                 <div>
@@ -712,58 +724,138 @@ const renderPOFormModalContent = (po, isEdit) => {
                     <p class="text-xs text-slate-400">Pilih supplier rekanan, tentukan daftar barang, harga modal HPP, dan termin pembayaran</p>
                 </div>
             </div>
-            <button onclick="window.closePOFormModal()" class="w-9 h-9 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-500 hover:text-slate-800 dark:hover:text-white flex items-center justify-center transition-all cursor-pointer">
-                <i class="fa-solid fa-xmark"></i>
+            <button onclick="window.closePOFormModal()" class="w-9 h-9 rounded-full bg-slate-100 hover:bg-rose-50 hover:text-rose-500 dark:bg-slate-800 dark:hover:bg-rose-950/40 text-slate-500 dark:text-slate-400 dark:hover:text-rose-400 flex items-center justify-center transition-all cursor-pointer active:scale-95">
+                <i class="fa-solid fa-xmark text-sm"></i>
             </button>
         </div>
 
         <form id="po-editor-form" onsubmit="window.savePOForm(event, '${isEdit ? po.id : ''}')" class="flex-1 flex flex-col overflow-hidden">
-            <div class="p-5 sm:p-6 space-y-5 flex-1 overflow-y-auto hide-scrollbar">
+            <div class="p-4 sm:p-6 space-y-4 sm:space-y-5 flex-1 overflow-y-auto hide-scrollbar">
+            
             <!-- 1. IDENTITAS HEADER PO -->
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div>
-                    <label class="block text-[10px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-1.5">Pilih Supplier Rekanan *</label>
-                    <select id="pof-supplierId" required class="admin-input bg-slate-50 dark:bg-slate-900 font-bold cursor-pointer" onchange="window.handlePOSupplierChange(this.value)">
-                        ${suppliers.map(s => `
-                            <option value="${s.id}" ${String(s.id) === String(po.supplierId) ? 'selected' : ''} class="font-bold">
-                                ${esc(s.name)}${s.code ? ` (${esc(s.code)})` : ''}
-                            </option>
-                        `).join('')}
-                    </select>
-                </div>
+            <div class="p-4 sm:p-5 rounded-2xl bg-slate-50/70 dark:bg-slate-900/50 border border-slate-200/80 dark:border-slate-800 space-y-3.5">
+                <span class="block text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                    <i class="fa-solid fa-file-lines text-[var(--color-primary)] mr-1"></i> Data Utama Order Kulakan
+                </span>
 
-                <div>
-                    <label class="block text-[10px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-1.5">Nomor Purchase Order *</label>
-                    <input type="text" id="pof-poNumber" required value="${esc(po.poNumber || '')}" placeholder="PO-202609-001" class="admin-input bg-slate-50 dark:bg-slate-900 font-mono font-bold">
-                </div>
-
-                <div>
-                    <label class="block text-[10px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-1.5">Tanggal Order *</label>
-                    <input type="date" id="pof-date" required value="${esc(po.date || new Date().toISOString().split('T')[0])}" class="admin-input bg-slate-50 dark:bg-slate-900 font-bold">
-                </div>
-            </div>
-
-            <!-- 2. PEMILIHAN TERMIN PEMBAYARAN -->
-            <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 space-y-3">
-                <span class="block text-[10px] font-bold uppercase tracking-widest text-slate-500">Termin &amp; Skema Pembayaran Kulakan</span>
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
                     <div>
-                        <label class="block text-[9px] font-bold uppercase text-slate-400 mb-1">Metode Pembayaran</label>
-                        <select id="pof-paymentType" class="admin-input bg-white dark:bg-slate-800 font-bold cursor-pointer" onchange="window.handlePOPaymentTypeChange(this.value)">
-                            <option value="cash" ${po.paymentType === 'cash' ? 'selected' : ''}>Cash / Tunai Saat Kirim</option>
-                            <option value="tempo" ${po.paymentType === 'tempo' ? 'selected' : ''}>Tempo (Hutang Usaha)</option>
-                            <option value="konsinyasi" ${po.paymentType === 'konsinyasi' ? 'selected' : ''}>Konsinyasi (Titipan Laku Bayar)</option>
+                        <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1">Pilih Supplier Rekanan *</label>
+                        <select id="pof-supplierId" required class="w-full text-xs font-bold text-slate-800 dark:text-slate-100 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-2.5 focus:border-[var(--color-primary)] focus:outline-none transition-all cursor-pointer" onchange="window.handlePOSupplierChange(this.value)">
+                            ${suppliers.map(s => `
+                                <option value="${s.id}" ${String(s.id) === String(po.supplierId) ? 'selected' : ''} class="font-bold">
+                                    ${esc(s.name)}${s.code ? ` (${esc(s.code)})` : ''}
+                                </option>
+                            `).join('')}
                         </select>
                     </div>
 
-                    <div id="pof-tempo-days-box" class="${po.paymentType === 'tempo' ? '' : 'hidden'}">
-                        <label class="block text-[9px] font-bold uppercase text-slate-400 mb-1">Durasi Tempo (Hari)</label>
-                        <input type="number" id="pof-tempoDays" min="1" max="180" value="${po.tempoDays || 14}" placeholder="14" class="admin-input bg-white dark:bg-slate-800 font-bold" oninput="window.recalcPOTempoDueDate()">
+                    <div>
+                        <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1">Nomor Purchase Order *</label>
+                        <input type="text" id="pof-poNumber" required value="${esc(po.poNumber || '')}" placeholder="PO-202609-001" class="w-full text-xs font-mono font-bold text-slate-800 dark:text-slate-100 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-2.5 focus:border-[var(--color-primary)] focus:outline-none transition-all">
                     </div>
 
-                    <div id="pof-tempo-due-box" class="${po.paymentType === 'tempo' ? '' : 'hidden'}">
-                        <label class="block text-[9px] font-bold uppercase text-slate-400 mb-1">Estimasi Jatuh Tempo</label>
-                        <input type="text" id="pof-tempoDueDate" readonly class="admin-input bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 font-bold">
+                    <div>
+                        <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1">Tanggal Order *</label>
+                        <input type="date" id="pof-date" required value="${esc(po.date || new Date().toISOString().split('T')[0])}" class="w-full text-xs font-bold text-slate-800 dark:text-slate-100 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-2.5 focus:border-[var(--color-primary)] focus:outline-none transition-all">
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. PEMILIHAN TERMIN PEMBAYARAN (NATIVE SEGMENTED PILLS) -->
+            <div class="p-4 sm:p-5 rounded-2xl bg-slate-50/70 dark:bg-slate-900/50 border border-slate-200/80 dark:border-slate-800 space-y-3.5">
+                <div class="flex items-center justify-between">
+                    <span class="block text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                        <i class="fa-solid fa-wallet text-[var(--color-primary)] mr-1"></i> Termin &amp; Skema Pembayaran
+                    </span>
+                    <span class="text-[10px] font-bold text-slate-400" id="pof-payment-badge-desc">
+                        ${po.paymentType === 'cash' ? 'Bayar Penuh Saat Kirim' : (po.paymentType === 'konsinyasi' ? 'Titip Jual Laku Bayar' : 'Hutang Usaha Bertempo')}
+                    </span>
+                </div>
+
+                <!-- Hidden native input agar kompatibel dengan form submit -->
+                <input type="hidden" id="pof-paymentType" value="${po.paymentType || 'tempo'}">
+
+                <!-- Segmented Control Touch Pills -->
+                <div class="flex items-center gap-2 p-1 bg-slate-200/60 dark:bg-slate-800/80 rounded-2xl">
+                    <button 
+                        type="button" 
+                        id="pof-type-btn-cash" 
+                        onclick="window.setPOPaymentType('cash')" 
+                        class="pof-type-btn flex-1 py-2.5 px-3 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition-all active:scale-95 cursor-pointer ${po.paymentType === 'cash' ? 'text-white shadow-sm' : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'}"
+                        style="${po.paymentType === 'cash' ? 'background: var(--color-primary); box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.3);' : ''}"
+                    >
+                        <i class="fa-solid fa-money-bill-wave text-xs"></i>
+                        <span>Tunai / Cash</span>
+                    </button>
+
+                    <button 
+                        type="button" 
+                        id="pof-type-btn-tempo" 
+                        onclick="window.setPOPaymentType('tempo')" 
+                        class="pof-type-btn flex-1 py-2.5 px-3 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition-all active:scale-95 cursor-pointer ${(!po.paymentType || po.paymentType === 'tempo') ? 'text-white shadow-sm' : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'}"
+                        style="${(!po.paymentType || po.paymentType === 'tempo') ? 'background: var(--color-primary); box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.3);' : ''}"
+                    >
+                        <i class="fa-solid fa-clock text-xs"></i>
+                        <span>Tempo (Hutang)</span>
+                    </button>
+
+                    <button 
+                        type="button" 
+                        id="pof-type-btn-konsinyasi" 
+                        onclick="window.setPOPaymentType('konsinyasi')" 
+                        class="pof-type-btn flex-1 py-2.5 px-3 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition-all active:scale-95 cursor-pointer ${po.paymentType === 'konsinyasi' ? 'text-white shadow-sm' : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'}"
+                        style="${po.paymentType === 'konsinyasi' ? 'background: var(--color-primary); box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.3);' : ''}"
+                    >
+                        <i class="fa-solid fa-handshake text-xs"></i>
+                        <span>Konsinyasi</span>
+                    </button>
+                </div>
+
+                <!-- Opsi Tambahan untuk Tempo -->
+                <div id="pof-tempo-options-box" class="${(!po.paymentType || po.paymentType === 'tempo') ? 'space-y-3 pt-1' : 'hidden'}">
+                    <div class="flex items-center gap-1.5 flex-wrap">
+                        <span class="text-[9px] font-black uppercase text-slate-400 mr-1">Preset Durasi:</span>
+                        ${[7, 14, 30, 45, 60].map(d => `
+                            <button 
+                                type="button" 
+                                id="pof-tempo-chip-${d}" 
+                                onclick="window.setPOTempoPresetDays(${d})" 
+                                class="px-2.5 py-1 rounded-lg text-[11px] font-bold border transition-all active:scale-95 cursor-pointer ${(po.tempoDays || 14) === d ? 'text-white border-transparent' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700'}"
+                                style="${(po.tempoDays || 14) === d ? 'background: var(--color-primary);' : ''}"
+                            >
+                                ${d} Hari
+                            </button>
+                        `).join('')}
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-[9px] font-bold uppercase text-slate-400 mb-1">Durasi Kustom (Hari)</label>
+                            <input 
+                                type="number" 
+                                id="pof-tempoDays" 
+                                min="1" 
+                                max="365" 
+                                value="${po.tempoDays || 14}" 
+                                placeholder="14" 
+                                class="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-bold focus:border-[var(--color-primary)] focus:outline-none" 
+                                oninput="window.recalcPOTempoDueDate()"
+                            >
+                        </div>
+
+                        <div>
+                            <label class="block text-[9px] font-bold uppercase text-slate-400 mb-1">Estimasi Tanggal Jatuh Tempo</label>
+                            <div class="relative">
+                                <i class="fa-regular fa-calendar-check absolute left-3 top-1/2 -translate-y-1/2 text-sm" style="color:var(--color-primary)"></i>
+                                <input 
+                                    type="text" 
+                                    id="pof-tempoDueDate" 
+                                    readonly 
+                                    class="w-full bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl pl-9 pr-3 py-2 text-xs font-bold text-slate-700 dark:text-slate-200"
+                                >
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -772,52 +864,105 @@ const renderPOFormModalContent = (po, isEdit) => {
             <div class="space-y-3">
                 <div class="flex items-center justify-between">
                     <div>
-                        <h4 class="font-bold text-xs uppercase tracking-widest text-slate-600 dark:text-slate-300">Daftar Barang yang Dipesan</h4>
+                        <h4 class="font-black text-xs uppercase tracking-wider text-slate-700 dark:text-slate-200 flex items-center gap-1.5">
+                            <i class="fa-solid fa-boxes-stacked text-[var(--color-primary)]"></i>
+                            <span>Daftar Barang yang Dipesan</span>
+                        </h4>
                         <p class="text-[10px] text-slate-400">Pilih dari katalog produk atau masukkan kuantitas dan harga beli modal baru</p>
                     </div>
-                    <button type="button" onclick="window.addPOItemRow()" class="px-3.5 py-1.5 rounded-xl primary-bg text-white font-bold text-xs flex items-center gap-1.5 shadow-2xs active:scale-95 transition-all">
+                    <button 
+                        type="button" 
+                        onclick="window.addPOItemRow()" 
+                        class="px-3.5 py-1.5 rounded-xl text-white font-bold text-xs flex items-center gap-1.5 shadow-2xs active:scale-95 transition-all cursor-pointer"
+                        style="background: var(--color-primary); box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.25);"
+                    >
                         <i class="fa-solid fa-plus text-xs"></i>
                         <span>Tambah Barang</span>
                     </button>
                 </div>
 
-                <div id="po-items-table-container" class="border border-slate-200 dark:border-slate-700 rounded-2xl overflow-hidden bg-white dark:bg-slate-800">
-                    <!-- Tabel Item PO di-render oleh renderPOItemsTable() -->
+                <div id="po-items-table-container">
+                    <!-- Item PO di-render oleh renderPOItemsTable() dalam format Adaptive Mobile Cards + Desktop Table -->
                 </div>
             </div>
 
-            <!-- 4. RINGKASAN BIAYA & DISKON -->
-            <div class="p-4 sm:p-5 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 space-y-3">
+            <!-- 4. RINGKASAN BIAYA & CATATAN PENGIRIMAN -->
+            <div class="p-4 sm:p-5 rounded-2xl bg-slate-50/70 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800 space-y-4">
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-1">Catatan Tambahan / Nomor Surat Jalan</label>
-                        <textarea id="pof-notes" rows="3" placeholder="Catatan pengiriman, armada truk, nomor invoice supplier..." class="admin-input bg-white dark:bg-slate-800 resize-none text-xs">${esc(po.notes || '')}</textarea>
+                        <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1.5">
+                            <i class="fa-solid fa-note-sticky text-[var(--color-primary)] mr-1"></i> Catatan Tambahan / Nomor Surat Jalan
+                        </label>
+                        <textarea 
+                            id="pof-notes" 
+                            rows="4" 
+                            placeholder="Catatan pengiriman, armada truk, nomor invoice supplier..." 
+                            class="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-3 text-xs resize-none focus:border-[var(--color-primary)] focus:outline-none"
+                        >${esc(po.notes || '')}</textarea>
                     </div>
 
-                    <div class="space-y-2 text-xs">
+                    <div class="space-y-2.5 text-xs bg-white dark:bg-slate-800/80 p-4 rounded-xl border border-slate-200/80 dark:border-slate-700">
                         <div class="flex items-center justify-between">
-                            <span class="text-slate-500">Subtotal Barang:</span>
+                            <span class="text-slate-500 font-medium">Subtotal Barang:</span>
                             <span class="font-bold text-slate-800 dark:text-white" id="pof-calc-subtotal">Rp 0</span>
                         </div>
+
                         <div class="flex items-center justify-between gap-3">
-                            <span class="text-slate-500">Diskon Potongan Nota:</span>
-                            <input type="number" id="pof-discount" min="0" value="${po.discount || 0}" placeholder="0" class="admin-input bg-white dark:bg-slate-800 w-36 text-right py-1.5 text-xs font-bold" oninput="window.recalcPOTotals()">
+                            <span class="text-slate-500 font-medium">Diskon Potongan Nota:</span>
+                            <div class="relative w-36">
+                                <span class="absolute left-2.5 top-1/2 -translate-y-1/2 text-[10px] font-bold text-slate-400">Rp</span>
+                                <input 
+                                    type="number" 
+                                    id="pof-discount" 
+                                    min="0" 
+                                    value="${po.discount || 0}" 
+                                    placeholder="0" 
+                                    class="w-full pl-8 pr-2.5 py-1.5 text-xs font-bold text-right bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg focus:border-[var(--color-primary)] focus:outline-none" 
+                                    oninput="window.recalcPOTotals()"
+                                >
+                            </div>
                         </div>
+
                         <div class="flex items-center justify-between gap-3">
-                            <span class="text-slate-500">Ongkos Kirim / Ekspedisi:</span>
-                            <input type="number" id="pof-shippingFee" min="0" value="${po.shippingFee || 0}" placeholder="0" class="admin-input bg-white dark:bg-slate-800 w-36 text-right py-1.5 text-xs font-bold" oninput="window.recalcPOTotals()">
+                            <span class="text-slate-500 font-medium">Ongkos Kirim / Ekspedisi:</span>
+                            <div class="relative w-36">
+                                <span class="absolute left-2.5 top-1/2 -translate-y-1/2 text-[10px] font-bold text-slate-400">Rp</span>
+                                <input 
+                                    type="number" 
+                                    id="pof-shippingFee" 
+                                    min="0" 
+                                    value="${po.shippingFee || 0}" 
+                                    placeholder="0" 
+                                    class="w-full pl-8 pr-2.5 py-1.5 text-xs font-bold text-right bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg focus:border-[var(--color-primary)] focus:outline-none" 
+                                    oninput="window.recalcPOTotals()"
+                                >
+                            </div>
                         </div>
+
                         <div class="pt-2 border-t border-slate-200 dark:border-slate-700 flex items-center justify-between text-sm sm:text-base font-black">
                             <span class="text-slate-800 dark:text-white">Total Tagihan PO:</span>
-                            <span class="text-[var(--color-primary)] text-lg" id="pof-calc-grandtotal">Rp 0</span>
+                            <span class="text-lg font-black" style="color:var(--color-primary)" id="pof-calc-grandtotal">Rp 0</span>
                         </div>
+
                         <div class="flex items-center justify-between gap-3 pt-1">
                             <span class="text-slate-500 font-bold" id="pof-dp-label">Pembayaran Awal / DP:</span>
-                            <input type="number" id="pof-amountPaid" min="0" value="${po.amountPaid || 0}" placeholder="0" class="admin-input bg-white dark:bg-slate-800 w-36 text-right py-1.5 text-xs font-bold text-emerald-600" oninput="window.recalcPOTotals()">
+                            <div class="relative w-36">
+                                <span class="absolute left-2.5 top-1/2 -translate-y-1/2 text-[10px] font-bold text-emerald-500">Rp</span>
+                                <input 
+                                    type="number" 
+                                    id="pof-amountPaid" 
+                                    min="0" 
+                                    value="${po.amountPaid || 0}" 
+                                    placeholder="0" 
+                                    class="w-full pl-8 pr-2.5 py-1.5 text-xs font-black text-right bg-emerald-50/60 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 rounded-lg focus:border-emerald-500 focus:outline-none" 
+                                    oninput="window.recalcPOTotals()"
+                                >
+                            </div>
                         </div>
-                        <div class="flex items-center justify-between text-xs font-bold pt-1">
+
+                        <div class="flex items-center justify-between text-xs font-bold pt-1.5 border-t border-dashed border-slate-200 dark:border-slate-700">
                             <span class="text-amber-500">Sisa Hutang Tempo:</span>
-                            <span class="text-amber-600 dark:text-amber-400" id="pof-calc-balance">Rp 0</span>
+                            <span class="text-amber-600 dark:text-amber-400 font-black text-sm" id="pof-calc-balance">Rp 0</span>
                         </div>
                     </div>
                 </div>
@@ -825,13 +970,22 @@ const renderPOFormModalContent = (po, isEdit) => {
 
             </div>
 
-            <!-- TOMBOL SIMPAN STICKY FOOTER -->
-            <div class="p-4 sm:p-5 border-t border-slate-100 dark:border-slate-800 flex items-center justify-end gap-2.5 bg-white/95 dark:bg-slate-900/95 sticky bottom-0 z-10 shrink-0 backdrop-blur-xs">
-                <button type="button" onclick="window.closePOFormModal()" class="px-5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold text-xs hover:bg-slate-100 dark:hover:bg-slate-800 transition-all cursor-pointer">
+            <!-- TOMBOL SIMPAN STICKY FOOTER (NATIVE MOBILE TOUCH ACTION) -->
+            <div class="p-4 sm:p-5 border-t border-slate-100 dark:border-slate-800 flex items-center justify-end gap-3 bg-white/95 dark:bg-slate-900/95 sticky bottom-0 z-20 shrink-0 backdrop-blur-md" style="padding-bottom: max(1rem, env(safe-area-inset-bottom))">
+                <button 
+                    type="button" 
+                    onclick="window.closePOFormModal()" 
+                    class="flex-1 sm:flex-initial h-12 px-6 rounded-2xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 font-bold text-xs sm:text-sm hover:bg-slate-100 dark:hover:bg-slate-800 transition-all active:scale-95 cursor-pointer flex items-center justify-center"
+                >
                     Batal
                 </button>
-                <button type="submit" class="px-6 py-2.5 rounded-xl primary-bg text-white font-bold text-xs shadow-glow transition-all active:scale-95 cursor-pointer">
-                    <i class="fa-solid fa-floppy-disk mr-1.5"></i> Simpan Order PO
+                <button 
+                    type="submit" 
+                    class="flex-1 sm:flex-initial h-12 px-8 rounded-2xl text-white font-bold text-xs sm:text-sm shadow-md transition-all active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
+                    style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);"
+                >
+                    <i class="fa-solid fa-floppy-disk text-sm"></i>
+                    <span>Simpan Order PO</span>
                 </button>
             </div>
         </form>
@@ -856,6 +1010,64 @@ window.closePOFormModal = () => {
     const box = el('modal-po-form-box');
     if (!modal) return;
     closeModalAnim(modal, box);
+};
+
+/**
+ * Switch & Set Tipe Pembayaran (Cash / Tempo / Konsinyasi) via Segmented Control
+ */
+window.setPOPaymentType = (val) => {
+    const input = el('pof-paymentType');
+    if (input) input.value = val;
+
+    ['cash', 'tempo', 'konsinyasi'].forEach(type => {
+        const btn = el(`pof-type-btn-${type}`);
+        if (!btn) return;
+        if (type === val) {
+            btn.className = 'pof-type-btn flex-1 py-2.5 px-3 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition-all active:scale-95 cursor-pointer text-white shadow-sm';
+            btn.style.background = 'var(--color-primary)';
+            btn.style.boxShadow = '0 2px 8px rgba(var(--color-primary-rgb), 0.3)';
+        } else {
+            btn.className = 'pof-type-btn flex-1 py-2.5 px-3 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition-all active:scale-95 cursor-pointer text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white';
+            btn.style.background = '';
+            btn.style.boxShadow = '';
+        }
+    });
+
+    const tempoBox = el('pof-tempo-options-box');
+    const badgeDesc = el('pof-payment-badge-desc');
+    if (tempoBox) {
+        if (val === 'tempo') tempoBox.classList.remove('hidden');
+        else tempoBox.classList.add('hidden');
+    }
+    if (badgeDesc) {
+        badgeDesc.textContent = val === 'cash' ? 'Bayar Penuh Saat Kirim' : (val === 'konsinyasi' ? 'Titip Jual Laku Bayar' : 'Hutang Usaha Bertempo');
+    }
+
+    window.handlePOPaymentTypeChange(val);
+};
+
+/**
+ * Set Durasi Tempo Cepat dari Preset Chips
+ */
+window.setPOTempoPresetDays = (days) => {
+    const input = el('pof-tempoDays');
+    if (input) {
+        input.value = days;
+        window.recalcPOTempoDueDate();
+    }
+    [7, 14, 30, 45, 60].forEach(d => {
+        const chip = el(`pof-tempo-chip-${d}`);
+        if (!chip) return;
+        if (d === days) {
+            chip.style.background = 'var(--color-primary)';
+            chip.style.color = '#fff';
+            chip.style.borderColor = 'transparent';
+        } else {
+            chip.style.background = '';
+            chip.style.color = '';
+            chip.style.borderColor = '';
+        }
+    });
 };
 
 /**
@@ -893,7 +1105,20 @@ window.removePOItemRow = (index) => {
 };
 
 /**
- * Render Tabel Builder Item Form PO
+ * Stepper Kuantitas Item PO (+ / -)
+ */
+window.stepPOItemQty = (index, delta) => {
+    if (!tempPOItems[index]) return;
+    const current = parseFloat(tempPOItems[index].qty) || 0;
+    const next = Math.max(1, current + delta);
+    tempPOItems[index].qty = next;
+    tempPOItems[index].subtotal = next * (parseFloat(tempPOItems[index].unitPrice) || 0);
+    renderPOItemsTable();
+    window.recalcPOTotals();
+};
+
+/**
+ * Render Tabel Builder Item Form PO (Adaptive Native Cards on Mobile + Table on Desktop)
  */
 const renderPOItemsTable = () => {
     const container = el('po-items-table-container');
@@ -904,24 +1129,137 @@ const renderPOItemsTable = () => {
 
     if (tempPOItems.length === 0) {
         setH('po-items-table-container', `
-            <div class="p-6 text-center text-slate-400 text-xs font-bold">
-                Belum ada barang di dalam daftar order ini. Klik "+ Tambah Barang" di atas.
+            <div class="p-8 text-center flex flex-col items-center justify-center text-slate-400 bg-slate-50/60 dark:bg-slate-900/40 rounded-2xl border-2 border-dashed border-slate-200 dark:border-slate-800">
+                <div class="w-12 h-12 rounded-2xl flex items-center justify-center text-xl mb-2.5" style="background: rgba(var(--color-primary-rgb), 0.1); color: var(--color-primary);">
+                    <i class="fa-solid fa-boxes-packing"></i>
+                </div>
+                <p class="font-bold text-xs sm:text-sm text-slate-700 dark:text-slate-200">Belum Ada Barang yang Ditambahkan</p>
+                <p class="text-[11px] text-slate-400 mt-0.5 max-w-xs">Tambahkan produk dari katalog toko untuk memesan kulakan ke supplier.</p>
+                <button type="button" onclick="window.addPOItemRow()" class="mt-3.5 px-4 py-2 rounded-xl text-white font-bold text-xs flex items-center gap-1.5 shadow-sm active:scale-95 transition-all cursor-pointer" style="background: var(--color-primary);">
+                    <i class="fa-solid fa-plus text-xs"></i>
+                    <span>+ Tambah Barang Pertama</span>
+                </button>
             </div>
         `);
         return;
     }
 
     setH('po-items-table-container', `
-        <div class="overflow-x-auto">
+        <!-- ═══ TAMPILAN MOBILE (NATIVE APP CARDS) ═══ -->
+        <div class="space-y-3 sm:hidden">
+            ${tempPOItems.map((item, idx) => {
+                const itemSubtotal = (parseFloat(item.qty) || 0) * (parseFloat(item.unitPrice) || 0);
+                const selectedProd = products.find(p => String(p.id) === String(item.productId));
+                const coverThumb = selectedProd ? renderProductCoverHtml(selectedProd, { size: 'thumb' }) : '';
+
+                return `
+                    <div class="p-3.5 rounded-2xl bg-white dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700 shadow-xs space-y-3 relative group">
+                        <!-- Baris 1: Nomor Urut, Thumbnail, Dropdown Produk, & Tombol Hapus -->
+                        <div class="flex items-start gap-2.5">
+                            <div class="w-10 h-10 rounded-xl overflow-hidden shrink-0 border border-slate-200/70 dark:border-slate-700 flex items-center justify-center bg-slate-50 dark:bg-slate-900 mt-0.5">
+                                ${selectedProd?.img 
+                                    ? `<img src="${esc(selectedProd.img)}" alt="${esc(item.name)}" class="w-full h-full object-cover" onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='flex';"><div class="w-full h-full" style="display:none">${coverThumb}</div>`
+                                    : (coverThumb || `<div class="w-full h-full flex items-center justify-center font-black text-xs" style="color:var(--color-primary)">#${idx + 1}</div>`)}
+                            </div>
+
+                            <div class="flex-1 min-w-0">
+                                <label class="block text-[9px] font-black uppercase tracking-wider text-slate-400 mb-1">
+                                    Item #${idx + 1} — Pilih Produk Toko
+                                </label>
+                                <select 
+                                    class="w-full text-xs font-bold text-slate-800 dark:text-slate-100 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl p-2 focus:border-[var(--color-primary)] focus:outline-none transition-all cursor-pointer"
+                                    onchange="window.updatePOItemProduct(${idx}, this.value)"
+                                >
+                                    <option value="" class="text-slate-400">-- Pilih Produk Toko --</option>
+                                    ${products.map(p => {
+                                        const isSelected = String(p.id) === String(item.productId);
+                                        const isFromThisSupplier = String(p.supplierId) === String(currentSupplierId);
+                                        return `
+                                            <option value="${p.id}" ${isSelected ? 'selected' : ''} class="${isFromThisSupplier ? 'font-black' : ''}">
+                                                ${isFromThisSupplier ? '★ ' : ''}${esc(p.name)}${p.sku ? ` (${p.sku})` : ''}
+                                            </option>
+                                        `;
+                                    }).join('')}
+                                </select>
+                            </div>
+
+                            <button 
+                                type="button" 
+                                onclick="window.removePOItemRow(${idx})" 
+                                class="w-9 h-9 rounded-xl text-rose-500 bg-rose-50 hover:bg-rose-500 hover:text-white dark:bg-rose-950/40 dark:hover:bg-rose-600 transition-all flex items-center justify-center shrink-0 active:scale-90 cursor-pointer shadow-2xs mt-0.5" 
+                                title="Hapus Baris Ini"
+                            >
+                                <i class="fa-solid fa-trash-can text-xs"></i>
+                            </button>
+                        </div>
+
+                        <!-- Baris 2: Kuantitas (Stepper) & Harga Beli Modal (HPP) -->
+                        <div class="grid grid-cols-2 gap-2.5 pt-1">
+                            <div>
+                                <label class="block text-[9px] font-black uppercase tracking-wider text-slate-400 mb-1">Kuantitas &amp; Satuan</label>
+                                <div class="flex items-center gap-1.5">
+                                    <div class="flex-1 flex items-center bg-slate-100 dark:bg-slate-700/80 rounded-xl p-1 border border-slate-200 dark:border-slate-600 focus-within:border-[var(--color-primary)]">
+                                        <button type="button" onclick="window.stepPOItemQty(${idx}, -1)" class="w-7 h-7 rounded-lg text-slate-600 dark:text-slate-200 hover:bg-white dark:hover:bg-slate-600 font-black text-sm flex items-center justify-center active:scale-90 transition-all cursor-pointer">−</button>
+                                        <input 
+                                            type="number" 
+                                            min="0.01" 
+                                            step="any" 
+                                            value="${item.qty}" 
+                                            class="w-full text-center text-xs font-black bg-transparent text-slate-800 dark:text-slate-100 focus:outline-none" 
+                                            oninput="window.updatePOItemField(${idx}, 'qty', this.value)"
+                                        >
+                                        <button type="button" onclick="window.stepPOItemQty(${idx}, 1)" class="w-7 h-7 rounded-lg text-slate-600 dark:text-slate-200 hover:bg-white dark:hover:bg-slate-600 font-black text-sm flex items-center justify-center active:scale-90 transition-all cursor-pointer">+</button>
+                                    </div>
+                                    <input 
+                                        type="text" 
+                                        value="${esc(item.unit || 'Pcs')}" 
+                                        placeholder="Pcs" 
+                                        class="w-16 text-center text-xs font-bold bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl py-2 px-1 focus:border-[var(--color-primary)] focus:outline-none" 
+                                        oninput="window.updatePOItemField(${idx}, 'unit', this.value)"
+                                    >
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-[9px] font-black uppercase tracking-wider text-slate-400 mb-1">Harga Beli Modal (HPP)</label>
+                                <div class="relative">
+                                    <span class="absolute left-2.5 top-1/2 -translate-y-1/2 text-[10px] font-bold text-slate-400">Rp</span>
+                                    <input 
+                                        type="number" 
+                                        min="0" 
+                                        step="1" 
+                                        value="${item.unitPrice}" 
+                                        class="w-full pl-8 pr-2.5 py-2 text-xs font-bold text-right bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:border-[var(--color-primary)] focus:outline-none" 
+                                        oninput="window.updatePOItemField(${idx}, 'unitPrice', this.value)"
+                                    >
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Baris 3: Subtotal Strip -->
+                        <div class="flex items-center justify-between pt-2 border-t border-slate-100 dark:border-slate-700/60 text-xs">
+                            <span class="text-slate-400 font-bold text-[10px] uppercase tracking-wider">Subtotal Item:</span>
+                            <span class="font-black text-sm" style="color:var(--color-primary)" id="po-item-subtotal-card-${idx}">
+                                ${fCur(itemSubtotal)}
+                            </span>
+                        </div>
+                    </div>
+                `;
+            }).join('')}
+        </div>
+
+        <!-- ═══ TAMPILAN DESKTOP / TABLET (MODERN CLEAN TABLE) ═══ -->
+        <div class="hidden sm:block border border-slate-200 dark:border-slate-700 rounded-2xl overflow-hidden bg-white dark:bg-slate-800">
             <table class="w-full text-left border-collapse text-xs">
                 <thead>
-                    <tr class="bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700 text-[10px] font-black uppercase tracking-wider text-slate-400">
-                        <th class="py-2.5 px-3">Produk Toko</th>
-                        <th class="py-2.5 px-3 w-24">Jumlah</th>
-                        <th class="py-2.5 px-3 w-24">Satuan</th>
-                        <th class="py-2.5 px-3 w-36">Harga Modal (HPP)</th>
-                        <th class="py-2.5 px-3 w-36 text-right">Subtotal</th>
-                        <th class="py-2.5 px-2 w-10 text-center"></th>
+                    <tr class="bg-slate-50 dark:bg-slate-900/80 border-b border-slate-200 dark:border-slate-700 text-[10px] font-black uppercase tracking-wider text-slate-400">
+                        <th class="py-3 px-3 w-10 text-center">#</th>
+                        <th class="py-3 px-3">Produk Toko</th>
+                        <th class="py-3 px-3 w-32 text-center">Jumlah</th>
+                        <th class="py-3 px-3 w-20 text-center">Satuan</th>
+                        <th class="py-3 px-3 w-40 text-right">Harga Modal (HPP)</th>
+                        <th class="py-3 px-3 w-36 text-right">Subtotal</th>
+                        <th class="py-3 px-2 w-12 text-center"></th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
@@ -929,35 +1267,71 @@ const renderPOItemsTable = () => {
                         const itemSubtotal = (parseFloat(item.qty) || 0) * (parseFloat(item.unitPrice) || 0);
 
                         return `
-                            <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-700/50 transition-colors">
+                            <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-700/40 transition-colors">
+                                <td class="py-2.5 px-3 text-center font-bold text-slate-400 text-[11px]">${idx + 1}</td>
                                 <td class="py-2.5 px-3">
-                                    <select class="admin-input bg-white dark:bg-slate-800 py-1.5 text-xs font-bold w-full" onchange="window.updatePOItemProduct(${idx}, this.value)">
-                                        <option value="" class="text-slate-400">-- Pilih Produk --</option>
+                                    <select 
+                                        class="w-full text-xs font-bold text-slate-800 dark:text-slate-100 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl p-2 focus:border-[var(--color-primary)] focus:outline-none transition-all cursor-pointer"
+                                        onchange="window.updatePOItemProduct(${idx}, this.value)"
+                                    >
+                                        <option value="" class="text-slate-400">-- Pilih Produk Toko --</option>
                                         ${products.map(p => {
                                             const isSelected = String(p.id) === String(item.productId);
                                             const isFromThisSupplier = String(p.supplierId) === String(currentSupplierId);
                                             return `
-                                                <option value="${p.id}" ${isSelected ? 'selected' : ''} class="${isFromThisSupplier ? 'font-black text-teal-600' : ''}">
-                                                    ${isFromThisSupplier ? '★ ' : ''}${esc(p.name)} (${p.sku || '-'})
+                                                <option value="${p.id}" ${isSelected ? 'selected' : ''} class="${isFromThisSupplier ? 'font-black' : ''}">
+                                                    ${isFromThisSupplier ? '★ ' : ''}${esc(p.name)}${p.sku ? ` (${p.sku})` : ''}
                                                 </option>
                                             `;
                                         }).join('')}
                                     </select>
                                 </td>
                                 <td class="py-2.5 px-3">
-                                    <input type="number" min="0.01" step="any" value="${item.qty}" class="admin-input bg-white dark:bg-slate-800 py-1.5 text-xs font-bold text-center w-full" oninput="window.updatePOItemField(${idx}, 'qty', this.value)">
+                                    <div class="flex items-center bg-slate-100 dark:bg-slate-700/80 rounded-xl p-0.5 border border-slate-200 dark:border-slate-600 focus-within:border-[var(--color-primary)]">
+                                        <button type="button" onclick="window.stepPOItemQty(${idx}, -1)" class="w-6 h-6 rounded text-slate-600 dark:text-slate-200 hover:bg-white dark:hover:bg-slate-600 font-black text-xs flex items-center justify-center active:scale-90 transition-all cursor-pointer">−</button>
+                                        <input 
+                                            type="number" 
+                                            min="0.01" 
+                                            step="any" 
+                                            value="${item.qty}" 
+                                            class="w-full text-center text-xs font-black bg-transparent text-slate-800 dark:text-slate-100 focus:outline-none px-1" 
+                                            oninput="window.updatePOItemField(${idx}, 'qty', this.value)"
+                                        >
+                                        <button type="button" onclick="window.stepPOItemQty(${idx}, 1)" class="w-6 h-6 rounded text-slate-600 dark:text-slate-200 hover:bg-white dark:hover:bg-slate-600 font-black text-xs flex items-center justify-center active:scale-90 transition-all cursor-pointer">+</button>
+                                    </div>
                                 </td>
                                 <td class="py-2.5 px-3">
-                                    <input type="text" value="${esc(item.unit || 'Pcs')}" placeholder="Pcs/Sak" class="admin-input bg-white dark:bg-slate-800 py-1.5 text-xs font-bold text-center w-full" oninput="window.updatePOItemField(${idx}, 'unit', this.value)">
+                                    <input 
+                                        type="text" 
+                                        value="${esc(item.unit || 'Pcs')}" 
+                                        placeholder="Pcs" 
+                                        class="w-full text-center text-xs font-bold bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl py-1.5 px-1 focus:border-[var(--color-primary)] focus:outline-none" 
+                                        oninput="window.updatePOItemField(${idx}, 'unit', this.value)"
+                                    >
                                 </td>
                                 <td class="py-2.5 px-3">
-                                    <input type="number" min="0" step="1" value="${item.unitPrice}" class="admin-input bg-white dark:bg-slate-800 py-1.5 text-xs font-bold text-right w-full" oninput="window.updatePOItemField(${idx}, 'unitPrice', this.value)">
+                                    <div class="relative">
+                                        <span class="absolute left-2 top-1/2 -translate-y-1/2 text-[10px] font-bold text-slate-400">Rp</span>
+                                        <input 
+                                            type="number" 
+                                            min="0" 
+                                            step="1" 
+                                            value="${item.unitPrice}" 
+                                            class="w-full pl-7 pr-2 py-1.5 text-xs font-bold text-right bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:border-[var(--color-primary)] focus:outline-none" 
+                                            oninput="window.updatePOItemField(${idx}, 'unitPrice', this.value)"
+                                        >
+                                    </div>
                                 </td>
-                                <td class="py-2.5 px-3 text-right font-black text-slate-800 dark:text-slate-100">
+                                <td class="py-2.5 px-3 text-right font-black text-xs text-slate-800 dark:text-slate-100" id="po-item-subtotal-row-${idx}">
                                     ${fCur(itemSubtotal)}
                                 </td>
                                 <td class="py-2.5 px-2 text-center">
-                                    <button type="button" onclick="window.removePOItemRow(${idx})" class="w-7 h-7 rounded-lg text-slate-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-all" title="Hapus Baris">
+                                    <button 
+                                        type="button" 
+                                        onclick="window.removePOItemRow(${idx})" 
+                                        class="w-8 h-8 rounded-xl text-slate-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-all flex items-center justify-center mx-auto active:scale-90 cursor-pointer" 
+                                        title="Hapus Baris"
+                                    >
                                         <i class="fa-solid fa-trash-can text-xs"></i>
                                     </button>
                                 </td>
@@ -967,6 +1341,16 @@ const renderPOItemsTable = () => {
                 </tbody>
             </table>
         </div>
+
+        <!-- Tombol Tambah Barang Mengambang Penuh -->
+        <button 
+            type="button" 
+            onclick="window.addPOItemRow()" 
+            class="w-full py-3.5 rounded-2xl border-2 border-dashed border-[rgba(var(--color-primary-rgb),0.35)] bg-[rgba(var(--color-primary-rgb),0.04)] hover:bg-[rgba(var(--color-primary-rgb),0.08)] text-[var(--color-primary)] font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all active:scale-[0.98] cursor-pointer shadow-2xs mt-2"
+        >
+            <i class="fa-solid fa-circle-plus text-base"></i>
+            <span>+ Tambah Barang Kulakan</span>
+        </button>
     `);
 };
 
@@ -995,6 +1379,10 @@ window.updatePOItemField = (index, field, value) => {
     if (field === 'qty' || field === 'unitPrice') {
         tempPOItems[index][field] = parseFloat(value) || 0;
         tempPOItems[index].subtotal = (parseFloat(tempPOItems[index].qty) || 0) * (parseFloat(tempPOItems[index].unitPrice) || 0);
+        const subCard = el(`po-item-subtotal-card-${index}`);
+        const subRow = el(`po-item-subtotal-row-${index}`);
+        if (subCard) subCard.textContent = fCur(tempPOItems[index].subtotal);
+        if (subRow) subRow.textContent = fCur(tempPOItems[index].subtotal);
     } else {
         tempPOItems[index][field] = value;
     }
@@ -1025,19 +1413,14 @@ window.handlePOSupplierChange = (supplierId) => {
     const suppliers = appData.suppliers || [];
     const s = suppliers.find(x => String(x.id) === String(supplierId));
     if (s && s.defaultTerms) {
-        const pTypeEl = el('pof-paymentType');
-        if (pTypeEl) {
-            if (s.defaultTerms.startsWith('tempo')) {
-                pTypeEl.value = 'tempo';
-                const days = parseInt(s.defaultTerms.split('_')[1], 10) || 14;
-                const daysEl = el('pof-tempoDays');
-                if (daysEl) daysEl.value = days;
-            } else if (s.defaultTerms === 'konsinyasi') {
-                pTypeEl.value = 'konsinyasi';
-            } else {
-                pTypeEl.value = 'cash';
-            }
-            window.handlePOPaymentTypeChange(pTypeEl.value);
+        if (s.defaultTerms.startsWith('tempo')) {
+            const days = parseInt(s.defaultTerms.split('_')[1], 10) || 14;
+            window.setPOTempoPresetDays(days);
+            window.setPOPaymentType('tempo');
+        } else if (s.defaultTerms === 'konsinyasi') {
+            window.setPOPaymentType('konsinyasi');
+        } else {
+            window.setPOPaymentType('cash');
         }
     }
     renderPOItemsTable();
@@ -1047,20 +1430,14 @@ window.handlePOSupplierChange = (supplierId) => {
  * Handle Ganti Tipe Pembayaran (Cash / Tempo / Konsinyasi)
  */
 window.handlePOPaymentTypeChange = (val) => {
-    const daysBox = el('pof-tempo-days-box');
-    const dueBox = el('pof-tempo-due-box');
     const dpLabel = el('pof-dp-label');
     const paidInput = el('pof-amountPaid');
 
     if (val === 'tempo') {
-        if (daysBox) daysBox.classList.remove('hidden');
-        if (dueBox) dueBox.classList.remove('hidden');
         if (dpLabel) dpLabel.innerText = 'Uang Muka / DP:';
         window.recalcPOTempoDueDate();
     } else {
-        if (daysBox) daysBox.classList.add('hidden');
-        if (dueBox) dueBox.classList.add('hidden');
-        if (dpLabel) dpLabel.innerText = 'Nomor Bayar:';
+        if (dpLabel) dpLabel.innerText = 'Pembayaran:';
         
         if (val === 'cash' && paidInput) {
             // Jika cash, otomatis isi penuh sesuai grand total
@@ -1259,6 +1636,10 @@ window.deletePurchaseOrder = (poId) => {
  * FITUR UTAMA 3: DETAIL PO & KARTU PEMBAYARAN CICILAN
  * ══════════════════════════════════════════════════════════════════
  */
+window.closePODetailModal = () => {
+    window.closePurchaseDetailModal();
+};
+
 window.openPurchaseDetailModal = (poId) => {
     ensurePurchaseModals();
     const purchases = appData.purchases || [];
@@ -1276,45 +1657,87 @@ window.openPurchaseDetailModal = (poId) => {
 
     setH('modal-po-detail-content', `
         <!-- DRAG PULL INDICATOR (NATIVE MOBILE SHEET) -->
-        <div class="pull-indicator"></div>
+        <div class="pull-indicator sm:hidden"></div>
 
-        <div class="p-5 sm:p-6 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-900/40">
-            <div>
-                <div class="flex items-center gap-2">
-                    <h3 class="font-mono font-black text-base sm:text-lg text-slate-800 dark:text-white tracking-tight">${esc(po.poNumber || po.id)}</h3>
-                    <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold ${po.status === 'received' || po.status === 'completed' ? 'primary-bg-soft primary-text border primary-border' : 'bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-800'}">
-                        ${po.status === 'ordered' ? 'Dipesan' : (po.status === 'received' ? 'Barang Diterima' : 'Selesai')}
-                    </span>
+        <!-- HEADER MODAL -->
+        <div class="px-5 sm:px-6 pt-3 sm:pt-5 pb-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between shrink-0 bg-slate-50/70 dark:bg-slate-900/60">
+            <div class="flex items-center gap-3">
+                <div class="w-11 h-11 rounded-2xl flex items-center justify-center text-lg shrink-0 aspect-square shadow-xs" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary); border: 1px solid rgba(var(--color-primary-rgb), 0.25);">
+                    <i class="fa-solid fa-receipt"></i>
                 </div>
-                <p class="text-xs text-slate-400 mt-0.5">Supplier: <b>${esc(po.supplierName)}</b> • Tanggal: ${formatDate(po.date || po.createdAt)}</p>
+                <div>
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <h3 class="font-mono font-black text-base sm:text-lg text-slate-800 dark:text-white tracking-tight">${esc(po.poNumber || po.id)}</h3>
+                        <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold" style="${po.status === 'received' || po.status === 'completed' ? 'background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary); border: 1px solid rgba(var(--color-primary-rgb), 0.25);' : 'background: rgba(59, 130, 246, 0.12); color: #2563eb; border: 1px solid rgba(59, 130, 246, 0.25);'}">
+                            ${po.status === 'ordered' ? 'Dipesan' : (po.status === 'received' ? 'Barang Diterima' : (po.status === 'completed' ? 'Selesai / Lunas' : 'Dibatalkan'))}
+                        </span>
+                    </div>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Supplier: <b class="text-slate-700 dark:text-slate-200">${esc(po.supplierName)}</b> • Tanggal: ${formatDate(po.date || po.createdAt)}</p>
+                </div>
             </div>
             <div class="flex items-center gap-2">
                 <button onclick="window.printPurchaseOrder('${po.id}')" class="w-9 h-9 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 flex items-center justify-center transition-all cursor-pointer" title="Cetak PO">
                     <i class="fa-solid fa-print text-xs"></i>
                 </button>
-                <button onclick="window.closePurchaseDetailModal()" class="w-9 h-9 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-500 hover:text-slate-800 dark:hover:text-white flex items-center justify-center transition-all cursor-pointer">
-                    <i class="fa-solid fa-xmark"></i>
+                <button onclick="window.closePurchaseDetailModal()" class="w-9 h-9 rounded-xl bg-slate-100 hover:bg-rose-100 hover:text-rose-500 dark:bg-slate-800 dark:hover:bg-rose-950/40 dark:hover:text-rose-400 text-slate-500 flex items-center justify-center transition-all cursor-pointer">
+                    <i class="fa-solid fa-xmark text-sm"></i>
                 </button>
             </div>
         </div>
 
-        <div class="p-5 sm:p-6 space-y-5">
-            <!-- TABEL DAFTAR BARANG PO -->
+        <div class="p-4 sm:p-6 space-y-5 overflow-y-auto flex-1 hide-scrollbar">
+            <!-- DAFTAR BARANG YANG DIPESAN (DUAL MODE: MOBILE CARDS & DESKTOP TABLE) -->
             <div>
-                <h4 class="font-bold text-xs uppercase tracking-widest text-slate-500 mb-2">Item Barang Dipesan</h4>
-                <div class="border border-slate-200 dark:border-slate-700 rounded-2xl overflow-hidden bg-white dark:bg-slate-800">
+                <div class="flex items-center justify-between mb-2.5">
+                    <h4 class="font-black text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
+                        <i class="fa-solid fa-boxes-stacked" style="color:var(--color-primary)"></i>
+                        <span>Item Barang Dipesan (${(po.items || []).length})</span>
+                    </h4>
+                </div>
+
+                <!-- ═══ TAMPILAN MOBILE (NATIVE APP CARDS) ═══ -->
+                <div class="sm:hidden space-y-2.5">
+                    ${(po.items || []).map((item, idx) => {
+                        const itemSub = (parseFloat(item.qty) || 0) * (parseFloat(item.unitPrice) || 0);
+                        return `
+                            <div class="p-3.5 rounded-2xl bg-white dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs space-y-2">
+                                <div class="flex items-start justify-between gap-2">
+                                    <div class="min-w-0 flex-1">
+                                        <div class="flex items-center gap-1.5">
+                                            <span class="w-5 h-5 rounded-md bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-300 text-[10px] font-black flex items-center justify-center shrink-0">${idx + 1}</span>
+                                            <p class="font-bold text-xs text-slate-800 dark:text-slate-100 truncate">${esc(item.name)}</p>
+                                        </div>
+                                        ${item.sku ? `<span class="text-[10px] font-mono text-slate-400 ml-6 block">SKU: ${esc(item.sku)}</span>` : ''}
+                                    </div>
+                                    <span class="px-2 py-0.5 rounded-lg bg-slate-100 dark:bg-slate-700/70 text-slate-700 dark:text-slate-200 text-xs font-black shrink-0">
+                                        ${item.qty} ${esc(item.unit || 'pcs')}
+                                    </span>
+                                </div>
+                                <div class="pt-2 border-t border-slate-100 dark:border-slate-700/60 flex items-center justify-between text-xs">
+                                    <span class="text-[11px] text-slate-400">Modal: <b>${fCur(item.unitPrice)}</b></span>
+                                    <span class="font-black text-slate-800 dark:text-white" style="color:var(--color-primary)">${fCur(itemSub)}</span>
+                                </div>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+
+                <!-- ═══ TAMPILAN DESKTOP (MODERN CLEAN TABLE) ═══ -->
+                <div class="hidden sm:block border border-slate-200 dark:border-slate-700 rounded-2xl overflow-hidden bg-white dark:bg-slate-800 shadow-2xs">
                     <table class="w-full text-left text-xs">
                         <thead>
-                            <tr class="bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700 text-[10px] font-black uppercase tracking-wider text-slate-400">
+                            <tr class="bg-slate-50 dark:bg-slate-900/80 border-b border-slate-200 dark:border-slate-700 text-[10px] font-black uppercase tracking-wider text-slate-400">
+                                <th class="py-2.5 px-3 w-10 text-center">#</th>
                                 <th class="py-2.5 px-3">Nama Produk</th>
                                 <th class="py-2.5 px-3 text-center">Jumlah</th>
-                                <th class="py-2.5 px-3 text-right">Harga Modal</th>
+                                <th class="py-2.5 px-3 text-right">Harga Modal (HPP)</th>
                                 <th class="py-2.5 px-3 text-right">Subtotal</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
-                            ${(po.items || []).map(item => `
-                                <tr>
+                            ${(po.items || []).map((item, idx) => `
+                                <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-700/30 transition-colors">
+                                    <td class="py-2.5 px-3 text-center font-bold text-slate-400 text-[11px]">${idx + 1}</td>
                                     <td class="py-2.5 px-3">
                                         <p class="font-bold text-slate-800 dark:text-slate-100">${esc(item.name)}</p>
                                         ${item.sku ? `<span class="text-[10px] font-mono text-slate-400">SKU: ${esc(item.sku)}</span>` : ''}
@@ -1340,24 +1763,24 @@ window.openPurchaseDetailModal = (poId) => {
                 <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-2 text-xs">
                     <span class="block text-[10px] font-bold uppercase tracking-widest text-slate-400">Informasi Tagihan</span>
                     <div class="flex justify-between">
-                        <span class="text-slate-500">Subtotal:</span>
+                        <span class="text-slate-500">Subtotal Nota:</span>
                         <span class="font-bold text-slate-800 dark:text-white">${fCur(po.subtotal)}</span>
                     </div>
                     ${po.discount > 0 ? `
                         <div class="flex justify-between text-emerald-500">
-                            <span>Diskon Nota:</span>
+                            <span>Diskon Pembelian:</span>
                             <span>-${fCur(po.discount)}</span>
                         </div>
                     ` : ''}
                     ${po.shippingFee > 0 ? `
                         <div class="flex justify-between">
-                            <span class="text-slate-500">Ongkos Kirim:</span>
+                            <span class="text-slate-500">Ongkos Kirim Armada:</span>
                             <span>+${fCur(po.shippingFee)}</span>
                         </div>
                     ` : ''}
                     <div class="pt-2 border-t border-slate-200 dark:border-slate-700 flex justify-between font-black text-sm">
-                        <span>Total PO:</span>
-                        <span class="text-[var(--color-primary)]">${fCur(total)}</span>
+                        <span>Total Tagihan PO:</span>
+                        <span style="color:var(--color-primary)">${fCur(total)}</span>
                     </div>
                     <div class="flex justify-between text-xs pt-1">
                         <span class="text-slate-500">Sudah Dibayar:</span>
@@ -1369,23 +1792,21 @@ window.openPurchaseDetailModal = (poId) => {
                     </div>
                 </div>
 
-                <!-- RIWAYAT CICILAN & TOMBOL BAYAR -->
+                <!-- RIWAYAT CICILAN & STATUS -->
                 <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-3">
                     <div class="flex items-center justify-between">
                         <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Histori Pembayaran Cicilan</span>
-                        ${balance > 0 && po.paymentType === 'tempo' ? `
-                            <button onclick="window.closePurchaseDetailModal(); window.openPurchasePaymentModal('${po.id}')" class="px-3 py-1 rounded-xl bg-amber-500 text-white font-bold text-xs shadow-2xs hover:bg-amber-600 transition-all">
-                                + Bayar Cicilan
-                            </button>
-                        ` : ''}
                     </div>
 
                     ${(po.paymentHistory || []).length === 0 ? `
-                        <p class="text-xs text-slate-400 text-center py-4">Belum ada catatan pembayaran.</p>
+                        <div class="text-center py-6 text-slate-400">
+                            <i class="fa-regular fa-clock text-xl mb-1 text-slate-300 dark:text-slate-600 block"></i>
+                            <p class="text-xs">Belum ada catatan pembayaran cicilan.</p>
+                        </div>
                     ` : `
-                        <div class="space-y-2 max-h-48 overflow-y-auto">
+                        <div class="space-y-2 max-h-48 overflow-y-auto hide-scrollbar">
                             ${po.paymentHistory.map(ph => `
-                                <div class="p-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-between text-xs">
+                                <div class="p-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-between text-xs shadow-2xs">
                                     <div>
                                         <span class="font-black text-emerald-600 dark:text-emerald-400">${fCur(ph.amount)}</span>
                                         <p class="text-[10px] text-slate-400">${formatDateTime(ph.date)} • ${esc(ph.method || 'Transfer')}</p>
@@ -1396,6 +1817,44 @@ window.openPurchaseDetailModal = (poId) => {
                         </div>
                     `}
                 </div>
+            </div>
+        </div>
+
+        <!-- STICKY NATIVE ACTION FOOTER -->
+        <div class="p-4 sm:p-5 border-t border-slate-100 dark:border-slate-800 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md shrink-0 flex flex-wrap sm:flex-nowrap items-center justify-between gap-2.5" style="padding-bottom: max(1rem, env(safe-area-inset-bottom))">
+            <div class="flex items-center gap-2 w-full sm:w-auto">
+                <button type="button" onclick="window.closePurchaseDetailModal()" class="flex-1 sm:flex-initial h-12 px-5 rounded-2xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold text-xs hover:bg-slate-100 dark:hover:bg-slate-800 transition-all cursor-pointer">
+                    Tutup
+                </button>
+                <button type="button" onclick="window.printPurchaseOrder('${po.id}')" class="h-12 px-4 rounded-2xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200/80 dark:border-slate-700 font-bold text-xs transition-all cursor-pointer flex items-center gap-2">
+                    <i class="fa-solid fa-print"></i>
+                    <span class="hidden sm:inline">Cetak Surat PO</span>
+                </button>
+            </div>
+
+            <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
+                ${po.status === 'ordered' ? `
+                    <button 
+                        type="button" 
+                        onclick="window.closePurchaseDetailModal(); window.receiveAndRestockPO('${po.id}');" 
+                        class="flex-1 sm:flex-initial h-12 px-6 rounded-2xl text-white font-bold text-xs shadow-glow active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-2"
+                        style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);"
+                    >
+                        <i class="fa-solid fa-boxes-stacked"></i>
+                        <span>Terima Barang &amp; Restock</span>
+                    </button>
+                ` : ''}
+
+                ${balance > 0 && po.paymentType === 'tempo' ? `
+                    <button 
+                        type="button" 
+                        onclick="window.closePurchaseDetailModal(); window.openPurchasePaymentModal('${po.id}');" 
+                        class="flex-1 sm:flex-initial h-12 px-6 rounded-2xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs shadow-2xs active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-2"
+                    >
+                        <i class="fa-solid fa-money-bill-wave"></i>
+                        <span>+ Bayar Cicilan Hutang</span>
+                    </button>
+                ` : ''}
             </div>
         </div>
     `);
@@ -1432,11 +1891,11 @@ window.openPurchasePaymentModal = (poId) => {
 
     setH('modal-po-payment-content', `
         <!-- DRAG PULL INDICATOR (NATIVE MOBILE SHEET) -->
-        <div class="pull-indicator"></div>
+        <div class="pull-indicator sm:hidden"></div>
 
-        <div class="p-5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-900/40">
+        <div class="px-5 sm:px-6 pt-3 sm:pt-5 pb-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between shrink-0 bg-slate-50/70 dark:bg-slate-900/60">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-2xl bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 flex items-center justify-center text-lg border border-amber-200 dark:border-amber-800">
+                <div class="w-11 h-11 rounded-2xl flex items-center justify-center text-lg shrink-0 aspect-square shadow-xs" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary); border: 1px solid rgba(var(--color-primary-rgb), 0.25);">
                     <i class="fa-solid fa-money-bill-wave"></i>
                 </div>
                 <div>
@@ -1444,64 +1903,68 @@ window.openPurchasePaymentModal = (poId) => {
                     <p class="text-xs text-slate-400">${esc(po.supplierName)} • ${esc(po.poNumber || po.id)}</p>
                 </div>
             </div>
-            <button onclick="window.closePurchasePaymentModal()" class="w-9 h-9 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-500 hover:text-slate-800 dark:hover:text-white flex items-center justify-center transition-all cursor-pointer">
-                <i class="fa-solid fa-xmark"></i>
+            <button onclick="window.closePurchasePaymentModal()" class="w-9 h-9 rounded-xl bg-slate-100 hover:bg-rose-100 hover:text-rose-500 dark:bg-slate-800 dark:hover:bg-rose-950/40 dark:hover:text-rose-400 text-slate-500 flex items-center justify-center transition-all cursor-pointer">
+                <i class="fa-solid fa-xmark text-sm"></i>
             </button>
         </div>
 
-        <form id="po-pay-form" onsubmit="window.submitPurchasePayment(event, '${po.id}')" class="p-5 space-y-4">
-            <div class="p-3.5 rounded-2xl bg-amber-50/70 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800/60 text-xs space-y-1">
-                <div class="flex justify-between">
-                    <span class="text-slate-500">Total Tagihan PO:</span>
-                    <span class="font-bold text-slate-800 dark:text-white">${fCur(total)}</span>
-                </div>
-                <div class="flex justify-between">
-                    <span class="text-slate-500">Sudah Dibayar:</span>
-                    <span class="font-bold text-emerald-600">${fCur(paid)}</span>
-                </div>
-                <div class="flex justify-between pt-1 border-t border-amber-200 dark:border-amber-800 font-black">
-                    <span class="text-amber-600 dark:text-amber-400">Sisa Hutang Wajib Bayar:</span>
-                    <span class="text-amber-600 dark:text-amber-400 text-sm">${fCur(unpaid)}</span>
-                </div>
-            </div>
-
-            <div>
-                <label class="block text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-1.5">Nominal Pembayaran (Rp) *</label>
-                <div class="relative">
-                    <input type="number" id="pop-amount" required min="1" max="${unpaid}" value="${unpaid}" class="admin-input bg-slate-50 dark:bg-slate-900 font-black text-base pr-20 text-emerald-600">
-                    <button type="button" onclick="document.getElementById('pop-amount').value = ${unpaid}" class="absolute right-2 top-1/2 -translate-y-1/2 px-2.5 py-1 rounded-lg primary-bg text-white font-bold text-[10px] shadow-2xs">
-                        Lunas
-                    </button>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-2 gap-3">
-                <div>
-                    <label class="block text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-1.5">Tanggal Bayar *</label>
-                    <input type="date" id="pop-date" required value="${new Date().toISOString().split('T')[0]}" class="admin-input bg-slate-50 dark:bg-slate-900 text-xs font-bold">
+        <form id="po-pay-form" onsubmit="window.submitPurchasePayment(event, '${po.id}')" class="flex-1 flex flex-col overflow-hidden">
+            <div class="p-4 sm:p-6 space-y-4 overflow-y-auto flex-1 hide-scrollbar">
+                <div class="p-4 rounded-2xl bg-amber-50/70 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800/60 text-xs space-y-1.5 shadow-2xs">
+                    <div class="flex justify-between">
+                        <span class="text-slate-500">Total Tagihan PO:</span>
+                        <span class="font-bold text-slate-800 dark:text-white">${fCur(total)}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-slate-500">Sudah Dibayar:</span>
+                        <span class="font-bold text-emerald-600">${fCur(paid)}</span>
+                    </div>
+                    <div class="flex justify-between pt-1.5 border-t border-amber-200 dark:border-amber-800 font-black">
+                        <span class="text-amber-600 dark:text-amber-400">Sisa Hutang Wajib Bayar:</span>
+                        <span class="text-amber-600 dark:text-amber-400 text-base">${fCur(unpaid)}</span>
+                    </div>
                 </div>
 
                 <div>
-                    <label class="block text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-1.5">Metode Bayar</label>
-                    <select id="pop-method" class="admin-input bg-slate-50 dark:bg-slate-900 text-xs font-bold cursor-pointer">
-                        <option value="Transfer Bank">Transfer Bank</option>
-                        <option value="Kas Tunai">Kas Tunai</option>
-                        <option value="Giro / Cek">Giro / Cek</option>
-                    </select>
+                    <label class="block text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1.5">Nominal Pembayaran (Rp) *</label>
+                    <div class="relative">
+                        <input type="number" id="pop-amount" required min="1" max="${unpaid}" value="${unpaid}" class="admin-input bg-slate-50 dark:bg-slate-900 font-black text-lg pr-24 text-emerald-600 rounded-2xl">
+                        <button type="button" onclick="document.getElementById('pop-amount').value = ${unpaid}" class="absolute right-2 top-1/2 -translate-y-1/2 px-3 py-1.5 rounded-xl text-white font-black text-[11px] shadow-sm active:scale-95 transition-all cursor-pointer" style="background: var(--color-primary);">
+                            Lunas
+                        </button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1.5">Tanggal Bayar *</label>
+                        <input type="date" id="pop-date" required value="${new Date().toISOString().split('T')[0]}" class="admin-input bg-slate-50 dark:bg-slate-900 text-xs font-bold rounded-2xl">
+                    </div>
+
+                    <div>
+                        <label class="block text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1.5">Metode Bayar</label>
+                        <select id="pop-method" class="admin-input bg-slate-50 dark:bg-slate-900 text-xs font-bold rounded-2xl cursor-pointer">
+                            <option value="Transfer Bank">Transfer Bank</option>
+                            <option value="Kas Tunai">Kas Tunai Toko</option>
+                            <option value="Giro / Cek">Giro / Cek Mundur</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1.5">Catatan / No. Bukti Transfer</label>
+                    <input type="text" id="pop-note" placeholder="Contoh: Transfer via BCA No Ref 123456" class="admin-input bg-slate-50 dark:bg-slate-900 text-xs rounded-2xl">
                 </div>
             </div>
 
-            <div>
-                <label class="block text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-1.5">Catatan / Bukti Transfer</label>
-                <input type="text" id="pop-note" placeholder="Contoh: Transfer via BCA No Ref 123456" class="admin-input bg-slate-50 dark:bg-slate-900 text-xs">
-            </div>
-
-            <div class="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-end gap-2.5">
-                <button type="button" onclick="window.closePurchasePaymentModal()" class="px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold text-xs">
+            <!-- STICKY ACTION FOOTER -->
+            <div class="p-4 sm:p-5 border-t border-slate-100 dark:border-slate-800 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md shrink-0 flex items-center justify-end gap-2.5" style="padding-bottom: max(1rem, env(safe-area-inset-bottom))">
+                <button type="button" onclick="window.closePurchasePaymentModal()" class="h-12 px-5 rounded-2xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold text-xs hover:bg-slate-100 dark:hover:bg-slate-800 transition-all cursor-pointer">
                     Batal
                 </button>
-                <button type="submit" class="px-5 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs shadow-2xs transition-all active:scale-95">
-                    <i class="fa-solid fa-check mr-1.5"></i> Simpan Pembayaran
+                <button type="submit" class="h-12 px-6 rounded-2xl text-white font-bold text-xs shadow-glow transition-all active:scale-95 cursor-pointer flex items-center gap-2" style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
+                    <i class="fa-solid fa-check"></i>
+                    <span>Simpan Pembayaran</span>
                 </button>
             </div>
         </form>
