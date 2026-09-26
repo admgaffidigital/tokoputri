@@ -176,6 +176,15 @@ Aplikasi telah dilengkapi dengan fondasi **Capacitor 8 Android Native**:
 
 ## 📋 Riwayat Pembaruan (Changelog)
 
+### v1.9.41 — Penyelarasan Logika POS Kasir 1:1 dengan Storefront: Validasi Produk Non-Aktif, Indikator Produk Habis, Dukungan Penuh Pre-Order (PO) & Pengurangan Stok Terintegrasi (26 Sep 2026)
+- **Penyelarasan Logika Stok 1:1 Storefront (`useStock` Engine)**: POS Kasir kini menerapkan saklar `useStock` yang persis sama dengan storefront pembeli (`appData.store.useStock === true`). Bila `useStock` aktif, ketersediaan dihitung dari varian aktif atau stok induk. Jika `useStock` nonaktif, produk diperlakukan sebagai stok tak terbatas (*unlimited stock*).
+- **Proteksi Produk Non-Aktif (`isActive: false`)**: Produk dan varian yang dinonaktifkan di CMS Admin secara ketat disaring keluar dari katalog kasir, lembar varian, dan ditolak oleh pemindai barcode fisik/kamera dengan notifikasi *"Produk ini sedang tidak tersedia"*.
+- **Indikator & Proteksi Produk Habis (`HABIS`)**: Produk dengan stok habis otomatis menampilkan overlay gelap elegan bertuliskan *"HABIS"*, tombol tambah dinonaktifkan dengan `cursor-not-allowed`, dan pemindai barcode memberikan umpan balik peringatan stok kosong tanpa menambahkannya ke keranjang.
+- **Dukungan Penuh Produk Pre-Order (`PO`)**: Produk dengan estimasi waktu preorder (`poTime`) menampilkan lencana oranye *"PO [estimasi]"* di katalog grid & list, lembar varian, rincian keranjang kasir, serta membawa flag `orderData.hasPO = true` untuk keperluan cetak struk kasir, invoice, dan surat jalan.
+- **Pengurangan Stok Akurat via `qtyMap` Aggregation**: Penyelesaian transaksi kasir kini mengagregasi kuantitas item keranjang terlebih dahulu (identik modul checkout storefront), memotong stok induk dan varian Firestore secara atomik, menambah akumulator `totalSold`, memperbarui `appData.products` di memori lokal seketika, serta menyegarkan katalog kasir tanpa perlu me-reload halaman.
+
+---
+
 ### v1.9.40 — Solusi Tuntas Header POS Kasir Android: Proteksi Status Bar & Notch Kamera (Anti-Collision Safe-Area Inset) & Harmonisasi Tema Glass-Header (26 Sep 2026)
 - **Proteksi Anti-Tabrakan Status Bar Android**: Mengganti kelas arbitrary value pada header POS kasir storefront dengan kelas terdedikasi `.pos-storefront-header` yang menerapkan `padding-top: max(1.25rem, env(safe-area-inset-top, 1.25rem))` dan proteksi khusus aplikasi native (`.is-native-app`) `max(1.5rem, env(safe-area-inset-top, 1.5rem))`, memastikan tombol kembali, nama toko, dan status kasir tidak pernah lagi tertimpa oleh bilah status jam/baterai maupun poni kamera (*punch hole/notch*) smartphone Android.
 - **Harmonisasi Kelas .glass-header pada Terminal POS**: Mengadopsi arsitektur *glass-header* yang konsisten dengan halaman storefront lainnya, dilengkapi padding-bottom lega (`0.625rem`), touch target ergonomis (≥ 44px), serta safe padding sisi kiri dan kanan (`safe-area-inset-left/right`).

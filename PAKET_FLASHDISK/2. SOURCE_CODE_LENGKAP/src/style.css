@@ -277,6 +277,28 @@ html {
     background: #d97706 !important; /* amber-600 — stok menipis */
 }
 
+.pos-badge-po {
+    background: #f59e0b !important; /* amber-500 — pre-order */
+    color: white !important;
+}
+
+/* Status produk habis pada katalog kasir (identik Storefront) */
+.pos-product-card.is-out-of-stock,
+.pos-list-item.is-out-of-stock {
+    opacity: 0.65 !important;
+    filter: grayscale(40%);
+}
+
+.pos-product-card.is-out-of-stock:hover {
+    transform: none !important;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05) !important;
+    border-color: rgba(203, 213, 225, 0.9) !important;
+}
+
+.pos-product-card.is-out-of-stock .pos-img-box img {
+    transform: none !important;
+}
+
 /* Animasi laser pemindai barcode kamera POS */
 @keyframes posScanline {
     0% { top: 6%; opacity: 0.85; }

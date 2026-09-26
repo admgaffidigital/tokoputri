@@ -8,6 +8,21 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-9-41',
+        version: 'v1.9.41',
+        date: '2026-09-26',
+        title: 'Penyelarasan Logika POS Kasir 1:1 dengan Storefront: Validasi Produk Non-Aktif, Indikator Produk Habis, Dukungan Penuh Pre-Order (PO) & Pengurangan Stok Terintegrasi',
+        category: 'feature',
+        badge: 'POS & Storefront Logic Parity v1.9.41',
+        items: [
+            'Penyelarasan Logika Stok 1:1 Storefront (useStock Engine): POS Kasir kini menerapkan saklar useStock yang persis sama dengan storefront pembeli (appData.store.useStock === true). Bila useStock aktif, ketersediaan dihitung dari varian aktif atau stok induk. Jika useStock nonaktif, produk diperlakukan sebagai stok tak terbatas (unlimited stock).',
+            'Proteksi Produk Non-Aktif (isActive: false): Produk dan varian yang dinonaktifkan di CMS Admin secara ketat disaring keluar dari katalog kasir, lembar varian, dan ditolak oleh pemindai barcode fisik/kamera dengan notifikasi "Produk ini sedang tidak tersedia".',
+            'Indikator & Proteksi Produk Habis (HABIS): Produk dengan stok habis otomatis menampilkan overlay gelap elegan bertuliskan "HABIS", tombol tambah dinonaktifkan dengan cursor-not-allowed, dan pemindai barcode memberikan umpan balik peringatan stok kosong tanpa menambahkannya ke keranjang.',
+            'Dukungan Penuh Produk Pre-Order (PO): Produk dengan estimasi waktu preorder (poTime) menampilkan lencana oranye "PO [estimasi]" di katalog grid & list, lembar varian, rincian keranjang kasir, serta membawa flag orderData.hasPO = true untuk keperluan cetak struk kasir, invoice, dan surat jalan.',
+            'Pengurangan Stok Akurat via qtyMap Aggregation: Penyelesaian transaksi kasir kini mengagregasi kuantitas item keranjang terlebih dahulu (identik modul checkout storefront), memotong stok induk dan varian Firestore secara atomik, menambah akumulator totalSold, memperbarui appData.products di memori lokal seketika, serta menyegarkan katalog kasir tanpa perlu me-reload halaman.'
+        ]
+    },
+    {
         id: 'log-1-9-40',
         version: 'v1.9.40',
         date: '2026-09-26',

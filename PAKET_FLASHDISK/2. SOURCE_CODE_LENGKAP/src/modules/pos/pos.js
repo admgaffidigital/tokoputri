@@ -116,23 +116,44 @@ export const posDiscountAmount = () => {
 const posTotal    = () => Math.max(0, posSubtotal() - posDiscountAmount());
 const posChange   = () => posPaidAmount - posTotal();
 
-// Status dan Ketersediaan Stok Produk Kasir (Aman Null & Array Variant)
+// Status dan Ketersediaan Stok Produk Kasir (Identik 1:1 dengan Storefront)
 export const getProductStockInfo = (p) => {
-    if (!p) return { isManaged: false, totalStock: 0, isOutOfStock: true, isLowStock: false };
-    const useStk = appData?.store?.useStock !== false;
-    if (!useStk) return { isManaged: false, totalStock: 9999, isOutOfStock: false, isLowStock: false };
+    if (!p) return { isManaged: false, totalStock: 0, isOutOfStock: true, isLowStock: false, isInactive: true, isPreorder: false, poTime: '' };
     
+    // 1. Validasi Status Produk Aktif
+    const pActive = p.isActive !== 'false' && p.isActive !== false;
+    if (!pActive) {
+        return { isManaged: true, totalStock: 0, isOutOfStock: true, isLowStock: false, isInactive: true, isPreorder: false, poTime: '' };
+    }
+
+    // 2. Evaluasi Saklar Manajemen Stok Toko (useStock)
+    const useStk = appData?.store?.useStock === true || appData?.store?.useStock === 'true';
+    const isPreorder = Boolean(p.poTime && String(p.poTime).trim());
+    const poTime = isPreorder ? String(p.poTime).trim() : '';
+
+    if (!useStk) {
+        // Jika useStock OFF: Stok tak terbatas (unlimited stock), cocok untuk barang preorder / tanpa limit stok
+        return { isManaged: false, totalStock: 999999, isOutOfStock: false, isLowStock: false, isInactive: false, isPreorder, poTime };
+    }
+    
+    // 3. Hitung Total Stok dari Varian Aktif Saja (Persis Storefront)
     let total = 0;
     if (Array.isArray(p.variants) && p.variants.length > 0) {
-        total = p.variants.reduce((s, v) => s + (v && v.stock != null ? (parseFloat(v.stock) || 0) : 0), 0);
+        total = p.variants
+            .filter(v => v && v.isActive !== false && v.isActive !== 'false')
+            .reduce((s, v) => s + (v.stock != null ? (parseFloat(v.stock) || 0) : 0), 0);
     } else {
         total = parseFloat(p.stock) || 0;
     }
+
     return {
         isManaged: true,
         totalStock: total,
         isOutOfStock: total <= 0,
-        isLowStock: total > 0 && total <= 5
+        isLowStock: total > 0 && total <= 5,
+        isInactive: false,
+        isPreorder,
+        poTime
     };
 };
 
@@ -281,9 +302,11 @@ const initBarcodeListener = () => {
                      (p.id && String(p.id).toLowerCase() === c))
                 );
                 if (prod) {
-                    addToCart(prod.id);
-                    playCashierBeep();
-                    showToast(`Ditambahkan: ${prod.name}`, 'success');
+                    const added = addToCart(prod.id);
+                    if (added) {
+                        playCashierBeep();
+                        showToast(`Ditambahkan: ${prod.name}`, 'success');
+                    }
                 } else {
                     const sf = el('pos-search-input');
                     if (sf) { sf.value = barcodeBuffer; posSearch = barcodeBuffer; renderCatalog(); }
@@ -303,60 +326,152 @@ const initBarcodeListener = () => {
 // ─── Cart CRUD ───────────────────────────────────────────────
 export const addToCart = (productId) => {
     const p = (appData.products || []).find(x => x && String(x.id) === String(productId));
-    if (!p) return;
+    if (!p) return false;
+
+    // 1. Validasi Produk Aktif (Identik Storefront)
+    const pActive = p.isActive !== 'false' && p.isActive !== false;
+    if (!pActive) {
+        showToast('Produk ini sedang tidak tersedia', 'warning');
+        return false;
+    }
+
     const hasVariants = p.variants && p.variants.length > 0;
     if (hasVariants) {
         // Produk ber-varian → buka sheet pilih varian
         ensurePOSVariantSheet().then(() => {
             if (typeof window.openPOSVariantSheet === 'function') window.openPOSVariantSheet(productId);
         });
-        return;
+        return true;
     }
+
+    // 2. Validasi Stok Tersedia (Identik Storefront)
     const sInfo = getProductStockInfo(p);
     if (sInfo.isManaged && sInfo.isOutOfStock) {
-        showToast(`Peringatan: Stok "${p.name}" habis di etalase/gudang!`, 'warning');
+        showToast(`Maaf, stok "${p.name}" sedang kosong!`, 'warning');
+        return false;
     }
+
     const existing = posCart.find(i => String(i.id) === String(productId) && !i.isVariant);
     if (existing) {
         const nextQty = parseFloat((existing.qty + 1).toFixed(3));
         if (sInfo.isManaged && nextQty > sInfo.totalStock) {
-            showToast(`Stok maksimal "${p.name}" hanya ${formatQty(sInfo.totalStock)} ${p.unit || 'pcs'}`, 'warning');
-            return;
+            showToast(`Stok tidak cukup! Tersisa: ${formatQty(sInfo.totalStock)} ${p.unit || 'pcs'}`, 'warning');
+            return false;
         }
         existing.qty = nextQty; recalcItem(existing);
     } else {
         const price = parseFloat(p.price) || 0;
-        posCart.push(recalcItem({ id: p.id, name: p.name, price, basePrice: price, qty: 1, discount: 0, subtotal: price, isVariant: false, isWholesale: false }));
+        posCart.push(recalcItem({
+            id: p.id,
+            name: p.name,
+            price,
+            basePrice: price,
+            qty: 1,
+            unit: p.unit || 'pcs',
+            poTime: p.poTime || '',
+            discount: 0,
+            subtotal: price,
+            isVariant: false,
+            isWholesale: false
+        }));
     }
     playCashierBeep();
     if (typeof window.triggerHaptic === 'function') window.triggerHaptic('light');
     renderCart();
+    return true;
 };
 
 export const posAddToCartQty = (productId, qty) => {
     const p = (appData.products || []).find(x => x && String(x.id) === String(productId));
-    if (!p) return;
+    if (!p) return false;
+
+    // 1. Validasi Produk Aktif (Identik Storefront)
+    const pActive = p.isActive !== 'false' && p.isActive !== false;
+    if (!pActive) {
+        showToast('Produk ini sedang tidak tersedia', 'warning');
+        return false;
+    }
+
+    // 2. Validasi Stok Tersedia (Identik Storefront)
     const sInfo = getProductStockInfo(p);
+    if (sInfo.isManaged && sInfo.isOutOfStock) {
+        showToast(`Maaf, stok "${p.name}" sedang kosong!`, 'warning');
+        return false;
+    }
+
     const numQty = fQty(qty) || 1;
     const existing = posCart.find(i => String(i.id) === String(productId) && !i.isVariant);
     if (existing) {
         const nextQty = parseFloat((existing.qty + numQty).toFixed(3));
         if (sInfo.isManaged && nextQty > sInfo.totalStock) {
-            showToast(`Stok maksimal "${p.name}" hanya ${formatQty(sInfo.totalStock)} ${p.unit || 'pcs'}`, 'warning');
-            return;
+            showToast(`Stok tidak cukup! Tersisa: ${formatQty(sInfo.totalStock)} ${p.unit || 'pcs'}`, 'warning');
+            return false;
         }
         existing.qty = nextQty; recalcItem(existing);
     } else {
+        if (sInfo.isManaged && numQty > sInfo.totalStock) {
+            showToast(`Stok tidak cukup! Tersisa: ${formatQty(sInfo.totalStock)} ${p.unit || 'pcs'}`, 'warning');
+            return false;
+        }
         const price = parseFloat(p.price) || 0;
-        const item  = recalcItem({ id: p.id, name: p.name, price, basePrice: price, qty: numQty, discount: 0, subtotal: price * numQty, isVariant: false, isWholesale: false });
+        const item  = recalcItem({
+            id: p.id,
+            name: p.name,
+            price,
+            basePrice: price,
+            qty: numQty,
+            unit: p.unit || 'pcs',
+            poTime: p.poTime || '',
+            discount: 0,
+            subtotal: price * numQty,
+            isVariant: false,
+            isWholesale: false
+        });
         posCart.push(item);
     }
     playCashierBeep();
     if (typeof window.triggerHaptic === 'function') window.triggerHaptic('light');
     renderCart();
+    return true;
 };
 
 export const addToCartWithVariant = (productId, variantName, variantPrice, variantIdx, qty = 1) => {
+    const p = (appData.products || []).find(x => x && String(x.id) === String(productId));
+    if (!p) return false;
+
+    // 1. Validasi Produk Aktif
+    const pActive = p.isActive !== 'false' && p.isActive !== false;
+    if (!pActive) {
+        showToast('Produk ini sedang tidak tersedia', 'warning');
+        return false;
+    }
+
+    // 2. Validasi Varian Aktif & Ketersediaan Stok (Identik Storefront)
+    const v = p.variants?.[variantIdx];
+    if (v) {
+        const vActive = v.isActive !== false && v.isActive !== 'false';
+        if (!vActive) {
+            showToast('Varian ini sedang tidak tersedia', 'warning');
+            return false;
+        }
+        const useStk = appData.store?.useStock === true || appData.store?.useStock === 'true';
+        if (useStk) {
+            const vStock = parseFloat(v.stock) || 0;
+            const cartKey = `${productId}__v${variantIdx}`;
+            const existing = posCart.find(i => i.cartKey === cartKey);
+            const inCartQty = existing ? parseFloat(existing.qty) || 0 : 0;
+            const numQty = fQty(qty) || 1;
+            if (vStock <= 0) {
+                showToast(`Maaf, stok varian "${v.name}" sedang kosong!`, 'warning');
+                return false;
+            }
+            if (inCartQty + numQty > vStock) {
+                showToast(`Stok varian "${v.name}" tidak cukup! Sisa: ${formatQty(vStock)}`, 'warning');
+                return false;
+            }
+        }
+    }
+
     const cartKey = `${productId}__v${variantIdx}`;
     const numQty = fQty(qty) || 1;
     const existing = posCart.find(i => i.cartKey === cartKey);
@@ -364,20 +479,28 @@ export const addToCartWithVariant = (productId, variantName, variantPrice, varia
         existing.qty = parseFloat((existing.qty + numQty).toFixed(3));
         recalcItem(existing);
     } else {
-        const p = (appData.products || []).find(x => x && String(x.id) === String(productId));
-        const displayName = `${p?.name || productId} — ${variantName}`;
+        const displayName = `${p.name} — ${variantName}`;
         posCart.push(recalcItem({
-            id: productId, cartKey,
+            id: productId,
+            cartKey,
             name: displayName,
-            variantName, variantIdx,
-            price: variantPrice, basePrice: variantPrice,
-            qty: numQty, discount: 0, subtotal: variantPrice * numQty,
-            isVariant: true, isWholesale: false
+            variantName,
+            variantIdx,
+            price: variantPrice,
+            basePrice: variantPrice,
+            qty: numQty,
+            unit: v?.unit || p.unit || 'pcs',
+            poTime: p.poTime || '',
+            discount: 0,
+            subtotal: variantPrice * numQty,
+            isVariant: true,
+            isWholesale: false
         }));
     }
     playCashierBeep();
     if (typeof window.triggerHaptic === 'function') window.triggerHaptic('light');
     renderCart();
+    return true;
 };
 
 export const updateQty = (cartKey, delta) => {
@@ -388,13 +511,25 @@ export const updateQty = (cartKey, delta) => {
         removeFromCart(cartKey);
         return;
     }
-    if (delta > 0 && !item.isVariant) {
+    if (delta > 0) {
         const p = (appData.products || []).find(x => x && String(x.id) === String(item.id));
         if (p) {
-            const sInfo = getProductStockInfo(p);
-            if (sInfo.isManaged && nextQty > sInfo.totalStock) {
-                showToast(`Stok maksimal tersedia: ${formatQty(sInfo.totalStock)} ${p.unit || 'pcs'}`, 'warning');
-                return;
+            const useStk = appData.store?.useStock === true || appData.store?.useStock === 'true';
+            if (useStk) {
+                if (item.isVariant && p.variants) {
+                    const v = p.variants.find(vv => vv.name === item.variantName);
+                    const vStock = parseFloat(v?.stock) || 0;
+                    if (nextQty > vStock) {
+                        showToast(`Stok maksimal "${item.name}" hanya ${formatQty(vStock)}`, 'warning');
+                        return;
+                    }
+                } else {
+                    const sInfo = getProductStockInfo(p);
+                    if (sInfo.isManaged && nextQty > sInfo.totalStock) {
+                        showToast(`Stok maksimal tersedia: ${formatQty(sInfo.totalStock)} ${p.unit || 'pcs'}`, 'warning');
+                        return;
+                    }
+                }
             }
         }
     }
@@ -412,13 +547,23 @@ export const setQty = (cartKey, val) => {
         removeFromCart(cartKey);
         return;
     }
-    if (!item.isVariant) {
-        const p = (appData.products || []).find(x => x && String(x.id) === String(item.id));
-        if (p) {
-            const sInfo = getProductStockInfo(p);
-            if (sInfo.isManaged && targetQty > sInfo.totalStock) {
-                showToast(`Stok maksimal tersedia: ${formatQty(sInfo.totalStock)} ${p.unit || 'pcs'}`, 'warning');
-                targetQty = sInfo.totalStock;
+    const p = (appData.products || []).find(x => x && String(x.id) === String(item.id));
+    if (p) {
+        const useStk = appData.store?.useStock === true || appData.store?.useStock === 'true';
+        if (useStk) {
+            if (item.isVariant && p.variants) {
+                const v = p.variants.find(vv => vv.name === item.variantName);
+                const vStock = parseFloat(v?.stock) || 0;
+                if (targetQty > vStock) {
+                    showToast(`Stok maksimal "${item.name}" hanya ${formatQty(vStock)}`, 'warning');
+                    targetQty = vStock;
+                }
+            } else {
+                const sInfo = getProductStockInfo(p);
+                if (sInfo.isManaged && targetQty > sInfo.totalStock) {
+                    showToast(`Stok maksimal tersedia: ${formatQty(sInfo.totalStock)} ${p.unit || 'pcs'}`, 'warning');
+                    targetQty = sInfo.totalStock;
+                }
             }
         }
     }
@@ -971,7 +1116,15 @@ export const renderCatalog = () => {
                 const name = String(p.name || '').toLowerCase();
                 const barcode = String(p.barcode || '').toLowerCase();
                 const sku = String(p.sku || '').toLowerCase();
-                return name.includes(q) || barcode.includes(q) || sku.includes(q);
+                const cat = String(p.category || '').toLowerCase();
+                const subCat = String(p.subCategory || '').toLowerCase();
+                const brand = String(p.brand || '').toLowerCase();
+                const hasMatchingVariant = Array.isArray(p.variants) && p.variants.some(v => 
+                    (v.name || '').toLowerCase().includes(q) || 
+                    (v.sku || '').toLowerCase().includes(q) || 
+                    (v.barcode || '').toLowerCase().includes(q)
+                );
+                return name.includes(q) || barcode.includes(q) || sku.includes(q) || cat.includes(q) || subCat.includes(q) || brand.includes(q) || hasMatchingVariant;
             }
             return true;
         });
@@ -1009,11 +1162,14 @@ export const renderCatalog = () => {
                 const pName          = esc(String(p.name || 'Produk'));
                 const pCat           = esc(String(p.category || ''));
                 const pPrice         = parseFloat(p.price) || 0;
+                const poBadge        = stockInfo.isPreorder
+                    ? `<span class="pos-badge pos-badge-po"><i class="fa-solid fa-clock" style="font-size:6px"></i> PO ${esc(stockInfo.poTime)}</span>`
+                    : '';
 
                 if (posCatalogViewMode === 'list') {
                     // ── LIST MODE: baris kompak dengan thumbnail 52px ──
                     return `
-                    <div class="pos-list-item${totalQtyInCart > 0 ? ' in-cart' : ''}${stockInfo.isOutOfStock ? ' opacity-75' : ''}" onclick="window.posAddToCart('${safeId}')">
+                    <div class="pos-list-item${totalQtyInCart > 0 ? ' in-cart' : ''}${stockInfo.isOutOfStock ? ' is-out-of-stock cursor-not-allowed' : ' cursor-pointer'}" onclick="window.posAddToCart('${safeId}')">
                         <div class="pos-list-thumb">
                             ${hasImg
                                 ? `<img width="52" height="52" loading="lazy" decoding="async" src="${esc(imgUrl)}" alt="${pName}" onerror="this.onerror=null;this.style.display='none';this.nextElementSibling.style.display='flex';">
@@ -1026,26 +1182,34 @@ export const renderCatalog = () => {
                                 ${pCat ? `<span style="font-size:9px;text-transform:uppercase;letter-spacing:0.06em;font-weight:700;color:#94a3b8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:80px">${pCat}</span>` : ''}
                                 ${hasVariants ? `<span class="pos-badge pos-badge-varian"><i class="fa-solid fa-layer-group" style="font-size:6px"></i> VARIAN</span>` : ''}
                                 ${hasGrosir   ? `<span class="pos-badge pos-badge-grosir"><i class="fa-solid fa-tags" style="font-size:6px"></i> GROSIR</span>` : ''}
+                                ${poBadge}
                                 ${stockInfo.isOutOfStock ? `<span class="pos-badge pos-badge-habis"><i class="fa-solid fa-ban" style="font-size:6px"></i> HABIS</span>` : ''}
                                 ${stockInfo.isLowStock ? `<span class="pos-badge pos-badge-low"><i class="fa-solid fa-triangle-exclamation" style="font-size:6px"></i> SISA ${formatQty(stockInfo.totalStock)}</span>` : ''}
                             </div>
                             <p class="text-xs font-bold text-slate-800 dark:text-slate-100 truncate" title="${pName}">${pName}</p>
                             <p style="font-size:12px;font-weight:900;color:var(--color-primary);margin-top:2px">${fRp(pPrice)}</p>
                         </div>
-                        <button onclick="event.stopPropagation();window.posAddToCart('${safeId}')" class="pos-add-btn" title="Tambah ke keranjang">
-                            <i class="fa-solid fa-plus"></i>
-                        </button>
+                        ${stockInfo.isOutOfStock 
+                            ? `<button class="pos-add-btn opacity-40 cursor-not-allowed" disabled title="Stok Habis"><i class="fa-solid fa-ban"></i></button>`
+                            : `<button onclick="event.stopPropagation();window.posAddToCart('${safeId}')" class="pos-add-btn" title="Tambah ke keranjang"><i class="fa-solid fa-plus"></i></button>`}
                     </div>`;
                 }
 
                 // ── GRID MODE (Default): kartu 1:1 anti-collapse (min-height 220px) ──
                 return `
-                <div class="pos-product-card${totalQtyInCart > 0 ? ' in-cart' : ''}${stockInfo.isOutOfStock ? ' opacity-75' : ''}" onclick="window.posAddToCart('${safeId}')">
+                <div class="pos-product-card${totalQtyInCart > 0 ? ' in-cart' : ''}${stockInfo.isOutOfStock ? ' is-out-of-stock cursor-not-allowed' : ' cursor-pointer'}" onclick="window.posAddToCart('${safeId}')">
                     <!-- Kotak Gambar Rasio 1:1 Anti-Collapse (aspect-ratio 1:1 + min-height 120px) -->
                     <div class="pos-img-box">
+                        ${stockInfo.isOutOfStock ? `
+                            <div class="absolute inset-0 bg-slate-900/60 z-20 flex items-center justify-center rounded-xl backdrop-blur-[1px]">
+                                <span class="bg-rose-600 text-white text-[9px] font-black px-2.5 py-1 rounded-lg shadow-md uppercase tracking-wider flex items-center gap-1">
+                                    <i class="fa-solid fa-ban"></i> HABIS
+                                </span>
+                            </div>` : ''}
                         <div class="pos-img-badges">
                             ${hasVariants ? `<span class="pos-badge pos-badge-varian"><i class="fa-solid fa-layer-group" style="font-size:6px"></i> VARIAN</span>` : ''}
                             ${hasGrosir   ? `<span class="pos-badge pos-badge-grosir"><i class="fa-solid fa-tags" style="font-size:6px"></i> GROSIR</span>` : ''}
+                            ${poBadge}
                             ${stockInfo.isOutOfStock ? `<span class="pos-badge pos-badge-habis"><i class="fa-solid fa-ban" style="font-size:6px"></i> HABIS</span>` : ''}
                             ${stockInfo.isLowStock ? `<span class="pos-badge pos-badge-low"><i class="fa-solid fa-triangle-exclamation" style="font-size:6px"></i> SISA ${formatQty(stockInfo.totalStock)}</span>` : ''}
                         </div>
@@ -1068,9 +1232,9 @@ export const renderCatalog = () => {
                         <p class="pos-card-name" title="${pName}">${pName}</p>
                         <div class="pos-card-footer">
                             <span class="pos-card-price">${fRp(pPrice)}</span>
-                            <button onclick="event.stopPropagation();window.posAddToCart('${safeId}')" class="pos-add-btn" title="Tambah ke keranjang">
-                                <i class="fa-solid fa-plus"></i>
-                            </button>
+                            ${stockInfo.isOutOfStock
+                                ? `<button class="pos-add-btn opacity-40 cursor-not-allowed" disabled title="Stok Habis"><i class="fa-solid fa-ban"></i></button>`
+                                : `<button onclick="event.stopPropagation();window.posAddToCart('${safeId}')" class="pos-add-btn" title="Tambah ke keranjang"><i class="fa-solid fa-plus"></i></button>`}
                         </div>
                     </div>
                 </div>`;
@@ -1134,6 +1298,7 @@ const renderCart = () => {
                     <div class="flex items-center gap-1.5 mt-0.5 flex-wrap">
                         ${item.isWholesale ? `<span class="inline-flex items-center text-[8px] font-black px-1.5 py-0.5 rounded text-white shadow-2xs" style="background:var(--color-primary)">GROSIR</span>` : ''}
                         ${item.isVariant ? `<span class="inline-flex items-center gap-1 text-[8px] font-black px-1.5 py-0.5 rounded text-white shadow-2xs" style="background:var(--color-primary);opacity:0.95"><i class="fa-solid fa-layer-group text-[7px]"></i>${esc(item.variantName || 'VARIAN')}</span>` : ''}
+                        ${item.poTime ? `<span class="inline-flex items-center gap-1 text-[8px] font-bold px-1.5 py-0.5 rounded text-amber-700 bg-amber-100 dark:bg-amber-900/30 dark:text-amber-300 border border-amber-200 dark:border-amber-800 shadow-2xs uppercase tracking-wide"><i class="fa-solid fa-clock text-[7px]"></i> PO ${esc(item.poTime)}</span>` : ''}
                         <span class="text-[10px] text-slate-500 font-medium">
                             ${item.isWholesale && item.basePrice ? `<span class="line-through text-slate-400">${fRp(item.basePrice)}</span> <span class="font-bold" style="color:var(--color-primary)">${fRp(item.price)}</span>` : fRp(item.price)}
                         </span>
@@ -1974,8 +2139,11 @@ export const processPOSTx = async () => {
                 variantName: i.variantName || '',
                 isVariant: !!i.isVariant,
                 isWholesale: !!i.isWholesale,
-                effectivePrice: parseFloat(i.price) || 0
+                effectivePrice: parseFloat(i.price) || 0,
+                poTime: i.poTime || '',
+                unit: i.unit || 'pcs'
             })),
+            hasPO: posCart.some(i => i.poTime && String(i.poTime).trim() !== ''),
             payment: {
                 method: posPayMethod,
                 subtotal: posSubtotal(),
@@ -2036,34 +2204,52 @@ export const processPOSTx = async () => {
         // Rekam transaksi ke shift kasir aktif
         recordTransactionToShift(orderData);
 
-        // ── 5. Potong Stok Otomatis Jika Fitur Stok Aktif ─────────────
+        // ── 5. Potong Stok Otomatis Jika Fitur Stok Aktif (Identik Storefront) ─────
         if (useStk) {
+            const qtyMap = {}; 
+            posCart.forEach(ci => {
+                const pId = ci.id != null ? ci.id.toString() : null;
+                if (!pId) return;
+                if (!qtyMap[pId]) qtyMap[pId] = { main: 0, variants: {} };
+                const q = parseFloat(ci.qty) || 0;
+                if (ci.variantName) qtyMap[pId].variants[ci.variantName] = (qtyMap[pId].variants[ci.variantName] || 0) + q;
+                else qtyMap[pId].main += q;
+            });
+
+            const pIds = Object.keys(qtyMap);
             const updatedProductIds = [];
-            for (const ci of posCart) {
-                const pId = String(ci.id);
+
+            for (const pId of pIds) {
+                const need = qtyMap[pId];
                 const prod = (appData.products || []).find(p => String(p.id) === pId);
                 if (!prod) continue;
-                const qty = parseFloat(ci.qty) || 0;
                 const updatePayload = {};
 
-                if (ci.variantName && prod.variants) {
-                    const vIdx = prod.variants.findIndex(v => v.name === ci.variantName);
-                    if (vIdx > -1) {
-                        prod.variants[vIdx].stock = Math.max(0, (parseFloat(prod.variants[vIdx].stock) || 0) - qty);
-                        if (prod.variants[vIdx].stock === 0) prod.variants[vIdx].isActive = false;
-                        prod.variants[vIdx].totalSold = (parseFloat(prod.variants[vIdx].totalSold) || 0) + qty;
-                        updatePayload.variants = prod.variants;
-                    }
-                } else {
-                    prod.stock = Math.max(0, (parseFloat(prod.stock) || 0) - qty);
+                if (need.main > 0) {
+                    prod.stock = Math.max(0, (parseFloat(prod.stock) || 0) - need.main);
                     updatePayload.stock = prod.stock;
                     if (prod.stock === 0) {
                         prod.isActive = 'false';
                         updatePayload.isActive = 'false';
                     }
-                    prod.totalSold = (parseFloat(prod.totalSold) || 0) + qty;
+                    prod.totalSold = (parseFloat(prod.totalSold) || 0) + need.main;
                     updatePayload.totalSold = prod.totalSold;
                 }
+
+                if (Object.keys(need.variants).length > 0 && prod.variants) {
+                    Object.keys(need.variants).forEach(vName => {
+                        const vIdx = prod.variants.findIndex(v => v.name === vName);
+                        if (vIdx > -1) {
+                            prod.variants[vIdx].stock = Math.max(0, (parseFloat(prod.variants[vIdx].stock) || 0) - need.variants[vName]);
+                            if (prod.variants[vIdx].stock === 0) prod.variants[vIdx].isActive = false;
+                            prod.variants[vIdx].totalSold = (parseFloat(prod.variants[vIdx].totalSold) || 0) + need.variants[vName];
+                        }
+                    });
+                    updatePayload.variants = prod.variants;
+                }
+
+                const localIdx = (appData.products || []).findIndex(p => String(p.id) === pId);
+                if (localIdx > -1) appData.products[localIdx] = prod;
 
                 try {
                     await db.collection("freshmart").doc("cms_data").collection("products").doc(pId).update(updatePayload);
@@ -2628,6 +2814,7 @@ const exposeToWindow = () => {
     window.posClearCart            = clearCart;
     window.openPayModal            = openPayModal;
     window.closePayModal           = closePayModal;
+    window.getPOSCart              = () => posCart;
     window.setPosCustomerType      = setPosCustomerType;
     window.setPosPayMethod         = setPosPayMethod;
     window.updatePosChange         = updatePosChange;
@@ -2935,24 +3122,33 @@ const _handleBarcodeResult = (code) => {
             return;
         }
 
-        addToCart(prod.id);
+        const added = addToCart(prod.id);
 
-        if (banner && bannerTxt && bannerPrice) {
-            bannerTxt.textContent = prod.name;
-            bannerPrice.textContent = fRp(parseFloat(prod.price) || 0);
-            banner.classList.remove('hidden');
-        }
+        if (added) {
+            if (banner && bannerTxt && bannerPrice) {
+                bannerTxt.textContent = prod.name;
+                bannerPrice.textContent = fRp(parseFloat(prod.price) || 0);
+                banner.classList.remove('hidden');
+            }
 
-        if (pill) {
-            pill.innerHTML = `<span class="text-emerald-300 font-black"><i class="fa-solid fa-check mr-1"></i>${esc(prod.name)} (+1)</span>`;
-            setTimeout(() => {
-                if (pill) pill.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span><span>Menunggu barcode...</span>`;
-            }, 1500);
-        }
+            if (pill) {
+                pill.innerHTML = `<span class="text-emerald-300 font-black"><i class="fa-solid fa-check mr-1"></i>${esc(prod.name)} (+1)</span>`;
+                setTimeout(() => {
+                    if (pill) pill.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span><span>Menunggu barcode...</span>`;
+                }, 1500);
+            }
 
-        if (!posScannerContinuous) {
-            closePOSCameraScanner();
-            showToast(`Ditambahkan: ${prod.name}`, 'success');
+            if (!posScannerContinuous) {
+                closePOSCameraScanner();
+                showToast(`Ditambahkan: ${prod.name}`, 'success');
+            }
+        } else {
+            if (pill) {
+                pill.innerHTML = `<span class="text-rose-400 font-bold"><i class="fa-solid fa-ban mr-1"></i>Stok "${esc(prod.name)}" Habis</span>`;
+                setTimeout(() => {
+                    if (pill) pill.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span><span>Menunggu barcode...</span>`;
+                }, 2000);
+            }
         }
     } else {
         if (reticle) {
@@ -3110,3 +3306,4 @@ window.closePOSCloseShiftModal = closePOSCloseShiftModal;
 window.renderShiftHeaderBadge  = renderShiftHeaderBadge;
 window.printShiftSettlementReceipt = printShiftSettlementReceipt;
 window.executeShiftPrintDirect = executeShiftPrintDirect;
+window.getPOSCart              = () => posCart;
