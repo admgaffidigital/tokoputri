@@ -6,7 +6,7 @@ Aplikasi e-commerce dan manajemen kasir point-of-sales (POS) modern berkinerja t
 
 ## 🛠️ Informasi Pengembang & Hak Cipta
 * **Nama Projek**: TOKO PUTRI
-* **Versi Rilis**: **v1.9.43** (Android VersionCode: `10943`)
+* **Versi Rilis**: **v1.9.44** (Android VersionCode: `10944`)
 * **Dikembangkan & Ditandatangani Oleh**: **Novan Restu Utomo** (Selaku Pengembang Utama dan Developer Asli)
 
 ---
@@ -176,6 +176,15 @@ Aplikasi telah dilengkapi dengan fondasi **Capacitor 8 Android Native**:
 ---
 
 ## 📋 Riwayat Pembaruan (Changelog)
+
+### v1.9.44 — Harmonisasi Tema Warna Penuh & Integrasi Presisi Mode Gelap Sistem (System Dark Mode Parity) (26 Sep 2026)
+- **Harmonisasi Penuh Pusat Data & Sinkronisasi CMS**: Memperbaiki kartu ekspor database dan riwayat penjualan dengan latar belakang dark slate yang elegan dan kontras tinggi, mengeliminasi kartu putih yang silau saat mode gelap aktif.
+- **Penyelarasan Warna Tombol Ekspor dengan Tema Toko**: Tombol ekspor CSV katalog produk dan transaksi kini otomatis mengadopsi warna tema primer aktif (`var(--color-primary)`) toko, menggantikan tombol biru dan ungu yang tidak serasi.
+- **Perbaikan Teks & Kontras Proteksi Rollback**: Memperbaiki kartu Proteksi Keamanan Anti-Kehilangan Data sehingga teks deskripsi, ikon perisai, dan tombol rollback tampil tajam dan 100% terbaca jelas di mode gelap.
+- **Harmonisasi Kartu Unduh Aplikasi Android di Footer**: Menyelaraskan border, gradien latar belakang, lencana APK RESMI, dan panah unduh dengan warna tema utama toko, menghilangkan benturan warna hijau zamrud statis.
+- **Integrasi Real-Time Mode Gelap Sistem OS**: Menambahkan pendeteksian dinamis `prefers-color-scheme` via media query listener sehingga aplikasi otomatis menyesuaikan tampilan terang/gelap saat pengguna mengubah setelan tema perangkat Android/komputer secara real-time.
+
+---
 
 ### v1.9.43 — Smart Dynamic Product Cover Engine: Visual Mewah & Otomatis untuk Produk Tanpa Gambar di Storefront, Modal & POS Kasir (26 Sep 2026)
 - **Smart Dynamic Product Cover Engine**: Solusi visual grafis otomatis beresolusi tinggi bagi produk baru yang belum memiliki foto/gambar. Tanpa upload foto manual, sistem menghasilkan kartu grafis modern dengan gradien warna estetik, cincin geometris konsentris (*concentric rings*), dan efek *ambient radial glow*.

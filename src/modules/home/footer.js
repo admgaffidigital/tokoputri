@@ -207,23 +207,23 @@ export const renderFooter = () => {
                 </div>
               </a>
 
-              <!-- Download App Card (Google Play Store Styled) -->
+              <!-- Download App Card (Harmonized with Theme & Google Play Authentic) -->
               <div
-                class="group flex cursor-pointer items-center gap-3.5 rounded-2xl border border-emerald-400/40 bg-gradient-to-r from-emerald-500/15 via-teal-500/10 to-transparent hover:bg-emerald-500/25 p-3.5 transition-all duration-200 shadow-sm hover:border-emerald-400 hover:shadow-md"
+                class="group flex cursor-pointer items-center gap-3.5 rounded-2xl border border-[rgba(var(--color-primary-rgb),0.35)] bg-gradient-to-r from-[rgba(var(--color-primary-rgb),0.12)] via-[rgba(var(--color-primary-rgb),0.06)] to-transparent hover:bg-[rgba(var(--color-primary-rgb),0.2)] p-3.5 transition-all duration-200 shadow-sm hover:border-[rgba(var(--color-primary-rgb),0.6)] hover:shadow-md"
                 onclick="if(typeof window.openAppDownloadModal==='function') window.openAppDownloadModal();"
               >
-                <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#01875f] text-white text-xl shadow-md shadow-emerald-500/30 group-hover:scale-105 transition-transform">
+                <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white text-xl shadow-md shadow-emerald-500/25 group-hover:scale-105 transition-transform">
                   <i class="fa-brands fa-google-play"></i>
                 </div>
                 <div class="min-w-0 text-left">
                   <div class="flex items-center gap-1.5">
-                    <span class="px-1.5 py-0.2 rounded text-[8px] font-black uppercase bg-[#01875f] text-white">APK RESMI</span>
-                    <p class="text-[9px] font-extrabold uppercase tracking-widest text-emerald-300">Android Release</p>
+                    <span class="px-1.5 py-0.5 rounded text-[8px] font-black uppercase text-white shadow-2xs" style="background:var(--color-primary)">APK RESMI</span>
+                    <p class="text-[9px] font-extrabold uppercase tracking-widest text-[var(--color-primary)]">Android Release</p>
                   </div>
-                  <p class="truncate text-xs font-black text-white group-hover:text-emerald-200 transition-colors">Unduh Aplikasi Android</p>
+                  <p class="truncate text-xs font-black text-white group-hover:text-white transition-colors">Unduh Aplikasi Android</p>
                   <p class="text-[10px] font-medium text-white/70">Versi ${esc(latestVer)} • Update Real-Time</p>
                 </div>
-                <div class="ml-auto text-emerald-400 group-hover:text-white group-hover:translate-x-0.5 transition-all">
+                <div class="ml-auto text-[var(--color-primary)] group-hover:text-white group-hover:translate-x-0.5 transition-all">
                   <i class="fa-solid fa-arrow-down text-xs"></i>
                 </div>
               </div>
@@ -233,7 +233,7 @@ export const renderFooter = () => {
                 <!-- Email (if configured) -->
                 ${storeEmail ? `
                 <a href="mailto:${esc(storeEmail)}" class="flex items-center gap-2.5 text-white/85 hover:text-white transition-colors pb-2.5 border-b border-white/10">
-                  <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-white/15 bg-white/10 text-white">
+                  <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-white/15 bg-white/10 text-[var(--color-primary)]">
                     <i class="fa-solid fa-envelope text-xs"></i>
                   </div>
                   <span class="truncate text-xs font-bold tracking-wide">${esc(storeEmail)}</span>

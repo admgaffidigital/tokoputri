@@ -153,7 +153,7 @@ export const renderBackupSyncView = async () => {
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-3.5 pt-2">
                 <!-- Backup Lengkap JSON -->
-                <div class="p-4 rounded-2xl bg-slate-50/80 dark:bg-slate-850/60 border border-slate-200/80 dark:border-slate-800 flex flex-col justify-between space-y-3">
+                <div class="p-4 rounded-2xl bg-slate-50/90 dark:bg-slate-800/80 border border-slate-200/90 dark:border-slate-700/80 flex flex-col justify-between space-y-3">
                     <div class="space-y-1">
                         <div class="flex items-center gap-2">
                             <span class="w-2 h-2 rounded-full" style="background: var(--color-primary)"></span>
@@ -170,34 +170,34 @@ export const renderBackupSyncView = async () => {
                 </div>
 
                 <!-- Ekspor CSV Produk & Stok -->
-                <div class="p-4 rounded-2xl bg-slate-50/80 dark:bg-slate-850/60 border border-slate-200/80 dark:border-slate-800 flex flex-col justify-between space-y-3">
+                <div class="p-4 rounded-2xl bg-slate-50/90 dark:bg-slate-800/80 border border-slate-200/90 dark:border-slate-700/80 flex flex-col justify-between space-y-3">
                     <div class="space-y-1">
                         <div class="flex items-center gap-2">
-                            <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+                            <span class="w-2 h-2 rounded-full" style="background: var(--color-primary)"></span>
                             <h4 class="text-xs font-black uppercase tracking-wider text-slate-800 dark:text-slate-100">Katalog Produk (.csv)</h4>
                         </div>
                         <p class="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
                             Tabel daftar produk, SKU/barcode, kategori, HPP modal, harga jual, harga grosir, dan stok fisik untuk Excel.
                         </p>
                     </div>
-                    <button onclick="window.exportProductsCSV()" class="w-full py-2.5 px-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-black text-xs flex items-center justify-center gap-2 shadow-xs transition-all active:scale-95 cursor-pointer">
+                    <button onclick="window.exportProductsCSV()" class="w-full py-2.5 px-3 rounded-xl text-white font-black text-xs flex items-center justify-center gap-2 shadow-xs transition-all active:scale-95 cursor-pointer hover:opacity-95" style="background:var(--color-primary)">
                         <i class="fa-solid fa-file-excel"></i>
                         <span>Ekspor Produk (.csv)</span>
                     </button>
                 </div>
 
                 <!-- Ekspor CSV Transaksi Penjualan -->
-                <div class="p-4 rounded-2xl bg-slate-50/80 dark:bg-slate-850/60 border border-slate-200/80 dark:border-slate-800 flex flex-col justify-between space-y-3">
+                <div class="p-4 rounded-2xl bg-slate-50/90 dark:bg-slate-800/80 border border-slate-200/90 dark:border-slate-700/80 flex flex-col justify-between space-y-3">
                     <div class="space-y-1">
                         <div class="flex items-center gap-2">
-                            <span class="w-2 h-2 rounded-full bg-purple-500"></span>
+                            <span class="w-2 h-2 rounded-full" style="background: var(--color-primary)"></span>
                             <h4 class="text-xs font-black uppercase tracking-wider text-slate-800 dark:text-slate-100">Riwayat Penjualan (.csv)</h4>
                         </div>
                         <p class="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
                             Laporan transaksi kasir &amp; pesanan online, rincian pembayaran (Tunai/QRIS/Tempo), dan diskon untuk pembukuan.
                         </p>
                     </div>
-                    <button onclick="window.exportOrdersCSV()" class="w-full py-2.5 px-3 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-black text-xs flex items-center justify-center gap-2 shadow-xs transition-all active:scale-95 cursor-pointer">
+                    <button onclick="window.exportOrdersCSV()" class="w-full py-2.5 px-3 rounded-xl text-white font-black text-xs flex items-center justify-center gap-2 shadow-xs transition-all active:scale-95 cursor-pointer hover:opacity-95" style="background:var(--color-primary)">
                         <i class="fa-solid fa-file-invoice-dollar"></i>
                         <span>Ekspor Transaksi (.csv)</span>
                     </button>
@@ -221,7 +221,7 @@ export const renderBackupSyncView = async () => {
             </div>
 
             <!-- Upload Area & Proteksi -->
-            <div class="p-3.5 sm:p-5 rounded-2xl bg-slate-50/90 dark:bg-slate-850/70 border border-slate-200/90 dark:border-slate-700/80 space-y-3.5">
+            <div class="p-3.5 sm:p-5 rounded-2xl bg-slate-50/90 dark:bg-slate-800/80 border border-slate-200/90 dark:border-slate-700/80 space-y-3.5">
                 <div class="flex items-start gap-2.5 sm:gap-3">
                     <div class="w-7 h-7 rounded-xl flex items-center justify-center shrink-0 aspect-square mt-0.5 shadow-2xs border border-[rgba(var(--color-primary-rgb),0.25)]" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary)">
                         <i class="fa-solid fa-shield-halved text-xs"></i>
@@ -254,12 +254,12 @@ export const renderBackupSyncView = async () => {
                     <span class="leading-snug"><b>Snapshot Cepat di Perangkat:</b> Simpan cadangan kilat ke memori browser tanpa unduh file</span>
                 </div>
                 <div class="grid grid-cols-2 gap-2.5 sm:gap-3">
-                    <button onclick="window.saveQuickDeviceSnapshot()" class="h-11 sm:h-12 px-2 sm:px-4 rounded-xl sm:rounded-2xl bg-white dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700 hover:border-[rgba(var(--color-primary-rgb),0.5)] text-slate-700 dark:text-slate-200 transition-all active:scale-95 cursor-pointer shadow-xs flex items-center justify-center gap-1.5 sm:gap-2 min-w-0">
+                    <button onclick="window.saveQuickDeviceSnapshot()" class="h-11 sm:h-12 px-2 sm:px-4 rounded-xl sm:rounded-2xl bg-white dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700 hover:border-[var(--color-primary)] text-slate-700 dark:text-slate-200 transition-all active:scale-95 cursor-pointer shadow-xs flex items-center justify-center gap-1.5 sm:gap-2 min-w-0">
                         <i class="fa-solid fa-camera text-xs sm:text-sm shrink-0" style="color:var(--color-primary)"></i>
                         <span class="font-bold text-[11px] sm:text-xs whitespace-nowrap">Simpan Cepat</span>
                     </button>
-                    <button onclick="window.restoreQuickDeviceSnapshot()" class="h-11 sm:h-12 px-2 sm:px-4 rounded-xl sm:rounded-2xl bg-white dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700 hover:border-amber-400 text-slate-700 dark:text-slate-200 transition-all active:scale-95 cursor-pointer shadow-xs flex items-center justify-center gap-1.5 sm:gap-2 min-w-0">
-                        <i class="fa-solid fa-clock-rotate-left text-xs sm:text-sm shrink-0 text-amber-500"></i>
+                    <button onclick="window.restoreQuickDeviceSnapshot()" class="h-11 sm:h-12 px-2 sm:px-4 rounded-xl sm:rounded-2xl bg-white dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700 hover:border-[var(--color-primary)] text-slate-700 dark:text-slate-200 transition-all active:scale-95 cursor-pointer shadow-xs flex items-center justify-center gap-1.5 sm:gap-2 min-w-0">
+                        <i class="fa-solid fa-clock-rotate-left text-xs sm:text-sm shrink-0" style="color:var(--color-primary)"></i>
                         <span class="font-bold text-[11px] sm:text-xs whitespace-nowrap">Pulihkan</span>
                     </button>
                 </div>
@@ -752,7 +752,7 @@ const openPreRestoreModal = ({ fileName, backupDate, productsCount, ordersCount,
             </div>
 
             <!-- Modal Footer -->
-            <div class="p-4 bg-slate-50 dark:bg-slate-850 border-t border-slate-100 dark:border-slate-800 flex items-center justify-end gap-2.5">
+            <div class="p-4 bg-slate-50 dark:bg-slate-800 border-t border-slate-100 dark:border-slate-800 flex items-center justify-end gap-2.5">
                 <button onclick="document.getElementById('modal-pre-restore-inspector').remove()" class="px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold text-xs hover:bg-slate-100 dark:hover:bg-slate-800 transition-all cursor-pointer">
                     Batal
                 </button>

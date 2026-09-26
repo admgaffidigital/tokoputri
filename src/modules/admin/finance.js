@@ -543,16 +543,16 @@ export const openTaxDocPreview = (reportType) => {
         const dpp = t.omset - t.disc;
         const rows = Array.from({length: 12}, (_, i) => i + 1).map(m => {
             const d = gTaxMonthly ? gTaxMonthly[m] : { omset: 0, ppn: 0, orderCount: 0 };
-            return `<tr class="border-b border-slate-200"><td class="py-2.5 px-3 font-bold text-slate-700">${MONTH_NAMES[m - 1]} ${taxYear}</td><td class="py-2.5 px-3 text-right font-bold text-slate-700">${fCur(d.omset)}</td><td class="py-2.5 px-3 text-right font-bold text-slate-900">${fCur(d.ppn)}</td><td class="py-2.5 px-3 text-right font-bold text-slate-500">${d.orderCount}</td></tr>`;
+            return `<tr class="border-b border-slate-200 dark:border-slate-700/80"><td class="py-2.5 px-3 font-bold text-slate-700 dark:text-slate-200">${MONTH_NAMES[m - 1]} ${taxYear}</td><td class="py-2.5 px-3 text-right font-bold text-slate-700 dark:text-slate-200">${fCur(d.omset)}</td><td class="py-2.5 px-3 text-right font-bold text-slate-900 dark:text-white">${fCur(d.ppn)}</td><td class="py-2.5 px-3 text-right font-bold text-slate-500 dark:text-slate-400">${d.orderCount}</td></tr>`;
         }).join('');
         bodyHtml = `
         <div class="grid grid-cols-4 gap-4 mb-8">
-            <div class="bg-slate-50 border border-slate-200 rounded-xl p-4"><p class="text-[9px] font-bold text-slate-400 uppercase mb-1">Omset Bruto</p><p class="font-bold text-slate-900">${fCur(t.omset)}</p></div>
-            <div class="bg-slate-50 border border-slate-200 rounded-xl p-4"><p class="text-[9px] font-bold text-slate-400 uppercase mb-1">Diskon</p><p class="font-bold text-rose-600">${fCur(t.disc)}</p></div>
-            <div class="bg-slate-50 border border-slate-200 rounded-xl p-4"><p class="text-[9px] font-bold text-slate-400 uppercase mb-1">DPP</p><p class="font-bold text-slate-900">${fCur(dpp)}</p></div>
-            <div class="bg-amber-50 border border-amber-200 rounded-xl p-4"><p class="text-[9px] font-bold text-amber-600 uppercase mb-1">PPN Keluaran</p><p class="font-bold text-amber-700">${fCur(t.ppn)}</p></div>
+            <div class="bg-slate-50 dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700 rounded-xl p-4"><p class="text-[9px] font-bold text-slate-400 uppercase mb-1">Omset Bruto</p><p class="font-bold text-slate-900 dark:text-white">${fCur(t.omset)}</p></div>
+            <div class="bg-slate-50 dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700 rounded-xl p-4"><p class="text-[9px] font-bold text-slate-400 uppercase mb-1">Diskon</p><p class="font-bold text-rose-600 dark:text-rose-400">${fCur(t.disc)}</p></div>
+            <div class="bg-slate-50 dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700 rounded-xl p-4"><p class="text-[9px] font-bold text-slate-400 uppercase mb-1">DPP</p><p class="font-bold text-slate-900 dark:text-white">${fCur(dpp)}</p></div>
+            <div class="bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/60 rounded-xl p-4"><p class="text-[9px] font-bold text-amber-600 dark:text-amber-400 uppercase mb-1">PPN Keluaran</p><p class="font-bold text-amber-700 dark:text-amber-300">${fCur(t.ppn)}</p></div>
         </div>
-        <table class="w-full text-xs"><thead><tr class="bg-slate-100 text-left"><th class="py-2.5 px-3 font-bold text-slate-500 uppercase text-[9px]">Bulan</th><th class="py-2.5 px-3 font-bold text-slate-500 uppercase text-[9px] text-right">Omset</th><th class="py-2.5 px-3 font-bold text-slate-500 uppercase text-[9px] text-right">PPN Keluaran</th><th class="py-2.5 px-3 font-bold text-slate-500 uppercase text-[9px] text-right">Pesanan</th></tr></thead><tbody>${rows}</tbody></table>`;
+        <table class="w-full text-xs"><thead><tr class="bg-slate-100 dark:bg-slate-800 text-left"><th class="py-2.5 px-3 font-bold text-slate-500 dark:text-slate-400 uppercase text-[9px]">Bulan</th><th class="py-2.5 px-3 font-bold text-slate-500 dark:text-slate-400 uppercase text-[9px] text-right">Omset</th><th class="py-2.5 px-3 font-bold text-slate-500 dark:text-slate-400 uppercase text-[9px] text-right">PPN Keluaran</th><th class="py-2.5 px-3 font-bold text-slate-500 dark:text-slate-400 uppercase text-[9px] text-right">Pesanan</th></tr></thead><tbody>${rows}</tbody></table>`;
     } else if (reportType === 'income') {
         const t = getTaxPeriodTotals();
         const labaKotor = t.omset - t.disc - t.hpp;

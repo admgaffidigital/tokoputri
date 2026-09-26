@@ -160,9 +160,38 @@ export const applyUITheme = (themeName, customHex) => {
  */
 export const initDarkMode = () => {
     const savedTheme = localStorage.getItem('freshmart_theme');
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const mediaQuery = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
+    const prefersDark = mediaQuery ? mediaQuery.matches : false;
+    
+    // Terapkan mode: utamakan preferensi manual jika ada, jika belum ada ikuti sistem OS
     if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
         document.documentElement.classList.add('dark');
+    } else {
+        document.documentElement.classList.remove('dark');
+    }
+
+    // Dengarkan perubahan mode gelap sistem OS secara real-time
+    if (mediaQuery && !window._darkModeSystemListenerBound) {
+        window._darkModeSystemListenerBound = true;
+        try {
+            const handleSystemThemeChange = (e) => {
+                const currentPref = localStorage.getItem('freshmart_theme');
+                // Hanya ikuti perubahan OS jika pengguna belum mengunci preferensi manual secara eksplisit
+                if (!currentPref) {
+                    if (e.matches) {
+                        document.documentElement.classList.add('dark');
+                    } else {
+                        document.documentElement.classList.remove('dark');
+                    }
+                    initThemeIcon();
+                }
+            };
+            if (typeof mediaQuery.addEventListener === 'function') {
+                mediaQuery.addEventListener('change', handleSystemThemeChange);
+            } else if (typeof mediaQuery.addListener === 'function') {
+                mediaQuery.addListener(handleSystemThemeChange);
+            }
+        } catch (_) {}
     }
 };
 

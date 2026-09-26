@@ -253,7 +253,7 @@ window.exportVariantToColorDB = async (idx) => {
                 </div>
             </div>
             <div class="flex gap-3 mt-6">
-                <button onclick="_closeColorFloatModal()" class="flex-1 py-3 rounded-xl border border-slate-200 font-bold text-slate-500 text-sm hover:bg-slate-50 transition-all cursor-pointer">Batal</button>
+                <button onclick="_closeColorFloatModal()" class="flex-1 py-3 rounded-xl border border-slate-200 dark:border-slate-700 font-bold text-slate-500 dark:text-slate-400 text-sm hover:bg-slate-50 dark:hover:bg-slate-800 transition-all cursor-pointer">Batal</button>
                 <button onclick="confirmExportVariantToColorDB()" class="flex-1 py-3 rounded-xl primary-bg text-white font-bold text-sm hover:opacity-90 transition-all active:scale-95 cursor-pointer"><i class="fa-solid fa-floppy-disk mr-2"></i>Simpan</button>
             </div>
         </div>`);
@@ -291,7 +291,7 @@ window.exportAllVariantsToColorDB = async () => {
                 <datalist id="expall-catalog-list">${catalogOpts}</datalist>
             </div>
             <div class="flex gap-3 mt-6">
-                <button onclick="_closeColorFloatModal()" class="flex-1 py-3 rounded-xl border border-slate-200 font-bold text-slate-500 text-sm hover:bg-slate-50 transition-all cursor-pointer">Batal</button>
+                <button onclick="_closeColorFloatModal()" class="flex-1 py-3 rounded-xl border border-slate-200 dark:border-slate-700 font-bold text-slate-500 dark:text-slate-400 text-sm hover:bg-slate-50 dark:hover:bg-slate-800 transition-all cursor-pointer">Batal</button>
                 <button onclick="confirmExportAllVariants()" class="flex-1 py-3 rounded-xl primary-bg text-white font-bold text-sm hover:opacity-90 transition-all active:scale-95 cursor-pointer"><i class="fa-solid fa-upload mr-2"></i>Ekspor</button>
             </div>
         </div>`);
@@ -354,7 +354,7 @@ window.openImportFromProductsModal = async () => {
                 <datalist id="impprod-cat-list">${catalogOpts}</datalist>
             </div>
             <div class="flex gap-3 mt-5">
-                <button onclick="_closeColorFloatModal()" class="flex-1 py-3 rounded-xl border border-slate-200 font-bold text-slate-500 text-sm hover:bg-slate-50 transition-all cursor-pointer">Batal</button>
+                <button onclick="_closeColorFloatModal()" class="flex-1 py-3 rounded-xl border border-slate-200 dark:border-slate-700 font-bold text-slate-500 dark:text-slate-400 text-sm hover:bg-slate-50 dark:hover:bg-slate-800 transition-all cursor-pointer">Batal</button>
                 <button onclick="confirmImportFromProducts()" class="flex-1 py-3 rounded-xl primary-bg font-bold text-sm transition-all active:scale-95 cursor-pointer"><i class="fa-solid fa-download mr-2"></i>Impor</button>
             </div>
         </div>`);
