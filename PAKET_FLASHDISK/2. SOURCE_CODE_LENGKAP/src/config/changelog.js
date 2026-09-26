@@ -8,6 +8,22 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-9-45',
+        version: 'v1.9.45',
+        date: '2026-09-26',
+        title: 'Harmonisasi Tema Warna Penuh pada Kartu Member Digital & Loyalty Pass',
+        category: 'optimization',
+        badge: 'Member Card Theme Parity v1.9.45',
+        items: [
+            'Harmonisasi Ikon Header Modal Member: Menggantikan gradien oranye/amber statis dengan warna tema primer aktif toko (primary-bg) berbayang halus yang menyatu dengan identitas brand toko.',
+            'Penyelarasan Tombol Simpan ke Galeri: Tombol unduh/ekspor kartu member kini otomatis mengadopsi warna brand primer aktif toko, menghilangkan ketidakselarasan warna oranye jomplang.',
+            'Harmonisasi Tombol Balik Kartu & Ikon Level: Tombol balik kartu 3D dan ikon tingkatan keanggotaan kini menggunakan variabel var(--color-primary).',
+            'Penyelarasan Indikator Progres Level & Saldo Poin: Bar progres kenaikan tingkat tier member dan badge total saldo poin kini tersinkronisasi 100% dengan warna tema toko.',
+            'Harmonisasi Kartu Ringkasan Member di Checkout: Banner pendeteksian nomor member resmi saat checkout kini menggunakan border, ikon, dan tombol buka kartu bernuansa tema aktif toko.',
+            'Kotak Keuntungan Member & Kontak WhatsApp: Menyelaraskan kotak edukasi hak istimewa member dengan palet tema toko serta nomor layanan WhatsApp kasir resmi.'
+        ]
+    },
+    {
         id: 'log-1-9-44',
         version: 'v1.9.44',
         date: '2026-09-26',

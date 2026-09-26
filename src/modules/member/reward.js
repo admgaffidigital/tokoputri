@@ -379,7 +379,7 @@ export const renderDigitalMemberCard = (mData) => {
                     <!-- Barcode untuk Scanner Kasir Toko -->
                     <div class="mt-2 text-center">
                         <p class="text-[8px] font-bold text-slate-400 uppercase tracking-wider mb-1 flex items-center justify-center gap-1">
-                            <i class="fa-solid fa-barcode text-amber-400"></i> Scan Barcode di Kasir POS Toko:
+                            <i class="fa-solid fa-barcode text-[var(--color-primary-light)]"></i> Scan Barcode di Kasir POS Toko:
                         </p>
                         ${generateBarcodeSVG(rawPhone)}
                         <p class="text-[9px] font-mono font-bold tracking-[0.2em] text-slate-300 mt-1">*${esc(rawPhone)}*</p>
@@ -391,7 +391,7 @@ export const renderDigitalMemberCard = (mData) => {
                     <p class="text-[7.5px] sm:text-[8px] text-slate-400 leading-tight">
                         Kartu member digital resmi <b class="text-white">${esc(storeName)}</b>. Tunjukkan saat transaksi untuk poin belanja.
                     </p>
-                    <p class="text-[8px] font-bold text-amber-300 mt-0.5">
+                    <p class="text-[8px] font-bold text-emerald-400 mt-0.5">
                         <i class="fa-brands fa-whatsapp mr-1"></i>CS: +${esc(csPhone)}
                     </p>
                 </div>
@@ -559,17 +559,17 @@ export const checkMemberStatus = () => {
         const renderCheckoutMiniCard = (mData) => {
             const pts = parseFloat(mData.points) || 0;
             const tier = getMemberTier(pts);
-            banner.className = 'mt-3 p-3 sm:p-4 rounded-2xl bg-gradient-to-r from-slate-950 via-slate-900 to-slate-950 text-white border border-amber-400/40 shadow-xl relative overflow-hidden flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3';
+            banner.className = 'mt-3 p-3 sm:p-4 rounded-2xl bg-gradient-to-r from-slate-950 via-slate-900 to-slate-950 text-white border border-[rgba(var(--color-primary-rgb),0.35)] shadow-xl relative overflow-hidden flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3';
             banner.innerHTML = `
-                <div class="absolute -right-6 -bottom-6 w-28 h-28 bg-amber-400/10 rounded-full blur-xl pointer-events-none"></div>
+                <div class="absolute -right-6 -bottom-6 w-28 h-28 bg-[rgba(var(--color-primary-rgb),0.12)] rounded-full blur-xl pointer-events-none"></div>
                 <div class="flex items-center gap-3 relative z-10 min-w-0">
-                    <div class="w-12 h-10 rounded-xl bg-gradient-to-br from-amber-400/20 to-yellow-600/20 border border-amber-400/40 flex items-center justify-center shrink-0 shadow-inner">
-                        <i class="fa-solid fa-id-card text-xl text-amber-300"></i>
+                    <div class="w-12 h-10 rounded-xl bg-[rgba(var(--color-primary-rgb),0.15)] border border-[rgba(var(--color-primary-rgb),0.35)] flex items-center justify-center shrink-0 shadow-inner">
+                        <i class="fa-solid fa-id-card text-xl text-[var(--color-primary-light)]"></i>
                     </div>
                     <div class="min-w-0">
                         <div class="flex items-center gap-2 flex-wrap">
                             <span class="text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full ${tier.accentBg} ${tier.accentText} border ${tier.accentBorder}">${tier.badge}</span>
-                            <span class="text-[10px] font-bold text-amber-300 flex items-center gap-1"><i class="fa-solid fa-star text-[9px]"></i>${pts} Poin</span>
+                            <span class="text-[10px] font-bold text-[var(--color-primary-light)] flex items-center gap-1"><i class="fa-solid fa-coins text-[9px]"></i>${pts} Poin</span>
                         </div>
                         <p class="text-xs font-bold text-white mt-0.5 truncate flex items-center gap-1.5">
                             <span>${esc(mData.name || 'Pelanggan')}</span>
@@ -577,7 +577,7 @@ export const checkMemberStatus = () => {
                         </p>
                     </div>
                 </div>
-                <button type="button" onclick="openMemberModal()" class="relative z-10 w-full sm:w-auto shrink-0 bg-gradient-to-r from-amber-500 via-amber-400 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-slate-950 text-[10px] font-black uppercase tracking-wider px-3.5 py-2.5 rounded-xl shadow-md active:scale-95 transition-all flex items-center justify-center gap-1.5 cursor-pointer">
+                <button type="button" onclick="openMemberModal()" class="relative z-10 w-full sm:w-auto shrink-0 primary-bg hover:opacity-90 text-white text-[10px] font-black uppercase tracking-wider px-3.5 py-2.5 rounded-xl shadow-md active:scale-95 transition-all flex items-center justify-center gap-1.5 cursor-pointer">
                     <i class="fa-solid fa-wallet"></i> Buka Kartu Member
                 </button>`;
             show(banner); 
@@ -700,7 +700,7 @@ export const openMemberModal = () => {
             <!-- Header Modal -->
             <div class="p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center shrink-0 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md">
                 <div class="flex items-center gap-2.5">
-                    <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-white shadow-sm">
+                    <div class="w-8 h-8 rounded-xl primary-bg flex items-center justify-center text-white shadow-sm shadow-[rgba(var(--color-primary-rgb),0.25)]">
                         <i class="fa-solid fa-id-card text-xs"></i>
                     </div>
                     <div>
@@ -744,7 +744,7 @@ export const rMemberModalBody = () => {
             ${r.img ? `<img src="${esc(r.img)}" class="w-14 h-14 rounded-xl object-contain bg-white p-1 border border-slate-200 dark:border-slate-700 shrink-0" onerror="this.style.display='none'" loading="lazy">` : `<div class="w-14 h-14 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-300 shrink-0"><i class="fa-solid fa-gift text-xl"></i></div>`}
             <div class="min-w-0 flex-1">
                 <p class="text-xs font-bold text-slate-800 dark:text-white truncate">${esc(r.name)}</p>
-                <p class="text-[11px] font-black text-amber-500 dark:text-amber-400 mt-0.5 flex items-center gap-1">
+                <p class="text-[11px] font-black text-[var(--color-primary)] mt-0.5 flex items-center gap-1">
                     <i class="fa-solid fa-star text-[10px]"></i> ${parseFloat(r.pointsCost) || 0} Poin
                 </p>
                 ${!stockOk ? `<p class="text-[10px] font-bold text-rose-500 mt-0.5">Stok hadiah habis</p>` : ''}
@@ -763,13 +763,13 @@ export const rMemberModalBody = () => {
                 
                 <!-- Action Controls: Balik Kartu, Unduh Kartu & Tutup -->
                 <div class="flex items-center justify-between gap-2 mt-3 max-w-[390px] mx-auto">
-                    <button type="button" onclick="flipMemberCard()" class="flex-1 py-2.5 px-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-xs font-bold flex items-center justify-center gap-1.5 hover:bg-slate-100 dark:hover:bg-slate-700 active:scale-95 transition-all shadow-xs cursor-pointer">
-                        <i class="fa-solid fa-repeat text-[11px] text-amber-500"></i> Balik Kartu
+                    <button type="button" onclick="flipMemberCard()" class="flex-1 py-2.5 px-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-xs font-bold flex items-center justify-center gap-1.5 hover:bg-slate-50 dark:hover:bg-slate-700 active:scale-95 transition-all shadow-2xs cursor-pointer">
+                        <i class="fa-solid fa-repeat text-[11px] text-[var(--color-primary)]"></i> Balik Kartu
                     </button>
-                    <button type="button" onclick="downloadMemberCard()" class="flex-1 py-2.5 px-3 rounded-xl border border-amber-400/50 bg-gradient-to-r from-amber-500 to-amber-600 text-white text-xs font-bold flex items-center justify-center gap-1.5 hover:opacity-95 active:scale-95 transition-all shadow-xs cursor-pointer">
+                    <button type="button" onclick="downloadMemberCard()" class="flex-1 py-2.5 px-3 rounded-xl primary-bg hover:opacity-95 text-white text-xs font-bold flex items-center justify-center gap-1.5 active:scale-95 transition-all shadow-sm shadow-[rgba(var(--color-primary-rgb),0.25)] cursor-pointer">
                         <i class="fa-solid fa-download text-[11px]"></i> Simpan ke Galeri
                     </button>
-                    <button type="button" onclick="closeMemberModal()" class="py-2.5 px-3.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-500 hover:text-slate-800 dark:hover:text-white text-xs font-bold flex items-center justify-center gap-1 active:scale-95 transition-all cursor-pointer" title="Tutup">
+                    <button type="button" onclick="closeMemberModal()" class="py-2.5 px-3.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-500 hover:text-slate-800 dark:hover:text-white text-xs font-bold flex items-center justify-center gap-1 active:scale-95 transition-all cursor-pointer" title="Tutup">
                         <i class="fa-solid fa-xmark"></i>
                     </button>
                 </div>
@@ -786,12 +786,12 @@ export const rMemberModalBody = () => {
                     <div>
                         <p class="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Level Keanggotaan</p>
                         <h4 class="text-xs sm:text-sm font-black text-slate-800 dark:text-white flex items-center gap-1.5 mt-0.5">
-                            <i class="fa-solid ${tier.icon} text-amber-500"></i> ${tier.name}
+                            <i class="fa-solid ${tier.icon} text-[var(--color-primary)]"></i> ${tier.name}
                         </h4>
                     </div>
                     <div class="text-right">
                         <p class="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Total Saldo</p>
-                        <p class="text-xs sm:text-sm font-black text-amber-500 dark:text-amber-400 mt-0.5">${pts} Poin</p>
+                        <p class="text-xs sm:text-sm font-black text-[var(--color-primary)] mt-0.5 flex items-center justify-end gap-1"><i class="fa-solid fa-coins text-[11px]"></i> ${pts} Poin</p>
                     </div>
                 </div>
 
@@ -799,10 +799,10 @@ export const rMemberModalBody = () => {
                 <div class="space-y-1.5 pt-1">
                     <div class="flex justify-between text-[10px] font-semibold text-slate-500 dark:text-slate-400">
                         <span>Menuju <b>${tier.nextTier}</b></span>
-                        <span class="font-bold text-slate-700 dark:text-slate-200">${tier.progress}%</span>
+                        <span class="font-bold text-[var(--color-primary)]">${tier.progress}%</span>
                     </div>
                     <div class="w-full h-2 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden">
-                        <div class="h-full rounded-full bg-gradient-to-r from-amber-500 to-yellow-400 transition-all duration-500" style="width: ${tier.progress}%"></div>
+                        <div class="h-full rounded-full primary-bg transition-all duration-500" style="width: ${tier.progress}%"></div>
                     </div>
                     <p class="text-[9px] text-slate-500 dark:text-slate-400 font-medium">
                         Kumpulkan <b>${tier.ptsNeeded} poin lagi</b> untuk otomatis naik tingkat ke <b>${tier.nextTier}</b>!
@@ -868,9 +868,9 @@ export const rMemberModalBody = () => {
             </div>
 
             <!-- KEUNTUNGAN MENJADI MEMBER -->
-            <div class="p-4 rounded-2xl border border-amber-400/30 bg-amber-50/50 dark:bg-amber-950/20 text-xs space-y-2">
-                <h4 class="font-bold text-amber-800 dark:text-amber-300 flex items-center gap-1.5">
-                    <i class="fa-solid fa-sparkles text-amber-500"></i> Keuntungan Menjadi Member Toko Putri:
+            <div class="p-4 rounded-2xl border border-[rgba(var(--color-primary-rgb),0.25)] bg-[rgba(var(--color-primary-rgb),0.05)] dark:bg-[rgba(var(--color-primary-rgb),0.1)] text-xs space-y-2">
+                <h4 class="font-bold text-slate-800 dark:text-white flex items-center gap-1.5">
+                    <i class="fa-solid fa-sparkles text-[var(--color-primary)]"></i> Keuntungan Menjadi Member Toko Putri:
                 </h4>
                 <ul class="text-[11px] text-slate-600 dark:text-slate-300 space-y-1 list-disc pl-4">
                     <li>Otomatis terdaftar menjadi member pada pesanan pertama Anda.</li>
