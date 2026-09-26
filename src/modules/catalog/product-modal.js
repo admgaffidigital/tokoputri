@@ -218,6 +218,11 @@ export const closeProductModal = (fH = false) => {
             vc.innerHTML = '';
             vc.classList.add('hidden');
         }
+        const cp = el('product-modal-cover-placeholder');
+        if (cp) {
+            cp.innerHTML = '';
+            cp.classList.add('hidden');
+        }
 
         // Restore URL, Meta Tags, & JSON-LD
         const urlParams = new URLSearchParams(window.location.search);

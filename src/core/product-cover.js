@@ -186,7 +186,7 @@ export const renderProductCoverHtml = (product, options = {}) => {
 
     const theme = getProductTheme(product, pCat, pBrand);
     const monogram = getMonogram(pName);
-    const labelText = pCat ? esc(pCat) : theme.label;
+    const labelText = pCat ? esc(pCat) : esc(theme.label);
 
     return `
     <div class="pos-smart-cover cover-${size} ${customClass}" style="background: ${theme.bg};" title="${esc(pName)}">
