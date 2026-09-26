@@ -7,7 +7,7 @@
  */
 
 import { appData, cart, aCat, setACat, aSubCat, setASubCat, aBrand, setABrand, sQ, setSQ, cSort, setCSort, cView, setCView, cPage, setCPage, iPP } from '../../core/state.js';
-import { el, show, hide, toggleCls, esc, fCur, getOptImg, showToast } from '../../core/utils.js';
+import { el, show, hide, toggleCls, esc, fCur, getOptImg, showToast, renderProductCoverHtml } from '../../core/utils.js';
 import { updCart } from '../cart/cart.js';
 import { openProductModal, openQuickVariantSheet } from './product-modal.js';
 
@@ -241,13 +241,21 @@ export const rCat = () => {
         
         let unt = `<span class="text-[9px] text-slate-600 dark:text-slate-400 font-bold ml-0.5 mb-0.5 uppercase tracking-wide">/${esc(p.unit || 'PCS')}</span>`;
         
+        const hasImg = Boolean(p.img && typeof p.img === 'string' && p.img.trim());
+        const imgUrl = hasImg ? esc(getOptImg(p.img, 'w300-rw')) : '';
+        const coverMdHtml = renderProductCoverHtml(p, { size: 'md' });
+        const coverSmHtml = renderProductCoverHtml(p, { size: 'sm' });
+
         if (cView === 'grid') {
             return `
             <a href="?p=${p.id}" class="w-full bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700/50 rounded-[1.5rem] shadow-soft ${cardCursorCls} transition-all duration-300 flex flex-col group relative overflow-hidden text-left" onclick="event.preventDefault(); openProductModal('${esc(p.id)}')">
                 ${nH}
-                <div class="relative aspect-square w-full bg-white flex items-center justify-center shrink-0 border-b border-slate-100 dark:border-slate-700/50">
+                <div class="relative aspect-square w-full bg-white dark:bg-slate-900 flex items-center justify-center shrink-0 border-b border-slate-100 dark:border-slate-700/50 overflow-hidden">
                       ${stockBadge}
-                      <img width="300" height="300" loading="lazy" decoding="async" sizes="(max-width: 640px) 45vw, (max-width: 1024px) 30vw, 20vw" src="${esc(getOptImg(p.img, 'w300-rw'))}" alt="${esc(p.name)}" onerror="this.onerror=null;this.src='https://placehold.co/400?text=No+Image'" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 ${nH ? 'grayscale opacity-50' : ''}">
+                      ${hasImg 
+                          ? `<img width="300" height="300" loading="lazy" decoding="async" sizes="(max-width: 640px) 45vw, (max-width: 1024px) 30vw, 20vw" src="${imgUrl}" alt="${esc(p.name)}" onerror="this.onerror=null;this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='flex';" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 ${nH ? 'grayscale opacity-50' : ''}">
+                             <div class="w-full h-full" style="display:none">${coverMdHtml}</div>`
+                          : coverMdHtml}
                 </div>
                 <div class="flex-1 flex flex-col p-3 sm:p-4 min-w-0 bg-white dark:bg-slate-800 relative z-10">
                     ${bH}
@@ -270,9 +278,12 @@ export const rCat = () => {
             return `
             <a href="?p=${p.id}" class="w-full bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700/50 rounded-[1.5rem] shadow-soft ${cardCursorClsList} transition-all duration-300 flex items-stretch p-2.5 sm:p-3 gap-3 sm:gap-4 group relative overflow-hidden text-left" onclick="event.preventDefault(); openProductModal('${esc(p.id)}')">
                 ${nH}
-                <div class="relative w-24 h-24 sm:w-28 sm:h-28 shrink-0 bg-white dark:bg-slate-900 rounded-xl flex items-center justify-center p-2 border border-slate-100 dark:border-slate-700/50 overflow-hidden">
+                <div class="relative w-24 h-24 sm:w-28 sm:h-28 shrink-0 bg-white dark:bg-slate-900 rounded-xl flex items-center justify-center border border-slate-100 dark:border-slate-700/50 overflow-hidden">
                     ${stockBadge}
-                    <img width="96" height="96" loading="lazy" decoding="async" sizes="96px" src="${esc(getOptImg(p.img, 'w300-rw'))}" alt="${esc(p.name)}" onerror="this.onerror=null;this.src='https://placehold.co/400?text=No+Image'" class="max-w-full max-h-full object-contain transition-transform duration-500 group-hover:scale-105 ${nH ? 'grayscale opacity-50' : ''}">
+                    ${hasImg
+                        ? `<img width="96" height="96" loading="lazy" decoding="async" sizes="96px" src="${imgUrl}" alt="${esc(p.name)}" onerror="this.onerror=null;this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='flex';" class="max-w-full max-h-full object-contain transition-transform duration-500 group-hover:scale-105 ${nH ? 'grayscale opacity-50' : ''}">
+                           <div class="w-full h-full" style="display:none">${coverSmHtml}</div>`
+                        : coverSmHtml}
                 </div>
                 <div class="flex-1 min-w-0 py-1 flex flex-col justify-center h-full relative z-10 pr-2">
                     ${bH}

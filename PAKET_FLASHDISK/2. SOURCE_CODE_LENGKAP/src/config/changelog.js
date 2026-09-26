@@ -8,6 +8,21 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-9-43',
+        version: 'v1.9.43',
+        date: '2026-09-26',
+        title: 'Smart Dynamic Product Cover Engine: Visual Mewah & Otomatis untuk Produk Tanpa Gambar di Storefront, Modal & POS Kasir',
+        category: 'feature',
+        badge: 'Smart Product Cover v1.9.43',
+        items: [
+            'Smart Dynamic Product Cover Engine: Menghadirkan solusi visual otomatis bagi produk baru yang belum memiliki foto/gambar. Tanpa perlu upload gambar atau koneksi eksternal, sistem secara otomatis merender kartu grafis modern beresolusi tinggi dengan gradien warna estetik, cincin geometris, dan radial glow.',
+            'Deteksi Ikon & Palet Kategori Semantik Otomatis: Sistem secara cerdas mendeteksi kata kunci kategori, subkategori, atau nama produk untuk menyematkan ikon vektor resmi (contoh: Rol Cat untuk Cat & Pelapis, Palu & Obeng untuk Paku & Perkakas, Kran/Air untuk Pipa & Sanitair, Cetok Semen untuk Bahan Bangunan, Petir/Lampu untuk Kelistrikan, Pohon untuk Kayu, Gembok untuk Kunci, Perisai untuk Besi/Atap, dan Spray/Lem untuk Perekat).',
+            'Tipografi Monogram Inisial Huruf Besar: Menampilkan 2 huruf inisial produk dengan tipografi tebal modern berbayang lembut (contoh: "ND" untuk No Drop, "PS" untuk Paku Super, "SG" untuk Semen Gresik) layaknya kemasan produk minimalis kelas dunia.',
+            'Eliminasi Ketergantungan Eksternal (Zero Offline Failure): Menghapus seluruh placeholder eksternal (placehold.co) yang lambat atau rusak saat offline. Visual Smart Cover dirender instan 0ms secara lokal via CSS & SVG murni.',
+            'Integrasi Menyeluruh di Seluruh Modul: Diterapkan serempak pada Kartu Katalog Storefront (Grid & List), Modal Detail Produk (Hero Image & Rekomendasi Terkait), POS Kasir (Katalog Grid, List & Keranjang Belanja), Lembar Varian Kasir, Keranjang Belanja Pembeli, Halaman Favorit/Wishlist, serta Tabel & Form Produk CMS Admin.'
+        ]
+    },
+    {
         id: 'log-1-9-42',
         version: 'v1.9.42',
         date: '2026-09-26',

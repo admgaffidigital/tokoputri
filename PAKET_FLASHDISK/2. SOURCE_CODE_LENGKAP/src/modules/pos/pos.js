@@ -10,7 +10,7 @@
 
 import { db, firebase } from '../../config/firebase.js';
 import { appData } from '../../core/state.js';
-import { el, setH, setIn, esc, fCur, showToast, getOptImg } from '../../core/utils.js';
+import { el, setH, setIn, esc, fCur, showToast, getOptImg, renderProductCoverHtml } from '../../core/utils.js';
 import { getEffHpp } from '../../core/pricing.js';
 import { getPrinterConfig, openPrinterSettingsModal } from '../print/printer-settings.js';
 import {
@@ -1254,6 +1254,9 @@ export const renderCatalog = () => {
                 }
                 const hppTagHtml = `<span class="pos-hpp-tag" title="Harga Pokok Penjualan (Modal Kasir)"><i class="fa-solid fa-coins text-[8px]"></i> Modal: <b>${hppDisplay || (p.hpp ? fRp(parseFloat(p.hpp)) : 'Rp 0')}</b></span>`;
 
+                const coverSmHtml = renderProductCoverHtml(p, { size: 'sm' });
+                const coverMdHtml = renderProductCoverHtml(p, { size: 'md' });
+
                 if (posCatalogViewMode === 'list') {
                     // ── LIST MODE: baris kompak & rapi tanpa badge menumpuk ──
                     return `
@@ -1261,8 +1264,8 @@ export const renderCatalog = () => {
                         <div class="pos-list-thumb">
                             ${hasImg
                                 ? `<img width="52" height="52" loading="lazy" decoding="async" src="${esc(imgUrl)}" alt="${pName}" onerror="this.onerror=null;this.style.display='none';this.nextElementSibling.style.display='flex';">
-                                   <div class="pos-img-placeholder" style="display:none;width:100%;height:100%"><i class="fa-solid fa-box" style="font-size:16px;margin:0"></i></div>`
-                                : `<div class="pos-img-placeholder" style="width:100%;height:100%"><i class="fa-solid fa-box" style="font-size:16px;margin:0"></i></div>`}
+                                   <div class="w-full h-full" style="display:none">${coverSmHtml}</div>`
+                                : coverSmHtml}
                             ${discBadge ? `<div class="absolute top-1 left-1 z-10 scale-90 origin-top-left">${discBadge}</div>` : ''}
                             ${totalQtyInCart > 0 ? `<div class="pos-qty-badge" style="top:2px;right:2px;min-width:18px;height:18px;font-size:9px;border-width:1.5px">${formatQty(totalQtyInCart)}</div>` : ''}
                         </div>
@@ -1315,14 +1318,8 @@ export const renderCatalog = () => {
                         ${hasImg
                             ? `<img width="300" height="300" loading="lazy" decoding="async" src="${esc(imgUrl)}" alt="${pName}"
                                  onerror="this.onerror=null;this.style.display='none';this.nextElementSibling.style.display='flex';">
-                               <div class="pos-img-placeholder" style="display:none">
-                                 <i class="fa-solid fa-box-open"></i>
-                                 <span>${esc(p.category || 'Toko')}</span>
-                               </div>`
-                            : `<div class="pos-img-placeholder">
-                                 <i class="fa-solid fa-box-open"></i>
-                                 <span>${esc(p.category || 'Produk')}</span>
-                               </div>`}
+                               <div class="w-full h-full" style="display:none">${coverMdHtml}</div>`
+                            : coverMdHtml}
                     </div>
                     <!-- Info Produk Rapi -->
                     <div class="pos-card-info">
@@ -1398,15 +1395,15 @@ const renderCart = () => {
             const baseName = item.isVariant && item.variantName ? esc(item.name.replace(` — ${item.variantName}`, '')) : esc(item.name);
             const itemHpp = item.hpp != null ? parseFloat(item.hpp) : (getEffHpp(item) || 0);
             const maxItemDisc = itemHpp > 0 ? Math.max(0, Math.round((item.price - itemHpp) * item.qty)) : Math.round(item.price * item.qty);
-            const itemMargin = Math.round(item.subtotal - (itemHpp * item.qty));
+            const coverThumbHtml = renderProductCoverHtml(item, { size: 'thumb' });
             return `
             <div class="group flex items-start gap-2.5 p-2.5 bg-white dark:bg-slate-800/90 rounded-2xl border border-slate-200/90 dark:border-slate-700/80 shadow-xs hover:border-[var(--color-primary)] transition-all">
-                <!-- 42px Thumbnail -->
-                <div class="w-11 h-11 rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-700 shrink-0 border border-slate-200/60 dark:border-slate-700 flex items-center justify-center">
+                <!-- 44px Thumbnail -->
+                <div class="w-11 h-11 rounded-xl overflow-hidden shrink-0 border border-slate-200/60 dark:border-slate-700 flex items-center justify-center">
                     ${img 
                         ? `<img width="44" height="44" loading="lazy" src="${esc(img)}" alt="${esc(item.name)}" onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='flex';" class="w-full h-full object-cover">
-                           <div class="hidden w-full h-full items-center justify-center text-slate-400"><i class="fa-solid fa-box text-xs"></i></div>`
-                        : `<div class="w-full h-full flex items-center justify-center text-slate-400"><i class="fa-solid fa-box text-xs"></i></div>`}
+                           <div class="w-full h-full" style="display:none">${coverThumbHtml}</div>`
+                        : coverThumbHtml}
                 </div>
                 <!-- Details -->
                 <div class="flex-1 min-w-0 pr-1">

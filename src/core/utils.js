@@ -409,3 +409,23 @@ window.sL = sL;
 window.ssL = ssL;
 window.triggerHaptic = triggerHaptic;
 window.flyToCartAnimation = flyToCartAnimation;
+
+// ─── Smart Product Cover Engine ──────────────────────────────
+export {
+    getProductTheme,
+    getMonogram,
+    renderProductCoverHtml,
+    getProductCoverSvgDataUri
+} from './product-cover.js';
+
+import {
+    renderProductCoverHtml,
+    getProductTheme,
+    getMonogram,
+    getProductCoverSvgDataUri
+} from './product-cover.js';
+
+window.renderProductCoverHtml = renderProductCoverHtml;
+window.getProductTheme = getProductTheme;
+window.getMonogram = getMonogram;
+window.getProductCoverSvgDataUri = getProductCoverSvgDataUri;

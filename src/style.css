@@ -461,7 +461,203 @@ html {
     border: 2px solid white;
 }
 
-/* Placeholder tanpa gambar */
+/* ============================================================
+   SMART DYNAMIC PRODUCT COVER ENGINE (Visual Estetik Tanpa Gambar)
+   ============================================================ */
+.pos-smart-cover {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    user-select: none;
+    box-sizing: border-box;
+    transition: transform 0.3s ease;
+}
+
+/* Ambient Radial Glow */
+.pos-smart-cover .cover-glow {
+    position: absolute;
+    top: -25%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 150%;
+    height: 120%;
+    pointer-events: none;
+    opacity: 0.7;
+    border-radius: 50%;
+}
+
+/* Decorative Geometric Rings */
+.pos-smart-cover .cover-ring {
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    pointer-events: none;
+}
+.pos-smart-cover .cover-ring-1 {
+    width: 170%;
+    height: 170%;
+    top: -35%;
+    left: -35%;
+}
+.pos-smart-cover .cover-ring-2 {
+    width: 120%;
+    height: 120%;
+    bottom: -35%;
+    right: -25%;
+}
+
+/* Central Content */
+.pos-smart-cover .cover-center {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 4px;
+}
+
+/* Glass Icon Circle */
+.pos-smart-cover .cover-icon-circle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    background: rgba(255, 255, 255, 0.14);
+    border: 1.5px solid rgba(255, 255, 255, 0.25);
+    transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.pos-product-card:hover .cover-icon-circle,
+.group:hover .pos-smart-cover .cover-icon-circle {
+    transform: scale(1.12) rotate(-5deg);
+}
+
+/* Monogram Initials */
+.pos-smart-cover .cover-monogram {
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    color: #ffffff;
+    line-height: 1;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+/* Bottom Category Capsule */
+.pos-smart-cover .cover-pill {
+    position: relative;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    gap: 4.5px;
+    padding: 3px 9px;
+    border-radius: 9999px;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    font-size: 8px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #ffffff;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+    max-width: 90%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Store Watermark */
+.pos-smart-cover .cover-watermark {
+    position: absolute;
+    bottom: 5px;
+    font-size: 6.5px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.42);
+    z-index: 1;
+    pointer-events: none;
+}
+
+/* Size Variants */
+/* LG Size: Product Modal */
+.pos-smart-cover.cover-lg .cover-icon-circle {
+    width: 68px;
+    height: 68px;
+    font-size: 28px;
+    margin-bottom: 12px;
+}
+.pos-smart-cover.cover-lg .cover-monogram {
+    font-size: 40px;
+    margin-bottom: 14px;
+}
+.pos-smart-cover.cover-lg .cover-pill {
+    font-size: 10px;
+    padding: 4px 14px;
+    margin-bottom: 14px;
+}
+.pos-smart-cover.cover-lg .cover-watermark {
+    bottom: 12px;
+    font-size: 8px;
+}
+
+/* MD Size: Default Grid Card */
+.pos-smart-cover.cover-md .cover-icon-circle {
+    width: 44px;
+    height: 44px;
+    font-size: 18px;
+    margin-bottom: 6px;
+}
+.pos-smart-cover.cover-md .cover-monogram {
+    font-size: 22px;
+    margin-bottom: 8px;
+}
+
+/* SM Size: List Item (~52px - 96px) */
+.pos-smart-cover.cover-sm {
+    border-radius: 12px;
+}
+.pos-smart-cover.cover-sm .cover-icon-circle {
+    width: 32px;
+    height: 32px;
+    font-size: 13px;
+    margin-bottom: 2px;
+}
+.pos-smart-cover.cover-sm .cover-monogram {
+    font-size: 14px;
+}
+.pos-smart-cover.cover-sm .cover-pill,
+.pos-smart-cover.cover-sm .cover-watermark {
+    display: none;
+}
+
+/* THUMB Size: Cart & Tiny Thumbnails (~36px - 44px) */
+.pos-smart-cover.cover-thumb {
+    border-radius: 8px;
+}
+.pos-smart-cover.cover-thumb .cover-icon-circle {
+    width: 24px;
+    height: 24px;
+    font-size: 10px;
+    border-width: 1px;
+}
+.pos-smart-cover.cover-thumb .cover-monogram {
+    display: none;
+}
+.pos-smart-cover.cover-thumb .cover-pill,
+.pos-smart-cover.cover-thumb .cover-watermark {
+    display: none;
+}
+
+/* Backward compatibility untuk .pos-img-placeholder */
 .pos-img-placeholder {
     width: 100%;
     height: 100%;
@@ -469,18 +665,16 @@ html {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
     color: #94a3b8;
     text-align: center;
     padding: 8px;
 }
-
 .pos-img-placeholder i {
     font-size: 20px;
     color: #cbd5e1;
     margin-bottom: 4px;
 }
-
 .pos-img-placeholder span {
     font-size: 7px;
     font-weight: 800;

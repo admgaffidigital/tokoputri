@@ -19,7 +19,8 @@ import {
 import { 
     el, show, hide, setIn, setH, setV, 
     esc, fCur, getOptImg, showToast, 
-    getYouTubeId, ssL, openModalAnim, closeModalAnim 
+    getYouTubeId, ssL, openModalAnim, closeModalAnim,
+    renderProductCoverHtml
 } from '../../core/utils.js';
 
 import { updCart } from '../cart/cart.js';
@@ -292,9 +293,12 @@ export const previewVariant = (idx) => {
             </div>
         `;
     } else {
+        const coverLg = renderProductCoverHtml(cProd, { size: 'lg' });
         html = `
             <div class="relative w-full aspect-square bg-white rounded-3xl overflow-hidden shadow-2xl border border-slate-200 dark:border-slate-800 flex items-center justify-center">
-                <img loading="lazy" decoding="async" class="w-full h-full object-contain" src="${getOptImg(cProd.img || '', 'w800-rw')}" alt="${esc(cProd.name)}">
+                ${cProd.img 
+                    ? `<img loading="lazy" decoding="async" class="w-full h-full object-contain" src="${getOptImg(cProd.img, 'w800-rw')}" alt="${esc(cProd.name)}" onerror="this.onerror=null;this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='flex';"><div class="w-full h-full" style="display:none">${coverLg}</div>`
+                    : coverLg}
             </div>
             <div class="mt-5 text-center px-4 w-full">
                 <h4 class="text-white font-extrabold text-lg md:text-xl tracking-wide uppercase break-words leading-tight">${esc(v.name)}</h4>
@@ -325,10 +329,13 @@ export const previewProductImage = () => {
     const imgSrc = v?.img || cProd.img || '';
     const titleStr = v ? `${esc(cProd.name)} - ${esc(v.name)}` : esc(cProd.name);
     const priceStr = fCur(v?.price ?? cProd.price);
+    const coverLg = renderProductCoverHtml(cProd, { size: 'lg' });
 
     let html = `
         <div class="relative w-full aspect-square bg-white rounded-3xl overflow-hidden shadow-2xl border border-slate-200 dark:border-slate-800 flex items-center justify-center">
-            <img loading="lazy" decoding="async" class="w-full h-full object-contain" src="${getOptImg(imgSrc, 'w800-rw')}" alt="${titleStr}">
+            ${imgSrc 
+                ? `<img loading="lazy" decoding="async" class="w-full h-full object-contain" src="${getOptImg(imgSrc, 'w800-rw')}" alt="${titleStr}" onerror="this.onerror=null;this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='flex';"><div class="w-full h-full" style="display:none">${coverLg}</div>`
+                : coverLg}
             ${v?.colorCode ? `<div class="absolute top-4 left-4 w-12 h-12 rounded-full border-4 border-white shadow-lg" style="background-color: ${esc(v.colorCode)};"></div>` : ''}
         </div>
         <div class="mt-5 text-center px-4 w-full">
@@ -466,10 +473,21 @@ export const rProdMod = () => {
             if (zoomInd) zoomInd.classList.add('hidden');
         } else {
             if (vc) vc.classList.add('hidden');
-            if (i) {
-                i.style.display = 'block';
-                i.src = getOptImg(v?.img || p.img || '', 'w600-rw');
-                i.style.opacity = 1;
+            const targetImg = v?.img || p.img || '';
+            const coverPlaceholder = el('product-modal-cover-placeholder');
+            if (!targetImg) {
+                if (i) i.style.display = 'none';
+                if (coverPlaceholder) {
+                    coverPlaceholder.innerHTML = renderProductCoverHtml(p, { size: 'lg' });
+                    coverPlaceholder.classList.remove('hidden');
+                }
+            } else {
+                if (coverPlaceholder) coverPlaceholder.classList.add('hidden');
+                if (i) {
+                    i.style.display = 'block';
+                    i.src = getOptImg(targetImg, 'w600-rw');
+                    i.style.opacity = 1;
+                }
             }
             const zoomInd = el('zoom-indicator');
             if (zoomInd) zoomInd.classList.remove('hidden');
@@ -483,10 +501,21 @@ export const rProdMod = () => {
             vc.innerHTML = '';
             vc.classList.add('hidden');
         }
-        if (i) {
-            i.style.display = 'block';
-            i.style.opacity = 0;
-            setTimeout(() => { i.src = getOptImg(v?.img || p.img || '', 'w600-rw'); i.style.opacity = 1; }, 150);
+        const targetImg = v?.img || p.img || '';
+        const coverPlaceholder = el('product-modal-cover-placeholder');
+        if (!targetImg) {
+            if (i) i.style.display = 'none';
+            if (coverPlaceholder) {
+                coverPlaceholder.innerHTML = renderProductCoverHtml(p, { size: 'lg' });
+                coverPlaceholder.classList.remove('hidden');
+            }
+        } else {
+            if (coverPlaceholder) coverPlaceholder.classList.add('hidden');
+            if (i) {
+                i.style.display = 'block';
+                i.style.opacity = 0;
+                setTimeout(() => { i.src = getOptImg(targetImg, 'w600-rw'); i.style.opacity = 1; }, 150);
+            }
         }
         const zoomInd = el('zoom-indicator');
         if (zoomInd) zoomInd.classList.remove('hidden');
@@ -1028,10 +1057,16 @@ export const renderRelatedProducts = p => {
 
         let badgeText = item.subCategory || item.brand || item.category || '';
 
+        const hasItemImg = Boolean(item.img && typeof item.img === 'string' && item.img.trim());
+        const coverItemHtml = renderProductCoverHtml(item, { size: 'sm' });
+
         return `
         <div onclick="openProductModal('${esc(item.id)}')" class="group cursor-pointer shrink-0 w-[145px] sm:w-[165px] bg-slate-50 dark:bg-slate-900/70 hover:bg-white dark:hover:bg-slate-800 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-2.5 flex flex-col transition-all duration-300 hover:shadow-md hover:border-[var(--color-primary)]/40 hover:-translate-y-1 snap-start">
-            <div class="relative aspect-square w-full rounded-xl bg-white overflow-hidden mb-2 border border-slate-100 dark:border-slate-700/50 flex items-center justify-center">
-                <img loading="lazy" decoding="async" src="${esc(itemImg)}" alt="${esc(item.name)}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" onerror="this.onerror=null;this.src='https://placehold.co/300?text=No+Image'">
+            <div class="relative aspect-square w-full rounded-xl bg-white dark:bg-slate-900 overflow-hidden mb-2 border border-slate-100 dark:border-slate-700/50 flex items-center justify-center">
+                ${hasItemImg
+                    ? `<img loading="lazy" decoding="async" src="${esc(itemImg)}" alt="${esc(item.name)}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" onerror="this.onerror=null;this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='flex';">
+                       <div class="w-full h-full" style="display:none">${coverItemHtml}</div>`
+                    : coverItemHtml}
                 ${badgeText ? `<span class="absolute top-1.5 left-1.5 bg-slate-900/80 backdrop-blur-xs text-white text-[7.5px] sm:text-[8px] font-bold px-1.5 py-0.5 rounded-md truncate max-w-[85%] uppercase tracking-wider">${esc(badgeText)}</span>` : ''}
             </div>
             <h5 class="text-[11px] font-bold text-slate-700 dark:text-slate-200 line-clamp-2 leading-tight mb-1.5 group-hover:text-[var(--color-primary)] transition-colors uppercase">${esc(item.name)}</h5>

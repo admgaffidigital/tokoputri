@@ -9,7 +9,7 @@
 
 import Sortable from 'sortablejs';
 import { appData } from '../../../core/state.js';
-import { el, setH, esc, fCur, showToast } from '../../../core/utils.js';
+import { el, setH, esc, fCur, showToast, renderProductCoverHtml } from '../../../core/utils.js';
 import { saveApp, sortProductsByOrder } from '../../../services/storage.js';
 import { computeInventoryStats } from '../auth.js';
 import { cTab, setCTab, aSq, setASq } from './index.js';
@@ -348,9 +348,10 @@ window.rAdmItms = t => {
             </div>
         ` : '';
 
+        const coverThumb = renderProductCoverHtml(x, { size: 'thumb' });
         let img = x.img 
-            ? `<div class="w-16 h-16 sm:w-20 sm:h-20 shrink-0 bg-white border border-slate-100 dark:border-slate-700/60 rounded-2xl p-1.5 flex items-center justify-center overflow-hidden"><img loading="lazy" src="${esc(x.img)}" alt="${esc(x.name)}" onerror="this.onerror=null;this.src='https://placehold.co/100?text=Img'" class="w-full h-full object-contain ${isOff?'grayscale opacity-50':''}"></div>`
-            : `<div class="w-16 h-16 sm:w-20 sm:h-20 shrink-0 bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700/60 rounded-2xl flex items-center justify-center text-slate-300 dark:text-slate-600"><i class="fa-solid fa-image text-2xl"></i></div>`;
+            ? `<div class="w-16 h-16 sm:w-20 sm:h-20 shrink-0 bg-white border border-slate-100 dark:border-slate-700/60 rounded-2xl p-1.5 flex items-center justify-center overflow-hidden"><img loading="lazy" src="${esc(x.img)}" alt="${esc(x.name)}" onerror="this.onerror=null;this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='flex';" class="w-full h-full object-contain ${isOff?'grayscale opacity-50':''}"><div class="w-full h-full" style="display:none">${coverThumb}</div></div>`
+            : `<div class="w-16 h-16 sm:w-20 sm:h-20 shrink-0 border border-slate-100 dark:border-slate-700/60 rounded-2xl overflow-hidden flex items-center justify-center">${coverThumb}</div>`;
         
         const isAdminActive = window.isAdm || window.__localIsAdm;
         let tglBtn = isP ? (isOff 

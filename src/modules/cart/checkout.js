@@ -7,7 +7,7 @@
  */
 
 import { appData, cart, setCart, cust, setCust, vouch, setVouch, myOrders, setMyOrders, currentMember, setCurrentMember, selectedReward, setSelectedReward, isSaving, setIsSaving } from '../../core/state.js';
-import { el, show, hide, toggleCls, getV, setV, setIn, setH, esc, fCur, sL, ssL, sLoad, hLoad } from '../../core/utils.js';
+import { el, show, hide, toggleCls, getV, setV, setIn, setH, esc, fCur, sL, ssL, sLoad, hLoad, renderProductCoverHtml } from '../../core/utils.js';
 import { db, firebase } from '../../config/firebase.js';
 
 /**
@@ -361,10 +361,16 @@ export const rPay = () => {
     setH('payment-items-preview', cart.map(i => {
         const variantText = i.variantName ? `<span class="bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-1.5 py-0.5 rounded-lg text-[9px] font-bold">${esc(i.variantName)}</span>` : '';
         const poText = i.poTime ? `<span class="amber-badge px-1.5 py-0.5 rounded-lg text-[8px] font-bold uppercase">PO ${esc(i.poTime)}</span>` : '';
+        const hasCheckImg = Boolean(i.img && typeof i.img === 'string' && i.img.trim());
+        const coverThumb = renderProductCoverHtml(i, { size: 'thumb' });
         return `
         <div class="flex justify-between items-center bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm min-w-0">
             <div class="flex items-center gap-3.5 min-w-0">
-                <img loading="lazy" src="${esc(i.img)}" alt="${esc(i.name)}" class="w-12 h-12 rounded-xl object-cover border border-slate-200 dark:border-slate-700 shrink-0" onerror="this.onerror=null;this.src='https://placehold.co/400?text=No+Image'">
+                <div class="w-12 h-12 rounded-xl border border-slate-200 dark:border-slate-700 shrink-0 overflow-hidden flex items-center justify-center">
+                    ${hasCheckImg 
+                        ? `<img loading="lazy" src="${esc(i.img)}" alt="${esc(i.name)}" class="w-full h-full object-cover" onerror="this.onerror=null;this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='flex';"><div class="w-full h-full" style="display:none">${coverThumb}</div>`
+                        : coverThumb}
+                </div>
                 <div class="min-w-0">
                     <p class="text-sm font-bold text-slate-800 dark:text-white truncate mb-1" title="${esc(i.name)}">${esc(i.name)}</p>
                     ${(i.variantName || i.poTime) ? `

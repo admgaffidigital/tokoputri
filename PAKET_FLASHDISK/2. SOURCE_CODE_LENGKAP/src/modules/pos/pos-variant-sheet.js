@@ -8,7 +8,7 @@
  */
 
 import { appData } from '../../core/state.js';
-import { el, esc, fCur, getOptImg, showToast } from '../../core/utils.js';
+import { el, esc, fCur, getOptImg, showToast, renderProductCoverHtml } from '../../core/utils.js';
 import { getEffHpp } from '../../core/pricing.js';
 
 // ─── State ───────────────────────────────────────────────────
@@ -130,11 +130,13 @@ const renderVariantSheetContent = (p) => {
     }
 
     const img = p.img ? getOptImg(p.img, 'w200-rw') : '';
+    const coverThumb = renderProductCoverHtml(p, { size: 'thumb' });
 
     // Thumbnail
     const imgHtml = img
-        ? `<img src="${esc(img)}" alt="${esc(p.name)}" class="w-full h-full object-cover">`
-        : `<i class="fa-solid fa-box text-slate-300 text-2xl"></i>`;
+        ? `<img src="${esc(img)}" alt="${esc(p.name)}" onerror="this.onerror=null;this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='flex';" class="w-full h-full object-cover">
+           <div class="w-full h-full" style="display:none">${coverThumb}</div>`
+        : coverThumb;
 
     // Varian chips
     const variantsHtml = hasVariants ? vars.map((v, i) => {
