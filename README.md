@@ -176,6 +176,40 @@ Aplikasi telah dilengkapi dengan fondasi **Capacitor 8 Android Native**:
 
 ## 📋 Riwayat Pembaruan (Changelog)
 
+### v1.9.40 — Solusi Tuntas Header POS Kasir Android: Proteksi Status Bar & Notch Kamera (Anti-Collision Safe-Area Inset) & Harmonisasi Tema Glass-Header (26 Sep 2026)
+- **Proteksi Anti-Tabrakan Status Bar Android**: Mengganti kelas arbitrary value pada header POS kasir storefront dengan kelas terdedikasi `.pos-storefront-header` yang menerapkan `padding-top: max(1.25rem, env(safe-area-inset-top, 1.25rem))` dan proteksi khusus aplikasi native (`.is-native-app`) `max(1.5rem, env(safe-area-inset-top, 1.5rem))`, memastikan tombol kembali, nama toko, dan status kasir tidak pernah lagi tertimpa oleh bilah status jam/baterai maupun poni kamera (*punch hole/notch*) smartphone Android.
+- **Harmonisasi Kelas .glass-header pada Terminal POS**: Mengadopsi arsitektur *glass-header* yang konsisten dengan halaman storefront lainnya, dilengkapi padding-bottom lega (`0.625rem`), touch target ergonomis (≥ 44px), serta safe padding sisi kiri dan kanan (`safe-area-inset-left/right`).
+- **Proteksi Safe-Area pada Mobile Cart Drawer**: Memperbaiki kontainer header drawer keranjang belanja kasir mobile (`.pos-mobile-cart-header`) agar tetap memiliki jarak aman dari bilah atas sistem saat dibuka dalam mode layar penuh di ponsel.
+- **Deteksi Runtime Native App Cerdas**: Menambahkan pendeteksian otomatis `window.AndroidNativeApp` dan `window.Capacitor` di level root DOM (`document.documentElement.classList.add("is-native-app")`) guna memastikan perangkat Android secara presisi mendapatkan jarak bernapas status bar yang pas dan presisi.
+
+---
+
+### v1.9.39 — Resolusi Tuntas Keranjang Belanja Beli Cepat: Isolasi Namespace window.renderCart POS, Auto Re-hydration Keranjang & Alur Navigasi Kembali Mulus (26 Sep 2026)
+- **Resolusi Konflik Namespace window.renderCart**: Mengubah fungsi render internal kasir POS menjadi `window.posRenderCart` dan `window.posRenderCatalog`, memastikan fungsi render keranjang storefront pembeli tidak pernah tertimpa lagi oleh modul kasir.
+- **Auto Re-hydration Keranjang Belanja**: Menambahkan pemulihan otomatis data keranjang dari penyimpanan lokal (`localStorage`) di awal `renderCart` jika memori sesi belum tersinkronisasi, sehingga isi keranjang selalu muncul seketika tanpa perlu me-reload website.
+- **Navigasi Bertingkat Alur Belanja Cerdas (Smart Back Navigation)**: Menata kembali alur tombol kembali dari Checkout ke Keranjang (`view-checkout` -> `view-cart`) dan dari Keranjang ke Katalog (`view-cart` -> `view-catalog`) secara mulus dan konsisten.
+- **Perbaikan Beli Cepat (Instant Buy Now)**: Menghapus manipulasi `replaceState` paksa pada Beli Sekarang dan Quick Variant Sheet, sehingga perpindahan ke checkout dan navigasi kembali berjalan konsisten 100% responsif di desktop maupun mobile.
+
+---
+
+### v1.9.38 — Standarisasi Wajib Preview Sebelum Cetak Universal, Peningkatan Ketahanan Cetak Thermal & Presisi UI/UX Mobile Friendly (26 Sep 2026)
+- **Wajib Preview Sebelum Cetak (Universal Preview-First Printing)**: Seluruh sistem pencetakan (Struk Transaksi POS Kasir 58mm/80mm, Slip Rekap Shift X-Report & Z-Report, Faktur Invoice, dan Surat Jalan A4) kini wajib menampilkan modal preview visual in-page interaktif sebelum perintah cetak diteruskan ke printer fisik.
+- **Auto-Create Thermal Print Section**: Penambahan inisialisasi otomatis kontainer DOM `#thermal-print-section` jika belum tersedia, menjamin seluruh pencetakan thermal kasir selalu terisolasi bersih dan bebas dari elemen latar belakang browser.
+- **Smart Iframe Fallback Anti-Popup Blocker**: Pencetakan dokumen A4 kini dilengkapi fallback cerdas menggunakan hidden iframe tersembunyi yang langsung memicu dialog cetak printer jika pop-up tab baru diblokir oleh browser.
+- **Presisi Responsivitas Mobile Friendly (Viewport 390x844px)**: Penataan header kasir anti-wrap, tombol mengambang keranjang kasir (*floating cart drawer*), touch target nyaman (≥ 44px), dan integrasi safe area notch smartphone.
+
+---
+
+### v1.9.37 — Penyempurnaan Visual CMS Kasir & Laporan Shift: Segmented Switcher Sticky, Auto-Reset Scroll & Eliminasi Clipping Header (25 Sep 2026)
+- **Segmented Switcher Tab Sticky (Pinned Sub-Header)**: Bilah pengalih tab "Akun Kasir" dan "Laporan Shift" kini berposisi sticky tepat di bawah bilah emas CMS Admin dengan efek *backdrop-blur* elegan, sehingga kasir/admin dapat berpindah tab kapan pun tanpa harus menggulir balik ke atas.
+- **Auto-Reset Scroll Top pada Pergantian Tab**: Memastikan scroll container otomatis melompat ke posisi teratas (`scrollTop = 0`) setiap kali tab "Akun Kasir" atau "Laporan Shift" diklik, mencegah konten terpotong atau tersembunyi di bawah bilah navigasi atas.
+- **Eliminasi Teks Terpotong & Orphan Word (Anti-Clipping Header)**: Menghapus penumpukan padding ganda dan memangkas subjudul menjadi satu baris bersih dengan utilitas `truncate`, memastikan teks tidak pernah terputus canggung di batas header mobile.
+- **Penyelarasan Horizontal Baris Judul & Tombol Segarkan**: Tombol "Segarkan Data" kini sejajar rapi di sisi kanan judul "Rekap Shift Kasir (Z-Report)" pada satu baris terpadu, simetris dan konsisten dengan tab Manajemen Kasir.
+- **Standarisasi Wajib Preview Sebelum Cetak**: Mengintegrasikan modal preview in-page interaktif sebelum proses pencetakan fisik pada Struk Transaksi POS Kasir (58mm/80mm), Slip Rekap Shift Kasir (X-Report & Z-Report), Faktur Invoice, dan Surat Jalan A4.
+- **Sinkronisasi Thermal Print Section & Isolasi Media Cetak**: Konten struk dan slip rekap shift otomatis disinkronkan ke elemen `#thermal-print-section` sehingga hasil cetak printer thermal bersih, tajam, dan tidak terganggu elemen latar belakang antarmuka.
+
+---
+
 ### v1.9.36 — Arsitektur Single Shift Akun Kasir Terpusat & Sinkronisasi Multi-Perangkat Real-Time: Anti-Double Shift & Auto-Resume Multi-Device (25 Sep 2026)
 - **Arsitektur 1 Akun Kasir 1 Shift Aktif (Single Active Shift per Account)**: Mengunci aturan kerja kasir di mana satu akun kasir (`cashierUid`) hanya dapat membuka 1 shift kerja aktif (`status: 'open'`) di seluruh toko dan tidak dapat diduplikasi.
 - **Auto-Resume Lintas Perangkat Tanpa Buka Kas Baru**: Kasir dapat berpindah secara mulus dari komputer kasir meja (PC) ke smartphone Android atau tablet tanpa harus memasukkan modal awal atau membuka kas baru — sistem otomatis mendeteksi dan melanjutkan sesi shift aktif yang ada.
