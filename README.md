@@ -6,7 +6,7 @@ Aplikasi e-commerce dan manajemen kasir point-of-sales (POS) modern berkinerja t
 
 ## 🛠️ Informasi Pengembang & Hak Cipta
 * **Nama Projek**: TOKO PUTRI
-* **Versi Rilis**: **v1.9.47** (Android VersionCode: `10947`)
+* **Versi Rilis**: **v1.9.48** (Android VersionCode: `10948`)
 * **Dikembangkan & Ditandatangani Oleh**: **Novan Restu Utomo** (Selaku Pengembang Utama dan Developer Asli)
 
 ---
@@ -176,6 +176,14 @@ Aplikasi telah dilengkapi dengan fondasi **Capacitor 8 Android Native**:
 ---
 
 ## 📋 Riwayat Pembaruan (Changelog)
+
+### v1.9.48 — Resolusi Tuntas Bottom Sheet Terpotong di Modul Supplier & PO: Mounting Modal ke Root DOM & Animasi Geser Native (26 Sep 2026)
+- **Mounting Modal ke Root DOM (`document.body`)**: Memindahkan seluruh wadah modal Supplier (Detail Profil, Form Pendaftaran) dan Order Kulakan PO (Form PO, Detail PO, Pembayaran Hutang) keluar dari kontainer scroll `#admin-content` langsung ke `document.body`. Mengeliminasi isolasi *stacking context* dan efek samping `transform: translateY(0)` parent yang sebelumnya menjebak modal di dasar scroll dan memotong tampilan form.
+- **Integrasi Penuh `openModalAnim` & `closeModalAnim`**: Menyelaraskan 5 modal Supplier & PO dengan modul transisi native resmi Toko Putri (`translate-y-full` ke `translate-y-0`) disertai kalkulasi reflow sinkron (*synchronous reflow*) guna menjamin pengalaman geser jempol yang halus dan anti-glitch.
+- **Eliminasi Benturan Transformasi GPU Hardware Acceleration**: Menghapus deklarasi `transform: translateZ(0)` statis pada selector modal di CSS yang menimpa animasi pergeseran vertikal Tailwind.
+- **Backdrop Blur Penuh 100% Viewport**: Latar belakang modal semi-transparan `bg-slate-950/40 backdrop-blur-sm` kini melapisi 100% layar perangkat ponsel dan desktop dengan `z-[150]`, menutup modal seketika saat pengguna menyentuh area luar modal.
+
+---
 
 ### v1.9.47 — Harmonisasi Tema Penuh & Native App Bottom Sheet — Supplier & Order Kulakan (PO) (26 Sep 2026)
 - **Eliminasi Latar Hitam Modal**: Mengganti `dark:bg-slate-850` (kelas Tailwind tidak valid) dan `bg-black/60` yang menghasilkan latar belakang modal pitch-black dengan `bg-slate-950/40 backdrop-blur-sm` yang elegan, jernih, dan semi-transparan.

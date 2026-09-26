@@ -1028,8 +1028,6 @@ body {
     perspective: 1000px;
     -webkit-transform-style: preserve-3d;
     transform-style: preserve-3d;
-    transform: translateZ(0);
-    -webkit-transform: translateZ(0);
 }
 
 .modal-bottom-sheet,
@@ -1347,9 +1345,6 @@ body {
 .btn-solid:hover { box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12); transform: translateY(-1px); }
 .btn-solid:active { transform: scale(0.97); }
 
-.modal-bottom-sheet { border-top-left-radius: 1.5rem; border-top-right-radius: 1.5rem; }
-.pull-indicator { width: 48px; height: 4px; background-color: #e2e8f0; border-radius: 99px; margin: 12px auto 20px; transition: background 0.2s; }
-.modal-bottom-sheet:hover .pull-indicator { background-color: #cbd5e1; }
 
 /* === TOAST NOTIFICATION SYSTEM (THEMED & MINIMALIST) === */
 #toast {

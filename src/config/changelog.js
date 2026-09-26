@@ -8,6 +8,20 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-9-48',
+        version: 'v1.9.48',
+        date: '2026-09-26',
+        title: 'Resolusi Tuntas Bottom Sheet Terpotong di Modul Supplier & PO — Root DOM Mounting & Animasi Geser Native',
+        category: 'bugfix',
+        badge: 'Bottom Sheet Fix v1.9.48',
+        items: [
+            'Mounting Modal ke Root DOM (document.body): Memindahkan kontainer modal Supplier dan Order Kulakan (PO) keluar dari #admin-content dan .scroll-content langsung ke document.body, mengeliminasi isolasi stacking context dan CSS transform yang menyebabkan modal terpotong atau terselip di dasar layar.',
+            'Integrasi openModalAnim & closeModalAnim: Menyelaraskan seluruh modal Supplier & PO dengan engine animasi native resmi Toko Putri (translate-y-full ke translate-y-0) dengan pembersihan reflow sinkron (void m.offsetWidth) untuk transisi geser jempol yang mulus.',
+            'Eliminasi GPU Override Transform Clashes: Menghapus deklarasi transform: translateZ(0) langsung pada selector modal di CSS yang menimpa animasi translate-y Tailwind.',
+            'Backdrop Blur 100% Viewport: Backdrop semi-transparan bg-slate-950/40 backdrop-blur-sm kini menutupi 100% layar HP maupun desktop dengan z-[150], dengan penutupan modal instan saat klik area luar.'
+        ]
+    },
+    {
         id: 'log-1-9-47',
         version: 'v1.9.47',
         date: '2026-09-26',

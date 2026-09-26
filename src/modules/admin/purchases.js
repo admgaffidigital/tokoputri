@@ -17,9 +17,61 @@ import { db } from '../../config/firebase.js';
 import { appData } from '../../core/state.js';
 import { 
     el, setH, esc, fCur, showToast, showConfirm, sLoad, hLoad, 
-    openWhatsApp, normalizeWA, renderProductCoverHtml 
+    openWhatsApp, normalizeWA, renderProductCoverHtml,
+    openModalAnim, closeModalAnim 
 } from '../../core/utils.js';
 import { saveApp } from '../../services/storage.js';
+
+/**
+ * Pastikan seluruh wadah modal Purchase Order terpasang di root document.body
+ * agar terbebas dari scroll container & transform parent (.view-section / .scroll-content).
+ */
+export const ensurePurchaseModals = () => {
+    // Bersihkan modal lama jika pernah terinjeksi ke dalam #admin-content
+    ['modal-po-form', 'modal-po-detail', 'modal-po-payment'].forEach(id => {
+        const inside = document.querySelector(`#admin-content #${id}`);
+        if (inside) inside.remove();
+    });
+
+    if (!el('modal-po-form')) {
+        const m = document.createElement('div');
+        m.id = 'modal-po-form';
+        m.className = 'fixed inset-0 z-[150] flex hidden items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-950/40 backdrop-blur-sm opacity-0 transition-opacity duration-300';
+        m.onclick = (e) => { if (e.target === m) window.closePOFormModal?.(); };
+        m.innerHTML = `
+            <div id="modal-po-form-box" class="modal-bottom-sheet relative flex max-h-[92dvh] sm:max-h-[88dvh] w-full max-w-4xl translate-y-full sm:translate-y-10 transform flex-col overflow-hidden rounded-t-[2rem] sm:rounded-3xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xl transition-transform duration-300">
+                <div id="modal-po-form-content" class="flex-1 flex flex-col overflow-hidden"></div>
+            </div>
+        `;
+        document.body.appendChild(m);
+    }
+
+    if (!el('modal-po-detail')) {
+        const m = document.createElement('div');
+        m.id = 'modal-po-detail';
+        m.className = 'fixed inset-0 z-[150] flex hidden items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-950/40 backdrop-blur-sm opacity-0 transition-opacity duration-300';
+        m.onclick = (e) => { if (e.target === m) window.closePODetailModal?.(); };
+        m.innerHTML = `
+            <div id="modal-po-detail-box" class="modal-bottom-sheet relative flex max-h-[92dvh] sm:max-h-[88dvh] w-full max-w-3xl translate-y-full sm:translate-y-10 transform flex-col overflow-hidden rounded-t-[2rem] sm:rounded-3xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xl transition-transform duration-300">
+                <div id="modal-po-detail-content" class="flex-1 overflow-y-auto hide-scrollbar flex flex-col"></div>
+            </div>
+        `;
+        document.body.appendChild(m);
+    }
+
+    if (!el('modal-po-payment')) {
+        const m = document.createElement('div');
+        m.id = 'modal-po-payment';
+        m.className = 'fixed inset-0 z-[150] flex hidden items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-950/40 backdrop-blur-sm opacity-0 transition-opacity duration-300';
+        m.onclick = (e) => { if (e.target === m) window.closePurchasePaymentModal?.(); };
+        m.innerHTML = `
+            <div id="modal-po-payment-box" class="modal-bottom-sheet relative flex max-h-[92dvh] sm:max-h-[88dvh] w-full max-w-md translate-y-full sm:translate-y-10 transform flex-col overflow-hidden rounded-t-[2rem] sm:rounded-3xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xl transition-transform duration-300">
+                <div id="modal-po-payment-content" class="flex-1 overflow-y-auto hide-scrollbar flex flex-col"></div>
+            </div>
+        `;
+        document.body.appendChild(m);
+    }
+};
 
 // State modul purchases
 let activePOFilter = 'all'; // 'all' | 'ordered' | 'received' | 'unpaid' | 'completed'
@@ -114,6 +166,7 @@ export const computePurchaseMetrics = () => {
  * Render Tampilan Utama Modul Pembelian (Purchases View)
  */
 export const renderPurchasesView = () => {
+    ensurePurchaseModals();
     const content = el('admin-content');
     if (!content) return;
 
@@ -315,27 +368,6 @@ export const renderPurchasesView = () => {
                         </button>
                     </div>
                 ` : filtered.map(po => renderPOCardHtml(po)).join('')}
-            </div>
-        </div>
-
-        <!-- MODAL FORM PEMBUATAN / EDIT PURCHASE ORDER (PO) (NATIVE BOTTOM SHEET) -->
-        <div id="modal-po-form" class="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-950/40 backdrop-blur-sm hidden opacity-0 transition-opacity duration-200">
-            <div id="modal-po-form-box" class="modal-bottom-sheet bg-white dark:bg-slate-900 rounded-t-[2rem] sm:rounded-3xl border border-slate-200/90 dark:border-slate-800 shadow-2xl w-full max-w-4xl max-h-[92vh] sm:max-h-[88vh] flex flex-col scale-95 transition-transform duration-200 overflow-hidden">
-                <div id="modal-po-form-content" class="flex-1 flex flex-col overflow-hidden"></div>
-            </div>
-        </div>
-
-        <!-- MODAL DETAIL & REVIEW PURCHASE ORDER (NATIVE BOTTOM SHEET) -->
-        <div id="modal-po-detail" class="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-950/40 backdrop-blur-sm hidden opacity-0 transition-opacity duration-200">
-            <div id="modal-po-detail-box" class="modal-bottom-sheet bg-white dark:bg-slate-900 rounded-t-[2rem] sm:rounded-3xl border border-slate-200/90 dark:border-slate-800 shadow-2xl w-full max-w-3xl max-h-[92vh] sm:max-h-[88vh] flex flex-col scale-95 transition-transform duration-200 overflow-hidden">
-                <div id="modal-po-detail-content" class="flex-1 overflow-y-auto hide-scrollbar flex flex-col"></div>
-            </div>
-        </div>
-
-        <!-- MODAL BAYAR / CICIL HUTANG TEMPO PO (NATIVE BOTTOM SHEET) -->
-        <div id="modal-po-payment" class="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-950/40 backdrop-blur-sm hidden opacity-0 transition-opacity duration-200">
-            <div id="modal-po-payment-box" class="modal-bottom-sheet bg-white dark:bg-slate-900 rounded-t-[2rem] sm:rounded-3xl border border-slate-200/90 dark:border-slate-800 shadow-2xl w-full max-w-md max-h-[92vh] sm:max-h-[88vh] flex flex-col scale-95 transition-transform duration-200 overflow-hidden">
-                <div id="modal-po-payment-content" class="flex-1 overflow-y-auto hide-scrollbar flex flex-col"></div>
             </div>
         </div>
 
@@ -601,6 +633,7 @@ window.receiveAndRestockPO = (poId) => {
  * ══════════════════════════════════════════════════════════════════
  */
 window.openCreatePOModal = (preselectedSupplierId = null, existingPOId = null) => {
+    ensurePurchaseModals();
     currentEditingPOId = existingPOId;
     const isEdit = !!existingPOId;
     const purchases = appData.purchases || [];
@@ -652,11 +685,7 @@ window.openCreatePOModal = (preselectedSupplierId = null, existingPOId = null) =
     const modal = el('modal-po-form');
     const box = el('modal-po-form-box');
     if (!modal) return;
-    modal.classList.remove('hidden');
-    setTimeout(() => {
-        modal.classList.remove('opacity-0');
-        if (box) box.classList.remove('scale-95');
-    }, 10);
+    openModalAnim(modal, box);
 };
 
 /**
@@ -826,11 +855,7 @@ window.closePOFormModal = () => {
     const modal = el('modal-po-form');
     const box = el('modal-po-form-box');
     if (!modal) return;
-    modal.classList.add('opacity-0');
-    if (box) box.classList.add('scale-95');
-    setTimeout(() => {
-        modal.classList.add('hidden');
-    }, 200);
+    closeModalAnim(modal, box);
 };
 
 /**
@@ -1235,6 +1260,7 @@ window.deletePurchaseOrder = (poId) => {
  * ══════════════════════════════════════════════════════════════════
  */
 window.openPurchaseDetailModal = (poId) => {
+    ensurePurchaseModals();
     const purchases = appData.purchases || [];
     const po = purchases.find(x => String(x.id) === String(poId));
     if (!po) return showToast('Data PO tidak ditemukan!');
@@ -1374,22 +1400,14 @@ window.openPurchaseDetailModal = (poId) => {
         </div>
     `);
 
-    modal.classList.remove('hidden');
-    setTimeout(() => {
-        modal.classList.remove('opacity-0');
-        if (box) box.classList.remove('scale-95');
-    }, 10);
+    openModalAnim(modal, box);
 };
 
 window.closePurchaseDetailModal = () => {
     const modal = el('modal-po-detail');
     const box = el('modal-po-detail-box');
     if (!modal) return;
-    modal.classList.add('opacity-0');
-    if (box) box.classList.add('scale-95');
-    setTimeout(() => {
-        modal.classList.add('hidden');
-    }, 200);
+    closeModalAnim(modal, box);
 };
 
 /**
@@ -1398,6 +1416,7 @@ window.closePurchaseDetailModal = () => {
  * ══════════════════════════════════════════════════════════════════
  */
 window.openPurchasePaymentModal = (poId) => {
+    ensurePurchaseModals();
     const purchases = appData.purchases || [];
     const po = purchases.find(x => String(x.id) === String(poId));
     if (!po) return showToast('Data PO tidak ditemukan!');
@@ -1488,22 +1507,14 @@ window.openPurchasePaymentModal = (poId) => {
         </form>
     `);
 
-    modal.classList.remove('hidden');
-    setTimeout(() => {
-        modal.classList.remove('opacity-0');
-        if (box) box.classList.remove('scale-95');
-    }, 10);
+    openModalAnim(modal, box);
 };
 
 window.closePurchasePaymentModal = () => {
     const modal = el('modal-po-payment');
     const box = el('modal-po-payment-box');
     if (!modal) return;
-    modal.classList.add('opacity-0');
-    if (box) box.classList.add('scale-95');
-    setTimeout(() => {
-        modal.classList.add('hidden');
-    }, 200);
+    closeModalAnim(modal, box);
 };
 
 /**

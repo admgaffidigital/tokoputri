@@ -16,9 +16,48 @@ import { db } from '../../config/firebase.js';
 import { appData } from '../../core/state.js';
 import { 
     el, setH, esc, fCur, showToast, showConfirm, sLoad, hLoad, 
-    openWhatsApp, normalizeWA, renderProductCoverHtml 
+    openWhatsApp, normalizeWA, renderProductCoverHtml,
+    openModalAnim, closeModalAnim 
 } from '../../core/utils.js';
 import { saveApp } from '../../services/storage.js';
+
+/**
+ * Pastikan wadah modal Supplier terpasang di root document.body
+ * agar bebas dari scroll container & transform parent (.view-section / .scroll-content).
+ */
+export const ensureSupplierModals = () => {
+    // Bersihkan modal lama jika pernah terinjeksi ke dalam #admin-content
+    const insideDetail = document.querySelector('#admin-content #modal-supplier-detail');
+    if (insideDetail) insideDetail.remove();
+    const insideForm = document.querySelector('#admin-content #modal-supplier-form');
+    if (insideForm) insideForm.remove();
+
+    if (!el('modal-supplier-detail')) {
+        const m = document.createElement('div');
+        m.id = 'modal-supplier-detail';
+        m.className = 'fixed inset-0 z-[150] flex hidden items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-950/40 backdrop-blur-sm opacity-0 transition-opacity duration-300';
+        m.onclick = (e) => { if (e.target === m) window.closeSupplierDetailModal?.(); };
+        m.innerHTML = `
+            <div id="modal-supplier-detail-box" class="modal-bottom-sheet relative flex max-h-[92dvh] sm:max-h-[88dvh] w-full max-w-4xl translate-y-full sm:translate-y-10 transform flex-col overflow-hidden rounded-t-[2rem] sm:rounded-3xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xl transition-transform duration-300">
+                <div id="modal-supplier-detail-content" class="flex-1 overflow-y-auto hide-scrollbar flex flex-col"></div>
+            </div>
+        `;
+        document.body.appendChild(m);
+    }
+
+    if (!el('modal-supplier-form')) {
+        const m = document.createElement('div');
+        m.id = 'modal-supplier-form';
+        m.className = 'fixed inset-0 z-[150] flex hidden items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-950/40 backdrop-blur-sm opacity-0 transition-opacity duration-300';
+        m.onclick = (e) => { if (e.target === m) window.closeSupplierFormModal?.(); };
+        m.innerHTML = `
+            <div id="modal-supplier-form-box" class="modal-bottom-sheet relative flex max-h-[92dvh] sm:max-h-[88dvh] w-full max-w-2xl translate-y-full sm:translate-y-10 transform flex-col overflow-hidden rounded-t-[2rem] sm:rounded-3xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xl transition-transform duration-300">
+                <div id="modal-supplier-form-content" class="flex-1 flex flex-col overflow-hidden"></div>
+            </div>
+        `;
+        document.body.appendChild(m);
+    }
+};
 
 // State lokal modul supplier
 let supplierSearchQuery = '';
@@ -80,6 +119,7 @@ export const computeSupplierMetrics = () => {
  * Render Tampilan Utama Modul Supplier
  */
 export const renderSuppliersView = () => {
+    ensureSupplierModals();
     const content = el('admin-content');
     if (!content) return;
 
@@ -233,20 +273,6 @@ export const renderSuppliersView = () => {
                         </button>
                     </div>
                 ` : filtered.map(s => renderSupplierCardHtml(s)).join('')}
-            </div>
-        </div>
-
-        <!-- MODAL DETAIL SUPPLIER & PROFIL LENGKAP (NATIVE BOTTOM SHEET) -->
-        <div id="modal-supplier-detail" class="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-950/40 backdrop-blur-sm hidden opacity-0 transition-opacity duration-200">
-            <div id="modal-supplier-detail-box" class="modal-bottom-sheet bg-white dark:bg-slate-900 rounded-t-[2rem] sm:rounded-3xl border border-slate-200/90 dark:border-slate-800 shadow-2xl w-full max-w-4xl max-h-[92vh] sm:max-h-[88vh] flex flex-col scale-95 transition-transform duration-200 overflow-hidden">
-                <div id="modal-supplier-detail-content" class="flex-1 overflow-y-auto hide-scrollbar flex flex-col"></div>
-            </div>
-        </div>
-
-        <!-- MODAL FORM TAMBAH / EDIT SUPPLIER (NATIVE BOTTOM SHEET) -->
-        <div id="modal-supplier-form" class="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-950/40 backdrop-blur-sm hidden opacity-0 transition-opacity duration-200">
-            <div id="modal-supplier-form-box" class="modal-bottom-sheet bg-white dark:bg-slate-900 rounded-t-[2rem] sm:rounded-3xl border border-slate-200/90 dark:border-slate-800 shadow-2xl w-full max-w-2xl max-h-[92vh] sm:max-h-[88vh] flex flex-col scale-95 transition-transform duration-200 overflow-hidden">
-                <div id="modal-supplier-form-content" class="flex-1 flex flex-col overflow-hidden"></div>
             </div>
         </div>
     `);
@@ -414,6 +440,7 @@ window.openSupplierWhatsApp = (phone, supplierName, salesName) => {
  * Modal Tambah / Edit Supplier
  */
 window.openSupplierFormModal = (supplierId = null) => {
+    ensureSupplierModals();
     const suppliers = appData.suppliers || [];
     const isEdit = !!supplierId;
     const s = isEdit ? suppliers.find(x => String(x.id) === String(supplierId)) || {} : {
@@ -531,11 +558,7 @@ window.openSupplierFormModal = (supplierId = null) => {
         </form>
     `);
 
-    modal.classList.remove('hidden');
-    setTimeout(() => {
-        modal.classList.remove('opacity-0');
-        box.classList.remove('scale-95');
-    }, 10);
+    openModalAnim(modal, box);
 };
 
 /**
@@ -545,11 +568,7 @@ window.closeSupplierFormModal = () => {
     const modal = el('modal-supplier-form');
     const box = el('modal-supplier-form-box');
     if (!modal) return;
-    modal.classList.add('opacity-0');
-    if (box) box.classList.add('scale-95');
-    setTimeout(() => {
-        modal.classList.add('hidden');
-    }, 200);
+    closeModalAnim(modal, box);
 };
 
 /**
@@ -685,6 +704,7 @@ window.deleteSupplier = (supplierId) => {
  * Modal Detail Profil Supplier & 3 Tab (Katalog Disuplai, PO, Kartu Hutang)
  */
 window.openSupplierDetailModal = (supplierId, initialTab = 'products') => {
+    ensureSupplierModals();
     currentViewingSupplierId = supplierId;
     currentDetailModalTab = initialTab;
 
@@ -699,11 +719,7 @@ window.openSupplierDetailModal = (supplierId, initialTab = 'products') => {
 
     renderSupplierDetailModalContent(s);
 
-    modal.classList.remove('hidden');
-    setTimeout(() => {
-        modal.classList.remove('opacity-0');
-        box.classList.remove('scale-95');
-    }, 10);
+    openModalAnim(modal, box);
 };
 
 /**
@@ -713,11 +729,7 @@ window.closeSupplierDetailModal = () => {
     const modal = el('modal-supplier-detail');
     const box = el('modal-supplier-detail-box');
     if (!modal) return;
-    modal.classList.add('opacity-0');
-    if (box) box.classList.add('scale-95');
-    setTimeout(() => {
-        modal.classList.add('hidden');
-    }, 200);
+    closeModalAnim(modal, box);
 };
 
 /**
