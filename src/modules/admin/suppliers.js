@@ -39,7 +39,7 @@ export const ensureSupplierModals = () => {
         m.onclick = (e) => { if (e.target === m) window.closeSupplierDetailModal?.(); };
         m.innerHTML = `
             <div id="modal-supplier-detail-box" class="modal-bottom-sheet relative flex max-h-[92dvh] sm:max-h-[88dvh] w-full max-w-4xl translate-y-full sm:translate-y-10 transform flex-col overflow-hidden rounded-t-[2rem] sm:rounded-3xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xl transition-transform duration-300">
-                <div id="modal-supplier-detail-content" class="flex-1 overflow-y-auto hide-scrollbar flex flex-col"></div>
+                <div id="modal-supplier-detail-content" class="flex-1 flex flex-col overflow-hidden"></div>
             </div>
         `;
         document.body.appendChild(m);
@@ -751,6 +751,7 @@ window.switchSupplierDetailTab = (tabName) => {
 const renderSupplierDetailModalContent = (s) => {
     const content = el('modal-supplier-detail-content');
     if (!content) return;
+    content.className = 'flex-1 flex flex-col overflow-hidden';
 
     const products = appData.products || [];
     const purchases = appData.purchases || [];
@@ -779,78 +780,80 @@ const renderSupplierDetailModalContent = (s) => {
         <div class="pull-indicator sm:hidden"></div>
 
         <!-- HEADER MODAL: PROFIL SUPPLIER -->
-        <div class="p-5 sm:p-7 border-b border-slate-100 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/60 shrink-0">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div class="flex items-start gap-4">
-                    <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl flex items-center justify-center text-xl sm:text-2xl shrink-0 font-black shadow-xs" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary); border: 1px solid rgba(var(--color-primary-rgb), 0.25);">
-                        ${s.code ? esc(s.code.substring(0, 3).toUpperCase()) : '<i class="fa-solid fa-truck-field"></i>'}
-                    </div>
-                    <div>
-                        <div class="flex items-center gap-2 flex-wrap">
-                            <h3 class="font-black text-lg sm:text-xl text-slate-800 dark:text-white tracking-tight">${esc(s.name)}</h3>
-                            ${s.code ? `<span class="px-2 py-0.5 rounded-md bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-mono font-bold">${esc(s.code)}</span>` : ''}
-                        </div>
-                        <div class="flex items-center gap-3 text-xs text-slate-500 dark:text-slate-400 mt-1 flex-wrap">
-                            ${s.salesName ? `<span><i class="fa-solid fa-user-tie text-[var(--color-primary)] mr-1"></i>Sales: <b>${esc(s.salesName)}</b></span>` : ''}
-                            ${cleanPhone ? `<a href="https://wa.me/${cleanPhone}" target="_blank" class="text-emerald-600 dark:text-emerald-400 font-bold hover:underline"><i class="fa-brands fa-whatsapp mr-1"></i>+${cleanPhone}</a>` : ''}
-                            ${s.bankName && s.bankAccount ? `<span><i class="fa-solid fa-credit-card text-blue-500 mr-1"></i>${esc(s.bankName)}: <b class="font-mono text-slate-700 dark:text-slate-200">${esc(s.bankAccount)}</b> a/n ${esc(s.bankHolder || '-')}</span>` : ''}
-                        </div>
-                        ${s.address ? `<p class="text-xs text-slate-400 mt-1"><i class="fa-solid fa-location-dot text-rose-500 mr-1"></i>${esc(s.address)}</p>` : ''}
-                    </div>
-                </div>
+        <div class="relative p-4 sm:p-6 border-b border-slate-100 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/60 shrink-0">
+            <!-- Pinned Native Close Button (Top-Right) -->
+            <button 
+                type="button" 
+                onclick="window.closeSupplierDetailModal()" 
+                class="absolute top-3.5 right-3.5 sm:top-5 sm:right-5 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-slate-200/70 hover:bg-rose-100 hover:text-rose-500 dark:bg-slate-800 dark:hover:bg-rose-950/40 dark:hover:text-rose-400 text-slate-500 flex items-center justify-center transition-all cursor-pointer z-10 active:scale-95" 
+                aria-label="Tutup Modal"
+            >
+                <i class="fa-solid fa-xmark text-sm"></i>
+            </button>
 
-                <div class="flex items-center gap-2 self-end sm:self-center">
-                    <button onclick="window.quickCreatePOForSupplier('${s.id}')" class="px-4 py-2.5 rounded-xl text-white font-bold text-xs flex items-center gap-2 shadow-glow active:scale-95 transition-all cursor-pointer" style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
-                        <i class="fa-solid fa-plus text-xs"></i>
-                        <span>Buat Order (PO)</span>
-                    </button>
-                    <button onclick="window.closeSupplierDetailModal()" class="w-9 h-9 rounded-xl bg-slate-100 hover:bg-rose-100 hover:text-rose-500 dark:bg-slate-800 dark:hover:bg-rose-950/40 dark:hover:text-rose-400 text-slate-500 flex items-center justify-center transition-all cursor-pointer">
-                        <i class="fa-solid fa-xmark text-sm"></i>
-                    </button>
+            <!-- Profil Header Info -->
+            <div class="flex items-start gap-3 sm:gap-4 pr-9 sm:pr-10">
+                <div class="w-13 h-13 sm:w-16 sm:h-16 rounded-2xl flex items-center justify-center text-lg sm:text-2xl shrink-0 font-black shadow-xs transition-transform" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary); border: 1.5px solid rgba(var(--color-primary-rgb), 0.25);">
+                    ${s.code ? esc(s.code.substring(0, 3).toUpperCase()) : '<i class="fa-solid fa-truck-field"></i>'}
+                </div>
+                <div class="min-w-0 flex-1">
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <h3 class="font-black text-base sm:text-xl text-slate-800 dark:text-white tracking-tight leading-tight">${esc(s.name)}</h3>
+                        ${s.code ? `<span class="px-2 py-0.5 rounded-lg bg-slate-200/80 dark:bg-slate-700/80 text-slate-700 dark:text-slate-300 text-[11px] font-mono font-bold">${esc(s.code)}</span>` : ''}
+                    </div>
+                    <div class="flex items-center gap-x-3 gap-y-1 text-xs text-slate-500 dark:text-slate-400 mt-1 flex-wrap">
+                        ${s.salesName ? `<span><i class="fa-solid fa-user-tie text-[var(--color-primary)] mr-1"></i>Sales: <b>${esc(s.salesName)}</b></span>` : ''}
+                        ${cleanPhone ? `<a href="https://wa.me/${cleanPhone}" target="_blank" class="text-emerald-600 dark:text-emerald-400 font-bold hover:underline inline-flex items-center"><i class="fa-brands fa-whatsapp mr-1 text-emerald-500"></i>+${cleanPhone}</a>` : ''}
+                        ${s.bankName && s.bankAccount ? `<span><i class="fa-solid fa-credit-card text-blue-500 mr-1"></i>${esc(s.bankName)}: <b class="font-mono text-slate-700 dark:text-slate-200">${esc(s.bankAccount)}</b></span>` : ''}
+                    </div>
+                    ${s.address ? `<p class="text-[11px] text-slate-400 dark:text-slate-400 mt-1 line-clamp-2"><i class="fa-solid fa-location-dot text-rose-500 mr-1 shrink-0"></i>${esc(s.address)}</p>` : ''}
                 </div>
             </div>
 
-            <!-- TAB NAVIGASI MODAL -->
-            <div class="flex items-center gap-2 mt-6 border-b border-slate-200 dark:border-slate-700 overflow-x-auto hide-scrollbar">
+            <!-- NATIVE SEGMENTED TAB BAR -->
+            <div class="mt-4 sm:mt-5 p-1 bg-slate-200/60 dark:bg-slate-800/80 rounded-2xl grid grid-cols-3 gap-1 text-center font-bold text-xs select-none">
                 <button 
+                    type="button" 
                     onclick="window.switchSupplierDetailTab('products')" 
-                    class="px-4 py-2.5 font-bold text-xs border-b-2 transition-all flex items-center gap-2 whitespace-nowrap cursor-pointer rounded-t-xl"
-                    style="${currentDetailModalTab === 'products' ? 'border-color: var(--color-primary); color: var(--color-primary); background: rgba(var(--color-primary-rgb), 0.08);' : 'border-color: transparent; color: #64748b;'}"
+                    class="py-2 sm:py-2.5 px-1 rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 ${currentDetailModalTab === 'products' ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-xs font-black' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'}"
+                    ${currentDetailModalTab === 'products' ? 'style="color: var(--color-primary);"' : ''}
                 >
-                    <i class="fa-solid fa-boxes-stacked"></i>
-                    <span>Katalog Barang Disuplai (${suppliedProducts.length})</span>
+                    <i class="fa-solid fa-boxes-stacked text-xs"></i>
+                    <span class="truncate">Produk (${suppliedProducts.length})</span>
                 </button>
 
                 <button 
+                    type="button" 
                     onclick="window.switchSupplierDetailTab('orders')" 
-                    class="px-4 py-2.5 font-bold text-xs border-b-2 transition-all flex items-center gap-2 whitespace-nowrap cursor-pointer rounded-t-xl"
-                    style="${currentDetailModalTab === 'orders' ? 'border-color: var(--color-primary); color: var(--color-primary); background: rgba(var(--color-primary-rgb), 0.08);' : 'border-color: transparent; color: #64748b;'}"
+                    class="py-2 sm:py-2.5 px-1 rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 ${currentDetailModalTab === 'orders' ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-xs font-black' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'}"
+                    ${currentDetailModalTab === 'orders' ? 'style="color: var(--color-primary);"' : ''}
                 >
-                    <i class="fa-solid fa-cart-flatbed"></i>
-                    <span>Riwayat Order PO (${supplierPurchases.length})</span>
+                    <i class="fa-solid fa-cart-flatbed text-xs"></i>
+                    <span class="truncate">Order PO (${supplierPurchases.length})</span>
                 </button>
 
                 <button 
+                    type="button" 
                     onclick="window.switchSupplierDetailTab('debt')" 
-                    class="px-4 py-2.5 font-bold text-xs border-b-2 transition-all flex items-center gap-2 whitespace-nowrap cursor-pointer rounded-t-xl"
-                    style="${currentDetailModalTab === 'debt' ? 'border-color: var(--color-primary); color: var(--color-primary); background: rgba(var(--color-primary-rgb), 0.08);' : 'border-color: transparent; color: #64748b;'}"
+                    class="py-2 sm:py-2.5 px-1 rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 ${currentDetailModalTab === 'debt' ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-xs font-black' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'}"
+                    ${currentDetailModalTab === 'debt' ? 'style="color: var(--color-primary);"' : ''}
                 >
-                    <i class="fa-solid fa-file-invoice-dollar"></i>
-                    <span>Kartu Hutang Usaha ${totalDebt > 0 ? `<span class="px-1.5 py-0.5 rounded-full bg-amber-500 text-white text-[9px] font-black">${fCur(totalDebt)}</span>` : ''}</span>
+                    <i class="fa-solid fa-file-invoice-dollar text-xs"></i>
+                    <span class="truncate">Hutang ${totalDebt > 0 ? `<span class="inline-block px-1.5 py-0.2 rounded-full bg-amber-500 text-white text-[9px] font-black leading-tight ml-0.5">${fCur(totalDebt)}</span>` : '(0)'}</span>
                 </button>
             </div>
         </div>
 
-        <!-- ISI KONTEN TAB (SCROLLABLE) -->
+        <!-- ISI KONTEN TAB (SCROLLABLE, FLUID FLEX-1) -->
         <div class="p-4 sm:p-6 overflow-y-auto flex-1 hide-scrollbar">
             ${currentDetailModalTab === 'products' ? renderSuppliedProductsTab(suppliedProducts, s) : ''}
             ${currentDetailModalTab === 'orders' ? renderSupplierOrdersTab(supplierPurchases, s) : ''}
             ${currentDetailModalTab === 'debt' ? renderSupplierDebtTab(tempoPurchases, totalDebt, s) : ''}
         </div>
 
-        <!-- STICKY ACTION FOOTER -->
-        <div class="p-4 sm:p-5 border-t border-slate-100 dark:border-slate-800 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md shrink-0 flex items-center justify-between gap-2.5" style="padding-bottom: max(1rem, env(safe-area-inset-bottom))">
-            <button type="button" onclick="window.closeSupplierDetailModal()" class="h-12 px-5 rounded-2xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold text-xs hover:bg-slate-100 dark:hover:bg-slate-800 transition-all cursor-pointer">
+        <!-- STICKY ACTION FOOTER (NATIVE APP STANDARD) -->
+        <div class="p-4 sm:p-5 border-t border-slate-100 dark:border-slate-800 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md shrink-0 flex items-center justify-between gap-3" style="padding-bottom: max(1rem, env(safe-area-inset-bottom))">
+            <button type="button" onclick="window.closeSupplierDetailModal()" class="h-12 px-5 sm:px-6 rounded-2xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold text-xs hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 transition-all cursor-pointer">
                 Tutup
             </button>
             <button type="button" onclick="window.quickCreatePOForSupplier('${s.id}')" class="h-12 px-6 rounded-2xl text-white font-bold text-xs shadow-glow transition-all active:scale-95 cursor-pointer flex items-center gap-2" style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
@@ -867,14 +870,15 @@ const renderSupplierDetailModalContent = (s) => {
 const renderSuppliedProductsTab = (products, s) => {
     if (products.length === 0) {
         return `
-            <div class="text-center py-12 text-slate-400">
-                <div class="w-14 h-14 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-2xl mx-auto mb-3 text-slate-400">
+            <div class="text-center py-10 sm:py-12 text-slate-400">
+                <div class="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl mx-auto mb-3 shadow-xs" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary); border: 1.5px solid rgba(var(--color-primary-rgb), 0.25);">
                     <i class="fa-solid fa-box-open"></i>
                 </div>
-                <p class="font-bold text-sm text-slate-700 dark:text-slate-300">Belum Ada Produk yang Dihubungkan</p>
-                <p class="text-xs text-slate-400 mt-1 max-w-md mx-auto">Saat Anda menambahkan atau mengedit produk di menu Katalog Produk, pilih <b>${esc(s.name)}</b> pada field Rekanan/Supplier Asal.</p>
-                <button onclick="window.closeSupplierDetailModal(); if(window.openAdminTab) window.openAdminTab('products');" class="mt-4 px-4 py-2 rounded-xl font-bold text-xs cursor-pointer active:scale-95 transition-all" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary);">
-                    <i class="fa-solid fa-box-archive mr-1.5"></i> Buka Katalog Produk Toko
+                <p class="font-bold text-sm text-slate-700 dark:text-slate-200">Belum Ada Produk yang Dihubungkan</p>
+                <p class="text-xs text-slate-400 mt-1 max-w-md mx-auto leading-relaxed">Saat Anda menambahkan atau mengedit produk di menu Katalog Produk, pilih <b>${esc(s.name)}</b> pada field Rekanan/Supplier Asal.</p>
+                <button onclick="window.closeSupplierDetailModal(); if(window.openAdminTab) window.openAdminTab('products');" class="mt-4 px-5 py-2.5 rounded-2xl font-bold text-xs cursor-pointer active:scale-95 transition-all inline-flex items-center gap-2 border shadow-xs" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary); border-color: rgba(var(--color-primary-rgb), 0.25);">
+                    <i class="fa-solid fa-box-archive text-xs"></i>
+                    <span>Buka Katalog Produk Toko</span>
                 </button>
             </div>
         `;
@@ -952,14 +956,15 @@ const renderSuppliedProductsTab = (products, s) => {
 const renderSupplierOrdersTab = (purchases, s) => {
     if (purchases.length === 0) {
         return `
-            <div class="text-center py-12 text-slate-400">
-                <div class="w-14 h-14 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-2xl mx-auto mb-3 text-slate-400">
+            <div class="text-center py-10 sm:py-12 text-slate-400">
+                <div class="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl mx-auto mb-3 shadow-xs" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary); border: 1.5px solid rgba(var(--color-primary-rgb), 0.25);">
                     <i class="fa-solid fa-receipt"></i>
                 </div>
-                <p class="font-bold text-sm text-slate-700 dark:text-slate-300">Belum Ada Riwayat Order PO</p>
-                <p class="text-xs text-slate-400 mt-1 max-w-md mx-auto">Mulai buat surat pesanan kulakan (Purchase Order) untuk mencatat barang masuk, harga modal, dan termin pembayaran.</p>
-                <button onclick="window.quickCreatePOForSupplier('${s.id}')" class="mt-4 px-4 py-2 rounded-xl text-white font-bold text-xs shadow-glow transition-all active:scale-95 cursor-pointer" style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
-                    <i class="fa-solid fa-cart-flatbed mr-1.5"></i> Buat Order PO Pertama
+                <p class="font-bold text-sm text-slate-700 dark:text-slate-200">Belum Ada Riwayat Order PO</p>
+                <p class="text-xs text-slate-400 mt-1 max-w-md mx-auto leading-relaxed">Mulai buat surat pesanan kulakan (Purchase Order) untuk mencatat barang masuk, harga modal, dan termin pembayaran.</p>
+                <button onclick="window.quickCreatePOForSupplier('${s.id}')" class="mt-4 px-5 py-2.5 rounded-2xl text-white font-bold text-xs shadow-glow transition-all active:scale-95 cursor-pointer inline-flex items-center gap-2" style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
+                    <i class="fa-solid fa-cart-flatbed text-xs"></i>
+                    <span>Buat Order PO Pertama</span>
                 </button>
             </div>
         `;
@@ -1069,7 +1074,7 @@ const renderSupplierDebtTab = (tempoPurchases, totalDebt, s) => {
                                 </div>
                             </div>
 
-                            <button onclick="window.closeSupplierDetailModal(); if(window.openAdminTab) window.openAdminTab('purchases'); setTimeout(() => { window.openPurchasePaymentModal?.('${po.id}'); }, 200);" class="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs flex items-center gap-1.5 shadow-2xs active:scale-95 transition-all">
+                            <button onclick="window.closeSupplierDetailModal(); if(window.openAdminTab) window.openAdminTab('purchases'); setTimeout(() => { window.openPurchasePaymentModal?.('${po.id}'); }, 200);" class="h-10 px-4 rounded-2xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs flex items-center gap-1.5 shadow-2xs active:scale-95 transition-all cursor-pointer">
                                 <i class="fa-solid fa-money-bill-wave text-xs"></i>
                                 <span>Bayar / Cicil</span>
                             </button>
