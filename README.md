@@ -6,7 +6,7 @@ Aplikasi e-commerce dan manajemen kasir point-of-sales (POS) modern berkinerja t
 
 ## 🛠️ Informasi Pengembang & Hak Cipta
 * **Nama Projek**: TOKO PUTRI
-* **Versi Rilis**: **v1.9.42** (Android VersionCode: `10942`)
+* **Versi Rilis**: **v1.9.43** (Android VersionCode: `10943`)
 * **Dikembangkan & Ditandatangani Oleh**: **Novan Restu Utomo** (Selaku Pengembang Utama dan Developer Asli)
 
 ---
@@ -176,6 +176,24 @@ Aplikasi telah dilengkapi dengan fondasi **Capacitor 8 Android Native**:
 ---
 
 ## 📋 Riwayat Pembaruan (Changelog)
+
+### v1.9.43 — Smart Dynamic Product Cover Engine: Visual Mewah & Otomatis untuk Produk Tanpa Gambar di Storefront, Modal & POS Kasir (26 Sep 2026)
+- **Smart Dynamic Product Cover Engine**: Solusi visual grafis otomatis beresolusi tinggi bagi produk baru yang belum memiliki foto/gambar. Tanpa upload foto manual, sistem menghasilkan kartu grafis modern dengan gradien warna estetik, cincin geometris konsentris (*concentric rings*), dan efek *ambient radial glow*.
+- **Deteksi Ikon & Palet Kategori Semantik Otomatis**: Mendeteksi kata kunci nama produk, kategori, dan subkategori untuk memilih ikon vektor presisi (Rol Cat untuk Cat/Pelapis, Palu & Obeng untuk Perkakas, Kran untuk Pipa/Sanitair, Cetok Semen untuk Bahan Bangunan, Petir untuk Kelistrikan, Pohon untuk Kayu, Gembok untuk Kunci, Perisai untuk Besi/Atap, dan Spray untuk Perekat).
+- **Tipografi Monogram Inisial Huruf Besar**: Menampilkan 2 inisial huruf nama produk dengan tipografi tebal modern berbayang lembut (contoh: *"ND"* untuk No Drop, *"PS"* untuk Paku Super, *"SG"* untuk Semen Gresik) layaknya kemasan industri premium.
+- **Eliminasi Ketergantungan Eksternal (100% Offline Ready)**: Menghapus total placeholder pihak ketiga (*placehold.co*) yang lambat dan rentan gagal saat offline/sinyal lemah. Smart Cover dirender instan 0ms murni menggunakan CSS dan SVG lokal.
+- **Integrasi Menyeluruh di Seluruh Modul**: Diterapkan serempak pada Kartu Katalog Storefront (Grid & List), Modal Detail Produk (Hero Image & Rekomendasi Terkait), POS Kasir (Katalog Grid, List & Keranjang Belanja), Lembar Varian Kasir, Keranjang Belanja Pembeli, Halaman Favorit/Wishlist, serta Tabel & Form Produk CMS Admin.
+
+---
+
+### v1.9.42 — Tampilan Harga Modal HPP POS Kasir, Paritas Lencana Produk Lengkap & Proteksi Diskon Anti-Jual Rugi (Margin Guard) (26 Sep 2026)
+- **Perapian Tata Letak Lencana (Badges) POS Kasir**: Menata ulang posisi badge agar kartu produk tidak berantakan atau tertutup tumpukan badge. Foto produk kini 100% bersih tanpa deretan badge vertikal (hanya maksimal 1 pill diskon/PO di sudut atas), Brand ditampilkan sebagai subtitle teks elegan mendampingi Kategori (contoh: `CAT TEMBOK · NO DROP`), chip operasional (Varian, Grosir, Sisa Stok) disajikan ringkas, dan Harga Modal (HPP) disematkan rapi tepat di samping harga jual.
+- **Transparansi Harga Modal (HPP) Kasir**: Menampilkan badge *"HPP [nominal]"* dan info *"Modal: Rp [nominal]"* di kartu produk katalog kasir, lembar varian aktif, rincian per baris item di keranjang belanja, ringkasan belanja total, serta pop-up pembayaran kasir.
+- **Proteksi Diskon Anti-Jual Rugi (Margin Guard)**: Diskon produk per item secara ketat dibatasi tidak boleh membuat harga jual jatuh di bawah harga pokok penjualan (HPP) produk/varian. Kasir disajikan batas maksimal diskon yang diizinkan (*"Maks: Rp ..."*) dan sistem menolak input diskon yang melampaui modal dengan peringatan toast dan haptic feedback.
+- **Proteksi Diskon Global & Verifikasi Transaksi Akhir**: Diskon transaksi keranjang kasir (nominal Rp maupun %) otomatis dicek terhadap total HPP keranjang. Jika diskon global memicu total tagihan di bawah total modal, sistem otomatis menahan dan membatasi pada batas diskon maksimal aman.
+- **Pencatatan HPP ke Dokumen Pesanan (Laporan Laba Rugi Akurat)**: Data item transaksi kasir (`orderData.items`) kini merekam atribut `hpp`, `totalHpp`, serta estimasi `grossProfit` ke Firestore `freshmart_orders` sehingga laporan keuangan dan margin laba bersih toko terintegrasi otomatis dan akurat.
+
+---
 
 ### v1.9.41 — Penyelarasan Logika POS Kasir 1:1 dengan Storefront: Validasi Produk Non-Aktif, Indikator Produk Habis, Dukungan Penuh Pre-Order (PO) & Pengurangan Stok Terintegrasi (26 Sep 2026)
 - **Penyelarasan Logika Stok 1:1 Storefront (`useStock` Engine)**: POS Kasir kini menerapkan saklar `useStock` yang persis sama dengan storefront pembeli (`appData.store.useStock === true`). Bila `useStock` aktif, ketersediaan dihitung dari varian aktif atau stok induk. Jika `useStock` nonaktif, produk diperlakukan sebagai stok tak terbatas (*unlimited stock*).
