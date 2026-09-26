@@ -84,6 +84,13 @@ window.oAEd = (t, id) => {
             h += `<div class="relative"><select id="af-${k.key}" class="admin-input shadow-sm cursor-pointer appearance-none pr-10 bg-slate-50 dark:bg-slate-900" onchange="if(window.rVarsB) window.rVarsB();"><option value="" class="font-bold primary-text">-- Semua Produk (Tanpa Batasan) --</option>`;
             (appData.products||[]).forEach(p => { h += `<option value="${p.id}" ${v==p.id?'selected':''} class="font-bold">${esc(p.name)}</option>`; });
             h += `</select><i class="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-[10px]"></i></div>`;
+        } else if(k.type === 'dynamic_select_supplier') {
+            h += `<div class="relative"><select id="af-${k.key}" class="admin-input shadow-sm cursor-pointer appearance-none pr-10 bg-slate-50 dark:bg-slate-900"><option value="" class="font-bold text-slate-400">-- Pilih Rekanan / Supplier Asal --</option>`;
+            (appData.suppliers||[]).forEach(s => { 
+                const isSel = String(v) === String(s.id);
+                h += `<option value="${s.id}" ${isSel ? 'selected' : ''} class="font-bold">${esc(s.name)}${s.code ? ` (${esc(s.code)})` : ''}</option>`; 
+            });
+            h += `</select><i class="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-[10px]"></i></div>`;
         } else if(k.type === 'variants_builder') {
             h += `<div id="variants-builder-container" class="bg-slate-50/50 dark:bg-slate-900/30 p-4 sm:p-5 md:p-6 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-inner min-h-[60px]"></div>`;
         } else if(k.type === 'wholesale_builder') {

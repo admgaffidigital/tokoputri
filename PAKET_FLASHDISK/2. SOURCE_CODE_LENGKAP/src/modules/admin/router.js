@@ -59,6 +59,8 @@ export const openAdminTab = (t, fH = false) => {
         'piutang': 'Piutang Tempo',
         'colors': 'Database Warna',
         'changelog': 'Log Pembaruan Sistem',
+        'suppliers': 'Supplier & Rekanan',
+        'purchases': 'Order Pembelian & Hutang PO',
         'pos': 'Kasir POS',
         'cashiers': 'Manajemen Akun Kasir',
         'backup_sync': 'Pusat Data & Sinkronisasi'
@@ -78,6 +80,16 @@ export const openAdminTab = (t, fH = false) => {
         if (typeof window.rTaxPanel === 'function') window.rTaxPanel();
     } else if (t === 'piutang') {
         if (typeof window.rAdmPiutang === 'function') window.rAdmPiutang();
+    } else if (t === 'suppliers') {
+        // Lazy load modul master data supplier & asal-usul barang
+        import('./suppliers.js').then(m => m.renderSuppliersView()).catch(err => {
+            console.error('[Suppliers] Gagal memuat modul:', err);
+        });
+    } else if (t === 'purchases') {
+        // Lazy load modul order pembelian (PO) & hutang rekanan
+        import('./purchases.js').then(m => m.renderPurchasesView()).catch(err => {
+            console.error('[Purchases] Gagal memuat modul:', err);
+        });
     } else if (t === 'customers') {
         setH('admin-content', `<div class="text-center py-16"><i class="fa-solid fa-spinner fa-spin text-3xl text-slate-300"></i></div>`);
         if (aCustLst) { aCustLst(); setACustLst(null); }

@@ -6,7 +6,7 @@ Aplikasi e-commerce dan manajemen kasir point-of-sales (POS) modern berkinerja t
 
 ## 🛠️ Informasi Pengembang & Hak Cipta
 * **Nama Projek**: TOKO PUTRI
-* **Versi Rilis**: **v1.9.44** (Android VersionCode: `10944`)
+* **Versi Rilis**: **v1.9.47** (Android VersionCode: `10947`)
 * **Dikembangkan & Ditandatangani Oleh**: **Novan Restu Utomo** (Selaku Pengembang Utama dan Developer Asli)
 
 ---
@@ -176,6 +176,39 @@ Aplikasi telah dilengkapi dengan fondasi **Capacitor 8 Android Native**:
 ---
 
 ## 📋 Riwayat Pembaruan (Changelog)
+
+### v1.9.47 — Harmonisasi Tema Penuh & Native App Bottom Sheet — Supplier & Order Kulakan (PO) (26 Sep 2026)
+- **Eliminasi Latar Hitam Modal**: Mengganti `dark:bg-slate-850` (kelas Tailwind tidak valid) dan `bg-black/60` yang menghasilkan latar belakang modal pitch-black dengan `bg-slate-950/40 backdrop-blur-sm` yang elegan, jernih, dan semi-transparan.
+- **Native Mobile Bottom Sheet**: Semua modal Supplier (detail profil, form rekanan) dan Order Kulakan PO (form PO, detail penerimaan, pembayaran hutang) kini tampil sebagai *bottom sheet* ala app native Android/iOS (`rounded-t-[2rem]` di smartphone, terpusat elegan di desktop) disertai tarikan pill indicator (`.pull-indicator`) di atas setiap sheet.
+- **Hero Banner Tematis**: Menambahkan ambient hero banner dengan glow `var(--color-primary)` di header modul Supplier & Rekanan dan Order Kulakan sebagai titik orientasi visual utama yang selaras dengan seluruh CMS Toko Putri.
+- **Kartu Metrik Selaras Tema**: Mengganti kartu `.card-modern` dengan hardcoded dark background menjadi kartu `bg-white/95 dark:bg-slate-800/80` yang bersih, kontras tinggi, dan 100% kompatibel dark mode.
+- **Filter Tab Tema Konsisten**: Semua tab filter status PO (Semua, Dipesan, Diterima, Hutang, Selesai) kini menggunakan `primary-bg text-white shadow-glow` saat aktif, menggantikan warna keras (indigo/teal/amber) yang tidak selaras dengan tema toko.
+- **CSS Kelas Khusus Baru**: Ditambahkan `.modal-bottom-sheet`, `.pull-indicator`, dan `.hide-scrollbar` ke `src/style.css` untuk standardisasi pengalaman aplikasi native di seluruh perangkat layar sentuh.
+- **Sticky Action Footer & Clean Scrollbar**: Tombol Simpan di form PO kini sticky di dasar modal dengan frosted glass (`backdrop-blur-md`) agar selalu mudah dijangkau jempol kasir/admin tanpa scroll panjang, serta menghilangkan scrollbar tebal desktop yang mengganggu estetika mobile.
+
+---
+
+### v1.9.46 — Modul Supplier & Rekanan + Order Kulakan (Purchase Order) Terintegrasi (26 Sep 2026)
+- **Modul Master Data Supplier & Rekanan**: Database lengkap rekanan pemasok barang mencakup nama perusahaan, kode unik rekanan, nama sales/PIC, nomor WhatsApp, kota, alamat gudang, rekening bank penerima, dan termin pembayaran default (*Cash*, *Tempo 7-60 hari*, atau *Konsinyasi*).
+- **Profil Rekanan 3-Tab Mendalam**: Setiap supplier memiliki kartu profil dengan 3 tab navigasi: *Katalog Produk yang Disuplai*, *Riwayat Order Pembelian (PO)*, dan *Kartu Hutang Usaha*, dilengkapi metrik ringkasan (total produk, total PO, dan saldo sisa hutang usaha).
+- **Lacak Asal-Usul Barang & Badge Rekanan**: Setiap produk kini dapat dihubungkan langsung ke supplier pemasoknya melalui menu dropdown di form produk CMS Admin, memunculkan badge rekanan langsung di kartu produk CMS untuk identifikasi cepat.
+- **Order Kulakan / Purchase Order (PO) Terpadu**: Sistem pencatatan PO komprehensif ke supplier pemasok — pemilihan rekanan, tanggal pesanan, estimasi waktu tiba, termin bayar, catatan faktur supplier, serta tabel input item produk, kuantitas, dan harga beli grosir.
+- **Otomatis Restock Stok Gudang Real-Time**: Ketika status Order Kulakan diubah menjadi *"Diterima"*, sistem secara atomik dan otomatis menambah jumlah stok fisik seluruh produk dalam order tersebut ke database Firestore tanpa perlu repot mengedit stok satu per satu.
+- **Manajemen Pembayaran Hutang Usaha Supplier**: Pencatatan pembayaran cicilan atau pelunasan hutang ke rekanan supplier (cash/transfer), kalkulasi otomatis sisa hutang (*outstanding debt*), penanda status lunas, dan histori transaksi pembayaran terperinci per nomor PO.
+- **Filter Produk Berdasarkan Rekanan**: Tabel inventori produk CMS Admin mendukung filter instan per supplier untuk meninjau seluruh varian barang yang disuplai oleh rekanan tertentu.
+- **Pintasan WhatsApp 1-Klik ke Sales Supplier**: Tombol shortcut WhatsApp langsung membuka percakapan chat dengan nomor kontak sales supplier dari dalam profil rekanan.
+
+---
+
+### v1.9.45 — Harmonisasi Tema Warna Penuh pada Kartu Member Digital & Loyalty Pass (26 Sep 2026)
+- **Harmonisasi Ikon Header Modal Member**: Menggantikan gradien oranye/amber statis dengan warna tema primer aktif toko (`primary-bg`) berbayang halus yang menyatu dengan identitas brand toko.
+- **Penyelarasan Tombol Simpan ke Galeri**: Tombol unduh/ekspor kartu member kini otomatis mengadopsi warna brand primer aktif toko, menghilangkan ketidakselarasan warna oranye jomplang.
+- **Harmonisasi Tombol Balik Kartu & Ikon Level**: Tombol balik kartu 3D dan ikon tingkatan keanggotaan kini menggunakan variabel `var(--color-primary)`.
+- **Penyelarasan Indikator Progres Level & Saldo Poin**: Bar progres kenaikan tingkat tier member dan badge total saldo poin kini tersinkronisasi 100% dengan warna tema toko.
+- **Harmonisasi Kartu Ringkasan Member di Checkout**: Banner pendeteksian nomor member resmi saat checkout kini menggunakan border, ikon, dan tombol buka kartu bernuansa tema aktif toko.
+- **Kotak Keuntungan Member & Kontak WhatsApp**: Menyelaraskan kotak edukasi hak istimewa member dengan palet tema toko serta nomor layanan WhatsApp kasir resmi.
+
+---
 
 ### v1.9.44 — Harmonisasi Tema Warna Penuh & Integrasi Presisi Mode Gelap Sistem (System Dark Mode Parity) (26 Sep 2026)
 - **Harmonisasi Penuh Pusat Data & Sinkronisasi CMS**: Memperbaiki kartu ekspor database dan riwayat penjualan dengan latar belakang dark slate yang elegan dan kontras tinggi, mengeliminasi kartu putih yang silau saat mode gelap aktif.

@@ -237,7 +237,15 @@ window.rAdmL = t => {
                 <span class="hidden sm:inline">Tahan & geser pegangan <i class="fa-solid fa-grip-vertical opacity-60"></i> atau gunakan tombol panah untuk mengatur urutan.</span>
                 <span class="sm:hidden">Geser <i class="fa-solid fa-grip-vertical opacity-60"></i> atau panah untuk atur urutan.</span>
             </div>
-            <div class="flex items-center gap-2 ml-auto">
+            <div class="flex items-center gap-2 ml-auto flex-wrap">
+                ${(appData.suppliers || []).length > 0 ? `
+                    <div class="relative inline-block">
+                        <select onchange="window.adminSupplierFilter = this.value; rAdmItms('products');" class="px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold text-[11px] border border-slate-200/80 dark:border-slate-700 cursor-pointer shadow-2xs">
+                            <option value="">Semua Supplier (${(appData.suppliers || []).length})</option>
+                            ${(appData.suppliers || []).map(s => `<option value="${s.id}" ${window.adminSupplierFilter === String(s.id) ? 'selected' : ''}>${esc(s.name)}</option>`).join('')}
+                        </select>
+                    </div>
+                ` : ''}
                 <button onclick="window.autoGroupProductsByCategory()" class="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold text-[11px] transition-all active:scale-95 shadow-2xs border border-slate-200/80 dark:border-slate-700" title="Otomatis kumpulkan produk sejenis (Paku dengan Paku, Semen dengan Semen)">
                     <i class="fa-solid fa-layer-group text-[var(--color-primary)]"></i> Rapikan per Kategori
                 </button>
@@ -324,9 +332,21 @@ window.rAdmItms = t => {
     }
 
     const searchVal = (aSq || window.aSq || '').toLowerCase();
+    const selSupFilter = window.adminSupplierFilter || '';
     let i = rawList.filter(x => {
+        if (t === 'products' && selSupFilter) {
+            if (String(x.supplierId) !== String(selSupFilter)) return false;
+        }
         let m = (x.name||x.title||x.bankName||x.code||x.sku||x.phone||'').toLowerCase().includes(searchVal);
-        if(t==='products' && !m && x.variants) { m = x.variants.some(v => v.sku && v.sku.toLowerCase().includes(searchVal)); }
+        if(t==='products' && !m) {
+            if (x.supplierId && (appData.suppliers || []).length) {
+                const sObj = appData.suppliers.find(s => String(s.id) === String(x.supplierId));
+                if (sObj && (sObj.name || '').toLowerCase().includes(searchVal)) m = true;
+            }
+            if (!m && x.variants) {
+                m = x.variants.some(v => v.sku && v.sku.toLowerCase().includes(searchVal));
+            }
+        }
         return m;
     });
     
@@ -394,6 +414,10 @@ window.rAdmItms = t => {
                     ${isP ? (() => {
                         const sold = x.variants && x.variants.length ? x.variants.reduce((s,vv)=>s+(parseFloat(vv.totalSold)||0),0) : (parseFloat(x.totalSold)||0);
                         return sold > 0 ? `<p class="text-[10px] font-bold text-orange-400 mt-0.5"><i class="fa-solid fa-fire-flame-curved mr-1"></i>Terjual: ${sold}</p>` : '';
+                    })() : ''}
+                    ${isP && x.supplierId ? (() => {
+                        const sObj = (appData.suppliers || []).find(s => String(s.id) === String(x.supplierId));
+                        return sObj ? `<p class="text-[10px] font-bold text-teal-600 dark:text-teal-400 mt-0.5"><i class="fa-solid fa-truck-field mr-1"></i>Supplier: <b>${esc(sObj.name)}</b></p>` : '';
                     })() : ''}
                     ${t==='colors' ? `<div class="flex items-center gap-2 mt-1"><div class="w-4 h-4 rounded-full border border-slate-200 dark:border-slate-600 shadow-sm" style="background-color: ${esc(x.hex||'transparent')}"></div><p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest"><i class="fa-solid fa-swatchbook mr-1"></i>${esc(x.catalog||'Tanpa Katalog')}</p></div>` : ''}
                     ${t==='customers' ? `<p class="text-xs font-bold text-slate-500 dark:text-slate-400"><i class="fa-brands fa-whatsapp text-emerald-500 mr-1"></i>+${esc(x.phone)}</p><p class="text-[11px] font-bold text-[var(--color-primary)] mt-0.5"><i class="fa-solid fa-star mr-1"></i>${(parseFloat(x.points)||0)} Poin</p>` : ''}
