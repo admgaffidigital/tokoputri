@@ -6,6 +6,7 @@ Aplikasi e-commerce dan manajemen kasir point-of-sales (POS) modern berkinerja t
 
 ## 🛠️ Informasi Pengembang & Hak Cipta
 * **Nama Projek**: TOKO PUTRI
+* **Versi Rilis**: **v1.9.42** (Android VersionCode: `10942`)
 * **Dikembangkan & Ditandatangani Oleh**: **Novan Restu Utomo** (Selaku Pengembang Utama dan Developer Asli)
 
 ---

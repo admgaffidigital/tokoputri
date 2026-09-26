@@ -8,6 +8,21 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-9-42',
+        version: 'v1.9.42',
+        date: '2026-09-26',
+        title: 'Tampilan Harga Modal HPP POS Kasir, Paritas Lencana Produk Lengkap & Proteksi Diskon Anti-Jual Rugi (Margin Guard)',
+        category: 'feature',
+        badge: 'POS HPP & Margin Protection v1.9.42',
+        items: [
+            'Paritas Lencana (Badges) 100% Identik Storefront: Katalog POS kasir (Grid & List) kini menyajikan seluruh atribut badge visual layaknya etalase pembeli: promo diskon (-%), harga normal dicoret, Pre-Order (PO), opsi varian, grosir, bonus poin member (+X Poin), jumlah terjual (X Terjual), brand resmi, subkategori, serta indikator stok menipis (SISA X).',
+            'Transparansi Harga Modal (HPP) Kasir: Menampilkan badge "HPP [nominal]" dan info "Modal: Rp [nominal]" di kartu produk katalog kasir, lembar varian aktif, rincian per baris item di keranjang belanja, ringkasan belanja total, serta pop-up pembayaran kasir.',
+            'Proteksi Diskon Anti-Jual Rugi (Margin Guard): Diskon produk per item secara ketat dibatasi tidak boleh membuat harga jual jatuh di bawah harga pokok penjualan (HPP) produk/varian. Kasir disajikan batas maksimal diskon yang diizinkan (Maks: Rp ...) dan sistem menolak input diskon yang melampaui modal dengan peringatan toast dan haptic feedback.',
+            'Proteksi Diskon Global & Verifikasi Transaksi Akhir: Diskon transaksi keranjang kasir (nominal Rp maupun %) otomatis dicek terhadap total HPP keranjang. Jika diskon global memicu total tagihan di bawah total modal, sistem otomatis menahan dan membatasi pada batas diskon maksimal aman.',
+            'Pencatatan HPP ke Dokumen Pesanan (Laporan Laba Rugi Akurat): Data item transaksi kasir (orderData.items) kini merekam atribut hpp, totalHpp, serta estimasi grossProfit ke Firestore freshmart_orders sehingga laporan keuangan dan margin laba bersih toko terintegrasi otomatis dan akurat.'
+        ]
+    },
+    {
         id: 'log-1-9-41',
         version: 'v1.9.41',
         date: '2026-09-26',

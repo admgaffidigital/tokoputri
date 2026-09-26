@@ -9,6 +9,7 @@
 
 import { appData } from '../../core/state.js';
 import { el, esc, fCur, getOptImg, showToast } from '../../core/utils.js';
+import { getEffHpp } from '../../core/pricing.js';
 
 // ─── State ───────────────────────────────────────────────────
 let _currentProductId  = null;
@@ -116,6 +117,7 @@ const renderVariantSheetContent = (p) => {
     const activePrice = hasVariants
         ? (parseFloat(activeVar?.price) || parseFloat(p.price) || 0)
         : (parseFloat(p.price) || 0);
+    const activeHpp = activeVar && activeVar.hpp != null ? (parseFloat(activeVar.hpp) || 0) : (parseFloat(p.hpp) || 0);
     const activeStock = hasVariants ? (parseFloat(activeVar?.stock) || 0) : (parseFloat(p.stock) || 0);
     const isVarActive = activeVar ? (activeVar.isActive !== false && activeVar.isActive !== 'false') : true;
     const isOutOfStock = useStock && activeStock <= 0;
@@ -137,6 +139,7 @@ const renderVariantSheetContent = (p) => {
     // Varian chips
     const variantsHtml = hasVariants ? vars.map((v, i) => {
         const varPrice = parseFloat(v.price) || parseFloat(p.price) || 0;
+        const varHpp   = v.hpp != null ? (parseFloat(v.hpp) || 0) : (parseFloat(p.hpp) || 0);
         const varStock = parseFloat(v.stock) || 0;
         const isVActive = v.isActive !== false && v.isActive !== 'false';
         const isVOutOfStock = useStock && varStock <= 0;
@@ -157,11 +160,17 @@ const renderVariantSheetContent = (p) => {
             : '';
         return `<button
             onclick="${isDisabled ? '' : `window.selectPOSVariant(${i})`}"
-            class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-[11px] font-bold transition-all ${activeStyle} ${outStyle}"
+            class="flex items-center gap-2 px-3 py-1.5 rounded-xl border text-[11px] font-bold transition-all ${activeStyle} ${outStyle}"
             ${isDisabled ? 'disabled' : ''}>
             ${colorDot}
-            <span class="truncate max-w-[100px]">${esc(v.name)}${labelSuffix}</span>
-            ${isActive ? '<i class="fa-solid fa-check text-[8px] shrink-0"></i>' : ''}
+            <div class="flex flex-col items-start min-w-0">
+                <span class="truncate max-w-[120px]">${esc(v.name)}${labelSuffix}</span>
+                <div class="flex items-center gap-1.5 text-[9px]">
+                    <span class="text-slate-500 font-bold">${fRp(varPrice)}</span>
+                    ${varHpp > 0 ? `<span class="text-amber-600 dark:text-amber-400 font-black">HPP: ${fRp(varHpp)}</span>` : ''}
+                </div>
+            </div>
+            ${isActive ? '<i class="fa-solid fa-check text-[8px] shrink-0 ml-1"></i>' : ''}
         </button>`;
     }).join('') : '';
 
@@ -205,6 +214,7 @@ const renderVariantSheetContent = (p) => {
     <div class="p-4 sm:p-5 pb-3 border-b border-slate-100 dark:border-slate-800/60 flex items-start gap-3.5">
         <div class="w-20 h-20 min-w-[80px] rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 flex items-center justify-center p-1.5 shadow-xs shrink-0">
             ${imgHtml}
+        </div>
         <div class="flex-1 min-w-0 pr-6">
             <h4 class="font-extrabold text-sm text-slate-900 dark:text-white line-clamp-2 leading-snug break-words flex items-center gap-1.5 flex-wrap">
                 <span>${esc(p.name)}</span>
@@ -213,6 +223,7 @@ const renderVariantSheetContent = (p) => {
             <div class="mt-1 flex items-baseline gap-2 flex-wrap">
                 ${priceHtml}
                 <span class="text-[10px] font-bold text-slate-400">${activeStockStr}</span>
+                ${activeHpp > 0 ? `<span class="inline-flex items-center gap-1 text-[10px] font-black text-amber-950 bg-amber-100 dark:bg-amber-950/60 dark:text-amber-300 px-2 py-0.5 rounded-md border border-amber-300/80 dark:border-amber-700 shadow-2xs whitespace-nowrap"><i class="fa-solid fa-coins text-[8px] text-amber-600 dark:text-amber-400"></i>HPP: ${fRp(activeHpp)}</span>` : ''}
             </div>
             ${hasVariants ? `<p class="text-[11px] font-bold mt-0.5 truncate" style="color:var(--color-primary)">Varian: ${esc(vars[_selectedVariantIdx]?.name || '-')}</p>` : ''}
         </div>
@@ -248,10 +259,15 @@ const renderVariantSheetContent = (p) => {
         </div>
     </div>
     <div class="p-4 border-t border-slate-100 dark:border-slate-800/80 bg-slate-50/80 dark:bg-slate-900/60">
-        <div class="flex items-center justify-between mb-3">
+        <div class="flex items-center justify-between mb-1">
             <span class="text-xs font-bold text-slate-500">Subtotal</span>
             <span class="text-sm font-black" style="color:var(--color-primary)">${fRp(subtotal)}</span>
         </div>
+        ${activeHpp > 0 ? `
+        <div class="flex items-center justify-between mb-3 text-[10px]">
+            <span class="text-slate-400 font-semibold flex items-center gap-1"><i class="fa-solid fa-coins text-amber-500"></i> Total Modal (HPP): <b class="text-amber-600 dark:text-amber-400 font-bold">${fRp(activeHpp * _selectedQty)}</b></span>
+            <span class="font-bold text-emerald-600 dark:text-emerald-400">Untung: +${fRp(Math.max(0, subtotal - (activeHpp * _selectedQty)))}</span>
+        </div>` : '<div class="mb-2"></div>'}
         <button onclick="window.confirmPOSVariantAdd()"
             class="w-full h-12 rounded-2xl text-white font-black text-sm flex items-center justify-center gap-2 active:scale-95 transition-all shadow-md cursor-pointer"
             style="background:var(--color-primary)">

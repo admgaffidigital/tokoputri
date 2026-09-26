@@ -282,6 +282,45 @@ html {
     color: white !important;
 }
 
+.pos-badge-promo {
+    background: #ef4444 !important; /* rose-500 — diskon promo */
+    color: white !important;
+}
+
+.pos-badge-poin {
+    background: rgba(16, 185, 129, 0.2) !important;
+    color: #10b981 !important;
+    border: 1px solid rgba(16, 185, 129, 0.35) !important;
+}
+
+.pos-badge-sold {
+    background: #334155 !important;
+    color: #f1f5f9 !important;
+}
+
+.pos-badge-brand {
+    background: #64748b !important;
+    color: white !important;
+}
+
+.pos-badge-subcat {
+    background: rgba(var(--color-primary-rgb, 16, 185, 129), 0.15) !important;
+    color: var(--color-primary) !important;
+    border: 1px solid rgba(var(--color-primary-rgb, 16, 185, 129), 0.3) !important;
+}
+
+.pos-badge-tag {
+    background: #475569 !important;
+    color: white !important;
+}
+
+.pos-badge-hpp {
+    background: #0f172a !important; /* navy gelap eksklusif */
+    color: #fbbf24 !important; /* emas / amber */
+    border: 1px solid rgba(245, 158, 11, 0.5) !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+}
+
 /* Status produk habis pada katalog kasir (identik Storefront) */
 .pos-product-card.is-out-of-stock,
 .pos-list-item.is-out-of-stock {

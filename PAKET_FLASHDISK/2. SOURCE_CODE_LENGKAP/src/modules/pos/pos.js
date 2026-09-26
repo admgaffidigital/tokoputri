@@ -11,6 +11,7 @@
 import { db, firebase } from '../../config/firebase.js';
 import { appData } from '../../core/state.js';
 import { el, setH, setIn, esc, fCur, showToast, getOptImg } from '../../core/utils.js';
+import { getEffHpp } from '../../core/pricing.js';
 import { getPrinterConfig, openPrinterSettingsModal } from '../print/printer-settings.js';
 import {
     getActiveShift,
@@ -105,12 +106,30 @@ const fRp  = (n) => fCur(n);
 
 const posSubtotal = () => posCart.reduce((s, i) => s + i.subtotal, 0);
 
+// Hitung total modal HPP seluruh item di keranjang kasir
+export const getCartTotalHpp = () => {
+    return posCart.reduce((sum, item) => {
+        const hpp = item.hpp != null ? parseFloat(item.hpp) : (getEffHpp(item) || 0);
+        return sum + ((parseFloat(hpp) || 0) * (parseFloat(item.qty) || 0));
+    }, 0);
+};
+
 export const posDiscountAmount = () => {
+    const sub = posSubtotal();
+    let disc = 0;
     if (posDiscountType === 'percent') {
         const pct = Math.min(100, Math.max(0, parseFloat(posDiscountVal) || 0));
-        return Math.round((posSubtotal() * pct) / 100);
+        disc = Math.round((sub * pct) / 100);
+    } else {
+        disc = Math.min(sub, fNum(posDiscountVal || posGlobalDisc));
     }
-    return Math.min(posSubtotal(), fNum(posDiscountVal || posGlobalDisc));
+    // Proteksi: Total transaksi tidak boleh lebih rendah dari total modal HPP
+    const totalHpp = getCartTotalHpp();
+    if (totalHpp > 0) {
+        const maxAllowed = Math.max(0, sub - totalHpp);
+        if (disc > maxAllowed) disc = maxAllowed;
+    }
+    return disc;
 };
 
 const posTotal    = () => Math.max(0, posSubtotal() - posDiscountAmount());
@@ -201,6 +220,23 @@ const recalcItem = (item) => {
             item.isWholesale = false;
         }
     }
+
+    // Pastikan HPP modal produk/varian tersimpan
+    if (item.hpp == null) {
+        item.hpp = getEffHpp(item) || 0;
+    }
+    const itemHpp = parseFloat(item.hpp) || 0;
+
+    // Proteksi: Diskon item TIDAK BOLEH melebihi batas modal (harga jual < HPP)
+    if (itemHpp > 0) {
+        const maxAllowedDisc = Math.max(0, Math.round((item.price - itemHpp) * item.qty));
+        if (fNum(item.discount) > maxAllowedDisc) {
+            item.discount = maxAllowedDisc;
+        }
+    } else {
+        item.discount = Math.min(fNum(item.discount), item.price * item.qty);
+    }
+
     item.subtotal = Math.max(0, item.price * item.qty - fNum(item.discount));
     return item;
 };
@@ -366,6 +402,7 @@ export const addToCart = (productId) => {
             name: p.name,
             price,
             basePrice: price,
+            hpp: parseFloat(p.hpp) || 0,
             qty: 1,
             unit: p.unit || 'pcs',
             poTime: p.poTime || '',
@@ -419,6 +456,7 @@ export const posAddToCartQty = (productId, qty) => {
             name: p.name,
             price,
             basePrice: price,
+            hpp: parseFloat(p.hpp) || 0,
             qty: numQty,
             unit: p.unit || 'pcs',
             poTime: p.poTime || '',
@@ -480,6 +518,7 @@ export const addToCartWithVariant = (productId, variantName, variantPrice, varia
         recalcItem(existing);
     } else {
         const displayName = `${p.name} — ${variantName}`;
+        const varHpp = parseFloat(v?.hpp != null ? v.hpp : p.hpp) || 0;
         posCart.push(recalcItem({
             id: productId,
             cartKey,
@@ -488,6 +527,7 @@ export const addToCartWithVariant = (productId, variantName, variantPrice, varia
             variantIdx,
             price: variantPrice,
             basePrice: variantPrice,
+            hpp: varHpp,
             qty: numQty,
             unit: v?.unit || p.unit || 'pcs',
             poTime: p.poTime || '',
@@ -575,7 +615,22 @@ export const setQty = (cartKey, val) => {
 export const setItemDisc = (cartKey, val) => {
     const item = posCart.find(i => (i.cartKey || String(i.id)) === String(cartKey));
     if (!item) return;
-    item.discount = Math.min(fNum(val), item.price * item.qty);
+    const numVal = fNum(val);
+    const itemHpp = item.hpp != null ? parseFloat(item.hpp) : (getEffHpp(item) || 0);
+
+    if (itemHpp > 0) {
+        // Diskon per item tidak boleh membuat harga jual di bawah harga modal HPP
+        const maxDisc = Math.max(0, Math.round((item.price - itemHpp) * item.qty));
+        if (numVal > maxDisc) {
+            showToast(`Diskon ditolak! Tidak boleh di bawah harga modal (HPP ${fRp(itemHpp)}). Maksimal diskon: ${fRp(maxDisc)}`, 'warning');
+            item.discount = maxDisc;
+            recalcItem(item);
+            renderCart();
+            if (typeof window.triggerHaptic === 'function') window.triggerHaptic('heavy');
+            return;
+        }
+    }
+    item.discount = Math.min(numVal, item.price * item.qty);
     recalcItem(item);
     renderCart();
 };
@@ -1162,9 +1217,61 @@ export const renderCatalog = () => {
                 const pName          = esc(String(p.name || 'Produk'));
                 const pCat           = esc(String(p.category || ''));
                 const pPrice         = parseFloat(p.price) || 0;
-                const poBadge        = stockInfo.isPreorder
+                // 1. Promo Diskon & Harga Coret
+                let discBadge = '';
+                let priceNormalHtml = '';
+                if (p.priceNormal && parseFloat(p.priceNormal) > pPrice) {
+                    const pct = Math.round(((parseFloat(p.priceNormal) - pPrice) / parseFloat(p.priceNormal)) * 100);
+                    discBadge = `<span class="pos-badge pos-badge-promo"><i class="fa-solid fa-tags" style="font-size:6px"></i> -${pct}%</span>`;
+                    priceNormalHtml = `<span class="text-[10px] text-slate-400 line-through font-bold">${fRp(parseFloat(p.priceNormal))}</span>`;
+                }
+
+                // 2. Pre-Order Badge
+                const poBadge = stockInfo.isPreorder
                     ? `<span class="pos-badge pos-badge-po"><i class="fa-solid fa-clock" style="font-size:6px"></i> PO ${esc(stockInfo.poTime)}</span>`
                     : '';
+
+                // 3. Poin Member Badge
+                let poinBadge = '';
+                if (hasVariants) {
+                    const poinVals = p.variants.map(v => parseFloat(v.poin) || 0).filter(x => x > 0);
+                    if (poinVals.length) {
+                        const uniq = [...new Set(poinVals)];
+                        poinBadge = uniq.length === 1
+                            ? `<span class="pos-badge pos-badge-poin"><i class="fa-solid fa-star" style="font-size:6px"></i> +${uniq[0]} Poin</span>`
+                            : `<span class="pos-badge pos-badge-poin"><i class="fa-solid fa-star" style="font-size:6px"></i> Poin</span>`;
+                    }
+                } else if (parseFloat(p.poin) > 0) {
+                    poinBadge = `<span class="pos-badge pos-badge-poin"><i class="fa-solid fa-star" style="font-size:6px"></i> +${parseFloat(p.poin)} Poin</span>`;
+                }
+
+                // 4. Terjual Badge
+                const totalSoldCard = hasVariants
+                    ? p.variants.reduce((s, vv) => s + (parseFloat(vv.totalSold) || 0), 0)
+                    : (parseFloat(p.totalSold) || 0);
+                const soldBadge = totalSoldCard > 0
+                    ? `<span class="pos-badge pos-badge-sold"><i class="fa-solid fa-fire text-amber-400" style="font-size:6px"></i> ${totalSoldCard} Terjual</span>`
+                    : '';
+
+                // 5. Brand & Subkategori Badge
+                const brandBadge = p.brand ? `<span class="pos-badge pos-badge-brand"><i class="fa-solid fa-tag" style="font-size:6px"></i> ${esc(p.brand)}</span>` : '';
+                const subCatBadge = p.subCategory ? `<span class="pos-badge pos-badge-subcat"><i class="fa-solid fa-shapes" style="font-size:6px"></i> ${esc(p.subCategory)}</span>` : '';
+
+                // 6. HARGA MODAL (HPP)
+                let hppDisplay = '';
+                if (hasVariants) {
+                    const hppList = p.variants.map(v => v.hpp != null ? (parseFloat(v.hpp) || 0) : (parseFloat(p.hpp) || 0)).filter(h => h > 0);
+                    if (hppList.length > 0) {
+                        const minH = Math.min(...hppList);
+                        const maxH = Math.max(...hppList);
+                        hppDisplay = minH === maxH ? fRp(minH) : `${fRp(minH)} - ${fRp(maxH)}`;
+                    } else if (p.hpp) {
+                        hppDisplay = fRp(parseFloat(p.hpp) || 0);
+                    }
+                } else if (p.hpp) {
+                    hppDisplay = fRp(parseFloat(p.hpp) || 0);
+                }
+                const hppBadge = hppDisplay ? `<span class="pos-badge pos-badge-hpp" title="Harga Pokok Penjualan (Modal)"><i class="fa-solid fa-coins" style="font-size:6px"></i> HPP ${hppDisplay}</span>` : '';
 
                 if (posCatalogViewMode === 'list') {
                     // ── LIST MODE: baris kompak dengan thumbnail 52px ──
@@ -1180,18 +1287,28 @@ export const renderCatalog = () => {
                         <div style="flex:1;min-width:0">
                             <div style="display:flex;align-items:center;gap:4px;flex-wrap:wrap;margin-bottom:3px">
                                 ${pCat ? `<span style="font-size:9px;text-transform:uppercase;letter-spacing:0.06em;font-weight:700;color:#94a3b8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:80px">${pCat}</span>` : ''}
+                                ${discBadge}
                                 ${hasVariants ? `<span class="pos-badge pos-badge-varian"><i class="fa-solid fa-layer-group" style="font-size:6px"></i> VARIAN</span>` : ''}
                                 ${hasGrosir   ? `<span class="pos-badge pos-badge-grosir"><i class="fa-solid fa-tags" style="font-size:6px"></i> GROSIR</span>` : ''}
                                 ${poBadge}
+                                ${hppBadge}
+                                ${poinBadge}
+                                ${soldBadge}
+                                ${brandBadge}
+                                ${subCatBadge}
                                 ${stockInfo.isOutOfStock ? `<span class="pos-badge pos-badge-habis"><i class="fa-solid fa-ban" style="font-size:6px"></i> HABIS</span>` : ''}
                                 ${stockInfo.isLowStock ? `<span class="pos-badge pos-badge-low"><i class="fa-solid fa-triangle-exclamation" style="font-size:6px"></i> SISA ${formatQty(stockInfo.totalStock)}</span>` : ''}
                             </div>
                             <p class="text-xs font-bold text-slate-800 dark:text-slate-100 truncate" title="${pName}">${pName}</p>
-                            <p style="font-size:12px;font-weight:900;color:var(--color-primary);margin-top:2px">${fRp(pPrice)}</p>
+                            <div class="flex items-baseline gap-2 flex-wrap mt-0.5">
+                                <span style="font-size:12px;font-weight:900;color:var(--color-primary)">${fRp(pPrice)}</span>
+                                ${priceNormalHtml}
+                                ${hppDisplay ? `<span class="text-[10px] font-black text-amber-600 dark:text-amber-400 flex items-center gap-1"><i class="fa-solid fa-coins text-[8px]"></i> Modal: ${hppDisplay}</span>` : ''}
+                            </div>
                         </div>
                         ${stockInfo.isOutOfStock 
-                            ? `<button class="pos-add-btn opacity-40 cursor-not-allowed" disabled title="Stok Habis"><i class="fa-solid fa-ban"></i></button>`
-                            : `<button onclick="event.stopPropagation();window.posAddToCart('${safeId}')" class="pos-add-btn" title="Tambah ke keranjang"><i class="fa-solid fa-plus"></i></button>`}
+                            ? `<button class="pos-add-btn opacity-40 cursor-not-allowed shrink-0" disabled title="Stok Habis"><i class="fa-solid fa-ban"></i></button>`
+                            : `<button onclick="event.stopPropagation();window.posAddToCart('${safeId}')" class="pos-add-btn shrink-0" title="Tambah ke keranjang"><i class="fa-solid fa-plus"></i></button>`}
                     </div>`;
                 }
 
@@ -1207,9 +1324,15 @@ export const renderCatalog = () => {
                                 </span>
                             </div>` : ''}
                         <div class="pos-img-badges">
+                            ${discBadge}
                             ${hasVariants ? `<span class="pos-badge pos-badge-varian"><i class="fa-solid fa-layer-group" style="font-size:6px"></i> VARIAN</span>` : ''}
                             ${hasGrosir   ? `<span class="pos-badge pos-badge-grosir"><i class="fa-solid fa-tags" style="font-size:6px"></i> GROSIR</span>` : ''}
                             ${poBadge}
+                            ${hppBadge}
+                            ${poinBadge}
+                            ${soldBadge}
+                            ${brandBadge}
+                            ${subCatBadge}
                             ${stockInfo.isOutOfStock ? `<span class="pos-badge pos-badge-habis"><i class="fa-solid fa-ban" style="font-size:6px"></i> HABIS</span>` : ''}
                             ${stockInfo.isLowStock ? `<span class="pos-badge pos-badge-low"><i class="fa-solid fa-triangle-exclamation" style="font-size:6px"></i> SISA ${formatQty(stockInfo.totalStock)}</span>` : ''}
                         </div>
@@ -1230,11 +1353,17 @@ export const renderCatalog = () => {
                     <div class="pos-card-info">
                         ${pCat ? `<p class="pos-card-cat">${pCat}</p>` : ''}
                         <p class="pos-card-name" title="${pName}">${pName}</p>
-                        <div class="pos-card-footer">
-                            <span class="pos-card-price">${fRp(pPrice)}</span>
+                        <div class="pos-card-footer flex items-center justify-between gap-1">
+                            <div class="flex flex-col min-w-0">
+                                <div class="flex items-baseline gap-1.5 flex-wrap">
+                                    <span class="pos-card-price">${fRp(pPrice)}</span>
+                                    ${priceNormalHtml}
+                                </div>
+                                ${hppDisplay ? `<span class="text-[10px] font-black text-amber-600 dark:text-amber-400 flex items-center gap-1 leading-tight mt-0.5"><i class="fa-solid fa-coins text-[8px]"></i> Modal: ${hppDisplay}</span>` : ''}
+                            </div>
                             ${stockInfo.isOutOfStock
-                                ? `<button class="pos-add-btn opacity-40 cursor-not-allowed" disabled title="Stok Habis"><i class="fa-solid fa-ban"></i></button>`
-                                : `<button onclick="event.stopPropagation();window.posAddToCart('${safeId}')" class="pos-add-btn" title="Tambah ke keranjang"><i class="fa-solid fa-plus"></i></button>`}
+                                ? `<button class="pos-add-btn opacity-40 cursor-not-allowed shrink-0" disabled title="Stok Habis"><i class="fa-solid fa-ban"></i></button>`
+                                : `<button onclick="event.stopPropagation();window.posAddToCart('${safeId}')" class="pos-add-btn shrink-0" title="Tambah ke keranjang"><i class="fa-solid fa-plus"></i></button>`}
                         </div>
                     </div>
                 </div>`;
@@ -1283,6 +1412,9 @@ const renderCart = () => {
             const ckey = esc(String(item.cartKey || item.id));
             const img = getItemImg(item);
             const baseName = item.isVariant && item.variantName ? esc(item.name.replace(` — ${item.variantName}`, '')) : esc(item.name);
+            const itemHpp = item.hpp != null ? parseFloat(item.hpp) : (getEffHpp(item) || 0);
+            const maxItemDisc = itemHpp > 0 ? Math.max(0, Math.round((item.price - itemHpp) * item.qty)) : Math.round(item.price * item.qty);
+            const itemMargin = Math.round(item.subtotal - (itemHpp * item.qty));
             return `
             <div class="group flex items-start gap-2.5 p-2.5 bg-white dark:bg-slate-800/90 rounded-2xl border border-slate-200/90 dark:border-slate-700/80 shadow-xs hover:border-[var(--color-primary)] transition-all">
                 <!-- 42px Thumbnail -->
@@ -1299,14 +1431,16 @@ const renderCart = () => {
                         ${item.isWholesale ? `<span class="inline-flex items-center text-[8px] font-black px-1.5 py-0.5 rounded text-white shadow-2xs" style="background:var(--color-primary)">GROSIR</span>` : ''}
                         ${item.isVariant ? `<span class="inline-flex items-center gap-1 text-[8px] font-black px-1.5 py-0.5 rounded text-white shadow-2xs" style="background:var(--color-primary);opacity:0.95"><i class="fa-solid fa-layer-group text-[7px]"></i>${esc(item.variantName || 'VARIAN')}</span>` : ''}
                         ${item.poTime ? `<span class="inline-flex items-center gap-1 text-[8px] font-bold px-1.5 py-0.5 rounded text-amber-700 bg-amber-100 dark:bg-amber-900/30 dark:text-amber-300 border border-amber-200 dark:border-amber-800 shadow-2xs uppercase tracking-wide"><i class="fa-solid fa-clock text-[7px]"></i> PO ${esc(item.poTime)}</span>` : ''}
+                        ${itemHpp > 0 ? `<span class="inline-flex items-center gap-1 text-[8px] font-black px-1.5 py-0.5 rounded text-amber-950 bg-amber-100 dark:bg-amber-950/60 dark:text-amber-300 border border-amber-300/80 dark:border-amber-700 shadow-2xs" title="Harga Modal (HPP)"><i class="fa-solid fa-coins text-[7px] text-amber-600 dark:text-amber-400"></i>HPP: ${fRp(itemHpp)}</span>` : ''}
                         <span class="text-[10px] text-slate-500 font-medium">
                             ${item.isWholesale && item.basePrice ? `<span class="line-through text-slate-400">${fRp(item.basePrice)}</span> <span class="font-bold" style="color:var(--color-primary)">${fRp(item.price)}</span>` : fRp(item.price)}
                         </span>
                     </div>
-                    <div class="flex items-center gap-1.5 mt-1.5">
+                    <div class="flex items-center gap-1.5 mt-1.5 flex-wrap">
                         <span class="text-[9px] text-slate-400 font-bold uppercase tracking-wider">Diskon:</span>
-                        <input type="number" min="0" placeholder="0" value="${item.discount || ''}" onchange="window.posSetItemDisc('${ckey}',this.value)"
+                        <input type="number" min="0" ${itemHpp > 0 ? `max="${maxItemDisc}"` : ''} placeholder="0" value="${item.discount || ''}" onchange="window.posSetItemDisc('${ckey}',this.value)"
                             class="w-16 text-[10px] font-mono font-bold border border-slate-200 dark:border-slate-700 rounded-md px-1.5 py-0.5 bg-slate-50 dark:bg-slate-700/60 text-right focus:outline-none focus:border-[var(--color-primary)] transition-all">
+                        ${itemHpp > 0 ? `<span class="text-[9px] text-amber-600 dark:text-amber-400 font-bold whitespace-nowrap" title="Maksimal diskon agar tidak di bawah harga modal HPP">(Maks: ${fRp(maxItemDisc)})</span>` : ''}
                     </div>
                 </div>
                 <!-- Stepper & Subtotal -->
@@ -1323,6 +1457,7 @@ const renderCart = () => {
                         </button>
                     </div>
                     <p class="text-xs font-black mt-1.5" style="color:var(--color-primary)">${fRp(item.subtotal)}</p>
+                    ${itemHpp > 0 ? `<p class="text-[9px] font-bold ${itemMargin >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-500'} mt-0.5" title="Estimasi laba kotor item ini"><i class="fa-solid fa-arrow-trend-up text-[8px] mr-0.5"></i>Untung: ${fRp(itemMargin)}</p>` : ''}
                 </div>
             </div>`;
         }).join('');
@@ -1332,6 +1467,14 @@ const renderCart = () => {
     document.querySelectorAll('.pos-subtotal-target').forEach(e => e.textContent = formattedSub);
     document.querySelectorAll('.pos-total-target').forEach(e => e.textContent = formattedTotal);
     document.querySelectorAll('.pos-item-count-target').forEach(e => e.textContent = formatQty(totalQty));
+
+    const totalCartHpp = getCartTotalHpp();
+    const formattedTotalHpp = fRp(totalCartHpp);
+    const totalMargin = Math.max(0, total - totalCartHpp);
+    const formattedTotalMargin = fRp(totalMargin);
+
+    document.querySelectorAll('.pos-total-hpp-target').forEach(e => e.textContent = formattedTotalHpp);
+    document.querySelectorAll('.pos-total-margin-target').forEach(e => e.textContent = formattedTotalMargin);
 
     const discAmt = posDiscountAmount();
     const formattedDiscAmt = fRp(discAmt);
@@ -1444,6 +1587,12 @@ const renderCart = () => {
 // ─── Modal Bayar ─────────────────────────────────────────────
 export const openPayModal = () => {
     if (posCart.length === 0) { showToast('Keranjang masih kosong!', 'warning'); return; }
+    const totalCartHpp = getCartTotalHpp();
+    if (totalCartHpp > 0 && posTotal() < totalCartHpp) {
+        showToast(`Transaksi ditolak! Total tagihan (${fRp(posTotal())}) tidak boleh di bawah harga modal HPP (${fRp(totalCartHpp)})!`, 'error');
+        if (typeof window.triggerHaptic === 'function') window.triggerHaptic('heavy');
+        return;
+    }
     if (typeof window.pushModalHistory === 'function') window.pushModalHistory('posPayment');
     posCustomer   = { name: '', phone: '', isMember: false, memberId: null, isNewTempo: false };
     posPayMethod  = 'cash';
@@ -1461,7 +1610,10 @@ export const openPayModal = () => {
               <i class="fa-solid fa-cash-register" style="color:var(--color-primary)"></i>
               <span>Proses Pembayaran Kasir</span>
             </h2>
-            <p class="text-xs text-slate-500 mt-0.5">Total Tagihan: <span class="font-black text-sm" style="color:var(--color-primary)">${fRp(posTotal())}</span></p>
+            <div class="flex items-center gap-2 mt-0.5 flex-wrap">
+              <span class="text-xs text-slate-500">Total Tagihan: <span class="font-black text-sm" style="color:var(--color-primary)">${fRp(posTotal())}</span></span>
+              ${totalCartHpp > 0 ? `<span class="inline-flex items-center gap-1 text-[10px] font-bold text-amber-950 bg-amber-100 dark:bg-amber-950/60 dark:text-amber-300 px-2 py-0.5 rounded-full border border-amber-300/80 dark:border-amber-700 shadow-2xs"><i class="fa-solid fa-coins text-[8px] text-amber-600 dark:text-amber-400"></i>HPP: ${fRp(totalCartHpp)}</span>` : ''}
+            </div>
           </div>
           <button onclick="window.closePayModal()" class="w-9 h-9 rounded-xl bg-slate-200/60 dark:bg-slate-700/60 text-slate-500 hover:text-slate-800 dark:hover:text-white text-lg flex items-center justify-center transition-all leading-none cursor-pointer">×</button>
         </div>
@@ -1541,10 +1693,23 @@ const renderPayDetail = (method) => {
     const d = el('pos-pay-detail');
     if (!d) return;
     const total  = posTotal();
+    const totalCartHpp = getCartTotalHpp();
+    const estMargin = Math.max(0, total - totalCartHpp);
     const topRow = `
-      <div class="flex justify-between items-center py-2 px-3 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-100 dark:border-slate-700/60 mb-2.5 text-xs">
-        <span class="text-slate-500 font-medium">Total yang Harus Dibayar</span>
-        <span class="font-black text-sm" style="color:var(--color-primary)">${fRp(total)}</span>
+      <div class="p-3 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-100 dark:border-slate-700/60 mb-2.5 text-xs space-y-1.5">
+        <div class="flex justify-between items-center">
+          <span class="text-slate-500 font-medium">Total yang Harus Dibayar</span>
+          <span class="font-black text-sm" style="color:var(--color-primary)">${fRp(total)}</span>
+        </div>
+        ${totalCartHpp > 0 ? `
+        <div class="flex justify-between items-center pt-1.5 border-t border-slate-200/60 dark:border-slate-700/60 text-[10px]">
+          <span class="text-slate-400 font-semibold flex items-center gap-1"><i class="fa-solid fa-coins text-amber-500"></i> Total Modal (HPP):</span>
+          <span class="font-bold text-amber-600 dark:text-amber-400">${fRp(totalCartHpp)}</span>
+        </div>
+        <div class="flex justify-between items-center text-[10px]">
+          <span class="text-slate-400 font-semibold flex items-center gap-1"><i class="fa-solid fa-arrow-trend-up text-emerald-500"></i> Estimasi Laba Bersih:</span>
+          <span class="font-bold text-emerald-600 dark:text-emerald-400">+ ${fRp(estMargin)}</span>
+        </div>` : ''}
       </div>`;
 
     if (method === 'cash') {
@@ -2044,6 +2209,12 @@ export const lookupPosMember = async () => {
 // ─── Proses Transaksi ────────────────────────────────────────
 export const processPOSTx = async () => {
     if (posCart.length === 0) { showToast('Keranjang kosong!', 'warning'); return; }
+    const totalCartHpp = getCartTotalHpp();
+    if (totalCartHpp > 0 && posTotal() < totalCartHpp) {
+        showToast(`Transaksi ditolak! Total transaksi (${fRp(posTotal())}) tidak boleh di bawah total harga modal HPP (${fRp(totalCartHpp)})!`, 'error');
+        if (typeof window.triggerHaptic === 'function') window.triggerHaptic('heavy');
+        return;
+    }
     const custName = posCustomer.isMember
         ? (posCustomer.name || 'Member Toko')
         : (el('pos-cust-name')?.value?.trim() || 'Pelanggan Umum');
@@ -2133,6 +2304,7 @@ export const processPOSTx = async () => {
                 name: i.name,
                 price: parseFloat(i.price) || 0,
                 basePrice: parseFloat(i.basePrice || i.price) || 0,
+                hpp: i.hpp != null ? parseFloat(i.hpp) : (getEffHpp(i) || 0),
                 qty: parseFloat(i.qty) || 1,
                 discount: parseFloat(i.discount) || 0,
                 subtotal: parseFloat(i.subtotal) || 0,
@@ -2164,6 +2336,8 @@ export const processPOSTx = async () => {
             globalDiscount: posDiscountAmount(),
             discountType: posDiscountType,
             discountVal: posDiscountVal,
+            totalHpp: totalCartHpp,
+            grossProfit: Math.max(0, posTotal() - totalCartHpp),
             total: posTotal(),
             isTempo: posPayMethod === 'tempo',
             pointsEarned: 0,
@@ -2553,6 +2727,14 @@ const buildPOSLayout = ({ isStorefront }) => {
                         <span>Subtotal Item</span>
                         <span class="pos-subtotal-target font-bold text-slate-800 dark:text-slate-200">Rp 0</span>
                     </div>
+                    <div class="flex justify-between text-xs text-slate-500 font-medium">
+                        <span class="flex items-center gap-1"><i class="fa-solid fa-coins text-amber-500 text-[10px]"></i> Total Modal (HPP)</span>
+                        <span class="pos-total-hpp-target font-bold text-amber-600 dark:text-amber-400">Rp 0</span>
+                    </div>
+                    <div class="flex justify-between text-xs text-slate-500 font-medium">
+                        <span class="flex items-center gap-1"><i class="fa-solid fa-arrow-trend-up text-emerald-500 text-[10px]"></i> Estimasi Laba</span>
+                        <span class="pos-total-margin-target font-bold text-emerald-600 dark:text-emerald-400">Rp 0</span>
+                    </div>
                     <!-- Smart Diskon Transaksi Kasir (Rp / %) -->
                     <div class="space-y-1.5 p-2.5 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200/80 dark:border-slate-700/60 text-xs transition-colors" style="border-color:rgba(var(--color-primary-rgb),0.25)">
                         <div class="flex items-center justify-between">
@@ -2645,6 +2827,14 @@ const buildPOSLayout = ({ isStorefront }) => {
                     <div class="flex justify-between text-xs text-slate-500 font-medium">
                         <span>Subtotal Item</span>
                         <span class="pos-subtotal-target font-bold text-slate-700 dark:text-slate-200">Rp 0</span>
+                    </div>
+                    <div class="flex justify-between text-xs text-slate-500 font-medium">
+                        <span class="flex items-center gap-1"><i class="fa-solid fa-coins text-amber-500 text-[10px]"></i> Total Modal (HPP)</span>
+                        <span class="pos-total-hpp-target font-bold text-amber-600 dark:text-amber-400">Rp 0</span>
+                    </div>
+                    <div class="flex justify-between text-xs text-slate-500 font-medium">
+                        <span class="flex items-center gap-1"><i class="fa-solid fa-arrow-trend-up text-emerald-500 text-[10px]"></i> Estimasi Laba</span>
+                        <span class="pos-total-margin-target font-bold text-emerald-600 dark:text-emerald-400">Rp 0</span>
                     </div>
                     <!-- Smart Diskon Transaksi Kasir (Rp / %) di Mobile Drawer -->
                     <div class="space-y-1.5 p-2 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200/80 dark:border-slate-700/60 text-xs transition-colors" style="border-color:rgba(var(--color-primary-rgb),0.25)">
@@ -2815,6 +3005,7 @@ const exposeToWindow = () => {
     window.openPayModal            = openPayModal;
     window.closePayModal           = closePayModal;
     window.getPOSCart              = () => posCart;
+    window.getCartTotalHpp         = getCartTotalHpp;
     window.setPosCustomerType      = setPosCustomerType;
     window.setPosPayMethod         = setPosPayMethod;
     window.updatePosChange         = updatePosChange;
@@ -2903,16 +3094,44 @@ export const posSetDiscountType = (type) => {
 };
 
 export const posSetDiscountVal = (val) => {
-    posDiscountVal = Math.max(0, parseFloat(val) || 0);
-    posGlobalDisc = posDiscountAmount();
+    const rawVal = Math.max(0, parseFloat(val) || 0);
+    const totalHpp = getCartTotalHpp();
+    const subtotal = posSubtotal();
+    const maxAllowedDisc = totalHpp > 0 ? Math.max(0, subtotal - totalHpp) : subtotal;
+
+    if (posDiscountType === 'percent') {
+        const pct = Math.min(100, rawVal);
+        const discAmt = Math.round((subtotal * pct) / 100);
+        if (totalHpp > 0 && discAmt > maxAllowedDisc) {
+            const maxPct = subtotal > 0 ? Math.floor((maxAllowedDisc / subtotal) * 100) : 0;
+            showToast(`Diskon ${pct}% ditolak karena melebihi modal (Total HPP ${fRp(totalHpp)})! Diskon maksimal: ${maxPct}% (${fRp(maxAllowedDisc)})`, 'warning');
+            posDiscountVal = maxPct;
+            posGlobalDisc = Math.round((subtotal * maxPct) / 100);
+            renderCart();
+            if (typeof window.triggerHaptic === 'function') window.triggerHaptic('heavy');
+            return;
+        }
+        posDiscountVal = pct;
+        posGlobalDisc = discAmt;
+    } else {
+        const discAmt = rawVal;
+        if (totalHpp > 0 && discAmt > maxAllowedDisc) {
+            showToast(`Diskon ditolak! Total transaksi tidak boleh di bawah harga modal (Total HPP ${fRp(totalHpp)}). Maksimal diskon: ${fRp(maxAllowedDisc)}`, 'warning');
+            posDiscountVal = maxAllowedDisc;
+            posGlobalDisc = maxAllowedDisc;
+            renderCart();
+            if (typeof window.triggerHaptic === 'function') window.triggerHaptic('heavy');
+            return;
+        }
+        posDiscountVal = discAmt;
+        posGlobalDisc = discAmt;
+    }
     renderCart();
 };
 
 export const posApplyQuickDiscount = (val, type) => {
     if (type) posDiscountType = type;
-    posDiscountVal = val;
-    posGlobalDisc = posDiscountAmount();
-    renderCart();
+    posSetDiscountVal(val);
     playCashierBeep();
 };
 
