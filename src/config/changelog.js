@@ -8,6 +8,24 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-9-46',
+        version: 'v1.9.46',
+        date: '2026-09-26',
+        title: 'Modul Supplier & Rekanan + Order Kulakan (Purchase Order) Terintegrasi',
+        category: 'feature',
+        badge: 'Supplier & Purchase Order v1.9.46',
+        items: [
+            'Modul Master Data Supplier & Rekanan: Database lengkap rekanan/pemasok mencakup nama perusahaan, kode unik, nama sales/PIC, nomor WhatsApp, kota, alamat gudang, rekening bank, dan termin pembayaran default (cash / tempo 7-60 hari / konsinyasi).',
+            'Profil Rekanan 3-Tab: Setiap supplier memiliki profil mendalam dengan tab Katalog Produk yang Disuplai, Riwayat Order Pembelian (PO), dan Kartu Hutang Usaha — lengkap dengan metrik ringkasan (total produk, total PO, dan outstanding debt).',
+            'Lacak Asal-Usul Barang: Setiap produk kini dapat dihubungkan ke supplier pemasoknya melalui dropdown di form edit produk. Badge rekanan tampil di kartu produk CMS Admin untuk identifikasi instan.',
+            'Order Kulakan / Purchase Order (PO): Sistem PO lengkap untuk pencatatan order ke supplier — pilih supplier, tanggal order, termin bayar, dan tambahkan item produk beserta qty dan harga beli.',
+            'Otomatis Restock Stok Gudang: Saat PO berstatus "Diterima", stok semua produk dalam order otomatis bertambah secara real-time tanpa perlu input manual per produk.',
+            'Manajemen Pembayaran Hutang Supplier: Catat pembayaran hutang ke supplier (cash / cicilan / tempo), lacak sisa hutang outstanding, tandai PO lunas, dan lihat riwayat pembayaran lengkap per PO.',
+            'Filter Produk per Supplier: Tabel produk CMS Admin mendukung filter berdasarkan supplier untuk melihat semua barang yang disuplai oleh rekanan tertentu.',
+            'Kirim WhatsApp 1-Klik ke Sales: Tombol shortcut WhatsApp langsung membuka chat dengan sales supplier dari dalam profil rekanan.'
+        ]
+    },
+    {
         id: 'log-1-9-45',
         version: 'v1.9.45',
         date: '2026-09-26',

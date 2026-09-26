@@ -20,8 +20,22 @@ export const aF = {
         {key:'video', label:'Link Video YouTube (Opsional)', type:'text'},
         {key:'img', label:'URL Gambar', type:'text'},
         {key:'category', label:'Kategori', type:'dynamic_select_category'}, {key:'subCategory', label:'Jenis / Sub-Kategori (Cth: Cat Tembok, Pipa PVC, Power Tools)', type:'text'}, {key:'brand', label:'Merek', type:'dynamic_select_brand'},
+        {key:'supplierId', label:'Supplier / Rekanan Pemasok', type:'dynamic_select_supplier'},
         {key:'tag', label:'Label/Tag', type:'text'}, {key:'isActive', label:'Status', type:'select', options:[{val:'true',text:'Tersedia'},{val:'false',text:'Habis'}]},
         {key:'desc', label:'Deskripsi Lengkap', type:'richtext'}, {key:'specTable', label:'Tabel Spesifikasi (Opsional)', type:'spec_table_builder'}, {key:'wholesale', label:'Grosir', type:'wholesale_builder'}, {key:'variants', label:'Varian', type:'variants_builder'}
+    ],
+    suppliers: [
+        {key:'code', label:'Kode Supplier (Cth: SUP-001)', type:'text'},
+        {key:'name', label:'Nama Perusahaan / Supplier', type:'text'},
+        {key:'picName', label:'Nama Sales / Kontak PIC', type:'text'},
+        {key:'phone', label:'Nomor WhatsApp / Telp Sales', type:'text'},
+        {key:'city', label:'Kota / Wilayah', type:'text'},
+        {key:'address', label:'Alamat Kantor / Gudang', type:'textarea'},
+        {key:'bankName', label:'Nama Bank Rekening', type:'text'},
+        {key:'bankAccount', label:'Nomor Rekening', type:'text'},
+        {key:'bankHolder', label:'Atas Nama Pemilik Rekening', type:'text'},
+        {key:'defaultTerm', label:'Termin / Cara Bayar Default', type:'select', options:[{val:'cash',text:'Cash / Tunai / Transfer'},{val:'tempo_7',text:'Tempo 7 Hari'},{val:'tempo_14',text:'Tempo 14 Hari'},{val:'tempo_30',text:'Tempo 30 Hari'},{val:'tempo_60',text:'Tempo 60 Hari'},{val:'konsinyasi',text:'Konsinyasi / Barang Titipan'}]},
+        {key:'notes', label:'Catatan / Jadwal Rutin Kunjungan Sales', type:'textarea'}
     ],
     colors: [
         {key:'name', label:'Nama Warna', type:'text'},
