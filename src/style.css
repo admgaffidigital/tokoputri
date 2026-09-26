@@ -738,6 +738,60 @@ body {
     padding-right: max(0.75rem, env(safe-area-inset-right, 0.75rem));
 }
 
+/* ============================================================
+   POS KASIR STOREFRONT HEADER (ANTI-STATUS BAR COLLISION)
+   Menjamin header POS Kasir di aplikasi Android & iOS tidak
+   bertabrakan dengan System Status Bar, Notch, maupun Dynamic Island.
+   ============================================================ */
+.pos-storefront-header {
+    background: var(--color-primary) !important;
+    z-index: 30 !important;
+    border-bottom: 0 !important;
+    box-shadow: none !important;
+    box-sizing: border-box !important;
+    width: 100% !important;
+    flex-shrink: 0 !important;
+    /* Android Status Bar (24-36px), Punch Hole, & iOS Notch Safe Padding */
+    padding-top: max(1.25rem, env(safe-area-inset-top, 1.25rem)) !important;
+    padding-left: max(0.75rem, env(safe-area-inset-left, 0.75rem)) !important;
+    padding-right: max(0.75rem, env(safe-area-inset-right, 0.75rem)) !important;
+    padding-bottom: 0.625rem !important;
+    min-height: calc(3.5rem + max(1.25rem, env(safe-area-inset-top, 1.25rem))) !important;
+}
+
+@media (min-width: 640px) {
+    .pos-storefront-header {
+        padding-top: max(0.75rem, env(safe-area-inset-top, 0.75rem)) !important;
+        padding-bottom: 0.75rem !important;
+        min-height: calc(3.25rem + max(0.75rem, env(safe-area-inset-top, 0.75rem))) !important;
+    }
+}
+
+/* POS Kasir Mobile Cart Drawer Header Safe Area */
+.pos-mobile-cart-header {
+    box-sizing: border-box !important;
+    padding-top: max(1.25rem, env(safe-area-inset-top, 1.25rem)) !important;
+    padding-left: max(0.875rem, env(safe-area-inset-left, 0.875rem)) !important;
+    padding-right: max(0.875rem, env(safe-area-inset-right, 0.875rem)) !important;
+    padding-bottom: 0.625rem !important;
+}
+
+@media (min-width: 640px) {
+    .pos-mobile-cart-header {
+        padding-top: max(0.75rem, env(safe-area-inset-top, 0.75rem)) !important;
+        padding-bottom: 0.75rem !important;
+    }
+}
+
+/* Proteksi Ekstra Saat Berjalan di Aplikasi Native Android / Capacitor */
+.is-native-app .pos-storefront-header {
+    padding-top: max(1.5rem, env(safe-area-inset-top, 1.5rem)) !important;
+    min-height: calc(3.5rem + max(1.5rem, env(safe-area-inset-top, 1.5rem))) !important;
+}
+.is-native-app .pos-mobile-cart-header {
+    padding-top: max(1.5rem, env(safe-area-inset-top, 1.5rem)) !important;
+}
+
 .glass-nav { 
     background: #ffffff; 
     border-top: 1.5px solid rgba(203, 213, 225, 0.9); 

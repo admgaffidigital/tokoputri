@@ -8,6 +8,20 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-9-40',
+        version: 'v1.9.40',
+        date: '2026-09-26',
+        title: 'Solusi Tuntas Header POS Kasir Android: Proteksi Status Bar & Notch Kamera (Anti-Collision Safe-Area Inset) & Harmonisasi Tema Glass-Header',
+        category: 'bugfix',
+        badge: 'Android Safe-Area & POS Header v1.9.40',
+        items: [
+            'Proteksi Anti-Tabrakan Status Bar Android: Mengganti kelas arbitrary value pada header POS kasir storefront dengan kelas terdedikasi .pos-storefront-header yang menerapkan padding-top: max(1.25rem, env(safe-area-inset-top, 1.25rem)) dan proteksi khusus aplikasi native (.is-native-app) max(1.5rem, env(safe-area-inset-top, 1.5rem)), memastikan tombol kembali, nama toko, dan status kasir tidak pernah lagi tertimpa oleh bilah status jam/baterai maupun poni kamera (punch hole/notch) smartphone.',
+            'Harmonisasi Kelas .glass-header pada Terminal POS: Mengadopsi arsitektur glass-header yang konsisten dengan halaman storefront lainnya, dilengkapi padding-bottom lega (0.625rem), touch target ergonomis (≥ 44px), serta safe padding sisi kiri dan kanan (safe-area-inset-left/right).',
+            'Proteksi Safe-Area pada Mobile Cart Drawer: Memperbaiki kontainer header drawer keranjang belanja kasir mobile (.pos-mobile-cart-header) agar tetap memiliki jarak aman dari bilah atas sistem saat dibuka dalam mode layar penuh di ponsel.',
+            'Deteksi Runtime Native App Cerdas: Menambahkan pendeteksian otomatis window.AndroidNativeApp dan window.Capacitor di level root DOM (document.documentElement.classList.add("is-native-app")) guna memastikan perangkat Android secara presisi mendapatkan jarak bernapas status bar yang pas dan presisi.'
+        ]
+    },
+    {
         id: 'log-1-9-39',
         version: 'v1.9.39',
         date: '2026-09-26',

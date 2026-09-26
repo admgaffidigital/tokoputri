@@ -87,8 +87,12 @@ if (typeof history !== 'undefined' && 'scrollRestoration' in history) {
     history.scrollRestoration = 'manual';
 }
 window.scrollTo(0, 0);
-if (document.documentElement) document.documentElement.scrollTop = 0;
-if (document.body) document.body.scrollTop = 0;
+// Deteksi runtime aplikasi native Android / Capacitor untuk penerapan safe-area status bar
+if (typeof window !== 'undefined') {
+    if (window.AndroidNativeApp || window.Capacitor || (window.location && (window.location.protocol === 'capacitor:' || window.location.protocol === 'ionic:'))) {
+        document.documentElement.classList.add('is-native-app');
+    }
+}
 
 setupHistoryRouter();
 
