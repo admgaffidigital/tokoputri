@@ -8,6 +8,24 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-9-47',
+        version: 'v1.9.47',
+        date: '2026-09-26',
+        title: 'Harmonisasi Tema Penuh & Native App Bottom Sheet — Supplier & Order Kulakan (PO)',
+        category: 'optimization',
+        badge: 'Native Bottom Sheet v1.9.47',
+        items: [
+            'Eliminasi Latar Hitam Modal: Mengganti dark:bg-slate-850 (kelas Tailwind tidak valid) dan bg-black/60 yang menghasilkan latar belakang modal pitch-black dengan bg-slate-950/40 backdrop-blur-sm yang elegan dan semi-transparan.',
+            'Native Mobile Bottom Sheet: Semua modal Supplier (detail, form) dan Order Kulakan PO (form, detail, bayar) kini tampil sebagai bottom sheet ala app native Android/iOS — rounded-t-[2rem] di mobile, centered di desktop, disertai drag pill indicator (.pull-indicator) di atas setiap sheet.',
+            'Hero Banner Tematis: Menambahkan ambient hero banner dengan glow var(--color-primary) di header modul Supplier & Rekanan dan Order Kulakan sebagai titik orientasi visual utama.',
+            'Kartu Metrik Selaras Tema: Mengganti kartu .card-modern yang memiliki hardcoded dark background dengan kartu bg-white/95 dark:bg-slate-800/80 yang bersih dan kompatibel dark mode.',
+            'Filter Tab Tema Konsisten: Semua tab filter status PO kini menggunakan primary-bg text-white saat aktif, menggantikan warna bg-indigo-600/teal-600/amber-600 yang tidak selaras tema.',
+            'CSS Kelas Baru (.modal-bottom-sheet, .pull-indicator, .hide-scrollbar): Ditambahkan ke style.css untuk mendukung perancangan native app sheet di seluruh codebase.',
+            'Sticky Action Footer: Tombol Simpan di form PO kini sticky di bawah modal dengan background frosted glass sehingga selalu terjangkau ibu jari tanpa scroll panjang.',
+            'Scrollbar Tersembunyi: Menerapkan .hide-scrollbar pada konten modal untuk menghilangkan scrollbar tebal bergaya desktop yang tidak native di layar sentuh.'
+        ]
+    },
+    {
         id: 'log-1-9-46',
         version: 'v1.9.46',
         date: '2026-09-26',

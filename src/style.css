@@ -1500,11 +1500,8 @@ html.dark .card-modern:hover {
 /* Inner elements / Inputs inside cards for unified contrast */
 html.dark select,
 html.dark #search-input,
-html.dark .admin-input,
-html.dark .bg-slate-50,
-html.dark .dark\:bg-slate-800\/50,
-html.dark .dark\:bg-slate-800\/60 { 
-    background-color: #0b1121 !important; 
+html.dark .admin-input { 
+    background-color: #131c2e !important; 
     border-color: #1e293b !important; 
     color: #f1f5f9 !important; 
 }
@@ -1513,6 +1510,21 @@ html.dark .admin-input::placeholder { color: #64748b !important; }
 html.dark .custom-radio:checked + div { background-color: rgba(var(--color-primary-rgb), 0.12); border-color: var(--color-primary); }
 html.dark .pull-indicator { background-color: #334155; }
 html.dark .modal-bottom-sheet:hover .pull-indicator { background-color: #475569; }
+
+/* Modal & Bottom Sheet Dark Mode Parity */
+.modal-bottom-sheet { background-color: #ffffff; }
+html.dark .modal-bottom-sheet,
+html.dark [id*="modal-"][id*="-box"] {
+    background-color: #0f172a !important;
+    border-color: #1e293b !important;
+    color: #f8fafc !important;
+}
+html.dark .modal-bottom-sheet .admin-input,
+html.dark [id*="modal-"][id*="-box"] .admin-input {
+    background-color: #1e293b !important;
+    border-color: #334155 !important;
+    color: #f8fafc !important;
+}
 
 /* Dark mode scrollbars */
 html.dark ::-webkit-scrollbar { width: 6px; height: 6px; }
@@ -2489,3 +2501,55 @@ html.dark .backup-sync-hero {
     border-color: rgba(var(--color-primary-rgb), 0.38) !important;
     box-shadow: 0 4px 20px -4px rgba(0, 0, 0, 0.35) !important;
 }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   NATIVE MOBILE BOTTOM SHEET — Tampilan Modal Ala App Native Android/iOS
+   v1.9.47
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* Container sheet */
+.modal-bottom-sheet {
+    will-change: transform;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Drag pill indicator */
+.pull-indicator {
+    width: 36px;
+    height: 4px;
+    background-color: #cbd5e1;
+    border-radius: 2px;
+    margin: 12px auto 4px;
+    flex-shrink: 0;
+}
+html.dark .pull-indicator {
+    background-color: #475569;
+}
+@media (min-width: 640px) {
+    .pull-indicator {
+        display: none;
+    }
+}
+
+/* Hide scrollbar while keeping scrollability */
+.hide-scrollbar {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE / Edge */
+}
+.hide-scrollbar::-webkit-scrollbar {
+    display: none; /* Chrome / Safari / Opera */
+}
+
+/* ─── NATIVE MODAL DARK MODE OVERRIDES ─── */
+html.dark .modal-bottom-sheet {
+    background-color: #0f172a;
+    border-color: #1e293b;
+}
+html.dark .modal-bottom-sheet input,
+html.dark .modal-bottom-sheet select,
+html.dark .modal-bottom-sheet textarea {
+    background-color: #1e293b;
+    border-color: #334155;
+    color: #e2e8f0;
+}
+

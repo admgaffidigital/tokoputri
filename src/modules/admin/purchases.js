@@ -148,50 +148,80 @@ export const renderPurchasesView = () => {
 
     setH('admin-content', `
         <div class="space-y-5 fade-in max-w-5xl mx-auto pb-24 pt-2">
-            <!-- 1. HEADER & SUMMARY METRICS -->
+            <!-- 0. HERO BANNER PENGADAAN & ORDER KULAKAN (PO) -->
+            <div class="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 p-5 sm:p-7 text-white shadow-xl border border-slate-700/60">
+                <div class="absolute -right-12 -top-12 w-64 h-64 rounded-full blur-3xl pointer-events-none opacity-25" style="background: radial-gradient(circle, var(--color-primary) 0%, transparent 70%);"></div>
+                <div class="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-5">
+                    <div class="space-y-1.5 max-w-xl">
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-white/10 backdrop-blur-md border border-white/15">
+                            <i class="fa-solid fa-cart-flatbed" style="color:var(--color-primary)"></i>
+                            <span>Pengadaan &amp; Purchase Order (PO)</span>
+                        </div>
+                        <h2 class="text-xl sm:text-2xl font-black tracking-tight text-white">
+                            Order Kulakan &amp; Restock Barang Toko
+                        </h2>
+                        <p class="text-xs sm:text-sm text-slate-300/90 font-medium leading-relaxed">
+                            Kelola pesanan barang kulakan ke supplier rekanan, otomatisasi penerimaan stok masuk, dan pantau jatuh tempo hutang usaha.
+                        </p>
+                    </div>
+
+                    <div class="flex items-center gap-2 shrink-0">
+                        <button onclick="if(window.openAdminTab) window.openAdminTab('suppliers');" class="px-4 py-3 rounded-2xl bg-white/10 hover:bg-white/20 text-white border border-white/15 font-bold text-xs shadow-2xs transition-all flex items-center gap-2 cursor-pointer active:scale-95">
+                            <i class="fa-solid fa-truck-field" style="color:var(--color-primary)"></i>
+                            <span>Data Supplier</span>
+                        </button>
+                        <button onclick="window.openCreatePOModal()" class="px-5 py-3 rounded-2xl text-xs font-black text-white shadow-glow active:scale-95 transition-all flex items-center gap-2 cursor-pointer primary-bg hover:opacity-95">
+                            <i class="fa-solid fa-plus text-xs"></i>
+                            <span>Buat Order PO</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 1. SUMMARY METRICS CARDS -->
             <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-                <div class="card-modern p-4 sm:p-5 relative overflow-hidden">
-                    <div class="flex items-center justify-between mb-2">
-                        <span class="text-[9px] font-black uppercase tracking-widest text-slate-400">Kulakan Bulan Ini</span>
-                        <div class="w-8 h-8 rounded-xl bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 flex items-center justify-center text-sm shadow-2xs">
+                <div class="p-3.5 sm:p-4 rounded-2xl bg-white/95 dark:bg-slate-800/80 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs backdrop-blur-xs flex flex-col justify-between">
+                    <div class="flex items-center justify-between mb-1.5">
+                        <span class="text-[9px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">Kulakan Bulan Ini</span>
+                        <div class="w-7 h-7 rounded-xl primary-bg-soft primary-text flex items-center justify-center text-xs shadow-2xs">
                             <i class="fa-solid fa-cart-shopping"></i>
                         </div>
                     </div>
                     <p class="text-lg sm:text-xl font-black text-slate-800 dark:text-white tracking-tight">${fCur(metrics.monthPurchasesTotal)}</p>
-                    <p class="text-[10px] font-bold text-slate-400 mt-1">Total Belanja Modal Toko</p>
+                    <p class="text-[10px] font-bold text-slate-400 mt-0.5">Total Belanja Modal Toko</p>
                 </div>
 
-                <div class="card-modern p-4 sm:p-5 relative overflow-hidden">
-                    <div class="flex items-center justify-between mb-2">
-                        <span class="text-[9px] font-black uppercase tracking-widest text-amber-500">Hutang Belum Lunas</span>
-                        <div class="w-8 h-8 rounded-xl bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 flex items-center justify-center text-sm shadow-2xs">
+                <div class="p-3.5 sm:p-4 rounded-2xl bg-white/95 dark:bg-slate-800/80 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs backdrop-blur-xs flex flex-col justify-between">
+                    <div class="flex items-center justify-between mb-1.5">
+                        <span class="text-[9px] font-black uppercase tracking-wider text-amber-500">Hutang Belum Lunas</span>
+                        <div class="w-7 h-7 rounded-xl bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 flex items-center justify-center text-xs shadow-2xs">
                             <i class="fa-solid fa-file-invoice-dollar"></i>
                         </div>
                     </div>
                     <p class="text-lg sm:text-xl font-black text-amber-600 dark:text-amber-400 tracking-tight">${fCur(metrics.totalUnpaidDebt)}</p>
-                    <p class="text-[10px] font-bold text-slate-400 mt-1">Tempo ke Supplier</p>
+                    <p class="text-[10px] font-bold text-slate-400 mt-0.5">Tempo ke Supplier</p>
                 </div>
 
-                <div class="card-modern p-4 sm:p-5 relative overflow-hidden">
-                    <div class="flex items-center justify-between mb-2">
-                        <span class="text-[9px] font-black uppercase tracking-widest text-indigo-500">Menunggu Barang</span>
-                        <div class="w-8 h-8 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-sm shadow-2xs">
+                <div class="p-3.5 sm:p-4 rounded-2xl bg-white/95 dark:bg-slate-800/80 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs backdrop-blur-xs flex flex-col justify-between">
+                    <div class="flex items-center justify-between mb-1.5">
+                        <span class="text-[9px] font-black uppercase tracking-wider text-blue-500">Menunggu Barang</span>
+                        <div class="w-7 h-7 rounded-xl bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 flex items-center justify-center text-xs shadow-2xs">
                             <i class="fa-solid fa-truck-ramp-box"></i>
                         </div>
                     </div>
-                    <p class="text-xl sm:text-2xl font-black text-indigo-600 dark:text-indigo-400 tracking-tight">${metrics.pendingArrivalCount}</p>
-                    <p class="text-[10px] font-bold text-slate-400 mt-1">PO Sedang Dikirim</p>
+                    <p class="text-xl sm:text-2xl font-black text-blue-600 dark:text-blue-400 tracking-tight">${metrics.pendingArrivalCount}</p>
+                    <p class="text-[10px] font-bold text-slate-400 mt-0.5">PO Sedang Dikirim</p>
                 </div>
 
-                <div class="card-modern p-4 sm:p-5 relative overflow-hidden">
-                    <div class="flex items-center justify-between mb-2">
-                        <span class="text-[9px] font-black uppercase tracking-widest text-emerald-500">PO Selesai / Lunas</span>
-                        <div class="w-8 h-8 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-sm shadow-2xs">
+                <div class="p-3.5 sm:p-4 rounded-2xl bg-white/95 dark:bg-slate-800/80 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs backdrop-blur-xs flex flex-col justify-between">
+                    <div class="flex items-center justify-between mb-1.5">
+                        <span class="text-[9px] font-black uppercase tracking-wider text-emerald-500">PO Selesai / Lunas</span>
+                        <div class="w-7 h-7 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-xs shadow-2xs">
                             <i class="fa-solid fa-circle-check"></i>
                         </div>
                     </div>
                     <p class="text-xl sm:text-2xl font-black text-emerald-600 dark:text-emerald-400 tracking-tight">${metrics.completedCount}</p>
-                    <p class="text-[10px] font-bold text-slate-400 mt-1">Stok Masuk &amp; Lunas</p>
+                    <p class="text-[10px] font-bold text-slate-400 mt-0.5">Stok Masuk &amp; Lunas</p>
                 </div>
             </div>
 
@@ -205,42 +235,42 @@ export const renderPurchasesView = () => {
                         value="${esc(purchaseSearchQuery)}" 
                         placeholder="Cari no PO, nama supplier, atau nama barang..." 
                         oninput="window.handlePurchaseSearch(this.value)"
-                        class="w-full bg-white dark:bg-slate-800 border-[1.5px] border-slate-200 dark:border-slate-700 rounded-2xl py-3 pl-11 pr-4 text-xs sm:text-sm font-bold text-slate-700 dark:text-slate-200 focus:outline-none focus:border-[var(--color-primary)] focus:shadow-[0_0_0_3px_rgba(var(--color-primary-rgb),0.12)] shadow-2xs transition-all"
+                        class="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl py-3 pl-11 pr-4 text-xs sm:text-sm font-bold text-slate-700 dark:text-slate-200 focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/15 shadow-2xs transition-all"
                     >
                 </div>
 
                 <div class="flex items-center gap-2">
                     <button 
                         onclick="if(window.openAdminTab) window.openAdminTab('suppliers');" 
-                        class="px-4 py-3 rounded-2xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold text-xs sm:text-sm flex items-center gap-2 border border-slate-200 dark:border-slate-700 transition-all active:scale-95 shadow-2xs"
+                        class="px-4 py-3 rounded-2xl bg-white/90 dark:bg-slate-800/90 text-slate-700 dark:text-slate-200 font-bold text-xs sm:text-sm flex items-center gap-2 border border-slate-200/90 dark:border-slate-700/80 transition-all active:scale-95 shadow-2xs cursor-pointer hover:bg-white dark:hover:bg-slate-700"
                         title="Buka Master Database Rekanan &amp; Asal-Usul Barang"
                     >
-                        <i class="fa-solid fa-truck-field text-[var(--color-primary)]"></i>
+                        <i class="fa-solid fa-truck-field" style="color:var(--color-primary)"></i>
                         <span>Data Supplier</span>
                     </button>
 
                     <button 
                         onclick="window.openCreatePOModal()" 
-                        class="px-4 sm:px-5 py-3 rounded-2xl primary-bg text-white font-bold text-xs sm:text-sm flex items-center gap-2 shadow-glow hover:opacity-95 transition-all active:scale-95 shrink-0"
+                        class="px-4 sm:px-5 py-3 rounded-2xl primary-bg text-white font-bold text-xs sm:text-sm flex items-center gap-2 shadow-glow hover:opacity-95 transition-all active:scale-95 shrink-0 cursor-pointer"
                     >
                         <i class="fa-solid fa-cart-plus text-xs"></i>
-                        <span>+ Buat Order PO</span>
+                        <span>Buat Order PO</span>
                     </button>
                 </div>
             </div>
 
             <!-- 3. TAB FILTER STATUS PO -->
-            <div class="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar text-xs font-bold">
+            <div class="flex items-center gap-2 overflow-x-auto hide-scrollbar pb-1 text-xs font-bold">
                 <button 
                     onclick="window.setPurchaseFilter('all')" 
-                    class="px-4 py-2 rounded-xl transition-all shrink-0 ${activePOFilter === 'all' ? 'primary-bg text-white shadow-glow' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700'}"
+                    class="px-4 py-2 rounded-xl transition-all shrink-0 cursor-pointer ${activePOFilter === 'all' ? 'primary-bg text-white shadow-glow' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700'}"
                 >
                     Semua PO (${purchases.length})
                 </button>
 
                 <button 
                     onclick="window.setPurchaseFilter('ordered')" 
-                    class="px-4 py-2 rounded-xl transition-all shrink-0 flex items-center gap-1.5 ${activePOFilter === 'ordered' ? 'bg-indigo-600 text-white shadow-glow' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700'}"
+                    class="px-4 py-2 rounded-xl transition-all shrink-0 flex items-center gap-1.5 cursor-pointer ${activePOFilter === 'ordered' ? 'primary-bg text-white shadow-glow' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700'}"
                 >
                     <i class="fa-solid fa-clock text-[10px]"></i>
                     Dipesan / Dikirim (${purchases.filter(p => p.status === 'ordered').length})
@@ -248,7 +278,7 @@ export const renderPurchasesView = () => {
 
                 <button 
                     onclick="window.setPurchaseFilter('received')" 
-                    class="px-4 py-2 rounded-xl transition-all shrink-0 flex items-center gap-1.5 ${activePOFilter === 'received' ? 'bg-teal-600 text-white shadow-glow' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700'}"
+                    class="px-4 py-2 rounded-xl transition-all shrink-0 flex items-center gap-1.5 cursor-pointer ${activePOFilter === 'received' ? 'primary-bg text-white shadow-glow' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700'}"
                 >
                     <i class="fa-solid fa-boxes-stacked text-[10px]"></i>
                     Barang Diterima (${purchases.filter(p => p.status === 'received').length})
@@ -256,7 +286,7 @@ export const renderPurchasesView = () => {
 
                 <button 
                     onclick="window.setPurchaseFilter('unpaid')" 
-                    class="px-4 py-2 rounded-xl transition-all shrink-0 flex items-center gap-1.5 ${activePOFilter === 'unpaid' ? 'bg-amber-600 text-white shadow-glow' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700'}"
+                    class="px-4 py-2 rounded-xl transition-all shrink-0 flex items-center gap-1.5 cursor-pointer ${activePOFilter === 'unpaid' ? 'primary-bg text-white shadow-glow' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700'}"
                 >
                     <i class="fa-solid fa-file-invoice-dollar text-[10px]"></i>
                     Hutang Belum Lunas
@@ -264,7 +294,7 @@ export const renderPurchasesView = () => {
 
                 <button 
                     onclick="window.setPurchaseFilter('completed')" 
-                    class="px-4 py-2 rounded-xl transition-all shrink-0 flex items-center gap-1.5 ${activePOFilter === 'completed' ? 'bg-emerald-600 text-white shadow-glow' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700'}"
+                    class="px-4 py-2 rounded-xl transition-all shrink-0 flex items-center gap-1.5 cursor-pointer ${activePOFilter === 'completed' ? 'primary-bg text-white shadow-glow' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700'}"
                 >
                     <i class="fa-solid fa-check-double text-[10px]"></i>
                     Selesai / Lunas
@@ -274,13 +304,13 @@ export const renderPurchasesView = () => {
             <!-- 4. DAFTAR KARTU PURCHASE ORDER (PO) -->
             <div id="purchase-cards-list" class="space-y-3">
                 ${filtered.length === 0 ? `
-                    <div class="card-modern p-12 text-center flex flex-col items-center justify-center text-slate-400">
-                        <div class="w-16 h-16 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-3xl mb-3 text-slate-400">
+                    <div class="p-12 text-center flex flex-col items-center justify-center text-slate-400 bg-white/95 dark:bg-slate-800/80 rounded-2xl sm:rounded-3xl border border-slate-200/90 dark:border-slate-700/80">
+                        <div class="w-16 h-16 rounded-2xl primary-bg-soft primary-text flex items-center justify-center text-3xl mb-3 shadow-xs">
                             <i class="fa-solid fa-cart-flatbed"></i>
                         </div>
-                        <p class="font-bold text-sm text-slate-600 dark:text-slate-300">Belum Ada Order Pembelian (PO)</p>
+                        <p class="font-bold text-sm text-slate-700 dark:text-slate-200">Belum Ada Order Pembelian (PO)</p>
                         <p class="text-xs text-slate-400 mt-1 max-w-sm">Buat order pembelian kulakan ke supplier untuk mencatat barang masuk, memperbarui stok toko otomatis, dan melacak jatuh tempo hutang.</p>
-                        <button onclick="window.openCreatePOModal()" class="mt-4 px-5 py-2.5 rounded-xl primary-bg text-white font-bold text-xs shadow-glow">
+                        <button onclick="window.openCreatePOModal()" class="mt-4 px-5 py-2.5 rounded-xl primary-bg text-white font-bold text-xs shadow-glow cursor-pointer">
                             <i class="fa-solid fa-cart-plus mr-1.5"></i> Buat Order PO Pertama
                         </button>
                     </div>
@@ -288,24 +318,24 @@ export const renderPurchasesView = () => {
             </div>
         </div>
 
-        <!-- MODAL FORM PEMBUATAN / EDIT PURCHASE ORDER (PO) -->
-        <div id="modal-po-form" class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/60 backdrop-blur-xs hidden opacity-0 transition-opacity duration-200">
-            <div id="modal-po-form-box" class="bg-white dark:bg-slate-850 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-2xl w-full max-w-4xl max-h-[94vh] flex flex-col scale-95 transition-transform duration-200 overflow-hidden">
-                <div id="modal-po-form-content" class="flex-1 overflow-y-auto"></div>
+        <!-- MODAL FORM PEMBUATAN / EDIT PURCHASE ORDER (PO) (NATIVE BOTTOM SHEET) -->
+        <div id="modal-po-form" class="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-950/40 backdrop-blur-sm hidden opacity-0 transition-opacity duration-200">
+            <div id="modal-po-form-box" class="modal-bottom-sheet bg-white dark:bg-slate-900 rounded-t-[2rem] sm:rounded-3xl border border-slate-200/90 dark:border-slate-800 shadow-2xl w-full max-w-4xl max-h-[92vh] sm:max-h-[88vh] flex flex-col scale-95 transition-transform duration-200 overflow-hidden">
+                <div id="modal-po-form-content" class="flex-1 flex flex-col overflow-hidden"></div>
             </div>
         </div>
 
-        <!-- MODAL DETAIL & REVIEW PURCHASE ORDER -->
-        <div id="modal-po-detail" class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/60 backdrop-blur-xs hidden opacity-0 transition-opacity duration-200">
-            <div id="modal-po-detail-box" class="bg-white dark:bg-slate-850 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-2xl w-full max-w-3xl max-h-[92vh] flex flex-col scale-95 transition-transform duration-200 overflow-hidden">
-                <div id="modal-po-detail-content" class="flex-1 overflow-y-auto"></div>
+        <!-- MODAL DETAIL & REVIEW PURCHASE ORDER (NATIVE BOTTOM SHEET) -->
+        <div id="modal-po-detail" class="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-950/40 backdrop-blur-sm hidden opacity-0 transition-opacity duration-200">
+            <div id="modal-po-detail-box" class="modal-bottom-sheet bg-white dark:bg-slate-900 rounded-t-[2rem] sm:rounded-3xl border border-slate-200/90 dark:border-slate-800 shadow-2xl w-full max-w-3xl max-h-[92vh] sm:max-h-[88vh] flex flex-col scale-95 transition-transform duration-200 overflow-hidden">
+                <div id="modal-po-detail-content" class="flex-1 overflow-y-auto hide-scrollbar flex flex-col"></div>
             </div>
         </div>
 
-        <!-- MODAL BAYAR / CICIL HUTANG TEMPO PO -->
-        <div id="modal-po-payment" class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/60 backdrop-blur-xs hidden opacity-0 transition-opacity duration-200">
-            <div id="modal-po-payment-box" class="bg-white dark:bg-slate-850 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-2xl w-full max-w-md max-h-[90vh] flex flex-col scale-95 transition-transform duration-200 overflow-hidden">
-                <div id="modal-po-payment-content" class="flex-1 overflow-y-auto"></div>
+        <!-- MODAL BAYAR / CICIL HUTANG TEMPO PO (NATIVE BOTTOM SHEET) -->
+        <div id="modal-po-payment" class="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-950/40 backdrop-blur-sm hidden opacity-0 transition-opacity duration-200">
+            <div id="modal-po-payment-box" class="modal-bottom-sheet bg-white dark:bg-slate-900 rounded-t-[2rem] sm:rounded-3xl border border-slate-200/90 dark:border-slate-800 shadow-2xl w-full max-w-md max-h-[92vh] sm:max-h-[88vh] flex flex-col scale-95 transition-transform duration-200 overflow-hidden">
+                <div id="modal-po-payment-content" class="flex-1 overflow-y-auto hide-scrollbar flex flex-col"></div>
             </div>
         </div>
 
@@ -353,11 +383,11 @@ const renderPOCardHtml = (po) => {
     const cleanPhone = po.supplierPhone ? normalizeWA(po.supplierPhone) : '';
 
     return `
-        <div class="card-modern p-4 sm:p-5 border border-slate-200 dark:border-slate-700 hover:border-[var(--color-primary)]/40 dark:hover:border-[var(--color-primary)]/40 transition-all rounded-2xl sm:rounded-3xl shadow-2xs group">
+        <div class="bg-white/95 dark:bg-slate-800/90 p-4 sm:p-5 border border-slate-200/90 dark:border-slate-700/80 hover:border-[var(--color-primary)]/40 dark:hover:border-[var(--color-primary)]/40 transition-all rounded-2xl sm:rounded-3xl shadow-2xs group">
             <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
                 <!-- Sisi Kiri: Identitas PO & Supplier -->
                 <div class="flex items-start gap-3.5 min-w-0">
-                    <div class="w-12 h-12 rounded-2xl ${po.status === 'received' || po.status === 'completed' ? 'bg-teal-50 dark:bg-teal-950/40 text-teal-600 dark:text-teal-400' : 'bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400'} border border-slate-200 dark:border-slate-700 flex items-center justify-center text-xl shrink-0 font-black shadow-inner">
+                    <div class="w-12 h-12 rounded-2xl ${po.status === 'received' || po.status === 'completed' ? 'primary-bg-soft primary-text border primary-border' : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700'} flex items-center justify-center text-xl shrink-0 font-black shadow-inner">
                         <i class="fa-solid ${po.status === 'received' || po.status === 'completed' ? 'fa-boxes-stacked' : 'fa-cart-flatbed'}"></i>
                     </div>
 
@@ -640,9 +670,12 @@ const renderPOFormModalContent = (po, isEdit) => {
     const products = appData.products || [];
 
     setH('modal-po-form-content', `
-        <div class="p-5 sm:p-6 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+        <!-- DRAG PULL INDICATOR (NATIVE MOBILE SHEET) -->
+        <div class="pull-indicator"></div>
+
+        <div class="p-5 sm:p-6 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-900/40 shrink-0">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-2xl bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-lg">
+                <div class="w-10 h-10 rounded-2xl primary-bg-soft primary-text border primary-border flex items-center justify-center text-lg shrink-0">
                     <i class="fa-solid fa-cart-flatbed"></i>
                 </div>
                 <div>
@@ -650,12 +683,13 @@ const renderPOFormModalContent = (po, isEdit) => {
                     <p class="text-xs text-slate-400">Pilih supplier rekanan, tentukan daftar barang, harga modal HPP, dan termin pembayaran</p>
                 </div>
             </div>
-            <button onclick="window.closePOFormModal()" class="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-slate-800 dark:hover:text-white flex items-center justify-center transition-all">
+            <button onclick="window.closePOFormModal()" class="w-9 h-9 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-500 hover:text-slate-800 dark:hover:text-white flex items-center justify-center transition-all cursor-pointer">
                 <i class="fa-solid fa-xmark"></i>
             </button>
         </div>
 
-        <form id="po-editor-form" onsubmit="window.savePOForm(event, '${isEdit ? po.id : ''}')" class="p-5 sm:p-6 space-y-5">
+        <form id="po-editor-form" onsubmit="window.savePOForm(event, '${isEdit ? po.id : ''}')" class="flex-1 flex flex-col overflow-hidden">
+            <div class="p-5 sm:p-6 space-y-5 flex-1 overflow-y-auto hide-scrollbar">
             <!-- 1. IDENTITAS HEADER PO -->
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
@@ -760,12 +794,14 @@ const renderPOFormModalContent = (po, isEdit) => {
                 </div>
             </div>
 
-            <!-- TOMBOL SIMPAN -->
-            <div class="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-end gap-2.5">
-                <button type="button" onclick="window.closePOFormModal()" class="px-5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold text-xs hover:bg-slate-100 dark:hover:bg-slate-800 transition-all">
+            </div>
+
+            <!-- TOMBOL SIMPAN STICKY FOOTER -->
+            <div class="p-4 sm:p-5 border-t border-slate-100 dark:border-slate-800 flex items-center justify-end gap-2.5 bg-white/95 dark:bg-slate-900/95 sticky bottom-0 z-10 shrink-0 backdrop-blur-xs">
+                <button type="button" onclick="window.closePOFormModal()" class="px-5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold text-xs hover:bg-slate-100 dark:hover:bg-slate-800 transition-all cursor-pointer">
                     Batal
                 </button>
-                <button type="submit" class="px-6 py-2.5 rounded-xl primary-bg text-white font-bold text-xs shadow-glow transition-all active:scale-95">
+                <button type="submit" class="px-6 py-2.5 rounded-xl primary-bg text-white font-bold text-xs shadow-glow transition-all active:scale-95 cursor-pointer">
                     <i class="fa-solid fa-floppy-disk mr-1.5"></i> Simpan Order PO
                 </button>
             </div>
@@ -868,7 +904,7 @@ const renderPOItemsTable = () => {
                         const itemSubtotal = (parseFloat(item.qty) || 0) * (parseFloat(item.unitPrice) || 0);
 
                         return `
-                            <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-750 transition-colors">
+                            <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-700/50 transition-colors">
                                 <td class="py-2.5 px-3">
                                     <select class="admin-input bg-white dark:bg-slate-800 py-1.5 text-xs font-bold w-full" onchange="window.updatePOItemProduct(${idx}, this.value)">
                                         <option value="" class="text-slate-400">-- Pilih Produk --</option>
@@ -1213,21 +1249,24 @@ window.openPurchaseDetailModal = (poId) => {
     const balance = total - paid;
 
     setH('modal-po-detail-content', `
-        <div class="p-5 sm:p-6 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-900/30">
+        <!-- DRAG PULL INDICATOR (NATIVE MOBILE SHEET) -->
+        <div class="pull-indicator"></div>
+
+        <div class="p-5 sm:p-6 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-900/40">
             <div>
                 <div class="flex items-center gap-2">
                     <h3 class="font-mono font-black text-base sm:text-lg text-slate-800 dark:text-white tracking-tight">${esc(po.poNumber || po.id)}</h3>
-                    <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold ${po.status === 'received' || po.status === 'completed' ? 'bg-teal-50 text-teal-600 border border-teal-200' : 'bg-indigo-50 text-indigo-600 border border-indigo-200'}">
+                    <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold ${po.status === 'received' || po.status === 'completed' ? 'primary-bg-soft primary-text border primary-border' : 'bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-800'}">
                         ${po.status === 'ordered' ? 'Dipesan' : (po.status === 'received' ? 'Barang Diterima' : 'Selesai')}
                     </span>
                 </div>
                 <p class="text-xs text-slate-400 mt-0.5">Supplier: <b>${esc(po.supplierName)}</b> • Tanggal: ${formatDate(po.date || po.createdAt)}</p>
             </div>
             <div class="flex items-center gap-2">
-                <button onclick="window.printPurchaseOrder('${po.id}')" class="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 flex items-center justify-center transition-all hover:bg-slate-200" title="Cetak PO">
+                <button onclick="window.printPurchaseOrder('${po.id}')" class="w-9 h-9 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 flex items-center justify-center transition-all cursor-pointer" title="Cetak PO">
                     <i class="fa-solid fa-print text-xs"></i>
                 </button>
-                <button onclick="window.closePurchaseDetailModal()" class="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-slate-800 dark:hover:text-white flex items-center justify-center transition-all">
+                <button onclick="window.closePurchaseDetailModal()" class="w-9 h-9 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-500 hover:text-slate-800 dark:hover:text-white flex items-center justify-center transition-all cursor-pointer">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>
@@ -1373,9 +1412,12 @@ window.openPurchasePaymentModal = (poId) => {
     if (!modal || !content) return;
 
     setH('modal-po-payment-content', `
-        <div class="p-5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+        <!-- DRAG PULL INDICATOR (NATIVE MOBILE SHEET) -->
+        <div class="pull-indicator"></div>
+
+        <div class="p-5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-900/40">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-2xl bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 flex items-center justify-center text-lg">
+                <div class="w-10 h-10 rounded-2xl bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 flex items-center justify-center text-lg border border-amber-200 dark:border-amber-800">
                     <i class="fa-solid fa-money-bill-wave"></i>
                 </div>
                 <div>
@@ -1383,7 +1425,7 @@ window.openPurchasePaymentModal = (poId) => {
                     <p class="text-xs text-slate-400">${esc(po.supplierName)} • ${esc(po.poNumber || po.id)}</p>
                 </div>
             </div>
-            <button onclick="window.closePurchasePaymentModal()" class="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-slate-800 dark:hover:text-white flex items-center justify-center transition-all">
+            <button onclick="window.closePurchasePaymentModal()" class="w-9 h-9 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-500 hover:text-slate-800 dark:hover:text-white flex items-center justify-center transition-all cursor-pointer">
                 <i class="fa-solid fa-xmark"></i>
             </button>
         </div>
