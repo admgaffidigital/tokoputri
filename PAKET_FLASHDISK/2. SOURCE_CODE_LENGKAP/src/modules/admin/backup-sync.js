@@ -430,7 +430,7 @@ export const downloadFullBackupJSON = async () => {
         const backupPayload = {
             _meta: {
                 appName: "Toko Putri Super App",
-                version: "1.9.36",
+                version: "1.9.49",
                 backupType: "full_ecosystem",
                 createdAt: now.toISOString(),
                 exportedBy: window.isAdm ? 'Seller Admin' : 'Staff',

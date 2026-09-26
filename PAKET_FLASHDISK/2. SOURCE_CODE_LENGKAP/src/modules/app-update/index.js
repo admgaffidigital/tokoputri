@@ -50,7 +50,7 @@ export const fetchLatestReleaseInfo = async () => {
     if (cachedReleaseInfo) return cachedReleaseInfo;
     if (isFetchingRelease) return null;
 
-    const localVer = getLatestVersion(appData) || 'v1.9.36';
+    const localVer = getLatestVersion(appData) || 'v1.9.49';
 
     isFetchingRelease = true;
     try {
@@ -72,7 +72,7 @@ export const fetchLatestReleaseInfo = async () => {
             cachedReleaseInfo = {
                 tagName: effectiveTag,
                 name: `Toko Putri ${effectiveTag}`,
-                publishedAt: isGitHubOlder ? '24 Sep 2026' : formatReleaseDate(data.published_at),
+                publishedAt: isGitHubOlder ? '26 Sep 2026' : formatReleaseDate(data.published_at),
                 fileSize: apkAsset ? formatFileSize(apkAsset.size) : '8.0 MB',
                 downloadUrl: apkAsset?.browser_download_url || GITHUB_LATEST_DOWNLOAD_URL,
                 notes: data.body || '',
@@ -83,11 +83,11 @@ export const fetchLatestReleaseInfo = async () => {
         }
     } catch (err) {
         // Fallback anggun ke konfigurasi changelog internal
-        const fallbackVer = getLatestVersion(appData) || 'v1.9.36';
+        const fallbackVer = getLatestVersion(appData) || 'v1.9.49';
         cachedReleaseInfo = {
             tagName: fallbackVer,
             name: `Toko Putri ${fallbackVer}`,
-            publishedAt: '25 Sep 2026',
+            publishedAt: '26 Sep 2026',
             fileSize: '8.0 MB',
             downloadUrl: GITHUB_LATEST_DOWNLOAD_URL,
             notes: '',
@@ -217,14 +217,14 @@ const ensureAppDownloadModalDOM = () => {
             <div class="space-y-2">
                 <button id="btn-download-apk-action" onclick="downloadLatestApk()" class="w-full py-3.5 px-6 rounded-2xl bg-[#01875f] hover:bg-[#01704f] active:scale-[0.98] text-white font-extrabold text-sm sm:text-base flex items-center justify-center gap-3 shadow-lg shadow-emerald-600/25 transition-all cursor-pointer group">
                     <i class="fa-solid fa-download group-hover:translate-y-0.5 transition-transform" id="btn-download-apk-icon"></i>
-                    <span id="btn-download-apk-text">Unduh &amp; Pasang APK (<span id="app-modal-version-tag">v1.9.36</span>)</span>
+                    <span id="btn-download-apk-text">Unduh &amp; Pasang APK (<span id="app-modal-version-tag">v1.9.49</span>)</span>
                 </button>
                 <div class="flex items-center justify-between px-1 text-[10px] font-bold text-slate-400 dark:text-slate-500">
                     <span class="flex items-center gap-1.5">
                         <i class="fa-brands fa-android text-emerald-500 text-xs"></i>
                         <span>Kompatibel: Android 7.0 (Nougat) s/d Android 15</span>
                     </span>
-                    <span id="app-modal-published-date" class="hidden sm:inline">Rilis: 25 Sep 2026</span>
+                    <span id="app-modal-published-date" class="hidden sm:inline">Rilis: 26 Sep 2026</span>
                 </div>
             </div>
 
@@ -248,12 +248,12 @@ const ensureAppDownloadModalDOM = () => {
                 </div>
             </div>
 
-            <!-- Apa yang Baru (Highlights Changelog v1.9.36) -->
+            <!-- Apa yang Baru (Highlights Changelog v1.9.49) -->
             <div class="space-y-2.5">
                 <div class="flex items-center justify-between">
                     <h3 class="text-xs sm:text-sm font-black text-slate-900 dark:text-white flex items-center gap-2">
                         <i class="fa-solid fa-sparkles text-amber-500"></i>
-                        <span>Apa yang Baru di v1.9.36</span>
+                        <span>Apa yang Baru di v1.9.49</span>
                     </h3>
                     <button type="button" onclick="closeAppDownloadModal(); if(typeof window.openChangelogModal==='function') window.openChangelogModal();" class="text-[10px] font-bold text-[var(--color-primary)] hover:underline cursor-pointer">
                         Lihat Semua Riwayat
@@ -264,37 +264,37 @@ const ensureAppDownloadModalDOM = () => {
                     <div class="flex items-start gap-2.5 text-slate-700 dark:text-slate-300">
                         <i class="fa-solid fa-circle-check text-emerald-500 mt-0.5 text-[11px] shrink-0"></i>
                         <span class="font-medium text-[11px] leading-relaxed">
-                            <b>Single Shift Akun Kasir &amp; Auto-Resume Multi-Device:</b> 1 akun kasir hanya membuka 1 shift aktif, dapat berpindah bebas antara PC, HP, dan tablet tanpa harus membuka kas baru.
+                            <b>Adaptive Dual-Mode PO Item Builder:</b> Tampilan kartu sentuh native di mobile (stepper [-] [ 1 ] [+], monogram produk, input Rp modal HPP) dan tabel presisi di desktop.
                         </span>
                     </div>
                     <div class="flex items-start gap-2.5 text-slate-700 dark:text-slate-300">
                         <i class="fa-solid fa-circle-check text-emerald-500 mt-0.5 text-[11px] shrink-0"></i>
                         <span class="font-medium text-[11px] leading-relaxed">
-                            <b>Sinkronisasi Real-Time Dua Arah:</b> Transaksi penjualan, kas laci, dan kuantitas item otomatis terupdate seketika di semua perangkat kasir yang aktif bersamaan.
+                            <b>Segmented Touch Control Termin Pembayaran:</b> Pilihan sentuh instan Tunai, Tempo (preset 7/14/30/60 Hari), dan Konsinyasi dengan perhitungan jatuh tempo otomatis.
                         </span>
                     </div>
                     <div class="flex items-start gap-2.5 text-slate-700 dark:text-slate-300">
                         <i class="fa-solid fa-circle-check text-emerald-500 mt-0.5 text-[11px] shrink-0"></i>
                         <span class="font-medium text-[11px] leading-relaxed">
-                            <b>Dukungan Kuantitas Desimal POS Kasir:</b> Mendukung penjualan satuan pecahan desimal (seperti 0.5 kg, 1.25 m, 2.5 L) sinkron dengan keranjang storefront pembeli.
+                            <b>Database Rekanan &amp; Profil 3-Tab:</b> Master data rekanan lengkap dengan profil 3 tab (Katalog Produk, Riwayat PO, dan Kartu Hutang Usaha outstanding).
                         </span>
                     </div>
                     <div class="flex items-start gap-2.5 text-slate-700 dark:text-slate-300">
                         <i class="fa-solid fa-circle-check text-emerald-500 mt-0.5 text-[11px] shrink-0"></i>
                         <span class="font-medium text-[11px] leading-relaxed">
-                            <b>Lembar Keranjang POS Full-Height (Zero-Black-Backdrop):</b> Tampilan keranjang HP leluasa tanpa celah baris hitam di atas header dan anti-pemotongan judul counter.
+                            <b>Otomatis Restock Stok Gudang:</b> Stok fisik toko bertambah otomatis seketika saat order pembelian (PO) diterima tanpa input manual per barang.
                         </span>
                     </div>
                     <div class="flex items-start gap-2.5 text-slate-700 dark:text-slate-300">
                         <i class="fa-solid fa-circle-check text-emerald-500 mt-0.5 text-[11px] shrink-0"></i>
                         <span class="font-medium text-[11px] leading-relaxed">
-                            <b>Manajemen Shift Kasir &amp; Z-Report:</b> Rekonsiliasi fisik laci laci kasir (denominasi), deteksi selisih kas, dan cetak slip thermal ESC/POS 58mm/80mm.
+                            <b>Harmonisasi Tema Warna 100%:</b> Mengeliminasi warna kusam (*muddy tan/grey*) dengan engine dynamic translucent RGBA di semua tema warna &amp; mode gelap.
                         </span>
                     </div>
                     <div class="flex items-start gap-2.5 text-slate-700 dark:text-slate-300">
                         <i class="fa-solid fa-circle-check text-emerald-500 mt-0.5 text-[11px] shrink-0"></i>
                         <span class="font-medium text-[11px] leading-relaxed">
-                            <b>Integrasi Universal Printer Thermal POS:</b> Cetak struk kasir 58mm/80mm, Bluetooth ESC/POS, dan RawBT Android driver langsung dari kasir.
+                            <b>Standarisasi Sticky Action Footer 48px:</b> Bilah aksi bawah ergonomis di seluruh modal dengan safe-area padding dan micro-interaction active:scale-95.
                         </span>
                     </div>
                 </div>
@@ -454,7 +454,7 @@ export const downloadLatestApk = () => {
             icon.className = 'fa-solid fa-circle-check text-white';
         }
         if (text) {
-            const ver = cachedReleaseInfo?.tagName || getLatestVersion(appData) || 'v1.9.36';
+            const ver = cachedReleaseInfo?.tagName || getLatestVersion(appData) || 'v1.9.49';
             text.textContent = `Unduh Ulang APK (${ver})`;
         }
     }, 2500);
