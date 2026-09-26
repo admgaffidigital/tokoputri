@@ -2766,7 +2766,7 @@ const buildPOSLayout = ({ isStorefront }) => {
                         <div class="flex items-center gap-1.5">
                             <span class="text-[11px] font-bold text-slate-300">Total Transaksi</span>
                         </div>
-                        <p class="pos-total-target text-sm font-black" style="color:var(--color-primary-light,#34d399)">Rp 0</p>
+                        <p class="pos-total-target text-sm font-black text-emerald-400 dark:text-emerald-300">Rp 0</p>
                     </div>
                 </div>
                 <button onclick="event.stopPropagation(); window.openPOSCartDrawer();" class="px-4 py-2.5 rounded-xl font-black text-xs uppercase tracking-wider text-white shadow-lg active:scale-95 transition-all flex items-center gap-1.5 shrink-0" style="background:var(--color-primary)">

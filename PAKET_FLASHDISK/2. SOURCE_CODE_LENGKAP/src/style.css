@@ -1264,7 +1264,7 @@ body {
 
 .custom-radio:checked + div { 
     border-color: var(--color-primary); 
-    background-color: var(--color-primary-light); 
+    background-color: rgba(var(--color-primary-rgb), 0.12); 
     box-shadow: 0 0 0 2px rgba(var(--color-primary-rgb), 0.1); 
 }
 
@@ -1672,7 +1672,7 @@ html.dark .card-modern {
 
 /* === DYNAMIC THEME OPACITY BUG FIXES (ACCENT BOXES & BADGES) === */
 .accent-box {
-    background-color: var(--color-primary-light) !important;
+    background-color: rgba(var(--color-primary-rgb), 0.08) !important;
     border: 1px solid rgba(var(--color-primary-rgb), 0.25) !important;
 }
 .accent-box:hover {
@@ -1689,7 +1689,7 @@ html.dark .accent-box:hover {
 }
 
 .accent-badge {
-    background-color: var(--color-primary-light) !important;
+    background-color: rgba(var(--color-primary-rgb), 0.12) !important;
     border: 1px solid rgba(var(--color-primary-rgb), 0.25) !important;
     color: var(--color-primary) !important;
 }
@@ -1700,7 +1700,7 @@ html.dark .accent-badge {
 }
 
 .primary-light-icon-box {
-    background-color: var(--color-primary-light) !important;
+    background-color: rgba(var(--color-primary-rgb), 0.12) !important;
     color: var(--color-primary) !important;
     transition: background-color 0.2s, color 0.2s;
 }
@@ -1777,7 +1777,7 @@ html.dark .themed-footer {
 }
 
 .primary-bg-soft {
-    background-color: var(--color-primary-light) !important;
+    background-color: rgba(var(--color-primary-rgb), 0.12) !important;
 }
 html.dark .primary-bg-soft {
     background-color: rgba(var(--color-primary-rgb), 0.15) !important;
@@ -1911,7 +1911,7 @@ html.dark .custom-radio:checked + .option-select-card {
 
 /* Tombol ikon kecil: latar soft lalu solid saat hover — pola paling umum di CMS */
 .primary-icon-btn {
-    background-color: var(--color-primary-light) !important;
+    background-color: rgba(var(--color-primary-rgb), 0.12) !important;
     color: var(--color-primary) !important;
     border-color: rgba(var(--color-primary-rgb), 0.25) !important;
     transition: background-color 0.2s, color 0.2s, border-color 0.2s;
@@ -1932,13 +1932,13 @@ html.dark .primary-icon-btn:hover {
 
 /* Card highlight/aksen berbasis warna solid tema (tanpa gradasi) */
 .primary-solid-card {
-    background-color: var(--color-primary-light) !important;
+    background-color: rgba(var(--color-primary-rgb), 0.08) !important;
 }
 html.dark .primary-solid-card {
     background-color: rgba(var(--color-primary-rgb), 0.08) !important;
 }
 .primary-gradient-card {
-    background-color: var(--color-primary-light) !important;
+    background-color: rgba(var(--color-primary-rgb), 0.08) !important;
 }
 html.dark .primary-gradient-card {
     background-color: rgba(var(--color-primary-rgb), 0.08) !important;

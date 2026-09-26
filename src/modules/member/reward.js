@@ -379,7 +379,7 @@ export const renderDigitalMemberCard = (mData) => {
                     <!-- Barcode untuk Scanner Kasir Toko -->
                     <div class="mt-2 text-center">
                         <p class="text-[8px] font-bold text-slate-400 uppercase tracking-wider mb-1 flex items-center justify-center gap-1">
-                            <i class="fa-solid fa-barcode text-[var(--color-primary-light)]"></i> Scan Barcode di Kasir POS Toko:
+                            <i class="fa-solid fa-barcode text-[var(--color-primary)]"></i> Scan Barcode di Kasir POS Toko:
                         </p>
                         ${generateBarcodeSVG(rawPhone)}
                         <p class="text-[9px] font-mono font-bold tracking-[0.2em] text-slate-300 mt-1">*${esc(rawPhone)}*</p>
@@ -564,12 +564,12 @@ export const checkMemberStatus = () => {
                 <div class="absolute -right-6 -bottom-6 w-28 h-28 bg-[rgba(var(--color-primary-rgb),0.12)] rounded-full blur-xl pointer-events-none"></div>
                 <div class="flex items-center gap-3 relative z-10 min-w-0">
                     <div class="w-12 h-10 rounded-xl bg-[rgba(var(--color-primary-rgb),0.15)] border border-[rgba(var(--color-primary-rgb),0.35)] flex items-center justify-center shrink-0 shadow-inner">
-                        <i class="fa-solid fa-id-card text-xl text-[var(--color-primary-light)]"></i>
+                        <i class="fa-solid fa-id-card text-xl text-[var(--color-primary)]"></i>
                     </div>
                     <div class="min-w-0">
                         <div class="flex items-center gap-2 flex-wrap">
                             <span class="text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full ${tier.accentBg} ${tier.accentText} border ${tier.accentBorder}">${tier.badge}</span>
-                            <span class="text-[10px] font-bold text-[var(--color-primary-light)] flex items-center gap-1"><i class="fa-solid fa-coins text-[9px]"></i>${pts} Poin</span>
+                            <span class="text-[10px] font-bold text-[var(--color-primary)] flex items-center gap-1"><i class="fa-solid fa-coins text-[9px]"></i>${pts} Poin</span>
                         </div>
                         <p class="text-xs font-bold text-white mt-0.5 truncate flex items-center gap-1.5">
                             <span>${esc(mData.name || 'Pelanggan')}</span>

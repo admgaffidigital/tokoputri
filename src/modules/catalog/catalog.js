@@ -46,7 +46,7 @@ export const rCat = () => {
             let filterLabel = "Menampilkan"; 
             let filterValue = ""; 
             let filterIcon = "fa-filter"; 
-            let iconColor = "text-[var(--color-primary)] bg-[var(--color-primary-light)] dark:bg-[var(--color-primary-dark)]/30";
+            let iconColor = "text-[var(--color-primary)] bg-[rgba(var(--color-primary-rgb),0.12)] dark:bg-[rgba(var(--color-primary-rgb),0.2)]";
             
             if (sQ !== '') { 
                 filterLabel = "Hasil Pencarian"; 
@@ -57,17 +57,17 @@ export const rCat = () => {
                 filterLabel = "Kategori Pilihan"; 
                 filterValue = aCat + (aSubCat !== 'Semua Jenis' ? ` • ${aSubCat}` : ''); 
                 filterIcon = "fa-layer-group"; 
-                iconColor = "text-[var(--color-primary)] bg-[var(--color-primary-light)] dark:bg-[var(--color-primary-dark)]/30"; 
+                iconColor = "text-[var(--color-primary)] bg-[rgba(var(--color-primary-rgb),0.12)] dark:bg-[rgba(var(--color-primary-rgb),0.2)]"; 
             } else if (aBrand !== 'Semua Merek') { 
                 filterLabel = "Merek Pilihan"; 
                 filterValue = aBrand; 
                 filterIcon = "fa-tag"; 
-                iconColor = "text-[var(--color-primary)] bg-[var(--color-primary-light)] dark:bg-[var(--color-primary-dark)]/30"; 
+                iconColor = "text-[var(--color-primary)] bg-[rgba(var(--color-primary-rgb),0.12)] dark:bg-[rgba(var(--color-primary-rgb),0.2)]"; 
             } else if (aSubCat !== 'Semua Jenis') {
                 filterLabel = "Sub-Kategori"; 
                 filterValue = aSubCat; 
                 filterIcon = "fa-shapes"; 
-                iconColor = "text-[var(--color-primary)] bg-[var(--color-primary-light)] dark:bg-[var(--color-primary-dark)]/30"; 
+                iconColor = "text-[var(--color-primary)] bg-[rgba(var(--color-primary-rgb),0.12)] dark:bg-[rgba(var(--color-primary-rgb),0.2)]"; 
             }
 
             // Ekstrak sub-kategori unik jika kategori sedang dipilih
@@ -233,7 +233,7 @@ export const rCat = () => {
             ${poinBadge}
             ${soldBadge}
             ${p.subCategory ? `<span class="bg-[rgba(var(--color-primary-rgb),0.08)] text-[var(--color-primary)] border border-[rgba(var(--color-primary-rgb),0.2)] px-2 py-0.5 rounded-full text-[8px] font-bold flex items-center gap-1 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-shapes"></i> ${esc(p.subCategory)}</span>` : ''}
-            ${p.tag ? `<span class="bg-[var(--color-primary-light)] text-[var(--color-primary-dark)] dark:bg-[var(--color-primary-dark)]/50 dark:text-[var(--color-primary)] px-2 py-0.5 rounded-full text-[8px] font-bold flex items-center gap-1 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-hashtag"></i> ${esc(p.tag)}</span>` : ''}
+            ${p.tag ? `<span class="bg-[rgba(var(--color-primary-rgb),0.12)] text-[var(--color-primary)] dark:bg-[rgba(var(--color-primary-rgb),0.25)] px-2 py-0.5 rounded-full text-[8px] font-bold flex items-center gap-1 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-hashtag"></i> ${esc(p.tag)}</span>` : ''}
             <span class="accent-badge px-2 py-0.5 rounded-full text-[8px] font-bold flex items-center gap-1 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-circle-check"></i> Official</span>
             ${p.brand ? `<span class="bg-slate-200 text-slate-700 dark:bg-slate-700 dark:text-slate-300 px-2 py-0.5 rounded-full text-[8px] font-bold flex items-center gap-1 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-tag"></i> ${esc(p.brand)}</span>` : ''}
             ${(p.wholesale?.length && !p.variants?.length) ? `<span class="amber-badge px-2 py-0.5 rounded-full text-[8px] font-bold flex items-center gap-1 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-layer-group"></i> Grosir</span>` : ''}

@@ -210,7 +210,7 @@ export const renderPurchasesView = () => {
                 <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div class="space-y-1.5 max-w-xl">
                         <div class="flex items-center gap-2">
-                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider primary-bg-soft primary-text border primary-border shadow-2xs">
+                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider border shadow-2xs" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary); border-color: rgba(var(--color-primary-rgb), 0.25);">
                                 <i class="fa-solid fa-cart-flatbed"></i> Pengadaan &amp; Purchase Order (PO)
                             </span>
                         </div>
@@ -240,7 +240,7 @@ export const renderPurchasesView = () => {
                 <div class="p-3.5 sm:p-4 rounded-2xl bg-white/95 dark:bg-slate-800/80 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs backdrop-blur-xs flex flex-col justify-between">
                     <div class="flex items-center justify-between mb-1.5">
                         <span class="text-[9px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">Kulakan Bulan Ini</span>
-                        <div class="w-7 h-7 rounded-xl primary-bg-soft primary-text flex items-center justify-center text-xs shadow-2xs">
+                        <div class="w-7 h-7 rounded-xl flex items-center justify-center text-xs shadow-2xs" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary);">
                             <i class="fa-solid fa-cart-shopping"></i>
                         </div>
                     </div>
@@ -429,7 +429,7 @@ const renderPOCardHtml = (po) => {
             <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
                 <!-- Sisi Kiri: Identitas PO & Supplier -->
                 <div class="flex items-start gap-3.5 min-w-0">
-                    <div class="w-12 h-12 rounded-2xl ${po.status === 'received' || po.status === 'completed' ? 'primary-bg-soft primary-text border primary-border' : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700'} flex items-center justify-center text-xl shrink-0 font-black shadow-inner">
+                    <div class="w-12 h-12 rounded-2xl ${po.status === 'received' || po.status === 'completed' ? 'border shadow-inner' : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 shadow-inner'} flex items-center justify-center text-xl shrink-0 font-black" style="${po.status === 'received' || po.status === 'completed' ? 'background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary); border-color: rgba(var(--color-primary-rgb), 0.25);' : ''}">
                         <i class="fa-solid ${po.status === 'received' || po.status === 'completed' ? 'fa-boxes-stacked' : 'fa-cart-flatbed'}"></i>
                     </div>
 
@@ -1679,7 +1679,7 @@ window.openPurchaseDetailModal = (poId) => {
                 <button onclick="window.printPurchaseOrder('${po.id}')" class="w-9 h-9 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 flex items-center justify-center transition-all cursor-pointer" title="Cetak PO">
                     <i class="fa-solid fa-print text-xs"></i>
                 </button>
-                <button onclick="window.closePurchaseDetailModal()" class="w-9 h-9 rounded-xl bg-slate-100 hover:bg-rose-100 hover:text-rose-500 dark:bg-slate-800 dark:hover:bg-rose-950/40 dark:hover:text-rose-400 text-slate-500 flex items-center justify-center transition-all cursor-pointer">
+                <button onclick="window.closePurchaseDetailModal()" class="w-9 h-9 rounded-full bg-slate-100 hover:bg-rose-100 hover:text-rose-500 dark:bg-slate-800 dark:hover:bg-rose-950/40 dark:hover:text-rose-400 text-slate-500 flex items-center justify-center transition-all cursor-pointer active:scale-95" aria-label="Tutup Modal">
                     <i class="fa-solid fa-xmark text-sm"></i>
                 </button>
             </div>
@@ -1903,7 +1903,7 @@ window.openPurchasePaymentModal = (poId) => {
                     <p class="text-xs text-slate-400">${esc(po.supplierName)} • ${esc(po.poNumber || po.id)}</p>
                 </div>
             </div>
-            <button onclick="window.closePurchasePaymentModal()" class="w-9 h-9 rounded-xl bg-slate-100 hover:bg-rose-100 hover:text-rose-500 dark:bg-slate-800 dark:hover:bg-rose-950/40 dark:hover:text-rose-400 text-slate-500 flex items-center justify-center transition-all cursor-pointer">
+            <button onclick="window.closePurchasePaymentModal()" class="w-9 h-9 rounded-full bg-slate-100 hover:bg-rose-100 hover:text-rose-500 dark:bg-slate-800 dark:hover:bg-rose-950/40 dark:hover:text-rose-400 text-slate-500 flex items-center justify-center transition-all cursor-pointer active:scale-95" aria-label="Tutup Modal">
                 <i class="fa-solid fa-xmark text-sm"></i>
             </button>
         </div>
