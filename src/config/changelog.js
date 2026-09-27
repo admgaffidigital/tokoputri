@@ -8,6 +8,23 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-9-50',
+        version: 'v1.9.50',
+        date: '2026-09-27',
+        title: 'Modernisasi Total Modul Piutang & Manajemen Tempo Cerdas — True Native Bottom Sheet, Quick-Pay Chips & Detail Multi-Tab',
+        category: 'feature',
+        badge: 'Smart Tempo & Native Sheet v1.9.50',
+        items: [
+            'Arsitektur Root DOM Mounting (ensureTempoModals): Seluruh modal Piutang (Detail Nota, Pembayaran Cicilan, dan Pengaturan Denda) kini dimounting langsung ke document.body sehingga bebas dari containing block dan CSS stacking context parent.',
+            'True Native Mobile Bottom Sheet Pembayaran Cicilan (modal-tempo-payment): Mengeliminasi window.customPrompt primitif, digantikan form pembayaran interaktif beranimasi native dengan ringkasan sisa pokok & denda, live preview "Sisa Tagihan Setelah Bayar", pilihan tanggal bayar, metode bayar (Kas Tunai, Transfer Bank, QRIS), catatan transaksi, serta sticky action footer 48px.',
+            'Quick-Pay Preset Chips Cicilan Piutang: Tombol cepat pembayaran persentase ([ 25% ] [ 50% ] [ 75% ] [ 100% LUNAS ]) yang menghitung nominal seketika dengan 1 ketukan jempol.',
+            'Modal Detail Piutang Komprehensif (modal-tempo-detail): Menghadirkan profil pelanggan dengan monogram inisial, tombol tutup tersemat di sudut kanan atas (pinned top-right), serta Segmented Tab Control 3-Kolom: (1) Rincian Barang yang dibeli (tampilan adaptif mobile card vs tabel desktop), (2) Histori Cicilan kronologis lengkap dengan nominal, metode, dan catatan, (3) Data Pengiriman & Pengaturan Denda Keterlambatan.',
+            'Pengaturan Denda Keterlambatan Native (modal-tempo-penalty): Mengganti dialog prompt lama dengan modal bottom sheet ramping yang menyediakan preset chips tarif denda ([ 0% Bebas Denda ] [ 0.5% ] [ 1% Standar ] [ 2% ]), input custom %/hari, serta tombol bekukan/lanjutkan denda otomatis.',
+            'Harmonisasi Warna Tema 100% (var(--color-primary)): Mengganti kelas statis primary-bg dengan token dinamis dan transparansi RGBA tembus pandang pada seluruh kartu metrik statistik, lencana keterlambatan, segmented filter chips, dan tombol aksi kartu piutang.',
+            'Fallback Dynamic Import di Router: Memastikan navigasi tab Piutang di Admin CMS selalu termuat tangguh dan instan melalui fallback lazy load tempo.js.'
+        ]
+    },
+    {
         id: 'log-1-9-49',
         version: 'v1.9.49',
         date: '2026-09-26',

@@ -5,13 +5,16 @@
  * filter status keterlambatan, pencarian instan, denda otomatis,
  * pembekuan denda, pembayaran cicilan, pelunasan instan,
  * 1-Klik Tagihan WhatsApp otomatis & rincian rekening, dan cetak struk.
+ * Diperbarui v1.9.50: True Native Bottom Sheet, Harmonisasi Tema 100%,
+ * Quick-Pay Chips, & Detail Nota Piutang Multi-Tab.
  * ============================================================
  */
 
 import { db } from '../../config/firebase.js';
 import { appData, gOrds } from '../../core/state.js';
 import { 
-    el, show, hide, setH, esc, fCur, showToast, showConfirm, sLoad, hLoad, openWhatsApp, normalizeWA 
+    el, show, hide, setH, esc, fCur, showToast, showConfirm, sLoad, hLoad, openWhatsApp, normalizeWA,
+    openModalAnim, closeModalAnim 
 } from '../../core/utils.js';
 
 const pushModalHistory = (id) => window.pushModalHistory?.(id);
@@ -19,6 +22,98 @@ const pushModalHistory = (id) => window.pushModalHistory?.(id);
 let activeTempoFilter = 'all'; // 'all' | 'late' | 'due_soon' | 'active'
 let tempoSearchQuery = '';
 let cachedPiutangOrders = [];
+let currentDetailOrderId = null;
+let currentDetailTab = 'items'; // 'items' | 'installments' | 'penalty_info'
+
+/**
+ * Pastikan seluruh wadah modal Piutang & Tempo terpasang di root document.body
+ * agar terbebas dari scroll container & transform parent (.view-section / .scroll-content).
+ */
+export const ensureTempoModals = () => {
+    // Bersihkan modal lama jika pernah terinjeksi ke dalam #admin-content
+    ['modal-tempo-detail', 'modal-tempo-payment', 'modal-tempo-penalty'].forEach(id => {
+        const inside = document.querySelector(`#admin-content #${id}`);
+        if (inside) inside.remove();
+    });
+
+    // 1. Modal Detail Piutang & Histori Cicilan
+    if (!el('modal-tempo-detail')) {
+        const m = document.createElement('div');
+        m.id = 'modal-tempo-detail';
+        m.className = 'fixed inset-0 z-[150] flex hidden items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-950/40 backdrop-blur-sm opacity-0 transition-opacity duration-300';
+        m.onclick = (e) => { if (e.target === m) window.closeTempoDetailModal?.(); };
+        m.innerHTML = `
+            <div id="modal-tempo-detail-box" class="modal-bottom-sheet relative flex max-h-[92dvh] sm:max-h-[88dvh] w-full max-w-3xl translate-y-full sm:translate-y-10 transform flex-col overflow-hidden rounded-t-[2rem] sm:rounded-3xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xl transition-transform duration-300">
+                <div id="modal-tempo-detail-content" class="flex-1 overflow-y-auto hide-scrollbar flex flex-col"></div>
+            </div>
+        `;
+        document.body.appendChild(m);
+    }
+
+    // 2. Modal Catat Pembayaran Cicilan Piutang
+    if (!el('modal-tempo-payment')) {
+        const m = document.createElement('div');
+        m.id = 'modal-tempo-payment';
+        m.className = 'fixed inset-0 z-[150] flex hidden items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-950/40 backdrop-blur-sm opacity-0 transition-opacity duration-300';
+        m.onclick = (e) => { if (e.target === m) window.closeTempoPaymentModal?.(); };
+        m.innerHTML = `
+            <div id="modal-tempo-payment-box" class="modal-bottom-sheet relative flex max-h-[92dvh] sm:max-h-[88dvh] w-full max-w-md translate-y-full sm:translate-y-10 transform flex-col overflow-hidden rounded-t-[2rem] sm:rounded-3xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xl transition-transform duration-300">
+                <div id="modal-tempo-payment-content" class="flex-1 overflow-y-auto hide-scrollbar flex flex-col"></div>
+            </div>
+        `;
+        document.body.appendChild(m);
+    }
+
+    // 3. Modal Atur Denda Keterlambatan
+    if (!el('modal-tempo-penalty')) {
+        const m = document.createElement('div');
+        m.id = 'modal-tempo-penalty';
+        m.className = 'fixed inset-0 z-[150] flex hidden items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-950/40 backdrop-blur-sm opacity-0 transition-opacity duration-300';
+        m.onclick = (e) => { if (e.target === m) window.closeTempoPenaltyModal?.(); };
+        m.innerHTML = `
+            <div id="modal-tempo-penalty-box" class="modal-bottom-sheet relative flex max-h-[92dvh] sm:max-h-[88dvh] w-full max-w-md translate-y-full sm:translate-y-10 transform flex-col overflow-hidden rounded-t-[2rem] sm:rounded-3xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xl transition-transform duration-300">
+                <div id="modal-tempo-penalty-content" class="flex-1 overflow-y-auto hide-scrollbar flex flex-col"></div>
+            </div>
+        `;
+        document.body.appendChild(m);
+    }
+};
+
+/**
+ * Helper Monogram Inisial 2 Huruf Pelanggan
+ */
+const getCustomerMonogram = (name) => {
+    if (!name) return 'PL';
+    const parts = name.trim().split(/\s+/).filter(Boolean);
+    if (parts.length === 1) return parts[0].substring(0, 2).toUpperCase();
+    return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+};
+
+/**
+ * Format Tanggal Indonesia
+ */
+const formatDateID = (val) => {
+    if (!val) return '-';
+    try {
+        const d = new Date(val);
+        return d.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
+    } catch (_) {
+        return val;
+    }
+};
+
+/**
+ * Format Tanggal & Jam Indonesia
+ */
+const formatDateTimeID = (val) => {
+    if (!val) return '-';
+    try {
+        const d = new Date(val);
+        return d.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) + ' WIB';
+    } catch (_) {
+        return val;
+    }
+};
 
 /**
  * Kalkulasi dinamis piutang, keterlambatan, dan denda suatu pesanan
@@ -69,28 +164,818 @@ export const getTempoOrderCalculations = (o) => {
     };
 };
 
-window.editTempoPenalty = (orderId, currentRate) => {
-    window.customPrompt('Persentase Denda Baru (% / Hari)', currentRate, async (val) => {
-        if (!val) return;
-        let newRate = parseFloat(val.replace(',', '.'));
-        if (isNaN(newRate) || newRate < 0) return showToast('Persentase tidak valid!');
-        sLoad('Menyimpan...');
-        try {
-            await db.collection("freshmart_orders").doc(orderId).update({
-                'payment.tempoPenaltyRate': newRate
-            });
-            showToast('Persentase denda berhasil diubah!');
-            window.rAdmPiutang();
-        } catch(e) {
-            showToast('Gagal mengubah denda: ' + e.message);
-        }
-        hLoad();
-    });
+/**
+ * ══════════════════════════════════════════════════════════════════
+ * 1. MODAL DETAIL PIUTANG & HISTORI CICILAN (modal-tempo-detail)
+ * ══════════════════════════════════════════════════════════════════
+ */
+export const openTempoDetailModal = (orderId) => {
+    ensureTempoModals();
+    currentDetailOrderId = orderId;
+    currentDetailTab = 'items';
+
+    const o = cachedPiutangOrders.find(x => x.orderId === orderId);
+    if (!o) return showToast('Data piutang tidak ditemukan!');
+
+    renderTempoDetailModalContent(o);
+
+    const modal = el('modal-tempo-detail');
+    const box = el('modal-tempo-detail-box');
+    if (!modal) return;
+    openModalAnim(modal, box);
+    pushModalHistory('tempoDetail');
 };
 
+export const closeTempoDetailModal = () => {
+    const modal = el('modal-tempo-detail');
+    const box = el('modal-tempo-detail-box');
+    if (!modal) return;
+    closeModalAnim(modal, box);
+};
+
+window.openTempoDetailModal = openTempoDetailModal;
+window.closeTempoDetailModal = closeTempoDetailModal;
+
+/**
+ * Ganti Tab Aktif di Modal Detail
+ */
+window.switchTempoDetailTab = (tabKey) => {
+    currentDetailTab = tabKey;
+    const o = cachedPiutangOrders.find(x => x.orderId === currentDetailOrderId);
+    if (o) renderTempoDetailModalContent(o);
+};
+
+const renderTempoDetailModalContent = (o) => {
+    const content = el('modal-tempo-detail-content');
+    if (!content) return;
+
+    const calc = getTempoOrderCalculations(o);
+    const waNum = normalizeWA(o.customer?.wa || '');
+    const monogram = getCustomerMonogram(o.customer?.name || 'Pelanggan');
+    const dueStr = calc.dueDate ? formatDateID(calc.dueDate) : '-';
+    const dateStr = o.dateString ? formatDateTimeID(o.dateString) : '-';
+
+    const items = o.items || [];
+    const installments = o.payment?.installments || [];
+    const totalPaid = installments.reduce((sum, ins) => sum + (parseFloat(ins.amount) || 0), 0);
+    const grandTotalAwal = o.payment?.grandTotal || (calc.sisa + totalPaid);
+
+    // Status Badge
+    let statusBadgeHtml = '';
+    if (calc.isLate) {
+        statusBadgeHtml = `<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-black uppercase tracking-wider bg-rose-50 text-rose-600 dark:bg-rose-950/40 dark:text-rose-400 border border-rose-200 dark:border-rose-800 shadow-2xs"><i class="fa-solid fa-triangle-exclamation"></i> Terlambat ${calc.daysLate} Hari</span>`;
+    } else if (calc.isDueSoon) {
+        statusBadgeHtml = `<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-black uppercase tracking-wider bg-amber-50 text-amber-600 dark:bg-amber-950/40 dark:text-amber-400 border border-amber-200 dark:border-amber-800 shadow-2xs"><i class="fa-solid fa-clock"></i> Jatuh Tempo H-${calc.daysLeft <= 0 ? '0 (Hari Ini)' : calc.daysLeft}</span>`;
+    } else {
+        statusBadgeHtml = `<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-black uppercase tracking-wider text-[var(--color-primary)] border shadow-2xs" style="background: rgba(var(--color-primary-rgb), 0.08); border-color: rgba(var(--color-primary-rgb), 0.25);"><i class="fa-solid fa-circle-check"></i> Tempo Berjalan (${calc.daysLeft} Hari Lagi)</span>`;
+    }
+
+    setH('modal-tempo-detail-content', `
+        <!-- DRAG PULL INDICATOR (NATIVE MOBILE SHEET) -->
+        <div class="pull-indicator sm:hidden"></div>
+
+        <!-- HEADER MODAL DENGAN PINNED CLOSE BUTTON -->
+        <div class="relative px-5 sm:px-6 pt-3 sm:pt-5 pb-4 border-b border-slate-100 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/60 shrink-0">
+            <!-- Pinned Close Button -->
+            <button onclick="window.closeTempoDetailModal()" class="absolute top-3.5 right-3.5 sm:top-5 sm:right-5 z-10 w-9 h-9 rounded-full bg-slate-100 hover:bg-rose-100 hover:text-rose-500 dark:bg-slate-800 dark:hover:bg-rose-950/40 dark:hover:text-rose-400 text-slate-500 flex items-center justify-center transition-all cursor-pointer active:scale-95" aria-label="Tutup Rincian">
+                <i class="fa-solid fa-xmark text-sm"></i>
+            </button>
+
+            <div class="flex items-center gap-3.5 pr-12">
+                <div class="w-12 h-12 rounded-2xl flex items-center justify-center text-sm font-black shrink-0 aspect-square shadow-xs" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary); border: 1px solid rgba(var(--color-primary-rgb), 0.25);">
+                    ${monogram}
+                </div>
+                <div class="min-w-0">
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <h3 class="font-black text-base sm:text-lg text-slate-800 dark:text-white tracking-tight truncate">${esc(o.customer?.name || 'Pelanggan Anonim')}</h3>
+                        <span class="text-[9px] font-bold px-2 py-0.5 rounded-xl uppercase tracking-widest border ${o.customerType === 'Member' ? 'text-amber-600 bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800' : 'text-slate-500 bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700'}">
+                            ${o.customerType === 'Member' ? '<i class="fa-solid fa-star text-amber-400 mr-1"></i>Member' : '<i class="fa-solid fa-user mr-1"></i>Umum'}
+                        </span>
+                    </div>
+                    <div class="flex items-center gap-3 mt-1 text-xs text-slate-500 dark:text-slate-400 flex-wrap">
+                        <span class="font-bold text-slate-400">#${esc(o.orderId)}</span>
+                        <span>•</span>
+                        <a href="javascript:void(0)" onclick="window.sendSmartTempoWA('${o.orderId}')" class="font-mono text-emerald-600 dark:text-emerald-400 hover:underline flex items-center gap-1 font-bold">
+                            <i class="fa-brands fa-whatsapp"></i> +${esc(waNum || '-')}
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STATUS & JATUH TEMPO STRIP -->
+            <div class="mt-3.5 flex items-center justify-between flex-wrap gap-2 pt-3 border-t border-slate-200/60 dark:border-slate-800">
+                <div class="flex items-center gap-2">
+                    ${statusBadgeHtml}
+                </div>
+                <div class="text-xs font-bold text-slate-500 dark:text-slate-400">
+                    Batas Waktu: <span class="font-mono text-slate-800 dark:text-slate-200">${dueStr}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- RINGKASAN SALDO PIUTANG STRIP (HIGHLIGHT CARD) -->
+        <div class="p-4 sm:p-5 bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800 shrink-0">
+            <div class="p-4 rounded-2xl border ${calc.isLate ? 'bg-rose-50/60 dark:bg-rose-950/20 border-rose-200 dark:border-rose-900/40' : 'bg-slate-50 dark:bg-slate-800/60 border-slate-200 dark:border-slate-700/80'} shadow-2xs">
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center sm:text-left">
+                    <div>
+                        <span class="block text-[10px] font-bold uppercase tracking-wider text-slate-400">Total Transaksi</span>
+                        <span class="text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-200 font-mono mt-0.5 block">${fCur(grandTotalAwal)}</span>
+                    </div>
+                    <div>
+                        <span class="block text-[10px] font-bold uppercase tracking-wider text-slate-400">Sudah Dibayar</span>
+                        <span class="text-xs sm:text-sm font-bold text-emerald-600 dark:text-emerald-400 font-mono mt-0.5 block">${fCur(totalPaid)}</span>
+                    </div>
+                    <div>
+                        <span class="block text-[10px] font-bold uppercase tracking-wider text-slate-400">Sisa Pokok</span>
+                        <span class="text-xs sm:text-sm font-bold text-slate-700 dark:text-slate-300 font-mono mt-0.5 block">${fCur(calc.sisa)}</span>
+                    </div>
+                    <div>
+                        <span class="block text-[10px] font-bold uppercase tracking-wider ${calc.isLate ? 'text-rose-500' : 'text-slate-400'}">Total Wajib Bayar</span>
+                        <span class="text-sm sm:text-base font-black ${calc.isLate ? 'text-rose-600 dark:text-rose-400' : 'text-slate-900 dark:text-white'} font-mono mt-0.5 block">${fCur(calc.totalAkhir)}</span>
+                    </div>
+                </div>
+                ${calc.latePenalty > 0 ? `
+                <div class="mt-2.5 pt-2 border-t border-rose-200/80 dark:border-rose-900/60 flex items-center justify-between text-xs text-rose-600 dark:text-rose-400">
+                    <span class="font-bold flex items-center gap-1.5"><i class="fa-solid fa-clock"></i> Termasuk Denda Keterlambatan (${calc.rate}%/hari • ${calc.daysLate} hari):</span>
+                    <span class="font-black font-mono">+${fCur(calc.latePenalty)}</span>
+                </div>` : ''}
+            </div>
+        </div>
+
+        <!-- 3-COLUMN SEGMENTED TAB BAR -->
+        <div class="px-4 sm:px-6 pt-3 pb-2 bg-white dark:bg-slate-900 shrink-0">
+            <div class="grid grid-cols-3 gap-1 p-1 bg-slate-100 dark:bg-slate-800 rounded-2xl">
+                <button type="button" onclick="window.switchTempoDetailTab('items')" class="py-2.5 px-2 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 active:scale-95 cursor-pointer ${currentDetailTab === 'items' ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-xs' : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'}">
+                    <i class="fa-solid fa-box text-xs"></i>
+                    <span>Barang (${items.length})</span>
+                </button>
+                <button type="button" onclick="window.switchTempoDetailTab('installments')" class="py-2.5 px-2 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 active:scale-95 cursor-pointer ${currentDetailTab === 'installments' ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-xs' : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'}">
+                    <i class="fa-solid fa-receipt text-xs"></i>
+                    <span>Cicilan (${installments.length})</span>
+                </button>
+                <button type="button" onclick="window.switchTempoDetailTab('penalty_info')" class="py-2.5 px-2 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 active:scale-95 cursor-pointer ${currentDetailTab === 'penalty_info' ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-xs' : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'}">
+                    <i class="fa-solid fa-gear text-xs"></i>
+                    <span>Denda &amp; Info</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- TAB BODY CONTENT -->
+        <div class="p-4 sm:p-6 overflow-y-auto flex-1 hide-scrollbar bg-white dark:bg-slate-900">
+            ${renderActiveTempoDetailTab(o, calc)}
+        </div>
+
+        <!-- STICKY NATIVE ACTION FOOTER (48PX ERGONOMIC TOUCH) -->
+        <div class="p-4 sm:p-5 border-t border-slate-100 dark:border-slate-800 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md shrink-0 flex flex-wrap sm:flex-nowrap items-center justify-between gap-2.5" style="padding-bottom: max(1rem, env(safe-area-inset-bottom))">
+            <div class="flex items-center gap-2 w-full sm:w-auto">
+                <button type="button" onclick="window.closeTempoDetailModal()" class="flex-1 sm:flex-initial h-12 px-5 rounded-2xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold text-xs hover:bg-slate-100 dark:hover:bg-slate-800 transition-all cursor-pointer active:scale-95">
+                    Tutup
+                </button>
+                <button type="button" onclick="window.previewTempoReceipt('${o.orderId}')" class="h-12 px-4 rounded-2xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs transition-all cursor-pointer flex items-center gap-2 active:scale-95 shadow-2xs" title="Cetak Nota Struk">
+                    <i class="fa-solid fa-print"></i>
+                    <span class="hidden sm:inline">Cetak Struk</span>
+                </button>
+                <button type="button" onclick="window.sendSmartTempoWA('${o.orderId}')" class="h-12 px-4 rounded-2xl bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs transition-all cursor-pointer flex items-center gap-2 active:scale-95 shadow-2xs" title="Kirim Tagihan WhatsApp">
+                    <i class="fa-brands fa-whatsapp text-sm"></i>
+                    <span class="hidden sm:inline">Tagih WA</span>
+                </button>
+            </div>
+
+            <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
+                <button type="button" onclick="window.closeTempoDetailModal(); window.openTempoPaymentModal('${o.orderId}');" class="flex-1 sm:flex-initial h-12 px-5 rounded-2xl text-white font-bold text-xs shadow-glow active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-2" style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
+                    <i class="fa-solid fa-money-bill-wave"></i>
+                    <span>+ Catat Cicilan</span>
+                </button>
+                <button type="button" onclick="window.closeTempoDetailModal(); window.markTempoPaid('${o.orderId}');" class="h-12 px-4 rounded-2xl bg-slate-900 hover:bg-black dark:bg-slate-800 dark:hover:bg-slate-700 text-white font-bold text-xs transition-all cursor-pointer flex items-center gap-2 active:scale-95 shadow-2xs" title="Tandai Seluruh Tagihan Lunas">
+                    <i class="fa-solid fa-check-double text-emerald-400"></i>
+                    <span>Lunasi</span>
+                </button>
+            </div>
+        </div>
+    `);
+};
+
+/**
+ * Render Konten Spesifik Tab Aktif Modal Detail
+ */
+const renderActiveTempoDetailTab = (o, calc) => {
+    const items = o.items || [];
+    const installments = o.payment?.installments || [];
+
+    if (currentDetailTab === 'items') {
+        if (items.length === 0) {
+            return `
+                <div class="text-center py-10 text-slate-400">
+                    <i class="fa-solid fa-box-open text-3xl mb-2 block opacity-40"></i>
+                    <p class="text-xs font-bold">Rincian barang tidak ditemukan untuk pesanan ini.</p>
+                </div>
+            `;
+        }
+
+        return `
+            <div class="space-y-3">
+                <!-- Mobile List (Adaptive Card) -->
+                <div class="sm:hidden space-y-2.5">
+                    ${items.map(item => {
+                        const effPrice = item.effectivePrice !== undefined ? item.effectivePrice : (item.price || 0);
+                        const subtotal = (parseFloat(item.qty) || 1) * effPrice;
+                        return `
+                            <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700 flex items-start justify-between gap-3 shadow-2xs">
+                                <div class="min-w-0 flex-1">
+                                    <h4 class="font-bold text-xs text-slate-800 dark:text-slate-100">${esc(item.name || 'Barang')}</h4>
+                                    ${item.variantName ? `<span class="inline-block mt-0.5 text-[10px] text-slate-500 font-medium">Varian: ${esc(item.variantName)}</span>` : ''}
+                                    <div class="mt-1 text-[11px] font-mono text-slate-500 dark:text-slate-400">
+                                        ${item.qty} ${esc(item.unit || 'pcs')} × ${fCur(effPrice)}
+                                    </div>
+                                </div>
+                                <div class="text-right shrink-0">
+                                    <span class="font-black text-xs text-slate-900 dark:text-white font-mono">${fCur(subtotal)}</span>
+                                </div>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+
+                <!-- Desktop Table -->
+                <div class="hidden sm:block overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-700/80">
+                    <table class="w-full text-xs text-left">
+                        <thead class="bg-slate-50 dark:bg-slate-800 text-slate-400 uppercase text-[10px] font-bold border-b border-slate-200 dark:border-slate-700">
+                            <tr>
+                                <th class="py-3 px-4">Nama Produk &amp; Varian</th>
+                                <th class="py-3 px-3 text-center">Qty</th>
+                                <th class="py-3 px-3 text-right">Harga Satuan</th>
+                                <th class="py-3 px-4 text-right">Subtotal</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100 dark:divide-slate-800 font-medium">
+                            ${items.map(item => {
+                                const effPrice = item.effectivePrice !== undefined ? item.effectivePrice : (item.price || 0);
+                                const subtotal = (parseFloat(item.qty) || 1) * effPrice;
+                                return `
+                                    <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/40">
+                                        <td class="py-3 px-4">
+                                            <span class="font-bold text-slate-800 dark:text-slate-200">${esc(item.name || 'Barang')}</span>
+                                            ${item.variantName ? `<span class="block text-[10px] text-slate-400">Varian: ${esc(item.variantName)}</span>` : ''}
+                                        </td>
+                                        <td class="py-3 px-3 text-center font-mono font-bold">${item.qty} ${esc(item.unit || 'pcs')}</td>
+                                        <td class="py-3 px-3 text-right font-mono">${fCur(effPrice)}</td>
+                                        <td class="py-3 px-4 text-right font-black font-mono text-slate-800 dark:text-slate-100">${fCur(subtotal)}</td>
+                                    </tr>
+                                `;
+                            }).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        `;
+    }
+
+    if (currentDetailTab === 'installments') {
+        if (installments.length === 0) {
+            return `
+                <div class="text-center py-10 text-slate-400 bg-slate-50/60 dark:bg-slate-900/40 rounded-2xl border-2 border-dashed border-slate-200 dark:border-slate-800 p-6">
+                    <div class="w-12 h-12 rounded-2xl flex items-center justify-center text-xl mb-2.5 mx-auto" style="background: rgba(var(--color-primary-rgb), 0.1); color: var(--color-primary);">
+                        <i class="fa-solid fa-receipt"></i>
+                    </div>
+                    <p class="font-bold text-xs sm:text-sm text-slate-700 dark:text-slate-200">Belum Ada Riwayat Cicilan</p>
+                    <p class="text-[11px] text-slate-400 mt-0.5 max-w-xs mx-auto">Pelanggan belum melakukan pembayaran cicilan apapun untuk tagihan tempo ini.</p>
+                    <button type="button" onclick="window.closeTempoDetailModal(); window.openTempoPaymentModal('${o.orderId}');" class="mt-4 px-4 py-2 rounded-xl text-white font-bold text-xs inline-flex items-center gap-1.5 shadow-sm active:scale-95 transition-all cursor-pointer" style="background: var(--color-primary);">
+                        <i class="fa-solid fa-plus text-xs"></i>
+                        <span>+ Catat Pembayaran Cicilan Pertama</span>
+                    </button>
+                </div>
+            `;
+        }
+
+        return `
+            <div class="space-y-3">
+                <div class="flex items-center justify-between text-xs font-bold text-slate-500 mb-1">
+                    <span>Daftar Transaksi Cicilan (${installments.length})</span>
+                    <span>Total Masuk: <span class="text-emerald-600 font-mono">${fCur(installments.reduce((sum, ins) => sum + (parseFloat(ins.amount) || 0), 0))}</span></span>
+                </div>
+                <div class="space-y-2.5">
+                    ${installments.map((ins, idx) => `
+                        <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700 flex items-center justify-between gap-3 shadow-2xs">
+                            <div class="flex items-center gap-3">
+                                <div class="w-9 h-9 rounded-xl flex items-center justify-center text-xs font-black shrink-0 bg-emerald-100 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-400">
+                                    #${idx + 1}
+                                </div>
+                                <div>
+                                    <span class="font-black text-xs text-emerald-600 dark:text-emerald-400 font-mono">+${fCur(ins.amount)}</span>
+                                    <div class="flex items-center gap-2 mt-0.5 text-[10px] text-slate-400">
+                                        <span>${formatDateTimeID(ins.date)}</span>
+                                        <span>•</span>
+                                        <span class="font-bold text-slate-600 dark:text-slate-300">${esc(ins.method || 'Tunai')}</span>
+                                    </div>
+                                    ${ins.note ? `<p class="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5 italic">"${esc(ins.note)}"</p>` : ''}
+                                </div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+    }
+
+    if (currentDetailTab === 'penalty_info') {
+        return `
+            <div class="space-y-4">
+                <!-- Info Pengiriman & Catatan Pelanggan -->
+                <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700 space-y-2.5 text-xs">
+                    <span class="block text-[10px] font-bold uppercase tracking-wider text-slate-400">Data Pelanggan &amp; Pengiriman</span>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                        <div>
+                            <span class="text-slate-400 block text-[10px]">Alamat Pelanggan:</span>
+                            <span class="font-medium text-slate-700 dark:text-slate-200 mt-0.5 block">${esc(o.customer?.address || 'Tidak dicantumkan')}</span>
+                        </div>
+                        <div>
+                            <span class="text-slate-400 block text-[10px]">Nomor WhatsApp:</span>
+                            <span class="font-medium font-mono text-slate-700 dark:text-slate-200 mt-0.5 block">+${esc(o.customer?.wa || '-')}</span>
+                        </div>
+                    </div>
+                    ${o.notes ? `
+                    <div class="pt-2 border-t border-slate-200/60 dark:border-slate-700">
+                        <span class="text-slate-400 block text-[10px]">Catatan Pesanan:</span>
+                        <p class="font-medium text-slate-700 dark:text-slate-200 mt-0.5 italic">"${esc(o.notes)}"</p>
+                    </div>` : ''}
+                </div>
+
+                <!-- Pengaturan Denda Keterlambatan -->
+                <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700 space-y-3 text-xs">
+                    <div class="flex items-center justify-between">
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Status Denda Keterlambatan</span>
+                        <span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full ${calc.isStopped ? 'bg-slate-200 text-slate-600 dark:bg-slate-700 dark:text-slate-300' : 'bg-rose-100 text-rose-600 dark:bg-rose-950/60 dark:text-rose-400'}">
+                            ${calc.isStopped ? 'DIBEKUKAN (FIXED)' : 'BERJALAN OTOMATIS'}
+                        </span>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3 pt-1">
+                        <div>
+                            <span class="text-slate-400 block text-[10px]">Tarif Denda Harian:</span>
+                            <span class="font-bold text-slate-800 dark:text-slate-100 font-mono mt-0.5 block">${calc.rate}% / Hari</span>
+                        </div>
+                        <div>
+                            <span class="text-slate-400 block text-[10px]">Akumulasi Denda:</span>
+                            <span class="font-bold text-rose-600 dark:text-rose-400 font-mono mt-0.5 block">+${fCur(calc.latePenalty)}</span>
+                        </div>
+                    </div>
+
+                    <!-- Tombol Kontrol Denda -->
+                    <div class="flex items-center gap-2 pt-2 border-t border-slate-200/60 dark:border-slate-700">
+                        <button type="button" onclick="window.openTempoPenaltyModal('${o.orderId}')" class="flex-1 py-2 px-3 rounded-xl border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-200 font-bold text-xs hover:bg-slate-100 dark:hover:bg-slate-700 transition-all flex items-center justify-center gap-1.5 active:scale-95 cursor-pointer">
+                            <i class="fa-solid fa-percent text-xs"></i>
+                            <span>Ubah Tarif Denda</span>
+                        </button>
+                        <button type="button" onclick="window.stopTempoPenalty('${o.orderId}', ${calc.latePenalty}, ${calc.isStopped})" class="flex-1 py-2 px-3 rounded-xl font-bold text-xs transition-all flex items-center justify-center gap-1.5 active:scale-95 cursor-pointer ${calc.isStopped ? 'bg-[rgba(var(--color-primary-rgb),0.1)] text-[var(--color-primary)] border border-[rgba(var(--color-primary-rgb),0.3)]' : 'bg-rose-100 dark:bg-rose-900/30 text-rose-600 dark:text-rose-400 hover:bg-rose-200'}">
+                            <i class="fa-solid ${calc.isStopped ? 'fa-play' : 'fa-pause'} text-xs"></i>
+                            <span>${calc.isStopped ? 'Lanjutkan Denda' : 'Bekukan Denda'}</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    return '';
+};
+
+/**
+ * ══════════════════════════════════════════════════════════════════
+ * 2. MODAL CATAT PEMBAYARAN CICILAN PIUTANG (modal-tempo-payment)
+ * ══════════════════════════════════════════════════════════════════
+ */
+export const openTempoPaymentModal = (orderId) => {
+    ensureTempoModals();
+    const o = cachedPiutangOrders.find(x => x.orderId === orderId);
+    if (!o) return showToast('Data piutang tidak ditemukan!');
+
+    const calc = getTempoOrderCalculations(o);
+    const modal = el('modal-tempo-payment');
+    const box = el('modal-tempo-payment-box');
+    const content = el('modal-tempo-payment-content');
+    if (!modal || !content) return;
+
+    const totalWajib = Math.round(calc.totalAkhir);
+
+    setH('modal-tempo-payment-content', `
+        <!-- DRAG PULL INDICATOR (NATIVE MOBILE SHEET) -->
+        <div class="pull-indicator sm:hidden"></div>
+
+        <!-- HEADER MODAL -->
+        <div class="px-5 sm:px-6 pt-3 sm:pt-5 pb-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between shrink-0 bg-slate-50/70 dark:bg-slate-900/60">
+            <div class="flex items-center gap-3">
+                <div class="w-11 h-11 rounded-2xl flex items-center justify-center text-lg shrink-0 aspect-square shadow-xs" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary); border: 1px solid rgba(var(--color-primary-rgb), 0.25);">
+                    <i class="fa-solid fa-money-bill-wave"></i>
+                </div>
+                <div>
+                    <h3 class="font-black text-base text-slate-800 dark:text-white tracking-tight">Catat Pembayaran Cicilan</h3>
+                    <p class="text-xs text-slate-400">${esc(o.customer?.name || 'Pelanggan')} • #${esc(o.orderId)}</p>
+                </div>
+            </div>
+            <button onclick="window.closeTempoPaymentModal()" class="w-9 h-9 rounded-full bg-slate-100 hover:bg-rose-100 hover:text-rose-500 dark:bg-slate-800 dark:hover:bg-rose-950/40 dark:hover:text-rose-400 text-slate-500 flex items-center justify-center transition-all cursor-pointer active:scale-95" aria-label="Tutup Modal">
+                <i class="fa-solid fa-xmark text-sm"></i>
+            </button>
+        </div>
+
+        <form id="tempo-pay-form" onsubmit="window.submitTempoPayment(event, '${o.orderId}')" class="flex-1 flex flex-col overflow-hidden">
+            <input type="hidden" id="tempo-pay-total-wajib" value="${totalWajib}">
+
+            <div class="p-4 sm:p-6 space-y-4 overflow-y-auto flex-1 hide-scrollbar">
+                <!-- KARTU RINGKASAN TAGIHAN -->
+                <div class="p-4 rounded-2xl bg-amber-50/70 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800/60 text-xs space-y-1.5 shadow-2xs">
+                    <div class="flex justify-between">
+                        <span class="text-slate-500">Sisa Pokok Piutang:</span>
+                        <span class="font-bold text-slate-800 dark:text-white">${fCur(calc.sisa)}</span>
+                    </div>
+                    ${calc.latePenalty > 0 ? `
+                    <div class="flex justify-between text-rose-600 dark:text-rose-400">
+                        <span>Denda Keterlambatan (${calc.daysLate} hari):</span>
+                        <span class="font-bold font-mono">+${fCur(calc.latePenalty)}</span>
+                    </div>` : ''}
+                    <div class="flex justify-between pt-1.5 border-t border-amber-200 dark:border-amber-800 font-black">
+                        <span class="text-amber-600 dark:text-amber-400">Total Wajib Bayar:</span>
+                        <span class="text-amber-600 dark:text-amber-400 text-base font-mono">${fCur(totalWajib)}</span>
+                    </div>
+                </div>
+
+                <!-- INPUT NOMINAL PEMBAYARAN -->
+                <div>
+                    <label class="block text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1.5">Nominal Cicilan (Rp) *</label>
+                    <div class="relative">
+                        <input 
+                            type="number" 
+                            id="tempo-pay-amount" 
+                            required 
+                            min="1" 
+                            max="${totalWajib}" 
+                            value="${totalWajib}" 
+                            oninput="window.recalcTempoPayPreview()"
+                            class="admin-input bg-slate-50 dark:bg-slate-900 font-black text-lg pr-24 text-emerald-600 rounded-2xl"
+                        >
+                        <button 
+                            type="button" 
+                            onclick="window.setQuickPayTempo(${totalWajib})" 
+                            class="absolute right-2 top-1/2 -translate-y-1/2 px-3 py-1.5 rounded-xl text-white font-black text-[11px] shadow-sm active:scale-95 transition-all cursor-pointer" 
+                            style="background: var(--color-primary);"
+                        >
+                            Lunas
+                        </button>
+                    </div>
+
+                    <!-- PRESET QUICK-PAY CHIPS -->
+                    <div class="flex items-center gap-1.5 mt-2 overflow-x-auto pb-1 hide-scrollbar">
+                        <button type="button" onclick="window.setQuickPayTempo(${Math.round(totalWajib * 0.25)})" class="px-2.5 py-1 rounded-xl text-[10px] font-bold border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-100 text-slate-600 dark:text-slate-300 active:scale-95 transition-all shrink-0">
+                            25% (${fCur(Math.round(totalWajib * 0.25))})
+                        </button>
+                        <button type="button" onclick="window.setQuickPayTempo(${Math.round(totalWajib * 0.5)})" class="px-2.5 py-1 rounded-xl text-[10px] font-bold border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-100 text-slate-600 dark:text-slate-300 active:scale-95 transition-all shrink-0">
+                            50% (${fCur(Math.round(totalWajib * 0.5))})
+                        </button>
+                        <button type="button" onclick="window.setQuickPayTempo(${Math.round(totalWajib * 0.75)})" class="px-2.5 py-1 rounded-xl text-[10px] font-bold border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-100 text-slate-600 dark:text-slate-300 active:scale-95 transition-all shrink-0">
+                            75% (${fCur(Math.round(totalWajib * 0.75))})
+                        </button>
+                        <button type="button" onclick="window.setQuickPayTempo(${totalWajib})" class="px-2.5 py-1 rounded-xl text-[10px] font-black border text-white active:scale-95 transition-all shrink-0" style="background: var(--color-primary); border-color: var(--color-primary);">
+                            100% Lunas
+                        </button>
+                    </div>
+                </div>
+
+                <!-- LIVE PREVIEW HASIL PEMBAYARAN -->
+                <div id="tempo-pay-preview-box" class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700 text-xs">
+                    <!-- Diperbarui reaktif oleh window.recalcTempoPayPreview() -->
+                </div>
+
+                <!-- TANGGAL & METODE BAYAR -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1.5">Tanggal Bayar *</label>
+                        <input type="date" id="tempo-pay-date" required value="${new Date().toISOString().split('T')[0]}" class="admin-input bg-slate-50 dark:bg-slate-900 text-xs font-bold rounded-2xl">
+                    </div>
+
+                    <div>
+                        <label class="block text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1.5">Metode Bayar *</label>
+                        <select id="tempo-pay-method" class="admin-input bg-slate-50 dark:bg-slate-900 text-xs font-bold rounded-2xl cursor-pointer">
+                            <option value="Kas Tunai Toko">Kas Tunai Toko</option>
+                            <option value="Transfer Bank">Transfer Bank</option>
+                            <option value="QRIS Toko">QRIS Toko</option>
+                            <option value="Giro / Cek">Giro / Cek</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- CATATAN / BUKTI PEMBAYARAN -->
+                <div>
+                    <label class="block text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1.5">Catatan / No. Bukti Pembayaran</label>
+                    <input type="text" id="tempo-pay-note" placeholder="Contoh: Transfer m-BCA ref 98765 / Titip Kasir" class="admin-input bg-slate-50 dark:bg-slate-900 text-xs rounded-2xl">
+                </div>
+            </div>
+
+            <!-- STICKY ACTION FOOTER (48PX) -->
+            <div class="p-4 sm:p-5 border-t border-slate-100 dark:border-slate-800 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md shrink-0 flex items-center justify-end gap-2.5" style="padding-bottom: max(1rem, env(safe-area-inset-bottom))">
+                <button type="button" onclick="window.closeTempoPaymentModal()" class="h-12 px-5 rounded-2xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold text-xs hover:bg-slate-100 dark:hover:bg-slate-800 transition-all cursor-pointer active:scale-95">
+                    Batal
+                </button>
+                <button type="submit" class="h-12 px-6 rounded-2xl text-white font-bold text-xs shadow-glow transition-all active:scale-95 cursor-pointer flex items-center gap-2" style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
+                    <i class="fa-solid fa-check"></i>
+                    <span>Simpan Pembayaran</span>
+                </button>
+            </div>
+        </form>
+    `);
+
+    window.recalcTempoPayPreview();
+    openModalAnim(modal, box);
+};
+
+export const closeTempoPaymentModal = () => {
+    const modal = el('modal-tempo-payment');
+    const box = el('modal-tempo-payment-box');
+    if (!modal) return;
+    closeModalAnim(modal, box);
+};
+
+window.openTempoPaymentModal = openTempoPaymentModal;
+window.closeTempoPaymentModal = closeTempoPaymentModal;
+
+/**
+ * Pasang Nilai Cepat dari Quick-Pay Chips
+ */
+window.setQuickPayTempo = (amount) => {
+    const input = el('tempo-pay-amount');
+    if (input) {
+        input.value = Math.max(1, Math.round(amount));
+        window.recalcTempoPayPreview();
+    }
+};
+
+/**
+ * Kalkulasi Live Sisa Tagihan Setelah Pembayaran Ini
+ */
+window.recalcTempoPayPreview = () => {
+    const input = el('tempo-pay-amount');
+    const previewBox = el('tempo-pay-preview-box');
+    const totalWajib = parseFloat(el('tempo-pay-total-wajib')?.value) || 0;
+    if (!input || !previewBox) return;
+
+    const val = parseFloat(input.value) || 0;
+    const sisa = Math.max(0, totalWajib - val);
+
+    if (val >= totalWajib && totalWajib > 0) {
+        previewBox.innerHTML = `
+            <div class="flex items-center justify-between text-emerald-600 dark:text-emerald-400 font-bold">
+                <span>Status Setelah Pembayaran:</span>
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] bg-emerald-100 dark:bg-emerald-950/60 border border-emerald-300 dark:border-emerald-700">
+                    <i class="fa-solid fa-check-double"></i> OTOMATIS LUNAS
+                </span>
+            </div>
+            <p class="text-[10px] text-emerald-500 mt-1">Seluruh sisa tagihan terbayar penuh dan pesanan akan otomatis ditandai Selesai.</p>
+        `;
+    } else {
+        previewBox.innerHTML = `
+            <div class="flex items-center justify-between text-slate-600 dark:text-slate-300 font-bold">
+                <span>Sisa Tagihan Setelah Bayar:</span>
+                <span class="font-mono text-slate-800 dark:text-white text-sm font-black">${fCur(sisa)}</span>
+            </div>
+            <p class="text-[10px] text-slate-400 mt-0.5">Sisa saldo piutang akan diperbarui secara otomatis.</p>
+        `;
+    }
+};
+
+/**
+ * Simpan Pembayaran Cicilan ke Database
+ */
+window.submitTempoPayment = async (e, orderId) => {
+    e.preventDefault();
+    sLoad('Mencatat Pembayaran...');
+
+    try {
+        const amount = parseFloat(el('tempo-pay-amount')?.value) || 0;
+        const payDate = el('tempo-pay-date')?.value || new Date().toISOString();
+        const payMethod = el('tempo-pay-method')?.value || 'Kas Tunai Toko';
+        const payNote = (el('tempo-pay-note')?.value || '').trim();
+
+        if (amount <= 0) {
+            hLoad();
+            return showToast('Nominal cicilan harus lebih besar dari Rp 0!');
+        }
+
+        const docRef = db.collection("freshmart_orders").doc(orderId);
+        const docSnap = await docRef.get();
+        if (!docSnap.exists) {
+            hLoad();
+            return showToast('Pesanan tidak ditemukan!');
+        }
+
+        const data = docSnap.data();
+        let currentBalance = parseFloat(data.payment?.tempoBalance) || 0;
+        let newBalance = Math.max(0, currentBalance - amount);
+        let installments = data.payment?.installments || [];
+
+        installments.push({
+            date: payDate ? new Date(payDate).getTime() : Date.now(),
+            amount: amount,
+            method: payMethod,
+            note: payNote || `Cicilan (${payMethod})`
+        });
+
+        let updates = {
+            'payment.tempoBalance': newBalance,
+            'payment.installments': installments
+        };
+
+        if (newBalance <= 0) {
+            updates['payment.paymentStatus'] = 'lunas';
+            updates['status'] = 'Selesai';
+        }
+
+        await docRef.update(updates);
+
+        // Update in-memory state
+        if (Array.isArray(gOrds)) {
+            let idx = gOrds.findIndex(o => o.orderId === orderId);
+            if (idx !== -1) {
+                gOrds[idx].payment.tempoBalance = newBalance;
+                gOrds[idx].payment.installments = installments;
+                if (newBalance <= 0) {
+                    gOrds[idx].payment.paymentStatus = 'lunas';
+                    gOrds[idx].status = 'Selesai';
+                }
+            }
+        }
+
+        hLoad();
+        window.closeTempoPaymentModal();
+        showToast('Pembayaran cicilan berhasil dicatat! 💰');
+
+        // Segarkan data piutang
+        if (window.rAdmPiutang) window.rAdmPiutang();
+    } catch (err) {
+        hLoad();
+        console.error('Gagal mencatat cicilan:', err);
+        showToast('Gagal memproses cicilan: ' + err.message);
+    }
+};
+
+// Aliaskan payTempoInstallment ke openTempoPaymentModal untuk kompatibilitas penuh
+window.payTempoInstallment = (orderId) => {
+    window.openTempoPaymentModal(orderId);
+};
+
+/**
+ * ══════════════════════════════════════════════════════════════════
+ * 3. MODAL ATUR DENDA KETERLAMBATAN (modal-tempo-penalty)
+ * ══════════════════════════════════════════════════════════════════
+ */
+export const openTempoPenaltyModal = (orderId) => {
+    ensureTempoModals();
+    const o = cachedPiutangOrders.find(x => x.orderId === orderId);
+    if (!o) return showToast('Data piutang tidak ditemukan!');
+
+    const calc = getTempoOrderCalculations(o);
+    const modal = el('modal-tempo-penalty');
+    const box = el('modal-tempo-penalty-box');
+    const content = el('modal-tempo-penalty-content');
+    if (!modal || !content) return;
+
+    setH('modal-tempo-penalty-content', `
+        <!-- DRAG PULL INDICATOR (NATIVE MOBILE SHEET) -->
+        <div class="pull-indicator sm:hidden"></div>
+
+        <!-- HEADER MODAL -->
+        <div class="px-5 sm:px-6 pt-3 sm:pt-5 pb-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between shrink-0 bg-slate-50/70 dark:bg-slate-900/60">
+            <div class="flex items-center gap-3">
+                <div class="w-11 h-11 rounded-2xl flex items-center justify-center text-lg shrink-0 aspect-square shadow-xs" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary); border: 1px solid rgba(var(--color-primary-rgb), 0.25);">
+                    <i class="fa-solid fa-percent"></i>
+                </div>
+                <div>
+                    <h3 class="font-black text-base text-slate-800 dark:text-white tracking-tight">Atur Tarif Denda</h3>
+                    <p class="text-xs text-slate-400">${esc(o.customer?.name || 'Pelanggan')} • Sisa: ${fCur(calc.sisa)}</p>
+                </div>
+            </div>
+            <button onclick="window.closeTempoPenaltyModal()" class="w-9 h-9 rounded-full bg-slate-100 hover:bg-rose-100 hover:text-rose-500 dark:bg-slate-800 dark:hover:bg-rose-950/40 dark:hover:text-rose-400 text-slate-500 flex items-center justify-center transition-all cursor-pointer active:scale-95" aria-label="Tutup Modal">
+                <i class="fa-solid fa-xmark text-sm"></i>
+            </button>
+        </div>
+
+        <form id="tempo-penalty-form" onsubmit="window.submitTempoPenalty(event, '${o.orderId}')" class="flex-1 flex flex-col overflow-hidden">
+            <div class="p-4 sm:p-6 space-y-4 overflow-y-auto flex-1 hide-scrollbar">
+                <!-- INFO DENDA SAAT INI -->
+                <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 text-xs space-y-1">
+                    <div class="flex justify-between">
+                        <span class="text-slate-400">Tarif Saat Ini:</span>
+                        <span class="font-bold text-slate-800 dark:text-white font-mono">${calc.rate}% / Hari</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-slate-400">Hari Keterlambatan:</span>
+                        <span class="font-bold text-slate-800 dark:text-white font-mono">${calc.daysLate} Hari</span>
+                    </div>
+                    <div class="flex justify-between pt-1 border-t border-slate-200/60 dark:border-slate-700">
+                        <span class="text-rose-500 font-bold">Total Denda Akumulasi:</span>
+                        <span class="font-bold font-mono text-rose-600 dark:text-rose-400">+${fCur(calc.latePenalty)}</span>
+                    </div>
+                </div>
+
+                <!-- PRESET CHIPS TARIF DENDA -->
+                <div>
+                    <label class="block text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1.5">Pilihan Cepat Tarif (% / Hari)</label>
+                    <div class="grid grid-cols-4 gap-1.5">
+                        <button type="button" onclick="document.getElementById('tempo-penalty-rate').value = 0" class="py-2 px-1 rounded-xl text-center text-xs font-bold border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-all active:scale-95">
+                            0% (Bebas)
+                        </button>
+                        <button type="button" onclick="document.getElementById('tempo-penalty-rate').value = 0.5" class="py-2 px-1 rounded-xl text-center text-xs font-bold border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-all active:scale-95">
+                            0.5%
+                        </button>
+                        <button type="button" onclick="document.getElementById('tempo-penalty-rate').value = 1" class="py-2 px-1 rounded-xl text-center text-xs font-bold border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-all active:scale-95">
+                            1% (Std)
+                        </button>
+                        <button type="button" onclick="document.getElementById('tempo-penalty-rate').value = 2" class="py-2 px-1 rounded-xl text-center text-xs font-bold border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-all active:scale-95">
+                            2%
+                        </button>
+                    </div>
+                </div>
+
+                <!-- INPUT PERSENTASE CUSTOM -->
+                <div>
+                    <label class="block text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1.5">Tarif Persentase Baru (% / Hari) *</label>
+                    <input 
+                        type="number" 
+                        step="0.01" 
+                        min="0" 
+                        id="tempo-penalty-rate" 
+                        required 
+                        value="${calc.rate}" 
+                        class="admin-input bg-slate-50 dark:bg-slate-900 font-black text-lg text-slate-800 dark:text-white rounded-2xl"
+                    >
+                </div>
+            </div>
+
+            <!-- STICKY ACTION FOOTER (48PX) -->
+            <div class="p-4 sm:p-5 border-t border-slate-100 dark:border-slate-800 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md shrink-0 flex items-center justify-end gap-2.5" style="padding-bottom: max(1rem, env(safe-area-inset-bottom))">
+                <button type="button" onclick="window.closeTempoPenaltyModal()" class="h-12 px-5 rounded-2xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold text-xs hover:bg-slate-100 dark:hover:bg-slate-800 transition-all cursor-pointer active:scale-95">
+                    Batal
+                </button>
+                <button type="submit" class="h-12 px-6 rounded-2xl text-white font-bold text-xs shadow-glow transition-all active:scale-95 cursor-pointer flex items-center gap-2" style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
+                    <i class="fa-solid fa-check"></i>
+                    <span>Simpan Tarif Denda</span>
+                </button>
+            </div>
+        </form>
+    `);
+
+    openModalAnim(modal, box);
+};
+
+export const closeTempoPenaltyModal = () => {
+    const modal = el('modal-tempo-penalty');
+    const box = el('modal-tempo-penalty-box');
+    if (!modal) return;
+    closeModalAnim(modal, box);
+};
+
+window.openTempoPenaltyModal = openTempoPenaltyModal;
+window.closeTempoPenaltyModal = closeTempoPenaltyModal;
+
+/**
+ * Submit Pengaturan Denda
+ */
+window.submitTempoPenalty = async (e, orderId) => {
+    e.preventDefault();
+    const val = el('tempo-penalty-rate')?.value;
+    let newRate = parseFloat(val);
+    if (isNaN(newRate) || newRate < 0) return showToast('Persentase tidak valid!');
+
+    sLoad('Menyimpan Denda...');
+    try {
+        await db.collection("freshmart_orders").doc(orderId).update({
+            'payment.tempoPenaltyRate': newRate
+        });
+
+        // Update cache lokal
+        const o = cachedPiutangOrders.find(x => x.orderId === orderId);
+        if (o && o.payment) o.payment.tempoPenaltyRate = newRate;
+
+        hLoad();
+        window.closeTempoPenaltyModal();
+        showToast('Persentase denda berhasil diperbarui!');
+        window.rAdmPiutang();
+    } catch (err) {
+        hLoad();
+        showToast('Gagal mengubah denda: ' + err.message);
+    }
+};
+
+// Aliaskan editTempoPenalty ke openTempoPenaltyModal
+window.editTempoPenalty = (orderId) => {
+    window.openTempoPenaltyModal(orderId);
+};
+
+/**
+ * Hentikan / Bekukan / Lanjutkan Denda Berjalan
+ */
 window.stopTempoPenalty = (orderId, latePenalty, isStopped) => {
     let title = 'Konfirmasi Denda';
-    let msg = isStopped ? 'Lanjutkan perhitungan denda otomatis berjalan?' : 'Hentikan denda berjalan sekarang? (Nominal denda akan dibekukan di ' + fCur(latePenalty) + ')';
+    let msg = isStopped 
+        ? 'Lanjutkan perhitungan denda otomatis berjalan?' 
+        : 'Hentikan denda berjalan sekarang? (Nominal denda akan dibekukan di ' + fCur(latePenalty) + ')';
     let btn = isStopped ? 'Lanjutkan' : 'Bekukan';
     
     showConfirm(title, msg, async () => {
@@ -100,6 +985,14 @@ window.stopTempoPenalty = (orderId, latePenalty, isStopped) => {
                 'payment.tempoPenaltyStopped': !isStopped,
                 'payment.tempoFixedPenalty': isStopped ? null : latePenalty
             });
+
+            // Update in-memory
+            const o = cachedPiutangOrders.find(x => x.orderId === orderId);
+            if (o && o.payment) {
+                o.payment.tempoPenaltyStopped = !isStopped;
+                o.payment.tempoFixedPenalty = isStopped ? null : latePenalty;
+            }
+
             showToast(isStopped ? 'Denda dilanjutkan!' : 'Denda berhasil dibekukan!');
             window.rAdmPiutang();
         } catch(e) {
@@ -109,51 +1002,9 @@ window.stopTempoPenalty = (orderId, latePenalty, isStopped) => {
     }, btn, !isStopped);
 };
 
-window.payTempoInstallment = (orderId) => {
-    window.customPrompt('Masukkan Nominal Cicilan (Rp)', '', async (val) => {
-        if (!val) return;
-        let amount = parseFloat(val.replace(/[^0-9]/g, ''));
-        if (isNaN(amount) || amount <= 0) return showToast('Nominal cicilan tidak valid!');
-        
-        sLoad('Menyimpan cicilan...');
-        try {
-            const doc = await db.collection("freshmart_orders").doc(orderId).get();
-            if (!doc.exists) {
-                hLoad();
-                return showToast('Pesanan tidak ditemukan');
-            }
-            const data = doc.data();
-            
-            let newBalance = (data.payment?.tempoBalance || 0) - amount;
-            let installments = data.payment?.installments || [];
-            
-            installments.push({
-                date: Date.now(),
-                amount: amount,
-                note: 'Cicilan'
-            });
-            
-            let updates = {
-                'payment.tempoBalance': Math.max(0, newBalance),
-                'payment.installments': installments
-            };
-            
-            if (newBalance <= 0) {
-                updates['payment.paymentStatus'] = 'lunas';
-                updates['status'] = 'Selesai';
-            }
-            
-            await db.collection("freshmart_orders").doc(orderId).update(updates);
-            showToast('Cicilan berhasil ditambahkan!');
-            
-            if (window.rAdmPiutang) window.rAdmPiutang();
-        } catch(e) {
-            showToast('Gagal memproses cicilan: ' + e.message);
-        }
-        hLoad();
-    });
-};
-
+/**
+ * Preview Struk Nota Tempo
+ */
 window.previewTempoReceipt = async (orderId) => {
     sLoad('Memuat data struk...');
     try {
@@ -249,6 +1100,9 @@ window.previewTempoReceipt = async (orderId) => {
     }
 };
 
+/**
+ * Lunasi Seluruh Sisa Tagihan Tempo
+ */
 window.markTempoPaid = async (orderId) => {
     showConfirm('Konfirmasi Pelunasan', 'Tandai seluruh sisa tagihan tempo pesanan ini sebagai LUNAS?', async () => {
         try {
@@ -356,6 +1210,9 @@ window.onTempoSearch = (val) => {
     renderTempoCardsOnly();
 };
 
+/**
+ * Filter & Render Kartu Piutang
+ */
 const renderTempoCardsOnly = () => {
     const container = el('tempo-cards-container');
     if (!container) return;
@@ -393,13 +1250,17 @@ const renderTempoCardsOnly = () => {
     container.innerHTML = filtered.map(o => renderTempoCardItem(o)).join('');
 };
 
+/**
+ * Render Kartu Piutang Individual
+ */
 const renderTempoCardItem = (o) => {
     const calc = getTempoOrderCalculations(o);
     const waNum = normalizeWA(o.customer?.wa || '');
-    const dueStr = calc.dueDate ? new Date(calc.dueDate).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' }) : '-';
+    const monogram = getCustomerMonogram(o.customer?.name || 'Pelanggan');
+    const dueStr = calc.dueDate ? formatDateID(calc.dueDate) : '-';
 
     let badgeHTML = '';
-    let borderClass = 'border-slate-200 dark:border-slate-700';
+    let borderClass = 'border-slate-200 dark:border-slate-700/80';
 
     if (calc.isLate) {
         borderClass = 'border-rose-400 dark:border-rose-600 shadow-[0_0_15px_rgba(225,29,72,0.12)]';
@@ -408,29 +1269,36 @@ const renderTempoCardItem = (o) => {
         borderClass = 'border-amber-400 dark:border-amber-600 shadow-[0_0_15px_rgba(245,158,11,0.12)]';
         badgeHTML = `<div class="absolute -right-7 top-4 bg-amber-500 text-white text-[9px] font-bold uppercase tracking-widest px-8 py-1 rotate-45 shadow-sm">H-${calc.daysLeft <= 0 ? '0 (HARI INI)' : calc.daysLeft}</div>`;
     } else {
-        badgeHTML = `<div class="inline-block px-2.5 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800">Sisa ${calc.daysLeft} Hari</div>`;
+        badgeHTML = `<div class="inline-block px-2.5 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider text-[var(--color-primary)] border" style="background: rgba(var(--color-primary-rgb), 0.08); border-color: rgba(var(--color-primary-rgb), 0.25);">Sisa ${calc.daysLeft} Hari</div>`;
     }
 
     return `
-    <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border ${borderClass} relative overflow-hidden group hover:-translate-y-1 transition-all duration-300 shadow-sm flex flex-col justify-between">
+    <div class="bg-white dark:bg-slate-800 p-4 sm:p-5 rounded-3xl border ${borderClass} relative overflow-hidden group hover:-translate-y-1 transition-all duration-300 shadow-sm flex flex-col justify-between cursor-pointer" onclick="window.openTempoDetailModal('${o.orderId}')">
         ${badgeHTML}
         
         <div>
-            <div class="flex justify-between items-start mb-3 pr-12">
-                <div class="flex-1 min-w-0">
-                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Pesanan #${o.orderId}</p>
-                    <h3 class="font-bold text-slate-800 dark:text-slate-100 mt-1 uppercase text-sm">${esc(o.customer?.name || 'Anonim')}</h3>
-                    <div class="flex items-center gap-2 mt-1.5 flex-wrap">
-                        <p class="text-[11px] font-bold text-slate-500 flex items-center gap-1.5">
+            <!-- HEADER KARTU DENGAN AVATAR MONOGRAM -->
+            <div class="flex items-start gap-3 mb-3 pr-10">
+                <div class="w-10 h-10 rounded-2xl flex items-center justify-center text-xs font-black shrink-0 aspect-square shadow-2xs" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary); border: 1px solid rgba(var(--color-primary-rgb), 0.25);">
+                    ${monogram}
+                </div>
+                <div class="min-w-0 flex-1">
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Nota #${o.orderId}</p>
+                    <h3 class="font-bold text-slate-800 dark:text-slate-100 mt-0.5 uppercase text-sm truncate">${esc(o.customer?.name || 'Anonim')}</h3>
+                    <div class="flex items-center gap-2 mt-1 flex-wrap" onclick="event.stopPropagation()">
+                        <p class="text-[11px] font-bold text-slate-500 flex items-center gap-1">
                             <i class="fa-brands fa-whatsapp text-emerald-500"></i>
-                            <a href="javascript:void(0)" onclick="window.sendSmartTempoWA('${o.orderId}')" class="hover:underline text-slate-600 dark:text-slate-300 font-mono">+${esc(o.customer?.wa || '-')}</a>
+                            <a href="javascript:void(0)" onclick="window.sendSmartTempoWA('${o.orderId}')" class="hover:underline text-slate-600 dark:text-slate-300 font-mono">+${esc(waNum || '-')}</a>
                         </p>
-                        <span class="text-[9px] font-bold px-2 py-0.5 rounded-xl uppercase tracking-widest border ${o.customerType === 'Member' ? 'text-amber-600 bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800' : 'text-slate-500 bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700'}">${o.customerType === 'Member' ? '<i class="fa-solid fa-star text-amber-400 mr-1"></i>Member' : '<i class="fa-solid fa-user mr-1"></i>Umum'}</span>
+                        <span class="text-[9px] font-bold px-2 py-0.5 rounded-xl uppercase tracking-widest border ${o.customerType === 'Member' ? 'text-amber-600 bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800' : 'text-slate-500 bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700'}">
+                            ${o.customerType === 'Member' ? '<i class="fa-solid fa-star text-amber-400 mr-1"></i>Member' : '<i class="fa-solid fa-user mr-1"></i>Umum'}
+                        </span>
                     </div>
                 </div>
             </div>
             
-            <div class="space-y-2 mb-3 bg-slate-50 dark:bg-slate-900/50 p-3.5 rounded-xl border border-slate-100 dark:border-slate-700/50">
+            <!-- RINGKASAN JATUH TEMPO & POKOK -->
+            <div class="space-y-2 mb-3 bg-slate-50 dark:bg-slate-900/50 p-3 rounded-2xl border border-slate-100 dark:border-slate-700/50">
                 <div class="flex justify-between items-center text-xs">
                     <span class="font-bold text-slate-500">Jatuh Tempo</span>
                     <span class="font-bold font-mono ${calc.isLate ? 'text-rose-600' : (calc.isDueSoon ? 'text-amber-600' : 'text-slate-700 dark:text-slate-300')}">${dueStr}</span>
@@ -446,49 +1314,34 @@ const renderTempoCardItem = (o) => {
                 </div>` : ''}
             </div>
             
-            <div class="flex justify-between items-center bg-rose-50 text-rose-600 dark:bg-rose-900/20 dark:text-rose-400 p-3.5 rounded-xl border border-rose-100 dark:border-rose-900/30 mb-3">
-                <span class="text-[10px] font-bold uppercase tracking-widest">Total Tagihan</span>
-                <span class="text-sm font-bold font-mono tracking-tight">${fCur(calc.totalAkhir)}</span>
+            <!-- TOTAL SISA TAGIHAN HIGHLIGHT -->
+            <div class="flex justify-between items-center ${calc.isLate ? 'bg-rose-50 text-rose-600 dark:bg-rose-950/30 dark:text-rose-400 border-rose-100 dark:border-rose-900/40' : 'bg-slate-100 dark:bg-slate-700/60 text-slate-800 dark:text-white border-slate-200 dark:border-slate-700'} p-3 rounded-2xl border mb-3">
+                <span class="text-[10px] font-black uppercase tracking-wider">Total Tagihan:</span>
+                <span class="text-sm font-black font-mono tracking-tight">${fCur(calc.totalAkhir)}</span>
             </div>
-            
-            <div class="flex gap-2 mb-3">
-                <button onclick="editTempoPenalty('${o.orderId}', ${calc.rate})" class="flex-1 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-300 rounded-xl py-2 flex items-center justify-center gap-1.5 text-[10px] font-bold uppercase tracking-widest transition-all">
-                    <i class="fa-solid fa-percent"></i> Edit Denda
-                </button>
-                <button onclick="stopTempoPenalty('${o.orderId}', ${calc.latePenalty}, ${calc.isStopped})" class="flex-1 ${calc.isStopped ? 'bg-[rgba(var(--color-primary-rgb),0.08)] dark:bg-[rgba(var(--color-primary-rgb),0.12)] text-[var(--color-primary)] hover:bg-[rgba(var(--color-primary-rgb),0.15)]' : 'bg-rose-100 dark:bg-rose-900/30 text-rose-600 dark:text-rose-400 hover:bg-rose-200'} rounded-xl py-2 flex items-center justify-center gap-1.5 text-[10px] font-bold uppercase tracking-widest transition-all">
-                    <i class="fa-solid ${calc.isStopped ? 'fa-play' : 'fa-stop'}"></i> ${calc.isStopped ? 'Lanjut Denda' : 'Stop Denda'}
-                </button>
-            </div>
-            
-            ${o.payment?.installments && o.payment.installments.length > 0 ? `
-            <div class="mb-3 space-y-1.5 bg-slate-50 dark:bg-slate-900/30 p-3 rounded-xl border border-slate-100 dark:border-slate-800">
-                <div class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-2 flex justify-between">
-                    <span>Riwayat Cicilan</span>
-                    <span>Total: ${fCur(o.payment.installments.reduce((sum, ins) => sum + (parseFloat(ins.amount)||0), 0))}</span>
-                </div>
-                ${o.payment.installments.map((ins) => `
-                <div class="flex justify-between items-center text-[10px]">
-                    <span class="text-slate-500 dark:text-slate-400 font-mono">${new Date(ins.date).toLocaleDateString('id-ID', {day:'2-digit',month:'short'})}</span>
-                    <span class="font-bold text-[var(--color-primary)] font-mono">+${fCur(ins.amount)}</span>
-                </div>
-                `).join('')}
-            </div>` : ''}
         </div>
         
-        <div class="space-y-2 pt-2 border-t border-slate-100 dark:border-slate-700/60">
+        <!-- ACTION BAR TOUCH ERGONOMIS -->
+        <div class="space-y-2 pt-2 border-t border-slate-100 dark:border-slate-700/60" onclick="event.stopPropagation()">
+            <!-- Baris 1: Rincian, Tagih WA, & Struk -->
             <div class="flex gap-2">
-                <button onclick="window.sendSmartTempoWA('${o.orderId}')" class="flex-1 bg-emerald-50 dark:bg-emerald-950/40 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 text-emerald-600 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-700 rounded-xl py-2 flex items-center justify-center gap-1.5 text-[10px] font-bold uppercase tracking-widest transition-all cursor-pointer shadow-xs active:scale-95" title="Kirim Tagihan Otomatis WhatsApp">
+                <button type="button" onclick="window.openTempoDetailModal('${o.orderId}')" class="flex-1 py-2 px-2.5 rounded-xl font-bold text-xs transition-all active:scale-95 border flex items-center justify-center gap-1.5 cursor-pointer shadow-2xs" style="background: rgba(var(--color-primary-rgb), 0.08); color: var(--color-primary); border-color: rgba(var(--color-primary-rgb), 0.25);" title="Buka Rincian Nota &amp; Histori">
+                    <i class="fa-solid fa-file-invoice"></i> Rincian
+                </button>
+                <button type="button" onclick="window.sendSmartTempoWA('${o.orderId}')" class="flex-1 bg-emerald-50 dark:bg-emerald-950/40 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 text-emerald-600 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-700 rounded-xl py-2 flex items-center justify-center gap-1.5 text-xs font-bold transition-all cursor-pointer shadow-2xs active:scale-95" title="Kirim Tagihan Otomatis WhatsApp">
                     <i class="fa-brands fa-whatsapp text-sm"></i> Tagih WA
                 </button>
-                <button onclick="previewTempoReceipt('${o.orderId}')" class="flex-1 bg-amber-500 hover:bg-amber-600 text-white rounded-xl py-2 flex items-center justify-center gap-1.5 text-[10px] font-bold uppercase tracking-widest shadow-sm shadow-amber-500/20 transition-all active:scale-95" title="Cetak Struk Nota Tempo">
-                    <i class="fa-solid fa-print"></i> Struk
+                <button type="button" onclick="window.previewTempoReceipt('${o.orderId}')" class="w-10 h-9 bg-amber-500 hover:bg-amber-600 text-white rounded-xl flex items-center justify-center text-xs shadow-2xs transition-all active:scale-95 cursor-pointer" title="Cetak Struk Nota Tempo">
+                    <i class="fa-solid fa-print"></i>
                 </button>
             </div>
+
+            <!-- Baris 2: Catat Cicilan & Lunasi -->
             <div class="flex gap-2">
-                <button onclick="payTempoInstallment('${o.orderId}')" class="flex-1 bg-white dark:bg-slate-700 border border-[var(--color-primary)] text-[var(--color-primary)] hover:bg-[rgba(var(--color-primary-rgb),0.08)] rounded-xl py-2 flex items-center justify-center gap-1.5 text-[10px] font-bold uppercase tracking-widest transition-all active:scale-95">
+                <button type="button" onclick="window.openTempoPaymentModal('${o.orderId}')" class="flex-1 bg-white dark:bg-slate-700 border border-[var(--color-primary)] text-[var(--color-primary)] hover:bg-[rgba(var(--color-primary-rgb),0.08)] rounded-xl py-2 flex items-center justify-center gap-1.5 text-xs font-black uppercase tracking-wider transition-all active:scale-95 shadow-2xs cursor-pointer">
                     <i class="fa-solid fa-money-bill-wave"></i> Cicil
                 </button>
-                <button onclick="markTempoPaid('${o.orderId}')" class="flex-1 primary-bg hover:opacity-90 text-white rounded-xl py-2 flex items-center justify-center gap-1.5 text-[10px] font-bold uppercase tracking-widest shadow-sm transition-all active:scale-95">
+                <button type="button" onclick="window.markTempoPaid('${o.orderId}')" class="flex-1 text-white rounded-xl py-2 flex items-center justify-center gap-1.5 text-xs font-black uppercase tracking-wider shadow-sm transition-all active:scale-95 cursor-pointer" style="background: var(--color-primary); box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.3);">
                     <i class="fa-solid fa-check-double"></i> Lunas
                 </button>
             </div>
@@ -496,7 +1349,12 @@ const renderTempoCardItem = (o) => {
     </div>`;
 };
 
+/**
+ * Render Tampilan Utama Modul Piutang & Tempo
+ */
 const renderTempoContent = () => {
+    ensureTempoModals();
+
     let totalPiutang = 0;
     let totalTerlambat = 0;
     let countLate = 0;
@@ -519,79 +1377,81 @@ const renderTempoContent = () => {
     let h = `
     <div class="max-w-full pb-12 fade-in-scale text-sm space-y-5">
         
-        <!-- HEADER KARTU STATISTIK METRIK PIUTANG -->
+        <!-- HEADER KARTU STATISTIK METRIK PIUTANG DENGAN AMBIENT THEME GLOW -->
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex items-center gap-3.5">
-                <div class="w-11 h-11 rounded-xl flex items-center justify-center shrink-0 bg-rose-50 text-rose-600 dark:bg-rose-950/50 dark:text-rose-400">
+            <div class="bg-white dark:bg-slate-800 p-4 rounded-3xl border border-slate-200/90 dark:border-slate-700 shadow-sm flex items-center gap-3.5 relative overflow-hidden">
+                <div class="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 shadow-xs" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary); border: 1px solid rgba(var(--color-primary-rgb), 0.25);">
                     <i class="fa-solid fa-hand-holding-dollar text-xl"></i>
                 </div>
                 <div class="min-w-0">
-                    <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Total Piutang Aktif</p>
-                    <p class="text-base font-bold text-slate-900 dark:text-white font-mono mt-0.5">${fCur(totalPiutang)}</p>
+                    <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Total Piutang Aktif</p>
+                    <p class="text-base sm:text-lg font-black text-slate-900 dark:text-white font-mono mt-0.5 tracking-tight">${fCur(totalPiutang)}</p>
                 </div>
             </div>
 
-            <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex items-center gap-3.5">
-                <div class="w-11 h-11 rounded-xl flex items-center justify-center shrink-0 bg-red-50 text-red-600 dark:bg-red-950/50 dark:text-red-400">
+            <div class="bg-white dark:bg-slate-800 p-4 rounded-3xl border border-rose-200 dark:border-rose-900/60 shadow-sm flex items-center gap-3.5 relative overflow-hidden">
+                <div class="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 bg-rose-50 text-rose-600 dark:bg-rose-950/50 dark:text-rose-400 border border-rose-200 dark:border-rose-800">
                     <i class="fa-solid fa-triangle-exclamation text-xl"></i>
                 </div>
                 <div class="min-w-0">
-                    <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Piutang Terlambat</p>
-                    <p class="text-base font-bold text-rose-600 dark:text-rose-400 font-mono mt-0.5">${fCur(totalTerlambat)}</p>
+                    <p class="text-[9px] font-black text-rose-500 uppercase tracking-widest">Piutang Terlambat</p>
+                    <p class="text-base sm:text-lg font-black text-rose-600 dark:text-rose-400 font-mono mt-0.5 tracking-tight">${fCur(totalTerlambat)}</p>
                 </div>
             </div>
 
-            <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex items-center gap-3.5">
-                <div class="w-11 h-11 rounded-xl flex items-center justify-center shrink-0" style="background: rgba(var(--color-primary-rgb),0.1); color: var(--color-primary)">
+            <div class="bg-white dark:bg-slate-800 p-4 rounded-3xl border border-slate-200/90 dark:border-slate-700 shadow-sm flex items-center gap-3.5 relative overflow-hidden">
+                <div class="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 bg-amber-50 text-amber-600 dark:bg-amber-950/50 dark:text-amber-400 border border-amber-200 dark:border-amber-800">
                     <i class="fa-solid fa-file-invoice-dollar text-xl"></i>
                 </div>
                 <div class="min-w-0">
-                    <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Total Nota Tempo</p>
-                    <p class="text-base font-bold text-slate-900 dark:text-white font-mono mt-0.5">${cachedPiutangOrders.length} Nota</p>
+                    <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Total Nota Tempo</p>
+                    <p class="text-base sm:text-lg font-black text-slate-900 dark:text-white font-mono mt-0.5 tracking-tight">${cachedPiutangOrders.length} Nota</p>
                 </div>
             </div>
         </div>
 
-        <!-- SEARCH BAR & FILTER STATUS PILLS -->
-        <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-3">
+        <!-- SEARCH BAR & FILTER STATUS CHIPS -->
+        <div class="bg-white dark:bg-slate-800 p-4 rounded-3xl border border-slate-200/90 dark:border-slate-700 shadow-sm space-y-3">
             <div class="relative">
                 <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
                 <input type="text" 
                     id="tempo-search-input"
                     value="${esc(tempoSearchQuery)}"
-                    placeholder="Cari nama pelanggan, nomor WhatsApp, atau ID pesanan..." 
+                    placeholder="Cari nama pelanggan, nomor WhatsApp, atau ID nota tempo..." 
                     oninput="window.onTempoSearch(this.value)"
-                    class="w-full pl-9 pr-4 py-2.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-xs font-medium text-slate-800 dark:text-slate-100 focus:outline-none focus:border-[var(--color-primary)] transition-all">
+                    class="w-full pl-9 pr-8 py-2.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl text-xs font-medium text-slate-800 dark:text-slate-100 focus:outline-none focus:border-[var(--color-primary)] transition-all">
                 ${tempoSearchQuery ? `
-                <button onclick="window.onTempoSearch(''); el('tempo-search-input').value='';" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+                <button onclick="window.onTempoSearch(''); el('tempo-search-input').value='';" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 cursor-pointer">
                     <i class="fa-solid fa-circle-xmark text-sm"></i>
                 </button>` : ''}
             </div>
 
-            <div class="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar text-xs font-bold uppercase tracking-wider">
+            <!-- FILTER STATUS SEGMENTED CONTROL -->
+            <div class="flex items-center gap-2 overflow-x-auto pb-1 hide-scrollbar text-xs font-bold uppercase tracking-wider">
                 <button onclick="window.setTempoFilter('all')" 
-                    class="px-3.5 py-1.5 rounded-xl border transition-all shrink-0 ${activeTempoFilter === 'all' 
-                        ? 'primary-bg text-white border-transparent shadow-xs' 
-                        : 'bg-slate-50 dark:bg-slate-900 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-100'}">
+                    class="px-3.5 py-2 rounded-xl border transition-all shrink-0 cursor-pointer active:scale-95 ${activeTempoFilter === 'all' 
+                        ? 'text-white border-transparent shadow-xs' 
+                        : 'bg-slate-50 dark:bg-slate-900 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-100'}"
+                    style="${activeTempoFilter === 'all' ? 'background: var(--color-primary); box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.3);' : ''}">
                     Semua (${cachedPiutangOrders.length})
                 </button>
                 <button onclick="window.setTempoFilter('late')" 
-                    class="px-3.5 py-1.5 rounded-xl border transition-all shrink-0 ${activeTempoFilter === 'late' 
+                    class="px-3.5 py-2 rounded-xl border transition-all shrink-0 cursor-pointer active:scale-95 ${activeTempoFilter === 'late' 
                         ? 'bg-rose-600 text-white border-rose-600 shadow-xs' 
                         : 'bg-rose-50 dark:bg-rose-950/30 text-rose-600 dark:text-rose-400 border-rose-200 dark:border-rose-900/50 hover:bg-rose-100'}">
                     <i class="fa-solid fa-triangle-exclamation mr-1"></i> Terlambat (${countLate})
                 </button>
                 <button onclick="window.setTempoFilter('due_soon')" 
-                    class="px-3.5 py-1.5 rounded-xl border transition-all shrink-0 ${activeTempoFilter === 'due_soon' 
+                    class="px-3.5 py-2 rounded-xl border transition-all shrink-0 cursor-pointer active:scale-95 ${activeTempoFilter === 'due_soon' 
                         ? 'bg-amber-500 text-white border-amber-500 shadow-xs' 
                         : 'bg-amber-50 dark:bg-amber-950/30 text-amber-600 dark:text-amber-400 border-amber-200 dark:border-amber-900/50 hover:bg-amber-100'}">
                     <i class="fa-solid fa-clock mr-1"></i> H-3 Jatuh Tempo (${countDueSoon})
                 </button>
                 <button onclick="window.setTempoFilter('active')" 
-                    class="px-3.5 py-1.5 rounded-xl border transition-all shrink-0 ${activeTempoFilter === 'active' 
+                    class="px-3.5 py-2 rounded-xl border transition-all shrink-0 cursor-pointer active:scale-95 ${activeTempoFilter === 'active' 
                         ? 'bg-emerald-600 text-white border-emerald-600 shadow-xs' 
                         : 'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 border-emerald-200 dark:border-emerald-900/50 hover:bg-emerald-100'}">
-                    <i class="fa-solid fa-circle-check mr-1"></i> Berjalan (${countActive})
+                    <i class="fa-solid fa-circle-check mr-1"></i> Berjalan Lancar (${countActive})
                 </button>
             </div>
         </div>
@@ -599,12 +1459,12 @@ const renderTempoContent = () => {
 
     if (cachedPiutangOrders.length === 0) {
         h += `
-        <div class="bg-white dark:bg-slate-800 p-10 text-center rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
-            <div class="w-20 h-20 bg-[rgba(var(--color-primary-rgb),0.08)] dark:bg-[rgba(var(--color-primary-rgb),0.15)] text-[var(--color-primary)] rounded-full flex items-center justify-center mx-auto mb-4">
+        <div class="bg-white dark:bg-slate-800 p-10 text-center rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm">
+            <div class="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4" style="background: rgba(var(--color-primary-rgb), 0.1); color: var(--color-primary);">
                 <i class="fa-solid fa-check-double text-4xl"></i>
             </div>
-            <h3 class="font-bold text-slate-800 dark:text-slate-100 text-base uppercase tracking-widest">Luar Biasa! Semua Tagihan Lunas</h3>
-            <p class="text-slate-500 dark:text-slate-400 mt-1.5 text-xs font-medium">Tidak ada piutang tempo yang sedang aktif atau tertunda saat ini.</p>
+            <h3 class="font-black text-slate-800 dark:text-slate-100 text-base uppercase tracking-widest">Semua Tagihan Piutang Lunas!</h3>
+            <p class="text-slate-500 dark:text-slate-400 mt-1.5 text-xs font-medium max-w-sm mx-auto">Tidak ada piutang tempo penjualan pelanggan yang sedang aktif atau tertunda saat ini.</p>
         </div>`;
     } else {
         h += `<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="tempo-cards-container"></div>`;
@@ -618,7 +1478,10 @@ const renderTempoContent = () => {
     }
 };
 
-window.rAdmPiutang = async () => {
+/**
+ * Entry Point Memuat Data Piutang dari Firestore
+ */
+export const rAdmPiutang = async () => {
     sLoad('Memuat data piutang...');
     cachedPiutangOrders = [];
     try {
@@ -646,8 +1509,14 @@ window.rAdmPiutang = async () => {
     renderTempoContent();
 };
 
+window.rAdmPiutang = rAdmPiutang;
+
 export default {
     rAdmPiutang: window.rAdmPiutang,
     sendSmartTempoWA: window.sendSmartTempoWA,
-    getTempoOrderCalculations
+    openTempoDetailModal: window.openTempoDetailModal,
+    openTempoPaymentModal: window.openTempoPaymentModal,
+    openTempoPenaltyModal: window.openTempoPenaltyModal,
+    getTempoOrderCalculations,
+    ensureTempoModals
 };
