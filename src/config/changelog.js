@@ -8,6 +8,20 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-9-56',
+        version: 'v1.9.56',
+        date: '2026-09-27',
+        title: 'Fix Tampilan Dialog Konfirmasi — Render HTML Tersanitasi & Redesain Dialog Lega Native App',
+        category: 'optimization',
+        badge: 'Confirm Dialog HTML Parity v1.9.56',
+        items: [
+            'Fix Raw HTML Entities pada Dialog Konfirmasi: Memperbaiki metode render pesan dialog konfirmasi (showConfirm) dari innerText mentah menjadi innerHTML yang disanitasi secara aman via DOMPurify (dengan pelestarian class styling & style inline), mengeliminasi bug di mana tag <b>, <br>, dan <span class="..."> muncul sebagai teks mentah pada dialog hapus PO dan hapus supplier.',
+            'Redesain Kotak Dialog Konfirmasi (Custom Confirm Box): Memperlebar lebar dialog dari 320px sempit menjadi max-w-[380px] sm:max-w-[420px] yang lapang dan bernafas, mengganti elemen teks pesan menjadi kontainer multiline (leading-relaxed), serta menstandardisasi sudut tombol aksi ke rounded-2xl ala iOS & Android Material 3.',
+            'Kerapian Pesan Peringatan Bertingkat: Peringatan jumlah produk etalase terhubung (amber) dan riwayat order kulakan PO terkait (rose) kini tampil terformat indah, berwarna, dan mudah dipahami dalam sekali pandang.',
+            'Sinkronisasi Multi-Channel v1.9.56 (Android VersionCode 10956): Terkompilasi dan tersinkronisasi penuh ke Vite build, paket flashdisk, dan Capacitor Android.'
+        ]
+    },
+    {
         id: 'log-1-9-55',
         version: 'v1.9.55',
         date: '2026-09-27',

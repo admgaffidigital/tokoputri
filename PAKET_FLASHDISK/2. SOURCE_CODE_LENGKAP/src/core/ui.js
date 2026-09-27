@@ -141,16 +141,26 @@ export const showConfirm = (t, m, cb, btnText = "Ya, Hapus", isDanger = true) =>
     }
 
     setIn('confirm-title', title);
-    setIn('confirm-msg', msg);
+    const msgEl = el('confirm-msg');
+    if (msgEl) {
+        if (typeof msg === 'string') {
+            const cleanMsg = (typeof window.DOMPurify !== 'undefined')
+                ? window.DOMPurify.sanitize(msg, { ADD_ATTR: ['class', 'style'] })
+                : msg;
+            msgEl.innerHTML = cleanMsg;
+        } else {
+            msgEl.textContent = msg || '';
+        }
+    }
     const b = el('confirm-yes-btn');
     if (b) {
         b.innerText = btnLabel;
         if (dangerMode) {
-            b.className = 'flex-1 py-3.5 bg-rose-600 text-white font-bold rounded-xl hover:bg-rose-700 active:scale-95 transition-all text-sm shadow-md shadow-rose-500/30 cursor-pointer';
+            b.className = 'flex-1 py-3.5 bg-rose-600 text-white font-bold rounded-2xl hover:bg-rose-700 active:scale-95 transition-all text-sm shadow-md shadow-rose-500/30 cursor-pointer';
             el('confirm-icon-box').className = 'w-16 h-16 bg-rose-50 dark:bg-rose-900/30 text-rose-500 dark:text-rose-400 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-5 border border-rose-200 dark:border-rose-800';
             el('confirm-icon').className = 'fa-solid fa-triangle-exclamation';
         } else {
-            b.className = 'flex-1 py-3.5 bg-[var(--color-primary)] text-white font-bold rounded-xl hover:opacity-90 active:scale-95 transition-all text-sm shadow-sm cursor-pointer';
+            b.className = 'flex-1 py-3.5 bg-[var(--color-primary)] text-white font-bold rounded-2xl hover:opacity-90 active:scale-95 transition-all text-sm shadow-sm cursor-pointer';
             el('confirm-icon-box').className = 'w-16 h-16 bg-[rgba(var(--color-primary-rgb),0.08)] dark:bg-[rgba(var(--color-primary-rgb),0.15)] text-[var(--color-primary)] rounded-2xl flex items-center justify-center text-3xl mx-auto mb-5 border border-[var(--color-primary)]/20';
             el('confirm-icon').className = 'fa-solid fa-copy';
         }
