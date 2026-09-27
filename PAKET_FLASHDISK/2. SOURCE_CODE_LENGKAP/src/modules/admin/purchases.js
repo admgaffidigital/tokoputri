@@ -28,7 +28,7 @@ import { saveApp } from '../../services/storage.js';
  */
 export const ensurePurchaseModals = () => {
     // Bersihkan modal lama jika pernah terinjeksi ke dalam #admin-content
-    ['modal-po-form', 'modal-po-detail', 'modal-po-payment'].forEach(id => {
+    ['modal-po-form', 'modal-po-detail', 'modal-po-payment', 'modal-po-product-picker'].forEach(id => {
         const inside = document.querySelector(`#admin-content #${id}`);
         if (inside) inside.remove();
     });
@@ -71,6 +71,19 @@ export const ensurePurchaseModals = () => {
         `;
         document.body.appendChild(m);
     }
+
+    if (!el('modal-po-product-picker')) {
+        const m = document.createElement('div');
+        m.id = 'modal-po-product-picker';
+        m.className = 'fixed inset-0 z-[160] flex hidden items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-950/40 backdrop-blur-sm opacity-0 transition-opacity duration-300';
+        m.onclick = (e) => { if (e.target === m) window.closePOProductPicker?.(); };
+        m.innerHTML = `
+            <div id="modal-po-product-picker-box" class="modal-bottom-sheet relative flex max-h-[92dvh] sm:max-h-[85dvh] w-full max-w-2xl translate-y-full sm:translate-y-10 transform flex-col overflow-hidden rounded-t-[2rem] sm:rounded-3xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xl transition-transform duration-300">
+                <div id="modal-po-product-picker-content" class="flex-1 flex flex-col overflow-hidden"></div>
+            </div>
+        `;
+        document.body.appendChild(m);
+    }
 };
 
 // State modul purchases
@@ -78,6 +91,20 @@ let activePOFilter = 'all'; // 'all' | 'ordered' | 'received' | 'unpaid' | 'comp
 let purchaseSearchQuery = '';
 let currentEditingPOId = null;
 let tempPOItems = []; // Item builder saat membuat/mengedit PO
+
+// State Native Product Picker PO
+let poPickerTargetRow = null;
+let poPickerSearch = '';
+let poPickerFilterSupplier = true;
+let poPickerCategory = 'all';
+
+/**
+ * Format kuantitas desimal bersih (menghilangkan trailing zero, contoh: 2.5 bukan 2.500)
+ */
+export const formatQty = (n) => {
+    const val = parseFloat(n) || 0;
+    return parseFloat(val.toFixed(3)).toString();
+};
 
 /**
  * Format tanggal Indonesia yang ramah
@@ -451,7 +478,7 @@ const renderPOCardHtml = (po) => {
 
                         <!-- Snippet preview item barang -->
                         <div class="text-[11px] text-slate-400 mt-1.5 truncate max-w-xl">
-                            ${(po.items || []).map(it => `${esc(it.name)} (${it.qty} ${esc(it.unit || 'pcs')})`).join(' • ')}
+                            ${(po.items || []).map(it => `${esc(it.name)}${it.variantName ? ` [${esc(it.variantName)}]` : ''} (${formatQty(it.qty)} ${esc(it.unit || 'pcs')})`).join(' • ')}
                         </div>
                     </div>
                 </div>
@@ -556,7 +583,7 @@ window.setPurchaseFilter = (filterKey) => {
 /**
  * ══════════════════════════════════════════════════════════════════
  * FITUR UTAMA 1: AUTO-RESTOCK GUDANG (BARANG DITERIMA)
- * Menambahkan stok produk toko secara otomatis saat status diubah ke 'received'
+ * Menambahkan stok produk & varian toko secara otomatis saat status diubah ke 'received'
  * ══════════════════════════════════════════════════════════════════
  */
 window.receiveAndRestockPO = (poId) => {
@@ -568,7 +595,7 @@ window.receiveAndRestockPO = (poId) => {
         return showToast('Stok dari PO ini sudah pernah masuk ke gudang sebelumnya.');
     }
 
-    const itemsSummary = (po.items || []).map(it => `• <b>${esc(it.name)}</b>: +${it.qty} ${esc(it.unit || 'pcs')} (Modal HPP: ${fCur(it.unitPrice)})`).join('<br>');
+    const itemsSummary = (po.items || []).map(it => `• <b>${esc(it.name)}${it.variantName ? ` [${esc(it.variantName)}]` : ''}</b>: +${formatQty(it.qty)} ${esc(it.unit || 'pcs')} (Modal HPP: ${fCur(it.unitPrice)})`).join('<br>');
 
     showConfirm(
         'Terima Barang & Restock Otomatis',
@@ -591,16 +618,27 @@ window.receiveAndRestockPO = (poId) => {
                         const addedQty = parseFloat(item.qty) || 0;
                         const newHpp = parseFloat(item.unitPrice) || 0;
 
-                        // Tambah stok utama produk
-                        const currentStock = parseFloat(prod.stock) || 0;
-                        prod.stock = currentStock + addedQty;
+                        // 1. Restock spesifik varian jika item memiliki varian
+                        if (item.variantName && Array.isArray(prod.variants) && prod.variants.length > 0) {
+                            const v = prod.variants.find(x => x.name === item.variantName);
+                            if (v) {
+                                const curVStock = parseFloat(v.stock) || 0;
+                                v.stock = parseFloat((curVStock + addedQty).toFixed(3));
+                                if (newHpp > 0) v.hpp = newHpp;
+                                if (v.isActive === false || v.isActive === 'false') v.isActive = true;
+                            }
+                        }
 
-                        // Perbarui HPP jika harga beli modal valid
+                        // 2. Tambah stok utama produk (desimal presisi)
+                        const currentStock = parseFloat(prod.stock) || 0;
+                        prod.stock = parseFloat((currentStock + addedQty).toFixed(3));
+
+                        // 3. Perbarui HPP jika harga beli modal valid
                         if (newHpp > 0) {
                             prod.hpp = newHpp;
                         }
 
-                        // Jika produk sebelumnya non-aktif karena stok 0, aktifkan kembali
+                        // 4. Jika produk sebelumnya non-aktif karena stok 0, aktifkan kembali
                         if (prod.isActive === false || prod.isActive === 'false') {
                             prod.isActive = true;
                         }
@@ -872,17 +910,17 @@ const renderPOFormModalContent = (po, isEdit) => {
                     </div>
                     <button 
                         type="button" 
-                        onclick="window.addPOItemRow()" 
+                        onclick="window.openPOProductPicker(null)" 
                         class="px-3.5 py-1.5 rounded-xl text-white font-bold text-xs flex items-center gap-1.5 shadow-2xs active:scale-95 transition-all cursor-pointer"
                         style="background: var(--color-primary); box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.25);"
                     >
-                        <i class="fa-solid fa-plus text-xs"></i>
-                        <span>Tambah Barang</span>
+                        <i class="fa-solid fa-cart-plus text-xs"></i>
+                        <span>+ Tambah Barang</span>
                     </button>
                 </div>
 
                 <div id="po-items-table-container">
-                    <!-- Item PO di-render oleh renderPOItemsTable() dalam format Adaptive Mobile Cards + Desktop Table -->
+                    <!-- Item PO di-render oleh renderPOItemsTable() dalam format Native App Cards -->
                 </div>
             </div>
 
@@ -991,12 +1029,8 @@ const renderPOFormModalContent = (po, isEdit) => {
         </form>
     `);
 
-    // Jika item builder masih kosong, tambahkan 1 baris pertama
-    if (tempPOItems.length === 0) {
-        window.addPOItemRow();
-    } else {
-        renderPOItemsTable();
-    }
+    // Render daftar barang PO (jika kosong akan tampil state panduan ambil barang)
+    renderPOItemsTable();
 
     window.recalcPOTempoDueDate();
     window.recalcPOTotals();
@@ -1071,28 +1105,166 @@ window.setPOTempoPresetDays = (days) => {
 };
 
 /**
- * Tambah Baris Item di Form PO
+ * Buka Native Product Picker Modal untuk Form PO
+ * @param {number|null} targetRowIndex - jika null: tambah item baru, jika angka: ganti produk pada baris tersebut
  */
-window.addPOItemRow = () => {
-    const products = appData.products || [];
+window.openPOProductPicker = (targetRowIndex = null) => {
+    ensurePurchaseModals();
+    poPickerTargetRow = targetRowIndex;
+    poPickerSearch = '';
+    
+    // Cek apakah ada supplier terpilih di form PO & produk milik supplier tersebut
     const currentSupplierId = el('pof-supplierId')?.value || '';
+    const products = appData.products || [];
+    const hasSupplierProducts = products.some(p => String(p.supplierId) === String(currentSupplierId));
+    poPickerFilterSupplier = !!(currentSupplierId && hasSupplierProducts);
+    poPickerCategory = 'all';
 
-    // Prioritaskan produk dari supplier ini jika ada
-    const supplierProducts = products.filter(p => String(p.supplierId) === String(currentSupplierId));
-    const defaultProd = supplierProducts[0] || products[0] || null;
+    renderPOProductPickerContent();
 
-    tempPOItems.push({
-        productId: defaultProd ? defaultProd.id : '',
-        name: defaultProd ? defaultProd.name : '',
-        sku: defaultProd ? (defaultProd.sku || '') : '',
+    const modal = el('modal-po-product-picker');
+    const box = el('modal-po-product-picker-box');
+    if (!modal) return;
+    openModalAnim(modal, box);
+
+    // Auto-focus input pencarian
+    setTimeout(() => {
+        const searchInput = el('po-picker-search-input');
+        if (searchInput) searchInput.focus();
+    }, 250);
+};
+
+/**
+ * Tutup Native Product Picker Modal
+ */
+window.closePOProductPicker = () => {
+    const modal = el('modal-po-product-picker');
+    const box = el('modal-po-product-picker-box');
+    if (!modal) return;
+    closeModalAnim(modal, box);
+};
+
+/**
+ * Handler pencarian teks pada Product Picker
+ */
+window.handlePOPickerSearch = (val) => {
+    poPickerSearch = val || '';
+    renderPOProductPickerContent();
+};
+
+/**
+ * Filter Supplier / Semua Katalog pada Product Picker
+ */
+window.setPOPickerSupplierFilter = (val) => {
+    poPickerFilterSupplier = !!val;
+    renderPOProductPickerContent();
+};
+
+/**
+ * Filter Kategori pada Product Picker
+ */
+window.setPOPickerCategory = (cat) => {
+    poPickerCategory = cat || 'all';
+    renderPOProductPickerContent();
+};
+
+/**
+ * Pilih Produk & Varian dari Picker ke dalam PO
+ */
+window.selectProductForPO = (productId, variantIndex = null) => {
+    const products = appData.products || [];
+    const prod = products.find(p => String(p.id) === String(productId));
+    if (!prod) return;
+
+    let selectedVariant = null;
+    if (variantIndex !== null && Array.isArray(prod.variants) && prod.variants[variantIndex]) {
+        selectedVariant = prod.variants[variantIndex];
+    } else if (Array.isArray(prod.variants) && prod.variants.length > 0) {
+        selectedVariant = prod.variants[0];
+    }
+
+    const unitPrice = selectedVariant 
+        ? (parseFloat(selectedVariant.hpp) || parseFloat(selectedVariant.price) || 0)
+        : (parseFloat(prod.hpp) || parseFloat(prod.price) || 0);
+
+    const itemObj = {
+        productId: prod.id,
+        name: prod.name,
+        sku: selectedVariant?.sku || prod.sku || '',
+        variantName: selectedVariant ? selectedVariant.name : '',
+        variantKey: selectedVariant ? selectedVariant.name : '',
+        variantSku: selectedVariant ? (selectedVariant.sku || '') : '',
         qty: 1,
-        unit: 'Pcs',
-        unitPrice: defaultProd ? (parseFloat(defaultProd.hpp) || parseFloat(defaultProd.price) || 0) : 0,
-        subtotal: defaultProd ? (parseFloat(defaultProd.hpp) || parseFloat(defaultProd.price) || 0) : 0
+        unit: selectedVariant?.unit || prod.unit || 'Pcs',
+        unitPrice: unitPrice,
+        subtotal: unitPrice
+    };
+
+    if (poPickerTargetRow !== null && tempPOItems[poPickerTargetRow]) {
+        tempPOItems[poPickerTargetRow] = itemObj;
+        showToast(`Barang diubah: ${prod.name}${itemObj.variantName ? ` (${itemObj.variantName})` : ''} ✨`);
+    } else {
+        tempPOItems.push(itemObj);
+        showToast(`Ditambahkan: ${prod.name}${itemObj.variantName ? ` (${itemObj.variantName})` : ''} 🛒`);
+    }
+
+    renderPOItemsTable();
+    window.recalcPOTotals();
+    window.closePOProductPicker();
+};
+
+/**
+ * Tambahkan Seluruh Varian Produk ke PO Sekaligus (Batch Add All Variants)
+ */
+window.addAllVariantsForPO = (productId) => {
+    const products = appData.products || [];
+    const prod = products.find(p => String(p.id) === String(productId));
+    if (!prod || !Array.isArray(prod.variants) || prod.variants.length === 0) return;
+
+    let addedCount = 0;
+    prod.variants.forEach(v => {
+        const unitPrice = parseFloat(v.hpp) || parseFloat(v.price) || 0;
+        const itemObj = {
+            productId: prod.id,
+            name: prod.name,
+            sku: v.sku || prod.sku || '',
+            variantName: v.name || '',
+            variantKey: v.name || '',
+            variantSku: v.sku || '',
+            qty: 1,
+            unit: v.unit || prod.unit || 'Pcs',
+            unitPrice: unitPrice,
+            subtotal: unitPrice
+        };
+        tempPOItems.push(itemObj);
+        addedCount++;
     });
 
     renderPOItemsTable();
     window.recalcPOTotals();
+    window.closePOProductPicker();
+    showToast(`${addedCount} varian ${prod.name} berhasil ditambahkan ke PO! 📦✨`);
+};
+
+/**
+ * Tambah Item Manual (Barang Baru di Luar Katalog)
+ */
+window.addManualPOItemRow = () => {
+    tempPOItems.push({
+        productId: '',
+        name: 'Barang Kulakan Manual',
+        sku: '',
+        variantName: '',
+        variantKey: '',
+        variantSku: '',
+        qty: 1,
+        unit: 'Pcs',
+        unitPrice: 0,
+        subtotal: 0
+    });
+    renderPOItemsTable();
+    window.recalcPOTotals();
+    showToast('Item manual ditambahkan. Silakan ketik nama dan harga modal.');
 };
 
 /**
@@ -1105,20 +1277,76 @@ window.removePOItemRow = (index) => {
 };
 
 /**
- * Stepper Kuantitas Item PO (+ / -)
+ * Ganti Pilihan Varian pada Kartu Item PO
  */
-window.stepPOItemQty = (index, delta) => {
-    if (!tempPOItems[index]) return;
-    const current = parseFloat(tempPOItems[index].qty) || 0;
-    const next = Math.max(1, current + delta);
-    tempPOItems[index].qty = next;
-    tempPOItems[index].subtotal = next * (parseFloat(tempPOItems[index].unitPrice) || 0);
+window.selectPOItemVariant = (itemIndex, variantIndex) => {
+    const item = tempPOItems[itemIndex];
+    if (!item) return;
+    const products = appData.products || [];
+    const prod = products.find(p => String(p.id) === String(item.productId));
+    if (!prod || !Array.isArray(prod.variants) || !prod.variants[variantIndex]) return;
+
+    const v = prod.variants[variantIndex];
+    item.variantName = v.name || '';
+    item.variantKey = v.name || '';
+    item.variantSku = v.sku || '';
+    if (v.unit) item.unit = v.unit;
+    const vHpp = parseFloat(v.hpp) || parseFloat(v.price) || 0;
+    if (vHpp > 0 || !item.unitPrice) {
+        item.unitPrice = vHpp;
+    }
+    item.subtotal = Math.round((parseFloat(item.qty) || 0) * (parseFloat(item.unitPrice) || 0));
+
     renderPOItemsTable();
     window.recalcPOTotals();
 };
 
 /**
- * Render Tabel Builder Item Form PO (Adaptive Native Cards on Mobile + Table on Desktop)
+ * Stepper Kuantitas Item PO (+ / -) dengan Dukungan Desimal
+ */
+window.stepPOItemQty = (index, delta) => {
+    if (!tempPOItems[index]) return;
+    const current = parseFloat(tempPOItems[index].qty) || 0;
+    let next;
+    if (current <= 1 && delta < 0) {
+        next = Math.max(0.1, parseFloat((current - 0.1).toFixed(3)));
+    } else {
+        next = Math.max(0.1, parseFloat((current + delta).toFixed(3)));
+    }
+    tempPOItems[index].qty = next;
+    tempPOItems[index].subtotal = Math.round(next * (parseFloat(tempPOItems[index].unitPrice) || 0));
+    renderPOItemsTable();
+    window.recalcPOTotals();
+};
+
+/**
+ * Update Field Angka / Teks pada Baris Item PO (Dukung Koma & Titik Desimal)
+ */
+window.updatePOItemField = (index, field, value) => {
+    if (!tempPOItems[index]) return;
+    if (field === 'qty') {
+        const cleanVal = typeof value === 'string' ? value.replace(',', '.') : value;
+        const parsed = parseFloat(cleanVal) || 0;
+        tempPOItems[index].qty = cleanVal;
+        tempPOItems[index].subtotal = Math.round(parsed * (parseFloat(tempPOItems[index].unitPrice) || 0));
+        const subCard = el(`po-item-subtotal-card-${index}`);
+        if (subCard) subCard.textContent = fCur(tempPOItems[index].subtotal);
+    } else if (field === 'unitPrice') {
+        const cleanVal = typeof value === 'string' ? value.replace(',', '.') : value;
+        const parsed = parseFloat(cleanVal) || 0;
+        tempPOItems[index].unitPrice = parsed;
+        const qtyNum = parseFloat(tempPOItems[index].qty) || 0;
+        tempPOItems[index].subtotal = Math.round(qtyNum * parsed);
+        const subCard = el(`po-item-subtotal-card-${index}`);
+        if (subCard) subCard.textContent = fCur(tempPOItems[index].subtotal);
+    } else {
+        tempPOItems[index][field] = value;
+    }
+    window.recalcPOTotals();
+};
+
+/**
+ * Render Tabel Builder Item Form PO dalam format Native App Cards Modern
  */
 const renderPOItemsTable = () => {
     const container = el('po-items-table-container');
@@ -1129,264 +1357,468 @@ const renderPOItemsTable = () => {
 
     if (tempPOItems.length === 0) {
         setH('po-items-table-container', `
-            <div class="p-8 text-center flex flex-col items-center justify-center text-slate-400 bg-slate-50/60 dark:bg-slate-900/40 rounded-2xl border-2 border-dashed border-slate-200 dark:border-slate-800">
-                <div class="w-12 h-12 rounded-2xl flex items-center justify-center text-xl mb-2.5" style="background: rgba(var(--color-primary-rgb), 0.1); color: var(--color-primary);">
+            <div class="p-8 text-center flex flex-col items-center justify-center text-slate-400 bg-slate-50/70 dark:bg-slate-900/40 rounded-3xl border-2 border-dashed border-slate-200 dark:border-slate-800 space-y-3">
+                <div class="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl shadow-sm" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary);">
                     <i class="fa-solid fa-boxes-packing"></i>
                 </div>
-                <p class="font-bold text-xs sm:text-sm text-slate-700 dark:text-slate-200">Belum Ada Barang yang Ditambahkan</p>
-                <p class="text-[11px] text-slate-400 mt-0.5 max-w-xs">Tambahkan produk dari katalog toko untuk memesan kulakan ke supplier.</p>
-                <button type="button" onclick="window.addPOItemRow()" class="mt-3.5 px-4 py-2 rounded-xl text-white font-bold text-xs flex items-center gap-1.5 shadow-sm active:scale-95 transition-all cursor-pointer" style="background: var(--color-primary);">
-                    <i class="fa-solid fa-plus text-xs"></i>
-                    <span>+ Tambah Barang Pertama</span>
-                </button>
+                <div>
+                    <p class="font-black text-sm sm:text-base text-slate-700 dark:text-slate-200">Belum Ada Barang yang Dipesan</p>
+                    <p class="text-xs text-slate-400 mt-0.5 max-w-sm">Ambil data barang langsung dari katalog toko dengan antarmuka cepat &amp; modern.</p>
+                </div>
+                <div class="flex items-center gap-2 pt-1 flex-wrap justify-center">
+                    <button type="button" onclick="window.openPOProductPicker(null)" class="px-5 py-2.5 rounded-2xl text-white font-bold text-xs sm:text-sm flex items-center gap-2 shadow-md active:scale-95 transition-all cursor-pointer" style="background: var(--color-primary); box-shadow: 0 4px 12px rgba(var(--color-primary-rgb), 0.3);">
+                        <i class="fa-solid fa-cart-plus"></i>
+                        <span>+ Ambil Barang dari Katalog Toko</span>
+                    </button>
+                    <button type="button" onclick="window.addManualPOItemRow()" class="px-4 py-2.5 rounded-2xl border border-slate-200 dark:border-slate-700 font-bold text-xs text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all cursor-pointer">
+                        Input Manual
+                    </button>
+                </div>
             </div>
         `);
         return;
     }
 
     setH('po-items-table-container', `
-        <!-- ═══ TAMPILAN MOBILE (NATIVE APP CARDS) ═══ -->
-        <div class="space-y-3 sm:hidden">
+        <div class="space-y-3.5">
             ${tempPOItems.map((item, idx) => {
-                const itemSubtotal = (parseFloat(item.qty) || 0) * (parseFloat(item.unitPrice) || 0);
+                const itemQtyNum = parseFloat(item.qty) || 0;
+                const itemPriceNum = parseFloat(item.unitPrice) || 0;
+                const itemSubtotal = Math.round(itemQtyNum * itemPriceNum);
                 const selectedProd = products.find(p => String(p.id) === String(item.productId));
-                const coverThumb = selectedProd ? renderProductCoverHtml(selectedProd, { size: 'thumb' }) : '';
+                const coverThumb = selectedProd 
+                    ? (selectedProd.img 
+                        ? `<img src="${esc(selectedProd.img)}" alt="${esc(item.name)}" class="w-full h-full object-cover" onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='flex';"><div class="w-full h-full" style="display:none">${renderProductCoverHtml(selectedProd, { size: 'thumb' })}</div>`
+                        : renderProductCoverHtml(selectedProd, { size: 'thumb' }))
+                    : `<div class="w-full h-full flex items-center justify-center font-black text-xs text-slate-400">#${idx + 1}</div>`;
+                
+                const isFromThisSupplier = selectedProd && String(selectedProd.supplierId) === String(currentSupplierId);
+                const curStock = selectedProd ? (parseFloat(selectedProd.stock) || 0) : null;
+                const hasVariants = selectedProd && Array.isArray(selectedProd.variants) && selectedProd.variants.length > 0;
 
                 return `
-                    <div class="p-3.5 rounded-2xl bg-white dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700 shadow-xs space-y-3 relative group">
-                        <!-- Baris 1: Nomor Urut, Thumbnail, Dropdown Produk, & Tombol Hapus -->
-                        <div class="flex items-start gap-2.5">
-                            <div class="w-10 h-10 rounded-xl overflow-hidden shrink-0 border border-slate-200/70 dark:border-slate-700 flex items-center justify-center bg-slate-50 dark:bg-slate-900 mt-0.5">
-                                ${selectedProd?.img 
-                                    ? `<img src="${esc(selectedProd.img)}" alt="${esc(item.name)}" class="w-full h-full object-cover" onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='flex';"><div class="w-full h-full" style="display:none">${coverThumb}</div>`
-                                    : (coverThumb || `<div class="w-full h-full flex items-center justify-center font-black text-xs" style="color:var(--color-primary)">#${idx + 1}</div>`)}
-                            </div>
+                    <div class="p-4 sm:p-5 rounded-3xl bg-white dark:bg-slate-800/95 border border-slate-200/90 dark:border-slate-700/80 shadow-xs space-y-3.5 transition-all hover:border-[var(--color-primary)]/40 hover:shadow-md relative group">
+                        <!-- Baris 1: Nomor Urut, Thumbnail, Info Produk, Tombol Ganti Produk & Hapus -->
+                        <div class="flex items-start justify-between gap-3">
+                            <div class="flex items-start gap-3 min-w-0 flex-1">
+                                <div class="w-12 h-12 rounded-2xl overflow-hidden shrink-0 border border-slate-200/80 dark:border-slate-700 flex items-center justify-center bg-slate-50 dark:bg-slate-900 shadow-2xs mt-0.5">
+                                    ${coverThumb}
+                                </div>
 
-                            <div class="flex-1 min-w-0">
-                                <label class="block text-[9px] font-black uppercase tracking-wider text-slate-400 mb-1">
-                                    Item #${idx + 1} — Pilih Produk Toko
-                                </label>
-                                <select 
-                                    class="w-full text-xs font-bold text-slate-800 dark:text-slate-100 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl p-2 focus:border-[var(--color-primary)] focus:outline-none transition-all cursor-pointer"
-                                    onchange="window.updatePOItemProduct(${idx}, this.value)"
-                                >
-                                    <option value="" class="text-slate-400">-- Pilih Produk Toko --</option>
-                                    ${products.map(p => {
-                                        const isSelected = String(p.id) === String(item.productId);
-                                        const isFromThisSupplier = String(p.supplierId) === String(currentSupplierId);
-                                        return `
-                                            <option value="${p.id}" ${isSelected ? 'selected' : ''} class="${isFromThisSupplier ? 'font-black' : ''}">
-                                                ${isFromThisSupplier ? '★ ' : ''}${esc(p.name)}${p.sku ? ` (${p.sku})` : ''}
-                                            </option>
-                                        `;
-                                    }).join('')}
-                                </select>
-                            </div>
+                                <div class="min-w-0 flex-1">
+                                    <div class="flex items-center gap-2 flex-wrap">
+                                        <span class="w-6 h-6 rounded-lg text-[10px] font-black flex items-center justify-center shrink-0" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary);">#${idx + 1}</span>
+                                        
+                                        ${selectedProd ? `
+                                            <h5 class="font-black text-sm sm:text-base text-slate-800 dark:text-slate-100 tracking-tight truncate">${esc(item.name)}</h5>
+                                        ` : `
+                                            <input 
+                                                type="text" 
+                                                value="${esc(item.name)}" 
+                                                placeholder="Nama barang kulakan manual..."
+                                                class="font-black text-sm text-slate-800 dark:text-slate-100 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-2.5 py-1 focus:border-[var(--color-primary)] focus:outline-none flex-1"
+                                                oninput="window.updatePOItemField(${idx}, 'name', this.value)"
+                                            >
+                                        `}
 
-                            <button 
-                                type="button" 
-                                onclick="window.removePOItemRow(${idx})" 
-                                class="w-9 h-9 rounded-xl text-rose-500 bg-rose-50 hover:bg-rose-500 hover:text-white dark:bg-rose-950/40 dark:hover:bg-rose-600 transition-all flex items-center justify-center shrink-0 active:scale-90 cursor-pointer shadow-2xs mt-0.5" 
-                                title="Hapus Baris Ini"
-                            >
-                                <i class="fa-solid fa-trash-can text-xs"></i>
-                            </button>
-                        </div>
+                                        ${isFromThisSupplier ? `
+                                            <span class="px-2 py-0.5 rounded-full text-[9px] font-bold bg-amber-50 text-amber-600 dark:bg-amber-950/40 dark:text-amber-400 border border-amber-200 dark:border-amber-800 shrink-0">
+                                                <i class="fa-solid fa-star text-[8px] mr-0.5"></i>Supplier Terpilih
+                                            </span>
+                                        ` : ''}
 
-                        <!-- Baris 2: Kuantitas (Stepper) & Harga Beli Modal (HPP) -->
-                        <div class="grid grid-cols-2 gap-2.5 pt-1">
-                            <div>
-                                <label class="block text-[9px] font-black uppercase tracking-wider text-slate-400 mb-1">Kuantitas &amp; Satuan</label>
-                                <div class="flex items-center gap-1.5">
-                                    <div class="flex-1 flex items-center bg-slate-100 dark:bg-slate-700/80 rounded-xl p-1 border border-slate-200 dark:border-slate-600 focus-within:border-[var(--color-primary)]">
-                                        <button type="button" onclick="window.stepPOItemQty(${idx}, -1)" class="w-7 h-7 rounded-lg text-slate-600 dark:text-slate-200 hover:bg-white dark:hover:bg-slate-600 font-black text-sm flex items-center justify-center active:scale-90 transition-all cursor-pointer">−</button>
-                                        <input 
-                                            type="number" 
-                                            min="0.01" 
-                                            step="any" 
-                                            value="${item.qty}" 
-                                            class="w-full text-center text-xs font-black bg-transparent text-slate-800 dark:text-slate-100 focus:outline-none" 
-                                            oninput="window.updatePOItemField(${idx}, 'qty', this.value)"
-                                        >
-                                        <button type="button" onclick="window.stepPOItemQty(${idx}, 1)" class="w-7 h-7 rounded-lg text-slate-600 dark:text-slate-200 hover:bg-white dark:hover:bg-slate-600 font-black text-sm flex items-center justify-center active:scale-90 transition-all cursor-pointer">+</button>
+                                        ${item.variantName ? `
+                                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black text-white shrink-0" style="background: var(--color-primary); box-shadow: 0 2px 6px rgba(var(--color-primary-rgb), 0.25);">
+                                                Varian: ${esc(item.variantName)}
+                                            </span>
+                                        ` : ''}
                                     </div>
-                                    <input 
-                                        type="text" 
-                                        value="${esc(item.unit || 'Pcs')}" 
-                                        placeholder="Pcs" 
-                                        class="w-16 text-center text-xs font-bold bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl py-2 px-1 focus:border-[var(--color-primary)] focus:outline-none" 
-                                        oninput="window.updatePOItemField(${idx}, 'unit', this.value)"
-                                    >
+
+                                    <div class="flex items-center gap-2 text-[11px] text-slate-400 mt-1 flex-wrap">
+                                        ${item.sku ? `<span>SKU: <b class="font-mono text-slate-600 dark:text-slate-300">${esc(item.sku)}</b></span> •` : ''}
+                                        ${curStock !== null ? `<span>Stok Toko: <b class="${curStock > 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-500'}">${formatQty(curStock)} ${esc(item.unit || 'Pcs')}</b></span>` : ''}
+                                        ${selectedProd?.category ? `• <span>${esc(selectedProd.category)}</span>` : ''}
+                                    </div>
                                 </div>
                             </div>
 
-                            <div>
-                                <label class="block text-[9px] font-black uppercase tracking-wider text-slate-400 mb-1">Harga Beli Modal (HPP)</label>
+                            <div class="flex items-center gap-1.5 shrink-0">
+                                <button 
+                                    type="button" 
+                                    onclick="window.openPOProductPicker(${idx})" 
+                                    class="h-9 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 text-xs font-bold flex items-center gap-1.5 transition-all active:scale-95 cursor-pointer shadow-2xs" 
+                                    title="Ganti Produk dari Katalog"
+                                >
+                                    <i class="fa-solid fa-arrows-rotate text-xs"></i>
+                                    <span class="hidden sm:inline">Ganti Barang</span>
+                                </button>
+                                <button 
+                                    type="button" 
+                                    onclick="window.removePOItemRow(${idx})" 
+                                    class="w-9 h-9 rounded-xl text-rose-500 bg-rose-50 hover:bg-rose-500 hover:text-white dark:bg-rose-950/40 dark:hover:bg-rose-600 transition-all flex items-center justify-center shrink-0 active:scale-90 cursor-pointer shadow-2xs" 
+                                    title="Hapus Baris Ini"
+                                >
+                                    <i class="fa-solid fa-trash-can text-xs"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Baris 2: Pemilihan Varian (jika produk memiliki varian) -->
+                        ${hasVariants ? `
+                            <div class="p-3 rounded-2xl bg-slate-50/80 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-700/60 space-y-2">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
+                                        <i class="fa-solid fa-layer-group text-[var(--color-primary)]"></i> Pilih Varian Kulakan:
+                                    </span>
+                                    <span class="text-[10px] font-bold text-slate-400">${selectedProd.variants.length} Varian Tersedia</span>
+                                </div>
+
+                                <div class="flex items-center gap-2 flex-wrap">
+                                    ${selectedProd.variants.map((v, vIdx) => {
+                                        const isVarSelected = (item.variantName && item.variantName === v.name) || (!item.variantName && vIdx === 0);
+                                        return `
+                                            <button 
+                                                type="button" 
+                                                onclick="window.selectPOItemVariant(${idx}, ${vIdx})" 
+                                                class="px-3 py-1.5 rounded-xl text-xs font-bold border transition-all active:scale-95 cursor-pointer flex items-center gap-1.5 ${isVarSelected ? 'text-white border-transparent shadow-sm' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-[var(--color-primary)]/50'}"
+                                                style="${isVarSelected ? 'background: var(--color-primary); box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.3);' : ''}"
+                                            >
+                                                ${isVarSelected ? '<i class="fa-solid fa-circle-check text-[10px]"></i>' : ''}
+                                                <span>${esc(v.name)}</span>
+                                                <span class="text-[10px] opacity-80 font-normal">(${v.hpp ? fCur(v.hpp) : fCur(v.price || 0)})</span>
+                                            </button>
+                                        `;
+                                    }).join('')}
+                                </div>
+                            </div>
+                        ` : ''}
+
+                        <!-- Baris 3: Kuantitas Desimal, Satuan, Harga Modal HPP, dan Subtotal -->
+                        <div class="grid grid-cols-1 sm:grid-cols-12 gap-3 pt-1 items-end">
+                            <!-- Kuantitas Stepper Desimal (Col 4) -->
+                            <div class="sm:col-span-4">
+                                <label class="block text-[9px] font-black uppercase tracking-wider text-slate-400 mb-1">
+                                    Kuantitas (Dukung Desimal) *
+                                </label>
+                                <div class="flex items-center bg-slate-100 dark:bg-slate-700/80 rounded-xl p-1 border border-slate-200 dark:border-slate-600 focus-within:border-[var(--color-primary)]">
+                                    <button type="button" onclick="window.stepPOItemQty(${idx}, -1)" class="w-8 h-8 rounded-lg text-slate-600 dark:text-slate-200 hover:bg-white dark:hover:bg-slate-600 font-black text-sm flex items-center justify-center active:scale-90 transition-all cursor-pointer">
+                                        −
+                                    </button>
+                                    <input 
+                                        type="number" 
+                                        min="0.001" 
+                                        step="any" 
+                                        value="${item.qty}" 
+                                        class="w-full text-center text-xs font-black bg-transparent text-slate-800 dark:text-slate-100 focus:outline-none px-1" 
+                                        oninput="window.updatePOItemField(${idx}, 'qty', this.value)"
+                                        placeholder="1"
+                                    >
+                                    <button type="button" onclick="window.stepPOItemQty(${idx}, 1)" class="w-8 h-8 rounded-lg text-slate-600 dark:text-slate-200 hover:bg-white dark:hover:bg-slate-600 font-black text-sm flex items-center justify-center active:scale-90 transition-all cursor-pointer">
+                                        +
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Satuan Unit (Col 2) -->
+                            <div class="sm:col-span-2">
+                                <label class="block text-[9px] font-black uppercase tracking-wider text-slate-400 mb-1">
+                                    Satuan
+                                </label>
+                                <input 
+                                    type="text" 
+                                    value="${esc(item.unit || 'Pcs')}" 
+                                    placeholder="Pcs" 
+                                    class="w-full text-center text-xs font-bold bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl py-2 px-1 focus:border-[var(--color-primary)] focus:outline-none" 
+                                    oninput="window.updatePOItemField(${idx}, 'unit', this.value)"
+                                >
+                            </div>
+
+                            <!-- Harga Modal HPP (Col 3) -->
+                            <div class="sm:col-span-3">
+                                <label class="block text-[9px] font-black uppercase tracking-wider text-slate-400 mb-1">
+                                    Harga Modal HPP (Rp) *
+                                </label>
                                 <div class="relative">
-                                    <span class="absolute left-2.5 top-1/2 -translate-y-1/2 text-[10px] font-bold text-slate-400">Rp</span>
+                                    <span class="absolute left-3 top-1/2 -translate-y-1/2 text-[10px] font-bold text-slate-400">Rp</span>
                                     <input 
                                         type="number" 
                                         min="0" 
-                                        step="1" 
+                                        step="any" 
                                         value="${item.unitPrice}" 
                                         class="w-full pl-8 pr-2.5 py-2 text-xs font-bold text-right bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:border-[var(--color-primary)] focus:outline-none" 
                                         oninput="window.updatePOItemField(${idx}, 'unitPrice', this.value)"
                                     >
                                 </div>
                             </div>
-                        </div>
 
-                        <!-- Baris 3: Subtotal Strip -->
-                        <div class="flex items-center justify-between pt-2 border-t border-slate-100 dark:border-slate-700/60 text-xs">
-                            <span class="text-slate-400 font-bold text-[10px] uppercase tracking-wider">Subtotal Item:</span>
-                            <span class="font-black text-sm" style="color:var(--color-primary)" id="po-item-subtotal-card-${idx}">
-                                ${fCur(itemSubtotal)}
-                            </span>
+                            <!-- Subtotal Item (Col 3) -->
+                            <div class="sm:col-span-3 text-right bg-slate-50 dark:bg-slate-900/60 p-2 sm:p-2.5 rounded-xl border border-slate-200/70 dark:border-slate-700/60">
+                                <span class="block text-[8px] sm:text-[9px] font-bold text-slate-400 uppercase tracking-wider">Subtotal Item</span>
+                                <span class="font-black text-xs sm:text-sm text-slate-800 dark:text-white" style="color:var(--color-primary)" id="po-item-subtotal-card-${idx}">
+                                    ${fCur(itemSubtotal)}
+                                </span>
+                            </div>
                         </div>
                     </div>
                 `;
             }).join('')}
         </div>
 
-        <!-- ═══ TAMPILAN DESKTOP / TABLET (MODERN CLEAN TABLE) ═══ -->
-        <div class="hidden sm:block border border-slate-200 dark:border-slate-700 rounded-2xl overflow-hidden bg-white dark:bg-slate-800">
-            <table class="w-full text-left border-collapse text-xs">
-                <thead>
-                    <tr class="bg-slate-50 dark:bg-slate-900/80 border-b border-slate-200 dark:border-slate-700 text-[10px] font-black uppercase tracking-wider text-slate-400">
-                        <th class="py-3 px-3 w-10 text-center">#</th>
-                        <th class="py-3 px-3">Produk Toko</th>
-                        <th class="py-3 px-3 w-32 text-center">Jumlah</th>
-                        <th class="py-3 px-3 w-20 text-center">Satuan</th>
-                        <th class="py-3 px-3 w-40 text-right">Harga Modal (HPP)</th>
-                        <th class="py-3 px-3 w-36 text-right">Subtotal</th>
-                        <th class="py-3 px-2 w-12 text-center"></th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
-                    ${tempPOItems.map((item, idx) => {
-                        const itemSubtotal = (parseFloat(item.qty) || 0) * (parseFloat(item.unitPrice) || 0);
+        <!-- Tombol Aksi Tambah Barang di Bagian Bawah -->
+        <div class="grid grid-cols-1 sm:grid-cols-4 gap-2.5 mt-3">
+            <button 
+                type="button" 
+                onclick="window.openPOProductPicker(null)" 
+                class="sm:col-span-3 py-3.5 px-4 rounded-2xl border-2 border-dashed border-[rgba(var(--color-primary-rgb),0.4)] bg-[rgba(var(--color-primary-rgb),0.05)] hover:bg-[rgba(var(--color-primary-rgb),0.1)] text-[var(--color-primary)] font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all active:scale-[0.98] cursor-pointer shadow-2xs"
+            >
+                <i class="fa-solid fa-cart-plus text-base"></i>
+                <span>+ Ambil Barang dari Katalog Toko</span>
+            </button>
 
-                        return `
-                            <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-700/40 transition-colors">
-                                <td class="py-2.5 px-3 text-center font-bold text-slate-400 text-[11px]">${idx + 1}</td>
-                                <td class="py-2.5 px-3">
-                                    <select 
-                                        class="w-full text-xs font-bold text-slate-800 dark:text-slate-100 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl p-2 focus:border-[var(--color-primary)] focus:outline-none transition-all cursor-pointer"
-                                        onchange="window.updatePOItemProduct(${idx}, this.value)"
-                                    >
-                                        <option value="" class="text-slate-400">-- Pilih Produk Toko --</option>
-                                        ${products.map(p => {
-                                            const isSelected = String(p.id) === String(item.productId);
-                                            const isFromThisSupplier = String(p.supplierId) === String(currentSupplierId);
-                                            return `
-                                                <option value="${p.id}" ${isSelected ? 'selected' : ''} class="${isFromThisSupplier ? 'font-black' : ''}">
-                                                    ${isFromThisSupplier ? '★ ' : ''}${esc(p.name)}${p.sku ? ` (${p.sku})` : ''}
-                                                </option>
-                                            `;
-                                        }).join('')}
-                                    </select>
-                                </td>
-                                <td class="py-2.5 px-3">
-                                    <div class="flex items-center bg-slate-100 dark:bg-slate-700/80 rounded-xl p-0.5 border border-slate-200 dark:border-slate-600 focus-within:border-[var(--color-primary)]">
-                                        <button type="button" onclick="window.stepPOItemQty(${idx}, -1)" class="w-6 h-6 rounded text-slate-600 dark:text-slate-200 hover:bg-white dark:hover:bg-slate-600 font-black text-xs flex items-center justify-center active:scale-90 transition-all cursor-pointer">−</button>
-                                        <input 
-                                            type="number" 
-                                            min="0.01" 
-                                            step="any" 
-                                            value="${item.qty}" 
-                                            class="w-full text-center text-xs font-black bg-transparent text-slate-800 dark:text-slate-100 focus:outline-none px-1" 
-                                            oninput="window.updatePOItemField(${idx}, 'qty', this.value)"
-                                        >
-                                        <button type="button" onclick="window.stepPOItemQty(${idx}, 1)" class="w-6 h-6 rounded text-slate-600 dark:text-slate-200 hover:bg-white dark:hover:bg-slate-600 font-black text-xs flex items-center justify-center active:scale-90 transition-all cursor-pointer">+</button>
-                                    </div>
-                                </td>
-                                <td class="py-2.5 px-3">
-                                    <input 
-                                        type="text" 
-                                        value="${esc(item.unit || 'Pcs')}" 
-                                        placeholder="Pcs" 
-                                        class="w-full text-center text-xs font-bold bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl py-1.5 px-1 focus:border-[var(--color-primary)] focus:outline-none" 
-                                        oninput="window.updatePOItemField(${idx}, 'unit', this.value)"
-                                    >
-                                </td>
-                                <td class="py-2.5 px-3">
-                                    <div class="relative">
-                                        <span class="absolute left-2 top-1/2 -translate-y-1/2 text-[10px] font-bold text-slate-400">Rp</span>
-                                        <input 
-                                            type="number" 
-                                            min="0" 
-                                            step="1" 
-                                            value="${item.unitPrice}" 
-                                            class="w-full pl-7 pr-2 py-1.5 text-xs font-bold text-right bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:border-[var(--color-primary)] focus:outline-none" 
-                                            oninput="window.updatePOItemField(${idx}, 'unitPrice', this.value)"
-                                        >
-                                    </div>
-                                </td>
-                                <td class="py-2.5 px-3 text-right font-black text-xs text-slate-800 dark:text-slate-100" id="po-item-subtotal-row-${idx}">
-                                    ${fCur(itemSubtotal)}
-                                </td>
-                                <td class="py-2.5 px-2 text-center">
-                                    <button 
-                                        type="button" 
-                                        onclick="window.removePOItemRow(${idx})" 
-                                        class="w-8 h-8 rounded-xl text-slate-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-all flex items-center justify-center mx-auto active:scale-90 cursor-pointer" 
-                                        title="Hapus Baris"
-                                    >
-                                        <i class="fa-solid fa-trash-can text-xs"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                        `;
-                    }).join('')}
-                </tbody>
-            </table>
+            <button 
+                type="button" 
+                onclick="window.addManualPOItemRow()" 
+                class="sm:col-span-1 py-3.5 px-3 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 font-bold text-xs flex items-center justify-center gap-1.5 transition-all active:scale-95 cursor-pointer shadow-2xs"
+                title="Input nama barang dan harga manual tanpa katalog"
+            >
+                <i class="fa-solid fa-pen-to-square text-xs"></i>
+                <span>Input Manual</span>
+            </button>
         </div>
-
-        <!-- Tombol Tambah Barang Mengambang Penuh -->
-        <button 
-            type="button" 
-            onclick="window.addPOItemRow()" 
-            class="w-full py-3.5 rounded-2xl border-2 border-dashed border-[rgba(var(--color-primary-rgb),0.35)] bg-[rgba(var(--color-primary-rgb),0.04)] hover:bg-[rgba(var(--color-primary-rgb),0.08)] text-[var(--color-primary)] font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all active:scale-[0.98] cursor-pointer shadow-2xs mt-2"
-        >
-            <i class="fa-solid fa-circle-plus text-base"></i>
-            <span>+ Tambah Barang Kulakan</span>
-        </button>
     `);
 };
 
 /**
- * Update Pilihan Produk pada Baris Item PO
+ * Render Konten Native Product Picker Modal
  */
-window.updatePOItemProduct = (index, productId) => {
-    const products = appData.products || [];
-    const prod = products.find(p => String(p.id) === String(productId));
-    if (prod && tempPOItems[index]) {
-        tempPOItems[index].productId = prod.id;
-        tempPOItems[index].name = prod.name;
-        tempPOItems[index].sku = prod.sku || '';
-        tempPOItems[index].unitPrice = parseFloat(prod.hpp) || parseFloat(prod.price) || 0;
-        tempPOItems[index].subtotal = (parseFloat(tempPOItems[index].qty) || 1) * tempPOItems[index].unitPrice;
-    }
-    renderPOItemsTable();
-    window.recalcPOTotals();
-};
+const renderPOProductPickerContent = () => {
+    const content = el('modal-po-product-picker-content');
+    if (!content) return;
 
-/**
- * Update Field Angka / Teks pada Baris Item PO
- */
-window.updatePOItemField = (index, field, value) => {
-    if (!tempPOItems[index]) return;
-    if (field === 'qty' || field === 'unitPrice') {
-        tempPOItems[index][field] = parseFloat(value) || 0;
-        tempPOItems[index].subtotal = (parseFloat(tempPOItems[index].qty) || 0) * (parseFloat(tempPOItems[index].unitPrice) || 0);
-        const subCard = el(`po-item-subtotal-card-${index}`);
-        const subRow = el(`po-item-subtotal-row-${index}`);
-        if (subCard) subCard.textContent = fCur(tempPOItems[index].subtotal);
-        if (subRow) subRow.textContent = fCur(tempPOItems[index].subtotal);
-    } else {
-        tempPOItems[index][field] = value;
+    const products = appData.products || [];
+    const currentSupplierId = el('pof-supplierId')?.value || '';
+    const suppliers = appData.suppliers || [];
+    const selectedSupplier = suppliers.find(s => String(s.id) === String(currentSupplierId));
+
+    const supplierProducts = products.filter(p => String(p.supplierId) === String(currentSupplierId));
+    const allProductsCount = products.length;
+    const supplierProductsCount = supplierProducts.length;
+
+    // Filter produk berdasarkan tab supplier, pencarian, dan kategori
+    let list = poPickerFilterSupplier && supplierProductsCount > 0 ? supplierProducts : products;
+
+    if (poPickerCategory !== 'all') {
+        list = list.filter(p => (p.category || '').toLowerCase() === poPickerCategory.toLowerCase());
     }
-    window.recalcPOTotals();
+
+    const q = (poPickerSearch || '').toLowerCase().trim();
+    if (q) {
+        list = list.filter(p => {
+            const matchName = (p.name || '').toLowerCase().includes(q);
+            const matchSku = (p.sku || '').toLowerCase().includes(q);
+            const matchCat = (p.category || '').toLowerCase().includes(q);
+            const matchVariants = Array.isArray(p.variants) && p.variants.some(v => (v.name || '').toLowerCase().includes(q) || (v.sku || '').toLowerCase().includes(q));
+            return matchName || matchSku || matchCat || matchVariants;
+        });
+    }
+
+    // Ambil daftar kategori unik
+    const categories = ['all', ...new Set(products.map(p => p.category).filter(Boolean))];
+
+    setH('modal-po-product-picker-content', `
+        <!-- DRAG PULL INDICATOR (NATIVE MOBILE SHEET) -->
+        <div class="pull-indicator sm:hidden"></div>
+
+        <!-- HEADER PICKER -->
+        <div class="px-5 sm:px-6 pt-4 pb-3 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between shrink-0 bg-slate-50/70 dark:bg-slate-900/60">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-2xl flex items-center justify-center text-lg shrink-0 shadow-xs" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary); border: 1px solid rgba(var(--color-primary-rgb), 0.25);">
+                    <i class="fa-solid fa-boxes-stacked"></i>
+                </div>
+                <div>
+                    <h3 class="font-black text-base text-slate-800 dark:text-white tracking-tight">
+                        ${poPickerTargetRow !== null ? `Ganti Barang #${poPickerTargetRow + 1}` : 'Ambil Barang dari Katalog Toko'}
+                    </h3>
+                    <p class="text-xs text-slate-400">
+                        ${selectedSupplier ? `Supplier: <b class="text-slate-700 dark:text-slate-200">${esc(selectedSupplier.name)}</b>` : 'Pilih produk untuk dimasukkan ke daftar order kulakan'}
+                    </p>
+                </div>
+            </div>
+            <button onclick="window.closePOProductPicker()" class="w-9 h-9 rounded-full bg-slate-100 hover:bg-rose-100 hover:text-rose-500 dark:bg-slate-800 dark:hover:bg-rose-950/40 dark:hover:text-rose-400 text-slate-500 flex items-center justify-center transition-all cursor-pointer active:scale-95" aria-label="Tutup">
+                <i class="fa-solid fa-xmark text-sm"></i>
+            </button>
+        </div>
+
+        <!-- BILAH PENCARIAN & FILTER -->
+        <div class="p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800 space-y-3 bg-white dark:bg-slate-900 shrink-0">
+            <div class="relative">
+                <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                <input 
+                    type="text" 
+                    id="po-picker-search-input" 
+                    placeholder="Cari nama barang, varian, atau SKU barcode..." 
+                    value="${esc(poPickerSearch)}"
+                    oninput="window.handlePOPickerSearch(this.value)"
+                    class="w-full bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-2xl pl-9 pr-9 py-2.5 text-xs font-bold text-slate-800 dark:text-slate-100 placeholder:text-slate-400 focus:border-[var(--color-primary)] focus:outline-none transition-all"
+                >
+                ${poPickerSearch ? `
+                    <button onclick="window.handlePOPickerSearch('')" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1 cursor-pointer">
+                        <i class="fa-solid fa-circle-xmark text-xs"></i>
+                    </button>
+                ` : ''}
+            </div>
+
+            <!-- Tab Segmented Supplier / All -->
+            <div class="flex items-center gap-2 flex-wrap">
+                ${currentSupplierId && supplierProductsCount > 0 ? `
+                    <button 
+                        type="button" 
+                        onclick="window.setPOPickerSupplierFilter(true)" 
+                        class="px-3 py-1.5 rounded-xl text-xs font-bold border transition-all active:scale-95 cursor-pointer flex items-center gap-1.5 ${poPickerFilterSupplier ? 'text-white border-transparent shadow-sm' : 'bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700'}"
+                        style="${poPickerFilterSupplier ? 'background: var(--color-primary); box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.3);' : ''}"
+                    >
+                        <i class="fa-solid fa-star text-[10px] ${poPickerFilterSupplier ? 'text-amber-300' : 'text-amber-500'}"></i>
+                        <span>Produk Supplier Ini (${supplierProductsCount})</span>
+                    </button>
+                ` : ''}
+
+                <button 
+                    type="button" 
+                    onclick="window.setPOPickerSupplierFilter(false)" 
+                    class="px-3 py-1.5 rounded-xl text-xs font-bold border transition-all active:scale-95 cursor-pointer flex items-center gap-1.5 ${(!poPickerFilterSupplier || supplierProductsCount === 0) ? 'text-white border-transparent shadow-sm' : 'bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700'}"
+                    style="${(!poPickerFilterSupplier || supplierProductsCount === 0) ? 'background: var(--color-primary); box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.3);' : ''}"
+                >
+                    <i class="fa-solid fa-boxes-stacked text-[10px]"></i>
+                    <span>Semua Katalog (${allProductsCount})</span>
+                </button>
+
+                <button 
+                    type="button" 
+                    onclick="window.addManualPOItemRow(); window.closePOProductPicker();" 
+                    class="ml-auto px-3 py-1.5 rounded-xl text-xs font-bold border border-dashed border-slate-300 dark:border-slate-700 text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all flex items-center gap-1 active:scale-95 cursor-pointer"
+                    title="Tambah baris tanpa memilih produk dari katalog"
+                >
+                    <i class="fa-solid fa-plus text-[10px]"></i>
+                    <span>Input Manual</span>
+                </button>
+            </div>
+
+            <!-- Chips Kategori Horizontal Scrollable -->
+            ${categories.length > 2 ? `
+                <div class="flex items-center gap-1.5 overflow-x-auto hide-scrollbar pt-0.5">
+                    ${categories.map(cat => `
+                        <button 
+                            type="button" 
+                            onclick="window.setPOPickerCategory('${esc(cat)}')" 
+                            class="px-2.5 py-1 rounded-lg text-[11px] font-bold shrink-0 transition-all cursor-pointer ${poPickerCategory === cat ? 'text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'}"
+                            style="${poPickerCategory === cat ? 'background: var(--color-primary);' : ''}"
+                        >
+                            ${cat === 'all' ? 'Semua Kategori' : esc(cat)}
+                        </button>
+                    `).join('')}
+                </div>
+            ` : ''}
+        </div>
+
+        <!-- LIST PRODUK -->
+        <div class="p-4 sm:p-5 overflow-y-auto flex-1 hide-scrollbar space-y-3">
+            ${list.length === 0 ? `
+                <div class="p-8 text-center flex flex-col items-center justify-center text-slate-400 space-y-2">
+                    <div class="w-12 h-12 rounded-2xl flex items-center justify-center text-xl bg-slate-100 dark:bg-slate-800 text-slate-400">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </div>
+                    <p class="font-bold text-xs sm:text-sm text-slate-700 dark:text-slate-200">Tidak ada produk yang cocok</p>
+                    <p class="text-[11px] text-slate-400 max-w-xs">Coba ganti kata kunci pencarian atau gunakan tombol Input Manual untuk memasukkan barang baru.</p>
+                    <button type="button" onclick="window.addManualPOItemRow(); window.closePOProductPicker();" class="mt-2 px-4 py-2 rounded-xl text-white font-bold text-xs flex items-center gap-1.5 cursor-pointer active:scale-95" style="background: var(--color-primary);">
+                        <i class="fa-solid fa-plus"></i>
+                        <span>Input Barang Manual</span>
+                    </button>
+                </div>
+            ` : list.map(prod => {
+                const coverThumb = prod.img 
+                    ? `<img src="${esc(prod.img)}" alt="${esc(prod.name)}" class="w-full h-full object-cover" onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='flex';"><div class="w-full h-full" style="display:none">${renderProductCoverHtml(prod, { size: 'thumb' })}</div>`
+                    : renderProductCoverHtml(prod, { size: 'thumb' });
+                
+                const isCurrentSupplier = String(prod.supplierId) === String(currentSupplierId);
+                const prodStock = parseFloat(prod.stock) || 0;
+                const hasVariants = Array.isArray(prod.variants) && prod.variants.length > 0;
+                const defaultHpp = parseFloat(prod.hpp) || parseFloat(prod.price) || 0;
+
+                return `
+                    <div class="p-3.5 sm:p-4 rounded-2xl bg-white dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs hover:border-[var(--color-primary)]/50 transition-all space-y-3 group">
+                        <div class="flex items-start justify-between gap-3">
+                            <div class="flex items-start gap-3 min-w-0 flex-1">
+                                <div class="w-12 h-12 rounded-xl overflow-hidden shrink-0 border border-slate-200 dark:border-slate-700 flex items-center justify-center bg-slate-50 dark:bg-slate-900 shadow-2xs mt-0.5">
+                                    ${coverThumb}
+                                </div>
+                                <div class="min-w-0 flex-1">
+                                    <div class="flex items-center gap-1.5 flex-wrap">
+                                        <h5 class="font-black text-sm text-slate-800 dark:text-slate-100 group-hover:text-[var(--color-primary)] transition-colors">${esc(prod.name)}</h5>
+                                        ${isCurrentSupplier ? '<span class="px-2 py-0.5 rounded-full text-[9px] font-bold bg-amber-50 text-amber-600 dark:bg-amber-950/40 dark:text-amber-400 border border-amber-200 dark:border-amber-800"><i class="fa-solid fa-star text-[8px] mr-1"></i>Supplier Terpilih</span>' : ''}
+                                    </div>
+                                    <div class="flex items-center gap-2 text-[11px] text-slate-400 mt-0.5 flex-wrap">
+                                        ${prod.sku ? `<span>SKU: <b class="font-mono text-slate-600 dark:text-slate-300">${esc(prod.sku)}</b></span> •` : ''}
+                                        <span>Stok Toko: <b class="${prodStock > 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-500'}">${formatQty(prodStock)} ${esc(prod.unit || 'Pcs')}</b></span>
+                                        ${prod.category ? `• <span>${esc(prod.category)}</span>` : ''}
+                                    </div>
+                                    <div class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
+                                        Modal HPP: <b class="text-slate-700 dark:text-slate-200">${fCur(defaultHpp)}</b>
+                                        ${prod.price ? ` • Harga Jual: <span>${fCur(prod.price)}</span>` : ''}
+                                    </div>
+                                </div>
+                            </div>
+
+                            ${!hasVariants ? `
+                                <button 
+                                    type="button" 
+                                    onclick="window.selectProductForPO('${prod.id}')" 
+                                    class="px-4 py-2 rounded-xl text-white font-bold text-xs shadow-sm active:scale-95 transition-all cursor-pointer shrink-0 flex items-center gap-1.5"
+                                    style="background: var(--color-primary); box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.25);"
+                                >
+                                    <i class="fa-solid fa-plus text-xs"></i>
+                                    <span>Pilih</span>
+                                </button>
+                            ` : ''}
+                        </div>
+
+                        ${hasVariants ? `
+                            <div class="pt-2.5 border-t border-slate-100 dark:border-slate-700/60 space-y-2">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1">
+                                        <i class="fa-solid fa-layer-group text-[var(--color-primary)]"></i> Pilih Varian:
+                                    </span>
+                                    ${poPickerTargetRow === null ? `
+                                        <button 
+                                            type="button" 
+                                            onclick="window.addAllVariantsForPO('${prod.id}')" 
+                                            class="text-[10px] font-bold text-[var(--color-primary)] hover:underline flex items-center gap-1 cursor-pointer"
+                                        >
+                                            <i class="fa-solid fa-list-check"></i>
+                                            <span>+ Ambil Semua Varian (${prod.variants.length})</span>
+                                        </button>
+                                    ` : ''}
+                                </div>
+
+                                <div class="flex items-center gap-1.5 flex-wrap">
+                                    ${prod.variants.map((v, vIdx) => `
+                                        <button 
+                                            type="button" 
+                                            onclick="window.selectProductForPO('${prod.id}', ${vIdx})" 
+                                            class="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-50 hover:bg-[var(--color-primary)] hover:text-white dark:bg-slate-900/60 dark:hover:bg-[var(--color-primary)] border border-slate-200 dark:border-slate-700 hover:border-transparent transition-all flex items-center gap-1.5 active:scale-95 cursor-pointer shadow-2xs group/var"
+                                        >
+                                            <i class="fa-solid fa-plus text-[9px] opacity-60 group-hover/var:opacity-100"></i>
+                                            <span>${esc(v.name)}</span>
+                                            <span class="text-[10px] opacity-75 font-normal">(${v.hpp ? fCur(v.hpp) : fCur(v.price || 0)})</span>
+                                        </button>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+            }).join('')}
+        </div>
+    `);
 };
 
 /**
@@ -1455,15 +1887,14 @@ window.computePOGrandTotal = () => {
     const subtotal = tempPOItems.reduce((acc, it) => acc + ((parseFloat(it.qty) || 0) * (parseFloat(it.unitPrice) || 0)), 0);
     const discount = parseFloat(el('pof-discount')?.value) || 0;
     const shipping = parseFloat(el('pof-shippingFee')?.value) || 0;
-    const grand = Math.max(0, subtotal - discount + shipping);
-    return grand;
+    return Math.max(0, Math.round(subtotal - discount + shipping));
 };
 
 window.recalcPOTotals = () => {
     const subtotal = tempPOItems.reduce((acc, it) => acc + ((parseFloat(it.qty) || 0) * (parseFloat(it.unitPrice) || 0)), 0);
     const discount = parseFloat(el('pof-discount')?.value) || 0;
     const shipping = parseFloat(el('pof-shippingFee')?.value) || 0;
-    const grand = Math.max(0, subtotal - discount + shipping);
+    const grand = Math.max(0, Math.round(subtotal - discount + shipping));
     const paid = parseFloat(el('pof-amountPaid')?.value) || 0;
     const balance = Math.max(0, grand - paid);
 
@@ -1471,7 +1902,7 @@ window.recalcPOTotals = () => {
     const grandEl = el('pof-calc-grandtotal');
     const balEl = el('pof-calc-balance');
 
-    if (subEl) subEl.innerText = fCur(subtotal);
+    if (subEl) subEl.innerText = fCur(Math.round(subtotal));
     if (grandEl) grandEl.innerText = fCur(grand);
     if (balEl) balEl.innerText = fCur(balance);
 };
@@ -1505,14 +1936,30 @@ window.savePOForm = async (e, existingId) => {
             return showToast('Minimal harus ada 1 barang dalam order pembelian!');
         }
 
-        const validItems = tempPOItems.filter(it => it.name && (parseFloat(it.qty) || 0) > 0);
+        const validItems = tempPOItems.filter(it => it.name && (parseFloat(it.qty) || 0) > 0).map(it => {
+            const qtyNum = parseFloat(it.qty) || 0;
+            const priceNum = parseFloat(it.unitPrice) || 0;
+            return {
+                productId: it.productId || '',
+                name: it.name || '',
+                sku: it.sku || '',
+                variantName: it.variantName || '',
+                variantKey: it.variantKey || it.variantName || '',
+                variantSku: it.variantSku || '',
+                qty: qtyNum,
+                unit: it.unit || 'Pcs',
+                unitPrice: priceNum,
+                subtotal: Math.round(qtyNum * priceNum)
+            };
+        });
+
         if (validItems.length === 0) {
             hLoad();
             return showToast('Pastikan produk dan kuantitas order telah diisi dengan benar!');
         }
 
-        const subtotal = validItems.reduce((acc, it) => acc + ((parseFloat(it.qty) || 0) * (parseFloat(it.unitPrice) || 0)), 0);
-        const total = Math.max(0, subtotal - discount + shippingFee);
+        const subtotal = validItems.reduce((acc, it) => acc + it.subtotal, 0);
+        const total = Math.max(0, Math.round(subtotal - discount + shippingFee));
         const balance = Math.max(0, total - amountPaid);
 
         let paymentStatus = 'belum_bayar';
@@ -1698,19 +2145,20 @@ window.openPurchaseDetailModal = (poId) => {
                 <!-- ═══ TAMPILAN MOBILE (NATIVE APP CARDS) ═══ -->
                 <div class="sm:hidden space-y-2.5">
                     ${(po.items || []).map((item, idx) => {
-                        const itemSub = (parseFloat(item.qty) || 0) * (parseFloat(item.unitPrice) || 0);
+                        const itemSub = Math.round((parseFloat(item.qty) || 0) * (parseFloat(item.unitPrice) || 0));
                         return `
                             <div class="p-3.5 rounded-2xl bg-white dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs space-y-2">
                                 <div class="flex items-start justify-between gap-2">
                                     <div class="min-w-0 flex-1">
-                                        <div class="flex items-center gap-1.5">
+                                        <div class="flex items-center gap-1.5 flex-wrap">
                                             <span class="w-5 h-5 rounded-md bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-300 text-[10px] font-black flex items-center justify-center shrink-0">${idx + 1}</span>
-                                            <p class="font-bold text-xs text-slate-800 dark:text-slate-100 truncate">${esc(item.name)}</p>
+                                            <p class="font-bold text-xs text-slate-800 dark:text-slate-100">${esc(item.name)}</p>
+                                            ${item.variantName ? `<span class="px-2 py-0.5 rounded-md text-[10px] font-black text-white shrink-0" style="background:var(--color-primary); box-shadow: 0 1px 4px rgba(var(--color-primary-rgb),0.3);">Varian: ${esc(item.variantName)}</span>` : ''}
                                         </div>
                                         ${item.sku ? `<span class="text-[10px] font-mono text-slate-400 ml-6 block">SKU: ${esc(item.sku)}</span>` : ''}
                                     </div>
                                     <span class="px-2 py-0.5 rounded-lg bg-slate-100 dark:bg-slate-700/70 text-slate-700 dark:text-slate-200 text-xs font-black shrink-0">
-                                        ${item.qty} ${esc(item.unit || 'pcs')}
+                                        ${formatQty(item.qty)} ${esc(item.unit || 'pcs')}
                                     </span>
                                 </div>
                                 <div class="pt-2 border-t border-slate-100 dark:border-slate-700/60 flex items-center justify-between text-xs">
@@ -1739,17 +2187,20 @@ window.openPurchaseDetailModal = (poId) => {
                                 <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-700/30 transition-colors">
                                     <td class="py-2.5 px-3 text-center font-bold text-slate-400 text-[11px]">${idx + 1}</td>
                                     <td class="py-2.5 px-3">
-                                        <p class="font-bold text-slate-800 dark:text-slate-100">${esc(item.name)}</p>
+                                        <div class="flex items-center gap-1.5 flex-wrap">
+                                            <p class="font-bold text-slate-800 dark:text-slate-100">${esc(item.name)}</p>
+                                            ${item.variantName ? `<span class="px-2 py-0.5 rounded-md text-[10px] font-black text-white shrink-0" style="background:var(--color-primary); box-shadow: 0 1px 4px rgba(var(--color-primary-rgb),0.3);">Varian: ${esc(item.variantName)}</span>` : ''}
+                                        </div>
                                         ${item.sku ? `<span class="text-[10px] font-mono text-slate-400">SKU: ${esc(item.sku)}</span>` : ''}
                                     </td>
                                     <td class="py-2.5 px-3 text-center font-bold text-slate-700 dark:text-slate-200">
-                                        ${item.qty} ${esc(item.unit || 'pcs')}
+                                        ${formatQty(item.qty)} ${esc(item.unit || 'pcs')}
                                     </td>
                                     <td class="py-2.5 px-3 text-right font-mono text-slate-600 dark:text-slate-300">
                                         ${fCur(item.unitPrice)}
                                     </td>
                                     <td class="py-2.5 px-3 text-right font-black text-slate-800 dark:text-slate-100">
-                                        ${fCur((parseFloat(item.qty) || 0) * (parseFloat(item.unitPrice) || 0))}
+                                        ${fCur(Math.round((parseFloat(item.qty) || 0) * (parseFloat(item.unitPrice) || 0)))}
                                     </td>
                                 </tr>
                             `).join('')}
@@ -2061,7 +2512,10 @@ window.sendPOToSupplierWA = (poId) => {
     const storeAddress = appData.store?.address || '';
     const storePhone = appData.store?.phone || '';
 
-    let itemsText = (po.items || []).map((it, i) => `${i + 1}. *${it.name}* - ${it.qty} ${it.unit || 'pcs'} @ Rp ${Number(it.unitPrice).toLocaleString('id-ID')}`).join('\n');
+    let itemsText = (po.items || []).map((it, i) => {
+        const varLabel = it.variantName ? ` [Varian: ${it.variantName}]` : '';
+        return `${i + 1}. *${it.name}${varLabel}* - ${formatQty(it.qty)} ${it.unit || 'pcs'} @ Rp ${Number(it.unitPrice || 0).toLocaleString('id-ID')}`;
+    }).join('\n');
 
     let text = `*SURAT PESANAN PEMBELIAN BARANG (PURCHASE ORDER)*\n` +
         `Dari: *${storeName}*\n` +
@@ -2150,12 +2604,13 @@ window.printPurchaseOrder = (poId) => {
                         <tr style="border-bottom: 1px solid #e2e8f0;">
                             <td style="padding: 8px 10px; text-align: center;">${idx + 1}</td>
                             <td style="padding: 8px 10px;">
-                                <b>${esc(it.name)}</b>
+                                <b style="color: #0f172a;">${esc(it.name)}</b>
+                                ${it.variantName ? `<br><span style="display: inline-block; font-size: 10px; font-weight: 700; color: #4338ca; background: #e0e7ff; padding: 2px 7px; border-radius: 4px; margin-top: 3px;">Varian: ${esc(it.variantName)}</span>` : ''}
                                 ${it.sku ? `<br><span style="font-size: 10px; font-family: monospace; color: #64748b;">SKU: ${esc(it.sku)}</span>` : ''}
                             </td>
-                            <td style="padding: 8px 10px; text-align: center; font-weight: bold;">${it.qty} ${esc(it.unit || 'pcs')}</td>
-                            <td style="padding: 8px 10px; text-align: right;">${fCur(it.unitPrice)}</td>
-                            <td style="padding: 8px 10px; text-align: right; font-weight: bold;">${fCur((parseFloat(it.qty) || 0) * (parseFloat(it.unitPrice) || 0))}</td>
+                            <td style="padding: 8px 10px; text-align: center; font-weight: bold; color: #0f172a;">${formatQty(it.qty)} ${esc(it.unit || 'pcs')}</td>
+                            <td style="padding: 8px 10px; text-align: right; color: #334155;">${fCur(it.unitPrice)}</td>
+                            <td style="padding: 8px 10px; text-align: right; font-weight: bold; color: #0f172a;">${fCur(Math.round((parseFloat(it.qty) || 0) * (parseFloat(it.unitPrice) || 0)))}</td>
                         </tr>
                     `).join('')}
                 </tbody>

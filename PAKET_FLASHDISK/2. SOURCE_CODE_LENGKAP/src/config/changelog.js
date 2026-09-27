@@ -8,6 +8,24 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-9-51',
+        version: 'v1.9.51',
+        date: '2026-09-27',
+        title: 'Transformasi Native App Order Kulakan (PO) — Product Picker Terpadu, Dukungan Multi-Varian & Qty Desimal Cerdas',
+        category: 'feature',
+        badge: 'PO Native Picker & Multi-Variant v1.9.51',
+        items: [
+            'Native App Product Picker Sheet (modal-po-product-picker): Mengeliminasi dropdown select klasik web browser yang kaku, digantikan antarmuka katalog visual native app beranimasi geser lembut (bottom sheet) lengkap dengan pencarian real-time, filter instan "Hanya Supplier Terpilih" vs "Semua Katalog Toko", chips kategori horizontal, foto/monogram produk, dan indikator stok gudang.',
+            'Dukungan Multi-Varian Penuh pada Order Kulakan: Deteksi otomatis produk bervarian saat pengambilan barang. Pemilih produk menampilkan chips varian interaktif ([+ Varian A] [+ Varian B]) serta tombol "Ambil Semua Varian Sekaligus" untuk kulakan grosir cepat.',
+            'Penggantian Varian Langsung di Kartu Item (Variant Switcher): Pada baris/kartu barang PO, kasir/pemilik toko dapat mengganti varian secara instan hanya dengan 1 ketukan pada pills varian tanpa perlu menghapus baris item, otomatis menyesuaikan HPP modal dan satuan barang.',
+            'Auto-Restock Stok & HPP Spesifik Varian: Saat status PO diubah menjadi Diterima/Restock, sistem secara cerdas memperbarui stok dan HPP modal ke masing-masing item varian (prod.variants[x]) secara akurat sekaligus menyinkronkan stok total & HPP induk produk.',
+            'Dukungan Kuantitas (Qty) Desimal / Pecahan: Mendukung kulakan bahan/barang dengan takaran koma/pecahan (contoh: 2.5 kg, 0.75 m, 1.5 kubik). Dilengkapi helper formatQty paritas 1:1 dengan POS Kasir (tanpa trailing zero) serta stepper tombol [-] [+] adaptif yang ramah bilangan bulat maupun pecahan.',
+            'Adaptive Native Item Cards: Mengganti form input spreadsheet jadul dengan kartu item native yang kaya informasi: nomor urut (#1, #2), cover thumbnail monogram, badge kategori & supplier, live stepper kuantitas, input inline harga modal, serta strip subtotal reaktif dinamis.',
+            'Penyelarasan Multi-Kanal PO Resmi: Format pesan WhatsApp sales supplier dan cetak surat pesanan PO ramah printer kini otomatis memuat rincian nama varian, SKU produk, dan kuantitas desimal dengan rapi.',
+            'Sinkronisasi Multi-Channel v1.9.51 (Android VersionCode 10951): Terintegrasi penuh ke paket distribusi produksi, Flashdisk, dan Capacitor Android.'
+        ]
+    },
+    {
         id: 'log-1-9-50',
         version: 'v1.9.50',
         date: '2026-09-27',
