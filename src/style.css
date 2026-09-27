@@ -2577,3 +2577,67 @@ html.dark .modal-bottom-sheet textarea {
     color: #e2e8f0;
 }
 
+/* ============================================================
+   UNIVERSAL ICON CENTERING SYSTEM — v1.9.60
+   Memastikan semua ikon dalam button/container selalu presisi
+   center secara vertikal DAN horizontal di seluruh aplikasi.
+   ============================================================ */
+
+/* Semua button yang mengandung hanya ikon (rounded, square) */
+button:where([class*="w-6"], [class*="w-7"], [class*="w-8"], [class*="w-9"], [class*="w-10"], [class*="w-11"], [class*="w-12"]):where([class*="h-6"], [class*="h-7"], [class*="h-8"], [class*="h-9"], [class*="h-10"], [class*="h-11"], [class*="h-12"]) {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    line-height: 1 !important;
+}
+
+/* Icon element centering di dalam flex container */
+button > i.fa-solid,
+button > i.fa-regular,
+button > i.fa-brands,
+button > i[class*="fa-"] {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    font-size: inherit;
+}
+
+/* Fix: ikon di dalam span bertingkat (button > span > i) */
+button span > i.fa-solid,
+button span > i.fa-regular,
+button span > i[class*="fa-"] {
+    vertical-align: middle;
+    line-height: 1;
+}
+
+/* Fix action button strip icon centering */
+.action-btn i,
+.icon-btn i,
+[class*="action-strip"] button i {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+}
+
+/* ─── DOC PREVIEW MODAL: Pastikan wrapper lebih tinggi dari viewport ─── */
+#doc-paper-scroll-area {
+    min-height: 0;
+}
+
+#doc-paper-wrapper {
+    min-height: 200px; /* Mencegah wrapper collapse saat konten belum di-render */
+}
+
+/* Fix: Preview modal tidak tertutup overlay lain */
+#doc-preview-modal {
+    z-index: 10050 !important; /* di atas semua modal termasuk z-[9999], z-[10000], z-[10010] */
+}
+
+/* Fix: receipt & shift modal juga harus di atas */
+#pos-receipt-fallback-modal,
+#pos-shift-receipt-modal {
+    z-index: 10050 !important;
+}
+

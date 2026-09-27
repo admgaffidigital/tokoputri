@@ -313,6 +313,12 @@ export const closeModalByName = (m) => {
     else if (m === 'posLogin' && typeof window.closePOSLoginModal === 'function') window.closePOSLoginModal(true);
     else if (m === 'posCartDrawer' && typeof window.closePOSCartDrawer === 'function') window.closePOSCartDrawer(true);
     else if (m === 'posPayment' && typeof window.closePayModal === 'function') window.closePayModal(true);
+    else if (m === 'purchaseForm' && typeof window.closeCreatePOModal === 'function') window.closeCreatePOModal(true);
+    else if (m === 'purchasePicker' && typeof window.closePOProductPicker === 'function') window.closePOProductPicker(true);
+    else if (m === 'purchaseDetail' && typeof window.closePurchaseDetailModal === 'function') window.closePurchaseDetailModal(true);
+    else if (m === 'purchasePayment' && typeof window.closePurchasePaymentModal === 'function') window.closePurchasePaymentModal(true);
+    else if (m === 'supplierForm' && typeof window.closeSupplierFormModal === 'function') window.closeSupplierFormModal(true);
+    else if (m === 'supplierDetail' && typeof window.closeSupplierDetailModal === 'function') window.closeSupplierDetailModal(true);
 };
 
 /**

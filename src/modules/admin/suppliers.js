@@ -572,17 +572,24 @@ window.openSupplierFormModal = (supplierId = null) => {
         </form>
     `);
 
+    if (modal.classList.contains('hidden') && typeof window.pushModalHistory === 'function') {
+        window.pushModalHistory('supplierForm');
+    }
     openModalAnim(modal, box);
 };
 
 /**
  * Tutup Modal Form Supplier
  */
-window.closeSupplierFormModal = () => {
+window.closeSupplierFormModal = (fH = false) => {
     const modal = el('modal-supplier-form');
     const box = el('modal-supplier-form-box');
     if (!modal) return;
-    closeModalAnim(modal, box);
+    if (!fH && typeof window.requestCloseModal === 'function') {
+        window.requestCloseModal('supplierForm', false, () => closeModalAnim(modal, box));
+    } else {
+        closeModalAnim(modal, box);
+    }
 };
 
 /**
@@ -733,17 +740,24 @@ window.openSupplierDetailModal = (supplierId, initialTab = 'products') => {
 
     renderSupplierDetailModalContent(s);
 
+    if (modal.classList.contains('hidden') && typeof window.pushModalHistory === 'function') {
+        window.pushModalHistory('supplierDetail');
+    }
     openModalAnim(modal, box);
 };
 
 /**
  * Tutup Modal Detail Supplier
  */
-window.closeSupplierDetailModal = () => {
+window.closeSupplierDetailModal = (fH = false) => {
     const modal = el('modal-supplier-detail');
     const box = el('modal-supplier-detail-box');
     if (!modal) return;
-    closeModalAnim(modal, box);
+    if (!fH && typeof window.requestCloseModal === 'function') {
+        window.requestCloseModal('supplierDetail', false, () => closeModalAnim(modal, box));
+    } else {
+        closeModalAnim(modal, box);
+    }
 };
 
 /**

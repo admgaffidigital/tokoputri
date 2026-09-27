@@ -1,12 +1,12 @@
-import"./module-member-DhjtYN6g.js";import{a as p,e as c,b as $,f as m,i as s,al as T,am as F,z as P,G as D,a3 as M,a1 as g,u as f,v as I,t as L}from"./module-print-CW55i0qP.js";import{o as N}from"./module-admin-BDQ82kxB.js";import"./vendor-firebase-core-D2OF5R23.js";import"./vendor-firebase-db-BIUZcnOd.js";import"./module-faq-DtaajRTJ.js";const A=()=>{const e=document.querySelector("#admin-content #modal-supplier-detail");e&&e.remove();const r=document.querySelector("#admin-content #modal-supplier-form");if(r&&r.remove(),!c("modal-supplier-detail")){const t=document.createElement("div");t.id="modal-supplier-detail",t.className="fixed inset-0 z-[150] flex hidden items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-950/40 backdrop-blur-sm opacity-0 transition-opacity duration-300",t.onclick=a=>{a.target===t&&window.closeSupplierDetailModal?.()},t.innerHTML=`
+import"./module-member-jtQkGfOV.js";import{a as p,e as c,b as T,f as m,i as s,al as A,am as F,z as D,G as y,a3 as M,a1 as g,u as f,v as I,t as L}from"./module-print-CW55i0qP.js";import{o as N}from"./module-admin-DaSMuoSi.js";import"./vendor-firebase-core-D2OF5R23.js";import"./vendor-firebase-db-BIUZcnOd.js";import"./module-faq-Dc7600OU.js";const P=()=>{const t=document.querySelector("#admin-content #modal-supplier-detail");t&&t.remove();const r=document.querySelector("#admin-content #modal-supplier-form");if(r&&r.remove(),!c("modal-supplier-detail")){const e=document.createElement("div");e.id="modal-supplier-detail",e.className="fixed inset-0 z-[150] flex hidden items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-950/40 backdrop-blur-sm opacity-0 transition-opacity duration-300",e.onclick=a=>{a.target===e&&window.closeSupplierDetailModal?.()},e.innerHTML=`
             <div id="modal-supplier-detail-box" class="modal-bottom-sheet relative flex max-h-[92dvh] sm:max-h-[88dvh] w-full max-w-4xl translate-y-full sm:translate-y-10 transform flex-col overflow-hidden rounded-t-[2rem] sm:rounded-3xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xl transition-transform duration-300">
                 <div id="modal-supplier-detail-content" class="flex-1 flex flex-col overflow-hidden"></div>
             </div>
-        `,document.body.appendChild(t)}if(!c("modal-supplier-form")){const t=document.createElement("div");t.id="modal-supplier-form",t.className="fixed inset-0 z-[150] flex hidden items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-950/40 backdrop-blur-sm opacity-0 transition-opacity duration-300",t.onclick=a=>{a.target===t&&window.closeSupplierFormModal?.()},t.innerHTML=`
+        `,document.body.appendChild(e)}if(!c("modal-supplier-form")){const e=document.createElement("div");e.id="modal-supplier-form",e.className="fixed inset-0 z-[150] flex hidden items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-950/40 backdrop-blur-sm opacity-0 transition-opacity duration-300",e.onclick=a=>{a.target===e&&window.closeSupplierFormModal?.()},e.innerHTML=`
             <div id="modal-supplier-form-box" class="modal-bottom-sheet relative flex max-h-[92dvh] sm:max-h-[88dvh] w-full max-w-2xl translate-y-full sm:translate-y-10 transform flex-col overflow-hidden rounded-t-[2rem] sm:rounded-3xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xl transition-transform duration-300">
                 <div id="modal-supplier-form-content" class="flex-1 flex flex-col overflow-hidden"></div>
             </div>
-        `,document.body.appendChild(t)}};let S="",k="all",j=null,u="products";const O=e=>{if(!e)return"-";try{return new Date(e).toLocaleDateString("id-ID",{day:"numeric",month:"short",year:"numeric"})}catch{return e}},E=()=>{const e=p.suppliers||[],r=p.products||[],t=p.purchases||[],a=e.length,l=r.filter(d=>d.supplierId&&e.some(n=>String(n.id)===String(d.supplierId))).length,o=t.reduce((d,n)=>{if(n.paymentType==="tempo"&&n.paymentStatus!=="lunas"){const x=(parseFloat(n.total)||0)-(parseFloat(n.amountPaid)||0);return d+(x>0?x:0)}return d},0),i=t.filter(d=>d.status==="ordered").length;return{totalSuppliers:a,linkedProductsCount:l,totalOutstandingDebt:o,activePurchasesCount:i}},h=()=>{if(A(),!c("admin-content"))return;const r=E(),t=p.suppliers||[],a=S.toLowerCase().trim();let l=t.filter(o=>!a||(o.name||"").toLowerCase().includes(a)||(o.code||"").toLowerCase().includes(a)||(o.salesName||"").toLowerCase().includes(a)||(o.phone||"").includes(a)||(o.address||"").toLowerCase().includes(a)?k==="has_debt"?(p.purchases||[]).some(n=>String(n.supplierId)===String(o.id)&&n.paymentType==="tempo"&&n.paymentStatus!=="lunas"&&(parseFloat(n.total)||0)-(parseFloat(n.amountPaid)||0)>0):!0:!1);$("admin-content",`
+        `,document.body.appendChild(e)}};let $="",k="all",j=null,b="products";const O=t=>{if(!t)return"-";try{return new Date(t).toLocaleDateString("id-ID",{day:"numeric",month:"short",year:"numeric"})}catch{return t}},H=()=>{const t=p.suppliers||[],r=p.products||[],e=p.purchases||[],a=t.length,l=r.filter(d=>d.supplierId&&t.some(n=>String(n.id)===String(d.supplierId))).length,o=e.reduce((d,n)=>{if(n.paymentType==="tempo"&&n.paymentStatus!=="lunas"){const u=(parseFloat(n.total)||0)-(parseFloat(n.amountPaid)||0);return d+(u>0?u:0)}return d},0),i=e.filter(d=>d.status==="ordered").length;return{totalSuppliers:a,linkedProductsCount:l,totalOutstandingDebt:o,activePurchasesCount:i}},h=()=>{if(P(),!c("admin-content"))return;const r=H(),e=p.suppliers||[],a=$.toLowerCase().trim();let l=e.filter(o=>!a||(o.name||"").toLowerCase().includes(a)||(o.code||"").toLowerCase().includes(a)||(o.salesName||"").toLowerCase().includes(a)||(o.phone||"").includes(a)||(o.address||"").toLowerCase().includes(a)?k==="has_debt"?(p.purchases||[]).some(n=>String(n.supplierId)===String(o.id)&&n.paymentType==="tempo"&&n.paymentStatus!=="lunas"&&(parseFloat(n.total)||0)-(parseFloat(n.amountPaid)||0)>0):!0:!1);T("admin-content",`
         <div class="space-y-4 sm:space-y-5 fade-in max-w-5xl mx-auto pb-24 pt-1 sm:pt-2">
             <!-- 1. HERO BANNER: MASTER DATA SUPPLIER & REKANAN (THEME HARMONIZED) -->
             <div class="relative overflow-hidden p-5 sm:p-7 rounded-2xl sm:rounded-3xl border border-[rgba(var(--color-primary-rgb),0.2)] bg-gradient-to-br from-white via-white to-[rgba(var(--color-primary-rgb),0.05)] dark:from-slate-900 dark:via-slate-900/90 dark:to-slate-800 shadow-xs">
@@ -97,7 +97,7 @@ import"./module-member-DhjtYN6g.js";import{a as p,e as c,b as $,f as m,i as s,al
                         <input 
                             type="text" 
                             id="supplier-search-input" 
-                            value="${s(S)}" 
+                            value="${s($)}" 
                             placeholder="Cari supplier, kode, kontak sales, alamat..." 
                             oninput="window.handleSupplierSearch(this.value)"
                             class="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl py-3 pl-11 pr-4 text-xs sm:text-sm font-bold text-slate-700 dark:text-slate-200 focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/15 shadow-2xs transition-all"
@@ -131,29 +131,29 @@ import"./module-member-DhjtYN6g.js";import{a as p,e as c,b as $,f as m,i as s,al
                 `:l.map(o=>B(o)).join("")}
             </div>
         </div>
-    `)},B=e=>{const r=p.products||[],t=p.purchases||[],a=r.filter(n=>String(n.supplierId)===String(e.id)),o=t.filter(n=>String(n.supplierId)===String(e.id)).reduce((n,x)=>{if(x.paymentType==="tempo"&&x.paymentStatus!=="lunas"){const b=(parseFloat(x.total)||0)-(parseFloat(x.amountPaid)||0);return n+(b>0?b:0)}return n},0),i={cash:"Cash / Tunai",tempo_7:"Tempo 7 Hari",tempo_14:"Tempo 14 Hari",tempo_30:"Tempo 30 Hari",tempo_60:"Tempo 60 Hari",konsinyasi:"Konsinyasi (Titip Jual)"},d=e.phone?T(e.phone):"";return`
+    `)},B=t=>{const r=p.products||[],e=p.purchases||[],a=r.filter(n=>String(n.supplierId)===String(t.id)),o=e.filter(n=>String(n.supplierId)===String(t.id)).reduce((n,u)=>{if(u.paymentType==="tempo"&&u.paymentStatus!=="lunas"){const x=(parseFloat(u.total)||0)-(parseFloat(u.amountPaid)||0);return n+(x>0?x:0)}return n},0),i={cash:"Cash / Tunai",tempo_7:"Tempo 7 Hari",tempo_14:"Tempo 14 Hari",tempo_30:"Tempo 30 Hari",tempo_60:"Tempo 60 Hari",konsinyasi:"Konsinyasi (Titip Jual)"},d=t.phone?A(t.phone):"";return`
         <div class="bg-white/95 dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700/80 hover:border-[var(--color-primary)]/50 transition-all rounded-3xl p-4 sm:p-6 shadow-2xs group space-y-4">
             <!-- 1. IDENTITAS UTAMA SUPPLIER & STATUS -->
             <div class="flex items-start justify-between gap-3.5">
                 <div class="flex items-start gap-3.5 min-w-0">
                     <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center text-sm sm:text-base font-black shrink-0 border shadow-xs transition-transform group-hover:scale-105" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary); border-color: rgba(var(--color-primary-rgb), 0.25)">
-                        ${e.code?s(e.code.substring(0,3).toUpperCase()):'<i class="fa-solid fa-truck-field"></i>'}
+                        ${t.code?s(t.code.substring(0,3).toUpperCase()):'<i class="fa-solid fa-truck-field"></i>'}
                     </div>
 
                     <div class="min-w-0 flex-1">
                         <div class="flex items-center gap-2 flex-wrap">
-                            <h4 class="font-black text-sm sm:text-base text-slate-800 dark:text-white truncate tracking-tight">${s(e.name)}</h4>
-                            ${e.code?`<span class="px-2 py-0.5 rounded-lg bg-slate-100 dark:bg-slate-700/70 text-slate-600 dark:text-slate-300 text-[10px] font-mono font-bold border border-slate-200/60 dark:border-slate-700">${s(e.code)}</span>`:""}
-                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold border" style="background: rgba(var(--color-primary-rgb), 0.1); color: var(--color-primary); border-color: rgba(var(--color-primary-rgb), 0.25);">${s(i[e.defaultTerms]||"Cash")}</span>
+                            <h4 class="font-black text-sm sm:text-base text-slate-800 dark:text-white truncate tracking-tight">${s(t.name)}</h4>
+                            ${t.code?`<span class="px-2 py-0.5 rounded-lg bg-slate-100 dark:bg-slate-700/70 text-slate-600 dark:text-slate-300 text-[10px] font-mono font-bold border border-slate-200/60 dark:border-slate-700">${s(t.code)}</span>`:""}
+                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold border" style="background: rgba(var(--color-primary-rgb), 0.1); color: var(--color-primary); border-color: rgba(var(--color-primary-rgb), 0.25);">${s(i[t.defaultTerms]||"Cash")}</span>
                         </div>
 
                         <div class="flex items-center gap-3 text-xs text-slate-500 dark:text-slate-400 mt-1 flex-wrap">
-                            ${e.salesName?`<span><i class="fa-solid fa-user-tie mr-1" style="color:var(--color-primary)"></i>${s(e.salesName)}</span>`:""}
+                            ${t.salesName?`<span><i class="fa-solid fa-user-tie mr-1" style="color:var(--color-primary)"></i>${s(t.salesName)}</span>`:""}
                             ${d?`<a href="https://wa.me/${d}" target="_blank" onclick="event.stopPropagation();" class="text-emerald-600 dark:text-emerald-400 font-bold hover:underline flex items-center gap-1"><i class="fa-brands fa-whatsapp text-sm"></i>+${d}</a>`:""}
-                            ${e.bankName&&e.bankAccount?`<span><i class="fa-solid fa-credit-card mr-1" style="color:var(--color-primary)"></i>${s(e.bankName)}: <b class="font-mono text-slate-700 dark:text-slate-300">${s(e.bankAccount)}</b></span>`:""}
+                            ${t.bankName&&t.bankAccount?`<span><i class="fa-solid fa-credit-card mr-1" style="color:var(--color-primary)"></i>${s(t.bankName)}: <b class="font-mono text-slate-700 dark:text-slate-300">${s(t.bankAccount)}</b></span>`:""}
                         </div>
 
-                        ${e.address?`<p class="text-[11px] text-slate-400 truncate mt-1 max-w-lg"><i class="fa-solid fa-location-dot mr-1 text-rose-500"></i>${s(e.address)}</p>`:""}
+                        ${t.address?`<p class="text-[11px] text-slate-400 truncate mt-1 max-w-lg"><i class="fa-solid fa-location-dot mr-1 text-rose-500"></i>${s(t.address)}</p>`:""}
                     </div>
                 </div>
             </div>
@@ -181,7 +181,7 @@ import"./module-member-DhjtYN6g.js";import{a as p,e as c,b as $,f as m,i as s,al
                 <div class="flex items-center gap-2 flex-1">
                     <button 
                         type="button"
-                        onclick="event.stopPropagation(); window.quickCreatePOForSupplier('${e.id}')" 
+                        onclick="event.stopPropagation(); window.quickCreatePOForSupplier('${t.id}')" 
                         class="flex-1 sm:flex-initial h-11 px-5 rounded-2xl text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-sm active:scale-95 transition-all cursor-pointer" 
                         style="background: var(--color-primary); box-shadow: 0 4px 12px rgba(var(--color-primary-rgb), 0.3);"
                         title="Buat Order Kulakan Produk ke Supplier Ini"
@@ -192,7 +192,7 @@ import"./module-member-DhjtYN6g.js";import{a as p,e as c,b as $,f as m,i as s,al
 
                     <button 
                         type="button"
-                        onclick="window.openSupplierDetailModal('${e.id}')" 
+                        onclick="window.openSupplierDetailModal('${t.id}')" 
                         class="h-11 px-4 rounded-2xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-700/80 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200/80 dark:border-slate-600 font-bold text-xs sm:text-sm transition-all active:scale-95 shadow-2xs flex items-center justify-center gap-1.5 cursor-pointer"
                         title="Lihat Profil Rekanan, Katalog, & Histori PO"
                     >
@@ -206,7 +206,7 @@ import"./module-member-DhjtYN6g.js";import{a as p,e as c,b as $,f as m,i as s,al
                     ${d?`
                         <button 
                             type="button"
-                            onclick="event.stopPropagation(); window.openSupplierWhatsApp('${d}', '${s(e.name)}', '${s(e.salesName||"")}')" 
+                            onclick="event.stopPropagation(); window.openSupplierWhatsApp('${d}', '${s(t.name)}', '${s(t.salesName||"")}')" 
                             class="h-11 px-3 rounded-2xl bg-emerald-50 hover:bg-emerald-500 hover:text-white dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 flex items-center justify-center gap-1.5 transition-all active:scale-95 shadow-2xs cursor-pointer font-bold text-xs" 
                             title="Chat WhatsApp Sales"
                             aria-label="WhatsApp Sales"
@@ -218,7 +218,7 @@ import"./module-member-DhjtYN6g.js";import{a as p,e as c,b as $,f as m,i as s,al
 
                     <button 
                         type="button"
-                        onclick="event.stopPropagation(); window.openSupplierFormModal('${e.id}')" 
+                        onclick="event.stopPropagation(); window.openSupplierFormModal('${t.id}')" 
                         class="h-11 px-3 rounded-2xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-700/80 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 border border-slate-200/80 dark:border-slate-600 flex items-center justify-center gap-1.5 transition-all active:scale-95 shadow-2xs cursor-pointer font-bold text-xs" 
                         title="Edit Data Rekanan"
                         aria-label="Edit Data Rekanan"
@@ -229,7 +229,7 @@ import"./module-member-DhjtYN6g.js";import{a as p,e as c,b as $,f as m,i as s,al
 
                     <button 
                         type="button"
-                        onclick="event.stopPropagation(); window.deleteSupplier('${e.id}')" 
+                        onclick="event.stopPropagation(); window.deleteSupplier('${t.id}')" 
                         class="h-11 px-3 rounded-2xl bg-rose-50 hover:bg-rose-500 hover:text-white dark:bg-rose-950/40 text-rose-500 border border-rose-200 dark:border-rose-900 flex items-center justify-center gap-1.5 transition-all active:scale-95 shadow-2xs cursor-pointer font-bold text-xs" 
                         title="Hapus Rekanan"
                         aria-label="Hapus Rekanan"
@@ -240,18 +240,18 @@ import"./module-member-DhjtYN6g.js";import{a as p,e as c,b as $,f as m,i as s,al
                 </div>
             </div>
         </div>
-    `};window.handleSupplierSearch=e=>{S=e||"",h()};window.toggleSupplierFilter=()=>{k=k==="all"?"has_debt":"all",h()};window.openSupplierWhatsApp=(e,r,t)=>{const l=`${t?`Halo Pak/Bu ${t}`:`Halo Tim Sales ${r}`} dari *${p.store?.name||"Toko Putri"}*.
-Kami ingin menanyakan ketersediaan stok & mengajukan order barang. Mohon info update pricelist / ketersediaan barang ya. Terima kasih! 🙏`;F(e,l)};window.openSupplierFormModal=(e=null)=>{A();const r=p.suppliers||[],t=!!e,a=t?r.find(d=>String(d.id)===String(e))||{}:{code:"SUP-"+Math.floor(100+Math.random()*900),defaultTerms:"tempo_14"},l=c("modal-supplier-form"),o=c("modal-supplier-form-box"),i=c("modal-supplier-form-content");!l||!i||($("modal-supplier-form-content",`
+    `};window.handleSupplierSearch=t=>{$=t||"",h()};window.toggleSupplierFilter=()=>{k=k==="all"?"has_debt":"all",h()};window.openSupplierWhatsApp=(t,r,e)=>{const l=`${e?`Halo Pak/Bu ${e}`:`Halo Tim Sales ${r}`} dari *${p.store?.name||"Toko Putri"}*.
+Kami ingin menanyakan ketersediaan stok & mengajukan order barang. Mohon info update pricelist / ketersediaan barang ya. Terima kasih! 🙏`;F(t,l)};window.openSupplierFormModal=(t=null)=>{P();const r=p.suppliers||[],e=!!t,a=e?r.find(d=>String(d.id)===String(t))||{}:{code:"SUP-"+Math.floor(100+Math.random()*900),defaultTerms:"tempo_14"},l=c("modal-supplier-form"),o=c("modal-supplier-form-box"),i=c("modal-supplier-form-content");!l||!i||(T("modal-supplier-form-content",`
         <!-- Pull Indicator for Mobile Bottom Sheet -->
         <div class="pull-indicator sm:hidden"></div>
 
         <div class="px-5 sm:px-6 pt-3 sm:pt-5 pb-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between shrink-0 bg-slate-50/70 dark:bg-slate-900/60">
             <div class="flex items-center gap-3">
                 <div class="w-11 h-11 rounded-2xl flex items-center justify-center text-lg shrink-0 aspect-square shadow-xs" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary); border: 1px solid rgba(var(--color-primary-rgb), 0.25);">
-                    <i class="fa-solid ${t?"fa-pen-to-square":"fa-truck-field"}"></i>
+                    <i class="fa-solid ${e?"fa-pen-to-square":"fa-truck-field"}"></i>
                 </div>
                 <div>
-                    <h3 class="font-black text-base sm:text-lg text-slate-800 dark:text-white tracking-tight">${t?"Edit Data Rekanan / Supplier":"Daftarkan Supplier Baru"}</h3>
+                    <h3 class="font-black text-base sm:text-lg text-slate-800 dark:text-white tracking-tight">${e?"Edit Data Rekanan / Supplier":"Daftarkan Supplier Baru"}</h3>
                     <p class="text-xs text-slate-500 dark:text-slate-400">Master database pabrik, distributor, dan rekanan pengadaan barang toko</p>
                 </div>
             </div>
@@ -260,7 +260,7 @@ Kami ingin menanyakan ketersediaan stok & mengajukan order barang. Mohon info up
             </button>
         </div>
 
-        <form id="supplier-editor-form" onsubmit="window.saveSupplierForm(event, '${t?a.id:""}')" class="flex-1 flex flex-col overflow-hidden">
+        <form id="supplier-editor-form" onsubmit="window.saveSupplierForm(event, '${e?a.id:""}')" class="flex-1 flex flex-col overflow-hidden">
             <div class="custom-scrollbar p-5 sm:p-6 overflow-y-auto flex-1 space-y-4">
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
@@ -345,7 +345,7 @@ Kami ingin menanyakan ketersediaan stok & mengajukan order barang. Mohon info up
                 </button>
             </div>
         </form>
-    `),P(l,o))};window.closeSupplierFormModal=()=>{const e=c("modal-supplier-form"),r=c("modal-supplier-form-box");e&&D(e,r)};window.saveSupplierForm=async(e,r)=>{e.preventDefault(),M("Menyimpan Data Supplier...");try{const t=(c("sf-name")?.value||"").trim(),a=(c("sf-code")?.value||"").trim(),l=(c("sf-salesName")?.value||"").trim();let o=(c("sf-phone")?.value||"").trim();const i=c("sf-defaultTerms")?.value||"tempo_14",d=(c("sf-email")?.value||"").trim(),n=(c("sf-bankName")?.value||"").trim(),x=(c("sf-bankAccount")?.value||"").trim(),b=(c("sf-bankHolder")?.value||"").trim(),v=(c("sf-address")?.value||"").trim(),H=(c("sf-notes")?.value||"").trim();if(!t)return g(),f("Nama supplier wajib diisi!");o&&(o=T(o)),p.suppliers||(p.suppliers=[]);const w={id:r||"sup_"+Date.now().toString(36)+"_"+Math.random().toString(36).substring(2,6),name:t,code:a,salesName:l,phone:o,defaultTerms:i,email:d,bankName:n,bankAccount:x,bankHolder:b,address:v,notes:H,updatedAt:new Date().toISOString()};if(!r)w.createdAt=new Date().toISOString(),p.suppliers.unshift(w);else{const y=p.suppliers.findIndex(C=>String(C.id)===String(r));y>-1?p.suppliers[y]={...p.suppliers[y],...w}:p.suppliers.push(w)}await N(["suppliers"]),g(),window.closeSupplierFormModal(),f(r?"Data supplier diperbarui! ✨":"Supplier baru berhasil ditambahkan! 🎉"),h()}catch(t){g(),console.error("Gagal menyimpan supplier:",t),f("Gagal menyimpan: "+(t.message||""))}};window.deleteSupplier=e=>{const t=(p.suppliers||[]).find(i=>String(i.id)===String(e));if(!t)return;const a=(p.products||[]).filter(i=>String(i.supplierId)===String(e)),l=(p.purchases||[]).filter(i=>String(i.supplierId)===String(e));let o=`Hapus supplier <b>${s(t.name)}</b>?`;a.length>0&&(o+=`<br><span class="text-amber-500 font-bold text-xs mt-1 block">Perhatian: Ada ${a.length} produk di etalase yang terhubung ke supplier ini. Link supplier pada produk tersebut akan dilepas.</span>`),l.length>0&&(o+=`<br><span class="text-rose-500 font-bold text-xs mt-1 block">Terdapat ${l.length} riwayat pesanan kulakan (PO) terkait supplier ini.</span>`),I("Hapus Supplier",o,async()=>{M("Menghapus...");try{p.suppliers=(p.suppliers||[]).filter(d=>String(d.id)!==String(e));let i=!1;(p.products||[]).forEach(d=>{String(d.supplierId)===String(e)&&(delete d.supplierId,i=!0)}),await N(i?["suppliers","products"]:["suppliers"]),g(),f("Supplier berhasil dihapus."),h()}catch(i){g(),console.error("Gagal menghapus supplier:",i),f("Gagal menghapus: "+i.message)}},"Hapus Permanen")};window.openSupplierDetailModal=(e,r="products")=>{A(),j=e,u=r;const a=(p.suppliers||[]).find(d=>String(d.id)===String(e));if(!a)return f("Supplier tidak ditemukan!");const l=c("modal-supplier-detail"),o=c("modal-supplier-detail-box"),i=c("modal-supplier-detail-content");!l||!i||(R(a),P(l,o))};window.closeSupplierDetailModal=()=>{const e=c("modal-supplier-detail"),r=c("modal-supplier-detail-box");e&&D(e,r)};window.switchSupplierDetailTab=e=>{u=e;const t=(p.suppliers||[]).find(a=>String(a.id)===String(j));t&&R(t)};const R=e=>{const r=c("modal-supplier-detail-content");if(!r)return;r.className="flex-1 flex flex-col overflow-hidden";const t=p.products||[],a=p.purchases||[],l=t.filter(x=>String(x.supplierId)===String(e.id)),o=a.filter(x=>String(x.supplierId)===String(e.id));o.sort((x,b)=>new Date(b.date||b.createdAt||0)-new Date(x.date||x.createdAt||0));const i=o.filter(x=>x.paymentType==="tempo"),d=i.reduce((x,b)=>{if(b.paymentStatus!=="lunas"){const v=(parseFloat(b.total)||0)-(parseFloat(b.amountPaid)||0);return x+(v>0?v:0)}return x},0),n=e.phone?T(e.phone):"";$("modal-supplier-detail-content",`
+    `),l.classList.contains("hidden")&&typeof window.pushModalHistory=="function"&&window.pushModalHistory("supplierForm"),D(l,o))};window.closeSupplierFormModal=(t=!1)=>{const r=c("modal-supplier-form"),e=c("modal-supplier-form-box");r&&(!t&&typeof window.requestCloseModal=="function"?window.requestCloseModal("supplierForm",!1,()=>y(r,e)):y(r,e))};window.saveSupplierForm=async(t,r)=>{t.preventDefault(),M("Menyimpan Data Supplier...");try{const e=(c("sf-name")?.value||"").trim(),a=(c("sf-code")?.value||"").trim(),l=(c("sf-salesName")?.value||"").trim();let o=(c("sf-phone")?.value||"").trim();const i=c("sf-defaultTerms")?.value||"tempo_14",d=(c("sf-email")?.value||"").trim(),n=(c("sf-bankName")?.value||"").trim(),u=(c("sf-bankAccount")?.value||"").trim(),x=(c("sf-bankHolder")?.value||"").trim(),v=(c("sf-address")?.value||"").trim(),E=(c("sf-notes")?.value||"").trim();if(!e)return g(),f("Nama supplier wajib diisi!");o&&(o=A(o)),p.suppliers||(p.suppliers=[]);const w={id:r||"sup_"+Date.now().toString(36)+"_"+Math.random().toString(36).substring(2,6),name:e,code:a,salesName:l,phone:o,defaultTerms:i,email:d,bankName:n,bankAccount:u,bankHolder:x,address:v,notes:E,updatedAt:new Date().toISOString()};if(!r)w.createdAt=new Date().toISOString(),p.suppliers.unshift(w);else{const S=p.suppliers.findIndex(R=>String(R.id)===String(r));S>-1?p.suppliers[S]={...p.suppliers[S],...w}:p.suppliers.push(w)}await N(["suppliers"]),g(),window.closeSupplierFormModal(),f(r?"Data supplier diperbarui! ✨":"Supplier baru berhasil ditambahkan! 🎉"),h()}catch(e){g(),console.error("Gagal menyimpan supplier:",e),f("Gagal menyimpan: "+(e.message||""))}};window.deleteSupplier=t=>{const e=(p.suppliers||[]).find(i=>String(i.id)===String(t));if(!e)return;const a=(p.products||[]).filter(i=>String(i.supplierId)===String(t)),l=(p.purchases||[]).filter(i=>String(i.supplierId)===String(t));let o=`Hapus supplier <b>${s(e.name)}</b>?`;a.length>0&&(o+=`<br><span class="text-amber-500 font-bold text-xs mt-1 block">Perhatian: Ada ${a.length} produk di etalase yang terhubung ke supplier ini. Link supplier pada produk tersebut akan dilepas.</span>`),l.length>0&&(o+=`<br><span class="text-rose-500 font-bold text-xs mt-1 block">Terdapat ${l.length} riwayat pesanan kulakan (PO) terkait supplier ini.</span>`),I("Hapus Supplier",o,async()=>{M("Menghapus...");try{p.suppliers=(p.suppliers||[]).filter(d=>String(d.id)!==String(t));let i=!1;(p.products||[]).forEach(d=>{String(d.supplierId)===String(t)&&(delete d.supplierId,i=!0)}),await N(i?["suppliers","products"]:["suppliers"]),g(),f("Supplier berhasil dihapus."),h()}catch(i){g(),console.error("Gagal menghapus supplier:",i),f("Gagal menghapus: "+i.message)}},"Hapus Permanen")};window.openSupplierDetailModal=(t,r="products")=>{P(),j=t,b=r;const a=(p.suppliers||[]).find(d=>String(d.id)===String(t));if(!a)return f("Supplier tidak ditemukan!");const l=c("modal-supplier-detail"),o=c("modal-supplier-detail-box"),i=c("modal-supplier-detail-content");!l||!i||(C(a),l.classList.contains("hidden")&&typeof window.pushModalHistory=="function"&&window.pushModalHistory("supplierDetail"),D(l,o))};window.closeSupplierDetailModal=(t=!1)=>{const r=c("modal-supplier-detail"),e=c("modal-supplier-detail-box");r&&(!t&&typeof window.requestCloseModal=="function"?window.requestCloseModal("supplierDetail",!1,()=>y(r,e)):y(r,e))};window.switchSupplierDetailTab=t=>{b=t;const e=(p.suppliers||[]).find(a=>String(a.id)===String(j));e&&C(e)};const C=t=>{const r=c("modal-supplier-detail-content");if(!r)return;r.className="flex-1 flex flex-col overflow-hidden";const e=p.products||[],a=p.purchases||[],l=e.filter(u=>String(u.supplierId)===String(t.id)),o=a.filter(u=>String(u.supplierId)===String(t.id));o.sort((u,x)=>new Date(x.date||x.createdAt||0)-new Date(u.date||u.createdAt||0));const i=o.filter(u=>u.paymentType==="tempo"),d=i.reduce((u,x)=>{if(x.paymentStatus!=="lunas"){const v=(parseFloat(x.total)||0)-(parseFloat(x.amountPaid)||0);return u+(v>0?v:0)}return u},0),n=t.phone?A(t.phone):"";T("modal-supplier-detail-content",`
         <!-- DRAG PULL INDICATOR (NATIVE MOBILE SHEET) -->
         <div class="pull-indicator sm:hidden"></div>
 
@@ -364,19 +364,19 @@ Kami ingin menanyakan ketersediaan stok & mengajukan order barang. Mohon info up
             <!-- Profil Header Info -->
             <div class="flex items-start gap-3 sm:gap-4 pr-9 sm:pr-10">
                 <div class="w-13 h-13 sm:w-16 sm:h-16 rounded-2xl flex items-center justify-center text-lg sm:text-2xl shrink-0 font-black shadow-xs transition-transform" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary); border: 1.5px solid rgba(var(--color-primary-rgb), 0.25);">
-                    ${e.code?s(e.code.substring(0,3).toUpperCase()):'<i class="fa-solid fa-truck-field"></i>'}
+                    ${t.code?s(t.code.substring(0,3).toUpperCase()):'<i class="fa-solid fa-truck-field"></i>'}
                 </div>
                 <div class="min-w-0 flex-1">
                     <div class="flex items-center gap-2 flex-wrap">
-                        <h3 class="font-black text-base sm:text-xl text-slate-800 dark:text-white tracking-tight leading-tight">${s(e.name)}</h3>
-                        ${e.code?`<span class="px-2 py-0.5 rounded-lg bg-slate-200/80 dark:bg-slate-700/80 text-slate-700 dark:text-slate-300 text-[11px] font-mono font-bold">${s(e.code)}</span>`:""}
+                        <h3 class="font-black text-base sm:text-xl text-slate-800 dark:text-white tracking-tight leading-tight">${s(t.name)}</h3>
+                        ${t.code?`<span class="px-2 py-0.5 rounded-lg bg-slate-200/80 dark:bg-slate-700/80 text-slate-700 dark:text-slate-300 text-[11px] font-mono font-bold">${s(t.code)}</span>`:""}
                     </div>
                     <div class="flex items-center gap-x-3 gap-y-1 text-xs text-slate-500 dark:text-slate-400 mt-1 flex-wrap">
-                        ${e.salesName?`<span><i class="fa-solid fa-user-tie text-[var(--color-primary)] mr-1"></i>Sales: <b>${s(e.salesName)}</b></span>`:""}
+                        ${t.salesName?`<span><i class="fa-solid fa-user-tie text-[var(--color-primary)] mr-1"></i>Sales: <b>${s(t.salesName)}</b></span>`:""}
                         ${n?`<a href="https://wa.me/${n}" target="_blank" class="text-emerald-600 dark:text-emerald-400 font-bold hover:underline inline-flex items-center"><i class="fa-brands fa-whatsapp mr-1 text-emerald-500"></i>+${n}</a>`:""}
-                        ${e.bankName&&e.bankAccount?`<span><i class="fa-solid fa-credit-card mr-1" style="color:var(--color-primary)"></i>${s(e.bankName)}: <b class="font-mono text-slate-700 dark:text-slate-200">${s(e.bankAccount)}</b></span>`:""}
+                        ${t.bankName&&t.bankAccount?`<span><i class="fa-solid fa-credit-card mr-1" style="color:var(--color-primary)"></i>${s(t.bankName)}: <b class="font-mono text-slate-700 dark:text-slate-200">${s(t.bankAccount)}</b></span>`:""}
                     </div>
-                    ${e.address?`<p class="text-[11px] text-slate-400 dark:text-slate-400 mt-1 line-clamp-2"><i class="fa-solid fa-location-dot text-rose-500 mr-1 shrink-0"></i>${s(e.address)}</p>`:""}
+                    ${t.address?`<p class="text-[11px] text-slate-400 dark:text-slate-400 mt-1 line-clamp-2"><i class="fa-solid fa-location-dot text-rose-500 mr-1 shrink-0"></i>${s(t.address)}</p>`:""}
                 </div>
             </div>
 
@@ -385,8 +385,8 @@ Kami ingin menanyakan ketersediaan stok & mengajukan order barang. Mohon info up
                 <button 
                     type="button" 
                     onclick="window.switchSupplierDetailTab('products')" 
-                    class="py-2.5 px-2 rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 min-w-0 ${u==="products"?"bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-xs font-black":"text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"}"
-                    ${u==="products"?'style="color: var(--color-primary);"':""}
+                    class="py-2.5 px-2 rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 min-w-0 ${b==="products"?"bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-xs font-black":"text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"}"
+                    ${b==="products"?'style="color: var(--color-primary);"':""}
                 >
                     <i class="fa-solid fa-boxes-stacked text-xs shrink-0"></i>
                     <span class="truncate">Produk (${l.length})</span>
@@ -395,8 +395,8 @@ Kami ingin menanyakan ketersediaan stok & mengajukan order barang. Mohon info up
                 <button 
                     type="button" 
                     onclick="window.switchSupplierDetailTab('orders')" 
-                    class="py-2.5 px-2 rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 min-w-0 ${u==="orders"?"bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-xs font-black":"text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"}"
-                    ${u==="orders"?'style="color: var(--color-primary);"':""}
+                    class="py-2.5 px-2 rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 min-w-0 ${b==="orders"?"bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-xs font-black":"text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"}"
+                    ${b==="orders"?'style="color: var(--color-primary);"':""}
                 >
                     <i class="fa-solid fa-cart-flatbed text-xs shrink-0"></i>
                     <span class="truncate">PO (${o.length})</span>
@@ -405,8 +405,8 @@ Kami ingin menanyakan ketersediaan stok & mengajukan order barang. Mohon info up
                 <button 
                     type="button" 
                     onclick="window.switchSupplierDetailTab('debt')" 
-                    class="py-2.5 px-2 rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 min-w-0 ${u==="debt"?"bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-xs font-black":"text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"}"
-                    ${u==="debt"?'style="color: var(--color-primary);"':""}
+                    class="py-2.5 px-2 rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 min-w-0 ${b==="debt"?"bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-xs font-black":"text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"}"
+                    ${b==="debt"?'style="color: var(--color-primary);"':""}
                 >
                     <i class="fa-solid fa-file-invoice-dollar text-xs shrink-0"></i>
                     <span class="truncate">Hutang (${i.length})</span>
@@ -417,9 +417,9 @@ Kami ingin menanyakan ketersediaan stok & mengajukan order barang. Mohon info up
 
         <!-- ISI KONTEN TAB (SCROLLABLE, FLUID FLEX-1) -->
         <div class="p-4 sm:p-6 overflow-y-auto flex-1 custom-scrollbar">
-            ${u==="products"?K(l,e):""}
-            ${u==="orders"?U(o,e):""}
-            ${u==="debt"?_(i,d,e):""}
+            ${b==="products"?K(l,t):""}
+            ${b==="orders"?U(o,t):""}
+            ${b==="debt"?_(i,d,t):""}
         </div>
 
         <!-- STICKY ACTION FOOTER (NATIVE APP STANDARD) -->
@@ -427,12 +427,12 @@ Kami ingin menanyakan ketersediaan stok & mengajukan order barang. Mohon info up
             <button type="button" onclick="window.closeSupplierDetailModal()" class="h-12 px-5 sm:px-6 rounded-2xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold text-xs hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 transition-all cursor-pointer">
                 Tutup
             </button>
-            <button type="button" onclick="window.quickCreatePOForSupplier('${e.id}')" class="h-12 px-6 rounded-2xl text-white font-bold text-xs shadow-glow transition-all active:scale-95 cursor-pointer flex items-center gap-2" style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
+            <button type="button" onclick="window.quickCreatePOForSupplier('${t.id}')" class="h-12 px-6 rounded-2xl text-white font-bold text-xs shadow-glow transition-all active:scale-95 cursor-pointer flex items-center gap-2" style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
                 <i class="fa-solid fa-cart-flatbed"></i>
                 <span>Buat Order Kulakan (PO)</span>
             </button>
         </div>
-    `)},K=(e,r)=>e.length===0?`
+    `)},K=(t,r)=>t.length===0?`
             <div class="text-center py-10 sm:py-12 text-slate-400">
                 <div class="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl mx-auto mb-3 shadow-xs" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary); border: 1.5px solid rgba(var(--color-primary-rgb), 0.25);">
                     <i class="fa-solid fa-box-open"></i>
@@ -447,7 +447,7 @@ Kami ingin menanyakan ketersediaan stok & mengajukan order barang. Mohon info up
         `:`
         <div class="space-y-4">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 pb-1">
-                <p class="text-xs font-bold text-slate-500 dark:text-slate-400">Total <b>${e.length}</b> macam produk toko dari supplier ini:</p>
+                <p class="text-xs font-bold text-slate-500 dark:text-slate-400">Total <b>${t.length}</b> macam produk toko dari supplier ini:</p>
                 <button onclick="window.quickCreatePOForSupplier('${r.id}')" class="h-10 px-4 rounded-2xl text-white font-bold text-xs flex items-center justify-center gap-2 shadow-2xs cursor-pointer active:scale-95 transition-all self-stretch sm:self-auto shrink-0" style="background: var(--color-primary); box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.3);">
                     <i class="fa-solid fa-cart-plus text-xs"></i>
                     <span>Kulakan Produk Ini</span>
@@ -455,22 +455,22 @@ Kami ingin menanyakan ketersediaan stok & mengajukan order barang. Mohon info up
             </div>
 
             <div class="space-y-3">
-                ${e.map(t=>{const a=L(t,{size:"thumb"}),l=t.img?`<div class="w-14 h-14 shrink-0 rounded-2xl overflow-hidden bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-0.5 flex items-center justify-center shadow-2xs" style="width: 56px; height: 56px; min-width: 56px; min-height: 56px; max-width: 56px; max-height: 56px;"><img src="${s(t.img)}" alt="${s(t.name)}" class="w-full h-full object-cover rounded-xl" onerror="this.onerror=null;this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='flex';"><div class="w-full h-full" style="display:none">${a}</div></div>`:`<div class="w-14 h-14 shrink-0 rounded-2xl overflow-hidden bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-2xs flex items-center justify-center" style="width: 56px; height: 56px; min-width: 56px; min-height: 56px; max-width: 56px; max-height: 56px;">${a}</div>`,o=t.variants&&t.variants.length?t.variants.reduce((n,x)=>n+(parseFloat(x.stock)||0),0):parseFloat(t.stock)||0,i=t.price&&t.hpp?t.price-t.hpp:0,d=t.price&&t.hpp&&t.hpp>0?Math.round(i/t.hpp*100):0;return`
+                ${t.map(e=>{const a=L(e,{size:"thumb"}),l=e.img?`<div class="w-14 h-14 shrink-0 rounded-2xl overflow-hidden bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-0.5 flex items-center justify-center shadow-2xs" style="width: 56px; height: 56px; min-width: 56px; min-height: 56px; max-width: 56px; max-height: 56px;"><img src="${s(e.img)}" alt="${s(e.name)}" class="w-full h-full object-cover rounded-xl" onerror="this.onerror=null;this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='flex';"><div class="w-full h-full" style="display:none">${a}</div></div>`:`<div class="w-14 h-14 shrink-0 rounded-2xl overflow-hidden bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-2xs flex items-center justify-center" style="width: 56px; height: 56px; min-width: 56px; min-height: 56px; max-width: 56px; max-height: 56px;">${a}</div>`,o=e.variants&&e.variants.length?e.variants.reduce((n,u)=>n+(parseFloat(u.stock)||0),0):parseFloat(e.stock)||0,i=e.price&&e.hpp?e.price-e.hpp:0,d=e.price&&e.hpp&&e.hpp>0?Math.round(i/e.hpp*100):0;return`
                         <div class="p-3.5 sm:p-4 rounded-3xl bg-white dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs hover:border-[var(--color-primary)]/50 transition-all space-y-3">
                             <div class="flex items-start justify-between gap-3">
                                 <div class="flex items-start gap-3 min-w-0 flex-1">
                                     <div class="shrink-0">${l}</div>
                                     <div class="min-w-0 flex-1">
-                                        <h5 class="font-black text-xs sm:text-sm text-slate-800 dark:text-slate-100 truncate">${s(t.name)}</h5>
+                                        <h5 class="font-black text-xs sm:text-sm text-slate-800 dark:text-slate-100 truncate">${s(e.name)}</h5>
                                         <div class="flex items-center gap-2 text-[10px] text-slate-400 mt-1 flex-wrap">
-                                            ${t.sku?`<span class="font-mono bg-slate-100 dark:bg-slate-700/80 px-2 py-0.5 rounded-md text-slate-600 dark:text-slate-300 font-bold">SKU: ${s(t.sku)}</span>`:""}
-                                            ${t.category?`<span class="text-slate-500 dark:text-slate-400 font-medium">${s(t.category)}</span>`:""}
-                                            <span class="font-bold ${o<=2?"text-rose-500":"text-emerald-600 dark:text-emerald-400"}"><i class="fa-solid fa-boxes-stacked mr-1"></i>Stok: ${o} ${s(t.unit||"pcs")}</span>
+                                            ${e.sku?`<span class="font-mono bg-slate-100 dark:bg-slate-700/80 px-2 py-0.5 rounded-md text-slate-600 dark:text-slate-300 font-bold">SKU: ${s(e.sku)}</span>`:""}
+                                            ${e.category?`<span class="text-slate-500 dark:text-slate-400 font-medium">${s(e.category)}</span>`:""}
+                                            <span class="font-bold ${o<=2?"text-rose-500":"text-emerald-600 dark:text-emerald-400"}"><i class="fa-solid fa-boxes-stacked mr-1"></i>Stok: ${o} ${s(e.unit||"pcs")}</span>
                                         </div>
                                     </div>
                                 </div>
 
-                                <button onclick="window.closeSupplierDetailModal(); if(window.oAEd) window.oAEd('products', '${t.id}');" class="w-11 h-11 rounded-2xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-300 flex items-center justify-center transition-all shrink-0 active:scale-95 shadow-2xs cursor-pointer" title="Edit Produk">
+                                <button onclick="window.closeSupplierDetailModal(); if(window.oAEd) window.oAEd('products', '${e.id}');" class="w-11 h-11 rounded-2xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-300 flex items-center justify-center transition-all shrink-0 active:scale-95 shadow-2xs cursor-pointer" title="Edit Produk">
                                     <i class="fa-solid fa-pen text-xs"></i>
                                 </button>
                             </div>
@@ -479,11 +479,11 @@ Kami ingin menanyakan ketersediaan stok & mengajukan order barang. Mohon info up
                             <div class="grid grid-cols-3 gap-2 p-2.5 rounded-2xl bg-slate-50/80 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 text-xs">
                                 <div>
                                     <span class="block text-[9px] font-black uppercase tracking-wider text-slate-400">Modal (HPP)</span>
-                                    <span class="font-bold text-slate-700 dark:text-slate-200">${t.hpp?m(t.hpp):'<span class="text-slate-400 font-normal">-</span>'}</span>
+                                    <span class="font-bold text-slate-700 dark:text-slate-200">${e.hpp?m(e.hpp):'<span class="text-slate-400 font-normal">-</span>'}</span>
                                 </div>
                                 <div class="text-center">
                                     <span class="block text-[9px] font-black uppercase tracking-wider text-slate-400">Harga Jual</span>
-                                    <span class="font-black" style="color:var(--color-primary)">${m(t.price)}</span>
+                                    <span class="font-black" style="color:var(--color-primary)">${m(e.price)}</span>
                                 </div>
                                 <div class="text-right">
                                     <span class="block text-[9px] font-black uppercase tracking-wider text-slate-400">Margin Laba</span>
@@ -494,7 +494,7 @@ Kami ingin menanyakan ketersediaan stok & mengajukan order barang. Mohon info up
                     `}).join("")}
             </div>
         </div>
-    `,U=(e,r)=>e.length===0?`
+    `,U=(t,r)=>t.length===0?`
             <div class="text-center py-10 sm:py-12 text-slate-400">
                 <div class="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl mx-auto mb-3 shadow-xs" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary); border: 1.5px solid rgba(var(--color-primary-rgb), 0.25);">
                     <i class="fa-solid fa-receipt"></i>
@@ -508,38 +508,38 @@ Kami ingin menanyakan ketersediaan stok & mengajukan order barang. Mohon info up
             </div>
         `:`
         <div class="space-y-3">
-            ${e.map(t=>{const a={ordered:'<span class="px-2.5 py-1 rounded-full text-[10px] font-bold border" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary); border-color: rgba(var(--color-primary-rgb), 0.25);"><i class="fa-solid fa-clock mr-1"></i>Dipesan</span>',received:'<span class="px-2.5 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold border border-emerald-200 dark:border-emerald-800"><i class="fa-solid fa-boxes-stacked mr-1"></i>Barang Diterima</span>',completed:'<span class="px-2.5 py-1 rounded-full bg-emerald-500 text-white text-[10px] font-black shadow-2xs"><i class="fa-solid fa-check-double mr-1"></i>Selesai &amp; Lunas</span>',cancelled:'<span class="px-2.5 py-1 rounded-full bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 text-[10px] font-bold border border-rose-200 dark:border-rose-800"><i class="fa-solid fa-ban mr-1"></i>Dibatalkan</span>'}[t.status||"ordered"],l=t.paymentType==="tempo"?`
+            ${t.map(e=>{const a={ordered:'<span class="px-2.5 py-1 rounded-full text-[10px] font-bold border" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary); border-color: rgba(var(--color-primary-rgb), 0.25);"><i class="fa-solid fa-clock mr-1"></i>Dipesan</span>',received:'<span class="px-2.5 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold border border-emerald-200 dark:border-emerald-800"><i class="fa-solid fa-boxes-stacked mr-1"></i>Barang Diterima</span>',completed:'<span class="px-2.5 py-1 rounded-full bg-emerald-500 text-white text-[10px] font-black shadow-2xs"><i class="fa-solid fa-check-double mr-1"></i>Selesai &amp; Lunas</span>',cancelled:'<span class="px-2.5 py-1 rounded-full bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 text-[10px] font-bold border border-rose-200 dark:border-rose-800"><i class="fa-solid fa-ban mr-1"></i>Dibatalkan</span>'}[e.status||"ordered"],l=e.paymentType==="tempo"?`
                     <span class="px-2 py-0.5 rounded bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 text-[10px] font-bold border border-amber-200 dark:border-amber-800">
-                        Tempo ${t.tempoDays?`${t.tempoDays} Hari`:""} (${t.paymentStatus==="lunas"?"Lunas":"Belum Lunas"})
+                        Tempo ${e.tempoDays?`${e.tempoDays} Hari`:""} (${e.paymentStatus==="lunas"?"Lunas":"Belum Lunas"})
                     </span>
-                `:`<span class="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 text-[10px] font-bold uppercase">${s(t.paymentType||"Cash")}</span>`;return`
+                `:`<span class="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 text-[10px] font-bold uppercase">${s(e.paymentType||"Cash")}</span>`;return`
                     <div class="bg-white/95 dark:bg-slate-800/90 p-4 border border-slate-200/90 dark:border-slate-700/80 hover:border-[var(--color-primary)]/40 transition-all rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-2xs">
                         <div>
                             <div class="flex items-center gap-2 flex-wrap">
-                                <span class="font-mono font-black text-xs text-slate-800 dark:text-white">${s(t.poNumber||t.id)}</span>
+                                <span class="font-mono font-black text-xs text-slate-800 dark:text-white">${s(e.poNumber||e.id)}</span>
                                 ${a}
                                 ${l}
                             </div>
                             <p class="text-[11px] text-slate-400 mt-1 flex items-center gap-3">
-                                <span><i class="fa-regular fa-calendar mr-1"></i>${O(t.date||t.createdAt)}</span>
-                                <span><i class="fa-solid fa-box mr-1"></i>${(t.items||[]).length} Item Barang</span>
+                                <span><i class="fa-regular fa-calendar mr-1"></i>${O(e.date||e.createdAt)}</span>
+                                <span><i class="fa-solid fa-box mr-1"></i>${(e.items||[]).length} Item Barang</span>
                             </p>
                         </div>
 
                         <div class="flex items-center justify-between sm:justify-end gap-4">
                             <div class="text-right">
                                 <span class="block text-[9px] font-bold uppercase text-slate-400">Total Kulakan</span>
-                                <span class="text-sm font-black text-slate-800 dark:text-slate-100">${m(t.total)}</span>
+                                <span class="text-sm font-black text-slate-800 dark:text-slate-100">${m(e.total)}</span>
                             </div>
 
-                            <button onclick="window.closeSupplierDetailModal(); if(window.openAdminTab) window.openAdminTab('purchases'); setTimeout(() => { window.openPurchaseDetailModal?.('${t.id}'); }, 200);" class="px-3 py-1.5 rounded-xl font-bold text-xs transition-all border cursor-pointer active:scale-95" style="background: rgba(var(--color-primary-rgb), 0.1); color: var(--color-primary); border-color: rgba(var(--color-primary-rgb), 0.25);">
+                            <button onclick="window.closeSupplierDetailModal(); if(window.openAdminTab) window.openAdminTab('purchases'); setTimeout(() => { window.openPurchaseDetailModal?.('${e.id}'); }, 200);" class="px-3 py-1.5 rounded-xl font-bold text-xs transition-all border cursor-pointer active:scale-95" style="background: rgba(var(--color-primary-rgb), 0.1); color: var(--color-primary); border-color: rgba(var(--color-primary-rgb), 0.25);">
                                 Lihat PO <i class="fa-solid fa-arrow-right text-[10px] ml-1"></i>
                             </button>
                         </div>
                     </div>
                 `}).join("")}
         </div>
-    `,_=(e,r,t)=>{const a=e.filter(l=>(parseFloat(l.total)||0)-(parseFloat(l.amountPaid)||0)>0&&l.paymentStatus!=="lunas");return`
+    `,_=(t,r,e)=>{const a=t.filter(l=>(parseFloat(l.total)||0)-(parseFloat(l.amountPaid)||0)>0&&l.paymentStatus!=="lunas");return`
         <div class="space-y-4">
             <!-- RINGKASAN TOTAL HUTANG USAHA -->
             <div class="p-4 sm:p-5 rounded-3xl ${r>0?"bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700":"bg-emerald-50/70 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-800/60"} flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-2xs">
@@ -551,11 +551,11 @@ Kami ingin menanyakan ketersediaan stok & mengajukan order barang. Mohon info up
                     </p>
                 </div>
 
-                ${t.bankAccount?`
+                ${e.bankAccount?`
                     <div class="p-3 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 text-xs shrink-0 shadow-2xs">
                         <span class="block text-[9px] font-bold text-slate-400 uppercase">Rekening Tujuan Transfer:</span>
-                        <p class="font-bold text-slate-800 dark:text-white mt-0.5">${s(t.bankName)}: <b class="font-mono text-base">${s(t.bankAccount)}</b></p>
-                        <p class="text-[10px] text-slate-400">a/n ${s(t.bankHolder||t.name)}</p>
+                        <p class="font-bold text-slate-800 dark:text-white mt-0.5">${s(e.bankName)}: <b class="font-mono text-base">${s(e.bankAccount)}</b></p>
+                        <p class="text-[10px] text-slate-400">a/n ${s(e.bankHolder||e.name)}</p>
                     </div>
                 `:""}
             </div>
@@ -590,4 +590,4 @@ Kami ingin menanyakan ketersediaan stok & mengajukan order barang. Mohon info up
                     `}).join("")}
             </div>
         </div>
-    `};window.quickCreatePOForSupplier=e=>{window.closeSupplierDetailModal?.(),window.openAdminTab&&(window.openAdminTab("purchases"),setTimeout(()=>{typeof window.openCreatePOModal=="function"&&window.openCreatePOModal(e)},150))};window.renderSuppliersView=h;window.computeSupplierMetrics=E;export{E as computeSupplierMetrics,A as ensureSupplierModals,h as renderSuppliersView};
+    `};window.quickCreatePOForSupplier=t=>{window.closeSupplierDetailModal?.(),window.openAdminTab&&(window.openAdminTab("purchases"),setTimeout(()=>{typeof window.openCreatePOModal=="function"&&window.openCreatePOModal(t)},150))};window.renderSuppliersView=h;window.computeSupplierMetrics=H;export{H as computeSupplierMetrics,P as ensureSupplierModals,h as renderSuppliersView};

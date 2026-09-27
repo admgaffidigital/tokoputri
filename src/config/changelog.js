@@ -8,6 +8,21 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-9-60',
+        version: 'v1.9.60',
+        date: '2026-09-27',
+        title: 'Presisi Icon Center Universal, Back Button Android Menyeluruh & Fix Z-Index Preview Cetak',
+        category: 'fix',
+        badge: 'UX Precision Fix v1.9.60',
+        items: [
+            'Universal Icon Centering System: Menambahkan CSS global yang memastikan semua ikon FontAwesome di dalam button (rounded, square, maupun action strip) selalu presisi center secara vertikal DAN horizontal di seluruh antarmuka aplikasi menggunakan inline-flex + align-items center + line-height 1.',
+            'Perbaikan Back Button Android Menyeluruh — PO & Supplier: Mendaftarkan 6 modal yang sebelumnya tidak terdaftar ke sistem History API (oMods): Form PO (purchaseForm), Product Picker PO (purchasePicker), Detail PO (purchaseDetail), Bayar Hutang PO (purchasePayment), Form Supplier (supplierForm), dan Detail Supplier (supplierDetail). Kini back button Android menutup semua modal ini dengan animasi halus tanpa berpindah halaman.',
+            'Fix Z-Index Preview Cetak Dokumen: Menaikkan z-index modal doc-preview-modal, pos-receipt-fallback-modal, dan pos-shift-receipt-modal ke z-index 10050 agar tidak pernah tertutup overlay modal lain yang sedang terbuka secara bersamaan.',
+            'Fix Preview Wrapper Min-Height: Menambahkan min-height pada doc-paper-wrapper agar area kertas A4 tidak collapse saat konten belum dirender.',
+            'Sinkronisasi Multi-Channel v1.9.60 (Android VersionCode 10960): Terkompilasi dan tersinkronisasi penuh ke Vite build, paket flashdisk, dan Capacitor Android.'
+        ]
+    },
+    {
         id: 'log-1-9-59',
         version: 'v1.9.59',
         date: '2026-09-27',
