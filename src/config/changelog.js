@@ -8,6 +8,22 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-9-64',
+        version: 'v1.9.64',
+        date: '2026-09-27',
+        title: 'Presisi Icon Center Universal v1.9.64 & Redesain Empty-State Terpusat',
+        category: 'fix',
+        badge: 'Icon Precision & UX Polish v1.9.64',
+        items: [
+            'Penyempurnaan Universal Icon Centering Engine: Mengeliminasi offset vertikal default FontAwesome (-0.125em) yang kerap membuat ikon turun dari garis tengah flex container. Seluruh elemen <i> dan pseudo-element ::before kini diatur ke display: inline-flex dengan vertical-align: middle dan line-height: 1.',
+            'Presisi Wadah Ikon (Button, Div, Span, Badge): Menyelaraskan seluruh container berdimensi pasti (w-4 s/d w-16, h-4 s/d h-16) di modal PO Supplier, Detail Tempo, Form Produk, dan Header Admin agar child ikon 100% presisi vertikal dan horizontal tanpa terpengaruh line-height font luar.',
+            'Redesain Empty-State Histori Pembayaran PO: Memperbaiki ikon jam yang sebelumnya menempel di sisi kiri kartu karena deklarasi class block tanpa margin-auto. Diganti dengan wadah badge bulat lembut (rounded-2xl) terpusat (flex flex-col items-center justify-center) yang rapi, elegan, dan proporsional.',
+            'Perataan Ikon Empty-State Tempo, Varian & Kasir: Menyelaraskan seluruh tampilan kosong (empty-state) pada rincian barang tempo, spesifikasi varian produk, serta status gagal memuat akun kasir dengan tata letak flex terpusat.',
+            'Pembersihan Gap Header Mobile Admin: Menyesuaikan button action preview & logout di header CMS Admin agar bebas dari celah flexbox sisa saat teks tombol disembunyikan di layar mobile.',
+            'Sinkronisasi Multi-Channel v1.9.64 (Android VersionCode 10964): Terkompilasi dan tersinkronisasi penuh ke Vite build, paket flashdisk, dan Capacitor Android.'
+        ]
+    },
+    {
         id: 'log-1-9-63',
         version: 'v1.9.63',
         date: '2026-09-27',

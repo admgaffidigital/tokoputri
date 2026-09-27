@@ -2408,9 +2408,11 @@ window.openPurchaseDetailModal = (poId) => {
                     </div>
 
                     ${(po.paymentHistory || []).length === 0 ? `
-                        <div class="text-center py-6 text-slate-400">
-                            <i class="fa-regular fa-clock text-xl mb-1 text-slate-300 dark:text-slate-600 block"></i>
-                            <p class="text-xs">Belum ada catatan pembayaran cicilan.</p>
+                        <div class="text-center py-6 text-slate-400 flex flex-col items-center justify-center">
+                            <div class="w-10 h-10 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500 flex items-center justify-center text-base mb-2 shadow-2xs">
+                                <i class="fa-solid fa-clock-rotate-left"></i>
+                            </div>
+                            <p class="text-xs font-medium text-slate-500 dark:text-slate-400">Belum ada catatan pembayaran cicilan.</p>
                         </div>
                     ` : `
                         <div class="space-y-2 max-h-52 overflow-y-auto custom-scrollbar">

@@ -366,9 +366,11 @@ const renderActiveTempoDetailTab = (o, calc) => {
     if (currentDetailTab === 'items') {
         if (items.length === 0) {
             return `
-                <div class="text-center py-10 text-slate-400">
-                    <i class="fa-solid fa-box-open text-3xl mb-2 block opacity-40"></i>
-                    <p class="text-xs font-bold">Rincian barang tidak ditemukan untuk pesanan ini.</p>
+                <div class="text-center py-10 text-slate-400 flex flex-col items-center justify-center">
+                    <div class="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl mb-2.5 mx-auto bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500 shadow-2xs">
+                        <i class="fa-solid fa-box-open"></i>
+                    </div>
+                    <p class="text-xs font-bold text-slate-700 dark:text-slate-300">Rincian barang tidak ditemukan untuk pesanan ini.</p>
                 </div>
             `;
         }

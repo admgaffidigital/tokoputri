@@ -218,8 +218,10 @@ const loadCashierList = async () => {
     } catch (err) {
         console.error('[CashierAdmin] Gagal memuat daftar kasir:', err);
         container.innerHTML = `
-        <div class="text-center py-10 p-4 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-500">
-            <i class="fa-solid fa-triangle-exclamation text-rose-500 text-2xl mb-2 block"></i>
+        <div class="text-center py-10 p-4 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-500 flex flex-col items-center justify-center">
+            <div class="w-12 h-12 rounded-2xl bg-rose-50 dark:bg-rose-950/40 text-rose-500 flex items-center justify-center text-2xl mb-2.5 shadow-2xs">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
             <p class="text-xs font-bold text-slate-700 dark:text-slate-300">Gagal memuat data kasir</p>
             <p class="text-[11px] text-slate-400 mt-0.5">${esc(err.message || 'Periksa koneksi internet atau login admin')}</p>
             <button onclick="window.loadCashierList()" class="mt-3 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 text-xs font-bold text-slate-700 dark:text-slate-300 transition-all cursor-pointer inline-flex items-center gap-1.5 active:scale-95">

@@ -2578,47 +2578,125 @@ html.dark .modal-bottom-sheet textarea {
 }
 
 /* ============================================================
-   UNIVERSAL ICON CENTERING SYSTEM — v1.9.60
-   Memastikan semua ikon dalam button/container selalu presisi
-   center secara vertikal DAN horizontal di seluruh aplikasi.
+   UNIVERSAL ICON CENTERING SYSTEM — v1.9.64
+   Memastikan SEMUA ikon dalam button, badge, container (div/span/a),
+   maupun empty-state selalu presisi center secara vertikal DAN
+   horizontal di seluruh aplikasi Toko Putri.
    ============================================================ */
 
-/* Semua button yang mengandung hanya ikon (rounded, square) */
-button:where([class*="w-6"], [class*="w-7"], [class*="w-8"], [class*="w-9"], [class*="w-10"], [class*="w-11"], [class*="w-12"]):where([class*="h-6"], [class*="h-7"], [class*="h-8"], [class*="h-9"], [class*="h-10"], [class*="h-11"], [class*="h-12"]) {
+/* 1. Reset vertikal offset FontAwesome (-0.125em) yang membuat ikon turun/tidak center */
+i.fa-solid,
+i.fa-regular,
+i.fa-brands,
+i[class*="fa-"] {
     display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
     line-height: 1 !important;
+    vertical-align: middle !important;
+    text-align: center !important;
+    text-indent: 0 !important;
 }
 
-/* Icon element centering di dalam flex container */
-button > i.fa-solid,
-button > i.fa-regular,
-button > i.fa-brands,
-button > i[class*="fa-"] {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    line-height: 1;
-    font-size: inherit;
+i.fa-solid::before,
+i.fa-regular::before,
+i.fa-brands::before,
+i[class*="fa-"]::before {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    line-height: 1 !important;
+    vertical-align: 0 !important;
+    margin: 0 !important;
 }
 
-/* Fix: ikon di dalam span bertingkat (button > span > i) */
-button span > i.fa-solid,
-button span > i.fa-regular,
-button span > i[class*="fa-"] {
-    vertical-align: middle;
-    line-height: 1;
+/* 2. Semua wadah ikon (button, div, span, a) dengan ukuran pasti (w-4 s/d w-16, h-4 s/d h-16) */
+:where(button, div, span, a):where(
+    [class*="w-4"], [class*="w-5"], [class*="w-6"], [class*="w-7"], [class*="w-8"], 
+    [class*="w-9"], [class*="w-10"], [class*="w-11"], [class*="w-12"], 
+    [class*="w-14"], [class*="w-16"]
+):where(
+    [class*="h-4"], [class*="h-5"], [class*="h-6"], [class*="h-7"], [class*="h-8"], 
+    [class*="h-9"], [class*="h-10"], [class*="h-11"], [class*="h-12"], 
+    [class*="h-14"], [class*="h-16"]
+) {
+    line-height: 1 !important;
 }
 
-/* Fix action button strip icon centering */
+:where(button, div, span, a):where(
+    [class*="w-4"], [class*="w-5"], [class*="w-6"], [class*="w-7"], [class*="w-8"], 
+    [class*="w-9"], [class*="w-10"], [class*="w-11"], [class*="w-12"], 
+    [class*="w-14"], [class*="w-16"]
+):where(
+    [class*="h-4"], [class*="h-5"], [class*="h-6"], [class*="h-7"], [class*="h-8"], 
+    [class*="h-9"], [class*="h-10"], [class*="h-11"], [class*="h-12"], 
+    [class*="h-14"], [class*="h-16"]
+):where([class*="flex"], [class*="rounded"]) {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+}
+
+/* Direct child icon di dalam container berukuran pasti */
+:where(button, div, span, a):where(
+    [class*="w-4"], [class*="w-5"], [class*="w-6"], [class*="w-7"], [class*="w-8"], 
+    [class*="w-9"], [class*="w-10"], [class*="w-11"], [class*="w-12"], 
+    [class*="w-14"], [class*="w-16"]
+):where(
+    [class*="h-4"], [class*="h-5"], [class*="h-6"], [class*="h-7"], [class*="h-8"], 
+    [class*="h-9"], [class*="h-10"], [class*="h-11"], [class*="h-12"], 
+    [class*="h-14"], [class*="h-16"]
+) > i[class*="fa-"] {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    line-height: 1 !important;
+    margin: 0 !important;
+    vertical-align: middle !important;
+}
+
+/* 3. Anti-Left-Align: Icon di dalam container text-center atau yang memiliki class 'block' */
+i[class*="fa-"].block,
+.text-center i[class*="fa-"].block,
+.text-center > i[class*="fa-"] {
+    display: block !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    text-align: center !important;
+}
+
+/* 4. Fix ikon di dalam span bertingkat (button > span > i, a > span > i, div > span > i) */
+:where(button, a, div, span) span > i[class*="fa-"] {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    vertical-align: middle !important;
+    line-height: 1 !important;
+}
+
+/* 5. Fix action button strip & toolbar icon centering */
+.action-btn,
+.icon-btn,
+.primary-icon-btn,
+[class*="action-strip"] button {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    line-height: 1 !important;
+    text-align: center !important;
+}
+
 .action-btn i,
 .icon-btn i,
+.primary-icon-btn i,
 [class*="action-strip"] button i {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    line-height: 1;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    line-height: 1 !important;
+    vertical-align: middle !important;
+    margin: 0 !important;
 }
 
 /* ─── DOC PREVIEW MODAL: Pastikan wrapper lebih tinggi dari viewport ─── */

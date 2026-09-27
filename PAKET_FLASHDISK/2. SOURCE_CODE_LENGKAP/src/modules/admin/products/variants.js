@@ -42,7 +42,13 @@ window.rSpecB = () => {
             </table>
         </div>`;
     } else {
-        h += `<div class="text-center py-5 text-slate-400 dark:text-slate-500 text-[12px] font-medium"><i class="fa-solid fa-table-cells-large text-2xl mb-2 block opacity-30 text-[var(--color-primary)]"></i>Belum ada spesifikasi. Klik tombol di bawah untuk menambahkan.</div>`;
+        h += `
+        <div class="text-center py-6 text-slate-400 dark:text-slate-500 text-[12px] font-medium flex flex-col items-center justify-center">
+            <div class="w-11 h-11 rounded-2xl flex items-center justify-center text-xl mb-2 shadow-2xs" style="background: rgba(var(--color-primary-rgb), 0.1); color: var(--color-primary);">
+                <i class="fa-solid fa-table-cells-large"></i>
+            </div>
+            <span>Belum ada spesifikasi. Klik tombol di bawah untuk menambahkan.</span>
+        </div>`;
     }
     h += `<button type="button" onclick="addSpec()" class="w-full py-3.5 bg-[rgba(var(--color-primary-rgb),0.06)] dark:bg-[rgba(var(--color-primary-rgb),0.12)] text-[var(--color-primary)] font-bold rounded-xl text-xs sm:text-sm border-2 border-[rgba(var(--color-primary-rgb),0.25)] dark:border-[rgba(var(--color-primary-rgb),0.35)] border-dashed hover:bg-[rgba(var(--color-primary-rgb),0.12)] transition-all flex items-center justify-center gap-2 active:scale-95 shadow-2xs cursor-pointer"><i class="fa-solid fa-plus-circle text-base"></i> Tambah Baris Spesifikasi</button>`;
     container.innerHTML = h;
