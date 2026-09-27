@@ -32,6 +32,8 @@ export const sanitizeCart = () => {
     ssL('freshmart_cart', JSON.stringify(cart));
 };
 
+let prevCartQty = 0;
+
 /**
  * Perbarui indikator badge dan total preview keranjang
  */
@@ -53,10 +55,26 @@ export const updCart = () => {
         bnbBadge.classList.toggle('scale-0', q <= 0);
     }
 
-    document.querySelectorAll('.desktop-cart-badge').forEach(badge => {
-        badge.textContent = q.toString();
-        badge.classList.toggle('hidden', q <= 0);
+    const allBadges = [b, bnbBadge, ...document.querySelectorAll('.desktop-cart-badge')].filter(Boolean);
+
+    allBadges.forEach(badge => {
+        if (badge.classList.contains('desktop-cart-badge')) {
+            badge.textContent = q.toString();
+            badge.classList.toggle('hidden', q <= 0);
+        }
     });
+
+    // ── Efek Taktil & Animasi Bouncing Native Saat Kuantitas Keranjang Bertambah ──
+    if (q > prevCartQty && q > 0) {
+        if (typeof window.triggerHaptic === 'function') window.triggerHaptic('medium');
+        if (typeof window.playNativeSound === 'function') window.playNativeSound('pop');
+        allBadges.forEach(badge => {
+            badge.classList.remove('badge-pop-animate');
+            void badge.offsetWidth; // Reflow
+            badge.classList.add('badge-pop-animate');
+        });
+    }
+    prevCartQty = q;
     
     // Tampilkan / sembunyikan floating FAB secara dinamis
     const fc = el('floating-cart-container');

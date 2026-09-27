@@ -51,6 +51,11 @@ export const showToast = (m, type, title, duration) => {
         else type = 'info';
     }
 
+    // Trigger getaran taktil mikro otomatis sesuai kategori notifikasi
+    if (typeof window.triggerHaptic === 'function') {
+        window.triggerHaptic(type === 'error' ? 'error' : type === 'warning' ? 'warning' : type === 'success' ? 'success' : 'light');
+    }
+
     const style = getComputedStyle(document.documentElement);
     const pRgb  = style.getPropertyValue('--color-primary-rgb').trim() || '16,185,129';
     const pMain = style.getPropertyValue('--color-primary').trim() || '#10b981';

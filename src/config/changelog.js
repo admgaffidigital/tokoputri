@@ -8,6 +8,22 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-9-70',
+        version: 'v1.9.70',
+        date: '2026-09-27',
+        title: 'Native Mobile Polish: Dynamic Island Capsule Toast, Cart Bounce, Scroll-to-Top FAB & Audio FX',
+        category: 'feature',
+        badge: 'Mobile Polish v1.9.70',
+        items: [
+            'Dynamic Island Capsule Toast: Merancang ulang sistem pop-up notifikasi (#toast) menjadi kapsul mengambang modern (rounded-full) dengan efek kaca buram (frosted glass blur-20px), animasi pegas lentur (spring bezier), dan integrasi getaran taktil mikro otomatis pada seluruh 370+ aksi notifikasi toko.',
+            'Cart Bounce & Pop Haptic Animation: Efek animasi membal ceria (badge-pop-animate scale 1.35x) pada indikator keranjang belanja (bottom navigation, header, dan floating button) disertai getaran taktil instan dan efek suara bubble pop saat kuantitas barang bertambah.',
+            'Native Sound Effects Engine (Web Audio API): Generator audio taktil bawaan mandiri (0ms latency, tanpa unduh file eksternal, 100% offline) untuk suara pop keranjang, nada lonceng sukses transaksi, dan bip scanner barcode.',
+            'Floating Scroll-to-Top FAB: Tombol melayang cerdas "↑ Ke Atas" yang muncul otomatis saat scroll katalog atau riwayat pesanan melebihi 350px, memudahkan navigasi kembali ke puncak dalam satu sentuhan halus.',
+            'Native Connectivity Banner: Deteksi status jaringan cerdas yang memunculkan kapsul melayang otomatis saat perangkat kehilangan sinyal (Mode Offline) maupun saat koneksi internet kembali pulih.',
+            'Sinkronisasi Multi-Channel v1.9.70 (Android VersionCode 10970): Terkompilasi dan tersinkronisasi penuh ke Vite build, paket flashdisk, dan Capacitor Android.'
+        ]
+    },
+    {
         id: 'log-1-9-69',
         version: 'v1.9.69',
         date: '2026-09-27',

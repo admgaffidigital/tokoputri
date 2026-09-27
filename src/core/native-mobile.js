@@ -281,9 +281,174 @@ export const initAutoHapticFeedback = () => {
 };
 
 /**
+ * ============================================================
+ * NATIVE SOUND EFFECTS ENGINE (Web Audio API Synthesizer)
+ * 100% offline, 0ms latency, tanpa unduh file eksternal.
+ * ============================================================
+ */
+let nativeAudioCtx = null;
+export const playNativeSound = (type = 'pop') => {
+    try {
+        if (typeof window === 'undefined') return;
+        const AudioClass = window.AudioContext || window.webkitAudioContext;
+        if (!AudioClass) return;
+
+        if (!nativeAudioCtx) {
+            nativeAudioCtx = new AudioClass();
+        }
+        if (nativeAudioCtx.state === 'suspended') {
+            nativeAudioCtx.resume().catch(() => {});
+        }
+        const now = nativeAudioCtx.currentTime;
+
+        if (type === 'pop') {
+            // Soft pleasant bubble pop on add-to-cart
+            const osc = nativeAudioCtx.createOscillator();
+            const gain = nativeAudioCtx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(340, now);
+            osc.frequency.exponentialRampToValueAtTime(560, now + 0.07);
+            gain.gain.setValueAtTime(0.14, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+            osc.connect(gain);
+            gain.connect(nativeAudioCtx.destination);
+            osc.start(now);
+            osc.stop(now + 0.08);
+        } else if (type === 'success') {
+            // Harmonious two-tone chime (C5 -> E5)
+            const osc1 = nativeAudioCtx.createOscillator();
+            const osc2 = nativeAudioCtx.createOscillator();
+            const gain1 = nativeAudioCtx.createGain();
+            const gain2 = nativeAudioCtx.createGain();
+            osc1.type = 'triangle';
+            osc2.type = 'triangle';
+            osc1.frequency.setValueAtTime(523.25, now);
+            osc2.frequency.setValueAtTime(659.25, now + 0.09);
+            gain1.gain.setValueAtTime(0.12, now);
+            gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
+            gain2.gain.setValueAtTime(0.14, now + 0.09);
+            gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.32);
+            osc1.connect(gain1);
+            gain1.connect(nativeAudioCtx.destination);
+            osc2.connect(gain2);
+            gain2.connect(nativeAudioCtx.destination);
+            osc1.start(now);
+            osc1.stop(now + 0.22);
+            osc2.start(now + 0.09);
+            osc2.stop(now + 0.32);
+        } else if (type === 'beep') {
+            // Crisp barcode scanner beep
+            const osc = nativeAudioCtx.createOscillator();
+            const gain = nativeAudioCtx.createGain();
+            osc.type = 'square';
+            osc.frequency.setValueAtTime(1040, now);
+            gain.gain.setValueAtTime(0.08, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.07);
+            osc.connect(gain);
+            gain.connect(nativeAudioCtx.destination);
+            osc.start(now);
+            osc.stop(now + 0.07);
+        }
+    } catch (_) {}
+};
+
+if (typeof window !== 'undefined') {
+    window.playNativeSound = playNativeSound;
+}
+
+/**
+ * ============================================================
+ * FLOATING SCROLL-TO-TOP BUTTON (Auto-Fade FAB)
+ * ============================================================
+ */
+export const initFloatingScrollTop = () => {
+    if (typeof document === 'undefined') return;
+    let btn = document.getElementById('native-scroll-top-btn');
+    if (!btn) {
+        btn = document.createElement('button');
+        btn.id = 'native-scroll-top-btn';
+        btn.setAttribute('aria-label', 'Kembali ke Atas');
+        btn.className = 'fixed bottom-20 right-4 z-40 hidden opacity-0 translate-y-3 transition-all duration-300 flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-slate-900/85 dark:bg-slate-800/90 text-white text-xs font-semibold shadow-xl backdrop-blur-md border border-white/10 active:scale-95 cursor-pointer';
+        btn.innerHTML = '<i class="fa-solid fa-arrow-up text-[10px]"></i><span>Ke Atas</span>';
+        document.body.appendChild(btn);
+
+        btn.addEventListener('click', () => {
+            triggerHaptic('light');
+            const sc = document.querySelector('#view-catalog .scroll-content, #view-orders .scroll-content');
+            if (sc && sc.scrollTop > 50) {
+                sc.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    }
+
+    const checkScroll = (scrollTop) => {
+        if (!btn) return;
+        if (scrollTop > 350) {
+            btn.classList.remove('hidden');
+            requestAnimationFrame(() => {
+                btn.classList.remove('opacity-0', 'translate-y-3');
+            });
+        } else {
+            btn.classList.add('opacity-0', 'translate-y-3');
+            setTimeout(() => {
+                if (btn && btn.classList.contains('opacity-0')) btn.classList.add('hidden');
+            }, 300);
+        }
+    };
+
+    window.addEventListener('scroll', () => {
+        checkScroll(window.scrollY || document.documentElement.scrollTop);
+    }, { passive: true });
+
+    document.addEventListener('scroll', (e) => {
+        if (e.target && e.target.classList && e.target.classList.contains('scroll-content')) {
+            checkScroll(e.target.scrollTop);
+        }
+    }, { passive: true, capture: true });
+};
+
+/**
+ * ============================================================
+ * NATIVE CONNECTIVITY BANNER (Online & Offline Capsule)
+ * ============================================================
+ */
+export const initConnectivityBanner = () => {
+    if (typeof window === 'undefined' || typeof document === 'undefined') return;
+    let banner = document.getElementById('native-connectivity-banner');
+    if (!banner) {
+        banner = document.createElement('div');
+        banner.id = 'native-connectivity-banner';
+        banner.className = 'fixed top-2 left-1/2 -translate-x-1/2 z-[100000] -translate-y-16 opacity-0 transition-all duration-300 pointer-events-none flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold shadow-xl backdrop-blur-md';
+        document.body.appendChild(banner);
+    }
+
+    let hideTimer = null;
+    const showBanner = (isOnline) => {
+        clearTimeout(hideTimer);
+        triggerHaptic(isOnline ? 'success' : 'warning');
+        if (isOnline) {
+            banner.className = 'fixed top-2 left-1/2 -translate-x-1/2 z-[100000] translate-y-0 opacity-100 transition-all duration-300 pointer-events-none flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold shadow-xl backdrop-blur-md bg-emerald-600/90 text-white border border-emerald-400/30';
+            banner.innerHTML = '<i class="fa-solid fa-wifi text-xs"></i><span>Kembali Online — Terhubung</span>';
+            hideTimer = setTimeout(() => {
+                banner.classList.add('-translate-y-16', 'opacity-0');
+            }, 2500);
+        } else {
+            banner.className = 'fixed top-2 left-1/2 -translate-x-1/2 z-[100000] translate-y-0 opacity-100 transition-all duration-300 pointer-events-none flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold shadow-xl backdrop-blur-md bg-amber-500/95 text-slate-950 border border-amber-300/40';
+            banner.innerHTML = '<i class="fa-solid fa-wifi-slash text-xs"></i><span>Mode Offline — Menggunakan Data Lokal</span>';
+        }
+    };
+
+    window.addEventListener('online', () => showBanner(true));
+    window.addEventListener('offline', () => showBanner(false));
+};
+
+/**
  * Inisialisasi Seluruh Mesin Native Mobile Toko Putri
  */
 export const initNativeMobileEngine = () => {
     initNativeSheetGestures();
     initAutoHapticFeedback();
+    initFloatingScrollTop();
+    initConnectivityBanner();
 };
