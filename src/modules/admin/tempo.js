@@ -44,7 +44,7 @@ export const ensureTempoModals = () => {
         m.onclick = (e) => { if (e.target === m) window.closeTempoDetailModal?.(); };
         m.innerHTML = `
             <div id="modal-tempo-detail-box" class="modal-bottom-sheet relative flex max-h-[92dvh] sm:max-h-[88dvh] w-full max-w-3xl translate-y-full sm:translate-y-10 transform flex-col overflow-hidden rounded-t-[2rem] sm:rounded-3xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xl transition-transform duration-300">
-                <div id="modal-tempo-detail-content" class="flex-1 overflow-y-auto hide-scrollbar flex flex-col"></div>
+                <div id="modal-tempo-detail-content" class="flex-1 overflow-y-auto custom-scrollbar flex flex-col"></div>
             </div>
         `;
         document.body.appendChild(m);
@@ -58,7 +58,7 @@ export const ensureTempoModals = () => {
         m.onclick = (e) => { if (e.target === m) window.closeTempoPaymentModal?.(); };
         m.innerHTML = `
             <div id="modal-tempo-payment-box" class="modal-bottom-sheet relative flex max-h-[92dvh] sm:max-h-[88dvh] w-full max-w-md translate-y-full sm:translate-y-10 transform flex-col overflow-hidden rounded-t-[2rem] sm:rounded-3xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xl transition-transform duration-300">
-                <div id="modal-tempo-payment-content" class="flex-1 overflow-y-auto hide-scrollbar flex flex-col"></div>
+                <div id="modal-tempo-payment-content" class="flex-1 overflow-y-auto custom-scrollbar flex flex-col"></div>
             </div>
         `;
         document.body.appendChild(m);
@@ -72,7 +72,7 @@ export const ensureTempoModals = () => {
         m.onclick = (e) => { if (e.target === m) window.closeTempoPenaltyModal?.(); };
         m.innerHTML = `
             <div id="modal-tempo-penalty-box" class="modal-bottom-sheet relative flex max-h-[92dvh] sm:max-h-[88dvh] w-full max-w-md translate-y-full sm:translate-y-10 transform flex-col overflow-hidden rounded-t-[2rem] sm:rounded-3xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xl transition-transform duration-300">
-                <div id="modal-tempo-penalty-content" class="flex-1 overflow-y-auto hide-scrollbar flex flex-col"></div>
+                <div id="modal-tempo-penalty-content" class="flex-1 overflow-y-auto custom-scrollbar flex flex-col"></div>
             </div>
         `;
         document.body.appendChild(m);
@@ -321,7 +321,7 @@ const renderTempoDetailModalContent = (o) => {
         </div>
 
         <!-- TAB BODY CONTENT -->
-        <div class="p-4 sm:p-6 overflow-y-auto flex-1 hide-scrollbar bg-white dark:bg-slate-900">
+        <div class="p-4 sm:p-6 overflow-y-auto flex-1 custom-scrollbar bg-white dark:bg-slate-900">
             ${renderActiveTempoDetailTab(o, calc)}
         </div>
 
@@ -580,7 +580,7 @@ export const openTempoPaymentModal = (orderId) => {
         <form id="tempo-pay-form" onsubmit="window.submitTempoPayment(event, '${o.orderId}')" class="flex-1 flex flex-col overflow-hidden">
             <input type="hidden" id="tempo-pay-total-wajib" value="${totalWajib}">
 
-            <div class="p-4 sm:p-6 space-y-4 overflow-y-auto flex-1 hide-scrollbar">
+            <div class="p-4 sm:p-6 space-y-4 overflow-y-auto flex-1 custom-scrollbar">
                 <!-- KARTU RINGKASAN TAGIHAN -->
                 <div class="p-4 rounded-2xl bg-amber-50/70 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800/60 text-xs space-y-1.5 shadow-2xs">
                     <div class="flex justify-between">
@@ -857,7 +857,7 @@ export const openTempoPenaltyModal = (orderId) => {
         </div>
 
         <form id="tempo-penalty-form" onsubmit="window.submitTempoPenalty(event, '${o.orderId}')" class="flex-1 flex flex-col overflow-hidden">
-            <div class="p-4 sm:p-6 space-y-4 overflow-y-auto flex-1 hide-scrollbar">
+            <div class="p-4 sm:p-6 space-y-4 overflow-y-auto flex-1 custom-scrollbar">
                 <!-- INFO DENDA SAAT INI -->
                 <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 text-xs space-y-1">
                     <div class="flex justify-between">

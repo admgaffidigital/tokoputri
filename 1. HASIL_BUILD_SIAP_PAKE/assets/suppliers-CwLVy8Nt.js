@@ -1,4 +1,4 @@
-import"./module-member-BivWSgSm.js";import{a as p,e as c,b as $,f as m,i as s,al as T,am as F,z as P,G as D,a3 as M,a1 as g,u as f,v as I,t as L}from"./module-print-DdyfBoO_.js";import{o as N}from"./module-admin-D_7JHAUN.js";import"./vendor-firebase-core-D2OF5R23.js";import"./vendor-firebase-db-BIUZcnOd.js";import"./module-faq-Bb-rRU_B.js";const A=()=>{const e=document.querySelector("#admin-content #modal-supplier-detail");e&&e.remove();const r=document.querySelector("#admin-content #modal-supplier-form");if(r&&r.remove(),!c("modal-supplier-detail")){const t=document.createElement("div");t.id="modal-supplier-detail",t.className="fixed inset-0 z-[150] flex hidden items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-950/40 backdrop-blur-sm opacity-0 transition-opacity duration-300",t.onclick=a=>{a.target===t&&window.closeSupplierDetailModal?.()},t.innerHTML=`
+import"./module-member-BivWSgSm.js";import{a as p,e as c,b as $,f as m,i as s,al as T,am as F,z as P,G as D,a3 as M,a1 as g,u as f,v as I,t as L}from"./module-print-DdyfBoO_.js";import{o as N}from"./module-admin-kmPVHK8F.js";import"./vendor-firebase-core-D2OF5R23.js";import"./vendor-firebase-db-BIUZcnOd.js";import"./module-faq-DqIjZURS.js";const A=()=>{const e=document.querySelector("#admin-content #modal-supplier-detail");e&&e.remove();const r=document.querySelector("#admin-content #modal-supplier-form");if(r&&r.remove(),!c("modal-supplier-detail")){const t=document.createElement("div");t.id="modal-supplier-detail",t.className="fixed inset-0 z-[150] flex hidden items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-950/40 backdrop-blur-sm opacity-0 transition-opacity duration-300",t.onclick=a=>{a.target===t&&window.closeSupplierDetailModal?.()},t.innerHTML=`
             <div id="modal-supplier-detail-box" class="modal-bottom-sheet relative flex max-h-[92dvh] sm:max-h-[88dvh] w-full max-w-4xl translate-y-full sm:translate-y-10 transform flex-col overflow-hidden rounded-t-[2rem] sm:rounded-3xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xl transition-transform duration-300">
                 <div id="modal-supplier-detail-content" class="flex-1 flex flex-col overflow-hidden"></div>
             </div>
@@ -261,7 +261,7 @@ Kami ingin menanyakan ketersediaan stok & mengajukan order barang. Mohon info up
         </div>
 
         <form id="supplier-editor-form" onsubmit="window.saveSupplierForm(event, '${t?a.id:""}')" class="flex-1 flex flex-col overflow-hidden">
-            <div class="hide-scrollbar p-5 sm:p-6 overflow-y-auto flex-1 space-y-4">
+            <div class="custom-scrollbar p-5 sm:p-6 overflow-y-auto flex-1 space-y-4">
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1.5">Nama Perusahaan / Supplier *</label>
@@ -416,7 +416,7 @@ Kami ingin menanyakan ketersediaan stok & mengajukan order barang. Mohon info up
         </div>
 
         <!-- ISI KONTEN TAB (SCROLLABLE, FLUID FLEX-1) -->
-        <div class="p-4 sm:p-6 overflow-y-auto flex-1 hide-scrollbar">
+        <div class="p-4 sm:p-6 overflow-y-auto flex-1 custom-scrollbar">
             ${u==="products"?K(l,e):""}
             ${u==="orders"?U(o,e):""}
             ${u==="debt"?_(i,d,e):""}

@@ -8,6 +8,20 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-9-55',
+        version: 'v1.9.55',
+        date: '2026-09-27',
+        title: 'Audit Presisi UI Native App Menyeluruh — Harmonisasi Tombol Bayar PO & Standardisasi Slim Scrollbar Lintas Modul',
+        category: 'optimization',
+        badge: 'Native App UI Audit Parity v1.9.55',
+        items: [
+            'Harmonisasi Tombol Bayar Hutang PO: Menyelaraskan tombol aksi "Bayar Hutang Supplier" pada kartu daftar PO dari warna hardcoded amber (bg-amber-500) menjadi warna tema aktif toko var(--color-primary), serasi 1:1 dengan tombol cicilan pada modul supplier.',
+            'Standardisasi Custom Scrollbar Lintas Modal: Mengganti seluruh sisa utilitas hide-scrollbar pada Modal Detail PO, Histori Pembayaran Cicilan PO, Form Pembayaran Cicilan PO, Modal Form Supplier, Modal Profil Supplier, serta seluruh Modal Piutang & Denda Tempo menjadi .custom-scrollbar yang elegan, tipis (6px), dan ramah desktop/tablet.',
+            'Audit Bebas Keruntuhan & Overflow: Memverifikasi seluruh wadah gambar produk, kartu list, grid 2-kolom/3-kolom responsif, touch-targets 44px, dan safe-area bottom footer di seluruh modul pengadaan dan transaksi berjalan.',
+            'Sinkronisasi Multi-Channel v1.9.55 (Android VersionCode 10955): Terkompilasi dan tersinkronisasi penuh ke Vite build, paket flashdisk, dan Capacitor Android.'
+        ]
+    },
+    {
         id: 'log-1-9-54',
         version: 'v1.9.54',
         date: '2026-09-27',

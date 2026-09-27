@@ -486,7 +486,7 @@ window.openSupplierFormModal = (supplierId = null) => {
         </div>
 
         <form id="supplier-editor-form" onsubmit="window.saveSupplierForm(event, '${isEdit ? s.id : ''}')" class="flex-1 flex flex-col overflow-hidden">
-            <div class="hide-scrollbar p-5 sm:p-6 overflow-y-auto flex-1 space-y-4">
+            <div class="custom-scrollbar p-5 sm:p-6 overflow-y-auto flex-1 space-y-4">
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1.5">Nama Perusahaan / Supplier *</label>
@@ -857,7 +857,7 @@ const renderSupplierDetailModalContent = (s) => {
         </div>
 
         <!-- ISI KONTEN TAB (SCROLLABLE, FLUID FLEX-1) -->
-        <div class="p-4 sm:p-6 overflow-y-auto flex-1 hide-scrollbar">
+        <div class="p-4 sm:p-6 overflow-y-auto flex-1 custom-scrollbar">
             ${currentDetailModalTab === 'products' ? renderSuppliedProductsTab(suppliedProducts, s) : ''}
             ${currentDetailModalTab === 'orders' ? renderSupplierOrdersTab(supplierPurchases, s) : ''}
             ${currentDetailModalTab === 'debt' ? renderSupplierDebtTab(tempoPurchases, totalDebt, s) : ''}

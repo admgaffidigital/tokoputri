@@ -552,7 +552,8 @@ const renderPOCardHtml = (po) => {
                         <button 
                             type="button"
                             onclick="event.stopPropagation(); window.openPurchasePaymentModal('${po.id}')" 
-                            class="flex-1 sm:flex-initial h-11 px-5 rounded-2xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-sm active:scale-95 transition-all cursor-pointer"
+                            class="flex-1 sm:flex-initial h-11 px-5 rounded-2xl text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-sm active:scale-95 transition-all cursor-pointer"
+                            style="background: var(--color-primary); box-shadow: 0 4px 12px rgba(var(--color-primary-rgb), 0.3);"
                             title="Catat Pembayaran Cicilan Hutang Tempo"
                         >
                             <i class="fa-solid fa-money-bill-wave text-xs"></i>
@@ -2232,7 +2233,7 @@ window.openPurchaseDetailModal = (poId) => {
             </div>
         </div>
 
-        <div class="p-4 sm:p-6 space-y-5 overflow-y-auto flex-1 hide-scrollbar">
+        <div class="p-4 sm:p-6 space-y-5 overflow-y-auto flex-1 custom-scrollbar">
             <!-- DAFTAR BARANG YANG DIPESAN (DUAL MODE: MOBILE CARDS & DESKTOP TABLE) -->
             <div>
                 <div class="flex items-center justify-between mb-3">
@@ -2356,7 +2357,7 @@ window.openPurchaseDetailModal = (poId) => {
                             <p class="text-xs">Belum ada catatan pembayaran cicilan.</p>
                         </div>
                     ` : `
-                        <div class="space-y-2 max-h-52 overflow-y-auto hide-scrollbar">
+                        <div class="space-y-2 max-h-52 overflow-y-auto custom-scrollbar">
                             ${po.paymentHistory.map(ph => `
                                 <div class="p-3 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200/90 dark:border-slate-700 flex items-center justify-between text-xs shadow-2xs">
                                     <div>
@@ -2460,7 +2461,7 @@ window.openPurchasePaymentModal = (poId) => {
         </div>
 
         <form id="po-pay-form" onsubmit="window.submitPurchasePayment(event, '${po.id}')" class="flex-1 flex flex-col overflow-hidden">
-            <div class="p-4 sm:p-6 space-y-4 overflow-y-auto flex-1 hide-scrollbar">
+            <div class="p-4 sm:p-6 space-y-4 overflow-y-auto flex-1 custom-scrollbar">
                 <!-- Ringkasan Hutang -->
                 <div class="p-4 rounded-3xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-xs space-y-2 shadow-2xs">
                     <div class="flex justify-between">
