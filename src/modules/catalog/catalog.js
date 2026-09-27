@@ -181,15 +181,20 @@ export const rCat = () => {
         let stockBadge = '';
         
         if (useStk) {
+            // Guard: gunakan v.stock != null agar varian tanpa field stock
+            // tidak menghitung sebagai NaN (menyebabkan undercount stok)
             const totalStock = p.variants && p.variants.length
-                ? p.variants.filter(v => v.isActive !== false && v.isActive !== 'false').reduce((s, v) => s + (parseFloat(v.stock) || 0), 0)
+                ? p.variants
+                    .filter(v => v && v.isActive !== false && v.isActive !== 'false')
+                    .reduce((s, v) => s + (v.stock != null ? (parseFloat(v.stock) || 0) : 0), 0)
                 : parseFloat(p.stock) || 0;
             if (totalStock <= 0) {
                 nH = `<div class="absolute inset-0 bg-white/75 dark:bg-slate-900/75 z-20 flex items-center justify-center rounded-2xl"><span class="bg-slate-800 text-white text-[10px] font-bold px-3 py-1.5 rounded-xl shadow-lg uppercase tracking-widest"><i class="fa-solid fa-ban mr-1"></i> HABIS</span></div>`;
             } else if (totalStock <= 5) {
-                stockBadge = `<span class="absolute top-2 left-2 z-10 bg-rose-500 text-white text-[8px] font-bold px-2 py-1 rounded-xl shadow uppercase tracking-wider"><i class="fa-solid fa-fire mr-0.5"></i> SISA ${totalStock}</span>`;
+                // Sudut kanan-bawah: tidak bertabrakan dengan badge diskon/PO di kiri-atas
+                stockBadge = `<span class="absolute bottom-2 right-2 z-10 bg-rose-500 text-white text-[8px] font-bold px-2 py-1 rounded-xl shadow uppercase tracking-wider"><i class="fa-solid fa-fire mr-0.5"></i> SISA ${totalStock}</span>`;
             } else {
-                stockBadge = `<span class="absolute top-2 left-2 z-10 bg-slate-800/90 text-white text-[8px] font-bold px-2 py-1 rounded-xl shadow uppercase tracking-wider"><i class="fa-solid fa-box mr-0.5"></i> Stok ${totalStock}</span>`;
+                stockBadge = `<span class="absolute bottom-2 right-2 z-10 bg-slate-800/90 text-white text-[8px] font-bold px-2 py-1 rounded-xl shadow uppercase tracking-wider"><i class="fa-solid fa-box mr-0.5"></i> Stok ${totalStock}</span>`;
             }
         }
         

@@ -1311,10 +1311,10 @@ export const renderCatalog = () => {
                         <div class="pos-img-badges">
                             ${discBadge || (stockInfo.isPreorder ? poBadge : '')}
                         </div>
-                        <!-- Sisa Stok Sudut Kanan (Hanya jika stok menipis & belum di keranjang) -->
-                        ${stockInfo.isLowStock && !stockInfo.isOutOfStock && totalQtyInCart <= 0 ? `
+                        <!-- Sisa Stok Sudut Kanan (Tampil selalu jika stok menipis, kurangi qty di keranjang) -->
+                        ${stockInfo.isManaged && stockInfo.isLowStock && !stockInfo.isOutOfStock ? `
                             <div class="absolute top-1.5 right-1.5 z-10">
-                                <span class="pos-badge pos-badge-low"><i class="fa-solid fa-fire" style="font-size:6px"></i> SISA ${formatQty(stockInfo.totalStock)}</span>
+                                <span class="pos-badge pos-badge-low"><i class="fa-solid fa-fire" style="font-size:6px"></i> SISA ${formatQty(Math.max(0, stockInfo.totalStock - totalQtyInCart))}</span>
                             </div>` : ''}
                         ${totalQtyInCart > 0 ? `<div class="pos-qty-badge">${formatQty(totalQtyInCart)}</div>` : ''}
                         ${hasImg

@@ -8,6 +8,20 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-9-62',
+        version: 'v1.9.62',
+        date: '2026-09-27',
+        title: 'Fix Bug Badge Stok Timbul-Tenggelam di Storefront & POS Kasir',
+        category: 'fix',
+        badge: 'Stock Badge Bugfix v1.9.62',
+        items: [
+            'Bug 1 — Storefront: Badge "Stok X" dan "SISA X" kadang tidak muncul pada produk bervarian. Root cause: kalkulasi total stok varian tidak menggunakan guard v.stock != null, sehingga varian yang belum punya field stock (undefined) dievaluasi sebagai NaN dan menyebabkan undercount / total salah. Fix: tambahkan guard identik dengan getProductStockInfo() di POS: reduce((s,v) => s + (v.stock != null ? parseFloat(v.stock)||0 : 0)).',
+            'Bug 2 — Storefront: Badge "Stok X" bertabrakan / tertimpa badge Diskon atau PO karena keduanya menggunakan posisi absolute top-2 left-2 yang sama. Fix: pindahkan badge stok ke sudut kanan-bawah (bottom-2 right-2) agar tidak pernah bertabrakan dengan badge lain — badge stok kini selalu terlihat jelas.',
+            'Bug 3 — POS Kasir (Grid Mode): Badge "SISA X" langsung hilang begitu kasir menambahkan 1 item ke keranjang. Root cause: kondisi totalQtyInCart <= 0 membuat badge tidak dirender jika produk sudah ada di keranjang. Fix: hapus kondisi tersebut, badge SISA sekarang selalu tampil saat stok menipis dan menampilkan sisa stok AKTUAL setelah dikurangi qty di keranjang (SISA = totalStock - totalQtyInCart), membantu kasir mengetahui stok tersisa secara real-time.',
+            'Sinkronisasi Multi-Channel v1.9.62 (Android VersionCode 10962): Terkompilasi dan tersinkronisasi penuh ke Vite build, paket flashdisk, dan Capacitor Android.'
+        ]
+    },
+    {
         id: 'log-1-9-61',
         version: 'v1.9.61',
         date: '2026-09-27',
