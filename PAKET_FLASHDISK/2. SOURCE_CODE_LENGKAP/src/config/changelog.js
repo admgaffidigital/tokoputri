@@ -8,6 +8,20 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-9-72',
+        version: 'v1.9.72',
+        date: '2026-09-27',
+        title: 'Pencegahan Intervensi Browser pada Haptics & AudioContext Saat Startup Halaman',
+        category: 'fix',
+        badge: 'Browser Policy Guard v1.9.72',
+        items: [
+            'Proteksi Kebijakan Interaksi Pengguna (User Gesture Guard): Menghilangkan peringatan konsol "[Intervention] Blocked call to navigator.vibrate" dan "The AudioContext was not allowed to start" saat aplikasi pertama kali dibuka.',
+            'Initial Cart Load Muting: Menginisialisasi prevCartQty sebagai null pada modul keranjang (src/modules/cart/cart.js), sehingga kalkulasi badge keranjang saat inisialisasi awal toko berjalan hening tanpa memicu getaran dan audio secara prematur sebelum pengguna menyentuh layar.',
+            'Verifikasi userActivation & Event Tracker: Menambahkan validasi navigator.userActivation.hasBeenActive dan pelacak sentuhan pertama (pointerdown/touchstart) pada mesin native mobile (src/core/native-mobile.js) sebelum mengeksekusi getaran taktil ataupun Web Audio API.',
+            'Sinkronisasi Multi-Channel v1.9.72 (Android VersionCode 10972): Terkompilasi dan tersinkronisasi penuh ke Vite build, paket flashdisk, dan Capacitor Android.'
+        ]
+    },
+    {
         id: 'log-1-9-71',
         version: 'v1.9.71',
         date: '2026-09-27',

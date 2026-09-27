@@ -9,6 +9,24 @@
  * ============================================================
  */
 
+// Pelacak gesture interaksi pertama pengguna untuk memenuhi kebijakan keamanan browser modern
+let hasUserInteracted = false;
+if (typeof window !== 'undefined') {
+    const markInteraction = () => {
+        hasUserInteracted = true;
+    };
+    ['pointerdown', 'touchstart', 'mousedown', 'keydown'].forEach(evt => {
+        window.addEventListener(evt, markInteraction, { capture: true, once: true });
+    });
+}
+
+const checkUserGesture = () => {
+    if (typeof navigator !== 'undefined' && navigator.userActivation) {
+        return navigator.userActivation.hasBeenActive;
+    }
+    return hasUserInteracted;
+};
+
 /**
  * Trigger getaran haptic feedback mikro pada perangkat.
  * Mendukung Capacitor native hardware taptics dan fallback HTML5 vibration API.
@@ -37,6 +55,8 @@ export const triggerHaptic = (type = 'light') => {
 
         // 2. Fallback Web Vibration API (Browser HP Android / PWA)
         if (typeof navigator !== 'undefined' && typeof navigator.vibrate === 'function') {
+            // Mencegah intervensi browser jika belum ada interaksi pengguna
+            if (!checkUserGesture()) return;
             if (type === 'light' || type === 'selection') navigator.vibrate(10);
             else if (type === 'medium') navigator.vibrate(25);
             else if (type === 'heavy') navigator.vibrate(45);
@@ -290,6 +310,9 @@ let nativeAudioCtx = null;
 export const playNativeSound = (type = 'pop') => {
     try {
         if (typeof window === 'undefined') return;
+        // Mencegah error "The AudioContext was not allowed to start" jika belum ada interaksi pengguna
+        if (!checkUserGesture()) return;
+
         const AudioClass = window.AudioContext || window.webkitAudioContext;
         if (!AudioClass) return;
 

@@ -32,7 +32,7 @@ export const sanitizeCart = () => {
     ssL('freshmart_cart', JSON.stringify(cart));
 };
 
-let prevCartQty = 0;
+let prevCartQty = null;
 
 /**
  * Perbarui indikator badge dan total preview keranjang
@@ -65,7 +65,8 @@ export const updCart = () => {
     });
 
     // ── Efek Taktil & Animasi Bouncing Native Saat Kuantitas Keranjang Bertambah ──
-    if (q > prevCartQty && q > 0) {
+    // Hanya picu jika bukan pemuatan awal halaman (prevCartQty !== null) dan kuantitas benar-benar bertambah
+    if (prevCartQty !== null && q > prevCartQty && q > 0) {
         if (typeof window.triggerHaptic === 'function') window.triggerHaptic('medium');
         if (typeof window.playNativeSound === 'function') window.playNativeSound('pop');
         allBadges.forEach(badge => {
