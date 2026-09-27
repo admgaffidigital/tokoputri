@@ -18,6 +18,10 @@ export default {
   ],
   theme: {
     extend: {
+      spacing: {
+        '13': '3.25rem',
+        '15': '3.75rem',
+      },
       fontFamily: {
         sans: ['"Barlow"', 'system-ui', '-apple-system', 'sans-serif'],
       },

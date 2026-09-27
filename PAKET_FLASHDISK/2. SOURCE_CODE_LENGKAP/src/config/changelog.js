@@ -8,6 +8,23 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-9-53',
+        version: 'v1.9.53',
+        date: '2026-09-27',
+        title: 'Penyempurnaan Presisi UI Mobile & Harmonisasi Tema Menyeluruh — Tab Anti-Potong, Wrapper Thumbnail Kaku & Bayar Cicilan Tematis',
+        category: 'optimization',
+        badge: 'UI Precision & Theme Parity v1.9.53',
+        items: [
+            'Fix Keruntuhan Gambar Produk Disuplai: Membungkus elemen foto dan smart monogram cover produk ke dalam wrapper kaku (style="width: 56px; height: 56px; min-width: 56px; min-height: 56px;") dengan overflow-hidden dan w-full h-full object-cover, mengeliminasi bug di mana gambar melebar tanpa batas dan menutupi kartu produk di mobile.',
+            'Tab Bar Supplier Anti-Potong (No Truncate): Mengganti teks nominal hutang pada segmented tab profil rekanan menjadi format ringkas konsisten "Hutang (X)" dengan indikator dot aktif, mencegah terpotongnya teks menjadi "Hutang ..." di layar smartphone sempit.',
+            'Harmonisasi Tombol Bayar / Cicil Hutang: Mengganti tombol aksi bayar/cicil dari warna amber/oranye menyala (bg-amber-500) menjadi warna tema brand toko var(--color-primary), menciptakan keselarasan visual sempurna dengan tema aktif toko.',
+            'Redesain Elegan Ringkasan Total Hutang: Mengganti background amber norak pada kartu hutang supplier dan modal pembayaran hutang dengan palet slate netral modern yang sejuk, bersih, dan berbobot akuntansi profesional.',
+            'Touch Target Header & Footer 44px (WCAG Mobile): Tombol cetak dan tutup di header modal PO detail ditingkatkan ke 44x44px (w-11 h-11), tombol sekunder Tutup dan Cetak Surat PO di footer ditingkatkan menjadi h-12 rounded-2xl dengan grid simetris di smartphone.',
+            'Dukungan Spacing Ekstensi Tailwind (13 & 15): Mendaftarkan spacing 13 (3.25rem = 52px) dan 15 (3.75rem = 60px) ke tailwind.config.js guna mencegah class purging yang tidak disengaja.',
+            'Sinkronisasi Multi-Channel v1.9.53 (Android VersionCode 10953): Terkompilasi dan tersinkronisasi penuh ke Vite build, paket flashdisk, dan Capacitor Android.'
+        ]
+    },
+    {
         id: 'log-1-9-52',
         version: 'v1.9.52',
         date: '2026-09-27',

@@ -1,4 +1,4 @@
-import"./module-member-BivWSgSm.js";import{a as p,e as c,b as $,f as m,i as s,al as T,am as F,z as P,G as D,a3 as M,a1 as g,u as f,v as I,t as L}from"./module-print-DdyfBoO_.js";import{o as N}from"./module-admin-C1pm7NV5.js";import"./vendor-firebase-core-D2OF5R23.js";import"./vendor-firebase-db-BIUZcnOd.js";import"./module-faq-DTh_TbM8.js";const A=()=>{const e=document.querySelector("#admin-content #modal-supplier-detail");e&&e.remove();const r=document.querySelector("#admin-content #modal-supplier-form");if(r&&r.remove(),!c("modal-supplier-detail")){const t=document.createElement("div");t.id="modal-supplier-detail",t.className="fixed inset-0 z-[150] flex hidden items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-950/40 backdrop-blur-sm opacity-0 transition-opacity duration-300",t.onclick=a=>{a.target===t&&window.closeSupplierDetailModal?.()},t.innerHTML=`
+import"./module-member-BivWSgSm.js";import{a as p,e as c,b as $,f as m,i as s,al as T,am as F,z as P,G as D,a3 as M,a1 as g,u as f,v as I,t as L}from"./module-print-DdyfBoO_.js";import{o as N}from"./module-admin-DpdCi4Xa.js";import"./vendor-firebase-core-D2OF5R23.js";import"./vendor-firebase-db-BIUZcnOd.js";import"./module-faq-aL-yyOHe.js";const A=()=>{const e=document.querySelector("#admin-content #modal-supplier-detail");e&&e.remove();const r=document.querySelector("#admin-content #modal-supplier-form");if(r&&r.remove(),!c("modal-supplier-detail")){const t=document.createElement("div");t.id="modal-supplier-detail",t.className="fixed inset-0 z-[150] flex hidden items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-950/40 backdrop-blur-sm opacity-0 transition-opacity duration-300",t.onclick=a=>{a.target===t&&window.closeSupplierDetailModal?.()},t.innerHTML=`
             <div id="modal-supplier-detail-box" class="modal-bottom-sheet relative flex max-h-[92dvh] sm:max-h-[88dvh] w-full max-w-4xl translate-y-full sm:translate-y-10 transform flex-col overflow-hidden rounded-t-[2rem] sm:rounded-3xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xl transition-transform duration-300">
                 <div id="modal-supplier-detail-content" class="flex-1 flex flex-col overflow-hidden"></div>
             </div>
@@ -6,7 +6,7 @@ import"./module-member-BivWSgSm.js";import{a as p,e as c,b as $,f as m,i as s,al
             <div id="modal-supplier-form-box" class="modal-bottom-sheet relative flex max-h-[92dvh] sm:max-h-[88dvh] w-full max-w-2xl translate-y-full sm:translate-y-10 transform flex-col overflow-hidden rounded-t-[2rem] sm:rounded-3xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xl transition-transform duration-300">
                 <div id="modal-supplier-form-content" class="flex-1 flex flex-col overflow-hidden"></div>
             </div>
-        `,document.body.appendChild(t)}};let S="",k="all",j=null,x="products";const O=e=>{if(!e)return"-";try{return new Date(e).toLocaleDateString("id-ID",{day:"numeric",month:"short",year:"numeric"})}catch{return e}},E=()=>{const e=p.suppliers||[],r=p.products||[],t=p.purchases||[],a=e.length,l=r.filter(i=>i.supplierId&&e.some(n=>String(n.id)===String(i.supplierId))).length,o=t.reduce((i,n)=>{if(n.paymentType==="tempo"&&n.paymentStatus!=="lunas"){const b=(parseFloat(n.total)||0)-(parseFloat(n.amountPaid)||0);return i+(b>0?b:0)}return i},0),d=t.filter(i=>i.status==="ordered").length;return{totalSuppliers:a,linkedProductsCount:l,totalOutstandingDebt:o,activePurchasesCount:d}},v=()=>{if(A(),!c("admin-content"))return;const r=E(),t=p.suppliers||[],a=S.toLowerCase().trim();let l=t.filter(o=>!a||(o.name||"").toLowerCase().includes(a)||(o.code||"").toLowerCase().includes(a)||(o.salesName||"").toLowerCase().includes(a)||(o.phone||"").includes(a)||(o.address||"").toLowerCase().includes(a)?k==="has_debt"?(p.purchases||[]).some(n=>String(n.supplierId)===String(o.id)&&n.paymentType==="tempo"&&n.paymentStatus!=="lunas"&&(parseFloat(n.total)||0)-(parseFloat(n.amountPaid)||0)>0):!0:!1);$("admin-content",`
+        `,document.body.appendChild(t)}};let S="",k="all",j=null,u="products";const O=e=>{if(!e)return"-";try{return new Date(e).toLocaleDateString("id-ID",{day:"numeric",month:"short",year:"numeric"})}catch{return e}},E=()=>{const e=p.suppliers||[],r=p.products||[],t=p.purchases||[],a=e.length,l=r.filter(d=>d.supplierId&&e.some(n=>String(n.id)===String(d.supplierId))).length,o=t.reduce((d,n)=>{if(n.paymentType==="tempo"&&n.paymentStatus!=="lunas"){const x=(parseFloat(n.total)||0)-(parseFloat(n.amountPaid)||0);return d+(x>0?x:0)}return d},0),i=t.filter(d=>d.status==="ordered").length;return{totalSuppliers:a,linkedProductsCount:l,totalOutstandingDebt:o,activePurchasesCount:i}},h=()=>{if(A(),!c("admin-content"))return;const r=E(),t=p.suppliers||[],a=S.toLowerCase().trim();let l=t.filter(o=>!a||(o.name||"").toLowerCase().includes(a)||(o.code||"").toLowerCase().includes(a)||(o.salesName||"").toLowerCase().includes(a)||(o.phone||"").includes(a)||(o.address||"").toLowerCase().includes(a)?k==="has_debt"?(p.purchases||[]).some(n=>String(n.supplierId)===String(o.id)&&n.paymentType==="tempo"&&n.paymentStatus!=="lunas"&&(parseFloat(n.total)||0)-(parseFloat(n.amountPaid)||0)>0):!0:!1);$("admin-content",`
         <div class="space-y-4 sm:space-y-5 fade-in max-w-5xl mx-auto pb-24 pt-1 sm:pt-2">
             <!-- 1. HERO BANNER: MASTER DATA SUPPLIER & REKANAN (THEME HARMONIZED) -->
             <div class="relative overflow-hidden p-5 sm:p-7 rounded-2xl sm:rounded-3xl border border-[rgba(var(--color-primary-rgb),0.2)] bg-gradient-to-br from-white via-white to-[rgba(var(--color-primary-rgb),0.05)] dark:from-slate-900 dark:via-slate-900/90 dark:to-slate-800 shadow-xs">
@@ -131,7 +131,7 @@ import"./module-member-BivWSgSm.js";import{a as p,e as c,b as $,f as m,i as s,al
                 `:l.map(o=>B(o)).join("")}
             </div>
         </div>
-    `)},B=e=>{const r=p.products||[],t=p.purchases||[],a=r.filter(n=>String(n.supplierId)===String(e.id)),o=t.filter(n=>String(n.supplierId)===String(e.id)).reduce((n,b)=>{if(b.paymentType==="tempo"&&b.paymentStatus!=="lunas"){const u=(parseFloat(b.total)||0)-(parseFloat(b.amountPaid)||0);return n+(u>0?u:0)}return n},0),d={cash:"Cash / Tunai",tempo_7:"Tempo 7 Hari",tempo_14:"Tempo 14 Hari",tempo_30:"Tempo 30 Hari",tempo_60:"Tempo 60 Hari",konsinyasi:"Konsinyasi (Titip Jual)"},i=e.phone?T(e.phone):"";return`
+    `)},B=e=>{const r=p.products||[],t=p.purchases||[],a=r.filter(n=>String(n.supplierId)===String(e.id)),o=t.filter(n=>String(n.supplierId)===String(e.id)).reduce((n,x)=>{if(x.paymentType==="tempo"&&x.paymentStatus!=="lunas"){const b=(parseFloat(x.total)||0)-(parseFloat(x.amountPaid)||0);return n+(b>0?b:0)}return n},0),i={cash:"Cash / Tunai",tempo_7:"Tempo 7 Hari",tempo_14:"Tempo 14 Hari",tempo_30:"Tempo 30 Hari",tempo_60:"Tempo 60 Hari",konsinyasi:"Konsinyasi (Titip Jual)"},d=e.phone?T(e.phone):"";return`
         <div class="bg-white/95 dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700/80 hover:border-[var(--color-primary)]/50 transition-all rounded-3xl p-4 sm:p-6 shadow-2xs group space-y-4">
             <!-- 1. IDENTITAS UTAMA SUPPLIER & STATUS -->
             <div class="flex items-start justify-between gap-3.5">
@@ -144,12 +144,12 @@ import"./module-member-BivWSgSm.js";import{a as p,e as c,b as $,f as m,i as s,al
                         <div class="flex items-center gap-2 flex-wrap">
                             <h4 class="font-black text-sm sm:text-base text-slate-800 dark:text-white truncate tracking-tight">${s(e.name)}</h4>
                             ${e.code?`<span class="px-2 py-0.5 rounded-lg bg-slate-100 dark:bg-slate-700/70 text-slate-600 dark:text-slate-300 text-[10px] font-mono font-bold border border-slate-200/60 dark:border-slate-700">${s(e.code)}</span>`:""}
-                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold border" style="background: rgba(var(--color-primary-rgb), 0.1); color: var(--color-primary); border-color: rgba(var(--color-primary-rgb), 0.25);">${s(d[e.defaultTerms]||"Cash")}</span>
+                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold border" style="background: rgba(var(--color-primary-rgb), 0.1); color: var(--color-primary); border-color: rgba(var(--color-primary-rgb), 0.25);">${s(i[e.defaultTerms]||"Cash")}</span>
                         </div>
 
                         <div class="flex items-center gap-3 text-xs text-slate-500 dark:text-slate-400 mt-1 flex-wrap">
                             ${e.salesName?`<span><i class="fa-solid fa-user-tie mr-1" style="color:var(--color-primary)"></i>${s(e.salesName)}</span>`:""}
-                            ${i?`<a href="https://wa.me/${i}" target="_blank" onclick="event.stopPropagation();" class="text-emerald-600 dark:text-emerald-400 font-bold hover:underline flex items-center gap-1"><i class="fa-brands fa-whatsapp text-sm"></i>+${i}</a>`:""}
+                            ${d?`<a href="https://wa.me/${d}" target="_blank" onclick="event.stopPropagation();" class="text-emerald-600 dark:text-emerald-400 font-bold hover:underline flex items-center gap-1"><i class="fa-brands fa-whatsapp text-sm"></i>+${d}</a>`:""}
                             ${e.bankName&&e.bankAccount?`<span><i class="fa-solid fa-credit-card mr-1" style="color:var(--color-primary)"></i>${s(e.bankName)}: <b class="font-mono text-slate-700 dark:text-slate-300">${s(e.bankAccount)}</b></span>`:""}
                         </div>
 
@@ -202,11 +202,11 @@ import"./module-member-BivWSgSm.js";import{a as p,e as c,b as $,f as m,i as s,al
                 </div>
 
                 <!-- Aksi Sekunder: Touch-Targets 44px (Grid di HP, Row di Desktop) -->
-                <div class="${i?"grid grid-cols-3":"grid grid-cols-2"} gap-2 w-full sm:w-auto sm:flex sm:items-center sm:gap-2 justify-end shrink-0">
-                    ${i?`
+                <div class="${d?"grid grid-cols-3":"grid grid-cols-2"} gap-2 w-full sm:w-auto sm:flex sm:items-center sm:gap-2 justify-end shrink-0">
+                    ${d?`
                         <button 
                             type="button"
-                            onclick="event.stopPropagation(); window.openSupplierWhatsApp('${i}', '${s(e.name)}', '${s(e.salesName||"")}')" 
+                            onclick="event.stopPropagation(); window.openSupplierWhatsApp('${d}', '${s(e.name)}', '${s(e.salesName||"")}')" 
                             class="h-11 px-3 rounded-2xl bg-emerald-50 hover:bg-emerald-500 hover:text-white dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 flex items-center justify-center gap-1.5 transition-all active:scale-95 shadow-2xs cursor-pointer font-bold text-xs" 
                             title="Chat WhatsApp Sales"
                             aria-label="WhatsApp Sales"
@@ -240,8 +240,8 @@ import"./module-member-BivWSgSm.js";import{a as p,e as c,b as $,f as m,i as s,al
                 </div>
             </div>
         </div>
-    `};window.handleSupplierSearch=e=>{S=e||"",v()};window.toggleSupplierFilter=()=>{k=k==="all"?"has_debt":"all",v()};window.openSupplierWhatsApp=(e,r,t)=>{const l=`${t?`Halo Pak/Bu ${t}`:`Halo Tim Sales ${r}`} dari *${p.store?.name||"Toko Putri"}*.
-Kami ingin menanyakan ketersediaan stok & mengajukan order barang. Mohon info update pricelist / ketersediaan barang ya. Terima kasih! 🙏`;F(e,l)};window.openSupplierFormModal=(e=null)=>{A();const r=p.suppliers||[],t=!!e,a=t?r.find(i=>String(i.id)===String(e))||{}:{code:"SUP-"+Math.floor(100+Math.random()*900),defaultTerms:"tempo_14"},l=c("modal-supplier-form"),o=c("modal-supplier-form-box"),d=c("modal-supplier-form-content");!l||!d||($("modal-supplier-form-content",`
+    `};window.handleSupplierSearch=e=>{S=e||"",h()};window.toggleSupplierFilter=()=>{k=k==="all"?"has_debt":"all",h()};window.openSupplierWhatsApp=(e,r,t)=>{const l=`${t?`Halo Pak/Bu ${t}`:`Halo Tim Sales ${r}`} dari *${p.store?.name||"Toko Putri"}*.
+Kami ingin menanyakan ketersediaan stok & mengajukan order barang. Mohon info update pricelist / ketersediaan barang ya. Terima kasih! 🙏`;F(e,l)};window.openSupplierFormModal=(e=null)=>{A();const r=p.suppliers||[],t=!!e,a=t?r.find(d=>String(d.id)===String(e))||{}:{code:"SUP-"+Math.floor(100+Math.random()*900),defaultTerms:"tempo_14"},l=c("modal-supplier-form"),o=c("modal-supplier-form-box"),i=c("modal-supplier-form-content");!l||!i||($("modal-supplier-form-content",`
         <!-- Pull Indicator for Mobile Bottom Sheet -->
         <div class="pull-indicator sm:hidden"></div>
 
@@ -345,7 +345,7 @@ Kami ingin menanyakan ketersediaan stok & mengajukan order barang. Mohon info up
                 </button>
             </div>
         </form>
-    `),P(l,o))};window.closeSupplierFormModal=()=>{const e=c("modal-supplier-form"),r=c("modal-supplier-form-box");e&&D(e,r)};window.saveSupplierForm=async(e,r)=>{e.preventDefault(),M("Menyimpan Data Supplier...");try{const t=(c("sf-name")?.value||"").trim(),a=(c("sf-code")?.value||"").trim(),l=(c("sf-salesName")?.value||"").trim();let o=(c("sf-phone")?.value||"").trim();const d=c("sf-defaultTerms")?.value||"tempo_14",i=(c("sf-email")?.value||"").trim(),n=(c("sf-bankName")?.value||"").trim(),b=(c("sf-bankAccount")?.value||"").trim(),u=(c("sf-bankHolder")?.value||"").trim(),h=(c("sf-address")?.value||"").trim(),H=(c("sf-notes")?.value||"").trim();if(!t)return g(),f("Nama supplier wajib diisi!");o&&(o=T(o)),p.suppliers||(p.suppliers=[]);const w={id:r||"sup_"+Date.now().toString(36)+"_"+Math.random().toString(36).substring(2,6),name:t,code:a,salesName:l,phone:o,defaultTerms:d,email:i,bankName:n,bankAccount:b,bankHolder:u,address:h,notes:H,updatedAt:new Date().toISOString()};if(!r)w.createdAt=new Date().toISOString(),p.suppliers.unshift(w);else{const y=p.suppliers.findIndex(C=>String(C.id)===String(r));y>-1?p.suppliers[y]={...p.suppliers[y],...w}:p.suppliers.push(w)}await N(["suppliers"]),g(),window.closeSupplierFormModal(),f(r?"Data supplier diperbarui! ✨":"Supplier baru berhasil ditambahkan! 🎉"),v()}catch(t){g(),console.error("Gagal menyimpan supplier:",t),f("Gagal menyimpan: "+(t.message||""))}};window.deleteSupplier=e=>{const t=(p.suppliers||[]).find(d=>String(d.id)===String(e));if(!t)return;const a=(p.products||[]).filter(d=>String(d.supplierId)===String(e)),l=(p.purchases||[]).filter(d=>String(d.supplierId)===String(e));let o=`Hapus supplier <b>${s(t.name)}</b>?`;a.length>0&&(o+=`<br><span class="text-amber-500 font-bold text-xs mt-1 block">Perhatian: Ada ${a.length} produk di etalase yang terhubung ke supplier ini. Link supplier pada produk tersebut akan dilepas.</span>`),l.length>0&&(o+=`<br><span class="text-rose-500 font-bold text-xs mt-1 block">Terdapat ${l.length} riwayat pesanan kulakan (PO) terkait supplier ini.</span>`),I("Hapus Supplier",o,async()=>{M("Menghapus...");try{p.suppliers=(p.suppliers||[]).filter(i=>String(i.id)!==String(e));let d=!1;(p.products||[]).forEach(i=>{String(i.supplierId)===String(e)&&(delete i.supplierId,d=!0)}),await N(d?["suppliers","products"]:["suppliers"]),g(),f("Supplier berhasil dihapus."),v()}catch(d){g(),console.error("Gagal menghapus supplier:",d),f("Gagal menghapus: "+d.message)}},"Hapus Permanen")};window.openSupplierDetailModal=(e,r="products")=>{A(),j=e,x=r;const a=(p.suppliers||[]).find(i=>String(i.id)===String(e));if(!a)return f("Supplier tidak ditemukan!");const l=c("modal-supplier-detail"),o=c("modal-supplier-detail-box"),d=c("modal-supplier-detail-content");!l||!d||(R(a),P(l,o))};window.closeSupplierDetailModal=()=>{const e=c("modal-supplier-detail"),r=c("modal-supplier-detail-box");e&&D(e,r)};window.switchSupplierDetailTab=e=>{x=e;const t=(p.suppliers||[]).find(a=>String(a.id)===String(j));t&&R(t)};const R=e=>{const r=c("modal-supplier-detail-content");if(!r)return;r.className="flex-1 flex flex-col overflow-hidden";const t=p.products||[],a=p.purchases||[],l=t.filter(b=>String(b.supplierId)===String(e.id)),o=a.filter(b=>String(b.supplierId)===String(e.id));o.sort((b,u)=>new Date(u.date||u.createdAt||0)-new Date(b.date||b.createdAt||0));const d=o.filter(b=>b.paymentType==="tempo"),i=d.reduce((b,u)=>{if(u.paymentStatus!=="lunas"){const h=(parseFloat(u.total)||0)-(parseFloat(u.amountPaid)||0);return b+(h>0?h:0)}return b},0),n=e.phone?T(e.phone):"";$("modal-supplier-detail-content",`
+    `),P(l,o))};window.closeSupplierFormModal=()=>{const e=c("modal-supplier-form"),r=c("modal-supplier-form-box");e&&D(e,r)};window.saveSupplierForm=async(e,r)=>{e.preventDefault(),M("Menyimpan Data Supplier...");try{const t=(c("sf-name")?.value||"").trim(),a=(c("sf-code")?.value||"").trim(),l=(c("sf-salesName")?.value||"").trim();let o=(c("sf-phone")?.value||"").trim();const i=c("sf-defaultTerms")?.value||"tempo_14",d=(c("sf-email")?.value||"").trim(),n=(c("sf-bankName")?.value||"").trim(),x=(c("sf-bankAccount")?.value||"").trim(),b=(c("sf-bankHolder")?.value||"").trim(),v=(c("sf-address")?.value||"").trim(),H=(c("sf-notes")?.value||"").trim();if(!t)return g(),f("Nama supplier wajib diisi!");o&&(o=T(o)),p.suppliers||(p.suppliers=[]);const w={id:r||"sup_"+Date.now().toString(36)+"_"+Math.random().toString(36).substring(2,6),name:t,code:a,salesName:l,phone:o,defaultTerms:i,email:d,bankName:n,bankAccount:x,bankHolder:b,address:v,notes:H,updatedAt:new Date().toISOString()};if(!r)w.createdAt=new Date().toISOString(),p.suppliers.unshift(w);else{const y=p.suppliers.findIndex(C=>String(C.id)===String(r));y>-1?p.suppliers[y]={...p.suppliers[y],...w}:p.suppliers.push(w)}await N(["suppliers"]),g(),window.closeSupplierFormModal(),f(r?"Data supplier diperbarui! ✨":"Supplier baru berhasil ditambahkan! 🎉"),h()}catch(t){g(),console.error("Gagal menyimpan supplier:",t),f("Gagal menyimpan: "+(t.message||""))}};window.deleteSupplier=e=>{const t=(p.suppliers||[]).find(i=>String(i.id)===String(e));if(!t)return;const a=(p.products||[]).filter(i=>String(i.supplierId)===String(e)),l=(p.purchases||[]).filter(i=>String(i.supplierId)===String(e));let o=`Hapus supplier <b>${s(t.name)}</b>?`;a.length>0&&(o+=`<br><span class="text-amber-500 font-bold text-xs mt-1 block">Perhatian: Ada ${a.length} produk di etalase yang terhubung ke supplier ini. Link supplier pada produk tersebut akan dilepas.</span>`),l.length>0&&(o+=`<br><span class="text-rose-500 font-bold text-xs mt-1 block">Terdapat ${l.length} riwayat pesanan kulakan (PO) terkait supplier ini.</span>`),I("Hapus Supplier",o,async()=>{M("Menghapus...");try{p.suppliers=(p.suppliers||[]).filter(d=>String(d.id)!==String(e));let i=!1;(p.products||[]).forEach(d=>{String(d.supplierId)===String(e)&&(delete d.supplierId,i=!0)}),await N(i?["suppliers","products"]:["suppliers"]),g(),f("Supplier berhasil dihapus."),h()}catch(i){g(),console.error("Gagal menghapus supplier:",i),f("Gagal menghapus: "+i.message)}},"Hapus Permanen")};window.openSupplierDetailModal=(e,r="products")=>{A(),j=e,u=r;const a=(p.suppliers||[]).find(d=>String(d.id)===String(e));if(!a)return f("Supplier tidak ditemukan!");const l=c("modal-supplier-detail"),o=c("modal-supplier-detail-box"),i=c("modal-supplier-detail-content");!l||!i||(R(a),P(l,o))};window.closeSupplierDetailModal=()=>{const e=c("modal-supplier-detail"),r=c("modal-supplier-detail-box");e&&D(e,r)};window.switchSupplierDetailTab=e=>{u=e;const t=(p.suppliers||[]).find(a=>String(a.id)===String(j));t&&R(t)};const R=e=>{const r=c("modal-supplier-detail-content");if(!r)return;r.className="flex-1 flex flex-col overflow-hidden";const t=p.products||[],a=p.purchases||[],l=t.filter(x=>String(x.supplierId)===String(e.id)),o=a.filter(x=>String(x.supplierId)===String(e.id));o.sort((x,b)=>new Date(b.date||b.createdAt||0)-new Date(x.date||x.createdAt||0));const i=o.filter(x=>x.paymentType==="tempo"),d=i.reduce((x,b)=>{if(b.paymentStatus!=="lunas"){const v=(parseFloat(b.total)||0)-(parseFloat(b.amountPaid)||0);return x+(v>0?v:0)}return x},0),n=e.phone?T(e.phone):"";$("modal-supplier-detail-content",`
         <!-- DRAG PULL INDICATOR (NATIVE MOBILE SHEET) -->
         <div class="pull-indicator sm:hidden"></div>
 
@@ -385,40 +385,41 @@ Kami ingin menanyakan ketersediaan stok & mengajukan order barang. Mohon info up
                 <button 
                     type="button" 
                     onclick="window.switchSupplierDetailTab('products')" 
-                    class="py-2 sm:py-2.5 px-1 rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 ${x==="products"?"bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-xs font-black":"text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"}"
-                    ${x==="products"?'style="color: var(--color-primary);"':""}
+                    class="py-2.5 px-2 rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 min-w-0 ${u==="products"?"bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-xs font-black":"text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"}"
+                    ${u==="products"?'style="color: var(--color-primary);"':""}
                 >
-                    <i class="fa-solid fa-boxes-stacked text-xs"></i>
+                    <i class="fa-solid fa-boxes-stacked text-xs shrink-0"></i>
                     <span class="truncate">Produk (${l.length})</span>
                 </button>
 
                 <button 
                     type="button" 
                     onclick="window.switchSupplierDetailTab('orders')" 
-                    class="py-2 sm:py-2.5 px-1 rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 ${x==="orders"?"bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-xs font-black":"text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"}"
-                    ${x==="orders"?'style="color: var(--color-primary);"':""}
+                    class="py-2.5 px-2 rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 min-w-0 ${u==="orders"?"bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-xs font-black":"text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"}"
+                    ${u==="orders"?'style="color: var(--color-primary);"':""}
                 >
-                    <i class="fa-solid fa-cart-flatbed text-xs"></i>
-                    <span class="truncate">Order PO (${o.length})</span>
+                    <i class="fa-solid fa-cart-flatbed text-xs shrink-0"></i>
+                    <span class="truncate">PO (${o.length})</span>
                 </button>
 
                 <button 
                     type="button" 
                     onclick="window.switchSupplierDetailTab('debt')" 
-                    class="py-2 sm:py-2.5 px-1 rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 ${x==="debt"?"bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-xs font-black":"text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"}"
-                    ${x==="debt"?'style="color: var(--color-primary);"':""}
+                    class="py-2.5 px-2 rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 min-w-0 ${u==="debt"?"bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-xs font-black":"text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"}"
+                    ${u==="debt"?'style="color: var(--color-primary);"':""}
                 >
-                    <i class="fa-solid fa-file-invoice-dollar text-xs"></i>
-                    <span class="truncate">Hutang ${i>0?`<span class="inline-block px-1.5 py-0.2 rounded-full bg-amber-500 text-white text-[9px] font-black leading-tight ml-0.5">${m(i)}</span>`:"(0)"}</span>
+                    <i class="fa-solid fa-file-invoice-dollar text-xs shrink-0"></i>
+                    <span class="truncate">Hutang (${i.length})</span>
+                    ${d>0?'<span class="w-2 h-2 rounded-full bg-rose-500 shrink-0" title="Ada hutang aktif"></span>':""}
                 </button>
             </div>
         </div>
 
         <!-- ISI KONTEN TAB (SCROLLABLE, FLUID FLEX-1) -->
         <div class="p-4 sm:p-6 overflow-y-auto flex-1 hide-scrollbar">
-            ${x==="products"?K(l,e):""}
-            ${x==="orders"?U(o,e):""}
-            ${x==="debt"?_(d,i,e):""}
+            ${u==="products"?K(l,e):""}
+            ${u==="orders"?U(o,e):""}
+            ${u==="debt"?_(i,d,e):""}
         </div>
 
         <!-- STICKY ACTION FOOTER (NATIVE APP STANDARD) -->
@@ -445,20 +446,20 @@ Kami ingin menanyakan ketersediaan stok & mengajukan order barang. Mohon info up
             </div>
         `:`
         <div class="space-y-4">
-            <div class="flex items-center justify-between">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 pb-1">
                 <p class="text-xs font-bold text-slate-500 dark:text-slate-400">Total <b>${e.length}</b> macam produk toko dari supplier ini:</p>
-                <button onclick="window.quickCreatePOForSupplier('${r.id}')" class="px-3.5 py-2 rounded-2xl text-white font-bold text-xs flex items-center gap-1.5 shadow-2xs cursor-pointer active:scale-95 transition-all" style="background: var(--color-primary); box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.3);">
+                <button onclick="window.quickCreatePOForSupplier('${r.id}')" class="h-10 px-4 rounded-2xl text-white font-bold text-xs flex items-center justify-center gap-2 shadow-2xs cursor-pointer active:scale-95 transition-all self-stretch sm:self-auto shrink-0" style="background: var(--color-primary); box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.3);">
                     <i class="fa-solid fa-cart-plus text-xs"></i>
                     <span>Kulakan Produk Ini</span>
                 </button>
             </div>
 
             <div class="space-y-3">
-                ${e.map(t=>{const a=L(t,{size:"thumb"}),l=t.img?`<img src="${s(t.img)}" alt="${s(t.name)}" class="w-13 h-13 object-cover rounded-2xl p-0.5 bg-white border border-slate-200 dark:border-slate-700 shadow-2xs" onerror="this.onerror=null;this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='flex';"><div class="w-13 h-13" style="display:none">${a}</div>`:`<div class="w-13 h-13">${a}</div>`,o=t.variants&&t.variants.length?t.variants.reduce((n,b)=>n+(parseFloat(b.stock)||0),0):parseFloat(t.stock)||0,d=t.price&&t.hpp?t.price-t.hpp:0,i=t.price&&t.hpp&&t.hpp>0?Math.round(d/t.hpp*100):0;return`
+                ${e.map(t=>{const a=L(t,{size:"thumb"}),l=t.img?`<div class="w-14 h-14 shrink-0 rounded-2xl overflow-hidden bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-0.5 flex items-center justify-center shadow-2xs" style="width: 56px; height: 56px; min-width: 56px; min-height: 56px; max-width: 56px; max-height: 56px;"><img src="${s(t.img)}" alt="${s(t.name)}" class="w-full h-full object-cover rounded-xl" onerror="this.onerror=null;this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='flex';"><div class="w-full h-full" style="display:none">${a}</div></div>`:`<div class="w-14 h-14 shrink-0 rounded-2xl overflow-hidden bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-2xs flex items-center justify-center" style="width: 56px; height: 56px; min-width: 56px; min-height: 56px; max-width: 56px; max-height: 56px;">${a}</div>`,o=t.variants&&t.variants.length?t.variants.reduce((n,x)=>n+(parseFloat(x.stock)||0),0):parseFloat(t.stock)||0,i=t.price&&t.hpp?t.price-t.hpp:0,d=t.price&&t.hpp&&t.hpp>0?Math.round(i/t.hpp*100):0;return`
                         <div class="p-3.5 sm:p-4 rounded-3xl bg-white dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs hover:border-[var(--color-primary)]/50 transition-all space-y-3">
                             <div class="flex items-start justify-between gap-3">
                                 <div class="flex items-start gap-3 min-w-0 flex-1">
-                                    <div class="shrink-0 mt-0.5">${l}</div>
+                                    <div class="shrink-0">${l}</div>
                                     <div class="min-w-0 flex-1">
                                         <h5 class="font-black text-xs sm:text-sm text-slate-800 dark:text-slate-100 truncate">${s(t.name)}</h5>
                                         <div class="flex items-center gap-2 text-[10px] text-slate-400 mt-1 flex-wrap">
@@ -469,7 +470,7 @@ Kami ingin menanyakan ketersediaan stok & mengajukan order barang. Mohon info up
                                     </div>
                                 </div>
 
-                                <button onclick="window.closeSupplierDetailModal(); if(window.oAEd) window.oAEd('products', '${t.id}');" class="w-10 h-10 rounded-2xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-300 flex items-center justify-center transition-all shrink-0 active:scale-95 shadow-2xs cursor-pointer" title="Edit Produk">
+                                <button onclick="window.closeSupplierDetailModal(); if(window.oAEd) window.oAEd('products', '${t.id}');" class="w-11 h-11 rounded-2xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-300 flex items-center justify-center transition-all shrink-0 active:scale-95 shadow-2xs cursor-pointer" title="Edit Produk">
                                     <i class="fa-solid fa-pen text-xs"></i>
                                 </button>
                             </div>
@@ -486,7 +487,7 @@ Kami ingin menanyakan ketersediaan stok & mengajukan order barang. Mohon info up
                                 </div>
                                 <div class="text-right">
                                     <span class="block text-[9px] font-black uppercase tracking-wider text-slate-400">Margin Laba</span>
-                                    <span class="font-bold ${d>0?"text-emerald-500":"text-slate-400"}">${d>0?`+${m(d)} (${i}%)`:"-"}</span>
+                                    <span class="font-bold ${i>0?"text-emerald-500":"text-slate-400"}">${i>0?`+${m(i)} (${d}%)`:"-"}</span>
                                 </div>
                             </div>
                         </div>
@@ -541,17 +542,17 @@ Kami ingin menanyakan ketersediaan stok & mengajukan order barang. Mohon info up
     `,_=(e,r,t)=>{const a=e.filter(l=>(parseFloat(l.total)||0)-(parseFloat(l.amountPaid)||0)>0&&l.paymentStatus!=="lunas");return`
         <div class="space-y-4">
             <!-- RINGKASAN TOTAL HUTANG USAHA -->
-            <div class="p-4 sm:p-5 rounded-2xl ${r>0?"bg-amber-50/70 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800/60":"bg-emerald-50/70 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-800/60"} flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div class="p-4 sm:p-5 rounded-3xl ${r>0?"bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700":"bg-emerald-50/70 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-800/60"} flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-2xs">
                 <div>
-                    <span class="block text-[10px] font-black uppercase tracking-widest ${r>0?"text-amber-600 dark:text-amber-400":"text-emerald-600 dark:text-emerald-400"}">Total Hutang Usaha Berjalan</span>
-                    <p class="text-2xl font-black ${r>0?"text-amber-600 dark:text-amber-400":"text-emerald-600 dark:text-emerald-400"} tracking-tight">${m(r)}</p>
-                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                        ${r>0?`Ada <b>${a.length}</b> nota order pembelian tempo yang belum lunas ke supplier ini.`:"Semua tagihan pembelian ke supplier ini sudah lunas sempurna! ✨"}
+                    <span class="block text-[10px] font-black uppercase tracking-widest ${r>0?"text-slate-400":"text-emerald-600 dark:text-emerald-400"}">Total Hutang Usaha Berjalan</span>
+                    <p class="text-2xl font-black ${r>0?"text-slate-900 dark:text-white":"text-emerald-600 dark:text-emerald-400"} tracking-tight mt-0.5">${m(r)}</p>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                        ${r>0?`Ada <b class="text-rose-500 font-black">${a.length}</b> nota order pembelian tempo yang belum lunas ke supplier ini.`:"Semua tagihan pembelian ke supplier ini sudah lunas sempurna! ✨"}
                     </p>
                 </div>
 
                 ${t.bankAccount?`
-                    <div class="p-3 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 text-xs shrink-0">
+                    <div class="p-3 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 text-xs shrink-0 shadow-2xs">
                         <span class="block text-[9px] font-bold text-slate-400 uppercase">Rekening Tujuan Transfer:</span>
                         <p class="font-bold text-slate-800 dark:text-white mt-0.5">${s(t.bankName)}: <b class="font-mono text-base">${s(t.bankAccount)}</b></p>
                         <p class="text-[10px] text-slate-400">a/n ${s(t.bankHolder||t.name)}</p>
@@ -567,21 +568,21 @@ Kami ingin menanyakan ketersediaan stok & mengajukan order barang. Mohon info up
                         <i class="fa-solid fa-circle-check text-2xl text-emerald-500 mb-2"></i>
                         <p class="font-bold text-xs text-slate-600 dark:text-slate-300">Tidak ada tanggungan hutang yang aktif</p>
                     </div>
-                `:a.map(l=>{const o=(parseFloat(l.total)||0)-(parseFloat(l.amountPaid)||0),d=parseFloat(l.amountPaid)||0,i=l.tempoDueDate?O(l.tempoDueDate):"-";return`
+                `:a.map(l=>{const o=(parseFloat(l.total)||0)-(parseFloat(l.amountPaid)||0),i=parseFloat(l.amountPaid)||0,d=l.tempoDueDate?O(l.tempoDueDate):"-";return`
                         <div class="bg-white/95 dark:bg-slate-800/90 p-4 border border-slate-200/90 dark:border-slate-700/80 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-2xs">
                             <div>
                                 <div class="flex items-center gap-2">
                                     <span class="font-mono font-black text-xs text-slate-800 dark:text-white">${s(l.poNumber||l.id)}</span>
-                                    <span class="text-[10px] px-2 py-0.5 rounded bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300 font-bold">Jatuh Tempo: ${i}</span>
+                                    <span class="text-[10px] px-2 py-0.5 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 font-bold border border-slate-200/80 dark:border-slate-600">Jatuh Tempo: ${d}</span>
                                 </div>
-                                <div class="flex items-center gap-4 text-xs text-slate-500 dark:text-slate-400 mt-1">
+                                <div class="flex items-center gap-4 text-xs text-slate-500 dark:text-slate-400 mt-1.5 flex-wrap">
                                     <span>Total: <b>${m(l.total)}</b></span>
-                                    <span>Sudah Dibayar: <b class="text-emerald-500">${m(d)}</b></span>
-                                    <span>Sisa: <b class="text-amber-500">${m(o)}</b></span>
+                                    <span>Sudah Dibayar: <b class="text-emerald-500">${m(i)}</b></span>
+                                    <span>Sisa: <b class="text-rose-500 font-bold">${m(o)}</b></span>
                                 </div>
                             </div>
 
-                            <button onclick="window.closeSupplierDetailModal(); if(window.openAdminTab) window.openAdminTab('purchases'); setTimeout(() => { window.openPurchasePaymentModal?.('${l.id}'); }, 200);" class="h-10 px-4 rounded-2xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs flex items-center gap-1.5 shadow-2xs active:scale-95 transition-all cursor-pointer">
+                            <button onclick="window.closeSupplierDetailModal(); if(window.openAdminTab) window.openAdminTab('purchases'); setTimeout(() => { window.openPurchasePaymentModal?.('${l.id}'); }, 200);" class="h-11 px-5 rounded-2xl text-white font-bold text-xs flex items-center justify-center gap-2 shadow-2xs active:scale-95 transition-all cursor-pointer shrink-0" style="background: var(--color-primary); box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.3);">
                                 <i class="fa-solid fa-money-bill-wave text-xs"></i>
                                 <span>Bayar / Cicil</span>
                             </button>
@@ -589,4 +590,4 @@ Kami ingin menanyakan ketersediaan stok & mengajukan order barang. Mohon info up
                     `}).join("")}
             </div>
         </div>
-    `};window.quickCreatePOForSupplier=e=>{window.closeSupplierDetailModal?.(),window.openAdminTab&&(window.openAdminTab("purchases"),setTimeout(()=>{typeof window.openCreatePOModal=="function"&&window.openCreatePOModal(e)},150))};window.renderSuppliersView=v;window.computeSupplierMetrics=E;export{E as computeSupplierMetrics,A as ensureSupplierModals,v as renderSuppliersView};
+    `};window.quickCreatePOForSupplier=e=>{window.closeSupplierDetailModal?.(),window.openAdminTab&&(window.openAdminTab("purchases"),setTimeout(()=>{typeof window.openCreatePOModal=="function"&&window.openCreatePOModal(e)},150))};window.renderSuppliersView=h;window.computeSupplierMetrics=E;export{E as computeSupplierMetrics,A as ensureSupplierModals,h as renderSuppliersView};

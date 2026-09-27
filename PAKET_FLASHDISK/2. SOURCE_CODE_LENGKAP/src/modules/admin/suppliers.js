@@ -826,31 +826,32 @@ const renderSupplierDetailModalContent = (s) => {
                 <button 
                     type="button" 
                     onclick="window.switchSupplierDetailTab('products')" 
-                    class="py-2 sm:py-2.5 px-1 rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 ${currentDetailModalTab === 'products' ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-xs font-black' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'}"
+                    class="py-2.5 px-2 rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 min-w-0 ${currentDetailModalTab === 'products' ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-xs font-black' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'}"
                     ${currentDetailModalTab === 'products' ? 'style="color: var(--color-primary);"' : ''}
                 >
-                    <i class="fa-solid fa-boxes-stacked text-xs"></i>
+                    <i class="fa-solid fa-boxes-stacked text-xs shrink-0"></i>
                     <span class="truncate">Produk (${suppliedProducts.length})</span>
                 </button>
 
                 <button 
                     type="button" 
                     onclick="window.switchSupplierDetailTab('orders')" 
-                    class="py-2 sm:py-2.5 px-1 rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 ${currentDetailModalTab === 'orders' ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-xs font-black' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'}"
+                    class="py-2.5 px-2 rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 min-w-0 ${currentDetailModalTab === 'orders' ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-xs font-black' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'}"
                     ${currentDetailModalTab === 'orders' ? 'style="color: var(--color-primary);"' : ''}
                 >
-                    <i class="fa-solid fa-cart-flatbed text-xs"></i>
-                    <span class="truncate">Order PO (${supplierPurchases.length})</span>
+                    <i class="fa-solid fa-cart-flatbed text-xs shrink-0"></i>
+                    <span class="truncate">PO (${supplierPurchases.length})</span>
                 </button>
 
                 <button 
                     type="button" 
                     onclick="window.switchSupplierDetailTab('debt')" 
-                    class="py-2 sm:py-2.5 px-1 rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 ${currentDetailModalTab === 'debt' ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-xs font-black' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'}"
+                    class="py-2.5 px-2 rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 min-w-0 ${currentDetailModalTab === 'debt' ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-xs font-black' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'}"
                     ${currentDetailModalTab === 'debt' ? 'style="color: var(--color-primary);"' : ''}
                 >
-                    <i class="fa-solid fa-file-invoice-dollar text-xs"></i>
-                    <span class="truncate">Hutang ${totalDebt > 0 ? `<span class="inline-block px-1.5 py-0.2 rounded-full bg-amber-500 text-white text-[9px] font-black leading-tight ml-0.5">${fCur(totalDebt)}</span>` : '(0)'}</span>
+                    <i class="fa-solid fa-file-invoice-dollar text-xs shrink-0"></i>
+                    <span class="truncate">Hutang (${tempoPurchases.length})</span>
+                    ${totalDebt > 0 ? `<span class="w-2 h-2 rounded-full bg-rose-500 shrink-0" title="Ada hutang aktif"></span>` : ''}
                 </button>
             </div>
         </div>
@@ -897,9 +898,9 @@ const renderSuppliedProductsTab = (products, s) => {
 
     return `
         <div class="space-y-4">
-            <div class="flex items-center justify-between">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 pb-1">
                 <p class="text-xs font-bold text-slate-500 dark:text-slate-400">Total <b>${products.length}</b> macam produk toko dari supplier ini:</p>
-                <button onclick="window.quickCreatePOForSupplier('${s.id}')" class="px-3.5 py-2 rounded-2xl text-white font-bold text-xs flex items-center gap-1.5 shadow-2xs cursor-pointer active:scale-95 transition-all" style="background: var(--color-primary); box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.3);">
+                <button onclick="window.quickCreatePOForSupplier('${s.id}')" class="h-10 px-4 rounded-2xl text-white font-bold text-xs flex items-center justify-center gap-2 shadow-2xs cursor-pointer active:scale-95 transition-all self-stretch sm:self-auto shrink-0" style="background: var(--color-primary); box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.3);">
                     <i class="fa-solid fa-cart-plus text-xs"></i>
                     <span>Kulakan Produk Ini</span>
                 </button>
@@ -909,8 +910,8 @@ const renderSuppliedProductsTab = (products, s) => {
                 ${products.map(p => {
                     const coverThumb = renderProductCoverHtml(p, { size: 'thumb' });
                     const imgHtml = p.img 
-                        ? `<img src="${esc(p.img)}" alt="${esc(p.name)}" class="w-13 h-13 object-cover rounded-2xl p-0.5 bg-white border border-slate-200 dark:border-slate-700 shadow-2xs" onerror="this.onerror=null;this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='flex';"><div class="w-13 h-13" style="display:none">${coverThumb}</div>`
-                        : `<div class="w-13 h-13">${coverThumb}</div>`;
+                        ? `<div class="w-14 h-14 shrink-0 rounded-2xl overflow-hidden bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-0.5 flex items-center justify-center shadow-2xs" style="width: 56px; height: 56px; min-width: 56px; min-height: 56px; max-width: 56px; max-height: 56px;"><img src="${esc(p.img)}" alt="${esc(p.name)}" class="w-full h-full object-cover rounded-xl" onerror="this.onerror=null;this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='flex';"><div class="w-full h-full" style="display:none">${coverThumb}</div></div>`
+                        : `<div class="w-14 h-14 shrink-0 rounded-2xl overflow-hidden bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-2xs flex items-center justify-center" style="width: 56px; height: 56px; min-width: 56px; min-height: 56px; max-width: 56px; max-height: 56px;">${coverThumb}</div>`;
 
                     const currentStock = (p.variants && p.variants.length) 
                         ? p.variants.reduce((acc, v) => acc + (parseFloat(v.stock) || 0), 0)
@@ -923,7 +924,7 @@ const renderSuppliedProductsTab = (products, s) => {
                         <div class="p-3.5 sm:p-4 rounded-3xl bg-white dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs hover:border-[var(--color-primary)]/50 transition-all space-y-3">
                             <div class="flex items-start justify-between gap-3">
                                 <div class="flex items-start gap-3 min-w-0 flex-1">
-                                    <div class="shrink-0 mt-0.5">${imgHtml}</div>
+                                    <div class="shrink-0">${imgHtml}</div>
                                     <div class="min-w-0 flex-1">
                                         <h5 class="font-black text-xs sm:text-sm text-slate-800 dark:text-slate-100 truncate">${esc(p.name)}</h5>
                                         <div class="flex items-center gap-2 text-[10px] text-slate-400 mt-1 flex-wrap">
@@ -934,7 +935,7 @@ const renderSuppliedProductsTab = (products, s) => {
                                     </div>
                                 </div>
 
-                                <button onclick="window.closeSupplierDetailModal(); if(window.oAEd) window.oAEd('products', '${p.id}');" class="w-10 h-10 rounded-2xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-300 flex items-center justify-center transition-all shrink-0 active:scale-95 shadow-2xs cursor-pointer" title="Edit Produk">
+                                <button onclick="window.closeSupplierDetailModal(); if(window.oAEd) window.oAEd('products', '${p.id}');" class="w-11 h-11 rounded-2xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-300 flex items-center justify-center transition-all shrink-0 active:scale-95 shadow-2xs cursor-pointer" title="Edit Produk">
                                     <i class="fa-solid fa-pen text-xs"></i>
                                 </button>
                             </div>
@@ -1041,17 +1042,17 @@ const renderSupplierDebtTab = (tempoPurchases, totalDebt, s) => {
     return `
         <div class="space-y-4">
             <!-- RINGKASAN TOTAL HUTANG USAHA -->
-            <div class="p-4 sm:p-5 rounded-2xl ${totalDebt > 0 ? 'bg-amber-50/70 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800/60' : 'bg-emerald-50/70 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-800/60'} flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div class="p-4 sm:p-5 rounded-3xl ${totalDebt > 0 ? 'bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700' : 'bg-emerald-50/70 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-800/60'} flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-2xs">
                 <div>
-                    <span class="block text-[10px] font-black uppercase tracking-widest ${totalDebt > 0 ? 'text-amber-600 dark:text-amber-400' : 'text-emerald-600 dark:text-emerald-400'}">Total Hutang Usaha Berjalan</span>
-                    <p class="text-2xl font-black ${totalDebt > 0 ? 'text-amber-600 dark:text-amber-400' : 'text-emerald-600 dark:text-emerald-400'} tracking-tight">${fCur(totalDebt)}</p>
-                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                        ${totalDebt > 0 ? `Ada <b>${unpaidPurchases.length}</b> nota order pembelian tempo yang belum lunas ke supplier ini.` : 'Semua tagihan pembelian ke supplier ini sudah lunas sempurna! ✨'}
+                    <span class="block text-[10px] font-black uppercase tracking-widest ${totalDebt > 0 ? 'text-slate-400' : 'text-emerald-600 dark:text-emerald-400'}">Total Hutang Usaha Berjalan</span>
+                    <p class="text-2xl font-black ${totalDebt > 0 ? 'text-slate-900 dark:text-white' : 'text-emerald-600 dark:text-emerald-400'} tracking-tight mt-0.5">${fCur(totalDebt)}</p>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                        ${totalDebt > 0 ? `Ada <b class="text-rose-500 font-black">${unpaidPurchases.length}</b> nota order pembelian tempo yang belum lunas ke supplier ini.` : 'Semua tagihan pembelian ke supplier ini sudah lunas sempurna! ✨'}
                     </p>
                 </div>
 
                 ${s.bankAccount ? `
-                    <div class="p-3 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 text-xs shrink-0">
+                    <div class="p-3 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 text-xs shrink-0 shadow-2xs">
                         <span class="block text-[9px] font-bold text-slate-400 uppercase">Rekening Tujuan Transfer:</span>
                         <p class="font-bold text-slate-800 dark:text-white mt-0.5">${esc(s.bankName)}: <b class="font-mono text-base">${esc(s.bankAccount)}</b></p>
                         <p class="text-[10px] text-slate-400">a/n ${esc(s.bankHolder || s.name)}</p>
@@ -1077,16 +1078,16 @@ const renderSupplierDebtTab = (tempoPurchases, totalDebt, s) => {
                             <div>
                                 <div class="flex items-center gap-2">
                                     <span class="font-mono font-black text-xs text-slate-800 dark:text-white">${esc(po.poNumber || po.id)}</span>
-                                    <span class="text-[10px] px-2 py-0.5 rounded bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300 font-bold">Jatuh Tempo: ${dueDate}</span>
+                                    <span class="text-[10px] px-2 py-0.5 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 font-bold border border-slate-200/80 dark:border-slate-600">Jatuh Tempo: ${dueDate}</span>
                                 </div>
-                                <div class="flex items-center gap-4 text-xs text-slate-500 dark:text-slate-400 mt-1">
+                                <div class="flex items-center gap-4 text-xs text-slate-500 dark:text-slate-400 mt-1.5 flex-wrap">
                                     <span>Total: <b>${fCur(po.total)}</b></span>
                                     <span>Sudah Dibayar: <b class="text-emerald-500">${fCur(paid)}</b></span>
-                                    <span>Sisa: <b class="text-amber-500">${fCur(unpaid)}</b></span>
+                                    <span>Sisa: <b class="text-rose-500 font-bold">${fCur(unpaid)}</b></span>
                                 </div>
                             </div>
 
-                            <button onclick="window.closeSupplierDetailModal(); if(window.openAdminTab) window.openAdminTab('purchases'); setTimeout(() => { window.openPurchasePaymentModal?.('${po.id}'); }, 200);" class="h-10 px-4 rounded-2xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs flex items-center gap-1.5 shadow-2xs active:scale-95 transition-all cursor-pointer">
+                            <button onclick="window.closeSupplierDetailModal(); if(window.openAdminTab) window.openAdminTab('purchases'); setTimeout(() => { window.openPurchasePaymentModal?.('${po.id}'); }, 200);" class="h-11 px-5 rounded-2xl text-white font-bold text-xs flex items-center justify-center gap-2 shadow-2xs active:scale-95 transition-all cursor-pointer shrink-0" style="background: var(--color-primary); box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.3);">
                                 <i class="fa-solid fa-money-bill-wave text-xs"></i>
                                 <span>Bayar / Cicil</span>
                             </button>
