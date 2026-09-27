@@ -66,12 +66,12 @@ window.openRestockModal = (id) => {
                 </div>
                 <button onclick="closeRestockModal()" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:bg-rose-100 hover:text-rose-500 flex items-center justify-center transition-all cursor-pointer"><i class="fa-solid fa-xmark"></i></button>
             </div>
-            <div class="hide-scrollbar p-5 sm:p-6 overflow-y-auto flex-1 space-y-3">
+            <div class="custom-scrollbar p-5 sm:p-6 overflow-y-auto flex-1 space-y-3">
                 <p class="text-[11px] font-bold text-slate-600 dark:text-slate-300 bg-[rgba(var(--color-primary-rgb),0.06)] dark:bg-[rgba(var(--color-primary-rgb),0.12)] border border-[rgba(var(--color-primary-rgb),0.2)] dark:border-[rgba(var(--color-primary-rgb),0.3)] p-3 rounded-xl"><i class="fa-solid fa-circle-info text-[var(--color-primary)] mr-1.5"></i> Masukkan jumlah <b>penambahan</b> stok. Stok lama + nilai ini = stok baru.</p>
                 ${variantsHtml}
             </div>
             <div class="p-5 border-t border-slate-100 dark:border-slate-800 shrink-0">
-                <button onclick="processRestock(${id})" class="btn-primary py-3.5 text-sm shadow-glow !rounded-xl flex items-center justify-center gap-2 cursor-pointer active:scale-[0.98]"><i class="fa-solid fa-save"></i> Simpan Restock</button>
+                <button onclick="processRestock(${id})" class="btn-primary py-3.5 text-sm shadow-glow !rounded-2xl flex items-center justify-center gap-2 cursor-pointer active:scale-95"><i class="fa-solid fa-save"></i> Simpan Restock</button>
             </div>
         </div>`;
     m.style.opacity = '0';

@@ -122,7 +122,11 @@ export const toggleTheme = () => {
 };
 
 /**
+export let confirmPromiseResolve = null;
+
+/**
  * Dialog Konfirmasi Aksi (Custom Confirm Modal)
+ * Mendukung callback tradisional cb() maupun Promise (await showConfirm(...))
  */
 export const showConfirm = (t, m, cb, btnText = "Ya, Hapus", isDanger = true) => {
     let title = t;
@@ -138,6 +142,17 @@ export const showConfirm = (t, m, cb, btnText = "Ya, Hapus", isDanger = true) =>
         title = typeof btnText === 'string' && btnText !== "Ya, Hapus" ? btnText : "Konfirmasi Tindakan";
         btnLabel = typeof cb === 'string' ? cb : "Ya, Lanjutkan";
         dangerMode = true;
+    }
+
+    let promiseResult = null;
+    if (typeof callback !== 'function') {
+        promiseResult = new Promise((resolve) => {
+            confirmPromiseResolve = resolve;
+        });
+        confirmCb = null;
+    } else {
+        confirmCb = callback;
+        confirmPromiseResolve = null;
     }
 
     setIn('confirm-title', title);
@@ -156,16 +171,15 @@ export const showConfirm = (t, m, cb, btnText = "Ya, Hapus", isDanger = true) =>
     if (b) {
         b.innerText = btnLabel;
         if (dangerMode) {
-            b.className = 'flex-1 py-3.5 bg-rose-600 text-white font-bold rounded-2xl hover:bg-rose-700 active:scale-95 transition-all text-sm shadow-md shadow-rose-500/30 cursor-pointer';
+            b.className = 'flex-1 py-3.5 bg-rose-600 text-white font-bold rounded-2xl hover:bg-rose-700 active:scale-95 transition-all text-xs sm:text-sm shadow-md shadow-rose-500/30 cursor-pointer';
             el('confirm-icon-box').className = 'w-16 h-16 bg-rose-50 dark:bg-rose-900/30 text-rose-500 dark:text-rose-400 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-5 border border-rose-200 dark:border-rose-800';
             el('confirm-icon').className = 'fa-solid fa-triangle-exclamation';
         } else {
-            b.className = 'flex-1 py-3.5 bg-[var(--color-primary)] text-white font-bold rounded-2xl hover:opacity-90 active:scale-95 transition-all text-sm shadow-sm cursor-pointer';
+            b.className = 'flex-1 py-3.5 bg-[var(--color-primary)] text-white font-bold rounded-2xl hover:opacity-90 active:scale-95 transition-all text-xs sm:text-sm shadow-sm cursor-pointer';
             el('confirm-icon-box').className = 'w-16 h-16 bg-[rgba(var(--color-primary-rgb),0.08)] dark:bg-[rgba(var(--color-primary-rgb),0.15)] text-[var(--color-primary)] rounded-2xl flex items-center justify-center text-3xl mx-auto mb-5 border border-[var(--color-primary)]/20';
             el('confirm-icon').className = 'fa-solid fa-copy';
         }
     }
-    confirmCb = callback;
     const m2 = el('custom-confirm-modal');
     if (m2 && m2.classList.contains('hidden')) pushModalHistory('confirm');
     show('custom-confirm-modal');
@@ -173,9 +187,16 @@ export const showConfirm = (t, m, cb, btnText = "Ya, Hapus", isDanger = true) =>
         el('custom-confirm-modal').classList.remove('opacity-0');
         el('custom-confirm-box').classList.remove('scale-95');
     }, 10);
+
+    return promiseResult;
 };
 
 export const closeConfirm = (fH = false) => {
+    if (confirmPromiseResolve) {
+        const resolve = confirmPromiseResolve;
+        confirmPromiseResolve = null;
+        resolve(false);
+    }
     requestCloseModal('confirm', fH, () => {
         el('custom-confirm-modal').classList.add('opacity-0');
         el('custom-confirm-box').classList.add('scale-95');
@@ -184,6 +205,14 @@ export const closeConfirm = (fH = false) => {
 };
 
 export const executeConfirm = () => {
+    if (confirmPromiseResolve) {
+        const resolve = confirmPromiseResolve;
+        confirmPromiseResolve = null;
+        confirmCb = null;
+        closeConfirm();
+        setTimeout(() => { resolve(true); }, 150);
+        return;
+    }
     if (confirmCb) {
         const cb = confirmCb;
         confirmCb = null;
@@ -193,46 +222,99 @@ export const executeConfirm = () => {
 };
 
 /**
- * Custom Input Prompt Modal
+ * Custom Input Prompt Modal Modern (Native App Aesthetics)
+ * Mendukung callback tradisional maupun Promise (await customPrompt(...))
  */
-export const customPrompt = (title, defaultVal, callback) => {
+export const customPrompt = (title, defaultVal = '', callback = null) => {
+    let promiseResolve = null;
+    let promiseResult = null;
+    if (typeof callback !== 'function') {
+        promiseResult = new Promise((resolve) => {
+            promiseResolve = resolve;
+        });
+    }
+
+    const valStr = defaultVal != null ? String(defaultVal) : '';
+    const isMultiLine = (valStr.length > 50 || valStr.includes('\n')) ||
+                        /balasan|catatan|alasan|deskripsi|pesan|keterangan/i.test(title);
+
+    const safeDefault = valStr.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    const inputHtml = isMultiLine
+        ? `<textarea id="prompt-input" rows="3" class="w-full px-4 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 text-xs sm:text-sm font-medium focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent outline-none transition-all placeholder:text-slate-400 mb-6 custom-scrollbar resize-none leading-relaxed" placeholder="Tuliskan di sini...">${safeDefault}</textarea>`
+        : `<input type="text" id="prompt-input" value="${safeDefault}" class="w-full px-4 py-3.5 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 text-sm sm:text-base font-bold focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent outline-none transition-all placeholder:text-slate-400 mb-6 text-center" autocomplete="off" />`;
+
     let div = document.createElement('div');
-    div.className = 'fixed inset-0 z-[9999] bg-slate-900/80 flex items-center justify-center p-4 opacity-0 transition-opacity duration-300';
+    div.id = 'custom-prompt-container';
+    div.className = 'fixed inset-0 z-[10005] bg-slate-900/80 backdrop-blur-xs flex items-center justify-center p-4 opacity-0 transition-opacity duration-300';
+    div.onclick = (e) => { if (e.target === div) window.closePrompt(); };
     div.innerHTML = `
-        <div class="bg-white dark:bg-slate-800 rounded-3xl w-full max-w-[320px] p-6 shadow-2xl border border-slate-200 dark:border-slate-700 relative transform scale-95 transition-all duration-300 flex flex-col text-center">
-            <h3 class="font-bold text-slate-900 dark:text-white text-lg mb-4">${title}</h3>
-            <input type="text" id="prompt-input" value="${defaultVal}" class="w-full px-4 py-3.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-700 dark:text-slate-300 mb-6 focus:ring-2 focus:ring-[var(--color-primary)] outline-none text-center font-bold text-xl tracking-wider" autocomplete="off" />
+        <div class="bg-white dark:bg-slate-800 rounded-[2rem] w-full max-w-[380px] sm:max-w-[420px] p-6 sm:p-8 shadow-2xl border border-slate-200 dark:border-slate-700 relative transform scale-95 transition-all duration-300 flex flex-col text-center" onclick="event.stopPropagation()">
+            <div class="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl mx-auto mb-4 border shadow-sm" style="background: rgba(var(--color-primary-rgb),0.1); color: var(--color-primary); border-color: rgba(var(--color-primary-rgb),0.2)">
+                <i class="fa-solid fa-pen-to-square"></i>
+            </div>
+            <h3 class="font-black text-slate-900 dark:text-white text-base sm:text-lg mb-3 tracking-tight leading-snug">${title}</h3>
+            ${inputHtml}
             <div class="flex gap-3">
-                <button id="prompt-cancel" class="flex-1 py-3.5 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold rounded-xl hover:bg-slate-200 dark:hover:bg-slate-600 active:scale-95 transition-all text-sm">Batal</button>
-                <button id="prompt-ok" class="flex-1 py-3.5 bg-[var(--color-primary)] text-white font-bold rounded-xl hover:opacity-90 active:scale-95 transition-all text-sm shadow-md">Simpan</button>
+                <button id="prompt-cancel" type="button" class="flex-1 py-3.5 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold rounded-2xl hover:bg-slate-200 dark:hover:bg-slate-600 active:scale-95 transition-all text-xs sm:text-sm cursor-pointer">Batal</button>
+                <button id="prompt-ok" type="button" class="flex-1 py-3.5 text-white font-bold rounded-2xl hover:opacity-95 active:scale-95 transition-all text-xs sm:text-sm shadow-md cursor-pointer" style="background: var(--color-primary)">Simpan</button>
             </div>
         </div>
     `;
     document.body.appendChild(div);
     const box = div.querySelector('div');
-    
+
     pushModalHistory('prompt');
-    
-    setTimeout(() => { div.classList.remove('opacity-0'); box.classList.remove('scale-95'); }, 10);
+
+    setTimeout(() => {
+        div.classList.remove('opacity-0');
+        box.classList.remove('scale-95');
+    }, 10);
+
     const input = div.querySelector('#prompt-input');
-    input.focus();
-    input.select();
-    
+    if (input) {
+        input.focus();
+        input.select();
+        input.onkeydown = (e) => {
+            if (e.key === 'Enter' && (!isMultiLine || e.ctrlKey)) {
+                e.preventDefault();
+                div.querySelector('#prompt-ok')?.click();
+            } else if (e.key === 'Escape') {
+                e.preventDefault();
+                window.closePrompt();
+            }
+        };
+    }
+
     window.closePrompt = (fH = false) => {
         if (!div || !div.parentNode) return;
+        if (promiseResolve) {
+            const res = promiseResolve;
+            promiseResolve = null;
+            res(null);
+        }
         requestCloseModal('prompt', fH, () => {
-            div.classList.add('opacity-0'); box.classList.add('scale-95');
+            div.classList.add('opacity-0');
+            box.classList.add('scale-95');
             setTimeout(() => div.remove(), 300);
             window.closePrompt = null;
         });
     };
-    
+
     div.querySelector('#prompt-cancel').onclick = () => window.closePrompt();
     div.querySelector('#prompt-ok').onclick = () => {
         let val = input.value;
-        window.closePrompt();
-        callback(val);
+        if (promiseResolve) {
+            const res = promiseResolve;
+            promiseResolve = null;
+            window.closePrompt();
+            res(val);
+        } else {
+            window.closePrompt();
+            if (typeof callback === 'function') callback(val);
+        }
     };
+
+    return promiseResult;
 };
 
 export const checkProPrint = () => {

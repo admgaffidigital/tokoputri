@@ -151,7 +151,7 @@ const ensureAppDownloadModalDOM = () => {
         </div>
 
         <!-- Scrollable Modal Body -->
-        <div class="p-4 sm:p-6 overflow-y-auto flex-1 hide-scrollbar space-y-5">
+        <div class="p-4 sm:p-6 overflow-y-auto flex-1 custom-scrollbar space-y-5">
             
             <!-- Kartu Identitas Aplikasi (Play Store Layout) -->
             <div class="flex items-start gap-4">

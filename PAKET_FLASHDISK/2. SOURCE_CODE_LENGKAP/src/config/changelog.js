@@ -8,6 +8,23 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-9-57',
+        version: 'v1.9.57',
+        date: '2026-09-27',
+        title: 'Modernisasi Total UI/UX Native App & Eliminasi Dialog Klasik — Redesain Custom Prompt, Perbaikan Promise Confirm & Harmonisasi Modal',
+        category: 'optimization',
+        badge: 'Native Mobile UI/UX Parity v1.9.57',
+        items: [
+            'Redesain Total Custom Prompt Native App (window.customPrompt): Mengganti dialog prompt kaku dengan bottom-sheet/dialog mobile-first mewah (max-w-[380px] sm:max-w-[420px], rounded-[2rem]), ikon pensil tematis dinamis var(--color-primary), input teks / textarea adaptif, tombol rounded-2xl active:scale-95, serta dukungan penuh Promise (await customPrompt(...)) dan keyboard shortcut (Enter/Escape).',
+            'Eliminasi Sisa Native Browser Prompt: Mengganti prompt bawaan browser pada fitur lompat urutan produk CMS (jumpProductOrder) dengan customPrompt yang konsisten dengan estetika aplikasi.',
+            'Dukungan Promise Universal pada showConfirm: Memperbaiki showConfirm agar mengembalikan Promise boolean jika dipanggil tanpa fungsi callback. Mengatasi bug di mana pemanggilan await showConfirm() pada fitur rollback dan snapshot darurat (backup-sync.js) mengembalikan undefined sehingga proses rollback tidak dapat tereksekusi.',
+            'Modernisasi Parkir Antrean Kasir F6 (pos-hold-prompt-modal): Memperlebar kartu modal menjadi kontainer rounded-[2rem] yang lapang, tombol close SVG xmark menggantikan karakter "×", input catatan rounded-2xl, dan tombol aksi rounded-2xl py-3.5.',
+            'Harmonisasi Tombol Ulasan Admin & Akun Kasir: Mengubah tombol "Balas Ulasan" dari warna hardcoded biru menjadi warna tema toko (primary-bg-soft primary-text) dengan touch target lega 44px, serta memperbarui seluruh modal tambah & edit akun kasir dengan kontrol rounded-2xl.',
+            'Standardisasi Custom Scrollbar & Sudut Rounded-3xl Seluruh Modal: Memperbarui seluruh modal tersisa (product-modal, quick-variant, admin-modal, admin-order, printer-settings, exit-confirm, doc-preview, modal tanya-jawab Q&A FAQ, dan modal download APK) ke scrollbar tipis transparan (.custom-scrollbar) dan sudut kontainer rounded-3xl / rounded-[2rem].',
+            'Sinkronisasi Multi-Channel v1.9.57 (Android VersionCode 10957): Terkompilasi dan tersinkronisasi penuh ke Vite build, paket flashdisk, dan Capacitor Android.'
+        ]
+    },
+    {
         id: 'log-1-9-56',
         version: 'v1.9.56',
         date: '2026-09-27',

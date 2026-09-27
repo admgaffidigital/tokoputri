@@ -244,7 +244,7 @@ export const showToast = (m, type, title, duration) => {
 
 export const showConfirm = (t, m, y, n) => {
     if (typeof window.showConfirm === 'function') {
-        window.showConfirm(t, m, y, n);
+        return window.showConfirm(t, m, y, n);
     }
 };
 

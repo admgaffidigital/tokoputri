@@ -237,7 +237,7 @@ export const openChangelogModal = (initialCategory = 'all') => {
             </div>
 
             <!-- List Content Timeline -->
-            <div class="p-4 sm:p-6 overflow-y-auto flex-1 hide-scrollbar">
+            <div class="p-4 sm:p-6 overflow-y-auto flex-1 custom-scrollbar">
                 <div id="changelog-items-container" class="space-y-1"></div>
             </div>
 
@@ -247,7 +247,7 @@ export const openChangelogModal = (initialCategory = 'all') => {
                     <span class="w-2 h-2 rounded-full bg-[var(--color-primary)] animate-pulse"></span>
                     <span>Real-Time Sync Active</span>
                 </div>
-                <button onclick="closeChangelogModal()" class="px-5 py-2 rounded-xl primary-bg text-white text-xs font-bold uppercase tracking-wider hover:opacity-90 active:scale-95 transition-all cursor-pointer shadow-sm">
+                <button onclick="closeChangelogModal()" class="px-6 py-2.5 rounded-2xl primary-bg text-white text-xs font-bold uppercase tracking-wider hover:opacity-90 active:scale-95 transition-all cursor-pointer shadow-sm">
                     Tutup
                 </button>
             </div>

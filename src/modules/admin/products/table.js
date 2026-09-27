@@ -104,20 +104,24 @@ window.jumpProductOrder = async (productId) => {
     if (currentIndex === -1) return;
 
     const prod = currentList[currentIndex];
-    const targetNumStr = prompt(`Pindahkan "${prod.name}" ke nomor urut berapa? (1 - ${currentList.length}):`, String(currentIndex + 1));
-    if (!targetNumStr) return;
-    const targetNum = parseInt(targetNumStr, 10);
-    if (isNaN(targetNum) || targetNum < 1 || targetNum > currentList.length) {
-        return showToast(`Nomor urut harus antara 1 sampai ${currentList.length}`);
+    const askPrompt = (typeof window.customPrompt === 'function') ? window.customPrompt : null;
+    if (askPrompt) {
+        askPrompt(`Pindahkan urutan "${prod.name}" (1 - ${currentList.length}):`, String(currentIndex + 1), async (targetNumStr) => {
+            if (!targetNumStr) return;
+            const targetNum = parseInt(targetNumStr, 10);
+            if (isNaN(targetNum) || targetNum < 1 || targetNum > currentList.length) {
+                return showToast(`Nomor urut harus antara 1 sampai ${currentList.length}`);
+            }
+            const targetIndex = targetNum - 1;
+            if (targetIndex === currentIndex) return;
+
+            const newIds = currentList.map(p => String(p.id));
+            const [movedId] = newIds.splice(currentIndex, 1);
+            newIds.splice(targetIndex, 0, movedId);
+
+            await applyNewProductOrder(newIds);
+        });
     }
-    const targetIndex = targetNum - 1;
-    if (targetIndex === currentIndex) return;
-
-    const newIds = currentList.map(p => String(p.id));
-    const [movedId] = newIds.splice(currentIndex, 1);
-    newIds.splice(targetIndex, 0, movedId);
-
-    await applyNewProductOrder(newIds);
 };
 
 // ─── Otomatis Kumpulkan Produk per Kategori & Sub-Kategori ───────────────────

@@ -168,7 +168,7 @@ window._openColorFloatModal = (innerHtml) => {
     overlay.onclick = (e) => { if (e.target === overlay) _closeColorFloatModal(); };
     const box = document.createElement('div');
     box.id = 'color-float-box';
-    box.className = 'relative w-full max-w-sm scale-95 transform rounded-3xl border border-slate-200 bg-white shadow-2xl transition-all duration-300 dark:border-slate-700 dark:bg-slate-800 overflow-y-auto max-h-[90vh]';
+    box.className = 'relative w-full max-w-md sm:max-w-xl scale-95 transform rounded-[2rem] border border-slate-200 bg-white shadow-2xl transition-all duration-300 dark:border-slate-700 dark:bg-slate-800 overflow-y-auto max-h-[90vh] custom-scrollbar';
     box.innerHTML = innerHtml;
     overlay.appendChild(box);
     document.body.appendChild(overlay);
@@ -198,12 +198,12 @@ window.openColorImportModal = () => {
         if (!grouped[cat]) grouped[cat] = [];
         grouped[cat].push(c);
     });
-    let html = `<div class="p-6">
+    let html = `<div class="p-6 sm:p-7">
         <div class="flex justify-between items-center mb-6">
             <h3 class="text-lg font-bold text-slate-800 dark:text-white flex items-center gap-2"><i class="fa-solid fa-swatchbook text-[var(--color-primary)]"></i> Pilih Warna</h3>
             <button type="button" onclick="_closeColorFloatModal()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-500 flex items-center justify-center transition-all cursor-pointer"><i class="fa-solid fa-xmark"></i></button>
         </div>
-        <div class="space-y-6 max-h-[60vh] overflow-y-auto pr-2">`;
+        <div class="space-y-6 max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">`;
     for (let cat in grouped) {
         html += `<div>
             <h4 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3 pb-2 border-b border-slate-100 dark:border-slate-800">${esc(cat)}</h4>
@@ -253,8 +253,8 @@ window.exportVariantToColorDB = async (idx) => {
                 </div>
             </div>
             <div class="flex gap-3 mt-6">
-                <button onclick="_closeColorFloatModal()" class="flex-1 py-3 rounded-xl border border-slate-200 dark:border-slate-700 font-bold text-slate-500 dark:text-slate-400 text-sm hover:bg-slate-50 dark:hover:bg-slate-800 transition-all cursor-pointer">Batal</button>
-                <button onclick="confirmExportVariantToColorDB()" class="flex-1 py-3 rounded-xl primary-bg text-white font-bold text-sm hover:opacity-90 transition-all active:scale-95 cursor-pointer"><i class="fa-solid fa-floppy-disk mr-2"></i>Simpan</button>
+                <button onclick="_closeColorFloatModal()" class="flex-1 py-3.5 rounded-2xl border border-slate-200 dark:border-slate-700 font-bold text-slate-500 dark:text-slate-400 text-xs sm:text-sm hover:bg-slate-50 dark:hover:bg-slate-800 transition-all cursor-pointer active:scale-95">Batal</button>
+                <button onclick="confirmExportVariantToColorDB()" class="flex-1 py-3.5 rounded-2xl primary-bg text-white font-bold text-xs sm:text-sm hover:opacity-90 transition-all active:scale-95 cursor-pointer shadow-md"><i class="fa-solid fa-floppy-disk mr-2"></i>Simpan</button>
             </div>
         </div>`);
 };
@@ -291,8 +291,8 @@ window.exportAllVariantsToColorDB = async () => {
                 <datalist id="expall-catalog-list">${catalogOpts}</datalist>
             </div>
             <div class="flex gap-3 mt-6">
-                <button onclick="_closeColorFloatModal()" class="flex-1 py-3 rounded-xl border border-slate-200 dark:border-slate-700 font-bold text-slate-500 dark:text-slate-400 text-sm hover:bg-slate-50 dark:hover:bg-slate-800 transition-all cursor-pointer">Batal</button>
-                <button onclick="confirmExportAllVariants()" class="flex-1 py-3 rounded-xl primary-bg text-white font-bold text-sm hover:opacity-90 transition-all active:scale-95 cursor-pointer"><i class="fa-solid fa-upload mr-2"></i>Ekspor</button>
+                <button onclick="_closeColorFloatModal()" class="flex-1 py-3.5 rounded-2xl border border-slate-200 dark:border-slate-700 font-bold text-slate-500 dark:text-slate-400 text-xs sm:text-sm hover:bg-slate-50 dark:hover:bg-slate-800 transition-all cursor-pointer active:scale-95">Batal</button>
+                <button onclick="confirmExportAllVariants()" class="flex-1 py-3.5 rounded-2xl primary-bg text-white font-bold text-xs sm:text-sm hover:opacity-90 transition-all active:scale-95 cursor-pointer shadow-md"><i class="fa-solid fa-upload mr-2"></i>Ekspor</button>
             </div>
         </div>`);
 };
@@ -338,7 +338,7 @@ window.openImportFromProductsModal = async () => {
         <div class="p-6">
             <h3 class="text-lg font-bold text-slate-800 dark:text-white mb-2 flex items-center gap-2"><i class="fa-solid fa-box-archive text-[var(--color-primary)]"></i> Impor dari Semua Produk</h3>
             <p class="text-xs text-slate-500 mb-4">${newOnes.length} nama varian baru ditemukan (yang sudah ada di database dilewati).</p>
-            <div class="hide-scrollbar max-h-48 overflow-y-auto mb-4 space-y-2">
+            <div class="custom-scrollbar max-h-48 overflow-y-auto mb-4 space-y-2">
                 ${newOnes.map((v,i) => `
                     <label class="flex items-center gap-3 p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 cursor-pointer hover:border-[var(--color-primary)] transition-all">
                         <input type="checkbox" id="imp-chk-${i}" checked class="w-4 h-4 rounded accent-[var(--color-primary)]">
@@ -354,8 +354,8 @@ window.openImportFromProductsModal = async () => {
                 <datalist id="impprod-cat-list">${catalogOpts}</datalist>
             </div>
             <div class="flex gap-3 mt-5">
-                <button onclick="_closeColorFloatModal()" class="flex-1 py-3 rounded-xl border border-slate-200 dark:border-slate-700 font-bold text-slate-500 dark:text-slate-400 text-sm hover:bg-slate-50 dark:hover:bg-slate-800 transition-all cursor-pointer">Batal</button>
-                <button onclick="confirmImportFromProducts()" class="flex-1 py-3 rounded-xl primary-bg font-bold text-sm transition-all active:scale-95 cursor-pointer"><i class="fa-solid fa-download mr-2"></i>Impor</button>
+                <button onclick="_closeColorFloatModal()" class="flex-1 py-3.5 rounded-2xl border border-slate-200 dark:border-slate-700 font-bold text-slate-500 dark:text-slate-400 text-xs sm:text-sm hover:bg-slate-50 dark:hover:bg-slate-800 transition-all cursor-pointer active:scale-95">Batal</button>
+                <button onclick="confirmImportFromProducts()" class="flex-1 py-3.5 rounded-2xl primary-bg font-bold text-xs sm:text-sm transition-all active:scale-95 cursor-pointer shadow-md"><i class="fa-solid fa-download mr-2"></i>Impor</button>
             </div>
         </div>`);
 };

@@ -77,9 +77,9 @@ window.openQuickPriceModal = (id) => {
                 </div>
                 <button onclick="closeQuickPriceModal()" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:bg-rose-100 hover:text-rose-500 flex items-center justify-center transition-all cursor-pointer"><i class="fa-solid fa-xmark"></i></button>
             </div>
-            <div class="hide-scrollbar p-5 sm:p-6 overflow-y-auto flex-1 space-y-3" id="qp-body">${body}</div>
+            <div class="custom-scrollbar p-5 sm:p-6 overflow-y-auto flex-1 space-y-3" id="qp-body">${body}</div>
             <div class="p-5 border-t border-slate-100 dark:border-slate-800 shrink-0">
-                <button onclick="processQuickPrice(${id})" class="btn-primary py-3.5 text-sm shadow-glow !rounded-xl flex items-center justify-center gap-2 cursor-pointer active:scale-[0.98]"><i class="fa-solid fa-save"></i> Simpan Harga</button>
+                <button onclick="processQuickPrice(${id})" class="btn-primary py-3.5 text-sm shadow-glow !rounded-2xl flex items-center justify-center gap-2 cursor-pointer active:scale-95"><i class="fa-solid fa-save"></i> Simpan Harga</button>
             </div>
         </div>`;
     if (!hasVariants) rQpWhol();
