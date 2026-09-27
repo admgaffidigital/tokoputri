@@ -8,6 +8,20 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-9-61',
+        version: 'v1.9.61',
+        date: '2026-09-27',
+        title: 'Fix Kritis: Stok Restock PO Supplier Hilang Setelah Reload / Re-Login',
+        category: 'fix',
+        badge: 'Critical Bugfix v1.9.61',
+        items: [
+            'Root Cause: Saat admin menerima barang PO dan stok bertambah otomatis (receiveAndRestockPO), fungsi saveApp([\'purchases\', \'products\']) menyimpan array produk ke field di dokumen utama Firestore (cms_data), BUKAN ke sub-koleksi products/{id} yang merupakan sumber data saat loadAppData() dipanggil ulang. Akibatnya stok hanya ada di memori/cache lokal dan hilang begitu halaman di-reload atau admin re-login.',
+            'Fix: Mengganti mekanisme simpan produk di receiveAndRestockPO menjadi Firestore Batch Write langsung ke sub-koleksi freshmart/cms_data/products/{id} — identik dengan pola yang dipakai restock manual (stock.js), checkout (checkout.js), dan POS kasir (pos.js). Setiap produk yang stoknya berubah kini disimpan secara atomik dan persisten.',
+            'Sinkronisasi Multi-Perangkat: updatedProductIds dikirimkan ke listener realtime agar semua perangkat (tablet, HP kasir, dll) langsung menerima pembaruan stok tanpa perlu refresh manual.',
+            'Sinkronisasi Multi-Channel v1.9.61 (Android VersionCode 10961): Terkompilasi dan tersinkronisasi penuh ke Vite build, paket flashdisk, dan Capacitor Android.'
+        ]
+    },
+    {
         id: 'log-1-9-60',
         version: 'v1.9.60',
         date: '2026-09-27',

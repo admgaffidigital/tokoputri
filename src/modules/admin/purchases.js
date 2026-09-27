@@ -720,7 +720,39 @@ window.receiveAndRestockPO = (poId) => {
                 }
 
                 // Simpan perubahan ke cloud Firestore & localStorage
-                await saveApp(productsUpdated ? ['purchases', 'products'] : ['purchases']);
+                // PERBAIKAN BUG KRITIS: simpan produk langsung ke sub-koleksi
+                // freshmart/cms_data/products/{id} menggunakan Batch Write,
+                // BUKAN via saveApp(['products']) yang salah path ke dokumen utama.
+                if (productsUpdated) {
+                    const batch = db.batch();
+                    const updatedProductIds = [];
+
+                    (po.items || []).forEach(item => {
+                        if (!item.productId) return;
+                        const prod = (appData.products || []).find(p => String(p.id) === String(item.productId));
+                        if (prod) {
+                            const prodRef = db.collection('freshmart').doc('cms_data').collection('products').doc(prod.id.toString());
+                            batch.set(prodRef, prod);
+                            updatedProductIds.push(prod.id.toString());
+                        }
+                    });
+
+                    // Simpan status PO ke dokumen utama cms_data sekaligus
+                    await batch.commit();
+
+                    // Simpan perubahan PO ke dokumen utama (bukan produk)
+                    await saveApp(['purchases'], {
+                        updateType: 'restock_received',
+                        updatedProductIds
+                    });
+                } else {
+                    await saveApp(['purchases']);
+                }
+
+                // Update cache lokal produk setelah batch commit berhasil
+                try {
+                    localStorage.setItem('freshmart_products', JSON.stringify(appData.products));
+                } catch(_) {}
 
                 hLoad();
                 showToast('Barang berhasil diterima & stok toko bertambah! 📦✨');
