@@ -8,6 +8,24 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-9-52',
+        version: 'v1.9.52',
+        date: '2026-09-27',
+        title: 'Perombakan Ergonomi Mobile-First Total & Harmonisasi Tema 100% — Anti-Sesak, Touch Target 44px, & Kartu Rekanan/PO Responsif',
+        category: 'optimization',
+        badge: 'Ergonomic & Theme Harmony v1.9.52',
+        items: [
+            'Eliminasi Tampilan Jomplang & Hardcoded Colors: Menyelaraskan seluruh elemen antarmuka (lencana status PO di profil supplier, tombol kamera upload di form & varian produk, tombol duplikat & restock di tabel produk CMS) ke CSS variable var(--color-primary) toko.',
+            'Kartu Rekanan & Supplier 3-Zona Anti-Sesak: Merombak deretan 5 tombol kecil berhimpitan (36px) menjadi tata letak 3 zona yang lega: Zona 1 Profil Supplier, Zona 2 Kotak Finansial & Produk Disuplai, Zona 3 Action Bar responsif dengan Primary CTA Order PO (h-11) dan deretan tombol sekunder 44px (WA, Edit, Hapus) dalam grid 3-kolom simetris di HP.',
+            'Tab Produk Disuplai Mobile-First: Mengeliminasi padding horizontal sesak pl-15 di HP, menggantikannya dengan kartu produk responsif elegan ber-thumbnail 52px, status stok, kotak info finansial (HPP, Harga Jual, Laba) yang rapi, dan tombol edit 40x40px.',
+            'Action Bar Kartu Order Kulakan (PO) Simetris: Tombol sekunder di kartu daftar PO (WA Sales, Cetak Surat PO, Hapus PO) kini tertata dalam grid setara 44px (h-11 rounded-2xl) dengan teks label jelas di mobile, menjamin keterjangkauan ibu jari tanpa salah pencet.',
+            'Stepper Kuantitas & Kontrol Item PO 44px: Stepper kuantitas diperbesar menjadi 44x44px (w-11 h-11) dengan tombol ganti produk dan hapus yang serasi setinggi 44px (rounded-2xl) tanpa desak-desakan di layar HP 360px.',
+            'Lembar Cetak PO Profesional: Menyelaraskan tipografi lembar cetak PO dan warna font header dan subtotal ke palet warna elegan formal tanpa hardcoded biru elektrik.',
+            'Eliminasi Sintaks Duplikat: Memperbaiki penutupan fungsi openModalAnim ganda di helper pembayaran cicilan PO.',
+            'Sinkronisasi Multi-Channel v1.9.52 (Android VersionCode 10952): Tersinkronisasi ke paket distribusi Vite, Flashdisk, dan Capacitor Android.'
+        ]
+    },
+    {
         id: 'log-1-9-51',
         version: 'v1.9.51',
         date: '2026-09-27',

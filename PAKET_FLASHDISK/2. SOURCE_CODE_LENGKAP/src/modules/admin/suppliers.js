@@ -313,100 +313,111 @@ const renderSupplierCardHtml = (s) => {
     const cleanPhone = s.phone ? normalizeWA(s.phone) : '';
 
     return `
-        <div class="bg-white dark:bg-slate-800/80 border border-slate-200/90 dark:border-slate-700/80 hover:border-[var(--color-primary)]/40 dark:hover:border-[var(--color-primary)]/40 transition-all rounded-2xl sm:rounded-3xl p-4 sm:p-5 shadow-2xs group">
-            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <!-- Sisi Kiri: Identitas Supplier -->
+        <div class="bg-white/95 dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700/80 hover:border-[var(--color-primary)]/50 transition-all rounded-3xl p-4 sm:p-6 shadow-2xs group space-y-4">
+            <!-- 1. IDENTITAS UTAMA SUPPLIER & STATUS -->
+            <div class="flex items-start justify-between gap-3.5">
                 <div class="flex items-start gap-3.5 min-w-0">
-                    <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center text-sm sm:text-base font-black shrink-0 border shadow-xs" style="background: rgba(var(--color-primary-rgb), 0.1); color: var(--color-primary); border-color: rgba(var(--color-primary-rgb), 0.25)">
+                    <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center text-sm sm:text-base font-black shrink-0 border shadow-xs transition-transform group-hover:scale-105" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary); border-color: rgba(var(--color-primary-rgb), 0.25)">
                         ${s.code ? esc(s.code.substring(0, 3).toUpperCase()) : '<i class="fa-solid fa-truck-field"></i>'}
                     </div>
 
                     <div class="min-w-0 flex-1">
                         <div class="flex items-center gap-2 flex-wrap">
                             <h4 class="font-black text-sm sm:text-base text-slate-800 dark:text-white truncate tracking-tight">${esc(s.name)}</h4>
-                            ${s.code ? `<span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-700/70 text-slate-600 dark:text-slate-300 text-[10px] font-mono font-bold border border-slate-200/60 dark:border-slate-700">${esc(s.code)}</span>` : ''}
-                            <span class="px-2 py-0.5 rounded-md text-[10px] font-bold border" style="background: rgba(var(--color-primary-rgb), 0.1); color: var(--color-primary); border-color: rgba(var(--color-primary-rgb), 0.25);">${esc(termLabelMap[s.defaultTerms] || 'Cash')}</span>
+                            ${s.code ? `<span class="px-2 py-0.5 rounded-lg bg-slate-100 dark:bg-slate-700/70 text-slate-600 dark:text-slate-300 text-[10px] font-mono font-bold border border-slate-200/60 dark:border-slate-700">${esc(s.code)}</span>` : ''}
+                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold border" style="background: rgba(var(--color-primary-rgb), 0.1); color: var(--color-primary); border-color: rgba(var(--color-primary-rgb), 0.25);">${esc(termLabelMap[s.defaultTerms] || 'Cash')}</span>
                         </div>
 
                         <div class="flex items-center gap-3 text-xs text-slate-500 dark:text-slate-400 mt-1 flex-wrap">
-                            ${s.salesName ? `<span><i class="fa-solid fa-user-tie text-[var(--color-primary)] mr-1"></i>${esc(s.salesName)}</span>` : ''}
-                            ${s.phone ? `<a href="https://wa.me/${cleanPhone}" target="_blank" onclick="event.stopPropagation();" class="text-emerald-600 dark:text-emerald-400 font-bold hover:underline flex items-center gap-1"><i class="fa-brands fa-whatsapp"></i>+${cleanPhone}</a>` : ''}
-                            ${s.bankName && s.bankAccount ? `<span><i class="fa-solid fa-credit-card text-[var(--color-primary)] mr-1"></i>${esc(s.bankName)}: <b class="font-mono text-slate-700 dark:text-slate-300">${esc(s.bankAccount)}</b></span>` : ''}
+                            ${s.salesName ? `<span><i class="fa-solid fa-user-tie mr-1" style="color:var(--color-primary)"></i>${esc(s.salesName)}</span>` : ''}
+                            ${cleanPhone ? `<a href="https://wa.me/${cleanPhone}" target="_blank" onclick="event.stopPropagation();" class="text-emerald-600 dark:text-emerald-400 font-bold hover:underline flex items-center gap-1"><i class="fa-brands fa-whatsapp text-sm"></i>+${cleanPhone}</a>` : ''}
+                            ${s.bankName && s.bankAccount ? `<span><i class="fa-solid fa-credit-card mr-1" style="color:var(--color-primary)"></i>${esc(s.bankName)}: <b class="font-mono text-slate-700 dark:text-slate-300">${esc(s.bankAccount)}</b></span>` : ''}
                         </div>
 
                         ${s.address ? `<p class="text-[11px] text-slate-400 truncate mt-1 max-w-lg"><i class="fa-solid fa-location-dot mr-1 text-rose-500"></i>${esc(s.address)}</p>` : ''}
                     </div>
                 </div>
+            </div>
 
-                <!-- Sisi Kanan: Statistik Cepat & Tombol Aksi -->
-                <div class="flex flex-wrap sm:flex-nowrap items-center justify-between md:justify-end gap-3 pt-3 md:pt-0 border-t md:border-t-0 border-slate-100 dark:border-slate-700/60">
-                    <div class="flex items-center gap-4 text-right">
-                        <div class="text-left md:text-right">
-                            <span class="block text-[9px] font-bold uppercase tracking-widest text-slate-400">Produk</span>
-                            <span class="text-xs sm:text-sm font-black text-slate-700 dark:text-slate-200">
-                                <b class="text-teal-600 dark:text-teal-400">${suppliedProducts.length}</b> Macam
-                            </span>
-                        </div>
+            <!-- 2. KOTAK INFORMASI PRODUK & HUTANG USAHA -->
+            <div class="grid grid-cols-2 gap-3 p-3.5 sm:p-4 rounded-2xl bg-slate-50/70 dark:bg-slate-900/50 border border-slate-200/80 dark:border-slate-800">
+                <div class="space-y-0.5">
+                    <span class="block text-[10px] font-black uppercase tracking-wider text-slate-400">Katalog Disuplai</span>
+                    <p class="text-sm sm:text-base font-black text-slate-800 dark:text-white">
+                        <span style="color:var(--color-primary)">${suppliedProducts.length}</span> <span class="text-xs font-bold text-slate-500">Macam Produk</span>
+                    </p>
+                </div>
 
-                        <div class="text-right">
-                            <span class="block text-[9px] font-bold uppercase tracking-widest ${debt > 0 ? 'text-amber-500' : 'text-slate-400'}">Hutang Usaha</span>
-                            <span class="text-xs sm:text-sm font-black ${debt > 0 ? 'text-amber-600 dark:text-amber-400' : 'text-emerald-600 dark:text-emerald-400'}">
-                                ${debt > 0 ? fCur(debt) : '<span class="text-[11px] font-bold text-emerald-500">Lunas / Rp 0</span>'}
-                            </span>
-                        </div>
-                    </div>
+                <div class="space-y-0.5 text-right">
+                    <span class="block text-[10px] font-black uppercase tracking-wider ${debt > 0 ? 'text-amber-500' : 'text-slate-400'}">Hutang Usaha</span>
+                    <p class="text-sm sm:text-base font-black ${debt > 0 ? 'text-amber-600 dark:text-amber-400' : 'text-emerald-600 dark:text-emerald-400'}">
+                        ${debt > 0 ? fCur(debt) : '<span class="text-xs font-bold text-emerald-500"><i class="fa-solid fa-check mr-1"></i>Lunas (Rp 0)</span>'}
+                    </p>
+                </div>
+            </div>
 
-                    <div class="flex items-center gap-1.5 ml-auto md:ml-2">
-                        <!-- Tombol WA Sales Langsung -->
-                        ${cleanPhone ? `
-                            <button 
-                                onclick="event.stopPropagation(); window.openSupplierWhatsApp('${cleanPhone}', '${esc(s.name)}', '${esc(s.salesName || '')}')" 
-                                class="w-9 h-9 rounded-xl bg-emerald-50 hover:bg-emerald-500 hover:text-white dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 flex items-center justify-center transition-all active:scale-95 shadow-2xs cursor-pointer" 
-                                title="Chat WhatsApp Sales"
-                            >
-                                <i class="fa-brands fa-whatsapp text-sm"></i>
-                            </button>
-                        ` : ''}
+            <!-- 3. ACTION BAR RESPONSIF: MOBILE-FIRST & LAPANG -->
+            <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5 pt-1">
+                <!-- Aksi Utama: Order PO & Detail -->
+                <div class="flex items-center gap-2 flex-1">
+                    <button 
+                        type="button"
+                        onclick="event.stopPropagation(); window.quickCreatePOForSupplier('${s.id}')" 
+                        class="flex-1 sm:flex-initial h-11 px-5 rounded-2xl text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-sm active:scale-95 transition-all cursor-pointer" 
+                        style="background: var(--color-primary); box-shadow: 0 4px 12px rgba(var(--color-primary-rgb), 0.3);"
+                        title="Buat Order Kulakan Produk ke Supplier Ini"
+                    >
+                        <i class="fa-solid fa-cart-flatbed text-xs"></i>
+                        <span>Order PO Kulakan</span>
+                    </button>
 
-                        <!-- Tombol Buat PO Langsung untuk Supplier Ini -->
+                    <button 
+                        type="button"
+                        onclick="window.openSupplierDetailModal('${s.id}')" 
+                        class="h-11 px-4 rounded-2xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-700/80 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200/80 dark:border-slate-600 font-bold text-xs sm:text-sm transition-all active:scale-95 shadow-2xs flex items-center justify-center gap-1.5 cursor-pointer"
+                        title="Lihat Profil Rekanan, Katalog, & Histori PO"
+                    >
+                        <i class="fa-solid fa-layer-group text-xs" style="color:var(--color-primary)"></i>
+                        <span>Detail Profil</span>
+                    </button>
+                </div>
+
+                <!-- Aksi Sekunder: Touch-Targets 44px (Grid di HP, Row di Desktop) -->
+                <div class="${cleanPhone ? 'grid grid-cols-3' : 'grid grid-cols-2'} gap-2 w-full sm:w-auto sm:flex sm:items-center sm:gap-2 justify-end shrink-0">
+                    ${cleanPhone ? `
                         <button 
-                            onclick="event.stopPropagation(); window.quickCreatePOForSupplier('${s.id}')" 
-                            class="px-3 h-9 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all active:scale-95 shadow-2xs cursor-pointer border" 
-                            style="background: rgba(var(--color-primary-rgb), 0.1); color: var(--color-primary); border-color: rgba(var(--color-primary-rgb), 0.25);"
-                            title="Buat Order Kulakan Produk ke Supplier Ini"
+                            type="button"
+                            onclick="event.stopPropagation(); window.openSupplierWhatsApp('${cleanPhone}', '${esc(s.name)}', '${esc(s.salesName || '')}')" 
+                            class="h-11 px-3 rounded-2xl bg-emerald-50 hover:bg-emerald-500 hover:text-white dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 flex items-center justify-center gap-1.5 transition-all active:scale-95 shadow-2xs cursor-pointer font-bold text-xs" 
+                            title="Chat WhatsApp Sales"
+                            aria-label="WhatsApp Sales"
                         >
-                            <i class="fa-solid fa-cart-flatbed text-xs"></i>
-                            <span class="hidden sm:inline">Order PO</span>
+                            <i class="fa-brands fa-whatsapp text-sm"></i>
+                            <span class="sm:hidden">WA Sales</span>
                         </button>
+                    ` : ''}
 
-                        <!-- Tombol Lihat Profil & Katalog Lengkap -->
-                        <button 
-                            onclick="window.openSupplierDetailModal('${s.id}')" 
-                            class="px-3.5 h-9 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-700/80 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200/80 dark:border-slate-600 font-bold text-xs transition-all active:scale-95 shadow-2xs flex items-center gap-1.5 cursor-pointer"
-                            title="Lihat Daftar Barang yang Disuplai & Histori PO"
-                        >
-                            <i class="fa-solid fa-layer-group text-xs" style="color:var(--color-primary)"></i>
-                            <span>Detail</span>
-                        </button>
+                    <button 
+                        type="button"
+                        onclick="event.stopPropagation(); window.openSupplierFormModal('${s.id}')" 
+                        class="h-11 px-3 rounded-2xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-700/80 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 border border-slate-200/80 dark:border-slate-600 flex items-center justify-center gap-1.5 transition-all active:scale-95 shadow-2xs cursor-pointer font-bold text-xs" 
+                        title="Edit Data Rekanan"
+                        aria-label="Edit Data Rekanan"
+                    >
+                        <i class="fa-solid fa-pen text-xs"></i>
+                        <span class="sm:hidden">Edit</span>
+                    </button>
 
-                        <!-- Tombol Edit Data Supplier -->
-                        <button 
-                            onclick="event.stopPropagation(); window.openSupplierFormModal('${s.id}')" 
-                            class="w-9 h-9 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-700/80 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 border border-slate-200/80 dark:border-slate-600 flex items-center justify-center transition-all active:scale-95 shadow-2xs cursor-pointer" 
-                            title="Edit Data Rekanan"
-                        >
-                            <i class="fa-solid fa-pen text-xs"></i>
-                        </button>
-
-                        <!-- Tombol Hapus Supplier -->
-                        <button 
-                            onclick="event.stopPropagation(); window.deleteSupplier('${s.id}')" 
-                            class="w-9 h-9 rounded-xl bg-rose-50 hover:bg-rose-500 hover:text-white dark:bg-rose-950/40 text-rose-500 border border-rose-200 dark:border-rose-900 flex items-center justify-center transition-all active:scale-95 shadow-2xs cursor-pointer" 
-                            title="Hapus Rekanan"
-                        >
-                            <i class="fa-solid fa-trash text-xs"></i>
-                        </button>
-                    </div>
+                    <button 
+                        type="button"
+                        onclick="event.stopPropagation(); window.deleteSupplier('${s.id}')" 
+                        class="h-11 px-3 rounded-2xl bg-rose-50 hover:bg-rose-500 hover:text-white dark:bg-rose-950/40 text-rose-500 border border-rose-200 dark:border-rose-900 flex items-center justify-center gap-1.5 transition-all active:scale-95 shadow-2xs cursor-pointer font-bold text-xs" 
+                        title="Hapus Rekanan"
+                        aria-label="Hapus Rekanan"
+                    >
+                        <i class="fa-solid fa-trash text-xs"></i>
+                        <span class="sm:hidden">Hapus</span>
+                    </button>
                 </div>
             </div>
         </div>
@@ -804,7 +815,7 @@ const renderSupplierDetailModalContent = (s) => {
                     <div class="flex items-center gap-x-3 gap-y-1 text-xs text-slate-500 dark:text-slate-400 mt-1 flex-wrap">
                         ${s.salesName ? `<span><i class="fa-solid fa-user-tie text-[var(--color-primary)] mr-1"></i>Sales: <b>${esc(s.salesName)}</b></span>` : ''}
                         ${cleanPhone ? `<a href="https://wa.me/${cleanPhone}" target="_blank" class="text-emerald-600 dark:text-emerald-400 font-bold hover:underline inline-flex items-center"><i class="fa-brands fa-whatsapp mr-1 text-emerald-500"></i>+${cleanPhone}</a>` : ''}
-                        ${s.bankName && s.bankAccount ? `<span><i class="fa-solid fa-credit-card text-blue-500 mr-1"></i>${esc(s.bankName)}: <b class="font-mono text-slate-700 dark:text-slate-200">${esc(s.bankAccount)}</b></span>` : ''}
+                        ${s.bankName && s.bankAccount ? `<span><i class="fa-solid fa-credit-card mr-1" style="color:var(--color-primary)"></i>${esc(s.bankName)}: <b class="font-mono text-slate-700 dark:text-slate-200">${esc(s.bankAccount)}</b></span>` : ''}
                     </div>
                     ${s.address ? `<p class="text-[11px] text-slate-400 dark:text-slate-400 mt-1 line-clamp-2"><i class="fa-solid fa-location-dot text-rose-500 mr-1 shrink-0"></i>${esc(s.address)}</p>` : ''}
                 </div>
@@ -887,19 +898,19 @@ const renderSuppliedProductsTab = (products, s) => {
     return `
         <div class="space-y-4">
             <div class="flex items-center justify-between">
-                <p class="text-xs font-bold text-slate-500 dark:text-slate-400">Total <b>${products.length}</b> macam produk toko berasal dari supplier ini:</p>
-                <button onclick="window.quickCreatePOForSupplier('${s.id}')" class="px-3 py-1.5 rounded-xl text-white font-bold text-xs flex items-center gap-1.5 shadow-2xs cursor-pointer active:scale-95 transition-all" style="background: var(--color-primary); box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.3);">
+                <p class="text-xs font-bold text-slate-500 dark:text-slate-400">Total <b>${products.length}</b> macam produk toko dari supplier ini:</p>
+                <button onclick="window.quickCreatePOForSupplier('${s.id}')" class="px-3.5 py-2 rounded-2xl text-white font-bold text-xs flex items-center gap-1.5 shadow-2xs cursor-pointer active:scale-95 transition-all" style="background: var(--color-primary); box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.3);">
                     <i class="fa-solid fa-cart-plus text-xs"></i>
-                    <span>Kulakan Ulang Produk Ini</span>
+                    <span>Kulakan Produk Ini</span>
                 </button>
             </div>
 
-            <div class="divide-y divide-slate-100 dark:divide-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl overflow-hidden bg-white dark:bg-slate-800">
+            <div class="space-y-3">
                 ${products.map(p => {
                     const coverThumb = renderProductCoverHtml(p, { size: 'thumb' });
                     const imgHtml = p.img 
-                        ? `<img src="${esc(p.img)}" alt="${esc(p.name)}" class="w-12 h-12 object-contain rounded-xl p-1 bg-white border border-slate-100 dark:border-slate-700" onerror="this.onerror=null;this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='flex';"><div class="w-12 h-12" style="display:none">${coverThumb}</div>`
-                        : `<div class="w-12 h-12">${coverThumb}</div>`;
+                        ? `<img src="${esc(p.img)}" alt="${esc(p.name)}" class="w-13 h-13 object-cover rounded-2xl p-0.5 bg-white border border-slate-200 dark:border-slate-700 shadow-2xs" onerror="this.onerror=null;this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='flex';"><div class="w-13 h-13" style="display:none">${coverThumb}</div>`
+                        : `<div class="w-13 h-13">${coverThumb}</div>`;
 
                     const currentStock = (p.variants && p.variants.length) 
                         ? p.variants.reduce((acc, v) => acc + (parseFloat(v.stock) || 0), 0)
@@ -909,38 +920,39 @@ const renderSuppliedProductsTab = (products, s) => {
                     const marginPct = (p.price && p.hpp && p.hpp > 0) ? Math.round((margin / p.hpp) * 100) : 0;
 
                     return `
-                        <div class="p-3.5 sm:p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors">
-                            <div class="flex items-center gap-3 min-w-0">
-                                <div class="shrink-0">${imgHtml}</div>
-                                <div class="min-w-0">
-                                    <h5 class="font-bold text-xs sm:text-sm text-slate-800 dark:text-slate-100 truncate">${esc(p.name)}</h5>
-                                    <div class="flex items-center gap-2 text-[10px] text-slate-400 mt-0.5 flex-wrap">
-                                        ${p.sku ? `<span class="font-mono bg-slate-100 dark:bg-slate-700 px-1.5 py-0.5 rounded text-slate-600 dark:text-slate-300">SKU: ${esc(p.sku)}</span>` : ''}
-                                        ${p.category ? `<span>${esc(p.category)}</span>` : ''}
-                                        <span class="font-bold ${currentStock <= 2 ? 'text-rose-500' : 'text-slate-500'}"><i class="fa-solid fa-boxes-stacked mr-1"></i>Stok: ${currentStock}</span>
+                        <div class="p-3.5 sm:p-4 rounded-3xl bg-white dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs hover:border-[var(--color-primary)]/50 transition-all space-y-3">
+                            <div class="flex items-start justify-between gap-3">
+                                <div class="flex items-start gap-3 min-w-0 flex-1">
+                                    <div class="shrink-0 mt-0.5">${imgHtml}</div>
+                                    <div class="min-w-0 flex-1">
+                                        <h5 class="font-black text-xs sm:text-sm text-slate-800 dark:text-slate-100 truncate">${esc(p.name)}</h5>
+                                        <div class="flex items-center gap-2 text-[10px] text-slate-400 mt-1 flex-wrap">
+                                            ${p.sku ? `<span class="font-mono bg-slate-100 dark:bg-slate-700/80 px-2 py-0.5 rounded-md text-slate-600 dark:text-slate-300 font-bold">SKU: ${esc(p.sku)}</span>` : ''}
+                                            ${p.category ? `<span class="text-slate-500 dark:text-slate-400 font-medium">${esc(p.category)}</span>` : ''}
+                                            <span class="font-bold ${currentStock <= 2 ? 'text-rose-500' : 'text-emerald-600 dark:text-emerald-400'}"><i class="fa-solid fa-boxes-stacked mr-1"></i>Stok: ${currentStock} ${esc(p.unit || 'pcs')}</span>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
 
-                            <div class="flex items-center justify-between sm:justify-end gap-5 text-right pl-15 sm:pl-0">
-                                <div>
-                                    <span class="block text-[9px] font-bold uppercase text-slate-400">Modal (HPP)</span>
-                                    <span class="text-xs font-bold text-amber-600 dark:text-amber-400">${p.hpp ? fCur(p.hpp) : '<span class="text-slate-300">-</span>'}</span>
-                                </div>
-
-                                <div>
-                                    <span class="block text-[9px] font-bold uppercase text-slate-400">Harga Jual</span>
-                                    <span class="text-xs font-bold text-[var(--color-primary)]">${fCur(p.price)}</span>
-                                </div>
-
-                                <div>
-                                    <span class="block text-[9px] font-bold uppercase text-slate-400">Margin Laba</span>
-                                    <span class="text-xs font-bold ${margin > 0 ? 'text-emerald-500' : 'text-slate-400'}">${margin > 0 ? `+${fCur(margin)} (${marginPct}%)` : '-'}</span>
-                                </div>
-
-                                <button onclick="window.closeSupplierDetailModal(); if(window.oAEd) window.oAEd('products', '${p.id}');" class="w-8 h-8 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-300 flex items-center justify-center transition-all" title="Edit Produk">
+                                <button onclick="window.closeSupplierDetailModal(); if(window.oAEd) window.oAEd('products', '${p.id}');" class="w-10 h-10 rounded-2xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-300 flex items-center justify-center transition-all shrink-0 active:scale-95 shadow-2xs cursor-pointer" title="Edit Produk">
                                     <i class="fa-solid fa-pen text-xs"></i>
                                 </button>
+                            </div>
+
+                            <!-- Baris Finansial: HPP, Jual & Margin -->
+                            <div class="grid grid-cols-3 gap-2 p-2.5 rounded-2xl bg-slate-50/80 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 text-xs">
+                                <div>
+                                    <span class="block text-[9px] font-black uppercase tracking-wider text-slate-400">Modal (HPP)</span>
+                                    <span class="font-bold text-slate-700 dark:text-slate-200">${p.hpp ? fCur(p.hpp) : '<span class="text-slate-400 font-normal">-</span>'}</span>
+                                </div>
+                                <div class="text-center">
+                                    <span class="block text-[9px] font-black uppercase tracking-wider text-slate-400">Harga Jual</span>
+                                    <span class="font-black" style="color:var(--color-primary)">${fCur(p.price)}</span>
+                                </div>
+                                <div class="text-right">
+                                    <span class="block text-[9px] font-black uppercase tracking-wider text-slate-400">Margin Laba</span>
+                                    <span class="font-bold ${margin > 0 ? 'text-emerald-500' : 'text-slate-400'}">${margin > 0 ? `+${fCur(margin)} (${marginPct}%)` : '-'}</span>
+                                </div>
                             </div>
                         </div>
                     `;
@@ -974,10 +986,10 @@ const renderSupplierOrdersTab = (purchases, s) => {
         <div class="space-y-3">
             ${purchases.map(po => {
                 const statusBadge = {
-                    'ordered': '<span class="px-2.5 py-1 rounded-full bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-300 text-[10px] font-bold border border-blue-200 dark:border-blue-800"><i class="fa-solid fa-clock mr-1"></i>Dipesan</span>',
-                    'received': '<span class="px-2.5 py-1 rounded-full bg-teal-50 dark:bg-teal-950/40 text-teal-600 dark:text-teal-300 text-[10px] font-bold border border-teal-200 dark:border-teal-800"><i class="fa-solid fa-boxes-stacked mr-1"></i>Barang Diterima</span>',
-                    'completed': '<span class="px-2.5 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-300 text-[10px] font-bold border border-emerald-200 dark:border-emerald-800"><i class="fa-solid fa-check-double mr-1"></i>Selesai / Lunas</span>',
-                    'cancelled': '<span class="px-2.5 py-1 rounded-full bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-300 text-[10px] font-bold border border-rose-200 dark:border-rose-800"><i class="fa-solid fa-ban mr-1"></i>Dibatalkan</span>'
+                    'ordered': `<span class="px-2.5 py-1 rounded-full text-[10px] font-bold border" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary); border-color: rgba(var(--color-primary-rgb), 0.25);"><i class="fa-solid fa-clock mr-1"></i>Dipesan</span>`,
+                    'received': '<span class="px-2.5 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold border border-emerald-200 dark:border-emerald-800"><i class="fa-solid fa-boxes-stacked mr-1"></i>Barang Diterima</span>',
+                    'completed': '<span class="px-2.5 py-1 rounded-full bg-emerald-500 text-white text-[10px] font-black shadow-2xs"><i class="fa-solid fa-check-double mr-1"></i>Selesai &amp; Lunas</span>',
+                    'cancelled': '<span class="px-2.5 py-1 rounded-full bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 text-[10px] font-bold border border-rose-200 dark:border-rose-800"><i class="fa-solid fa-ban mr-1"></i>Dibatalkan</span>'
                 }[po.status || 'ordered'];
 
                 const paymentBadge = po.paymentType === 'tempo' ? `
