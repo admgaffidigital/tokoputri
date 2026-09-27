@@ -5,13 +5,24 @@
  * ============================================================
  */
 
-import { appData, gOrds, cVOrd } from '../../core/state.js';
+import { appData, gOrds, cVOrd, setCVOrd, myOrders } from '../../core/state.js';
 import { el, show, hide, setH, esc } from '../../core/utils.js';
 import { getPrinterConfig } from './printer-settings.js';
 
-export const openReceiptPreview = () => {
-    const o = gOrds.find(x => x.orderId === cVOrd); 
+export const openReceiptPreview = (orderId = null) => {
+    if (orderId && typeof setCVOrd === 'function') {
+        setCVOrd(orderId);
+    }
+    const targetId = orderId || cVOrd;
+    let o = (gOrds || []).find(x => x.orderId === targetId); 
+    if (!o && Array.isArray(myOrders)) {
+        o = myOrders.find(x => x.orderId === targetId);
+    }
+    if (!o && window.lastPrintedOrder && window.lastPrintedOrder.orderId === targetId) {
+        o = window.lastPrintedOrder;
+    }
     if (!o) return;
+    window.lastPrintedOrder = o;
     
     const config = typeof getPrinterConfig === 'function' ? getPrinterConfig() : { paperSize: '58mm', showPoints: true, showBarcode: true };
     const is80 = config.paperSize === '80mm';
@@ -120,7 +131,7 @@ export const closeReceiptPreviewModal = (fH = false) => {
 };
 
 export const executePrintReceipt = () => { 
-    const o = gOrds.find(x => x.orderId === cVOrd); 
+    const o = (gOrds || []).find(x => x.orderId === cVOrd) || (Array.isArray(myOrders) ? myOrders.find(x => x.orderId === cVOrd) : null) || window.lastPrintedOrder; 
     if (!o) return; 
     const p = el('receipt-paper-content') ? el('receipt-paper-content').innerHTML : ''; 
     let t = el('thermal-print-section'); 
@@ -146,7 +157,9 @@ export const executePrintReceipt = () => {
 
 // ─── Expose ke window untuk kompatibilitas onclick di HTML ──────
 window.openReceiptPreview = openReceiptPreview;
+window.openCustomerReceiptPreview = openReceiptPreview;
 window.closeReceiptPreviewModal = closeReceiptPreviewModal;
 window.executePrintReceipt = executePrintReceipt;
 window.checkProPrint = () => { openReceiptPreview(); };
+
 

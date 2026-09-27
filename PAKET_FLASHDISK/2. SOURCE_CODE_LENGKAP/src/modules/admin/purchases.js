@@ -2725,6 +2725,10 @@ window.sendPOToSupplierWA = (poId) => {
  * ══════════════════════════════════════════════════════════════════
  */
 window.printPurchaseOrder = (poId) => {
+    if (typeof window.openDocPreview === 'function') {
+        window.openDocPreview('po', poId);
+        return;
+    }
     const purchases = appData.purchases || [];
     const po = purchases.find(x => String(x.id) === String(poId));
     if (!po) return showToast('Data PO tidak ditemukan!');

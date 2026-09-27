@@ -10,8 +10,145 @@ import { el, show, hide, setIn, setH, esc, fCur, sLoad, hLoad } from '../../core
 
 export let currentDocType = 'invoice';
 
-export const openDocPreview = (type) => {
+export const openDocPreview = (type, targetId = null) => {
     currentDocType = type;
+
+    if (type === 'po') {
+        const purchases = appData.purchases || [];
+        const po = purchases.find(x => String(x.id) === String(targetId)) || (window.currentActivePoId ? purchases.find(x => String(x.id) === String(window.currentActivePoId)) : purchases[0]);
+        if (!po) {
+            if (typeof window.showToast === 'function') window.showToast('Data PO tidak ditemukan!');
+            return;
+        }
+
+        setIn('doc-modal-title', 'Preview Purchase Order (PO)');
+        
+        let logoHTML = '';
+        if (appData.store.logo && (appData.store.logo.includes('http') || appData.store.logo.includes('data:'))) {
+            logoHTML = `<img loading="eager" src="${esc(appData.store.logo)}" class="w-16 h-16 object-contain">`;
+        } else {
+            logoHTML = `<div class="w-16 h-16 primary-bg flex items-center justify-center rounded-xl text-white"><i class="fa-solid fa-store text-3xl"></i></div>`;
+        }
+
+        const formatDate = (val) => {
+            if (!val) return '-';
+            try {
+                const d = val.toDate ? val.toDate() : new Date(val);
+                return d.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
+            } catch(e) { return '-'; }
+        };
+
+        const formatQty = (q) => {
+            const num = parseFloat(q);
+            if (isNaN(num)) return '0';
+            return Number.isInteger(num) ? String(num) : num.toFixed(2).replace(/\.?0+$/, '');
+        };
+
+        const termLabel = po.paymentType === 'tempo' 
+            ? `Tempo ${po.tempoDays || 14} Hari (Jatuh Tempo: ${formatDate(po.tempoDueDate)})` 
+            : (po.paymentType === 'konsinyasi' ? 'Konsinyasi' : 'Cash / Tunai');
+
+        let h = `
+        <div class="flex justify-between items-start border-b-[3px] border-slate-800 pb-6 mb-6">
+            <div class="flex items-center gap-4">
+                ${logoHTML}
+                <div>
+                    <h1 class="font-bold text-2xl tracking-tight text-slate-900 uppercase">${esc(appData.store.name || 'TOKO PUTRI')}</h1>
+                    <p class="text-sm font-bold text-slate-500 mt-1 uppercase tracking-widest">${esc(appData.store.slogan || 'Pusat Alat Teknik, Bangunan & Perlengkapan')}</p>
+                    <p class="text-xs font-medium text-slate-500 mt-1 max-w-sm leading-snug">${esc(appData.store.address || 'Alamat fisik toko belum diatur.')}</p>
+                    <p class="text-xs font-medium text-slate-500 mt-0.5"><i class="fa-brands fa-whatsapp text-emerald-500"></i> ${esc(appData.store.wa || appData.store.phone || '-')}</p>
+                </div>
+            </div>
+            <div class="text-right">
+                <h2 class="font-bold text-3xl tracking-widest text-slate-900 uppercase">PURCHASE ORDER</h2>
+                <p class="text-sm font-bold text-slate-600 mt-2 font-mono">#${esc(po.poNumber || po.id)}</p>
+                <p class="text-xs font-semibold text-slate-500 mt-1">Tanggal: ${formatDate(po.date || po.createdAt)}</p>
+                <p class="text-xs font-bold mt-1 text-[var(--color-primary)]">Status: ${po.status === 'ordered' ? 'DIPESAN' : (po.status === 'received' ? 'DITERIMA' : 'SELESAI')}</p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-8 mb-8">
+            <div class="bg-slate-50 p-5 rounded-xl border border-slate-200">
+                <h3 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3 border-b border-slate-200 pb-2">Kepada Rekanan / Supplier:</h3>
+                <p class="font-bold text-base text-slate-900 uppercase mb-1">${esc(po.supplierName || 'Supplier')}</p>
+                ${po.supplierPhone ? `<p class="text-xs font-medium text-slate-600"><i class="fa-brands fa-whatsapp text-emerald-500"></i> ${esc(po.supplierPhone)}</p>` : ''}
+                ${po.supplierAddress ? `<p class="text-xs font-medium text-slate-600 mt-1 leading-relaxed">${esc(po.supplierAddress)}</p>` : ''}
+            </div>
+            <div class="bg-slate-50 p-5 rounded-xl border border-slate-200">
+                <h3 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3 border-b border-slate-200 pb-2">Ketentuan & Pembayaran:</h3>
+                <p class="text-xs font-semibold text-slate-700 mb-1.5"><span class="text-slate-500">Termin Pembayaran:</span> <b class="text-slate-900">${termLabel}</b></p>
+                <p class="text-xs font-semibold text-slate-700 mb-1.5"><span class="text-slate-500">Tujuan Pengiriman:</span> <b class="text-slate-900">${esc(appData.store.name || 'Gudang Utama Toko')}</b></p>
+                ${po.notes ? `<p class="text-xs font-semibold text-amber-700 bg-amber-50 p-2 rounded-lg border border-amber-200 mt-2"><i class="fa-solid fa-note-sticky mr-1"></i> ${esc(po.notes)}</p>` : ''}
+            </div>
+        </div>
+
+        <table class="w-full text-left border-collapse mb-8">
+            <thead>
+                <tr class="border-b-2 border-slate-800 text-[11px] font-bold text-slate-500 uppercase tracking-wider bg-slate-900 text-white">
+                    <th class="py-3 px-4 rounded-tl-xl text-center w-12 border-r border-slate-700">No</th>
+                    <th class="py-3 px-4 border-r border-slate-700">Nama Barang & Spesifikasi</th>
+                    <th class="py-3 px-4 text-center w-28 border-r border-slate-700">Kuantitas</th>
+                    <th class="py-3 px-4 text-right w-36 border-r border-slate-700">Harga Modal (HPP)</th>
+                    <th class="py-3 px-4 rounded-tr-xl text-right w-36">Subtotal</th>
+                </tr>
+            </thead>
+            <tbody class="border-b-2 border-slate-800 divide-y divide-slate-200">
+                ${(po.items || []).map((it, idx) => `
+                <tr class="hover:bg-slate-50 transition-colors">
+                    <td class="py-3 px-4 text-center font-mono text-slate-500">${idx + 1}</td>
+                    <td class="py-3 px-4 font-bold text-slate-900 uppercase">
+                        ${esc(it.name)}
+                        ${it.variantName ? `<span class="bg-slate-100 text-slate-600 px-2 py-0.5 rounded text-[10px] border border-slate-200 whitespace-nowrap ml-1.5">Varian: ${esc(it.variantName)}</span>` : ''}
+                        ${it.sku ? `<span class="text-slate-400 text-[10px] font-mono block mt-0.5">SKU: ${esc(it.sku)}</span>` : ''}
+                    </td>
+                    <td class="py-3 px-4 text-center font-bold text-base text-slate-800">${formatQty(it.qty)} <span class="text-xs font-normal text-slate-500">${esc(it.unit || 'pcs')}</span></td>
+                    <td class="py-3 px-4 text-right font-mono text-slate-600">${fCur(it.unitPrice)}</td>
+                    <td class="py-3 px-4 text-right font-bold font-mono text-slate-900">${fCur(Math.round((parseFloat(it.qty) || 0) * (parseFloat(it.unitPrice) || 0)))}</td>
+                </tr>
+                `).join('')}
+            </tbody>
+        </table>
+
+        <div class="flex justify-end mb-8">
+            <div class="w-80 bg-slate-50 p-5 rounded-xl border border-slate-200 text-xs space-y-2.5">
+                <div class="flex justify-between text-slate-600"><span>Subtotal Produk:</span><span class="font-bold text-slate-800">${fCur(po.subtotal)}</span></div>
+                ${po.discount > 0 ? `<div class="flex justify-between text-emerald-600 font-bold"><span>Potongan Diskon:</span><span>-${fCur(po.discount)}</span></div>` : ''}
+                ${po.shippingFee > 0 ? `<div class="flex justify-between text-slate-600"><span>Ongkos Kirim:</span><span>+${fCur(po.shippingFee)}</span></div>` : ''}
+                <div class="flex justify-between items-center border-t-2 border-slate-800 pt-2.5 mt-2 font-bold text-base text-slate-900">
+                    <span>TOTAL ORDER (PO):</span>
+                    <span class="text-[var(--color-primary)] font-black">${fCur(po.total)}</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-8 text-center text-sm mt-auto pt-8 border-t border-slate-200">
+            <div class="flex flex-col items-center">
+                <span class="font-bold text-slate-500 mb-20 uppercase tracking-widest text-[10px]">Dipesan Oleh (Purchasing):</span>
+                <div class="w-48 border-b-2 border-slate-800 mb-2"></div>
+                <span class="font-bold text-slate-900 uppercase">${esc(appData.store.name || 'Toko Putri')}</span>
+            </div>
+            <div class="flex flex-col items-center">
+                <span class="font-bold text-slate-500 mb-20 uppercase tracking-widest text-[10px]">Diterima &amp; Disetujui Oleh:</span>
+                <div class="w-48 border-b-2 border-slate-800 mb-2"></div>
+                <span class="font-bold text-slate-900 uppercase">${esc(po.supplierName || 'Rekanan / Supplier')}</span>
+            </div>
+        </div>
+        `;
+
+        setH('doc-paper-content', h);
+        const mDoc = el('doc-preview-modal');
+        if (mDoc && mDoc.classList.contains('hidden') && typeof window.pushModalHistory === 'function') {
+            window.pushModalHistory('docPreview');
+        }
+        show('doc-preview-modal');
+        setTimeout(() => {
+            if (el('doc-preview-modal')) el('doc-preview-modal').classList.remove('opacity-0');
+            if (el('doc-preview-modal-box')) el('doc-preview-modal-box').classList.remove('scale-95');
+            fitDocPreview();
+        }, 10);
+        return;
+    }
+
     const o = gOrds.find(x => x.orderId === cVOrd);
     if (!o) return;
 

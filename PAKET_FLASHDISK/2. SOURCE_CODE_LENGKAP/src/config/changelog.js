@@ -8,6 +8,23 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-9-58',
+        version: 'v1.9.58',
+        date: '2026-09-27',
+        title: 'Ekosistem Cetak Terpadu Berbasis Live Preview — Harmonisasi Struk POS, Slip Shift, Dokumen A4 PO Supplier, Invoice, Surat Jalan & Struk Storefront',
+        category: 'feature',
+        badge: 'Unified Print Preview Ecosystem v1.9.58',
+        items: [
+            'Standardisasi Wajib Live Interactive Preview: Seluruh alur pencetakan dokumen maupun struk kasir diwajibkan melalui pratinjau interaktif terlebih dahulu sebelum dieksekusi ke mesin printer fisik, PDF, atau gambar, mencegah salah cetak dan memastikan seluruh data tampak selaras.',
+            'Integrasi Purchase Order (PO) Supplier ke Modal Preview A4 (openDocPreview("po", poId)): Mengganti pencetakan langsung PO ke lembar pratinjau A4 standar resmi Toko Putri dengan Kop Toko, rincian supplier, termin pembayaran, tabel produk bergaris rapi, total/diskon/ongkir, tanda tangan Purchasing & Supplier, serta opsi Simpan Gambar HD (untuk WhatsApp ke supplier), Cetak PDF, dan Print Langsung.',
+            'Harmonisasi Preview Struk Kasir POS (pos-receipt-fallback-modal): Memodernisasi tampilan struk thermal in-modal dengan scrollbar halus (.custom-scrollbar), tombol close bulat dengan ikon SVG FontAwesome xmark, dan tombol aksi cetak rounded-2xl py-3.5 aktif.',
+            'Harmonisasi Preview Slip Rekap Shift Kasir (pos-shift-receipt-modal): Mempercantik pratinjau slip rekap shift X-Report dan Z-Report kasir dengan scrollbar halus (.custom-scrollbar), tombol close SVG xmark, dan tombol cetak rounded-2xl py-3.5.',
+            'Dukungan Struk Pelanggan Storefront (Customer Receipt Preview): Menghadirkan tombol aksi "Preview & Cetak Struk" pada modal rincian pesanan pembeli di Storefront, serta memperluas fungsi openReceiptPreview agar mendukung parameter orderId opsional dan fallback pencarian ke myOrders pelanggan.',
+            'Modernisasi Modal Preview Struk Utama (receipt-preview-modal): Memperbarui scrollbar dan tombol print thermal menjadi rounded-2xl py-3.5 font-bold shadow-glow dengan micro-animation active:scale-95.',
+            'Sinkronisasi Multi-Channel v1.9.58 (Android VersionCode 10958): Terkompilasi dan tersinkronisasi penuh ke Vite build, paket flashdisk, dan Capacitor Android.'
+        ]
+    },
+    {
         id: 'log-1-9-57',
         version: 'v1.9.57',
         date: '2026-09-27',
