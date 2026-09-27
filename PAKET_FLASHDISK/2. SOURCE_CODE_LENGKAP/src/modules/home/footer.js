@@ -328,10 +328,6 @@ export const renderFooter = () => {
             <span class="flex items-center gap-1 text-[var(--color-primary)] font-bold">
               <i class="fa-solid fa-lock"></i> SSL Secured
             </span>
-            <span class="text-white/20">•</span>
-            <button type="button" onclick="const c = document.querySelector('#view-catalog .scroll-content'); if (c) c.scrollTo({ top: 0, behavior: 'smooth' }); else window.scrollTo({ top: 0, behavior: 'smooth' });" class="inline-flex items-center gap-1.5 text-white/80 hover:text-white transition-colors cursor-pointer active:scale-95 font-bold">
-              Kembali ke Atas <i class="fa-solid fa-arrow-up text-[9px] text-[var(--color-primary)]"></i>
-            </button>
           </div>
         </div>
       </div>
