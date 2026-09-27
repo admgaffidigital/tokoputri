@@ -8,7 +8,7 @@
  */
 
 import { db, firebase, firebaseConfig } from '../config/firebase.js';
-import { appData, defApp, cart, wishlist } from '../core/state.js';
+import { appData, defApp, cart, wishlist, currentMember } from '../core/state.js';
 import { 
     sL, ssL, fixD, fixDriveVideo, setIn, showToast, 
     sLoad, hLoad, el, updateSEO, injectJSONLD, getOptImg 

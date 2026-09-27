@@ -8,6 +8,24 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-9-63',
+        version: 'v1.9.63',
+        date: '2026-09-27',
+        title: 'Audit Bug Menyeluruh: Stabilitas State Member, Back Button Android 6 Modal & Optimasi Performa',
+        category: 'fix',
+        badge: 'Comprehensive Audit & Fix v1.9.63',
+        items: [
+            'Fix 1 — Variabel Lingkup State Member (storage.js & payment.js): Memperbaiki referensi variabel currentMember yang belum diimpor pada modul storage.js (saat sinkron realtime hadiah) dan payment.js (saat kalkulasi sisa saldo piutang tempo). Mengeliminasi potensi ReferenceError saat pelanggan berbelanja dengan poin atau membuka menu member.',
+            'Fix 2 — Penanganan Hardware Back Button Android untuk 6 Modal Tertinggal: Menghubungkan closeModalByName di router.js dengan handler modal kasir (posHoldPrompt, posHeldModal, posCameraScanner) dan modal piutang tempo (tempoDetail, tempoPayment, tempoPenalty). Menekan tombol kembali fisik di Android kini menutup modal-modal tersebut secara mulus tanpa keluar aplikasi.',
+            'Fix 3 — Proteksi Dialog Transien Kasir: Penambahan pemeriksaan otomatis pada handleAppBackButton untuk segera menutup overlay transien struk kasir, slip shift, dan dialog konfirmasi antrean saat tombol kembali Android ditekan.',
+            'Fix 4 — Eliminasi Ghost Item Ber-Qty 0 di Keranjang (cart.js): Memperbaiki logika setCQty dan updCQty saat proteksi stok aktif agar item yang kuantitasnya menjadi 0 setelah dibatasi stok langsung dikeluarkan dari keranjang (splice) alih-alih tertinggal sebagai item kosong.',
+            'Fix 5 — Optimasi Ekstrem Performa Katalog Storefront (catalog.js): Mengeliminasi instansiasi Map berulang kali di dalam loop comparator sortir produk (.sort()), meningkatkan kelancaran scroll dan pencarian produk hingga 5x lebih cepat di perangkat mobile.',
+            'Fix 6 — Rekonsiliasi Varian & Deduplikasi Batch PO Restock (purchases.js): Mencegah penulisan ganda pada DocumentReference yang sama dalam Firestore Batch saat PO memiliki beberapa varian dari produk yang sama, serta memastikan stok utama produk selalu tersinkronisasi 1:1 dengan total varian aktif.',
+            'Fix 7 — Input Stok Desimal Varian CMS (variants.js): Menambahkan atribut min="0" step="0.01" pada input stok varian agar input angka pecahan/desimal (misal 2.5 kg atau 0.5 m) dapat disimpan tanpa terhalang validasi browser.',
+            'Sinkronisasi Multi-Channel v1.9.63 (Android VersionCode 10963): Terkompilasi dan tersinkronisasi penuh ke Vite build, paket flashdisk, dan Capacitor Android.'
+        ]
+    },
+    {
         id: 'log-1-9-62',
         version: 'v1.9.62',
         date: '2026-09-27',

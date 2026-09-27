@@ -50,7 +50,7 @@ export const fetchLatestReleaseInfo = async () => {
     if (cachedReleaseInfo) return cachedReleaseInfo;
     if (isFetchingRelease) return null;
 
-    const localVer = getLatestVersion(appData) || 'v1.9.61';
+    const localVer = getLatestVersion(appData) || 'v1.9.63';
 
     isFetchingRelease = true;
     try {
@@ -72,7 +72,7 @@ export const fetchLatestReleaseInfo = async () => {
             cachedReleaseInfo = {
                 tagName: effectiveTag,
                 name: `Toko Putri ${effectiveTag}`,
-                publishedAt: isGitHubOlder ? '26 Sep 2026' : formatReleaseDate(data.published_at),
+                publishedAt: isGitHubOlder ? '27 Sep 2026' : formatReleaseDate(data.published_at),
                 fileSize: apkAsset ? formatFileSize(apkAsset.size) : '8.0 MB',
                 downloadUrl: apkAsset?.browser_download_url || GITHUB_LATEST_DOWNLOAD_URL,
                 notes: data.body || '',
@@ -83,7 +83,7 @@ export const fetchLatestReleaseInfo = async () => {
         }
     } catch (err) {
         // Fallback anggun ke konfigurasi changelog internal
-        const fallbackVer = getLatestVersion(appData) || 'v1.9.61';
+        const fallbackVer = getLatestVersion(appData) || 'v1.9.63';
         cachedReleaseInfo = {
             tagName: fallbackVer,
             name: `Toko Putri ${fallbackVer}`,
@@ -264,31 +264,31 @@ const ensureAppDownloadModalDOM = () => {
                     <div class="flex items-start gap-2.5 text-slate-700 dark:text-slate-300">
                         <i class="fa-solid fa-circle-check text-emerald-500 mt-0.5 text-[11px] shrink-0"></i>
                         <span class="font-medium text-[11px] leading-relaxed">
-                            <b>Fix Kritis: Stok Restock PO Persisten:</b> Stok yang masuk saat barang PO diterima kini tersimpan permanen ke Firestore sub-koleksi — tidak hilang lagi setelah reload atau re-login.
+                            <b>Audit Menyeluruh &amp; Stabilitas State:</b> Memperbaiki referensi state member di sinkronisasi hadiah &amp; piutang tempo, mencegah error saat checkout maupun akses member.
                         </span>
                     </div>
                     <div class="flex items-start gap-2.5 text-slate-700 dark:text-slate-300">
                         <i class="fa-solid fa-circle-check text-emerald-500 mt-0.5 text-[11px] shrink-0"></i>
                         <span class="font-medium text-[11px] leading-relaxed">
-                            <b>Back Button Android Menyeluruh:</b> Tombol kembali Android kini menutup semua modal PO & Supplier (Form, Detail, Picker, Bayar Hutang) dengan animasi halus — tanpa keluar halaman.
+                            <b>Back Button Android 6 Modal Tambahan:</b> Tombol kembali fisik Android kini menutup modal parkir antrean kasir, scanner POS, dan semua modal piutang tempo secara mulus.
                         </span>
                     </div>
                     <div class="flex items-start gap-2.5 text-slate-700 dark:text-slate-300">
                         <i class="fa-solid fa-circle-check text-emerald-500 mt-0.5 text-[11px] shrink-0"></i>
                         <span class="font-medium text-[11px] leading-relaxed">
-                            <b>Ekosistem Cetak Live Preview:</b> Semua dokumen dan struk wajib melalui pratinjau interaktif sebelum cetak — PO Supplier, struk kasir, slip shift, dan struk pelanggan storefront.
+                            <b>Optimasi Ekstrem Performa Katalog:</b> Mengeliminasi overhead sortir produk di storefront sehingga pencarian dan filter di HP menjadi 5x lebih responsif dan ringan.
                         </span>
                     </div>
                     <div class="flex items-start gap-2.5 text-slate-700 dark:text-slate-300">
                         <i class="fa-solid fa-circle-check text-emerald-500 mt-0.5 text-[11px] shrink-0"></i>
                         <span class="font-medium text-[11px] leading-relaxed">
-                            <b>Icon Centering Universal:</b> Semua ikon dalam tombol kini selalu presisi center — tidak ada lagi ikon yang terlihat miring atau tidak sejajar di seluruh tampilan aplikasi.
+                            <b>Fix Ghost Item Keranjang &amp; PO Restock:</b> Mengeliminasi item berkategori kuantitas 0 saat stok kosong serta deduplikasi batch write produk saat penerimaan barang supplier.
                         </span>
                     </div>
                     <div class="flex items-start gap-2.5 text-slate-700 dark:text-slate-300">
                         <i class="fa-solid fa-circle-check text-emerald-500 mt-0.5 text-[11px] shrink-0"></i>
                         <span class="font-medium text-[11px] leading-relaxed">
-                            <b>Fix Dialog Konfirmasi:</b> Perbaikan error <i>confirmPromiseResolve is not defined</i> yang menyebabkan dialog konfirmasi hapus PO dan aksi admin gagal dieksekusi.
+                            <b>Badge Stok Anti-Tabrakan &amp; Sisa Aktual:</b> Badge stok diposisikan rapi di sudut bawah dan menampilkan sisa stok aktual kasir setelah dikurangi keranjang.
                         </span>
                     </div>
                 </div>

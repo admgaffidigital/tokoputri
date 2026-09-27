@@ -688,9 +688,13 @@ window.receiveAndRestockPO = (poId) => {
                             }
                         }
 
-                        // 2. Tambah stok utama produk (desimal presisi)
-                        const currentStock = parseFloat(prod.stock) || 0;
-                        prod.stock = parseFloat((currentStock + addedQty).toFixed(3));
+                        // 2. Sinkronkan stok utama produk (desimal presisi)
+                        if (Array.isArray(prod.variants) && prod.variants.length > 0) {
+                            prod.stock = prod.variants.reduce((s, v) => s + (v && v.stock != null ? (parseFloat(v.stock) || 0) : 0), 0);
+                        } else {
+                            const currentStock = parseFloat(prod.stock) || 0;
+                            prod.stock = parseFloat((currentStock + addedQty).toFixed(3));
+                        }
 
                         // 3. Perbarui HPP jika harga beli modal valid
                         if (newHpp > 0) {
@@ -720,7 +724,44 @@ window.receiveAndRestockPO = (poId) => {
                 }
 
                 // Simpan perubahan ke cloud Firestore & localStorage
-                await saveApp(productsUpdated ? ['purchases', 'products'] : ['purchases']);
+                // PERBAIKAN BUG KRITIS: simpan produk langsung ke sub-koleksi
+                // freshmart/cms_data/products/{id} menggunakan Batch Write,
+                // BUKAN via saveApp(['products']) yang salah path ke dokumen utama.
+                if (productsUpdated) {
+                    const batch = db.batch();
+                    const updatedProductIds = [];
+                    const seenProductIds = new Set();
+
+                    (po.items || []).forEach(item => {
+                        if (!item.productId) return;
+                        const pidStr = String(item.productId);
+                        if (seenProductIds.has(pidStr)) return;
+                        seenProductIds.add(pidStr);
+
+                        const prod = (appData.products || []).find(p => String(p.id) === pidStr);
+                        if (prod) {
+                            const prodRef = db.collection('freshmart').doc('cms_data').collection('products').doc(prod.id.toString());
+                            batch.set(prodRef, prod);
+                            updatedProductIds.push(prod.id.toString());
+                        }
+                    });
+
+                    // Simpan status PO ke dokumen utama cms_data sekaligus
+                    await batch.commit();
+
+                    // Simpan perubahan PO ke dokumen utama (bukan produk)
+                    await saveApp(['purchases'], {
+                        updateType: 'restock_received',
+                        updatedProductIds
+                    });
+                } else {
+                    await saveApp(['purchases']);
+                }
+
+                // Update cache lokal produk setelah batch commit berhasil
+                try {
+                    localStorage.setItem('freshmart_products', JSON.stringify(appData.products));
+                } catch(_) {}
 
                 hLoad();
                 showToast('Barang berhasil diterima & stok toko bertambah! 📦✨');
@@ -794,6 +835,9 @@ window.openCreatePOModal = (preselectedSupplierId = null, existingPOId = null) =
     const modal = el('modal-po-form');
     const box = el('modal-po-form-box');
     if (!modal) return;
+    if (modal.classList.contains('hidden') && typeof window.pushModalHistory === 'function') {
+        window.pushModalHistory('purchaseForm');
+    }
     openModalAnim(modal, box);
 
     // Pastikan scroll container form PO selalu berada di posisi paling atas saat baru dibuka
@@ -1104,12 +1148,17 @@ const renderPOFormModalContent = (po, isEdit) => {
 /**
  * Tutup Modal Form PO
  */
-window.closePOFormModal = () => {
+window.closePOFormModal = (fH = false) => {
     const modal = el('modal-po-form');
     const box = el('modal-po-form-box');
     if (!modal) return;
-    closeModalAnim(modal, box);
+    if (!fH && typeof window.requestCloseModal === 'function') {
+        window.requestCloseModal('purchaseForm', false, () => closeModalAnim(modal, box));
+    } else {
+        closeModalAnim(modal, box);
+    }
 };
+window.closeCreatePOModal = window.closePOFormModal;
 
 /**
  * Switch & Set Tipe Pembayaran (Cash / Tempo / Konsinyasi) via Segmented Control
@@ -1190,6 +1239,9 @@ window.openPOProductPicker = (targetRowIndex = null) => {
     const modal = el('modal-po-product-picker');
     const box = el('modal-po-product-picker-box');
     if (!modal) return;
+    if (modal.classList.contains('hidden') && typeof window.pushModalHistory === 'function') {
+        window.pushModalHistory('purchasePicker');
+    }
     openModalAnim(modal, box);
 
     // Pastikan scroll container picker selalu berada di posisi paling atas saat baru dibuka
@@ -1208,11 +1260,15 @@ window.openPOProductPicker = (targetRowIndex = null) => {
 /**
  * Tutup Native Product Picker Modal
  */
-window.closePOProductPicker = () => {
+window.closePOProductPicker = (fH = false) => {
     const modal = el('modal-po-product-picker');
     const box = el('modal-po-product-picker-box');
     if (!modal) return;
-    closeModalAnim(modal, box);
+    if (!fH && typeof window.requestCloseModal === 'function') {
+        window.requestCloseModal('purchasePicker', false, () => closeModalAnim(modal, box));
+    } else {
+        closeModalAnim(modal, box);
+    }
 };
 
 /**
@@ -2410,15 +2466,22 @@ window.openPurchaseDetailModal = (poId) => {
             </div>
         </div>
     `);
-
+    if (modal.classList.contains('hidden') && typeof window.pushModalHistory === 'function') {
+        window.pushModalHistory('purchaseDetail');
+    }
     openModalAnim(modal, box);
 };
 
-window.closePurchaseDetailModal = () => {
+
+window.closePurchaseDetailModal = (fH = false) => {
     const modal = el('modal-po-detail');
     const box = el('modal-po-detail-box');
     if (!modal) return;
-    closeModalAnim(modal, box);
+    if (!fH && typeof window.requestCloseModal === 'function') {
+        window.requestCloseModal('purchaseDetail', false, () => closeModalAnim(modal, box));
+    } else {
+        closeModalAnim(modal, box);
+    }
 };
 
 /**
@@ -2574,6 +2637,9 @@ window.openPurchasePaymentModal = (poId) => {
     `);
 
     window.recalcPOPaymentPreview(unpaid);
+    if (modal.classList.contains('hidden') && typeof window.pushModalHistory === 'function') {
+        window.pushModalHistory('purchasePayment');
+    }
     openModalAnim(modal, box);
 };
 
@@ -2603,11 +2669,15 @@ window.recalcPOPaymentPreview = (maxUnpaid) => {
     }
 };
 
-window.closePurchasePaymentModal = () => {
+window.closePurchasePaymentModal = (fH = false) => {
     const modal = el('modal-po-payment');
     const box = el('modal-po-payment-box');
     if (!modal) return;
-    closeModalAnim(modal, box);
+    if (!fH && typeof window.requestCloseModal === 'function') {
+        window.requestCloseModal('purchasePayment', false, () => closeModalAnim(modal, box));
+    } else {
+        closeModalAnim(modal, box);
+    }
 };
 
 /**

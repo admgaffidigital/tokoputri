@@ -50,7 +50,7 @@ export const fetchLatestReleaseInfo = async () => {
     if (cachedReleaseInfo) return cachedReleaseInfo;
     if (isFetchingRelease) return null;
 
-    const localVer = getLatestVersion(appData) || 'v1.9.49';
+    const localVer = getLatestVersion(appData) || 'v1.9.63';
 
     isFetchingRelease = true;
     try {
@@ -72,7 +72,7 @@ export const fetchLatestReleaseInfo = async () => {
             cachedReleaseInfo = {
                 tagName: effectiveTag,
                 name: `Toko Putri ${effectiveTag}`,
-                publishedAt: isGitHubOlder ? '26 Sep 2026' : formatReleaseDate(data.published_at),
+                publishedAt: isGitHubOlder ? '27 Sep 2026' : formatReleaseDate(data.published_at),
                 fileSize: apkAsset ? formatFileSize(apkAsset.size) : '8.0 MB',
                 downloadUrl: apkAsset?.browser_download_url || GITHUB_LATEST_DOWNLOAD_URL,
                 notes: data.body || '',
@@ -83,7 +83,7 @@ export const fetchLatestReleaseInfo = async () => {
         }
     } catch (err) {
         // Fallback anggun ke konfigurasi changelog internal
-        const fallbackVer = getLatestVersion(appData) || 'v1.9.49';
+        const fallbackVer = getLatestVersion(appData) || 'v1.9.63';
         cachedReleaseInfo = {
             tagName: fallbackVer,
             name: `Toko Putri ${fallbackVer}`,
@@ -248,12 +248,12 @@ const ensureAppDownloadModalDOM = () => {
                 </div>
             </div>
 
-            <!-- Apa yang Baru (Highlights Changelog v1.9.49) -->
+            <!-- Apa yang Baru (Highlights Changelog v1.9.61) -->
             <div class="space-y-2.5">
                 <div class="flex items-center justify-between">
                     <h3 class="text-xs sm:text-sm font-black text-slate-900 dark:text-white flex items-center gap-2">
                         <i class="fa-solid fa-sparkles text-amber-500"></i>
-                        <span>Apa yang Baru di v1.9.49</span>
+                        <span id="app-modal-whats-new-title">Apa yang Baru di v1.9.61</span>
                     </h3>
                     <button type="button" onclick="closeAppDownloadModal(); if(typeof window.openChangelogModal==='function') window.openChangelogModal();" class="text-[10px] font-bold text-[var(--color-primary)] hover:underline cursor-pointer">
                         Lihat Semua Riwayat
@@ -264,37 +264,31 @@ const ensureAppDownloadModalDOM = () => {
                     <div class="flex items-start gap-2.5 text-slate-700 dark:text-slate-300">
                         <i class="fa-solid fa-circle-check text-emerald-500 mt-0.5 text-[11px] shrink-0"></i>
                         <span class="font-medium text-[11px] leading-relaxed">
-                            <b>Adaptive Dual-Mode PO Item Builder:</b> Tampilan kartu sentuh native di mobile (stepper [-] [ 1 ] [+], monogram produk, input Rp modal HPP) dan tabel presisi di desktop.
+                            <b>Audit Menyeluruh &amp; Stabilitas State:</b> Memperbaiki referensi state member di sinkronisasi hadiah &amp; piutang tempo, mencegah error saat checkout maupun akses member.
                         </span>
                     </div>
                     <div class="flex items-start gap-2.5 text-slate-700 dark:text-slate-300">
                         <i class="fa-solid fa-circle-check text-emerald-500 mt-0.5 text-[11px] shrink-0"></i>
                         <span class="font-medium text-[11px] leading-relaxed">
-                            <b>Segmented Touch Control Termin Pembayaran:</b> Pilihan sentuh instan Tunai, Tempo (preset 7/14/30/60 Hari), dan Konsinyasi dengan perhitungan jatuh tempo otomatis.
+                            <b>Back Button Android 6 Modal Tambahan:</b> Tombol kembali fisik Android kini menutup modal parkir antrean kasir, scanner POS, dan semua modal piutang tempo secara mulus.
                         </span>
                     </div>
                     <div class="flex items-start gap-2.5 text-slate-700 dark:text-slate-300">
                         <i class="fa-solid fa-circle-check text-emerald-500 mt-0.5 text-[11px] shrink-0"></i>
                         <span class="font-medium text-[11px] leading-relaxed">
-                            <b>Database Rekanan &amp; Profil 3-Tab:</b> Master data rekanan lengkap dengan profil 3 tab (Katalog Produk, Riwayat PO, dan Kartu Hutang Usaha outstanding).
+                            <b>Optimasi Ekstrem Performa Katalog:</b> Mengeliminasi overhead sortir produk di storefront sehingga pencarian dan filter di HP menjadi 5x lebih responsif dan ringan.
                         </span>
                     </div>
                     <div class="flex items-start gap-2.5 text-slate-700 dark:text-slate-300">
                         <i class="fa-solid fa-circle-check text-emerald-500 mt-0.5 text-[11px] shrink-0"></i>
                         <span class="font-medium text-[11px] leading-relaxed">
-                            <b>Otomatis Restock Stok Gudang:</b> Stok fisik toko bertambah otomatis seketika saat order pembelian (PO) diterima tanpa input manual per barang.
+                            <b>Fix Ghost Item Keranjang &amp; PO Restock:</b> Mengeliminasi item berkategori kuantitas 0 saat stok kosong serta deduplikasi batch write produk saat penerimaan barang supplier.
                         </span>
                     </div>
                     <div class="flex items-start gap-2.5 text-slate-700 dark:text-slate-300">
                         <i class="fa-solid fa-circle-check text-emerald-500 mt-0.5 text-[11px] shrink-0"></i>
                         <span class="font-medium text-[11px] leading-relaxed">
-                            <b>Harmonisasi Tema Warna 100%:</b> Mengeliminasi warna kusam (*muddy tan/grey*) dengan engine dynamic translucent RGBA di semua tema warna &amp; mode gelap.
-                        </span>
-                    </div>
-                    <div class="flex items-start gap-2.5 text-slate-700 dark:text-slate-300">
-                        <i class="fa-solid fa-circle-check text-emerald-500 mt-0.5 text-[11px] shrink-0"></i>
-                        <span class="font-medium text-[11px] leading-relaxed">
-                            <b>Standarisasi Sticky Action Footer 48px:</b> Bilah aksi bawah ergonomis di seluruh modal dengan safe-area padding dan micro-interaction active:scale-95.
+                            <b>Badge Stok Anti-Tabrakan &amp; Sisa Aktual:</b> Badge stok diposisikan rapi di sudut bawah dan menampilkan sisa stok aktual kasir setelah dikurangi keranjang.
                         </span>
                     </div>
                 </div>

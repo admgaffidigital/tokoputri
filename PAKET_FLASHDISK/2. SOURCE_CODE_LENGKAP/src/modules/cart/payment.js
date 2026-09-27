@@ -8,7 +8,7 @@
  */
 
 import { db, firebase } from '../../config/firebase.js';
-import { appData, cart, cust } from '../../core/state.js';
+import { appData, cart, cust, currentMember } from '../../core/state.js';
 import { 
     el, show, hide, toggleCls, fCur, showToast, sLoad, hLoad, fixD 
 } from '../../core/utils.js';

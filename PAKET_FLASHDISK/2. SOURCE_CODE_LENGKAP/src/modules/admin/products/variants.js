@@ -133,7 +133,7 @@ window.rVarsB = () => {
                 </div>
                 <div>
                     <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Stok Varian (Qty)</label>
-                    <input autocomplete='off' placeholder="0" type="number" class="admin-input !text-sm !py-3.5 bg-white dark:bg-slate-800 shadow-sm" value="${v.stock !== undefined ? v.stock : ''}" onchange="uVar(${i},'stock',this.value)">
+                    <input autocomplete='off' placeholder="0" type="number" min="0" step="0.01" class="admin-input !text-sm !py-3.5 bg-white dark:bg-slate-800 shadow-sm" value="${v.stock !== undefined ? v.stock : ''}" onchange="uVar(${i},'stock',this.value)">
                 </div>
                 <div>
                     <label class="block text-[11px] font-bold text-[var(--color-primary)] mb-2 uppercase tracking-widest flex items-center gap-1"><i class="fa-solid fa-star"></i> Poin Member (per unit terjual)</label>

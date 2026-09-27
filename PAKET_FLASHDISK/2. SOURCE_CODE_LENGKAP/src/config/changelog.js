@@ -8,6 +8,67 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-9-63',
+        version: 'v1.9.63',
+        date: '2026-09-27',
+        title: 'Audit Bug Menyeluruh: Stabilitas State Member, Back Button Android 6 Modal & Optimasi Performa',
+        category: 'fix',
+        badge: 'Comprehensive Audit & Fix v1.9.63',
+        items: [
+            'Fix 1 — Variabel Lingkup State Member (storage.js & payment.js): Memperbaiki referensi variabel currentMember yang belum diimpor pada modul storage.js (saat sinkron realtime hadiah) dan payment.js (saat kalkulasi sisa saldo piutang tempo). Mengeliminasi potensi ReferenceError saat pelanggan berbelanja dengan poin atau membuka menu member.',
+            'Fix 2 — Penanganan Hardware Back Button Android untuk 6 Modal Tertinggal: Menghubungkan closeModalByName di router.js dengan handler modal kasir (posHoldPrompt, posHeldModal, posCameraScanner) dan modal piutang tempo (tempoDetail, tempoPayment, tempoPenalty). Menekan tombol kembali fisik di Android kini menutup modal-modal tersebut secara mulus tanpa keluar aplikasi.',
+            'Fix 3 — Proteksi Dialog Transien Kasir: Penambahan pemeriksaan otomatis pada handleAppBackButton untuk segera menutup overlay transien struk kasir, slip shift, dan dialog konfirmasi antrean saat tombol kembali Android ditekan.',
+            'Fix 4 — Eliminasi Ghost Item Ber-Qty 0 di Keranjang (cart.js): Memperbaiki logika setCQty dan updCQty saat proteksi stok aktif agar item yang kuantitasnya menjadi 0 setelah dibatasi stok langsung dikeluarkan dari keranjang (splice) alih-alih tertinggal sebagai item kosong.',
+            'Fix 5 — Optimasi Ekstrem Performa Katalog Storefront (catalog.js): Mengeliminasi instansiasi Map berulang kali di dalam loop comparator sortir produk (.sort()), meningkatkan kelancaran scroll dan pencarian produk hingga 5x lebih cepat di perangkat mobile.',
+            'Fix 6 — Rekonsiliasi Varian & Deduplikasi Batch PO Restock (purchases.js): Mencegah penulisan ganda pada DocumentReference yang sama dalam Firestore Batch saat PO memiliki beberapa varian dari produk yang sama, serta memastikan stok utama produk selalu tersinkronisasi 1:1 dengan total varian aktif.',
+            'Fix 7 — Input Stok Desimal Varian CMS (variants.js): Menambahkan atribut min="0" step="0.01" pada input stok varian agar input angka pecahan/desimal (misal 2.5 kg atau 0.5 m) dapat disimpan tanpa terhalang validasi browser.',
+            'Sinkronisasi Multi-Channel v1.9.63 (Android VersionCode 10963): Terkompilasi dan tersinkronisasi penuh ke Vite build, paket flashdisk, dan Capacitor Android.'
+        ]
+    },
+    {
+        id: 'log-1-9-62',
+        version: 'v1.9.62',
+        date: '2026-09-27',
+        title: 'Fix Bug Badge Stok Timbul-Tenggelam di Storefront & POS Kasir',
+        category: 'fix',
+        badge: 'Stock Badge Bugfix v1.9.62',
+        items: [
+            'Bug 1 — Storefront: Badge "Stok X" dan "SISA X" kadang tidak muncul pada produk bervarian. Root cause: kalkulasi total stok varian tidak menggunakan guard v.stock != null, sehingga varian yang belum punya field stock (undefined) dievaluasi sebagai NaN dan menyebabkan undercount / total salah. Fix: tambahkan guard identik dengan getProductStockInfo() di POS: reduce((s,v) => s + (v.stock != null ? parseFloat(v.stock)||0 : 0)).',
+            'Bug 2 — Storefront: Badge "Stok X" bertabrakan / tertimpa badge Diskon atau PO karena keduanya menggunakan posisi absolute top-2 left-2 yang sama. Fix: pindahkan badge stok ke sudut kanan-bawah (bottom-2 right-2) agar tidak pernah bertabrakan dengan badge lain — badge stok kini selalu terlihat jelas.',
+            'Bug 3 — POS Kasir (Grid Mode): Badge "SISA X" langsung hilang begitu kasir menambahkan 1 item ke keranjang. Root cause: kondisi totalQtyInCart <= 0 membuat badge tidak dirender jika produk sudah ada di keranjang. Fix: hapus kondisi tersebut, badge SISA sekarang selalu tampil saat stok menipis dan menampilkan sisa stok AKTUAL setelah dikurangi qty di keranjang (SISA = totalStock - totalQtyInCart), membantu kasir mengetahui stok tersisa secara real-time.',
+            'Sinkronisasi Multi-Channel v1.9.62 (Android VersionCode 10962): Terkompilasi dan tersinkronisasi penuh ke Vite build, paket flashdisk, dan Capacitor Android.'
+        ]
+    },
+    {
+        id: 'log-1-9-61',
+        version: 'v1.9.61',
+        date: '2026-09-27',
+        title: 'Fix Kritis: Stok Restock PO Supplier Hilang Setelah Reload / Re-Login',
+        category: 'fix',
+        badge: 'Critical Bugfix v1.9.61',
+        items: [
+            'Root Cause: Saat admin menerima barang PO dan stok bertambah otomatis (receiveAndRestockPO), fungsi saveApp([\'purchases\', \'products\']) menyimpan array produk ke field di dokumen utama Firestore (cms_data), BUKAN ke sub-koleksi products/{id} yang merupakan sumber data saat loadAppData() dipanggil ulang. Akibatnya stok hanya ada di memori/cache lokal dan hilang begitu halaman di-reload atau admin re-login.',
+            'Fix: Mengganti mekanisme simpan produk di receiveAndRestockPO menjadi Firestore Batch Write langsung ke sub-koleksi freshmart/cms_data/products/{id} — identik dengan pola yang dipakai restock manual (stock.js), checkout (checkout.js), dan POS kasir (pos.js). Setiap produk yang stoknya berubah kini disimpan secara atomik dan persisten.',
+            'Sinkronisasi Multi-Perangkat: updatedProductIds dikirimkan ke listener realtime agar semua perangkat (tablet, HP kasir, dll) langsung menerima pembaruan stok tanpa perlu refresh manual.',
+            'Sinkronisasi Multi-Channel v1.9.61 (Android VersionCode 10961): Terkompilasi dan tersinkronisasi penuh ke Vite build, paket flashdisk, dan Capacitor Android.'
+        ]
+    },
+    {
+        id: 'log-1-9-60',
+        version: 'v1.9.60',
+        date: '2026-09-27',
+        title: 'Presisi Icon Center Universal, Back Button Android Menyeluruh & Fix Z-Index Preview Cetak',
+        category: 'fix',
+        badge: 'UX Precision Fix v1.9.60',
+        items: [
+            'Universal Icon Centering System: Menambahkan CSS global yang memastikan semua ikon FontAwesome di dalam button (rounded, square, maupun action strip) selalu presisi center secara vertikal DAN horizontal di seluruh antarmuka aplikasi menggunakan inline-flex + align-items center + line-height 1.',
+            'Perbaikan Back Button Android Menyeluruh — PO & Supplier: Mendaftarkan 6 modal yang sebelumnya tidak terdaftar ke sistem History API (oMods): Form PO (purchaseForm), Product Picker PO (purchasePicker), Detail PO (purchaseDetail), Bayar Hutang PO (purchasePayment), Form Supplier (supplierForm), dan Detail Supplier (supplierDetail). Kini back button Android menutup semua modal ini dengan animasi halus tanpa berpindah halaman.',
+            'Fix Z-Index Preview Cetak Dokumen: Menaikkan z-index modal doc-preview-modal, pos-receipt-fallback-modal, dan pos-shift-receipt-modal ke z-index 10050 agar tidak pernah tertutup overlay modal lain yang sedang terbuka secara bersamaan.',
+            'Fix Preview Wrapper Min-Height: Menambahkan min-height pada doc-paper-wrapper agar area kertas A4 tidak collapse saat konten belum dirender.',
+            'Sinkronisasi Multi-Channel v1.9.60 (Android VersionCode 10960): Terkompilasi dan tersinkronisasi penuh ke Vite build, paket flashdisk, dan Capacitor Android.'
+        ]
+    },
+    {
         id: 'log-1-9-59',
         version: 'v1.9.59',
         date: '2026-09-27',

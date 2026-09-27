@@ -688,9 +688,13 @@ window.receiveAndRestockPO = (poId) => {
                             }
                         }
 
-                        // 2. Tambah stok utama produk (desimal presisi)
-                        const currentStock = parseFloat(prod.stock) || 0;
-                        prod.stock = parseFloat((currentStock + addedQty).toFixed(3));
+                        // 2. Sinkronkan stok utama produk (desimal presisi)
+                        if (Array.isArray(prod.variants) && prod.variants.length > 0) {
+                            prod.stock = prod.variants.reduce((s, v) => s + (v && v.stock != null ? (parseFloat(v.stock) || 0) : 0), 0);
+                        } else {
+                            const currentStock = parseFloat(prod.stock) || 0;
+                            prod.stock = parseFloat((currentStock + addedQty).toFixed(3));
+                        }
 
                         // 3. Perbarui HPP jika harga beli modal valid
                         if (newHpp > 0) {
@@ -726,10 +730,15 @@ window.receiveAndRestockPO = (poId) => {
                 if (productsUpdated) {
                     const batch = db.batch();
                     const updatedProductIds = [];
+                    const seenProductIds = new Set();
 
                     (po.items || []).forEach(item => {
                         if (!item.productId) return;
-                        const prod = (appData.products || []).find(p => String(p.id) === String(item.productId));
+                        const pidStr = String(item.productId);
+                        if (seenProductIds.has(pidStr)) return;
+                        seenProductIds.add(pidStr);
+
+                        const prod = (appData.products || []).find(p => String(p.id) === pidStr);
                         if (prod) {
                             const prodRef = db.collection('freshmart').doc('cms_data').collection('products').doc(prod.id.toString());
                             batch.set(prodRef, prod);

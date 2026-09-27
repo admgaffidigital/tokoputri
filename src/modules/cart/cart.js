@@ -310,7 +310,11 @@ export const setCQty = (i, v) => {
                 }
             }
         }
-        cart[i].qty = parseFloat(nv.toFixed(2));
+        if (nv <= 0) {
+            cart.splice(i, 1);
+        } else {
+            cart[i].qty = parseFloat(nv.toFixed(2));
+        }
     }
     renderCart(); 
     updCart();
@@ -338,7 +342,11 @@ export const updCQty = (i, c) => {
                 }
             }
         }
-        cart[i].qty = nv;
+        if (nv <= 0) {
+            cart.splice(i, 1);
+        } else {
+            cart[i].qty = nv;
+        }
     }
     renderCart(); 
     updCart();

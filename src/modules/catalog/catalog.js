@@ -126,6 +126,9 @@ export const rCat = () => {
         }
     }
 
+    const pOrder = (appData.productOrder && appData.productOrder.length) ? appData.productOrder : null;
+    const orderMap = pOrder ? new Map(pOrder.map((id, idx) => [String(id), idx])) : null;
+
     let f = appData.products.filter(p => {
         if (p.isActive === false || p.isActive === 'false') return false;
         if (aCat !== 'Semua Produk' && p.category !== aCat) return false;
@@ -145,8 +148,7 @@ export const rCat = () => {
         if (cSort === 'az') return (a.name || '').localeCompare(b.name || '');
         if (cSort === 'za') return (b.name || '').localeCompare(a.name || '');
         if (cSort === 'oldest') return (a.id || 0) - (b.id || 0);
-        if (appData.productOrder && appData.productOrder.length) {
-            const orderMap = new Map(appData.productOrder.map((id, idx) => [String(id), idx]));
+        if (orderMap) {
             const idA = a && a.id != null ? String(a.id) : '';
             const idB = b && b.id != null ? String(b.id) : '';
             const hasA = orderMap.has(idA);

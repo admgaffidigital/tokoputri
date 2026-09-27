@@ -18,6 +18,7 @@ import {
 } from '../../core/utils.js';
 
 const pushModalHistory = (id) => window.pushModalHistory?.(id);
+const requestCloseModal = (id, fH, cb) => (typeof window.requestCloseModal === 'function') ? window.requestCloseModal(id, fH, cb) : cb?.();
 
 let activeTempoFilter = 'all'; // 'all' | 'late' | 'due_soon' | 'active'
 let tempoSearchQuery = '';
@@ -186,11 +187,11 @@ export const openTempoDetailModal = (orderId) => {
     pushModalHistory('tempoDetail');
 };
 
-export const closeTempoDetailModal = () => {
+export const closeTempoDetailModal = (fH = false) => {
     const modal = el('modal-tempo-detail');
     const box = el('modal-tempo-detail-box');
     if (!modal) return;
-    closeModalAnim(modal, box);
+    requestCloseModal('tempoDetail', fH, () => closeModalAnim(modal, box));
 };
 
 window.openTempoDetailModal = openTempoDetailModal;
@@ -684,13 +685,14 @@ export const openTempoPaymentModal = (orderId) => {
 
     window.recalcTempoPayPreview();
     openModalAnim(modal, box);
+    pushModalHistory('tempoPayment');
 };
 
-export const closeTempoPaymentModal = () => {
+export const closeTempoPaymentModal = (fH = false) => {
     const modal = el('modal-tempo-payment');
     const box = el('modal-tempo-payment-box');
     if (!modal) return;
-    closeModalAnim(modal, box);
+    requestCloseModal('tempoPayment', fH, () => closeModalAnim(modal, box));
 };
 
 window.openTempoPaymentModal = openTempoPaymentModal;
@@ -922,13 +924,14 @@ export const openTempoPenaltyModal = (orderId) => {
     `);
 
     openModalAnim(modal, box);
+    pushModalHistory('tempoPenalty');
 };
 
-export const closeTempoPenaltyModal = () => {
+export const closeTempoPenaltyModal = (fH = false) => {
     const modal = el('modal-tempo-penalty');
     const box = el('modal-tempo-penalty-box');
     if (!modal) return;
-    closeModalAnim(modal, box);
+    requestCloseModal('tempoPenalty', fH, () => closeModalAnim(modal, box));
 };
 
 window.openTempoPenaltyModal = openTempoPenaltyModal;
