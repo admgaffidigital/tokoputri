@@ -49,6 +49,8 @@ import './modules/storefront/index.js';
 import './core/pricing.js';
 // Core: Dialog UI (Toast, Confirm, Prompt, Theme)
 import './core/ui.js';
+// Core: Native Mobile Experience Engine (Haptics, Swipe Sheets, Touch Feedbacks)
+import { initNativeMobileEngine, triggerHaptic } from './core/native-mobile.js';
 // Core: Router & History Navigation
 import { setupHistoryRouter } from './core/router.js';
 // Cart: sanitizeCart diimport langsung supaya window.sanitizeCart tidak circular
@@ -270,6 +272,9 @@ history.replaceState({view: 'view-catalog'}, '', '');
 
 // Booting Aplikasi Saat DOM Dimuat (Hanya Trigger Sekali)
 window.addEventListener('DOMContentLoaded', async () => {
+    // ── Inisialisasi Native Mobile Experience Engine (Haptics, Swipe Sheets, Touch Feedbacks) ──
+    try { initNativeMobileEngine(); } catch(e) { console.warn('[NativeMobile] Error:', e); }
+
     await loadAppData();
 
     // FIX BUG KRITIS: Setiap panggilan di sini dibungkus try/catch TERPISAH.
@@ -414,6 +419,9 @@ window.hLoad = hLoad;
 // sanitizeCart: diimport dari src/modules/cart/cart.js (cart.js juga expose ini, tapi kita
 // pastikan tersedia sejak awal di sini sebelum modul cart selesai diinisialisasi)
 window.sanitizeCart = sanitizeCart;
+// Native Mobile Experience Engine (Haptics & Gestures)
+window.initNativeMobileEngine = initNativeMobileEngine;
+window.triggerHaptic = triggerHaptic;
 
 const bindProp = (name, getter, setter) => {
     try {

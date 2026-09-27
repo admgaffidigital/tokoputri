@@ -20,9 +20,38 @@
   src: url('@fortawesome/fontawesome-free/webfonts/fa-brands-400.woff2') format('woff2');
 }
 
-/* Mencegah pergeseran tata letak horizontal akibat kemunculan scrollbar (CLS) */
+/* ============================================================
+   NATIVE MOBILE VIEWPORT & TOUCH SYSTEM — v1.9.69
+   Mencegah browser artifacts (pull-to-refresh reload circle, tap highlight grey,
+   300ms tap delay) sehingga aplikasi terasa 100% native di smartphone.
+   ============================================================ */
 html {
   overflow-y: scroll;
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior-y: contain;
+  touch-action: manipulation;
+}
+
+body {
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior-y: contain;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Sentuhan responsif tanpa delay & cegah seleksi teks yang tidak disengaja pada tombol/kartu */
+button, [role="button"], a, .interactive-tap, .pos-card-btn, nav, .bottom-nav, .pull-indicator {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+  touch-action: manipulation;
+}
+
+/* Pastikan input dan area teks tetap dapat diseleksi & diketik normal */
+input, textarea, [contenteditable="true"] {
+  -webkit-user-select: text;
+  user-select: text;
 }
 
 @tailwind base;
@@ -2594,6 +2623,33 @@ html.dark .modal-bottom-sheet textarea {
     background-color: #1e293b;
     border-color: #334155;
     color: #e2e8f0;
+}
+
+/* ============================================================
+   NATIVE TOUCH MICRO-INTERACTION & SKELETON SHIMMER — v1.9.69
+   ============================================================ */
+.active-press:active,
+.interactive-tap:active,
+.pos-card-btn:active {
+    transform: scale(0.965);
+    transition: transform 0.08s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes nativeShimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+
+.skeleton-shimmer {
+    background: linear-gradient(90deg, rgba(226, 232, 240, 0.4) 25%, rgba(241, 245, 249, 0.8) 50%, rgba(226, 232, 240, 0.4) 75%);
+    background-size: 200% 100%;
+    animation: nativeShimmer 1.5s infinite linear;
+}
+
+html.dark .skeleton-shimmer {
+    background: linear-gradient(90deg, rgba(30, 41, 59, 0.4) 25%, rgba(51, 65, 85, 0.8) 50%, rgba(30, 41, 59, 0.4) 75%);
+    background-size: 200% 100%;
+    animation: nativeShimmer 1.5s infinite linear;
 }
 
 /* ============================================================

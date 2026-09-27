@@ -8,6 +8,22 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-9-69',
+        version: 'v1.9.69',
+        date: '2026-09-27',
+        title: 'Native Mobile Experience Engine: Universal Haptics, Swipe-to-Dismiss Sheets & Viewport Purity',
+        category: 'feature',
+        badge: 'Native Engine v1.9.69',
+        items: [
+            'Native Mobile Experience Engine: Mengintegrasikan mesin native mobile terpusat (src/core/native-mobile.js) untuk menghadirkan sensasi dan kenyamanan aplikasi native murni (iOS & Android) di smartphone.',
+            'Universal Hardware & Software Haptics: Dukungan getaran mikro taktil instan melalui Capacitor Plugins Haptics (pada aplikasi Android APK) dengan fallback HTML5 Vibration API (di mobile browser/PWA) untuk setiap interaksi tombol, tabs navigasi, chip filter, dan stepper kuantitas.',
+            'Gesture Swipe-to-Dismiss / Drag-Down: Dukungan gestur geser ke bawah secara interaktif 1:1 pada seluruh lembar Bottom Sheet (modal produk, lembar varian kasir, order kulakan PO, modal tempo, supplier, dan konfirmasi) dengan spring snap-back physics dan haptic feedback saat tertutup.',
+            'Eliminasi Browser Artifacts & 0ms Tap Delay: Penerapan CSS overscroll-behavior-y: contain (mencegah reload circle browser), -webkit-tap-highlight-color: transparent (menghilangkan kotak abu-abu sentuhan), user-select: none pada kontrol interaktif, serta touch-action: manipulation untuk respon ketuk 0ms seketika.',
+            'Native Touch Micro-Interactions & Shimmer: Animasi ketukan responsif (active-press scale 0.965) dan efek skeleton shimmer modern untuk pengalaman navigasi yang halus dan berkelas.',
+            'Sinkronisasi Multi-Channel v1.9.69 (Android VersionCode 10969): Terkompilasi dan tersinkronisasi penuh ke Vite build, paket flashdisk, dan Capacitor Android.'
+        ]
+    },
+    {
         id: 'log-1-9-68',
         version: 'v1.9.68',
         date: '2026-09-27',
