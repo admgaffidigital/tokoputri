@@ -17,7 +17,8 @@ export const DEFAULT_CHANGELOG = [
         items: [
             'Proteksi Kebijakan Interaksi Pengguna (User Gesture Guard): Menghilangkan peringatan konsol "[Intervention] Blocked call to navigator.vibrate" dan "The AudioContext was not allowed to start" saat aplikasi pertama kali dibuka.',
             'Initial Cart Load Muting: Menginisialisasi prevCartQty sebagai null pada modul keranjang (src/modules/cart/cart.js), sehingga kalkulasi badge keranjang saat inisialisasi awal toko berjalan hening tanpa memicu getaran dan audio secara prematur sebelum pengguna menyentuh layar.',
-            'Verifikasi userActivation & Event Tracker: Menambahkan validasi navigator.userActivation.hasBeenActive dan pelacak sentuhan pertama (pointerdown/touchstart) pada mesin native mobile (src/core/native-mobile.js) sebelum mengeksekusi getaran taktil ataupun Web Audio API.',
+            'Unifikasi Haptic Engine di Utils: Menghapus implementasi lawas triggerHaptic di src/core/utils.js yang belum memiliki guard dan mendelegasikannya 100% ke engine terpadu src/core/native-mobile.js dengan proteksi window.checkUserGesture() serta Capacitor Haptics.',
+            'Proteksi Web Audio API Multi-Modul: Memasang guard window.checkUserGesture() pada suara pesanan baru admin (playNewOrderSound), audio kasir POS (playCashierBeep, playCashierChime), dan audio shift (playShiftChime) agar audio context hanya aktif setelah ada gesture interaksi pengguna.',
             'Sinkronisasi Multi-Channel v1.9.72 (Android VersionCode 10972): Terkompilasi dan tersinkronisasi penuh ke Vite build, paket flashdisk, dan Capacitor Android.'
         ]
     },

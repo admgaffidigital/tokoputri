@@ -267,6 +267,9 @@ export const syncActiveShiftFromCloud = async () => {
 // ─── Audio Chimes Shift Kasir (Web Audio API) ────────────────
 export const playShiftChime = (type = 'open') => {
     try {
+        if (typeof window !== 'undefined' && typeof window.checkUserGesture === 'function') {
+            if (!window.checkUserGesture()) return;
+        }
         const AudioCtx = window.AudioContext || window.webkitAudioContext;
         if (!AudioCtx) return;
         const ctx = new AudioCtx();

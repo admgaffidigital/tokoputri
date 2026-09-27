@@ -95,7 +95,19 @@ export const exportOrdersToExcel = async () => {
  */
 export const playNewOrderSound = () => {
     try {
-        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        if (typeof window !== 'undefined') {
+            if (typeof window.checkUserGesture === 'function' && !window.checkUserGesture()) return;
+            if (typeof window.playNativeSound === 'function') {
+                window.playNativeSound('success');
+                return;
+            }
+        }
+        const AudioClass = window.AudioContext || window.webkitAudioContext;
+        if (!AudioClass) return;
+        const ctx = new AudioClass();
+        if (ctx.state === 'suspended') {
+            ctx.resume().catch(() => {});
+        }
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
         osc.connect(gain); 
@@ -104,17 +116,18 @@ export const playNewOrderSound = () => {
         osc.type = 'sine';
         
         osc.frequency.setValueAtTime(800, ctx.currentTime);
-        gain.gain.setValueAtTime(1, ctx.currentTime);
+        gain.gain.setValueAtTime(0.2, ctx.currentTime);
         osc.frequency.setValueAtTime(600, ctx.currentTime + 0.2);
         
         osc.frequency.setValueAtTime(800, ctx.currentTime + 0.6);
-        gain.gain.setValueAtTime(1, ctx.currentTime + 0.6);
+        gain.gain.setValueAtTime(0.2, ctx.currentTime + 0.6);
         osc.frequency.setValueAtTime(600, ctx.currentTime + 0.8);
         
         gain.gain.exponentialRampToValueAtTime(0.00001, ctx.currentTime + 1.5); 
         
         osc.start(ctx.currentTime); 
         osc.stop(ctx.currentTime + 1.5);
+        setTimeout(() => { ctx.close().catch(() => {}); }, 1600);
     } catch(e) {}
 };
 

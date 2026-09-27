@@ -14,18 +14,24 @@ let hasUserInteracted = false;
 if (typeof window !== 'undefined') {
     const markInteraction = () => {
         hasUserInteracted = true;
+        window.__hasUserInteracted = true;
     };
     ['pointerdown', 'touchstart', 'mousedown', 'keydown'].forEach(evt => {
         window.addEventListener(evt, markInteraction, { capture: true, once: true });
     });
+    window.__hasUserInteracted = false;
 }
 
-const checkUserGesture = () => {
+export const checkUserGesture = () => {
     if (typeof navigator !== 'undefined' && navigator.userActivation) {
         return navigator.userActivation.hasBeenActive;
     }
-    return hasUserInteracted;
+    return Boolean(hasUserInteracted || (typeof window !== 'undefined' && window.__hasUserInteracted));
 };
+
+if (typeof window !== 'undefined') {
+    window.checkUserGesture = checkUserGesture;
+}
 
 /**
  * Trigger getaran haptic feedback mikro pada perangkat.

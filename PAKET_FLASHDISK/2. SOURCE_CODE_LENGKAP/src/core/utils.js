@@ -294,18 +294,10 @@ export const openWhatsApp = (phone, text = '') => {
 // ─── Native App Feel Helpers ─────────────────────────────────
 /**
  * Haptic Vibration Feedback (Sentuhan Taktil Bergetar)
- * @param {'light'|'medium'|'success'|'warning'} type
+ * Menggunakan engine terpadu native-mobile dengan User Gesture Guard & Capacitor Haptics.
  */
-export const triggerHaptic = (type = 'light') => {
-    try {
-        if (typeof navigator !== 'undefined' && typeof navigator.vibrate === 'function') {
-            if (type === 'light') navigator.vibrate(10);
-            else if (type === 'medium') navigator.vibrate(25);
-            else if (type === 'success') navigator.vibrate([15, 30, 20]);
-            else if (type === 'warning') navigator.vibrate([30, 40, 30]);
-        }
-    } catch (e) {}
-};
+export { triggerHaptic, playNativeSound } from './native-mobile.js';
+import { triggerHaptic } from './native-mobile.js';
 
 /**
  * Animasi Terbang Masuk Keranjang (Fly to Cart)

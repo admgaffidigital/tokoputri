@@ -179,6 +179,9 @@ export const getProductStockInfo = (p) => {
 // Audio Beep Sintetis Kasir (Zero-dependency Web Audio API)
 export const playCashierBeep = () => {
     try {
+        if (typeof window !== 'undefined' && typeof window.checkUserGesture === 'function') {
+            if (!window.checkUserGesture()) return;
+        }
         const AudioCtx = window.AudioContext || window.webkitAudioContext;
         if (!AudioCtx) return;
         const ctx = new AudioCtx();
@@ -657,6 +660,9 @@ export const clearCart = () => {
 // ─── Sound Chime Sintetis Kasir (Web Audio API) ─────────────
 export const playCashierChime = (type = 'hold') => {
     try {
+        if (typeof window !== 'undefined' && typeof window.checkUserGesture === 'function') {
+            if (!window.checkUserGesture()) return;
+        }
         const AudioCtx = window.AudioContext || window.webkitAudioContext;
         if (!AudioCtx) return;
         const ctx = new AudioCtx();
