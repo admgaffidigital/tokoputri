@@ -1397,6 +1397,7 @@ const renderCart = () => {
             const baseName = item.isVariant && item.variantName ? esc(item.name.replace(` — ${item.variantName}`, '')) : esc(item.name);
             const itemHpp = item.hpp != null ? parseFloat(item.hpp) : (getEffHpp(item) || 0);
             const maxItemDisc = itemHpp > 0 ? Math.max(0, Math.round((item.price - itemHpp) * item.qty)) : Math.round(item.price * item.qty);
+            const itemMargin = itemHpp > 0 ? Math.round(item.subtotal - (itemHpp * item.qty)) : 0;
             const coverThumbHtml = renderProductCoverHtml(item, { size: 'thumb' });
             return `
             <div class="group flex items-start gap-2.5 p-2.5 bg-white dark:bg-slate-800/90 rounded-2xl border border-slate-200/90 dark:border-slate-700/80 shadow-xs hover:border-[var(--color-primary)] transition-all">

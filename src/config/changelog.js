@@ -8,6 +8,20 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-9-67',
+        version: 'v1.9.67',
+        date: '2026-09-27',
+        title: 'Perbaikan Kritis POS Kasir: Deklarasi Estimasi Margin Keuntungan Item Keranjang',
+        category: 'fix',
+        badge: 'POS Error Fix v1.9.67',
+        items: [
+            'Fix Kritis ReferenceError itemMargin: Mengatasi error konsol "Uncaught ReferenceError: itemMargin is not defined" pada fungsi render keranjang belanja kasir (renderCart) dengan mendeklarasikan perhitungan margin laba kotor item secara eksplisit.',
+            'Kalkulasi Margin Item Akurat: Estimasi keuntungan per item (itemMargin) kini dihitung presisi berdasarkan selisih subtotal item setelah diskon dikurangi total harga modal HPP (subtotal - (itemHpp * qty)).',
+            'Ketahanan UI Keranjang Kasir: Menjamin penambahan produk, pengubahan kuantitas desimal, penerapan diskon per item, dan pemindai barcode kamera/keyboard berjalan lancar tanpa interupsi runtime error.',
+            'Sinkronisasi Multi-Channel v1.9.67 (Android VersionCode 10967): Terkompilasi dan tersinkronisasi penuh ke Vite build, paket flashdisk, dan Capacitor Android.'
+        ]
+    },
+    {
         id: 'log-1-9-66',
         version: 'v1.9.66',
         date: '2026-09-27',
