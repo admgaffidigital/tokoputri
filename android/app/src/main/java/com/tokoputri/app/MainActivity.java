@@ -81,6 +81,14 @@ public class MainActivity extends BridgeActivity {
                             startActivity(intent);
                             return true; // Cegah WebView memuat URL ini
                         } catch (Exception e) {
+                            if (url.startsWith("rawbt:")) {
+                                try {
+                                    Intent playStore = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=ru.a402d.rawbtprinter"));
+                                    playStore.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    startActivity(playStore);
+                                    return true;
+                                } catch (Exception ex) {}
+                            }
                             try {
                                 Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
                                 browserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -90,6 +98,41 @@ public class MainActivity extends BridgeActivity {
                                 Toast.makeText(MainActivity.this, "Aplikasi tidak ditemukan di perangkat", Toast.LENGTH_SHORT).show();
                                 return true;
                             }
+                        }
+                    }
+                    if (url.startsWith("intent:")) {
+                        try {
+                            Intent intent = Intent.parseUri(url, Intent.URI_INTENT_SCHEME);
+                            if (intent != null) {
+                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                startActivity(intent);
+                                return true;
+                            }
+                        } catch (Exception e) {
+                            if (url.contains("ru.a402d.rawbtprinter")) {
+                                try {
+                                    Intent playStore = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=ru.a402d.rawbtprinter"));
+                                    playStore.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    startActivity(playStore);
+                                } catch (Exception ex) {}
+                            }
+                        }
+                        return true;
+                    }
+                    if (url.startsWith("market:")) {
+                        try {
+                            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(intent);
+                            return true;
+                        } catch (Exception e) {
+                            try {
+                                String webUrl = url.replace("market://details?id=", "https://play.google.com/store/apps/details?id=");
+                                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(webUrl));
+                                browserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                startActivity(browserIntent);
+                            } catch (Exception ex) {}
+                            return true;
                         }
                     }
                     return super.shouldOverrideUrlLoading(view, request);
@@ -184,7 +227,37 @@ public class MainActivity extends BridgeActivity {
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
                 } catch (Exception e) {
-                    Toast.makeText(MainActivity.this, "Driver RawBT tidak ditemukan di perangkat", Toast.LENGTH_SHORT).show();
+                    try {
+                        Intent playStore = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=ru.a402d.rawbtprinter"));
+                        playStore.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(playStore);
+                        Toast.makeText(MainActivity.this, "Silakan pasang aplikasi RawBT (Gratis) dari Google Play Store", Toast.LENGTH_LONG).show();
+                    } catch (Exception ex) {
+                        Toast.makeText(MainActivity.this, "Driver RawBT tidak ditemukan di perangkat", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+        }
+
+        @JavascriptInterface
+        public void openRawBT() {
+            runOnUiThread(() -> {
+                try {
+                    Intent launchIntent = getPackageManager().getLaunchIntentForPackage("ru.a402d.rawbtprinter");
+                    if (launchIntent != null) {
+                        launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(launchIntent);
+                    } else {
+                        Intent playStore = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=ru.a402d.rawbtprinter"));
+                        playStore.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(playStore);
+                    }
+                } catch (Exception e) {
+                    try {
+                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=ru.a402d.rawbtprinter"));
+                        browserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(browserIntent);
+                    } catch (Exception ex) {}
                 }
             });
         }

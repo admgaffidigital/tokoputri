@@ -503,8 +503,11 @@ export const renderOrderDetailModal = (orderId, d, reviewedKeys = []) => {
                     </div>
 
                     <div class="pt-2 flex flex-col sm:flex-row gap-2.5">
-                        <button type="button" onclick="if(typeof window.openCustomerReceiptPreview==='function') window.openCustomerReceiptPreview('${d.orderId}'); else if(typeof window.openReceiptPreview==='function') window.openReceiptPreview('${d.orderId}');" class="flex-1 py-3.5 rounded-2xl primary-bg-soft primary-text border primary-border text-xs font-bold flex items-center justify-center gap-2 hover:opacity-90 active:scale-95 transition-all cursor-pointer shadow-xs">
-                            <i class="fa-solid fa-receipt text-sm"></i> Preview &amp; Cetak Struk
+                        <button type="button" onclick="if(typeof window.printCustomerReceiptDirect==='function') window.printCustomerReceiptDirect('${d.orderId}'); else window.openCustomerReceiptPreview('${d.orderId}', true);" class="flex-1 py-3.5 rounded-2xl btn-primary text-xs font-bold flex items-center justify-center gap-2 hover:opacity-90 active:scale-95 transition-all cursor-pointer shadow-md">
+                            <i class="fa-solid fa-bolt text-amber-300"></i><i class="fa-solid fa-print"></i> Cetak Struk Langsung (RawBT)
+                        </button>
+                        <button type="button" onclick="window.openReceiptPreview('${d.orderId}');" class="px-4 py-3.5 rounded-2xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 text-xs font-bold flex items-center justify-center gap-1.5 hover:bg-slate-50 dark:hover:bg-slate-800 active:scale-95 transition-all cursor-pointer">
+                            <i class="fa-solid fa-eye text-slate-400"></i> Preview
                         </button>
                     </div>
                 </div>

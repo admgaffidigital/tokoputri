@@ -1224,13 +1224,21 @@ const showClosedShiftSuccessModal = (closedShift) => {
 };
 
 // ─── Cetak Slip Rekap Shift Thermal POS (58mm / 80mm) ────────
-export const printShiftSettlementReceipt = (shift, isXReport = false) => {
+export const printShiftSettlementReceipt = (shift, isXReport = false, forcePreview = false) => {
     if (!shift) {
         showToast('Data shift tidak ditemukan.', 'warning');
         return;
     }
 
-    const config = typeof getPrinterConfig === 'function' ? getPrinterConfig() : { paperSize: '58mm', deviceType: 'system' };
+    window._lastShiftData = { shift, isXReport };
+    const config = typeof getPrinterConfig === 'function' ? getPrinterConfig() : { paperSize: '58mm', deviceType: 'rawbt' };
+
+    // Jika mode Direct Print aktif dan bukan dipaksa preview, langsung cetak ke RawBT!
+    if (!forcePreview && config.directPrint !== false && typeof window.printShiftSettlementDirect === 'function') {
+        window.printShiftSettlementDirect(shift, isXReport);
+        return;
+    }
+
     const is80 = config.paperSize === '80mm';
     const cols = is80 ? 48 : 32;
 
@@ -1254,7 +1262,7 @@ export const printShiftSettlementReceipt = (shift, isXReport = false) => {
     const diff = actualCash - expectedCash;
     const diffStatusStr = diff === 0 ? 'SEIMBANG (PAS)' : (diff > 0 ? `LEBIH (+${fRp(diff)})` : `KURANG (-${fRp(Math.abs(diff))})`);
 
-    // Wajib selalu tampilkan modal preview in-page terlebih dahulu
+    // Tampilkan modal preview in-page
     document.getElementById('pos-shift-receipt-modal')?.remove();
     document.body.insertAdjacentHTML('beforeend', `
     <div id="pos-shift-receipt-modal" class="fixed inset-0 z-[10003] flex items-center justify-center p-3 sm:p-4" style="background:rgba(15,23,42,0.7);backdrop-filter:blur(4px)">
@@ -1316,8 +1324,8 @@ export const printShiftSettlementReceipt = (shift, isXReport = false) => {
                 </div>
             </div>
             <div class="p-3 border-t border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/40 flex gap-2">
-                <button onclick="window.executeShiftPrintDirect()" class="flex-1 py-3.5 rounded-2xl text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 cursor-pointer shadow-md transition-all active:scale-95 hover:opacity-95" style="background:var(--color-primary)">
-                    <i class="fa-solid fa-print"></i> Cetak Sekarang
+                <button onclick="window.executeShiftPrintDirect()" class="flex-1 py-3.5 rounded-2xl text-white font-black text-xs sm:text-sm flex items-center justify-center gap-2 cursor-pointer shadow-md transition-all active:scale-95 hover:opacity-95" style="background:var(--color-primary)">
+                    <i class="fa-solid fa-bolt text-amber-300"></i><i class="fa-solid fa-print"></i> Cetak Sekarang
                 </button>
             </div>
         </div>
@@ -1325,7 +1333,12 @@ export const printShiftSettlementReceipt = (shift, isXReport = false) => {
 };
 
 export const executeShiftPrintDirect = () => {
-    const config = typeof getPrinterConfig === 'function' ? getPrinterConfig() : { paperSize: '58mm', deviceType: 'system' };
+    if (window._lastShiftData && typeof window.printShiftSettlementDirect === 'function') {
+        window.printShiftSettlementDirect(window._lastShiftData.shift, window._lastShiftData.isXReport);
+        return;
+    }
+
+    const config = typeof getPrinterConfig === 'function' ? getPrinterConfig() : { paperSize: '58mm', deviceType: 'rawbt' };
     const pBox = el('pos-shift-receipt-paper-box');
     if (!pBox) return;
 
@@ -1338,12 +1351,10 @@ export const executeShiftPrintDirect = () => {
     const is80 = config.paperSize === '80mm';
     t.innerHTML = `<div style="width:${is80 ? '80mm' : '58mm'};font-family:'Courier New',Courier,monospace;font-size:11px;line-height:1.2;color:#000;background:#fff;padding:4px;">${pBox.innerHTML}</div>`;
 
-    if (config.deviceType === 'rawbt' && window.AndroidNativeApp && typeof window.AndroidNativeApp.printRawBT === 'function') {
-        const rawHtml = pBox.innerText;
-        const b64 = btoa(unescape(encodeURIComponent(rawHtml)));
-        window.AndroidNativeApp.printRawBT(b64);
-    } else if (window.AndroidNativeApp && typeof window.AndroidNativeApp.print === 'function') {
-        window.AndroidNativeApp.print();
+    if (typeof window.sendToRawBT === 'function') {
+        const rawText = pBox.innerText;
+        const b64 = btoa(unescape(encodeURIComponent(rawText)));
+        window.sendToRawBT(b64, rawText, pBox.innerHTML);
     } else {
         window.print();
     }

@@ -11,12 +11,13 @@ import { appData } from '../../core/state.js';
 import { el, show, hide, esc, showToast } from '../../core/utils.js';
 
 export const DEFAULT_PRINTER_CONFIG = {
-    deviceType: 'bluetooth', // 'bluetooth' | 'usb' | 'network' | 'system' | 'rawbt'
-    deviceName: 'Printer Thermal POS (Default)',
+    deviceType: 'rawbt', // 'rawbt' (Rekomendasi Utama Free) | 'bluetooth' | 'usb' | 'network' | 'system'
+    deviceName: 'Driver RawBT (Printer Thermal Android - Free)',
     deviceId: '',
     paperSize: '58mm', // '58mm' (32 kolom) | '80mm' (48 kolom)
-    feedLines: 2,
-    autoCut: false,
+    directPrint: true, // Cetak langsung tanpa membuka jendela dialog berulang
+    feedLines: 3,
+    autoCut: true,
     openCashDrawer: false,
     autoPrintOrder: false,
     headerText: '',
@@ -75,12 +76,13 @@ export const openPrinterSettingsModal = () => {
 
     setChecked('printer-opt-points', config.showPoints);
     setChecked('printer-opt-barcode', config.showBarcode);
-    setChecked('printer-opt-autocut', config.autoCut);
+    setChecked('printer-opt-direct', config.directPrint !== false);
+    setChecked('printer-opt-autocut', config.autoCut !== false);
     setChecked('printer-opt-drawer', config.openCashDrawer);
     setChecked('printer-opt-autoprint', config.autoPrintOrder);
 
     // Tandai pilihan tipe perangkat aktif
-    selectPrinterDeviceTypeUI(config.deviceType);
+    selectPrinterDeviceTypeUI(config.deviceType || 'rawbt');
 
     const m = el('printer-settings-modal');
     if (m && m.classList.contains('hidden') && typeof window.pushModalHistory === 'function') {
@@ -130,6 +132,13 @@ export const selectPrinterDeviceTypeUI = (type) => {
         }
     });
 
+    // Tampilkan / sembunyikan kotak panduan RawBT
+    const rawbtBox = el('rawbt-quick-guide-box');
+    if (rawbtBox) {
+        if (type === 'rawbt') rawbtBox.classList.remove('hidden');
+        else rawbtBox.classList.add('hidden');
+    }
+
     // Tampilkan / sembunyikan konfigurasi khusus IP jika network dipilih
     const netBox = el('printer-network-box');
     if (netBox) {
@@ -145,15 +154,22 @@ export const savePrinterSettingsFromModal = () => {
     const getValue = (id, def = '') => { const elem = el(id); return elem ? elem.value : def; };
     const getChecked = (id, def = false) => { const elem = el(id); return elem ? elem.checked : def; };
 
+    const selectedType = window._selectedPrinterType || 'rawbt';
+    const defaultName = selectedType === 'rawbt'
+        ? 'Driver RawBT (Printer Thermal Android - Free)'
+        : (selectedType === 'bluetooth' ? 'Bluetooth POS Printer' : 'Printer Thermal POS');
+
     const newConfig = {
-        deviceType: window._selectedPrinterType || 'bluetooth',
+        deviceType: selectedType,
+        deviceName: getValue('printer-device-name-display', defaultName),
         paperSize: getValue('printer-paper-size', '58mm'),
         networkIp: getValue('printer-network-ip', '192.168.1.200:9100'),
         headerText: getValue('printer-header-custom', ''),
         footerText: getValue('printer-footer-custom', 'Terima kasih atas kunjungan Anda!'),
         showPoints: getChecked('printer-opt-points', true),
         showBarcode: getChecked('printer-opt-barcode', true),
-        autoCut: getChecked('printer-opt-autocut', false),
+        directPrint: getChecked('printer-opt-direct', true),
+        autoCut: getChecked('printer-opt-autocut', true),
         openCashDrawer: getChecked('printer-opt-drawer', false),
         autoPrintOrder: getChecked('printer-opt-autoprint', false)
     };
@@ -235,6 +251,13 @@ export const scanUsbPrinter = async () => {
  */
 export const executeTestPrint = () => {
     const config = getPrinterConfig();
+    if (config.deviceType === 'rawbt' || !config.deviceType) {
+        if (typeof window.executeRawBTTestPrint === 'function') {
+            window.executeRawBTTestPrint();
+            return;
+        }
+    }
+
     const is80 = config.paperSize === '80mm';
     const cols = is80 ? 48 : 32;
     const storeName = appData.store.name || 'TOKO PUTRI';
@@ -300,12 +323,10 @@ export const executeTestPrint = () => {
     }
     t.innerHTML = `<div style="width:${is80 ? '80mm' : '58mm'};font-family:'Courier New',Courier,monospace;font-size:11px;line-height:1.2;color:#000;background:#fff;padding:4px;">${h}</div>`;
     
-    if (config.deviceType === 'rawbt' && window.AndroidNativeApp && typeof window.AndroidNativeApp.printRawBT === 'function') {
-        const rawHtml = t.innerText;
-        const b64 = btoa(unescape(encodeURIComponent(rawHtml)));
-        window.AndroidNativeApp.printRawBT(b64);
-    } else if (window.AndroidNativeApp && typeof window.AndroidNativeApp.print === 'function') {
-        window.AndroidNativeApp.print();
+    if (typeof window.sendToRawBT === 'function') {
+        const rawText = t.innerText;
+        const b64 = btoa(unescape(encodeURIComponent(rawText)));
+        window.sendToRawBT(b64, rawText, h);
     } else {
         window.print();
     }

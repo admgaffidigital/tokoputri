@@ -2484,25 +2484,44 @@ const showPOSSuccess = (tx) => {
           </div>` : ''}
         </div>
         <div class="px-6 pb-6 flex flex-col gap-2">
-          <button onclick="window.previewPOSReceiptThenPrint(${txJson})" class="w-full py-3 rounded-2xl text-white font-bold text-sm shadow-md active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer" style="background:var(--color-primary)"><i class="fa-solid fa-eye mr-1"></i><i class="fa-solid fa-print"></i> Preview & Cetak Struk</button>
-          <button onclick="document.getElementById('pos-success-modal')?.remove()" class="w-full py-3 rounded-2xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold text-sm hover:bg-slate-50 dark:hover:bg-slate-800 transition-all cursor-pointer">Transaksi Baru</button>
+          <button onclick="window.printPOSReceiptDirect(${txJson})" class="w-full py-3.5 rounded-2xl text-white font-black text-sm shadow-lg active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer hover:opacity-95" style="background:var(--color-primary)">
+            <i class="fa-solid fa-bolt text-amber-300"></i><i class="fa-solid fa-print"></i> Cetak Struk Langsung (RawBT)
+          </button>
+          <button onclick="window.previewPOSReceiptThenPrint(${txJson})" class="w-full py-2.5 rounded-2xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold text-xs hover:bg-slate-50 dark:hover:bg-slate-800 transition-all cursor-pointer flex items-center justify-center gap-1.5">
+            <i class="fa-solid fa-eye text-slate-400"></i> Lihat Preview Struk Dulu
+          </button>
+          <button onclick="document.getElementById('pos-success-modal')?.remove()" class="w-full py-2.5 rounded-2xl border border-slate-200/80 dark:border-slate-700/80 text-slate-500 dark:text-slate-400 font-medium text-xs hover:bg-slate-50 dark:hover:bg-slate-800 transition-all cursor-pointer">Transaksi Baru</button>
           ${isInAdmin ? `
-          <button onclick="document.getElementById('pos-success-modal')?.remove(); if(typeof window.openAdminTab==='function') window.openAdminTab('orders');" class="w-full py-2.5 rounded-xl text-slate-500 dark:text-slate-400 text-xs font-bold hover:text-[var(--color-primary)] transition-all flex items-center justify-center gap-1.5 cursor-pointer">
+          <button onclick="document.getElementById('pos-success-modal')?.remove(); if(typeof window.openAdminTab==='function') window.openAdminTab('orders');" class="w-full py-2 rounded-xl text-slate-400 dark:text-slate-500 text-[11px] font-medium hover:text-[var(--color-primary)] transition-all flex items-center justify-center gap-1.5 cursor-pointer">
             <i class="fa-solid fa-receipt"></i> Buka Menu Pesanan Toko
           </button>` : ''}
         </div>
       </div>
     </div>`);
+
+    // Auto-Print langsung jika diaktifkan di pengaturan printer
+    const cfg = typeof getPrinterConfig === 'function' ? getPrinterConfig() : {};
+    if (cfg.autoPrintOrder && typeof window.printPOSReceiptDirect === 'function') {
+        setTimeout(() => {
+            window.printPOSReceiptDirect(tx);
+        }, 300);
+    }
 };
 
-// ─── Cetak Struk: Selalu Tampilkan Preview Dulu ─────────────
+// ─── Cetak Struk POS: Langsung Cetak atau Preview ─────────────
 export const printPOSReceipt = (tx) => {
     document.getElementById('pos-success-modal')?.remove();
-    previewPOSReceiptThenPrint(tx);
+    const cfg = typeof getPrinterConfig === 'function' ? getPrinterConfig() : {};
+    if (cfg.directPrint !== false && typeof window.printPOSReceiptDirect === 'function') {
+        window.printPOSReceiptDirect(tx);
+    } else {
+        previewPOSReceiptThenPrint(tx);
+    }
 };
 
 export const previewPOSReceiptThenPrint = (tx) => {
-    const config    = typeof getPrinterConfig === 'function' ? getPrinterConfig() : { paperSize: '58mm', deviceType: 'system' };
+    window._lastPOSTx = tx;
+    const config    = typeof getPrinterConfig === 'function' ? getPrinterConfig() : { paperSize: '58mm', deviceType: 'rawbt' };
     const is80      = config.paperSize === '80mm';
     const storeName = config.headerText || appData.store?.name || 'TOKO PUTRI';
     const storeWa   = appData.store?.wa || '';
@@ -2514,7 +2533,7 @@ export const previewPOSReceiptThenPrint = (tx) => {
     ).join('');
     const discLabel = tx.discountType === 'percent' && tx.discountVal ? `Diskon (${tx.discountVal}%)` : 'Diskon';
 
-    // Selalu tampilkan preview modal in-page terlebih dahulu
+    // Selalu tampilkan preview modal in-page jika dipanggil
     document.getElementById('pos-receipt-fallback-modal')?.remove();
     document.body.insertAdjacentHTML('beforeend', `
     <div id="pos-receipt-fallback-modal" class="fixed inset-0 z-[10000] flex items-center justify-center p-3 sm:p-4" style="background:rgba(15,23,42,0.7);backdrop-filter:blur(4px)">
@@ -2551,8 +2570,8 @@ export const previewPOSReceiptThenPrint = (tx) => {
                 <div class="text-center text-[10px] text-slate-400 my-1">${esc(footerTxt)}</div>
             </div>
             <div class="p-3 border-t border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/40 flex gap-2">
-                <button onclick="window.executePOSPrintDirect()" class="flex-1 py-3.5 rounded-2xl text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 cursor-pointer shadow-md transition-all active:scale-95 hover:opacity-95" style="background:var(--color-primary)">
-                    <i class="fa-solid fa-print"></i> Cetak Struk
+                <button onclick="window.executePOSPrintDirect()" class="flex-1 py-3.5 rounded-2xl text-white font-black text-xs sm:text-sm flex items-center justify-center gap-2 cursor-pointer shadow-md transition-all active:scale-95 hover:opacity-95" style="background:var(--color-primary)">
+                    <i class="fa-solid fa-bolt text-amber-300"></i><i class="fa-solid fa-print"></i> Cetak Struk Langsung
                 </button>
                 <button onclick="if(typeof window.openPrinterSettingsModal==='function') window.openPrinterSettingsModal();" class="px-3.5 py-3.5 rounded-2xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-bold text-xs flex items-center gap-1 cursor-pointer transition-all active:scale-95" title="Pengaturan Printer">
                     <i class="fa-solid fa-gear"></i>
@@ -2563,7 +2582,12 @@ export const previewPOSReceiptThenPrint = (tx) => {
 };
 
 export const executePOSPrintDirect = () => {
-    const config = typeof getPrinterConfig === 'function' ? getPrinterConfig() : { paperSize: '58mm', deviceType: 'system' };
+    if (window._lastPOSTx && typeof window.printPOSReceiptDirect === 'function') {
+        window.printPOSReceiptDirect(window._lastPOSTx);
+        return;
+    }
+
+    const config = typeof getPrinterConfig === 'function' ? getPrinterConfig() : { paperSize: '58mm', deviceType: 'rawbt' };
     const pBox = el('pos-receipt-paper-box');
     if (!pBox) return;
 
@@ -2576,12 +2600,10 @@ export const executePOSPrintDirect = () => {
     const is80 = config.paperSize === '80mm';
     t.innerHTML = `<div style="width:${is80 ? '80mm' : '58mm'};font-family:'Courier New',Courier,monospace;font-size:11px;line-height:1.2;color:#000;background:#fff;padding:4px;">${pBox.innerHTML}</div>`;
 
-    if (config.deviceType === 'rawbt' && window.AndroidNativeApp && typeof window.AndroidNativeApp.printRawBT === 'function') {
-        const rawHtml = pBox.innerText;
-        const b64 = btoa(unescape(encodeURIComponent(rawHtml)));
-        window.AndroidNativeApp.printRawBT(b64);
-    } else if (window.AndroidNativeApp && typeof window.AndroidNativeApp.print === 'function') {
-        window.AndroidNativeApp.print();
+    if (typeof window.sendToRawBT === 'function') {
+        const rawText = pBox.innerText;
+        const b64 = btoa(unescape(encodeURIComponent(rawText)));
+        window.sendToRawBT(b64, rawText, pBox.innerHTML);
     } else {
         window.print();
     }

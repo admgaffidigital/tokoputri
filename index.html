@@ -990,8 +990,27 @@
         <div class="custom-scrollbar flex-1 overflow-y-auto p-5 space-y-5 text-xs">
           <!-- 1. Pilihan Tipe Koneksi -->
           <div>
-            <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">Pilih Mode Koneksi Perangkat</label>
+            <div class="flex items-center justify-between mb-2">
+              <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">Pilih Mode Driver Printer POS</label>
+              <span class="text-[10px] text-amber-600 dark:text-amber-400 font-bold flex items-center gap-1"><i class="fa-solid fa-star"></i> Rekomendasi: RawBT Free</span>
+            </div>
             <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+              <!-- RawBT Driver (Rekomendasi No. 1) -->
+              <div class="printer-type-card cursor-pointer p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-[var(--color-primary)] transition-all flex flex-col items-center text-center gap-1.5 relative group col-span-2 sm:col-span-1 shadow-xs" data-type="rawbt" onclick="selectPrinterDeviceTypeUI('rawbt')">
+                <div class="w-8 h-8 rounded-full bg-amber-100 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400 flex items-center justify-center text-base group-hover:scale-110 transition-transform">
+                  <i class="fa-solid fa-bolt"></i>
+                </div>
+                <div class="min-w-0">
+                  <div class="flex items-center justify-center gap-1">
+                    <span class="font-bold text-[11px] text-slate-900 dark:text-white">Driver RawBT</span>
+                    <span class="px-1.5 py-0.2 rounded-md bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300 text-[8px] font-black uppercase">FREE</span>
+                  </div>
+                  <span class="text-[9px] text-slate-400 block mt-0.5">Android Direct 1-Tap</span>
+                </div>
+                <div class="printer-check-badge hidden absolute top-1.5 right-1.5 w-4 h-4 rounded-full bg-[var(--color-primary)] text-white text-[8px] flex items-center justify-center"><i class="fa-solid fa-check"></i></div>
+              </div>
+
+              <!-- Bluetooth POS -->
               <div class="printer-type-card cursor-pointer p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-[var(--color-primary)] transition-all flex flex-col items-center text-center gap-1.5 relative group" data-type="bluetooth" onclick="selectPrinterDeviceTypeUI('bluetooth')">
                 <i class="fa-brands fa-bluetooth-b text-xl text-blue-500 group-hover:scale-110 transition-transform"></i>
                 <span class="font-bold text-[11px] text-slate-800 dark:text-slate-100">Bluetooth POS</span>
@@ -999,6 +1018,7 @@
                 <div class="printer-check-badge hidden absolute top-1.5 right-1.5 w-4 h-4 rounded-full bg-[var(--color-primary)] text-white text-[8px] flex items-center justify-center"><i class="fa-solid fa-check"></i></div>
               </div>
 
+              <!-- USB / OTG -->
               <div class="printer-type-card cursor-pointer p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-[var(--color-primary)] transition-all flex flex-col items-center text-center gap-1.5 relative group" data-type="usb" onclick="selectPrinterDeviceTypeUI('usb')">
                 <i class="fa-solid fa-usb text-xl text-emerald-500 group-hover:scale-110 transition-transform"></i>
                 <span class="font-bold text-[11px] text-slate-800 dark:text-slate-100">USB / OTG</span>
@@ -1006,6 +1026,7 @@
                 <div class="printer-check-badge hidden absolute top-1.5 right-1.5 w-4 h-4 rounded-full bg-[var(--color-primary)] text-white text-[8px] flex items-center justify-center"><i class="fa-solid fa-check"></i></div>
               </div>
 
+              <!-- System Print -->
               <div class="printer-type-card cursor-pointer p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-[var(--color-primary)] transition-all flex flex-col items-center text-center gap-1.5 relative group" data-type="system" onclick="selectPrinterDeviceTypeUI('system')">
                 <i class="fa-solid fa-print text-xl text-violet-500 group-hover:scale-110 transition-transform"></i>
                 <span class="font-bold text-[11px] text-slate-800 dark:text-slate-100">System Print</span>
@@ -1013,13 +1034,7 @@
                 <div class="printer-check-badge hidden absolute top-1.5 right-1.5 w-4 h-4 rounded-full bg-[var(--color-primary)] text-white text-[8px] flex items-center justify-center"><i class="fa-solid fa-check"></i></div>
               </div>
 
-              <div class="printer-type-card cursor-pointer p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-[var(--color-primary)] transition-all flex flex-col items-center text-center gap-1.5 relative group" data-type="rawbt" onclick="selectPrinterDeviceTypeUI('rawbt')">
-                <i class="fa-solid fa-bolt text-xl text-amber-500 group-hover:scale-110 transition-transform"></i>
-                <span class="font-bold text-[11px] text-slate-800 dark:text-slate-100">RawBT Driver</span>
-                <span class="text-[9px] text-slate-400">Android Direct POS</span>
-                <div class="printer-check-badge hidden absolute top-1.5 right-1.5 w-4 h-4 rounded-full bg-[var(--color-primary)] text-white text-[8px] flex items-center justify-center"><i class="fa-solid fa-check"></i></div>
-              </div>
-
+              <!-- WiFi / LAN IP -->
               <div class="printer-type-card cursor-pointer p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-[var(--color-primary)] transition-all flex flex-col items-center text-center gap-1.5 relative group col-span-2 sm:col-span-1" data-type="network" onclick="selectPrinterDeviceTypeUI('network')">
                 <i class="fa-solid fa-network-wired text-xl text-indigo-500 group-hover:scale-110 transition-transform"></i>
                 <span class="font-bold text-[11px] text-slate-800 dark:text-slate-100">WiFi / LAN IP</span>
@@ -1029,14 +1044,54 @@
             </div>
           </div>
 
-          <!-- Tombol Pasangkan / Cari Perangkat -->
+          <!-- Panduan Cepat & Tombol Aksi RawBT (Gratis) -->
+          <div id="rawbt-quick-guide-box" class="p-4 rounded-2xl bg-amber-50/80 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/60 space-y-3">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="w-7 h-7 rounded-xl bg-amber-500 text-white flex items-center justify-center text-xs font-black shadow-xs">
+                  <i class="fa-solid fa-bolt"></i>
+                </span>
+                <div>
+                  <h4 class="font-bold text-xs text-amber-950 dark:text-amber-200 leading-tight">Panduan Mudah Koneksi RawBT (Gratis)</h4>
+                  <p class="text-[10px] text-amber-700/80 dark:text-amber-400/80">Support semua printer thermal Bluetooth, USB OTG, &amp; WiFi LAN</p>
+                </div>
+              </div>
+              <span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 text-[10px] font-bold">100% FREE</span>
+            </div>
+
+            <div class="text-[11px] text-amber-900/90 dark:text-amber-200/90 space-y-1.5 leading-relaxed bg-white/60 dark:bg-slate-900/40 p-3 rounded-xl border border-amber-200/60 dark:border-amber-800/40">
+              <div class="flex items-start gap-2">
+                <span class="w-4 h-4 rounded-full bg-amber-500 text-white text-[9px] font-black flex items-center justify-center shrink-0 mt-0.5">1</span>
+                <span>Instal aplikasi <b>RawBT Print Service (Gratis)</b> dari Google Play Store di perangkat kasir Anda.</span>
+              </div>
+              <div class="flex items-start gap-2">
+                <span class="w-4 h-4 rounded-full bg-amber-500 text-white text-[9px] font-black flex items-center justify-center shrink-0 mt-0.5">2</span>
+                <span>Buka aplikasi RawBT &rarr; Menu Setelan &rarr; Sambungkan printer thermal Anda (Bluetooth / USB OTG / WiFi). Lakukan tes cetak di RawBT sampai berhasil.</span>
+              </div>
+              <div class="flex items-start gap-2">
+                <span class="w-4 h-4 rounded-full bg-amber-500 text-white text-[9px] font-black flex items-center justify-center shrink-0 mt-0.5">3</span>
+                <span>Kembali ke Toko Putri, pilih mode <b>"Driver RawBT"</b>. Kini setiap transaksi kasir akan <b>langsung tercetak seketika</b> ke printer thermal!</span>
+              </div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row gap-2 pt-1">
+              <button type="button" onclick="window.openRawBTApp()" class="flex-1 py-2.5 px-3 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-sm active:scale-95 transition-all cursor-pointer">
+                <i class="fa-brands fa-google-play"></i> Buka / Unduh RawBT Gratis
+              </button>
+              <button type="button" onclick="window.executeRawBTTestPrint()" class="flex-1 py-2.5 px-3 rounded-xl bg-white dark:bg-slate-800 hover:bg-amber-50 dark:hover:bg-slate-700 text-amber-800 dark:text-amber-200 border border-amber-300 dark:border-amber-700 font-bold text-xs flex items-center justify-center gap-1.5 active:scale-95 transition-all cursor-pointer shadow-2xs">
+                <i class="fa-solid fa-receipt text-amber-500"></i> Tes Cetak RawBT Sekarang
+              </button>
+            </div>
+          </div>
+
+          <!-- Tombol Pasangkan / Cari Perangkat Manual (Bluetooth/USB) -->
           <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700 flex flex-col sm:flex-row items-center justify-between gap-3">
             <div class="flex-1 w-full">
-              <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Nama Perangkat Tersimpan</label>
-              <input type="text" id="printer-device-name-display" readonly class="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-xs font-bold text-slate-700 dark:text-slate-200 outline-none" value="Printer Thermal POS (Default)" />
+              <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Nama Perangkat / Driver Tersimpan</label>
+              <input type="text" id="printer-device-name-display" readonly class="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-xs font-bold text-slate-700 dark:text-slate-200 outline-none" value="Driver RawBT (Printer Thermal Android - Free)" />
             </div>
             <div class="flex gap-2 w-full sm:w-auto self-end">
-              <button type="button" onclick="scanBluetoothPrinter()" class="flex-1 sm:flex-none px-3.5 py-2.5 rounded-xl bg-blue-500 hover:bg-blue-600 text-white font-bold text-xs flex items-center justify-center gap-1.5 transition-all shadow-sm active:scale-95 cursor-pointer" title="Cari Printer Bluetooth"><i class="fa-brands fa-bluetooth-b"></i> Scan BT</button>
+              <button type="button" onclick="scanBluetoothPrinter()" class="flex-1 sm:flex-none px-3.5 py-2.5 rounded-xl bg-blue-500 hover:bg-blue-600 text-white font-bold text-xs flex items-center justify-center gap-1.5 transition-all shadow-sm active:scale-95 cursor-pointer" title="Cari Printer Bluetooth Direct"><i class="fa-brands fa-bluetooth-b"></i> Scan BT</button>
               <button type="button" onclick="scanUsbPrinter()" class="flex-1 sm:flex-none px-3.5 py-2.5 rounded-xl bg-slate-700 hover:bg-slate-800 text-white font-bold text-xs flex items-center justify-center gap-1.5 transition-all shadow-sm active:scale-95 cursor-pointer" title="Deteksi USB OTG"><i class="fa-solid fa-usb"></i> Scan USB</button>
             </div>
           </div>
@@ -1051,8 +1106,8 @@
           <div>
             <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">Ukuran Kertas Thermal Struk</label>
             <select id="printer-paper-size" class="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-3 text-xs font-bold text-slate-800 dark:text-slate-200 outline-none focus:border-[var(--color-primary)]">
-              <option value="58mm">58mm - Mini Thermal Kasir (32 Karakter / Kolom) [Rekomendasi Portable]</option>
-              <option value="80mm">80mm - Desktop POS Thermal (48 Karakter / Kolom) [Kasir Besar]</option>
+              <option value="58mm">58mm - Mini Thermal Kasir (32 Karakter / Kolom) [Rekomendasi Standar]</option>
+              <option value="80mm">80mm - Desktop POS Thermal (48 Karakter / Kolom) [Kasir Lebar]</option>
             </select>
           </div>
 
@@ -1068,10 +1123,21 @@
             </div>
           </div>
 
-          <!-- 4. Opsi Cetak Tambahan -->
+          <!-- 4. Opsi Cetak Tambahan & Direct Print -->
           <div>
-            <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2.5">Opsi Fitur Struk Kasir</label>
+            <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2.5">Opsi Fitur Struk Kasir &amp; Direct Print</label>
             <div class="space-y-2.5">
+              <label class="flex items-center gap-2.5 cursor-pointer p-2.5 rounded-xl bg-amber-50/60 dark:bg-amber-950/20 border border-amber-200/70 dark:border-amber-800/40">
+                <input type="checkbox" id="printer-opt-direct" class="rounded accent-amber-500 w-4 h-4 shrink-0" checked />
+                <div class="flex-1">
+                  <span class="text-xs text-slate-800 dark:text-slate-100 font-bold flex items-center gap-1.5"><i class="fa-solid fa-bolt text-amber-500"></i> Mode Cetak Langsung (Direct Print)</span>
+                  <p class="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">Seketika mencetak ke printer thermal saat tombol Cetak ditekan tanpa harus membuka jendela preview ganda.</p>
+                </div>
+              </label>
+              <label class="flex items-center gap-2.5 cursor-pointer">
+                <input type="checkbox" id="printer-opt-autoprint" class="rounded accent-[var(--color-primary)] w-4 h-4" />
+                <span class="text-xs text-slate-700 dark:text-slate-300 font-medium">Auto-Print Struk saat Transaksi Kasir Selesai</span>
+              </label>
               <label class="flex items-center gap-2.5 cursor-pointer">
                 <input type="checkbox" id="printer-opt-points" class="rounded accent-[var(--color-primary)] w-4 h-4" checked />
                 <span class="text-xs text-slate-700 dark:text-slate-300 font-medium">Cetak Saldo Poin &amp; Member Loyalty di Struk</span>
@@ -1081,16 +1147,12 @@
                 <span class="text-xs text-slate-700 dark:text-slate-300 font-medium">Cetak Barcode Nomor Pesanan di Bawah Struk</span>
               </label>
               <label class="flex items-center gap-2.5 cursor-pointer">
-                <input type="checkbox" id="printer-opt-autocut" class="rounded accent-[var(--color-primary)] w-4 h-4" />
+                <input type="checkbox" id="printer-opt-autocut" class="rounded accent-[var(--color-primary)] w-4 h-4" checked />
                 <span class="text-xs text-slate-700 dark:text-slate-300 font-medium">Kirim Perintah Potong Kertas Otomatis (Auto Cut)</span>
               </label>
               <label class="flex items-center gap-2.5 cursor-pointer">
                 <input type="checkbox" id="printer-opt-drawer" class="rounded accent-[var(--color-primary)] w-4 h-4" />
-                <span class="text-xs text-slate-700 dark:text-slate-300 font-medium">Buka Laci Kasir Otomatis (Cash Drawer Kick)</span>
-              </label>
-              <label class="flex items-center gap-2.5 cursor-pointer">
-                <input type="checkbox" id="printer-opt-autoprint" class="rounded accent-[var(--color-primary)] w-4 h-4" />
-                <span class="text-xs text-slate-700 dark:text-slate-300 font-medium">Auto-Print Struk saat Pesanan Baru Diproses</span>
+                <span class="text-xs text-slate-700 dark:text-slate-300 font-medium">Buka Laci Kasir Otomatis saat Bayar Tunai (Cash Drawer Kick)</span>
               </label>
             </div>
           </div>

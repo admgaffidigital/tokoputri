@@ -8,6 +8,22 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-9-74',
+        version: 'v1.9.74',
+        date: '2026-09-27',
+        title: 'Driver Printer RawBT Free Universal, Panduan 3 Langkah & Fitur Cetak Struk Langsung (Direct Print 1-Tap)',
+        category: 'feature',
+        badge: 'RawBT Free & Direct Print v1.9.74',
+        items: [
+            'Driver RawBT Free Sebagai Rekomendasi Utama: Mengintegrasikan secara penuh aplikasi RawBT (Free version) sebagai driver printer thermal standar Toko Putri. Mendukung seluruh printer thermal Bluetooth, USB OTG, dan WiFi LAN tanpa biaya lisensi.',
+            'Cetak Struk Langsung 1-Tap (Direct Print): Menghilangkan popup browser yang lambat saat mencetak struk. Begitu tombol cetak ditekan di kasir POS, slip shift, atau rincian pesanan toko, dokumen langsung dikirim seketika ke printer thermal via Intent RawBT / Capacitor Native Bridge.',
+            'Auto-Print Transaksi Selesai Kasir: Menghadirkan opsi opsional auto-print di mana struk belanja otomatis langsung tercetak dari printer segera setelah transaksi kasir berhasil diselesaikan.',
+            'Panduan Mudah Koneksi RawBT 3 Langkah: Panel Pengaturan Printer kini dilengkapi panduan visual 3 langkah mudah koneksi RawBT, tombol pintas unduh/buka aplikasi RawBT dari Google Play Store, serta tombol tes cetak instan (Test Print RawBT).',
+            'Engine ESC/POS Binary Universal (rawbt.js): Membangun builder biner ESC/POS mandiri (EscPosBuilder) dengan perataan kolom presisi (58mm 32 kolom / 80mm 48 kolom), pemotongan kertas otomatis (Auto Cut), dan pemicu buka laci kasir tunai (Cash Drawer Kick).',
+            'Sinkronisasi Multi-Channel v1.9.74 (Android VersionCode 10974): Terkompilasi dan tersinkronisasi penuh ke Vite build, paket flashdisk, dan Capacitor Android.'
+        ]
+    },
+    {
         id: 'log-1-9-73',
         version: 'v1.9.73',
         date: '2026-09-27',
