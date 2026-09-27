@@ -8,6 +8,20 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-9-71',
+        version: 'v1.9.71',
+        date: '2026-09-27',
+        title: 'Perbaikan Kritis Hapus Item Keranjang & Eliminasi Duplikasi Tombol SPH Header',
+        category: 'fix',
+        badge: 'Cart & Header Fix v1.9.71',
+        items: [
+            'Fix Kritis Tombol Hapus (X) Item Keranjang: Menyelesaikan masalah tombol silang (rmCart) tidak berfungsi saat menghapus item keranjang belanja. Urutan eksekusi kini memperbarui state & penyimpanan lokal (updCart) terlebih dahulu sebelum me-render ulang UI (renderCart), serta menambahkan guard isCartRehydrated guna mencegah item yang baru dihapus otomatis ter-rehydrate kembali dari cache.',
+            'Eliminasi Duplikasi Tombol SPH di Header: Menghapus tombol toggle "SPH" pada header keranjang belanja (#btn-cart-sph-header) agar tampilan header tetap bersih dan tidak duplikat dengan kartu resmi Surat Penawaran Harga (SPH Proyek) yang sudah tersedia di bagian bawah rincian barang.',
+            'Event Handling Tombol Hapus Produk: Menambahkan event.stopPropagation(), type="button", pointer-events-none pada ikon xmark, dan respon getaran taktil mikro ringan saat item dihapus.',
+            'Sinkronisasi Multi-Channel v1.9.71 (Android VersionCode 10971): Terkompilasi dan tersinkronisasi penuh ke Vite build, paket flashdisk, dan Capacitor Android.'
+        ]
+    },
+    {
         id: 'log-1-9-70',
         version: 'v1.9.70',
         date: '2026-09-27',

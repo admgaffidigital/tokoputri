@@ -89,12 +89,15 @@ export const updCart = () => {
     }
 };
 
+let isCartRehydrated = false;
+
 /**
  * Render halaman tampilan keranjang belanja
  */
 export const renderCart = () => {
-    // Auto re-hydration: jika cart kosong di memori, coba pulihkan dari localStorage
-    if (!cart.length) {
+    // Auto re-hydration: hanya pada pemuatan awal jika cart kosong di memori
+    if (!isCartRehydrated && !cart.length) {
+        isCartRehydrated = true;
         try {
             const raw = localStorage.getItem('freshmart_cart');
             if (raw) {
@@ -116,7 +119,6 @@ export const renderCart = () => {
         show('cart-empty-state'); 
         hide('cart-bottom-bar'); 
         hide('btn-clear-cart'); 
-        hide('btn-cart-sph-header');
         hide('cart-sph-card');
         show('spacer-cart'); 
         setH('cart-items-container', ''); 
@@ -134,7 +136,6 @@ export const renderCart = () => {
     hide('cart-empty-state'); 
     show('cart-bottom-bar'); 
     show('btn-clear-cart'); 
-    show('btn-cart-sph-header');
     show('cart-sph-card');
     hide('spacer-cart');
     
@@ -163,7 +164,7 @@ export const renderCart = () => {
             </div>
             
             <div class="flex-1 flex flex-col min-w-0 relative">
-                <button onclick="rmCart(${x})" class="absolute top-0 right-0 w-8 h-8 flex items-center justify-center rounded-full bg-slate-50 hover:bg-rose-50 dark:bg-slate-700/50 dark:hover:bg-rose-900/30 text-slate-400 hover:text-rose-500 transition-all active:scale-90 border border-slate-100 dark:border-slate-600 shadow-sm z-10"><i class="fa-solid fa-xmark text-sm"></i></button>
+                <button type="button" onclick="event.stopPropagation(); rmCart(${x});" aria-label="Hapus ${esc(i.name)}" class="absolute top-0 right-0 w-8 h-8 flex items-center justify-center rounded-full bg-slate-50 hover:bg-rose-50 dark:bg-slate-700/50 dark:hover:bg-rose-900/30 text-slate-400 hover:text-rose-500 transition-all active:scale-90 border border-slate-100 dark:border-slate-600 shadow-sm z-10 cursor-pointer"><i class="fa-solid fa-xmark text-sm pointer-events-none"></i></button>
                 
                 <h4 class="text-[13px] sm:text-sm font-bold text-slate-800 dark:text-white leading-snug line-clamp-2 mb-1.5 pr-10 uppercase tracking-wide">${esc(i.name)}</h4>
                 
@@ -334,8 +335,8 @@ export const setCQty = (i, v) => {
             cart[i].qty = parseFloat(nv.toFixed(2));
         }
     }
-    renderCart(); 
     updCart();
+    renderCart(); 
 };
 
 /**
@@ -366,17 +367,20 @@ export const updCQty = (i, c) => {
             cart[i].qty = nv;
         }
     }
-    renderCart(); 
     updCart();
+    renderCart(); 
 };
 
 /**
  * Hapus satu item dari keranjang
  */
 export const rmCart = i => { 
-    cart.splice(i, 1); 
-    renderCart(); 
-    updCart(); 
+    if (i >= 0 && i < cart.length) {
+        cart.splice(i, 1); 
+        updCart(); 
+        renderCart(); 
+        if (typeof window.triggerHaptic === 'function') window.triggerHaptic('light');
+    }
 };
 
 /**
