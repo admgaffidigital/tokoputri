@@ -121,7 +121,6 @@ export const toggleTheme = () => {
     if (icon) icon.className = isDark ? 'fa-solid fa-sun text-sm text-amber-400' : 'fa-solid fa-moon text-sm text-slate-600 dark:text-slate-300';
 };
 
-/**
 export let confirmPromiseResolve = null;
 
 /**

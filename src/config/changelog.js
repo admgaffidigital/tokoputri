@@ -8,6 +8,19 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-9-59',
+        version: 'v1.9.59',
+        date: '2026-09-27',
+        title: 'Fix Kritis Dialog Konfirmasi — Penanganan Deklarasi Variabel confirmPromiseResolve',
+        category: 'fix',
+        badge: 'Critical Bugfix v1.9.59',
+        items: [
+            'Fix Uncaught ReferenceError confirmPromiseResolve: Menghapus tag pembuka JSDoc yang tidak tertutup sebelum deklarasi variabel `export let confirmPromiseResolve = null;` di `src/core/ui.js` yang sebelumnya menyebabkan deklarasi variabel tertelan ke dalam blok komentar sehingga memicu error runtime saat dialog konfirmasi (showConfirm) dipanggil.',
+            'Stabilitas Dialog Hapus PO & Konfirmasi Global: Memastikan fitur hapus pesanan kulakan (deletePurchaseOrder), rollback cadangan, snapshot darurat, dan seluruh dialog aksi konfirmasi sistem berjalan normal 100% tanpa kendala di konsol peramban.',
+            'Sinkronisasi Multi-Channel v1.9.59 (Android VersionCode 10959): Terkompilasi dan tersinkronisasi penuh ke Vite build, paket flashdisk, dan Capacitor Android.'
+        ]
+    },
+    {
         id: 'log-1-9-58',
         version: 'v1.9.58',
         date: '2026-09-27',
