@@ -39,7 +39,7 @@ export const ensurePurchaseModals = () => {
         m.className = 'fixed inset-0 z-[150] flex hidden items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-950/40 backdrop-blur-sm opacity-0 transition-opacity duration-300';
         m.onclick = (e) => { if (e.target === m) window.closePOFormModal?.(); };
         m.innerHTML = `
-            <div id="modal-po-form-box" class="modal-bottom-sheet relative flex max-h-[92dvh] sm:max-h-[88dvh] w-full max-w-4xl translate-y-full sm:translate-y-10 transform flex-col overflow-hidden rounded-t-[2rem] sm:rounded-3xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xl transition-transform duration-300">
+            <div id="modal-po-form-box" class="modal-bottom-sheet relative flex max-h-[94dvh] sm:max-h-[92dvh] w-full max-w-5xl translate-y-full sm:translate-y-10 transform flex-col overflow-hidden rounded-t-[2rem] sm:rounded-3xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xl transition-transform duration-300">
                 <div id="modal-po-form-content" class="flex-1 flex flex-col overflow-hidden"></div>
             </div>
         `;
@@ -52,8 +52,8 @@ export const ensurePurchaseModals = () => {
         m.className = 'fixed inset-0 z-[150] flex hidden items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-950/40 backdrop-blur-sm opacity-0 transition-opacity duration-300';
         m.onclick = (e) => { if (e.target === m) window.closePODetailModal?.(); };
         m.innerHTML = `
-            <div id="modal-po-detail-box" class="modal-bottom-sheet relative flex max-h-[92dvh] sm:max-h-[88dvh] w-full max-w-3xl translate-y-full sm:translate-y-10 transform flex-col overflow-hidden rounded-t-[2rem] sm:rounded-3xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xl transition-transform duration-300">
-                <div id="modal-po-detail-content" class="flex-1 overflow-y-auto hide-scrollbar flex flex-col"></div>
+            <div id="modal-po-detail-box" class="modal-bottom-sheet relative flex max-h-[94dvh] sm:max-h-[90dvh] w-full max-w-3xl translate-y-full sm:translate-y-10 transform flex-col overflow-hidden rounded-t-[2rem] sm:rounded-3xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xl transition-transform duration-300">
+                <div id="modal-po-detail-content" class="flex-1 overflow-y-auto custom-scrollbar flex flex-col"></div>
             </div>
         `;
         document.body.appendChild(m);
@@ -65,8 +65,8 @@ export const ensurePurchaseModals = () => {
         m.className = 'fixed inset-0 z-[150] flex hidden items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-950/40 backdrop-blur-sm opacity-0 transition-opacity duration-300';
         m.onclick = (e) => { if (e.target === m) window.closePurchasePaymentModal?.(); };
         m.innerHTML = `
-            <div id="modal-po-payment-box" class="modal-bottom-sheet relative flex max-h-[92dvh] sm:max-h-[88dvh] w-full max-w-md translate-y-full sm:translate-y-10 transform flex-col overflow-hidden rounded-t-[2rem] sm:rounded-3xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xl transition-transform duration-300">
-                <div id="modal-po-payment-content" class="flex-1 overflow-y-auto hide-scrollbar flex flex-col"></div>
+            <div id="modal-po-payment-box" class="modal-bottom-sheet relative flex max-h-[94dvh] sm:max-h-[90dvh] w-full max-w-md translate-y-full sm:translate-y-10 transform flex-col overflow-hidden rounded-t-[2rem] sm:rounded-3xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xl transition-transform duration-300">
+                <div id="modal-po-payment-content" class="flex-1 overflow-y-auto custom-scrollbar flex flex-col"></div>
             </div>
         `;
         document.body.appendChild(m);
@@ -78,7 +78,7 @@ export const ensurePurchaseModals = () => {
         m.className = 'fixed inset-0 z-[160] flex hidden items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-950/40 backdrop-blur-sm opacity-0 transition-opacity duration-300';
         m.onclick = (e) => { if (e.target === m) window.closePOProductPicker?.(); };
         m.innerHTML = `
-            <div id="modal-po-product-picker-box" class="modal-bottom-sheet relative flex max-h-[92dvh] sm:max-h-[85dvh] w-full max-w-2xl translate-y-full sm:translate-y-10 transform flex-col overflow-hidden rounded-t-[2rem] sm:rounded-3xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xl transition-transform duration-300">
+            <div id="modal-po-product-picker-box" class="modal-bottom-sheet relative flex max-h-[94dvh] sm:max-h-[90dvh] w-full max-w-4xl translate-y-full sm:translate-y-10 transform flex-col overflow-hidden rounded-t-[2rem] sm:rounded-3xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xl transition-transform duration-300">
                 <div id="modal-po-product-picker-content" class="flex-1 flex flex-col overflow-hidden"></div>
             </div>
         `;
@@ -794,6 +794,12 @@ window.openCreatePOModal = (preselectedSupplierId = null, existingPOId = null) =
     const box = el('modal-po-form-box');
     if (!modal) return;
     openModalAnim(modal, box);
+
+    // Pastikan scroll container form PO selalu berada di posisi paling atas saat baru dibuka
+    requestAnimationFrame(() => {
+        const sc = el('po-form-scroll-container');
+        if (sc) sc.scrollTop = 0;
+    });
 };
 
 /**
@@ -826,7 +832,7 @@ const renderPOFormModalContent = (po, isEdit) => {
         </div>
 
         <form id="po-editor-form" onsubmit="window.savePOForm(event, '${isEdit ? po.id : ''}')" class="flex-1 flex flex-col overflow-hidden">
-            <div class="p-4 sm:p-6 space-y-4 sm:space-y-5 flex-1 overflow-y-auto hide-scrollbar">
+            <div id="po-form-scroll-container" class="p-4 sm:p-6 space-y-4 sm:space-y-5 flex-1 overflow-y-auto custom-scrollbar">
             
             <!-- 1. IDENTITAS HEADER PO -->
             <div class="p-4 sm:p-5 rounded-2xl bg-slate-50/70 dark:bg-slate-900/50 border border-slate-200/80 dark:border-slate-800 space-y-3.5">
@@ -1185,6 +1191,12 @@ window.openPOProductPicker = (targetRowIndex = null) => {
     if (!modal) return;
     openModalAnim(modal, box);
 
+    // Pastikan scroll container picker selalu berada di posisi paling atas saat baru dibuka
+    requestAnimationFrame(() => {
+        const psc = el('po-picker-scroll-container');
+        if (psc) psc.scrollTop = 0;
+    });
+
     // Auto-focus input pencarian
     setTimeout(() => {
         const searchInput = el('po-picker-search-input');
@@ -1409,6 +1421,8 @@ window.updatePOItemField = (index, field, value) => {
 const renderPOItemsTable = () => {
     const container = el('po-items-table-container');
     if (!container) return;
+    const scrollParent = el('po-form-scroll-container');
+    const prevScroll = scrollParent ? scrollParent.scrollTop : null;
 
     const products = appData.products || [];
     const currentSupplierId = el('pof-supplierId')?.value || '';
@@ -1532,7 +1546,7 @@ const renderPOItemsTable = () => {
                                     <span class="text-[11px] font-bold text-slate-400">${selectedProd.variants.length} Varian Tersedia</span>
                                 </div>
 
-                                <div class="flex items-center gap-2 flex-wrap">
+                                <div class="max-h-36 sm:max-h-44 overflow-y-auto custom-scrollbar p-1.5 rounded-xl bg-white dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/60 flex items-center gap-2 flex-wrap">
                                     ${selectedProd.variants.map((v, vIdx) => {
                                         const isVarSelected = (item.variantName && item.variantName === v.name) || (!item.variantName && vIdx === 0);
                                         return `
@@ -1661,6 +1675,12 @@ const renderPOItemsTable = () => {
             </button>
         </div>
     `);
+
+    if (scrollParent && prevScroll !== null) {
+        requestAnimationFrame(() => {
+            scrollParent.scrollTop = prevScroll;
+        });
+    }
 };
 
 /**
@@ -1787,7 +1807,7 @@ const renderPOProductPickerContent = () => {
         </div>
 
         <!-- LIST PRODUK LEGA & NYAMAN -->
-        <div class="p-4 sm:p-5 overflow-y-auto flex-1 hide-scrollbar space-y-3.5">
+        <div id="po-picker-scroll-container" class="p-4 sm:p-5 overflow-y-auto flex-1 custom-scrollbar space-y-3.5">
             ${list.length === 0 ? `
                 <div class="p-10 text-center flex flex-col items-center justify-center text-slate-400 space-y-3 bg-slate-50/70 dark:bg-slate-900/40 rounded-3xl border border-dashed border-slate-200 dark:border-slate-800">
                     <div class="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl" style="background: rgba(var(--color-primary-rgb), 0.1); color: var(--color-primary);">
@@ -1867,7 +1887,7 @@ const renderPOProductPickerContent = () => {
                                     ` : ''}
                                 </div>
 
-                                <div class="flex items-center gap-2 flex-wrap">
+                                <div class="max-h-44 sm:max-h-52 overflow-y-auto custom-scrollbar p-2 rounded-2xl bg-slate-50/80 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-700/60 flex items-center gap-2 flex-wrap">
                                     ${prod.variants.map((v, vIdx) => `
                                         <button 
                                             type="button" 

@@ -2535,6 +2535,35 @@ html.dark .pull-indicator {
     display: none; /* Chrome / Safari / Opera */
 }
 
+/* Custom slim modern scrollbar untuk modal & dropdown yang nyaman di desktop & mobile */
+.custom-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(148, 163, 184, 0.4) transparent;
+}
+.custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(148, 163, 184, 0.35);
+    border-radius: 9999px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(148, 163, 184, 0.6);
+}
+html.dark .custom-scrollbar {
+    scrollbar-color: rgba(100, 116, 139, 0.4) transparent;
+}
+html.dark .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(100, 116, 139, 0.4);
+}
+html.dark .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(148, 163, 184, 0.5);
+}
+
 /* ─── NATIVE MODAL DARK MODE OVERRIDES ─── */
 html.dark .modal-bottom-sheet {
     background-color: #0f172a;

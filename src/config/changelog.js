@@ -8,6 +8,22 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-9-54',
+        version: 'v1.9.54',
+        date: '2026-09-27',
+        title: 'Presisi Antarmuka Order Kulakan (PO) & Product Picker — Pembatasan Scroll Varian, Custom Slim Scrollbar & Perlebar Modal Desktop',
+        category: 'optimization',
+        badge: 'PO UI Precision & Scroll Parity v1.9.54',
+        items: [
+            'Pembatasan Kontainer Varian (Max-Height Scrollable): Membungkus daftar varian produk pada Product Picker (max-h-44 sm:max-h-52) dan Item Card Form PO (max-h-36 sm:max-h-44) ke dalam kontainer scrollable mandiri, mencegah produk dengan puluhan varian (seperti No Drop 36 varian) meledak vertikal dan mendorong elemen form lainnya keluar layar.',
+            'Custom Slim Scrollbar (.custom-scrollbar): Menghadirkan scrollbar tipis modern (6px) transparan dengan indikator pill melengkung halus dan kompatibilitas tema gelap (dark mode), menggantikan utilitas hide-scrollbar agar pengguna desktop/tablet mendapatkan petunjuk visual navigasi konten yang jelas tanpa scrollbar jadul yang kaku.',
+            'Preservasi Posisi Scroll Form PO: Mengintegrasikan penyimpanan dan pemulihan posisi scroll (prevScroll) saat pemilihan varian atau perubahan kuantitas item PO berlangsung, mencegah lompatan scroll liar saat pengguna sedang meninjau form.',
+            'Perlebar Modal PO di Desktop & Tablet: Memperlebar modal Buat/Edit Order Kulakan menjadi max-w-5xl (dari max-w-4xl) dan Product Picker menjadi max-w-4xl (dari max-w-2xl), menghadirkan ruang pandang yang jauh lebih lega, lapang, dan nyaman di layar komputer/laptop.',
+            'Auto-Reset Scroll ke Atas Saat Modal Dibuka: Memastikan form PO dan daftar katalog Product Picker selalu otomatis berada di puncak teratas (scrollTop = 0) saat pertama kali dibuka, menjamin informasi supplier dan header selalu terlihat jelas.',
+            'Sinkronisasi Multi-Channel v1.9.54 (Android VersionCode 10954): Terkompilasi dan tersinkronisasi penuh ke Vite build, paket flashdisk, dan Capacitor Android.'
+        ]
+    },
+    {
         id: 'log-1-9-53',
         version: 'v1.9.53',
         date: '2026-09-27',
