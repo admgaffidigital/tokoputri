@@ -27,9 +27,22 @@ export const rDyn = () => {
     if (appData.store.logo) {
         const i = el('dyn-store-logo-img'), c = el('dyn-store-logo-icon');
         if (appData.store.logo.includes('http') || appData.store.logo.includes('data:')) {
-            if(i) { i.src = appData.store.logo; i.onerror = () => { i.onerror=null; i.src='https://placehold.co/100?text=Logo'; }; show('dyn-store-logo-img'); hide('dyn-store-logo-icon'); }
+            if (i) {
+                i.src = appData.store.logo;
+                i.onerror = () => { i.onerror = null; i.src = 'https://placehold.co/100?text=Logo'; };
+                show('dyn-store-logo-img');
+                hide('dyn-store-logo-icon');
+                i.style.display = 'block';
+                if (c) c.style.display = 'none';
+            }
         } else {
-            if(c) { c.className = `fa-solid ${esc(appData.store.logo)} text-xl text-[var(--color-primary)]`; show('dyn-store-logo-icon'); hide('dyn-store-logo-img'); }
+            if (c) {
+                c.className = `fa-solid ${esc(appData.store.logo)} text-xl text-[var(--color-primary)]`;
+                show('dyn-store-logo-icon');
+                hide('dyn-store-logo-img');
+                c.style.display = 'inline-flex';
+                if (i) i.style.display = 'none';
+            }
         }
     }
 

@@ -8,6 +8,20 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-9-65',
+        version: 'v1.9.65',
+        date: '2026-09-27',
+        title: 'Perbaikan Kritis Posisi Logo Toko: Menjaga Utilitas .hidden & Isolasi Simbol Header',
+        category: 'fix',
+        badge: 'Logo & Centering Integrity v1.9.65',
+        items: [
+            'Fix Kritis Geser Logo Toko Header: Mengeliminasi pemaksaan deklarasi !important pada properti display ikon font yang sempat menimpa kelas utilitas .hidden (display: none). Ikon cadangan toko (dyn-store-logo-icon) kini 100% tersembunyi dengan sempurna saat logo gambar (dyn-store-logo-img) aktif, sehingga logo gambar toko kembali tampil tepat di tengah wadah rounded header tanpa terdorong ke kiri.',
+            'Proteksi Mutually Exclusive Tampilan Logo: Menyempurnakan logika render di home/sections.js agar gambar logo dan ikon toko dikontrol secara mutlak (style.display none/block) sehingga tidak dapat muncul bersamaan dalam satu wadah.',
+            'Presisi Centering Aman & Selektif: Menerapkan perataan ikon terpusat yang aman dengan selektor :not(.hidden):not([hidden]), menjamin ikon selalu simetris di tombol dan badge tanpa mengganggu elemen yang disembunyikan.',
+            'Sinkronisasi Multi-Channel v1.9.65 (Android VersionCode 10965): Terkompilasi dan tersinkronisasi penuh ke Vite build, paket flashdisk, dan Capacitor Android.'
+        ]
+    },
+    {
         id: 'log-1-9-64',
         version: 'v1.9.64',
         date: '2026-09-27',
