@@ -7,7 +7,8 @@
 
 import { appData, gOrds, cVOrd, setCVOrd, myOrders } from '../../core/state.js';
 import { el, show, hide, setH, esc } from '../../core/utils.js';
-import { getPrinterConfig } from './printer-settings.js';
+import { getPrinterConfig, getPaperCols } from './printer-settings.js';
+import { renderThermalDOMAndPrint, formatCompactDate, wrapWords } from './rawbt.js';
 
 export const openReceiptPreview = (orderId = null) => {
     if (orderId && typeof setCVOrd === 'function') {
@@ -25,61 +26,64 @@ export const openReceiptPreview = (orderId = null) => {
     window.lastPrintedOrder = o;
     
     const config = typeof getPrinterConfig === 'function' ? getPrinterConfig() : { paperSize: '58mm', showPoints: true, showBarcode: true };
-    const is80 = config.paperSize === '80mm';
-    const cols = is80 ? 48 : 32;
+    const cols = getPaperCols(config.paperSize);
+    const is80 = cols >= 40;
 
-    const d = o.dateString ? new Date(o.dateString).toLocaleString('id-ID', {
-        day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit'
-    }) : '';
+    const d = formatCompactDate(o.dateString, is80);
     const sN = config.headerText || appData.store.name || "Toko Putri";
     const sW = appData.store.wa || "";
     
     const pL = (l, r, len = cols) => { 
-        const p = len - l.length - r.length; 
-        return l + (p > 0 ? ' '.repeat(p) : ' ') + r; 
+        const left = String(l || '');
+        const right = String(r || '');
+        const p = len - left.length - right.length; 
+        return left + (p > 0 ? ' '.repeat(p) : ' ') + right; 
     };
     
     let h = `<div class="text-center font-bold" style="font-size:14px;margin-bottom:2px;">${esc(sN)}</div>`;
     if (sW) h += `<div class="text-center" style="font-size:11px;margin-bottom:4px;">WA: ${esc(sW)}</div>`;
-    h += `<div class="border-b border-dashed border-black my-2"></div><div style="white-space:pre;">Order: #${o.orderId}</div><div style="white-space:pre;">Tgl  : ${d}</div><div style="white-space:pre;">Plg  : ${esc(o.customer?.name || 'Guest').substring(0, cols - 10)}</div><div style="white-space:pre;">Tipe : ${o.customer?.deliveryMethod === 'delivery' ? 'Dikirim' : 'Ambil di Toko'}</div><div class="border-b border-dashed border-black my-2"></div>`;
+    h += `<div class="border-b border-dashed border-black my-2"></div>`;
+    h += `<div style="white-space:pre;font-family:monospace;">${pL(`Order: #${o.orderId}`, d, cols)}</div>`;
+    h += `<div style="white-space:pre;font-family:monospace;">${pL(`Plg  : ${esc(o.customer?.name || 'Guest').substring(0, is80 ? 18 : 10)}`, `Tipe: ${o.customer?.deliveryMethod === 'delivery' ? 'Kirim' : 'Ambil'}`, cols)}</div>`;
+    if (o.customer?.phone) {
+        h += `<div style="white-space:pre;font-family:monospace;">HP   : ${esc(o.customer.phone)}</div>`;
+    }
+    h += `<div class="border-b border-dashed border-black my-2"></div>`;
     if (o.customer?.note) { 
-        h += `<div style="white-space:pre-wrap;word-break:break-all;">Cat: ${esc(o.customer.note)}</div><div class="border-b border-dashed border-black my-2"></div>`; 
+        h += `<div style="white-space:pre-wrap;word-break:break-word;">Cat: ${esc(o.customer.note)}</div><div class="border-b border-dashed border-black my-2"></div>`; 
     }
     
     // Daftar item barang
     o.items.forEach(i => {
         let vText = i.variantName ? ` (${esc(i.variantName)}${i.colorCode ? ' ' + esc(i.colorCode) : ''})` : '';
-        const n = (esc(i.name) + vText + (i.poTime ? ` [PO]` : '')).substring(0, cols);
-        const q = `${parseFloat(i.qty)} ${esc(i.unit || 'pcs')} x ${i.effectivePrice.toLocaleString('id-ID')}`;
-        const t = (parseFloat(i.qty) * i.effectivePrice).toLocaleString('id-ID');
-        h += `<div style="white-space:pre-wrap;font-weight:bold;word-break:break-all;">${n}</div><div style="white-space:pre;font-size:11px;">${pL(q, t, cols)}</div>`;
+        const n = esc(i.name) + vText + (i.poTime ? ` [PO]` : '');
+        const effPrice = i.effectivePrice || i.price || 0;
+        const q = `  ${parseFloat(i.qty)} ${esc(i.unit || 'pcs')} x ${Math.round(effPrice).toLocaleString('id-ID')}`;
+        const t = (parseFloat(i.qty) * effPrice).toLocaleString('id-ID');
+        h += `<div style="white-space:pre-wrap;font-weight:bold;word-break:break-word;">${n}</div><div style="white-space:pre;font-family:monospace;font-size:11px;">${pL(q, t, cols)}</div>`;
         if (i.poTime) {
-            h += `<div style="white-space:pre;font-size:10px;font-style:italic;color:#4b5563;">* Estimasi PO: ${esc(i.poTime)}</div>`;
+            h += `<div style="white-space:pre;font-size:10px;font-style:italic;color:#4b5563;">  * Estimasi PO: ${esc(i.poTime)}</div>`;
         }
     });
     
-    h += `<div class="border-b border-dashed border-black my-2"></div><div style="white-space:pre;">${pL('Subtotal', (o.payment?.subtotal || 0).toLocaleString('id-ID'), cols)}</div>`;
-    if (o.customer?.deliveryMethod === 'delivery') h += `<div style="white-space:pre;">${pL('Ongkir', (o.payment?.shippingCost || 0).toLocaleString('id-ID'), cols)}</div>`;
-    if (o.payment?.shippingDiscount) h += `<div style="white-space:pre;">${pL('Pot.Ongkir', `-${o.payment.shippingDiscount.toLocaleString('id-ID')}`, cols)}</div>`;
-    if (o.payment?.productDiscount) h += `<div style="white-space:pre;">${pL('Pot.Harga', `-${o.payment.productDiscount.toLocaleString('id-ID')}`, cols)}</div>`;
+    h += `<div class="border-b border-dashed border-black my-2"></div><div style="white-space:pre;font-family:monospace;">${pL('Subtotal', (o.payment?.subtotal || 0).toLocaleString('id-ID'), cols)}</div>`;
+    if (o.customer?.deliveryMethod === 'delivery') h += `<div style="white-space:pre;font-family:monospace;">${pL('Ongkir', (o.payment?.shippingCost || 0).toLocaleString('id-ID'), cols)}</div>`;
+    if (o.payment?.shippingDiscount) h += `<div style="white-space:pre;font-family:monospace;">${pL('Pot.Ongkir', `-${o.payment.shippingDiscount.toLocaleString('id-ID')}`, cols)}</div>`;
+    if (o.payment?.productDiscount) h += `<div style="white-space:pre;font-family:monospace;">${pL('Pot.Harga', `-${o.payment.productDiscount.toLocaleString('id-ID')}`, cols)}</div>`;
     if (o.payment?.ppnAmount && o.payment.ppnAmount > 0) {
         const isInc = o.payment.ppnType === 'inclusive';
         const ppnRate = o.payment.ppnRate || 11;
         const ppnAmt = o.payment.ppnAmount || 0;
-        const baseBeforeTax = (o.payment.subtotal || 0) - (o.payment.productDiscount || 0) + (o.payment.shippingCost || 0) - (o.payment.shippingDiscount || 0);
-        const dppAmt = o.payment.dppAmount || (isInc ? Math.round((baseBeforeTax * 100) / (100 + ppnRate)) : Math.max(0, baseBeforeTax));
-
-        h += `<div style="white-space:pre;">${pL('DPP', dppAmt.toLocaleString('id-ID'), cols)}</div>`;
-        h += `<div style="white-space:pre;">${pL(`${isInc ? 'Inc. PPN' : 'PPN'} (${ppnRate}%)`, (isInc ? '' : '+') + ppnAmt.toLocaleString('id-ID'), cols)}</div>`;
+        h += `<div style="white-space:pre;font-family:monospace;">${pL(`${isInc ? 'Inc. PPN' : 'PPN'} (${ppnRate}%)`, (isInc ? '' : '+') + ppnAmt.toLocaleString('id-ID'), cols)}</div>`;
     }
-    h += `<div class="border-b border-dashed border-black my-2"></div><div style="white-space:pre;font-weight:bold;font-size:12px;">${pL('TOTAL', 'Rp ' + (o.payment?.grandTotal || 0).toLocaleString('id-ID'), cols)}</div><div style="white-space:pre;">${pL('Bayar:', String(o.payment?.method || '').toUpperCase(), cols)}</div>`;
+    h += `<div class="border-b border-dashed border-black my-2"></div><div style="white-space:pre;font-family:monospace;font-weight:bold;font-size:12px;">${pL('TOTAL', 'Rp ' + (o.payment?.grandTotal || 0).toLocaleString('id-ID'), cols)}</div><div style="white-space:pre;font-family:monospace;">${pL('Metode Bayar', String(o.payment?.method || 'Tunai').toUpperCase(), cols)}</div>`;
     
     // Informasi loyalty poin & reward
     if (config.showPoints && (o.pointsEarned > 0 || o.finalMemberPoints !== undefined)) {
         h += `<div class="border-b border-dashed border-black my-2"></div>`;
-        if (o.pointsEarned > 0) h += `<div style="white-space:pre;">${pL('Poin Didapat:', '+' + o.pointsEarned, cols)}</div>`;
-        if (o.finalMemberPoints !== undefined && o.finalMemberPoints !== null) h += `<div style="white-space:pre;font-weight:bold;">${pL('Saldo Poin:', String(o.finalMemberPoints), cols)}</div>`;
-        if (o.claimedReward) h += `<div style="white-space:pre-wrap;font-weight:bold;word-break:break-all;margin-top:2px;">HADIAH: ${esc(o.claimedReward.name)}</div><div style="white-space:pre;font-size:10px;">(${o.claimedReward.status === 'ready' ? 'Kirim bersama pesanan' : o.claimedReward.status === 'waiting_stock' ? 'Stok kosong-ditunda' : 'Menunggu konfirmasi'})</div>`;
+        if (o.pointsEarned > 0) h += `<div style="white-space:pre;font-family:monospace;">${pL('Poin Didapat', '+' + o.pointsEarned + ' Poin', cols)}</div>`;
+        if (o.finalMemberPoints !== undefined && o.finalMemberPoints !== null) h += `<div style="white-space:pre;font-family:monospace;font-weight:bold;">${pL('Saldo Poin', String(o.finalMemberPoints) + ' Poin', cols)}</div>`;
+        if (o.claimedReward) h += `<div style="white-space:pre-wrap;font-weight:bold;word-break:break-word;margin-top:2px;">HADIAH: ${esc(o.claimedReward.name)}</div>`;
     }
     
     const hasPO = o.items.some(i => i.poTime && i.poTime !== '');
@@ -98,11 +102,11 @@ export const openReceiptPreview = (orderId = null) => {
 
     // Sesuaikan lebar kertas pada kotak modal
     const paperEl = el('receipt-paper-content');
-    if (paperEl) paperEl.style.width = is80 ? '330px' : '260px';
+    if (paperEl) paperEl.style.width = is80 ? '340px' : '260px';
     const boxEl = el('receipt-preview-modal-box');
     if (boxEl) {
-        boxEl.classList.remove('max-w-[320px]', 'max-w-[390px]');
-        boxEl.classList.add(is80 ? 'max-w-[390px]' : 'max-w-[320px]');
+        boxEl.classList.remove('max-w-[320px]', 'max-w-[400px]');
+        boxEl.classList.add(is80 ? 'max-w-[400px]' : 'max-w-[320px]');
     }
 
     const mRec = el('receipt-preview-modal');
@@ -140,23 +144,7 @@ export const executePrintReceipt = () => {
     const o = (gOrds || []).find(x => x.orderId === cVOrd) || (Array.isArray(myOrders) ? myOrders.find(x => x.orderId === cVOrd) : null) || window.lastPrintedOrder; 
     if (!o) return; 
     const p = el('receipt-paper-content') ? el('receipt-paper-content').innerHTML : ''; 
-    let t = el('thermal-print-section'); 
-    if (!t) {
-        t = document.createElement('div');
-        t.id = 'thermal-print-section';
-        document.body.appendChild(t);
-    }
-    const config = typeof getPrinterConfig === 'function' ? getPrinterConfig() : { paperSize: '58mm', deviceType: 'rawbt' };
-    const is80 = config.paperSize === '80mm';
-    t.innerHTML = `<div style="width:${is80 ? '80mm' : '58mm'};font-family:'Courier New',Courier,monospace;font-size:11px;line-height:1.2;color:#000;background:#fff;padding:4px;">${p}</div>`; 
-    
-    if (typeof window.sendToRawBT === 'function') {
-        const rawText = t.innerText;
-        const b64 = btoa(unescape(encodeURIComponent(rawText)));
-        window.sendToRawBT(b64, rawText, p);
-    } else {
-        window.print(); 
-    }
+    renderThermalDOMAndPrint(p);
 };
 
 // ─── Expose ke window untuk kompatibilitas onclick di HTML ──────

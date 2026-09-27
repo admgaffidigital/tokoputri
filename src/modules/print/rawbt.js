@@ -5,20 +5,127 @@
  * pembuatan byte ESC/POS binary & teks thermal (58mm / 80mm),
  * cetak seketika (Direct Print) tanpa dialog browser, serta
  * manajemen koneksi printer Bluetooth, USB OTG, dan WiFi LAN.
+ * Didesain dengan presisi tinggi (Anti-Potong Tepi, Kalibrasi Kolom).
  * ============================================================
  */
 
 import { appData, gOrds, cVOrd, myOrders } from '../../core/state.js';
 import { el, esc } from '../../core/utils.js';
 import { showToast } from '../../core/ui.js';
-import { getPrinterConfig } from './printer-settings.js';
+import { getPrinterConfig, getPaperCols } from './printer-settings.js';
 
 // ─── Format Currency & Qty ───────────────────────────────────
-const fRp = (n) => 'Rp ' + Math.round(Number(n || 0)).toLocaleString('id-ID');
-const formatQty = (q) => {
+export const fRp = (n) => 'Rp ' + Math.round(Number(n || 0)).toLocaleString('id-ID');
+export const fRpNum = (n) => Math.round(Number(n || 0)).toLocaleString('id-ID');
+export const formatQty = (q) => {
     const num = parseFloat(q);
     if (isNaN(num)) return '0';
     return Number.isInteger(num) ? String(num) : num.toFixed(2).replace(/\.?0+$/, '');
+};
+
+/**
+ * Membersihkan string agar tepat 1 karakter per kolom cetak monospace:
+ * - Menghapus emoji / surrogate pair yang sering merusak hitungan kolom thermal.
+ * - Mengubah tab dan carriage return menjadi spasi.
+ * - Membatasi hanya karakter ASCII yang didukung penuh printer kasir.
+ */
+export const cleanLineAscii = (str) => {
+    if (!str) return '';
+    return String(str)
+        .replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, '') // Hapus emoji
+        .replace(/[\r\t]/g, ' ')                        // Ganti tab / CR jadi spasi
+        .replace(/[^\x20-\x7E\n]/g, ' ');               // Batasi karakter ASCII cetak
+};
+
+/**
+ * Memecah teks panjang menjadi beberapa baris berdasarkan batas kata (Word Wrap),
+ * mencegah kata terpotong di tengah-tengah pada baris thermal.
+ */
+export const wrapWords = (text, maxWidth) => {
+    if (!text) return [];
+    const clean = cleanLineAscii(text).replace(/ +/g, ' ').trim();
+    if (!clean) return [];
+    if (clean.length <= maxWidth) return [clean];
+
+    const words = clean.split(' ');
+    const lines = [];
+    let currentLine = '';
+
+    for (const word of words) {
+        if (!word) continue;
+        if (word.length > maxWidth) {
+            // Jika kata tunggal lebih panjang dari batas kolom, potong presisi
+            if (currentLine) {
+                lines.push(currentLine);
+                currentLine = '';
+            }
+            for (let i = 0; i < word.length; i += maxWidth) {
+                const chunk = word.substring(i, i + maxWidth);
+                if (chunk.length === maxWidth) {
+                    lines.push(chunk);
+                } else {
+                    currentLine = chunk;
+                }
+            }
+        } else if ((currentLine ? currentLine.length + 1 + word.length : word.length) <= maxWidth) {
+            currentLine = currentLine ? currentLine + ' ' + word : word;
+        } else {
+            lines.push(currentLine);
+            currentLine = word;
+        }
+    }
+    if (currentLine) lines.push(currentLine);
+    return lines;
+};
+
+/**
+ * Format tanggal ringkas presisi (contoh: 27/09/26 21:45)
+ */
+export const formatCompactDate = (dateVal, is80 = false) => {
+    const d = dateVal ? new Date(dateVal) : new Date();
+    const day = String(d.getDate()).padStart(2, '0');
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const year = is80 ? d.getFullYear() : String(d.getFullYear()).slice(-2);
+    const hour = String(d.getHours()).padStart(2, '0');
+    const min = String(d.getMinutes()).padStart(2, '0');
+    return `${day}/${month}/${year} ${hour}:${min}`;
+};
+
+/**
+ * Format dua kolom rata kiri dan rata kanan dengan kalkulasi spasi matematika presisi.
+ * Jika teks kiri terlalu panjang:
+ * - Jika truncateLeft=true: Teks kiri dipotong rapi agar sisi kanan tetap di baris yang sama.
+ * - Jika truncateLeft=false: Teks kiri dibungkus rapi dan nilai kanan diletakkan di sisi kanan tanpa terpotong.
+ */
+export const formatTwoColumn = (leftStr, rightStr, cols, truncateLeft = false) => {
+    const l = cleanLineAscii(String(leftStr || '')).trimEnd();
+    const r = cleanLineAscii(String(rightStr || '')).trim();
+
+    // 1. Muat sempurna dalam 1 baris
+    const gap = cols - l.length - r.length;
+    if (gap >= 0) {
+        return [l + ' '.repeat(gap) + r];
+    }
+
+    // 2. Mode potong kiri (untuk header / label metadata seperti No Transaksi & Tanggal)
+    if (truncateLeft) {
+        const maxL = Math.max(0, cols - r.length - 1);
+        const truncL = l.substring(0, maxL).trimEnd();
+        const pad = Math.max(1, cols - truncL.length - r.length);
+        return [truncL + ' '.repeat(pad) + r];
+    }
+
+    // 3. Mode multi-baris (untuk item belanja atau label finansial panjang)
+    const leftLines = wrapWords(l, cols);
+    const lastLeft = leftLines[leftLines.length - 1] || '';
+    if (lastLeft.length + 1 + r.length <= cols) {
+        const pad = cols - lastLeft.length - r.length;
+        leftLines[leftLines.length - 1] = lastLeft + ' '.repeat(pad) + r;
+        return leftLines;
+    } else {
+        const rightPad = Math.max(0, cols - r.length);
+        return [...leftLines, ' '.repeat(rightPad) + r];
+    }
 };
 
 /**
@@ -29,7 +136,7 @@ const formatQty = (q) => {
  */
 export class EscPosBuilder {
     constructor(cols = 32) {
-        this.cols = cols === 48 ? 48 : 32;
+        this.cols = Number(cols) || 32;
         this.bytes = [];
         this.plainLines = [];
     }
@@ -55,29 +162,28 @@ export class EscPosBuilder {
 
     /**
      * Atur ukuran font (GS ! n)
-     * 'title' = Double Width & Double Height
-     * 'total' = Double Height
-     * 'normal' = Normal 1x
+     * 'tall' / 'total' = Double Height (Tinggi 2x, Lebar 1x -> Kolom tetap penuh & presisi)
+     * 'wide'           = Double Width (Lebar 2x, Tinggi 1x)
+     * 'title'          = Double Width & Double Height (2x2)
+     * 'normal'         = Normal 1x
      */
     size(type = 'normal') {
         if (type === 'title') {
             this.bytes.push(0x1D, 0x21, 0x11); // Double width & height
-        } else if (type === 'total') {
-            this.bytes.push(0x1D, 0x21, 0x01); // Double height
+        } else if (type === 'tall' || type === 'total') {
+            this.bytes.push(0x1D, 0x21, 0x01); // Double height (tinggi 2x, lebar 1x)
+        } else if (type === 'wide') {
+            this.bytes.push(0x1D, 0x21, 0x10); // Double width
         } else {
             this.bytes.push(0x1D, 0x21, 0x00); // Normal
         }
         return this;
     }
 
-    /** Menambahkan teks mentah dengan encoding UTF-8 */
+    /** Menambahkan teks mentah dengan sanitasi ASCII */
     text(str) {
         if (!str) return this;
-        // Ganti karakter non-ASCII yang sering bermasalah di thermal
-        const clean = str
-            .replace(/[^\x00-\x7F]/g, ' ')
-            .replace(/[\r]/g, '');
-        
+        const clean = cleanLineAscii(str);
         for (let i = 0; i < clean.length; i++) {
             this.bytes.push(clean.charCodeAt(i));
         }
@@ -93,24 +199,66 @@ export class EscPosBuilder {
         return this;
     }
 
+    /** Mencetak teks di tengah dengan pembungkusan kata otomatis */
+    centered(str = '') {
+        const lines = wrapWords(str, this.cols);
+        lines.forEach(l => this.line(l, 'center'));
+        return this;
+    }
+
     /**
-     * Dua kolom rata kiri & kanan (contoh: "TOTAL          Rp 50.000")
+     * Dua kolom rata kiri & kanan presisi tinggi
      */
-    twoColumn(leftStr = '', rightStr = '', boldMode = false) {
+    twoColumn(leftStr = '', rightStr = '', boldMode = false, truncateLeft = false) {
         if (boldMode) this.bold(true);
-        const l = String(leftStr);
-        const r = String(rightStr);
-        const padLen = this.cols - l.length - r.length;
-        const lineStr = padLen > 0 ? l + ' '.repeat(padLen) + r : l + ' ' + r;
-        this.line(lineStr, 'left');
+        const lines = formatTwoColumn(leftStr, rightStr, this.cols, truncateLeft);
+        lines.forEach(l => this.line(l, 'left'));
         if (boldMode) this.bold(false);
         return this;
     }
 
-    /** Garis pemisah putus-putus */
+    /**
+     * Format baris item barang POS kasir presisi tinggi:
+     * - Baris 1: Nama barang + varian (word-wrap rapi, bold)
+     * - Baris 2: Qty x Harga satuan di kiri, Subtotal di kanan rata tepi
+     * - Baris 3: Diskon item jika ada
+     * - Baris 4: Info PO jika ada
+     */
+    itemRow(item) {
+        const vText = item.variantName ? ` (${item.variantName}${item.colorCode ? ' ' + item.colorCode : ''})` : '';
+        const itemName = (item.name || 'Barang') + vText + (item.poTime ? ' [PO]' : '');
+
+        // Baris 1: Nama Barang
+        this.bold(true);
+        const nameLines = wrapWords(itemName, this.cols);
+        nameLines.forEach(l => this.line(l, 'left'));
+        this.bold(false);
+
+        // Baris 2: Qty x Harga di kiri, Subtotal di kanan
+        const effPrice = item.effectivePrice || item.price || 0;
+        const subtotal = item.subtotal !== undefined ? item.subtotal : (parseFloat(item.qty || 1) * effPrice);
+        const qStr = `  ${formatQty(item.qty)} ${item.unit || 'pcs'} x ${fRpNum(effPrice)}`;
+        const tStr = fRpNum(subtotal);
+
+        this.twoColumn(qStr, tStr, false, false);
+
+        // Baris 3: Diskon per item jika ada
+        if (item.discount && item.discount > 0) {
+            this.twoColumn('  (Pot. Diskon)', `-${fRpNum(item.discount)}`, false, true);
+        }
+
+        // Baris 4: Info PO jika ada
+        if (item.poTime) {
+            this.line(`  * Estimasi PO: ${item.poTime}`, 'left');
+        }
+
+        return this;
+    }
+
+    /** Garis pemisah putus-putus presisi rata kiri (mencegah overflow margin printer) */
     separator(char = '-') {
         const sep = char.repeat(this.cols);
-        this.line(sep, 'center');
+        this.line(sep, 'left');
         return this;
     }
 
@@ -143,7 +291,6 @@ export class EscPosBuilder {
         const u8 = new Uint8Array(this.bytes);
         let binary = '';
         const len = u8.length;
-        // Batch conversion untuk performa optimal
         const chunkSize = 8192;
         for (let i = 0; i < len; i += chunkSize) {
             const sub = u8.subarray(i, i + chunkSize);
@@ -186,7 +333,7 @@ export const sendToRawBT = (escPosBase64, plainText = '', htmlDomContent = '') =
 
             // Cadangan jika intent terblokir di beberapa browser tertentu
             setTimeout(() => {
-                if (document.hidden) return; // Pengguna sudah berpindah ke RawBT
+                if (document.hidden) return;
                 try {
                     window.location.href = `rawbt:base64,${escPosBase64}`;
                 } catch (err) {}
@@ -205,10 +352,13 @@ export const sendToRawBT = (escPosBase64, plainText = '', htmlDomContent = '') =
 
 /**
  * Render ke elemen thermal DOM tersembunyi dan panggil window.print()
+ * dengan injeksi CSS dinamis sesuai ukuran kertas (58mm atau 80mm).
  */
 export const renderThermalDOMAndPrint = (content) => {
     const config = getPrinterConfig();
-    const is80 = config.paperSize === '80mm';
+    const cols = getPaperCols(config.paperSize);
+    const is80 = cols >= 40;
+    const paperWidth = is80 ? '80mm' : '58mm';
 
     let t = el('thermal-print-section');
     if (!t) {
@@ -217,11 +367,24 @@ export const renderThermalDOMAndPrint = (content) => {
         document.body.appendChild(t);
     }
 
+    t.className = is80 ? 'paper-80mm' : 'paper-58mm';
+    document.body.classList.remove('paper-58mm', 'paper-80mm');
+    document.body.classList.add(is80 ? 'paper-80mm' : 'paper-58mm');
+
+    // Injeksi aturan @page dinamis sesuai ukuran kertas yang dipilih
+    let pageStyle = document.getElementById('dynamic-print-page-style');
+    if (!pageStyle) {
+        pageStyle = document.createElement('style');
+        pageStyle.id = 'dynamic-print-page-style';
+        document.head.appendChild(pageStyle);
+    }
+    pageStyle.innerHTML = `@media print { @page { margin: 0; size: ${paperWidth} auto; } html, body { width: ${paperWidth} !important; } }`;
+
     const isHTML = typeof content === 'string' && content.includes('<') && content.includes('>');
-    const formatted = isHTML ? content : `<pre style="font-family:'Courier New',Courier,monospace;font-size:11px;margin:0;line-height:1.2;">${esc(content)}</pre>`;
+    const formatted = isHTML ? content : `<pre style="font-family:'Courier New',Courier,monospace;font-size:11px;margin:0;line-height:1.25;white-space:pre-wrap;word-break:break-word;">${esc(content)}</pre>`;
 
     t.innerHTML = `
-        <div style="width:${is80 ? '80mm' : '58mm'};font-family:'Courier New',Courier,monospace;font-size:11px;line-height:1.2;color:#000;background:#fff;padding:4px;">
+        <div style="width:100%;font-family:'Courier New',Courier,monospace;font-size:11px;line-height:1.25;color:#000;background:#fff;padding:0;">
             ${formatted}
         </div>
     `;
@@ -242,7 +405,6 @@ export const openRawBTApp = () => {
 
     const isAndroid = /android/i.test(navigator.userAgent || '');
     if (isAndroid) {
-        // Coba buka aplikasi lewat intent package
         window.location.href = "intent:#Intent;package=ru.a402d.rawbtprinter;end;";
         setTimeout(() => {
             if (!document.hidden) {
@@ -256,69 +418,72 @@ export const openRawBTApp = () => {
 
 /**
  * ============================================================
- * GENERATOR STRUK POS KASIR (ESC/POS & RAWBT)
+ * GENERATOR STRUK POS KASIR (ESC/POS & RAWBT) — PRESISI 100%
  * ============================================================
  */
 export const buildPOSReceiptPayload = (tx, config = null) => {
     const cfg = config || getPrinterConfig();
-    const is80 = cfg.paperSize === '80mm';
-    const cols = is80 ? 48 : 32;
+    const cols = getPaperCols(cfg.paperSize);
+    const is80 = cols >= 40;
 
     const builder = new EscPosBuilder(cols);
     builder.init();
 
-    // Laci Kasir (Cash Drawer Kick) jika tunai dan opsi aktif
+    // 1. Laci Kasir (Cash Drawer Kick)
     if (cfg.openCashDrawer && tx.payment?.method === 'cash') {
         builder.openDrawer();
     }
 
-    // Kop Toko
-    const storeName = cfg.headerText || appData.store?.name || 'TOKO PUTRI';
-    const storeAddr = appData.store?.address || '';
-    const storeWa   = appData.store?.wa || '';
+    // 2. Kop Toko (Header)
+    const storeName = cleanLineAscii(cfg.headerText || appData.store?.name || 'TOKO PUTRI').trim();
+    const storeAddr = cleanLineAscii(appData.store?.address || '').trim();
+    const storeWa   = cleanLineAscii(appData.store?.wa || '').trim();
 
-    builder.align('center').bold(true).size('title').line(storeName.toUpperCase(), 'center');
-    builder.size('normal').bold(false);
+    // Logika pemilihan ukuran judul agar tidak terpotong atau wrap sembarangan:
+    const maxDoubleWidth = Math.floor(cols / 2);
+    if (storeName.length <= maxDoubleWidth) {
+        builder.align('center').bold(true).size('title').line(storeName.toUpperCase(), 'center');
+        builder.size('normal').bold(false);
+    } else {
+        builder.align('center').bold(true).size('tall');
+        wrapWords(storeName.toUpperCase(), cols).forEach(l => builder.line(l, 'center'));
+        builder.size('normal').bold(false);
+    }
 
-    if (storeAddr) builder.line(storeAddr, 'center');
-    if (storeWa) builder.line(`WA: ${storeWa}`, 'center');
-    builder.separator('-');
-
-    // Informasi Transaksi
-    const dateStr = new Date(tx.dateMs || Date.now()).toLocaleString('id-ID', {
-        day: '2-digit', month: '2-digit', year: 'numeric',
-        hour: '2-digit', minute: '2-digit'
-    });
-
-    builder.twoColumn(`No  : #${tx.txId}`, `Tgl: ${dateStr}`);
-    builder.twoColumn(`Ksr : ${tx.cashierName || 'Kasir'}`, `Plg: ${(tx.customer?.name || 'Umum').substring(0, 14)}`);
-    if (tx.customer?.phone) {
-        builder.line(`HP  : ${tx.customer.phone}`, 'left');
+    if (storeAddr) {
+        wrapWords(storeAddr, cols).forEach(l => builder.line(l, 'center'));
+    }
+    if (storeWa) {
+        builder.line(`WA: ${storeWa}`, 'center');
     }
     builder.separator('-');
 
-    // Daftar Barang
+    // 3. Metadata Transaksi
+    const dateStr = formatCompactDate(tx.dateMs || Date.now(), is80);
+    const txNo = `#${tx.txId}`;
+    builder.twoColumn(`No : ${txNo}`, dateStr, false, true);
+
+    const ksrName = (tx.cashierName || 'Kasir').substring(0, is80 ? 16 : 9);
+    const plgName = (tx.customer?.name || 'Umum').substring(0, is80 ? 18 : 11);
+    builder.twoColumn(`Ksr: ${ksrName}`, `Plg: ${plgName}`, false, true);
+
+    if (tx.customer?.phone) {
+        builder.line(`HP : ${tx.customer.phone}`, 'left');
+    }
+    builder.separator('-');
+
+    // 4. Daftar Item Barang
     (tx.items || []).forEach(item => {
-        let vText = item.variantName ? ` (${item.variantName}${item.colorCode ? ' ' + item.colorCode : ''})` : '';
-        let itemName = item.name + vText + (item.poTime ? ' [PO]' : '');
-
-        builder.bold(true).line(itemName, 'left').bold(false);
-        const qStr = `  ${formatQty(item.qty)} ${item.unit || 'pcs'} x ${fRp(item.price)}`;
-        const tStr = fRp(item.subtotal);
-        builder.twoColumn(qStr, tStr);
-
-        if (item.poTime) {
-            builder.line(`  * Estimasi PO: ${item.poTime}`, 'left');
-        }
+        builder.itemRow(item);
     });
 
     builder.separator('-');
 
-    // Ringkasan Pembayaran
+    // 5. Ringkasan Keuangan & Total
     builder.twoColumn('Subtotal', fRp(tx.subtotal));
 
     if ((tx.globalDiscount || 0) > 0) {
-        const discLabel = tx.discountType === 'percent' && tx.discountVal ? `Diskon (${tx.discountVal}%)` : 'Diskon';
+        const discLabel = tx.discountType === 'percent' && tx.discountVal ? `Diskon (${tx.discountVal}%)` : 'Diskon Toko';
         builder.twoColumn(discLabel, `- ${fRp(tx.globalDiscount)}`);
     }
 
@@ -328,11 +493,12 @@ export const buildPOSReceiptPayload = (tx, config = null) => {
         builder.twoColumn(`${isInc ? 'Inc. PPN' : 'PPN'} (${rate}%)`, `${isInc ? '' : '+ '}${fRp(tx.payment.ppnAmount)}`);
     }
 
-    builder.separator('=');
-    builder.bold(true).size('total').twoColumn('TOTAL', fRp(tx.total), true).size('normal').bold(false);
-    builder.separator('=');
+    builder.doubleSeparator();
+    // Gunakan 'tall' (tinggi 2x, lebar 1x) agar baris TOTAL tetap memiliki 32/48 kolom penuh & tidak overflow
+    builder.bold(true).size('tall').twoColumn('TOTAL', fRp(tx.total)).size('normal').bold(false);
+    builder.doubleSeparator();
 
-    // Detail Pelunasan
+    // 6. Rincian Pelunasan
     const pMethod = (tx.payment?.method || 'CASH').toUpperCase();
     builder.twoColumn('Metode Bayar', pMethod);
 
@@ -347,7 +513,7 @@ export const buildPOSReceiptPayload = (tx, config = null) => {
         }
     }
 
-    // Poin Member
+    // 7. Poin Loyalitas Member
     if (cfg.showPoints && tx.pointsEarned > 0) {
         builder.separator('-');
         builder.twoColumn('Poin Didapat', `+${tx.pointsEarned} Poin`, true);
@@ -356,7 +522,7 @@ export const buildPOSReceiptPayload = (tx, config = null) => {
         }
     }
 
-    // Barcode / Nomor Transaksi
+    // 8. Barcode Transaksi
     if (cfg.showBarcode) {
         builder.separator('-');
         builder.align('center');
@@ -364,12 +530,12 @@ export const buildPOSReceiptPayload = (tx, config = null) => {
         builder.line('(SCAN DI KASIR)', 'center');
     }
 
-    // Footer Pesan Toko
+    // 9. Pesan Footer Toko
     builder.separator('-');
-    const footer = cfg.footerText || 'Terima Kasih Atas Kunjungan Anda!';
-    builder.line(footer, 'center');
+    const footerText = cfg.footerText || 'Terima Kasih Atas Kunjungan Anda!';
+    wrapWords(footerText, cols).forEach(l => builder.line(l, 'center'));
 
-    // Spasi & Pemotong Kertas
+    // 10. Pengumpan Kertas & Pemotong
     builder.feed(cfg.feedLines || 3);
     if (cfg.autoCut) {
         builder.cut();
@@ -383,49 +549,59 @@ export const buildPOSReceiptPayload = (tx, config = null) => {
 
 /**
  * ============================================================
- * GENERATOR SLIP REKAP SHIFT KASIR (X/Z-REPORT)
+ * GENERATOR SLIP REKAP SHIFT KASIR (X/Z-REPORT) — PRESISI 100%
  * ============================================================
  */
 export const buildShiftReceiptPayload = (shift, isXReport = false, config = null) => {
     const cfg = config || getPrinterConfig();
-    const is80 = cfg.paperSize === '80mm';
-    const cols = is80 ? 48 : 32;
+    const cols = getPaperCols(cfg.paperSize);
+    const is80 = cols >= 40;
 
     const builder = new EscPosBuilder(cols);
     builder.init();
 
-    const storeName = cfg.headerText || appData.store?.name || 'TOKO PUTRI';
-    const storeAddr = appData.store?.address || '';
-    const storeWa   = appData.store?.wa || '';
+    const storeName = cleanLineAscii(cfg.headerText || appData.store?.name || 'TOKO PUTRI').trim();
+    const storeAddr = cleanLineAscii(appData.store?.address || '').trim();
+    const storeWa   = cleanLineAscii(appData.store?.wa || '').trim();
 
-    builder.align('center').bold(true).size('title').line(storeName.toUpperCase(), 'center');
-    builder.size('normal').bold(false);
+    const maxDoubleWidth = Math.floor(cols / 2);
+    if (storeName.length <= maxDoubleWidth) {
+        builder.align('center').bold(true).size('title').line(storeName.toUpperCase(), 'center');
+        builder.size('normal').bold(false);
+    } else {
+        builder.align('center').bold(true).size('tall');
+        wrapWords(storeName.toUpperCase(), cols).forEach(l => builder.line(l, 'center'));
+        builder.size('normal').bold(false);
+    }
 
-    if (storeAddr) builder.line(storeAddr, 'center');
+    if (storeAddr) wrapWords(storeAddr, cols).forEach(l => builder.line(l, 'center'));
     if (storeWa) builder.line(`WA: ${storeWa}`, 'center');
     builder.separator('-');
 
-    const titleStr = isXReport ? 'RINGKASAN SHIFT (X-REPORT)' : 'REKAP TUTUP SHIFT (Z-REPORT)';
-    builder.bold(true).line(`*** ${titleStr} ***`, 'center').bold(false);
+    const titleStr = is80
+        ? (isXReport ? '*** RINGKASAN SHIFT (X-REPORT) ***' : '*** REKAP TUTUP SHIFT (Z-REPORT) ***')
+        : (isXReport ? '** RINGKASAN SHIFT (X) **' : '** REKAP TUTUP SHIFT (Z) **');
+
+    builder.bold(true).line(titleStr, 'center').bold(false);
     builder.separator('-');
 
-    const startDateStr = new Date(shift.startTime).toLocaleString('id-ID', { dateStyle: 'short', timeStyle: 'short' });
-    const endDateStr = shift.endTime ? new Date(shift.endTime).toLocaleString('id-ID', { dateStyle: 'short', timeStyle: 'short' }) : new Date().toLocaleString('id-ID', { dateStyle: 'short', timeStyle: 'short' });
+    const startDateStr = formatCompactDate(shift.startTime, is80);
+    const endDateStr = formatCompactDate(shift.endTime || Date.now(), is80);
 
-    builder.twoColumn('Shift ID', `#${shift.id || '-'}`);
-    builder.twoColumn('Kasir', shift.cashierName || 'Kasir');
-    builder.twoColumn('Mulai', startDateStr);
-    builder.twoColumn('Selesai', endDateStr);
+    builder.twoColumn('Shift ID', `#${shift.shiftNo || shift.id || '-'}`, false, true);
+    builder.twoColumn('Kasir', (shift.cashierName || 'Kasir').substring(0, is80 ? 20 : 12), false, true);
+    builder.twoColumn('Mulai', startDateStr, false, true);
+    builder.twoColumn('Selesai', endDateStr, false, true);
     builder.separator('-');
 
     // Ringkasan Penjualan
-    const startingCash = parseFloat(shift.startingCash) || 0;
-    const cashSales    = parseFloat(shift.cashSales) || 0;
-    const qrisSales    = parseFloat(shift.qrisSales) || 0;
-    const transferSales= parseFloat(shift.transferSales) || 0;
-    const tempoSales   = parseFloat(shift.tempoSales) || 0;
-    const totalSales   = parseFloat(shift.totalSales) || (cashSales + qrisSales + transferSales + tempoSales);
-    const txCount      = shift.txCount || 0;
+    const startingCash  = parseFloat(shift.startingCash) || 0;
+    const cashSales     = parseFloat(shift.cashSales) || 0;
+    const qrisSales     = parseFloat(shift.qrisSales) || 0;
+    const transferSales = parseFloat(shift.bankSales || shift.transferSales) || 0;
+    const tempoSales    = parseFloat(shift.tempoSales) || 0;
+    const totalSales    = parseFloat(shift.totalSales) || (cashSales + qrisSales + transferSales + tempoSales);
+    const txCount       = shift.txCount || 0;
 
     builder.bold(true).line('RINGKASAN PENJUALAN', 'left').bold(false);
     builder.twoColumn('Modal Awal Laci', fRp(startingCash));
@@ -434,9 +610,9 @@ export const buildShiftReceiptPayload = (shift, isXReport = false, config = null
     if (transferSales > 0) builder.twoColumn('Penjualan Transfer', fRp(transferSales));
     if (tempoSales > 0)    builder.twoColumn('Penjualan Tempo', fRp(tempoSales));
     builder.separator('-');
-    builder.twoColumn('Total Transaksi', `${txCount} Transaksi`);
-    builder.bold(true).size('total').twoColumn('TOTAL OMSET', fRp(totalSales), true).size('normal').bold(false);
-    builder.separator('=');
+    builder.twoColumn('Total Transaksi', `${txCount} Trx`);
+    builder.bold(true).size('tall').twoColumn('TOTAL OMSET', fRp(totalSales)).size('normal').bold(false);
+    builder.doubleSeparator();
 
     // Rekonsiliasi Kas Laci (Z-Report)
     if (!isXReport) {
@@ -450,19 +626,26 @@ export const buildShiftReceiptPayload = (shift, isXReport = false, config = null
         builder.twoColumn('Kas Fisik Aktual', fRp(actualCash));
         builder.bold(true).twoColumn('Selisih Kas', diffStr, true).bold(false);
         if (shift.closingNotes) {
-            builder.line(`Catatan: ${shift.closingNotes}`, 'left');
+            wrapWords(`Catatan: ${shift.closingNotes}`, cols).forEach(l => builder.line(l, 'left'));
         }
         builder.separator('-');
 
-        // Kolom Tanda Tangan
-        builder.line('Tanda Tangan & Verifikasi:', 'left');
+        // Kolom Tanda Tangan Kasir & Supervisor (Diposisikan simetris)
+        builder.line('Verifikasi & Tanda Tangan:', 'left');
         builder.feed(2);
-        builder.twoColumn('( Kasir )', '( Supervisor/Owner )');
+
+        const half = Math.floor(cols / 2);
+        const sig1 = '( Kasir )';
+        const sig2 = is80 ? '( Supervisor/Owner )' : '( Supervisor )';
+        const p1 = Math.max(0, Math.floor((half - sig1.length) / 2));
+        const p2 = Math.max(0, Math.floor((half - sig2.length) / 2));
+        const sigLine = ' '.repeat(p1) + sig1 + ' '.repeat(Math.max(1, half - p1 - sig1.length)) + ' '.repeat(p2) + sig2;
+        builder.line(sigLine, 'left');
         builder.separator('-');
     }
 
     const footer = cfg.footerText || 'Laporan Kasir Resmi Toko Putri';
-    builder.line(footer, 'center');
+    wrapWords(footer, cols).forEach(l => builder.line(l, 'center'));
     builder.feed(cfg.feedLines || 3);
     if (cfg.autoCut) builder.cut();
 
@@ -474,57 +657,53 @@ export const buildShiftReceiptPayload = (shift, isXReport = false, config = null
 
 /**
  * ============================================================
- * GENERATOR STRUK PESANAN PELANGGAN / STOREFRONT & ADMIN
+ * GENERATOR STRUK PESANAN PELANGGAN / STOREFRONT — PRESISI 100%
  * ============================================================
  */
 export const buildOrderReceiptPayload = (order, config = null) => {
     const cfg = config || getPrinterConfig();
-    const is80 = cfg.paperSize === '80mm';
-    const cols = is80 ? 48 : 32;
+    const cols = getPaperCols(cfg.paperSize);
+    const is80 = cols >= 40;
 
     const builder = new EscPosBuilder(cols);
     builder.init();
 
-    const storeName = cfg.headerText || appData.store?.name || 'TOKO PUTRI';
-    const storeAddr = appData.store?.address || '';
-    const storeWa   = appData.store?.wa || '';
+    const storeName = cleanLineAscii(cfg.headerText || appData.store?.name || 'TOKO PUTRI').trim();
+    const storeAddr = cleanLineAscii(appData.store?.address || '').trim();
+    const storeWa   = cleanLineAscii(appData.store?.wa || '').trim();
 
-    builder.align('center').bold(true).size('title').line(storeName.toUpperCase(), 'center');
-    builder.size('normal').bold(false);
+    const maxDoubleWidth = Math.floor(cols / 2);
+    if (storeName.length <= maxDoubleWidth) {
+        builder.align('center').bold(true).size('title').line(storeName.toUpperCase(), 'center');
+        builder.size('normal').bold(false);
+    } else {
+        builder.align('center').bold(true).size('tall');
+        wrapWords(storeName.toUpperCase(), cols).forEach(l => builder.line(l, 'center'));
+        builder.size('normal').bold(false);
+    }
 
-    if (storeAddr) builder.line(storeAddr, 'center');
+    if (storeAddr) wrapWords(storeAddr, cols).forEach(l => builder.line(l, 'center'));
     if (storeWa) builder.line(`WA: ${storeWa}`, 'center');
     builder.separator('-');
 
-    const dateStr = order.dateString ? new Date(order.dateString).toLocaleString('id-ID', {
-        day: '2-digit', month: '2-digit', year: 'numeric',
-        hour: '2-digit', minute: '2-digit'
-    }) : new Date().toLocaleString('id-ID');
+    const dateStr = formatCompactDate(order.dateString || order.dateMs || Date.now(), is80);
+    builder.twoColumn(`Order: #${order.orderId}`, dateStr, false, true);
 
-    builder.twoColumn(`Order: #${order.orderId}`, `Tgl: ${dateStr}`);
-    builder.twoColumn(`Plg  : ${(order.customer?.name || 'Guest').substring(0, 14)}`, `Tipe: ${order.customer?.deliveryMethod === 'delivery' ? 'Kirim' : 'Ambil'}`);
+    const custName = (order.customer?.name || 'Guest').substring(0, is80 ? 18 : 11);
+    const dMethod = order.customer?.deliveryMethod === 'delivery' ? 'Kirim' : 'Ambil';
+    builder.twoColumn(`Plg  : ${custName}`, `Tipe: ${dMethod}`, false, true);
+
     if (order.customer?.phone) {
         builder.line(`HP   : ${order.customer.phone}`, 'left');
     }
     if (order.customer?.note) {
-        builder.line(`Cat  : ${order.customer.note}`, 'left');
+        wrapWords(`Cat  : ${order.customer.note}`, cols).forEach(l => builder.line(l, 'left'));
     }
     builder.separator('-');
 
-    // Items
+    // Daftar Barang
     (order.items || []).forEach(item => {
-        let vText = item.variantName ? ` (${item.variantName})` : '';
-        let itemName = (item.name || 'Barang') + vText + (item.poTime ? ' [PO]' : '');
-
-        builder.bold(true).line(itemName, 'left').bold(false);
-        const effPrice = item.effectivePrice || item.price || 0;
-        const qStr = `  ${formatQty(item.qty)} ${item.unit || 'pcs'} x ${fRp(effPrice)}`;
-        const tStr = fRp(parseFloat(item.qty || 1) * effPrice);
-        builder.twoColumn(qStr, tStr);
-
-        if (item.poTime) {
-            builder.line(`  * Estimasi PO: ${item.poTime}`, 'left');
-        }
+        builder.itemRow(item);
     });
 
     builder.separator('-');
@@ -544,9 +723,9 @@ export const buildOrderReceiptPayload = (order, config = null) => {
         builder.twoColumn('Potongan Ongkir', `- ${fRp(order.payment.shippingDiscount)}`);
     }
 
-    builder.separator('=');
-    builder.bold(true).size('total').twoColumn('TOTAL', fRp(grandTot), true).size('normal').bold(false);
-    builder.separator('=');
+    builder.doubleSeparator();
+    builder.bold(true).size('tall').twoColumn('TOTAL', fRp(grandTot)).size('normal').bold(false);
+    builder.doubleSeparator();
 
     builder.twoColumn('Metode Bayar', (order.payment?.method || 'Tunai').toUpperCase());
 
@@ -564,7 +743,7 @@ export const buildOrderReceiptPayload = (order, config = null) => {
     }
 
     builder.separator('-');
-    builder.line(cfg.footerText || 'Terima Kasih Atas Kunjungan Anda!', 'center');
+    wrapWords(cfg.footerText || 'Terima Kasih Atas Kunjungan Anda!', cols).forEach(l => builder.line(l, 'center'));
     builder.feed(cfg.feedLines || 3);
     if (cfg.autoCut) builder.cut();
 
@@ -576,61 +755,93 @@ export const buildOrderReceiptPayload = (order, config = null) => {
 
 /**
  * ============================================================
- * GENERATOR STRUK UJI COBA CETAK (TEST PRINT)
+ * GENERATOR STRUK UJI COBA CETAK (TEST PRINT) DENGAN MISTAR PRESISI
  * ============================================================
  */
 export const buildTestReceiptPayload = (config = null) => {
     const cfg = config || getPrinterConfig();
-    const is80 = cfg.paperSize === '80mm';
-    const cols = is80 ? 48 : 32;
+    const cols = getPaperCols(cfg.paperSize);
+    const is80 = cols >= 40;
 
     const builder = new EscPosBuilder(cols);
     builder.init();
 
-    const storeName = cfg.headerText || appData.store?.name || 'TOKO PUTRI';
-    const storeWa   = appData.store?.wa || '';
+    const storeName = cleanLineAscii(cfg.headerText || appData.store?.name || 'TOKO PUTRI').trim();
+    const maxDoubleWidth = Math.floor(cols / 2);
+    if (storeName.length <= maxDoubleWidth) {
+        builder.align('center').bold(true).size('title').line(storeName.toUpperCase(), 'center');
+        builder.size('normal').bold(false);
+    } else {
+        builder.align('center').bold(true).size('tall');
+        wrapWords(storeName.toUpperCase(), cols).forEach(l => builder.line(l, 'center'));
+        builder.size('normal').bold(false);
+    }
 
-    builder.align('center').bold(true).size('title').line(storeName.toUpperCase(), 'center');
-    builder.size('normal').bold(false);
-
+    const storeWa = cleanLineAscii(appData.store?.wa || '').trim();
     if (storeWa) builder.line(`WA: ${storeWa}`, 'center');
     builder.separator('-');
 
-    builder.bold(true).line('*** UJI COBA CETAK STRUK RAWBT ***', 'center').bold(false);
+    const testHeader = is80
+        ? `*** UJI COBA CETAK STRUK THERMAL ${cols} KOLOM ***`
+        : `** UJI CETAK THERMAL ${cols} KOLOM **`;
+    builder.bold(true).line(testHeader, 'center').bold(false);
     builder.separator('-');
 
-    const dateStr = new Date().toLocaleString('id-ID', {
-        day: '2-digit', month: '2-digit', year: 'numeric',
-        hour: '2-digit', minute: '2-digit', second: '2-digit'
-    });
+    // MISTAR KALIBRASI PRESISI KERTAS (RULER)
+    builder.line('MISTAR KALIBRASI TEPI KERTAS:', 'left');
+    let rulerDigits = '';
+    for (let i = 1; i <= cols; i++) {
+        rulerDigits += String(i % 10);
+    }
+    builder.line(rulerDigits, 'left');
 
-    builder.line(`Tgl     : ${dateStr}`, 'left');
-    builder.line(`Format  : Thermal ${is80 ? '80mm (48 Kolom)' : '58mm (32 Kolom)'}`, 'left');
+    let rulerTicks = '';
+    for (let i = 1; i <= cols; i++) {
+        if (i === cols) rulerTicks += '|';
+        else if (i % 10 === 0) rulerTicks += '|';
+        else if (i % 5 === 0) rulerTicks += ':';
+        else rulerTicks += '.';
+    }
+    builder.line(rulerTicks, 'left');
+    builder.line(`(Pastikan angka ${cols % 10} paling kanan tercetak utuh)`, 'left');
+    builder.separator('-');
+
+    // Info Perangkat & Driver
+    const dateStr = formatCompactDate(Date.now(), is80);
+    builder.line(`Waktu   : ${dateStr}`, 'left');
+    builder.line(`Format  : Thermal ${cols} Kolom (${cfg.paperSize})`, 'left');
     builder.line(`Driver  : RAWBT FREE PRINT SERVICE`, 'left');
-    builder.line(`Status  : KONEKSI BERHASIL 100%`, 'left');
+    builder.line(`Status  : 100% PRESISI & SIAP PAKAI`, 'left');
     builder.separator('-');
 
-    builder.bold(true).twoColumn('ITEM UJI COBA', 'HARGA').bold(false);
-    builder.twoColumn('1x Kertas Kasir Thermal', 'Rp 15.000');
-    builder.twoColumn('2x Tes Cetak RawBT POS', 'Rp 25.000');
+    // Simulasi Item
+    builder.bold(true).twoColumn('ITEM SIMULASI', 'HARGA').bold(false);
+    builder.itemRow({ name: 'Kertas Thermal Kasir Roll', qty: 2, unit: 'roll', price: 15000, subtotal: 30000 });
+    builder.itemRow({ name: 'Semen Portland Komposit 40kg', qty: 1, unit: 'sak', price: 65000, subtotal: 65000 });
     builder.separator('-');
-    builder.bold(true).size('total').twoColumn('TOTAL TES', 'Rp 40.000', true).size('normal').bold(false);
-    builder.separator('=');
+    builder.twoColumn('Subtotal', fRp(95000));
+    builder.twoColumn('Diskon Uji Coba', `- ${fRp(5000)}`);
+    builder.doubleSeparator();
+    builder.bold(true).size('tall').twoColumn('TOTAL TES', fRp(90000)).size('normal').bold(false);
+    builder.doubleSeparator();
+    builder.twoColumn('Bayar Tunai', fRp(100000));
+    builder.bold(true).twoColumn('Kembalian', fRp(10000)).bold(false);
 
     if (cfg.showPoints) {
-        builder.twoColumn('Simulasi Poin Member', '+10 Poin');
         builder.separator('-');
+        builder.twoColumn('Simulasi Poin Member', '+10 Poin');
     }
 
     if (cfg.showBarcode) {
+        builder.separator('-');
         builder.align('center');
         builder.line(`*TEST-RAWBT-${Date.now().toString().slice(-6)}*`, 'center');
         builder.line('(BARCODE TEST BERHASIL)', 'center');
-        builder.separator('-');
     }
 
-    builder.line(cfg.footerText || 'Terima kasih atas kunjungan Anda!', 'center');
-    builder.line('Printer siap untuk transaksi kasir Toko Putri.', 'center');
+    builder.separator('-');
+    wrapWords(cfg.footerText || 'Terima kasih atas kunjungan Anda!', cols).forEach(l => builder.line(l, 'center'));
+    wrapWords('Hasil cetak telah terkalibrasi presisi.', cols).forEach(l => builder.line(l, 'center'));
 
     builder.feed(cfg.feedLines || 3);
     if (cfg.autoCut) builder.cut();
@@ -718,8 +929,13 @@ export const executeRawBTTestPrint = () => {
 };
 
 // ─── Expose Global ke window ──────────────────────────────────
+window.cleanLineAscii             = cleanLineAscii;
+window.wrapWords                  = wrapWords;
+window.formatTwoColumn            = formatTwoColumn;
+window.formatCompactDate          = formatCompactDate;
 window.EscPosBuilder              = EscPosBuilder;
 window.sendToRawBT                = sendToRawBT;
+window.renderThermalDOMAndPrint   = renderThermalDOMAndPrint;
 window.openRawBTApp               = openRawBTApp;
 window.buildPOSReceiptPayload     = buildPOSReceiptPayload;
 window.buildShiftReceiptPayload   = buildShiftReceiptPayload;

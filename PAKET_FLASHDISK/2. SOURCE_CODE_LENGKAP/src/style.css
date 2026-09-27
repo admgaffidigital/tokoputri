@@ -1592,18 +1592,18 @@ html.dark ::-webkit-scrollbar-track { background: #0b1121; }
 html.dark ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 99px; }
 html.dark ::-webkit-scrollbar-thumb:hover { background: #334155; }
 
-/* === 6. THERMAL PRINT STYLES === */
+/* === 6. THERMAL PRINT STYLES (PRESISI UNIVERSAL 58mm & 80mm) === */
 #thermal-print-section { display: none; }
 @media print {
-    @page { margin: 0; size: 58mm auto; }
+    @page { margin: 0; }
     html, body { 
         background-color: #fff !important; 
         color: #000 !important; 
         margin: 0 !important; 
         padding: 0 !important; 
-        width: 58mm !important; 
+        width: auto !important; 
     }
-    #app-container, #global-loader, #toast, .fixed, .absolute { 
+    #app-container, #global-loader, #toast, .fixed, .absolute, dialog { 
         display: none !important; 
         height: 0 !important; 
         opacity: 0 !important; 
@@ -1611,22 +1611,33 @@ html.dark ::-webkit-scrollbar-thumb:hover { background: #334155; }
     }
     #thermal-print-section { 
         display: block !important; 
-        width: 58mm !important; 
-        max-width: 58mm !important; 
-        margin: 0 !important; 
-        padding: 2mm !important; 
+        margin: 0 auto !important; 
         background-color: #fff !important; 
         color: #000 !important; 
         opacity: 1 !important; 
         visibility: visible !important; 
+        box-sizing: border-box !important;
+    }
+    /* Preset Kertas 58mm: Lebar cetak efektif ~48mm-52mm */
+    #thermal-print-section.paper-58mm, body.paper-58mm #thermal-print-section {
+        width: 58mm !important;
+        max-width: 58mm !important;
+        padding: 0 2mm !important;
+    }
+    /* Preset Kertas 80mm: Lebar cetak efektif ~72mm-76mm */
+    #thermal-print-section.paper-80mm, body.paper-80mm #thermal-print-section {
+        width: 80mm !important;
+        max-width: 80mm !important;
+        padding: 0 3mm !important;
     }
     #thermal-print-section * { 
         font-family: 'Courier New', Courier, monospace !important; 
         font-size: 11px !important; 
         font-weight: bold !important; 
         color: #000 !important; 
-        line-height: 1.2 !important; 
+        line-height: 1.25 !important; 
         box-sizing: border-box !important; 
+        word-break: break-word !important;
     }
     * { 
         -webkit-print-color-adjust: exact !important; 

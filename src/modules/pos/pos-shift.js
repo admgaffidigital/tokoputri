@@ -1239,8 +1239,8 @@ export const printShiftSettlementReceipt = (shift, isXReport = false, forcePrevi
         return;
     }
 
-    const is80 = config.paperSize === '80mm';
-    const cols = is80 ? 48 : 32;
+    const cols = typeof window.getPaperCols === 'function' ? window.getPaperCols(config.paperSize) : (config.paperSize === '80mm' ? 48 : 32);
+    const is80 = cols >= 40;
 
     const storeName = config.headerText || appData.store?.name || 'TOKO PUTRI';
     const storeAddr = appData.store?.address || '';
@@ -1248,13 +1248,16 @@ export const printShiftSettlementReceipt = (shift, isXReport = false, forcePrevi
     const footerTxt = config.footerText || 'Laporan Kasir Resmi Toko Putri';
 
     const pL = (l, r, len = cols) => {
-        const p = len - l.length - r.length;
-        return l + (p > 0 ? ' '.repeat(p) : ' ') + r;
+        const p = len - String(l).length - String(r).length;
+        return String(l) + (p > 0 ? ' '.repeat(p) : ' ') + String(r);
     };
 
-    const titleStr = isXReport ? 'RINGKASAN SHIFT (X-REPORT)' : 'REKAP TUTUP SHIFT (Z-REPORT)';
-    const startDateStr = new Date(shift.startTime).toLocaleString('id-ID', { dateStyle: 'short', timeStyle: 'short' });
-    const endDateStr = shift.endTime ? new Date(shift.endTime).toLocaleString('id-ID', { dateStyle: 'short', timeStyle: 'short' }) : new Date().toLocaleString('id-ID', { dateStyle: 'short', timeStyle: 'short' });
+    const titleStr = is80
+        ? (isXReport ? '*** RINGKASAN SHIFT (X-REPORT) ***' : '*** REKAP TUTUP SHIFT (Z-REPORT) ***')
+        : (isXReport ? '** RINGKASAN SHIFT (X) **' : '** REKAP TUTUP SHIFT (Z) **');
+
+    const startDateStr = typeof window.formatCompactDate === 'function' ? window.formatCompactDate(shift.startTime, is80) : new Date(shift.startTime).toLocaleString('id-ID');
+    const endDateStr = typeof window.formatCompactDate === 'function' ? window.formatCompactDate(shift.endTime || Date.now(), is80) : new Date(shift.endTime || Date.now()).toLocaleString('id-ID');
     const durationStr = shift.duration || formatShiftDuration(shift.startTime, shift.endTime || Date.now());
 
     const expectedCash = (parseFloat(shift.startingCash) || 0) + (parseFloat(shift.cashSales) || 0);
@@ -1266,9 +1269,9 @@ export const printShiftSettlementReceipt = (shift, isXReport = false, forcePrevi
     document.getElementById('pos-shift-receipt-modal')?.remove();
     document.body.insertAdjacentHTML('beforeend', `
     <div id="pos-shift-receipt-modal" class="fixed inset-0 z-[10003] flex items-center justify-center p-3 sm:p-4" style="background:rgba(15,23,42,0.7);backdrop-filter:blur(4px)">
-        <div class="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl w-full ${is80 ? 'max-w-md' : 'max-w-sm'} border border-slate-200 dark:border-slate-800 overflow-hidden flex flex-col max-h-[90vh]">
+        <div class="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl w-full ${is80 ? 'max-w-[420px]' : 'max-w-[340px]'} border border-slate-200 dark:border-slate-800 overflow-hidden flex flex-col max-h-[90vh]">
             <div class="p-3.5 sm:p-4 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center bg-slate-50 dark:bg-slate-800/50">
-                <span class="font-bold text-xs text-slate-700 dark:text-slate-200 flex items-center gap-1.5"><i class="fa-solid fa-receipt text-emerald-500"></i>Preview Slip Rekap Shift (${is80 ? '80mm' : '58mm'})</span>
+                <span class="font-bold text-xs text-slate-700 dark:text-slate-200 flex items-center gap-1.5"><i class="fa-solid fa-receipt text-emerald-500"></i>Preview Slip Rekap Shift (${cols} Kolom)</span>
                 <button onclick="document.getElementById('pos-shift-receipt-modal')?.remove()" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-slate-700 dark:hover:text-slate-200 transition-colors flex items-center justify-center cursor-pointer"><i class="fa-solid fa-xmark text-sm"></i></button>
             </div>
             <div id="pos-shift-receipt-paper-box" class="p-4 overflow-y-auto flex-1 font-mono text-[11px] bg-slate-50/60 dark:bg-slate-950 text-slate-800 dark:text-slate-200 space-y-1.5 select-text custom-scrollbar">
@@ -1278,11 +1281,9 @@ export const printShiftSettlementReceipt = (shift, isXReport = false, forcePrevi
                 <div class="border-t border-dashed border-slate-300 dark:border-slate-700 my-2"></div>
                 <div class="text-center font-black text-xs uppercase">${esc(titleStr)}</div>
                 <div class="border-t border-dashed border-slate-300 dark:border-slate-700 my-2"></div>
-                <div>No Shift: <b>#${esc(shift.shiftNo || shift.id)}</b></div>
-                <div>Kasir   : ${esc(shift.cashierName)}</div>
-                <div>Mulai   : ${esc(startDateStr)}</div>
-                <div>Selesai : ${esc(endDateStr)}</div>
-                <div>Durasi  : ${esc(durationStr)}</div>
+                <div class="flex justify-between"><span>No Shift: <b>#${esc(shift.shiftNo || shift.id)}</b></span><span>${esc(startDateStr)}</span></div>
+                <div class="flex justify-between"><span>Kasir   : ${esc(shift.cashierName)}</span><span>Durasi: ${esc(durationStr)}</span></div>
+                <div class="flex justify-between"><span>Selesai : ${esc(endDateStr)}</span></div>
                 <div class="border-t border-dashed border-slate-300 dark:border-slate-700 my-2"></div>
                 <div class="font-bold">RINGKASAN PENJUALAN:</div>
                 <div class="flex justify-between"><span>Total Struk</span><span>${shift.txCount || 0} Trx</span></div>
@@ -1290,7 +1291,7 @@ export const printShiftSettlementReceipt = (shift, isXReport = false, forcePrevi
                 <div class="border-t border-dashed border-slate-300 dark:border-slate-700 my-1"></div>
                 <div class="flex justify-between"><span>Tunai (Cash)</span><span>${fRp(shift.cashSales || 0)}</span></div>
                 <div class="flex justify-between"><span>QRIS</span><span>${fRp(shift.qrisSales || 0)}</span></div>
-                <div class="flex justify-between"><span>Transfer Bank</span><span>${fRp(shift.bankSales || 0)}</span></div>
+                <div class="flex justify-between"><span>Transfer Bank</span><span>${fRp(shift.bankSales || shift.transferSales || 0)}</span></div>
                 <div class="flex justify-between"><span>Tempo (Piutang)</span><span>${fRp(shift.tempoSales || 0)}</span></div>
                 <div class="border-t border-dashed border-slate-300 dark:border-slate-700 my-1"></div>
                 <div class="flex justify-between font-black text-xs pt-0.5"><span>TOTAL OMSET</span><span style="color:var(--color-primary)">${fRp(shift.totalSales || 0)}</span></div>
@@ -1338,23 +1339,11 @@ export const executeShiftPrintDirect = () => {
         return;
     }
 
-    const config = typeof getPrinterConfig === 'function' ? getPrinterConfig() : { paperSize: '58mm', deviceType: 'rawbt' };
     const pBox = el('pos-shift-receipt-paper-box');
     if (!pBox) return;
 
-    let t = el('thermal-print-section');
-    if (!t) {
-        t = document.createElement('div');
-        t.id = 'thermal-print-section';
-        document.body.appendChild(t);
-    }
-    const is80 = config.paperSize === '80mm';
-    t.innerHTML = `<div style="width:${is80 ? '80mm' : '58mm'};font-family:'Courier New',Courier,monospace;font-size:11px;line-height:1.2;color:#000;background:#fff;padding:4px;">${pBox.innerHTML}</div>`;
-
-    if (typeof window.sendToRawBT === 'function') {
-        const rawText = pBox.innerText;
-        const b64 = btoa(unescape(encodeURIComponent(rawText)));
-        window.sendToRawBT(b64, rawText, pBox.innerHTML);
+    if (typeof window.renderThermalDOMAndPrint === 'function') {
+        window.renderThermalDOMAndPrint(pBox.innerHTML);
     } else {
         window.print();
     }

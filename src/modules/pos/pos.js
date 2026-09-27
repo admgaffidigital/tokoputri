@@ -2522,47 +2522,60 @@ export const printPOSReceipt = (tx) => {
 export const previewPOSReceiptThenPrint = (tx) => {
     window._lastPOSTx = tx;
     const config    = typeof getPrinterConfig === 'function' ? getPrinterConfig() : { paperSize: '58mm', deviceType: 'rawbt' };
-    const is80      = config.paperSize === '80mm';
+    const cols      = typeof window.getPaperCols === 'function' ? window.getPaperCols(config.paperSize) : (config.paperSize === '80mm' ? 48 : 32);
+    const is80      = cols >= 40;
     const storeName = config.headerText || appData.store?.name || 'TOKO PUTRI';
     const storeWa   = appData.store?.wa || '';
     const storeAddr = appData.store?.address || '';
     const footerTxt = config.footerText || 'Terima Kasih Atas Kunjungan Anda!';
-    const dateStr   = new Date(tx.dateMs || Date.now()).toLocaleString('id-ID');
-    const itemsHtml = (tx.items || []).map(i =>
-        `<tr><td style="padding:2px 0;word-wrap:break-word">${esc(i.name)}</td><td style="text-align:right;padding:2px 4px;white-space:nowrap">${formatQty(i.qty)}x ${fRp(i.price)}</td><td style="text-align:right;padding:2px 0;white-space:nowrap;font-weight:bold">${fRp(i.subtotal)}</td></tr>`
-    ).join('');
-    const discLabel = tx.discountType === 'percent' && tx.discountVal ? `Diskon (${tx.discountVal}%)` : 'Diskon';
+    const dateStr   = typeof window.formatCompactDate === 'function' ? window.formatCompactDate(tx.dateMs || Date.now(), is80) : new Date(tx.dateMs || Date.now()).toLocaleString('id-ID');
+    const itemsHtml = (tx.items || []).map(i => {
+        const vText = i.variantName ? ` (${esc(i.variantName)}${i.colorCode ? ' ' + esc(i.colorCode) : ''})` : '';
+        const effPrice = i.effectivePrice || i.price || 0;
+        const subtotal = i.subtotal !== undefined ? i.subtotal : (parseFloat(i.qty || 1) * effPrice);
+        return `
+        <tr>
+            <td colspan="2" style="padding-top:4px;font-weight:bold;word-break:break-word;">${esc(i.name)}${vText}${i.poTime ? ' [PO]' : ''}</td>
+        </tr>
+        <tr>
+            <td style="padding-bottom:3px;color:#475569;font-size:10.5px;">&nbsp;&nbsp;${formatQty(i.qty)} ${esc(i.unit || 'pcs')} x ${Math.round(effPrice).toLocaleString('id-ID')}</td>
+            <td style="text-align:right;padding-bottom:3px;white-space:nowrap;font-weight:bold;">${Math.round(subtotal).toLocaleString('id-ID')}</td>
+        </tr>
+        ${i.discount && i.discount > 0 ? `<tr><td style="padding-bottom:2px;color:#e11d48;font-size:10px;">&nbsp;&nbsp;(Diskon)</td><td style="text-align:right;color:#e11d48;font-size:10px;">-${Math.round(i.discount).toLocaleString('id-ID')}</td></tr>` : ''}
+        ${i.poTime ? `<tr><td colspan="2" style="font-size:9.5px;font-style:italic;color:#64748b;">&nbsp;&nbsp;* Estimasi PO: ${esc(i.poTime)}</td></tr>` : ''}
+        `;
+    }).join('');
+    const discLabel = tx.discountType === 'percent' && tx.discountVal ? `Diskon (${tx.discountVal}%)` : 'Diskon Toko';
 
     // Selalu tampilkan preview modal in-page jika dipanggil
     document.getElementById('pos-receipt-fallback-modal')?.remove();
     document.body.insertAdjacentHTML('beforeend', `
     <div id="pos-receipt-fallback-modal" class="fixed inset-0 z-[10000] flex items-center justify-center p-3 sm:p-4" style="background:rgba(15,23,42,0.7);backdrop-filter:blur(4px)">
-        <div class="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl w-full ${is80 ? 'max-w-md' : 'max-w-sm'} border border-slate-200 dark:border-slate-800 overflow-hidden flex flex-col max-h-[90vh]">
+        <div class="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl w-full ${is80 ? 'max-w-[420px]' : 'max-w-[340px]'} border border-slate-200 dark:border-slate-800 overflow-hidden flex flex-col max-h-[90vh]">
             <div class="p-3.5 sm:p-4 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center bg-slate-50 dark:bg-slate-800/50">
-                <span class="font-bold text-xs text-slate-700 dark:text-slate-200 flex items-center gap-1.5"><i class="fa-solid fa-receipt text-amber-500"></i>Preview Struk Thermal (${is80 ? '80mm' : '58mm'})</span>
+                <span class="font-bold text-xs text-slate-700 dark:text-slate-200 flex items-center gap-1.5"><i class="fa-solid fa-receipt text-amber-500"></i>Preview Struk Thermal (${cols} Kolom)</span>
                 <button onclick="document.getElementById('pos-receipt-fallback-modal')?.remove()" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-slate-700 dark:hover:text-slate-200 transition-colors flex items-center justify-center cursor-pointer"><i class="fa-solid fa-xmark text-sm"></i></button>
             </div>
-            <div id="pos-receipt-paper-box" class="p-4 overflow-y-auto flex-1 font-mono text-[11px] bg-slate-50/60 dark:bg-slate-950 text-slate-800 dark:text-slate-200 space-y-2 select-text custom-scrollbar">
+            <div id="pos-receipt-paper-box" class="p-4 overflow-y-auto flex-1 font-mono text-[11px] bg-slate-50/60 dark:bg-slate-950 text-slate-800 dark:text-slate-200 space-y-1.5 select-text custom-scrollbar">
                 <div class="text-center font-bold text-sm uppercase">${esc(storeName)}</div>
                 ${storeAddr ? `<div class="text-center text-[10px] text-slate-500">${esc(storeAddr)}</div>` : ''}
                 ${storeWa ? `<div class="text-center text-[10px] text-slate-500">WA: ${esc(storeWa)}</div>` : ''}
                 <div class="border-t border-dashed border-slate-300 dark:border-slate-700 my-2"></div>
-                <div>No : <b>#${esc(tx.txId)}</b></div>
-                <div>Tgl: ${esc(dateStr)}</div>
-                <div>Kasir: ${esc(tx.cashierName || 'Kasir')}</div>
-                <div>Plg : ${esc(tx.customer?.name || 'Umum')}</div>
+                <div class="flex justify-between"><span>No : <b>#${esc(tx.txId)}</b></span><span>${esc(dateStr)}</span></div>
+                <div class="flex justify-between"><span>Kasir: ${esc(tx.cashierName || 'Kasir')}</span><span>Plg: ${esc(tx.customer?.name || 'Umum')}</span></div>
                 ${tx.customer?.phone ? `<div>HP  : ${esc(tx.customer.phone)}</div>` : ''}
                 <div class="border-t border-dashed border-slate-300 dark:border-slate-700 my-2"></div>
-                <table class="w-full text-[11px]">
+                <table class="w-full text-[11px] border-collapse">
                     ${itemsHtml}
                 </table>
                 <div class="border-t border-dashed border-slate-300 dark:border-slate-700 my-2"></div>
                 <div class="flex justify-between"><span>Subtotal</span><span>${fRp(tx.subtotal)}</span></div>
                 ${(tx.globalDiscount || 0) > 0 ? `<div class="flex justify-between text-rose-500 font-bold"><span>${discLabel}</span><span>- ${fRp(tx.globalDiscount)}</span></div>` : ''}
+                ${tx.payment?.ppnAmount && tx.payment.ppnAmount > 0 ? `<div class="flex justify-between"><span>${tx.payment.ppnType === 'inclusive' ? 'Inc. PPN' : 'PPN'} (${tx.payment.ppnRate || 11}%)</span><span>${fRp(tx.payment.ppnAmount)}</span></div>` : ''}
                 <div class="flex justify-between font-black text-sm pt-1 border-t border-slate-200 dark:border-slate-700"><span>TOTAL</span><span style="color:var(--color-primary)">${fRp(tx.total)}</span></div>
-                ${tx.payment.method === 'cash' ? `<div class="flex justify-between"><span>Bayar</span><span>${fRp(tx.payment.paid)}</span></div><div class="flex justify-between font-bold text-emerald-600"><span>Kembalian</span><span>${fRp(tx.payment.change)}</span></div>` : ''}
-                ${tx.payment.method === 'tempo' ? `<div class="flex justify-between"><span>DP</span><span>${fRp(tx.payment.dp || 0)}</span></div><div class="flex justify-between font-bold text-amber-600"><span>Sisa Piutang</span><span>${fRp(tx.payment.tempoBalance || 0)}</span></div>` : ''}
-                <div class="flex justify-between"><span>Metode</span><span>${esc(tx.payment.method.toUpperCase())}</span></div>
+                ${tx.payment.method === 'cash' ? `<div class="flex justify-between"><span>Bayar Tunai</span><span>${fRp(tx.payment.paid)}</span></div><div class="flex justify-between font-bold text-emerald-600"><span>Kembalian</span><span>${fRp(tx.payment.change)}</span></div>` : ''}
+                ${tx.payment.method === 'tempo' ? `<div class="flex justify-between"><span>Uang Muka (DP)</span><span>${fRp(tx.payment.dp || 0)}</span></div><div class="flex justify-between font-bold text-amber-600"><span>Sisa Piutang</span><span>${fRp(tx.payment.tempoBalance || 0)}</span></div>` : ''}
+                <div class="flex justify-between"><span>Metode Bayar</span><span>${esc(tx.payment.method.toUpperCase())}</span></div>
                 ${tx.pointsEarned > 0 ? `
                 <div class="border-t border-dashed border-slate-300 dark:border-slate-700 my-2"></div>
                 <div class="flex justify-between text-amber-600 dark:text-amber-400 font-bold"><span>Poin Member:</span><span>+${tx.pointsEarned} Poin</span></div>` : ''}
@@ -2587,23 +2600,11 @@ export const executePOSPrintDirect = () => {
         return;
     }
 
-    const config = typeof getPrinterConfig === 'function' ? getPrinterConfig() : { paperSize: '58mm', deviceType: 'rawbt' };
     const pBox = el('pos-receipt-paper-box');
     if (!pBox) return;
 
-    let t = el('thermal-print-section');
-    if (!t) {
-        t = document.createElement('div');
-        t.id = 'thermal-print-section';
-        document.body.appendChild(t);
-    }
-    const is80 = config.paperSize === '80mm';
-    t.innerHTML = `<div style="width:${is80 ? '80mm' : '58mm'};font-family:'Courier New',Courier,monospace;font-size:11px;line-height:1.2;color:#000;background:#fff;padding:4px;">${pBox.innerHTML}</div>`;
-
-    if (typeof window.sendToRawBT === 'function') {
-        const rawText = pBox.innerText;
-        const b64 = btoa(unescape(encodeURIComponent(rawText)));
-        window.sendToRawBT(b64, rawText, pBox.innerHTML);
+    if (typeof window.renderThermalDOMAndPrint === 'function') {
+        window.renderThermalDOMAndPrint(pBox.innerHTML);
     } else {
         window.print();
     }

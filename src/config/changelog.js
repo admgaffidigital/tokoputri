@@ -8,6 +8,23 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-9-75',
+        version: 'v1.9.75',
+        date: '2026-09-27',
+        title: 'Kalibrasi Presisi Tinggi Struk Thermal 58mm & 80mm: Algoritma Kolom Anti-Overflow, ItemRow Standar POS, Mistar Uji Cetak, & Opsi Compact Anti-Potong',
+        category: 'feature',
+        badge: 'High-Precision Thermal 58/80 v1.9.75',
+        items: [
+            'Algoritma Perataan Kolom Presisi Matematika (formatTwoColumn): Mengeliminasi tuntas masalah teks panjang atau nominal harga yang terpotong di tengah jalan dan melipat ke baris baru. Kolom kiri dan kanan dihitung dengan batas spasi matematika akurat sehingga angka harga dan total selalu rata kanan sempurna.',
+            'ItemRow Standar POS Kasir Profesional: Format cetak struk kasir kini memisahkan baris nama barang (word-wrap rapi tanpa memotong suku kata) dengan baris rincian Qty x Harga di sisi kiri dan Subtotal di sisi kanan rata tepi kertas, mencegah baris terpecah di kertas 58mm.',
+            'Opsi Kalibrasi Kertas Fleksibel (58mm 32/30 Kolom & 80mm 48/42 Kolom): Menambahkan opsi kertas 58mm - Mini Bluetooth Margin Sempit (30 Kolom) [Anti-Potong Tepi] untuk printer mini dengan margin fisik lebar (Panda, Iware, VSC, Zjiang) dan 80mm Compact (42 Kolom) untuk printer Epson TM series.',
+            'Mistar Kalibrasi Tepi Kertas pada Test Print: Lembar Uji Coba Cetak (Test Print RawBT) kini mencetak mistar numerik dan tick marks untuk verifikasi visual langsung pada kertas thermal fisik, memastikan tidak ada karakter yang terpotong di tepi kertas.',
+            'Judul Kop Toko Dinamis & Pemisah Rata Kiri: Menggunakan pembesaran proporsional (Double Height / Tall) jika nama toko panjang agar tidak melipat sembarangan, serta mengubah garis pemisah (--- dan ===) menjadi rata kiri guna mencegah bug wrap blank line pada printer Bluetooth.',
+            'CSS Thermal Print Dinamis Tanpa Batas Kaku: Memperbaiki media print CSS agar ukuran halaman (@page) dan kontainer kertas mengikuti pilihan 58mm atau 80mm secara otomatis tanpa pemaksaan kaku 58mm.',
+            'Sinkronisasi Multi-Channel v1.9.75 (Android VersionCode 10975): Terkompilasi dan tersinkronisasi penuh ke Vite build, paket flashdisk, dan Capacitor Android.'
+        ]
+    },
+    {
         id: 'log-1-9-74',
         version: 'v1.9.74',
         date: '2026-09-27',

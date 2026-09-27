@@ -14,7 +14,7 @@ export const DEFAULT_PRINTER_CONFIG = {
     deviceType: 'rawbt', // 'rawbt' (Rekomendasi Utama Free) | 'bluetooth' | 'usb' | 'network' | 'system'
     deviceName: 'Driver RawBT (Printer Thermal Android - Free)',
     deviceId: '',
-    paperSize: '58mm', // '58mm' (32 kolom) | '80mm' (48 kolom)
+    paperSize: '58mm', // '58mm' (32 col) | '58mm-compact' (30 col) | '80mm' (48 col) | '80mm-compact' (42 col)
     directPrint: true, // Cetak langsung tanpa membuka jendela dialog berulang
     feedLines: 3,
     autoCut: true,
@@ -26,6 +26,27 @@ export const DEFAULT_PRINTER_CONFIG = {
     showPoints: true,
     showBarcode: true,
     networkIp: '192.168.1.200:9100'
+};
+
+/**
+ * Menghitung jumlah kolom karakter presisi berdasarkan ukuran kertas
+ * 58mm: 32 kolom (standar) atau 30 kolom (compact margin sempit)
+ * 80mm: 48 kolom (standar) atau 42 kolom (compact POS)
+ */
+export const getPaperCols = (paperSize) => {
+    switch (paperSize) {
+        case '58mm-compact':
+        case '58mm_30':
+            return 30;
+        case '80mm-compact':
+        case '80mm_42':
+            return 42;
+        case '80mm':
+            return 48;
+        case '58mm':
+        default:
+            return 32;
+    }
 };
 
 /**
@@ -335,6 +356,7 @@ export const executeTestPrint = () => {
 
 // ─── Expose ke window untuk HTML onclick ──────
 window.getPrinterConfig = getPrinterConfig;
+window.getPaperCols = getPaperCols;
 window.savePrinterConfig = savePrinterConfig;
 window.openPrinterSettingsModal = openPrinterSettingsModal;
 window.closePrinterSettingsModal = closePrinterSettingsModal;
