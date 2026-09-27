@@ -277,7 +277,14 @@ html {
 }
 
 .pos-badge-low {
-    background: #d97706 !important;
+    background: #f43f5e !important;
+}
+
+.pos-badge-stock {
+    background: rgba(15, 23, 42, 0.85) !important;
+    color: #ffffff !important;
+    backdrop-filter: blur(2px);
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
 }
 
 .pos-badge-po {
@@ -401,6 +408,18 @@ html {
     background: rgba(239, 68, 68, 0.2);
     color: #f87171;
     border-color: rgba(239, 68, 68, 0.35);
+}
+
+.pos-tag-stock {
+    background: rgba(100, 116, 139, 0.12);
+    color: #475569;
+    border: 1px solid rgba(100, 116, 139, 0.25);
+}
+
+.dark .pos-tag-stock {
+    background: rgba(148, 163, 184, 0.18);
+    color: #cbd5e1;
+    border-color: rgba(148, 163, 184, 0.35);
 }
 
 /* Status produk habis pada katalog kasir (identik Storefront) */

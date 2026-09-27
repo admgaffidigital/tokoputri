@@ -8,6 +8,20 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-9-68',
+        version: 'v1.9.68',
+        date: '2026-09-27',
+        title: 'Paritas 1:1 Tampilan Stok POS Kasir & Storefront: Indikator Stok Terpadu & Info Varian',
+        category: 'feature',
+        badge: 'POS Stock Parity v1.9.68',
+        items: [
+            'Paritas 1:1 Tampilan Stok POS Kasir & Storefront: Menyelaraskan logika visibilitas stok produk kasir dengan storefront saat saklar kelola stok (useStock) aktif. Kartu produk kini selalu menampilkan badge status stok (Stok X / SISA X / HABIS).',
+            'Indikator Stok Mode Grid & List Kasir: Pada mode Grid, badge stok diposisikan presisi di sudut kanan-bawah foto (pos-badge-stock & pos-badge-low) tanpa benturan dengan badge kuantitas keranjang; pada mode List, chip status stok (pos-tag-stock & pos-tag-low) ditampilkan sejajar dengan kategori dan varian.',
+            'Transparansi Stok Lembar Varian Kasir: Menambahkan informasi kuantitas stok aktual pada setiap tombol varian produk di lembar pilih varian kasir (pos-variant-sheet) dan badge ketersediaan terpusat di area rincian produk.',
+            'Sinkronisasi Multi-Channel v1.9.68 (Android VersionCode 10968): Terkompilasi dan tersinkronisasi penuh ke Vite build, paket flashdisk, dan Capacitor Android.'
+        ]
+    },
+    {
         id: 'log-1-9-67',
         version: 'v1.9.67',
         date: '2026-09-27',

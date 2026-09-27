@@ -167,9 +167,10 @@ const renderVariantSheetContent = (p) => {
             ${colorDot}
             <div class="flex flex-col items-start min-w-0">
                 <span class="truncate max-w-[120px]">${esc(v.name)}${labelSuffix}</span>
-                <div class="flex items-center gap-1.5 text-[9px]">
+                <div class="flex items-center gap-1.5 text-[9px] flex-wrap">
                     <span class="text-slate-500 font-bold">${fRp(varPrice)}</span>
                     ${varHpp > 0 ? `<span class="text-amber-600 dark:text-amber-400 font-black">HPP: ${fRp(varHpp)}</span>` : ''}
+                    ${useStock && !isVOutOfStock ? `<span class="font-extrabold ${varStock <= 5 ? 'text-rose-500' : 'text-slate-400 dark:text-slate-400'}"><i class="fa-solid fa-box text-[7px] mr-0.5"></i>Stok ${formatQty(varStock)}</span>` : ''}
                 </div>
             </div>
             ${isActive ? '<i class="fa-solid fa-check text-[8px] shrink-0 ml-1"></i>' : ''}
@@ -224,7 +225,7 @@ const renderVariantSheetContent = (p) => {
             </h4>
             <div class="mt-1 flex items-baseline gap-2 flex-wrap">
                 ${priceHtml}
-                <span class="text-[10px] font-bold text-slate-400">${activeStockStr}</span>
+                <span class="inline-flex items-center gap-1 text-[10px] font-bold ${isOutOfStock ? 'text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800' : 'text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-700/60 border border-slate-200 dark:border-slate-600'} px-2 py-0.5 rounded-md shadow-2xs whitespace-nowrap"><i class="fa-solid fa-box text-[8px]"></i>${activeStockStr}</span>
                 ${activeHpp > 0 ? `<span class="inline-flex items-center gap-1 text-[10px] font-black text-amber-950 bg-amber-100 dark:bg-amber-950/60 dark:text-amber-300 px-2 py-0.5 rounded-md border border-amber-300/80 dark:border-amber-700 shadow-2xs whitespace-nowrap"><i class="fa-solid fa-coins text-[8px] text-amber-600 dark:text-amber-400"></i>HPP: ${fRp(activeHpp)}</span>` : ''}
             </div>
             ${hasVariants ? `<p class="text-[11px] font-bold mt-0.5 truncate" style="color:var(--color-primary)">Varian: ${esc(vars[_selectedVariantIdx]?.name || '-')}</p>` : ''}

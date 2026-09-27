@@ -1278,7 +1278,11 @@ export const renderCatalog = () => {
                                 ${hasVariants ? `<span class="pos-tag-chip pos-tag-variant"><i class="fa-solid fa-layer-group"></i> Varian</span>` : ''}
                                 ${hasGrosir ? `<span class="pos-tag-chip pos-tag-grosir"><i class="fa-solid fa-tags"></i> Grosir</span>` : ''}
                                 ${stockInfo.isPreorder ? `<span class="pos-tag-chip pos-tag-po"><i class="fa-solid fa-clock"></i> PO ${esc(stockInfo.poTime)}</span>` : ''}
-                                ${stockInfo.isLowStock && !stockInfo.isOutOfStock ? `<span class="pos-tag-chip pos-tag-low"><i class="fa-solid fa-fire"></i> Sisa ${formatQty(stockInfo.totalStock)}</span>` : ''}
+                                ${stockInfo.isManaged && !stockInfo.isOutOfStock ? (
+                                    stockInfo.isLowStock
+                                        ? `<span class="pos-tag-chip pos-tag-low"><i class="fa-solid fa-fire"></i> Sisa ${formatQty(stockInfo.totalStock)}</span>`
+                                        : `<span class="pos-tag-chip pos-tag-stock"><i class="fa-solid fa-box"></i> Stok ${formatQty(stockInfo.totalStock)}</span>`
+                                ) : ''}
                                 ${stockInfo.isOutOfStock ? `<span class="pos-badge pos-badge-habis" style="font-size:7px;padding:1px 4px"><i class="fa-solid fa-ban"></i> HABIS</span>` : ''}
                             </div>
                             <!-- Line 2: Nama Produk -->
@@ -1311,10 +1315,14 @@ export const renderCatalog = () => {
                         <div class="pos-img-badges">
                             ${discBadge || (stockInfo.isPreorder ? poBadge : '')}
                         </div>
-                        <!-- Sisa Stok Sudut Kanan (Tampil selalu jika stok menipis, kurangi qty di keranjang) -->
-                        ${stockInfo.isManaged && stockInfo.isLowStock && !stockInfo.isOutOfStock ? `
-                            <div class="absolute top-1.5 right-1.5 z-10">
-                                <span class="pos-badge pos-badge-low"><i class="fa-solid fa-fire" style="font-size:6px"></i> SISA ${formatQty(Math.max(0, stockInfo.totalStock - totalQtyInCart))}</span>
+                        <!-- Status Stok Sudut Kanan Bawah (Paritas 1:1 Storefront: SISA X / Stok X) -->
+                        ${stockInfo.isManaged && !stockInfo.isOutOfStock ? `
+                            <div class="absolute bottom-1.5 right-1.5 z-10 pointer-events-none">
+                                ${stockInfo.isLowStock ? `
+                                    <span class="pos-badge pos-badge-low shadow-sm"><i class="fa-solid fa-fire" style="font-size:6.5px"></i> SISA ${formatQty(stockInfo.totalStock)}</span>
+                                ` : `
+                                    <span class="pos-badge pos-badge-stock shadow-sm"><i class="fa-solid fa-box" style="font-size:6.5px"></i> Stok ${formatQty(stockInfo.totalStock)}</span>
+                                `}
                             </div>` : ''}
                         ${totalQtyInCart > 0 ? `<div class="pos-qty-badge">${formatQty(totalQtyInCart)}</div>` : ''}
                         ${hasImg
