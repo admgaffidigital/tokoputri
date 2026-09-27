@@ -29,6 +29,11 @@ let liveSyncStats = {
     shifts: 0
 };
 
+// Cache statistik live untuk menghindari full-read Firestore setiap kali tab Pusat Data dibuka.
+// OPTIMASI v1.9.73: TTL 5 menit ─ cukup segar untuk statistik dashboard tanpa boros kuota.
+const LIVE_STATS_CACHE_TTL = 5 * 60 * 1000; // 5 menit
+let liveStatsCache = { timestamp: 0, data: null };
+
 /**
  * Format tanggal Indonesia yang ramah & presisi
  */
@@ -275,12 +280,32 @@ export const renderBackupSyncView = async () => {
 
 /**
  * Muat metrik statistik live langsung dari Firestore
+ * OPTIMASI v1.9.73: Dilindungi cache 5 menit agar tidak re-fetch Firestore setiap kali
+ * tab Pusat Data dibuka. Data statistik cukup disegarkan setiap 5 menit sekali.
  */
 const loadLiveStatistics = async () => {
+    // Cek cache terlebih dahulu — jika data masih segar, tampilkan langsung tanpa hit Firestore
+    const now = Date.now();
+    if (liveStatsCache.data && (now - liveStatsCache.timestamp < LIVE_STATS_CACHE_TTL)) {
+        const s = liveStatsCache.data;
+        const elOrders = el('stat-sync-orders');
+        const elCust = el('stat-sync-customers');
+        const elCash = el('stat-sync-cashiers');
+        const elShift = el('stat-sync-shifts');
+        if (elOrders) elOrders.textContent = s.orders.toLocaleString('id-ID');
+        if (elCust) elCust.textContent = s.customers.toLocaleString('id-ID');
+        if (elCash) elCash.textContent = s.cashiers.toLocaleString('id-ID');
+        if (elShift) elShift.textContent = s.shifts.toLocaleString('id-ID');
+        Object.assign(liveSyncStats, s);
+        return; // selesai — 0 Read Firestore!
+    }
+
     try {
         // 1. Pesanan / Transaksi
         db.collection("freshmart_orders").get().then(snap => {
             liveSyncStats.orders = snap.size;
+            liveStatsCache.data = { ...liveSyncStats };
+            liveStatsCache.timestamp = Date.now();
             const elOrders = el('stat-sync-orders');
             if (elOrders) elOrders.textContent = snap.size.toLocaleString('id-ID');
         }).catch(() => {});
@@ -288,6 +313,8 @@ const loadLiveStatistics = async () => {
         // 2. Member / Pelanggan
         db.collection("freshmart").doc("cms_data").collection("customers").get().then(snap => {
             liveSyncStats.customers = snap.size;
+            liveStatsCache.data = { ...liveSyncStats };
+            liveStatsCache.timestamp = Date.now();
             const elCust = el('stat-sync-customers');
             if (elCust) elCust.textContent = snap.size.toLocaleString('id-ID');
         }).catch(() => {});
@@ -295,6 +322,8 @@ const loadLiveStatistics = async () => {
         // 3. Akun Kasir
         db.collection("freshmart").doc("cms_data").collection("cashier_accounts").get().then(snap => {
             liveSyncStats.cashiers = snap.size;
+            liveStatsCache.data = { ...liveSyncStats };
+            liveStatsCache.timestamp = Date.now();
             const elCash = el('stat-sync-cashiers');
             if (elCash) elCash.textContent = snap.size.toLocaleString('id-ID');
         }).catch(() => {});
@@ -302,6 +331,8 @@ const loadLiveStatistics = async () => {
         // 4. Sesi Shift Kasir
         db.collection("freshmart").doc("cms_data").collection("pos_shifts").get().then(snap => {
             liveSyncStats.shifts = snap.size;
+            liveStatsCache.data = { ...liveSyncStats };
+            liveStatsCache.timestamp = Date.now();
             const elShift = el('stat-sync-shifts');
             if (elShift) elShift.textContent = snap.size.toLocaleString('id-ID');
         }).catch(() => {});
@@ -403,7 +434,21 @@ export const triggerRealtimeSync = async () => {
 };
 
 // ─── FITUR 2: FULL COMPREHENSIVE BACKUP ENGINE (.JSON) ─────────
+/**
+ * Konfirmasi dulu sebelum backup besar — backup membaca SEMUA koleksi Firestore sekaligus.
+ * OPTIMASI v1.9.73: Guard konfirmasi mencegah admin tidak sengaja menekan tombol berulang kali.
+ */
 export const downloadFullBackupJSON = async () => {
+    const ordEst = liveSyncStats.orders || '?';
+    const custEst = liveSyncStats.customers || '?';
+    const confirmed = await showConfirm(
+        'Unduh Backup Lengkap (.json)',
+        `Proses ini akan membaca seluruh data toko dari Firestore (estimasi ±${ordEst} pesanan, ±${custEst} pelanggan, produk, kasir, shift, ulasan) sekaligus.\n\nGunakan fitur ini dengan bijak — hindari menekan berulang kali dalam waktu singkat.`,
+        'Lanjutkan Backup',
+        'Batal'
+    );
+    if (!confirmed) return;
+
     sLoad('Mengumpulkan seluruh data ekosistem toko...');
 
     try {
@@ -556,6 +601,17 @@ export const exportProductsCSV = () => {
  * Ekspor Riwayat Penjualan & Transaksi (.csv)
  */
 export const exportOrdersCSV = async () => {
+    // OPTIMASI v1.9.73: Konfirmasi dulu sebelum membaca semua dokumen pesanan dari Firestore.
+    // Jika sudah ada ribuan pesanan, satu klik ekspor bisa menghabiskan banyak kuota Read.
+    const ordEst = liveSyncStats.orders || '?';
+    const confirmed = await showConfirm(
+        'Ekspor Riwayat Penjualan (.csv)',
+        `Proses ini akan membaca seluruh riwayat transaksi dari Firestore (estimasi ±${ordEst} baris data) untuk diekspor ke file CSV.\n\nGunakan fitur ini dengan bijak — hindari mengekspor berulang kali dalam waktu singkat.`,
+        'Lanjutkan Ekspor',
+        'Batal'
+    );
+    if (!confirmed) return;
+
     sLoad('Menyiapkan laporan transaksi CSV...');
     try {
         const snap = await db.collection("freshmart_orders").orderBy("timestamp", "desc").get();

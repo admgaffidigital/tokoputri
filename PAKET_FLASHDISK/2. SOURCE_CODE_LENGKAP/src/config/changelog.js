@@ -8,6 +8,20 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-9-73',
+        version: 'v1.9.73',
+        date: '2026-09-27',
+        title: 'Optimasi Koneksi Firestore & Guard Kuota: Auto-Detect Long Polling, Cache Statistik Pusat Data, & Konfirmasi Operasi Berat',
+        category: 'fix',
+        badge: 'Firestore Efficiency v1.9.73',
+        items: [
+            'Optimasi Mode Koneksi Firestore (firebase.js): Mengganti experimentalForceLongPolling: true dengan experimentalAutoDetectLongPolling: true. Dengan mode auto-detect, Firestore otomatis memilih koneksi WebSocket (lebih hemat & responsif) jika jaringan mendukung, dan hanya fallback ke long-polling saat diperlukan (jaringan proxy/corporate). Berdampak langsung pada efisiensi koneksi di HP Android dengan jaringan 4G/WiFi normal.',
+            'Cache Statistik Pusat Data 5 Menit (backup-sync.js): Menambahkan liveStatsCache dengan TTL 5 menit pada fungsi loadLiveStatistics. Sebelumnya, membuka tab Pusat Data & Sinkronisasi selalu memicu 4 full-collection read ke Firestore (orders, customers, cashier_accounts, pos_shifts). Kini jika data masih segar, statistik langsung ditampilkan dari cache — 0 Read Firestore.',
+            'Guard Konfirmasi Sebelum Operasi Berat (backup-sync.js): Menambahkan dialog konfirmasi showConfirm pada fungsi downloadFullBackupJSON (Backup Lengkap .json) dan exportOrdersCSV (Ekspor Transaksi .csv) sebelum memulai proses full-table scan. Dialog menampilkan estimasi jumlah dokumen yang akan dibaca dan peringatan untuk tidak menekan berulang kali. Ini mencegah pemborosan kuota Firestore akibat klik tidak sengaja.',
+            'Sinkronisasi Multi-Channel v1.9.73 (Android VersionCode 10973): Terkompilasi dan tersinkronisasi penuh ke Vite build, paket flashdisk, dan Capacitor Android.'
+        ]
+    },
+    {
         id: 'log-1-9-72',
         version: 'v1.9.72',
         date: '2026-09-27',

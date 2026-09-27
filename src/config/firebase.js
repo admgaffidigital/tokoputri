@@ -55,10 +55,14 @@ if (typeof window !== 'undefined') {
 // mendapatkan data terbaru dari server, bukan data lama dari IndexedDB.
 // Ini KRITIS untuk realtime sync antar perangkat yang benar.
 // PENTING: merge:true agar tidak menimpa host/config internal Firebase yang sudah ada.
+// OPTIMASI v1.9.73: experimentalForceLongPolling diganti dengan experimentalAutoDetectLongPolling.
+// Dengan auto-detect, Firestore akan memilih WebSocket (lebih hemat & cepat) jika jaringan
+// mendukung, dan hanya fallback ke long-polling jika memang diperlukan (jaringan proxy/corporate).
+// Ini mengurangi beban koneksi & hemat kuota terutama di HP Android dengan jaringan normal.
 try {
     db.settings({
         ignoreUndefinedProperties: true,
-        experimentalForceLongPolling: true,
+        experimentalAutoDetectLongPolling: true,
         merge: true,
     });
 } catch(e) {}
