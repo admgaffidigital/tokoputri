@@ -8,6 +8,20 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-9-66',
+        version: 'v1.9.66',
+        date: '2026-09-27',
+        title: 'Pemulihan Tampilan Logo Loading Screen & Harmonisasi Display Inline Style',
+        category: 'fix',
+        badge: 'Loading Screen Logo Fix v1.9.66',
+        items: [
+            'Fix Logo Loading Screen: Mengeliminasi benturan stylesheet pada loader-logo-img sehingga gambar logo toko (PUT) kembali tampil sempurna di lingkaran loading awal.',
+            'Pembersihan Utilitas Display: Menghapus deklarasi stylesheet !important yang menahan override inline style.display block pada saat bootstrap data aplikasi.',
+            'Penanganan Fallback Ikon Cadangan: Menjamin onerror pada loader-logo-img memicu kembali tampilan ikon toko secara mulus jika gambar gagal termuat.',
+            'Sinkronisasi Multi-Channel v1.9.66 (Android VersionCode 10966): Terkompilasi dan tersinkronisasi penuh ke Vite build, paket flashdisk, dan Capacitor Android.'
+        ]
+    },
+    {
         id: 'log-1-9-65',
         version: 'v1.9.65',
         date: '2026-09-27',

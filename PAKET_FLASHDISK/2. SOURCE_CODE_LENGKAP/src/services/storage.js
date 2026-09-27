@@ -226,8 +226,12 @@ export const loadAppData = async () => {
         if (loaderLogoIcon) loaderLogoIcon.style.display = 'none';
         if (loaderLogoImg) {
             loaderLogoImg.src = logoUrl;
+            loaderLogoImg.classList.remove('hidden');
             loaderLogoImg.style.display = 'block';
         }
+    } else {
+        if (loaderLogoIcon) loaderLogoIcon.style.display = 'inline-flex';
+        if (loaderLogoImg) loaderLogoImg.style.display = 'none';
     }
 
     // --- PWA DYNAMIC MANIFEST & SPLASH SCREEN ENGINE ---

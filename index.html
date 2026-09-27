@@ -204,12 +204,14 @@
             <i class="fa-solid fa-store text-2xl text-[var(--color-primary)]" id="loader-logo-icon"></i>
             <img
               id="loader-logo-img"
-              class="hidden h-full w-full object-contain p-0.5"
+              class="h-full w-full object-contain p-0.5"
+              style="display: none;"
               src=""
               alt="Logo"
               onerror="
                 this.style.display = 'none';
-                document.getElementById('loader-logo-icon').style.display = 'block';
+                const li = document.getElementById('loader-logo-icon');
+                if (li) li.style.display = 'inline-flex';
               "
             />
           </div>
@@ -260,6 +262,7 @@
             const img = document.getElementById("loader-logo-img");
             if (img) {
               img.src = logo;
+              img.classList.remove('hidden');
               img.style.display = "block";
             }
           }

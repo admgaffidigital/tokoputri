@@ -2584,16 +2584,6 @@ html.dark .modal-bottom-sheet textarea {
    merusak utilitas display (seperti .hidden / display: none).
    ============================================================ */
 
-/* 0. UTILITY OVERRIDE: .hidden dan [hidden] WAJIB 100% display: none */
-.hidden,
-[hidden],
-i.hidden,
-i[hidden],
-button.hidden,
-span.hidden,
-div.hidden {
-    display: none !important;
-}
 
 /* 1. Reset vertikal offset FontAwesome (-0.125em) yang membuat ikon turun/tidak center */
 i.fa-solid:not(.hidden):not([hidden]),
