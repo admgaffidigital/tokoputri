@@ -362,6 +362,14 @@ export const openOrderDetail = (i) => {
     setCVOrd(i);
     
     const isPOS = o.source === 'pos' || o.channel === 'pos';
+    const hasWA = !!(o.customer?.wa);
+    // Label dan warna status badge untuk tombol WA
+    const waStatusIcon = o.status === 'Diproses' ? 'fa-spinner fa-spin' : o.status === 'Selesai' ? 'fa-check-double' : o.status === 'Dibatalkan' ? 'fa-xmark' : 'fa-asterisk';
+    const waStatusLabel = o.status === 'Baru' ? 'Konfirmasi Pesanan Baru'
+        : o.status === 'Diproses' ? 'Pesanan Sedang Diproses'
+        : o.status === 'Selesai' ? 'Pesanan Selesai'
+        : o.status === 'Dibatalkan' ? 'Pesanan Dibatalkan'
+        : o.status;
     let sSel = `<div class="relative w-full sm:w-40 mt-1"><select onchange="updateOrderStatus('${o.orderId}', this.value)" class="w-full text-sm font-bold ${o.status==='Baru'?'text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-950/50 border-rose-200 dark:border-rose-900/60':o.status==='Diproses'?'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/50 border-blue-200 dark:border-blue-900/60':o.status==='Selesai'?'text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/50 border-emerald-200 dark:border-emerald-900/60':'text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700'} border px-4 py-2.5 rounded-xl focus:outline-none appearance-none cursor-pointer transition-colors shadow-sm"><option value="Baru" ${o.status==='Baru'?'selected':''} class="text-slate-800 dark:text-slate-100 dark:bg-slate-800">Baru (Pending)</option><option value="Diproses" ${o.status==='Diproses'?'selected':''} class="text-slate-800 dark:text-slate-100 dark:bg-slate-800">Diproses</option><option value="Selesai" ${o.status==='Selesai'?'selected':''} class="text-slate-800 dark:text-slate-100 dark:bg-slate-800">Selesai</option><option value="Dibatalkan" ${o.status==='Dibatalkan'?'selected':''} class="text-slate-800 dark:text-slate-100 dark:bg-slate-800">Dibatalkan</option></select><i class="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 ${o.status==='Baru'?'text-rose-400':o.status==='Diproses'?'text-blue-400':o.status==='Selesai'?'text-emerald-400':'text-slate-400'} pointer-events-none text-xs"></i></div>`;
     
     setH('admin-order-modal-content', `
@@ -379,6 +387,20 @@ export const openOrderDetail = (i) => {
                             <i class="fa-solid fa-globe text-xs"></i> Sumber: Pesanan Online (Website Storefront)
                         </span>`}
                     </div>
+                    ${hasWA ? `
+                    <button type="button" onclick="konfirmasiKeWA('${o.orderId}')" 
+                        class="mt-3 w-full flex items-center justify-between gap-2.5 bg-emerald-50 dark:bg-emerald-950/40 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300 px-4 py-3 rounded-xl transition-all active:scale-95 cursor-pointer shadow-sm group">
+                        <div class="flex items-center gap-2.5 min-w-0">
+                            <div class="w-8 h-8 rounded-lg bg-[#25D366] text-white flex items-center justify-center shrink-0 shadow-sm shadow-emerald-400/30">
+                                <i class="fa-brands fa-whatsapp text-sm"></i>
+                            </div>
+                            <div class="min-w-0 text-left">
+                                <p class="text-[11px] font-black uppercase tracking-widest leading-tight">Notifikasi WA Pembeli</p>
+                                <p class="text-[10px] font-medium text-emerald-600/70 dark:text-emerald-400/70 truncate mt-0.5">${waStatusLabel}</p>
+                            </div>
+                        </div>
+                        <i class="fa-solid fa-paper-plane text-xs text-emerald-400 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform shrink-0"></i>
+                    </button>` : ''}
                 </div>
                 <div class="text-left sm:text-right flex flex-col justify-center">
                     <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1.5">ID Pesanan</p>
@@ -1042,40 +1064,6 @@ export const updateOrderStatus = async (i, s) => {
         }
 
         openOrderDetail(i);
-
-        // ── AUTO-PROMPT NOTIFIKASI WA KE PEMBELI ──────────────────────────────
-        // Hanya tampilkan jika ada nomor WA pembeli dan status berubah secara bermakna
-        if (ord && ord.customer?.wa && s !== oldStatus && s !== 'Baru') {
-            const statusLabel = s === 'Diproses' ? '🔄 Diproses' : s === 'Selesai' ? '✅ Selesai' : s === 'Dibatalkan' ? '❌ Dibatalkan' : s;
-            // Tampilkan toast interaktif dengan tombol kirim WA
-            setTimeout(() => {
-                const toastEl = el('toast');
-                if (toastEl) {
-                    const prevHtml = toastEl.innerHTML;
-                    const prevCls = toastEl.className;
-                    toastEl.style.cssText = 'display:flex !important; opacity:1; transform:translateY(0); position:fixed; bottom:5rem; left:50%; transform:translateX(-50%) translateY(0); z-index:9999; max-width:340px; width:calc(100% - 2rem);';
-                    toastEl.innerHTML = `
-                        <div class="flex flex-col w-full gap-2.5">
-                            <div class="flex items-center gap-2.5">
-                                <i class="fa-brands fa-whatsapp text-green-400 text-xl shrink-0"></i>
-                                <span class="text-sm font-bold text-white">Status → <span class="text-green-300">${statusLabel}</span></span>
-                            </div>
-                            <button type="button" onclick="konfirmasiKeWA('${i}'); this.closest('[id=toast]') && (this.closest('[id=toast]').style.display='none');" 
-                                class="w-full py-2 rounded-xl bg-green-500 hover:bg-green-400 active:scale-95 text-white font-black text-[11px] uppercase tracking-widest flex items-center justify-center gap-2 transition-all shadow-md shadow-green-500/30">
-                                <i class="fa-brands fa-whatsapp"></i> Kirim Notifikasi WA ke Pembeli
-                            </button>
-                        </div>
-                    `;
-                    // Auto sembunyi setelah 8 detik
-                    setTimeout(() => {
-                        if (toastEl.innerHTML.includes('Kirim Notifikasi WA')) {
-                            toastEl.style.display = 'none';
-                        }
-                    }, 8000);
-                }
-            }, 600);
-        }
-        // ── END AUTO-PROMPT WA ────────────────────────────────────────────────
 
     } catch(e) { 
         showToast("Gagal!"); 
