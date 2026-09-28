@@ -247,12 +247,18 @@ export const trackOrderManual = async () => {
                 myOrders.unshift({
                     orderId: searchId,
                     date: d.dateString || (d.timestamp ? d.timestamp.toDate().toISOString() : new Date().toISOString()),
-                    total: (d.payment && d.payment.grandTotal) ? d.payment.grandTotal : 0,
+                    dateString: d.dateString || (d.timestamp ? d.timestamp.toDate().toISOString() : new Date().toISOString()),
+                    total: (d.payment && d.payment.grandTotal) ? d.payment.grandTotal : (d.total || 0),
                     itemCount: (d.items || []).reduce((s, i) => s + (parseFloat(i.qty) || 0), 0),
                     status: d.status || 'Baru',
                     pointsEarned: d.pointsEarned || 0,
                     claimedReward: d.claimedReward || null,
-                    finalMemberPoints: d.finalMemberPoints || null
+                    finalMemberPoints: d.finalMemberPoints || null,
+                    customerType: d.customerType || 'Pelanggan Umum',
+                    customer: d.customer || {},
+                    items: d.items || [],
+                    payment: d.payment || {},
+                    isTempo: !!d.isTempo
                 });
                 saveMyOrdersToStorage();
                 renderMyOrders();
@@ -297,6 +303,8 @@ export const openCustomerOrderDetail = async (orderId) => {
         }
         
         const d = doc.data();
+        d.orderId = d.orderId || doc.id || orderId;
+
         let reviewedKeys = [];
         if (d.status === 'Selesai') {
             try {
@@ -304,6 +312,31 @@ export const openCustomerOrderDetail = async (orderId) => {
                 reviewedKeys = revSnap.docs.map(r => `${r.data().productId}::${r.data().variantName || ''}`);
             } catch(e) {}
         }
+
+        window.currentCustomerOrder = d;
+        window.lastPrintedOrder = d;
+
+        // Auto-hydrate entri di myOrders jika belum memiliki items/payment lengkap
+        if (Array.isArray(myOrders)) {
+            const mIdx = myOrders.findIndex(x => x.orderId === d.orderId);
+            if (mIdx !== -1) {
+                let needSave = false;
+                if (!myOrders[mIdx].items || myOrders[mIdx].items.length === 0) {
+                    myOrders[mIdx].items = d.items || [];
+                    needSave = true;
+                }
+                if (!myOrders[mIdx].payment || !myOrders[mIdx].payment.grandTotal) {
+                    myOrders[mIdx].payment = d.payment || {};
+                    needSave = true;
+                }
+                if (!myOrders[mIdx].customer || !myOrders[mIdx].customer.name) {
+                    myOrders[mIdx].customer = d.customer || {};
+                    needSave = true;
+                }
+                if (needSave) saveMyOrdersToStorage();
+            }
+        }
+
         renderOrderDetailModal(orderId, d, reviewedKeys);
     } catch (e) {
         console.error("Gagal mengambil data pesanan:", e);
@@ -318,6 +351,11 @@ export const openCustomerOrderDetail = async (orderId) => {
  */
 export const renderOrderDetailModal = (orderId, d, reviewedKeys = []) => {
     try {
+        if (d) {
+            d.orderId = d.orderId || orderId;
+            window.currentCustomerOrder = d;
+            window.lastPrintedOrder = d;
+        }
         let m = document.getElementById('order-detail-modal');
         if (!m) {
             m = document.createElement('div');

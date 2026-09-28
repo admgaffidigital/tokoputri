@@ -5,22 +5,80 @@
  * ============================================================
  */
 
+import { db } from '../../config/firebase.js';
 import { appData, gOrds, cVOrd, setCVOrd, myOrders } from '../../core/state.js';
 import { el, show, hide, setH, esc, openModalAnim, closeModalAnim } from '../../core/utils.js';
 import { getPrinterConfig, getPaperCols } from './printer-settings.js';
 import { renderThermalDOMAndPrint, formatCompactDate, wrapWords } from './rawbt.js';
 
-export const openReceiptPreview = (orderId = null) => {
+export const openReceiptPreview = async (orderId = null) => {
     if (orderId && typeof setCVOrd === 'function') {
         setCVOrd(orderId);
     }
-    const targetId = orderId || cVOrd;
-    let o = (gOrds || []).find(x => x.orderId === targetId); 
-    if (!o && Array.isArray(myOrders)) {
-        o = myOrders.find(x => x.orderId === targetId);
+    const rawTarget = (typeof orderId === 'string' ? orderId : (orderId && orderId.orderId ? orderId.orderId : null)) || cVOrd;
+    const targetId = String(rawTarget || '').replace(/^#/, '').trim();
+
+    const isOrderMatch = (cand) => {
+        if (!cand) return false;
+        const cid = String(cand.orderId || '').replace(/^#/, '').trim();
+        if (!targetId) return true;
+        return cid === targetId || cid.endsWith(targetId) || targetId.endsWith(cid);
+    };
+
+    let o = null;
+    if (typeof orderId === 'object' && orderId !== null && (Array.isArray(orderId.items) && orderId.items.length > 0)) {
+        o = orderId;
     }
-    if (!o && window.lastPrintedOrder && window.lastPrintedOrder.orderId === targetId) {
+    if ((!o || !o.items || o.items.length === 0) && isOrderMatch(window.currentCustomerOrder)) {
+        o = window.currentCustomerOrder;
+    }
+    if ((!o || !o.items || o.items.length === 0) && isOrderMatch(window.lastPrintedOrder)) {
         o = window.lastPrintedOrder;
+    }
+    if ((!o || !o.items || o.items.length === 0) && (gOrds || []).length > 0) {
+        const found = gOrds.find(isOrderMatch);
+        if (found && Array.isArray(found.items) && found.items.length > 0) o = found;
+    }
+    if ((!o || !o.items || o.items.length === 0) && Array.isArray(myOrders)) {
+        const mO = myOrders.find(isOrderMatch);
+        if (mO && Array.isArray(mO.items) && mO.items.length > 0) o = mO;
+    }
+
+    // Jika data belum memiliki rincian items, ambil langsung dari database Firestore freshmart_orders!
+    if ((!o || !o.items || o.items.length === 0) && targetId) {
+        try {
+            const _db = (typeof db !== 'undefined' && db) ? db : window.db;
+            if (_db) {
+                let snap = await _db.collection("freshmart_orders").doc(targetId).get();
+                if (!snap.exists && !targetId.startsWith('ORD-')) {
+                    const snap2 = await _db.collection("freshmart_orders").doc('ORD-' + targetId).get();
+                    if (snap2.exists) snap = snap2;
+                }
+                if (snap && snap.exists) {
+                    o = snap.data();
+                    o.orderId = o.orderId || snap.id;
+                    window.currentCustomerOrder = o;
+                    window.lastPrintedOrder = o;
+
+                    if (Array.isArray(myOrders)) {
+                        const idx = myOrders.findIndex(isOrderMatch);
+                        if (idx !== -1) {
+                            myOrders[idx].items = o.items || [];
+                            myOrders[idx].payment = o.payment || {};
+                            myOrders[idx].customer = o.customer || {};
+                            try { localStorage.setItem('freshmart_my_orders', JSON.stringify(myOrders)); } catch(e) {}
+                        }
+                    }
+                }
+            }
+        } catch (errF) {
+            console.warn('[Receipt] Gagal fetch order detail from Firestore:', errF);
+        }
+    }
+
+    // Jika masih null, baru fallback ke ringkasan myOrders
+    if (!o && Array.isArray(myOrders)) {
+        o = myOrders.find(isOrderMatch);
     }
     if (!o) return;
     window.lastPrintedOrder = o;
@@ -29,7 +87,7 @@ export const openReceiptPreview = (orderId = null) => {
     const cols = getPaperCols(config.paperSize);
     const is80 = cols >= 40;
 
-    const d = formatCompactDate(o.dateString, is80);
+    const d = formatCompactDate(o.dateString || o.date || Date.now(), is80);
     const sN = config.headerText || appData.store.name || "Toko Putri";
     const sW = appData.store.wa || "";
     
@@ -40,13 +98,22 @@ export const openReceiptPreview = (orderId = null) => {
         return left + (p > 0 ? ' '.repeat(p) : ' ') + right; 
     };
     
+    const orderItems = Array.isArray(o.items) ? o.items : (Array.isArray(o.cart) ? o.cart : []);
+    const calcSubtotal = orderItems.reduce((acc, i) => acc + (parseFloat(i.qty || 1) * (parseFloat(i.effectivePrice || i.price) || 0)), 0);
+    const subtotal = (o.payment && o.payment.subtotal !== undefined) ? o.payment.subtotal : (calcSubtotal || o.total || 0);
+    const shipping = (o.payment && o.payment.shippingCost !== undefined) ? o.payment.shippingCost : 0;
+    const grandTotal = (o.payment && o.payment.grandTotal !== undefined) ? o.payment.grandTotal : (o.total || (subtotal + shipping));
+    const payMethod = String(o.payment?.method || o.method || 'Tunai').toUpperCase();
+    const custName = o.customer?.name || o.customerName || 'Guest';
+    const isDelivery = o.customer?.deliveryMethod === 'delivery' || o.deliveryMethod === 'delivery';
+
     let h = `<div class="text-center font-bold" style="font-size:14px;margin-bottom:2px;">${esc(sN)}</div>`;
     if (sW) h += `<div class="text-center" style="font-size:11px;margin-bottom:4px;">WA: ${esc(sW)}</div>`;
     h += `<div class="border-b border-dashed border-black my-2"></div>`;
     h += `<div style="white-space:pre;font-family:monospace;">${pL(`Order: #${o.orderId}`, d, cols)}</div>`;
-    h += `<div style="white-space:pre;font-family:monospace;">${pL(`Plg  : ${esc(o.customer?.name || 'Guest').substring(0, is80 ? 18 : 10)}`, `Tipe: ${o.customer?.deliveryMethod === 'delivery' ? 'Kirim' : 'Ambil'}`, cols)}</div>`;
-    if (o.customer?.phone) {
-        h += `<div style="white-space:pre;font-family:monospace;">HP   : ${esc(o.customer.phone)}</div>`;
+    h += `<div style="white-space:pre;font-family:monospace;">${pL(`Plg  : ${esc(custName).substring(0, is80 ? 18 : 10)}`, `Tipe: ${isDelivery ? 'Kirim' : 'Ambil'}`, cols)}</div>`;
+    if (o.customer?.phone || o.customerPhone) {
+        h += `<div style="white-space:pre;font-family:monospace;">HP   : ${esc(o.customer?.phone || o.customerPhone)}</div>`;
     }
     h += `<div class="border-b border-dashed border-black my-2"></div>`;
     if (o.customer?.note) { 
@@ -54,7 +121,6 @@ export const openReceiptPreview = (orderId = null) => {
     }
     
     // Daftar item barang (defensive guard untuk o.items / o.cart)
-    const orderItems = Array.isArray(o.items) ? o.items : (Array.isArray(o.cart) ? o.cart : []);
     if (orderItems.length > 0) {
         orderItems.forEach(i => {
             let vText = i.variantName ? ` (${esc(i.variantName)}${i.colorCode ? ' ' + esc(i.colorCode) : ''})` : '';
@@ -71,8 +137,8 @@ export const openReceiptPreview = (orderId = null) => {
         h += `<div style="white-space:pre;font-style:italic;color:#64748b;text-align:center;padding:4px 0;">- Tidak ada rincian barang -</div>`;
     }
     
-    h += `<div class="border-b border-dashed border-black my-2"></div><div style="white-space:pre;font-family:monospace;">${pL('Subtotal', (o.payment?.subtotal || 0).toLocaleString('id-ID'), cols)}</div>`;
-    if (o.customer?.deliveryMethod === 'delivery') h += `<div style="white-space:pre;font-family:monospace;">${pL('Ongkir', (o.payment?.shippingCost || 0).toLocaleString('id-ID'), cols)}</div>`;
+    h += `<div class="border-b border-dashed border-black my-2"></div><div style="white-space:pre;font-family:monospace;">${pL('Subtotal', subtotal.toLocaleString('id-ID'), cols)}</div>`;
+    if (isDelivery) h += `<div style="white-space:pre;font-family:monospace;">${pL('Ongkir', shipping.toLocaleString('id-ID'), cols)}</div>`;
     if (o.payment?.shippingDiscount) h += `<div style="white-space:pre;font-family:monospace;">${pL('Pot.Ongkir', `-${o.payment.shippingDiscount.toLocaleString('id-ID')}`, cols)}</div>`;
     if (o.payment?.productDiscount) h += `<div style="white-space:pre;font-family:monospace;">${pL('Pot.Harga', `-${o.payment.productDiscount.toLocaleString('id-ID')}`, cols)}</div>`;
     if (o.payment?.ppnAmount && o.payment.ppnAmount > 0) {
@@ -81,7 +147,7 @@ export const openReceiptPreview = (orderId = null) => {
         const ppnAmt = o.payment.ppnAmount || 0;
         h += `<div style="white-space:pre;font-family:monospace;">${pL(`${isInc ? 'Inc. PPN' : 'PPN'} (${ppnRate}%)`, (isInc ? '' : '+') + ppnAmt.toLocaleString('id-ID'), cols)}</div>`;
     }
-    h += `<div class="border-b border-dashed border-black my-2"></div><div style="white-space:pre;font-family:monospace;font-weight:bold;font-size:12px;">${pL('TOTAL', 'Rp ' + (o.payment?.grandTotal || 0).toLocaleString('id-ID'), cols)}</div><div style="white-space:pre;font-family:monospace;">${pL('Metode Bayar', String(o.payment?.method || 'Tunai').toUpperCase(), cols)}</div>`;
+    h += `<div class="border-b border-dashed border-black my-2"></div><div style="white-space:pre;font-family:monospace;font-weight:bold;font-size:12px;">${pL('TOTAL', 'Rp ' + grandTotal.toLocaleString('id-ID'), cols)}</div><div style="white-space:pre;font-family:monospace;">${pL('Metode Bayar', payMethod, cols)}</div>`;
     
     // Informasi loyalty poin & reward
     if (config.showPoints && (o.pointsEarned > 0 || o.finalMemberPoints !== undefined)) {

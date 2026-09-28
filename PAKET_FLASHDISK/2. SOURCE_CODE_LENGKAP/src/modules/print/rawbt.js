@@ -9,6 +9,7 @@
  * ============================================================
  */
 
+import { db } from '../../config/firebase.js';
 import { appData, gOrds, cVOrd, myOrders } from '../../core/state.js';
 import { el, esc } from '../../core/utils.js';
 import { showToast } from '../../core/ui.js';
@@ -726,18 +727,24 @@ export const buildOrderReceiptPayload = (order, config = null) => {
     builder.separator('-');
 
     // Daftar Barang
-    (order.items || []).forEach(item => {
-        builder.itemRow(item);
-    });
+    const orderItems = Array.isArray(order.items) ? order.items : (Array.isArray(order.cart) ? order.cart : []);
+    if (orderItems.length > 0) {
+        orderItems.forEach(item => {
+            builder.itemRow(item);
+        });
+    } else {
+        builder.line('- Tidak ada rincian barang -', 'center');
+    }
 
     builder.separator('-');
 
-    const subtotal = order.payment?.subtotal || 0;
-    const shipping = order.payment?.shippingCost || 0;
-    const grandTot = order.payment?.grandTotal || (subtotal + shipping);
+    const calcSubtotal = orderItems.reduce((acc, i) => acc + (parseFloat(i.qty || 1) * (parseFloat(i.effectivePrice || i.price) || 0)), 0);
+    const subtotal = (order.payment && order.payment.subtotal !== undefined) ? order.payment.subtotal : (calcSubtotal || order.total || 0);
+    const shipping = (order.payment && order.payment.shippingCost !== undefined) ? order.payment.shippingCost : 0;
+    const grandTot = (order.payment && order.payment.grandTotal !== undefined) ? order.payment.grandTotal : (order.total || (subtotal + shipping));
 
     builder.twoColumn('Subtotal', fRp(subtotal));
-    if (order.customer?.deliveryMethod === 'delivery') {
+    if (order.customer?.deliveryMethod === 'delivery' || order.deliveryMethod === 'delivery') {
         builder.twoColumn('Ongkos Kirim', fRp(shipping));
     }
     if (order.payment?.productDiscount) {
@@ -1074,19 +1081,76 @@ export const printShiftSettlementDirect = (shift, isXReport = false) => {
 /**
  * Cetak Struk Pesanan Pelanggan Seketika (Direct Print)
  */
-export const printCustomerReceiptDirect = (orderId = null) => {
-    const targetId = orderId || cVOrd;
-    let order = (gOrds || []).find(x => x.orderId === targetId);
-    if (!order && Array.isArray(myOrders)) {
-        order = myOrders.find(x => x.orderId === targetId);
+export const printCustomerReceiptDirect = async (orderId = null) => {
+    const rawTarget = (typeof orderId === 'string' ? orderId : (orderId && orderId.orderId ? orderId.orderId : null)) || cVOrd;
+    const targetId = String(rawTarget || '').replace(/^#/, '').trim();
+
+    const isOrderMatch = (cand) => {
+        if (!cand) return false;
+        const cid = String(cand.orderId || '').replace(/^#/, '').trim();
+        if (!targetId) return true;
+        return cid === targetId || cid.endsWith(targetId) || targetId.endsWith(cid);
+    };
+
+    let order = null;
+    if (typeof orderId === 'object' && orderId !== null && (Array.isArray(orderId.items) && orderId.items.length > 0)) {
+        order = orderId;
     }
-    if (!order && window.lastPrintedOrder && window.lastPrintedOrder.orderId === targetId) {
+    if ((!order || !order.items || order.items.length === 0) && isOrderMatch(window.currentCustomerOrder)) {
+        order = window.currentCustomerOrder;
+    }
+    if ((!order || !order.items || order.items.length === 0) && isOrderMatch(window.lastPrintedOrder)) {
         order = window.lastPrintedOrder;
+    }
+    if ((!order || !order.items || order.items.length === 0) && (gOrds || []).length > 0) {
+        const found = gOrds.find(isOrderMatch);
+        if (found && Array.isArray(found.items) && found.items.length > 0) order = found;
+    }
+    if ((!order || !order.items || order.items.length === 0) && Array.isArray(myOrders)) {
+        const mO = myOrders.find(isOrderMatch);
+        if (mO && Array.isArray(mO.items) && mO.items.length > 0) order = mO;
+    }
+
+    // Jika data belum memiliki rincian items, ambil langsung dari database Firestore freshmart_orders!
+    if ((!order || !order.items || order.items.length === 0) && targetId) {
+        try {
+            const _db = (typeof db !== 'undefined' && db) ? db : window.db;
+            if (_db) {
+                let snap = await _db.collection("freshmart_orders").doc(targetId).get();
+                if (!snap.exists && !targetId.startsWith('ORD-')) {
+                    const snap2 = await _db.collection("freshmart_orders").doc('ORD-' + targetId).get();
+                    if (snap2.exists) snap = snap2;
+                }
+                if (snap && snap.exists) {
+                    order = snap.data();
+                    order.orderId = order.orderId || snap.id;
+                    window.currentCustomerOrder = order;
+                    window.lastPrintedOrder = order;
+
+                    if (Array.isArray(myOrders)) {
+                        const idx = myOrders.findIndex(isOrderMatch);
+                        if (idx !== -1) {
+                            myOrders[idx].items = order.items || [];
+                            myOrders[idx].payment = order.payment || {};
+                            myOrders[idx].customer = order.customer || {};
+                            try { localStorage.setItem('freshmart_my_orders', JSON.stringify(myOrders)); } catch(e) {}
+                        }
+                    }
+                }
+            }
+        } catch (errF) {
+            console.warn('[RawBT] Gagal fetch order detail from Firestore:', errF);
+        }
+    }
+
+    if (!order && Array.isArray(myOrders)) {
+        order = myOrders.find(isOrderMatch);
     }
     if (!order) {
         showToast('Data pesanan tidak ditemukan.', 'warning');
         return;
     }
+    window.lastPrintedOrder = order;
 
     const cfg = getPrinterConfig();
     const payload = buildOrderReceiptPayload(order, cfg);

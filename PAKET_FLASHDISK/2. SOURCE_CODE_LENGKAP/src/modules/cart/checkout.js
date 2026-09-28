@@ -920,19 +920,27 @@ export const processOrder = async () => {
             await orderRef.set(oD);
         }
 
-        // Simpan ke riwayat lokal pesanan
-        myOrders.unshift({
+        // Simpan ke riwayat lokal pesanan secara komprehensif (termasuk items & payment untuk struk)
+        const myOrderEntry = {
             orderId: oI, 
-            date: new Date().toISOString(), 
+            date: oD.dateString || new Date().toISOString(), 
+            dateString: oD.dateString || new Date().toISOString(),
             total: tot,
             itemCount: cart.reduce((sum, i) => sum + parseFloat(i.qty), 0),
             status: 'Baru',
             pointsEarned: oD.pointsEarned || 0,
             claimedReward: oD.claimedReward || null,
             finalMemberPoints: finalMemberPoints,
-            customerType: oD.customerType || 'Pelanggan Umum'
-        });
+            customerType: oD.customerType || 'Pelanggan Umum',
+            customer: oD.customer || cust,
+            items: oD.items || [],
+            payment: oD.payment || {},
+            isTempo: !!oD.isTempo
+        };
+        myOrders.unshift(myOrderEntry);
         setMyOrders(myOrders);
+        window.currentCustomerOrder = oD;
+        window.lastPrintedOrder = oD;
         try {
             localStorage.setItem('freshmart_my_orders', JSON.stringify(myOrders));
             localStorage.setItem('freshmart_last_order', Date.now().toString());
