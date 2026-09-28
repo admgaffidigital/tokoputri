@@ -53,18 +53,23 @@ export const openReceiptPreview = (orderId = null) => {
         h += `<div style="white-space:pre-wrap;word-break:break-word;">Cat: ${esc(o.customer.note)}</div><div class="border-b border-dashed border-black my-2"></div>`; 
     }
     
-    // Daftar item barang
-    o.items.forEach(i => {
-        let vText = i.variantName ? ` (${esc(i.variantName)}${i.colorCode ? ' ' + esc(i.colorCode) : ''})` : '';
-        const n = esc(i.name) + vText + (i.poTime ? ` [PO]` : '');
-        const effPrice = i.effectivePrice || i.price || 0;
-        const q = `  ${parseFloat(i.qty)} ${esc(i.unit || 'pcs')} x ${Math.round(effPrice).toLocaleString('id-ID')}`;
-        const t = (parseFloat(i.qty) * effPrice).toLocaleString('id-ID');
-        h += `<div style="white-space:pre-wrap;font-weight:bold;word-break:break-word;">${n}</div><div style="white-space:pre;font-family:monospace;font-size:11px;">${pL(q, t, cols)}</div>`;
-        if (i.poTime) {
-            h += `<div style="white-space:pre;font-size:10px;font-style:italic;color:#4b5563;">  * Estimasi PO: ${esc(i.poTime)}</div>`;
-        }
-    });
+    // Daftar item barang (defensive guard untuk o.items / o.cart)
+    const orderItems = Array.isArray(o.items) ? o.items : (Array.isArray(o.cart) ? o.cart : []);
+    if (orderItems.length > 0) {
+        orderItems.forEach(i => {
+            let vText = i.variantName ? ` (${esc(i.variantName)}${i.colorCode ? ' ' + esc(i.colorCode) : ''})` : '';
+            const n = esc(i.name || 'Barang') + vText + (i.poTime ? ` [PO]` : '');
+            const effPrice = i.effectivePrice || i.price || 0;
+            const q = `  ${parseFloat(i.qty || 1)} ${esc(i.unit || 'pcs')} x ${Math.round(effPrice).toLocaleString('id-ID')}`;
+            const t = (parseFloat(i.qty || 1) * effPrice).toLocaleString('id-ID');
+            h += `<div style="white-space:pre-wrap;font-weight:bold;word-break:break-word;">${n}</div><div style="white-space:pre;font-family:monospace;font-size:11px;">${pL(q, t, cols)}</div>`;
+            if (i.poTime) {
+                h += `<div style="white-space:pre;font-size:10px;font-style:italic;color:#4b5563;">  * Estimasi PO: ${esc(i.poTime)}</div>`;
+            }
+        });
+    } else {
+        h += `<div style="white-space:pre;font-style:italic;color:#64748b;text-align:center;padding:4px 0;">- Tidak ada rincian barang -</div>`;
+    }
     
     h += `<div class="border-b border-dashed border-black my-2"></div><div style="white-space:pre;font-family:monospace;">${pL('Subtotal', (o.payment?.subtotal || 0).toLocaleString('id-ID'), cols)}</div>`;
     if (o.customer?.deliveryMethod === 'delivery') h += `<div style="white-space:pre;font-family:monospace;">${pL('Ongkir', (o.payment?.shippingCost || 0).toLocaleString('id-ID'), cols)}</div>`;
@@ -86,7 +91,7 @@ export const openReceiptPreview = (orderId = null) => {
         if (o.claimedReward) h += `<div style="white-space:pre-wrap;font-weight:bold;word-break:break-word;margin-top:2px;">HADIAH: ${esc(o.claimedReward.name)}</div>`;
     }
     
-    const hasPO = o.items.some(i => i.poTime && i.poTime !== '');
+    const hasPO = orderItems.some(i => i && i.poTime && i.poTime !== '');
     if (hasPO) {
         h += `<div class="border-b border-dashed border-black my-2"></div><div style="white-space:pre-wrap;font-size:9px;text-align:center;line-height:1.2;font-style:italic;color:#4b5563;margin-bottom:4px;">* Catatan: Untuk pesanan gabungan, produk PO akan dikirimkan menyusul tanpa tambahan biaya.</div>`;
     }

@@ -907,9 +907,9 @@ export const buildTempoReceiptPayload = (order, config = null) => {
 
     if (!isLunas && appData.banks && appData.banks.length > 0) {
         builder.line('REKENING TRANSFER RESMI:', 'left');
-        appData.banks.forEach(b => {
-            builder.line(`${b.bank}: ${b.number}`, 'left');
-            builder.line(`a/n ${b.name}`, 'left');
+        (appData.banks || []).forEach(b => {
+            builder.line(`${b.bank || b.bankName || 'Bank'}: ${b.number || b.bankAccount || '-'}`, 'left');
+            builder.line(`a/n ${b.name || b.bankOwner || '-'}`, 'left');
         });
         builder.separator('-');
     }

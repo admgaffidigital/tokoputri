@@ -648,7 +648,7 @@ export const openDocPreview = (type, targetId = null) => {
                 </tr>
             </thead>
             <tbody class="border-b-2 border-slate-800 divide-y divide-slate-200">
-                ${o.items.map((item, idx) => `
+                ${(Array.isArray(o.items) ? o.items : (Array.isArray(o.cart) ? o.cart : [])).map((item, idx) => `
                 <tr class="hover:bg-slate-50 transition-colors">
                     <td class="py-4 px-4 text-center font-mono text-slate-500">${idx + 1}</td>
                     <td class="py-4 px-4 font-bold flex items-center gap-2">
@@ -710,7 +710,7 @@ export const openDocPreview = (type, targetId = null) => {
                 </tr>
             </thead>
             <tbody class="border-b-2 border-slate-800 divide-y divide-slate-200">
-                ${o.items.map((item, idx) => `
+                ${(Array.isArray(o.items) ? o.items : (Array.isArray(o.cart) ? o.cart : [])).map((item, idx) => `
                 <tr class="hover:bg-slate-50 transition-colors">
                     <td class="py-4 px-4 text-center font-mono text-slate-500">${idx + 1}</td>
                     <td class="py-4 px-4 font-bold uppercase flex items-center gap-2">
@@ -764,7 +764,7 @@ export const openDocPreview = (type, targetId = null) => {
         </div>`;
     }
 
-    const hasPO = o.items.some(i => i.poTime && i.poTime !== '');
+    const hasPO = (Array.isArray(o.items) ? o.items : (Array.isArray(o.cart) ? o.cart : [])).some(i => i && i.poTime && i.poTime !== '');
     if (hasPO) {
         h += `
         <div class="mt-6 mb-8 border border-amber-200 bg-amber-50 p-4 rounded-xl text-left flex gap-3 items-start">
