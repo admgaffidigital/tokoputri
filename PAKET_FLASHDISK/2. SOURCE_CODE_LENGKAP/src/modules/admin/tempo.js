@@ -255,6 +255,11 @@ const renderTempoDetailModalContent = (o) => {
                         <span class="text-[9px] font-bold px-2 py-0.5 rounded-xl uppercase tracking-widest border ${o.customerType === 'Member' ? 'text-amber-600 bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800' : 'text-slate-500 bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700'}">
                             ${o.customerType === 'Member' ? '<i class="fa-solid fa-star text-amber-400 mr-1"></i>Member' : '<i class="fa-solid fa-user mr-1"></i>Umum'}
                         </span>
+                        ${(o.payment?.isPaylater || o.isPaylater || o.payment?.subMethod === 'paylater') ? `
+                            <span class="text-[9px] font-black px-2 py-0.5 rounded-xl uppercase tracking-widest border border-emerald-300 dark:border-emerald-700 bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-200 flex items-center gap-1">
+                                <i class="fa-solid fa-bolt text-emerald-500"></i> Putri PayLater
+                            </span>
+                        ` : ''}
                     </div>
                     <div class="flex items-center gap-3 mt-1 text-xs text-slate-500 dark:text-slate-400 flex-wrap">
                         <span class="font-bold text-slate-400">#${esc(o.orderId)}</span>
@@ -804,6 +809,29 @@ window.submitTempoPayment = async (e, orderId) => {
 
         await docRef.update(updates);
 
+        // ── PULIHKAN LIMIT PUTRI PAYLATER JIKA PESANAN PAYLATER ──
+        const isPlOrder = !!(data.payment?.isPaylater || data.isPaylater || data.payment?.subMethod === 'paylater');
+        if (isPlOrder) {
+            const custPhone = (data.customer?.wa || data.customer?.phone || '').replace(/\D/g, '');
+            if (custPhone) {
+                try {
+                    const cRef = db.collection("freshmart").doc("cms_data").collection("customers").doc(custPhone);
+                    await cRef.set({
+                        paylaterUsed: firebase.firestore.FieldValue.increment(-amount)
+                    }, { merge: true });
+
+                    if (Array.isArray(appData.customers)) {
+                        const mCust = appData.customers.find(c => c && (String(c.id) === custPhone || String(c.phone).replace(/\D/g, '') === custPhone));
+                        if (mCust) {
+                            mCust.paylaterUsed = Math.max(0, (parseFloat(mCust.paylaterUsed) || 0) - amount);
+                        }
+                    }
+                } catch(ePl) {
+                    console.warn('[Tempo] Gagal pulihkan limit PayLater:', ePl);
+                }
+            }
+        }
+
         // Update in-memory state piutang cachedPiutangOrders
         if (newBalance <= 0) {
             cachedPiutangOrders = cachedPiutangOrders.filter(o => o.orderId !== orderId);
@@ -850,7 +878,9 @@ window.submitTempoPayment = async (e, orderId) => {
 
         hLoad();
         window.closeTempoPaymentModal();
-        if (isShiftSynced) {
+        if (isPlOrder) {
+            showToast('Cicilan dicatat & Limit Putri PayLater berhasil dipulihkan! ⚡');
+        } else if (isShiftSynced) {
             showToast('Cicilan dicatat & otomatis masuk ke Kas Laci Kasir! 💰');
         } else {
             showToast('Pembayaran cicilan berhasil dicatat! 💰');
@@ -1202,13 +1232,15 @@ window.sendSmartTempoWA = (orderId) => {
         bankText = 'Silakan hubungi admin/kasir untuk konfirmasi nomor rekening transfer.';
     }
 
+    const isPL = !!(o.payment?.isPaylater || o.isPaylater || o.payment?.subMethod === 'paylater');
     let msg = '';
     if (calc.isLate) {
-        msg = `*PEMBERITAHUAN JATUH TEMPO - ${storeName.toUpperCase()}*\n\n` +
+        msg = `*PEMBERITAHUAN JATUH TEMPO ${isPL ? 'PUTRI PAYLATER' : 'TEMPO'} - ${storeName.toUpperCase()}*\n\n` +
               `Yth. Bpk/Ibu *${custName}*,\n` +
-              `Kami menginformasikan bahwa tagihan pembelian Tempo Anda telah *MELEWATI BATAS JATUH TEMPO* (${calc.daysLate} hari keterlambatan).\n\n` +
+              `Kami menginformasikan bahwa tagihan pembelian ${isPL ? 'Putri PayLater' : 'Tempo'} Anda telah *MELEWATI BATAS JATUH TEMPO* (${calc.daysLate} hari keterlambatan).\n\n` +
               `📋 *Rincian Tagihan:*\n` +
               `• No. Pesanan: #${o.orderId}\n` +
+              (isPL ? `• Layanan: Putri PayLater VIP\n` : '') +
               `• Tgl. Transaksi: ${dateStr}\n` +
               `• Tgl. Jatuh Tempo: ${dueStr}\n` +
               `• Sisa Pokok: ${fCur(calc.sisa)}\n` +
@@ -1216,31 +1248,38 @@ window.sendSmartTempoWA = (orderId) => {
               `• *TOTAL HARUS DIBAYAR: ${fCur(calc.totalAkhir)}*\n\n` +
               `💳 *Pembayaran dapat ditransfer ke rekening resmi kami:*\n` +
               `${bankText}\n\n` +
-              `Mohon kesediaannya untuk segera melakukan pelunasan dan mengirimkan bukti transfer ke WhatsApp ini. Terima kasih banyak atas kerjasamanya. 🙏`;
+              `Mohon kesediaannya untuk segera melakukan pelunasan dan mengirimkan bukti transfer ke WhatsApp ini.` +
+              (isPL ? ` Limit belanja PayLater Anda akan otomatis pulih kembali setelah tagihan terlunasi.` : '') +
+              ` Terima kasih banyak atas kerjasamanya. 🙏`;
     } else if (calc.isDueSoon) {
         let reminderWord = calc.daysLeft <= 0 ? "hari ini" : `${calc.daysLeft} hari lagi`;
-        msg = `*PENGINGAT JATUH TEMPO - ${storeName.toUpperCase()}*\n\n` +
+        msg = `*PENGINGAT JATUH TEMPO ${isPL ? 'PUTRI PAYLATER' : 'TEMPO'} - ${storeName.toUpperCase()}*\n\n` +
               `Halo Bpk/Ibu *${custName}*,\n` +
-              `Semoga sehat dan sukses selalu. Kami dari *${storeName}* menginfokan bahwa tagihan pembelian Tempo Anda akan jatuh tempo *${reminderWord}* (${dueStr}).\n\n` +
+              `Semoga sehat dan sukses selalu. Kami dari *${storeName}* menginfokan bahwa tagihan pembelian ${isPL ? 'Putri PayLater' : 'Tempo'} Anda akan jatuh tempo *${reminderWord}* (${dueStr}).\n\n` +
               `📋 *Rincian Tagihan:*\n` +
               `• No. Pesanan: #${o.orderId}\n` +
+              (isPL ? `• Layanan: Putri PayLater VIP\n` : '') +
               `• Tgl. Transaksi: ${dateStr}\n` +
               `• Tgl. Jatuh Tempo: ${dueStr}\n` +
               `• *Sisa Tagihan: ${fCur(calc.totalAkhir)}*\n\n` +
               `💳 *Pembayaran dapat ditransfer ke rekening resmi kami:*\n` +
               `${bankText}\n\n` +
-              `Apabila sudah melakukan pembayaran, mohon abaikan pesan ini atau kirimkan bukti transfer ke nomor ini. Terima kasih atas kepercayaannya berbelanja di ${storeName}. 🙏`;
+              `Apabila sudah melakukan pembayaran, mohon abaikan pesan ini atau kirimkan bukti transfer ke nomor ini.` +
+              (isPL ? ` Limit PayLater Anda akan langsung terisi kembali setelah konfirmasi.` : '') +
+              ` Terima kasih atas kepercayaannya berbelanja di ${storeName}. 🙏`;
     } else {
-        msg = `*INFORMASI TAGIHAN TEMPO - ${storeName.toUpperCase()}*\n\n` +
+        msg = `*INFORMASI TAGIHAN ${isPL ? 'PUTRI PAYLATER' : 'TEMPO'} - ${storeName.toUpperCase()}*\n\n` +
               `Halo Bpk/Ibu *${custName}*,\n` +
-              `Berikut informasi rincian tagihan pembelian Tempo Anda di *${storeName}*:\n\n` +
+              `Berikut informasi rincian tagihan pembelian ${isPL ? 'Putri PayLater' : 'Tempo'} Anda di *${storeName}*:\n\n` +
               `📋 *Rincian Tagihan:*\n` +
               `• No. Pesanan: #${o.orderId}\n` +
+              (isPL ? `• Layanan: Putri PayLater VIP\n` : '') +
               `• Tgl. Transaksi: ${dateStr}\n` +
               `• Tgl. Jatuh Tempo: ${dueStr} (tersisa ${calc.daysLeft} hari)\n` +
               `• *Sisa Pokok: ${fCur(calc.totalAkhir)}*\n\n` +
               `💳 *Rekening Pembayaran Resmi:*\n` +
               `${bankText}\n\n` +
+              (isPL ? `✨ Bayar tagihan tepat waktu untuk menjaga skor & limit kredit PayLater Anda tetap prima.\n\n` : '') +
               `Terima kasih telah menjadi pelanggan setia ${storeName}. 🙏`;
     }
 
@@ -1439,6 +1478,11 @@ const renderTempoCardItem = (o) => {
                         <span class="text-[9px] font-bold px-2 py-0.5 rounded-xl uppercase tracking-widest border ${o.customerType === 'Member' ? 'text-amber-600 bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800' : 'text-slate-500 bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700'}">
                             ${o.customerType === 'Member' ? '<i class="fa-solid fa-star text-amber-400 mr-1"></i>Member' : '<i class="fa-solid fa-user mr-1"></i>Umum'}
                         </span>
+                        ${(o.payment?.isPaylater || o.isPaylater || o.payment?.subMethod === 'paylater') ? `
+                            <span class="text-[9px] font-black px-2 py-0.5 rounded-xl uppercase tracking-widest border border-emerald-300 dark:border-emerald-700 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 flex items-center gap-1">
+                                <i class="fa-solid fa-bolt text-emerald-500"></i>PayLater
+                            </span>
+                        ` : ''}
                     </div>
                 </div>
             </div>
@@ -1518,12 +1562,17 @@ const renderTempoCustomersTab = () => {
         const key = phone || name;
 
         if (!customerMap.has(key)) {
+            const cleanPhone = (phone || '').replace(/\D/g, '');
+            const mCust = (appData.customers || []).find(c => c && (String(c.id) === cleanPhone || String(c.phone).replace(/\D/g, '') === cleanPhone));
             customerMap.set(key, {
                 key,
                 name,
                 phone,
                 wa: o.customer?.wa || phone,
                 customerType: o.customerType || (o.customer?.isMember ? 'Member' : 'Umum'),
+                paylaterActive: mCust ? (mCust.paylaterActive === true || mCust.paylaterActive === 'true') : false,
+                paylaterLimit: mCust ? (parseFloat(mCust.paylaterLimit) || 0) : 0,
+                paylaterUsed: mCust ? (parseFloat(mCust.paylaterUsed) || 0) : 0,
                 orders: [],
                 totalAwal: 0,
                 totalPaid: 0,
@@ -1618,6 +1667,11 @@ const renderTempoCustomersTab = () => {
                                         <span class="text-[9px] font-bold px-2 py-0.2 rounded-lg uppercase tracking-wider border ${c.customerType === 'Member' ? 'text-amber-600 bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800' : 'text-slate-500 bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700'}">
                                             ${c.customerType}
                                         </span>
+                                        ${c.paylaterActive ? `
+                                            <span class="text-[9px] font-black px-2 py-0.2 rounded-lg uppercase tracking-wider bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700 flex items-center gap-1">
+                                                <i class="fa-solid fa-bolt text-emerald-500"></i>PayLater Aktif
+                                            </span>
+                                        ` : ''}
                                     </div>
                                 </div>
                             </div>

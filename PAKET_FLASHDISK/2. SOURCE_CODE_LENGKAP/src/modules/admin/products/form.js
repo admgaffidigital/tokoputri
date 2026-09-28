@@ -208,6 +208,10 @@ window.submitAdminForm = async () => {
         d.phone = normPhone;
         d.points = parseFloat(d.points) || 0;
         d.id = parseInt(normPhone, 10);
+        d.paylaterActive = (d.paylaterActive === 'true' || d.paylaterActive === true);
+        d.paylaterLimit = Math.max(0, parseFloat(d.paylaterLimit) || 0);
+        d.paylaterDueDay = Math.min(28, Math.max(1, parseInt(d.paylaterDueDay, 10) || 5));
+        d.paylaterUsed = Math.max(0, parseFloat(d.paylaterUsed) || 0);
     }
 
     let oldCustomerId = null;

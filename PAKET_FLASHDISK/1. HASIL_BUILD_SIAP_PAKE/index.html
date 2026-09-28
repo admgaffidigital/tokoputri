@@ -137,11 +137,11 @@
         }
       }
     </style>
-    <script type="module" crossorigin src="/assets/index-BZ3dxLPu.js"></script>
+    <script type="module" crossorigin src="/assets/index-CaaoXpC6.js"></script>
     <link rel="modulepreload" crossorigin href="/assets/vendor-firebase-core-D2OF5R23.js">
     <link rel="modulepreload" crossorigin href="/assets/vendor-firebase-db-BIUZcnOd.js">
     <link rel="modulepreload" crossorigin href="/assets/vendor-utils-Bszxp-Ae.js">
-    <link rel="stylesheet" crossorigin href="/assets/index-CzhF4AQM.css">
+    <link rel="stylesheet" crossorigin href="/assets/index-DLZcVKzI.css">
   </head>
   <body>
     <!-- UI Components Global -->
@@ -1695,6 +1695,13 @@
                     <span class="radio-label">Tempo VIP</span>
                   </div>
                 </label>
+                <label class="relative block hidden cursor-pointer" id="payment-option-paylater">
+                  <input class="custom-radio peer sr-only" name="payment" onchange="togglePaymentDetails()" type="radio" value="paylater" />
+                  <div class="option-select-card border-emerald-500/30">
+                    <div class="radio-icon-box text-emerald-500"><i class="fa-solid fa-bolt"></i></div>
+                    <span class="radio-label text-emerald-600 dark:text-emerald-400 font-extrabold">PayLater</span>
+                  </div>
+                </label>
               </div>
               <div class="mt-4 border-t border-slate-100 pt-4 dark:border-slate-700" id="detail-transfer">
                 <div class="space-y-3" id="dynamic-banks-container"></div>
@@ -1723,6 +1730,48 @@
                   </div>
                   <div class="mt-2 rounded-xl bg-white/60 p-3 dark:bg-slate-800/60">
                     <p class="text-[9px] font-bold leading-relaxed text-slate-500 dark:text-slate-400"><i class="fa-solid fa-circle-info mr-1 text-blue-400"></i>Maksimal pelunasan adalah 30 hari. Keterlambatan akan dikenakan denda sebesar 1% dari sisa tagihan per hari.</p>
+                  </div>
+                </div>
+              </div>
+              <div class="mt-4 hidden border-t border-slate-100 pt-4 dark:border-slate-700" id="detail-paylater">
+                <div class="flex flex-col rounded-2xl border border-emerald-500/30 bg-emerald-50/50 p-5 dark:border-emerald-500/30 dark:bg-emerald-950/20">
+                  <div class="flex items-center justify-between mb-3">
+                    <p class="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest text-emerald-700 dark:text-emerald-300">
+                      <i class="fa-solid fa-bolt text-amber-500"></i> Putri PayLater — Limit Kredit VIP
+                    </p>
+                    <span class="px-2 py-0.5 rounded-full text-[9px] font-black uppercase bg-emerald-100 text-emerald-700 dark:bg-emerald-900/60 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700">1-Klik Checkout</span>
+                  </div>
+                  
+                  <div class="grid grid-cols-2 gap-2 mb-3">
+                    <div class="bg-white dark:bg-slate-800 p-3 rounded-xl border border-slate-200/80 dark:border-slate-700 shadow-2xs">
+                      <span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">Sisa Limit Anda</span>
+                      <span class="text-sm font-black font-mono text-emerald-600 dark:text-emerald-400" id="paylater-limit-display">Rp 0</span>
+                    </div>
+                    <div class="bg-white dark:bg-slate-800 p-3 rounded-xl border border-slate-200/80 dark:border-slate-700 shadow-2xs">
+                      <span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">Jatuh Tempo</span>
+                      <span class="text-sm font-bold text-slate-800 dark:text-white" id="paylater-due-display">Tgl 5 Bulan Depan</span>
+                    </div>
+                  </div>
+
+                  <div id="paylater-status-box" class="p-3 rounded-xl bg-white/80 dark:bg-slate-800/80 border border-emerald-200 dark:border-emerald-800/60 text-xs"></div>
+
+                  <div class="mt-3 hidden" id="paylater-excess-dp-container">
+                    <div class="flex items-center justify-between gap-3 rounded-xl border border-amber-200 bg-amber-50/80 dark:bg-amber-950/30 p-3 dark:border-amber-800/60">
+                      <div class="text-xs">
+                        <span class="font-bold text-amber-800 dark:text-amber-300 block">Kekurangan Limit (Wajib DP)</span>
+                        <span class="text-[10px] text-amber-600 dark:text-amber-400">Bayar selisih kekurangan via Transfer / QRIS</span>
+                      </div>
+                      <div class="relative flex items-center">
+                        <span class="absolute left-3 text-xs font-bold text-amber-500">Rp</span>
+                        <input type="number" id="paylater-dp-input" oninput="calculatePaylaterBalance()" class="w-32 rounded-xl border border-amber-300 bg-white py-2 pl-8 pr-3 text-right text-sm font-bold text-amber-900 outline-none transition-colors focus:border-amber-500 dark:border-amber-700 dark:bg-slate-900 dark:text-amber-200" placeholder="0" min="0" />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="mt-2.5 rounded-xl bg-white/60 p-2.5 dark:bg-slate-800/60">
+                    <p class="text-[9px] font-bold leading-relaxed text-slate-500 dark:text-slate-400">
+                      <i class="fa-solid fa-circle-check mr-1 text-emerald-500"></i>Limit otomatis berkurang setelah pesanan dibuat dan akan terisi kembali saat Anda membayar tagihan.
+                    </p>
                   </div>
                 </div>
               </div>

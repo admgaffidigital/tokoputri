@@ -337,6 +337,10 @@ export const renderDigitalMemberCard = (mData) => {
                             <span class="text-base sm:text-xl font-black tracking-tight text-white">${pts}</span>
                             <span class="text-[9px] font-bold text-white/80">PTS</span>
                         </div>
+                        ${(currentMember && (currentMember.paylaterActive === true || currentMember.paylaterActive === 'true') && (parseFloat(currentMember.paylaterLimit)||0) > 0) ? `
+                        <div class="mt-1 flex items-center justify-end gap-1 text-[8px] font-black text-emerald-300 uppercase tracking-wider">
+                            <i class="fa-solid fa-bolt text-amber-300 text-[7px]"></i> PayLater: ${fCur(Math.max(0, (parseFloat(currentMember.paylaterLimit)||0) - (parseFloat(currentMember.paylaterUsed)||0)))}
+                        </div>` : ''}
                     </div>
                 </div>
 
@@ -554,7 +558,7 @@ export const checkMemberStatus = () => {
         
         if (!waNum || waNum.length < 10) { 
             hide(banner); 
-            hide('payment-option-tempo'); 
+            hide('payment-option-tempo'); hide('payment-option-paylater'); 
             setCurrentMember(null); 
             setSelectedReward(null); 
             const tempoRadio = document.querySelector('input[name="payment"][value="tempo"]');
@@ -590,7 +594,7 @@ export const checkMemberStatus = () => {
                     <i class="fa-solid fa-wallet"></i> Buka Kartu Member
                 </button>`;
             show(banner); 
-            show('payment-option-tempo');
+            show('payment-option-tempo'); if (mData.paylaterActive === true || mData.paylaterActive === 'true') show('payment-option-paylater'); else hide('payment-option-paylater');
         };
 
         // Cek in-memory cache untuk memotong query berulang ke Firestore
@@ -603,7 +607,7 @@ export const checkMemberStatus = () => {
                 setCurrentMember(null); 
                 setSelectedReward(null); 
                 hide(banner); 
-                hide('payment-option-tempo');
+                hide('payment-option-tempo'); hide('payment-option-paylater');
                 const tempoRadio = document.querySelector('input[name="payment"][value="tempo"]');
                 if (tempoRadio && tempoRadio.checked) {
                     const fallbackRadio = document.querySelector('input[name="payment"][value="transfer"]') || document.querySelector('input[name="payment"][value="cashier"]');
@@ -626,7 +630,7 @@ export const checkMemberStatus = () => {
                 setCurrentMember(null); 
                 setSelectedReward(null); 
                 hide(banner); 
-                hide('payment-option-tempo');
+                hide('payment-option-tempo'); hide('payment-option-paylater');
                 const tempoRadio = document.querySelector('input[name="payment"][value="tempo"]');
                 if (tempoRadio && tempoRadio.checked) {
                     const fallbackRadio = document.querySelector('input[name="payment"][value="transfer"]') || document.querySelector('input[name="payment"][value="cashier"]');
@@ -1043,6 +1047,91 @@ export const rMemberModalBody = () => {
                     </div>
                 </div>
             </div>
+
+            <!-- PUTRI PAYLATER DIGITAL CREDIT LIMIT -->
+            ${(() => {
+                const limit = parseFloat(currentMember.paylaterLimit) || 0;
+                const used = parseFloat(currentMember.paylaterUsed) || 0;
+                const isActive = currentMember.paylaterActive === true || currentMember.paylaterActive === 'true';
+                const available = Math.max(0, limit - used);
+                const percentUsed = limit > 0 ? Math.min(100, Math.round((used / limit) * 100)) : 0;
+                const dueDay = currentMember.paylaterDueDay || 5;
+
+                if (!isActive || limit <= 0) {
+                    return `
+                    <div class="p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-gradient-to-br from-slate-50 to-slate-100/60 dark:from-slate-900/60 dark:to-slate-800/40 relative overflow-hidden">
+                        <div class="flex items-center justify-between gap-2">
+                            <div class="flex items-center gap-2.5">
+                                <div class="w-9 h-9 rounded-xl bg-amber-500/10 text-amber-500 flex items-center justify-center border border-amber-500/20 shrink-0">
+                                    <i class="fa-solid fa-bolt text-sm"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-xs font-black text-slate-800 dark:text-white flex items-center gap-1.5">
+                                        Putri PayLater <span class="px-1.5 py-0.5 rounded text-[8px] font-black uppercase bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300">Belum Aktif</span>
+                                    </h4>
+                                    <p class="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">Belanja sekarang, bayar bulan depan (Limit Kredit Member VIP).</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-2.5 pt-2.5 border-t border-slate-200/60 dark:border-slate-700/60 flex items-center justify-between">
+                            <span class="text-[10px] text-slate-400 font-semibold">Plafon limit hingga Rp 5.000.000</span>
+                            <a href="https://wa.me/${((appData.store?.wa)||'').replace(/\D/g,'')}?text=Halo%20Admin%20Toko%20Putri,%20saya%20ingin%20mengajukan%20aktivasi%20fitur%20Putri%20PayLater%20untuk%20nomor%20${currentMember.phone||''}" target="_blank" class="text-[10px] font-bold text-[var(--color-primary)] hover:underline flex items-center gap-1">Ajukan Aktivasi <i class="fa-solid fa-arrow-right text-[8px]"></i></a>
+                        </div>
+                    </div>`;
+                }
+
+                return `
+                <div class="p-4 sm:p-5 rounded-2xl border border-emerald-500/30 dark:border-emerald-500/20 bg-gradient-to-br from-emerald-500/5 via-transparent to-teal-500/5 dark:from-emerald-950/20 dark:to-slate-900 shadow-sm relative overflow-hidden space-y-3">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <div class="w-8 h-8 rounded-xl bg-emerald-500 text-white flex items-center justify-center shadow-xs">
+                                <i class="fa-solid fa-bolt text-xs"></i>
+                            </div>
+                            <div>
+                                <div class="flex items-center gap-1.5">
+                                    <span class="text-xs font-black text-slate-900 dark:text-white">Putri PayLater</span>
+                                    <span class="px-1.5 py-0.5 rounded-full text-[8px] font-black uppercase tracking-wider bg-emerald-100 text-emerald-700 dark:bg-emerald-900/60 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700">Aktif</span>
+                                </div>
+                                <p class="text-[9px] text-slate-400 font-semibold">Limit Kredit Eksklusif Member Toko</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Sisa Limit Tersedia</p>
+                            <p class="text-sm font-black text-emerald-600 dark:text-emerald-400 font-mono">${fCur(available)}</p>
+                        </div>
+                    </div>
+
+                    <!-- Progress Bar Penggunaan Limit -->
+                    <div class="space-y-1.5 pt-0.5">
+                        <div class="flex justify-between text-[10px] font-bold text-slate-500 dark:text-slate-400">
+                            <span>Terpakai: <b class="font-mono text-slate-800 dark:text-slate-200">${fCur(used)}</b> (${percentUsed}%)</span>
+                            <span>Total Plafon: <b class="font-mono text-slate-800 dark:text-slate-200">${fCur(limit)}</b></span>
+                        </div>
+                        <div class="w-full h-2.5 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden p-0.5">
+                            <div class="h-full rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 transition-all duration-500" style="width: ${percentUsed}%"></div>
+                        </div>
+                    </div>
+
+                    <div class="pt-2 border-t border-slate-200/60 dark:border-slate-700/60 flex items-center justify-between text-[10px]">
+                        <span class="text-slate-500 dark:text-slate-400 flex items-center gap-1">
+                            <i class="fa-regular fa-calendar-check text-emerald-500"></i> Jatuh Tempo: <b>Tgl ${dueDay} Bulan Depan</b>
+                        </span>
+                        <span class="text-emerald-600 dark:text-emerald-400 font-bold">1-Klik Checkout Siap Pakai</span>
+                    </div>
+
+                    ${used > 0 ? `
+                        <div class="pt-2 border-t border-dashed border-slate-200 dark:border-slate-700 flex items-center justify-between gap-2">
+                            <div class="min-w-0">
+                                <p class="text-[9px] text-slate-400 uppercase font-bold tracking-wider">Tagihan Berjalan</p>
+                                <p class="text-xs font-black text-rose-600 dark:text-rose-400 font-mono">${fCur(used)}</p>
+                            </div>
+                            <a href="https://wa.me/${((appData.store?.wa)||'').replace(/\D/g,'')}?text=Halo%20Admin%20Toko%20Putri,%20saya%20ingin%20melakukan%20pembayaran%20tagihan%20Putri%20PayLater%20sebesar%20${encodeURIComponent(fCur(used))}%20untuk%20nomor%20${currentMember.phone||''}" target="_blank" class="px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-wider bg-emerald-600 hover:bg-emerald-700 text-white flex items-center gap-1.5 shadow-2xs transition-all active:scale-95 shrink-0">
+                                <i class="fa-brands fa-whatsapp text-xs"></i> Bayar Tagihan
+                            </a>
+                        </div>
+                    ` : ''}
+                </div>`;
+            })()}
 
             <!-- KATALOG REWARD / PENUKARAN HADIAH -->
             <div>

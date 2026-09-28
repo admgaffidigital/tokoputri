@@ -48,7 +48,11 @@ export const aF = {
     customers: [
         {key:'name', label:'Nama Lengkap', type:'text'},
         {key:'phone', label:'No. WhatsApp Aktif (Cth: 081234567890)', type:'text'},
-        {key:'points', label:'Poin Member (Penyesuaian Manual)', type:'number'}
+        {key:'points', label:'Poin Member (Penyesuaian Manual)', type:'number'},
+        {key:'paylaterActive', label:'Status Putri PayLater', type:'select', options:[{val:'false',text:'Nonaktif (Belum Disetujui)'},{val:'true',text:'Aktif (Diberikan Limit)'}]},
+        {key:'paylaterLimit', label:'Plafon Limit PayLater (Rp)', type:'number'},
+        {key:'paylaterDueDay', label:'Tanggal Jatuh Tempo Bulanan (1-28, default 5)', type:'number'},
+        {key:'paylaterUsed', label:'Limit Terpakai Saat Ini (Rp)', type:'number'}
     ],
     rewards: [
         {key:'name', label:'Nama Hadiah', type:'text'},

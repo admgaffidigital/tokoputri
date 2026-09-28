@@ -311,10 +311,91 @@ window.togglePaymentDetails = () => {
     toggleCls('detail-transfer', 'hidden', m !== 'transfer'); toggleCls('detail-qris', 'hidden', m !== 'qris');
     toggleCls('detail-cashier', 'hidden', m !== 'cashier'); toggleCls('detail-cod', 'hidden', m !== 'cod');
     toggleCls('detail-tempo', 'hidden', m !== 'tempo');
+    toggleCls('detail-paylater', 'hidden', m !== 'paylater');
     if (m === 'tempo') window.calculateTempoBalance();
+    if (m === 'paylater') window.calculatePaylaterBalance?.();
 
-    // Sembunyikan bagian upload bukti pembayaran jika COD atau Kasir
-    const needsBukti = (m === 'transfer' || m === 'qris' || m === 'tempo');
+    // Sembunyikan bagian upload bukti pembayaran jika COD, Kasir, atau PayLater (tanpa kekurangan DP)
+    const excessDp = parseFloat(document.getElementById('paylater-dp-input')?.value) || 0;
+    const needsBukti = (m === 'transfer' || m === 'qris' || m === 'tempo' || (m === 'paylater' && excessDp > 0));
+    toggleCls('bukti-payment-section', 'hidden', !needsBukti);
+};
+
+window.calculatePaylaterBalance = () => {
+    const limit = currentMember ? (parseFloat(currentMember.paylaterLimit) || 0) : 0;
+    const used = currentMember ? (parseFloat(currentMember.paylaterUsed) || 0) : 0;
+    const available = Math.max(0, limit - used);
+    const dueDay = currentMember?.paylaterDueDay || 5;
+
+    const limitDisp = document.getElementById('paylater-limit-display');
+    const dueDisp = document.getElementById('paylater-due-display');
+    const statusBox = document.getElementById('paylater-status-box');
+    const excessBox = document.getElementById('paylater-excess-dp-container');
+    const dpInput = document.getElementById('paylater-dp-input');
+
+    if (limitDisp) limitDisp.textContent = fCur(available);
+    if (dueDisp) dueDisp.textContent = 'Tgl ' + dueDay + ' Bulan Depan';
+
+    let sub = cart.reduce((s,i) => s + (parseFloat(getEffP(i))||0) * (parseFloat(i.qty)||0), 0);
+    let sC = 0, productDisc = 0, shippingDisc = 0;
+    if (cust.deliveryMethod === 'delivery') {
+        sC = Math.ceil((parseFloat(cust.distance)||0) * (parseFloat(appData.store.costPerKm)||0) / 500) * 500;
+    }
+    if (typeof vouch !== 'undefined' && vouch) {
+        let eligibleSubtotal = sub;
+        if(vouch.targetProduct && vouch.targetProduct !== '') {
+            const targetId = parseInt(vouch.targetProduct);
+            const eligibleItems = cart.filter(i => i.id === targetId);
+            eligibleSubtotal = eligibleItems.reduce((s,i) => s + (parseFloat(getEffP(i))||0) * (parseFloat(i.qty)||0), 0);
+        }
+        if(vouch.type === 'shipping_free') shippingDisc = sC;
+        else if(vouch.type === 'shipping_flat') shippingDisc = parseFloat(vouch.value)||0;
+        else if(vouch.type === 'percent') {
+            let calcDisc = eligibleSubtotal * ((parseFloat(vouch.value)||0) / 100);
+            if(vouch.maxDiscount && parseFloat(vouch.maxDiscount) > 0) calcDisc = Math.min(calcDisc, parseFloat(vouch.maxDiscount));
+            productDisc = calcDisc;
+        } else {
+            productDisc = parseFloat(vouch.value)||0;
+            productDisc = Math.min(productDisc, eligibleSubtotal);
+        }
+    }
+    const isFsPromo = (appData.store?.freeShippingMinSpendEnabled === true || appData.store?.freeShippingMinSpendEnabled === 'true')
+        && (parseFloat(appData.store?.freeShippingMinSpendAmount) || 0) > 0
+        && sub >= (parseFloat(appData.store?.freeShippingMinSpendAmount) || 0)
+        && cust.deliveryMethod === 'delivery';
+    if (isFsPromo) shippingDisc = sC;
+    shippingDisc = Math.min(shippingDisc, sC);
+    productDisc = Math.min(productDisc, sub);
+
+    let subAfterDisc = Math.max(0, sub - productDisc);
+    let shippingAfterDisc = Math.max(0, sC - shippingDisc);
+    const taxInfo = typeof window.calcTaxDetails === 'function' ? window.calcTaxDetails(subAfterDisc + shippingAfterDisc) : { grandTotalAdd: 0 };
+    let pointsDisc = 0;
+    if (window.useMemberPoints && currentMember) {
+        pointsDisc = Math.min(subAfterDisc + shippingAfterDisc + taxInfo.grandTotalAdd, parseFloat(currentMember.points) || 0);
+    }
+    let grandTotal = Math.max(0, subAfterDisc + shippingAfterDisc + (taxInfo.grandTotalAdd || 0) - pointsDisc);
+
+    if (grandTotal <= available) {
+        if (statusBox) {
+            statusBox.innerHTML = '<div class="flex items-center gap-2 text-emerald-700 dark:text-emerald-300 font-extrabold mb-1"><i class="fa-solid fa-circle-check text-emerald-500 text-sm"></i><span>Limit PayLater Anda Sangat Cukup!</span></div><p class="text-[11px] text-slate-600 dark:text-slate-300">Total belanja <b>' + fCur(grandTotal) + '</b> otomatis dipotong dari limit PayLater Anda. Anda <b>tidak perlu bayar sekarang</b> dan tanpa uang muka (DP Rp 0). Tagihan dibayar tanggal ' + dueDay + ' bulan depan.</p>';
+        }
+        if (excessBox) excessBox.classList.add('hidden');
+        if (dpInput) dpInput.value = 0;
+    } else {
+        const deficit = grandTotal - available;
+        let dp = parseFloat(dpInput?.value) || 0;
+        if (dp < deficit) {
+            dp = deficit;
+            if (dpInput) dpInput.value = dp;
+        }
+        if (statusBox) {
+            statusBox.innerHTML = '<div class="flex items-center gap-2 text-amber-700 dark:text-amber-300 font-extrabold mb-1"><i class="fa-solid fa-triangle-exclamation text-amber-500 text-sm"></i><span>Total Belanja Melebihi Sisa Limit PayLater</span></div><p class="text-[11px] text-slate-600 dark:text-slate-300">Sisa limit Anda <b>' + fCur(available) + '</b> akan digunakan maksimal. Selisih kekurangan sebesar <b>' + fCur(deficit) + '</b> wajib dibayar sebagai DP via Transfer/QRIS.</p>';
+        }
+        if (excessBox) excessBox.classList.remove('hidden');
+    }
+
+    const needsBukti = (parseFloat(dpInput?.value) || 0) > 0;
     toggleCls('bukti-payment-section', 'hidden', !needsBukti);
 };
 

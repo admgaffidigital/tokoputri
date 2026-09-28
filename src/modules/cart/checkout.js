@@ -555,7 +555,8 @@ export const processOrder = async () => {
         
         const m = (document.querySelector('input[name="payment"]:checked') || {}).value;
         
-        const needsBukti = (m === 'transfer' || m === 'qris' || m === 'tempo');
+        const paylaterDpVal = parseFloat(document.getElementById('paylater-dp-input')?.value) || 0;
+        const needsBukti = (m === 'transfer' || m === 'qris' || m === 'tempo' || (m === 'paylater' && paylaterDpVal > 0));
         const buktiReady = window.buktiGDriveUploaded && window.buktiPaymentUrl && !window.buktiPaymentUrl.startsWith('data:');
         if (needsBukti && !buktiReady) {
             setIsSaving(false); 
@@ -639,6 +640,59 @@ export const processOrder = async () => {
             oD.payment.tempoBalance = Math.max(0, tot - dp);
             oD.payment.tempoDueDate = Date.now() + (30 * 24 * 60 * 60 * 1000);
             oD.payment.paymentStatus = (tot - dp <= 0) ? 'lunas' : 'hutang';
+        }
+
+        if (m === 'paylater') {
+            if (!cust.wa || !currentMember || !(currentMember.paylaterActive === true || currentMember.paylaterActive === 'true')) {
+                setIsSaving(false); 
+                hLoad();
+                if (typeof window.showToast === 'function') window.showToast('Fitur Putri PayLater belum aktif untuk nomor Anda!');
+                return;
+            }
+            const limit = parseFloat(currentMember.paylaterLimit) || 0;
+            const used = parseFloat(currentMember.paylaterUsed) || 0;
+            const available = Math.max(0, limit - used);
+
+            const dpInput = document.getElementById('paylater-dp-input');
+            let dp = dpInput ? parseFloat(dpInput.value) || 0 : 0;
+            
+            if (tot > available && dp < (tot - available)) {
+                setIsSaving(false);
+                hLoad();
+                if (typeof window.showToast === 'function') window.showToast('Limit PayLater tidak cukup! Wajib bayar DP minimal ' + fCur(tot - available));
+                return;
+            }
+
+            const chargedToPaylater = Math.min(available, Math.max(0, tot - dp));
+            // Gunakan method: tempo dengan flag isPaylater: true agar kompatibel 100% dengan query Firestore & modul piutang
+            oD.payment.method = 'tempo';
+            oD.payment.subMethod = 'paylater';
+            oD.payment.isPaylater = true;
+            oD.payment.paylaterUsed = chargedToPaylater;
+            oD.payment.dp = dp;
+            oD.payment.tempoDp = dp;
+            oD.payment.tempoBalance = chargedToPaylater;
+
+            // Jatuh tempo tgl 5 bulan depan
+            const dueDay = currentMember.paylaterDueDay || 5;
+            const d = new Date();
+            const nextMonth = new Date(d.getFullYear(), d.getMonth() + 1, dueDay, 23, 59, 59);
+            oD.payment.tempoDueDate = nextMonth.getTime();
+            oD.payment.paymentStatus = (chargedToPaylater <= 0) ? 'lunas' : 'hutang';
+            oD.isTempo = true;
+
+            // Catat pemakaian limit ke database member
+            if (chargedToPaylater > 0) {
+                try {
+                    const custRef = db.collection("freshmart").doc("cms_data").collection("customers").doc(cust.wa);
+                    await custRef.set({
+                        paylaterUsed: firebase.firestore.FieldValue.increment(chargedToPaylater)
+                    }, { merge: true });
+                    currentMember.paylaterUsed = (parseFloat(currentMember.paylaterUsed) || 0) + chargedToPaylater;
+                } catch(e) {
+                    console.warn('[PayLater] Gagal update pemakaian limit:', e);
+                }
+            }
         }
 
         const orderRef = db.collection("freshmart_orders").doc(oI);
@@ -887,7 +941,11 @@ export const processOrder = async () => {
                 id: cust.wa,
                 phone: cust.wa,
                 name: cust.name || 'Pelanggan Setia',
-                points: finalMemberPoints
+                points: finalMemberPoints,
+                paylaterActive: currentMember ? (currentMember.paylaterActive === true || currentMember.paylaterActive === 'true') : false,
+                paylaterLimit: currentMember ? (parseFloat(currentMember.paylaterLimit) || 0) : 0,
+                paylaterUsed: currentMember ? (parseFloat(currentMember.paylaterUsed) || 0) : 0,
+                paylaterDueDay: currentMember ? (currentMember.paylaterDueDay || 5) : 5
             };
             setCurrentMember(activeMemberObj);
             try {

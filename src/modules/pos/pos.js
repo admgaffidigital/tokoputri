@@ -45,7 +45,7 @@ try {
     const savedMode = localStorage.getItem('pos_view_mode');
     if (savedMode === 'list' || savedMode === 'grid') posCatalogViewMode = savedMode;
 } catch (e) {}
-let posCustomer     = { name: '', phone: '', isMember: false, memberId: null, isNewTempo: false };
+let posCustomer     = { name: '', phone: '', isMember: false, memberId: null, isNewTempo: false, paylaterActive: false, paylaterLimit: 0, paylaterUsed: 0 };
 let posPointsRedeemed = 0;
 let posClaimedReward  = null;
 let posPayMethod    = 'cash';
@@ -1860,16 +1860,63 @@ const renderPayDetail = (method) => {
             `}
           </div>`;
     } else if (method === 'tempo') {
+        const hasPL = !!(posCustomer.isMember && posCustomer.paylaterActive && (posCustomer.paylaterLimit > 0));
+        const sisaLimit = hasPL ? Math.max(0, (posCustomer.paylaterLimit || 0) - (posCustomer.paylaterUsed || 0)) : 0;
+        const minDp = (hasPL && total > sisaLimit) ? (total - sisaLimit) : 0;
+
         d.innerHTML = `
           ${topRow}
-          <div class="p-3 bg-amber-50 dark:bg-amber-900/20 rounded-2xl border border-amber-200 dark:border-amber-700/80 mb-2.5">
-            <p class="text-xs font-bold text-amber-800 dark:text-amber-300 flex items-center gap-1.5"><i class="fa-solid fa-hourglass-half"></i> Pembayaran Tempo / Piutang</p>
-            <p class="text-[10px] text-amber-700 dark:text-amber-400 mt-1">Transaksi otomatis dicatat sebagai piutang di database toko.</p>
-          </div>
-          <label class="text-[10px] font-black uppercase tracking-wider text-slate-400 block mb-1">Uang Muka / DP (Rp) — opsional</label>
-          <input id="pos-dp-input" type="number" min="0" placeholder="0" value="0" class="w-full border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-black text-right bg-white dark:bg-slate-800 focus:outline-none focus:border-[var(--color-primary)]">`;
+          ${hasPL ? `
+            <div class="p-3.5 bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-950/40 dark:to-teal-950/40 rounded-2xl border border-emerald-200/80 dark:border-emerald-800/60 mb-2.5 space-y-2">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-black text-emerald-800 dark:text-emerald-300 flex items-center gap-1.5">
+                  <i class="fa-solid fa-bolt text-emerald-500"></i> Putri PayLater Member
+                </span>
+                <span class="text-[10px] font-black px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-900/60 dark:text-emerald-200">
+                  Plafon: ${fRp(posCustomer.paylaterLimit)}
+                </span>
+              </div>
+              <div class="flex justify-between items-center text-xs">
+                <span class="text-slate-500 dark:text-slate-400 text-[11px]">Sisa Plafon Tersedia:</span>
+                <span class="font-black text-emerald-600 dark:text-emerald-400 font-mono text-sm">${fRp(sisaLimit)}</span>
+              </div>
+              <label class="flex items-center gap-2 pt-1 cursor-pointer select-none border-t border-emerald-200/60 dark:border-emerald-800/40">
+                <input type="checkbox" id="pos-use-paylater" ${sisaLimit > 0 ? 'checked' : 'disabled'} onchange="window.posTogglePaylater(this.checked)" class="w-4 h-4 rounded text-emerald-600 focus:ring-emerald-500 cursor-pointer">
+                <span class="text-xs font-bold text-slate-700 dark:text-slate-200">Gunakan Plafon Putri PayLater</span>
+              </label>
+              ${minDp > 0 ? `
+                <div class="p-2 bg-amber-50 dark:bg-amber-950/40 rounded-xl border border-amber-200 dark:border-amber-800 text-[10px] text-amber-800 dark:text-amber-300 font-bold flex items-center gap-1.5">
+                  <i class="fa-solid fa-circle-exclamation text-amber-500 shrink-0"></i>
+                  <span>Total belanja melebihi sisa limit. Wajib DP minimal ${fRp(minDp)}</span>
+                </div>
+              ` : ''}
+            </div>
+          ` : `
+            <div class="p-3 bg-amber-50 dark:bg-amber-900/20 rounded-2xl border border-amber-200 dark:border-amber-700/80 mb-2.5">
+              <p class="text-xs font-bold text-amber-800 dark:text-amber-300 flex items-center gap-1.5"><i class="fa-solid fa-hourglass-half"></i> Pembayaran Tempo / Piutang</p>
+              <p class="text-[10px] text-amber-700 dark:text-amber-400 mt-1">Transaksi otomatis dicatat sebagai piutang di database toko.</p>
+            </div>
+          `}
+          <label class="text-[10px] font-black uppercase tracking-wider text-slate-400 block mb-1">${hasPL && minDp > 0 ? 'Uang Muka / DP Wajib (Rp)' : 'Uang Muka / DP (Rp) — opsional'}</label>
+          <input id="pos-dp-input" type="number" min="0" placeholder="0" value="${minDp > 0 ? minDp : 0}" class="w-full border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-black text-right bg-white dark:bg-slate-800 focus:outline-none focus:border-[var(--color-primary)]">`;
     }
 };
+
+export const posTogglePaylater = (usePl) => {
+    const total = posTotal();
+    const dpInput = el('pos-dp-input');
+    const dpLabel = el('pos-dp-input')?.previousElementSibling;
+    const hasPL = !!(posCustomer.isMember && posCustomer.paylaterActive && (posCustomer.paylaterLimit > 0));
+    const sisaLimit = hasPL ? Math.max(0, (posCustomer.paylaterLimit || 0) - (posCustomer.paylaterUsed || 0)) : 0;
+    const minDp = (usePl && hasPL && total > sisaLimit) ? (total - sisaLimit) : 0;
+    if (dpInput) {
+        dpInput.value = minDp > 0 ? minDp : 0;
+    }
+    if (dpLabel && dpLabel.tagName === 'LABEL') {
+        dpLabel.textContent = (usePl && hasPL && minDp > 0) ? 'Uang Muka / DP Wajib (Rp)' : 'Uang Muka / DP (Rp) — opsional';
+    }
+};
+window.posTogglePaylater = posTogglePaylater;
 
 export const setPosCustomerType = (type) => {
     posCustomer.isMember   = type === 'member';
@@ -2123,6 +2170,11 @@ export const renderPosMemberResult = () => {
             <div class="flex items-center gap-1.5 flex-wrap">
               <span class="text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-900/60 text-emerald-800 dark:text-emerald-200 border border-emerald-300 dark:border-emerald-700">${esc(tier.badge || 'VIP')}</span>
               <span class="text-[10px] font-black text-amber-600 dark:text-amber-400 flex items-center gap-0.5"><i class="fa-solid fa-star text-[9px]"></i>${pts} Poin</span>
+              ${(posCustomer.paylaterActive && (posCustomer.paylaterLimit > 0)) ? `
+                <span class="text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-900/60 text-emerald-800 dark:text-emerald-200 border border-emerald-300 dark:border-emerald-700 flex items-center gap-1">
+                  <i class="fa-solid fa-bolt text-emerald-500"></i> PayLater: ${fRp(Math.max(0, (posCustomer.paylaterLimit || 0) - (posCustomer.paylaterUsed || 0)))}
+                </span>
+              ` : ''}
             </div>
             <p class="text-xs font-black text-slate-800 dark:text-white truncate mt-0.5">${esc(posCustomer.name || 'Pelanggan Setia')}</p>
             <p class="text-[10px] text-slate-500 dark:text-slate-400 font-mono">${esc(posCustomer.phone || '')}</p>
@@ -2268,6 +2320,9 @@ export const applyMemberToPos = (member) => {
     posCustomer.points   = parseFloat(member.points) || 0;
     posPointsRedeemed    = 0;
     posClaimedReward     = null;
+    posCustomer.paylaterActive = !!member.paylaterActive;
+    posCustomer.paylaterLimit  = parseFloat(member.paylaterLimit) || 0;
+    posCustomer.paylaterUsed   = parseFloat(member.paylaterUsed) || 0;
 
     const inp = el('pos-cust-phone');
     if (inp) inp.value = member.phone || member.name || '';
@@ -2293,6 +2348,9 @@ export const resetPosMember = () => {
     posCustomer.points   = 0;
     posPointsRedeemed    = 0;
     posClaimedReward     = null;
+    posCustomer.paylaterActive = false;
+    posCustomer.paylaterLimit  = 0;
+    posCustomer.paylaterUsed   = 0;
     const inp = el('pos-cust-phone');
     if (inp) { inp.value = ''; inp.focus(); }
     const r = el('pos-member-result');
@@ -2428,6 +2486,16 @@ export const processPOSTx = async () => {
     posCustomer.phone = custPhone;
     const dp          = posPayMethod === 'tempo' ? fNum(el('pos-dp-input')?.value || 0) : 0;
     const bankName    = posPayMethod === 'transfer' ? (el('pos-bank-sel')?.value || '') : '';
+    const isPaylater  = posPayMethod === 'tempo' && !!(posCustomer.isMember && posCustomer.paylaterActive && el('pos-use-paylater')?.checked);
+    const sisaLimit   = isPaylater ? Math.max(0, (posCustomer.paylaterLimit || 0) - (posCustomer.paylaterUsed || 0)) : 0;
+    if (isPaylater) {
+        const minRequiredDp = posTotal() > sisaLimit ? (posTotal() - sisaLimit) : 0;
+        if (dp < minRequiredDp) {
+            showToast(`DP tidak mencukupi limit PayLater! Minimal DP: ${fRp(minRequiredDp)}`, 'warning');
+            return;
+        }
+    }
+    const chargedToPaylater = isPaylater ? Math.min(posTotal() - dp, sisaLimit) : 0;
     const btn         = el('pos-process-btn');
     if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Memproses...'; }
 
@@ -2524,6 +2592,9 @@ export const processPOSTx = async () => {
                 change: posPayMethod === 'cash' ? posChange() : 0,
                 bank: bankName,
                 paymentStatus: posPayMethod === 'tempo' ? ((posTotal() - dp <= 0) ? 'lunas' : 'hutang') : 'lunas',
+                subMethod: isPaylater ? 'paylater' : (posPayMethod === 'tempo' ? 'tempo' : ''),
+                isPaylater: isPaylater,
+                paylaterUsed: chargedToPaylater,
                 dp: dp,
                 tempoDp: dp,
                 tempoBalance: posPayMethod === 'tempo' ? Math.max(0, posTotal() - dp) : 0,
@@ -2599,6 +2670,25 @@ export const processPOSTx = async () => {
 
         // ── 4. Simpan ke Database Utama Toko (freshmart_orders) ──────
         // Transaksi kasir langsung masuk ke daftar Pesanan Admin & Laporan Penjualan Toko
+        // Potong limit Putri PayLater jika digunakan
+        if (isPaylater && posCustomer.phone) {
+            try {
+                const cleanCustPhone = posCustomer.phone.replace(/\D/g, '');
+                const targetCustId = String(posCustomer.memberId || cleanCustPhone);
+                const custDocRef = db.collection("freshmart").doc("cms_data").collection("customers").doc(targetCustId);
+                await custDocRef.set({
+                    paylaterUsed: firebase.firestore.FieldValue.increment(chargedToPaylater)
+                }, { merge: true });
+
+                if (appData.customers) {
+                    const mCust = appData.customers.find(c => c && (String(c.id) === targetCustId || String(c.phone).replace(/\D/g, '') === cleanCustPhone));
+                    if (mCust) mCust.paylaterUsed = (parseFloat(mCust.paylaterUsed) || 0) + chargedToPaylater;
+                }
+                posCustomer.paylaterUsed = (parseFloat(posCustomer.paylaterUsed) || 0) + chargedToPaylater;
+            } catch(ePl) {
+                console.warn('[POS] Gagal potong limit PayLater:', ePl);
+            }
+        }
         await db.collection('freshmart_orders').doc(txId).set(orderData);
 
         // Rekam transaksi ke shift kasir aktif
@@ -2815,8 +2905,15 @@ export const previewPOSReceiptThenPrint = (tx) => {
                 ${tx.payment?.ppnAmount && tx.payment.ppnAmount > 0 ? `<div class="flex justify-between"><span>${tx.payment.ppnType === 'inclusive' ? 'Inc. PPN' : 'PPN'} (${tx.payment.ppnRate || 11}%)</span><span>${fRp(tx.payment.ppnAmount)}</span></div>` : ''}
                 <div class="flex justify-between font-black text-sm pt-1 border-t border-slate-200 dark:border-slate-700"><span>TOTAL</span><span style="color:var(--color-primary)">${fRp(tx.total)}</span></div>
                 ${tx.payment.method === 'cash' ? `<div class="flex justify-between"><span>Bayar Tunai</span><span>${fRp(tx.payment.paid)}</span></div><div class="flex justify-between font-bold text-emerald-600"><span>Kembalian</span><span>${fRp(tx.payment.change)}</span></div>` : ''}
-                ${tx.payment.method === 'tempo' ? `<div class="flex justify-between"><span>Uang Muka (DP)</span><span>${fRp(tx.payment.tempoDp || tx.payment.dp || 0)}</span></div><div class="flex justify-between font-bold text-amber-600"><span>Sisa Piutang</span><span>${fRp(tx.payment.tempoBalance || 0)}</span></div>` : ''}
-                <div class="flex justify-between"><span>Metode Bayar</span><span>${esc(tx.payment.method.toUpperCase())}</span></div>
+                ${tx.payment.method === 'tempo' ? `
+                    ${(tx.payment.isPaylater || tx.isPaylater) ? `<div class="flex justify-between font-bold text-emerald-600"><span>Plafon PayLater Digunakan</span><span>${fRp(tx.payment.paylaterUsed || (tx.total - (tx.payment.tempoDp || tx.payment.dp || 0)))}</span></div>` : ''}
+                    <div class="flex justify-between"><span>Uang Muka (DP)</span><span>${fRp(tx.payment.tempoDp || tx.payment.dp || 0)}</span></div>
+                    <div class="flex justify-between font-bold ${(tx.payment.isPaylater || tx.isPaylater) ? 'text-emerald-700 dark:text-emerald-400' : 'text-amber-600'}">
+                        <span>${(tx.payment.isPaylater || tx.isPaylater) ? 'Tagihan PayLater' : 'Sisa Piutang'}</span>
+                        <span>${fRp(tx.payment.tempoBalance || 0)}</span>
+                    </div>
+                ` : ''}
+                <div class="flex justify-between"><span>Metode Bayar</span><span>${(tx.payment.isPaylater || tx.isPaylater) ? 'PUTRI PAYLATER' : esc(tx.payment.method.toUpperCase())}</span></div>
                 ${(tx.pointsEarned > 0 || (tx.pointsRedeemed || 0) > 0) ? `
                 <div class="border-t border-dashed border-slate-300 dark:border-slate-700 my-2"></div>
                 ${tx.pointsEarned > 0 ? `<div class="flex justify-between text-amber-600 dark:text-amber-400 font-bold"><span>Poin Didapat:</span><span>+${tx.pointsEarned} Poin</span></div>` : ''}

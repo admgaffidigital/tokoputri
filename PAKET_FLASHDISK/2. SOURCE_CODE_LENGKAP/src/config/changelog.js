@@ -8,6 +8,24 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-9-82',
+        version: 'v1.9.82',
+        date: '2026-09-28',
+        title: 'Ekosistem Komprehensif Putri PayLater: Limit Kredit Digital Member VIP, 1-Klik Checkout Storefront, Integrasi Kasir POS, Auto-Rollback Pesanan Batal, Pemulihan Limit Cicilan Piutang, Struk Thermal & Dokumen Resmi',
+        category: 'feature',
+        badge: 'Putri PayLater VIP Ecosystem v1.9.82',
+        items: [
+            'Fitur Putri PayLater di Storefront & Checkout (payment.js, checkout.js, index.html): Metode pembayaran baru "PayLater" eksklusif bagi member VIP yang disetujui (paylaterActive = true). Dukungan 1-Klik checkout tanpa DP bila limit mencukupi, serta kalkulasi otomatis pembayaran uang muka (DP) kekurangan limit jika total belanja melebihi sisa plafon.',
+            'Widget & Manajemen Limit Kartu Member Digital (reward.js): Tampilan plafon kredit, limit terpakai, sisa limit tersedia, progress bar interaktif persentase penggunaan, info tanggal jatuh tempo bulanan (tgl 5), pengajuan aktivasi via WA, dan tombol cepat bayar/konfirmasi tagihan berjalan ke admin via WhatsApp.',
+            'Integrasi Penuh Kasir POS Toko (pos.js): Kasir POS otomatis mengenali status PayLater member saat pencarian nomor/nama, menampilkan chip sisa limit aktif, toggle pembebanan ke limit kredit, kalkulasi proteksi minimum DP jika transaksi melebihi limit, serta preview struk kasir HTML dengan rincian plafon PayLater.',
+            'Manajemen Data Pelanggan & PayLater di CMS Admin (schema.js, form.js, table.js): Kolom master data pelanggan baru (paylaterActive, paylaterLimit, paylaterDueDay, paylaterUsed) di formulir pelanggan, validasi numerik, serta chip status limit PayLater (PayLater: Sisa / Plafon) pada tabel pelanggan CMS.',
+            'Transparansi Pesanan & Auto-Rollback Limit (orders.js): Lencana PayLater bertema emerald dengan ikon petir pada kartu pesanan admin, kartu rincian transaksi PayLater di modal detail pesanan, dan otomatis memulihkan (rollback) limit kredit terpakai ke profil member saat pesanan dibatalkan atau dihapus permanen.',
+            'Pemulihan Otomatis Limit pada Pembayaran Cicilan Piutang (tempo.js): Pencatatan cicilan tempo untuk pesanan PayLater otomatis memulihkan (mengurangi paylaterUsed) member secara real-time di Firestore dan memori, menampilkan badge PayLater pada nota dan buku besar debitur, serta template pesan penagihan WhatsApp cerdas bernuansa PayLater.',
+            'Cetak Struk Thermal RawBT & Dokumen Resmi A4 (rawbt.js, documents.js): Identifikasi "PUTRI PAYLATER" pada struk thermal ESC/POS kasir dan nota penagihan tempo (58mm/80mm), cetak limit terpakai, serta tampilan faktur resmi A4 penagihan berlabel "NOTA PUTRI PAYLATER".',
+            'Sinkronisasi Multi-Channel v1.9.82 (Android VersionCode 10982): Terkompilasi dan tersinkronisasi penuh ke Vite build, paket flashdisk, dan Capacitor Android.'
+        ]
+    },
+    {
         id: 'log-1-9-81',
         version: 'v1.9.81',
         date: '2026-09-28',

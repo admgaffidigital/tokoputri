@@ -509,17 +509,24 @@ export const buildPOSReceiptPayload = (tx, config = null) => {
     builder.doubleSeparator();
 
     // 6. Rincian Pelunasan
-    const pMethod = (tx.payment?.method || 'CASH').toUpperCase();
+    const isPaylater = tx.payment?.isPaylater || tx.isPaylater || tx.payment?.subMethod === 'paylater';
+    const pMethod = isPaylater ? 'PUTRI PAYLATER' : (tx.payment?.method || 'CASH').toUpperCase();
     builder.twoColumn('Metode Bayar', pMethod);
 
     if (tx.payment?.method === 'cash') {
         builder.twoColumn('Bayar Tunai', fRp(tx.payment.paid));
         builder.bold(true).twoColumn('Kembalian', fRp(tx.payment.change)).bold(false);
     } else if (tx.payment?.method === 'tempo') {
+        if (isPaylater) {
+            builder.twoColumn('Limit Terpakai', fRp(tx.payment?.paylaterUsed || tx.paylaterUsed || (tx.total - (tx.payment?.tempoDp ?? 0))));
+        }
         builder.twoColumn('Uang Muka (DP)', fRp(tx.payment?.tempoDp ?? tx.payment?.dp ?? 0));
-        builder.bold(true).twoColumn('Sisa Piutang', fRp(tx.payment.tempoBalance || 0)).bold(false);
+        builder.bold(true).twoColumn(isPaylater ? 'Tagihan PayLater' : 'Sisa Piutang', fRp(tx.payment.tempoBalance || 0)).bold(false);
         if (tx.payment.tempoDueDate) {
-            builder.line(`Jatuh Tempo: ${tx.payment.tempoDueDate}`, 'left');
+            const dueStr = typeof tx.payment.tempoDueDate === 'number'
+                ? new Date(tx.payment.tempoDueDate).toLocaleDateString('id-ID', {day: 'numeric', month: 'short', year: 'numeric'})
+                : tx.payment.tempoDueDate;
+            builder.line(`Jatuh Tempo: ${dueStr}`, 'left');
         }
     }
 
@@ -801,10 +808,15 @@ export const buildTempoReceiptPayload = (order, config = null) => {
     if (storeWa) builder.line(`WA: ${storeWa}`, 'center');
     builder.separator('-');
 
+    const isPaylater = order.payment?.isPaylater || order.isPaylater || order.payment?.subMethod === 'paylater';
     const isLunas = order.payment?.paymentStatus === 'lunas' || parseFloat(order.payment?.tempoBalance || 0) <= 0;
     const title = is80
-        ? (isLunas ? '*** NOTA TEMPO (LUNAS) ***' : '*** NOTA TAGIHAN TEMPO (PIUTANG) ***')
-        : (isLunas ? '** NOTA TEMPO (LUNAS) **' : '** NOTA TAGIHAN TEMPO **');
+        ? (isPaylater
+            ? (isLunas ? '*** NOTA PUTRI PAYLATER (LUNAS) ***' : '*** NOTA TAGIHAN PUTRI PAYLATER ***')
+            : (isLunas ? '*** NOTA TEMPO (LUNAS) ***' : '*** NOTA TAGIHAN TEMPO (PIUTANG) ***'))
+        : (isPaylater
+            ? (isLunas ? '** PAYLATER (LUNAS) **' : '** NOTA PUTRI PAYLATER **')
+            : (isLunas ? '** NOTA TEMPO (LUNAS) **' : '** NOTA TAGIHAN TEMPO **'));
 
     builder.bold(true).line(title, 'center').bold(false);
     builder.separator('-');
@@ -813,7 +825,7 @@ export const buildTempoReceiptPayload = (order, config = null) => {
     builder.twoColumn(`Order: #${order.orderId}`, dateStr, false, true);
 
     const custName = (order.customer?.name || 'Pelanggan').substring(0, is80 ? 18 : 11);
-    builder.twoColumn(`Plg  : ${custName}`, 'Tipe: Tempo', false, true);
+    builder.twoColumn(`Plg  : ${custName}`, isPaylater ? 'Tipe: PayLater' : 'Tipe: Tempo', false, true);
 
     if (order.customer?.phone || order.customer?.wa) {
         builder.line(`HP   : ${order.customer.wa || order.customer.phone}`, 'left');
@@ -890,7 +902,7 @@ export const buildTempoReceiptPayload = (order, config = null) => {
     }
 
     builder.doubleSeparator();
-    builder.bold(true).size('tall').twoColumn('SISA TAGIHAN', fRp(isLunas ? 0 : totalAkhir)).size('normal').bold(false);
+    builder.bold(true).size('tall').twoColumn(isPaylater ? 'TAGIHAN PAYLATER' : 'SISA TAGIHAN', fRp(isLunas ? 0 : totalAkhir)).size('normal').bold(false);
     builder.doubleSeparator();
 
     if (!isLunas && appData.banks && appData.banks.length > 0) {
@@ -905,8 +917,8 @@ export const buildTempoReceiptPayload = (order, config = null) => {
     if (cfg.showBarcode) {
         builder.separator('-');
         builder.align('center');
-        builder.line(`*TEMPO-${order.orderId}*`, 'center');
-        builder.line('(NOTA TEMPO RESMI)', 'center');
+        builder.line(isPaylater ? `*PAYLATER-${order.orderId}*` : `*TEMPO-${order.orderId}*`, 'center');
+        builder.line(isPaylater ? '(PUTRI PAYLATER RESMI)' : '(NOTA TEMPO RESMI)', 'center');
     }
 
     builder.separator('-');

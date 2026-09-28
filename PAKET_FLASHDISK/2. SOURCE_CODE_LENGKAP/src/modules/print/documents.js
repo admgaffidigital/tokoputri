@@ -209,8 +209,9 @@ export const openDocPreview = (type, targetId = null) => {
         const totalPaid = installments.reduce((sum, ins) => sum + (parseFloat(ins.amount) || 0), 0);
         const grandTotalAwal = o.payment?.grandTotal || (sisa + totalPaid);
         const isLunas = o.payment?.paymentStatus === 'lunas' || sisa <= 0;
+        const isPaylater = !!(o.payment?.isPaylater || o.isPaylater || o.payment?.subMethod === 'paylater');
 
-        let statusText = 'TEMPO BERJALAN';
+        let statusText = isPaylater ? 'PAYLATER BERJALAN' : 'TEMPO BERJALAN';
         let statusClass = 'text-blue-600 bg-blue-50 border-blue-200';
         if (isLunas) {
             statusText = 'LUNAS SEPENUHNYA';
@@ -239,7 +240,7 @@ export const openDocPreview = (type, targetId = null) => {
                 </div>
             </div>
             <div class="text-right">
-                <h2 class="font-bold text-2xl sm:text-3xl tracking-widest text-slate-900 uppercase">NOTA TAGIHAN PIUTANG</h2>
+                <h2 class="font-bold text-2xl sm:text-3xl tracking-widest text-slate-900 uppercase">${isPaylater ? 'NOTA PUTRI PAYLATER' : 'NOTA TAGIHAN PIUTANG'}</h2>
                 <p class="text-sm font-bold text-slate-600 mt-2 font-mono">#${esc(o.orderId)}</p>
                 <p class="text-xs font-semibold text-slate-500 mt-1">Tgl Transaksi: ${formatDate(o.dateString || o.timestamp)}</p>
                 <div class="mt-2 inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider border ${statusClass}">
@@ -259,7 +260,7 @@ export const openDocPreview = (type, targetId = null) => {
             <div class="bg-slate-50 p-5 rounded-xl border border-slate-200">
                 <h3 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3 border-b border-slate-200 pb-2">Ketentuan Jatuh Tempo:</h3>
                 <p class="text-xs font-semibold text-slate-700 mb-1.5"><span class="text-slate-500">Tanggal Jatuh Tempo:</span> <b class="text-slate-900 font-mono">${formatDate(dueDate)}</b></p>
-                <p class="text-xs font-semibold text-slate-700 mb-1.5"><span class="text-slate-500">Sistem Pembayaran:</span> <b class="text-slate-900 uppercase">Tempo / Bertahap</b></p>
+                <p class="text-xs font-semibold text-slate-700 mb-1.5"><span class="text-slate-500">Sistem Pembayaran:</span> <b class="${isPaylater ? 'text-emerald-700 font-bold' : 'text-slate-900'} uppercase">${isPaylater ? 'Putri PayLater Member VIP' : 'Tempo / Bertahap'}</b></p>
                 ${isLate ? `<p class="text-xs font-bold text-rose-600 mb-1.5"><span class="text-slate-500">Status Keterlambatan:</span> Lewat ${daysLate} Hari (Denda ${rate}%/hari)</p>` : ''}
                 <p class="text-xs font-semibold text-slate-700"><span class="text-slate-500">Kasir / Admin:</span> <b class="text-slate-900 uppercase">${esc(o.cashierName || 'Kasir Toko')}</b></p>
             </div>
@@ -334,11 +335,13 @@ export const openDocPreview = (type, targetId = null) => {
             <!-- Ringkasan Finansial Tagihan -->
             <div class="bg-slate-50 p-5 rounded-xl border border-slate-200 text-xs space-y-2.5">
                 <div class="flex justify-between text-slate-600"><span>Total Transaksi Awal:</span><span class="font-bold text-slate-800">${fCur(grandTotalAwal)}</span></div>
+                ${isPaylater ? `<div class="flex justify-between text-emerald-600 font-bold"><span>Limit PayLater Terpakai:</span><span>${fCur(o.payment?.paylaterUsed || (grandTotalAwal - (o.payment?.tempoDp || o.payment?.dp || 0)))}</span></div>` : ''}
+                ${(parseFloat(o.payment?.tempoDp || o.payment?.dp) || 0) > 0 ? `<div class="flex justify-between text-slate-600"><span>Uang Muka (DP Dibayar):</span><span class="font-bold">${fCur(o.payment?.tempoDp || o.payment?.dp || 0)}</span></div>` : ''}
                 ${totalPaid > 0 ? `<div class="flex justify-between text-emerald-600 font-bold"><span>Total Telah Dibayar (Cicilan):</span><span>-${fCur(totalPaid)}</span></div>` : ''}
-                <div class="flex justify-between text-slate-700 font-bold"><span>Sisa Pokok Piutang:</span><span>${fCur(sisa)}</span></div>
+                <div class="flex justify-between text-slate-700 font-bold"><span>${isPaylater ? 'Sisa Pokok PayLater:' : 'Sisa Pokok Piutang:'}</span><span>${fCur(sisa)}</span></div>
                 ${latePenalty > 0 ? `<div class="flex justify-between text-rose-600 font-bold"><span>Denda Keterlambatan (${daysLate} Hari):</span><span>+${fCur(latePenalty)}</span></div>` : ''}
                 <div class="flex justify-between items-center border-t-2 border-slate-800 pt-2.5 mt-2 font-bold text-base text-slate-900">
-                    <span>SISA TAGIHAN WAJIB BAYAR:</span>
+                    <span>${isPaylater ? 'SISA TAGIHAN PAYLATER:' : 'SISA TAGIHAN WAJIB BAYAR:'}</span>
                     <span class="text-[var(--color-primary)] font-black text-lg">${fCur(isLunas ? 0 : totalAkhir)}</span>
                 </div>
             </div>

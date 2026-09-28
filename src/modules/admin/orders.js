@@ -219,8 +219,9 @@ export const renderOrdersList = () => {
             pI = "fa-cash-register text-emerald-500";
             methodLabel = isPOS ? 'Tunai (Kasir)' : 'Kasir';
         } else if (method === 'tempo') {
-            pI = "fa-file-invoice-dollar text-amber-500";
-            methodLabel = 'Tempo';
+            const isPL = !!(o.payment?.isPaylater || o.isPaylater || o.payment?.subMethod === 'paylater');
+            pI = isPL ? "fa-bolt text-emerald-500" : "fa-file-invoice-dollar text-amber-500";
+            methodLabel = isPL ? 'PayLater' : 'Tempo';
         }
         
         let itemCount = o.items ? parseFloat(o.items.reduce((sum, item) => sum + (parseFloat(item.qty) || 0), 0).toFixed(2)) : 0;
@@ -509,31 +510,41 @@ export const openOrderDetail = (i) => {
                 ${(() => {
                     const isTempoOrder = o.payment?.method === 'tempo' || o.isTempo;
                     if (!isTempoOrder) return '';
+                    const isPL = !!(o.payment?.isPaylater || o.isPaylater || o.payment?.subMethod === 'paylater');
                     const tempoDp = parseFloat(o.payment?.tempoDp ?? o.payment?.dp) || 0;
                     const tempoBal = parseFloat(o.payment?.tempoBalance) || 0;
                     const isTempoLunas = o.payment?.paymentStatus === 'lunas' || tempoBal <= 0;
                     return `
                     <div class="mt-4 pt-3.5 border-t border-slate-700/80 space-y-2 relative z-10">
                         <div class="flex justify-between items-center text-xs">
-                            <span class="text-slate-400 font-bold flex items-center gap-1.5"><i class="fa-solid fa-hourglass-half text-amber-400"></i> Jenis Transaksi</span>
-                            <span class="font-bold text-amber-300">Penjualan Tempo (Piutang)</span>
+                            <span class="text-slate-400 font-bold flex items-center gap-1.5">
+                                <i class="fa-solid ${isPL ? 'fa-bolt text-emerald-400' : 'fa-hourglass-half text-amber-400'}"></i> Jenis Transaksi
+                            </span>
+                            <span class="font-bold ${isPL ? 'text-emerald-300' : 'text-amber-300'}">
+                                ${isPL ? 'Putri PayLater Member VIP' : 'Penjualan Tempo (Piutang)'}
+                            </span>
                         </div>
+                        ${isPL ? `
+                        <div class="flex justify-between items-center text-xs">
+                            <span class="text-slate-400">Limit PayLater Terpakai</span>
+                            <span class="font-bold text-emerald-400 font-mono">${fCur(o.payment?.paylaterUsed || (o.payment?.grandTotal - tempoDp))}</span>
+                        </div>` : ''}
                         <div class="flex justify-between items-center text-xs">
                             <span class="text-slate-400">Uang Muka (DP Dibayar)</span>
                             <span class="font-bold text-emerald-400 font-mono">${fCur(tempoDp)}</span>
                         </div>
                         <div class="flex justify-between items-center text-xs">
-                            <span class="text-slate-400">Sisa Tagihan Piutang</span>
-                            <span class="font-bold font-mono ${isTempoLunas ? 'text-emerald-400' : 'text-amber-400'}">${fCur(tempoBal)}</span>
+                            <span class="text-slate-400">Sisa Tagihan ${isPL ? 'PayLater' : 'Piutang'}</span>
+                            <span class="font-bold font-mono ${isTempoLunas ? 'text-emerald-400' : (isPL ? 'text-emerald-300' : 'text-amber-400')}">${fCur(tempoBal)}</span>
                         </div>
                         <div class="flex justify-between items-center text-xs">
-                            <span class="text-slate-400">Status Piutang</span>
-                            <span class="px-2 py-0.5 rounded-lg text-[10px] font-black uppercase tracking-wider ${isTempoLunas ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40' : 'bg-amber-500/20 text-amber-300 border border-amber-500/40'}">
+                            <span class="text-slate-400">Status ${isPL ? 'PayLater' : 'Piutang'}</span>
+                            <span class="px-2 py-0.5 rounded-lg text-[10px] font-black uppercase tracking-wider ${isTempoLunas ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40' : (isPL ? 'bg-teal-500/20 text-teal-300 border border-teal-500/40' : 'bg-amber-500/20 text-amber-300 border border-amber-500/40')}">
                                 ${isTempoLunas ? '✓ LUNAS' : '⏳ BELUM LUNAS'}
                             </span>
                         </div>
-                        <button type="button" onclick="if(typeof window.closeOrderDetailModal==='function') window.closeOrderDetailModal(); if(typeof window.openAdminTab==='function') window.openAdminTab('piutang'); setTimeout(() => { if(typeof window.openTempoDetail==='function') window.openTempoDetail('${esc(o.orderId)}'); }, 300);" class="mt-2.5 w-full py-2.5 px-3 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 text-[11px] font-bold flex items-center justify-center gap-2 transition-all cursor-pointer active:scale-95 shadow-xs">
-                            <i class="fa-solid fa-file-invoice-dollar"></i> Kelola Tagihan &amp; Cicilan di Modul Piutang
+                        <button type="button" onclick="if(typeof window.closeOrderDetailModal==='function') window.closeOrderDetailModal(); if(typeof window.openAdminTab==='function') window.openAdminTab('piutang'); setTimeout(() => { if(typeof window.openTempoDetail==='function') window.openTempoDetail('${esc(o.orderId)}'); }, 300);" class="mt-2.5 w-full py-2.5 px-3 rounded-xl ${isPL ? 'bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40' : 'bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40'} text-[11px] font-bold flex items-center justify-center gap-2 transition-all cursor-pointer active:scale-95 shadow-xs">
+                            <i class="fa-solid ${isPL ? 'fa-bolt' : 'fa-file-invoice-dollar'}"></i> Kelola Tagihan &amp; Cicilan di Modul Piutang
                         </button>
                     </div>`;
                 })()}
@@ -792,10 +803,33 @@ export const restoreOrderStockAndRewards = async (orderId, orderData = null) => 
             ord.isPointsRolledBack = true;
         }
 
+        // 3. ROLLBACK PEMAKAIAN LIMIT PUTRI PAYLATER (Jika pesanan menggunakan PayLater & belum pernah di-rollback)
+        const isPlOrder = !!(ord.payment?.isPaylater || ord.isPaylater || ord.payment?.subMethod === 'paylater');
+        if (!ord.isPaylaterRolledBack && isPlOrder && custPhone) {
+            try {
+                const usedLimit = parseFloat(ord.payment?.paylaterUsed || ord.paylaterUsed || ord.payment?.tempoBalance) || 0;
+                if (usedLimit > 0) {
+                    const cleanCustPhone = custPhone.replace(/\D/g, '');
+                    const cRef = db.collection("freshmart").doc("cms_data").collection("customers").doc(cleanCustPhone);
+                    await cRef.set({
+                        paylaterUsed: firebase.firestore.FieldValue.increment(-usedLimit)
+                    }, { merge: true });
+                    if (Array.isArray(appData.customers)) {
+                        const lCust = appData.customers.find(c => c && (String(c.phone).replace(/\D/g, '') === cleanCustPhone || String(c.id) === cleanCustPhone));
+                        if (lCust) lCust.paylaterUsed = Math.max(0, (parseFloat(lCust.paylaterUsed) || 0) - usedLimit);
+                    }
+                }
+            } catch (errPl) {
+                console.warn(`[Auto-Restock] Gagal rollback limit PayLater:`, errPl);
+            }
+            ord.isPaylaterRolledBack = true;
+        }
+
         // Simpan flag di pesanan Firestore jika pesanan masih ada
         await db.collection("freshmart_orders").doc(orderId).update({
             isStockRestocked: ord.isStockRestocked || false,
             isPointsRolledBack: ord.isPointsRolledBack || false,
+            isPaylaterRolledBack: ord.isPaylaterRolledBack || false,
             ...(ord.claimedReward ? { claimedReward: ord.claimedReward } : {})
         }).catch(() => {});
 

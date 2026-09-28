@@ -424,7 +424,19 @@ window.rAdmItms = t => {
                         return sObj ? `<p class="text-[10px] font-bold text-teal-600 dark:text-teal-400 mt-0.5"><i class="fa-solid fa-truck-field mr-1"></i>Supplier: <b>${esc(sObj.name)}</b></p>` : '';
                     })() : ''}
                     ${t==='colors' ? `<div class="flex items-center gap-2 mt-1"><div class="w-4 h-4 rounded-full border border-slate-200 dark:border-slate-600 shadow-sm" style="background-color: ${esc(x.hex||'transparent')}"></div><p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest"><i class="fa-solid fa-swatchbook mr-1"></i>${esc(x.catalog||'Tanpa Katalog')}</p></div>` : ''}
-                    ${t==='customers' ? `<p class="text-xs font-bold text-slate-500 dark:text-slate-400"><i class="fa-brands fa-whatsapp text-emerald-500 mr-1"></i>+${esc(x.phone)}</p><p class="text-[11px] font-bold text-[var(--color-primary)] mt-0.5"><i class="fa-solid fa-star mr-1"></i>${(parseFloat(x.points)||0)} Poin</p>` : ''}
+                    ${t==='customers' ? `
+                        <p class="text-xs font-bold text-slate-500 dark:text-slate-400"><i class="fa-brands fa-whatsapp text-emerald-500 mr-1"></i>+${esc(x.phone)}</p>
+                        <div class="flex items-center gap-1.5 mt-1 flex-wrap">
+                            <span class="text-[11px] font-bold text-[var(--color-primary)]"><i class="fa-solid fa-star mr-1"></i>${(parseFloat(x.points)||0)} Poin</span>
+                            ${(x.paylaterActive === true || x.paylaterActive === 'true') ? `
+                                <span class="px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700 flex items-center gap-1">
+                                    <i class="fa-solid fa-bolt text-emerald-500"></i> PayLater: ${fCur(Math.max(0, (parseFloat(x.paylaterLimit)||0) - (parseFloat(x.paylaterUsed)||0)))} / ${fCur(parseFloat(x.paylaterLimit)||0)}
+                                </span>
+                            ` : `
+                                <span class="px-1.5 py-0.5 rounded text-[8px] font-bold uppercase bg-slate-100 dark:bg-slate-700 text-slate-400">PayLater Off</span>
+                            `}
+                        </div>
+                    ` : ''}
                     ${t==='rewards' ? `<p class="text-sm font-bold text-violet-500"><i class="fa-solid fa-star mr-1"></i>${(parseFloat(x.pointsCost)||0)} Poin</p><p class="text-[10px] font-bold text-slate-500 mt-0.5"><i class="fa-solid fa-boxes-stacked mr-1"></i>Stok: ${parseFloat(x.stock)||0}</p>` : ''}
                 </div>
             </div>
