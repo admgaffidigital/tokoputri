@@ -197,11 +197,30 @@ export const isCurrentSessionActive = async () => {
     const _db = (typeof db !== 'undefined' && db) ? db : window.db;
     if (!_db) return true;
 
+    const isLocal = typeof window !== 'undefined' && 
+        (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+
     const mySessionId = localStorage.getItem('freshmart_admin_session_id');
     if (!mySessionId) {
+        // Jika di lingkungan dev lokal atau sesi baru dipulihkan, otomatis klaim sesi agar auth tidak terputus
+        if (isLocal) {
+            try { await claimAdminSession(); } catch (_) {}
+            return true;
+        }
+
         try {
             const doc = await _db.collection("freshmart").doc("cms_data").collection("admin_session").doc("active").get();
-            if (!doc.exists) return true;
+            if (!doc.exists) {
+                try { await claimAdminSession(); } catch (_) {}
+                return true;
+            }
+            // Periksa umur sesi aktif di server: jika sudah > 12 jam tidak aktif, klaim ulang
+            const data = doc.data() || {};
+            const lastActiveTime = data.lastActive?.toMillis ? data.lastActive.toMillis() : (data.loginAt?.toMillis ? data.loginAt.toMillis() : 0);
+            if (Date.now() - lastActiveTime > 12 * 60 * 60 * 1000) {
+                try { await claimAdminSession(); } catch (_) {}
+                return true;
+            }
             return false;
         } catch (e) {
             return true;
@@ -210,7 +229,10 @@ export const isCurrentSessionActive = async () => {
 
     try {
         const doc = await _db.collection("freshmart").doc("cms_data").collection("admin_session").doc("active").get();
-        if (!doc.exists) return true;
+        if (!doc.exists) {
+            try { await claimAdminSession(mySessionId); } catch (_) {}
+            return true;
+        }
         return doc.data().sessionId === mySessionId;
     } catch (e) {
         return true;

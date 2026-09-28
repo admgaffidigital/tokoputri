@@ -25,6 +25,23 @@ import { renderAdminShiftReportView } from './pos-shift.js';
 let _cachedStaffList = [];
 let _activeRoleFilter = 'all'; // 'all' | 'admin' | 'cashier'
 
+/**
+ * Helper: Verifikasi apakah pengguna saat ini terotentikasi sebagai Owner Utama (Super Admin)
+ * untuk melakukan modifikasi akun atau hak akses staf di Firestore Cloud.
+ */
+export const verifyOwnerAuthority = (actionName = 'mengubah data staf') => {
+    const user = auth.currentUser;
+    if (!user) {
+        showToast(`⚠️ Sesi Belum Terotentikasi: Harap login resmi menggunakan Akun Pemilik Toko (Email Owner) di form login CMS untuk ${actionName}.`, 'warning');
+        return false;
+    }
+    if (user.uid !== ADMIN_UID) {
+        showToast(`🛑 Akses Ditolak: Hanya Akun Pemilik Utama (Owner) yang berwenang ${actionName}. Akun staf tidak memiliki izin modifikasi database staf.`, 'error');
+        return false;
+    }
+    return true;
+};
+
 // ─── Render Panel Manajemen Staf & Akses ─────────────────────
 export const renderCashierAccounts = async () => {
     const content = el('admin-content');
@@ -32,6 +49,51 @@ export const renderCashierAccounts = async () => {
 
     const sc = document.querySelector('#view-admin .scroll-content');
     if (sc) sc.scrollTop = 0;
+
+    const curUser = auth.currentUser;
+    const isOwner = curUser && curUser.uid === ADMIN_UID;
+    const isStaff = curUser && curUser.uid !== ADMIN_UID;
+    const isUnauth = !curUser;
+
+    let authStatusBadge = '';
+    let authBannerHtml = '';
+
+    if (isUnauth) {
+        authStatusBadge = '<span class="flex items-center gap-1.5 text-amber-600 dark:text-amber-400 font-bold"><i class="fa-solid fa-triangle-exclamation"></i> Status: Pratinjau Lokal (Belum Terotentikasi Firebase)</span>';
+        authBannerHtml = `
+        <div class="p-4 rounded-2xl border border-amber-300 dark:border-amber-700/80 bg-amber-50 dark:bg-amber-950/40 text-amber-900 dark:text-amber-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-2xs">
+            <div class="flex items-start gap-3">
+                <div class="w-9 h-9 rounded-xl bg-amber-200/80 dark:bg-amber-900/60 text-amber-700 dark:text-amber-300 flex items-center justify-center shrink-0 shadow-2xs">
+                    <i class="fa-solid fa-triangle-exclamation text-sm"></i>
+                </div>
+                <div>
+                    <h4 class="text-xs font-black">Mode Pratinjau Lokal (Sesi Firebase Belum Terotentikasi)</h4>
+                    <p class="text-[11px] text-amber-800/90 dark:text-amber-300/90 mt-0.5 leading-relaxed">
+                        Anda dapat melihat data staf, namun untuk mendaftarkan staf baru atau menyimpan hak akses ke database cloud, Anda wajib login resmi dengan Email Pemilik Toko (Owner).
+                    </p>
+                </div>
+            </div>
+            <button onclick="if(typeof window.changeView==='function') window.changeView('view-admin-login');"
+                class="px-3.5 py-2 rounded-xl text-xs font-black text-white shrink-0 shadow-sm active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-2"
+                style="background: var(--color-primary)">
+                <i class="fa-solid fa-right-to-bracket text-xs"></i>
+                <span>Login Akun Owner</span>
+            </button>
+        </div>`;
+    } else if (isStaff) {
+        authStatusBadge = `<span class="flex items-center gap-1.5 text-blue-600 dark:text-blue-400 font-bold"><i class="fa-solid fa-user-shield"></i> Status: Login Staf (${esc(curUser.email || 'Staf')}) — Wewenang Dibatasi Khusus Owner</span>`;
+        authBannerHtml = `
+        <div class="p-3.5 rounded-2xl border border-blue-200 dark:border-blue-800/80 bg-blue-50/80 dark:bg-blue-950/40 text-blue-800 dark:text-blue-200 flex items-center gap-3 shadow-2xs">
+            <div class="w-8 h-8 rounded-xl bg-blue-200/70 dark:bg-blue-900/60 text-blue-700 dark:text-blue-300 flex items-center justify-center shrink-0">
+                <i class="fa-solid fa-shield-halved text-xs"></i>
+            </div>
+            <div class="text-[11px] leading-snug">
+                <span class="font-bold">Mode Akun Staf (${esc(curUser.email || 'Staf')}):</span> Anda dapat melihat direktori staf. Penambahan, pengubahan wewenang hak akses, dan penghapusan staf diproteksi eksklusif untuk Pemilik Toko (Owner).
+            </div>
+        </div>`;
+    } else {
+        authStatusBadge = `<span class="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-bold"><i class="fa-solid fa-circle-check"></i> Status: Terverifikasi Login sebagai Owner (${esc(curUser.email || 'Master')})</span>`;
+    }
 
     setH('admin-content', `
     <div class="space-y-4 max-w-5xl mx-auto pb-16">
@@ -54,6 +116,8 @@ export const renderCashierAccounts = async () => {
 
         <!-- Panel 1: Manajemen Staf & Hak Akses -->
         <div id="cashier-panel-accounts" class="space-y-4 pt-1">
+            ${authBannerHtml}
+
             <!-- Header -->
             <div class="flex items-center justify-between gap-3 pt-1">
                 <div>
@@ -88,8 +152,8 @@ export const renderCashierAccounts = async () => {
                     <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
                         Akun Owner memiliki akses 100% penuh atas seluruh modul toko, keuangan rahasia, laporan laba rugi, pengaturan rekening bank, serta satu-satunya akun yang berhak mendaftarkan dan mengubah hak akses staf lain.
                     </p>
-                    <div class="flex items-center gap-3 pt-1 text-[11px] text-purple-700 dark:text-purple-300 font-bold">
-                        <span class="flex items-center gap-1.5"><i class="fa-solid fa-circle-check text-emerald-500"></i> Status: Master Aktif</span>
+                    <div class="flex items-center gap-3 pt-1 text-[11px] text-purple-700 dark:text-purple-300 font-bold flex-wrap">
+                        ${authStatusBadge}
                         <span>•</span>
                         <span class="flex items-center gap-1.5"><i class="fa-solid fa-key"></i> Hak Akses: 22 Modul Terbuka</span>
                     </div>
@@ -339,6 +403,8 @@ export const loadStaffList = async () => {
 
 // ─── Modal Tambah Staf Baru ──────────────────────────────────
 export const openAddStaffModal = () => {
+    if (!verifyOwnerAuthority('mendaftarkan staf baru')) return;
+
     // Generate permission checkboxes HTML
     const renderPermissionGroup = (groupName, groupTitle, groupIcon) => {
         const defs = PERMISSION_DEFINITIONS.filter(p => p.group === groupName);
@@ -517,6 +583,8 @@ export const setAllNewStaffPerms = (val) => {
 
 // ─── Simpan Akun Staf Baru ───────────────────────────────────
 export const saveStaffAccount = async () => {
+    if (!verifyOwnerAuthority('mendaftarkan staf baru')) return;
+
     const name  = el('new-staff-name')?.value?.trim() || '';
     const email = el('new-staff-email')?.value?.trim() || '';
     const pass  = el('new-staff-pass')?.value || '';
@@ -588,8 +656,11 @@ export const saveStaffAccount = async () => {
 
     } catch (err) {
         console.error('[StaffAdmin] Gagal membuat akun staf:', err);
+        const isPerm = err.code === 'permission-denied' || (err.message && err.message.toLowerCase().includes('permission'));
         const code = err.code || '';
-        if (code === 'auth/email-already-in-use') {
+        if (isPerm) {
+            showErr('Akses Ditolak Firebase: Hanya akun Owner yang berwenang menambahkan staf ke Firestore.');
+        } else if (code === 'auth/email-already-in-use') {
             showErr('Email sudah digunakan oleh akun lain di Firebase.');
         } else if (code === 'auth/invalid-email') {
             showErr('Format email tidak valid.');
@@ -606,6 +677,8 @@ export const saveStaffAccount = async () => {
 
 // ─── Modal Atur Hak Akses Staf ───────────────────────────────
 export const openPermissionsModal = (uid) => {
+    if (!verifyOwnerAuthority('mengatur hak akses staf')) return;
+
     const staff = _cachedStaffList.find(s => s.uid === uid);
     if (!staff) {
         showToast("Data staf tidak ditemukan!");
@@ -726,6 +799,8 @@ export const setAllEditStaffPerms = (val) => {
 };
 
 export const saveStaffPermissions = async (uid) => {
+    if (!verifyOwnerAuthority('mengubah hak akses staf')) return;
+
     const btn = el('save-perms-btn');
     if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Menyimpan...'; }
     sLoad('Memperbarui hak akses...');
@@ -743,10 +818,11 @@ export const saveStaffPermissions = async (uid) => {
             detectedRole = ROLES.ADMIN;
         }
 
-        await db.collection('freshmart').doc('cms_data').collection('cashier_accounts').doc(uid).update({
+        await db.collection('freshmart').doc('cms_data').collection('cashier_accounts').doc(uid).set({
             permissions,
-            role: detectedRole
-        });
+            role: detectedRole,
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        }, { merge: true });
 
         closePermissionsModal();
         showToast('Hak akses berhasil diperbarui! ✅', 'success');
@@ -754,7 +830,12 @@ export const saveStaffPermissions = async (uid) => {
 
     } catch (err) {
         console.error('[StaffAdmin] Gagal menyimpan hak akses:', err);
-        showToast('Gagal memperbarui hak akses: ' + err.message, 'error');
+        const isPerm = err.code === 'permission-denied' || (err.message && err.message.toLowerCase().includes('permission'));
+        if (isPerm) {
+            showToast('Izin Ditolak Firebase: Pastikan login dengan Akun Owner dan aturan firestore.rules sudah dipublikasikan di Firebase Console.', 'error');
+        } else {
+            showToast('Gagal memperbarui hak akses: ' + (err.message || 'Terjadi kesalahan sistem'), 'error');
+        }
         if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-floppy-disk mr-2"></i>Simpan Hak Akses'; }
     } finally {
         hLoad();
@@ -763,6 +844,8 @@ export const saveStaffPermissions = async (uid) => {
 
 // ─── Modal Edit Profil Staf (Nama & Role) ────────────────────
 export const openEditStaffModal = (uid, currentName, currentEmail, currentRole) => {
+    if (!verifyOwnerAuthority('mengubah profil staf')) return;
+
     document.body.insertAdjacentHTML('beforeend', `
     <div id="edit-staff-modal" class="fixed inset-0 z-[9990] flex items-center justify-center p-4 bg-slate-900/70 backdrop-blur-xs"
         onclick="if(event.target===this) window.closeEditStaffModal()">
@@ -822,6 +905,8 @@ export const closeEditStaffModal = () => {
 };
 
 export const updateStaffProfile = async (uid) => {
+    if (!verifyOwnerAuthority('mengubah profil staf')) return;
+
     const name = el('edit-staff-name')?.value?.trim() || '';
     const role = el('edit-staff-role')?.value || ROLES.CASHIER;
     const errEl = el('edit-staff-error');
@@ -836,15 +921,18 @@ export const updateStaffProfile = async (uid) => {
     sLoad('Memperbarui profil staf...');
 
     try {
-        await db.collection('freshmart').doc('cms_data').collection('cashier_accounts').doc(uid).update({
+        await db.collection('freshmart').doc('cms_data').collection('cashier_accounts').doc(uid).set({
             name,
-            role
-        });
+            role,
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        }, { merge: true });
         closeEditStaffModal();
         showToast('Profil staf berhasil diperbarui! ✅', 'success');
         await loadStaffList();
     } catch (err) {
-        if (errEl) { errEl.textContent = 'Gagal memperbarui: ' + err.message; errEl.classList.remove('hidden'); }
+        const isPerm = err.code === 'permission-denied' || (err.message && err.message.toLowerCase().includes('permission'));
+        const msg = isPerm ? 'Izin ditolak oleh Firebase (Khusus Akun Owner).' : err.message;
+        if (errEl) { errEl.textContent = 'Gagal memperbarui: ' + msg; errEl.classList.remove('hidden'); }
         if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-floppy-disk mr-2"></i>Simpan'; }
     } finally {
         hLoad();
@@ -853,15 +941,23 @@ export const updateStaffProfile = async (uid) => {
 
 // ─── Toggle Aktif / Nonaktif ─────────────────────────────────
 export const toggleStaffActive = async (uid, newStatus) => {
+    if (!verifyOwnerAuthority('mengubah status aktif staf')) return;
+
     sLoad(newStatus ? 'Mengaktifkan staf...' : 'Menonaktifkan staf...');
     try {
-        await db.collection('freshmart').doc('cms_data').collection('cashier_accounts').doc(uid).update({
-            isActive: newStatus
-        });
+        await db.collection('freshmart').doc('cms_data').collection('cashier_accounts').doc(uid).set({
+            isActive: newStatus,
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        }, { merge: true });
         showToast(newStatus ? 'Akun staf diaktifkan ✅' : 'Akun staf dinonaktifkan ❌', 'success');
         await loadStaffList();
     } catch (err) {
-        showToast('Gagal mengubah status staf: ' + err.message, 'error');
+        const isPerm = err.code === 'permission-denied' || (err.message && err.message.toLowerCase().includes('permission'));
+        if (isPerm) {
+            showToast('Akses Ditolak: Hanya akun Owner yang berwenang mengubah status staf.', 'error');
+        } else {
+            showToast('Gagal mengubah status staf: ' + err.message, 'error');
+        }
     } finally {
         hLoad();
     }
@@ -869,6 +965,8 @@ export const toggleStaffActive = async (uid, newStatus) => {
 
 // ─── Hapus Akun Staf ─────────────────────────────────────────
 export const deleteStaffAccount = (uid, name) => {
+    if (!verifyOwnerAuthority('menghapus akun staf')) return;
+
     showConfirm(
         'Hapus Akun Staf',
         `Yakin hapus akun staf "${name}"? Akun tidak dapat dipulihkan dan staf tidak dapat login lagi ke toko.`,
@@ -879,7 +977,12 @@ export const deleteStaffAccount = (uid, name) => {
                 showToast(`Akun "${name}" berhasil dihapus`, 'success');
                 await loadStaffList();
             } catch (err) {
-                showToast('Gagal menghapus staf: ' + err.message, 'error');
+                const isPerm = err.code === 'permission-denied' || (err.message && err.message.toLowerCase().includes('permission'));
+                if (isPerm) {
+                    showToast('Akses Ditolak: Hanya akun Owner yang berwenang menghapus staf.', 'error');
+                } else {
+                    showToast('Gagal menghapus staf: ' + err.message, 'error');
+                }
             } finally {
                 hLoad();
             }
@@ -936,6 +1039,7 @@ if (typeof window !== 'undefined') {
     window.toggleStaffActive            = toggleStaffActive;
     window.deleteStaffAccount           = deleteStaffAccount;
     window.toggleStaffPassVisibility    = toggleStaffPassVisibility;
+    window.verifyOwnerAuthority         = verifyOwnerAuthority;
 
     // Legacy aliases
     window.openAddCashierModal          = openAddCashierModal;

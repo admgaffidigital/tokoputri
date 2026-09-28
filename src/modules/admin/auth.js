@@ -105,8 +105,8 @@ export const applyStaffMenuPermissions = () => {
 export const checkAdminAccess = async () => {
     const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
     if (window.isAdm || isLocal) {
-        // Hanya verifikasi auto kick-out jika pengguna adalah Owner utama
-        if (isOwnerUser()) {
+        // Hanya verifikasi auto kick-out jika pengguna adalah Owner utama (di luar lingkungan dev lokal)
+        if (isOwnerUser() && !isLocal) {
             const active = await isCurrentSessionActive();
             if (!active && auth.currentUser) {
                 detachAdminSessionGuard();

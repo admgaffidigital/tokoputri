@@ -8,6 +8,22 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-9-88',
+        version: 'v1.9.88',
+        date: '2026-09-28',
+        title: 'Penguatan Keamanan & Otorisasi Manajemen Staf: Pre-Flight Guard Otentikasi Owner, Auto-Claim Sesi Dev Lokal, Pencegahan Error Izin Firestore, dan Banner Status Akun Realtime',
+        category: 'security',
+        badge: 'Staff Auth Guard & Robust Permissions v1.9.88',
+        items: [
+            'Pre-Flight Owner Verification (src/modules/pos/pos-cashier-admin.js: verifyOwnerAuthority): Pengecekan status login dan validasi UID Owner utama (ADMIN_UID) di sisi client sebelum mengirim permintaan ke Firestore. Mencegah eksekusi aksi mutasi data staf dari sesi yang tidak terotentikasi atau akun non-owner.',
+            'Eliminasi Error Izin Firestore (Missing or insufficient permissions): Fungsi saveStaffPermissions kini menggunakan .set(..., { merge: true }) dengan penanganan error ramah dan solutif yang memandu pengguna secara jelas jika aturan Firestore Cloud belum ter-publish atau sesi belum terotentikasi.',
+            'Pencegahan Pemutusan Sesi Auth di Dev Lokal (src/modules/admin/session.js & src/main.js): Memperbaiki isCurrentSessionActive agar otomatis mengklaim sesi (claimAdminSession) saat dibuka di localhost/127.0.0.1 alih-alih memaksa signOut akun Owner akibat belum adanya freshmart_admin_session_id di localStorage lokal.',
+            'Banner Status Otentikasi Realtime di Panel Staf: Menampilkan status otentikasi dinamis (Mode Pratinjau Lokal Belum Login, Sesi Staf Dibatasi, atau Terverifikasi Owner) lengkap dengan tombol cepat Login Akun Owner untuk kemudahan navigasi.',
+            'Proteksi Menyeluruh Operasi Staf: Mengamankan modal pendaftaran staf (openAddStaffModal & saveStaffAccount), modal edit profil (openEditStaffModal & updateStaffProfile), tombol toggle status aktif (toggleStaffActive), serta dialog hapus staf (deleteStaffAccount).',
+            'Sinkronisasi Multi-Channel v1.9.88 (Android VersionCode 10988): Terkompilasi dan tersinkronisasi penuh ke Vite build produksi, paket flashdisk, dan Capacitor Android.'
+        ]
+    },
+    {
         id: 'log-1-9-87',
         version: 'v1.9.87',
         date: '2026-09-28',

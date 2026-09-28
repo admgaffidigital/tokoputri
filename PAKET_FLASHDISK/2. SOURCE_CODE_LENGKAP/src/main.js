@@ -379,8 +379,9 @@ window.addEventListener('DOMContentLoaded', async () => {
 
         await ensureAdminLoaded();
         // Validasi apakah sesi owner di perangkat ini masih aktif atau sudah diambil alih perangkat lain
+        const isLocalHost = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
         const isSessionValid = await isCurrentSessionActive();
-        if (!isSessionValid) {
+        if (!isSessionValid && !isLocalHost) {
             console.log('[Auth] Sesi admin lokal sudah tidak aktif (diambil alih perangkat lain).');
             detachAdminSessionGuard();
             localStorage.removeItem('freshmart_admin_session_id');
