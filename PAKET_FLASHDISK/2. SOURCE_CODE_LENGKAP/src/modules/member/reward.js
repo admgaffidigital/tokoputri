@@ -415,6 +415,8 @@ export const flipMemberCard = () => {
     const inner = document.getElementById('member-card-inner');
     if (!inner) return;
     inner.classList.toggle('is-flipped');
+    if (typeof window.triggerHaptic === 'function') window.triggerHaptic('light');
+    if (typeof window.playNativeSound === 'function') window.playNativeSound('tick');
 };
 
 /**

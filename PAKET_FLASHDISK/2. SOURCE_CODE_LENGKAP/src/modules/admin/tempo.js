@@ -804,7 +804,20 @@ window.submitTempoPayment = async (e, orderId) => {
 
         await docRef.update(updates);
 
-        // Update in-memory state
+        // Update in-memory state piutang cachedPiutangOrders
+        if (newBalance <= 0) {
+            cachedPiutangOrders = cachedPiutangOrders.filter(o => o.orderId !== orderId);
+        } else {
+            const cIdx = cachedPiutangOrders.findIndex(o => o.orderId === orderId);
+            if (cIdx !== -1) {
+                if (!cachedPiutangOrders[cIdx].payment) cachedPiutangOrders[cIdx].payment = {};
+                cachedPiutangOrders[cIdx].payment.tempoBalance = newBalance;
+                cachedPiutangOrders[cIdx].payment.installments = installments;
+            }
+        }
+        window.cachedPiutangOrders = cachedPiutangOrders;
+
+        // Update in-memory state gOrds utama
         if (Array.isArray(gOrds)) {
             let idx = gOrds.findIndex(o => o.orderId === orderId);
             if (idx !== -1) {
@@ -814,6 +827,17 @@ window.submitTempoPayment = async (e, orderId) => {
                     gOrds[idx].payment.paymentStatus = 'lunas';
                     gOrds[idx].status = 'Selesai';
                 }
+            }
+        }
+
+        // Jika modal detail sedang terbuka untuk nota ini, sinkronkan isinya seketika
+        const detailModal = el('modal-tempo-detail');
+        if (detailModal && !detailModal.classList.contains('hidden') && currentDetailOrderId === orderId) {
+            if (newBalance <= 0) {
+                window.closeTempoDetailModal();
+            } else {
+                const updatedOrder = cachedPiutangOrders.find(o => o.orderId === orderId);
+                if (updatedOrder) renderTempoDetailModalContent(updatedOrder);
             }
         }
 
@@ -1303,12 +1327,12 @@ window.setTempoFilter = (filterKey) => {
 
 window.setInstallmentPeriod = (periodKey) => {
     activeInstallmentPeriod = periodKey;
-    renderTempoContent();
+    renderActiveTempoTabBody();
 };
 
 window.setInstallmentMethod = (methodKey) => {
     activeInstallmentMethod = methodKey;
-    renderTempoContent();
+    renderActiveTempoTabBody();
 };
 
 window.onTempoSearch = (val) => {
@@ -1316,7 +1340,7 @@ window.onTempoSearch = (val) => {
     if (activeTempoMainTab === 'orders') {
         renderTempoCardsOnly();
     } else {
-        renderTempoContent();
+        renderActiveTempoTabBody();
     }
 };
 
@@ -1995,12 +2019,25 @@ const renderTempoContent = () => {
             </div>
             ` : ''}
         </div>
-    `;
 
-    // Render Konten Tab Aktif
+        <!-- CONTAINER KONTEN TAB AKTIF (SEAMLESS ZERO-FLICKER) -->
+        <div id="tempo-tab-content-container"></div>
+    </div>`;
+
+    setH('admin-content', h);
+    renderActiveTempoTabBody();
+};
+
+/**
+ * Render Konten Tab Aktif Tanpa Mengacak Input Search
+ */
+const renderActiveTempoTabBody = () => {
+    const container = el('tempo-tab-content-container');
+    if (!container) return;
+
     if (activeTempoMainTab === 'orders') {
         if (cachedPiutangOrders.length === 0) {
-            h += `
+            container.innerHTML = `
             <div class="bg-white dark:bg-slate-800 p-10 text-center rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm">
                 <div class="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4" style="background: rgba(var(--color-primary-rgb), 0.1); color: var(--color-primary);">
                     <i class="fa-solid fa-check-double text-4xl"></i>
@@ -2009,19 +2046,13 @@ const renderTempoContent = () => {
                 <p class="text-slate-500 dark:text-slate-400 mt-1.5 text-xs font-medium max-w-sm mx-auto">Tidak ada piutang tempo penjualan pelanggan yang sedang aktif atau tertunda saat ini.</p>
             </div>`;
         } else {
-            h += `<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="tempo-cards-container"></div>`;
+            container.innerHTML = `<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="tempo-cards-container"></div>`;
+            renderTempoCardsOnly();
         }
     } else if (activeTempoMainTab === 'customers') {
-        h += renderTempoCustomersTab();
+        container.innerHTML = renderTempoCustomersTab();
     } else if (activeTempoMainTab === 'installments') {
-        h += renderTempoInstallmentsTab();
-    }
-    
-    h += `</div>`;
-    setH('admin-content', h);
-
-    if (activeTempoMainTab === 'orders' && cachedPiutangOrders.length > 0) {
-        renderTempoCardsOnly();
+        container.innerHTML = renderTempoInstallmentsTab();
     }
 };
 

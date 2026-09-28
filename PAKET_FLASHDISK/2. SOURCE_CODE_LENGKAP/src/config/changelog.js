@@ -8,6 +8,22 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-9-77',
+        version: 'v1.9.77',
+        date: '2026-09-28',
+        title: 'Penyempurnaan Stabilitas & Ergonomi: Arsitektur Search Zero-Flicker Piutang, Live Sync Cicilan In-Memory, State Guard POS, & Haptic Feedback 3D',
+        category: 'fix',
+        badge: 'Stability & Ergonomic Polish v1.9.77',
+        items: [
+            'Arsitektur Pencarian Zero-Flicker Piutang (tempo.js): Mengeliminasi kendala kehilangan fokus kursor (cursor jump/blur) saat mengetik kata kunci pencarian di seluruh tab piutang (Nota, Pelanggan, dan Histori Cicilan). Memisahkan kontainer dinamis #tempo-tab-content-container melalui renderActiveTempoTabBody() sehingga hasil filter diperbarui instan tanpa merekonstruksi elemen input.',
+            'Sinkronisasi Reaktif Live Modal Cicilan (tempo.js): Pembayaran cicilan tempo (submitTempoPayment) kini memperbarui data in-memory cachedPiutangOrders seketika (0ms delay). Jika lunas, order otomatis terhapus dari piutang aktif; jika belum lunas, saldo dan histori cicilan di modal rincian nota yang terbuka di balik layar langsung ter-update live.',
+            'Pembersihan Bersih State Kasir POS (pos.js): Fungsi clearCart() kini secara presisi mereset state diskon poin (posPointsRedeemed = 0) dan klaim hadiah (posClaimedReward = null), memastikan pembatalan keranjang tidak meninggalkan residual diskon pada transaksi berikutnya.',
+            'Transparansi Dialog Sukses Transaksi POS (pos.js): Modal sukses transaksi kasir (showPOSSuccess) kini menampilkan ringkasan Diskon Poin Belanja dan Klaim Hadiah yang ditukarkan.',
+            'Respons Taktil Realistis Kartu Member 3D (reward.js): Menambahkan respons getaran taktil mikro (haptic tick) dan audio sintesis saat kartu member digital dibalik (flipMemberCard), memberikan sensasi nyata memegang kartu fisik.',
+            'Sinkronisasi Multi-Channel v1.9.77 (Android VersionCode 10977): Terkompilasi dan tersinkronisasi penuh ke Vite build, paket flashdisk, dan Capacitor Android.'
+        ]
+    },
+    {
         id: 'log-1-9-76',
         version: 'v1.9.76',
         date: '2026-09-28',

@@ -678,7 +678,9 @@ export const removeFromCart = (cartKey) => {
 export const clearCart = () => {
     if (posCart.length === 0) return;
     const executeClear = () => {
-        posCart = []; posGlobalDisc = 0; posDiscountVal = 0; posDiscountType = 'rp'; renderCart();
+        posCart = []; posGlobalDisc = 0; posDiscountVal = 0; posDiscountType = 'rp';
+        posPointsRedeemed = 0; posClaimedReward = null;
+        renderCart();
         showToast('Keranjang kasir dikosongkan.');
     };
     if (typeof window.showConfirm === 'function') {
@@ -2707,6 +2709,16 @@ const showPOSSuccess = (tx) => {
           <div class="mt-2 p-2 rounded-xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 text-amber-700 dark:text-amber-300 text-xs font-bold flex items-center justify-center gap-1.5">
             <i class="fa-solid fa-star text-amber-500"></i>
             <span>+${tx.pointsEarned} Poin Member Didapat!</span>
+          </div>` : ''}
+          ${(tx.pointDiscount > 0 || (tx.payment && tx.payment.pointDiscount > 0)) ? `
+          <div class="mt-1.5 p-2 rounded-xl bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-800 text-rose-700 dark:text-rose-300 text-xs font-bold flex items-center justify-center gap-1.5">
+            <i class="fa-solid fa-tags text-rose-500"></i>
+            <span>Diskon Poin: -${fRp(tx.pointDiscount || tx.payment?.pointDiscount)}</span>
+          </div>` : ''}
+          ${tx.claimedReward ? `
+          <div class="mt-1.5 p-2 rounded-xl bg-purple-50 dark:bg-purple-950/30 border border-purple-200 dark:border-purple-800 text-purple-700 dark:text-purple-300 text-xs font-bold flex items-center justify-center gap-1.5">
+            <i class="fa-solid fa-gift text-purple-500"></i>
+            <span>Klaim Hadiah: ${esc(tx.claimedReward.name)}</span>
           </div>` : ''}
         </div>
         <div class="px-6 pb-6 flex flex-col gap-2">
