@@ -22,14 +22,17 @@ export const renderCashierAccounts = async () => {
 
     setH('admin-content', `
     <div class="space-y-4 max-w-5xl mx-auto pb-16">
-        <!-- Native App Sticky Segmented Control Bar -->
-        <div class="sticky top-0 z-20 -mx-4 lg:-mx-8 px-4 lg:px-8 py-2.5 bg-slate-50/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800/80 shadow-2xs">
-            <div class="p-1 bg-slate-200/80 dark:bg-slate-800 rounded-2xl max-w-sm w-full mx-auto grid grid-cols-2 gap-1 border border-slate-300/50 dark:border-slate-700/60 shadow-2xs">
-                <button id="tab-btn-cashier-accounts" onclick="window.switchCashierTab('accounts')" class="py-2.5 px-3 rounded-xl text-xs font-black bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-xs transition-all flex items-center justify-center gap-2 cursor-pointer border border-black/5 dark:border-white/10">
-                    <i class="fa-solid fa-users" style="color:var(--color-primary)"></i>
+        <!-- Native App Sticky Segmented Control Bar (Theme Harmonized) -->
+        <div class="sticky top-0 z-20 -mx-4 lg:-mx-8 px-4 lg:px-8 py-3 bg-slate-50/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800/80 shadow-2xs">
+            <div class="p-1.5 bg-slate-100 dark:bg-slate-800/90 rounded-2xl max-w-md w-full mx-auto grid grid-cols-2 gap-1.5 border border-slate-200/90 dark:border-slate-700/80 shadow-inner">
+                <button id="tab-btn-cashier-accounts" onclick="window.switchCashierTab('accounts')" 
+                    class="py-2.5 px-4 rounded-xl text-xs font-black text-white transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-95 shadow-md"
+                    style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
+                    <i class="fa-solid fa-users text-white"></i>
                     <span>Akun Kasir</span>
                 </button>
-                <button id="tab-btn-cashier-shifts" onclick="window.switchCashierTab('shifts')" class="py-2.5 px-3 rounded-xl text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white transition-all flex items-center justify-center gap-2 cursor-pointer border border-transparent">
+                <button id="tab-btn-cashier-shifts" onclick="window.switchCashierTab('shifts')" 
+                    class="py-2.5 px-4 rounded-xl text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/60 dark:hover:bg-slate-700/60 transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-95">
                     <i class="fa-solid fa-file-invoice-dollar"></i>
                     <span>Laporan Shift</span>
                 </button>
@@ -41,27 +44,35 @@ export const renderCashierAccounts = async () => {
             <!-- Header -->
             <div class="flex items-center justify-between gap-3 pt-1">
                 <div>
-                    <h2 class="text-base font-black text-slate-900 dark:text-white flex items-center gap-2">
-                        <i class="fa-solid fa-users-gear" style="color:var(--color-primary)"></i>
-                        Manajemen Kasir
+                    <h2 class="text-base font-black text-slate-900 dark:text-white flex items-center gap-2.5">
+                        <span class="w-8 h-8 rounded-xl flex items-center justify-center text-xs shrink-0 shadow-2xs border border-[rgba(var(--color-primary-rgb),0.25)]" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary)">
+                            <i class="fa-solid fa-users-gear"></i>
+                        </span>
+                        <span>Manajemen Kasir</span>
                     </h2>
-                    <p class="text-xs text-slate-500 dark:text-slate-400">Daftarkan dan kelola akun kasir toko</p>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Daftarkan dan kelola akun kasir toko</p>
                 </div>
                 <button onclick="window.openAddCashierModal()"
-                    class="flex items-center gap-2 px-4 py-2.5 rounded-2xl text-white text-xs font-bold shadow-sm active:scale-95 transition-all cursor-pointer hover:opacity-95 shrink-0"
-                    style="background:var(--color-primary)">
+                    class="flex items-center gap-2 px-4 py-2.5 rounded-2xl text-white text-xs font-black shadow-md active:scale-95 transition-all cursor-pointer hover:opacity-95 shrink-0"
+                    style="background:var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
                     <i class="fa-solid fa-user-plus text-xs"></i>
                     <span>Tambah Kasir</span>
                 </button>
             </div>
 
-            <!-- Info Guide Banner (Harmonized Theme) -->
-            <div class="p-3.5 rounded-2xl border flex gap-3 items-start" style="background: rgba(var(--color-primary-rgb), 0.05); border-color: rgba(var(--color-primary-rgb), 0.22)">
-                <div class="w-7 h-7 rounded-xl flex items-center justify-center text-xs shrink-0 shadow-2xs mt-0.5" style="background: rgba(var(--color-primary-rgb), 0.15); color: var(--color-primary)">
-                    <i class="fa-solid fa-circle-info"></i>
+            <!-- Panduan Akses Kasir POS (Themed Frosted Card) -->
+            <div class="relative overflow-hidden p-4 rounded-2xl sm:rounded-3xl border border-slate-200/90 dark:border-slate-800 bg-white/95 dark:bg-slate-800/90 shadow-2xs flex items-start gap-3.5">
+                <div class="w-10 h-10 rounded-2xl flex items-center justify-center text-sm shrink-0 shadow-2xs" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary); border: 1px solid rgba(var(--color-primary-rgb), 0.25);">
+                    <i class="fa-solid fa-cash-register"></i>
                 </div>
-                <div class="text-xs text-slate-700 dark:text-slate-200 leading-relaxed">
-                    <b class="text-slate-900 dark:text-white">Panduan Akses:</b> Staf kasir login melalui ikon <i class="fa-solid fa-cash-register mx-1" style="color:var(--color-primary)"></i> di header toko pembeli (*storefront*), bukan di panel CMS Seller. Akun yang didaftarkan langsung aktif dan dapat digunakan bertransaksi di POS.
+                <div class="space-y-1 min-w-0 flex-1">
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <span class="text-xs font-black text-slate-900 dark:text-white">Panduan Akses Kasir POS</span>
+                        <span class="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full" style="background: rgba(var(--color-primary-rgb), 0.1); color: var(--color-primary);">Storefront Login</span>
+                    </div>
+                    <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                        Staf kasir dapat langsung login melalui tombol kasir <i class="fa-solid fa-cash-register mx-0.5" style="color:var(--color-primary)"></i> di bilah atas toko pembeli (*storefront*), bukan di panel CMS Seller. Akun yang didaftarkan langsung aktif dan dapat digunakan bertransaksi di POS.
+                    </p>
                 </div>
             </div>
 
@@ -87,32 +98,33 @@ export const switchCashierTab = (tab) => {
     const panelAccounts = el('cashier-panel-accounts');
     const panelShifts   = el('cashier-panel-shifts');
 
-    const activeCls = 'py-2.5 px-3 rounded-xl text-xs font-black bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-xs transition-all flex items-center justify-center gap-2 cursor-pointer border border-black/5 dark:border-white/10';
-    const inactiveCls = 'py-2.5 px-3 rounded-xl text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white transition-all flex items-center justify-center gap-2 cursor-pointer border border-transparent';
+    const applyActive = (btn, iconHtml, label) => {
+        if (!btn) return;
+        btn.className = 'py-2.5 px-4 rounded-xl text-xs font-black text-white transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-95 shadow-md';
+        btn.style.background = 'var(--color-primary)';
+        btn.style.boxShadow = '0 4px 14px rgba(var(--color-primary-rgb), 0.35)';
+        btn.innerHTML = `${iconHtml}<span>${label}</span>`;
+    };
+
+    const applyInactive = (btn, iconHtml, label) => {
+        if (!btn) return;
+        btn.className = 'py-2.5 px-4 rounded-xl text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/60 dark:hover:bg-slate-700/60 transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-95';
+        btn.style.background = 'transparent';
+        btn.style.boxShadow = 'none';
+        btn.innerHTML = `${iconHtml}<span>${label}</span>`;
+    };
 
     if (tab === 'shifts') {
-        if (tabAccounts) {
-            tabAccounts.className = inactiveCls;
-            tabAccounts.innerHTML = '<i class="fa-solid fa-users"></i><span>Akun Kasir</span>';
-        }
-        if (tabShifts) {
-            tabShifts.className = activeCls;
-            tabShifts.innerHTML = '<i class="fa-solid fa-file-invoice-dollar" style="color:var(--color-primary)"></i><span>Laporan Shift</span>';
-        }
+        applyInactive(tabAccounts, '<i class="fa-solid fa-users"></i>', 'Akun Kasir');
+        applyActive(tabShifts, '<i class="fa-solid fa-file-invoice-dollar text-white"></i>', 'Laporan Shift');
         if (panelAccounts) panelAccounts.classList.add('hidden');
         if (panelShifts) {
             panelShifts.classList.remove('hidden');
             renderAdminShiftReportView(panelShifts);
         }
     } else {
-        if (tabAccounts) {
-            tabAccounts.className = activeCls;
-            tabAccounts.innerHTML = '<i class="fa-solid fa-users" style="color:var(--color-primary)"></i><span>Akun Kasir</span>';
-        }
-        if (tabShifts) {
-            tabShifts.className = inactiveCls;
-            tabShifts.innerHTML = '<i class="fa-solid fa-file-invoice-dollar"></i><span>Laporan Shift</span>';
-        }
+        applyActive(tabAccounts, '<i class="fa-solid fa-users text-white"></i>', 'Akun Kasir');
+        applyInactive(tabShifts, '<i class="fa-solid fa-file-invoice-dollar"></i>', 'Laporan Shift');
         if (panelAccounts) panelAccounts.classList.remove('hidden');
         if (panelShifts) panelShifts.classList.add('hidden');
     }
@@ -167,45 +179,49 @@ const loadCashierList = async () => {
             const d = doc.data();
             const uid = doc.id;
             const isActive = d.isActive !== false;
-            const dateStr  = d.createdAt?.toDate ? d.createdAt.toDate().toLocaleDateString('id-ID') : '-';
+            const dateStr  = d.createdAt?.toDate ? d.createdAt.toDate().toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : '-';
+            const initials = (d.name || 'Kasir').trim().split(/\s+/).slice(0, 2).map(w => w[0]).join('').toUpperCase() || 'KS';
             return `
-            <div class="flex items-center justify-between gap-3 p-3.5 sm:p-4 bg-white dark:bg-slate-800/90 rounded-2xl sm:rounded-3xl border border-slate-200/90 dark:border-slate-700/80 shadow-2xs hover:shadow-xs transition-all">
-                <div class="flex items-center gap-3 min-w-0">
-                    <div class="w-11 h-11 rounded-2xl flex items-center justify-center font-bold text-sm shrink-0 shadow-2xs border border-[rgba(var(--color-primary-rgb),0.25)]"
+            <div class="flex items-center justify-between gap-3 p-4 sm:p-5 bg-white dark:bg-slate-800/95 rounded-2xl sm:rounded-3xl border border-slate-200/90 dark:border-slate-700/80 shadow-2xs hover:shadow-xs transition-all">
+                <div class="flex items-center gap-3.5 min-w-0">
+                    <div class="w-12 h-12 rounded-2xl flex items-center justify-center font-black text-sm shrink-0 shadow-2xs border border-[rgba(var(--color-primary-rgb),0.25)]"
                         style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary)">
-                        <i class="fa-solid fa-user-tie text-base"></i>
+                        ${initials}
                     </div>
                     <div class="min-w-0">
                         <div class="flex items-center gap-2 flex-wrap">
                             <p class="text-sm font-black text-slate-900 dark:text-white truncate">${esc(d.name || 'Kasir')}</p>
-                            <span class="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full ${isActive
+                            <span class="inline-flex items-center gap-1.5 text-[10px] font-black px-2.5 py-0.5 rounded-full ${isActive
                                 ? 'bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60'
                                 : 'bg-slate-100 dark:bg-slate-700 text-slate-500 border border-slate-200 dark:border-slate-600'}">
                                 <span class="w-1.5 h-1.5 rounded-full ${isActive ? 'bg-emerald-500 animate-pulse' : 'bg-slate-400'}"></span>
                                 ${isActive ? 'Aktif' : 'Nonaktif'}
                             </span>
                         </div>
-                        <p class="text-xs text-slate-500 dark:text-slate-400 truncate mt-0.5">${esc(d.email || '')}</p>
-                        <span class="text-[10px] text-slate-400 dark:text-slate-500">Terdaftar: ${esc(dateStr)}</span>
+                        <div class="flex items-center gap-3 mt-1 text-xs text-slate-500 dark:text-slate-400 flex-wrap">
+                            <span class="flex items-center gap-1"><i class="fa-solid fa-envelope text-[10px] text-slate-400"></i> ${esc(d.email || '')}</span>
+                            <span>•</span>
+                            <span class="flex items-center gap-1 text-[11px] text-slate-400 dark:text-slate-500"><i class="fa-solid fa-calendar-days text-[10px]"></i> Terdaftar: ${esc(dateStr)}</span>
+                        </div>
                     </div>
                 </div>
-                <div class="flex items-center gap-1.5 shrink-0">
+                <div class="flex items-center gap-2 shrink-0">
                     <button onclick="window.toggleCashierActive('${esc(uid)}', ${!isActive})"
-                        title="${isActive ? 'Nonaktifkan Kasir' : 'Aktifkan Kasir'}"
-                        class="w-9 h-9 rounded-xl flex items-center justify-center text-xs transition-all active:scale-90 cursor-pointer shadow-2xs
+                        title="${isActive ? 'Nonaktifkan Akun Kasir' : 'Aktifkan Akun Kasir'}"
+                        class="w-10 h-10 rounded-2xl flex items-center justify-center text-xs transition-all active:scale-95 cursor-pointer shadow-2xs border
                         ${isActive
-                            ? 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-700/80 text-slate-600 dark:text-slate-300 hover:text-amber-600'
-                            : 'bg-emerald-50 text-emerald-600 hover:bg-emerald-100 dark:bg-emerald-950/40'}">
+                            ? 'bg-slate-50 hover:bg-amber-50 dark:bg-slate-700/80 dark:hover:bg-amber-950/40 text-slate-600 dark:text-slate-300 hover:text-amber-600 border-slate-200/80 dark:border-slate-700 hover:border-amber-300'
+                            : 'bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/40 text-emerald-600 border-emerald-200 dark:border-emerald-800'}">
                         <i class="fa-solid ${isActive ? 'fa-ban' : 'fa-circle-check'}"></i>
                     </button>
                     <button onclick="window.openEditCashierModal('${esc(uid)}', '${esc(d.name || '')}', '${esc(d.email || '')}')"
-                        title="Edit Kasir"
-                        class="w-9 h-9 rounded-xl flex items-center justify-center text-xs bg-slate-100 hover:bg-slate-200 dark:bg-slate-700/80 text-slate-600 dark:text-slate-300 hover:text-[var(--color-primary)] transition-all active:scale-90 cursor-pointer shadow-2xs">
+                        title="Edit Profil Kasir"
+                        class="w-10 h-10 rounded-2xl flex items-center justify-center text-xs bg-slate-50 hover:bg-slate-100 dark:bg-slate-700/80 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 hover:text-[var(--color-primary)] border border-slate-200/80 dark:border-slate-700 transition-all active:scale-95 cursor-pointer shadow-2xs">
                         <i class="fa-solid fa-pen-to-square"></i>
                     </button>
                     <button onclick="window.deleteCashierAccount('${esc(uid)}', '${esc(d.name || 'Kasir')}')"
-                        title="Hapus Kasir"
-                        class="w-9 h-9 rounded-xl flex items-center justify-center text-xs bg-slate-100 hover:bg-rose-50 dark:bg-slate-700/80 text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 transition-all active:scale-90 cursor-pointer shadow-2xs">
+                        title="Hapus Akun Kasir"
+                        class="w-10 h-10 rounded-2xl flex items-center justify-center text-xs bg-slate-50 hover:bg-rose-50 dark:bg-slate-700/80 dark:hover:bg-rose-950/40 text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 border border-slate-200/80 dark:border-slate-700 hover:border-rose-200 transition-all active:scale-95 cursor-pointer shadow-2xs">
                         <i class="fa-solid fa-trash-can"></i>
                     </button>
                 </div>

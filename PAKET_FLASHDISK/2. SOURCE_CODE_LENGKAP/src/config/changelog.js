@@ -8,6 +8,22 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-9-84',
+        version: 'v1.9.84',
+        date: '2026-09-28',
+        title: 'Harmonisasi Total Antarmuka Manajemen Kasir & Laporan Shift POS: Segmented Navigation Selaras Tema, Banner Metrik Statistik Rekapitulasi, dan Desain Kartu Kasir & Riwayat Shift Standar Native App',
+        category: 'ui',
+        badge: 'Cashier & Shift UI Harmony v1.9.84',
+        items: [
+            'Harmonisasi Penuh Segmented Control (pos-cashier-admin.js): Mengeliminasi kontras kaku wadah tab abu-abu dengan tombol aktif putih polos. Digantikan segmented control modern bergaya aplikasi native dengan tombol aktif berlatar var(--color-primary), teks & ikon putih cerah, serta ambient glow shadow lembut yang selaras 100% dengan tema toko.',
+            'Redesain Kartu Panduan Akses Kasir (pos-cashier-admin.js): Mengubah kotak panduan akses lama yang kusam menjadi kartu frosted glass berkelas dengan lencana ikon kasir beraksen tema, chip "Storefront Login", dan tipografi yang rapi dan nyaman dibaca.',
+            'Peningkatan Visual Kartu Akun Kasir (pos-cashier-admin.js): Avatar monogram inisial nama 48px beraksen warna tema, chip indikator status aktif berdenyut (pulse) / nonaktif, ikon email dan tanggal terdaftar, serta tombol aksi (status, edit, hapus) berukuran sentuh ergonomis 40px dengan efek tekan taktil.',
+            'Banner Metrik Statistik Laporan Shift (pos-shift.js): Menambahkan 4 kartu ringkasan analitik di bagian atas Laporan Shift Kasir: Total Shift Tercatat, Shift Aktif / Berjalan (dengan indikator status real-time), Total Omset Penjualan Shift, dan Total Kas Fisik Laci Terdata.',
+            'Modernisasi Kartu Riwayat Shift & Z-Report (pos-shift.js): Menata ulang tampilan spreadsheet kaku menjadi kartu profesional modern: ID shift font mono tebal dengan rentang waktu lengkap, lencana status audit (PAS, LEBIH, KURANG, SEDANG BERJALAN), 4 tile metrik elegan (Kasir dengan jumlah transaksi & item, Modal Awal, Total Omset dengan warna tema, Kas Fisik Laci dengan keterangan audit), strip chip rincian metode pembayaran (Tunai, QRIS, Transfer, Tempo), callout catatan penutupan shift, serta tombol aksi cetak Slip Z-Report dan hapus yang ergonomis.',
+            'Sinkronisasi Multi-Channel v1.9.84 (Android VersionCode 10984): Terkompilasi dan tersinkronisasi penuh ke Vite build, paket flashdisk, dan Capacitor Android.'
+        ]
+    },
+    {
         id: 'log-1-9-83',
         version: 'v1.9.83',
         date: '2026-09-28',

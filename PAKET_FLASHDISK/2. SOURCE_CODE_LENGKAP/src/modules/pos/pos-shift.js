@@ -1453,22 +1453,27 @@ export const renderAdminShiftReportView = async (containerEl) => {
 
     c.innerHTML = `
     <div class="space-y-4">
+        <!-- Top Toolbar Header -->
         <div class="flex items-center justify-between gap-3 pt-1">
             <div class="min-w-0">
-                <h3 class="text-sm sm:text-base font-black text-slate-900 dark:text-white flex items-center gap-2">
+                <h3 class="text-sm sm:text-base font-black text-slate-900 dark:text-white flex items-center gap-2.5">
                     <span class="w-8 h-8 rounded-xl flex items-center justify-center text-xs shrink-0 shadow-2xs border border-[rgba(var(--color-primary-rgb),0.25)]" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary)">
                         <i class="fa-solid fa-file-invoice-dollar"></i>
                     </span>
                     <span class="truncate">Laporan Shift Kasir</span>
                 </h3>
-                <p class="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 mt-0.5 truncate">Rekap Z-Report buka-tutup kasir &amp; selisih laci</p>
+                <p class="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 mt-0.5 truncate">Rekap Z-Report buka-tutup kasir &amp; audit selisih kas fisik laci</p>
             </div>
-            <button onclick="window.loadAdminShiftReports()" class="h-9 px-3.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shrink-0 shadow-2xs active:scale-95" title="Segarkan Data Shift">
-                <i class="fa-solid fa-arrows-rotate text-[11px]"></i>
+            <button onclick="window.loadAdminShiftReports()" class="h-9 px-3.5 sm:px-4 rounded-xl bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700/80 text-slate-700 dark:text-slate-200 text-xs font-bold transition-all flex items-center gap-2 cursor-pointer shrink-0 shadow-2xs active:scale-95 border border-slate-200/90 dark:border-slate-700/80" title="Segarkan Data Shift">
+                <i class="fa-solid fa-arrows-rotate text-[11px]" style="color:var(--color-primary)"></i>
                 <span>Segarkan Data</span>
             </button>
         </div>
 
+        <!-- Summary Metrics Banner Container -->
+        <div id="admin-shift-metrics-target"></div>
+
+        <!-- Shift Cards Container -->
         <div id="admin-shift-list-target" class="space-y-3">
             <div class="text-center py-12 text-slate-400"><i class="fa-solid fa-spinner fa-spin text-2xl mb-2"></i><p class="text-xs">Memuat laporan shift kasir...</p></div>
         </div>
@@ -1479,6 +1484,7 @@ export const renderAdminShiftReportView = async (containerEl) => {
 
 export const loadAdminShiftReports = async () => {
     const target = el('admin-shift-list-target');
+    const metricsTarget = el('admin-shift-metrics-target');
     if (!target) return;
 
     try {
@@ -1488,6 +1494,7 @@ export const loadAdminShiftReports = async () => {
             .get();
 
         if (snap.empty) {
+            if (metricsTarget) metricsTarget.innerHTML = '';
             target.innerHTML = `
             <div class="text-center py-14 p-6 rounded-2xl sm:rounded-3xl bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 text-slate-400 dark:text-slate-500">
                 <i class="fa-solid fa-clipboard-list text-3xl mb-2"></i>
@@ -1497,64 +1504,168 @@ export const loadAdminShiftReports = async () => {
             return;
         }
 
-        const cards = snap.docs.map(doc => {
-            const s = doc.data();
+        const docsData = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+        // ── Hitung Metrik Ringkasan (Theme Harmonized) ──
+        let totalShiftsCount = docsData.length;
+        let activeShiftsCount = 0;
+        let totalOmsetSum = 0;
+        let totalCashInDrawerSum = 0;
+
+        docsData.forEach(s => {
+            if (s.status === 'open') activeShiftsCount++;
+            totalOmsetSum += (parseFloat(s.totalSales) || 0);
+            const actual = s.actualCash !== undefined 
+                ? parseFloat(s.actualCash) 
+                : ((parseFloat(s.startingCash) || 0) + (parseFloat(s.cashSales) || 0));
+            totalCashInDrawerSum += (actual || 0);
+        });
+
+        if (metricsTarget) {
+            metricsTarget.innerHTML = `
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-3.5">
+                <div class="p-3.5 sm:p-4 rounded-2xl sm:rounded-3xl bg-white dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs flex flex-col justify-between">
+                    <div class="flex items-center justify-between mb-1.5">
+                        <span class="text-[9px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">Total Shift</span>
+                        <div class="w-8 h-8 rounded-xl flex items-center justify-center text-xs shadow-2xs border border-[rgba(var(--color-primary-rgb),0.25)]" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary);">
+                            <i class="fa-solid fa-receipt"></i>
+                        </div>
+                    </div>
+                    <p class="text-base sm:text-xl font-black text-slate-900 dark:text-white tracking-tight">${totalShiftsCount} <span class="text-xs font-bold text-slate-400">Shift</span></p>
+                    <p class="text-[10px] font-bold text-slate-400 mt-0.5">Arsip Rekap Kasir</p>
+                </div>
+
+                <div class="p-3.5 sm:p-4 rounded-2xl sm:rounded-3xl bg-white dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs flex flex-col justify-between">
+                    <div class="flex items-center justify-between mb-1.5">
+                        <span class="text-[9px] font-black uppercase tracking-wider text-emerald-600 dark:text-emerald-400">Shift Aktif</span>
+                        <div class="w-8 h-8 rounded-xl bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-xs shadow-2xs border border-emerald-200 dark:border-emerald-800/60">
+                            <i class="fa-solid fa-clock-rotate-left"></i>
+                        </div>
+                    </div>
+                    <p class="text-base sm:text-xl font-black text-emerald-600 dark:text-emerald-400 tracking-tight flex items-center gap-1.5">
+                        ${activeShiftsCount} <span class="text-xs font-bold text-slate-400">Kasir</span>
+                        ${activeShiftsCount > 0 ? '<span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>' : ''}
+                    </p>
+                    <p class="text-[10px] font-bold text-slate-400 mt-0.5">${activeShiftsCount > 0 ? 'Sedang Bertransaksi' : 'Semua Shift Ditutup'}</p>
+                </div>
+
+                <div class="p-3.5 sm:p-4 rounded-2xl sm:rounded-3xl bg-white dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs flex flex-col justify-between">
+                    <div class="flex items-center justify-between mb-1.5">
+                        <span class="text-[9px] font-black uppercase tracking-wider" style="color:var(--color-primary)">Total Omset</span>
+                        <div class="w-8 h-8 rounded-xl flex items-center justify-center text-xs shadow-2xs border border-[rgba(var(--color-primary-rgb),0.25)]" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary);">
+                            <i class="fa-solid fa-chart-line"></i>
+                        </div>
+                    </div>
+                    <p class="text-base sm:text-lg font-black font-mono tracking-tight" style="color:var(--color-primary)">${fRp(totalOmsetSum)}</p>
+                    <p class="text-[10px] font-bold text-slate-400 mt-0.5">Gross Sales Shift</p>
+                </div>
+
+                <div class="p-3.5 sm:p-4 rounded-2xl sm:rounded-3xl bg-white dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs flex flex-col justify-between">
+                    <div class="flex items-center justify-between mb-1.5">
+                        <span class="text-[9px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">Total Kas Laci</span>
+                        <div class="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-700/60 text-slate-700 dark:text-slate-300 flex items-center justify-center text-xs shadow-2xs border border-slate-200 dark:border-slate-600/60">
+                            <i class="fa-solid fa-vault"></i>
+                        </div>
+                    </div>
+                    <p class="text-base sm:text-lg font-black font-mono text-slate-900 dark:text-white tracking-tight">${fRp(totalCashInDrawerSum)}</p>
+                    <p class="text-[10px] font-bold text-slate-400 mt-0.5">Uang Kas Fisik Terdata</p>
+                </div>
+            </div>`;
+        }
+
+        const cards = docsData.map(s => {
             const isClosed = s.status === 'closed';
             const diff = s.difference || 0;
             const diffBadge = !isClosed
-                ? `<span class="px-2.5 py-1 rounded-full text-[10px] font-black bg-emerald-100 dark:bg-emerald-950/70 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60 whitespace-nowrap shrink-0 tracking-wide">SEDANG BERJALAN</span>`
+                ? `<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black bg-emerald-50 dark:bg-emerald-950/70 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800 shadow-2xs tracking-wide shrink-0"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>SEDANG BERJALAN</span>`
                 : (diff === 0
-                    ? `<span class="px-2.5 py-1 rounded-full text-[10px] font-black bg-emerald-100 dark:bg-emerald-950/70 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60 whitespace-nowrap shrink-0">PAS</span>`
+                    ? `<span class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-[10px] font-black bg-emerald-100 dark:bg-emerald-950/70 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800 shadow-2xs shrink-0"><i class="fa-solid fa-check text-[10px]"></i> PAS</span>`
                     : (diff > 0
-                        ? `<span class="px-2.5 py-1 rounded-full text-[10px] font-black bg-amber-100 dark:bg-amber-950/70 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800/60 whitespace-nowrap shrink-0">+${fRp(diff)}</span>`
-                        : `<span class="px-2.5 py-1 rounded-full text-[10px] font-black bg-rose-100 dark:bg-rose-950/70 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-800/60 whitespace-nowrap shrink-0">-${fRp(Math.abs(diff))}</span>`));
+                        ? `<span class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-[10px] font-black bg-amber-100 dark:bg-amber-950/70 text-amber-700 dark:text-amber-300 border border-amber-300 dark:border-amber-800 shadow-2xs shrink-0"><i class="fa-solid fa-arrow-trend-up text-[10px]"></i> LEBIH +${fRp(diff)}</span>`
+                        : `<span class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-[10px] font-black bg-rose-100 dark:bg-rose-950/70 text-rose-700 dark:text-rose-300 border border-rose-300 dark:border-rose-800 shadow-2xs shrink-0"><i class="fa-solid fa-arrow-trend-down text-[10px]"></i> KURANG -${fRp(Math.abs(diff))}</span>`));
 
-            const startDate = new Date(s.startTime).toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' });
+            const startDate = s.startTime ? new Date(s.startTime).toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' }) : '-';
+            const endDate = s.endTime ? new Date(s.endTime).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) + ' WIB' : '';
             const sJson = JSON.stringify(s).replace(/"/g, '&quot;');
+            const actualCash = s.actualCash !== undefined ? s.actualCash : ((s.startingCash || 0) + (s.cashSales || 0));
 
             return `
-            <div class="p-4 sm:p-5 rounded-2xl sm:rounded-3xl bg-white dark:bg-slate-800/95 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs hover:shadow-xs transition-all space-y-3">
-                <div class="flex items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-700/60 pb-3">
-                    <div class="flex items-center gap-2.5 min-w-0">
-                        <div class="w-9 h-9 rounded-2xl flex items-center justify-center text-xs text-white shrink-0 shadow-2xs ${isClosed ? 'bg-slate-700 dark:bg-slate-600' : ''}" style="${!isClosed ? 'background: var(--color-primary)' : ''}">
-                            <i class="fa-solid fa-cash-register"></i>
+            <div class="p-4 sm:p-5 rounded-2xl sm:rounded-3xl bg-white dark:bg-slate-800/95 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs hover:shadow-xs transition-all space-y-3.5">
+                <div class="flex items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-700/60 pb-3 flex-wrap sm:flex-nowrap">
+                    <div class="flex items-center gap-3 min-w-0">
+                        <div class="w-10 h-10 rounded-2xl flex items-center justify-center text-sm text-white shrink-0 shadow-2xs ${isClosed ? 'bg-slate-800 dark:bg-slate-700' : ''}" style="${!isClosed ? 'background: var(--color-primary); box-shadow: 0 4px 12px rgba(var(--color-primary-rgb), 0.35);' : ''}">
+                            <i class="fa-solid ${!isClosed ? 'fa-cash-register' : 'fa-receipt'}"></i>
                         </div>
                         <div class="min-w-0">
-                            <span class="font-mono font-black text-xs text-slate-900 dark:text-white whitespace-nowrap block truncate">#${esc(s.shiftNo || s.id)}</span>
-                            <span class="text-[10px] text-slate-400 dark:text-slate-500 whitespace-nowrap block truncate">${startDate}</span>
+                            <div class="flex items-center gap-2">
+                                <span class="font-mono font-black text-xs sm:text-sm text-slate-900 dark:text-white whitespace-nowrap block truncate">#${esc(s.shiftNo || s.id)}</span>
+                            </div>
+                            <span class="text-[11px] text-slate-400 dark:text-slate-500 whitespace-nowrap block truncate mt-0.5">
+                                <i class="fa-solid fa-clock text-[10px] mr-1"></i>${startDate} ${endDate ? '— ' + endDate : '• Aktif'}
+                            </span>
                         </div>
                     </div>
                     <div class="flex items-center gap-2 shrink-0">
                         ${diffBadge}
-                        <button onclick="window.printShiftSettlementReceipt(${sJson}, ${!isClosed})" class="w-8 h-8 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-700/80 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-200 text-xs flex items-center justify-center transition-all cursor-pointer shrink-0 shadow-2xs active:scale-95" title="Preview & Cetak Slip">
-                            <i class="fa-solid fa-print"></i>
+                        <button onclick="window.printShiftSettlementReceipt(${sJson}, ${!isClosed})" class="h-9 px-3 rounded-xl bg-slate-50 hover:bg-slate-100 dark:bg-slate-700/80 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer shrink-0 shadow-2xs active:scale-95 border border-slate-200/80 dark:border-slate-600/60 hover:text-[var(--color-primary)]" title="Preview & Cetak Slip Rekap Shift">
+                            <i class="fa-solid fa-print text-xs"></i>
+                            <span class="hidden sm:inline">Slip Z-Report</span>
                         </button>
-                        <button onclick="window.deleteShiftRecord('${doc.id}', '${esc(s.shiftNo || s.id)}')" class="w-8 h-8 rounded-xl bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/40 dark:hover:bg-rose-900/60 text-rose-500 dark:text-rose-400 text-xs flex items-center justify-center transition-all cursor-pointer shrink-0 shadow-2xs active:scale-95 border border-rose-100 dark:border-rose-900/60" title="Hapus Data Shift">
+                        <button onclick="window.deleteShiftRecord('${s.id}', '${esc(s.shiftNo || s.id)}')" class="w-9 h-9 rounded-xl bg-slate-50 hover:bg-rose-50 dark:bg-slate-700/80 dark:hover:bg-rose-950/40 text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 text-xs flex items-center justify-center transition-all cursor-pointer shrink-0 shadow-2xs active:scale-95 border border-slate-200/80 dark:border-slate-600/60 hover:border-rose-200" title="Hapus Data Shift">
                             <i class="fa-solid fa-trash-can"></i>
                         </button>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
-                    <div class="p-2.5 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800/70">
-                        <span class="text-[10px] font-bold text-slate-400 dark:text-slate-500 block">Kasir</span>
-                        <span class="font-bold text-slate-800 dark:text-slate-200 truncate block mt-0.5">${esc(s.cashierName)}</span>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-xs">
+                    <div class="p-3 rounded-2xl bg-slate-50/90 dark:bg-slate-900/60 border border-slate-200/70 dark:border-slate-800/80">
+                        <span class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
+                            <i class="fa-solid fa-user-tie text-[10px]"></i> Kasir
+                        </span>
+                        <span class="font-black text-sm text-slate-800 dark:text-slate-100 truncate block mt-1">${esc(s.cashierName || 'Kasir')}</span>
+                        <span class="text-[10px] font-bold text-slate-400 dark:text-slate-500 block mt-0.5">${s.txCount || 0} Trx • ${s.itemCount || 0} Item</span>
                     </div>
-                    <div class="p-2.5 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800/70">
-                        <span class="text-[10px] font-bold text-slate-400 dark:text-slate-500 block">Modal Awal</span>
-                        <span class="font-bold text-slate-800 dark:text-slate-200 block mt-0.5">${fRp(s.startingCash)}</span>
+                    <div class="p-3 rounded-2xl bg-slate-50/90 dark:bg-slate-900/60 border border-slate-200/70 dark:border-slate-800/80">
+                        <span class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
+                            <i class="fa-solid fa-hand-holding-dollar text-[10px]"></i> Modal Awal
+                        </span>
+                        <span class="font-black text-sm text-slate-800 dark:text-slate-100 font-mono block mt-1">${fRp(s.startingCash || 0)}</span>
+                        <span class="text-[10px] text-slate-400 block mt-0.5">Uang Kas Buka Shift</span>
                     </div>
-                    <div class="p-2.5 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800/70">
-                        <span class="text-[10px] font-bold text-slate-400 dark:text-slate-500 block">Total Omset</span>
-                        <span class="font-black text-emerald-600 dark:text-emerald-400 block mt-0.5">${fRp(s.totalSales || 0)}</span>
+                    <div class="p-3 rounded-2xl bg-slate-50/90 dark:bg-slate-900/60 border border-slate-200/70 dark:border-slate-800/80">
+                        <span class="text-[10px] font-bold uppercase tracking-wider flex items-center gap-1.5" style="color:var(--color-primary)">
+                            <i class="fa-solid fa-chart-line text-[10px]"></i> Total Omset
+                        </span>
+                        <span class="font-black text-sm sm:text-base font-mono block mt-1" style="color:var(--color-primary)">${fRp(s.totalSales || 0)}</span>
+                        <span class="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 block mt-0.5">Gross Sales Shift</span>
                     </div>
-                    <div class="p-2.5 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800/70">
-                        <span class="text-[10px] font-bold text-slate-400 dark:text-slate-500 block">Kas Fisik Laci</span>
-                        <span class="font-black text-slate-900 dark:text-white block mt-0.5">${fRp(s.actualCash !== undefined ? s.actualCash : ((s.startingCash || 0) + (s.cashSales || 0)))}</span>
+                    <div class="p-3 rounded-2xl bg-slate-50/90 dark:bg-slate-900/60 border border-slate-200/70 dark:border-slate-800/80">
+                        <span class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
+                            <i class="fa-solid fa-vault text-[10px]"></i> Kas Fisik Laci
+                        </span>
+                        <span class="font-black text-sm sm:text-base font-mono text-slate-900 dark:text-white block mt-1">${fRp(actualCash)}</span>
+                        <span class="text-[10px] font-bold block mt-0.5 ${diff === 0 ? 'text-emerald-600 dark:text-emerald-400' : (diff > 0 ? 'text-amber-600' : 'text-rose-600')}">
+                            ${!isClosed ? 'Kas Saat Ini' : (diff === 0 ? 'Kas Pas & Sesuai' : (diff > 0 ? 'Surplus +' + fRp(diff) : 'Defisit -' + fRp(Math.abs(diff))))}
+                        </span>
                     </div>
                 </div>
 
-                ${s.closingNotes ? `<div class="text-[11px] text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-900/40 p-2.5 rounded-2xl border border-slate-100 dark:border-slate-800/70"><b>Catatan:</b> ${esc(s.closingNotes)}</div>` : ''}
+                ${(s.cashSales > 0 || s.qrisSales > 0 || s.bankSales > 0 || s.tempoSales > 0) ? `
+                <div class="flex items-center gap-2 overflow-x-auto pb-1 hide-scrollbar text-[11px] pt-1">
+                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider shrink-0 mr-0.5">Rincian Bayar:</span>
+                    ${s.cashSales ? `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl bg-slate-100 dark:bg-slate-700/60 text-slate-700 dark:text-slate-300 font-bold shrink-0"><i class="fa-solid fa-money-bill-wave text-emerald-500"></i> Tunai: ${fRp(s.cashSales)}</span>` : ''}
+                    ${s.qrisSales ? `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl bg-slate-100 dark:bg-slate-700/60 text-slate-700 dark:text-slate-300 font-bold shrink-0"><i class="fa-solid fa-qrcode text-indigo-500"></i> QRIS: ${fRp(s.qrisSales)}</span>` : ''}
+                    ${s.bankSales ? `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl bg-slate-100 dark:bg-slate-700/60 text-slate-700 dark:text-slate-300 font-bold shrink-0"><i class="fa-solid fa-building-columns text-blue-500"></i> Transfer: ${fRp(s.bankSales)}</span>` : ''}
+                    ${s.tempoSales ? `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 font-bold shrink-0 border border-amber-200/60"><i class="fa-solid fa-clock text-amber-500"></i> Tempo: ${fRp(s.tempoSales)}</span>` : ''}
+                </div>` : ''}
+
+                ${s.closingNotes ? `
+                <div class="text-xs text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-slate-900/60 p-3 rounded-2xl border border-slate-200/80 dark:border-slate-800 flex items-start gap-2.5">
+                    <i class="fa-solid fa-comment-dots text-slate-400 mt-0.5 shrink-0"></i>
+                    <div class="min-w-0">
+                        <span class="font-bold text-slate-800 dark:text-slate-200">Catatan Kasir:</span> ${esc(s.closingNotes)}
+                    </div>
+                </div>` : ''}
             </div>`;
         }).join('');
 
