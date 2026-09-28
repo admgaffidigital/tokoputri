@@ -8,6 +8,22 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-9-80',
+        version: 'v1.9.80',
+        date: '2026-09-28',
+        title: 'Penyelarasan Alur Logika Operasional Toko: Auto-Restock Pesanan Batal/Hapus, Rollback Poin & Hadiah Member, serta Live Sync Kas Cicilan Piutang ke Shift Kasir POS',
+        category: 'feature',
+        badge: 'Store Operations Harmony v1.9.80',
+        items: [
+            'Auto-Restock Stok Produk & Varian (orders.js): Pembatalan pesanan di panel CMS admin kini secara otomatis memulihkan stok fisik produk dan varian ke database toko, mengeliminasi selisih stok antara sistem dan rak toko. Jika status batal diaktifkan kembali, sistem otomatis memotong stok ulang secara proporsional.',
+            'Proteksi Stok saat Hapus Pesanan (orders.js): Menghapus pesanan secara permanen kini mengecek status pesanan; jika belum pernah dibatalkan, sistem otomatis me-restock seluruh barang terlebih dahulu sebelum pesanan dihapus dari Firestore.',
+            'Rollback Poin & Hadiah Member (orders.js): Pembatalan pesanan resmi member otomatis menarik kembali poin belanja yang didapatkan, mengembalikan poin yang dipakai klaim reward, serta memulihkan stok hadiah fisik ke katalog program hadiah.',
+            'Sinkronisasi Live Kas Cicilan Piutang ke Shift Kasir (tempo.js & pos-shift.js): Pembayaran angsuran piutang tempo via "Kas Tunai Toko" kini langsung disinkronkan ke Kas Masuk Shift Kasir yang sedang aktif. Mencegah selisih uang fisik laci kasir saat tutup shift (Z-Report).',
+            'Transparansi Rekonsiliasi Kas Laci (pos-shift.js): Menampilkan rincian "(incl. Cicilan Piutang)" pada modal X-Report, modal Z-Report, dan cetak struk thermal settlement agar kasir dan pemilik toko dapat mengaudit asal-usul uang tunai dengan presisi.',
+            'Sinkronisasi Multi-Channel v1.9.80 (Android VersionCode 10980): Terkompilasi dan tersinkronisasi penuh ke Vite build, paket flashdisk, dan Capacitor Android.'
+        ]
+    },
+    {
         id: 'log-1-9-79',
         version: 'v1.9.79',
         date: '2026-09-28',

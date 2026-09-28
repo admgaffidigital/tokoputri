@@ -661,6 +661,49 @@ export const recordTransactionToShift = (orderData) => {
     }
 };
 
+// ─── Rekam Pembayaran Cicilan Piutang Tunai ke Shift Kasir Aktif ────
+export const recordTempoPaymentToShift = (amount, orderId, note = '') => {
+    try {
+        const shift = getActiveShift();
+        if (!shift || shift.status !== 'open') return false;
+
+        const val = parseFloat(amount) || 0;
+        if (val <= 0) return false;
+
+        shift.cashSales = (shift.cashSales || 0) + val;
+        shift.tempoInstallmentCash = (shift.tempoInstallmentCash || 0) + val;
+
+        if (!Array.isArray(shift.tempoPayments)) shift.tempoPayments = [];
+        shift.tempoPayments.push({
+            orderId: orderId,
+            amount: val,
+            timestamp: Date.now(),
+            note: note || `Cicilan Piutang #${orderId}`
+        });
+
+        saveActiveShift(shift);
+
+        try {
+            const updatePayload = {
+                cashSales: shift.cashSales,
+                tempoInstallmentCash: shift.tempoInstallmentCash,
+                tempoPayments: shift.tempoPayments,
+                lastUpdatedISO: new Date().toISOString()
+            };
+            db.collection('freshmart').doc('cms_data').collection('pos_shifts').doc(shift.id).update(updatePayload).catch(() => {});
+            db.collection('pos_shifts').doc(shift.id).update(updatePayload).catch(() => {});
+        } catch (_) {}
+
+        if (typeof window.renderShiftHeaderBadge === 'function') {
+            window.renderShiftHeaderBadge();
+        }
+        return true;
+    } catch (err) {
+        console.warn('[POS Shift] Gagal rekam pembayaran cicilan ke shift:', err);
+        return false;
+    }
+};
+
 // ─── Modal Ringkasan Shift Berjalan (X-Report) ───────────────
 export const openShiftSummaryModal = () => {
     const shift = getActiveShift();
@@ -737,6 +780,14 @@ export const openShiftSummaryModal = () => {
                             </span>
                             <span class="font-bold text-slate-800 dark:text-white">${fRp(shift.cashSales || 0)}</span>
                         </div>
+                        ${(shift.tempoInstallmentCash || 0) > 0 ? `
+                        <div class="flex justify-between items-center p-2 rounded-xl bg-amber-50/70 dark:bg-amber-950/30 border border-amber-200/60 dark:border-amber-800/40 text-[11px]">
+                            <span class="text-amber-700 dark:text-amber-300 flex items-center gap-2">
+                                <span class="w-6 h-6 rounded-lg bg-amber-100 dark:bg-amber-900/60 text-amber-600 flex items-center justify-center text-[10px]"><i class="fa-solid fa-hand-holding-dollar"></i></span>
+                                <span>Dari Cicilan Piutang (Kas Masuk)</span>
+                            </span>
+                            <span class="font-bold text-amber-700 dark:text-amber-300">+${fRp(shift.tempoInstallmentCash)}</span>
+                        </div>` : ''}
                         <div class="flex justify-between items-center p-2 rounded-xl bg-slate-50 dark:bg-slate-800/40">
                             <span class="text-slate-600 dark:text-slate-300 flex items-center gap-2">
                                 <span class="w-6 h-6 rounded-lg bg-indigo-100 dark:bg-indigo-950/60 text-indigo-600 flex items-center justify-center text-[10px]"><i class="fa-solid fa-qrcode"></i></span>
@@ -854,7 +905,7 @@ export const openPOSCloseShiftModal = () => {
                     <div>
                         <span class="text-[10px] uppercase font-black text-slate-400 block tracking-wider">Uang Kas Sistem (Seharusnya di Laci)</span>
                         <div class="text-xs text-slate-600 dark:text-slate-300 mt-0.5">
-                            Modal Awal: <b>${fRp(shift.startingCash)}</b> + Penjualan Tunai: <b>${fRp(shift.cashSales || 0)}</b>
+                            Modal Awal: <b>${fRp(shift.startingCash)}</b> + Kas Masuk: <b>${fRp(shift.cashSales || 0)}</b>${(shift.tempoInstallmentCash || 0) > 0 ? ` <span class="text-amber-600 dark:text-amber-400 font-semibold">(incl. Cicilan +${fRp(shift.tempoInstallmentCash)})</span>` : ''}
                         </div>
                     </div>
                     <div class="text-right">
@@ -1299,7 +1350,9 @@ export const printShiftSettlementReceipt = (shift, isXReport = false, forcePrevi
                 <div class="border-t border-dashed border-slate-300 dark:border-slate-700 my-2"></div>
                 <div class="font-bold">REKONSILIASI KAS LACI:</div>
                 <div class="flex justify-between"><span>Modal Awal</span><span>${fRp(shift.startingCash)}</span></div>
-                <div class="flex justify-between"><span>Penjualan Tunai</span><span>${fRp(shift.cashSales || 0)}</span></div>
+                <div class="flex justify-between"><span>Penjualan Tunai</span><span>${fRp((shift.cashSales || 0) - (shift.tempoInstallmentCash || 0))}</span></div>
+                ${(shift.tempoInstallmentCash || 0) > 0 ? `
+                <div class="flex justify-between text-amber-600"><span>+ Cicilan Piutang</span><span>+${fRp(shift.tempoInstallmentCash)}</span></div>` : ''}
                 <div class="flex justify-between font-bold"><span>Kas Sistem</span><span>${fRp(expectedCash)}</span></div>
                 ${!isXReport ? `
                 <div class="flex justify-between font-bold"><span>Kas Fisik Dihitung</span><span>${fRp(actualCash)}</span></div>
@@ -1554,6 +1607,7 @@ window.posSetStartCashPreset      = posSetStartCashPreset;
 window.posUpdateStartCashChips    = posUpdateStartCashChips;
 window.confirmStartPOSShift       = confirmStartPOSShift;
 window.recordTransactionToShift   = recordTransactionToShift;
+window.recordTempoPaymentToShift  = recordTempoPaymentToShift;
 window.openPOSShiftModal          = openShiftSummaryModal;
 window.openPOSShiftSummaryModal   = openShiftSummaryModal;
 window.closePOSShiftSummaryModal  = closePOSShiftSummaryModal;

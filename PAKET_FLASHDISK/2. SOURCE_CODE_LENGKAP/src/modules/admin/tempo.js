@@ -841,9 +841,20 @@ window.submitTempoPayment = async (e, orderId) => {
             }
         }
 
+        // ── SINKRONISASI KAS MASUK KE SHIFT KASIR POS AKTIF ──
+        let isShiftSynced = false;
+        if (payMethod === 'Kas Tunai Toko' && typeof window.recordTempoPaymentToShift === 'function') {
+            const custName = data.customer?.name || 'Pelanggan';
+            isShiftSynced = window.recordTempoPaymentToShift(amount, orderId, `Cicilan #${orderId.split('-').pop()} (${custName})`);
+        }
+
         hLoad();
         window.closeTempoPaymentModal();
-        showToast('Pembayaran cicilan berhasil dicatat! 💰');
+        if (isShiftSynced) {
+            showToast('Cicilan dicatat & otomatis masuk ke Kas Laci Kasir! 💰');
+        } else {
+            showToast('Pembayaran cicilan berhasil dicatat! 💰');
+        }
 
         // Segarkan data piutang
         if (window.rAdmPiutang) window.rAdmPiutang();

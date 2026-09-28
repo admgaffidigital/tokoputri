@@ -636,18 +636,293 @@ export const closeOrderDetailModal = (fH = false) => {
 };
 
 /**
- * Ubah status pesanan di Firestore
+ * Pulihkan stok barang fisik dan rollback poin/hadiah saat pesanan dibatalkan atau dihapus
+ */
+export const restoreOrderStockAndRewards = async (orderId, orderData = null) => {
+    try {
+        let ord = orderData;
+        if (!ord) {
+            const doc = await db.collection("freshmart_orders").doc(orderId).get();
+            if (!doc.exists) return;
+            ord = doc.data();
+        }
+        if (!ord) return;
+
+        const useStk = appData.store?.useStock === true || appData.store?.useStock === 'true';
+
+        // 1. KEMBALIKAN STOK BARANG & VARIAN (Jika manajemen stok aktif & belum pernah di-restock)
+        if (useStk && !ord.isStockRestocked && Array.isArray(ord.items) && ord.items.length > 0) {
+            for (const it of ord.items) {
+                const pId = it.id != null ? String(it.id) : null;
+                const qty = parseFloat(it.qty) || 0;
+                if (!pId || qty <= 0) continue;
+
+                try {
+                    const pRef = db.collection("freshmart").doc("cms_data").collection("products").doc(pId);
+                    const pSnap = await pRef.get();
+                    if (pSnap.exists) {
+                        const pData = pSnap.data();
+                        let newStock = (parseFloat(pData.stock) || 0) + qty;
+                        let updatePayload = { stock: newStock };
+
+                        // Jika item bervarian
+                        if (it.variantName && Array.isArray(pData.variants)) {
+                            const vIdx = pData.variants.findIndex(v => v.name === it.variantName);
+                            if (vIdx !== -1) {
+                                pData.variants[vIdx].stock = (parseFloat(pData.variants[vIdx].stock) || 0) + qty;
+                                if (pData.variants[vIdx].stock > 0) {
+                                    pData.variants[vIdx].isActive = true;
+                                }
+                                updatePayload.variants = pData.variants;
+                            }
+                        }
+
+                        await pRef.update(updatePayload);
+
+                        // Update in-memory appData.products
+                        if (Array.isArray(appData.products)) {
+                            const localProd = appData.products.find(p => String(p.id) === pId);
+                            if (localProd) {
+                                localProd.stock = newStock;
+                                if (updatePayload.variants) localProd.variants = updatePayload.variants;
+                            }
+                        }
+                    }
+                } catch (errP) {
+                    console.warn(`[Auto-Restock] Gagal restock produk ${pId}:`, errP);
+                }
+            }
+            ord.isStockRestocked = true;
+        }
+
+        // 2. ROLLBACK POIN & HADIAH MEMBER (Jika pesanan member & belum pernah di-rollback)
+        const custPhone = ord.customerPhone || ord.customer?.wa;
+        if (!ord.isPointsRolledBack && custPhone) {
+            try {
+                const cRef = db.collection("freshmart").doc("cms_data").collection("customers").doc(custPhone);
+                const cSnap = await cRef.get();
+                if (cSnap.exists) {
+                    const cData = cSnap.data();
+                    let currentPts = parseFloat(cData.points) || 0;
+
+                    // Tarik kembali poin belanja yang didapat dari pesanan ini
+                    const earned = parseFloat(ord.pointsEarned) || 0;
+                    if (earned > 0) {
+                        currentPts = Math.max(0, currentPts - earned);
+                    }
+
+                    // Kembalikan poin yang digunakan untuk klaim hadiah
+                    if (ord.claimedReward && ord.claimedReward.id) {
+                        const cost = parseFloat(ord.claimedReward.pointsCost) || 0;
+                        if (cost > 0) currentPts += cost;
+
+                        // Kembalikan stok hadiah fisik ke katalog
+                        try {
+                            const rRef = db.collection("freshmart").doc("cms_data").collection("rewards").doc(String(ord.claimedReward.id));
+                            const rSnap = await rRef.get();
+                            if (rSnap.exists) {
+                                const rData = rSnap.data();
+                                const newRewStock = (parseFloat(rData.stock) || 0) + 1;
+                                await rRef.update({ stock: newRewStock });
+                                if (Array.isArray(appData.rewards)) {
+                                    const lRew = appData.rewards.find(r => String(r.id) === String(ord.claimedReward.id));
+                                    if (lRew) lRew.stock = newRewStock;
+                                }
+                            }
+                        } catch (errR) {
+                            console.warn(`[Auto-Restock] Gagal restock hadiah:`, errR);
+                        }
+
+                        ord.claimedReward.status = 'cancelled';
+                    }
+
+                    await cRef.update({ points: currentPts });
+
+                    // Update in-memory appData.customers
+                    if (Array.isArray(appData.customers)) {
+                        const lCust = appData.customers.find(c => String(c.phone) === custPhone || String(c.id) === custPhone);
+                        if (lCust) lCust.points = currentPts;
+                    }
+                }
+            } catch (errC) {
+                console.warn(`[Auto-Restock] Gagal rollback poin member:`, errC);
+            }
+            ord.isPointsRolledBack = true;
+        }
+
+        // Simpan flag di pesanan Firestore jika pesanan masih ada
+        await db.collection("freshmart_orders").doc(orderId).update({
+            isStockRestocked: ord.isStockRestocked || false,
+            isPointsRolledBack: ord.isPointsRolledBack || false,
+            ...(ord.claimedReward ? { claimedReward: ord.claimedReward } : {})
+        }).catch(() => {});
+
+        // Update in-memory gOrds
+        if (Array.isArray(gOrds)) {
+            const mIdx = gOrds.findIndex(o => o.orderId === orderId);
+            if (mIdx !== -1) {
+                gOrds[mIdx].isStockRestocked = ord.isStockRestocked;
+                gOrds[mIdx].isPointsRolledBack = ord.isPointsRolledBack;
+                if (ord.claimedReward) gOrds[mIdx].claimedReward = ord.claimedReward;
+            }
+        }
+    } catch (e) {
+        console.error('[Auto-Restock] Gagal proses pemulihan stok/poin:', e);
+    }
+};
+
+/**
+ * Potong kembali stok barang dan alokasikan poin jika status 'Dibatalkan' diubah kembali ke status aktif
+ */
+export const deductOrderStockAndRewards = async (orderId, orderData = null) => {
+    try {
+        let ord = orderData;
+        if (!ord) {
+            const doc = await db.collection("freshmart_orders").doc(orderId).get();
+            if (!doc.exists) return;
+            ord = doc.data();
+        }
+        if (!ord) return;
+
+        const useStk = appData.store?.useStock === true || appData.store?.useStock === 'true';
+
+        // 1. POTONG KEMBALI STOK BARANG & VARIAN (Jika sebelumnya sudah di-restock)
+        if (useStk && ord.isStockRestocked && Array.isArray(ord.items) && ord.items.length > 0) {
+            for (const it of ord.items) {
+                const pId = it.id != null ? String(it.id) : null;
+                const qty = parseFloat(it.qty) || 0;
+                if (!pId || qty <= 0) continue;
+
+                try {
+                    const pRef = db.collection("freshmart").doc("cms_data").collection("products").doc(pId);
+                    const pSnap = await pRef.get();
+                    if (pSnap.exists) {
+                        const pData = pSnap.data();
+                        let newStock = Math.max(0, (parseFloat(pData.stock) || 0) - qty);
+                        let updatePayload = { stock: newStock };
+
+                        if (it.variantName && Array.isArray(pData.variants)) {
+                            const vIdx = pData.variants.findIndex(v => v.name === it.variantName);
+                            if (vIdx !== -1) {
+                                pData.variants[vIdx].stock = Math.max(0, (parseFloat(pData.variants[vIdx].stock) || 0) - qty);
+                                if (pData.variants[vIdx].stock <= 0) {
+                                    pData.variants[vIdx].isActive = false;
+                                }
+                                updatePayload.variants = pData.variants;
+                            }
+                        }
+
+                        await pRef.update(updatePayload);
+
+                        if (Array.isArray(appData.products)) {
+                            const localProd = appData.products.find(p => String(p.id) === pId);
+                            if (localProd) {
+                                localProd.stock = newStock;
+                                if (updatePayload.variants) localProd.variants = updatePayload.variants;
+                            }
+                        }
+                    }
+                } catch (errP) {
+                    console.warn(`[Auto-Deduct] Gagal potong stok produk ${pId}:`, errP);
+                }
+            }
+            ord.isStockRestocked = false;
+        }
+
+        // 2. KEMBALIKAN ALOKASI POIN & STOK HADIAH
+        const custPhone = ord.customerPhone || ord.customer?.wa;
+        if (ord.isPointsRolledBack && custPhone) {
+            try {
+                const cRef = db.collection("freshmart").doc("cms_data").collection("customers").doc(custPhone);
+                const cSnap = await cRef.get();
+                if (cSnap.exists) {
+                    const cData = cSnap.data();
+                    let currentPts = parseFloat(cData.points) || 0;
+
+                    const earned = parseFloat(ord.pointsEarned) || 0;
+                    if (earned > 0) currentPts += earned;
+
+                    if (ord.claimedReward && ord.claimedReward.id) {
+                        const cost = parseFloat(ord.claimedReward.pointsCost) || 0;
+                        if (cost > 0) currentPts = Math.max(0, currentPts - cost);
+
+                        try {
+                            const rRef = db.collection("freshmart").doc("cms_data").collection("rewards").doc(String(ord.claimedReward.id));
+                            const rSnap = await rRef.get();
+                            if (rSnap.exists) {
+                                const rData = rSnap.data();
+                                const newRewStock = Math.max(0, (parseFloat(rData.stock) || 0) - 1);
+                                await rRef.update({ stock: newRewStock });
+                                if (Array.isArray(appData.rewards)) {
+                                    const lRew = appData.rewards.find(r => String(r.id) === String(ord.claimedReward.id));
+                                    if (lRew) lRew.stock = newRewStock;
+                                }
+                            }
+                        } catch (errR) {
+                            console.warn(`[Auto-Deduct] Gagal potong stok hadiah:`, errR);
+                        }
+
+                        ord.claimedReward.status = 'pending';
+                    }
+
+                    await cRef.update({ points: currentPts });
+
+                    if (Array.isArray(appData.customers)) {
+                        const lCust = appData.customers.find(c => String(c.phone) === custPhone || String(c.id) === custPhone);
+                        if (lCust) lCust.points = currentPts;
+                    }
+                }
+            } catch (errC) {
+                console.warn(`[Auto-Deduct] Gagal alokasi ulang poin member:`, errC);
+            }
+            ord.isPointsRolledBack = false;
+        }
+
+        await db.collection("freshmart_orders").doc(orderId).update({
+            isStockRestocked: false,
+            isPointsRolledBack: false,
+            ...(ord.claimedReward ? { claimedReward: ord.claimedReward } : {})
+        }).catch(() => {});
+
+        if (Array.isArray(gOrds)) {
+            const mIdx = gOrds.findIndex(o => o.orderId === orderId);
+            if (mIdx !== -1) {
+                gOrds[mIdx].isStockRestocked = false;
+                gOrds[mIdx].isPointsRolledBack = false;
+                if (ord.claimedReward) gOrds[mIdx].claimedReward = ord.claimedReward;
+            }
+        }
+    } catch (e) {
+        console.error('[Auto-Deduct] Gagal proses deduksi stok/poin:', e);
+    }
+};
+
+/**
+ * Ubah status pesanan di Firestore dengan Auto-Restock & Rollback cerdas
  */
 export const updateOrderStatus = async (i, s) => {
     if (isSaving) return; 
     setIsSaving(true); 
     sLoad('Update...');
     try { 
+        let ord = gOrds.find(x => x.orderId === i);
+        const oldStatus = ord ? ord.status : null;
+
         await db.collection("freshmart_orders").doc(i).update({ status: s }); 
-        let ord = gOrds.find(x => x.orderId === i); 
         if (ord) ord.status = s; 
+
+        // ── AUTO-RESTOCK & ROLLBACK GUARD ──
+        if (s === 'Dibatalkan' && oldStatus !== 'Dibatalkan') {
+            await restoreOrderStockAndRewards(i, ord);
+            showToast("Pesanan dibatalkan & stok dikembalikan ke toko!", "info");
+        } else if (oldStatus === 'Dibatalkan' && s !== 'Dibatalkan') {
+            await deductOrderStockAndRewards(i, ord);
+            showToast("Pesanan diaktifkan kembali & stok dipotong!", "info");
+        } else {
+            showToast("Status diupdate!"); 
+        }
+
         openOrderDetail(i); 
-        showToast("Status diupdate!"); 
     } catch(e) { 
         showToast("Gagal!"); 
     } finally { 
@@ -743,16 +1018,21 @@ export const konfirmasiKeWAPenerima = async (orderId) => {
 };
 
 /**
- * Hapus pesanan permanen dari Firestore
+ * Hapus pesanan permanen dari Firestore dengan proteksi pemulihan stok
  */
 export const deleteOrder = (i) => {
-    showConfirm("Hapus Pesanan", "Yakin ingin hapus permanen?", async () => {
+    showConfirm("Hapus Pesanan", "Yakin ingin menghapus pesanan ini secara permanen? Jika pesanan belum dibatalkan, stok barang akan otomatis dikembalikan ke toko.", async () => {
         if (isSaving) return; 
         setIsSaving(true); 
         sLoad('Menghapus...');
         try { 
+            let ord = gOrds.find(x => x.orderId === i);
+            if (!ord || ord.status !== 'Dibatalkan') {
+                // Pulihkan stok dan rollback poin/hadiah sebelum pesanan dihapus
+                await restoreOrderStockAndRewards(i, ord);
+            }
             await db.collection("freshmart_orders").doc(i).delete(); 
-            showToast("Terhapus!"); 
+            showToast("Pesanan terhapus & stok aman!"); 
             if (cVOrd === i) closeOrderDetailModal(); 
         } catch(e) { 
             showToast("Gagal!"); 
