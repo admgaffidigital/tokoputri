@@ -8,6 +8,24 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-9-76',
+        version: 'v1.9.76',
+        date: '2026-09-28',
+        title: 'Ekosistem Piutang Multi-Tab (Nota Tagihan A4, Struk RawBT, Kartu Pelanggan, Histori Cicilan) & Reward Loyalitas Kasir POS (Diskon Poin, Klaim Hadiah, Point Ledger)',
+        category: 'feature',
+        badge: 'Smart Tempo & Loyalty POS v1.9.76',
+        items: [
+            'Nota Tagihan A4 Resmi Toko Putri (tempo_invoice): Menghadirkan dokumen cetak tagihan piutang A4 berstandar korporat yang memuat kop toko resmi, status jatuh tempo, rincian barang, rekap pembayaran/cicilan masuk, kalkulasi denda keterlambatan, sisa tagihan wajib bayar, rekening transfer resmi toko, serta kolom tanda tangan debitur & pihak toko.',
+            'Kartu Piutang per Pelanggan (tempo_customer_ledger): Lembar rekapitulasi rekening piutang gabungan (Statement of Account) untuk pelanggan yang memiliki multi-nota tempo berjalan, lengkap dengan agregasi total transaksi, akumulasi cicilan masuk, denda berjalan, dan grand total tagihan outstanding.',
+            'Cetak Struk Piutang & Cicilan Thermal ESC/POS RawBT: Driver biner ESC/POS RawBT kini mendukung pencetakan langsung struk nota tempo dan struk pembayaran cicilan/pelunasan pada printer thermal 58mm/80mm, mencakup sisa hutang dan histori cicilan.',
+            'Navigasi 3 Tab Manajemen Piutang Admin (tempo.js): Tab Nota Tagihan (filter status berjalan, jatuh tempo H-3, terlambat), Tab Kartu Piutang per Pelanggan (pengelompokan debitur, tagih konsolidasi via WhatsApp multi-nota 1-klik, cetak kartu A4), dan Tab Histori Rincian Cicilan Masuk (filter periode dan metode bayar Tunai/Transfer/QRIS, serta total nominal uang cicilan masuk terkumpul).',
+            'Diskon Poin Belanja Instan di Kasir POS (Point-to-Cash): Kasir POS kini dapat menerapkan diskon saldo poin member langsung saat pembayaran dengan chips cepat (10 Poin, 20 Poin, Maksimal, Batal) disertai Margin Guard anti-jual rugi yang memastikan total transaksi tidak pernah berada di bawah total modal HPP keranjang.',
+            'Klaim Hadiah Katalog Reward di Kasir POS: Kasir dapat memproses klaim penukaran hadiah fisik member langsung dari katalog reward aktif, otomatis memotong saldo poin member dan stok hadiah di Firestore.',
+            'Buku Besar Riwayat Mutasi Poin & Hadiah (Point Ledger): Menghadirkan pelacakan kronologis perolehan poin belanja (+Poin), penukaran diskon kasir (-Poin), dan penukaran hadiah katalog (-Poin) di modal Kartu Member Digital dan struk belanja kasir.',
+            'Sinkronisasi Multi-Channel v1.9.76 (Android VersionCode 10976): Terkompilasi dan tersinkronisasi penuh ke Vite build, paket flashdisk, dan Capacitor Android.'
+        ]
+    },
+    {
         id: 'log-1-9-75',
         version: 'v1.9.75',
         date: '2026-09-27',

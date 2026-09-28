@@ -46,6 +46,8 @@ try {
     if (savedMode === 'list' || savedMode === 'grid') posCatalogViewMode = savedMode;
 } catch (e) {}
 let posCustomer     = { name: '', phone: '', isMember: false, memberId: null, isNewTempo: false };
+let posPointsRedeemed = 0;
+let posClaimedReward  = null;
 let posPayMethod    = 'cash';
 let posPaidAmount   = 0;
 let posGlobalDisc   = 0;
@@ -104,6 +106,25 @@ export const formatQty = (n) => {
 };
 const fRp  = (n) => fCur(n);
 
+export const getPointValue = () => parseFloat(appData.store?.pointValue) || 1000;
+export const posMemberPointsDiscount = () => Math.max(0, (parseFloat(posPointsRedeemed) || 0) * getPointValue());
+
+export const getMaxRedeemablePoints = () => {
+    if (!posCustomer.isMember || !posCustomer.points) return 0;
+    const availablePts = Math.max(0, parseFloat(posCustomer.points) || 0);
+    const rewardCost = posClaimedReward ? (parseFloat(posClaimedReward.pointsCost) || 0) : 0;
+    const remainingPts = Math.max(0, availablePts - rewardCost);
+    const ptVal = getPointValue();
+    if (ptVal <= 0) return 0;
+
+    const currentSubAfterDisc = Math.max(0, posSubtotal() - posDiscountAmount());
+    const totalHpp = getCartTotalHpp();
+    const maxDiscountAllowed = Math.max(0, currentSubAfterDisc - totalHpp);
+    const maxPtsByHpp = Math.floor(maxDiscountAllowed / ptVal);
+
+    return Math.min(remainingPts, maxPtsByHpp);
+};
+
 const posSubtotal = () => posCart.reduce((s, i) => s + i.subtotal, 0);
 
 // Hitung total modal HPP seluruh item di keranjang kasir
@@ -132,7 +153,17 @@ export const posDiscountAmount = () => {
     return disc;
 };
 
-const posTotal    = () => Math.max(0, posSubtotal() - posDiscountAmount());
+const posTotal    = () => {
+    const sub = posSubtotal();
+    const gDisc = posDiscountAmount();
+    const ptDisc = posMemberPointsDiscount();
+    let total = Math.max(0, sub - gDisc - ptDisc);
+    const totalHpp = getCartTotalHpp();
+    if (totalHpp > 0 && total < totalHpp) {
+        total = totalHpp;
+    }
+    return total;
+};
 const posChange   = () => posPaidAmount - posTotal();
 
 // Status dan Ketersediaan Stok Produk Kasir (Identik 1:1 dengan Storefront)
@@ -1593,6 +1624,8 @@ export const openPayModal = () => {
     }
     if (typeof window.pushModalHistory === 'function') window.pushModalHistory('posPayment');
     posCustomer   = { name: '', phone: '', isMember: false, memberId: null, isNewTempo: false };
+    posPointsRedeemed = 0;
+    posClaimedReward  = null;
     posPayMethod  = 'cash';
     posPaidAmount = posTotal(); // default: uang pas
     ensureCustomersLoaded(); // Prefetch member di background agar lookup instan
@@ -1693,14 +1726,34 @@ const renderPayDetail = (method) => {
     const total  = posTotal();
     const totalCartHpp = getCartTotalHpp();
     const estMargin = Math.max(0, total - totalCartHpp);
+    const ptDisc = posMemberPointsDiscount();
     const topRow = `
       <div class="p-3 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-100 dark:border-slate-700/60 mb-2.5 text-xs space-y-1.5">
         <div class="flex justify-between items-center">
-          <span class="text-slate-500 font-medium">Total yang Harus Dibayar</span>
+          <span class="text-slate-500 font-medium">Subtotal Belanja</span>
+          <span class="font-bold font-mono text-xs">${fRp(posSubtotal())}</span>
+        </div>
+        ${posDiscountAmount() > 0 ? `
+        <div class="flex justify-between items-center text-rose-500 text-[11px]">
+          <span>Diskon Toko</span>
+          <span class="font-bold font-mono">- ${fRp(posDiscountAmount())}</span>
+        </div>` : ''}
+        ${ptDisc > 0 ? `
+        <div class="flex justify-between items-center text-emerald-600 dark:text-emerald-400 text-[11px]">
+          <span class="flex items-center gap-1 font-bold"><i class="fa-solid fa-tags"></i> Diskon Poin (${posPointsRedeemed} Pts)</span>
+          <span class="font-black font-mono">- ${fRp(ptDisc)}</span>
+        </div>` : ''}
+        ${posClaimedReward ? `
+        <div class="flex justify-between items-center text-purple-600 dark:text-purple-400 text-[11px]">
+          <span class="flex items-center gap-1 font-bold"><i class="fa-solid fa-gift"></i> Klaim Hadiah</span>
+          <span class="font-bold truncate max-w-[170px]">${esc(posClaimedReward.name)} (-${posClaimedReward.pointsCost} Pts)</span>
+        </div>` : ''}
+        <div class="flex justify-between items-center pt-1.5 border-t border-slate-200/60 dark:border-slate-700/60">
+          <span class="text-slate-700 dark:text-slate-200 font-bold">Total Wajib Bayar</span>
           <span class="font-black text-sm" style="color:var(--color-primary)">${fRp(total)}</span>
         </div>
         ${totalCartHpp > 0 ? `
-        <div class="flex justify-between items-center pt-1.5 border-t border-slate-200/60 dark:border-slate-700/60 text-[10px]">
+        <div class="flex justify-between items-center pt-1 border-t border-slate-200/40 dark:border-slate-700/40 text-[10px]">
           <span class="text-slate-400 font-semibold flex items-center gap-1"><i class="fa-solid fa-coins text-amber-500"></i> Total Modal (HPP):</span>
           <span class="font-bold text-amber-600 dark:text-amber-400">${fRp(totalCartHpp)}</span>
         </div>
@@ -2043,42 +2096,183 @@ const queryMemberFromFirestore = async (query) => {
     return null;
 };
 
+export const renderPosMemberResult = () => {
+    const r = el('pos-member-result');
+    if (!r || !posCustomer.isMember) return;
+    const pts = parseFloat(posCustomer.points) || 0;
+    const tier = typeof window.getMemberTier === 'function' ? window.getMemberTier(pts) : { badge: 'MEMBER RESMI' };
+    const pointVal = getPointValue();
+    const currentPtDiscount = posMemberPointsDiscount();
+    const maxPts = getMaxRedeemablePoints();
+    
+    // Filter hadiah aktif yang stoknya > 0
+    const activeRewards = (appData.rewards || []).filter(rw => rw.isActive !== 'false' && rw.isActive !== false && (parseFloat(rw.stock) || 0) > 0);
+    const remainingPtsAfterRedeem = Math.max(0, pts - (posPointsRedeemed || 0));
+
+    r.innerHTML = `
+    <div class="space-y-2.5">
+      <!-- Info Member Bar -->
+      <div class="p-3 bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-950/40 dark:to-teal-950/30 rounded-2xl border border-emerald-300 dark:border-emerald-700/60 shadow-xs flex items-center justify-between gap-2.5">
+        <div class="flex items-center gap-2.5 min-w-0">
+          <div class="w-10 h-10 rounded-xl bg-emerald-500 text-white flex items-center justify-center shrink-0 shadow-xs">
+            <i class="fa-solid fa-id-card text-base"></i>
+          </div>
+          <div class="min-w-0">
+            <div class="flex items-center gap-1.5 flex-wrap">
+              <span class="text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-900/60 text-emerald-800 dark:text-emerald-200 border border-emerald-300 dark:border-emerald-700">${esc(tier.badge || 'VIP')}</span>
+              <span class="text-[10px] font-black text-amber-600 dark:text-amber-400 flex items-center gap-0.5"><i class="fa-solid fa-star text-[9px]"></i>${pts} Poin</span>
+            </div>
+            <p class="text-xs font-black text-slate-800 dark:text-white truncate mt-0.5">${esc(posCustomer.name || 'Pelanggan Setia')}</p>
+            <p class="text-[10px] text-slate-500 dark:text-slate-400 font-mono">${esc(posCustomer.phone || '')}</p>
+          </div>
+        </div>
+        <button onclick="window.resetPosMember()" type="button" class="shrink-0 px-2.5 py-1.5 rounded-xl text-[10px] font-bold text-slate-600 hover:text-rose-600 dark:text-slate-300 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 transition-all cursor-pointer" title="Ganti Member">
+          <i class="fa-solid fa-rotate-left mr-1"></i>Ganti
+        </button>
+      </div>
+
+      <!-- PANEL LOYALITAS KASIR: TUKAR POIN DISKON & KLAIM REWARD -->
+      ${pts > 0 ? `
+      <div class="p-3 bg-white dark:bg-slate-800/90 rounded-2xl border border-slate-200 dark:border-slate-700 space-y-3 shadow-xs">
+        <!-- 1. Tukar Poin Jadi Diskon Belanja Langsung -->
+        <div>
+          <div class="flex items-center justify-between text-xs mb-1.5">
+            <span class="font-bold text-slate-700 dark:text-slate-200 flex items-center gap-1.5">
+              <i class="fa-solid fa-tags text-emerald-500"></i>
+              <span>Tukar Poin Diskon Belanja</span>
+            </span>
+            <span class="text-[10px] text-slate-400 font-semibold font-mono">1 Poin = ${fRp(pointVal)}</span>
+          </div>
+
+          ${posPointsRedeemed > 0 ? `
+          <div class="p-2.5 bg-emerald-50 dark:bg-emerald-950/40 rounded-xl border border-emerald-200 dark:border-emerald-800/60 flex items-center justify-between gap-2">
+            <div class="text-xs">
+              <span class="font-bold text-emerald-700 dark:text-emerald-300">Potongan Belanja:</span>
+              <span class="font-black font-mono text-emerald-600 dark:text-emerald-400 ml-1">-${fRp(currentPtDiscount)}</span>
+              <span class="text-[10px] text-slate-500 ml-1">(${posPointsRedeemed} Poin)</span>
+            </div>
+            <button type="button" onclick="window.setPosPointsRedeemed(0)" class="text-[10px] font-bold text-rose-500 hover:underline cursor-pointer">
+              Batal
+            </button>
+          </div>
+          ` : `
+          <div class="space-y-2">
+            <div class="flex gap-1.5 flex-wrap">
+              ${[10, 20, 50].map(n => {
+                if (n > maxPts) return '';
+                return `
+                <button type="button" onclick="window.setPosPointsRedeemed(${n})" class="px-2.5 py-1.5 rounded-lg text-[10px] font-bold bg-slate-100 hover:bg-emerald-50 hover:text-emerald-700 dark:bg-slate-700 dark:hover:bg-emerald-900/40 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-600 transition-all cursor-pointer">
+                  Tukar ${n} Pts (-${fRp(n * pointVal)})
+                </button>
+                `;
+              }).join('')}
+              ${maxPts > 0 ? `
+              <button type="button" onclick="window.setPosPointsRedeemed(${maxPts})" class="px-2.5 py-1.5 rounded-lg text-[10px] font-bold bg-emerald-600 text-white hover:bg-emerald-700 transition-all cursor-pointer shadow-xs">
+                Maksimal (${maxPts} Pts)
+              </button>
+              ` : ''}
+            </div>
+            ${maxPts <= 0 ? `
+            <p class="text-[10px] text-slate-400 italic">* Batas harga modal HPP atau saldo poin telah tercapai.</p>
+            ` : ''}
+          </div>
+          `}
+        </div>
+
+        <!-- 2. Klaim Hadiah Katalog Langsung di Kasir -->
+        ${activeRewards.length > 0 ? `
+        <div class="pt-2.5 border-t border-slate-100 dark:border-slate-700/60">
+          <div class="flex items-center justify-between text-xs mb-1.5">
+            <span class="font-bold text-slate-700 dark:text-slate-200 flex items-center gap-1.5">
+              <i class="fa-solid fa-gift text-purple-500"></i>
+              <span>Klaim Hadiah Katalog Reward</span>
+            </span>
+            <span class="text-[10px] text-slate-400 font-semibold">Tersisa: ${remainingPtsAfterRedeem} Poin</span>
+          </div>
+
+          ${posClaimedReward ? `
+          <div class="p-2.5 bg-purple-50 dark:bg-purple-950/40 rounded-xl border border-purple-200 dark:border-purple-800/60 flex items-center justify-between gap-2">
+            <div class="text-xs min-w-0">
+              <span class="font-bold text-purple-800 dark:text-purple-300 block truncate">🎁 ${esc(posClaimedReward.name)}</span>
+              <span class="text-[10px] text-purple-600 dark:text-purple-400 font-mono">Ditukar dengan ${posClaimedReward.pointsCost} Poin</span>
+            </div>
+            <button type="button" onclick="window.deselectPosReward()" class="text-[10px] font-bold text-rose-500 hover:underline cursor-pointer shrink-0">
+              Batal
+            </button>
+          </div>
+          ` : `
+          <div class="relative">
+            <select onchange="if(this.value){window.selectPosReward(this.value);}else{window.deselectPosReward();}" class="w-full text-xs py-2 pl-3 pr-8 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:outline-none focus:border-[var(--color-primary)]">
+              <option value="">-- Pilih Hadiah Member (Opsional) --</option>
+              ${activeRewards.map(rw => {
+                const cost = parseFloat(rw.pointsCost) || 0;
+                const canAfford = cost <= remainingPtsAfterRedeem;
+                return `
+                <option value="${rw.id}" ${canAfford ? '' : 'disabled'}>
+                  ${esc(rw.name)} (${cost} Poin) ${canAfford ? '' : '[Poin Kurang]'}
+                </option>
+                `;
+              }).join('')}
+            </select>
+          </div>
+          `}
+        </div>
+        ` : ''}
+      </div>
+      ` : ''}
+    </div>`;
+};
+
+export const setPosPointsRedeemed = (pts) => {
+    const maxAllowed = getMaxRedeemablePoints();
+    const requested = Math.min(maxAllowed, Math.max(0, parseInt(pts) || 0));
+    posPointsRedeemed = requested;
+    renderPosMemberResult();
+    renderPayDetail(posPayMethod);
+    const totalEl = document.querySelector('#pos-pay-modal .text-xs.text-slate-500 .font-black');
+    if (totalEl) totalEl.textContent = fRp(posTotal());
+};
+
+export const selectPosReward = (rewardId) => {
+    const r = (appData.rewards || []).find(x => String(x.id) === String(rewardId));
+    if (!r) return;
+    const cost = parseFloat(r.pointsCost) || 0;
+    const available = Math.max(0, (parseFloat(posCustomer.points) || 0) - (posPointsRedeemed || 0));
+    if (cost > available) {
+        showToast('Poin member tidak cukup untuk hadiah ini!', 'warning');
+        return;
+    }
+    posClaimedReward = { id: r.id, name: r.name, pointsCost: cost };
+    showToast(`Hadiah "${r.name}" dipilih!`, 'success');
+    renderPosMemberResult();
+    renderPayDetail(posPayMethod);
+    const totalEl = document.querySelector('#pos-pay-modal .text-xs.text-slate-500 .font-black');
+    if (totalEl) totalEl.textContent = fRp(posTotal());
+};
+
+export const deselectPosReward = () => {
+    posClaimedReward = null;
+    renderPosMemberResult();
+    renderPayDetail(posPayMethod);
+    const totalEl = document.querySelector('#pos-pay-modal .text-xs.text-slate-500 .font-black');
+    if (totalEl) totalEl.textContent = fRp(posTotal());
+};
+
 export const applyMemberToPos = (member) => {
     posCustomer.isMember = true;
     posCustomer.name     = member.name || 'Member Toko';
     posCustomer.phone    = member.phone || '';
     posCustomer.memberId = member.id || member._docId || member.phone;
     posCustomer.points   = parseFloat(member.points) || 0;
+    posPointsRedeemed    = 0;
+    posClaimedReward     = null;
 
     const inp = el('pos-cust-phone');
     if (inp) inp.value = member.phone || member.name || '';
 
-    const pts = posCustomer.points;
-    const tier = typeof window.getMemberTier === 'function' ? window.getMemberTier(pts) : { badge: 'MEMBER RESMI' };
-
-    const r = el('pos-member-result');
-    if (r) {
-        r.innerHTML = `
-        <div class="p-3 bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-950/40 dark:to-teal-950/30 rounded-2xl border border-emerald-300 dark:border-emerald-700/60 shadow-xs flex items-center justify-between gap-2.5">
-          <div class="flex items-center gap-2.5 min-w-0">
-            <div class="w-10 h-10 rounded-xl bg-emerald-500 text-white flex items-center justify-center shrink-0 shadow-xs">
-              <i class="fa-solid fa-id-card text-base"></i>
-            </div>
-            <div class="min-w-0">
-              <div class="flex items-center gap-1.5 flex-wrap">
-                <span class="text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-900/60 text-emerald-800 dark:text-emerald-200 border border-emerald-300 dark:border-emerald-700">${esc(tier.badge || 'VIP')}</span>
-                <span class="text-[10px] font-black text-amber-600 dark:text-amber-400 flex items-center gap-0.5"><i class="fa-solid fa-star text-[9px]"></i>${pts} Poin</span>
-              </div>
-              <p class="text-xs font-black text-slate-800 dark:text-white truncate mt-0.5">${esc(member.name || 'Pelanggan Setia')}</p>
-              <p class="text-[10px] text-slate-500 dark:text-slate-400 font-mono">${esc(member.phone || '')}</p>
-            </div>
-          </div>
-          <button onclick="window.resetPosMember()" type="button" class="shrink-0 px-2.5 py-1.5 rounded-xl text-[10px] font-bold text-slate-600 hover:text-rose-600 dark:text-slate-300 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 transition-all cursor-pointer" title="Ganti Member">
-            <i class="fa-solid fa-rotate-left mr-1"></i>Ganti
-          </button>
-        </div>`;
-    }
-    showToast(`Member terdeteksi: ${member.name} (${pts} Poin)`, 'success');
+    renderPosMemberResult();
+    renderPayDetail(posPayMethod);
+    showToast(`Member terdeteksi: ${member.name} (${posCustomer.points} Poin)`, 'success');
 };
 
 export const selectPosMember = (memberId) => {
@@ -2095,10 +2289,13 @@ export const resetPosMember = () => {
     posCustomer.phone    = '';
     posCustomer.memberId = null;
     posCustomer.points   = 0;
+    posPointsRedeemed    = 0;
+    posClaimedReward     = null;
     const inp = el('pos-cust-phone');
     if (inp) { inp.value = ''; inp.focus(); }
     const r = el('pos-member-result');
     if (r) r.innerHTML = '';
+    renderPayDetail(posPayMethod);
 };
 
 let _posMemberSearchTimer = null;
@@ -2319,6 +2516,7 @@ export const processPOSTx = async () => {
                 subtotal: posSubtotal(),
                 productDiscount: fNum(posGlobalDisc),
                 shippingCost: 0,
+                pointDiscount: posMemberPointsDiscount(),
                 grandTotal: posTotal(),
                 paid: posPayMethod === 'cash' ? posPaidAmount : (posPayMethod === 'tempo' ? dp : posTotal()),
                 change: posPayMethod === 'cash' ? posChange() : 0,
@@ -2332,6 +2530,13 @@ export const processPOSTx = async () => {
             },
             subtotal: posSubtotal(),
             globalDiscount: posDiscountAmount(),
+            pointDiscount: posMemberPointsDiscount(),
+            pointsRedeemed: (posPointsRedeemed || 0) + (posClaimedReward ? (parseFloat(posClaimedReward.pointsCost) || 0) : 0),
+            claimedReward: posClaimedReward ? {
+                id: posClaimedReward.id,
+                name: posClaimedReward.name,
+                pointsCost: parseFloat(posClaimedReward.pointsCost) || 0
+            } : null,
             discountType: posDiscountType,
             discountVal: posDiscountVal,
             totalHpp: totalCartHpp,
@@ -2348,23 +2553,43 @@ export const processPOSTx = async () => {
                 ? window.calculateCartPoints(posCart, appData.store)
                 : { totalPoints: 0 };
             const ptsEarned = calcPoints.totalPoints || 0;
-            if (ptsEarned > 0) {
-                orderData.pointsEarned = ptsEarned;
-                try {
-                    const cleanPhone = custPhone.replace(/\D/g, '');
-                    const targetId = String(posCustomer.memberId || cleanPhone);
-                    const custRef = db.collection("freshmart").doc("cms_data").collection("customers").doc(targetId);
-                    await custRef.set({
-                        points: firebase.firestore.FieldValue.increment(ptsEarned),
-                        lastOrderAt: nowISO
-                    }, { merge: true });
+            orderData.pointsEarned = ptsEarned;
 
-                    if (appData.customers) {
-                        const m = appData.customers.find(c => c && (String(c.id) === targetId || String(c.phone).replace(/\D/g, '') === cleanPhone));
-                        if (m) m.points = (parseFloat(m.points) || 0) + ptsEarned;
+            const totalPtsRedeemed = (posPointsRedeemed || 0) + (posClaimedReward ? (parseFloat(posClaimedReward.pointsCost) || 0) : 0);
+            const netPtsChange = ptsEarned - totalPtsRedeemed;
+            const finalPts = Math.max(0, (parseFloat(posCustomer.points) || 0) + netPtsChange);
+            orderData.finalMemberPoints = finalPts;
+
+            try {
+                const cleanPhone = custPhone.replace(/\D/g, '');
+                const targetId = String(posCustomer.memberId || cleanPhone);
+                const custRef = db.collection("freshmart").doc("cms_data").collection("customers").doc(targetId);
+                await custRef.set({
+                    points: firebase.firestore.FieldValue.increment(netPtsChange),
+                    lastOrderAt: nowISO
+                }, { merge: true });
+
+                if (appData.customers) {
+                    const m = appData.customers.find(c => c && (String(c.id) === targetId || String(c.phone).replace(/\D/g, '') === cleanPhone));
+                    if (m) m.points = finalPts;
+                }
+                posCustomer.points = finalPts;
+            } catch (e) {
+                console.warn('[POS] Gagal update poin member:', e);
+            }
+
+            // Jika ada hadiah yang diklaim, potong stok hadiah di database
+            if (posClaimedReward && posClaimedReward.id) {
+                try {
+                    await db.collection("freshmart").doc("cms_data").collection("rewards").doc(String(posClaimedReward.id)).update({
+                        stock: firebase.firestore.FieldValue.increment(-1)
+                    });
+                    const rLocal = (appData.rewards || []).find(x => String(x.id) === String(posClaimedReward.id));
+                    if (rLocal && rLocal.stock !== undefined) {
+                        rLocal.stock = Math.max(0, (parseInt(rLocal.stock) || 0) - 1);
                     }
-                } catch (e) {
-                    console.warn('[POS] Gagal update poin member:', e);
+                } catch(e) {
+                    console.warn('[POS] Gagal update stok reward:', e);
                 }
             }
         }
@@ -2446,6 +2671,7 @@ export const processPOSTx = async () => {
         closePOSCartDrawer(true);
         const lastTx = { ...orderData };
         posCart = []; posGlobalDisc = 0; posDiscountVal = 0; posDiscountType = 'rp';
+        posPointsRedeemed = 0; posClaimedReward = null;
         renderCart(); renderCatalog();
         showPOSSuccess(lastTx);
     } catch (err) {
@@ -2571,14 +2797,18 @@ export const previewPOSReceiptThenPrint = (tx) => {
                 <div class="border-t border-dashed border-slate-300 dark:border-slate-700 my-2"></div>
                 <div class="flex justify-between"><span>Subtotal</span><span>${fRp(tx.subtotal)}</span></div>
                 ${(tx.globalDiscount || 0) > 0 ? `<div class="flex justify-between text-rose-500 font-bold"><span>${discLabel}</span><span>- ${fRp(tx.globalDiscount)}</span></div>` : ''}
+                ${(tx.pointDiscount || 0) > 0 ? `<div class="flex justify-between text-emerald-600 font-bold"><span>Diskon Poin (${tx.pointsRedeemed || 0} Pts)</span><span>- ${fRp(tx.pointDiscount)}</span></div>` : ''}
+                ${tx.claimedReward ? `<div class="flex justify-between text-purple-600 font-bold"><span>[Klaim Hadiah]</span><span class="truncate max-w-[150px]">${esc(tx.claimedReward.name)}</span></div>` : ''}
                 ${tx.payment?.ppnAmount && tx.payment.ppnAmount > 0 ? `<div class="flex justify-between"><span>${tx.payment.ppnType === 'inclusive' ? 'Inc. PPN' : 'PPN'} (${tx.payment.ppnRate || 11}%)</span><span>${fRp(tx.payment.ppnAmount)}</span></div>` : ''}
                 <div class="flex justify-between font-black text-sm pt-1 border-t border-slate-200 dark:border-slate-700"><span>TOTAL</span><span style="color:var(--color-primary)">${fRp(tx.total)}</span></div>
                 ${tx.payment.method === 'cash' ? `<div class="flex justify-between"><span>Bayar Tunai</span><span>${fRp(tx.payment.paid)}</span></div><div class="flex justify-between font-bold text-emerald-600"><span>Kembalian</span><span>${fRp(tx.payment.change)}</span></div>` : ''}
                 ${tx.payment.method === 'tempo' ? `<div class="flex justify-between"><span>Uang Muka (DP)</span><span>${fRp(tx.payment.dp || 0)}</span></div><div class="flex justify-between font-bold text-amber-600"><span>Sisa Piutang</span><span>${fRp(tx.payment.tempoBalance || 0)}</span></div>` : ''}
                 <div class="flex justify-between"><span>Metode Bayar</span><span>${esc(tx.payment.method.toUpperCase())}</span></div>
-                ${tx.pointsEarned > 0 ? `
+                ${(tx.pointsEarned > 0 || (tx.pointsRedeemed || 0) > 0) ? `
                 <div class="border-t border-dashed border-slate-300 dark:border-slate-700 my-2"></div>
-                <div class="flex justify-between text-amber-600 dark:text-amber-400 font-bold"><span>Poin Member:</span><span>+${tx.pointsEarned} Poin</span></div>` : ''}
+                ${tx.pointsEarned > 0 ? `<div class="flex justify-between text-amber-600 dark:text-amber-400 font-bold"><span>Poin Didapat:</span><span>+${tx.pointsEarned} Poin</span></div>` : ''}
+                ${(tx.pointsRedeemed || 0) > 0 ? `<div class="flex justify-between text-rose-500 font-bold"><span>Poin Ditukar:</span><span>-${tx.pointsRedeemed} Poin</span></div>` : ''}
+                ${tx.finalMemberPoints !== undefined ? `<div class="flex justify-between text-slate-600 dark:text-slate-300 font-bold"><span>Sisa Saldo Poin:</span><span>${tx.finalMemberPoints} Poin</span></div>` : ''}` : ''}
                 <div class="border-t border-dashed border-slate-300 dark:border-slate-700 my-2"></div>
                 <div class="text-center text-[10px] text-slate-400 my-1">${esc(footerTxt)}</div>
             </div>
@@ -3038,6 +3268,12 @@ const exposeToWindow = () => {
     window.selectPosMember         = selectPosMember;
     window.resetPosMember          = resetPosMember;
     window.processPOSTx            = processPOSTx;
+    window.setPosPointsRedeemed    = setPosPointsRedeemed;
+    window.selectPosReward         = selectPosReward;
+    window.deselectPosReward       = deselectPosReward;
+    window.posMemberPointsDiscount = posMemberPointsDiscount;
+    window.getMaxRedeemablePoints  = getMaxRedeemablePoints;
+    window.getPointValue           = getPointValue;
     window.printPOSReceipt         = printPOSReceipt;
     window.previewPOSReceiptThenPrint = previewPOSReceiptThenPrint;
     window.posSetGlobalDisc        = (v) => { posSetDiscountVal(v); };

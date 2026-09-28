@@ -7,11 +7,13 @@
  */
 
 import { appData, currentMember, setCurrentMember, selectedReward, setSelectedReward } from '../../core/state.js';
-import { el, show, hide, getV, setH, esc, ensureScriptLoaded } from '../../core/utils.js';
+import { el, show, hide, getV, setH, esc, fCur, ensureScriptLoaded } from '../../core/utils.js';
 import { db } from '../../config/firebase.js';
 
 const memberCache = new Map();
 const MEMBER_CACHE_TTL = 3 * 60 * 1000; // 3 menit cache poin/member
+const memberHistoryCache = new Map();
+const MEMBER_HISTORY_CACHE_TTL = 2 * 60 * 1000; // 2 menit cache mutasi poin
 const OFFICIAL_LOGO_URL = 'https://lh3.googleusercontent.com/d/1KHwsV5sK6aAH3-eP_vTJA4tE5MyRukLo';
 
 /**
@@ -20,6 +22,7 @@ const OFFICIAL_LOGO_URL = 'https://lh3.googleusercontent.com/d/1KHwsV5sK6aAH3-eP
 export const invalidateMemberCache = (phone) => {
     if (!phone) {
         memberCache.clear();
+        memberHistoryCache.clear();
         return;
     }
     const clean = phone.toString().replace(/\D/g, '');
@@ -30,6 +33,10 @@ export const invalidateMemberCache = (phone) => {
     memberCache.delete(w1);
     memberCache.delete(w2);
     memberCache.delete(w3);
+    memberHistoryCache.delete(clean);
+    memberHistoryCache.delete(w1);
+    memberHistoryCache.delete(w2);
+    memberHistoryCache.delete(w3);
 };
 
 /**
@@ -728,6 +735,216 @@ export const openMemberModal = () => {
 };
 
 /**
+ * Ambil riwayat mutasi poin & penukaran reward pelanggan
+ * Menggabungkan riwayat pesanan lokal dan pesanan online/POS di Firestore
+ */
+export const getMemberPointsHistory = async (phone, force = false) => {
+    try {
+        let clean = (phone || '').toString().replace(/\D/g, '');
+        if (clean.startsWith('0')) clean = '62' + clean.substring(1);
+        else if (!clean.startsWith('62')) clean = '62' + clean;
+
+        if (!clean || clean.length < 9) return [];
+
+        const cacheKey = clean;
+        const cached = memberHistoryCache.get(cacheKey);
+        if (!force && cached && (Date.now() - cached.timestamp < MEMBER_HISTORY_CACHE_TTL)) {
+            return cached.data;
+        }
+
+        const cleanVariants = new Set([
+            clean,
+            clean.startsWith('62') ? '0' + clean.substring(2) : clean,
+            clean.startsWith('62') ? clean.substring(2) : clean
+        ]);
+
+        // 1. Ambil pesanan lokal (freshmart_my_orders)
+        let localOrders = [];
+        try {
+            const raw = localStorage.getItem('freshmart_my_orders');
+            if (raw) localOrders = JSON.parse(raw) || [];
+        } catch (e) {}
+
+        // 2. Ambil pesanan dari Firestore (freshmart_orders)
+        let remoteOrders = [];
+        try {
+            const snap = await db.collection("freshmart_orders")
+                .where("customerPhone", "in", Array.from(cleanVariants).slice(0, 10))
+                .limit(50)
+                .get();
+            if (snap && !snap.empty) {
+                remoteOrders = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            }
+        } catch (e) {
+            try {
+                const snap2 = await db.collection("freshmart_orders")
+                    .where("phone", "in", Array.from(cleanVariants).slice(0, 10))
+                    .limit(50)
+                    .get();
+                if (snap2 && !snap2.empty) {
+                    remoteOrders = snap2.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                }
+            } catch (e2) {
+                console.warn('[getMemberPointsHistory] Firestore query fallback:', e2);
+            }
+        }
+
+        // 3. Gabungkan pesanan dan eliminasi duplikasi
+        const orderMap = new Map();
+        [...remoteOrders, ...localOrders].forEach(o => {
+            if (o && o.id) {
+                const oPhone = (o.customerPhone || o.phone || (o.customer && o.customer.phone) || '').toString().replace(/\D/g, '');
+                if (cleanVariants.has(oPhone) || !oPhone) {
+                    orderMap.set(o.id, o);
+                }
+            }
+        });
+
+        // 4. Ekstraksi mutasi poin (Earn, POS Point Discount, Claim Reward)
+        const events = [];
+        orderMap.forEach(o => {
+            const rawDate = o.createdAt || o.date || o.timestamp || o.dateString;
+            let dateObj = new Date();
+            if (rawDate) {
+                if (typeof rawDate.toDate === 'function') dateObj = rawDate.toDate();
+                else if (typeof rawDate === 'number' || !isNaN(Number(rawDate))) dateObj = new Date(Number(rawDate));
+                else dateObj = new Date(rawDate);
+            }
+            const dateStr = !isNaN(dateObj.getTime())
+                ? dateObj.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })
+                : '-';
+            const timestamp = !isNaN(dateObj.getTime()) ? dateObj.getTime() : 0;
+            const isPos = o.source === 'pos';
+
+            // Mutasi A: Poin Belanja Didapat
+            const ptsEarned = parseFloat(o.pointsEarned) || 0;
+            if (ptsEarned > 0) {
+                events.push({
+                    id: `${o.id}-earn`,
+                    orderId: o.id,
+                    timestamp,
+                    dateStr,
+                    type: 'earn',
+                    title: `Poin Belanja (${isPos ? 'Kasir POS' : 'Belanja Online'})`,
+                    desc: `Faktur #${o.id} • Total Belanja ${fCur(o.total || o.payment?.grandTotal || 0)}`,
+                    points: ptsEarned,
+                    sign: '+',
+                    colorClass: 'text-emerald-500 dark:text-emerald-400',
+                    bgClass: 'bg-emerald-500/10 border-emerald-500/20 text-emerald-600 dark:text-emerald-400',
+                    icon: 'fa-coins'
+                });
+            }
+
+            // Mutasi B: Diskon Poin Belanja Kasir POS (Point-to-Cash)
+            const ptDiscount = parseFloat(o.pointDiscount || o.payment?.pointDiscount) || 0;
+            const ptsRedeemed = parseFloat(o.pointsRedeemed) || 0;
+            if (ptDiscount > 0 || (ptsRedeemed > 0 && !o.claimedReward)) {
+                const ptsUsed = ptsRedeemed > 0 ? ptsRedeemed : Math.round(ptDiscount / 1000);
+                events.push({
+                    id: `${o.id}-discount`,
+                    orderId: o.id,
+                    timestamp: timestamp + 1,
+                    dateStr,
+                    type: 'discount',
+                    title: 'Diskon Poin di Kasir POS',
+                    desc: `Potongan belanja tunai -${fCur(ptDiscount || (ptsUsed * 1000))} • #${o.id}`,
+                    points: ptsUsed,
+                    sign: '-',
+                    colorClass: 'text-rose-500 dark:text-rose-400',
+                    bgClass: 'bg-rose-500/10 border-rose-500/20 text-rose-600 dark:text-rose-400',
+                    icon: 'fa-percent'
+                });
+            }
+
+            // Mutasi C: Klaim Hadiah Katalog (Reward Redemption)
+            if (o.claimedReward && (o.claimedReward.name || o.claimedReward.id)) {
+                const ptsCost = parseFloat(o.claimedReward.pointsCost) || 0;
+                const rStatus = o.claimedReward.status === 'ready' ? 'Tersedia / Diterima'
+                    : o.claimedReward.status === 'waiting_stock' ? 'Menunggu Stok Toko'
+                    : 'Sedang Diproses Toko';
+                events.push({
+                    id: `${o.id}-reward`,
+                    orderId: o.id,
+                    timestamp: timestamp + 2,
+                    dateStr,
+                    type: 'reward',
+                    title: `Tukar Hadiah: ${o.claimedReward.name}`,
+                    desc: `Status: ${rStatus}${o.claimedReward.note ? ` ("${o.claimedReward.note}")` : ''} • #${o.id}`,
+                    points: ptsCost,
+                    sign: '-',
+                    colorClass: 'text-amber-500 dark:text-amber-400',
+                    bgClass: 'bg-amber-500/10 border-amber-500/20 text-amber-600 dark:text-amber-400',
+                    icon: 'fa-gift'
+                });
+            }
+        });
+
+        // Urutkan dari transaksi paling baru
+        events.sort((a, b) => b.timestamp - a.timestamp);
+
+        memberHistoryCache.set(cacheKey, { data: events, timestamp: Date.now() });
+        return events;
+    } catch (err) {
+        console.warn('[getMemberPointsHistory] Error:', err);
+        return [];
+    }
+};
+
+/**
+ * Render riwayat mutasi poin ke elemen #member-points-history-list
+ */
+export const loadMemberPointsHistory = async (phone, force = false) => {
+    const container = document.getElementById('member-points-history-list');
+    if (!container) return;
+
+    if (force) {
+        container.innerHTML = `
+            <div class="p-4 text-center text-slate-400 text-xs font-semibold">
+                <i class="fa-solid fa-circle-notch fa-spin mr-1.5 text-[var(--color-primary)]"></i> Memperbarui riwayat poin...
+            </div>
+        `;
+    }
+
+    const events = await getMemberPointsHistory(phone, force);
+    if (!container) return;
+
+    if (!events || !events.length) {
+        container.innerHTML = `
+            <div class="p-4 rounded-2xl border border-dashed border-slate-200 dark:border-slate-800 text-center space-y-1.5 bg-slate-50/50 dark:bg-slate-900/30">
+                <div class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-400 flex items-center justify-center mx-auto text-xs">
+                    <i class="fa-solid fa-receipt"></i>
+                </div>
+                <p class="text-xs font-bold text-slate-700 dark:text-slate-300">Belum Ada Riwayat Mutasi Poin</p>
+                <p class="text-[10px] text-slate-400 max-w-xs mx-auto">
+                    Kumpulkan poin di setiap belanja kasir POS atau pesanan online Toko Putri untuk menikmati diskon &amp; hadiah eksklusif.
+                </p>
+            </div>
+        `;
+        return;
+    }
+
+    container.innerHTML = events.map(ev => `
+        <div class="flex items-center gap-3 p-3 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/50 shadow-2xs hover:border-[var(--color-primary)]/40 transition-all">
+            <div class="w-9 h-9 rounded-xl flex items-center justify-center text-xs shrink-0 border ${ev.bgClass}">
+                <i class="fa-solid ${ev.icon}"></i>
+            </div>
+            <div class="min-w-0 flex-1">
+                <div class="flex items-center justify-between gap-1">
+                    <p class="text-xs font-bold text-slate-800 dark:text-white truncate">${esc(ev.title)}</p>
+                    <span class="text-xs font-black ${ev.colorClass} shrink-0">
+                        ${ev.sign}${ev.points} Poin
+                    </span>
+                </div>
+                <p class="text-[10px] text-slate-500 dark:text-slate-400 truncate mt-0.5">${esc(ev.desc)}</p>
+                <p class="text-[9px] font-semibold text-slate-400 dark:text-slate-500 mt-0.5 flex items-center gap-1">
+                    <i class="fa-regular fa-clock text-[8px]"></i> ${ev.dateStr}
+                </p>
+            </div>
+        </div>
+    `).join('');
+};
+
+/**
  * Render isi modal member (Kartu digital + Progress tier + Katalog Hadiah)
  */
 export const rMemberModalBody = () => {
@@ -832,7 +1049,29 @@ export const rMemberModalBody = () => {
             </div>
 
             ${selectedReward ? `<div class="bg-[rgba(var(--color-primary-rgb),0.06)] dark:bg-[rgba(var(--color-primary-rgb),0.12)] border border-[var(--color-primary)]/30 rounded-xl p-3.5 text-[11px] font-bold text-[var(--color-primary)] flex items-center gap-2"><i class="fa-solid fa-gift text-base shrink-0"></i><span>Hadiah "<b>${esc(selectedReward.name)}</b>" telah dipilih dan akan otomatis diproses saat pesanan Anda selesai di checkout.</span></div>` : ''}
+
+            <!-- RIWAYAT MUTASI POIN & HADIAH (POINT LEDGER) -->
+            <div class="space-y-2.5 pt-2 border-t border-slate-200/60 dark:border-slate-800/60">
+                <div class="flex items-center justify-between">
+                    <p class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">Riwayat Mutasi Poin &amp; Hadiah</p>
+                    <button type="button" onclick="loadMemberPointsHistory('${esc(currentMember.phone || currentMember.id || '')}', true)" class="text-[10px] text-[var(--color-primary)] font-bold hover:underline cursor-pointer flex items-center gap-1 active:scale-95 transition-all">
+                        <i class="fa-solid fa-arrows-rotate text-[9px]"></i> Refresh
+                    </button>
+                </div>
+                <div id="member-points-history-list" class="space-y-2">
+                    <div class="p-4 text-center text-slate-400 text-xs font-semibold">
+                        <i class="fa-solid fa-circle-notch fa-spin mr-1.5 text-[var(--color-primary)]"></i> Memuat riwayat poin...
+                    </div>
+                </div>
+            </div>
         `);
+
+        // Muat riwayat mutasi poin secara asinkron
+        setTimeout(() => {
+            if (currentMember) {
+                loadMemberPointsHistory(currentMember.phone || currentMember.id);
+            }
+        }, 50);
     } else {
         setH('member-modal-body', `
             <!-- PREVIEW KARTU CONTOH (MEMIKAT PELANGGAN) -->
@@ -1017,4 +1256,5 @@ window.generateBarcodeSVG = generateBarcodeSVG;
 window.setCurrentMember = setCurrentMember;
 window.invalidateMemberCache = invalidateMemberCache;
 window.reconcilePointsFromOrders = reconcilePointsFromOrders;
-
+window.getMemberPointsHistory = getMemberPointsHistory;
+window.loadMemberPointsHistory = loadMemberPointsHistory;

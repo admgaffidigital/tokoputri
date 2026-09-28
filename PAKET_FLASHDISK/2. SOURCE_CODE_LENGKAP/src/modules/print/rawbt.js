@@ -487,6 +487,16 @@ export const buildPOSReceiptPayload = (tx, config = null) => {
         builder.twoColumn(discLabel, `- ${fRp(tx.globalDiscount)}`);
     }
 
+    if ((tx.pointDiscount || 0) > 0) {
+        builder.twoColumn(`Diskon Poin (${tx.pointsRedeemed || 0} Poin)`, `- ${fRp(tx.pointDiscount)}`);
+    }
+
+    if (tx.claimedReward && tx.claimedReward.name) {
+        builder.separator('-');
+        builder.bold(true).line(`[KLAIM HADIAH: ${cleanLineAscii(tx.claimedReward.name)}]`, 'left').bold(false);
+        builder.twoColumn('Poin Reward Ditukar', `-${tx.claimedReward.pointsCost || 0} Poin`);
+    }
+
     if (tx.payment?.ppnAmount && tx.payment.ppnAmount > 0) {
         const isInc = tx.payment.ppnType === 'inclusive';
         const rate = tx.payment.ppnRate || 11;
@@ -514,11 +524,18 @@ export const buildPOSReceiptPayload = (tx, config = null) => {
     }
 
     // 7. Poin Loyalitas Member
-    if (cfg.showPoints && tx.pointsEarned > 0) {
-        builder.separator('-');
-        builder.twoColumn('Poin Didapat', `+${tx.pointsEarned} Poin`, true);
-        if (tx.finalMemberPoints !== undefined && tx.finalMemberPoints !== null) {
-            builder.twoColumn('Total Saldo Poin', `${tx.finalMemberPoints} Poin`);
+    if (cfg.showPoints) {
+        if (tx.pointsEarned > 0 || (tx.pointsRedeemed || 0) > 0) {
+            builder.separator('-');
+            if (tx.pointsEarned > 0) {
+                builder.twoColumn('Poin Didapat', `+${tx.pointsEarned} Poin`, true);
+            }
+            if ((tx.pointsRedeemed || 0) > 0) {
+                builder.twoColumn('Poin Ditukar', `-${tx.pointsRedeemed} Poin`);
+            }
+            if (tx.finalMemberPoints !== undefined && tx.finalMemberPoints !== null) {
+                builder.twoColumn('Sisa Saldo Poin', `${tx.finalMemberPoints} Poin`);
+            }
         }
     }
 
@@ -755,6 +772,156 @@ export const buildOrderReceiptPayload = (order, config = null) => {
 
 /**
  * ============================================================
+ * GENERATOR STRUK NOTA TAGIHAN TEMPO / PIUTANG — PRESISI 100%
+ * ============================================================
+ */
+export const buildTempoReceiptPayload = (order, config = null) => {
+    const cfg = config || getPrinterConfig();
+    const cols = getPaperCols(cfg.paperSize);
+    const is80 = cols >= 40;
+
+    const builder = new EscPosBuilder(cols);
+    builder.init();
+
+    const storeName = cleanLineAscii(cfg.headerText || appData.store?.name || 'TOKO PUTRI').trim();
+    const storeAddr = cleanLineAscii(appData.store?.address || '').trim();
+    const storeWa   = cleanLineAscii(appData.store?.wa || '').trim();
+
+    const maxDoubleWidth = Math.floor(cols / 2);
+    if (storeName.length <= maxDoubleWidth) {
+        builder.align('center').bold(true).size('title').line(storeName.toUpperCase(), 'center');
+        builder.size('normal').bold(false);
+    } else {
+        builder.align('center').bold(true).size('tall');
+        wrapWords(storeName.toUpperCase(), cols).forEach(l => builder.line(l, 'center'));
+        builder.size('normal').bold(false);
+    }
+
+    if (storeAddr) wrapWords(storeAddr, cols).forEach(l => builder.line(l, 'center'));
+    if (storeWa) builder.line(`WA: ${storeWa}`, 'center');
+    builder.separator('-');
+
+    const isLunas = order.payment?.paymentStatus === 'lunas' || parseFloat(order.payment?.tempoBalance || 0) <= 0;
+    const title = is80
+        ? (isLunas ? '*** NOTA TEMPO (LUNAS) ***' : '*** NOTA TAGIHAN TEMPO (PIUTANG) ***')
+        : (isLunas ? '** NOTA TEMPO (LUNAS) **' : '** NOTA TAGIHAN TEMPO **');
+
+    builder.bold(true).line(title, 'center').bold(false);
+    builder.separator('-');
+
+    const dateStr = formatCompactDate(order.dateString || order.timestamp || Date.now(), is80);
+    builder.twoColumn(`Order: #${order.orderId}`, dateStr, false, true);
+
+    const custName = (order.customer?.name || 'Pelanggan').substring(0, is80 ? 18 : 11);
+    builder.twoColumn(`Plg  : ${custName}`, 'Tipe: Tempo', false, true);
+
+    if (order.customer?.phone || order.customer?.wa) {
+        builder.line(`HP   : ${order.customer.wa || order.customer.phone}`, 'left');
+    }
+
+    // Kalkulasi finansial piutang
+    let sisa = parseFloat(order.payment?.tempoBalance) || 0;
+    let rate = order.payment?.tempoPenaltyRate !== undefined ? parseFloat(order.payment.tempoPenaltyRate) : 1;
+    let isStopped = order.payment?.tempoPenaltyStopped === true;
+    let latePenalty = 0;
+    let dueDate = order.payment?.tempoDueDate || 0;
+    let daysLate = 0;
+    let daysLeft = 0;
+    let isLate = false;
+    let isDueSoon = false;
+    const now = Date.now();
+
+    if (dueDate > 0) {
+        if (now > dueDate) {
+            daysLate = Math.floor((now - dueDate) / (24 * 60 * 60 * 1000));
+            if (daysLate > 0) isLate = true;
+        } else {
+            daysLeft = Math.ceil((dueDate - now) / (24 * 60 * 60 * 1000));
+            if (daysLeft <= 3) isDueSoon = true;
+        }
+    }
+
+    if (isStopped) {
+        latePenalty = parseFloat(order.payment?.tempoFixedPenalty) || 0;
+    } else if (isLate) {
+        latePenalty = (rate / 100 * sisa) * daysLate;
+    }
+
+    let totalAkhir = sisa + latePenalty;
+    const installments = order.payment?.installments || [];
+    const totalPaid = installments.reduce((sum, ins) => sum + (parseFloat(ins.amount) || 0), 0);
+    const grandTotalAwal = order.payment?.grandTotal || (sisa + totalPaid);
+
+    if (dueDate > 0) {
+        const dueStr = formatCompactDate(dueDate, is80);
+        let statusKeterlambatan = '';
+        if (isLunas) statusKeterlambatan = 'LUNAS';
+        else if (isLate) statusKeterlambatan = `Telat ${daysLate} Hari`;
+        else if (isDueSoon) statusKeterlambatan = `H-${daysLeft <= 0 ? 0 : daysLeft}`;
+        else statusKeterlambatan = `Sisa ${daysLeft} Hari`;
+        builder.twoColumn(`J.Tmp: ${dueStr}`, statusKeterlambatan, false, true);
+    }
+
+    builder.separator('-');
+
+    // Daftar Barang
+    (order.items || []).forEach(item => {
+        builder.itemRow(item);
+    });
+
+    builder.separator('-');
+
+    builder.twoColumn('Total Transaksi', fRp(grandTotalAwal));
+
+    // Histori Cicilan
+    if (installments.length > 0) {
+        builder.separator('-');
+        builder.bold(true).line('HISTORI PEMBAYARAN CICILAN:', 'left').bold(false);
+        installments.forEach((ins, idx) => {
+            const insDate = formatCompactDate(ins.date, is80);
+            builder.twoColumn(`${idx + 1}. ${insDate}`, fRp(ins.amount));
+        });
+        builder.twoColumn('Total Terbayar', fRp(totalPaid), true);
+    }
+
+    builder.twoColumn('Sisa Pokok', fRp(sisa));
+    if (latePenalty > 0) {
+        builder.twoColumn(`Denda (${daysLate} Hari)`, `+ ${fRp(latePenalty)}`);
+    }
+
+    builder.doubleSeparator();
+    builder.bold(true).size('tall').twoColumn('SISA TAGIHAN', fRp(isLunas ? 0 : totalAkhir)).size('normal').bold(false);
+    builder.doubleSeparator();
+
+    if (!isLunas && appData.banks && appData.banks.length > 0) {
+        builder.line('REKENING TRANSFER RESMI:', 'left');
+        appData.banks.forEach(b => {
+            builder.line(`${b.bank}: ${b.number}`, 'left');
+            builder.line(`a/n ${b.name}`, 'left');
+        });
+        builder.separator('-');
+    }
+
+    if (cfg.showBarcode) {
+        builder.separator('-');
+        builder.align('center');
+        builder.line(`*TEMPO-${order.orderId}*`, 'center');
+        builder.line('(NOTA TEMPO RESMI)', 'center');
+    }
+
+    builder.separator('-');
+    wrapWords(cfg.footerText || 'Terima Kasih Atas Kerja Sama & Kepercayaannya!', cols).forEach(l => builder.line(l, 'center'));
+    builder.feed(cfg.feedLines || 3);
+    if (cfg.autoCut) builder.cut();
+
+    return {
+        base64: builder.toBase64(),
+        plainText: builder.toPlainText()
+    };
+};
+
+/**
+ * ============================================================
  * GENERATOR STRUK UJI COBA CETAK (TEST PRINT) DENGAN MISTAR PRESISI
  * ============================================================
  */
@@ -920,6 +1087,33 @@ export const printCustomerReceiptDirect = (orderId = null) => {
 };
 
 /**
+ * Cetak Struk Nota Tagihan Tempo Seketika (Direct Print)
+ */
+export const printTempoReceiptDirect = (orderId = null) => {
+    const targetId = orderId || cVOrd;
+    const piutangList = window.cachedPiutangOrders || [];
+    let order = piutangList.find(x => String(x.orderId) === String(targetId))
+        || (gOrds || []).find(x => String(x.orderId) === String(targetId));
+    if (!order && window.lastPrintedOrder && String(window.lastPrintedOrder.orderId) === String(targetId)) {
+        order = window.lastPrintedOrder;
+    }
+
+    if (!order) {
+        showToast('Data nota piutang tidak ditemukan.', 'warning');
+        return;
+    }
+
+    const cfg = getPrinterConfig();
+    const payload = buildTempoReceiptPayload(order, cfg);
+
+    if (typeof window.closeReceiptPreviewModal === 'function') {
+        window.closeReceiptPreviewModal();
+    }
+
+    sendToRawBT(payload.base64, payload.plainText);
+};
+
+/**
  * Uji Coba Cetak RawBT Seketika
  */
 export const executeRawBTTestPrint = () => {
@@ -940,8 +1134,10 @@ window.openRawBTApp               = openRawBTApp;
 window.buildPOSReceiptPayload     = buildPOSReceiptPayload;
 window.buildShiftReceiptPayload   = buildShiftReceiptPayload;
 window.buildOrderReceiptPayload   = buildOrderReceiptPayload;
+window.buildTempoReceiptPayload   = buildTempoReceiptPayload;
 window.buildTestReceiptPayload    = buildTestReceiptPayload;
 window.printPOSReceiptDirect      = printPOSReceiptDirect;
 window.printShiftSettlementDirect = printShiftSettlementDirect;
 window.printCustomerReceiptDirect = printCustomerReceiptDirect;
+window.printTempoReceiptDirect    = printTempoReceiptDirect;
 window.executeRawBTTestPrint      = executeRawBTTestPrint;

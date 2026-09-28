@@ -21,6 +21,9 @@ const pushModalHistory = (id) => window.pushModalHistory?.(id);
 const requestCloseModal = (id, fH, cb) => (typeof window.requestCloseModal === 'function') ? window.requestCloseModal(id, fH, cb) : cb?.();
 
 let activeTempoFilter = 'all'; // 'all' | 'late' | 'due_soon' | 'active'
+let activeTempoMainTab = 'orders'; // 'orders' | 'customers' | 'installments'
+let activeInstallmentPeriod = 'all'; // 'all' | 'today' | 'week' | 'month'
+let activeInstallmentMethod = 'all'; // 'all' | 'cash' | 'transfer' | 'qris'
 let tempoSearchQuery = '';
 let cachedPiutangOrders = [];
 let currentDetailOrderId = null;
@@ -259,6 +262,10 @@ const renderTempoDetailModalContent = (o) => {
                         <a href="javascript:void(0)" onclick="window.sendSmartTempoWA('${o.orderId}')" class="font-mono text-emerald-600 dark:text-emerald-400 hover:underline flex items-center gap-1 font-bold">
                             <i class="fa-brands fa-whatsapp"></i> +${esc(waNum || '-')}
                         </a>
+                        <span>•</span>
+                        <button type="button" onclick="if(typeof window.openDocPreview==='function') window.openDocPreview('tempo_customer_ledger', '${esc(o.customer?.phone || o.customer?.wa || o.customer?.name || '')}');" class="text-xs font-bold text-[var(--color-primary)] hover:underline inline-flex items-center gap-1 cursor-pointer">
+                            <i class="fa-solid fa-address-book"></i> Kartu Pelanggan
+                        </button>
                     </div>
                 </div>
             </div>
@@ -326,28 +333,32 @@ const renderTempoDetailModalContent = (o) => {
             ${renderActiveTempoDetailTab(o, calc)}
         </div>
 
-        <!-- STICKY NATIVE ACTION FOOTER (48PX ERGONOMIC TOUCH) -->
-        <div class="p-4 sm:p-5 border-t border-slate-100 dark:border-slate-800 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md shrink-0 flex flex-wrap sm:flex-nowrap items-center justify-between gap-2.5" style="padding-bottom: max(1rem, env(safe-area-inset-bottom))">
-            <div class="flex items-center gap-2 w-full sm:w-auto">
-                <button type="button" onclick="window.closeTempoDetailModal()" class="flex-1 sm:flex-initial h-12 px-5 rounded-2xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold text-xs hover:bg-slate-100 dark:hover:bg-slate-800 transition-all cursor-pointer active:scale-95">
+        <!-- STICKY NATIVE ACTION FOOTER (ERGONOMIC TOUCH) -->
+        <div class="p-4 sm:p-5 border-t border-slate-100 dark:border-slate-800 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md shrink-0 flex flex-wrap sm:flex-nowrap items-center justify-between gap-2" style="padding-bottom: max(1rem, env(safe-area-inset-bottom))">
+            <div class="flex items-center gap-1.5 w-full sm:w-auto flex-wrap">
+                <button type="button" onclick="window.closeTempoDetailModal()" class="h-11 px-3.5 rounded-2xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold text-xs hover:bg-slate-100 dark:hover:bg-slate-800 transition-all cursor-pointer active:scale-95">
                     Tutup
                 </button>
-                <button type="button" onclick="window.previewTempoReceipt('${o.orderId}')" class="h-12 px-4 rounded-2xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs transition-all cursor-pointer flex items-center gap-2 active:scale-95 shadow-2xs" title="Cetak Nota Struk">
-                    <i class="fa-solid fa-print"></i>
-                    <span class="hidden sm:inline">Cetak Struk</span>
+                <button type="button" onclick="if(typeof window.openDocPreview==='function') window.openDocPreview('tempo_invoice', '${o.orderId}');" class="h-11 px-3 rounded-2xl border border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 font-bold text-xs transition-all cursor-pointer flex items-center gap-1.5 active:scale-95 shadow-2xs" title="Cetak Nota A4 / PDF / Simpan Gambar">
+                    <i class="fa-solid fa-file-invoice"></i>
+                    <span class="inline">Nota A4</span>
                 </button>
-                <button type="button" onclick="window.sendSmartTempoWA('${o.orderId}')" class="h-12 px-4 rounded-2xl bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs transition-all cursor-pointer flex items-center gap-2 active:scale-95 shadow-2xs" title="Kirim Tagihan WhatsApp">
+                <button type="button" onclick="if(typeof window.printTempoReceiptDirect==='function'){window.printTempoReceiptDirect('${o.orderId}');}else{window.previewTempoReceipt('${o.orderId}');}" class="h-11 px-3 rounded-2xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs transition-all cursor-pointer flex items-center gap-1.5 active:scale-95 shadow-2xs" title="Cetak Struk Thermal (RawBT / Web)">
+                    <i class="fa-solid fa-print"></i>
+                    <span class="inline">Struk</span>
+                </button>
+                <button type="button" onclick="window.sendSmartTempoWA('${o.orderId}')" class="h-11 px-3 rounded-2xl bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs transition-all cursor-pointer flex items-center gap-1.5 active:scale-95 shadow-2xs" title="Kirim Tagihan WhatsApp">
                     <i class="fa-brands fa-whatsapp text-sm"></i>
-                    <span class="hidden sm:inline">Tagih WA</span>
+                    <span class="inline">Tagih WA</span>
                 </button>
             </div>
 
             <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
-                <button type="button" onclick="window.closeTempoDetailModal(); window.openTempoPaymentModal('${o.orderId}');" class="flex-1 sm:flex-initial h-12 px-5 rounded-2xl text-white font-bold text-xs shadow-glow active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-2" style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
+                <button type="button" onclick="window.closeTempoDetailModal(); window.openTempoPaymentModal('${o.orderId}');" class="flex-1 sm:flex-initial h-11 px-4 rounded-2xl text-white font-bold text-xs shadow-glow active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-1.5" style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
                     <i class="fa-solid fa-money-bill-wave"></i>
                     <span>+ Catat Cicilan</span>
                 </button>
-                <button type="button" onclick="window.closeTempoDetailModal(); window.markTempoPaid('${o.orderId}');" class="h-12 px-4 rounded-2xl bg-slate-900 hover:bg-black dark:bg-slate-800 dark:hover:bg-slate-700 text-white font-bold text-xs transition-all cursor-pointer flex items-center gap-2 active:scale-95 shadow-2xs" title="Tandai Seluruh Tagihan Lunas">
+                <button type="button" onclick="window.closeTempoDetailModal(); window.markTempoPaid('${o.orderId}');" class="h-11 px-3.5 rounded-2xl bg-slate-900 hover:bg-black dark:bg-slate-800 dark:hover:bg-slate-700 text-white font-bold text-xs transition-all cursor-pointer flex items-center gap-1.5 active:scale-95 shadow-2xs" title="Tandai Seluruh Tagihan Lunas">
                     <i class="fa-solid fa-check-double text-emerald-400"></i>
                     <span>Lunasi</span>
                 </button>
@@ -1205,14 +1216,108 @@ window.sendSmartTempoWA = (orderId) => {
     }
 };
 
+/**
+ * 1-Klik Tagih Konsolidasi Multi-Nota per Pelanggan via WhatsApp
+ */
+window.sendConsolidatedTempoWA = (customerKey) => {
+    const custKey = String(customerKey || '').trim();
+    if (!custKey) return showToast('Identitas pelanggan tidak valid!');
+
+    const customerOrders = cachedPiutangOrders.filter(o => {
+        const phone = String(o.customer?.phone || o.customer?.wa || '').replace(/\D/g, '');
+        const name = String(o.customer?.name || '').toLowerCase().trim();
+        const cleanKey = custKey.replace(/\D/g, '');
+        if (cleanKey.length >= 8 && phone.includes(cleanKey)) return true;
+        if (name && custKey.toLowerCase().includes(name)) return true;
+        return false;
+    });
+
+    if (customerOrders.length === 0) return showToast('Tidak ada nota piutang aktif untuk pelanggan ini.');
+
+    const sampleCust = customerOrders[0].customer || {};
+    const rawWa = sampleCust.wa || sampleCust.phone || '';
+    const waNum = normalizeWA(rawWa);
+    if (!waNum) return showToast('Nomor WhatsApp pelanggan belum valid!');
+
+    const storeName = appData.store?.name || "Toko Putri";
+    const custName = sampleCust.name || "Pelanggan";
+
+    let bankText = '';
+    if (appData.banks && appData.banks.length > 0) {
+        bankText = appData.banks.map(b => `• *Bank ${b.bankName}*: ${b.bankAccount} (a.n ${b.bankOwner})`).join('\n');
+    } else {
+        bankText = 'Silakan hubungi admin/kasir untuk konfirmasi nomor rekening transfer.';
+    }
+
+    let grandTotalAkumulasi = 0;
+    let totalDendaAkumulasi = 0;
+    let anyLate = false;
+
+    let itemsText = customerOrders.map((o, idx) => {
+        const calc = getTempoOrderCalculations(o);
+        grandTotalAkumulasi += calc.totalAkhir;
+        totalDendaAkumulasi += calc.latePenalty;
+        if (calc.isLate) anyLate = true;
+
+        const dueStr = calc.dueDate ? new Date(calc.dueDate).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' }) : "-";
+        let statusStr = calc.isLate ? `⚠️ TERLAMBAT ${calc.daysLate} HARI` : (calc.isDueSoon ? `⏳ H-${calc.daysLeft}` : '✅ Berjalan');
+
+        let noteLine = `*${idx + 1}. Nota #${o.orderId}* (${statusStr})\n` +
+                       `   • Jatuh Tempo: ${dueStr}\n` +
+                       `   • Sisa Pokok: ${fCur(calc.sisa)}\n`;
+        if (calc.latePenalty > 0) {
+            noteLine += `   • Denda: ${fCur(calc.latePenalty)}\n`;
+        }
+        noteLine += `   • *Subtotal Wajib Bayar: ${fCur(calc.totalAkhir)}*`;
+        return noteLine;
+    }).join('\n\n');
+
+    let msg = `*REKAPITULASI KARTU PIUTANG - ${storeName.toUpperCase()}*\n\n` +
+              `Yth. Bpk/Ibu *${custName}*,\n` +
+              `Berikut rincian seluruh tagihan tempo Anda yang masih aktif (${customerOrders.length} Nota) di *${storeName}*:\n\n` +
+              `${itemsText}\n\n` +
+              `══════════════════════\n` +
+              `💰 *TOTAL KESELURUHAN PIUTANG: ${fCur(grandTotalAkumulasi)}*\n` +
+              (totalDendaAkumulasi > 0 ? `(Termasuk total denda: ${fCur(totalDendaAkumulasi)})\n` : '') +
+              `══════════════════════\n\n` +
+              `💳 *Pembayaran dapat ditransfer ke rekening resmi kami:*\n` +
+              `${bankText}\n\n` +
+              `Mohon kesediaannya untuk melakukan pembayaran dan mengirimkan bukti transfer ke WhatsApp ini. Terima kasih banyak atas kepercayaan dan kerjasamanya. 🙏`;
+
+    if (typeof window.openWhatsApp === 'function') {
+        window.openWhatsApp(waNum, msg);
+    } else {
+        openWhatsApp(waNum, msg);
+    }
+};
+
+window.switchTempoMainTab = (tabKey) => {
+    activeTempoMainTab = tabKey;
+    renderTempoContent();
+};
+
 window.setTempoFilter = (filterKey) => {
     activeTempoFilter = filterKey;
     renderTempoContent();
 };
 
+window.setInstallmentPeriod = (periodKey) => {
+    activeInstallmentPeriod = periodKey;
+    renderTempoContent();
+};
+
+window.setInstallmentMethod = (methodKey) => {
+    activeInstallmentMethod = methodKey;
+    renderTempoContent();
+};
+
 window.onTempoSearch = (val) => {
     tempoSearchQuery = val || '';
-    renderTempoCardsOnly();
+    if (activeTempoMainTab === 'orders') {
+        renderTempoCardsOnly();
+    } else {
+        renderTempoContent();
+    }
 };
 
 /**
@@ -1263,6 +1368,7 @@ const renderTempoCardItem = (o) => {
     const waNum = normalizeWA(o.customer?.wa || '');
     const monogram = getCustomerMonogram(o.customer?.name || 'Pelanggan');
     const dueStr = calc.dueDate ? formatDateID(calc.dueDate) : '-';
+    const custKey = esc(o.customer?.phone || o.customer?.wa || o.customer?.name || '');
 
     let badgeHTML = '';
     let borderClass = 'border-slate-200 dark:border-slate-700/80';
@@ -1326,32 +1432,434 @@ const renderTempoCardItem = (o) => {
             </div>
         </div>
         
-        <!-- ACTION BAR TOUCH ERGONOMIS -->
+        <!-- ACTION BAR TOUCH ERGONOMIS 2-BARIS LEGA -->
         <div class="space-y-2 pt-2 border-t border-slate-100 dark:border-slate-700/60" onclick="event.stopPropagation()">
-            <!-- Baris 1: Rincian, Tagih WA, & Struk -->
-            <div class="flex gap-2">
-                <button type="button" onclick="window.openTempoDetailModal('${o.orderId}')" class="flex-1 py-2 px-2.5 rounded-xl font-bold text-xs transition-all active:scale-95 border flex items-center justify-center gap-1.5 cursor-pointer shadow-2xs" style="background: rgba(var(--color-primary-rgb), 0.08); color: var(--color-primary); border-color: rgba(var(--color-primary-rgb), 0.25);" title="Buka Rincian Nota &amp; Histori">
-                    <i class="fa-solid fa-file-invoice"></i> Rincian
+            <!-- Baris 1: Rincian, Nota A4, Struk, Tagih WA -->
+            <div class="grid grid-cols-4 gap-1.5">
+                <button type="button" onclick="window.openTempoDetailModal('${o.orderId}')" class="py-2 px-1 rounded-xl font-bold text-[11px] transition-all active:scale-95 border flex flex-col sm:flex-row items-center justify-center gap-1 cursor-pointer shadow-2xs text-center" style="background: rgba(var(--color-primary-rgb), 0.08); color: var(--color-primary); border-color: rgba(var(--color-primary-rgb), 0.25);" title="Buka Rincian Nota &amp; Histori">
+                    <i class="fa-solid fa-eye text-xs"></i>
+                    <span class="truncate">Rincian</span>
                 </button>
-                <button type="button" onclick="window.sendSmartTempoWA('${o.orderId}')" class="flex-1 bg-emerald-50 dark:bg-emerald-950/40 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 text-emerald-600 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-700 rounded-xl py-2 flex items-center justify-center gap-1.5 text-xs font-bold transition-all cursor-pointer shadow-2xs active:scale-95" title="Kirim Tagihan Otomatis WhatsApp">
-                    <i class="fa-brands fa-whatsapp text-sm"></i> Tagih WA
+                <button type="button" onclick="if(typeof window.openDocPreview==='function') window.openDocPreview('tempo_invoice', '${o.orderId}');" class="py-2 px-1 rounded-xl bg-blue-50 hover:bg-blue-100 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-800 flex flex-col sm:flex-row items-center justify-center gap-1 text-[11px] font-bold transition-all cursor-pointer shadow-2xs active:scale-95 text-center" title="Cetak Nota Resmi A4 / PDF / WA">
+                    <i class="fa-solid fa-file-invoice text-xs"></i>
+                    <span class="truncate">Nota A4</span>
                 </button>
-                <button type="button" onclick="window.previewTempoReceipt('${o.orderId}')" class="w-10 h-9 bg-amber-500 hover:bg-amber-600 text-white rounded-xl flex items-center justify-center text-xs shadow-2xs transition-all active:scale-95 cursor-pointer" title="Cetak Struk Nota Tempo">
-                    <i class="fa-solid fa-print"></i>
+                <button type="button" onclick="if(typeof window.printTempoReceiptDirect==='function'){window.printTempoReceiptDirect('${o.orderId}');}else{window.previewTempoReceipt('${o.orderId}');}" class="py-2 px-1 bg-amber-500 hover:bg-amber-600 text-white rounded-xl flex flex-col sm:flex-row items-center justify-center gap-1 text-[11px] font-bold shadow-2xs transition-all active:scale-95 cursor-pointer text-center" title="Cetak Struk Thermal Nota Tempo">
+                    <i class="fa-solid fa-print text-xs"></i>
+                    <span class="truncate">Struk</span>
+                </button>
+                <button type="button" onclick="window.sendSmartTempoWA('${o.orderId}')" class="py-2 px-1 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl flex flex-col sm:flex-row items-center justify-center gap-1 text-[11px] font-bold transition-all cursor-pointer shadow-2xs active:scale-95 text-center" title="Kirim Tagihan Otomatis WhatsApp">
+                    <i class="fa-brands fa-whatsapp text-xs"></i>
+                    <span class="truncate">WA</span>
                 </button>
             </div>
 
-            <!-- Baris 2: Catat Cicilan & Lunasi -->
-            <div class="flex gap-2">
-                <button type="button" onclick="window.openTempoPaymentModal('${o.orderId}')" class="flex-1 bg-white dark:bg-slate-700 border border-[var(--color-primary)] text-[var(--color-primary)] hover:bg-[rgba(var(--color-primary-rgb),0.08)] rounded-xl py-2 flex items-center justify-center gap-1.5 text-xs font-black uppercase tracking-wider transition-all active:scale-95 shadow-2xs cursor-pointer">
-                    <i class="fa-solid fa-money-bill-wave"></i> Cicil
+            <!-- Baris 2: Cicil, Lunas, & Kartu Pelanggan -->
+            <div class="grid grid-cols-3 gap-1.5">
+                <button type="button" onclick="window.openTempoPaymentModal('${o.orderId}')" class="bg-white dark:bg-slate-700 border border-[var(--color-primary)] text-[var(--color-primary)] hover:bg-[rgba(var(--color-primary-rgb),0.08)] rounded-xl py-2 flex items-center justify-center gap-1 text-xs font-bold transition-all active:scale-95 shadow-2xs cursor-pointer">
+                    <i class="fa-solid fa-money-bill-wave text-xs"></i> Cicil
                 </button>
-                <button type="button" onclick="window.markTempoPaid('${o.orderId}')" class="flex-1 text-white rounded-xl py-2 flex items-center justify-center gap-1.5 text-xs font-black uppercase tracking-wider shadow-sm transition-all active:scale-95 cursor-pointer" style="background: var(--color-primary); box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.3);">
-                    <i class="fa-solid fa-check-double"></i> Lunas
+                <button type="button" onclick="window.markTempoPaid('${o.orderId}')" class="text-white rounded-xl py-2 flex items-center justify-center gap-1 text-xs font-bold shadow-sm transition-all active:scale-95 cursor-pointer" style="background: var(--color-primary); box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.3);">
+                    <i class="fa-solid fa-check-double text-xs"></i> Lunas
+                </button>
+                <button type="button" onclick="if(typeof window.openDocPreview==='function') window.openDocPreview('tempo_customer_ledger', '${custKey}');" class="bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-600 rounded-xl py-2 flex items-center justify-center gap-1 text-xs font-bold transition-all active:scale-95 shadow-2xs cursor-pointer" title="Cetak Kartu Piutang Pelanggan">
+                    <i class="fa-solid fa-address-book text-xs text-indigo-500"></i> Kartu
                 </button>
             </div>
         </div>
     </div>`;
+};
+
+/**
+ * Render Tab 2: Kartu Piutang per Pelanggan (Customer Receivable Ledger)
+ */
+const renderTempoCustomersTab = () => {
+    // 1. Kelompokkan order per pelanggan
+    const customerMap = new Map();
+
+    cachedPiutangOrders.forEach(o => {
+        const phone = String(o.customer?.phone || o.customer?.wa || '').trim();
+        const name = String(o.customer?.name || 'Pelanggan Anonim').trim();
+        const key = phone || name;
+
+        if (!customerMap.has(key)) {
+            customerMap.set(key, {
+                key,
+                name,
+                phone,
+                wa: o.customer?.wa || phone,
+                customerType: o.customerType || (o.customer?.isMember ? 'Member' : 'Umum'),
+                orders: [],
+                totalAwal: 0,
+                totalPaid: 0,
+                totalSisaPokok: 0,
+                totalDenda: 0,
+                totalWajibBayar: 0,
+                hasLate: false,
+                hasDueSoon: false
+            });
+        }
+
+        const cData = customerMap.get(key);
+        const calc = getTempoOrderCalculations(o);
+        const awal = (o.payment?.grandTotal && o.payment.grandTotal > 0) ? o.payment.grandTotal : (parseFloat(o.total) || calc.sisa);
+        const paid = (o.payment?.installments || []).reduce((acc, ins) => acc + (parseFloat(ins.amount) || 0), 0);
+
+        cData.orders.push(o);
+        cData.totalAwal += awal;
+        cData.totalPaid += paid;
+        cData.totalSisaPokok += calc.sisa;
+        cData.totalDenda += calc.latePenalty;
+        cData.totalWajibBayar += calc.totalAkhir;
+
+        if (calc.isLate) cData.hasLate = true;
+        if (calc.isDueSoon) cData.hasDueSoon = true;
+    });
+
+    let customers = Array.from(customerMap.values());
+
+    // Filter pencarian
+    if (tempoSearchQuery.trim()) {
+        const q = tempoSearchQuery.trim().toLowerCase();
+        customers = customers.filter(c => 
+            c.name.toLowerCase().includes(q) || 
+            c.phone.toLowerCase().includes(q) || 
+            c.orders.some(o => (o.orderId || '').toLowerCase().includes(q))
+        );
+    }
+
+    // Urutkan: yang ada keterlambatan di atas, lalu berdasarkan total piutang terbesar
+    customers.sort((a, b) => {
+        if (a.hasLate && !b.hasLate) return -1;
+        if (!a.hasLate && b.hasLate) return 1;
+        return b.totalWajibBayar - a.totalWajibBayar;
+    });
+
+    if (customers.length === 0) {
+        return `
+            <div class="bg-white dark:bg-slate-800 p-10 text-center rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm">
+                <div class="w-16 h-16 bg-slate-100 dark:bg-slate-700/50 text-slate-400 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <i class="fa-solid fa-users-slash text-2xl"></i>
+                </div>
+                <h4 class="font-bold text-slate-700 dark:text-slate-200 text-sm uppercase tracking-wider">Tidak Ada Data Pelanggan</h4>
+                <p class="text-slate-500 dark:text-slate-400 mt-1 text-xs font-medium">Tidak ada pelanggan berpiutang yang cocok dengan kata kunci pencarian.</p>
+            </div>
+        `;
+    }
+
+    return `
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            ${customers.map(c => {
+                const monogram = getCustomerMonogram(c.name);
+                const waNum = normalizeWA(c.wa || c.phone || '');
+                let statusBadge = '';
+                let borderClass = 'border-slate-200 dark:border-slate-700/80';
+
+                if (c.hasLate) {
+                    borderClass = 'border-rose-400 dark:border-rose-600 shadow-[0_0_15px_rgba(225,29,72,0.1)]';
+                    statusBadge = `<span class="px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-rose-50 text-rose-600 dark:bg-rose-950/40 dark:text-rose-400 border border-rose-200 dark:border-rose-800 flex items-center gap-1"><i class="fa-solid fa-triangle-exclamation"></i> Ada Terlambat</span>`;
+                } else if (c.hasDueSoon) {
+                    borderClass = 'border-amber-400 dark:border-amber-600 shadow-[0_0_15px_rgba(245,158,11,0.1)]';
+                    statusBadge = `<span class="px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-amber-50 text-amber-600 dark:bg-amber-950/40 dark:text-amber-400 border border-amber-200 dark:border-amber-800 flex items-center gap-1"><i class="fa-solid fa-clock"></i> Jatuh Tempo Dekat</span>`;
+                } else {
+                    statusBadge = `<span class="px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-emerald-50 text-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 flex items-center gap-1"><i class="fa-solid fa-circle-check"></i> Berjalan Lancar</span>`;
+                }
+
+                return `
+                <div class="bg-white dark:bg-slate-800 p-4 sm:p-5 rounded-3xl border ${borderClass} shadow-sm flex flex-col justify-between space-y-4">
+                    <div>
+                        <!-- Header Pelanggan -->
+                        <div class="flex items-start justify-between gap-3">
+                            <div class="flex items-center gap-3 min-w-0">
+                                <div class="w-11 h-11 rounded-2xl flex items-center justify-center text-sm font-black shrink-0 aspect-square shadow-2xs" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary); border: 1px solid rgba(var(--color-primary-rgb), 0.25);">
+                                    ${monogram}
+                                </div>
+                                <div class="min-w-0">
+                                    <h3 class="font-bold text-slate-800 dark:text-slate-100 text-sm truncate uppercase">${esc(c.name)}</h3>
+                                    <div class="flex items-center gap-2 mt-0.5 flex-wrap">
+                                        <p class="text-[11px] font-bold text-slate-500 font-mono flex items-center gap-1">
+                                            <i class="fa-brands fa-whatsapp text-emerald-500"></i> +${esc(waNum || '-')}
+                                        </p>
+                                        <span class="text-[9px] font-bold px-2 py-0.2 rounded-lg uppercase tracking-wider border ${c.customerType === 'Member' ? 'text-amber-600 bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800' : 'text-slate-500 bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700'}">
+                                            ${c.customerType}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="shrink-0 text-right">
+                                <span class="inline-block px-2.5 py-1 rounded-xl bg-slate-100 dark:bg-slate-700/60 text-slate-700 dark:text-slate-200 text-[11px] font-black font-mono">
+                                    ${c.orders.length} Nota
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Status Badge -->
+                        <div class="mt-3 flex items-center justify-between gap-2 pt-2 border-t border-slate-100 dark:border-slate-700/60">
+                            ${statusBadge}
+                            <span class="text-[10px] text-slate-400 font-bold">Total Sisa Pokok: <b class="font-mono text-slate-700 dark:text-slate-200">${fCur(c.totalSisaPokok)}</b></span>
+                        </div>
+
+                        <!-- Ringkasan Saldo Akumulasi -->
+                        <div class="mt-3 p-3.5 rounded-2xl ${c.hasLate ? 'bg-rose-50/70 dark:bg-rose-950/30 border border-rose-100 dark:border-rose-900/50' : 'bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-700/60'}">
+                            <div class="flex items-center justify-between text-xs">
+                                <span class="font-bold text-slate-500">Akumulasi Tagihan:</span>
+                                <span class="font-black text-sm font-mono ${c.hasLate ? 'text-rose-600 dark:text-rose-400' : 'text-slate-900 dark:text-white'}">${fCur(c.totalWajibBayar)}</span>
+                            </div>
+                            ${c.totalDenda > 0 ? `
+                            <div class="flex items-center justify-between text-[11px] text-rose-600 dark:text-rose-400 font-medium mt-1 pt-1 border-t border-rose-200/60 dark:border-rose-900/40">
+                                <span>Termasuk Denda Berjalan:</span>
+                                <span class="font-bold font-mono">+${fCur(c.totalDenda)}</span>
+                            </div>` : ''}
+                        </div>
+
+                        <!-- Mini Daftar Nota -->
+                        <div class="mt-3 space-y-1.5">
+                            <span class="text-[10px] font-black uppercase tracking-wider text-slate-400 block">Rincian Nota Aktif:</span>
+                            <div class="space-y-1 max-h-28 overflow-y-auto custom-scrollbar">
+                                ${c.orders.map(o => {
+                                    const oCalc = getTempoOrderCalculations(o);
+                                    const oDue = oCalc.dueDate ? formatDateID(oCalc.dueDate) : '-';
+                                    return `
+                                        <div onclick="window.openTempoDetailModal('${o.orderId}')" class="p-2 rounded-xl bg-white dark:bg-slate-700/50 border border-slate-100 dark:border-slate-700 flex items-center justify-between text-[11px] hover:border-[var(--color-primary)] transition-all cursor-pointer">
+                                            <div class="flex items-center gap-1.5">
+                                                <i class="fa-solid fa-file-invoice text-slate-400 text-[10px]"></i>
+                                                <span class="font-bold font-mono text-slate-700 dark:text-slate-200">#${esc(o.orderId)}</span>
+                                                <span class="text-[9px] text-slate-400 font-medium font-mono">(${oDue})</span>
+                                            </div>
+                                            <span class="font-bold font-mono ${oCalc.isLate ? 'text-rose-600' : 'text-slate-800 dark:text-slate-100'}">${fCur(oCalc.totalAkhir)}</span>
+                                        </div>
+                                    `;
+                                }).join('')}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tombol Aksi Tab Pelanggan -->
+                    <div class="pt-2 border-t border-slate-100 dark:border-slate-700/60 grid grid-cols-2 gap-2">
+                        <button type="button" onclick="if(typeof window.openDocPreview==='function') window.openDocPreview('tempo_customer_ledger', '${esc(c.phone || c.name)}');" class="py-2.5 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-800 dark:text-slate-100 font-bold text-xs flex items-center justify-center gap-1.5 transition-all active:scale-95 cursor-pointer shadow-2xs" title="Cetak Lembar Kartu Piutang Resmi A4 / PDF / WA">
+                            <i class="fa-solid fa-file-invoice text-indigo-500"></i>
+                            <span>Cetak Kartu A4</span>
+                        </button>
+                        <button type="button" onclick="window.sendConsolidatedTempoWA('${esc(c.phone || c.name)}')" class="py-2.5 px-3 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs flex items-center justify-center gap-1.5 transition-all active:scale-95 cursor-pointer shadow-2xs" title="Kirim Tagihan WhatsApp Seluruh Nota">
+                            <i class="fa-brands fa-whatsapp text-sm"></i>
+                            <span>Tagih Semua WA</span>
+                        </button>
+                    </div>
+                </div>
+                `;
+            }).join('')}
+        </div>
+    `;
+};
+
+/**
+ * Render Tab 3: Histori Rincian Cicilan Masuk (Installment History Log)
+ */
+const renderTempoInstallmentsTab = () => {
+    // 1. Himpun seluruh cicilan dari seluruh nota tempo
+    let allInstallments = [];
+    cachedPiutangOrders.forEach(o => {
+        const installments = o.payment?.installments || [];
+        installments.forEach((ins, idx) => {
+            allInstallments.push({
+                ...ins,
+                installmentIndex: idx + 1,
+                orderId: o.orderId,
+                customerName: o.customer?.name || 'Pelanggan',
+                customerPhone: o.customer?.phone || o.customer?.wa || '',
+                customerType: o.customerType || (o.customer?.isMember ? 'Member' : 'Umum'),
+                orderDate: o.dateString
+            });
+        });
+    });
+
+    // 2. Filter Periode
+    const now = new Date();
+    const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+    const startOfWeek = Date.now() - (7 * 24 * 60 * 60 * 1000);
+    const startOfMonth = Date.now() - (30 * 24 * 60 * 60 * 1000);
+
+    let filtered = allInstallments.filter(ins => {
+        const insTime = new Date(ins.date || 0).getTime();
+
+        if (activeInstallmentPeriod === 'today' && insTime < startOfToday) return false;
+        if (activeInstallmentPeriod === 'week' && insTime < startOfWeek) return false;
+        if (activeInstallmentPeriod === 'month' && insTime < startOfMonth) return false;
+
+        const method = (ins.method || 'cash').toLowerCase();
+        if (activeInstallmentMethod !== 'all' && method !== activeInstallmentMethod) return false;
+
+        if (tempoSearchQuery.trim()) {
+            const q = tempoSearchQuery.trim().toLowerCase();
+            const cName = ins.customerName.toLowerCase();
+            const cPhone = ins.customerPhone.toLowerCase();
+            const ordId = ins.orderId.toLowerCase();
+            const notes = (ins.notes || '').toLowerCase();
+            if (!cName.includes(q) && !cPhone.includes(q) && !ordId.includes(q) && !notes.includes(q)) return false;
+        }
+
+        return true;
+    });
+
+    // Urutkan kronologis terbaru di paling atas
+    filtered.sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
+
+    // Hitung total cicilan masuk pada filter aktif
+    const totalCollected = filtered.reduce((acc, curr) => acc + (parseFloat(curr.amount) || 0), 0);
+
+    return `
+        <div class="space-y-4">
+            <!-- Filter Bar Histori Cicilan (Periode & Metode) -->
+            <div class="bg-white dark:bg-slate-800 p-4 rounded-3xl border border-slate-200/90 dark:border-slate-700 shadow-sm space-y-3">
+                <div class="flex flex-wrap items-center justify-between gap-3">
+                    <!-- Filter Periode -->
+                    <div class="flex items-center gap-1.5 overflow-x-auto pb-1 hide-scrollbar text-xs font-bold uppercase tracking-wider">
+                        <button onclick="window.setInstallmentPeriod('all')" class="px-3 py-1.5 rounded-xl border transition-all cursor-pointer ${activeInstallmentPeriod === 'all' ? 'text-white border-transparent' : 'bg-slate-50 dark:bg-slate-900 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700'}" style="${activeInstallmentPeriod === 'all' ? 'background: var(--color-primary);' : ''}">
+                            Semua Waktu
+                        </button>
+                        <button onclick="window.setInstallmentPeriod('today')" class="px-3 py-1.5 rounded-xl border transition-all cursor-pointer ${activeInstallmentPeriod === 'today' ? 'text-white border-transparent' : 'bg-slate-50 dark:bg-slate-900 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700'}" style="${activeInstallmentPeriod === 'today' ? 'background: var(--color-primary);' : ''}">
+                            Hari Ini
+                        </button>
+                        <button onclick="window.setInstallmentPeriod('week')" class="px-3 py-1.5 rounded-xl border transition-all cursor-pointer ${activeInstallmentPeriod === 'week' ? 'text-white border-transparent' : 'bg-slate-50 dark:bg-slate-900 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700'}" style="${activeInstallmentPeriod === 'week' ? 'background: var(--color-primary);' : ''}">
+                            7 Hari Terakhir
+                        </button>
+                        <button onclick="window.setInstallmentPeriod('month')" class="px-3 py-1.5 rounded-xl border transition-all cursor-pointer ${activeInstallmentPeriod === 'month' ? 'text-white border-transparent' : 'bg-slate-50 dark:bg-slate-900 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700'}" style="${activeInstallmentPeriod === 'month' ? 'background: var(--color-primary);' : ''}">
+                            Bulan Ini
+                        </button>
+                    </div>
+
+                    <!-- Filter Metode Bayar -->
+                    <div class="flex items-center gap-1.5 overflow-x-auto pb-1 hide-scrollbar text-xs font-bold uppercase tracking-wider">
+                        <button onclick="window.setInstallmentMethod('all')" class="px-2.5 py-1.5 rounded-xl border text-[10px] transition-all cursor-pointer ${activeInstallmentMethod === 'all' ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 border-transparent' : 'bg-slate-50 dark:bg-slate-900 text-slate-500 border-slate-200 dark:border-slate-700'}">
+                            Semua Metode
+                        </button>
+                        <button onclick="window.setInstallmentMethod('cash')" class="px-2.5 py-1.5 rounded-xl border text-[10px] transition-all cursor-pointer ${activeInstallmentMethod === 'cash' ? 'bg-emerald-600 text-white border-transparent' : 'bg-slate-50 dark:bg-slate-900 text-slate-500 border-slate-200 dark:border-slate-700'}">
+                            💵 Tunai
+                        </button>
+                        <button onclick="window.setInstallmentMethod('transfer')" class="px-2.5 py-1.5 rounded-xl border text-[10px] transition-all cursor-pointer ${activeInstallmentMethod === 'transfer' ? 'bg-blue-600 text-white border-transparent' : 'bg-slate-50 dark:bg-slate-900 text-slate-500 border-slate-200 dark:border-slate-700'}">
+                            🏦 Transfer
+                        </button>
+                        <button onclick="window.setInstallmentMethod('qris')" class="px-2.5 py-1.5 rounded-xl border text-[10px] transition-all cursor-pointer ${activeInstallmentMethod === 'qris' ? 'bg-purple-600 text-white border-transparent' : 'bg-slate-50 dark:bg-slate-900 text-slate-500 border-slate-200 dark:border-slate-700'}">
+                            📱 QRIS
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Total Cicilan Terkumpul Highlight Strip -->
+                <div class="pt-3 border-t border-slate-100 dark:border-slate-700/60 flex items-center justify-between flex-wrap gap-2">
+                    <span class="text-xs font-bold text-slate-500 dark:text-slate-400">
+                        Menampilkan <b class="text-slate-800 dark:text-slate-200">${filtered.length}</b> transaksi cicilan
+                    </span>
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs font-bold text-slate-500">Total Uang Cicilan Masuk:</span>
+                        <span class="text-base font-black font-mono text-emerald-600 dark:text-emerald-400">${fCur(totalCollected)}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabel / Card List Cicilan -->
+            ${filtered.length === 0 ? `
+                <div class="bg-white dark:bg-slate-800 p-10 text-center rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm">
+                    <div class="w-16 h-16 bg-slate-100 dark:bg-slate-700/50 text-slate-400 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <i class="fa-solid fa-receipt text-2xl"></i>
+                    </div>
+                    <h4 class="font-bold text-slate-700 dark:text-slate-200 text-sm uppercase tracking-wider">Tidak Ada Transaksi Cicilan</h4>
+                    <p class="text-slate-500 dark:text-slate-400 mt-1 text-xs font-medium">Belum ada cicilan yang tercatat untuk filter periode atau kata kunci ini.</p>
+                </div>
+            ` : `
+                <!-- Mobile Card List -->
+                <div class="sm:hidden space-y-2.5">
+                    ${filtered.map(ins => {
+                        const dateStr = formatDateTimeID(ins.date);
+                        const method = (ins.method || 'cash').toUpperCase();
+                        return `
+                        <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200/90 dark:border-slate-700 shadow-2xs space-y-2">
+                            <div class="flex items-start justify-between gap-2">
+                                <div>
+                                    <h4 class="font-bold text-xs text-slate-800 dark:text-slate-100">${esc(ins.customerName)}</h4>
+                                    <p class="text-[10px] text-slate-400 font-mono mt-0.5">${dateStr}</p>
+                                </div>
+                                <span class="text-sm font-black font-mono text-emerald-600 dark:text-emerald-400">+${fCur(ins.amount)}</span>
+                            </div>
+                            <div class="flex items-center justify-between text-[11px] pt-2 border-t border-slate-100 dark:border-slate-700/60">
+                                <span class="font-mono text-slate-500">Nota: <a href="javascript:void(0)" onclick="window.openTempoDetailModal('${ins.orderId}')" class="font-bold text-[var(--color-primary)] hover:underline">#${esc(ins.orderId)}</a></span>
+                                <span class="px-2 py-0.5 rounded-lg text-[10px] font-bold uppercase tracking-wider bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300">
+                                    ${method}
+                                </span>
+                            </div>
+                            ${ins.notes ? `<p class="text-[10px] italic text-slate-500 bg-slate-50 dark:bg-slate-900/40 p-2 rounded-xl border border-slate-100 dark:border-slate-800">${esc(ins.notes)}</p>` : ''}
+                            <div class="pt-2 flex items-center justify-end gap-1.5">
+                                <button type="button" onclick="window.openTempoDetailModal('${ins.orderId}')" class="px-2.5 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 text-[10px] font-bold hover:bg-slate-50 transition-all cursor-pointer">
+                                    <i class="fa-solid fa-eye mr-1"></i>Detail Nota
+                                </button>
+                                <button type="button" onclick="if(typeof window.printTempoReceiptDirect==='function'){window.printTempoReceiptDirect('${ins.orderId}');}else{window.previewTempoReceipt('${ins.orderId}');}" class="px-2.5 py-1.5 rounded-xl bg-amber-500 text-white text-[10px] font-bold hover:bg-amber-600 transition-all cursor-pointer">
+                                    <i class="fa-solid fa-print mr-1"></i>Struk
+                                </button>
+                            </div>
+                        </div>
+                        `;
+                    }).join('')}
+                </div>
+
+                <!-- Desktop Table -->
+                <div class="hidden sm:block bg-white dark:bg-slate-800 rounded-3xl border border-slate-200/90 dark:border-slate-700 overflow-hidden shadow-sm">
+                    <table class="w-full text-xs text-left">
+                        <thead class="bg-slate-50 dark:bg-slate-900/60 text-slate-400 uppercase text-[10px] font-bold border-b border-slate-200 dark:border-slate-700">
+                            <tr>
+                                <th class="py-3 px-4">Tgl &amp; Waktu</th>
+                                <th class="py-3 px-3">Pelanggan</th>
+                                <th class="py-3 px-3">ID Nota</th>
+                                <th class="py-3 px-3 text-center">Metode</th>
+                                <th class="py-3 px-3 text-right">Jumlah Cicilan</th>
+                                <th class="py-3 px-3">Penerima / Kasir</th>
+                                <th class="py-3 px-4 text-center">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100 dark:divide-slate-700/60 font-medium">
+                            ${filtered.map(ins => {
+                                const dateStr = formatDateTimeID(ins.date);
+                                const method = (ins.method || 'cash').toUpperCase();
+                                return `
+                                <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-700/30 transition-colors">
+                                    <td class="py-3 px-4 font-mono text-slate-500 whitespace-nowrap">${dateStr}</td>
+                                    <td class="py-3 px-3">
+                                        <span class="font-bold text-slate-800 dark:text-slate-100 block">${esc(ins.customerName)}</span>
+                                        <span class="text-[10px] font-mono text-slate-400">${esc(ins.customerPhone || '-')}</span>
+                                    </td>
+                                    <td class="py-3 px-3 font-mono font-bold">
+                                        <a href="javascript:void(0)" onclick="window.openTempoDetailModal('${ins.orderId}')" class="text-[var(--color-primary)] hover:underline">#${esc(ins.orderId)}</a>
+                                    </td>
+                                    <td class="py-3 px-3 text-center">
+                                        <span class="px-2 py-0.5 rounded-lg text-[10px] font-bold uppercase tracking-wider bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300">
+                                            ${method}
+                                        </span>
+                                    </td>
+                                    <td class="py-3 px-3 text-right font-black font-mono text-emerald-600 dark:text-emerald-400 whitespace-nowrap">
+                                        +${fCur(ins.amount)}
+                                    </td>
+                                    <td class="py-3 px-3 text-slate-600 dark:text-slate-300">
+                                        <span>${esc(ins.cashierName || 'Kasir')}</span>
+                                        ${ins.notes ? `<span class="block text-[10px] italic text-slate-400 truncate max-w-[150px]" title="${esc(ins.notes)}">${esc(ins.notes)}</span>` : ''}
+                                    </td>
+                                    <td class="py-3 px-4 text-center whitespace-nowrap">
+                                        <div class="flex items-center justify-center gap-1.5">
+                                            <button type="button" onclick="window.openTempoDetailModal('${ins.orderId}')" class="p-1.5 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-600 hover:text-[var(--color-primary)] dark:text-slate-300 text-xs transition-all cursor-pointer" title="Buka Detail Nota">
+                                                <i class="fa-solid fa-eye"></i>
+                                            </button>
+                                            <button type="button" onclick="if(typeof window.printTempoReceiptDirect==='function'){window.printTempoReceiptDirect('${ins.orderId}');}else{window.previewTempoReceipt('${ins.orderId}');}" class="p-1.5 rounded-lg bg-amber-500 hover:bg-amber-600 text-white text-xs transition-all cursor-pointer shadow-2xs" title="Cetak Struk Nota">
+                                                <i class="fa-solid fa-print"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                `;
+                            }).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `}
+        </div>
+    `;
 };
 
 /**
@@ -1366,6 +1874,9 @@ const renderTempoContent = () => {
     let countDueSoon = 0;
     let countActive = 0;
 
+    const uniqueCustomerKeys = new Set();
+    let totalInstallmentsCount = 0;
+
     cachedPiutangOrders.forEach(o => {
         const calc = getTempoOrderCalculations(o);
         totalPiutang += calc.totalAkhir;
@@ -1377,6 +1888,12 @@ const renderTempoContent = () => {
         } else {
             countActive++;
         }
+
+        const cKey = String(o.customer?.phone || o.customer?.wa || o.customer?.name || '').trim();
+        if (cKey) uniqueCustomerKeys.add(cKey);
+
+        const ins = o.payment?.installments || [];
+        totalInstallmentsCount += ins.length;
     });
 
     let h = `
@@ -1410,19 +1927,35 @@ const renderTempoContent = () => {
                 </div>
                 <div class="min-w-0">
                     <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Total Nota Tempo</p>
-                    <p class="text-base sm:text-lg font-black text-slate-900 dark:text-white font-mono mt-0.5 tracking-tight">${cachedPiutangOrders.length} Nota</p>
+                    <p class="text-base sm:text-lg font-black text-slate-900 dark:text-white font-mono mt-0.5 tracking-tight">${cachedPiutangOrders.length} Nota (${uniqueCustomerKeys.size} Debitur)</p>
                 </div>
             </div>
         </div>
 
-        <!-- SEARCH BAR & FILTER STATUS CHIPS -->
+        <!-- 3 TAB NAVIGASI UTAMA (ORDERS, CUSTOMERS, INSTALLMENTS) -->
+        <div class="p-1.5 bg-slate-100 dark:bg-slate-800/80 rounded-2xl border border-slate-200/80 dark:border-slate-700/80 grid grid-cols-3 gap-1">
+            <button type="button" onclick="window.switchTempoMainTab('orders')" class="py-2.5 px-2 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 active:scale-95 cursor-pointer ${activeTempoMainTab === 'orders' ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-xs' : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'}">
+                <i class="fa-solid fa-file-invoice text-xs"></i>
+                <span>Daftar Nota (${cachedPiutangOrders.length})</span>
+            </button>
+            <button type="button" onclick="window.switchTempoMainTab('customers')" class="py-2.5 px-2 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 active:scale-95 cursor-pointer ${activeTempoMainTab === 'customers' ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-xs' : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'}">
+                <i class="fa-solid fa-address-book text-xs text-indigo-500"></i>
+                <span>Kartu Pelanggan (${uniqueCustomerKeys.size})</span>
+            </button>
+            <button type="button" onclick="window.switchTempoMainTab('installments')" class="py-2.5 px-2 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 active:scale-95 cursor-pointer ${activeTempoMainTab === 'installments' ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-xs' : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'}">
+                <i class="fa-solid fa-receipt text-xs text-emerald-500"></i>
+                <span>Histori Cicilan (${totalInstallmentsCount})</span>
+            </button>
+        </div>
+
+        <!-- SEARCH BAR INSTAN (GLOBAL UNTUK SEMUA TAB) -->
         <div class="bg-white dark:bg-slate-800 p-4 rounded-3xl border border-slate-200/90 dark:border-slate-700 shadow-sm space-y-3">
             <div class="relative">
                 <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
                 <input type="text" 
                     id="tempo-search-input"
                     value="${esc(tempoSearchQuery)}"
-                    placeholder="Cari nama pelanggan, nomor WhatsApp, atau ID nota tempo..." 
+                    placeholder="${activeTempoMainTab === 'orders' ? 'Cari nama pelanggan, nomor WhatsApp, atau ID nota tempo...' : (activeTempoMainTab === 'customers' ? 'Cari nama pelanggan atau nomor WhatsApp...' : 'Cari transaksi cicilan, nama, nomor nota, atau catatan...')}" 
                     oninput="window.onTempoSearch(this.value)"
                     class="w-full pl-9 pr-8 py-2.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl text-xs font-medium text-slate-800 dark:text-slate-100 focus:outline-none focus:border-[var(--color-primary)] transition-all">
                 ${tempoSearchQuery ? `
@@ -1431,7 +1964,8 @@ const renderTempoContent = () => {
                 </button>` : ''}
             </div>
 
-            <!-- FILTER STATUS SEGMENTED CONTROL -->
+            ${activeTempoMainTab === 'orders' ? `
+            <!-- FILTER STATUS SEGMENTED CONTROL (TAB ORDERS) -->
             <div class="flex items-center gap-2 overflow-x-auto pb-1 hide-scrollbar text-xs font-bold uppercase tracking-wider">
                 <button onclick="window.setTempoFilter('all')" 
                     class="px-3.5 py-2 rounded-xl border transition-all shrink-0 cursor-pointer active:scale-95 ${activeTempoFilter === 'all' 
@@ -1459,26 +1993,34 @@ const renderTempoContent = () => {
                     <i class="fa-solid fa-circle-check mr-1"></i> Berjalan Lancar (${countActive})
                 </button>
             </div>
+            ` : ''}
         </div>
     `;
 
-    if (cachedPiutangOrders.length === 0) {
-        h += `
-        <div class="bg-white dark:bg-slate-800 p-10 text-center rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm">
-            <div class="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4" style="background: rgba(var(--color-primary-rgb), 0.1); color: var(--color-primary);">
-                <i class="fa-solid fa-check-double text-4xl"></i>
-            </div>
-            <h3 class="font-black text-slate-800 dark:text-slate-100 text-base uppercase tracking-widest">Semua Tagihan Piutang Lunas!</h3>
-            <p class="text-slate-500 dark:text-slate-400 mt-1.5 text-xs font-medium max-w-sm mx-auto">Tidak ada piutang tempo penjualan pelanggan yang sedang aktif atau tertunda saat ini.</p>
-        </div>`;
-    } else {
-        h += `<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="tempo-cards-container"></div>`;
+    // Render Konten Tab Aktif
+    if (activeTempoMainTab === 'orders') {
+        if (cachedPiutangOrders.length === 0) {
+            h += `
+            <div class="bg-white dark:bg-slate-800 p-10 text-center rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm">
+                <div class="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4" style="background: rgba(var(--color-primary-rgb), 0.1); color: var(--color-primary);">
+                    <i class="fa-solid fa-check-double text-4xl"></i>
+                </div>
+                <h3 class="font-black text-slate-800 dark:text-slate-100 text-base uppercase tracking-widest">Semua Tagihan Piutang Lunas!</h3>
+                <p class="text-slate-500 dark:text-slate-400 mt-1.5 text-xs font-medium max-w-sm mx-auto">Tidak ada piutang tempo penjualan pelanggan yang sedang aktif atau tertunda saat ini.</p>
+            </div>`;
+        } else {
+            h += `<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="tempo-cards-container"></div>`;
+        }
+    } else if (activeTempoMainTab === 'customers') {
+        h += renderTempoCustomersTab();
+    } else if (activeTempoMainTab === 'installments') {
+        h += renderTempoInstallmentsTab();
     }
     
     h += `</div>`;
     setH('admin-content', h);
 
-    if (cachedPiutangOrders.length > 0) {
+    if (activeTempoMainTab === 'orders' && cachedPiutangOrders.length > 0) {
         renderTempoCardsOnly();
     }
 };
@@ -1511,6 +2053,9 @@ export const rAdmPiutang = async () => {
         return dueA - dueB;
     });
 
+    // Simpan ke window agar sinkron dengan modal dokumen cetak (openDocPreview)
+    window.cachedPiutangOrders = cachedPiutangOrders;
+
     renderTempoContent();
 };
 
@@ -1519,9 +2064,11 @@ window.rAdmPiutang = rAdmPiutang;
 export default {
     rAdmPiutang: window.rAdmPiutang,
     sendSmartTempoWA: window.sendSmartTempoWA,
+    sendConsolidatedTempoWA: window.sendConsolidatedTempoWA,
     openTempoDetailModal: window.openTempoDetailModal,
     openTempoPaymentModal: window.openTempoPaymentModal,
     openTempoPenaltyModal: window.openTempoPenaltyModal,
     getTempoOrderCalculations,
     ensureTempoModals
 };
+
