@@ -8,6 +8,23 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-9-85',
+        version: 'v1.9.85',
+        date: '2026-09-28',
+        title: 'Notifikasi WhatsApp Status Pesanan Dinamis: Pesan Adaptif per Status, Auto-Prompt WA Setelah Update, dan Ringkasan Item Pesanan di Pesan WA',
+        category: 'feature',
+        badge: 'Smart WA Notification v1.9.85',
+        items: [
+            'Pesan WA Dinamis Adaptif per Status Pesanan (orders.js): Fungsi konfirmasiKeWA diperbarui total — kini menghasilkan 4 template pesan yang berbeda dan relevan secara kontekstual: (1) Baru: konfirmasi penerimaan pesanan + ringkasan item + informasi pengiriman; (2) Diproses: kabar pesanan sedang disiapkan + info metode pengiriman/ambil; (3) Selesai: ucapan terima kasih profesional + ajakan kembali berbelanja; (4) Dibatalkan: pemberitahuan pembatalan transparan dan mohon maaf.',
+            'Ringkasan Item Pesanan di Pesan WA: Setiap pesan notifikasi kini menyertakan ringkasan produk yang dipesan (maks. 3 item teratas beserta nama varian dan kuantitas, dengan keterangan "...dan X item lainnya" jika lebih dari 3).',
+            'Info Pengiriman Kontekstual di Pesan WA: Pesan otomatis menyertakan alamat pengiriman (delivery), nama & alamat penerima Drop-Point (lokasi berbeda), atau informasi ambil di toko, sesuai metode yang dipilih pembeli.',
+            'Label Metode Pembayaran Lebih Ramah (orders.js): Kode metode bayar raw (transfer, qris, tempo, cod, cashier) ditampilkan dalam format label ramah bahasa Indonesia (Transfer Bank, QRIS, COD (Bayar di Tempat), Putri PayLater, Tunai) di isi pesan WA.',
+            'Auto-Prompt Notifikasi WA setelah Update Status (orders.js): Setelah admin mengubah status pesanan (ke Diproses/Selesai/Dibatalkan), toast interaktif muncul otomatis selama 8 detik berisi tombol hijau "Kirim Notifikasi WA ke Pembeli" — admin cukup 1 klik tanpa perlu buka ulang modal detail pesanan.',
+            'Performa Optimal Zero-Latency (orders.js): konfirmasiKeWA kini mengambil data pesanan dari cache memori lokal (gOrds) terlebih dahulu, hanya fallback ke Firestore fetch jika data tidak ada di cache — eliminasi loading spinner tidak perlu untuk pesanan yang sudah tampil di daftar.',
+            'Sinkronisasi Multi-Channel v1.9.85 (Android VersionCode 10985): Terkompilasi dan tersinkronisasi penuh ke Vite build, paket flashdisk, dan Capacitor Android.'
+        ]
+    },
+    {
         id: 'log-1-9-84',
         version: 'v1.9.84',
         date: '2026-09-28',

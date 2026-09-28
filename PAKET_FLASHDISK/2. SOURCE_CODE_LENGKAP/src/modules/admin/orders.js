@@ -1038,10 +1038,45 @@ export const updateOrderStatus = async (i, s) => {
             await deductOrderStockAndRewards(i, ord);
             showToast("Pesanan diaktifkan kembali & stok dipotong!", "info");
         } else {
-            showToast("Status diupdate!"); 
+            showToast("✅ Status diupdate!"); 
         }
 
-        openOrderDetail(i); 
+        openOrderDetail(i);
+
+        // ── AUTO-PROMPT NOTIFIKASI WA KE PEMBELI ──────────────────────────────
+        // Hanya tampilkan jika ada nomor WA pembeli dan status berubah secara bermakna
+        if (ord && ord.customer?.wa && s !== oldStatus && s !== 'Baru') {
+            const statusLabel = s === 'Diproses' ? '🔄 Diproses' : s === 'Selesai' ? '✅ Selesai' : s === 'Dibatalkan' ? '❌ Dibatalkan' : s;
+            // Tampilkan toast interaktif dengan tombol kirim WA
+            setTimeout(() => {
+                const toastEl = el('toast');
+                if (toastEl) {
+                    const prevHtml = toastEl.innerHTML;
+                    const prevCls = toastEl.className;
+                    toastEl.style.cssText = 'display:flex !important; opacity:1; transform:translateY(0); position:fixed; bottom:5rem; left:50%; transform:translateX(-50%) translateY(0); z-index:9999; max-width:340px; width:calc(100% - 2rem);';
+                    toastEl.innerHTML = `
+                        <div class="flex flex-col w-full gap-2.5">
+                            <div class="flex items-center gap-2.5">
+                                <i class="fa-brands fa-whatsapp text-green-400 text-xl shrink-0"></i>
+                                <span class="text-sm font-bold text-white">Status → <span class="text-green-300">${statusLabel}</span></span>
+                            </div>
+                            <button type="button" onclick="konfirmasiKeWA('${i}'); this.closest('[id=toast]') && (this.closest('[id=toast]').style.display='none');" 
+                                class="w-full py-2 rounded-xl bg-green-500 hover:bg-green-400 active:scale-95 text-white font-black text-[11px] uppercase tracking-widest flex items-center justify-center gap-2 transition-all shadow-md shadow-green-500/30">
+                                <i class="fa-brands fa-whatsapp"></i> Kirim Notifikasi WA ke Pembeli
+                            </button>
+                        </div>
+                    `;
+                    // Auto sembunyi setelah 8 detik
+                    setTimeout(() => {
+                        if (toastEl.innerHTML.includes('Kirim Notifikasi WA')) {
+                            toastEl.style.display = 'none';
+                        }
+                    }, 8000);
+                }
+            }, 600);
+        }
+        // ── END AUTO-PROMPT WA ────────────────────────────────────────────────
+
     } catch(e) { 
         showToast("Gagal!"); 
     } finally { 
@@ -1051,50 +1086,127 @@ export const updateOrderStatus = async (i, s) => {
 };
 
 /**
- * Kirim pesan konfirmasi otomatis ke WhatsApp pembeli
+ * Kirim pesan notifikasi status pesanan ke WhatsApp pembeli
+ * Pesan bersifat dinamis dan disesuaikan dengan status pesanan saat ini
  */
 export const konfirmasiKeWA = async (orderId) => {
     if (!orderId) return showToast('ID pesanan tidak valid!');
-    sLoad('Memuat data...');
-    try {
-        const doc = await db.collection('freshmart_orders').doc(orderId).get();
-        hLoad();
-        if (!doc.exists) return showToast('Data pesanan tidak ditemukan!');
-        const d = doc.data();
-        const waNum = d.customer && d.customer.wa;
-        if (!waNum) return showToast('Nomor WhatsApp pelanggan tidak tersedia!');
-        
-        const storeName = (appData && appData.store && appData.store.name) ? appData.store.name : 'Toko Putri';
-        const cName = (d.customer && d.customer.name) ? d.customer.name : 'Pelanggan';
-        const status = d.status || 'Baru';
-        const grandTotal = (d.payment && d.payment.grandTotal) ? fCur(d.payment.grandTotal) : '-';
-        const method = (d.payment && d.payment.method) ? d.payment.method.toUpperCase() : '-';
-        
-        let dpSection = '';
-        if (d.isDropPoint && d.dropPoint) {
-            dpSection = `\n📍 *Alamat Pengantaran (Drop-Point):*\n`
-                + `👤 Penerima di Lokasi: *${d.dropPoint.name || '-'}* (+${d.dropPoint.wa || '-'})\n`
-                + `🏠 Alamat Tujuan: ${d.dropPoint.address || '-'}\n`;
+    // Ambil dari memori lokal dulu supaya tidak perlu Firestore fetch
+    let d = gOrds.find(x => x.orderId === orderId);
+    if (!d) {
+        sLoad('Memuat data...');
+        try {
+            const doc = await db.collection('freshmart_orders').doc(orderId).get();
+            hLoad();
+            if (!doc.exists) return showToast('Data pesanan tidak ditemukan!');
+            d = doc.data();
+        } catch(e) {
+            hLoad();
+            showToast('Gagal memuat data pesanan!');
+            return;
         }
+    }
 
-        const msg = `Halo *${cName}*! 👋\n\n`
-            + `Terima kasih telah berbelanja di *${storeName}*. 🛒\n\n`
-            + `*Detail Pesanan Anda:*\n`
-            + `📋 ID: *#${orderId.split('-').pop()}*\n`
-            + `💰 Total: *${grandTotal}*\n`
-            + `💳 Pembayaran: *${method}*\n`
-            + `📦 Status: *${status}*\n`
-            + dpSection + `\n`
-            + `Kami akan segera memproses pesanan Anda. Terima kasih! 🙏`;
-        
-        if (typeof window.openWhatsApp === 'function') {
-            window.openWhatsApp(waNum, msg);
-        } else {
-            window.open(`https://wa.me/${waNum}?text=${encodeURIComponent(msg)}`, '_blank', 'noopener,noreferrer');
+    const waNum = d.customer && d.customer.wa;
+    if (!waNum) return showToast('Nomor WhatsApp pelanggan tidak tersedia!');
+    
+    const storeName = (appData && appData.store && appData.store.name) ? appData.store.name : 'Toko Putri';
+    const storePhone = (appData && appData.store && appData.store.phone) ? appData.store.phone : '';
+    const cName = (d.customer && d.customer.name) ? d.customer.name : 'Pelanggan';
+    const status = d.status || 'Baru';
+    const grandTotal = (d.payment && d.payment.grandTotal) ? fCur(d.payment.grandTotal) : '-';
+    const shortId = (orderId || '').split('-').pop();
+    const methodRaw = (d.payment && d.payment.method) ? d.payment.method : '';
+    const isPL = !!(d.payment?.isPaylater || d.payment?.subMethod === 'paylater');
+    const methodLabel = methodRaw === 'transfer' ? 'Transfer Bank'
+        : methodRaw === 'qris' ? 'QRIS'
+        : methodRaw === 'cod' ? 'COD (Bayar di Tempat)'
+        : (methodRaw === 'tempo' && isPL) ? 'Putri PayLater'
+        : methodRaw === 'tempo' ? 'Penjualan Tempo'
+        : methodRaw === 'cashier' || methodRaw === 'cash' ? 'Tunai'
+        : methodRaw.toUpperCase();
+    
+    const isPOS = d.source === 'pos' || d.channel === 'pos';
+    const deliveryMethod = d.customer?.deliveryMethod;
+    const isDelivery = deliveryMethod === 'delivery';
+
+    // Info produk singkat (maks 3 item)
+    const items = (d.items || []).slice(0, 3);
+    const itemLines = items.map(t => `  • ${t.name}${t.variantName ? ` (${t.variantName})` : ''} x${parseFloat(t.qty)}`).join('\n');
+    const moreItems = (d.items || []).length > 3 ? `  ...dan ${(d.items || []).length - 3} item lainnya` : '';
+    const itemSection = itemLines + (moreItems ? '\n' + moreItems : '');
+
+    // Info pengiriman
+    let deliverySection = '';
+    if (!isPOS) {
+        if (d.isDropPoint && d.dropPoint) {
+            deliverySection = `\n📍 *Dikirim ke Lokasi:*\n`
+                + `👤 Penerima: *${d.dropPoint.name || '-'}*\n`
+                + `🏠 Alamat Tujuan: ${d.dropPoint.address || '-'}\n`;
+        } else if (isDelivery && d.customer?.address) {
+            deliverySection = `\n🚚 *Alamat Pengiriman:*\n${d.customer.address}\n`;
+        } else if (!isDelivery) {
+            deliverySection = `\n🏪 *Metode:* Ambil di Toko\n`;
         }
-    } catch(e) {
-        hLoad();
-        showToast('Gagal memuat data pesanan!');
+    }
+
+    // Buat pesan sesuai status
+    let msg = '';
+    if (status === 'Baru') {
+        msg = `Halo *${cName}*! 👋\n\n`
+            + `Terima kasih telah berbelanja di *${storeName}*! 🛒\n\n`
+            + `✅ *Pesanan Anda sudah kami terima!*\n\n`
+            + `📋 No. Pesanan: *#${shortId}*\n`
+            + `💰 Total: *${grandTotal}*\n`
+            + `💳 Pembayaran: *${methodLabel}*\n\n`
+            + `🛍️ *Ringkasan Pesanan:*\n${itemSection}\n`
+            + deliverySection
+            + `\n⏳ Pesanan Anda sedang kami periksa dan akan segera diproses.`
+            + (storePhone ? `\n\nJika ada pertanyaan, balas pesan ini atau hubungi kami. Terima kasih! 🙏` : `\n\nTerima kasih! 🙏`);
+    } else if (status === 'Diproses') {
+        msg = `Halo *${cName}*! 👋\n\n`
+            + `🔄 *Kabar Terbaru Pesanan Anda!*\n\n`
+            + `Pesanan *#${shortId}* sedang kami siapkan dengan sepenuh hati di *${storeName}*.\n\n`
+            + `📋 No. Pesanan: *#${shortId}*\n`
+            + `💰 Total: *${grandTotal}*\n\n`
+            + `🛍️ *Item yang Disiapkan:*\n${itemSection}\n`
+            + deliverySection
+            + (isDelivery && !d.isDropPoint
+                ? `\n🚗 Pesanan akan segera dikirim ke alamat Anda. Harap siap menerima!`
+                : d.isDropPoint
+                ? `\n🚗 Pesanan akan segera dikirim ke lokasi tujuan yang Anda tentukan.`
+                : `\n🏪 Pesanan Anda akan siap diambil di toko kami sebentar lagi!`)
+            + `\n\nTerima kasih atas kepercayaan Anda! 🙏`;
+    } else if (status === 'Selesai') {
+        msg = `Halo *${cName}*! 👋\n\n`
+            + `✅ *Pesanan Selesai! Terima kasih sudah berbelanja!*\n\n`
+            + `Pesanan *#${shortId}* dari *${storeName}* telah berhasil diselesaikan.\n\n`
+            + `💰 Total Belanja: *${grandTotal}*\n`
+            + `💳 Pembayaran: *${methodLabel}*\n\n`
+            + `Semoga produk yang Anda terima sesuai harapan! 🎉\n\n`
+            + `💬 *Apakah Anda puas dengan pelayanan kami?*\n`
+            + `Jangan ragu untuk kembali berbelanja di *${storeName}*. Sampai jumpa! 🛒✨`;
+    } else if (status === 'Dibatalkan') {
+        msg = `Halo *${cName}*! 👋\n\n`
+            + `❌ *Pemberitahuan Pembatalan Pesanan*\n\n`
+            + `Kami informasikan bahwa pesanan *#${shortId}* di *${storeName}* telah dibatalkan.\n\n`
+            + `💰 Total yang Dibatalkan: *${grandTotal}*\n\n`
+            + `Jika Anda memiliki pertanyaan mengenai pembatalan ini atau ingin memesan kembali, `
+            + `silakan hubungi kami kembali.\n\n`
+            + `Mohon maaf atas ketidaknyamanannya. Terima kasih! 🙏`;
+    } else {
+        // Fallback generik
+        msg = `Halo *${cName}*! 👋\n\n`
+            + `Update status pesanan *#${shortId}* dari *${storeName}*:\n\n`
+            + `📦 Status: *${status}*\n`
+            + `💰 Total: *${grandTotal}*\n\n`
+            + `Terima kasih! 🙏`;
+    }
+    
+    if (typeof window.openWhatsApp === 'function') {
+        window.openWhatsApp(waNum, msg);
+    } else {
+        window.open(`https://wa.me/${waNum}?text=${encodeURIComponent(msg)}`, '_blank', 'noopener,noreferrer');
     }
 };
 
