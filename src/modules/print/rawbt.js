@@ -516,7 +516,7 @@ export const buildPOSReceiptPayload = (tx, config = null) => {
         builder.twoColumn('Bayar Tunai', fRp(tx.payment.paid));
         builder.bold(true).twoColumn('Kembalian', fRp(tx.payment.change)).bold(false);
     } else if (tx.payment?.method === 'tempo') {
-        builder.twoColumn('Uang Muka (DP)', fRp(tx.payment.dp || 0));
+        builder.twoColumn('Uang Muka (DP)', fRp(tx.payment?.tempoDp ?? tx.payment?.dp ?? 0));
         builder.bold(true).twoColumn('Sisa Piutang', fRp(tx.payment.tempoBalance || 0)).bold(false);
         if (tx.payment.tempoDueDate) {
             builder.line(`Jatuh Tempo: ${tx.payment.tempoDueDate}`, 'left');

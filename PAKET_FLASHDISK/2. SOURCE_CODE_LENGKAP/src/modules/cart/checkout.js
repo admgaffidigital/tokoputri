@@ -634,10 +634,11 @@ export const processOrder = async () => {
             const dpInput = document.getElementById('tempo-dp-input');
             let dp = dpInput ? parseFloat(dpInput.value) || 0 : 0;
             if (dp > tot) dp = tot;
+            oD.payment.dp = dp;
             oD.payment.tempoDp = dp;
-            oD.payment.tempoBalance = tot - dp;
+            oD.payment.tempoBalance = Math.max(0, tot - dp);
             oD.payment.tempoDueDate = Date.now() + (30 * 24 * 60 * 60 * 1000);
-            oD.payment.paymentStatus = 'hutang';
+            oD.payment.paymentStatus = (tot - dp <= 0) ? 'lunas' : 'hutang';
         }
 
         const orderRef = db.collection("freshmart_orders").doc(oI);

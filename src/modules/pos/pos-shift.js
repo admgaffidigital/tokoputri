@@ -602,7 +602,7 @@ export const recordTransactionToShift = (orderData) => {
 
         const total = parseFloat(orderData.total) || 0;
         const method = orderData.payment?.method || 'cash';
-        const dp = parseFloat(orderData.payment?.dp) || 0;
+        const dp = parseFloat(orderData.payment?.tempoDp ?? orderData.payment?.dp ?? orderData.payment?.paid) || 0;
         const tempoBal = parseFloat(orderData.payment?.tempoBalance) || 0;
         const discount = parseFloat(orderData.globalDiscount) || 0;
         const points = parseFloat(orderData.pointsEarned) || 0;

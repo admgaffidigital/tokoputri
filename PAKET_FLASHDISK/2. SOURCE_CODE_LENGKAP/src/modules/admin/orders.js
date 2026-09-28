@@ -475,6 +475,16 @@ export const openOrderDetail = (i) => {
                     ${o.payment?.shippingDiscount ? `<div class="flex justify-between items-center text-[var(--color-primary)] bg-[rgba(var(--color-primary-rgb),0.15)] px-2 py-1 -mx-2 rounded-xl"><span>Diskon Ongkir</span><span class="font-bold">-${fCur(o.payment.shippingDiscount)}</span></div>` : ''}
                     ${o.payment?.productDiscount ? `<div class="flex justify-between items-center text-rose-400 bg-rose-900/20 px-2 py-1 -mx-2 rounded-xl"><span>Diskon Promo</span><span class="font-bold">-${fCur(o.payment.productDiscount)}</span></div>` : ''}
                     ${(() => {
+                        const ptDisc = parseFloat(o.pointDiscount || o.payment?.pointDiscount) || 0;
+                        const pts = parseFloat(o.pointsRedeemed) || 0;
+                        if (ptDisc <= 0) return '';
+                        return `
+                        <div class="flex justify-between items-center text-emerald-400 bg-emerald-950/40 px-2.5 py-1.5 -mx-2 rounded-xl border border-emerald-800/40">
+                            <span class="flex items-center gap-1.5 font-bold"><i class="fa-solid fa-tags text-emerald-400"></i> Diskon Poin Member ${pts > 0 ? `(${pts} Poin)` : ''}</span>
+                            <span class="font-bold font-mono">-${fCur(ptDisc)}</span>
+                        </div>`;
+                    })()}
+                    ${(() => {
                         if (!o.payment?.ppnAmount || o.payment.ppnAmount <= 0) return '';
                         const isInc = o.payment.ppnType === 'inclusive';
                         const ppnRate = o.payment.ppnRate || 11;
@@ -495,6 +505,38 @@ export const openOrderDetail = (i) => {
                     <span class="text-sm font-bold text-slate-400 uppercase tracking-widest mb-1">Total Tagihan</span>
                     <span class="text-3xl font-bold text-[var(--color-primary)] tracking-tight font-extrabold">${fCur(o.payment?.grandTotal)}</span>
                 </div>
+
+                ${(() => {
+                    const isTempoOrder = o.payment?.method === 'tempo' || o.isTempo;
+                    if (!isTempoOrder) return '';
+                    const tempoDp = parseFloat(o.payment?.tempoDp ?? o.payment?.dp) || 0;
+                    const tempoBal = parseFloat(o.payment?.tempoBalance) || 0;
+                    const isTempoLunas = o.payment?.paymentStatus === 'lunas' || tempoBal <= 0;
+                    return `
+                    <div class="mt-4 pt-3.5 border-t border-slate-700/80 space-y-2 relative z-10">
+                        <div class="flex justify-between items-center text-xs">
+                            <span class="text-slate-400 font-bold flex items-center gap-1.5"><i class="fa-solid fa-hourglass-half text-amber-400"></i> Jenis Transaksi</span>
+                            <span class="font-bold text-amber-300">Penjualan Tempo (Piutang)</span>
+                        </div>
+                        <div class="flex justify-between items-center text-xs">
+                            <span class="text-slate-400">Uang Muka (DP Dibayar)</span>
+                            <span class="font-bold text-emerald-400 font-mono">${fCur(tempoDp)}</span>
+                        </div>
+                        <div class="flex justify-between items-center text-xs">
+                            <span class="text-slate-400">Sisa Tagihan Piutang</span>
+                            <span class="font-bold font-mono ${isTempoLunas ? 'text-emerald-400' : 'text-amber-400'}">${fCur(tempoBal)}</span>
+                        </div>
+                        <div class="flex justify-between items-center text-xs">
+                            <span class="text-slate-400">Status Piutang</span>
+                            <span class="px-2 py-0.5 rounded-lg text-[10px] font-black uppercase tracking-wider ${isTempoLunas ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40' : 'bg-amber-500/20 text-amber-300 border border-amber-500/40'}">
+                                ${isTempoLunas ? '✓ LUNAS' : '⏳ BELUM LUNAS'}
+                            </span>
+                        </div>
+                        <button type="button" onclick="if(typeof window.closeOrderDetailModal==='function') window.closeOrderDetailModal(); if(typeof window.openAdminTab==='function') window.openAdminTab('piutang'); setTimeout(() => { if(typeof window.openTempoDetail==='function') window.openTempoDetail('${esc(o.orderId)}'); }, 300);" class="mt-2.5 w-full py-2.5 px-3 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 text-[11px] font-bold flex items-center justify-center gap-2 transition-all cursor-pointer active:scale-95 shadow-xs">
+                            <i class="fa-solid fa-file-invoice-dollar"></i> Kelola Tagihan &amp; Cicilan di Modul Piutang
+                        </button>
+                    </div>`;
+                })()}
             </div>
 
             </div>

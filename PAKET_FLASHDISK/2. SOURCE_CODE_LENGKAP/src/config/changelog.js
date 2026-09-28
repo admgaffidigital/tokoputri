@@ -8,6 +8,22 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-9-81',
+        version: 'v1.9.81',
+        date: '2026-09-28',
+        title: 'Penyempurnaan Finansial Kasir & Piutang: Sinkronisasi Uang Muka (DP) ke Laci Kas Shift Kasir POS, Presisi Cetak Struk RawBT, dan Transparansi Diskon Poin & Piutang di Modal Pesanan CMS',
+        category: 'fix',
+        badge: 'Financial & POS Precision v1.9.81',
+        items: [
+            'Sinkronisasi Uang Muka (DP) ke Laci Kas Shift (pos-shift.js & pos.js): Transaksi tempo di kasir POS dengan pembayaran uang muka (DP) tunai kini otomatis masuk ke pembukuan uang laci kasir (shift.cashSales) secara akurat. Mengeliminasi selisih kas fisik lebih saat rekonsiliasi tutup shift (Z-Report).',
+            'Presisi Nilai DP di Struk Kasir & Thermal RawBT (pos.js & rawbt.js): Memperbaiki pembacaan nominal uang muka tempo dari tempoDp/dp pada preview struk kasir dan cetak struk thermal ESC/POS RawBT 58/80mm sehingga mencetak nominal DP yang sesungguhnya (tidak lagi tertulis Rp 0).',
+            'Status Pelunasan Tempo Otomatis (pos.js & checkout.js): Jika pelanggan membayar uang muka penuh (DP >= total belanja / sisa saldo Rp 0), status pembayaran otomatis disetel ke "lunas", bukan "hutang".',
+            'Transparansi Diskon Poin Member di CMS (orders.js): Modal rincian pesanan admin kini menampilkan baris potongan Diskon Poin Member secara jelas pada kartu Ringkasan Bayar.',
+            'Kartu Informasi & Pintasan Piutang di Pesanan Admin (orders.js): Menambahkan blok rincian transaksi tempo (Uang Muka, Sisa Tagihan Piutang, Status Lunas/Hutang) dan tombol cepat untuk langsung membuka detail nota dan mencatat cicilan di Modul Piutang.',
+            'Sinkronisasi Multi-Channel v1.9.81 (Android VersionCode 10981): Terkompilasi dan tersinkronisasi penuh ke Vite build, paket flashdisk, dan Capacitor Android.'
+        ]
+    },
+    {
         id: 'log-1-9-80',
         version: 'v1.9.80',
         date: '2026-09-28',

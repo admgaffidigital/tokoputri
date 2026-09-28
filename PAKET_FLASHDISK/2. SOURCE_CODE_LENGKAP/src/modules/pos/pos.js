@@ -2523,9 +2523,10 @@ export const processPOSTx = async () => {
                 paid: posPayMethod === 'cash' ? posPaidAmount : (posPayMethod === 'tempo' ? dp : posTotal()),
                 change: posPayMethod === 'cash' ? posChange() : 0,
                 bank: bankName,
-                paymentStatus: posPayMethod === 'tempo' ? 'hutang' : 'lunas',
+                paymentStatus: posPayMethod === 'tempo' ? ((posTotal() - dp <= 0) ? 'lunas' : 'hutang') : 'lunas',
+                dp: dp,
                 tempoDp: dp,
-                tempoBalance: posPayMethod === 'tempo' ? posTotal() - dp : 0,
+                tempoBalance: posPayMethod === 'tempo' ? Math.max(0, posTotal() - dp) : 0,
                 tempoDueDate: Date.now() + (30 * 24 * 60 * 60 * 1000),
                 tempoPenaltyRate: 1,
                 tempoPenaltyStopped: false
@@ -2814,7 +2815,7 @@ export const previewPOSReceiptThenPrint = (tx) => {
                 ${tx.payment?.ppnAmount && tx.payment.ppnAmount > 0 ? `<div class="flex justify-between"><span>${tx.payment.ppnType === 'inclusive' ? 'Inc. PPN' : 'PPN'} (${tx.payment.ppnRate || 11}%)</span><span>${fRp(tx.payment.ppnAmount)}</span></div>` : ''}
                 <div class="flex justify-between font-black text-sm pt-1 border-t border-slate-200 dark:border-slate-700"><span>TOTAL</span><span style="color:var(--color-primary)">${fRp(tx.total)}</span></div>
                 ${tx.payment.method === 'cash' ? `<div class="flex justify-between"><span>Bayar Tunai</span><span>${fRp(tx.payment.paid)}</span></div><div class="flex justify-between font-bold text-emerald-600"><span>Kembalian</span><span>${fRp(tx.payment.change)}</span></div>` : ''}
-                ${tx.payment.method === 'tempo' ? `<div class="flex justify-between"><span>Uang Muka (DP)</span><span>${fRp(tx.payment.dp || 0)}</span></div><div class="flex justify-between font-bold text-amber-600"><span>Sisa Piutang</span><span>${fRp(tx.payment.tempoBalance || 0)}</span></div>` : ''}
+                ${tx.payment.method === 'tempo' ? `<div class="flex justify-between"><span>Uang Muka (DP)</span><span>${fRp(tx.payment.tempoDp || tx.payment.dp || 0)}</span></div><div class="flex justify-between font-bold text-amber-600"><span>Sisa Piutang</span><span>${fRp(tx.payment.tempoBalance || 0)}</span></div>` : ''}
                 <div class="flex justify-between"><span>Metode Bayar</span><span>${esc(tx.payment.method.toUpperCase())}</span></div>
                 ${(tx.pointsEarned > 0 || (tx.pointsRedeemed || 0) > 0) ? `
                 <div class="border-t border-dashed border-slate-300 dark:border-slate-700 my-2"></div>
