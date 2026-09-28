@@ -430,7 +430,7 @@ window.rAdmItms = t => {
                             <span class="text-[11px] font-bold text-[var(--color-primary)]"><i class="fa-solid fa-star mr-1"></i>${(parseFloat(x.points)||0)} Poin</span>
                             ${(x.paylaterActive === true || x.paylaterActive === 'true') ? `
                                 <span class="px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700 flex items-center gap-1">
-                                    <i class="fa-solid fa-bolt text-emerald-500"></i> PayLater: ${fCur(Math.max(0, (parseFloat(x.paylaterLimit)||0) - (parseFloat(x.paylaterUsed)||0)))} / ${fCur(parseFloat(x.paylaterLimit)||0)}
+                                    <i class="fa-solid fa-bolt text-emerald-500"></i> PayLater: ${fCur(Math.max(0, (parseFloat(x.paylaterLimit)||0) - Math.max(0, parseFloat(x.paylaterUsed)||0)))} / ${fCur(parseFloat(x.paylaterLimit)||0)}
                                 </span>
                             ` : `
                                 <span class="px-1.5 py-0.5 rounded text-[8px] font-bold uppercase bg-slate-100 dark:bg-slate-700 text-slate-400">PayLater Off</span>

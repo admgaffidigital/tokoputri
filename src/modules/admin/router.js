@@ -95,7 +95,14 @@ export const openAdminTab = (t, fH = false) => {
         if (aCustLst) { aCustLst(); setACustLst(null); }
         const unsubCust = db.collection("freshmart").doc("cms_data").collection("customers")
             .onSnapshot(snap => {
-                appData.customers = snap.docs.map(d => d.data());
+                appData.customers = snap.docs.map(d => {
+                    const cData = d.data();
+                    if (parseFloat(cData.paylaterUsed) < 0) {
+                        cData.paylaterUsed = 0;
+                        d.ref.update({ paylaterUsed: 0 }).catch(() => {});
+                    }
+                    return cData;
+                });
                 if (typeof window.rAdmL === 'function') window.rAdmL('customers');
             }, () => { 
                 showToast("Gagal memuat data pelanggan!"); 

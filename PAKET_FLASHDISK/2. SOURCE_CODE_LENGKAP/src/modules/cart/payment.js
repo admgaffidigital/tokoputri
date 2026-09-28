@@ -322,8 +322,8 @@ window.togglePaymentDetails = () => {
 };
 
 window.calculatePaylaterBalance = () => {
-    const limit = currentMember ? (parseFloat(currentMember.paylaterLimit) || 0) : 0;
-    const used = currentMember ? (parseFloat(currentMember.paylaterUsed) || 0) : 0;
+    const limit = currentMember ? Math.max(0, parseFloat(currentMember.paylaterLimit) || 0) : 0;
+    const used = currentMember ? Math.max(0, parseFloat(currentMember.paylaterUsed) || 0) : 0;
     const available = Math.max(0, limit - used);
     const dueDay = currentMember?.paylaterDueDay || 5;
 

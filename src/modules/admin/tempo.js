@@ -812,18 +812,24 @@ window.submitTempoPayment = async (e, orderId) => {
         // ── PULIHKAN LIMIT PUTRI PAYLATER JIKA PESANAN PAYLATER ──
         const isPlOrder = !!(data.payment?.isPaylater || data.isPaylater || data.payment?.subMethod === 'paylater');
         if (isPlOrder) {
-            const custPhone = (data.customer?.wa || data.customer?.phone || '').replace(/\D/g, '');
-            if (custPhone) {
+            const rawPhone = (data.customer?.wa || data.customer?.phone || '').replace(/\D/g, '');
+            const normPhone = rawPhone.startsWith('0') ? '62' + rawPhone.slice(1) : rawPhone;
+            if (normPhone) {
                 try {
-                    const cRef = db.collection("freshmart").doc("cms_data").collection("customers").doc(custPhone);
-                    await cRef.set({
-                        paylaterUsed: firebase.firestore.FieldValue.increment(-amount)
-                    }, { merge: true });
+                    const cRef = db.collection("freshmart").doc("cms_data").collection("customers").doc(normPhone);
+                    await db.runTransaction(async (txn) => {
+                        const custSnap = await txn.get(cRef);
+                        if (custSnap.exists) {
+                            const currentUsed = Math.max(0, parseFloat(custSnap.data().paylaterUsed) || 0);
+                            const newUsed = Math.max(0, currentUsed - amount);
+                            txn.update(cRef, { paylaterUsed: newUsed });
+                        }
+                    });
 
                     if (Array.isArray(appData.customers)) {
-                        const mCust = appData.customers.find(c => c && (String(c.id) === custPhone || String(c.phone).replace(/\D/g, '') === custPhone));
+                        const mCust = appData.customers.find(c => c && (String(c.id) === normPhone || String(c.phone).replace(/\D/g, '') === rawPhone || String(c.phone).replace(/\D/g, '') === normPhone));
                         if (mCust) {
-                            mCust.paylaterUsed = Math.max(0, (parseFloat(mCust.paylaterUsed) || 0) - amount);
+                            mCust.paylaterUsed = Math.max(0, (Math.max(0, parseFloat(mCust.paylaterUsed) || 0)) - amount);
                         }
                     }
                 } catch(ePl) {

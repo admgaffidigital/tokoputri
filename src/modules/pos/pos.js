@@ -1861,7 +1861,7 @@ const renderPayDetail = (method) => {
           </div>`;
     } else if (method === 'tempo') {
         const hasPL = !!(posCustomer.isMember && posCustomer.paylaterActive && (posCustomer.paylaterLimit > 0));
-        const sisaLimit = hasPL ? Math.max(0, (posCustomer.paylaterLimit || 0) - (posCustomer.paylaterUsed || 0)) : 0;
+        const sisaLimit = hasPL ? Math.max(0, (posCustomer.paylaterLimit || 0) - Math.max(0, posCustomer.paylaterUsed || 0)) : 0;
         const minDp = (hasPL && total > sisaLimit) ? (total - sisaLimit) : 0;
 
         d.innerHTML = `
@@ -1907,7 +1907,7 @@ export const posTogglePaylater = (usePl) => {
     const dpInput = el('pos-dp-input');
     const dpLabel = el('pos-dp-input')?.previousElementSibling;
     const hasPL = !!(posCustomer.isMember && posCustomer.paylaterActive && (posCustomer.paylaterLimit > 0));
-    const sisaLimit = hasPL ? Math.max(0, (posCustomer.paylaterLimit || 0) - (posCustomer.paylaterUsed || 0)) : 0;
+    const sisaLimit = hasPL ? Math.max(0, (posCustomer.paylaterLimit || 0) - Math.max(0, posCustomer.paylaterUsed || 0)) : 0;
     const minDp = (usePl && hasPL && total > sisaLimit) ? (total - sisaLimit) : 0;
     if (dpInput) {
         dpInput.value = minDp > 0 ? minDp : 0;
@@ -2172,7 +2172,7 @@ export const renderPosMemberResult = () => {
               <span class="text-[10px] font-black text-amber-600 dark:text-amber-400 flex items-center gap-0.5"><i class="fa-solid fa-star text-[9px]"></i>${pts} Poin</span>
               ${(posCustomer.paylaterActive && (posCustomer.paylaterLimit > 0)) ? `
                 <span class="text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-900/60 text-emerald-800 dark:text-emerald-200 border border-emerald-300 dark:border-emerald-700 flex items-center gap-1">
-                  <i class="fa-solid fa-bolt text-emerald-500"></i> PayLater: ${fRp(Math.max(0, (posCustomer.paylaterLimit || 0) - (posCustomer.paylaterUsed || 0)))}
+                  <i class="fa-solid fa-bolt text-emerald-500"></i> PayLater: ${fRp(Math.max(0, (posCustomer.paylaterLimit || 0) - Math.max(0, posCustomer.paylaterUsed || 0)))}
                 </span>
               ` : ''}
             </div>
@@ -2321,8 +2321,8 @@ export const applyMemberToPos = (member) => {
     posPointsRedeemed    = 0;
     posClaimedReward     = null;
     posCustomer.paylaterActive = !!member.paylaterActive;
-    posCustomer.paylaterLimit  = parseFloat(member.paylaterLimit) || 0;
-    posCustomer.paylaterUsed   = parseFloat(member.paylaterUsed) || 0;
+    posCustomer.paylaterLimit  = Math.max(0, parseFloat(member.paylaterLimit) || 0);
+    posCustomer.paylaterUsed   = Math.max(0, parseFloat(member.paylaterUsed) || 0);
 
     const inp = el('pos-cust-phone');
     if (inp) inp.value = member.phone || member.name || '';
@@ -2487,7 +2487,7 @@ export const processPOSTx = async () => {
     const dp          = posPayMethod === 'tempo' ? fNum(el('pos-dp-input')?.value || 0) : 0;
     const bankName    = posPayMethod === 'transfer' ? (el('pos-bank-sel')?.value || '') : '';
     const isPaylater  = posPayMethod === 'tempo' && !!(posCustomer.isMember && posCustomer.paylaterActive && el('pos-use-paylater')?.checked);
-    const sisaLimit   = isPaylater ? Math.max(0, (posCustomer.paylaterLimit || 0) - (posCustomer.paylaterUsed || 0)) : 0;
+    const sisaLimit   = isPaylater ? Math.max(0, (posCustomer.paylaterLimit || 0) - Math.max(0, posCustomer.paylaterUsed || 0)) : 0;
     if (isPaylater) {
         const minRequiredDp = posTotal() > sisaLimit ? (posTotal() - sisaLimit) : 0;
         if (dp < minRequiredDp) {
@@ -2674,17 +2674,17 @@ export const processPOSTx = async () => {
         if (isPaylater && posCustomer.phone) {
             try {
                 const cleanCustPhone = posCustomer.phone.replace(/\D/g, '');
-                const targetCustId = String(posCustomer.memberId || cleanCustPhone);
-                const custDocRef = db.collection("freshmart").doc("cms_data").collection("customers").doc(targetCustId);
+                const normPhone = cleanCustPhone.startsWith('0') ? '62' + cleanCustPhone.slice(1) : cleanCustPhone;
+                const custDocRef = db.collection("freshmart").doc("cms_data").collection("customers").doc(normPhone);
                 await custDocRef.set({
                     paylaterUsed: firebase.firestore.FieldValue.increment(chargedToPaylater)
                 }, { merge: true });
 
                 if (appData.customers) {
-                    const mCust = appData.customers.find(c => c && (String(c.id) === targetCustId || String(c.phone).replace(/\D/g, '') === cleanCustPhone));
-                    if (mCust) mCust.paylaterUsed = (parseFloat(mCust.paylaterUsed) || 0) + chargedToPaylater;
+                    const mCust = appData.customers.find(c => c && (String(c.id) === normPhone || String(c.phone).replace(/\D/g, '') === cleanCustPhone));
+                    if (mCust) mCust.paylaterUsed = (Math.max(0, parseFloat(mCust.paylaterUsed) || 0)) + chargedToPaylater;
                 }
-                posCustomer.paylaterUsed = (parseFloat(posCustomer.paylaterUsed) || 0) + chargedToPaylater;
+                posCustomer.paylaterUsed = (Math.max(0, parseFloat(posCustomer.paylaterUsed) || 0)) + chargedToPaylater;
             } catch(ePl) {
                 console.warn('[POS] Gagal potong limit PayLater:', ePl);
             }

@@ -806,18 +806,33 @@ export const restoreOrderStockAndRewards = async (orderId, orderData = null) => 
         // 3. ROLLBACK PEMAKAIAN LIMIT PUTRI PAYLATER (Jika pesanan menggunakan PayLater & belum pernah di-rollback)
         const isPlOrder = !!(ord.payment?.isPaylater || ord.isPaylater || ord.payment?.subMethod === 'paylater');
         if (!ord.isPaylaterRolledBack && isPlOrder && custPhone) {
+            // Guard: jika order punya flag paylaterLimitTracked===false, berarti increment Firestore
+            // memang TIDAK berhasil saat checkout → jangan decrement (bisa jadi negatif)
+            const wasTracked = ord.paylaterLimitTracked !== false; // undefined = order lama, asumsikan tracked
             try {
                 const usedLimit = parseFloat(ord.payment?.paylaterUsed || ord.paylaterUsed || ord.payment?.tempoBalance) || 0;
-                if (usedLimit > 0) {
+                if (usedLimit > 0 && wasTracked) {
                     const cleanCustPhone = custPhone.replace(/\D/g, '');
-                    const cRef = db.collection("freshmart").doc("cms_data").collection("customers").doc(cleanCustPhone);
-                    await cRef.set({
-                        paylaterUsed: firebase.firestore.FieldValue.increment(-usedLimit)
-                    }, { merge: true });
+                    const normPhone = cleanCustPhone.startsWith('0') ? '62' + cleanCustPhone.slice(1) : cleanCustPhone;
+                    const cRef = db.collection("freshmart").doc("cms_data").collection("customers").doc(normPhone);
+                    // Gunakan TRANSACTION agar paylaterUsed tidak bisa jadi negatif
+                    // (mencegah bug "sisa limit malah bertambah" akibat increment negatif pada nilai 0)
+                    await db.runTransaction(async (txn) => {
+                        const custSnap = await txn.get(cRef);
+                        const currentUsed = Math.max(0, parseFloat(custSnap.exists ? (custSnap.data().paylaterUsed || 0) : 0));
+                        const newUsed = Math.max(0, currentUsed - usedLimit);
+                        if (custSnap.exists) {
+                            txn.update(cRef, { paylaterUsed: newUsed });
+                        } else {
+                            txn.set(cRef, { paylaterUsed: 0 }, { merge: true });
+                        }
+                    });
                     if (Array.isArray(appData.customers)) {
-                        const lCust = appData.customers.find(c => c && (String(c.phone).replace(/\D/g, '') === cleanCustPhone || String(c.id) === cleanCustPhone));
-                        if (lCust) lCust.paylaterUsed = Math.max(0, (parseFloat(lCust.paylaterUsed) || 0) - usedLimit);
+                        const lCust = appData.customers.find(c => c && (String(c.phone).replace(/\D/g, '') === cleanCustPhone || String(c.id) === normPhone));
+                        if (lCust) lCust.paylaterUsed = Math.max(0, (Math.max(0, parseFloat(lCust.paylaterUsed) || 0)) - usedLimit);
                     }
+                } else if (usedLimit > 0 && !wasTracked) {
+                    console.info('[PayLater Rollback] Dilewati: pesanan ini tidak berhasil update Firestore saat checkout (paylaterLimitTracked=false). Tidak ada rollback diperlukan.');
                 }
             } catch (errPl) {
                 console.warn(`[Auto-Restock] Gagal rollback limit PayLater:`, errPl);
@@ -954,9 +969,37 @@ export const deductOrderStockAndRewards = async (orderId, orderData = null) => {
             ord.isPointsRolledBack = false;
         }
 
+        // 3. RE-APPLY PEMAKAIAN LIMIT PUTRI PAYLATER (Jika sebelumnya sempat di-rollback saat Dibatalkan)
+        const isPlOrder = !!(ord.payment?.isPaylater || ord.isPaylater || ord.payment?.subMethod === 'paylater');
+        if (ord.isPaylaterRolledBack && isPlOrder && custPhone) {
+            try {
+                const usedLimit = parseFloat(ord.payment?.paylaterUsed || ord.paylaterUsed || ord.payment?.tempoBalance) || 0;
+                if (usedLimit > 0) {
+                    const cleanCustPhone = custPhone.replace(/\D/g, '');
+                    const normPhone = cleanCustPhone.startsWith('0') ? '62' + cleanCustPhone.slice(1) : cleanCustPhone;
+                    const cRef = db.collection("freshmart").doc("cms_data").collection("customers").doc(normPhone);
+                    await db.runTransaction(async (txn) => {
+                        const custSnap = await txn.get(cRef);
+                        if (custSnap.exists) {
+                            const currentUsed = Math.max(0, parseFloat(custSnap.data().paylaterUsed) || 0);
+                            txn.update(cRef, { paylaterUsed: currentUsed + usedLimit });
+                        }
+                    });
+                    if (Array.isArray(appData.customers)) {
+                        const lCust = appData.customers.find(c => c && (String(c.phone).replace(/\D/g, '') === cleanCustPhone || String(c.id) === normPhone));
+                        if (lCust) lCust.paylaterUsed = (Math.max(0, parseFloat(lCust.paylaterUsed) || 0)) + usedLimit;
+                    }
+                }
+            } catch (errPl) {
+                console.warn(`[Auto-Deduct] Gagal re-apply limit PayLater:`, errPl);
+            }
+            ord.isPaylaterRolledBack = false;
+        }
+
         await db.collection("freshmart_orders").doc(orderId).update({
             isStockRestocked: false,
             isPointsRolledBack: false,
+            isPaylaterRolledBack: false,
             ...(ord.claimedReward ? { claimedReward: ord.claimedReward } : {})
         }).catch(() => {});
 

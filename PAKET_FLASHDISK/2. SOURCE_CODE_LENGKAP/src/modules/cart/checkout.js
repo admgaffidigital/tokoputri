@@ -650,7 +650,8 @@ export const processOrder = async () => {
                 return;
             }
             const limit = parseFloat(currentMember.paylaterLimit) || 0;
-            const used = parseFloat(currentMember.paylaterUsed) || 0;
+            // Clamp ke 0: jika paylaterUsed sempat negatif di Firestore akibat rollback ganda, jangan tampilkan sisa > limit
+            const used = Math.max(0, parseFloat(currentMember.paylaterUsed) || 0);
             const available = Math.max(0, limit - used);
 
             const dpInput = document.getElementById('paylater-dp-input');
@@ -682,20 +683,29 @@ export const processOrder = async () => {
             oD.isTempo = true;
 
             // Catat pemakaian limit ke database member
+            // FLAG: paylaterLimitTracked = true hanya jika Firestore berhasil diupdate.
+            // Jika false, rollback admin di orders.js harus hati-hati (jangan decrement jadi negatif).
+            oD.paylaterLimitTracked = false;
             if (chargedToPaylater > 0) {
                 if (currentMember) {
-                    currentMember.paylaterUsed = (parseFloat(currentMember.paylaterUsed) || 0) + chargedToPaylater;
+                    currentMember.paylaterUsed = (Math.max(0, parseFloat(currentMember.paylaterUsed) || 0)) + chargedToPaylater;
+                    try {
+                        localStorage.setItem('freshmart_current_member', JSON.stringify(currentMember));
+                    } catch(e) {}
                 }
-                const targetCustId = (currentMember && currentMember.phone) 
-                    ? String(currentMember.phone).replace(/\D/g, '') 
-                    : cust.wa;
+                const cleanPhone = (currentMember?.phone || cust.wa || '').replace(/\D/g, '');
+                const targetCustId = cleanPhone.startsWith('0') ? '62' + cleanPhone.slice(1) : cleanPhone;
                 try {
                     const custRef = db.collection("freshmart").doc("cms_data").collection("customers").doc(targetCustId);
-                    await custRef.set({
+                    // Gunakan .update() (bukan .set merge) agar Firestore rules 'update' aktif.
+                    // Rule: allow update jika affectedKeys hasOnly ['paylaterUsed', ...] — tanpa perlu auth.
+                    await custRef.update({
                         paylaterUsed: firebase.firestore.FieldValue.increment(chargedToPaylater)
-                    }, { merge: true });
+                    });
+                    oD.paylaterLimitTracked = true; // Firestore berhasil → rollback admin aman
                 } catch(e) {
-                    console.warn('[PayLater] Update limit member di server membutuhkan publish firestore.rules terbaru di Firebase Console:', e);
+                    console.warn('[PayLater] Gagal update pemakaian limit di Firestore:', e.code || e.message || e);
+                    // paylaterLimitTracked tetap false → rollback admin harus pakai transaksi clamp-0
                 }
             }
         }
@@ -711,7 +721,9 @@ export const processOrder = async () => {
             spend: calcPoints.spendPoints
         };
         const cmsDataRef = db.collection("freshmart").doc("cms_data");
-        const memberRef = cust.wa ? cmsDataRef.collection("customers").doc(cust.wa) : null;
+        const rawMemberPhone = (currentMember?.phone || cust.wa || '').replace(/\D/g, '');
+        const normMemberDocId = rawMemberPhone ? (rawMemberPhone.startsWith('0') ? '62' + rawMemberPhone.slice(1) : rawMemberPhone) : null;
+        const memberRef = normMemberDocId ? cmsDataRef.collection("customers").doc(normMemberDocId) : null;
         const wantsRewardClaim = !!selectedReward;
         let finalMemberPoints = null;
 
@@ -957,7 +969,7 @@ export const processOrder = async () => {
                 points: finalMemberPoints,
                 paylaterActive: currentMember ? (currentMember.paylaterActive === true || currentMember.paylaterActive === 'true') : false,
                 paylaterLimit: currentMember ? (parseFloat(currentMember.paylaterLimit) || 0) : 0,
-                paylaterUsed: currentMember ? (parseFloat(currentMember.paylaterUsed) || 0) : 0,
+                paylaterUsed: currentMember ? Math.max(0, parseFloat(currentMember.paylaterUsed) || 0) : 0,
                 paylaterDueDay: currentMember ? (currentMember.paylaterDueDay || 5) : 5
             };
             setCurrentMember(activeMemberObj);

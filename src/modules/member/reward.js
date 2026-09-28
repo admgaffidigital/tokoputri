@@ -339,7 +339,7 @@ export const renderDigitalMemberCard = (mData) => {
                         </div>
                         ${(currentMember && (currentMember.paylaterActive === true || currentMember.paylaterActive === 'true') && (parseFloat(currentMember.paylaterLimit)||0) > 0) ? `
                         <div class="mt-1 flex items-center justify-end gap-1 text-[8px] font-black text-emerald-300 uppercase tracking-wider">
-                            <i class="fa-solid fa-bolt text-amber-300 text-[7px]"></i> PayLater: ${fCur(Math.max(0, (parseFloat(currentMember.paylaterLimit)||0) - (parseFloat(currentMember.paylaterUsed)||0)))}
+                            <i class="fa-solid fa-bolt text-amber-300 text-[7px]"></i> PayLater: ${fCur(Math.max(0, (parseFloat(currentMember.paylaterLimit)||0) - Math.max(0, parseFloat(currentMember.paylaterUsed)||0)))}
                         </div>` : ''}
                     </div>
                 </div>
@@ -670,6 +670,9 @@ export const openMemberModal = () => {
         db.collection("freshmart").doc("cms_data").collection("customers").doc(clean).get().then(async (doc) => {
             if (doc.exists) {
                 let mData = doc.data();
+                if (parseFloat(mData.paylaterUsed) < 0) {
+                    mData.paylaterUsed = 0;
+                }
                 if ((parseFloat(mData.points) || 0) === 0) {
                     const rec = await reconcilePointsFromOrders(clean, mData.name);
                     if (rec) mData = rec;
@@ -1050,11 +1053,11 @@ export const rMemberModalBody = () => {
 
             <!-- PUTRI PAYLATER DIGITAL CREDIT LIMIT -->
             ${(() => {
-                const limit = parseFloat(currentMember.paylaterLimit) || 0;
-                const used = parseFloat(currentMember.paylaterUsed) || 0;
+                const limit = Math.max(0, parseFloat(currentMember.paylaterLimit) || 0);
+                const used = Math.max(0, parseFloat(currentMember.paylaterUsed) || 0);
                 const isActive = currentMember.paylaterActive === true || currentMember.paylaterActive === 'true';
                 const available = Math.max(0, limit - used);
-                const percentUsed = limit > 0 ? Math.min(100, Math.round((used / limit) * 100)) : 0;
+                const percentUsed = limit > 0 ? Math.min(100, Math.max(0, Math.round((used / limit) * 100))) : 0;
                 const dueDay = currentMember.paylaterDueDay || 5;
 
                 if (!isActive || limit <= 0) {

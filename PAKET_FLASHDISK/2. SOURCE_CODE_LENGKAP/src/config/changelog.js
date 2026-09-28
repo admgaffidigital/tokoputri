@@ -8,6 +8,21 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-9-83',
+        version: 'v1.9.83',
+        date: '2026-09-28',
+        title: 'Presisi & Proteksi Saldo Putri PayLater: Normalisasi Pemotongan Limit Kredit, Eliminasi Saldo Negatif, Auto-Healing Data Member, dan Transaksi Rollback Aman',
+        category: 'fix',
+        badge: 'PayLater Precision & Auto-Healing v1.9.83',
+        items: [
+            'Normalisasi & Proteksi Saldo PayLater (reward.js, payment.js, checkout.js, pos.js, table.js): Memperbaiki bug kalkulasi sisa limit PayLater di mana saldo terpotong secara keliru atau bertambah abnormal (-Rp 65.000 / Sisa melebihi limit) akibat decrement nilai pada saldo 0. Memasang clamp Math.max(0, ...) di seluruh titik baca, render kartu member digital, modal checkout, kasir POS, dan tabel pelanggan admin.',
+            'Auto-Healing Data Member Real-time (router.js & reward.js): Pemulihan otomatis (auto-heal) pada dokumen member yang memiliki nilai paylaterUsed negatif di Firestore maupun memori, otomatis mengembalikan saldo terpakai ke Rp 0 dan menyelaraskan sisa limit tersedia secara presisi.',
+            'Penyelarasan Document ID Normalisasi WhatsApp (checkout.js, pos.js, orders.js, tempo.js): Standardisasi target kunci dokumen Firestore pelanggan menggunakan format nomor internasional normal (diawali 62) sehingga checkout storefront, transaksi kasir POS, dan pelunasan cicilan selalu mengarah ke dokumen yang tepat tanpa kegagalan izin (permission error).',
+            'Rollback & Re-apply PayLater Berbasis Firestore Transaction (orders.js & tempo.js): Pemulihan pemakaian limit saat pembatalan atau penghapusan pesanan kini menggunakan transaksi Firestore dengan pengaman clamp-0, sehingga tidak akan pernah menghasilkan nilai negatif. Dilengkapi logika re-apply jika status pesanan diaktifkan kembali dari Dibatalkan.',
+            'Sinkronisasi Multi-Channel v1.9.83 (Android VersionCode 10983): Terkompilasi dan tersinkronisasi penuh ke Vite build, paket flashdisk, dan Capacitor Android.'
+        ]
+    },
+    {
         id: 'log-1-9-82',
         version: 'v1.9.82',
         date: '2026-09-28',
