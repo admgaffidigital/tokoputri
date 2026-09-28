@@ -132,13 +132,16 @@ export const closeModalById = (id) => {
         case 'pos-login-modal':
             if (typeof window.closePOSLoginModal === 'function') window.closePOSLoginModal();
             break;
+        case 'admin-order-modal':
+            if (typeof window.closeOrderDetailModal === 'function') window.closeOrderDetailModal();
+            break;
         default: {
             const m = document.getElementById(id);
             if (m) {
                 const closeBtn = m.querySelector('button[onclick*="close"], .fa-xmark')?.closest('button');
                 if (closeBtn) closeBtn.click();
                 else if (typeof window.closeModalAnim === 'function') {
-                    const box = m.querySelector('.modal-bottom-sheet, [id$="-box"], [id$="-content"]') || m.firstElementChild;
+                    const box = m.querySelector('.modal-bottom-sheet, [id$="-box"]') || m.firstElementChild;
                     window.closeModalAnim(m, box);
                 } else {
                     m.classList.add('hidden', 'opacity-0');
@@ -166,13 +169,25 @@ export const initNativeSheetGestures = () => {
         if (e.touches.length !== 1) return;
         const touch = e.touches[0];
 
-        // Cari apakah sentuhan berada di dalam modal/bottom sheet yang sedang terbuka
-        const sheetBox = touch.target.closest('.modal-bottom-sheet, [id$="-box"], [id$="-content"]');
-        if (!sheetBox) return;
-
-        // Pastikan modal pembungkusnya tidak hidden
-        const modalContainer = sheetBox.closest('[id*="modal"], [id*="sheet"]');
+        // Pastikan sentuhan berada di dalam modal/sheet container yang sedang terbuka
+        const modalContainer = touch.target.closest('[id*="modal"], [id*="sheet"]');
         if (!modalContainer || modalContainer.classList.contains('hidden') || modalContainer.classList.contains('opacity-0')) return;
+
+        // ── GUARD KRUSIAL: Gesture Swipe-to-Dismiss HANYA untuk elemen Bottom Sheet murni ──
+        // Centered modal / dialog biasa (seperti admin-order-modal, admin-modal, preview struk) 
+        // TIDAK BOLEH terkena gesture swipe-to-dismiss agar scroll rincian data bebas leluasa!
+        const isBottomSheet = modalContainer.classList.contains('items-end') || 
+                              Boolean(touch.target.closest('.modal-bottom-sheet')) ||
+                              modalContainer.classList.contains('modal-bottom-sheet');
+        if (!isBottomSheet) return;
+
+        // Cari elemen container sheet utama (prioritaskan .modal-bottom-sheet atau [id$="-box"])
+        // Jangan pernah memilih sub-elemen konten jika berada di dalam kotak sheet!
+        let sheetBox = touch.target.closest('.modal-bottom-sheet') || touch.target.closest('[id$="-box"]');
+        if (!sheetBox) {
+            sheetBox = touch.target.closest('[id$="-content"]');
+        }
+        if (!sheetBox) return;
 
         // Dapatkan elemen scroll di dalam sheet (jika ada)
         const scrollEl = sheetBox.classList.contains('overflow-y-auto') 

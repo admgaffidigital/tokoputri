@@ -15,7 +15,8 @@ import {
 import { 
     el, show, hide, setIn, setH, esc, fCur, 
     showToast, showConfirm, sLoad, hLoad, 
-    ensureScriptLoaded, rewardStatusLabel 
+    ensureScriptLoaded, rewardStatusLabel,
+    openModalAnim, closeModalAnim
 } from '../../core/utils.js';
 
 /**
@@ -501,14 +502,17 @@ export const openOrderDetail = (i) => {
         </div>`);
         
     const mOrd = el('admin-order-modal');
+    const bOrd = el('admin-order-modal-box');
+    const cOrd = el('admin-order-modal-content');
+    if (cOrd) {
+        cOrd.scrollTop = 0;
+        cOrd.style.transform = '';
+        cOrd.style.transition = '';
+    }
     if (mOrd && mOrd.classList.contains('hidden') && typeof window.pushModalHistory === 'function') {
         window.pushModalHistory('adminOrder');
     }
-    show('admin-order-modal'); 
-    setTimeout(() => { 
-        if (el('admin-order-modal')) el('admin-order-modal').classList.remove('opacity-0'); 
-        if (el('admin-order-modal-box')) el('admin-order-modal-box').classList.remove('scale-95'); 
-    }, 10);
+    openModalAnim(mOrd, bOrd);
 };
 
 /**
@@ -618,10 +622,10 @@ export const ackRewardClaim = async (orderId, status) => {
  * Tutup modal detail pesanan admin
  */
 export const closeOrderDetailModal = (fH = false) => {
+    const mOrd = el('admin-order-modal');
+    const bOrd = el('admin-order-modal-box');
     const doClose = () => {
-        if (el('admin-order-modal')) el('admin-order-modal').classList.add('opacity-0');
-        if (el('admin-order-modal-box')) el('admin-order-modal-box').classList.add('scale-95');
-        setTimeout(() => hide('admin-order-modal'), 300);
+        closeModalAnim(mOrd, bOrd);
     };
 
     if (typeof window.requestCloseModal === 'function') {

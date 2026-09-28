@@ -8,6 +8,22 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-9-79',
+        version: 'v1.9.79',
+        date: '2026-09-28',
+        title: 'Resolusi Tuntas Bug Detail Pesanan Hilang Saat Di-scroll: Guard Bottom Sheet Murni, Eliminasi Benturan Gesture Swipe Mobile, & Arsitektur Scrollbox Bebas Glitch',
+        category: 'fix',
+        badge: 'Order Detail Scroll Stability v1.9.79',
+        items: [
+            'Guard Bottom Sheet Murni (native-mobile.js): Menambahkan validasi isBottomSheet pada listener sentuhan initNativeSheetGestures sehingga modal berposisi centered (seperti modal Detail Pesanan, formulir produk, dan preview struk) 100% dikecualikan dari intervensi gesture swipe-to-dismiss. Pengguna kini bebas menggeser dan men-scroll data tanpa risiko elemen bergeser keluar layar.',
+            'Eliminasi Benturan Selector Sheet (native-mobile.js): Menyempurnakan selector pencari sheetBox agar memprioritaskan .modal-bottom-sheet dan [id$="-box"] serta tidak pernah menargetkan elemen sub-konten -content secara terpisah saat berada di dalam wadah sheet. Mengeliminasi bug di mana konten pesanan (#admin-order-modal-content) terlempar ke bawah sedangkan footer cetak tertinggal di layar.',
+            'Restrukturisasi Arsitektur Scrollbox Modal (index.html): Mengubah kontainer #admin-order-modal-box menjadi overflow-hidden flex flex-col, mengunci header di atas (shrink-0 border-b), mengisolasi scroll area pada #admin-order-modal-content (custom-scrollbar flex-1 overflow-y-auto space-y-4), dan menambatkan footer tombol cetak di bawah (shrink-0 border-t). Mencegah clipping bug dan glitch rendering pada browser mobile Android/iOS.',
+            'Integrasi Engine Animasi & Reset Gaya (orders.js): Menyelaraskan pembukaan dan penutupan modal detail pesanan admin dengan engine resmi openModalAnim dan closeModalAnim. Menambahkan pembersihan inline style transform dan auto-scroll ke posisi puncak (scrollTop = 0) setiap kali modal pesanan dibuka.',
+            'Pendaftaran closeModalById Terpusat (native-mobile.js): Mendaftarkan case "admin-order-modal" agar penutupan modal terhubung langsung ke closeOrderDetailModal().',
+            'Sinkronisasi Multi-Channel v1.9.79 (Android VersionCode 10979): Terkompilasi dan tersinkronisasi penuh ke Vite build, paket flashdisk, dan Capacitor Android.'
+        ]
+    },
+    {
         id: 'log-1-9-78',
         version: 'v1.9.78',
         date: '2026-09-28',
