@@ -190,6 +190,38 @@ export const hasPermission = (permissionKey) => {
 };
 
 /**
+ * Cek apakah pengguna saat ini berhak melihat harga modal (HPP) dan estimasi margin keuntungan.
+ * KASIR FISIK TIDAK PERNAH DIBOLEHKAN MELIHAT HARGA MODAL DEMI KERAHASIAAN BISNIS TOKO.
+ * @returns {boolean}
+ */
+export const canViewHpp = () => {
+    // 1. Owner toko selalu berhak 100%
+    if (isOwnerUser()) return true;
+
+    // 2. Cek sesi kasir storefront (pos_cashier_session)
+    try {
+        const raw = sessionStorage.getItem('pos_cashier_session');
+        if (raw) {
+            const cashierSession = JSON.parse(raw);
+            if (cashierSession.role === ROLES.OWNER || cashierSession.uid === ADMIN_UID) return true;
+            if (cashierSession.role === ROLES.CASHIER) return false;
+        }
+    } catch (_) {}
+
+    // 3. Cek profil staf aktif di CMS (freshmart_staff_profile)
+    const staff = getActiveStaff();
+    if (staff) {
+        if (staff.role === ROLES.OWNER || staff.uid === ADMIN_UID) return true;
+        if (staff.role === ROLES.CASHIER) return false;
+        // Staf Admin hanya bisa jika diberi hak akses laporan finansial (view_reports)
+        return hasPermission('view_reports');
+    }
+
+    // 4. Default aman: sembunyikan modal HPP dari non-owner
+    return false;
+};
+
+/**
  * Dapatkan badge HTML yang cantik dan selaras tema untuk ditampilkan di UI
  */
 export const getRoleBadgeHtml = (role) => {
@@ -228,5 +260,6 @@ if (typeof window !== 'undefined') {
     window.isAdminUser = isAdminUser;
     window.isCashierUser = isCashierUser;
     window.hasPermission = hasPermission;
+    window.canViewHpp = canViewHpp;
     window.getRoleBadgeHtml = getRoleBadgeHtml;
 }

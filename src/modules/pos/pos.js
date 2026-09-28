@@ -12,6 +12,7 @@ import { db, firebase } from '../../config/firebase.js';
 import { appData } from '../../core/state.js';
 import { el, setH, setIn, esc, fCur, showToast, getOptImg, renderProductCoverHtml } from '../../core/utils.js';
 import { getEffHpp } from '../../core/pricing.js';
+import { canViewHpp } from '../../core/auth-roles.js';
 import { getPrinterConfig, openPrinterSettingsModal } from '../print/printer-settings.js';
 import {
     getActiveShift,
@@ -656,7 +657,8 @@ export const setItemDisc = (cartKey, val) => {
         // Diskon per item tidak boleh membuat harga jual di bawah harga modal HPP
         const maxDisc = Math.max(0, Math.round((item.price - itemHpp) * item.qty));
         if (numVal > maxDisc) {
-            showToast(`Diskon ditolak! Tidak boleh di bawah harga modal (HPP ${fRp(itemHpp)}). Maksimal diskon: ${fRp(maxDisc)}`, 'warning');
+            const hppDetail = canViewHpp() ? ` (HPP ${fRp(itemHpp)})` : '';
+            showToast(`Diskon ditolak! Tidak boleh di bawah harga modal toko${hppDetail}. Maksimal diskon: ${fRp(maxDisc)}`, 'warning');
             item.discount = maxDisc;
             recalcItem(item);
             renderCart();
@@ -1275,25 +1277,30 @@ export const renderCatalog = () => {
                 // 3. Brand & Kategori Text yang Rapi (Bukan Badge Menumpuk)
                 const catBrandText = `${pCat || 'Produk'}${p.brand ? ` · ${esc(p.brand)}` : ''}`;
 
-                // 4. HARGA MODAL (HPP)
-                let hppVal = 0;
-                let hppDisplay = '';
-                if (hasVariants) {
-                    const hppList = (p.variants || []).map(v => v.hpp != null ? (parseFloat(v.hpp) || 0) : (parseFloat(p.hpp) || 0)).filter(h => h > 0);
-                    if (hppList.length > 0) {
-                        const minH = Math.min(...hppList);
-                        const maxH = Math.max(...hppList);
-                        hppVal = minH;
-                        hppDisplay = minH === maxH ? fRp(minH) : `${fRp(minH)} - ${fRp(maxH)}`;
+                // 4. HARGA MODAL (HPP) - Hanya ditampilkan jika diizinkan (Owner / Akses Laporan)
+                let hppTagHtml = '';
+                if (canViewHpp()) {
+                    let hppVal = 0;
+                    let hppDisplay = '';
+                    if (hasVariants) {
+                        const hppList = (p.variants || []).map(v => v.hpp != null ? (parseFloat(v.hpp) || 0) : (parseFloat(p.hpp) || 0)).filter(h => h > 0);
+                        if (hppList.length > 0) {
+                            const minH = Math.min(...hppList);
+                            const maxH = Math.max(...hppList);
+                            hppVal = minH;
+                            hppDisplay = minH === maxH ? fRp(minH) : `${fRp(minH)} - ${fRp(maxH)}`;
+                        } else if (p.hpp != null && parseFloat(p.hpp) > 0) {
+                            hppVal = parseFloat(p.hpp);
+                            hppDisplay = fRp(hppVal);
+                        }
                     } else if (p.hpp != null && parseFloat(p.hpp) > 0) {
                         hppVal = parseFloat(p.hpp);
                         hppDisplay = fRp(hppVal);
                     }
-                } else if (p.hpp != null && parseFloat(p.hpp) > 0) {
-                    hppVal = parseFloat(p.hpp);
-                    hppDisplay = fRp(hppVal);
+                    if (hppDisplay || (p.hpp != null && parseFloat(p.hpp) > 0)) {
+                        hppTagHtml = `<span class="pos-hpp-tag" title="Harga Pokok Penjualan (Modal Toko)"><i class="fa-solid fa-coins text-[8px]"></i> Modal: <b>${hppDisplay || fRp(parseFloat(p.hpp))}</b></span>`;
+                    }
                 }
-                const hppTagHtml = `<span class="pos-hpp-tag" title="Harga Pokok Penjualan (Modal Kasir)"><i class="fa-solid fa-coins text-[8px]"></i> Modal: <b>${hppDisplay || (p.hpp ? fRp(parseFloat(p.hpp)) : 'Rp 0')}</b></span>`;
 
                 const coverSmHtml = renderProductCoverHtml(p, { size: 'sm' });
                 const coverMdHtml = renderProductCoverHtml(p, { size: 'md' });
@@ -1462,7 +1469,7 @@ const renderCart = () => {
                         ${item.isWholesale ? `<span class="inline-flex items-center text-[8px] font-black px-1.5 py-0.5 rounded text-white shadow-2xs" style="background:var(--color-primary)">GROSIR</span>` : ''}
                         ${item.isVariant ? `<span class="inline-flex items-center gap-1 text-[8px] font-black px-1.5 py-0.5 rounded text-white shadow-2xs" style="background:var(--color-primary);opacity:0.95"><i class="fa-solid fa-layer-group text-[7px]"></i>${esc(item.variantName || 'VARIAN')}</span>` : ''}
                         ${item.poTime ? `<span class="inline-flex items-center gap-1 text-[8px] font-bold px-1.5 py-0.5 rounded text-amber-700 bg-amber-100 dark:bg-amber-900/30 dark:text-amber-300 border border-amber-200 dark:border-amber-800 shadow-2xs uppercase tracking-wide"><i class="fa-solid fa-clock text-[7px]"></i> PO ${esc(item.poTime)}</span>` : ''}
-                        ${itemHpp > 0 ? `<span class="inline-flex items-center gap-1 text-[8px] font-black px-1.5 py-0.5 rounded text-amber-950 bg-amber-100 dark:bg-amber-950/60 dark:text-amber-300 border border-amber-300/80 dark:border-amber-700 shadow-2xs" title="Harga Modal (HPP)"><i class="fa-solid fa-coins text-[7px] text-amber-600 dark:text-amber-400"></i>HPP: ${fRp(itemHpp)}</span>` : ''}
+                        ${canViewHpp() && itemHpp > 0 ? `<span class="inline-flex items-center gap-1 text-[8px] font-black px-1.5 py-0.5 rounded text-amber-950 bg-amber-100 dark:bg-amber-950/60 dark:text-amber-300 border border-amber-300/80 dark:border-amber-700 shadow-2xs" title="Harga Modal (HPP)"><i class="fa-solid fa-coins text-[7px] text-amber-600 dark:text-amber-400"></i>HPP: ${fRp(itemHpp)}</span>` : ''}
                         <span class="text-[10px] text-slate-500 font-medium">
                             ${item.isWholesale && item.basePrice ? `<span class="line-through text-slate-400">${fRp(item.basePrice)}</span> <span class="font-bold" style="color:var(--color-primary)">${fRp(item.price)}</span>` : fRp(item.price)}
                         </span>
@@ -1471,7 +1478,7 @@ const renderCart = () => {
                         <span class="text-[9px] text-slate-400 font-bold uppercase tracking-wider">Diskon:</span>
                         <input type="number" min="0" ${itemHpp > 0 ? `max="${maxItemDisc}"` : ''} placeholder="0" value="${item.discount || ''}" onchange="window.posSetItemDisc('${ckey}',this.value)"
                             class="w-16 text-[10px] font-mono font-bold border border-slate-200 dark:border-slate-700 rounded-md px-1.5 py-0.5 bg-slate-50 dark:bg-slate-700/60 text-right focus:outline-none focus:border-[var(--color-primary)] transition-all">
-                        ${itemHpp > 0 ? `<span class="text-[9px] text-amber-600 dark:text-amber-400 font-bold whitespace-nowrap" title="Maksimal diskon agar tidak di bawah harga modal HPP">(Maks: ${fRp(maxItemDisc)})</span>` : ''}
+                        ${canViewHpp() && itemHpp > 0 ? `<span class="text-[9px] text-amber-600 dark:text-amber-400 font-bold whitespace-nowrap" title="Maksimal diskon agar tidak di bawah harga modal HPP">(Maks: ${fRp(maxItemDisc)})</span>` : ''}
                     </div>
                 </div>
                 <!-- Stepper & Subtotal -->
@@ -1488,7 +1495,7 @@ const renderCart = () => {
                         </button>
                     </div>
                     <p class="text-xs font-black mt-1.5" style="color:var(--color-primary)">${fRp(item.subtotal)}</p>
-                    ${itemHpp > 0 ? `<p class="text-[9px] font-bold ${itemMargin >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-500'} mt-0.5" title="Estimasi laba kotor item ini"><i class="fa-solid fa-arrow-trend-up text-[8px] mr-0.5"></i>Untung: ${fRp(itemMargin)}</p>` : ''}
+                    ${canViewHpp() && itemHpp > 0 ? `<p class="text-[9px] font-bold ${itemMargin >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-500'} mt-0.5" title="Estimasi laba kotor item ini"><i class="fa-solid fa-arrow-trend-up text-[8px] mr-0.5"></i>Untung: ${fRp(itemMargin)}</p>` : ''}
                 </div>
             </div>`;
         }).join('');
@@ -1499,13 +1506,19 @@ const renderCart = () => {
     document.querySelectorAll('.pos-total-target').forEach(e => e.textContent = formattedTotal);
     document.querySelectorAll('.pos-item-count-target').forEach(e => e.textContent = formatQty(totalQty));
 
-    const totalCartHpp = getCartTotalHpp();
+    const showHpp = canViewHpp();
+    const totalCartHpp = showHpp ? getCartTotalHpp() : 0;
     const formattedTotalHpp = fRp(totalCartHpp);
-    const totalMargin = Math.max(0, total - totalCartHpp);
+    const totalMargin = showHpp ? Math.max(0, total - totalCartHpp) : 0;
     const formattedTotalMargin = fRp(totalMargin);
 
     document.querySelectorAll('.pos-total-hpp-target').forEach(e => e.textContent = formattedTotalHpp);
     document.querySelectorAll('.pos-total-margin-target').forEach(e => e.textContent = formattedTotalMargin);
+
+    // Sembunyikan baris Total Modal HPP & Estimasi Laba jika bukan Owner
+    document.querySelectorAll('.pos-hpp-margin-row').forEach(row => {
+        row.style.display = showHpp ? 'flex' : 'none';
+    });
 
     const discAmt = posDiscountAmount();
     const formattedDiscAmt = fRp(discAmt);
@@ -3088,11 +3101,11 @@ const buildPOSLayout = ({ isStorefront }) => {
                         <span>Subtotal Item</span>
                         <span class="pos-subtotal-target font-bold text-slate-800 dark:text-slate-200">Rp 0</span>
                     </div>
-                    <div class="flex justify-between text-xs text-slate-500 font-medium">
+                    <div class="pos-hpp-margin-row flex justify-between text-xs text-slate-500 font-medium">
                         <span class="flex items-center gap-1"><i class="fa-solid fa-coins text-amber-500 text-[10px]"></i> Total Modal (HPP)</span>
                         <span class="pos-total-hpp-target font-bold text-amber-600 dark:text-amber-400">Rp 0</span>
                     </div>
-                    <div class="flex justify-between text-xs text-slate-500 font-medium">
+                    <div class="pos-hpp-margin-row flex justify-between text-xs text-slate-500 font-medium">
                         <span class="flex items-center gap-1"><i class="fa-solid fa-arrow-trend-up text-emerald-500 text-[10px]"></i> Estimasi Laba</span>
                         <span class="pos-total-margin-target font-bold text-emerald-600 dark:text-emerald-400">Rp 0</span>
                     </div>
@@ -3189,11 +3202,11 @@ const buildPOSLayout = ({ isStorefront }) => {
                         <span>Subtotal Item</span>
                         <span class="pos-subtotal-target font-bold text-slate-700 dark:text-slate-200">Rp 0</span>
                     </div>
-                    <div class="flex justify-between text-xs text-slate-500 font-medium">
+                    <div class="pos-hpp-margin-row flex justify-between text-xs text-slate-500 font-medium">
                         <span class="flex items-center gap-1"><i class="fa-solid fa-coins text-amber-500 text-[10px]"></i> Total Modal (HPP)</span>
                         <span class="pos-total-hpp-target font-bold text-amber-600 dark:text-amber-400">Rp 0</span>
                     </div>
-                    <div class="flex justify-between text-xs text-slate-500 font-medium">
+                    <div class="pos-hpp-margin-row flex justify-between text-xs text-slate-500 font-medium">
                         <span class="flex items-center gap-1"><i class="fa-solid fa-arrow-trend-up text-emerald-500 text-[10px]"></i> Estimasi Laba</span>
                         <span class="pos-total-margin-target font-bold text-emerald-600 dark:text-emerald-400">Rp 0</span>
                     </div>
@@ -3471,7 +3484,8 @@ export const posSetDiscountVal = (val) => {
         const discAmt = Math.round((subtotal * pct) / 100);
         if (totalHpp > 0 && discAmt > maxAllowedDisc) {
             const maxPct = subtotal > 0 ? Math.floor((maxAllowedDisc / subtotal) * 100) : 0;
-            showToast(`Diskon ${pct}% ditolak karena melebihi modal (Total HPP ${fRp(totalHpp)})! Diskon maksimal: ${maxPct}% (${fRp(maxAllowedDisc)})`, 'warning');
+            const hppDetail = canViewHpp() ? ` (Total HPP ${fRp(totalHpp)})` : '';
+            showToast(`Diskon ${pct}% ditolak karena melebihi batas modal toko${hppDetail}! Diskon maksimal: ${maxPct}% (${fRp(maxAllowedDisc)})`, 'warning');
             posDiscountVal = maxPct;
             posGlobalDisc = Math.round((subtotal * maxPct) / 100);
             renderCart();
@@ -3483,7 +3497,8 @@ export const posSetDiscountVal = (val) => {
     } else {
         const discAmt = rawVal;
         if (totalHpp > 0 && discAmt > maxAllowedDisc) {
-            showToast(`Diskon ditolak! Total transaksi tidak boleh di bawah harga modal (Total HPP ${fRp(totalHpp)}). Maksimal diskon: ${fRp(maxAllowedDisc)}`, 'warning');
+            const hppDetail = canViewHpp() ? ` (Total HPP ${fRp(totalHpp)})` : '';
+            showToast(`Diskon ditolak! Total transaksi tidak boleh di bawah harga modal toko${hppDetail}. Maksimal diskon: ${fRp(maxAllowedDisc)}`, 'warning');
             posDiscountVal = maxAllowedDisc;
             posGlobalDisc = maxAllowedDisc;
             renderCart();

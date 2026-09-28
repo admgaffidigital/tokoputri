@@ -8,6 +8,23 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-9-87',
+        version: 'v1.9.87',
+        date: '2026-09-28',
+        title: 'Proteksi Kerahasiaan Harga Modal Kasir (HPP Privacy Guard): Penyembunyian Harga Modal & Margin Laba di Seluruh Antarmuka Kasir POS untuk Menjaga Privasi Finansial Toko',
+        category: 'security',
+        badge: 'HPP Privacy Guard v1.9.87',
+        items: [
+            'HPP Privacy Guard (src/core/auth-roles.js: canViewHpp): Algoritma pengaman sentral yang mendeteksi hak akses finansial pengguna — Kasir fisik (cashier) dibatasi 100% dari melihat harga modal kulakan produk, sedangkan Owner tetap dapat melihat modal dan estimasi laba untuk evaluasi toko.',
+            'Pembersihan Tag Modal di Katalog Kasir (src/modules/pos/pos.js): Lencana "Modal: Rp ..." di kartu produk mode Grid maupun mode List disembunyikan total untuk akun kasir. Kasir hanya melihat foto, nama barang, sisa stok, dan harga jual resmi toko.',
+            'Penyembunyian HPP & Estimasi Untung di Keranjang (src/modules/pos/pos.js): Item belanja kasir tidak lagi menampilkan chip "HPP: Rp ...", batas teks "(Maks: Rp ...)", serta baris kalkulasi "Untung: Rp ...". Kasir fokus murni pada rincian kuantitas, harga jual, dan subtotal pelanggan.',
+            'Penyembunyian HPP di Lembar Pemilihan Varian (src/modules/pos/pos-variant-sheet.js): Header lembar varian dan masing-masing tombol varian produk (warna/ukuran) dibersihkan dari label HPP, mencegah kebocoran modal barang saat kasir melayani pembeli.',
+            'Penyembunyian Ringkasan Finansial Kasir (src/modules/pos/pos.js): Baris "Total Modal (HPP)" dan "Estimasi Laba" di panel ringkasan kasir (desktop sidebar & mobile bottom drawer) otomatis dihilangkan (display: none) saat kasir bertugas.',
+            'Notifikasi Proteksi Margin Cerdas Tanpa Membocorkan Modal: Validasi diskon kasir tetap bekerja aktif mencegah penjualan di bawah modal HPP, namun notifikasi toast peringatan tidak lagi mengekspos nominal modal asli ke kasir.',
+            'Sinkronisasi Multi-Channel v1.9.87 (Android VersionCode 10987): Terkompilasi dan tersinkronisasi penuh ke Vite build produksi, paket flashdisk, dan Capacitor Android.'
+        ]
+    },
+    {
         id: 'log-1-9-86',
         version: 'v1.9.86',
         date: '2026-09-28',
