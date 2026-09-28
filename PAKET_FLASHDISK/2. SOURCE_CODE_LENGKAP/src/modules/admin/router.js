@@ -146,8 +146,8 @@ export const openAdminTab = (t, fH = false) => {
         import('../../modules/pos/pos.js').then(m => m.renderPOS()).catch(err => {
             console.error('[POS] Gagal memuat modul kasir:', err);
         });
-    } else if (t === 'cashiers') {
-        // Lazy load modul manajemen akun kasir
+    } else if (t === 'cashiers' || t === 'staff') {
+        // Lazy load modul manajemen staf & hak akses
         import('../../modules/pos/pos-cashier-admin.js').then(m => m.renderCashierAccounts()).catch(err => {
             console.error('[CashierAdmin] Gagal memuat modul:', err);
         });

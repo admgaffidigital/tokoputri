@@ -28,7 +28,7 @@ export const getCashierSession = () => {
     return null;
 };
 
-const setCashierSession = (data) => {
+export const setCashierSession = (data) => {
     _cashierSession = data;
     try {
         if (data) sessionStorage.setItem('pos_cashier_session', JSON.stringify(data));
@@ -277,7 +277,8 @@ export const processCashierLogin = async () => {
         // namun admin session di Firestore (admin_session doc) tidak terganggu
 
         closePOSLoginModal();
-        showToast(`Selamat datang, ${cashierData.name || 'Kasir'}! 👋`, 'success');
+        const curSession = getCashierSession();
+        showToast(`Selamat datang, ${curSession?.name || 'Kasir'}! 👋`, 'success');
 
         // Buka POS View
         if (typeof window.changeView === 'function') window.changeView('view-pos-cashier');
