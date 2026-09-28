@@ -7,7 +7,7 @@
  * ============================================================
  */
 
-import { el, show, hide, showToast, ensureScriptLoaded } from '../../../core/utils.js';
+import { el, show, hide, showToast, ensureScriptLoaded, openModalAnim } from '../../../core/utils.js';
 
 const pushModalHistory  = (id) => window.pushModalHistory?.(id);
 const requestCloseModal = (id, fH, cb) => window.requestCloseModal?.(id, fH, cb);
@@ -18,8 +18,7 @@ let html5QrCode;
 window.openCameraScanner = async (targetId='search-input') => {
     const mScan = el('scanner-modal');
     if (mScan && mScan.classList.contains('hidden')) pushModalHistory('scanner');
-    show('scanner-modal');
-    setTimeout(() => { el('scanner-modal').classList.remove('opacity-0'); }, 10);
+    openModalAnim(mScan, mScan?.firstElementChild);
 
     // Muat library scanner secara lazy — hanya saat benar-benar diperlukan
     try {

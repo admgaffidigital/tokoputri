@@ -8,7 +8,7 @@
  */
 
 import { appData } from '../../core/state.js';
-import { el, show, hide, esc, showToast } from '../../core/utils.js';
+import { el, show, hide, esc, showToast, openModalAnim, closeModalAnim } from '../../core/utils.js';
 
 export const DEFAULT_PRINTER_CONFIG = {
     deviceType: 'rawbt', // 'rawbt' (Rekomendasi Utama Free) | 'bluetooth' | 'usb' | 'network' | 'system'
@@ -106,30 +106,26 @@ export const openPrinterSettingsModal = () => {
     selectPrinterDeviceTypeUI(config.deviceType || 'rawbt');
 
     const m = el('printer-settings-modal');
+    const b = el('printer-settings-modal-box');
     if (m && m.classList.contains('hidden') && typeof window.pushModalHistory === 'function') {
         window.pushModalHistory('printerSettings');
     }
-    show('printer-settings-modal');
-    setTimeout(() => {
-        if (el('printer-settings-modal')) el('printer-settings-modal').classList.remove('opacity-0');
-        if (el('printer-settings-modal-box')) el('printer-settings-modal-box').classList.remove('scale-95');
-    }, 10);
+    openModalAnim(m, b);
 };
 
 /**
  * Tutup modal pengaturan printer universal
  */
 export const closePrinterSettingsModal = (fH = false) => {
+    const m = el('printer-settings-modal');
+    const b = el('printer-settings-modal-box');
+    if (!m) return;
     if (typeof window.requestCloseModal === 'function') {
         window.requestCloseModal('printerSettings', fH, () => {
-            if (el('printer-settings-modal')) el('printer-settings-modal').classList.add('opacity-0');
-            if (el('printer-settings-modal-box')) el('printer-settings-modal-box').classList.add('scale-95');
-            setTimeout(() => hide('printer-settings-modal'), 300);
+            closeModalAnim(m, b);
         });
     } else {
-        if (el('printer-settings-modal')) el('printer-settings-modal').classList.add('opacity-0');
-        if (el('printer-settings-modal-box')) el('printer-settings-modal-box').classList.add('scale-95');
-        setTimeout(() => hide('printer-settings-modal'), 300);
+        closeModalAnim(m, b);
     }
 };
 

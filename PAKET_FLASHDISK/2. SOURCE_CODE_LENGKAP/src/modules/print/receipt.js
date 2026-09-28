@@ -6,7 +6,7 @@
  */
 
 import { appData, gOrds, cVOrd, setCVOrd, myOrders } from '../../core/state.js';
-import { el, show, hide, setH, esc } from '../../core/utils.js';
+import { el, show, hide, setH, esc, openModalAnim, closeModalAnim } from '../../core/utils.js';
 import { getPrinterConfig, getPaperCols } from './printer-settings.js';
 import { renderThermalDOMAndPrint, formatCompactDate, wrapWords } from './rawbt.js';
 
@@ -110,27 +110,23 @@ export const openReceiptPreview = (orderId = null) => {
     }
 
     const mRec = el('receipt-preview-modal');
+    const bRec = el('receipt-preview-modal-box');
     if (mRec && mRec.classList.contains('hidden') && typeof window.pushModalHistory === 'function') {
         window.pushModalHistory('receipt');
     }
-    show('receipt-preview-modal');
-    setTimeout(() => { 
-        if (el('receipt-preview-modal')) el('receipt-preview-modal').classList.remove('opacity-0'); 
-        if (el('receipt-preview-modal-box')) el('receipt-preview-modal-box').classList.remove('scale-95'); 
-    }, 10);
+    openModalAnim(mRec, bRec);
 };
 
 export const closeReceiptPreviewModal = (fH = false) => {
+    const mRec = el('receipt-preview-modal');
+    const bRec = el('receipt-preview-modal-box');
+    if (!mRec) return;
     if (typeof window.requestCloseModal === 'function') {
         window.requestCloseModal('receipt', fH, () => {
-            if (el('receipt-preview-modal')) el('receipt-preview-modal').classList.add('opacity-0');
-            if (el('receipt-preview-modal-box')) el('receipt-preview-modal-box').classList.add('scale-95');
-            setTimeout(() => hide('receipt-preview-modal'), 300);
+            closeModalAnim(mRec, bRec);
         });
     } else {
-        if (el('receipt-preview-modal')) el('receipt-preview-modal').classList.add('opacity-0');
-        if (el('receipt-preview-modal-box')) el('receipt-preview-modal-box').classList.add('scale-95');
-        setTimeout(() => hide('receipt-preview-modal'), 300);
+        closeModalAnim(mRec, bRec);
     }
 };
 

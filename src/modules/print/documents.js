@@ -5,8 +5,7 @@
  * ============================================================
  */
 
-import { appData, gOrds, cVOrd, cart, isSaving, setIsSaving } from '../../core/state.js';
-import { el, show, hide, setIn, setH, esc, fCur, sLoad, hLoad } from '../../core/utils.js';
+import { el, show, hide, setIn, setH, esc, fCur, sLoad, hLoad, openModalAnim, closeModalAnim } from '../../core/utils.js';
 
 export let currentDocType = 'invoice';
 
@@ -136,16 +135,7 @@ export const openDocPreview = (type, targetId = null) => {
         `;
 
         setH('doc-paper-content', h);
-        const mDoc = el('doc-preview-modal');
-        if (mDoc && mDoc.classList.contains('hidden') && typeof window.pushModalHistory === 'function') {
-            window.pushModalHistory('docPreview');
-        }
-        show('doc-preview-modal');
-        setTimeout(() => {
-            if (el('doc-preview-modal')) el('doc-preview-modal').classList.remove('opacity-0');
-            if (el('doc-preview-modal-box')) el('doc-preview-modal-box').classList.remove('scale-95');
-            fitDocPreview();
-        }, 10);
+        showDocModalWithAnim();
         return;
     }
 
@@ -369,16 +359,7 @@ export const openDocPreview = (type, targetId = null) => {
         `;
 
         setH('doc-paper-content', h);
-        const mDoc = el('doc-preview-modal');
-        if (mDoc && mDoc.classList.contains('hidden') && typeof window.pushModalHistory === 'function') {
-            window.pushModalHistory('docPreview');
-        }
-        show('doc-preview-modal');
-        setTimeout(() => {
-            if (el('doc-preview-modal')) el('doc-preview-modal').classList.remove('opacity-0');
-            if (el('doc-preview-modal-box')) el('doc-preview-modal-box').classList.remove('scale-95');
-            fitDocPreview();
-        }, 10);
+        showDocModalWithAnim();
         return;
     }
 
@@ -582,16 +563,7 @@ export const openDocPreview = (type, targetId = null) => {
         `;
 
         setH('doc-paper-content', h);
-        const mDoc = el('doc-preview-modal');
-        if (mDoc && mDoc.classList.contains('hidden') && typeof window.pushModalHistory === 'function') {
-            window.pushModalHistory('docPreview');
-        }
-        show('doc-preview-modal');
-        setTimeout(() => {
-            if (el('doc-preview-modal')) el('doc-preview-modal').classList.remove('opacity-0');
-            if (el('doc-preview-modal-box')) el('doc-preview-modal-box').classList.remove('scale-95');
-            fitDocPreview();
-        }, 10);
+        showDocModalWithAnim();
         return;
     }
 
@@ -823,16 +795,7 @@ export const openDocPreview = (type, targetId = null) => {
     `;
 
     setH('doc-paper-content', h);
-    const mDoc = el('doc-preview-modal');
-    if (mDoc && mDoc.classList.contains('hidden') && typeof window.pushModalHistory === 'function') {
-        window.pushModalHistory('docPreview');
-    }
-    show('doc-preview-modal');
-    setTimeout(() => {
-        if (el('doc-preview-modal')) el('doc-preview-modal').classList.remove('opacity-0');
-        if (el('doc-preview-modal-box')) el('doc-preview-modal-box').classList.remove('scale-95');
-        fitDocPreview();
-    }, 10);
+    showDocModalWithAnim();
 };
 
 /**
@@ -969,16 +932,17 @@ export const openCartSPHPreview = () => {
     `;
 
     setH('doc-paper-content', h);
+    showDocModalWithAnim();
+};
+
+const showDocModalWithAnim = () => {
     const mDoc = el('doc-preview-modal');
+    const bDoc = el('doc-preview-modal-box');
     if (mDoc && mDoc.classList.contains('hidden') && typeof window.pushModalHistory === 'function') {
         window.pushModalHistory('docPreview');
     }
-    show('doc-preview-modal');
-    setTimeout(() => {
-        if (el('doc-preview-modal')) el('doc-preview-modal').classList.remove('opacity-0');
-        if (el('doc-preview-modal-box')) el('doc-preview-modal-box').classList.remove('scale-95');
-        fitDocPreview();
-    }, 10);
+    openModalAnim(mDoc, bDoc);
+    fitDocPreview();
 };
 
 export const fitDocPreview = () => {
@@ -1002,16 +966,15 @@ window.addEventListener('resize', () => {
 });
 
 export const closeDocPreviewModal = (fH = false) => {
+    const m = el('doc-preview-modal');
+    const b = el('doc-preview-modal-box');
+    if (!m) return;
     if (typeof window.requestCloseModal === 'function') {
         window.requestCloseModal('docPreview', fH, () => {
-            if (el('doc-preview-modal')) el('doc-preview-modal').classList.add('opacity-0');
-            if (el('doc-preview-modal-box')) el('doc-preview-modal-box').classList.add('scale-95');
-            setTimeout(() => hide('doc-preview-modal'), 300);
+            closeModalAnim(m, b);
         });
     } else {
-        if (el('doc-preview-modal')) el('doc-preview-modal').classList.add('opacity-0');
-        if (el('doc-preview-modal-box')) el('doc-preview-modal-box').classList.add('scale-95');
-        setTimeout(() => hide('doc-preview-modal'), 300);
+        closeModalAnim(m, b);
     }
 };
 

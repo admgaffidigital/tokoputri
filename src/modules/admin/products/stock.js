@@ -9,7 +9,7 @@
 import { db } from '../../../config/firebase.js';
 import { saveApp } from '../../../services/storage.js';
 import { appData } from '../../../core/state.js';
-import { el, show, hide, setIn, esc, sLoad, hLoad, showToast } from '../../../core/utils.js';
+import { el, show, hide, setIn, esc, sLoad, hLoad, showToast, closeModalAnim } from '../../../core/utils.js';
 import { isSaving, setIsSaving } from './index.js';
 
 // Fungsi ini diimpor dari router.js (admin) via window agar tidak circular
@@ -201,9 +201,10 @@ window.toggleProductStatus = async (id, toActive) => {
 // ─── Tutup Modal Admin Utama ──────────────────────────────────────────────────
 
 window.closeAdminModal = (fH=false) => {
+    const m = el('admin-modal');
+    const b = el('admin-modal-box');
+    if (!m) return;
     requestCloseModal('admin', fH, () => {
-        el('admin-modal').classList.add('opacity-0');
-        el('admin-modal-box').classList.add('scale-95');
-        setTimeout(() => hide('admin-modal'), 300);
+        closeModalAnim(m, b);
     });
 };

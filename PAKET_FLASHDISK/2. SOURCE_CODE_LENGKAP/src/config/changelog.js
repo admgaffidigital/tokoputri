@@ -8,6 +8,22 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-9-78',
+        version: 'v1.9.78',
+        date: '2026-09-28',
+        title: 'Resolusi Tuntas Layar Berkedip (Screen Flicker): Arsitektur Anti-Flicker Tab & Bottom Sheet, Eliminasi Konflik 3D GPU Skia, & Double rAF Transition',
+        category: 'fix',
+        badge: 'Zero-Flicker & Visual Stability v1.9.78',
+        items: [
+            'Eliminasi Blank Flash pada Tab (style.css): Memperbaiki keyframes animasi fadeIn dan fadeInScale yang sebelumnya dimulai dari opacity: 0 (menyebabkan seluruh area tab layar padam/gelap selama 0.3 detik setiap kali tab dibuka atau di-refresh data Firestore). Kini dimulai dari opacity: 0.92 dengan durasi 0.16s, menghasilkan pergantian tab instan dan bebas kedip.',
+            'Pembersihan Konflik 3D GPU Skia pada Bottom Sheet & Modal (style.css): Menghapus properti perspective: 1000px dan transform-style: preserve-3d dari selektor modal yang bentrok dengan backdrop-filter: blur (Chromium Skia bug). Menggantinya dengan akselerasi 2D murni (transform: translateZ(0)) sehingga GPU tidak mengalami frame drop saat membuka bottom sheet.',
+            'Double requestAnimationFrame Engine (utils.js): Mengoptimasi fungsi pembuka animasi modal (openModalAnim) dengan Double rAF tanpa synchronous layout thrashing (void m.offsetWidth), mengeliminasi lonjakan beban CPU dan lag visual 1-frame saat modal un-hidden.',
+            'Standardisasi Animasi Modal & Sheet Global: Menyelaraskan seluruh modul yang sebelumnya memakai setTimeout 10ms (pos-variant-sheet.js, receipt.js, printer-settings.js, documents.js, scanner.js, dan form.js) ke engine openModalAnim & closeModalAnim, mencegah tabrakan siklus render Vsync (60Hz/90Hz/120Hz).',
+            'Pencegahan Pergeseran Scrollbar (style.css): Menambahkan scrollbar-gutter: stable pada html agar layout halaman tidak melompat 15-17px saat scrollbar muncul atau hilang.',
+            'Sinkronisasi Multi-Channel v1.9.78 (Android VersionCode 10978): Terkompilasi dan tersinkronisasi penuh ke Vite build, paket flashdisk, dan Capacitor Android.'
+        ]
+    },
+    {
         id: 'log-1-9-77',
         version: 'v1.9.77',
         date: '2026-09-28',

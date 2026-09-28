@@ -27,6 +27,7 @@
    ============================================================ */
 html {
   overflow-y: scroll;
+  scrollbar-gutter: stable;
   -webkit-tap-highlight-color: transparent;
   overscroll-behavior-y: contain;
   touch-action: manipulation;
@@ -1072,16 +1073,8 @@ body {
 #bottom-nav-bar {
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
-    -webkit-perspective: 1000px;
-    perspective: 1000px;
-    -webkit-transform-style: preserve-3d;
-    transform-style: preserve-3d;
-}
-
-.modal-bottom-sheet,
-[id*="modal-content"],
-[id*="modal-box"] {
-    will-change: transform, opacity;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
 }
 
 .scroll-content { 
@@ -1094,15 +1087,16 @@ body {
 }
 
 /* === 3. ANIMATIONS === */
-.fade-in { animation: fadeIn 0.3s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
+/* Zero-Flicker Animations: Mulai dari opacity 0.92 agar tidak ada layar blank putih/gelap saat tab dibuka */
+.fade-in { animation: fadeIn 0.16s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
 @keyframes fadeIn { 
-    from { opacity: 0; transform: translateY(8px); } 
+    from { opacity: 0.92; transform: translateY(4px); } 
     to { opacity: 1; transform: translateY(0); } 
 }
 
-.fade-in-scale { animation: fadeInScale 0.3s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
+.fade-in-scale { animation: fadeInScale 0.16s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
 @keyframes fadeInScale { 
-    from { opacity: 0; transform: scale(0.97); } 
+    from { opacity: 0.92; transform: scale(0.99); } 
     to { opacity: 1; transform: scale(1); } 
 }
 

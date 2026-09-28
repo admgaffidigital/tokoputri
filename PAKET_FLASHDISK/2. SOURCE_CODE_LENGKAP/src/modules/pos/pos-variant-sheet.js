@@ -8,7 +8,7 @@
  */
 
 import { appData } from '../../core/state.js';
-import { el, esc, fCur, getOptImg, showToast, renderProductCoverHtml } from '../../core/utils.js';
+import { el, esc, fCur, getOptImg, showToast, renderProductCoverHtml, openModalAnim, closeModalAnim } from '../../core/utils.js';
 import { getEffHpp } from '../../core/pricing.js';
 
 // ─── State ───────────────────────────────────────────────────
@@ -84,25 +84,19 @@ export const openPOSVariantSheet = (productId) => {
 
     renderVariantSheetContent(p);
 
-    modal.classList.remove('hidden');
-    setTimeout(() => {
-        modal.classList.remove('opacity-0');
-        if (box) box.classList.remove('translate-y-full');
-    }, 10);
+    openModalAnim(modal, box);
     if (typeof window.triggerHaptic === 'function') window.triggerHaptic('light');
 };
 
 export const closePOSVariantSheet = () => {
     const modal = el('pos-variant-sheet');
     const box   = el('pos-variant-sheet-box');
-    if (modal) modal.classList.add('opacity-0');
-    if (box)   box.classList.add('translate-y-full');
-    setTimeout(() => {
-        if (modal) modal.classList.add('hidden');
+    if (!modal) return;
+    closeModalAnim(modal, box, () => {
         _currentProductId  = null;
         _selectedVariantIdx = 0;
         _selectedQty       = 1;
-    }, 300);
+    });
 };
 
 // ─── Render Konten Sheet ─────────────────────────────────────

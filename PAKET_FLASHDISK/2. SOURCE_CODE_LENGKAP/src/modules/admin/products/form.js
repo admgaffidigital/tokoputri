@@ -10,7 +10,7 @@
 import { db } from '../../../config/firebase.js';
 import { saveApp } from '../../../services/storage.js';
 import { appData } from '../../../core/state.js';
-import { el, show, setIn, setH, getV, esc, fixD, sLoad, hLoad, showToast } from '../../../core/utils.js';
+import { el, show, setIn, setH, getV, esc, fixD, sLoad, hLoad, showToast, openModalAnim } from '../../../core/utils.js';
 import { aF } from '../schema.js';
 import {
     cTab, setCTab,
@@ -167,8 +167,7 @@ window.oAEd = (t, id) => {
 
     const mAd = el('admin-modal');
     if (mAd && mAd.classList.contains('hidden')) pushModalHistory('admin');
-    show('admin-modal');
-    setTimeout(() => { el('admin-modal').classList.remove('opacity-0'); el('admin-modal-box').classList.remove('scale-95'); }, 10);
+    openModalAnim(mAd, el('admin-modal-box'));
 };
 
 // ─── Submit Form (Simpan) ─────────────────────────────────────────────────────

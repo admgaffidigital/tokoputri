@@ -18,8 +18,8 @@ export const getV      = id => { const e = el(id); return e ? e.value : ''; };
 
 /**
  * Membuka modal/bottom-sheet dengan animasi mulus tanpa kedip (anti-flicker).
- * Memaksa browser melakukan reflow synchronous (void m.offsetWidth) sebelum
- * requestAnimationFrame agar posisi awal (opacity-0 & translate-y-full) selalu dipaint.
+ * Menggunakan Double requestAnimationFrame (rAF) agar browser mendaftarkan display
+ * frame pertama secara murni di GPU tanpa memicu synchronous layout thrashing (void m.offsetWidth).
  */
 export const openModalAnim = (modalEl, contentEl) => {
     const m = typeof modalEl === 'string' ? el(modalEl) : modalEl;
@@ -27,13 +27,14 @@ export const openModalAnim = (modalEl, contentEl) => {
     if (!m) return;
     
     m.classList.remove('hidden');
-    void m.offsetWidth; // Force synchronous browser reflow to commit initial zero frame
     
     requestAnimationFrame(() => {
-        m.classList.remove('opacity-0');
-        if (c) {
-            c.classList.remove('translate-y-full', 'sm:translate-y-10', 'sm:translate-y-8', 'scale-95');
-        }
+        requestAnimationFrame(() => {
+            m.classList.remove('opacity-0');
+            if (c) {
+                c.classList.remove('translate-y-full', 'sm:translate-y-10', 'sm:translate-y-8', 'scale-95');
+            }
+        });
     });
 };
 
@@ -50,7 +51,7 @@ export const closeModalAnim = (modalEl, contentEl, onClosed) => {
     
     m.classList.add('opacity-0');
     if (c) {
-        c.classList.add('translate-y-full', 'sm:translate-y-10', 'sm:translate-y-8');
+        c.classList.add('translate-y-full', 'sm:translate-y-10', 'sm:translate-y-8', 'scale-95');
     }
     
     setTimeout(() => {
