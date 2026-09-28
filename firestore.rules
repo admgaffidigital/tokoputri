@@ -51,13 +51,13 @@ service cloud.firestore {
         allow create, update, delete: if isAdmin();
       }
 
-      // Database Pelanggan / Member (data profil & poin)
+      // Database Pelanggan / Member (data profil, poin & limit paylater)
       // Publik & Kasir dapat membaca data member untuk lookup profil & poin saat transaksi POS.
       match /customers/{phone} {
         allow read: if true;
         allow create: if isAdmin() || isCashier();
         allow update: if isAdmin() || isCashier() ||
-          request.resource.data.diff(resource.data).affectedKeys().hasOnly(['points', 'lastOrderAt']);
+          request.resource.data.diff(resource.data).affectedKeys().hasOnly(['points', 'lastOrderAt', 'paylaterUsed', 'name']);
         allow delete: if isAdmin();
       }
 

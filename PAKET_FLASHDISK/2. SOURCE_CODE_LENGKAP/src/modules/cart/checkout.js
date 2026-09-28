@@ -683,14 +683,19 @@ export const processOrder = async () => {
 
             // Catat pemakaian limit ke database member
             if (chargedToPaylater > 0) {
+                if (currentMember) {
+                    currentMember.paylaterUsed = (parseFloat(currentMember.paylaterUsed) || 0) + chargedToPaylater;
+                }
+                const targetCustId = (currentMember && currentMember.phone) 
+                    ? String(currentMember.phone).replace(/\D/g, '') 
+                    : cust.wa;
                 try {
-                    const custRef = db.collection("freshmart").doc("cms_data").collection("customers").doc(cust.wa);
+                    const custRef = db.collection("freshmart").doc("cms_data").collection("customers").doc(targetCustId);
                     await custRef.set({
                         paylaterUsed: firebase.firestore.FieldValue.increment(chargedToPaylater)
                     }, { merge: true });
-                    currentMember.paylaterUsed = (parseFloat(currentMember.paylaterUsed) || 0) + chargedToPaylater;
                 } catch(e) {
-                    console.warn('[PayLater] Gagal update pemakaian limit:', e);
+                    console.warn('[PayLater] Update limit member di server membutuhkan publish firestore.rules terbaru di Firebase Console:', e);
                 }
             }
         }
