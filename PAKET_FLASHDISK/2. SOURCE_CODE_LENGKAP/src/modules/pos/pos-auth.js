@@ -214,39 +214,57 @@ export const processCashierLogin = async () => {
         const uid  = cred.user?.uid;
         if (!uid) throw new Error('UID tidak ditemukan');
 
-        // Verifikasi role kasir di Firestore
-        const docRef = db.collection('freshmart').doc('cms_data').collection('cashier_accounts').doc(uid);
-        const docSnap = await docRef.get();
+        // 1. Jika ini Akun Owner Utama (ADMIN_UID)
+        if (uid === ADMIN_UID) {
+            setCashierSession({
+                uid,
+                name: 'Owner Toko',
+                email,
+                role: 'owner'
+            });
+            try { localStorage.setItem('pos_has_cashier', 'true'); } catch (_) {}
+            updatePOSHeaderIcon();
+        } else {
+            // 2. Verifikasi staf (kasir/admin) di Firestore
+            const docRef = db.collection('freshmart').doc('cms_data').collection('cashier_accounts').doc(uid);
+            const docSnap = await docRef.get();
 
-        if (!docSnap.exists) {
-            await auth.signOut();
-            showErr('Akun ini bukan akun kasir yang terdaftar di toko ini.');
-            return;
+            if (!docSnap.exists) {
+                await auth.signOut();
+                showErr('Akun ini bukan akun staf/kasir yang terdaftar di toko ini.');
+                return;
+            }
+
+            const staffData = docSnap.data() || {};
+
+            if (staffData.isActive === false) {
+                await auth.signOut();
+                showErr('Akun staf ini telah dinonaktifkan oleh Owner toko.');
+                return;
+            }
+
+            // Periksa izin akses kasir POS
+            const hasPosAccess = staffData.role === 'cashier' || 
+                                 staffData.role === 'admin' || 
+                                 staffData.role === 'owner' || 
+                                 staffData.permissions?.pos !== false;
+
+            if (!hasPosAccess) {
+                await auth.signOut();
+                showErr('Akun ini tidak memiliki hak akses kasir POS.');
+                return;
+            }
+
+            // Simpan sesi kasir di sessionStorage
+            setCashierSession({
+                uid,
+                name: staffData.name || email,
+                email: staffData.email || email,
+                role: staffData.role || 'cashier'
+            });
+            try { localStorage.setItem('pos_has_cashier', 'true'); } catch (_) {}
+            updatePOSHeaderIcon();
         }
-
-        const cashierData = docSnap.data();
-
-        if (cashierData.role !== 'cashier') {
-            await auth.signOut();
-            showErr('Akun ini tidak memiliki akses kasir.');
-            return;
-        }
-
-        if (!cashierData.isActive) {
-            await auth.signOut();
-            showErr('Akun kasir ini telah dinonaktifkan. Hubungi admin toko.');
-            return;
-        }
-
-        // Simpan sesi kasir di sessionStorage (tidak mengganggu sesi admin)
-        setCashierSession({
-            uid,
-            name: cashierData.name || email,
-            email: cashierData.email || email,
-            role: 'cashier'
-        });
-        try { localStorage.setItem('pos_has_cashier', 'true'); } catch (_) {}
-        updatePOSHeaderIcon();
 
         // Segera sinkronkan dan sambungkan shift aktif dari Cloud Firestore
         if (typeof window.syncActiveShiftFromCloud === 'function') {

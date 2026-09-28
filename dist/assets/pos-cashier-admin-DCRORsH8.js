@@ -1,39 +1,4 @@
-/**
- * ============================================================
- * MODUL ADMIN: MANAJEMEN STAF & HAK AKSES TOKO
- * Toko Putri v1.9.86
- * Ditampilkan di tab "Staf & Hak Akses" (cashiers/staff) pada CMS.
- * Owner dapat:
- * - Menambah staf baru (Kasir POS, Admin Operasional, Owner)
- * - Mengatur hak akses setiap modul secara dinamis (granular permissions)
- * - Mengaktifkan / menonaktifkan akun staf seketika
- * - Menghapus akun staf
- * ============================================================
- */
-
-import { auth, db, firebase, ADMIN_UID } from '../../config/firebase.js';
-import { el, setH, esc, showToast, showConfirm, sLoad, hLoad } from '../../core/utils.js';
-import { 
-    ROLES, 
-    PERMISSION_DEFINITIONS, 
-    ROLE_PRESETS, 
-    isOwnerUser, 
-    getRoleBadgeHtml 
-} from '../../core/auth-roles.js';
-import { renderAdminShiftReportView } from './pos-shift.js';
-
-let _cachedStaffList = [];
-let _activeRoleFilter = 'all'; // 'all' | 'admin' | 'cashier'
-
-// ─── Render Panel Manajemen Staf & Akses ─────────────────────
-export const renderCashierAccounts = async () => {
-    const content = el('admin-content');
-    if (!content) return;
-
-    const sc = document.querySelector('#view-admin .scroll-content');
-    if (sc) sc.scrollTop = 0;
-
-    setH('admin-content', `
+import{e as n,x as O,aa as v,l as x,v as u,a8 as y,i as d,b as D,$ as K}from"./module-print-CSpCL44s.js";import{v as h,R as l,P as S,w as B}from"./module-admin-DQT5z7ud.js";import{r as F}from"./module-pos-5usvjO7m.js";import{f as A}from"./vendor-firebase-core-D2OF5R23.js";import"./vendor-firebase-db-BIUZcnOd.js";import"./module-faq-B3Yivrwd.js";let g=[],P="all";const q=async()=>{if(!n("admin-content"))return;const e=document.querySelector("#view-admin .scroll-content");e&&(e.scrollTop=0),D("admin-content",`
     <div class="space-y-4 max-w-5xl mx-auto pb-16">
         <!-- Native App Sticky Segmented Control Bar -->
         <div class="sticky top-0 z-20 -mx-4 lg:-mx-8 px-4 lg:px-8 py-3 bg-slate-50/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800/80 shadow-2xs">
@@ -124,247 +89,97 @@ export const renderCashierAccounts = async () => {
 
         <!-- Panel 2: Laporan Shift Kasir -->
         <div id="cashier-panel-shifts" class="hidden pt-1"></div>
-    </div>`);
-
-    await loadStaffList();
-};
-
-export const switchCashierTab = (tab) => {
-    const sc = document.querySelector('#view-admin .scroll-content');
-    if (sc) sc.scrollTop = 0;
-
-    const tabAccounts = el('tab-btn-cashier-accounts');
-    const tabShifts   = el('tab-btn-cashier-shifts');
-    const panelAccounts = el('cashier-panel-accounts');
-    const panelShifts   = el('cashier-panel-shifts');
-
-    const applyActive = (btn, iconHtml, label) => {
-        if (!btn) return;
-        btn.className = 'py-2.5 px-4 rounded-xl text-xs font-black text-white transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-95 shadow-md';
-        btn.style.background = 'var(--color-primary)';
-        btn.style.boxShadow = '0 4px 14px rgba(var(--color-primary-rgb), 0.35)';
-        btn.innerHTML = `${iconHtml}<span>${label}</span>`;
-    };
-
-    const applyInactive = (btn, iconHtml, label) => {
-        if (!btn) return;
-        btn.className = 'py-2.5 px-4 rounded-xl text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/60 dark:hover:bg-slate-700/60 transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-95';
-        btn.style.background = 'transparent';
-        btn.style.boxShadow = 'none';
-        btn.innerHTML = `${iconHtml}<span>${label}</span>`;
-    };
-
-    if (tab === 'shifts') {
-        applyInactive(tabAccounts, '<i class="fa-solid fa-users-gear"></i>', 'Staf &amp; Hak Akses');
-        applyActive(tabShifts, '<i class="fa-solid fa-file-invoice-dollar text-white"></i>', 'Laporan Shift Kasir');
-        if (panelAccounts) panelAccounts.classList.add('hidden');
-        if (panelShifts) {
-            panelShifts.classList.remove('hidden');
-            renderAdminShiftReportView(panelShifts);
-        }
-    } else {
-        applyActive(tabAccounts, '<i class="fa-solid fa-users-gear text-white"></i>', 'Staf &amp; Hak Akses');
-        applyInactive(tabShifts, '<i class="fa-solid fa-file-invoice-dollar"></i>', 'Laporan Shift Kasir');
-        if (panelAccounts) panelAccounts.classList.remove('hidden');
-        if (panelShifts) panelShifts.classList.add('hidden');
-    }
-};
-
-export const filterStaffRole = (role) => {
-    _activeRoleFilter = role;
-    document.querySelectorAll('.staff-filter-btn').forEach(btn => {
-        btn.style.background = 'transparent';
-        btn.style.color = '';
-        btn.classList.add('bg-white', 'dark:bg-slate-800', 'text-slate-600', 'dark:text-slate-300');
-    });
-
-    const activeBtn = el(`staff-filter-${role}`);
-    if (activeBtn) {
-        activeBtn.classList.remove('bg-white', 'dark:bg-slate-800', 'text-slate-600', 'dark:text-slate-300');
-        activeBtn.style.background = 'var(--color-primary)';
-        activeBtn.style.color = '#fff';
-    }
-
-    renderStaffListHtml();
-};
-
-const countStaffPermissions = (staff) => {
-    if (staff.role === ROLES.OWNER) return PERMISSION_DEFINITIONS.length;
-    if (staff.permissions) {
-        return Object.values(staff.permissions).filter(Boolean).length;
-    }
-    const preset = ROLE_PRESETS[staff.role] || ROLE_PRESETS[ROLES.CASHIER];
-    return Object.values(preset).filter(Boolean).length;
-};
-
-const renderStaffListHtml = () => {
-    const container = el('cashier-list-container');
-    if (!container) return;
-
-    let filtered = _cachedStaffList;
-    if (_activeRoleFilter === 'admin') {
-        filtered = _cachedStaffList.filter(s => s.role === ROLES.ADMIN || s.role === ROLES.OWNER);
-    } else if (_activeRoleFilter === 'cashier') {
-        filtered = _cachedStaffList.filter(s => s.role === ROLES.CASHIER || !s.role);
-    }
-
-    if (filtered.length === 0) {
-        container.innerHTML = `
+    </div>`),await w()},G=t=>{const e=document.querySelector("#view-admin .scroll-content");e&&(e.scrollTop=0);const s=n("tab-btn-cashier-accounts"),a=n("tab-btn-cashier-shifts"),r=n("cashier-panel-accounts"),o=n("cashier-panel-shifts"),f=(i,m,k)=>{i&&(i.className="py-2.5 px-4 rounded-xl text-xs font-black text-white transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-95 shadow-md",i.style.background="var(--color-primary)",i.style.boxShadow="0 4px 14px rgba(var(--color-primary-rgb), 0.35)",i.innerHTML=`${m}<span>${k}</span>`)},c=(i,m,k)=>{i&&(i.className="py-2.5 px-4 rounded-xl text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/60 dark:hover:bg-slate-700/60 transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-95",i.style.background="transparent",i.style.boxShadow="none",i.innerHTML=`${m}<span>${k}</span>`)};t==="shifts"?(c(s,'<i class="fa-solid fa-users-gear"></i>',"Staf &amp; Hak Akses"),f(a,'<i class="fa-solid fa-file-invoice-dollar text-white"></i>',"Laporan Shift Kasir"),r&&r.classList.add("hidden"),o&&(o.classList.remove("hidden"),F(o))):(f(s,'<i class="fa-solid fa-users-gear text-white"></i>',"Staf &amp; Hak Akses"),c(a,'<i class="fa-solid fa-file-invoice-dollar"></i>',"Laporan Shift Kasir"),r&&r.classList.remove("hidden"),o&&o.classList.add("hidden"))},V=t=>{P=t,document.querySelectorAll(".staff-filter-btn").forEach(s=>{s.style.background="transparent",s.style.color="",s.classList.add("bg-white","dark:bg-slate-800","text-slate-600","dark:text-slate-300")});const e=n(`staff-filter-${t}`);e&&(e.classList.remove("bg-white","dark:bg-slate-800","text-slate-600","dark:text-slate-300"),e.style.background="var(--color-primary)",e.style.color="#fff"),H()},z=t=>{if(t.role===l.OWNER)return S.length;if(t.permissions)return Object.values(t.permissions).filter(Boolean).length;const e=h[t.role]||h[l.CASHIER];return Object.values(e).filter(Boolean).length},H=()=>{const t=n("cashier-list-container");if(!t)return;let e=g;if(P==="admin"?e=g.filter(a=>a.role===l.ADMIN||a.role===l.OWNER):P==="cashier"&&(e=g.filter(a=>a.role===l.CASHIER||!a.role)),e.length===0){t.innerHTML=`
         <div class="flex flex-col items-center justify-center py-16 text-slate-400 dark:text-slate-600 bg-white dark:bg-slate-800/60 rounded-3xl border border-slate-200/80 dark:border-slate-800 p-8 text-center">
             <div class="w-14 h-14 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-2xl mb-3 text-slate-400">
                 <i class="fa-solid fa-user-slash"></i>
             </div>
             <p class="font-bold text-sm text-slate-700 dark:text-slate-300">Belum ada akun staf pada kategori ini</p>
             <p class="text-xs mt-1 text-slate-400">Klik "Tambah Staf" untuk mendaftarkan akun kasir atau admin baru</p>
-        </div>`;
-        return;
-    }
-
-    const listHtml = filtered.map(d => {
-        const uid = d.uid;
-        const isActive = d.isActive !== false;
-        const dateStr  = d.createdAt?.toDate ? d.createdAt.toDate().toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : '-';
-        const initials = (d.name || 'Staf').trim().split(/\s+/).slice(0, 2).map(w => w[0]).join('').toUpperCase() || 'ST';
-        const role = d.role || ROLES.CASHIER;
-        const permCount = countStaffPermissions(d);
-
-        return `
+        </div>`;return}const s=e.map(a=>{const r=a.uid,o=a.isActive!==!1,f=a.createdAt?.toDate?a.createdAt.toDate().toLocaleDateString("id-ID",{day:"numeric",month:"short",year:"numeric"}):"-",c=(a.name||"Staf").trim().split(/\s+/).slice(0,2).map(k=>k[0]).join("").toUpperCase()||"ST",i=a.role||l.CASHIER,m=z(a);return`
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3.5 p-4 sm:p-5 bg-white dark:bg-slate-800/95 rounded-2xl sm:rounded-3xl border border-slate-200/90 dark:border-slate-700/80 shadow-2xs hover:shadow-xs transition-all">
             <div class="flex items-start sm:items-center gap-3.5 min-w-0">
                 <div class="w-12 h-12 rounded-2xl flex items-center justify-center font-black text-sm shrink-0 shadow-2xs border border-[rgba(var(--color-primary-rgb),0.25)]"
                     style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary)">
-                    ${initials}
+                    ${c}
                 </div>
                 <div class="min-w-0 flex-1">
                     <div class="flex items-center gap-2 flex-wrap">
-                        <p class="text-sm font-black text-slate-900 dark:text-white truncate">${esc(d.name || 'Staf')}</p>
-                        ${getRoleBadgeHtml(role)}
-                        <span class="inline-flex items-center gap-1.5 text-[10px] font-black px-2.5 py-0.5 rounded-full ${isActive
-                            ? 'bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60'
-                            : 'bg-slate-100 dark:bg-slate-700 text-slate-500 border border-slate-200 dark:border-slate-600'}">
-                            <span class="w-1.5 h-1.5 rounded-full ${isActive ? 'bg-emerald-500 animate-pulse' : 'bg-slate-400'}"></span>
-                            ${isActive ? 'Aktif' : 'Nonaktif'}
+                        <p class="text-sm font-black text-slate-900 dark:text-white truncate">${d(a.name||"Staf")}</p>
+                        ${B(i)}
+                        <span class="inline-flex items-center gap-1.5 text-[10px] font-black px-2.5 py-0.5 rounded-full ${o?"bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60":"bg-slate-100 dark:bg-slate-700 text-slate-500 border border-slate-200 dark:border-slate-600"}">
+                            <span class="w-1.5 h-1.5 rounded-full ${o?"bg-emerald-500 animate-pulse":"bg-slate-400"}"></span>
+                            ${o?"Aktif":"Nonaktif"}
                         </span>
                     </div>
                     <div class="flex items-center gap-3 mt-1.5 text-xs text-slate-500 dark:text-slate-400 flex-wrap">
-                        <span class="flex items-center gap-1 font-medium"><i class="fa-solid fa-envelope text-[10px] text-slate-400"></i> ${esc(d.email || '')}</span>
+                        <span class="flex items-center gap-1 font-medium"><i class="fa-solid fa-envelope text-[10px] text-slate-400"></i> ${d(a.email||"")}</span>
                         <span>•</span>
                         <span class="inline-flex items-center gap-1 font-bold text-[11px] text-[var(--color-primary)]">
-                            <i class="fa-solid fa-key text-[9px]"></i> ${permCount} Modul Diizinkan
+                            <i class="fa-solid fa-key text-[9px]"></i> ${m} Modul Diizinkan
                         </span>
                         <span>•</span>
-                        <span class="flex items-center gap-1 text-[11px] text-slate-400 dark:text-slate-500"><i class="fa-solid fa-calendar-days text-[10px]"></i> Terdaftar: ${esc(dateStr)}</span>
+                        <span class="flex items-center gap-1 text-[11px] text-slate-400 dark:text-slate-500"><i class="fa-solid fa-calendar-days text-[10px]"></i> Terdaftar: ${d(f)}</span>
                     </div>
                 </div>
             </div>
             <!-- Tombol Aksi Hak Akses, Status & Edit -->
             <div class="flex items-center gap-2 shrink-0 self-end sm:self-center border-t sm:border-t-0 pt-2 sm:pt-0 border-slate-100 dark:border-slate-700/60 w-full sm:w-auto justify-end">
-                <button onclick="window.openPermissionsModal('${esc(uid)}')"
+                <button onclick="window.openPermissionsModal('${d(r)}')"
                     title="Atur Hak Akses Modul"
                     class="px-3 py-2 rounded-xl text-xs font-bold transition-all active:scale-95 cursor-pointer shadow-2xs flex items-center gap-1.5 border border-purple-200 dark:border-purple-800/60 bg-purple-50 hover:bg-purple-100 dark:bg-purple-950/40 text-purple-700 dark:text-purple-300">
                     <i class="fa-solid fa-sliders text-[10px]"></i>
                     <span>Hak Akses</span>
                 </button>
-                <button onclick="window.toggleStaffActive('${esc(uid)}', ${!isActive})"
-                    title="${isActive ? 'Nonaktifkan Akun Staf' : 'Aktifkan Akun Staf'}"
+                <button onclick="window.toggleStaffActive('${d(r)}', ${!o})"
+                    title="${o?"Nonaktifkan Akun Staf":"Aktifkan Akun Staf"}"
                     class="w-9 h-9 rounded-xl flex items-center justify-center text-xs transition-all active:scale-95 cursor-pointer shadow-2xs border
-                    ${isActive
-                        ? 'bg-slate-50 hover:bg-amber-50 dark:bg-slate-700/80 dark:hover:bg-amber-950/40 text-slate-600 dark:text-slate-300 hover:text-amber-600 border-slate-200/80 dark:border-slate-700 hover:border-amber-300'
-                        : 'bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/40 text-emerald-600 border-emerald-200 dark:border-emerald-800'}">
-                    <i class="fa-solid ${isActive ? 'fa-ban' : 'fa-circle-check'}"></i>
+                    ${o?"bg-slate-50 hover:bg-amber-50 dark:bg-slate-700/80 dark:hover:bg-amber-950/40 text-slate-600 dark:text-slate-300 hover:text-amber-600 border-slate-200/80 dark:border-slate-700 hover:border-amber-300":"bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/40 text-emerald-600 border-emerald-200 dark:border-emerald-800"}">
+                    <i class="fa-solid ${o?"fa-ban":"fa-circle-check"}"></i>
                 </button>
-                <button onclick="window.openEditStaffModal('${esc(uid)}', '${esc(d.name || '')}', '${esc(d.email || '')}', '${esc(role)}')"
+                <button onclick="window.openEditStaffModal('${d(r)}', '${d(a.name||"")}', '${d(a.email||"")}', '${d(i)}')"
                     title="Edit Profil Staf"
                     class="w-9 h-9 rounded-xl flex items-center justify-center text-xs bg-slate-50 hover:bg-slate-100 dark:bg-slate-700/80 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 hover:text-[var(--color-primary)] border border-slate-200/80 dark:border-slate-700 transition-all active:scale-95 cursor-pointer shadow-2xs">
                     <i class="fa-solid fa-pen-to-square"></i>
                 </button>
-                <button onclick="window.deleteStaffAccount('${esc(uid)}', '${esc(d.name || 'Staf')}')"
+                <button onclick="window.deleteStaffAccount('${d(r)}', '${d(a.name||"Staf")}')"
                     title="Hapus Akun Staf"
                     class="w-9 h-9 rounded-xl flex items-center justify-center text-xs bg-slate-50 hover:bg-rose-50 dark:bg-slate-700/80 dark:hover:bg-rose-950/40 text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 border border-slate-200/80 dark:border-slate-700 hover:border-rose-200 transition-all active:scale-95 cursor-pointer shadow-2xs">
                     <i class="fa-solid fa-trash-can"></i>
                 </button>
             </div>
-        </div>`;
-    }).join('');
-
-    container.innerHTML = `<div class="space-y-2.5">${listHtml}</div>
-    <p class="text-center text-[10px] text-slate-400 mt-3 font-medium">${filtered.length} staf terdaftar</p>`;
-};
-
-export const loadStaffList = async () => {
-    const container = el('cashier-list-container');
-    if (!container) return;
-
-    try {
-        let snap;
-        try {
-            snap = await db.collection('freshmart').doc('cms_data')
-                .collection('cashier_accounts')
-                .orderBy('createdAt', 'desc')
-                .get();
-        } catch (_) {
-            snap = await db.collection('freshmart').doc('cms_data')
-                .collection('cashier_accounts')
-                .get();
-        }
-
-        _cachedStaffList = snap.docs.map(doc => ({ uid: doc.id, ...doc.data() }));
-
-        // Sinkronisasi status hasCashier ke metadata
-        const hasActiveCashier = _cachedStaffList.some(s => s.isActive !== false && s.role === ROLES.CASHIER);
-        try {
-            localStorage.setItem('pos_has_cashier', hasActiveCashier ? 'true' : 'false');
-            await db.collection('freshmart').doc('cms_data').set({ hasCashier: hasActiveCashier }, { merge: true });
-        } catch (_) {}
-        if (typeof window.updatePOSHeaderIcon === 'function') window.updatePOSHeaderIcon();
-
-        renderStaffListHtml();
-
-    } catch (err) {
-        console.error('[StaffAdmin] Gagal memuat daftar staf:', err);
-        container.innerHTML = `
+        </div>`}).join("");t.innerHTML=`<div class="space-y-2.5">${s}</div>
+    <p class="text-center text-[10px] text-slate-400 mt-3 font-medium">${e.length} staf terdaftar</p>`},w=async()=>{const t=n("cashier-list-container");if(t)try{let e;try{e=await x.collection("freshmart").doc("cms_data").collection("cashier_accounts").orderBy("createdAt","desc").get()}catch{e=await x.collection("freshmart").doc("cms_data").collection("cashier_accounts").get()}g=e.docs.map(a=>({uid:a.id,...a.data()}));const s=g.some(a=>a.isActive!==!1&&a.role===l.CASHIER);try{localStorage.setItem("pos_has_cashier",s?"true":"false"),await x.collection("freshmart").doc("cms_data").set({hasCashier:s},{merge:!0})}catch{}typeof window.updatePOSHeaderIcon=="function"&&window.updatePOSHeaderIcon(),H()}catch(e){console.error("[StaffAdmin] Gagal memuat daftar staf:",e),t.innerHTML=`
         <div class="text-center py-10 p-4 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-500 flex flex-col items-center justify-center">
             <div class="w-12 h-12 rounded-2xl bg-rose-50 dark:bg-rose-950/40 text-rose-500 flex items-center justify-center text-2xl mb-2.5 shadow-2xs">
                 <i class="fa-solid fa-triangle-exclamation"></i>
             </div>
             <p class="text-xs font-bold text-slate-700 dark:text-slate-300">Gagal memuat data staf</p>
-            <p class="text-[11px] text-slate-400 mt-0.5">${esc(err.message || 'Periksa koneksi internet atau login admin')}</p>
+            <p class="text-[11px] text-slate-400 mt-0.5">${d(e.message||"Periksa koneksi internet atau login admin")}</p>
             <button onclick="window.loadStaffList()" class="mt-3 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 text-xs font-bold text-slate-700 dark:text-slate-300 transition-all cursor-pointer inline-flex items-center gap-1.5 active:scale-95">
                 <i class="fa-solid fa-arrows-rotate text-[10px]"></i>
                 <span>Coba Lagi</span>
             </button>
-        </div>`;
-    }
-};
-
-// ─── Modal Tambah Staf Baru ──────────────────────────────────
-export const openAddStaffModal = () => {
-    // Generate permission checkboxes HTML
-    const renderPermissionGroup = (groupName, groupTitle, groupIcon) => {
-        const defs = PERMISSION_DEFINITIONS.filter(p => p.group === groupName);
-        return `
+        </div>`}},j=()=>{const t=(e,s,a)=>{const r=S.filter(o=>o.group===e);return`
         <div class="space-y-2">
             <p class="text-[11px] font-black uppercase tracking-wider text-slate-700 dark:text-slate-200 flex items-center gap-1.5">
-                <i class="fa-solid ${groupIcon} text-[var(--color-primary)]"></i>
-                <span>${groupTitle}</span>
+                <i class="fa-solid ${a} text-[var(--color-primary)]"></i>
+                <span>${s}</span>
             </p>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                ${defs.map(p => `
+                ${r.map(o=>`
                 <label class="flex items-start gap-2.5 p-2.5 rounded-xl border border-slate-200/80 dark:border-slate-700/80 bg-slate-50 dark:bg-slate-800/60 hover:bg-white dark:hover:bg-slate-800 transition-all cursor-pointer text-left">
-                    <input type="checkbox" name="staff_perm" value="${p.key}" class="mt-0.5 rounded border-slate-300 text-[var(--color-primary)] focus:ring-[var(--color-primary)]/30">
+                    <input type="checkbox" name="staff_perm" value="${o.key}" class="mt-0.5 rounded border-slate-300 text-[var(--color-primary)] focus:ring-[var(--color-primary)]/30">
                     <div class="min-w-0">
                         <p class="text-xs font-bold text-slate-800 dark:text-white flex items-center gap-1.5">
-                            <i class="fa-solid ${p.icon} text-[10px] text-slate-400"></i>
-                            <span>${p.label}</span>
+                            <i class="fa-solid ${o.icon} text-[10px] text-slate-400"></i>
+                            <span>${o.label}</span>
                         </p>
-                        <p class="text-[10px] text-slate-400 dark:text-slate-500 leading-tight mt-0.5">${p.desc}</p>
+                        <p class="text-[10px] text-slate-400 dark:text-slate-500 leading-tight mt-0.5">${o.desc}</p>
                     </div>
-                </label>`).join('')}
+                </label>`).join("")}
             </div>
-        </div>`;
-    };
-
-    document.body.insertAdjacentHTML('beforeend', `
+        </div>`};document.body.insertAdjacentHTML("beforeend",`
     <div id="add-staff-modal" class="fixed inset-0 z-[9990] flex items-center justify-center p-4 bg-slate-900/70 backdrop-blur-xs"
         onclick="if(event.target===this) window.closeAddStaffModal()">
         <div class="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl w-full max-w-2xl flex flex-col max-h-[92vh] overflow-hidden scale-95 transition-transform duration-300 border border-slate-200 dark:border-slate-800" id="add-staff-modal-box">
@@ -418,13 +233,13 @@ export const openAddStaffModal = () => {
                     <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1.5">Jabatan / Role Pokok <span class="text-rose-500">*</span></label>
                     <div class="grid grid-cols-3 gap-2">
                         <label class="flex flex-col items-center justify-center p-3 rounded-2xl border-2 border-emerald-500/40 bg-emerald-50/50 dark:bg-emerald-950/30 text-emerald-800 dark:text-emerald-200 cursor-pointer hover:border-emerald-500 transition-all text-center">
-                            <input type="radio" name="new_staff_role" value="${ROLES.CASHIER}" checked onchange="window.applyNewStaffPreset('${ROLES.CASHIER}')" class="sr-only">
+                            <input type="radio" name="new_staff_role" value="${l.CASHIER}" checked onchange="window.applyNewStaffPreset('${l.CASHIER}')" class="sr-only">
                             <i class="fa-solid fa-cash-register text-lg mb-1 text-emerald-600"></i>
                             <span class="text-xs font-black">Kasir POS</span>
                             <span class="text-[9px] text-slate-400 mt-0.5">Penjualan Fisik</span>
                         </label>
                         <label class="flex flex-col items-center justify-center p-3 rounded-2xl border-2 border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 cursor-pointer hover:border-blue-500 transition-all text-center">
-                            <input type="radio" name="new_staff_role" value="${ROLES.ADMIN}" onchange="window.applyNewStaffPreset('${ROLES.ADMIN}')" class="sr-only">
+                            <input type="radio" name="new_staff_role" value="${l.ADMIN}" onchange="window.applyNewStaffPreset('${l.ADMIN}')" class="sr-only">
                             <i class="fa-solid fa-shield-halved text-lg mb-1 text-blue-500"></i>
                             <span class="text-xs font-black">Admin Toko</span>
                             <span class="text-[9px] text-slate-400 mt-0.5">Operasional CMS</span>
@@ -451,9 +266,9 @@ export const openAddStaffModal = () => {
                         </div>
                     </div>
 
-                    ${renderPermissionGroup('operasional', '1. Operasional Toko', 'fa-dolly')}
-                    ${renderPermissionGroup('konten', '2. Katalog & Konten Toko', 'fa-layer-group')}
-                    ${renderPermissionGroup('sensitif', '3. Finansial & Pengaturan Sensitif (Khusus Owner)', 'fa-lock')}
+                    ${t("operasional","1. Operasional Toko","fa-dolly")}
+                    ${t("konten","2. Katalog & Konten Toko","fa-layer-group")}
+                    ${t("sensitif","3. Finansial & Pengaturan Sensitif (Khusus Owner)","fa-lock")}
                 </div>
 
                 <div id="add-staff-error" class="hidden text-xs text-rose-600 font-semibold p-3 bg-rose-50 dark:bg-rose-950/40 rounded-2xl border border-rose-200 dark:border-rose-900/50"></div>
@@ -472,176 +287,26 @@ export const openAddStaffModal = () => {
                 </button>
             </div>
         </div>
-    </div>`);
-
-    // Inisialisasi preset default Kasir
-    window.applyNewStaffPreset(ROLES.CASHIER);
-
-    setTimeout(() => {
-        const box = el('add-staff-modal-box');
-        if (box) box.classList.remove('scale-95');
-        const nameInput = el('new-staff-name');
-        if (nameInput) nameInput.focus();
-    }, 10);
-};
-
-export const closeAddStaffModal = () => {
-    const modal = el('add-staff-modal');
-    if (modal) { modal.style.opacity = '0'; setTimeout(() => modal.remove(), 200); }
-};
-
-export const applyNewStaffPreset = (presetKey) => {
-    const preset = ROLE_PRESETS[presetKey] || ROLE_PRESETS[ROLES.CASHIER];
-    document.querySelectorAll('#add-staff-modal input[name="staff_perm"]').forEach(cb => {
-        cb.checked = !!preset[cb.value];
-    });
-
-    // Update style radio border
-    document.querySelectorAll('#add-staff-modal input[name="new_staff_role"]').forEach(rb => {
-        const label = rb.closest('label');
-        if (label) {
-            if (rb.value === presetKey) {
-                label.className = 'flex flex-col items-center justify-center p-3 rounded-2xl border-2 border-[var(--color-primary)] bg-[rgba(var(--color-primary-rgb),0.08)] text-slate-900 dark:text-white cursor-pointer shadow-xs transition-all text-center';
-            } else {
-                label.className = 'flex flex-col items-center justify-center p-3 rounded-2xl border-2 border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 cursor-pointer hover:border-slate-300 transition-all text-center';
-            }
-        }
-    });
-};
-
-export const setAllNewStaffPerms = (val) => {
-    document.querySelectorAll('#add-staff-modal input[name="staff_perm"]').forEach(cb => {
-        cb.checked = !!val;
-    });
-};
-
-// ─── Simpan Akun Staf Baru ───────────────────────────────────
-export const saveStaffAccount = async () => {
-    const name  = el('new-staff-name')?.value?.trim() || '';
-    const email = el('new-staff-email')?.value?.trim() || '';
-    const pass  = el('new-staff-pass')?.value || '';
-    const roleRadio = document.querySelector('#add-staff-modal input[name="new_staff_role"]:checked');
-    const roleValue = roleRadio ? roleRadio.value : ROLES.CASHIER;
-    const finalRole = (roleValue === 'manager' || roleValue === ROLES.ADMIN) ? ROLES.ADMIN : roleValue;
-
-    const errEl = el('add-staff-error');
-    const btn   = el('save-staff-btn');
-
-    const showErr = (msg) => {
-        if (errEl) { errEl.textContent = msg; errEl.classList.remove('hidden'); }
-    };
-    const clearErr = () => { if (errEl) errEl.classList.add('hidden'); };
-
-    clearErr();
-    if (!name) { showErr('Nama staf wajib diisi.'); return; }
-    if (!email || !email.includes('@')) { showErr('Email login tidak valid.'); return; }
-    if (pass.length < 6) { showErr('Password minimal 6 karakter.'); return; }
-
-    // Kumpulkan hak akses yang dicentang
-    const permissions = {};
-    PERMISSION_DEFINITIONS.forEach(p => {
-        const cb = document.querySelector(`#add-staff-modal input[name="staff_perm"][value="${p.key}"]`);
-        permissions[p.key] = cb ? cb.checked : false;
-    });
-
-    if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Mendaftarkan ke Firebase...'; }
-    sLoad('Mendaftarkan akun staf...');
-
-    try {
-        // Buat akun Firebase Auth via secondary app instance agar sesi Owner tidak tergeser
-        const secondaryApp = firebase.apps.find(a => a.name === 'pos-cashier-creator') ||
-            firebase.initializeApp(window.FIREBASE_CONFIG || firebase.app().options, 'pos-cashier-creator');
-        const secondaryAuth = secondaryApp.auth();
-
-        const cred = await secondaryAuth.createUserWithEmailAndPassword(email, pass);
-        const uid  = cred.user?.uid;
-        if (!uid) throw new Error('UID tidak diterima dari Firebase');
-
-        // Sign out dari secondary app
-        await secondaryAuth.signOut();
-
-        // Simpan dokumen profil staf ke Firestore
-        await db.collection('freshmart').doc('cms_data').collection('cashier_accounts').doc(uid).set({
-            uid,
-            name,
-            email,
-            role: finalRole,
-            permissions,
-            isActive: true,
-            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-            createdBy: auth.currentUser?.uid || 'owner'
-        });
-
-        // Update status hasCashier toko jika role kasir
-        if (finalRole === ROLES.CASHIER) {
-            try {
-                localStorage.setItem('pos_has_cashier', 'true');
-                await db.collection('freshmart').doc('cms_data').set({ hasCashier: true }, { merge: true });
-            } catch (_) {}
-        }
-
-        closeAddStaffModal();
-        showToast(`Akun "${name}" (${finalRole.toUpperCase()}) berhasil didaftarkan! ✅`, 'success');
-        await loadStaffList();
-
-        if (typeof window.updatePOSHeaderIcon === 'function') window.updatePOSHeaderIcon();
-
-    } catch (err) {
-        console.error('[StaffAdmin] Gagal membuat akun staf:', err);
-        const code = err.code || '';
-        if (code === 'auth/email-already-in-use') {
-            showErr('Email sudah digunakan oleh akun lain di Firebase.');
-        } else if (code === 'auth/invalid-email') {
-            showErr('Format email tidak valid.');
-        } else if (code === 'auth/weak-password') {
-            showErr('Password terlalu lemah (min. 6 karakter).');
-        } else {
-            showErr('Gagal mendaftarkan: ' + (err.message || 'Terjadi kesalahan sistem'));
-        }
-        if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-floppy-disk mr-2"></i>Simpan &amp; Daftarkan Staf'; }
-    } finally {
-        hLoad();
-    }
-};
-
-// ─── Modal Atur Hak Akses Staf ───────────────────────────────
-export const openPermissionsModal = (uid) => {
-    const staff = _cachedStaffList.find(s => s.uid === uid);
-    if (!staff) {
-        showToast("Data staf tidak ditemukan!");
-        return;
-    }
-
-    const currentPerms = staff.permissions || (ROLE_PRESETS[staff.role] || ROLE_PRESETS[ROLES.CASHIER]);
-
-    const renderPermissionGroup = (groupName, groupTitle, groupIcon) => {
-        const defs = PERMISSION_DEFINITIONS.filter(p => p.group === groupName);
-        return `
+    </div>`),window.applyNewStaffPreset(l.CASHIER),setTimeout(()=>{const e=n("add-staff-modal-box");e&&e.classList.remove("scale-95");const s=n("new-staff-name");s&&s.focus()},10)},E=()=>{const t=n("add-staff-modal");t&&(t.style.opacity="0",setTimeout(()=>t.remove(),200))},U=t=>{const e=h[t]||h[l.CASHIER];document.querySelectorAll('#add-staff-modal input[name="staff_perm"]').forEach(s=>{s.checked=!!e[s.value]}),document.querySelectorAll('#add-staff-modal input[name="new_staff_role"]').forEach(s=>{const a=s.closest("label");a&&(s.value===t?a.className="flex flex-col items-center justify-center p-3 rounded-2xl border-2 border-[var(--color-primary)] bg-[rgba(var(--color-primary-rgb),0.08)] text-slate-900 dark:text-white cursor-pointer shadow-xs transition-all text-center":a.className="flex flex-col items-center justify-center p-3 rounded-2xl border-2 border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 cursor-pointer hover:border-slate-300 transition-all text-center")})},W=t=>{document.querySelectorAll('#add-staff-modal input[name="staff_perm"]').forEach(e=>{e.checked=!!t})},_=async()=>{const t=n("new-staff-name")?.value?.trim()||"",e=n("new-staff-email")?.value?.trim()||"",s=n("new-staff-pass")?.value||"",a=document.querySelector('#add-staff-modal input[name="new_staff_role"]:checked'),r=a?a.value:l.CASHIER,o=r==="manager"||r===l.ADMIN?l.ADMIN:r,f=n("add-staff-error"),c=n("save-staff-btn"),i=p=>{f&&(f.textContent=p,f.classList.remove("hidden"))};if((()=>{f&&f.classList.add("hidden")})(),!t){i("Nama staf wajib diisi.");return}if(!e||!e.includes("@")){i("Email login tidak valid.");return}if(s.length<6){i("Password minimal 6 karakter.");return}const k={};S.forEach(p=>{const b=document.querySelector(`#add-staff-modal input[name="staff_perm"][value="${p.key}"]`);k[p.key]=b?b.checked:!1}),c&&(c.disabled=!0,c.innerHTML='<i class="fa-solid fa-spinner fa-spin mr-2"></i>Mendaftarkan ke Firebase...'),v("Mendaftarkan akun staf...");try{const b=(A.apps.find(C=>C.name==="pos-cashier-creator")||A.initializeApp(window.FIREBASE_CONFIG||A.app().options,"pos-cashier-creator")).auth(),M=(await b.createUserWithEmailAndPassword(e,s)).user?.uid;if(!M)throw new Error("UID tidak diterima dari Firebase");if(await b.signOut(),await x.collection("freshmart").doc("cms_data").collection("cashier_accounts").doc(M).set({uid:M,name:t,email:e,role:o,permissions:k,isActive:!0,createdAt:A.firestore.FieldValue.serverTimestamp(),createdBy:K.currentUser?.uid||"owner"}),o===l.CASHIER)try{localStorage.setItem("pos_has_cashier","true"),await x.collection("freshmart").doc("cms_data").set({hasCashier:!0},{merge:!0})}catch{}E(),u(`Akun "${t}" (${o.toUpperCase()}) berhasil didaftarkan! ✅`,"success"),await w(),typeof window.updatePOSHeaderIcon=="function"&&window.updatePOSHeaderIcon()}catch(p){console.error("[StaffAdmin] Gagal membuat akun staf:",p);const b=p.code||"";i(b==="auth/email-already-in-use"?"Email sudah digunakan oleh akun lain di Firebase.":b==="auth/invalid-email"?"Format email tidak valid.":b==="auth/weak-password"?"Password terlalu lemah (min. 6 karakter).":"Gagal mendaftarkan: "+(p.message||"Terjadi kesalahan sistem")),c&&(c.disabled=!1,c.innerHTML='<i class="fa-solid fa-floppy-disk mr-2"></i>Simpan &amp; Daftarkan Staf')}finally{y()}},J=t=>{const e=g.find(r=>r.uid===t);if(!e){u("Data staf tidak ditemukan!");return}const s=e.permissions||h[e.role]||h[l.CASHIER],a=(r,o,f)=>{const c=S.filter(i=>i.group===r);return`
         <div class="space-y-2">
             <p class="text-[11px] font-black uppercase tracking-wider text-slate-700 dark:text-slate-200 flex items-center gap-1.5">
-                <i class="fa-solid ${groupIcon} text-[var(--color-primary)]"></i>
-                <span>${groupTitle}</span>
+                <i class="fa-solid ${f} text-[var(--color-primary)]"></i>
+                <span>${o}</span>
             </p>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                ${defs.map(p => {
-                    const isChecked = currentPerms[p.key] === true;
-                    return `
+                ${c.map(i=>{const m=s[i.key]===!0;return`
                     <label class="flex items-start gap-2.5 p-2.5 rounded-xl border border-slate-200/80 dark:border-slate-700/80 bg-slate-50 dark:bg-slate-800/60 hover:bg-white dark:hover:bg-slate-800 transition-all cursor-pointer text-left">
-                        <input type="checkbox" name="edit_staff_perm" value="${p.key}" ${isChecked ? 'checked' : ''} class="mt-0.5 rounded border-slate-300 text-[var(--color-primary)] focus:ring-[var(--color-primary)]/30">
+                        <input type="checkbox" name="edit_staff_perm" value="${i.key}" ${m?"checked":""} class="mt-0.5 rounded border-slate-300 text-[var(--color-primary)] focus:ring-[var(--color-primary)]/30">
                         <div class="min-w-0">
                             <p class="text-xs font-bold text-slate-800 dark:text-white flex items-center gap-1.5">
-                                <i class="fa-solid ${p.icon} text-[10px] text-slate-400"></i>
-                                <span>${p.label}</span>
+                                <i class="fa-solid ${i.icon} text-[10px] text-slate-400"></i>
+                                <span>${i.label}</span>
                             </p>
-                            <p class="text-[10px] text-slate-400 dark:text-slate-500 leading-tight mt-0.5">${p.desc}</p>
+                            <p class="text-[10px] text-slate-400 dark:text-slate-500 leading-tight mt-0.5">${i.desc}</p>
                         </div>
-                    </label>`;
-                }).join('')}
+                    </label>`}).join("")}
             </div>
-        </div>`;
-    };
-
-    document.body.insertAdjacentHTML('beforeend', `
+        </div>`};document.body.insertAdjacentHTML("beforeend",`
     <div id="permissions-modal" class="fixed inset-0 z-[9990] flex items-center justify-center p-4 bg-slate-900/70 backdrop-blur-xs"
         onclick="if(event.target===this) window.closePermissionsModal()">
         <div class="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl w-full max-w-2xl flex flex-col max-h-[92vh] overflow-hidden scale-95 transition-transform duration-300 border border-slate-200 dark:border-slate-800" id="permissions-modal-box">
@@ -652,7 +317,7 @@ export const openPermissionsModal = (uid) => {
                         <i class="fa-solid fa-sliders"></i>
                     </div>
                     <div>
-                        <h3 class="font-black text-sm text-slate-900 dark:text-white">Atur Hak Akses: ${esc(staff.name || 'Staf')}</h3>
+                        <h3 class="font-black text-sm text-slate-900 dark:text-white">Atur Hak Akses: ${d(e.name||"Staf")}</h3>
                         <p class="text-[11px] text-slate-400">Sesuaikan modul yang boleh dibuka oleh akun ini</p>
                     </div>
                 </div>
@@ -674,16 +339,16 @@ export const openPermissionsModal = (uid) => {
                         </div>
                     </div>
                     <div class="grid grid-cols-4 gap-1.5">
-                        <button type="button" onclick="window.applyEditStaffPreset('${ROLES.CASHIER}')" class="py-2 px-2 rounded-xl text-[11px] font-bold bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-600 hover:border-emerald-500 hover:text-emerald-600 transition-all active:scale-95 shadow-2xs">Kasir POS</button>
-                        <button type="button" onclick="window.applyEditStaffPreset('${ROLES.ADMIN}')" class="py-2 px-2 rounded-xl text-[11px] font-bold bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-600 hover:border-blue-500 hover:text-blue-600 transition-all active:scale-95 shadow-2xs">Admin Ops</button>
+                        <button type="button" onclick="window.applyEditStaffPreset('${l.CASHIER}')" class="py-2 px-2 rounded-xl text-[11px] font-bold bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-600 hover:border-emerald-500 hover:text-emerald-600 transition-all active:scale-95 shadow-2xs">Kasir POS</button>
+                        <button type="button" onclick="window.applyEditStaffPreset('${l.ADMIN}')" class="py-2 px-2 rounded-xl text-[11px] font-bold bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-600 hover:border-blue-500 hover:text-blue-600 transition-all active:scale-95 shadow-2xs">Admin Ops</button>
                         <button type="button" onclick="window.applyEditStaffPreset('manager')" class="py-2 px-2 rounded-xl text-[11px] font-bold bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-600 hover:border-purple-500 hover:text-purple-600 transition-all active:scale-95 shadow-2xs">Manajer</button>
-                        <button type="button" onclick="window.applyEditStaffPreset('${ROLES.OWNER}')" class="py-2 px-2 rounded-xl text-[11px] font-bold bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-600 hover:border-amber-500 hover:text-amber-600 transition-all active:scale-95 shadow-2xs">Full Akses</button>
+                        <button type="button" onclick="window.applyEditStaffPreset('${l.OWNER}')" class="py-2 px-2 rounded-xl text-[11px] font-bold bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-600 hover:border-amber-500 hover:text-amber-600 transition-all active:scale-95 shadow-2xs">Full Akses</button>
                     </div>
                 </div>
 
-                ${renderPermissionGroup('operasional', '1. Operasional Toko', 'fa-dolly')}
-                ${renderPermissionGroup('konten', '2. Katalog & Konten Toko', 'fa-layer-group')}
-                ${renderPermissionGroup('sensitif', '3. Finansial & Pengaturan Sensitif (Khusus Owner)', 'fa-lock')}
+                ${a("operasional","1. Operasional Toko","fa-dolly")}
+                ${a("konten","2. Katalog & Konten Toko","fa-layer-group")}
+                ${a("sensitif","3. Finansial & Pengaturan Sensitif (Khusus Owner)","fa-lock")}
             </div>
 
             <!-- Modal Footer -->
@@ -692,78 +357,14 @@ export const openPermissionsModal = (uid) => {
                     class="flex-1 py-3.5 rounded-2xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold text-sm hover:bg-slate-100 active:scale-95 transition-all cursor-pointer">
                     Batal
                 </button>
-                <button onclick="window.saveStaffPermissions('${esc(uid)}')" id="save-perms-btn"
+                <button onclick="window.saveStaffPermissions('${d(t)}')" id="save-perms-btn"
                     class="flex-[2] py-3.5 rounded-2xl text-white font-black text-sm shadow-lg active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
                     style="background:var(--color-primary)">
                     <i class="fa-solid fa-floppy-disk"></i> Simpan Hak Akses
                 </button>
             </div>
         </div>
-    </div>`);
-
-    setTimeout(() => {
-        const box = el('permissions-modal-box');
-        if (box) box.classList.remove('scale-95');
-    }, 10);
-};
-
-export const closePermissionsModal = () => {
-    const modal = el('permissions-modal');
-    if (modal) { modal.style.opacity = '0'; setTimeout(() => modal.remove(), 200); }
-};
-
-export const applyEditStaffPreset = (presetKey) => {
-    const preset = ROLE_PRESETS[presetKey] || ROLE_PRESETS[ROLES.CASHIER];
-    document.querySelectorAll('#permissions-modal input[name="edit_staff_perm"]').forEach(cb => {
-        cb.checked = !!preset[cb.value];
-    });
-};
-
-export const setAllEditStaffPerms = (val) => {
-    document.querySelectorAll('#permissions-modal input[name="edit_staff_perm"]').forEach(cb => {
-        cb.checked = !!val;
-    });
-};
-
-export const saveStaffPermissions = async (uid) => {
-    const btn = el('save-perms-btn');
-    if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Menyimpan...'; }
-    sLoad('Memperbarui hak akses...');
-
-    try {
-        const permissions = {};
-        PERMISSION_DEFINITIONS.forEach(p => {
-            const cb = document.querySelector(`#permissions-modal input[name="edit_staff_perm"][value="${p.key}"]`);
-            permissions[p.key] = cb ? cb.checked : false;
-        });
-
-        // Otomatis tentukan role berdasarkan profil hak akses
-        let detectedRole = ROLES.CASHIER;
-        if (permissions.orders || permissions.products || permissions.suppliers || permissions.purchases) {
-            detectedRole = ROLES.ADMIN;
-        }
-
-        await db.collection('freshmart').doc('cms_data').collection('cashier_accounts').doc(uid).update({
-            permissions,
-            role: detectedRole
-        });
-
-        closePermissionsModal();
-        showToast('Hak akses berhasil diperbarui! ✅', 'success');
-        await loadStaffList();
-
-    } catch (err) {
-        console.error('[StaffAdmin] Gagal menyimpan hak akses:', err);
-        showToast('Gagal memperbarui hak akses: ' + err.message, 'error');
-        if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-floppy-disk mr-2"></i>Simpan Hak Akses'; }
-    } finally {
-        hLoad();
-    }
-};
-
-// ─── Modal Edit Profil Staf (Nama & Role) ────────────────────
-export const openEditStaffModal = (uid, currentName, currentEmail, currentRole) => {
-    document.body.insertAdjacentHTML('beforeend', `
+    </div>`),setTimeout(()=>{const r=n("permissions-modal-box");r&&r.classList.remove("scale-95")},10)},L=()=>{const t=n("permissions-modal");t&&(t.style.opacity="0",setTimeout(()=>t.remove(),200))},Y=t=>{const e=h[t]||h[l.CASHIER];document.querySelectorAll('#permissions-modal input[name="edit_staff_perm"]').forEach(s=>{s.checked=!!e[s.value]})},Q=t=>{document.querySelectorAll('#permissions-modal input[name="edit_staff_perm"]').forEach(e=>{e.checked=!!t})},X=async t=>{const e=n("save-perms-btn");e&&(e.disabled=!0,e.innerHTML='<i class="fa-solid fa-spinner fa-spin mr-2"></i>Menyimpan...'),v("Memperbarui hak akses...");try{const s={};S.forEach(r=>{const o=document.querySelector(`#permissions-modal input[name="edit_staff_perm"][value="${r.key}"]`);s[r.key]=o?o.checked:!1});let a=l.CASHIER;(s.orders||s.products||s.suppliers||s.purchases)&&(a=l.ADMIN),await x.collection("freshmart").doc("cms_data").collection("cashier_accounts").doc(t).update({permissions:s,role:a}),L(),u("Hak akses berhasil diperbarui! ✅","success"),await w()}catch(s){console.error("[StaffAdmin] Gagal menyimpan hak akses:",s),u("Gagal memperbarui hak akses: "+s.message,"error"),e&&(e.disabled=!1,e.innerHTML='<i class="fa-solid fa-floppy-disk mr-2"></i>Simpan Hak Akses')}finally{y()}},T=(t,e,s,a)=>{document.body.insertAdjacentHTML("beforeend",`
     <div id="edit-staff-modal" class="fixed inset-0 z-[9990] flex items-center justify-center p-4 bg-slate-900/70 backdrop-blur-xs"
         onclick="if(event.target===this) window.closeEditStaffModal()">
         <div class="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl w-full max-w-sm flex flex-col overflow-hidden scale-95 transition-transform duration-300 border border-slate-200 dark:border-slate-800" id="edit-staff-modal-box">
@@ -778,20 +379,20 @@ export const openEditStaffModal = (uid, currentName, currentEmail, currentRole) 
             <div class="p-5 space-y-3.5">
                 <div>
                     <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1.5">Nama Staf</label>
-                    <input id="edit-staff-name" type="text" value="${esc(currentName)}"
+                    <input id="edit-staff-name" type="text" value="${d(e)}"
                         class="w-full border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-3 text-sm bg-white dark:bg-slate-800 focus:outline-none focus:border-[var(--color-primary)] text-slate-900 dark:text-white transition-all shadow-inner">
                 </div>
                 <div>
                     <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1.5">Jabatan / Role</label>
                     <select id="edit-staff-role" class="w-full border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-3 text-sm bg-white dark:bg-slate-800 focus:outline-none focus:border-[var(--color-primary)] text-slate-900 dark:text-white transition-all shadow-inner font-bold">
-                        <option value="${ROLES.CASHIER}" ${currentRole === ROLES.CASHIER ? 'selected' : ''}>Kasir POS</option>
-                        <option value="${ROLES.ADMIN}" ${currentRole === ROLES.ADMIN ? 'selected' : ''}>Admin Toko</option>
-                        <option value="${ROLES.OWNER}" ${currentRole === ROLES.OWNER ? 'selected' : ''}>Co-Owner / Wakil Owner</option>
+                        <option value="${l.CASHIER}" ${a===l.CASHIER?"selected":""}>Kasir POS</option>
+                        <option value="${l.ADMIN}" ${a===l.ADMIN?"selected":""}>Admin Toko</option>
+                        <option value="${l.OWNER}" ${a===l.OWNER?"selected":""}>Co-Owner / Wakil Owner</option>
                     </select>
                 </div>
                 <div>
                     <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1.5">Email Login (Permanen)</label>
-                    <input type="email" value="${esc(currentEmail)}" disabled
+                    <input type="email" value="${d(s)}" disabled
                         class="w-full border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-3 text-sm bg-slate-50 dark:bg-slate-800/50 text-slate-400 cursor-not-allowed">
                 </div>
                 <div id="edit-staff-error" class="hidden text-xs text-rose-600 font-semibold p-2.5 bg-rose-50 dark:bg-rose-900/20 rounded-2xl border border-rose-200 dark:border-rose-800"></div>
@@ -801,150 +402,11 @@ export const openEditStaffModal = (uid, currentName, currentEmail, currentRole) 
                     class="flex-1 py-3.5 rounded-2xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold text-sm hover:bg-slate-100 active:scale-95 transition-all cursor-pointer">
                     Batal
                 </button>
-                <button onclick="window.updateStaffProfile('${esc(uid)}')" id="update-staff-btn"
+                <button onclick="window.updateStaffProfile('${d(t)}')" id="update-staff-btn"
                     class="flex-[2] py-3.5 rounded-2xl text-white font-black text-sm shadow-lg active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
                     style="background:var(--color-primary)">
                     <i class="fa-solid fa-floppy-disk"></i> Simpan
                 </button>
             </div>
         </div>
-    </div>`);
-
-    setTimeout(() => {
-        const box = el('edit-staff-modal-box');
-        if (box) box.classList.remove('scale-95');
-    }, 10);
-};
-
-export const closeEditStaffModal = () => {
-    const modal = el('edit-staff-modal');
-    if (modal) { modal.style.opacity = '0'; setTimeout(() => modal.remove(), 200); }
-};
-
-export const updateStaffProfile = async (uid) => {
-    const name = el('edit-staff-name')?.value?.trim() || '';
-    const role = el('edit-staff-role')?.value || ROLES.CASHIER;
-    const errEl = el('edit-staff-error');
-    const btn = el('update-staff-btn');
-
-    if (!name) {
-        if (errEl) { errEl.textContent = 'Nama staf tidak boleh kosong.'; errEl.classList.remove('hidden'); }
-        return;
-    }
-
-    if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Menyimpan...'; }
-    sLoad('Memperbarui profil staf...');
-
-    try {
-        await db.collection('freshmart').doc('cms_data').collection('cashier_accounts').doc(uid).update({
-            name,
-            role
-        });
-        closeEditStaffModal();
-        showToast('Profil staf berhasil diperbarui! ✅', 'success');
-        await loadStaffList();
-    } catch (err) {
-        if (errEl) { errEl.textContent = 'Gagal memperbarui: ' + err.message; errEl.classList.remove('hidden'); }
-        if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-floppy-disk mr-2"></i>Simpan'; }
-    } finally {
-        hLoad();
-    }
-};
-
-// ─── Toggle Aktif / Nonaktif ─────────────────────────────────
-export const toggleStaffActive = async (uid, newStatus) => {
-    sLoad(newStatus ? 'Mengaktifkan staf...' : 'Menonaktifkan staf...');
-    try {
-        await db.collection('freshmart').doc('cms_data').collection('cashier_accounts').doc(uid).update({
-            isActive: newStatus
-        });
-        showToast(newStatus ? 'Akun staf diaktifkan ✅' : 'Akun staf dinonaktifkan ❌', 'success');
-        await loadStaffList();
-    } catch (err) {
-        showToast('Gagal mengubah status staf: ' + err.message, 'error');
-    } finally {
-        hLoad();
-    }
-};
-
-// ─── Hapus Akun Staf ─────────────────────────────────────────
-export const deleteStaffAccount = (uid, name) => {
-    showConfirm(
-        'Hapus Akun Staf',
-        `Yakin hapus akun staf "${name}"? Akun tidak dapat dipulihkan dan staf tidak dapat login lagi ke toko.`,
-        async () => {
-            sLoad('Menghapus akun staf...');
-            try {
-                await db.collection('freshmart').doc('cms_data').collection('cashier_accounts').doc(uid).delete();
-                showToast(`Akun "${name}" berhasil dihapus`, 'success');
-                await loadStaffList();
-            } catch (err) {
-                showToast('Gagal menghapus staf: ' + err.message, 'error');
-            } finally {
-                hLoad();
-            }
-        },
-        'Ya, Hapus',
-        true
-    );
-};
-
-// ─── Toggle Password Visibility ──────────────────────────────
-export const toggleStaffPassVisibility = (inputId) => {
-    const input = el(inputId);
-    const eyeIcon = el(inputId + '-eye');
-    if (!input) return;
-    if (input.type === 'password') {
-        input.type = 'text';
-        if (eyeIcon) { eyeIcon.className = 'fa-solid fa-eye-slash text-sm'; }
-    } else {
-        input.type = 'password';
-        if (eyeIcon) { eyeIcon.className = 'fa-solid fa-eye text-sm'; }
-    }
-};
-
-// ─── Backward Compatibility Mapping ──────────────────────────
-export const openAddCashierModal = openAddStaffModal;
-export const closeAddCashierModal = closeAddStaffModal;
-export const saveCashierAccount = saveStaffAccount;
-export const openEditCashierModal = (uid, name, email) => openEditStaffModal(uid, name, email, ROLES.CASHIER);
-export const closeEditCashierModal = closeEditStaffModal;
-export const toggleCashierActive = toggleStaffActive;
-export const deleteCashierAccount = deleteStaffAccount;
-export const loadCashierList = loadStaffList;
-export const toggleCashierPassVisibility = toggleStaffPassVisibility;
-
-// ─── Expose ke window untuk atribut onclick HTML ─────────────
-if (typeof window !== 'undefined') {
-    window.renderCashierAccounts        = renderCashierAccounts;
-    window.switchCashierTab             = switchCashierTab;
-    window.filterStaffRole              = filterStaffRole;
-    window.loadStaffList                = loadStaffList;
-    window.openAddStaffModal            = openAddStaffModal;
-    window.closeAddStaffModal           = closeAddStaffModal;
-    window.applyNewStaffPreset          = applyNewStaffPreset;
-    window.setAllNewStaffPerms          = setAllNewStaffPerms;
-    window.saveStaffAccount             = saveStaffAccount;
-    window.openPermissionsModal         = openPermissionsModal;
-    window.closePermissionsModal        = closePermissionsModal;
-    window.applyEditStaffPreset         = applyEditStaffPreset;
-    window.setAllEditStaffPerms         = setAllEditStaffPerms;
-    window.saveStaffPermissions         = saveStaffPermissions;
-    window.openEditStaffModal           = openEditStaffModal;
-    window.closeEditStaffModal          = closeEditStaffModal;
-    window.updateStaffProfile           = updateStaffProfile;
-    window.toggleStaffActive            = toggleStaffActive;
-    window.deleteStaffAccount           = deleteStaffAccount;
-    window.toggleStaffPassVisibility    = toggleStaffPassVisibility;
-
-    // Legacy aliases
-    window.openAddCashierModal          = openAddCashierModal;
-    window.closeAddCashierModal         = closeAddCashierModal;
-    window.saveCashierAccount           = saveCashierAccount;
-    window.openEditCashierModal         = openEditCashierModal;
-    window.closeEditCashierModal        = closeEditCashierModal;
-    window.toggleCashierActive          = toggleCashierActive;
-    window.deleteCashierAccount         = deleteCashierAccount;
-    window.loadCashierList              = loadCashierList;
-    window.toggleCashierPassVisibility  = toggleCashierPassVisibility;
-}
+    </div>`),setTimeout(()=>{const r=n("edit-staff-modal-box");r&&r.classList.remove("scale-95")},10)},$=()=>{const t=n("edit-staff-modal");t&&(t.style.opacity="0",setTimeout(()=>t.remove(),200))},Z=async t=>{const e=n("edit-staff-name")?.value?.trim()||"",s=n("edit-staff-role")?.value||l.CASHIER,a=n("edit-staff-error"),r=n("update-staff-btn");if(!e){a&&(a.textContent="Nama staf tidak boleh kosong.",a.classList.remove("hidden"));return}r&&(r.disabled=!0,r.innerHTML='<i class="fa-solid fa-spinner fa-spin mr-2"></i>Menyimpan...'),v("Memperbarui profil staf...");try{await x.collection("freshmart").doc("cms_data").collection("cashier_accounts").doc(t).update({name:e,role:s}),$(),u("Profil staf berhasil diperbarui! ✅","success"),await w()}catch(o){a&&(a.textContent="Gagal memperbarui: "+o.message,a.classList.remove("hidden")),r&&(r.disabled=!1,r.innerHTML='<i class="fa-solid fa-floppy-disk mr-2"></i>Simpan')}finally{y()}},I=async(t,e)=>{v(e?"Mengaktifkan staf...":"Menonaktifkan staf...");try{await x.collection("freshmart").doc("cms_data").collection("cashier_accounts").doc(t).update({isActive:e}),u(e?"Akun staf diaktifkan ✅":"Akun staf dinonaktifkan ❌","success"),await w()}catch(s){u("Gagal mengubah status staf: "+s.message,"error")}finally{y()}},R=(t,e)=>{O("Hapus Akun Staf",`Yakin hapus akun staf "${e}"? Akun tidak dapat dipulihkan dan staf tidak dapat login lagi ke toko.`,async()=>{v("Menghapus akun staf...");try{await x.collection("freshmart").doc("cms_data").collection("cashier_accounts").doc(t).delete(),u(`Akun "${e}" berhasil dihapus`,"success"),await w()}catch(s){u("Gagal menghapus staf: "+s.message,"error")}finally{y()}},"Ya, Hapus")},N=t=>{const e=n(t),s=n(t+"-eye");e&&(e.type==="password"?(e.type="text",s&&(s.className="fa-solid fa-eye-slash text-sm")):(e.type="password",s&&(s.className="fa-solid fa-eye text-sm")))},ee=j,te=E,ae=_,se=(t,e,s)=>T(t,e,s,l.CASHIER),re=$,le=I,oe=R,ie=w,ne=N;typeof window<"u"&&(window.renderCashierAccounts=q,window.switchCashierTab=G,window.filterStaffRole=V,window.loadStaffList=w,window.openAddStaffModal=j,window.closeAddStaffModal=E,window.applyNewStaffPreset=U,window.setAllNewStaffPerms=W,window.saveStaffAccount=_,window.openPermissionsModal=J,window.closePermissionsModal=L,window.applyEditStaffPreset=Y,window.setAllEditStaffPerms=Q,window.saveStaffPermissions=X,window.openEditStaffModal=T,window.closeEditStaffModal=$,window.updateStaffProfile=Z,window.toggleStaffActive=I,window.deleteStaffAccount=R,window.toggleStaffPassVisibility=N,window.openAddCashierModal=ee,window.closeAddCashierModal=te,window.saveCashierAccount=ae,window.openEditCashierModal=se,window.closeEditCashierModal=re,window.toggleCashierActive=le,window.deleteCashierAccount=oe,window.loadCashierList=ie,window.toggleCashierPassVisibility=ne);export{Y as applyEditStaffPreset,U as applyNewStaffPreset,te as closeAddCashierModal,E as closeAddStaffModal,re as closeEditCashierModal,$ as closeEditStaffModal,L as closePermissionsModal,oe as deleteCashierAccount,R as deleteStaffAccount,V as filterStaffRole,ie as loadCashierList,w as loadStaffList,ee as openAddCashierModal,j as openAddStaffModal,se as openEditCashierModal,T as openEditStaffModal,J as openPermissionsModal,q as renderCashierAccounts,ae as saveCashierAccount,_ as saveStaffAccount,X as saveStaffPermissions,Q as setAllEditStaffPerms,W as setAllNewStaffPerms,G as switchCashierTab,le as toggleCashierActive,ne as toggleCashierPassVisibility,I as toggleStaffActive,N as toggleStaffPassVisibility,Z as updateStaffProfile};

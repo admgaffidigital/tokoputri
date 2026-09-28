@@ -30,6 +30,8 @@ import './modules/catalog/index.js';
 import './modules/orders/index.js';
 // Modules: Sesi Admin Seller (Guard ringan)
 import { attachAdminSessionGuard, detachAdminSessionGuard, isCurrentSessionActive, isLoggingIn } from './modules/admin/session.js';
+// Security: Role-Based Access Control (RBAC) & Profil Staf
+import { ROLES, setActiveStaff, clearActiveStaff } from './core/auth-roles.js';
 // Modules: Tanya Jawab (Q&A / FAQ) Storefront
 import './modules/faq/index.js';
 // Modules: Log Pembaruan Sistem (Changelog) Storefront
@@ -301,37 +303,88 @@ window.addEventListener('DOMContentLoaded', async () => {
         if (typeof m.initPOSAuth === 'function') m.initPOSAuth();
     }).catch(e => console.warn('[POS Auth] Gagal inisialisasi:', e));
 
-// --- FITUR AUTO-LOGIN (Sesi Permanen Firebase) ---
+// --- FITUR AUTO-LOGIN & PEMULIHAN SESI MULTI-AKUN (Owner, Admin, Kasir) ---
     auth.onAuthStateChanged(async (user) => {
     // Jika sedang dalam proses submit login manual di form login, serahkan ke processAdminLogin
     if (isLoggingIn()) {
         return;
     }
 
-    // FIX KEAMANAN: kalau ada sesi tersimpan tapi UID-nya bukan pemilik toko,
-    // anggap seperti tidak login sama sekali — paksa logout, jangan masuk dashboard.
-    // EXCEPTION: jika UID adalah akun kasir terdaftar, biarkan (POS auth ditangani pos-auth.js)
+    // 1. JIKA USER ADALAH STAF TERDAFTAR (Admin atau Kasir)
     if (user && user.uid !== ADMIN_UID) {
-        // Cek apakah ini akun kasir terdaftar
         try {
-            const cashierDoc = await db.collection('freshmart').doc('cms_data')
+            const staffDoc = await db.collection('freshmart').doc('cms_data')
                 .collection('cashier_accounts').doc(user.uid).get();
-            if (cashierDoc.exists && cashierDoc.data().role === 'cashier') {
-                // Kasir login dari storefront — biarkan, jangan force logout
+
+            if (staffDoc.exists) {
+                const staffData = staffDoc.data() || {};
+                if (staffData.isActive === false) {
+                    clearActiveStaff();
+                    await auth.signOut();
+                    return;
+                }
+
+                const staffProfile = {
+                    uid: user.uid,
+                    name: staffData.name || user.email,
+                    email: staffData.email || user.email,
+                    role: staffData.role || ROLES.CASHIER,
+                    permissions: staffData.permissions || null,
+                    isActive: true
+                };
+                setActiveStaff(staffProfile);
+
+                // Jika Kasir POS
+                if (staffProfile.role === ROLES.CASHIER) {
+                    import('./modules/pos/pos-auth.js').then(m => {
+                        if (typeof m.setCashierSession === 'function') m.setCashierSession(staffProfile);
+                    }).catch(() => {});
+                    if (typeof window.updatePOSHeaderIcon === 'function') window.updatePOSHeaderIcon();
+                    return;
+                }
+
+                // Jika Admin Operasional / Co-Owner
+                await ensureAdminLoaded();
+                window.isAdm = true;
+                window.__localIsAdm = true;
+                window.isPro = true;
+                if (window.updateProBadge) window.updateProBadge();
+                if (typeof window.updatePOSHeaderIcon === 'function') window.updatePOSHeaderIcon();
+
+                let loginView = document.getElementById('view-admin-login');
+                if (loginView && !loginView.classList.contains('hidden')) {
+                    history.replaceState({view: 'view-admin'}, '', window.location.href);
+                    changeView('view-admin', true); 
+                    if (typeof window.openAdminMenu === 'function') window.openAdminMenu();
+                }
                 return;
             }
         } catch(_) {}
+
+        // Jika bukan staf dan bukan owner, paksa sign out demi keamanan
+        clearActiveStaff();
         await auth.signOut();
         return;
     }
-    if (user) {
+
+    // 2. JIKA USER ADALAH OWNER UTAMA (ADMIN_UID)
+    if (user && user.uid === ADMIN_UID) {
+        setActiveStaff({
+            uid: ADMIN_UID,
+            name: 'Owner Toko',
+            email: user.email,
+            role: ROLES.OWNER,
+            isActive: true
+        });
+
         await ensureAdminLoaded();
-        // Validasi apakah sesi admin di perangkat ini masih aktif atau sudah diambil alih perangkat lain
+        // Validasi apakah sesi owner di perangkat ini masih aktif atau sudah diambil alih perangkat lain
         const isSessionValid = await isCurrentSessionActive();
         if (!isSessionValid) {
             console.log('[Auth] Sesi admin lokal sudah tidak aktif (diambil alih perangkat lain).');
             detachAdminSessionGuard();
             localStorage.removeItem('freshmart_admin_session_id');
+            clearActiveStaff();
             window.isAdm = false;
             window.__localIsAdm = false;
             window.isPro = false;
@@ -342,6 +395,7 @@ window.addEventListener('DOMContentLoaded', async () => {
 
         attachAdminSessionGuard();
         window.isAdm = true;
+        window.__localIsAdm = true;
 
         window.isPro = true;
         localStorage.removeItem("isFreshmartPro");
@@ -360,18 +414,16 @@ window.addEventListener('DOMContentLoaded', async () => {
         // 3. MASUK KE DASHBOARD ADMIN
         let loginView = document.getElementById('view-admin-login');
         if (loginView && !loginView.classList.contains('hidden')) {
-            // FIX BACK BUTTON: jangan sertakan `tab` di state awal — kalau ada tab di sini,
-            // history stack langsung "kotor" sebelum user klik apapun, sehingga back dari
-            // dashboard admin malah masuk ke tab (bukan ke katalog/konfirmasi logout).
             history.replaceState({view: 'view-admin'}, '', window.location.href);
             changeView('view-admin', true); 
-            openAdminMenu();
-            showToast("Sesi Dipulihkan! Selamat Datang.");
+            if (typeof window.openAdminMenu === 'function') window.openAdminMenu();
+            showToast("Sesi Owner Dipulihkan! Selamat Datang.");
         }
     } else {
         // JIKA LOGOUT ATAU SESI HABIS
         detachAdminSessionGuard();
         localStorage.removeItem('freshmart_admin_session_id');
+        clearActiveStaff();
         window.isAdm = false;
         window.__localIsAdm = false;
         window.isPro = false;

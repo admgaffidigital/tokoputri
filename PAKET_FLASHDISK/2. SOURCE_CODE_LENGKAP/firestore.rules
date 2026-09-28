@@ -2,34 +2,45 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     
-    // ─── Helper: Verifikasi Admin Toko ─────────────────────
-    function isAdmin() {
+    // ─── Helper: Verifikasi Owner (Pemilik Utama / Super Admin) ──
+    function isOwner() {
       return request.auth != null && request.auth.uid == 'K2ijSERTT2dg27yYGTEgn6XHSnW2';
     }
 
-    // ─── Helper: Verifikasi Kasir Terdaftar ────────────────
-    // Kasir adalah akun Firebase Auth yang UID-nya terdaftar di
-    // freshmart/cms_data/cashier_accounts dengan role == 'cashier' & isActive == true
-    function isCashier() {
+    // ─── Helper: Verifikasi Staf Terdaftar di Firestore ────
+    function getStaffData() {
+      return get(/databases/$(database)/documents/freshmart/cms_data/cashier_accounts/$(request.auth.uid)).data;
+    }
+
+    function isStaffActive() {
       return request.auth != null &&
         exists(/databases/$(database)/documents/freshmart/cms_data/cashier_accounts/$(request.auth.uid)) &&
-        get(/databases/$(database)/documents/freshmart/cms_data/cashier_accounts/$(request.auth.uid)).data.role == 'cashier' &&
-        get(/databases/$(database)/documents/freshmart/cms_data/cashier_accounts/$(request.auth.uid)).data.isActive == true;
+        getStaffData().isActive == true;
+    }
+
+    // ─── Helper: Verifikasi Admin Toko ─────────────────────
+    function isAdmin() {
+      return isOwner() || (isStaffActive() && (getStaffData().role == 'admin' || getStaffData().role == 'owner'));
+    }
+
+    // ─── Helper: Verifikasi Kasir Terdaftar ────────────────
+    function isCashier() {
+      return isStaffActive() && (getStaffData().role == 'cashier' || !('role' in getStaffData()));
     }
     
     // Dokumen utama toko (pengaturan, banner, kategori, dll di 'cms_data')
     match /freshmart/{docId} {
       allow read: if true;
-      // Admin memiliki akses penuh. Pelanggan saat checkout hanya diizinkan
-      // memperbarui penanda sinkronisasi: lastUpdate, updateType, updatedProductIds
-      allow write: if isAdmin() ||
+      // Owner dan Admin memiliki akses kelola toko. Pelanggan saat checkout hanya diizinkan
+      // memperbarui penanda sinkronisasi: lastUpdate, updateType, updatedProductIds, hasCashier
+      allow write: if isOwner() || isAdmin() ||
         (resource != null &&
-         request.resource.data.diff(resource.data).affectedKeys().hasOnly(['lastUpdate', 'updateType', 'updatedProductIds']));
+         request.resource.data.diff(resource.data).affectedKeys().hasOnly(['lastUpdate', 'updateType', 'updatedProductIds', 'hasCashier']));
 
       // Sub-koleksi Produk
       match /products/{productId} {
         allow read: if true;
-        // Admin boleh tambah, edit, hapus seluruh produk & varian.
+        // Owner & Admin boleh tambah, edit, hapus seluruh produk & varian.
         // Pelanggan saat checkout HANYA boleh mengubah stock, isActive, variants, totalSold.
         // Kasir POS juga bisa update stok saat transaksi.
         allow write: if isAdmin() || isCashier() || (
@@ -42,13 +53,13 @@ service cloud.firestore {
         );
       }
 
-      // ─── Akun Kasir (PRIVATE: hanya admin yang bisa buat/edit) ─
+      // ─── Akun Staf & Kasir (PRIVATE: hanya Owner yang bisa buat/edit/hapus) ─
       match /cashier_accounts/{cashierId} {
-        // Admin bisa baca semua. Kasir hanya bisa baca data miliknya sendiri.
-        allow get: if isAdmin() || (request.auth != null && request.auth.uid == cashierId);
-        allow list: if isAdmin();
-        // Hanya admin yang bisa mendaftarkan, mengubah, atau menghapus akun kasir
-        allow create, update, delete: if isAdmin();
+        // Owner atau staf yang bersangkutan bisa membaca data profilnya
+        allow get: if isOwner() || (request.auth != null && request.auth.uid == cashierId);
+        allow list: if isOwner() || isAdmin();
+        // HANYA Owner yang bisa mendaftarkan, mengubah hak akses, atau menghapus staf
+        allow create, update, delete: if isOwner();
       }
 
       // Database Pelanggan / Member (data profil, poin & limit paylater)
@@ -85,10 +96,10 @@ service cloud.firestore {
         allow update, delete: if isAdmin();
       }
 
-      // Sesi Admin Tunggal (Single Active Session / Kick-out Otomatis Antar Perangkat)
+      // Sesi Admin Tunggal (Single Active Session / Kick-out Otomatis Antar Perangkat Owner)
       match /admin_session/{sessionId} {
         allow read: if true;
-        allow write: if isAdmin();
+        allow write: if isOwner();
       }
 
       // ─── Transaksi Kasir POS ───────────────────────────────
@@ -129,9 +140,9 @@ service cloud.firestore {
       allow update, delete: if isAdmin() || isCashier() || (request.auth != null);
     }
 
-    // Lisensi PRO
+    // Lisensi PRO (Hanya Owner)
     match /freshmart_licenses/{licenseId} {
-      allow read, write: if isAdmin();
+      allow read, write: if isOwner();
     }
   }
 }

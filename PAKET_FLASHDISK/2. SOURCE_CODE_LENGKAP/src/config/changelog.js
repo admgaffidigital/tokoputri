@@ -8,6 +8,25 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-9-86',
+        version: 'v1.9.86',
+        date: '2026-09-28',
+        title: 'Sistem Keamanan Multi-Akun & Role-Based Access Control (RBAC): Hak Akses Dinamis Granular 22 Modul, Smart Unified Login, dan Proteksi Data Keuangan & Manajemen Staf Toko',
+        category: 'feature',
+        badge: 'Staff RBAC & Multi-Account Security v1.9.86',
+        items: [
+            'Arsitektur Role-Based Access Control (src/core/auth-roles.js): Implementasi modul otentikasi peran terpusat dengan 3 tingkatan akun hierarkis: Owner (Super Admin absolut 100%), Admin Toko (pengelola operasional, pesanan, katalog, pelanggan, & piutang), dan Kasir POS (khusus transaksi penjualan & shift kasir fisik).',
+            'Manajemen Hak Akses Granular 22 Modul: Sistem izin terperinci mencakup 3 kelompok fungsional (Operasional Kasir & Toko, Pengelolaan Konten & Katalog, serta Kontrol Sensitif & Finansial) dengan tombol preset 1-klik: Kasir POS, Admin Operasional, Manajer Toko, dan Full Akses.',
+            'Smart Unified Login Otomatis (src/modules/admin/auth.js): Gerbang masuk tunggal di form login CMS yang secara cerdas mendeteksi tingkatan peran akun — Kasir otomatis diarahkan langsung ke antarmuka Kasir POS tanpa membuka dashboard admin, Admin Toko masuk ke CMS dengan menu yang tersaring rapi sesuai hak aksesnya, dan Owner memiliki kendali penuh.',
+            'Proteksi Data Finansial & Laporan Sensitif (src/modules/admin/auth.js): Ringkasan keuangan penting (omset, HPP, margin laba kotor, dan laba bersih) terkunci rapat untuk staf yang tidak memiliki izin view_reports. Menampilkan kartu pelindung privasi data bisnis.',
+            'Penyaringan Menu Dashboard Admin Dinamis (src/modules/admin/auth.js): Kartu navigasi dan menu CMS disaring otomatis secara real-time. Modul yang tidak diizinkan disembunyikan dan dicegah dari akses tab langsung (router.js).',
+            'Modul Manajemen Staf & Hak Akses Modern (src/modules/pos/pos-cashier-admin.js): Redesain total halaman pengelolaan kasir menjadi pusat manajemen staf toko lengkap — kartu Owner Utama terproteksi, pencarian & filter peran instan, indikator status aktif/nonaktif, modal pendaftaran staf baru via secondary Firebase auth instance tanpa memutus sesi login Owner, modal atur hak akses interaktif per modul, modal edit profil staf, dan konfirmasi hapus aman.',
+            'Pemisahan Sesi Login Multi-Perangkat: Membatasi mekanisme admin_session single-login guard hanya untuk akun Owner Utama (ADMIN_UID), sehingga staf Admin dan Kasir dapat login dan beroperasi bersamaan di banyak perangkat smartphone, tablet, atau laptop kasir tanpa saling mengeluarkan.',
+            'Proteksi Database Cloud Lapis Ganda (firestore.rules): Pembaruan aturan keamanan Firestore dengan fungsi pembantu isOwner(), isAdmin(), isKasir(), isStaffActive(), dan getStaffData(). Koleksi data sensitif (cashier_accounts, licenses, admin_session) dikunci eksklusif hanya untuk Owner toko.',
+            'Sinkronisasi Multi-Channel v1.9.86 (Android VersionCode 10986): Terkompilasi dan tersinkronisasi penuh ke Vite build produksi, paket flashdisk, dan Capacitor Android.'
+        ]
+    },
+    {
         id: 'log-1-9-85',
         version: 'v1.9.85',
         date: '2026-09-28',

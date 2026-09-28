@@ -14,8 +14,17 @@ import {
     aRevLst, setARevLst, gReviews, setGReviews 
 } from '../../core/state.js';
 import { el, show, hide, setIn, setH, showToast } from '../../core/utils.js';
+import { hasPermission } from '../../core/auth-roles.js';
 
 export const openAdminTab = (t, fH = false) => {
+    // Verifikasi hak akses pengguna untuk modul ini
+    const permKey = t === 'staff' ? 'cashiers' : t;
+    if (!hasPermission(permKey)) {
+        showToast("Akses Dibatasi: Akun Anda tidak memiliki izin untuk membuka modul ini.");
+        if (typeof window.openAdminMenu === 'function') window.openAdminMenu();
+        return;
+    }
+
     const adminScroll = document.querySelector('#view-admin .scroll-content');
     if (adminScroll) adminScroll.scrollTop = 0;
     
@@ -62,7 +71,8 @@ export const openAdminTab = (t, fH = false) => {
         'suppliers': 'Supplier & Rekanan',
         'purchases': 'Order Pembelian & Hutang PO',
         'pos': 'Kasir POS',
-        'cashiers': 'Manajemen Akun Kasir',
+        'cashiers': 'Kelola Staf & Hak Akses',
+        'staff': 'Kelola Staf & Hak Akses',
         'backup_sync': 'Pusat Data & Sinkronisasi'
     };
     
