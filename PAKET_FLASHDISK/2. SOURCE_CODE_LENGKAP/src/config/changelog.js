@@ -8,6 +8,23 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-9-89',
+        version: 'v1.9.89',
+        date: '2026-09-28',
+        title: 'Harmonisasi Total Antarmuka & Ergonomi Mobile-First: Transformasi Bottom-Sheet Interaktif, Touch Target Presisi 44px, Tata Letak Konsisten, dan Safe-Area Inset Multi-Modal',
+        category: 'ui',
+        badge: 'Native Mobile-First Polish & Consistent UX v1.9.89',
+        items: [
+            'Arsitektur Bottom-Sheet Dinamis (src/modules/pos/pos-cashier-admin.js): Seluruh modal manajemen staf (Pendaftaran Staf, Pengaturan Hak Akses Modul, dan Edit Profil Staf) bertransformasi otomatis menjadi lembar interaktif bawah (bottom sheet) pada smartphone dan modal terpusat pada tablet/desktop (items-end sm:items-center, rounded-t-[2rem] sm:rounded-3xl).',
+            'Handle Bar Indikator Geser Mobile: Menyematkan indikator visual drag handle di bagian atas lembar modal HP untuk sensasi aplikasi native iOS & Android yang elegan dan intuitif.',
+            'Standarisasi Touch Target 44px & Ergonomi Ibu Jari: Tombol filter kategori diperlebar (px-4 py-2), tombol aksi kartu staf diperbesar menjadi h-10 px-3.5 (Hak Akses) dan w-10 h-10 (Toggle Status, Edit Profil, Hapus) untuk eliminasi salah sentuh di layar smartphone.',
+            'Distribusi Fleksibel Kartu Staf di Mobile: Tombol "Hak Akses" menempati porsi responsif (flex-1 sm:flex-initial) pada baris aksi bawah kartu staf di HP sehingga sangat mudah dijangkau dan ditekan dengan satu tangan.',
+            'Preset Hak Akses Kompak 2-Kolom Mobile: Menata ulang preset 1-klik di modal hak akses menjadi 2x2 grid pada layar sempit (grid-cols-2 sm:grid-cols-4), menjaga label dan ikon (Kasir POS, Admin Ops, Manajer, Full Akses) tetap proporsional dan bebas dari teks melipat.',
+            'Proteksi Safe-Area Inset Bilah Gestur Bawah: Membekali seluruh footer modal dengan pb-[max(1rem,env(safe-area-inset-bottom))] dan min-h-[48px] pada tombol aksi utama, menjamin tombol Batal dan Simpan tidak tertutup oleh navigasi gestur Android / iOS.',
+            'Sinkronisasi Multi-Channel v1.9.89 (Android VersionCode 10989): Terkompilasi dan tersinkronisasi penuh ke Vite build produksi, paket flashdisk, dan Capacitor Android.'
+        ]
+    },
+    {
         id: 'log-1-9-88',
         version: 'v1.9.88',
         date: '2026-09-28',

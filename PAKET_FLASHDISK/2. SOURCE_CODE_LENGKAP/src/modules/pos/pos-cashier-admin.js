@@ -163,18 +163,18 @@ export const renderCashierAccounts = async () => {
             <!-- Filter Kategori Staf -->
             <div class="flex items-center gap-2 overflow-x-auto pb-1 custom-scrollbar">
                 <button onclick="window.filterStaffRole('all')" id="staff-filter-all"
-                    class="staff-filter-btn px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer shadow-2xs flex items-center gap-1.5 active:scale-95"
+                    class="staff-filter-btn px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer shadow-2xs flex items-center gap-1.5 active:scale-95 shrink-0"
                     style="background: var(--color-primary); color: #fff;">
                     <i class="fa-solid fa-users text-[10px]"></i>
                     <span>Semua Staf</span>
                 </button>
                 <button onclick="window.filterStaffRole('admin')" id="staff-filter-admin"
-                    class="staff-filter-btn px-3.5 py-1.5 rounded-xl text-xs font-bold bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-slate-300 transition-all cursor-pointer shadow-2xs flex items-center gap-1.5 active:scale-95">
+                    class="staff-filter-btn px-4 py-2 rounded-xl text-xs font-bold bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-slate-300 transition-all cursor-pointer shadow-2xs flex items-center gap-1.5 active:scale-95 shrink-0">
                     <i class="fa-solid fa-shield-halved text-[10px] text-blue-500"></i>
                     <span>Admin Toko</span>
                 </button>
                 <button onclick="window.filterStaffRole('cashier')" id="staff-filter-cashier"
-                    class="staff-filter-btn px-3.5 py-1.5 rounded-xl text-xs font-bold bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-slate-300 transition-all cursor-pointer shadow-2xs flex items-center gap-1.5 active:scale-95">
+                    class="staff-filter-btn px-4 py-2 rounded-xl text-xs font-bold bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-slate-300 transition-all cursor-pointer shadow-2xs flex items-center gap-1.5 active:scale-95 shrink-0">
                     <i class="fa-solid fa-cash-register text-[10px] text-emerald-500"></i>
                     <span>Kasir POS</span>
                 </button>
@@ -322,16 +322,16 @@ const renderStaffListHtml = () => {
                 </div>
             </div>
             <!-- Tombol Aksi Hak Akses, Status & Edit -->
-            <div class="flex items-center gap-2 shrink-0 self-end sm:self-center border-t sm:border-t-0 pt-2 sm:pt-0 border-slate-100 dark:border-slate-700/60 w-full sm:w-auto justify-end">
+            <div class="flex items-center gap-2 shrink-0 self-end sm:self-center border-t sm:border-t-0 pt-2.5 sm:pt-0 border-slate-100 dark:border-slate-700/60 w-full sm:w-auto justify-end">
                 <button onclick="window.openPermissionsModal('${esc(uid)}')"
                     title="Atur Hak Akses Modul"
-                    class="px-3 py-2 rounded-xl text-xs font-bold transition-all active:scale-95 cursor-pointer shadow-2xs flex items-center gap-1.5 border border-purple-200 dark:border-purple-800/60 bg-purple-50 hover:bg-purple-100 dark:bg-purple-950/40 text-purple-700 dark:text-purple-300">
+                    class="flex-1 sm:flex-initial h-10 px-3.5 rounded-xl text-xs font-bold transition-all active:scale-95 cursor-pointer shadow-2xs flex items-center justify-center gap-1.5 border border-purple-200 dark:border-purple-800/60 bg-purple-50 hover:bg-purple-100 dark:bg-purple-950/40 text-purple-700 dark:text-purple-300">
                     <i class="fa-solid fa-sliders text-[10px]"></i>
                     <span>Hak Akses</span>
                 </button>
                 <button onclick="window.toggleStaffActive('${esc(uid)}', ${!isActive})"
                     title="${isActive ? 'Nonaktifkan Akun Staf' : 'Aktifkan Akun Staf'}"
-                    class="w-9 h-9 rounded-xl flex items-center justify-center text-xs transition-all active:scale-95 cursor-pointer shadow-2xs border
+                    class="w-10 h-10 rounded-xl flex items-center justify-center text-xs transition-all active:scale-95 cursor-pointer shadow-2xs border shrink-0
                     ${isActive
                         ? 'bg-slate-50 hover:bg-amber-50 dark:bg-slate-700/80 dark:hover:bg-amber-950/40 text-slate-600 dark:text-slate-300 hover:text-amber-600 border-slate-200/80 dark:border-slate-700 hover:border-amber-300'
                         : 'bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/40 text-emerald-600 border-emerald-200 dark:border-emerald-800'}">
@@ -339,12 +339,12 @@ const renderStaffListHtml = () => {
                 </button>
                 <button onclick="window.openEditStaffModal('${esc(uid)}', '${esc(d.name || '')}', '${esc(d.email || '')}', '${esc(role)}')"
                     title="Edit Profil Staf"
-                    class="w-9 h-9 rounded-xl flex items-center justify-center text-xs bg-slate-50 hover:bg-slate-100 dark:bg-slate-700/80 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 hover:text-[var(--color-primary)] border border-slate-200/80 dark:border-slate-700 transition-all active:scale-95 cursor-pointer shadow-2xs">
+                    class="w-10 h-10 rounded-xl flex items-center justify-center text-xs bg-slate-50 hover:bg-slate-100 dark:bg-slate-700/80 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 hover:text-[var(--color-primary)] border border-slate-200/80 dark:border-slate-700 transition-all active:scale-95 cursor-pointer shadow-2xs shrink-0">
                     <i class="fa-solid fa-pen-to-square"></i>
                 </button>
                 <button onclick="window.deleteStaffAccount('${esc(uid)}', '${esc(d.name || 'Staf')}')"
                     title="Hapus Akun Staf"
-                    class="w-9 h-9 rounded-xl flex items-center justify-center text-xs bg-slate-50 hover:bg-rose-50 dark:bg-slate-700/80 dark:hover:bg-rose-950/40 text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 border border-slate-200/80 dark:border-slate-700 hover:border-rose-200 transition-all active:scale-95 cursor-pointer shadow-2xs">
+                    class="w-10 h-10 rounded-xl flex items-center justify-center text-xs bg-slate-50 hover:bg-rose-50 dark:bg-slate-700/80 dark:hover:bg-rose-950/40 text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 border border-slate-200/80 dark:border-slate-700 hover:border-rose-200 transition-all active:scale-95 cursor-pointer shadow-2xs shrink-0">
                     <i class="fa-solid fa-trash-can"></i>
                 </button>
             </div>
@@ -431,11 +431,13 @@ export const openAddStaffModal = () => {
     };
 
     document.body.insertAdjacentHTML('beforeend', `
-    <div id="add-staff-modal" class="fixed inset-0 z-[9990] flex items-center justify-center p-4 bg-slate-900/70 backdrop-blur-xs"
+    <div id="add-staff-modal" class="fixed inset-0 z-[9990] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-900/70 backdrop-blur-xs"
         onclick="if(event.target===this) window.closeAddStaffModal()">
-        <div class="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl w-full max-w-2xl flex flex-col max-h-[92vh] overflow-hidden scale-95 transition-transform duration-300 border border-slate-200 dark:border-slate-800" id="add-staff-modal-box">
+        <div class="bg-white dark:bg-slate-900 rounded-t-[2rem] sm:rounded-3xl shadow-2xl w-full max-w-2xl flex flex-col max-h-[92vh] sm:max-h-[90vh] overflow-hidden scale-95 transition-transform duration-300 border border-slate-200 dark:border-slate-800" id="add-staff-modal-box">
+            <!-- Mobile Drag Handle -->
+            <div class="sm:hidden w-12 h-1.5 bg-slate-300 dark:bg-slate-700 rounded-full mx-auto mt-2.5 mb-1 shrink-0"></div>
             <!-- Modal Header -->
-            <div class="flex items-center justify-between p-5 border-b border-slate-100 dark:border-slate-800 shrink-0">
+            <div class="flex items-center justify-between p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800 shrink-0">
                 <div class="flex items-center gap-3">
                     <div class="w-10 h-10 rounded-2xl flex items-center justify-center text-sm shadow-2xs border border-[rgba(var(--color-primary-rgb),0.25)]"
                         style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary)">
@@ -526,13 +528,13 @@ export const openAddStaffModal = () => {
             </div>
 
             <!-- Modal Footer -->
-            <div class="p-4 border-t border-slate-100 dark:border-slate-800 flex gap-3 shrink-0 bg-slate-50/50 dark:bg-slate-900/50">
+            <div class="p-4 sm:p-5 border-t border-slate-100 dark:border-slate-800 flex gap-3 shrink-0 bg-slate-50/50 dark:bg-slate-900/50 pb-[max(1rem,env(safe-area-inset-bottom))]">
                 <button onclick="window.closeAddStaffModal()"
-                    class="flex-1 py-3.5 rounded-2xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold text-sm hover:bg-slate-100 active:scale-95 transition-all cursor-pointer">
+                    class="flex-1 min-h-[48px] py-3.5 rounded-2xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold text-sm hover:bg-slate-100 active:scale-95 transition-all cursor-pointer">
                     Batal
                 </button>
                 <button onclick="window.saveStaffAccount()" id="save-staff-btn"
-                    class="flex-[2] py-3.5 rounded-2xl text-white font-black text-sm shadow-lg active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
+                    class="flex-[2] min-h-[48px] py-3.5 rounded-2xl text-white font-black text-sm shadow-lg active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
                     style="background:var(--color-primary)">
                     <i class="fa-solid fa-floppy-disk"></i> Simpan &amp; Daftarkan Staf
                 </button>
@@ -715,11 +717,13 @@ export const openPermissionsModal = (uid) => {
     };
 
     document.body.insertAdjacentHTML('beforeend', `
-    <div id="permissions-modal" class="fixed inset-0 z-[9990] flex items-center justify-center p-4 bg-slate-900/70 backdrop-blur-xs"
+    <div id="permissions-modal" class="fixed inset-0 z-[9990] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-900/70 backdrop-blur-xs"
         onclick="if(event.target===this) window.closePermissionsModal()">
-        <div class="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl w-full max-w-2xl flex flex-col max-h-[92vh] overflow-hidden scale-95 transition-transform duration-300 border border-slate-200 dark:border-slate-800" id="permissions-modal-box">
+        <div class="bg-white dark:bg-slate-900 rounded-t-[2rem] sm:rounded-3xl shadow-2xl w-full max-w-2xl flex flex-col max-h-[92vh] sm:max-h-[90vh] overflow-hidden scale-95 transition-transform duration-300 border border-slate-200 dark:border-slate-800" id="permissions-modal-box">
+            <!-- Mobile Drag Handle -->
+            <div class="sm:hidden w-12 h-1.5 bg-slate-300 dark:bg-slate-700 rounded-full mx-auto mt-2.5 mb-1 shrink-0"></div>
             <!-- Modal Header -->
-            <div class="flex items-center justify-between p-5 border-b border-slate-100 dark:border-slate-800 shrink-0">
+            <div class="flex items-center justify-between p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800 shrink-0">
                 <div class="flex items-center gap-3">
                     <div class="w-10 h-10 rounded-2xl flex items-center justify-center text-sm shadow-2xs border border-purple-200 dark:border-purple-800/60 bg-purple-50 dark:bg-purple-950/40 text-purple-600 dark:text-purple-300">
                         <i class="fa-solid fa-sliders"></i>
@@ -735,22 +739,34 @@ export const openPermissionsModal = (uid) => {
             </div>
 
             <!-- Modal Body -->
-            <div class="p-5 space-y-4 overflow-y-auto flex-1 custom-scrollbar">
+            <div class="p-4 sm:p-5 space-y-4 overflow-y-auto flex-1 custom-scrollbar">
                 <!-- 1-Click Preset Bar -->
-                <div class="p-3 bg-slate-100/80 dark:bg-slate-800/80 rounded-2xl border border-slate-200/80 dark:border-slate-700/80">
+                <div class="p-3.5 bg-slate-100/80 dark:bg-slate-800/80 rounded-2xl border border-slate-200/80 dark:border-slate-700/80">
                     <div class="flex items-center justify-between mb-2">
-                        <span class="text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">Preset Cepat:</span>
-                        <div class="flex items-center gap-1.5 text-[11px]">
-                            <button type="button" onclick="window.setAllEditStaffPerms(true)" class="text-xs text-[var(--color-primary)] font-bold hover:underline">Semua</button>
+                        <span class="text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">Preset Cepat 1-Klik:</span>
+                        <div class="flex items-center gap-2 text-[11px]">
+                            <button type="button" onclick="window.setAllEditStaffPerms(true)" class="text-xs text-[var(--color-primary)] font-bold hover:underline active:scale-95 transition-all">Pilih Semua</button>
                             <span class="text-slate-300">•</span>
-                            <button type="button" onclick="window.setAllEditStaffPerms(false)" class="text-xs text-rose-500 font-bold hover:underline">Kosongkan</button>
+                            <button type="button" onclick="window.setAllEditStaffPerms(false)" class="text-xs text-rose-500 font-bold hover:underline active:scale-95 transition-all">Kosongkan</button>
                         </div>
                     </div>
-                    <div class="grid grid-cols-4 gap-1.5">
-                        <button type="button" onclick="window.applyEditStaffPreset('${ROLES.CASHIER}')" class="py-2 px-2 rounded-xl text-[11px] font-bold bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-600 hover:border-emerald-500 hover:text-emerald-600 transition-all active:scale-95 shadow-2xs">Kasir POS</button>
-                        <button type="button" onclick="window.applyEditStaffPreset('${ROLES.ADMIN}')" class="py-2 px-2 rounded-xl text-[11px] font-bold bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-600 hover:border-blue-500 hover:text-blue-600 transition-all active:scale-95 shadow-2xs">Admin Ops</button>
-                        <button type="button" onclick="window.applyEditStaffPreset('manager')" class="py-2 px-2 rounded-xl text-[11px] font-bold bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-600 hover:border-purple-500 hover:text-purple-600 transition-all active:scale-95 shadow-2xs">Manajer</button>
-                        <button type="button" onclick="window.applyEditStaffPreset('${ROLES.OWNER}')" class="py-2 px-2 rounded-xl text-[11px] font-bold bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-600 hover:border-amber-500 hover:text-amber-600 transition-all active:scale-95 shadow-2xs">Full Akses</button>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                        <button type="button" onclick="window.applyEditStaffPreset('${ROLES.CASHIER}')" class="py-2.5 px-2 rounded-xl text-xs font-bold bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-600 hover:border-emerald-500 hover:text-emerald-600 transition-all active:scale-95 shadow-2xs flex items-center justify-center gap-1.5">
+                            <i class="fa-solid fa-cash-register text-[11px] text-emerald-500"></i>
+                            <span>Kasir POS</span>
+                        </button>
+                        <button type="button" onclick="window.applyEditStaffPreset('${ROLES.ADMIN}')" class="py-2.5 px-2 rounded-xl text-xs font-bold bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-600 hover:border-blue-500 hover:text-blue-600 transition-all active:scale-95 shadow-2xs flex items-center justify-center gap-1.5">
+                            <i class="fa-solid fa-shield-halved text-[11px] text-blue-500"></i>
+                            <span>Admin Ops</span>
+                        </button>
+                        <button type="button" onclick="window.applyEditStaffPreset('manager')" class="py-2.5 px-2 rounded-xl text-xs font-bold bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-600 hover:border-purple-500 hover:text-purple-600 transition-all active:scale-95 shadow-2xs flex items-center justify-center gap-1.5">
+                            <i class="fa-solid fa-user-tie text-[11px] text-purple-500"></i>
+                            <span>Manajer</span>
+                        </button>
+                        <button type="button" onclick="window.applyEditStaffPreset('${ROLES.OWNER}')" class="py-2.5 px-2 rounded-xl text-xs font-bold bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-600 hover:border-amber-500 hover:text-amber-600 transition-all active:scale-95 shadow-2xs flex items-center justify-center gap-1.5">
+                            <i class="fa-solid fa-crown text-[11px] text-amber-500"></i>
+                            <span>Full Akses</span>
+                        </button>
                     </div>
                 </div>
 
@@ -760,13 +776,13 @@ export const openPermissionsModal = (uid) => {
             </div>
 
             <!-- Modal Footer -->
-            <div class="p-4 border-t border-slate-100 dark:border-slate-800 flex gap-3 shrink-0 bg-slate-50/50 dark:bg-slate-900/50">
+            <div class="p-4 sm:p-5 border-t border-slate-100 dark:border-slate-800 flex gap-3 shrink-0 bg-slate-50/50 dark:bg-slate-900/50 pb-[max(1rem,env(safe-area-inset-bottom))]">
                 <button onclick="window.closePermissionsModal()"
-                    class="flex-1 py-3.5 rounded-2xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold text-sm hover:bg-slate-100 active:scale-95 transition-all cursor-pointer">
+                    class="flex-1 min-h-[48px] py-3.5 rounded-2xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold text-sm hover:bg-slate-100 active:scale-95 transition-all cursor-pointer">
                     Batal
                 </button>
                 <button onclick="window.saveStaffPermissions('${esc(uid)}')" id="save-perms-btn"
-                    class="flex-[2] py-3.5 rounded-2xl text-white font-black text-sm shadow-lg active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
+                    class="flex-[2] min-h-[48px] py-3.5 rounded-2xl text-white font-black text-sm shadow-lg active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
                     style="background:var(--color-primary)">
                     <i class="fa-solid fa-floppy-disk"></i> Simpan Hak Akses
                 </button>
@@ -847,10 +863,12 @@ export const openEditStaffModal = (uid, currentName, currentEmail, currentRole) 
     if (!verifyOwnerAuthority('mengubah profil staf')) return;
 
     document.body.insertAdjacentHTML('beforeend', `
-    <div id="edit-staff-modal" class="fixed inset-0 z-[9990] flex items-center justify-center p-4 bg-slate-900/70 backdrop-blur-xs"
+    <div id="edit-staff-modal" class="fixed inset-0 z-[9990] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-900/70 backdrop-blur-xs"
         onclick="if(event.target===this) window.closeEditStaffModal()">
-        <div class="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl w-full max-w-sm flex flex-col overflow-hidden scale-95 transition-transform duration-300 border border-slate-200 dark:border-slate-800" id="edit-staff-modal-box">
-            <div class="flex items-center justify-between p-5 border-b border-slate-100 dark:border-slate-800 shrink-0">
+        <div class="bg-white dark:bg-slate-900 rounded-t-[2rem] sm:rounded-3xl shadow-2xl w-full max-w-sm flex flex-col overflow-hidden scale-95 transition-transform duration-300 border border-slate-200 dark:border-slate-800" id="edit-staff-modal-box">
+            <!-- Mobile Drag Handle -->
+            <div class="sm:hidden w-12 h-1.5 bg-slate-300 dark:bg-slate-700 rounded-full mx-auto mt-2.5 mb-1 shrink-0"></div>
+            <div class="flex items-center justify-between p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800 shrink-0">
                 <h3 class="font-black text-sm text-slate-900 dark:text-white flex items-center gap-2">
                     <i class="fa-solid fa-pen-to-square text-[var(--color-primary)]"></i> Edit Profil Staf
                 </h3>
@@ -858,7 +876,7 @@ export const openEditStaffModal = (uid, currentName, currentEmail, currentRole) 
                     <i class="fa-solid fa-xmark text-sm"></i>
                 </button>
             </div>
-            <div class="p-5 space-y-3.5">
+            <div class="p-4 sm:p-5 space-y-3.5">
                 <div>
                     <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1.5">Nama Staf</label>
                     <input id="edit-staff-name" type="text" value="${esc(currentName)}"
@@ -879,13 +897,13 @@ export const openEditStaffModal = (uid, currentName, currentEmail, currentRole) 
                 </div>
                 <div id="edit-staff-error" class="hidden text-xs text-rose-600 font-semibold p-2.5 bg-rose-50 dark:bg-rose-900/20 rounded-2xl border border-rose-200 dark:border-rose-800"></div>
             </div>
-            <div class="p-4 border-t border-slate-100 dark:border-slate-800 flex gap-3 shrink-0 bg-slate-50/50 dark:bg-slate-900/50">
+            <div class="p-4 sm:p-5 border-t border-slate-100 dark:border-slate-800 flex gap-3 shrink-0 bg-slate-50/50 dark:bg-slate-900/50 pb-[max(1rem,env(safe-area-inset-bottom))]">
                 <button onclick="window.closeEditStaffModal()"
-                    class="flex-1 py-3.5 rounded-2xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold text-sm hover:bg-slate-100 active:scale-95 transition-all cursor-pointer">
+                    class="flex-1 min-h-[48px] py-3.5 rounded-2xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold text-sm hover:bg-slate-100 active:scale-95 transition-all cursor-pointer">
                     Batal
                 </button>
                 <button onclick="window.updateStaffProfile('${esc(uid)}')" id="update-staff-btn"
-                    class="flex-[2] py-3.5 rounded-2xl text-white font-black text-sm shadow-lg active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
+                    class="flex-[2] min-h-[48px] py-3.5 rounded-2xl text-white font-black text-sm shadow-lg active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
                     style="background:var(--color-primary)">
                     <i class="fa-solid fa-floppy-disk"></i> Simpan
                 </button>
