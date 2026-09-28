@@ -217,7 +217,12 @@ export const canViewHpp = () => {
         return hasPermission('view_reports');
     }
 
-    // 4. Default aman: sembunyikan modal HPP dari non-owner
+    // 4. Jika sedang dalam sesi Admin CMS penuh (termasuk mode dev lokal)
+    if (window.isAdm || window.__localIsAdm) {
+        return true;
+    }
+
+    // 5. Default aman: sembunyikan modal HPP dari non-owner
     return false;
 };
 
