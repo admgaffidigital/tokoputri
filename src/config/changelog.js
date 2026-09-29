@@ -8,6 +8,22 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-9-91',
+        version: 'v1.9.91',
+        date: '2026-09-29',
+        title: 'Unifikasi Total UI/UX Tema Luxury Gold & Soft Claymorphism 4 Layar Flagship: Welcome Hero Mascot 3D, Kartu Member VIP, 3-Kolom Swatch Quick Variant Sheet & Bento Grid App Launcher',
+        category: 'ui',
+        badge: 'Total UI/UX Unification v1.9.91',
+        items: [
+            'Layar 1 — Storefront Homepage (src/modules/home/sections.js, src/modules/home/banner.js, src/style.css): Implementasi kanvas mewah hangat #FAF8F5, Slide #0 Welcome Hero Card dengan maskot 3D Toko Putri (wanita berhijab & helm keselamatan proyek), katalog reward loyalitas bersih berlabel ganda "GRATIS" + "X Poin", serta voucher tiket belanja warm gold metalik dengan punch hole presisi.',
+            'Layar 2 — Modal Kartu Member Digital VIP (src/modules/member/reward.js): Redesain kartu loyalitas VIP dengan tekstur tembaga/perunggu metalik berkilau, smart chip EMV realistis, nomor kartu 16-digit beraksen timbul (embossed), formulir pencarian member WhatsApp (+62), keuntungan member VIP, dan katalog penukaran hadiah terpadu.',
+            'Layar 3 — Quick Variant Sheet & Full Product Swatch (src/modules/catalog/product-modal.js, index.html): Penyelarasan swatch varian produk menjadi kisi 3-kolom mobile-first dengan titik warna melingkar berbayang, cincin seleksi aktif warm gold beraksen emas (ring-amber-400), subtotal live calculator real-time, tombol wishlist cepat, serta sticky action footer ergonomis (+ Keranjang & Beli Sekarang).',
+            'Layar 4 — Bento Grid App Launcher & Menu Navigasi Utama (index.html, src/modules/admin/settings.js): Transformasi menu cepat storefront (#quickmenu-modal-content) dan navigasi modul admin (#admin-dashboard-view) menjadi ubin Bento Grid 2-kolom dengan wadah ikon squircle bergradien dinamis, kartu Play Store unduh aplikasi APK resmi, dan palet Putri Gold bawaan.',
+            'Harmonisasi Total Seluruh Tampilan Toko (src/style.css): Mengeliminasi kontras abu-abu dingin (bg-slate-50) di seluruh tampilan keranjang (view-cart), checkout (view-checkout), pembayaran (view-payment), riwayat pesanan (view-orders), wishlist (view-wishlist), dan pusat bantuan (view-faq) agar 100% selaras dengan kanvas mewah hangat #FAF8F5.',
+            'Multi-Channel Build & Sync v1.9.91 (Android VersionCode 10991): Terkompilasi dan tersinkronisasi penuh ke Vite build produksi, paket flashdisk, dan Capacitor Android.'
+        ]
+    },
+    {
         id: 'log-1-9-90',
         version: 'v1.9.90',
         date: '2026-09-29',

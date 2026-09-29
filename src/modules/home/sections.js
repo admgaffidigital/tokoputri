@@ -46,11 +46,52 @@ export const rDyn = () => {
         }
     }
 
-    // --- RENDER BANNER 3D PREMIUM (mendukung tipe gambar & video) ---
-    let bHTML = (appData.banners && appData.banners.length) ? `
-    <div class="relative group/banner-wrapper w-full">
-        <div id="banner-slider" class="flex overflow-x-auto gap-4 sm:gap-6 pb-4 pt-2 snap-x hide-scrollbar scroll-smooth" ontouchstart="clearInterval(window.bannerTmr)" ontouchend="setTimeout(() => window.startBannerAutoSlide?.(), 8000)" onmouseenter="clearInterval(window.bannerTmr)" onmouseleave="window.startBannerAutoSlide?.()" onscroll="window.onBannerScroll && window.onBannerScroll()">
-            ${appData.banners.map((b,idx)=>{
+    // --- RENDER BANNER 3D PREMIUM & KARTU SAMBUTAN HERO MASKOT ---
+    // ── SLIDE 0: KARTU SAMBUTAN HERO MASKOT 3D (Putri Utama Teknik / Toko Putri) ──
+    const welcomeHeroSlide = `
+        <div id="banner-slide-0" class="banner-slide-item w-[88vw] sm:w-[480px] min-h-[190px] sm:min-h-[220px] snap-center shrink-0 rounded-3xl relative overflow-hidden group cursor-pointer bg-gradient-to-br from-[#b89535] via-[#9d7d1e] to-[#6b5212] text-white shadow-lg shadow-amber-950/20 border border-amber-300/30 flex flex-col transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
+            <!-- Dynamic Ambient Glow & Decorative Rings -->
+            <div class="absolute -right-10 -top-10 w-44 h-44 rounded-full bg-white/10 blur-xl pointer-events-none group-hover:scale-110 transition-transform duration-700"></div>
+            <div class="absolute -left-10 -bottom-10 w-36 h-36 rounded-full bg-black/20 blur-lg pointer-events-none"></div>
+            <div class="absolute right-24 top-3 w-10 h-10 rounded-full border border-amber-200/20 pointer-events-none"></div>
+
+            <div class="flex flex-1 w-full relative z-10 items-center justify-between">
+                <!-- Text & Action (Left Side) -->
+                <div class="w-[60%] sm:w-[62%] p-4 sm:p-5 md:p-6 flex flex-col justify-center z-20">
+                    <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-black/25 backdrop-blur-md text-amber-200 text-[8.5px] sm:text-[9.5px] font-black uppercase tracking-wider mb-1.5 border border-white/20 w-max shadow-2xs">
+                        <i class="fa-solid fa-sparkles text-amber-300"></i> SELAMAT DATANG
+                    </div>
+                    <h2 class="text-[15px] sm:text-lg md:text-xl font-black text-white leading-tight tracking-tight drop-shadow-sm line-clamp-1">
+                        ${esc(appData.store.name || 'TOKO PUTRI')}
+                    </h2>
+                    <p class="text-[10px] sm:text-xs text-amber-100/90 font-medium leading-relaxed mt-1 line-clamp-2">
+                        ${esc(appData.store.slogan || appData.store.desc || 'Pusat Solusi Bangunan, Alat Teknik & Cat Terlengkap. Belanja Mudah, Cepat, dan Bergaransi!')}
+                    </p>
+                    <div class="mt-2.5 sm:mt-3 flex items-center gap-2">
+                        <button type="button" onclick="event.stopPropagation(); if(typeof window.openMemberModal==='function') window.openMemberModal(); else if(typeof window.showToast==='function') window.showToast('Buka kartu member VIP untuk info poin!');" class="bg-white text-amber-950 hover:bg-amber-50 active:scale-95 text-[9px] sm:text-[10px] uppercase tracking-wider font-extrabold py-1.5 sm:py-2 px-3.5 sm:px-4 rounded-full shadow-md flex items-center gap-1.5 transition-all group-hover:pr-4 cursor-pointer">
+                            <i class="fa-solid fa-id-card text-amber-700"></i> Member VIP <i class="fa-solid fa-arrow-right text-[8px] text-amber-700 transition-transform group-hover:translate-x-1"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 3D Mascot Avatar (Right Side) -->
+                <div class="w-[40%] sm:w-[38%] relative z-10 flex flex-col items-center justify-center p-2 pr-3 sm:pr-5 shrink-0">
+                    <div class="relative group/mascot">
+                        <div class="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden shadow-2xl border-2 border-white/50 bg-amber-900/30 transform group-hover:scale-105 transition-transform duration-500 flex items-center justify-center">
+                            <img width="128" height="128" loading="eager" fetchpriority="high" src="/putri_mascot_3d.jpg" onerror="this.onerror=null;this.src='./putri_mascot_3d.jpg';" alt="Maskot Toko Putri" class="w-full h-full object-cover">
+                        </div>
+                        <!-- Status Badge -->
+                        <div class="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-slate-950/85 backdrop-blur-md text-[7.5px] sm:text-[8px] font-bold text-amber-300 border border-white/20 px-2 py-0.5 rounded-full shadow-md whitespace-nowrap flex items-center gap-1">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> Siap Melayani
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+
+    // ── SLIDES BANNER PROMOSI (jika ada) ──
+    const promoBannersHtml = ((appData.banners || [])).map((b, idx) => {
+        const slideIdx = idx + 1;
         const isVideo = b.type === 'video' && b.videoUrl;
         const linkAction = (!isVideo && b.link) ? `onclick="window.open('${esc(b.link)}', '_self')"` : '';
 
@@ -70,10 +111,6 @@ export const rDyn = () => {
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                 ></iframe>`;
             } else if (vInfo.type === 'gdrive') {
-                // Langsung pakai iframe /preview — Google Drive tidak mengizinkan
-                // streaming <video> langsung (CORS + redirect blocked), sehingga
-                // <video src="uc?export=download"> selalu blank hitam.
-                // iframe /preview adalah satu-satunya cara yang andal untuk Drive.
                 videoMediaHtml = `
                 <iframe
                     class="banner-video-iframe absolute z-0 border-0 pointer-events-none select-none"
@@ -97,7 +134,7 @@ export const rDyn = () => {
             }
 
             return `
-            <div id="banner-slide-${idx}" class="banner-slide-item w-[88vw] sm:w-[520px] aspect-video snap-center shrink-0 rounded-3xl relative overflow-hidden group bg-black shadow-none border border-white/10 flex flex-col select-none">
+            <div id="banner-slide-${slideIdx}" class="banner-slide-item w-[88vw] sm:w-[520px] aspect-video snap-center shrink-0 rounded-3xl relative overflow-hidden group bg-black shadow-none border border-white/10 flex flex-col select-none">
                 ${videoMediaHtml}
                 <!-- Shield Transparan: Mencegah klik/tap pada video agar video tidak bisa di-klik/di-pause -->
                 <div class="absolute inset-0 z-15 bg-transparent pointer-events-auto cursor-default" onclick="event.preventDefault(); event.stopPropagation();"></div>
@@ -108,18 +145,17 @@ export const rDyn = () => {
                         ${b.desc  ? `<p class="text-white/90 text-[11px] sm:text-xs font-medium line-clamp-2 mt-0.5">${esc(b.desc)}</p>` : ''}
                     </div>
                     <div class="ml-3 shrink-0 flex items-center gap-2 pointer-events-auto">
-                        <button onclick="event.stopPropagation(); window.toggleBannerVideoSound(this, ${idx});" type="button" aria-label="Aktifkan Suara Video" class="banner-sound-toggle inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-900/80 hover:bg-slate-900 text-white text-[10px] sm:text-xs font-bold rounded-full shadow-lg border border-white/20 active:scale-95 transition-all cursor-pointer">
+                        <button onclick="event.stopPropagation(); window.toggleBannerVideoSound(this, ${slideIdx});" type="button" aria-label="Aktifkan Suara Video" class="banner-sound-toggle inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-900/80 hover:bg-slate-900 text-white text-[10px] sm:text-xs font-bold rounded-full shadow-lg border border-white/20 active:scale-95 transition-all cursor-pointer">
                             <i class="fa-solid fa-volume-xmark text-xs"></i> <span>Aktifkan Suara</span>
                         </button>
                     </div>
                 </div>
-
             </div>`;
         }
 
         // ── SLIDE GAMBAR (default) ────────────────────────────────────────
         return `
-        <div ${linkAction} class="banner-slide-item w-[88vw] sm:w-[480px] min-h-[190px] sm:min-h-[220px] snap-center shrink-0 rounded-3xl relative overflow-hidden group cursor-pointer bg-[var(--color-primary)] text-white shadow-none hover:-translate-y-1 hover:scale-[1.01] hover:shadow-none transition-all duration-300 border border-white/15 flex flex-col">
+        <div id="banner-slide-${slideIdx}" ${linkAction} class="banner-slide-item w-[88vw] sm:w-[480px] min-h-[190px] sm:min-h-[220px] snap-center shrink-0 rounded-3xl relative overflow-hidden group cursor-pointer bg-[var(--color-primary)] text-white shadow-none hover:-translate-y-1 hover:scale-[1.01] hover:shadow-none transition-all duration-300 border border-white/15 flex flex-col">
             <!-- Dynamic Solid Header Shapes -->
             <div class="absolute -right-10 -top-10 w-40 h-40 border-[16px] border-white/10 rounded-full pointer-events-none group-hover:scale-105 transition-transform duration-500"></div>
             <div class="absolute -left-12 top-10 w-24 h-24 bg-white/10 rounded-full border border-white/10 pointer-events-none transform -rotate-12 group-hover:-translate-x-1 transition-transform duration-500"></div>
@@ -131,16 +167,23 @@ export const rDyn = () => {
                     ${b.link ? `<button class="mt-2 bg-white text-slate-900 text-[9px] sm:text-[10px] uppercase tracking-wider font-extrabold py-2 px-4 rounded-full w-max hover:bg-slate-100 active:scale-95 transition-all shadow-md flex items-center gap-2 group-hover:pr-5">Beli Sekarang <i class="fa-solid fa-arrow-right transition-transform group-hover:translate-x-1"></i></button>` : ''}
                 </div>
                 <div class="w-[38%] sm:w-[35%] relative z-10 flex items-center justify-center p-2 sm:p-4 pr-4 sm:pr-6 shrink-0">
-                    ${b.img ? `<img width="240" height="140" loading="${idx === 0 ? 'eager' : 'lazy'}" fetchpriority="${idx === 0 ? 'high' : 'auto'}" decoding="${idx === 0 ? 'sync' : 'async'}" src="${esc(getOptImg(b.img, 'w600-rw'))}" alt="${esc(b.title || 'Promo Banner')}" class="w-full h-full max-h-[140px] sm:max-h-[170px] object-contain drop-shadow-md transition-transform duration-500 group-hover:scale-105" onerror="this.style.display='none'">` : `
+                    ${b.img ? `<img width="240" height="140" loading="lazy" decoding="async" src="${esc(getOptImg(b.img, 'w600-rw'))}" alt="${esc(b.title || 'Promo Banner')}" class="w-full h-full max-h-[140px] sm:max-h-[170px] object-contain drop-shadow-md transition-transform duration-500 group-hover:scale-105" onerror="this.style.display='none'">` : `
                     <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-white/20 border-2 border-white/30 flex items-center justify-center shadow-md group-hover:scale-105 transition-all duration-300">
                         <i class="fa-solid fa-gift text-4xl sm:text-5xl text-white"></i>
                     </div>`}
                 </div>
             </div>
         </div>`;
-    }).join('')}
+    }).join('');
+
+    const totalBannerSlides = 1 + ((appData.banners && appData.banners.length) || 0);
+    const bHTML = `
+    <div class="relative group/banner-wrapper w-full">
+        <div id="banner-slider" class="flex overflow-x-auto gap-4 sm:gap-6 pb-4 pt-2 snap-x hide-scrollbar scroll-smooth" ontouchstart="clearInterval(window.bannerTmr)" ontouchend="setTimeout(() => window.startBannerAutoSlide?.(), 8000)" onmouseenter="clearInterval(window.bannerTmr)" onmouseleave="window.startBannerAutoSlide?.()" onscroll="window.onBannerScroll && window.onBannerScroll()">
+            ${welcomeHeroSlide}
+            ${promoBannersHtml}
         </div>
-        ${appData.banners.length > 1 ? `
+        ${totalBannerSlides > 1 ? `
         <!-- Navigation Arrows (Desktop) -->
         <button onclick="window.scrollBannerPrev()" type="button" aria-label="Banner Sebelumnya" class="hidden sm:flex absolute left-1 top-1/2 -translate-y-1/2 z-30 w-10 h-10 rounded-full bg-slate-900 hover:bg-slate-800 text-white items-center justify-center border border-slate-700 transition-all opacity-0 group-hover/banner-wrapper:opacity-100 shadow-xl active:scale-95">
             <i class="fa-solid fa-chevron-left text-sm"></i>
@@ -151,19 +194,19 @@ export const rDyn = () => {
 
         <!-- Dots Indicator Navigation -->
         <div id="banner-dots-container" class="flex items-center justify-center gap-1.5 mt-2">
-            ${appData.banners.map((_, idx) => `
+            ${Array.from({ length: totalBannerSlides }).map((_, idx) => `
                 <button onclick="window.scrollToBanner(${idx})" type="button" aria-label="Slide ${idx+1}" class="banner-dot-item ${idx === 0 ? 'h-2.5 rounded-full transition-all duration-300 bg-[var(--color-primary)] w-7 shadow-sm' : 'w-2.5 h-2.5 rounded-full transition-all duration-300 bg-slate-300 dark:bg-slate-700 hover:bg-slate-400'}" data-index="${idx}"></button>
             `).join('')}
         </div>
         ` : ''}
-    </div>` : '';
+    </div>`;
 
-    if (bHTML) {
-        setH('dynamic-banners-container', bHTML);
+    setH('dynamic-banners-container', bHTML);
+    if (totalBannerSlides > 1) {
         setTimeout(startBannerAutoSlide, 500);
     }
 
-    // --- RENDER VOUCHERS PROMO ---
+    // --- RENDER VOUCHERS PROMO (Luxury Warm Gold Ticket Style) ---
     const activeVouchers = (appData.vouchers || []).filter(v => v.isShow === 'true' || v.isShow === true);
     const vC = el('dynamic-vouchers-container');
     if (activeVouchers.length > 0 && vC) {
@@ -171,7 +214,7 @@ export const rDyn = () => {
         let vHTML = `
         <div class="flex items-center justify-between mb-2.5">
             <h3 class="font-bold text-slate-800 dark:text-white text-xs sm:text-sm tracking-tight flex items-center gap-2">
-                <div class="w-7 h-7 rounded-lg bg-[var(--color-primary)] flex items-center justify-center text-white shadow-2xs">
+                <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center text-white shadow-2xs">
                     <i class="fa-solid fa-ticket-simple text-xs -rotate-45"></i>
                 </div> VOUCHER TOKO
             </h3>
@@ -186,32 +229,32 @@ export const rDyn = () => {
                 let termsStr = terms.length > 0 ? esc(terms.join(' • ')) : 'Tanpa min. belanja';
                 
                 return `
-                <div class="w-[220px] sm:w-[245px] shrink-0 snap-start relative group cursor-pointer active:scale-95 transition-all duration-200" onclick="copyVoucher('${esc(v.code)}')">
-                    <div class="w-full h-[78px] sm:h-[82px] bg-[var(--color-primary)] rounded-xl shadow-xs hover:shadow-sm hover:-translate-y-0.5 transition-all duration-200 flex relative overflow-hidden border border-white/20 text-white">
-                        <!-- Left/Right Ticket Punch Holes (Biting into the sides) -->
-                        <div class="absolute -top-2 right-[25%] w-3.5 h-3.5 rounded-full bg-[#f1f5f9] dark:bg-[#0b1121] border-b border-white/10 z-20 pointer-events-none transform translate-x-1/2 transition-colors duration-300"></div>
-                        <div class="absolute -bottom-2 right-[25%] w-3.5 h-3.5 rounded-full bg-[#f1f5f9] dark:bg-[#0b1121] border-t border-white/10 z-20 pointer-events-none transform translate-x-1/2 transition-colors duration-300"></div>
+                <div class="w-[225px] sm:w-[250px] shrink-0 snap-start relative group cursor-pointer active:scale-95 transition-all duration-200" onclick="copyVoucher('${esc(v.code)}')">
+                    <div class="w-full h-[82px] sm:h-[86px] bg-gradient-to-r from-[#b89535] via-[#9d7d1e] to-[#735815] rounded-2xl shadow-xs hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 flex relative overflow-hidden border border-amber-300/30 text-white">
+                        <!-- Left/Right Ticket Punch Holes (Biting into the sides using soft canvas color) -->
+                        <div class="absolute -top-2.5 right-[26%] w-4 h-4 rounded-full bg-[#FAF8F5] dark:bg-[#0b1120] border-b border-amber-950/20 z-20 pointer-events-none transform translate-x-1/2 transition-colors duration-300"></div>
+                        <div class="absolute -bottom-2.5 right-[26%] w-4 h-4 rounded-full bg-[#FAF8F5] dark:bg-[#0b1120] border-t border-amber-950/20 z-20 pointer-events-none transform translate-x-1/2 transition-colors duration-300"></div>
                         
                         <!-- Main Details (Left Side) -->
-                        <div class="flex-1 px-3 py-2 sm:px-3.5 sm:py-2 flex flex-col justify-center relative z-10 min-w-0">
+                        <div class="flex-1 px-3.5 py-2 flex flex-col justify-center relative z-10 min-w-0">
                             <h4 class="font-extrabold text-white text-xs sm:text-[13px] leading-tight mb-0.5 drop-shadow-xs line-clamp-1">${desc}</h4>
-                            <p class="text-[7.5px] sm:text-[8px] font-medium text-white/90 flex items-center gap-1 mb-1.5 uppercase tracking-wider line-clamp-1"><i class="fa-solid fa-circle-info text-white/70 text-[7px]"></i> ${termsStr}</p>
+                            <p class="text-[7.5px] sm:text-[8px] font-medium text-amber-100/90 flex items-center gap-1 mb-1.5 uppercase tracking-wider line-clamp-1"><i class="fa-solid fa-circle-info text-amber-200 text-[7px]"></i> ${termsStr}</p>
                             <div class="inline-flex">
-                                <span class="bg-black/30 text-white text-[9px] sm:text-[10px] font-bold px-2 py-0.5 rounded-md uppercase tracking-wider border border-white/20 flex items-center gap-1 font-mono w-max">
+                                <span class="bg-black/25 backdrop-blur-xs text-white text-[9px] sm:text-[10px] font-bold px-2 py-0.5 rounded-md uppercase tracking-wider border border-white/20 flex items-center gap-1.5 font-mono w-max shadow-inner">
                                     <i class="fa-solid fa-ticket text-amber-300 text-[8px]"></i> ${esc(v.code)}
                                 </span>
                             </div>
                         </div>
                         
                         <!-- Divider Line -->
-                        <div class="w-0 border-l-[1.5px] border-dashed border-white/30 relative z-10 my-2"></div>
+                        <div class="w-0 border-l-[1.5px] border-dashed border-white/30 relative z-10 my-2.5"></div>
                         
                         <!-- Action Area (Right Side) -->
-                        <div class="w-[25%] flex flex-col items-center justify-center relative z-10 bg-black/15 group-hover:bg-black/25 transition-all duration-200">
-                            <div class="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-white text-[var(--color-primary)] font-bold flex items-center justify-center mb-0.5 shadow-2xs group-hover:scale-105 transition-all">
+                        <div class="w-[26%] flex flex-col items-center justify-center relative z-10 bg-black/20 group-hover:bg-black/30 transition-all duration-200">
+                            <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white text-amber-950 font-black flex items-center justify-center mb-0.5 shadow-sm group-hover:scale-110 active:scale-90 transition-all">
                                 <i class="fa-regular fa-copy text-xs"></i>
                             </div>
-                            <span class="text-[8px] font-bold uppercase tracking-wider text-white drop-shadow-xs">Salin</span>
+                            <span class="text-[8px] font-black uppercase tracking-wider text-white drop-shadow-xs">Salin</span>
                         </div>
                     </div>
                 </div>`;

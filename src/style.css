@@ -59,6 +59,16 @@ input, textarea, [contenteditable="true"] {
 @tailwind components;
 @tailwind utilities;
 
+/* Warm Luxury Canvas & Harmonized Views */
+body, #app-container,
+.view-section:not(#view-admin-login) {
+  background-color: #FAF8F5;
+}
+.dark body, .dark #app-container,
+.dark .view-section:not(#view-admin-login) {
+  background-color: #0b1120;
+}
+
 /* Explicit Aspect Ratio Utilities (Mencegah keruntuhan gambar di mobile/desktop) */
 .aspect-square {
     aspect-ratio: 1 / 1 !important;
@@ -1241,10 +1251,15 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 2px 6px rgba(var(--color-primary-rgb), 0.2);
+    box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);
     transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
     transform: translateY(-14px);
     margin-bottom: -10px;
+    border: 3.5px solid #FAF8F5;
+}
+
+.dark .bnav-hero-button {
+    border-color: #1e293b;
 }
 
 .bnav-center-hub:active .bnav-hero-button {
@@ -1253,7 +1268,7 @@ body {
 
 .bnav-center-hub.active .bnav-hero-button {
     transform: translateY(-16px) scale(1.06);
-    box-shadow: 0 3px 8px rgba(var(--color-primary-rgb), 0.25);
+    box-shadow: 0 6px 18px rgba(var(--color-primary-rgb), 0.4);
 }
 
 .bnav-center-hub.active .bnav-hero-button i {
@@ -1267,6 +1282,18 @@ body {
 
 .bnav-center-hub:not(.active) .bnav-hero-button {
     opacity: 0.88;
+}
+
+/* VIP Loyalty Pass Embossed Card Text Effect & Hologram */
+.embossed-text {
+    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.45), 0 -1px 1px rgba(0, 0, 0, 0.65);
+    letter-spacing: 0.16em;
+}
+
+.card-hologram-seal {
+    background: linear-gradient(135deg, rgba(255,255,255,0.45) 0%, rgba(251,191,36,0.35) 50%, rgba(255,255,255,0.15) 100%);
+    backdrop-filter: blur(2px);
+    box-shadow: inset 0 0 6px rgba(255,255,255,0.6);
 }
 
 .admin-input { 

@@ -704,7 +704,7 @@ export const rProdMod = () => {
         if (hV) {
             show('product-modal-options-container');
             
-            let gridHTML = `<div class="grid grid-cols-[repeat(auto-fill,minmax(80px,1fr))] sm:grid-cols-[repeat(auto-fill,minmax(95px,1fr))] gap-2 sm:gap-3 w-full">`;
+            let gridHTML = `<div class="grid grid-cols-3 sm:grid-cols-4 gap-2 sm:gap-2.5 w-full">`;
             
             gridHTML += p.variants.map((r, x) => {
                 let isVarActive = r.isActive !== false && r.isActive !== 'false';
@@ -712,25 +712,30 @@ export const rProdMod = () => {
                 const varStock = parseFloat(r.stock) || 0;
                 const isVarOutOfStock = useStkV && varStock <= 0;
                 let isVarSelectable = isVarActive && !isVarOutOfStock;
+                const isSelected = x === cVar;
                 
-                let colorCircle = r.colorCode ? `<span class="w-10 h-10 sm:w-12 sm:h-12 rounded-full shadow-inner border border-slate-300 dark:border-slate-600 mb-2 shrink-0" style="background-color: ${esc(r.colorCode)};"></span>` : '';
-                
-                let btnClass = "";
+                let cardClass = "";
                 if (!isVarSelectable) {
-                    btnClass = "bg-slate-100 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 opacity-60 cursor-not-allowed";
-                } else if (x === cVar) {
-                    btnClass = "bg-[rgba(var(--color-primary-rgb),0.08)] border-[var(--color-primary)] text-[var(--color-primary)] dark:bg-[rgba(var(--color-primary-rgb),0.12)] dark:text-[var(--color-primary)] shadow-sm";
+                    cardClass = "bg-slate-100/70 dark:bg-slate-800/40 border-slate-200 dark:border-slate-700/60 text-slate-400 opacity-50 cursor-not-allowed";
+                } else if (isSelected) {
+                    cardClass = "border-2 border-amber-500 bg-amber-50/70 dark:bg-amber-950/30 ring-2 ring-amber-400/40 shadow-xs text-amber-950 dark:text-amber-200";
                 } else {
-                    btnClass = "bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:border-[var(--color-primary)]/40 hover:shadow-sm";
+                    cardClass = "bg-white dark:bg-slate-800/90 border-slate-200/80 dark:border-slate-700/80 text-slate-700 dark:text-slate-300 hover:border-amber-400/60";
                 }
 
-                const zoomBtn = isVarSelectable && (r.colorCode || r.img) ? `<span onclick="event.stopPropagation(); previewVariant(${x})" class="absolute top-1.5 right-1.5 w-5 h-5 rounded-full bg-white/90 dark:bg-slate-700/90 shadow-sm flex items-center justify-center text-slate-500 hover:text-[var(--color-primary)] hover:scale-110 active:scale-90 transition-all border border-slate-200/50 dark:border-slate-600/50" title="Perbesar"><i class="fa-solid fa-magnifying-glass-plus text-[9px]"></i></span>` : '';
+                const colorHex = r.colorCode || (p.colorCode || '#CBD5E1');
+                const colorDot = `<span class="w-8 h-8 sm:w-9 sm:h-9 rounded-full shrink-0 border border-black/10 shadow-xs flex items-center justify-center mx-auto transition-transform ${isSelected ? 'scale-110' : ''}" style="background-color: ${esc(colorHex)}"></span>`;
 
-                return `<button ${!isVarSelectable ? 'disabled' : ''} class="relative p-2.5 sm:p-3 rounded-xl text-[10px] sm:text-[11px] font-bold uppercase tracking-wide border-2 transition-all active:scale-95 flex flex-col items-center justify-start text-center h-full ${btnClass}" ${isVarSelectable ? `onclick="selectVariant(${x})"` : ''}>
+                const zoomBtn = isVarSelectable && (r.colorCode || r.img) ? `<span onclick="event.stopPropagation(); previewVariant(${x})" class="absolute top-1.5 right-1.5 w-5 h-5 rounded-full bg-white/90 dark:bg-slate-700/90 shadow-sm flex items-center justify-center text-slate-500 hover:text-amber-600 hover:scale-110 active:scale-90 transition-all border border-slate-200/50 dark:border-slate-600/50 z-10" title="Perbesar"><i class="fa-solid fa-magnifying-glass-plus text-[9px]"></i></span>` : '';
+
+                return `<button ${!isVarSelectable ? 'disabled' : ''} class="relative p-2 sm:p-2.5 rounded-2xl text-center border transition-all active:scale-95 flex flex-col items-center justify-center gap-1.5 cursor-pointer overflow-hidden ${cardClass}" ${isVarSelectable ? `onclick="selectVariant(${x})"` : ''}>
                     ${zoomBtn}
-                    ${colorCircle} 
-                    <span class="${!isVarSelectable ? 'line-through' : ''} leading-snug break-words w-full ${!r.colorCode ? 'my-auto' : ''}">${esc(r.name)}</span>
-                    ${isVarOutOfStock && isVarActive ? '<span class="text-[8px] font-bold text-rose-500 normal-case mt-0.5">Stok Habis</span>' : ''}
+                    ${colorDot}
+                    <div class="w-full min-w-0 px-0.5">
+                        <span class="block text-[10px] sm:text-[10.5px] font-black leading-tight truncate ${isSelected ? 'text-amber-950 dark:text-amber-200' : 'text-slate-800 dark:text-white'} ${!isVarSelectable ? 'line-through' : ''}">${esc(r.name)}</span>
+                        <span class="block text-[8px] sm:text-[8.5px] font-bold text-slate-400 dark:text-slate-500 truncate mt-0.5">${esc(r.code || r.unit || (r.colorCode ? r.colorCode.toUpperCase() : ''))}</span>
+                    </div>
+                    ${isVarOutOfStock && isVarActive ? '<span class="absolute top-1 right-1 px-1 py-0.5 rounded text-[7.5px] bg-rose-500 text-white font-bold leading-none">Habis</span>' : ''}
                 </button>`;
             }).join('');
             
@@ -1166,6 +1171,55 @@ export const updateQuickVariantQty = (delta) => {
     qvQty = newQty;
     const input = el('quick-variant-qty-input');
     if (input) input.value = qvQty;
+    
+    // Update live subtotal
+    const priceVal = v?.price ?? qvProd.price;
+    setIn('quick-variant-subtotal', fCur(priceVal * qvQty));
+
+    if (typeof window.triggerHaptic === 'function') window.triggerHaptic('light');
+};
+
+export const updateQuickVariantWishUI = () => {
+    if (!qvProd) return;
+    const v = qvProd.variants?.[qvVar];
+    const vN = v?.name || null;
+    const isWished = wishlist.some(i => String(i.id) === String(qvProd.id) && i.variantName === vN);
+    const icon = el('quick-variant-wish-icon');
+    const btn = el('quick-variant-btn-wish');
+    if (icon) {
+        icon.className = isWished ? 'fa-solid fa-heart text-base text-rose-500' : 'fa-regular fa-heart text-base text-slate-400 dark:text-slate-500';
+    }
+    if (btn) {
+        btn.classList.toggle('border-rose-300', isWished);
+        btn.classList.toggle('bg-rose-50/70', isWished);
+    }
+};
+
+export const toggleQuickVariantWishlist = () => {
+    if (!qvProd) return;
+    const v = qvProd.variants?.[qvVar];
+    const vN = v?.name || null;
+    const existingIdx = wishlist.findIndex(i => String(i.id) === String(qvProd.id) && i.variantName === vN);
+    if (existingIdx >= 0) {
+        wishlist.splice(existingIdx, 1);
+        ssL('freshmart_wishlist', JSON.stringify(wishlist));
+        if (typeof window.updWish === 'function') window.updWish();
+        updateQuickVariantWishUI();
+        showToast("Dihapus dari Favorit");
+    } else {
+        wishlist.push({
+            id: qvProd.id,
+            name: qvProd.name,
+            variantName: vN,
+            price: v?.price ?? qvProd.price,
+            img: v?.img || qvProd.img,
+            colorCode: v?.colorCode || ''
+        });
+        ssL('freshmart_wishlist', JSON.stringify(wishlist));
+        if (typeof window.updWish === 'function') window.updWish();
+        updateQuickVariantWishUI();
+        showToast("Masuk Favorit ❤️");
+    }
     if (typeof window.triggerHaptic === 'function') window.triggerHaptic('light');
 };
 
@@ -1182,6 +1236,9 @@ export const renderQuickVariantSheet = () => {
 
     const priceVal = v?.price ?? p.price;
     setIn('quick-variant-price', fCur(priceVal));
+
+    // Live Subtotal Calculator
+    setIn('quick-variant-subtotal', fCur(priceVal * qvQty));
 
     const varStock = parseFloat(v?.stock) || 0;
     const stockEl = el('quick-variant-stock');
@@ -1204,7 +1261,7 @@ export const renderQuickVariantSheet = () => {
     const input = el('quick-variant-qty-input');
     if (input) input.value = qvQty;
 
-    // Render Options
+    // Render Options: 3-Column Swatch Cards (Screen 3 Reference)
     const optContainer = el('quick-variant-options');
     if (optContainer && p.variants) {
         optContainer.innerHTML = p.variants.map((r, idx) => {
@@ -1214,26 +1271,33 @@ export const renderQuickVariantSheet = () => {
             const isSelectable = isVarActive && !isOOS;
             const isSelected = idx === qvVar;
 
-            let btnClass = "";
+            let cardClass = "";
             if (!isSelectable) {
-                btnClass = "bg-slate-100 dark:bg-slate-800/40 border-slate-200 dark:border-slate-700 text-slate-400 opacity-50 cursor-not-allowed";
+                cardClass = "bg-slate-100/70 dark:bg-slate-800/40 border-slate-200 dark:border-slate-700/60 text-slate-400 opacity-50 cursor-not-allowed";
             } else if (isSelected) {
-                btnClass = "bg-[rgba(var(--color-primary-rgb),0.1)] border-[var(--color-primary)] text-[var(--color-primary)] font-black shadow-xs ring-1 ring-[var(--color-primary)]/40";
+                cardClass = "border-2 border-amber-500 bg-amber-50/70 dark:bg-amber-950/30 ring-2 ring-amber-400/40 shadow-xs text-amber-950 dark:text-amber-200";
             } else {
-                btnClass = "bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:border-[var(--color-primary)]/40";
+                cardClass = "bg-white dark:bg-slate-800/90 border-slate-200/80 dark:border-slate-700/80 text-slate-700 dark:text-slate-300 hover:border-amber-400/60";
             }
 
-            const colorDot = r.colorCode ? `<span class="w-3.5 h-3.5 rounded-full shrink-0 border border-black/10 shadow-xs" style="background-color: ${esc(r.colorCode)}"></span>` : '';
+            const colorHex = r.colorCode || (p.colorCode || '#CBD5E1');
+            const colorDot = `<span class="w-8 h-8 sm:w-9 sm:h-9 rounded-full shrink-0 border border-black/10 shadow-xs flex items-center justify-center mx-auto transition-transform ${isSelected ? 'scale-110' : ''}" style="background-color: ${esc(colorHex)}"></span>`;
 
             return `
-                <button ${!isSelectable ? 'disabled' : ''} onclick="selectQuickVariant(${idx})" class="px-3 py-2 rounded-xl text-xs font-bold border transition-all active:scale-95 flex items-center gap-2 cursor-pointer ${btnClass}">
+                <button ${!isSelectable ? 'disabled' : ''} onclick="selectQuickVariant(${idx})" class="p-2 sm:p-2.5 rounded-2xl text-center border transition-all active:scale-95 flex flex-col items-center justify-center gap-1.5 cursor-pointer relative overflow-hidden ${cardClass}">
                     ${colorDot}
-                    <span class="${!isSelectable ? 'line-through' : ''}">${esc(r.name)}</span>
-                    ${isOOS ? '<span class="text-[9px] text-rose-500 font-bold ml-1">Habis</span>' : ''}
+                    <div class="w-full min-w-0 px-0.5">
+                        <span class="block text-[10px] sm:text-[10.5px] font-black leading-tight truncate ${isSelected ? 'text-amber-950 dark:text-amber-200' : 'text-slate-800 dark:text-white'} ${!isSelectable ? 'line-through' : ''}">${esc(r.name)}</span>
+                        <span class="block text-[8px] sm:text-[8.5px] font-bold text-slate-400 dark:text-slate-500 truncate mt-0.5">${esc(r.code || r.unit || (r.colorCode ? r.colorCode.toUpperCase() : ''))}</span>
+                    </div>
+                    ${isOOS ? '<span class="absolute top-1 right-1 px-1 py-0.5 rounded text-[7.5px] bg-rose-500 text-white font-bold leading-none">Habis</span>' : ''}
                 </button>
             `;
         }).join('');
     }
+
+    // Wishlist UI State
+    updateQuickVariantWishUI();
 
     // Button states
     const isOutOfStock = useStk && varStock <= 0;
@@ -1374,3 +1438,6 @@ window.selectQuickVariant = selectQuickVariant;
 window.updateQuickVariantQty = updateQuickVariantQty;
 window.quickVariantAddToCart = quickVariantAddToCart;
 window.quickVariantBuyNow = quickVariantBuyNow;
+window.toggleQuickVariantWishlist = toggleQuickVariantWishlist;
+window.updateQuickVariantWishUI = updateQuickVariantWishUI;
+

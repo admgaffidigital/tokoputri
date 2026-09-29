@@ -511,31 +511,39 @@ export const renderRewardCatalog = () => {
     let rHTML = `
     <div class="flex items-center justify-between mb-2.5">
         <h3 class="font-bold text-slate-800 dark:text-white text-xs sm:text-sm tracking-tight flex items-center gap-2">
-            <div class="w-7 h-7 rounded-lg bg-[var(--color-primary)] flex items-center justify-center text-white shadow-2xs">
+            <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center text-white shadow-2xs">
                 <i class="fa-solid fa-gift text-xs"></i>
-            </div> KATALOG HADIAH POIN PELANGGAN
+            </div> KATALOG REWARD POIN
         </h3>
-        <button type="button" onclick="if(typeof window.openMemberModal==='function') window.openMemberModal(); else if(typeof window.showToast==='function') window.showToast('Gunakan poin Anda untuk menukar hadiah menarik!');" class="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg border border-[var(--color-primary)]/30 text-[var(--color-primary)] hover:bg-[var(--color-primary)] hover:text-white transition-all active:scale-95 flex items-center gap-1 cursor-pointer">
-            Lihat Kartu Member <i class="fa-solid fa-chevron-right text-[8px]"></i>
+        <button type="button" onclick="if(typeof window.openMemberModal==='function') window.openMemberModal(); else if(typeof window.showToast==='function') window.showToast('Gunakan poin Anda untuk menukar hadiah menarik!');" class="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg border border-amber-500/40 text-amber-700 dark:text-amber-400 hover:bg-amber-500 hover:text-white transition-all active:scale-95 flex items-center gap-1 cursor-pointer">
+            Lihat Kartu VIP <i class="fa-solid fa-chevron-right text-[8px]"></i>
         </button>
     </div>
     <div class="flex gap-2.5 sm:gap-3 overflow-x-auto hide-scrollbar snap-x pb-3 pt-1">
         ${activeRewards.map((r) => {
+            const ptsCost = parseFloat(r.pointsCost || r.pointsRequired) || 0;
             return `
-            <div class="w-[115px] sm:w-[130px] shrink-0 snap-start relative group cursor-pointer active:scale-95 transition-all duration-200" onclick="if(typeof window.openMemberModal==='function') window.openMemberModal(); else if(typeof window.showToast==='function') window.showToast('Tukarkan hadiah ini saat checkout menggunakan poin belanja Anda!');">
-                <div class="w-full bg-[var(--color-primary)] rounded-xl shadow-xs hover:shadow-sm hover:-translate-y-0.5 transition-all duration-200 flex flex-col relative overflow-hidden border border-white/20 text-white p-1.5">
-                    <div class="absolute -right-3 -top-3 w-16 h-16 bg-white/20 rounded-full blur-lg pointer-events-none"></div>
-                    <div class="absolute bottom-8 -left-2.5 w-4 h-4 rounded-full bg-[#f1f5f9] dark:bg-[#0b1121] border-r border-white/20 z-20 pointer-events-none transition-colors duration-300 shadow-inner"></div>
-                    <div class="absolute bottom-8 -right-2.5 w-4 h-4 rounded-full bg-[#f1f5f9] dark:bg-[#0b1121] border-l border-white/20 z-20 pointer-events-none transition-colors duration-300 shadow-inner"></div>
-                    <div class="absolute bottom-10 left-1.5 right-1.5 border-t border-dashed border-white/30 z-10 pointer-events-none"></div>
-                    <div class="w-full aspect-square rounded-lg bg-white flex items-center justify-center overflow-hidden relative shadow-inner z-0 p-1.5">
-                        <img loading="lazy" src="${esc(r.img)}" alt="${esc(r.name)}" class="w-full h-full object-contain transition-transform duration-300 group-hover:scale-105" onerror="this.onerror=null;this.src='https://placehold.co/400?text=Hadiah'">
-                        <div class="absolute top-1 left-1 bg-rose-500 text-white text-[7px] sm:text-[8px] font-bold px-1.5 py-0.5 rounded-md shadow-2xs uppercase tracking-wider"><i class="fa-solid fa-gift mr-0.5"></i>Gratis</div>
-                        <div class="absolute top-1 right-1 bg-[var(--color-primary)] text-white text-[7px] sm:text-[8px] font-bold px-1.5 py-0.5 rounded-md shadow-2xs border border-white/20">${parseFloat(r.pointsCost || r.pointsRequired) || 0} Poin</div>
+            <div class="w-[130px] sm:w-[145px] shrink-0 snap-start relative group cursor-pointer active:scale-95 transition-all duration-200" onclick="if(typeof window.openMemberModal==='function') window.openMemberModal(); else if(typeof window.showToast==='function') window.showToast('Tukarkan hadiah ini saat checkout menggunakan poin belanja Anda!');">
+                <div class="w-full bg-white dark:bg-slate-800 rounded-2xl shadow-xs hover:shadow-md hover:-translate-y-1 transition-all duration-300 flex flex-col relative overflow-hidden border border-slate-200/90 dark:border-slate-700/80 p-2 text-slate-800 dark:text-slate-100">
+                    <!-- Badges Row -->
+                    <div class="flex items-center justify-between gap-1 mb-1.5">
+                        <span class="bg-rose-500 text-white text-[7.5px] sm:text-[8px] font-extrabold px-1.5 py-0.5 rounded-full uppercase tracking-wider shadow-2xs flex items-center gap-1">
+                            <i class="fa-solid fa-gift text-[7px]"></i> Gratis
+                        </span>
+                        <span class="bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border border-amber-300/40 dark:border-amber-700/50 text-[7.5px] sm:text-[8px] font-black px-1.5 py-0.5 rounded-full flex items-center gap-1 shadow-2xs">
+                            <i class="fa-solid fa-coins text-amber-500 text-[7px]"></i> ${ptsCost} Poin
+                        </span>
                     </div>
-                    <div class="w-full h-3.5 shrink-0"></div>
-                    <div class="h-7 w-full px-0.5 flex flex-col justify-center items-center relative z-0 shrink-0 mb-0.5">
-                        <h4 class="text-[9px] sm:text-[10px] font-bold text-white leading-tight line-clamp-2 uppercase tracking-wider text-center drop-shadow-xs">${esc(r.name)}</h4>
+                    <!-- Reward Image -->
+                    <div class="w-full aspect-square rounded-xl bg-slate-50 dark:bg-slate-900/50 flex items-center justify-center overflow-hidden relative border border-slate-100 dark:border-slate-700/60 p-2 group-hover:bg-amber-50/20 transition-colors">
+                        <img loading="lazy" src="${esc(r.img)}" alt="${esc(r.name)}" class="w-full h-full object-contain transition-transform duration-300 group-hover:scale-108" onerror="this.onerror=null;this.src='https://placehold.co/400?text=Hadiah'">
+                    </div>
+                    <!-- Details & Action -->
+                    <div class="mt-2 flex-1 flex flex-col justify-between">
+                        <h4 class="text-[9.5px] sm:text-[10px] font-black text-slate-800 dark:text-white leading-snug line-clamp-2 uppercase tracking-tight text-center drop-shadow-2xs">${esc(r.name)}</h4>
+                        <div class="mt-2 w-full py-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white text-[8.5px] sm:text-[9.5px] font-extrabold uppercase tracking-wider text-center shadow-2xs transition-all flex items-center justify-center gap-1 group-hover:shadow-xs">
+                            <i class="fa-solid fa-hand-holding-dollar text-[8px]"></i> Tukar Poin
+                        </div>
                     </div>
                 </div>
             </div>`;
@@ -1169,11 +1177,11 @@ export const rMemberModalBody = () => {
     } else {
         setH('member-modal-body', `
             <!-- PREVIEW KARTU CONTOH (MEMIKAT PELANGGAN) -->
-            <div class="opacity-90">
+            <div class="opacity-95">
                 ${renderDigitalMemberCard({
-                    name: 'NAMA ANDA',
+                    name: 'CONTOH: PELANGGAN VIP',
                     phone: '81234567890',
-                    points: 0
+                    points: 500
                 })}
             </div>
 

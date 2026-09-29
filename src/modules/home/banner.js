@@ -186,7 +186,9 @@ export const scrollBannerNext = () => {
 export const startBannerAutoSlide = () => {
     clearInterval(window.bannerTmr);
     const s = el('banner-slider');
-    if (!s || !appData.banners || appData.banners.length <= 1) return;
+    if (!s) return;
+    const items = s.querySelectorAll('.banner-slide-item');
+    if (!items || items.length <= 1) return;
 
     const syncBannerVideos = () => {
         forcePlayBannerVideos();
