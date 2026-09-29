@@ -506,7 +506,7 @@ export const openSettingForm = (type) => {
                         <label class="block text-[11px] font-bold text-slate-600 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Gaya Tampilan Kategori</label>
                         <select id="set-category-style" class="admin-input !py-3 bg-white dark:bg-slate-900 shadow-sm w-full text-xs">
                             <option value="grid" ${appData.store.categoryStyle === 'grid' ? 'selected' : ''}>Grid Ikon (Kotak berjejer)</option>
-                            <option value="pill" ${appData.store.categoryStyle === 'pill' ? 'selected' : ''}>Pill Horizontal Scroll (Kapsul geser)</option>
+                            <option value="pill" ${(appData.store.categoryStyle === 'pill' || appData.store.categoryStyle === 'text' || !appData.store.categoryStyle) ? 'selected' : ''}>Pill Horizontal Scroll (Kapsul geser)</option>
                         </select>
                     </div>
                     <div>
@@ -540,8 +540,8 @@ export const openSettingForm = (type) => {
                     <div>
                         <label class="block text-[11px] font-bold text-slate-600 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Gaya Tampilan Merek</label>
                         <select id="set-brand-style" class="admin-input !py-3 bg-white dark:bg-slate-900 shadow-sm w-full text-xs">
-                            <option value="logo" ${appData.store.brandStyle === 'logo' || !appData.store.brandStyle ? 'selected' : ''}>Logo Kotak (Grid Visual)</option>
-                            <option value="text" ${appData.store.brandStyle === 'text' ? 'selected' : ''}>Pill Horizontal Scroll (Kapsul teks)</option>
+                            <option value="logo" ${appData.store.brandStyle === 'logo' || appData.store.brandStyle === 'image' || !appData.store.brandStyle ? 'selected' : ''}>Logo Kotak (Grid Visual)</option>
+                            <option value="pill" ${(appData.store.brandStyle === 'pill' || appData.store.brandStyle === 'text') ? 'selected' : ''}>Pill Horizontal Scroll (Kapsul teks)</option>
                         </select>
                     </div>
                     <div>
@@ -1037,6 +1037,8 @@ export const saveAdminSettings = async (type) => {
         } else {
             showToast("Tersimpan!");
             rAdmSet(); 
+            if (typeof rDyn === 'function') rDyn(); else if (typeof window.rDyn === 'function') window.rDyn();
+            if (typeof rCat === 'function') rCat(); else if (typeof window.rCat === 'function') window.rCat();
         }
     } catch(e) { 
         showToast("Gagal menyimpan pengaturan"); 

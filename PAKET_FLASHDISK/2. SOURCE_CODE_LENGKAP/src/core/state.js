@@ -20,7 +20,7 @@ export const defApp = {
         freeShippingMinSpendEnabled: false,
         freeShippingMinSpendAmount: 0,
         allProductsIcon: "", allBrandsIcon: "",
-        categoryStyle: "text", brandStyle: "image",
+        categoryStyle: "pill", brandStyle: "logo",
         showCategories: true, showBrands: true,
         themeColor: "#10b981", uiTheme: "emerald",
         bgStyle: "minimalist",   // "minimalist" | "hero_arch" | "aurora_glow" | "tech_grid" | "glass_studio"

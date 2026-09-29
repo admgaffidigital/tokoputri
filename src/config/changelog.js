@@ -8,6 +8,21 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-9-90',
+        version: 'v1.9.90',
+        date: '2026-09-29',
+        title: 'Perbaikan Kritis Navigasi Kategori: Sinkronisasi Nilai Opsi "Pill Horizontal Scroll", Eliminasi Anomali Grid Ikon Permanen, dan Re-Render Instan Etalase Toko',
+        category: 'bugfix',
+        badge: 'Category Pill Nav Fix v1.9.90',
+        items: [
+            'Resolusi Evaluasi Gaya Kategori (src/modules/home/sections.js): Mengeliminasi bug pemilihan gaya navigasi kategori di mana pengaturan "Pill Horizontal Scroll" tidak berubah dan selalu jatuh ke "Grid Ikon". Evaluasi kini mengenali nilai "pill", "text" (legacy), serta nilai bawaan secara presisi.',
+            'Penyelarasan Nilai Opsi Pengaturan (src/modules/admin/settings.js): Memastikan penanda selected pada menu dropdown kategori dan merek cocok dengan nilai di database/state, serta mendukung opsi "pill" dan "text" secara harmonis.',
+            'Dukungan Visual Avatar Kapsul Geser (Pill): Item pill kini dapat menampilkan cover thumbnail gambar kategori/brand secara proporsional jika tersedia, dengan fallback mulus ke ikon font-awesome jika gambar kosong.',
+            'Sinkronisasi Re-Render Instan In-Memory: Menyimpan pengaturan katalog di tab admin langsung memperbarui tampilan storefront kategori & brand (rDyn & rCat) secara instan tanpa perlu memuat ulang halaman.',
+            'Multi-Channel Build & Sync v1.9.90 (Android VersionCode 10990): Terkompilasi dan tersinkronisasi penuh ke Vite build produksi, paket flashdisk, dan Capacitor Android.'
+        ]
+    },
+    {
         id: 'log-1-9-89',
         version: 'v1.9.89',
         date: '2026-09-28',
