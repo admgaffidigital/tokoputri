@@ -257,9 +257,12 @@ export const rCat = () => {
             return `
             <a href="?p=${p.id}" class="w-full bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700/50 rounded-[1.5rem] shadow-soft ${cardCursorCls} transition-all duration-300 flex flex-col group relative overflow-hidden text-left" onclick="event.preventDefault(); openProductModal('${esc(p.id)}')">
                 ${nH}
-                <div class="relative aspect-square w-full flex items-center justify-center shrink-0 border-b border-slate-100 dark:border-slate-700/50 overflow-hidden">
+                <div class="relative aspect-square w-full bg-white dark:bg-slate-900 flex items-center justify-center shrink-0 border-b border-slate-100 dark:border-slate-700/50 overflow-hidden">
                       ${stockBadge}
-                      ${nH ? `<div class="w-full h-full grayscale opacity-50">${coverMdHtml}</div>` : coverMdHtml}
+                      ${hasImg 
+                          ? `<img width="300" height="300" loading="lazy" decoding="async" sizes="(max-width: 640px) 45vw, (max-width: 1024px) 30vw, 20vw" src="${imgUrl}" alt="${esc(p.name)}" onerror="this.onerror=null;this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='flex';" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 ${nH ? 'grayscale opacity-50' : ''}">
+                             <div class="w-full h-full" style="display:none">${coverMdHtml}</div>`
+                          : coverMdHtml}
                 </div>
                 <div class="flex-1 flex flex-col p-3 sm:p-4 min-w-0 bg-white dark:bg-slate-800 relative z-10">
                     ${bH}
@@ -282,9 +285,12 @@ export const rCat = () => {
             return `
             <a href="?p=${p.id}" class="w-full bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700/50 rounded-[1.5rem] shadow-soft ${cardCursorClsList} transition-all duration-300 flex items-stretch p-2.5 sm:p-3 gap-3 sm:gap-4 group relative overflow-hidden text-left" onclick="event.preventDefault(); openProductModal('${esc(p.id)}')">
                 ${nH}
-                <div class="relative w-24 h-24 sm:w-28 sm:h-28 shrink-0 rounded-xl flex items-center justify-center border border-slate-100 dark:border-slate-700/50 overflow-hidden">
+                <div class="relative w-24 h-24 sm:w-28 sm:h-28 shrink-0 bg-white dark:bg-slate-900 rounded-xl flex items-center justify-center border border-slate-100 dark:border-slate-700/50 overflow-hidden">
                     ${stockBadge}
-                    ${nH ? `<div class="w-full h-full grayscale opacity-50">${coverSmHtml}</div>` : coverSmHtml}
+                    ${hasImg
+                        ? `<img width="96" height="96" loading="lazy" decoding="async" sizes="96px" src="${imgUrl}" alt="${esc(p.name)}" onerror="this.onerror=null;this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='flex';" class="max-w-full max-h-full object-contain transition-transform duration-500 group-hover:scale-105 ${nH ? 'grayscale opacity-50' : ''}">
+                           <div class="w-full h-full" style="display:none">${coverSmHtml}</div>`
+                        : coverSmHtml}
                 </div>
                 <div class="flex-1 min-w-0 py-1 flex flex-col justify-center h-full relative z-10 pr-2">
                     ${bH}
