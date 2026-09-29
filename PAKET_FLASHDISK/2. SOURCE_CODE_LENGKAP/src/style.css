@@ -534,40 +534,68 @@ body, #app-container,
     overflow: hidden;
     user-select: none;
     box-sizing: border-box;
-    transition: transform 0.3s ease;
+    /* Soft Warm Porcelain Studio Canvas (Cerah & Mewah) */
+    background: linear-gradient(180deg, #fdfcf9 0%, #f6f1e8 50%, #eee6d8 100%);
+    transition: transform 0.35s ease, background 0.3s ease;
 }
 
-/* Ambient Radial Glow */
+.dark .pos-smart-cover {
+    /* Sleek Deep Navy / Slate Studio Canvas */
+    background: linear-gradient(180deg, #1e293b 0%, #151e2e 50%, #0f172a 100%);
+}
+
+/* Subtle Architectural Studio Grid/Dot Pattern */
+.pos-smart-cover .cover-studio-grid {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.45;
+    background-image: radial-gradient(rgba(148, 163, 184, 0.3) 1px, transparent 1px);
+    background-size: 14px 14px;
+}
+.dark .pos-smart-cover .cover-studio-grid {
+    opacity: 0.18;
+    background-image: radial-gradient(rgba(255, 255, 255, 0.4) 1px, transparent 1px);
+}
+
+/* Ambient Radial Aura Behind Pod */
 .pos-smart-cover .cover-glow {
     position: absolute;
-    top: -25%;
+    top: 50%;
     left: 50%;
-    transform: translateX(-50%);
-    width: 150%;
-    height: 120%;
+    transform: translate(-50%, -55%);
+    width: 140%;
+    height: 140%;
     pointer-events: none;
-    opacity: 0.7;
+    opacity: 0.85;
     border-radius: 50%;
+    filter: blur(8px);
 }
 
-/* Decorative Geometric Rings */
+/* Decorative Modern Floating Rings */
 .pos-smart-cover .cover-ring {
     position: absolute;
     border-radius: 50%;
-    border: 1px solid rgba(255, 255, 255, 0.08);
     pointer-events: none;
+    border: 1px dashed rgba(148, 163, 184, 0.22);
+}
+.dark .pos-smart-cover .cover-ring {
+    border-color: rgba(255, 255, 255, 0.08);
 }
 .pos-smart-cover .cover-ring-1 {
-    width: 170%;
-    height: 170%;
-    top: -35%;
-    left: -35%;
+    width: 130px;
+    height: 130px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -55%);
 }
 .pos-smart-cover .cover-ring-2 {
-    width: 120%;
-    height: 120%;
-    bottom: -35%;
-    right: -25%;
+    width: 168px;
+    height: 168px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -55%);
+    opacity: 0.5;
 }
 
 /* Central Content */
@@ -579,140 +607,190 @@ body, #app-container,
     align-items: center;
     justify-content: center;
     text-align: center;
-    padding: 4px;
 }
 
-/* Glass Icon Circle */
-.pos-smart-cover .cover-icon-circle {
+/* 3D Claymorphic Pod */
+.pos-smart-cover .cover-pod-wrap {
+    perspective: 800px;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 50%;
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
-    background: rgba(255, 255, 255, 0.14);
-    border: 1.5px solid rgba(255, 255, 255, 0.25);
-    transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-.pos-product-card:hover .cover-icon-circle,
-.group:hover .pos-smart-cover .cover-icon-circle {
-    transform: scale(1.12) rotate(-5deg);
+.pos-smart-cover .cover-3d-pod {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 22px;
+    border: 2px solid rgba(255, 255, 255, 0.85);
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s ease;
+    transform: translateZ(0);
 }
 
-/* Monogram Initials */
-.pos-smart-cover .cover-monogram {
-    font-weight: 900;
-    letter-spacing: 0.08em;
-    color: #ffffff;
-    line-height: 1;
-    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+.dark .pos-smart-cover .cover-3d-pod {
+    border-color: rgba(255, 255, 255, 0.35);
+}
+
+.group:hover .pos-smart-cover .cover-3d-pod,
+.pos-product-card:hover .cover-3d-pod {
+    transform: translateY(-5px) scale(1.08) rotate(-3deg);
+}
+
+/* Hero Icon inside Pod */
+.pos-smart-cover .cover-hero-icon {
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.group:hover .pos-smart-cover .cover-hero-icon,
+.pos-product-card:hover .cover-hero-icon {
+    transform: scale(1.12) rotate(6deg);
 }
 
 /* Bottom Category Capsule */
 .pos-smart-cover .cover-pill {
-    position: relative;
-    z-index: 2;
+    position: absolute;
+    bottom: 22px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 3;
     display: inline-flex;
     align-items: center;
-    gap: 4.5px;
-    padding: 3px 9px;
+    gap: 4px;
+    padding: 3px 10px;
     border-radius: 9999px;
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    background: rgba(255, 255, 255, 0.88);
+    border: 1px solid rgba(226, 232, 240, 0.85);
     font-size: 8px;
     font-weight: 800;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: #ffffff;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
-    max-width: 90%;
+    letter-spacing: 0.06em;
+    color: #334155;
+    box-shadow: 0 4px 10px -2px rgba(0, 0, 0, 0.08), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
+    max-width: 85%;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    transition: transform 0.25s ease, background 0.25s ease, color 0.25s ease;
+}
+
+.dark .pos-smart-cover .cover-pill {
+    background: rgba(15, 23, 42, 0.85);
+    border-color: rgba(255, 255, 255, 0.15);
+    color: #cbd5e1;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.group:hover .pos-smart-cover .cover-pill {
+    transform: translate(-50%, -2px);
+    background: #ffffff;
+    color: var(--color-primary);
+}
+.dark .group:hover .pos-smart-cover .cover-pill {
+    background: rgba(30, 41, 59, 0.95);
+    color: var(--color-primary-light);
 }
 
 /* Store Watermark */
 .pos-smart-cover .cover-watermark {
     position: absolute;
     bottom: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
     font-size: 6.5px;
     font-weight: 800;
-    letter-spacing: 0.12em;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.42);
-    z-index: 1;
+    color: #94a3b8;
+    z-index: 2;
     pointer-events: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.dark .pos-smart-cover .cover-watermark {
+    color: #64748b;
 }
 
 /* Size Variants */
-/* LG Size: Product Modal */
-.pos-smart-cover.cover-lg .cover-icon-circle {
-    width: 68px;
-    height: 68px;
-    font-size: 28px;
-    margin-bottom: 12px;
+/* LG Size: Product Modal (~280px - 400px) */
+.pos-smart-cover.cover-lg .cover-3d-pod {
+    width: 96px;
+    height: 96px;
+    border-radius: 28px;
 }
-.pos-smart-cover.cover-lg .cover-monogram {
+.pos-smart-cover.cover-lg .cover-hero-icon {
     font-size: 40px;
-    margin-bottom: 14px;
+}
+.pos-smart-cover.cover-lg .cover-ring-1 {
+    width: 180px;
+    height: 180px;
+}
+.pos-smart-cover.cover-lg .cover-ring-2 {
+    width: 230px;
+    height: 230px;
 }
 .pos-smart-cover.cover-lg .cover-pill {
-    font-size: 10px;
+    bottom: 28px;
+    font-size: 9.5px;
     padding: 4px 14px;
-    margin-bottom: 14px;
 }
 .pos-smart-cover.cover-lg .cover-watermark {
-    bottom: 12px;
-    font-size: 8px;
+    bottom: 10px;
+    font-size: 7.5px;
 }
 
-/* MD Size: Default Grid Card */
-.pos-smart-cover.cover-md .cover-icon-circle {
-    width: 44px;
-    height: 44px;
-    font-size: 18px;
-    margin-bottom: 6px;
+/* MD Size: Default Grid Card (~140px - 220px) */
+.pos-smart-cover.cover-md .cover-3d-pod {
+    width: 66px;
+    height: 66px;
+    border-radius: 20px;
 }
-.pos-smart-cover.cover-md .cover-monogram {
-    font-size: 22px;
-    margin-bottom: 8px;
+.pos-smart-cover.cover-md .cover-hero-icon {
+    font-size: 26px;
+}
+.pos-smart-cover.cover-md .cover-pill {
+    bottom: 18px;
 }
 
 /* SM Size: List Item (~52px - 96px) */
 .pos-smart-cover.cover-sm {
-    border-radius: 12px;
+    border-radius: 14px;
 }
-.pos-smart-cover.cover-sm .cover-icon-circle {
-    width: 32px;
-    height: 32px;
-    font-size: 13px;
-    margin-bottom: 2px;
+.pos-smart-cover.cover-sm .cover-3d-pod {
+    width: 42px;
+    height: 42px;
+    border-radius: 14px;
+    border-width: 1.5px;
 }
-.pos-smart-cover.cover-sm .cover-monogram {
-    font-size: 14px;
+.pos-smart-cover.cover-sm .cover-hero-icon {
+    font-size: 17px;
 }
 .pos-smart-cover.cover-sm .cover-pill,
-.pos-smart-cover.cover-sm .cover-watermark {
+.pos-smart-cover.cover-sm .cover-watermark,
+.pos-smart-cover.cover-sm .cover-ring {
     display: none;
 }
 
 /* THUMB Size: Cart & Tiny Thumbnails (~36px - 44px) */
 .pos-smart-cover.cover-thumb {
-    border-radius: 8px;
+    border-radius: 10px;
 }
-.pos-smart-cover.cover-thumb .cover-icon-circle {
-    width: 24px;
-    height: 24px;
-    font-size: 10px;
+.pos-smart-cover.cover-thumb .cover-3d-pod {
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
     border-width: 1px;
 }
-.pos-smart-cover.cover-thumb .cover-monogram {
-    display: none;
+.pos-smart-cover.cover-thumb .cover-hero-icon {
+    font-size: 13px;
 }
 .pos-smart-cover.cover-thumb .cover-pill,
-.pos-smart-cover.cover-thumb .cover-watermark {
+.pos-smart-cover.cover-thumb .cover-watermark,
+.pos-smart-cover.cover-thumb .cover-ring,
+.pos-smart-cover.cover-thumb .cover-studio-grid {
     display: none;
 }
 

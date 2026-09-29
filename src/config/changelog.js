@@ -8,6 +8,22 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-9-95',
+        version: 'v1.9.95',
+        date: '2026-09-29',
+        title: 'Redesain Menyeluruh Visual Cover Produk Tanpa Foto: Modern 3D Studio Claymorphism & Eliminasi Monogram Kaku',
+        category: 'ui',
+        badge: 'Modern 3D Studio Claymorphism Cover v1.9.95',
+        items: [
+            'Arsitektur Visual 3D Claymorphic Studio (src/core/product-cover.js & src/style.css): Menggantikan latar gelap kusam dan hitam kelam dengan kanvas studio porcelain hangat (#fdfcf9 ke #eee6d8) bertekstur architectural micro-grid halus dan ambient volumetric aura yang mewah.',
+            'Wadah Ikon 3D Squircle Melayang (Floating 3D Pod): Menghadirkan pod squircle 3D berbahan claymorphic lembut dengan multi-layer soft drop shadow dan highlight berkilau yang memberikan kedalaman fisik realistis.',
+            'Eliminasi Huruf Monogram Kaku (MB / GC): Menghapus singkatan inisial besar yang membingungkan dan menggantikannya dengan ikon ilustrasi kategori produk yang besar, hidup, dan tajam (32px-38px) dengan efek drop-shadow dan micro-interaction interaktif saat di-hover.',
+            'Pengayaan Kategori & Penyelarasan Tema Toko: Menambahkan tema Kebutuhan & Rumah Tangga (minyak, sembako, dll) dengan gradien Warm Golden Honey, memperbarui tema Perkakas menjadi Titanium Blue cerah, Gembok & Kunci dengan Golden Brass, serta tema bawaan Radiant Warm Luxury Gold khas Toko Putri.',
+            'Kapsul Kategori Melayang & Watermark Resmi: Dilengkapi frosted glass capsule pill presisi di bagian bawah pod dan tanda watermark halus PUTRI UTAMA TEKNIK yang mempertegas identitas ritel bergaransi resmi.',
+            'Multi-Channel Build & Sync v1.9.95 (Android versionCode 10995): Build produksi Vite, paket flashdisk, dan platform Android Capacitor terkompilasi dan tersinkronisasi 100%.'
+        ]
+    },
+    {
         id: 'log-1-9-94',
         version: 'v1.9.94',
         date: '2026-09-29',
