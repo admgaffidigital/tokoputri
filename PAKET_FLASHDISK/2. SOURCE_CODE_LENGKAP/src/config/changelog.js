@@ -11,9 +11,9 @@ export const DEFAULT_CHANGELOG = [
         id: 'log-1-9-96',
         version: 'v1.9.96',
         date: '2026-09-29',
-        title: 'Arsitektur Cerdas Dual-Model Varian Produk: Katalog Warna Cat vs Varian Standar Flex-Chips & Eliminasi Swatch Dummy',
+        title: 'Dual-Model Varian Cerdas, Minimalist Icon Cover Katalog & Upgrade Visual Squircle Pod Emas',
         category: 'feature',
-        badge: 'Smart Dual-Model Variants System v1.9.96',
+        badge: 'Smart Variants + Minimalist Icon Cover v1.9.96',
         items: [
             'Arsitektur Dual-Model Varian (src/modules/catalog/product-modal.js): Membedakan secara cerdas tampilan varian menjadi 2 model: Model Katalog Warna Cat (khusus jika kode HEX diisi sebagai simulasi warna cat) dan Model Varian Standar / Umum (jika kode HEX tidak diisi seperti pada gembok, paku, pipa, alat teknik, dll).',
             'Model 1 - Swatch Katalog Warna Cat: Merender kartu grid swatch katalog warna cat presisi dengan lingkaran warna HEX asli sebagai simulasi warna cat, kode warna/katalog, nama varian, dan tombol kaca pembesar untuk pratinjau perbesar warna.',
@@ -21,6 +21,8 @@ export const DEFAULT_CHANGELOG = [
             'Eliminasi Lingkaran Warna Dummy (#CBD5E1): Menghapus paksaan fallback swatch abu-abu palsu pada produk non-cat sehingga varian umum tidak lagi berpenampilan seperti produk cat.',
             'Pengecualian Gambar Thumbnail Varian: Jika varian standar memiliki gambar foto (v.img), chip varian menampilkan thumbnail foto varian; jika tanpa foto dan tanpa hex, chip tampil bersih sebagai teks murni.',
             'Harmonisasi Lembar Varian Kasir POS (src/modules/pos/pos-variant-sheet.js): Menyelaraskan tampilan varian kasir dengan membaca colorCode untuk warna cat dan thumbnail foto untuk varian bergambar.',
+            'Minimalist Icon Cover Katalog Produk (src/modules/catalog/catalog.js): Kartu produk di grid dan list storefront kini SELALU menampilkan icon squircle solid bergradien emas — fa-box-open (bahan/perkakas) atau fa-bag-shopping (umum) — dengan watermark resmi "PUTRI UTAMA TEKNIK". Tampilan seragam, rapi, tidak jomplang antar produk yang punya foto berbeda kualitas. Foto asli tetap tersimpan & tampil di modal detail produk.',
+            'Upgrade Visual Cover Premium (src/style.css): Icon pod diupgrade dari outline tipis transparan menjadi squircle solid bergradien emas murni, ikon putih kontras di atasnya, shadow layered premium, hover spring-bounce animation naik +4px scale 1.07, background canvas putih bersih warm-tinted (#fdfcfa→#f3ede2), dan watermark bertinta warna emas tema (rgba primary 0.45) — eliminasi total tampilan gelap kusam lama.',
             'Multi-Channel Build & Sync v1.9.96 (Android versionCode 10996): Sinkronisasi paket web produksi, flashdisk, dan platform Android Capacitor.'
         ]
     },
