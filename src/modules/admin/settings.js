@@ -496,7 +496,84 @@ export const openSettingForm = (type) => {
                 </div>
             </div>
 
-            <!-- KARTU 4: WAKTU OPERASIONAL, FOOTER & HADIAH -->
+            <!-- KARTU 4: BANNER HERO SAMBUTAN & MASKOT 3D (SLIDE #0) -->
+            <div class="p-4 sm:p-5 bg-slate-50/80 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700/80 rounded-2xl shadow-sm space-y-4">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-xl flex items-center justify-center text-sm shadow-sm shrink-0" style="background: rgba(var(--color-primary-rgb),0.1); color: var(--color-primary)">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider">Banner Sambutan &amp; Maskot 3D (Slide #0)</h4>
+                            <p class="text-[10px] text-slate-500 dark:text-slate-400">Atur foto maskot/karakter, status badge 'Siap Melayani', teks sambutan, atau sembunyikan slide utama</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-600 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Status Tayang Slide Sambutan</label>
+                        <select id="set-show-hero-slide" class="admin-input !py-3 bg-white dark:bg-slate-900 shadow-sm w-full text-xs font-bold">
+                            <option value="true" ${appData.store.showHeroSlide !== false && appData.store.showHeroSlide !== 'false' ? 'selected' : ''}>Ya, Tampilkan Slide Hero Sambutan (Default)</option>
+                            <option value="false" ${appData.store.showHeroSlide === false || appData.store.showHeroSlide === 'false' ? 'selected' : ''}>Sembunyikan (Hanya Tampilkan Banner Promosi Produk)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-600 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Teks Badge Status (Di Bawah Foto)</label>
+                        <input autocomplete="off" id="set-hero-badge-text" value="${esc(appData.store.heroBadgeText || 'Siap Melayani')}" class="admin-input !py-3 bg-white dark:bg-slate-900 shadow-sm w-full text-xs" placeholder="Contoh: Siap Melayani">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-600 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Foto / Animasi Maskot (JPG · PNG · GIF Bergerak ✨)</label>
+                    <div class="flex gap-2">
+                        <input autocomplete="off" id="set-hero-mascot-img" value="${esc(appData.store.heroMascotImg || '')}"
+                               class="admin-input !py-3 bg-white dark:bg-slate-900 shadow-sm flex-1 text-xs"
+                               placeholder="URL gambar/GIF atau klik Upload (Kosong = Maskot 3D Asli)"
+                               oninput="const p=document.getElementById('card-preview-mascot'); if(p) p.src = this.value || '/putri_mascot_3d.jpg';">
+                        <label class="bg-white hover:bg-slate-50 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-300 rounded-xl px-4 flex items-center justify-center cursor-pointer transition-all shrink-0 active:scale-95 shadow-sm font-bold text-xs">
+                            <i class="fa-solid fa-cloud-arrow-up mr-1.5"></i> Upload
+                            <input type="file" accept="image/gif,image/jpeg,image/png,image/webp" class="hidden" onchange="handleImageUpload(this, 'set-hero-mascot-img'); setTimeout(() => { const v=document.getElementById('set-hero-mascot-img')?.value; const p=document.getElementById('card-preview-mascot'); if(p && v) p.src=v; }, 800);">
+                        </label>
+                    </div>
+                    <p class="text-[10px] text-slate-400 dark:text-slate-500 mt-1 ml-0.5"><i class="fa-solid fa-circle-info mr-1"></i>Mendukung GIF animasi (maks 8MB) · JPG/PNG/WEBP maks 3MB · URL langsung dari internet juga bisa</p>
+                    <div class="flex items-center justify-between gap-2 mt-2 flex-wrap">
+                        <div class="flex gap-2 flex-wrap">
+                            <button type="button" onclick="document.getElementById('set-hero-mascot-img').value='/putri_mascot_3d.jpg'; const p=document.getElementById('card-preview-mascot'); if(p) p.src='/putri_mascot_3d.jpg'; showToast('Maskot 3D asli dipilih');" class="text-[10px] font-bold px-2.5 py-1 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-all active:scale-95 cursor-pointer">
+                                <i class="fa-solid fa-rotate-left mr-1"></i> Maskot 3D Asli
+                            </button>
+                            ${appData.store.logo ? `
+                            <button type="button" onclick="const l='${esc(appData.store.logo)}'; document.getElementById('set-hero-mascot-img').value=l; const p=document.getElementById('card-preview-mascot'); if(p) p.src=l; showToast('Logo toko dipilih');" class="text-[10px] font-bold px-2.5 py-1 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-all active:scale-95 cursor-pointer">
+                                <i class="fa-solid fa-store mr-1"></i> Pakai Logo Toko
+                            </button>` : ''}
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-[10px] font-bold text-slate-400">Preview:</span>
+                            <div class="w-16 h-16 rounded-xl overflow-hidden border-2 border-dashed border-slate-300 dark:border-slate-600 bg-black/10 shadow-sm shrink-0">
+                                <img id="card-preview-mascot" src="${esc(appData.store.heroMascotImg || '/putri_mascot_3d.jpg')}" class="w-full h-full object-contain" onerror="this.src='/putri_mascot_3d.jpg';" style="image-rendering: auto;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-600 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Tag Sambutan</label>
+                        <input autocomplete="off" id="set-hero-welcome-tag" value="${esc(appData.store.heroWelcomeTag || 'SELAMAT DATANG')}" class="admin-input !py-3 bg-white dark:bg-slate-900 shadow-sm w-full text-xs" placeholder="Contoh: SELAMAT DATANG">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-600 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Judul Sambutan Banner</label>
+                        <input autocomplete="off" id="set-hero-title" value="${esc(appData.store.heroTitle || appData.store.name || '')}" class="admin-input !py-3 bg-white dark:bg-slate-900 shadow-sm w-full text-xs" placeholder="Contoh: PUTRI UTAMA TEKNIK (Kosong = Nama Toko)">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-600 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Slogan / Deskripsi Sambutan Banner</label>
+                    <textarea id="set-hero-subtitle" class="admin-input !py-3 bg-white dark:bg-slate-900 shadow-sm w-full text-xs" rows="2" placeholder="Deskripsi sambutan yang tampil di kartu banner utama...">${esc(appData.store.heroSubtitle || appData.store.slogan || '')}</textarea>
+                </div>
+            </div>
+
+            <!-- KARTU 5: WAKTU OPERASIONAL, FOOTER & HADIAH -->
             <div class="p-4 sm:p-5 bg-slate-50/80 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700/80 rounded-2xl shadow-sm space-y-4">
                 <div class="flex items-center gap-3">
                     <div class="w-9 h-9 rounded-xl flex items-center justify-center text-sm shadow-sm shrink-0" style="background: rgba(var(--color-primary-rgb),0.1); color: var(--color-primary)">
@@ -1010,6 +1087,12 @@ export const saveAdminSettings = async (type) => {
             appData.store.showRewardCatalog = getV('set-show-reward-catalog') === 'true';
             appData.store.operationalHours = getV('set-hours');
             appData.store.footerCredit = getV('set-credit');
+            appData.store.showHeroSlide = getV('set-show-hero-slide') === 'true';
+            appData.store.heroMascotImg = fixD(getV('set-hero-mascot-img'));
+            appData.store.heroBadgeText = getV('set-hero-badge-text') || 'Siap Melayani';
+            appData.store.heroWelcomeTag = getV('set-hero-welcome-tag') || 'SELAMAT DATANG';
+            appData.store.heroTitle = getV('set-hero-title');
+            appData.store.heroSubtitle = getV('set-hero-subtitle');
             appData.store.themeColor = getV('set-theme-color'); 
             appData.store.uiTheme = getV('set-ui-theme');
             appData.store.bgStyle = getV('set-bg-style') || 'minimalist';
@@ -1233,6 +1316,162 @@ export const restoreData = (e) => {
     r.readAsText(file);
 };
 
+// ─── Modal Cepat Kelola Banner Hero Sambutan & Maskot 3D ──────
+export const openHeroBannerModal = () => {
+    let modal = document.getElementById('admin-hero-banner-modal');
+    if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'admin-hero-banner-modal';
+        document.body.appendChild(modal);
+    }
+    
+    const showHeroVal = appData.store.showHeroSlide !== false && appData.store.showHeroSlide !== 'false';
+    const currentMascot = appData.store.heroMascotImg || '/putri_mascot_3d.jpg';
+    
+    modal.className = "fixed inset-0 z-[120] flex items-center justify-center bg-slate-900/80 p-4 transition-opacity duration-300";
+    modal.innerHTML = `
+        <div class="relative w-full max-w-lg bg-white dark:bg-slate-900 rounded-[2rem] border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+            <div class="p-5 border-b border-slate-100 dark:border-slate-800/80 flex items-center justify-between shrink-0">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-2xl flex items-center justify-center text-lg shadow-sm" style="background: rgba(var(--color-primary-rgb),0.12); color: var(--color-primary)">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-sm sm:text-base font-black text-slate-800 dark:text-white leading-tight">Kelola Banner Sambutan &amp; Maskot</h3>
+                        <p class="text-[10px] sm:text-[11px] font-semibold text-slate-400 dark:text-slate-500 mt-0.5">Kustomisasi foto/karakter dan teks Slide #0 Beranda</p>
+                    </div>
+                </div>
+                <button type="button" onclick="closeHeroBannerModal()" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-rose-500 flex items-center justify-center transition-all cursor-pointer"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <div class="p-5 overflow-y-auto custom-scrollbar space-y-4 text-xs">
+                <!-- Preview Live Box -->
+                <div class="p-4 rounded-2xl text-white shadow-md relative overflow-hidden flex items-center justify-between"
+                     style="background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-primary) 50%, var(--color-primary-dark) 100%);">
+                    <div class="w-[62%] pr-2">
+                        <span class="inline-block px-2 py-0.5 rounded-full bg-black/25 text-[8.5px] font-black uppercase tracking-wider mb-1" id="m-preview-tag">
+                            <i class="fa-solid fa-sparkles text-amber-300"></i> ${esc(appData.store.heroWelcomeTag || 'SELAMAT DATANG')}
+                        </span>
+                        <h4 class="font-black text-sm text-white line-clamp-1" id="m-preview-title">${esc(appData.store.heroTitle || appData.store.name || 'TOKO PUTRI')}</h4>
+                        <p class="text-[9.5px] text-white/90 line-clamp-2 mt-0.5 font-medium" id="m-preview-sub">${esc(appData.store.heroSubtitle || appData.store.slogan || 'Pusat Solusi Bangunan & Cat Terlengkap')}</p>
+                    </div>
+                    <div class="w-[35%] flex flex-col items-center">
+                        <div class="w-18 h-18 rounded-2xl overflow-hidden shadow-lg border-2 border-white/60 bg-black/20 flex items-center justify-center">
+                            <img id="m-preview-img" src="${esc(currentMascot)}" class="w-full h-full object-cover" onerror="this.src='/putri_mascot_3d.jpg';">
+                        </div>
+                        <div class="mt-1 bg-slate-950/80 text-[7.5px] font-bold text-white px-2 py-0.5 rounded-full flex items-center gap-1 border border-white/20 whitespace-nowrap">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                            <span id="m-preview-badge">${esc(appData.store.heroBadgeText || 'Siap Melayani')}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tampilkan Toggle -->
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-600 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Status Tayang Slide Sambutan</label>
+                    <select id="quick-set-show-hero-slide" class="admin-input !py-3 bg-white dark:bg-slate-800 shadow-sm w-full text-xs font-bold">
+                        <option value="true" ${showHeroVal ? 'selected' : ''}>Ya, Tampilkan Slide Hero Sambutan (Rekomendasi)</option>
+                        <option value="false" ${!showHeroVal ? 'selected' : ''}>Sembunyikan Slide Sambutan (Hanya Promo Produk)</option>
+                    </select>
+                </div>
+
+                <!-- Ganti Foto / GIF Maskot / Avatar -->
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-600 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Foto / Animasi Maskot (JPG · PNG · GIF Bergerak ✨)</label>
+                    <div class="flex gap-2">
+                        <input autocomplete="off" id="quick-set-hero-mascot-img" value="${esc(appData.store.heroMascotImg || '')}"
+                               class="admin-input !py-3 bg-white dark:bg-slate-800 shadow-sm flex-1 text-xs"
+                               placeholder="URL gambar/GIF atau klik Upload (Kosong = Maskot Asli)"
+                               oninput="document.getElementById('m-preview-img').src = this.value || '/putri_mascot_3d.jpg';">
+                        <label class="bg-white hover:bg-slate-50 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-300 rounded-xl px-4 flex items-center justify-center cursor-pointer transition-all shrink-0 active:scale-95 shadow-sm font-bold text-xs">
+                            <i class="fa-solid fa-cloud-arrow-up mr-1.5"></i> Upload
+                            <input type="file" accept="image/gif,image/jpeg,image/png,image/webp" class="hidden" onchange="handleImageUpload(this, 'quick-set-hero-mascot-img'); setTimeout(() => { const v=document.getElementById('quick-set-hero-mascot-img')?.value; if(v) document.getElementById('m-preview-img').src=v; }, 800);">
+                        </label>
+                    </div>
+                    <p class="text-[10px] text-slate-400 dark:text-slate-500 mt-1"><i class="fa-solid fa-circle-info mr-1"></i>GIF animasi maks 8MB · JPG/PNG maks 3MB · URL internet langsung juga bisa</p>
+                    <div class="flex gap-2 mt-1.5 flex-wrap">
+                        <button type="button" onclick="document.getElementById('quick-set-hero-mascot-img').value='/putri_mascot_3d.jpg'; document.getElementById('m-preview-img').src='/putri_mascot_3d.jpg'; showToast('Maskot 3D asli dipilih');" class="text-[10px] font-bold px-2.5 py-1 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-all active:scale-95 cursor-pointer">
+                            <i class="fa-solid fa-rotate-left mr-1"></i> Maskot 3D Asli
+                        </button>
+                        ${appData.store.logo ? `
+                        <button type="button" onclick="const l='${esc(appData.store.logo)}'; document.getElementById('quick-set-hero-mascot-img').value=l; document.getElementById('m-preview-img').src=l; showToast('Logo toko dipilih');" class="text-[10px] font-bold px-2.5 py-1 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-all active:scale-95 cursor-pointer">
+                            <i class="fa-solid fa-store mr-1"></i> Pakai Logo Toko
+                        </button>` : ''}
+                    </div>
+                </div>
+
+                <!-- Teks Status Badge & Tag -->
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-600 dark:text-slate-400 mb-1 uppercase tracking-wider">Teks Badge Status</label>
+                        <input autocomplete="off" id="quick-set-hero-badge-text" value="${esc(appData.store.heroBadgeText || 'Siap Melayani')}" class="admin-input !py-2.5 bg-white dark:bg-slate-800 shadow-sm w-full text-xs" placeholder="Siap Melayani" oninput="document.getElementById('m-preview-badge').innerText = this.value || 'Siap Melayani';">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-600 dark:text-slate-400 mb-1 uppercase tracking-wider">Tag Ucapan</label>
+                        <input autocomplete="off" id="quick-set-hero-welcome-tag" value="${esc(appData.store.heroWelcomeTag || 'SELAMAT DATANG')}" class="admin-input !py-2.5 bg-white dark:bg-slate-800 shadow-sm w-full text-xs" placeholder="SELAMAT DATANG" oninput="document.getElementById('m-preview-tag').innerHTML = '<i class=\\'fa-solid fa-sparkles text-amber-300\\'></i> ' + (this.value || 'SELAMAT DATANG');">
+                    </div>
+                </div>
+
+                <!-- Judul & Subtitle -->
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-600 dark:text-slate-400 mb-1 uppercase tracking-wider">Judul Banner (Kosong = Nama Toko)</label>
+                    <input autocomplete="off" id="quick-set-hero-title" value="${esc(appData.store.heroTitle || appData.store.name || '')}" class="admin-input !py-2.5 bg-white dark:bg-slate-800 shadow-sm w-full text-xs" placeholder="${esc(appData.store.name || 'TOKO PUTRI')}" oninput="document.getElementById('m-preview-title').innerText = this.value || '${esc(appData.store.name || 'TOKO PUTRI')}';">
+                </div>
+
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-600 dark:text-slate-400 mb-1 uppercase tracking-wider">Slogan / Deskripsi Banner</label>
+                    <textarea id="quick-set-hero-subtitle" rows="2" class="admin-input !py-2.5 bg-white dark:bg-slate-800 shadow-sm w-full text-xs" placeholder="Deskripsi ringkas..." oninput="document.getElementById('m-preview-sub').innerText = this.value || '';">${esc(appData.store.heroSubtitle || appData.store.slogan || '')}</textarea>
+                </div>
+            </div>
+
+            <!-- Footer Modal -->
+            <div class="p-4 border-t border-slate-100 dark:border-slate-800/80 bg-slate-50/70 dark:bg-slate-800/50 flex items-center justify-end gap-2 shrink-0">
+                <button type="button" onclick="closeHeroBannerModal()" class="px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold text-xs hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 transition-all cursor-pointer">
+                    Batal
+                </button>
+                <button type="button" onclick="saveHeroBannerModal()" class="px-6 py-2.5 rounded-xl primary-bg text-white font-bold text-xs shadow-md hover:opacity-90 active:scale-95 transition-all cursor-pointer flex items-center gap-1.5">
+                    <i class="fa-solid fa-floppy-disk"></i> Simpan Perubahan
+                </button>
+            </div>
+        </div>
+    `;
+};
+
+export const closeHeroBannerModal = () => {
+    const modal = document.getElementById('admin-hero-banner-modal');
+    if (modal) modal.remove();
+};
+
+export const saveHeroBannerModal = async () => {
+    sLoad('Menyimpan banner...');
+    try {
+        appData.store.showHeroSlide = getV('quick-set-show-hero-slide') === 'true';
+        appData.store.heroMascotImg = fixD(getV('quick-set-hero-mascot-img'));
+        appData.store.heroBadgeText = getV('quick-set-hero-badge-text') || 'Siap Melayani';
+        appData.store.heroWelcomeTag = getV('quick-set-hero-welcome-tag') || 'SELAMAT DATANG';
+        appData.store.heroTitle = getV('quick-set-hero-title');
+        appData.store.heroSubtitle = getV('quick-set-hero-subtitle');
+        
+        if (typeof window.saveApp === 'function') {
+            await window.saveApp(['store']);
+        }
+        
+        closeHeroBannerModal();
+        showToast("Banner sambutan & maskot berhasil diperbarui!");
+        
+        // Re-render modul tabel banner jika sedang di tab banners
+        if (window.cTab === 'banners' && typeof window.rAdmL === 'function') {
+            window.rAdmL('banners');
+        }
+        // Re-render beranda storefront
+        if (typeof window.rDyn === 'function') window.rDyn();
+    } catch(e) {
+        showToast("Gagal menyimpan banner sambutan");
+    } finally {
+        hLoad();
+    }
+};
+
 // ─── Expose ke window untuk atribut onclick di HTML ──────
 window.syncAppMeta = syncAppMeta;
 window.rAdmSet = rAdmSet;
@@ -1247,3 +1486,6 @@ window.handleManualCoordChange = handleManualCoordChange;
 window.pasteFromClipboardToMapsInput = pasteFromClipboardToMapsInput;
 window.previewStoreOnMaps = previewStoreOnMaps;
 window.detectAdminGPS = detectAdminGPS;
+window.openHeroBannerModal = openHeroBannerModal;
+window.closeHeroBannerModal = closeHeroBannerModal;
+window.saveHeroBannerModal = saveHeroBannerModal;

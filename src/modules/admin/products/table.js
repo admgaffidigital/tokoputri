@@ -269,9 +269,32 @@ window.rAdmL = t => {
             </div>
         </div>` : '';
 
+    const bannerHeroNotice = t === 'banners' ? `
+        <div class="mb-5 p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white border border-[rgba(var(--color-primary-rgb),0.35)] shadow-md flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div class="flex items-center gap-3.5 min-w-0">
+                <div class="relative w-14 h-14 rounded-2xl overflow-hidden border-2 border-white/60 bg-black/40 shrink-0 shadow-inner">
+                    <img src="${esc(appData.store.heroMascotImg || '/putri_mascot_3d.jpg')}" onerror="this.onerror=null;this.src='/putri_mascot_3d.jpg';" alt="Maskot" class="w-full h-full object-cover">
+                    <div class="absolute bottom-0 inset-x-0 bg-slate-950/85 text-[7px] text-center font-black text-amber-300 py-0.5">SLIDE #0</div>
+                </div>
+                <div class="min-w-0">
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <h4 class="font-extrabold text-xs sm:text-sm text-white">Slide #0: Banner Sambutan &amp; Maskot 3D Toko</h4>
+                        <span class="px-2 py-0.5 rounded-full text-[8.5px] font-black uppercase ${appData.store.showHeroSlide !== false && appData.store.showHeroSlide !== 'false' ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40' : 'bg-slate-700 text-slate-400'}">
+                            ${appData.store.showHeroSlide !== false && appData.store.showHeroSlide !== 'false' ? 'Aktif Tayang' : 'Disembunyikan'}
+                        </span>
+                    </div>
+                    <p class="text-[10px] text-slate-300 mt-0.5 line-clamp-2">Ganti foto wanita/maskot, ubah status badge "Siap Melayani", teks sambutan, atau sembunyikan slide utama.</p>
+                </div>
+            </div>
+            <button onclick="if(typeof window.openHeroBannerModal==='function') window.openHeroBannerModal(); else if(typeof window.openSettingForm==='function') window.openSettingForm('profile');" type="button" class="shrink-0 w-full sm:w-auto px-4 py-2.5 rounded-xl primary-bg hover:opacity-90 text-white font-black text-xs flex items-center justify-center gap-2 active:scale-95 shadow-sm transition-all cursor-pointer">
+                <i class="fa-solid fa-wand-magic-sparkles"></i> Kelola Maskot &amp; Sambutan
+            </button>
+        </div>` : '';
+
     setH('admin-content', `
         <div class="max-w-5xl mx-auto">
         ${statsContainer}
+        ${bannerHeroNotice}
         <div class="mb-6">
             ${colorActions}
             <div class="flex gap-2 items-center mb-4">

@@ -511,11 +511,14 @@ export const renderRewardCatalog = () => {
     let rHTML = `
     <div class="flex items-center justify-between mb-2.5">
         <h3 class="font-bold text-slate-800 dark:text-white text-xs sm:text-sm tracking-tight flex items-center gap-2">
-            <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center text-white shadow-2xs">
+            <div class="w-7 h-7 rounded-lg flex items-center justify-center text-white shadow-2xs"
+                 style="background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-primary) 50%, var(--color-primary-dark) 100%);">
                 <i class="fa-solid fa-gift text-xs"></i>
             </div> KATALOG REWARD POIN
         </h3>
-        <button type="button" onclick="if(typeof window.openMemberModal==='function') window.openMemberModal(); else if(typeof window.showToast==='function') window.showToast('Gunakan poin Anda untuk menukar hadiah menarik!');" class="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg border border-amber-500/40 text-amber-700 dark:text-amber-400 hover:bg-amber-500 hover:text-white transition-all active:scale-95 flex items-center gap-1 cursor-pointer">
+        <button type="button" onclick="if(typeof window.openMemberModal==='function') window.openMemberModal(); else if(typeof window.showToast==='function') window.showToast('Gunakan poin Anda untuk menukar hadiah menarik!');" 
+                class="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg border transition-all active:scale-95 flex items-center gap-1 cursor-pointer"
+                style="border-color: rgba(var(--color-primary-rgb), 0.35); color: var(--color-primary); background: rgba(var(--color-primary-rgb), 0.06);">
             Lihat Kartu VIP <i class="fa-solid fa-chevron-right text-[8px]"></i>
         </button>
     </div>
@@ -535,13 +538,14 @@ export const renderRewardCatalog = () => {
                         </span>
                     </div>
                     <!-- Reward Image -->
-                    <div class="w-full aspect-square rounded-xl bg-slate-50 dark:bg-slate-900/50 flex items-center justify-center overflow-hidden relative border border-slate-100 dark:border-slate-700/60 p-2 group-hover:bg-amber-50/20 transition-colors">
+                    <div class="w-full aspect-square rounded-xl bg-slate-50 dark:bg-slate-900/50 flex items-center justify-center overflow-hidden relative border border-slate-100 dark:border-slate-700/60 p-2 group-hover:bg-[rgba(var(--color-primary-rgb),0.05)] transition-colors">
                         <img loading="lazy" src="${esc(r.img)}" alt="${esc(r.name)}" class="w-full h-full object-contain transition-transform duration-300 group-hover:scale-108" onerror="this.onerror=null;this.src='https://placehold.co/400?text=Hadiah'">
                     </div>
                     <!-- Details & Action -->
                     <div class="mt-2 flex-1 flex flex-col justify-between">
                         <h4 class="text-[9.5px] sm:text-[10px] font-black text-slate-800 dark:text-white leading-snug line-clamp-2 uppercase tracking-tight text-center drop-shadow-2xs">${esc(r.name)}</h4>
-                        <div class="mt-2 w-full py-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white text-[8.5px] sm:text-[9.5px] font-extrabold uppercase tracking-wider text-center shadow-2xs transition-all flex items-center justify-center gap-1 group-hover:shadow-xs">
+                        <div class="mt-2 w-full py-1.5 rounded-xl text-white text-[8.5px] sm:text-[9.5px] font-extrabold uppercase tracking-wider text-center shadow-2xs transition-all flex items-center justify-center gap-1 group-hover:shadow-xs"
+                             style="background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-primary) 50%, var(--color-primary-dark) 100%);">
                             <i class="fa-solid fa-hand-holding-dollar text-[8px]"></i> Tukar Poin
                         </div>
                     </div>

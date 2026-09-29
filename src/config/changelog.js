@@ -8,6 +8,20 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-9-93',
+        version: 'v1.9.93',
+        date: '2026-09-29',
+        title: 'Harmonisasi Tema Berjalan (Dynamic Theme) & Kustomisasi Maskot Hero Banner CMS',
+        category: 'ui',
+        badge: 'Dynamic Theme & Mascot CMS v1.9.93',
+        items: [
+            'Penyelarasan Warna Hardcoded (Theming): Menghapus hardcoding warna amber pada badge voucher, tiket promo, badge katalog reward, tombol tukar poin, dan quick menu modal (index.html). Seluruh elemen sekarang menggunakan variabel CSS tema aktif var(--color-primary) atau utilitas dinamis rgba().',
+            'Pengelolaan Hero Banner & Maskot 3D (src/modules/admin/settings.js): Menambahkan kartu pengaturan baru di tab Admin Settings CMS untuk memodifikasi Banner Welcome dan Maskot 3D slide. Menambahkan toggle untuk mematikan/menyalakan slide hero dan input URL gambar kustom untuk maskot utama.',
+            'Akses Cepat Pengelola Banners (src/modules/admin/products/table.js): Menambahkan kartu navigasi cerdas di tab Banners admin untuk memandu pengguna menuju panel pengaturan Hero & Maskot 3D di CMS.',
+            'Optimasi Background Gradien Welcome Banner (src/modules/home/sections.js): Mengubah background gradien pada slide #0 agar senantiasa sinkron dengan konfigurasi warna tema yang dipilih pengguna.'
+        ]
+    },
+    {
         id: 'log-1-9-92',
         version: 'v1.9.92',
         date: '2026-09-29',

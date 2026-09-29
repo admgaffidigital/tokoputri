@@ -26,9 +26,12 @@ export const handleImageUpload = async (inputElement, targetInputId, varIndex = 
         return showToast("Hanya file JPG, PNG, WEBP, atau GIF yang diizinkan!");
     }
     
-    if (file.size > 3 * 1024 * 1024) {
+    // GIF animasi maskot diperbolehkan hingga 8MB
+    const maxSize = file.type === 'image/gif' ? 8 * 1024 * 1024 : 3 * 1024 * 1024;
+    const maxLabel = file.type === 'image/gif' ? '8MB' : '3MB';
+    if (file.size > maxSize) {
         inputElement.value = '';
-        return showToast("Maksimal gambar 3MB!");
+        return showToast(`Maksimal ukuran file ${maxLabel} (GIF animasi maks 8MB)!`);
     }
     
     const uploadUrl = window.GAS_UPLOAD_URL || GAS_UPLOAD_URL;
