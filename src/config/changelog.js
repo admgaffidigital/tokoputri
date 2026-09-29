@@ -8,6 +8,23 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-9-92',
+        version: 'v1.9.92',
+        date: '2026-09-29',
+        title: 'Harmonisasi Total Seluruh Tampilan Ekosistem: Kalibrasi Radiant Warm Luxury Gold, Eliminasi Disk Blur Gelap, Bento Stat Cards & Rekonsiliasi Visual POS Kasir 100%',
+        category: 'ui',
+        badge: 'Ecosystem Visual Harmony v1.9.92',
+        items: [
+            'Kalibrasi Palet Radiant Warm Luxury Gold (src/core/theme.js): Memperbarui shade gold (500: #c59b27, 600: #a87f1b, 400: #e1b858) menggantikan warna lama (#9d7d1e) yang kusam/olive, dilengkapi migrasi otomatis saat boot dari localStorage dan appData.store.themeColor.',
+            'Eliminasi Lingkaran Disk Gelap Blur-3xl (src/core/theme.js, suppliers.js, purchases.js, backup-sync.js): Mengganti orbs blur-3xl rounded-full yang terdampak filter:none dengan CSS radial-gradient halus, mengeliminasi lingkaran disc pekat pada background hero etalase, tab rekanan, riwayat pembelian, dan sinkronisasi backup.',
+            'Bento Stat Cards & Rekanan Modern (src/modules/admin/suppliers.js): Merombak 4 kartu ringkasan rekanan (Total Rekanan, Barang Terhubung, Hutang Usaha, PO Berjalan) menjadi kartu Bento dengan wadah ikon squircle bergradien dinamis dan rasio proporsional.',
+            'Harmonisasi Penuh POS Kasir (src/style.css, src/modules/pos/pos.js, src/modules/pos/pos-shift.js): Header kasir storefront (.pos-storefront-header) ditingkatkan dengan gradien emas mewah anti-tabrakan status bar, tombol tambah [+] bergradien hangat 30px, filter kategori aktif dengan gradien emas bercahaya, tombol pembayaran utama, serta modal Buka Shift Kasir Baru dan ringkasan shift kasir yang selaras 100% dengan tema.',
+            'Unifikasi Action Toolbar Dokumen Pesanan (index.html): Menstandarisasi bilah tombol cetak dokumen pesanan (Struk POS, Invoice A4, Surat Jalan) menjadi toolbar dokumen terpadu netral elegan dengan aksen emerald WhatsApp dan rose Hapus.',
+            'Penyelarasan Swatch Varian & Tombol Beli (src/modules/catalog/product-modal.js, index.html): Menggantikan kelas warna amber statis dengan token tema var(--color-primary), cincin seleksi aktif berbayang, dan tombol Beli Sekarang bergradien emas dinamis.',
+            'Multi-Channel Build & Sync v1.9.92 (Android VersionCode 10992): Terkompilasi dan tersinkronisasi penuh ke Vite build produksi, paket flashdisk, dan Capacitor Android.'
+        ]
+    },
+    {
         id: 'log-1-9-91',
         version: 'v1.9.91',
         date: '2026-09-29',

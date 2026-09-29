@@ -10,7 +10,7 @@
 // ─── Palet Warna Lengkap ─────────────────────────────────────
 // Setiap palet berisi 10 shade (50–900) sesuai skala Tailwind.
 export const uiPalettes = {
-    'gold'    : { 50: '#fdfbf7', 100: '#f9f5ea', 200: '#f2e8cc', 300: '#e7d4a1', 400: '#d7bb6f', 500: '#9d7d1e', 600: '#8a6d17', 700: '#735815', 800: '#5e4717', 900: '#4f3b17' },
+    'gold'    : { 50: '#fdfcf7', 100: '#faf3e1', 200: '#f5e4bd', 300: '#eccf8d', 400: '#e1b858', 500: '#c59b27', 600: '#a87f1b', 700: '#876317', 800: '#6c4d18', 900: '#593e17' },
     'emerald' : { 50: '#ecfdf5', 100: '#d1fae5', 200: '#a7f3d0', 300: '#6ee7b7', 400: '#34d399', 500: '#10b981', 600: '#059669', 700: '#047857', 800: '#065f46', 900: '#064e3b' },
     'teal'    : { 50: '#f0fdfa', 100: '#ccfbf1', 200: '#99f6e4', 300: '#5eead4', 400: '#2dd4bf', 500: '#14b8a6', 600: '#0d9488', 700: '#0f766e', 800: '#115e59', 900: '#134e4a' },
     'cyan'    : { 50: '#ecfeff', 100: '#cffafe', 200: '#a5f3fc', 300: '#67e8f9', 400: '#22d3ee', 500: '#06b6d4', 600: '#0891b2', 700: '#0e7490', 800: '#155e75', 900: '#164e63' },
@@ -135,13 +135,24 @@ export const applyUITheme = (themeName, customHex) => {
 
     if (themeName) localStorage.setItem('freshmart_ui_theme', uiTheme);
 
+    // Sanitasi: jika tersimpan warna usang #9d7d1e (muddy olive), migrasikan otomatis ke gold baru yang cerah
+    let cachedHex = localStorage.getItem('freshmart_theme_color');
+    if (cachedHex === '#9d7d1e' || cachedHex === '#9D7D1E') {
+        cachedHex = colors[500];
+        localStorage.setItem('freshmart_theme_color', cachedHex);
+    }
+    if (typeof appData !== 'undefined' && appData.store && (appData.store.themeColor === '#9d7d1e' || appData.store.themeColor === '#9D7D1E')) {
+        appData.store.themeColor = colors[500];
+    }
+
     // Jika ada customHex pakai itu, kalau tidak ambil dari palet atau cache
-    const hex = customHex || localStorage.getItem('freshmart_theme_color') || colors[500];
+    let hex = customHex || cachedHex || colors[500];
+    if (hex === '#9d7d1e' || hex === '#9D7D1E') hex = colors[500];
     if (customHex) localStorage.setItem('freshmart_theme_color', hex);
 
     const primaryRgb = hexToRgb(hex);
-    const darkHex    = adjustHex(hex, -30);   // lebih gelap ~12%
-    const lightHex   = adjustHex(hex, 150);   // sangat terang untuk background subtle
+    const darkHex    = (colors && colors[600] && hex === colors[500]) ? colors[600] : adjustHex(hex, -30);
+    const lightHex   = (colors && colors[400] && hex === colors[500]) ? colors[400] : adjustHex(hex, 40);
 
     document.documentElement.style.setProperty('--color-primary',       hex);
     document.documentElement.style.setProperty('--color-primary-dark',  darkHex);
@@ -289,17 +300,15 @@ export const applyBackgroundStyle = (bgStyle = 'minimalist', customBgUrl = '') =
 
     if (style === 'hero_arch') {
         shapesHtml = `
-            <!-- Hero Arch: Canopy Dome Curve & Radial Ambient Aura -->
-            <div class="absolute -top-32 left-1/2 -translate-x-1/2 w-[160%] max-w-[1700px] h-96 rounded-b-[100%] bg-gradient-to-b from-[rgba(var(--color-primary-rgb),0.22)] via-[rgba(var(--color-primary-rgb),0.08)] to-transparent pointer-events-none blur-sm"></div>
+            <!-- Hero Arch: Canopy Dome Curve & Radial Ambient Aura (Anti-Hard Disc) -->
+            <div class="absolute -top-32 left-1/2 -translate-x-1/2 w-[160%] max-w-[1700px] h-96 rounded-b-[100%] bg-gradient-to-b from-[rgba(var(--color-primary-rgb),0.22)] via-[rgba(var(--color-primary-rgb),0.08)] to-transparent pointer-events-none"></div>
             <div class="absolute top-24 left-1/2 -translate-x-1/2 w-[120%] max-w-[1400px] h-60 rounded-b-[100%] border-b-2 border-[rgba(var(--color-primary-rgb),0.25)] pointer-events-none"></div>
-            <div class="absolute -top-10 left-1/2 -translate-x-1/2 w-80 h-80 rounded-full bg-[rgba(var(--color-primary-rgb),0.18)] blur-3xl pointer-events-none"></div>
+            <div class="absolute inset-0 pointer-events-none" style="background: radial-gradient(circle 320px at 50% 0%, rgba(var(--color-primary-rgb), 0.14), transparent 70%);"></div>
         `;
     } else if (style === 'aurora_glow') {
         shapesHtml = `
-            <!-- Aurora Mesh Glow: Dynamic Atmospheric Ambient Orbs -->
-            <div class="absolute -top-24 -left-20 w-[420px] h-[420px] rounded-full bg-gradient-to-br from-[rgba(var(--color-primary-rgb),0.28)] via-[rgba(var(--color-primary-rgb),0.12)] to-transparent blur-[80px] pointer-events-none"></div>
-            <div class="absolute -top-28 -right-20 w-[460px] h-[460px] rounded-full bg-gradient-to-bl from-[rgba(var(--color-primary-rgb),0.24)] via-[rgba(var(--color-primary-rgb),0.1)] to-transparent blur-[90px] pointer-events-none"></div>
-            <div class="absolute top-1/3 left-1/2 -translate-x-1/2 w-full max-w-[900px] h-72 bg-gradient-to-b from-[rgba(var(--color-primary-rgb),0.06)] to-transparent rounded-full blur-[100px] pointer-events-none"></div>
+            <!-- Aurora Mesh Glow: Soft Radial Ambient Mesh (Anti-Hard Disc) -->
+            <div class="absolute inset-0 pointer-events-none" style="background: radial-gradient(circle 380px at 15% 15%, rgba(var(--color-primary-rgb), 0.14), transparent 70%), radial-gradient(circle 420px at 85% 15%, rgba(var(--color-primary-rgb), 0.12), transparent 70%), radial-gradient(circle 500px at 50% 50%, rgba(var(--color-primary-rgb), 0.05), transparent 70%);"></div>
         `;
     } else if (style === 'tech_grid') {
         shapesHtml = `
@@ -311,10 +320,9 @@ export const applyBackgroundStyle = (bgStyle = 'minimalist', customBgUrl = '') =
         `;
     } else if (style === 'glass_studio') {
         shapesHtml = `
-            <!-- Glass Studio: Frosted Depth & Diagonal Light Rays -->
-            <div class="absolute -top-36 -right-16 w-[500px] h-[500px] bg-gradient-to-br from-[rgba(var(--color-primary-rgb),0.22)] to-transparent rounded-full blur-3xl pointer-events-none"></div>
-            <div class="absolute inset-0 pointer-events-none opacity-20 dark:opacity-15" style="background: repeating-linear-gradient(135deg, rgba(var(--color-primary-rgb),0.15), rgba(var(--color-primary-rgb),0.15) 1.5px, transparent 1.5px, transparent 28px);"></div>
-            <div class="absolute top-1/4 -left-20 w-80 h-80 bg-[rgba(var(--color-primary-rgb),0.14)] rounded-full blur-3xl pointer-events-none"></div>
+            <!-- Glass Studio: Frosted Depth & Soft Radial Light (Anti-Hard Disc) -->
+            <div class="absolute inset-0 pointer-events-none" style="background: radial-gradient(circle 380px at 90% 10%, rgba(var(--color-primary-rgb), 0.12), transparent 70%), radial-gradient(circle 280px at 5% 35%, rgba(var(--color-primary-rgb), 0.08), transparent 70%);"></div>
+            <div class="absolute inset-0 pointer-events-none opacity-20 dark:opacity-15" style="background: repeating-linear-gradient(135deg, rgba(var(--color-primary-rgb),0.12), rgba(var(--color-primary-rgb),0.12) 1.5px, transparent 1.5px, transparent 28px);"></div>
         `;
     } else {
         // Minimalis: Polos bersih, elegan, solid dengan subtle top breath
@@ -340,7 +348,11 @@ import { appData } from './state.js';
 
 export const syncAppMeta = () => {
     const sName = appData.store?.name || 'Toko Putri';
-    const sColor = appData.store?.themeColor || '#10b981';
+    let sColor = appData.store?.themeColor || '#10b981';
+    if (sColor === '#9d7d1e' || sColor === '#9D7D1E') {
+        sColor = uiPalettes.gold[500];
+        if (appData.store) appData.store.themeColor = sColor;
+    }
 
     const setM = (n, c, isProp = false) => { 
         let m = document.querySelector(`meta[${isProp ? 'property' : 'name'}="${n}"]`); 

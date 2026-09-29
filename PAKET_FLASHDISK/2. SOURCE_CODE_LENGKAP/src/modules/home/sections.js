@@ -49,7 +49,7 @@ export const rDyn = () => {
     // --- RENDER BANNER 3D PREMIUM & KARTU SAMBUTAN HERO MASKOT ---
     // ── SLIDE 0: KARTU SAMBUTAN HERO MASKOT 3D (Putri Utama Teknik / Toko Putri) ──
     const welcomeHeroSlide = `
-        <div id="banner-slide-0" class="banner-slide-item w-[88vw] sm:w-[480px] min-h-[190px] sm:min-h-[220px] snap-center shrink-0 rounded-3xl relative overflow-hidden group cursor-pointer bg-gradient-to-br from-[#b89535] via-[#9d7d1e] to-[#6b5212] text-white shadow-lg shadow-amber-950/20 border border-amber-300/30 flex flex-col transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
+        <div id="banner-slide-0" class="banner-slide-item w-[88vw] sm:w-[480px] min-h-[190px] sm:min-h-[220px] snap-center shrink-0 rounded-3xl relative overflow-hidden group cursor-pointer bg-gradient-to-br from-[#dfbc5b] via-[#c59b27] to-[#876019] text-white shadow-lg shadow-amber-950/20 border border-amber-300/30 flex flex-col transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
             <!-- Dynamic Ambient Glow & Decorative Rings -->
             <div class="absolute -right-10 -top-10 w-44 h-44 rounded-full bg-white/10 blur-xl pointer-events-none group-hover:scale-110 transition-transform duration-700"></div>
             <div class="absolute -left-10 -bottom-10 w-36 h-36 rounded-full bg-black/20 blur-lg pointer-events-none"></div>
@@ -230,7 +230,7 @@ export const rDyn = () => {
                 
                 return `
                 <div class="w-[225px] sm:w-[250px] shrink-0 snap-start relative group cursor-pointer active:scale-95 transition-all duration-200" onclick="copyVoucher('${esc(v.code)}')">
-                    <div class="w-full h-[82px] sm:h-[86px] bg-gradient-to-r from-[#b89535] via-[#9d7d1e] to-[#735815] rounded-2xl shadow-xs hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 flex relative overflow-hidden border border-amber-300/30 text-white">
+                    <div class="w-full h-[82px] sm:h-[86px] bg-gradient-to-r from-[#dfbc5b] via-[#c59b27] to-[#876019] rounded-2xl shadow-xs hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 flex relative overflow-hidden border border-amber-300/30 text-white">
                         <!-- Left/Right Ticket Punch Holes (Biting into the sides using soft canvas color) -->
                         <div class="absolute -top-2.5 right-[26%] w-4 h-4 rounded-full bg-[#FAF8F5] dark:bg-[#0b1120] border-b border-amber-950/20 z-20 pointer-events-none transform translate-x-1/2 transition-colors duration-300"></div>
                         <div class="absolute -bottom-2.5 right-[26%] w-4 h-4 rounded-full bg-[#FAF8F5] dark:bg-[#0b1120] border-t border-amber-950/20 z-20 pointer-events-none transform translate-x-1/2 transition-colors duration-300"></div>

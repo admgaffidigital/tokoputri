@@ -155,9 +155,8 @@ export const renderSuppliersView = () => {
         <div class="space-y-4 sm:space-y-5 fade-in max-w-5xl mx-auto pb-24 pt-1 sm:pt-2">
             <!-- 1. HERO BANNER: MASTER DATA SUPPLIER & REKANAN (THEME HARMONIZED) -->
             <div class="relative overflow-hidden p-5 sm:p-7 rounded-2xl sm:rounded-3xl border border-[rgba(var(--color-primary-rgb),0.2)] bg-gradient-to-br from-white via-white to-[rgba(var(--color-primary-rgb),0.05)] dark:from-slate-900 dark:via-slate-900/90 dark:to-slate-800 shadow-xs">
-                <!-- Ambient Glow Dekorasi -->
-                <div class="pointer-events-none absolute -right-10 -top-10 h-48 w-48 rounded-full opacity-15 blur-3xl" style="background: var(--color-primary)"></div>
-                <div class="pointer-events-none absolute -bottom-10 -left-10 h-40 w-40 rounded-full opacity-10 blur-2xl" style="background: var(--color-primary)"></div>
+                <!-- Ambient Glow Dekorasi (Radial Gradient Anti-Hard Disc) -->
+                <div class="pointer-events-none absolute inset-0 rounded-2xl sm:rounded-3xl" style="background: radial-gradient(circle at 90% 10%, rgba(var(--color-primary-rgb), 0.12), transparent 60%), radial-gradient(circle at 10% 90%, rgba(var(--color-primary-rgb), 0.08), transparent 50%);"></div>
 
                 <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div class="space-y-1.5">
@@ -186,49 +185,49 @@ export const renderSuppliersView = () => {
                     </div>
                 </div>
 
-                <!-- METRIK STATISTIK REKANAN -->
-                <div class="mt-6 pt-5 border-t border-[rgba(var(--color-primary-rgb),0.15)] dark:border-slate-700/60 grid grid-cols-2 lg:grid-cols-4 gap-3">
-                    <div class="p-3.5 sm:p-4 rounded-2xl bg-white/95 dark:bg-slate-800/80 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs backdrop-blur-xs flex flex-col justify-between">
-                        <div class="flex items-center justify-between mb-1.5">
-                            <span class="text-[9px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">Total Rekanan</span>
-                            <div class="w-7 h-7 rounded-xl flex items-center justify-center text-xs shadow-2xs" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary);">
+                <!-- METRIK STATISTIK REKANAN (BENTO STAT CARDS) -->
+                <div class="mt-6 pt-5 border-t border-[rgba(var(--color-primary-rgb),0.15)] dark:border-slate-700/60 grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-3.5">
+                    <div class="p-4 rounded-2xl bg-white/95 dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs hover:-translate-y-0.5 hover:shadow-md transition-all duration-200 flex flex-col justify-between">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">Total Rekanan</span>
+                            <div class="w-9 h-9 rounded-xl flex items-center justify-center text-xs text-white shadow-xs shrink-0" style="background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));">
                                 <i class="fa-solid fa-truck-field"></i>
                             </div>
                         </div>
-                        <p class="text-xl sm:text-2xl font-black text-slate-800 dark:text-white tracking-tight">${metrics.totalSuppliers}</p>
+                        <p class="text-2xl font-black text-slate-800 dark:text-white tracking-tight">${metrics.totalSuppliers}</p>
                         <p class="text-[10px] font-bold text-slate-400 mt-0.5">Pabrik &amp; Distributor Aktif</p>
                     </div>
 
-                    <div class="p-3.5 sm:p-4 rounded-2xl bg-white/95 dark:bg-slate-800/80 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs backdrop-blur-xs flex flex-col justify-between">
-                        <div class="flex items-center justify-between mb-1.5">
-                            <span class="text-[9px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">Barang Terhubung</span>
-                            <div class="w-7 h-7 rounded-xl bg-teal-50 dark:bg-teal-950/40 text-teal-600 dark:text-teal-400 flex items-center justify-center text-xs shadow-2xs">
+                    <div class="p-4 rounded-2xl bg-white/95 dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs hover:-translate-y-0.5 hover:shadow-md transition-all duration-200 flex flex-col justify-between">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">Barang Terhubung</span>
+                            <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-teal-500 to-teal-600 text-white flex items-center justify-center text-xs shadow-xs shrink-0">
                                 <i class="fa-solid fa-boxes-stacked"></i>
                             </div>
                         </div>
-                        <p class="text-xl sm:text-2xl font-black text-teal-600 dark:text-teal-400 tracking-tight">${metrics.linkedProductsCount}</p>
+                        <p class="text-2xl font-black text-teal-600 dark:text-teal-400 tracking-tight">${metrics.linkedProductsCount}</p>
                         <p class="text-[10px] font-bold text-slate-400 mt-0.5">Produk Terlacak Asalnya</p>
                     </div>
 
-                    <div class="p-3.5 sm:p-4 rounded-2xl bg-white/95 dark:bg-slate-800/80 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs backdrop-blur-xs flex flex-col justify-between">
-                        <div class="flex items-center justify-between mb-1.5">
-                            <span class="text-[9px] font-black uppercase tracking-wider text-amber-500">Hutang Usaha</span>
-                            <div class="w-7 h-7 rounded-xl bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 flex items-center justify-center text-xs shadow-2xs">
+                    <div class="p-4 rounded-2xl bg-white/95 dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs hover:-translate-y-0.5 hover:shadow-md transition-all duration-200 flex flex-col justify-between">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-[10px] font-black uppercase tracking-wider text-amber-600 dark:text-amber-400">Hutang Usaha</span>
+                            <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-amber-500 to-amber-600 text-white flex items-center justify-center text-xs shadow-xs shrink-0">
                                 <i class="fa-solid fa-file-invoice-dollar"></i>
                             </div>
                         </div>
-                        <p class="text-lg sm:text-xl font-black text-amber-600 dark:text-amber-400 tracking-tight">${fCur(metrics.totalOutstandingDebt)}</p>
+                        <p class="text-xl sm:text-2xl font-black text-amber-600 dark:text-amber-400 tracking-tight">${fCur(metrics.totalOutstandingDebt)}</p>
                         <p class="text-[10px] font-bold text-slate-400 mt-0.5">Kewajiban Belum Lunas</p>
                     </div>
 
-                    <div class="p-3.5 sm:p-4 rounded-2xl bg-white/95 dark:bg-slate-800/80 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs backdrop-blur-xs flex flex-col justify-between">
-                        <div class="flex items-center justify-between mb-1.5">
-                            <span class="text-[9px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">PO Berjalan</span>
-                            <div class="w-7 h-7 rounded-xl flex items-center justify-center text-xs shadow-2xs" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary);">
+                    <div class="p-4 rounded-2xl bg-white/95 dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs hover:-translate-y-0.5 hover:shadow-md transition-all duration-200 flex flex-col justify-between">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">PO Berjalan</span>
+                            <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-500 to-indigo-600 text-white flex items-center justify-center text-xs shadow-xs shrink-0">
                                 <i class="fa-solid fa-cart-flatbed"></i>
                             </div>
                         </div>
-                        <p class="text-xl sm:text-2xl font-black text-slate-800 dark:text-white tracking-tight">${metrics.activePurchasesCount}</p>
+                        <p class="text-2xl font-black text-slate-800 dark:text-white tracking-tight">${metrics.activePurchasesCount}</p>
                         <p class="text-[10px] font-bold text-slate-400 mt-0.5">Menunggu Barang Datang</p>
                     </div>
                 </div>

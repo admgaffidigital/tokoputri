@@ -143,9 +143,9 @@ export const setOrderSourceFilter = (mode) => {
         const b = el(`btn-ord-filter-${k}`);
         if (b) {
             if (k === mode) {
-                b.className = "h-8 px-3.5 rounded-xl text-xs font-bold transition-all cursor-pointer bg-[var(--color-primary)] text-white shadow-sm flex items-center gap-1.5";
+                b.className = "h-8 px-4 rounded-xl text-xs font-bold transition-all cursor-pointer bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-primary-dark)] text-white shadow-sm shadow-[rgba(var(--color-primary-rgb),0.3)] flex items-center gap-1.5";
             } else {
-                b.className = "h-8 px-3.5 rounded-xl text-xs font-bold transition-all cursor-pointer bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 flex items-center gap-1.5";
+                b.className = "h-8 px-4 rounded-xl text-xs font-bold transition-all cursor-pointer bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-700/60 flex items-center gap-1.5";
             }
         }
     });
@@ -282,30 +282,31 @@ export const renderOrdersList = () => {
  */
 export const rAdmOrd = () => {
     setH('admin-content', `
-        <div class="mb-4 flex flex-wrap items-center justify-between gap-3 bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
+        <div class="mb-4 flex flex-wrap items-center justify-between gap-3 bg-white dark:bg-slate-800 p-4 sm:p-5 rounded-2xl border border-slate-200/90 dark:border-slate-700/80 shadow-2xs">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background: rgba(var(--color-primary-rgb),0.1); color: var(--color-primary)">
+                <div class="w-11 h-11 rounded-2xl flex items-center justify-center text-white shadow-xs shrink-0" style="background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));">
                     <i class="fa-solid fa-satellite-dish animate-pulse text-base"></i>
                 </div>
                 <div>
-                    <h2 class="font-bold text-sm text-slate-800 dark:text-slate-100 uppercase tracking-widest leading-tight">Live Orders</h2>
-                    <p class="text-[9px] font-bold text-slate-500 mt-0.5">Pusat pesanan terpadu Website Storefront &amp; Kasir POS</p>
+                    <h2 class="font-extrabold text-sm sm:text-base text-slate-800 dark:text-slate-100 uppercase tracking-wider leading-tight">Live Orders</h2>
+                    <p class="text-[10px] font-bold text-slate-500 mt-0.5">Pusat pesanan terpadu Website Storefront &amp; Kasir POS</p>
                 </div>
             </div>
-            <button onclick="exportOrdersToExcel()" class="h-9 px-4 rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-sm border transition-all active:scale-95 hover:text-white hover:border-[var(--color-primary)] text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-slate-700 border-slate-200 dark:border-slate-600" style="--tw-shadow-color: rgba(var(--color-primary-rgb),0.2)" onmouseover="this.style.background='var(--color-primary)'" onmouseout="this.style.background=''">
-                <i class="fa-solid fa-file-csv"></i> <span class="hidden sm:inline">Export Excel</span>
+            <button onclick="exportOrdersToExcel()" class="h-10 px-4 rounded-xl text-xs font-bold flex items-center gap-2 border border-slate-200/90 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 shadow-2xs hover:bg-slate-50 dark:hover:bg-slate-700 active:scale-95 transition-all cursor-pointer">
+                <i class="fa-solid fa-file-excel text-emerald-600 text-sm"></i>
+                <span>Export Excel</span>
             </button>
         </div>
 
         <!-- Filter Sumber Pesanan: Semua, Kasir POS, Storefront -->
         <div class="mb-4 flex items-center gap-2 overflow-x-auto pb-1 hide-scrollbar">
-            <button onclick="setOrderSourceFilter('all')" id="btn-ord-filter-all" class="h-8 px-3.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${orderSourceFilter==='all' ? 'bg-[var(--color-primary)] text-white shadow-sm' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700'}">
+            <button onclick="setOrderSourceFilter('all')" id="btn-ord-filter-all" class="h-8 px-4 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${orderSourceFilter==='all' ? 'bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-primary-dark)] text-white shadow-sm shadow-[rgba(var(--color-primary-rgb),0.3)]' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700/60'}">
                 Semua Pesanan
             </button>
-            <button onclick="setOrderSourceFilter('pos')" id="btn-ord-filter-pos" class="h-8 px-3.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${orderSourceFilter==='pos' ? 'bg-[var(--color-primary)] text-white shadow-sm' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700'}">
+            <button onclick="setOrderSourceFilter('pos')" id="btn-ord-filter-pos" class="h-8 px-4 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${orderSourceFilter==='pos' ? 'bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-primary-dark)] text-white shadow-sm shadow-[rgba(var(--color-primary-rgb),0.3)]' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700/60'}">
                 <i class="fa-solid fa-cash-register text-[10px]"></i> Kasir POS
             </button>
-            <button onclick="setOrderSourceFilter('storefront')" id="btn-ord-filter-storefront" class="h-8 px-3.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${orderSourceFilter==='storefront' ? 'bg-[var(--color-primary)] text-white shadow-sm' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700'}">
+            <button onclick="setOrderSourceFilter('storefront')" id="btn-ord-filter-storefront" class="h-8 px-4 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${orderSourceFilter==='storefront' ? 'bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-primary-dark)] text-white shadow-sm shadow-[rgba(var(--color-primary-rgb),0.3)]' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700/60'}">
                 <i class="fa-solid fa-globe text-[10px]"></i> Storefront Web
             </button>
         </div>

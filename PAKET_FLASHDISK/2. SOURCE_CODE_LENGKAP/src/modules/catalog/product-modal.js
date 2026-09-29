@@ -718,15 +718,15 @@ export const rProdMod = () => {
                 if (!isVarSelectable) {
                     cardClass = "bg-slate-100/70 dark:bg-slate-800/40 border-slate-200 dark:border-slate-700/60 text-slate-400 opacity-50 cursor-not-allowed";
                 } else if (isSelected) {
-                    cardClass = "border-2 border-amber-500 bg-amber-50/70 dark:bg-amber-950/30 ring-2 ring-amber-400/40 shadow-xs text-amber-950 dark:text-amber-200";
+                    cardClass = "border-2 border-[var(--color-primary)] bg-[rgba(var(--color-primary-rgb),0.08)] dark:bg-[rgba(var(--color-primary-rgb),0.15)] ring-2 ring-[var(--color-primary)]/25 shadow-xs text-slate-900 dark:text-white";
                 } else {
-                    cardClass = "bg-white dark:bg-slate-800/90 border-slate-200/80 dark:border-slate-700/80 text-slate-700 dark:text-slate-300 hover:border-amber-400/60";
+                    cardClass = "bg-white dark:bg-slate-800/90 border-slate-200/80 dark:border-slate-700/80 text-slate-700 dark:text-slate-300 hover:border-[var(--color-primary)]/50";
                 }
 
                 const colorHex = r.colorCode || (p.colorCode || '#CBD5E1');
                 const colorDot = `<span class="w-8 h-8 sm:w-9 sm:h-9 rounded-full shrink-0 border border-black/10 shadow-xs flex items-center justify-center mx-auto transition-transform ${isSelected ? 'scale-110' : ''}" style="background-color: ${esc(colorHex)}"></span>`;
 
-                const zoomBtn = isVarSelectable && (r.colorCode || r.img) ? `<span onclick="event.stopPropagation(); previewVariant(${x})" class="absolute top-1.5 right-1.5 w-5 h-5 rounded-full bg-white/90 dark:bg-slate-700/90 shadow-sm flex items-center justify-center text-slate-500 hover:text-amber-600 hover:scale-110 active:scale-90 transition-all border border-slate-200/50 dark:border-slate-600/50 z-10" title="Perbesar"><i class="fa-solid fa-magnifying-glass-plus text-[9px]"></i></span>` : '';
+                const zoomBtn = isVarSelectable && (r.colorCode || r.img) ? `<span onclick="event.stopPropagation(); previewVariant(${x})" class="absolute top-1.5 right-1.5 w-5 h-5 rounded-full bg-white/90 dark:bg-slate-700/90 shadow-sm flex items-center justify-center text-slate-500 hover:text-[var(--color-primary)] hover:scale-110 active:scale-90 transition-all border border-slate-200/50 dark:border-slate-600/50 z-10" title="Perbesar"><i class="fa-solid fa-magnifying-glass-plus text-[9px]"></i></span>` : '';
 
                 return `<button ${!isVarSelectable ? 'disabled' : ''} class="relative p-2 sm:p-2.5 rounded-2xl text-center border transition-all active:scale-95 flex flex-col items-center justify-center gap-1.5 cursor-pointer overflow-hidden ${cardClass}" ${isVarSelectable ? `onclick="selectVariant(${x})"` : ''}>
                     ${zoomBtn}
@@ -1275,9 +1275,9 @@ export const renderQuickVariantSheet = () => {
             if (!isSelectable) {
                 cardClass = "bg-slate-100/70 dark:bg-slate-800/40 border-slate-200 dark:border-slate-700/60 text-slate-400 opacity-50 cursor-not-allowed";
             } else if (isSelected) {
-                cardClass = "border-2 border-amber-500 bg-amber-50/70 dark:bg-amber-950/30 ring-2 ring-amber-400/40 shadow-xs text-amber-950 dark:text-amber-200";
+                cardClass = "border-2 border-[var(--color-primary)] bg-[rgba(var(--color-primary-rgb),0.08)] dark:bg-[rgba(var(--color-primary-rgb),0.15)] ring-2 ring-[var(--color-primary)]/25 shadow-xs text-slate-900 dark:text-white";
             } else {
-                cardClass = "bg-white dark:bg-slate-800/90 border-slate-200/80 dark:border-slate-700/80 text-slate-700 dark:text-slate-300 hover:border-amber-400/60";
+                cardClass = "bg-white dark:bg-slate-800/90 border-slate-200/80 dark:border-slate-700/80 text-slate-700 dark:text-slate-300 hover:border-[var(--color-primary)]/50";
             }
 
             const colorHex = r.colorCode || (p.colorCode || '#CBD5E1');
