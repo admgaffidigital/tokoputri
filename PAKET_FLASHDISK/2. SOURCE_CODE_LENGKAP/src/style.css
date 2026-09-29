@@ -521,7 +521,9 @@ body, #app-container,
 }
 
 /* ============================================================
-   SMART DYNAMIC PRODUCT COVER ENGINE (Visual Estetik Tanpa Gambar)
+   MINIMALIST CLEAN BRAND PRODUCT COVER (Toko Putri v1.9.97)
+   Desain sederhana, tenang, rapi, dan 100% harmonis dengan tema.
+   Menampilkan ikon paket/bag shopping dan watermark resmi toko.
    ============================================================ */
 .pos-smart-cover {
     width: 100%;
@@ -534,68 +536,25 @@ body, #app-container,
     overflow: hidden;
     user-select: none;
     box-sizing: border-box;
-    /* Soft Warm Porcelain Studio Canvas (Cerah & Mewah) */
-    background: linear-gradient(180deg, #fdfcf9 0%, #f6f1e8 50%, #eee6d8 100%);
-    transition: transform 0.35s ease, background 0.3s ease;
+    /* Clean warm white canvas, sangat ringan dan tidak noisy */
+    background: linear-gradient(160deg, #fdfcfa 0%, #f9f6f0 55%, #f3ede2 100%);
+    transition: background 0.3s ease;
 }
 
 .dark .pos-smart-cover {
-    /* Sleek Deep Navy / Slate Studio Canvas */
-    background: linear-gradient(180deg, #1e293b 0%, #151e2e 50%, #0f172a 100%);
+    background: linear-gradient(160deg, #1a2235 0%, #131b2c 55%, #0d1424 100%);
 }
 
-/* Subtle Architectural Studio Grid/Dot Pattern */
-.pos-smart-cover .cover-studio-grid {
+/* Ambient Radial Aura Halus Beraksen Tema Toko */
+.pos-smart-cover .cover-surface-glow {
     position: absolute;
     inset: 0;
     pointer-events: none;
-    opacity: 0.45;
-    background-image: radial-gradient(rgba(148, 163, 184, 0.3) 1px, transparent 1px);
-    background-size: 14px 14px;
+    background: radial-gradient(ellipse at 50% 45%, rgba(var(--color-primary-rgb), 0.08) 0%, transparent 65%);
+    opacity: 1;
 }
-.dark .pos-smart-cover .cover-studio-grid {
-    opacity: 0.18;
-    background-image: radial-gradient(rgba(255, 255, 255, 0.4) 1px, transparent 1px);
-}
-
-/* Ambient Radial Aura Behind Pod */
-.pos-smart-cover .cover-glow {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -55%);
-    width: 140%;
-    height: 140%;
-    pointer-events: none;
-    opacity: 0.85;
-    border-radius: 50%;
-    filter: blur(8px);
-}
-
-/* Decorative Modern Floating Rings */
-.pos-smart-cover .cover-ring {
-    position: absolute;
-    border-radius: 50%;
-    pointer-events: none;
-    border: 1px dashed rgba(148, 163, 184, 0.22);
-}
-.dark .pos-smart-cover .cover-ring {
-    border-color: rgba(255, 255, 255, 0.08);
-}
-.pos-smart-cover .cover-ring-1 {
-    width: 130px;
-    height: 130px;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -55%);
-}
-.pos-smart-cover .cover-ring-2 {
-    width: 168px;
-    height: 168px;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -55%);
-    opacity: 0.5;
+.dark .pos-smart-cover .cover-surface-glow {
+    background: radial-gradient(ellipse at 50% 45%, rgba(var(--color-primary-rgb), 0.14) 0%, transparent 70%);
 }
 
 /* Central Content */
@@ -603,194 +562,147 @@ body, #app-container,
     position: relative;
     z-index: 2;
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-}
-
-/* 3D Claymorphic Pod */
-.pos-smart-cover .cover-pod-wrap {
-    perspective: 800px;
-    display: flex;
     align-items: center;
     justify-content: center;
 }
 
-.pos-smart-cover .cover-3d-pod {
+/* Icon Pod: Squircle Solid Bergradien Emas — premium, bersih, tidak jomplang */
+.pos-smart-cover .cover-icon-pod {
     display: flex;
     align-items: center;
     justify-content: center;
     border-radius: 22px;
-    border: 2px solid rgba(255, 255, 255, 0.85);
-    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s ease;
-    transform: translateZ(0);
+    /* Solid gold gradient: warm primary theme */
+    background: linear-gradient(145deg,
+        rgba(var(--color-primary-rgb), 0.92) 0%,
+        rgba(var(--color-primary-rgb), 1.0) 50%,
+        color-mix(in srgb, var(--color-primary) 85%, #8B6000) 100%);
+    border: none;
+    box-shadow:
+        0 6px 20px -4px rgba(var(--color-primary-rgb), 0.35),
+        0 2px 6px -2px rgba(var(--color-primary-rgb), 0.25),
+        inset 0 1px 2px rgba(255, 255, 255, 0.30);
+    transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.35s ease;
 }
 
-.dark .pos-smart-cover .cover-3d-pod {
-    border-color: rgba(255, 255, 255, 0.35);
+.dark .pos-smart-cover .cover-icon-pod {
+    background: linear-gradient(145deg,
+        rgba(var(--color-primary-rgb), 0.85) 0%,
+        rgba(var(--color-primary-rgb), 0.95) 50%,
+        color-mix(in srgb, var(--color-primary) 80%, #8B6000) 100%);
+    box-shadow:
+        0 6px 24px -4px rgba(var(--color-primary-rgb), 0.40),
+        0 2px 8px -2px rgba(0, 0, 0, 0.5),
+        inset 0 1px 2px rgba(255, 255, 255, 0.15);
 }
 
-.group:hover .pos-smart-cover .cover-3d-pod,
-.pos-product-card:hover .cover-3d-pod {
-    transform: translateY(-5px) scale(1.08) rotate(-3deg);
+.group:hover .pos-smart-cover .cover-icon-pod,
+.pos-product-card:hover .cover-icon-pod {
+    transform: translateY(-4px) scale(1.07);
+    box-shadow:
+        0 12px 28px -4px rgba(var(--color-primary-rgb), 0.45),
+        0 4px 10px -2px rgba(var(--color-primary-rgb), 0.30),
+        inset 0 1px 2px rgba(255, 255, 255, 0.30);
 }
 
-/* Hero Icon inside Pod */
-.pos-smart-cover .cover-hero-icon {
-    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+/* Icon inside Pod — putih kontras di atas background emas */
+.pos-smart-cover .cover-icon {
+    color: #fff;
+    filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.20));
+    transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-.group:hover .pos-smart-cover .cover-hero-icon,
-.pos-product-card:hover .cover-hero-icon {
-    transform: scale(1.12) rotate(6deg);
+.group:hover .pos-smart-cover .cover-icon,
+.pos-product-card:hover .cover-icon {
+    transform: scale(1.10);
 }
 
-/* Bottom Category Capsule */
-.pos-smart-cover .cover-pill {
-    position: absolute;
-    bottom: 22px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 3;
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    padding: 3px 10px;
-    border-radius: 9999px;
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    background: rgba(255, 255, 255, 0.88);
-    border: 1px solid rgba(226, 232, 240, 0.85);
-    font-size: 8px;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    color: #334155;
-    box-shadow: 0 4px 10px -2px rgba(0, 0, 0, 0.08), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
-    max-width: 85%;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    transition: transform 0.25s ease, background 0.25s ease, color 0.25s ease;
-}
-
-.dark .pos-smart-cover .cover-pill {
-    background: rgba(15, 23, 42, 0.85);
-    border-color: rgba(255, 255, 255, 0.15);
-    color: #cbd5e1;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-}
-
-.group:hover .pos-smart-cover .cover-pill {
-    transform: translate(-50%, -2px);
-    background: #ffffff;
-    color: var(--color-primary);
-}
-.dark .group:hover .pos-smart-cover .cover-pill {
-    background: rgba(30, 41, 59, 0.95);
-    color: var(--color-primary-light);
-}
-
-/* Store Watermark */
+/* Store Official Watermark — elegan, subtle, profesional */
 .pos-smart-cover .cover-watermark {
     position: absolute;
-    bottom: 5px;
+    bottom: 7px;
     left: 50%;
     transform: translateX(-50%);
-    width: 100%;
+    width: 88%;
     font-size: 6.5px;
     font-weight: 800;
-    letter-spacing: 0.14em;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
-    color: #94a3b8;
+    color: rgba(var(--color-primary-rgb), 0.45);
     z-index: 2;
     pointer-events: none;
     display: flex;
     align-items: center;
     justify-content: center;
+    gap: 2px;
+    white-space: nowrap;
+    opacity: 1;
 }
 .dark .pos-smart-cover .cover-watermark {
-    color: #64748b;
+    color: rgba(var(--color-primary-rgb), 0.35);
 }
 
-/* Size Variants */
-/* LG Size: Product Modal (~280px - 400px) */
-.pos-smart-cover.cover-lg .cover-3d-pod {
-    width: 96px;
-    height: 96px;
+/* LG Size: Product Modal */
+.pos-smart-cover.cover-lg .cover-icon-pod {
+    width: 90px;
+    height: 90px;
     border-radius: 28px;
 }
-.pos-smart-cover.cover-lg .cover-hero-icon {
-    font-size: 40px;
-}
-.pos-smart-cover.cover-lg .cover-ring-1 {
-    width: 180px;
-    height: 180px;
-}
-.pos-smart-cover.cover-lg .cover-ring-2 {
-    width: 230px;
-    height: 230px;
-}
-.pos-smart-cover.cover-lg .cover-pill {
-    bottom: 28px;
-    font-size: 9.5px;
-    padding: 4px 14px;
+.pos-smart-cover.cover-lg .cover-icon {
+    font-size: 38px;
 }
 .pos-smart-cover.cover-lg .cover-watermark {
-    bottom: 10px;
-    font-size: 7.5px;
+    bottom: 14px;
+    font-size: 8.5px;
+    letter-spacing: 0.20em;
 }
 
 /* MD Size: Default Grid Card (~140px - 220px) */
-.pos-smart-cover.cover-md .cover-3d-pod {
-    width: 66px;
-    height: 66px;
+.pos-smart-cover.cover-md .cover-icon-pod {
+    width: 60px;
+    height: 60px;
     border-radius: 20px;
 }
-.pos-smart-cover.cover-md .cover-hero-icon {
+.pos-smart-cover.cover-md .cover-icon {
     font-size: 26px;
 }
-.pos-smart-cover.cover-md .cover-pill {
-    bottom: 18px;
+.pos-smart-cover.cover-md .cover-watermark {
+    bottom: 7px;
+    font-size: 6.5px;
 }
 
-/* SM Size: List Item (~52px - 96px) */
+/* SM Size: List Item, Wishlist (~52px - 96px) */
 .pos-smart-cover.cover-sm {
     border-radius: 14px;
 }
-.pos-smart-cover.cover-sm .cover-3d-pod {
-    width: 42px;
-    height: 42px;
-    border-radius: 14px;
-    border-width: 1.5px;
+.pos-smart-cover.cover-sm .cover-icon-pod {
+    width: 38px;
+    height: 38px;
+    border-radius: 13px;
 }
-.pos-smart-cover.cover-sm .cover-hero-icon {
+.pos-smart-cover.cover-sm .cover-icon {
     font-size: 17px;
 }
-.pos-smart-cover.cover-sm .cover-pill,
-.pos-smart-cover.cover-sm .cover-watermark,
-.pos-smart-cover.cover-sm .cover-ring {
-    display: none;
+.pos-smart-cover.cover-sm .cover-watermark {
+    bottom: 4px;
+    font-size: 5.5px;
+    letter-spacing: 0.14em;
+    opacity: 0.8;
 }
 
 /* THUMB Size: Cart & Tiny Thumbnails (~36px - 44px) */
 .pos-smart-cover.cover-thumb {
     border-radius: 10px;
 }
-.pos-smart-cover.cover-thumb .cover-3d-pod {
-    width: 32px;
-    height: 32px;
-    border-radius: 10px;
-    border-width: 1px;
+.pos-smart-cover.cover-thumb .cover-icon-pod {
+    width: 28px;
+    height: 28px;
+    border-radius: 9px;
 }
-.pos-smart-cover.cover-thumb .cover-hero-icon {
+.pos-smart-cover.cover-thumb .cover-icon {
     font-size: 13px;
 }
-.pos-smart-cover.cover-thumb .cover-pill,
-.pos-smart-cover.cover-thumb .cover-watermark,
-.pos-smart-cover.cover-thumb .cover-ring,
-.pos-smart-cover.cover-thumb .cover-studio-grid {
+.pos-smart-cover.cover-thumb .cover-watermark {
     display: none;
 }
 
