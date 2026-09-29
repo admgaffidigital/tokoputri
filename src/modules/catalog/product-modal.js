@@ -704,43 +704,104 @@ export const rProdMod = () => {
         if (hV) {
             show('product-modal-options-container');
             
-            let gridHTML = `<div class="grid grid-cols-3 sm:grid-cols-4 gap-2 sm:gap-2.5 w-full">`;
+            const isColorCatalog = p.variants.some(v => v.colorCode && typeof v.colorCode === 'string' && v.colorCode.trim() !== '');
+
+            const titleEl = el('product-modal-options-title');
+            if (titleEl) {
+                titleEl.innerHTML = isColorCatalog 
+                    ? '<i class="fa-solid fa-palette text-[var(--color-primary)] mr-1"></i> Pilih Warna Cat' 
+                    : '<i class="fa-solid fa-sliders text-[var(--color-primary)] mr-1"></i> Pilih Varian';
+            }
+
+            let optHTML = '';
+            if (isColorCatalog) {
+                // MODEL 1: KATALOG WARNA CAT KHUSUS (Grid Swatch Kartu Simulasi Warna Cat)
+                optHTML = `<div class="grid grid-cols-3 sm:grid-cols-4 gap-2 sm:gap-2.5 w-full">`;
+                optHTML += p.variants.map((r, x) => {
+                    let isVarActive = r.isActive !== false && r.isActive !== 'false';
+                    const useStkV = appData.store.useStock === true || appData.store.useStock === 'true';
+                    const varStock = parseFloat(r.stock) || 0;
+                    const isVarOutOfStock = useStkV && varStock <= 0;
+                    let isVarSelectable = isVarActive && !isVarOutOfStock;
+                    const isSelected = x === cVar;
+                    
+                    let cardClass = "";
+                    if (!isVarSelectable) {
+                        cardClass = "bg-slate-100/70 dark:bg-slate-800/40 border-slate-200 dark:border-slate-700/60 text-slate-400 opacity-50 cursor-not-allowed";
+                    } else if (isSelected) {
+                        cardClass = "border-2 border-[var(--color-primary)] bg-[rgba(var(--color-primary-rgb),0.08)] dark:bg-[rgba(var(--color-primary-rgb),0.15)] ring-2 ring-[var(--color-primary)]/25 shadow-xs text-slate-900 dark:text-white";
+                    } else {
+                        cardClass = "bg-white dark:bg-slate-800/90 border-slate-200/80 dark:border-slate-700/80 text-slate-700 dark:text-slate-300 hover:border-[var(--color-primary)]/50";
+                    }
+
+                    const hex = (r.colorCode && typeof r.colorCode === 'string' && r.colorCode.trim()) ? r.colorCode.trim() : '';
+                    let swatchInner = '';
+                    if (r.img && r.img.trim()) {
+                        swatchInner = `<img src="${getOptImg(r.img, 'w100-rw')}" alt="${esc(r.name)}" class="w-full h-full object-cover rounded-full">`;
+                    }
+                    const swatchDot = hex 
+                        ? `<span class="w-8 h-8 sm:w-9 sm:h-9 rounded-full shrink-0 border border-black/10 shadow-xs flex items-center justify-center mx-auto transition-transform ${isSelected ? 'scale-110' : ''}" style="background-color: ${esc(hex)}">${swatchInner}</span>`
+                        : (r.img ? `<img src="${getOptImg(r.img, 'w100-rw')}" alt="${esc(r.name)}" class="w-8 h-8 sm:w-9 sm:h-9 rounded-full object-cover shrink-0 border border-slate-200 shadow-xs mx-auto">` : '');
+
+                    const zoomBtn = isVarSelectable && (hex || r.img) 
+                        ? `<span onclick="event.stopPropagation(); previewVariant(${x})" class="absolute top-1.5 right-1.5 w-5 h-5 rounded-full bg-white/90 dark:bg-slate-700/90 shadow-sm flex items-center justify-center text-slate-500 hover:text-[var(--color-primary)] hover:scale-110 active:scale-90 transition-all border border-slate-200/50 dark:border-slate-600/50 z-10 cursor-pointer" title="Perbesar"><i class="fa-solid fa-magnifying-glass-plus text-[9px]"></i></span>` 
+                        : '';
+
+                    return `<button ${!isVarSelectable ? 'disabled' : ''} class="relative p-2 sm:p-2.5 rounded-2xl text-center border transition-all active:scale-95 flex flex-col items-center justify-center gap-1.5 cursor-pointer overflow-hidden ${cardClass}" ${isVarSelectable ? `onclick="selectVariant(${x})"` : ''}>
+                        ${zoomBtn}
+                        ${swatchDot}
+                        <div class="w-full min-w-0 px-0.5">
+                            <span class="block text-[10px] sm:text-[10.5px] font-black leading-tight truncate ${isSelected ? 'text-amber-950 dark:text-amber-200' : 'text-slate-800 dark:text-white'} ${!isVarSelectable ? 'line-through' : ''}">${esc(r.name)}</span>
+                            <span class="block text-[8px] sm:text-[8.5px] font-bold text-slate-400 dark:text-slate-500 truncate mt-0.5">${esc(r.code || r.unit || (hex ? hex.toUpperCase() : ''))}</span>
+                        </div>
+                        ${isVarOutOfStock && isVarActive ? '<span class="absolute top-1 right-1 px-1 py-0.5 rounded text-[7.5px] bg-rose-500 text-white font-bold leading-none">Habis</span>' : ''}
+                    </button>`;
+                }).join('');
+                optHTML += `</div>`;
+            } else {
+                // MODEL 2: VARIAN STANDAR / UMUM (NON-CAT, TANPA KODE HEX)
+                // Flex-wrap horizontal chips/pills, tanpa bulatan warna palsu
+                // Jika memiliki gambar, tampilkan gambar varian
+                optHTML = `<div class="flex flex-wrap gap-2 sm:gap-2.5 w-full">`;
+                optHTML += p.variants.map((r, x) => {
+                    let isVarActive = r.isActive !== false && r.isActive !== 'false';
+                    const useStkV = appData.store.useStock === true || appData.store.useStock === 'true';
+                    const varStock = parseFloat(r.stock) || 0;
+                    const isVarOutOfStock = useStkV && varStock <= 0;
+                    let isVarSelectable = isVarActive && !isVarOutOfStock;
+                    const isSelected = x === cVar;
+                    
+                    let chipClass = "";
+                    if (!isVarSelectable) {
+                        chipClass = "bg-slate-100/70 dark:bg-slate-800/40 border-slate-200 dark:border-slate-700/60 text-slate-400 opacity-50 cursor-not-allowed";
+                    } else if (isSelected) {
+                        chipClass = "border-2 border-[var(--color-primary)] bg-[rgba(var(--color-primary-rgb),0.08)] dark:bg-[rgba(var(--color-primary-rgb),0.15)] ring-2 ring-[var(--color-primary)]/25 shadow-xs text-slate-900 dark:text-white font-black";
+                    } else {
+                        chipClass = "bg-white dark:bg-slate-800/90 border-slate-200/80 dark:border-slate-700/80 text-slate-700 dark:text-slate-300 hover:border-[var(--color-primary)]/50";
+                    }
+
+                    const thumbImg = (r.img && r.img.trim())
+                        ? `<img src="${getOptImg(r.img, 'w100-rw')}" alt="${esc(r.name)}" class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg object-cover shrink-0 border border-slate-200 dark:border-slate-700 shadow-2xs">`
+                        : '';
+
+                    const hasDiffPrice = r.price && parseFloat(r.price) !== parseFloat(p.price);
+                    const priceBadge = hasDiffPrice 
+                        ? `<span class="text-[10px] font-bold ${isSelected ? 'text-[var(--color-primary)]' : 'text-slate-500 dark:text-slate-400'}">${fCur(r.price)}</span>`
+                        : '';
+
+                    return `<button ${!isVarSelectable ? 'disabled' : ''} class="px-3.5 py-2 rounded-xl text-xs font-bold border transition-all active:scale-95 flex items-center gap-2 cursor-pointer ${chipClass}" ${isVarSelectable ? `onclick="selectVariant(${x})"` : ''}>
+                        ${thumbImg}
+                        <div class="flex flex-col text-left min-w-0">
+                            <span class="truncate max-w-[150px] sm:max-w-[200px] leading-tight ${!isVarSelectable ? 'line-through' : ''}">${esc(r.name)}</span>
+                            ${priceBadge}
+                        </div>
+                        ${isVarOutOfStock && isVarActive ? '<span class="ml-1 px-1.5 py-0.5 rounded text-[8px] bg-rose-500 text-white font-bold leading-none">Habis</span>' : ''}
+                    </button>`;
+                }).join('');
+                optHTML += `</div>`;
+            }
             
-            gridHTML += p.variants.map((r, x) => {
-                let isVarActive = r.isActive !== false && r.isActive !== 'false';
-                const useStkV = appData.store.useStock === true || appData.store.useStock === 'true';
-                const varStock = parseFloat(r.stock) || 0;
-                const isVarOutOfStock = useStkV && varStock <= 0;
-                let isVarSelectable = isVarActive && !isVarOutOfStock;
-                const isSelected = x === cVar;
-                
-                let cardClass = "";
-                if (!isVarSelectable) {
-                    cardClass = "bg-slate-100/70 dark:bg-slate-800/40 border-slate-200 dark:border-slate-700/60 text-slate-400 opacity-50 cursor-not-allowed";
-                } else if (isSelected) {
-                    cardClass = "border-2 border-[var(--color-primary)] bg-[rgba(var(--color-primary-rgb),0.08)] dark:bg-[rgba(var(--color-primary-rgb),0.15)] ring-2 ring-[var(--color-primary)]/25 shadow-xs text-slate-900 dark:text-white";
-                } else {
-                    cardClass = "bg-white dark:bg-slate-800/90 border-slate-200/80 dark:border-slate-700/80 text-slate-700 dark:text-slate-300 hover:border-[var(--color-primary)]/50";
-                }
-
-                const colorHex = r.colorCode || (p.colorCode || '#CBD5E1');
-                const colorDot = `<span class="w-8 h-8 sm:w-9 sm:h-9 rounded-full shrink-0 border border-black/10 shadow-xs flex items-center justify-center mx-auto transition-transform ${isSelected ? 'scale-110' : ''}" style="background-color: ${esc(colorHex)}"></span>`;
-
-                const zoomBtn = isVarSelectable && (r.colorCode || r.img) ? `<span onclick="event.stopPropagation(); previewVariant(${x})" class="absolute top-1.5 right-1.5 w-5 h-5 rounded-full bg-white/90 dark:bg-slate-700/90 shadow-sm flex items-center justify-center text-slate-500 hover:text-[var(--color-primary)] hover:scale-110 active:scale-90 transition-all border border-slate-200/50 dark:border-slate-600/50 z-10" title="Perbesar"><i class="fa-solid fa-magnifying-glass-plus text-[9px]"></i></span>` : '';
-
-                return `<button ${!isVarSelectable ? 'disabled' : ''} class="relative p-2 sm:p-2.5 rounded-2xl text-center border transition-all active:scale-95 flex flex-col items-center justify-center gap-1.5 cursor-pointer overflow-hidden ${cardClass}" ${isVarSelectable ? `onclick="selectVariant(${x})"` : ''}>
-                    ${zoomBtn}
-                    ${colorDot}
-                    <div class="w-full min-w-0 px-0.5">
-                        <span class="block text-[10px] sm:text-[10.5px] font-black leading-tight truncate ${isSelected ? 'text-amber-950 dark:text-amber-200' : 'text-slate-800 dark:text-white'} ${!isVarSelectable ? 'line-through' : ''}">${esc(r.name)}</span>
-                        <span class="block text-[8px] sm:text-[8.5px] font-bold text-slate-400 dark:text-slate-500 truncate mt-0.5">${esc(r.code || r.unit || (r.colorCode ? r.colorCode.toUpperCase() : ''))}</span>
-                    </div>
-                    ${isVarOutOfStock && isVarActive ? '<span class="absolute top-1 right-1 px-1 py-0.5 rounded text-[7.5px] bg-rose-500 text-white font-bold leading-none">Habis</span>' : ''}
-                </button>`;
-            }).join('');
-            
-            gridHTML += `</div>`;
-            setH('product-modal-options', gridHTML);
+            setH('product-modal-options', optHTML);
             
         } else { 
             hide('product-modal-options-container'); 
@@ -1231,7 +1292,24 @@ export const renderQuickVariantSheet = () => {
 
     // Mini Header Update
     const imgEl = el('quick-variant-img');
-    if (imgEl) imgEl.src = getOptImg(v?.img || p.img || '', 'w300-rw');
+    const targetImg = v?.img || p.img || '';
+    if (imgEl) {
+        if (targetImg) {
+            imgEl.src = getOptImg(targetImg, 'w300-rw');
+            imgEl.style.display = 'block';
+            if (imgEl.nextElementSibling) imgEl.nextElementSibling.style.display = 'none';
+        } else {
+            imgEl.style.display = 'none';
+            let ph = imgEl.nextElementSibling;
+            if (!ph) {
+                ph = document.createElement('div');
+                ph.className = 'w-full h-full flex items-center justify-center';
+                imgEl.parentNode.appendChild(ph);
+            }
+            ph.innerHTML = renderProductCoverHtml(p, { size: 'thumb' });
+            ph.style.display = 'flex';
+        }
+    }
     setIn('quick-variant-title', p.name);
 
     const priceVal = v?.price ?? p.price;
@@ -1261,39 +1339,98 @@ export const renderQuickVariantSheet = () => {
     const input = el('quick-variant-qty-input');
     if (input) input.value = qvQty;
 
-    // Render Options: 3-Column Swatch Cards (Screen 3 Reference)
+    // Render Options: 2 Model cerdas (Katalog Warna vs Varian Biasa)
     const optContainer = el('quick-variant-options');
     if (optContainer && p.variants) {
-        optContainer.innerHTML = p.variants.map((r, idx) => {
-            const isVarActive = r.isActive !== false && r.isActive !== 'false';
-            const s = parseFloat(r.stock) || 0;
-            const isOOS = useStk && s <= 0;
-            const isSelectable = isVarActive && !isOOS;
-            const isSelected = idx === qvVar;
+        const isColorCatalog = p.variants.some(vr => vr.colorCode && typeof vr.colorCode === 'string' && vr.colorCode.trim() !== '');
 
-            let cardClass = "";
-            if (!isSelectable) {
-                cardClass = "bg-slate-100/70 dark:bg-slate-800/40 border-slate-200 dark:border-slate-700/60 text-slate-400 opacity-50 cursor-not-allowed";
-            } else if (isSelected) {
-                cardClass = "border-2 border-[var(--color-primary)] bg-[rgba(var(--color-primary-rgb),0.08)] dark:bg-[rgba(var(--color-primary-rgb),0.15)] ring-2 ring-[var(--color-primary)]/25 shadow-xs text-slate-900 dark:text-white";
-            } else {
-                cardClass = "bg-white dark:bg-slate-800/90 border-slate-200/80 dark:border-slate-700/80 text-slate-700 dark:text-slate-300 hover:border-[var(--color-primary)]/50";
-            }
+        const titleSectionEl = el('quick-variant-section-title');
+        if (titleSectionEl) {
+            titleSectionEl.innerHTML = isColorCatalog 
+                ? `<i class="fa-solid fa-palette text-[var(--color-primary)]"></i> Pilih Warna Cat` 
+                : `<i class="fa-solid fa-sliders text-[var(--color-primary)]"></i> Pilih Varian`;
+        }
 
-            const colorHex = r.colorCode || (p.colorCode || '#CBD5E1');
-            const colorDot = `<span class="w-8 h-8 sm:w-9 sm:h-9 rounded-full shrink-0 border border-black/10 shadow-xs flex items-center justify-center mx-auto transition-transform ${isSelected ? 'scale-110' : ''}" style="background-color: ${esc(colorHex)}"></span>`;
+        if (isColorCatalog) {
+            // MODEL 1: KATALOG WARNA CAT KHUSUS
+            optContainer.className = "grid grid-cols-3 gap-2 sm:gap-2.5 max-h-56 overflow-y-auto custom-scrollbar p-0.5";
+            optContainer.innerHTML = p.variants.map((r, idx) => {
+                const isVarActive = r.isActive !== false && r.isActive !== 'false';
+                const s = parseFloat(r.stock) || 0;
+                const isOOS = useStk && s <= 0;
+                const isSelectable = isVarActive && !isOOS;
+                const isSelected = idx === qvVar;
 
-            return `
-                <button ${!isSelectable ? 'disabled' : ''} onclick="selectQuickVariant(${idx})" class="p-2 sm:p-2.5 rounded-2xl text-center border transition-all active:scale-95 flex flex-col items-center justify-center gap-1.5 cursor-pointer relative overflow-hidden ${cardClass}">
-                    ${colorDot}
-                    <div class="w-full min-w-0 px-0.5">
-                        <span class="block text-[10px] sm:text-[10.5px] font-black leading-tight truncate ${isSelected ? 'text-amber-950 dark:text-amber-200' : 'text-slate-800 dark:text-white'} ${!isSelectable ? 'line-through' : ''}">${esc(r.name)}</span>
-                        <span class="block text-[8px] sm:text-[8.5px] font-bold text-slate-400 dark:text-slate-500 truncate mt-0.5">${esc(r.code || r.unit || (r.colorCode ? r.colorCode.toUpperCase() : ''))}</span>
-                    </div>
-                    ${isOOS ? '<span class="absolute top-1 right-1 px-1 py-0.5 rounded text-[7.5px] bg-rose-500 text-white font-bold leading-none">Habis</span>' : ''}
-                </button>
-            `;
-        }).join('');
+                let cardClass = "";
+                if (!isSelectable) {
+                    cardClass = "bg-slate-100/70 dark:bg-slate-800/40 border-slate-200 dark:border-slate-700/60 text-slate-400 opacity-50 cursor-not-allowed";
+                } else if (isSelected) {
+                    cardClass = "border-2 border-[var(--color-primary)] bg-[rgba(var(--color-primary-rgb),0.08)] dark:bg-[rgba(var(--color-primary-rgb),0.15)] ring-2 ring-[var(--color-primary)]/25 shadow-xs text-slate-900 dark:text-white";
+                } else {
+                    cardClass = "bg-white dark:bg-slate-800/90 border-slate-200/80 dark:border-slate-700/80 text-slate-700 dark:text-slate-300 hover:border-[var(--color-primary)]/50";
+                }
+
+                const hex = (r.colorCode && typeof r.colorCode === 'string' && r.colorCode.trim()) ? r.colorCode.trim() : '';
+                let swatchInner = '';
+                if (r.img && r.img.trim()) {
+                    swatchInner = `<img src="${getOptImg(r.img, 'w100-rw')}" alt="${esc(r.name)}" class="w-full h-full object-cover rounded-full">`;
+                }
+                const swatchDot = hex 
+                    ? `<span class="w-8 h-8 sm:w-9 sm:h-9 rounded-full shrink-0 border border-black/10 shadow-xs flex items-center justify-center mx-auto transition-transform ${isSelected ? 'scale-110' : ''}" style="background-color: ${esc(hex)}">${swatchInner}</span>`
+                    : (r.img ? `<img src="${getOptImg(r.img, 'w100-rw')}" alt="${esc(r.name)}" class="w-8 h-8 sm:w-9 sm:h-9 rounded-full object-cover shrink-0 border border-slate-200 shadow-xs mx-auto">` : '');
+
+                return `
+                    <button ${!isSelectable ? 'disabled' : ''} onclick="selectQuickVariant(${idx})" class="p-2 sm:p-2.5 rounded-2xl text-center border transition-all active:scale-95 flex flex-col items-center justify-center gap-1.5 cursor-pointer relative overflow-hidden ${cardClass}">
+                        ${swatchDot}
+                        <div class="w-full min-w-0 px-0.5">
+                            <span class="block text-[10px] sm:text-[10.5px] font-black leading-tight truncate ${isSelected ? 'text-amber-950 dark:text-amber-200' : 'text-slate-800 dark:text-white'} ${!isSelectable ? 'line-through' : ''}">${esc(r.name)}</span>
+                            <span class="block text-[8px] sm:text-[8.5px] font-bold text-slate-400 dark:text-slate-500 truncate mt-0.5">${esc(r.code || r.unit || (hex ? hex.toUpperCase() : ''))}</span>
+                        </div>
+                        ${isOOS ? '<span class="absolute top-1 right-1 px-1 py-0.5 rounded text-[7.5px] bg-rose-500 text-white font-bold leading-none">Habis</span>' : ''}
+                    </button>
+                `;
+            }).join('');
+        } else {
+            // MODEL 2: VARIAN STANDAR / UMUM (NON-CAT, TANPA KODE HEX)
+            optContainer.className = "flex flex-wrap gap-2 max-h-56 overflow-y-auto custom-scrollbar p-0.5";
+            optContainer.innerHTML = p.variants.map((r, idx) => {
+                const isVarActive = r.isActive !== false && r.isActive !== 'false';
+                const s = parseFloat(r.stock) || 0;
+                const isOOS = useStk && s <= 0;
+                const isSelectable = isVarActive && !isOOS;
+                const isSelected = idx === qvVar;
+
+                let chipClass = "";
+                if (!isSelectable) {
+                    chipClass = "bg-slate-100/70 dark:bg-slate-800/40 border-slate-200 dark:border-slate-700/60 text-slate-400 opacity-50 cursor-not-allowed";
+                } else if (isSelected) {
+                    chipClass = "border-2 border-[var(--color-primary)] bg-[rgba(var(--color-primary-rgb),0.08)] dark:bg-[rgba(var(--color-primary-rgb),0.15)] ring-2 ring-[var(--color-primary)]/25 shadow-xs text-slate-900 dark:text-white font-black";
+                } else {
+                    chipClass = "bg-white dark:bg-slate-800/90 border-slate-200/80 dark:border-slate-700/80 text-slate-700 dark:text-slate-300 hover:border-[var(--color-primary)]/50";
+                }
+
+                // Tampilkan gambar jika varian memiliki foto (pengecualian gambar)
+                const thumbImg = (r.img && r.img.trim())
+                    ? `<img src="${getOptImg(r.img, 'w100-rw')}" alt="${esc(r.name)}" class="w-7 h-7 rounded-lg object-cover shrink-0 border border-slate-200 dark:border-slate-700 shadow-2xs">`
+                    : '';
+
+                const hasDiffPrice = r.price && parseFloat(r.price) !== parseFloat(p.price);
+                const priceBadge = hasDiffPrice 
+                    ? `<span class="text-[10px] font-bold ${isSelected ? 'text-[var(--color-primary)]' : 'text-slate-500 dark:text-slate-400'}">${fCur(r.price)}</span>`
+                    : '';
+
+                return `
+                    <button ${!isSelectable ? 'disabled' : ''} onclick="selectQuickVariant(${idx})" class="px-3.5 py-2 rounded-xl text-xs font-bold border transition-all active:scale-95 flex items-center gap-2 cursor-pointer ${chipClass}">
+                        ${thumbImg}
+                        <div class="flex flex-col text-left min-w-0">
+                            <span class="truncate max-w-[150px] leading-tight ${!isSelectable ? 'line-through' : ''}">${esc(r.name)}</span>
+                            ${priceBadge}
+                        </div>
+                        ${isOOS ? '<span class="ml-1 px-1.5 py-0.5 rounded text-[8px] bg-rose-500 text-white font-bold leading-none">Habis</span>' : ''}
+                    </button>
+                `;
+            }).join('');
+        }
     }
 
     // Wishlist UI State

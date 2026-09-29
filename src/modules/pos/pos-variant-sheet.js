@@ -124,7 +124,8 @@ const renderVariantSheetContent = (p) => {
         activeStockStr = isOutOfStock ? 'Stok Habis' : `Stok: ${formatQty(activeStock)}`;
     }
 
-    const img = p.img ? getOptImg(p.img, 'w200-rw') : '';
+    const varImg = activeVar?.img || p.img || '';
+    const img = varImg ? getOptImg(varImg, 'w200-rw') : '';
     const coverThumb = renderProductCoverHtml(p, { size: 'thumb' });
 
     // Thumbnail
@@ -151,15 +152,20 @@ const renderVariantSheetContent = (p) => {
         if (!isVActive) labelSuffix = ' (Nonaktif)';
         else if (isVOutOfStock) labelSuffix = ' (Habis)';
 
-        // Tampilkan warna jika ada
-        const colorDot = v.color
-            ? `<span class="w-3 h-3 rounded-full border border-slate-200 dark:border-slate-600 shrink-0" style="background:${esc(v.color)}"></span>`
-            : '';
+        // Tampilkan visual: jika ada kode warna hex -> bulatan warna simulasi cat; jika ada img -> thumbnail foto varian; jika tidak ada keduanya -> tidak menampilkan bulatan cat dummy
+        const vHex = (v.colorCode || v.color || '').trim();
+        let vVisual = '';
+        if (vHex) {
+            vVisual = `<span class="w-3.5 h-3.5 rounded-full border border-slate-300 dark:border-slate-600 shrink-0 shadow-2xs" style="background:${esc(vHex)}"></span>`;
+        } else if (v.img && v.img.trim()) {
+            vVisual = `<img src="${getOptImg(v.img, 'w100-rw')}" alt="${esc(v.name)}" class="w-6 h-6 rounded-md object-cover border border-slate-200 dark:border-slate-700 shrink-0">`;
+        }
+
         return `<button
             onclick="${isDisabled ? '' : `window.selectPOSVariant(${i})`}"
             class="flex items-center gap-2 px-3 py-1.5 rounded-xl border text-[11px] font-bold transition-all ${activeStyle} ${outStyle}"
             ${isDisabled ? 'disabled' : ''}>
-            ${colorDot}
+            ${vVisual}
             <div class="flex flex-col items-start min-w-0">
                 <span class="truncate max-w-[120px]">${esc(v.name)}${labelSuffix}</span>
                 <div class="flex items-center gap-1.5 text-[9px] flex-wrap">

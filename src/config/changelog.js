@@ -8,6 +8,23 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-9-96',
+        version: 'v1.9.96',
+        date: '2026-09-29',
+        title: 'Arsitektur Cerdas Dual-Model Varian Produk: Katalog Warna Cat vs Varian Standar Flex-Chips & Eliminasi Swatch Dummy',
+        category: 'feature',
+        badge: 'Smart Dual-Model Variants System v1.9.96',
+        items: [
+            'Arsitektur Dual-Model Varian (src/modules/catalog/product-modal.js): Membedakan secara cerdas tampilan varian menjadi 2 model: Model Katalog Warna Cat (khusus jika kode HEX diisi sebagai simulasi warna cat) dan Model Varian Standar / Umum (jika kode HEX tidak diisi seperti pada gembok, paku, pipa, alat teknik, dll).',
+            'Model 1 - Swatch Katalog Warna Cat: Merender kartu grid swatch katalog warna cat presisi dengan lingkaran warna HEX asli sebagai simulasi warna cat, kode warna/katalog, nama varian, dan tombol kaca pembesar untuk pratinjau perbesar warna.',
+            'Model 2 - Varian Standar Flex-Chips: Merender varian non-cat dalam bentuk horizontal flex-wrap chips/pills yang ringkas, rapi, dan modern layaknya e-commerce profesional.',
+            'Eliminasi Lingkaran Warna Dummy (#CBD5E1): Menghapus paksaan fallback swatch abu-abu palsu pada produk non-cat sehingga varian umum tidak lagi berpenampilan seperti produk cat.',
+            'Pengecualian Gambar Thumbnail Varian: Jika varian standar memiliki gambar foto (v.img), chip varian menampilkan thumbnail foto varian; jika tanpa foto dan tanpa hex, chip tampil bersih sebagai teks murni.',
+            'Harmonisasi Lembar Varian Kasir POS (src/modules/pos/pos-variant-sheet.js): Menyelaraskan tampilan varian kasir dengan membaca colorCode untuk warna cat dan thumbnail foto untuk varian bergambar.',
+            'Multi-Channel Build & Sync v1.9.96 (Android versionCode 10996): Sinkronisasi paket web produksi, flashdisk, dan platform Android Capacitor.'
+        ]
+    },
+    {
         id: 'log-1-9-95',
         version: 'v1.9.95',
         date: '2026-09-29',
