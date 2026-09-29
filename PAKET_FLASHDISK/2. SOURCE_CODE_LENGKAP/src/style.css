@@ -462,6 +462,19 @@ body, #app-container,
     border-color: rgba(148, 163, 184, 0.35);
 }
 
+.pos-tag-promo {
+    background: rgba(239, 68, 68, 0.10);
+    color: #dc2626;
+    border: 1px solid rgba(239, 68, 68, 0.28);
+    font-weight: 900;
+}
+
+.dark .pos-tag-promo {
+    background: rgba(239, 68, 68, 0.18);
+    color: #f87171;
+    border-color: rgba(239, 68, 68, 0.35);
+}
+
 /* Status produk habis pada katalog kasir (identik Storefront) */
 .pos-product-card.is-out-of-stock,
 .pos-list-item.is-out-of-stock {

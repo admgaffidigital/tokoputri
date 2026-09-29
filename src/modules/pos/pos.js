@@ -1265,13 +1265,13 @@ export const renderCatalog = () => {
                 let priceNormalHtml = '';
                 if (p.priceNormal && parseFloat(p.priceNormal) > pPrice) {
                     const pct = Math.round(((parseFloat(p.priceNormal) - pPrice) / parseFloat(p.priceNormal)) * 100);
-                    discBadge = `<span class="pos-badge pos-badge-promo"><i class="fa-solid fa-tags" style="font-size:6px"></i> -${pct}%</span>`;
+                    discBadge = `<span class="pos-tag-chip pos-tag-promo"><i class="fa-solid fa-tags"></i> -${pct}%</span>`;
                     priceNormalHtml = `<span class="text-[10px] text-slate-400 line-through font-bold">${fRp(parseFloat(p.priceNormal))}</span>`;
                 }
 
-                // 2. Pre-Order Badge
-                const poBadge = stockInfo.isPreorder
-                    ? `<span class="pos-badge pos-badge-po"><i class="fa-solid fa-clock" style="font-size:6px"></i> PO ${esc(stockInfo.poTime)}</span>`
+                // 2. Pre-Order Badge (sebagai chip seragam)
+                const poChip = stockInfo.isPreorder
+                    ? `<span class="pos-tag-chip pos-tag-po"><i class="fa-solid fa-clock"></i> PO ${esc(stockInfo.poTime)}</span>`
                     : '';
 
                 // 3. Brand & Kategori Text yang Rapi (Bukan Badge Menumpuk)
@@ -1317,19 +1317,19 @@ export const renderCatalog = () => {
                             ${totalQtyInCart > 0 ? `<div class="pos-qty-badge" style="top:2px;right:2px;min-width:18px;height:18px;font-size:9px;border-width:1.5px">${formatQty(totalQtyInCart)}</div>` : ''}
                         </div>
                         <div style="flex:1;min-width:0" class="flex flex-col justify-center">
-                            <!-- Line 1: Kategori & Brand + Chip Operasional -->
-                            <div class="flex items-center gap-1.5 flex-wrap">
-                                <span class="text-[9px] uppercase tracking-wider font-bold text-slate-400 dark:text-slate-500 truncate max-w-[130px]">${catBrandText}</span>
-                                ${discBadge ? `<span class="shrink-0">${discBadge}</span>` : ''}
-                                ${hasVariants ? `<span class="pos-tag-chip pos-tag-variant"><i class="fa-solid fa-layer-group"></i> Varian</span>` : ''}
-                                ${hasGrosir ? `<span class="pos-tag-chip pos-tag-grosir"><i class="fa-solid fa-tags"></i> Grosir</span>` : ''}
-                                ${stockInfo.isPreorder ? `<span class="pos-tag-chip pos-tag-po"><i class="fa-solid fa-clock"></i> PO ${esc(stockInfo.poTime)}</span>` : ''}
+                            <!-- Line 1: Kategori & Brand + Chip Operasional (1 baris nowrap) -->
+                            <div class="flex items-center gap-1 flex-nowrap overflow-hidden">
+                                <span class="text-[9px] uppercase tracking-wider font-bold text-slate-400 dark:text-slate-500 truncate shrink-0 max-w-[80px]">${catBrandText}</span>
+                                ${discBadge}
+                                ${hasVariants ? `<span class="pos-tag-chip pos-tag-variant shrink-0"><i class="fa-solid fa-layer-group"></i> Varian</span>` : ''}
+                                ${hasGrosir ? `<span class="pos-tag-chip pos-tag-grosir shrink-0"><i class="fa-solid fa-tags"></i> Grosir</span>` : ''}
+                                ${poChip}
                                 ${stockInfo.isManaged && !stockInfo.isOutOfStock ? (
                                     stockInfo.isLowStock
-                                        ? `<span class="pos-tag-chip pos-tag-low"><i class="fa-solid fa-fire"></i> Sisa ${formatQty(stockInfo.totalStock)}</span>`
-                                        : `<span class="pos-tag-chip pos-tag-stock"><i class="fa-solid fa-box"></i> Stok ${formatQty(stockInfo.totalStock)}</span>`
+                                        ? `<span class="pos-tag-chip pos-tag-low shrink-0"><i class="fa-solid fa-fire"></i> ${formatQty(stockInfo.totalStock)}</span>`
+                                        : `<span class="pos-tag-chip pos-tag-stock shrink-0"><i class="fa-solid fa-box"></i> ${formatQty(stockInfo.totalStock)}</span>`
                                 ) : ''}
-                                ${stockInfo.isOutOfStock ? `<span class="pos-badge pos-badge-habis" style="font-size:7px;padding:1px 4px"><i class="fa-solid fa-ban"></i> HABIS</span>` : ''}
+                                ${stockInfo.isOutOfStock ? `<span class="pos-tag-chip pos-tag-low shrink-0"><i class="fa-solid fa-ban"></i> Habis</span>` : ''}
                             </div>
                             <!-- Line 2: Nama Produk -->
                             <p class="text-xs font-bold text-slate-800 dark:text-slate-100 truncate mt-0.5 leading-snug" title="${pName}">${pName}</p>
@@ -1368,17 +1368,17 @@ export const renderCatalog = () => {
                     <div class="pos-card-info">
                         <p class="pos-card-cat truncate">${catBrandText}</p>
                         <p class="pos-card-name leading-tight line-clamp-2" title="${pName}">${pName}</p>
-                        <!-- Chip Operasional Rapi (Diskon / Varian / Grosir / PO / Stok) -->
+                        <!-- Chip Operasional Rapi 1 baris (Diskon / Varian / Grosir / PO / Stok) -->
                         ${(discBadge || hasVariants || hasGrosir || stockInfo.isPreorder || (stockInfo.isManaged && !stockInfo.isOutOfStock)) ? `
                         <div class="flex items-center gap-1 mt-1 mb-0.5 flex-wrap">
-                            ${discBadge ? `<span class="shrink-0">${discBadge}</span>` : ''}
+                            ${discBadge}
                             ${hasVariants ? `<span class="pos-tag-chip pos-tag-variant"><i class="fa-solid fa-layer-group"></i> Varian</span>` : ''}
                             ${hasGrosir ? `<span class="pos-tag-chip pos-tag-grosir"><i class="fa-solid fa-tags"></i> Grosir</span>` : ''}
-                            ${stockInfo.isPreorder ? `<span class="pos-tag-chip pos-tag-po"><i class="fa-solid fa-clock"></i> PO ${esc(stockInfo.poTime)}</span>` : ''}
+                            ${poChip}
                             ${stockInfo.isManaged && !stockInfo.isOutOfStock ? (
                                 stockInfo.isLowStock
-                                    ? `<span class="pos-tag-chip pos-tag-low"><i class="fa-solid fa-fire"></i> SISA ${formatQty(stockInfo.totalStock)}</span>`
-                                    : `<span class="pos-tag-chip pos-tag-stock"><i class="fa-solid fa-box"></i> Stok ${formatQty(stockInfo.totalStock)}</span>`
+                                    ? `<span class="pos-tag-chip pos-tag-low"><i class="fa-solid fa-fire"></i> Sisa ${formatQty(stockInfo.totalStock)}</span>`
+                                    : `<span class="pos-tag-chip pos-tag-stock"><i class="fa-solid fa-box"></i> ${formatQty(stockInfo.totalStock)}</span>`
                             ) : ''}
                         </div>` : ''}
                         <div class="pos-card-footer flex items-center justify-between gap-1">
