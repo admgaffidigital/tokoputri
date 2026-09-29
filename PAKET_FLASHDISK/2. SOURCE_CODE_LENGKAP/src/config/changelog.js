@@ -8,6 +8,35 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-9-94',
+        version: 'v1.9.94',
+        date: '2026-09-29',
+        title: 'Ekosistem Animasi GIF Maskot Hero Banner & Integrasi Cerdas Google Drive 8MB',
+        category: 'ui',
+        badge: 'Animated Mascot GIF Ecosystem v1.9.94',
+        items: [
+            'Integrasi Maskot Animasi GIF (/putri_mascot_anim.gif): Mengunduh dan menanamkan aset animasi GIF maskot resmi (7.52MB) ke dalam penyimpanan lokal aplikasi, menghadirkan rendering 0ms instan tanpa ketergantungan kuota atau rate limit Google Drive.',
+            'Presisi Deteksi Tipe & Ekstensi File Upload (src/services/upload.js): Memperbaiki validasi MIME type pada handleImageUpload dan handleRTEditorImage agar memeriksa ekstensi .gif secara cerdas, mengeliminasi galat salah baca batas 3MB pada file GIF hingga 8MB.',
+            'Penangan Tautan Cerdas Google Drive (src/core/utils.js): Memperbarui fungsi fixD untuk mendeteksi file animasi GIF dari Google Drive dan menyajikannya dalam format direct stream (uc?export=view) serta direct Google CDN tanpa re-encode ke JPEG statis.',
+            'Tombol Aksi 1-Klik Animasi Maskot di CMS (src/modules/admin/settings.js): Menambahkan tombol "Animasi GIF Maskot ✨" pada pengaturan profil CMS dan modal quick-edit banner sambutan untuk beralih instan antara maskot bergerak dan 3D statis.',
+            'Sinkronisasi Multi-Kanal v1.9.94 (Android versionCode 10994): Build web produksi Vite, paket flashdisk, dan sinkronisasi Capacitor Android terbarui secara menyeluruh.'
+        ]
+    },
+    {
+        id: 'log-1-9-93',
+        version: 'v1.9.93',
+        date: '2026-09-29',
+        title: 'Harmonisasi Tema Berjalan (Dynamic Theme) & Kustomisasi Maskot Hero Banner CMS',
+        category: 'ui',
+        badge: 'Dynamic Theme & Mascot CMS v1.9.93',
+        items: [
+            'Penyelarasan Warna Hardcoded (Theming): Menghapus hardcoding warna amber pada badge voucher, tiket promo, badge katalog reward, tombol tukar poin, dan quick menu modal (index.html). Seluruh elemen sekarang menggunakan variabel CSS tema aktif var(--color-primary) atau utilitas dinamis rgba().',
+            'Pengelolaan Hero Banner & Maskot 3D (src/modules/admin/settings.js): Menambahkan kartu pengaturan baru di tab Admin Settings CMS untuk memodifikasi Banner Welcome dan Maskot 3D slide. Menambahkan toggle untuk mematikan/menyalakan slide hero dan input URL gambar kustom untuk maskot utama.',
+            'Akses Cepat Pengelola Banners (src/modules/admin/products/table.js): Menambahkan kartu navigasi cerdas di tab Banners admin untuk memandu pengguna menuju panel pengaturan Hero & Maskot 3D di CMS.',
+            'Optimasi Background Gradien Welcome Banner (src/modules/home/sections.js): Mengubah background gradien pada slide #0 agar senantiasa sinkron dengan konfigurasi warna tema yang dipilih pengguna.'
+        ]
+    },
+    {
         id: 'log-1-9-92',
         version: 'v1.9.92',
         date: '2026-09-29',

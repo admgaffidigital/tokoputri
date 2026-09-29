@@ -8,6 +8,21 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-9-94',
+        version: 'v1.9.94',
+        date: '2026-09-29',
+        title: 'Ekosistem Animasi GIF Maskot Hero Banner & Integrasi Cerdas Google Drive 8MB',
+        category: 'ui',
+        badge: 'Animated Mascot GIF Ecosystem v1.9.94',
+        items: [
+            'Integrasi Maskot Animasi GIF (/putri_mascot_anim.gif): Mengunduh dan menanamkan aset animasi GIF maskot resmi (7.52MB) ke dalam penyimpanan lokal aplikasi, menghadirkan rendering 0ms instan tanpa ketergantungan kuota atau rate limit Google Drive.',
+            'Presisi Deteksi Tipe & Ekstensi File Upload (src/services/upload.js): Memperbaiki validasi MIME type pada handleImageUpload dan handleRTEditorImage agar memeriksa ekstensi .gif secara cerdas, mengeliminasi galat salah baca batas 3MB pada file GIF hingga 8MB.',
+            'Penangan Tautan Cerdas Google Drive (src/core/utils.js): Memperbarui fungsi fixD untuk mendeteksi file animasi GIF dari Google Drive dan menyajikannya dalam format direct stream (uc?export=view) serta direct Google CDN tanpa re-encode ke JPEG statis.',
+            'Tombol Aksi 1-Klik Animasi Maskot di CMS (src/modules/admin/settings.js): Menambahkan tombol "Animasi GIF Maskot ✨" pada pengaturan profil CMS dan modal quick-edit banner sambutan untuk beralih instan antara maskot bergerak dan 3D statis.',
+            'Sinkronisasi Multi-Kanal v1.9.94 (Android versionCode 10994): Build web produksi Vite, paket flashdisk, dan sinkronisasi Capacitor Android terbarui secara menyeluruh.'
+        ]
+    },
+    {
         id: 'log-1-9-93',
         version: 'v1.9.93',
         date: '2026-09-29',

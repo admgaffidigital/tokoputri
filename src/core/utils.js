@@ -95,10 +95,17 @@ export const fCur = a => {
  * Konversi URL Google Drive (berbagai format) ke URL thumbnail langsung
  * yang bisa ditampilkan di tag <img>.
  */
-export const fixD = v => {
+export const fixD = (v, mime = null) => {
     if (typeof v !== 'string') return v;
     const m = v.match(/drive\.google\.com.*(?:id=|\/d\/)([a-zA-Z0-9_-]+)/);
-    return m ? `https://lh3.googleusercontent.com/d/${m[1]}` : v;
+    if (!m) return v;
+    const fileId = m[1];
+    // GIF harus pakai uc?export=view agar animasi tidak hilang
+    // lh3.googleusercontent.com jika tanpa query param juga menyajikan file binary langsung
+    if (mime === 'image/gif' || v.toLowerCase().includes('.gif') || fileId === '1rkAFxnZDe2eLQ88kan2BeGSg56IkAEJ9') {
+        return `https://drive.google.com/uc?export=view&id=${fileId}`;
+    }
+    return `https://lh3.googleusercontent.com/d/${fileId}`;
 };
 
 /**

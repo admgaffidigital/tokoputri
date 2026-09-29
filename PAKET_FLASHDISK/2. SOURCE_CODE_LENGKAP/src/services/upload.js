@@ -21,14 +21,20 @@ export const handleImageUpload = async (inputElement, targetInputId, varIndex = 
     const file = inputElement.files[0];
     if (!file) return;
     
-    if (!ALLOWED_IMAGE_MIMES.includes(file.type)) {
+    const isGif = file.type === 'image/gif' || /\.gif$/i.test(file.name || '');
+    const mimeType = isGif ? 'image/gif' : (file.type || 'image/jpeg');
+    
+    if (!ALLOWED_IMAGE_MIMES.includes(mimeType) && !isGif) {
         inputElement.value = '';
         return showToast("Hanya file JPG, PNG, WEBP, atau GIF yang diizinkan!");
     }
     
-    if (file.size > 3 * 1024 * 1024) {
+    // GIF animasi maskot diperbolehkan hingga 8MB
+    const maxSize = isGif ? 8 * 1024 * 1024 : 3 * 1024 * 1024;
+    const maxLabel = isGif ? '8MB' : '3MB';
+    if (file.size > maxSize) {
         inputElement.value = '';
-        return showToast("Maksimal gambar 3MB!");
+        return showToast(`Maksimal ukuran file ${maxLabel} (GIF animasi maks 8MB)!`);
     }
     
     const uploadUrl = window.GAS_UPLOAD_URL || GAS_UPLOAD_URL;
@@ -47,7 +53,7 @@ export const handleImageUpload = async (inputElement, targetInputId, varIndex = 
             const safeName = file.name.replace(/[^a-zA-Z0-9.]/g, '_');
             const payload = { 
                 name: "POS_" + Date.now() + "_" + safeName, 
-                mimeType: file.type, 
+                mimeType: mimeType, 
                 data: base64Data, 
                 token: GAS_SECRET_TOKEN 
             };
@@ -64,7 +70,7 @@ export const handleImageUpload = async (inputElement, targetInputId, varIndex = 
             try { responseData = JSON.parse(textRes); } catch(e) { return showToast("Error Server!"); }
             
             if (responseData.status === 'success') {
-                const finalUrl = fixD(responseData.url);
+                const finalUrl = fixD(responseData.url, mimeType);
                 const targetInput = el(targetInputId);
                 if (targetInput) {
                     targetInput.value = finalUrl;
@@ -172,13 +178,17 @@ export const handleRTEditorImage = async (inputElement, editorId) => {
     const file = inputElement.files[0];
     if (!file) return;
 
-    if (!ALLOWED_IMAGE_MIMES.includes(file.type)) {
+    const isGif = file.type === 'image/gif' || /\.gif$/i.test(file.name || '');
+    const mimeType = isGif ? 'image/gif' : (file.type || 'image/jpeg');
+
+    if (!ALLOWED_IMAGE_MIMES.includes(mimeType) && !isGif) {
         inputElement.value = '';
         return showToast("Hanya file JPG, PNG, WEBP, atau GIF yang diizinkan!");
     }
-    if (file.size > 3 * 1024 * 1024) { 
+    const maxEditorSize = isGif ? 8 * 1024 * 1024 : 3 * 1024 * 1024;
+    if (file.size > maxEditorSize) { 
         inputElement.value = ''; 
-        return showToast("Maksimal gambar 3MB!"); 
+        return showToast(`Maksimal gambar ${isGif ? '8MB (GIF)' : '3MB'}!`); 
     }
     
     const uploadUrl = window.GAS_UPLOAD_URL || GAS_UPLOAD_URL;

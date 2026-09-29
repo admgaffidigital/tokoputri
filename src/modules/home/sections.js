@@ -47,9 +47,9 @@ export const rDyn = () => {
     }
 
     // --- RENDER BANNER 3D PREMIUM & KARTU SAMBUTAN HERO MASKOT ---
-    // ── SLIDE 0: KARTU SAMBUTAN HERO MASKOT 3D (Putri Utama Teknik / Toko Putri) ──
+    // ── SLIDE 0: KARTU SAMBUTAN HERO MASKOT 3D & ANIMASI (Putri Utama Teknik / Toko Putri) ──
     const showHeroSlide = appData.store.showHeroSlide !== false && appData.store.showHeroSlide !== 'false';
-    const heroMascotImg = appData.store.heroMascotImg || '/putri_mascot_3d.jpg';
+    const heroMascotImg = appData.store.heroMascotImg || '/putri_mascot_anim.gif';
     const heroBadgeText = appData.store.heroBadgeText || 'Siap Melayani';
     const heroWelcomeTag = appData.store.heroWelcomeTag || 'SELAMAT DATANG';
     const heroTitle = appData.store.heroTitle || appData.store.name || 'TOKO PUTRI';

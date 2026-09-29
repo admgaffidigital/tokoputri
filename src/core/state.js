@@ -25,6 +25,12 @@ export const defApp = {
         themeColor: "#10b981", uiTheme: "emerald",
         bgStyle: "minimalist",   // "minimalist" | "hero_arch" | "aurora_glow" | "tech_grid" | "glass_studio"
         bgCustomUrl: "",        // URL gambar wallpaper kustom (opsional)
+        showHeroSlide: true,
+        heroMascotImg: "/putri_mascot_anim.gif",
+        heroBadgeText: "Siap Melayani",
+        heroWelcomeTag: "SELAMAT DATANG",
+        heroTitle: "",
+        heroSubtitle: "",
         showRewardCatalog: true,
         useStock: false,
         ppnEnabled: false,

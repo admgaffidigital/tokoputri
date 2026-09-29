@@ -47,29 +47,38 @@ export const rDyn = () => {
     }
 
     // --- RENDER BANNER 3D PREMIUM & KARTU SAMBUTAN HERO MASKOT ---
-    // ── SLIDE 0: KARTU SAMBUTAN HERO MASKOT 3D (Putri Utama Teknik / Toko Putri) ──
-    const welcomeHeroSlide = `
-        <div id="banner-slide-0" class="banner-slide-item w-[88vw] sm:w-[480px] min-h-[190px] sm:min-h-[220px] snap-center shrink-0 rounded-3xl relative overflow-hidden group cursor-pointer bg-gradient-to-br from-[#dfbc5b] via-[#c59b27] to-[#876019] text-white shadow-lg shadow-amber-950/20 border border-amber-300/30 flex flex-col transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
+    // ── SLIDE 0: KARTU SAMBUTAN HERO MASKOT 3D & ANIMASI (Putri Utama Teknik / Toko Putri) ──
+    const showHeroSlide = appData.store.showHeroSlide !== false && appData.store.showHeroSlide !== 'false';
+    const heroMascotImg = appData.store.heroMascotImg || '/putri_mascot_anim.gif';
+    const heroBadgeText = appData.store.heroBadgeText || 'Siap Melayani';
+    const heroWelcomeTag = appData.store.heroWelcomeTag || 'SELAMAT DATANG';
+    const heroTitle = appData.store.heroTitle || appData.store.name || 'TOKO PUTRI';
+    const heroSubtitle = appData.store.heroSubtitle || appData.store.slogan || appData.store.desc || 'Pusat Solusi Bangunan, Alat Teknik & Cat Terlengkap. Belanja Mudah, Cepat, dan Bergaransi!';
+    const heroBtnText = appData.store.heroBtnText || 'Member VIP';
+
+    const welcomeHeroSlide = showHeroSlide ? `
+        <div id="banner-slide-0" class="banner-slide-item w-[88vw] sm:w-[480px] min-h-[190px] sm:min-h-[220px] snap-center shrink-0 rounded-3xl relative overflow-hidden group cursor-pointer text-white shadow-lg flex flex-col transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
+             style="background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-primary) 45%, var(--color-primary-dark) 100%); border: 1px solid rgba(var(--color-primary-rgb), 0.35); box-shadow: 0 10px 25px -5px rgba(var(--color-primary-rgb), 0.35);">
             <!-- Dynamic Ambient Glow & Decorative Rings -->
-            <div class="absolute -right-10 -top-10 w-44 h-44 rounded-full bg-white/10 blur-xl pointer-events-none group-hover:scale-110 transition-transform duration-700"></div>
+            <div class="absolute -right-10 -top-10 w-44 h-44 rounded-full bg-white/15 blur-xl pointer-events-none group-hover:scale-110 transition-transform duration-700"></div>
             <div class="absolute -left-10 -bottom-10 w-36 h-36 rounded-full bg-black/20 blur-lg pointer-events-none"></div>
-            <div class="absolute right-24 top-3 w-10 h-10 rounded-full border border-amber-200/20 pointer-events-none"></div>
+            <div class="absolute right-24 top-3 w-10 h-10 rounded-full border border-white/20 pointer-events-none"></div>
 
             <div class="flex flex-1 w-full relative z-10 items-center justify-between">
                 <!-- Text & Action (Left Side) -->
                 <div class="w-[60%] sm:w-[62%] p-4 sm:p-5 md:p-6 flex flex-col justify-center z-20">
-                    <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-black/25 backdrop-blur-md text-amber-200 text-[8.5px] sm:text-[9.5px] font-black uppercase tracking-wider mb-1.5 border border-white/20 w-max shadow-2xs">
-                        <i class="fa-solid fa-sparkles text-amber-300"></i> SELAMAT DATANG
+                    <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-black/25 backdrop-blur-md text-white text-[8.5px] sm:text-[9.5px] font-black uppercase tracking-wider mb-1.5 border border-white/25 w-max shadow-2xs">
+                        <i class="fa-solid fa-sparkles text-amber-300"></i> ${esc(heroWelcomeTag)}
                     </div>
                     <h2 class="text-[15px] sm:text-lg md:text-xl font-black text-white leading-tight tracking-tight drop-shadow-sm line-clamp-1">
-                        ${esc(appData.store.name || 'TOKO PUTRI')}
+                        ${esc(heroTitle)}
                     </h2>
-                    <p class="text-[10px] sm:text-xs text-amber-100/90 font-medium leading-relaxed mt-1 line-clamp-2">
-                        ${esc(appData.store.slogan || appData.store.desc || 'Pusat Solusi Bangunan, Alat Teknik & Cat Terlengkap. Belanja Mudah, Cepat, dan Bergaransi!')}
+                    <p class="text-[10px] sm:text-xs text-white/90 font-medium leading-relaxed mt-1 line-clamp-2">
+                        ${esc(heroSubtitle)}
                     </p>
                     <div class="mt-2.5 sm:mt-3 flex items-center gap-2">
-                        <button type="button" onclick="event.stopPropagation(); if(typeof window.openMemberModal==='function') window.openMemberModal(); else if(typeof window.showToast==='function') window.showToast('Buka kartu member VIP untuk info poin!');" class="bg-white text-amber-950 hover:bg-amber-50 active:scale-95 text-[9px] sm:text-[10px] uppercase tracking-wider font-extrabold py-1.5 sm:py-2 px-3.5 sm:px-4 rounded-full shadow-md flex items-center gap-1.5 transition-all group-hover:pr-4 cursor-pointer">
-                            <i class="fa-solid fa-id-card text-amber-700"></i> Member VIP <i class="fa-solid fa-arrow-right text-[8px] text-amber-700 transition-transform group-hover:translate-x-1"></i>
+                        <button type="button" onclick="event.stopPropagation(); if(typeof window.openMemberModal==='function') window.openMemberModal(); else if(typeof window.showToast==='function') window.showToast('Buka kartu member VIP untuk info poin!');" class="bg-white hover:bg-slate-50 active:scale-95 text-[9px] sm:text-[10px] uppercase tracking-wider font-extrabold py-1.5 sm:py-2 px-3.5 sm:px-4 rounded-full shadow-md flex items-center gap-1.5 transition-all group-hover:pr-4 cursor-pointer" style="color: var(--color-primary-dark);">
+                            <i class="fa-solid fa-id-card" style="color: var(--color-primary);"></i> ${esc(heroBtnText)} <i class="fa-solid fa-arrow-right text-[8px] transition-transform group-hover:translate-x-1" style="color: var(--color-primary);"></i>
                         </button>
                     </div>
                 </div>
@@ -77,21 +86,21 @@ export const rDyn = () => {
                 <!-- 3D Mascot Avatar (Right Side) -->
                 <div class="w-[40%] sm:w-[38%] relative z-10 flex flex-col items-center justify-center p-2 pr-3 sm:pr-5 shrink-0">
                     <div class="relative group/mascot">
-                        <div class="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden shadow-2xl border-2 border-white/50 bg-amber-900/30 transform group-hover:scale-105 transition-transform duration-500 flex items-center justify-center">
-                            <img width="128" height="128" loading="eager" fetchpriority="high" src="/putri_mascot_3d.jpg" onerror="this.onerror=null;this.src='./putri_mascot_3d.jpg';" alt="Maskot Toko Putri" class="w-full h-full object-cover">
+                        <div class="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden shadow-2xl border-2 border-white/60 bg-black/20 transform group-hover:scale-105 transition-transform duration-500 flex items-center justify-center">
+                            <img width="128" height="128" loading="eager" fetchpriority="high" src="${esc(heroMascotImg)}" onerror="this.onerror=null;this.src='/putri_mascot_3d.jpg';" alt="${esc(heroTitle)}" class="w-full h-full object-contain" style="image-rendering: auto;">
                         </div>
                         <!-- Status Badge -->
-                        <div class="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-slate-950/85 backdrop-blur-md text-[7.5px] sm:text-[8px] font-bold text-amber-300 border border-white/20 px-2 py-0.5 rounded-full shadow-md whitespace-nowrap flex items-center gap-1">
-                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> Siap Melayani
+                        <div class="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-slate-950/85 backdrop-blur-md text-[7.5px] sm:text-[8px] font-bold text-white border border-white/20 px-2 py-0.5 rounded-full shadow-md whitespace-nowrap flex items-center gap-1">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> ${esc(heroBadgeText)}
                         </div>
                     </div>
                 </div>
             </div>
-        </div>`;
+        </div>` : '';
 
     // ── SLIDES BANNER PROMOSI (jika ada) ──
     const promoBannersHtml = ((appData.banners || [])).map((b, idx) => {
-        const slideIdx = idx + 1;
+        const slideIdx = (showHeroSlide ? 1 : 0) + idx;
         const isVideo = b.type === 'video' && b.videoUrl;
         const linkAction = (!isVideo && b.link) ? `onclick="window.open('${esc(b.link)}', '_self')"` : '';
 
@@ -176,37 +185,43 @@ export const rDyn = () => {
         </div>`;
     }).join('');
 
-    const totalBannerSlides = 1 + ((appData.banners && appData.banners.length) || 0);
-    const bHTML = `
-    <div class="relative group/banner-wrapper w-full">
-        <div id="banner-slider" class="flex overflow-x-auto gap-4 sm:gap-6 pb-4 pt-2 snap-x hide-scrollbar scroll-smooth" ontouchstart="clearInterval(window.bannerTmr)" ontouchend="setTimeout(() => window.startBannerAutoSlide?.(), 8000)" onmouseenter="clearInterval(window.bannerTmr)" onmouseleave="window.startBannerAutoSlide?.()" onscroll="window.onBannerScroll && window.onBannerScroll()">
-            ${welcomeHeroSlide}
-            ${promoBannersHtml}
-        </div>
-        ${totalBannerSlides > 1 ? `
-        <!-- Navigation Arrows (Desktop) -->
-        <button onclick="window.scrollBannerPrev()" type="button" aria-label="Banner Sebelumnya" class="hidden sm:flex absolute left-1 top-1/2 -translate-y-1/2 z-30 w-10 h-10 rounded-full bg-slate-900 hover:bg-slate-800 text-white items-center justify-center border border-slate-700 transition-all opacity-0 group-hover/banner-wrapper:opacity-100 shadow-xl active:scale-95">
-            <i class="fa-solid fa-chevron-left text-sm"></i>
-        </button>
-        <button onclick="window.scrollBannerNext()" type="button" aria-label="Banner Selanjutnya" class="hidden sm:flex absolute right-1 top-1/2 -translate-y-1/2 z-30 w-10 h-10 rounded-full bg-slate-900 hover:bg-slate-800 text-white items-center justify-center border border-slate-700 transition-all opacity-0 group-hover/banner-wrapper:opacity-100 shadow-xl active:scale-95">
-            <i class="fa-solid fa-chevron-right text-sm"></i>
-        </button>
+    const totalBannerSlides = (showHeroSlide ? 1 : 0) + ((appData.banners && appData.banners.length) || 0);
+    if (totalBannerSlides > 0) {
+        show('dynamic-banners-container');
+        const bHTML = `
+        <div class="relative group/banner-wrapper w-full">
+            <div id="banner-slider" class="flex overflow-x-auto gap-4 sm:gap-6 pb-4 pt-2 snap-x hide-scrollbar scroll-smooth" ontouchstart="clearInterval(window.bannerTmr)" ontouchend="setTimeout(() => window.startBannerAutoSlide?.(), 8000)" onmouseenter="clearInterval(window.bannerTmr)" onmouseleave="window.startBannerAutoSlide?.()" onscroll="window.onBannerScroll && window.onBannerScroll()">
+                ${welcomeHeroSlide}
+                ${promoBannersHtml}
+            </div>
+            ${totalBannerSlides > 1 ? `
+            <!-- Navigation Arrows (Desktop) -->
+            <button onclick="window.scrollBannerPrev()" type="button" aria-label="Banner Sebelumnya" class="hidden sm:flex absolute left-1 top-1/2 -translate-y-1/2 z-30 w-10 h-10 rounded-full bg-slate-900 hover:bg-slate-800 text-white items-center justify-center border border-slate-700 transition-all opacity-0 group-hover/banner-wrapper:opacity-100 shadow-xl active:scale-95">
+                <i class="fa-solid fa-chevron-left text-sm"></i>
+            </button>
+            <button onclick="window.scrollBannerNext()" type="button" aria-label="Banner Selanjutnya" class="hidden sm:flex absolute right-1 top-1/2 -translate-y-1/2 z-30 w-10 h-10 rounded-full bg-slate-900 hover:bg-slate-800 text-white items-center justify-center border border-slate-700 transition-all opacity-0 group-hover/banner-wrapper:opacity-100 shadow-xl active:scale-95">
+                <i class="fa-solid fa-chevron-right text-sm"></i>
+            </button>
 
-        <!-- Dots Indicator Navigation -->
-        <div id="banner-dots-container" class="flex items-center justify-center gap-1.5 mt-2">
-            ${Array.from({ length: totalBannerSlides }).map((_, idx) => `
-                <button onclick="window.scrollToBanner(${idx})" type="button" aria-label="Slide ${idx+1}" class="banner-dot-item ${idx === 0 ? 'h-2.5 rounded-full transition-all duration-300 bg-[var(--color-primary)] w-7 shadow-sm' : 'w-2.5 h-2.5 rounded-full transition-all duration-300 bg-slate-300 dark:bg-slate-700 hover:bg-slate-400'}" data-index="${idx}"></button>
-            `).join('')}
-        </div>
-        ` : ''}
-    </div>`;
+            <!-- Dots Indicator Navigation -->
+            <div id="banner-dots-container" class="flex items-center justify-center gap-1.5 mt-2">
+                ${Array.from({ length: totalBannerSlides }).map((_, idx) => `
+                    <button onclick="window.scrollToBanner(${idx})" type="button" aria-label="Slide ${idx+1}" class="banner-dot-item ${idx === 0 ? 'h-2.5 rounded-full transition-all duration-300 bg-[var(--color-primary)] w-7 shadow-sm' : 'w-2.5 h-2.5 rounded-full transition-all duration-300 bg-slate-300 dark:bg-slate-700 hover:bg-slate-400'}" data-index="${idx}"></button>
+                `).join('')}
+            </div>
+            ` : ''}
+        </div>`;
 
-    setH('dynamic-banners-container', bHTML);
-    if (totalBannerSlides > 1) {
-        setTimeout(startBannerAutoSlide, 500);
+        setH('dynamic-banners-container', bHTML);
+        if (totalBannerSlides > 1) {
+            setTimeout(startBannerAutoSlide, 500);
+        }
+    } else {
+        setH('dynamic-banners-container', '');
+        hide('dynamic-banners-container');
     }
 
-    // --- RENDER VOUCHERS PROMO (Luxury Warm Gold Ticket Style) ---
+    // --- RENDER VOUCHERS PROMO (Dynamic Theme Luxury Ticket Style) ---
     const activeVouchers = (appData.vouchers || []).filter(v => v.isShow === 'true' || v.isShow === true);
     const vC = el('dynamic-vouchers-container');
     if (activeVouchers.length > 0 && vC) {
@@ -214,7 +229,8 @@ export const rDyn = () => {
         let vHTML = `
         <div class="flex items-center justify-between mb-2.5">
             <h3 class="font-bold text-slate-800 dark:text-white text-xs sm:text-sm tracking-tight flex items-center gap-2">
-                <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center text-white shadow-2xs">
+                <div class="w-7 h-7 rounded-lg flex items-center justify-center text-white shadow-2xs"
+                     style="background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-primary) 50%, var(--color-primary-dark) 100%);">
                     <i class="fa-solid fa-ticket-simple text-xs -rotate-45"></i>
                 </div> VOUCHER TOKO
             </h3>
@@ -230,18 +246,19 @@ export const rDyn = () => {
                 
                 return `
                 <div class="w-[225px] sm:w-[250px] shrink-0 snap-start relative group cursor-pointer active:scale-95 transition-all duration-200" onclick="copyVoucher('${esc(v.code)}')">
-                    <div class="w-full h-[82px] sm:h-[86px] bg-gradient-to-r from-[#dfbc5b] via-[#c59b27] to-[#876019] rounded-2xl shadow-xs hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 flex relative overflow-hidden border border-amber-300/30 text-white">
+                    <div class="w-full h-[82px] sm:h-[86px] rounded-2xl shadow-xs hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 flex relative overflow-hidden text-white"
+                         style="background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-primary) 45%, var(--color-primary-dark) 100%); border: 1px solid rgba(var(--color-primary-rgb), 0.35);">
                         <!-- Left/Right Ticket Punch Holes (Biting into the sides using soft canvas color) -->
-                        <div class="absolute -top-2.5 right-[26%] w-4 h-4 rounded-full bg-[#FAF8F5] dark:bg-[#0b1120] border-b border-amber-950/20 z-20 pointer-events-none transform translate-x-1/2 transition-colors duration-300"></div>
-                        <div class="absolute -bottom-2.5 right-[26%] w-4 h-4 rounded-full bg-[#FAF8F5] dark:bg-[#0b1120] border-t border-amber-950/20 z-20 pointer-events-none transform translate-x-1/2 transition-colors duration-300"></div>
+                        <div class="absolute -top-2.5 right-[26%] w-4 h-4 rounded-full bg-[#FAF8F5] dark:bg-[#0b1120] border-b border-black/20 z-20 pointer-events-none transform translate-x-1/2 transition-colors duration-300"></div>
+                        <div class="absolute -bottom-2.5 right-[26%] w-4 h-4 rounded-full bg-[#FAF8F5] dark:bg-[#0b1120] border-t border-black/20 z-20 pointer-events-none transform translate-x-1/2 transition-colors duration-300"></div>
                         
                         <!-- Main Details (Left Side) -->
                         <div class="flex-1 px-3.5 py-2 flex flex-col justify-center relative z-10 min-w-0">
                             <h4 class="font-extrabold text-white text-xs sm:text-[13px] leading-tight mb-0.5 drop-shadow-xs line-clamp-1">${desc}</h4>
-                            <p class="text-[7.5px] sm:text-[8px] font-medium text-amber-100/90 flex items-center gap-1 mb-1.5 uppercase tracking-wider line-clamp-1"><i class="fa-solid fa-circle-info text-amber-200 text-[7px]"></i> ${termsStr}</p>
+                            <p class="text-[7.5px] sm:text-[8px] font-medium text-white/90 flex items-center gap-1 mb-1.5 uppercase tracking-wider line-clamp-1"><i class="fa-solid fa-circle-info text-white/80 text-[7px]"></i> ${termsStr}</p>
                             <div class="inline-flex">
                                 <span class="bg-black/25 backdrop-blur-xs text-white text-[9px] sm:text-[10px] font-bold px-2 py-0.5 rounded-md uppercase tracking-wider border border-white/20 flex items-center gap-1.5 font-mono w-max shadow-inner">
-                                    <i class="fa-solid fa-ticket text-amber-300 text-[8px]"></i> ${esc(v.code)}
+                                    <i class="fa-solid fa-ticket text-white/90 text-[8px]"></i> ${esc(v.code)}
                                 </span>
                             </div>
                         </div>
@@ -251,7 +268,8 @@ export const rDyn = () => {
                         
                         <!-- Action Area (Right Side) -->
                         <div class="w-[26%] flex flex-col items-center justify-center relative z-10 bg-black/20 group-hover:bg-black/30 transition-all duration-200">
-                            <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white text-amber-950 font-black flex items-center justify-center mb-0.5 shadow-sm group-hover:scale-110 active:scale-90 transition-all">
+                            <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white font-black flex items-center justify-center mb-0.5 shadow-sm group-hover:scale-110 active:scale-90 transition-all"
+                                 style="color: var(--color-primary-dark);">
                                 <i class="fa-regular fa-copy text-xs"></i>
                             </div>
                             <span class="text-[8px] font-black uppercase tracking-wider text-white drop-shadow-xs">Salin</span>

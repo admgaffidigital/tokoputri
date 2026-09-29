@@ -539,8 +539,11 @@ export const openSettingForm = (type) => {
                     <p class="text-[10px] text-slate-400 dark:text-slate-500 mt-1 ml-0.5"><i class="fa-solid fa-circle-info mr-1"></i>Mendukung GIF animasi (maks 8MB) · JPG/PNG/WEBP maks 3MB · URL langsung dari internet juga bisa</p>
                     <div class="flex items-center justify-between gap-2 mt-2 flex-wrap">
                         <div class="flex gap-2 flex-wrap">
+                            <button type="button" onclick="document.getElementById('set-hero-mascot-img').value='/putri_mascot_anim.gif'; const p=document.getElementById('card-preview-mascot'); if(p) p.src='/putri_mascot_anim.gif'; showToast('Animasi GIF dipilih ✨');" class="text-[10px] font-bold px-2.5 py-1 rounded-lg border border-amber-300 dark:border-amber-600 bg-amber-50 dark:bg-amber-950/40 hover:bg-amber-100 dark:hover:bg-amber-900/60 text-amber-700 dark:text-amber-300 transition-all active:scale-95 cursor-pointer">
+                                <i class="fa-solid fa-wand-magic-sparkles mr-1"></i> Animasi GIF Maskot ✨
+                            </button>
                             <button type="button" onclick="document.getElementById('set-hero-mascot-img').value='/putri_mascot_3d.jpg'; const p=document.getElementById('card-preview-mascot'); if(p) p.src='/putri_mascot_3d.jpg'; showToast('Maskot 3D asli dipilih');" class="text-[10px] font-bold px-2.5 py-1 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-all active:scale-95 cursor-pointer">
-                                <i class="fa-solid fa-rotate-left mr-1"></i> Maskot 3D Asli
+                                <i class="fa-solid fa-rotate-left mr-1"></i> Maskot 3D Statis
                             </button>
                             ${appData.store.logo ? `
                             <button type="button" onclick="const l='${esc(appData.store.logo)}'; document.getElementById('set-hero-mascot-img').value=l; const p=document.getElementById('card-preview-mascot'); if(p) p.src=l; showToast('Logo toko dipilih');" class="text-[10px] font-bold px-2.5 py-1 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-all active:scale-95 cursor-pointer">
@@ -550,7 +553,7 @@ export const openSettingForm = (type) => {
                         <div class="flex items-center gap-2">
                             <span class="text-[10px] font-bold text-slate-400">Preview:</span>
                             <div class="w-16 h-16 rounded-xl overflow-hidden border-2 border-dashed border-slate-300 dark:border-slate-600 bg-black/10 shadow-sm shrink-0">
-                                <img id="card-preview-mascot" src="${esc(appData.store.heroMascotImg || '/putri_mascot_3d.jpg')}" class="w-full h-full object-contain" onerror="this.src='/putri_mascot_3d.jpg';" style="image-rendering: auto;">
+                                <img id="card-preview-mascot" src="${esc(appData.store.heroMascotImg || '/putri_mascot_anim.gif')}" class="w-full h-full object-contain" onerror="this.src='/putri_mascot_3d.jpg';" style="image-rendering: auto;">
                             </div>
                         </div>
                     </div>
@@ -1326,7 +1329,7 @@ export const openHeroBannerModal = () => {
     }
     
     const showHeroVal = appData.store.showHeroSlide !== false && appData.store.showHeroSlide !== 'false';
-    const currentMascot = appData.store.heroMascotImg || '/putri_mascot_3d.jpg';
+    const currentMascot = appData.store.heroMascotImg || '/putri_mascot_anim.gif';
     
     modal.className = "fixed inset-0 z-[120] flex items-center justify-center bg-slate-900/80 p-4 transition-opacity duration-300";
     modal.innerHTML = `
@@ -1390,8 +1393,11 @@ export const openHeroBannerModal = () => {
                     </div>
                     <p class="text-[10px] text-slate-400 dark:text-slate-500 mt-1"><i class="fa-solid fa-circle-info mr-1"></i>GIF animasi maks 8MB · JPG/PNG maks 3MB · URL internet langsung juga bisa</p>
                     <div class="flex gap-2 mt-1.5 flex-wrap">
+                        <button type="button" onclick="document.getElementById('quick-set-hero-mascot-img').value='/putri_mascot_anim.gif'; document.getElementById('m-preview-img').src='/putri_mascot_anim.gif'; showToast('Animasi GIF dipilih ✨');" class="text-[10px] font-bold px-2.5 py-1 rounded-lg border border-amber-300 dark:border-amber-600 bg-amber-50 dark:bg-amber-950/40 hover:bg-amber-100 dark:hover:bg-amber-900/60 text-amber-700 dark:text-amber-300 transition-all active:scale-95 cursor-pointer">
+                            <i class="fa-solid fa-wand-magic-sparkles mr-1"></i> Animasi GIF Maskot ✨
+                        </button>
                         <button type="button" onclick="document.getElementById('quick-set-hero-mascot-img').value='/putri_mascot_3d.jpg'; document.getElementById('m-preview-img').src='/putri_mascot_3d.jpg'; showToast('Maskot 3D asli dipilih');" class="text-[10px] font-bold px-2.5 py-1 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-all active:scale-95 cursor-pointer">
-                            <i class="fa-solid fa-rotate-left mr-1"></i> Maskot 3D Asli
+                            <i class="fa-solid fa-rotate-left mr-1"></i> Maskot 3D Statis
                         </button>
                         ${appData.store.logo ? `
                         <button type="button" onclick="const l='${esc(appData.store.logo)}'; document.getElementById('quick-set-hero-mascot-img').value=l; document.getElementById('m-preview-img').src=l; showToast('Logo toko dipilih');" class="text-[10px] font-bold px-2.5 py-1 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-all active:scale-95 cursor-pointer">
