@@ -18,71 +18,116 @@ import { toggleTaxMenuVisibility } from './auth.js';
 export { syncAppMeta } from '../../core/theme.js';
 
 /**
- * Render menu grid utama pengaturan toko
+ * Render menu grid utama pengaturan toko (Bento Grid Flagship - Screen 4 Aligned)
  */
 export const rAdmSet = () => {
     let h = `
     <div class="max-w-full pb-10 text-sm fade-in-scale">
-        <div class="mb-5 flex justify-between items-center bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background: rgba(var(--color-primary-rgb),0.1); color: var(--color-primary)">
-                    <i class="fa-solid fa-sliders text-base"></i>
+        <!-- Header Banner Bento -->
+        <div class="mb-5 flex items-center justify-between bg-white/95 dark:bg-slate-900/80 p-4 sm:p-5 rounded-[1.5rem] border border-slate-200/80 dark:border-slate-800 shadow-2xs">
+            <div class="flex items-center gap-3.5">
+                <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-500 to-yellow-600 text-white flex items-center justify-center text-xl shadow-md shadow-amber-500/20 shrink-0">
+                    <i class="fa-solid fa-sliders"></i>
                 </div>
                 <div>
-                    <h2 class="font-bold text-sm text-slate-800 dark:text-slate-100 uppercase tracking-widest leading-tight">Pengaturan Toko</h2>
-                    <p class="text-[10px] font-medium text-slate-500 dark:text-slate-400 mt-0.5">Kelola konfigurasi profil, katalog, pengiriman, pembayaran, dan operasional</p>
+                    <h2 class="font-black text-sm sm:text-base text-slate-800 dark:text-white uppercase tracking-wider leading-tight">Pengaturan Toko</h2>
+                    <p class="text-[10px] sm:text-xs font-semibold text-slate-400 dark:text-slate-500 mt-0.5">Kelola konfigurasi profil, katalog, pengiriman, pembayaran, dan operasional</p>
                 </div>
+            </div>
+            <div class="hidden sm:flex items-center gap-2">
+                <span class="px-3 py-1 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200/60 dark:border-amber-800/40 text-amber-700 dark:text-amber-300 text-[10px] font-black uppercase tracking-wider">
+                    <i class="fa-solid fa-palette mr-1"></i> ${esc(appData.store.uiTheme || 'gold')}
+                </span>
             </div>
         </div>
 
-        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7 gap-4 sm:gap-5 mb-6">
-            <button onclick="openSettingForm('profile')" class="card-modern p-5 flex flex-col items-center justify-center text-center gap-2.5 hover:-translate-y-1 hover:border-[rgba(var(--color-primary-rgb),0.4)] hover:shadow-lg transition-all duration-300 group relative overflow-hidden">
-                <div class="w-12 h-12 rounded-2xl flex items-center justify-center shadow-inner group-hover:scale-110 group-hover:text-white transition-all duration-300 z-10" style="background: rgba(var(--color-primary-rgb),0.1); color: var(--color-primary)" onmouseover="this.style.background='var(--color-primary)'" onmouseout="this.style.background='rgba(var(--color-primary-rgb),0.1)'"><i class="fa-solid fa-store text-xl"></i></div>
-                <div class="z-10">
-                    <span class="font-bold text-slate-800 dark:text-slate-100 uppercase tracking-widest text-[10px] block">Profil Toko</span>
-                    <span class="text-[9px] text-slate-400 block mt-0.5 font-medium">Branding & Tema</span>
+        <!-- 8-Card Symmetrical Bento Grid (2x4 on Desktop, 4x2 on Mobile) -->
+        <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-3.5 sm:gap-4 lg:gap-5 mb-6">
+            <!-- 1. Profil Toko -->
+            <button onclick="openSettingForm('profile')" class="card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-5 sm:p-6 text-center transition-all duration-300 hover:-translate-y-1.5 hover:border-amber-400/50 hover:bg-amber-50/20 hover:shadow-xl dark:hover:bg-slate-800/60 rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-white/95 dark:bg-slate-900/60 shadow-xs cursor-pointer active:scale-95">
+                <div class="relative z-10 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-500 to-yellow-600 text-white shadow-md transition-all duration-300 group-hover:scale-110">
+                    <i class="fa-solid fa-store text-2xl sm:text-3xl"></i>
+                </div>
+                <div class="relative z-10">
+                    <span class="block text-[10px] font-black uppercase leading-tight tracking-widest text-slate-800 dark:text-white sm:text-[11px]">Profil Toko</span>
+                    <span class="mt-0.5 block text-[9px] font-bold text-slate-400 dark:text-slate-500">Branding &amp; Tema</span>
                 </div>
             </button>
-            <button onclick="openSettingForm('catalog')" class="card-modern p-5 flex flex-col items-center justify-center text-center gap-2.5 hover:-translate-y-1 hover:border-blue-300 dark:hover:border-blue-600 hover:shadow-lg transition-all duration-300 group relative overflow-hidden">
-                <div class="w-12 h-12 rounded-2xl bg-blue-50 dark:bg-blue-900/30 text-blue-500 flex items-center justify-center shadow-inner group-hover:scale-110 group-hover:bg-blue-500 group-hover:text-white transition-all duration-300 z-10"><i class="fa-solid fa-palette text-xl"></i></div>
-                <div class="z-10">
-                    <span class="font-bold text-slate-800 dark:text-slate-100 uppercase tracking-widest text-[10px] block">Kategori & Brand</span>
-                    <span class="text-[9px] text-slate-400 block mt-0.5 font-medium">Layout & Navigasi</span>
+
+            <!-- 2. Kategori & Brand -->
+            <button onclick="openSettingForm('catalog')" class="card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-5 sm:p-6 text-center transition-all duration-300 hover:-translate-y-1.5 hover:border-blue-400/50 hover:bg-blue-50/20 hover:shadow-xl dark:hover:bg-slate-800/60 rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-white/95 dark:bg-slate-900/60 shadow-xs cursor-pointer active:scale-95">
+                <div class="relative z-10 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 text-white shadow-md transition-all duration-300 group-hover:scale-110">
+                    <i class="fa-solid fa-palette text-2xl sm:text-3xl"></i>
+                </div>
+                <div class="relative z-10">
+                    <span class="block text-[10px] font-black uppercase leading-tight tracking-widest text-slate-800 dark:text-white sm:text-[11px]">Kategori &amp; Brand</span>
+                    <span class="mt-0.5 block text-[9px] font-bold text-slate-400 dark:text-slate-500">Layout &amp; Navigasi</span>
                 </div>
             </button>
-            <button onclick="openSettingForm('shipping')" class="card-modern p-5 flex flex-col items-center justify-center text-center gap-2.5 hover:-translate-y-1 hover:border-amber-300 dark:hover:border-amber-600 hover:shadow-lg transition-all duration-300 group relative overflow-hidden">
-                <div class="w-12 h-12 rounded-2xl bg-amber-50 dark:bg-amber-900/30 text-amber-500 flex items-center justify-center shadow-inner group-hover:scale-110 group-hover:bg-amber-500 group-hover:text-white transition-all duration-300 z-10"><i class="fa-solid fa-motorcycle text-xl"></i></div>
-                <div class="z-10">
-                    <span class="font-bold text-slate-800 dark:text-slate-100 uppercase tracking-widest text-[10px] block">Pengiriman</span>
-                    <span class="text-[9px] text-slate-400 block mt-0.5 font-medium">Ongkir & Lokasi</span>
+
+            <!-- 3. Pengiriman & Lokasi -->
+            <button onclick="openSettingForm('shipping')" class="card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-5 sm:p-6 text-center transition-all duration-300 hover:-translate-y-1.5 hover:border-orange-400/50 hover:bg-orange-50/20 hover:shadow-xl dark:hover:bg-slate-800/60 rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-white/95 dark:bg-slate-900/60 shadow-xs cursor-pointer active:scale-95">
+                <div class="relative z-10 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-orange-500 to-amber-600 text-white shadow-md transition-all duration-300 group-hover:scale-110">
+                    <i class="fa-solid fa-motorcycle text-2xl sm:text-3xl"></i>
+                </div>
+                <div class="relative z-10">
+                    <span class="block text-[10px] font-black uppercase leading-tight tracking-widest text-slate-800 dark:text-white sm:text-[11px]">Pengiriman</span>
+                    <span class="mt-0.5 block text-[9px] font-bold text-slate-400 dark:text-slate-500">Ongkir &amp; Lokasi</span>
                 </div>
             </button>
-            <button onclick="openSettingForm('payment')" class="card-modern p-5 flex flex-col items-center justify-center text-center gap-2.5 hover:-translate-y-1 hover:border-indigo-300 dark:hover:border-indigo-600 hover:shadow-lg transition-all duration-300 group relative overflow-hidden">
-                <div class="w-12 h-12 rounded-2xl bg-indigo-50 dark:bg-indigo-900/30 text-indigo-500 flex items-center justify-center shadow-inner group-hover:scale-110 group-hover:bg-indigo-500 group-hover:text-white transition-all duration-300 z-10"><i class="fa-solid fa-qrcode text-xl"></i></div>
-                <div class="z-10">
-                    <span class="font-bold text-slate-800 dark:text-slate-100 uppercase tracking-widest text-[10px] block">QRIS Pay</span>
-                    <span class="text-[9px] text-slate-400 block mt-0.5 font-medium">Metode Non-Tunai</span>
+
+            <!-- 4. QRIS Pay -->
+            <button onclick="openSettingForm('payment')" class="card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-5 sm:p-6 text-center transition-all duration-300 hover:-translate-y-1.5 hover:border-purple-400/50 hover:bg-purple-50/20 hover:shadow-xl dark:hover:bg-slate-800/60 rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-white/95 dark:bg-slate-900/60 shadow-xs cursor-pointer active:scale-95">
+                <div class="relative z-10 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-purple-500 to-indigo-600 text-white shadow-md transition-all duration-300 group-hover:scale-110">
+                    <i class="fa-solid fa-qrcode text-2xl sm:text-3xl"></i>
+                </div>
+                <div class="relative z-10">
+                    <span class="block text-[10px] font-black uppercase leading-tight tracking-widest text-slate-800 dark:text-white sm:text-[11px]">QRIS Pay</span>
+                    <span class="mt-0.5 block text-[9px] font-bold text-slate-400 dark:text-slate-500">Metode Non-Tunai</span>
                 </div>
             </button>
-            <button onclick="openSettingForm('config')" class="card-modern p-5 flex flex-col items-center justify-center text-center gap-2.5 hover:-translate-y-1 hover:border-rose-300 dark:hover:border-rose-600 hover:shadow-lg transition-all duration-300 group relative overflow-hidden">
-                <div class="w-12 h-12 rounded-2xl bg-rose-50 dark:bg-rose-900/30 text-rose-500 flex items-center justify-center shadow-inner group-hover:scale-110 group-hover:bg-rose-500 group-hover:text-white transition-all duration-300 z-10"><i class="fa-solid fa-laptop-code text-xl"></i></div>
-                <div class="z-10">
-                    <span class="font-bold text-slate-800 dark:text-slate-100 uppercase tracking-widest text-[10px] block">Sistem & API</span>
-                    <span class="text-[9px] text-slate-400 block mt-0.5 font-medium">Google Apps Script</span>
+
+            <!-- 5. Sistem & API -->
+            <button onclick="openSettingForm('config')" class="card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-5 sm:p-6 text-center transition-all duration-300 hover:-translate-y-1.5 hover:border-rose-400/50 hover:bg-rose-50/20 hover:shadow-xl dark:hover:bg-slate-800/60 rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-white/95 dark:bg-slate-900/60 shadow-xs cursor-pointer active:scale-95">
+                <div class="relative z-10 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-rose-500 to-pink-600 text-white shadow-md transition-all duration-300 group-hover:scale-110">
+                    <i class="fa-solid fa-laptop-code text-2xl sm:text-3xl"></i>
+                </div>
+                <div class="relative z-10">
+                    <span class="block text-[10px] font-black uppercase leading-tight tracking-widest text-slate-800 dark:text-white sm:text-[11px]">Sistem &amp; API</span>
+                    <span class="mt-0.5 block text-[9px] font-bold text-slate-400 dark:text-slate-500">Google Apps Script</span>
                 </div>
             </button>
-            <button onclick="openSettingForm('operasional')" class="card-modern p-5 flex flex-col items-center justify-center text-center gap-2.5 hover:-translate-y-1 hover:border-violet-300 dark:hover:border-violet-600 hover:shadow-lg transition-all duration-300 group relative overflow-hidden">
-                <div class="w-12 h-12 rounded-2xl bg-violet-50 dark:bg-violet-900/30 text-violet-500 flex items-center justify-center shadow-inner group-hover:scale-110 group-hover:bg-violet-500 group-hover:text-white transition-all duration-300 z-10"><i class="fa-solid fa-sliders text-xl"></i></div>
-                <div class="z-10">
-                    <span class="font-bold text-slate-800 dark:text-slate-100 uppercase tracking-widest text-[10px] block">Operasional</span>
-                    <span class="text-[9px] text-slate-400 block mt-0.5 font-medium">Stok, Pajak & Poin</span>
+
+            <!-- 6. Operasional -->
+            <button onclick="openSettingForm('operasional')" class="card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-5 sm:p-6 text-center transition-all duration-300 hover:-translate-y-1.5 hover:border-violet-400/50 hover:bg-violet-50/20 hover:shadow-xl dark:hover:bg-slate-800/60 rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-white/95 dark:bg-slate-900/60 shadow-xs cursor-pointer active:scale-95">
+                <div class="relative z-10 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-violet-500 to-purple-600 text-white shadow-md transition-all duration-300 group-hover:scale-110">
+                    <i class="fa-solid fa-sliders text-2xl sm:text-3xl"></i>
+                </div>
+                <div class="relative z-10">
+                    <span class="block text-[10px] font-black uppercase leading-tight tracking-widest text-slate-800 dark:text-white sm:text-[11px]">Operasional</span>
+                    <span class="mt-0.5 block text-[9px] font-bold text-slate-400 dark:text-slate-500">Stok, Pajak &amp; Poin</span>
                 </div>
             </button>
-            <button onclick="openPrinterSettingsModal()" class="card-modern p-5 flex flex-col items-center justify-center text-center gap-2.5 hover:-translate-y-1 hover:border-emerald-300 dark:hover:border-emerald-600 hover:shadow-lg transition-all duration-300 group relative overflow-hidden">
-                <div class="w-12 h-12 rounded-2xl bg-emerald-50 dark:bg-emerald-900/30 text-emerald-500 flex items-center justify-center shadow-inner group-hover:scale-110 group-hover:bg-emerald-500 group-hover:text-white transition-all duration-300 z-10"><i class="fa-solid fa-print text-xl"></i></div>
-                <div class="z-10">
-                    <span class="font-bold text-slate-800 dark:text-slate-100 uppercase tracking-widest text-[10px] block">Printer Struk</span>
-                    <span class="text-[9px] text-slate-400 block mt-0.5 font-medium">Bluetooth &amp; Thermal</span>
+
+            <!-- 7. Printer Struk -->
+            <button onclick="openPrinterSettingsModal()" class="card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-5 sm:p-6 text-center transition-all duration-300 hover:-translate-y-1.5 hover:border-emerald-400/50 hover:bg-emerald-50/20 hover:shadow-xl dark:hover:bg-slate-800/60 rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-white/95 dark:bg-slate-900/60 shadow-xs cursor-pointer active:scale-95">
+                <div class="relative z-10 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-md transition-all duration-300 group-hover:scale-110">
+                    <i class="fa-solid fa-print text-2xl sm:text-3xl"></i>
+                </div>
+                <div class="relative z-10">
+                    <span class="block text-[10px] font-black uppercase leading-tight tracking-widest text-slate-800 dark:text-white sm:text-[11px]">Printer Struk</span>
+                    <span class="mt-0.5 block text-[9px] font-bold text-slate-400 dark:text-slate-500">Bluetooth &amp; Thermal</span>
+                </div>
+            </button>
+
+            <!-- 8. Backup & Data (Cloud Sync Hub) -->
+            <button onclick="openAdminTab('backup_sync')" class="card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-5 sm:p-6 text-center transition-all duration-300 hover:-translate-y-1.5 hover:border-cyan-400/50 hover:bg-cyan-50/20 hover:shadow-xl dark:hover:bg-slate-800/60 rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-white/95 dark:bg-slate-900/60 shadow-xs cursor-pointer active:scale-95">
+                <div class="relative z-10 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-cyan-600 to-blue-700 text-white shadow-md transition-all duration-300 group-hover:scale-110">
+                    <i class="fa-solid fa-cloud-arrow-up text-2xl sm:text-3xl"></i>
+                </div>
+                <div class="relative z-10">
+                    <span class="block text-[10px] font-black uppercase leading-tight tracking-widest text-slate-800 dark:text-white sm:text-[11px]">Backup &amp; Data</span>
+                    <span class="mt-0.5 block text-[9px] font-bold text-slate-400 dark:text-slate-500">Pusat Cadangan Cloud</span>
                 </div>
             </button>
         </div>
@@ -905,22 +950,22 @@ export const openSettingForm = (type) => {
     let h = `
     <div class="w-full max-w-5xl mx-auto pb-10 text-sm fade-in-scale">
         <div class="mb-5 flex items-center justify-between">
-            <button onclick="rAdmSet()" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 font-bold text-xs shadow-sm transition-all active:scale-95">
+            <button onclick="rAdmSet()" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200/80 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 font-bold text-xs shadow-xs transition-all active:scale-95 cursor-pointer">
                 <i class="fa-solid fa-arrow-left"></i> Kembali ke Menu Pengaturan
             </button>
-            <button onclick="saveAdminSettings('${type}')" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-white font-bold text-xs shadow-sm transition-all active:scale-95 hover:opacity-95" style="background: var(--color-primary)">
+            <button onclick="saveAdminSettings('${type}')" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl text-white font-bold text-xs shadow-md transition-all active:scale-95 hover:opacity-95 cursor-pointer" style="background: var(--color-primary)">
                 <i class="fa-solid fa-floppy-disk"></i> Simpan
             </button>
         </div>
 
-        <div class="bg-white dark:bg-slate-800 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden mb-6 relative">
+        <div class="bg-white/95 dark:bg-slate-900/90 rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 shadow-sm overflow-hidden mb-6 relative">
             <div class="absolute top-0 left-0 w-full h-1.5 ${colorTheme.line}"></div>
             <div class="p-6 sm:p-8 flex-1 mt-2">
-                <div class="mb-6 flex items-center gap-3.5 pb-4 border-b border-slate-100 dark:border-slate-700/80">
-                    <div class="w-12 h-12 rounded-2xl ${colorTheme.box} flex items-center justify-center shrink-0 text-xl shadow-sm"><i class="fa-solid ${icon}"></i></div> 
+                <div class="mb-6 flex items-center gap-3.5 pb-4 border-b border-slate-100 dark:border-slate-800">
+                    <div class="w-13 h-13 rounded-2xl ${colorTheme.box} flex items-center justify-center shrink-0 text-xl shadow-sm"><i class="fa-solid ${icon}"></i></div> 
                     <div>
-                        <h3 class="font-bold text-slate-800 dark:text-white text-base tracking-wide leading-tight">${title}</h3>
-                        <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">${subtitle || 'Konfigurasi pengaturan toko'}</p>
+                        <h3 class="font-extrabold text-slate-800 dark:text-white text-base sm:text-lg tracking-wide leading-tight">${title}</h3>
+                        <p class="text-xs font-medium text-slate-500 dark:text-slate-400 mt-0.5">${subtitle || 'Konfigurasi pengaturan toko'}</p>
                     </div>
                 </div>
                 <div class="space-y-5">
