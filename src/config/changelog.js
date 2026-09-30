@@ -8,6 +8,21 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-10-1',
+        version: 'v1.10.1',
+        date: '2026-09-30',
+        title: 'Sistem Visual Background Arsitektur Presisi & Bento Island Container: Elevasi Tampilan Aplikasi Profesional',
+        category: 'ui',
+        badge: 'Precision Architectural Background & Bento Islands v1.10.1',
+        items: [
+            'Kanvas Visual Modern Arsitektur Presisi (src/style.css): Mengeliminasi latar putih polos flat menjadi kanvas bertekstur dot-matrix arsitektural halus (24px x 24px) dengan pencahayaan ambient top wash dinamis yang beradaptasi otomatis mengikuti warna tema toko (Burgundy, Gold, dll.) baik di Light Mode maupun Dark Mode.',
+            'Transparansi Dinamis View Section: Memperbarui kelas .view-section menjadi transparan agar dekorasi visual latar belakang dan dynamic-bg-container bersinar menembus seluruh halaman aplikasi tanpa tertutup lapisan latar opak.',
+            'Penyempurnaan 4 Model Gaya Visual Background (src/core/theme.js): Memperkaya preset gaya visual latar belakang toko (Minimalis Clean Studio dengan soft aura horizon, Hero Arch dengan kanopi dome lengkung, Aurora Glow dengan mesh dual-zone, dan Tech Grid dengan blueprint CAD presisi) secara solid, tajam, dan 100% bebas blur (Zero Blur).',
+            'Standardisasi Bento Island Container Etalase (src/modules/member/reward.js & src/modules/home/sections.js): Menyelaraskan Katalog Reward Poin dan Voucher Diskon Toko ke dalam wadah Bento Island Card terstruktur (rounded-2xl border border-slate-100 bg-white) seragam dengan Kategori Produk dan Brand Mitra.',
+            'Multi-Channel Build & Sync v1.10.1 (Android versionCode 11001): Kompilasi produksi web, sinkronisasi paket flashdisk, dan Android Capacitor tersinkronisasi 100%.'
+        ]
+    },
+    {
         id: 'log-1-10-0',
         version: 'v1.10.0',
         date: '2026-09-30',

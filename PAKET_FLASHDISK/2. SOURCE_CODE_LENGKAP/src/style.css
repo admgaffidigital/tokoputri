@@ -59,14 +59,34 @@ input, textarea, [contenteditable="true"] {
 @tailwind components;
 @tailwind utilities;
 
-/* Warm Luxury Canvas & Harmonized Views */
-body, #app-container,
-.view-section:not(#view-admin-login) {
+/* Warm Luxury Canvas & Harmonized Views with Precision Architectural Dot-Matrix & Ambient Wash */
+body, #app-container {
   background-color: #FAF8F5;
+  background-image: 
+    radial-gradient(rgba(var(--color-primary-rgb), 0.08) 1.25px, transparent 1.25px),
+    linear-gradient(180deg, rgba(var(--color-primary-rgb), 0.05) 0%, rgba(var(--color-primary-rgb), 0.015) 320px, transparent 700px);
+  background-size: 24px 24px, 100% 100%;
+  background-repeat: repeat, no-repeat;
+  background-attachment: fixed;
 }
 .dark body, .dark #app-container,
-.dark .view-section:not(#view-admin-login) {
+html.dark body, html.dark #app-container {
   background-color: #0b1120;
+  background-image: 
+    radial-gradient(rgba(var(--color-primary-rgb), 0.16) 1.25px, transparent 1.25px),
+    linear-gradient(180deg, rgba(var(--color-primary-rgb), 0.12) 0%, rgba(var(--color-primary-rgb), 0.03) 360px, transparent 750px);
+  background-size: 24px 24px, 100% 100%;
+  background-repeat: repeat, no-repeat;
+  background-attachment: fixed;
+}
+
+/* Biarkan background canvas & dynamic-bg-container bersinar ke seluruh halaman */
+.view-section:not(#view-admin-login) {
+  background-color: transparent !important;
+}
+.dark .view-section:not(#view-admin-login),
+html.dark .view-section:not(#view-admin-login) {
+  background-color: transparent !important;
 }
 
 /* Explicit Aspect Ratio Utilities (Mencegah keruntuhan gambar di mobile/desktop) */
@@ -2122,19 +2142,17 @@ video.banner-video-element::-webkit-media-controls-start-playback-button {
 }
 
 #app-container {
-    background-color: #f8fafc;
     transition: background-color 0.4s ease;
-}
-html.dark #app-container {
-    background-color: #0b1120;
 }
 
 /* Transparansi lembut saat ada wallpaper kustom */
 #app-container[data-has-custom-bg="true"] {
-    background-color: rgba(248, 250, 252, 0.88) !important;
+    background-color: rgba(250, 248, 245, 0.88) !important;
+    background-image: none !important;
 }
 html.dark #app-container[data-has-custom-bg="true"] {
     background-color: rgba(11, 17, 32, 0.88) !important;
+    background-image: none !important;
 }
 
 /* ─── 1. HERO ARCH (Header lengkung solid) ─── */

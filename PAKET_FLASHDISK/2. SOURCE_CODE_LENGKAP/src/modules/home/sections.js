@@ -225,56 +225,59 @@ export const rDyn = () => {
     if (activeVouchers.length > 0 && vC) {
         vC.classList.remove('hidden');
         let vHTML = `
-        <div class="flex items-center justify-between mb-2.5">
-            <h3 class="font-bold text-slate-800 dark:text-white text-xs sm:text-sm tracking-tight flex items-center gap-2">
-                <div class="w-7 h-7 rounded-lg flex items-center justify-center text-white shadow-2xs"
-                     style="background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-primary) 50%, var(--color-primary-dark) 100%);">
-                    <i class="fa-solid fa-ticket-simple text-xs -rotate-45"></i>
-                </div> VOUCHER TOKO
-            </h3>
-        </div>
-        <div class="flex gap-2.5 sm:gap-3 overflow-x-auto hide-scrollbar snap-x pb-3 pt-1">
-            ${activeVouchers.map((v) => {
-                let desc = v.type === 'shipping_free' ? 'Gratis Ongkir' : (v.type === 'percent' ? `Diskon ${esc(String(parseFloat(v.value)||0))}%` : `Diskon ${fCur(v.value)}`);
-                let terms = [];
-                if(v.minPurchase > 0) terms.push(`Min. Blj ${fCur(v.minPurchase)}`);
-                if(v.maxDiscount > 0) terms.push(`Maks. ptg ${fCur(v.maxDiscount)}`);
-                if(v.targetProduct) terms.push(`Produk Khusus`);
-                let termsStr = terms.length > 0 ? esc(terms.join(' • ')) : 'Tanpa min. belanja';
-                
-                return `
-                <div class="w-[225px] sm:w-[250px] shrink-0 snap-start relative group cursor-pointer active:scale-95 transition-all duration-200" onclick="copyVoucher('${esc(v.code)}')">
-                    <div class="w-full h-[82px] sm:h-[86px] rounded-2xl shadow-xs hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 flex relative overflow-hidden text-white"
-                         style="background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-primary) 45%, var(--color-primary-dark) 100%); border: 1px solid rgba(var(--color-primary-rgb), 0.35);">
-                        <!-- Left/Right Ticket Punch Holes (Biting into the sides using soft canvas color) -->
-                        <div class="absolute -top-2.5 right-[26%] w-4 h-4 rounded-full bg-[#FAF8F5] dark:bg-[#0b1120] border-b border-black/20 z-20 pointer-events-none transform translate-x-1/2 transition-colors duration-300"></div>
-                        <div class="absolute -bottom-2.5 right-[26%] w-4 h-4 rounded-full bg-[#FAF8F5] dark:bg-[#0b1120] border-t border-black/20 z-20 pointer-events-none transform translate-x-1/2 transition-colors duration-300"></div>
-                        
-                        <!-- Main Details (Left Side) -->
-                        <div class="flex-1 px-3.5 py-2 flex flex-col justify-center relative z-10 min-w-0">
-                            <h4 class="font-extrabold text-white text-xs sm:text-[13px] leading-tight mb-0.5 drop-shadow-xs line-clamp-1">${desc}</h4>
-                            <p class="text-[7.5px] sm:text-[8px] font-medium text-white/90 flex items-center gap-1 mb-1.5 uppercase tracking-wider line-clamp-1"><i class="fa-solid fa-circle-info text-white/80 text-[7px]"></i> ${termsStr}</p>
-                            <div class="inline-flex">
-                                <span class="bg-black/40 text-white text-[9px] sm:text-[10px] font-bold px-2 py-0.5 rounded-md uppercase tracking-wider border border-white/20 flex items-center gap-1.5 font-mono w-max shadow-inner">
-                                    <i class="fa-solid fa-ticket text-white/90 text-[8px]"></i> ${esc(v.code)}
-                                </span>
-                            </div>
-                        </div>
-                        
-                        <!-- Divider Line -->
-                        <div class="w-0 border-l-[1.5px] border-dashed border-white/30 relative z-10 my-2.5"></div>
-                        
-                        <!-- Action Area (Right Side) -->
-                        <div class="w-[26%] flex flex-col items-center justify-center relative z-10 bg-black/20 group-hover:bg-black/30 transition-all duration-200">
-                            <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white font-black flex items-center justify-center mb-0.5 shadow-sm group-hover:scale-110 active:scale-90 transition-all"
-                                 style="color: var(--color-primary-dark);">
-                                <i class="fa-regular fa-copy text-xs"></i>
-                            </div>
-                            <span class="text-[8px] font-black uppercase tracking-wider text-white drop-shadow-xs">Salin</span>
-                        </div>
+        <div class="rounded-2xl border border-slate-100 bg-white p-3.5 sm:p-4 md:p-4.5 shadow-xs transition-all duration-300 hover:shadow-sm dark:border-slate-700/60 dark:bg-slate-800">
+            <div class="mb-3 flex items-center justify-between border-b border-slate-100 pb-2.5 dark:border-slate-700/50">
+                <div class="flex items-center gap-2.5">
+                    <div class="flex h-7 w-7 items-center justify-center rounded-lg text-white shadow-2xs"
+                         style="background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-primary) 50%, var(--color-primary-dark) 100%);">
+                        <i class="fa-solid fa-ticket-simple text-xs -rotate-45"></i>
                     </div>
-                </div>`;
-            }).join('')}
+                    <h3 class="text-xs font-extrabold uppercase tracking-tight text-slate-800 dark:text-white sm:text-sm">VOUCHER DISKON TOKO</h3>
+                </div>
+            </div>
+            <div class="flex gap-2.5 sm:gap-3 overflow-x-auto hide-scrollbar snap-x pb-1 pt-1">
+                ${activeVouchers.map((v) => {
+                    let desc = v.type === 'shipping_free' ? 'Gratis Ongkir' : (v.type === 'percent' ? `Diskon ${esc(String(parseFloat(v.value)||0))}%` : `Diskon ${fCur(v.value)}`);
+                    let terms = [];
+                    if(v.minPurchase > 0) terms.push(`Min. Blj ${fCur(v.minPurchase)}`);
+                    if(v.maxDiscount > 0) terms.push(`Maks. ptg ${fCur(v.maxDiscount)}`);
+                    if(v.targetProduct) terms.push(`Produk Khusus`);
+                    let termsStr = terms.length > 0 ? esc(terms.join(' • ')) : 'Tanpa min. belanja';
+                    
+                    return `
+                    <div class="w-[225px] sm:w-[250px] shrink-0 snap-start relative group cursor-pointer active:scale-95 transition-all duration-200" onclick="copyVoucher('${esc(v.code)}')">
+                        <div class="w-full h-[82px] sm:h-[86px] rounded-2xl shadow-xs hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 flex relative overflow-hidden text-white"
+                             style="background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-primary) 45%, var(--color-primary-dark) 100%); border: 1px solid rgba(var(--color-primary-rgb), 0.35);">
+                            <!-- Left/Right Ticket Punch Holes (Biting into the sides using bento canvas color) -->
+                            <div class="absolute -top-2.5 right-[26%] w-4 h-4 rounded-full bg-white dark:bg-slate-800 border-b border-black/20 z-20 pointer-events-none transform translate-x-1/2 transition-colors duration-300"></div>
+                            <div class="absolute -bottom-2.5 right-[26%] w-4 h-4 rounded-full bg-white dark:bg-slate-800 border-t border-black/20 z-20 pointer-events-none transform translate-x-1/2 transition-colors duration-300"></div>
+                            
+                            <!-- Main Details (Left Side) -->
+                            <div class="flex-1 px-3.5 py-2 flex flex-col justify-center relative z-10 min-w-0">
+                                <h4 class="font-extrabold text-white text-xs sm:text-[13px] leading-tight mb-0.5 drop-shadow-xs line-clamp-1">${desc}</h4>
+                                <p class="text-[7.5px] sm:text-[8px] font-medium text-white/90 flex items-center gap-1 mb-1.5 uppercase tracking-wider line-clamp-1"><i class="fa-solid fa-circle-info text-white/80 text-[7px]"></i> ${termsStr}</p>
+                                <div class="inline-flex">
+                                    <span class="bg-black/40 text-white text-[9px] sm:text-[10px] font-bold px-2 py-0.5 rounded-md uppercase tracking-wider border border-white/20 flex items-center gap-1.5 font-mono w-max shadow-inner">
+                                        <i class="fa-solid fa-ticket text-white/90 text-[8px]"></i> ${esc(v.code)}
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            <!-- Divider Line -->
+                            <div class="w-0 border-l-[1.5px] border-dashed border-white/30 relative z-10 my-2.5"></div>
+                            
+                            <!-- Action Area (Right Side) -->
+                            <div class="w-[26%] flex flex-col items-center justify-center relative z-10 bg-black/20 group-hover:bg-black/30 transition-all duration-200">
+                                <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white font-black flex items-center justify-center mb-0.5 shadow-sm group-hover:scale-110 active:scale-90 transition-all"
+                                     style="color: var(--color-primary-dark);">
+                                    <i class="fa-regular fa-copy text-xs"></i>
+                                </div>
+                                <span class="text-[8px] font-black uppercase tracking-wider text-white drop-shadow-xs">Salin</span>
+                            </div>
+                        </div>
+                    </div>`;
+                }).join('')}
+            </div>
         </div>`;
         vC.innerHTML = vHTML;
     } else if (vC) {

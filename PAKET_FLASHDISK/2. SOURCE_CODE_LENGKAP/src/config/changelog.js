@@ -8,6 +8,36 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-10-1',
+        version: 'v1.10.1',
+        date: '2026-09-30',
+        title: 'Sistem Visual Background Arsitektur Presisi & Bento Island Container: Elevasi Tampilan Aplikasi Profesional',
+        category: 'ui',
+        badge: 'Precision Architectural Background & Bento Islands v1.10.1',
+        items: [
+            'Kanvas Visual Modern Arsitektur Presisi (src/style.css): Mengeliminasi latar putih polos flat menjadi kanvas bertekstur dot-matrix arsitektural halus (24px x 24px) dengan pencahayaan ambient top wash dinamis yang beradaptasi otomatis mengikuti warna tema toko (Burgundy, Gold, dll.) baik di Light Mode maupun Dark Mode.',
+            'Transparansi Dinamis View Section: Memperbarui kelas .view-section menjadi transparan agar dekorasi visual latar belakang dan dynamic-bg-container bersinar menembus seluruh halaman aplikasi tanpa tertutup lapisan latar opak.',
+            'Penyempurnaan 4 Model Gaya Visual Background (src/core/theme.js): Memperkaya preset gaya visual latar belakang toko (Minimalis Clean Studio dengan soft aura horizon, Hero Arch dengan kanopi dome lengkung, Aurora Glow dengan mesh dual-zone, dan Tech Grid dengan blueprint CAD presisi) secara solid, tajam, dan 100% bebas blur (Zero Blur).',
+            'Standardisasi Bento Island Container Etalase (src/modules/member/reward.js & src/modules/home/sections.js): Menyelaraskan Katalog Reward Poin dan Voucher Diskon Toko ke dalam wadah Bento Island Card terstruktur (rounded-2xl border border-slate-100 bg-white) seragam dengan Kategori Produk dan Brand Mitra.',
+            'Multi-Channel Build & Sync v1.10.1 (Android versionCode 11001): Kompilasi produksi web, sinkronisasi paket flashdisk, dan Android Capacitor tersinkronisasi 100%.'
+        ]
+    },
+    {
+        id: 'log-1-10-0',
+        version: 'v1.10.0',
+        date: '2026-09-30',
+        title: 'Unifikasi Visual Total Modul Pengaturan Admin: Konsistensi Warna Tema 100% & Eliminasi Warna Hardcoded',
+        category: 'improvement',
+        badge: 'Settings UI Consistency v1.10.0',
+        items: [
+            'Standardisasi Bento Grid Menu Pengaturan (rAdmSet): Refaktor header banner dan 8 kartu menu utama — Profil Toko, Kategori & Brand, Pengiriman, QRIS Pay, Sistem & API, Operasional, Printer Struk, dan Backup & Data — menggunakan gradien dan shadow berbasis var(--color-primary) sepenuhnya.',
+            'Harmonisasi Kartu Form Sub-Pengaturan: Semua kartu konten di dalam 6 form sub-pengaturan (profile, catalog, shipping, payment, config, operasional) kini menggunakan bg-slate-50/80 dark:bg-slate-900/60 dan icon badge rgba(var(--color-primary-rgb)) secara seragam.',
+            'Eliminasi Total Warna Hardcoded (Zero Hardcoded Colors): Menghapus seluruh penggunaan kelas Tailwind warna statis (bg-amber-500, text-blue-600, bg-emerald-100, border-amber-300, dll.) di settings.js dan menggantinya dengan CSS variable dinamis — badge "Modern iOS" Aurora Glow, badge "Pro Teknik" Tech Grid, badge "QRIS Siap Digunakan", dan tombol "Animasi GIF Maskot" di modal banner.',
+            'Konsistensi Callout Box & Info Banner: Seluruh kotak informasi/tip di semua form pengaturan (stok, pajak, ongkir, katalog, QRIS) menggunakan skema warna seragam berbasis rgba(var(--color-primary-rgb),0.06) sehingga otomatis menyesuaikan tema toko aktif.',
+            'Multi-Channel Build & Sync v1.10.0 (Android versionCode 11000): Kompilasi produksi web, sinkronisasi bundle distribusi, dan Android Capacitor tersinkronisasi 100%.'
+        ]
+    },
+    {
         id: 'log-1-9-99',
         version: 'v1.9.99',
         date: '2026-09-30',

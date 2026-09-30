@@ -301,29 +301,32 @@ export const applyBackgroundStyle = (bgStyle = 'minimalist', customBgUrl = '') =
 
     if (style === 'hero_arch') {
         shapesHtml = `
-            <!-- Hero Arch: Canopy Dome Curve & Radial Ambient Aura (Anti-Hard Disc) -->
+            <!-- Hero Arch: Canopy Dome Curve & Radial Ambient Aura -->
             <div class="absolute -top-32 left-1/2 -translate-x-1/2 w-[160%] max-w-[1700px] h-96 rounded-b-[100%] bg-gradient-to-b from-[rgba(var(--color-primary-rgb),0.22)] via-[rgba(var(--color-primary-rgb),0.08)] to-transparent pointer-events-none"></div>
-            <div class="absolute top-24 left-1/2 -translate-x-1/2 w-[120%] max-w-[1400px] h-60 rounded-b-[100%] border-b-2 border-[rgba(var(--color-primary-rgb),0.25)] pointer-events-none"></div>
-            <div class="absolute inset-0 pointer-events-none" style="background: radial-gradient(circle 320px at 50% 0%, rgba(var(--color-primary-rgb), 0.14), transparent 70%);"></div>
+            <div class="absolute top-24 left-1/2 -translate-x-1/2 w-[120%] max-w-[1400px] h-60 rounded-b-[100%] border-b-2 border-[rgba(var(--color-primary-rgb),0.22)] pointer-events-none"></div>
+            <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-[1300px] h-[450px] pointer-events-none" style="background: radial-gradient(ellipse 60% 50% at 50% 0%, rgba(var(--color-primary-rgb), 0.16), transparent 70%);"></div>
         `;
     } else if (style === 'aurora_glow') {
         shapesHtml = `
-            <!-- Aurora Mesh Glow: Soft Radial Ambient Mesh (Anti-Hard Disc) -->
-            <div class="absolute inset-0 pointer-events-none" style="background: radial-gradient(circle 380px at 15% 15%, rgba(var(--color-primary-rgb), 0.14), transparent 70%), radial-gradient(circle 420px at 85% 15%, rgba(var(--color-primary-rgb), 0.12), transparent 70%), radial-gradient(circle 500px at 50% 50%, rgba(var(--color-primary-rgb), 0.05), transparent 70%);"></div>
+            <!-- Aurora Mesh Glow: Soft Radial Ambient Mesh (Dual Zone) -->
+            <div class="absolute inset-0 pointer-events-none" style="background: radial-gradient(circle 450px at 15% 15%, rgba(var(--color-primary-rgb), 0.16), transparent 70%), radial-gradient(circle 480px at 85% 18%, rgba(var(--color-primary-rgb), 0.14), transparent 70%), radial-gradient(circle 540px at 50% 45%, rgba(var(--color-primary-rgb), 0.06), transparent 70%);"></div>
+            <div class="absolute top-0 left-0 right-0 h-96 bg-gradient-to-b from-[rgba(var(--color-primary-rgb),0.12)] to-transparent pointer-events-none"></div>
         `;
     } else if (style === 'tech_grid') {
         shapesHtml = `
-            <!-- Tech Grid: Blueprint Dot-Matrix & Precision Architectural Accents -->
-            <div class="absolute inset-0 pointer-events-none opacity-40 dark:opacity-30" style="background-image: radial-gradient(rgba(var(--color-primary-rgb), 0.22) 1.5px, transparent 1.5px); background-size: 24px 24px;"></div>
-            <div class="absolute top-0 left-0 right-0 h-80 bg-gradient-to-b from-[rgba(var(--color-primary-rgb),0.18)] via-[rgba(var(--color-primary-rgb),0.05)] to-transparent pointer-events-none"></div>
-            <div class="absolute top-20 left-10 w-48 h-48 border border-[rgba(var(--color-primary-rgb),0.15)] rounded-2xl pointer-events-none -rotate-6"></div>
-            <div class="absolute top-36 right-12 w-64 h-64 border border-[rgba(var(--color-primary-rgb),0.12)] rounded-3xl pointer-events-none rotate-12"></div>
+            <!-- Tech Grid: Blueprint Precision Architectural Framing -->
+            <div class="absolute inset-0 pointer-events-none opacity-45 dark:opacity-35" style="background-image: radial-gradient(rgba(var(--color-primary-rgb), 0.28) 1.5px, transparent 1.5px); background-size: 20px 20px;"></div>
+            <div class="absolute top-0 left-0 right-0 h-96 bg-gradient-to-b from-[rgba(var(--color-primary-rgb),0.18)] via-[rgba(var(--color-primary-rgb),0.05)] to-transparent pointer-events-none"></div>
+            <div class="absolute top-20 left-1/2 -translate-x-1/2 w-[94%] max-w-[1240px] h-[360px] border border-[rgba(var(--color-primary-rgb),0.15)] rounded-3xl pointer-events-none"></div>
+            <div class="absolute top-28 left-6 w-24 h-24 border-t-2 border-l-2 border-[rgba(var(--color-primary-rgb),0.25)] rounded-tl-2xl pointer-events-none"></div>
+            <div class="absolute top-28 right-6 w-24 h-24 border-t-2 border-r-2 border-[rgba(var(--color-primary-rgb),0.25)] rounded-tr-2xl pointer-events-none"></div>
         `;
     } else {
-        // Minimalis: Polos bersih, elegan, solid dengan subtle top breath
+        // Minimalis: Clean Architectural Studio dengan soft top wash & subtle ambient horizon
         shapesHtml = `
-            <!-- Minimalis Clean Studio: Soft top ambient wash -->
-            <div class="absolute top-0 left-0 right-0 h-48 bg-gradient-to-b from-[rgba(var(--color-primary-rgb),0.08)] to-transparent pointer-events-none"></div>
+            <!-- Minimalis Clean Studio: Soft top ambient wash & delicate horizon aura -->
+            <div class="absolute top-0 left-0 right-0 h-[480px] bg-gradient-to-b from-[rgba(var(--color-primary-rgb),0.12)] via-[rgba(var(--color-primary-rgb),0.03)] to-transparent pointer-events-none"></div>
+            <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-[1300px] h-[360px] pointer-events-none" style="background: radial-gradient(ellipse 65% 55% at 50% 0%, rgba(var(--color-primary-rgb), 0.12), transparent 70%);"></div>
         `;
     }
 
