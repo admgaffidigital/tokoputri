@@ -1462,7 +1462,7 @@
           </div>
         </div>
         <!-- STEP INDICATOR: STEP 1 (KERANJANG) -->
-        <div class="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 py-3 px-4 shadow-xs">
+        <div class="checkout-stepper-bar bg-white dark:bg-slate-800 py-3 px-4">
           <div class="mx-auto flex max-w-md items-center justify-between gap-2">
             <div class="step-item active">
               <span class="step-num">1</span>
@@ -1481,11 +1481,31 @@
           </div>
         </div>
         <div class="scroll-content z-10 flex-1 overflow-y-auto pb-[calc(8rem+env(safe-area-inset-bottom))] pt-6">
-          <div class="mx-auto flex hidden h-[50vh] max-w-xs flex-col items-center justify-center px-5 text-center" id="cart-empty-state">
-            <div class="mb-5 flex h-24 w-24 items-center justify-center rounded-full bg-slate-100 text-slate-300 shadow-inner dark:bg-slate-800 dark:text-slate-600"><i class="fa-solid fa-bag-shopping text-5xl"></i></div>
-            <h3 class="mb-2 text-xl font-bold text-slate-900 dark:text-white">Keranjang Kosong</h3>
-            <p class="mb-8 text-sm font-medium text-slate-500 dark:text-slate-400">Belum ada produk yang dipilih.</p>
-            <button class="btn-primary rounded-xl px-8 py-3.5 text-sm shadow-glow" onclick="changeView('view-catalog')">Belanja Sekarang</button>
+          <div class="mx-auto hidden w-full max-w-md px-4 py-8" id="cart-empty-state">
+            <div class="bento-island-card relative overflow-hidden rounded-3xl p-8 sm:p-10 text-center shadow-lg transition-all duration-300">
+              <!-- Ambient Subtle Theme Glow Inside Card -->
+              <div class="absolute -top-16 left-1/2 -translate-x-1/2 w-48 h-48 rounded-full pointer-events-none opacity-20 dark:opacity-15" style="background: radial-gradient(circle, var(--color-primary) 0%, transparent 70%);"></div>
+              
+              <!-- Squircle Icon Badge with Theme Gradient -->
+              <div class="relative mx-auto mb-6 flex h-24 w-24 sm:h-28 sm:w-28 items-center justify-center rounded-3xl shadow-xl ring-4 ring-[rgba(var(--color-primary-rgb),0.12)] dark:ring-[rgba(var(--color-primary-rgb),0.25)] transition-transform duration-300 hover:scale-105" style="background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-primary) 55%, var(--color-primary-dark) 100%);">
+                <i class="fa-solid fa-basket-shopping text-4xl sm:text-5xl text-white drop-shadow-md"></i>
+                <div class="absolute -bottom-1 -right-1 flex h-8 w-8 items-center justify-center rounded-full bg-white dark:bg-slate-900 shadow-md border border-slate-100 dark:border-slate-800">
+                  <i class="fa-solid fa-heart text-xs text-rose-500"></i>
+                </div>
+              </div>
+
+              <!-- Typography -->
+              <h3 class="mb-2 text-xl sm:text-2xl font-black tracking-tight text-slate-900 dark:text-white">Keranjang Masih Kosong</h3>
+              <p class="mx-auto mb-7 max-w-xs text-xs sm:text-sm font-medium leading-relaxed text-slate-500 dark:text-slate-400">
+                Belum ada produk pilihan di keranjang Anda. Jelajahi etalase dan temukan berbagai penawaran menarik sekarang!
+              </p>
+
+              <!-- Action Button -->
+              <button class="btn-primary inline-flex w-full sm:w-auto items-center justify-center gap-2.5 rounded-2xl px-8 py-3.5 text-xs sm:text-sm font-black tracking-wide uppercase shadow-lg shadow-[rgba(var(--color-primary-rgb),0.25)] transition-all hover:shadow-xl active:scale-95 cursor-pointer" onclick="changeView('view-catalog')">
+                <i class="fa-solid fa-bag-shopping text-sm"></i>
+                <span>Mulai Belanja Sekarang</span>
+              </button>
+            </div>
           </div>
           <div class="mx-auto mb-4 w-full max-w-full px-4 lg:px-8 xl:max-w-[1200px] hidden" id="cart-free-shipping-bar"></div>
           <div class="mx-auto mb-4 w-full max-w-full px-4 lg:px-8 xl:max-w-[1200px] hidden" id="cart-loyalty-points-bar"></div>
@@ -1537,7 +1557,7 @@
           </div>
         </div>
         <!-- STEP INDICATOR: STEP 2 (PENGIRIMAN) -->
-        <div class="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 py-3 px-4 shadow-xs">
+        <div class="checkout-stepper-bar bg-white dark:bg-slate-800 py-3 px-4">
           <div class="mx-auto flex max-w-md items-center justify-between gap-2">
             <div class="step-item completed">
               <span class="step-num"><i class="fa-solid fa-check text-[10px]"></i></span>
@@ -1717,7 +1737,7 @@
           </div>
         </div>
         <!-- STEP INDICATOR: STEP 3 (PEMBAYARAN) -->
-        <div class="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 py-3 px-4 shadow-xs">
+        <div class="checkout-stepper-bar bg-white dark:bg-slate-800 py-3 px-4">
           <div class="mx-auto flex max-w-md items-center justify-between gap-2">
             <div class="step-item completed">
               <span class="step-num"><i class="fa-solid fa-check text-[10px]"></i></span>
@@ -1996,13 +2016,18 @@
             </div>
           </div>
 
-          <div class="mx-auto flex hidden h-[45vh] max-w-xs flex-col items-center justify-center px-5 text-center" id="orders-empty-state">
-            <div class="mb-4 flex h-20 w-20 items-center justify-center rounded-2xl border border-slate-200 bg-slate-100 text-slate-400 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-500"><i class="fa-solid fa-clock-rotate-left text-4xl"></i></div>
-            <h3 class="mb-1.5 text-base font-bold text-slate-800 dark:text-white">Belum Ada Riwayat Pesanan</h3>
-            <p class="text-xs font-medium text-slate-500 dark:text-slate-400 mb-5 leading-relaxed">Pesanan Anda akan tersimpan di sini, atau Anda dapat melacak langsung menggunakan ID Pesanan di atas.</p>
-            <button type="button" onclick="changeView('view-catalog')" class="h-10 px-5 rounded-xl bg-[var(--color-primary)] text-white text-xs font-bold shadow-xs hover:bg-[var(--color-primary-dark)] active:scale-95 transition-all flex items-center gap-2">
-              <i class="fa-solid fa-bag-shopping"></i> Mulai Belanja Sekarang
-            </button>
+          <div class="mx-auto hidden w-full max-w-md px-4 py-8" id="orders-empty-state">
+            <div class="bento-island-card relative overflow-hidden rounded-3xl p-8 sm:p-10 text-center shadow-lg transition-all duration-300">
+              <div class="absolute -top-16 left-1/2 -translate-x-1/2 w-48 h-48 rounded-full pointer-events-none opacity-20 dark:opacity-15" style="background: radial-gradient(circle, var(--color-primary) 0%, transparent 70%);"></div>
+              <div class="relative mx-auto mb-5 flex h-20 w-20 sm:h-24 sm:w-24 items-center justify-center rounded-3xl shadow-lg ring-4 ring-[rgba(var(--color-primary-rgb),0.12)] dark:ring-[rgba(var(--color-primary-rgb),0.25)] text-white" style="background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-primary) 55%, var(--color-primary-dark) 100%);">
+                <i class="fa-solid fa-clock-rotate-left text-3xl sm:text-4xl text-white drop-shadow-md"></i>
+              </div>
+              <h3 class="mb-2 text-lg sm:text-xl font-black text-slate-900 dark:text-white">Belum Ada Riwayat Pesanan</h3>
+              <p class="mx-auto mb-6 max-w-xs text-xs sm:text-sm font-medium leading-relaxed text-slate-500 dark:text-slate-400">Pesanan Anda akan tersimpan rapi di sini, atau Anda dapat melacak langsung menggunakan ID Pesanan di atas.</p>
+              <button type="button" onclick="changeView('view-catalog')" class="btn-primary inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-2xl px-7 py-3 text-xs sm:text-sm font-bold uppercase tracking-wider shadow-lg shadow-[rgba(var(--color-primary-rgb),0.25)] active:scale-95 transition-all">
+                <i class="fa-solid fa-bag-shopping"></i> Mulai Belanja Sekarang
+              </button>
+            </div>
           </div>
           <div class="mx-auto w-full max-w-full space-y-3 px-4 lg:px-8 xl:max-w-[1200px]" id="orders-items-container"></div>
         </div>
@@ -2017,10 +2042,18 @@
           </div>
         </div>
         <div class="scroll-content z-10 flex-1 overflow-y-auto pb-[calc(5.5rem+env(safe-area-inset-bottom))] pt-6">
-          <div class="mx-auto flex hidden h-[50vh] max-w-xs flex-col items-center justify-center px-5 text-center" id="wishlist-empty-state">
-            <div class="mb-5 flex h-24 w-24 items-center justify-center rounded-full border border-rose-200 bg-rose-50 text-rose-400 shadow-inner dark:border-rose-800 dark:bg-rose-900/20"><i class="fa-solid fa-heart text-5xl"></i></div>
-            <h3 class="mb-2 text-xl font-bold text-slate-800 dark:text-white">Belum Ada Favorit</h3>
-            <p class="text-sm font-medium text-slate-600 dark:text-slate-400">Kumpulkan produk impianmu di sini.</p>
+          <div class="mx-auto hidden w-full max-w-md px-4 py-8" id="wishlist-empty-state">
+            <div class="bento-island-card relative overflow-hidden rounded-3xl p-8 sm:p-10 text-center shadow-lg transition-all duration-300">
+              <div class="absolute -top-16 left-1/2 -translate-x-1/2 w-48 h-48 rounded-full pointer-events-none opacity-20 dark:opacity-15" style="background: radial-gradient(circle, #f43f5e 0%, transparent 70%);"></div>
+              <div class="relative mx-auto mb-5 flex h-20 w-20 sm:h-24 sm:w-24 items-center justify-center rounded-3xl shadow-lg ring-4 ring-rose-500/20 text-white bg-gradient-to-br from-rose-400 via-rose-500 to-rose-600">
+                <i class="fa-solid fa-heart text-3xl sm:text-4xl text-white drop-shadow-md"></i>
+              </div>
+              <h3 class="mb-2 text-lg sm:text-xl font-black text-slate-900 dark:text-white">Belum Ada Favorit</h3>
+              <p class="mx-auto mb-6 max-w-xs text-xs sm:text-sm font-medium leading-relaxed text-slate-500 dark:text-slate-400">Kumpulkan produk impian dan simpan produk incaran Anda di sini.</p>
+              <button type="button" onclick="changeView('view-catalog')" class="btn-primary inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-2xl px-7 py-3 text-xs sm:text-sm font-bold uppercase tracking-wider shadow-lg shadow-[rgba(var(--color-primary-rgb),0.25)] active:scale-95 transition-all">
+                <i class="fa-solid fa-magnifying-glass"></i> Cari Produk Favorit
+              </button>
+            </div>
           </div>
           <div class="mx-auto w-full max-w-full space-y-4 px-4 lg:px-8 xl:max-w-[1200px]" id="wishlist-items-container"></div>
         </div>

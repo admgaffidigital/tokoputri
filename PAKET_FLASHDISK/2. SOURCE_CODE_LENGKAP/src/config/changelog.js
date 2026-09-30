@@ -8,6 +8,22 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-10-8',
+        version: 'v1.10.8',
+        date: '2026-10-01',
+        title: 'Harmonisasi Menyeluruh Sub-View & Keranjang Belanja: Redesain Bento Empty State, Kalibrasi Opasitas Kanvas & Header Aligned',
+        category: 'ui',
+        badge: 'Empty State Bento & Canvas Polish v1.10.8',
+        items: [
+            'Pembersihan Penumpukan Gradien & Kalibrasi Opasitas Kanvas (src/core/theme.js & src/style.css): Mengeliminasi pencucian latar belakang gelap/kusam (murky wash) di sub-view seperti keranjang belanja saat tema gelap (seperti Burgundy #800020) aktif. Menghapus duplikasi linear-gradient pada #app-container dan mengalibrasi opasitas bentuk kanopi kubah atmosferik di #dynamic-bg-container ke tingkat lembut bercahaya (peak 0.11 jatuh halus ke 0.03 dan transparan) tanpa menumpuk opasitas hingga 50%+.',
+            'Redesain Menyeluruh Empty State Kartu Bento (.bento-island-card): Mengubah tampilan halaman keranjang kosong, riwayat pesanan kosong, dan wishlist kosong yang sebelumnya hanya berupa teks mengambang polos dengan ikon abu-abu pucat menjadi kartu Bento Island terpadu ber-outline tema, pendaran radial lembut di dalam kartu, serta lencana squircle bergradien tema dinamis dengan kontras tinggi (WCAG AAA) dan tombol aksi berpendar.',
+            'Penyelarasan Presisi Lengkung Header vs Stepper Bar (src/style.css & index.html): Mengisolasi lengkungan kanopi bawah header (border-radius: 0 0 2.25rem 2.25rem) secara eksklusif hanya untuk beranda etalase (#view-catalog .glass-header). Header pada sub-view (Keranjang, Checkout, Pembayaran, dll.) kini memiliki batas bawah lurus rapi (border-radius: 0) yang menyatu sempurna dengan bilah alur langkah checkout (.checkout-stepper-bar) tanpa sudut melipat yang memotong.',
+            'Harmonisasi Bilah Alur Langkah Checkout (.checkout-stepper-bar): Menyematkan kelas terpadu dengan border aksen tema halus (rgba(var(--color-primary-rgb), 0.12) di light mode dan 0.22 di dark mode) serta pewarnaan nomor langkah selesai (completed) dengan warna tema toko.',
+            'Proteksi FAB Scroll-to-Top Cerdas (src/core/router.js & src/core/native-mobile.js): Menyembunyikan seketika tombol melayang "↑ Ke Atas" (#native-scroll-top-btn) saat berpindah tampilan layar (changeView) dan membatasi agar tombol tidak pernah muncul secara keliru di halaman pendek seperti keranjang kosong atau alur checkout.',
+            'Multi-Channel Build & Sync v1.10.8 (Android versionCode 11008): Kompilasi produksi web, sinkronisasi bundle flashdisk siap pakai, dan Android Capacitor tersinkronisasi 100%.'
+        ]
+    },
+    {
         id: 'log-1-10-7',
         version: 'v1.10.7',
         date: '2026-10-01',

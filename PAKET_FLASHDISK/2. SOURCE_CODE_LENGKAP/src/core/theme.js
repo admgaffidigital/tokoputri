@@ -343,34 +343,33 @@ export const applyBackgroundStyle = (bgStyle = 'minimalist', customBgUrl = '') =
 
     if (style === 'hero_arch') {
         shapesHtml = `
-            <!-- Hero Arch: Bold Canopy Dome flowing seamlessly behind the header without sharp cutoff lines -->
-            <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-[1600px] h-[720px] pointer-events-none" style="background: radial-gradient(ellipse 85% 60% at 50% 0%, rgba(var(--color-primary-rgb), 0.24) 0%, rgba(var(--color-primary-rgb), 0.12) 40%, rgba(var(--color-primary-rgb), 0.03) 70%, transparent 100%);"></div>
-            <div class="absolute top-0 left-0 right-0 h-[520px] pointer-events-none" style="background: linear-gradient(180deg, rgba(var(--color-primary-rgb), 0.15) 0%, rgba(var(--color-primary-rgb), 0.04) 55%, transparent 100%);"></div>
+            <!-- Hero Arch: Luminous Canopy Dome flowing seamlessly behind the header without sharp cutoff lines -->
+            <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-[1500px] h-[580px] pointer-events-none" style="background: radial-gradient(ellipse 80% 55% at 50% 0%, rgba(var(--color-primary-rgb), 0.11) 0%, rgba(var(--color-primary-rgb), 0.03) 45%, transparent 75%);"></div>
         `;
     } else if (style === 'aurora_glow') {
         shapesHtml = `
             <!-- Aurora Mesh Glow: Luminous Multi-Zone Ambient Wash in Theme Tones -->
-            <div class="absolute inset-0 pointer-events-none" style="background: radial-gradient(circle 600px at 15% 15%, rgba(var(--color-primary-rgb), 0.24), transparent 70%), radial-gradient(circle 600px at 85% 25%, rgba(var(--color-primary-rgb), 0.18), transparent 70%), radial-gradient(circle 700px at 50% 50%, rgba(var(--color-primary-rgb), 0.12), transparent 70%);"></div>
-            <div class="absolute top-0 left-0 right-0 h-[600px] pointer-events-none" style="background: linear-gradient(180deg, rgba(var(--color-primary-rgb), 0.18) 0%, rgba(var(--color-primary-rgb), 0.04) 60%, transparent 100%);"></div>
+            <div class="absolute inset-0 pointer-events-none" style="background: radial-gradient(circle 500px at 15% 15%, rgba(var(--color-primary-rgb), 0.12), transparent 70%), radial-gradient(circle 500px at 85% 25%, rgba(var(--color-primary-rgb), 0.08), transparent 70%), radial-gradient(circle 600px at 50% 50%, rgba(var(--color-primary-rgb), 0.05), transparent 70%);"></div>
+            <div class="absolute top-0 left-0 right-0 h-[500px] pointer-events-none" style="background: linear-gradient(180deg, rgba(var(--color-primary-rgb), 0.08) 0%, rgba(var(--color-primary-rgb), 0.02) 60%, transparent 100%);"></div>
         `;
     } else if (style === 'tech_grid') {
         shapesHtml = `
             <!-- Tech Grid: Cool Precision Horizon Wash -->
-            <div class="absolute top-0 left-0 right-0 h-[600px] pointer-events-none" style="background: linear-gradient(180deg, rgba(var(--color-primary-rgb), 0.18) 0%, rgba(var(--color-primary-rgb), 0.06) 40%, rgba(30, 41, 59, 0.03) 70%, transparent 100%);"></div>
-            <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-[1400px] h-[500px] pointer-events-none" style="background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(var(--color-primary-rgb), 0.18) 0%, transparent 75%);"></div>
+            <div class="absolute top-0 left-0 right-0 h-[500px] pointer-events-none" style="background: linear-gradient(180deg, rgba(var(--color-primary-rgb), 0.10) 0%, rgba(var(--color-primary-rgb), 0.03) 40%, rgba(30, 41, 59, 0.02) 70%, transparent 100%);"></div>
+            <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-[1400px] h-[450px] pointer-events-none" style="background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(var(--color-primary-rgb), 0.08) 0%, transparent 75%);"></div>
         `;
     } else if (style === 'industrial') {
         shapesHtml = `
             <!-- Industrial: Heavy-Duty Deep Solid Horizon & Bold Steel Ambience -->
-            <div class="absolute top-0 left-0 right-0 h-[650px] pointer-events-none" style="background: linear-gradient(180deg, rgba(var(--color-primary-rgb), 0.22) 0%, rgba(var(--color-primary-rgb), 0.08) 45%, rgba(15, 23, 42, 0.04) 75%, transparent 100%);"></div>
-            <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-[1400px] h-[550px] pointer-events-none" style="background: radial-gradient(ellipse 85% 65% at 50% 0%, rgba(var(--color-primary-rgb), 0.20) 0%, transparent 75%);"></div>
+            <div class="absolute top-0 left-0 right-0 h-[550px] pointer-events-none" style="background: linear-gradient(180deg, rgba(var(--color-primary-rgb), 0.12) 0%, rgba(var(--color-primary-rgb), 0.04) 45%, rgba(15, 23, 42, 0.02) 75%, transparent 100%);"></div>
+            <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-[1400px] h-[450px] pointer-events-none" style="background: radial-gradient(ellipse 85% 65% at 50% 0%, rgba(var(--color-primary-rgb), 0.10) 0%, transparent 75%);"></div>
         `;
     } else {
         // Minimalis: Clean Architectural Studio dengan soft top wash & subtle ambient horizon
         shapesHtml = `
             <!-- Minimalis Clean Studio: Soft top ambient wash & delicate horizon aura -->
-            <div class="absolute top-0 left-0 right-0 h-[500px] pointer-events-none" style="background: linear-gradient(180deg, rgba(var(--color-primary-rgb), 0.10) 0%, rgba(var(--color-primary-rgb), 0.02) 60%, transparent 100%);"></div>
-            <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-[1400px] h-[450px] pointer-events-none" style="background: radial-gradient(ellipse 70% 60% at 50% 0%, rgba(var(--color-primary-rgb), 0.08) 0%, transparent 75%);"></div>
+            <div class="absolute top-0 left-0 right-0 h-[450px] pointer-events-none" style="background: linear-gradient(180deg, rgba(var(--color-primary-rgb), 0.07) 0%, rgba(var(--color-primary-rgb), 0.01) 60%, transparent 100%);"></div>
+            <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-[1400px] h-[400px] pointer-events-none" style="background: radial-gradient(ellipse 70% 60% at 50% 0%, rgba(var(--color-primary-rgb), 0.05) 0%, transparent 75%);"></div>
         `;
     }
 

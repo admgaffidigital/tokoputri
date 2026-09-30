@@ -428,6 +428,13 @@ export const initFloatingScrollTop = () => {
 
     const checkScroll = (scrollTop) => {
         if (!btn) return;
+        // Hanya izinkan FAB Ke Atas muncul di halaman dengan scroll panjang (misal katalog & riwayat pesanan)
+        const activeSection = document.querySelector('.view-section:not(.hidden)');
+        if (!activeSection || activeSection.id === 'view-cart' || activeSection.id === 'view-checkout' || activeSection.id === 'view-payment') {
+            btn.classList.add('opacity-0', 'translate-y-3');
+            btn.classList.add('hidden');
+            return;
+        }
         if (scrollTop > 350) {
             btn.classList.remove('hidden');
             requestAnimationFrame(() => {
