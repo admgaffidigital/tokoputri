@@ -190,20 +190,28 @@ let GAS_UPLOAD_URL = _GAS_URL;
 window.calcTaxDetails = (baseAmount) => {
     const store = state.appData?.store || {};
     const ppnEnabled = store.ppnEnabled === true || store.ppnEnabled === 'true';
-    const ppnRate = parseFloat(store.ppnRate) || 11;
+    const ppnRate = (store.ppnRate !== undefined && store.ppnRate !== null && !isNaN(parseFloat(store.ppnRate)))
+        ? Math.max(0, parseFloat(store.ppnRate))
+        : 11;
     const ppnType = store.ppnType || 'exclusive';
+    const ppnShowZero = store.ppnShowZero !== false; // default aktif
+    const ppnLabel = store.ppnTaxLabel || 'PPN';
 
     if (!ppnEnabled || baseAmount <= 0) {
-        return { ppnEnabled: false, ppnRate: 0, ppnType, ppnAmount: 0, dppAmount: Math.max(0, baseAmount), grandTotalAdd: 0 };
+        return { ppnEnabled: false, ppnRate: 0, ppnType, ppnAmount: 0, dppAmount: Math.max(0, baseAmount), grandTotalAdd: 0, ppnShowZero: false, ppnLabel: 'PPN' };
+    }
+
+    if (ppnRate === 0) {
+        return { ppnEnabled: true, ppnRate: 0, ppnType, ppnAmount: 0, dppAmount: Math.max(0, baseAmount), grandTotalAdd: 0, ppnShowZero, ppnLabel };
     }
 
     if (ppnType === 'inclusive') {
         const dpp = Math.round((baseAmount * 100) / (100 + ppnRate));
         const ppn = baseAmount - dpp;
-        return { ppnEnabled: true, ppnRate, ppnType: 'inclusive', ppnAmount: ppn, dppAmount: dpp, grandTotalAdd: 0 };
+        return { ppnEnabled: true, ppnRate, ppnType: 'inclusive', ppnAmount: ppn, dppAmount: dpp, grandTotalAdd: 0, ppnShowZero, ppnLabel };
     } else {
         const ppn = Math.round((baseAmount * ppnRate) / 100);
-        return { ppnEnabled: true, ppnRate, ppnType: 'exclusive', ppnAmount: ppn, dppAmount: Math.max(0, baseAmount), grandTotalAdd: ppn };
+        return { ppnEnabled: true, ppnRate, ppnType: 'exclusive', ppnAmount: ppn, dppAmount: Math.max(0, baseAmount), grandTotalAdd: ppn, ppnShowZero, ppnLabel };
     }
 };
 

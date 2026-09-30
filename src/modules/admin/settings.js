@@ -924,42 +924,134 @@ export const openSettingForm = (type) => {
                 </div>
             </div>
 
-            <!-- KARTU 2: PERHITUNGAN PAJAK PPN -->
+            <!-- KARTU 2: KONFIGURASI SMART PERPAJAKAN REPUBLIK INDONESIA 2026 -->
             <div class="p-4 sm:p-5 bg-slate-50/80 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700/80 rounded-2xl shadow-sm space-y-4">
-                <div class="flex items-center gap-3">
-                    <div class="w-9 h-9 rounded-xl bg-purple-600 text-white flex items-center justify-center text-sm shadow-sm shrink-0">
-                        <i class="fa-solid fa-receipt"></i>
-                    </div>
-                    <div>
-                        <h4 class="text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider">Konfigurasi Pajak Pertambahan Nilai (PPN)</h4>
-                        <p class="text-[10px] text-slate-500 dark:text-slate-400">Atur skema perpajakan resmi pada kalkulasi struk kasir, invoice A4, dan checkout belanja</p>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div>
-                        <label class="block text-[11px] font-bold text-slate-600 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Status Perhitungan PPN</label>
-                        <select id="set-ppn-enabled" class="admin-input !py-3 bg-white dark:bg-slate-900 shadow-sm w-full text-xs">
-                            <option value="true" ${appData.store.ppnEnabled === true ? 'selected' : ''}>Aktif (Kalkulasi PPN Dihitung)</option>
-                            <option value="false" ${appData.store.ppnEnabled !== true ? 'selected' : ''}>Nonaktif (Bebas PPN)</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-[11px] font-bold text-slate-600 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Tipe Perhitungan</label>
-                        <select id="set-ppn-type" class="admin-input !py-3 bg-white dark:bg-slate-900 shadow-sm w-full text-xs">
-                            <option value="exclusive" ${appData.store.ppnType !== 'inclusive' ? 'selected' : ''}>Eksklusif (Ditambah di checkout)</option>
-                            <option value="inclusive" ${appData.store.ppnType === 'inclusive' ? 'selected' : ''}>Inklusif (Sudah termasuk di harga)</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-[11px] font-bold text-slate-600 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Tarif PPN (%)</label>
-                        <input autocomplete='off' type="number" id="set-ppn-rate" value="${esc(appData.store.ppnRate || 11)}" min="0" max="100" step="0.1" class="admin-input !py-3 bg-white dark:bg-slate-900 shadow-sm w-full text-xs" placeholder="11">
+                <div class="flex items-center justify-between flex-wrap gap-2">
+                    <div class="flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-xl bg-purple-600 text-white flex items-center justify-center text-sm shadow-sm shrink-0">
+                            <i class="fa-solid fa-scale-balanced"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider flex items-center gap-1.5">
+                                <span>Konfigurasi PPN &amp; Smart Perpajakan RI 2026</span>
+                                <span class="px-2 py-0.5 rounded-full text-[9px] font-black bg-purple-100 dark:bg-purple-900/50 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-800">UU HPP &bull; PP 55/2022</span>
+                            </h4>
+                            <p class="text-[10px] text-slate-500 dark:text-slate-400">Atur skema perpajakan resmi pada struk kasir, invoice A4, laporan keuangan, dan checkout belanja</p>
+                        </div>
                     </div>
                 </div>
 
-                <div class="p-3 bg-purple-50/60 dark:bg-purple-950/20 border border-purple-100 dark:border-purple-900/40 rounded-xl text-[11px] text-purple-700 dark:text-purple-300 flex items-start gap-2">
-                    <i class="fa-solid fa-file-invoice-dollar text-purple-500 mt-0.5"></i>
-                    <span><b>Penjelasan Skema:</b> <i>Eksklusif</i> akan menambahkan nilai pajak di atas subtotal belanja pelanggan. <i>Inklusif</i> akan menguraikan nilai pajak tanpa menambah total yang harus dibayar pembeli.</span>
+                <!-- PRESET 1-KLIK SMART PERPAJAKAN INDONESIA 2026 -->
+                <div class="space-y-2">
+                    <label class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                        <i class="fa-solid fa-wand-magic-sparkles text-purple-500 mr-1"></i>Pilih Preset Cepat Smart Perpajakan RI 2026:
+                    </label>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
+                        <!-- PRESET A: BADAN NON-PKP (0% TRANSPARAN) -->
+                        <button type="button" onclick="window.applyTaxPresetRI('badan_non_pkp')" class="p-3 text-left rounded-xl border border-purple-200 dark:border-purple-800/80 bg-purple-50/60 dark:bg-purple-950/20 hover:border-purple-500 hover:bg-purple-100/50 dark:hover:bg-purple-900/40 transition-all cursor-pointer group active:scale-98">
+                            <div class="flex items-center justify-between mb-1">
+                                <span class="text-xs font-bold text-purple-900 dark:text-purple-200 flex items-center gap-1.5">
+                                    <i class="fa-solid fa-building text-purple-600"></i> Badan Non-PKP
+                                </span>
+                                <span class="text-[9px] font-black px-1.5 py-0.5 rounded bg-purple-200/80 dark:bg-purple-800 text-purple-800 dark:text-purple-200">0%</span>
+                            </div>
+                            <p class="text-[10px] text-slate-600 dark:text-slate-400 leading-tight">Bebas PPN Rp 0 ke pembeli. Baris PPN 0% tetap tercetak di struk &amp; faktur A4 resmi.</p>
+                        </button>
+
+                        <!-- PRESET B: HARGA INKLUSIF TOKO (11% UU HPP) -->
+                        <button type="button" onclick="window.applyTaxPresetRI('inklusif_11')" class="p-3 text-left rounded-xl border border-blue-200 dark:border-blue-800/80 bg-blue-50/60 dark:bg-blue-950/20 hover:border-blue-500 hover:bg-blue-100/50 dark:hover:bg-blue-900/40 transition-all cursor-pointer group active:scale-98">
+                            <div class="flex items-center justify-between mb-1">
+                                <span class="text-xs font-bold text-blue-900 dark:text-blue-200 flex items-center gap-1.5">
+                                    <i class="fa-solid fa-tags text-blue-600"></i> Harga Inklusif
+                                </span>
+                                <span class="text-[9px] font-black px-1.5 py-0.5 rounded bg-blue-200/80 dark:bg-blue-800 text-blue-800 dark:text-blue-200">11%</span>
+                            </div>
+                            <p class="text-[10px] text-slate-600 dark:text-slate-400 leading-tight">Pajak sudah di dalam harga. Pembeli tidak nambah bayar, DPP &amp; PPN diurai di struk.</p>
+                        </button>
+
+                        <!-- PRESET C: PKP STANDAR (11% UU HPP) -->
+                        <button type="button" onclick="window.applyTaxPresetRI('pkp_11')" class="p-3 text-left rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-purple-500 transition-all cursor-pointer group active:scale-98">
+                            <div class="flex items-center justify-between mb-1">
+                                <span class="text-xs font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
+                                    <i class="fa-solid fa-landmark text-slate-600 dark:text-slate-400"></i> PKP Standar
+                                </span>
+                                <span class="text-[9px] font-black px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300">11%</span>
+                            </div>
+                            <p class="text-[10px] text-slate-600 dark:text-slate-400 leading-tight">Eksklusif: PPN 11% ditambahkan di atas subtotal saat checkout dan kasir POS.</p>
+                        </button>
+
+                        <!-- PRESET D: PKP PENYESUAIAN 12% (UU HPP 2026) -->
+                        <button type="button" onclick="window.applyTaxPresetRI('pkp_12')" class="p-3 text-left rounded-xl border border-amber-200 dark:border-amber-800/80 bg-amber-50/60 dark:bg-amber-950/20 hover:border-amber-500 transition-all cursor-pointer group active:scale-98">
+                            <div class="flex items-center justify-between mb-1">
+                                <span class="text-xs font-bold text-amber-900 dark:text-amber-200 flex items-center gap-1.5">
+                                    <i class="fa-solid fa-bolt text-amber-600"></i> PKP Transisi
+                                </span>
+                                <span class="text-[9px] font-black px-1.5 py-0.5 rounded bg-amber-200/80 dark:bg-amber-800 text-amber-800 dark:text-amber-200">12%</span>
+                            </div>
+                            <p class="text-[10px] text-slate-600 dark:text-slate-400 leading-tight">Penyesuaian tarif PPN 12% sesuai tahapan regulasi UU Harmonisasi Perpajakan.</p>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- FORM KONTROL GRANULAR PERPAJAKAN -->
+                ${(() => {
+                    const safeRate = (appData.store.ppnRate !== undefined && appData.store.ppnRate !== null && !isNaN(parseFloat(appData.store.ppnRate))) ? parseFloat(appData.store.ppnRate) : 11;
+                    const showZero = appData.store.ppnShowZero !== false;
+                    const taxLabel = appData.store.ppnTaxLabel || '';
+                    const npwpVal = appData.store.taxNpwp || appData.taxSettings?.npwp || '';
+
+                    return `
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-1">
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-600 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Status Perhitungan PPN</label>
+                            <select id="set-ppn-enabled" class="admin-input !py-3 bg-white dark:bg-slate-900 shadow-sm w-full text-xs">
+                                <option value="true" ${appData.store.ppnEnabled === true ? 'selected' : ''}>Aktif (Kalkulasi PPN Dihitung)</option>
+                                <option value="false" ${appData.store.ppnEnabled !== true ? 'selected' : ''}>Nonaktif (Tanpa Baris PPN)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-600 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Tipe Perhitungan</label>
+                            <select id="set-ppn-type" class="admin-input !py-3 bg-white dark:bg-slate-900 shadow-sm w-full text-xs">
+                                <option value="inclusive" ${appData.store.ppnType === 'inclusive' ? 'selected' : ''}>Inklusif (Pajak dalam harga &bull; Pembeli Rp 0 Tambahan)</option>
+                                <option value="exclusive" ${appData.store.ppnType !== 'inclusive' ? 'selected' : ''}>Eksklusif (Pajak ditambah di atas subtotal)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-600 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Tarif PPN (%)</label>
+                            <input autocomplete='off' type="number" id="set-ppn-rate" value="${safeRate}" min="0" max="100" step="0.1" class="admin-input !py-3 bg-white dark:bg-slate-900 shadow-sm w-full text-xs" placeholder="0 atau 11">
+                            <span class="text-[10px] text-slate-400 mt-1 block">Ketik <b>0</b> jika Wajib Pajak Badan Non-PKP / Bebas PPN.</span>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-600 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Tampilan PPN 0% di Struk / Faktur</label>
+                            <select id="set-ppn-show-zero" class="admin-input !py-3 bg-white dark:bg-slate-900 shadow-sm w-full text-xs">
+                                <option value="true" ${showZero ? 'selected' : ''}>Tetap Tampilkan Baris Pajak (Walau Rp 0)</option>
+                                <option value="false" ${!showZero ? 'selected' : ''}>Sembunyikan Baris Pajak jika Rp 0</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-600 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Label Pajak di Struk/Invoice</label>
+                            <input autocomplete='off' type="text" id="set-ppn-tax-label" value="${esc(taxLabel)}" class="admin-input !py-3 bg-white dark:bg-slate-900 shadow-sm w-full text-xs" placeholder="Cth: PPN Badan (0%) atau PPN">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-600 dark:text-slate-400 mb-1.5 uppercase tracking-wider">NPWP Toko / 16-Digit CTAS DJP</label>
+                            <input autocomplete='off' type="text" id="set-tax-npwp" value="${esc(npwpVal)}" class="admin-input !py-3 bg-white dark:bg-slate-900 shadow-sm w-full text-xs font-mono" placeholder="16 digit format Coretax DJP">
+                        </div>
+                    </div>
+                    `;
+                })()}
+
+                <div class="p-3.5 bg-purple-50/70 dark:bg-purple-950/20 border border-purple-200 dark:border-purple-900/40 rounded-xl text-[11px] text-purple-900 dark:text-purple-300 space-y-1.5">
+                    <div class="flex items-center gap-2 font-bold text-purple-800 dark:text-purple-200">
+                        <i class="fa-solid fa-circle-info text-purple-600 text-sm"></i>
+                        <span>Pedoman Praktis Wajib Pajak Badan di Toko Putri:</span>
+                    </div>
+                    <ul class="list-disc pl-5 space-y-1 text-[10px] text-slate-600 dark:text-slate-400">
+                        <li><b>Wajib Pajak Badan Non-PKP / Bebas PPN (0%):</b> Pilih Status <i>Aktif</i>, Tipe <i>Inklusif</i>, Tarif <i>0%</i>, dan Tampilan PPN 0% <i>Tetap Tampilkan</i>. Pelanggan <b>tidak ditarik uang tambahan sepeser pun (Rp 0)</b>, sementara pada struk kasir, invoice A4, dan riwayat pesanan tetap tercantum baris DPP dan PPN 0% secara transparan.</li>
+                        <li><b>PPh Final 0,5% Badan UMKM (PP 55/2022):</b> Wajib Pajak Badan dengan omset &lt; Rp 4,8 Miliar berhak memanfaatkan tarif PPh Final 0,5% dari omset bulanan yang dapat dipantau di menu <b>Pajak &amp; Keuangan</b>.</li>
+                    </ul>
                 </div>
             </div>
 
@@ -1124,16 +1216,29 @@ export const saveAdminSettings = async (type) => {
             appData.store.useStock   = getV('set-use-stock') === 'true';
             appData.store.ppnEnabled = getV('set-ppn-enabled') === 'true';
             appData.store.ppnType    = getV('set-ppn-type') || 'exclusive';
-            appData.store.ppnRate    = parseFloat(getV('set-ppn-rate')) || 11;
+            
+            const rawRate = getV('set-ppn-rate');
+            const parsedRate = parseFloat(rawRate);
+            appData.store.ppnRate = (!isNaN(parsedRate) && parsedRate >= 0) ? parsedRate : 11;
+            
+            appData.store.ppnShowZero = getV('set-ppn-show-zero') === 'true';
+            appData.store.ppnTaxLabel = (getV('set-ppn-tax-label') || '').trim();
+            
+            const npwpVal = (getV('set-tax-npwp') || '').trim();
+            appData.store.taxNpwp = npwpVal;
+            if (!appData.taxSettings) appData.taxSettings = {};
+            if (npwpVal) appData.taxSettings.npwp = npwpVal;
+            
             appData.store.spendPointsEnabled = getV('set-spend-points-enabled') === 'true';
             appData.store.spendPointsThreshold = Math.max(1, parseFloat(getV('set-spend-points-threshold')) || 100000);
             appData.store.spendPointsPerThreshold = Math.max(1, parseFloat(getV('set-spend-points-per-threshold')) || 1);
             toggleTaxMenuVisibility();
         }
         
-        const settingsKeyMap = { profile: 'store', catalog: 'store', shipping: 'store', operasional: 'store', payment: 'payment', config: 'config' };
+        const settingsKeyMap = { profile: 'store', catalog: 'store', shipping: 'store', operasional: ['store', 'taxSettings'], payment: 'payment', config: 'config' };
         if (typeof window.saveApp === 'function') {
-            await window.saveApp([settingsKeyMap[type] || 'store']);
+            const keysToSave = Array.isArray(settingsKeyMap[type]) ? settingsKeyMap[type] : [settingsKeyMap[type] || 'store'];
+            await window.saveApp(keysToSave);
         }
         
         if (type === 'profile' || type === 'config') {
@@ -1452,6 +1557,49 @@ export const saveHeroBannerModal = async () => {
     }
 };
 
+// ─── Terapkan Preset Cepat Smart Perpajakan Republik Indonesia 2026 ───
+export const applyTaxPresetRI = (preset) => {
+    const elEnabled = el('set-ppn-enabled');
+    const elType = el('set-ppn-type');
+    const elRate = el('set-ppn-rate');
+    const elShowZero = el('set-ppn-show-zero');
+    const elLabel = el('set-ppn-tax-label');
+
+    if (!elEnabled || !elType || !elRate) return;
+
+    if (preset === 'badan_non_pkp') {
+        elEnabled.value = 'true';
+        elType.value = 'inclusive';
+        elRate.value = '0';
+        if (elShowZero) elShowZero.value = 'true';
+        if (elLabel) elLabel.value = 'PPN Badan (0% Bebas PPN)';
+        showToast('Preset Badan Non-PKP diterapkan! (Tarif 0%, Bebas PPN Rp 0, Baris Pajak tercetak)');
+    } else if (preset === 'inklusif_11') {
+        elEnabled.value = 'true';
+        elType.value = 'inclusive';
+        elRate.value = '11';
+        if (elShowZero) elShowZero.value = 'true';
+        if (elLabel) elLabel.value = 'PPN (11%)';
+        showToast('Preset Harga Inklusif 11% diterapkan! (Pajak di dalam harga produk)');
+    } else if (preset === 'pkp_11') {
+        elEnabled.value = 'true';
+        elType.value = 'exclusive';
+        elRate.value = '11';
+        if (elShowZero) elShowZero.value = 'false';
+        if (elLabel) elLabel.value = 'PPN (11%)';
+        showToast('Preset PKP Standar 11% diterapkan! (Pajak ditambahkan di checkout)');
+    } else if (preset === 'pkp_12') {
+        elEnabled.value = 'true';
+        elType.value = 'exclusive';
+        elRate.value = '12';
+        if (elShowZero) elShowZero.value = 'false';
+        if (elLabel) elLabel.value = 'PPN (12%)';
+        showToast('Preset Penyesuaian PKP 12% diterapkan! (UU Harmonisasi Perpajakan)');
+    }
+
+    if (typeof window.triggerHaptic === 'function') window.triggerHaptic('medium');
+};
+
 // ─── Expose ke window untuk atribut onclick di HTML ──────
 window.syncAppMeta = syncAppMeta;
 window.rAdmSet = rAdmSet;
@@ -1459,6 +1607,7 @@ window.selectPresetTheme = selectPresetTheme;
 window.selectBgStyle = selectBgStyle;
 window.openSettingForm = openSettingForm;
 window.saveAdminSettings = saveAdminSettings;
+window.applyTaxPresetRI = applyTaxPresetRI;
 window.backupData = backupData;
 window.restoreData = restoreData;
 window.handleSmartMapsInput = handleSmartMapsInput;

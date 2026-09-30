@@ -154,18 +154,43 @@ export const posDiscountAmount = () => {
     return disc;
 };
 
-const posTotal    = () => {
+export const posTaxInfo = () => {
     const sub = posSubtotal();
     const gDisc = posDiscountAmount();
     const ptDisc = posMemberPointsDiscount();
-    let total = Math.max(0, sub - gDisc - ptDisc);
+    const baseTotal = Math.max(0, sub - gDisc - ptDisc);
+    if (typeof window.calcTaxDetails === 'function') {
+        return window.calcTaxDetails(baseTotal);
+    }
+    const ppnOn = appData.store?.ppnEnabled === true || appData.store?.ppnEnabled === 'true';
+    const ppnType = appData.store?.ppnType || 'exclusive';
+    const ppnRate = (appData.store?.ppnRate !== undefined && !isNaN(parseFloat(appData.store?.ppnRate))) ? parseFloat(appData.store?.ppnRate) : 11;
+    return {
+        ppnEnabled: ppnOn,
+        ppnRate,
+        ppnType,
+        ppnAmount: 0,
+        dppAmount: baseTotal,
+        grandTotalAdd: 0,
+        ppnShowZero: appData.store?.ppnShowZero !== false,
+        ppnLabel: appData.store?.ppnTaxLabel || ''
+    };
+};
+
+const posTotal = () => {
+    const sub = posSubtotal();
+    const gDisc = posDiscountAmount();
+    const ptDisc = posMemberPointsDiscount();
+    const baseTotal = Math.max(0, sub - gDisc - ptDisc);
+    const tax = posTaxInfo();
+    let total = baseTotal + (tax.ppnType === 'exclusive' ? (tax.grandTotalAdd || 0) : 0);
     const totalHpp = getCartTotalHpp();
     if (totalHpp > 0 && total < totalHpp) {
         total = totalHpp;
     }
     return total;
 };
-const posChange   = () => posPaidAmount - posTotal();
+const posChange = () => posPaidAmount - posTotal();
 
 // Status dan Ketersediaan Stok Produk Kasir (Identik 1:1 dengan Storefront)
 export const getProductStockInfo = (p) => {
@@ -2593,6 +2618,14 @@ export const processPOSTx = async () => {
                 productDiscount: fNum(posGlobalDisc),
                 shippingCost: 0,
                 pointDiscount: posMemberPointsDiscount(),
+                ppnAmount: posTaxInfo().ppnAmount || 0,
+                dppAmount: posTaxInfo().dppAmount || posSubtotal(),
+                ppnRate: posTaxInfo().ppnEnabled ? posTaxInfo().ppnRate : 0,
+                ppnType: posTaxInfo().ppnEnabled ? posTaxInfo().ppnType : 'exclusive',
+                ppnEnabled: !!posTaxInfo().ppnEnabled,
+                ppnShowZero: !!posTaxInfo().ppnShowZero,
+                ppnLabel: posTaxInfo().ppnLabel || '',
+                taxNpwp: appData.store?.taxNpwp || appData.taxSettings?.npwp || '',
                 grandTotal: posTotal(),
                 paid: posPayMethod === 'cash' ? posPaidAmount : (posPayMethod === 'tempo' ? dp : posTotal()),
                 change: posPayMethod === 'cash' ? posChange() : 0,
@@ -2895,6 +2928,7 @@ export const previewPOSReceiptThenPrint = (tx) => {
                 <div class="text-center font-bold text-sm uppercase">${esc(storeName)}</div>
                 ${storeAddr ? `<div class="text-center text-[10px] text-slate-500">${esc(storeAddr)}</div>` : ''}
                 ${storeWa ? `<div class="text-center text-[10px] text-slate-500">WA: ${esc(storeWa)}</div>` : ''}
+                ${(tx.payment?.taxNpwp || appData.store?.taxNpwp) ? `<div class="text-center text-[9px] font-mono text-slate-500">NPWP: ${esc(tx.payment?.taxNpwp || appData.store.taxNpwp)}</div>` : ''}
                 <div class="border-t border-dashed border-slate-300 dark:border-slate-700 my-2"></div>
                 <div class="flex justify-between"><span>No : <b>#${esc(tx.txId)}</b></span><span>${esc(dateStr)}</span></div>
                 <div class="flex justify-between"><span>Kasir: ${esc(tx.cashierName || 'Kasir')}</span><span>Plg: ${esc(tx.customer?.name || 'Umum')}</span></div>
@@ -2908,7 +2942,16 @@ export const previewPOSReceiptThenPrint = (tx) => {
                 ${(tx.globalDiscount || 0) > 0 ? `<div class="flex justify-between text-rose-500 font-bold"><span>${discLabel}</span><span>- ${fRp(tx.globalDiscount)}</span></div>` : ''}
                 ${(tx.pointDiscount || 0) > 0 ? `<div class="flex justify-between text-emerald-600 font-bold"><span>Diskon Poin (${tx.pointsRedeemed || 0} Pts)</span><span>- ${fRp(tx.pointDiscount)}</span></div>` : ''}
                 ${tx.claimedReward ? `<div class="flex justify-between text-purple-600 font-bold"><span>[Klaim Hadiah]</span><span class="truncate max-w-[150px]">${esc(tx.claimedReward.name)}</span></div>` : ''}
-                ${tx.payment?.ppnAmount && tx.payment.ppnAmount > 0 ? `<div class="flex justify-between"><span>${tx.payment.ppnType === 'inclusive' ? 'Inc. PPN' : 'PPN'} (${tx.payment.ppnRate || 11}%)</span><span>${fRp(tx.payment.ppnAmount)}</span></div>` : ''}
+                ${(() => {
+                    const showPpnRow = (tx.payment?.ppnEnabled || tx.payment?.ppnShowZero || (tx.payment?.ppnRate === 0) || (tx.payment?.ppnAmount && tx.payment.ppnAmount > 0)) && (appData.store?.ppnEnabled || tx.payment?.ppnEnabled);
+                    if (!showPpnRow) return '';
+                    const isInc = tx.payment?.ppnType === 'inclusive';
+                    const rate = tx.payment?.ppnRate !== undefined ? tx.payment.ppnRate : (appData.store?.ppnRate || 0);
+                    const amt = tx.payment?.ppnAmount || 0;
+                    const lbl = tx.payment?.ppnLabel || `${isInc ? 'Inc. PPN' : 'PPN'} (${rate}%)`;
+                    const valStr = amt > 0 ? `${isInc ? '' : '+'}${fRp(amt)}` : 'Rp 0';
+                    return `<div class="flex justify-between"><span>${esc(lbl)}</span><span>${valStr}</span></div>`;
+                })()}
                 <div class="flex justify-between font-black text-sm pt-1 border-t border-slate-200 dark:border-slate-700"><span>TOTAL</span><span style="color:var(--color-primary)">${fRp(tx.total)}</span></div>
                 ${tx.payment.method === 'cash' ? `<div class="flex justify-between"><span>Bayar Tunai</span><span>${fRp(tx.payment.paid)}</span></div><div class="flex justify-between font-bold text-emerald-600"><span>Kembalian</span><span>${fRp(tx.payment.change)}</span></div>` : ''}
                 ${tx.payment.method === 'tempo' ? `

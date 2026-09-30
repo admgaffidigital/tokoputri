@@ -592,6 +592,7 @@ export const openDocPreview = (type, targetId = null) => {
                 <p class="text-sm font-bold text-slate-500 mt-1 uppercase tracking-widest">${esc(appData.store.slogan || 'General Supplier')}</p>
                 <p class="text-xs font-medium text-slate-500 mt-1 max-w-sm leading-snug">${esc(appData.store.address || 'Alamat fisik toko belum diatur.')}</p>
                 <p class="text-xs font-medium text-slate-500 mt-0.5"><i class="fa-brands fa-whatsapp text-emerald-500"></i> ${esc(appData.store.wa || '-')}</p>
+                ${(o.payment?.taxNpwp || appData.store?.taxNpwp) ? `<p class="text-xs font-semibold text-slate-600 mt-0.5"><i class="fa-solid fa-id-card text-blue-500"></i> NPWP Toko: <span class="font-mono">${esc(o.payment?.taxNpwp || appData.store.taxNpwp)}</span></p>` : ''}
             </div>
         </div>
         <div class="text-right">
@@ -670,16 +671,18 @@ export const openDocPreview = (type, targetId = null) => {
                 ${o.payment?.shippingDiscount ? `<div class="flex justify-between px-4 text-emerald-600"><span>Diskon Ongkir</span><span class="font-mono">-${fCur(o.payment.shippingDiscount)}</span></div>` : ''}
                 ${o.payment?.productDiscount ? `<div class="flex justify-between px-4 text-rose-600"><span>Diskon Produk</span><span class="font-mono">-${fCur(o.payment.productDiscount)}</span></div>` : ''}
                 ${(() => {
-                    if (!o.payment?.ppnAmount || o.payment.ppnAmount <= 0) return '';
-                    const isInc = o.payment.ppnType === 'inclusive';
-                    const ppnRate = o.payment.ppnRate || 11;
-                    const ppnAmt = o.payment.ppnAmount;
-                    const baseBeforeTax = (o.payment.subtotal || 0) - (o.payment.productDiscount || 0) + (o.payment.shippingCost || 0) - (o.payment.shippingDiscount || 0);
-                    const dppAmt = o.payment.dppAmount || (isInc ? Math.round((baseBeforeTax * 100) / (100 + ppnRate)) : Math.max(0, baseBeforeTax));
+                    const hasPpn = (o.payment?.ppnEnabled || o.payment?.ppnShowZero || (o.payment?.ppnRate === 0) || (o.payment?.ppnAmount && o.payment.ppnAmount > 0)) && (appData.store?.ppnEnabled || o.payment?.ppnEnabled);
+                    if (!hasPpn) return '';
+                    const isInc = o.payment?.ppnType === 'inclusive';
+                    const ppnRate = o.payment?.ppnRate !== undefined ? o.payment.ppnRate : (appData.store?.ppnRate || 0);
+                    const ppnAmt = o.payment?.ppnAmount || 0;
+                    const ppnLbl = o.payment?.ppnLabel || `${isInc ? 'Termasuk PPN' : 'PPN'} (${ppnRate}%)`;
+                    const baseBeforeTax = (o.payment?.subtotal || 0) - (o.payment?.productDiscount || 0) + (o.payment?.shippingCost || 0) - (o.payment?.shippingDiscount || 0);
+                    const dppAmt = o.payment?.dppAmount !== undefined ? o.payment.dppAmount : (isInc && ppnRate > 0 ? Math.round((baseBeforeTax * 100) / (100 + ppnRate)) : Math.max(0, baseBeforeTax));
 
                     return `
                     <div class="flex justify-between px-4 text-slate-600"><span>DPP (Dasar Pengenaan Pajak)</span><span class="font-mono">${fCur(dppAmt)}</span></div>
-                    <div class="flex justify-between px-4 text-amber-600"><span>${isInc ? 'Termasuk PPN' : 'PPN'} (${ppnRate}%)</span><span class="font-mono">${isInc ? '' : '+'}${fCur(ppnAmt)}</span></div>
+                    <div class="flex justify-between px-4 text-amber-600"><span>${ppnLbl}</span><span class="font-mono">${ppnAmt > 0 ? (isInc ? '' : '+') + fCur(ppnAmt) : 'Rp 0'}</span></div>
                     `;
                 })()}
                 

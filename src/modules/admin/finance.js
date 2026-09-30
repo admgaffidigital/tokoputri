@@ -212,39 +212,47 @@ export const rTaxSummary = () => {
     const t = getTaxPeriodTotals();
     const periodLabel = taxMonth === 0 ? `Tahun ${taxYear}` : `${MONTH_NAMES[taxMonth - 1]} ${taxYear}`;
     const dpp = t.omset - t.disc;
+    const estimasiPphFinal = Math.round(t.omset * 0.005);
 
     const monthRows = Array.from({length: 12}, (_, i) => i + 1).map(m => {
         const d = gTaxMonthly ? gTaxMonthly[m] : { omset: 0, ppn: 0, orderCount: 0 };
         const isActiveRow = taxMonth === m;
+        const mPph = Math.round((d.omset || 0) * 0.005);
         return `<tr class="${isActiveRow ? 'bg-[rgba(var(--color-primary-rgb),0.08)] dark:bg-[rgba(var(--color-primary-rgb),0.14)] font-bold' : 'hover:bg-slate-50 dark:hover:bg-slate-700/30'} border-b border-slate-100 dark:border-slate-700/50 last:border-0 transition-colors">
             <td class="py-3 px-4 text-xs font-bold text-slate-700 dark:text-slate-200">${MONTH_NAMES[m - 1]}</td>
             <td class="py-3 px-4 text-xs font-bold text-slate-800 dark:text-white text-right">${fCur(d.omset)}</td>
             <td class="py-3 px-4 text-xs font-bold text-right" style="color:var(--color-primary)">${fCur(d.ppn)}</td>
+            <td class="py-3 px-4 text-xs font-bold text-emerald-600 dark:text-emerald-400 text-right">${fCur(mPph)}</td>
             <td class="py-3 px-4 text-xs font-bold text-slate-500 dark:text-slate-400 text-right">${d.orderCount}</td>
         </tr>`;
     }).join('');
 
     setH('tax-content', `
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-            <div class="card-modern p-5 flex flex-col justify-between">
+        <div class="grid grid-cols-2 lg:grid-cols-5 gap-3.5 mb-6">
+            <div class="card-modern p-4 sm:p-5 flex flex-col justify-between">
                 <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Omset Bruto (${periodLabel})</p>
-                <p class="text-base sm:text-xl font-bold text-slate-800 dark:text-white truncate">${fCur(t.omset)}</p>
+                <p class="text-sm sm:text-lg font-bold text-slate-800 dark:text-white truncate">${fCur(t.omset)}</p>
                 <p class="text-[10px] font-bold text-slate-400 mt-1">${t.orderCount} pesanan</p>
             </div>
-            <div class="card-modern p-5 flex flex-col justify-between">
+            <div class="card-modern p-4 sm:p-5 flex flex-col justify-between">
                 <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1.5"><i class="fa-solid fa-minus mr-1"></i>Diskon Produk</p>
-                <p class="text-base sm:text-xl font-bold text-rose-500 truncate">${fCur(t.disc)}</p>
+                <p class="text-sm sm:text-lg font-bold text-rose-500 truncate">${fCur(t.disc)}</p>
                 <p class="text-[10px] font-bold text-slate-400 mt-1">Potongan diskon</p>
             </div>
-            <div class="card-modern p-5 flex flex-col justify-between">
+            <div class="card-modern p-4 sm:p-5 flex flex-col justify-between">
                 <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">DPP (Dasar Pengenaan Pajak)</p>
-                <p class="text-base sm:text-xl font-bold text-slate-800 dark:text-white truncate">${fCur(dpp)}</p>
+                <p class="text-sm sm:text-lg font-bold text-slate-800 dark:text-white truncate">${fCur(dpp)}</p>
                 <p class="text-[10px] font-bold text-slate-400 mt-1">Omset bersih</p>
             </div>
-            <div class="card-modern p-5 flex flex-col justify-between border-[rgba(var(--color-primary-rgb),0.4)] relative overflow-hidden" style="background: rgba(var(--color-primary-rgb),0.04)">
+            <div class="card-modern p-4 sm:p-5 flex flex-col justify-between border-[rgba(var(--color-primary-rgb),0.4)] relative overflow-hidden" style="background: rgba(var(--color-primary-rgb),0.04)">
                 <p class="text-[9px] font-bold uppercase tracking-widest mb-1.5" style="color:var(--color-primary)"><i class="fa-solid fa-file-invoice-dollar mr-1"></i>PPN Keluaran</p>
-                <p class="text-base sm:text-xl font-bold truncate" style="color:var(--color-primary)">${fCur(t.ppn)}</p>
-                <p class="text-[10px] font-bold mt-1 opacity-80" style="color:var(--color-primary)">Wajib disetor ke negara</p>
+                <p class="text-sm sm:text-lg font-bold truncate" style="color:var(--color-primary)">${fCur(t.ppn)}</p>
+                <p class="text-[10px] font-bold mt-1 opacity-80" style="color:var(--color-primary)">${t.ppn > 0 ? 'Wajib setor kas negara' : 'Bebas PPN / Tarif 0%'}</p>
+            </div>
+            <div class="card-modern p-4 sm:p-5 flex flex-col justify-between border-emerald-300 dark:border-emerald-800/80 bg-emerald-50/40 dark:bg-emerald-950/20 col-span-2 lg:col-span-1">
+                <p class="text-[9px] font-bold uppercase tracking-widest mb-1.5 text-emerald-700 dark:text-emerald-400"><i class="fa-solid fa-building-columns mr-1"></i>PPh Final 0,5%</p>
+                <p class="text-sm sm:text-lg font-bold text-emerald-700 dark:text-emerald-400 truncate">${fCur(estimasiPphFinal)}</p>
+                <p class="text-[10px] font-bold text-emerald-600 dark:text-emerald-500 mt-1">PP 55/2022 Badan/UMKM</p>
             </div>
         </div>
         <div class="card-modern overflow-hidden">
@@ -261,6 +269,7 @@ export const rTaxSummary = () => {
                             <th class="py-3 px-4 text-[9px] font-bold text-slate-400 uppercase tracking-widest">Bulan</th>
                             <th class="py-3 px-4 text-[9px] font-bold text-slate-400 uppercase tracking-widest text-right">Omset</th>
                             <th class="py-3 px-4 text-[9px] font-bold text-slate-400 uppercase tracking-widest text-right">PPN Keluaran</th>
+                            <th class="py-3 px-4 text-[9px] font-bold text-slate-400 uppercase tracking-widest text-right">PPh Final 0,5%</th>
                             <th class="py-3 px-4 text-[9px] font-bold text-slate-400 uppercase tracking-widest text-right">Pesanan</th>
                         </tr>
                     </thead>
@@ -282,8 +291,8 @@ export const rTaxIncome = () => {
 
     const scheme = appData.taxSettings?.taxScheme || 'umkm_final';
     let taxRate, taxBase, taxLabel;
-    if (scheme === 'umkm_final') { taxRate = 0.5; taxBase = t.omset; taxLabel = 'PPh Final UMKM (0,5% × Omset)'; }
-    else if (scheme === 'badan_normal') { taxRate = 22; taxBase = Math.max(0, labaBersih); taxLabel = 'PPh Badan (22% × Laba Bersih)'; }
+    if (scheme === 'umkm_final') { taxRate = 0.5; taxBase = t.omset; taxLabel = 'PPh Final Badan / UMKM (0,5% × Omset PP 55/2022)'; }
+    else if (scheme === 'badan_normal') { taxRate = 22; taxBase = Math.max(0, labaBersih); taxLabel = 'PPh Badan (22% × Laba Bersih UU HPP)'; }
     else { taxRate = parseFloat(appData.taxSettings?.customTaxRate) || 0; taxBase = Math.max(0, labaBersih); taxLabel = `PPh Custom (${taxRate}% × Laba Bersih)`; }
     const estimasiPajak = taxBase * (taxRate / 100);
     const labaSetelahPajak = labaBersih - estimasiPajak;
@@ -457,8 +466,8 @@ export const rTaxSettingsPanel = () => {
             <div>
                 <label class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Skema Perhitungan PPh</label>
                 <select id="tax-scheme" onchange="toggleCustomTaxRateInput(this.value)" class="admin-input !py-3 bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 border border-slate-200 dark:border-slate-700 rounded-xl cursor-pointer font-bold focus:border-[var(--color-primary)]">
-                    <option value="umkm_final" ${ts.taxScheme === 'umkm_final' ? 'selected' : ''}>PPh Final UMKM — 0,5% dari Omset (PP 23/2018)</option>
-                    <option value="badan_normal" ${ts.taxScheme === 'badan_normal' ? 'selected' : ''}>PPh Badan Normal — 22% dari Laba Bersih</option>
+                    <option value="umkm_final" ${ts.taxScheme === 'umkm_final' ? 'selected' : ''}>PPh Final Badan / UMKM — 0,5% dari Omset (PP 55/2022 &amp; UU HPP)</option>
+                    <option value="badan_normal" ${ts.taxScheme === 'badan_normal' ? 'selected' : ''}>PPh Badan Normal — 22% dari Laba Bersih (UU HPP)</option>
                     <option value="custom" ${ts.taxScheme === 'custom' ? 'selected' : ''}>Custom (isi tarif sendiri)</option>
                 </select>
             </div>
@@ -484,11 +493,14 @@ export const saveTaxSettingsPanel = async () => {
     try {
         if (!appData.taxSettings) appData.taxSettings = {};
         appData.taxSettings.companyName = getV('tax-company-name');
-        appData.taxSettings.npwp = getV('tax-npwp');
+        const npwpVal = getV('tax-npwp');
+        appData.taxSettings.npwp = npwpVal;
+        if (!appData.store) appData.store = {};
+        appData.store.taxNpwp = npwpVal;
         appData.taxSettings.taxScheme = getV('tax-scheme');
         appData.taxSettings.customTaxRate = parseFloat(getV('tax-custom-rate')) || 0.5;
-        if (typeof window.saveApp === 'function') await window.saveApp(['taxSettings']);
-        showToast('Pengaturan pajak tersimpan!');
+        if (typeof window.saveApp === 'function') await window.saveApp(['taxSettings', 'store']);
+        showToast('Pengaturan pajak & NPWP tersimpan!');
     } catch(e) { 
         showToast('Gagal menyimpan pengaturan pajak!'); 
     } finally { 

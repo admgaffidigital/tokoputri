@@ -8,6 +8,22 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-9-99',
+        version: 'v1.9.99',
+        date: '2026-09-30',
+        title: 'Smart Perpajakan Republik Indonesia 2026, Solusi Wajib Pajak Badan Bebas PPN (0%), dan Presisi Nilai Penarikan Pajak',
+        category: 'feature',
+        badge: 'Smart Tax RI 2026 & Zero-Tax Precision v1.9.99',
+        items: [
+            'Resolusi Akar Masalah Edit Tarif PPN 0% (src/main.js & src/modules/admin/settings.js): Memperbaiki bug evaluasi falsy JavaScript (|| 11) yang sebelumnya selalu memaksa tarif pajak kembali ke 11% saat diketik 0 atau angka desimal. Pengaturan tarif pajak kini mendukung nilai 0% secara presisi dan permanen.',
+            'Solusi Wajib Pajak Badan Non-PKP / Bebas PPN (0%): Menghadirkan solusi resmi bagi Wajib Pajak Badan yang ingin tetap menampilkan rincian Dasar Pengenaan Pajak (DPP) dan baris PPN 0% (Rp 0) di struk kasir, invoice A4 resmi, dan checkout belanja tanpa menarik biaya pajak sepeser pun ke pelanggan.',
+            '4 Preset Cerdas Smart Perpajakan RI 2026 (1-Klik Auto Config): Menambahkan tombol preset 1-klik di CMS Pengaturan: (1) 🏢 Badan Non-PKP / UMKM (Tarif 0% Transparan, Pelanggan Bebas PPN, Baris Pajak Tercetak); (2) 🏷️ Harga Toko Inklusif (Pajak 11% sudah di dalam harga produk, pembeli bayar nominal asli, DPP & PPN diurai di struk); (3) 🏛️ PKP Standar 11% UU HPP (Eksklusif ditambah di checkout/kasir); (4) ⚡ PKP Penyesuaian 12% UU HPP (Tahapan regulasi UU Harmonisasi Perpajakan).',
+            'Harmonisasi Cetak Struk & Faktur Resmi Seluruh Saluran: Menyelaraskan pencetakan NPWP Toko (format 16-Digit CTAS DJP 2026) dan baris DPP & PPN (0%) pada Struk HTML (receipt.js), Struk Thermal Bluetooth RawBT 58/80mm (rawbt.js), Faktur Tagihan / Invoice A4 resmi (documents.js), Modal Rincian Pesanan (orders.js), dan Modal Preview Kasir POS (pos.js).',
+            'Integrasi Regulasi PP 55 Tahun 2022 (src/modules/admin/finance.js): Memperbarui modul Pajak & Keuangan dari PP 23/2018 menjadi PP 55/2022 (PPh Final 0,5% Badan UMKM dari omset), menghadirkan kartu ringkasan estimasi setoran PPh Final 0,5% per bulan dan per tahun, serta sinkronisasi NPWP dua arah.',
+            'Multi-Channel Build & Sync v1.9.99 (Android versionCode 10999): Kompilasi produksi web, sinkronisasi bundle distribusi flashdisk siap pakai, dan Android Capacitor tersinkronisasi 100%.'
+        ]
+    },
+    {
         id: 'log-1-9-98',
         version: 'v1.9.98',
         date: '2026-09-30',

@@ -109,6 +109,8 @@ export const openReceiptPreview = async (orderId = null) => {
 
     let h = `<div class="text-center font-bold" style="font-size:14px;margin-bottom:2px;">${esc(sN)}</div>`;
     if (sW) h += `<div class="text-center" style="font-size:11px;margin-bottom:4px;">WA: ${esc(sW)}</div>`;
+    const npwpStr = o.payment?.taxNpwp || appData.store?.taxNpwp;
+    if (npwpStr) h += `<div class="text-center" style="font-size:10px;font-family:monospace;margin-bottom:4px;">NPWP: ${esc(npwpStr)}</div>`;
     h += `<div class="border-b border-dashed border-black my-2"></div>`;
     h += `<div style="white-space:pre;font-family:monospace;">${pL(`Order: #${o.orderId}`, d, cols)}</div>`;
     h += `<div style="white-space:pre;font-family:monospace;">${pL(`Plg  : ${esc(custName).substring(0, is80 ? 18 : 10)}`, `Tipe: ${isDelivery ? 'Kirim' : 'Ambil'}`, cols)}</div>`;
@@ -141,11 +143,14 @@ export const openReceiptPreview = async (orderId = null) => {
     if (isDelivery) h += `<div style="white-space:pre;font-family:monospace;">${pL('Ongkir', shipping.toLocaleString('id-ID'), cols)}</div>`;
     if (o.payment?.shippingDiscount) h += `<div style="white-space:pre;font-family:monospace;">${pL('Pot.Ongkir', `-${o.payment.shippingDiscount.toLocaleString('id-ID')}`, cols)}</div>`;
     if (o.payment?.productDiscount) h += `<div style="white-space:pre;font-family:monospace;">${pL('Pot.Harga', `-${o.payment.productDiscount.toLocaleString('id-ID')}`, cols)}</div>`;
-    if (o.payment?.ppnAmount && o.payment.ppnAmount > 0) {
-        const isInc = o.payment.ppnType === 'inclusive';
-        const ppnRate = o.payment.ppnRate || 11;
-        const ppnAmt = o.payment.ppnAmount || 0;
-        h += `<div style="white-space:pre;font-family:monospace;">${pL(`${isInc ? 'Inc. PPN' : 'PPN'} (${ppnRate}%)`, (isInc ? '' : '+') + ppnAmt.toLocaleString('id-ID'), cols)}</div>`;
+    const showPpn = (o.payment?.ppnEnabled || o.payment?.ppnShowZero || (o.payment?.ppnRate === 0) || (o.payment?.ppnAmount && o.payment.ppnAmount > 0)) && (appData.store?.ppnEnabled || o.payment?.ppnEnabled);
+    if (showPpn) {
+        const isInc = o.payment?.ppnType === 'inclusive';
+        const ppnRate = o.payment?.ppnRate !== undefined ? o.payment.ppnRate : (appData.store?.ppnRate || 0);
+        const ppnAmt = o.payment?.ppnAmount || 0;
+        const ppnLbl = o.payment?.ppnLabel || `${isInc ? 'Inc. PPN' : 'PPN'} (${ppnRate}%)`;
+        const valStr = ppnAmt > 0 ? `${isInc ? '' : '+'}${ppnAmt.toLocaleString('id-ID')}` : '0';
+        h += `<div style="white-space:pre;font-family:monospace;">${pL(ppnLbl, valStr, cols)}</div>`;
     }
     h += `<div class="border-b border-dashed border-black my-2"></div><div style="white-space:pre;font-family:monospace;font-weight:bold;font-size:12px;">${pL('TOTAL', 'Rp ' + grandTotal.toLocaleString('id-ID'), cols)}</div><div style="white-space:pre;font-family:monospace;">${pL('Metode Bayar', payMethod, cols)}</div>`;
     

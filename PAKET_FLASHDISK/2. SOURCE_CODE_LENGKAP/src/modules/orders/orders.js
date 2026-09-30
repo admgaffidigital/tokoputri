@@ -524,14 +524,16 @@ export const renderOrderDetailModal = (orderId, d, reviewedKeys = []) => {
                         ${shippingDiscount > 0 ? `<div class="flex justify-between text-[var(--color-primary)]"><p>Diskon Ongkir</p><p class="font-bold">-${fCur(shippingDiscount)}</p></div>` : ''}
                         ${discount > 0 ? `<div class="flex justify-between text-rose-500"><p>Diskon Promo</p><p class="font-bold">-${fCur(discount)}</p></div>` : ''}
                         ${(() => {
-                            if (ppnAmt <= 0) return '';
+                            const hasPpn = (d.payment?.ppnEnabled || d.payment?.ppnShowZero || (d.payment?.ppnRate === 0) || (ppnAmt > 0)) && (appData.store?.ppnEnabled || d.payment?.ppnEnabled);
+                            if (!hasPpn) return '';
                             const isInc = d.payment?.ppnType === 'inclusive';
+                            const ppnLbl = d.payment?.ppnLabel || `${isInc ? 'Termasuk PPN' : 'PPN'} (${ppnRt}%)`;
                             const baseBeforeTax = (subtotal - discount) + (shipping - shippingDiscount);
-                            const dppAmt = d.payment?.dppAmount || (isInc ? Math.round((baseBeforeTax * 100) / (100 + ppnRt)) : Math.max(0, baseBeforeTax));
+                            const dppAmt = d.payment?.dppAmount !== undefined ? d.payment.dppAmount : (isInc && ppnRt > 0 ? Math.round((baseBeforeTax * 100) / (100 + ppnRt)) : Math.max(0, baseBeforeTax));
 
                             return `
                             <div class="flex justify-between text-slate-600 dark:text-slate-400"><p>DPP (Dasar Pengenaan Pajak)</p><p class="font-bold text-slate-800 dark:text-white">${fCur(dppAmt)}</p></div>
-                            <div class="flex justify-between text-amber-600 dark:text-amber-400"><p>${isInc ? 'Termasuk PPN' : 'PPN'} (${ppnRt}%)</p><p class="font-bold">${isInc ? '' : '+'}${fCur(ppnAmt)}</p></div>
+                            <div class="flex justify-between text-amber-600 dark:text-amber-400"><p>${ppnLbl}</p><p class="font-bold">${ppnAmt > 0 ? (isInc ? '' : '+') + fCur(ppnAmt) : 'Rp 0'}</p></div>
                             `;
                         })()}
                         <div class="flex justify-between items-center border-t border-dashed border-slate-300 dark:border-slate-700 pt-3 mt-2">

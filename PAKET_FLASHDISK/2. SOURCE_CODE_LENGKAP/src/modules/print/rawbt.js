@@ -457,6 +457,10 @@ export const buildPOSReceiptPayload = (tx, config = null) => {
     if (storeWa) {
         builder.line(`WA: ${storeWa}`, 'center');
     }
+    const npwpStr = tx.payment?.taxNpwp || appData.store?.taxNpwp;
+    if (npwpStr) {
+        builder.line(`NPWP: ${npwpStr}`, 'center');
+    }
     builder.separator('-');
 
     // 3. Metadata Transaksi
@@ -498,10 +502,14 @@ export const buildPOSReceiptPayload = (tx, config = null) => {
         builder.twoColumn('Poin Reward Ditukar', `-${tx.claimedReward.pointsCost || 0} Poin`);
     }
 
-    if (tx.payment?.ppnAmount && tx.payment.ppnAmount > 0) {
-        const isInc = tx.payment.ppnType === 'inclusive';
-        const rate = tx.payment.ppnRate || 11;
-        builder.twoColumn(`${isInc ? 'Inc. PPN' : 'PPN'} (${rate}%)`, `${isInc ? '' : '+ '}${fRp(tx.payment.ppnAmount)}`);
+    const showTxPpn = (tx.payment?.ppnEnabled || tx.payment?.ppnShowZero || (tx.payment?.ppnRate === 0) || (tx.payment?.ppnAmount && tx.payment.ppnAmount > 0)) && (appData.store?.ppnEnabled || tx.payment?.ppnEnabled);
+    if (showTxPpn) {
+        const isInc = tx.payment?.ppnType === 'inclusive';
+        const rate = tx.payment?.ppnRate !== undefined ? tx.payment.ppnRate : (appData.store?.ppnRate || 0);
+        const amt = tx.payment?.ppnAmount || 0;
+        const lbl = tx.payment?.ppnLabel || `${isInc ? 'Inc. PPN' : 'PPN'} (${rate}%)`;
+        const valStr = amt > 0 ? `${isInc ? '' : '+ '}${fRp(amt)}` : 'Rp 0';
+        builder.twoColumn(lbl, valStr);
     }
 
     builder.doubleSeparator();
@@ -709,6 +717,8 @@ export const buildOrderReceiptPayload = (order, config = null) => {
 
     if (storeAddr) wrapWords(storeAddr, cols).forEach(l => builder.line(l, 'center'));
     if (storeWa) builder.line(`WA: ${storeWa}`, 'center');
+    const npwpStrOrder = order.payment?.taxNpwp || appData.store?.taxNpwp;
+    if (npwpStrOrder) builder.line(`NPWP: ${npwpStrOrder}`, 'center');
     builder.separator('-');
 
     const dateStr = formatCompactDate(order.dateString || order.dateMs || Date.now(), is80);
@@ -752,6 +762,16 @@ export const buildOrderReceiptPayload = (order, config = null) => {
     }
     if (order.payment?.shippingDiscount) {
         builder.twoColumn('Potongan Ongkir', `- ${fRp(order.payment.shippingDiscount)}`);
+    }
+
+    const showOrderPpn = (order.payment?.ppnEnabled || order.payment?.ppnShowZero || (order.payment?.ppnRate === 0) || (order.payment?.ppnAmount && order.payment.ppnAmount > 0)) && (appData.store?.ppnEnabled || order.payment?.ppnEnabled);
+    if (showOrderPpn) {
+        const isInc = order.payment?.ppnType === 'inclusive';
+        const rate = order.payment?.ppnRate !== undefined ? order.payment.ppnRate : (appData.store?.ppnRate || 0);
+        const amt = order.payment?.ppnAmount || 0;
+        const lbl = order.payment?.ppnLabel || `${isInc ? 'Inc. PPN' : 'PPN'} (${rate}%)`;
+        const valStr = amt > 0 ? `${isInc ? '' : '+ '}${fRp(amt)}` : 'Rp 0';
+        builder.twoColumn(lbl, valStr);
     }
 
     builder.doubleSeparator();

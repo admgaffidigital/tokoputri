@@ -320,14 +320,16 @@ export const rPay = () => {
     // PPN row
     const ppnRow = el('summary-ppn-row');
     if (ppnRow) {
-        if (taxInfo.ppnEnabled && ppnAmount > 0) {
+        const showPpnRow = taxInfo.ppnEnabled && (ppnAmount > 0 || taxInfo.ppnShowZero || taxInfo.ppnRate === 0);
+        if (showPpnRow) {
             ppnRow.classList.remove('hidden');
+            const rateLabel = taxInfo.ppnRate !== undefined ? `${taxInfo.ppnRate}%` : '11%';
+            const baseLabel = taxInfo.ppnLabel || (taxInfo.ppnType === 'inclusive' ? `Termasuk PPN (${rateLabel})` : `PPN (${rateLabel})`);
+            setIn('summary-ppn-label', baseLabel);
             if (taxInfo.ppnType === 'inclusive') {
-                setIn('summary-ppn-label', `Termasuk PPN (${taxInfo.ppnRate}%)`);
                 setIn('summary-ppn', fCur(ppnAmount));
             } else {
-                setIn('summary-ppn-label', `PPN (${taxInfo.ppnRate}%)`);
-                setIn('summary-ppn', `+${fCur(ppnAmount)}`);
+                setIn('summary-ppn', ppnAmount > 0 ? `+${fCur(ppnAmount)}` : fCur(0));
             }
         } else {
             ppnRow.classList.add('hidden');
@@ -618,6 +620,10 @@ export const processOrder = async () => {
                 dppAmount: dppAmount, 
                 ppnRate: taxInfo.ppnEnabled ? taxInfo.ppnRate : 0, 
                 ppnType: taxInfo.ppnEnabled ? taxInfo.ppnType : 'exclusive', 
+                ppnEnabled: !!taxInfo.ppnEnabled,
+                ppnShowZero: !!taxInfo.ppnShowZero,
+                ppnLabel: taxInfo.ppnLabel || '',
+                taxNpwp: appData.store?.taxNpwp || appData.taxSettings?.npwp || '',
                 grandTotal: tot,
                 isFreeShippingPromo: isFsPromo || false
             },
