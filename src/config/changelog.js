@@ -8,6 +8,20 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-10-10',
+        version: 'v1.10.10',
+        date: '2026-10-01',
+        title: 'Penyelarasan Ergonomis Tombol Melayang Scroll-To-Top (FAB) & Eliminasi Tabrakan Kartu Footer',
+        category: 'ui',
+        badge: 'Compact Floating Action Button v1.10.10',
+        items: [
+            'Redesain Tombol Melayang Scroll-to-Top Menjadi Circular FAB Kompak (src/core/native-mobile.js): Mengubah format tombol #native-scroll-top-btn yang sebelumnya berbentuk kapsul horizontal melebar (lebar ~100px) menjadi tombol aksi melayang sirkular/squircle ergonomis (w-10 h-10 di HP dan w-11 h-11 di desktop) dengan ikon panah elegan yang terpusat rapi dan efek micro-interaction hover naik halus.',
+            'Eliminasi Tabrakan Visual Kartu Footer (Zero Collision Positioning): Mengatur ulang titik tumpu tombol agar responsif — di layar HP tetap berada di bottom-20 right-4 (tepat di atas floating bottom bar mobile), sedangkan di layar desktop/tablet (md:) berpindah ke bottom-6 right-6 / lg:bottom-8 lg:right-8. Hal ini membebaskan 100% kartu Bento ke-4 ("Jaminan Mutu") dari tumpang tindih tombol melayang.',
+            'Penyelarasan Aksen Tema Dinamis: Tombol melayang kini dilengkapi efek pendaran tema lembut (hover:shadow-[0_4px_20px_rgba(var(--color-primary-rgb),0.4)]) dan transisi border warna tema toko saat disentuh atau disorot kursor.',
+            'Multi-Channel Build & Sync v1.10.10 (Android versionCode 11010): Kompilasi produksi web, sinkronisasi bundle flashdisk siap pakai, dan Android Capacitor tersinkronisasi 100%.'
+        ]
+    },
+    {
         id: 'log-1-10-9',
         version: 'v1.10.9',
         date: '2026-10-01',

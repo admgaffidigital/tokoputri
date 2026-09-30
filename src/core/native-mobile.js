@@ -411,11 +411,15 @@ export const initFloatingScrollTop = () => {
     if (!btn) {
         btn = document.createElement('button');
         btn.id = 'native-scroll-top-btn';
-        btn.setAttribute('aria-label', 'Kembali ke Atas');
-        btn.className = 'fixed bottom-20 right-4 z-40 hidden opacity-0 translate-y-3 transition-all duration-300 flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-slate-900 dark:bg-slate-800 text-white text-xs font-semibold shadow-xl border border-slate-700/80 active:scale-95 cursor-pointer';
-        btn.innerHTML = '<i class="fa-solid fa-arrow-up text-[10px]"></i><span>Ke Atas</span>';
         document.body.appendChild(btn);
+    }
+    btn.setAttribute('aria-label', 'Kembali ke Atas');
+    btn.setAttribute('title', 'Kembali ke Atas');
+    btn.className = 'fixed bottom-20 md:bottom-6 right-4 md:right-6 z-40 hidden opacity-0 translate-y-3 transition-all duration-300 flex items-center justify-center w-10 h-10 md:w-11 md:h-11 rounded-full bg-slate-900/95 dark:bg-slate-800/95 text-white shadow-xl shadow-black/25 border border-slate-700/80 hover:bg-[var(--color-primary)] hover:border-[var(--color-primary)] hover:shadow-[0_4px_20px_rgba(var(--color-primary-rgb),0.4)] hover:scale-105 active:scale-90 cursor-pointer group';
+    btn.innerHTML = '<i class="fa-solid fa-arrow-up text-xs md:text-sm transition-transform duration-200 group-hover:-translate-y-0.5"></i>';
 
+    if (!btn._hasClickListener) {
+        btn._hasClickListener = true;
         btn.addEventListener('click', () => {
             triggerHaptic('light');
             const sc = document.querySelector('#view-catalog .scroll-content, #view-orders .scroll-content');
