@@ -8,6 +8,23 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-10-9',
+        version: 'v1.10.9',
+        date: '2026-10-01',
+        title: 'Transformasi Total Footer Menjadi Native App Bento Island Hub: Eliminasi Kontras Gelap Ekstrem & Arsitektur Quick-Actions',
+        category: 'ui',
+        badge: 'Native Footer Bento Island v1.10.9',
+        items: [
+            'Transformasi Total Footer ke Native App Bento Island Hub (src/modules/home/footer.js & src/style.css): Mengeliminasi jurang kontras hitam pekat (#0b0f19) di mode terang (Light Mode) yang sebelumnya membuat bagian bawah etalase tampak terputus dan jomplang dari kanvas toko (#FAF9F6). Footer kini berwujud kartu mengambang premium Bento Island (.footer-bento-hub) dengan padding responsif, sudut lengkung adaptif, dan border aksen warna tema aktif.',
+            'Arsitektur 4 Quick-Action Tiles Native Mobile: Menggantikan tumpukan teks tautan vertikal panjang ala portal web lawas dengan 4 kartu ubin interaktif berbentuk squircle (Lacak Status Pesanan, Klaim Voucher Promo, Tanya Jawab FAQ Toko, dan Sertifikasi Jaminan Mutu 100% Asli) dengan respon haptik mikro dan active:scale-95.',
+            'Identitas Toko & Aksi Cepat Terintegrasi: Logo toko squircle terpadu dengan lencana Toko Resmi Terverifikasi, status jam operasional toko dengan titik indikator hijau berdenyut (pulsing dot), kartu alamat fisik ringkas, tombol WhatsApp Customer Care, serta tombol Unduh APK Android bertema dinamis.',
+            'Pita Ekosistem Pembayaran & Logistik Terpadu: Penataan kapsul pill badge modern dan rapi untuk metode pembayaran resmi (QRIS, Transfer Bank BCA, Mandiri, BRI, Kartu Kredit/Debit, Bayar di Kasir) dan opsi logistik pengiriman (Ekspedisi Cepat, Kargo Truk, Kurir Instan Motor, Ambil Sendiri di Toko).',
+            'Sub-Footer Legal & Security Bar Rapi: Bilah legalitas dan keamanan ringkas yang dilengkapi lencana SSL Secured, shortcut panduan belanja, verifikasi versi toko live (v1.10.9) dengan pemutar Changelog, serta tombol akses Admin portal tanpa merusak harmoni estetika.',
+            'Adaptasi Dinamis 5 Model Latar Belakang & 19 Preset Tema Toko: Sudut lengkung dan bayangan pendaran footer-bento-hub otomatis menyesuaikan gaya latar aktif toko (Minimalis 1.75rem, Hero Arch 2.25rem, Aurora Glow 2rem, Tech Grid 1.5rem, Industrial 1.5rem) serta menyatu sempurna dengan seluruh palet warna (Putri Gold, Burgundy, Emerald, Slate, dll.).',
+            'Multi-Channel Build & Sync v1.10.9 (Android versionCode 11009): Kompilasi produksi web, sinkronisasi bundle flashdisk siap pakai, dan Android Capacitor tersinkronisasi 100%.'
+        ]
+    },
+    {
         id: 'log-1-10-8',
         version: 'v1.10.8',
         date: '2026-10-01',
