@@ -8,6 +8,21 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-10-0',
+        version: 'v1.10.0',
+        date: '2026-09-30',
+        title: 'Unifikasi Visual Total Modul Pengaturan Admin: Konsistensi Warna Tema 100% & Eliminasi Warna Hardcoded',
+        category: 'improvement',
+        badge: 'Settings UI Consistency v1.10.0',
+        items: [
+            'Standardisasi Bento Grid Menu Pengaturan (rAdmSet): Refaktor header banner dan 8 kartu menu utama — Profil Toko, Kategori & Brand, Pengiriman, QRIS Pay, Sistem & API, Operasional, Printer Struk, dan Backup & Data — menggunakan gradien dan shadow berbasis var(--color-primary) sepenuhnya.',
+            'Harmonisasi Kartu Form Sub-Pengaturan: Semua kartu konten di dalam 6 form sub-pengaturan (profile, catalog, shipping, payment, config, operasional) kini menggunakan bg-slate-50/80 dark:bg-slate-900/60 dan icon badge rgba(var(--color-primary-rgb)) secara seragam.',
+            'Eliminasi Total Warna Hardcoded (Zero Hardcoded Colors): Menghapus seluruh penggunaan kelas Tailwind warna statis (bg-amber-500, text-blue-600, bg-emerald-100, border-amber-300, dll.) di settings.js dan menggantinya dengan CSS variable dinamis — badge "Modern iOS" Aurora Glow, badge "Pro Teknik" Tech Grid, badge "QRIS Siap Digunakan", dan tombol "Animasi GIF Maskot" di modal banner.',
+            'Konsistensi Callout Box & Info Banner: Seluruh kotak informasi/tip di semua form pengaturan (stok, pajak, ongkir, katalog, QRIS) menggunakan skema warna seragam berbasis rgba(var(--color-primary-rgb),0.06) sehingga otomatis menyesuaikan tema toko aktif.',
+            'Multi-Channel Build & Sync v1.10.0 (Android versionCode 11000): Kompilasi produksi web, sinkronisasi bundle distribusi, dan Android Capacitor tersinkronisasi 100%.'
+        ]
+    },
+    {
         id: 'log-1-9-99',
         version: 'v1.9.99',
         date: '2026-09-30',
