@@ -303,45 +303,33 @@ export const applyBackgroundStyle = (bgStyle = 'minimalist', customBgUrl = '') =
     if (style === 'hero_arch') {
         shapesHtml = `
             <!-- Hero Arch: Canopy Dome Curve & Radial Ambient Aura -->
-            <div class="absolute -top-32 left-1/2 -translate-x-1/2 w-[160%] max-w-[1700px] h-96 rounded-b-[100%] bg-gradient-to-b from-[rgba(var(--color-primary-rgb),0.22)] via-[rgba(var(--color-primary-rgb),0.08)] to-transparent pointer-events-none"></div>
-            <div class="absolute top-24 left-1/2 -translate-x-1/2 w-[120%] max-w-[1400px] h-60 rounded-b-[100%] border-b-2 border-[rgba(var(--color-primary-rgb),0.22)] pointer-events-none"></div>
-            <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-[1300px] h-[450px] pointer-events-none" style="background: radial-gradient(ellipse 60% 50% at 50% 0%, rgba(var(--color-primary-rgb), 0.16), transparent 70%);"></div>
+            <div class="absolute -top-32 left-1/2 -translate-x-1/2 w-[160%] max-w-[1700px] h-96 rounded-b-[100%] bg-gradient-to-b from-[rgba(var(--color-primary-rgb),0.18)] via-[rgba(var(--color-primary-rgb),0.06)] to-transparent pointer-events-none"></div>
+            <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-[1300px] h-[450px] pointer-events-none" style="background: radial-gradient(ellipse 60% 50% at 50% 0%, rgba(var(--color-primary-rgb), 0.14), transparent 70%);"></div>
         `;
     } else if (style === 'aurora_glow') {
         shapesHtml = `
             <!-- Aurora Mesh Glow: Soft Radial Ambient Mesh (Dual Zone) -->
-            <div class="absolute inset-0 pointer-events-none" style="background: radial-gradient(circle 450px at 15% 15%, rgba(var(--color-primary-rgb), 0.16), transparent 70%), radial-gradient(circle 480px at 85% 18%, rgba(var(--color-primary-rgb), 0.14), transparent 70%), radial-gradient(circle 540px at 50% 45%, rgba(var(--color-primary-rgb), 0.06), transparent 70%);"></div>
-            <div class="absolute top-0 left-0 right-0 h-96 bg-gradient-to-b from-[rgba(var(--color-primary-rgb),0.12)] to-transparent pointer-events-none"></div>
+            <div class="absolute inset-0 pointer-events-none" style="background: radial-gradient(circle 450px at 15% 15%, rgba(var(--color-primary-rgb), 0.15), transparent 70%), radial-gradient(circle 480px at 85% 18%, rgba(var(--color-primary-rgb), 0.12), transparent 70%), radial-gradient(circle 540px at 50% 45%, rgba(var(--color-primary-rgb), 0.05), transparent 70%);"></div>
+            <div class="absolute top-0 left-0 right-0 h-96 bg-gradient-to-b from-[rgba(var(--color-primary-rgb),0.10)] to-transparent pointer-events-none"></div>
         `;
     } else if (style === 'tech_grid') {
         shapesHtml = `
-            <!-- Tech Grid: Blueprint Precision Architectural Framing -->
-            <div class="absolute inset-0 pointer-events-none opacity-45 dark:opacity-35" style="background-image: radial-gradient(rgba(var(--color-primary-rgb), 0.28) 1.5px, transparent 1.5px); background-size: 20px 20px;"></div>
-            <div class="absolute top-0 left-0 right-0 h-96 bg-gradient-to-b from-[rgba(var(--color-primary-rgb),0.18)] via-[rgba(var(--color-primary-rgb),0.05)] to-transparent pointer-events-none"></div>
-            <div class="absolute top-20 left-1/2 -translate-x-1/2 w-[94%] max-w-[1240px] h-[360px] border border-[rgba(var(--color-primary-rgb),0.15)] rounded-3xl pointer-events-none"></div>
-            <div class="absolute top-28 left-6 w-24 h-24 border-t-2 border-l-2 border-[rgba(var(--color-primary-rgb),0.25)] rounded-tl-2xl pointer-events-none"></div>
-            <div class="absolute top-28 right-6 w-24 h-24 border-t-2 border-r-2 border-[rgba(var(--color-primary-rgb),0.25)] rounded-tr-2xl pointer-events-none"></div>
+            <!-- Tech Grid: Clean Architectural Ambient Illumination (Zero Noise) -->
+            <div class="absolute top-0 left-0 right-0 h-[450px] bg-gradient-to-b from-[rgba(var(--color-primary-rgb),0.14)] via-[rgba(var(--color-primary-rgb),0.04)] to-transparent pointer-events-none"></div>
+            <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-[1240px] h-[360px] pointer-events-none" style="background: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(var(--color-primary-rgb), 0.12), transparent 70%);"></div>
         `;
     } else if (style === 'industrial') {
         shapesHtml = `
-            <!-- Industrial Heavy-Duty: Steel Diamond Tread Plate, Hazard Safety Stripes & CAD Framing -->
-            <div class="absolute inset-0 pointer-events-none opacity-25 dark:opacity-20" style="background-image: repeating-linear-gradient(45deg, rgba(var(--color-primary-rgb), 0.25) 0, rgba(var(--color-primary-rgb), 0.25) 2px, transparent 2px, transparent 14px), repeating-linear-gradient(-45deg, rgba(var(--color-primary-rgb), 0.25) 0, rgba(var(--color-primary-rgb), 0.25) 2px, transparent 2px, transparent 14px); background-size: 28px 28px;"></div>
-            <div class="absolute top-0 left-0 right-0 h-[480px] bg-gradient-to-b from-[rgba(var(--color-primary-rgb),0.18)] via-[rgba(var(--color-primary-rgb),0.05)] to-transparent pointer-events-none"></div>
-            <!-- Top Hazard Safety Accent Strip -->
-            <div class="absolute top-0 left-0 right-0 h-1.5 opacity-35 pointer-events-none" style="background: repeating-linear-gradient(45deg, var(--color-primary), var(--color-primary) 12px, #0f172a 12px, #0f172a 24px);"></div>
-            <!-- Technical CAD Guides & Corner Brackets -->
-            <div class="absolute top-16 left-1/2 -translate-x-1/2 w-[95%] max-w-[1260px] h-[380px] border border-dashed border-[rgba(var(--color-primary-rgb),0.2)] rounded-3xl pointer-events-none"></div>
-            <div class="absolute top-24 left-8 text-[9px] font-mono font-bold tracking-widest text-[var(--color-primary)] opacity-40 uppercase pointer-events-none select-none">[HEAVY-DUTY INDUSTRIAL // PUTRI UTAMA TEKNIK]</div>
-            <div class="absolute top-24 right-8 flex items-center gap-1.5 text-[9px] font-mono font-bold text-[var(--color-primary)] opacity-40 uppercase pointer-events-none select-none">
-                <i class="fa-solid fa-screwdriver-wrench text-[8px]"></i> PRO GRADE
-            </div>
+            <!-- Industrial: Heavy-Duty Clean Solid Canvas with Deep Ambient Aura (Zero Stripes, Zero Crosshatch) -->
+            <div class="absolute top-0 left-0 right-0 h-[480px] bg-gradient-to-b from-[rgba(var(--color-primary-rgb),0.16)] via-[rgba(var(--color-primary-rgb),0.04)] to-transparent pointer-events-none"></div>
+            <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-[1300px] h-[400px] pointer-events-none" style="background: radial-gradient(ellipse 75% 55% at 50% 0%, rgba(var(--color-primary-rgb), 0.14), transparent 70%);"></div>
         `;
     } else {
         // Minimalis: Clean Architectural Studio dengan soft top wash & subtle ambient horizon
         shapesHtml = `
             <!-- Minimalis Clean Studio: Soft top ambient wash & delicate horizon aura -->
-            <div class="absolute top-0 left-0 right-0 h-[480px] bg-gradient-to-b from-[rgba(var(--color-primary-rgb),0.12)] via-[rgba(var(--color-primary-rgb),0.03)] to-transparent pointer-events-none"></div>
-            <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-[1300px] h-[360px] pointer-events-none" style="background: radial-gradient(ellipse 65% 55% at 50% 0%, rgba(var(--color-primary-rgb), 0.12), transparent 70%);"></div>
+            <div class="absolute top-0 left-0 right-0 h-[480px] bg-gradient-to-b from-[rgba(var(--color-primary-rgb),0.10)] via-[rgba(var(--color-primary-rgb),0.02)] to-transparent pointer-events-none"></div>
+            <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-[1300px] h-[360px] pointer-events-none" style="background: radial-gradient(ellipse 65% 55% at 50% 0%, rgba(var(--color-primary-rgb), 0.10), transparent 70%);"></div>
         `;
     }
 

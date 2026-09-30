@@ -59,24 +59,18 @@ input, textarea, [contenteditable="true"] {
 @tailwind components;
 @tailwind utilities;
 
-/* Warm Luxury Canvas & Harmonized Views with Precision Architectural Dot-Matrix & Ambient Wash */
+/* Clean Luxury Canvas & Harmonized Views with Pure Smooth Ambient Wash (Zero Dots, Zero Noise) */
 body, #app-container {
   background-color: #FAF8F5;
-  background-image: 
-    radial-gradient(rgba(var(--color-primary-rgb), 0.08) 1.25px, transparent 1.25px),
-    linear-gradient(180deg, rgba(var(--color-primary-rgb), 0.05) 0%, rgba(var(--color-primary-rgb), 0.015) 320px, transparent 700px);
-  background-size: 24px 24px, 100% 100%;
-  background-repeat: repeat, no-repeat;
+  background-image: linear-gradient(180deg, rgba(var(--color-primary-rgb), 0.05) 0%, rgba(var(--color-primary-rgb), 0.015) 320px, transparent 700px);
+  background-repeat: no-repeat;
   background-attachment: fixed;
 }
 .dark body, .dark #app-container,
 html.dark body, html.dark #app-container {
   background-color: #0b1120;
-  background-image: 
-    radial-gradient(rgba(var(--color-primary-rgb), 0.16) 1.25px, transparent 1.25px),
-    linear-gradient(180deg, rgba(var(--color-primary-rgb), 0.12) 0%, rgba(var(--color-primary-rgb), 0.03) 360px, transparent 750px);
-  background-size: 24px 24px, 100% 100%;
-  background-repeat: repeat, no-repeat;
+  background-image: linear-gradient(180deg, rgba(var(--color-primary-rgb), 0.10) 0%, rgba(var(--color-primary-rgb), 0.02) 360px, transparent 750px);
+  background-repeat: no-repeat;
   background-attachment: fixed;
 }
 
@@ -2174,45 +2168,34 @@ html.dark #app-container[data-has-custom-bg="true"] {
     border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-/* ─── 3. TECH GRID (Blueprint Dot-Matrix) ─── */
+/* ─── 3. TECH GRID (Arsitektur Bersih & Presisi) ─── */
 [data-bg-style="tech_grid"] .glass-header,
 [data-bg-style="geometric_3d"] .glass-header {
-    background-color: var(--color-primary);
-    background-image: radial-gradient(rgba(255, 255, 255, 0.25) 1.5px, transparent 1.5px);
-    background-size: 16px 16px;
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
     border-radius: 0 0 1.25rem 1.25rem;
     padding-bottom: 1.15rem;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-/* ─── 4. INDUSTRIAL (Heavy-Duty Steel & Hazard Line) ─── */
+/* ─── 4. INDUSTRIAL (Heavy-Duty Solid Kuat) ─── */
 [data-bg-style="industrial"] .glass-header {
-    background-color: var(--color-primary);
-    background-image: 
-        repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(0, 0, 0, 0.1) 10px, rgba(0, 0, 0, 0.1) 20px),
-        linear-gradient(180deg, rgba(255, 255, 255, 0.14) 0%, transparent 100%);
+    background: linear-gradient(180deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
     border-radius: 0 0 1.25rem 1.25rem;
     padding-bottom: 1.15rem;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    border-bottom: 2px solid rgba(255, 255, 255, 0.35);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    border-bottom: 2px solid rgba(255, 255, 255, 0.25);
 }
 
-/* Kanvas khusus gaya industrial */
+/* Kanvas khusus gaya industrial (Mulus & Bersih tanpa corak bintik/garis) */
 [data-bg-style="industrial"] #app-container {
-    background-image: 
-        radial-gradient(rgba(var(--color-primary-rgb), 0.1) 1.5px, transparent 1.5px),
-        repeating-linear-gradient(45deg, rgba(var(--color-primary-rgb), 0.04) 0, rgba(var(--color-primary-rgb), 0.04) 1px, transparent 1px, transparent 14px),
-        linear-gradient(180deg, rgba(var(--color-primary-rgb), 0.08) 0%, rgba(var(--color-primary-rgb), 0.02) 320px, transparent 700px);
-    background-size: 28px 28px, 28px 28px, 100% 100%;
+    background-image: linear-gradient(180deg, rgba(var(--color-primary-rgb), 0.07) 0%, rgba(var(--color-primary-rgb), 0.02) 320px, transparent 700px);
+    background-repeat: no-repeat;
 }
 html.dark[data-bg-style="industrial"] #app-container,
 .dark[data-bg-style="industrial"] #app-container {
-    background-image: 
-        radial-gradient(rgba(var(--color-primary-rgb), 0.2) 1.5px, transparent 1.5px),
-        repeating-linear-gradient(45deg, rgba(var(--color-primary-rgb), 0.08) 0, rgba(var(--color-primary-rgb), 0.08) 1px, transparent 1px, transparent 14px),
-        linear-gradient(180deg, rgba(var(--color-primary-rgb), 0.15) 0%, rgba(var(--color-primary-rgb), 0.04) 360px, transparent 750px);
-    background-size: 28px 28px, 28px 28px, 100% 100%;
+    background-image: linear-gradient(180deg, rgba(var(--color-primary-rgb), 0.12) 0%, rgba(var(--color-primary-rgb), 0.03) 360px, transparent 750px);
+    background-repeat: no-repeat;
 }
 
 
@@ -2311,17 +2294,15 @@ html.dark .mini-phone-screen {
     opacity: 0.55;
 }
 .mini-preview-tech .mini-preview-header {
-    background-image: radial-gradient(rgba(255, 255, 255, 0.45) 1px, transparent 1px);
-    background-size: 6px 6px;
     border-radius: 0 0 8px 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
 }
 .mini-preview-industrial .mini-preview-header {
-    background-image: repeating-linear-gradient(45deg, transparent, transparent 3px, rgba(0, 0, 0, 0.25) 3px, rgba(0, 0, 0, 0.25) 6px);
     border-radius: 0 0 8px 8px;
-    border-bottom: 1.5px solid rgba(255, 255, 255, 0.5);
+    border-bottom: 1.5px solid rgba(255, 255, 255, 0.4);
 }
 .mini-preview-industrial .mini-dummy-content {
-    background-image: repeating-linear-gradient(45deg, rgba(148, 163, 184, 0.15) 0, rgba(148, 163, 184, 0.15) 1px, transparent 1px, transparent 6px);
+    background: transparent;
 }
 .mini-preview-minimal .mini-preview-header {
     height: 22px;

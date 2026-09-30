@@ -8,6 +8,22 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-10-3',
+        version: 'v1.10.3',
+        date: '2026-09-30',
+        title: 'Pembersihan Total Corak Bintik & Garis (Zero Texture Noise): Latar Belakang Mulus, Bersih & Elegan',
+        category: 'ui',
+        badge: 'Zero Texture Noise Purity v1.10.3',
+        items: [
+            'Pembersihan Menyeluruh Bintik-Bintik (Zero Dots): Mengeliminasi seluruh pola dot-matrix (radial-gradient) pada kanvas aplikasi (body dan #app-container), header, dan dynamic background yang sebelumnya menimbulkan kesan bintik-bintik berlebih pada layar.',
+            'Eliminasi Garis-Garis Silang & Hazard (Zero Stripes): Menghilangkan seluruh corak arsiran diagonal (repeating-linear-gradient), garis plat bordes silang, garis hazard, garis putus-putus CAD, dan bracket sudut dari latar belakang maupun header.',
+            'Kanvas Mulus Mewah & Ambient Wash Lembut: Menghadirkan permukaan latar belakang yang bersih, halus, dan elegan (warm luxury off-white #FAF8F5 pada mode terang, sleek slate #0B1120 pada mode gelap) dipadukan dengan pencahayaan ambient vertikal yang mengalir natural tanpa bising visual.',
+            'Header Bersih, Solid & Berbobot: Seluruh model gaya header (Minimalis, Hero Arch, Aurora, Tech Grid, dan Industrial) kini tampil solid dan bergradien halus tanpa gangguan tekstur titik-titik maupun garis miring.',
+            'Bento Islands Tetap Terstruktur Rapi: Konten toko (Katalog Reward, Voucher Diskon, Kategori, Brand) tampil menonjol, tajam, dan kontras di atas kanvas bersih.',
+            'Multi-Channel Build & Sync v1.10.3 (Android versionCode 11003): Kompilasi produksi web, sinkronisasi bundle flashdisk siap pakai, dan Android Capacitor tersinkronisasi 100%.'
+        ]
+    },
+    {
         id: 'log-1-10-2',
         version: 'v1.10.2',
         date: '2026-09-30',

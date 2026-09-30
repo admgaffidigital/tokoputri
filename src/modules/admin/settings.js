@@ -444,7 +444,7 @@ export const openSettingForm = (type) => {
                         <div class="w-full">
                             <div class="inline-block px-1.5 py-0.5 rounded-md text-[8px] font-bold mb-1 tracking-wider uppercase" style="background: rgba(var(--color-primary-rgb),0.1); color: var(--color-primary);">Pro Teknik</div>
                             <span class="block text-xs font-bold text-slate-800 dark:text-slate-100 mb-0.5">Tech Grid</span>
-                            <span class="block text-[9px] text-slate-500 dark:text-slate-400 leading-tight">Dot-matrix blueprint</span>
+                            <span class="block text-[9px] text-slate-500 dark:text-slate-400 leading-tight">Arsitektur modern &amp; rapi</span>
                         </div>
                     </button>
 
@@ -470,7 +470,7 @@ export const openSettingForm = (type) => {
                         <div class="w-full">
                             <div class="inline-block px-1.5 py-0.5 rounded-md text-[8px] font-bold mb-1 tracking-wider uppercase" style="background: rgba(var(--color-primary-rgb),0.1); color: var(--color-primary);">Heavy-Duty</div>
                             <span class="block text-xs font-bold text-slate-800 dark:text-slate-100 mb-0.5">Industrial</span>
-                            <span class="block text-[9px] text-slate-500 dark:text-slate-400 leading-tight">Plat baja &amp; hazard</span>
+                            <span class="block text-[9px] text-slate-500 dark:text-slate-400 leading-tight">Solid kuat &amp; berkarakter</span>
                         </div>
                     </button>
                 </div>
