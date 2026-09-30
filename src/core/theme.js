@@ -195,9 +195,14 @@ export const applyUITheme = (themeName, customHex) => {
     // Update warna header browser, status bar PWA, dan Dynamic Manifest Blob
     updatePwaThemeMeta(hex);
 
-    // Re-render footer toko secara real-time agar seketika mengadopsi pakaian tema baru
-    if (typeof window !== 'undefined' && typeof window.renderStorefrontFooter === 'function') {
-        try { window.renderStorefrontFooter(); } catch (_) {}
+    // Re-render footer toko dan katalog hadiah secara real-time agar seketika mengadopsi pakaian tema baru
+    if (typeof window !== 'undefined') {
+        if (typeof window.renderStorefrontFooter === 'function') {
+            try { window.renderStorefrontFooter(); } catch (_) {}
+        }
+        if (typeof window.renderRewardCatalog === 'function') {
+            try { window.renderRewardCatalog(); } catch (_) {}
+        }
     }
 
     return colors;
@@ -338,34 +343,34 @@ export const applyBackgroundStyle = (bgStyle = 'minimalist', customBgUrl = '') =
 
     if (style === 'hero_arch') {
         shapesHtml = `
-            <!-- Hero Arch: Bold Canopy Dome flowing behind the header and hero banner -->
-            <div class="absolute -top-16 left-1/2 -translate-x-1/2 w-[180%] max-w-[1800px] h-[380px] rounded-b-[50%] pointer-events-none" style="background: linear-gradient(180deg, var(--color-primary) 0%, rgba(var(--color-primary-rgb), 0.85) 55%, transparent 100%); opacity: 0.22;"></div>
-            <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-[1300px] h-[480px] pointer-events-none" style="background: radial-gradient(ellipse 75% 55% at 50% 0%, rgba(var(--color-primary-rgb), 0.25), transparent 70%);"></div>
+            <!-- Hero Arch: Bold Canopy Dome flowing seamlessly behind the header without sharp cutoff lines -->
+            <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-[1600px] h-[720px] pointer-events-none" style="background: radial-gradient(ellipse 85% 60% at 50% 0%, rgba(var(--color-primary-rgb), 0.24) 0%, rgba(var(--color-primary-rgb), 0.12) 40%, rgba(var(--color-primary-rgb), 0.03) 70%, transparent 100%);"></div>
+            <div class="absolute top-0 left-0 right-0 h-[520px] pointer-events-none" style="background: linear-gradient(180deg, rgba(var(--color-primary-rgb), 0.15) 0%, rgba(var(--color-primary-rgb), 0.04) 55%, transparent 100%);"></div>
         `;
     } else if (style === 'aurora_glow') {
         shapesHtml = `
-            <!-- Aurora Mesh Glow: Luminous Multi-Zone Ambient Wash -->
-            <div class="absolute inset-0 pointer-events-none" style="background: radial-gradient(circle 500px at 10% 15%, rgba(var(--color-primary-rgb), 0.26), transparent 70%), radial-gradient(circle 500px at 90% 25%, rgba(245, 158, 11, 0.20), transparent 70%), radial-gradient(circle 600px at 50% 50%, rgba(var(--color-primary-rgb), 0.14), transparent 70%);"></div>
-            <div class="absolute top-0 left-0 right-0 h-[480px] bg-gradient-to-b from-[rgba(var(--color-primary-rgb),0.20)] to-transparent pointer-events-none"></div>
+            <!-- Aurora Mesh Glow: Luminous Multi-Zone Ambient Wash in Theme Tones -->
+            <div class="absolute inset-0 pointer-events-none" style="background: radial-gradient(circle 600px at 15% 15%, rgba(var(--color-primary-rgb), 0.24), transparent 70%), radial-gradient(circle 600px at 85% 25%, rgba(var(--color-primary-rgb), 0.18), transparent 70%), radial-gradient(circle 700px at 50% 50%, rgba(var(--color-primary-rgb), 0.12), transparent 70%);"></div>
+            <div class="absolute top-0 left-0 right-0 h-[600px] pointer-events-none" style="background: linear-gradient(180deg, rgba(var(--color-primary-rgb), 0.18) 0%, rgba(var(--color-primary-rgb), 0.04) 60%, transparent 100%);"></div>
         `;
     } else if (style === 'tech_grid') {
         shapesHtml = `
             <!-- Tech Grid: Cool Precision Horizon Wash -->
-            <div class="absolute top-0 left-0 right-0 h-[480px] bg-gradient-to-b from-[rgba(var(--color-primary-rgb),0.22)] via-[rgba(30,41,59,0.08)] to-transparent pointer-events-none"></div>
-            <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-[1240px] h-[380px] pointer-events-none" style="background: radial-gradient(ellipse 75% 55% at 50% 0%, rgba(var(--color-primary-rgb), 0.20), transparent 70%);"></div>
+            <div class="absolute top-0 left-0 right-0 h-[600px] pointer-events-none" style="background: linear-gradient(180deg, rgba(var(--color-primary-rgb), 0.18) 0%, rgba(var(--color-primary-rgb), 0.06) 40%, rgba(30, 41, 59, 0.03) 70%, transparent 100%);"></div>
+            <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-[1400px] h-[500px] pointer-events-none" style="background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(var(--color-primary-rgb), 0.18) 0%, transparent 75%);"></div>
         `;
     } else if (style === 'industrial') {
         shapesHtml = `
             <!-- Industrial: Heavy-Duty Deep Solid Horizon & Bold Steel Ambience -->
-            <div class="absolute top-0 left-0 right-0 h-[500px] bg-gradient-to-b from-[rgba(var(--color-primary-rgb),0.26)] via-[rgba(15,23,42,0.12)] to-transparent pointer-events-none"></div>
-            <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-[1300px] h-[440px] pointer-events-none" style="background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(var(--color-primary-rgb), 0.22), transparent 70%);"></div>
+            <div class="absolute top-0 left-0 right-0 h-[650px] pointer-events-none" style="background: linear-gradient(180deg, rgba(var(--color-primary-rgb), 0.22) 0%, rgba(var(--color-primary-rgb), 0.08) 45%, rgba(15, 23, 42, 0.04) 75%, transparent 100%);"></div>
+            <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-[1400px] h-[550px] pointer-events-none" style="background: radial-gradient(ellipse 85% 65% at 50% 0%, rgba(var(--color-primary-rgb), 0.20) 0%, transparent 75%);"></div>
         `;
     } else {
         // Minimalis: Clean Architectural Studio dengan soft top wash & subtle ambient horizon
         shapesHtml = `
             <!-- Minimalis Clean Studio: Soft top ambient wash & delicate horizon aura -->
-            <div class="absolute top-0 left-0 right-0 h-[400px] bg-gradient-to-b from-[rgba(var(--color-primary-rgb),0.10)] via-[rgba(var(--color-primary-rgb),0.02)] to-transparent pointer-events-none"></div>
-            <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-[1300px] h-[340px] pointer-events-none" style="background: radial-gradient(ellipse 65% 55% at 50% 0%, rgba(var(--color-primary-rgb), 0.10), transparent 70%);"></div>
+            <div class="absolute top-0 left-0 right-0 h-[500px] pointer-events-none" style="background: linear-gradient(180deg, rgba(var(--color-primary-rgb), 0.10) 0%, rgba(var(--color-primary-rgb), 0.02) 60%, transparent 100%);"></div>
+            <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-[1400px] h-[450px] pointer-events-none" style="background: radial-gradient(ellipse 70% 60% at 50% 0%, rgba(var(--color-primary-rgb), 0.08) 0%, transparent 75%);"></div>
         `;
     }
 
@@ -376,9 +381,14 @@ export const applyBackgroundStyle = (bgStyle = 'minimalist', customBgUrl = '') =
         container.appendChild(vectorDiv);
     }
 
-    // Re-render footer toko agar dekorasi gaya background langsung harmonis
-    if (typeof window !== 'undefined' && typeof window.renderStorefrontFooter === 'function') {
-        try { window.renderStorefrontFooter(); } catch (_) {}
+    // Re-render footer toko dan katalog hadiah agar dekorasi gaya background langsung harmonis
+    if (typeof window !== 'undefined') {
+        if (typeof window.renderStorefrontFooter === 'function') {
+            try { window.renderStorefrontFooter(); } catch (_) {}
+        }
+        if (typeof window.renderRewardCatalog === 'function') {
+            try { window.renderRewardCatalog(); } catch (_) {}
+        }
     }
 };
 

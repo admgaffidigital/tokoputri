@@ -8,6 +8,22 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-10-7',
+        version: 'v1.10.7',
+        date: '2026-10-01',
+        title: 'Harmonisasi Menyeluruh Bento Island Storefront: Eliminasi Garis Sambungan Background & Layout Seimbang Desktop',
+        category: 'ui',
+        badge: 'Seamless Bento & Canvas Harmony v1.10.7',
+        items: [
+            'Eliminasi Total Garis Sambungan Background (src/core/theme.js & src/style.css): Menyelesaikan masalah visual garis lengkung/seam melintang yang memotong layar pada gaya Hero Arch dan background toko. Mengganti div terpotong h-[380px] dengan radial elliptical gradient matematis tanpa batas potong sehingga latar mengalir mulus tanpa cacat garis di semua ukuran layar desktop maupun HP.',
+            'Harmonisasi Menyeluruh Kartu Bento Island (.bento-island-card): Mengunifikasi seluruh kontainer beranda (Katalog Reward Poin, Voucher Diskon Toko, Kategori Produk, Brand Mitra, dan Bar Pencarian) menggunakan token tema dinamis dengan border beraksen warna tema (rgba(var(--color-primary-rgb), 0.16) di light mode dan 0.24 di dark mode) serta bayangan pendaran tema yang elegan.',
+            'Tata Letak Responsif Seimbang di Layar Desktop (Balanced Desktop Layout): Menghilangkan kekosongan masif di sisi kanan kartu pada layar komputer/desktop. Kartu voucher diskon toko dan reward poin kini responsif membentang secara proporsional dan seimbang (md:flex-wrap, md:flex-1) dengan tetap mempertahankan kenyamanan usap horizontal (swipe) di layar HP.',
+            'Eliminasi Hardcode Warna Badge Hadiah & Pill Kategori: Mengganti badge "Gratis" yang sebelumnya terkunci merah rose-500 dengan gradien warna tema aktif (Putri Gold, Burgundy, Emerald, Industrial, dll.), serta menyelaraskan outline pill kategori & merek dengan aksen tema.',
+            'Penyegaran Real-Time Seketika (Zero-Reload Live Sync): Memperluas mekanisme event applyUITheme dan applyBackgroundStyle agar katalog hadiah dan kartu bento ikut ter-render ulang secara instan saat pemilik toko memilih tema baru di CMS Pengaturan.',
+            'Multi-Channel Build & Sync v1.10.7 (Android versionCode 11007): Kompilasi produksi web, sinkronisasi bundle flashdisk siap pakai, dan Android Capacitor tersinkronisasi 100%.'
+        ]
+    },
+    {
         id: 'log-1-10-6',
         version: 'v1.10.6',
         date: '2026-10-01',

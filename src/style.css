@@ -2281,24 +2281,65 @@ html.dark[data-bg-style="minimalist"] #app-container {
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
 }
 
+/* ─── UNIVERSAL BENTO ISLAND CARDS (Harmoni Busana Menyeluruh) ─── */
+.bento-island-card {
+    background-color: #ffffff !important;
+    border: 1px solid rgba(var(--color-primary-rgb), 0.16) !important;
+    box-shadow: 0 4px 20px -3px rgba(var(--color-primary-rgb), 0.08), 0 1px 3px rgba(0, 0, 0, 0.03) !important;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+}
+
+html.dark .bento-island-card,
+.dark .bento-island-card {
+    background-color: #0f172a !important;
+    border: 1px solid rgba(var(--color-primary-rgb), 0.24) !important;
+    box-shadow: 0 4px 20px -3px rgba(0, 0, 0, 0.4), 0 0 15px -3px rgba(var(--color-primary-rgb), 0.12) !important;
+}
+
+/* ─── 1. MINIMALIS BENTO & THEME HARMONY ─── */
+[data-bg-style="minimalist"] #reward-catalog-container,
+[data-bg-style="minimalist"] #dynamic-vouchers-container,
+[data-bg-style="minimalist"] .bento-island-card {
+    border-color: rgba(var(--color-primary-rgb), 0.15) !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04) !important;
+}
+html.dark[data-bg-style="minimalist"] #reward-catalog-container,
+html.dark[data-bg-style="minimalist"] #dynamic-vouchers-container,
+html.dark[data-bg-style="minimalist"] .bento-island-card {
+    border-color: rgba(var(--color-primary-rgb), 0.20) !important;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35) !important;
+}
+
 /* ─── 2. HERO ARCH (Lengkung Kanopi Emas / Stage Dome) ─── */
 [data-bg-style="hero_arch"],
 [data-bg-style="hero_arch"] #app-container {
     background-color: #F8F9FA !important;
-    background-image: linear-gradient(180deg, rgba(var(--color-primary-rgb), 0.16) 0%, rgba(var(--color-primary-rgb), 0.04) 380px, transparent 650px) !important;
+    background-image: linear-gradient(180deg, rgba(var(--color-primary-rgb), 0.14) 0%, rgba(var(--color-primary-rgb), 0.05) 260px, rgba(var(--color-primary-rgb), 0.01) 520px, transparent 750px) !important;
 }
 .dark[data-bg-style="hero_arch"],
 .dark[data-bg-style="hero_arch"] #app-container,
 html.dark[data-bg-style="hero_arch"],
 html.dark[data-bg-style="hero_arch"] #app-container {
     background-color: #0A0F1D !important;
-    background-image: linear-gradient(180deg, rgba(var(--color-primary-rgb), 0.24) 0%, rgba(var(--color-primary-rgb), 0.05) 380px, transparent 650px) !important;
+    background-image: linear-gradient(180deg, rgba(var(--color-primary-rgb), 0.22) 0%, rgba(var(--color-primary-rgb), 0.08) 260px, rgba(var(--color-primary-rgb), 0.02) 520px, transparent 750px) !important;
 }
 [data-bg-style="hero_arch"] .glass-header {
     background: linear-gradient(180deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
     border-radius: 0 0 2.25rem 2.25rem;
     padding-bottom: 1.45rem;
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+}
+[data-bg-style="hero_arch"] #reward-catalog-container,
+[data-bg-style="hero_arch"] #dynamic-vouchers-container,
+[data-bg-style="hero_arch"] .bento-island-card {
+    border-color: rgba(var(--color-primary-rgb), 0.20) !important;
+    box-shadow: 0 4px 18px -2px rgba(var(--color-primary-rgb), 0.10), 0 1px 4px rgba(0, 0, 0, 0.03) !important;
+}
+html.dark[data-bg-style="hero_arch"] #reward-catalog-container,
+html.dark[data-bg-style="hero_arch"] #dynamic-vouchers-container,
+html.dark[data-bg-style="hero_arch"] .bento-island-card {
+    border-color: rgba(var(--color-primary-rgb), 0.26) !important;
+    box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.5), 0 0 16px -2px rgba(var(--color-primary-rgb), 0.14) !important;
 }
 
 /* ─── 3. AURORA GLOW (Gradien Suasana Mewah / Luminous Ambient) ─── */
@@ -2309,7 +2350,7 @@ html.dark[data-bg-style="hero_arch"] #app-container {
     background-color: #F6F3F8 !important;
     background-image: 
         radial-gradient(circle at 10% 15%, rgba(var(--color-primary-rgb), 0.22) 0%, transparent 60%),
-        radial-gradient(circle at 90% 25%, rgba(245, 158, 11, 0.16) 0%, transparent 55%),
+        radial-gradient(circle at 90% 25%, rgba(var(--color-primary-rgb), 0.16) 0%, transparent 55%),
         linear-gradient(180deg, rgba(var(--color-primary-rgb), 0.10) 0%, transparent 600px) !important;
     background-attachment: fixed !important;
 }
@@ -2320,7 +2361,7 @@ html.dark[data-bg-style="aurora_glow"] #app-container {
     background-color: #080C16 !important;
     background-image: 
         radial-gradient(circle at 10% 15%, rgba(var(--color-primary-rgb), 0.32) 0%, transparent 60%),
-        radial-gradient(circle at 90% 25%, rgba(245, 158, 11, 0.20) 0%, transparent 55%),
+        radial-gradient(circle at 90% 25%, rgba(var(--color-primary-rgb), 0.20) 0%, transparent 55%),
         linear-gradient(180deg, rgba(var(--color-primary-rgb), 0.16) 0%, transparent 600px) !important;
     background-attachment: fixed !important;
 }
@@ -2337,6 +2378,12 @@ html.dark[data-bg-style="aurora_glow"] #app-container {
 [data-bg-style="aurora_glow"] .bento-island-card {
     border-color: rgba(var(--color-primary-rgb), 0.25) !important;
     box-shadow: 0 6px 20px -3px rgba(var(--color-primary-rgb), 0.14) !important;
+}
+html.dark[data-bg-style="aurora_glow"] #reward-catalog-container,
+html.dark[data-bg-style="aurora_glow"] #dynamic-vouchers-container,
+html.dark[data-bg-style="aurora_glow"] .bento-island-card {
+    border-color: rgba(var(--color-primary-rgb), 0.30) !important;
+    box-shadow: 0 6px 24px -3px rgba(0, 0, 0, 0.55), 0 0 20px -3px rgba(var(--color-primary-rgb), 0.18) !important;
 }
 
 /* ─── 4. TECH GRID (Arsitektur Presisi / Cool Graphite & Slate) ─── */
@@ -2365,13 +2412,13 @@ html.dark[data-bg-style="tech_grid"] #app-container {
 [data-bg-style="tech_grid"] #reward-catalog-container,
 [data-bg-style="tech_grid"] #dynamic-vouchers-container,
 [data-bg-style="tech_grid"] .bento-island-card {
-    border-color: #CBD5E1 !important;
+    border-color: rgba(var(--color-primary-rgb), 0.20) !important;
     box-shadow: 0 2px 8px rgba(15, 23, 42, 0.07) !important;
 }
 html.dark[data-bg-style="tech_grid"] #reward-catalog-container,
 html.dark[data-bg-style="tech_grid"] #dynamic-vouchers-container,
 html.dark[data-bg-style="tech_grid"] .bento-island-card {
-    border-color: #334155 !important;
+    border-color: rgba(var(--color-primary-rgb), 0.28) !important;
 }
 
 /* ─── 5. INDUSTRIAL (Heavy-Duty Toko Bangunan & Teknik) ─── */
@@ -2397,13 +2444,13 @@ html.dark[data-bg-style="industrial"] #app-container {
 [data-bg-style="industrial"] #reward-catalog-container,
 [data-bg-style="industrial"] #dynamic-vouchers-container,
 [data-bg-style="industrial"] .bento-island-card {
-    border-color: #94A3B8 !important;
+    border-color: rgba(var(--color-primary-rgb), 0.24) !important;
     box-shadow: 0 4px 16px rgba(15, 23, 42, 0.12) !important;
 }
 html.dark[data-bg-style="industrial"] #reward-catalog-container,
 html.dark[data-bg-style="industrial"] #dynamic-vouchers-container,
 html.dark[data-bg-style="industrial"] .bento-island-card {
-    border-color: #475569 !important;
+    border-color: rgba(var(--color-primary-rgb), 0.32) !important;
 }
 
 /* === MINI SMARTPHONE MOCKUP CARDS (CMS ADMIN PREVIEWS) === */
