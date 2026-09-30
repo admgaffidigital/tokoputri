@@ -68,29 +68,33 @@
         const themeColor = localStorage.getItem("freshmart_theme_color") || "#10b981";
 
         const palettes = {
-          emerald: { 50: "#f0fdf4", 500: "#10b981", 600: "#059669" },
-          teal: { 50: "#f0fdfa", 500: "#14b8a6", 600: "#0d9488" },
-          cyan: { 50: "#ecfeff", 500: "#06b6d4", 600: "#0891b2" },
-          sky: { 50: "#f0f9ff", 500: "#0ea5e9", 600: "#0284c7" },
-          blue: { 50: "#eff6ff", 500: "#3b82f6", 600: "#2563eb" },
-          indigo: { 50: "#eef2ff", 500: "#6366f1", 600: "#4f46e5" },
-          violet: { 50: "#f5f3ff", 500: "#8b5cf6", 600: "#7c3aed" },
-          purple: { 50: "#faf5ff", 500: "#a855f7", 600: "#9333ea" },
-          fuchsia: { 50: "#fdf4ff", 500: "#d946ef", 600: "#c026d3" },
-          pink: { 50: "#fdf2f8", 500: "#ec4899", 600: "#db2777" },
-          rose: { 50: "#fff1f2", 500: "#f43f5e", 600: "#e11d48" },
-          red: { 50: "#fef2f2", 500: "#dc2626", 600: "#b91c1c" },
-          orange: { 50: "#fff7ed", 500: "#ea580c", 600: "#c2410c" },
-          amber: { 50: "#fffbeb", 500: "#d97706", 600: "#b45309" },
-          yellow: { 50: "#fefce8", 500: "#d97706", 600: "#b45309" },
-          lime: { 50: "#f7fee7", 500: "#65a30d", 600: "#4d7c0f" },
-          green: { 50: "#f0fdf4", 500: "#16a34a", 600: "#15803d" },
-          slate: { 50: "#f8fafc", 500: "#475569", 600: "#334155" },
-          stone: { 50: "#fafaf9", 500: "#57534e", 600: "#44403c" },
+          gold: { 50: "#fdfcf7", 100: "#faf3e1", 200: "#f5e4bd", 300: "#eccf8d", 400: "#e1b858", 500: "#c59b27", 600: "#a87f1b", 700: "#876317", 800: "#6c4d18", 900: "#593e17", 950: "#3a270d" },
+          burgundy: { 50: "#fdf2f4", 100: "#fce5e9", 200: "#f8ccd5", 300: "#f0a4b4", 400: "#e16c84", 500: "#800020", 600: "#6c001b", 700: "#560015", 800: "#420010", 900: "#30000b", 950: "#200007" },
+          industrial: { 50: "#fffbeb", 100: "#fef3c7", 200: "#fed7aa", 300: "#fdba74", 400: "#f59e0b", 500: "#d97706", 600: "#b45309", 700: "#9a3412", 800: "#7c2d12", 900: "#431407", 950: "#2b0c03" },
+          emerald: { 50: "#ecfdf5", 100: "#d1fae5", 200: "#a7f3d0", 300: "#6ee7b7", 400: "#34d399", 500: "#10b981", 600: "#059669", 700: "#047857", 800: "#065f46", 900: "#064e3b", 950: "#022c22" },
+          teal: { 50: "#f0fdfa", 100: "#ccfbf1", 200: "#99f6e4", 300: "#5eead4", 400: "#2dd4bf", 500: "#14b8a6", 600: "#0d9488", 700: "#0f766e", 800: "#115e59", 900: "#134e4a", 950: "#042f2e" },
+          cyan: { 50: "#ecfeff", 100: "#cffafe", 200: "#a5f3fc", 300: "#67e8f9", 400: "#22d3ee", 500: "#06b6d4", 600: "#0891b2", 700: "#0e7490", 800: "#155e75", 900: "#164e63", 950: "#083344" },
+          sky: { 50: "#f0f9ff", 100: "#e0f2fe", 200: "#bae6fd", 300: "#7dd3fc", 400: "#38bdf8", 500: "#0ea5e9", 600: "#0284c7", 700: "#0369a1", 800: "#075985", 900: "#0c4a6e", 950: "#082f49" },
+          blue: { 50: "#eff6ff", 100: "#dbeafe", 200: "#bfdbfe", 300: "#93c5fd", 400: "#60a5fa", 500: "#3b82f6", 600: "#2563eb", 700: "#1d4ed8", 800: "#1e40af", 900: "#1e3a8a", 950: "#172554" },
+          indigo: { 50: "#eef2ff", 100: "#e0e7ff", 200: "#c7d2fe", 300: "#a5b4fc", 400: "#818cf8", 500: "#6366f1", 600: "#4f46e5", 700: "#4338ca", 800: "#3730a3", 900: "#312e81", 950: "#1e1b4b" },
+          violet: { 50: "#f5f3ff", 100: "#ede9fe", 200: "#ddd6fe", 300: "#c4b5fd", 400: "#a78bfa", 500: "#8b5cf6", 600: "#7c3aed", 700: "#6d28d9", 800: "#5b21b6", 900: "#4c1d95", 950: "#2e1065" },
+          purple: { 50: "#faf5ff", 100: "#f3e8ff", 200: "#e9d5ff", 300: "#d8b4fe", 400: "#c084fc", 500: "#a855f7", 600: "#9333ea", 700: "#7e22ce", 800: "#6b21a8", 900: "#581c87", 950: "#3b0764" },
+          fuchsia: { 50: "#fdf4ff", 100: "#fae8ff", 200: "#f5d0fe", 300: "#f0abfc", 400: "#e879f9", 500: "#d946ef", 600: "#c026d3", 700: "#a21caf", 800: "#86198f", 900: "#701a75", 950: "#4a044e" },
+          pink: { 50: "#fdf2f8", 100: "#fce7f3", 200: "#fbcfe8", 300: "#f9a8d4", 400: "#f472b6", 500: "#ec4899", 600: "#db2777", 700: "#be185d", 800: "#9d174d", 900: "#831843", 950: "#500724" },
+          rose: { 50: "#fff1f2", 100: "#ffe4e6", 200: "#fecdd3", 300: "#fda4af", 400: "#fb7185", 500: "#f43f5e", 600: "#e11d48", 700: "#be123c", 800: "#9f1239", 900: "#881337", 950: "#4c0519" },
+          red: { 50: "#fef2f2", 100: "#fee2e2", 200: "#fecaca", 300: "#fca5a5", 400: "#f87171", 500: "#dc2626", 600: "#b91c1c", 700: "#991b1b", 800: "#7f1d1d", 900: "#450a0a", 950: "#450a0a" },
+          orange: { 50: "#fff7ed", 100: "#ffedd5", 200: "#fed7aa", 300: "#fdba74", 400: "#fb923c", 500: "#ea580c", 600: "#c2410c", 700: "#9a3412", 800: "#7c2d12", 900: "#431407", 950: "#431407" },
+          amber: { 50: "#fffbeb", 100: "#fef3c7", 200: "#fde68a", 300: "#fcd34d", 400: "#fbbf24", 500: "#d97706", 600: "#b45309", 700: "#92400e", 800: "#78350f", 900: "#451a03", 950: "#451a03" },
+          yellow: { 50: "#fefce8", 100: "#fef9c3", 200: "#fef08a", 300: "#fde047", 400: "#eab308", 500: "#d97706", 600: "#b45309", 700: "#854d0e", 800: "#713f12", 900: "#3f1d0b", 950: "#3f1d0b" },
+          lime: { 50: "#f7fee7", 100: "#ecfccb", 200: "#d9f99d", 300: "#bef264", 400: "#a3e635", 500: "#65a30d", 600: "#4d7c0f", 700: "#3f6212", 800: "#365314", 900: "#1a2e05", 950: "#1a2e05" },
+          green: { 50: "#f0fdf4", 100: "#dcfce7", 200: "#bbf7d0", 300: "#86efac", 400: "#4ade80", 500: "#16a34a", 600: "#15803d", 700: "#166534", 800: "#14532d", 900: "#052e16", 950: "#052e16" },
+          slate: { 50: "#f8fafc", 100: "#f1f5f9", 200: "#e2e8f0", 300: "#cbd5e1", 400: "#94a3b8", 500: "#475569", 600: "#334155", 700: "#1e293b", 800: "#0f172a", 900: "#020617", 950: "#020617" },
+          stone: { 50: "#fafaf9", 100: "#f5f5f4", 200: "#e7e5e4", 300: "#d6d3d1", 400: "#a8a29e", 500: "#57534e", 600: "#44403c", 700: "#292524", 800: "#1c1917", 900: "#0c0a09", 950: "#0c0a09" },
         };
 
         const colors = palettes[uiTheme] || palettes["emerald"];
-        const hex = themeColor || colors[500];
+        let hex = themeColor || colors[500];
+        if (hex === '#9d7d1e' || hex === '#9D7D1E') hex = colors[500];
 
         function hexToRgb(h) {
           let bigint = parseInt(h.replace("#", ""), 16);
@@ -98,9 +102,24 @@
         }
 
         document.documentElement.style.setProperty("--color-primary", hex);
-        document.documentElement.style.setProperty("--color-primary-dark", colors[600]);
-        document.documentElement.style.setProperty("--color-primary-light", colors[50]);
+        document.documentElement.style.setProperty("--color-primary-dark", colors[600] || hex);
+        document.documentElement.style.setProperty("--color-primary-light", colors[50] || hex);
         document.documentElement.style.setProperty("--color-primary-rgb", hexToRgb(hex));
+
+        // Inject dynamic emerald scale (50-950) & RGB so Tailwind utilities instantly reflect active theme
+        var shades = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950];
+        shades.forEach(function(s) {
+          var sHex = colors[s] || hex;
+          document.documentElement.style.setProperty("--color-emerald-" + s, sHex);
+          document.documentElement.style.setProperty("--color-emerald-" + s + "-rgb", hexToRgb(sHex));
+        });
+
+        // Initialize background style data attribute instantly to prevent canvas flash
+        var bgStyle = localStorage.getItem("freshmart_bg_style") || "minimalist";
+        if (bgStyle === 'dual_tone') bgStyle = 'aurora_glow';
+        if (bgStyle === 'geometric_3d') bgStyle = 'tech_grid';
+        if (bgStyle === 'diagonal_skew' || bgStyle === 'glass_studio') bgStyle = 'minimalist';
+        document.documentElement.setAttribute("data-bg-style", bgStyle);
 
         // Sync meta tags for PWA status bar & header instantly
         const metaTags = [
@@ -319,16 +338,16 @@
           </div>
           <button class="flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-slate-500 transition-all hover:bg-rose-50 hover:text-rose-500 dark:bg-slate-700 dark:hover:bg-rose-900/30 active:scale-95" onclick="closeQuickMenuModal()"><i class="fa-solid fa-xmark"></i></button>
         </div>
-        <div class="p-4 sm:p-5 overflow-y-auto custom-scrollbar space-y-3 bg-[#FAF8F5]/60 dark:bg-[#0b1121]">
+        <div class="p-4 sm:p-5 overflow-y-auto custom-scrollbar space-y-3 bg-slate-50/60 dark:bg-[#0b1121]">
           <!-- Feature Card: Unduh Aplikasi Android (Play Store Bento Tile) -->
-          <button class="flex w-full items-center gap-3.5 rounded-2xl border border-emerald-300/80 bg-gradient-to-r from-emerald-500/15 via-teal-500/10 to-transparent p-3.5 text-left font-bold text-slate-800 transition-all hover:border-emerald-400 hover:bg-emerald-500/20 active:scale-[0.98] dark:border-emerald-500/30 dark:bg-emerald-950/20 dark:text-white shadow-2xs cursor-pointer" onclick="navigateFromQuickMenu(openAppDownloadModal)">
-            <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#01875f] text-white shadow-md shadow-emerald-500/25 shrink-0">
+          <button class="flex w-full items-center gap-3.5 rounded-2xl border border-[var(--color-primary)]/40 bg-gradient-to-r from-[rgba(var(--color-primary-rgb),0.12)] via-[rgba(var(--color-primary-rgb),0.06)] to-transparent p-3.5 text-left font-bold text-slate-800 transition-all hover:border-[var(--color-primary)]/60 hover:bg-[rgba(var(--color-primary-rgb),0.18)] active:scale-[0.98] dark:border-[var(--color-primary)]/30 dark:bg-[rgba(var(--color-primary-rgb),0.10)] dark:text-white shadow-2xs cursor-pointer" onclick="navigateFromQuickMenu(openAppDownloadModal)">
+            <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-[var(--color-primary)] text-white shadow-md shadow-[rgba(var(--color-primary-rgb),0.3)] shrink-0">
               <i class="fa-brands fa-google-play text-lg"></i>
             </div>
             <div class="flex-1 min-w-0">
               <div class="flex items-center gap-1.5 flex-wrap">
-                <h4 class="text-xs sm:text-sm leading-tight text-emerald-950 dark:text-emerald-300 font-extrabold">Unduh Aplikasi Android</h4>
-                <span class="px-1.5 py-0.5 rounded text-[8px] font-black uppercase bg-[#01875f] text-white shadow-2xs">APK Resmi</span>
+                <h4 class="text-xs sm:text-sm leading-tight text-slate-900 dark:text-slate-100 font-extrabold">Unduh Aplikasi Android</h4>
+                <span class="px-1.5 py-0.5 rounded text-[8px] font-black uppercase bg-[var(--color-primary)] text-white shadow-2xs">APK Resmi</span>
               </div>
               <p class="mt-0.5 text-[9.5px] font-semibold text-slate-500 dark:text-slate-400 truncate">Unduh &amp; instal aplikasi Toko Putri langsung di HP</p>
             </div>
@@ -1431,7 +1450,7 @@
           </button>
         </div>
       </div>
-      <div class="view-section fade-in flex hidden flex-col bg-slate-50 dark:bg-slate-900" id="view-cart">
+      <div class="view-section fade-in flex hidden flex-col" id="view-cart">
         <div class="glass-header sticky top-0 z-30 flex shrink-0 justify-center px-5 pb-3">
           <div class="mx-auto flex w-full max-w-full items-center justify-between px-4 lg:px-10 xl:max-w-[1200px]">
             <button class="flex h-10 w-10 items-center justify-center rounded-full border border-white/30 bg-white/20 text-white shadow-sm transition-all hover:bg-white/30 active:scale-95 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300" onclick="handleAppBackButton()"><i class="fa-solid fa-arrow-left text-sm"></i></button>
@@ -1506,7 +1525,7 @@
         </div>
       </div>
       <!-- View: Checkout -->
-      <div class="view-section fade-in flex hidden flex-col bg-slate-50 dark:bg-slate-900" id="view-checkout">
+      <div class="view-section fade-in flex hidden flex-col" id="view-checkout">
         <div class="glass-header sticky top-0 z-30 flex shrink-0 justify-center px-5 pb-3">
           <div class="mx-auto flex w-full max-w-full items-center justify-between px-4 lg:px-10 xl:max-w-[1200px]">
             <button class="flex h-10 w-10 items-center justify-center rounded-full border border-white/30 bg-white/20 text-white shadow-sm transition-all hover:bg-white/30 active:scale-95 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300" onclick="handleAppBackButton()"><i class="fa-solid fa-arrow-left text-sm"></i></button>
@@ -1686,7 +1705,7 @@
           </div>
         </div>
       </div>
-      <div class="view-section fade-in flex hidden flex-col bg-slate-50 dark:bg-slate-900" id="view-payment">
+      <div class="view-section fade-in flex hidden flex-col" id="view-payment">
         <div class="glass-header sticky top-0 z-30 flex shrink-0 justify-center px-5 pb-3">
           <div class="mx-auto flex w-full max-w-full items-center justify-between px-4 lg:px-10 xl:max-w-[1200px]">
             <button class="flex h-10 w-10 items-center justify-center rounded-full border border-white/30 bg-white/20 text-white shadow-sm transition-all hover:bg-white/30 active:scale-95 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300" onclick="handleAppBackButton()"><i class="fa-solid fa-arrow-left text-sm"></i></button>
@@ -1952,7 +1971,7 @@
           </div>
         </div>
       </div>
-      <div class="view-section fade-in flex hidden flex-col bg-slate-50 dark:bg-slate-900" id="view-orders">
+      <div class="view-section fade-in flex hidden flex-col" id="view-orders">
         <div class="glass-header sticky top-0 z-30 flex shrink-0 justify-center px-5 pb-3">
           <div class="mx-auto flex w-full max-w-full items-center justify-between px-4 lg:px-10 xl:max-w-[1200px]">
             <button class="flex h-10 w-10 items-center justify-center rounded-full border border-white/30 bg-white/20 text-white shadow-sm transition-all hover:bg-white/30 active:scale-95 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300" onclick="handleAppBackButton()"><i class="fa-solid fa-arrow-left text-sm"></i></button>
@@ -1988,7 +2007,7 @@
           <div class="mx-auto w-full max-w-full space-y-3 px-4 lg:px-8 xl:max-w-[1200px]" id="orders-items-container"></div>
         </div>
       </div>
-      <div class="view-section fade-in flex hidden flex-col bg-slate-50 dark:bg-slate-900" id="view-wishlist">
+      <div class="view-section fade-in flex hidden flex-col" id="view-wishlist">
         <div class="glass-header sticky top-0 z-30 flex shrink-0 justify-center px-5 pb-3">
           <div class="mx-auto flex w-full max-w-full items-center justify-between px-4 lg:px-10 xl:max-w-[1200px]">
             <button class="flex h-10 w-10 items-center justify-center rounded-full border border-white/30 bg-white/20 text-white shadow-sm transition-all hover:bg-white/30 active:scale-95 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300" onclick="handleAppBackButton()"><i class="fa-solid fa-arrow-left text-sm"></i></button>
@@ -2008,7 +2027,7 @@
       </div>
 
       <!-- VIEW Q&A STOREFRONT -->
-      <div class="view-section fade-in flex hidden flex-col bg-slate-50 dark:bg-slate-900" id="view-faq">
+      <div class="view-section fade-in flex hidden flex-col" id="view-faq">
         <div class="glass-header sticky top-0 z-30 flex shrink-0 justify-center px-5 pb-3">
           <div class="mx-auto flex w-full max-w-full items-center justify-between px-4 lg:px-10 xl:max-w-[1200px]">
             <button class="flex h-10 w-10 items-center justify-center rounded-full border border-white/30 bg-white/20 text-white shadow-sm transition-all hover:bg-white/30 active:scale-95 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300" onclick="handleAppBackButton()"><i class="fa-solid fa-arrow-left text-sm"></i></button>
@@ -2096,7 +2115,7 @@
         <!-- Konten dirender oleh renderPOSStorefront() -->
       </div>
 
-      <div class="view-section fade-in z-50 flex hidden flex-col bg-slate-50 dark:bg-slate-900" id="view-admin">
+      <div class="view-section fade-in z-50 flex hidden flex-col" id="view-admin">
         <div class="glass-header sticky top-0 z-30 flex shrink-0 items-center justify-center px-4 pb-2.5 sm:pb-3 shadow-sm border-b border-black/10 dark:border-black/25">
           <div class="mx-auto flex w-full max-w-full items-center justify-between px-4 lg:px-10 xl:max-w-[1200px]">
             <div class="flex items-center gap-3">
@@ -2157,107 +2176,107 @@
               </div>
               <div class="grid grid-cols-2 gap-3 pb-8 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
                 <!-- 1. PESANAN (Screen 4 Flagship) -->
-                <button class="card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-4 sm:p-5 text-center transition-all duration-300 hover:-translate-y-1.5 hover:border-amber-400/50 hover:bg-amber-50/20 hover:shadow-xl dark:hover:bg-slate-800/60 rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-[#FAF8F5]/90 dark:bg-slate-900/60 shadow-xs cursor-pointer active:scale-95" onclick="openAdminTab('orders')">
+                <button class="card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-4 sm:p-5 text-center transition-all duration-300 hover:-translate-y-1.5 hover:border-amber-400/50 hover:bg-amber-50/20 hover:shadow-xl dark:hover:bg-slate-800/60 rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-white/90 dark:bg-slate-900/60 shadow-xs cursor-pointer active:scale-95" onclick="openAdminTab('orders')">
                   <div class="relative z-10 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-500 to-yellow-600 text-white shadow-md transition-all duration-300 group-hover:scale-110"><i class="fa-solid fa-clipboard-list text-2xl sm:text-3xl"></i></div>
                   <div class="relative z-10"><span class="block text-[10px] font-black uppercase leading-tight tracking-widest text-slate-800 dark:text-white sm:text-[11px]">Pesanan</span><span class="mt-0.5 block text-[9px] font-bold text-slate-400 dark:text-slate-500">Kelola Transaksi</span></div>
                 </button>
                 <!-- 2. PRODUK (Screen 4 Flagship) -->
-                <button class="card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-4 sm:p-5 text-center transition-all duration-300 hover:-translate-y-1.5 hover:border-blue-400/50 hover:bg-blue-50/20 hover:shadow-xl dark:hover:bg-slate-800/60 rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-[#FAF8F5]/90 dark:bg-slate-900/60 shadow-xs cursor-pointer active:scale-95" onclick="openAdminTab('products')">
+                <button class="card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-4 sm:p-5 text-center transition-all duration-300 hover:-translate-y-1.5 hover:border-blue-400/50 hover:bg-blue-50/20 hover:shadow-xl dark:hover:bg-slate-800/60 rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-white/90 dark:bg-slate-900/60 shadow-xs cursor-pointer active:scale-95" onclick="openAdminTab('products')">
                   <div class="relative z-10 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 text-white shadow-md transition-all duration-300 group-hover:scale-110"><i class="fa-solid fa-box-open text-2xl sm:text-3xl"></i></div>
                   <div class="relative z-10"><span class="block text-[10px] font-black uppercase leading-tight tracking-widest text-slate-800 dark:text-white sm:text-[11px]">Produk</span><span class="mt-0.5 block text-[9px] font-bold text-slate-400 dark:text-slate-500">Katalog Barang</span></div>
                 </button>
                 <!-- 3. SUPPLIER (Screen 4 Flagship) -->
-                <button class="card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-4 sm:p-5 text-center transition-all duration-300 hover:-translate-y-1.5 hover:border-emerald-400/50 hover:bg-emerald-50/20 hover:shadow-xl dark:hover:bg-slate-800/60 rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-[#FAF8F5]/90 dark:bg-slate-900/60 shadow-xs cursor-pointer active:scale-95" onclick="openAdminTab('suppliers')">
+                <button class="card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-4 sm:p-5 text-center transition-all duration-300 hover:-translate-y-1.5 hover:border-emerald-400/50 hover:bg-emerald-50/20 hover:shadow-xl dark:hover:bg-slate-800/60 rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-white/90 dark:bg-slate-900/60 shadow-xs cursor-pointer active:scale-95" onclick="openAdminTab('suppliers')">
                   <div class="relative z-10 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-md transition-all duration-300 group-hover:scale-110"><i class="fa-solid fa-truck-fast text-2xl sm:text-3xl"></i></div>
                   <div class="relative z-10"><span class="block text-[10px] font-black uppercase leading-tight tracking-widest text-slate-800 dark:text-white sm:text-[11px]">Supplier</span><span class="mt-0.5 block text-[9px] font-bold text-slate-400 dark:text-slate-500">Data Rekanan &amp; Asal</span></div>
                 </button>
                 <!-- 4. KULAKAN PO (Screen 4 Flagship) -->
-                <button class="card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-4 sm:p-5 text-center transition-all duration-300 hover:-translate-y-1.5 hover:border-purple-400/50 hover:bg-purple-50/20 hover:shadow-xl dark:hover:bg-slate-800/60 rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-[#FAF8F5]/90 dark:bg-slate-900/60 shadow-xs cursor-pointer active:scale-95" onclick="openAdminTab('purchases')">
+                <button class="card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-4 sm:p-5 text-center transition-all duration-300 hover:-translate-y-1.5 hover:border-purple-400/50 hover:bg-purple-50/20 hover:shadow-xl dark:hover:bg-slate-800/60 rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-white/90 dark:bg-slate-900/60 shadow-xs cursor-pointer active:scale-95" onclick="openAdminTab('purchases')">
                   <div class="relative z-10 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-purple-500 to-indigo-600 text-white shadow-md transition-all duration-300 group-hover:scale-110"><i class="fa-solid fa-cart-flatbed text-2xl sm:text-3xl"></i></div>
                   <div class="relative z-10"><span class="block text-[10px] font-black uppercase leading-tight tracking-widest text-slate-800 dark:text-white sm:text-[11px]">Kulakan PO</span><span class="mt-0.5 block text-[9px] font-bold text-slate-400 dark:text-slate-500">Order &amp; Hutang Rekanan</span></div>
                 </button>
                 <!-- 5. PENGATURAN (Screen 4 Flagship) -->
-                <button class="card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-4 sm:p-5 text-center transition-all duration-300 hover:-translate-y-1.5 hover:border-slate-400/50 hover:bg-slate-100/40 hover:shadow-xl dark:hover:bg-slate-800/60 rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-[#FAF8F5]/90 dark:bg-slate-900/60 shadow-xs cursor-pointer active:scale-95" onclick="openAdminTab('settings')">
+                <button class="card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-4 sm:p-5 text-center transition-all duration-300 hover:-translate-y-1.5 hover:border-slate-400/50 hover:bg-slate-100/40 hover:shadow-xl dark:hover:bg-slate-800/60 rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-white/90 dark:bg-slate-900/60 shadow-xs cursor-pointer active:scale-95" onclick="openAdminTab('settings')">
                   <div class="relative z-10 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-slate-600 to-slate-800 text-white shadow-md transition-all duration-300 group-hover:scale-110"><i class="fa-solid fa-gear text-2xl transition-transform duration-500 group-hover:rotate-90 sm:text-3xl"></i></div>
                   <div class="relative z-10"><span class="block text-[10px] font-black uppercase leading-tight tracking-widest text-slate-800 dark:text-white sm:text-[11px]">Pengaturan</span><span class="mt-0.5 block text-[9px] font-bold text-slate-400 dark:text-slate-500">Sistem Toko</span></div>
                 </button>
                 <!-- 6. KATEGORI (Screen 4 Flagship) -->
-                <button class="card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-4 sm:p-5 text-center transition-all duration-300 hover:-translate-y-1.5 hover:border-orange-400/50 hover:bg-orange-50/20 hover:shadow-xl dark:hover:bg-slate-800/60 rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-[#FAF8F5]/90 dark:bg-slate-900/60 shadow-xs cursor-pointer active:scale-95" onclick="openAdminTab('categories')">
+                <button class="card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-4 sm:p-5 text-center transition-all duration-300 hover:-translate-y-1.5 hover:border-orange-400/50 hover:bg-orange-50/20 hover:shadow-xl dark:hover:bg-slate-800/60 rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-white/90 dark:bg-slate-900/60 shadow-xs cursor-pointer active:scale-95" onclick="openAdminTab('categories')">
                   <div class="relative z-10 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-orange-500 to-amber-600 text-white shadow-md transition-all duration-300 group-hover:scale-110"><i class="fa-solid fa-tags text-2xl sm:text-3xl"></i></div>
                   <div class="relative z-10"><span class="block text-[10px] font-black uppercase leading-tight tracking-widest text-slate-800 dark:text-white sm:text-[11px]">Kategori</span><span class="mt-0.5 block text-[9px] font-bold text-slate-400 dark:text-slate-500">Grup Etalase</span></div>
                 </button>
                 <!-- 7. MEREK (Screen 4 Flagship) -->
-                <button class="card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-4 sm:p-5 text-center transition-all duration-300 hover:-translate-y-1.5 hover:border-indigo-400/50 hover:bg-indigo-50/20 hover:shadow-xl dark:hover:bg-slate-800/60 rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-[#FAF8F5]/90 dark:bg-slate-900/60 shadow-xs cursor-pointer active:scale-95" onclick="openAdminTab('brands')">
+                <button class="card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-4 sm:p-5 text-center transition-all duration-300 hover:-translate-y-1.5 hover:border-indigo-400/50 hover:bg-indigo-50/20 hover:shadow-xl dark:hover:bg-slate-800/60 rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-white/90 dark:bg-slate-900/60 shadow-xs cursor-pointer active:scale-95" onclick="openAdminTab('brands')">
                   <div class="relative z-10 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-blue-600 text-white shadow-md transition-all duration-300 group-hover:scale-110"><i class="fa-solid fa-certificate text-2xl sm:text-3xl"></i></div>
                   <div class="relative z-10"><span class="block text-[10px] font-black uppercase leading-tight tracking-widest text-slate-800 dark:text-white sm:text-[11px]">Merek</span><span class="mt-0.5 block text-[9px] font-bold text-slate-400 dark:text-slate-500">Brand Ternama</span></div>
                 </button>
                 <!-- 8. WARNA (Screen 4 Flagship) -->
-                <button class="card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-4 sm:p-5 text-center transition-all duration-300 hover:-translate-y-1.5 hover:border-pink-400/50 hover:bg-pink-50/20 hover:shadow-xl dark:hover:bg-slate-800/60 rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-[#FAF8F5]/90 dark:bg-slate-900/60 shadow-xs cursor-pointer active:scale-95" onclick="openAdminTab('colors')">
+                <button class="card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-4 sm:p-5 text-center transition-all duration-300 hover:-translate-y-1.5 hover:border-pink-400/50 hover:bg-pink-50/20 hover:shadow-xl dark:hover:bg-slate-800/60 rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-white/90 dark:bg-slate-900/60 shadow-xs cursor-pointer active:scale-95" onclick="openAdminTab('colors')">
                   <div class="relative z-10 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-rose-500 to-pink-600 text-white shadow-md transition-all duration-300 group-hover:scale-110"><i class="fa-solid fa-palette text-2xl sm:text-3xl"></i></div>
                   <div class="relative z-10"><span class="block text-[10px] font-black uppercase leading-tight tracking-widest text-slate-800 dark:text-white sm:text-[11px]">Warna</span><span class="mt-0.5 block text-[9px] font-bold text-slate-400 dark:text-slate-500">Database &amp; Katalog</span></div>
                 </button>
                 <!-- KASIR POS -->
-                <button class="card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-4 sm:p-5 text-center transition-all duration-300 hover:-translate-y-1.5 hover:border-emerald-400/50 hover:bg-emerald-50/20 hover:shadow-xl dark:hover:bg-slate-800/60 rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-[#FAF8F5]/90 dark:bg-slate-900/60 shadow-xs cursor-pointer active:scale-95" onclick="openAdminTab('pos')">
+                <button class="card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-4 sm:p-5 text-center transition-all duration-300 hover:-translate-y-1.5 hover:border-emerald-400/50 hover:bg-emerald-50/20 hover:shadow-xl dark:hover:bg-slate-800/60 rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-white/90 dark:bg-slate-900/60 shadow-xs cursor-pointer active:scale-95" onclick="openAdminTab('pos')">
                   <div class="relative z-10 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-600 to-teal-700 text-white shadow-md transition-all duration-300 group-hover:scale-110"><i class="fa-solid fa-cash-register text-2xl sm:text-3xl"></i></div>
                   <div class="relative z-10"><span class="block text-[10px] font-black uppercase leading-tight tracking-widest text-slate-800 dark:text-white sm:text-[11px]">Kasir POS</span><span class="mt-0.5 block text-[9px] font-bold text-slate-400 dark:text-slate-500">Mode Point of Sale</span></div>
                 </button>
                 <!-- PIUTANG TEMPO -->
-                <button class="card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-4 sm:p-5 text-center transition-all duration-300 hover:-translate-y-1.5 hover:border-cyan-400/50 hover:bg-cyan-50/20 hover:shadow-xl dark:hover:bg-slate-800/60 rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-[#FAF8F5]/90 dark:bg-slate-900/60 shadow-xs cursor-pointer active:scale-95" onclick="openAdminTab('piutang')">
+                <button class="card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-4 sm:p-5 text-center transition-all duration-300 hover:-translate-y-1.5 hover:border-cyan-400/50 hover:bg-cyan-50/20 hover:shadow-xl dark:hover:bg-slate-800/60 rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-white/90 dark:bg-slate-900/60 shadow-xs cursor-pointer active:scale-95" onclick="openAdminTab('piutang')">
                   <div class="relative z-10 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-cyan-600 to-blue-600 text-white shadow-md transition-all duration-300 group-hover:scale-110"><i class="fa-solid fa-clock-rotate-left text-2xl sm:text-3xl"></i></div>
                   <div class="relative z-10"><span class="block text-[10px] font-black uppercase leading-tight tracking-widest text-slate-800 dark:text-white sm:text-[11px]">Piutang Tempo</span><span class="mt-0.5 block text-[9px] font-bold text-slate-400 dark:text-slate-500">Laporan Hutang Pelanggan</span></div>
                 </button>
                 <!-- VOUCHER -->
-                <button class="card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-4 sm:p-5 text-center transition-all duration-300 hover:-translate-y-1.5 hover:border-purple-400/50 hover:bg-purple-50/20 hover:shadow-xl dark:hover:bg-slate-800/60 rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-[#FAF8F5]/90 dark:bg-slate-900/60 shadow-xs cursor-pointer active:scale-95" onclick="openAdminTab('vouchers')">
+                <button class="card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-4 sm:p-5 text-center transition-all duration-300 hover:-translate-y-1.5 hover:border-purple-400/50 hover:bg-purple-50/20 hover:shadow-xl dark:hover:bg-slate-800/60 rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-white/90 dark:bg-slate-900/60 shadow-xs cursor-pointer active:scale-95" onclick="openAdminTab('vouchers')">
                   <div class="relative z-10 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-purple-500 to-pink-500 text-white shadow-md transition-all duration-300 group-hover:scale-110"><i class="fa-solid fa-ticket-simple -rotate-45 text-2xl sm:text-3xl"></i></div>
                   <div class="relative z-10"><span class="block text-[10px] font-black uppercase leading-tight tracking-widest text-slate-800 dark:text-white sm:text-[11px]">Voucher</span><span class="mt-0.5 block text-[9px] font-bold text-slate-400 dark:text-slate-500">Diskon &amp; Promo</span></div>
                 </button>
                 <!-- PELANGGAN -->
-                <button class="card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-4 sm:p-5 text-center transition-all duration-300 hover:-translate-y-1.5 hover:border-teal-400/50 hover:bg-teal-50/20 hover:shadow-xl dark:hover:bg-slate-800/60 rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-[#FAF8F5]/90 dark:bg-slate-900/60 shadow-xs cursor-pointer active:scale-95" onclick="openAdminTab('customers')">
+                <button class="card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-4 sm:p-5 text-center transition-all duration-300 hover:-translate-y-1.5 hover:border-teal-400/50 hover:bg-teal-50/20 hover:shadow-xl dark:hover:bg-slate-800/60 rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-white/90 dark:bg-slate-900/60 shadow-xs cursor-pointer active:scale-95" onclick="openAdminTab('customers')">
                   <div class="relative z-10 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-teal-500 to-emerald-600 text-white shadow-md transition-all duration-300 group-hover:scale-110"><i class="fa-solid fa-address-book text-2xl sm:text-3xl"></i></div>
                   <div class="relative z-10"><span class="block text-[10px] font-black uppercase leading-tight tracking-widest text-slate-800 dark:text-white sm:text-[11px]">Pelanggan</span><span class="mt-0.5 block text-[9px] font-bold text-slate-400 dark:text-slate-500">Database Member</span></div>
                 </button>
                 <!-- HADIAH -->
-                <button class="card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-4 sm:p-5 text-center transition-all duration-300 hover:-translate-y-1.5 hover:border-amber-400/50 hover:bg-amber-50/20 hover:shadow-xl dark:hover:bg-slate-800/60 rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-[#FAF8F5]/90 dark:bg-slate-900/60 shadow-xs cursor-pointer active:scale-95" onclick="openAdminTab('rewards')">
+                <button class="card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-4 sm:p-5 text-center transition-all duration-300 hover:-translate-y-1.5 hover:border-amber-400/50 hover:bg-amber-50/20 hover:shadow-xl dark:hover:bg-slate-800/60 rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-white/90 dark:bg-slate-900/60 shadow-xs cursor-pointer active:scale-95" onclick="openAdminTab('rewards')">
                   <div class="relative z-10 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-yellow-500 to-amber-600 text-white shadow-md transition-all duration-300 group-hover:scale-110"><i class="fa-solid fa-gift text-2xl sm:text-3xl"></i></div>
                   <div class="relative z-10"><span class="block text-[10px] font-black uppercase leading-tight tracking-widest text-slate-800 dark:text-white sm:text-[11px]">Hadiah</span><span class="mt-0.5 block text-[9px] font-bold text-slate-400 dark:text-slate-500">Tukar Poin Member</span></div>
                 </button>
                 <!-- REKENING -->
-                <button class="card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-4 sm:p-5 text-center transition-all duration-300 hover:-translate-y-1.5 hover:border-cyan-400/50 hover:bg-cyan-50/20 hover:shadow-xl dark:hover:bg-slate-800/60 rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-[#FAF8F5]/90 dark:bg-slate-900/60 shadow-xs cursor-pointer active:scale-95" onclick="openAdminTab('banks')">
+                <button class="card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-4 sm:p-5 text-center transition-all duration-300 hover:-translate-y-1.5 hover:border-cyan-400/50 hover:bg-cyan-50/20 hover:shadow-xl dark:hover:bg-slate-800/60 rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-white/90 dark:bg-slate-900/60 shadow-xs cursor-pointer active:scale-95" onclick="openAdminTab('banks')">
                   <div class="relative z-10 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-600 to-cyan-600 text-white shadow-md transition-all duration-300 group-hover:scale-110"><i class="fa-solid fa-building-columns text-2xl sm:text-3xl"></i></div>
                   <div class="relative z-10"><span class="block text-[10px] font-black uppercase leading-tight tracking-widest text-slate-800 dark:text-white sm:text-[11px]">Rekening</span><span class="mt-0.5 block text-[9px] font-bold text-slate-400 dark:text-slate-500">Metode Transfer</span></div>
                 </button>
                 <!-- BANNER -->
-                <button class="card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-4 sm:p-5 text-center transition-all duration-300 hover:-translate-y-1.5 hover:border-pink-400/50 hover:bg-pink-50/20 hover:shadow-xl dark:hover:bg-slate-800/60 rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-[#FAF8F5]/90 dark:bg-slate-900/60 shadow-xs cursor-pointer active:scale-95" onclick="openAdminTab('banners')">
+                <button class="card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-4 sm:p-5 text-center transition-all duration-300 hover:-translate-y-1.5 hover:border-pink-400/50 hover:bg-pink-50/20 hover:shadow-xl dark:hover:bg-slate-800/60 rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-white/90 dark:bg-slate-900/60 shadow-xs cursor-pointer active:scale-95" onclick="openAdminTab('banners')">
                   <div class="relative z-10 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-rose-500 to-orange-500 text-white shadow-md transition-all duration-300 group-hover:scale-110"><i class="fa-solid fa-images text-2xl sm:text-3xl"></i></div>
                   <div class="relative z-10"><span class="block text-[10px] font-black uppercase leading-tight tracking-widest text-slate-800 dark:text-white sm:text-[11px]">Banner</span><span class="mt-0.5 block text-[9px] font-bold text-slate-400 dark:text-slate-500">Slider Promosi</span></div>
                 </button>
                 <!-- ULASAN -->
-                <button class="card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-4 sm:p-5 text-center transition-all duration-300 hover:-translate-y-1.5 hover:border-amber-400/50 hover:bg-amber-50/20 hover:shadow-xl dark:hover:bg-slate-800/60 rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-[#FAF8F5]/90 dark:bg-slate-900/60 shadow-xs cursor-pointer active:scale-95" onclick="openAdminTab('reviews')">
+                <button class="card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-4 sm:p-5 text-center transition-all duration-300 hover:-translate-y-1.5 hover:border-amber-400/50 hover:bg-amber-50/20 hover:shadow-xl dark:hover:bg-slate-800/60 rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-white/90 dark:bg-slate-900/60 shadow-xs cursor-pointer active:scale-95" onclick="openAdminTab('reviews')">
                   <div class="relative z-10 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-400 to-yellow-500 text-white shadow-md transition-all duration-300 group-hover:scale-110"><i class="fa-solid fa-star text-2xl sm:text-3xl"></i></div>
                   <div class="relative z-10"><span class="block text-[10px] font-black uppercase leading-tight tracking-widest text-slate-800 dark:text-white sm:text-[11px]">Ulasan</span><span class="mt-0.5 block text-[9px] font-bold text-slate-400 dark:text-slate-500">Testimoni Pelanggan</span></div>
                 </button>
                 <!-- Q&A / FAQ -->
-                <button class="card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-4 sm:p-5 text-center transition-all duration-300 hover:-translate-y-1.5 hover:border-purple-400/50 hover:bg-purple-50/20 hover:shadow-xl dark:hover:bg-slate-800/60 rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-[#FAF8F5]/90 dark:bg-slate-900/60 shadow-xs cursor-pointer active:scale-95" onclick="openAdminTab('faqs')">
+                <button class="card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-4 sm:p-5 text-center transition-all duration-300 hover:-translate-y-1.5 hover:border-purple-400/50 hover:bg-purple-50/20 hover:shadow-xl dark:hover:bg-slate-800/60 rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-white/90 dark:bg-slate-900/60 shadow-xs cursor-pointer active:scale-95" onclick="openAdminTab('faqs')">
                   <div class="relative z-10 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 text-white shadow-md transition-all duration-300 group-hover:scale-110"><i class="fa-solid fa-circle-question text-2xl sm:text-3xl"></i></div>
                   <div class="relative z-10"><span class="block text-[10px] font-black uppercase leading-tight tracking-widest text-slate-800 dark:text-white sm:text-[11px]">Q&amp;A / FAQ</span><span class="mt-0.5 block text-[9px] font-bold text-slate-400 dark:text-slate-500">Kelola Tanya Jawab</span></div>
                 </button>
                 <!-- STAF & HAK AKSES -->
-                <button class="card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-4 sm:p-5 text-center transition-all duration-300 hover:-translate-y-1.5 hover:border-teal-400/50 hover:bg-teal-50/20 hover:shadow-xl dark:hover:bg-slate-800/60 rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-[#FAF8F5]/90 dark:bg-slate-900/60 shadow-xs cursor-pointer active:scale-95" onclick="openAdminTab('cashiers')">
+                <button class="card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-4 sm:p-5 text-center transition-all duration-300 hover:-translate-y-1.5 hover:border-teal-400/50 hover:bg-teal-50/20 hover:shadow-xl dark:hover:bg-slate-800/60 rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-white/90 dark:bg-slate-900/60 shadow-xs cursor-pointer active:scale-95" onclick="openAdminTab('cashiers')">
                   <div class="relative z-10 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-teal-600 to-teal-800 text-white shadow-md transition-all duration-300 group-hover:scale-110"><i class="fa-solid fa-users-gear text-2xl sm:text-3xl"></i></div>
                   <div class="relative z-10"><span class="block text-[10px] font-black uppercase leading-tight tracking-widest text-slate-800 dark:text-white sm:text-[11px]">Staf &amp; Hak Akses</span><span class="mt-0.5 block text-[9px] font-bold text-slate-400 dark:text-slate-500">Kelola Kasir &amp; Izin</span></div>
                 </button>
                 <!-- PUSAT DATA, SINKRONISASI & PENCADANGAN -->
-                <button class="card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-4 sm:p-5 text-center transition-all duration-300 hover:-translate-y-1.5 hover:border-cyan-400/50 hover:bg-cyan-50/20 hover:shadow-xl dark:hover:bg-slate-800/60 rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-[#FAF8F5]/90 dark:bg-slate-900/60 shadow-xs cursor-pointer active:scale-95" onclick="openAdminTab('backup_sync')">
+                <button class="card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-4 sm:p-5 text-center transition-all duration-300 hover:-translate-y-1.5 hover:border-cyan-400/50 hover:bg-cyan-50/20 hover:shadow-xl dark:hover:bg-slate-800/60 rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-white/90 dark:bg-slate-900/60 shadow-xs cursor-pointer active:scale-95" onclick="openAdminTab('backup_sync')">
                   <div class="relative z-10 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-cyan-600 to-blue-700 text-white shadow-md transition-all duration-300 group-hover:scale-110"><i class="fa-solid fa-cloud-arrow-up text-2xl sm:text-3xl"></i></div>
                   <div class="relative z-10"><span class="block text-[10px] font-black uppercase leading-tight tracking-widest text-slate-800 dark:text-white sm:text-[11px]">Backup &amp; Sync</span><span class="mt-0.5 block text-[9px] font-bold text-slate-400 dark:text-slate-500">Pusat Data Cloud</span></div>
                 </button>
                 <!-- CHANGELOG -->
-                <button class="card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-4 sm:p-5 text-center transition-all duration-300 hover:-translate-y-1.5 hover:border-slate-400/50 hover:bg-slate-100/40 hover:shadow-xl dark:hover:bg-slate-800/60 rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-[#FAF8F5]/90 dark:bg-slate-900/60 shadow-xs cursor-pointer active:scale-95" onclick="openAdminTab('changelog')">
+                <button class="card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-4 sm:p-5 text-center transition-all duration-300 hover:-translate-y-1.5 hover:border-slate-400/50 hover:bg-slate-100/40 hover:shadow-xl dark:hover:bg-slate-800/60 rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-white/90 dark:bg-slate-900/60 shadow-xs cursor-pointer active:scale-95" onclick="openAdminTab('changelog')">
                   <div class="relative z-10 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-slate-600 to-slate-700 text-white shadow-md transition-all duration-300 group-hover:scale-110"><i class="fa-solid fa-clock-rotate-left text-2xl sm:text-3xl"></i></div>
                   <div class="relative z-10"><span class="block text-[10px] font-black uppercase leading-tight tracking-widest text-slate-800 dark:text-white sm:text-[11px]">Changelog</span><span class="mt-0.5 block text-[9px] font-bold text-slate-400 dark:text-slate-500">Log Pembaruan Sistem</span></div>
                 </button>
                 <!-- PAJAK -->
-                <button class="card-modern group relative hidden flex-col items-center justify-center gap-3 overflow-hidden p-4 sm:p-5 text-center transition-all duration-300 hover:-translate-y-1.5 hover:border-red-400/50 hover:bg-red-50/20 hover:shadow-xl dark:hover:bg-slate-800/60 rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-[#FAF8F5]/90 dark:bg-slate-900/60 shadow-xs cursor-pointer active:scale-95" id="admin-menu-tax-btn" onclick="openAdminTab('tax')">
+                <button class="card-modern group relative hidden flex-col items-center justify-center gap-3 overflow-hidden p-4 sm:p-5 text-center transition-all duration-300 hover:-translate-y-1.5 hover:border-red-400/50 hover:bg-red-50/20 hover:shadow-xl dark:hover:bg-slate-800/60 rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-white/90 dark:bg-slate-900/60 shadow-xs cursor-pointer active:scale-95" id="admin-menu-tax-btn" onclick="openAdminTab('tax')">
                   <div class="relative z-10 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-rose-600 to-red-700 text-white shadow-md transition-all duration-300 group-hover:scale-110"><i class="fa-solid fa-file-invoice-dollar text-2xl sm:text-3xl"></i></div>
                   <div class="relative z-10"><span class="block text-[10px] font-black uppercase leading-tight tracking-widest text-slate-800 dark:text-white sm:text-[11px]">Pajak</span><span class="mt-0.5 block text-[9px] font-bold text-slate-400 dark:text-slate-500">PPN, Laba Rugi, Neraca</span></div>
                 </button>

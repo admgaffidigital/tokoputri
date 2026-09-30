@@ -8,6 +8,23 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-10-5',
+        version: 'v1.10.5',
+        date: '2026-09-30',
+        title: 'Universal Dynamic Theme Engine: Eliminasi Total Hardcode Warna & Penetrasi Tema Menyeluruh 100%',
+        category: 'ui',
+        badge: 'Universal Dynamic Theme Engine v1.10.5',
+        items: [
+            'Universal Dynamic Emerald Scale (tailwind.config.js & src/core/theme.js): Mengeliminasi kendala hardcode warna di mana pergantian tema sebelumnya tidak menjangkau seluruh modul akibat ratusan utility class emerald yang terkunci warna hijau. Kini seluruh skala warna emerald (50 s/d 950) dan nilai RGB-nya dibind secara dinamis ke palet tema yang aktif.',
+            'Penetrasi Warna Menyeluruh 100% ke Seluruh Modul: Modul POS Kasir (tombol bayar, laci kas, kartu kembalian, ringkasan margin), Riwayat & Status Pesanan, Member VIP & Putri PayLater, Keranjang, Checkout, Dokumen Cetak, hingga Laporan Keuangan kini berubah warna serempak dan konsisten 100% mengikuti tema yang dipilih (Industrial CAT, Putri Gold, Burgundy, Blue, dll.).',
+            'Dukungan Opasitas & Gradien Presisi (withOpacity Helper): Memperbarui konfigurasi Tailwind CSS dengan helper withOpacity yang mendukung alpha value rgba() pada seluruh skala warna (misal: bg-emerald-500/20, border-emerald-200/80, bg-emerald-950/40), memastikan gradien dan transparansi tetap presisi tanpa ada warna yang pudar atau rusak.',
+            'Pembersihan Hardcode Latar Belakang View Section (index.html): Menghapus kelas bg-slate-50 dark:bg-slate-900 dari kontainer view (Keranjang, Checkout, Pembayaran, Riwayat Pesanan, Wishlist, FAQ, dan Dashboard Admin) sehingga warna kanvas dan gaya latar belakang (Minimalis, Hero Arch, Aurora Glow, Tech Grid, Industrial) menembus dan menyatu secara seamless di seluruh halaman.',
+            'Eliminasi Warna Hardcode Khusus (Quick Menu & Shortcut Admin): Menghilangkan nilai warna statis #FAF8F5 dan #01875f pada tombol shortcut menu admin dan kartu unduh APK, menggantikannya dengan variabel tema adaptif dan kartu frosted putih elegan.',
+            'Instant Theme Bootstrap Script (index.html): Memperbarui script inisialisasi di dalam tag <head> dengan pustaka lengkap (termasuk Industrial, Gold, dan Burgundy) serta injeksi instan CSS variables dan data-bg-style sebelum render pertama, mengeliminasi kedipan (FOUC) saat aplikasi dibuka.',
+            'Multi-Channel Build & Sync v1.10.5 (Android versionCode 11005): Kompilasi produksi web, sinkronisasi bundle flashdisk siap pakai, dan Android Capacitor tersinkronisasi 100%.'
+        ]
+    },
+    {
         id: 'log-1-10-4',
         version: 'v1.10.4',
         date: '2026-09-30',

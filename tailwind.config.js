@@ -1,3 +1,10 @@
+const withOpacity = (varName) => ({ opacityValue }) => {
+  if (opacityValue !== undefined) {
+    return `rgba(var(${varName}-rgb), ${opacityValue})`;
+  }
+  return `var(${varName})`;
+};
+
 /** @type {import('tailwindcss').Config} */
 export default {
   content: [
@@ -53,16 +60,17 @@ export default {
       },
       colors: {
         emerald: {
-          50: 'var(--color-emerald-50)',
-          100: 'var(--color-emerald-100)',
-          200: 'var(--color-emerald-200)',
-          300: 'var(--color-emerald-300)',
-          400: 'var(--color-emerald-400)',
-          500: 'var(--color-emerald-500)',
-          600: 'var(--color-emerald-600)',
-          700: 'var(--color-emerald-700)',
-          800: 'var(--color-emerald-800)',
-          900: 'var(--color-emerald-900)',
+          50: withOpacity('--color-emerald-50'),
+          100: withOpacity('--color-emerald-100'),
+          200: withOpacity('--color-emerald-200'),
+          300: withOpacity('--color-emerald-300'),
+          400: withOpacity('--color-emerald-400'),
+          500: withOpacity('--color-emerald-500'),
+          600: withOpacity('--color-emerald-600'),
+          700: withOpacity('--color-emerald-700'),
+          800: withOpacity('--color-emerald-800'),
+          900: withOpacity('--color-emerald-900'),
+          950: withOpacity('--color-emerald-950'),
         }
       }
     },

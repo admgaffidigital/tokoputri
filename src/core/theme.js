@@ -161,6 +161,37 @@ export const applyUITheme = (themeName, customHex) => {
     document.documentElement.style.setProperty('--color-primary-light', lightHex);
     document.documentElement.style.setProperty('--color-primary-rgb',   primaryRgb);
 
+    // ── Universal Dynamic Theme Engine (v1.10.5) ──────────────────
+    // Sinkronkan seluruh skala warna emerald (50-950) & RGB variables ke tema yang aktif.
+    // Ini mengeliminasi 100% hardcode warna sehingga seluruh modul toko
+    // (POS Kasir, Keranjang, Checkout, Riwayat Pesanan, Member VIP, Piutang, Laporan Keuangan)
+    // langsung mengadopsi warna tema yang dipilih tanpa ada komponen yang tertinggal warna hijau!
+    const activeShades = (customHex && customHex !== colors[500]) ? {
+        50: adjustHex(hex, 180),
+        100: adjustHex(hex, 140),
+        200: adjustHex(hex, 100),
+        300: adjustHex(hex, 60),
+        400: adjustHex(hex, 30),
+        500: hex,
+        600: adjustHex(hex, -25),
+        700: adjustHex(hex, -50),
+        800: adjustHex(hex, -75),
+        900: adjustHex(hex, -100),
+        950: adjustHex(hex, -125),
+    } : {
+        ...colors,
+        950: colors[950] || adjustHex(colors[900], -25)
+    };
+
+    const shades = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950];
+    shades.forEach(s => {
+        const sHex = activeShades[s] || colors[s] || hex;
+        if (sHex) {
+            document.documentElement.style.setProperty(`--color-emerald-${s}`, sHex);
+            document.documentElement.style.setProperty(`--color-emerald-${s}-rgb`, hexToRgb(sHex));
+        }
+    });
+
     // Update warna header browser, status bar PWA, dan Dynamic Manifest Blob
     updatePwaThemeMeta(hex);
 

@@ -351,9 +351,9 @@ html.dark .view-section:not(#view-admin-login) {
 }
 
 .pos-badge-poin {
-    background: rgba(16, 185, 129, 0.2) !important;
-    color: #10b981 !important;
-    border: 1px solid rgba(16, 185, 129, 0.35) !important;
+    background: rgba(var(--color-primary-rgb, 16, 185, 129), 0.2) !important;
+    color: var(--color-primary, #10b981) !important;
+    border: 1px solid rgba(var(--color-primary-rgb, 16, 185, 129), 0.35) !important;
 }
 
 .pos-badge-sold {
@@ -517,8 +517,8 @@ html.dark .view-section:not(#view-admin-login) {
     left: 5%;
     right: 5%;
     height: 2px;
-    background: linear-gradient(90deg, transparent, #10b981 20%, #34d399 50%, #10b981 80%, transparent);
-    box-shadow: 0 0 14px 3px rgba(52, 211, 153, 0.9);
+    background: linear-gradient(90deg, transparent, var(--color-primary) 20%, var(--color-primary-light) 50%, var(--color-primary) 80%, transparent);
+    box-shadow: 0 0 14px 3px rgba(var(--color-primary-rgb), 0.9);
     animation: posScanline 2.2s ease-in-out infinite;
     pointer-events: none;
     z-index: 20;
@@ -944,22 +944,34 @@ html.dark .view-section:not(#view-admin-login) {
     --sat-bottom: env(safe-area-inset-bottom); 
     --sat-top: env(safe-area-inset-top); 
 
-    /* Default Theme: Emerald */
+    /* Default Theme: Emerald Scales & RGB Triples (Dynamic via applyUITheme & bootstrap script) */
     --color-emerald-50: #ecfdf5;
+    --color-emerald-50-rgb: 236, 253, 245;
     --color-emerald-100: #d1fae5;
+    --color-emerald-100-rgb: 209, 250, 229;
     --color-emerald-200: #a7f3d0;
+    --color-emerald-200-rgb: 167, 243, 208;
     --color-emerald-300: #6ee7b7;
+    --color-emerald-300-rgb: 110, 231, 183;
     --color-emerald-400: #34d399;
+    --color-emerald-400-rgb: 52, 211, 153;
     --color-emerald-500: #10b981;
+    --color-emerald-500-rgb: 16, 185, 129;
     --color-emerald-600: #059669;
+    --color-emerald-600-rgb: 5, 150, 105;
     --color-emerald-700: #047857;
+    --color-emerald-700-rgb: 4, 120, 87;
     --color-emerald-800: #065f46;
+    --color-emerald-800-rgb: 6, 95, 70;
     --color-emerald-900: #064e3b;
+    --color-emerald-900-rgb: 6, 78, 59;
+    --color-emerald-950: #022c22;
+    --color-emerald-950-rgb: 2, 44, 34;
 
     --color-primary: var(--color-emerald-500);
     --color-primary-dark: var(--color-emerald-600);
     --color-primary-light: var(--color-emerald-50);
-    --color-primary-rgb: 16,185,129;
+    --color-primary-rgb: 16, 185, 129;
 }
 
 /* === Prevent transition flash on first paint === */
