@@ -2186,6 +2186,35 @@ html.dark #app-container[data-has-custom-bg="true"] {
     border-bottom: 1px solid rgba(255, 255, 255, 0.25);
 }
 
+/* ─── 4. INDUSTRIAL (Heavy-Duty Steel & Hazard Line) ─── */
+[data-bg-style="industrial"] .glass-header {
+    background-color: var(--color-primary);
+    background-image: 
+        repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(0, 0, 0, 0.1) 10px, rgba(0, 0, 0, 0.1) 20px),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.14) 0%, transparent 100%);
+    border-radius: 0 0 1.25rem 1.25rem;
+    padding-bottom: 1.15rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-bottom: 2px solid rgba(255, 255, 255, 0.35);
+}
+
+/* Kanvas khusus gaya industrial */
+[data-bg-style="industrial"] #app-container {
+    background-image: 
+        radial-gradient(rgba(var(--color-primary-rgb), 0.1) 1.5px, transparent 1.5px),
+        repeating-linear-gradient(45deg, rgba(var(--color-primary-rgb), 0.04) 0, rgba(var(--color-primary-rgb), 0.04) 1px, transparent 1px, transparent 14px),
+        linear-gradient(180deg, rgba(var(--color-primary-rgb), 0.08) 0%, rgba(var(--color-primary-rgb), 0.02) 320px, transparent 700px);
+    background-size: 28px 28px, 28px 28px, 100% 100%;
+}
+html.dark[data-bg-style="industrial"] #app-container,
+.dark[data-bg-style="industrial"] #app-container {
+    background-image: 
+        radial-gradient(rgba(var(--color-primary-rgb), 0.2) 1.5px, transparent 1.5px),
+        repeating-linear-gradient(45deg, rgba(var(--color-primary-rgb), 0.08) 0, rgba(var(--color-primary-rgb), 0.08) 1px, transparent 1px, transparent 14px),
+        linear-gradient(180deg, rgba(var(--color-primary-rgb), 0.15) 0%, rgba(var(--color-primary-rgb), 0.04) 360px, transparent 750px);
+    background-size: 28px 28px, 28px 28px, 100% 100%;
+}
+
 
 /* ─── 5. MINIMALIS (Polos bersih elegan) ─── */
 [data-bg-style="minimalist"] .glass-header {
@@ -2285,6 +2314,14 @@ html.dark .mini-phone-screen {
     background-image: radial-gradient(rgba(255, 255, 255, 0.45) 1px, transparent 1px);
     background-size: 6px 6px;
     border-radius: 0 0 8px 8px;
+}
+.mini-preview-industrial .mini-preview-header {
+    background-image: repeating-linear-gradient(45deg, transparent, transparent 3px, rgba(0, 0, 0, 0.25) 3px, rgba(0, 0, 0, 0.25) 6px);
+    border-radius: 0 0 8px 8px;
+    border-bottom: 1.5px solid rgba(255, 255, 255, 0.5);
+}
+.mini-preview-industrial .mini-dummy-content {
+    background-image: repeating-linear-gradient(45deg, rgba(148, 163, 184, 0.15) 0, rgba(148, 163, 184, 0.15) 1px, transparent 1px, transparent 6px);
 }
 .mini-preview-minimal .mini-preview-header {
     height: 22px;

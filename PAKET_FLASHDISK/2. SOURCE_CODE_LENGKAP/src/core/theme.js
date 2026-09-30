@@ -12,6 +12,7 @@
 export const uiPalettes = {
     'gold'     : { 50: '#fdfcf7', 100: '#faf3e1', 200: '#f5e4bd', 300: '#eccf8d', 400: '#e1b858', 500: '#c59b27', 600: '#a87f1b', 700: '#876317', 800: '#6c4d18', 900: '#593e17' },
     'burgundy' : { 50: '#fdf2f4', 100: '#fce5e9', 200: '#f8ccd5', 300: '#f0a4b4', 400: '#e16c84', 500: '#800020', 600: '#6c001b', 700: '#560015', 800: '#420010', 900: '#30000b' },
+    'industrial': { 50: '#fffbeb', 100: '#fef3c7', 200: '#fed7aa', 300: '#fdba74', 400: '#f59e0b', 500: '#d97706', 600: '#b45309', 700: '#9a3412', 800: '#7c2d12', 900: '#431407' },
     'emerald'  : { 50: '#ecfdf5', 100: '#d1fae5', 200: '#a7f3d0', 300: '#6ee7b7', 400: '#34d399', 500: '#10b981', 600: '#059669', 700: '#047857', 800: '#065f46', 900: '#064e3b' },
     'teal'    : { 50: '#f0fdfa', 100: '#ccfbf1', 200: '#99f6e4', 300: '#5eead4', 400: '#2dd4bf', 500: '#14b8a6', 600: '#0d9488', 700: '#0f766e', 800: '#115e59', 900: '#134e4a' },
     'cyan'    : { 50: '#ecfeff', 100: '#cffafe', 200: '#a5f3fc', 300: '#67e8f9', 400: '#22d3ee', 500: '#06b6d4', 600: '#0891b2', 700: '#0e7490', 800: '#155e75', 900: '#164e63' },
@@ -320,6 +321,20 @@ export const applyBackgroundStyle = (bgStyle = 'minimalist', customBgUrl = '') =
             <div class="absolute top-20 left-1/2 -translate-x-1/2 w-[94%] max-w-[1240px] h-[360px] border border-[rgba(var(--color-primary-rgb),0.15)] rounded-3xl pointer-events-none"></div>
             <div class="absolute top-28 left-6 w-24 h-24 border-t-2 border-l-2 border-[rgba(var(--color-primary-rgb),0.25)] rounded-tl-2xl pointer-events-none"></div>
             <div class="absolute top-28 right-6 w-24 h-24 border-t-2 border-r-2 border-[rgba(var(--color-primary-rgb),0.25)] rounded-tr-2xl pointer-events-none"></div>
+        `;
+    } else if (style === 'industrial') {
+        shapesHtml = `
+            <!-- Industrial Heavy-Duty: Steel Diamond Tread Plate, Hazard Safety Stripes & CAD Framing -->
+            <div class="absolute inset-0 pointer-events-none opacity-25 dark:opacity-20" style="background-image: repeating-linear-gradient(45deg, rgba(var(--color-primary-rgb), 0.25) 0, rgba(var(--color-primary-rgb), 0.25) 2px, transparent 2px, transparent 14px), repeating-linear-gradient(-45deg, rgba(var(--color-primary-rgb), 0.25) 0, rgba(var(--color-primary-rgb), 0.25) 2px, transparent 2px, transparent 14px); background-size: 28px 28px;"></div>
+            <div class="absolute top-0 left-0 right-0 h-[480px] bg-gradient-to-b from-[rgba(var(--color-primary-rgb),0.18)] via-[rgba(var(--color-primary-rgb),0.05)] to-transparent pointer-events-none"></div>
+            <!-- Top Hazard Safety Accent Strip -->
+            <div class="absolute top-0 left-0 right-0 h-1.5 opacity-35 pointer-events-none" style="background: repeating-linear-gradient(45deg, var(--color-primary), var(--color-primary) 12px, #0f172a 12px, #0f172a 24px);"></div>
+            <!-- Technical CAD Guides & Corner Brackets -->
+            <div class="absolute top-16 left-1/2 -translate-x-1/2 w-[95%] max-w-[1260px] h-[380px] border border-dashed border-[rgba(var(--color-primary-rgb),0.2)] rounded-3xl pointer-events-none"></div>
+            <div class="absolute top-24 left-8 text-[9px] font-mono font-bold tracking-widest text-[var(--color-primary)] opacity-40 uppercase pointer-events-none select-none">[HEAVY-DUTY INDUSTRIAL // PUTRI UTAMA TEKNIK]</div>
+            <div class="absolute top-24 right-8 flex items-center gap-1.5 text-[9px] font-mono font-bold text-[var(--color-primary)] opacity-40 uppercase pointer-events-none select-none">
+                <i class="fa-solid fa-screwdriver-wrench text-[8px]"></i> PRO GRADE
+            </div>
         `;
     } else {
         // Minimalis: Clean Architectural Studio dengan soft top wash & subtle ambient horizon

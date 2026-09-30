@@ -8,6 +8,21 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-10-2',
+        version: 'v1.10.2',
+        date: '2026-09-30',
+        title: 'Peluncuran Tema Visual Heavy-Duty Industrial & Palet Warna CAT Amber Toko Teknik',
+        category: 'ui',
+        badge: 'Heavy-Duty Industrial Theme v1.10.2',
+        items: [
+            'Model Gaya Visual Background Baru "Industrial" (src/core/theme.js & src/style.css): Menambahkan opsi ke-5 gaya visual latar belakang dengan tekstur plat baja bordes mikro (steel diamond plate tread), aksen garis hazard safety (45° safety stripes), siraman ambient wash 480px, dan panduan CAD arsitektural berspesifikasi Heavy-Duty toko teknik.',
+            'Header Industrial Berkarakter Kuat: Menghadirkan pola mikro hazard line dan aksen border baja solid 2px pada header saat mode background Industrial aktif.',
+            'Palet Warna Baru "Industrial CAT" (uiPalettes & CMS Settings): Menambahkan preset palet warna kuning-amber industri (#d97706) khas Caterpillar & DeWalt dengan kontras WCAG AAA dan chip swatch interaktif di menu pengaturan warna tema.',
+            'Mini Smartphone Mockup Preview Baru: Menambahkan visual mini preview Industrial (.mini-preview-industrial) dengan badge "Heavy-Duty" pada kartu pemilihan latar belakang CMS Pengaturan.',
+            'Multi-Channel Build & Sync v1.10.2 (Android versionCode 11002): Kompilasi produksi web, sinkronisasi bundle flashdisk siap pakai, dan Android Capacitor tersinkronisasi 100%.'
+        ]
+    },
+    {
         id: 'log-1-10-1',
         version: 'v1.10.1',
         date: '2026-09-30',
