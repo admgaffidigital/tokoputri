@@ -52,17 +52,21 @@ export const renderFooter = () => {
     container.innerHTML = `
     <!-- ================= FOOTER TOKO RESMI (MODERN, CLEAN, HARMONIS DENGAN TEMA) ================= -->
     <footer class="themed-footer relative mt-14 w-full overflow-hidden pb-[calc(6.5rem+env(safe-area-inset-bottom))] sm:pb-[calc(3.5rem+env(safe-area-inset-bottom))]">
+      <!-- Ambient Theme Glow Beam & Top Aura -->
+      <div class="themed-footer-glow-bar absolute top-0 inset-x-0 h-[2px] bg-gradient-to-r from-transparent via-[var(--color-primary)] to-transparent pointer-events-none opacity-90"></div>
+      <div class="themed-footer-aura absolute -top-24 left-1/2 -translate-x-1/2 w-full max-w-[1000px] h-32 pointer-events-none" style="background: radial-gradient(ellipse 60% 50% at 50% 0%, rgba(var(--color-primary-rgb), 0.35), transparent 75%);"></div>
+
       <div class="relative z-10 mx-auto w-full px-4 sm:px-6 lg:px-8 xl:max-w-[1240px] pt-10 sm:pt-14 pb-8">
         <div class="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-12">
           <!-- Kolom 1: Profil Perusahaan & Brand -->
           <div class="flex flex-col items-start text-left md:col-span-6 lg:col-span-4">
             <div class="mb-4 flex items-center gap-3.5">
-              <div class="flex h-13 w-13 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-white/20 bg-white p-2.5 shadow-md">
+              <div class="flex h-13 w-13 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-[rgba(var(--color-primary-rgb),0.35)] bg-white p-2.5 shadow-md shadow-[rgba(var(--color-primary-rgb),0.15)]">
                 ${logoHtml}
               </div>
               <div class="flex flex-col items-start min-w-0">
                 <h3 class="text-base sm:text-lg font-black tracking-tight text-white leading-tight break-words max-w-full">${esc(storeName)}</h3>
-                <span class="mt-1 inline-flex items-center gap-1.5 rounded-lg border border-[var(--color-primary)]/40 bg-[var(--color-primary)]/15 px-2.5 py-0.5 text-[9px] font-extrabold uppercase tracking-widest text-[var(--color-primary)]">
+                <span class="mt-1 inline-flex items-center gap-1.5 rounded-lg border border-[rgba(var(--color-primary-rgb),0.4)] bg-[rgba(var(--color-primary-rgb),0.15)] px-2.5 py-0.5 text-[9px] font-extrabold uppercase tracking-widest text-[var(--color-primary)]">
                   <i class="fa-solid fa-circle-check"></i> Verified Official Store
                 </span>
               </div>
@@ -73,7 +77,7 @@ export const renderFooter = () => {
             </p>
 
             <!-- Value Trust Pill (Tidak mengulang kalimat deskripsi) -->
-            <div class="mb-3.5 inline-flex items-center gap-2 rounded-xl border border-white/15 bg-white/5 px-3 py-1.5 text-[11px] font-semibold text-white/90 shadow-xs">
+            <div class="mb-3.5 inline-flex items-center gap-2 rounded-xl border border-[rgba(var(--color-primary-rgb),0.25)] bg-[rgba(var(--color-primary-rgb),0.08)] px-3 py-1.5 text-[11px] font-semibold text-white/95 shadow-xs">
               <span class="relative flex h-2 w-2">
                 <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--color-primary)] opacity-75"></span>
                 <span class="relative inline-flex h-2 w-2 rounded-full bg-[var(--color-primary)]"></span>
@@ -83,7 +87,7 @@ export const renderFooter = () => {
 
             <!-- Store Address (Formatted Card) -->
             ${storeAddress ? `
-            <div class="text-xs text-white/80 flex items-start gap-2.5 max-w-md bg-white/5 border border-white/10 rounded-xl p-3">
+            <div class="text-xs text-white/85 flex items-start gap-2.5 max-w-md bg-[rgba(var(--color-primary-rgb),0.07)] border border-[rgba(var(--color-primary-rgb),0.2)] rounded-xl p-3">
               <i class="fa-solid fa-location-dot text-[var(--color-primary)] mt-0.5 shrink-0 text-sm"></i>
               <span class="leading-relaxed font-medium">${esc(storeAddress)}</span>
             </div>` : ''}
@@ -96,8 +100,8 @@ export const renderFooter = () => {
           <div class="grid grid-cols-2 gap-6 md:contents">
             <!-- Kolom 2: Navigasi Belanja Cepat -->
             <div class="flex flex-col items-start text-left md:col-span-3 lg:col-span-2">
-              <h4 class="mb-4 text-[11px] font-black uppercase tracking-wider text-white border-b border-white/10 pb-2.5 w-full flex items-center gap-2">
-                <span class="w-1.5 h-1.5 rounded-full bg-[var(--color-primary)]"></span> Belanja Cepat
+              <h4 class="mb-4 text-[11px] font-black uppercase tracking-wider text-white border-b border-[rgba(var(--color-primary-rgb),0.25)] pb-2.5 w-full flex items-center gap-2">
+                <span class="w-1.5 h-1.5 rounded-full bg-[var(--color-primary)] shadow-[0_0_8px_var(--color-primary)]"></span> Belanja Cepat
               </h4>
               <ul class="space-y-3 w-full text-xs font-semibold">
                 <li>
@@ -135,8 +139,8 @@ export const renderFooter = () => {
 
             <!-- Kolom 3: Layanan & Informasi -->
             <div class="flex flex-col items-start text-left md:col-span-3 lg:col-span-2">
-              <h4 class="mb-4 text-[11px] font-black uppercase tracking-wider text-white border-b border-white/10 pb-2.5 w-full flex items-center gap-2">
-                <span class="w-1.5 h-1.5 rounded-full bg-[var(--color-primary)]"></span> Bantuan
+              <h4 class="mb-4 text-[11px] font-black uppercase tracking-wider text-white border-b border-[rgba(var(--color-primary-rgb),0.25)] pb-2.5 w-full flex items-center gap-2">
+                <span class="w-1.5 h-1.5 rounded-full bg-[var(--color-primary)] shadow-[0_0_8px_var(--color-primary)]"></span> Bantuan
               </h4>
               <ul class="space-y-3 w-full text-xs font-semibold">
                 <li>
@@ -181,13 +185,13 @@ export const renderFooter = () => {
 
           <!-- Kolom 4: Hubungi Kami & Jam Kerja -->
           <div class="flex flex-col items-start text-left md:col-span-6 lg:col-span-4">
-            <h4 class="mb-4 text-[11px] font-black uppercase tracking-wider text-white border-b border-white/10 pb-2.5 w-full flex items-center gap-2">
-              <span class="w-1.5 h-1.5 rounded-full bg-[var(--color-primary)]"></span> Hubungi Kami
+            <h4 class="mb-4 text-[11px] font-black uppercase tracking-wider text-white border-b border-[rgba(var(--color-primary-rgb),0.25)] pb-2.5 w-full flex items-center gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-[var(--color-primary)] shadow-[0_0_8px_var(--color-primary)]"></span> Hubungi Kami
             </h4>
             <div class="w-full space-y-3">
               <!-- WhatsApp CTA Card (Themed Dark Card dengan Aksen Warna Tema Toko yang Selaras) -->
               <a
-                class="group flex cursor-pointer items-center gap-3.5 rounded-2xl border border-[rgba(var(--color-primary-rgb),0.35)] bg-[rgba(var(--color-primary-rgb),0.1)] hover:bg-[rgba(var(--color-primary-rgb),0.2)] p-3.5 transition-all duration-200 shadow-sm hover:border-[rgba(var(--color-primary-rgb),0.6)] hover:shadow-md"
+                class="group flex cursor-pointer items-center gap-3.5 rounded-2xl border border-[rgba(var(--color-primary-rgb),0.35)] bg-[rgba(var(--color-primary-rgb),0.1)] hover:bg-[rgba(var(--color-primary-rgb),0.18)] p-3.5 transition-all duration-200 shadow-sm hover:border-[rgba(var(--color-primary-rgb),0.6)] hover:shadow-md"
                 href="javascript:void(0)"
                 onclick="${waOnClick}"
               >
@@ -209,10 +213,10 @@ export const renderFooter = () => {
 
               <!-- Download App Card (Harmonized with Theme & Google Play Authentic) -->
               <div
-                class="group flex cursor-pointer items-center gap-3.5 rounded-2xl border border-[rgba(var(--color-primary-rgb),0.35)] bg-gradient-to-r from-[rgba(var(--color-primary-rgb),0.12)] via-[rgba(var(--color-primary-rgb),0.06)] to-transparent hover:bg-[rgba(var(--color-primary-rgb),0.2)] p-3.5 transition-all duration-200 shadow-sm hover:border-[rgba(var(--color-primary-rgb),0.6)] hover:shadow-md"
+                class="group flex cursor-pointer items-center gap-3.5 rounded-2xl border border-[rgba(var(--color-primary-rgb),0.35)] bg-gradient-to-r from-[rgba(var(--color-primary-rgb),0.14)] via-[rgba(var(--color-primary-rgb),0.07)] to-transparent hover:bg-[rgba(var(--color-primary-rgb),0.22)] p-3.5 transition-all duration-200 shadow-sm hover:border-[rgba(var(--color-primary-rgb),0.6)] hover:shadow-md"
                 onclick="if(typeof window.openAppDownloadModal==='function') window.openAppDownloadModal();"
               >
-                <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white text-xl shadow-md shadow-emerald-500/25 group-hover:scale-105 transition-transform">
+                <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-white text-xl shadow-md transition-transform group-hover:scale-105" style="background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
                   <i class="fa-brands fa-google-play"></i>
                 </div>
                 <div class="min-w-0 text-left">
@@ -229,11 +233,11 @@ export const renderFooter = () => {
               </div>
 
               <!-- Email & Hours Card (Glass Translucent Selaras) -->
-              <div class="rounded-2xl border border-white/10 bg-white/5 p-3.5 space-y-3 text-white shadow-xs">
+              <div class="rounded-2xl border border-[rgba(var(--color-primary-rgb),0.22)] bg-[rgba(var(--color-primary-rgb),0.07)] p-3.5 space-y-3 text-white shadow-xs">
                 <!-- Email (if configured) -->
                 ${storeEmail ? `
-                <a href="mailto:${esc(storeEmail)}" class="flex items-center gap-2.5 text-white/85 hover:text-white transition-colors pb-2.5 border-b border-white/10">
-                  <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-white/15 bg-white/10 text-[var(--color-primary)]">
+                <a href="mailto:${esc(storeEmail)}" class="flex items-center gap-2.5 text-white/85 hover:text-white transition-colors pb-2.5 border-b border-[rgba(var(--color-primary-rgb),0.15)]">
+                  <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-[rgba(var(--color-primary-rgb),0.3)] bg-[rgba(var(--color-primary-rgb),0.15)] text-[var(--color-primary)]">
                     <i class="fa-solid fa-envelope text-xs"></i>
                   </div>
                   <span class="truncate text-xs font-bold tracking-wide">${esc(storeEmail)}</span>
@@ -241,12 +245,12 @@ export const renderFooter = () => {
 
                 <!-- Operating Hours -->
                 <div class="flex items-center gap-2.5 text-white/90">
-                  <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-white/15 bg-white/10 text-[var(--color-primary)]">
+                  <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-[rgba(var(--color-primary-rgb),0.3)] bg-[rgba(var(--color-primary-rgb),0.15)] text-[var(--color-primary)]">
                     <i class="fa-solid fa-clock text-xs"></i>
                   </div>
                   <div class="min-w-0 text-left">
                     <p class="truncate text-xs font-bold text-white tracking-wide">${esc(storeHours)}</p>
-                    <p class="text-[10px] font-medium text-white/60">Pemesanan online 24 jam</p>
+                    <p class="text-[10px] font-medium text-white/70">Pemesanan online 24 jam</p>
                   </div>
                 </div>
               </div>
@@ -255,7 +259,7 @@ export const renderFooter = () => {
         </div>
 
         <!-- Payment & Shipping Badges Row (Harmonis, Proporsional & Modern) -->
-        <div class="mt-10 border-t border-white/10 pt-7">
+        <div class="mt-10 border-t border-[rgba(var(--color-primary-rgb),0.2)] pt-7">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-10 items-start">
             <!-- Payment -->
             <div class="flex flex-col items-start w-full">
@@ -263,22 +267,22 @@ export const renderFooter = () => {
                 <i class="fa-solid fa-credit-card text-[var(--color-primary)]"></i> Metode Pembayaran Resmi
               </p>
               <div class="flex flex-wrap items-center gap-2 w-full">
-                <span class="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 px-3 py-1.5 text-[11px] font-semibold text-white/90 transition-colors shadow-xs" title="QRIS Standar Nasional">
+                <span class="inline-flex items-center gap-1.5 rounded-xl border border-[rgba(var(--color-primary-rgb),0.22)] bg-[rgba(var(--color-primary-rgb),0.08)] hover:bg-[rgba(var(--color-primary-rgb),0.16)] px-3 py-1.5 text-[11px] font-semibold text-white/95 transition-colors shadow-xs" title="QRIS Standar Nasional">
                   <i class="fa-solid fa-qrcode text-rose-300"></i> QRIS
                 </span>
-                <span class="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 px-3 py-1.5 text-[11px] font-semibold text-white/90 transition-colors shadow-xs" title="Transfer Bank BCA">
+                <span class="inline-flex items-center gap-1.5 rounded-xl border border-[rgba(var(--color-primary-rgb),0.22)] bg-[rgba(var(--color-primary-rgb),0.08)] hover:bg-[rgba(var(--color-primary-rgb),0.16)] px-3 py-1.5 text-[11px] font-semibold text-white/95 transition-colors shadow-xs" title="Transfer Bank BCA">
                   <i class="fa-solid fa-building-columns text-blue-300"></i> BCA
                 </span>
-                <span class="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 px-3 py-1.5 text-[11px] font-semibold text-white/90 transition-colors shadow-xs" title="Transfer Bank Mandiri">
+                <span class="inline-flex items-center gap-1.5 rounded-xl border border-[rgba(var(--color-primary-rgb),0.22)] bg-[rgba(var(--color-primary-rgb),0.08)] hover:bg-[rgba(var(--color-primary-rgb),0.16)] px-3 py-1.5 text-[11px] font-semibold text-white/95 transition-colors shadow-xs" title="Transfer Bank Mandiri">
                   <i class="fa-solid fa-building-columns text-amber-300"></i> Mandiri
                 </span>
-                <span class="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 px-3 py-1.5 text-[11px] font-semibold text-white/90 transition-colors shadow-xs" title="Transfer Bank BRI">
+                <span class="inline-flex items-center gap-1.5 rounded-xl border border-[rgba(var(--color-primary-rgb),0.22)] bg-[rgba(var(--color-primary-rgb),0.08)] hover:bg-[rgba(var(--color-primary-rgb),0.16)] px-3 py-1.5 text-[11px] font-semibold text-white/95 transition-colors shadow-xs" title="Transfer Bank BRI">
                   <i class="fa-solid fa-building-columns text-sky-300"></i> BRI
                 </span>
-                <span class="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 px-3 py-1.5 text-[11px] font-semibold text-white/90 transition-colors shadow-xs" title="Visa & Mastercard">
+                <span class="inline-flex items-center gap-1.5 rounded-xl border border-[rgba(var(--color-primary-rgb),0.22)] bg-[rgba(var(--color-primary-rgb),0.08)] hover:bg-[rgba(var(--color-primary-rgb),0.16)] px-3 py-1.5 text-[11px] font-semibold text-white/95 transition-colors shadow-xs" title="Visa & Mastercard">
                   <i class="fa-brands fa-cc-visa text-indigo-300"></i> <i class="fa-brands fa-cc-mastercard text-orange-300"></i> Kartu
                 </span>
-                <span class="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 px-3 py-1.5 text-[11px] font-semibold text-white/90 transition-colors shadow-xs" title="Bayar di Kasir Toko">
+                <span class="inline-flex items-center gap-1.5 rounded-xl border border-[rgba(var(--color-primary-rgb),0.22)] bg-[rgba(var(--color-primary-rgb),0.08)] hover:bg-[rgba(var(--color-primary-rgb),0.16)] px-3 py-1.5 text-[11px] font-semibold text-white/95 transition-colors shadow-xs" title="Bayar di Kasir Toko">
                   <i class="fa-solid fa-cash-register text-[var(--color-primary)]"></i> Kasir Toko
                 </span>
               </div>
@@ -290,16 +294,16 @@ export const renderFooter = () => {
                 <i class="fa-solid fa-truck-fast text-[var(--color-primary)]"></i> Jasa Pengiriman &amp; Logistik
               </p>
               <div class="flex flex-wrap items-center gap-2 w-full">
-                <span class="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 px-3 py-1.5 text-[11px] font-semibold text-white/90 transition-colors shadow-xs" title="Kirim Cepat Ekspedisi">
+                <span class="inline-flex items-center gap-1.5 rounded-xl border border-[rgba(var(--color-primary-rgb),0.22)] bg-[rgba(var(--color-primary-rgb),0.08)] hover:bg-[rgba(var(--color-primary-rgb),0.16)] px-3 py-1.5 text-[11px] font-semibold text-white/95 transition-colors shadow-xs" title="Kirim Cepat Ekspedisi">
                   <i class="fa-solid fa-truck-fast text-sky-400"></i> Ekspedisi Cepat
                 </span>
-                <span class="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 px-3 py-1.5 text-[11px] font-semibold text-white/90 transition-colors shadow-xs" title="Kargo Truk & Partai Besar">
+                <span class="inline-flex items-center gap-1.5 rounded-xl border border-[rgba(var(--color-primary-rgb),0.22)] bg-[rgba(var(--color-primary-rgb),0.08)] hover:bg-[rgba(var(--color-primary-rgb),0.16)] px-3 py-1.5 text-[11px] font-semibold text-white/95 transition-colors shadow-xs" title="Kargo Truk & Partai Besar">
                   <i class="fa-solid fa-truck-ramp-box text-amber-300"></i> Kargo &amp; Truk
                 </span>
-                <span class="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 px-3 py-1.5 text-[11px] font-semibold text-white/90 transition-colors shadow-xs" title="Kurir Instan & Same Day">
+                <span class="inline-flex items-center gap-1.5 rounded-xl border border-[rgba(var(--color-primary-rgb),0.22)] bg-[rgba(var(--color-primary-rgb),0.08)] hover:bg-[rgba(var(--color-primary-rgb),0.16)] px-3 py-1.5 text-[11px] font-semibold text-white/95 transition-colors shadow-xs" title="Kurir Instan & Same Day">
                   <i class="fa-solid fa-motorcycle text-[var(--color-primary)]"></i> Kurir Instan
                 </span>
-                <span class="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 px-3 py-1.5 text-[11px] font-semibold text-white/90 transition-colors shadow-xs" title="Ambil di Toko Fisik">
+                <span class="inline-flex items-center gap-1.5 rounded-xl border border-[rgba(var(--color-primary-rgb),0.22)] bg-[rgba(var(--color-primary-rgb),0.08)] hover:bg-[rgba(var(--color-primary-rgb),0.16)] px-3 py-1.5 text-[11px] font-semibold text-white/95 transition-colors shadow-xs" title="Ambil di Toko Fisik">
                   <i class="fa-solid fa-store text-sky-300"></i> Ambil Sendiri
                 </span>
               </div>
@@ -309,18 +313,18 @@ export const renderFooter = () => {
       </div>
 
       <!-- Sub-Footer Bottom Bar (Clean Solid Bar) -->
-      <div class="border-t border-white/10 bg-black/40 py-4">
+      <div class="border-t border-[rgba(var(--color-primary-rgb),0.22)] bg-black/55 dark:bg-black/75 py-4">
         <div class="mx-auto flex w-full flex-col items-center justify-between gap-3 px-4 sm:px-6 md:flex-row lg:px-8 xl:max-w-[1240px]">
           <p class="text-[11px] font-medium text-white/80 text-center sm:text-left">
             &#169; <span>${currentYear}</span> <span class="font-extrabold text-white">${esc(storeName)}</span>. <span>${esc(footerCredit)}</span>
           </p>
           <div class="flex flex-wrap items-center justify-center gap-3 text-[10px] font-bold text-white">
-            <button type="button" onclick="if(typeof window.openAppDownloadModal==='function') window.openAppDownloadModal();" class="inline-flex items-center gap-1.5 rounded-full border border-emerald-400/40 bg-emerald-500/20 hover:bg-emerald-500/30 px-3 py-1 text-[9px] font-extrabold uppercase tracking-wider text-emerald-300 hover:text-white transition-all active:scale-95 cursor-pointer shadow-xs" title="Unduh Aplikasi Android Toko Putri (APK)">
-              <i class="fa-brands fa-google-play text-emerald-400"></i>
+            <button type="button" onclick="if(typeof window.openAppDownloadModal==='function') window.openAppDownloadModal();" class="inline-flex items-center gap-1.5 rounded-full border border-[rgba(var(--color-primary-rgb),0.45)] bg-[rgba(var(--color-primary-rgb),0.18)] hover:bg-[rgba(var(--color-primary-rgb),0.32)] px-3 py-1 text-[9px] font-extrabold uppercase tracking-wider text-white transition-all active:scale-95 cursor-pointer shadow-xs" title="Unduh Aplikasi Android Toko Putri (APK)">
+              <i class="fa-brands fa-google-play text-[var(--color-primary)]"></i>
               <span>Unduh APK (${esc(latestVer)})</span>
             </button>
             <span class="text-white/20">•</span>
-            <button type="button" onclick="if(typeof window.openChangelogModal==='function') window.openChangelogModal();" class="inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/10 px-3 py-1 text-[9px] font-extrabold uppercase tracking-wider text-white hover:bg-white/20 transition-all active:scale-95 cursor-pointer shadow-xs" title="Lihat Catatan Pembaruan & Versi">
+            <button type="button" onclick="if(typeof window.openChangelogModal==='function') window.openChangelogModal();" class="inline-flex items-center gap-1.5 rounded-full border border-[rgba(var(--color-primary-rgb),0.35)] bg-[rgba(var(--color-primary-rgb),0.1)] hover:bg-[rgba(var(--color-primary-rgb),0.22)] px-3 py-1 text-[9px] font-extrabold uppercase tracking-wider text-white transition-all active:scale-95 cursor-pointer shadow-xs" title="Lihat Catatan Pembaruan & Versi">
               <span class="h-1.5 w-1.5 rounded-full bg-[var(--color-primary)] animate-pulse"></span>
               <span>${esc(latestVer)}</span> • Changelog
             </button>
@@ -492,6 +496,7 @@ export const closeSecurityModal = (fH = false) => {
 };
 
 // Export ke window untuk kemudahan panggil
+window.renderFooter = renderFooter;
 window.renderStorefrontFooter = renderFooter;
 window.openQualityGuaranteeModal = openQualityGuaranteeModal;
 window.closeQualityGuaranteeModal = closeQualityGuaranteeModal;

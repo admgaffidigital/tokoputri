@@ -195,6 +195,11 @@ export const applyUITheme = (themeName, customHex) => {
     // Update warna header browser, status bar PWA, dan Dynamic Manifest Blob
     updatePwaThemeMeta(hex);
 
+    // Re-render footer toko secara real-time agar seketika mengadopsi pakaian tema baru
+    if (typeof window !== 'undefined' && typeof window.renderStorefrontFooter === 'function') {
+        try { window.renderStorefrontFooter(); } catch (_) {}
+    }
+
     return colors;
 };
 
@@ -369,6 +374,11 @@ export const applyBackgroundStyle = (bgStyle = 'minimalist', customBgUrl = '') =
         vectorDiv.className = "absolute inset-0 z-0 pointer-events-none";
         vectorDiv.innerHTML = shapesHtml;
         container.appendChild(vectorDiv);
+    }
+
+    // Re-render footer toko agar dekorasi gaya background langsung harmonis
+    if (typeof window !== 'undefined' && typeof window.renderStorefrontFooter === 'function') {
+        try { window.renderStorefrontFooter(); } catch (_) {}
     }
 };
 

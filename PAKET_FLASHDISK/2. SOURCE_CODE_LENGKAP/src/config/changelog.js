@@ -8,6 +8,22 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-10-6',
+        version: 'v1.10.6',
+        date: '2026-10-01',
+        title: 'Harmonisasi Menyeluruh Tampilan Footer: Eliminasi Total Hardcode & Adaptasi 5 Gaya Latar Belakang Toko',
+        category: 'ui',
+        badge: 'Footer Theme Harmonization v1.10.6',
+        items: [
+            'Harmonisasi Menyeluruh Footer Toko (src/style.css & src/modules/home/footer.js): Menyelesaikan masalah footer yang sebelumnya tidak mengalami perubahan saat pergantian tema dan terkesan kaku/hardcode. Kini seluruh tampilan footer menyatu sempurna layaknya pakaian utuh yang membungkus keseluruhan sistem.',
+            'Adaptasi Dinamis Terhadap 5 Model Gaya Latar Belakang ([data-bg-style]): Footer kini merespons langsung gaya latar belakang aktif — Minimalis (arsitektur bersih ber-shadow lembut), Hero Arch (lengkung kanopi kubah megah rounded-t-[2.5rem] dengan border tebal dan pendaran tema), Aurora Glow (pancaran luminous radial-gradient multi-zone), Tech Grid (bingkai presisi graphite slate arsitektural), dan Industrial (karakter baja kokoh heavy-duty berbayangan dalam).',
+            'Eliminasi Total Warna Hardcode di Elemen Footer: Mengganti warna statis emerald pada tombol Unduh APK dan kartu Google Play, border statis putih, serta baris sub-footer dengan token tema dinamis (var(--color-primary), var(--color-primary-dark), dan rgba(var(--color-primary-rgb), ...)).',
+            'Ambient Theme Glow Beam & Top Aura: Menambahkan pendaran garis cahaya atmosferik horizontal di bibir atas footer dan aura radial glow lembut yang mengalir dari tema warna aktif toko.',
+            'Penyegaran Real-Time Seketika (Zero-Reload Live Sync): Mengaitkan event pergantian tema warna (applyUITheme) dan gaya latar (applyBackgroundStyle) ke fungsi renderStorefrontFooter(), sehingga perubahan warna di CMS Pengaturan langsung terlihat live di footer tanpa perlu reload halaman.',
+            'Multi-Channel Build & Sync v1.10.6 (Android versionCode 11006): Kompilasi produksi web, sinkronisasi bundle flashdisk siap pakai, dan Android Capacitor tersinkronisasi 100%.'
+        ]
+    },
+    {
         id: 'log-1-10-5',
         version: 'v1.10.5',
         date: '2026-09-30',

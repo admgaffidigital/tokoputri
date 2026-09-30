@@ -1871,19 +1871,114 @@ html:not(.dark) .card-modern select {
     background-color: #ffffff !important;
 }
 
-/* === 8. THEMED FOOTER (ELEGAN SLATE DARK DENGAN AKSEN BORDER TEMA) === */
+/* === 8. THEMED FOOTER (HARMONISASI TEMA MENYELURUH & 5 GAYA LATAR BELAKANG) ===
+   Footer toko mengadopsi 100% warna tema aktif (Putri Gold, Burgundy, Industrial CAT, Emerald, dll)
+   serta merespons secara dinamis terhadap 5 model gaya latar belakang (Minimalis, Hero Arch, Aurora Glow, Tech Grid, Industrial).
+   Tidak ada lagi warna hardcoded yang tertinggal!
+*/
 .themed-footer {
     position: relative;
-    background: #0f172a;
+    background: linear-gradient(180deg, rgba(var(--color-primary-rgb), 0.18) 0%, rgba(var(--color-primary-rgb), 0.04) 140px, #0b0f19 100%), #0b0f19 !important;
     border-top: 2px solid var(--color-primary) !important;
-    box-shadow: none !important;
+    box-shadow: 0 -10px 30px -5px rgba(var(--color-primary-rgb), 0.22) !important;
     color: #f8fafc;
+    transition: background 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease, border-radius 0.35s ease;
 }
 html.dark .themed-footer {
-    background: #020617 !important;
+    background: linear-gradient(180deg, rgba(var(--color-primary-rgb), 0.26) 0%, rgba(var(--color-primary-rgb), 0.05) 160px, #020617 100%), #020617 !important;
     border-top: 2px solid var(--color-primary) !important;
-    box-shadow: none !important;
+    box-shadow: 0 -12px 35px -5px rgba(var(--color-primary-rgb), 0.32) !important;
     color: #f8fafc;
+}
+
+/* 8.1 Footer: Gaya Minimalis (Clean Architectural Studio) */
+[data-bg-style="minimalist"] .themed-footer {
+    background: linear-gradient(180deg, rgba(var(--color-primary-rgb), 0.14) 0%, rgba(var(--color-primary-rgb), 0.03) 120px, #0c101c 100%), #0c101c !important;
+    border-top: 2px solid var(--color-primary) !important;
+    border-radius: 0 !important;
+    box-shadow: 0 -6px 20px -2px rgba(var(--color-primary-rgb), 0.15) !important;
+}
+html.dark[data-bg-style="minimalist"] .themed-footer {
+    background: linear-gradient(180deg, rgba(var(--color-primary-rgb), 0.20) 0%, rgba(var(--color-primary-rgb), 0.04) 140px, #030712 100%), #030712 !important;
+    border-top: 2px solid var(--color-primary) !important;
+    border-radius: 0 !important;
+    box-shadow: 0 -8px 25px -2px rgba(var(--color-primary-rgb), 0.22) !important;
+}
+
+/* 8.2 Footer: Gaya Hero Arch (Lengkung Kanopi Tematik) */
+[data-bg-style="hero_arch"] .themed-footer {
+    background: linear-gradient(180deg, rgba(var(--color-primary-rgb), 0.26) 0%, rgba(var(--color-primary-rgb), 0.06) 160px, #0a0e1a 100%), #0a0e1a !important;
+    border-top: 2.5px solid var(--color-primary) !important;
+    border-top-left-radius: 2.5rem !important;
+    border-top-right-radius: 2.5rem !important;
+    box-shadow: 0 -14px 40px -5px rgba(var(--color-primary-rgb), 0.35) !important;
+}
+html.dark[data-bg-style="hero_arch"] .themed-footer {
+    background: linear-gradient(180deg, rgba(var(--color-primary-rgb), 0.34) 0%, rgba(var(--color-primary-rgb), 0.08) 180px, #030610 100%), #030610 !important;
+    border-top: 2.5px solid var(--color-primary) !important;
+    border-top-left-radius: 2.5rem !important;
+    border-top-right-radius: 2.5rem !important;
+    box-shadow: 0 -16px 45px -5px rgba(var(--color-primary-rgb), 0.45) !important;
+}
+
+/* 8.3 Footer: Gaya Aurora Glow & Dual Tone (Pancaran Luminous Ambient) */
+[data-bg-style="aurora_glow"] .themed-footer,
+[data-bg-style="dual_tone"] .themed-footer {
+    background: 
+        radial-gradient(circle at 15% 0%, rgba(var(--color-primary-rgb), 0.32) 0%, transparent 60%),
+        radial-gradient(circle at 85% 20%, rgba(245, 158, 11, 0.20) 0%, transparent 55%),
+        linear-gradient(180deg, rgba(var(--color-primary-rgb), 0.18) 0%, #090d18 100%),
+        #090d18 !important;
+    border-top: 2px solid var(--color-primary) !important;
+    border-top-left-radius: 1.75rem !important;
+    border-top-right-radius: 1.75rem !important;
+    box-shadow: 0 -12px 35px -4px rgba(var(--color-primary-rgb), 0.35) !important;
+}
+html.dark[data-bg-style="aurora_glow"] .themed-footer,
+html.dark[data-bg-style="dual_tone"] .themed-footer {
+    background: 
+        radial-gradient(circle at 15% 0%, rgba(var(--color-primary-rgb), 0.42) 0%, transparent 60%),
+        radial-gradient(circle at 85% 20%, rgba(245, 158, 11, 0.25) 0%, transparent 55%),
+        linear-gradient(180deg, rgba(var(--color-primary-rgb), 0.24) 0%, #02050c 100%),
+        #02050c !important;
+    border-top: 2px solid var(--color-primary) !important;
+    border-top-left-radius: 1.75rem !important;
+    border-top-right-radius: 1.75rem !important;
+    box-shadow: 0 -14px 42px -4px rgba(var(--color-primary-rgb), 0.45) !important;
+}
+
+/* 8.4 Footer: Gaya Tech Grid & Geometric 3D (Arsitektur Presisi Cool Slate) */
+[data-bg-style="tech_grid"] .themed-footer,
+[data-bg-style="geometric_3d"] .themed-footer {
+    background: linear-gradient(180deg, rgba(var(--color-primary-rgb), 0.22) 0%, rgba(30, 41, 59, 0.45) 120px, #080c16 100%), #080c16 !important;
+    border-top: 2px solid var(--color-primary) !important;
+    border-top-left-radius: 1rem !important;
+    border-top-right-radius: 1rem !important;
+    box-shadow: 0 -6px 20px rgba(0, 0, 0, 0.25) !important;
+}
+html.dark[data-bg-style="tech_grid"] .themed-footer,
+html.dark[data-bg-style="geometric_3d"] .themed-footer {
+    background: linear-gradient(180deg, rgba(var(--color-primary-rgb), 0.28) 0%, rgba(30, 41, 59, 0.65) 130px, #02050b 100%), #02050b !important;
+    border-top: 2px solid var(--color-primary) !important;
+    border-top-left-radius: 1rem !important;
+    border-top-right-radius: 1rem !important;
+    box-shadow: 0 -8px 25px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* 8.5 Footer: Gaya Industrial (Heavy-Duty Steel & Amber Horizon) */
+[data-bg-style="industrial"] .themed-footer {
+    background: linear-gradient(180deg, rgba(var(--color-primary-rgb), 0.26) 0%, rgba(15, 23, 42, 0.96) 130px, #060911 100%), #060911 !important;
+    border-top: 3px solid var(--color-primary) !important;
+    border-top-left-radius: 1.25rem !important;
+    border-top-right-radius: 1.25rem !important;
+    box-shadow: 0 -12px 35px rgba(0, 0, 0, 0.4) !important;
+}
+html.dark[data-bg-style="industrial"] .themed-footer {
+    background: linear-gradient(180deg, rgba(var(--color-primary-rgb), 0.35) 0%, rgba(15, 23, 42, 0.98) 140px, #01040a 100%), #01040a !important;
+    border-top: 3px solid var(--color-primary) !important;
+    border-top-left-radius: 1.25rem !important;
+    border-top-right-radius: 1.25rem !important;
+    box-shadow: 0 -15px 45px rgba(0, 0, 0, 0.55) !important;
 }
 
 
