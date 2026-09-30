@@ -168,54 +168,54 @@ export const renderFooter = () => {
                 <i class="fa-solid fa-bolt text-[var(--color-primary)]"></i> Menu Layanan &amp; Bantuan Cepat
               </p>
             </div>
-            <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
               
               <!-- Tile 1: Lacak Pesanan -->
-              <button type="button" onclick="changeView('view-orders')" class="group flex items-start gap-3 p-3.5 rounded-2xl border border-slate-200/90 dark:border-slate-700/80 bg-slate-50/60 dark:bg-slate-800/50 hover:bg-white dark:hover:bg-slate-800 hover:border-[var(--color-primary)]/40 hover:shadow-md transition-all active:scale-95 text-left cursor-pointer">
-                <div class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 text-white shadow-xs transition-transform group-hover:scale-105" style="background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-primary) 100%);">
-                  <i class="fa-solid fa-clock-rotate-left text-sm"></i>
+              <button type="button" onclick="changeView('view-orders')" class="group flex items-center sm:items-start gap-2.5 sm:gap-3 p-2.5 sm:p-3.5 rounded-xl sm:rounded-2xl border border-slate-200/90 dark:border-slate-700/80 bg-slate-50/60 dark:bg-slate-800/50 hover:bg-white dark:hover:bg-slate-800 hover:border-[var(--color-primary)]/40 hover:shadow-md transition-all active:scale-95 text-left cursor-pointer">
+                <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl flex items-center justify-center shrink-0 text-white shadow-xs transition-transform group-hover:scale-105" style="background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-primary) 100%);">
+                  <i class="fa-solid fa-clock-rotate-left text-xs sm:text-sm"></i>
                 </div>
                 <div class="min-w-0 flex-1">
-                  <p class="text-xs font-extrabold text-slate-900 dark:text-white group-hover:text-[var(--color-primary)] transition-colors">Lacak Pesanan</p>
-                  <p class="text-[10px] font-medium text-slate-500 dark:text-slate-400 line-clamp-1 mt-0.5">Cek status &amp; resi kirim</p>
+                  <p class="text-[11px] sm:text-xs font-extrabold text-slate-900 dark:text-white group-hover:text-[var(--color-primary)] transition-colors truncate">Lacak Pesanan</p>
+                  <p class="text-[9px] sm:text-[10px] font-medium text-slate-500 dark:text-slate-400 truncate mt-0.5">Status &amp; resi kirim</p>
                 </div>
-                <i class="fa-solid fa-chevron-right text-[10px] text-slate-400 group-hover:text-[var(--color-primary)] group-hover:translate-x-0.5 transition-all mt-1"></i>
+                <i class="hidden sm:block fa-solid fa-chevron-right text-[10px] text-slate-400 group-hover:text-[var(--color-primary)] group-hover:translate-x-0.5 transition-all mt-1"></i>
               </button>
 
               <!-- Tile 2: Kupon Promo -->
-              <button type="button" onclick="if(typeof window.openVoucherModal==='function') window.openVoucherModal();" class="group flex items-start gap-3 p-3.5 rounded-2xl border border-slate-200/90 dark:border-slate-700/80 bg-slate-50/60 dark:bg-slate-800/50 hover:bg-white dark:hover:bg-slate-800 hover:border-amber-400/50 hover:shadow-md transition-all active:scale-95 text-left cursor-pointer">
-                <div class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 text-white shadow-xs bg-gradient-to-br from-amber-400 to-amber-600 transition-transform group-hover:scale-105">
-                  <i class="fa-solid fa-ticket-simple text-sm"></i>
+              <button type="button" onclick="if(typeof window.openVoucherModal==='function') window.openVoucherModal();" class="group flex items-center sm:items-start gap-2.5 sm:gap-3 p-2.5 sm:p-3.5 rounded-xl sm:rounded-2xl border border-slate-200/90 dark:border-slate-700/80 bg-slate-50/60 dark:bg-slate-800/50 hover:bg-white dark:hover:bg-slate-800 hover:border-amber-400/50 hover:shadow-md transition-all active:scale-95 text-left cursor-pointer">
+                <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl flex items-center justify-center shrink-0 text-white shadow-xs bg-gradient-to-br from-amber-400 to-amber-600 transition-transform group-hover:scale-105">
+                  <i class="fa-solid fa-ticket-simple text-xs sm:text-sm"></i>
                 </div>
                 <div class="min-w-0 flex-1">
-                  <p class="text-xs font-extrabold text-slate-900 dark:text-white group-hover:text-amber-500 transition-colors">Kupon Promo</p>
-                  <p class="text-[10px] font-medium text-slate-500 dark:text-slate-400 line-clamp-1 mt-0.5">Klaim diskon belanja</p>
+                  <p class="text-[11px] sm:text-xs font-extrabold text-slate-900 dark:text-white group-hover:text-amber-500 transition-colors truncate">Kupon Promo</p>
+                  <p class="text-[9px] sm:text-[10px] font-medium text-slate-500 dark:text-slate-400 truncate mt-0.5">Diskon belanja</p>
                 </div>
-                <i class="fa-solid fa-chevron-right text-[10px] text-slate-400 group-hover:text-amber-500 group-hover:translate-x-0.5 transition-all mt-1"></i>
+                <i class="hidden sm:block fa-solid fa-chevron-right text-[10px] text-slate-400 group-hover:text-amber-500 group-hover:translate-x-0.5 transition-all mt-1"></i>
               </button>
 
               <!-- Tile 3: Pusat Bantuan & FAQ -->
-              <button type="button" onclick="changeView('view-faq')" class="group flex items-start gap-3 p-3.5 rounded-2xl border border-slate-200/90 dark:border-slate-700/80 bg-slate-50/60 dark:bg-slate-800/50 hover:bg-white dark:hover:bg-slate-800 hover:border-blue-400/50 hover:shadow-md transition-all active:scale-95 text-left cursor-pointer">
-                <div class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 text-white shadow-xs bg-gradient-to-br from-sky-400 to-blue-600 transition-transform group-hover:scale-105">
-                  <i class="fa-solid fa-circle-question text-sm"></i>
+              <button type="button" onclick="changeView('view-faq')" class="group flex items-center sm:items-start gap-2.5 sm:gap-3 p-2.5 sm:p-3.5 rounded-xl sm:rounded-2xl border border-slate-200/90 dark:border-slate-700/80 bg-slate-50/60 dark:bg-slate-800/50 hover:bg-white dark:hover:bg-slate-800 hover:border-blue-400/50 hover:shadow-md transition-all active:scale-95 text-left cursor-pointer">
+                <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl flex items-center justify-center shrink-0 text-white shadow-xs bg-gradient-to-br from-sky-400 to-blue-600 transition-transform group-hover:scale-105">
+                  <i class="fa-solid fa-circle-question text-xs sm:text-sm"></i>
                 </div>
                 <div class="min-w-0 flex-1">
-                  <p class="text-xs font-extrabold text-slate-900 dark:text-white group-hover:text-blue-500 transition-colors">Tanya Jawab</p>
-                  <p class="text-[10px] font-medium text-slate-500 dark:text-slate-400 line-clamp-1 mt-0.5">FAQ &amp; panduan toko</p>
+                  <p class="text-[11px] sm:text-xs font-extrabold text-slate-900 dark:text-white group-hover:text-blue-500 transition-colors truncate">Tanya Jawab</p>
+                  <p class="text-[9px] sm:text-[10px] font-medium text-slate-500 dark:text-slate-400 truncate mt-0.5">FAQ &amp; panduan</p>
                 </div>
-                <i class="fa-solid fa-chevron-right text-[10px] text-slate-400 group-hover:text-blue-500 group-hover:translate-x-0.5 transition-all mt-1"></i>
+                <i class="hidden sm:block fa-solid fa-chevron-right text-[10px] text-slate-400 group-hover:text-blue-500 group-hover:translate-x-0.5 transition-all mt-1"></i>
               </button>
 
               <!-- Tile 4: Jaminan Mutu Resmi -->
-              <button type="button" onclick="openQualityGuaranteeModal()" class="group flex items-start gap-3 p-3.5 rounded-2xl border border-slate-200/90 dark:border-slate-700/80 bg-slate-50/60 dark:bg-slate-800/50 hover:bg-white dark:hover:bg-slate-800 hover:border-rose-400/50 hover:shadow-md transition-all active:scale-95 text-left cursor-pointer">
-                <div class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 text-white shadow-xs bg-gradient-to-br from-rose-400 to-rose-600 transition-transform group-hover:scale-105">
-                  <i class="fa-solid fa-shield-halved text-sm"></i>
+              <button type="button" onclick="openQualityGuaranteeModal()" class="group flex items-center sm:items-start gap-2.5 sm:gap-3 p-2.5 sm:p-3.5 rounded-xl sm:rounded-2xl border border-slate-200/90 dark:border-slate-700/80 bg-slate-50/60 dark:bg-slate-800/50 hover:bg-white dark:hover:bg-slate-800 hover:border-rose-400/50 hover:shadow-md transition-all active:scale-95 text-left cursor-pointer">
+                <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl flex items-center justify-center shrink-0 text-white shadow-xs bg-gradient-to-br from-rose-400 to-rose-600 transition-transform group-hover:scale-105">
+                  <i class="fa-solid fa-shield-halved text-xs sm:text-sm"></i>
                 </div>
                 <div class="min-w-0 flex-1">
-                  <p class="text-xs font-extrabold text-slate-900 dark:text-white group-hover:text-rose-500 transition-colors">Jaminan Mutu</p>
-                  <p class="text-[10px] font-medium text-slate-500 dark:text-slate-400 line-clamp-1 mt-0.5">100% produk resmi</p>
+                  <p class="text-[11px] sm:text-xs font-extrabold text-slate-900 dark:text-white group-hover:text-rose-500 transition-colors truncate">Jaminan Mutu</p>
+                  <p class="text-[9px] sm:text-[10px] font-medium text-slate-500 dark:text-slate-400 truncate mt-0.5">100% garansi resmi</p>
                 </div>
-                <i class="fa-solid fa-chevron-right text-[10px] text-slate-400 group-hover:text-rose-500 group-hover:translate-x-0.5 transition-all mt-1"></i>
+                <i class="hidden sm:block fa-solid fa-chevron-right text-[10px] text-slate-400 group-hover:text-rose-500 group-hover:translate-x-0.5 transition-all mt-1"></i>
               </button>
 
             </div>

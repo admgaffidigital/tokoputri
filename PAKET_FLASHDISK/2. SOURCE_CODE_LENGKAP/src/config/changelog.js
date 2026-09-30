@@ -8,6 +8,19 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-10-11',
+        version: 'v1.10.11',
+        date: '2026-10-01',
+        title: 'Optimasi Tipografi & Tata Letak Mobile Quick-Action Tiles Footer: Eliminasi Pemotongan Teks Ellipsis',
+        category: 'ui',
+        badge: 'Mobile Quick-Action Polish v1.10.11',
+        items: [
+            'Optimasi Tata Letak Cerdas Quick-Action Tiles di Layar HP (src/modules/home/footer.js): Menyelesaikan masalah teks judul terlipat 2 baris dan subtitle terpotong titik-titik ("disko...", "FAQ &...", "produ...") pada layar HP (viewport sempit). Ikon kini proporsional adaptif (w-8 h-8 di mobile dan w-10 h-10 di desktop), padding kartu dirampingkan (p-2.5 di mobile), dan panah chevron kanan disembunyikan di mobile (hidden sm:block) sehingga ruang teks bertambah luas +65%.',
+            'Penyelarasan Kalimat Subtitle Presisi 1 Baris: Memperbarui teks keterangan kartu menjadi padat, ringkas, dan jelas ("Status & resi kirim", "Diskon belanja", "FAQ & panduan", "100% garansi resmi") sehingga tampil utuh tanpa terpotong di seluruh ukuran layar smartphone.',
+            'Multi-Channel Build & Sync v1.10.11 (Android versionCode 11011): Kompilasi produksi web, sinkronisasi bundle flashdisk siap pakai, dan Android Capacitor tersinkronisasi 100%.'
+        ]
+    },
+    {
         id: 'log-1-10-10',
         version: 'v1.10.10',
         date: '2026-10-01',
