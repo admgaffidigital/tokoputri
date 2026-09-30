@@ -8,6 +8,24 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-10-4',
+        version: 'v1.10.4',
+        date: '2026-09-30',
+        title: 'Diferensiasi Signifikan Tema & Karakter Visual: 5 Gaya Latar Belakang Unik & Kontras Nyata',
+        category: 'ui',
+        badge: 'Distinct Theme Ambience v1.10.4',
+        items: [
+            'Diferensiasi Signifikan Antar-Gaya Latar Belakang (src/style.css & src/core/theme.js): Mengeliminasi keseragaman latar yang sebelumnya terasa sama saja, kini setiap gaya latar belakang menghadirkan atmosfer, warna kanvas, siluet header, dan kontras kartu yang 100% berbeda dan langsung terlihat perubahannya.',
+            'Minimalis Clean Studio: Kanvas putih gading mewah (#FAF8F5 / #0B1120) dengan header flat bersih dan kartu berbingkai halus, terinspirasi estetika toko ritel modern.',
+            'Hero Arch (Kanopi Lengkung Kubah): Hadir dengan kubah kanopi lengkung megah berwarna primer toko yang menjulur dari header dan membingkai banner sambutan etalase secara dramatis.',
+            'Aurora Glow (Pendaran Gradien Bercahaya): Kanvas atmosferik bercahaya dengan pendaran ambient multi-zone di sudut-sudut layar serta halo glow bercahaya pada kartu Bento katalog.',
+            'Tech Grid (Arsitektur Slate Modern): Kanvas bernuansa dingin arsitektural (#EEF2F6 / #0A0E17) dengan kontras garis presisi (#CBD5E1) dan header dual-tone berkarakter teknik presisi tinggi.',
+            'Industrial Heavy-Duty (Toko Bangunan & Alat Pertukangan): Kanvas beton baja abu-abu (#E2E8F0 / #111827) yang kokoh dan berbobot, membuat kartu produk putih menonjol dengan kontras tajam (High Contrast), bayangan berbobot, dan header baja pekat.',
+            'Penyelarasan Kartu Mockup CMS Pengaturan: Setiap kartu preview di CMS Pengaturan kini mencerminkan warna kanvas, siluet header, dan aura tema aslinya secara akurat.',
+            'Multi-Channel Build & Sync v1.10.4 (Android versionCode 11004): Kompilasi produksi web, sinkronisasi bundle flashdisk siap pakai, dan Android Capacitor tersinkronisasi 100%.'
+        ]
+    },
+    {
         id: 'log-1-10-3',
         version: 'v1.10.3',
         date: '2026-09-30',

@@ -2149,63 +2149,154 @@ html.dark #app-container[data-has-custom-bg="true"] {
     background-image: none !important;
 }
 
-/* ─── 1. HERO ARCH (Header lengkung solid) ─── */
-[data-bg-style="hero_arch"] .glass-header {
+/* ══════════════════════════════════════════════════════════
+   GAYA LATAR BELAKANG & TEMA VISUAL (DISTINCT THEME STYLES)
+   Setiap gaya memiliki karakter visual, warna kanvas, 
+   siluet header, dan kontras kartu yang nyata & berbeda 100%.
+   ══════════════════════════════════════════════════════════ */
+
+/* ─── 1. MINIMALIS (Clean White Studio / Tokopedia & Apple Style) ─── */
+[data-bg-style="minimalist"],
+[data-bg-style="minimalist"] #app-container {
+    background-color: #FAF8F5 !important;
+    background-image: linear-gradient(180deg, rgba(var(--color-primary-rgb), 0.04) 0%, transparent 400px) !important;
+}
+.dark[data-bg-style="minimalist"],
+.dark[data-bg-style="minimalist"] #app-container,
+html.dark[data-bg-style="minimalist"],
+html.dark[data-bg-style="minimalist"] #app-container {
+    background-color: #0B1120 !important;
+    background-image: linear-gradient(180deg, rgba(var(--color-primary-rgb), 0.08) 0%, transparent 400px) !important;
+}
+[data-bg-style="minimalist"] .glass-header {
     background: var(--color-primary);
-    border-radius: 0 0 1.75rem 1.75rem;
-    padding-bottom: 1.25rem;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-    border-bottom: none;
+    border-radius: 0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
 }
 
-/* ─── 2. AURORA GLOW (Atmospheric Mesh Aura) ─── */
+/* ─── 2. HERO ARCH (Lengkung Kanopi Emas / Stage Dome) ─── */
+[data-bg-style="hero_arch"],
+[data-bg-style="hero_arch"] #app-container {
+    background-color: #F8F9FA !important;
+    background-image: linear-gradient(180deg, rgba(var(--color-primary-rgb), 0.16) 0%, rgba(var(--color-primary-rgb), 0.04) 380px, transparent 650px) !important;
+}
+.dark[data-bg-style="hero_arch"],
+.dark[data-bg-style="hero_arch"] #app-container,
+html.dark[data-bg-style="hero_arch"],
+html.dark[data-bg-style="hero_arch"] #app-container {
+    background-color: #0A0F1D !important;
+    background-image: linear-gradient(180deg, rgba(var(--color-primary-rgb), 0.24) 0%, rgba(var(--color-primary-rgb), 0.05) 380px, transparent 650px) !important;
+}
+[data-bg-style="hero_arch"] .glass-header {
+    background: linear-gradient(180deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+    border-radius: 0 0 2.25rem 2.25rem;
+    padding-bottom: 1.45rem;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+}
+
+/* ─── 3. AURORA GLOW (Gradien Suasana Mewah / Luminous Ambient) ─── */
+[data-bg-style="aurora_glow"],
+[data-bg-style="aurora_glow"] #app-container,
+[data-bg-style="dual_tone"],
+[data-bg-style="dual_tone"] #app-container {
+    background-color: #F6F3F8 !important;
+    background-image: 
+        radial-gradient(circle at 10% 15%, rgba(var(--color-primary-rgb), 0.22) 0%, transparent 60%),
+        radial-gradient(circle at 90% 25%, rgba(245, 158, 11, 0.16) 0%, transparent 55%),
+        linear-gradient(180deg, rgba(var(--color-primary-rgb), 0.10) 0%, transparent 600px) !important;
+    background-attachment: fixed !important;
+}
+.dark[data-bg-style="aurora_glow"],
+.dark[data-bg-style="aurora_glow"] #app-container,
+html.dark[data-bg-style="aurora_glow"],
+html.dark[data-bg-style="aurora_glow"] #app-container {
+    background-color: #080C16 !important;
+    background-image: 
+        radial-gradient(circle at 10% 15%, rgba(var(--color-primary-rgb), 0.32) 0%, transparent 60%),
+        radial-gradient(circle at 90% 25%, rgba(245, 158, 11, 0.20) 0%, transparent 55%),
+        linear-gradient(180deg, rgba(var(--color-primary-rgb), 0.16) 0%, transparent 600px) !important;
+    background-attachment: fixed !important;
+}
 [data-bg-style="aurora_glow"] .glass-header,
 [data-bg-style="dual_tone"] .glass-header {
     background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
     border-radius: 0 0 1.5rem 1.5rem;
     padding-bottom: 1.15rem;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 6px 22px -2px rgba(var(--color-primary-rgb), 0.3);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+}
+[data-bg-style="aurora_glow"] #reward-catalog-container,
+[data-bg-style="aurora_glow"] #dynamic-vouchers-container,
+[data-bg-style="aurora_glow"] .bento-island-card {
+    border-color: rgba(var(--color-primary-rgb), 0.25) !important;
+    box-shadow: 0 6px 20px -3px rgba(var(--color-primary-rgb), 0.14) !important;
 }
 
-/* ─── 3. TECH GRID (Arsitektur Bersih & Presisi) ─── */
+/* ─── 4. TECH GRID (Arsitektur Presisi / Cool Graphite & Slate) ─── */
+[data-bg-style="tech_grid"],
+[data-bg-style="tech_grid"] #app-container,
+[data-bg-style="geometric_3d"],
+[data-bg-style="geometric_3d"] #app-container {
+    background-color: #EEF2F6 !important;
+    background-image: linear-gradient(180deg, rgba(var(--color-primary-rgb), 0.12) 0%, rgba(30, 41, 59, 0.05) 350px, transparent 700px) !important;
+}
+.dark[data-bg-style="tech_grid"],
+.dark[data-bg-style="tech_grid"] #app-container,
+html.dark[data-bg-style="tech_grid"],
+html.dark[data-bg-style="tech_grid"] #app-container {
+    background-color: #0A0E17 !important;
+    background-image: linear-gradient(180deg, rgba(var(--color-primary-rgb), 0.18) 0%, rgba(30, 41, 59, 0.18) 350px, transparent 700px) !important;
+}
 [data-bg-style="tech_grid"] .glass-header,
 [data-bg-style="geometric_3d"] .glass-header {
-    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
-    border-radius: 0 0 1.25rem 1.25rem;
-    padding-bottom: 1.15rem;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    background: linear-gradient(135deg, var(--color-primary) 0%, #1e293b 100%);
+    border-radius: 0 0 1rem 1rem;
+    padding-bottom: 1.1rem;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.12);
     border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
+[data-bg-style="tech_grid"] #reward-catalog-container,
+[data-bg-style="tech_grid"] #dynamic-vouchers-container,
+[data-bg-style="tech_grid"] .bento-island-card {
+    border-color: #CBD5E1 !important;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.07) !important;
+}
+html.dark[data-bg-style="tech_grid"] #reward-catalog-container,
+html.dark[data-bg-style="tech_grid"] #dynamic-vouchers-container,
+html.dark[data-bg-style="tech_grid"] .bento-island-card {
+    border-color: #334155 !important;
+}
 
-/* ─── 4. INDUSTRIAL (Heavy-Duty Solid Kuat) ─── */
+/* ─── 5. INDUSTRIAL (Heavy-Duty Toko Bangunan & Teknik) ─── */
+[data-bg-style="industrial"],
+[data-bg-style="industrial"] #app-container {
+    background-color: #E2E8F0 !important;
+    background-image: linear-gradient(180deg, rgba(var(--color-primary-rgb), 0.16) 0%, rgba(15, 23, 42, 0.08) 380px, transparent 700px) !important;
+}
+.dark[data-bg-style="industrial"],
+.dark[data-bg-style="industrial"] #app-container,
+html.dark[data-bg-style="industrial"],
+html.dark[data-bg-style="industrial"] #app-container {
+    background-color: #111827 !important;
+    background-image: linear-gradient(180deg, rgba(var(--color-primary-rgb), 0.20) 0%, rgba(15, 23, 42, 0.35) 380px, transparent 700px) !important;
+}
 [data-bg-style="industrial"] .glass-header {
-    background: linear-gradient(180deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+    background: linear-gradient(180deg, var(--color-primary) 0%, #0f172a 100%);
     border-radius: 0 0 1.25rem 1.25rem;
     padding-bottom: 1.15rem;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.22);
     border-bottom: 2px solid rgba(255, 255, 255, 0.25);
 }
-
-/* Kanvas khusus gaya industrial (Mulus & Bersih tanpa corak bintik/garis) */
-[data-bg-style="industrial"] #app-container {
-    background-image: linear-gradient(180deg, rgba(var(--color-primary-rgb), 0.07) 0%, rgba(var(--color-primary-rgb), 0.02) 320px, transparent 700px);
-    background-repeat: no-repeat;
+[data-bg-style="industrial"] #reward-catalog-container,
+[data-bg-style="industrial"] #dynamic-vouchers-container,
+[data-bg-style="industrial"] .bento-island-card {
+    border-color: #94A3B8 !important;
+    box-shadow: 0 4px 16px rgba(15, 23, 42, 0.12) !important;
 }
-html.dark[data-bg-style="industrial"] #app-container,
-.dark[data-bg-style="industrial"] #app-container {
-    background-image: linear-gradient(180deg, rgba(var(--color-primary-rgb), 0.12) 0%, rgba(var(--color-primary-rgb), 0.03) 360px, transparent 750px);
-    background-repeat: no-repeat;
-}
-
-
-/* ─── 5. MINIMALIS (Polos bersih elegan) ─── */
-[data-bg-style="minimalist"] .glass-header {
-    background: var(--color-primary);
-    border-radius: 0;
-    clip-path: none;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+html.dark[data-bg-style="industrial"] #reward-catalog-container,
+html.dark[data-bg-style="industrial"] #dynamic-vouchers-container,
+html.dark[data-bg-style="industrial"] .bento-island-card {
+    border-color: #475569 !important;
 }
 
 /* === MINI SMARTPHONE MOCKUP CARDS (CMS ADMIN PREVIEWS) === */
@@ -2277,37 +2368,68 @@ html.dark .mini-phone-screen {
     position: relative;
     transition: all 0.2s ease;
 }
-.mini-preview-arch .mini-preview-header {
-    border-radius: 0 0 100% 100% / 0 0 18px 18px;
-    box-shadow: 0 3px 8px rgba(var(--color-primary-rgb), 0.3);
-}
-.mini-preview-aurora .mini-preview-header {
-    background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
-    border-radius: 0 0 10px 10px;
-}
-.mini-preview-aurora .mini-aura-orb {
-    position: absolute;
-    width: 24px;
-    height: 24px;
-    border-radius: 9999px;
-    background: var(--color-primary);
-    opacity: 0.55;
-}
-.mini-preview-tech .mini-preview-header {
-    border-radius: 0 0 8px 8px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
-}
-.mini-preview-industrial .mini-preview-header {
-    border-radius: 0 0 8px 8px;
-    border-bottom: 1.5px solid rgba(255, 255, 255, 0.4);
-}
-.mini-preview-industrial .mini-dummy-content {
-    background: transparent;
+.mini-preview-minimal {
+    background-color: #FAF8F5 !important;
 }
 .mini-preview-minimal .mini-preview-header {
     height: 22px;
     border-radius: 0;
 }
+
+.mini-preview-arch {
+    background-color: #F8F9FA !important;
+}
+.mini-preview-arch .mini-preview-header {
+    border-radius: 0 0 100% 100% / 0 0 20px 20px;
+    box-shadow: 0 4px 10px rgba(var(--color-primary-rgb), 0.35);
+}
+
+.mini-preview-aurora {
+    background-color: #F6F3F8 !important;
+}
+.mini-preview-aurora .mini-preview-header {
+    background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+    border-radius: 0 0 12px 12px;
+    box-shadow: 0 4px 12px rgba(var(--color-primary-rgb), 0.35);
+}
+.mini-preview-aurora .mini-aura-orb {
+    position: absolute;
+    width: 26px;
+    height: 26px;
+    border-radius: 9999px;
+    background: var(--color-primary);
+    opacity: 0.45;
+}
+
+.mini-preview-tech {
+    background-color: #EEF2F6 !important;
+}
+.mini-preview-tech .mini-preview-header {
+    background: linear-gradient(135deg, var(--color-primary), #1e293b);
+    border-radius: 0 0 8px 8px;
+    border-bottom: 1.5px solid rgba(255, 255, 255, 0.4);
+}
+
+.mini-preview-industrial {
+    background-color: #E2E8F0 !important;
+}
+.mini-preview-industrial .mini-preview-header {
+    background: linear-gradient(180deg, var(--color-primary), #0f172a);
+    border-radius: 0 0 9px 9px;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.5);
+}
+.mini-preview-industrial .mini-dummy-content {
+    background: transparent;
+}
+.mini-preview-industrial .mini-dummy-card {
+    border: 1px solid #94A3B8;
+}
+
+html.dark .mini-preview-minimal { background-color: #0B1120 !important; }
+html.dark .mini-preview-arch { background-color: #0A0F1D !important; }
+html.dark .mini-preview-aurora { background-color: #080C16 !important; }
+html.dark .mini-preview-tech { background-color: #0A0E17 !important; }
+html.dark .mini-preview-industrial { background-color: #111827 !important; }
 
 .mini-dummy-content {
     padding: 4px;
