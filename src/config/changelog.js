@@ -8,6 +8,19 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-9-98',
+        version: 'v1.9.98',
+        date: '2026-09-30',
+        title: 'Penambahan Tema Warna Burgundy Mewah & Elegan di CMS Pengaturan',
+        category: 'ui',
+        badge: 'Regal Burgundy Theme v1.9.98',
+        items: [
+            'Palet Warna Burgundy Mewah (src/core/theme.js): Menambahkan tema warna Burgundy (#800020) dengan 10 skala warna Tailwind harmonis (50-900) yang memancarkan aura merah anggur klasik, berkelas, dan berkontras tinggi (rasio kontras 8.78:1 memenuhi standar WCAG AAA).',
+            'Integrasi Swatch Tema CMS Pengaturan (src/modules/admin/settings.js): Menghadirkan chip warna Burgundy interaktif dengan tooltip "Burgundy", preview instan langsung saat diklik, dan penyimpanan otomatis ke preferensi toko dan PWA meta tags.',
+            'Multi-Channel Build & Sync v1.9.98 (Android versionCode 10998): Kompilasi produksi web, paket flashdisk, dan platform Android Capacitor tersinkronisasi 100%.'
+        ]
+    },
+    {
         id: 'log-1-9-97',
         version: 'v1.9.97',
         date: '2026-09-30',

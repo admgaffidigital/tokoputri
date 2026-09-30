@@ -219,7 +219,7 @@ export const openSettingForm = (type) => {
         if (currentBgStyle === 'geometric_3d') currentBgStyle = 'tech_grid';
         if (currentBgStyle === 'diagonal_skew' || currentBgStyle === 'glass_studio') currentBgStyle = 'minimalist';
         const presetNames = {
-            gold: "Putri Gold", emerald: "Emerald", teal: "Teal", lime: "Lime", cyan: "Cyan", sky: "Sky",
+            gold: "Putri Gold", burgundy: "Burgundy", emerald: "Emerald", teal: "Teal", lime: "Lime", cyan: "Cyan", sky: "Sky",
             blue: "Blue", indigo: "Indigo", violet: "Violet", purple: "Purple",
             fuchsia: "Fuchsia", pink: "Pink", rose: "Rose", red: "Red",
             orange: "Orange", amber: "Amber", yellow: "Yellow", green: "Green",
