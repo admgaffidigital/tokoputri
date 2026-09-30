@@ -8,6 +8,23 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-9-97',
+        version: 'v1.9.97',
+        date: '2026-09-30',
+        title: 'Eliminasi Total Efek Blur & Glassmorphism: Desain Solid, Tajam, Berkontras Tinggi & Kinerja Maksimal',
+        category: 'ui',
+        badge: 'Zero Blur & Pure Solid Clarity v1.9.97',
+        items: [
+            'Penghapusan Total Efek Blur & Glassmorphism di Seluruh Ekosistem: Menghilangkan semua efek backdrop-blur, blur orbs, dan filter kaca di etalase toko, modal katalog, POS kasir, panel admin CMS, serta paket build Toko Putri.',
+            'Universal CSS Anti-Blur Shield (src/style.css): Mengimplementasikan aturan global backdrop-filter: none !important dan filter: none !important pada seluruh elemen, kelas [class*="backdrop-blur"], [class*="blur-"], dan selector modal/overlay untuk mencegah kebocoran efek buram.',
+            'Penataan Ulang Preset Background (src/modules/admin/settings.js & src/core/theme.js): Mengeliminasi preset "Glass Studio" dan menata ulang pilihan latar belakang toko menjadi 4 opsi simetris 2x2 yang solid dan elegan: Minimalis, Hero Arch, Aurora Glow, dan Tech Grid.',
+            'Transisi Modal & Bottom Sheet Solid (index.html, pos.js, pos-shift.js, pos-auth.js, pos-cashier-admin.js, reward.js): Mengubah seluruh overlay modal dan bottom sheet dari latar semi-transparan buram menjadi latar solid berbobot (bg-slate-900/80 - bg-slate-900/85) yang tajam, kontras tinggi, dan nyaman dibaca.',
+            'Pembersihan Orbs & Halo Blur (sections.js, reward.js, orders.js, finance.js, index.html): Mengeliminasi lingkaran-lingkaran blur dekoratif yang dapat memperberat kinerja rendering GPU perangkat pengguna.',
+            'Kapsul Notifikasi & Floating Bar Solid (src/style.css, native-mobile.js, pos.js): Mengubah popup toast notifikasi dan floating bar mobile kasir menjadi kapsul solid ber-outline tegas tanpa lapisan buram berkabut.',
+            'Multi-Channel Build & Sync v1.9.97 (Android versionCode 10997): Kompilasi produksi web, sinkronisasi folder distribusi siap pakai, paket flashdisk, dan platform Android Capacitor.'
+        ]
+    },
+    {
         id: 'log-1-9-96',
         version: 'v1.9.96',
         date: '2026-09-29',

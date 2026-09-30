@@ -314,7 +314,7 @@ export const cashierLogout = async (bypassShiftCheck = false) => {
             document.getElementById('pos-logout-shift-modal')?.remove();
             const startCashStr = typeof window.fRp === 'function' ? window.fRp(activeShift.startingCash) : 'Rp ' + activeShift.startingCash;
             document.body.insertAdjacentHTML('beforeend', `
-            <div id="pos-logout-shift-modal" class="fixed inset-0 z-[10005] flex items-center justify-center p-3 sm:p-4" style="background:rgba(15,23,42,0.75);backdrop-filter:blur(5px)">
+            <div id="pos-logout-shift-modal" class="fixed inset-0 z-[10005] flex items-center justify-center p-3 sm:p-4" style="background:rgba(15,23,42,0.8)">
                 <div class="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl w-full max-w-sm border border-slate-200 dark:border-slate-800 p-5 text-center space-y-4">
                     <div class="w-14 h-14 rounded-2xl bg-amber-100 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 flex items-center justify-center text-2xl mx-auto shadow-inner">
                         <i class="fa-solid fa-triangle-exclamation"></i>

@@ -98,7 +98,7 @@ export const renderCashierAccounts = async () => {
     setH('admin-content', `
     <div class="space-y-4 max-w-5xl mx-auto pb-16">
         <!-- Native App Sticky Segmented Control Bar -->
-        <div class="sticky top-0 z-20 -mx-4 lg:-mx-8 px-4 lg:px-8 py-3 bg-slate-50/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800/80 shadow-2xs">
+        <div class="sticky top-0 z-20 -mx-4 lg:-mx-8 px-4 lg:px-8 py-3 bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 shadow-2xs">
             <div class="p-1.5 bg-slate-100 dark:bg-slate-800/90 rounded-2xl max-w-md w-full mx-auto grid grid-cols-2 gap-1.5 border border-slate-200/90 dark:border-slate-700/80 shadow-inner">
                 <button id="tab-btn-cashier-accounts" onclick="window.switchCashierTab('accounts')" 
                     class="py-2.5 px-4 rounded-xl text-xs font-black text-white transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-95 shadow-md"
@@ -431,7 +431,7 @@ export const openAddStaffModal = () => {
     };
 
     document.body.insertAdjacentHTML('beforeend', `
-    <div id="add-staff-modal" class="fixed inset-0 z-[9990] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-900/70 backdrop-blur-xs"
+    <div id="add-staff-modal" class="fixed inset-0 z-[9990] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-900/75"
         onclick="if(event.target===this) window.closeAddStaffModal()">
         <div class="bg-white dark:bg-slate-900 rounded-t-[2rem] sm:rounded-3xl shadow-2xl w-full max-w-2xl flex flex-col max-h-[92vh] sm:max-h-[90vh] overflow-hidden scale-95 transition-transform duration-300 border border-slate-200 dark:border-slate-800" id="add-staff-modal-box">
             <!-- Mobile Drag Handle -->
@@ -717,7 +717,7 @@ export const openPermissionsModal = (uid) => {
     };
 
     document.body.insertAdjacentHTML('beforeend', `
-    <div id="permissions-modal" class="fixed inset-0 z-[9990] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-900/70 backdrop-blur-xs"
+    <div id="permissions-modal" class="fixed inset-0 z-[9990] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-900/75"
         onclick="if(event.target===this) window.closePermissionsModal()">
         <div class="bg-white dark:bg-slate-900 rounded-t-[2rem] sm:rounded-3xl shadow-2xl w-full max-w-2xl flex flex-col max-h-[92vh] sm:max-h-[90vh] overflow-hidden scale-95 transition-transform duration-300 border border-slate-200 dark:border-slate-800" id="permissions-modal-box">
             <!-- Mobile Drag Handle -->
@@ -863,7 +863,7 @@ export const openEditStaffModal = (uid, currentName, currentEmail, currentRole) 
     if (!verifyOwnerAuthority('mengubah profil staf')) return;
 
     document.body.insertAdjacentHTML('beforeend', `
-    <div id="edit-staff-modal" class="fixed inset-0 z-[9990] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-900/70 backdrop-blur-xs"
+    <div id="edit-staff-modal" class="fixed inset-0 z-[9990] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-900/75"
         onclick="if(event.target===this) window.closeEditStaffModal()">
         <div class="bg-white dark:bg-slate-900 rounded-t-[2rem] sm:rounded-3xl shadow-2xl w-full max-w-sm flex flex-col overflow-hidden scale-95 transition-transform duration-300 border border-slate-200 dark:border-slate-800" id="edit-staff-modal-box">
             <!-- Mobile Drag Handle -->

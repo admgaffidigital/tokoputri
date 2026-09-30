@@ -249,7 +249,7 @@ export const customPrompt = (title, defaultVal = '', callback = null) => {
 
     let div = document.createElement('div');
     div.id = 'custom-prompt-container';
-    div.className = 'fixed inset-0 z-[10005] bg-slate-900/80 backdrop-blur-xs flex items-center justify-center p-4 opacity-0 transition-opacity duration-300';
+    div.className = 'fixed inset-0 z-[10005] bg-slate-900/85 flex items-center justify-center p-4 opacity-0 transition-opacity duration-300';
     div.onclick = (e) => { if (e.target === div) window.closePrompt(); };
     div.innerHTML = `
         <div class="bg-white dark:bg-slate-800 rounded-[2rem] w-full max-w-[380px] sm:max-w-[420px] p-6 sm:p-8 shadow-2xl border border-slate-200 dark:border-slate-700 relative transform scale-95 transition-all duration-300 flex flex-col text-center" onclick="event.stopPropagation()">

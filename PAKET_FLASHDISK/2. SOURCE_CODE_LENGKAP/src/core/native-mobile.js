@@ -412,7 +412,7 @@ export const initFloatingScrollTop = () => {
         btn = document.createElement('button');
         btn.id = 'native-scroll-top-btn';
         btn.setAttribute('aria-label', 'Kembali ke Atas');
-        btn.className = 'fixed bottom-20 right-4 z-40 hidden opacity-0 translate-y-3 transition-all duration-300 flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-slate-900/85 dark:bg-slate-800/90 text-white text-xs font-semibold shadow-xl backdrop-blur-md border border-white/10 active:scale-95 cursor-pointer';
+        btn.className = 'fixed bottom-20 right-4 z-40 hidden opacity-0 translate-y-3 transition-all duration-300 flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-slate-900 dark:bg-slate-800 text-white text-xs font-semibold shadow-xl border border-slate-700/80 active:scale-95 cursor-pointer';
         btn.innerHTML = '<i class="fa-solid fa-arrow-up text-[10px]"></i><span>Ke Atas</span>';
         document.body.appendChild(btn);
 
@@ -463,7 +463,7 @@ export const initConnectivityBanner = () => {
     if (!banner) {
         banner = document.createElement('div');
         banner.id = 'native-connectivity-banner';
-        banner.className = 'fixed top-2 left-1/2 -translate-x-1/2 z-[100000] -translate-y-16 opacity-0 transition-all duration-300 pointer-events-none flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold shadow-xl backdrop-blur-md';
+        banner.className = 'fixed top-2 left-1/2 -translate-x-1/2 z-[100000] -translate-y-16 opacity-0 transition-all duration-300 pointer-events-none flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold shadow-xl';
         document.body.appendChild(banner);
     }
 
@@ -472,13 +472,13 @@ export const initConnectivityBanner = () => {
         clearTimeout(hideTimer);
         triggerHaptic(isOnline ? 'success' : 'warning');
         if (isOnline) {
-            banner.className = 'fixed top-2 left-1/2 -translate-x-1/2 z-[100000] translate-y-0 opacity-100 transition-all duration-300 pointer-events-none flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold shadow-xl backdrop-blur-md bg-emerald-600/90 text-white border border-emerald-400/30';
+            banner.className = 'fixed top-2 left-1/2 -translate-x-1/2 z-[100000] translate-y-0 opacity-100 transition-all duration-300 pointer-events-none flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold shadow-xl bg-emerald-600 text-white border border-emerald-400/40';
             banner.innerHTML = '<i class="fa-solid fa-wifi text-xs"></i><span>Kembali Online — Terhubung</span>';
             hideTimer = setTimeout(() => {
                 banner.classList.add('-translate-y-16', 'opacity-0');
             }, 2500);
         } else {
-            banner.className = 'fixed top-2 left-1/2 -translate-x-1/2 z-[100000] translate-y-0 opacity-100 transition-all duration-300 pointer-events-none flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold shadow-xl backdrop-blur-md bg-amber-500/95 text-slate-950 border border-amber-300/40';
+            banner.className = 'fixed top-2 left-1/2 -translate-x-1/2 z-[100000] translate-y-0 opacity-100 transition-all duration-300 pointer-events-none flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold shadow-xl bg-amber-500 text-slate-950 border border-amber-300/60';
             banner.innerHTML = '<i class="fa-solid fa-wifi-slash text-xs"></i><span>Mode Offline — Menggunakan Data Lokal</span>';
         }
     };

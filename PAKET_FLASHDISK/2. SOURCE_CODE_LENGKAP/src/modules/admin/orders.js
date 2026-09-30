@@ -486,11 +486,9 @@ export const openOrderDetail = (i) => {
             </div>` : ''}
 
             <div class="bg-slate-900 p-6 sm:p-7 rounded-[1.5rem] text-white shadow-xl shadow-slate-900/20 border border-slate-700/60 relative overflow-hidden group mt-2">
-                <div class="absolute -top-10 -right-10 w-32 h-32 primary-blur-orb rounded-full blur-3xl pointer-events-none transition-all duration-700"></div>
-                
                 <div class="flex justify-between items-center border-b border-slate-700/80 pb-4 mb-4 relative z-10">
                     <h4 class="font-bold text-[11px] uppercase tracking-widest text-slate-300 flex items-center gap-2.5"><i class="fa-solid fa-wallet text-[var(--color-primary)] text-sm"></i> Ringkasan Bayar</h4>
-                    <span class="bg-white/10 backdrop-blur-md px-3 py-1 rounded-xl text-[10px] font-bold tracking-widest border border-white/10 uppercase shadow-inner text-white">${esc(o.payment?.method || '').toUpperCase()}</span>
+                    <span class="bg-white/15 px-3 py-1 rounded-xl text-[10px] font-bold tracking-widest border border-white/20 uppercase shadow-inner text-white">${esc(o.payment?.method || '').toUpperCase()}</span>
                 </div>
                 
                 <div class="space-y-3 font-medium text-sm text-slate-300 relative z-10">

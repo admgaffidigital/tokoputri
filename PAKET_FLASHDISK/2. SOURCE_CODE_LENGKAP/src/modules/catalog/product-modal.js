@@ -1138,7 +1138,7 @@ export const renderRelatedProducts = p => {
                     ? `<img loading="lazy" decoding="async" src="${esc(itemImg)}" alt="${esc(item.name)}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" onerror="this.onerror=null;this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='flex';">
                        <div class="w-full h-full" style="display:none">${coverItemHtml}</div>`
                     : coverItemHtml}
-                ${badgeText ? `<span class="absolute top-1.5 left-1.5 bg-slate-900/80 backdrop-blur-xs text-white text-[7.5px] sm:text-[8px] font-bold px-1.5 py-0.5 rounded-md truncate max-w-[85%] uppercase tracking-wider">${esc(badgeText)}</span>` : ''}
+                ${badgeText ? `<span class="absolute top-1.5 left-1.5 bg-slate-900 text-white text-[7.5px] sm:text-[8px] font-bold px-1.5 py-0.5 rounded-md truncate max-w-[85%] uppercase tracking-wider">${esc(badgeText)}</span>` : ''}
             </div>
             <h5 class="text-[11px] font-bold text-slate-700 dark:text-slate-200 line-clamp-2 leading-tight mb-1.5 group-hover:text-[var(--color-primary)] transition-colors uppercase">${esc(item.name)}</h5>
             <div class="mt-auto flex items-baseline justify-between pt-1">

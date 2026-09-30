@@ -109,7 +109,7 @@ const ensureAppDownloadModalDOM = () => {
 
     m = document.createElement('div');
     m.id = 'app-download-modal';
-    m.className = 'fixed inset-0 z-[125] bg-slate-950/80 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4 opacity-0 transition-opacity duration-300';
+    m.className = 'fixed inset-0 z-[125] bg-slate-950/85 flex items-end sm:items-center justify-center p-0 sm:p-4 opacity-0 transition-opacity duration-300';
     m.onclick = (e) => {
         if (e.target === m) closeAppDownloadModal();
     };

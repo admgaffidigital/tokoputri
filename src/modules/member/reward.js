@@ -586,7 +586,6 @@ export const checkMemberStatus = () => {
             const tier = getMemberTier(pts);
             banner.className = 'mt-3 p-3 sm:p-4 rounded-2xl bg-gradient-to-r from-slate-950 via-slate-900 to-slate-950 text-white border border-[rgba(var(--color-primary-rgb),0.35)] shadow-xl relative overflow-hidden flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3';
             banner.innerHTML = `
-                <div class="absolute -right-6 -bottom-6 w-28 h-28 bg-[rgba(var(--color-primary-rgb),0.12)] rounded-full blur-xl pointer-events-none"></div>
                 <div class="flex items-center gap-3 relative z-10 min-w-0">
                     <div class="w-12 h-10 rounded-xl bg-[rgba(var(--color-primary-rgb),0.15)] border border-[rgba(var(--color-primary-rgb),0.35)] flex items-center justify-center shrink-0 shadow-inner">
                         <i class="fa-solid fa-id-card text-xl text-[var(--color-primary)]"></i>
@@ -718,7 +717,7 @@ export const openMemberModal = () => {
     if (!m) {
         m = document.createElement('div');
         m.id = 'member-modal';
-        m.className = 'fixed inset-0 z-[115] bg-slate-900/60 flex items-end sm:items-center justify-center p-0 sm:p-5 backdrop-blur-xs';
+        m.className = 'fixed inset-0 z-[115] bg-slate-900/75 flex items-end sm:items-center justify-center p-0 sm:p-5';
         m.onclick = (e) => { if (e.target === m) closeMemberModal(); };
         document.body.appendChild(m);
     }
@@ -726,7 +725,7 @@ export const openMemberModal = () => {
     m.innerHTML = `
         <div class="bg-white dark:bg-slate-900 w-full max-w-lg rounded-t-3xl sm:rounded-3xl max-h-[90vh] flex flex-col shadow-xl border border-slate-200 dark:border-slate-800 overflow-hidden">
             <!-- Header Modal -->
-            <div class="p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center shrink-0 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md">
+            <div class="p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center shrink-0 bg-white dark:bg-slate-900">
                 <div class="flex items-center gap-2.5">
                     <div class="w-8 h-8 rounded-xl primary-bg flex items-center justify-center text-white shadow-sm shadow-[rgba(var(--color-primary-rgb),0.25)]">
                         <i class="fa-solid fa-id-card text-xs"></i>

@@ -242,7 +242,6 @@ export const rTaxSummary = () => {
                 <p class="text-[10px] font-bold text-slate-400 mt-1">Omset bersih</p>
             </div>
             <div class="card-modern p-5 flex flex-col justify-between border-[rgba(var(--color-primary-rgb),0.4)] relative overflow-hidden" style="background: rgba(var(--color-primary-rgb),0.04)">
-                <div class="absolute -right-4 -bottom-4 w-20 h-20 rounded-full blur-xl pointer-events-none" style="background: rgba(var(--color-primary-rgb),0.15)"></div>
                 <p class="text-[9px] font-bold uppercase tracking-widest mb-1.5" style="color:var(--color-primary)"><i class="fa-solid fa-file-invoice-dollar mr-1"></i>PPN Keluaran</p>
                 <p class="text-base sm:text-xl font-bold truncate" style="color:var(--color-primary)">${fCur(t.ppn)}</p>
                 <p class="text-[10px] font-bold mt-1 opacity-80" style="color:var(--color-primary)">Wajib disetor ke negara</p>

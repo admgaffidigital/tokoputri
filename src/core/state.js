@@ -23,7 +23,7 @@ export const defApp = {
         categoryStyle: "pill", brandStyle: "logo",
         showCategories: true, showBrands: true,
         themeColor: "#10b981", uiTheme: "emerald",
-        bgStyle: "minimalist",   // "minimalist" | "hero_arch" | "aurora_glow" | "tech_grid" | "glass_studio"
+        bgStyle: "minimalist",   // "minimalist" | "hero_arch" | "aurora_glow" | "tech_grid"
         bgCustomUrl: "",        // URL gambar wallpaper kustom (opsional)
         showHeroSlide: true,
         heroMascotImg: "/putri_mascot_anim.gif",

@@ -176,7 +176,7 @@ export const selectBgStyle = (styleName) => {
     let normalized = styleName;
     if (normalized === 'dual_tone') normalized = 'aurora_glow';
     if (normalized === 'geometric_3d') normalized = 'tech_grid';
-    if (normalized === 'diagonal_skew') normalized = 'glass_studio';
+    if (normalized === 'diagonal_skew' || normalized === 'glass_studio') normalized = 'minimalist';
 
     const input = document.getElementById('set-bg-style');
     if (input) input.value = normalized;
@@ -217,7 +217,7 @@ export const openSettingForm = (type) => {
         let currentBgStyle = appData.store.bgStyle || localStorage.getItem('freshmart_bg_style') || 'minimalist';
         if (currentBgStyle === 'dual_tone') currentBgStyle = 'aurora_glow';
         if (currentBgStyle === 'geometric_3d') currentBgStyle = 'tech_grid';
-        if (currentBgStyle === 'diagonal_skew') currentBgStyle = 'glass_studio';
+        if (currentBgStyle === 'diagonal_skew' || currentBgStyle === 'glass_studio') currentBgStyle = 'minimalist';
         const presetNames = {
             gold: "Putri Gold", emerald: "Emerald", teal: "Teal", lime: "Lime", cyan: "Cyan", sky: "Sky",
             blue: "Blue", indigo: "Indigo", violet: "Violet", purple: "Purple",
@@ -340,8 +340,34 @@ export const openSettingForm = (type) => {
 
                 <input type="hidden" id="set-bg-style" value="${currentBgStyle}">
                 
-                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-3.5">
-                    <!-- 1. Hero Arch -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-3.5">
+                    <!-- 1. Minimalis -->
+                    <button type="button" onclick="selectBgStyle('minimalist')" id="bg-opt-minimalist"
+                            class="bg-mockup-card flex flex-col items-center justify-between text-center p-3 sm:p-3.5 rounded-2xl border-2 transition-all duration-200 cursor-pointer ${currentBgStyle === 'minimalist' ? 'active border-[var(--color-primary)] bg-white dark:bg-slate-800 shadow-md ring-2 ring-[var(--color-primary)]/20' : 'border-slate-200 dark:border-slate-700/80 bg-white/60 dark:bg-slate-800/60 hover:border-slate-300 dark:hover:border-slate-600'}">
+                        <span class="active-check-badge ${currentBgStyle === 'minimalist' ? '' : 'hidden'} absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full primary-bg text-white text-[10px] flex items-center justify-center shadow-md z-20">
+                            <i class="fa-solid fa-check"></i>
+                        </span>
+                        <div class="mini-phone-frame">
+                            <div class="mini-phone-screen mini-preview-minimal">
+                                <div class="mini-phone-notch"></div>
+                                <div class="mini-preview-header"></div>
+                                <div class="mini-dummy-content">
+                                    <div class="mini-dummy-bar w-3/4"></div>
+                                    <div class="mini-dummy-grid">
+                                        <div class="mini-dummy-card"></div>
+                                        <div class="mini-dummy-card"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="w-full">
+                            <div class="inline-block px-1.5 py-0.5 rounded-md bg-slate-500/10 text-slate-600 dark:text-slate-400 text-[8px] font-bold mb-1 tracking-wider uppercase">Studio Clean</div>
+                            <span class="block text-xs font-bold text-slate-800 dark:text-slate-100 mb-0.5">Minimalis</span>
+                            <span class="block text-[9px] text-slate-500 dark:text-slate-400 leading-tight">Polos bersih elegan</span>
+                        </div>
+                    </button>
+
+                    <!-- 2. Hero Arch -->
                     <button type="button" onclick="selectBgStyle('hero_arch')" id="bg-opt-hero_arch"
                             class="bg-mockup-card flex flex-col items-center justify-between text-center p-3 sm:p-3.5 rounded-2xl border-2 transition-all duration-200 cursor-pointer ${currentBgStyle === 'hero_arch' ? 'active border-[var(--color-primary)] bg-white dark:bg-slate-800 shadow-md ring-2 ring-[var(--color-primary)]/20' : 'border-slate-200 dark:border-slate-700/80 bg-white/60 dark:bg-slate-800/60 hover:border-slate-300 dark:hover:border-slate-600'}">
                         <span class="active-check-badge ${currentBgStyle === 'hero_arch' ? '' : 'hidden'} absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full primary-bg text-white text-[10px] flex items-center justify-center shadow-md z-20">
@@ -367,7 +393,7 @@ export const openSettingForm = (type) => {
                         </div>
                     </button>
 
-                    <!-- 2. Aurora Glow -->
+                    <!-- 3. Aurora Glow -->
                     <button type="button" onclick="selectBgStyle('aurora_glow')" id="bg-opt-aurora_glow"
                             class="bg-mockup-card flex flex-col items-center justify-between text-center p-3 sm:p-3.5 rounded-2xl border-2 transition-all duration-200 cursor-pointer ${currentBgStyle === 'aurora_glow' ? 'active border-[var(--color-primary)] bg-white dark:bg-slate-800 shadow-md ring-2 ring-[var(--color-primary)]/20' : 'border-slate-200 dark:border-slate-700/80 bg-white/60 dark:bg-slate-800/60 hover:border-slate-300 dark:hover:border-slate-600'}">
                         <span class="active-check-badge ${currentBgStyle === 'aurora_glow' ? '' : 'hidden'} absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full primary-bg text-white text-[10px] flex items-center justify-center shadow-md z-20">
@@ -396,7 +422,7 @@ export const openSettingForm = (type) => {
                         </div>
                     </button>
 
-                    <!-- 3. Tech Grid -->
+                    <!-- 4. Tech Grid -->
                     <button type="button" onclick="selectBgStyle('tech_grid')" id="bg-opt-tech_grid"
                             class="bg-mockup-card flex flex-col items-center justify-between text-center p-3 sm:p-3.5 rounded-2xl border-2 transition-all duration-200 cursor-pointer ${currentBgStyle === 'tech_grid' ? 'active border-[var(--color-primary)] bg-white dark:bg-slate-800 shadow-md ring-2 ring-[var(--color-primary)]/20' : 'border-slate-200 dark:border-slate-700/80 bg-white/60 dark:bg-slate-800/60 hover:border-slate-300 dark:hover:border-slate-600'}">
                         <span class="active-check-badge ${currentBgStyle === 'tech_grid' ? '' : 'hidden'} absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full primary-bg text-white text-[10px] flex items-center justify-center shadow-md z-20">
@@ -419,58 +445,6 @@ export const openSettingForm = (type) => {
                             <div class="inline-block px-1.5 py-0.5 rounded-md bg-blue-500/10 text-blue-600 dark:text-blue-400 text-[8px] font-bold mb-1 tracking-wider uppercase">Pro Teknik</div>
                             <span class="block text-xs font-bold text-slate-800 dark:text-slate-100 mb-0.5">Tech Grid</span>
                             <span class="block text-[9px] text-slate-500 dark:text-slate-400 leading-tight">Dot-matrix blueprint</span>
-                        </div>
-                    </button>
-
-                    <!-- 4. Glass Studio -->
-                    <button type="button" onclick="selectBgStyle('glass_studio')" id="bg-opt-glass_studio"
-                            class="bg-mockup-card flex flex-col items-center justify-between text-center p-3 sm:p-3.5 rounded-2xl border-2 transition-all duration-200 cursor-pointer ${currentBgStyle === 'glass_studio' ? 'active border-[var(--color-primary)] bg-white dark:bg-slate-800 shadow-md ring-2 ring-[var(--color-primary)]/20' : 'border-slate-200 dark:border-slate-700/80 bg-white/60 dark:bg-slate-800/60 hover:border-slate-300 dark:hover:border-slate-600'}">
-                        <span class="active-check-badge ${currentBgStyle === 'glass_studio' ? '' : 'hidden'} absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full primary-bg text-white text-[10px] flex items-center justify-center shadow-md z-20">
-                            <i class="fa-solid fa-check"></i>
-                        </span>
-                        <div class="mini-phone-frame">
-                            <div class="mini-phone-screen mini-preview-glass">
-                                <div class="mini-phone-notch"></div>
-                                <div class="mini-preview-header"></div>
-                                <div class="mini-dummy-content">
-                                    <div class="mini-dummy-bar w-3/4"></div>
-                                    <div class="mini-dummy-grid">
-                                        <div class="mini-dummy-card"></div>
-                                        <div class="mini-dummy-card"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="w-full">
-                            <div class="inline-block px-1.5 py-0.5 rounded-md bg-purple-500/10 text-purple-600 dark:text-purple-400 text-[8px] font-bold mb-1 tracking-wider uppercase">Frosted Lux</div>
-                            <span class="block text-xs font-bold text-slate-800 dark:text-slate-100 mb-0.5">Glass Studio</span>
-                            <span class="block text-[9px] text-slate-500 dark:text-slate-400 leading-tight">Kedalaman bias kaca</span>
-                        </div>
-                    </button>
-
-                    <!-- 5. Minimalis -->
-                    <button type="button" onclick="selectBgStyle('minimalist')" id="bg-opt-minimalist"
-                            class="bg-mockup-card flex flex-col items-center justify-between text-center p-3 sm:p-3.5 rounded-2xl border-2 transition-all duration-200 cursor-pointer col-span-2 sm:col-span-1 ${currentBgStyle === 'minimalist' ? 'active border-[var(--color-primary)] bg-white dark:bg-slate-800 shadow-md ring-2 ring-[var(--color-primary)]/20' : 'border-slate-200 dark:border-slate-700/80 bg-white/60 dark:bg-slate-800/60 hover:border-slate-300 dark:hover:border-slate-600'}">
-                        <span class="active-check-badge ${currentBgStyle === 'minimalist' ? '' : 'hidden'} absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full primary-bg text-white text-[10px] flex items-center justify-center shadow-md z-20">
-                            <i class="fa-solid fa-check"></i>
-                        </span>
-                        <div class="mini-phone-frame">
-                            <div class="mini-phone-screen mini-preview-minimal">
-                                <div class="mini-phone-notch"></div>
-                                <div class="mini-preview-header"></div>
-                                <div class="mini-dummy-content">
-                                    <div class="mini-dummy-bar w-3/4"></div>
-                                    <div class="mini-dummy-grid">
-                                        <div class="mini-dummy-card"></div>
-                                        <div class="mini-dummy-card"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="w-full">
-                            <div class="inline-block px-1.5 py-0.5 rounded-md bg-slate-500/10 text-slate-600 dark:text-slate-400 text-[8px] font-bold mb-1 tracking-wider uppercase">Studio Clean</div>
-                            <span class="block text-xs font-bold text-slate-800 dark:text-slate-100 mb-0.5">Minimalis</span>
-                            <span class="block text-[9px] text-slate-500 dark:text-slate-400 leading-tight">Polos bersih elegan</span>
                         </div>
                     </button>
                 </div>

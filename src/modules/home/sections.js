@@ -59,15 +59,13 @@ export const rDyn = () => {
     const welcomeHeroSlide = showHeroSlide ? `
         <div id="banner-slide-0" class="banner-slide-item w-[88vw] sm:w-[480px] min-h-[190px] sm:min-h-[220px] snap-center shrink-0 rounded-3xl relative overflow-hidden group cursor-pointer text-white shadow-lg flex flex-col transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
              style="background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-primary) 45%, var(--color-primary-dark) 100%); border: 1px solid rgba(var(--color-primary-rgb), 0.35); box-shadow: 0 10px 25px -5px rgba(var(--color-primary-rgb), 0.35);">
-            <!-- Dynamic Ambient Glow & Decorative Rings -->
-            <div class="absolute -right-10 -top-10 w-44 h-44 rounded-full bg-white/15 blur-xl pointer-events-none group-hover:scale-110 transition-transform duration-700"></div>
-            <div class="absolute -left-10 -bottom-10 w-36 h-36 rounded-full bg-black/20 blur-lg pointer-events-none"></div>
+            <!-- Clean Decorative Ring -->
             <div class="absolute right-24 top-3 w-10 h-10 rounded-full border border-white/20 pointer-events-none"></div>
 
             <div class="flex flex-1 w-full relative z-10 items-center justify-between">
                 <!-- Text & Action (Left Side) -->
                 <div class="w-[60%] sm:w-[62%] p-4 sm:p-5 md:p-6 flex flex-col justify-center z-20">
-                    <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-black/25 backdrop-blur-md text-white text-[8.5px] sm:text-[9.5px] font-black uppercase tracking-wider mb-1.5 border border-white/25 w-max shadow-2xs">
+                    <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-black/40 text-white text-[8.5px] sm:text-[9.5px] font-black uppercase tracking-wider mb-1.5 border border-white/25 w-max shadow-2xs">
                         <i class="fa-solid fa-sparkles text-amber-300"></i> ${esc(heroWelcomeTag)}
                     </div>
                     <h2 class="text-[15px] sm:text-lg md:text-xl font-black text-white leading-tight tracking-tight drop-shadow-sm line-clamp-1">
@@ -90,7 +88,7 @@ export const rDyn = () => {
                             <img width="128" height="128" loading="eager" fetchpriority="high" src="${esc(heroMascotImg)}" onerror="this.onerror=null;this.src='/putri_mascot_3d.jpg';" alt="${esc(heroTitle)}" class="w-full h-full object-contain" style="image-rendering: auto;">
                         </div>
                         <!-- Status Badge -->
-                        <div class="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-slate-950/85 backdrop-blur-md text-[7.5px] sm:text-[8px] font-bold text-white border border-white/20 px-2 py-0.5 rounded-full shadow-md whitespace-nowrap flex items-center gap-1">
+                        <div class="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-slate-950 text-[7.5px] sm:text-[8px] font-bold text-white border border-white/20 px-2 py-0.5 rounded-full shadow-md whitespace-nowrap flex items-center gap-1">
                             <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> ${esc(heroBadgeText)}
                         </div>
                     </div>
@@ -257,7 +255,7 @@ export const rDyn = () => {
                             <h4 class="font-extrabold text-white text-xs sm:text-[13px] leading-tight mb-0.5 drop-shadow-xs line-clamp-1">${desc}</h4>
                             <p class="text-[7.5px] sm:text-[8px] font-medium text-white/90 flex items-center gap-1 mb-1.5 uppercase tracking-wider line-clamp-1"><i class="fa-solid fa-circle-info text-white/80 text-[7px]"></i> ${termsStr}</p>
                             <div class="inline-flex">
-                                <span class="bg-black/25 backdrop-blur-xs text-white text-[9px] sm:text-[10px] font-bold px-2 py-0.5 rounded-md uppercase tracking-wider border border-white/20 flex items-center gap-1.5 font-mono w-max shadow-inner">
+                                <span class="bg-black/40 text-white text-[9px] sm:text-[10px] font-bold px-2 py-0.5 rounded-md uppercase tracking-wider border border-white/20 flex items-center gap-1.5 font-mono w-max shadow-inner">
                                     <i class="fa-solid fa-ticket text-white/90 text-[8px]"></i> ${esc(v.code)}
                                 </span>
                             </div>

@@ -240,10 +240,10 @@ export const initThemeIcon = () => {
  */
 export const applyBackgroundStyle = (bgStyle = 'minimalist', customBgUrl = '') => {
     let style = bgStyle || localStorage.getItem('freshmart_bg_style') || 'minimalist';
-    // Normalisasi alias lama ke gaya modern
+    // Normalisasi alias lama ke gaya modern (tanpa glass/blur)
     if (style === 'dual_tone') style = 'aurora_glow';
     if (style === 'geometric_3d') style = 'tech_grid';
-    if (style === 'diagonal_skew') style = 'glass_studio';
+    if (style === 'diagonal_skew' || style === 'glass_studio') style = 'minimalist';
 
     const rawBgUrl = customBgUrl !== undefined && customBgUrl !== null
         ? customBgUrl
@@ -317,12 +317,6 @@ export const applyBackgroundStyle = (bgStyle = 'minimalist', customBgUrl = '') =
             <div class="absolute top-0 left-0 right-0 h-80 bg-gradient-to-b from-[rgba(var(--color-primary-rgb),0.18)] via-[rgba(var(--color-primary-rgb),0.05)] to-transparent pointer-events-none"></div>
             <div class="absolute top-20 left-10 w-48 h-48 border border-[rgba(var(--color-primary-rgb),0.15)] rounded-2xl pointer-events-none -rotate-6"></div>
             <div class="absolute top-36 right-12 w-64 h-64 border border-[rgba(var(--color-primary-rgb),0.12)] rounded-3xl pointer-events-none rotate-12"></div>
-        `;
-    } else if (style === 'glass_studio') {
-        shapesHtml = `
-            <!-- Glass Studio: Frosted Depth & Soft Radial Light (Anti-Hard Disc) -->
-            <div class="absolute inset-0 pointer-events-none" style="background: radial-gradient(circle 380px at 90% 10%, rgba(var(--color-primary-rgb), 0.12), transparent 70%), radial-gradient(circle 280px at 5% 35%, rgba(var(--color-primary-rgb), 0.08), transparent 70%);"></div>
-            <div class="absolute inset-0 pointer-events-none opacity-20 dark:opacity-15" style="background: repeating-linear-gradient(135deg, rgba(var(--color-primary-rgb),0.12), rgba(var(--color-primary-rgb),0.12) 1.5px, transparent 1.5px, transparent 28px);"></div>
         `;
     } else {
         // Minimalis: Polos bersih, elegan, solid dengan subtle top breath

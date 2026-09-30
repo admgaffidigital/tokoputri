@@ -103,33 +103,33 @@ export const renderBackupSyncView = async () => {
 
             <!-- GRID STATISTIK EKOSISTEM DATA -->
             <div class="mt-6 pt-5 border-t border-[rgba(var(--color-primary-rgb),0.2)] dark:border-slate-700/60 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-                <div class="p-3 sm:p-3.5 rounded-2xl bg-white/95 dark:bg-slate-800/80 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs backdrop-blur-xs flex flex-col justify-between">
+                <div class="p-3 sm:p-3.5 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs flex flex-col justify-between">
                     <p class="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Total Produk</p>
                     <p class="text-lg sm:text-xl font-black text-slate-800 dark:text-white mt-0.5" id="stat-sync-products">${liveSyncStats.products}</p>
                 </div>
-                <div class="p-3 sm:p-3.5 rounded-2xl bg-white/95 dark:bg-slate-800/80 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs backdrop-blur-xs flex flex-col justify-between">
+                <div class="p-3 sm:p-3.5 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs flex flex-col justify-between">
                     <p class="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Kategori</p>
                     <p class="text-lg sm:text-xl font-black text-slate-800 dark:text-white mt-0.5" id="stat-sync-categories">${liveSyncStats.categories}</p>
                 </div>
-                <div class="p-3 sm:p-3.5 rounded-2xl bg-white/95 dark:bg-slate-800/80 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs backdrop-blur-xs flex flex-col justify-between">
+                <div class="p-3 sm:p-3.5 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs flex flex-col justify-between">
                     <p class="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Transaksi</p>
                     <p class="text-lg sm:text-xl font-black text-emerald-600 dark:text-emerald-400 mt-0.5" id="stat-sync-orders">
                         <i class="fa-solid fa-spinner fa-spin text-xs text-slate-400"></i>
                     </p>
                 </div>
-                <div class="p-3 sm:p-3.5 rounded-2xl bg-white/95 dark:bg-slate-800/80 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs backdrop-blur-xs flex flex-col justify-between">
+                <div class="p-3 sm:p-3.5 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs flex flex-col justify-between">
                     <p class="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Pelanggan</p>
                     <p class="text-lg sm:text-xl font-black text-blue-600 dark:text-blue-400 mt-0.5" id="stat-sync-customers">
                         <i class="fa-solid fa-spinner fa-spin text-xs text-slate-400"></i>
                     </p>
                 </div>
-                <div class="p-3 sm:p-3.5 rounded-2xl bg-white/95 dark:bg-slate-800/80 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs backdrop-blur-xs flex flex-col justify-between">
+                <div class="p-3 sm:p-3.5 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs flex flex-col justify-between">
                     <p class="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Akun Kasir</p>
                     <p class="text-lg sm:text-xl font-black text-amber-600 dark:text-amber-400 mt-0.5" id="stat-sync-cashiers">
                         <i class="fa-solid fa-spinner fa-spin text-xs text-slate-400"></i>
                     </p>
                 </div>
-                <div class="p-3 sm:p-3.5 rounded-2xl bg-white/95 dark:bg-slate-800/80 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs backdrop-blur-xs flex flex-col justify-between">
+                <div class="p-3 sm:p-3.5 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs flex flex-col justify-between">
                     <p class="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Sesi Shift</p>
                     <p class="text-lg sm:text-xl font-black text-purple-600 dark:text-purple-400 mt-0.5" id="stat-sync-shifts">
                         <i class="fa-solid fa-spinner fa-spin text-xs text-slate-400"></i>
@@ -750,7 +750,7 @@ const openPreRestoreModal = ({ fileName, backupDate, productsCount, ordersCount,
     if (existingModal) existingModal.remove();
 
     const modalHTML = `
-    <div id="modal-pre-restore-inspector" class="fixed inset-0 z-[10005] flex items-center justify-center p-3.5 bg-black/70 backdrop-blur-xs fade-in">
+    <div id="modal-pre-restore-inspector" class="fixed inset-0 z-[10005] flex items-center justify-center p-3.5 bg-black/80 fade-in">
         <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-2xl w-full max-w-lg overflow-hidden fade-in-scale">
             <!-- Modal Header -->
             <div class="p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-amber-50/70 dark:bg-amber-950/30">
