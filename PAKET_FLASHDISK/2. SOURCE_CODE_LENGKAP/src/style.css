@@ -497,7 +497,7 @@ html.dark .view-section:not(#view-admin-login) {
 
 .pos-product-card.is-out-of-stock:hover {
     transform: none !important;
-    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05) !important;
+    box-shadow: none !important;
     border-color: rgba(203, 213, 225, 0.9) !important;
 }
 
@@ -1163,7 +1163,7 @@ body {
     background: linear-gradient(135deg, var(--color-primary-light, #e1b858) 0%, var(--color-primary, #c59b27) 45%, var(--color-primary-dark, #a87f1b) 100%) !important;
     z-index: 30 !important;
     border-bottom: 1px solid rgba(255, 255, 255, 0.18) !important;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12) !important;
+    box-shadow: none !important;
     box-sizing: border-box !important;
     width: 100% !important;
     flex-shrink: 0 !important;
@@ -1613,7 +1613,7 @@ html.dark .admin-input {
     border-color: #1e293b !important; 
     color: #f1f5f9 !important; 
 }
-html.dark .admin-input:focus { border-color: var(--color-primary) !important; box-shadow: 0 0 0 3px rgba(var(--color-primary-rgb), 0.2), inset 0 1px 3px rgba(0, 0, 0, 0.3) !important; }
+html.dark .admin-input:focus { border-color: var(--color-primary) !important; box-shadow: none !important; outline: 2px solid var(--color-primary) !important; outline-offset: 1px !important; }
 html.dark .admin-input::placeholder { color: #64748b !important; }
 html.dark .custom-radio:checked + div { background-color: rgba(var(--color-primary-rgb), 0.12); border-color: var(--color-primary); }
 html.dark .pull-indicator { background-color: #334155; }
@@ -1724,6 +1724,13 @@ body {
 *, *::before, *::after {
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
+}
+
+/* === UNIVERSAL ZERO-SHADOW SHIELD (ELIMINASI TOTAL SEMUA BAYANGAN DI SELURUH SISTEM) === */
+*, *::before, *::after {
+    box-shadow: none !important;
+    -webkit-box-shadow: none !important;
+    text-shadow: none !important;
 }
 
 .backdrop-blur,
@@ -1894,7 +1901,7 @@ html:not(.dark) .card-modern select {
 .footer-bento-hub {
     background-color: #ffffff !important;
     border: 1px solid rgba(var(--color-primary-rgb), 0.16) !important;
-    box-shadow: 0 4px 24px -2px rgba(var(--color-primary-rgb), 0.08), 0 1px 4px rgba(0, 0, 0, 0.03) !important;
+    box-shadow: none !important;
     color: #1e293b;
     transition: all 0.3s ease;
 }
@@ -1902,7 +1909,7 @@ html.dark .footer-bento-hub,
 .dark .footer-bento-hub {
     background-color: #0f172a !important;
     border: 1px solid rgba(var(--color-primary-rgb), 0.26) !important;
-    box-shadow: 0 6px 30px -4px rgba(0, 0, 0, 0.5), 0 0 20px -3px rgba(var(--color-primary-rgb), 0.16) !important;
+    box-shadow: none !important;
     color: #f8fafc;
 }
 
@@ -1910,7 +1917,7 @@ html.dark .footer-bento-hub,
 [data-bg-style="minimalist"] .footer-bento-hub {
     border-radius: 1.75rem !important;
     border-color: rgba(var(--color-primary-rgb), 0.14) !important;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04) !important;
+    box-shadow: none !important;
 }
 
 /* 8.2 Footer: Gaya Hero Arch */
@@ -1918,7 +1925,7 @@ html.dark .footer-bento-hub,
     border-radius: 2.25rem !important;
     border-color: rgba(var(--color-primary-rgb), 0.20) !important;
     border-top-width: 2px !important;
-    box-shadow: 0 8px 28px -4px rgba(var(--color-primary-rgb), 0.14), 0 2px 6px rgba(0, 0, 0, 0.03) !important;
+    box-shadow: none !important;
 }
 
 /* 8.3 Footer: Gaya Aurora Glow */
@@ -1926,7 +1933,7 @@ html.dark .footer-bento-hub,
 [data-bg-style="dual_tone"] .footer-bento-hub {
     border-radius: 2rem !important;
     border-color: rgba(var(--color-primary-rgb), 0.22) !important;
-    box-shadow: 0 8px 30px -4px rgba(var(--color-primary-rgb), 0.18), 0 0 16px -2px rgba(var(--color-primary-rgb), 0.10) !important;
+    box-shadow: none !important;
 }
 
 /* 8.4 Footer: Gaya Tech Grid */
@@ -1934,7 +1941,7 @@ html.dark .footer-bento-hub,
 [data-bg-style="geometric_3d"] .footer-bento-hub {
     border-radius: 1.5rem !important;
     border-color: rgba(var(--color-primary-rgb), 0.22) !important;
-    box-shadow: 0 4px 16px rgba(15, 23, 42, 0.08) !important;
+    box-shadow: none !important;
 }
 
 /* 8.5 Footer: Gaya Industrial */
@@ -1942,7 +1949,7 @@ html.dark .footer-bento-hub,
     border-radius: 1.5rem !important;
     border-color: rgba(var(--color-primary-rgb), 0.26) !important;
     border-top-width: 2.5px !important;
-    box-shadow: 0 6px 20px rgba(15, 23, 42, 0.14) !important;
+    box-shadow: none !important;
 }
 
 
@@ -2078,13 +2085,17 @@ html.dark .option-select-card .radio-label {
 .custom-radio:checked + .option-select-card {
     border-color: var(--color-primary) !important;
     background-color: #ffffff !important;
-    box-shadow: 0 0 0 1.5px var(--color-primary), 0 4px 12px rgba(0,0,0,0.05) !important;
+    box-shadow: none !important;
+    outline: 2px solid var(--color-primary) !important;
+    outline-offset: -1px !important;
 }
 
 html.dark .custom-radio:checked + .option-select-card {
     border-color: var(--color-primary) !important;
     background-color: #1e293b !important;
-    box-shadow: 0 0 0 1.5px var(--color-primary) !important;
+    box-shadow: none !important;
+    outline: 2px solid var(--color-primary) !important;
+    outline-offset: -1px !important;
 }
 
 .custom-radio:checked + .option-select-card .radio-icon-box {
@@ -2242,22 +2253,22 @@ html.dark[data-bg-style="minimalist"] #app-container {
 [data-bg-style="minimalist"] .glass-header {
     background: var(--color-primary);
     border-radius: 0;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    box-shadow: none !important;
 }
 
 /* ─── UNIVERSAL BENTO ISLAND CARDS (Harmoni Busana Menyeluruh) ─── */
 .bento-island-card {
     background-color: #ffffff !important;
     border: 1px solid rgba(var(--color-primary-rgb), 0.16) !important;
-    box-shadow: 0 4px 20px -3px rgba(var(--color-primary-rgb), 0.08), 0 1px 3px rgba(0, 0, 0, 0.03) !important;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+    box-shadow: none !important;
+    transition: border-color 0.3s ease, background-color 0.3s ease;
 }
 
 html.dark .bento-island-card,
 .dark .bento-island-card {
     background-color: #0f172a !important;
     border: 1px solid rgba(var(--color-primary-rgb), 0.24) !important;
-    box-shadow: 0 4px 20px -3px rgba(0, 0, 0, 0.4), 0 0 15px -3px rgba(var(--color-primary-rgb), 0.12) !important;
+    box-shadow: none !important;
 }
 
 /* ─── 1. MINIMALIS BENTO & THEME HARMONY ─── */
@@ -2265,13 +2276,13 @@ html.dark .bento-island-card,
 [data-bg-style="minimalist"] #dynamic-vouchers-container,
 [data-bg-style="minimalist"] .bento-island-card {
     border-color: rgba(var(--color-primary-rgb), 0.15) !important;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04) !important;
+    box-shadow: none !important;
 }
 html.dark[data-bg-style="minimalist"] #reward-catalog-container,
 html.dark[data-bg-style="minimalist"] #dynamic-vouchers-container,
 html.dark[data-bg-style="minimalist"] .bento-island-card {
     border-color: rgba(var(--color-primary-rgb), 0.20) !important;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35) !important;
+    box-shadow: none !important;
 }
 
 /* ─── 2. HERO ARCH (Lengkung Kanopi Emas / Stage Dome) ─── */
@@ -2291,25 +2302,25 @@ html.dark[data-bg-style="hero_arch"] #app-container {
     background: linear-gradient(180deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
     border-radius: 0 0 2.25rem 2.25rem;
     padding-bottom: 1.45rem;
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+    box-shadow: none !important;
 }
 [data-bg-style="hero_arch"] .view-section:not(#view-catalog) .glass-header {
     background: linear-gradient(180deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
     border-radius: 0;
     padding-bottom: 0.75rem;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    box-shadow: none !important;
 }
 [data-bg-style="hero_arch"] #reward-catalog-container,
 [data-bg-style="hero_arch"] #dynamic-vouchers-container,
 [data-bg-style="hero_arch"] .bento-island-card {
     border-color: rgba(var(--color-primary-rgb), 0.20) !important;
-    box-shadow: 0 4px 18px -2px rgba(var(--color-primary-rgb), 0.10), 0 1px 4px rgba(0, 0, 0, 0.03) !important;
+    box-shadow: none !important;
 }
 html.dark[data-bg-style="hero_arch"] #reward-catalog-container,
 html.dark[data-bg-style="hero_arch"] #dynamic-vouchers-container,
 html.dark[data-bg-style="hero_arch"] .bento-island-card {
     border-color: rgba(var(--color-primary-rgb), 0.26) !important;
-    box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.5), 0 0 16px -2px rgba(var(--color-primary-rgb), 0.14) !important;
+    box-shadow: none !important;
 }
 
 /* ─── 3. AURORA GLOW (Gradien Suasana Mewah / Luminous Ambient) ─── */
@@ -2332,7 +2343,7 @@ html.dark[data-bg-style="aurora_glow"] #app-container {
     background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
     border-radius: 0 0 1.5rem 1.5rem;
     padding-bottom: 1.15rem;
-    box-shadow: 0 6px 22px -2px rgba(var(--color-primary-rgb), 0.3);
+    box-shadow: none !important;
     border-bottom: 1px solid rgba(255, 255, 255, 0.25);
 }
 [data-bg-style="aurora_glow"] .view-section:not(#view-catalog) .glass-header,
@@ -2340,20 +2351,20 @@ html.dark[data-bg-style="aurora_glow"] #app-container {
     background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
     border-radius: 0;
     padding-bottom: 0.75rem;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    box-shadow: none !important;
     border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
 [data-bg-style="aurora_glow"] #reward-catalog-container,
 [data-bg-style="aurora_glow"] #dynamic-vouchers-container,
 [data-bg-style="aurora_glow"] .bento-island-card {
     border-color: rgba(var(--color-primary-rgb), 0.25) !important;
-    box-shadow: 0 6px 20px -3px rgba(var(--color-primary-rgb), 0.14) !important;
+    box-shadow: none !important;
 }
 html.dark[data-bg-style="aurora_glow"] #reward-catalog-container,
 html.dark[data-bg-style="aurora_glow"] #dynamic-vouchers-container,
 html.dark[data-bg-style="aurora_glow"] .bento-island-card {
     border-color: rgba(var(--color-primary-rgb), 0.30) !important;
-    box-shadow: 0 6px 24px -3px rgba(0, 0, 0, 0.55), 0 0 20px -3px rgba(var(--color-primary-rgb), 0.18) !important;
+    box-shadow: none !important;
 }
 
 /* ─── 4. TECH GRID (Arsitektur Presisi / Cool Graphite & Slate) ─── */
@@ -2376,7 +2387,7 @@ html.dark[data-bg-style="tech_grid"] #app-container {
     background: linear-gradient(135deg, var(--color-primary) 0%, #1e293b 100%);
     border-radius: 0 0 1rem 1rem;
     padding-bottom: 1.1rem;
-    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.12);
+    box-shadow: none !important;
     border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
 [data-bg-style="tech_grid"] .view-section:not(#view-catalog) .glass-header,
@@ -2384,19 +2395,20 @@ html.dark[data-bg-style="tech_grid"] #app-container {
     background: linear-gradient(135deg, var(--color-primary) 0%, #1e293b 100%);
     border-radius: 0;
     padding-bottom: 0.75rem;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    box-shadow: none !important;
     border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
 [data-bg-style="tech_grid"] #reward-catalog-container,
 [data-bg-style="tech_grid"] #dynamic-vouchers-container,
 [data-bg-style="tech_grid"] .bento-island-card {
     border-color: rgba(var(--color-primary-rgb), 0.20) !important;
-    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.07) !important;
+    box-shadow: none !important;
 }
 html.dark[data-bg-style="tech_grid"] #reward-catalog-container,
 html.dark[data-bg-style="tech_grid"] #dynamic-vouchers-container,
 html.dark[data-bg-style="tech_grid"] .bento-island-card {
     border-color: rgba(var(--color-primary-rgb), 0.28) !important;
+    box-shadow: none !important;
 }
 
 /* ─── 5. INDUSTRIAL (Heavy-Duty Toko Bangunan & Teknik) ─── */
@@ -2416,26 +2428,27 @@ html.dark[data-bg-style="industrial"] #app-container {
     background: linear-gradient(180deg, var(--color-primary) 0%, #0f172a 100%);
     border-radius: 0 0 1.25rem 1.25rem;
     padding-bottom: 1.15rem;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.22);
+    box-shadow: none !important;
     border-bottom: 2px solid rgba(255, 255, 255, 0.25);
 }
 [data-bg-style="industrial"] .view-section:not(#view-catalog) .glass-header {
     background: linear-gradient(180deg, var(--color-primary) 0%, #0f172a 100%);
     border-radius: 0;
     padding-bottom: 0.75rem;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    box-shadow: none !important;
     border-bottom: 2px solid rgba(255, 255, 255, 0.25);
 }
 [data-bg-style="industrial"] #reward-catalog-container,
 [data-bg-style="industrial"] #dynamic-vouchers-container,
 [data-bg-style="industrial"] .bento-island-card {
     border-color: rgba(var(--color-primary-rgb), 0.24) !important;
-    box-shadow: 0 4px 16px rgba(15, 23, 42, 0.12) !important;
+    box-shadow: none !important;
 }
 html.dark[data-bg-style="industrial"] #reward-catalog-container,
 html.dark[data-bg-style="industrial"] #dynamic-vouchers-container,
 html.dark[data-bg-style="industrial"] .bento-island-card {
     border-color: rgba(var(--color-primary-rgb), 0.32) !important;
+    box-shadow: none !important;
 }
 
 /* === MINI SMARTPHONE MOCKUP CARDS (CMS ADMIN PREVIEWS) === */
@@ -2451,7 +2464,9 @@ html.dark[data-bg-style="industrial"] .bento-island-card {
 .bg-mockup-card.active {
     border-color: var(--color-primary) !important;
     background-color: white !important;
-    box-shadow: 0 0 0 2px var(--color-primary) !important;
+    box-shadow: none !important;
+    outline: 2px solid var(--color-primary) !important;
+    outline-offset: -1px !important;
 }
 html.dark .bg-mockup-card.active {
     background-color: #1e293b !important;
@@ -2819,7 +2834,6 @@ html.dark .product-modal-sticky-action-bar {
 }
 .embossed-text {
     letter-spacing: 0.12em;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
     font-family: 'Courier New', Courier, monospace;
     font-weight: 700;
 }
@@ -2840,43 +2854,23 @@ html.dark .product-modal-sticky-action-bar {
 }
 .card-hologram-seal {
     background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.8), rgba(254,240,138,0.4) 30%, rgba(56,189,248,0.4) 60%, rgba(217,70,239,0.3) 100%);
-    box-shadow: 0 0 6px rgba(255,255,255,0.2);
+    border: 1px solid rgba(255, 255, 255, 0.4);
 }
 
-/* === ULTRA-CLEAN MODERN SHADOW TUNING (APPLE / VERCEL STYLE) ===
-   Menghilangkan bayangan tebal/gelap di seluruh website agar tampilan
-   menjadi ultra-clean, minimalis, tajam, dan elegan tanpa kabur hitam. */
-.shadow-2xl, .shadow-xl {
-    box-shadow: 0 4px 14px -2px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.02) !important;
+/* === ULTRA-CLEAN ZERO-SHADOW ARCHITECTURE (100% FLAT SOLID PURITY) ===
+   Menghilangkan seluruh bayangan di seluruh website agar tampilan
+   menjadi 100% ultra-clean, minimalis, tajam, dan elegan tanpa kabur hitam. */
+.shadow-2xl, .shadow-xl, .shadow-lg, .shadow-md, .shadow-sm, .shadow-xs, .shadow-2xs, .shadow,
+.shadow-glow, .shadow-soft, .shadow-float, .shadow-inner,
+[class*="shadow-"], [class*="shadow"] {
+    box-shadow: none !important;
+    -webkit-box-shadow: none !important;
 }
-html.dark .shadow-2xl, html.dark .shadow-xl {
-    box-shadow: 0 4px 14px -2px rgba(0, 0, 0, 0.2), 0 2px 4px -2px rgba(0, 0, 0, 0.1) !important;
-}
-
-.shadow-lg {
-    box-shadow: 0 3px 8px -2px rgba(0, 0, 0, 0.04), 0 1px 3px -1px rgba(0, 0, 0, 0.02) !important;
-}
-html.dark .shadow-lg {
-    box-shadow: 0 3px 8px -2px rgba(0, 0, 0, 0.16) !important;
-}
-
-.shadow-md {
-    box-shadow: 0 2px 5px -1px rgba(0, 0, 0, 0.04) !important;
-}
-html.dark .shadow-md {
-    box-shadow: 0 2px 5px -1px rgba(0, 0, 0, 0.12) !important;
-}
-
-.shadow-glow {
-    box-shadow: 0 2px 6px -1px rgba(var(--color-primary-rgb), 0.15) !important;
-}
-
-.shadow-soft {
-    box-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.03) !important;
-}
-
-.shadow-float {
-    box-shadow: 0 3px 8px -2px rgba(15, 23, 42, 0.04) !important;
+html.dark .shadow-2xl, html.dark .shadow-xl, html.dark .shadow-lg, html.dark .shadow-md,
+html.dark .shadow-sm, html.dark .shadow-xs, html.dark .shadow-2xs, html.dark .shadow,
+html.dark [class*="shadow-"], html.dark [class*="shadow"] {
+    box-shadow: none !important;
+    -webkit-box-shadow: none !important;
 }
 
 /* === HERO BANNER PUSAT DATA & SINKRONISASI (SEAMLESS THEME HARMONY) === */
@@ -2884,12 +2878,12 @@ html.dark .shadow-md {
     background: linear-gradient(135deg, rgba(var(--color-primary-rgb), 0.08) 0%, #ffffff 50%, rgba(var(--color-primary-rgb), 0.02) 100%) !important;
     border: 1.5px solid rgba(var(--color-primary-rgb), 0.28) !important;
     border-radius: 1.5rem !important;
-    box-shadow: 0 4px 20px -4px rgba(var(--color-primary-rgb), 0.08), 0 2px 6px -1px rgba(15, 23, 42, 0.03) !important;
+    box-shadow: none !important;
 }
 html.dark .backup-sync-hero {
     background: linear-gradient(135deg, rgba(var(--color-primary-rgb), 0.14) 0%, #1e293b 55%, #0f172a 100%) !important;
     border-color: rgba(var(--color-primary-rgb), 0.38) !important;
-    box-shadow: 0 4px 20px -4px rgba(0, 0, 0, 0.35) !important;
+    box-shadow: none !important;
 }
 
 /* ═══════════════════════════════════════════════════════════════════════
@@ -3109,4 +3103,33 @@ button span > i[class*="fa-"]:not(.hidden):not([hidden]) {
 #pos-shift-receipt-modal {
     z-index: 10050 !important;
 }
+
+/* ============================================================
+   TERMINAL ENFORCER: ZERO-SHADOW SHIELD (100% FLAT SOLID PURITY)
+   Menjamin 100% ketiadaan bayangan di seluruh aplikasi (box-shadow, drop-shadow, text-shadow).
+   ============================================================ */
+*, *::before, *::after {
+    box-shadow: none !important;
+    -webkit-box-shadow: none !important;
+    text-shadow: none !important;
+}
+
+[class*="shadow"],
+[class*="shadow-"],
+[style*="box-shadow"],
+[style*="box_shadow"],
+.shadow, .shadow-2xs, .shadow-xs, .shadow-sm, .shadow-md, .shadow-lg, .shadow-xl, .shadow-2xl,
+.shadow-inner, .shadow-glow, .shadow-soft, .shadow-float {
+    box-shadow: none !important;
+    -webkit-box-shadow: none !important;
+}
+
+[class*="drop-shadow"],
+[style*="drop-shadow"],
+[style*="filter: drop-shadow"],
+[style*="filter:drop-shadow"] {
+    filter: none !important;
+    -webkit-filter: none !important;
+}
+
 

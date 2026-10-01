@@ -8,6 +8,20 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-10-12',
+        version: 'v1.10.12',
+        date: '2026-10-01',
+        title: 'Universal Zero-Shadow Shield: Eliminasi Total 100% Seluruh Efek Bayangan (Box-Shadow & Drop-Shadow) di Seluruh Web App',
+        category: 'ui',
+        badge: 'Universal Zero-Shadow Pure Flat v1.10.12',
+        items: [
+            'Universal Zero-Shadow Shield (src/style.css): Mengeliminasi total 100% seluruh efek bayangan (box-shadow, -webkit-box-shadow, drop-shadow filter, dan text-shadow) di seluruh ekosistem web aplikasi Toko Putri. Seluruh kartu, panel, tombol, header, modal, footer, dan elemen interaktif kini berpenampilan murni ultra-clean, flat, tajam, dan solid tanpa noda/kabur hitam bayangan.',
+            'Kompilasi Flat Tailwind CSS (tailwind.config.js): Mengatur ulang seluruh skala boxShadow dan dropShadow bawaan Tailwind menjadi "none", memastikan tidak ada kelas utilitas shadow yang menginjeksi bayangan ke elemen manapun.',
+            'Terminal Enforcer & Fokus Berbasis Outline Tajam: Menggantikan ring bayangan (box-shadow ring) pada elemen form input, radio card terpilih, dan mockup CMS dengan outline warna tema yang presisi, kontras tinggi, dan ramah aksesibilitas.',
+            'Multi-Channel Build & Sync v1.10.12 (Android versionCode 11012): Kompilasi produksi web, sinkronisasi bundle flashdisk siap pakai, dan Android Capacitor tersinkronisasi 100%.'
+        ]
+    },
+    {
         id: 'log-1-10-11',
         version: 'v1.10.11',
         date: '2026-10-01',
