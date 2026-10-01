@@ -249,72 +249,74 @@ export const renderReportsShell = () => {
     const tabsHTML = tabs.map(tab => {
         const isActive = reportActiveTab === tab.k;
         return `
-            <button type="button" onclick="switchReportTab('${tab.k}')" class="group flex items-center gap-1.5 sm:gap-2 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl text-[11px] sm:text-xs font-bold transition-all cursor-pointer whitespace-nowrap active:scale-95 shrink-0 ${
+            <button type="button" onclick="switchReportTab('${tab.k}')" class="group flex items-center gap-2 px-3 sm:px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap active:scale-95 shrink-0 snap-start ${
                 isActive 
-                ? 'bg-[var(--color-primary)] text-white shadow-xs' 
-                : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200/90 dark:border-slate-700/80 hover:border-[var(--color-primary)]'
+                ? 'bg-[var(--color-primary)] text-white shadow-2xs font-black' 
+                : 'bg-slate-50 dark:bg-slate-800/90 text-slate-700 dark:text-slate-300 border border-[rgba(var(--color-primary-rgb),0.15)] dark:border-slate-700 hover:border-[var(--color-primary)] hover:bg-[rgba(var(--color-primary-rgb),0.06)]'
             }">
-                <i class="fa-solid ${tab.i} text-xs ${isActive ? 'text-white' : 'text-slate-400 group-hover:text-[var(--color-primary)]'}"></i>
+                <div class="w-5 h-5 rounded-lg flex items-center justify-center shrink-0 ${isActive ? 'bg-white/20 text-white' : 'bg-white dark:bg-slate-700 text-slate-400 group-hover:text-[var(--color-primary)]'} transition-colors">
+                    <i class="fa-solid ${tab.i} text-[10px]"></i>
+                </div>
                 <span>${tab.l}</span>
             </button>
         `;
     }).join('');
 
     setH('admin-content', `
-        <div class="space-y-6">
-            <!-- 1. HEADER KONTROL PUSAT LAPORAN TERPADU -->
-            <div class="rounded-2xl border border-[rgba(var(--color-primary-rgb),0.2)] bg-gradient-to-br from-white via-white to-[rgba(var(--color-primary-rgb),0.04)] dark:from-slate-900 dark:via-slate-900 dark:to-[rgba(var(--color-primary-rgb),0.08)] p-4 sm:p-5 shadow-2xs">
-                <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-                    <div class="flex items-center gap-3.5">
-                        <div class="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 border border-slate-200/80 dark:border-slate-800" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary)">
-                            <i class="fa-solid fa-chart-pie text-xl"></i>
+        <div class="space-y-4 sm:space-y-6">
+            <!-- 1. HEADER KONTROL PUSAT LAPORAN TERPADU (NATIVE APP BAR) -->
+            <div class="rounded-2xl border border-[rgba(var(--color-primary-rgb),0.2)] bg-gradient-to-br from-white via-white to-[rgba(var(--color-primary-rgb),0.04)] dark:from-slate-900 dark:via-slate-900 dark:to-[rgba(var(--color-primary-rgb),0.08)] p-3.5 sm:p-5 shadow-2xs space-y-3.5">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div class="flex items-center gap-3">
+                        <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl flex items-center justify-center shrink-0 border border-slate-200/80 dark:border-slate-800 shadow-2xs" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary)">
+                            <i class="fa-solid fa-chart-pie text-lg sm:text-xl"></i>
                         </div>
-                        <div>
+                        <div class="min-w-0">
                             <div class="flex items-center gap-2">
-                                <h1 class="font-bold text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider">Pusat Laporan &amp; Keuangan Terpadu</h1>
-                                <span class="px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-widest" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary); border: 1px solid rgba(var(--color-primary-rgb), 0.25);">Live Sync</span>
+                                <h1 class="font-bold text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider truncate">Pusat Laporan &amp; Keuangan</h1>
+                                <span class="px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-widest shrink-0" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary); border: 1px solid rgba(var(--color-primary-rgb), 0.25);">Live</span>
                             </div>
-                            <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 font-medium">
-                                Laporan Penjualan, Valuasi Stok, Utang Piutang, Biaya Operasional, &amp; Kepatuhan Pajak RI 2026
+                            <p class="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 font-medium truncate">
+                                Laba Rugi, Penjualan, Valuasi Stok, Utang Piutang &amp; Pajak
                             </p>
                         </div>
                     </div>
 
-                    <!-- Global Filter Bar -->
-                    <div class="flex flex-wrap items-center gap-2">
+                    <!-- Global Filter & Actions Bar -->
+                    <div class="flex items-center flex-wrap gap-2 pt-1 sm:pt-0 border-t sm:border-t-0 border-slate-100 dark:border-slate-800/80">
                         <!-- Filter Bulan -->
-                        <div class="flex items-center gap-1.5 bg-slate-50 dark:bg-slate-800/80 p-1 rounded-xl border border-slate-200 dark:border-slate-700">
-                            <i class="fa-solid fa-calendar-day text-xs text-slate-400 ml-2"></i>
-                            <select onchange="changeReportMonth(this.value)" class="bg-transparent text-xs font-bold text-slate-800 dark:text-slate-200 py-1.5 pr-3 pl-1 focus:outline-hidden cursor-pointer">
+                        <div class="flex items-center gap-1.5 bg-slate-50 dark:bg-slate-800/80 px-2 py-1 rounded-xl border border-[rgba(var(--color-primary-rgb),0.2)] dark:border-slate-700 min-h-[36px]">
+                            <i class="fa-solid fa-calendar-day text-[11px] text-slate-400"></i>
+                            <select onchange="changeReportMonth(this.value)" class="bg-transparent text-xs font-bold text-slate-800 dark:text-slate-200 py-1 pr-2 pl-0.5 focus:outline-hidden cursor-pointer">
                                 <option value="0" ${reportMonth === 0 ? 'selected' : ''}>Setahun Penuh</option>
                                 ${MONTH_NAMES.map((m, idx) => `<option value="${idx + 1}" ${reportMonth === (idx + 1) ? 'selected' : ''}>${m}</option>`).join('')}
                             </select>
                         </div>
 
                         <!-- Filter Tahun -->
-                        <div class="flex items-center gap-1.5 bg-slate-50 dark:bg-slate-800/80 p-1 rounded-xl border border-slate-200 dark:border-slate-700">
-                            <i class="fa-solid fa-calendar text-xs text-slate-400 ml-2"></i>
-                            <select onchange="changeReportYear(this.value)" class="bg-transparent text-xs font-bold text-slate-800 dark:text-slate-200 py-1.5 pr-3 pl-1 focus:outline-hidden cursor-pointer">
+                        <div class="flex items-center gap-1.5 bg-slate-50 dark:bg-slate-800/80 px-2 py-1 rounded-xl border border-[rgba(var(--color-primary-rgb),0.2)] dark:border-slate-700 min-h-[36px]">
+                            <i class="fa-solid fa-calendar text-[11px] text-slate-400"></i>
+                            <select onchange="changeReportYear(this.value)" class="bg-transparent text-xs font-bold text-slate-800 dark:text-slate-200 py-1 pr-2 pl-0.5 focus:outline-hidden cursor-pointer">
                                 ${yearOptions.map(y => `<option value="${y}" ${y === reportYear ? 'selected' : ''}>${y}</option>`).join('')}
                             </select>
                         </div>
 
                         <!-- Tombol Refresh Data -->
-                        <button type="button" onclick="refreshReportData()" class="p-2 sm:px-3 sm:py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-xs font-bold hover:text-[var(--color-primary)] hover:border-[var(--color-primary)] transition-all cursor-pointer active:scale-95 flex items-center gap-1.5" title="Muat Ulang Data Terbaru">
+                        <button type="button" onclick="refreshReportData()" class="h-9 w-9 sm:w-auto sm:px-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-xs font-bold hover:text-[var(--color-primary)] hover:border-[var(--color-primary)] transition-all cursor-pointer active:scale-95 flex items-center justify-center gap-1.5" title="Muat Ulang Data Terbaru">
                             <i class="fa-solid fa-arrows-rotate text-xs"></i>
                             <span class="hidden sm:inline">Segarkan</span>
                         </button>
 
                         <!-- Tombol Cetak Dokumen A4 -->
-                        <button type="button" onclick="openReportCurrentDocPreview()" class="px-3.5 py-2 rounded-xl text-white text-xs font-bold transition-all cursor-pointer active:scale-95 flex items-center gap-2 border border-black/10 shadow-xs" style="background: var(--color-primary);" title="Cetak Lembar Resmi A4 / PDF">
+                        <button type="button" onclick="openReportCurrentDocPreview()" class="h-9 px-3.5 rounded-xl text-white text-xs font-bold transition-all cursor-pointer active:scale-95 flex items-center justify-center gap-2 border border-black/10 shadow-2xs" style="background: var(--color-primary);" title="Cetak Lembar Resmi A4 / PDF">
                             <i class="fa-solid fa-print text-xs"></i>
                             <span>Cetak A4</span>
                         </button>
                     </div>
                 </div>
 
-                <!-- Tab Pill Navigation -->
-                <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center gap-1.5 sm:gap-2 overflow-x-auto custom-scrollbar pb-1">
+                <!-- Tab Segmented Pill Navigation -->
+                <div class="pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center gap-1.5 sm:gap-2 overflow-x-auto hide-scrollbar pb-1 snap-x snap-mandatory">
                     ${tabsHTML}
                 </div>
             </div>
@@ -428,24 +430,24 @@ export const renderExecutiveSummaryTab = () => {
     const expenseRatio = grossSales > 0 ? ((totalExpenses / grossSales) * 100).toFixed(1) : '0.0';
 
     setH('report-hub-content', `
-        <div class="space-y-6">
+        <div class="space-y-4 sm:space-y-6">
             ${totals.orderCount === 0 ? `
-            <!-- BANNER STATUS INFORMASI TRANSAKSI KOSONG -->
-            <div class="p-3.5 sm:p-4 rounded-2xl bg-amber-50/80 dark:bg-amber-950/30 border border-amber-200/90 dark:border-amber-800/60 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <!-- BANNER STATUS INFORMASI TRANSAKSI KOSONG (THEME HARMONY) -->
+            <div class="p-3.5 sm:p-4 rounded-2xl border flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-2xs" style="background: rgba(var(--color-primary-rgb), 0.05); border-color: rgba(var(--color-primary-rgb), 0.25);">
                 <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-xl bg-amber-100 dark:bg-amber-900/60 text-amber-700 dark:text-amber-300 flex items-center justify-center shrink-0 text-sm">
+                    <div class="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 text-sm shadow-2xs" style="background: rgba(var(--color-primary-rgb), 0.15); color: var(--color-primary);">
                         <i class="fa-solid fa-circle-info"></i>
                     </div>
                     <div>
-                        <p class="text-xs font-bold text-amber-900 dark:text-amber-200">Belum ada transaksi penjualan selesai pada ${periodLabel}</p>
-                        <p class="text-[10px] text-amber-700 dark:text-amber-400 mt-0.5">Nilai Rp 0 adalah status riil database saat ini. Begitu transaksi kasir POS atau pesanan web tercatat, omzet dan laba akan terakumulasi otomatis.</p>
+                        <p class="text-xs font-bold text-slate-800 dark:text-white">Belum ada transaksi penjualan selesai pada ${periodLabel}</p>
+                        <p class="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">Nilai Rp 0 adalah status riil database saat ini. Begitu transaksi kasir POS atau pesanan web tercatat, omzet dan laba akan terakumulasi otomatis.</p>
                     </div>
                 </div>
                 <div class="flex items-center gap-2 shrink-0">
-                    <button type="button" onclick="switchReportTab('stock')" class="px-3 py-1.5 rounded-xl bg-white dark:bg-slate-800 border border-amber-300 dark:border-amber-700/80 text-amber-800 dark:text-amber-200 text-xs font-bold hover:bg-amber-50 transition-all cursor-pointer">
-                        <i class="fa-solid fa-boxes-stacked mr-1"></i> Cek Valuasi Stok
+                    <button type="button" onclick="switchReportTab('stock')" class="px-3.5 py-2 rounded-xl bg-white dark:bg-slate-800 border text-slate-800 dark:text-slate-200 text-xs font-bold hover:bg-slate-50 dark:hover:bg-slate-700 transition-all cursor-pointer shadow-2xs" style="border-color: rgba(var(--color-primary-rgb), 0.3);">
+                        <i class="fa-solid fa-boxes-stacked mr-1" style="color: var(--color-primary)"></i> Cek Valuasi Stok
                     </button>
-                    <button type="button" onclick="if(window.openAdminTab) window.openAdminTab('pos')" class="px-3 py-1.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold transition-all shadow-xs cursor-pointer">
+                    <button type="button" onclick="if(window.openAdminTab) window.openAdminTab('pos')" class="px-3.5 py-2 rounded-xl text-white text-xs font-bold transition-all shadow-2xs cursor-pointer active:scale-95" style="background: var(--color-primary);">
                         <i class="fa-solid fa-cash-register mr-1"></i> Buka Kasir POS
                     </button>
                 </div>
@@ -454,11 +456,11 @@ export const renderExecutiveSummaryTab = () => {
             <!-- 4 KARTU BENTO UTAMA KESEHATAN FINANSIAL -->
             <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
                 <!-- 1. Omset Penjualan -->
-                <div class="card-modern p-4 sm:p-5 border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 flex flex-col justify-between">
+                <div class="card-modern p-4 sm:p-5 border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 rounded-2xl flex flex-col justify-between">
                     <div>
                         <div class="flex items-center justify-between mb-2">
                             <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Total Penjualan</span>
-                            <span class="w-6 h-6 rounded-lg flex items-center justify-center text-[10px]" style="background: rgba(var(--color-primary-rgb), 0.1); color: var(--color-primary);"><i class="fa-solid fa-arrow-trend-up"></i></span>
+                            <span class="w-7 h-7 rounded-xl flex items-center justify-center text-[10px] border border-slate-100 dark:border-slate-800" style="background: rgba(var(--color-primary-rgb), 0.1); color: var(--color-primary);"><i class="fa-solid fa-arrow-trend-up"></i></span>
                         </div>
                         <p class="text-base sm:text-xl font-black text-slate-900 dark:text-white truncate">${fCur(grossSales)}</p>
                     </div>
@@ -469,11 +471,11 @@ export const renderExecutiveSummaryTab = () => {
                 </div>
 
                 <!-- 2. Laba Kotor -->
-                <div class="card-modern p-4 sm:p-5 border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 flex flex-col justify-between">
+                <div class="card-modern p-4 sm:p-5 border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 rounded-2xl flex flex-col justify-between">
                     <div>
                         <div class="flex items-center justify-between mb-2">
                             <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Laba Kotor</span>
-                            <span class="w-6 h-6 rounded-lg flex items-center justify-center text-[10px]" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary)"><i class="fa-solid fa-sack-dollar"></i></span>
+                            <span class="w-7 h-7 rounded-xl flex items-center justify-center text-[10px] border border-slate-100 dark:border-slate-800" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary)"><i class="fa-solid fa-sack-dollar"></i></span>
                         </div>
                         <p class="text-base sm:text-xl font-black truncate" style="color: var(--color-primary)">${fCur(grossProfit)}</p>
                     </div>
@@ -484,11 +486,11 @@ export const renderExecutiveSummaryTab = () => {
                 </div>
 
                 <!-- 3. Biaya Operasional -->
-                <div class="card-modern p-4 sm:p-5 border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 flex flex-col justify-between">
+                <div class="card-modern p-4 sm:p-5 border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 rounded-2xl flex flex-col justify-between">
                     <div>
                         <div class="flex items-center justify-between mb-2">
-                            <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Beban Operasional</span>
-                            <span class="w-6 h-6 rounded-lg bg-amber-50 text-amber-600 dark:bg-amber-950/60 dark:text-amber-400 flex items-center justify-center text-[10px]"><i class="fa-solid fa-money-bill-transfer"></i></span>
+                            <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Beban Usaha</span>
+                            <span class="w-7 h-7 rounded-xl bg-amber-50 text-amber-600 dark:bg-amber-950/60 dark:text-amber-400 border border-amber-200/60 dark:border-amber-900/40 flex items-center justify-center text-[10px]"><i class="fa-solid fa-money-bill-transfer"></i></span>
                         </div>
                         <p class="text-base sm:text-xl font-black text-amber-600 dark:text-amber-400 truncate">${fCur(totalExpenses)}</p>
                     </div>
@@ -503,7 +505,7 @@ export const renderExecutiveSummaryTab = () => {
                     <div>
                         <div class="flex items-center justify-between mb-2">
                             <span class="text-[9px] font-bold uppercase tracking-widest" style="color: var(--color-primary)">Laba Bersih Riil</span>
-                            <span class="w-6 h-6 rounded-lg flex items-center justify-center text-[10px]" style="background: rgba(var(--color-primary-rgb), 0.18); color: var(--color-primary)"><i class="fa-solid fa-crown"></i></span>
+                            <span class="w-7 h-7 rounded-xl flex items-center justify-center text-[10px]" style="background: rgba(var(--color-primary-rgb), 0.18); color: var(--color-primary)"><i class="fa-solid fa-crown"></i></span>
                         </div>
                         <p class="text-base sm:text-xl font-black truncate" style="color: var(--color-primary)">${fCur(netProfit)}</p>
                     </div>
@@ -515,14 +517,19 @@ export const renderExecutiveSummaryTab = () => {
             </div>
 
             <!-- LEMBAR LAPORAN LABA RUGI RESMI (P&L BREAKDOWN) -->
-            <div class="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden">
+            <div class="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden shadow-2xs">
                 <div class="p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between gap-3">
-                    <div>
-                        <h3 class="font-bold text-xs uppercase tracking-wider text-slate-800 dark:text-white">Laporan Laba Rugi Komprehensif — ${periodLabel}</h3>
-                        <p class="text-[10px] text-slate-400 mt-0.5">Penetapan pendapatan, beban pokok penjualan, beban operasional &amp; laba bersih</p>
+                    <div class="flex items-center gap-2.5">
+                        <div class="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 text-xs" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary);">
+                            <i class="fa-solid fa-file-invoice"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-xs uppercase tracking-wider text-slate-800 dark:text-white">Laporan Laba Rugi Komprehensif — ${periodLabel}</h3>
+                            <p class="text-[10px] text-slate-400 mt-0.5">Penetapan pendapatan, beban pokok penjualan, beban operasional &amp; laba bersih</p>
+                        </div>
                     </div>
-                    <button type="button" onclick="openTaxDocPreview('income')" class="px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-bold hover:text-[var(--color-primary)] hover:border-[var(--color-primary)] transition-all flex items-center gap-1.5 cursor-pointer active:scale-95">
-                        <i class="fa-solid fa-print text-xs"></i> Cetak Laba Rugi
+                    <button type="button" onclick="openTaxDocPreview('income')" class="px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-bold hover:text-[var(--color-primary)] hover:border-[var(--color-primary)] transition-all flex items-center gap-1.5 cursor-pointer active:scale-95 shadow-2xs">
+                        <i class="fa-solid fa-print text-xs"></i> <span class="hidden sm:inline">Cetak Laba Rugi</span>
                     </button>
                 </div>
 
@@ -530,24 +537,24 @@ export const renderExecutiveSummaryTab = () => {
                     <!-- 1. PENDAPATAN -->
                     <div class="space-y-2">
                         <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">1. Pendapatan Penjualan</p>
-                        <div class="flex items-center justify-between py-1.5 px-3 rounded-lg bg-slate-50 dark:bg-slate-800/40 text-xs">
+                        <div class="flex items-center justify-between py-2 px-3 rounded-xl bg-slate-50 dark:bg-slate-800/40 text-xs border border-slate-100 dark:border-slate-800/60">
                             <span class="text-slate-700 dark:text-slate-300 font-medium">Penjualan Bruto (${totals.orderCount} pesanan)</span>
                             <span class="font-bold text-slate-800 dark:text-white">${fCur(grossSales)}</span>
                         </div>
-                        <div class="flex items-center justify-between py-1.5 px-3 rounded-lg bg-slate-50 dark:bg-slate-800/40 text-xs">
+                        <div class="flex items-center justify-between py-2 px-3 rounded-xl bg-slate-50 dark:bg-slate-800/40 text-xs border border-slate-100 dark:border-slate-800/60">
                             <span class="text-slate-700 dark:text-slate-300 font-medium">Potongan Diskon Produk</span>
                             <span class="font-bold text-rose-500">− ${fCur(totalDiscount)}</span>
                         </div>
                         <div class="flex items-center justify-between py-2 px-3 rounded-xl bg-slate-100 dark:bg-slate-800 font-bold text-xs border border-slate-200/80 dark:border-slate-700">
                             <span class="text-slate-800 dark:text-white">Penjualan Bersih (DPP)</span>
-                            <span class="text-slate-900 dark:text-white">${fCur(netSales)}</span>
+                            <span class="text-slate-900 dark:text-white font-black">${fCur(netSales)}</span>
                         </div>
                     </div>
 
                     <!-- 2. BEBAN POKOK PENJUALAN -->
                     <div class="space-y-2 pt-2">
                         <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">2. Beban Pokok Penjualan (HPP)</p>
-                        <div class="flex items-center justify-between py-1.5 px-3 rounded-lg bg-slate-50 dark:bg-slate-800/40 text-xs">
+                        <div class="flex items-center justify-between py-2 px-3 rounded-xl bg-slate-50 dark:bg-slate-800/40 text-xs border border-slate-100 dark:border-slate-800/60">
                             <span class="text-slate-700 dark:text-slate-300 font-medium">Total Modal Barang Terjual (HPP)</span>
                             <span class="font-bold text-rose-500">− ${fCur(totalHpp)}</span>
                         </div>
@@ -565,24 +572,24 @@ export const renderExecutiveSummaryTab = () => {
                                 Kelola Biaya Operasional <i class="fa-solid fa-arrow-right text-[9px]"></i>
                             </button>
                         </div>
-                        <div class="flex items-center justify-between py-1.5 px-3 rounded-lg bg-slate-50 dark:bg-slate-800/40 text-xs">
+                        <div class="flex items-center justify-between py-2 px-3 rounded-xl bg-slate-50 dark:bg-slate-800/40 text-xs border border-slate-100 dark:border-slate-800/60">
                             <span class="text-slate-700 dark:text-slate-300 font-medium">Beban Rutin Operasional Toko</span>
                             <span class="font-bold text-amber-600 dark:text-amber-400">− ${fCur(totalExpenses)}</span>
                         </div>
                         <div class="flex items-center justify-between py-2 px-3 rounded-xl bg-slate-100 dark:bg-slate-800 font-bold text-xs border border-slate-200/80 dark:border-slate-700">
                             <span class="text-slate-800 dark:text-white">Laba Operasional Sebelum Pajak (EBIT)</span>
-                            <span class="text-slate-900 dark:text-white">${fCur(operatingProfit)}</span>
+                            <span class="text-slate-900 dark:text-white font-black">${fCur(operatingProfit)}</span>
                         </div>
                     </div>
 
                     <!-- 4. PAJAK PENGHASILAN & LABA BERSIH -->
                     <div class="space-y-2 pt-2">
                         <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">4. Kepatuhan Pajak &amp; Laba Bersih Akhir</p>
-                        <div class="flex items-center justify-between py-1.5 px-3 rounded-lg bg-slate-50 dark:bg-slate-800/40 text-xs">
+                        <div class="flex items-center justify-between py-2 px-3 rounded-xl bg-slate-50 dark:bg-slate-800/40 text-xs border border-slate-100 dark:border-slate-800/60">
                             <span class="text-slate-700 dark:text-slate-300 font-medium">${taxLabel}</span>
                             <span class="font-bold text-slate-700 dark:text-slate-300">− ${fCur(taxAmount)}</span>
                         </div>
-                        <div class="flex items-center justify-between py-3 px-4 rounded-xl text-white font-bold text-sm sm:text-base shadow-none" style="background: var(--color-primary);">
+                        <div class="flex items-center justify-between py-3 px-4 rounded-xl text-white font-bold text-sm sm:text-base shadow-2xs" style="background: var(--color-primary);">
                             <div class="flex items-center gap-2">
                                 <i class="fa-solid fa-crown text-base"></i>
                                 <span>LABA BERSIH TAHUN / BULAN BERJALAN</span>
@@ -676,6 +683,69 @@ export const renderSalesAnalyticsTab = () => {
     // Urutkan top 10 produk terlaris
     const topProducts = Object.values(productSalesMap).sort((a, b) => b.qty - a.qty).slice(0, 10);
 
+    const maxOmset = topProducts.length ? Math.max(...topProducts.map(p => p.omset || 1)) : 1;
+    
+    // 1. Mobile Native Leaderboard Cards
+    const topProductsCardsHTML = topProducts.length ? topProducts.map((p, idx) => {
+        const profit = p.omset - p.hpp;
+        const marginPct = p.omset > 0 ? ((profit / p.omset) * 100).toFixed(0) : '0';
+        const omsetPct = Math.min(100, Math.max(8, Math.round((p.omset / maxOmset) * 100)));
+
+        let rankBadge = '';
+        if (idx === 0) {
+            rankBadge = `<span class="w-8 h-8 rounded-xl flex items-center justify-center text-xs font-black bg-gradient-to-br from-amber-400 to-yellow-500 text-amber-950 shadow-2xs shrink-0"><i class="fa-solid fa-trophy text-[11px]"></i></span>`;
+        } else if (idx === 1) {
+            rankBadge = `<span class="w-8 h-8 rounded-xl flex items-center justify-center text-xs font-black bg-slate-300 dark:bg-slate-700 text-slate-800 dark:text-slate-100 shadow-2xs shrink-0">#2</span>`;
+        } else if (idx === 2) {
+            rankBadge = `<span class="w-8 h-8 rounded-xl flex items-center justify-center text-xs font-black bg-amber-700/20 text-amber-800 dark:text-amber-300 border border-amber-600/30 shrink-0">#3</span>`;
+        } else {
+            rankBadge = `<span class="w-8 h-8 rounded-xl flex items-center justify-center text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 shrink-0">#${idx + 1}</span>`;
+        }
+
+        return `
+            <div class="p-3.5 rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xs space-y-2.5">
+                <div class="flex items-center justify-between gap-3">
+                    <div class="flex items-center gap-2.5 min-w-0">
+                        ${rankBadge}
+                        <div class="min-w-0">
+                            <p class="text-xs font-bold text-slate-900 dark:text-white truncate">${esc(p.name)}</p>
+                            <p class="text-[10px] text-slate-400">Modal HPP: ${fCur(p.hpp)}</p>
+                        </div>
+                    </div>
+                    <div class="text-right shrink-0">
+                        <span class="px-2.5 py-1 rounded-lg text-xs font-black" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary); border: 1px solid rgba(var(--color-primary-rgb), 0.25);">
+                            ${p.qty} Unit
+                        </span>
+                    </div>
+                </div>
+                <!-- Progress bar omset -->
+                <div class="w-full bg-slate-100 dark:bg-slate-800 h-1.5 rounded-full overflow-hidden">
+                    <div class="h-full rounded-full transition-all duration-500" style="width: ${omsetPct}%; background: var(--color-primary);"></div>
+                </div>
+                <!-- Stat 2 Kolom -->
+                <div class="grid grid-cols-2 gap-2 pt-1 border-t border-slate-100 dark:border-slate-800 text-[11px]">
+                    <div class="bg-slate-50 dark:bg-slate-800/50 p-2 rounded-xl">
+                        <span class="text-[9px] uppercase tracking-wider text-slate-400 font-bold block">Total Omset</span>
+                        <span class="font-black text-slate-800 dark:text-white">${fCur(p.omset)}</span>
+                    </div>
+                    <div class="bg-slate-50 dark:bg-slate-800/50 p-2 rounded-xl text-right">
+                        <span class="text-[9px] uppercase tracking-wider text-slate-400 font-bold block">Laba Kotor</span>
+                        <span class="font-black" style="color: var(--color-primary);">${fCur(profit)} <span class="text-[9px] font-normal text-slate-400">(${marginPct}%)</span></span>
+                    </div>
+                </div>
+            </div>
+        `;
+    }).join('') : `
+        <div class="py-8 text-center flex flex-col items-center justify-center p-4 bg-slate-50 dark:bg-slate-800/40 rounded-2xl border border-slate-200/80 dark:border-slate-800">
+            <div class="w-10 h-10 rounded-2xl flex items-center justify-center mb-2" style="background: rgba(var(--color-primary-rgb), 0.1); color: var(--color-primary)">
+                <i class="fa-solid fa-chart-simple text-sm"></i>
+            </div>
+            <p class="text-xs font-bold text-slate-700 dark:text-slate-300">Belum ada transaksi penjualan pada periode ini</p>
+            <p class="text-[10px] text-slate-400 mt-0.5">Penjualan kasir POS &amp; pesanan web akan otomatis tampil di sini</p>
+        </div>
+    `;
+
+    // 2. Desktop Table Rows
     const topProductsHTML = topProducts.length ? topProducts.map((p, idx) => {
         const profit = p.omset - p.hpp;
         const marginPct = p.omset > 0 ? ((profit / p.omset) * 100).toFixed(0) : '0';
@@ -696,54 +766,83 @@ export const renderSalesAnalyticsTab = () => {
     `;
 
     setH('report-hub-content', `
-        <div class="space-y-6">
+        <div class="space-y-4 sm:space-y-6">
             <!-- RINGKASAN METRIK PENJUALAN -->
             <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-                <div class="card-modern p-4 sm:p-5 border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900">
-                    <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Total Penjualan</p>
-                    <p class="text-lg sm:text-xl font-black text-slate-900 dark:text-white truncate">${fCur(totalGross)}</p>
-                    <p class="text-[10px] text-slate-500 mt-1">${totalTransactions} transaksi berhasil</p>
+                <div class="card-modern p-4 sm:p-5 border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 rounded-2xl flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Total Penjualan</span>
+                            <span class="w-7 h-7 rounded-xl flex items-center justify-center text-[10px] border border-slate-100 dark:border-slate-800" style="background: rgba(var(--color-primary-rgb), 0.1); color: var(--color-primary);"><i class="fa-solid fa-arrow-trend-up"></i></span>
+                        </div>
+                        <p class="text-base sm:text-xl font-black text-slate-900 dark:text-white truncate">${fCur(totalGross)}</p>
+                    </div>
+                    <p class="text-[10px] text-slate-500 mt-2 pt-2 border-t border-slate-100 dark:border-slate-800">${totalTransactions} transaksi berhasil</p>
                 </div>
-                <div class="card-modern p-4 sm:p-5 border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900">
-                    <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Rata-Rata Keranjang (AOV)</p>
-                    <p class="text-lg sm:text-xl font-black text-slate-900 dark:text-white truncate">${fCur(aov)}</p>
-                    <p class="text-[10px] text-slate-500 mt-1">Per transaksi pesanan</p>
+                <div class="card-modern p-4 sm:p-5 border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 rounded-2xl flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Rata-Rata Keranjang (AOV)</span>
+                            <span class="w-7 h-7 rounded-xl flex items-center justify-center text-[10px] bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300"><i class="fa-solid fa-basket-shopping"></i></span>
+                        </div>
+                        <p class="text-base sm:text-xl font-black text-slate-900 dark:text-white truncate">${fCur(aov)}</p>
+                    </div>
+                    <p class="text-[10px] text-slate-500 mt-2 pt-2 border-t border-slate-100 dark:border-slate-800">Per transaksi pesanan</p>
                 </div>
-                <div class="card-modern p-4 sm:p-5 border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900">
-                    <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Total Barang Terjual</p>
-                    <p class="text-lg sm:text-xl font-black truncate" style="color: var(--color-primary)">${totalItemsCount} Unit</p>
-                    <p class="text-[10px] text-slate-500 mt-1">Rata-rata ${avgItemsPerOrder} item / order</p>
+                <div class="card-modern p-4 sm:p-5 border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 rounded-2xl flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Total Barang Terjual</span>
+                            <span class="w-7 h-7 rounded-xl flex items-center justify-center text-[10px]" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary);"><i class="fa-solid fa-boxes-packing"></i></span>
+                        </div>
+                        <p class="text-base sm:text-xl font-black truncate" style="color: var(--color-primary)">${totalItemsCount} Unit</p>
+                    </div>
+                    <p class="text-[10px] text-slate-500 mt-2 pt-2 border-t border-slate-100 dark:border-slate-800">Rata-rata ${avgItemsPerOrder} item / order</p>
                 </div>
-                <div class="card-modern p-4 sm:p-5 border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900">
-                    <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Kanal Penjualan</p>
-                    <p class="text-xs font-bold text-slate-800 dark:text-white mt-1 flex items-center justify-between">
-                        <span>Kasir POS:</span> <b style="color: var(--color-primary)">${fCur(posTotal)}</b>
-                    </p>
-                    <p class="text-xs font-bold text-slate-800 dark:text-white mt-1 flex items-center justify-between">
-                        <span>Storefront Web:</span> <b class="text-slate-700 dark:text-slate-300">${fCur(webTotal)}</b>
+                <div class="card-modern p-4 sm:p-5 border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 rounded-2xl flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Kanal Penjualan</span>
+                            <span class="w-7 h-7 rounded-xl bg-purple-50 text-purple-600 dark:bg-purple-950/60 dark:text-purple-400 flex items-center justify-center text-[10px]"><i class="fa-solid fa-cash-register"></i></span>
+                        </div>
+                        <p class="text-xs font-bold text-slate-800 dark:text-white flex items-center justify-between">
+                            <span>Kasir POS:</span> <b style="color: var(--color-primary)">${fCur(posTotal)}</b>
+                        </p>
+                    </div>
+                    <p class="text-xs font-bold text-slate-800 dark:text-white mt-1.5 pt-1.5 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
+                        <span>Storefront:</span> <b class="text-slate-600 dark:text-slate-300">${fCur(webTotal)}</b>
                     </p>
                 </div>
             </div>
 
             <!-- DISTRIBUSI METODE PEMBAYARAN -->
-            <div class="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 sm:p-5">
-                <h3 class="font-bold text-xs uppercase tracking-wider text-slate-800 dark:text-white mb-3 flex items-center gap-2">
-                    <i class="fa-solid fa-wallet text-[var(--color-primary)]"></i>
-                    <span>Distribusi Metode Pembayaran</span>
-                </h3>
+            <div class="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 sm:p-5 shadow-2xs">
+                <div class="flex items-center gap-2 mb-3.5">
+                    <div class="w-7 h-7 rounded-xl flex items-center justify-center text-xs" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary)">
+                        <i class="fa-solid fa-wallet"></i>
+                    </div>
+                    <h3 class="font-bold text-xs uppercase tracking-wider text-slate-800 dark:text-white">
+                        Distribusi Metode Pembayaran
+                    </h3>
+                </div>
                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
                     ${Object.values(payMethods).filter(m => m.count > 0 || m.label.includes('Tunai') || m.label.includes('QRIS') || m.label.includes('Transfer') || m.label.includes('Tempo')).map(m => {
                         const pct = totalGross > 0 ? ((m.total / totalGross) * 100).toFixed(0) : '0';
                         return `
-                            <div class="p-3.5 rounded-xl border border-slate-100 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/40">
-                                <div class="flex items-center gap-2 mb-2">
-                                    <i class="fa-solid ${m.icon} text-xs text-slate-500"></i>
-                                    <p class="text-[10px] font-bold text-slate-600 dark:text-slate-300 truncate">${m.label}</p>
+                            <div class="p-3.5 rounded-2xl border border-slate-100 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-800/40 space-y-2">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-6 h-6 rounded-lg bg-white dark:bg-slate-700 flex items-center justify-center text-xs text-slate-500 shadow-2xs">
+                                        <i class="fa-solid ${m.icon}"></i>
+                                    </div>
+                                    <p class="text-[10px] font-bold text-slate-700 dark:text-slate-300 truncate">${m.label}</p>
                                 </div>
                                 <p class="text-sm font-black text-slate-900 dark:text-white truncate">${fCur(m.total)}</p>
-                                <div class="mt-2 flex items-center justify-between text-[10px] text-slate-400">
+                                <div class="w-full bg-slate-200 dark:bg-slate-700 h-1 rounded-full overflow-hidden">
+                                    <div class="h-full rounded-full" style="width: ${pct}%; background: var(--color-primary);"></div>
+                                </div>
+                                <div class="flex items-center justify-between text-[10px] text-slate-400 pt-0.5">
                                     <span>${m.count} pesanan</span>
-                                    <span class="font-bold text-slate-600 dark:text-slate-300">${pct}%</span>
+                                    <span class="font-bold text-slate-700 dark:text-slate-300">${pct}%</span>
                                 </div>
                             </div>
                         `;
@@ -751,15 +850,27 @@ export const renderSalesAnalyticsTab = () => {
                 </div>
             </div>
 
-            <!-- TOP 10 PRODUK TERLARIS -->
-            <div class="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden">
+            <!-- TOP 10 PRODUK TERLARIS (RESPONSIVE CARD / TABLE HYBRID) -->
+            <div class="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden shadow-2xs">
                 <div class="p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
-                    <div>
-                        <h3 class="font-bold text-xs uppercase tracking-wider text-slate-800 dark:text-white">Top 10 Produk Terlaris &amp; Kontribusi Laba</h3>
-                        <p class="text-[10px] text-slate-400 mt-0.5">Produk dengan volume penjualan &amp; margin keuntungan tertinggi</p>
+                    <div class="flex items-center gap-2.5">
+                        <div class="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 text-xs" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary);">
+                            <i class="fa-solid fa-ranking-star"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-xs uppercase tracking-wider text-slate-800 dark:text-white">Top 10 Produk Terlaris &amp; Kontribusi Laba</h3>
+                            <p class="text-[10px] text-slate-400 mt-0.5">Produk dengan volume penjualan &amp; margin keuntungan tertinggi</p>
+                        </div>
                     </div>
                 </div>
-                <div class="overflow-x-auto">
+
+                <!-- Tampilan Mobile (< 640px): Leaderboard Cards -->
+                <div class="block sm:hidden p-3.5 space-y-3">
+                    ${topProductsCardsHTML}
+                </div>
+
+                <!-- Tampilan Desktop (>= 640px): Full Table -->
+                <div class="hidden sm:block overflow-x-auto">
                     <table class="w-full text-left border-collapse">
                         <thead>
                             <tr class="bg-slate-50 dark:bg-slate-800/60 border-b border-slate-100 dark:border-slate-800 text-[10px] font-black uppercase tracking-widest text-slate-400">
@@ -879,6 +990,75 @@ export const renderStockValuationTab = () => {
     // Urutkan default: stok habis & menipis di paling atas
     filteredItems.sort((a, b) => a.stock - b.stock);
 
+    // 1. Mobile Native Inventory Cards (< 640px)
+    const stockCardsHTML = filteredItems.length ? filteredItems.map((item, idx) => {
+        let badgeHTML = '';
+        if (item.status === 'empty') {
+            badgeHTML = `<span class="px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-rose-100 text-rose-700 dark:bg-rose-950/70 dark:text-rose-300 border border-rose-200 dark:border-rose-900/60">Habis</span>`;
+        } else if (item.status === 'low') {
+            badgeHTML = `<span class="px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-amber-100 text-amber-700 dark:bg-amber-950/70 dark:text-amber-300 border border-amber-200 dark:border-amber-900/60">Sisa ${item.stock}</span>`;
+        } else {
+            badgeHTML = `<span class="px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary); border: 1px solid rgba(var(--color-primary-rgb), 0.25);">Stok Aman (${item.stock})</span>`;
+        }
+
+        const marginTotal = item.totalRetail - item.totalHpp;
+        const marginUnit = item.price - item.hpp;
+
+        return `
+            <div class="p-3.5 sm:p-4 rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xs space-y-2.5">
+                <div class="flex items-start justify-between gap-2.5">
+                    <div class="flex items-center gap-2.5 min-w-0">
+                        <div class="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 border border-slate-200/80 dark:border-slate-800" style="background: rgba(var(--color-primary-rgb), 0.08); color: var(--color-primary)">
+                            <i class="fa-solid fa-boxes-stacked text-xs"></i>
+                        </div>
+                        <div class="min-w-0">
+                            <p class="text-xs font-bold text-slate-900 dark:text-white truncate">${esc(item.name)}</p>
+                            <div class="flex items-center gap-1.5 mt-0.5">
+                                <span class="text-[9px] px-1.5 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-500 font-bold uppercase tracking-wider">${esc(item.category)}</span>
+                                ${item.brand && item.brand !== '-' ? `<span class="text-[9px] text-slate-400">• ${esc(item.brand)}</span>` : ''}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="shrink-0">
+                        ${badgeHTML}
+                    </div>
+                </div>
+
+                <!-- Bento Mini Grid 2x2 -->
+                <div class="grid grid-cols-2 gap-2 text-xs">
+                    <div class="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800">
+                        <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest block">Stok Fisik</span>
+                        <span class="text-xs font-black text-slate-800 dark:text-white">${item.stock} ${item.unit}</span>
+                    </div>
+                    <div class="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800">
+                        <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest block">Harga Jual Retail</span>
+                        <span class="text-xs font-black text-slate-800 dark:text-white">${fCur(item.price)}</span>
+                        <span class="text-[9px] text-slate-400 block truncate">Total: ${fCur(item.totalRetail)}</span>
+                    </div>
+                    <div class="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800">
+                        <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest block">Modal Kulakan (HPP)</span>
+                        <span class="text-xs font-bold text-slate-700 dark:text-slate-300">${fCur(item.hpp)}</span>
+                        <span class="text-[9px] text-slate-400 block truncate">Total: ${fCur(item.totalHpp)}</span>
+                    </div>
+                    <div class="p-2.5 rounded-xl border" style="background: rgba(var(--color-primary-rgb), 0.05); border-color: rgba(var(--color-primary-rgb), 0.2);">
+                        <span class="text-[9px] font-bold uppercase tracking-widest block" style="color: var(--color-primary);">Potensi Laba Kotor</span>
+                        <span class="text-xs font-black truncate" style="color: var(--color-primary);">+${fCur(marginTotal)}</span>
+                        <span class="text-[9px] text-slate-400 block truncate">Per unit: +${fCur(marginUnit)}</span>
+                    </div>
+                </div>
+            </div>
+        `;
+    }).join('') : `
+        <div class="py-10 text-center flex flex-col items-center justify-center p-6 bg-slate-50 dark:bg-slate-800/40 rounded-2xl border border-slate-200/80 dark:border-slate-800">
+            <div class="w-12 h-12 rounded-2xl flex items-center justify-center mb-3" style="background: rgba(var(--color-primary-rgb), 0.1); color: var(--color-primary)">
+                <i class="fa-solid fa-boxes-stacked text-base"></i>
+            </div>
+            <p class="text-xs font-bold text-slate-700 dark:text-slate-300">Tidak ada produk yang cocok</p>
+            <p class="text-[10px] text-slate-400 mt-0.5">Ubah pencarian atau reset filter untuk menampilkan barang</p>
+        </div>
+    `;
+
+    // 2. Desktop Table Rows (>= 640px)
     const stockRowsHTML = filteredItems.length ? filteredItems.map((item, idx) => {
         let badgeHTML = '';
         if (item.status === 'empty') {
@@ -916,67 +1096,128 @@ export const renderStockValuationTab = () => {
         <tr><td colspan="5" class="py-10 text-center text-xs text-slate-400">Tidak ada produk yang sesuai dengan filter</td></tr>
     `;
 
+    // Filter status pills list
+    const statusPills = [
+        { key: 'all', label: 'Semua', count: stockItems.length },
+        { key: 'empty', label: 'Habis', count: outOfStockCount, colorClass: 'text-rose-600 dark:text-rose-400' },
+        { key: 'low', label: 'Menipis', count: lowStockCount, colorClass: 'text-amber-600 dark:text-amber-400' },
+        { key: 'safe', label: 'Aman', count: safeStockCount, colorClass: 'text-emerald-600 dark:text-emerald-400' }
+    ];
+
+    const statusPillsHTML = statusPills.map(p => {
+        const isSel = reportStockFilter === p.key;
+        return `
+            <button type="button" onclick="filterStockReportStatus('${p.key}')" class="px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap active:scale-95 shrink-0 flex items-center gap-1.5 ${
+                isSel 
+                ? 'bg-[var(--color-primary)] text-white shadow-2xs font-black' 
+                : 'bg-slate-50 dark:bg-slate-800/80 text-slate-600 dark:text-slate-300 border border-slate-200/80 dark:border-slate-700 hover:border-[var(--color-primary)]'
+            }">
+                <span>${p.label}</span>
+                <span class="px-1.5 py-0.2 rounded-md text-[10px] ${isSel ? 'bg-white/25 text-white' : 'bg-slate-200/80 dark:bg-slate-700 ' + (p.colorClass || 'text-slate-600 dark:text-slate-300')}">${p.count}</span>
+            </button>
+        `;
+    }).join('');
+
     setH('report-hub-content', `
-        <div class="space-y-6">
+        <div class="space-y-4 sm:space-y-6">
             <!-- 4 KARTU VALUASI ASET GUDANG -->
             <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-                <div class="card-modern p-4 sm:p-5 border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900">
-                    <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Nilai Aset Modal (HPP)</p>
-                    <p class="text-lg sm:text-xl font-black text-slate-900 dark:text-white truncate">${fCur(totalAssetHpp)}</p>
-                    <p class="text-[10px] text-slate-500 mt-1">Uang modal tertanam di rak</p>
+                <div class="card-modern p-4 sm:p-5 border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 rounded-2xl flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Aset Modal (HPP)</span>
+                            <span class="w-7 h-7 rounded-xl flex items-center justify-center text-[10px] bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300"><i class="fa-solid fa-coins"></i></span>
+                        </div>
+                        <p class="text-base sm:text-xl font-black text-slate-900 dark:text-white truncate">${fCur(totalAssetHpp)}</p>
+                    </div>
+                    <p class="text-[10px] text-slate-500 mt-2 pt-2 border-t border-slate-100 dark:border-slate-800 truncate">Modal fisik tertanam</p>
                 </div>
-                <div class="card-modern p-4 sm:p-5 border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900">
-                    <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Estimasi Nilai Jual Retail</p>
-                    <p class="text-lg sm:text-xl font-black truncate" style="color: var(--color-primary)">${fCur(totalAssetRetail)}</p>
-                    <p class="text-[10px] font-bold mt-1" style="color: var(--color-primary)">Potensi margin: ${fCur(potentialMargin)}</p>
+                <div class="card-modern p-4 sm:p-5 border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 rounded-2xl flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Nilai Jual Retail</span>
+                            <span class="w-7 h-7 rounded-xl flex items-center justify-center text-[10px]" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary);"><i class="fa-solid fa-tag"></i></span>
+                        </div>
+                        <p class="text-base sm:text-xl font-black truncate" style="color: var(--color-primary)">${fCur(totalAssetRetail)}</p>
+                    </div>
+                    <p class="text-[10px] font-bold mt-2 pt-2 border-t border-slate-100 dark:border-slate-800 truncate" style="color: var(--color-primary)">Potensi margin: ${fCur(potentialMargin)}</p>
                 </div>
-                <div class="card-modern p-4 sm:p-5 border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900">
-                    <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Fisik Unit Barang</p>
-                    <p class="text-lg sm:text-xl font-black text-slate-900 dark:text-white truncate">${totalPhysicalUnits.toLocaleString('id-ID')} Unit</p>
-                    <p class="text-[10px] text-slate-500 mt-1">${totalSkuCount} SKU / Varian aktif</p>
+                <div class="card-modern p-4 sm:p-5 border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 rounded-2xl flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Fisik Barang</span>
+                            <span class="w-7 h-7 rounded-xl flex items-center justify-center text-[10px] bg-blue-50 text-blue-600 dark:bg-blue-950/60 dark:text-blue-400"><i class="fa-solid fa-box-archive"></i></span>
+                        </div>
+                        <p class="text-base sm:text-xl font-black text-slate-900 dark:text-white truncate">${totalPhysicalUnits.toLocaleString('id-ID')} Unit</p>
+                    </div>
+                    <p class="text-[10px] text-slate-500 mt-2 pt-2 border-t border-slate-100 dark:border-slate-800 truncate">${totalSkuCount} SKU / Varian aktif</p>
                 </div>
-                <div class="card-modern p-4 sm:p-5 border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900">
-                    <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Peringatan Kritis Stok</p>
-                    <div class="flex items-center gap-2 mt-1">
-                        <span class="px-2 py-0.5 rounded-lg text-xs font-black bg-rose-100 text-rose-700 dark:bg-rose-950/60 dark:text-rose-400">${outOfStockCount} Habis</span>
-                        <span class="px-2 py-0.5 rounded-lg text-xs font-black bg-amber-100 text-amber-700 dark:bg-amber-950/60 dark:text-amber-400">${lowStockCount} Menipis</span>
+                <div class="card-modern p-4 sm:p-5 border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 rounded-2xl flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Kritis Stok</span>
+                            <span class="w-7 h-7 rounded-xl flex items-center justify-center text-[10px] bg-rose-50 text-rose-600 dark:bg-rose-950/60 dark:text-rose-400"><i class="fa-solid fa-triangle-exclamation"></i></span>
+                        </div>
+                        <div class="flex items-center gap-1.5 mt-1">
+                            <button type="button" onclick="filterStockReportStatus('empty')" class="px-2 py-0.5 rounded-lg text-xs font-black bg-rose-100 text-rose-700 dark:bg-rose-950/70 dark:text-rose-300 border border-rose-200 dark:border-rose-900/60 active:scale-95 cursor-pointer" title="Klik filter habis">${outOfStockCount} Habis</button>
+                            <button type="button" onclick="filterStockReportStatus('low')" class="px-2 py-0.5 rounded-lg text-xs font-black bg-amber-100 text-amber-700 dark:bg-amber-950/70 dark:text-amber-300 border border-amber-200 dark:border-amber-900/60 active:scale-95 cursor-pointer" title="Klik filter menipis">${lowStockCount} Menipis</button>
+                        </div>
+                    </div>
+                    <div class="mt-2 pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-[10px]">
+                        <span class="text-slate-500 font-medium">Aman: <b>${safeStockCount}</b></span>
+                        <button type="button" onclick="filterStockReportStatus('all')" class="text-[10px] font-bold text-[var(--color-primary)] hover:underline cursor-pointer">Lihat Semua</button>
                     </div>
                 </div>
             </div>
 
-            <!-- TABEL VALUASI & FILTER -->
-            <div class="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden">
-                <div class="p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                    <div>
-                        <h3 class="font-bold text-xs uppercase tracking-wider text-slate-800 dark:text-white">Rincian Valuasi Inventori Gudang</h3>
-                        <p class="text-[10px] text-slate-400 mt-0.5">Daftar barang beserta perbandingan modal HPP vs harga retail</p>
-                    </div>
-
-                    <!-- Filter Bar -->
-                    <div class="flex flex-wrap items-center gap-2">
-                        <!-- Pencarian -->
-                        <div class="relative w-full sm:w-48">
-                            <i class="fa-solid fa-search absolute left-3 top-2.5 text-xs text-slate-400"></i>
-                            <input type="text" placeholder="Cari barang..." value="${esc(reportSearchQuery)}" oninput="filterStockReportSearch(this.value)" class="w-full pl-8 pr-3 py-1.5 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-200 focus:outline-hidden">
+            <!-- VALUASI INVENTORI & FILTER BAR -->
+            <div class="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden shadow-2xs">
+                <div class="p-3.5 sm:p-5 border-b border-slate-100 dark:border-slate-800 space-y-3">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div class="flex items-center gap-2.5">
+                            <div class="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 text-xs" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary);">
+                                <i class="fa-solid fa-boxes-stacked"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-xs uppercase tracking-wider text-slate-800 dark:text-white">Rincian Valuasi Inventori Gudang</h3>
+                                <p class="text-[10px] text-slate-400 mt-0.5">Daftar barang beserta perbandingan modal HPP vs harga retail</p>
+                            </div>
                         </div>
 
-                        <!-- Filter Status -->
-                        <select onchange="filterStockReportStatus(this.value)" class="px-2.5 py-1.5 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-200 font-bold focus:outline-hidden cursor-pointer">
-                            <option value="all" ${reportStockFilter === 'all' ? 'selected' : ''}>Semua Status</option>
-                            <option value="empty" ${reportStockFilter === 'empty' ? 'selected' : ''}>Stok Habis (0)</option>
-                            <option value="low" ${reportStockFilter === 'low' ? 'selected' : ''}>Stok Menipis</option>
-                            <option value="safe" ${reportStockFilter === 'safe' ? 'selected' : ''}>Stok Aman</option>
-                        </select>
+                        <!-- Bar Pencarian & Dropdown Kategori -->
+                        <div class="flex items-center gap-2 w-full sm:w-auto">
+                            <!-- Input Pencarian dengan Clear Button -->
+                            <div class="relative flex-1 sm:w-56">
+                                <i class="fa-solid fa-search absolute left-3 top-2.5 text-xs text-slate-400"></i>
+                                <input type="text" placeholder="Cari nama barang / SKU..." value="${esc(reportSearchQuery)}" oninput="filterStockReportSearch(this.value)" class="w-full pl-8 pr-7 py-1.5 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-200 focus:outline-hidden">
+                                ${reportSearchQuery ? `
+                                    <button type="button" onclick="filterStockReportSearch('')" class="absolute right-2.5 top-2 text-xs text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer">
+                                        <i class="fa-solid fa-circle-xmark"></i>
+                                    </button>
+                                ` : ''}
+                            </div>
 
-                        <!-- Filter Kategori -->
-                        <select onchange="filterStockReportCategory(this.value)" class="px-2.5 py-1.5 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-200 font-bold focus:outline-hidden cursor-pointer">
-                            <option value="all" ${reportStockCategory === 'all' ? 'selected' : ''}>Semua Kategori</option>
-                            ${categories.map(c => `<option value="${c.name}" ${reportStockCategory === c.name ? 'selected' : ''}>${c.name}</option>`).join('')}
-                        </select>
+                            <!-- Filter Kategori -->
+                            <select onchange="filterStockReportCategory(this.value)" class="px-2.5 py-1.5 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-200 font-bold focus:outline-hidden cursor-pointer max-w-[140px] sm:max-w-none truncate">
+                                <option value="all" ${reportStockCategory === 'all' ? 'selected' : ''}>Semua Kategori</option>
+                                ${categories.map(c => `<option value="${c.name}" ${reportStockCategory === c.name ? 'selected' : ''}>${c.name}</option>`).join('')}
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Filter Status Pills Carousel -->
+                    <div class="flex items-center gap-1.5 overflow-x-auto hide-scrollbar pt-1">
+                        ${statusPillsHTML}
                     </div>
                 </div>
 
-                <div class="overflow-x-auto">
+                <!-- Tampilan Mobile (< 640px): Native Inventory Cards -->
+                <div class="block sm:hidden p-3.5 space-y-3">
+                    ${stockCardsHTML}
+                </div>
+
+                <!-- Tampilan Desktop (>= 640px): Full Table -->
+                <div class="hidden sm:block overflow-x-auto">
                     <table class="w-full text-left border-collapse">
                         <thead>
                             <tr class="bg-slate-50 dark:bg-slate-800/60 border-b border-slate-100 dark:border-slate-800 text-[10px] font-black uppercase tracking-widest text-slate-400">
@@ -995,6 +1236,11 @@ export const renderStockValuationTab = () => {
     `);
 };
 
+export const clearStockReportSearch = () => {
+    reportSearchQuery = '';
+    renderStockValuationTab();
+};
+
 export const filterStockReportStatus = (val) => {
     reportStockFilter = val;
     renderStockValuationTab();
@@ -1009,8 +1255,6 @@ export const filterStockReportSearch = (val) => {
     reportSearchQuery = val;
     renderStockValuationTab();
 };
-
-// ═══════════════════════════════════════════════════════════════
 // 4. TAB 4: LAPORAN UTANG & PIUTANG TERPADU (DEBTS & RECEIVABLES)
 // ═══════════════════════════════════════════════════════════════
 export const renderDebtsReceivablesTab = () => {
@@ -1068,11 +1312,108 @@ export const renderDebtsReceivablesTab = () => {
     const netGap = totalPiutangPelanggan - totalUtangSupplier;
     const isSurplus = netGap >= 0;
 
+    // Mobile & Desktop HTML untuk Debitur Pelanggan
+    const topDebiturCardsHTML = topDebitur.length ? topDebitur.slice(0, 8).map(d => `
+        <div class="p-3.5 rounded-xl border border-slate-100 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-800/40 space-y-2.5">
+            <div class="flex items-start justify-between gap-2">
+                <div class="min-w-0 flex-1">
+                    <div class="flex items-center gap-1.5 flex-wrap">
+                        <p class="font-bold text-xs text-slate-800 dark:text-white truncate">${esc(d.name)}</p>
+                        ${d.isLate ? '<span class="px-1.5 py-0.5 rounded-md text-[9px] font-black bg-rose-100 text-rose-600 dark:bg-rose-950/60 dark:text-rose-400">Jatuh Tempo</span>' : ''}
+                    </div>
+                    <p class="text-[10px] text-slate-400 mt-0.5">${d.orderCount} nota tempo aktif</p>
+                </div>
+                <div class="text-right shrink-0">
+                    <span class="text-xs font-black text-slate-900 dark:text-white">${fCur(d.totalPiutang)}</span>
+                    <span class="block text-[9px] text-slate-400">Sisa Tagihan</span>
+                </div>
+            </div>
+            <div class="pt-2 border-t border-slate-200/60 dark:border-slate-700/60 flex items-center justify-between">
+                <span class="text-[10px] text-slate-500 dark:text-slate-400 flex items-center gap-1">
+                    <i class="fa-solid fa-phone text-[9px]"></i> ${esc(d.phone)}
+                </span>
+                <button type="button" onclick="openAdminTab('piutang')" class="px-2.5 py-1 rounded-lg bg-[var(--color-primary)] text-white text-[10px] font-bold shadow-2xs hover:opacity-90 active:scale-95 transition-all cursor-pointer inline-flex items-center gap-1">
+                    Kelola Nota <i class="fa-solid fa-arrow-right text-[8px]"></i>
+                </button>
+            </div>
+        </div>
+    `).join('') : `
+        <div class="py-8 px-4 rounded-xl border border-dashed border-slate-200 dark:border-slate-800 bg-slate-50/40 dark:bg-slate-800/20 text-center space-y-2">
+            <div class="w-10 h-10 mx-auto rounded-xl flex items-center justify-center text-sm" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary);">
+                <i class="fa-solid fa-circle-check"></i>
+            </div>
+            <p class="text-xs font-bold text-slate-700 dark:text-slate-200">Tidak Ada Piutang Pelanggan</p>
+            <p class="text-[10px] text-slate-400 max-w-xs mx-auto">Seluruh pelanggan telah melunasi tagihannya atau belum ada penjualan tempo aktif.</p>
+        </div>
+    `;
+
+    const topDebiturRowsHTML = topDebitur.length ? topDebitur.slice(0, 5).map(d => `
+        <tr class="border-b border-slate-50 dark:border-slate-800/50 hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors last:border-0">
+            <td class="py-2.5 px-3">
+                 <p class="font-bold text-slate-800 dark:text-white truncate">${esc(d.name)}</p>
+                 <p class="text-[10px] text-slate-400">${d.orderCount} nota ${d.isLate ? '<span class="text-rose-500 font-bold">• Terlambat</span>' : ''}</p>
+            </td>
+            <td class="py-2.5 px-3 text-right font-black text-slate-800 dark:text-white">${fCur(d.totalPiutang)}</td>
+            <td class="py-2.5 px-3 text-right">
+                <button type="button" onclick="openAdminTab('piutang')" class="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-[10px] font-bold hover:text-[var(--color-primary)] transition-all cursor-pointer">Buka</button>
+            </td>
+        </tr>
+    `).join('') : `
+        <tr><td colspan="3" class="py-6 text-center text-slate-400 text-xs">Tidak ada piutang pelanggan aktif</td></tr>
+    `;
+
+    // Mobile & Desktop HTML untuk Utang Supplier
+    const topSupplierCardsHTML = topSupplierDebt.length ? topSupplierDebt.slice(0, 8).map(s => `
+        <div class="p-3.5 rounded-xl border border-slate-100 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-800/40 space-y-2.5">
+            <div class="flex items-start justify-between gap-2">
+                <div class="min-w-0 flex-1">
+                    <p class="font-bold text-xs text-slate-800 dark:text-white truncate">${esc(s.name)}</p>
+                    <p class="text-[10px] text-slate-400 mt-0.5">${s.poCount} invoice PO tempo kulakan</p>
+                </div>
+                <div class="text-right shrink-0">
+                    <span class="text-xs font-black text-rose-600 dark:text-rose-400">${fCur(s.totalDebt)}</span>
+                    <span class="block text-[9px] text-slate-400">Sisa Hutang Toko</span>
+                </div>
+            </div>
+            <div class="pt-2 border-t border-slate-200/60 dark:border-slate-700/60 flex items-center justify-between">
+                <span class="text-[10px] text-slate-500 dark:text-slate-400 flex items-center gap-1">
+                    <i class="fa-solid fa-truck text-[9px]"></i> Rekanan Kulakan
+                </span>
+                <button type="button" onclick="openAdminTab('purchases')" class="px-2.5 py-1 rounded-lg bg-[var(--color-primary)] text-white text-[10px] font-bold shadow-2xs hover:opacity-90 active:scale-95 transition-all cursor-pointer inline-flex items-center gap-1">
+                    Bayar PO <i class="fa-solid fa-arrow-right text-[8px]"></i>
+                </button>
+            </div>
+        </div>
+    `).join('') : `
+        <div class="py-8 px-4 rounded-xl border border-dashed border-slate-200 dark:border-slate-800 bg-slate-50/40 dark:bg-slate-800/20 text-center space-y-2">
+            <div class="w-10 h-10 mx-auto rounded-xl flex items-center justify-center text-sm bg-emerald-50 text-emerald-600 dark:bg-emerald-950/60 dark:text-emerald-400">
+                <i class="fa-solid fa-check-double"></i>
+            </div>
+            <p class="text-xs font-bold text-slate-700 dark:text-slate-200">Seluruh Tagihan Lunas</p>
+            <p class="text-[10px] text-slate-400 max-w-xs mx-auto">Seluruh tagihan pembelian & kulakan ke supplier telah lunas tepat waktu.</p>
+        </div>
+    `;
+
+    const topSupplierRowsHTML = topSupplierDebt.length ? topSupplierDebt.slice(0, 5).map(s => `
+        <tr class="border-b border-slate-50 dark:border-slate-800/50 hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors last:border-0">
+            <td class="py-2.5 px-3">
+                <p class="font-bold text-slate-800 dark:text-white truncate">${esc(s.name)}</p>
+                <p class="text-[10px] text-slate-400">${s.poCount} invoice PO tempo</p>
+            </td>
+            <td class="py-2.5 px-3 text-right font-black text-rose-500">${fCur(s.totalDebt)}</td>
+            <td class="py-2.5 px-3 text-right">
+                <button type="button" onclick="openAdminTab('purchases')" class="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-[10px] font-bold hover:text-[var(--color-primary)] transition-all cursor-pointer">Bayar</button>
+            </td>
+        </tr>
+    `).join('') : `
+        <tr><td colspan="3" class="py-6 text-center text-slate-400 text-xs">Seluruh tagihan kulakan supplier telah lunas</td></tr>
+    `;
+
     setH('report-hub-content', `
-        <div class="space-y-6">
+        <div class="space-y-4 sm:space-y-6">
             <!-- KARTU POSISI BERSIH LIKUIDITAS TOKO -->
-            <div class="rounded-2xl border p-5 ${!isSurplus ? 'border-rose-300 dark:border-rose-800 bg-rose-50/40 dark:bg-rose-950/20' : ''}" style="${isSurplus ? 'border: 1px solid rgba(var(--color-primary-rgb), 0.35); background: linear-gradient(135deg, rgba(var(--color-primary-rgb), 0.08), rgba(var(--color-primary-rgb), 0.02));' : ''}">
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div class="rounded-2xl border p-4 sm:p-5 ${!isSurplus ? 'border-rose-300 dark:border-rose-800 bg-rose-50/40 dark:bg-rose-950/20' : ''}" style="${isSurplus ? 'border: 1px solid rgba(var(--color-primary-rgb), 0.35); background: linear-gradient(135deg, rgba(var(--color-primary-rgb), 0.08), rgba(var(--color-primary-rgb), 0.02));' : ''}">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div>
                         <span class="text-[9px] font-black uppercase tracking-widest ${!isSurplus ? 'text-rose-700 dark:text-rose-400' : ''}" style="${isSurplus ? 'color: var(--color-primary);' : ''}">
                             Posisi Bersih Likuiditas Toko (Net Working Capital Gap)
@@ -1087,13 +1428,13 @@ export const renderDebtsReceivablesTab = () => {
                         </p>
                     </div>
 
-                    <div class="flex items-center gap-3">
-                        <div class="px-3.5 py-2 rounded-xl bg-white/90 dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-800 text-center">
+                    <div class="flex items-center gap-2 sm:gap-3">
+                        <div class="flex-1 sm:flex-initial px-3.5 py-2.5 rounded-xl bg-white/95 dark:bg-slate-900/90 border border-slate-200/80 dark:border-slate-800 text-center shadow-2xs">
                             <span class="block text-[9px] font-bold text-slate-400 uppercase">Piutang Pelanggan</span>
                             <span class="text-xs sm:text-sm font-bold text-slate-800 dark:text-white">${fCur(totalPiutangPelanggan)}</span>
                         </div>
-                        <span class="text-slate-400 font-bold">−</span>
-                        <div class="px-3.5 py-2 rounded-xl bg-white/90 dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-800 text-center">
+                        <span class="text-slate-400 font-black text-sm">−</span>
+                        <div class="flex-1 sm:flex-initial px-3.5 py-2.5 rounded-xl bg-white/95 dark:bg-slate-900/90 border border-slate-200/80 dark:border-slate-800 text-center shadow-2xs">
                             <span class="block text-[9px] font-bold text-slate-400 uppercase">Utang Supplier</span>
                             <span class="text-xs sm:text-sm font-bold text-rose-500">${fCur(totalUtangSupplier)}</span>
                         </div>
@@ -1102,9 +1443,9 @@ export const renderDebtsReceivablesTab = () => {
             </div>
 
             <!-- DUA KOLOM: PIUTANG PELANGGAN vs UTANG SUPPLIER -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
                 <!-- KOLOM KIRI: PIUTANG PELANGGAN (ACCOUNTS RECEIVABLE) -->
-                <div class="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 space-y-4">
+                <div class="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 sm:p-5 space-y-4">
                     <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
                         <div class="flex items-center gap-2.5">
                             <div class="w-8 h-8 rounded-xl flex items-center justify-center text-xs" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary);">
@@ -1120,53 +1461,48 @@ export const renderDebtsReceivablesTab = () => {
                         </button>
                     </div>
 
-                    <div class="grid grid-cols-2 gap-3">
+                    <div class="grid grid-cols-2 gap-2.5 sm:gap-3">
                         <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800">
                             <span class="text-[9px] font-bold text-slate-400 uppercase">Total Piutang Toko</span>
-                            <p class="text-base font-black text-slate-900 dark:text-white mt-0.5">${fCur(totalPiutangPelanggan)}</p>
+                            <p class="text-sm sm:text-base font-black text-slate-900 dark:text-white mt-0.5 truncate">${fCur(totalPiutangPelanggan)}</p>
                         </div>
                         <div class="p-3 rounded-xl bg-rose-50/50 dark:bg-rose-950/20 border border-rose-100 dark:border-rose-900/40">
                             <span class="text-[9px] font-bold text-rose-500 uppercase">Lewat Jatuh Tempo</span>
-                            <p class="text-base font-black text-rose-600 dark:text-rose-400 mt-0.5">${latePiutangCount} Nota</p>
+                            <p class="text-sm sm:text-base font-black text-rose-600 dark:text-rose-400 mt-0.5">${latePiutangCount} Nota</p>
                         </div>
                     </div>
 
-                    <!-- Tabel Debitur Terbesar -->
-                    <div class="overflow-x-auto">
+                    <div>
                         <p class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Debitur Pelanggan Terbesar</p>
-                        <table class="w-full text-left border-collapse text-xs">
-                            <thead>
-                                <tr class="border-b border-slate-100 dark:border-slate-800 text-[10px] font-bold text-slate-400">
-                                    <th class="py-2">Nama Pelanggan</th>
-                                    <th class="py-2 text-right">Sisa Tagihan</th>
-                                    <th class="py-2 text-right w-16">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                ${topDebitur.length ? topDebitur.slice(0, 5).map(d => `
-                                    <tr class="border-b border-slate-50 dark:border-slate-800/50 last:border-0">
-                                        <td class="py-2.5">
-                                             <p class="font-bold text-slate-800 dark:text-white truncate">${esc(d.name)}</p>
-                                             <p class="text-[10px] text-slate-400">${d.orderCount} nota ${d.isLate ? '<span class="text-rose-500 font-bold">• Terlambat</span>' : ''}</p>
-                                        </td>
-                                        <td class="py-2.5 text-right font-black text-slate-800 dark:text-white">${fCur(d.totalPiutang)}</td>
-                                        <td class="py-2.5 text-right">
-                                            <button type="button" onclick="openAdminTab('piutang')" class="px-2 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-[10px] font-bold hover:text-[var(--color-primary)] transition-all cursor-pointer">Buka</button>
-                                        </td>
+                        
+                        <!-- Mobile View (< 640px): Native Cards -->
+                        <div class="block sm:hidden space-y-2">
+                            ${topDebiturCardsHTML}
+                        </div>
+
+                        <!-- Desktop View (>= 640px): Table -->
+                        <div class="hidden sm:block overflow-x-auto">
+                            <table class="w-full text-left border-collapse text-xs">
+                                <thead>
+                                    <tr class="border-b border-slate-100 dark:border-slate-800 text-[10px] font-bold text-slate-400">
+                                        <th class="py-2 px-3">Nama Pelanggan</th>
+                                        <th class="py-2 px-3 text-right">Sisa Tagihan</th>
+                                        <th class="py-2 px-3 text-right w-16">Aksi</th>
                                     </tr>
-                                `).join('') : `
-                                    <tr><td colspan="3" class="py-4 text-center text-slate-400 text-xs">Tidak ada piutang pelanggan aktif</td></tr>
-                                `}
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    ${topDebiturRowsHTML}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
 
                 <!-- KOLOM KANAN: UTANG SUPPLIER KULAKAN (ACCOUNTS PAYABLE) -->
-                <div class="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 space-y-4">
+                <div class="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 sm:p-5 space-y-4">
                     <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
                         <div class="flex items-center gap-2.5">
-                            <div class="w-8 h-8 rounded-xl bg-purple-50 text-purple-600 dark:bg-purple-950/60 dark:text-purple-400 flex items-center justify-center text-xs">
+                            <div class="w-8 h-8 rounded-xl flex items-center justify-center text-xs" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary);">
                                 <i class="fa-solid fa-cart-flatbed"></i>
                             </div>
                             <div>
@@ -1179,45 +1515,40 @@ export const renderDebtsReceivablesTab = () => {
                         </button>
                     </div>
 
-                    <div class="grid grid-cols-2 gap-3">
+                    <div class="grid grid-cols-2 gap-2.5 sm:gap-3">
                         <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800">
                             <span class="text-[9px] font-bold text-slate-400 uppercase">Total Hutang Supplier</span>
-                            <p class="text-base font-black text-rose-600 dark:text-rose-400 mt-0.5">${fCur(totalUtangSupplier)}</p>
+                            <p class="text-sm sm:text-base font-black text-rose-600 dark:text-rose-400 mt-0.5 truncate">${fCur(totalUtangSupplier)}</p>
                         </div>
                         <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800">
                             <span class="text-[9px] font-bold uppercase" style="color: var(--color-primary)">Menunggu Kirim Barang</span>
-                            <p class="text-base font-black mt-0.5" style="color: var(--color-primary)">${purchaseMetrics.pendingArrivalCount} PO</p>
+                            <p class="text-sm sm:text-base font-black mt-0.5 truncate" style="color: var(--color-primary)">${purchaseMetrics.pendingArrivalCount} PO</p>
                         </div>
                     </div>
 
-                    <!-- Tabel Utang Rekanan Terbesar -->
-                    <div class="overflow-x-auto">
+                    <div>
                         <p class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Tagihan Supplier Rekanan Terbesar</p>
-                        <table class="w-full text-left border-collapse text-xs">
-                            <thead>
-                                <tr class="border-b border-slate-100 dark:border-slate-800 text-[10px] font-bold text-slate-400">
-                                    <th class="py-2">Nama Supplier</th>
-                                    <th class="py-2 text-right">Sisa Hutang</th>
-                                    <th class="py-2 text-right w-16">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                ${topSupplierDebt.length ? topSupplierDebt.slice(0, 5).map(s => `
-                                    <tr class="border-b border-slate-50 dark:border-slate-800/50 last:border-0">
-                                        <td class="py-2.5">
-                                            <p class="font-bold text-slate-800 dark:text-white truncate">${esc(s.name)}</p>
-                                            <p class="text-[10px] text-slate-400">${s.poCount} invoice PO tempo</p>
-                                        </td>
-                                        <td class="py-2.5 text-right font-black text-rose-500">${fCur(s.totalDebt)}</td>
-                                        <td class="py-2.5 text-right">
-                                            <button type="button" onclick="openAdminTab('purchases')" class="px-2 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-[10px] font-bold hover:text-[var(--color-primary)] transition-all cursor-pointer">Bayar</button>
-                                        </td>
+                        
+                        <!-- Mobile View (< 640px): Native Cards -->
+                        <div class="block sm:hidden space-y-2">
+                            ${topSupplierCardsHTML}
+                        </div>
+
+                        <!-- Desktop View (>= 640px): Table -->
+                        <div class="hidden sm:block overflow-x-auto">
+                            <table class="w-full text-left border-collapse text-xs">
+                                <thead>
+                                    <tr class="border-b border-slate-100 dark:border-slate-800 text-[10px] font-bold text-slate-400">
+                                        <th class="py-2 px-3">Nama Supplier</th>
+                                        <th class="py-2 px-3 text-right">Sisa Hutang</th>
+                                        <th class="py-2 px-3 text-right w-16">Aksi</th>
                                     </tr>
-                                `).join('') : `
-                                    <tr><td colspan="3" class="py-4 text-center text-slate-400 text-xs">Seluruh tagihan kulakan supplier telah lunas</td></tr>
-                                `}
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    ${topSupplierRowsHTML}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1411,6 +1742,50 @@ export const renderTaxComplianceTab = () => {
         }
     });
 
+    // Mobile Monthly SPT Cards (< 640px)
+    const monthCardsHTML = Array.from({length: 12}, (_, i) => i + 1).map(m => {
+        const d = (window.gTaxMonthly && window.gTaxMonthly[m] && window.gTaxMonthly[m].omset > 0)
+            ? window.gTaxMonthly[m]
+            : monthlyMap[m];
+        const isActiveRow = reportMonth === m;
+        const mPph = Math.round((d.omset || 0) * 0.005);
+        return `
+            <div class="p-3.5 rounded-xl border transition-all ${
+                isActiveRow 
+                ? 'border-[var(--color-primary)] bg-[rgba(var(--color-primary-rgb),0.06)] shadow-2xs' 
+                : 'border-slate-100 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-800/40'
+            } space-y-2">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                        <span class="w-6 h-6 rounded-lg text-[10px] font-black flex items-center justify-center ${
+                            isActiveRow ? 'bg-[var(--color-primary)] text-white' : 'bg-slate-200/80 dark:bg-slate-700 text-slate-600 dark:text-slate-300'
+                        }">${m}</span>
+                        <span class="text-xs font-black ${isActiveRow ? 'text-[var(--color-primary)]' : 'text-slate-800 dark:text-white'}">${MONTH_NAMES[m - 1]}</span>
+                        ${isActiveRow ? '<span class="px-1.5 py-0.2 rounded text-[9px] font-bold bg-[var(--color-primary)] text-white">Bulan Aktif</span>' : ''}
+                    </div>
+                    <span class="text-[10px] px-2 py-0.5 rounded-full font-bold bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-700 text-slate-600 dark:text-slate-300">
+                        ${d.orderCount} Pesanan
+                    </span>
+                </div>
+                <div class="grid grid-cols-3 gap-2 pt-2 border-t border-slate-200/60 dark:border-slate-700/60 text-center">
+                    <div>
+                        <span class="block text-[9px] font-bold text-slate-400 uppercase">Omset (DPP)</span>
+                        <span class="text-xs font-bold text-slate-800 dark:text-white">${fCur(d.omset)}</span>
+                    </div>
+                    <div>
+                        <span class="block text-[9px] font-bold uppercase" style="color: var(--color-primary)">PPN</span>
+                        <span class="text-xs font-bold" style="color: var(--color-primary)">${fCur(d.ppn)}</span>
+                    </div>
+                    <div>
+                        <span class="block text-[9px] font-bold uppercase" style="color: var(--color-primary)">PPh 0,5%</span>
+                        <span class="text-xs font-bold" style="color: var(--color-primary)">${fCur(mPph)}</span>
+                    </div>
+                </div>
+            </div>
+        `;
+    }).join('');
+
+    // Desktop 12-Month Table Rows (>= 640px)
     const monthRows = Array.from({length: 12}, (_, i) => i + 1).map(m => {
         const d = (window.gTaxMonthly && window.gTaxMonthly[m] && window.gTaxMonthly[m].omset > 0)
             ? window.gTaxMonthly[m]
@@ -1429,50 +1804,82 @@ export const renderTaxComplianceTab = () => {
     }).join('');
 
     setH('report-hub-content', `
-        <div class="space-y-6">
+        <div class="space-y-4 sm:space-y-6">
             <!-- 5 KARTU PAJAK REKAPITULASI -->
             <div class="grid grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4">
-                <div class="card-modern p-4 sm:p-5 border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900">
-                    <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Omset Bruto</p>
-                    <p class="text-sm sm:text-lg font-black text-slate-800 dark:text-white truncate">${fCur(totals.omset)}</p>
-                    <p class="text-[10px] text-slate-400 mt-1">${totals.orderCount} pesanan</p>
+                <div class="card-modern p-4 sm:p-5 border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 rounded-2xl flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Omset Bruto</span>
+                            <span class="w-7 h-7 rounded-xl flex items-center justify-center text-[10px] bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300"><i class="fa-solid fa-coins"></i></span>
+                        </div>
+                        <p class="text-sm sm:text-lg font-black text-slate-800 dark:text-white truncate">${fCur(totals.omset)}</p>
+                    </div>
+                    <p class="text-[10px] text-slate-400 mt-2 pt-2 border-t border-slate-100 dark:border-slate-800">${totals.orderCount} pesanan</p>
                 </div>
-                <div class="card-modern p-4 sm:p-5 border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900">
-                    <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Diskon Produk</p>
-                    <p class="text-sm sm:text-lg font-black text-rose-500 truncate">${fCur(totals.disc)}</p>
-                    <p class="text-[10px] text-slate-400 mt-1">Potongan belanja</p>
+                <div class="card-modern p-4 sm:p-5 border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 rounded-2xl flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Diskon Produk</span>
+                            <span class="w-7 h-7 rounded-xl flex items-center justify-center text-[10px] bg-rose-50 text-rose-600 dark:bg-rose-950/60 dark:text-rose-400"><i class="fa-solid fa-tag"></i></span>
+                        </div>
+                        <p class="text-sm sm:text-lg font-black text-rose-500 truncate">${fCur(totals.disc)}</p>
+                    </div>
+                    <p class="text-[10px] text-slate-400 mt-2 pt-2 border-t border-slate-100 dark:border-slate-800">Potongan belanja</p>
                 </div>
-                <div class="card-modern p-4 sm:p-5 border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900">
-                    <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">DPP Penjualan</p>
-                    <p class="text-sm sm:text-lg font-black text-slate-800 dark:text-white truncate">${fCur(dpp)}</p>
-                    <p class="text-[10px] text-slate-400 mt-1">Dasar Pengenaan Pajak</p>
+                <div class="card-modern p-4 sm:p-5 border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 rounded-2xl flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">DPP Penjualan</span>
+                            <span class="w-7 h-7 rounded-xl flex items-center justify-center text-[10px] bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300"><i class="fa-solid fa-calculator"></i></span>
+                        </div>
+                        <p class="text-sm sm:text-lg font-black text-slate-800 dark:text-white truncate">${fCur(dpp)}</p>
+                    </div>
+                    <p class="text-[10px] text-slate-400 mt-2 pt-2 border-t border-slate-100 dark:border-slate-800">Dasar Pengenaan Pajak</p>
                 </div>
-                <div class="card-modern p-4 sm:p-5 border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900">
-                    <p class="text-[9px] font-bold uppercase tracking-widest mb-1.5" style="color:var(--color-primary)">PPN Keluaran</p>
-                    <p class="text-sm sm:text-lg font-black truncate" style="color:var(--color-primary)">${fCur(totals.ppn)}</p>
-                    <p class="text-[10px] text-slate-400 mt-1">${totals.ppn > 0 ? 'Wajib setor kas negara' : 'Bebas PPN / Tarif 0%'}</p>
+                <div class="card-modern p-4 sm:p-5 border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 rounded-2xl flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-[9px] font-bold uppercase tracking-widest" style="color:var(--color-primary)">PPN Keluaran</span>
+                            <span class="w-7 h-7 rounded-xl flex items-center justify-center text-[10px]" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary);"><i class="fa-solid fa-receipt"></i></span>
+                        </div>
+                        <p class="text-sm sm:text-lg font-black truncate" style="color:var(--color-primary)">${fCur(totals.ppn)}</p>
+                    </div>
+                    <p class="text-[10px] text-slate-400 mt-2 pt-2 border-t border-slate-100 dark:border-slate-800">${totals.ppn > 0 ? 'Wajib setor kas negara' : 'Bebas PPN / Tarif 0%'}</p>
                 </div>
-                <div class="card-modern p-4 sm:p-5 col-span-2 lg:col-span-1 rounded-2xl" style="border: 1px solid rgba(var(--color-primary-rgb), 0.25); background: rgba(var(--color-primary-rgb), 0.05);">
-                    <p class="text-[9px] font-bold uppercase tracking-widest mb-1.5" style="color: var(--color-primary)">PPh Final 0,5%</p>
-                    <p class="text-sm sm:text-lg font-black truncate" style="color: var(--color-primary)">${fCur(estimasiPphFinal)}</p>
-                    <p class="text-[10px] font-medium mt-1" style="color: var(--color-primary); opacity: 0.85;">PP 55/2022 UMKM</p>
+                <div class="card-modern p-4 sm:p-5 col-span-2 lg:col-span-1 rounded-2xl flex flex-col justify-between" style="border: 1px solid rgba(var(--color-primary-rgb), 0.25); background: rgba(var(--color-primary-rgb), 0.05);">
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-[9px] font-bold uppercase tracking-widest" style="color: var(--color-primary)">PPh Final 0,5%</span>
+                            <span class="w-7 h-7 rounded-xl flex items-center justify-center text-[10px]" style="background: rgba(var(--color-primary-rgb), 0.2); color: var(--color-primary);"><i class="fa-solid fa-building-columns"></i></span>
+                        </div>
+                        <p class="text-sm sm:text-lg font-black truncate" style="color: var(--color-primary)">${fCur(estimasiPphFinal)}</p>
+                    </div>
+                    <p class="text-[10px] font-medium mt-2 pt-2 border-t border-[rgba(var(--color-primary-rgb),0.15)]" style="color: var(--color-primary); opacity: 0.85;">PP 55/2022 UMKM</p>
                 </div>
             </div>
 
             <!-- TABEL REKAP 12 BULAN & PENGATURAN IDENTITAS PAJAK -->
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <!-- Tabel 12 Bulan -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
+                <!-- Tabel / Kartu 12 Bulan -->
                 <div class="lg:col-span-2 rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden">
-                    <div class="p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+                    <div class="p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between gap-2">
                         <div>
                             <h3 class="font-bold text-xs uppercase tracking-wider text-slate-800 dark:text-white">Rekapitulasi SPT Per Bulan — ${reportYear}</h3>
                             <p class="text-[10px] text-slate-400 mt-0.5">Dasar Pengenaan Pajak, PPN Keluaran, &amp; PPh Final 0,5%</p>
                         </div>
-                        <button type="button" onclick="openTaxDocPreview('summary')" class="px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-bold hover:text-[var(--color-primary)] hover:border-[var(--color-primary)] transition-all flex items-center gap-1.5 cursor-pointer active:scale-95">
-                            <i class="fa-solid fa-print text-xs"></i> Cetak Rekap Pajak
+                        <button type="button" onclick="openTaxDocPreview('summary')" class="px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-bold hover:text-[var(--color-primary)] hover:border-[var(--color-primary)] transition-all flex items-center gap-1.5 cursor-pointer active:scale-95 shrink-0">
+                            <i class="fa-solid fa-print text-xs"></i> Cetak Rekap
                         </button>
                     </div>
-                    <div class="overflow-x-auto">
+                    
+                    <!-- Mobile View (< 640px): Native Cards -->
+                    <div class="block sm:hidden p-3.5 space-y-2.5">
+                        ${monthCardsHTML}
+                    </div>
+
+                    <!-- Desktop View (>= 640px): Full Table -->
+                    <div class="hidden sm:block overflow-x-auto">
                         <table class="w-full text-left border-collapse">
                             <thead>
                                 <tr class="bg-slate-50 dark:bg-slate-800/60 border-b border-slate-100 dark:border-slate-800 text-[10px] font-black uppercase tracking-widest text-slate-400">
@@ -1489,10 +1896,15 @@ export const renderTaxComplianceTab = () => {
                 </div>
 
                 <!-- Formulir Identitas Pajak CTAS 2026 -->
-                <div class="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 space-y-4">
-                    <div class="pb-3 border-b border-slate-100 dark:border-slate-800">
-                        <h4 class="font-bold text-xs uppercase tracking-wider text-slate-800 dark:text-white">Identitas Wajib Pajak</h4>
-                        <p class="text-[10px] text-slate-400 mt-0.5">Konfigurasi NPWP 16-Digit CTAS DJP 2026</p>
+                <div class="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 sm:p-5 space-y-4">
+                    <div class="flex items-center gap-2.5 pb-3 border-b border-slate-100 dark:border-slate-800">
+                        <div class="w-8 h-8 rounded-xl flex items-center justify-center text-xs" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary);">
+                            <i class="fa-solid fa-id-card"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-xs uppercase tracking-wider text-slate-800 dark:text-white">Identitas Wajib Pajak</h4>
+                            <p class="text-[10px] text-slate-400">NPWP 16-Digit CTAS DJP 2026</p>
+                        </div>
                     </div>
 
                     <div class="space-y-3">
@@ -1511,7 +1923,7 @@ export const renderTaxComplianceTab = () => {
                                 <option value="badan_normal" ${ts.taxScheme === 'badan_normal' ? 'selected' : ''}>PPh Badan Normal 22% (UU HPP)</option>
                             </select>
                         </div>
-                        <button type="button" onclick="saveReportTaxSettings()" class="w-full py-2.5 rounded-xl bg-[var(--color-primary)] text-white text-xs font-bold transition-all cursor-pointer active:scale-95 flex items-center justify-center gap-1.5 mt-2">
+                        <button type="button" onclick="saveReportTaxSettings()" class="w-full py-2.5 rounded-xl bg-[var(--color-primary)] text-white text-xs font-bold transition-all cursor-pointer active:scale-95 flex items-center justify-center gap-1.5 mt-2 shadow-2xs">
                             <i class="fa-solid fa-floppy-disk"></i> Simpan Pengaturan Pajak
                         </button>
                     </div>
@@ -1657,6 +2069,7 @@ window.openReportCurrentDocPreview = openReportCurrentDocPreview;
 window.filterStockReportStatus = filterStockReportStatus;
 window.filterStockReportCategory = filterStockReportCategory;
 window.filterStockReportSearch = filterStockReportSearch;
+window.clearStockReportSearch = clearStockReportSearch;
 window.calcReportMonthlyExpenseTotal = calcReportMonthlyExpenseTotal;
 window.saveReportExpenseBreakdown = saveReportExpenseBreakdown;
 window.saveReportMonthlyExpense = saveReportMonthlyExpense;

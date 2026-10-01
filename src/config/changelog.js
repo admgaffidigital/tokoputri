@@ -8,6 +8,23 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-10-15',
+        version: 'v1.10.15',
+        date: '2026-10-01',
+        title: 'Penyelarasan Visual Native Mobile & Eliminasi Total Tampilan Jomplang Pusat Laporan & Keuangan Terpadu',
+        category: 'ui',
+        badge: 'Reports Native Mobile Polish v1.10.15',
+        items: [
+            'Redesain Shell App Native Bar & Filter Bar (src/modules/admin/reports.js): Mentransformasi header kartu desktop yang kaku menjadi Native Mobile App Bar (rounded-2xl, squircle icon dengan gradien tema var(--color-primary), badge Live Sync, dan status role). Menata ulang toolbar filter mobile dengan touch targets 40-44px yang nyaman di jari, dropdown Bulan dan Tahun dengan chevron kustom, tombol putar Segarkan Data, tombol solid tema Cetak A4, serta Segmented Tabs Carousel dengan indikator tab aktif solid bertema.',
+            'Harmonisasi Palet Warna Tema (Tab 1 Ringkasan & Laba Rugi): Mengeliminasi total warna hardcoded amber (bg-amber-50, text-amber-900) yang bertabrakan dengan tema toko. Kini menggunakan token tema murni rgba(var(--color-primary-rgb), 0.05), ikon squircle tema, dan tombol aksi terpadu.',
+            'Leaderboard Native Cards (Tab 2 Penjualan & Kasir): Mengubah tabel desktop Top 10 Produk Terlaris menjadi Responsive Hybrid — di layar ponsel (< 640px) tampil sebagai Leaderboard Cards dengan medali peringkat (Emas #1, Perak #2, Perunggu #3, Slate pill #4-10), progress bar omset, dan metrik omset & laba kotor, sementara di desktop tetap mempertahankan tabel lengkap.',
+            'Native Mobile Inventory Cards & Filter Status Carousel (Tab 3 Stok & Valuasi): Menggantikan tabel inventori yang terpotong di layar HP dengan Native Inventory Cards responsif menampilkan avatar squircle kategori, badge status stok (Habis, Menipis, Aman), dan Bento Mini-Grid 2x2 (Stok Fisik, Harga Jual, Modal HPP, Potensi Laba). Dilengkapi pencarian mobile dengan tombol clear instan (✕) dan carousel filter pills interaktif (Semua, Habis, Menipis, Aman).',
+            'Debitur & Kreditor Mobile Cards (Tab 4 Utang & Piutang): Menghilangkan tabel desktop kaku pada Utang Supplier dan Piutang Pelanggan di HP, digantikan dengan Native Cards berisikan nomor WhatsApp debitur, tombol cepat Kelola Nota & Bayar PO, serta Celebration Native Cards yang estetik menggantikan teks tabel kosong.',
+            'Monthly SPT Cards Responsif (Tab 6 Perpajakan RI 2026): Merombak tabel 12 bulan SPT di HP menjadi Monthly Cards interaktif dengan highlight bulan aktif tema, rincian 3 kolom (Omset DPP, PPN, PPh 0,5%), serta 5 Bento Tax Cards dengan ikon squircle seragam.',
+            'Multi-Channel Build & Sync v1.10.15 (Android versionCode 11015): Kompilasi produksi web, sinkronisasi bundle flashdisk siap pakai, dan Android Capacitor tersinkronisasi 100%.'
+        ]
+    },
+    {
         id: 'log-1-10-14',
         version: 'v1.10.14',
         date: '2026-10-01',
