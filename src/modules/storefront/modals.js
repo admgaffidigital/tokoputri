@@ -259,9 +259,33 @@ window.closeQuickMenuModal = (fH=false) => {
     }
 };
 
-window.openShoppingGuideModal = () => {
+window.switchGuideTab = (tab = 'customer') => {
+    const tabs = ['customer', 'pos', 'admin'];
+    tabs.forEach(t => {
+        const btn = el(`guide-tab-btn-${t}`);
+        const sec = el(`guide-section-${t}`);
+        if (t === tab) {
+            if (btn) {
+                btn.className = "flex-1 py-2 sm:py-2.5 px-3 rounded-xl font-extrabold text-xs transition-all shadow-xs flex items-center justify-center gap-1.5 whitespace-nowrap cursor-pointer primary-bg text-white";
+            }
+            if (sec) sec.classList.remove('hidden');
+        } else {
+            if (btn) {
+                btn.className = "flex-1 py-2 sm:py-2.5 px-3 rounded-xl font-bold text-xs transition-all flex items-center justify-center gap-1.5 whitespace-nowrap cursor-pointer bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white";
+            }
+            if (sec) sec.classList.add('hidden');
+        }
+    });
+    const scrollContainer = document.querySelector('#shopping-guide-modal .custom-scrollbar');
+    if (scrollContainer) scrollContainer.scrollTop = 0;
+};
+
+window.openShoppingGuideModal = (initialTab = 'customer') => {
     const m = el('shopping-guide-modal'), c = el('shopping-guide-modal-content');
     if (m && c) {
+        if (typeof window.switchGuideTab === 'function') {
+            window.switchGuideTab(initialTab);
+        }
         if (m.classList.contains('hidden')) pushModalHistory('guide');
         openModalAnim(m, c);
     }

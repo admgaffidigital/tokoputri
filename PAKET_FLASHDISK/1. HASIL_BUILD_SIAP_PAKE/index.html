@@ -156,11 +156,11 @@
         }
       }
     </style>
-    <script type="module" crossorigin src="/assets/index-BNesncch.js"></script>
+    <script type="module" crossorigin src="/assets/index-CjISs5nZ.js"></script>
     <link rel="modulepreload" crossorigin href="/assets/vendor-firebase-core-D2OF5R23.js">
     <link rel="modulepreload" crossorigin href="/assets/vendor-firebase-db-BIUZcnOd.js">
     <link rel="modulepreload" crossorigin href="/assets/vendor-utils-Bszxp-Ae.js">
-    <link rel="stylesheet" crossorigin href="/assets/index-C9vVQEyK.css">
+    <link rel="stylesheet" crossorigin href="/assets/index-DL4i0sY6.css">
   </head>
   <body data-bg-style="minimalist">
     <!-- UI Components Global -->
@@ -440,16 +440,17 @@
               </div>
             </button>
 
-            <!-- 7. Panduan Belanja -->
-            <button class="p-3 sm:p-3.5 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900/80 hover:border-teal-400 hover:bg-teal-50/40 dark:hover:bg-slate-800 transition-all active:scale-95 text-left flex flex-col justify-between shadow-2xs cursor-pointer group" onclick="navigateFromQuickMenu(openShoppingGuideModal)">
+            <!-- 7. Panduan Toko & SOP -->
+            <button class="p-3 sm:p-3.5 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900/80 hover:border-teal-400 hover:bg-teal-50/40 dark:hover:bg-slate-800 transition-all active:scale-95 text-left flex flex-col justify-between shadow-2xs cursor-pointer group" onclick="navigateFromQuickMenu(() => openShoppingGuideModal('customer'))">
               <div class="flex items-start justify-between w-full mb-2">
                 <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-teal-500 to-cyan-600 text-white flex items-center justify-center text-sm shadow-sm group-hover:scale-105 transition-transform shrink-0">
                   <i class="fa-solid fa-book-open-reader"></i>
                 </div>
+                <span class="px-1.5 py-0.5 rounded text-[8px] font-black uppercase bg-teal-100 text-teal-700 dark:bg-teal-900/40 dark:text-teal-300">SOP</span>
               </div>
               <div>
-                <h4 class="text-xs sm:text-sm font-extrabold text-slate-800 dark:text-white line-clamp-1">Cara Pesan</h4>
-                <p class="text-[9px] sm:text-[10px] font-semibold text-slate-400 dark:text-slate-500 line-clamp-1 mt-0.5">Panduan belanja &amp; nota</p>
+                <h4 class="text-xs sm:text-sm font-extrabold text-slate-800 dark:text-white line-clamp-1">Panduan Toko</h4>
+                <p class="text-[9px] sm:text-[10px] font-semibold text-slate-400 dark:text-slate-500 line-clamp-1 mt-0.5">SOP Belanja, Kasir &amp; Admin</p>
               </div>
             </button>
 
@@ -517,9 +518,10 @@
       </div>
     </div>
 
-    <!-- Shopping Guide Modal (Panduan Belanja & Cara Pesan Lengkap) -->
+    <!-- Shopping Guide Modal (Panduan Toko & SOP Lengkap: Pelanggan, Kasir POS, & Admin) -->
     <div class="fixed inset-0 z-[115] flex hidden items-end justify-center bg-slate-900/80 p-0 opacity-0 transition-opacity duration-300 sm:items-center sm:p-5" id="shopping-guide-modal" onclick="if (event.target === this) closeShoppingGuideModal();">
-      <div class="relative flex max-h-[88dvh] w-full max-w-sm sm:max-w-xl md:max-w-2xl lg:max-w-3xl translate-y-full transform flex-col overflow-hidden rounded-t-3xl sm:rounded-2xl border border-slate-200 bg-white shadow-2xl transition-transform duration-300 dark:border-slate-800 dark:bg-[#0b1121] sm:translate-y-10" id="shopping-guide-modal-content">
+      <div class="relative flex max-h-[90dvh] w-full max-w-sm sm:max-w-xl md:max-w-2xl lg:max-w-3xl translate-y-full transform flex-col overflow-hidden rounded-t-3xl sm:rounded-2xl border border-slate-200 bg-white shadow-2xl transition-transform duration-300 dark:border-slate-800 dark:bg-[#0b1121] sm:translate-y-10" id="shopping-guide-modal-content">
+        <!-- Header -->
         <div class="flex shrink-0 items-center justify-between border-b border-slate-100 p-4 sm:p-5 dark:border-slate-800/80 bg-white dark:bg-[#0b1121]">
           <div class="flex items-center gap-3">
             <div class="w-10 h-10 rounded-2xl bg-[rgba(var(--color-primary-rgb),0.12)] border border-[rgba(var(--color-primary-rgb),0.22)] text-[var(--color-primary)] flex items-center justify-center text-base sm:text-lg shadow-2xs shrink-0">
@@ -527,153 +529,370 @@
             </div>
             <div>
               <h3 class="text-sm sm:text-base font-black text-slate-900 dark:text-white tracking-tight leading-tight">
-                Panduan Cara Memesan
+                Panduan &amp; SOP Ekosistem Toko
               </h3>
               <p class="text-[10px] sm:text-[11px] font-semibold text-slate-400 dark:text-slate-500 mt-0.5">
-                Langkah mudah berbelanja online di Toko Putri
+                Manual resmi untuk Pelanggan, Kasir POS, dan Admin/Owner
               </p>
             </div>
           </div>
-          <button class="flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-slate-500 transition-all hover:bg-rose-50 hover:text-rose-500 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-rose-900/30 active:scale-95" onclick="closeShoppingGuideModal()"><i class="fa-solid fa-xmark"></i></button>
+          <button class="flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-slate-500 transition-all hover:bg-rose-50 hover:text-rose-500 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-rose-900/30 active:scale-95 cursor-pointer" onclick="closeShoppingGuideModal()"><i class="fa-solid fa-xmark"></i></button>
         </div>
 
-        <div class="custom-scrollbar flex-1 overflow-y-auto bg-white p-5 sm:p-6 dark:bg-[#0b1121] text-xs sm:text-sm text-slate-600 dark:text-slate-300 space-y-4">
-          <!-- Intro Banner -->
-          <div class="p-4 rounded-2xl bg-[rgba(var(--color-primary-rgb),0.06)] border border-[rgba(var(--color-primary-rgb),0.2)] flex items-start gap-3">
-            <i class="fa-solid fa-circle-info text-[var(--color-primary)] text-lg shrink-0 mt-0.5"></i>
-            <p class="text-xs leading-relaxed text-slate-700 dark:text-slate-200 font-medium">
-              Selamat datang di <b>Toko Putri</b>! Kami menyediakan sistem pemesanan online yang cepat, transparan, dan terhubung langsung ke WhatsApp serta status realtime toko. Ikuti langkah mudah di bawah ini:
-            </p>
-          </div>
-
-          <!-- Step 1 -->
-          <div class="p-4 rounded-2xl border border-slate-200 dark:border-slate-700/80 bg-slate-50/50 dark:bg-slate-800/40 space-y-2">
-            <div class="flex items-center gap-2.5">
-              <span class="w-6 h-6 rounded-lg primary-bg text-white text-xs font-black flex items-center justify-center shrink-0">1</span>
-              <h4 class="font-bold text-slate-800 dark:text-white text-sm">Pilih Produk, Varian &amp; Poin Loyalty</h4>
-            </div>
-            <p class="text-xs leading-relaxed pl-8">
-              Jelajahi katalog melalui <b>Pencarian / Scan Barcode</b>, filter Kategori atau Brand. Klik produk untuk melihat detail spesifikasi, tingkatan harga grosir, dan ketersediaan stok. Pilih varian warna/ukuran, tentukan jumlah (qty), lalu klik <b>"Tambah ke Keranjang"</b>.
-            </p>
-            <div class="pl-8 pt-1 flex flex-wrap gap-1.5">
-              <span class="text-[9px] font-bold px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400"><i class="fa-solid fa-id-card mr-1"></i>Member Terdaftar: Otomatis Dapat Poin Belanja</span>
-              <span class="text-[9px] font-bold px-2 py-0.5 rounded bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400"><i class="fa-solid fa-clock mr-1"></i>Label PO: Dikirim sesuai estimasi</span>
-              <span class="text-[9px] font-bold px-2 py-0.5 rounded primary-bg-soft primary-text border primary-border"><i class="fa-solid fa-tags mr-1"></i>Harga Grosir Otomatis</span>
-            </div>
-          </div>
-
-          <!-- Step 2 -->
-          <div class="p-4 rounded-2xl border border-slate-200 dark:border-slate-700/80 bg-slate-50/50 dark:bg-slate-800/40 space-y-2">
-            <div class="flex items-center gap-2.5">
-              <span class="w-6 h-6 rounded-lg primary-bg text-white text-xs font-black flex items-center justify-center shrink-0">2</span>
-              <h4 class="font-bold text-slate-800 dark:text-white text-sm">Periksa Keranjang, Promo Ongkir &amp; Cetak SPH Proyek</h4>
-            </div>
-            <p class="text-xs leading-relaxed pl-8">
-              Buka <b>Keranjang Belanja</b> (ikon tas di navigasi). Anda dapat menyesuaikan kuantitas produk, memasukkan <b>Kupon Voucher</b>, atau menukarkan <b>Poin Hadiah Member</b>.
-            </p>
-            <div class="pl-8 pt-1 space-y-2">
-              <div class="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-800 dark:text-amber-300 text-xs">
-                <b class="flex items-center gap-1.5 mb-0.5"><i class="fa-solid fa-file-signature text-amber-600 dark:text-amber-400"></i> Fitur Proyek: Cetak Surat Penawaran Harga (SPH A4/PDF)</b>
-                Pelanggan, mandor, atau rekanan proyek dapat menekan tombol <b>"Cetak SPH"</b> langsung di keranjang untuk mencetak dokumen penawaran harga resmi Toko Putri (A4/PDF) lengkap dengan KOP toko untuk pengajuan anggaran/RAB sebelum memesan.
-              </div>
-              <div class="p-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-800 dark:text-emerald-300 text-xs">
-                <b class="flex items-center gap-1.5 mb-0.5"><i class="fa-solid fa-truck-fast text-emerald-600 dark:text-emerald-400"></i> Promo Bebas Ongkir Otomatis</b>
-                Belanja hingga batas minimal toko (misal Rp 500.000) untuk menikmati potongan gratis ongkir otomatis tanpa perlu kupon manual.
-              </div>
-            </div>
-            <p class="text-xs leading-relaxed pl-8 pt-1 text-slate-700 dark:text-slate-300 font-medium">
-              Jika rincian sudah sesuai, klik tombol <b>"Checkout"</b> untuk melanjutkan.
-            </p>
-          </div>
-
-          <!-- Step 3 -->
-          <div class="p-4 rounded-2xl border border-slate-200 dark:border-slate-700/80 bg-slate-50/50 dark:bg-slate-800/40 space-y-2">
-            <div class="flex items-center gap-2.5">
-              <span class="w-6 h-6 rounded-lg primary-bg text-white text-xs font-black flex items-center justify-center shrink-0">3</span>
-              <h4 class="font-bold text-slate-800 dark:text-white text-sm">Pilih Pengiriman: Alamat Sendiri, Lokasi Proyek, atau Ambil Toko</h4>
-            </div>
-            <p class="text-xs leading-relaxed pl-8">
-              Toko Putri menyediakan 3 pilihan pengiriman yang fleksibel:
-            </p>
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 pl-8 pt-1">
-              <div class="p-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs">
-                <b class="text-slate-800 dark:text-white block mb-0.5"><i class="fa-solid fa-house-chimney text-blue-500 mr-1"></i> Ke Alamat Rumah</b>
-                Barang dikirim ke alamat rumah/kantor pemesan dengan perhitungan ongkir otomatis via GPS.
-              </div>
-              <div class="p-2.5 rounded-xl bg-white dark:bg-slate-800 border border-amber-500/30 text-xs">
-                <b class="text-amber-700 dark:text-amber-400 block mb-0.5"><i class="fa-solid fa-location-dot text-amber-500 mr-1"></i> Lokasi Proyek (Drop-Point)</b>
-                Pesan dari rumah, kirim ke tukang/mandor di lokasi proyek. Lengkap dengan info penerima &amp; GPS tujuan. Ongkir dihitung presisi ke proyek.
-              </div>
-              <div class="p-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs">
-                <b class="text-slate-800 dark:text-white block mb-0.5"><i class="fa-solid fa-store text-emerald-500 mr-1"></i> Ambil di Toko</b>
-                Ambil sendiri pesanan langsung di gerai fisik Toko Putri tanpa biaya pengiriman.
-              </div>
-            </div>
-            <p class="text-xs leading-relaxed pl-8 text-slate-500 dark:text-slate-400 italic">
-              *Pastikan Nomor WhatsApp yang dimasukkan aktif untuk pengiriman nota digital dan koordinasi pengiriman oleh kurir toko.
-            </p>
-          </div>
-
-          <!-- Step 4 -->
-          <div class="p-4 rounded-2xl border border-slate-200 dark:border-slate-700/80 bg-slate-50/50 dark:bg-slate-800/40 space-y-2">
-            <div class="flex items-center gap-2.5">
-              <span class="w-6 h-6 rounded-lg primary-bg text-white text-xs font-black flex items-center justify-center shrink-0">4</span>
-              <h4 class="font-bold text-slate-800 dark:text-white text-sm">Pilih Metode Pembayaran &amp; Fasilitas Tempo</h4>
-            </div>
-            <p class="text-xs leading-relaxed pl-8">
-              Pilih metode transaksi resmi yang nyaman dan aman:
-            </p>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pl-8 pt-1">
-              <div class="p-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-medium">
-                <b class="text-slate-800 dark:text-white block mb-0.5"><i class="fa-solid fa-money-bill-wave text-[var(--color-primary)] mr-1"></i> Cash / COD</b>
-                Bayar tunai saat barang sampai di tempat atau saat ambil langsung di toko.
-              </div>
-              <div class="p-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-medium">
-                <b class="text-slate-800 dark:text-white block mb-0.5"><i class="fa-solid fa-building-columns text-blue-500 mr-1"></i> Transfer Bank Resmi</b>
-                Transfer ke rekening bank resmi toko (BCA, Mandiri, BRI, BNI).
-              </div>
-              <div class="p-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-medium">
-                <b class="text-slate-800 dark:text-white block mb-0.5"><i class="fa-solid fa-qrcode text-rose-500 mr-1"></i> QRIS Nasional Instan</b>
-                Scan QRIS dari e-Wallet (GoPay, OVO, DANA, ShopeePay) atau mobile banking.
-              </div>
-              <div class="p-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-medium">
-                <b class="text-slate-800 dark:text-white block mb-0.5"><i class="fa-solid fa-calendar-check text-amber-500 mr-1"></i> Cash Tempo (Kredit)</b>
-                <span class="text-[11px] text-slate-500 dark:text-slate-400">Eksklusif bagi <b>Member Resmi Terdaftar</b> yang limit piutang temponya telah disetujui toko.</span>
-              </div>
-            </div>
-            <p class="text-xs leading-relaxed pl-8 text-slate-500 dark:text-slate-400">
-              *Untuk pembayaran Transfer Bank &amp; QRIS, Anda dapat melampirkan foto struk bukti transfer yang otomatis tersimpan aman di sistem toko.
-            </p>
-          </div>
-
-          <!-- Step 5 -->
-          <div class="p-4 rounded-2xl border border-slate-200 dark:border-slate-700/80 bg-slate-50/50 dark:bg-slate-800/40 space-y-2">
-            <div class="flex items-center gap-2.5">
-              <span class="w-6 h-6 rounded-lg primary-bg text-white text-xs font-black flex items-center justify-center shrink-0">5</span>
-              <h4 class="font-bold text-slate-800 dark:text-white text-sm">Konfirmasi Pesanan Cepat ke WhatsApp Toko</h4>
-            </div>
-            <p class="text-xs leading-relaxed pl-8">
-              Klik <b>"Proses Pesanan"</b>. Sistem akan membuat format rincian belanja lengkap (termasuk instruksi pengantaran ke lokasi proyek jika memilih drop-point) dan langsung mengarahkan Anda ke WhatsApp resmi Toko Putri. Anda cukup menekan tombol <b>Kirim</b> agar admin toko segera menyiapkan barang.
-            </p>
-          </div>
-
-          <!-- Step 6 -->
-          <div class="p-4 rounded-2xl border border-slate-200 dark:border-slate-700/80 bg-slate-50/50 dark:bg-slate-800/40 space-y-2">
-            <div class="flex items-center gap-2.5">
-              <span class="w-6 h-6 rounded-lg primary-bg text-white text-xs font-black flex items-center justify-center shrink-0">6</span>
-              <h4 class="font-bold text-slate-800 dark:text-white text-sm">Lacak Status Pesanan &amp; Kartu Member Digital VIP</h4>
-            </div>
-            <p class="text-xs leading-relaxed pl-8">
-              Buka menu <b>Riwayat Pesanan</b> kapan saja untuk memantau status pesanan secara realtime (<i>Baru ➔ Diproses ➔ Siap / Dikirim ➔ Selesai</i>). Anda juga dapat melacak dari perangkat lain cukup dengan memasukkan nomor <b>ID Pesanan (ORD-...)</b>. Buka menu <b>Kartu Member</b> untuk melihat akumulasi saldo poin, tingkatan tier VIP, dan barcode belanja kasir!
-            </p>
+        <!-- Role Selector Tabs -->
+        <div class="px-4 sm:px-5 pt-3 pb-2.5 shrink-0 bg-slate-50/80 dark:bg-slate-900/60 border-b border-slate-100 dark:border-slate-800/80">
+          <div class="flex items-center gap-1.5 p-1 bg-slate-200/70 dark:bg-slate-800/90 rounded-2xl">
+            <button id="guide-tab-btn-customer" onclick="switchGuideTab('customer')" class="flex-1 py-2 sm:py-2.5 px-3 rounded-xl font-extrabold text-xs transition-all shadow-xs flex items-center justify-center gap-1.5 whitespace-nowrap cursor-pointer primary-bg text-white">
+              <i class="fa-solid fa-basket-shopping text-xs"></i> <span>Pelanggan</span>
+            </button>
+            <button id="guide-tab-btn-pos" onclick="switchGuideTab('pos')" class="flex-1 py-2 sm:py-2.5 px-3 rounded-xl font-bold text-xs transition-all flex items-center justify-center gap-1.5 whitespace-nowrap cursor-pointer bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
+              <i class="fa-solid fa-cash-register text-xs"></i> <span>Kasir POS</span>
+            </button>
+            <button id="guide-tab-btn-admin" onclick="switchGuideTab('admin')" class="flex-1 py-2 sm:py-2.5 px-3 rounded-xl font-bold text-xs transition-all flex items-center justify-center gap-1.5 whitespace-nowrap cursor-pointer bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
+              <i class="fa-solid fa-sliders text-xs"></i> <span>Admin &amp; Owner</span>
+            </button>
           </div>
         </div>
 
-        <div class="p-4 sm:p-5 border-t border-slate-100 dark:border-slate-800/80 bg-slate-50 dark:bg-slate-900/50 flex justify-between items-center shrink-0 gap-3">
-          <p class="text-[11px] font-semibold text-slate-500 dark:text-slate-400 hidden sm:block">Siap untuk mulai berbelanja?</p>
-          <button onclick="closeShoppingGuideModal(); changeView('view-catalog')" class="w-full sm:w-auto primary-bg text-white font-bold text-xs py-3 px-6 rounded-xl shadow-xs active:scale-95 transition-all flex items-center justify-center gap-2">
-            <i class="fa-solid fa-bag-shopping"></i> Mulai Belanja Sekarang
-          </button>
+        <!-- Scrollable Content Body -->
+        <div class="custom-scrollbar flex-1 overflow-y-auto bg-white p-4 sm:p-6 dark:bg-[#0b1121] text-xs sm:text-sm text-slate-600 dark:text-slate-300">
+          
+          <!-- ================= TAB 1: PANDUAN PELANGGAN ================= -->
+          <div id="guide-section-customer" class="space-y-4">
+            <!-- Intro Banner -->
+            <div class="p-4 rounded-2xl bg-[rgba(var(--color-primary-rgb),0.06)] border border-[rgba(var(--color-primary-rgb),0.2)] flex items-start gap-3">
+              <i class="fa-solid fa-circle-info text-[var(--color-primary)] text-lg shrink-0 mt-0.5"></i>
+              <p class="text-xs leading-relaxed text-slate-700 dark:text-slate-200 font-medium">
+                Selamat datang di <b>Toko Putri</b>! Belanja kebutuhan alat teknik, perkakas, dan bahan bangunan kini semakin mudah, cepat, dan transparan melalui aplikasi kami. Ikuti panduan langkah demi langkah di bawah ini:
+              </p>
+            </div>
+
+            <!-- Step 1 -->
+            <div class="p-4 rounded-2xl border border-slate-200 dark:border-slate-700/80 bg-slate-50/50 dark:bg-slate-800/40 space-y-2">
+              <div class="flex items-center gap-2.5">
+                <span class="w-6 h-6 rounded-lg primary-bg text-white text-xs font-black flex items-center justify-center shrink-0">1</span>
+                <h4 class="font-bold text-slate-800 dark:text-white text-sm">Pilih Produk, Varian &amp; Harga Grosir Otomatis</h4>
+              </div>
+              <p class="text-xs leading-relaxed pl-8">
+                Cari produk melalui bilah pencarian atau scan barcode dengan kamera HP Anda. Gunakan filter Kategori &amp; Sub-Kategori atau Merek untuk mempercepat penemuan. Klik produk untuk melihat detail spesifikasi teknis, pilihan varian (ukuran/warna/daya), dan ketersediaan stok fisik.
+              </p>
+              <div class="pl-8 pt-1 flex flex-wrap gap-1.5">
+                <span class="text-[9px] font-bold px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400"><i class="fa-solid fa-id-card mr-1"></i>Member Terdaftar: Otomatis Dapat Poin Belanja</span>
+                <span class="text-[9px] font-bold px-2 py-0.5 rounded primary-bg-soft primary-text border primary-border"><i class="fa-solid fa-tags mr-1"></i>Harga Grosir Otomatis Sesuai Jumlah Beli</span>
+                <span class="text-[9px] font-bold px-2 py-0.5 rounded bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400"><i class="fa-solid fa-clock mr-1"></i>Label PO: Dikirim Sesuai Estimasi</span>
+              </div>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="p-4 rounded-2xl border border-slate-200 dark:border-slate-700/80 bg-slate-50/50 dark:bg-slate-800/40 space-y-2">
+              <div class="flex items-center gap-2.5">
+                <span class="w-6 h-6 rounded-lg primary-bg text-white text-xs font-black flex items-center justify-center shrink-0">2</span>
+                <h4 class="font-bold text-slate-800 dark:text-white text-sm">Periksa Keranjang, Promo Bebas Ongkir &amp; SPH Proyek</h4>
+              </div>
+              <p class="text-xs leading-relaxed pl-8">
+                Buka menu <b>Keranjang Belanja</b> untuk mengatur kuantitas, memasukkan kode voucher promo, atau menukar saldo reward.
+              </p>
+              <div class="pl-8 pt-1 space-y-2">
+                <div class="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-800 dark:text-amber-300 text-xs">
+                  <b class="flex items-center gap-1.5 mb-0.5"><i class="fa-solid fa-file-signature text-amber-600 dark:text-amber-400"></i> Fitur Proyek: Cetak Surat Penawaran Harga (SPH A4/PDF)</b>
+                  Mandor, kontraktor, atau pembeli proyek dapat menekan tombol <b>"Cetak SPH"</b> di keranjang untuk menerbitkan dokumen penawaran harga resmi A4/PDF dengan KOP Toko Putri untuk keperluan pengajuan RAB sebelum checkout.
+                </div>
+                <div class="p-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-800 dark:text-emerald-300 text-xs">
+                  <b class="flex items-center gap-1.5 mb-0.5"><i class="fa-solid fa-truck-fast text-emerald-600 dark:text-emerald-400"></i> Bebas Ongkir Otomatis</b>
+                  Mencapai batas belanja minimal toko otomatis membebaskan biaya ongkir tanpa perlu kode promo.
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="p-4 rounded-2xl border border-slate-200 dark:border-slate-700/80 bg-slate-50/50 dark:bg-slate-800/40 space-y-2">
+              <div class="flex items-center gap-2.5">
+                <span class="w-6 h-6 rounded-lg primary-bg text-white text-xs font-black flex items-center justify-center shrink-0">3</span>
+                <h4 class="font-bold text-slate-800 dark:text-white text-sm">Pilih Pengiriman: Alamat Rumah, Proyek, atau Ambil Toko</h4>
+              </div>
+              <p class="text-xs leading-relaxed pl-8">
+                Toko Putri menyediakan 3 metode pengantaran yang fleksibel:
+              </p>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 pl-8 pt-1">
+                <div class="p-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs">
+                  <b class="text-slate-800 dark:text-white block mb-0.5"><i class="fa-solid fa-house-chimney text-blue-500 mr-1"></i> Ke Alamat Sendiri</b>
+                  Barang diantar ke alamat rumah/kantor dengan kalkulasi ongkir radius GPS otomatis.
+                </div>
+                <div class="p-2.5 rounded-xl bg-white dark:bg-slate-800 border border-amber-500/30 text-xs">
+                  <b class="text-amber-700 dark:text-amber-400 block mb-0.5"><i class="fa-solid fa-location-dot text-amber-500 mr-1"></i> Lokasi Proyek (Drop-Point)</b>
+                  Pesan dari rumah, kirim langsung ke tukang/mandor di lapangan. Lengkap dengan kontak penerima &amp; titik GPS proyek.
+                </div>
+                <div class="p-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs">
+                  <b class="text-slate-800 dark:text-white block mb-0.5"><i class="fa-solid fa-store text-emerald-500 mr-1"></i> Ambil di Toko</b>
+                  Gratis ongkir 100%. Ambil langsung pesanan di toko fisik dengan menunjukkan kode pesanan.
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 4 -->
+            <div class="p-4 rounded-2xl border border-slate-200 dark:border-slate-700/80 bg-slate-50/50 dark:bg-slate-800/40 space-y-2">
+              <div class="flex items-center gap-2.5">
+                <span class="w-6 h-6 rounded-lg primary-bg text-white text-xs font-black flex items-center justify-center shrink-0">4</span>
+                <h4 class="font-bold text-slate-800 dark:text-white text-sm">Metode Pembayaran Resmi &amp; Fasilitas Tempo</h4>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pl-8 pt-1">
+                <div class="p-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs">
+                  <b class="text-slate-800 dark:text-white block mb-0.5"><i class="fa-solid fa-money-bill-wave text-[var(--color-primary)] mr-1"></i> Cash / COD</b>
+                  Bayar tunai di tempat saat barang sampai atau saat ambil langsung di toko.
+                </div>
+                <div class="p-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs">
+                  <b class="text-slate-800 dark:text-white block mb-0.5"><i class="fa-solid fa-building-columns text-blue-500 mr-1"></i> Transfer Bank Resmi</b>
+                  Transfer via BCA, Mandiri, BRI, atau BNI dengan lampiran foto bukti bayar.
+                </div>
+                <div class="p-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs">
+                  <b class="text-slate-800 dark:text-white block mb-0.5"><i class="fa-solid fa-qrcode text-rose-500 mr-1"></i> QRIS Nasional Instan</b>
+                  Scan langsung menggunakan e-Wallet (GoPay, OVO, DANA, ShopeePay) &amp; mobile banking.
+                </div>
+                <div class="p-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs">
+                  <b class="text-slate-800 dark:text-white block mb-0.5"><i class="fa-solid fa-calendar-check text-amber-500 mr-1"></i> Putri PayLater VIP</b>
+                  <span class="text-[11px] text-slate-500 dark:text-slate-400">Belanja tempo tanpa DP khusus bagi <b>Member VIP Aktif</b> yang limit piutangnya disetujui toko.</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 5 & 6 -->
+            <div class="p-4 rounded-2xl border border-slate-200 dark:border-slate-700/80 bg-slate-50/50 dark:bg-slate-800/40 space-y-2">
+              <div class="flex items-center gap-2.5">
+                <span class="w-6 h-6 rounded-lg primary-bg text-white text-xs font-black flex items-center justify-center shrink-0">5</span>
+                <h4 class="font-bold text-slate-800 dark:text-white text-sm">Konfirmasi WhatsApp, Lacak Pesanan &amp; Kartu Member VIP</h4>
+              </div>
+              <p class="text-xs leading-relaxed pl-8">
+                Setelah klik <b>"Proses Pesanan"</b>, sistem otomatis membuka WhatsApp Toko Putri dengan format rincian lengkap untuk penyiapan barang seketika. Anda dapat memantau status pesanan (<i>Baru ➔ Diproses ➔ Dikirim ➔ Selesai</i>) di menu <b>Riwayat Pesanan</b> atau membuka <b>Kartu Member Digital</b> untuk mengecek saldo poin dan barcode belanja.
+              </p>
+            </div>
+          </div>
+
+          <!-- ================= TAB 2: PANDUAN KASIR POS ================= -->
+          <div id="guide-section-pos" class="space-y-4 hidden">
+            <!-- Intro Banner -->
+            <div class="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/25 flex items-start gap-3">
+              <i class="fa-solid fa-cash-register text-amber-600 dark:text-amber-400 text-lg shrink-0 mt-0.5"></i>
+              <p class="text-xs leading-relaxed text-slate-700 dark:text-slate-200 font-medium">
+                <b>SOP Kasir Toko &amp; Manajemen Shift POS:</b> Ikuti alur operasional kasir untuk menjamin akurasi fisik uang laci, kecepatan transaksi pelanggan, dan integritas data kasir secara realtime.
+              </p>
+            </div>
+
+            <!-- SOP 1 -->
+            <div class="p-4 rounded-2xl border border-slate-200 dark:border-slate-700/80 bg-slate-50/50 dark:bg-slate-800/40 space-y-2">
+              <div class="flex items-center gap-2.5">
+                <span class="w-6 h-6 rounded-lg bg-amber-500 text-white text-xs font-black flex items-center justify-center shrink-0">1</span>
+                <h4 class="font-bold text-slate-800 dark:text-white text-sm">Buka Shift Kasir Baru (Modal Awal Kas Kecil)</h4>
+              </div>
+              <p class="text-xs leading-relaxed pl-8">
+                Setiap awal jam kerja sebelum melayani transaksi, kasir wajib membuka shift di tombol <b>"Shift Kasir"</b>. Masukkan nominal fisik <b>Modal Kas Kecil (Petty Cash)</b> yang ada di laci (misal Rp 200.000). Sistem akan mengunci sesi kasir aktif dan mencatat jam mulai dinas.
+              </p>
+            </div>
+
+            <!-- SOP 2 -->
+            <div class="p-4 rounded-2xl border border-slate-200 dark:border-slate-700/80 bg-slate-50/50 dark:bg-slate-800/40 space-y-2">
+              <div class="flex items-center gap-2.5">
+                <span class="w-6 h-6 rounded-lg bg-amber-500 text-white text-xs font-black flex items-center justify-center shrink-0">2</span>
+                <h4 class="font-bold text-slate-800 dark:text-white text-sm">Scan Barcode Cepat &amp; Pencarian Barang</h4>
+              </div>
+              <p class="text-xs leading-relaxed pl-8">
+                Arahkan scanner barcode USB atau gunakan kamera perangkat ke barcode produk (EAN-13, Code 128, QR Code). Item akan langsung masuk ke keranjang kasir dalam hitungan milidetik. Anda juga dapat memilih via kartu kategori atau mengetik nama produk di kotak pencarian.
+              </p>
+            </div>
+
+            <!-- SOP 3 -->
+            <div class="p-4 rounded-2xl border border-slate-200 dark:border-slate-700/80 bg-slate-50/50 dark:bg-slate-800/40 space-y-2">
+              <div class="flex items-center gap-2.5">
+                <span class="w-6 h-6 rounded-lg bg-amber-500 text-white text-xs font-black flex items-center justify-center shrink-0">3</span>
+                <h4 class="font-bold text-slate-800 dark:text-white text-sm">Deteksi Member &amp; Diskon Poin dengan Margin Guard HPP</h4>
+              </div>
+              <p class="text-xs leading-relaxed pl-8">
+                Klik <b>"Pilih Member"</b> atau scan barcode dari kartu member digital pelanggan. Sistem langsung mendeteksi nama member, tingkatan tier, saldo poin, dan sisa limit PayLater.
+              </p>
+              <div class="pl-8 pt-1 space-y-1.5">
+                <div class="p-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-xs text-slate-700 dark:text-slate-300">
+                  <b class="text-emerald-700 dark:text-emerald-400 block"><i class="fa-solid fa-coins mr-1"></i> Point-to-Cash Diskon:</b>
+                  Poin member dapat langsung ditukarkan menjadi potongan kas tunai saat transaksi.
+                </div>
+                <div class="p-2.5 rounded-xl bg-blue-500/10 border border-blue-500/20 text-xs text-slate-700 dark:text-slate-300">
+                  <b class="text-blue-700 dark:text-blue-400 block"><i class="fa-solid fa-shield-halved mr-1"></i> Margin Guard Anti-Jual Rugi:</b>
+                  Sistem otomatis membatasi diskon poin agar harga jual tidak pernah jatuh di bawah modal pokok (HPP) toko.
+                </div>
+              </div>
+            </div>
+
+            <!-- SOP 4 -->
+            <div class="p-4 rounded-2xl border border-slate-200 dark:border-slate-700/80 bg-slate-50/50 dark:bg-slate-800/40 space-y-2">
+              <div class="flex items-center gap-2.5">
+                <span class="w-6 h-6 rounded-lg bg-amber-500 text-white text-xs font-black flex items-center justify-center shrink-0">4</span>
+                <h4 class="font-bold text-slate-800 dark:text-white text-sm">Transaksi Putri PayLater &amp; Tempo DP Kasir</h4>
+              </div>
+              <p class="text-xs leading-relaxed pl-8">
+                Saat pelanggan bertransaksi tempo, pilih metode <b>Tempo / PayLater</b>. Jika belanja melebihi sisa limit kredit pelanggan, sistem mewajibkan pembayaran <b>Uang Muka (DP)</b>. <i>Uang muka tunai yang diterima kasir otomatis masuk dan tercatat ke kas laci shift aktif secara presisi.</i>
+              </p>
+            </div>
+
+            <!-- SOP 5 -->
+            <div class="p-4 rounded-2xl border border-slate-200 dark:border-slate-700/80 bg-slate-50/50 dark:bg-slate-800/40 space-y-2">
+              <div class="flex items-center gap-2.5">
+                <span class="w-6 h-6 rounded-lg bg-amber-500 text-white text-xs font-black flex items-center justify-center shrink-0">5</span>
+                <h4 class="font-bold text-slate-800 dark:text-white text-sm">Tahan &amp; Panggil Antrean Pembeli (Hold / Recall Cart)</h4>
+              </div>
+              <p class="text-xs leading-relaxed pl-8">
+                Jika pembeli masih ingin mengambil barang tambahan atau tertahan di dompet, tekan tombol <b>"Hold Cart"</b>. Antrean disimpan di memori dan kasir bisa langsung melayani antrean berikutnya tanpa hambatan. Tekan <b>"Recall Cart"</b> untuk memulihkan pesanan yang ditahan sebelumnya.
+              </p>
+            </div>
+
+            <!-- SOP 6 -->
+            <div class="p-4 rounded-2xl border border-slate-200 dark:border-slate-700/80 bg-slate-50/50 dark:bg-slate-800/40 space-y-2">
+              <div class="flex items-center gap-2.5">
+                <span class="w-6 h-6 rounded-lg bg-amber-500 text-white text-xs font-black flex items-center justify-center shrink-0">6</span>
+                <h4 class="font-bold text-slate-800 dark:text-white text-sm">Cetak Struk Thermal RawBT (58/80mm) &amp; Struk WA</h4>
+              </div>
+              <p class="text-xs leading-relaxed pl-8">
+                Setelah pembayaran selesai, struk thermal kasir dicetak dalam 1 klik via Bluetooth atau USB menggunakan RawBT ESC/POS. Struk otomatis terkalibrasi presisi matematika anti-terpotong (58mm compact 30 kol / 58mm standar 32 kol / 80mm). Kasir juga dapat menekan <b>Kirim Struk WA</b> untuk bukti digital tanpa kertas.
+              </p>
+            </div>
+
+            <!-- SOP 7 -->
+            <div class="p-4 rounded-2xl border border-slate-200 dark:border-slate-700/80 bg-slate-50/50 dark:bg-slate-800/40 space-y-2">
+              <div class="flex items-center gap-2.5">
+                <span class="w-6 h-6 rounded-lg bg-amber-500 text-white text-xs font-black flex items-center justify-center shrink-0">7</span>
+                <h4 class="font-bold text-slate-800 dark:text-white text-sm">Tutup Shift Kasir &amp; Rekonsiliasi Kas Laci</h4>
+              </div>
+              <p class="text-xs leading-relaxed pl-8">
+                Saat pergantian kasir atau tutup toko, klik <b>"Tutup Shift"</b>. Hitung fisik uang tunai di laci kasir dan ketikkan nominalnya. Sistem otomatis membandingkan: <code>Modal Awal + Penjualan Tunai + DP Tempo - Biaya Kasir = Saldo Seharusnya</code>. Menghasilkan status *Sesuai*, *Lebih*, atau *Kurang* serta mencetak Laporan Shift (Z-Report).
+              </p>
+            </div>
+          </div>
+
+          <!-- ================= TAB 3: PANDUAN ADMIN & OWNER ================= -->
+          <div id="guide-section-admin" class="space-y-4 hidden">
+            <!-- Intro Banner -->
+            <div class="p-4 rounded-2xl bg-teal-500/10 border border-teal-500/25 flex items-start gap-3">
+              <i class="fa-solid fa-sliders text-teal-600 dark:text-teal-400 text-lg shrink-0 mt-0.5"></i>
+              <p class="text-xs leading-relaxed text-slate-700 dark:text-slate-200 font-medium">
+                <b>Manual Operasional &amp; Kendali Owner / Admin CMS:</b> Panduan komprehensif mengelola seluruh aspek toko: katalog produk, pemrosesan order, buku kas &amp; biaya operasional, piutang tempo, restock PO supplier, laporan pajak RI 2026, hingga keamanan staf RBAC.
+              </p>
+            </div>
+
+            <!-- Admin 1 -->
+            <div class="p-4 rounded-2xl border border-slate-200 dark:border-slate-700/80 bg-slate-50/50 dark:bg-slate-800/40 space-y-2">
+              <div class="flex items-center gap-2.5">
+                <span class="w-6 h-6 rounded-lg bg-teal-600 text-white text-xs font-black flex items-center justify-center shrink-0">1</span>
+                <h4 class="font-bold text-slate-800 dark:text-white text-sm">Master Produk &amp; Hierarki Kategori / Sub-Kategori Terkelompok</h4>
+              </div>
+              <p class="text-xs leading-relaxed pl-8">
+                Kelola master produk lengkap dengan foto, barcode unik, harga modal kulakan (HPP), harga eceran, dan tingkatan harga grosir. Gunakan menu <b>Kategori</b> untuk mengelompokkan sub-kategori (misal Kategori <i>Peralatan Listrik</i> memiliki sub <i>Kabel, Saklar, Lampu</i>). Form produk dilengkapi Smart Cascading Dropdown dan tombol cepat tambah sub-kategori on-the-fly.
+              </p>
+            </div>
+
+            <!-- Admin 2 -->
+            <div class="p-4 rounded-2xl border border-slate-200 dark:border-slate-700/80 bg-slate-50/50 dark:bg-slate-800/40 space-y-2">
+              <div class="flex items-center gap-2.5">
+                <span class="w-6 h-6 rounded-lg bg-teal-600 text-white text-xs font-black flex items-center justify-center shrink-0">2</span>
+                <h4 class="font-bold text-slate-800 dark:text-white text-sm">Order Fulfillment &amp; Cetak Dokumen Resmi</h4>
+              </div>
+              <p class="text-xs leading-relaxed pl-8">
+                Semua pesanan online dan kasir terpusat di menu <b>Pesanan</b>. Admin dapat memverifikasi bukti bayar, mengubah status ke <i>Diproses</i>, <i>Siap Diambil</i>, atau <i>Dikirim</i>. Menerbitkan 3 jenis dokumen resmi 1-klik:
+              </p>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 pl-8 pt-1">
+                <div class="p-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs">
+                  <b class="text-slate-800 dark:text-white block mb-0.5"><i class="fa-solid fa-receipt text-blue-500 mr-1"></i> Struk Kasir RawBT</b>
+                  Format thermal ESC/POS 58mm/80mm untuk struk belanja fisik pelanggan.
+                </div>
+                <div class="p-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs">
+                  <b class="text-slate-800 dark:text-white block mb-0.5"><i class="fa-solid fa-file-invoice-dollar text-emerald-500 mr-1"></i> Faktur / Invoice A4</b>
+                  Dokumen faktur penagihan formal standar perpajakan lengkap KOP &amp; rincian DPP/PPN.
+                </div>
+                <div class="p-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs">
+                  <b class="text-slate-800 dark:text-white block mb-0.5"><i class="fa-solid fa-truck-ramp-box text-amber-500 mr-1"></i> Surat Jalan (Delivery)</b>
+                  Dokumen resmi bukti serah terima barang kepada kurir toko dan penerima di lokasi proyek.
+                </div>
+              </div>
+            </div>
+
+            <!-- Admin 3 -->
+            <div class="p-4 rounded-2xl border border-slate-200 dark:border-slate-700/80 bg-slate-50/50 dark:bg-slate-800/40 space-y-2">
+              <div class="flex items-center gap-2.5">
+                <span class="w-6 h-6 rounded-lg bg-teal-600 text-white text-xs font-black flex items-center justify-center shrink-0">3</span>
+                <h4 class="font-bold text-slate-800 dark:text-white text-sm">Buku Kas Harian &amp; Biaya Operasional Toko</h4>
+              </div>
+              <p class="text-xs leading-relaxed pl-8">
+                Catat seluruh pengeluaran operasional toko (listrik, gaji karyawan, bensin armada, ATK, pemeliharaan). Dilengkapi pemilihan <b>Multi-Sumber Dana</b> (Kas Kasir, Rekening BCA, Kas Toko Utama) dan upload lampiran foto nota fisik. Tampilan Bento Card otomatis menyesuaikan tema aktif toko.
+              </p>
+            </div>
+
+            <!-- Admin 4 -->
+            <div class="p-4 rounded-2xl border border-slate-200 dark:border-slate-700/80 bg-slate-50/50 dark:bg-slate-800/40 space-y-2">
+              <div class="flex items-center gap-2.5">
+                <span class="w-6 h-6 rounded-lg bg-teal-600 text-white text-xs font-black flex items-center justify-center shrink-0">4</span>
+                <h4 class="font-bold text-slate-800 dark:text-white text-sm">Kulakan Restock PO Supplier &amp; Rekanan Pemasok</h4>
+              </div>
+              <p class="text-xs leading-relaxed pl-8">
+                Kelola data supplier distributor di menu <b>Rekanan Supplier</b>. Terbitkan Purchase Order (PO) kulakan barang dengan pencatatan harga modal baru dan tanggal jatuh tempo hutang supplier. Begitu barang tiba, stok produk di etalase dan kasir POS bertambah otomatis (<i>Auto-Restock</i>).
+              </p>
+            </div>
+
+            <!-- Admin 5 -->
+            <div class="p-4 rounded-2xl border border-slate-200 dark:border-slate-700/80 bg-slate-50/50 dark:bg-slate-800/40 space-y-2">
+              <div class="flex items-center gap-2.5">
+                <span class="w-6 h-6 rounded-lg bg-teal-600 text-white text-xs font-black flex items-center justify-center shrink-0">5</span>
+                <h4 class="font-bold text-slate-800 dark:text-white text-sm">Manajemen Piutang Tempo &amp; Kartu Debitur</h4>
+              </div>
+              <p class="text-xs leading-relaxed pl-8">
+                Pantau seluruh tagihan pelanggan melalui 3 tab terintegrasi: <i>Nota Tagihan</i>, <i>Kartu Piutang per Pelanggan</i>, dan <i>Histori Cicilan</i>. Catat pembayaran cicilan dengan pemulihan limit kredit seketika (<i>Live Sync 0ms</i>), cetak Nota Tagihan Resmi A4, dan kirim pengingat tagihan konsolidasi via WhatsApp.
+              </p>
+            </div>
+
+            <!-- Admin 6 -->
+            <div class="p-4 rounded-2xl border border-slate-200 dark:border-slate-700/80 bg-slate-50/50 dark:bg-slate-800/40 space-y-2">
+              <div class="flex items-center gap-2.5">
+                <span class="w-6 h-6 rounded-lg bg-teal-600 text-white text-xs font-black flex items-center justify-center shrink-0">6</span>
+                <h4 class="font-bold text-slate-800 dark:text-white text-sm">Pusat Laporan &amp; Smart Perpajakan RI 2026</h4>
+              </div>
+              <p class="text-xs leading-relaxed pl-8">
+                Analisis Laba Rugi komprehensif (Omset, HPP Modal, Beban Operasional, Laba Bersih), peringkat kasir, dan valuasi aset stok gudang. Sistem mengadopsi <b>Smart Perpajakan RI 2026</b>: NPWP 16-Digit CTAS DJP, PPh Final PP 55/2022 (0,5%), serta 4 preset PPN fleksibel (Badan Non-PKP 0%, Inklusif 11%, PKP 11%, dan PKP 12%).
+              </p>
+            </div>
+
+            <!-- Admin 7 -->
+            <div class="p-4 rounded-2xl border border-slate-200 dark:border-slate-700/80 bg-slate-50/50 dark:bg-slate-800/40 space-y-2">
+              <div class="flex items-center gap-2.5">
+                <span class="w-6 h-6 rounded-lg bg-teal-600 text-white text-xs font-black flex items-center justify-center shrink-0">7</span>
+                <h4 class="font-bold text-slate-800 dark:text-white text-sm">Staf Multi-Akun RBAC 22 Modul &amp; HPP Privacy Guard</h4>
+              </div>
+              <p class="text-xs leading-relaxed pl-8">
+                Kelola hak akses karyawan dengan sistem RBAC 22 modul granular dan 4 preset 1-klik (Owner, Admin, Kasir, Gudang). Fitur <b>HPP Privacy Guard</b> melindungi data rahasia bisnis dengan menyembunyikan harga modal kulakan dan margin laba dari layar kasir dan staf umum.
+              </p>
+            </div>
+
+            <!-- Admin 8 -->
+            <div class="p-4 rounded-2xl border border-slate-200 dark:border-slate-700/80 bg-slate-50/50 dark:bg-slate-800/40 space-y-2">
+              <div class="flex items-center gap-2.5">
+                <span class="w-6 h-6 rounded-lg bg-teal-600 text-white text-xs font-black flex items-center justify-center shrink-0">8</span>
+                <h4 class="font-bold text-slate-800 dark:text-white text-sm">Pengaturan Toko, Printer RawBT &amp; Multi-Channel Sync</h4>
+              </div>
+              <p class="text-xs leading-relaxed pl-8">
+                Konfigurasi identitas toko, koordinat GPS pengiriman, tema visual (Gold, Emerald, Burgundy, Sapphire, dll), opsi tombol melayang scroll-to-top, dan kalibrasi ukuran kertas printer thermal RawBT. Seluruh data disinkronisasi ke Cloud Firestore, aplikasi Android APK, dan paket offline flashdisk.
+              </p>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Footer Action Strip -->
+        <div class="p-4 sm:p-5 border-t border-slate-100 dark:border-slate-800/80 bg-slate-50 dark:bg-slate-900/50 flex flex-col sm:flex-row justify-between items-center shrink-0 gap-2.5">
+          <p class="text-[11px] font-semibold text-slate-500 dark:text-slate-400 hidden sm:block">
+            Ekosistem terpadu Toko Putri &bull; Satu Data untuk Semua
+          </p>
+          <div class="flex items-center gap-2 w-full sm:w-auto">
+            <button onclick="closeShoppingGuideModal()" class="flex-1 sm:flex-none border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-bold text-xs py-2.5 px-4 rounded-xl shadow-2xs hover:bg-slate-50 dark:hover:bg-slate-700/60 transition-all cursor-pointer active:scale-95 text-center">
+              Tutup
+            </button>
+            <button onclick="closeShoppingGuideModal(); changeView('view-catalog')" class="flex-1 sm:flex-none primary-bg text-white font-bold text-xs py-2.5 px-5 rounded-xl shadow-xs active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer">
+              <i class="fa-solid fa-bag-shopping"></i> Ke Etalase
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -2167,6 +2386,7 @@
               </div>
             </div>
             <div class="flex items-center gap-1.5">
+              <button class="flex h-8 w-8 sm:w-auto shrink-0 aspect-square sm:aspect-auto items-center justify-center sm:gap-1.5 rounded-xl border border-white/25 bg-white/20 px-0 sm:px-3 text-[11px] font-bold text-white shadow-xs transition-all hover:bg-white/30 active:scale-95 cursor-pointer" onclick="openShoppingGuideModal('admin')" title="Panduan & SOP Sistem"><i class="fa-solid fa-book-open text-xs text-white"></i><span class="hidden sm:inline">Panduan</span></button>
               <button class="flex h-8 w-8 sm:w-auto shrink-0 aspect-square sm:aspect-auto items-center justify-center sm:gap-1.5 rounded-xl border border-white/25 bg-white/20 px-0 sm:px-3 text-[11px] font-bold text-white shadow-xs transition-all hover:bg-white/30 active:scale-95 cursor-pointer" onclick="changeView('view-catalog')"><i class="fa-solid fa-eye text-xs text-white"></i><span class="hidden sm:inline">Preview</span></button>
               <button class="flex h-8 w-8 sm:w-auto shrink-0 aspect-square sm:aspect-auto items-center justify-center sm:gap-1.5 rounded-xl border border-white/25 bg-rose-500/85 hover:bg-rose-600 text-white px-0 sm:px-3 text-[11px] font-bold shadow-xs transition-all active:scale-95 cursor-pointer" onclick="confirmLogoutAdmin()"><i class="fa-solid fa-power-off text-xs text-white"></i><span class="hidden sm:inline">Keluar</span></button>
             </div>
@@ -2295,6 +2515,11 @@
                 <button class="card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-4 sm:p-5 text-center transition-all duration-300 hover:-translate-y-1.5 hover:border-teal-400/50 hover:bg-teal-50/20 hover:shadow-xl dark:hover:bg-slate-800/60 rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-white/90 dark:bg-slate-900/60 shadow-xs cursor-pointer active:scale-95" onclick="openAdminTab('cashiers')">
                   <div class="relative z-10 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-teal-600 to-teal-800 text-white shadow-md transition-all duration-300 group-hover:scale-110"><i class="fa-solid fa-users-gear text-2xl sm:text-3xl"></i></div>
                   <div class="relative z-10"><span class="block text-[10px] font-black uppercase leading-tight tracking-widest text-slate-800 dark:text-white sm:text-[11px]">Staf &amp; Hak Akses</span><span class="mt-0.5 block text-[9px] font-bold text-slate-400 dark:text-slate-500">Kelola Kasir &amp; Izin</span></div>
+                </button>
+                <!-- PANDUAN SISTEM (MANUAL & SOP) -->
+                <button class="card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-4 sm:p-5 text-center transition-all duration-300 hover:-translate-y-1.5 hover:border-emerald-400/50 hover:bg-emerald-50/20 hover:shadow-xl dark:hover:bg-slate-800/60 rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-white/90 dark:bg-slate-900/60 shadow-xs cursor-pointer active:scale-95" onclick="openShoppingGuideModal('admin')">
+                  <div class="relative z-10 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-600 to-teal-700 text-white shadow-md transition-all duration-300 group-hover:scale-110"><i class="fa-solid fa-book-bookmark text-2xl sm:text-3xl"></i></div>
+                  <div class="relative z-10"><span class="block text-[10px] font-black uppercase leading-tight tracking-widest text-slate-800 dark:text-white sm:text-[11px]">Panduan Sistem</span><span class="mt-0.5 block text-[9px] font-bold text-slate-400 dark:text-slate-500">Manual SOP &amp; Operasional</span></div>
                 </button>
                 <!-- CHANGELOG -->
                 <button class="card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-4 sm:p-5 text-center transition-all duration-300 hover:-translate-y-1.5 hover:border-slate-400/50 hover:bg-slate-100/40 hover:shadow-xl dark:hover:bg-slate-800/60 rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-white/90 dark:bg-slate-900/60 shadow-xs cursor-pointer active:scale-95" onclick="openAdminTab('changelog')">
