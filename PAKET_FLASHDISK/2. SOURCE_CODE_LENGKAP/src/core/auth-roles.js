@@ -39,6 +39,7 @@ export const PERMISSION_DEFINITIONS = [
     { key: 'changelog', label: 'Log Pembaruan Sistem', desc: 'Melihat riwayat update sistem toko', group: 'konten', icon: 'fa-code-branch' },
 
     // 3. Modul Sensitif & Finansial (Hanya Owner secara default)
+    { key: 'reports', label: 'Pusat Laporan & Keuangan', desc: 'Laporan terpadu penjualan, stok, laba rugi, utang piutang, dan perpajakan', group: 'sensitif', icon: 'fa-chart-pie' },
     { key: 'view_reports', label: 'Laporan Finansial & Laba', desc: 'Lihat omset, total HPP terjual, margin & laba bersih toko', group: 'sensitif', icon: 'fa-chart-line' },
     { key: 'tax', label: 'Pajak & Keuangan (PPN)', desc: 'Laporan PPN, neraca keuangan, dan laba rugi resmi', group: 'sensitif', icon: 'fa-file-invoice-dollar' },
     { key: 'banks', label: 'Rekening Bank & QRIS', desc: 'Ubah nomor rekening toko dan QRIS tujuan pembayaran', group: 'sensitif', icon: 'fa-building-columns' },
@@ -56,7 +57,7 @@ export const ROLE_PRESETS = {
         piutang: false, customers: false, categories: false, brands: false,
         colors: false, vouchers: false, banners: false, rewards: false,
         reviews: false, faqs: false, changelog: false,
-        view_reports: false, tax: false, banks: false, settings: false,
+        reports: false, view_reports: false, tax: false, banks: false, settings: false,
         cashiers: false, backup_sync: false
     },
     // 🛡️ ADMIN OPERASIONAL: Operasional & konten aktif, finansial & pengaturan toko dibatasi
@@ -66,7 +67,7 @@ export const ROLE_PRESETS = {
         piutang: true, customers: true, categories: true, brands: true,
         colors: true, vouchers: true, banners: true, rewards: true,
         reviews: true, faqs: true, changelog: true,
-        view_reports: false, tax: false, banks: false, settings: false,
+        reports: false, view_reports: false, tax: false, banks: false, settings: false,
         cashiers: false, backup_sync: false
     },
     // 💼 MANAJER TOKO: Semua operasional + laporan laba, tanpa izin ubah rekening & akun staf
@@ -76,7 +77,7 @@ export const ROLE_PRESETS = {
         piutang: true, customers: true, categories: true, brands: true,
         colors: true, vouchers: true, banners: true, rewards: true,
         reviews: true, faqs: true, changelog: true,
-        view_reports: true, tax: true, banks: false, settings: false,
+        reports: true, view_reports: true, tax: true, banks: false, settings: false,
         cashiers: false, backup_sync: false
     },
     // 👑 OWNER: Akses 100% penuh tanpa batasan
@@ -86,7 +87,7 @@ export const ROLE_PRESETS = {
         piutang: true, customers: true, categories: true, brands: true,
         colors: true, vouchers: true, banners: true, rewards: true,
         reviews: true, faqs: true, changelog: true,
-        view_reports: true, tax: true, banks: true, settings: true,
+        reports: true, view_reports: true, tax: true, banks: true, settings: true,
         cashiers: true, backup_sync: true
     }
 };
@@ -180,8 +181,17 @@ export const hasPermission = (permissionKey) => {
     }
 
     // 4. Periksa izin eksplisit pada profil staf
-    if (staff.permissions && typeof staff.permissions[permissionKey] !== 'undefined') {
-        return staff.permissions[permissionKey] === true;
+    if (staff.permissions) {
+        if (typeof staff.permissions[permissionKey] !== 'undefined') {
+            return staff.permissions[permissionKey] === true;
+        }
+        // Backward compatibility fallback untuk modul Laporan Terpadu
+        if (permissionKey === 'reports') {
+            if (staff.permissions.view_reports === true || staff.permissions.tax === true) return true;
+        }
+        if (permissionKey === 'view_reports' || permissionKey === 'tax') {
+            if (staff.permissions.reports === true) return true;
+        }
     }
 
     // 5. Fallback ke preset default sesuai role staf

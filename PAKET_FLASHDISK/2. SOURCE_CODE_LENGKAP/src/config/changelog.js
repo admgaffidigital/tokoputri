@@ -8,6 +8,21 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-10-13',
+        version: 'v1.10.13',
+        date: '2026-10-01',
+        title: 'Pusat Laporan & Keuangan Terpadu: Konsolidasi Penjualan, Valuasi Stok, Utang Piutang, Biaya Operasional, Perpajakan RI 2026, dan Eliminasi Laporan Duplikat',
+        category: 'feature',
+        badge: 'Unified Financial & Reports Hub v1.10.13',
+        items: [
+            'Arsitektur Pusat Laporan & Keuangan Terpadu (src/modules/admin/reports.js): Mengonsolidasi seluruh laporan yang sebelumnya terpisah-pisah dan berserakan ke dalam 1 menu khusus Laporan Terpadu dengan 7 tab saling terhubung secara real-time: (1) Eksekutif Laba-Rugi (P&L Financial Statement, Gross/Net Margins, Operating & Tax deductions); (2) Laporan Penjualan (Ringkasan Kasir POS vs Web, distribusi metode bayar, dan Top 10 Produk Terlaris); (3) Valuasi Stok & Gudang (Total aset fisik, HPP vs harga jual, analisis potensi laba, dan alert stok menipis/habis); (4) Utang Piutang (Kompilasi piutang pelanggan vs utang kulakan supplier, rasio modal kerja, dan gap likuiditas); (5) Biaya Operasional (Pencatatan beban usaha: gaji staf, listrik/wifi, sewa tempat, kemasan, transportasi, pemeliharaan, dan biaya lain); (6) Kepatuhan Pajak RI 2026 (Perhitungan DPP, PPN 0%/11%/12%, PPh Final 0,5% PP 55/2022, NPWP 16-Digit CTAS DJP, dan ekspor CSV SPT); (7) Neraca Sederhana (Aktiva Lancar & Fisik vs Kewajiban & Ekuitas Toko).',
+            'Pembersihan Total Laporan Duplikat di Dashboard Admin (index.html): Menghapus container laporan mini lama (#admin-report-container) dan tombol tersembunyi Pajak (#admin-menu-tax-btn) di dashboard admin. Menu operasional kini fokus pada eksekusi transaksi, sedangkan seluruh analitik dan pelaporan terpusat di menu flagship "Pusat Laporan".',
+            'Integrasi Hak Akses RBAC & Router Terpadu (src/core/auth-roles.js & src/modules/admin/router.js): Mengintegrasikan izin "reports" ke dalam skema RBAC granular (Owner, Admin, Kasir) dengan kompatibilitas mundur (fallback check) terhadap izin lawas "view_reports" dan "tax".',
+            'Pintasan Kontekstual dari Modul Operasional: Menambahkan tombol navigasi cepat 1-klik dari kartu aset stok di Manajemen Produk (table.js) ke Valuasi Stok, serta dari Modul Piutang Tempo (tempo.js) dan Order Kulakan PO (purchases.js) langsung ke Laporan Utang Piutang.',
+            'Multi-Channel Build & Sync v1.10.13 (Android versionCode 11013): Kompilasi produksi web, sinkronisasi bundle flashdisk siap pakai, dan Android Capacitor tersinkronisasi 100%.'
+        ]
+    },
+    {
         id: 'log-1-10-12',
         version: 'v1.10.12',
         date: '2026-10-01',

@@ -156,11 +156,11 @@
         }
       }
     </style>
-    <script type="module" crossorigin src="/assets/index-CP-Ww46P.js"></script>
+    <script type="module" crossorigin src="/assets/index-DPYy5saX.js"></script>
     <link rel="modulepreload" crossorigin href="/assets/vendor-firebase-core-D2OF5R23.js">
     <link rel="modulepreload" crossorigin href="/assets/vendor-firebase-db-BIUZcnOd.js">
     <link rel="modulepreload" crossorigin href="/assets/vendor-utils-Bszxp-Ae.js">
-    <link rel="stylesheet" crossorigin href="/assets/index-B5IcpZSl.css">
+    <link rel="stylesheet" crossorigin href="/assets/index-D0k4xV5k.css">
   </head>
   <body>
     <!-- UI Components Global -->
@@ -2190,24 +2190,7 @@
                   </div>
                 </div>
               </div>
-              <!-- FITUR BARU: Laporan Penjualan & Aset -->
-              <div class="mb-7">
-                <div class="mb-4 flex flex-wrap items-center justify-between gap-3 px-1">
-                  <div class="flex items-center gap-2.5">
-                    <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl" style="background: rgba(var(--color-primary-rgb), 0.1); color: var(--color-primary)"><i class="fa-solid fa-chart-line text-sm"></i></div>
-                    <h3 class="text-xs font-bold uppercase tracking-widest text-slate-700 dark:text-slate-200">Laporan Toko</h3>
-                  </div>
-                  <div class="flex gap-1.5 rounded-xl bg-slate-100 p-1 dark:bg-slate-800" id="report-period-tabs">
-                    <button class="report-period-btn rounded-xl px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest text-slate-500 transition-all dark:text-slate-400" data-period="today" onclick="loadAdminReport('today')">Hari Ini</button>
-                    <button class="report-period-btn rounded-xl px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest text-slate-500 transition-all dark:text-slate-400" data-period="week" onclick="loadAdminReport('week')">Minggu Ini</button>
-                    <button class="report-period-btn rounded-xl px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest text-slate-500 transition-all dark:text-slate-400" data-period="month" onclick="loadAdminReport('month')">Bulan Ini</button>
-                    <button class="report-period-btn rounded-xl px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest text-slate-500 transition-all dark:text-slate-400" data-period="all" onclick="loadAdminReport('all')">Semua</button>
-                  </div>
-                </div>
-                <div id="admin-report-container">
-                  <div class="py-10 text-center"><i class="fa-solid fa-spinner fa-spin text-2xl text-slate-300"></i></div>
-                </div>
-              </div>
+
               <div class="mb-4 flex items-center gap-2.5 px-1">
                 <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-amber-500/15 border border-amber-500/25 text-amber-600 dark:text-amber-400"><i class="fa-solid fa-circle-check text-sm"></i></div>
                 <h3 class="text-xs font-bold uppercase tracking-widest text-slate-700 dark:text-slate-200">Menu Navigasi Utama</h3>
@@ -2229,11 +2212,16 @@
                   <div class="relative z-10"><span class="block text-[10px] font-black uppercase leading-tight tracking-widest text-slate-800 dark:text-white sm:text-[11px]">Supplier</span><span class="mt-0.5 block text-[9px] font-bold text-slate-400 dark:text-slate-500">Data Rekanan &amp; Asal</span></div>
                 </button>
                 <!-- 4. KULAKAN PO (Screen 4 Flagship) -->
-                <button class="card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-4 sm:p-5 text-center transition-all duration-300 hover:-translate-y-1.5 hover:border-purple-400/50 hover:bg-purple-50/20 hover:shadow-xl dark:hover:bg-slate-800/60 rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-white/90 dark:bg-slate-900/60 shadow-xs cursor-pointer active:scale-95" onclick="openAdminTab('purchases')">
-                  <div class="relative z-10 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-purple-500 to-indigo-600 text-white shadow-md transition-all duration-300 group-hover:scale-110"><i class="fa-solid fa-cart-flatbed text-2xl sm:text-3xl"></i></div>
+                <button class="card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-4 sm:p-5 text-center transition-all duration-300 hover:-translate-y-1.5 hover:border-purple-400/50 hover:bg-purple-50/20 rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-white/90 dark:bg-slate-900/60 shadow-none cursor-pointer active:scale-95" onclick="openAdminTab('purchases')">
+                  <div class="relative z-10 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-purple-500 to-indigo-600 text-white shadow-none transition-all duration-300 group-hover:scale-110"><i class="fa-solid fa-cart-flatbed text-2xl sm:text-3xl"></i></div>
                   <div class="relative z-10"><span class="block text-[10px] font-black uppercase leading-tight tracking-widest text-slate-800 dark:text-white sm:text-[11px]">Kulakan PO</span><span class="mt-0.5 block text-[9px] font-bold text-slate-400 dark:text-slate-500">Order &amp; Hutang Rekanan</span></div>
                 </button>
-                <!-- 5. PENGATURAN (Screen 4 Flagship) -->
+                <!-- 5. PUSAT LAPORAN TERPADU (Screen 4 Flagship) -->
+                <button class="card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-4 sm:p-5 text-center transition-all duration-300 hover:-translate-y-1.5 hover:border-rose-400/50 hover:bg-rose-50/20 rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-white/90 dark:bg-slate-900/60 shadow-none cursor-pointer active:scale-95" id="admin-menu-reports-btn" onclick="openAdminTab('reports')">
+                  <div class="relative z-10 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-rose-500 via-amber-500 to-yellow-600 text-white shadow-none transition-all duration-300 group-hover:scale-110"><i class="fa-solid fa-chart-pie text-2xl sm:text-3xl"></i></div>
+                  <div class="relative z-10"><span class="block text-[10px] font-black uppercase leading-tight tracking-widest text-slate-800 dark:text-white sm:text-[11px]">Laporan Terpadu</span><span class="mt-0.5 block text-[9px] font-bold text-slate-400 dark:text-slate-500">Penjualan, Stok, Pajak &amp; Utang</span></div>
+                </button>
+                <!-- 6. PENGATURAN (Screen 4 Flagship) -->
                 <button class="card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-4 sm:p-5 text-center transition-all duration-300 hover:-translate-y-1.5 hover:border-slate-400/50 hover:bg-slate-100/40 hover:shadow-xl dark:hover:bg-slate-800/60 rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-white/90 dark:bg-slate-900/60 shadow-xs cursor-pointer active:scale-95" onclick="openAdminTab('settings')">
                   <div class="relative z-10 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-slate-600 to-slate-800 text-white shadow-md transition-all duration-300 group-hover:scale-110"><i class="fa-solid fa-gear text-2xl transition-transform duration-500 group-hover:rotate-90 sm:text-3xl"></i></div>
                   <div class="relative z-10"><span class="block text-[10px] font-black uppercase leading-tight tracking-widest text-slate-800 dark:text-white sm:text-[11px]">Pengaturan</span><span class="mt-0.5 block text-[9px] font-bold text-slate-400 dark:text-slate-500">Sistem Toko</span></div>
@@ -2312,11 +2300,6 @@
                 <button class="card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-4 sm:p-5 text-center transition-all duration-300 hover:-translate-y-1.5 hover:border-slate-400/50 hover:bg-slate-100/40 hover:shadow-xl dark:hover:bg-slate-800/60 rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-white/90 dark:bg-slate-900/60 shadow-xs cursor-pointer active:scale-95" onclick="openAdminTab('changelog')">
                   <div class="relative z-10 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-slate-600 to-slate-700 text-white shadow-md transition-all duration-300 group-hover:scale-110"><i class="fa-solid fa-clock-rotate-left text-2xl sm:text-3xl"></i></div>
                   <div class="relative z-10"><span class="block text-[10px] font-black uppercase leading-tight tracking-widest text-slate-800 dark:text-white sm:text-[11px]">Changelog</span><span class="mt-0.5 block text-[9px] font-bold text-slate-400 dark:text-slate-500">Log Pembaruan Sistem</span></div>
-                </button>
-                <!-- PAJAK -->
-                <button class="card-modern group relative hidden flex-col items-center justify-center gap-3 overflow-hidden p-4 sm:p-5 text-center transition-all duration-300 hover:-translate-y-1.5 hover:border-red-400/50 hover:bg-red-50/20 hover:shadow-xl dark:hover:bg-slate-800/60 rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-white/90 dark:bg-slate-900/60 shadow-xs cursor-pointer active:scale-95" id="admin-menu-tax-btn" onclick="openAdminTab('tax')">
-                  <div class="relative z-10 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-rose-600 to-red-700 text-white shadow-md transition-all duration-300 group-hover:scale-110"><i class="fa-solid fa-file-invoice-dollar text-2xl sm:text-3xl"></i></div>
-                  <div class="relative z-10"><span class="block text-[10px] font-black uppercase leading-tight tracking-widest text-slate-800 dark:text-white sm:text-[11px]">Pajak</span><span class="mt-0.5 block text-[9px] font-bold text-slate-400 dark:text-slate-500">PPN, Laba Rugi, Neraca</span></div>
                 </button>
               </div>
 

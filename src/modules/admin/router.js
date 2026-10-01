@@ -64,7 +64,8 @@ export const openAdminTab = (t, fH = false) => {
         'rewards': 'Program Hadiah',
         'reviews': 'Ulasan Pelanggan',
         'faqs': 'Tanya Jawab / Q&A',
-        'tax': 'Pajak & Keuangan',
+        'reports': 'Pusat Laporan & Keuangan',
+        'tax': 'Pusat Laporan & Keuangan',
         'piutang': 'Piutang Tempo',
         'colors': 'Database Warna',
         'changelog': 'Log Pembaruan Sistem',
@@ -86,8 +87,11 @@ export const openAdminTab = (t, fH = false) => {
         if (typeof window.rAdmSet === 'function') window.rAdmSet();
     } else if (t === 'orders') {
         if (typeof window.rAdmOrd === 'function') window.rAdmOrd();
-    } else if (t === 'tax') {
-        if (typeof window.rTaxPanel === 'function') window.rTaxPanel();
+    } else if (t === 'reports' || t === 'tax') {
+        // Lazy load modul Pusat Laporan & Keuangan Terpadu
+        import('./reports.js').then(m => m.renderReportsHubView(t === 'tax' ? 'tax' : null)).catch(err => {
+            console.error('[Reports] Gagal memuat modul laporan terpadu:', err);
+        });
     } else if (t === 'piutang') {
         if (typeof window.rAdmPiutang === 'function') window.rAdmPiutang();
     } else if (t === 'suppliers') {
