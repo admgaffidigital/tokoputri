@@ -263,7 +263,7 @@ export const renderReportsShell = () => {
     setH('admin-content', `
         <div class="space-y-6">
             <!-- 1. HEADER KONTROL PUSAT LAPORAN TERPADU -->
-            <div class="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 sm:p-5">
+            <div class="rounded-2xl border border-[rgba(var(--color-primary-rgb),0.2)] bg-gradient-to-br from-white via-white to-[rgba(var(--color-primary-rgb),0.04)] dark:from-slate-900 dark:via-slate-900 dark:to-[rgba(var(--color-primary-rgb),0.08)] p-4 sm:p-5 shadow-2xs">
                 <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
                     <div class="flex items-center gap-3.5">
                         <div class="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 border border-slate-200/80 dark:border-slate-800" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary)">
@@ -272,7 +272,7 @@ export const renderReportsShell = () => {
                         <div>
                             <div class="flex items-center gap-2">
                                 <h1 class="font-bold text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider">Pusat Laporan &amp; Keuangan Terpadu</h1>
-                                <span class="px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-widest bg-emerald-100 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-400">Live Sync</span>
+                                <span class="px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-widest" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary); border: 1px solid rgba(var(--color-primary-rgb), 0.25);">Live Sync</span>
                             </div>
                             <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 font-medium">
                                 Laporan Penjualan, Valuasi Stok, Utang Piutang, Biaya Operasional, &amp; Kepatuhan Pajak RI 2026
@@ -306,7 +306,7 @@ export const renderReportsShell = () => {
                         </button>
 
                         <!-- Tombol Cetak Dokumen A4 -->
-                        <button type="button" onclick="openReportCurrentDocPreview()" class="px-3.5 py-2 rounded-xl bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 text-xs font-bold transition-all cursor-pointer active:scale-95 flex items-center gap-2" title="Cetak Lembar Resmi A4 / PDF">
+                        <button type="button" onclick="openReportCurrentDocPreview()" class="px-3.5 py-2 rounded-xl text-white text-xs font-bold transition-all cursor-pointer active:scale-95 flex items-center gap-2 border border-black/10 shadow-xs" style="background: var(--color-primary);" title="Cetak Lembar Resmi A4 / PDF">
                             <i class="fa-solid fa-print text-xs"></i>
                             <span>Cetak A4</span>
                         </button>
@@ -458,7 +458,7 @@ export const renderExecutiveSummaryTab = () => {
                     <div>
                         <div class="flex items-center justify-between mb-2">
                             <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Total Penjualan</span>
-                            <span class="w-6 h-6 rounded-lg bg-blue-50 text-blue-600 dark:bg-blue-950/60 dark:text-blue-400 flex items-center justify-center text-[10px]"><i class="fa-solid fa-arrow-trend-up"></i></span>
+                            <span class="w-6 h-6 rounded-lg flex items-center justify-center text-[10px]" style="background: rgba(var(--color-primary-rgb), 0.1); color: var(--color-primary);"><i class="fa-solid fa-arrow-trend-up"></i></span>
                         </div>
                         <p class="text-base sm:text-xl font-black text-slate-900 dark:text-white truncate">${fCur(grossSales)}</p>
                     </div>
@@ -479,7 +479,7 @@ export const renderExecutiveSummaryTab = () => {
                     </div>
                     <div class="mt-3 pt-2.5 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-[10px]">
                         <span class="text-slate-500 font-medium">HPP: ${fCur(totalHpp)}</span>
-                        <span class="font-bold text-emerald-600 dark:text-emerald-400">Margin ${grossMarginPercent}%</span>
+                        <span class="font-bold" style="color: var(--color-primary)">Margin ${grossMarginPercent}%</span>
                     </div>
                 </div>
 
@@ -498,18 +498,18 @@ export const renderExecutiveSummaryTab = () => {
                     </div>
                 </div>
 
-                <!-- 4. Laba Bersih Akhir -->
-                <div class="card-modern p-4 sm:p-5 border border-emerald-300 dark:border-emerald-800/80 bg-emerald-50/30 dark:bg-emerald-950/15 flex flex-col justify-between col-span-2 lg:col-span-1">
+                <!-- 4. Laba Bersih Akhir (Royal Theme Card) -->
+                <div class="card-modern p-4 sm:p-5 flex flex-col justify-between col-span-2 lg:col-span-1 rounded-2xl" style="border: 1px solid rgba(var(--color-primary-rgb), 0.35); background: linear-gradient(135deg, rgba(var(--color-primary-rgb), 0.1), rgba(var(--color-primary-rgb), 0.03));">
                     <div>
                         <div class="flex items-center justify-between mb-2">
-                            <span class="text-[9px] font-bold text-emerald-700 dark:text-emerald-400 uppercase tracking-widest">Laba Bersih Riil</span>
-                            <span class="w-6 h-6 rounded-lg bg-emerald-100 text-emerald-700 dark:bg-emerald-900/60 dark:text-emerald-300 flex items-center justify-center text-[10px]"><i class="fa-solid fa-crown"></i></span>
+                            <span class="text-[9px] font-bold uppercase tracking-widest" style="color: var(--color-primary)">Laba Bersih Riil</span>
+                            <span class="w-6 h-6 rounded-lg flex items-center justify-center text-[10px]" style="background: rgba(var(--color-primary-rgb), 0.18); color: var(--color-primary)"><i class="fa-solid fa-crown"></i></span>
                         </div>
-                        <p class="text-base sm:text-xl font-black text-emerald-700 dark:text-emerald-400 truncate">${fCur(netProfit)}</p>
+                        <p class="text-base sm:text-xl font-black truncate" style="color: var(--color-primary)">${fCur(netProfit)}</p>
                     </div>
-                    <div class="mt-3 pt-2.5 border-t border-emerald-200/60 dark:border-emerald-900/40 flex items-center justify-between text-[10px]">
-                        <span class="text-emerald-600 dark:text-emerald-500 font-medium">Net Profit</span>
-                        <span class="font-black text-emerald-700 dark:text-emerald-300">${netMarginPercent}%</span>
+                    <div class="mt-3 pt-2.5 flex items-center justify-between text-[10px]" style="border-top: 1px solid rgba(var(--color-primary-rgb), 0.2);">
+                        <span class="font-medium" style="color: var(--color-primary); opacity: 0.85;">Net Profit</span>
+                        <span class="font-black" style="color: var(--color-primary)">${netMarginPercent}%</span>
                     </div>
                 </div>
             </div>
@@ -582,9 +582,9 @@ export const renderExecutiveSummaryTab = () => {
                             <span class="text-slate-700 dark:text-slate-300 font-medium">${taxLabel}</span>
                             <span class="font-bold text-slate-700 dark:text-slate-300">− ${fCur(taxAmount)}</span>
                         </div>
-                        <div class="flex items-center justify-between py-3 px-4 rounded-xl bg-emerald-600 text-white font-bold text-sm sm:text-base shadow-none">
+                        <div class="flex items-center justify-between py-3 px-4 rounded-xl text-white font-bold text-sm sm:text-base shadow-none" style="background: var(--color-primary);">
                             <div class="flex items-center gap-2">
-                                <i class="fa-solid fa-circle-check text-base"></i>
+                                <i class="fa-solid fa-crown text-base"></i>
                                 <span>LABA BERSIH TAHUN / BULAN BERJALAN</span>
                             </div>
                             <span class="text-base sm:text-lg font-black">${fCur(netProfit)}</span>
@@ -688,7 +688,7 @@ export const renderSalesAnalyticsTab = () => {
                 </td>
                 <td class="py-3 px-3 text-right text-xs font-bold text-slate-800 dark:text-white">${p.qty} unit</td>
                 <td class="py-3 px-3 text-right text-xs font-bold text-slate-800 dark:text-white">${fCur(p.omset)}</td>
-                <td class="py-3 px-3 text-right text-xs font-black text-emerald-600 dark:text-emerald-400">${fCur(profit)} <span class="text-[9px] font-normal text-slate-400">(${marginPct}%)</span></td>
+                <td class="py-3 px-3 text-right text-xs font-black" style="color: var(--color-primary);">${fCur(profit)} <span class="text-[9px] font-normal text-slate-400">(${marginPct}%)</span></td>
             </tr>
         `;
     }).join('') : `
@@ -706,21 +706,21 @@ export const renderSalesAnalyticsTab = () => {
                 </div>
                 <div class="card-modern p-4 sm:p-5 border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900">
                     <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Rata-Rata Keranjang (AOV)</p>
-                    <p class="text-lg sm:text-xl font-black text-blue-600 dark:text-blue-400 truncate">${fCur(aov)}</p>
+                    <p class="text-lg sm:text-xl font-black text-slate-900 dark:text-white truncate">${fCur(aov)}</p>
                     <p class="text-[10px] text-slate-500 mt-1">Per transaksi pesanan</p>
                 </div>
                 <div class="card-modern p-4 sm:p-5 border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900">
                     <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Total Barang Terjual</p>
-                    <p class="text-lg sm:text-xl font-black text-emerald-600 dark:text-emerald-400 truncate">${totalItemsCount} Unit</p>
+                    <p class="text-lg sm:text-xl font-black truncate" style="color: var(--color-primary)">${totalItemsCount} Unit</p>
                     <p class="text-[10px] text-slate-500 mt-1">Rata-rata ${avgItemsPerOrder} item / order</p>
                 </div>
                 <div class="card-modern p-4 sm:p-5 border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900">
                     <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Kanal Penjualan</p>
                     <p class="text-xs font-bold text-slate-800 dark:text-white mt-1 flex items-center justify-between">
-                        <span>Kasir POS:</span> <b class="text-emerald-600">${fCur(posTotal)}</b>
+                        <span>Kasir POS:</span> <b style="color: var(--color-primary)">${fCur(posTotal)}</b>
                     </p>
                     <p class="text-xs font-bold text-slate-800 dark:text-white mt-1 flex items-center justify-between">
-                        <span>Storefront Web:</span> <b class="text-blue-600">${fCur(webTotal)}</b>
+                        <span>Storefront Web:</span> <b class="text-slate-700 dark:text-slate-300">${fCur(webTotal)}</b>
                     </p>
                 </div>
             </div>
@@ -886,7 +886,7 @@ export const renderStockValuationTab = () => {
         } else if (item.status === 'low') {
             badgeHTML = `<span class="px-2 py-0.5 rounded-full text-[9px] font-black uppercase bg-amber-100 text-amber-700 dark:bg-amber-950/60 dark:text-amber-400">Sisa ${item.stock}</span>`;
         } else {
-            badgeHTML = `<span class="px-2 py-0.5 rounded-full text-[9px] font-black uppercase bg-emerald-100 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-400">Aman</span>`;
+            badgeHTML = `<span class="px-2 py-0.5 rounded-full text-[9px] font-black uppercase" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary); border: 1px solid rgba(var(--color-primary-rgb), 0.25);">Aman</span>`;
         }
 
         return `
@@ -928,11 +928,11 @@ export const renderStockValuationTab = () => {
                 <div class="card-modern p-4 sm:p-5 border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900">
                     <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Estimasi Nilai Jual Retail</p>
                     <p class="text-lg sm:text-xl font-black truncate" style="color: var(--color-primary)">${fCur(totalAssetRetail)}</p>
-                    <p class="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold mt-1">Potensi margin: ${fCur(potentialMargin)}</p>
+                    <p class="text-[10px] font-bold mt-1" style="color: var(--color-primary)">Potensi margin: ${fCur(potentialMargin)}</p>
                 </div>
                 <div class="card-modern p-4 sm:p-5 border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900">
                     <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Fisik Unit Barang</p>
-                    <p class="text-lg sm:text-xl font-black text-blue-600 dark:text-blue-400 truncate">${totalPhysicalUnits.toLocaleString('id-ID')} Unit</p>
+                    <p class="text-lg sm:text-xl font-black text-slate-900 dark:text-white truncate">${totalPhysicalUnits.toLocaleString('id-ID')} Unit</p>
                     <p class="text-[10px] text-slate-500 mt-1">${totalSkuCount} SKU / Varian aktif</p>
                 </div>
                 <div class="card-modern p-4 sm:p-5 border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900">
@@ -1071,20 +1071,16 @@ export const renderDebtsReceivablesTab = () => {
     setH('report-hub-content', `
         <div class="space-y-6">
             <!-- KARTU POSISI BERSIH LIKUIDITAS TOKO -->
-            <div class="rounded-2xl border p-5 ${
-                isSurplus 
-                ? 'border-emerald-300 dark:border-emerald-800 bg-emerald-50/40 dark:bg-emerald-950/20' 
-                : 'border-rose-300 dark:border-rose-800 bg-rose-50/40 dark:bg-rose-950/20'
-            }">
+            <div class="rounded-2xl border p-5 ${!isSurplus ? 'border-rose-300 dark:border-rose-800 bg-rose-50/40 dark:bg-rose-950/20' : ''}" style="${isSurplus ? 'border: 1px solid rgba(var(--color-primary-rgb), 0.35); background: linear-gradient(135deg, rgba(var(--color-primary-rgb), 0.08), rgba(var(--color-primary-rgb), 0.02));' : ''}">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div>
-                        <span class="text-[9px] font-black uppercase tracking-widest ${isSurplus ? 'text-emerald-700 dark:text-emerald-400' : 'text-rose-700 dark:text-rose-400'}">
+                        <span class="text-[9px] font-black uppercase tracking-widest ${!isSurplus ? 'text-rose-700 dark:text-rose-400' : ''}" style="${isSurplus ? 'color: var(--color-primary);' : ''}">
                             Posisi Bersih Likuiditas Toko (Net Working Capital Gap)
                         </span>
-                        <h2 class="text-xl sm:text-2xl font-black ${isSurplus ? 'text-emerald-800 dark:text-emerald-300' : 'text-rose-800 dark:text-rose-300'} mt-0.5">
+                        <h2 class="text-xl sm:text-2xl font-black ${!isSurplus ? 'text-rose-800 dark:text-rose-300' : ''} mt-0.5" style="${isSurplus ? 'color: var(--color-primary);' : ''}">
                             ${isSurplus ? '+' : ''}${fCur(netGap)}
                         </h2>
-                        <p class="text-xs ${isSurplus ? 'text-emerald-700 dark:text-emerald-400' : 'text-rose-700 dark:text-rose-400'} mt-1 font-medium">
+                        <p class="text-xs ${!isSurplus ? 'text-rose-700 dark:text-rose-400' : ''} mt-1 font-medium" style="${isSurplus ? 'color: var(--color-primary); opacity: 0.9;' : ''}">
                             ${isSurplus 
                                 ? 'Surplus Piutang: Hak tagihan toko di pelanggan lebih besar daripada kewajiban toko ke supplier.' 
                                 : 'Defisit Utang: Kewajiban toko ke supplier lebih besar daripada tagihan piutang di pelanggan.'}
@@ -1111,7 +1107,7 @@ export const renderDebtsReceivablesTab = () => {
                 <div class="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 space-y-4">
                     <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
                         <div class="flex items-center gap-2.5">
-                            <div class="w-8 h-8 rounded-xl bg-cyan-50 text-cyan-600 dark:bg-cyan-950/60 dark:text-cyan-400 flex items-center justify-center text-xs">
+                            <div class="w-8 h-8 rounded-xl flex items-center justify-center text-xs" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary);">
                                 <i class="fa-solid fa-clock-rotate-left"></i>
                             </div>
                             <div>
@@ -1150,8 +1146,8 @@ export const renderDebtsReceivablesTab = () => {
                                 ${topDebitur.length ? topDebitur.slice(0, 5).map(d => `
                                     <tr class="border-b border-slate-50 dark:border-slate-800/50 last:border-0">
                                         <td class="py-2.5">
-                                            <p class="font-bold text-slate-800 dark:text-white truncate">${esc(d.name)}</p>
-                                            <p class="text-[10px] text-slate-400">${d.orderCount} nota ${d.isLate ? '<span class="text-rose-500 font-bold">• Terlambat</span>' : ''}</p>
+                                             <p class="font-bold text-slate-800 dark:text-white truncate">${esc(d.name)}</p>
+                                             <p class="text-[10px] text-slate-400">${d.orderCount} nota ${d.isLate ? '<span class="text-rose-500 font-bold">• Terlambat</span>' : ''}</p>
                                         </td>
                                         <td class="py-2.5 text-right font-black text-slate-800 dark:text-white">${fCur(d.totalPiutang)}</td>
                                         <td class="py-2.5 text-right">
@@ -1188,9 +1184,9 @@ export const renderDebtsReceivablesTab = () => {
                             <span class="text-[9px] font-bold text-slate-400 uppercase">Total Hutang Supplier</span>
                             <p class="text-base font-black text-rose-600 dark:text-rose-400 mt-0.5">${fCur(totalUtangSupplier)}</p>
                         </div>
-                        <div class="p-3 rounded-xl bg-blue-50/50 dark:bg-blue-950/20 border border-blue-100 dark:border-blue-900/40">
-                            <span class="text-[9px] font-bold text-blue-500 uppercase">Menunggu Kirim Barang</span>
-                            <p class="text-base font-black text-blue-600 dark:text-blue-400 mt-0.5">${purchaseMetrics.pendingArrivalCount} PO</p>
+                        <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800">
+                            <span class="text-[9px] font-bold uppercase" style="color: var(--color-primary)">Menunggu Kirim Barang</span>
+                            <p class="text-base font-black mt-0.5" style="color: var(--color-primary)">${purchaseMetrics.pendingArrivalCount} PO</p>
                         </div>
                     </div>
 
@@ -1426,7 +1422,7 @@ export const renderTaxComplianceTab = () => {
                 <td class="py-3 px-4 text-xs font-bold text-slate-700 dark:text-slate-200">${MONTH_NAMES[m - 1]}</td>
                 <td class="py-3 px-4 text-xs font-bold text-slate-800 dark:text-white text-right">${fCur(d.omset)}</td>
                 <td class="py-3 px-4 text-xs font-bold text-right" style="color:var(--color-primary)">${fCur(d.ppn)}</td>
-                <td class="py-3 px-4 text-xs font-bold text-emerald-600 dark:text-emerald-400 text-right">${fCur(mPph)}</td>
+                <td class="py-3 px-4 text-xs font-bold text-right" style="color: var(--color-primary)">${fCur(mPph)}</td>
                 <td class="py-3 px-4 text-xs font-bold text-slate-500 dark:text-slate-400 text-right">${d.orderCount}</td>
             </tr>
         `;
@@ -1456,10 +1452,10 @@ export const renderTaxComplianceTab = () => {
                     <p class="text-sm sm:text-lg font-black truncate" style="color:var(--color-primary)">${fCur(totals.ppn)}</p>
                     <p class="text-[10px] text-slate-400 mt-1">${totals.ppn > 0 ? 'Wajib setor kas negara' : 'Bebas PPN / Tarif 0%'}</p>
                 </div>
-                <div class="card-modern p-4 sm:p-5 border border-emerald-300 dark:border-emerald-800 bg-emerald-50/30 dark:bg-emerald-950/20 col-span-2 lg:col-span-1">
-                    <p class="text-[9px] font-bold uppercase tracking-widest mb-1.5 text-emerald-700 dark:text-emerald-400">PPh Final 0,5%</p>
-                    <p class="text-sm sm:text-lg font-black text-emerald-700 dark:text-emerald-400 truncate">${fCur(estimasiPphFinal)}</p>
-                    <p class="text-[10px] text-emerald-600 dark:text-emerald-500 mt-1">PP 55/2022 UMKM</p>
+                <div class="card-modern p-4 sm:p-5 col-span-2 lg:col-span-1 rounded-2xl" style="border: 1px solid rgba(var(--color-primary-rgb), 0.25); background: rgba(var(--color-primary-rgb), 0.05);">
+                    <p class="text-[9px] font-bold uppercase tracking-widest mb-1.5" style="color: var(--color-primary)">PPh Final 0,5%</p>
+                    <p class="text-sm sm:text-lg font-black truncate" style="color: var(--color-primary)">${fCur(estimasiPphFinal)}</p>
+                    <p class="text-[10px] font-medium mt-1" style="color: var(--color-primary); opacity: 0.85;">PP 55/2022 UMKM</p>
                 </div>
             </div>
 
@@ -1574,10 +1570,10 @@ export const renderBalanceSheetTab = () => {
                 <div class="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 space-y-4">
                     <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
                         <div class="flex items-center gap-2">
-                            <span class="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 dark:bg-blue-950/60 dark:text-blue-400 flex items-center justify-center text-xs"><i class="fa-solid fa-vault"></i></span>
+                            <span class="w-8 h-8 rounded-xl flex items-center justify-center text-xs" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary);"><i class="fa-solid fa-vault"></i></span>
                             <h3 class="font-bold text-xs uppercase tracking-wider text-slate-800 dark:text-white">ASET &amp; AKTIVA</h3>
                         </div>
-                        <span class="text-xs font-black text-blue-600 dark:text-blue-400">${fCur(totalAktiva)}</span>
+                        <span class="text-xs font-black" style="color: var(--color-primary)">${fCur(totalAktiva)}</span>
                     </div>
 
                     <div class="space-y-3">
@@ -1595,7 +1591,7 @@ export const renderBalanceSheetTab = () => {
                         </div>
                         <div class="flex items-center justify-between py-2.5 px-3 rounded-xl bg-slate-100 dark:bg-slate-800 font-black text-xs border border-slate-200 dark:border-slate-700">
                             <span>TOTAL AKTIVA</span>
-                            <span class="text-blue-600 dark:text-blue-400">${fCur(totalAktiva)}</span>
+                            <span style="color: var(--color-primary)">${fCur(totalAktiva)}</span>
                         </div>
                     </div>
                 </div>
@@ -1604,10 +1600,10 @@ export const renderBalanceSheetTab = () => {
                 <div class="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 space-y-4">
                     <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
                         <div class="flex items-center gap-2">
-                            <span class="w-8 h-8 rounded-xl bg-purple-50 text-purple-600 dark:bg-purple-950/60 dark:text-purple-400 flex items-center justify-center text-xs"><i class="fa-solid fa-scale-balanced"></i></span>
+                            <span class="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 flex items-center justify-center text-xs"><i class="fa-solid fa-scale-balanced"></i></span>
                             <h3 class="font-bold text-xs uppercase tracking-wider text-slate-800 dark:text-white">KEWAJIBAN &amp; MODAL</h3>
                         </div>
-                        <span class="text-xs font-black text-purple-600 dark:text-purple-400">${fCur(totalPasiva)}</span>
+                        <span class="text-xs font-black text-slate-800 dark:text-white">${fCur(totalPasiva)}</span>
                     </div>
 
                     <div class="space-y-3">
@@ -1617,11 +1613,11 @@ export const renderBalanceSheetTab = () => {
                         </div>
                         <div class="flex items-center justify-between py-2 px-3 rounded-lg bg-slate-50 dark:bg-slate-800/40 text-xs">
                             <span class="text-slate-700 dark:text-slate-300 font-medium">Modal &amp; Laba Ditahan</span>
-                            <span class="font-bold text-emerald-600 dark:text-emerald-400">${fCur(modalDanLaba)}</span>
+                            <span class="font-bold" style="color: var(--color-primary)">${fCur(modalDanLaba)}</span>
                         </div>
                         <div class="flex items-center justify-between py-2.5 px-3 rounded-xl bg-slate-100 dark:bg-slate-800 font-black text-xs border border-slate-200 dark:border-slate-700">
                             <span>TOTAL PASIVA (KEWAJIBAN + MODAL)</span>
-                            <span class="text-purple-600 dark:text-purple-400">${fCur(totalPasiva)}</span>
+                            <span class="text-slate-800 dark:text-white">${fCur(totalPasiva)}</span>
                         </div>
                     </div>
                 </div>
