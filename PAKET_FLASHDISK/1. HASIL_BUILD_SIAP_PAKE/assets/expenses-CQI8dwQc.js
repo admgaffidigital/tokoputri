@@ -1,4 +1,4 @@
-import{e as l,f as x,I as B,a as b,x as _,a9 as j,a7 as w,v as p,B as O,a8 as K,b as q,i as E}from"./module-print-mzxAJR_T.js";import{y as L,E as f}from"./module-admin-BtYLIfLp.js";import{G}from"./index-C8PdAoc4.js";import"./vendor-firebase-core-D2OF5R23.js";import"./vendor-firebase-db-BIUZcnOd.js";import"./module-pos-BNCKM8SN.js";import"./module-faq-Dj4LBSGG.js";import"./vendor-utils-Bszxp-Ae.js";import"./module-member-CmNyKugZ.js";const g=[{key:"cash",label:"Kas Laci Toko (Tunai)",shortLabel:"Kas Toko",icon:"fa-money-bill-wave",color:"emerald"},{key:"bank",label:"Transfer Rekening Bank",shortLabel:"Transfer Bank",icon:"fa-building-columns",color:"blue"},{key:"owner",label:"Dana Pribadi / Talangan Owner",shortLabel:"Dana Owner",icon:"fa-user-shield",color:"purple"}],P=["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];let y=new Date().getFullYear(),k=new Date().getMonth()+1,T="all",S="all",$="",v="newest";const H=()=>"exp_"+Date.now()+"_"+Math.random().toString(36).substring(2,7),m=t=>{const e=["","Satu","Dua","Tiga","Empat","Lima","Enam","Tujuh","Delapan","Sembilan","Sepuluh","Sebelas"];return t=Math.floor(Math.abs(Number(t)||0)),t<12?e[t]:t<20?m(t-10)+" Belas":t<100?m(Math.floor(t/10))+" Puluh "+m(t%10):t<200?"Seratus "+m(t-100):t<1e3?m(Math.floor(t/100))+" Ratus "+m(t%100):t<2e3?"Seribu "+m(t-1e3):t<1e6?m(Math.floor(t/1e3))+" Ribu "+m(t%1e3):t<1e9?m(Math.floor(t/1e6))+" Juta "+m(t%1e6):t<1e12?m(Math.floor(t/1e9))+" Miliar "+m(t%1e9):"Jumlah Sangat Besar"},C=t=>{if(!t)return"-";try{const e=t.split("-");if(e.length===3){const o=parseInt(e[0],10),i=parseInt(e[1],10);return`${parseInt(e[2],10)} ${P[i-1]||""} ${o}`}const a=new Date(t);return isNaN(a.getTime())?t:`${a.getDate()} ${P[a.getMonth()]} ${a.getFullYear()}`}catch{return t}},M=()=>{const t=document.querySelector("#admin-content #modal-expense-form");t&&t.remove();const e=document.querySelector("#admin-content #modal-expense-receipt-preview");if(e&&e.remove(),!l("modal-expense-form")){const a=document.createElement("div");a.id="modal-expense-form",a.className="fixed inset-0 z-[150] flex hidden items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-950/75 opacity-0 transition-opacity duration-300",a.onclick=o=>{o.target===a&&window.closeExpenseModal?.()},a.innerHTML=`
+import{e as l,f as x,I as B,a as b,x as _,a9 as j,a7 as y,v as p,B as O,a8 as K,b as q,i as E}from"./module-print-mzxAJR_T.js";import{y as L,E as f}from"./module-admin-BMRL5Ct-.js";import{G}from"./index-BqwBiLvk.js";import"./vendor-firebase-core-D2OF5R23.js";import"./vendor-firebase-db-BIUZcnOd.js";import"./module-pos-BNCKM8SN.js";import"./module-faq-CZKw0rRC.js";import"./vendor-utils-Bszxp-Ae.js";import"./module-member-CmNyKugZ.js";const g=[{key:"cash",label:"Kas Laci Toko (Tunai)",shortLabel:"Kas Toko",icon:"fa-money-bill-wave",color:"emerald"},{key:"bank",label:"Transfer Rekening Bank",shortLabel:"Transfer Bank",icon:"fa-building-columns",color:"blue"},{key:"owner",label:"Dana Pribadi / Talangan Owner",shortLabel:"Dana Owner",icon:"fa-user-shield",color:"purple"}],P=["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];let w=new Date().getFullYear(),h=new Date().getMonth()+1,T="all",S="all",$="",k="newest";const H=()=>"exp_"+Date.now()+"_"+Math.random().toString(36).substring(2,7),m=t=>{const e=["","Satu","Dua","Tiga","Empat","Lima","Enam","Tujuh","Delapan","Sembilan","Sepuluh","Sebelas"];return t=Math.floor(Math.abs(Number(t)||0)),t<12?e[t]:t<20?m(t-10)+" Belas":t<100?m(Math.floor(t/10))+" Puluh "+m(t%10):t<200?"Seratus "+m(t-100):t<1e3?m(Math.floor(t/100))+" Ratus "+m(t%100):t<2e3?"Seribu "+m(t-1e3):t<1e6?m(Math.floor(t/1e3))+" Ribu "+m(t%1e3):t<1e9?m(Math.floor(t/1e6))+" Juta "+m(t%1e6):t<1e12?m(Math.floor(t/1e9))+" Miliar "+m(t%1e9):"Jumlah Sangat Besar"},C=t=>{if(!t)return"-";try{const e=t.split("-");if(e.length===3){const o=parseInt(e[0],10),n=parseInt(e[1],10);return`${parseInt(e[2],10)} ${P[n-1]||""} ${o}`}const a=new Date(t);return isNaN(a.getTime())?t:`${a.getDate()} ${P[a.getMonth()]} ${a.getFullYear()}`}catch{return t}},M=()=>{const t=document.querySelector("#admin-content #modal-expense-form");t&&t.remove();const e=document.querySelector("#admin-content #modal-expense-receipt-preview");if(e&&e.remove(),!l("modal-expense-form")){const a=document.createElement("div");a.id="modal-expense-form",a.className="fixed inset-0 z-[150] flex hidden items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-950/75 opacity-0 transition-opacity duration-300",a.onclick=o=>{o.target===a&&window.closeExpenseModal?.()},a.innerHTML=`
             <div id="modal-expense-form-box" class="modal-bottom-sheet relative flex max-h-[92dvh] sm:max-h-[88dvh] w-full max-w-xl translate-y-full sm:translate-y-10 transform flex-col overflow-hidden rounded-t-[2rem] sm:rounded-3xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xl transition-transform duration-300" onclick="event.stopPropagation()">
                 <!-- Pull Indicator for Mobile Bottom Sheet -->
                 <div class="pull-indicator sm:hidden"></div>
@@ -6,7 +6,7 @@ import{e as l,f as x,I as B,a as b,x as _,a9 as j,a7 as w,v as p,B as O,a8 as K,
                 <!-- Sticky Header Modal -->
                 <div class="px-5 sm:px-6 pt-3 sm:pt-4 pb-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between shrink-0 bg-white dark:bg-slate-900">
                     <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-rose-500 to-amber-600 text-white flex items-center justify-center shadow-md shadow-rose-500/20 text-base shrink-0">
+                        <div class="w-10 h-10 rounded-2xl text-white flex items-center justify-center text-base shrink-0" style="background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark)); box-shadow: 0 4px 12px rgba(var(--color-primary-rgb), 0.35);">
                             <i class="fa-solid fa-money-bill-transfer"></i>
                         </div>
                         <div>
@@ -29,15 +29,15 @@ import{e as l,f as x,I as B,a as b,x as _,a9 as j,a7 as w,v as p,B as O,a8 as K,
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                             <div>
                                 <label class="block text-[11px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
-                                    <i class="fa-regular fa-calendar text-rose-500 mr-1"></i> Tanggal Transaksi <span class="text-rose-500">*</span>
+                                    <i class="fa-regular fa-calendar mr-1" style="color: var(--color-primary)"></i> Tanggal Transaksi <span style="color: var(--color-primary)">*</span>
                                 </label>
-                                <input type="date" id="exp-input-date" required class="w-full text-xs font-bold bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-slate-800 dark:text-white focus:outline-hidden focus:border-rose-500 transition-colors">
+                                <input type="date" id="exp-input-date" required class="w-full text-xs font-bold bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-slate-800 dark:text-white focus:outline-hidden focus:border-[var(--color-primary)] transition-colors">
                             </div>
                             <div>
                                 <label class="block text-[11px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
-                                    <i class="fa-solid fa-tags text-rose-500 mr-1"></i> Kategori Beban <span class="text-rose-500">*</span>
+                                    <i class="fa-solid fa-tags mr-1" style="color: var(--color-primary)"></i> Kategori Beban <span style="color: var(--color-primary)">*</span>
                                 </label>
-                                <select id="exp-input-category" required class="w-full text-xs font-bold bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2.5 text-slate-800 dark:text-white focus:outline-hidden focus:border-rose-500 transition-colors cursor-pointer">
+                                <select id="exp-input-category" required class="w-full text-xs font-bold bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2.5 text-slate-800 dark:text-white focus:outline-hidden focus:border-[var(--color-primary)] transition-colors cursor-pointer">
                                     ${f.map(o=>`<option value="${o.key}">${o.label}</option>`).join("")}
                                 </select>
                             </div>
@@ -47,41 +47,41 @@ import{e as l,f as x,I as B,a as b,x as _,a9 as j,a7 as w,v as p,B as O,a8 as K,
                         <div>
                             <div class="flex items-center justify-between mb-1.5">
                                 <label class="block text-[11px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
-                                    <i class="fa-solid fa-rupiah-sign text-rose-500 mr-1"></i> Nominal Pengeluaran <span class="text-rose-500">*</span>
+                                    <i class="fa-solid fa-rupiah-sign mr-1" style="color: var(--color-primary)"></i> Nominal Pengeluaran <span style="color: var(--color-primary)">*</span>
                                 </label>
-                                <span class="text-[10px] font-bold text-rose-500" id="exp-nominal-preview">Rp 0</span>
+                                <span class="text-[10px] font-bold" style="color: var(--color-primary)" id="exp-nominal-preview">Rp 0</span>
                             </div>
                             <div class="relative">
                                 <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-xs font-black text-slate-400">Rp</span>
-                                <input type="text" id="exp-input-amount" inputmode="numeric" placeholder="0" required oninput="window.handleExpenseAmountInput(this)" class="w-full pl-11 pr-4 py-2.5 text-sm font-black bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white focus:outline-hidden focus:border-rose-500 transition-colors">
+                                <input type="text" id="exp-input-amount" inputmode="numeric" placeholder="0" required oninput="window.handleExpenseAmountInput(this)" class="w-full pl-11 pr-4 py-2.5 text-sm font-black bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white focus:outline-hidden focus:border-[var(--color-primary)] transition-colors">
                             </div>
                             <!-- Quick Nominal Chips -->
                             <div class="flex flex-wrap items-center gap-1.5 mt-2">
                                 <span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider mr-1">Cepat:</span>
-                                <button type="button" onclick="window.addQuickExpenseAmount(10000)" class="px-2 py-0.5 text-[10px] font-bold rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-rose-400 text-slate-700 dark:text-slate-300 active:scale-95 transition-all cursor-pointer">+10 rb</button>
-                                <button type="button" onclick="window.addQuickExpenseAmount(25000)" class="px-2 py-0.5 text-[10px] font-bold rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-rose-400 text-slate-700 dark:text-slate-300 active:scale-95 transition-all cursor-pointer">+25 rb</button>
-                                <button type="button" onclick="window.addQuickExpenseAmount(50000)" class="px-2 py-0.5 text-[10px] font-bold rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-rose-400 text-slate-700 dark:text-slate-300 active:scale-95 transition-all cursor-pointer">+50 rb</button>
-                                <button type="button" onclick="window.addQuickExpenseAmount(100000)" class="px-2 py-0.5 text-[10px] font-bold rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-rose-400 text-slate-700 dark:text-slate-300 active:scale-95 transition-all cursor-pointer">+100 rb</button>
-                                <button type="button" onclick="window.addQuickExpenseAmount(500000)" class="px-2 py-0.5 text-[10px] font-bold rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-rose-400 text-slate-700 dark:text-slate-300 active:scale-95 transition-all cursor-pointer">+500 rb</button>
+                                <button type="button" onclick="window.addQuickExpenseAmount(10000)" class="px-2 py-0.5 text-[10px] font-bold rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] text-slate-700 dark:text-slate-300 active:scale-95 transition-all cursor-pointer">+10 rb</button>
+                                <button type="button" onclick="window.addQuickExpenseAmount(25000)" class="px-2 py-0.5 text-[10px] font-bold rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] text-slate-700 dark:text-slate-300 active:scale-95 transition-all cursor-pointer">+25 rb</button>
+                                <button type="button" onclick="window.addQuickExpenseAmount(50000)" class="px-2 py-0.5 text-[10px] font-bold rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] text-slate-700 dark:text-slate-300 active:scale-95 transition-all cursor-pointer">+50 rb</button>
+                                <button type="button" onclick="window.addQuickExpenseAmount(100000)" class="px-2 py-0.5 text-[10px] font-bold rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] text-slate-700 dark:text-slate-300 active:scale-95 transition-all cursor-pointer">+100 rb</button>
+                                <button type="button" onclick="window.addQuickExpenseAmount(500000)" class="px-2 py-0.5 text-[10px] font-bold rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] text-slate-700 dark:text-slate-300 active:scale-95 transition-all cursor-pointer">+500 rb</button>
                             </div>
                         </div>
 
                         <!-- Baris 3: Keperluan / Deskripsi Pengeluaran -->
                         <div>
                             <label class="block text-[11px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
-                                <i class="fa-solid fa-align-left text-rose-500 mr-1"></i> Keperluan / Uraian Beban <span class="text-rose-500">*</span>
+                                <i class="fa-solid fa-align-left mr-1" style="color: var(--color-primary)"></i> Keperluan / Uraian Beban <span style="color: var(--color-primary)">*</span>
                             </label>
-                            <textarea id="exp-input-desc" rows="2" required placeholder="Contoh: Beli lakban cokelat 5 roll, isi ulang galon, token listrik toko..." class="w-full text-xs font-medium bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl p-3 text-slate-800 dark:text-white focus:outline-hidden focus:border-rose-500 transition-colors resize-none"></textarea>
+                            <textarea id="exp-input-desc" rows="2" required placeholder="Contoh: Beli lakban cokelat 5 roll, isi ulang galon, token listrik toko..." class="w-full text-xs font-medium bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl p-3 text-slate-800 dark:text-white focus:outline-hidden focus:border-[var(--color-primary)] transition-colors resize-none"></textarea>
                         </div>
 
                         <!-- Baris 4: Sumber Pembayaran Dana -->
                         <div>
                             <label class="block text-[11px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
-                                <i class="fa-solid fa-wallet text-rose-500 mr-1"></i> Sumber Dana Pembayaran <span class="text-rose-500">*</span>
+                                <i class="fa-solid fa-wallet mr-1" style="color: var(--color-primary)"></i> Sumber Dana Pembayaran <span style="color: var(--color-primary)">*</span>
                             </label>
                             <div class="grid grid-cols-3 gap-2" id="exp-source-selector">
                                 ${g.map(o=>`
-                                    <label class="relative flex flex-col items-center justify-center p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/50 cursor-pointer text-center transition-all hover:border-slate-400 select-none group has-checked:border-rose-500 has-checked:bg-rose-50/40 dark:has-checked:bg-rose-950/20 has-checked:text-rose-600">
+                                    <label class="relative flex flex-col items-center justify-center p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/50 cursor-pointer text-center transition-all hover:border-slate-400 select-none group has-checked:border-[var(--color-primary)] has-checked:bg-[rgba(var(--color-primary-rgb),0.08)] has-checked:text-[var(--color-primary)]">
                                         <input type="radio" name="exp_source" value="${o.key}" class="sr-only" ${o.key==="cash"?"checked":""}>
                                         <i class="fa-solid ${o.icon} text-sm mb-1 text-slate-500 group-hover:text-slate-800 dark:group-hover:text-white"></i>
                                         <span class="text-[10px] font-bold text-slate-800 dark:text-slate-200 leading-tight">${o.shortLabel}</span>
@@ -94,22 +94,22 @@ import{e as l,f as x,I as B,a as b,x as _,a9 as j,a7 as w,v as p,B as O,a8 as K,
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                             <div>
                                 <label class="block text-[11px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
-                                    <i class="fa-solid fa-store text-rose-500 mr-1"></i> Dibayarkan Kepada / Vendor <span class="text-[9px] text-slate-400 lowercase">(opsional)</span>
+                                    <i class="fa-solid fa-store mr-1" style="color: var(--color-primary)"></i> Dibayarkan Kepada / Vendor <span class="text-[9px] text-slate-400 lowercase">(opsional)</span>
                                 </label>
-                                <input type="text" id="exp-input-recipient" placeholder="Contoh: Toko Plastik Berkah, PLN, SPBU..." class="w-full text-xs font-semibold bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-slate-800 dark:text-white focus:outline-hidden focus:border-rose-500 transition-colors">
+                                <input type="text" id="exp-input-recipient" placeholder="Contoh: Toko Plastik Berkah, PLN, SPBU..." class="w-full text-xs font-semibold bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-slate-800 dark:text-white focus:outline-hidden focus:border-[var(--color-primary)] transition-colors">
                             </div>
                             <div>
                                 <label class="block text-[11px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
-                                    <i class="fa-solid fa-user-pen text-rose-500 mr-1"></i> Dicatat Oleh <span class="text-[9px] text-slate-400 lowercase">(opsional)</span>
+                                    <i class="fa-solid fa-user-pen mr-1" style="color: var(--color-primary)"></i> Dicatat Oleh <span class="text-[9px] text-slate-400 lowercase">(opsional)</span>
                                 </label>
-                                <input type="text" id="exp-input-createdby" placeholder="Owner / Kasir Shift" class="w-full text-xs font-semibold bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-slate-800 dark:text-white focus:outline-hidden focus:border-rose-500 transition-colors">
+                                <input type="text" id="exp-input-createdby" placeholder="Owner / Kasir Shift" class="w-full text-xs font-semibold bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-slate-800 dark:text-white focus:outline-hidden focus:border-[var(--color-primary)] transition-colors">
                             </div>
                         </div>
 
                         <!-- Baris 6: Foto Bukti Struk / Nota (Upload & Preview) -->
                         <div>
                             <label class="block text-[11px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
-                                <i class="fa-solid fa-receipt text-rose-500 mr-1"></i> Foto Bukti Struk / Nota Fisik <span class="text-[9px] text-slate-400 lowercase">(opsional)</span>
+                                <i class="fa-solid fa-receipt mr-1" style="color: var(--color-primary)"></i> Foto Bukti Struk / Nota Fisik <span class="text-[9px] text-slate-400 lowercase">(opsional)</span>
                             </label>
                             <div class="flex items-center gap-3">
                                 <div id="exp-receipt-preview-box" class="w-16 h-16 rounded-xl border-2 border-dashed border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 flex items-center justify-center overflow-hidden shrink-0 relative group">
@@ -123,7 +123,7 @@ import{e as l,f as x,I as B,a as b,x as _,a9 as j,a7 as w,v as p,B as O,a8 as K,
                                     <input type="hidden" id="exp-input-receipt-url" value="">
                                     <div class="flex items-center gap-2 flex-wrap">
                                         <label class="px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold cursor-pointer transition-colors flex items-center gap-1.5 active:scale-95 shrink-0">
-                                            <i class="fa-solid fa-camera text-rose-500"></i>
+                                            <i class="fa-solid fa-camera" style="color: var(--color-primary)"></i>
                                             <span>Ambil Foto / Pilih File</span>
                                             <input type="file" accept="image/*" class="sr-only" onchange="window.handleExpenseReceiptUpload(this)">
                                         </label>
@@ -140,7 +140,7 @@ import{e as l,f as x,I as B,a as b,x as _,a9 as j,a7 as w,v as p,B as O,a8 as K,
                         <button type="button" onclick="closeExpenseModal()" class="h-11 sm:h-12 px-5 rounded-2xl border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer">
                             Batal
                         </button>
-                        <button type="submit" id="btn-save-expense" class="h-11 sm:h-12 px-6 rounded-2xl bg-gradient-to-r from-rose-500 to-amber-600 hover:from-rose-600 hover:to-amber-700 text-white text-xs font-black shadow-md shadow-rose-500/25 transition-all cursor-pointer active:scale-95 flex items-center gap-2">
+                        <button type="submit" id="btn-save-expense" class="h-11 sm:h-12 px-6 rounded-2xl text-white text-xs font-black transition-all cursor-pointer active:scale-95 flex items-center gap-2 hover:opacity-95" style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
                             <i class="fa-solid fa-floppy-disk"></i>
                             <span>Simpan Pengeluaran</span>
                         </button>
@@ -149,24 +149,24 @@ import{e as l,f as x,I as B,a as b,x as _,a9 as j,a7 as w,v as p,B as O,a8 as K,
             </div>
         `,document.body.appendChild(a)}if(!l("modal-expense-receipt-preview")){const a=document.createElement("div");a.id="modal-expense-receipt-preview",a.className="fixed inset-0 z-[160] flex hidden items-center justify-center p-4 bg-slate-950/90 opacity-0 transition-opacity duration-300",a.onclick=o=>{o.target===a&&window.closeExpenseReceiptPreview?.()},a.innerHTML=`
             <div id="modal-expense-receipt-preview-box" class="relative max-w-3xl max-h-[90vh] bg-slate-900 rounded-2xl border border-slate-800 p-2 shadow-2xl flex flex-col items-center justify-center transform scale-95 transition-all duration-300" onclick="event.stopPropagation()">
-                <button type="button" onclick="closeExpenseReceiptPreview()" class="absolute -top-3 -right-3 w-9 h-9 rounded-full bg-rose-600 text-white flex items-center justify-center shadow-lg hover:bg-rose-700 cursor-pointer z-10">
+                <button type="button" onclick="closeExpenseReceiptPreview()" class="absolute -top-3 -right-3 w-9 h-9 rounded-full text-white flex items-center justify-center shadow-lg cursor-pointer z-10 hover:opacity-95" style="background: var(--color-primary); box-shadow: 0 4px 12px rgba(var(--color-primary-rgb), 0.4);">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
                 <img id="img-full-receipt" src="" alt="Bukti Nota" class="max-h-[82vh] w-auto max-w-full rounded-xl object-contain">
                 <p id="caption-full-receipt" class="text-xs text-slate-300 font-bold mt-2 text-center"></p>
             </div>
-        `,document.body.appendChild(a)}},F=()=>(Array.isArray(b.expenses)?b.expenses:[]).filter(e=>{if(!e||!e.date)return!1;const[a,o]=e.date.split("-"),i=parseInt(a,10),s=parseInt(o,10);if(y&&i!==y||k!==0&&s!==k||T!=="all"&&e.category!==T||S!=="all"&&e.source!==S)return!1;if($&&$.trim()){const r=$.toLowerCase().trim(),n=(e.desc||"").toLowerCase().includes(r),d=(e.recipient||"").toLowerCase().includes(r),c=(e.category||"").toLowerCase().includes(r),u=(e.amount||"").toString().includes(r);if(!n&&!d&&!c&&!u)return!1}return!0}).sort((e,a)=>{if(v==="highest")return(a.amount||0)-(e.amount||0);if(v==="lowest")return(e.amount||0)-(a.amount||0);if(v==="oldest")return(new Date(e.date).getTime()||0)-(new Date(a.date).getTime()||0);const o=(new Date(a.date).getTime()||0)-(new Date(e.date).getTime()||0);return o!==0?o:(a.createdAt||0)-(e.createdAt||0)}),z=()=>{const t=F();let e=0;const a={cash:0,bank:0,owner:0},o={};f.forEach(n=>{o[n.key]=0}),t.forEach(n=>{const d=parseFloat(n.amount)||0;e+=d;const c=n.source||"cash";a[c]!==void 0?a[c]+=d:a.cash+=d;const u=n.category||"lainnya";o[u]!==void 0?o[u]+=d:o.lainnya+=d});let i="lainnya",s=0;Object.entries(o).forEach(([n,d])=>{d>s&&(s=d,i=n)});const r=f.find(n=>n.key===i)||f[6];return{count:t.length,totalAmount:e,bySource:a,byCategory:o,topCategory:{...r,amount:s,percent:e>0?(s/e*100).toFixed(0):"0"}}},D=()=>{M();const t=z(),e=F(),a=k===0?`Tahun ${y}`:`${P[k-1]} ${y}`,o=new Date().getFullYear(),i=[o-2,o-1,o,o+1];q("admin-content",`
+        `,document.body.appendChild(a)}},F=()=>(Array.isArray(b.expenses)?b.expenses:[]).filter(e=>{if(!e||!e.date)return!1;const[a,o]=e.date.split("-"),n=parseInt(a,10),r=parseInt(o,10);if(w&&n!==w||h!==0&&r!==h||T!=="all"&&e.category!==T||S!=="all"&&e.source!==S)return!1;if($&&$.trim()){const s=$.toLowerCase().trim(),i=(e.desc||"").toLowerCase().includes(s),d=(e.recipient||"").toLowerCase().includes(s),c=(e.category||"").toLowerCase().includes(s),u=(e.amount||"").toString().includes(s);if(!i&&!d&&!c&&!u)return!1}return!0}).sort((e,a)=>{if(k==="highest")return(a.amount||0)-(e.amount||0);if(k==="lowest")return(e.amount||0)-(a.amount||0);if(k==="oldest")return(new Date(e.date).getTime()||0)-(new Date(a.date).getTime()||0);const o=(new Date(a.date).getTime()||0)-(new Date(e.date).getTime()||0);return o!==0?o:(a.createdAt||0)-(e.createdAt||0)}),z=()=>{const t=F();let e=0;const a={cash:0,bank:0,owner:0},o={};f.forEach(i=>{o[i.key]=0}),t.forEach(i=>{const d=parseFloat(i.amount)||0;e+=d;const c=i.source||"cash";a[c]!==void 0?a[c]+=d:a.cash+=d;const u=i.category||"lainnya";o[u]!==void 0?o[u]+=d:o.lainnya+=d});let n="lainnya",r=0;Object.entries(o).forEach(([i,d])=>{d>r&&(r=d,n=i)});const s=f.find(i=>i.key===n)||f[6];return{count:t.length,totalAmount:e,bySource:a,byCategory:o,topCategory:{...s,amount:r,percent:e>0?(r/e*100).toFixed(0):"0"}}},D=()=>{M();const t=z(),e=F(),a=h===0?`Tahun ${w}`:`${P[h-1]} ${w}`,o=new Date().getFullYear(),n=[o-2,o-1,o,o+1];q("admin-content",`
         <div class="space-y-6 pb-12">
             <!-- 1. TOP APP BAR & QUICK ACTION -->
-            <div class="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white/95 dark:bg-slate-900/90 p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-xs">
+            <div class="rounded-2xl border border-[rgba(var(--color-primary-rgb),0.2)] bg-gradient-to-br from-white via-white to-[rgba(var(--color-primary-rgb),0.04)] dark:from-slate-900 dark:via-slate-900 dark:to-slate-800 p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-xs">
                 <div class="flex items-center gap-3.5">
-                    <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-rose-500 via-rose-600 to-amber-600 text-white flex items-center justify-center shadow-lg shadow-rose-500/25 text-xl shrink-0">
+                    <div class="w-12 h-12 rounded-2xl text-white flex items-center justify-center text-xl shrink-0" style="background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark)); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
                         <i class="fa-solid fa-money-bill-transfer"></i>
                     </div>
                     <div>
                         <div class="flex items-center gap-2">
                             <h2 class="text-base sm:text-lg font-black text-slate-800 dark:text-white">Buku Kas &amp; Biaya Operasional</h2>
-                            <span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-rose-100 text-rose-700 dark:bg-rose-950/60 dark:text-rose-400 border border-rose-200 dark:border-rose-900/60">
+                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black border" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary); border-color: rgba(var(--color-primary-rgb), 0.25);">
                                 ${t.count} Transaksi
                             </span>
                         </div>
@@ -180,7 +180,7 @@ import{e as l,f as x,I as B,a as b,x as _,a9 as j,a7 as w,v as p,B as O,a8 as K,
                         <i class="fa-solid fa-file-excel text-emerald-600"></i>
                         <span>Ekspor Excel</span>
                     </button>
-                    <button type="button" onclick="openExpenseModal()" class="flex-1 sm:flex-initial px-5 py-2.5 rounded-xl bg-gradient-to-r from-rose-500 to-amber-600 hover:from-rose-600 hover:to-amber-700 text-white text-xs font-black shadow-md shadow-rose-500/25 transition-all cursor-pointer flex items-center justify-center gap-2 active:scale-95">
+                    <button type="button" onclick="openExpenseModal()" class="flex-1 sm:flex-initial px-5 py-2.5 rounded-xl text-white text-xs font-black transition-all cursor-pointer flex items-center justify-center gap-2 active:scale-95 hover:opacity-95" style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
                         <i class="fa-solid fa-plus"></i>
                         <span>Catat Pengeluaran</span>
                     </button>
@@ -190,26 +190,26 @@ import{e as l,f as x,I as B,a as b,x as _,a9 as j,a7 as w,v as p,B as O,a8 as K,
             <!-- 2. BENTO STAT CARDS -->
             <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
                 <!-- Card 1: Total Beban Periode Ini -->
-                <div class="p-4 sm:p-5 rounded-2xl border border-rose-200/80 dark:border-rose-950/50 bg-gradient-to-br from-rose-50/70 via-white to-amber-50/30 dark:from-rose-950/20 dark:via-slate-900 dark:to-slate-900 flex flex-col justify-between">
+                <div class="p-4 sm:p-5 rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white/95 dark:bg-slate-900 shadow-2xs hover:-translate-y-0.5 hover:shadow-md transition-all flex flex-col justify-between">
                     <div class="flex items-center justify-between mb-2">
-                        <span class="text-[10px] font-black uppercase tracking-widest text-rose-700 dark:text-rose-400">Total Biaya Operasional</span>
-                        <div class="w-7 h-7 rounded-lg bg-rose-500/10 text-rose-600 flex items-center justify-center text-xs"><i class="fa-solid fa-calculator"></i></div>
+                        <span class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">Total Biaya Operasional</span>
+                        <div class="w-7 h-7 rounded-xl flex items-center justify-center text-xs shrink-0" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary);"><i class="fa-solid fa-calculator"></i></div>
                     </div>
                     <div class="my-1">
-                        <p class="text-lg sm:text-2xl font-black text-rose-600 dark:text-rose-400 truncate">${x(t.totalAmount)}</p>
+                        <p class="text-lg sm:text-2xl font-black truncate" style="color: var(--color-primary);">${x(t.totalAmount)}</p>
                         <p class="text-[10px] text-slate-400 mt-0.5">${a} (${t.count} nota)</p>
                     </div>
-                    <div class="mt-2 pt-2 border-t border-rose-100 dark:border-slate-800 text-[10px] text-slate-500 dark:text-slate-400 flex items-center justify-between">
+                    <div class="mt-2 pt-2 border-t border-slate-100 dark:border-slate-800 text-[10px] text-slate-500 dark:text-slate-400 flex items-center justify-between">
                         <span>Mengurangi Laba Kotor</span>
-                        <i class="fa-solid fa-arrow-trend-down text-rose-500"></i>
+                        <i class="fa-solid fa-arrow-trend-down text-slate-400"></i>
                     </div>
                 </div>
 
                 <!-- Card 2: Beban Terbesar -->
-                <div class="p-4 sm:p-5 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 flex flex-col justify-between">
+                <div class="p-4 sm:p-5 rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white/95 dark:bg-slate-900 shadow-2xs hover:-translate-y-0.5 hover:shadow-md transition-all flex flex-col justify-between">
                     <div class="flex items-center justify-between mb-2">
                         <span class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">Beban Terbesar</span>
-                        <div class="w-7 h-7 rounded-lg bg-amber-500/10 text-amber-600 flex items-center justify-center text-xs"><i class="fa-solid fa-crown"></i></div>
+                        <div class="w-7 h-7 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center text-xs shrink-0"><i class="fa-solid fa-crown"></i></div>
                     </div>
                     <div class="my-1">
                         <p class="text-sm sm:text-base font-black text-slate-800 dark:text-white truncate" title="${t.totalAmount>0?t.topCategory.label:"Belum Ada Transaksi"}">${t.totalAmount>0?t.topCategory.label:"Belum Ada Transaksi"}</p>
@@ -222,10 +222,10 @@ import{e as l,f as x,I as B,a as b,x as _,a9 as j,a7 as w,v as p,B as O,a8 as K,
                 </div>
 
                 <!-- Card 3: Kas Laci Toko (Tunai Petty Cash) -->
-                <div class="p-4 sm:p-5 rounded-2xl border border-emerald-200/70 dark:border-emerald-950/40 bg-white dark:bg-slate-900 flex flex-col justify-between">
+                <div class="p-4 sm:p-5 rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white/95 dark:bg-slate-900 shadow-2xs hover:-translate-y-0.5 hover:shadow-md transition-all flex flex-col justify-between">
                     <div class="flex items-center justify-between mb-2">
                         <span class="text-[10px] font-black uppercase tracking-widest text-emerald-600 dark:text-emerald-400">Kas Laci Toko (Tunai)</span>
-                        <div class="w-7 h-7 rounded-lg bg-emerald-500/10 text-emerald-600 flex items-center justify-center text-xs"><i class="fa-solid fa-money-bill-wave"></i></div>
+                        <div class="w-7 h-7 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-xs shrink-0"><i class="fa-solid fa-money-bill-wave"></i></div>
                     </div>
                     <div class="my-1">
                         <p class="text-base sm:text-xl font-black text-slate-800 dark:text-white truncate">${x(t.bySource.cash)}</p>
@@ -233,15 +233,15 @@ import{e as l,f as x,I as B,a as b,x as _,a9 as j,a7 as w,v as p,B as O,a8 as K,
                     </div>
                     <div class="mt-2 pt-2 border-t border-slate-100 dark:border-slate-800 text-[10px] text-slate-400 flex items-center justify-between">
                         <span>Porsi Tunai</span>
-                        <span class="font-bold text-emerald-600">${t.totalAmount>0?(t.bySource.cash/t.totalAmount*100).toFixed(0):"0"}%</span>
+                        <span class="font-bold text-emerald-600 dark:text-emerald-400">${t.totalAmount>0?(t.bySource.cash/t.totalAmount*100).toFixed(0):"0"}%</span>
                     </div>
                 </div>
 
                 <!-- Card 4: Transfer Bank & Talangan Owner -->
-                <div class="p-4 sm:p-5 rounded-2xl border border-blue-200/70 dark:border-blue-950/40 bg-white dark:bg-slate-900 flex flex-col justify-between">
+                <div class="p-4 sm:p-5 rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white/95 dark:bg-slate-900 shadow-2xs hover:-translate-y-0.5 hover:shadow-md transition-all flex flex-col justify-between">
                     <div class="flex items-center justify-between mb-2">
                         <span class="text-[10px] font-black uppercase tracking-widest text-blue-600 dark:text-blue-400">Bank &amp; Dana Owner</span>
-                        <div class="w-7 h-7 rounded-lg bg-blue-500/10 text-blue-600 flex items-center justify-center text-xs"><i class="fa-solid fa-building-columns"></i></div>
+                        <div class="w-7 h-7 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center text-xs shrink-0"><i class="fa-solid fa-building-columns"></i></div>
                     </div>
                     <div class="my-1">
                         <p class="text-base sm:text-xl font-black text-slate-800 dark:text-white truncate">${x(t.bySource.bank+t.bySource.owner)}</p>
@@ -249,34 +249,34 @@ import{e as l,f as x,I as B,a as b,x as _,a9 as j,a7 as w,v as p,B as O,a8 as K,
                     </div>
                     <div class="mt-2 pt-2 border-t border-slate-100 dark:border-slate-800 text-[10px] text-slate-400 flex items-center justify-between">
                         <span>Non-Tunai</span>
-                        <span class="font-bold text-blue-600">${t.totalAmount>0?((t.bySource.bank+t.bySource.owner)/t.totalAmount*100).toFixed(0):"0"}%</span>
+                        <span class="font-bold text-blue-600 dark:text-blue-400">${t.totalAmount>0?((t.bySource.bank+t.bySource.owner)/t.totalAmount*100).toFixed(0):"0"}%</span>
                     </div>
                 </div>
             </div>
 
             <!-- 3. DISTRIBUSI KATEGORI BEBAN (HORIZONTAL MINI PROGRESS) -->
-            <div class="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 sm:p-5 space-y-3">
+            <div class="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 sm:p-5 space-y-3 shadow-2xs">
                 <div class="flex items-center justify-between">
                     <h3 class="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-white flex items-center gap-2">
-                        <i class="fa-solid fa-chart-pie text-rose-500"></i> Alokasi Kategori Biaya Operasional
+                        <i class="fa-solid fa-chart-pie" style="color: var(--color-primary)"></i> Alokasi Kategori Biaya Operasional
                     </h3>
-                    <button type="button" onclick="openAdminTab('reports')" class="text-[11px] font-bold text-amber-600 hover:text-amber-700 transition-colors flex items-center gap-1">
+                    <button type="button" onclick="openAdminTab('reports')" class="text-[11px] font-bold flex items-center gap-1 transition-opacity hover:opacity-80" style="color: var(--color-primary)">
                         <span>Lihat di Laba Rugi</span>
                         <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
                     </button>
                 </div>
                 <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2.5">
-                    ${f.map(s=>{const r=t.byCategory[s.key]||0,n=t.totalAmount>0?(r/t.totalAmount*100).toFixed(0):"0";return`
+                    ${f.map(r=>{const s=t.byCategory[r.key]||0,i=t.totalAmount>0?(s/t.totalAmount*100).toFixed(0):"0";return`
                             <div class="p-3 rounded-xl border border-slate-100 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-800/40 flex flex-col justify-between">
                                 <div class="flex items-center justify-between mb-1">
-                                    <span class="text-[9px] font-bold text-slate-500 dark:text-slate-400 uppercase truncate">${s.label.split(" ")[0]}</span>
-                                    <i class="fa-solid ${s.icon} text-[10px] text-slate-400"></i>
+                                    <span class="text-[9px] font-bold text-slate-500 dark:text-slate-400 uppercase truncate">${r.label.split(" ")[0]}</span>
+                                    <i class="fa-solid ${r.icon} text-[10px] text-slate-400"></i>
                                 </div>
-                                <p class="text-xs font-black text-slate-800 dark:text-white truncate">${x(r)}</p>
+                                <p class="text-xs font-black text-slate-800 dark:text-white truncate">${x(s)}</p>
                                 <div class="mt-2 w-full bg-slate-200 dark:bg-slate-700 h-1 rounded-full overflow-hidden">
-                                    <div class="bg-rose-500 h-full rounded-full" style="width: ${n}%"></div>
+                                    <div class="h-full rounded-full" style="width: ${i}%; background: var(--color-primary);"></div>
                                 </div>
-                                <span class="text-[9px] font-bold text-slate-400 mt-1 text-right">${n}%</span>
+                                <span class="text-[9px] font-bold text-slate-400 mt-1 text-right">${i}%</span>
                             </div>
                         `}).join("")}
                 </div>
@@ -289,7 +289,7 @@ import{e as l,f as x,I as B,a as b,x as _,a9 as j,a7 as w,v as p,B as O,a8 as K,
                     <div>
                         <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Tahun</label>
                         <select onchange="window.setExpenseFilter('year', this.value)" class="w-full text-xs font-bold bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-slate-800 dark:text-white focus:outline-hidden">
-                            ${i.map(s=>`<option value="${s}" ${s===y?"selected":""}>${s}</option>`).join("")}
+                            ${n.map(r=>`<option value="${r}" ${r===w?"selected":""}>${r}</option>`).join("")}
                         </select>
                     </div>
 
@@ -297,8 +297,8 @@ import{e as l,f as x,I as B,a as b,x as _,a9 as j,a7 as w,v as p,B as O,a8 as K,
                     <div>
                         <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Bulan</label>
                         <select onchange="window.setExpenseFilter('month', this.value)" class="w-full text-xs font-bold bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-slate-800 dark:text-white focus:outline-hidden">
-                            <option value="0" ${k===0?"selected":""}>Semua Bulan (Setahun)</option>
-                            ${P.map((s,r)=>`<option value="${r+1}" ${r+1===k?"selected":""}>${s}</option>`).join("")}
+                            <option value="0" ${h===0?"selected":""}>Semua Bulan (Setahun)</option>
+                            ${P.map((r,s)=>`<option value="${s+1}" ${s+1===h?"selected":""}>${r}</option>`).join("")}
                         </select>
                     </div>
 
@@ -307,7 +307,7 @@ import{e as l,f as x,I as B,a as b,x as _,a9 as j,a7 as w,v as p,B as O,a8 as K,
                         <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Kategori</label>
                         <select onchange="window.setExpenseFilter('category', this.value)" class="w-full text-xs font-bold bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-slate-800 dark:text-white focus:outline-hidden">
                             <option value="all" ${T==="all"?"selected":""}>Semua Kategori</option>
-                            ${f.map(s=>`<option value="${s.key}" ${s.key===T?"selected":""}>${s.label}</option>`).join("")}
+                            ${f.map(r=>`<option value="${r.key}" ${r.key===T?"selected":""}>${r.label}</option>`).join("")}
                         </select>
                     </div>
 
@@ -316,7 +316,7 @@ import{e as l,f as x,I as B,a as b,x as _,a9 as j,a7 as w,v as p,B as O,a8 as K,
                         <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Sumber Dana</label>
                         <select onchange="window.setExpenseFilter('source', this.value)" class="w-full text-xs font-bold bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-slate-800 dark:text-white focus:outline-hidden">
                             <option value="all" ${S==="all"?"selected":""}>Semua Sumber</option>
-                            ${g.map(s=>`<option value="${s.key}" ${s.key===S?"selected":""}>${s.label}</option>`).join("")}
+                            ${g.map(r=>`<option value="${r.key}" ${r.key===S?"selected":""}>${r.label}</option>`).join("")}
                         </select>
                     </div>
 
@@ -324,10 +324,10 @@ import{e as l,f as x,I as B,a as b,x as _,a9 as j,a7 as w,v as p,B as O,a8 as K,
                     <div>
                         <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Urutkan</label>
                         <select onchange="window.setExpenseFilter('sort', this.value)" class="w-full text-xs font-bold bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-slate-800 dark:text-white focus:outline-hidden">
-                            <option value="newest" ${v==="newest"?"selected":""}>Tanggal Terbaru</option>
-                            <option value="oldest" ${v==="oldest"?"selected":""}>Tanggal Terlama</option>
-                            <option value="highest" ${v==="highest"?"selected":""}>Nominal Terbesar</option>
-                            <option value="lowest" ${v==="lowest"?"selected":""}>Nominal Terkecil</option>
+                            <option value="newest" ${k==="newest"?"selected":""}>Tanggal Terbaru</option>
+                            <option value="oldest" ${k==="oldest"?"selected":""}>Tanggal Terlama</option>
+                            <option value="highest" ${k==="highest"?"selected":""}>Nominal Terbesar</option>
+                            <option value="lowest" ${k==="lowest"?"selected":""}>Nominal Terkecil</option>
                         </select>
                     </div>
                 </div>
@@ -347,18 +347,18 @@ import{e as l,f as x,I as B,a as b,x as _,a9 as j,a7 as w,v as p,B as O,a8 as K,
                         <h3 class="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-white">Buku Kas Pengeluaran Operasional</h3>
                         <p class="text-[10px] text-slate-400 mt-0.5">Menampilkan ${e.length} dari total ${(b.expenses||[]).length} catatan</p>
                     </div>
-                    <span class="text-xs font-black text-rose-600 dark:text-rose-400">${x(t.totalAmount)}</span>
+                    <span class="text-xs font-black" style="color: var(--color-primary);">${x(t.totalAmount)}</span>
                 </div>
 
                 ${e.length===0?`
                     <!-- Empty State -->
                     <div class="py-16 px-4 text-center flex flex-col items-center justify-center">
-                        <div class="w-16 h-16 rounded-2xl bg-rose-50 dark:bg-rose-950/40 text-rose-500 border border-rose-200/60 dark:border-rose-900/40 flex items-center justify-center text-2xl mb-3">
+                        <div class="w-16 h-16 rounded-2xl flex items-center justify-center text-2xl mb-3 shrink-0" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary); border: 1px solid rgba(var(--color-primary-rgb), 0.25);">
                             <i class="fa-solid fa-receipt"></i>
                         </div>
                         <h4 class="text-sm font-bold text-slate-700 dark:text-slate-200">Belum Ada Catatan Biaya Operasional</h4>
                         <p class="text-xs text-slate-400 max-w-sm mt-1">Belum ada transaksi pengeluaran operasional yang dicatat untuk filter periode ini.</p>
-                        <button type="button" onclick="openExpenseModal()" class="mt-4 px-5 py-2.5 rounded-xl bg-gradient-to-r from-rose-500 to-amber-600 text-white text-xs font-bold shadow-md shadow-rose-500/20 hover:scale-105 active:scale-95 transition-all cursor-pointer flex items-center gap-2">
+                        <button type="button" onclick="openExpenseModal()" class="mt-4 px-5 py-2.5 rounded-xl text-white text-xs font-bold transition-all cursor-pointer flex items-center gap-2 active:scale-95 hover:opacity-95" style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
                             <i class="fa-solid fa-plus"></i>
                             <span>Catat Pengeluaran Pertama</span>
                         </button>
@@ -379,49 +379,49 @@ import{e as l,f as x,I as B,a as b,x as _,a9 as j,a7 as w,v as p,B as O,a8 as K,
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
-                                ${e.map(s=>{const r=f.find(c=>c.key===s.category)||f[6],n=g.find(c=>c.key===s.source)||g[0],d=!!s.receiptImg;return`
+                                ${e.map(r=>{const s=f.find(c=>c.key===r.category)||f[6],i=g.find(c=>c.key===r.source)||g[0],d=!!r.receiptImg;return`
                                         <tr class="hover:bg-slate-50/60 dark:hover:bg-slate-800/30 transition-colors">
                                             <td class="py-3.5 px-4 font-bold text-slate-700 dark:text-slate-300 whitespace-nowrap">
                                                 <div class="flex items-center gap-2">
                                                     <i class="fa-regular fa-calendar text-slate-400"></i>
-                                                    <span>${C(s.date)}</span>
+                                                    <span>${C(r.date)}</span>
                                                 </div>
                                             </td>
                                             <td class="py-3.5 px-4">
                                                 <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[10px] font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
-                                                    <i class="fa-solid ${r.icon} text-rose-500"></i>
-                                                    <span>${r.label}</span>
+                                                    <i class="fa-solid ${s.icon}" style="color: var(--color-primary)"></i>
+                                                    <span>${s.label}</span>
                                                 </span>
                                             </td>
                                             <td class="py-3.5 px-4">
-                                                <p class="font-bold text-slate-800 dark:text-white">${E(s.desc)}</p>
-                                                ${s.recipient?`<p class="text-[10px] text-slate-400 mt-0.5"><i class="fa-solid fa-store mr-1 text-slate-300"></i>Penerima: <span class="font-semibold text-slate-600 dark:text-slate-300">${E(s.recipient)}</span></p>`:""}
+                                                <p class="font-bold text-slate-800 dark:text-white">${E(r.desc)}</p>
+                                                ${r.recipient?`<p class="text-[10px] text-slate-400 mt-0.5"><i class="fa-solid fa-store mr-1 text-slate-300"></i>Penerima: <span class="font-semibold text-slate-600 dark:text-slate-300">${E(r.recipient)}</span></p>`:""}
                                             </td>
                                             <td class="py-3.5 px-4">
-                                                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold ${s.source==="cash"?"bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 border border-emerald-200 dark:border-emerald-800/50":s.source==="bank"?"bg-blue-50 dark:bg-blue-950/40 text-blue-600 border border-blue-200 dark:border-blue-800/50":"bg-purple-50 dark:bg-purple-950/40 text-purple-600 border border-purple-200 dark:border-purple-800/50"}">
-                                                    <i class="fa-solid ${n.icon} text-[9px]"></i>
-                                                    <span>${n.shortLabel}</span>
+                                                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold ${r.source==="cash"?"bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 border border-emerald-200 dark:border-emerald-800/50":r.source==="bank"?"bg-blue-50 dark:bg-blue-950/40 text-blue-600 border border-blue-200 dark:border-blue-800/50":"bg-purple-50 dark:bg-purple-950/40 text-purple-600 border border-purple-200 dark:border-purple-800/50"}">
+                                                    <i class="fa-solid ${i.icon} text-[9px]"></i>
+                                                    <span>${i.shortLabel}</span>
                                                 </span>
                                             </td>
                                             <td class="py-3.5 px-4 text-center">
                                                 ${d?`
-                                                    <button type="button" onclick="window.previewExpenseReceipt('${s.id}')" title="Lihat Foto Struk" class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 text-amber-600 dark:text-amber-400 transition-colors cursor-pointer">
+                                                    <button type="button" onclick="window.previewExpenseReceipt('${r.id}')" title="Lihat Foto Struk" class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 text-amber-600 dark:text-amber-400 transition-colors cursor-pointer">
                                                         <i class="fa-solid fa-image text-xs"></i>
                                                     </button>
                                                 `:'<span class="text-[10px] text-slate-300 dark:text-slate-600">-</span>'}
                                             </td>
                                             <td class="py-3.5 px-4 text-right whitespace-nowrap">
-                                                <span class="font-black text-rose-600 dark:text-rose-400 text-sm">- ${x(s.amount)}</span>
+                                                <span class="font-black text-slate-800 dark:text-slate-100 text-sm">- ${x(r.amount)}</span>
                                             </td>
                                             <td class="py-3.5 px-4 text-center whitespace-nowrap">
                                                 <div class="inline-flex items-center gap-1.5">
-                                                    <button type="button" onclick="window.printExpenseSlip('${s.id}')" title="Cetak Bukti Kas Keluar (BKK)" class="w-7 h-7 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-center transition-colors cursor-pointer">
+                                                    <button type="button" onclick="window.printExpenseSlip('${r.id}')" title="Cetak Bukti Kas Keluar (BKK)" class="w-7 h-7 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-center transition-colors cursor-pointer">
                                                         <i class="fa-solid fa-print text-xs"></i>
                                                     </button>
-                                                    <button type="button" onclick="window.openExpenseModal('${s.id}')" title="Edit Pengeluaran" class="w-7 h-7 rounded-lg text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-950/40 flex items-center justify-center transition-colors cursor-pointer">
+                                                    <button type="button" onclick="window.openExpenseModal('${r.id}')" title="Edit Pengeluaran" class="w-7 h-7 rounded-lg text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-950/40 flex items-center justify-center transition-colors cursor-pointer">
                                                         <i class="fa-solid fa-pen-to-square text-xs"></i>
                                                     </button>
-                                                    <button type="button" onclick="window.confirmDeleteExpense('${s.id}')" title="Hapus Pengeluaran" class="w-7 h-7 rounded-lg text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/40 flex items-center justify-center transition-colors cursor-pointer">
+                                                    <button type="button" onclick="window.confirmDeleteExpense('${r.id}')" title="Hapus Pengeluaran" class="w-7 h-7 rounded-lg text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/40 flex items-center justify-center transition-colors cursor-pointer">
                                                         <i class="fa-solid fa-trash-can text-xs"></i>
                                                     </button>
                                                 </div>
@@ -434,44 +434,44 @@ import{e as l,f as x,I as B,a as b,x as _,a9 as j,a7 as w,v as p,B as O,a8 as K,
 
                     <!-- Mobile Cards (< 768px) -->
                     <div class="md:hidden divide-y divide-slate-100 dark:divide-slate-800">
-                        ${e.map(s=>{const r=f.find(c=>c.key===s.category)||f[6],n=g.find(c=>c.key===s.source)||g[0],d=!!s.receiptImg;return`
+                        ${e.map(r=>{const s=f.find(c=>c.key===r.category)||f[6],i=g.find(c=>c.key===r.source)||g[0],d=!!r.receiptImg;return`
                                 <div class="p-4 space-y-2.5">
                                     <div class="flex items-center justify-between">
                                         <div class="flex items-center gap-2">
                                             <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
-                                                <i class="fa-solid ${r.icon} text-rose-500 text-[9px]"></i>
-                                                <span>${r.label}</span>
+                                                <i class="fa-solid ${s.icon} text-[9px]" style="color: var(--color-primary)"></i>
+                                                <span>${s.label}</span>
                                             </span>
-                                            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold ${s.source==="cash"?"bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600":s.source==="bank"?"bg-blue-50 dark:bg-blue-950/40 text-blue-600":"bg-purple-50 dark:bg-purple-950/40 text-purple-600"}">
-                                                <i class="fa-solid ${n.icon} text-[8px]"></i>
-                                                <span>${n.shortLabel}</span>
+                                            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold ${r.source==="cash"?"bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600":r.source==="bank"?"bg-blue-50 dark:bg-blue-950/40 text-blue-600":"bg-purple-50 dark:bg-purple-950/40 text-purple-600"}">
+                                                <i class="fa-solid ${i.icon} text-[8px]"></i>
+                                                <span>${i.shortLabel}</span>
                                             </span>
                                         </div>
-                                        <span class="text-[10px] text-slate-400 font-bold">${C(s.date)}</span>
+                                        <span class="text-[10px] text-slate-400 font-bold">${C(r.date)}</span>
                                     </div>
 
                                     <div>
-                                        <p class="text-xs font-black text-slate-800 dark:text-white leading-snug">${E(s.desc)}</p>
-                                        ${s.recipient?`<p class="text-[10px] text-slate-400 mt-0.5"><i class="fa-solid fa-store mr-1 text-slate-300"></i>Penerima: ${E(s.recipient)}</p>`:""}
+                                        <p class="text-xs font-black text-slate-800 dark:text-white leading-snug">${E(r.desc)}</p>
+                                        ${r.recipient?`<p class="text-[10px] text-slate-400 mt-0.5"><i class="fa-solid fa-store mr-1 text-slate-300"></i>Penerima: ${E(r.recipient)}</p>`:""}
                                     </div>
 
                                     <div class="flex items-center justify-between pt-2 border-t border-slate-100 dark:border-slate-800/60">
                                         <div class="flex items-center gap-2">
-                                            <span class="text-sm font-black text-rose-600 dark:text-rose-400">- ${x(s.amount)}</span>
+                                            <span class="text-sm font-black text-slate-800 dark:text-white">- ${x(r.amount)}</span>
                                             ${d?`
-                                                <button type="button" onclick="window.previewExpenseReceipt('${s.id}')" class="px-2 py-0.5 rounded-md bg-amber-500/10 text-amber-600 dark:text-amber-400 text-[10px] font-bold flex items-center gap-1 cursor-pointer">
+                                                <button type="button" onclick="window.previewExpenseReceipt('${r.id}')" class="px-2 py-0.5 rounded-md bg-amber-500/10 text-amber-600 dark:text-amber-400 text-[10px] font-bold flex items-center gap-1 cursor-pointer">
                                                     <i class="fa-solid fa-image text-[9px]"></i> Nota
                                                 </button>
                                             `:""}
                                         </div>
                                         <div class="flex items-center gap-1">
-                                            <button type="button" onclick="window.printExpenseSlip('${s.id}')" title="Cetak BKK" class="w-8 h-8 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-white flex items-center justify-center active:scale-90">
+                                            <button type="button" onclick="window.printExpenseSlip('${r.id}')" title="Cetak BKK" class="w-8 h-8 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-white flex items-center justify-center active:scale-90">
                                                 <i class="fa-solid fa-print text-xs"></i>
                                             </button>
-                                            <button type="button" onclick="window.openExpenseModal('${s.id}')" title="Edit" class="w-8 h-8 rounded-lg text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-950/40 flex items-center justify-center active:scale-90">
+                                            <button type="button" onclick="window.openExpenseModal('${r.id}')" title="Edit" class="w-8 h-8 rounded-lg text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-950/40 flex items-center justify-center active:scale-90">
                                                 <i class="fa-solid fa-pen-to-square text-xs"></i>
                                             </button>
-                                            <button type="button" onclick="window.confirmDeleteExpense('${s.id}')" title="Hapus" class="w-8 h-8 rounded-lg text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/40 flex items-center justify-center active:scale-90">
+                                            <button type="button" onclick="window.confirmDeleteExpense('${r.id}')" title="Hapus" class="w-8 h-8 rounded-lg text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/40 flex items-center justify-center active:scale-90">
                                                 <i class="fa-solid fa-trash-can text-xs"></i>
                                             </button>
                                         </div>
@@ -482,8 +482,8 @@ import{e as l,f as x,I as B,a as b,x as _,a9 as j,a7 as w,v as p,B as O,a8 as K,
                 `}
             </div>
         </div>
-    `)},Q=(t=null)=>{M();const e=l("modal-expense-form"),a=l("modal-expense-form-box"),o=l("modal-expense-title"),i=l("btn-save-expense"),s=l("expense-form-scroll-container");if(!(!e||!a)){if(t){const r=(b.expenses||[]).find(d=>d.id===t);if(!r)return p("Data pengeluaran tidak ditemukan!");o&&(o.innerText="Edit Catatan Pengeluaran"),i&&(i.querySelector("span").innerText="Perbarui Pengeluaran"),l("exp-input-id").value=r.id,l("exp-input-date").value=r.date||new Date().toISOString().split("T")[0],l("exp-input-category").value=r.category||"lainnya",l("exp-input-amount").value=new Intl.NumberFormat("id-ID").format(r.amount||0),l("exp-nominal-preview").innerText=x(r.amount||0),l("exp-input-desc").value=r.desc||"",l("exp-input-recipient").value=r.recipient||"",l("exp-input-createdby").value=r.createdBy||"",l("exp-input-receipt-url").value=r.receiptImg||"",l("exp-input-receipt-manual").value=r.receiptImg||"",document.querySelectorAll('input[name="exp_source"]').forEach(d=>{d.checked=d.value===(r.source||"cash")}),R(r.receiptImg||"")}else o&&(o.innerText="Catat Pengeluaran Baru"),i&&(i.querySelector("span").innerText="Simpan Pengeluaran"),l("exp-input-id").value="",l("exp-input-date").value=new Date().toISOString().split("T")[0],l("exp-input-category").value="kemasan",l("exp-input-amount").value="",l("exp-nominal-preview").innerText="Rp 0",l("exp-input-desc").value="",l("exp-input-recipient").value="",l("exp-input-createdby").value="Owner",l("exp-input-receipt-url").value="",l("exp-input-receipt-manual").value="",document.querySelectorAll('input[name="exp_source"]').forEach(n=>{n.checked=n.value==="cash"}),R("");s&&(s.scrollTop=0),e.classList.contains("hidden")&&typeof window.pushModalHistory=="function"&&window.pushModalHistory("expenseForm"),O(e,a)}},N=(t=!1)=>{const e=l("modal-expense-form"),a=l("modal-expense-form-box");e&&(!t&&typeof window.requestCloseModal=="function"?window.requestCloseModal("expenseForm",!1,()=>{B(e,a,()=>{})}):B(e,a,()=>{}))},J=t=>{let e=t.value.replace(/[^0-9]/g,"");const a=parseInt(e,10)||0;t.value=e?new Intl.NumberFormat("id-ID").format(a):"",setIn("exp-nominal-preview",x(a))},Y=t=>{const e=l("exp-input-amount");if(!e)return;let a=parseInt(e.value.replace(/[^0-9]/g,""),10)||0;a+=t,e.value=new Intl.NumberFormat("id-ID").format(a),setIn("exp-nominal-preview",x(a))},R=t=>{l("exp-receipt-preview-box");const e=l("exp-receipt-placeholder-icon"),a=l("exp-receipt-preview-img"),o=l("exp-receipt-remove-btn");t?(a&&(a.src=K(t),a.classList.remove("hidden")),e&&e.classList.add("hidden"),o&&o.classList.remove("hidden")):(a&&(a.src="",a.classList.add("hidden")),e&&e.classList.remove("hidden"),o&&o.classList.add("hidden"))},I=t=>{const e=(t||"").trim();l("exp-input-receipt-url").value=e,R(e)},W=()=>{l("exp-input-receipt-url").value="",l("exp-input-receipt-manual").value="",R(""),p("Foto struk dihapus")},V=async t=>{const e=t.files[0];if(e){if(!e.type.startsWith("image/"))return t.value="",p("Hanya file gambar (JPG, PNG, WEBP) yang diperbolehkan!");j("Memproses foto nota...");try{const a=await X(e,1e3,.75),o=window.GAS_UPLOAD_URL||G;if(o&&!o.includes("ISI_DENGAN")){j("Mengunggah foto nota ke Google Drive...");try{const i={name:"EXP_NOTA_"+Date.now()+".jpg",mimeType:"image/jpeg",data:a.split(",")[1],token:"B7qgwFQqtYLpBqdaK69HgtCfR7s5t67p"},r=await(await fetch(o,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(i)})).json();if(r&&r.status==="success"&&r.url){w(),I(r.url),l("exp-input-receipt-manual").value=r.url,p("Foto nota berhasil diunggah!");return}}catch(i){console.warn("[Expenses] Gagal upload ke GAS, menggunakan kompresi lokal:",i)}}w(),I(a),p("Foto nota tersimpan!")}catch(a){w(),p("Gagal memproses gambar: "+a.message)}}},X=(t,e=1e3,a=.75)=>new Promise((o,i)=>{const s=new FileReader;s.readAsDataURL(t),s.onload=r=>{const n=new Image;n.src=r.target.result,n.onload=()=>{let d=n.width,c=n.height;(d>e||c>e)&&(d>c?(c=Math.round(c*e/d),d=e):(d=Math.round(d*e/c),c=e));const u=document.createElement("canvas");u.width=d,u.height=c,u.getContext("2d").drawImage(n,0,0,d,c);const h=u.toDataURL("image/jpeg",a);o(h)},n.onerror=i},s.onerror=i}),Z=t=>{M();const e=(b.expenses||[]).find(r=>r.id===t);if(!e||!e.receiptImg)return p("Foto struk tidak tersedia");const a=l("modal-expense-receipt-preview"),o=l("modal-expense-receipt-preview-box"),i=l("img-full-receipt"),s=l("caption-full-receipt");i&&(i.src=K(e.receiptImg)),s&&(s.innerText=`${C(e.date)} — ${e.desc} (${x(e.amount)})`),a&&o&&(a.classList.contains("hidden")&&typeof window.pushModalHistory=="function"&&window.pushModalHistory("expenseReceipt"),O(a,o))},ee=(t=!1)=>{const e=l("modal-expense-receipt-preview"),a=l("modal-expense-receipt-preview-box");e&&(!t&&typeof window.requestCloseModal=="function"?window.requestCloseModal("expenseReceipt",!1,()=>{B(e,a)}):B(e,a))},te=async()=>{const t=l("exp-input-id").value,e=l("exp-input-date").value,a=l("exp-input-category").value,o=l("exp-input-amount").value.replace(/[^0-9]/g,""),i=parseInt(o,10),s=l("exp-input-desc").value.trim(),r=l("exp-input-recipient").value.trim(),n=l("exp-input-createdby").value.trim()||"Owner",d=l("exp-input-receipt-url").value.trim(),c=document.querySelector('input[name="exp_source"]:checked'),u=c?c.value:"cash";if(!e)return p("Pilih tanggal transaksi!");if(!a)return p("Pilih kategori pengeluaran!");if(!i||i<=0)return p("Masukkan nominal pengeluaran yang valid!");if(!s)return p("Isi keperluan / uraian pengeluaran!");j("Menyimpan pengeluaran..."),Array.isArray(b.expenses)||(b.expenses=[]);const A=Date.now();if(t){const h=b.expenses.findIndex(U=>U.id===t);h!==-1&&(b.expenses[h]={...b.expenses[h],date:e,category:a,amount:i,desc:s,source:u,recipient:r,createdBy:n,receiptImg:d,updatedAt:A})}else{const h={id:H(),date:e,category:a,amount:i,desc:s,source:u,recipient:r,createdBy:n,receiptImg:d,createdAt:A,updatedAt:A};b.expenses.unshift(h)}try{await L(["expenses"]),w(),N(),p(t?"Pengeluaran berhasil diperbarui! 💸":"Pengeluaran baru berhasil dicatat! 💸"),D()}catch(h){w(),p("Gagal menyimpan ke server: "+h.message)}},ae=t=>{const e=(b.expenses||[]).find(a=>a.id===t);e&&_("Hapus Catatan Pengeluaran",`Apakah Anda yakin ingin menghapus catatan pengeluaran "${e.desc}" sebesar ${x(e.amount)}? Data tidak dapat dipulihkan.`,async()=>{j("Menghapus pengeluaran..."),b.expenses=(b.expenses||[]).filter(a=>a.id!==t);try{await L(["expenses"]),w(),p("Catatan pengeluaran dihapus!"),D()}catch(a){w(),p("Gagal menghapus: "+a.message)}})},se=(t,e)=>{t==="year"?y=parseInt(e,10):t==="month"?k=parseInt(e,10):t==="category"?T=e:t==="source"?S=e:t==="sort"?v=e:t==="search"&&($=e),D()},re=()=>{const t=F();if(t.length===0)return p("Tidak ada data untuk diekspor!");const e=["ID","Tanggal","Kategori","Keperluan","Penerima","Sumber Dana","Nominal (Rp)","Dicatat Oleh"],a=t.map(n=>{const d=f.find(u=>u.key===n.category)||f[6],c=g.find(u=>u.key===n.source)||g[0];return[`"${n.id||""}"`,`"${n.date||""}"`,`"${d.label.replace(/"/g,'""')}"`,`"${(n.desc||"").replace(/"/g,'""')}"`,`"${(n.recipient||"-").replace(/"/g,'""')}"`,`"${c.label}"`,`"${n.amount||0}"`,`"${(n.createdBy||"Owner").replace(/"/g,'""')}"`].join(",")}),o="\uFEFF"+[e.join(","),...a].join(`\r
-`),i=new Blob([o],{type:"text/csv;charset=utf-8;"}),s=URL.createObjectURL(i),r=document.createElement("a");r.href=s,r.download=`Buku_Kas_Pengeluaran_TokoPutri_${y}_${k||"Semua"}.csv`,r.click(),URL.revokeObjectURL(s),p("File Excel/CSV berhasil diunduh! 📊")},oe=t=>{const e=(b.expenses||[]).find(r=>r.id===t);if(!e)return p("Data tidak ditemukan");const a=f.find(r=>r.key===e.category)||f[6],o=g.find(r=>r.key===e.source)||g[0],i=b.store||{},s=window.open("","_blank");if(!s)return p("Izinkan pop-up untuk mencetak Bukti Kas Keluar!");s.document.write(`
+    `)},Q=(t=null)=>{M();const e=l("modal-expense-form"),a=l("modal-expense-form-box"),o=l("modal-expense-title"),n=l("btn-save-expense"),r=l("expense-form-scroll-container");if(!(!e||!a)){if(t){const s=(b.expenses||[]).find(d=>d.id===t);if(!s)return p("Data pengeluaran tidak ditemukan!");o&&(o.innerText="Edit Catatan Pengeluaran"),n&&(n.querySelector("span").innerText="Perbarui Pengeluaran"),l("exp-input-id").value=s.id,l("exp-input-date").value=s.date||new Date().toISOString().split("T")[0],l("exp-input-category").value=s.category||"lainnya",l("exp-input-amount").value=new Intl.NumberFormat("id-ID").format(s.amount||0),l("exp-nominal-preview").innerText=x(s.amount||0),l("exp-input-desc").value=s.desc||"",l("exp-input-recipient").value=s.recipient||"",l("exp-input-createdby").value=s.createdBy||"",l("exp-input-receipt-url").value=s.receiptImg||"",l("exp-input-receipt-manual").value=s.receiptImg||"",document.querySelectorAll('input[name="exp_source"]').forEach(d=>{d.checked=d.value===(s.source||"cash")}),R(s.receiptImg||"")}else o&&(o.innerText="Catat Pengeluaran Baru"),n&&(n.querySelector("span").innerText="Simpan Pengeluaran"),l("exp-input-id").value="",l("exp-input-date").value=new Date().toISOString().split("T")[0],l("exp-input-category").value="kemasan",l("exp-input-amount").value="",l("exp-nominal-preview").innerText="Rp 0",l("exp-input-desc").value="",l("exp-input-recipient").value="",l("exp-input-createdby").value="Owner",l("exp-input-receipt-url").value="",l("exp-input-receipt-manual").value="",document.querySelectorAll('input[name="exp_source"]').forEach(i=>{i.checked=i.value==="cash"}),R("");r&&(r.scrollTop=0),e.classList.contains("hidden")&&typeof window.pushModalHistory=="function"&&window.pushModalHistory("expenseForm"),O(e,a)}},N=(t=!1)=>{const e=l("modal-expense-form"),a=l("modal-expense-form-box");e&&(!t&&typeof window.requestCloseModal=="function"?window.requestCloseModal("expenseForm",!1,()=>{B(e,a,()=>{})}):B(e,a,()=>{}))},J=t=>{let e=t.value.replace(/[^0-9]/g,"");const a=parseInt(e,10)||0;t.value=e?new Intl.NumberFormat("id-ID").format(a):"",setIn("exp-nominal-preview",x(a))},Y=t=>{const e=l("exp-input-amount");if(!e)return;let a=parseInt(e.value.replace(/[^0-9]/g,""),10)||0;a+=t,e.value=new Intl.NumberFormat("id-ID").format(a),setIn("exp-nominal-preview",x(a))},R=t=>{l("exp-receipt-preview-box");const e=l("exp-receipt-placeholder-icon"),a=l("exp-receipt-preview-img"),o=l("exp-receipt-remove-btn");t?(a&&(a.src=K(t),a.classList.remove("hidden")),e&&e.classList.add("hidden"),o&&o.classList.remove("hidden")):(a&&(a.src="",a.classList.add("hidden")),e&&e.classList.remove("hidden"),o&&o.classList.add("hidden"))},I=t=>{const e=(t||"").trim();l("exp-input-receipt-url").value=e,R(e)},W=()=>{l("exp-input-receipt-url").value="",l("exp-input-receipt-manual").value="",R(""),p("Foto struk dihapus")},V=async t=>{const e=t.files[0];if(e){if(!e.type.startsWith("image/"))return t.value="",p("Hanya file gambar (JPG, PNG, WEBP) yang diperbolehkan!");j("Memproses foto nota...");try{const a=await X(e,1e3,.75),o=window.GAS_UPLOAD_URL||G;if(o&&!o.includes("ISI_DENGAN")){j("Mengunggah foto nota ke Google Drive...");try{const n={name:"EXP_NOTA_"+Date.now()+".jpg",mimeType:"image/jpeg",data:a.split(",")[1],token:"B7qgwFQqtYLpBqdaK69HgtCfR7s5t67p"},s=await(await fetch(o,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(n)})).json();if(s&&s.status==="success"&&s.url){y(),I(s.url),l("exp-input-receipt-manual").value=s.url,p("Foto nota berhasil diunggah!");return}}catch(n){console.warn("[Expenses] Gagal upload ke GAS, menggunakan kompresi lokal:",n)}}y(),I(a),p("Foto nota tersimpan!")}catch(a){y(),p("Gagal memproses gambar: "+a.message)}}},X=(t,e=1e3,a=.75)=>new Promise((o,n)=>{const r=new FileReader;r.readAsDataURL(t),r.onload=s=>{const i=new Image;i.src=s.target.result,i.onload=()=>{let d=i.width,c=i.height;(d>e||c>e)&&(d>c?(c=Math.round(c*e/d),d=e):(d=Math.round(d*e/c),c=e));const u=document.createElement("canvas");u.width=d,u.height=c,u.getContext("2d").drawImage(i,0,0,d,c);const v=u.toDataURL("image/jpeg",a);o(v)},i.onerror=n},r.onerror=n}),Z=t=>{M();const e=(b.expenses||[]).find(s=>s.id===t);if(!e||!e.receiptImg)return p("Foto struk tidak tersedia");const a=l("modal-expense-receipt-preview"),o=l("modal-expense-receipt-preview-box"),n=l("img-full-receipt"),r=l("caption-full-receipt");n&&(n.src=K(e.receiptImg)),r&&(r.innerText=`${C(e.date)} — ${e.desc} (${x(e.amount)})`),a&&o&&(a.classList.contains("hidden")&&typeof window.pushModalHistory=="function"&&window.pushModalHistory("expenseReceipt"),O(a,o))},ee=(t=!1)=>{const e=l("modal-expense-receipt-preview"),a=l("modal-expense-receipt-preview-box");e&&(!t&&typeof window.requestCloseModal=="function"?window.requestCloseModal("expenseReceipt",!1,()=>{B(e,a)}):B(e,a))},te=async()=>{const t=l("exp-input-id").value,e=l("exp-input-date").value,a=l("exp-input-category").value,o=l("exp-input-amount").value.replace(/[^0-9]/g,""),n=parseInt(o,10),r=l("exp-input-desc").value.trim(),s=l("exp-input-recipient").value.trim(),i=l("exp-input-createdby").value.trim()||"Owner",d=l("exp-input-receipt-url").value.trim(),c=document.querySelector('input[name="exp_source"]:checked'),u=c?c.value:"cash";if(!e)return p("Pilih tanggal transaksi!");if(!a)return p("Pilih kategori pengeluaran!");if(!n||n<=0)return p("Masukkan nominal pengeluaran yang valid!");if(!r)return p("Isi keperluan / uraian pengeluaran!");j("Menyimpan pengeluaran..."),Array.isArray(b.expenses)||(b.expenses=[]);const A=Date.now();if(t){const v=b.expenses.findIndex(U=>U.id===t);v!==-1&&(b.expenses[v]={...b.expenses[v],date:e,category:a,amount:n,desc:r,source:u,recipient:s,createdBy:i,receiptImg:d,updatedAt:A})}else{const v={id:H(),date:e,category:a,amount:n,desc:r,source:u,recipient:s,createdBy:i,receiptImg:d,createdAt:A,updatedAt:A};b.expenses.unshift(v)}try{await L(["expenses"]),y(),N(),p(t?"Pengeluaran berhasil diperbarui! 💸":"Pengeluaran baru berhasil dicatat! 💸"),D()}catch(v){y(),p("Gagal menyimpan ke server: "+v.message)}},ae=t=>{const e=(b.expenses||[]).find(a=>a.id===t);e&&_("Hapus Catatan Pengeluaran",`Apakah Anda yakin ingin menghapus catatan pengeluaran "${e.desc}" sebesar ${x(e.amount)}? Data tidak dapat dipulihkan.`,async()=>{j("Menghapus pengeluaran..."),b.expenses=(b.expenses||[]).filter(a=>a.id!==t);try{await L(["expenses"]),y(),p("Catatan pengeluaran dihapus!"),D()}catch(a){y(),p("Gagal menghapus: "+a.message)}})},re=(t,e)=>{t==="year"?w=parseInt(e,10):t==="month"?h=parseInt(e,10):t==="category"?T=e:t==="source"?S=e:t==="sort"?k=e:t==="search"&&($=e),D()},se=()=>{const t=F();if(t.length===0)return p("Tidak ada data untuk diekspor!");const e=["ID","Tanggal","Kategori","Keperluan","Penerima","Sumber Dana","Nominal (Rp)","Dicatat Oleh"],a=t.map(i=>{const d=f.find(u=>u.key===i.category)||f[6],c=g.find(u=>u.key===i.source)||g[0];return[`"${i.id||""}"`,`"${i.date||""}"`,`"${d.label.replace(/"/g,'""')}"`,`"${(i.desc||"").replace(/"/g,'""')}"`,`"${(i.recipient||"-").replace(/"/g,'""')}"`,`"${c.label}"`,`"${i.amount||0}"`,`"${(i.createdBy||"Owner").replace(/"/g,'""')}"`].join(",")}),o="\uFEFF"+[e.join(","),...a].join(`\r
+`),n=new Blob([o],{type:"text/csv;charset=utf-8;"}),r=URL.createObjectURL(n),s=document.createElement("a");s.href=r,s.download=`Buku_Kas_Pengeluaran_TokoPutri_${w}_${h||"Semua"}.csv`,s.click(),URL.revokeObjectURL(r),p("File Excel/CSV berhasil diunduh! 📊")},oe=t=>{const e=(b.expenses||[]).find(s=>s.id===t);if(!e)return p("Data tidak ditemukan");const a=f.find(s=>s.key===e.category)||f[6],o=g.find(s=>s.key===e.source)||g[0],n=b.store||{},r=window.open("","_blank");if(!r)return p("Izinkan pop-up untuk mencetak Bukti Kas Keluar!");r.document.write(`
         <!DOCTYPE html>
         <html lang="id">
         <head>
@@ -514,8 +514,8 @@ import{e as l,f as x,I as B,a as b,x as _,a9 as j,a7 as w,v as p,B as O,a8 as K,
         <body>
             <div class="slip-box">
                 <div class="header">
-                    <div class="title">${(i.name||"TOKO PUTRI").toUpperCase()}</div>
-                    <div class="sub">${i.address||"Alamat Toko"} | WA: ${i.wa||"-"}</div>
+                    <div class="title">${(n.name||"TOKO PUTRI").toUpperCase()}</div>
+                    <div class="sub">${n.address||"Alamat Toko"} | WA: ${n.wa||"-"}</div>
                     <div style="font-weight: 900; margin-top: 6px; font-size: 15px;">BUKTI KAS KELUAR (BKK)</div>
                 </div>
 
@@ -557,4 +557,4 @@ import{e as l,f as x,I as B,a as b,x as _,a9 as j,a7 as w,v as p,B as O,a8 as K,
             <\/script>
         </body>
         </html>
-    `),s.document.close()};window.renderExpensesAdminView=D;window.openExpenseModal=Q;window.closeExpenseModal=N;window.submitExpenseForm=te;window.confirmDeleteExpense=ae;window.setExpenseFilter=se;window.handleExpenseAmountInput=J;window.addQuickExpenseAmount=Y;window.handleExpenseReceiptUpload=V;window.setExpenseReceiptUrl=I;window.removeExpenseReceiptPhoto=W;window.previewExpenseReceipt=Z;window.closeExpenseReceiptPreview=ee;window.exportExpensesToCsv=re;window.printExpenseSlip=oe;export{g as EXPENSE_SOURCES,Y as addQuickExpenseAmount,N as closeExpenseModal,ee as closeExpenseReceiptPreview,ae as confirmDeleteExpense,M as ensureExpenseModals,re as exportExpensesToCsv,z as getExpenseMetrics,F as getFilteredExpenses,J as handleExpenseAmountInput,V as handleExpenseReceiptUpload,Q as openExpenseModal,Z as previewExpenseReceipt,oe as printExpenseSlip,W as removeExpenseReceiptPhoto,D as renderExpensesAdminView,se as setExpenseFilter,I as setExpenseReceiptUrl,te as submitExpenseForm};
+    `),r.document.close()};window.renderExpensesAdminView=D;window.openExpenseModal=Q;window.closeExpenseModal=N;window.submitExpenseForm=te;window.confirmDeleteExpense=ae;window.setExpenseFilter=re;window.handleExpenseAmountInput=J;window.addQuickExpenseAmount=Y;window.handleExpenseReceiptUpload=V;window.setExpenseReceiptUrl=I;window.removeExpenseReceiptPhoto=W;window.previewExpenseReceipt=Z;window.closeExpenseReceiptPreview=ee;window.exportExpensesToCsv=se;window.printExpenseSlip=oe;export{g as EXPENSE_SOURCES,Y as addQuickExpenseAmount,N as closeExpenseModal,ee as closeExpenseReceiptPreview,ae as confirmDeleteExpense,M as ensureExpenseModals,se as exportExpensesToCsv,z as getExpenseMetrics,F as getFilteredExpenses,J as handleExpenseAmountInput,V as handleExpenseReceiptUpload,Q as openExpenseModal,Z as previewExpenseReceipt,oe as printExpenseSlip,W as removeExpenseReceiptPhoto,D as renderExpensesAdminView,re as setExpenseFilter,I as setExpenseReceiptUrl,te as submitExpenseForm};

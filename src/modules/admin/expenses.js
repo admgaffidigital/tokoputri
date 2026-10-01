@@ -113,7 +113,7 @@ export const ensureExpenseModals = () => {
                 <!-- Sticky Header Modal -->
                 <div class="px-5 sm:px-6 pt-3 sm:pt-4 pb-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between shrink-0 bg-white dark:bg-slate-900">
                     <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-rose-500 to-amber-600 text-white flex items-center justify-center shadow-md shadow-rose-500/20 text-base shrink-0">
+                        <div class="w-10 h-10 rounded-2xl text-white flex items-center justify-center text-base shrink-0" style="background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark)); box-shadow: 0 4px 12px rgba(var(--color-primary-rgb), 0.35);">
                             <i class="fa-solid fa-money-bill-transfer"></i>
                         </div>
                         <div>
@@ -136,15 +136,15 @@ export const ensureExpenseModals = () => {
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                             <div>
                                 <label class="block text-[11px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
-                                    <i class="fa-regular fa-calendar text-rose-500 mr-1"></i> Tanggal Transaksi <span class="text-rose-500">*</span>
+                                    <i class="fa-regular fa-calendar mr-1" style="color: var(--color-primary)"></i> Tanggal Transaksi <span style="color: var(--color-primary)">*</span>
                                 </label>
-                                <input type="date" id="exp-input-date" required class="w-full text-xs font-bold bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-slate-800 dark:text-white focus:outline-hidden focus:border-rose-500 transition-colors">
+                                <input type="date" id="exp-input-date" required class="w-full text-xs font-bold bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-slate-800 dark:text-white focus:outline-hidden focus:border-[var(--color-primary)] transition-colors">
                             </div>
                             <div>
                                 <label class="block text-[11px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
-                                    <i class="fa-solid fa-tags text-rose-500 mr-1"></i> Kategori Beban <span class="text-rose-500">*</span>
+                                    <i class="fa-solid fa-tags mr-1" style="color: var(--color-primary)"></i> Kategori Beban <span style="color: var(--color-primary)">*</span>
                                 </label>
-                                <select id="exp-input-category" required class="w-full text-xs font-bold bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2.5 text-slate-800 dark:text-white focus:outline-hidden focus:border-rose-500 transition-colors cursor-pointer">
+                                <select id="exp-input-category" required class="w-full text-xs font-bold bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2.5 text-slate-800 dark:text-white focus:outline-hidden focus:border-[var(--color-primary)] transition-colors cursor-pointer">
                                     ${EXPENSE_CATEGORIES.map(c => `<option value="${c.key}">${c.label}</option>`).join('')}
                                 </select>
                             </div>
@@ -154,41 +154,41 @@ export const ensureExpenseModals = () => {
                         <div>
                             <div class="flex items-center justify-between mb-1.5">
                                 <label class="block text-[11px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
-                                    <i class="fa-solid fa-rupiah-sign text-rose-500 mr-1"></i> Nominal Pengeluaran <span class="text-rose-500">*</span>
+                                    <i class="fa-solid fa-rupiah-sign mr-1" style="color: var(--color-primary)"></i> Nominal Pengeluaran <span style="color: var(--color-primary)">*</span>
                                 </label>
-                                <span class="text-[10px] font-bold text-rose-500" id="exp-nominal-preview">Rp 0</span>
+                                <span class="text-[10px] font-bold" style="color: var(--color-primary)" id="exp-nominal-preview">Rp 0</span>
                             </div>
                             <div class="relative">
                                 <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-xs font-black text-slate-400">Rp</span>
-                                <input type="text" id="exp-input-amount" inputmode="numeric" placeholder="0" required oninput="window.handleExpenseAmountInput(this)" class="w-full pl-11 pr-4 py-2.5 text-sm font-black bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white focus:outline-hidden focus:border-rose-500 transition-colors">
+                                <input type="text" id="exp-input-amount" inputmode="numeric" placeholder="0" required oninput="window.handleExpenseAmountInput(this)" class="w-full pl-11 pr-4 py-2.5 text-sm font-black bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white focus:outline-hidden focus:border-[var(--color-primary)] transition-colors">
                             </div>
                             <!-- Quick Nominal Chips -->
                             <div class="flex flex-wrap items-center gap-1.5 mt-2">
                                 <span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider mr-1">Cepat:</span>
-                                <button type="button" onclick="window.addQuickExpenseAmount(10000)" class="px-2 py-0.5 text-[10px] font-bold rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-rose-400 text-slate-700 dark:text-slate-300 active:scale-95 transition-all cursor-pointer">+10 rb</button>
-                                <button type="button" onclick="window.addQuickExpenseAmount(25000)" class="px-2 py-0.5 text-[10px] font-bold rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-rose-400 text-slate-700 dark:text-slate-300 active:scale-95 transition-all cursor-pointer">+25 rb</button>
-                                <button type="button" onclick="window.addQuickExpenseAmount(50000)" class="px-2 py-0.5 text-[10px] font-bold rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-rose-400 text-slate-700 dark:text-slate-300 active:scale-95 transition-all cursor-pointer">+50 rb</button>
-                                <button type="button" onclick="window.addQuickExpenseAmount(100000)" class="px-2 py-0.5 text-[10px] font-bold rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-rose-400 text-slate-700 dark:text-slate-300 active:scale-95 transition-all cursor-pointer">+100 rb</button>
-                                <button type="button" onclick="window.addQuickExpenseAmount(500000)" class="px-2 py-0.5 text-[10px] font-bold rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-rose-400 text-slate-700 dark:text-slate-300 active:scale-95 transition-all cursor-pointer">+500 rb</button>
+                                <button type="button" onclick="window.addQuickExpenseAmount(10000)" class="px-2 py-0.5 text-[10px] font-bold rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] text-slate-700 dark:text-slate-300 active:scale-95 transition-all cursor-pointer">+10 rb</button>
+                                <button type="button" onclick="window.addQuickExpenseAmount(25000)" class="px-2 py-0.5 text-[10px] font-bold rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] text-slate-700 dark:text-slate-300 active:scale-95 transition-all cursor-pointer">+25 rb</button>
+                                <button type="button" onclick="window.addQuickExpenseAmount(50000)" class="px-2 py-0.5 text-[10px] font-bold rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] text-slate-700 dark:text-slate-300 active:scale-95 transition-all cursor-pointer">+50 rb</button>
+                                <button type="button" onclick="window.addQuickExpenseAmount(100000)" class="px-2 py-0.5 text-[10px] font-bold rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] text-slate-700 dark:text-slate-300 active:scale-95 transition-all cursor-pointer">+100 rb</button>
+                                <button type="button" onclick="window.addQuickExpenseAmount(500000)" class="px-2 py-0.5 text-[10px] font-bold rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] text-slate-700 dark:text-slate-300 active:scale-95 transition-all cursor-pointer">+500 rb</button>
                             </div>
                         </div>
 
                         <!-- Baris 3: Keperluan / Deskripsi Pengeluaran -->
                         <div>
                             <label class="block text-[11px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
-                                <i class="fa-solid fa-align-left text-rose-500 mr-1"></i> Keperluan / Uraian Beban <span class="text-rose-500">*</span>
+                                <i class="fa-solid fa-align-left mr-1" style="color: var(--color-primary)"></i> Keperluan / Uraian Beban <span style="color: var(--color-primary)">*</span>
                             </label>
-                            <textarea id="exp-input-desc" rows="2" required placeholder="Contoh: Beli lakban cokelat 5 roll, isi ulang galon, token listrik toko..." class="w-full text-xs font-medium bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl p-3 text-slate-800 dark:text-white focus:outline-hidden focus:border-rose-500 transition-colors resize-none"></textarea>
+                            <textarea id="exp-input-desc" rows="2" required placeholder="Contoh: Beli lakban cokelat 5 roll, isi ulang galon, token listrik toko..." class="w-full text-xs font-medium bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl p-3 text-slate-800 dark:text-white focus:outline-hidden focus:border-[var(--color-primary)] transition-colors resize-none"></textarea>
                         </div>
 
                         <!-- Baris 4: Sumber Pembayaran Dana -->
                         <div>
                             <label class="block text-[11px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
-                                <i class="fa-solid fa-wallet text-rose-500 mr-1"></i> Sumber Dana Pembayaran <span class="text-rose-500">*</span>
+                                <i class="fa-solid fa-wallet mr-1" style="color: var(--color-primary)"></i> Sumber Dana Pembayaran <span style="color: var(--color-primary)">*</span>
                             </label>
                             <div class="grid grid-cols-3 gap-2" id="exp-source-selector">
                                 ${EXPENSE_SOURCES.map(s => `
-                                    <label class="relative flex flex-col items-center justify-center p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/50 cursor-pointer text-center transition-all hover:border-slate-400 select-none group has-checked:border-rose-500 has-checked:bg-rose-50/40 dark:has-checked:bg-rose-950/20 has-checked:text-rose-600">
+                                    <label class="relative flex flex-col items-center justify-center p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/50 cursor-pointer text-center transition-all hover:border-slate-400 select-none group has-checked:border-[var(--color-primary)] has-checked:bg-[rgba(var(--color-primary-rgb),0.08)] has-checked:text-[var(--color-primary)]">
                                         <input type="radio" name="exp_source" value="${s.key}" class="sr-only" ${s.key === 'cash' ? 'checked' : ''}>
                                         <i class="fa-solid ${s.icon} text-sm mb-1 text-slate-500 group-hover:text-slate-800 dark:group-hover:text-white"></i>
                                         <span class="text-[10px] font-bold text-slate-800 dark:text-slate-200 leading-tight">${s.shortLabel}</span>
@@ -201,22 +201,22 @@ export const ensureExpenseModals = () => {
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                             <div>
                                 <label class="block text-[11px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
-                                    <i class="fa-solid fa-store text-rose-500 mr-1"></i> Dibayarkan Kepada / Vendor <span class="text-[9px] text-slate-400 lowercase">(opsional)</span>
+                                    <i class="fa-solid fa-store mr-1" style="color: var(--color-primary)"></i> Dibayarkan Kepada / Vendor <span class="text-[9px] text-slate-400 lowercase">(opsional)</span>
                                 </label>
-                                <input type="text" id="exp-input-recipient" placeholder="Contoh: Toko Plastik Berkah, PLN, SPBU..." class="w-full text-xs font-semibold bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-slate-800 dark:text-white focus:outline-hidden focus:border-rose-500 transition-colors">
+                                <input type="text" id="exp-input-recipient" placeholder="Contoh: Toko Plastik Berkah, PLN, SPBU..." class="w-full text-xs font-semibold bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-slate-800 dark:text-white focus:outline-hidden focus:border-[var(--color-primary)] transition-colors">
                             </div>
                             <div>
                                 <label class="block text-[11px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
-                                    <i class="fa-solid fa-user-pen text-rose-500 mr-1"></i> Dicatat Oleh <span class="text-[9px] text-slate-400 lowercase">(opsional)</span>
+                                    <i class="fa-solid fa-user-pen mr-1" style="color: var(--color-primary)"></i> Dicatat Oleh <span class="text-[9px] text-slate-400 lowercase">(opsional)</span>
                                 </label>
-                                <input type="text" id="exp-input-createdby" placeholder="Owner / Kasir Shift" class="w-full text-xs font-semibold bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-slate-800 dark:text-white focus:outline-hidden focus:border-rose-500 transition-colors">
+                                <input type="text" id="exp-input-createdby" placeholder="Owner / Kasir Shift" class="w-full text-xs font-semibold bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-slate-800 dark:text-white focus:outline-hidden focus:border-[var(--color-primary)] transition-colors">
                             </div>
                         </div>
 
                         <!-- Baris 6: Foto Bukti Struk / Nota (Upload & Preview) -->
                         <div>
                             <label class="block text-[11px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
-                                <i class="fa-solid fa-receipt text-rose-500 mr-1"></i> Foto Bukti Struk / Nota Fisik <span class="text-[9px] text-slate-400 lowercase">(opsional)</span>
+                                <i class="fa-solid fa-receipt mr-1" style="color: var(--color-primary)"></i> Foto Bukti Struk / Nota Fisik <span class="text-[9px] text-slate-400 lowercase">(opsional)</span>
                             </label>
                             <div class="flex items-center gap-3">
                                 <div id="exp-receipt-preview-box" class="w-16 h-16 rounded-xl border-2 border-dashed border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 flex items-center justify-center overflow-hidden shrink-0 relative group">
@@ -230,7 +230,7 @@ export const ensureExpenseModals = () => {
                                     <input type="hidden" id="exp-input-receipt-url" value="">
                                     <div class="flex items-center gap-2 flex-wrap">
                                         <label class="px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold cursor-pointer transition-colors flex items-center gap-1.5 active:scale-95 shrink-0">
-                                            <i class="fa-solid fa-camera text-rose-500"></i>
+                                            <i class="fa-solid fa-camera" style="color: var(--color-primary)"></i>
                                             <span>Ambil Foto / Pilih File</span>
                                             <input type="file" accept="image/*" class="sr-only" onchange="window.handleExpenseReceiptUpload(this)">
                                         </label>
@@ -247,7 +247,7 @@ export const ensureExpenseModals = () => {
                         <button type="button" onclick="closeExpenseModal()" class="h-11 sm:h-12 px-5 rounded-2xl border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer">
                             Batal
                         </button>
-                        <button type="submit" id="btn-save-expense" class="h-11 sm:h-12 px-6 rounded-2xl bg-gradient-to-r from-rose-500 to-amber-600 hover:from-rose-600 hover:to-amber-700 text-white text-xs font-black shadow-md shadow-rose-500/25 transition-all cursor-pointer active:scale-95 flex items-center gap-2">
+                        <button type="submit" id="btn-save-expense" class="h-11 sm:h-12 px-6 rounded-2xl text-white text-xs font-black transition-all cursor-pointer active:scale-95 flex items-center gap-2 hover:opacity-95" style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
                             <i class="fa-solid fa-floppy-disk"></i>
                             <span>Simpan Pengeluaran</span>
                         </button>
@@ -266,7 +266,7 @@ export const ensureExpenseModals = () => {
         p.onclick = (e) => { if (e.target === p) window.closeExpenseReceiptPreview?.(); };
         p.innerHTML = `
             <div id="modal-expense-receipt-preview-box" class="relative max-w-3xl max-h-[90vh] bg-slate-900 rounded-2xl border border-slate-800 p-2 shadow-2xl flex flex-col items-center justify-center transform scale-95 transition-all duration-300" onclick="event.stopPropagation()">
-                <button type="button" onclick="closeExpenseReceiptPreview()" class="absolute -top-3 -right-3 w-9 h-9 rounded-full bg-rose-600 text-white flex items-center justify-center shadow-lg hover:bg-rose-700 cursor-pointer z-10">
+                <button type="button" onclick="closeExpenseReceiptPreview()" class="absolute -top-3 -right-3 w-9 h-9 rounded-full text-white flex items-center justify-center shadow-lg cursor-pointer z-10 hover:opacity-95" style="background: var(--color-primary); box-shadow: 0 4px 12px rgba(var(--color-primary-rgb), 0.4);">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
                 <img id="img-full-receipt" src="" alt="Bukti Nota" class="max-h-[82vh] w-auto max-w-full rounded-xl object-contain">
@@ -391,15 +391,15 @@ export const renderExpensesAdminView = () => {
     setH('admin-content', `
         <div class="space-y-6 pb-12">
             <!-- 1. TOP APP BAR & QUICK ACTION -->
-            <div class="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white/95 dark:bg-slate-900/90 p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-xs">
+            <div class="rounded-2xl border border-[rgba(var(--color-primary-rgb),0.2)] bg-gradient-to-br from-white via-white to-[rgba(var(--color-primary-rgb),0.04)] dark:from-slate-900 dark:via-slate-900 dark:to-slate-800 p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-xs">
                 <div class="flex items-center gap-3.5">
-                    <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-rose-500 via-rose-600 to-amber-600 text-white flex items-center justify-center shadow-lg shadow-rose-500/25 text-xl shrink-0">
+                    <div class="w-12 h-12 rounded-2xl text-white flex items-center justify-center text-xl shrink-0" style="background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark)); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
                         <i class="fa-solid fa-money-bill-transfer"></i>
                     </div>
                     <div>
                         <div class="flex items-center gap-2">
                             <h2 class="text-base sm:text-lg font-black text-slate-800 dark:text-white">Buku Kas &amp; Biaya Operasional</h2>
-                            <span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-rose-100 text-rose-700 dark:bg-rose-950/60 dark:text-rose-400 border border-rose-200 dark:border-rose-900/60">
+                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black border" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary); border-color: rgba(var(--color-primary-rgb), 0.25);">
                                 ${metrics.count} Transaksi
                             </span>
                         </div>
@@ -413,7 +413,7 @@ export const renderExpensesAdminView = () => {
                         <i class="fa-solid fa-file-excel text-emerald-600"></i>
                         <span>Ekspor Excel</span>
                     </button>
-                    <button type="button" onclick="openExpenseModal()" class="flex-1 sm:flex-initial px-5 py-2.5 rounded-xl bg-gradient-to-r from-rose-500 to-amber-600 hover:from-rose-600 hover:to-amber-700 text-white text-xs font-black shadow-md shadow-rose-500/25 transition-all cursor-pointer flex items-center justify-center gap-2 active:scale-95">
+                    <button type="button" onclick="openExpenseModal()" class="flex-1 sm:flex-initial px-5 py-2.5 rounded-xl text-white text-xs font-black transition-all cursor-pointer flex items-center justify-center gap-2 active:scale-95 hover:opacity-95" style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
                         <i class="fa-solid fa-plus"></i>
                         <span>Catat Pengeluaran</span>
                     </button>
@@ -423,26 +423,26 @@ export const renderExpensesAdminView = () => {
             <!-- 2. BENTO STAT CARDS -->
             <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
                 <!-- Card 1: Total Beban Periode Ini -->
-                <div class="p-4 sm:p-5 rounded-2xl border border-rose-200/80 dark:border-rose-950/50 bg-gradient-to-br from-rose-50/70 via-white to-amber-50/30 dark:from-rose-950/20 dark:via-slate-900 dark:to-slate-900 flex flex-col justify-between">
+                <div class="p-4 sm:p-5 rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white/95 dark:bg-slate-900 shadow-2xs hover:-translate-y-0.5 hover:shadow-md transition-all flex flex-col justify-between">
                     <div class="flex items-center justify-between mb-2">
-                        <span class="text-[10px] font-black uppercase tracking-widest text-rose-700 dark:text-rose-400">Total Biaya Operasional</span>
-                        <div class="w-7 h-7 rounded-lg bg-rose-500/10 text-rose-600 flex items-center justify-center text-xs"><i class="fa-solid fa-calculator"></i></div>
+                        <span class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">Total Biaya Operasional</span>
+                        <div class="w-7 h-7 rounded-xl flex items-center justify-center text-xs shrink-0" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary);"><i class="fa-solid fa-calculator"></i></div>
                     </div>
                     <div class="my-1">
-                        <p class="text-lg sm:text-2xl font-black text-rose-600 dark:text-rose-400 truncate">${fCur(metrics.totalAmount)}</p>
+                        <p class="text-lg sm:text-2xl font-black truncate" style="color: var(--color-primary);">${fCur(metrics.totalAmount)}</p>
                         <p class="text-[10px] text-slate-400 mt-0.5">${periodLabel} (${metrics.count} nota)</p>
                     </div>
-                    <div class="mt-2 pt-2 border-t border-rose-100 dark:border-slate-800 text-[10px] text-slate-500 dark:text-slate-400 flex items-center justify-between">
+                    <div class="mt-2 pt-2 border-t border-slate-100 dark:border-slate-800 text-[10px] text-slate-500 dark:text-slate-400 flex items-center justify-between">
                         <span>Mengurangi Laba Kotor</span>
-                        <i class="fa-solid fa-arrow-trend-down text-rose-500"></i>
+                        <i class="fa-solid fa-arrow-trend-down text-slate-400"></i>
                     </div>
                 </div>
 
                 <!-- Card 2: Beban Terbesar -->
-                <div class="p-4 sm:p-5 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 flex flex-col justify-between">
+                <div class="p-4 sm:p-5 rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white/95 dark:bg-slate-900 shadow-2xs hover:-translate-y-0.5 hover:shadow-md transition-all flex flex-col justify-between">
                     <div class="flex items-center justify-between mb-2">
                         <span class="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">Beban Terbesar</span>
-                        <div class="w-7 h-7 rounded-lg bg-amber-500/10 text-amber-600 flex items-center justify-center text-xs"><i class="fa-solid fa-crown"></i></div>
+                        <div class="w-7 h-7 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center text-xs shrink-0"><i class="fa-solid fa-crown"></i></div>
                     </div>
                     <div class="my-1">
                         <p class="text-sm sm:text-base font-black text-slate-800 dark:text-white truncate" title="${metrics.totalAmount > 0 ? metrics.topCategory.label : 'Belum Ada Transaksi'}">${metrics.totalAmount > 0 ? metrics.topCategory.label : 'Belum Ada Transaksi'}</p>
@@ -455,10 +455,10 @@ export const renderExpensesAdminView = () => {
                 </div>
 
                 <!-- Card 3: Kas Laci Toko (Tunai Petty Cash) -->
-                <div class="p-4 sm:p-5 rounded-2xl border border-emerald-200/70 dark:border-emerald-950/40 bg-white dark:bg-slate-900 flex flex-col justify-between">
+                <div class="p-4 sm:p-5 rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white/95 dark:bg-slate-900 shadow-2xs hover:-translate-y-0.5 hover:shadow-md transition-all flex flex-col justify-between">
                     <div class="flex items-center justify-between mb-2">
                         <span class="text-[10px] font-black uppercase tracking-widest text-emerald-600 dark:text-emerald-400">Kas Laci Toko (Tunai)</span>
-                        <div class="w-7 h-7 rounded-lg bg-emerald-500/10 text-emerald-600 flex items-center justify-center text-xs"><i class="fa-solid fa-money-bill-wave"></i></div>
+                        <div class="w-7 h-7 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-xs shrink-0"><i class="fa-solid fa-money-bill-wave"></i></div>
                     </div>
                     <div class="my-1">
                         <p class="text-base sm:text-xl font-black text-slate-800 dark:text-white truncate">${fCur(metrics.bySource.cash)}</p>
@@ -466,15 +466,15 @@ export const renderExpensesAdminView = () => {
                     </div>
                     <div class="mt-2 pt-2 border-t border-slate-100 dark:border-slate-800 text-[10px] text-slate-400 flex items-center justify-between">
                         <span>Porsi Tunai</span>
-                        <span class="font-bold text-emerald-600">${metrics.totalAmount > 0 ? ((metrics.bySource.cash / metrics.totalAmount) * 100).toFixed(0) : '0'}%</span>
+                        <span class="font-bold text-emerald-600 dark:text-emerald-400">${metrics.totalAmount > 0 ? ((metrics.bySource.cash / metrics.totalAmount) * 100).toFixed(0) : '0'}%</span>
                     </div>
                 </div>
 
                 <!-- Card 4: Transfer Bank & Talangan Owner -->
-                <div class="p-4 sm:p-5 rounded-2xl border border-blue-200/70 dark:border-blue-950/40 bg-white dark:bg-slate-900 flex flex-col justify-between">
+                <div class="p-4 sm:p-5 rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white/95 dark:bg-slate-900 shadow-2xs hover:-translate-y-0.5 hover:shadow-md transition-all flex flex-col justify-between">
                     <div class="flex items-center justify-between mb-2">
                         <span class="text-[10px] font-black uppercase tracking-widest text-blue-600 dark:text-blue-400">Bank &amp; Dana Owner</span>
-                        <div class="w-7 h-7 rounded-lg bg-blue-500/10 text-blue-600 flex items-center justify-center text-xs"><i class="fa-solid fa-building-columns"></i></div>
+                        <div class="w-7 h-7 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center text-xs shrink-0"><i class="fa-solid fa-building-columns"></i></div>
                     </div>
                     <div class="my-1">
                         <p class="text-base sm:text-xl font-black text-slate-800 dark:text-white truncate">${fCur(metrics.bySource.bank + metrics.bySource.owner)}</p>
@@ -482,18 +482,18 @@ export const renderExpensesAdminView = () => {
                     </div>
                     <div class="mt-2 pt-2 border-t border-slate-100 dark:border-slate-800 text-[10px] text-slate-400 flex items-center justify-between">
                         <span>Non-Tunai</span>
-                        <span class="font-bold text-blue-600">${metrics.totalAmount > 0 ? (((metrics.bySource.bank + metrics.bySource.owner) / metrics.totalAmount) * 100).toFixed(0) : '0'}%</span>
+                        <span class="font-bold text-blue-600 dark:text-blue-400">${metrics.totalAmount > 0 ? (((metrics.bySource.bank + metrics.bySource.owner) / metrics.totalAmount) * 100).toFixed(0) : '0'}%</span>
                     </div>
                 </div>
             </div>
 
             <!-- 3. DISTRIBUSI KATEGORI BEBAN (HORIZONTAL MINI PROGRESS) -->
-            <div class="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 sm:p-5 space-y-3">
+            <div class="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 sm:p-5 space-y-3 shadow-2xs">
                 <div class="flex items-center justify-between">
                     <h3 class="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-white flex items-center gap-2">
-                        <i class="fa-solid fa-chart-pie text-rose-500"></i> Alokasi Kategori Biaya Operasional
+                        <i class="fa-solid fa-chart-pie" style="color: var(--color-primary)"></i> Alokasi Kategori Biaya Operasional
                     </h3>
-                    <button type="button" onclick="openAdminTab('reports')" class="text-[11px] font-bold text-amber-600 hover:text-amber-700 transition-colors flex items-center gap-1">
+                    <button type="button" onclick="openAdminTab('reports')" class="text-[11px] font-bold flex items-center gap-1 transition-opacity hover:opacity-80" style="color: var(--color-primary)">
                         <span>Lihat di Laba Rugi</span>
                         <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
                     </button>
@@ -510,7 +510,7 @@ export const renderExpensesAdminView = () => {
                                 </div>
                                 <p class="text-xs font-black text-slate-800 dark:text-white truncate">${fCur(val)}</p>
                                 <div class="mt-2 w-full bg-slate-200 dark:bg-slate-700 h-1 rounded-full overflow-hidden">
-                                    <div class="bg-rose-500 h-full rounded-full" style="width: ${pct}%"></div>
+                                    <div class="h-full rounded-full" style="width: ${pct}%; background: var(--color-primary);"></div>
                                 </div>
                                 <span class="text-[9px] font-bold text-slate-400 mt-1 text-right">${pct}%</span>
                             </div>
@@ -584,18 +584,18 @@ export const renderExpensesAdminView = () => {
                         <h3 class="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-white">Buku Kas Pengeluaran Operasional</h3>
                         <p class="text-[10px] text-slate-400 mt-0.5">Menampilkan ${filteredList.length} dari total ${(appData.expenses || []).length} catatan</p>
                     </div>
-                    <span class="text-xs font-black text-rose-600 dark:text-rose-400">${fCur(metrics.totalAmount)}</span>
+                    <span class="text-xs font-black" style="color: var(--color-primary);">${fCur(metrics.totalAmount)}</span>
                 </div>
 
                 ${filteredList.length === 0 ? `
                     <!-- Empty State -->
                     <div class="py-16 px-4 text-center flex flex-col items-center justify-center">
-                        <div class="w-16 h-16 rounded-2xl bg-rose-50 dark:bg-rose-950/40 text-rose-500 border border-rose-200/60 dark:border-rose-900/40 flex items-center justify-center text-2xl mb-3">
+                        <div class="w-16 h-16 rounded-2xl flex items-center justify-center text-2xl mb-3 shrink-0" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary); border: 1px solid rgba(var(--color-primary-rgb), 0.25);">
                             <i class="fa-solid fa-receipt"></i>
                         </div>
                         <h4 class="text-sm font-bold text-slate-700 dark:text-slate-200">Belum Ada Catatan Biaya Operasional</h4>
                         <p class="text-xs text-slate-400 max-w-sm mt-1">Belum ada transaksi pengeluaran operasional yang dicatat untuk filter periode ini.</p>
-                        <button type="button" onclick="openExpenseModal()" class="mt-4 px-5 py-2.5 rounded-xl bg-gradient-to-r from-rose-500 to-amber-600 text-white text-xs font-bold shadow-md shadow-rose-500/20 hover:scale-105 active:scale-95 transition-all cursor-pointer flex items-center gap-2">
+                        <button type="button" onclick="openExpenseModal()" class="mt-4 px-5 py-2.5 rounded-xl text-white text-xs font-bold transition-all cursor-pointer flex items-center gap-2 active:scale-95 hover:opacity-95" style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
                             <i class="fa-solid fa-plus"></i>
                             <span>Catat Pengeluaran Pertama</span>
                         </button>
@@ -631,7 +631,7 @@ export const renderExpensesAdminView = () => {
                                             </td>
                                             <td class="py-3.5 px-4">
                                                 <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[10px] font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
-                                                    <i class="fa-solid ${catObj.icon} text-rose-500"></i>
+                                                    <i class="fa-solid ${catObj.icon}" style="color: var(--color-primary)"></i>
                                                     <span>${catObj.label}</span>
                                                 </span>
                                             </td>
@@ -657,7 +657,7 @@ export const renderExpensesAdminView = () => {
                                                 ` : `<span class="text-[10px] text-slate-300 dark:text-slate-600">-</span>`}
                                             </td>
                                             <td class="py-3.5 px-4 text-right whitespace-nowrap">
-                                                <span class="font-black text-rose-600 dark:text-rose-400 text-sm">- ${fCur(exp.amount)}</span>
+                                                <span class="font-black text-slate-800 dark:text-slate-100 text-sm">- ${fCur(exp.amount)}</span>
                                             </td>
                                             <td class="py-3.5 px-4 text-center whitespace-nowrap">
                                                 <div class="inline-flex items-center gap-1.5">
@@ -691,7 +691,7 @@ export const renderExpensesAdminView = () => {
                                     <div class="flex items-center justify-between">
                                         <div class="flex items-center gap-2">
                                             <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
-                                                <i class="fa-solid ${catObj.icon} text-rose-500 text-[9px]"></i>
+                                                <i class="fa-solid ${catObj.icon} text-[9px]" style="color: var(--color-primary)"></i>
                                                 <span>${catObj.label}</span>
                                             </span>
                                             <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold ${
@@ -713,7 +713,7 @@ export const renderExpensesAdminView = () => {
 
                                     <div class="flex items-center justify-between pt-2 border-t border-slate-100 dark:border-slate-800/60">
                                         <div class="flex items-center gap-2">
-                                            <span class="text-sm font-black text-rose-600 dark:text-rose-400">- ${fCur(exp.amount)}</span>
+                                            <span class="text-sm font-black text-slate-800 dark:text-white">- ${fCur(exp.amount)}</span>
                                             ${hasReceipt ? `
                                                 <button type="button" onclick="window.previewExpenseReceipt('${exp.id}')" class="px-2 py-0.5 rounded-md bg-amber-500/10 text-amber-600 dark:text-amber-400 text-[10px] font-bold flex items-center gap-1 cursor-pointer">
                                                     <i class="fa-solid fa-image text-[9px]"></i> Nota

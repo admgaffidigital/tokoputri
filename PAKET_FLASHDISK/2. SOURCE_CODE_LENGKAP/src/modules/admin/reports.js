@@ -1688,11 +1688,11 @@ export const renderExpensesTab = () => {
             <div class="flex items-center justify-between">
                 <div>
                     <h3 class="font-bold text-xs uppercase tracking-wider text-slate-800 dark:text-white flex items-center gap-2">
-                        <i class="fa-solid fa-receipt text-rose-500"></i> Riwayat Transaksi Beban Operasional — ${periodLabel}
+                        <i class="fa-solid fa-receipt" style="color: var(--color-primary)"></i> Riwayat Transaksi Beban Operasional — ${periodLabel}
                     </h3>
                     <p class="text-[10px] text-slate-400 mt-0.5">Daftar nota pengeluaran operasional yang dicatat di Buku Kas</p>
                 </div>
-                <button type="button" onclick="openAdminTab('expenses')" class="text-xs font-bold text-rose-600 hover:text-rose-700 flex items-center gap-1 cursor-pointer">
+                <button type="button" onclick="openAdminTab('expenses')" class="text-xs font-bold flex items-center gap-1 cursor-pointer hover:opacity-80" style="color: var(--color-primary)">
                     <span>Buka Buku Kas Lengkap</span>
                     <i class="fa-solid fa-arrow-right text-[10px]"></i>
                 </button>
@@ -1719,7 +1719,7 @@ export const renderExpensesTab = () => {
                                     <td class="py-2.5 px-3 font-bold text-slate-700 dark:text-slate-300 whitespace-nowrap">${exp.date || '-'}</td>
                                     <td class="py-2.5 px-3">
                                         <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
-                                            <i class="fa-solid ${catObj.icon} text-rose-500 text-[9px]"></i>
+                                            <i class="fa-solid ${catObj.icon} text-[9px]" style="color: var(--color-primary)"></i>
                                             <span>${catObj.label}</span>
                                         </span>
                                     </td>
@@ -1730,7 +1730,7 @@ export const renderExpensesTab = () => {
                                     <td class="py-2.5 px-3 whitespace-nowrap">
                                         <span class="text-[10px] font-bold text-slate-600 dark:text-slate-400">${srcLabel}</span>
                                     </td>
-                                    <td class="py-2.5 px-3 text-right font-black text-rose-600 dark:text-rose-400 whitespace-nowrap">
+                                    <td class="py-2.5 px-3 text-right font-black text-slate-800 dark:text-slate-100 text-sm whitespace-nowrap">
                                         - ${fCur(exp.amount)}
                                     </td>
                                 </tr>
