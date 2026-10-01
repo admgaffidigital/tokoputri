@@ -26,6 +26,7 @@ export const PERMISSION_DEFINITIONS = [
     { key: 'piutang', label: 'Piutang Tempo & Cicilan', desc: 'Kelola nota piutang pelanggan, denda keterlambatan, & cicilan', group: 'operasional', icon: 'fa-clock-rotate-left' },
     { key: 'customers', label: 'Database Pelanggan', desc: 'Lihat daftar member, atur limit kredit PayLater, & mutasi poin', group: 'operasional', icon: 'fa-address-book' },
     { key: 'pos', label: 'Kasir POS', desc: 'Akses antarmuka penjualan kasir toko fisik dan shift kasir', group: 'operasional', icon: 'fa-cash-register' },
+    { key: 'expenses', label: 'Biaya Operasional Toko', desc: 'Buku kas pengeluaran operasional toko harian & nota kas', group: 'operasional', icon: 'fa-money-bill-transfer' },
 
     // 2. Modul Konten & Etalase
     { key: 'categories', label: 'Kategori Produk', desc: 'Tambah dan susun kategori etalase produk', group: 'konten', icon: 'fa-tags' },
@@ -56,7 +57,7 @@ export const ROLE_PRESETS = {
         orders: false, products: false, suppliers: false, purchases: false,
         piutang: false, customers: false, categories: false, brands: false,
         colors: false, vouchers: false, banners: false, rewards: false,
-        reviews: false, faqs: false, changelog: false,
+        reviews: false, faqs: false, changelog: false, expenses: false,
         reports: false, view_reports: false, tax: false, banks: false, settings: false,
         cashiers: false, backup_sync: false
     },
@@ -66,7 +67,7 @@ export const ROLE_PRESETS = {
         orders: true, products: true, suppliers: true, purchases: true,
         piutang: true, customers: true, categories: true, brands: true,
         colors: true, vouchers: true, banners: true, rewards: true,
-        reviews: true, faqs: true, changelog: true,
+        reviews: true, faqs: true, changelog: true, expenses: true,
         reports: false, view_reports: false, tax: false, banks: false, settings: false,
         cashiers: false, backup_sync: false
     },
@@ -76,7 +77,7 @@ export const ROLE_PRESETS = {
         orders: true, products: true, suppliers: true, purchases: true,
         piutang: true, customers: true, categories: true, brands: true,
         colors: true, vouchers: true, banners: true, rewards: true,
-        reviews: true, faqs: true, changelog: true,
+        reviews: true, faqs: true, changelog: true, expenses: true,
         reports: true, view_reports: true, tax: true, banks: false, settings: false,
         cashiers: false, backup_sync: false
     },
@@ -86,7 +87,7 @@ export const ROLE_PRESETS = {
         orders: true, products: true, suppliers: true, purchases: true,
         piutang: true, customers: true, categories: true, brands: true,
         colors: true, vouchers: true, banners: true, rewards: true,
-        reviews: true, faqs: true, changelog: true,
+        reviews: true, faqs: true, changelog: true, expenses: true,
         reports: true, view_reports: true, tax: true, banks: true, settings: true,
         cashiers: true, backup_sync: true
     }

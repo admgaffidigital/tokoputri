@@ -46,7 +46,7 @@ export const defApp = {
     config:   { gasUrl: "" },
     banks: [], banners: [], categories: [], brands: [], products: [],
     vouchers: [], colors: [], rewards: [], faqs: [], customers: [], changelog: [], deletedChangelogIds: [], productOrder: [],
-    suppliers: [], purchases: [],
+    suppliers: [], purchases: [], expenses: [],
     taxSettings: {
         companyName: "", npwp: "",
         taxScheme: "umkm_final",  // 'umkm_final' | 'badan_normal' | 'custom'

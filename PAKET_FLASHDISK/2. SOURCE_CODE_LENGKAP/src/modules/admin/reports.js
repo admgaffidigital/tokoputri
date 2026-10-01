@@ -47,15 +47,7 @@ let cachedSalesMetrics = null;
 let lastFetchKey = '';
 
 // Kategori Standar Beban Operasional Toko
-export const EXPENSE_CATEGORIES = [
-    { key: 'gaji', label: 'Gaji & Tunjangan Staf', icon: 'fa-user-tie', color: 'blue' },
-    { key: 'listrik', label: 'Listrik, Air & Wifi Toko', icon: 'fa-bolt', color: 'amber' },
-    { key: 'sewa', label: 'Sewa Ruko / Tempat Usaha', icon: 'fa-shop', color: 'purple' },
-    { key: 'transport', label: 'Bensin & Transportasi', icon: 'fa-van-shuttle', color: 'emerald' },
-    { key: 'kemasan', label: 'Kemasan / Lakban / Plastik', icon: 'fa-box', color: 'orange' },
-    { key: 'perawatan', label: 'Pemeliharaan Toko & Alat', icon: 'fa-screwdriver-wrench', color: 'cyan' },
-    { key: 'lainnya', label: 'Biaya Operasional Lainnya', icon: 'fa-receipt', color: 'slate' }
-];
+export { EXPENSE_CATEGORIES } from './schema.js';
 
 /**
  * Helper ekstraksi objek Date dari berbagai format timestamp pesanan
@@ -175,27 +167,63 @@ export const getReportFinancialTotals = () => {
 export const getExpenseBreakdownForPeriod = () => {
     const expBreakdown = appData.taxSettings?.expenseBreakdown || {};
     const monthlyExp = appData.taxSettings?.monthlyExpenses || {};
+    const allExpenses = Array.isArray(appData.expenses) ? appData.expenses : [];
     const months = reportMonth === 0 ? Array.from({length: 12}, (_, i) => i + 1) : [reportMonth];
     
     const summary = {
         total: 0,
-        categories: {}
+        transactionCount: 0,
+        categories: {},
+        periodExpenses: []
     };
     EXPENSE_CATEGORIES.forEach(c => { summary.categories[c.key] = 0; });
 
+    // 1. Agregasi dari transaksi buku kas operasional (Itemized Expense Ledger)
+    allExpenses.forEach(exp => {
+        if (!exp || !exp.date) return;
+        const [expYStr, expMStr] = exp.date.split('-');
+        const expY = parseInt(expYStr, 10);
+        const expM = parseInt(expMStr, 10);
+
+        if (expY === reportYear && (reportMonth === 0 || expM === reportMonth)) {
+            const amt = parseFloat(exp.amount) || 0;
+            const catKey = exp.category || 'lainnya';
+            if (summary.categories[catKey] !== undefined) {
+                summary.categories[catKey] += amt;
+            } else {
+                summary.categories['lainnya'] += amt;
+            }
+            summary.total += amt;
+            summary.transactionCount++;
+            summary.periodExpenses.push(exp);
+        }
+    });
+
+    // Urutkan transaksi periode ini (terbaru duluan)
+    summary.periodExpenses.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
+    // 2. Fallback untuk bulan yang belum memiliki transaksi itemized di Buku Kas:
+    // Gunakan input manual dari taxSettings.monthlyExpenses agar data legacy tetap utuh
     months.forEach(m => {
         const k = `${reportYear}-${m}`;
-        const detail = expBreakdown[k];
-        if (detail) {
-            EXPENSE_CATEGORIES.forEach(c => {
-                summary.categories[c.key] += (parseFloat(detail[c.key]) || 0);
-            });
-            summary.total += (parseFloat(monthlyExp[k]) || 0);
-        } else {
-            // Jika hanya diisi nominal total tanpa rincian kategori
-            const rawVal = parseFloat(monthlyExp[k]) || 0;
-            summary.total += rawVal;
-            summary.categories['lainnya'] += rawVal;
+        const hasTransactionsInMonth = allExpenses.some(exp => {
+            if (!exp || !exp.date) return false;
+            const [y, mon] = exp.date.split('-');
+            return parseInt(y, 10) === reportYear && parseInt(mon, 10) === m;
+        });
+
+        if (!hasTransactionsInMonth) {
+            const detail = expBreakdown[k];
+            if (detail) {
+                EXPENSE_CATEGORIES.forEach(c => {
+                    summary.categories[c.key] += (parseFloat(detail[c.key]) || 0);
+                });
+                summary.total += (parseFloat(monthlyExp[k]) || 0);
+            } else {
+                const rawVal = parseFloat(monthlyExp[k]) || 0;
+                summary.total += rawVal;
+                summary.categories['lainnya'] += rawVal;
+            }
         }
     });
 
@@ -1651,21 +1679,140 @@ export const renderExpensesTab = () => {
         `;
     }
 
+    const hasLedgerItems = (expenseData.periodExpenses && expenseData.periodExpenses.length > 0);
+
+    // Tabel / Daftar Transaksi Pengeluaran Buku Kas Terkini untuk Periode ini
+    const ledgerTableHTML = hasLedgerItems ? `
+        <div class="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 space-y-3">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h3 class="font-bold text-xs uppercase tracking-wider text-slate-800 dark:text-white flex items-center gap-2">
+                        <i class="fa-solid fa-receipt text-rose-500"></i> Riwayat Transaksi Beban Operasional — ${periodLabel}
+                    </h3>
+                    <p class="text-[10px] text-slate-400 mt-0.5">Daftar nota pengeluaran operasional yang dicatat di Buku Kas</p>
+                </div>
+                <button type="button" onclick="openAdminTab('expenses')" class="text-xs font-bold text-rose-600 hover:text-rose-700 flex items-center gap-1 cursor-pointer">
+                    <span>Buka Buku Kas Lengkap</span>
+                    <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                </button>
+            </div>
+
+            <!-- Tabel Transaksi Desktop & Mobile Card -->
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs">
+                    <thead class="bg-slate-50 dark:bg-slate-800/60 text-[10px] uppercase font-bold text-slate-500 border-b border-slate-100 dark:border-slate-800">
+                        <tr>
+                            <th class="py-2.5 px-3">Tanggal</th>
+                            <th class="py-2.5 px-3">Kategori</th>
+                            <th class="py-2.5 px-3">Keperluan</th>
+                            <th class="py-2.5 px-3">Sumber</th>
+                            <th class="py-2.5 px-3 text-right">Nominal</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+                        ${expenseData.periodExpenses.slice(0, 10).map(exp => {
+                            const catObj = EXPENSE_CATEGORIES.find(c => c.key === exp.category) || EXPENSE_CATEGORIES[6];
+                            const srcLabel = exp.source === 'cash' ? 'Kas Toko' : exp.source === 'bank' ? 'Transfer Bank' : 'Dana Owner';
+                            return `
+                                <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/30">
+                                    <td class="py-2.5 px-3 font-bold text-slate-700 dark:text-slate-300 whitespace-nowrap">${exp.date || '-'}</td>
+                                    <td class="py-2.5 px-3">
+                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
+                                            <i class="fa-solid ${catObj.icon} text-rose-500 text-[9px]"></i>
+                                            <span>${catObj.label}</span>
+                                        </span>
+                                    </td>
+                                    <td class="py-2.5 px-3">
+                                        <p class="font-bold text-slate-800 dark:text-white">${esc(exp.desc)}</p>
+                                        ${exp.recipient ? `<span class="text-[10px] text-slate-400">Penerima: ${esc(exp.recipient)}</span>` : ''}
+                                    </td>
+                                    <td class="py-2.5 px-3 whitespace-nowrap">
+                                        <span class="text-[10px] font-bold text-slate-600 dark:text-slate-400">${srcLabel}</span>
+                                    </td>
+                                    <td class="py-2.5 px-3 text-right font-black text-rose-600 dark:text-rose-400 whitespace-nowrap">
+                                        - ${fCur(exp.amount)}
+                                    </td>
+                                </tr>
+                            `;
+                        }).join('')}
+                    </tbody>
+                </table>
+            </div>
+            ${expenseData.periodExpenses.length > 10 ? `
+                <div class="text-center pt-2">
+                    <button type="button" onclick="openAdminTab('expenses')" class="text-[11px] font-bold text-slate-500 hover:text-slate-800 dark:hover:text-white">
+                        + Lihat ${expenseData.periodExpenses.length - 10} transaksi lainnya di Buku Kas
+                    </button>
+                </div>
+            ` : ''}
+        </div>
+    ` : '';
+
     setH('report-hub-content', `
         <div class="space-y-6">
+            <!-- HEADER TOOLBAR BIAYA OPERASIONAL -->
+            <div class="p-4 rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-xs">
+                <div>
+                    <h3 class="font-black text-sm text-slate-800 dark:text-white flex items-center gap-2">
+                        <i class="fa-solid fa-money-bill-transfer text-rose-500"></i>
+                        <span>Manajemen Biaya Operasional Toko</span>
+                    </h3>
+                    <p class="text-[11px] text-slate-400 mt-0.5">Catat nota beban berkala dan sinkronkan dengan perhitungan Laba Rugi</p>
+                </div>
+                <div class="flex items-center gap-2 w-full sm:w-auto">
+                    <button type="button" onclick="openAdminTab('expenses')" class="flex-1 sm:flex-initial px-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1.5 active:scale-95">
+                        <i class="fa-solid fa-book text-amber-500"></i>
+                        <span>Buku Kas &amp; Riwayat</span>
+                    </button>
+                    <button type="button" onclick="if(typeof window.openExpenseModal==='function'){window.openExpenseModal();}else{import('./expenses.js').then(m=>m.openExpenseModal());}" class="flex-1 sm:flex-initial px-4 py-2 rounded-xl bg-gradient-to-r from-rose-500 to-amber-600 hover:from-rose-600 hover:to-amber-700 text-white text-xs font-black shadow-md shadow-rose-500/20 transition-all cursor-pointer flex items-center justify-center gap-1.5 active:scale-95">
+                        <i class="fa-solid fa-plus"></i>
+                        <span>Catat Pengeluaran</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- STATUS KONEKSI BUKU KAS -->
+            <div class="p-3.5 rounded-xl border ${
+                hasLedgerItems 
+                ? 'border-emerald-200/80 bg-emerald-50/50 dark:border-emerald-900/40 dark:bg-emerald-950/20 text-emerald-800 dark:text-emerald-300' 
+                : 'border-amber-200/80 bg-amber-50/50 dark:border-amber-900/40 dark:bg-amber-950/20 text-amber-800 dark:text-amber-300'
+            } flex items-center justify-between text-xs">
+                <div class="flex items-center gap-2.5">
+                    <i class="fa-solid ${hasLedgerItems ? 'fa-circle-check text-emerald-600 text-sm' : 'fa-circle-info text-amber-600 text-sm'}"></i>
+                    <div>
+                        <span class="font-bold">${hasLedgerItems ? 'Sinkronisasi Otomatis Aktif' : 'Pencatatan Transaksional'}</span>: 
+                        <span class="text-[11px] opacity-90">${
+                            hasLedgerItems 
+                            ? `Terhubung dengan Buku Kas (${expenseData.transactionCount} transaksi di ${periodLabel}).` 
+                            : `Belum ada nota transaksi di ${periodLabel}. Anda dapat mencatat nota baru atau memasukkan estimasi nominal di bawah.`
+                        }</span>
+                    </div>
+                </div>
+                <button type="button" onclick="if(typeof window.openExpenseModal==='function'){window.openExpenseModal();}else{import('./expenses.js').then(m=>m.openExpenseModal());}" class="shrink-0 text-[11px] font-black underline cursor-pointer hover:opacity-80">
+                    + Catat Baru
+                </button>
+            </div>
+
             <!-- REKAP KARTU KATEGORI BEBAN -->
             <div class="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 space-y-4">
                 <div class="flex items-center justify-between">
                     <div>
                         <h3 class="font-bold text-xs uppercase tracking-wider text-slate-800 dark:text-white">Distribusi Biaya Operasional Toko — ${periodLabel}</h3>
-                        <p class="text-[10px] text-slate-400 mt-0.5">Total biaya operasional yang mengurangi Laba Kotor di Laba Rugi: <b class="text-amber-600">${fCur(expenseData.total)}</b></p>
+                        <p class="text-[10px] text-slate-400 mt-0.5">Total biaya operasional yang mengurangi Laba Kotor di Laba Rugi: <b class="text-rose-600 dark:text-rose-400">${fCur(expenseData.total)}</b></p>
                     </div>
                 </div>
                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">${categoryCardsHTML}</div>
             </div>
 
-            <!-- FORM PENCATATAN / EDIT BIAYA OPERASIONAL -->
+            <!-- DAFTAR TRANSAKSI ITEM BUKU KAS (JIKA ADA) -->
+            ${ledgerTableHTML}
+
+            <!-- FORM PENYESUAIAN BULANAN / MANUAL OVERRIDE -->
             <div class="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-5">
+                <div class="mb-3 pb-2 border-b border-slate-100 dark:border-slate-800">
+                    <h4 class="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">Penyesuaian Manual / Input Angka Cepat</h4>
+                    <p class="text-[10px] text-slate-400 mt-0.5">Digunakan jika Anda ingin menyesuaikan total operasional secara langsung per bulan</p>
+                </div>
                 ${formHTML}
             </div>
         </div>

@@ -59,6 +59,7 @@ export const loadAppData = async () => {
         appData.rewards = appData.rewards || [];
         appData.suppliers = Array.isArray(appData.suppliers) ? appData.suppliers : [];
         appData.purchases = Array.isArray(appData.purchases) ? appData.purchases : [];
+        appData.expenses = Array.isArray(appData.expenses) ? appData.expenses : [];
         if(appData.rewards) appData.rewards.forEach(r => { if(r.img) r.img = fixD(r.img); });
         appData.products.forEach(p => { 
             if(p.img) p.img = fixD(p.img); 
@@ -471,6 +472,7 @@ export const attachRealtimeStockSync = () => {
             if (f.faqs) appData.faqs = f.faqs;
             if (f.suppliers) appData.suppliers = f.suppliers;
             if (f.purchases) appData.purchases = f.purchases;
+            if (f.expenses) appData.expenses = f.expenses;
             appData.payment = { ...defApp.payment, ...(f.payment || {}) };
             appData.config = { ...defApp.config, ...(f.config || {}) };
             appData.taxSettings = { ...defApp.taxSettings, ...(f.taxSettings || {}) };

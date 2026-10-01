@@ -85,3 +85,14 @@ export const aF = {
 };
 
 window.aF = aF;
+
+// Kategori Standar Beban Operasional Toko
+export const EXPENSE_CATEGORIES = [
+    { key: 'gaji', label: 'Gaji & Tunjangan Staf', icon: 'fa-user-tie', color: 'blue' },
+    { key: 'listrik', label: 'Listrik, Air & Wifi Toko', icon: 'fa-bolt', color: 'amber' },
+    { key: 'sewa', label: 'Sewa Ruko / Tempat Usaha', icon: 'fa-shop', color: 'purple' },
+    { key: 'transport', label: 'Bensin & Transportasi', icon: 'fa-van-shuttle', color: 'emerald' },
+    { key: 'kemasan', label: 'Kemasan / Lakban / Plastik', icon: 'fa-box', color: 'orange' },
+    { key: 'perawatan', label: 'Pemeliharaan Toko & Alat', icon: 'fa-screwdriver-wrench', color: 'cyan' },
+    { key: 'lainnya', label: 'Biaya Operasional Lainnya', icon: 'fa-receipt', color: 'slate' }
+];

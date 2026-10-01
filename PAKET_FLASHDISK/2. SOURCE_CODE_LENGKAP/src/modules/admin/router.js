@@ -66,6 +66,7 @@ export const openAdminTab = (t, fH = false) => {
         'faqs': 'Tanya Jawab / Q&A',
         'reports': 'Pusat Laporan & Keuangan',
         'tax': 'Pusat Laporan & Keuangan',
+        'expenses': 'Biaya Operasional Toko',
         'piutang': 'Piutang Tempo',
         'colors': 'Database Warna',
         'changelog': 'Log Pembaruan Sistem',
@@ -103,6 +104,11 @@ export const openAdminTab = (t, fH = false) => {
         // Lazy load modul order pembelian (PO) & hutang rekanan
         import('./purchases.js').then(m => m.renderPurchasesView()).catch(err => {
             console.error('[Purchases] Gagal memuat modul:', err);
+        });
+    } else if (t === 'expenses') {
+        // Lazy load modul pencatatan biaya operasional & buku kas pengeluaran
+        import('./expenses.js').then(m => m.renderExpensesAdminView()).catch(err => {
+            console.error('[Expenses] Gagal memuat modul pengeluaran operasional:', err);
         });
     } else if (t === 'customers') {
         setH('admin-content', `<div class="text-center py-16"><i class="fa-solid fa-spinner fa-spin text-3xl text-slate-300"></i></div>`);

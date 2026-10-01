@@ -8,6 +8,24 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-10-17',
+        version: 'v1.10.17',
+        date: '2026-10-01',
+        title: 'Ekosistem Pencatatan Biaya Operasional Toko: Buku Kas Transaksional Harian, Sumber Dana Multi-Akun, & Integrasi Otomatis Pusat Laporan Keuangan Terpadu',
+        category: 'feature',
+        badge: 'Operational Expense Ledger v1.10.17',
+        items: [
+            'Peluncuran Modul Biaya Operasional & Buku Kas (src/modules/admin/expenses.js): Menghadirkan modul manajemen pengeluaran operasional toko harian model transaksional (Expense Ledger). Mencakup pencatatan tanggal, kategori beban terstandar (Gaji & Tunjangan, Listrik/Air/Wifi, Sewa Ruko, Transportasi, Kemasan & Lakban, Pemeliharaan Toko, dan Beban Lainnya), nominal rupiah, keperluan/uraian, nama penerima/vendor, serta foto bukti nota/struk fisik.',
+            'Tile Navigasi Standalone CMS Admin (index.html & src/modules/admin/router.js): Menambahkan kartu menu utama "Biaya Operasional - Buku Kas & Beban Toko" dengan ikon gradien rose-to-amber (#admin-menu-expenses-btn) pada grid dashboard CMS Admin, berposisi strategis tepat di antara Kulakan PO (HPP) dan Laporan Terpadu (Laba Rugi) untuk alur kerja akuntansi toko yang runut.',
+            'Sumber Dana Pembayaran Terpadu (Multi-Account Source): Mendukung pelacakan asal uang pengeluaran secara transparan: Kas Laci Toko (uang tunai fisik / petty cash kasir), Transfer Rekening Bank (rekening operasional toko), dan Dana Pribadi / Talangan Owner (modal pribadi pemilik toko yang ditalangi lebih dulu).',
+            'Bento Stat Cards & Distribusi Proporsi Beban: Menampilkan 4 kartu statistik cerdas (Total Biaya Operasional Periode Ini, Kategori Beban Terbesar, Porsi Kas Laci Toko, serta Porsi Non-Tunai Bank & Owner) dan progress bar interaktif distribusi alokasi beban per kategori.',
+            'Modal Input Zero-Blur & Kompresi Cerdas Foto Nota: Modal form pencatatan yang solid dan elegan dengan tombol nominal instan (+10rb, +25rb, +50rb, +100rb, +500rb), selektor sumber dana interaktif, preview nota fullscreen, serta kompresi cerdas di canvas sebelum upload ke Google Drive atau penyimpanan lokal.',
+            'Ekspor Excel CSV & Cetak Bukti Kas Keluar (BKK): Fasilitas 1-klik ekspor Buku Kas format CSV/Excel dengan BOM UTF-8 rapi, serta cetak slip resmi Bukti Kas Keluar (BKK) lengkap dengan kalimat terbilang otomatis dan kolom tanda tangan (Dibukukan, Disetujui Owner, Penerima Dana).',
+            'Integrasi Otomatis Laporan Terpadu (src/modules/admin/reports.js Tab 5 & Tab 1): Fungsi getExpenseBreakdownForPeriod() kini mengagregasi seluruh transaksi itemized secara real-time ke Laporan Operasional (Tab 5) dan otomatis memotong Laba Kotor di Laba Rugi (Tab 1), dengan fallback aman bagi pembukuan manual terdahulu.',
+            'Multi-Channel Build & Sync v1.10.17 (Android versionCode 11017): Kompilasi produksi web, sinkronisasi bundle flashdisk siap pakai (1. HASIL_BUILD_SIAP_PAKE dan PAKET_FLASHDISK), serta Android Capacitor tersinkronisasi 100%.'
+        ]
+    },
+    {
         id: 'log-1-10-16',
         version: 'v1.10.16',
         date: '2026-10-01',
