@@ -97,10 +97,14 @@ export const changeView = (v, fH = false) => {
     });
 
     // Sembunyikan FAB Scroll-to-Top seketika saat berpindah tampilan layar
-    const stBtn = document.getElementById('native-scroll-top-btn');
-    if (stBtn) {
-        stBtn.classList.add('opacity-0', 'translate-y-3');
-        stBtn.classList.add('hidden');
+    if (typeof window.hideFloatingScrollTop === 'function') {
+        window.hideFloatingScrollTop();
+    } else {
+        const stBtn = document.getElementById('native-scroll-top-btn');
+        if (stBtn) {
+            stBtn.classList.add('opacity-0', 'translate-y-3');
+            stBtn.classList.add('hidden');
+        }
     }
         
     if (t) {

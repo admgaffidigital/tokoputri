@@ -682,6 +682,32 @@ export const openSettingForm = (type) => {
                     <span>Pelanggan dapat mengklik logo brand untuk langsung memfilter etalase hanya menampilkan barang dari merek tersebut.</span>
                 </div>
             </div>
+
+            <!-- KARTU 3: TOMBOL PULL UP / SCROLL TO TOP -->
+            <div class="p-4 sm:p-5 bg-slate-50/80 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700/80 rounded-2xl shadow-sm space-y-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-xl flex items-center justify-center text-sm shadow-sm shrink-0" style="background: rgba(var(--color-primary-rgb),0.12); color: var(--color-primary)">
+                        <i class="fa-solid fa-arrow-up"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider">Tombol Melayang Kembali ke Atas (Scroll-to-Top)</h4>
+                        <p class="text-[10px] text-slate-500 dark:text-slate-400">Tombol bulat panah atas otomatis melayang saat pelanggan menggulir panjang daftar produk di etalase toko</p>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-600 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Status Tombol Scroll-to-Top</label>
+                    <select id="set-show-scroll-top" class="admin-input !py-3 bg-white dark:bg-slate-900 shadow-sm w-full text-xs">
+                        <option value="true" ${appData.store.showScrollTopButton !== false ? 'selected' : ''}>Aktif (Hanya tampil di etalase belanja &amp; riwayat belanja pelanggan)</option>
+                        <option value="false" ${appData.store.showScrollTopButton === false ? 'selected' : ''}>Nonaktifkan Seluruhnya</option>
+                    </select>
+                </div>
+
+                <div class="p-3 rounded-xl text-[11px] flex items-start gap-2.5 border" style="background: rgba(var(--color-primary-rgb),0.06); border-color: rgba(var(--color-primary-rgb),0.18); color: var(--color-primary-dark, #a87f1b);">
+                    <i class="fa-solid fa-shield-halved mt-0.5 shrink-0" style="color: var(--color-primary)"></i>
+                    <span><b>Proteksi Khusus:</b> Tombol ini secara otomatis dilindungi dan <u>tidak akan pernah muncul</u> di dashboard CMS Admin, Kasir POS, formulir checkout, maupun saat jendela modal sedang terbuka.</span>
+                </div>
+            </div>
         `;
     } else if (type === 'shipping') {
         title = "Pengiriman & Lokasi Toko"; 
@@ -1200,6 +1226,10 @@ export const saveAdminSettings = async (type) => {
             appData.store.brandStyle = getV('set-brand-style'); 
             appData.store.showCategories = getV('set-show-categories') === 'true';
             appData.store.showBrands = getV('set-show-brands') === 'true';
+            appData.store.showScrollTopButton = getV('set-show-scroll-top') === 'true';
+            if (appData.store.showScrollTopButton === false && typeof window.hideFloatingScrollTop === 'function') {
+                window.hideFloatingScrollTop();
+            }
         } else if (type === 'shipping') {
             appData.store.wa = getV('set-wa').replace(/\D/g, ''); 
             appData.store.address = getV('set-address'); 

@@ -405,6 +405,19 @@ if (typeof window !== 'undefined') {
  * FLOATING SCROLL-TO-TOP BUTTON (Auto-Fade FAB)
  * ============================================================
  */
+export const hideFloatingScrollTop = () => {
+    if (typeof document === 'undefined') return;
+    const btn = document.getElementById('native-scroll-top-btn');
+    if (btn) {
+        btn.classList.add('opacity-0', 'translate-y-3');
+        btn.classList.add('hidden');
+    }
+};
+
+if (typeof window !== 'undefined') {
+    window.hideFloatingScrollTop = hideFloatingScrollTop;
+}
+
 export const initFloatingScrollTop = () => {
     if (typeof document === 'undefined') return;
     let btn = document.getElementById('native-scroll-top-btn');
@@ -422,24 +435,52 @@ export const initFloatingScrollTop = () => {
         btn._hasClickListener = true;
         btn.addEventListener('click', () => {
             triggerHaptic('light');
-            const sc = document.querySelector('#view-catalog .scroll-content, #view-orders .scroll-content');
-            if (sc && sc.scrollTop > 50) {
-                sc.scrollTo({ top: 0, behavior: 'smooth' });
+            const activeSection = document.querySelector('.view-section:not(.hidden)');
+            if (activeSection) {
+                const sc = activeSection.querySelector('.scroll-content');
+                if (sc && sc.scrollTop > 10) {
+                    sc.scrollTo({ top: 0, behavior: 'smooth' });
+                }
             }
             window.scrollTo({ top: 0, behavior: 'smooth' });
         });
     }
 
-    const checkScroll = (scrollTop) => {
+    const checkScroll = (scrollTop, targetElement = null) => {
         if (!btn) return;
-        // Hanya izinkan FAB Ke Atas muncul di halaman dengan scroll panjang (misal katalog & riwayat pesanan)
-        const activeSection = document.querySelector('.view-section:not(.hidden)');
-        if (!activeSection || activeSection.id === 'view-cart' || activeSection.id === 'view-checkout' || activeSection.id === 'view-payment') {
-            btn.classList.add('opacity-0', 'translate-y-3');
-            btn.classList.add('hidden');
+
+        // 1. Guard Pengaturan Toko: Jika dinonaktifkan pemilik toko via CMS Settings
+        if (typeof window !== 'undefined' && window.appData?.store?.showScrollTopButton === false) {
+            hideFloatingScrollTop();
             return;
         }
-        if (scrollTop > 350) {
+
+        // 2. Strict Whitelist: HANYA izinkan di etalase katalog (#view-catalog) dan riwayat belanja pelanggan (#view-orders)
+        // DILARANG KERAS muncul di CMS Seller (#view-admin), POS Kasir (#view-pos-cashier), Checkout, Cart, dll.
+        const activeSection = document.querySelector('.view-section:not(.hidden)');
+        if (!activeSection || (activeSection.id !== 'view-catalog' && activeSection.id !== 'view-orders')) {
+            hideFloatingScrollTop();
+            return;
+        }
+
+        // 3. Jika scroll dipicu oleh elemen container (.scroll-content), pastikan kontainer tersebut milik katalog/orders
+        if (targetElement) {
+            const parentSection = targetElement.closest('.view-section');
+            if (!parentSection || (parentSection.id !== 'view-catalog' && parentSection.id !== 'view-orders')) {
+                hideFloatingScrollTop();
+                return;
+            }
+        }
+
+        // 4. Guard Modal / Bottom Sheet / Dialog: Sembunyikan jika ada jendela modal aktif yang sedang terbuka
+        const hasOpenModal = document.querySelector('[id*="modal"]:not(.hidden):not(.pointer-events-none), [id*="dialog"]:not(.hidden), .fixed.inset-0:not(.hidden):not(.pointer-events-none):not(#native-theme-ambient)');
+        if (hasOpenModal) {
+            hideFloatingScrollTop();
+            return;
+        }
+
+        // 5. Threshold: Tampilkan tombol jika sudah discroll melebihi 450px
+        if (scrollTop > 450) {
             btn.classList.remove('hidden');
             requestAnimationFrame(() => {
                 btn.classList.remove('opacity-0', 'translate-y-3');
@@ -458,7 +499,7 @@ export const initFloatingScrollTop = () => {
 
     document.addEventListener('scroll', (e) => {
         if (e.target && e.target.classList && e.target.classList.contains('scroll-content')) {
-            checkScroll(e.target.scrollTop);
+            checkScroll(e.target.scrollTop, e.target);
         }
     }, { passive: true, capture: true });
 };

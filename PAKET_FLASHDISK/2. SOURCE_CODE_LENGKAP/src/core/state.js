@@ -32,6 +32,7 @@ export const defApp = {
         heroTitle: "",
         heroSubtitle: "",
         showRewardCatalog: true,
+        showScrollTopButton: true,
         useStock: false,
         ppnEnabled: false,
         ppnType: "exclusive",   // "exclusive" | "inclusive"

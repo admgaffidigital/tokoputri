@@ -27,6 +27,7 @@ export const openAdminTab = (t, fH = false) => {
 
     const adminScroll = document.querySelector('#view-admin .scroll-content');
     if (adminScroll) adminScroll.scrollTop = 0;
+    if (typeof window.hideFloatingScrollTop === 'function') window.hideFloatingScrollTop();
     
     const adminView = el('view-admin');
     if (adminView) {
