@@ -47,7 +47,8 @@ let cachedSalesMetrics = null;
 let lastFetchKey = '';
 
 // Kategori Standar Beban Operasional Toko
-export { EXPENSE_CATEGORIES } from './schema.js';
+import { EXPENSE_CATEGORIES } from './schema.js';
+export { EXPENSE_CATEGORIES };
 
 /**
  * Helper ekstraksi objek Date dari berbagai format timestamp pesanan
