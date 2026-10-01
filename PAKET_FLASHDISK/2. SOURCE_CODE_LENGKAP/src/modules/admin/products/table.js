@@ -12,6 +12,7 @@ import { appData } from '../../../core/state.js';
 import { el, setH, esc, fCur, showToast, renderProductCoverHtml } from '../../../core/utils.js';
 import { saveApp, sortProductsByOrder } from '../../../services/storage.js';
 import { computeInventoryStats } from '../auth.js';
+import { customPrompt, showConfirm } from '../../../core/ui.js';
 import { cTab, setCTab, aSq, setASq } from './index.js';
 
 let adminSortableInstance = null;
@@ -384,6 +385,94 @@ window.rAdmItms = t => {
     if(!i.length){ return setH('admin-list-container', `<div class="flex flex-col items-center justify-center py-20 text-slate-400 font-bold bg-white dark:bg-slate-800 rounded-[1.5rem] border border-slate-200 dark:border-slate-700 shadow-sm text-center"><i class="fa-solid fa-folder-open text-5xl mb-4 opacity-30"></i>Data kosong</div>`); }
     
     setH('admin-list-container', i.map((x, idx) => {
+        if (t === 'categories') {
+            const catProducts = (appData.products || []).filter(p => p.category === x.name);
+            const totalProd = catProducts.length;
+            const officialSubs = Array.isArray(x.subCategories) ? x.subCategories : [];
+            
+            // Cari subkategori di produk yang belum ada di officialSubs
+            const existingProductSubCats = [...new Set(catProducts.map(p => (p.subCategory || '').trim()).filter(Boolean))];
+            const unregisteredSubCats = existingProductSubCats.filter(sc => !officialSubs.some(osc => osc.toLowerCase() === sc.toLowerCase()));
+
+            const catImgHtml = x.img 
+                ? `<div class="w-14 h-14 sm:w-16 sm:h-16 shrink-0 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-2xl p-1 flex items-center justify-center overflow-hidden"><img loading="lazy" src="${esc(x.img)}" alt="${esc(x.name)}" class="w-full h-full object-contain" onerror="this.onerror=null;this.parentElement.innerHTML='<div class=\\'w-full h-full flex items-center justify-center text-slate-400 font-bold text-xl\\'><i class=\\'fa-solid fa-shapes\\'></i></div>';"></div>`
+                : `<div class="w-14 h-14 sm:w-16 sm:h-16 shrink-0 rounded-2xl flex items-center justify-center text-xl font-bold border border-slate-200 dark:border-slate-700" style="background: rgba(var(--color-primary-rgb),0.1); color: var(--color-primary)"><i class="fa-solid fa-layer-group"></i></div>`;
+
+            return `
+            <div data-id="${x.id}" class="category-admin-card p-4 sm:p-5 md:p-6 flex flex-col gap-3.5 rounded-2xl sm:rounded-[1.5rem] border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-800 shadow-2xs hover:shadow-md hover:border-[var(--color-primary)]/40 transition-all duration-200">
+                <!-- Header: Ikon + Nama Kategori + Badge Jumlah + Tombol Aksi -->
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div class="flex items-center gap-3.5 min-w-0">
+                        ${catImgHtml}
+                        <div class="min-w-0 flex flex-col justify-center">
+                            <div class="flex items-center gap-2 flex-wrap">
+                                <h4 class="text-sm sm:text-base font-black text-slate-800 dark:text-slate-100 uppercase tracking-wide leading-tight">${esc(x.name)}</h4>
+                                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-600">
+                                    <i class="fa-solid fa-boxes-stacked mr-1 text-[9px] text-[var(--color-primary)]"></i>${totalProd} Produk
+                                </span>
+                                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[rgba(var(--color-primary-rgb),0.1)] text-[var(--color-primary)] border border-[rgba(var(--color-primary-rgb),0.2)]">
+                                    <i class="fa-solid fa-shapes mr-1 text-[9px]"></i>${officialSubs.length} Sub-Kategori
+                                </span>
+                            </div>
+                            <p class="text-[11px] text-slate-400 mt-0.5 font-medium">Master Kategori &amp; Pengelompokan Jenis Produk</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2 self-end sm:self-center shrink-0">
+                        <button type="button" onclick="event.stopPropagation(); window.promptAddSubCategory('${x.id}')" class="px-3.5 py-2 rounded-xl primary-bg-soft border primary-border text-[var(--color-primary)] hover:primary-bg hover:text-white text-xs font-bold transition-all flex items-center gap-1.5 shadow-2xs active:scale-95 cursor-pointer" title="Tambah Sub-Kategori ke ${esc(x.name)}">
+                            <i class="fa-solid fa-plus text-[10px]"></i>
+                            <span>Sub-Kategori</span>
+                        </button>
+                        <button type="button" onclick="event.stopPropagation(); oAEd('categories','${x.id}')" class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-slate-50 border border-slate-200 text-slate-500 flex items-center justify-center hover:bg-slate-500 hover:text-white dark:bg-slate-700 dark:border-slate-600 dark:text-slate-300 transition-all active:scale-95 shadow-sm cursor-pointer" title="Edit Kategori">
+                            <i class="fa-solid fa-pen text-xs sm:text-sm"></i>
+                        </button>
+                        <button type="button" onclick="event.stopPropagation(); oADel('categories','${x.id}')" class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-rose-50 border border-rose-200 text-rose-500 flex items-center justify-center hover:bg-rose-500 hover:text-white dark:bg-rose-900/30 dark:border-rose-800 transition-all active:scale-95 shadow-sm cursor-pointer" title="Hapus Kategori">
+                            <i class="fa-solid fa-trash text-xs sm:text-sm"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Wadah Kelompok Sub-Kategori -->
+                <div class="p-3 sm:p-4 rounded-xl bg-slate-50 dark:bg-slate-900/40 border border-slate-100 dark:border-slate-700/60 flex flex-col gap-2.5">
+                    <div class="flex items-center justify-between gap-2 flex-wrap">
+                        <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500 flex items-center gap-1.5">
+                            <i class="fa-solid fa-folder-tree text-[var(--color-primary)]"></i>
+                            <span>Kelompok Sub-Kategori / Jenis Produk Terdaftar:</span>
+                        </span>
+                        ${unregisteredSubCats.length > 0 ? `
+                            <button type="button" onclick="event.stopPropagation(); window.syncSubCategoriesFromProducts('${x.id}')" class="text-[10px] font-bold text-amber-600 dark:text-amber-400 hover:underline flex items-center gap-1 cursor-pointer">
+                                <i class="fa-solid fa-wand-magic-sparkles text-amber-500"></i>
+                                <span>Tarik ${unregisteredSubCats.length} sub dari produk</span>
+                            </button>
+                        ` : ''}
+                    </div>
+
+                    <div class="flex flex-wrap items-center gap-2">
+                        ${officialSubs.length === 0 ? `
+                            <div class="text-xs text-slate-400 italic py-1 flex items-center gap-2">
+                                <i class="fa-solid fa-circle-info text-slate-300 dark:text-slate-600"></i>
+                                <span>Belum ada sub-kategori. Klik tombol <b>+ Sub-Kategori</b> di atas untuk menambahkan kelompok jenis produk.</span>
+                            </div>
+                        ` : officialSubs.map(sc => {
+                            const subCount = catProducts.filter(p => (p.subCategory || '').trim().toLowerCase() === sc.toLowerCase()).length;
+                            return `
+                            <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 shadow-2xs hover:border-[var(--color-primary)]/50 transition-all group">
+                                <i class="fa-solid fa-shapes text-[10px] text-[var(--color-primary)]"></i>
+                                <span>${esc(sc)}</span>
+                                <span class="text-[10px] font-extrabold px-1.5 py-0.2 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-600" title="${subCount} Produk">${subCount}</span>
+                                <button type="button" onclick="event.stopPropagation(); window.removeCategorySubCategory('${x.id}', '${esc(sc).replace(/'/g, "\\'")}')" class="text-slate-400 hover:text-rose-500 p-0.5 rounded ml-0.5 transition-colors cursor-pointer" title="Hapus Sub-Kategori '${esc(sc)}'">
+                                    <i class="fa-solid fa-xmark text-[11px]"></i>
+                                </button>
+                            </span>`;
+                        }).join('')}
+                        <button type="button" onclick="event.stopPropagation(); window.promptAddSubCategory('${x.id}')" class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-xs font-bold border border-dashed border-slate-300 dark:border-slate-600 text-slate-500 dark:text-slate-400 hover:text-[var(--color-primary)] hover:border-[var(--color-primary)] hover:bg-[rgba(var(--color-primary-rgb),0.05)] transition-all cursor-pointer">
+                            <i class="fa-solid fa-plus text-[9px]"></i>
+                            <span>Tambah Sub</span>
+                        </button>
+                    </div>
+                </div>
+            </div>`;
+        }
+
         let isP = t==='products', isOff = isP && (x.isActive==='false'||x.isActive===false);
         let bC = isOff ? 'border-rose-200 bg-rose-50/50 dark:border-rose-900/50 dark:bg-rose-900/10' : 'border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-800';
         let tC = isOff ? 'text-slate-500 dark:text-slate-400 line-through' : 'text-slate-800 dark:text-slate-100';
@@ -484,5 +573,96 @@ window.rAdmItms = t => {
     }
 
     if (scrollParent) requestAnimationFrame(() => { scrollParent.scrollTop = savedScrollTop; });
+};
+
+// ─── Aksi Cepat Manajemen Sub-Kategori di Master Kategori ────────────────────
+
+window.promptAddSubCategory = async (catId) => {
+    const catObj = (appData.categories || []).find(c => String(c.id) === String(catId));
+    if (!catObj) return;
+    const promptFn = typeof customPrompt === 'function' ? customPrompt : (window.customPrompt || prompt);
+    const res = await promptFn(`Tambah Sub-Kategori Baru untuk '${catObj.name}':`, '');
+    if (!res || !res.trim()) return;
+    const newSub = res.trim();
+
+    catObj.subCategories = Array.isArray(catObj.subCategories) ? catObj.subCategories : [];
+    if (catObj.subCategories.some(s => s.toLowerCase() === newSub.toLowerCase())) {
+        showToast("Sub-kategori ini sudah ada!");
+        return;
+    }
+    catObj.subCategories.push(newSub);
+
+    try {
+        const _save = typeof saveApp === 'function' ? saveApp : (window.saveApp || (async () => {}));
+        await _save(['categories']);
+        showToast(`Sub-kategori '${newSub}' berhasil ditambahkan ke '${catObj.name}'! ✨`);
+        window.rAdmItms?.('categories');
+    } catch(e) {
+        console.error("Gagal simpan subkategori:", e);
+        showToast("Gagal menyimpan sub-kategori: " + (e.message || ''));
+    }
+};
+
+window.removeCategorySubCategory = async (catId, subCatName) => {
+    const catObj = (appData.categories || []).find(c => String(c.id) === String(catId));
+    if (!catObj) return;
+
+    const confirmFn = typeof showConfirm === 'function' ? showConfirm : window.showConfirm;
+    const doRemove = async () => {
+        catObj.subCategories = (catObj.subCategories || []).filter(s => s.toLowerCase() !== subCatName.toLowerCase());
+        try {
+            const _save = typeof saveApp === 'function' ? saveApp : (window.saveApp || (async () => {}));
+            await _save(['categories']);
+            showToast(`Sub-kategori '${subCatName}' berhasil dihapus!`);
+            window.rAdmItms?.('categories');
+        } catch(e) {
+            console.error("Gagal hapus subkategori:", e);
+            showToast("Gagal menghapus sub-kategori: " + (e.message || ''));
+        }
+    };
+
+    if (confirmFn) {
+        confirmFn("Hapus Sub-Kategori", `Hapus sub-kategori '${subCatName}' dari kelompok '${catObj.name}'? Produk yang sudah ada tidak akan terhapus.`, doRemove, "Ya, Hapus", true);
+    } else {
+        await doRemove();
+    }
+};
+
+window.syncSubCategoriesFromProducts = async (catId) => {
+    const catObj = (appData.categories || []).find(c => String(c.id) === String(catId));
+    if (!catObj) return;
+
+    const inProds = [...new Set((appData.products || [])
+        .filter(p => p.category === catObj.name && p.subCategory)
+        .map(p => p.subCategory.trim()))];
+
+    if (!inProds.length) {
+        showToast("Tidak ditemukan sub-kategori di produk untuk kategori ini.");
+        return;
+    }
+
+    catObj.subCategories = Array.isArray(catObj.subCategories) ? catObj.subCategories : [];
+    let added = 0;
+    inProds.forEach(sc => {
+        if (!catObj.subCategories.some(s => s.toLowerCase() === sc.toLowerCase())) {
+            catObj.subCategories.push(sc);
+            added++;
+        }
+    });
+
+    if (added === 0) {
+        showToast("Semua sub-kategori produk sudah terdaftar di master!");
+        return;
+    }
+
+    try {
+        const _save = typeof saveApp === 'function' ? saveApp : (window.saveApp || (async () => {}));
+        await _save(['categories']);
+        showToast(`${added} sub-kategori berhasil disinkronkan dari produk! ✨`);
+        window.rAdmItms?.('categories');
+    } catch(e) {
+        console.error("Gagal sinkron subkategori:", e);
+        showToast("Gagal sinkron sub-kategori: " + (e.message || ''));
+    }
 };
 

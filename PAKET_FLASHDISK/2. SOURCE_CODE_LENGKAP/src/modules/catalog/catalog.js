@@ -73,8 +73,17 @@ export const rCat = () => {
             // Ekstrak sub-kategori unik jika kategori sedang dipilih
             let subCategoriesHtml = '';
             if (aCat !== 'Semua Produk') {
+                const catObj = (appData.categories || []).find(c => c.name === aCat);
+                const officialSubs = Array.isArray(catObj?.subCategories) ? catObj.subCategories : [];
                 const productsInCat = appData.products.filter(p => (p.isActive !== false && p.isActive !== 'false') && p.category === aCat);
                 const subCatMap = {};
+
+                // Daftarkan subkategori resmi
+                officialSubs.forEach(sc => {
+                    const trimmed = (sc || '').trim();
+                    if (trimmed) subCatMap[trimmed] = 0;
+                });
+
                 productsInCat.forEach(p => {
                     const sc = (p.subCategory || '').trim();
                     if (sc) {
@@ -95,9 +104,9 @@ export const rCat = () => {
                                 Semua Jenis
                             </button>
                             ${subCats.map(item => `
-                                <button onclick="filterSubCategory('${esc(item.name).replace(/'/g, "\\'")}')" class="shrink-0 px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all flex items-center gap-1.5 ${aSubCat === item.name ? 'bg-[var(--color-primary)] text-white shadow-xs' : 'bg-slate-50 dark:bg-slate-900 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-[var(--color-primary)]/50'}">
+                                <button onclick="filterSubCategory('${esc(item.name).replace(/'/g, "\\'")}')" class="shrink-0 px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all flex items-center gap-1.5 ${aSubCat.toLowerCase() === item.name.toLowerCase() ? 'bg-[var(--color-primary)] text-white shadow-xs' : 'bg-slate-50 dark:bg-slate-900 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-[var(--color-primary)]/50'}">
                                     <span>${esc(item.name)}</span>
-                                    <span class="text-[10px] px-1.5 py-0.2 rounded-full ${aSubCat === item.name ? 'bg-white/20 text-white' : 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300'}">${item.count}</span>
+                                    <span class="text-[10px] px-1.5 py-0.2 rounded-full ${aSubCat.toLowerCase() === item.name.toLowerCase() ? 'bg-white/20 text-white' : 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300'}">${item.count}</span>
                                 </button>
                             `).join('')}
                         </div>
@@ -132,7 +141,7 @@ export const rCat = () => {
     let f = appData.products.filter(p => {
         if (p.isActive === false || p.isActive === 'false') return false;
         if (aCat !== 'Semua Produk' && p.category !== aCat) return false;
-        if (aSubCat !== 'Semua Jenis' && p.subCategory !== aSubCat) return false;
+        if (aSubCat !== 'Semua Jenis' && (p.subCategory || '').trim().toLowerCase() !== aSubCat.trim().toLowerCase()) return false;
         if (aBrand !== 'Semua Merek' && p.brand !== aBrand) return false;
         if (!sQ) return true;
         let q = sQ.toLowerCase();

@@ -12,6 +12,7 @@ import { saveApp } from '../../../services/storage.js';
 import { appData } from '../../../core/state.js';
 import { el, show, setIn, setH, getV, esc, fixD, sLoad, hLoad, showToast, openModalAnim } from '../../../core/utils.js';
 import { aF } from '../schema.js';
+import { customPrompt } from '../../../core/ui.js';
 import {
     cTab, setCTab,
     eId, setEId,
@@ -19,6 +20,7 @@ import {
     tVars, setTVars,
     tWhol, setTWhol,
     tSpec, setTSpec,
+    tSubCats, setTSubCats,
 } from './index.js';
 
 /** Fungsi lokal untuk konversi URL embed video (drive → preview) */
@@ -53,9 +55,15 @@ window.oAEd = (t, id) => {
         setTWhol(d && d.wholesale ? JSON.parse(JSON.stringify(d.wholesale)) : []);
         setTSpec(d && d.specTable ? JSON.parse(JSON.stringify(d.specTable)) : []);
     }
+    if(t==='categories'){
+        const existingSubs = Array.isArray(d?.subCategories) 
+            ? [...d.subCategories] 
+            : (typeof d?.subCategories === 'string' ? d.subCategories.split(',').map(s=>s.trim()).filter(Boolean) : []);
+        setTSubCats(existingSubs);
+    }
 
     // Kelompokkan field dalam grid 2-kolom responsive
-    const FULL_WIDTH_TYPES = ['textarea','richtext','variants_builder','wholesale_builder','spec_table_builder'];
+    const FULL_WIDTH_TYPES = ['textarea','richtext','variants_builder','wholesale_builder','spec_table_builder','subcategories_builder'];
     const FULL_WIDTH_KEYS  = ['img','desc','name','isActive','tag','poTime','video'];
     const isFullWidth = k => FULL_WIDTH_TYPES.includes(k.type) || FULL_WIDTH_KEYS.includes(k.key);
 
@@ -73,7 +81,7 @@ window.oAEd = (t, id) => {
             });
             h += `</select><i class="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-[10px]"></i></div>`;
         } else if(k.type === 'dynamic_select_category') {
-            h += `<div class="relative"><select id="af-${k.key}" class="admin-input shadow-sm cursor-pointer appearance-none pr-10 bg-slate-50 dark:bg-slate-900" onchange="if(window.rVarsB) window.rVarsB();"><option value="" class="font-bold">Pilih Kategori</option>`;
+            h += `<div class="relative"><select id="af-${k.key}" class="admin-input shadow-sm cursor-pointer appearance-none pr-10 bg-slate-50 dark:bg-slate-900" onchange="if(window.rVarsB) window.rVarsB(); if(window.updateProductSubCategoryOptions) window.updateProductSubCategoryOptions(this.value);"><option value="" class="font-bold">Pilih Kategori</option>`;
             appData.categories.forEach(c => { h += `<option value="${esc(c.name)}" ${v===c.name?'selected':''} class="font-bold">${esc(c.name)}</option>`; });
             h += `</select><i class="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-[10px]"></i></div>`;
         } else if(k.type === 'dynamic_select_brand') {
@@ -97,14 +105,25 @@ window.oAEd = (t, id) => {
             h += `<div id="wholesale-builder-container" class="bg-slate-50/50 dark:bg-slate-900/30 p-4 sm:p-5 md:p-6 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-inner min-h-[60px]"></div>`;
         } else if(k.type === 'spec_table_builder') {
             h += `<div id="spec-table-builder-container" class="bg-slate-50/50 dark:bg-slate-900/30 p-4 sm:p-5 md:p-6 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-inner min-h-[60px]"></div>`;
+        } else if(k.type === 'subcategories_builder') {
+            h += `<div id="subcategories-builder-container" class="bg-slate-50/50 dark:bg-slate-900/30 p-4 sm:p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-inner flex flex-col gap-3 min-h-[80px]"></div>`;
         } else if(k.key === 'subCategory') {
-            const existingSubCats = [...new Set((appData.products || []).map(p => (p.subCategory || '').trim()).filter(Boolean))].sort();
-            h += `<div class="relative flex items-center">
-                <input autocomplete='off' type="text" id="af-${k.key}" list="subcategories-datalist" value="${esc(v)}" class="admin-input shadow-sm bg-slate-50 dark:bg-slate-900 !pr-10" placeholder="Ketik atau pilih jenis produk..." >
-                <datalist id="subcategories-datalist">
-                    ${existingSubCats.map(sc => `<option value="${esc(sc)}"></option>`).join('')}
-                </datalist>
-                <i class="fa-solid fa-list-check absolute right-3 text-slate-400 pointer-events-none text-xs"></i>
+            h += `
+            <div class="flex flex-col gap-1.5" id="af-subCategory-wrapper">
+                <div class="relative flex items-center gap-2">
+                    <div class="relative flex-1">
+                        <select id="af-subCategory-select" onchange="window.handleSubCategorySelectChange(this)" class="admin-input shadow-sm cursor-pointer appearance-none pr-10 bg-slate-50 dark:bg-slate-900 w-full font-bold text-xs">
+                            <option value="">-- Tanpa Sub-Kategori / Pilih Jenis --</option>
+                        </select>
+                        <i class="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-[10px]"></i>
+                    </div>
+                    <button type="button" onclick="window.promptAddNewSubCategoryToProduct()" class="px-3.5 py-3 rounded-xl primary-bg-soft border primary-border text-[var(--color-primary)] hover:primary-bg hover:text-white text-xs font-bold transition-all shrink-0 flex items-center gap-1.5 active:scale-95 cursor-pointer shadow-2xs" title="Tambah Sub-Kategori Baru">
+                        <i class="fa-solid fa-plus text-[10px]"></i>
+                        <span class="hidden sm:inline">Sub Baru</span>
+                    </button>
+                </div>
+                <input autocomplete="off" type="text" id="af-${k.key}" value="${esc(v)}" class="admin-input shadow-sm bg-slate-50 dark:bg-slate-900 text-xs hidden mt-1" placeholder="Ketik nama sub-kategori baru..." oninput="window.syncCustomSubCategoryValue(this.value)">
+                <p id="af-subCategory-hint" class="text-[10px] text-slate-400 font-medium"></p>
             </div>`;
         } else if(k.key === 'sku') {
             h += `<div class="relative flex items-center"><input autocomplete='off' type="${k.type}" id="af-${k.key}" value="${esc(v)}" class="admin-input shadow-sm bg-slate-50 dark:bg-slate-900 !pr-12" placeholder="Scan atau ketik..." ><button type="button" onclick="openCameraScanner('af-${k.key}')" class="absolute right-2 w-9 h-9 flex items-center justify-center text-slate-400 hover:bg-slate-200 hover:text-[var(--color-primary)] rounded-xl transition-all" title="Scan Barcode via HP"><i class="fa-solid fa-qrcode text-lg"></i></button></div>`;
@@ -163,7 +182,15 @@ window.oAEd = (t, id) => {
     h = `<div class="grid grid-cols-1 lg:grid-cols-2 gap-x-5 gap-y-5 items-start">${h}</div>`;
 
     setH('admin-modal-form', h);
-    if(t==='products') { window.rVarsB?.(); window.rWholB?.(); window.rSpecB?.(); }
+    if(t==='products') { 
+        window.rVarsB?.(); 
+        window.rWholB?.(); 
+        window.rSpecB?.(); 
+        window.updateProductSubCategoryOptions?.(d ? d.category : '', d ? d.subCategory : '');
+    }
+    if(t==='categories') {
+        window.rSubCatsB?.();
+    }
 
     const mAd = el('admin-modal');
     if (mAd && mAd.classList.contains('hidden')) pushModalHistory('admin');
@@ -183,6 +210,8 @@ window.submitAdminForm = async () => {
             d.wholesale = tWhol.filter(w => parseFloat(w.minQty) > 0.01 && w.price > 0);
         } else if (k.type === 'spec_table_builder') {
             d.specTable = tSpec.filter(s => s.key.trim() !== '');
+        } else if (k.type === 'subcategories_builder') {
+            d.subCategories = (tSubCats || window.tSubCats || []).map(s => String(s).trim()).filter(Boolean);
         } else {
             let v = '';
             if (k.type === 'richtext') {
@@ -368,4 +397,219 @@ window.duplicateProduct = async (id) => {
         } catch(e) { showToast("Gagal menyalin: " + (e.message || '')); }
         finally { setIsSaving(false); hLoad(); }
     }, "Ya, Salin", false);
+};
+
+// ─── Builder Sub-Kategori (Kelompok Jenis Produk) ─────────────────────────────
+
+window.rSubCatsB = () => {
+    const box = el('subcategories-builder-container');
+    if (!box) return;
+    const list = Array.isArray(tSubCats || window.tSubCats) ? (tSubCats || window.tSubCats) : [];
+    const currentCatName = (getV('af-name') || '').trim();
+
+    // Hitung subkategori yang ada di produk tapi belum terdaftar di list
+    let unregisteredFromProds = [];
+    if (currentCatName && Array.isArray(appData.products)) {
+        const inProds = [...new Set(appData.products.filter(p => p.category === currentCatName && p.subCategory).map(p => p.subCategory.trim()))];
+        unregisteredFromProds = inProds.filter(sc => !list.some(x => x.toLowerCase() === sc.toLowerCase()));
+    }
+
+    box.innerHTML = `
+        <div class="flex flex-col gap-2.5">
+            <div class="flex items-center justify-between gap-2 flex-wrap">
+                <label class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
+                    <i class="fa-solid fa-shapes text-[var(--color-primary)]"></i>
+                    <span>Kelompok Sub-Kategori / Jenis (${list.length})</span>
+                </label>
+                ${unregisteredFromProds.length > 0 ? `
+                    <button type="button" onclick="window.autoDetectSubCatsFromProducts()" class="text-[10px] font-bold text-amber-600 dark:text-amber-400 hover:underline flex items-center gap-1 cursor-pointer">
+                        <i class="fa-solid fa-wand-magic-sparkles text-amber-500"></i>
+                        <span>Tarik ${unregisteredFromProds.length} sub dari produk terdaftar</span>
+                    </button>
+                ` : ''}
+            </div>
+
+            <!-- Input Baris Tambah Sub-Kategori -->
+            <div class="flex gap-2">
+                <div class="relative flex-1">
+                    <input type="text" id="af-new-subcat-input" class="admin-input shadow-sm bg-white dark:bg-slate-800 text-xs w-full pr-10" placeholder="Ketik nama sub-kategori (misal: Cat Tembok, Cat Besi) lalu Enter..." onkeydown="if(event.key==='Enter' || event.key===','){event.preventDefault(); window.addSubCategoryFromInput();}">
+                    <i class="fa-solid fa-tag absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-xs"></i>
+                </div>
+                <button type="button" onclick="window.addSubCategoryFromInput()" class="px-4 py-2.5 rounded-xl text-white hover:opacity-95 text-xs font-bold transition-all shrink-0 flex items-center gap-1.5 active:scale-95 cursor-pointer shadow-sm" style="background:var(--color-primary)">
+                    <i class="fa-solid fa-plus text-[10px]"></i>
+                    <span>Tambah</span>
+                </button>
+            </div>
+
+            <!-- Daftar Chip Sub-Kategori -->
+            <div class="flex flex-wrap gap-2 min-h-[40px] items-center p-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+                ${list.length === 0 ? `
+                    <p class="text-xs text-slate-400 italic py-1 px-1 flex items-center gap-1.5">
+                        <i class="fa-solid fa-circle-info text-slate-300 dark:text-slate-600"></i>
+                        <span>Belum ada sub-kategori. Ketik di atas lalu tekan <b>Enter</b> atau klik <b>Tambah</b>.</span>
+                    </p>
+                ` : list.map((sc, idx) => `
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-100 dark:bg-slate-700/60 text-slate-700 dark:text-slate-200 border border-slate-200/80 dark:border-slate-600/80 shadow-2xs group">
+                        <i class="fa-solid fa-shapes text-[10px] text-[var(--color-primary)]"></i>
+                        <span>${esc(sc)}</span>
+                        <button type="button" onclick="window.removeSubCategoryFromBuilder(${idx})" class="text-slate-400 hover:text-rose-500 p-0.5 rounded ml-1 transition-colors cursor-pointer" title="Hapus Sub-Kategori '${esc(sc)}'">
+                            <i class="fa-solid fa-xmark text-[11px]"></i>
+                        </button>
+                    </span>
+                `).join('')}
+            </div>
+            <p class="text-[10px] text-slate-400 flex items-center gap-1.5">
+                <i class="fa-solid fa-circle-check text-[var(--color-primary)]"></i>
+                <span>Sub-kategori yang dikelompokkan di sini otomatis menjadi pilihan dropdown saat input produk baru di kategori ini.</span>
+            </p>
+        </div>
+    `;
+};
+
+window.addSubCategoryFromInput = () => {
+    const inp = el('af-new-subcat-input');
+    if (!inp) return;
+    const val = (inp.value || '').trim();
+    if (!val) return;
+    const list = Array.isArray(tSubCats || window.tSubCats) ? [...(tSubCats || window.tSubCats)] : [];
+    if (list.some(x => x.toLowerCase() === val.toLowerCase())) {
+        showToast("Sub-kategori sudah ada!");
+        inp.value = '';
+        return;
+    }
+    list.push(val);
+    setTSubCats(list);
+    window.rSubCatsB();
+    const newInp = el('af-new-subcat-input');
+    if (newInp) newInp.focus();
+};
+
+window.removeSubCategoryFromBuilder = (idx) => {
+    const list = Array.isArray(tSubCats || window.tSubCats) ? [...(tSubCats || window.tSubCats)] : [];
+    list.splice(idx, 1);
+    setTSubCats(list);
+    window.rSubCatsB();
+};
+
+window.autoDetectSubCatsFromProducts = () => {
+    const currentCatName = (getV('af-name') || '').trim();
+    if (!currentCatName) {
+        showToast("Isi nama kategori terlebih dahulu!");
+        return;
+    }
+    const inProds = [...new Set((appData.products || []).filter(p => p.category === currentCatName && p.subCategory).map(p => p.subCategory.trim()))];
+    if (!inProds.length) {
+        showToast("Belum ada produk dengan sub-kategori pada kategori ini");
+        return;
+    }
+    const list = Array.isArray(tSubCats || window.tSubCats) ? [...(tSubCats || window.tSubCats)] : [];
+    let addedCount = 0;
+    inProds.forEach(sc => {
+        if (!list.some(x => x.toLowerCase() === sc.toLowerCase())) {
+            list.push(sc);
+            addedCount++;
+        }
+    });
+    setTSubCats(list);
+    window.rSubCatsB();
+    showToast(`${addedCount} sub-kategori berhasil ditarik dari produk!`);
+};
+
+// ─── Cascading Sub-Category Dropdown di Form Produk ───────────────────────────
+
+window.updateProductSubCategoryOptions = (catName, currentSubVal = '') => {
+    const sel = el('af-subCategory-select');
+    const customInp = el('af-subCategory');
+    const hint = el('af-subCategory-hint');
+    if (!sel || !customInp) return;
+
+    const val = currentSubVal !== undefined ? currentSubVal : (customInp.value || '').trim();
+    const catObj = (appData.categories || []).find(c => c.name === catName);
+    const officialSubs = Array.isArray(catObj?.subCategories) ? catObj.subCategories : [];
+    const productSubs = (appData.products || [])
+        .filter(p => p.category === catName && p.subCategory)
+        .map(p => p.subCategory.trim());
+
+    const mergedSubs = [...new Set([...officialSubs, ...productSubs])].filter(Boolean);
+
+    let optionsHtml = `<option value="">-- Tanpa Sub-Kategori / Pilih Jenis --</option>`;
+    mergedSubs.forEach(sc => {
+        optionsHtml += `<option value="${esc(sc)}">${esc(sc)}</option>`;
+    });
+    optionsHtml += `<option value="__custom__" class="font-bold text-[var(--color-primary)]">+ Ketik Nama Sub-Kategori Manual...</option>`;
+
+    sel.innerHTML = optionsHtml;
+
+    if (val) {
+        const hasExact = mergedSubs.some(sc => sc.toLowerCase() === val.toLowerCase());
+        if (hasExact) {
+            const match = mergedSubs.find(sc => sc.toLowerCase() === val.toLowerCase());
+            sel.value = match;
+            customInp.value = match;
+            customInp.classList.add('hidden');
+        } else {
+            sel.value = '__custom__';
+            customInp.value = val;
+            customInp.classList.remove('hidden');
+        }
+    } else {
+        sel.value = '';
+        customInp.value = '';
+        customInp.classList.add('hidden');
+    }
+
+    if (hint) {
+        if (catName && mergedSubs.length > 0) {
+            hint.textContent = `Tersedia ${mergedSubs.length} sub-kategori terkelompok di bawah '${catName}'`;
+        } else if (catName) {
+            hint.textContent = `Belum ada sub-kategori di bawah '${catName}'. Klik '+ Sub Baru' untuk menambahkan.`;
+        } else {
+            hint.textContent = 'Pilih kategori induk terlebih dahulu untuk melihat pilihan sub-kategori.';
+        }
+    }
+};
+
+window.handleSubCategorySelectChange = (sel) => {
+    const customInp = el('af-subCategory');
+    if (!customInp) return;
+    if (sel.value === '__custom__') {
+        customInp.classList.remove('hidden');
+        customInp.focus();
+    } else {
+        customInp.classList.add('hidden');
+        customInp.value = sel.value;
+    }
+};
+
+window.syncCustomSubCategoryValue = (val) => {
+    // Sinkronisasi nilai ketika mengetik manual
+};
+
+window.promptAddNewSubCategoryToProduct = async () => {
+    const catName = getV('af-category');
+    if (!catName) {
+        showToast("Pilih kategori induk produk terlebih dahulu!");
+        return;
+    }
+    const promptFn = typeof customPrompt === 'function' ? customPrompt : (window.customPrompt || prompt);
+    const res = await promptFn(`Tambah Sub-Kategori Baru untuk '${catName}':`, '');
+    if (!res || !res.trim()) return;
+    const newSub = res.trim();
+
+    let catObj = (appData.categories || []).find(c => c.name === catName);
+    if (catObj) {
+        catObj.subCategories = Array.isArray(catObj.subCategories) ? catObj.subCategories : [];
+        if (!catObj.subCategories.some(s => s.toLowerCase() === newSub.toLowerCase())) {
+            catObj.subCategories.push(newSub);
+            try {
+                const _save = typeof saveApp === 'function' ? saveApp : (window.saveApp || (async () => {}));
+                await _save(['categories']);
+            } catch(e) {
+                console.error("Gagal simpan subkategori baru:", e);
+            }
+        }
+    }
+
+    window.updateProductSubCategoryOptions(catName, newSub);
+    showToast(`Sub-kategori '${newSub}' berhasil ditambahkan! ✨`);
 };

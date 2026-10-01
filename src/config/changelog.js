@@ -8,6 +8,22 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-10-14',
+        version: 'v1.10.14',
+        date: '2026-10-01',
+        title: 'Hierarki Kategori & Sub-Kategori Terkelompok: Bento Group Card CMS, Cascading Smart Dropdown Form Produk, dan Sinkronisasi Otomatis Etalase Toko & Kasir POS',
+        category: 'feature',
+        badge: 'Hierarchical Categories & Subcategories v1.10.14',
+        items: [
+            'Struktur Hierarki Master Data Kategori (src/modules/admin/schema.js & src/services/storage.js): Memperkaya skema kategori toko dengan field koleksi array subCategories. Sistem mendukung pengelompokan jenis produk di bawah kategori induk terkait (contoh: Perkakas -> Gembok Pengaman, Kunci & Pertukangan, Mata Bor) dengan normalisasi data dan proteksi kompatibilitas mundur 100% terhadap katalog lama.',
+            'Tampilan Bento Group Card di Manajemen Kategori CMS (src/modules/admin/products/table.js): Mentransformasi kartu kategori CMS menjadi Bento Card terstruktur yang menampilkan avatar ikon squircle, nama kategori, badge total produk terdaftar, badge jumlah sub-kategori, daftar chip sub-kategori interaktif dengan badge hitungan produk per jenis dan tombol hapus cepat, tombol "+ Sub-Kategori" langsung tanpa form panjang, serta tombol cerdas "Tarik Sub dari Produk" yang otomatis mendeteksi subkategori lawas dari produk eksisting.',
+            'Sub-Category Builder & Tag Manager di Modal Edit Kategori (src/modules/admin/products/form.js): Menambahkan builder chip sub-kategori interaktif pada form tambah/edit kategori dengan dukungan ketik + tekan Enter / koma, deteksi duplikasi, eliminasi chip instan, dan tombol auto-detect dari produk terdaftar.',
+            'Cascading Smart Dropdown di Form Input/Edit Produk (src/modules/admin/products/form.js): Pilihan sub-kategori di form produk kini dinamis cascading menyesuaikan kategori induk yang dipilih. Dilengkapi tombol "+ Sub Baru" yang membuka prompt instan untuk mendaftarkan jenis barang baru ke master kategori secara live tanpa meninggalkan form produk.',
+            'Penyelarasan Filter Etalase Storefront & POS Kasir (src/modules/catalog/catalog.js & src/modules/pos/pos.js): Filter pill sub-kategori pada etalase katalog toko dan kasir POS otomatis memuat sub-kategori resmi terdaftar dengan pencocokan case-insensitive, counter produk real-time, serta filter instan multi-layer.',
+            'Multi-Channel Build & Sync v1.10.14 (Android versionCode 11014): Kompilasi produksi web, sinkronisasi bundle flashdisk siap pakai, dan Android Capacitor tersinkronisasi 100%.'
+        ]
+    },
+    {
         id: 'log-1-10-13',
         version: 'v1.10.13',
         date: '2026-10-01',

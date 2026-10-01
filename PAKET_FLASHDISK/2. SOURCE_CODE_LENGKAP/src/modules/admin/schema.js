@@ -42,7 +42,11 @@ export const aF = {
         {key:'hex', label:'Kode Warna (Hex) - Opsional', type:'text'},
         {key:'catalog', label:'Katalog / Merek (Contoh: No Drop)', type:'text'}
     ],
-    categories: [{key:'name', label:'Kategori', type:'text'}, {key:'img', label:'URL Ikon', type:'text'}],
+    categories: [
+        {key:'name', label:'Nama Kategori', type:'text'},
+        {key:'img', label:'URL Ikon / Gambar (Opsional)', type:'text'},
+        {key:'subCategories', label:'Daftar Sub-Kategori / Kelompok Jenis', type:'subcategories_builder'}
+    ],
     brands: [{key:'name', label:'Nama Merek', type:'text'}, {key:'img', label:'URL Logo Merek', type:'text'}],
     banks: [{key:'bankName', label:'Nama Bank', type:'text'}, {key:'bankAccount', label:'No. Rekening', type:'text'}, {key:'bankOwner', label:'Atas Nama', type:'text'}],
     customers: [

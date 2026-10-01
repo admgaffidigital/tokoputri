@@ -41,6 +41,7 @@ const ensurePOSVariantSheet = () => {
 let posCart            = [];
 let posSearch          = '';
 let posCatFilterVal    = '';
+let posSubCatFilterVal = '';
 let posCatalogViewMode = 'grid'; // 'grid' | 'list'
 try {
     const savedMode = localStorage.getItem('pos_view_mode');
@@ -1234,6 +1235,7 @@ export const renderCatalog = () => {
         const products = prodList.filter(p => {
             if (!p || p.isActive === 'false' || p.isActive === false) return false;
             if (posCatFilterVal && p.category !== posCatFilterVal) return false;
+            if (posSubCatFilterVal && (p.subCategory || '').trim().toLowerCase() !== posSubCatFilterVal.toLowerCase()) return false;
             if (posSearch) {
                 const q = String(posSearch).toLowerCase();
                 const name = String(p.name || '').toLowerCase();
@@ -1263,6 +1265,36 @@ export const renderCatalog = () => {
             const active = isAll ? !posCatFilterVal : posCatFilterVal === c;
             return `<button onclick="window.posCatFilter('${esc(isAll ? '' : c)}')" class="shrink-0 px-3.5 py-1.5 rounded-xl text-[11px] font-black uppercase tracking-wider border transition-all active:scale-95 shadow-2xs ${active ? 'text-white border-transparent' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-[var(--color-primary)]/50'}" style="${active ? 'background:linear-gradient(135deg, var(--color-primary-light,#e1b858) 0%, var(--color-primary,#c59b27) 60%, var(--color-primary-dark,#a87f1b) 100%);box-shadow:0 2px 8px rgba(var(--color-primary-rgb),0.3)' : ''}">${esc(c)}</button>`;
         }).join('');
+
+        let subCatHTML = '';
+        if (posCatFilterVal) {
+            const catObj = (appData?.categories || []).find(c => c.name === posCatFilterVal);
+            const officialSubs = Array.isArray(catObj?.subCategories) ? catObj.subCategories : [];
+            const prodsInCat = prodList.filter(p => p && p.isActive !== 'false' && p.isActive !== false && p.category === posCatFilterVal);
+            const subCatMap = {};
+            officialSubs.forEach(sc => {
+                const trimmed = (sc || '').trim();
+                if (trimmed) subCatMap[trimmed] = 0;
+            });
+            prodsInCat.forEach(p => {
+                const sc = (p.subCategory || '').trim();
+                if (sc) subCatMap[sc] = (subCatMap[sc] || 0) + 1;
+            });
+            const subCats = Object.keys(subCatMap).sort().map(name => ({ name, count: subCatMap[name] }));
+            if (subCats.length > 0) {
+                subCatHTML = `
+                <div class="flex items-center gap-1.5 overflow-x-auto pb-1 hide-scrollbar pt-1.5 mt-1 border-t border-slate-100 dark:border-slate-700/50 w-full">
+                    <button onclick="window.posSubCatFilter('')" class="shrink-0 px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase transition-all active:scale-95 border ${!posSubCatFilterVal ? 'bg-slate-800 text-white dark:bg-white dark:text-slate-900 border-transparent shadow-2xs' : 'bg-slate-100 dark:bg-slate-800/80 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700'}">Semua Jenis</button>
+                    ${subCats.map(sc => {
+                        const active = posSubCatFilterVal.toLowerCase() === sc.name.toLowerCase();
+                        return `<button onclick="window.posSubCatFilter('${esc(sc.name).replace(/'/g, "\\'")}')" class="shrink-0 px-2.5 py-1 rounded-lg text-[10px] font-bold transition-all active:scale-95 border flex items-center gap-1 ${active ? 'bg-[var(--color-primary)] text-white border-transparent shadow-2xs' : 'bg-slate-100 dark:bg-slate-800/80 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700'}">
+                            <span>${esc(sc.name)}</span>
+                            <span class="text-[9px] px-1 py-0.2 rounded-full ${active ? 'bg-white/20 text-white' : 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300'}">${sc.count}</span>
+                        </button>`;
+                    }).join('')}
+                </div>`;
+            }
+        }
 
         const prodHTML = products.length === 0
             ? `<div class="col-span-full flex flex-col items-center justify-center py-20 text-slate-400 dark:text-slate-600">
@@ -1426,6 +1458,11 @@ export const renderCatalog = () => {
 
         document.querySelectorAll('#pos-cat-filter').forEach(catEl => {
             catEl.innerHTML = catHTML;
+        });
+        document.querySelectorAll('#pos-subcat-filter').forEach(subEl => {
+            subEl.innerHTML = subCatHTML;
+            if (!subCatHTML) subEl.classList.add('hidden');
+            else subEl.classList.remove('hidden');
         });
         document.querySelectorAll('#pos-catalog-grid').forEach(gridEl => {
             gridEl.className = posCatalogViewMode === 'list' ? 'pos-catalog-list-mode' : 'pos-catalog-grid-mode';
@@ -3100,6 +3137,7 @@ const buildPOSLayout = ({ isStorefront }) => {
                     </div>
                     <!-- Kategori Chips -->
                     <div id="pos-cat-filter" class="flex gap-1.5 overflow-x-auto hide-scrollbar pb-0.5"></div>
+                    <div id="pos-subcat-filter" class="w-full hidden"></div>
                 </div>
 
                 <!-- Product Catalog Container -->
@@ -3287,10 +3325,11 @@ const buildPOSLayout = ({ isStorefront }) => {
 // ─── Render Storefront Standalone View ───────────────────────
 export const renderPOSStorefront = () => {
     try {
-        posSearch       = '';
-        posCatFilterVal = '';
-        posCart         = [];
-        posGlobalDisc   = 0;
+        posSearch          = '';
+        posCatFilterVal    = '';
+        posSubCatFilterVal = '';
+        posCart            = [];
+        posGlobalDisc      = 0;
 
         const viewEl = el('view-pos-cashier');
         if (!viewEl) return;
@@ -3337,8 +3376,9 @@ export const renderPOSStorefront = () => {
 // ─── Render di Admin CMS ────────────────────────────────────
 export const renderPOS = () => {
     try {
-        posSearch       = '';
-        posCatFilterVal = '';
+        posSearch          = '';
+        posCatFilterVal    = '';
+        posSubCatFilterVal = '';
 
         const adminView = el('view-admin');
         if (adminView) adminView.classList.add('admin-pos-mode');
@@ -3460,7 +3500,8 @@ const exposeToWindow = () => {
     window.renderShiftHeaderBadge  = renderShiftHeaderBadge;
     window.printShiftSettlementReceipt = printShiftSettlementReceipt;
     window.executeShiftPrintDirect = executeShiftPrintDirect;
-    window.posCatFilter            = (c) => { posCatFilterVal = c; renderCatalog(); };
+    window.posCatFilter            = (c) => { posCatFilterVal = c; posSubCatFilterVal = ''; renderCatalog(); };
+    window.posSubCatFilter         = (sc) => { posSubCatFilterVal = sc; renderCatalog(); };
     window.posSearchFn             = (v) => { 
         posSearch = typeof v === 'string' ? v : (v?.value || ''); 
         document.querySelectorAll('#pos-search-input').forEach(inp => {
@@ -3943,4 +3984,5 @@ window.closePOSCloseShiftModal = closePOSCloseShiftModal;
 window.renderShiftHeaderBadge  = renderShiftHeaderBadge;
 window.printShiftSettlementReceipt = printShiftSettlementReceipt;
 window.executeShiftPrintDirect = executeShiftPrintDirect;
+window.posSubCatFilter         = (sc) => { posSubCatFilterVal = sc; renderCatalog(); };
 window.getPOSCart              = () => posCart;

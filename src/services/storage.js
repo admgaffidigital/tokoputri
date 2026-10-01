@@ -70,6 +70,9 @@ export const loadAppData = async () => {
                 c.img = fixD(c.img);
                 if (c.img.includes('10b981')) c.img = 'https://placehold.co/150/f1f5f9/64748b?text=Cat';
             }
+            c.subCategories = Array.isArray(c.subCategories) 
+                ? c.subCategories 
+                : (typeof c.subCategories === 'string' ? c.subCategories.split(',').map(s=>s.trim()).filter(Boolean) : []);
         });
         if(appData.brands) appData.brands.forEach(b => { 
             if(b.img) {
@@ -478,6 +481,9 @@ export const attachRealtimeStockSync = () => {
                     c.img = fixD(c.img);
                     if (c.img.includes('10b981')) c.img = 'https://placehold.co/150/f1f5f9/64748b?text=Cat';
                 }
+                c.subCategories = Array.isArray(c.subCategories) 
+                    ? c.subCategories 
+                    : (typeof c.subCategories === 'string' ? c.subCategories.split(',').map(s=>s.trim()).filter(Boolean) : []);
             });
             if (appData.brands) appData.brands.forEach(b => { 
                 if(b.img) {

@@ -35,10 +35,14 @@ export const setTWhol = (v) => { tWhol = v; };
 export let tSpec = [];
 export const setTSpec = (v) => { tSpec = v; };
 
+export let tSubCats = [];
+export const setTSubCats = (v) => { tSubCats = v; window.tSubCats = v; };
+
 // Expose state mutators ke window untuk kompatibilitas script inline HTML
 window.setCTab = setCTab;
 window.setASq  = setASq;
 window.setEId  = setEId;
+window.setTSubCats = setTSubCats;
 
 // ─── Import Sub-Modul ─────────────────────────────────────────────────────────
 import './table.js';
