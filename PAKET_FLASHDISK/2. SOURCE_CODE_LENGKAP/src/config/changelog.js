@@ -8,6 +8,21 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-10-16',
+        version: 'v1.10.16',
+        date: '2026-10-01',
+        title: 'Penyempurnaan Theme & Style: Kalibrasi Canvas Warm Luxury Linen Ivory, Eliminasi Total Background Putih Polos, dan Radiant Fixed Ambient Canopy',
+        category: 'ui',
+        badge: 'Theme & Style Canvas Polish v1.10.16',
+        items: [
+            'Eliminasi Total Latar Putih Polos & Kalibrasi Canvas Mewah (src/style.css): Menggantikan latar dasar dingin yang terkesan putih polos (#FAF8F5 / #f1f5f9 / bg-slate-50) menjadi Warm Luxury Linen Ivory Canvas (#F5F1EB pada mode terang dan #0B1120 pada mode gelap). Warna kanvas ini memberikan rasio kontras alami yang sangat tegas terhadap kartu bento putih (#ffffff) sehingga kartu tampak mengambang elegan dengan batas fisik yang bersih layaknya aplikasi native Apple / Tokopedia.',
+            'Radiant Fixed Ambient Canopy (src/style.css): Menerapkan perpaduan gradien ganda tetap (background-attachment: fixed) berupa radial-gradient kanopi tema (ellipse 90% 50% at 50% -5%) dan linear-gradient atmosferik (180deg hingga 650px). Efek ini memastikan bahwa di seluruh halaman yang panjang (etalase, pusat laporan, manajemen produk, pesanan), pancaran aura warna tema aktif toko (Emas, Zamrud, Burgundy, Biru, dll.) selalu berpendar di bagian atas tanpa pernah putus atau memudar menjadi putih polos saat discroll.',
+            'Penyempurnaan 5 Preset Gaya Latar Toko (src/style.css & src/core/theme.js): Melakukan kalibrasi presisi pada seluruh 5 preset latar visual (Minimalis, Hero Arch, Aurora Glow, Tech Grid, Industrial) dengan kanvas dasar terpadu (#F5F1EB, #F5F2EC, #F4EFF6, #EBF0F5, #DFE5EC), peningkatan intensitas pendaran bentuk vektor tema pada dynamic-bg-container tanpa blur, serta sinkronisasi mockup preview mini-smartphone pada CMS Pengaturan Toko.',
+            'Proteksi Anti-Flash Startup (index.html): Menambahkan atribut data-bg-style="minimalist" langsung pada tag <html>, <body>, dan #app-container, serta mengeliminasi kelas bg-slate-50 menjadi bg-[#F5F1EB], mencegah kedipan warna putih dingin saat browser pertama kali memuat dokumen.',
+            'Multi-Channel Build & Sync v1.10.16 (Android versionCode 11016): Kompilasi produksi web, sinkronisasi bundle flashdisk siap pakai (1. HASIL_BUILD_SIAP_PAKE dan PAKET_FLASHDISK), serta Android Capacitor tersinkronisasi 100%.'
+        ]
+    },
+    {
         id: 'log-1-10-15',
         version: 'v1.10.15',
         date: '2026-10-01',
