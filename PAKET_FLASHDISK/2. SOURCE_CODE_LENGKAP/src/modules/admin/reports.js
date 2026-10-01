@@ -58,7 +58,31 @@ export const EXPENSE_CATEGORIES = [
 ];
 
 /**
- * Tarik data pesanan lengkap untuk periode aktif
+ * Helper ekstraksi objek Date dari berbagai format timestamp pesanan
+ */
+export const parseOrderDate = (o) => {
+    if (!o) return null;
+    let d = null;
+    if (o.timestamp?.toDate) {
+        d = o.timestamp.toDate();
+    } else if (o.createdAt?.toDate) {
+        d = o.createdAt.toDate();
+    } else if (o.dateMs) {
+        d = new Date(o.dateMs);
+    } else if (o.dateString) {
+        d = new Date(o.dateString);
+    } else if (typeof o.timestamp === 'number') {
+        d = new Date(o.timestamp);
+    } else if (typeof o.timestamp === 'string') {
+        d = new Date(o.timestamp);
+    } else if (typeof o.createdAt === 'string') {
+        d = new Date(o.createdAt);
+    }
+    return (d && !isNaN(d.getTime())) ? d : null;
+};
+
+/**
+ * Tarik data pesanan lengkap untuk periode aktif (Realtime & Multi-format)
  */
 export const fetchReportOrdersData = async (forceRefresh = false) => {
     const fetchKey = `${reportYear}-${reportMonth}`;
@@ -69,27 +93,33 @@ export const fetchReportOrdersData = async (forceRefresh = false) => {
     cachedReportOrders = [];
     cachedPiutangOrders = [];
 
-    let startDate, endDate;
-    if (reportMonth === 0) {
-        startDate = new Date(reportYear, 0, 1);
-        endDate = new Date(reportYear + 1, 0, 1);
-    } else {
-        startDate = new Date(reportYear, reportMonth - 1, 1);
-        endDate = new Date(reportYear, reportMonth, 1);
-    }
-
     try {
-        // 1. Tarik pesanan periode aktif
-        const qOrders = db.collection("freshmart_orders")
-            .where('timestamp', '>=', firebase.firestore.Timestamp.fromDate(startDate))
-            .where('timestamp', '<', firebase.firestore.Timestamp.fromDate(endDate));
-        
-        const snap = await qOrders.limit(5000).get();
+        // 1. Tarik pesanan dari Firestore freshmart_orders
+        const snap = await db.collection("freshmart_orders")
+            .orderBy("timestamp", "desc")
+            .limit(2000)
+            .get()
+            .catch(async () => {
+                // Fallback jika belum ada composite index: ambil tanpa orderBy
+                return await db.collection("freshmart_orders").limit(2000).get();
+            });
+
         snap.forEach(doc => {
             const o = doc.data();
-            if (o.status !== 'Dibatalkan') {
-                cachedReportOrders.push(o);
-            }
+            if (o.status === 'Dibatalkan' || o.status === 'Test') return;
+
+            const orderDate = parseOrderDate(o);
+            if (!orderDate) return;
+
+            const oYear = orderDate.getFullYear();
+            const oMonth = orderDate.getMonth() + 1; // 1-12
+
+            // Filter tahun
+            if (oYear !== reportYear) return;
+            // Filter bulan jika bukan setahun penuh (0)
+            if (reportMonth !== 0 && oMonth !== reportMonth) return;
+
+            cachedReportOrders.push(o);
         });
 
         // 2. Tarik seluruh piutang tempo yang belum lunas (aktif & menunggak)
@@ -109,6 +139,34 @@ export const fetchReportOrdersData = async (forceRefresh = false) => {
     }
 
     return { orders: cachedReportOrders, piutang: cachedPiutangOrders };
+};
+
+/**
+ * Hitung kalkulasi angka finansial & pajak mandiri untuk pesanan periode aktif
+ */
+export const getReportFinancialTotals = () => {
+    let omset = 0;
+    let ppn = 0;
+    let hpp = 0;
+    let disc = 0;
+    let orderCount = cachedReportOrders.length;
+
+    cachedReportOrders.forEach(o => {
+        const dppVal = (o.payment?.dppAmount !== undefined && o.payment?.dppAmount !== null) 
+            ? parseFloat(o.payment.dppAmount) 
+            : (parseFloat(o.payment?.subtotal) || 0);
+        
+        omset += dppVal;
+        ppn += parseFloat(o.payment?.ppnAmount) || 0;
+        disc += parseFloat(o.payment?.productDiscount) || 0;
+
+        (o.items || []).forEach(it => {
+            const hppItem = (it.hpp !== undefined && it.hpp !== null) ? parseFloat(it.hpp) : (getEffHpp(it) || 0);
+            hpp += (parseFloat(hppItem) || 0) * (parseFloat(it.qty) || 1);
+        });
+    });
+
+    return { omset, ppn, hpp, disc, orderCount };
 };
 
 /**
@@ -191,9 +249,9 @@ export const renderReportsShell = () => {
     const tabsHTML = tabs.map(tab => {
         const isActive = reportActiveTab === tab.k;
         return `
-            <button type="button" onclick="switchReportTab('${tab.k}')" class="group flex items-center gap-2.5 px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap active:scale-95 ${
+            <button type="button" onclick="switchReportTab('${tab.k}')" class="group flex items-center gap-1.5 sm:gap-2 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl text-[11px] sm:text-xs font-bold transition-all cursor-pointer whitespace-nowrap active:scale-95 shrink-0 ${
                 isActive 
-                ? 'bg-[var(--color-primary)] text-white' 
+                ? 'bg-[var(--color-primary)] text-white shadow-xs' 
                 : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200/90 dark:border-slate-700/80 hover:border-[var(--color-primary)]'
             }">
                 <i class="fa-solid ${tab.i} text-xs ${isActive ? 'text-white' : 'text-slate-400 group-hover:text-[var(--color-primary)]'}"></i>
@@ -256,7 +314,7 @@ export const renderReportsShell = () => {
                 </div>
 
                 <!-- Tab Pill Navigation -->
-                <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center gap-2 overflow-x-auto custom-scrollbar pb-1">
+                <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center gap-1.5 sm:gap-2 overflow-x-auto custom-scrollbar pb-1">
                     ${tabsHTML}
                 </div>
             </div>
@@ -336,7 +394,7 @@ export const renderReportTabContent = () => {
 // 1. TAB 1: RINGKASAN EKSEKUTIF & LABA RUGI (P&L STATEMENT)
 // ═══════════════════════════════════════════════════════════════
 export const renderExecutiveSummaryTab = () => {
-    const totals = getTaxPeriodTotals();
+    const totals = getReportFinancialTotals();
     const periodLabel = reportMonth === 0 ? `Tahun ${reportYear}` : `${MONTH_NAMES[reportMonth - 1]} ${reportYear}`;
 
     const grossSales = totals.omset;
@@ -344,7 +402,7 @@ export const renderExecutiveSummaryTab = () => {
     const netSales = grossSales - totalDiscount;
     const totalHpp = totals.hpp;
     const grossProfit = netSales - totalHpp;
-    const totalExpenses = getTaxPeriodExpenses();
+    const totalExpenses = getExpenseBreakdownForPeriod().total;
     const operatingProfit = grossProfit - totalExpenses;
 
     // Pajak Penghasilan (PPh Final 0,5% PP 55/2022)
@@ -371,6 +429,28 @@ export const renderExecutiveSummaryTab = () => {
 
     setH('report-hub-content', `
         <div class="space-y-6">
+            ${totals.orderCount === 0 ? `
+            <!-- BANNER STATUS INFORMASI TRANSAKSI KOSONG -->
+            <div class="p-3.5 sm:p-4 rounded-2xl bg-amber-50/80 dark:bg-amber-950/30 border border-amber-200/90 dark:border-amber-800/60 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-xl bg-amber-100 dark:bg-amber-900/60 text-amber-700 dark:text-amber-300 flex items-center justify-center shrink-0 text-sm">
+                        <i class="fa-solid fa-circle-info"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs font-bold text-amber-900 dark:text-amber-200">Belum ada transaksi penjualan selesai pada ${periodLabel}</p>
+                        <p class="text-[10px] text-amber-700 dark:text-amber-400 mt-0.5">Nilai Rp 0 adalah status riil database saat ini. Begitu transaksi kasir POS atau pesanan web tercatat, omzet dan laba akan terakumulasi otomatis.</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2 shrink-0">
+                    <button type="button" onclick="switchReportTab('stock')" class="px-3 py-1.5 rounded-xl bg-white dark:bg-slate-800 border border-amber-300 dark:border-amber-700/80 text-amber-800 dark:text-amber-200 text-xs font-bold hover:bg-amber-50 transition-all cursor-pointer">
+                        <i class="fa-solid fa-boxes-stacked mr-1"></i> Cek Valuasi Stok
+                    </button>
+                    <button type="button" onclick="if(window.openAdminTab) window.openAdminTab('pos')" class="px-3 py-1.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold transition-all shadow-xs cursor-pointer">
+                        <i class="fa-solid fa-cash-register mr-1"></i> Buka Kasir POS
+                    </button>
+                </div>
+            </div>` : ''}
+
             <!-- 4 KARTU BENTO UTAMA KESEHATAN FINANSIAL -->
             <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
                 <!-- 1. Omset Penjualan -->
@@ -1313,14 +1393,32 @@ export const saveReportMonthlyExpense = async (key, val) => {
 // 6. TAB 6: LAPORAN PERPAJAKAN RI 2026 (TAX COMPLIANCE)
 // ═══════════════════════════════════════════════════════════════
 export const renderTaxComplianceTab = () => {
-    const totals = getTaxPeriodTotals();
+    const totals = getReportFinancialTotals();
     const periodLabel = reportMonth === 0 ? `Tahun ${reportYear}` : `${MONTH_NAMES[reportMonth - 1]} ${reportYear}`;
     const dpp = totals.omset - totals.disc;
     const estimasiPphFinal = Math.round(totals.omset * 0.005);
     const ts = appData.taxSettings || {};
 
+    const monthlyMap = {};
+    for (let m = 1; m <= 12; m++) monthlyMap[m] = { omset: 0, ppn: 0, orderCount: 0 };
+    cachedReportOrders.forEach(o => {
+        const orderDate = parseOrderDate(o);
+        if (!orderDate) return;
+        const mKey = orderDate.getMonth() + 1;
+        if (monthlyMap[mKey]) {
+            const dppVal = (o.payment?.dppAmount !== undefined && o.payment?.dppAmount !== null) 
+                ? parseFloat(o.payment.dppAmount) 
+                : (parseFloat(o.payment?.subtotal) || 0);
+            monthlyMap[mKey].omset += dppVal;
+            monthlyMap[mKey].ppn += parseFloat(o.payment?.ppnAmount) || 0;
+            monthlyMap[mKey].orderCount++;
+        }
+    });
+
     const monthRows = Array.from({length: 12}, (_, i) => i + 1).map(m => {
-        const d = (window.gTaxMonthly && window.gTaxMonthly[m]) ? window.gTaxMonthly[m] : { omset: 0, ppn: 0, orderCount: 0 };
+        const d = (window.gTaxMonthly && window.gTaxMonthly[m] && window.gTaxMonthly[m].omset > 0)
+            ? window.gTaxMonthly[m]
+            : monthlyMap[m];
         const isActiveRow = reportMonth === m;
         const mPph = Math.round((d.omset || 0) * 0.005);
         return `

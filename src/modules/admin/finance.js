@@ -82,6 +82,7 @@ export const fetchTaxPeriodData = async (year) => {
         showToast('Gagal memuat data periode ini!'); 
     }
     taxPeriodCache.set(year, { data: monthly, timestamp: Date.now() });
+    gTaxMonthly = monthly;
     return monthly;
 };
 
