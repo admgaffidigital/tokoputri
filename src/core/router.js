@@ -332,6 +332,8 @@ export const closeModalByName = (m) => {
     else if (m === 'tempoDetail' && typeof window.closeTempoDetailModal === 'function') window.closeTempoDetailModal(true);
     else if (m === 'tempoPayment' && typeof window.closeTempoPaymentModal === 'function') window.closeTempoPaymentModal(true);
     else if (m === 'tempoPenalty' && typeof window.closeTempoPenaltyModal === 'function') window.closeTempoPenaltyModal(true);
+    else if (m === 'expenseForm' && typeof window.closeExpenseModal === 'function') window.closeExpenseModal(true);
+    else if (m === 'expenseReceipt' && typeof window.closeExpenseReceiptPreview === 'function') window.closeExpenseReceiptPreview(true);
 };
 
 /**

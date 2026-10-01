@@ -106,11 +106,14 @@ export const ensureExpenseModals = () => {
         m.className = 'fixed inset-0 z-[150] flex hidden items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-950/75 opacity-0 transition-opacity duration-300';
         m.onclick = (e) => { if (e.target === m) window.closeExpenseModal?.(); };
         m.innerHTML = `
-            <div id="modal-expense-form-content" class="w-full max-w-xl max-h-[92vh] sm:max-h-[88vh] bg-white dark:bg-slate-900 rounded-t-[2rem] sm:rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-2xl flex flex-col overflow-hidden transform translate-y-full sm:translate-y-8 transition-transform duration-300" onclick="event.stopPropagation()">
-                <!-- Header Modal -->
-                <div class="px-5 sm:px-6 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between shrink-0 bg-slate-50/70 dark:bg-slate-800/40">
+            <div id="modal-expense-form-box" class="modal-bottom-sheet relative flex max-h-[92dvh] sm:max-h-[88dvh] w-full max-w-xl translate-y-full sm:translate-y-10 transform flex-col overflow-hidden rounded-t-[2rem] sm:rounded-3xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xl transition-transform duration-300" onclick="event.stopPropagation()">
+                <!-- Pull Indicator for Mobile Bottom Sheet -->
+                <div class="pull-indicator sm:hidden"></div>
+
+                <!-- Sticky Header Modal -->
+                <div class="px-5 sm:px-6 pt-3 sm:pt-4 pb-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between shrink-0 bg-white dark:bg-slate-900">
                     <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-rose-500 to-amber-600 text-white flex items-center justify-center shadow-md shadow-rose-500/20 text-base">
+                        <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-rose-500 to-amber-600 text-white flex items-center justify-center shadow-md shadow-rose-500/20 text-base shrink-0">
                             <i class="fa-solid fa-money-bill-transfer"></i>
                         </div>
                         <div>
@@ -118,130 +121,133 @@ export const ensureExpenseModals = () => {
                             <p class="text-[10px] text-slate-400 font-medium">Buku Kas &amp; Beban Operasional Toko</p>
                         </div>
                     </div>
-                    <button type="button" onclick="closeExpenseModal()" class="w-9 h-9 rounded-xl flex items-center justify-center text-slate-400 hover:text-slate-700 dark:hover:text-white hover:bg-slate-200/60 dark:hover:bg-slate-800 transition-colors cursor-pointer">
+                    <button type="button" onclick="closeExpenseModal()" class="w-9 h-9 rounded-xl flex items-center justify-center text-slate-400 hover:text-slate-700 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer">
                         <i class="fa-solid fa-xmark text-lg"></i>
                     </button>
                 </div>
 
-                <!-- Form Body (Scrollable) -->
-                <form id="form-expense-entry" onsubmit="event.preventDefault(); window.submitExpenseForm();" class="p-5 sm:p-6 overflow-y-auto space-y-4 flex-1">
+                <!-- Form Container with Full-height Flex Column -->
+                <form id="form-expense-entry" onsubmit="event.preventDefault(); window.submitExpenseForm();" class="flex-1 flex flex-col overflow-hidden min-h-0">
                     <input type="hidden" id="exp-input-id" value="">
 
-                    <!-- Baris 1: Tanggal & Kategori -->
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                        <div>
-                            <label class="block text-[11px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
-                                <i class="fa-regular fa-calendar text-rose-500 mr-1"></i> Tanggal Transaksi <span class="text-rose-500">*</span>
-                            </label>
-                            <input type="date" id="exp-input-date" required class="w-full text-xs font-bold bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-slate-800 dark:text-white focus:outline-hidden focus:border-rose-500 transition-colors">
-                        </div>
-                        <div>
-                            <label class="block text-[11px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
-                                <i class="fa-solid fa-tags text-rose-500 mr-1"></i> Kategori Beban <span class="text-rose-500">*</span>
-                            </label>
-                            <select id="exp-input-category" required class="w-full text-xs font-bold bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2.5 text-slate-800 dark:text-white focus:outline-hidden focus:border-rose-500 transition-colors cursor-pointer">
-                                ${EXPENSE_CATEGORIES.map(c => `<option value="${c.key}">${c.label}</option>`).join('')}
-                            </select>
-                        </div>
-                    </div>
-
-                    <!-- Baris 2: Nominal Pengeluaran + Quick Chips -->
-                    <div>
-                        <div class="flex items-center justify-between mb-1.5">
-                            <label class="block text-[11px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
-                                <i class="fa-solid fa-rupiah-sign text-rose-500 mr-1"></i> Nominal Pengeluaran <span class="text-rose-500">*</span>
-                            </label>
-                            <span class="text-[10px] font-bold text-rose-500" id="exp-nominal-preview">Rp 0</span>
-                        </div>
-                        <div class="relative">
-                            <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-xs font-black text-slate-400">Rp</span>
-                            <input type="text" id="exp-input-amount" inputmode="numeric" placeholder="0" required oninput="window.handleExpenseAmountInput(this)" class="w-full pl-11 pr-4 py-2.5 text-sm font-black bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white focus:outline-hidden focus:border-rose-500 transition-colors">
-                        </div>
-                        <!-- Quick Nominal Chips -->
-                        <div class="flex flex-wrap items-center gap-1.5 mt-2">
-                            <span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider mr-1">Cepat:</span>
-                            <button type="button" onclick="window.addQuickExpenseAmount(10000)" class="px-2 py-0.5 text-[10px] font-bold rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-rose-400 text-slate-700 dark:text-slate-300 active:scale-95 transition-all">+10 rb</button>
-                            <button type="button" onclick="window.addQuickExpenseAmount(25000)" class="px-2 py-0.5 text-[10px] font-bold rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-rose-400 text-slate-700 dark:text-slate-300 active:scale-95 transition-all">+25 rb</button>
-                            <button type="button" onclick="window.addQuickExpenseAmount(50000)" class="px-2 py-0.5 text-[10px] font-bold rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-rose-400 text-slate-700 dark:text-slate-300 active:scale-95 transition-all">+50 rb</button>
-                            <button type="button" onclick="window.addQuickExpenseAmount(100000)" class="px-2 py-0.5 text-[10px] font-bold rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-rose-400 text-slate-700 dark:text-slate-300 active:scale-95 transition-all">+100 rb</button>
-                            <button type="button" onclick="window.addQuickExpenseAmount(500000)" class="px-2 py-0.5 text-[10px] font-bold rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-rose-400 text-slate-700 dark:text-slate-300 active:scale-95 transition-all">+500 rb</button>
-                        </div>
-                    </div>
-
-                    <!-- Baris 3: Keperluan / Deskripsi Pengeluaran -->
-                    <div>
-                        <label class="block text-[11px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
-                            <i class="fa-solid fa-align-left text-rose-500 mr-1"></i> Keperluan / Uraian Beban <span class="text-rose-500">*</span>
-                        </label>
-                        <textarea id="exp-input-desc" rows="2" required placeholder="Contoh: Beli lakban cokelat 5 roll, isi ulang galon, token listrik toko..." class="w-full text-xs font-medium bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl p-3 text-slate-800 dark:text-white focus:outline-hidden focus:border-rose-500 transition-colors"></textarea>
-                    </div>
-
-                    <!-- Baris 4: Sumber Pembayaran Dana -->
-                    <div>
-                        <label class="block text-[11px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
-                            <i class="fa-solid fa-wallet text-rose-500 mr-1"></i> Sumber Dana Pembayaran <span class="text-rose-500">*</span>
-                        </label>
-                        <div class="grid grid-cols-3 gap-2" id="exp-source-selector">
-                            ${EXPENSE_SOURCES.map(s => `
-                                <label class="relative flex flex-col items-center justify-center p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/50 cursor-pointer text-center transition-all hover:border-slate-400 select-none group has-checked:border-rose-500 has-checked:bg-rose-50/40 dark:has-checked:bg-rose-950/20 has-checked:text-rose-600">
-                                    <input type="radio" name="exp_source" value="${s.key}" class="sr-only" ${s.key === 'cash' ? 'checked' : ''}>
-                                    <i class="fa-solid ${s.icon} text-sm mb-1 text-slate-500 group-hover:text-slate-800 dark:group-hover:text-white"></i>
-                                    <span class="text-[10px] font-bold text-slate-800 dark:text-slate-200 leading-tight">${s.shortLabel}</span>
+                    <!-- Scrollable Body (Independent scroll container) -->
+                    <div id="expense-form-scroll-container" class="custom-scrollbar p-5 sm:p-6 overflow-y-auto flex-1 space-y-4 min-h-0">
+                        <!-- Baris 1: Tanggal & Kategori -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                            <div>
+                                <label class="block text-[11px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
+                                    <i class="fa-regular fa-calendar text-rose-500 mr-1"></i> Tanggal Transaksi <span class="text-rose-500">*</span>
                                 </label>
-                            `).join('')}
-                        </div>
-                    </div>
-
-                    <!-- Baris 5: Toko / Penerima Dana (Opsional) -->
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                        <div>
-                            <label class="block text-[11px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
-                                <i class="fa-solid fa-store text-rose-500 mr-1"></i> Dibayarkan Kepada / Vendor <span class="text-[9px] text-slate-400 lowercase">(opsional)</span>
-                            </label>
-                            <input type="text" id="exp-input-recipient" placeholder="Contoh: Toko Plastik Berkah, PLN, SPBU..." class="w-full text-xs font-semibold bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-slate-800 dark:text-white focus:outline-hidden focus:border-rose-500 transition-colors">
-                        </div>
-                        <div>
-                            <label class="block text-[11px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
-                                <i class="fa-solid fa-user-pen text-rose-500 mr-1"></i> Dicatat Oleh <span class="text-[9px] text-slate-400 lowercase">(opsional)</span>
-                            </label>
-                            <input type="text" id="exp-input-createdby" placeholder="Owner / Kasir Shift" class="w-full text-xs font-semibold bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-slate-800 dark:text-white focus:outline-hidden focus:border-rose-500 transition-colors">
-                        </div>
-                    </div>
-
-                    <!-- Baris 6: Foto Bukti Struk / Nota (Upload & Preview) -->
-                    <div>
-                        <label class="block text-[11px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
-                            <i class="fa-solid fa-receipt text-rose-500 mr-1"></i> Foto Bukti Struk / Nota Fisik <span class="text-[9px] text-slate-400 lowercase">(opsional)</span>
-                        </label>
-                        <div class="flex items-center gap-3">
-                            <div id="exp-receipt-preview-box" class="w-16 h-16 rounded-xl border-2 border-dashed border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 flex items-center justify-center overflow-hidden shrink-0 relative group">
-                                <i class="fa-regular fa-image text-slate-400 text-xl" id="exp-receipt-placeholder-icon"></i>
-                                <img id="exp-receipt-preview-img" src="" alt="Bukti Struk" class="w-full h-full object-cover hidden">
-                                <button type="button" id="exp-receipt-remove-btn" onclick="window.removeExpenseReceiptPhoto()" class="absolute inset-0 bg-slate-900/70 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hidden cursor-pointer">
-                                    <i class="fa-solid fa-trash-can text-sm text-rose-400"></i>
-                                </button>
+                                <input type="date" id="exp-input-date" required class="w-full text-xs font-bold bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-slate-800 dark:text-white focus:outline-hidden focus:border-rose-500 transition-colors">
                             </div>
-                            <div class="flex-1 space-y-1.5">
-                                <input type="hidden" id="exp-input-receipt-url" value="">
-                                <div class="flex items-center gap-2">
-                                    <label class="px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold cursor-pointer transition-colors flex items-center gap-1.5 active:scale-95">
-                                        <i class="fa-solid fa-camera text-rose-500"></i>
-                                        <span>Ambil Foto / Pilih File</span>
-                                        <input type="file" accept="image/*" class="sr-only" onchange="window.handleExpenseReceiptUpload(this)">
+                            <div>
+                                <label class="block text-[11px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
+                                    <i class="fa-solid fa-tags text-rose-500 mr-1"></i> Kategori Beban <span class="text-rose-500">*</span>
+                                </label>
+                                <select id="exp-input-category" required class="w-full text-xs font-bold bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2.5 text-slate-800 dark:text-white focus:outline-hidden focus:border-rose-500 transition-colors cursor-pointer">
+                                    ${EXPENSE_CATEGORIES.map(c => `<option value="${c.key}">${c.label}</option>`).join('')}
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Baris 2: Nominal Pengeluaran + Quick Chips -->
+                        <div>
+                            <div class="flex items-center justify-between mb-1.5">
+                                <label class="block text-[11px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
+                                    <i class="fa-solid fa-rupiah-sign text-rose-500 mr-1"></i> Nominal Pengeluaran <span class="text-rose-500">*</span>
+                                </label>
+                                <span class="text-[10px] font-bold text-rose-500" id="exp-nominal-preview">Rp 0</span>
+                            </div>
+                            <div class="relative">
+                                <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-xs font-black text-slate-400">Rp</span>
+                                <input type="text" id="exp-input-amount" inputmode="numeric" placeholder="0" required oninput="window.handleExpenseAmountInput(this)" class="w-full pl-11 pr-4 py-2.5 text-sm font-black bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white focus:outline-hidden focus:border-rose-500 transition-colors">
+                            </div>
+                            <!-- Quick Nominal Chips -->
+                            <div class="flex flex-wrap items-center gap-1.5 mt-2">
+                                <span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider mr-1">Cepat:</span>
+                                <button type="button" onclick="window.addQuickExpenseAmount(10000)" class="px-2 py-0.5 text-[10px] font-bold rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-rose-400 text-slate-700 dark:text-slate-300 active:scale-95 transition-all cursor-pointer">+10 rb</button>
+                                <button type="button" onclick="window.addQuickExpenseAmount(25000)" class="px-2 py-0.5 text-[10px] font-bold rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-rose-400 text-slate-700 dark:text-slate-300 active:scale-95 transition-all cursor-pointer">+25 rb</button>
+                                <button type="button" onclick="window.addQuickExpenseAmount(50000)" class="px-2 py-0.5 text-[10px] font-bold rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-rose-400 text-slate-700 dark:text-slate-300 active:scale-95 transition-all cursor-pointer">+50 rb</button>
+                                <button type="button" onclick="window.addQuickExpenseAmount(100000)" class="px-2 py-0.5 text-[10px] font-bold rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-rose-400 text-slate-700 dark:text-slate-300 active:scale-95 transition-all cursor-pointer">+100 rb</button>
+                                <button type="button" onclick="window.addQuickExpenseAmount(500000)" class="px-2 py-0.5 text-[10px] font-bold rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-rose-400 text-slate-700 dark:text-slate-300 active:scale-95 transition-all cursor-pointer">+500 rb</button>
+                            </div>
+                        </div>
+
+                        <!-- Baris 3: Keperluan / Deskripsi Pengeluaran -->
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
+                                <i class="fa-solid fa-align-left text-rose-500 mr-1"></i> Keperluan / Uraian Beban <span class="text-rose-500">*</span>
+                            </label>
+                            <textarea id="exp-input-desc" rows="2" required placeholder="Contoh: Beli lakban cokelat 5 roll, isi ulang galon, token listrik toko..." class="w-full text-xs font-medium bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl p-3 text-slate-800 dark:text-white focus:outline-hidden focus:border-rose-500 transition-colors resize-none"></textarea>
+                        </div>
+
+                        <!-- Baris 4: Sumber Pembayaran Dana -->
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
+                                <i class="fa-solid fa-wallet text-rose-500 mr-1"></i> Sumber Dana Pembayaran <span class="text-rose-500">*</span>
+                            </label>
+                            <div class="grid grid-cols-3 gap-2" id="exp-source-selector">
+                                ${EXPENSE_SOURCES.map(s => `
+                                    <label class="relative flex flex-col items-center justify-center p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/50 cursor-pointer text-center transition-all hover:border-slate-400 select-none group has-checked:border-rose-500 has-checked:bg-rose-50/40 dark:has-checked:bg-rose-950/20 has-checked:text-rose-600">
+                                        <input type="radio" name="exp_source" value="${s.key}" class="sr-only" ${s.key === 'cash' ? 'checked' : ''}>
+                                        <i class="fa-solid ${s.icon} text-sm mb-1 text-slate-500 group-hover:text-slate-800 dark:group-hover:text-white"></i>
+                                        <span class="text-[10px] font-bold text-slate-800 dark:text-slate-200 leading-tight">${s.shortLabel}</span>
                                     </label>
-                                    <span class="text-[10px] text-slate-400">JPG, PNG, WEBP (maks. 5MB)</span>
+                                `).join('')}
+                            </div>
+                        </div>
+
+                        <!-- Baris 5: Toko / Penerima Dana (Opsional) -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                            <div>
+                                <label class="block text-[11px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
+                                    <i class="fa-solid fa-store text-rose-500 mr-1"></i> Dibayarkan Kepada / Vendor <span class="text-[9px] text-slate-400 lowercase">(opsional)</span>
+                                </label>
+                                <input type="text" id="exp-input-recipient" placeholder="Contoh: Toko Plastik Berkah, PLN, SPBU..." class="w-full text-xs font-semibold bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-slate-800 dark:text-white focus:outline-hidden focus:border-rose-500 transition-colors">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
+                                    <i class="fa-solid fa-user-pen text-rose-500 mr-1"></i> Dicatat Oleh <span class="text-[9px] text-slate-400 lowercase">(opsional)</span>
+                                </label>
+                                <input type="text" id="exp-input-createdby" placeholder="Owner / Kasir Shift" class="w-full text-xs font-semibold bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-slate-800 dark:text-white focus:outline-hidden focus:border-rose-500 transition-colors">
+                            </div>
+                        </div>
+
+                        <!-- Baris 6: Foto Bukti Struk / Nota (Upload & Preview) -->
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
+                                <i class="fa-solid fa-receipt text-rose-500 mr-1"></i> Foto Bukti Struk / Nota Fisik <span class="text-[9px] text-slate-400 lowercase">(opsional)</span>
+                            </label>
+                            <div class="flex items-center gap-3">
+                                <div id="exp-receipt-preview-box" class="w-16 h-16 rounded-xl border-2 border-dashed border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 flex items-center justify-center overflow-hidden shrink-0 relative group">
+                                    <i class="fa-regular fa-image text-slate-400 text-xl" id="exp-receipt-placeholder-icon"></i>
+                                    <img id="exp-receipt-preview-img" src="" alt="Bukti Struk" class="w-full h-full object-cover hidden">
+                                    <button type="button" id="exp-receipt-remove-btn" onclick="window.removeExpenseReceiptPhoto()" class="absolute inset-0 bg-slate-900/70 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hidden cursor-pointer">
+                                        <i class="fa-solid fa-trash-can text-sm text-rose-400"></i>
+                                    </button>
                                 </div>
-                                <input type="url" id="exp-input-receipt-manual" placeholder="Atau tempel URL gambar langsung..." oninput="window.setExpenseReceiptUrl(this.value)" class="w-full text-[11px] bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-lg px-2.5 py-1.5 text-slate-700 dark:text-slate-300 focus:outline-hidden">
+                                <div class="flex-1 space-y-1.5 min-w-0">
+                                    <input type="hidden" id="exp-input-receipt-url" value="">
+                                    <div class="flex items-center gap-2 flex-wrap">
+                                        <label class="px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold cursor-pointer transition-colors flex items-center gap-1.5 active:scale-95 shrink-0">
+                                            <i class="fa-solid fa-camera text-rose-500"></i>
+                                            <span>Ambil Foto / Pilih File</span>
+                                            <input type="file" accept="image/*" class="sr-only" onchange="window.handleExpenseReceiptUpload(this)">
+                                        </label>
+                                        <span class="text-[10px] text-slate-400 shrink-0">JPG, PNG, WEBP (maks. 5MB)</span>
+                                    </div>
+                                    <input type="url" id="exp-input-receipt-manual" placeholder="Atau tempel URL gambar langsung..." oninput="window.setExpenseReceiptUrl(this.value)" class="w-full text-[11px] bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-lg px-2.5 py-1.5 text-slate-700 dark:text-slate-300 focus:outline-hidden">
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Footer Action Buttons -->
-                    <div class="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-end gap-2.5">
-                        <button type="button" onclick="closeExpenseModal()" class="px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer">
+                    <!-- Sticky Docked Action Footer on Mobile & Desktop -->
+                    <div class="p-4 sm:p-5 border-t border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 shrink-0 flex items-center justify-end gap-2.5 z-10" style="padding-bottom: max(1rem, env(safe-area-inset-bottom))">
+                        <button type="button" onclick="closeExpenseModal()" class="h-11 sm:h-12 px-5 rounded-2xl border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer">
                             Batal
                         </button>
-                        <button type="submit" id="btn-save-expense" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-rose-500 to-amber-600 hover:from-rose-600 hover:to-amber-700 text-white text-xs font-black shadow-md shadow-rose-500/25 transition-all cursor-pointer active:scale-95 flex items-center gap-2">
+                        <button type="submit" id="btn-save-expense" class="h-11 sm:h-12 px-6 rounded-2xl bg-gradient-to-r from-rose-500 to-amber-600 hover:from-rose-600 hover:to-amber-700 text-white text-xs font-black shadow-md shadow-rose-500/25 transition-all cursor-pointer active:scale-95 flex items-center gap-2">
                             <i class="fa-solid fa-floppy-disk"></i>
                             <span>Simpan Pengeluaran</span>
                         </button>
@@ -257,9 +263,9 @@ export const ensureExpenseModals = () => {
         const p = document.createElement('div');
         p.id = 'modal-expense-receipt-preview';
         p.className = 'fixed inset-0 z-[160] flex hidden items-center justify-center p-4 bg-slate-950/90 opacity-0 transition-opacity duration-300';
-        p.onclick = () => window.closeExpenseReceiptPreview?.();
+        p.onclick = (e) => { if (e.target === p) window.closeExpenseReceiptPreview?.(); };
         p.innerHTML = `
-            <div class="relative max-w-3xl max-h-[90vh] bg-slate-900 rounded-2xl border border-slate-800 p-2 shadow-2xl flex flex-col items-center justify-center" onclick="event.stopPropagation()">
+            <div id="modal-expense-receipt-preview-box" class="relative max-w-3xl max-h-[90vh] bg-slate-900 rounded-2xl border border-slate-800 p-2 shadow-2xl flex flex-col items-center justify-center transform scale-95 transition-all duration-300" onclick="event.stopPropagation()">
                 <button type="button" onclick="closeExpenseReceiptPreview()" class="absolute -top-3 -right-3 w-9 h-9 rounded-full bg-rose-600 text-white flex items-center justify-center shadow-lg hover:bg-rose-700 cursor-pointer z-10">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
@@ -742,11 +748,12 @@ export const openExpenseModal = (expenseId = null) => {
     editingExpenseId = expenseId;
 
     const modal = el('modal-expense-form');
-    const content = el('modal-expense-form-content');
+    const box = el('modal-expense-form-box');
     const titleEl = el('modal-expense-title');
     const btnSave = el('btn-save-expense');
+    const scrollContainer = el('expense-form-scroll-container');
 
-    if (!modal) return;
+    if (!modal || !box) return;
 
     if (expenseId) {
         // Mode Edit
@@ -795,14 +802,31 @@ export const openExpenseModal = (expenseId = null) => {
         updateReceiptPreviewUI('');
     }
 
-    openModalAnim(modal, content);
+    // Selalu reset scroll ke posisi teratas saat modal dibuka
+    if (scrollContainer) {
+        scrollContainer.scrollTop = 0;
+    }
+
+    if (modal.classList.contains('hidden') && typeof window.pushModalHistory === 'function') {
+        window.pushModalHistory('expenseForm');
+    }
+
+    openModalAnim(modal, box);
 };
 
-export const closeExpenseModal = () => {
+export const closeExpenseModal = (fH = false) => {
     const modal = el('modal-expense-form');
-    const content = el('modal-expense-form-content');
-    if (modal) {
-        closeModalAnim(modal, content, () => {
+    const box = el('modal-expense-form-box');
+    if (!modal) return;
+
+    if (!fH && typeof window.requestCloseModal === 'function') {
+        window.requestCloseModal('expenseForm', false, () => {
+            closeModalAnim(modal, box, () => {
+                editingExpenseId = null;
+            });
+        });
+    } else {
+        closeModalAnim(modal, box, () => {
             editingExpenseId = null;
         });
     }
@@ -961,27 +985,37 @@ const compressImageFile = (file, maxDimension = 1000, quality = 0.75) => {
 
 // ─── Modal Preview Nota Fullscreen ───────────────────────────
 export const previewExpenseReceipt = (expenseId) => {
+    ensureExpenseModals();
     const exp = (appData.expenses || []).find(e => e.id === expenseId);
     if (!exp || !exp.receiptImg) return showToast("Foto struk tidak tersedia");
 
     const modal = el('modal-expense-receipt-preview');
+    const box = el('modal-expense-receipt-preview-box');
     const img = el('img-full-receipt');
     const cap = el('caption-full-receipt');
 
     if (img) img.src = fixD(exp.receiptImg);
     if (cap) cap.innerText = `${formatIndoDate(exp.date)} — ${exp.desc} (${fCur(exp.amount)})`;
 
-    if (modal) {
-        modal.classList.remove('hidden');
-        requestAnimationFrame(() => modal.classList.remove('opacity-0'));
+    if (modal && box) {
+        if (modal.classList.contains('hidden') && typeof window.pushModalHistory === 'function') {
+            window.pushModalHistory('expenseReceipt');
+        }
+        openModalAnim(modal, box);
     }
 };
 
-export const closeExpenseReceiptPreview = () => {
+export const closeExpenseReceiptPreview = (fH = false) => {
     const modal = el('modal-expense-receipt-preview');
-    if (modal) {
-        modal.classList.add('opacity-0');
-        setTimeout(() => modal.classList.add('hidden'), 250);
+    const box = el('modal-expense-receipt-preview-box');
+    if (!modal) return;
+
+    if (!fH && typeof window.requestCloseModal === 'function') {
+        window.requestCloseModal('expenseReceipt', false, () => {
+            closeModalAnim(modal, box);
+        });
+    } else {
+        closeModalAnim(modal, box);
     }
 };
 
