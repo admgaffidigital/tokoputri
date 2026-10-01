@@ -445,8 +445,8 @@ export const renderExpensesAdminView = () => {
                         <div class="w-7 h-7 rounded-lg bg-amber-500/10 text-amber-600 flex items-center justify-center text-xs"><i class="fa-solid fa-crown"></i></div>
                     </div>
                     <div class="my-1">
-                        <p class="text-sm sm:text-base font-black text-slate-800 dark:text-white truncate">${metrics.topCategory.label}</p>
-                        <p class="text-xs sm:text-sm font-bold text-amber-600 dark:text-amber-400 mt-0.5">${fCur(metrics.topCategory.amount)}</p>
+                        <p class="text-sm sm:text-base font-black text-slate-800 dark:text-white truncate" title="${metrics.totalAmount > 0 ? metrics.topCategory.label : 'Belum Ada Transaksi'}">${metrics.totalAmount > 0 ? metrics.topCategory.label : 'Belum Ada Transaksi'}</p>
+                        <p class="text-xs sm:text-sm font-bold text-amber-600 dark:text-amber-400 mt-0.5">${metrics.totalAmount > 0 ? fCur(metrics.topCategory.amount) : 'Rp 0'}</p>
                     </div>
                     <div class="mt-2 pt-2 border-t border-slate-100 dark:border-slate-800 text-[10px] text-slate-400 flex items-center justify-between">
                         <span>Porsi Alokasi</span>
