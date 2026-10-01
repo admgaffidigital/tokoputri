@@ -78,13 +78,12 @@ jobs:
             
             Unduh file installer **TokoPutri.apk** di bawah untuk dipasang di smartphone Android.
             
-            **Pembaruan Fitur Terbaru (v1.9.21):**
-            - 💼 **Manajemen Shift Kasir & Modal Awal (Cash Float)**: Buka shift kasir dengan modal awal laci uang kembalian (chip cepat Rp 0, 50rb, 100rb, 200rb, 500rb) dan audio chime Web Audio API yang elegan.
-            - 📊 **Ringkasan Shift Berjalan (X-Report)**: Pantau durasi kerja aktif, rincian omset per metode pembayaran (Tunai, QRIS, Bank, Tempo), diskon toko, poin member, dan uang kas yang seharusnya ada di laci.
-            - 🔒 **Rekonsiliasi Kas Laci & Rekap Tutup Kasir (Z-Report)**: Alur tutup kasir profesional dengan dua mode hitung fisik (Input Cepat & Kalkulator Denominasi Lembaran), deteksi otomatis selisih kas (Pas, Surplus, Defisit), dan proteksi logout kasir.
-            - 🖨️ **Cetak Slip Rekap Shift Thermal POS (58mm / 80mm)**: Cetak bukti settlement shift kasir resmi ke printer thermal (Bluetooth ESC/POS, RawBT, browser) lengkap dengan tanda tangan kasir & supervisor.
-            - 📋 **Laporan Shift Kasir Cloud di CMS Admin**: Tab baru di menu Manajemen Kasir CMS Admin untuk mengaudit riwayat shift seluruh kasir dan mencetak ulang slip rekap kasir kapan saja.
-            - ⌨️ **Pintasan Keyboard Shift (F10)**: Akses cepat modal ringkasan dan buka shift langsung dari keyboard kasir.
+            **Pusat Laporan & Keuangan Terpadu (v1.10.13):**
+            - 📊 **Pusat Laporan & Keuangan Terpadu (7 Tab)**: Konsolidasi total seluruh laporan berserakan menjadi 1 menu khusus (Eksekutif Laba-Rugi P&L, Laporan Penjualan POS vs Web, Valuasi Stok Gudang & HPP, Utang Piutang & Working Capital, Beban Biaya Operasional, Kepatuhan Pajak RI 2026 CTAS 16-Digit, dan Neraca Sederhana).
+            - 🧹 **Eliminasi Laporan Duplikat**: Menghapus widget mini laporan dan tombol lama di dashboard admin, membebaskan antarmuka dari redundansi data.
+            - 🛡️ **Universal Zero-Shadow Shield & Flat Clarity**: Seluruh kartu, modal, header, dan elemen berpenampilan solid, bersih, kontras tinggi WCAG AAA, dan bebas bayangan blur.
+            - 🔗 **Pintasan Cepat Antar-Modul**: Tombol lompat langsung dari kartu stok produk, tempo piutang, dan kulakan PO ke tab laporan terkait.
+            - 📱 **Android Capacitor Native Sync**: Sinkronisasi penuh aset public, Android versionCode 11013, dan APK siap pasang.
           files: build-output/TokoPutri.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
