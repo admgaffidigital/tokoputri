@@ -310,9 +310,9 @@ export const handleSoBarcodeScan = (rawCode) => {
             const rowEl = document.getElementById(`so-row-${matched.key}`);
             if (rowEl) {
                 rowEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                rowEl.classList.add('ring-2', 'ring-amber-500', 'bg-amber-50/40', 'dark:bg-amber-950/30');
+                rowEl.classList.add('ring-2', 'ring-[var(--color-primary)]', 'bg-[rgba(var(--color-primary-rgb),0.08)]');
                 setTimeout(() => {
-                    rowEl.classList.remove('ring-2', 'ring-amber-500', 'bg-amber-50/40', 'dark:bg-amber-950/30');
+                    rowEl.classList.remove('ring-2', 'ring-[var(--color-primary)]', 'bg-[rgba(var(--color-primary-rgb),0.08)]');
                 }, 1500);
             }
         });
@@ -501,17 +501,17 @@ const renderDiffBadgeHtml = (item) => {
  */
 const renderReasonSelectorHtml = (item) => {
     if (!item.isCounted || item.diff === 0) {
-        return `<span class="text-[10px] text-slate-400 italic">Tidak ada selisih</span>`;
+        return `<span class="text-[10px] text-slate-400 italic">Tidak ada selisih stok</span>`;
     }
 
     return `
-        <div class="flex items-center gap-1.5 w-full">
-            <select onchange="window.setSoItemReason('${item.key}', this.value)" class="text-[11px] font-bold py-1.5 px-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 focus:outline-hidden focus:border-[var(--color-primary)] cursor-pointer max-w-[190px] truncate shadow-2xs">
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-1.5 w-full">
+            <select onchange="window.setSoItemReason('${item.key}', this.value)" class="text-[11px] font-bold py-1.5 px-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 focus:outline-hidden focus:border-[var(--color-primary)] cursor-pointer w-full sm:w-auto sm:max-w-[190px] truncate shadow-2xs">
                 ${SO_DISCREPANCY_REASONS.map(r => `
                     <option value="${r.key}" ${item.reason === r.key ? 'selected' : ''}>${r.label}</option>
                 `).join('')}
             </select>
-            <input type="text" placeholder="Catatan..." value="${esc(item.notes || '')}" oninput="window.setSoItemNotes('${item.key}', this.value)" class="text-[11px] font-medium py-1.5 px-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 focus:outline-hidden focus:border-[var(--color-primary)] flex-1 min-w-[110px] shadow-2xs">
+            <input type="text" placeholder="Catatan selisih (opsional)..." value="${esc(item.notes || '')}" oninput="window.setSoItemNotes('${item.key}', this.value)" class="text-[11px] font-medium py-1.5 px-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 focus:outline-hidden focus:border-[var(--color-primary)] flex-1 min-w-0 shadow-2xs">
         </div>
     `;
 };
@@ -530,13 +530,13 @@ export const renderStockOpnameView = () => {
             <div class="rounded-3xl border border-[rgba(var(--color-primary-rgb),0.2)] bg-gradient-to-br from-white via-white to-[rgba(var(--color-primary-rgb),0.04)] dark:from-slate-900 dark:via-slate-900 dark:to-[rgba(var(--color-primary-rgb),0.08)] p-4 sm:p-6 shadow-2xs space-y-4">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div class="flex items-center gap-3.5">
-                        <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center shrink-0 border border-amber-500/30 text-white shadow-md" style="background: linear-gradient(135deg, #f59e0b, #d97706); box-shadow: 0 4px 14px rgba(217, 119, 6, 0.35);">
+                        <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center shrink-0 border border-white/20 text-white shadow-md" style="background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark)); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
                             <i class="fa-solid fa-clipboard-check text-xl sm:text-2xl"></i>
                         </div>
                         <div class="min-w-0">
                             <div class="flex items-center gap-2 flex-wrap">
                                 <h1 class="font-extrabold text-base sm:text-xl text-slate-900 dark:text-white uppercase tracking-tight">Stock Opname</h1>
-                                <span class="px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-amber-100 text-amber-800 dark:bg-amber-950/70 dark:text-amber-300 border border-amber-300/80 dark:border-amber-800">
+                                <span class="px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider border" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary); border-color: rgba(var(--color-primary-rgb), 0.25);">
                                     Audit Fisik Rak
                                 </span>
                             </div>
@@ -546,12 +546,12 @@ export const renderStockOpnameView = () => {
                         </div>
                     </div>
 
-                    <!-- Dual Segmented Sub-Tab Switcher -->
-                    <div class="flex items-center p-1 bg-slate-100 dark:bg-slate-800 rounded-2xl border border-slate-200/80 dark:border-slate-700/80 shrink-0 self-start sm:self-auto">
-                        <button onclick="window.switchSoSubTab('active')" class="px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer ${soActiveSubTab === 'active' ? 'primary-bg text-white shadow-xs' : 'text-slate-600 dark:text-slate-300 hover:text-slate-900'}">
+                    <!-- Dual Segmented Sub-Tab Switcher (Mobile 50/50 Responsive) -->
+                    <div class="flex items-center p-1 bg-slate-100 dark:bg-slate-800 rounded-2xl border border-slate-200/80 dark:border-slate-700/80 shrink-0 w-full sm:w-auto">
+                        <button onclick="window.switchSoSubTab('active')" class="flex-1 sm:flex-initial px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer ${soActiveSubTab === 'active' ? 'primary-bg text-white shadow-xs' : 'text-slate-600 dark:text-slate-300 hover:text-slate-900'}">
                             <i class="fa-solid fa-boxes-stacked text-xs"></i> <span>Sesi Audit Aktif</span>
                         </button>
-                        <button onclick="window.switchSoSubTab('history')" class="px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer ${soActiveSubTab === 'history' ? 'primary-bg text-white shadow-xs' : 'text-slate-600 dark:text-slate-300 hover:text-slate-900'}">
+                        <button onclick="window.switchSoSubTab('history')" class="flex-1 sm:flex-initial px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer ${soActiveSubTab === 'history' ? 'primary-bg text-white shadow-xs' : 'text-slate-600 dark:text-slate-300 hover:text-slate-900'}">
                             <i class="fa-solid fa-clock-rotate-left text-xs"></i> <span>Arsip &amp; Riwayat (${(appData.stockOpnameHistory || []).length})</span>
                         </button>
                     </div>
@@ -596,11 +596,11 @@ export const renderSoStatsBar = () => {
 
     container.innerHTML = `
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3.5 pt-1">
-            <!-- Card 1: Total Progress Hitung -->
-            <div class="p-3.5 sm:p-4 rounded-2xl bg-white dark:bg-slate-900/90 border border-slate-200/80 dark:border-slate-800 shadow-2xs">
+            <!-- Card 1: Total Progress Hitung (Diaksen Tema) -->
+            <div class="p-3.5 sm:p-4 rounded-2xl bg-gradient-to-br from-white to-[rgba(var(--color-primary-rgb),0.03)] dark:from-slate-900 dark:to-slate-900 border border-[rgba(var(--color-primary-rgb),0.25)] shadow-2xs">
                 <div class="flex items-center justify-between gap-2 mb-2">
                     <span class="text-[9px] font-black uppercase tracking-widest text-slate-400">Kemajuan Hitung</span>
-                    <span class="text-[10px] font-black text-[var(--color-primary)]">${progressPct}%</span>
+                    <span class="text-[10px] font-black" style="color: var(--color-primary);">${progressPct}%</span>
                 </div>
                 <div class="flex items-baseline gap-1.5">
                     <span class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white">${st.countedCount}</span>
@@ -625,7 +625,7 @@ export const renderSoStatsBar = () => {
             </div>
 
             <!-- Card 3: Selisih Kurang (Loss) -->
-            <div class="p-3.5 sm:p-4 rounded-2xl bg-white dark:bg-slate-900/90 border border-rose-200/70 dark:border-rose-900/50 shadow-2xs">
+            <div class="p-3.5 sm:p-4 rounded-2xl bg-white dark:bg-slate-900/90 border border-slate-200/80 dark:border-slate-800 shadow-2xs">
                 <div class="flex items-center justify-between gap-2 mb-2">
                     <span class="text-[9px] font-black uppercase tracking-widest text-rose-600 dark:text-rose-400">Selisih Kurang (Loss)</span>
                     <i class="fa-solid fa-arrow-trend-down text-rose-500 text-xs"></i>
@@ -640,7 +640,7 @@ export const renderSoStatsBar = () => {
             </div>
 
             <!-- Card 4: Selisih Lebih (Surplus) / Dampak Bersih -->
-            <div class="p-3.5 sm:p-4 rounded-2xl bg-white dark:bg-slate-900/90 border border-amber-200/70 dark:border-amber-900/50 shadow-2xs">
+            <div class="p-3.5 sm:p-4 rounded-2xl bg-white dark:bg-slate-900/90 border border-slate-200/80 dark:border-slate-800 shadow-2xs">
                 <div class="flex items-center justify-between gap-2 mb-2">
                     <span class="text-[9px] font-black uppercase tracking-widest text-amber-600 dark:text-amber-400">Selisih Lebih (Surplus)</span>
                     <i class="fa-solid fa-arrow-trend-up text-amber-500 text-xs"></i>
@@ -686,14 +686,14 @@ export const renderSoActiveView = (categories, brands) => {
                     </div>
 
                     <!-- Tombol Aksi Cepat Massal & Finalisasi -->
-                    <div class="flex items-center flex-wrap gap-2 shrink-0">
-                        <button onclick="window.matchAllUncountedInView()" class="px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold text-xs flex items-center gap-1.5 shadow-2xs transition-all cursor-pointer active:scale-95" title="Samakan semua item yang belum diisi agar selisih 0">
-                            <i class="fa-solid fa-check-double text-emerald-500"></i> <span class="hidden sm:inline">Samakan Belum Diisi</span>
+                    <div class="flex items-center flex-wrap sm:flex-nowrap gap-2 shrink-0 w-full sm:w-auto">
+                        <button onclick="window.matchAllUncountedInView()" class="flex-1 sm:flex-initial px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold text-xs flex items-center justify-center gap-1.5 shadow-2xs transition-all cursor-pointer active:scale-95" title="Samakan semua item yang belum diisi agar selisih 0">
+                            <i class="fa-solid fa-check-double text-emerald-500"></i> <span class="whitespace-nowrap">Samakan Belum Diisi</span>
                         </button>
-                        <button onclick="window.printSoWorksheet()" class="px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold text-xs flex items-center gap-1.5 shadow-2xs transition-all cursor-pointer active:scale-95" title="Cetak lembar hitung fisik untuk staf rak">
-                            <i class="fa-solid fa-print text-slate-500"></i> <span class="hidden sm:inline">Cetak Lembar Kerja</span>
+                        <button onclick="window.printSoWorksheet()" class="flex-1 sm:flex-initial px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold text-xs flex items-center justify-center gap-1.5 shadow-2xs transition-all cursor-pointer active:scale-95" title="Cetak lembar hitung fisik untuk staf rak">
+                            <i class="fa-solid fa-print text-slate-500"></i> <span class="whitespace-nowrap">Lembar Kerja</span>
                         </button>
-                        <button onclick="window.openFinalizeModal()" class="px-4 py-2.5 rounded-xl text-white font-extrabold text-xs flex items-center gap-2 shadow-md transition-all cursor-pointer active:scale-95" style="background: linear-gradient(135deg, #f59e0b, #d97706); box-shadow: 0 4px 14px rgba(217, 119, 6, 0.35);">
+                        <button onclick="window.openFinalizeModal()" class="w-full sm:w-auto px-4 py-2.5 rounded-xl text-white font-extrabold text-xs flex items-center justify-center gap-2 shadow-md transition-all cursor-pointer active:scale-95 whitespace-nowrap" style="background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark)); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
                             <i class="fa-solid fa-floppy-disk"></i> <span>Terapkan Penyesuaian</span>
                         </button>
                     </div>
@@ -776,7 +776,7 @@ export const renderSoActiveItems = () => {
     if (!items.length) {
         container.innerHTML = `
             <div class="p-8 sm:p-12 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-slate-800 text-center flex flex-col items-center justify-center space-y-3 shadow-2xs">
-                <div class="w-14 h-14 rounded-2xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center text-2xl border border-amber-500/20">
+                <div class="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl border" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary); border-color: rgba(var(--color-primary-rgb), 0.25);">
                     <i class="fa-solid fa-magnifying-glass"></i>
                 </div>
                 <p class="text-sm font-bold text-slate-800 dark:text-white">Tidak ada produk ditemukan</p>
@@ -801,14 +801,14 @@ export const renderSoActiveItems = () => {
 
             <!-- List Item Rows -->
             ${items.map(item => `
-                <div id="so-row-${item.key}" class="p-3.5 sm:p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 hover:border-amber-400/50 transition-all shadow-2xs space-y-3 lg:space-y-0">
+                <div id="so-row-${item.key}" class="p-3.5 sm:p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 hover:border-[rgba(var(--color-primary-rgb),0.4)] transition-all shadow-2xs space-y-3 lg:space-y-0">
                     <div class="grid grid-cols-1 lg:grid-cols-12 gap-3 items-center">
                         <!-- Col 1: Informasi Produk (Desktop: 5 cols) -->
                         <div class="lg:col-span-5 flex items-center gap-3 min-w-0">
                             <div class="w-12 h-12 rounded-xl overflow-hidden shrink-0 border border-slate-200/80 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/60 flex items-center justify-center">
                                 ${item.img 
                                     ? `<img src="${esc(item.img)}" alt="${esc(item.productName)}" class="w-full h-full object-cover">`
-                                    : `<div class="w-full h-full flex items-center justify-center text-amber-500 font-bold text-base"><i class="fa-solid fa-box-open"></i></div>`
+                                    : `<div class="w-full h-full flex items-center justify-center font-bold text-base" style="color: var(--color-primary)"><i class="fa-solid fa-box-open"></i></div>`
                                 }
                             </div>
                             <div class="min-w-0 flex-1">
@@ -827,27 +827,41 @@ export const renderSoActiveItems = () => {
                             </div>
                         </div>
 
-                        <!-- Col 2: Stok Sistem (Desktop: 2 cols) -->
-                        <div class="lg:col-span-2 flex lg:flex-col items-center justify-between lg:justify-center border-t lg:border-t-0 pt-2 lg:pt-0 border-slate-100 dark:border-slate-800">
-                            <span class="lg:hidden text-[11px] font-bold text-slate-400">Stok Sistem:</span>
-                            <div class="text-center">
-                                <span class="text-sm sm:text-base font-black text-slate-800 dark:text-slate-200 font-mono">${item.systemStock}</span>
-                                <span class="text-[10px] text-slate-400 ml-0.5 font-medium">${esc(item.unit)}</span>
-                            </div>
+                        <!-- Col 2: Stok Sistem (Desktop Only) -->
+                        <div class="hidden lg:flex lg:col-span-2 flex-col items-center justify-center text-center">
+                            <span class="text-sm sm:text-base font-black text-slate-800 dark:text-slate-200 font-mono">${item.systemStock}</span>
+                            <span class="text-[10px] text-slate-400 ml-0.5 font-medium">${esc(item.unit)}</span>
                         </div>
 
-                        <!-- Col 3: Input Fisik Rak (Desktop: 2 cols) -->
-                        <div class="lg:col-span-2 flex lg:flex-col items-center justify-between lg:justify-center gap-2">
-                            <span class="lg:hidden text-[11px] font-bold text-slate-400">Hasil Hitung Fisik:</span>
-                            <div class="flex items-center gap-1">
-                                <button type="button" onclick="window.stepSoPhysicalCount('${item.key}', -1)" class="w-8 h-8 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 font-black text-xs flex items-center justify-center transition-all cursor-pointer active:scale-90 shadow-2xs">
+                        <!-- Col 3: Input Fisik Rak (Desktop Only) -->
+                        <div class="hidden lg:flex lg:col-span-2 items-center justify-center gap-1">
+                            <button type="button" onclick="window.stepSoPhysicalCount('${item.key}', -1)" class="w-8 h-8 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 font-black text-xs flex items-center justify-center transition-all cursor-pointer active:scale-90 shadow-2xs">
+                                <i class="fa-solid fa-minus"></i>
+                            </button>
+                            <input type="number" min="0" step="any" placeholder="Fisik" value="${item.physicalStock !== null ? item.physicalStock : ''}" onchange="window.setSoPhysicalCount('${item.key}', this.value)" oninput="window.setSoPhysicalCount('${item.key}', this.value)" class="so-phys-input w-16 sm:w-20 py-1.5 px-1 text-center font-mono font-black text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-hidden focus:border-[var(--color-primary)] text-slate-900 dark:text-white shadow-2xs">
+                            <button type="button" onclick="window.stepSoPhysicalCount('${item.key}', 1)" class="w-8 h-8 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 font-black text-xs flex items-center justify-center transition-all cursor-pointer active:scale-90 shadow-2xs">
+                                <i class="fa-solid fa-plus"></i>
+                            </button>
+                            <button type="button" onclick="window.matchSoItem('${item.key}')" class="h-8 px-2 rounded-xl primary-bg-soft primary-border border primary-text hover:bg-[rgba(var(--color-primary-rgb),0.2)] font-black text-[10px] flex items-center justify-center transition-all cursor-pointer active:scale-95 shadow-2xs" title="Samakan fisik dengan stok sistem">
+                                =
+                            </button>
+                        </div>
+
+                        <!-- MOBILE ONLY: Compact Bar Sistem vs Fisik (Touch-Friendly) -->
+                        <div class="lg:hidden p-2.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800 flex items-center justify-between gap-2">
+                            <div class="flex flex-col">
+                                <span class="text-[9px] font-black uppercase tracking-wider text-slate-400">Stok Sistem</span>
+                                <span class="text-xs font-black font-mono text-slate-800 dark:text-slate-200">${item.systemStock} ${esc(item.unit)}</span>
+                            </div>
+                            <div class="flex items-center gap-1.5">
+                                <button type="button" onclick="window.stepSoPhysicalCount('${item.key}', -1)" class="w-9 h-9 rounded-xl bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200/90 dark:border-slate-600 font-black text-xs flex items-center justify-center transition-all cursor-pointer active:scale-90 shadow-2xs">
                                     <i class="fa-solid fa-minus"></i>
                                 </button>
-                                <input type="number" min="0" step="any" placeholder="Fisik" value="${item.physicalStock !== null ? item.physicalStock : ''}" onchange="window.setSoPhysicalCount('${item.key}', this.value)" oninput="window.setSoPhysicalCount('${item.key}', this.value)" class="so-phys-input w-16 sm:w-20 py-1.5 px-1 text-center font-mono font-black text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-hidden focus:border-[var(--color-primary)] text-slate-900 dark:text-white shadow-2xs">
-                                <button type="button" onclick="window.stepSoPhysicalCount('${item.key}', 1)" class="w-8 h-8 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 font-black text-xs flex items-center justify-center transition-all cursor-pointer active:scale-90 shadow-2xs">
+                                <input type="number" min="0" step="any" placeholder="Fisik" value="${item.physicalStock !== null ? item.physicalStock : ''}" onchange="window.setSoPhysicalCount('${item.key}', this.value)" oninput="window.setSoPhysicalCount('${item.key}', this.value)" class="so-phys-input w-16 py-1.5 px-1 text-center font-mono font-black text-sm bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-hidden focus:border-[var(--color-primary)] text-slate-900 dark:text-white shadow-2xs">
+                                <button type="button" onclick="window.stepSoPhysicalCount('${item.key}', 1)" class="w-9 h-9 rounded-xl bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200/90 dark:border-slate-600 font-black text-xs flex items-center justify-center transition-all cursor-pointer active:scale-90 shadow-2xs">
                                     <i class="fa-solid fa-plus"></i>
                                 </button>
-                                <button type="button" onclick="window.matchSoItem('${item.key}')" class="h-8 px-2 rounded-xl primary-bg-soft primary-border border primary-text hover:bg-[rgba(var(--color-primary-rgb),0.2)] font-black text-[10px] flex items-center justify-center transition-all cursor-pointer active:scale-95 shadow-2xs" title="Samakan fisik dengan stok sistem">
+                                <button type="button" onclick="window.matchSoItem('${item.key}')" class="h-9 px-2.5 rounded-xl primary-bg-soft primary-border border primary-text font-black text-xs flex items-center justify-center transition-all cursor-pointer active:scale-95 shadow-2xs" title="Samakan fisik = sistem">
                                     =
                                 </button>
                             </div>
@@ -923,7 +937,7 @@ export const ensureSoModals = () => {
             <div id="modal-so-finalize-content" class="bg-white dark:bg-slate-900 w-full max-w-lg rounded-t-3xl sm:rounded-2xl max-h-[90vh] flex flex-col shadow-2xl border border-slate-200 dark:border-slate-800 translate-y-full sm:translate-y-10 transition-transform duration-300">
                 <div class="p-5 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center shrink-0">
                     <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-2xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center text-lg border border-amber-500/20">
+                        <div class="w-10 h-10 rounded-2xl flex items-center justify-center text-lg text-white shadow-sm shrink-0" style="background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark)); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
                             <i class="fa-solid fa-clipboard-check"></i>
                         </div>
                         <div>
@@ -940,7 +954,7 @@ export const ensureSoModals = () => {
                     <button type="button" onclick="window.closeFinalizeModal()" class="px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-50 cursor-pointer active:scale-95 transition-all text-xs">
                         Batal
                     </button>
-                    <button type="button" onclick="window.executeSoFinalize()" class="px-5 py-2.5 rounded-xl text-white font-extrabold flex items-center gap-2 shadow-md cursor-pointer active:scale-95 transition-all text-xs" style="background: linear-gradient(135deg, #f59e0b, #d97706); box-shadow: 0 4px 14px rgba(217, 119, 6, 0.35);">
+                    <button type="button" onclick="window.executeSoFinalize()" class="px-5 py-2.5 rounded-xl text-white font-extrabold flex items-center gap-2 shadow-md cursor-pointer active:scale-95 transition-all text-xs" style="background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark)); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
                         <i class="fa-solid fa-check"></i> <span>Konfirmasi &amp; Update Stok</span>
                     </button>
                 </div>
@@ -959,7 +973,7 @@ export const ensureSoModals = () => {
             <div id="modal-so-history-content" class="bg-white dark:bg-slate-900 w-full max-w-3xl rounded-t-3xl sm:rounded-2xl max-h-[90vh] flex flex-col shadow-2xl border border-slate-200 dark:border-slate-800 translate-y-full sm:translate-y-10 transition-transform duration-300">
                 <div class="p-5 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center shrink-0">
                     <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-2xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center text-lg border border-amber-500/20">
+                        <div class="w-10 h-10 rounded-2xl flex items-center justify-center text-lg text-white shadow-sm shrink-0" style="background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark)); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
                             <i class="fa-solid fa-file-invoice"></i>
                         </div>
                         <div>
@@ -1004,12 +1018,12 @@ export const openFinalizeModal = () => {
     const body = el('so-finalize-body');
     if (body) {
         body.innerHTML = `
-            <div class="p-4 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/80 space-y-2">
-                <div class="flex items-center gap-2 text-amber-800 dark:text-amber-300 font-bold text-xs">
-                    <i class="fa-solid fa-circle-exclamation text-amber-500"></i>
+            <div class="p-4 rounded-2xl border space-y-1.5" style="background: rgba(var(--color-primary-rgb), 0.06); border-color: rgba(var(--color-primary-rgb), 0.2);">
+                <div class="flex items-center gap-2 font-bold text-xs" style="color: var(--color-primary);">
+                    <i class="fa-solid fa-circle-info"></i>
                     <span>Ringkasan Berita Acara &amp; Rekonsiliasi</span>
                 </div>
-                <p class="text-[11px] text-amber-700 dark:text-amber-400 leading-relaxed">
+                <p class="text-[11px] text-slate-600 dark:text-slate-300 leading-relaxed">
                     Stok di database toko akan diperbarui secara atomik mengikuti angka <b>Hasil Fisik</b> yang Anda masukkan. Item yang tidak dihitung tetap memakai stok lama.
                 </p>
             </div>
@@ -1244,10 +1258,10 @@ export const renderSoHistoryView = () => {
     subContent.innerHTML = `
         <div class="space-y-3">
             ${history.map(rec => `
-                <div class="p-4 sm:p-5 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 hover:border-amber-400/50 transition-all shadow-2xs space-y-3">
+                <div class="p-4 sm:p-5 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 hover:border-[rgba(var(--color-primary-rgb),0.4)] transition-all shadow-2xs space-y-3">
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800/80 pb-3">
                         <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-2xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center text-base border border-amber-500/20 shrink-0">
+                            <div class="w-10 h-10 rounded-2xl flex items-center justify-center text-base border shrink-0" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary); border-color: rgba(var(--color-primary-rgb), 0.25);">
                                 <i class="fa-solid fa-file-signature"></i>
                             </div>
                             <div>
@@ -1268,7 +1282,7 @@ export const renderSoHistoryView = () => {
                             <button onclick="window.viewSoHistoryDetail('${rec.id}')" class="px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer active:scale-95 shadow-2xs">
                                 <i class="fa-solid fa-eye text-xs"></i> <span>Rincian</span>
                             </button>
-                            <button onclick="window.openDocPreview && window.openDocPreview('stock_opname', '${rec.id}')" class="px-3 py-1.5 rounded-xl text-white font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer active:scale-95 shadow-2xs" style="background: linear-gradient(135deg, #f59e0b, #d97706);">
+                            <button onclick="window.openDocPreview && window.openDocPreview('stock_opname', '${rec.id}')" class="px-3 py-1.5 rounded-xl text-white font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer active:scale-95 shadow-2xs" style="background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark)); box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.3);">
                                 <i class="fa-solid fa-print text-xs"></i> <span>Cetak A4</span>
                             </button>
                             ${isOwnerUser() ? `

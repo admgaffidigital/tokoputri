@@ -305,7 +305,7 @@ window.rAdmL = t => {
                     <button onclick="openCameraScanner('admin-search-input')" class="absolute right-2.5 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center text-slate-400 hover:text-[var(--color-primary)] hover:bg-[rgba(var(--color-primary-rgb),0.08)] rounded-xl transition-all" title="Scan Barcode"><i class="fa-solid fa-qrcode text-sm"></i></button>
                 </div>
                 ${t === 'products' ? `
-                <button onclick="openAdminTab('stock_opname')" class="h-[46px] px-3.5 sm:px-4 rounded-2xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs flex items-center gap-2 shadow-sm active:scale-95 transition-all shrink-0 cursor-pointer" title="Stock Opname (Audit Fisik Stok)">
+                <button onclick="openAdminTab('stock_opname')" class="h-[46px] px-3.5 sm:px-4 rounded-2xl border font-bold text-xs flex items-center gap-2 shadow-2xs active:scale-95 transition-all shrink-0 cursor-pointer hover:opacity-90" style="background: rgba(var(--color-primary-rgb), 0.1); color: var(--color-primary); border-color: rgba(var(--color-primary-rgb), 0.25);" title="Stock Opname (Audit Fisik Stok)">
                     <i class="fa-solid fa-clipboard-check text-sm"></i>
                     <span class="hidden sm:inline">Stock Opname</span>
                 </button>` : ''}
