@@ -8,6 +8,22 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-10-31',
+        version: 'v1.10.31',
+        date: '2026-10-03',
+        title: 'Penyelarasan Presisi Kartu List View Etalase & POS Kasir: Foto Bersih, Eliminasi Void Tengah & Gap Ringkas',
+        category: 'ui',
+        badge: 'Sleek List View & POS Harmonization v1.10.31',
+        items: [
+            'Unifikasi Desain List View Etalase Konsisten dengan POS Kasir: Merestrukturisasi kartu mode list etalase pelanggan menjadi baris horizontal kompak dan presisi (tinggi ~88px). Foto produk kini 100% bersih tanpa tertutup tumpukan badge promo.',
+            'Relokasi Badge Promo ke Baris Chip: Badge diskon (-X%) dan Pre-Order (PO) pada mode list dipindahkan ke baris chip teks di sebelah kanan foto, menampilkan informasi promo secara jelas tanpa menutupi visual barang.',
+            'Eliminasi Void Tengah pada List View: Mengganti layout justify-between h-full menjadi flex-col justify-center gap-1, menghilangkan ruang kosong 40px melompong di tengah kartu.',
+            'Perampingan Gap Antarkartu: Mengurangi celah antarkartu mode list menjadi gap-1.5 sm:gap-2 (6px–8px) dan mode grid menjadi gap-2 sm:gap-2.5 md:gap-3 lg:gap-3.5 xl:gap-4 baik di etalase pelanggan maupun POS kasir (pos-catalog-grid-mode, pos-catalog-list-mode).',
+            'Penyelarasan Chip POS Grid Mode: Mengunci baris chip POS Grid menjadi 1 baris flex-nowrap agar kartu tidak bertambah tinggi secara eksesif saat memuat banyak badge operasional.',
+            'Multi-Channel Build & Sync v1.10.31 (Android versionCode 11031): Kompilasi produksi web, sinkronisasi bundle flashdisk siap pakai, serta platform Android Capacitor tersinkronisasi 100%.'
+        ]
+    },
+    {
         id: 'log-1-10-30',
         version: 'v1.10.30',
         date: '2026-10-03',

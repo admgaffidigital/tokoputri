@@ -1432,15 +1432,15 @@ export const renderCatalog = () => {
                         <p class="pos-card-name leading-tight line-clamp-2" title="${pName}">${pName}</p>
                         <!-- Chip Operasional Rapi 1 baris (Diskon / Varian / Grosir / PO / Stok) -->
                         ${(discBadge || hasVariants || hasGrosir || stockInfo.isPreorder || (stockInfo.isManaged && !stockInfo.isOutOfStock)) ? `
-                        <div class="flex items-center gap-1 mt-1 mb-0.5 flex-wrap">
+                        <div class="flex items-center gap-1 mt-1 mb-0.5 overflow-hidden flex-nowrap">
                             ${discBadge}
-                            ${hasVariants ? `<span class="pos-tag-chip pos-tag-variant"><i class="fa-solid fa-layer-group"></i> Varian</span>` : ''}
-                            ${hasGrosir ? `<span class="pos-tag-chip pos-tag-grosir"><i class="fa-solid fa-tags"></i> Grosir</span>` : ''}
+                            ${hasVariants ? `<span class="pos-tag-chip pos-tag-variant shrink-0"><i class="fa-solid fa-layer-group"></i> Varian</span>` : ''}
+                            ${hasGrosir ? `<span class="pos-tag-chip pos-tag-grosir shrink-0"><i class="fa-solid fa-tags"></i> Grosir</span>` : ''}
                             ${poChip}
                             ${stockInfo.isManaged && !stockInfo.isOutOfStock ? (
                                 stockInfo.isLowStock
-                                    ? `<span class="pos-tag-chip pos-tag-low"><i class="fa-solid fa-fire"></i> Sisa ${formatQty(stockInfo.totalStock)}</span>`
-                                    : `<span class="pos-tag-chip pos-tag-stock"><i class="fa-solid fa-box"></i> ${formatQty(stockInfo.totalStock)}</span>`
+                                    ? `<span class="pos-tag-chip pos-tag-low shrink-0"><i class="fa-solid fa-fire"></i> Sisa ${formatQty(stockInfo.totalStock)}</span>`
+                                    : `<span class="pos-tag-chip pos-tag-stock shrink-0"><i class="fa-solid fa-box"></i> ${formatQty(stockInfo.totalStock)}</span>`
                             ) : ''}
                         </div>` : ''}
                         <div class="pos-card-footer flex items-center justify-between gap-1">

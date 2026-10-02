@@ -172,8 +172,8 @@ export const rCat = () => {
     const c = el('product-container');
     if (!c) return;
     c.className = cView === 'grid' 
-        ? 'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-5 2xl:grid-cols-6 gap-2.5 sm:gap-3 md:gap-3.5 lg:gap-4' 
-        : 'flex flex-col gap-2.5 sm:gap-3';
+        ? 'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-5 2xl:grid-cols-6 gap-2 sm:gap-2.5 md:gap-3 lg:gap-3.5 xl:gap-4' 
+        : 'flex flex-col gap-1.5 sm:gap-2';
     
     if (!f.length) {
         if (!window.__isProductsLoaded && !sQ && !aCat && !aBrand) {
@@ -200,27 +200,27 @@ export const rCat = () => {
                     .reduce((s, v) => s + (v.stock != null ? (parseFloat(v.stock) || 0) : 0), 0)
                 : parseFloat(p.stock) || 0;
             if (totalStock <= 0) {
-                nH = `<div class="absolute inset-0 bg-white/75 dark:bg-slate-900/75 z-20 flex items-center justify-center rounded-2xl"><span class="bg-slate-800 text-white text-[10px] font-bold px-3 py-1.5 rounded-xl shadow-lg uppercase tracking-widest"><i class="fa-solid fa-ban mr-1"></i> HABIS</span></div>`;
+                nH = `<div class="absolute inset-0 bg-white/75 dark:bg-slate-900/75 z-20 flex items-center justify-center rounded-xl"><span class="bg-slate-800 text-white text-[10px] font-bold px-3 py-1.5 rounded-xl shadow-lg uppercase tracking-widest"><i class="fa-solid fa-ban mr-1"></i> HABIS</span></div>`;
             } else if (totalStock <= 5) {
-                stockBadge = `<span class="absolute bottom-2 right-2 z-10 bg-rose-500 text-white text-[8px] font-bold px-2 py-0.5 rounded-lg shadow uppercase tracking-wider"><i class="fa-solid fa-fire mr-0.5"></i> SISA ${totalStock}</span>`;
+                stockBadge = `<span class="absolute bottom-1.5 right-1.5 z-10 bg-rose-500 text-white text-[8px] font-bold px-1.5 py-0.5 rounded-md shadow uppercase tracking-wider"><i class="fa-solid fa-fire mr-0.5"></i> SISA ${totalStock}</span>`;
             } else {
-                stockBadge = `<span class="absolute bottom-2 right-2 z-10 bg-slate-800/90 text-white text-[8px] font-bold px-2 py-0.5 rounded-lg shadow uppercase tracking-wider"><i class="fa-solid fa-box mr-0.5"></i> STOK ${totalStock}</span>`;
+                stockBadge = `<span class="absolute bottom-1.5 right-1.5 z-10 bg-slate-800/90 text-white text-[8px] font-bold px-1.5 py-0.5 rounded-md shadow uppercase tracking-wider"><i class="fa-solid fa-box mr-0.5"></i> STOK ${totalStock}</span>`;
             }
         }
         
         const canOpen = !nH;
         const cardCursorCls = canOpen ? 'cursor-pointer hover:shadow-md hover:-translate-y-1.5 hover:border-[var(--color-primary)]/40' : 'cursor-not-allowed';
-        const cardCursorClsList = canOpen ? 'cursor-pointer hover:shadow-md hover:-translate-y-1 hover:border-[var(--color-primary)]/40' : 'cursor-not-allowed';
+        const cardCursorClsList = canOpen ? 'cursor-pointer hover:shadow-md hover:-translate-y-0.5 hover:border-[var(--color-primary)]/40' : 'cursor-not-allowed';
 
         let discPill = '';
         let priceNormalHtml = '';
         if (p.priceNormal && p.priceNormal > p.price) {
             let pct = Math.round(((p.priceNormal - p.price) / p.priceNormal) * 100);
-            discPill = `<span class="bg-rose-500 text-white px-1.5 py-0.5 rounded-lg text-[9px] font-extrabold flex items-center gap-1 whitespace-nowrap uppercase tracking-wider shadow-md"><i class="fa-solid fa-tags text-[8px]"></i> -${pct}%</span>`;
+            discPill = `<span class="bg-rose-500 text-white px-1.5 py-0.5 rounded-md text-[8px] font-extrabold flex items-center gap-0.5 whitespace-nowrap uppercase tracking-wider shadow-sm"><i class="fa-solid fa-tags text-[7px]"></i> -${pct}%</span>`;
             priceNormalHtml = `<p class="text-[10px] text-slate-400 dark:text-slate-500 line-through leading-none font-semibold truncate">${fCur(p.priceNormal)}</p>`;
         }
 
-        let poPill = p.poTime ? `<span class="bg-amber-500 text-white px-1.5 py-0.5 rounded-lg text-[9px] font-extrabold flex items-center gap-1 whitespace-nowrap uppercase tracking-wider shadow-md"><i class="fa-solid fa-clock text-[8px]"></i> PO ${esc(p.poTime)}</span>` : '';
+        let poPill = p.poTime ? `<span class="bg-amber-500 text-white px-1.5 py-0.5 rounded-md text-[8px] font-extrabold flex items-center gap-0.5 whitespace-nowrap uppercase tracking-wider shadow-sm"><i class="fa-solid fa-clock text-[7px]"></i> PO ${esc(p.poTime)}</span>` : '';
 
         let poinBadge = '';
         if (p.variants && p.variants.length) {
@@ -254,6 +254,21 @@ export const rCat = () => {
         }
         if (p.wholesale?.length && !p.variants?.length) {
             chipList.push(`<span class="amber-badge px-1.5 py-0.5 rounded-md text-[8px] font-bold flex items-center gap-0.5 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-layer-group text-[7px]"></i> Grosir</span>`);
+        }
+
+        // Chip khusus untuk List View: cantumkan Diskon & PO langsung di baris chip
+        const listChips = [];
+        if (discPill) listChips.push(discPill);
+        if (poPill) listChips.push(poPill);
+        if (soldBadge) listChips.push(soldBadge);
+        if (poinBadge) listChips.push(poinBadge);
+        if (p.subCategory) {
+            listChips.push(`<span class="bg-[rgba(var(--color-primary-rgb),0.08)] text-[var(--color-primary)] border border-[rgba(var(--color-primary-rgb),0.2)] px-1.5 py-0.5 rounded-md text-[8px] font-bold flex items-center gap-0.5 whitespace-nowrap uppercase tracking-wider truncate max-w-[120px]"><i class="fa-solid fa-shapes text-[7px]"></i> ${esc(p.subCategory)}</span>`);
+        } else if (p.brand) {
+            listChips.push(`<span class="bg-slate-100 text-slate-600 dark:bg-slate-700/60 dark:text-slate-300 px-1.5 py-0.5 rounded-md text-[8px] font-bold flex items-center gap-0.5 whitespace-nowrap uppercase tracking-wider truncate max-w-[110px]"><i class="fa-solid fa-tag text-[7px]"></i> ${esc(p.brand)}</span>`);
+        }
+        if (p.wholesale?.length && !p.variants?.length) {
+            listChips.push(`<span class="amber-badge px-1.5 py-0.5 rounded-md text-[8px] font-bold flex items-center gap-0.5 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-layer-group text-[7px]"></i> Grosir</span>`);
         }
 
         let bH = chipList.length
@@ -302,34 +317,27 @@ export const rCat = () => {
             </a>`;
         } else {
             return `
-            <a href="?p=${p.id}" class="w-full bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700/50 rounded-2xl shadow-soft ${cardCursorClsList} transition-all duration-300 flex items-stretch p-2.5 sm:p-3 gap-3 group relative overflow-hidden text-left" onclick="event.preventDefault(); openProductModal('${esc(p.id)}')">
+            <a href="?p=${p.id}" class="w-full bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700/50 rounded-xl sm:rounded-2xl shadow-sm ${cardCursorClsList} transition-all duration-300 flex items-center p-2 sm:p-2.5 gap-2.5 sm:gap-3 group relative overflow-hidden text-left" onclick="event.preventDefault(); openProductModal('${esc(p.id)}')">
                 ${nH}
-                <div class="relative w-20 h-20 sm:w-24 sm:h-24 shrink-0 bg-white dark:bg-slate-900 rounded-xl flex items-center justify-center border border-slate-100 dark:border-slate-700/50 overflow-hidden">
-                    ${(discPill || poPill) ? `<div class="absolute top-1 left-1 z-10 flex flex-col gap-0.5 items-start pointer-events-none">${discPill}${poPill}</div>` : ''}
+                <div class="relative w-20 h-20 sm:w-22 sm:h-22 shrink-0 bg-white dark:bg-slate-900 rounded-lg flex items-center justify-center border border-slate-100 dark:border-slate-700/50 overflow-hidden">
                     ${stockBadge}
                     ${hasImg
-                        ? `<img width="96" height="96" loading="lazy" decoding="async" sizes="96px" src="${imgUrl}" alt="${esc(p.name)}" onerror="this.onerror=null;this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='flex';" class="max-w-full max-h-full object-contain transition-transform duration-500 group-hover:scale-105 ${nH ? 'grayscale opacity-50' : ''}">
+                        ? `<img width="88" height="88" loading="lazy" decoding="async" sizes="88px" src="${imgUrl}" alt="${esc(p.name)}" onerror="this.onerror=null;this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='flex';" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 ${nH ? 'grayscale opacity-50' : ''}">
                            <div class="w-full h-full" style="display:none">${coverSmHtml}</div>`
                         : coverSmHtml}
                 </div>
-                <div class="flex-1 min-w-0 py-0.5 flex flex-col justify-between h-full relative z-10 pr-1">
-                    <div>
-                        ${bH}
-                        <h4 class="text-[11px] sm:text-xs font-bold text-slate-700 dark:text-slate-200 line-clamp-2 leading-snug mb-1 group-hover:text-[var(--color-primary)] transition-colors uppercase">${esc(p.name)}</h4>
-                    </div>
-                    <div class="flex items-end justify-between pt-1">
-                        <div class="min-w-0 pr-1">
-                            <div class="h-3 flex items-center">
-                                ${p.variants && p.variants.length > 0 ? '' : priceNormalHtml}
-                            </div>
-                            <div class="flex items-baseline gap-0.5">
-                                <p class="text-[var(--color-primary)] font-bold text-xs sm:text-[14px] leading-none tracking-tight truncate">
-                                    ${p.variants && p.variants.length > 0 ? '<span class="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider">PILIH VARIAN</span>' : fCur(p.price)}
-                                </p>
-                                ${p.variants && p.variants.length > 0 ? '' : unt}
-                            </div>
+                <div class="flex-1 min-w-0 flex flex-col justify-center gap-1 relative z-10 pr-0.5">
+                    ${listChips.length ? `<div class="flex items-center gap-1 overflow-hidden whitespace-nowrap text-nowrap">${listChips.join('')}</div>` : ''}
+                    <h4 class="text-xs sm:text-[13px] font-bold text-slate-800 dark:text-slate-100 line-clamp-1 sm:line-clamp-2 leading-tight group-hover:text-[var(--color-primary)] transition-colors uppercase break-words">${esc(p.name)}</h4>
+                    <div class="flex items-center justify-between pt-0.5">
+                        <div class="flex items-baseline gap-1.5 min-w-0">
+                            <p class="text-[var(--color-primary)] font-bold text-xs sm:text-[14px] leading-none tracking-tight truncate">
+                                ${p.variants && p.variants.length > 0 ? '<span class="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider">PILIH VARIAN</span>' : fCur(p.price)}
+                            </p>
+                            ${p.variants && p.variants.length > 0 ? '' : unt}
+                            ${(p.variants && p.variants.length > 0) || !p.priceNormal || p.priceNormal <= p.price ? '' : `<span class="text-[10px] text-slate-400 dark:text-slate-500 line-through leading-none font-semibold truncate">${fCur(p.priceNormal)}</span>`}
                         </div>
-                        <button type="button" class="w-7 h-7 sm:w-7.5 sm:h-7.5 rounded-xl bg-[rgba(var(--color-primary-rgb),0.08)] text-[var(--color-primary)] border border-[rgba(var(--color-primary-rgb),0.15)] flex items-center justify-center shrink-0 transition-all group-hover:bg-[var(--color-primary)] group-hover:text-white group-hover:scale-105 active:scale-95 shadow-sm mr-1 cursor-pointer z-20" onclick="quickAddOrOpenProduct(event, '${esc(p.id)}')" title="Tambah ke Keranjang" aria-label="Tambah ${esc(p.name)} ke keranjang">
+                        <button type="button" class="w-7 h-7 sm:w-7.5 sm:h-7.5 rounded-lg bg-[rgba(var(--color-primary-rgb),0.08)] text-[var(--color-primary)] border border-[rgba(var(--color-primary-rgb),0.15)] flex items-center justify-center shrink-0 transition-all group-hover:bg-[var(--color-primary)] group-hover:text-white group-hover:scale-105 active:scale-95 shadow-sm mr-0.5 cursor-pointer z-20" onclick="quickAddOrOpenProduct(event, '${esc(p.id)}')" title="Tambah ke Keranjang" aria-label="Tambah ${esc(p.name)} ke keranjang">
                             <i class="fa-solid fa-plus text-xs"></i>
                         </button>
                     </div>
