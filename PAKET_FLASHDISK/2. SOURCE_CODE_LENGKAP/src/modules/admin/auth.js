@@ -88,17 +88,39 @@ export const applyStaffMenuPermissions = () => {
         }
     });
 
-    // Perbarui badge role & nama akun di header dashboard
+    // Perbarui badge role, nama akun & salam di header dan dashboard
     const staff = getActiveStaff();
     const roleBadgeEl = el('admin-header-role-badge');
-    if (roleBadgeEl) {
-        if (isOwnerUser()) {
+    const headerTitleEl = el('admin-header-title');
+    const welcomeTitleEl = el('admin-dashboard-welcome-title');
+    const welcomeTagEl = el('admin-dashboard-welcome-tag');
+    const welcomeDescEl = el('admin-dashboard-welcome-desc');
+
+    if (isOwnerUser()) {
+        if (roleBadgeEl) {
             roleBadgeEl.innerHTML = '<span class="inline-flex items-center gap-1 text-[9px] font-black uppercase text-amber-300 drop-shadow-xs"><i class="fa-solid fa-crown text-[8px]"></i> Owner</span>';
-        } else if (staff?.role === ROLES.ADMIN) {
-            roleBadgeEl.innerHTML = `<span class="inline-flex items-center gap-1 text-[9px] font-black uppercase text-blue-200 drop-shadow-xs"><i class="fa-solid fa-shield-halved text-[8px]"></i> Admin (${staff.name || 'Staf'})</span>`;
-        } else {
+        }
+        if (headerTitleEl) headerTitleEl.textContent = 'CMS OWNER';
+        if (welcomeTitleEl) welcomeTitleEl.innerHTML = 'Selamat Datang, Pemilik Toko! 👑';
+        if (welcomeTagEl) welcomeTagEl.textContent = 'Panel Kontrol Owner';
+        if (welcomeDescEl) welcomeDescEl.textContent = 'Akses penuh seluruh operasional, keuangan, dan pengaturan Toko Putri.';
+    } else if (staff?.role === ROLES.ADMIN) {
+        const staffName = staff.name || 'Admin';
+        if (roleBadgeEl) {
+            roleBadgeEl.innerHTML = `<span class="inline-flex items-center gap-1 text-[9px] font-black uppercase text-blue-200 drop-shadow-xs"><i class="fa-solid fa-shield-halved text-[8px]"></i> Admin (${staffName})</span>`;
+        }
+        if (headerTitleEl) headerTitleEl.textContent = 'CMS ADMIN';
+        if (welcomeTitleEl) welcomeTitleEl.innerHTML = `Selamat Datang, ${staffName}! 🛡️`;
+        if (welcomeTagEl) welcomeTagEl.textContent = 'Panel Operasional Admin';
+        if (welcomeDescEl) welcomeDescEl.textContent = 'Kelola pesanan, katalog produk, dan aktivitas harian toko.';
+    } else {
+        if (roleBadgeEl) {
             roleBadgeEl.innerHTML = '<span class="text-[9px] font-bold uppercase text-white/90">Seller</span>';
         }
+        if (headerTitleEl) headerTitleEl.textContent = 'CMS SELLER';
+        if (welcomeTitleEl) welcomeTitleEl.innerHTML = 'Selamat Datang, Seller! 👋';
+        if (welcomeTagEl) welcomeTagEl.textContent = 'Panel Kontrol';
+        if (welcomeDescEl) welcomeDescEl.textContent = 'Kelola produk, pesanan, dan seluruh operasional toko dari satu tempat.';
     }
 };
 
@@ -158,7 +180,6 @@ export const openAdminMenu = () => {
     hide('admin-content-view'); 
     hide('btn-admin-back'); 
     show('admin-logo-box'); 
-    setIn('admin-header-title', 'CMS SELLER'); 
     
     setCTab('');
     window.cTab = '';
@@ -173,7 +194,7 @@ export const openAdminMenu = () => {
     if (aCustLst) { aCustLst(); setACustLst(null); } 
     if (aRevLst) { aRevLst(); setARevLst(null); } 
     
-    // Terapkan izin menu dinamis ke tombol-tombol dashboard
+    // Terapkan izin menu dinamis & identitas header ke dashboard
     applyStaffMenuPermissions();
 
     loadAdminReport(lastReportPeriod); 
@@ -377,6 +398,16 @@ export const processAdminLogin = async () => {
                 isActive: true
             });
 
+            // Sinkronkan sesi kasir ke Owner agar tidak ada residu sesi kasir lama yang mengontaminasi
+            try {
+                sessionStorage.setItem('pos_cashier_session', JSON.stringify({
+                    uid: ADMIN_UID,
+                    name: 'Owner Toko',
+                    email: u,
+                    role: ROLES.OWNER
+                }));
+            } catch (_) {}
+
             window.isAdm = true;
             window.__localIsAdm = true;
             history.replaceState({ view: 'view-admin' }, '', window.location.href);
@@ -474,6 +505,15 @@ export const logoutAdmin = async () => {
         if (isOwnerUser()) detachAdminSessionGuard();
         localStorage.removeItem('freshmart_admin_session_id');
         clearActiveStaff();
+        try {
+            const raw = sessionStorage.getItem('pos_cashier_session');
+            if (raw) {
+                const cs = JSON.parse(raw);
+                if (cs.role === ROLES.OWNER || cs.role === 'owner') {
+                    sessionStorage.removeItem('pos_cashier_session');
+                }
+            }
+        } catch (_) {}
         // Detach seluruh Firestore realtime listeners SEBELUM signOut agar tidak terpicu permission-denied
         if (typeof window.detachPOSHistoryListener === 'function') {
             window.detachPOSHistoryListener();
@@ -496,9 +536,12 @@ export const logoutAdmin = async () => {
 };
 
 export const confirmLogoutAdmin = () => {
+    const isOwner = isOwnerUser();
+    const title = isOwner ? "Keluar Panel Owner" : "Keluar CMS Toko";
+    const msg = isOwner ? "Apakah Anda yakin ingin keluar dari panel kontrol Owner Toko?" : "Apakah Anda yakin ingin keluar dari halaman admin?";
     showConfirm(
-        "Keluar Seller",
-        "Apakah anda akan keluar dari dashboard seller?",
+        title,
+        msg,
         () => { logoutAdmin(); },
         "Ya, Keluar",
         true

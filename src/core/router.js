@@ -446,11 +446,14 @@ export const handleAppBackButton = () => {
             return;
         }
 
-        // Pengguna sudah berada di Menu Utama CMS (bukan di dalam tab konten), konfirmasi keluar seller
+        // Pengguna sudah berada di Menu Utama CMS (bukan di dalam tab konten), konfirmasi keluar CMS
         if (typeof window.showConfirm === 'function') {
+            const isOwner = typeof window.isOwnerUser === 'function' && window.isOwnerUser();
+            const title = isOwner ? "Keluar Panel Owner" : "Keluar CMS Toko";
+            const msg = isOwner ? "Apakah Anda yakin ingin keluar dari panel kontrol Owner Toko?" : "Apakah Anda yakin ingin keluar dari halaman admin?";
             window.showConfirm(
-                "Keluar Seller",
-                "Apakah anda akan keluar dari dashboard seller?",
+                title,
+                msg,
                 () => { if (typeof window.logoutAdmin === 'function') window.logoutAdmin(); },
                 "Ya, Keluar",
                 true
@@ -562,9 +565,12 @@ export const setupHistoryRouter = () => {
 
                 history.pushState({ view: 'view-admin' }, '', window.location.href);
                 if (typeof window.showConfirm === 'function') {
+                    const isOwner = typeof window.isOwnerUser === 'function' && window.isOwnerUser();
+                    const title = isOwner ? "Keluar Panel Owner" : "Keluar CMS Toko";
+                    const msg = isOwner ? "Apakah Anda yakin ingin keluar dari panel kontrol Owner Toko?" : "Apakah Anda yakin ingin keluar dari halaman admin?";
                     window.showConfirm(
-                        "Keluar Seller",
-                        "Apakah anda akan keluar dari dashboard seller?",
+                        title,
+                        msg,
                         () => { if (typeof window.logoutAdmin === 'function') window.logoutAdmin(); },
                         "Ya, Keluar",
                         true

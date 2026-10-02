@@ -396,6 +396,16 @@ window.addEventListener('DOMContentLoaded', async () => {
             isActive: true
         });
 
+        // Sinkronkan sesi kasir ke Owner agar tidak ada residu sesi kasir lama yang mengontaminasi
+        try {
+            sessionStorage.setItem('pos_cashier_session', JSON.stringify({
+                uid: ADMIN_UID,
+                name: 'Owner Toko',
+                email: user.email,
+                role: ROLES.OWNER
+            }));
+        } catch (_) {}
+
         await ensureAdminLoaded();
         // Klaim / perbarui sesi admin aktif di Firestore.
         // isCurrentSessionActive() sekarang selalu berhasil (auto-reclaim) sehingga

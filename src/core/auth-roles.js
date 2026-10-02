@@ -131,28 +131,35 @@ export const clearActiveStaff = () => {
  * Cek apakah pengguna saat ini adalah Owner Toko (Super Admin)
  */
 export const isOwnerUser = () => {
-    // 1. Sesi kasir aktif berprioritas paling tinggi
+    // 1. Prioritas Utama: User autentikasi Firebase adalah Owner Utama (ADMIN_UID)
+    const user = auth.currentUser;
+    if (user && user.uid === ADMIN_UID) return true;
+
+    // 2. Profil staf aktif CMS adalah Owner
+    const staff = getActiveStaff();
+    if (staff) {
+        const role = String(staff.role || '').toLowerCase();
+        if (role === 'owner' || staff.uid === ADMIN_UID) return true;
+        if (role === 'cashier' || role === 'kasir' || role === 'staff') return false;
+    }
+
+    // 3. Lingkungan dev lokal (localhost / 127.0.0.1) jika mode admin aktif tanpa staf non-owner
+    const isLocal = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+    if ((window.isAdm || window.__localIsAdm) && isLocal && !staff) {
+        return true;
+    }
+
+    // 4. Sesi kasir aktif di sessionStorage (hanya jika memang bertindak sebagai owner)
     try {
         const raw = sessionStorage.getItem('pos_cashier_session');
         if (raw) {
             const cashierSession = JSON.parse(raw);
             const role = String(cashierSession.role || '').toLowerCase();
-            if (role === 'cashier' || role === 'kasir' || role === 'staff') return false;
             if (role === 'owner' || cashierSession.uid === ADMIN_UID) return true;
+            if (role === 'cashier' || role === 'kasir' || role === 'staff') return false;
         }
     } catch (_) {}
 
-    // 2. Profil staf CMS
-    const staff = getActiveStaff();
-    if (staff) {
-        const role = String(staff.role || '').toLowerCase();
-        if (role === 'cashier' || role === 'kasir' || role === 'staff') return false;
-        if (role === 'owner' || staff.uid === ADMIN_UID) return true;
-    }
-
-    // 3. User autentikasi Firebase
-    const user = auth.currentUser;
-    if (user && user.uid === ADMIN_UID) return true;
     return false;
 };
 
@@ -160,8 +167,8 @@ export const isOwnerUser = () => {
  * Cek apakah pengguna saat ini memiliki hak Admin atau Owner
  */
 export const isAdminUser = () => {
-    if (isCashierUser()) return false;
     if (isOwnerUser()) return true;
+    if (isCashierUser()) return false;
     const staff = getActiveStaff();
     return staff?.role === ROLES.ADMIN || String(staff?.role || '').toLowerCase() === 'admin';
 };
@@ -170,7 +177,18 @@ export const isAdminUser = () => {
  * Cek apakah pengguna saat ini adalah Kasir
  */
 export const isCashierUser = () => {
-    // 1. Sesi kasir POS di sessionStorage
+    // 1. Jika adalah Owner, BUKAN kasir murni
+    if (isOwnerUser()) return false;
+
+    // 2. Profil staf aktif CMS
+    const staff = getActiveStaff();
+    if (staff) {
+        const role = String(staff.role || '').toLowerCase();
+        if (role === 'owner' || staff.uid === ADMIN_UID) return false;
+        if (role === 'cashier' || role === 'kasir') return true;
+    }
+
+    // 3. Sesi kasir POS di sessionStorage
     try {
         const raw = sessionStorage.getItem('pos_cashier_session');
         if (raw) {
@@ -181,14 +199,6 @@ export const isCashierUser = () => {
         }
     } catch (_) {}
 
-    // 2. Profil staf aktif CMS
-    const staff = getActiveStaff();
-    if (staff) {
-        const role = String(staff.role || '').toLowerCase();
-        if (role === 'owner' || staff.uid === ADMIN_UID) return false;
-        if (role === 'cashier' || role === 'kasir') return true;
-    }
-
     return false;
 };
 
@@ -198,7 +208,41 @@ export const isCashierUser = () => {
  * @returns {boolean}
  */
 export const hasPermission = (permissionKey) => {
-    // 1. Cek sesi kasir aktif terlebih dahulu
+    // 1. Owner Toko selalu memiliki hak akses 100% penuh ke seluruh modul
+    if (isOwnerUser()) return true;
+
+    // 2. Profil staf aktif di CMS (freshmart_staff_profile)
+    const staff = getActiveStaff();
+    if (staff) {
+        // Jika akun dinonaktifkan
+        if (staff.isActive === false) return false;
+
+        const staffRole = String(staff.role || '').toLowerCase();
+        if (staffRole === ROLES.OWNER || staffRole === 'owner') return true;
+        if (staffRole === ROLES.CASHIER || staffRole === 'cashier' || staffRole === 'kasir') {
+            return permissionKey === 'pos';
+        }
+
+        // Periksa izin eksplisit pada profil staf
+        if (staff.permissions) {
+            if (typeof staff.permissions[permissionKey] !== 'undefined') {
+                return staff.permissions[permissionKey] === true;
+            }
+            // Backward compatibility fallback untuk modul Laporan Terpadu
+            if (permissionKey === 'reports') {
+                if (staff.permissions.view_reports === true || staff.permissions.tax === true) return true;
+            }
+            if (permissionKey === 'view_reports' || permissionKey === 'tax') {
+                if (staff.permissions.reports === true) return true;
+            }
+        }
+
+        // Fallback ke preset default sesuai role staf
+        const defaultPreset = ROLE_PRESETS[staff.role] || ROLE_PRESETS[ROLES.ADMIN];
+        return defaultPreset[permissionKey] === true;
+    }
+
+    // 3. Sesi kasir aktif (pos_cashier_session) jika tidak ada profil staf CMS
     try {
         const raw = sessionStorage.getItem('pos_cashier_session');
         if (raw) {
@@ -213,48 +257,16 @@ export const hasPermission = (permissionKey) => {
         }
     } catch (_) {}
 
-    // 2. Owner selalu memiliki izin 100%
-    if (isOwnerUser()) return true;
-
-    const staff = getActiveStaff();
-    if (!staff) {
-        // Fallback untuk sesi admin legacy di localhost atau tanpa data staff
-        if (window.isAdm || window.__localIsAdm) {
-            // Jika modul sensitif keuangan/pengaturan, hanya izinkan jika UID adalah ADMIN_UID
-            if (['banks', 'settings', 'cashiers', 'backup_sync'].includes(permissionKey)) {
-                return auth.currentUser?.uid === ADMIN_UID;
-            }
-            return true;
+    // 4. Fallback untuk sesi admin legacy di localhost atau tanpa data staff
+    if (window.isAdm || window.__localIsAdm) {
+        // Jika modul sensitif keuangan/pengaturan, hanya izinkan jika UID adalah ADMIN_UID
+        if (['banks', 'settings', 'cashiers', 'backup_sync'].includes(permissionKey)) {
+            return auth.currentUser?.uid === ADMIN_UID;
         }
-        return false;
+        return true;
     }
 
-    // 3. Jika akun dinonaktifkan
-    if (staff.isActive === false) return false;
-
-    // 4. Kasir murni hanya diizinkan untuk POS
-    const staffRole = String(staff.role || '').toLowerCase();
-    if (staffRole === ROLES.CASHIER || staffRole === 'cashier' || staffRole === 'kasir') {
-        return permissionKey === 'pos';
-    }
-
-    // 5. Periksa izin eksplisit pada profil staf
-    if (staff.permissions) {
-        if (typeof staff.permissions[permissionKey] !== 'undefined') {
-            return staff.permissions[permissionKey] === true;
-        }
-        // Backward compatibility fallback untuk modul Laporan Terpadu
-        if (permissionKey === 'reports') {
-            if (staff.permissions.view_reports === true || staff.permissions.tax === true) return true;
-        }
-        if (permissionKey === 'view_reports' || permissionKey === 'tax') {
-            if (staff.permissions.reports === true) return true;
-        }
-    }
-
-    // 6. Fallback ke preset default sesuai role staf
-    const defaultPreset = ROLE_PRESETS[staff.role] || ROLE_PRESETS[ROLES.ADMIN];
-    return defaultPreset[permissionKey] === true;
+    return false;
 };
 
 /**
@@ -263,25 +275,33 @@ export const hasPermission = (permissionKey) => {
  * @returns {boolean}
  */
 export const canViewHpp = () => {
-    // 1. Cek sesi kasir fisik aktif terlebih dahulu (pos_cashier_session)
-    // Sesi kasir POS memiliki prioritas tertinggi agar tidak tertimpa token admin background
-    try {
-        const raw = sessionStorage.getItem('pos_cashier_session');
-        if (raw) {
-            const cashierSession = JSON.parse(raw);
-            const role = String(cashierSession.role || '').toLowerCase();
-            if (role === ROLES.OWNER || role === 'owner' || cashierSession.uid === ADMIN_UID) {
-                return true;
-            }
-            if (role === ROLES.CASHIER || role === 'cashier' || role === 'kasir' || role === 'staff') {
-                return false;
-            }
-            // Sesi kasir non-owner dalam bentuk apapun tidak diizinkan melihat HPP & Laba
-            return false;
-        }
-    } catch (_) {}
+    // 1. Jika sedang berada di antarmuka Kasir POS (#view-pos-cashier atau modal kasir fisik):
+    // Prioritaskan sesi kasir fisik aktif agar kasir fisik tidak dapat mengintip HPP
+    const isPosContext = typeof window !== 'undefined' && (
+        window.curViewName === 'view-pos-cashier' ||
+        document.getElementById('view-pos-cashier')?.classList.contains('flex') ||
+        document.getElementById('pos-payment-modal')?.classList.contains('flex') ||
+        document.getElementById('pos-variant-sheet')?.classList.contains('flex')
+    );
 
-    // 2. Cek profil staf aktif di CMS (freshmart_staff_profile)
+    if (isPosContext) {
+        try {
+            const raw = sessionStorage.getItem('pos_cashier_session');
+            if (raw) {
+                const cashierSession = JSON.parse(raw);
+                const role = String(cashierSession.role || '').toLowerCase();
+                if (role === ROLES.OWNER || role === 'owner' || cashierSession.uid === ADMIN_UID) {
+                    return true;
+                }
+                return false; // Kasir fisik terkunci mutlak dari HPP
+            }
+        } catch (_) {}
+    }
+
+    // 2. Owner Utama selalu berhak melihat HPP
+    if (isOwnerUser()) return true;
+
+    // 3. Cek profil staf aktif di CMS (freshmart_staff_profile)
     const staff = getActiveStaff();
     if (staff) {
         const role = String(staff.role || '').toLowerCase();
@@ -295,18 +315,18 @@ export const canViewHpp = () => {
         return hasPermission('view_reports');
     }
 
-    // 3. Cek apakah pengguna saat ini adalah Owner Toko utama (Super Admin)
+    // 4. User Firebase Auth adalah ADMIN_UID
     const user = auth.currentUser;
     if (user && user.uid === ADMIN_UID) {
         return true;
     }
 
-    // 4. Jika sedang dalam sesi Admin CMS penuh (termasuk mode dev lokal)
+    // 5. Admin CMS sesi aktif (termasuk dev lokal)
     if (window.isAdm || window.__localIsAdm) {
         return true;
     }
 
-    // 5. Default aman: sembunyikan modal HPP dan estimasi margin dari non-owner
+    // 6. Default aman: sembunyikan modal HPP dan estimasi margin dari non-owner
     return false;
 };
 

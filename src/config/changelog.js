@@ -8,6 +8,21 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-10-27',
+        version: 'v1.10.27',
+        date: '2026-10-02',
+        title: 'Resolusi Identitas Login Akun Owner: Hak Akses Mutlak Super Admin, Penyelarasan UI CMS OWNER & Eliminasi Kontaminasi Sesi Kasir',
+        category: 'fix',
+        badge: 'Owner Role Authentication v1.10.27',
+        items: [
+            'Rekalibrasi Hierarki Autentikasi Mutlak Owner (src/core/auth-roles.js): Menempatkan verifikasi Firebase Auth (auth.currentUser.uid === ADMIN_UID) dan profil staf CMS (staff.role === owner) sebagai prioritas tertinggi pada isOwnerUser(), hasPermission(), dan canViewHpp(). Mengeliminasi bug di mana residu sesi kasir lama (pos_cashier_session) di sessionStorage salah diprioritaskan sehingga menyebabkan akun Owner terdeteksi sebagai Seller/Kasir dengan seluruh menu CMS tertutup.',
+            'Penyelarasan Dinamis Header CMS & Welcome Banner (src/modules/admin/auth.js, index.html): Mengganti teks hardcoded Selamat Datang, Seller! 👋 dan CMS SELLER dengan perenderan dinamis. Ketika Owner masuk, header menampilkan CMS OWNER dengan badge mahkota emas 👑 Owner, serta banner menyapa Selamat Datang, Pemilik Toko! 👑 dengan akses penuh 24 menu kontrol operasional dan finansial.',
+            'Sinkronisasi Otomatis Sesi Kasir POS (src/modules/admin/auth.js, src/main.js): Menyinkronkan sesi kasir aktif (pos_cashier_session) saat Owner login atau memulihkan sesi, sehingga tidak ada konflik atau kebingungan hak akses antar-modul.',
+            'Penyelarasan Dialog Konfirmasi Keluar (src/core/router.js, src/modules/admin/auth.js): Menyesuaikan dialog konfirmasi keluar dari Keluar Seller menjadi Keluar Panel Owner dengan pesan yang ramah dan akurat.',
+            'Multi-Channel Build & Sync v1.10.27 (Android versionCode 11027): Kompilasi produksi web, sinkronisasi bundle flashdisk siap pakai, serta Android Capacitor tersinkronisasi 100%.'
+        ]
+    },
+    {
         id: 'log-1-10-26',
         version: 'v1.10.26',
         date: '2026-10-02',
