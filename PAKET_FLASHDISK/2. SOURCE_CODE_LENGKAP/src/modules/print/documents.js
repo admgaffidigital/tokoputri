@@ -166,7 +166,7 @@ export const openDocPreview = (type, targetId = null) => {
             } catch(e) { return '-'; }
         };
 
-        const showHpp = typeof canViewHpp === 'function' ? canViewHpp() : true;
+        const showHpp = typeof canViewHpp === 'function' ? canViewHpp() : false;
         const items = so.items || [];
 
         let h = `

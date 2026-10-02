@@ -8,6 +8,23 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-10-24',
+        version: 'v1.10.24',
+        date: '2026-10-02',
+        title: 'Penyempurnaan Total Logika Multi-Role Akun: Isolasi Mutlak Privasi HPP, Laba & Margin di Alur Transaksi Kasir POS',
+        category: 'security',
+        badge: 'Watertight Multi-Role & HPP Privacy Guard v1.10.24',
+        items: [
+            'Isolasi Mutlak Hak Akses Finansial (src/core/auth-roles.js): Mengalibrasi canViewHpp(), isOwnerUser(), isCashierUser(), dan hasPermission() dengan prioritas utama pada sesi kasir aktif (pos_cashier_session). Kasir fisik (cashier/kasir/staff) dijamin 100% terkunci dari melihat data HPP modal kulakan dan margin toko, meskipun browser menyimpan token admin atau sesi CMS di latar belakang.',
+            'Eliminasi Kebocoran HPP di Header Modal Pembayaran (src/modules/pos/pos.js): Mengamankan badge HPP total keranjang pada header modal pembayaran kasir (#pos-pay-modal) dengan proteksi canViewHpp() && totalCartHpp > 0 sehingga tidak pernah muncul di layar kasir.',
+            'Eliminasi Kebocoran Modal & Estimasi Laba di Rincian Pembayaran (pos.js): Mengamankan baris Total Modal (HPP) dan Estimasi Laba Bersih pada rincian metode pembayaran (renderPayDetail) dengan proteksi canViewHpp(), hanya ditampilkan bagi Owner toko untuk keperluan evaluasi transaksi.',
+            'Eliminasi Kebocoran Modal & Untung di Sheet Varian Kasir (src/modules/pos/pos-variant-sheet.js): Memproteksi baris Total Modal (HPP) dan kalkulasi Untung (+Rp ...) pada bottom sheet pemilihan varian dengan canViewHpp() && activeHpp > 0.',
+            'Sanitasi Pesan Notifikasi Toast Margin Guard (pos.js): Mengganti pesan error penolakan transaksi dan diskon yang sebelumnya menyebutkan nominal rupiah HPP modal kulakan menjadi pesan netral profesional untuk kasir non-owner (\'Transaksi ditolak! Total transaksi melebihi batas diskon maksimum yang diizinkan sistem.\').',
+            'Penghapusan Flash Tampilan Baris HPP Keranjang (pos.js): Memberikan inline style display:none bawaan pada baris .pos-hpp-margin-row template desktop & mobile drawer agar tidak pernah berkedip sebelum script evaluasi peran selesai dimuat.',
+            'Multi-Channel Build & Sync v1.10.24 (Android versionCode 11024): Kompilasi produksi web, sinkronisasi bundle flashdisk siap pakai (1. HASIL_BUILD_SIAP_PAKE dan PAKET_FLASHDISK), serta Android Capacitor tersinkronisasi 100%.'
+        ]
+    },
+    {
         id: 'log-1-10-23',
         version: 'v1.10.23',
         date: '2026-10-02',

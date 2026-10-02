@@ -267,7 +267,7 @@ const renderVariantSheetContent = (p) => {
             <span class="text-xs font-bold text-slate-500">Subtotal</span>
             <span class="text-sm font-black" style="color:var(--color-primary)">${fRp(subtotal)}</span>
         </div>
-        ${activeHpp > 0 ? `
+        ${canViewHpp() && activeHpp > 0 ? `
         <div class="flex items-center justify-between mb-3 text-[10px]">
             <span class="text-slate-400 font-semibold flex items-center gap-1"><i class="fa-solid fa-coins text-amber-500"></i> Total Modal (HPP): <b class="text-amber-600 dark:text-amber-400 font-bold">${fRp(activeHpp * _selectedQty)}</b></span>
             <span class="font-bold text-emerald-600 dark:text-emerald-400">Untung: +${fRp(Math.max(0, subtotal - (activeHpp * _selectedQty)))}</span>

@@ -683,8 +683,10 @@ export const setItemDisc = (cartKey, val) => {
         // Diskon per item tidak boleh membuat harga jual di bawah harga modal HPP
         const maxDisc = Math.max(0, Math.round((item.price - itemHpp) * item.qty));
         if (numVal > maxDisc) {
-            const hppDetail = canViewHpp() ? ` (HPP ${fRp(itemHpp)})` : '';
-            showToast(`Diskon ditolak! Tidak boleh di bawah harga modal toko${hppDetail}. Maksimal diskon: ${fRp(maxDisc)}`, 'warning');
+            const msg = canViewHpp()
+                ? `Diskon ditolak! Tidak boleh di bawah harga modal toko (HPP ${fRp(itemHpp)}). Maksimal diskon: ${fRp(maxDisc)}`
+                : 'Diskon ditolak! Nilai diskon melebihi batas diskon maksimum yang diizinkan untuk item ini.';
+            showToast(msg, 'warning');
             item.discount = maxDisc;
             recalcItem(item);
             renderCart();
@@ -1688,7 +1690,10 @@ export const openPayModal = () => {
     if (posCart.length === 0) { showToast('Keranjang masih kosong!', 'warning'); return; }
     const totalCartHpp = getCartTotalHpp();
     if (totalCartHpp > 0 && posTotal() < totalCartHpp) {
-        showToast(`Transaksi ditolak! Total tagihan (${fRp(posTotal())}) tidak boleh di bawah harga modal HPP (${fRp(totalCartHpp)})!`, 'error');
+        const msg = canViewHpp()
+            ? `Transaksi ditolak! Total tagihan (${fRp(posTotal())}) tidak boleh di bawah harga modal HPP (${fRp(totalCartHpp)})!`
+            : 'Transaksi ditolak! Total transaksi melebihi batas diskon maksimum yang diizinkan sistem.';
+        showToast(msg, 'error');
         if (typeof window.triggerHaptic === 'function') window.triggerHaptic('heavy');
         return;
     }
@@ -1713,7 +1718,7 @@ export const openPayModal = () => {
             </h2>
             <div class="flex items-center gap-2 mt-0.5 flex-wrap">
               <span class="text-xs text-slate-500">Total Tagihan: <span class="font-black text-sm" style="color:var(--color-primary)">${fRp(posTotal())}</span></span>
-              ${totalCartHpp > 0 ? `<span class="inline-flex items-center gap-1 text-[10px] font-bold text-amber-950 bg-amber-100 dark:bg-amber-950/60 dark:text-amber-300 px-2 py-0.5 rounded-full border border-amber-300/80 dark:border-amber-700 shadow-2xs"><i class="fa-solid fa-coins text-[8px] text-amber-600 dark:text-amber-400"></i>HPP: ${fRp(totalCartHpp)}</span>` : ''}
+              ${canViewHpp() && totalCartHpp > 0 ? `<span class="inline-flex items-center gap-1 text-[10px] font-bold text-amber-950 bg-amber-100 dark:bg-amber-950/60 dark:text-amber-300 px-2 py-0.5 rounded-full border border-amber-300/80 dark:border-amber-700 shadow-2xs"><i class="fa-solid fa-coins text-[8px] text-amber-600 dark:text-amber-400"></i>HPP: ${fRp(totalCartHpp)}</span>` : ''}
             </div>
           </div>
           <button onclick="window.closePayModal()" class="w-9 h-9 rounded-xl bg-slate-200/60 dark:bg-slate-700/60 text-slate-500 hover:text-slate-800 dark:hover:text-white text-lg flex items-center justify-center transition-all leading-none cursor-pointer">×</button>
@@ -1822,7 +1827,7 @@ const renderPayDetail = (method) => {
           <span class="text-slate-700 dark:text-slate-200 font-bold">Total Wajib Bayar</span>
           <span class="font-black text-sm" style="color:var(--color-primary)">${fRp(total)}</span>
         </div>
-        ${totalCartHpp > 0 ? `
+        ${canViewHpp() && totalCartHpp > 0 ? `
         <div class="flex justify-between items-center pt-1 border-t border-slate-200/40 dark:border-slate-700/40 text-[10px]">
           <span class="text-slate-400 font-semibold flex items-center gap-1"><i class="fa-solid fa-coins text-amber-500"></i> Total Modal (HPP):</span>
           <span class="font-bold text-amber-600 dark:text-amber-400">${fRp(totalCartHpp)}</span>
@@ -2295,7 +2300,7 @@ export const renderPosMemberResult = () => {
               ` : ''}
             </div>
             ${maxPts <= 0 ? `
-            <p class="text-[10px] text-slate-400 italic">* Batas harga modal HPP atau saldo poin telah tercapai.</p>
+            <p class="text-[10px] text-slate-400 italic">${canViewHpp() ? '* Batas harga modal HPP atau saldo poin telah tercapai.' : '* Batas diskon maksimum atau saldo poin telah tercapai.'}</p>
             ` : ''}
           </div>
           `}
@@ -2534,7 +2539,10 @@ export const processPOSTx = async () => {
     if (posCart.length === 0) { showToast('Keranjang kosong!', 'warning'); return; }
     const totalCartHpp = getCartTotalHpp();
     if (totalCartHpp > 0 && posTotal() < totalCartHpp) {
-        showToast(`Transaksi ditolak! Total transaksi (${fRp(posTotal())}) tidak boleh di bawah total harga modal HPP (${fRp(totalCartHpp)})!`, 'error');
+        const msg = canViewHpp()
+            ? `Transaksi ditolak! Total transaksi (${fRp(posTotal())}) tidak boleh di bawah total harga modal HPP (${fRp(totalCartHpp)})!`
+            : 'Transaksi ditolak! Total transaksi melebihi batas diskon maksimum yang diizinkan sistem.';
+        showToast(msg, 'error');
         if (typeof window.triggerHaptic === 'function') window.triggerHaptic('heavy');
         return;
     }
@@ -3182,11 +3190,11 @@ const buildPOSLayout = ({ isStorefront }) => {
                         <span>Subtotal Item</span>
                         <span class="pos-subtotal-target font-bold text-slate-800 dark:text-slate-200">Rp 0</span>
                     </div>
-                    <div class="pos-hpp-margin-row flex justify-between text-xs text-slate-500 font-medium">
+                    <div class="pos-hpp-margin-row flex justify-between text-xs text-slate-500 font-medium" style="display:none">
                         <span class="flex items-center gap-1"><i class="fa-solid fa-coins text-amber-500 text-[10px]"></i> Total Modal (HPP)</span>
                         <span class="pos-total-hpp-target font-bold text-amber-600 dark:text-amber-400">Rp 0</span>
                     </div>
-                    <div class="pos-hpp-margin-row flex justify-between text-xs text-slate-500 font-medium">
+                    <div class="pos-hpp-margin-row flex justify-between text-xs text-slate-500 font-medium" style="display:none">
                         <span class="flex items-center gap-1"><i class="fa-solid fa-arrow-trend-up text-emerald-500 text-[10px]"></i> Estimasi Laba</span>
                         <span class="pos-total-margin-target font-bold text-emerald-600 dark:text-emerald-400">Rp 0</span>
                     </div>
@@ -3283,11 +3291,11 @@ const buildPOSLayout = ({ isStorefront }) => {
                         <span>Subtotal Item</span>
                         <span class="pos-subtotal-target font-bold text-slate-700 dark:text-slate-200">Rp 0</span>
                     </div>
-                    <div class="pos-hpp-margin-row flex justify-between text-xs text-slate-500 font-medium">
+                    <div class="pos-hpp-margin-row flex justify-between text-xs text-slate-500 font-medium" style="display:none">
                         <span class="flex items-center gap-1"><i class="fa-solid fa-coins text-amber-500 text-[10px]"></i> Total Modal (HPP)</span>
                         <span class="pos-total-hpp-target font-bold text-amber-600 dark:text-amber-400">Rp 0</span>
                     </div>
-                    <div class="pos-hpp-margin-row flex justify-between text-xs text-slate-500 font-medium">
+                    <div class="pos-hpp-margin-row flex justify-between text-xs text-slate-500 font-medium" style="display:none">
                         <span class="flex items-center gap-1"><i class="fa-solid fa-arrow-trend-up text-emerald-500 text-[10px]"></i> Estimasi Laba</span>
                         <span class="pos-total-margin-target font-bold text-emerald-600 dark:text-emerald-400">Rp 0</span>
                     </div>
@@ -3568,8 +3576,10 @@ export const posSetDiscountVal = (val) => {
         const discAmt = Math.round((subtotal * pct) / 100);
         if (totalHpp > 0 && discAmt > maxAllowedDisc) {
             const maxPct = subtotal > 0 ? Math.floor((maxAllowedDisc / subtotal) * 100) : 0;
-            const hppDetail = canViewHpp() ? ` (Total HPP ${fRp(totalHpp)})` : '';
-            showToast(`Diskon ${pct}% ditolak karena melebihi batas modal toko${hppDetail}! Diskon maksimal: ${maxPct}% (${fRp(maxAllowedDisc)})`, 'warning');
+            const msg = canViewHpp()
+                ? `Diskon ${pct}% ditolak karena melebihi batas modal toko (Total HPP ${fRp(totalHpp)})! Diskon maksimal: ${maxPct}% (${fRp(maxAllowedDisc)})`
+                : `Diskon ${pct}% ditolak! Persentase diskon melebihi batas maksimum transaksi yang diizinkan sistem.`;
+            showToast(msg, 'warning');
             posDiscountVal = maxPct;
             posGlobalDisc = Math.round((subtotal * maxPct) / 100);
             renderCart();
@@ -3581,8 +3591,10 @@ export const posSetDiscountVal = (val) => {
     } else {
         const discAmt = rawVal;
         if (totalHpp > 0 && discAmt > maxAllowedDisc) {
-            const hppDetail = canViewHpp() ? ` (Total HPP ${fRp(totalHpp)})` : '';
-            showToast(`Diskon ditolak! Total transaksi tidak boleh di bawah harga modal toko${hppDetail}. Maksimal diskon: ${fRp(maxAllowedDisc)}`, 'warning');
+            const msg = canViewHpp()
+                ? `Diskon ditolak! Total transaksi tidak boleh di bawah harga modal toko (Total HPP ${fRp(totalHpp)}). Maksimal diskon: ${fRp(maxAllowedDisc)}`
+                : 'Diskon ditolak! Nominal diskon melebihi batas maksimum transaksi yang diizinkan sistem.';
+            showToast(msg, 'warning');
             posDiscountVal = maxAllowedDisc;
             posGlobalDisc = maxAllowedDisc;
             renderCart();
