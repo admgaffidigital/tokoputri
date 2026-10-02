@@ -235,9 +235,7 @@ if (typeof requestIdleCallback !== 'undefined') {
     setTimeout(loadAnalytics, 3000);
 }
 
-window.updateProBadge = () => {};
-window.isAdm = false; 
-window.isPro = true;
+window.isAdm = false;
 
 
 // =====================================================================
@@ -366,8 +364,6 @@ window.addEventListener('DOMContentLoaded', async () => {
                 await ensureAdminLoaded();
                 window.isAdm = true;
                 window.__localIsAdm = true;
-                window.isPro = true;
-                if (window.updateProBadge) window.updateProBadge();
                 if (typeof window.updatePOSHeaderIcon === 'function') window.updatePOSHeaderIcon();
 
                 let loginView = document.getElementById('view-admin-login');
@@ -417,13 +413,6 @@ window.addEventListener('DOMContentLoaded', async () => {
         window.isAdm = true;
         window.__localIsAdm = true;
 
-        window.isPro = true;
-        localStorage.removeItem("isFreshmartPro");
-        localStorage.removeItem("freshmart_license_code");
-
-        // Update badge PRO/FREE di UI
-        if (window.updateProBadge) window.updateProBadge();
-
         // Update status toggle icon POS Kasir di header saat auth pulih
         if (typeof window.updatePOSHeaderIcon === 'function') {
             window.updatePOSHeaderIcon();
@@ -446,25 +435,13 @@ window.addEventListener('DOMContentLoaded', async () => {
         clearActiveStaff();
         window.isAdm = false;
         window.__localIsAdm = false;
-        window.isPro = false;
-        if (window.updateProBadge) window.updateProBadge();
-        localStorage.removeItem("isFreshmartPro");
-        localStorage.removeItem("freshmart_license_code");
         if (typeof window.updatePOSHeaderIcon === 'function') window.updatePOSHeaderIcon();
     }
 });
 });
 
 // Note: Logika dokumen cetak A4 (openDocPreview, fitDocPreview, closeDocPreviewModal, printDocA4, exportDocFile)
-// telah dipindahkan ke modul: src/modules/print/documents.js
-
-
-
-
-
-
 // ==========================================
-// ========================================== 
 // AUTO-GENERATED BINDINGS FOR GLOBAL SCOPE
 // ========================================== 
 window.el = el;

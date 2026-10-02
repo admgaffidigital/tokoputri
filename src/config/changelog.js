@@ -8,6 +8,23 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-10-29',
+        version: 'v1.10.29',
+        date: '2026-10-03',
+        title: 'Pembersihan Total Sampah & Redundansi: Eliminasi Kode Mati, Perapian Struktur Paket Flashdisk & Higienitas Modul',
+        category: 'optimization',
+        badge: 'Codebase Hygiene & Project Cleanup v1.10.29',
+        items: [
+            'Pembersihan Total Paket Flashdisk (PAKET_FLASHDISK): Menghapus folder usang lama (1. FILE_SIAP_PAKAI), folder assets lawas, dan berkas-berkas build tercecer (config.js, index.html 183KB, manifest.json, robots.txt) yang menumpuk dari pembaruan sebelumnya. Struktur paket kini rapi, higienis, dan teratur dalam 3 subfolder definitif (1. HASIL_BUILD_SIAP_PAKE, 2. SOURCE_CODE_LENGKAP, 3. PANDUAN_DAN_TUTORIAL) dan TokoPutri.apk.',
+            'Optimalisasi Script Sinkronisasi Bersih (scripts/sync.mjs): Mengubah mekanisme mirroring agar folder distribusi dibersihkan tuntas sebelum disalin dari dist/, menjamin tidak ada residu hash-chunk usang dari build sebelumnya yang tertinggal.',
+            'Penyelarasan Panduan Flashdisk (BACA_SAYA_PANDUAN_INSTALASI.txt): Memperbarui nama folder target instalasi menjadi 1. HASIL_BUILD_SIAP_PAKE agar seragam dan akurat dengan hasil build otomatis.',
+            'Eliminasi Kode Mati & Residu Lisensi Warisan (src/main.js, src/modules/admin/auth.js, src/modules/admin/session.js): Menghapus seluruh variabel dan pemanggilan fungsi lisensi usang yang sudah tidak lagi dipakai (window.isPro, window.updateProBadge(), pembersihan localStorage isFreshmartPro & freshmart_license_code).',
+            'Perapian Arsitektur Barrel Export Admin (src/modules/admin/index.js): Mengarahkan export modul produk langsung ke ./products/index.js dan mengeliminasi lapisan indireksi yang tidak diperlukan.',
+            'Pembersihan Folder Temp (scratch): Mengeliminasi direktori scratch kosong dari root proyek.',
+            'Multi-Channel Build & Sync v1.10.29 (Android versionCode 11029): Kompilasi produksi web, sinkronisasi bundle flashdisk siap pakai, serta platform Android Capacitor tersinkronisasi 100%.'
+        ]
+    },
+    {
         id: 'log-1-10-28',
         version: 'v1.10.28',
         date: '2026-10-02',

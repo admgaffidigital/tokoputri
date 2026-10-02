@@ -524,8 +524,6 @@ export const logoutAdmin = async () => {
         await auth.signOut();
         window.isAdm = false; 
         window.__localIsAdm = false;
-        window.isPro = false; 
-        if (typeof window.updateProBadge === 'function') window.updateProBadge();
         showToast("Berhasil Logout");
         if (typeof window.changeView === 'function') window.changeView('view-catalog');
     } catch(e) {

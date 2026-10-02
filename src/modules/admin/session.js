@@ -165,7 +165,6 @@ export const attachAdminSessionGuard = () => {
                 try {
                     window.isAdm = false;
                     window.__localIsAdm = false;
-                    window.isPro = false;
                     if (auth && typeof auth.signOut === 'function') {
                         await auth.signOut();
                     }

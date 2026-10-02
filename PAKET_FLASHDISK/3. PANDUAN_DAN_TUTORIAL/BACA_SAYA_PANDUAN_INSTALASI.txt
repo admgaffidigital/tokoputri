@@ -13,7 +13,7 @@ LANGKAH 1: SIAPKAN DATABASE FIREBASE (GRATIS)
 6. Copy kode konfigurasi yang diberikan oleh Firebase.
 
 LANGKAH 2: HUBUNGKAN APLIKASI KE DATABASE
-1. Buka folder '1. FILE_SIAP_PAKAI' di dalam Flashdisk ini.
+1. Buka folder '1. HASIL_BUILD_SIAP_PAKE' di dalam Flashdisk ini.
 2. Cari file bernama 'config.js'.
 3. Klik kanan file tersebut, lalu pilih 'Open with' -> 'Notepad'.
 4. Ganti teks 'ISI_API_KEY_ANDA_DISINI' dan baris lainnya dengan kode yang Anda dapatkan dari Firebase di Langkah 1.
@@ -21,6 +21,6 @@ LANGKAH 2: HUBUNGKAN APLIKASI KE DATABASE
 
 LANGKAH 3: ONLINE-KAN WEBSITE ANDA
 1. Buka website https://app.netlify.com/drop (Gratis).
-2. Seret (Drag) dan lepas (Drop) SELURUH isi folder '1. FILE_SIAP_PAKAI' ke dalam lingkaran di halaman Netlify tersebut.
+2. Seret (Drag) dan lepas (Drop) SELURUH isi folder '1. HASIL_BUILD_SIAP_PAKE' ke dalam lingkaran di halaman Netlify tersebut.
 3. Tunggu 1 menit, dan website toko online Anda sudah siap digunakan!
 
