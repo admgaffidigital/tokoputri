@@ -68,6 +68,7 @@ export const openAdminTab = (t, fH = false) => {
         'reports': 'Pusat Laporan & Keuangan',
         'tax': 'Pusat Laporan & Keuangan',
         'expenses': 'Biaya Operasional Toko',
+        'stock_opname': 'Stock Opname (Audit Fisik)',
         'piutang': 'Piutang Tempo',
         'colors': 'Database Warna',
         'changelog': 'Log Pembaruan Sistem',
@@ -110,6 +111,11 @@ export const openAdminTab = (t, fH = false) => {
         // Lazy load modul pencatatan biaya operasional & buku kas pengeluaran
         import('./expenses.js').then(m => m.renderExpensesAdminView()).catch(err => {
             console.error('[Expenses] Gagal memuat modul pengeluaran operasional:', err);
+        });
+    } else if (t === 'stock_opname') {
+        // Lazy load modul Stock Opname & Audit Inventori Fisik
+        import('./stock-opname.js').then(m => m.renderStockOpnameView()).catch(err => {
+            console.error('[StockOpname] Gagal memuat modul stock opname:', err);
         });
     } else if (t === 'customers') {
         setH('admin-content', `<div class="text-center py-16"><i class="fa-solid fa-spinner fa-spin text-3xl text-slate-300"></i></div>`);

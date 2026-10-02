@@ -8,6 +8,26 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-10-19',
+        version: 'v1.10.19',
+        date: '2026-10-02',
+        title: 'Modul Stock Opname & Audit Inventori Fisik Terpadu: Barcode Scanner Cepat, Rekonsiliasi Selisih Rak, Atomic Finalization & Cetak Berita Acara A4',
+        category: 'feature',
+        badge: 'Physical Stock Audit Hub v1.10.19',
+        items: [
+            'Peluncuran Modul Stock Opname (src/modules/admin/stock-opname.js): Menghadirkan modul audit inventori fisik rak dan gudang secara menyeluruh. Mendukung audit seluruh katalog produk dan varian, pencatatan hasil hitung fisik aktual, perbandingan langsung dengan stok sistem, dan kalkulasi selisih kuantitas serta dampak finansial rupiah.',
+            'Barcode Scanner Kamera & Barcode Gun USB/Bluetooth: Input cepat deteksi produk via scanner barcode fisik atau kamera HP langsung di rak toko. Begitu barcode atau SKU terdeteksi, sistem otomatis mencocokkan item, auto-scroll ke baris barang, memberikan efek visual highlight, dan auto-increment atau memfokuskan input fisik seketika.',
+            'Bento Stat Cards & Rekapitulasi Sesi Audit: 4 kartu metrik pintar yang memantau kemajuan hitung (Total Item Diperiksa & Progress Bar %), Jumlah Barang Sesuai (Balance), Total Selisih Kurang (Loss/Defisit dalam Unit & Rp), serta Total Selisih Lebih (Surplus dalam Unit & Rp) dengan kalkulasi Net Variance bersih.',
+            'HPP Privacy Guard Terintegrasi: Staf atau kasir tanpa izin canViewHpp() hanya melihat perbandingan unit kuantitas fisik vs sistem, sedangkan nilai rupiah modal HPP dan total nominal kerugian/keuntungan selisih dirahasiakan untuk menjaga privasi finansial toko.',
+            'Pilihan Alasan Selisih Cerdas & Catatan Per-Item: Menu pilihan alasan selisih terstandar (Salah Catat Kasir, Barang Rusak/Cacat Fisik, Barang Hilang/Shrinkage, Kadaluarsa/Expired, Bonus Supplier/Temuan, Retur Tertunda, dan Lainnya) disertai kolom catatan khusus.',
+            'Aksi Cepat Massal & Lembar Kerja (Worksheet): Fitur 1-klik "Samakan Belum Diisi" untuk mempercepat verifikasi barang yang sudah dicek tidak ada selisih, reset sesi audit aman dengan dialog konfirmasi, serta tombol cetak Lembar Kerja Hitung Fisik (Worksheet A4) siap bawa ke rak/gudang toko.',
+            'Eksekusi Atomic Finalisasi & Penyesuaian Stok: Dialog konfirmasi ringkasan audit sebelum finalisasi. Menggunakan Firestore Batch Write untuk memperbarui stok produk dan varian secara atomik di sub-koleksi products/{id}, sinkronisasi instan in-memory 0ms ke etalase & kasir POS, serta penerbitan nomor Berita Acara resmi (SO-YYYYMMDD-XXXX).',
+            'Arsip & Riwayat Berita Acara (History Tab): Seluruh sesi Stock Opname masa lalu tersimpan permanen di cloud Firestore (appData.stockOpnameHistory), dapat ditinjau kembali rincian item perbedaannya, dan dapat dicetak kapan saja.',
+            'Format Cetak Resmi A4 Standar Toko Putri (src/modules/print/documents.js): Menghadirkan 2 dokumen resmi A4: (1) Berita Acara Stock Opname Resmi A4 lengkap dengan Kop Toko, Nomor Dokumen, Auditor, Rekapitulasi Selisih, Tabel Barang Discrepancy, dan 3 Kolom Tanda Tangan Resmi (Auditor, Kepala Gudang, Owner); (2) Lembar Kerja Hitung Fisik (Worksheet A4) dengan kotak ceklis, kolom tulis tangan hasil fisik, dan catatan kondisi barang.',
+            'Titik Akses Terpadu & Panduan SOP Sistem: Akses langsung dari Tile Menu CMS Seller (#admin-menu-stock-opname-btn), Tombol Cepat di Toolbar Produk CMS, Akses Cepat di Tab 3 Stok & Valuasi Laporan Keuangan, serta penambahan Bab 8 SOP Stock Opname & Audit Fisik pada panduan resmi toko (#shopping-guide-modal).'
+        ]
+    },
+    {
         id: 'log-1-10-18',
         version: 'v1.10.18',
         date: '2026-10-01',

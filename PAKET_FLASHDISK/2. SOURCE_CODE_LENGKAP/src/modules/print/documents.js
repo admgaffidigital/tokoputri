@@ -6,6 +6,8 @@
  */
 
 import { el, show, hide, setIn, setH, esc, fCur, sLoad, hLoad, openModalAnim, closeModalAnim } from '../../core/utils.js';
+import { appData } from '../../core/state.js';
+import { canViewHpp } from '../../core/auth-roles.js';
 
 export let currentDocType = 'invoice';
 
@@ -130,6 +132,278 @@ export const openDocPreview = (type, targetId = null) => {
                 <span class="font-bold text-slate-500 mb-20 uppercase tracking-widest text-[10px]">Diterima &amp; Disetujui Oleh:</span>
                 <div class="w-48 border-b-2 border-slate-800 mb-2"></div>
                 <span class="font-bold text-slate-900 uppercase">${esc(po.supplierName || 'Rekanan / Supplier')}</span>
+            </div>
+        </div>
+        `;
+
+        setH('doc-paper-content', h);
+        showDocModalWithAnim();
+        return;
+    }
+
+    if (type === 'stock_opname') {
+        const historyList = appData.stockOpnameHistory || [];
+        const so = historyList.find(x => String(x.id) === String(targetId) || String(x.soNumber) === String(targetId)) || historyList[0];
+        if (!so) {
+            if (typeof window.showToast === 'function') window.showToast('Data Berita Acara Stock Opname tidak ditemukan!');
+            return;
+        }
+
+        setIn('doc-modal-title', 'Preview Berita Acara Stock Opname');
+
+        let logoHTML = '';
+        if (appData.store?.logo && (appData.store.logo.includes('http') || appData.store.logo.includes('data:'))) {
+            logoHTML = `<img loading="eager" src="${esc(appData.store.logo)}" class="w-16 h-16 object-contain">`;
+        } else {
+            logoHTML = `<div class="w-16 h-16 primary-bg flex items-center justify-center rounded-xl text-white"><i class="fa-solid fa-store text-3xl"></i></div>`;
+        }
+
+        const formatDate = (val) => {
+            if (!val) return '-';
+            try {
+                const d = val.toDate ? val.toDate() : new Date(val);
+                return d.toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+            } catch(e) { return '-'; }
+        };
+
+        const showHpp = typeof canViewHpp === 'function' ? canViewHpp() : true;
+        const items = so.items || [];
+
+        let h = `
+        <div class="flex justify-between items-start border-b-[3px] border-slate-800 pb-5 mb-5">
+            <div class="flex items-center gap-4">
+                ${logoHTML}
+                <div>
+                    <h1 class="font-bold text-2xl tracking-tight text-slate-900 uppercase">${esc(appData.store.name || 'TOKO PUTRI')}</h1>
+                    <p class="text-sm font-bold text-slate-500 mt-1 uppercase tracking-widest">${esc(appData.store.slogan || 'Pusat Alat Teknik, Bangunan & Perlengkapan')}</p>
+                    <p class="text-xs font-medium text-slate-500 mt-1 max-w-sm leading-snug">${esc(appData.store.address || 'Alamat fisik toko')}</p>
+                    <p class="text-xs font-medium text-slate-500 mt-0.5"><i class="fa-brands fa-whatsapp text-emerald-500"></i> ${esc(appData.store.wa || appData.store.phone || '-')}</p>
+                </div>
+            </div>
+            <div class="text-right">
+                <h2 class="font-black text-2xl tracking-widest text-slate-900 uppercase">BERITA ACARA</h2>
+                <h3 class="font-bold text-base tracking-wider text-amber-600 uppercase">STOCK OPNAME</h3>
+                <p class="text-sm font-bold text-slate-700 mt-1.5 font-mono">#${esc(so.soNumber || so.id)}</p>
+                <p class="text-xs font-semibold text-slate-500 mt-1">Tanggal: ${formatDate(so.date)}</p>
+                <p class="text-xs font-bold text-slate-600 mt-0.5">Auditor: <b class="text-slate-900">${esc(so.auditorName || 'Staf Auditor')}</b></p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-4 gap-3 mb-6">
+            <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200 text-center">
+                <span class="text-[9px] font-black uppercase text-slate-400 block tracking-wider">Total Diperiksa</span>
+                <span class="text-lg font-black text-slate-800 font-mono">${so.totalItemsAudited || 0}</span>
+                <span class="text-[10px] text-slate-500 block">Item Produk</span>
+            </div>
+            <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200 text-center">
+                <span class="text-[9px] font-black uppercase text-slate-400 block tracking-wider">Item Selisih</span>
+                <span class="text-lg font-black ${so.totalWithDiff > 0 ? 'text-amber-600' : 'text-emerald-600'} font-mono">${so.totalWithDiff || 0}</span>
+                <span class="text-[10px] text-slate-500 block">Disesuaikan</span>
+            </div>
+            <div class="bg-rose-50 p-3.5 rounded-xl border border-rose-200 text-center">
+                <span class="text-[9px] font-black uppercase text-rose-500 block tracking-wider">Total Kurang (Loss)</span>
+                <span class="text-lg font-black text-rose-600 font-mono">−${so.totalLossUnits || 0}</span>
+                <span class="text-[10px] text-rose-500 block">${showHpp ? '−' + fCur(so.totalLossRp || 0) : 'Pcs'}</span>
+            </div>
+            <div class="bg-amber-50 p-3.5 rounded-xl border border-amber-200 text-center">
+                <span class="text-[9px] font-black uppercase text-amber-600 block tracking-wider">Total Lebih (Surplus)</span>
+                <span class="text-lg font-black text-amber-600 font-mono">+${so.totalSurplusUnits || 0}</span>
+                <span class="text-[10px] text-amber-600 block">${showHpp ? '+' + fCur(so.totalSurplusRp || 0) : 'Pcs'}</span>
+            </div>
+        </div>
+
+        <table class="w-full text-left border-collapse mb-6">
+            <thead>
+                <tr class="border-b-2 border-slate-800 text-[10px] font-black text-white uppercase tracking-wider bg-slate-900">
+                    <th class="py-2.5 px-3 rounded-tl-xl text-center w-10 border-r border-slate-700">No</th>
+                    <th class="py-2.5 px-3 border-r border-slate-700">Nama Barang &amp; Spesifikasi</th>
+                    <th class="py-2.5 px-3 text-center w-24 border-r border-slate-700">Stok Sistem</th>
+                    <th class="py-2.5 px-3 text-center w-24 border-r border-slate-700">Hasil Fisik</th>
+                    <th class="py-2.5 px-3 text-center w-24 border-r border-slate-700">Selisih</th>
+                    <th class="py-2.5 px-3 border-r border-slate-700">Alasan &amp; Keterangan</th>
+                    ${showHpp ? `<th class="py-2.5 px-3 rounded-tr-xl text-right w-32">Dampak HPP</th>` : `<th class="py-2.5 px-3 rounded-tr-xl text-right w-16">Satuan</th>`}
+                </tr>
+            </thead>
+            <tbody class="border-b-2 border-slate-800 divide-y divide-slate-200 text-xs">
+                ${items.length === 0 ? `
+                    <tr>
+                        <td colspan="7" class="py-8 text-center text-slate-500 italic">
+                            Semua stok fisik barang dalam kondisi berimbang (100% Sesuai / Selisih 0).
+                        </td>
+                    </tr>
+                ` : items.map((it, idx) => `
+                    <tr class="hover:bg-slate-50">
+                        <td class="py-2 px-3 text-center font-mono text-slate-500">${idx + 1}</td>
+                        <td class="py-2 px-3 font-bold text-slate-900 uppercase">
+                            ${esc(it.productName)}
+                            ${it.variantName ? `<span class="bg-slate-100 text-slate-700 px-1.5 py-0.5 rounded text-[9px] border border-slate-300 ml-1 font-semibold">${esc(it.variantName)}</span>` : ''}
+                            ${it.sku ? `<span class="text-slate-400 font-mono text-[9px] block">SKU: ${esc(it.sku)}</span>` : ''}
+                        </td>
+                        <td class="py-2 px-3 text-center font-mono text-slate-600">${it.systemStock} ${esc(it.unit || 'pcs')}</td>
+                        <td class="py-2 px-3 text-center font-mono font-bold text-slate-900">${it.physicalStock} ${esc(it.unit || 'pcs')}</td>
+                        <td class="py-2 px-3 text-center font-bold font-mono ${it.diff < 0 ? 'text-rose-600' : 'text-amber-600'}">
+                            ${it.diff < 0 ? `−${Math.abs(it.diff)}` : `+${it.diff}`}
+                        </td>
+                        <td class="py-2 px-3 text-[10.5px]">
+                            <span class="font-bold text-slate-800">${esc(it.reason === 'salah_hitung' ? 'Koreksi Kasir' : (it.reason === 'rusak' ? 'Barang Rusak' : (it.reason === 'hilang' ? 'Barang Hilang' : (it.reason === 'kadaluarsa' ? 'Expired' : (it.reason === 'bonus' ? 'Bonus Supplier' : it.reason)))))}</span>
+                            ${it.notes ? `<span class="text-slate-500 block italic">"${esc(it.notes)}"</span>` : ''}
+                        </td>
+                        ${showHpp ? `
+                            <td class="py-2 px-3 text-right font-mono font-bold ${it.diff < 0 ? 'text-rose-600' : 'text-amber-600'}">
+                                ${it.diff < 0 ? '−' : '+'}${fCur(Math.abs(it.diffValueHpp || 0))}
+                            </td>` : `
+                            <td class="py-2 px-3 text-right text-slate-500">${esc(it.unit || 'pcs')}</td>
+                        `}
+                    </tr>
+                `).join('')}
+            </tbody>
+        </table>
+
+        ${so.notes ? `
+            <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-xs mb-6 text-slate-700">
+                <b class="text-slate-900">Catatan Auditor:</b> ${esc(so.notes)}
+            </div>` : ''}
+
+        <div class="grid grid-cols-3 gap-6 text-center text-xs mt-auto pt-6 border-t border-slate-200">
+            <div class="flex flex-col items-center">
+                <span class="font-bold text-slate-500 mb-16 uppercase tracking-widest text-[9px]">Pemeriksa / Auditor:</span>
+                <div class="w-36 border-b-2 border-slate-800 mb-1.5"></div>
+                <span class="font-bold text-slate-900 uppercase">${esc(so.auditorName || 'Petugas Auditor')}</span>
+            </div>
+            <div class="flex flex-col items-center">
+                <span class="font-bold text-slate-500 mb-16 uppercase tracking-widest text-[9px]">Kepala Gudang / Kasir:</span>
+                <div class="w-36 border-b-2 border-slate-800 mb-1.5"></div>
+                <span class="font-bold text-slate-900 uppercase">Gudang Toko</span>
+            </div>
+            <div class="flex flex-col items-center">
+                <span class="font-bold text-slate-500 mb-16 uppercase tracking-widest text-[9px]">Mengetahui (Owner Toko):</span>
+                <div class="w-36 border-b-2 border-slate-800 mb-1.5"></div>
+                <span class="font-bold text-slate-900 uppercase">${esc(appData.store.name || 'Pimpinan')}</span>
+            </div>
+        </div>
+        `;
+
+        setH('doc-paper-content', h);
+        showDocModalWithAnim();
+        return;
+    }
+
+    if (type === 'stock_opname_worksheet') {
+        setIn('doc-modal-title', 'Preview Lembar Kerja Hitung Fisik (Worksheet)');
+
+        let logoHTML = '';
+        if (appData.store?.logo && (appData.store.logo.includes('http') || appData.store.logo.includes('data:'))) {
+            logoHTML = `<img loading="eager" src="${esc(appData.store.logo)}" class="w-14 h-14 object-contain">`;
+        } else {
+            logoHTML = `<div class="w-14 h-14 primary-bg flex items-center justify-center rounded-xl text-white"><i class="fa-solid fa-store text-2xl"></i></div>`;
+        }
+
+        const currentDate = new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' });
+        const products = appData.products || [];
+
+        // Flatten products and variants
+        const rows = [];
+        products.forEach(p => {
+            if (!p || p.id == null) return;
+            if (p.variants && p.variants.length > 0) {
+                p.variants.forEach(v => {
+                    rows.push({
+                        name: p.name,
+                        variantName: v.name,
+                        sku: v.sku || p.sku || '',
+                        barcode: v.barcode || p.barcode || '',
+                        category: p.category || 'Umum',
+                        brand: p.brand || '-',
+                        unit: p.unit || 'pcs',
+                        systemStock: parseFloat(v.stock) || 0
+                    });
+                });
+            } else {
+                rows.push({
+                    name: p.name,
+                    variantName: '',
+                    sku: p.sku || '',
+                    barcode: p.barcode || '',
+                    category: p.category || 'Umum',
+                    brand: p.brand || '-',
+                    unit: p.unit || 'pcs',
+                    systemStock: parseFloat(p.stock) || 0
+                });
+            }
+        });
+
+        let h = `
+        <div class="flex justify-between items-start border-b-[3px] border-slate-800 pb-4 mb-4">
+            <div class="flex items-center gap-3">
+                ${logoHTML}
+                <div>
+                    <h1 class="font-bold text-xl tracking-tight text-slate-900 uppercase">${esc(appData.store.name || 'TOKO PUTRI')}</h1>
+                    <p class="text-xs font-bold text-slate-500 uppercase tracking-widest">${esc(appData.store.slogan || 'Pusat Alat Teknik & Bangunan')}</p>
+                    <p class="text-[10px] text-slate-400 mt-0.5">${esc(appData.store.address || '')}</p>
+                </div>
+            </div>
+            <div class="text-right">
+                <h2 class="font-black text-xl tracking-wider text-slate-900 uppercase">LEMBAR KERJA AUDIT</h2>
+                <h3 class="font-bold text-xs tracking-widest text-amber-600 uppercase">STOCK OPNAME FISIK RAK</h3>
+                <p class="text-xs font-medium text-slate-500 mt-1">Tanggal Cetak: <b>${currentDate}</b></p>
+                <p class="text-xs font-medium text-slate-500">Total Item: <b>${rows.length} Baris</b></p>
+            </div>
+        </div>
+
+        <div class="p-2.5 rounded-lg bg-slate-50 border border-slate-200 text-[10px] text-slate-600 mb-4 flex items-center justify-between">
+            <span><b>Petunjuk:</b> Hitung fisik barang di rak/gudang secara teliti. Tulis angka aktual pada kolom <b>HASIL FISIK</b> dan beri catatan bila ada barang rusak/cacat.</span>
+            <span class="font-mono text-slate-400">Hal. 1</span>
+        </div>
+
+        <table class="w-full text-left border-collapse mb-6">
+            <thead>
+                <tr class="border-b-2 border-slate-800 text-[9.5px] font-black text-white uppercase tracking-wider bg-slate-900">
+                    <th class="py-2 px-2 text-center w-8 border-r border-slate-700">Cek</th>
+                    <th class="py-2 px-2 text-center w-8 border-r border-slate-700">No</th>
+                    <th class="py-2 px-3 border-r border-slate-700">Nama Barang &amp; Spesifikasi Varian</th>
+                    <th class="py-2 px-2 border-r border-slate-700 w-28">Kategori / Rak</th>
+                    <th class="py-2 px-2 text-center w-20 border-r border-slate-700">Stok Sistem</th>
+                    <th class="py-2 px-2 text-center w-28 border-r border-slate-700 bg-amber-900/60">HASIL FISIK</th>
+                    <th class="py-2 px-3 text-left w-36">Kondisi &amp; Catatan</th>
+                </tr>
+            </thead>
+            <tbody class="border-b-2 border-slate-800 divide-y divide-slate-200 text-[11px]">
+                ${rows.map((r, idx) => `
+                    <tr class="hover:bg-slate-50">
+                        <td class="py-2 px-2 text-center font-mono border-r border-slate-200"><span class="inline-block w-3.5 h-3.5 border border-slate-400 rounded-sm"></span></td>
+                        <td class="py-2 px-2 text-center font-mono text-slate-400 border-r border-slate-200">${idx + 1}</td>
+                        <td class="py-2 px-3 font-bold text-slate-900 border-r border-slate-200 uppercase">
+                            ${esc(r.name)}
+                            ${r.variantName ? `<span class="bg-slate-100 text-slate-700 px-1 rounded text-[8.5px] border border-slate-300 ml-1 font-semibold">${esc(r.variantName)}</span>` : ''}
+                            ${r.sku ? `<span class="text-slate-400 font-mono text-[8.5px] block">SKU: ${esc(r.sku)}</span>` : ''}
+                        </td>
+                        <td class="py-2 px-2 text-[10px] text-slate-600 border-r border-slate-200">
+                            ${esc(r.category)}
+                        </td>
+                        <td class="py-2 px-2 text-center font-mono font-bold text-slate-600 border-r border-slate-200">
+                            ${r.systemStock} ${esc(r.unit)}
+                        </td>
+                        <td class="py-2 px-2 text-center font-mono border-r border-slate-200 bg-amber-50/40">
+                            <span class="inline-block w-20 h-6 border-b-2 border-slate-400"></span>
+                        </td>
+                        <td class="py-2 px-3 text-[10px] text-slate-400">
+                            <span class="inline-block w-full h-6 border-b border-slate-200"></span>
+                        </td>
+                    </tr>
+                `).join('')}
+            </tbody>
+        </table>
+
+        <div class="grid grid-cols-2 gap-6 text-center text-xs mt-auto pt-6 border-t border-slate-200">
+            <div class="flex flex-col items-center">
+                <span class="font-bold text-slate-500 mb-14 uppercase tracking-widest text-[9px]">Staf Penghitung Fisik:</span>
+                <div class="w-40 border-b-2 border-slate-800 mb-1"></div>
+                <span class="font-bold text-slate-900 uppercase">Nama &amp; Tanda Tangan</span>
+            </div>
+            <div class="flex flex-col items-center">
+                <span class="font-bold text-slate-500 mb-14 uppercase tracking-widest text-[9px]">Diverifikasi Oleh:</span>
+                <div class="w-40 border-b-2 border-slate-800 mb-1"></div>
+                <span class="font-bold text-slate-900 uppercase">Kepala Toko / Owner</span>
             </div>
         </div>
         `;

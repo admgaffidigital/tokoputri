@@ -1213,8 +1213,11 @@ export const renderStockValuationTab = () => {
                             </div>
                         </div>
 
-                        <!-- Bar Pencarian & Dropdown Kategori -->
-                        <div class="flex items-center gap-2 w-full sm:w-auto">
+                        <!-- Bar Pencarian, Dropdown Kategori & Tombol Stock Opname -->
+                        <div class="flex items-center flex-wrap sm:flex-nowrap gap-2 w-full sm:w-auto">
+                            <button type="button" onclick="openAdminTab('stock_opname')" class="px-3 py-1.5 rounded-xl text-white text-xs font-bold flex items-center gap-1.5 shadow-2xs cursor-pointer active:scale-95 shrink-0" style="background: linear-gradient(135deg, #f59e0b, #d97706);" title="Audit fisik stok rak & rekonsiliasi selisih">
+                                <i class="fa-solid fa-clipboard-check text-xs"></i> <span>Stock Opname</span>
+                            </button>
                             <!-- Input Pencarian dengan Clear Button -->
                             <div class="relative flex-1 sm:w-56">
                                 <i class="fa-solid fa-search absolute left-3 top-2.5 text-xs text-slate-400"></i>

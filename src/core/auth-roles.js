@@ -27,6 +27,7 @@ export const PERMISSION_DEFINITIONS = [
     { key: 'customers', label: 'Database Pelanggan', desc: 'Lihat daftar member, atur limit kredit PayLater, & mutasi poin', group: 'operasional', icon: 'fa-address-book' },
     { key: 'pos', label: 'Kasir POS', desc: 'Akses antarmuka penjualan kasir toko fisik dan shift kasir', group: 'operasional', icon: 'fa-cash-register' },
     { key: 'expenses', label: 'Biaya Operasional Toko', desc: 'Buku kas pengeluaran operasional toko harian & nota kas', group: 'operasional', icon: 'fa-money-bill-transfer' },
+    { key: 'stock_opname', label: 'Stock Opname (Audit Fisik)', desc: 'Audit stok fisik rak/gudang, rekonsiliasi selisih & terapkan penyesuaian stok', group: 'operasional', icon: 'fa-clipboard-check' },
 
     // 2. Modul Konten & Etalase
     { key: 'categories', label: 'Kategori Produk', desc: 'Tambah dan susun kategori etalase produk', group: 'konten', icon: 'fa-tags' },
@@ -58,6 +59,7 @@ export const ROLE_PRESETS = {
         piutang: false, customers: false, categories: false, brands: false,
         colors: false, vouchers: false, banners: false, rewards: false,
         reviews: false, faqs: false, changelog: false, expenses: false,
+        stock_opname: false,
         reports: false, view_reports: false, tax: false, banks: false, settings: false,
         cashiers: false, backup_sync: false
     },
@@ -68,6 +70,7 @@ export const ROLE_PRESETS = {
         piutang: true, customers: true, categories: true, brands: true,
         colors: true, vouchers: true, banners: true, rewards: true,
         reviews: true, faqs: true, changelog: true, expenses: true,
+        stock_opname: true,
         reports: false, view_reports: false, tax: false, banks: false, settings: false,
         cashiers: false, backup_sync: false
     },
@@ -78,6 +81,7 @@ export const ROLE_PRESETS = {
         piutang: true, customers: true, categories: true, brands: true,
         colors: true, vouchers: true, banners: true, rewards: true,
         reviews: true, faqs: true, changelog: true, expenses: true,
+        stock_opname: true,
         reports: true, view_reports: true, tax: true, banks: false, settings: false,
         cashiers: false, backup_sync: false
     },
