@@ -172,15 +172,15 @@ export const rCat = () => {
     const c = el('product-container');
     if (!c) return;
     c.className = cView === 'grid' 
-        ? 'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-5 2xl:grid-cols-6 gap-4 sm:gap-6 lg:gap-8' 
-        : 'flex flex-col gap-3 sm:gap-4';
+        ? 'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-5 2xl:grid-cols-6 gap-2.5 sm:gap-3 md:gap-3.5 lg:gap-4' 
+        : 'flex flex-col gap-2.5 sm:gap-3';
     
     if (!f.length) {
         if (!window.__isProductsLoaded && !sQ && !aCat && !aBrand) {
             // Data produk masih dalam proses unduh, pertahankan skeleton card
             return;
         }
-        c.innerHTML = `<div class="col-span-full text-center py-16 sm:py-24 text-slate-500 dark:text-slate-400 font-bold bg-slate-50 dark:bg-slate-800/50 rounded-[1.5rem] border border-slate-200 border-dashed dark:border-slate-700 text-sm sm:text-base flex flex-col items-center justify-center"><div class="w-20 h-20 bg-white dark:bg-slate-800 rounded-full flex items-center justify-center shadow-sm mb-4"><i class="fa-solid fa-box-open text-3xl sm:text-4xl text-slate-300 dark:text-slate-600"></i></div>Maaf, produk tidak ditemukan.<br><span class="text-xs font-medium text-slate-500 dark:text-slate-400 mt-2 font-normal">Coba gunakan kata kunci pencarian yang berbeda atau hapus filter.</span></div>`;
+        c.innerHTML = `<div class="col-span-full text-center py-16 sm:py-24 text-slate-500 dark:text-slate-400 font-bold bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-slate-200 border-dashed dark:border-slate-700 text-sm sm:text-base flex flex-col items-center justify-center"><div class="w-20 h-20 bg-white dark:bg-slate-800 rounded-full flex items-center justify-center shadow-sm mb-4"><i class="fa-solid fa-box-open text-3xl sm:text-4xl text-slate-300 dark:text-slate-600"></i></div>Maaf, produk tidak ditemukan.<br><span class="text-xs font-medium text-slate-500 dark:text-slate-400 mt-2 font-normal">Coba gunakan kata kunci pencarian yang berbeda atau hapus filter.</span></div>`;
         hide('load-more-container'); 
         return;
     }
@@ -202,10 +202,9 @@ export const rCat = () => {
             if (totalStock <= 0) {
                 nH = `<div class="absolute inset-0 bg-white/75 dark:bg-slate-900/75 z-20 flex items-center justify-center rounded-2xl"><span class="bg-slate-800 text-white text-[10px] font-bold px-3 py-1.5 rounded-xl shadow-lg uppercase tracking-widest"><i class="fa-solid fa-ban mr-1"></i> HABIS</span></div>`;
             } else if (totalStock <= 5) {
-                // Sudut kanan-bawah: tidak bertabrakan dengan badge diskon/PO di kiri-atas
-                stockBadge = `<span class="absolute bottom-2 right-2 z-10 bg-rose-500 text-white text-[8px] font-bold px-2 py-1 rounded-xl shadow uppercase tracking-wider"><i class="fa-solid fa-fire mr-0.5"></i> SISA ${totalStock}</span>`;
+                stockBadge = `<span class="absolute bottom-2 right-2 z-10 bg-rose-500 text-white text-[8px] font-bold px-2 py-0.5 rounded-lg shadow uppercase tracking-wider"><i class="fa-solid fa-fire mr-0.5"></i> SISA ${totalStock}</span>`;
             } else {
-                stockBadge = `<span class="absolute bottom-2 right-2 z-10 bg-slate-800/90 text-white text-[8px] font-bold px-2 py-1 rounded-xl shadow uppercase tracking-wider"><i class="fa-solid fa-box mr-0.5"></i> Stok ${totalStock}</span>`;
+                stockBadge = `<span class="absolute bottom-2 right-2 z-10 bg-slate-800/90 text-white text-[8px] font-bold px-2 py-0.5 rounded-lg shadow uppercase tracking-wider"><i class="fa-solid fa-box mr-0.5"></i> STOK ${totalStock}</span>`;
             }
         }
         
@@ -217,11 +216,11 @@ export const rCat = () => {
         let priceNormalHtml = '';
         if (p.priceNormal && p.priceNormal > p.price) {
             let pct = Math.round(((p.priceNormal - p.price) / p.priceNormal) * 100);
-            discPill = `<span class="bg-rose-500 text-white px-2 py-0.5 rounded-full text-[8px] font-bold flex items-center gap-1 whitespace-nowrap uppercase tracking-wider shadow-sm"><i class="fa-solid fa-tags"></i> -${pct}%</span>`;
-            priceNormalHtml = `<p class="text-[10px] text-slate-600 dark:text-slate-400 line-through mb-0.5 font-bold">${fCur(p.priceNormal)}</p>`;
+            discPill = `<span class="bg-rose-500 text-white px-1.5 py-0.5 rounded-lg text-[9px] font-extrabold flex items-center gap-1 whitespace-nowrap uppercase tracking-wider shadow-md"><i class="fa-solid fa-tags text-[8px]"></i> -${pct}%</span>`;
+            priceNormalHtml = `<p class="text-[10px] text-slate-400 dark:text-slate-500 line-through leading-none font-semibold truncate">${fCur(p.priceNormal)}</p>`;
         }
 
-        let poPill = p.poTime ? `<span class="bg-amber-500 text-white px-2 py-0.5 rounded-full text-[8px] font-bold flex items-center gap-1 whitespace-nowrap uppercase tracking-wider shadow-sm"><i class="fa-solid fa-clock"></i> PO ${esc(p.poTime)}</span>` : '';
+        let poPill = p.poTime ? `<span class="bg-amber-500 text-white px-1.5 py-0.5 rounded-lg text-[9px] font-extrabold flex items-center gap-1 whitespace-nowrap uppercase tracking-wider shadow-md"><i class="fa-solid fa-clock text-[8px]"></i> PO ${esc(p.poTime)}</span>` : '';
 
         let poinBadge = '';
         if (p.variants && p.variants.length) {
@@ -229,31 +228,37 @@ export const rCat = () => {
             if (poinVals.length) {
                 const uniq = [...new Set(poinVals)];
                 poinBadge = uniq.length === 1
-                    ? `<span class="bg-[rgba(var(--color-primary-rgb),0.1)] text-[var(--color-primary)] px-2 py-0.5 rounded-full text-[8px] font-bold flex items-center gap-1 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-star"></i> +${uniq[0]} Poin</span>`
-                    : `<span class="bg-[rgba(var(--color-primary-rgb),0.1)] text-[var(--color-primary)] px-2 py-0.5 rounded-full text-[8px] font-bold flex items-center gap-1 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-star"></i> Dapat Poin</span>`;
+                    ? `<span class="bg-[rgba(var(--color-primary-rgb),0.08)] text-[var(--color-primary)] px-1.5 py-0.5 rounded-md text-[8px] font-bold flex items-center gap-0.5 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-star text-[7px]"></i> +${uniq[0]}</span>`
+                    : `<span class="bg-[rgba(var(--color-primary-rgb),0.08)] text-[var(--color-primary)] px-1.5 py-0.5 rounded-md text-[8px] font-bold flex items-center gap-0.5 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-star text-[7px]"></i> Poin</span>`;
             }
         } else if (parseFloat(p.poin) > 0) {
-            poinBadge = `<span class="bg-[rgba(var(--color-primary-rgb),0.1)] text-[var(--color-primary)] px-2 py-0.5 rounded-full text-[8px] font-bold flex items-center gap-1 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-star"></i> +${parseFloat(p.poin)} Poin</span>`;
+            poinBadge = `<span class="bg-[rgba(var(--color-primary-rgb),0.08)] text-[var(--color-primary)] px-1.5 py-0.5 rounded-md text-[8px] font-bold flex items-center gap-0.5 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-star text-[7px]"></i> +${parseFloat(p.poin)}</span>`;
         }
 
         const totalSoldCard = p.variants && p.variants.length
             ? p.variants.reduce((s, vv) => s + (parseFloat(vv.totalSold) || 0), 0)
             : (parseFloat(p.totalSold) || 0);
         const soldBadge = totalSoldCard > 0
-            ? `<span class="bg-slate-200 text-slate-700 dark:bg-slate-700 dark:text-slate-300 px-2 py-0.5 rounded-full text-[8px] font-bold flex items-center gap-1 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-fire-flame-curved text-orange-400"></i> ${totalSoldCard} Terjual</span>`
+            ? `<span class="bg-slate-100 text-slate-600 dark:bg-slate-700/60 dark:text-slate-300 px-1.5 py-0.5 rounded-md text-[8px] font-bold flex items-center gap-0.5 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-fire text-amber-500 text-[7px]"></i> ${totalSoldCard} Terjual</span>`
             : '';
 
-        let bH = `<div class="mb-2.5 flex flex-wrap gap-1.5 items-center overflow-hidden shrink-0">
-            ${discPill}
-            ${poPill}
-            ${poinBadge}
-            ${soldBadge}
-            ${p.subCategory ? `<span class="bg-[rgba(var(--color-primary-rgb),0.08)] text-[var(--color-primary)] border border-[rgba(var(--color-primary-rgb),0.2)] px-2 py-0.5 rounded-full text-[8px] font-bold flex items-center gap-1 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-shapes"></i> ${esc(p.subCategory)}</span>` : ''}
-            ${p.tag ? `<span class="bg-[rgba(var(--color-primary-rgb),0.12)] text-[var(--color-primary)] dark:bg-[rgba(var(--color-primary-rgb),0.25)] px-2 py-0.5 rounded-full text-[8px] font-bold flex items-center gap-1 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-hashtag"></i> ${esc(p.tag)}</span>` : ''}
-            <span class="accent-badge px-2 py-0.5 rounded-full text-[8px] font-bold flex items-center gap-1 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-circle-check"></i> Official</span>
-            ${p.brand ? `<span class="bg-slate-200 text-slate-700 dark:bg-slate-700 dark:text-slate-300 px-2 py-0.5 rounded-full text-[8px] font-bold flex items-center gap-1 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-tag"></i> ${esc(p.brand)}</span>` : ''}
-            ${(p.wholesale?.length && !p.variants?.length) ? `<span class="amber-badge px-2 py-0.5 rounded-full text-[8px] font-bold flex items-center gap-1 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-layer-group"></i> Grosir</span>` : ''}
-        </div>`;
+        const chipList = [];
+        if (soldBadge) chipList.push(soldBadge);
+        if (poinBadge) chipList.push(poinBadge);
+        if (p.subCategory) {
+            chipList.push(`<span class="bg-[rgba(var(--color-primary-rgb),0.08)] text-[var(--color-primary)] border border-[rgba(var(--color-primary-rgb),0.2)] px-1.5 py-0.5 rounded-md text-[8px] font-bold flex items-center gap-0.5 whitespace-nowrap uppercase tracking-wider truncate max-w-[120px]"><i class="fa-solid fa-shapes text-[7px]"></i> ${esc(p.subCategory)}</span>`);
+        } else if (p.brand) {
+            chipList.push(`<span class="bg-slate-100 text-slate-600 dark:bg-slate-700/60 dark:text-slate-300 px-1.5 py-0.5 rounded-md text-[8px] font-bold flex items-center gap-0.5 whitespace-nowrap uppercase tracking-wider truncate max-w-[110px]"><i class="fa-solid fa-tag text-[7px]"></i> ${esc(p.brand)}</span>`);
+        } else if (p.tag) {
+            chipList.push(`<span class="bg-slate-100 text-slate-600 dark:bg-slate-700/60 dark:text-slate-300 px-1.5 py-0.5 rounded-md text-[8px] font-bold flex items-center gap-0.5 whitespace-nowrap uppercase tracking-wider truncate max-w-[110px]"><i class="fa-solid fa-hashtag text-[7px]"></i> ${esc(p.tag)}</span>`);
+        }
+        if (p.wholesale?.length && !p.variants?.length) {
+            chipList.push(`<span class="amber-badge px-1.5 py-0.5 rounded-md text-[8px] font-bold flex items-center gap-0.5 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-layer-group text-[7px]"></i> Grosir</span>`);
+        }
+
+        let bH = chipList.length
+            ? `<div class="mb-1.5 flex items-center gap-1 overflow-hidden whitespace-nowrap text-nowrap h-5 shrink-0">${chipList.join('')}</div>`
+            : `<div class="mb-1.5 h-5 shrink-0"></div>`;
         
         let unt = `<span class="text-[9px] text-slate-600 dark:text-slate-400 font-bold ml-0.5 mb-0.5 uppercase tracking-wide">/${esc(p.unit || 'PCS')}</span>`;
         
@@ -264,56 +269,68 @@ export const rCat = () => {
 
         if (cView === 'grid') {
             return `
-            <a href="?p=${p.id}" class="w-full bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700/50 rounded-[1.5rem] shadow-soft ${cardCursorCls} transition-all duration-300 flex flex-col group relative overflow-hidden text-left" onclick="event.preventDefault(); openProductModal('${esc(p.id)}')">
+            <a href="?p=${p.id}" class="w-full bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700/50 rounded-2xl shadow-soft ${cardCursorCls} transition-all duration-300 flex flex-col group relative overflow-hidden text-left" onclick="event.preventDefault(); openProductModal('${esc(p.id)}')">
                 ${nH}
                 <div class="relative aspect-square w-full bg-white dark:bg-slate-900 flex items-center justify-center shrink-0 border-b border-slate-100 dark:border-slate-700/50 overflow-hidden">
+                      ${(discPill || poPill) ? `<div class="absolute top-2 left-2 z-10 flex flex-col gap-1 items-start pointer-events-none">${discPill}${poPill}</div>` : ''}
                       ${stockBadge}
                       ${hasImg 
                           ? `<img width="300" height="300" loading="lazy" decoding="async" sizes="(max-width: 640px) 45vw, (max-width: 1024px) 30vw, 20vw" src="${imgUrl}" alt="${esc(p.name)}" onerror="this.onerror=null;this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='flex';" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 ${nH ? 'grayscale opacity-50' : ''}">
                              <div class="w-full h-full" style="display:none">${coverMdHtml}</div>`
                           : coverMdHtml}
                 </div>
-                <div class="flex-1 flex flex-col p-3 sm:p-4 min-w-0 bg-white dark:bg-slate-800 relative z-10">
+                <div class="flex-1 flex flex-col p-2.5 sm:p-3 min-w-0 bg-white dark:bg-slate-800 relative z-10">
                     ${bH}
-                    <h4 class="text-[11px] sm:text-xs font-bold text-slate-700 dark:text-slate-200 line-clamp-2 leading-snug mb-2 group-hover:text-[var(--color-primary)] transition-colors uppercase">${esc(p.name)}</h4>
+                    <h4 class="text-[11px] sm:text-xs font-bold text-slate-700 dark:text-slate-200 line-clamp-2 leading-snug min-h-[2.1rem] sm:min-h-[2.25rem] mb-1 group-hover:text-[var(--color-primary)] transition-colors uppercase break-words">${esc(p.name)}</h4>
                     <div class="flex items-end justify-between mt-auto pt-1">
-                        <div>
-                            ${p.variants && p.variants.length > 0 ? '' : priceNormalHtml}
-                            <p class="text-[var(--color-primary)] font-bold text-sm sm:text-[15px] leading-none tracking-tight">
-                                ${p.variants && p.variants.length > 0 ? '<span class="text-[10px] sm:text-xs text-slate-600 dark:text-slate-400 font-bold uppercase tracking-wider">PILIH VARIAN</span>' : fCur(p.price)}
-                            </p>
-                            ${p.variants && p.variants.length > 0 ? '' : unt}
+                        <div class="min-w-0 pr-1">
+                            <div class="h-3.5 flex items-center">
+                                ${p.variants && p.variants.length > 0 ? '' : priceNormalHtml}
+                            </div>
+                            <div class="flex items-baseline gap-0.5">
+                                <p class="text-[var(--color-primary)] font-bold text-xs sm:text-[14px] leading-none tracking-tight truncate">
+                                    ${p.variants && p.variants.length > 0 ? '<span class="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider">PILIH VARIAN</span>' : fCur(p.price)}
+                                </p>
+                                ${p.variants && p.variants.length > 0 ? '' : unt}
+                            </div>
                         </div>
-                        <button type="button" class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[rgba(var(--color-primary-rgb),0.08)] text-[var(--color-primary)] border border-[rgba(var(--color-primary-rgb),0.15)] flex items-center justify-center transition-all group-hover:bg-[var(--color-primary)] group-hover:text-white group-hover:scale-110 active:scale-90 shadow-sm cursor-pointer z-20" onclick="quickAddOrOpenProduct(event, '${esc(p.id)}')" title="Tambah ke Keranjang" aria-label="Tambah ${esc(p.name)} ke keranjang">
-                            <i class="fa-solid fa-plus text-xs sm:text-sm"></i>
+                        <button type="button" class="w-7 h-7 sm:w-7.5 sm:h-7.5 rounded-xl bg-[rgba(var(--color-primary-rgb),0.08)] text-[var(--color-primary)] border border-[rgba(var(--color-primary-rgb),0.15)] flex items-center justify-center shrink-0 transition-all group-hover:bg-[var(--color-primary)] group-hover:text-white group-hover:scale-105 active:scale-95 shadow-sm cursor-pointer z-20" onclick="quickAddOrOpenProduct(event, '${esc(p.id)}')" title="Tambah ke Keranjang" aria-label="Tambah ${esc(p.name)} ke keranjang">
+                            <i class="fa-solid fa-plus text-xs"></i>
                         </button>
                     </div>
                 </div>
             </a>`;
         } else {
             return `
-            <a href="?p=${p.id}" class="w-full bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700/50 rounded-[1.5rem] shadow-soft ${cardCursorClsList} transition-all duration-300 flex items-stretch p-2.5 sm:p-3 gap-3 sm:gap-4 group relative overflow-hidden text-left" onclick="event.preventDefault(); openProductModal('${esc(p.id)}')">
+            <a href="?p=${p.id}" class="w-full bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700/50 rounded-2xl shadow-soft ${cardCursorClsList} transition-all duration-300 flex items-stretch p-2.5 sm:p-3 gap-3 group relative overflow-hidden text-left" onclick="event.preventDefault(); openProductModal('${esc(p.id)}')">
                 ${nH}
-                <div class="relative w-24 h-24 sm:w-28 sm:h-28 shrink-0 bg-white dark:bg-slate-900 rounded-xl flex items-center justify-center border border-slate-100 dark:border-slate-700/50 overflow-hidden">
+                <div class="relative w-20 h-20 sm:w-24 sm:h-24 shrink-0 bg-white dark:bg-slate-900 rounded-xl flex items-center justify-center border border-slate-100 dark:border-slate-700/50 overflow-hidden">
+                    ${(discPill || poPill) ? `<div class="absolute top-1 left-1 z-10 flex flex-col gap-0.5 items-start pointer-events-none">${discPill}${poPill}</div>` : ''}
                     ${stockBadge}
                     ${hasImg
                         ? `<img width="96" height="96" loading="lazy" decoding="async" sizes="96px" src="${imgUrl}" alt="${esc(p.name)}" onerror="this.onerror=null;this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='flex';" class="max-w-full max-h-full object-contain transition-transform duration-500 group-hover:scale-105 ${nH ? 'grayscale opacity-50' : ''}">
                            <div class="w-full h-full" style="display:none">${coverSmHtml}</div>`
                         : coverSmHtml}
                 </div>
-                <div class="flex-1 min-w-0 py-1 flex flex-col justify-center h-full relative z-10 pr-2">
-                    ${bH}
-                    <h4 class="text-[11px] sm:text-xs font-bold text-slate-700 dark:text-slate-200 line-clamp-2 leading-snug mb-1.5 group-hover:text-[var(--color-primary)] transition-colors uppercase">${esc(p.name)}</h4>
-                    <div class="flex items-end justify-between mt-auto pt-1">
-                        <div>
-                            ${p.variants && p.variants.length > 0 ? '' : priceNormalHtml}
-                            <p class="text-[var(--color-primary)] font-bold text-sm sm:text-[15px] leading-none tracking-tight">
-                                ${p.variants && p.variants.length > 0 ? '<span class="text-[10px] sm:text-xs text-slate-600 dark:text-slate-400 font-bold uppercase tracking-wider">PILIH VARIAN</span>' : fCur(p.price)}
-                            </p>
-                            ${p.variants && p.variants.length > 0 ? '' : unt}
+                <div class="flex-1 min-w-0 py-0.5 flex flex-col justify-between h-full relative z-10 pr-1">
+                    <div>
+                        ${bH}
+                        <h4 class="text-[11px] sm:text-xs font-bold text-slate-700 dark:text-slate-200 line-clamp-2 leading-snug mb-1 group-hover:text-[var(--color-primary)] transition-colors uppercase">${esc(p.name)}</h4>
+                    </div>
+                    <div class="flex items-end justify-between pt-1">
+                        <div class="min-w-0 pr-1">
+                            <div class="h-3 flex items-center">
+                                ${p.variants && p.variants.length > 0 ? '' : priceNormalHtml}
+                            </div>
+                            <div class="flex items-baseline gap-0.5">
+                                <p class="text-[var(--color-primary)] font-bold text-xs sm:text-[14px] leading-none tracking-tight truncate">
+                                    ${p.variants && p.variants.length > 0 ? '<span class="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider">PILIH VARIAN</span>' : fCur(p.price)}
+                                </p>
+                                ${p.variants && p.variants.length > 0 ? '' : unt}
+                            </div>
                         </div>
-                        <button type="button" class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[rgba(var(--color-primary-rgb),0.08)] text-[var(--color-primary)] border border-[rgba(var(--color-primary-rgb),0.15)] flex items-center justify-center transition-all group-hover:bg-[var(--color-primary)] group-hover:text-white group-hover:scale-110 active:scale-90 shadow-sm mr-1 cursor-pointer z-20" onclick="quickAddOrOpenProduct(event, '${esc(p.id)}')" title="Tambah ke Keranjang" aria-label="Tambah ${esc(p.name)} ke keranjang">
-                            <i class="fa-solid fa-plus text-xs sm:text-sm"></i>
+                        <button type="button" class="w-7 h-7 sm:w-7.5 sm:h-7.5 rounded-xl bg-[rgba(var(--color-primary-rgb),0.08)] text-[var(--color-primary)] border border-[rgba(var(--color-primary-rgb),0.15)] flex items-center justify-center shrink-0 transition-all group-hover:bg-[var(--color-primary)] group-hover:text-white group-hover:scale-105 active:scale-95 shadow-sm mr-1 cursor-pointer z-20" onclick="quickAddOrOpenProduct(event, '${esc(p.id)}')" title="Tambah ke Keranjang" aria-label="Tambah ${esc(p.name)} ke keranjang">
+                            <i class="fa-solid fa-plus text-xs"></i>
                         </button>
                     </div>
                 </div>
@@ -399,18 +416,18 @@ export const renderCatalogSkeleton = () => {
     let skeletonCards = '';
     for (let i = 0; i < count; i++) {
         skeletonCards += `
-        <div class="w-full bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700/50 rounded-[1.5rem] shadow-soft p-3 sm:p-4 flex flex-col space-y-3 overflow-hidden">
-            <div class="aspect-square w-full rounded-2xl skeleton-shimmer"></div>
-            <div class="h-3 w-16 rounded-full skeleton-shimmer"></div>
+        <div class="w-full bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700/50 rounded-2xl shadow-soft p-2.5 sm:p-3 flex flex-col space-y-2 overflow-hidden">
+            <div class="aspect-square w-full rounded-xl skeleton-shimmer"></div>
+            <div class="h-3 w-16 rounded-md skeleton-shimmer"></div>
             <div class="h-3.5 w-full rounded-md skeleton-shimmer"></div>
             <div class="h-3 w-3/4 rounded-md skeleton-shimmer"></div>
-            <div class="mt-auto pt-2 flex items-center justify-between">
-                <div class="h-5 w-20 rounded-md skeleton-shimmer"></div>
-                <div class="w-7 h-7 rounded-full skeleton-shimmer"></div>
+            <div class="mt-auto pt-1 flex items-center justify-between">
+                <div class="h-4 w-16 rounded-md skeleton-shimmer"></div>
+                <div class="w-7 h-7 rounded-xl skeleton-shimmer"></div>
             </div>
         </div>`;
     }
-    c.className = 'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-5 2xl:grid-cols-6 gap-4 sm:gap-6 lg:gap-8';
+    c.className = 'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-5 2xl:grid-cols-6 gap-2.5 sm:gap-3 md:gap-3.5 lg:gap-4';
     c.innerHTML = skeletonCards;
 };
 

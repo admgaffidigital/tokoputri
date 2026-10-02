@@ -8,6 +8,22 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-10-30',
+        version: 'v1.10.30',
+        date: '2026-10-03',
+        title: 'Penyempurnaan Total Layout Kartu Katalog & Grid Spacing: Eliminasi Celah Kosong, Overlay Promo pada Foto & Penyelarasan Ketinggian Presisi',
+        category: 'ui',
+        badge: 'Compact Catalog Cards & Tight Grid v1.10.30',
+        items: [
+            'Kalibrasi Grid Gap Responsif: Mengurangi celah antarkartu dari gap-4 sm:gap-6 lg:gap-8 (32px kosong) menjadi standar e-commerce modern gap-2.5 sm:gap-3 md:gap-3.5 lg:gap-4 (10px–16px), menghilangkan jarak kosong yang menganga antarkartu di etalase desktop maupun mobile.',
+            'Overlay Promo & Pre-Order pada Foto Produk: Memindahkan badge diskon persentase (-X%) dan badge Pre-Order (PO X Hari) menjadi overlay floating elegan di sudut kiri-atas kontainer foto produk, berdampingan serasi dengan badge stok di sudut kanan-bawah.',
+            'Eliminasi Ruang Putih Kosong di Dalam Kartu: Merestrukturisasi badge bodi produk menjadi 1 baris chip ringkas (h-5 shrink-0) berisi status terjual, poin reward, sub-kategori/merek, dan grosir. Mengeliminasi badge duplikat redundan "Official" pada setiap kartu.',
+            'Standardisasi Ketinggian Judul & Slot Harga: Memberikan tinggi minimum terpadu pada judul produk (min-h-[2.1rem] sm:min-h-[2.25rem] 2 baris) dan slot harga coret (h-3.5), menjamin seluruh kartu dalam 1 baris memiliki ketinggian yang presisi, rata, dan tanpa ruang putih kosong melompong.',
+            'Ergonomi Radius & Padding Kartu: Merampingkan sudut kartu menjadi rounded-2xl (16px) dan padding bodi menjadi p-2.5 sm:p-3, memaksimalkan area tampilan visual produk secara estetis dan profesional.',
+            'Multi-Channel Build & Sync v1.10.30 (Android versionCode 11030): Kompilasi produksi web, sinkronisasi bundle flashdisk siap pakai, serta platform Android Capacitor tersinkronisasi 100%.'
+        ]
+    },
+    {
         id: 'log-1-10-29',
         version: 'v1.10.29',
         date: '2026-10-03',
