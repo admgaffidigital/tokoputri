@@ -8,6 +8,21 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-10-25',
+        version: 'v1.10.25',
+        date: '2026-10-02',
+        title: 'Perbaikan Stabilitas Sesi Owner: Auto-Reclaim Cerdas & Eliminasi False Kick-Out pada Auth Multi-Perangkat',
+        category: 'fix',
+        badge: 'Session Resilience Fix v1.10.25',
+        items: [
+            'Eliminasi False Kick-Out Owner (src/modules/admin/session.js): Memperbaiki bug di mana Owner ter-kick-out dari dashboard CMS saat membuka browser baru, tab baru, atau setelah clear cache meskipun tidak ada perangkat lain yang aktif. Akar masalah: tidak adanya freshmart_admin_session_id di localStorage menyebabkan isCurrentSessionActive() return false dan memaksa sign-out.',
+            'Strategi Auto-Reclaim Sesi Pintar: Jika Owner yang sudah terautentikasi Firebase tidak memiliki session ID lokal, sistem sekarang langsung mengklaim sesi baru di Firestore (bukan menolak). Perangkat lain yang benar-benar aktif akan menerima notifikasi kick-out yang tepat melalui Firestore listener.',
+            'Pembaruan lastActive Otomatis: Saat sesi Owner sudah cocok antara lokal dan Firestore, lastActive diperbarui secara silent setiap auth state change untuk memperpanjang validitas sesi tanpa interaksi pengguna.',
+            'Grace Period Guard 2 Detik (attachAdminSessionGuard): Menambahkan jeda 2 detik setelah sesi diklaim sebelum snapshot listener mulai memvalidasi, mencegah race condition di mana snapshot Firestore diterima sesaat setelah klaim baru memicu false kick-out.',
+            'Multi-Channel Build & Sync v1.10.25 (Android versionCode 11025): Kompilasi produksi web, sinkronisasi bundle flashdisk siap pakai, serta Android Capacitor tersinkronisasi 100%.'
+        ]
+    },
+    {
         id: 'log-1-10-24',
         version: 'v1.10.24',
         date: '2026-10-02',

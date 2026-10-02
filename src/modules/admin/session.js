@@ -12,6 +12,7 @@ import { db, auth, firebase } from '../../config/firebase.js';
 let unsubAdminSession = null;
 let isBeingKickedOut = false;
 let isLoggingInState = false;
+let _sessionClaimedAt = 0; // Timestamp saat sesi terakhir diklaim (untuk grace period)
 
 export const setLoggingIn = (val) => {
     isLoggingInState = !!val;
@@ -71,6 +72,7 @@ export const claimAdminSession = async (existingSessionId = null) => {
         });
 
         isBeingKickedOut = false;
+        _sessionClaimedAt = Date.now(); // Catat waktu klaim untuk grace period guard
         return mySessionId;
     } catch (e) {
         console.warn('Gagal mengklaim sesi admin aktif:', e);
@@ -145,6 +147,10 @@ export const attachAdminSessionGuard = () => {
             const activeSessionId = data.sessionId;
             const currentSessionId = localStorage.getItem('freshmart_admin_session_id');
 
+            // Grace period: Abaikan snapshot dalam 2 detik pertama setelah klaim sesi
+            // Mencegah race condition saat snapshot Firestore diterima tepat setelah klaim baru
+            if (_sessionClaimedAt && (Date.now() - _sessionClaimedAt) < 2000) return;
+
             // Jika session ID di Firestore sudah berbeda dengan yang dimiliki perangkat ini
             if (activeSessionId && currentSessionId && activeSessionId !== currentSessionId) {
                 if (isBeingKickedOut) return;
@@ -202,39 +208,66 @@ export const isCurrentSessionActive = async () => {
 
     const mySessionId = localStorage.getItem('freshmart_admin_session_id');
     if (!mySessionId) {
-        // Jika di lingkungan dev lokal atau sesi baru dipulihkan, otomatis klaim sesi agar auth tidak terputus
-        if (isLocal) {
-            try { await claimAdminSession(); } catch (_) {}
-            return true;
-        }
-
+        // Tidak ada session ID lokal → Owner membuka browser baru / clear cache
+        // Strategi: langsung klaim sesi baru agar Owner tidak ter-kick-out dari perangkatnya sendiri.
+        // Perangkat lama yang aktif akan menerima notifikasi kick-out (bukan Owner ini).
         try {
             const doc = await _db.collection("freshmart").doc("cms_data").collection("admin_session").doc("active").get();
             if (!doc.exists) {
+                // Belum ada sesi aktif di server → klaim langsung
                 try { await claimAdminSession(); } catch (_) {}
                 return true;
             }
-            // Periksa umur sesi aktif di server: jika sudah > 12 jam tidak aktif, klaim ulang
+
+            // Ada sesi aktif di server — cek apakah sudah expired (> 24 jam)
             const data = doc.data() || {};
             const lastActiveTime = data.lastActive?.toMillis ? data.lastActive.toMillis() : (data.loginAt?.toMillis ? data.loginAt.toMillis() : 0);
-            if (Date.now() - lastActiveTime > 12 * 60 * 60 * 1000) {
+            const hoursOld = (Date.now() - lastActiveTime) / (60 * 60 * 1000);
+
+            // Klaim ulang jika: di localhost, atau sesi server sudah > 1 jam tidak aktif
+            // Ini memberikan waktu yang cukup untuk kick-out perangkat aktif lainnya
+            // tapi tidak terlalu kejam memaksa Owner keluar dari sesi yang masih fresh
+            if (isLocal || hoursOld > 1) {
                 try { await claimAdminSession(); } catch (_) {}
                 return true;
             }
-            return false;
+
+            // Sesi server masih fresh (< 1 jam) — kemungkinan ada perangkat lain yang aktif
+            // Klaim ulang saja (Owner baru buka → perangkat lama ter-kick-out)
+            try { await claimAdminSession(); } catch (_) {}
+            return true;
         } catch (e) {
+            // Jika Firestore error → jangan block Owner, beri akses
             return true;
         }
     }
 
+    // Ada session ID lokal → validasi apakah masih cocok dengan server
     try {
         const doc = await _db.collection("freshmart").doc("cms_data").collection("admin_session").doc("active").get();
         if (!doc.exists) {
+            // Tidak ada sesi di server → klaim ulang dengan ID yang sama
             try { await claimAdminSession(mySessionId); } catch (_) {}
             return true;
         }
-        return doc.data().sessionId === mySessionId;
+
+        const serverSessionId = doc.data().sessionId;
+        if (serverSessionId === mySessionId) {
+            // Sesi cocok → perbarui lastActive secara silent
+            try {
+                await _db.collection("freshmart").doc("cms_data").collection("admin_session").doc("active").update({
+                    lastActive: firebase.firestore.FieldValue.serverTimestamp()
+                });
+            } catch (_) {}
+            return true;
+        }
+
+        // Sesi tidak cocok → perangkat lain aktif, klaim ulang (kick-out perangkat lain)
+        // Karena Owner ini sudah punya ID lokal yang valid, dia berhak mengklaim kembali
+        try { await claimAdminSession(mySessionId); } catch (_) {}
+        return true;
     } catch (e) {
+        // Jika Firestore error → jangan block Owner
         return true;
     }
 };
