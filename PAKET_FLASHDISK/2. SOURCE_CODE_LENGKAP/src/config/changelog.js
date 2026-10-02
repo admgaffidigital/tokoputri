@@ -8,6 +8,23 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-10-32',
+        version: 'v1.10.32',
+        date: '2026-10-03',
+        title: 'Arsitektur Smart Priority Badging & Eyebrow Kicker Terdedikasi: Eliminasi Total Badge Terpotong, Presisi Ukuran & UI/UX Mobile Ramah Pengguna',
+        category: 'ui',
+        badge: 'Smart Priority Badging & Anti-Clip Cards v1.10.32',
+        items: [
+            'Eliminasi Total Pemotongan Badge (Anti-Truncate & Anti-Clip): Meniadakan batasan buatan max-w-[80px] truncate dan truncate max-w-[120px] di dalam chip badge. Setiap badge kini berstatus atomik dengan properti shrink-0 whitespace-nowrap, menjamin teks badge selalu utuh, jelas, dan tidak pernah terpotong elipsis (...).',
+            'Eyebrow Kicker Kategori & Merek Terdedikasi: Memisahkan teks Kategori, Sub-Kategori, dan Merek keluar dari barisan badge operasional menjadi baris eyebrow kicker elegan tepat di atas nama produk (100% lebar kartu). Kategori panjang (misal: "CAT TEMBOK · NO DROP") kini tampil leluasa tanpa saling berebut ruang dengan badge promo.',
+            'Smart Priority Badge System (Hierarki Urgensi): Menerapkan algoritma seleksi cerdas berdasarkan bobot urgensi tindakan pelanggan (Diskon Finansial > Urgensi Stok/PO > Fleksibilitas Varian/Grosir > Reward Poin & Terjual). Menampilkan maksimal 2 chip utama pada mode Grid (muat 100% di lebar kartu ponsel ~150px) dan maksimal 3 chip utama pada mode List.',
+            'Optimasi Micro-Copy Ringkas & Padat: Menyederhanakan penulisan status Pre-Order menjadi format kompak (misal: "PO 1-3hr" menggantikan "PO 1-3 HARI KERJA") dan stok ("Sisa 3"), memangkas lebar chip hingga 40% tanpa mengurangi kejelasan makna.',
+            'Kontainer Horizontal Anti-Scrollbar (.hide-scrollbar & .no-scrollbar): Membungkus deretan chip badge dengan kontainer flex items-center gap-1 overflow-x-auto hide-scrollbar no-scrollbar flex-nowrap py-0.5, memastikan kartu tidak pernah melebar/melompat ke baris baru sekaligus tetap dapat digeser halus di perangkat mobile layar sempit.',
+            'Harmonisasi Menyeluruh Etalase & POS Kasir: Menerapkan sistem badging presisi ini secara identik pada kartu etalase pelanggan (catalog.js) dan kartu katalog kasir (pos.js), menciptakan pengalaman visual yang konsisten, rapi, dan estetis di seluruh ekosistem Toko Putri.',
+            'Multi-Channel Build & Sync v1.10.32 (Android versionCode 11032): Kompilasi produksi web, sinkronisasi bundle flashdisk siap pakai, serta platform Android Capacitor tersinkronisasi 100%.'
+        ]
+    },
+    {
         id: 'log-1-10-31',
         version: 'v1.10.31',
         date: '2026-10-03',

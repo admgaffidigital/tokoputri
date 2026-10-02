@@ -425,6 +425,7 @@ html.dark .view-section:not(#view-admin-login) {
     letter-spacing: 0.03em;
     line-height: 1.2;
     white-space: nowrap;
+    flex-shrink: 0;
 }
 
 .pos-tag-variant {
@@ -1073,8 +1074,10 @@ body {
 }
 
 /* === 2. LAYOUT & UTILITIES === */
-.hide-scrollbar::-webkit-scrollbar { display: none; } 
-.hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+.hide-scrollbar::-webkit-scrollbar,
+.no-scrollbar::-webkit-scrollbar { display: none; } 
+.hide-scrollbar,
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
 .view-section { 
     width: 100%; 

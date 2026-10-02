@@ -216,11 +216,17 @@ export const rCat = () => {
         let priceNormalHtml = '';
         if (p.priceNormal && p.priceNormal > p.price) {
             let pct = Math.round(((p.priceNormal - p.price) / p.priceNormal) * 100);
-            discPill = `<span class="bg-rose-500 text-white px-1.5 py-0.5 rounded-md text-[8px] font-extrabold flex items-center gap-0.5 whitespace-nowrap uppercase tracking-wider shadow-sm"><i class="fa-solid fa-tags text-[7px]"></i> -${pct}%</span>`;
+            discPill = `<span class="bg-rose-500 text-white px-1.5 py-0.5 rounded-md text-[8px] font-extrabold flex items-center gap-0.5 whitespace-nowrap shrink-0 uppercase tracking-wider shadow-sm"><i class="fa-solid fa-tags text-[7px]"></i> -${pct}%</span>`;
             priceNormalHtml = `<p class="text-[10px] text-slate-400 dark:text-slate-500 line-through leading-none font-semibold truncate">${fCur(p.priceNormal)}</p>`;
         }
 
-        let poPill = p.poTime ? `<span class="bg-amber-500 text-white px-1.5 py-0.5 rounded-md text-[8px] font-extrabold flex items-center gap-0.5 whitespace-nowrap uppercase tracking-wider shadow-sm"><i class="fa-solid fa-clock text-[7px]"></i> PO ${esc(p.poTime)}</span>` : '';
+        const compactPoStr = p.poTime
+            ? String(p.poTime).replace(/\s*hari\s*kerja/gi, 'hr').replace(/\s*hari/gi, 'hr').replace(/\s*minggu/gi, 'mgg').replace(/\s*bulan/gi, 'bln').trim()
+            : '';
+        let poPill = compactPoStr ? `<span class="bg-amber-500 text-white px-1.5 py-0.5 rounded-md text-[8px] font-extrabold flex items-center gap-0.5 whitespace-nowrap shrink-0 uppercase tracking-wider shadow-sm"><i class="fa-solid fa-clock text-[7px]"></i> PO ${esc(compactPoStr)}</span>` : '';
+
+        // Eyebrow Kategori & Brand Terdedikasi (100% Lebar Kartu, Anti-Terpotong)
+        const catBrandText = esc(`${p.subCategory || p.category || 'PRODUK'}${p.brand ? ` · ${p.brand}` : ''}`);
 
         let poinBadge = '';
         if (p.variants && p.variants.length) {
@@ -228,52 +234,45 @@ export const rCat = () => {
             if (poinVals.length) {
                 const uniq = [...new Set(poinVals)];
                 poinBadge = uniq.length === 1
-                    ? `<span class="bg-[rgba(var(--color-primary-rgb),0.08)] text-[var(--color-primary)] px-1.5 py-0.5 rounded-md text-[8px] font-bold flex items-center gap-0.5 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-star text-[7px]"></i> +${uniq[0]}</span>`
-                    : `<span class="bg-[rgba(var(--color-primary-rgb),0.08)] text-[var(--color-primary)] px-1.5 py-0.5 rounded-md text-[8px] font-bold flex items-center gap-0.5 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-star text-[7px]"></i> Poin</span>`;
+                    ? `<span class="bg-[rgba(var(--color-primary-rgb),0.08)] text-[var(--color-primary)] px-1.5 py-0.5 rounded-md text-[8px] font-bold flex items-center gap-0.5 whitespace-nowrap shrink-0 uppercase tracking-wider"><i class="fa-solid fa-star text-[7px]"></i> +${uniq[0]}</span>`
+                    : `<span class="bg-[rgba(var(--color-primary-rgb),0.08)] text-[var(--color-primary)] px-1.5 py-0.5 rounded-md text-[8px] font-bold flex items-center gap-0.5 whitespace-nowrap shrink-0 uppercase tracking-wider"><i class="fa-solid fa-star text-[7px]"></i> Poin</span>`;
             }
         } else if (parseFloat(p.poin) > 0) {
-            poinBadge = `<span class="bg-[rgba(var(--color-primary-rgb),0.08)] text-[var(--color-primary)] px-1.5 py-0.5 rounded-md text-[8px] font-bold flex items-center gap-0.5 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-star text-[7px]"></i> +${parseFloat(p.poin)}</span>`;
+            poinBadge = `<span class="bg-[rgba(var(--color-primary-rgb),0.08)] text-[var(--color-primary)] px-1.5 py-0.5 rounded-md text-[8px] font-bold flex items-center gap-0.5 whitespace-nowrap shrink-0 uppercase tracking-wider"><i class="fa-solid fa-star text-[7px]"></i> +${parseFloat(p.poin)}</span>`;
         }
 
         const totalSoldCard = p.variants && p.variants.length
             ? p.variants.reduce((s, vv) => s + (parseFloat(vv.totalSold) || 0), 0)
             : (parseFloat(p.totalSold) || 0);
         const soldBadge = totalSoldCard > 0
-            ? `<span class="bg-slate-100 text-slate-600 dark:bg-slate-700/60 dark:text-slate-300 px-1.5 py-0.5 rounded-md text-[8px] font-bold flex items-center gap-0.5 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-fire text-amber-500 text-[7px]"></i> ${totalSoldCard} Terjual</span>`
+            ? `<span class="bg-slate-100 text-slate-600 dark:bg-slate-700/60 dark:text-slate-300 px-1.5 py-0.5 rounded-md text-[8px] font-bold flex items-center gap-0.5 whitespace-nowrap shrink-0 uppercase tracking-wider"><i class="fa-solid fa-fire text-amber-500 text-[7px]"></i> ${totalSoldCard} Terjual</span>`
             : '';
 
-        const chipList = [];
-        if (soldBadge) chipList.push(soldBadge);
-        if (poinBadge) chipList.push(poinBadge);
-        if (p.subCategory) {
-            chipList.push(`<span class="bg-[rgba(var(--color-primary-rgb),0.08)] text-[var(--color-primary)] border border-[rgba(var(--color-primary-rgb),0.2)] px-1.5 py-0.5 rounded-md text-[8px] font-bold flex items-center gap-0.5 whitespace-nowrap uppercase tracking-wider truncate max-w-[120px]"><i class="fa-solid fa-shapes text-[7px]"></i> ${esc(p.subCategory)}</span>`);
-        } else if (p.brand) {
-            chipList.push(`<span class="bg-slate-100 text-slate-600 dark:bg-slate-700/60 dark:text-slate-300 px-1.5 py-0.5 rounded-md text-[8px] font-bold flex items-center gap-0.5 whitespace-nowrap uppercase tracking-wider truncate max-w-[110px]"><i class="fa-solid fa-tag text-[7px]"></i> ${esc(p.brand)}</span>`);
-        } else if (p.tag) {
-            chipList.push(`<span class="bg-slate-100 text-slate-600 dark:bg-slate-700/60 dark:text-slate-300 px-1.5 py-0.5 rounded-md text-[8px] font-bold flex items-center gap-0.5 whitespace-nowrap uppercase tracking-wider truncate max-w-[110px]"><i class="fa-solid fa-hashtag text-[7px]"></i> ${esc(p.tag)}</span>`);
-        }
-        if (p.wholesale?.length && !p.variants?.length) {
-            chipList.push(`<span class="amber-badge px-1.5 py-0.5 rounded-md text-[8px] font-bold flex items-center gap-0.5 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-layer-group text-[7px]"></i> Grosir</span>`);
-        }
+        const variantBadge = (p.variants && p.variants.length > 0)
+            ? `<span class="bg-indigo-50 text-indigo-600 dark:bg-indigo-950/60 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800/50 px-1.5 py-0.5 rounded-md text-[8px] font-bold flex items-center gap-0.5 whitespace-nowrap shrink-0 uppercase tracking-wider"><i class="fa-solid fa-layer-group text-[7px]"></i> Varian</span>`
+            : '';
 
-        // Chip khusus untuk List View: cantumkan Diskon & PO langsung di baris chip
-        const listChips = [];
-        if (discPill) listChips.push(discPill);
-        if (poPill) listChips.push(poPill);
-        if (soldBadge) listChips.push(soldBadge);
-        if (poinBadge) listChips.push(poinBadge);
-        if (p.subCategory) {
-            listChips.push(`<span class="bg-[rgba(var(--color-primary-rgb),0.08)] text-[var(--color-primary)] border border-[rgba(var(--color-primary-rgb),0.2)] px-1.5 py-0.5 rounded-md text-[8px] font-bold flex items-center gap-0.5 whitespace-nowrap uppercase tracking-wider truncate max-w-[120px]"><i class="fa-solid fa-shapes text-[7px]"></i> ${esc(p.subCategory)}</span>`);
-        } else if (p.brand) {
-            listChips.push(`<span class="bg-slate-100 text-slate-600 dark:bg-slate-700/60 dark:text-slate-300 px-1.5 py-0.5 rounded-md text-[8px] font-bold flex items-center gap-0.5 whitespace-nowrap uppercase tracking-wider truncate max-w-[110px]"><i class="fa-solid fa-tag text-[7px]"></i> ${esc(p.brand)}</span>`);
-        }
-        if (p.wholesale?.length && !p.variants?.length) {
-            listChips.push(`<span class="amber-badge px-1.5 py-0.5 rounded-md text-[8px] font-bold flex items-center gap-0.5 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-layer-group text-[7px]"></i> Grosir</span>`);
-        }
+        const grosirBadge = (p.wholesale?.length && !p.variants?.length)
+            ? `<span class="amber-badge px-1.5 py-0.5 rounded-md text-[8px] font-bold flex items-center gap-0.5 whitespace-nowrap shrink-0 uppercase tracking-wider"><i class="fa-solid fa-tags text-[7px]"></i> Grosir</span>`
+            : '';
 
-        let bH = chipList.length
-            ? `<div class="mb-1.5 flex items-center gap-1 overflow-hidden whitespace-nowrap text-nowrap h-5 shrink-0">${chipList.join('')}</div>`
-            : `<div class="mb-1.5 h-5 shrink-0"></div>`;
+        // ── Smart Priority Badges untuk Grid Mode (Maks 2 chip presisi, tidak menumpuk subcategory) ──
+        const gridCandidates = [];
+        if (variantBadge) gridCandidates.push(variantBadge);
+        if (grosirBadge) gridCandidates.push(grosirBadge);
+        if (poinBadge) gridCandidates.push(poinBadge);
+        if (soldBadge) gridCandidates.push(soldBadge);
+        const gridChipsHtml = gridCandidates.slice(0, 2).join('');
+
+        // ── Smart Priority Badges untuk List View: cantumkan Diskon & PO langsung di baris chip (Maks 3 chip presisi) ──
+        const listCandidates = [];
+        if (discPill) listCandidates.push(discPill);
+        if (poPill) listCandidates.push(poPill);
+        if (variantBadge) listCandidates.push(variantBadge);
+        if (grosirBadge) listCandidates.push(grosirBadge);
+        if (poinBadge) listCandidates.push(poinBadge);
+        if (soldBadge) listCandidates.push(soldBadge);
+        const listChipsHtml = listCandidates.slice(0, 3).join('');
         
         let unt = `<span class="text-[9px] text-slate-600 dark:text-slate-400 font-bold ml-0.5 mb-0.5 uppercase tracking-wide">/${esc(p.unit || 'PCS')}</span>`;
         
@@ -295,8 +294,11 @@ export const rCat = () => {
                           : coverMdHtml}
                 </div>
                 <div class="flex-1 flex flex-col p-2.5 sm:p-3 min-w-0 bg-white dark:bg-slate-800 relative z-10">
-                    ${bH}
+                    <p class="text-[9px] sm:text-[9.5px] uppercase tracking-wider font-bold text-slate-400 dark:text-slate-500 truncate leading-none mb-1">${catBrandText}</p>
                     <h4 class="text-[11px] sm:text-xs font-bold text-slate-700 dark:text-slate-200 line-clamp-2 leading-snug min-h-[2.1rem] sm:min-h-[2.25rem] mb-1 group-hover:text-[var(--color-primary)] transition-colors uppercase break-words">${esc(p.name)}</h4>
+                    <div class="h-5 mb-1.5 flex items-center gap-1 overflow-x-auto hide-scrollbar no-scrollbar flex-nowrap py-0.5 shrink-0">
+                        ${gridChipsHtml}
+                    </div>
                     <div class="flex items-end justify-between mt-auto pt-1">
                         <div class="min-w-0 pr-1">
                             <div class="h-3.5 flex items-center">
@@ -326,9 +328,14 @@ export const rCat = () => {
                            <div class="w-full h-full" style="display:none">${coverSmHtml}</div>`
                         : coverSmHtml}
                 </div>
-                <div class="flex-1 min-w-0 flex flex-col justify-center gap-1 relative z-10 pr-0.5">
-                    ${listChips.length ? `<div class="flex items-center gap-1 overflow-hidden whitespace-nowrap text-nowrap">${listChips.join('')}</div>` : ''}
+                <div class="flex-1 min-w-0 flex flex-col justify-center gap-0.5 relative z-10 pr-0.5">
+                    <!-- Line 1: Eyebrow Kategori & Brand Terdedikasi (100% lebar kartu, anti-terpotong) -->
+                    <p class="text-[9px] sm:text-[9.5px] uppercase tracking-wider font-bold text-slate-400 dark:text-slate-500 truncate leading-none">${catBrandText}</p>
+                    <!-- Line 2: Nama Produk -->
                     <h4 class="text-xs sm:text-[13px] font-bold text-slate-800 dark:text-slate-100 line-clamp-1 sm:line-clamp-2 leading-tight group-hover:text-[var(--color-primary)] transition-colors uppercase break-words">${esc(p.name)}</h4>
+                    <!-- Line 3: Chips Operasional Rapi Terprioritas (Anti-terpotong, Maks 3) -->
+                    ${listChipsHtml ? `<div class="flex items-center gap-1 overflow-x-auto hide-scrollbar no-scrollbar flex-nowrap py-0.5">${listChipsHtml}</div>` : ''}
+                    <!-- Line 4: Harga & Action -->
                     <div class="flex items-center justify-between pt-0.5">
                         <div class="flex items-baseline gap-1.5 min-w-0">
                             <p class="text-[var(--color-primary)] font-bold text-xs sm:text-[14px] leading-none tracking-tight truncate">
