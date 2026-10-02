@@ -8,6 +8,22 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-10-20',
+        version: 'v1.10.20',
+        date: '2026-10-02',
+        title: 'Resolusi Dynamic Import Modul Biaya Operasional (Vercel Production MIME Error Fix) & Resiliensi Chunk Loading',
+        category: 'fix',
+        badge: 'Production Chunk Loader & MIME Fix v1.10.20',
+        items: [
+            'Resolusi Dynamic Import Modul Biaya Operasional (src/modules/admin/reports.js): Mengeliminasi bug import langsung pada string template onclick di Tab Laporan Biaya Operasional yang menyebabkan browser meminta file mentah /expenses.js di domain root Vercel (sehingga ter-rewrite menjadi text/html). Digantikan dengan helper function openExpenseModalFromReports() yang diproses secara native oleh bundler Vite menjadi asset chunk resmi /assets/expenses-[hash].js.',
+            'Harmonisasi Visual & Zero-Jomplang (reports.js): Mengganti warna hardcoded merah/rose-amber pada tombol aksi [Catat Pengeluaran] dan [+ Catat Baru] di laporan biaya operasional menjadi 100% harmonis menggunakan token tema toko aktif (var(--color-primary)).',
+            'Proxy Auto-Loader Awal (src/modules/admin/router.js): Menambahkan early loading proxy untuk window.openExpenseModal sehingga pemanggilan modal pengeluaran sebelum chunk expenses.js selesai diunduh akan otomatis memicu download modul resmi melalui bundler tanpa gagal.',
+            'Error Boundary & Pemulihan Anggun Tab Admin (renderModuleLoadError): Menambahkan UI penanganan kegagalan unduh chunk pada seluruh modul lazy (Laporan, Supplier, Pembelian/PO, Biaya Operasional, Stock Opname, POS Kasir, Kelola Staf, dan Backup Sync) lengkap dengan tombol Coba Lagi dan Segarkan Halaman jika koneksi bermasalah atau versi baru dirilis.',
+            'Event Listener vite:preloadError (src/main.js): Menambahkan penanganan otomatis saat browser mendeteksi cache chunk usang setelah deployment baru di cloud hosting/Vercel dengan proteksi debounce sessionStorage untuk auto-reload yang mulus.',
+            'Multi-Channel Build & Sync v1.10.20 (Android versionCode 11020): Kompilasi produksi web, sinkronisasi bundle flashdisk siap pakai (1. HASIL_BUILD_SIAP_PAKE dan PAKET_FLASHDISK), serta Android Capacitor tersinkronisasi 100%.'
+        ]
+    },
+    {
         id: 'log-1-10-19',
         version: 'v1.10.19',
         date: '2026-10-02',

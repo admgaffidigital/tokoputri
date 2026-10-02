@@ -164,6 +164,17 @@ window.onerror = function(msg, url, line, col, error) {
 window.addEventListener("unhandledrejection", function(e) {
     console.warn("Promise Rejection Sentinel:", e.reason);
 });
+// Penanganan otomatis jika Vite gagal memuat chunk dinamis (misal setelah deployment baru di Vercel)
+window.addEventListener("vite:preloadError", function(event) {
+    console.warn("[Vite] Chunk preload failed (new deployment detected). Auto-reloading...", event);
+    const reloadKey = "freshmart_preload_reload";
+    const lastReload = sessionStorage.getItem(reloadKey);
+    const now = Date.now();
+    if (!lastReload || now - parseInt(lastReload, 10) > 10000) {
+        sessionStorage.setItem(reloadKey, String(now));
+        window.location.reload();
+    }
+});
 
 // ─── SECTION 3: EXPOSE UTILS & SEO KE WINDOW ───────────────────────────────────
 // Fungsi-fungsi berikut sudah diimport dari core/utils.js (atas),

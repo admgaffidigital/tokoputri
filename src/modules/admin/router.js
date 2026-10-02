@@ -16,6 +16,47 @@ import {
 import { el, show, hide, setIn, setH, showToast } from '../../core/utils.js';
 import { hasPermission } from '../../core/auth-roles.js';
 
+/**
+ * Tampilan pemulihan anggun jika terjadi kegagalan muat chunk/modul lazy
+ */
+const renderModuleLoadError = (moduleTitle, tabKey, err) => {
+    console.error(`[AdminRouter] Gagal memuat modul ${moduleTitle}:`, err);
+    setH('admin-content', `
+        <div class="max-w-md mx-auto my-12 p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm text-center">
+            <div class="w-14 h-14 mx-auto mb-4 rounded-2xl bg-rose-50 dark:bg-rose-950/40 text-rose-500 flex items-center justify-center text-2xl">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <h3 class="font-extrabold text-base text-slate-800 dark:text-white mb-1">Gagal Memuat ${moduleTitle}</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mb-5 leading-relaxed">
+                Modul gagal diunduh dari server. Hal ini biasanya terjadi jika koneksi terputus atau versi aplikasi baru saja diperbarui di server.
+            </p>
+            <div class="flex items-center justify-center gap-3">
+                <button type="button" onclick="openAdminTab('${tabKey}')" class="px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-xs font-bold text-slate-700 dark:text-slate-200 transition-all cursor-pointer active:scale-95">
+                    <i class="fa-solid fa-rotate-right mr-1.5"></i> Coba Lagi
+                </button>
+                <button type="button" onclick="window.location.reload()" class="px-4 py-2.5 rounded-xl text-white text-xs font-black shadow-sm transition-all cursor-pointer active:scale-95 hover:opacity-95" style="background: var(--color-primary);">
+                    <i class="fa-solid fa-arrows-rotate mr-1.5"></i> Segarkan Halaman
+                </button>
+            </div>
+        </div>
+    `);
+};
+
+// Proxy auto-loader: jika ada pemanggilan window.openExpenseModal sebelum expenses.js selesai dimuat,
+// panggil dynamic import internal Vite agar modul dimuat secara mulus ke chunk asset resmi.
+if (typeof window.openExpenseModal !== 'function') {
+    window.openExpenseModal = (expenseId = null) => {
+        import('./expenses.js').then(m => {
+            if (m && typeof m.openExpenseModal === 'function') {
+                m.openExpenseModal(expenseId);
+            }
+        }).catch(err => {
+            console.error('[Expenses] Gagal memuat modal pengeluaran via proxy:', err);
+            showToast('Gagal memuat form pengeluaran.');
+        });
+    };
+}
+
 export const openAdminTab = (t, fH = false) => {
     // Verifikasi hak akses pengguna untuk modul ini
     const permKey = t === 'staff' ? 'cashiers' : t;
@@ -93,29 +134,29 @@ export const openAdminTab = (t, fH = false) => {
     } else if (t === 'reports' || t === 'tax') {
         // Lazy load modul Pusat Laporan & Keuangan Terpadu
         import('./reports.js').then(m => m.renderReportsHubView(t === 'tax' ? 'tax' : null)).catch(err => {
-            console.error('[Reports] Gagal memuat modul laporan terpadu:', err);
+            renderModuleLoadError('Pusat Laporan & Keuangan', t, err);
         });
     } else if (t === 'piutang') {
         if (typeof window.rAdmPiutang === 'function') window.rAdmPiutang();
     } else if (t === 'suppliers') {
         // Lazy load modul master data supplier & asal-usul barang
         import('./suppliers.js').then(m => m.renderSuppliersView()).catch(err => {
-            console.error('[Suppliers] Gagal memuat modul:', err);
+            renderModuleLoadError('Supplier & Rekanan', t, err);
         });
     } else if (t === 'purchases') {
         // Lazy load modul order pembelian (PO) & hutang rekanan
         import('./purchases.js').then(m => m.renderPurchasesView()).catch(err => {
-            console.error('[Purchases] Gagal memuat modul:', err);
+            renderModuleLoadError('Order Pembelian (PO)', t, err);
         });
     } else if (t === 'expenses') {
         // Lazy load modul pencatatan biaya operasional & buku kas pengeluaran
         import('./expenses.js').then(m => m.renderExpensesAdminView()).catch(err => {
-            console.error('[Expenses] Gagal memuat modul pengeluaran operasional:', err);
+            renderModuleLoadError('Biaya Operasional Toko', t, err);
         });
     } else if (t === 'stock_opname') {
         // Lazy load modul Stock Opname & Audit Inventori Fisik
         import('./stock-opname.js').then(m => m.renderStockOpnameView()).catch(err => {
-            console.error('[StockOpname] Gagal memuat modul stock opname:', err);
+            renderModuleLoadError('Stock Opname (Audit Fisik)', t, err);
         });
     } else if (t === 'customers') {
         setH('admin-content', `<div class="text-center py-16"><i class="fa-solid fa-spinner fa-spin text-3xl text-slate-300"></i></div>`);
@@ -161,17 +202,17 @@ export const openAdminTab = (t, fH = false) => {
     } else if (t === 'pos') {
         // Lazy load modul POS — hanya dimuat saat kasir dibuka
         import('../../modules/pos/pos.js').then(m => m.renderPOS()).catch(err => {
-            console.error('[POS] Gagal memuat modul kasir:', err);
+            renderModuleLoadError('Kasir POS', t, err);
         });
     } else if (t === 'cashiers' || t === 'staff') {
         // Lazy load modul manajemen staf & hak akses
         import('../../modules/pos/pos-cashier-admin.js').then(m => m.renderCashierAccounts()).catch(err => {
-            console.error('[CashierAdmin] Gagal memuat modul:', err);
+            renderModuleLoadError('Kelola Staf & Hak Akses', t, err);
         });
     } else if (t === 'backup_sync') {
         // Lazy load modul pusat data, backup & sinkronisasi
         import('./backup-sync.js').then(m => m.renderBackupSyncView()).catch(err => {
-            console.error('[BackupSync] Gagal memuat modul:', err);
+            renderModuleLoadError('Pusat Data & Sinkronisasi', t, err);
         });
     } else {
         if (typeof window.rAdmL === 'function') window.rAdmL(t);

@@ -1591,6 +1591,30 @@ export const renderDebtsReceivablesTab = () => {
 // ═══════════════════════════════════════════════════════════════
 // 5. TAB 5: LAPORAN BIAYA OPERASIONAL (OPERATIONAL EXPENSES)
 // ═══════════════════════════════════════════════════════════════
+
+/**
+ * Helper pembuka modal pengeluaran operasional terintegrasi dari dalam Pusat Laporan.
+ * Memanfaatkan dynamic import internal Vite agar terbundle ke hash asset yang tepat di Vercel/Produksi.
+ */
+export const openExpenseModalFromReports = async (expenseId = null) => {
+    if (typeof window.openExpenseModal === 'function') {
+        window.openExpenseModal(expenseId);
+        return;
+    }
+    try {
+        const mod = await import('./expenses.js');
+        if (mod && typeof mod.openExpenseModal === 'function') {
+            mod.openExpenseModal(expenseId);
+        } else if (typeof window.openExpenseModal === 'function') {
+            window.openExpenseModal(expenseId);
+        }
+    } catch (err) {
+        console.error('[Reports] Gagal membuka form pengeluaran operasional:', err);
+        showToast('Gagal memuat modul pengeluaran operasional.');
+    }
+};
+window.openExpenseModalFromReports = openExpenseModalFromReports;
+
 export const renderExpensesTab = () => {
     const periodLabel = reportMonth === 0 ? `Tahun ${reportYear}` : `${MONTH_NAMES[reportMonth - 1]} ${reportYear}`;
     const expenseData = getExpenseBreakdownForPeriod();
@@ -1758,17 +1782,17 @@ export const renderExpensesTab = () => {
             <div class="p-4 rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-xs">
                 <div>
                     <h3 class="font-black text-sm text-slate-800 dark:text-white flex items-center gap-2">
-                        <i class="fa-solid fa-money-bill-transfer text-rose-500"></i>
+                        <i class="fa-solid fa-money-bill-transfer" style="color: var(--color-primary)"></i>
                         <span>Manajemen Biaya Operasional Toko</span>
                     </h3>
                     <p class="text-[11px] text-slate-400 mt-0.5">Catat nota beban berkala dan sinkronkan dengan perhitungan Laba Rugi</p>
                 </div>
                 <div class="flex items-center gap-2 w-full sm:w-auto">
                     <button type="button" onclick="openAdminTab('expenses')" class="flex-1 sm:flex-initial px-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1.5 active:scale-95">
-                        <i class="fa-solid fa-book text-amber-500"></i>
+                        <i class="fa-solid fa-book" style="color: var(--color-primary)"></i>
                         <span>Buku Kas &amp; Riwayat</span>
                     </button>
-                    <button type="button" onclick="if(typeof window.openExpenseModal==='function'){window.openExpenseModal();}else{import('./expenses.js').then(m=>m.openExpenseModal());}" class="flex-1 sm:flex-initial px-4 py-2 rounded-xl bg-gradient-to-r from-rose-500 to-amber-600 hover:from-rose-600 hover:to-amber-700 text-white text-xs font-black shadow-md shadow-rose-500/20 transition-all cursor-pointer flex items-center justify-center gap-1.5 active:scale-95">
+                    <button type="button" onclick="openExpenseModalFromReports()" class="flex-1 sm:flex-initial px-4 py-2 rounded-xl text-white text-xs font-black shadow-md transition-all cursor-pointer flex items-center justify-center gap-1.5 active:scale-95 hover:opacity-95" style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.3);">
                         <i class="fa-solid fa-plus"></i>
                         <span>Catat Pengeluaran</span>
                     </button>
@@ -1792,7 +1816,7 @@ export const renderExpensesTab = () => {
                         }</span>
                     </div>
                 </div>
-                <button type="button" onclick="if(typeof window.openExpenseModal==='function'){window.openExpenseModal();}else{import('./expenses.js').then(m=>m.openExpenseModal());}" class="shrink-0 text-[11px] font-black underline cursor-pointer hover:opacity-80">
+                <button type="button" onclick="openExpenseModalFromReports()" class="shrink-0 text-[11px] font-black underline cursor-pointer hover:opacity-80" style="color: var(--color-primary)">
                     + Catat Baru
                 </button>
             </div>
