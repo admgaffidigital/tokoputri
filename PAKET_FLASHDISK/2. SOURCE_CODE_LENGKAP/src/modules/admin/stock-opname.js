@@ -437,16 +437,22 @@ const updateSoItemRowDom = (key) => {
     const item = soAuditSession[key];
     if (!item) return;
 
-    // Update input fisik
-    const physInput = rowEl.querySelector('.so-phys-input');
-    if (physInput) {
-        physInput.value = item.physicalStock !== null ? item.physicalStock : '';
-    }
+    // Update SEMUA input fisik (baik desktop maupun mobile)
+    const physInputs = rowEl.querySelectorAll('.so-phys-input');
+    physInputs.forEach(input => {
+        const newVal = item.physicalStock !== null ? String(item.physicalStock) : '';
+        if (input.value !== newVal) {
+            input.value = newVal;
+        }
+    });
 
-    // Update diff badge
+    // Update diff badge (pertahankan label Selisih di mobile)
     const diffBadge = rowEl.querySelector('.so-diff-badge');
     if (diffBadge) {
-        diffBadge.innerHTML = renderDiffBadgeHtml(item);
+        diffBadge.innerHTML = `
+            <span class="lg:hidden text-[11px] font-bold text-slate-400">Selisih:</span>
+            ${renderDiffBadgeHtml(item)}
+        `;
     }
 
     // Update reason wrapper
@@ -854,14 +860,14 @@ export const renderSoActiveItems = () => {
                                 <span class="text-xs font-black font-mono text-slate-800 dark:text-slate-200">${item.systemStock} ${esc(item.unit)}</span>
                             </div>
                             <div class="flex items-center gap-1.5">
-                                <button type="button" onclick="window.stepSoPhysicalCount('${item.key}', -1)" class="w-9 h-9 rounded-xl bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200/90 dark:border-slate-600 font-black text-xs flex items-center justify-center transition-all cursor-pointer active:scale-90 shadow-2xs">
+                                <button type="button" onclick="window.stepSoPhysicalCount('${item.key}', -1)" class="w-10 h-10 rounded-xl bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200/90 dark:border-slate-600 font-black text-sm flex items-center justify-center transition-all cursor-pointer active:scale-90 shadow-2xs" title="Kurangi 1">
                                     <i class="fa-solid fa-minus"></i>
                                 </button>
-                                <input type="number" min="0" step="any" placeholder="Fisik" value="${item.physicalStock !== null ? item.physicalStock : ''}" onchange="window.setSoPhysicalCount('${item.key}', this.value)" oninput="window.setSoPhysicalCount('${item.key}', this.value)" class="so-phys-input w-16 py-1.5 px-1 text-center font-mono font-black text-sm bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-hidden focus:border-[var(--color-primary)] text-slate-900 dark:text-white shadow-2xs">
-                                <button type="button" onclick="window.stepSoPhysicalCount('${item.key}', 1)" class="w-9 h-9 rounded-xl bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200/90 dark:border-slate-600 font-black text-xs flex items-center justify-center transition-all cursor-pointer active:scale-90 shadow-2xs">
+                                <input type="number" min="0" step="any" placeholder="Fisik" value="${item.physicalStock !== null ? item.physicalStock : ''}" onchange="window.setSoPhysicalCount('${item.key}', this.value)" oninput="window.setSoPhysicalCount('${item.key}', this.value)" class="so-phys-input w-20 sm:w-24 h-10 py-1.5 px-2 text-center font-mono font-black text-base bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-hidden focus:border-[var(--color-primary)] text-slate-900 dark:text-white shadow-2xs">
+                                <button type="button" onclick="window.stepSoPhysicalCount('${item.key}', 1)" class="w-10 h-10 rounded-xl bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200/90 dark:border-slate-600 font-black text-sm flex items-center justify-center transition-all cursor-pointer active:scale-90 shadow-2xs" title="Tambah 1">
                                     <i class="fa-solid fa-plus"></i>
                                 </button>
-                                <button type="button" onclick="window.matchSoItem('${item.key}')" class="h-9 px-2.5 rounded-xl primary-bg-soft primary-border border primary-text font-black text-xs flex items-center justify-center transition-all cursor-pointer active:scale-95 shadow-2xs" title="Samakan fisik = sistem">
+                                <button type="button" onclick="window.matchSoItem('${item.key}')" class="h-10 px-3 rounded-xl primary-bg-soft primary-border border primary-text font-black text-sm flex items-center justify-center transition-all cursor-pointer active:scale-95 shadow-2xs" title="Samakan fisik = sistem">
                                     =
                                 </button>
                             </div>

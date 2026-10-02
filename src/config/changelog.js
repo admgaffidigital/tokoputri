@@ -8,6 +8,21 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-10-21',
+        version: 'v1.10.21',
+        date: '2026-10-02',
+        title: 'Presisi Selektor Sumber Dana Biaya Operasional & Sinkronisasi Stepper Hitung Fisik Stock Opname Mobile',
+        category: 'fix',
+        badge: 'UI Selector & Stepper Sync Fix v1.10.21',
+        items: [
+            'Resolusi Selektor Sumber Dana Pembayaran (src/modules/admin/expenses.js): Memperbaiki bug pemilihan kartu sumber dana (Kas Toko, Transfer Bank, Dana Owner) pada Modal Catat Pengeluaran Baru. Menambahkan fungsi helper terpadu selectExpenseSource(key) yang mengaktifkan radio input sekaligus memberikan highlight visual instan beraksen warna tema toko (var(--color-primary)), border bercahaya, dan latar lembut bertema dinamis.',
+            'Resolusi Sinkronisasi Stepper Hitung Fisik Mobile (src/modules/admin/stock-opname.js): Mengatasi bug tombol tambah [+] dan kurang [-] yang tidak tampak mengubah angka di perangkat mobile. Memperbaiki fungsi updateSoItemRowDom() agar menyinkronkan seluruh input fisik (.so-phys-input) baik pada kontainer desktop maupun kontainer mobile secara serentak.',
+            'Peningkatan Ergonomi & Touch Target Stepper Mobile (stock-opname.js): Memperbesar tombol stepper hitung fisik mobile menjadi w-10 h-10 (40px) dengan tipografi font-black, input angka fisik w-20/w-24 h-10 text-base yang anti-zoom, dan tombol samakan [=] h-10 px-3 untuk kenyamanan jempol saat audit rak toko.',
+            'Presisi Label Selisih Mobile (stock-opname.js): Menjaga label indikator Selisih tetap utuh dan rapi saat badge diskrepansi di-render ulang secara reaktif tanpa flickering.',
+            'Multi-Channel Build & Sync v1.10.21 (Android versionCode 11021): Kompilasi produksi web, sinkronisasi bundle flashdisk siap pakai (1. HASIL_BUILD_SIAP_PAKE dan PAKET_FLASHDISK), serta Android Capacitor tersinkronisasi 100%.'
+        ]
+    },
+    {
         id: 'log-1-10-20',
         version: 'v1.10.20',
         date: '2026-10-02',

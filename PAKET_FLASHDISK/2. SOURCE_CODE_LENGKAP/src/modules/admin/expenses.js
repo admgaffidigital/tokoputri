@@ -188,11 +188,11 @@ export const ensureExpenseModals = () => {
                             </label>
                             <div class="grid grid-cols-3 gap-2" id="exp-source-selector">
                                 ${EXPENSE_SOURCES.map(s => `
-                                    <label class="relative flex flex-col items-center justify-center p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/50 cursor-pointer text-center transition-all hover:border-slate-400 select-none group has-checked:border-[var(--color-primary)] has-checked:bg-[rgba(var(--color-primary-rgb),0.08)] has-checked:text-[var(--color-primary)]">
+                                    <div data-source-key="${s.key}" onclick="window.selectExpenseSource('${s.key}')" class="relative flex flex-col items-center justify-center p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/50 cursor-pointer text-center transition-all hover:border-slate-400 select-none group active:scale-95 shadow-2xs">
                                         <input type="radio" name="exp_source" value="${s.key}" class="sr-only" ${s.key === 'cash' ? 'checked' : ''}>
-                                        <i class="fa-solid ${s.icon} text-sm mb-1 text-slate-500 group-hover:text-slate-800 dark:group-hover:text-white"></i>
-                                        <span class="text-[10px] font-bold text-slate-800 dark:text-slate-200 leading-tight">${s.shortLabel}</span>
-                                    </label>
+                                        <i class="fa-solid ${s.icon} text-base mb-1.5 text-slate-500 transition-colors"></i>
+                                        <span class="text-[11px] font-black text-slate-800 dark:text-slate-200 leading-tight transition-colors">${s.shortLabel}</span>
+                                    </div>
                                 `).join('')}
                             </div>
                         </div>
@@ -742,6 +742,50 @@ export const renderExpensesAdminView = () => {
     `);
 };
 
+// ─── Selector Sumber Dana Helper ─────────────────────────────
+export const selectExpenseSource = (key) => {
+    const selector = document.getElementById('exp-source-selector');
+    if (!selector) return;
+
+    const cards = selector.querySelectorAll('[data-source-key]');
+    cards.forEach(card => {
+        const k = card.getAttribute('data-source-key');
+        const radio = card.querySelector('input[type="radio"]');
+        const icon = card.querySelector('i');
+        const span = card.querySelector('span');
+        const isSelected = (k === key);
+
+        if (radio) radio.checked = isSelected;
+
+        if (isSelected) {
+            card.classList.add('is-source-active');
+            card.style.borderColor = 'var(--color-primary)';
+            card.style.backgroundColor = 'rgba(var(--color-primary-rgb), 0.12)';
+            card.style.boxShadow = '0 0 0 1.5px var(--color-primary), 0 2px 10px rgba(var(--color-primary-rgb), 0.25)';
+            if (icon) {
+                icon.style.color = 'var(--color-primary)';
+                icon.classList.remove('text-slate-500');
+            }
+            if (span) {
+                span.style.color = 'var(--color-primary)';
+            }
+        } else {
+            card.classList.remove('is-source-active');
+            card.style.borderColor = '';
+            card.style.backgroundColor = '';
+            card.style.boxShadow = '';
+            if (icon) {
+                icon.style.color = '';
+                icon.classList.add('text-slate-500');
+            }
+            if (span) {
+                span.style.color = '';
+            }
+        }
+    });
+};
+window.selectExpenseSource = selectExpenseSource;
+
 // ─── Modal Open & Close Handlers ─────────────────────────────
 export const openExpenseModal = (expenseId = null) => {
     ensureExpenseModals();
@@ -774,9 +818,8 @@ export const openExpenseModal = (expenseId = null) => {
         el('exp-input-receipt-url').value = exp.receiptImg || '';
         el('exp-input-receipt-manual').value = exp.receiptImg || '';
 
-        // Radio source
-        const radios = document.querySelectorAll('input[name="exp_source"]');
-        radios.forEach(r => { r.checked = (r.value === (exp.source || 'cash')); });
+        // Radio source & card visual styling
+        selectExpenseSource(exp.source || 'cash');
 
         // Preview nota jika ada
         updateReceiptPreviewUI(exp.receiptImg || '');
@@ -796,8 +839,8 @@ export const openExpenseModal = (expenseId = null) => {
         el('exp-input-receipt-url').value = '';
         el('exp-input-receipt-manual').value = '';
 
-        const radios = document.querySelectorAll('input[name="exp_source"]');
-        radios.forEach(r => { r.checked = (r.value === 'cash'); });
+        // Default radio source: cash (Kas Toko)
+        selectExpenseSource('cash');
 
         updateReceiptPreviewUI('');
     }
@@ -1268,3 +1311,4 @@ window.previewExpenseReceipt = previewExpenseReceipt;
 window.closeExpenseReceiptPreview = closeExpenseReceiptPreview;
 window.exportExpensesToCsv = exportExpensesToCsv;
 window.printExpenseSlip = printExpenseSlip;
+window.selectExpenseSource = selectExpenseSource;
