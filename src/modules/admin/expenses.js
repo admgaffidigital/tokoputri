@@ -103,26 +103,26 @@ export const ensureExpenseModals = () => {
     if (!el('modal-expense-form')) {
         const m = document.createElement('div');
         m.id = 'modal-expense-form';
-        m.className = 'fixed inset-0 z-[150] flex hidden items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-950/75 opacity-0 transition-opacity duration-300';
+        m.className = 'fixed inset-0 z-[150] flex hidden items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-950/75 opacity-0 transition-opacity duration-300 overflow-hidden';
         m.onclick = (e) => { if (e.target === m) window.closeExpenseModal?.(); };
         m.innerHTML = `
-            <div id="modal-expense-form-box" class="modal-bottom-sheet relative flex max-h-[92dvh] sm:max-h-[88dvh] w-full max-w-xl translate-y-full sm:translate-y-10 transform flex-col overflow-hidden rounded-t-[2rem] sm:rounded-3xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xl transition-transform duration-300" onclick="event.stopPropagation()">
+            <div id="modal-expense-form-box" class="modal-bottom-sheet relative flex max-h-[84dvh] sm:max-h-[82dvh] w-full max-w-lg translate-y-full sm:translate-y-8 transform flex-col overflow-hidden rounded-t-[1.75rem] sm:rounded-3xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xl transition-transform duration-300" onclick="event.stopPropagation()">
                 <!-- Pull Indicator for Mobile Bottom Sheet -->
-                <div class="pull-indicator sm:hidden"></div>
+                <div class="pull-indicator sm:hidden" style="margin: 8px auto 2px;"></div>
 
-                <!-- Sticky Header Modal -->
-                <div class="px-5 sm:px-6 pt-3 sm:pt-4 pb-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between shrink-0 bg-white dark:bg-slate-900">
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-2xl text-white flex items-center justify-center text-base shrink-0" style="background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark)); box-shadow: 0 4px 12px rgba(var(--color-primary-rgb), 0.35);">
+                <!-- Compact Sticky Header Modal -->
+                <div class="px-4 sm:px-5 py-2.5 sm:py-3 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between shrink-0 bg-white dark:bg-slate-900">
+                    <div class="flex items-center gap-2.5">
+                        <div class="w-8 h-8 rounded-xl text-white flex items-center justify-center text-xs shrink-0" style="background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark)); box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.35);">
                             <i class="fa-solid fa-money-bill-transfer"></i>
                         </div>
                         <div>
-                            <h3 class="text-sm sm:text-base font-black text-slate-800 dark:text-white" id="modal-expense-title">Catat Pengeluaran Baru</h3>
-                            <p class="text-[10px] text-slate-400 font-medium">Buku Kas &amp; Beban Operasional Toko</p>
+                            <h3 class="text-xs sm:text-sm font-black text-slate-800 dark:text-white" id="modal-expense-title">Catat Pengeluaran Baru</h3>
+                            <p class="text-[9px] text-slate-400 font-medium">Buku Kas &amp; Beban Operasional Toko</p>
                         </div>
                     </div>
-                    <button type="button" onclick="closeExpenseModal()" class="w-9 h-9 rounded-xl flex items-center justify-center text-slate-400 hover:text-slate-700 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer">
-                        <i class="fa-solid fa-xmark text-lg"></i>
+                    <button type="button" onclick="closeExpenseModal()" class="w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:text-slate-700 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer">
+                        <i class="fa-solid fa-xmark text-sm"></i>
                     </button>
                 </div>
 
@@ -131,20 +131,20 @@ export const ensureExpenseModals = () => {
                     <input type="hidden" id="exp-input-id" value="">
 
                     <!-- Scrollable Body (Independent scroll container) -->
-                    <div id="expense-form-scroll-container" class="custom-scrollbar p-5 sm:p-6 overflow-y-auto flex-1 space-y-4 min-h-0">
-                        <!-- Baris 1: Tanggal & Kategori -->
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                    <div id="expense-form-scroll-container" class="custom-scrollbar p-3.5 sm:p-4 overflow-y-auto flex-1 space-y-3 min-h-0">
+                        <!-- Baris 1: Tanggal & Kategori (2 Kolom Presisi) -->
+                        <div class="grid grid-cols-2 gap-2">
                             <div>
-                                <label class="block text-[11px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
-                                    <i class="fa-regular fa-calendar mr-1" style="color: var(--color-primary)"></i> Tanggal Transaksi <span style="color: var(--color-primary)">*</span>
+                                <label class="block text-[10px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">
+                                    <i class="fa-regular fa-calendar mr-0.5" style="color: var(--color-primary)"></i> Tanggal <span style="color: var(--color-primary)">*</span>
                                 </label>
-                                <input type="date" id="exp-input-date" required class="w-full text-xs font-bold bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-slate-800 dark:text-white focus:outline-hidden focus:border-[var(--color-primary)] transition-colors">
+                                <input type="date" id="exp-input-date" required class="w-full text-xs font-bold bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl px-2.5 py-1.5 text-slate-800 dark:text-white focus:outline-hidden focus:border-[var(--color-primary)] transition-colors">
                             </div>
                             <div>
-                                <label class="block text-[11px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
-                                    <i class="fa-solid fa-tags mr-1" style="color: var(--color-primary)"></i> Kategori Beban <span style="color: var(--color-primary)">*</span>
+                                <label class="block text-[10px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">
+                                    <i class="fa-solid fa-tags mr-0.5" style="color: var(--color-primary)"></i> Kategori <span style="color: var(--color-primary)">*</span>
                                 </label>
-                                <select id="exp-input-category" required class="w-full text-xs font-bold bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2.5 text-slate-800 dark:text-white focus:outline-hidden focus:border-[var(--color-primary)] transition-colors cursor-pointer">
+                                <select id="exp-input-category" required class="w-full text-xs font-bold bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl px-2 py-1.5 text-slate-800 dark:text-white focus:outline-hidden focus:border-[var(--color-primary)] transition-colors cursor-pointer">
                                     ${EXPENSE_CATEGORIES.map(c => `<option value="${c.key}">${c.label}</option>`).join('')}
                                 </select>
                             </div>
@@ -152,103 +152,103 @@ export const ensureExpenseModals = () => {
 
                         <!-- Baris 2: Nominal Pengeluaran + Quick Chips -->
                         <div>
-                            <div class="flex items-center justify-between mb-1.5">
-                                <label class="block text-[11px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
-                                    <i class="fa-solid fa-rupiah-sign mr-1" style="color: var(--color-primary)"></i> Nominal Pengeluaran <span style="color: var(--color-primary)">*</span>
+                            <div class="flex items-center justify-between mb-1">
+                                <label class="block text-[10px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
+                                    <i class="fa-solid fa-rupiah-sign mr-0.5" style="color: var(--color-primary)"></i> Nominal Pengeluaran <span style="color: var(--color-primary)">*</span>
                                 </label>
-                                <span class="text-[10px] font-bold" style="color: var(--color-primary)" id="exp-nominal-preview">Rp 0</span>
+                                <span class="text-[10px] font-black" style="color: var(--color-primary)" id="exp-nominal-preview">Rp 0</span>
                             </div>
                             <div class="relative">
-                                <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-xs font-black text-slate-400">Rp</span>
-                                <input type="text" id="exp-input-amount" inputmode="numeric" placeholder="0" required oninput="window.handleExpenseAmountInput(this)" class="w-full pl-11 pr-4 py-2.5 text-sm font-black bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white focus:outline-hidden focus:border-[var(--color-primary)] transition-colors">
+                                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-xs font-black text-slate-400">Rp</span>
+                                <input type="text" id="exp-input-amount" inputmode="numeric" placeholder="0" required oninput="window.handleExpenseAmountInput(this)" class="w-full pl-9 pr-3 py-2 text-sm font-black bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white focus:outline-hidden focus:border-[var(--color-primary)] transition-colors">
                             </div>
                             <!-- Quick Nominal Chips -->
-                            <div class="flex flex-wrap items-center gap-1.5 mt-2">
-                                <span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider mr-1">Cepat:</span>
-                                <button type="button" onclick="window.addQuickExpenseAmount(10000)" class="px-2 py-0.5 text-[10px] font-bold rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] text-slate-700 dark:text-slate-300 active:scale-95 transition-all cursor-pointer">+10 rb</button>
-                                <button type="button" onclick="window.addQuickExpenseAmount(25000)" class="px-2 py-0.5 text-[10px] font-bold rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] text-slate-700 dark:text-slate-300 active:scale-95 transition-all cursor-pointer">+25 rb</button>
-                                <button type="button" onclick="window.addQuickExpenseAmount(50000)" class="px-2 py-0.5 text-[10px] font-bold rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] text-slate-700 dark:text-slate-300 active:scale-95 transition-all cursor-pointer">+50 rb</button>
-                                <button type="button" onclick="window.addQuickExpenseAmount(100000)" class="px-2 py-0.5 text-[10px] font-bold rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] text-slate-700 dark:text-slate-300 active:scale-95 transition-all cursor-pointer">+100 rb</button>
-                                <button type="button" onclick="window.addQuickExpenseAmount(500000)" class="px-2 py-0.5 text-[10px] font-bold rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] text-slate-700 dark:text-slate-300 active:scale-95 transition-all cursor-pointer">+500 rb</button>
+                            <div class="flex flex-wrap items-center gap-1 mt-1.5">
+                                <span class="text-[8.5px] font-bold text-slate-400 uppercase tracking-wider mr-0.5">Cepat:</span>
+                                <button type="button" onclick="window.addQuickExpenseAmount(10000)" class="px-1.5 py-0.5 text-[9px] font-bold rounded-md border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] text-slate-700 dark:text-slate-300 active:scale-95 transition-all cursor-pointer">+10 rb</button>
+                                <button type="button" onclick="window.addQuickExpenseAmount(25000)" class="px-1.5 py-0.5 text-[9px] font-bold rounded-md border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] text-slate-700 dark:text-slate-300 active:scale-95 transition-all cursor-pointer">+25 rb</button>
+                                <button type="button" onclick="window.addQuickExpenseAmount(50000)" class="px-1.5 py-0.5 text-[9px] font-bold rounded-md border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] text-slate-700 dark:text-slate-300 active:scale-95 transition-all cursor-pointer">+50 rb</button>
+                                <button type="button" onclick="window.addQuickExpenseAmount(100000)" class="px-1.5 py-0.5 text-[9px] font-bold rounded-md border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] text-slate-700 dark:text-slate-300 active:scale-95 transition-all cursor-pointer">+100 rb</button>
+                                <button type="button" onclick="window.addQuickExpenseAmount(500000)" class="px-1.5 py-0.5 text-[9px] font-bold rounded-md border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] text-slate-700 dark:text-slate-300 active:scale-95 transition-all cursor-pointer">+500 rb</button>
                             </div>
                         </div>
 
                         <!-- Baris 3: Keperluan / Deskripsi Pengeluaran -->
                         <div>
-                            <label class="block text-[11px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
-                                <i class="fa-solid fa-align-left mr-1" style="color: var(--color-primary)"></i> Keperluan / Uraian Beban <span style="color: var(--color-primary)">*</span>
+                            <label class="block text-[10px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">
+                                <i class="fa-solid fa-align-left mr-0.5" style="color: var(--color-primary)"></i> Keperluan / Uraian Beban <span style="color: var(--color-primary)">*</span>
                             </label>
-                            <textarea id="exp-input-desc" rows="2" required placeholder="Contoh: Beli lakban cokelat 5 roll, isi ulang galon, token listrik toko..." class="w-full text-xs font-medium bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl p-3 text-slate-800 dark:text-white focus:outline-hidden focus:border-[var(--color-primary)] transition-colors resize-none"></textarea>
+                            <textarea id="exp-input-desc" rows="2" required placeholder="Contoh: Beli lakban cokelat 5 roll, isi ulang galon, token listrik..." class="w-full text-xs font-medium bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl p-2.5 text-slate-800 dark:text-white focus:outline-hidden focus:border-[var(--color-primary)] transition-colors resize-none"></textarea>
                         </div>
 
-                        <!-- Baris 4: Sumber Pembayaran Dana -->
+                        <!-- Baris 4: Sumber Pembayaran Dana (3 Card Presisi) -->
                         <div>
-                            <label class="block text-[11px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
-                                <i class="fa-solid fa-wallet mr-1" style="color: var(--color-primary)"></i> Sumber Dana Pembayaran <span style="color: var(--color-primary)">*</span>
+                            <label class="block text-[10px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">
+                                <i class="fa-solid fa-wallet mr-0.5" style="color: var(--color-primary)"></i> Sumber Dana <span style="color: var(--color-primary)">*</span>
                             </label>
-                            <div class="grid grid-cols-3 gap-2" id="exp-source-selector">
+                            <div class="grid grid-cols-3 gap-1.5" id="exp-source-selector">
                                 ${EXPENSE_SOURCES.map(s => `
-                                    <div data-source-key="${s.key}" onclick="window.selectExpenseSource('${s.key}')" class="relative flex flex-col items-center justify-center p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/50 cursor-pointer text-center transition-all hover:border-slate-400 select-none group active:scale-95 shadow-2xs">
+                                    <div data-source-key="${s.key}" onclick="window.selectExpenseSource('${s.key}')" class="relative flex flex-col items-center justify-center p-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/50 cursor-pointer text-center transition-all hover:border-slate-400 select-none group active:scale-95 shadow-2xs">
                                         <input type="radio" name="exp_source" value="${s.key}" class="sr-only" ${s.key === 'cash' ? 'checked' : ''}>
-                                        <i class="fa-solid ${s.icon} text-base mb-1.5 text-slate-500 transition-colors"></i>
-                                        <span class="text-[11px] font-black text-slate-800 dark:text-slate-200 leading-tight transition-colors">${s.shortLabel}</span>
+                                        <i class="fa-solid ${s.icon} text-sm mb-1 text-slate-500 transition-colors"></i>
+                                        <span class="text-[10px] font-black text-slate-800 dark:text-slate-200 leading-tight transition-colors">${s.shortLabel}</span>
                                     </div>
                                 `).join('')}
                             </div>
                         </div>
 
-                        <!-- Baris 5: Toko / Penerima Dana (Opsional) -->
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                        <!-- Baris 5: Toko/Vendor & Dicatat Oleh (2 Kolom Presisi) -->
+                        <div class="grid grid-cols-2 gap-2">
                             <div>
-                                <label class="block text-[11px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
-                                    <i class="fa-solid fa-store mr-1" style="color: var(--color-primary)"></i> Dibayarkan Kepada / Vendor <span class="text-[9px] text-slate-400 lowercase">(opsional)</span>
+                                <label class="block text-[10px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">
+                                    <i class="fa-solid fa-store mr-0.5" style="color: var(--color-primary)"></i> Vendor <span class="text-[8.5px] text-slate-400 lowercase">(opsional)</span>
                                 </label>
-                                <input type="text" id="exp-input-recipient" placeholder="Contoh: Toko Plastik Berkah, PLN, SPBU..." class="w-full text-xs font-semibold bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-slate-800 dark:text-white focus:outline-hidden focus:border-[var(--color-primary)] transition-colors">
+                                <input type="text" id="exp-input-recipient" placeholder="Toko Plastik, PLN, dll" class="w-full text-xs font-semibold bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl px-2.5 py-1.5 text-slate-800 dark:text-white focus:outline-hidden focus:border-[var(--color-primary)] transition-colors">
                             </div>
                             <div>
-                                <label class="block text-[11px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
-                                    <i class="fa-solid fa-user-pen mr-1" style="color: var(--color-primary)"></i> Dicatat Oleh <span class="text-[9px] text-slate-400 lowercase">(opsional)</span>
+                                <label class="block text-[10px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">
+                                    <i class="fa-solid fa-user-pen mr-0.5" style="color: var(--color-primary)"></i> Dicatat <span class="text-[8.5px] text-slate-400 lowercase">(opsional)</span>
                                 </label>
-                                <input type="text" id="exp-input-createdby" placeholder="Owner / Kasir Shift" class="w-full text-xs font-semibold bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-slate-800 dark:text-white focus:outline-hidden focus:border-[var(--color-primary)] transition-colors">
+                                <input type="text" id="exp-input-createdby" placeholder="Owner / Kasir" class="w-full text-xs font-semibold bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl px-2.5 py-1.5 text-slate-800 dark:text-white focus:outline-hidden focus:border-[var(--color-primary)] transition-colors">
                             </div>
                         </div>
 
-                        <!-- Baris 6: Foto Bukti Struk / Nota (Upload & Preview) -->
+                        <!-- Baris 6: Foto Bukti Struk / Nota (Upload & Preview Ringkas) -->
                         <div>
-                            <label class="block text-[11px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
-                                <i class="fa-solid fa-receipt mr-1" style="color: var(--color-primary)"></i> Foto Bukti Struk / Nota Fisik <span class="text-[9px] text-slate-400 lowercase">(opsional)</span>
+                            <label class="block text-[10px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">
+                                <i class="fa-solid fa-receipt mr-0.5" style="color: var(--color-primary)"></i> Foto Bukti Nota <span class="text-[8.5px] text-slate-400 lowercase">(opsional)</span>
                             </label>
-                            <div class="flex items-center gap-3">
-                                <div id="exp-receipt-preview-box" class="w-16 h-16 rounded-xl border-2 border-dashed border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 flex items-center justify-center overflow-hidden shrink-0 relative group">
-                                    <i class="fa-regular fa-image text-slate-400 text-xl" id="exp-receipt-placeholder-icon"></i>
+                            <div class="flex items-center gap-2.5">
+                                <div id="exp-receipt-preview-box" class="w-12 h-12 rounded-xl border-2 border-dashed border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 flex items-center justify-center overflow-hidden shrink-0 relative group">
+                                    <i class="fa-regular fa-image text-slate-400 text-base" id="exp-receipt-placeholder-icon"></i>
                                     <img id="exp-receipt-preview-img" src="" alt="Bukti Struk" class="w-full h-full object-cover hidden">
                                     <button type="button" id="exp-receipt-remove-btn" onclick="window.removeExpenseReceiptPhoto()" class="absolute inset-0 bg-slate-900/70 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hidden cursor-pointer">
-                                        <i class="fa-solid fa-trash-can text-sm text-rose-400"></i>
+                                        <i class="fa-solid fa-trash-can text-xs text-rose-400"></i>
                                     </button>
                                 </div>
-                                <div class="flex-1 space-y-1.5 min-w-0">
+                                <div class="flex-1 space-y-1 min-w-0">
                                     <input type="hidden" id="exp-input-receipt-url" value="">
-                                    <div class="flex items-center gap-2 flex-wrap">
-                                        <label class="px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold cursor-pointer transition-colors flex items-center gap-1.5 active:scale-95 shrink-0">
-                                            <i class="fa-solid fa-camera" style="color: var(--color-primary)"></i>
-                                            <span>Ambil Foto / Pilih File</span>
+                                    <div class="flex items-center gap-1.5 flex-wrap">
+                                        <label class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 text-[11px] font-bold cursor-pointer transition-colors flex items-center gap-1 active:scale-95 shrink-0">
+                                            <i class="fa-solid fa-camera text-[10px]" style="color: var(--color-primary)"></i>
+                                            <span>Foto / File</span>
                                             <input type="file" accept="image/*" class="sr-only" onchange="window.handleExpenseReceiptUpload(this)">
                                         </label>
-                                        <span class="text-[10px] text-slate-400 shrink-0">JPG, PNG, WEBP (maks. 5MB)</span>
+                                        <span class="text-[9px] text-slate-400 shrink-0">Maks. 5MB</span>
                                     </div>
-                                    <input type="url" id="exp-input-receipt-manual" placeholder="Atau tempel URL gambar langsung..." oninput="window.setExpenseReceiptUrl(this.value)" class="w-full text-[11px] bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-lg px-2.5 py-1.5 text-slate-700 dark:text-slate-300 focus:outline-hidden">
+                                    <input type="url" id="exp-input-receipt-manual" placeholder="Atau tempel URL gambar..." oninput="window.setExpenseReceiptUrl(this.value)" class="w-full text-[10px] bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-lg px-2 py-1 text-slate-700 dark:text-slate-300 focus:outline-hidden">
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     <!-- Sticky Docked Action Footer on Mobile & Desktop -->
-                    <div class="p-4 sm:p-5 border-t border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 shrink-0 flex items-center justify-end gap-2.5 z-10" style="padding-bottom: max(1rem, env(safe-area-inset-bottom))">
-                        <button type="button" onclick="closeExpenseModal()" class="h-11 sm:h-12 px-5 rounded-2xl border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer">
+                    <div class="px-4 py-2.5 sm:py-3 border-t border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 shrink-0 flex items-center justify-end gap-2 z-10" style="padding-bottom: max(0.65rem, env(safe-area-inset-bottom))">
+                        <button type="button" onclick="closeExpenseModal()" class="h-9 sm:h-10 px-4 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer">
                             Batal
                         </button>
-                        <button type="submit" id="btn-save-expense" class="h-11 sm:h-12 px-6 rounded-2xl text-white text-xs font-black transition-all cursor-pointer active:scale-95 flex items-center gap-2 hover:opacity-95" style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
-                            <i class="fa-solid fa-floppy-disk"></i>
+                        <button type="submit" id="btn-save-expense" class="h-9 sm:h-10 px-5 rounded-xl text-white text-xs font-black transition-all cursor-pointer active:scale-95 flex items-center gap-1.5 hover:opacity-95" style="background: var(--color-primary); box-shadow: 0 2px 10px rgba(var(--color-primary-rgb), 0.35);">
+                            <i class="fa-solid fa-floppy-disk text-xs"></i>
                             <span>Simpan Pengeluaran</span>
                         </button>
                     </div>
@@ -854,6 +854,7 @@ export const openExpenseModal = (expenseId = null) => {
         window.pushModalHistory('expenseForm');
     }
 
+    document.body.classList.add('overflow-hidden');
     openModalAnim(modal, box);
 };
 
@@ -861,6 +862,8 @@ export const closeExpenseModal = (fH = false) => {
     const modal = el('modal-expense-form');
     const box = el('modal-expense-form-box');
     if (!modal) return;
+
+    document.body.classList.remove('overflow-hidden');
 
     if (!fH && typeof window.requestCloseModal === 'function') {
         window.requestCloseModal('expenseForm', false, () => {

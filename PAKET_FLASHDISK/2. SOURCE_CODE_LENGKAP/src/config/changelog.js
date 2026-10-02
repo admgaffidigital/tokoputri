@@ -8,6 +8,22 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-10-22',
+        version: 'v1.10.22',
+        date: '2026-10-02',
+        title: 'Rekalibrasi Proporsi Ergonomis Modal Pengeluaran: Desain Ringkas, Presisi 2-Kolom & Anti-Stretching',
+        category: 'ui',
+        badge: 'Compact Modal & Precision Polish v1.10.22',
+        items: [
+            'Rekalibrasi Tinggi & Proporsi Modal (src/modules/admin/expenses.js): Mengeliminasi tinggi modal yang berlebihan (92dvh) menjadi tinggi kompak ergonomis (max-h-[84dvh] di mobile dan max-h-[82dvh] / max-w-lg di desktop). Modal tidak lagi menjulang hingga menabrak status bar atas layar.',
+            'Tata Letak Presisi 2-Kolom (expenses.js): Mengubah baris form Tanggal & Kategori serta Vendor & Pencatat yang sebelumnya menumpuk vertikal menjadi layout 2-kolom ringkas (grid-cols-2). Menghemat ruang vertikal hingga 140px sehingga seluruh formulir muat dalam satu pandangan.',
+            'Penyelarasan Kartu Sumber Dana & Upload Bukti: Mengalibrasi ukuran 3 kartu sumber dana menjadi p-2 beraksen tema, serta memperingkas preview box nota menjadi w-12 h-12 dengan kontrol upload yang rapi.',
+            'Docking Sticky Action Footer Presisi: Merampingkan tombol [Batal] dan [Simpan Pengeluaran] menjadi h-9/h-10 dengan border-radius modern rounded-xl, terpasang kokoh di dasar sheet tanpa celah kosong berlebih (zero-void).',
+            'Proteksi Body Scroll Lock: Mengunci scroll latar belakang body (overflow-hidden) saat modal dibuka, mencegah pergeseran vertikal halaman di browser mobile.',
+            'Multi-Channel Build & Sync v1.10.22 (Android versionCode 11022): Kompilasi produksi web, sinkronisasi bundle flashdisk siap pakai (1. HASIL_BUILD_SIAP_PAKE dan PAKET_FLASHDISK), serta Android Capacitor tersinkronisasi 100%.'
+        ]
+    },
+    {
         id: 'log-1-10-21',
         version: 'v1.10.21',
         date: '2026-10-02',
