@@ -264,16 +264,16 @@ html.dark .view-section:not(#view-admin-login) {
     background: #f1f5f9;
     flex-shrink: 0 !important;
     margin-bottom: 8px;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
 }
 
-/* Gambar langsung di dalam kotak */
+/* Gambar presisi di dalam kotak — absolute fill penuh */
 .pos-img-box img {
+    position: absolute !important;
+    inset: 0 !important;
     width: 100% !important;
     height: 100% !important;
     object-fit: cover !important;
+    object-position: center center !important;
     display: block !important;
     transition: transform 0.3s ease;
 }
@@ -890,9 +890,13 @@ html.dark .view-section:not(#view-admin-login) {
 }
 
 .pos-list-thumb img {
+    position: absolute;
+    inset: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
+    object-position: center center;
+    display: block;
 }
 
 /* Dark mode overrides */

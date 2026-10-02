@@ -1370,8 +1370,10 @@ export const renderCatalog = () => {
                     <div class="pos-list-item${totalQtyInCart > 0 ? ' in-cart' : ''}${stockInfo.isOutOfStock ? ' is-out-of-stock cursor-not-allowed' : ' cursor-pointer'}" onclick="window.posAddToCart('${safeId}')">
                         <div class="pos-list-thumb">
                             ${hasImg
-                                ? `<img width="52" height="52" loading="lazy" decoding="async" src="${esc(imgUrl)}" alt="${pName}" onerror="this.onerror=null;this.style.display='none';this.nextElementSibling.style.display='flex';">
-                                   <div class="w-full h-full" style="display:none">${coverSmHtml}</div>`
+                                ? `<img width="52" height="52" loading="lazy" decoding="async" src="${esc(imgUrl)}" alt="${pName}"
+                                     class="absolute inset-0 w-full h-full object-cover object-center block"
+                                     onerror="this.onerror=null;this.style.display='none';this.nextElementSibling.style.display='flex';">
+                                   <div class="absolute inset-0 w-full h-full" style="display:none">${coverSmHtml}</div>`
                                 : coverSmHtml}
                             ${totalQtyInCart > 0 ? `<div class="pos-qty-badge" style="top:2px;right:2px;min-width:18px;height:18px;font-size:9px;border-width:1.5px">${formatQty(totalQtyInCart)}</div>` : ''}
                         </div>
@@ -1419,8 +1421,9 @@ export const renderCatalog = () => {
                         ${totalQtyInCart > 0 ? `<div class="pos-qty-badge">${formatQty(totalQtyInCart)}</div>` : ''}
                         ${hasImg
                             ? `<img width="300" height="300" loading="lazy" decoding="async" src="${esc(imgUrl)}" alt="${pName}"
+                                 class="absolute inset-0 w-full h-full object-cover object-center block"
                                  onerror="this.onerror=null;this.style.display='none';this.nextElementSibling.style.display='flex';">
-                               <div class="w-full h-full" style="display:none">${coverMdHtml}</div>`
+                               <div class="absolute inset-0 w-full h-full" style="display:none">${coverMdHtml}</div>`
                             : coverMdHtml}
                     </div>
                     <!-- Info Produk Rapi -->

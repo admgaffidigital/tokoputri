@@ -8,6 +8,22 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-10-26',
+        version: 'v1.10.26',
+        date: '2026-10-02',
+        title: 'Presisi Gambar Produk POS: Perbaikan Posisi & Skala Foto di Kartu Grid dan Baris List Mode',
+        category: 'fix',
+        badge: 'POS Image Precision Fix v1.10.26',
+        items: [
+            'Perbaikan Gambar Produk Penceng di Kartu Grid POS (pos.js): Menambahkan class CSS presisi (absolute inset-0 w-full h-full object-cover object-center block) pada tag <img> kartu produk grid mode yang sebelumnya tidak memiliki class apapun, menyebabkan gambar menggunakan ukuran natural 300×300px dan tidak mengisi container dengan benar.',
+            'Perbaikan Gambar List Mode (pos.js): Menambahkan class CSS yang sama pada thumbnail list mode (52×52px) agar gambar terisi penuh dan terpusat presisi.',
+            'Perbaikan CSS .pos-img-box (style.css): Menghapus display:flex + align-items + justify-content yang bertentangan dengan strategi absolute positioning gambar. Container kini murni position:relative sebagai anchor bagi gambar absolute.',
+            'CSS .pos-img-box img: Menambahkan position:absolute + inset:0 + object-position:center center untuk memastikan gambar benar-benar mengisi kotak rasio 1:1 secara presisi dari semua sisi.',
+            'CSS .pos-list-thumb img: Menambahkan position:absolute + inset:0 + object-position:center center untuk thumbnail list mode.',
+            'Multi-Channel Build & Sync v1.10.26 (Android versionCode 11026): Kompilasi produksi web, sinkronisasi bundle flashdisk siap pakai, serta Android Capacitor tersinkronisasi 100%.'
+        ]
+    },
+    {
         id: 'log-1-10-25',
         version: 'v1.10.25',
         date: '2026-10-02',
