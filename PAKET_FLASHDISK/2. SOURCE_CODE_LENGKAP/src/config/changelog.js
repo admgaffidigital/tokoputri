@@ -8,6 +8,23 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-10-28',
+        version: 'v1.10.28',
+        date: '2026-10-02',
+        title: 'Standardisasi Dokumen Cetak A4 Presisi: Multi-Page Pagination, Penomoran Halaman Resmi, & Eliminasi Dokumen Memanjang',
+        category: 'feature',
+        badge: 'A4 Precision & Pagination v1.10.28',
+        items: [
+            'Arsitektur Lembar Kertas Standar A4 (.a4-page): Mengubah seluruh dokumen A4 (Faktur Invoice, Surat Jalan, Purchase Order / PO, Berita Acara Stock Opname, Lembar Kerja Audit Fisik Rak, Nota Tagihan Piutang, Kartu Piutang Pelanggan, dan Surat Penawaran Harga / SPH) dari satu kontainer vertikal memanjang tanpa batas menjadi lembar-lembar kertas A4 standar presisi (210mm × 297mm atau 794px × 1123px pada 96 DPI).',
+            'Universal Pagination Engine (paginateTableDocument): Memecah baris data tabel secara cerdas ke dalam halaman-halaman A4 presisi. Halaman 1 memuat Kop Surat Toko Resmi dan metadata dokumen, Halaman 2..N memuat Running Continuation Header profesional dan baris tabel lanjutan, serta Halaman Terakhir memuat ringkasan finansial dan blok tanda tangan tanpa risiko terpotong di tengah halaman.',
+            'Penomoran Halaman Resmi (Halaman X dari Y): Setiap lembar kertas A4 kini dilengkapi Running Page Footer permanen yang mencantumkan nama toko resmi, jenis dokumen, dan penomoran halaman standar (Halaman 1 dari N, Halaman 2 dari N) baik di pratinjau layar, cetakan printer, maupun file PDF.',
+            'True Multi-Page PDF Export (exportDocFile): Mengeliminasi dokumen PDF memanjang yang sebelumnya dirender dalam satu canvas kustom tanpa batas. Ekspor PDF kini merender setiap lembar .a4-page secara individual ke format standar A4 (format: a4, 210mm × 297mm) menggunakan jsPDF dengan pdf.addPage(), menghasilkan dokumen PDF standar internasional yang siap cetak dan rapi saat dibagikan via WhatsApp.',
+            'Presisi Print Cetak Langsung (printDocA4): Mengatur styling cetak @page { size: A4 portrait; margin: 0; } dan .a4-page { width: 210mm !important; height: 297mm !important; page-break-after: always !important; } yang menjamin setiap halaman dicetak ke 1 lembar kertas A4 fisik secara presisi tanpa terbelah atau bergeser.',
+            'Pembaruan Pratinjau Modal & Indikator Halaman (index.html, style.css): Modal pratinjau dokumen kini menampilkan tumpukan lembar kertas A4 terpisah dengan bayangan realistis, border presisi, scaling responsif di mobile/desktop, serta badge indikator jumlah halaman (misal: "2 Halaman A4") di header modal.',
+            'Multi-Channel Build & Sync v1.10.28 (Android versionCode 11028): Kompilasi produksi web, sinkronisasi bundle flashdisk siap pakai, serta Android Capacitor tersinkronisasi 100%.'
+        ]
+    },
+    {
         id: 'log-1-10-27',
         version: 'v1.10.27',
         date: '2026-10-02',

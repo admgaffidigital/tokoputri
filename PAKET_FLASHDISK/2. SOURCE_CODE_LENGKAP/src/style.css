@@ -1701,6 +1701,84 @@ html.dark ::-webkit-scrollbar-thumb:hover { background: #334155; }
     }
 }
 
+/* === STANDAR DOKUMEN CETAK A4 PRESISI (210mm x 297mm) === */
+.a4-page {
+    width: 794px;
+    height: 1123px;
+    min-height: 1123px;
+    max-height: 1123px;
+    position: relative;
+    background: #ffffff;
+    color: #0f172a;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    padding: 38px 46px 28px 46px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: hidden;
+    font-size: 13px;
+    line-height: 1.45;
+    font-family: 'Barlow', system-ui, -apple-system, sans-serif;
+}
+.a4-page-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+.a4-page-footer {
+    margin-top: auto;
+    padding-top: 10px;
+    border-top: 1px solid #e2e8f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 10.5px;
+    color: #64748b;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+#a4-print-section {
+    display: none;
+}
+@media print {
+    body.printing-a4 #thermal-print-section {
+        display: none !important;
+    }
+    body.printing-a4 #a4-print-section {
+        display: block !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+    }
+    body.printing-a4 .a4-page {
+        width: 210mm !important;
+        height: 297mm !important;
+        min-height: 297mm !important;
+        max-height: 297mm !important;
+        margin: 0 auto !important;
+        padding: 12mm 15mm 10mm 15mm !important;
+        box-sizing: border-box !important;
+        page-break-after: always !important;
+        break-after: page !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        box-shadow: none !important;
+        border: none !important;
+        border-radius: 0 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: space-between !important;
+        overflow: hidden !important;
+        background: #ffffff !important;
+    }
+    body.printing-a4 .a4-page:last-child {
+        page-break-after: avoid !important;
+        break-after: avoid !important;
+    }
+}
+
 /* === BORDER RADIUS GLOBAL OVERRIDES (TAMPILAN LEBIH TEGAS / KURANG MELENGKUNG) === */
 .rounded-\[2rem\] { border-radius: 12px !important; }
 .rounded-t-\[2rem\] { border-top-left-radius: 12px !important; border-top-right-radius: 12px !important; }

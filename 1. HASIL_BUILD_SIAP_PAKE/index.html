@@ -156,11 +156,11 @@
         }
       }
     </style>
-    <script type="module" crossorigin src="/assets/index-D2zrdLsy.js"></script>
+    <script type="module" crossorigin src="/assets/index-D7eNC6JH.js"></script>
     <link rel="modulepreload" crossorigin href="/assets/vendor-firebase-core-D2OF5R23.js">
     <link rel="modulepreload" crossorigin href="/assets/vendor-firebase-db-BIUZcnOd.js">
     <link rel="modulepreload" crossorigin href="/assets/vendor-utils-Bszxp-Ae.js">
-    <link rel="stylesheet" crossorigin href="/assets/index-t3eqjyGb.css">
+    <link rel="stylesheet" crossorigin href="/assets/index-XOUYEA0Y.css">
   </head>
   <body data-bg-style="minimalist">
     <!-- UI Components Global -->
@@ -1510,15 +1510,23 @@
     <div class="fixed inset-0 z-[115] flex hidden items-center justify-center bg-slate-900/80 p-2 opacity-0 transition-all duration-300 sm:p-5" id="doc-preview-modal" onclick="if (event.target === this) closeDocPreviewModal();">
       <div class="relative flex max-h-[95dvh] w-full max-w-4xl scale-95 transform flex-col overflow-hidden rounded-[2rem] border border-slate-200 bg-slate-100 shadow-lg transition-all duration-300 dark:border-slate-700 dark:bg-slate-800" id="doc-preview-modal-box">
         <div class="sticky top-0 z-20 flex items-center justify-between border-b border-slate-200 bg-white px-5 py-4 shadow-sm dark:border-slate-700 dark:bg-slate-800">
-          <div>
-            <h3 class="text-base font-bold text-slate-900 dark:text-white" id="doc-modal-title">Preview Dokumen</h3>
-            <p class="mt-0.5 text-[10px] font-bold uppercase tracking-widest text-white/90 drop-shadow-sm">Format Kertas Standar A4</p>
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-xl bg-blue-50 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400 flex items-center justify-center shrink-0">
+              <i class="fa-solid fa-file-lines text-base"></i>
+            </div>
+            <div>
+              <div class="flex items-center gap-2">
+                <h3 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white leading-tight" id="doc-modal-title">Preview Dokumen</h3>
+                <span id="doc-page-count-badge" class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200 dark:bg-blue-900/30 dark:text-blue-300 dark:border-blue-700">1 Halaman</span>
+              </div>
+              <p class="mt-0.5 text-[10px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400" id="doc-modal-subtitle">Format Kertas Standar A4 Presisi (210mm &times; 297mm)</p>
+            </div>
           </div>
-          <button class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-slate-100 text-slate-500 transition-all hover:text-rose-500 dark:bg-slate-700" onclick="closeDocPreviewModal()"><i class="fa-solid fa-xmark"></i></button>
+          <button class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-slate-100 text-slate-500 transition-all hover:bg-rose-50 hover:text-rose-500 dark:bg-slate-700 dark:hover:bg-rose-900/40 active:scale-95 cursor-pointer" onclick="closeDocPreviewModal()"><i class="fa-solid fa-xmark"></i></button>
         </div>
         <div class="custom-scrollbar flex-1 overflow-auto bg-slate-200 p-3 dark:bg-slate-900 sm:p-8" id="doc-paper-scroll-area">
           <div class="relative w-full" id="doc-paper-wrapper">
-            <div class="absolute left-1/2 top-0 flex h-max w-[794px] flex-col rounded-sm border border-slate-300 bg-white p-8 leading-relaxed text-slate-900 shadow-xl sm:p-12" id="doc-paper-content" style="min-height: 1123px; font-size: 13px; transform-origin: top center"></div>
+            <div class="absolute left-1/2 top-0 flex flex-col items-center gap-6 w-[794px]" id="doc-paper-content" style="transform-origin: top center"></div>
           </div>
         </div>
         <div class="z-20 grid grid-cols-3 gap-3 border-t border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-800 sm:p-5 md:p-6 lg:p-8">
@@ -1529,6 +1537,7 @@
       </div>
     </div>
     <div id="thermal-print-section"></div>
+    <div id="a4-print-section"></div>
     <div class="relative w-full h-full bg-[#F5F1EB] dark:bg-[#0b1120] overflow-hidden" id="app-container" data-bg-style="minimalist">
       <!-- DEKORASI BACKGROUND (BERSIH, SOLID & BEBAS CORAK YANG MENGGANGGU) -->
       <div id="dynamic-bg-container" class="pointer-events-none fixed inset-0 z-0 overflow-hidden"></div>
