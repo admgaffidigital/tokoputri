@@ -937,30 +937,35 @@ export const ensureSoModals = () => {
     if (!el('modal-so-finalize')) {
         const m = document.createElement('div');
         m.id = 'modal-so-finalize';
-        m.className = 'fixed inset-0 z-[115] bg-slate-900/80 hidden items-end sm:items-center justify-center p-0 sm:p-5 opacity-0 transition-opacity duration-300';
+        m.className = 'fixed inset-0 z-[150] flex hidden items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-950/75 opacity-0 transition-opacity duration-300 overflow-hidden';
         m.onclick = (e) => { if (e.target === m) window.closeFinalizeModal(); };
         m.innerHTML = `
-            <div id="modal-so-finalize-content" class="bg-white dark:bg-slate-900 w-full max-w-lg rounded-t-3xl sm:rounded-2xl max-h-[90vh] flex flex-col shadow-2xl border border-slate-200 dark:border-slate-800 translate-y-full sm:translate-y-10 transition-transform duration-300">
-                <div class="p-5 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center shrink-0">
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-2xl flex items-center justify-center text-lg text-white shadow-sm shrink-0" style="background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark)); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
+            <div id="modal-so-finalize-content" class="modal-bottom-sheet relative flex max-h-[84dvh] sm:max-h-[82dvh] w-full max-w-lg translate-y-full sm:translate-y-8 transform flex-col overflow-hidden rounded-t-[1.75rem] sm:rounded-3xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xl transition-transform duration-300" onclick="event.stopPropagation()">
+                <!-- Pull Indicator for Mobile Bottom Sheet -->
+                <div class="pull-indicator sm:hidden" style="margin: 8px auto 2px;"></div>
+
+                <div class="px-4 sm:px-5 py-2.5 sm:py-3 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center shrink-0 bg-white dark:bg-slate-900">
+                    <div class="flex items-center gap-2.5">
+                        <div class="w-8 h-8 rounded-xl flex items-center justify-center text-xs text-white shadow-xs shrink-0" style="background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark)); box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.35);">
                             <i class="fa-solid fa-clipboard-check"></i>
                         </div>
                         <div>
-                            <h3 class="font-extrabold text-base text-slate-800 dark:text-white">Terapkan Penyesuaian Stok</h3>
-                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">Finalisasi Stock Opname</p>
+                            <h3 class="font-extrabold text-xs sm:text-sm text-slate-800 dark:text-white">Terapkan Penyesuaian Stok</h3>
+                            <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">Finalisasi Stock Opname</p>
                         </div>
                     </div>
-                    <button onclick="window.closeFinalizeModal()" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-rose-500 flex items-center justify-center transition-all cursor-pointer"><i class="fa-solid fa-xmark"></i></button>
+                    <button type="button" onclick="window.closeFinalizeModal()" class="w-8 h-8 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-center transition-colors cursor-pointer">
+                        <i class="fa-solid fa-xmark text-sm"></i>
+                    </button>
                 </div>
 
-                <div class="custom-scrollbar p-5 sm:p-6 overflow-y-auto flex-1 space-y-4 text-xs" id="so-finalize-body"></div>
+                <div class="custom-scrollbar p-3.5 sm:p-5 overflow-y-auto flex-1 space-y-3.5 min-h-0 text-xs" id="so-finalize-body"></div>
 
-                <div class="p-4 sm:p-5 border-t border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50 flex items-center justify-end gap-2 shrink-0">
-                    <button type="button" onclick="window.closeFinalizeModal()" class="px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-50 cursor-pointer active:scale-95 transition-all text-xs">
+                <div class="px-4 py-2.5 sm:py-3 border-t border-slate-100 dark:border-slate-800 bg-slate-50/90 dark:bg-slate-900/90 flex items-center justify-end gap-2 shrink-0" style="padding-bottom: max(0.65rem, env(safe-area-inset-bottom));">
+                    <button type="button" onclick="window.closeFinalizeModal()" class="px-4 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-50 cursor-pointer active:scale-95 transition-all text-xs">
                         Batal
                     </button>
-                    <button type="button" onclick="window.executeSoFinalize()" class="px-5 py-2.5 rounded-xl text-white font-extrabold flex items-center gap-2 shadow-md cursor-pointer active:scale-95 transition-all text-xs" style="background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark)); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
+                    <button type="button" onclick="window.executeSoFinalize()" class="px-5 py-2 rounded-xl text-white font-extrabold flex items-center gap-2 shadow-xs cursor-pointer active:scale-95 transition-all text-xs" style="background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark)); box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.35);">
                         <i class="fa-solid fa-check"></i> <span>Konfirmasi &amp; Update Stok</span>
                     </button>
                 </div>
@@ -973,30 +978,35 @@ export const ensureSoModals = () => {
     if (!el('modal-so-history-detail')) {
         const m = document.createElement('div');
         m.id = 'modal-so-history-detail';
-        m.className = 'fixed inset-0 z-[115] bg-slate-900/80 hidden items-end sm:items-center justify-center p-0 sm:p-5 opacity-0 transition-opacity duration-300';
+        m.className = 'fixed inset-0 z-[150] flex hidden items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-950/75 opacity-0 transition-opacity duration-300 overflow-hidden';
         m.onclick = (e) => { if (e.target === m) window.closeSoHistoryModal(); };
         m.innerHTML = `
-            <div id="modal-so-history-content" class="bg-white dark:bg-slate-900 w-full max-w-3xl rounded-t-3xl sm:rounded-2xl max-h-[90vh] flex flex-col shadow-2xl border border-slate-200 dark:border-slate-800 translate-y-full sm:translate-y-10 transition-transform duration-300">
-                <div class="p-5 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center shrink-0">
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-2xl flex items-center justify-center text-lg text-white shadow-sm shrink-0" style="background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark)); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
+            <div id="modal-so-history-content" class="modal-bottom-sheet relative flex max-h-[84dvh] sm:max-h-[82dvh] w-full max-w-2xl translate-y-full sm:translate-y-8 transform flex-col overflow-hidden rounded-t-[1.75rem] sm:rounded-3xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xl transition-transform duration-300" onclick="event.stopPropagation()">
+                <!-- Pull Indicator for Mobile Bottom Sheet -->
+                <div class="pull-indicator sm:hidden" style="margin: 8px auto 2px;"></div>
+
+                <div class="px-4 sm:px-5 py-2.5 sm:py-3 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center shrink-0 bg-white dark:bg-slate-900">
+                    <div class="flex items-center gap-2.5">
+                        <div class="w-8 h-8 rounded-xl flex items-center justify-center text-xs text-white shadow-xs shrink-0" style="background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark)); box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.35);">
                             <i class="fa-solid fa-file-invoice"></i>
                         </div>
                         <div>
-                            <h3 class="font-extrabold text-base text-slate-800 dark:text-white" id="so-detail-title">Berita Acara Stock Opname</h3>
-                            <p class="text-[10px] font-mono text-slate-400 mt-0.5" id="so-detail-subtitle"></p>
+                            <h3 class="font-extrabold text-xs sm:text-sm text-slate-800 dark:text-white" id="so-detail-title">Berita Acara Stock Opname</h3>
+                            <p class="text-[9px] font-mono text-slate-400 mt-0.5" id="so-detail-subtitle"></p>
                         </div>
                     </div>
-                    <button onclick="window.closeSoHistoryModal()" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-rose-500 flex items-center justify-center transition-all cursor-pointer"><i class="fa-solid fa-xmark"></i></button>
+                    <button type="button" onclick="window.closeSoHistoryModal()" class="w-8 h-8 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-center transition-colors cursor-pointer">
+                        <i class="fa-solid fa-xmark text-sm"></i>
+                    </button>
                 </div>
 
-                <div class="custom-scrollbar p-5 sm:p-6 overflow-y-auto flex-1 space-y-4" id="so-detail-body"></div>
+                <div class="custom-scrollbar p-3.5 sm:p-5 overflow-y-auto flex-1 space-y-3 min-h-0" id="so-detail-body"></div>
 
-                <div class="p-4 sm:p-5 border-t border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50 flex items-center justify-between shrink-0">
-                    <button type="button" onclick="window.printSoHistoryActive()" class="px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-50 cursor-pointer active:scale-95 transition-all text-xs flex items-center gap-2">
+                <div class="px-4 py-2.5 sm:py-3 border-t border-slate-100 dark:border-slate-800 bg-slate-50/90 dark:bg-slate-900/90 flex items-center justify-between gap-3 shrink-0" style="padding-bottom: max(0.65rem, env(safe-area-inset-bottom));">
+                    <button type="button" onclick="window.printSoHistoryActive()" class="px-3.5 sm:px-4 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-50 cursor-pointer active:scale-95 transition-all text-xs flex items-center gap-2 shadow-2xs">
                         <i class="fa-solid fa-print"></i> <span>Cetak A4 / PDF</span>
                     </button>
-                    <button type="button" onclick="window.closeSoHistoryModal()" class="px-5 py-2.5 rounded-xl primary-bg text-white font-extrabold cursor-pointer active:scale-95 transition-all text-xs">
+                    <button type="button" onclick="window.closeSoHistoryModal()" class="px-5 sm:px-6 py-2 rounded-xl primary-bg text-white font-extrabold cursor-pointer active:scale-95 transition-all text-xs shadow-xs">
                         Tutup
                     </button>
                 </div>
@@ -1076,14 +1086,19 @@ export const openFinalizeModal = () => {
         `;
     }
 
+    ensureSoModals();
     const modal = el('modal-so-finalize');
     const content = el('modal-so-finalize-content');
-    if (modal && content) openModalAnim(modal, content);
+    if (modal && content) {
+        document.body.classList.add('overflow-hidden');
+        openModalAnim(modal, content);
+    }
 };
 
 export const closeFinalizeModal = () => {
     const modal = el('modal-so-finalize');
     const content = el('modal-so-finalize-content');
+    document.body.classList.remove('overflow-hidden');
     if (modal && content) closeModalAnim(modal, content);
 };
 
@@ -1342,6 +1357,7 @@ export const viewSoHistoryDetail = (soId) => {
         return;
     }
 
+    ensureSoModals();
     soActiveModalDetail = rec;
 
     const titleEl = el('so-detail-title');
@@ -1356,22 +1372,23 @@ export const viewSoHistoryDetail = (soId) => {
 
     if (bodyEl) {
         bodyEl.innerHTML = `
-            <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 flex flex-wrap items-center justify-between gap-3 text-xs">
-                <div>
-                    <span class="text-[9px] font-black uppercase text-slate-400 block">Total Item Disesuaikan</span>
-                    <span class="font-black text-slate-800 dark:text-white text-sm">${items.length} Barang</span>
+            <!-- Bento Rekap 4 Metrik Presisi -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
+                <div class="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+                    <span class="text-[9px] font-black uppercase text-slate-400 block">Total Disesuaikan</span>
+                    <span class="font-black text-slate-800 dark:text-white text-xs">${items.length} Barang</span>
                 </div>
-                <div>
+                <div class="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
                     <span class="text-[9px] font-black uppercase text-rose-500 block">Total Defisit</span>
-                    <span class="font-black text-rose-600 text-sm">−${rec.totalLossUnits || 0} Pcs</span>
+                    <span class="font-black text-rose-600 text-xs">−${rec.totalLossUnits || 0} Pcs</span>
                 </div>
-                <div>
+                <div class="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
                     <span class="text-[9px] font-black uppercase text-amber-500 block">Total Surplus</span>
-                    <span class="font-black text-amber-600 text-sm">+${rec.totalSurplusUnits || 0} Pcs</span>
+                    <span class="font-black text-amber-600 text-xs">+${rec.totalSurplusUnits || 0} Pcs</span>
                 </div>
-                <div>
-                    <span class="text-[9px] font-black uppercase text-slate-400 block">Dampak Finansial Bersih</span>
-                    <span class="font-black ${showHpp ? (rec.netVarianceRp >= 0 ? 'text-emerald-600' : 'text-rose-600') : 'text-slate-700'} text-sm">
+                <div class="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+                    <span class="text-[9px] font-black uppercase text-slate-400 block">Dampak Finansial</span>
+                    <span class="font-black ${showHpp ? (rec.netVarianceRp >= 0 ? 'text-emerald-600' : 'text-rose-600') : 'text-slate-700 dark:text-slate-200'} text-xs">
                         ${showHpp ? (rec.netVarianceRp >= 0 ? '+' : '−') + fCur(Math.abs(rec.netVarianceRp || 0)) : `${rec.netVarianceUnits || 0} Pcs`}
                     </span>
                 </div>
@@ -1379,28 +1396,28 @@ export const viewSoHistoryDetail = (soId) => {
 
             <!-- Tabel Daftar Barang yang Discrepancy -->
             <div class="space-y-2">
-                <h4 class="text-xs font-black uppercase tracking-wider text-slate-700 dark:text-slate-300">Rincian Barang yang Mengalami Selisih:</h4>
+                <h4 class="text-[11px] font-black uppercase tracking-wider text-slate-600 dark:text-slate-400">Rincian Barang yang Mengalami Selisih:</h4>
                 <div class="border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden divide-y divide-slate-100 dark:divide-slate-800 text-xs">
                     ${items.map((it, idx) => `
-                        <div class="p-3 bg-white dark:bg-slate-900 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+                        <div class="p-2.5 sm:p-3 bg-white dark:bg-slate-900 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                             <div class="min-w-0 flex-1">
-                                <div class="flex items-center gap-2">
+                                <div class="flex items-center gap-1.5 flex-wrap">
                                     <span class="font-bold text-slate-800 dark:text-white truncate">${idx + 1}. ${esc(it.productName)}</span>
-                                    ${it.variantName ? `<span class="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-[9px] font-bold">${esc(it.variantName)}</span>` : ''}
+                                    ${it.variantName ? `<span class="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-[9px] font-bold text-slate-600 dark:text-slate-300">${esc(it.variantName)}</span>` : ''}
                                 </div>
-                                <div class="flex items-center gap-2 mt-1 text-[10px] text-slate-400">
+                                <div class="flex items-center gap-2 mt-0.5 text-[10px] text-slate-400 flex-wrap">
                                     <span>Kategori: ${esc(it.category || 'Umum')}</span>
                                     ${it.sku ? `<span>• SKU: ${esc(it.sku)}</span>` : ''}
                                     ${it.notes ? `<span>• Catatan: <i class="italic text-slate-500 dark:text-slate-400">${esc(it.notes)}</i></span>` : ''}
                                 </div>
                             </div>
 
-                            <div class="flex items-center gap-3 shrink-0 self-end sm:self-center">
-                                <div class="text-right text-[11px]">
+                            <div class="flex items-center justify-between sm:justify-end gap-3 shrink-0 pt-1 sm:pt-0 border-t sm:border-t-0 border-slate-100 dark:border-slate-800">
+                                <div class="text-left sm:text-right text-[11px]">
                                     <span class="text-slate-400 block text-[9px]">Sistem ➔ Fisik</span>
                                     <span class="font-mono font-bold">${it.systemStock} ➔ <b class="text-slate-900 dark:text-white">${it.physicalStock}</b> ${esc(it.unit || 'pcs')}</span>
                                 </div>
-                                <div class="text-right min-w-[90px]">
+                                <div class="text-right min-w-[80px]">
                                     <span class="px-2 py-0.5 rounded-lg text-[10px] font-black ${it.diff < 0 ? 'bg-rose-100 text-rose-700 dark:bg-rose-950/70 dark:text-rose-300' : 'bg-amber-100 text-amber-700 dark:bg-amber-950/70 dark:text-amber-300'}">
                                         ${it.diff < 0 ? `−${Math.abs(it.diff)}` : `+${it.diff}`} ${esc(it.unit || 'pcs')}
                                     </span>
@@ -1419,12 +1436,16 @@ export const viewSoHistoryDetail = (soId) => {
 
     const modal = el('modal-so-history-detail');
     const content = el('modal-so-history-content');
-    if (modal && content) openModalAnim(modal, content);
+    if (modal && content) {
+        document.body.classList.add('overflow-hidden');
+        openModalAnim(modal, content);
+    }
 };
 
 export const closeSoHistoryModal = () => {
     const modal = el('modal-so-history-detail');
     const content = el('modal-so-history-content');
+    document.body.classList.remove('overflow-hidden');
     if (modal && content) closeModalAnim(modal, content);
 };
 

@@ -8,6 +8,22 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-10-23',
+        version: 'v1.10.23',
+        date: '2026-10-02',
+        title: 'Kalibrasi Presisi Modal Stock Opname Mobile: Bottom Sheet Docking, Eliminasi Gap Bawah & Bento Stat Cards',
+        category: 'ui',
+        badge: 'Stock Opname Modal Precision v1.10.23',
+        items: [
+            'Arsitektur Flex Bottom Sheet (src/modules/admin/stock-opname.js): Menambahkan kelas flex pada backdrop modal (#modal-so-history-detail & #modal-so-finalize) sehingga items-end di mobile berfungsi 100% dan mengeliminasi total celah kosong gelap (void) di bawah tombol footer.',
+            'Docking Sticky Action Footer dengan Safe-Area: Menambatkan tombol [Cetak A4 / PDF] dan [Tutup] langsung di dasar layar mobile dengan padding dinamis env(safe-area-inset-bottom), mencegah modal melayang atau terpotong.',
+            'Bento Stat Cards 4-Metrik Ringkas: Mentransformasi kartu ringkasan diskrepansi menjadi grid simetris 2x2 di mobile (4-kolom di desktop) untuk Total Disesuaikan, Total Defisit, Total Surplus, dan Dampak Finansial Bersih.',
+            'Daftar Rincian Barang yang Lebih Kompak: Merampingkan baris barang selisih dengan tipografi presisi, badge diskrepansi (+/- Pcs) dan selisih HPP yang rapi sehingga lebih banyak barang terlihat dalam sekali pandang.',
+            'Proteksi Body Scroll Lock & Pull Indicator: Menambahkan pull-indicator khas native sheet dan mengunci scroll halaman latar belakang (document.body.classList.add(\'overflow-hidden\')) saat modal aktif.',
+            'Multi-Channel Build & Sync v1.10.23 (Android versionCode 11023): Kompilasi produksi web, sinkronisasi bundle flashdisk siap pakai (1. HASIL_BUILD_SIAP_PAKE dan PAKET_FLASHDISK), serta Android Capacitor tersinkronisasi 100%.'
+        ]
+    },
+    {
         id: 'log-1-10-22',
         version: 'v1.10.22',
         date: '2026-10-02',
