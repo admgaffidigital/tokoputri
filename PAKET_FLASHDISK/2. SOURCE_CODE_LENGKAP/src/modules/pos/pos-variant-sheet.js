@@ -113,14 +113,20 @@ const renderVariantSheetContent = (p) => {
         ? (parseFloat(activeVar?.price) || parseFloat(p.price) || 0)
         : (parseFloat(p.price) || 0);
     const activeHpp = activeVar && activeVar.hpp != null ? (parseFloat(activeVar.hpp) || 0) : (parseFloat(p.hpp) || 0);
-    const activeStock = hasVariants ? (parseFloat(activeVar?.stock) || 0) : (parseFloat(p.stock) || 0);
+    
+    // Perbaikan Stok: Cek fallback stock & stok pada varian dan induk
+    const rawActiveStock = hasVariants
+        ? (activeVar?.stock != null && activeVar?.stock !== '' ? activeVar.stock : (activeVar?.stok != null && activeVar?.stok !== '' ? activeVar.stok : null))
+        : (p?.stock != null && p?.stock !== '' ? p.stock : (p?.stok != null && p?.stok !== '' ? p.stok : null));
+    const hasDefinedStock = rawActiveStock != null && !isNaN(parseFloat(rawActiveStock));
+    const activeStock = hasDefinedStock ? parseFloat(rawActiveStock) : 0;
     const isVarActive = activeVar ? (activeVar.isActive !== false && activeVar.isActive !== 'false') : true;
     const isOutOfStock = useStock && activeStock <= 0;
 
     let activeStockStr = 'Tersedia';
     if (!isVarActive) {
         activeStockStr = 'Tidak Tersedia';
-    } else if (useStock) {
+    } else if (useStock || hasDefinedStock) {
         activeStockStr = isOutOfStock ? 'Stok Habis' : `Stok: ${formatQty(activeStock)}`;
     }
 
@@ -138,7 +144,9 @@ const renderVariantSheetContent = (p) => {
     const variantsHtml = hasVariants ? vars.map((v, i) => {
         const varPrice = parseFloat(v.price) || parseFloat(p.price) || 0;
         const varHpp   = v.hpp != null ? (parseFloat(v.hpp) || 0) : (parseFloat(p.hpp) || 0);
-        const varStock = parseFloat(v.stock) || 0;
+        const rawVStock = v.stock != null && v.stock !== '' ? v.stock : (v.stok != null && v.stok !== '' ? v.stok : null);
+        const hasVStock = rawVStock != null && !isNaN(parseFloat(rawVStock));
+        const varStock = hasVStock ? parseFloat(rawVStock) : 0;
         const isVActive = v.isActive !== false && v.isActive !== 'false';
         const isVOutOfStock = useStock && varStock <= 0;
         const isDisabled = !isVActive || isVOutOfStock;
@@ -161,6 +169,8 @@ const renderVariantSheetContent = (p) => {
             vVisual = `<img src="${getOptImg(v.img, 'w100-rw')}" alt="${esc(v.name)}" class="w-6 h-6 rounded-md object-cover border border-slate-200 dark:border-slate-700 shrink-0">`;
         }
 
+        const showStockChip = (useStock || hasVStock) && !isVOutOfStock;
+
         return `<button
             onclick="${isDisabled ? '' : `window.selectPOSVariant(${i})`}"
             class="flex items-center gap-2 px-3 py-1.5 rounded-xl border text-[11px] font-bold transition-all ${activeStyle} ${outStyle}"
@@ -171,7 +181,7 @@ const renderVariantSheetContent = (p) => {
                 <div class="flex items-center gap-1.5 text-[9px] flex-wrap">
                     <span class="text-slate-500 font-bold">${fRp(varPrice)}</span>
                     ${canViewHpp() && varHpp > 0 ? `<span class="text-amber-600 dark:text-amber-400 font-black">HPP: ${fRp(varHpp)}</span>` : ''}
-                    ${useStock && !isVOutOfStock ? `<span class="font-extrabold ${varStock <= 5 ? 'text-rose-500' : 'text-slate-400 dark:text-slate-400'}"><i class="fa-solid fa-box text-[7px] mr-0.5"></i>Stok ${formatQty(varStock)}</span>` : ''}
+                    ${showStockChip ? `<span class="font-extrabold ${varStock <= 5 ? 'text-rose-500' : 'text-slate-400 dark:text-slate-400'}"><i class="fa-solid fa-box text-[7px] mr-0.5"></i>Stok ${formatQty(varStock)}</span>` : ''}
                 </div>
             </div>
             ${isActive ? '<i class="fa-solid fa-check text-[8px] shrink-0 ml-1"></i>' : ''}
@@ -338,8 +348,10 @@ export const confirmPOSVariantAdd = () => {
         }
 
         // 3. Validasi Stok Varian & Akumulasi Keranjang
-        if (useStock) {
-            const vStock = parseFloat(v.stock) || 0;
+        const isPreorder = Boolean(p.poTime && String(p.poTime).trim());
+        if (useStock && !isPreorder) {
+            const rawVStock = v.stock != null && v.stock !== '' ? v.stock : (v.stok != null && v.stok !== '' ? v.stok : null);
+            const vStock = rawVStock != null && !isNaN(parseFloat(rawVStock)) ? parseFloat(rawVStock) : 0;
             if (vStock <= 0) {
                 showToast(`Maaf, stok varian "${v.name}" sedang kosong!`, 'warning');
                 return;
@@ -359,8 +371,10 @@ export const confirmPOSVariantAdd = () => {
         }
     } else {
         // Non varian — gunakan posAddToCartQty
-        if (useStock) {
-            const pStock = parseFloat(p.stock) || 0;
+        const isPreorder = Boolean(p.poTime && String(p.poTime).trim());
+        if (useStock && !isPreorder) {
+            const rawPStock = p.stock != null && p.stock !== '' ? p.stock : (p.stok != null && p.stok !== '' ? p.stok : null);
+            const pStock = rawPStock != null && !isNaN(parseFloat(rawPStock)) ? parseFloat(rawPStock) : 0;
             if (pStock <= 0) {
                 showToast(`Maaf, stok "${p.name}" sedang kosong!`, 'warning');
                 return;

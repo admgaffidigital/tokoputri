@@ -485,10 +485,13 @@ export const processOrder = async () => {
             for (const cartItem of cart) {
                 const serverProd = appData.products.find(p => p.id === cartItem.id);
                 if (!serverProd) continue;
+                const isPreorder = Boolean(serverProd.poTime && String(serverProd.poTime).trim());
+                if (isPreorder) continue; // Barang Pre-Order tidak dibatasi oleh stok fisik nol
                 const qty = parseFloat(cartItem.qty) || 0;
                 if (cartItem.variantName) {
                     const variant = (serverProd.variants || []).find(v => v.name === cartItem.variantName);
-                    const stk = parseFloat(variant && variant.stock !== undefined ? variant.stock : 0);
+                    const rawStk = variant ? ((variant.stock != null && variant.stock !== '') ? variant.stock : ((variant.stok != null && variant.stok !== '') ? variant.stok : null)) : null;
+                    const stk = rawStk != null && !isNaN(parseFloat(rawStk)) ? parseFloat(rawStk) : 0;
                     if (stk < qty) {
                         setIsSaving(false); 
                         hLoad();
@@ -496,7 +499,8 @@ export const processOrder = async () => {
                         return;
                     }
                 } else {
-                    const stk = parseFloat(serverProd.stock !== undefined ? serverProd.stock : 0);
+                    const rawStk = (serverProd.stock != null && serverProd.stock !== '') ? serverProd.stock : ((serverProd.stok != null && serverProd.stok !== '') ? serverProd.stok : null);
+                    const stk = rawStk != null && !isNaN(parseFloat(rawStk)) ? parseFloat(rawStk) : 0;
                     if (stk < qty) {
                         setIsSaving(false); 
                         hLoad();

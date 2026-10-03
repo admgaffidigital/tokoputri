@@ -11,7 +11,7 @@
 import { db, firebase } from '../../config/firebase.js';
 import { appData } from '../../core/state.js';
 import { el, setH, setIn, esc, fCur, showToast, getOptImg, renderProductCoverHtml } from '../../core/utils.js';
-import { getEffHpp } from '../../core/pricing.js';
+import { getEffHpp, computeTotalProductStock } from '../../core/pricing.js';
 import { canViewHpp } from '../../core/auth-roles.js';
 import { getPrinterConfig, openPrinterSettingsModal } from '../print/printer-settings.js';
 import {
@@ -199,43 +199,7 @@ const posChange = () => posPaidAmount - posTotal();
 
 // Status dan Ketersediaan Stok Produk Kasir (Identik 1:1 dengan Storefront)
 export const getProductStockInfo = (p) => {
-    if (!p) return { isManaged: false, totalStock: 0, isOutOfStock: true, isLowStock: false, isInactive: true, isPreorder: false, poTime: '' };
-    
-    // 1. Validasi Status Produk Aktif
-    const pActive = p.isActive !== 'false' && p.isActive !== false;
-    if (!pActive) {
-        return { isManaged: true, totalStock: 0, isOutOfStock: true, isLowStock: false, isInactive: true, isPreorder: false, poTime: '' };
-    }
-
-    // 2. Evaluasi Saklar Manajemen Stok Toko (useStock)
-    const useStk = appData?.store?.useStock === true || appData?.store?.useStock === 'true';
-    const isPreorder = Boolean(p.poTime && String(p.poTime).trim());
-    const poTime = isPreorder ? String(p.poTime).trim() : '';
-
-    if (!useStk) {
-        // Jika useStock OFF: Stok tak terbatas (unlimited stock), cocok untuk barang preorder / tanpa limit stok
-        return { isManaged: false, totalStock: 999999, isOutOfStock: false, isLowStock: false, isInactive: false, isPreorder, poTime };
-    }
-    
-    // 3. Hitung Total Stok dari Varian Aktif Saja (Persis Storefront)
-    let total = 0;
-    if (Array.isArray(p.variants) && p.variants.length > 0) {
-        total = p.variants
-            .filter(v => v && v.isActive !== false && v.isActive !== 'false')
-            .reduce((s, v) => s + (v.stock != null ? (parseFloat(v.stock) || 0) : 0), 0);
-    } else {
-        total = parseFloat(p.stock) || 0;
-    }
-
-    return {
-        isManaged: true,
-        totalStock: total,
-        isOutOfStock: total <= 0,
-        isLowStock: total > 0 && total <= 5,
-        isInactive: false,
-        isPreorder,
-        poTime
-    };
+    return computeTotalProductStock(p);
 };
 
 // Format Waktu Pre-Order Ringkas (Anti-Overflow & Presisi Badge)
@@ -518,7 +482,7 @@ export const addToCart = (productId) => {
 
     // 2. Validasi Stok Tersedia (Identik Storefront)
     const sInfo = getProductStockInfo(p);
-    if (sInfo.isManaged && sInfo.isOutOfStock) {
+    if (sInfo.isManaged && !sInfo.isPreorder && sInfo.isOutOfStock) {
         showToast(`Maaf, stok "${p.name}" sedang kosong!`, 'warning');
         return false;
     }
@@ -526,7 +490,7 @@ export const addToCart = (productId) => {
     const existing = posCart.find(i => String(i.id) === String(productId) && !i.isVariant);
     if (existing) {
         const nextQty = parseFloat((existing.qty + 1).toFixed(3));
-        if (sInfo.isManaged && nextQty > sInfo.totalStock) {
+        if (sInfo.isManaged && !sInfo.isPreorder && nextQty > sInfo.totalStock) {
             showToast(`Stok tidak cukup! Tersisa: ${formatQty(sInfo.totalStock)} ${p.unit || 'pcs'}`, 'warning');
             return false;
         }
@@ -567,7 +531,7 @@ export const posAddToCartQty = (productId, qty) => {
 
     // 2. Validasi Stok Tersedia (Identik Storefront)
     const sInfo = getProductStockInfo(p);
-    if (sInfo.isManaged && sInfo.isOutOfStock) {
+    if (sInfo.isManaged && !sInfo.isPreorder && sInfo.isOutOfStock) {
         showToast(`Maaf, stok "${p.name}" sedang kosong!`, 'warning');
         return false;
     }
@@ -576,13 +540,13 @@ export const posAddToCartQty = (productId, qty) => {
     const existing = posCart.find(i => String(i.id) === String(productId) && !i.isVariant);
     if (existing) {
         const nextQty = parseFloat((existing.qty + numQty).toFixed(3));
-        if (sInfo.isManaged && nextQty > sInfo.totalStock) {
+        if (sInfo.isManaged && !sInfo.isPreorder && nextQty > sInfo.totalStock) {
             showToast(`Stok tidak cukup! Tersisa: ${formatQty(sInfo.totalStock)} ${p.unit || 'pcs'}`, 'warning');
             return false;
         }
         existing.qty = nextQty; recalcItem(existing);
     } else {
-        if (sInfo.isManaged && numQty > sInfo.totalStock) {
+        if (sInfo.isManaged && !sInfo.isPreorder && numQty > sInfo.totalStock) {
             showToast(`Stok tidak cukup! Tersisa: ${formatQty(sInfo.totalStock)} ${p.unit || 'pcs'}`, 'warning');
             return false;
         }
@@ -1410,29 +1374,40 @@ export const renderCatalog = (isLoadMore = false) => {
                 // 2. Eyebrow Kategori & Brand Text Terdedikasi (100% Lebar Kartu, Anti-Terpotong)
                 const catBrandText = esc(`${p.subCategory || pCat || 'PRODUK'}${p.brand ? ` · ${p.brand}` : ''}`);
 
-                // 3. Smart Priority Badges: Seleksi terprioritas (Diskon > PO/Stok > Varian/Grosir)
+                // 3. Smart Priority Badges: Seleksi terprioritas (Diskon > Stok Fisik > PO > Varian/Grosir > Poin)
                 const candidateChips = [];
                 // Prioritas 1: Promo Diskon (-X%)
                 if (discBadge) candidateChips.push(discBadge);
 
-                // Prioritas 2: Status Ketersediaan & Urgensi Stok
+                // Prioritas 2: Status Ketersediaan & Urgensi Stok Fisik
                 if (stockInfo.isOutOfStock) {
                     candidateChips.push(`<span class="pos-tag-chip pos-tag-low shrink-0 whitespace-nowrap"><i class="fa-solid fa-ban"></i> Habis</span>`);
-                } else if (stockInfo.isPreorder) {
-                    const poShort = formatCompactPoText(stockInfo.poTime);
-                    candidateChips.push(`<span class="pos-tag-chip pos-tag-po shrink-0 whitespace-nowrap"><i class="fa-solid fa-clock"></i> PO ${esc(poShort)}</span>`);
                 } else if (stockInfo.isManaged && stockInfo.isLowStock) {
                     candidateChips.push(`<span class="pos-tag-chip pos-tag-low shrink-0 whitespace-nowrap"><i class="fa-solid fa-fire"></i> Sisa ${formatQty(stockInfo.totalStock)}</span>`);
                 } else if (stockInfo.isManaged && stockInfo.totalStock > 0) {
                     candidateChips.push(`<span class="pos-tag-chip pos-tag-stock shrink-0 whitespace-nowrap"><i class="fa-solid fa-box"></i> ${formatQty(stockInfo.totalStock)}</span>`);
                 }
 
-                // Prioritas 3: Opsi Varian & Grosir
+                // Prioritas 3: Pre-Order (Dapat berdampingan dengan stok fisik jika ready-stock)
+                if (stockInfo.isPreorder) {
+                    const poShort = formatCompactPoText(stockInfo.poTime);
+                    candidateChips.push(`<span class="pos-tag-chip pos-tag-po shrink-0 whitespace-nowrap"><i class="fa-solid fa-clock"></i> PO ${esc(poShort)}</span>`);
+                }
+
+                // Prioritas 4: Opsi Varian & Grosir
                 if (hasVariants) {
                     candidateChips.push(`<span class="pos-tag-chip pos-tag-variant shrink-0 whitespace-nowrap"><i class="fa-solid fa-layer-group"></i> Varian</span>`);
                 }
                 if (hasGrosir) {
                     candidateChips.push(`<span class="pos-tag-chip pos-tag-grosir shrink-0 whitespace-nowrap"><i class="fa-solid fa-tags"></i> Grosir</span>`);
+                }
+
+                // Prioritas 5: Poin Reward
+                const activePoin = (p.variants && p.variants.length)
+                    ? Math.max(...p.variants.map(v => parseFloat(v.poin) || 0))
+                    : (parseFloat(p.poin) || 0);
+                if (activePoin > 0) {
+                    candidateChips.push(`<span class="pos-tag-chip shrink-0 whitespace-nowrap bg-[rgba(var(--color-primary-rgb),0.08)] text-[var(--color-primary)]"><i class="fa-solid fa-star"></i> +${activePoin}</span>`);
                 }
 
                 // List Mode: Baris dedikasi hingga 3 chip teratas

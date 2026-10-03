@@ -17,14 +17,19 @@ export const sanitizeCart = () => {
     const cleanCart = cart.filter(c => {
         const p = appData.products.find(x => x && x.id != null && String(x.id) === String(c.id));
         if (!p || p.isActive === 'false' || p.isActive === false) return false;
+        const isPreorder = Boolean(p.poTime && String(p.poTime).trim());
         
         if (c.variantName) {
             const v = (p.variants || []).find(vv => vv.name === c.variantName);
             if (!v) return false;
             if (v.isActive === false || v.isActive === 'false') return false;
-            if (useStk && (parseFloat(v.stock) || 0) <= 0) return false;
+            const rawV = (v.stock != null && v.stock !== '') ? v.stock : (v.stok != null && v.stok !== '' ? v.stok : null);
+            const vStock = rawV != null && !isNaN(parseFloat(rawV)) ? parseFloat(rawV) : 0;
+            if (useStk && !isPreorder && vStock <= 0) return false;
         } else {
-            if (useStk && (parseFloat(p.stock) || 0) <= 0) return false;
+            const rawP = (p.stock != null && p.stock !== '') ? p.stock : (p.stok != null && p.stok !== '' ? p.stok : null);
+            const pStock = rawP != null && !isNaN(parseFloat(rawP)) ? parseFloat(rawP) : 0;
+            if (useStk && !isPreorder && pStock <= 0) return false;
         }
         return true;
     });
@@ -321,12 +326,21 @@ export const setCQty = (i, v) => {
             const ci = cart[i];
             const p = appData.products.find(x => x && x.id != null && String(x.id) === String(ci.id));
             if (p) {
-                const avail = ci.variantName
-                    ? (parseFloat(((p.variants || []).find(vv => vv.name === ci.variantName) || {}).stock) || 0)
-                    : (parseFloat(p.stock) || 0);
-                if (nv > avail) { 
-                    nv = avail; 
-                    if (typeof window.showToast === 'function') window.showToast(`Maks stok: ${avail}`); 
+                const isPreorder = Boolean(p.poTime && String(p.poTime).trim());
+                if (!isPreorder) {
+                    let avail = 0;
+                    if (ci.variantName) {
+                        const vObj = (p.variants || []).find(vv => vv.name === ci.variantName);
+                        const rawV = vObj ? ((vObj.stock != null && vObj.stock !== '') ? vObj.stock : ((vObj.stok != null && vObj.stok !== '') ? vObj.stok : null)) : null;
+                        avail = rawV != null && !isNaN(parseFloat(rawV)) ? parseFloat(rawV) : 0;
+                    } else {
+                        const rawP = (p.stock != null && p.stock !== '') ? p.stock : ((p.stok != null && p.stok !== '') ? p.stok : null);
+                        avail = rawP != null && !isNaN(parseFloat(rawP)) ? parseFloat(rawP) : 0;
+                    }
+                    if (nv > avail) { 
+                        nv = avail; 
+                        if (typeof window.showToast === 'function') window.showToast(`Maks stok: ${avail}`); 
+                    }
                 }
             }
         }
@@ -353,12 +367,21 @@ export const updCQty = (i, c) => {
             const ci = cart[i];
             const p = appData.products.find(x => x && x.id != null && String(x.id) === String(ci.id));
             if (p) {
-                const avail = ci.variantName
-                    ? (parseFloat(((p.variants || []).find(vv => vv.name === ci.variantName) || {}).stock) || 0)
-                    : (parseFloat(p.stock) || 0);
-                if (nv > avail) { 
-                    nv = avail; 
-                    if (typeof window.showToast === 'function') window.showToast(`Maks stok: ${avail}`); 
+                const isPreorder = Boolean(p.poTime && String(p.poTime).trim());
+                if (!isPreorder) {
+                    let avail = 0;
+                    if (ci.variantName) {
+                        const vObj = (p.variants || []).find(vv => vv.name === ci.variantName);
+                        const rawV = vObj ? ((vObj.stock != null && vObj.stock !== '') ? vObj.stock : ((vObj.stok != null && vObj.stok !== '') ? vObj.stok : null)) : null;
+                        avail = rawV != null && !isNaN(parseFloat(rawV)) ? parseFloat(rawV) : 0;
+                    } else {
+                        const rawP = (p.stock != null && p.stock !== '') ? p.stock : ((p.stok != null && p.stok !== '') ? p.stok : null);
+                        avail = rawP != null && !isNaN(parseFloat(rawP)) ? parseFloat(rawP) : 0;
+                    }
+                    if (nv > avail) { 
+                        nv = avail; 
+                        if (typeof window.showToast === 'function') window.showToast(`Maks stok: ${avail}`); 
+                    }
                 }
             }
         }

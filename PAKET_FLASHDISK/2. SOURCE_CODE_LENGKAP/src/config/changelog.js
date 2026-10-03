@@ -8,6 +8,23 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-10-34',
+        version: 'v1.10.34',
+        date: '2026-10-03',
+        title: 'Penyempurnaan Total Sinkronisasi Stok Universal & Ekosistem Smart Badging (Storefront Etalase & POS Kasir)',
+        category: 'feature',
+        badge: 'Universal Stock Sync & Badge Fidelity v1.10.34',
+        items: [
+            'Universal Stock Calculation Engine (computeTotalProductStock): Menyatukan logika pembacaan stok 1:1 di Storefront Etalase dan POS Kasir. Mendukung evaluasi cerdas multi-varian aktif, stok induk, fallback alias (stock & stok), serta deteksi ketersediaan fisik otomatis (hasStockData).',
+            'Resolusi Permanen Bug Stok Hilang Saat useStock Nonaktif: Menjamin seluruh produk yang memiliki angka kuantitas stok di CMS selalu menampilkan indikator stok (Stok X / Sisa X / Habis) secara transparan di katalog pelanggan dan kasir tanpa terhalang toggle global toko.',
+            'Pemisahan Evaluasi Pre-Order & Stok Fisik (Zero-Interference): Menghilangkan bug di mana produk Pre-Order menelan badge stok fisik di POS kasir. Produk PO yang memiliki ready-stock fisik kini menampilkan badge stok fisik dan badge PO secara harmonis.',
+            'Integrasi Chip Stok di Storefront List View: Menyematkan chip status stok (Stok X / Sisa X / Habis) secara presisi ke dalam barisan chip informasi di samping nama produk, menjaga foto thumbnail 88px tetap bersih dan tajam.',
+            'Harmonisasi Stok Varian POS Sheet & Modal Produk: Menampilkan kuantitas stok aktual pada setiap chip varian di POS Variant Sheet dan Product Detail Modal, serta mengeliminasi status teks kaku "Tersedia" menjadi angka riil.',
+            'Resiliensi Keranjang & Alur Checkout Pre-Order: Memastikan barang Pre-Order dengan stok fisik 0 tidak dibatalkan atau dihapus secara keliru dari keranjang belanja dan formulir checkout pelanggan.',
+            'Multi-Channel Build & Sync v1.10.34 (Android versionCode 11034): Kompilasi produksi web, sinkronisasi bundle flashdisk distribusi siap pakai, dan pembaruan platform Android Capacitor 100% mutakhir.'
+        ]
+    },
+    {
         id: 'log-1-10-33',
         version: 'v1.10.33',
         date: '2026-10-03',

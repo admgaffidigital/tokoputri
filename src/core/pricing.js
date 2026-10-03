@@ -236,12 +236,97 @@ export const computeInventoryStats = () => {
     return { activeProd, inactiveProd, activeVar, inactiveVar, assetHpp, assetJual };
 };
 
+/**
+ * Kalkulasi total stok produk terpadu (Storefront & POS Kasir)
+ * Menjamin pembacaan stok akurat baik dari varian aktif, stok induk,
+ * maupun fallback cerdas jika produk memiliki data stok di database.
+ */
+export const computeTotalProductStock = (p) => {
+    if (!p) {
+        return {
+            totalStock: 0,
+            hasStockData: false,
+            isManaged: false,
+            isOutOfStock: true,
+            isLowStock: false,
+            isInactive: true,
+            isPreorder: false,
+            poTime: ''
+        };
+    }
+
+    const pActive = p.isActive !== 'false' && p.isActive !== false;
+    const storeUseStock = appData?.store?.useStock === true || appData?.store?.useStock === 'true';
+    const isPreorder = Boolean(p.poTime && String(p.poTime).trim());
+    const poTime = isPreorder ? String(p.poTime).trim() : '';
+
+    const hasVariants = Array.isArray(p.variants) && p.variants.length > 0;
+    let variantStockSum = 0;
+    let hasVariantStockDefined = false;
+
+    if (hasVariants) {
+        const activeVariants = p.variants.filter(v => v && v.isActive !== false && v.isActive !== 'false');
+        for (const v of activeVariants) {
+            const rawVal = v.stock != null && v.stock !== '' ? v.stock : (v.stok != null && v.stok !== '' ? v.stok : null);
+            if (rawVal !== null && rawVal !== undefined) {
+                const num = parseFloat(rawVal);
+                if (!isNaN(num)) {
+                    hasVariantStockDefined = true;
+                    variantStockSum += num;
+                }
+            }
+        }
+    }
+
+    const rawParent = p.stock != null && p.stock !== '' ? p.stock : (p.stok != null && p.stok !== '' ? p.stok : null);
+    const hasParentStockDefined = rawParent !== null && rawParent !== undefined && !isNaN(parseFloat(rawParent));
+    const parentStockNum = hasParentStockDefined ? parseFloat(rawParent) : 0;
+
+    let totalStock = 0;
+    let hasStockData = false;
+
+    if (hasVariants && hasVariantStockDefined) {
+        totalStock = variantStockSum;
+        hasStockData = true;
+        // Fallback cerdas: Jika varian stok berjumlah 0 tapi induk memiliki stok > 0
+        if (totalStock === 0 && hasParentStockDefined && parentStockNum > 0) {
+            totalStock = parentStockNum;
+        }
+    } else if (hasParentStockDefined) {
+        totalStock = parentStockNum;
+        hasStockData = true;
+    } else if (hasVariants) {
+        totalStock = 0;
+        hasStockData = false;
+    } else {
+        totalStock = 0;
+        hasStockData = false;
+    }
+
+    // isManaged: aktif jika toko mengaktifkan kelola stok ATAU produk memiliki data stok yang terisi
+    const isManaged = storeUseStock || hasStockData;
+    const isOutOfStock = !pActive || (isManaged && totalStock <= 0 && !isPreorder);
+    const isLowStock = isManaged && totalStock > 0 && totalStock <= 5;
+
+    return {
+        totalStock: Math.max(0, totalStock),
+        hasStockData,
+        isManaged,
+        isOutOfStock,
+        isLowStock,
+        isInactive: !pActive,
+        isPreorder,
+        poTime
+    };
+};
+
 // ─── Expose ke window untuk atribut onclick di HTML ──────
 window.getEffP = getEffP;
 window.getEffHpp = getEffHpp;
 window.getEffPoin = getEffPoin;
 window.calculateCartPoints = calculateCartPoints;
 window.computeInventoryStats = computeInventoryStats;
+window.computeTotalProductStock = computeTotalProductStock;
 window.getDist = getDist;
 window.parseGeoCoordinates = parseGeoCoordinates;
 window.autoParseCoords = autoParseCoords;

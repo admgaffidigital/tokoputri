@@ -39,18 +39,22 @@ export const openProductModal = (i, isFromNavStack = false) => {
     
     // Validasi produk aktif dan stok tersedia
     const pActive = p.isActive !== 'false' && p.isActive !== false;
+    const isPreorder = Boolean(p.poTime && String(p.poTime).trim());
     const useStk = appData.store.useStock === true || appData.store.useStock === 'true';
     let totalAvail = Infinity;
     if (useStk) {
         totalAvail = (p.variants && p.variants.length)
-            ? p.variants.filter(v => v.isActive !== false && v.isActive !== 'false').reduce((s, v) => s + (parseFloat(v.stock) || 0), 0)
-            : (parseFloat(p.stock) || 0);
+            ? p.variants.filter(v => v.isActive !== false && v.isActive !== 'false').reduce((s, v) => {
+                const rawV = (v.stock != null && v.stock !== '') ? v.stock : (v.stok != null && v.stok !== '' ? v.stok : null);
+                return s + (rawV != null ? (parseFloat(rawV) || 0) : 0);
+            }, 0)
+            : (parseFloat(p.stock != null && p.stock !== '' ? p.stock : (p.stok != null && p.stok !== '' ? p.stok : 0)) || 0);
     }
     if (!pActive) {
         showToast('Produk ini sedang tidak tersedia');
         return;
     }
-    if (useStk && totalAvail <= 0) {
+    if (useStk && !isPreorder && totalAvail <= 0) {
         showToast('Maaf, stok produk ini sedang kosong');
         return;
     }
@@ -76,8 +80,9 @@ export const openProductModal = (i, isFromNavStack = false) => {
     if (p.variants && p.variants.length > 0) {
         const found = p.variants.findIndex(v => {
             const isActive = v.isActive !== false && v.isActive !== 'false';
-            const stock = parseFloat(v.stock) || 0;
-            return isActive && (!useStk || stock > 0);
+            const rawV = (v.stock != null && v.stock !== '') ? v.stock : (v.stok != null && v.stok !== '' ? v.stok : null);
+            const stock = rawV != null ? (parseFloat(rawV) || 0) : 0;
+            return isActive && (!useStk || isPreorder || stock > 0);
         });
         setCVar(found >= 0 ? found : 0);
     } else {
@@ -609,6 +614,19 @@ export const rProdMod = () => {
     
     if (p.poTime) bH += `<span class="bg-amber-500 text-white px-2.5 py-1 rounded-full text-[9px] font-bold flex items-center gap-1.5 whitespace-nowrap uppercase tracking-wider shadow-sm"><i class="fa-solid fa-clock"></i> PO ${esc(p.poTime)}</span>`;
 
+    const activeStockVal = hV && cVar !== null
+        ? ((v?.stock != null && v?.stock !== '') ? parseFloat(v.stock) : ((v?.stok != null && v?.stok !== '') ? parseFloat(v.stok) : null))
+        : ((p?.stock != null && p?.stock !== '') ? parseFloat(p.stock) : ((p?.stok != null && p?.stok !== '') ? parseFloat(p.stok) : null));
+    if (activeStockVal !== null && !isNaN(activeStockVal)) {
+        if (activeStockVal <= 0) {
+            bH += `<span class="bg-rose-500 text-white px-2.5 py-1 rounded-full text-[9px] font-bold flex items-center gap-1.5 whitespace-nowrap uppercase tracking-wider shadow-sm"><i class="fa-solid fa-ban"></i> Habis</span>`;
+        } else if (activeStockVal <= 5) {
+            bH += `<span class="bg-rose-500 text-white px-2.5 py-1 rounded-full text-[9px] font-bold flex items-center gap-1.5 whitespace-nowrap uppercase tracking-wider shadow-sm"><i class="fa-solid fa-fire"></i> Sisa ${activeStockVal}</span>`;
+        } else {
+            bH += `<span class="bg-slate-700 text-white px-2.5 py-1 rounded-full text-[9px] font-bold flex items-center gap-1.5 whitespace-nowrap uppercase tracking-wider shadow-sm"><i class="fa-solid fa-box"></i> Stok ${activeStockVal}</span>`;
+        }
+    }
+
     const activePoin = (v && parseFloat(v.poin) > 0) ? parseFloat(v.poin) : (parseFloat(p.poin) || 0);
     if (activePoin > 0 && (!hV || cVar !== null)) {
         bH += `<span class="bg-[var(--color-primary)] text-white px-2.5 py-1 rounded-full text-[9px] font-bold flex items-center gap-1.5 whitespace-nowrap uppercase tracking-wider shadow-sm"><i class="fa-solid fa-star"></i> +${activePoin} Poin</span>`;
@@ -720,7 +738,9 @@ export const rProdMod = () => {
                 optHTML += p.variants.map((r, x) => {
                     let isVarActive = r.isActive !== false && r.isActive !== 'false';
                     const useStkV = appData.store.useStock === true || appData.store.useStock === 'true';
-                    const varStock = parseFloat(r.stock) || 0;
+                    const rawVarStock = (r.stock != null && r.stock !== '') ? r.stock : (r.stok != null && r.stok !== '' ? r.stok : null);
+                    const hasVStock = rawVarStock !== null && !isNaN(parseFloat(rawVarStock));
+                    const varStock = hasVStock ? parseFloat(rawVarStock) : 0;
                     const isVarOutOfStock = useStkV && varStock <= 0;
                     let isVarSelectable = isVarActive && !isVarOutOfStock;
                     const isSelected = x === cVar;
@@ -752,7 +772,7 @@ export const rProdMod = () => {
                         ${swatchDot}
                         <div class="w-full min-w-0 px-0.5">
                             <span class="block text-[10px] sm:text-[10.5px] font-black leading-tight truncate ${isSelected ? 'text-amber-950 dark:text-amber-200' : 'text-slate-800 dark:text-white'} ${!isVarSelectable ? 'line-through' : ''}">${esc(r.name)}</span>
-                            <span class="block text-[8px] sm:text-[8.5px] font-bold text-slate-400 dark:text-slate-500 truncate mt-0.5">${esc(r.code || r.unit || (hex ? hex.toUpperCase() : ''))}</span>
+                            <span class="block text-[8px] sm:text-[8.5px] font-bold text-slate-400 dark:text-slate-500 truncate mt-0.5">${hasVStock && !isVarOutOfStock ? `Stok ${varStock}` : esc(r.code || r.unit || (hex ? hex.toUpperCase() : ''))}</span>
                         </div>
                         ${isVarOutOfStock && isVarActive ? '<span class="absolute top-1 right-1 px-1 py-0.5 rounded text-[7.5px] bg-rose-500 text-white font-bold leading-none">Habis</span>' : ''}
                     </button>`;
@@ -766,7 +786,9 @@ export const rProdMod = () => {
                 optHTML += p.variants.map((r, x) => {
                     let isVarActive = r.isActive !== false && r.isActive !== 'false';
                     const useStkV = appData.store.useStock === true || appData.store.useStock === 'true';
-                    const varStock = parseFloat(r.stock) || 0;
+                    const rawVarStock = (r.stock != null && r.stock !== '') ? r.stock : (r.stok != null && r.stok !== '' ? r.stok : null);
+                    const hasVStock = rawVarStock !== null && !isNaN(parseFloat(rawVarStock));
+                    const varStock = hasVStock ? parseFloat(rawVarStock) : 0;
                     const isVarOutOfStock = useStkV && varStock <= 0;
                     let isVarSelectable = isVarActive && !isVarOutOfStock;
                     const isSelected = x === cVar;
@@ -793,7 +815,10 @@ export const rProdMod = () => {
                         ${thumbImg}
                         <div class="flex flex-col text-left min-w-0">
                             <span class="truncate max-w-[150px] sm:max-w-[200px] leading-tight ${!isVarSelectable ? 'line-through' : ''}">${esc(r.name)}</span>
-                            ${priceBadge}
+                            <div class="flex items-center gap-1.5 flex-wrap">
+                                ${priceBadge}
+                                ${hasVStock && !isVarOutOfStock ? `<span class="text-[9px] font-bold ${varStock <= 5 ? 'text-rose-500' : 'text-slate-400 dark:text-slate-500'}">Stok ${varStock}</span>` : ''}
+                            </div>
                         </div>
                         ${isVarOutOfStock && isVarActive ? '<span class="ml-1 px-1.5 py-0.5 rounded text-[8px] bg-rose-500 text-white font-bold leading-none">Habis</span>' : ''}
                     </button>`;
@@ -851,22 +876,28 @@ export const uMPP = () => {
 
 export const updateModalQty = c => {
     const useStk = appData.store.useStock === true || appData.store.useStock === 'true';
+    const isPreorder = Boolean(cProd?.poTime && String(cProd.poTime).trim());
     const v2 = cProd?.variants?.[cVar];
     const vN2 = v2?.name || null;
-    const maxStk = useStk ? (vN2 ? (parseFloat(v2?.stock) || 0) : (parseFloat(cProd?.stock) || 0)) : Infinity;
+    const rawStk = vN2 ? (v2?.stock != null && v2?.stock !== '' ? v2.stock : (v2?.stok != null && v2?.stok !== '' ? v2.stok : null)) : (cProd?.stock != null && cProd?.stock !== '' ? cProd.stock : (cProd?.stok != null && cProd?.stok !== '' ? cProd.stok : null));
+    const parsedStk = rawStk != null && !isNaN(parseFloat(rawStk)) ? parseFloat(rawStk) : 0;
+    const maxStk = (useStk && !isPreorder) ? parsedStk : Infinity;
     const newQty = parseFloat(Math.min(maxStk, Math.max(0.01, cQty + c)).toFixed(2));
     setCQty(newQty);
     setV('modal-qty-input', cQty); 
     uMPP();
     if (typeof window.triggerHaptic === 'function') window.triggerHaptic('light');
-    if (useStk && maxStk !== Infinity && cQty >= maxStk) showToast(`Maks stok: ${maxStk}`);
+    if (useStk && !isPreorder && maxStk !== Infinity && cQty >= maxStk) showToast(`Maks stok: ${maxStk}`);
 };
 
 export const handleModalQtyChange = v => {
     const useStk = appData.store.useStock === true || appData.store.useStock === 'true';
+    const isPreorder = Boolean(cProd?.poTime && String(cProd.poTime).trim());
     const v2 = cProd?.variants?.[cVar];
     const vN2 = v2?.name || null;
-    const maxStk = useStk ? (vN2 ? (parseFloat(v2?.stock) || 0) : (parseFloat(cProd?.stock) || 0)) : Infinity;
+    const rawStk = vN2 ? (v2?.stock != null && v2?.stock !== '' ? v2.stock : (v2?.stok != null && v2?.stok !== '' ? v2.stok : null)) : (cProd?.stock != null && cProd?.stock !== '' ? cProd.stock : (cProd?.stok != null && cProd?.stok !== '' ? cProd.stok : null));
+    const parsedStk = rawStk != null && !isNaN(parseFloat(rawStk)) ? parseFloat(rawStk) : 0;
+    const maxStk = (useStk && !isPreorder) ? parsedStk : Infinity;
     let nv = parseFloat(v); 
     if (isNaN(nv) || nv <= 0) nv = 0.01;
     nv = Math.min(maxStk, nv);
@@ -1226,8 +1257,11 @@ export const selectQuickVariant = (idx) => {
 export const updateQuickVariantQty = (delta) => {
     if (!qvProd) return;
     const useStk = appData.store.useStock === true || appData.store.useStock === 'true';
+    const isPreorder = Boolean(qvProd.poTime && String(qvProd.poTime).trim());
     const v = qvProd.variants?.[qvVar];
-    const maxStk = useStk ? (parseFloat(v?.stock) || 0) : Infinity;
+    const rawStk = v ? ((v.stock != null && v.stock !== '') ? v.stock : ((v.stok != null && v.stok !== '') ? v.stok : null)) : null;
+    const parsedStk = rawStk != null && !isNaN(parseFloat(rawStk)) ? parseFloat(rawStk) : 0;
+    const maxStk = (useStk && !isPreorder) ? parsedStk : Infinity;
     const newQty = Math.min(maxStk, Math.max(1, qvQty + delta));
     qvQty = newQty;
     const input = el('quick-variant-qty-input');
@@ -1318,10 +1352,12 @@ export const renderQuickVariantSheet = () => {
     // Live Subtotal Calculator
     setIn('quick-variant-subtotal', fCur(priceVal * qvQty));
 
-    const varStock = parseFloat(v?.stock) || 0;
+    const rawVStock = v ? ((v.stock != null && v.stock !== '') ? v.stock : ((v.stok != null && v.stok !== '') ? v.stok : null)) : null;
+    const hasVStock = rawVStock != null && !isNaN(parseFloat(rawVStock));
+    const varStock = hasVStock ? parseFloat(rawVStock) : 0;
     const stockEl = el('quick-variant-stock');
     if (stockEl) {
-        if (useStk) {
+        if (useStk || hasVStock) {
             stockEl.innerText = varStock > 0 ? `Sisa: ${varStock} ${v?.unit || p.unit || 'pcs'}` : 'Stok Habis';
             stockEl.className = `text-[10px] font-bold ${varStock > 0 ? 'text-slate-400 dark:text-slate-500' : 'text-rose-500'}`;
         } else {
@@ -1356,7 +1392,9 @@ export const renderQuickVariantSheet = () => {
             optContainer.className = "grid grid-cols-3 gap-2 sm:gap-2.5 max-h-56 overflow-y-auto custom-scrollbar p-0.5";
             optContainer.innerHTML = p.variants.map((r, idx) => {
                 const isVarActive = r.isActive !== false && r.isActive !== 'false';
-                const s = parseFloat(r.stock) || 0;
+                const rawS = (r.stock != null && r.stock !== '') ? r.stock : ((r.stok != null && r.stok !== '') ? r.stok : null);
+                const hasS = rawS != null && !isNaN(parseFloat(rawS));
+                const s = hasS ? parseFloat(rawS) : 0;
                 const isOOS = useStk && s <= 0;
                 const isSelectable = isVarActive && !isOOS;
                 const isSelected = idx === qvVar;
@@ -1384,7 +1422,7 @@ export const renderQuickVariantSheet = () => {
                         ${swatchDot}
                         <div class="w-full min-w-0 px-0.5">
                             <span class="block text-[10px] sm:text-[10.5px] font-black leading-tight truncate ${isSelected ? 'text-amber-950 dark:text-amber-200' : 'text-slate-800 dark:text-white'} ${!isSelectable ? 'line-through' : ''}">${esc(r.name)}</span>
-                            <span class="block text-[8px] sm:text-[8.5px] font-bold text-slate-400 dark:text-slate-500 truncate mt-0.5">${esc(r.code || r.unit || (hex ? hex.toUpperCase() : ''))}</span>
+                            <span class="block text-[8px] sm:text-[8.5px] font-bold text-slate-400 dark:text-slate-500 truncate mt-0.5">${hasS && !isOOS ? `Stok ${s}` : esc(r.code || r.unit || (hex ? hex.toUpperCase() : ''))}</span>
                         </div>
                         ${isOOS ? '<span class="absolute top-1 right-1 px-1 py-0.5 rounded text-[7.5px] bg-rose-500 text-white font-bold leading-none">Habis</span>' : ''}
                     </button>
@@ -1395,7 +1433,9 @@ export const renderQuickVariantSheet = () => {
             optContainer.className = "flex flex-wrap gap-2 max-h-56 overflow-y-auto custom-scrollbar p-0.5";
             optContainer.innerHTML = p.variants.map((r, idx) => {
                 const isVarActive = r.isActive !== false && r.isActive !== 'false';
-                const s = parseFloat(r.stock) || 0;
+                const rawS = (r.stock != null && r.stock !== '') ? r.stock : ((r.stok != null && r.stok !== '') ? r.stok : null);
+                const hasS = rawS != null && !isNaN(parseFloat(rawS));
+                const s = hasS ? parseFloat(rawS) : 0;
                 const isOOS = useStk && s <= 0;
                 const isSelectable = isVarActive && !isOOS;
                 const isSelected = idx === qvVar;
@@ -1424,7 +1464,10 @@ export const renderQuickVariantSheet = () => {
                         ${thumbImg}
                         <div class="flex flex-col text-left min-w-0">
                             <span class="truncate max-w-[150px] leading-tight ${!isSelectable ? 'line-through' : ''}">${esc(r.name)}</span>
-                            ${priceBadge}
+                            <div class="flex items-center gap-1.5 flex-wrap">
+                                ${priceBadge}
+                                ${hasS && !isOOS ? `<span class="text-[9px] font-bold ${s <= 5 ? 'text-rose-500' : 'text-slate-400 dark:text-slate-500'}">Stok ${s}</span>` : ''}
+                            </div>
                         </div>
                         ${isOOS ? '<span class="ml-1 px-1.5 py-0.5 rounded text-[8px] bg-rose-500 text-white font-bold leading-none">Habis</span>' : ''}
                     </button>

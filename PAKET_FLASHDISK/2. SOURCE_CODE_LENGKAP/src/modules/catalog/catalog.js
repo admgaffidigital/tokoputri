@@ -8,6 +8,7 @@
 
 import { appData, cart, aCat, setACat, aSubCat, setASubCat, aBrand, setABrand, sQ, setSQ, cSort, setCSort, cView, setCView, cPage, setCPage, iPP } from '../../core/state.js';
 import { el, show, hide, toggleCls, esc, fCur, getOptImg, showToast, renderProductCoverHtml } from '../../core/utils.js';
+import { computeTotalProductStock } from '../../core/pricing.js';
 import { updCart } from '../cart/cart.js';
 import { openProductModal, openQuickVariantSheet } from './product-modal.js';
 
@@ -187,28 +188,23 @@ export const rCat = () => {
     
     const v = f.slice(0, cPage * iPP);
     c.innerHTML = v.map(p => {
+        const stockInfo = computeTotalProductStock(p);
         let nH = '';
-        const useStk = appData.store.useStock === true || appData.store.useStock === 'true';
         let stockBadge = '';
-        
-        if (useStk) {
-            // Guard: gunakan v.stock != null agar varian tanpa field stock
-            // tidak menghitung sebagai NaN (menyebabkan undercount stok)
-            const totalStock = p.variants && p.variants.length
-                ? p.variants
-                    .filter(v => v && v.isActive !== false && v.isActive !== 'false')
-                    .reduce((s, v) => s + (v.stock != null ? (parseFloat(v.stock) || 0) : 0), 0)
-                : parseFloat(p.stock) || 0;
-            if (totalStock <= 0) {
-                nH = `<div class="absolute inset-0 bg-white/75 dark:bg-slate-900/75 z-20 flex items-center justify-center rounded-xl"><span class="bg-slate-800 text-white text-[10px] font-bold px-3 py-1.5 rounded-xl shadow-lg uppercase tracking-widest"><i class="fa-solid fa-ban mr-1"></i> HABIS</span></div>`;
-            } else if (totalStock <= 5) {
-                stockBadge = `<span class="absolute bottom-1.5 right-1.5 z-10 bg-rose-500 text-white text-[8px] font-bold px-1.5 py-0.5 rounded-md shadow uppercase tracking-wider"><i class="fa-solid fa-fire mr-0.5"></i> SISA ${totalStock}</span>`;
-            } else {
-                stockBadge = `<span class="absolute bottom-1.5 right-1.5 z-10 bg-slate-800/90 text-white text-[8px] font-bold px-1.5 py-0.5 rounded-md shadow uppercase tracking-wider"><i class="fa-solid fa-box mr-0.5"></i> STOK ${totalStock}</span>`;
-            }
+        let stockChipList = '';
+
+        if (stockInfo.isOutOfStock) {
+            nH = `<div class="absolute inset-0 bg-white/75 dark:bg-slate-900/75 z-20 flex items-center justify-center rounded-xl"><span class="bg-slate-800 text-white text-[10px] font-bold px-3 py-1.5 rounded-xl shadow-lg uppercase tracking-widest"><i class="fa-solid fa-ban mr-1"></i> HABIS</span></div>`;
+            stockChipList = `<span class="bg-rose-500 text-white px-1.5 py-0.5 rounded-md text-[8px] font-extrabold flex items-center gap-0.5 whitespace-nowrap shrink-0 uppercase tracking-wider shadow-sm"><i class="fa-solid fa-ban text-[7px]"></i> Habis</span>`;
+        } else if (stockInfo.isLowStock) {
+            stockBadge = `<span class="absolute bottom-1.5 right-1.5 z-10 bg-rose-500 text-white text-[8px] font-bold px-1.5 py-0.5 rounded-md shadow uppercase tracking-wider"><i class="fa-solid fa-fire mr-0.5"></i> SISA ${stockInfo.totalStock}</span>`;
+            stockChipList = `<span class="bg-rose-500 text-white px-1.5 py-0.5 rounded-md text-[8px] font-extrabold flex items-center gap-0.5 whitespace-nowrap shrink-0 uppercase tracking-wider shadow-sm"><i class="fa-solid fa-fire text-[7px]"></i> Sisa ${stockInfo.totalStock}</span>`;
+        } else if (stockInfo.isManaged && stockInfo.totalStock > 0) {
+            stockBadge = `<span class="absolute bottom-1.5 right-1.5 z-10 bg-slate-800/90 text-white text-[8px] font-bold px-1.5 py-0.5 rounded-md shadow uppercase tracking-wider"><i class="fa-solid fa-box mr-0.5"></i> STOK ${stockInfo.totalStock}</span>`;
+            stockChipList = `<span class="bg-slate-800/90 dark:bg-slate-700 text-white px-1.5 py-0.5 rounded-md text-[8px] font-bold flex items-center gap-0.5 whitespace-nowrap shrink-0 uppercase tracking-wider"><i class="fa-solid fa-box text-[7px]"></i> Stok ${stockInfo.totalStock}</span>`;
         }
         
-        const canOpen = !nH;
+        const canOpen = !stockInfo.isOutOfStock || stockInfo.isPreorder;
         const cardCursorCls = canOpen ? 'cursor-pointer hover:shadow-md hover:-translate-y-1.5 hover:border-[var(--color-primary)]/40' : 'cursor-not-allowed';
         const cardCursorClsList = canOpen ? 'cursor-pointer hover:shadow-md hover:-translate-y-0.5 hover:border-[var(--color-primary)]/40' : 'cursor-not-allowed';
 
@@ -264,9 +260,10 @@ export const rCat = () => {
         if (soldBadge) gridCandidates.push(soldBadge);
         const gridChipsHtml = gridCandidates.slice(0, 2).join('');
 
-        // ── Smart Priority Badges untuk List View: cantumkan Diskon & PO langsung di baris chip (Maks 3 chip presisi) ──
+        // ── Smart Priority Badges untuk List View: cantumkan Diskon, Stok & PO langsung di baris chip (Maks 3 chip presisi) ──
         const listCandidates = [];
         if (discPill) listCandidates.push(discPill);
+        if (stockChipList) listCandidates.push(stockChipList);
         if (poPill) listCandidates.push(poPill);
         if (variantBadge) listCandidates.push(variantBadge);
         if (grosirBadge) listCandidates.push(grosirBadge);
@@ -381,15 +378,15 @@ export const quickAddOrOpenProduct = (e, productId) => {
 
     // Validasi stok jika toko mengaktifkan pembatasan stok
     const useStk = appData.store.useStock === true || appData.store.useStock === 'true';
-    const avail = parseFloat(p.stock) || 0;
-    if (useStk && avail <= 0) {
+    const sInfo = computeTotalProductStock(p);
+    if (useStk && !sInfo.isPreorder && sInfo.totalStock <= 0) {
         return showToast('Stok produk ini sedang kosong');
     }
 
     const existing = cart.find(i => i.id === p.id && !i.variantName);
     const inCartQty = existing ? parseFloat(existing.qty) || 0 : 0;
-    if (useStk && inCartQty + 1 > avail) {
-        return showToast(`Maksimal stok tercapai: ${avail}`);
+    if (useStk && !sInfo.isPreorder && inCartQty + 1 > sInfo.totalStock) {
+        return showToast(`Maksimal stok tercapai: ${sInfo.totalStock}`);
     }
 
     if (existing) {
