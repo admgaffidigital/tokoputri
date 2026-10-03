@@ -2382,37 +2382,60 @@
           </div>
         </div>
       </div>
-      <div class="view-section fade-in relative z-50 flex hidden items-center justify-center overflow-hidden bg-slate-900 dark:bg-[#0b1121]" id="view-admin-login">
-        <div class="pointer-events-none absolute -left-20 -top-20 h-72 w-72 rounded-full border border-white/10 bg-white/5 opacity-25"></div>
-        <div class="pointer-events-none absolute -bottom-20 -right-20 h-64 w-64 rounded-full border border-white/10 bg-white/5 opacity-15"></div>
-        <div class="relative z-10 mx-auto w-full max-w-sm p-5">
-          <div class="bg-white/8 relative flex flex-col items-center rounded-[2rem] border border-white/15 p-8 text-center shadow-2xl dark:border-slate-700/50 dark:bg-slate-800/50">
-            <button class="absolute right-4 top-4 flex h-8 w-8 items-center justify-center rounded-xl bg-white/10 text-white/80 transition-all hover:bg-rose-500 hover:text-white" onclick="handleAppBackButton()" title="Kembali ke Beranda"><i class="fa-solid fa-xmark text-xs"></i></button>
-            <div class="mb-4 flex h-[72px] w-[72px] items-center justify-center overflow-hidden rounded-2xl border border-white/20 bg-white p-2 shadow-xl">
-              <img id="login-store-logo-img" alt="Logo Toko Putri" class="hidden h-full w-full object-contain" />
-              <i id="login-store-logo-icon" class="fa-solid fa-store text-3xl text-[var(--color-primary)]"></i>
-            </div>
-            <h2 class="mb-1 text-2xl font-black tracking-tight text-white">Panel Owner</h2>
-            <div class="mb-2 inline-flex items-center gap-1.5 rounded-full bg-amber-400/10 border border-amber-400/30 px-3 py-0.5 text-[10px] font-black uppercase tracking-wider text-amber-300">
-              <i class="fa-solid fa-store text-[9px]"></i> Toko Putri ( Official Store )
-            </div>
-            <p class="mb-6 text-[10px] font-bold uppercase tracking-widest text-slate-400">Otorisasi Pemilik & Staf Toko</p>
-            <form autocomplete="off" class="w-full space-y-3 text-left" onsubmit="return false;">
-              <div class="relative">
-                <i class="fa-solid fa-envelope absolute left-3.5 top-1/2 -translate-y-1/2 text-sm text-slate-400"></i>
-                <input autocomplete="off" class="w-full rounded-xl border border-white/10 bg-black/20 py-3.5 pl-10 pr-4 text-sm font-semibold text-white shadow-inner transition-all placeholder:text-slate-400 focus:border-[rgba(var(--color-primary-rgb),0.7)] focus:bg-black/30 focus:outline-none dark:placeholder:text-slate-400" id="login-username" name="x_panel_id_7k2" placeholder="Email Owner / Admin" type="email" />
+      <div class="view-section fade-in relative z-50 flex hidden min-h-[100dvh] items-center justify-center p-4 sm:p-6" id="view-admin-login">
+        <div class="relative z-10 w-full max-w-sm">
+          <!-- Main Bento Luxury Card -->
+          <div class="relative flex flex-col items-center overflow-hidden rounded-[2.25rem] border border-slate-200/90 bg-white p-7 pt-8 text-center shadow-2xl shadow-slate-300/40 transition-all dark:border-slate-800 dark:bg-slate-900/95 dark:shadow-black/60">
+            <!-- Top Gradient Accent Line -->
+            <div class="absolute top-0 left-0 right-0 h-1.5" style="background: linear-gradient(90deg, transparent, var(--color-primary), var(--color-primary-light,#e1b858), var(--color-primary), transparent);"></div>
+
+            <!-- Close / Back Button -->
+            <button type="button" class="absolute right-4 top-4 flex h-9 w-9 items-center justify-center rounded-2xl bg-slate-100 text-slate-500 transition-all hover:bg-rose-50 hover:text-rose-500 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-rose-950/40 dark:hover:text-rose-400 active:scale-95 cursor-pointer" onclick="handleAppBackButton()" title="Kembali ke Beranda"><i class="fa-solid fa-xmark text-sm"></i></button>
+
+            <!-- Store Logo Squircle -->
+            <div class="relative mb-4 mt-1">
+              <div class="flex h-20 w-20 items-center justify-center overflow-hidden rounded-[1.5rem] border-2 bg-slate-50 p-2.5 shadow-lg ring-4 dark:bg-slate-800" style="border-color: rgba(var(--color-primary-rgb),0.35); ring-color: rgba(var(--color-primary-rgb),0.12);">
+                <img id="login-store-logo-img" alt="Logo Toko Putri" class="hidden h-full w-full object-contain" />
+                <i id="login-store-logo-icon" class="fa-solid fa-store text-3xl text-[var(--color-primary)]"></i>
               </div>
+            </div>
+
+            <!-- Title & Store Badge -->
+            <h2 class="text-2xl font-black tracking-tight text-slate-900 dark:text-white">Panel Owner</h2>
+            <div class="mt-2 inline-flex items-center gap-1.5 rounded-full px-3.5 py-1 text-[11px] font-black uppercase tracking-wider" style="background: rgba(var(--color-primary-rgb),0.1); border: 1px solid rgba(var(--color-primary-rgb),0.25); color: var(--color-primary-dark,#a87f1b);">
+              <i class="fa-solid fa-crown text-[10px]"></i> Toko Putri ( Official Store )
+            </div>
+            <p class="mt-1.5 mb-6 text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500">Otorisasi Pemilik &amp; Staf Toko</p>
+
+            <!-- Form -->
+            <form autocomplete="off" class="w-full space-y-3.5 text-left" onsubmit="return false;">
+              <!-- Email Field -->
               <div class="relative">
-                <i class="fa-solid fa-lock absolute left-3.5 top-1/2 -translate-y-1/2 text-sm text-slate-400"></i>
-                <input autocomplete="off" class="w-full rounded-xl border border-white/10 bg-black/20 py-3.5 pl-10 pr-4 text-sm font-semibold text-white shadow-inner transition-all placeholder:text-slate-400 focus:border-[rgba(var(--color-primary-rgb),0.7)] focus:bg-black/30 focus:outline-none dark:placeholder:text-slate-400" id="login-password" name="x_panel_pw_9m4" placeholder="Kata Sandi / Password" type="password" />
+                <i class="fa-solid fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-sm text-[var(--color-primary)] opacity-80"></i>
+                <input autocomplete="off" class="w-full rounded-2xl border border-slate-200 bg-slate-50/80 py-3.5 pl-11 pr-4 text-sm font-semibold text-slate-900 shadow-sm transition-all placeholder:text-slate-400 focus:border-[var(--color-primary)] focus:bg-white focus:outline-none focus:ring-4 dark:border-slate-700 dark:bg-slate-800/80 dark:text-white dark:placeholder:text-slate-500 dark:focus:bg-slate-800" style="--tw-ring-color: rgba(var(--color-primary-rgb),0.15);" id="login-username" name="x_panel_id_7k2" placeholder="Email Owner / Admin" type="email" />
               </div>
-              <div class="pt-3">
-                <button class="btn-solid shadow-glow w-full flex items-center justify-center gap-2 py-3.5 rounded-xl font-bold text-sm text-white" onclick="processAdminLogin()" type="button">
+
+              <!-- Password Field with Show/Hide Toggle -->
+              <div class="relative">
+                <i class="fa-solid fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-sm text-[var(--color-primary)] opacity-80"></i>
+                <input autocomplete="off" class="w-full rounded-2xl border border-slate-200 bg-slate-50/80 py-3.5 pl-11 pr-11 text-sm font-semibold text-slate-900 shadow-sm transition-all placeholder:text-slate-400 focus:border-[var(--color-primary)] focus:bg-white focus:outline-none focus:ring-4 dark:border-slate-700 dark:bg-slate-800/80 dark:text-white dark:placeholder:text-slate-500 dark:focus:bg-slate-800" style="--tw-ring-color: rgba(var(--color-primary-rgb),0.15);" id="login-password" name="x_panel_pw_9m4" placeholder="Kata Sandi / Password" type="password" onkeydown="if(event.key==='Enter') processAdminLogin();" />
+                <button type="button" onclick="const p=document.getElementById('login-password');const icon=this.querySelector('i');if(p.type==='password'){p.type='text';icon.className='fa-solid fa-eye-slash text-xs';}else{p.type='password';icon.className='fa-solid fa-eye text-xs';}" class="absolute right-3 top-1/2 -translate-y-1/2 flex h-8 w-8 items-center justify-center rounded-xl text-slate-400 transition-colors hover:text-slate-600 dark:hover:text-slate-300 cursor-pointer" title="Lihat Password"><i class="fa-solid fa-eye text-xs"></i></button>
+              </div>
+
+              <!-- Submit Button -->
+              <div class="pt-2">
+                <button class="w-full flex items-center justify-center gap-2.5 py-3.5 rounded-2xl font-black text-sm text-white transition-all active:scale-[0.98] cursor-pointer hover:brightness-105" style="background: linear-gradient(135deg, var(--color-primary-light,#e1b858) 0%, var(--color-primary,#c59b27) 50%, var(--color-primary-dark,#a87f1b) 100%); box-shadow: 0 10px 25px -5px rgba(var(--color-primary-rgb,197,155,39),0.45);" onclick="processAdminLogin()" type="button">
                   <span>Masuk ke Panel Kontrol</span>
                   <i class="fa-solid fa-arrow-right-to-bracket text-xs"></i>
                 </button>
               </div>
             </form>
+
+            <!-- Trust Badge -->
+            <div class="mt-6 flex items-center justify-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500">
+              <i class="fa-solid fa-shield-halved text-[var(--color-primary)]"></i>
+              <span>Dilindungi Enkripsi &amp; Akses Resmi</span>
+            </div>
           </div>
         </div>
       </div>

@@ -8,6 +8,23 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-10-41',
+        version: 'v1.10.41',
+        date: '2026-10-03',
+        title: 'Harmonisasi Visual Total & Redesain Eksekutif Panel Login Owner: Eliminasi Tampilan Jomplang, Bento Luxury Card & Ambient Radiant Canopy',
+        category: 'improvement',
+        badge: 'Executive Login Harmony v1.10.41',
+        items: [
+            'Harmonisasi Visual Total (Zero Jomplang): Mengeliminasi kontras kaku kotak gelap mengambang di atas kanvas terang. Panel login kini mengadopsi bahasa desain mewah Toko Putri secara menyeluruh (Warm Luxury Linen di Light Mode, Sleek Obsidian di Dark Mode).',
+            'Bento Luxury Card: Kartu login kini berlatar murni (bg-white di Light Mode, dark:bg-slate-900 di Dark Mode) dengan border presisi border-slate-200/90, sudut rounded-[2.25rem], bayangan lembut shadow-2xl, serta pita aksen gradien tema di bagian atas kartu.',
+            'Ambient Radiant Canopy (style.css): Layar view-admin-login kini dipadukan dengan radiant canopy radial-gradient warna tema toko yang memancar halus dari atas kanvas solid anti-flicker (#F8F6F2 pada Light Mode, #0b1120 pada Dark Mode).',
+            'Squircle Logo & Badge Toko Dinamis: Logo toko dibingkai squircle rounded-[1.5rem] dengan ring bergradien tema, dipadukan badge resmi pill emas dengan ikon mahkota yang otomatis menyelaraskan nama toko aktif.',
+            'Ergonomi Input Modern & Toggle Password: Input email dan kata sandi tampil bersih dan elegan dengan ring fokus warna tema, serta dilengkapi tombol interaktif intip kata sandi (show/hide password toggle) untuk kemudahan pemilik.',
+            'Tombol CTA Bergradien Tema Mewah: Tombol \"Masuk ke Panel Kontrol\" menggunakan gradien dinamis 3-titik warna primer toko dengan bayangan bercahaya (box-shadow glow) dan transisi responsif.',
+            'Multi-Channel Distribution v1.10.41 (Android versionCode 11041).'
+        ]
+    },
+    {
         id: 'log-1-10-40',
         version: 'v1.10.40',
         date: '2026-10-03',

@@ -62,6 +62,10 @@ export const rDyn = () => {
                 li.classList.add('hidden');
             }
         }
+        const lb = el('login-store-badge');
+        if (lb) {
+            lb.innerHTML = `<i class="fa-solid fa-crown text-[10px]"></i> ${esc(appData.store.name || 'Toko Putri')} ( Official Store )`;
+        }
     }
 
     // --- RENDER BANNER 3D PREMIUM & KARTU SAMBUTAN HERO MASKOT ---

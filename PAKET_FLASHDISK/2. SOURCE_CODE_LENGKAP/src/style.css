@@ -89,8 +89,7 @@ html.dark .view-section:not(#view-admin-login):not(#view-admin) {
 }
 
 /* Latar Belakang Solid Anti-Flicker & Isolasi GPU untuk Panel Admin CMS & Login */
-#view-admin,
-#view-admin-login {
+#view-admin {
   background-color: #F8F6F2 !important;
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
@@ -98,11 +97,26 @@ html.dark .view-section:not(#view-admin-login):not(#view-admin) {
   transform: translateZ(0);
 }
 
+#view-admin-login {
+  background: radial-gradient(circle at 50% -10%, rgba(var(--color-primary-rgb), 0.15) 0%, rgba(var(--color-primary-rgb), 0.04) 45%, transparent 75%), #F8F6F2 !important;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+}
+
 .dark #view-admin,
-html.dark #view-admin,
+html.dark #view-admin {
+  background-color: #0b1120 !important;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+}
+
 .dark #view-admin-login,
 html.dark #view-admin-login {
-  background-color: #0b1120 !important;
+  background: radial-gradient(circle at 50% -10%, rgba(var(--color-primary-rgb), 0.22) 0%, rgba(var(--color-primary-rgb), 0.06) 45%, transparent 75%), #0b1120 !important;
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
   -webkit-transform: translateZ(0);
@@ -1884,10 +1898,6 @@ body {
 }
 
 /* Penyesuaian agar latar belakang elemen eks-glassmorphism tetap kontras & solid */
-#view-admin-login .bg-white\/8 {
-    background-color: rgba(30, 41, 59, 0.96) !important;
-    border-color: rgba(255, 255, 255, 0.15) !important;
-}
 .bg-white\/10 {
     background-color: rgba(255, 255, 255, 0.25) !important;
 }
