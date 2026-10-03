@@ -8,6 +8,23 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-10-33',
+        version: 'v1.10.33',
+        date: '2026-10-03',
+        title: 'Optimasi Performa Kasir POS, Resiliensi Transaksi Offline, Keyboard Shortcuts & Vite Code Splitting Super Cepat',
+        category: 'perf',
+        badge: 'POS Speed & Offline Resilience v1.10.33',
+        items: [
+            'Keyboard Shortcuts Ergonomis Kasir POS: Akses kilat tanpa mouse untuk operasi kasir sibuk: F2 (Fokus Cari Barang), F4 (Buka Dialog Pembayaran), F6 (Tahan Keranjang Belanja), F7 (Fokus Input Diskon Kasir), F8 (Buka Transaksi Tertahan), F9 (Buka Pemindai Barcode Kamera), dan Esc (Menutup Jendela Modal / Bersihkan Input Pencarian). Dilengkapi bilah panduan shortcut desktop di bawah search bar.',
+            'Debounced Search & Tombol Instant Clear [✕]: Pencarian katalog POS kini dilengkapi debounce cerdas (130ms) dan tombol pembersih cepat [✕], mengeliminasi lag dan re-render berlebihan saat kasir mengetik nama atau kode barang dengan cepat.',
+            'Katalog Chunked Pagination (48 Item/Batch): Memuat produk secara bertahap dengan tombol "Tampilkan Lebih Banyak" untuk katalog toko berukuran besar, menghemat penggunaan memori browser dan menjamin kelancaran scroll.',
+            'Resiliensi Transaksi Offline & Auto-Sync Jaringan: Indikator status jaringan real-time (Online/Offline) pada header kasir. Jika koneksi internet terputus, transaksi kasir otomatis diamankan ke antrean lokal (freshmart_pos_offline_tx_queue) dan struk tetap dapat langsung dicetak. Sistem secara otomatis menyinkronkan transaksi ke cloud Firestore saat internet pulih kembali.',
+            'Responsivitas Touch Filter Mobile: Penambahan utilitas touch-manipulation dan select-none pada chip kategori dan sub-kategori POS kasir guna mengeliminasi jeda tap 300ms pada layar sentuh ponsel dan tablet kasir.',
+            'Vite Code Splitting & Build Performance: Ekstraksi pustaka SortableJS ke vendor chunk terisolasi dan pemindahan kalkulasi inventori ke core/pricing.js. Waktu build terpangkas 3.9x lebih cepat (dari 27.8s menjadi 7.1s–7.5s) dan mengeliminasi warning ukuran chunk admin (>600 kB).',
+            'Multi-Channel Build & Sync v1.10.33 (Android versionCode 11033): Kompilasi produksi web, sinkronisasi bundle flashdisk siap pakai, serta platform Android Capacitor tersinkronisasi 100%.'
+        ]
+    },
+    {
         id: 'log-1-10-32',
         version: 'v1.10.32',
         date: '2026-10-03',

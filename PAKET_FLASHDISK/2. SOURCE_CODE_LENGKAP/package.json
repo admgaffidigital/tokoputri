@@ -1,7 +1,7 @@
 {
   "name": "toko-putri",
   "private": true,
-  "version": "1.10.32",
+  "version": "1.10.33",
   "type": "module",
   "scripts": {
     "dev": "vite",

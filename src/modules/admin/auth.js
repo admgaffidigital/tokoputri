@@ -219,32 +219,9 @@ export const toggleTaxMenuVisibility = () => {
 };
 
 /**
- * Hitung statistik inventaris produk, varian, dan total modal aset tertanam
+ * Hitung statistik inventaris produk, varian, dan total modal aset tertanam (re-export dari core/pricing.js)
  */
-export const computeInventoryStats = () => {
-    const useStk = appData.store.useStock === true || appData.store.useStock === 'true';
-    let activeProd = 0, inactiveProd = 0, activeVar = 0, inactiveVar = 0, assetHpp = 0, assetJual = 0;
-    (appData.products || []).forEach(p => {
-        if (p.variants && p.variants.length) {
-            p.variants.forEach(v => {
-                const isAct = v.isActive !== false && v.isActive !== 'false';
-                const stock = parseFloat(v.stock) || 0;
-                const purchasable = isAct && (!useStk || stock > 0);
-                if (purchasable) activeVar++; else inactiveVar++;
-                assetHpp += (parseFloat(v.hpp) || 0) * stock;
-                assetJual += (parseFloat(v.price) || 0) * stock;
-            });
-        } else {
-            const isAct = p.isActive !== false && p.isActive !== 'false';
-            const stock = parseFloat(p.stock) || 0;
-            const purchasable = isAct && (!useStk || stock > 0);
-            if (purchasable) activeProd++; else inactiveProd++;
-            assetHpp += (parseFloat(p.hpp) || 0) * stock;
-            assetJual += (parseFloat(p.price) || 0) * stock;
-        }
-    });
-    return { activeProd, inactiveProd, activeVar, inactiveVar, assetHpp, assetJual };
-};
+export { computeInventoryStats } from '../../core/pricing.js';
 
 /**
  * Muat ringkasan omset penjualan & laba bersih sesuai periode

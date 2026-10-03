@@ -43,6 +43,10 @@ let posSearch          = '';
 let posCatFilterVal    = '';
 let posSubCatFilterVal = '';
 let posCatalogViewMode = 'grid'; // 'grid' | 'list'
+let posCatalogPage     = 1;
+const POS_PAGE_SIZE    = 48;
+let posSearchDebounceTimer = null;
+const POS_OFFLINE_TX_KEY = 'freshmart_pos_offline_tx_queue';
 try {
     const savedMode = localStorage.getItem('pos_view_mode');
     if (savedMode === 'list' || savedMode === 'grid') posCatalogViewMode = savedMode;
@@ -359,29 +363,56 @@ const initBarcodeListener = () => {
         const inPos = curView === 'view-pos-cashier' || (curView === 'view-admin' && window.cTab === 'pos');
         if (!inPos) return;
 
-        // Pintasan Keyboard Kasir
-        if (e.key === 'F4') {
+        // 1. Pintasan F2 / F3: Fokus ke Pencarian Produk / Barcode
+        if (e.key === 'F2' || e.key === 'F3') {
             e.preventDefault();
             const sf = el('pos-search-input');
             if (sf) { sf.focus(); sf.select(); }
             return;
         }
-        if (e.key === 'F6' || e.key === 'F7') {
+
+        // 2. Pintasan F4: Buka Dialog Pembayaran (Bayar Sekarang)
+        if (e.key === 'F4') {
+            e.preventDefault();
+            if (!posCart.length) {
+                showToast('Keranjang kasir masih kosong', 'warning');
+                return;
+            }
+            openPayModal();
+            return;
+        }
+
+        // 3. Pintasan F6: Tahan Transaksi Sementara (Hold Cart)
+        if (e.key === 'F6') {
             e.preventDefault();
             posHoldCurrentCart();
             return;
         }
+
+        // 4. Pintasan F7: Fokus Input Diskon Kasir
+        if (e.key === 'F7') {
+            e.preventDefault();
+            const discInp = document.querySelector('.pos-disc-val-input');
+            if (discInp) { discInp.focus(); discInp.select(); }
+            return;
+        }
+
+        // 5. Pintasan F8: Buka Keranjang Tertahan (Recall Held)
         if (e.key === 'F8') {
             e.preventDefault();
             openPOSHeldModal();
             return;
         }
+
+        // 6. Pintasan F9: Buka/Tutup Scanner Kamera HP / Laptop
         if (e.key === 'F9') {
             e.preventDefault();
             if (el('pos-camera-scanner-modal')) closePOSCameraScanner();
             else openPOSCameraScanner();
             return;
         }
+
+        // 7. Pintasan F10: Buka Ringkasan Shift Kasir
         if (e.key === 'F10') {
             e.preventDefault();
             if (isShiftActive()) {
@@ -397,9 +428,38 @@ const initBarcodeListener = () => {
             return;
         }
 
+        // 8. Pintasan Escape: Tutup Modal Terbuka atau Bersihkan Pencarian
+        if (e.key === 'Escape') {
+            if (el('pos-camera-scanner-modal')) { closePOSCameraScanner(); return; }
+            if (el('pos-held-modal')) { closePOSHeldModal(); return; }
+            if (el('pos-pay-modal')) { closePayModal(); return; }
+            if (el('modal-pos-open-shift')) { closePOSOpenShiftModal(); return; }
+            if (el('modal-pos-shift-summary')) { closePOSShiftSummaryModal(); return; }
+            if (el('modal-pos-close-shift')) { closePOSCloseShiftModal(); return; }
+            if (el('pos-success-modal')) { el('pos-success-modal').remove(); return; }
+            const vs = el('pos-variant-sheet');
+            if (vs && !vs.classList.contains('hidden')) { 
+                if (typeof window.closePOSVariantSheet === 'function') window.closePOSVariantSheet(); 
+                return; 
+            }
+            const cd = el('pos-cart-drawer');
+            if (cd && !cd.classList.contains('hidden')) { 
+                if (typeof window.closePOSCartDrawer === 'function') window.closePOSCartDrawer(); 
+                return; 
+            }
+
+            const sf = el('pos-search-input');
+            if (sf && (sf.value || document.activeElement === sf)) {
+                if (typeof window.posClearSearch === 'function') window.posClearSearch();
+                sf.blur();
+                return;
+            }
+        }
+
         const tag = document.activeElement?.tagName?.toLowerCase();
         if (tag === 'input' || tag === 'textarea' || tag === 'select') return;
 
+        // Pemindai Barcode Laser USB (Hardware Barcode Reader)
         if (e.key === 'Enter') {
             if (barcodeBuffer && barcodeBuffer.length >= 3) {
                 const c = barcodeBuffer.trim().toLowerCase();
@@ -416,8 +476,12 @@ const initBarcodeListener = () => {
                         showToast(`Ditambahkan: ${prod.name}`, 'success');
                     }
                 } else {
-                    const sf = el('pos-search-input');
-                    if (sf) { sf.value = barcodeBuffer; posSearch = barcodeBuffer; renderCatalog(); }
+                    if (typeof window.posSearchFn === 'function') {
+                        window.posSearchFn(barcodeBuffer, true);
+                    } else {
+                        const sf = el('pos-search-input');
+                        if (sf) { sf.value = barcodeBuffer; posSearch = barcodeBuffer; renderCatalog(); }
+                    }
                     showToast('Barcode tidak ditemukan di katalog', 'warning');
                 }
                 barcodeBuffer = '';
@@ -1231,8 +1295,9 @@ const getItemImg = (item) => {
     return '';
 };
 
-export const renderCatalog = () => {
+export const renderCatalog = (isLoadMore = false) => {
     try {
+        if (!isLoadMore) posCatalogPage = 1;
         // Fallback pemulihan produk dari cache lokal jika appData.products belum terisi
         if (!appData?.products || !appData.products.length) {
             try {
@@ -1276,7 +1341,7 @@ export const renderCatalog = () => {
         const catHTML = cats.map(c => {
             const isAll  = c === 'Semua';
             const active = isAll ? !posCatFilterVal : posCatFilterVal === c;
-            return `<button onclick="window.posCatFilter('${esc(isAll ? '' : c)}')" class="shrink-0 px-3.5 py-1.5 rounded-xl text-[11px] font-black uppercase tracking-wider border transition-all active:scale-95 shadow-2xs ${active ? 'text-white border-transparent' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-[var(--color-primary)]/50'}" style="${active ? 'background:linear-gradient(135deg, var(--color-primary-light,#e1b858) 0%, var(--color-primary,#c59b27) 60%, var(--color-primary-dark,#a87f1b) 100%);box-shadow:0 2px 8px rgba(var(--color-primary-rgb),0.3)' : ''}">${esc(c)}</button>`;
+            return `<button type="button" onclick="window.posCatFilter('${esc(isAll ? '' : c)}')" class="shrink-0 px-3.5 py-1.5 rounded-xl text-[11px] font-black uppercase tracking-wider border transition-all active:scale-95 shadow-2xs cursor-pointer touch-manipulation select-none ${active ? 'text-white border-transparent' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-[var(--color-primary)]/50'}" style="${active ? 'background:linear-gradient(135deg, var(--color-primary-light,#e1b858) 0%, var(--color-primary,#c59b27) 60%, var(--color-primary-dark,#a87f1b) 100%);box-shadow:0 2px 8px rgba(var(--color-primary-rgb),0.3)' : ''}">${esc(c)}</button>`;
         }).join('');
 
         let subCatHTML = '';
@@ -1297,10 +1362,10 @@ export const renderCatalog = () => {
             if (subCats.length > 0) {
                 subCatHTML = `
                 <div class="flex items-center gap-1.5 overflow-x-auto pb-1 hide-scrollbar pt-1.5 mt-1 border-t border-slate-100 dark:border-slate-700/50 w-full">
-                    <button onclick="window.posSubCatFilter('')" class="shrink-0 px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase transition-all active:scale-95 border ${!posSubCatFilterVal ? 'bg-slate-800 text-white dark:bg-white dark:text-slate-900 border-transparent shadow-2xs' : 'bg-slate-100 dark:bg-slate-800/80 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700'}">Semua Jenis</button>
+                    <button type="button" onclick="window.posSubCatFilter('')" class="shrink-0 px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase transition-all active:scale-95 border cursor-pointer touch-manipulation select-none ${!posSubCatFilterVal ? 'bg-slate-800 text-white dark:bg-white dark:text-slate-900 border-transparent shadow-2xs' : 'bg-slate-100 dark:bg-slate-800/80 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700'}">Semua Jenis</button>
                     ${subCats.map(sc => {
                         const active = posSubCatFilterVal.toLowerCase() === sc.name.toLowerCase();
-                        return `<button onclick="window.posSubCatFilter('${esc(sc.name).replace(/'/g, "\\'")}')" class="shrink-0 px-2.5 py-1 rounded-lg text-[10px] font-bold transition-all active:scale-95 border flex items-center gap-1 ${active ? 'bg-[var(--color-primary)] text-white border-transparent shadow-2xs' : 'bg-slate-100 dark:bg-slate-800/80 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700'}">
+                        return `<button type="button" onclick="window.posSubCatFilter('${esc(sc.name).replace(/'/g, "\\'")}')" class="shrink-0 px-2.5 py-1 rounded-lg text-[10px] font-bold transition-all active:scale-95 border flex items-center gap-1 cursor-pointer touch-manipulation select-none ${active ? 'bg-[var(--color-primary)] text-white border-transparent shadow-2xs' : 'bg-slate-100 dark:bg-slate-800/80 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700'}">
                             <span>${esc(sc.name)}</span>
                             <span class="text-[9px] px-1 py-0.2 rounded-full ${active ? 'bg-white/20 text-white' : 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300'}">${sc.count}</span>
                         </button>`;
@@ -1309,7 +1374,10 @@ export const renderCatalog = () => {
             }
         }
 
-        const prodHTML = products.length === 0
+        const visibleProducts = products.slice(0, posCatalogPage * POS_PAGE_SIZE);
+        const hasMore = products.length > visibleProducts.length;
+
+        let prodHTML = products.length === 0
             ? `<div class="col-span-full flex flex-col items-center justify-center py-20 text-slate-400 dark:text-slate-600">
                  <div class="w-16 h-16 rounded-3xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400 mb-3 shadow-inner">
                    <i class="fa-solid fa-box-open text-2xl"></i>
@@ -1317,7 +1385,7 @@ export const renderCatalog = () => {
                  <p class="font-bold text-sm text-slate-600 dark:text-slate-400">Produk Tidak Ditemukan</p>
                  <p class="text-xs text-slate-400 mt-0.5">Coba gunakan kata kunci pencarian atau kategori lain</p>
                </div>`
-            : products.map(p => {
+            : visibleProducts.map(p => {
                 if (!p) return '';
                 const hasImg         = Boolean(p.img && typeof p.img === 'string' && p.img.trim());
                 const imgUrl         = hasImg ? getOptImg(p.img, 'w300-rw') : '';
@@ -1477,6 +1545,17 @@ export const renderCatalog = () => {
                     </div>
                 </div>`;
             }).join('');
+
+        if (products.length > 0 && hasMore) {
+            prodHTML += `
+            <div class="col-span-full py-4 flex flex-col items-center justify-center gap-2">
+                <button type="button" onclick="window.posLoadMoreProducts()" class="px-6 py-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-700 dark:text-slate-200 hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] transition-all shadow-2xs active:scale-95 flex items-center gap-2 cursor-pointer group">
+                    <i class="fa-solid fa-layer-group text-[var(--color-primary)] group-hover:scale-110 transition-transform"></i>
+                    <span>Tampilkan Lebih Banyak (${products.length - visibleProducts.length} lagi)</span>
+                </button>
+                <span class="text-[10px] text-slate-400 dark:text-slate-500 font-medium">Menampilkan ${visibleProducts.length} dari ${products.length} produk</span>
+            </div>`;
+        }
 
         document.querySelectorAll('#pos-cat-filter').forEach(catEl => {
             catEl.innerHTML = catHTML;
@@ -2793,7 +2872,24 @@ export const processPOSTx = async () => {
                 console.warn('[POS] Gagal potong limit PayLater:', ePl);
             }
         }
-        await db.collection('freshmart_orders').doc(txId).set(orderData);
+
+        // ── 4. Simpan ke Database Utama Toko (freshmart_orders) ──────
+        // Transaksi kasir langsung masuk ke daftar Pesanan Admin & Laporan Penjualan Toko
+        let isSavedOffline = false;
+        if (typeof navigator !== 'undefined' && !navigator.onLine) {
+            enqueueOfflineTx(orderData);
+            isSavedOffline = true;
+            orderData._isSavedOffline = true;
+        } else {
+            try {
+                await db.collection('freshmart_orders').doc(txId).set(orderData);
+            } catch (netErr) {
+                console.warn('[POS] Gagal simpan order online, mengalihkan ke antrean offline:', netErr);
+                enqueueOfflineTx(orderData);
+                isSavedOffline = true;
+                orderData._isSavedOffline = true;
+            }
+        }
 
         // Rekam transaksi ke shift kasir aktif
         recordTransactionToShift(orderData);
@@ -2871,6 +2967,9 @@ export const processPOSTx = async () => {
         posPointsRedeemed = 0; posClaimedReward = null;
         renderCart(); renderCatalog();
         showPOSSuccess(lastTx);
+        if (isSavedOffline) {
+            showToast(`Mode Offline: Transaksi #${lastTx.txId.slice(-6)} tersimpan di antrean lokal. Otomatis sinkron saat online.`, 'warning');
+        }
     } catch (err) {
         console.error('[POS] Error:', err);
         showToast('Gagal menyimpan transaksi. Coba lagi.', 'error');
@@ -2896,10 +2995,15 @@ const showPOSSuccess = (tx) => {
           <p class="text-xs text-slate-400 mb-2">#${esc(tx.txId)}</p>
           <p class="text-2xl font-black mb-1" style="color:var(--color-primary)">${fRp(tx.total)}</p>
           ${changeInfo}
+          ${tx._isSavedOffline || tx._offlineQueuedAt ? `
+          <div class="mt-2.5 px-3 py-1.5 rounded-xl bg-amber-50 dark:bg-amber-950/40 text-[11px] font-bold text-amber-700 dark:text-amber-300 flex items-center justify-center gap-1.5 border border-amber-200 dark:border-amber-800">
+            <i class="fa-solid fa-cloud-arrow-up text-amber-500"></i>
+            <span>Tersimpan di Antrean Offline (Akan sinkron saat online)</span>
+          </div>` : `
           <div class="mt-2.5 px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800/80 text-[11px] font-bold text-slate-600 dark:text-slate-300 flex items-center justify-center gap-1.5 border border-slate-200/60 dark:border-slate-700/60">
             <i class="fa-solid fa-check-double text-emerald-500"></i>
             <span>Tercatat Resmi di Menu Pesanan CMS</span>
-          </div>
+          </div>`}
           ${tx.pointsEarned > 0 ? `
           <div class="mt-2 p-2 rounded-xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 text-amber-700 dark:text-amber-300 text-xs font-bold flex items-center justify-center gap-1.5">
             <i class="fa-solid fa-star text-amber-500"></i>
@@ -3064,6 +3168,209 @@ export const executePOSPrintDirect = () => {
     }
 };
 
+// ─── Debounced Search & Instant Clear ─────────────────────────
+export const posSearchFn = (v, immediate = false) => {
+    const query = typeof v === 'string' ? v : (v?.value || '');
+    if (posSearchDebounceTimer) {
+        clearTimeout(posSearchDebounceTimer);
+        posSearchDebounceTimer = null;
+    }
+
+    const execute = () => {
+        posSearch = query;
+        posCatalogPage = 1; // Reset pagination
+        document.querySelectorAll('#pos-search-input').forEach(inp => {
+            if (inp.value !== posSearch) inp.value = posSearch;
+        });
+        document.querySelectorAll('.pos-search-clear-btn').forEach(btn => {
+            if (posSearch && posSearch.trim().length > 0) {
+                btn.classList.remove('hidden');
+                btn.classList.add('flex');
+            } else {
+                btn.classList.add('hidden');
+                btn.classList.remove('flex');
+            }
+        });
+        renderCatalog();
+    };
+
+    if (immediate) {
+        execute();
+    } else {
+        posSearchDebounceTimer = setTimeout(execute, 130);
+    }
+};
+
+export const posClearSearch = () => {
+    document.querySelectorAll('#pos-search-input').forEach(inp => {
+        inp.value = '';
+    });
+    posSearchFn('', true);
+    const firstInp = el('pos-search-input');
+    if (firstInp) firstInp.focus();
+};
+
+export const posLoadMoreProducts = () => {
+    posCatalogPage += 1;
+    renderCatalog(true);
+};
+
+// ─── Resiliensi Offline Kasir & Sinkronisasi Antrean ──────────
+export const getOfflineTxQueue = () => {
+    try {
+        const raw = localStorage.getItem(POS_OFFLINE_TX_KEY);
+        return raw ? JSON.parse(raw) : [];
+    } catch (e) {
+        console.error('[POS Offline] Gagal baca antrean offline:', e);
+        return [];
+    }
+};
+
+export const saveOfflineTxQueue = (queue) => {
+    try {
+        localStorage.setItem(POS_OFFLINE_TX_KEY, JSON.stringify(queue || []));
+    } catch (e) {
+        console.error('[POS Offline] Gagal simpan antrean offline:', e);
+    }
+};
+
+export const enqueueOfflineTx = (orderData) => {
+    const queue = getOfflineTxQueue();
+    const queuedItem = {
+        ...orderData,
+        _offlineQueuedAt: new Date().toISOString()
+    };
+    const exists = queue.findIndex(t => (t.id || t.txId) === (orderData.id || orderData.txId));
+    if (exists >= 0) {
+        queue[exists] = queuedItem;
+    } else {
+        queue.push(queuedItem);
+    }
+    saveOfflineTxQueue(queue);
+    renderOfflineQueueBadge();
+};
+
+let _isSyncingOfflineTx = false;
+export const posSyncOfflineTransactions = async (silent = false) => {
+    if (_isSyncingOfflineTx) return;
+    if (typeof navigator !== 'undefined' && !navigator.onLine) {
+        if (!silent) showToast('Koneksi internet offline. Sinkronisasi ditunda sampai koneksi pulih.', 'warning');
+        return;
+    }
+
+    const queue = getOfflineTxQueue();
+    if (!queue || queue.length === 0) {
+        renderOfflineQueueBadge();
+        if (!silent) showToast('Semua transaksi kasir sudah tersinkronisasi.', 'success');
+        return;
+    }
+
+    _isSyncingOfflineTx = true;
+    renderOfflineQueueBadge(true);
+    if (!silent) showToast(`Menyinkronkan ${queue.length} transaksi offline ke server...`, 'info');
+
+    let successCount = 0;
+    const remainingQueue = [];
+
+    for (const tx of queue) {
+        try {
+            const cleanTx = { ...tx };
+            const docId = cleanTx.id || cleanTx.txId;
+            delete cleanTx._isSavedOffline;
+            delete cleanTx._offlineQueuedAt;
+            await db.collection('freshmart_orders').doc(docId).set(cleanTx, { merge: true });
+            successCount++;
+        } catch (err) {
+            console.error('[POS Offline] Gagal sinkronkan transaksi:', tx.id || tx.txId, err);
+            remainingQueue.push(tx);
+        }
+    }
+
+    saveOfflineTxQueue(remainingQueue);
+    _isSyncingOfflineTx = false;
+    renderOfflineQueueBadge();
+
+    if (successCount > 0) {
+        showToast(`Berhasil menyinkronkan ${successCount} transaksi kasir ke cloud!`, 'success');
+    }
+    if (remainingQueue.length > 0) {
+        showToast(`${remainingQueue.length} transaksi belum berhasil disinkronkan. Akan dicoba lagi otomatis.`, 'warning');
+    }
+};
+
+export const renderOfflineQueueBadge = (isSyncing = false) => {
+    const queue = getOfflineTxQueue();
+    const count = queue.length;
+
+    document.querySelectorAll('.pos-offline-sync-container').forEach(container => {
+        if (count === 0 && !isSyncing) {
+            container.innerHTML = '';
+            container.classList.add('hidden');
+            return;
+        }
+
+        container.classList.remove('hidden');
+        if (isSyncing) {
+            container.innerHTML = `
+                <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-amber-500/20 text-amber-300 border border-amber-500/30 text-[10px] font-bold shadow-xs">
+                    <i class="fa-solid fa-arrows-rotate animate-spin text-[10px]"></i>
+                    <span class="hidden sm:inline">Sinkron (${count})...</span>
+                    <span class="sm:hidden">${count}</span>
+                </div>
+            `;
+        } else {
+            container.innerHTML = `
+                <button type="button" onclick="window.posSyncOfflineTransactions()" class="inline-flex items-center gap-1.5 px-2 sm:px-2.5 py-1 rounded-xl bg-amber-500/25 hover:bg-amber-500/40 text-amber-200 hover:text-white border border-amber-400/40 text-[10px] font-bold cursor-pointer active:scale-95 transition-all shadow-xs" title="${count} transaksi offline belum disinkronkan ke server. Klik untuk sinkronisasi sekarang.">
+                    <i class="fa-solid fa-cloud-arrow-up text-amber-400"></i>
+                    <span class="hidden sm:inline">${count} Antrean Offline</span>
+                    <span class="sm:hidden font-black">${count}</span>
+                </button>
+            `;
+        }
+    });
+};
+
+export const updateNetworkStatusUI = (isOnline) => {
+    document.querySelectorAll('.pos-network-status-badge').forEach(badge => {
+        if (isOnline) {
+            badge.className = 'pos-network-status-badge hidden sm:inline-flex items-center gap-1.5 text-[10px] font-bold text-emerald-400 bg-emerald-950/40 px-2.5 py-1 rounded-lg border border-emerald-500/30';
+            badge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span><span>Online</span>`;
+        } else {
+            badge.className = 'pos-network-status-badge inline-flex items-center gap-1.5 text-[10px] font-bold text-rose-300 bg-rose-950/60 px-2.5 py-1 rounded-lg border border-rose-500/40 animate-pulse';
+            badge.innerHTML = `<i class="fa-solid fa-wifi-slash text-[10px] text-rose-400"></i><span>Offline</span>`;
+        }
+    });
+};
+
+let _posNetworkListenersAttached = false;
+export const initPOSNetworkMonitoring = () => {
+    const isOnline = typeof navigator !== 'undefined' ? navigator.onLine : true;
+    updateNetworkStatusUI(isOnline);
+    renderOfflineQueueBadge();
+
+    if (_posNetworkListenersAttached) return;
+    _posNetworkListenersAttached = true;
+
+    window.addEventListener('online', () => {
+        updateNetworkStatusUI(true);
+        showToast('Koneksi internet terhubung kembali. Memulai auto-sync transaksi kasir...', 'info');
+        posSyncOfflineTransactions(true);
+    });
+
+    window.addEventListener('offline', () => {
+        updateNetworkStatusUI(false);
+        showToast('Koneksi terputus. Mode POS Offline aktif (transaksi kasir aman di antrean lokal).', 'warning');
+    });
+
+    // Auto sync jika sedang online saat startup
+    if (isOnline) {
+        const queue = getOfflineTxQueue();
+        if (queue.length > 0) {
+            setTimeout(() => { posSyncOfflineTransactions(true); }, 2500);
+        }
+    }
+};
+
 // ─── Layout Generator Terpadu ────────────────────────────────
 const buildPOSLayout = ({ isStorefront }) => {
     const cashierSession = typeof window.getCashierSession === 'function' ? window.getCashierSession() : null;
@@ -3092,6 +3399,10 @@ const buildPOSLayout = ({ isStorefront }) => {
                 </div>
             </div>
             <div class="flex items-center gap-1.5 sm:gap-2 shrink-0 whitespace-nowrap">
+                <span class="pos-network-status-badge hidden sm:inline-flex items-center gap-1.5 text-[10px] font-bold text-emerald-400 bg-emerald-950/40 px-2.5 py-1 rounded-lg border border-emerald-500/30">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span><span>Online</span>
+                </span>
+                <div class="pos-offline-sync-container hidden items-center shrink-0"></div>
                 <span id="pos-live-clock" class="hidden sm:inline-block text-[10px] font-mono text-white/90 px-2.5 py-1 bg-black/15 rounded-lg border border-white/20">--:--:--</span>
                 <span class="hidden md:inline-flex items-center gap-1.5 text-[10px] font-bold text-white bg-black/20 px-2.5 py-1 rounded-lg">
                     <i class="fa-solid fa-barcode text-xs"></i> USB Scanner Aktif
@@ -3119,6 +3430,10 @@ const buildPOSLayout = ({ isStorefront }) => {
                 <span id="pos-live-clock" class="hidden sm:inline text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400">--:--:--</span>
             </div>
             <div class="flex items-center gap-1.5 sm:gap-2 shrink-0 whitespace-nowrap">
+                <span class="pos-network-status-badge hidden sm:inline-flex items-center gap-1.5 text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 px-2.5 py-1 rounded-lg border border-emerald-200 dark:border-emerald-800">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span><span>Online</span>
+                </span>
+                <div class="pos-offline-sync-container hidden items-center shrink-0"></div>
                 <span class="hidden md:inline-flex items-center gap-1.5 text-[10px] font-bold text-slate-500 dark:text-slate-400 whitespace-nowrap">
                     <i class="fa-solid fa-barcode text-xs"></i> Scanner Otomatis
                 </span>
@@ -3148,10 +3463,10 @@ const buildPOSLayout = ({ isStorefront }) => {
                     <div class="flex items-center gap-2">
                         <div class="relative flex-1 min-w-0">
                             <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs pointer-events-none"></i>
-                            <input id="pos-search-input" type="text" placeholder="Cari barang, barcode USB... (F4)" 
+                            <input id="pos-search-input" type="text" placeholder="Cari nama, SKU, barcode... [F2]" 
                                 class="w-full pl-8 pr-8 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs sm:text-sm font-medium text-slate-800 dark:text-slate-100 focus:outline-none focus:border-[var(--color-primary)] focus:bg-white dark:focus:bg-slate-900 transition-all"
                                 oninput="window.posSearchFn(this.value)">
-                            <button onclick="document.querySelectorAll('#pos-search-input').forEach(i => i.value=''); window.posSearchFn('');" class="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xs p-1 cursor-pointer" title="Hapus pencarian">
+                            <button type="button" onclick="window.posClearSearch()" class="pos-search-clear-btn hidden absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-rose-500 text-xs p-1 cursor-pointer transition-colors active:scale-90" title="Hapus pencarian (Esc)">
                                 <i class="fa-solid fa-circle-xmark"></i>
                             </button>
                         </div>
@@ -3173,6 +3488,24 @@ const buildPOSLayout = ({ isStorefront }) => {
                     <!-- Kategori Chips -->
                     <div id="pos-cat-filter" class="flex gap-1.5 overflow-x-auto hide-scrollbar pb-0.5"></div>
                     <div id="pos-subcat-filter" class="w-full hidden"></div>
+                    <!-- Keyboard Shortcuts Quick Bar (Hanya Desktop >= sm) -->
+                    <div class="hidden sm:flex items-center justify-between text-[10px] text-slate-400 dark:text-slate-500 pt-1 border-t border-slate-100 dark:border-slate-800/80 px-0.5 select-none">
+                        <div class="flex items-center gap-2 overflow-x-auto hide-scrollbar py-0.5">
+                            <span class="inline-flex items-center gap-1"><kbd class="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 font-mono font-bold text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700">F2</kbd> Cari</span>
+                            <span class="text-slate-300 dark:text-slate-700">•</span>
+                            <span class="inline-flex items-center gap-1"><kbd class="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 font-mono font-bold text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700">F4</kbd> Bayar</span>
+                            <span class="text-slate-300 dark:text-slate-700">•</span>
+                            <span class="inline-flex items-center gap-1"><kbd class="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 font-mono font-bold text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700">F6</kbd> Tahan</span>
+                            <span class="text-slate-300 dark:text-slate-700">•</span>
+                            <span class="inline-flex items-center gap-1"><kbd class="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 font-mono font-bold text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700">F7</kbd> Diskon</span>
+                            <span class="text-slate-300 dark:text-slate-700">•</span>
+                            <span class="inline-flex items-center gap-1"><kbd class="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 font-mono font-bold text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700">F8</kbd> Tertahan</span>
+                            <span class="text-slate-300 dark:text-slate-700">•</span>
+                            <span class="inline-flex items-center gap-1"><kbd class="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 font-mono font-bold text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700">F9</kbd> Kamera</span>
+                            <span class="text-slate-300 dark:text-slate-700">•</span>
+                            <span class="inline-flex items-center gap-1"><kbd class="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 font-mono font-bold text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700">Esc</kbd> Batal/Tutup</span>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Product Catalog Container -->
@@ -3382,6 +3715,8 @@ export const renderPOSStorefront = () => {
         renderCart();
         renderHeldBadges();
         renderShiftHeaderBadge();
+        initPOSNetworkMonitoring();
+        renderOfflineQueueBadge();
         initBarcodeListener();
         startClock();
         ensureCustomersLoaded(); // Prefetch member data
@@ -3435,6 +3770,8 @@ export const renderPOS = () => {
         renderCart();
         renderHeldBadges();
         renderShiftHeaderBadge();
+        initPOSNetworkMonitoring();
+        renderOfflineQueueBadge();
         initBarcodeListener();
         startClock();
         ensureCustomersLoaded(); // Prefetch member data
@@ -3535,15 +3872,15 @@ const exposeToWindow = () => {
     window.renderShiftHeaderBadge  = renderShiftHeaderBadge;
     window.printShiftSettlementReceipt = printShiftSettlementReceipt;
     window.executeShiftPrintDirect = executeShiftPrintDirect;
-    window.posCatFilter            = (c) => { posCatFilterVal = c; posSubCatFilterVal = ''; renderCatalog(); };
-    window.posSubCatFilter         = (sc) => { posSubCatFilterVal = sc; renderCatalog(); };
-    window.posSearchFn             = (v) => { 
-        posSearch = typeof v === 'string' ? v : (v?.value || ''); 
-        document.querySelectorAll('#pos-search-input').forEach(inp => {
-            if (inp.value !== posSearch) inp.value = posSearch;
-        });
-        renderCatalog(); 
-    };
+    window.posCatFilter            = (c) => { posCatFilterVal = c; posSubCatFilterVal = ''; posCatalogPage = 1; renderCatalog(); };
+    window.posSubCatFilter         = (sc) => { posSubCatFilterVal = sc; posCatalogPage = 1; renderCatalog(); };
+    window.posSearchFn             = posSearchFn;
+    window.posClearSearch          = posClearSearch;
+    window.posLoadMoreProducts     = posLoadMoreProducts;
+    window.posSyncOfflineTransactions = posSyncOfflineTransactions;
+    window.renderOfflineQueueBadge = renderOfflineQueueBadge;
+    window.initPOSNetworkMonitoring= initPOSNetworkMonitoring;
+    window.getOfflineTxQueue       = getOfflineTxQueue;
     window.posRenderCatalog        = renderCatalog;
     window.posRenderCart           = renderCart;
     window.refreshPOSCatalog       = () => {
@@ -4025,3 +4362,11 @@ window.printShiftSettlementReceipt = printShiftSettlementReceipt;
 window.executeShiftPrintDirect = executeShiftPrintDirect;
 window.posSubCatFilter         = (sc) => { posSubCatFilterVal = sc; renderCatalog(); };
 window.getPOSCart              = () => posCart;
+window.posSearchFn             = posSearchFn;
+window.posClearSearch          = posClearSearch;
+window.posLoadMoreProducts     = posLoadMoreProducts;
+window.posSyncOfflineTransactions = posSyncOfflineTransactions;
+window.renderOfflineQueueBadge = renderOfflineQueueBadge;
+window.initPOSNetworkMonitoring= initPOSNetworkMonitoring;
+window.getOfflineTxQueue       = getOfflineTxQueue;
+

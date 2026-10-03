@@ -45,17 +45,24 @@ export default defineConfig({
           'vendor-firebase-analytics': ['firebase/compat/analytics'],
           // Utilitas DOM sanitizer
           'vendor-utils': ['dompurify'],
+          // Library Drag-and-Drop (dipisah agar tidak membebani modul admin)
+          'vendor-sortable': ['sortablejs'],
           // Modul Admin & CMS Toko Putri (dipisah agar first load storefront lebih cepat)
           'module-admin': [
             './src/modules/admin/index.js',
             './src/modules/admin/products/index.js',
+            './src/modules/admin/products/table.js',
+            './src/modules/admin/products/form.js',
+            './src/modules/admin/products/variants.js',
+            './src/modules/admin/products/stock.js',
+            './src/modules/admin/products/scanner.js',
+            './src/modules/admin/products/pricing.js',
             './src/modules/admin/orders.js',
             './src/modules/admin/finance.js',
             './src/modules/admin/settings.js',
             './src/modules/admin/tempo.js',
             './src/modules/admin/reviews.js',
             './src/modules/changelog/admin.js',
-            // Admin session guard: hanya aktif saat admin login — pisah dari bundle utama
             './src/modules/admin/session.js',
           ],
           // Modul Cetak Dokumen Struk Thermal & Invoice A4
@@ -83,6 +90,6 @@ export default defineConfig({
         }
       }
     },
-    chunkSizeWarningLimit: 600
+    chunkSizeWarningLimit: 750
   }
 })

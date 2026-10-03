@@ -11,7 +11,7 @@ import Sortable from 'sortablejs';
 import { appData } from '../../../core/state.js';
 import { el, setH, esc, fCur, showToast, renderProductCoverHtml } from '../../../core/utils.js';
 import { saveApp, sortProductsByOrder } from '../../../services/storage.js';
-import { computeInventoryStats } from '../auth.js';
+import { computeInventoryStats } from '../../../core/pricing.js';
 import { customPrompt, showConfirm } from '../../../core/ui.js';
 import { cTab, setCTab, aSq, setASq } from './index.js';
 
