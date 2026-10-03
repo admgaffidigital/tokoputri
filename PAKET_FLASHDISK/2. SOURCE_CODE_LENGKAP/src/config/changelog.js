@@ -8,6 +8,21 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-10-37',
+        version: 'v1.10.37',
+        date: '2026-10-03',
+        title: 'Rebranding Form Login Panel Owner dengan Logo Toko & Perbaikan Build Otomatis GitHub',
+        category: 'feature',
+        badge: 'Panel Owner Login & CI Fix v1.10.37',
+        items: [
+            'Rebranding Form Login: Judul "Seller Panel" diganti menjadi "Panel Owner" dengan label Toko Putri ( Official Store ), subjudul "Otorisasi Pemilik & Staf Toko", placeholder "Email Owner / Admin", dan tombol "Masuk ke Panel Kontrol".',
+            'Logo Toko di Form Login: Ikon perisai diganti logo toko yang diambil otomatis dari Pengaturan Toko, dengan fallback ikon toko bila logo kosong atau gagal dimuat.',
+            'Penyelarasan Teks CMS: Teks loading "Membuka Akses Seller..." menjadi "Membuka Panel Owner..." dan header cadangan "CMS SELLER" menjadi "CMS TOKO".',
+            'Perbaikan Build Otomatis GitHub Actions: Nama aset rilis diseragamkan menjadi TokoPutri.OfficialStore.apk/.aab sehingga langkah unggah ke GitHub Releases tidak lagi gagal akibat bentrok nama file.',
+            'Multi-Channel Distribution v1.10.37 (Android versionCode 11037).'
+        ]
+    },
+    {
         id: 'log-1-10-36',
         version: 'v1.10.36',
         date: '2026-10-03',
