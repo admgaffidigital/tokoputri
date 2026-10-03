@@ -676,8 +676,57 @@ export const attachRealtimeProductsSync = () => {
 // Membawa: suppliers, purchases, expenses, taxSettings, stockOpnameHistory.
 // Jika pengguna bukan admin (permission denied), error diabaikan dengan tenang.
 // =====================================================================
+// Migrasi otomatis satu kali: pindahkan data sensitif dari cms_data → cms_private
+// jika cms_private kosong (pertama kali deploy Fase 2). Tidak butuh service account key.
+const _runPrivateMigrationIfNeeded = async () => {
+    const FLAG = 'freshmart_priv_migrated_v2';
+    if (localStorage.getItem(FLAG)) return; // sudah pernah dijalankan
+
+    try {
+        const privSnap = await db.collection('freshmart').doc('cms_private').get();
+        const privData = privSnap.exists ? privSnap.data() : {};
+
+        // Cek apakah ada satu saja field sensitif yang belum ada di cms_private
+        const missing = [...PRIVATE_APP_KEYS].filter(k => !(k in privData));
+        if (!missing.length) {
+            localStorage.setItem(FLAG, '1'); // sudah lengkap, tandai selesai
+            return;
+        }
+
+        // Baca data dari cms_data
+        const cmsSnap = await db.collection('freshmart').doc('cms_data').get();
+        if (!cmsSnap.exists) { localStorage.setItem(FLAG, '1'); return; }
+        const cmsData = cmsSnap.data();
+
+        const toWrite = {};
+        const toDelete = {};
+        let hasAny = false;
+        for (const k of missing) {
+            if (k in cmsData) {
+                toWrite[k] = cmsData[k];
+                toDelete[k] = firebase.firestore.FieldValue.delete();
+                hasAny = true;
+            }
+        }
+
+        if (!hasAny) { localStorage.setItem(FLAG, '1'); return; }
+
+        // Tulis ke cms_private, hapus dari cms_data
+        await db.collection('freshmart').doc('cms_private').set(toWrite, { merge: true });
+        await db.collection('freshmart').doc('cms_data').update(toDelete);
+        localStorage.setItem(FLAG, '1');
+        console.info('[Migrasi] Data sensitif berhasil dipindah ke cms_private:', Object.keys(toWrite));
+    } catch (e) {
+        // Bukan masalah fatal — migrasi akan dicoba lagi sesi berikutnya
+        if (e.code !== 'permission-denied') console.warn('[Migrasi] cms_private migration error:', e);
+    }
+};
+
 export const attachPrivateDataListener = () => {
     if (window.unsubPrivateRealtime) return; // sudah terpasang
+
+    // Jalankan migrasi otomatis satu kali jika belum
+    _runPrivateMigrationIfNeeded();
 
     window.unsubPrivateRealtime = db.collection('freshmart').doc('cms_private')
         .onSnapshot((doc) => {
