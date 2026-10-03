@@ -48,8 +48,11 @@ service cloud.firestore {
       return 5000;
     }
 
-    // ─── Dokumen Utama Toko (cms_data: pengaturan, banner, kategori, dll) ───
-    match /freshmart/{docId} {
+    // ─── Dokumen Utama Toko (cms_data: pengaturan publik — banner, kategori, dll) ───
+    // PERHATIAN: cms_data boleh dibaca semua orang. Data sensitif (supplier,
+    // pembelian, pengeluaran, pajak, riwayat opname) HARUS disimpan di
+    // cms_private di bawah, BUKAN di dokumen ini.
+    match /freshmart/cms_data {
       allow read: if true;
       // Checkout publik hanya boleh menaikkan penanda sinkronisasi stok.
       allow write: if isAdmin() || (
@@ -153,6 +156,13 @@ service cloud.firestore {
       match /orders/{orderId} {
         allow read, write: if isStaff();
       }
+    }
+
+    // ─── Data Bisnis Sensitif (cms_private: HANYA staf admin/owner) ──────────
+    // Menyimpan: suppliers, purchases, expenses, taxSettings, stockOpnameHistory.
+    // Dokumen ini TIDAK PERNAH boleh dibaca publik atau kasir biasa.
+    match /freshmart/cms_private {
+      allow read, write: if isAdmin();
     }
 
     // Shift Kasir (koleksi root fallback) — hanya staf
