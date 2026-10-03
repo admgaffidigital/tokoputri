@@ -46,6 +46,24 @@ export const rDyn = () => {
         }
     }
 
+    // Logo toko pada kartu login Panel Owner (fallback ke ikon jika gambar gagal/kosong)
+    {
+        const li = el('login-store-logo-img'), lc = el('login-store-logo-icon');
+        const logo = appData.store.logo || '';
+        const isImg = logo.includes('http') || logo.includes('data:');
+        if (li && lc) {
+            if (isImg) {
+                li.src = logo;
+                li.onerror = () => { li.onerror = null; li.classList.add('hidden'); lc.classList.remove('hidden'); };
+                li.classList.remove('hidden');
+                lc.classList.add('hidden');
+            } else {
+                lc.className = `fa-solid ${esc(logo || 'fa-store')} text-3xl text-[var(--color-primary)]`;
+                li.classList.add('hidden');
+            }
+        }
+    }
+
     // --- RENDER BANNER 3D PREMIUM & KARTU SAMBUTAN HERO MASKOT ---
     // ── SLIDE 0: KARTU SAMBUTAN HERO MASKOT 3D & ANIMASI (Putri Utama Teknik / Toko Putri) ──
     const showHeroSlide = appData.store.showHeroSlide !== false && appData.store.showHeroSlide !== 'false';
