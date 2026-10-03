@@ -221,14 +221,8 @@ export const executePrintReceipt = () => {
 
 // ─── Expose ke window untuk kompatibilitas onclick di HTML ──────
 window.openReceiptPreview = openReceiptPreview;
-window.openCustomerReceiptPreview = (orderId, forceDirect = false) => {
-    const config = typeof getPrinterConfig === 'function' ? getPrinterConfig() : {};
-    if (forceDirect || config.directPrint) {
-        if (typeof window.printCustomerReceiptDirect === 'function') {
-            window.printCustomerReceiptDirect(orderId);
-            return;
-        }
-    }
+window.openCustomerReceiptPreview = (orderId) => {
+    // Selalu buka preview struk terlebih dahulu sebelum cetak
     openReceiptPreview(orderId);
 };
 window.closeReceiptPreviewModal = closeReceiptPreviewModal;

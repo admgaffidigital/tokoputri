@@ -15,7 +15,7 @@ export const DEFAULT_PRINTER_CONFIG = {
     deviceName: 'Driver RawBT (Printer Thermal Android - Free)',
     deviceId: '',
     paperSize: '58mm', // '58mm' (32 col) | '58mm-compact' (30 col) | '80mm' (48 col) | '80mm-compact' (42 col)
-    directPrint: true, // Cetak langsung tanpa membuka jendela dialog berulang
+    directPrint: false, // Wajib melalui preview dokumen / struk sebelum cetak
     feedLines: 3,
     autoCut: true,
     openCashDrawer: false,
@@ -97,7 +97,7 @@ export const openPrinterSettingsModal = () => {
 
     setChecked('printer-opt-points', config.showPoints);
     setChecked('printer-opt-barcode', config.showBarcode);
-    setChecked('printer-opt-direct', config.directPrint !== false);
+    setChecked('printer-opt-direct', config.directPrint === true);
     setChecked('printer-opt-autocut', config.autoCut !== false);
     setChecked('printer-opt-drawer', config.openCashDrawer);
     setChecked('printer-opt-autoprint', config.autoPrintOrder);
@@ -185,7 +185,7 @@ export const savePrinterSettingsFromModal = () => {
         footerText: getValue('printer-footer-custom', 'Terima kasih atas kunjungan Anda!'),
         showPoints: getChecked('printer-opt-points', true),
         showBarcode: getChecked('printer-opt-barcode', true),
-        directPrint: getChecked('printer-opt-direct', true),
+        directPrint: getChecked('printer-opt-direct', false),
         autoCut: getChecked('printer-opt-autocut', true),
         openCashDrawer: getChecked('printer-opt-drawer', false),
         autoPrintOrder: getChecked('printer-opt-autoprint', false)

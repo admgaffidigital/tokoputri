@@ -2918,6 +2918,31 @@ window.printPurchaseOrder = (poId) => {
         </div>
     `;
 
+    const fullPoHtml = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>PO - ${esc(po.poNumber || po.id)}</title>
+            <style>
+                @page { size: A4; margin: 10mm; }
+                body { margin: 0; background: white; font-family: Arial, sans-serif; }
+            </style>
+        </head>
+        <body>
+            ${printHtml}
+        </body>
+        </html>
+    `;
+
+    if (typeof window.openHtmlPrintPreview === 'function') {
+        window.openHtmlPrintPreview({
+            title: `Purchase Order #${po.poNumber || po.id}`,
+            html: fullPoHtml,
+            paper: 'a4'
+        });
+        return;
+    }
+
     // Buat iframe terisolasi untuk cetak bersih
     let printIframe = el('po-print-iframe');
     if (!printIframe) {
@@ -2934,21 +2959,7 @@ window.printPurchaseOrder = (poId) => {
 
     const doc = printIframe.contentWindow.document;
     doc.open();
-    doc.write(`
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <title>PO - ${esc(po.poNumber || po.id)}</title>
-            <style>
-                @page { size: A4; margin: 10mm; }
-                body { margin: 0; background: white; font-family: Arial, sans-serif; }
-            </style>
-        </head>
-        <body>
-            ${printHtml}
-        </body>
-        </html>
-    `);
+    doc.write(fullPoHtml);
     doc.close();
 
     setTimeout(() => {

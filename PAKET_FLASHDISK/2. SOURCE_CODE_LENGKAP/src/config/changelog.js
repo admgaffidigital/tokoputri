@@ -8,6 +8,23 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-10-39',
+        version: 'v1.10.39',
+        date: '2026-10-03',
+        title: 'Arsitektur Universal Print Preview: Wajib Pratinjau Dokumen & Struk Kasir Sebelum Cetak ke Seluruh Sistem',
+        category: 'feature',
+        badge: 'Universal Print Preview Gate v1.10.39',
+        items: [
+            'Wajib Preview Sebelum Cetak (Universal Gate): Menjamin 100% seluruh dokumen transaksi dan operasional toko (struk kasir POS, slip shift X/Z-report, struk pesanan pelanggan, nota tagihan tempo, uji cetak printer, hingga Bukti Kas Keluar BKK & dokumen resmi A4) wajib melalui sistem pratinjau terlebih dahulu sebelum fisik kertas dicetak.',
+            'Engine Pratinjau Struk Thermal WYSIWYG (src/modules/print/print-preview.js): Pratinjau interaktif berbasis rendering baris ESC/POS aktual dengan perataan teks rata tengah/kiri/kanan presisi, styling huruf tebal, font size tall & title, efek potongan tepi gerigi kertas kasir, pemilihan ukuran kertas 58mm/80mm seketika, dan tombol "Cetak Sekarang".',
+            'Alur Selesai Transaksi Kasir POS (src/modules/pos/pos.js): Modal sukses transaksi POS kini secara default mengarahkan kasir ke aksi utama "Preview & Cetak Struk" sehingga kasir dapat memverifikasi nama barang, diskon, poin, metode bayar, dan nominal kembalian sebelum mencetak fisik struk.',
+            'Universal Thermal Interceptor (src/modules/print/rawbt.js): Setiap pemanggilan driver cetak (sendToRawBT, printPOSReceiptDirect, printShiftSettlementDirect, printCustomerReceiptDirect, printTempoReceiptDirect, executeRawBTTestPrint) dicegat secara terpusat untuk menampilkan layar pratinjau dan hanya memicu pengiriman data printer jika user telah menekan konfirmasi di dalam pratinjau.',
+            'Pratinjau Bukti Kas Keluar (BKK) & Dokumen A4 (src/modules/admin/expenses.js & purchases.js): Modul pengeluaran kas kini menggunakan openHtmlPrintPreview terisolasi dengan tampilan dokumen resmi dan tombol konfirmasi cetak menggantikan window.print() langsung tanpa pop-up blocker.',
+            'Opsi Setelan Printer Terkalibrasi (src/modules/print/printer-settings.js & index.html): Mengubah setelan bawaan directPrint menjadi nonaktif (default aman selalu preview), serta memperjelas deskripsi opsi menjadi "Mode Bypass Pratinjau".',
+            'Multi-Channel Distribution v1.10.39 (Android versionCode 11039).'
+        ]
+    },
+    {
         id: 'log-1-10-38',
         version: 'v1.10.38',
         date: '2026-10-03',

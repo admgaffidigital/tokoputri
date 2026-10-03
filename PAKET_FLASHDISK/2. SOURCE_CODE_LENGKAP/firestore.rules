@@ -38,6 +38,15 @@ service cloud.firestore {
       return isOwner() || isAdmin() || isCashier();
     }
 
+    // Cek ringan: user sudah auth Firebase DAN terdaftar di cashier_accounts
+    // (tanpa get() yang berat — cukup untuk koleksi operasional POS)
+    function isAuthStaff() {
+      return request.auth != null && (
+        request.auth.uid == 'K2ijSERTT2dg27yYGTEgn6XHSnW2' ||
+        exists(/databases/$(database)/documents/freshmart/cms_data/cashier_accounts/$(request.auth.uid))
+      );
+    }
+
     function changed() {
       return request.resource.data.diff(resource.data).affectedKeys();
     }
@@ -144,17 +153,17 @@ service cloud.firestore {
         allow write: if isOwner();
       }
 
-      // ─── Data Operasional Kasir (hanya staf) ──────────────
+      // ─── Data Operasional Kasir (staf auth Firebase — cek exists(), lebih cepat) ───
       match /pos_transactions/{txId} {
-        allow read, write: if isStaff();
+        allow read, write: if isAuthStaff();
       }
 
       match /pos_shifts/{shiftId} {
-        allow read, write: if isStaff();
+        allow read, write: if isAuthStaff();
       }
 
       match /orders/{orderId} {
-        allow read, write: if isStaff();
+        allow read, write: if isAuthStaff();
       }
     }
 
@@ -165,9 +174,9 @@ service cloud.firestore {
       allow read, write: if isAdmin();
     }
 
-    // Shift Kasir (koleksi root fallback) — hanya staf
+    // Shift Kasir (koleksi root fallback) — staf auth Firebase
     match /pos_shifts/{shiftId} {
-      allow read, write: if isStaff();
+      allow read, write: if isAuthStaff();
     }
 
     // ─── Pesanan Terpadu (Etalase, Kasir POS & CMS) ───────────

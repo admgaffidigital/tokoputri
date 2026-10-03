@@ -14,6 +14,7 @@ import { appData, gOrds, cVOrd, myOrders } from '../../core/state.js';
 import { el, esc } from '../../core/utils.js';
 import { showToast } from '../../core/ui.js';
 import { getPrinterConfig, getPaperCols } from './printer-settings.js';
+import { openThermalPrintPreview } from './print-preview.js';
 
 // ─── Format Currency & Qty ───────────────────────────────────
 export const fRp = (n) => 'Rp ' + Math.round(Number(n || 0)).toLocaleString('id-ID');
@@ -140,6 +141,10 @@ export class EscPosBuilder {
         this.cols = Number(cols) || 32;
         this.bytes = [];
         this.plainLines = [];
+        // Baris terformat untuk Preview WYSIWYG (perataan, tebal, ukuran)
+        this.previewLines = [];
+        this._bold = false;
+        this._size = 'normal';
     }
 
     /** Reset/Inisialisasi printer (ESC @) */
@@ -158,6 +163,7 @@ export class EscPosBuilder {
     /** Mode tebal / bold (ESC E n) */
     bold(enable = true) {
         this.bytes.push(0x1B, 0x45, enable ? 1 : 0);
+        this._bold = !!enable;
         return this;
     }
 
@@ -169,6 +175,7 @@ export class EscPosBuilder {
      * 'normal'         = Normal 1x
      */
     size(type = 'normal') {
+        this._size = type || 'normal';
         if (type === 'title') {
             this.bytes.push(0x1D, 0x21, 0x11); // Double width & height
         } else if (type === 'tall' || type === 'total') {
@@ -197,6 +204,7 @@ export class EscPosBuilder {
         this.text(str);
         this.bytes.push(0x0A); // LF
         this.plainLines.push(str);
+        this.previewLines.push({ t: cleanLineAscii(str), a: alignMode, b: this._bold, s: this._size });
         return this;
     }
 
@@ -271,7 +279,10 @@ export class EscPosBuilder {
     /** Feed baris kosong agar kertas melewati pemotong (ESC d n) */
     feed(lines = 3) {
         this.bytes.push(0x1B, 0x64, Math.max(1, lines));
-        for (let i = 0; i < lines; i++) this.plainLines.push('');
+        for (let i = 0; i < lines; i++) {
+            this.plainLines.push('');
+            this.previewLines.push({ t: '', a: 'left', b: false, s: 'normal' });
+        }
         return this;
     }
 
@@ -311,7 +322,37 @@ export class EscPosBuilder {
  * ENGINE PENGIRIMAN DOKUMEN KE DRIVER RAWBT (ANDROID FREE/PRO)
  * ============================================================
  */
-export const sendToRawBT = (escPosBase64, plainText = '', htmlDomContent = '') => {
+/**
+ * GERBANG CETAK WAJIB PREVIEW
+ * Setiap permintaan cetak thermal SELALU ditampilkan preview dulu.
+ * Cetak fisik hanya terjadi setelah user menekan "Cetak Sekarang".
+ * options.skipPreview = true HANYA dipakai bila user sudah berada di
+ * jendela preview lain (mis. preview visual POS/shift/struk pesanan).
+ */
+export const sendToRawBT = (escPosBase64, plainText = '', htmlDomContent = '', options = {}) => {
+    if (!options.skipPreview) {
+        return openThermalPrintPreview({
+            base64: escPosBase64,
+            plainText,
+            html: htmlDomContent,
+            previewLines: options.previewLines,
+            title: options.title,
+            rebuild: options.rebuild,
+            onConfirm: options.onConfirm,
+            onCancel: options.onCancel,
+            dispatch: (b64, txt, html) => dispatchToThermalPrinter(b64, txt, html)
+        });
+    }
+    if (typeof options.onConfirm === 'function') {
+        try { options.onConfirm(); } catch (e) {}
+    }
+    return dispatchToThermalPrinter(escPosBase64, plainText, htmlDomContent);
+};
+
+/**
+ * Kirim payload ke printer (dipanggil SETELAH preview dikonfirmasi)
+ */
+const dispatchToThermalPrinter = (escPosBase64, plainText = '', htmlDomContent = '') => {
     const isAndroid = /android/i.test(navigator.userAgent || '');
 
     // 1. Prioritas 1: Aplikasi Android Native (Capacitor Bridge)
@@ -576,7 +617,8 @@ export const buildPOSReceiptPayload = (tx, config = null) => {
 
     return {
         base64: builder.toBase64(),
-        plainText: builder.toPlainText()
+        plainText: builder.toPlainText(),
+        previewLines: builder.previewLines
     };
 };
 
@@ -684,7 +726,8 @@ export const buildShiftReceiptPayload = (shift, isXReport = false, config = null
 
     return {
         base64: builder.toBase64(),
-        plainText: builder.toPlainText()
+        plainText: builder.toPlainText(),
+        previewLines: builder.previewLines
     };
 };
 
@@ -800,7 +843,8 @@ export const buildOrderReceiptPayload = (order, config = null) => {
 
     return {
         base64: builder.toBase64(),
-        plainText: builder.toPlainText()
+        plainText: builder.toPlainText(),
+        previewLines: builder.previewLines
     };
 };
 
@@ -955,7 +999,8 @@ export const buildTempoReceiptPayload = (order, config = null) => {
 
     return {
         base64: builder.toBase64(),
-        plainText: builder.toPlainText()
+        plainText: builder.toPlainText(),
+        previewLines: builder.previewLines
     };
 };
 
@@ -1054,19 +1099,28 @@ export const buildTestReceiptPayload = (config = null) => {
 
     return {
         base64: builder.toBase64(),
-        plainText: builder.toPlainText()
+        plainText: builder.toPlainText(),
+        previewLines: builder.previewLines
     };
 };
 
 /**
  * ============================================================
- * FUNGSI EKSEKUSI CETAK LANGSUNG (DIRECT PRINT)
- * Menjalankan pencetakan seketika ke printer tanpa popup tambahan
+ * FUNGSI EKSEKUSI CETAK (MELALUI GERBANG PREVIEW WAJIB)
+ * Setiap fungsi di bawah SELALU menampilkan preview struk dulu.
+ * Preview dilewati HANYA jika user menekan Cetak dari jendela
+ * preview visual yang sudah terbuka (sudah melihat preview).
  * ============================================================
  */
 
+/** Cek apakah modal preview tertentu sedang terlihat */
+const isPreviewModalOpen = (id) => {
+    const m = document.getElementById(id);
+    return !!m && !m.classList.contains('hidden');
+};
+
 /**
- * Cetak Struk POS Kasir Seketika (Direct Print)
+ * Cetak Struk POS Kasir (Preview → Cetak)
  */
 export const printPOSReceiptDirect = (tx) => {
     if (!tx) {
@@ -1075,12 +1129,19 @@ export const printPOSReceiptDirect = (tx) => {
     }
     const cfg = getPrinterConfig();
     const payload = buildPOSReceiptPayload(tx, cfg);
+    const fromPreview = isPreviewModalOpen('pos-receipt-fallback-modal');
 
-    // Hapus modal sukses atau preview jika sedang terbuka
-    document.getElementById('pos-success-modal')?.remove();
-    document.getElementById('pos-receipt-fallback-modal')?.remove();
-
-    sendToRawBT(payload.base64, payload.plainText);
+    sendToRawBT(payload.base64, payload.plainText, '', {
+        skipPreview: fromPreview,
+        previewLines: payload.previewLines,
+        title: `Struk Kasir #${tx.txId || ''}`,
+        rebuild: () => buildPOSReceiptPayload(tx, getPrinterConfig()),
+        onConfirm: () => {
+            // Tutup modal sukses / preview hanya setelah cetak dikonfirmasi
+            document.getElementById('pos-success-modal')?.remove();
+            document.getElementById('pos-receipt-fallback-modal')?.remove();
+        }
+    });
 };
 
 /**
@@ -1093,9 +1154,15 @@ export const printShiftSettlementDirect = (shift, isXReport = false) => {
     }
     const cfg = getPrinterConfig();
     const payload = buildShiftReceiptPayload(shift, isXReport, cfg);
+    const fromPreview = isPreviewModalOpen('pos-shift-receipt-modal');
 
-    document.getElementById('pos-shift-receipt-modal')?.remove();
-    sendToRawBT(payload.base64, payload.plainText);
+    sendToRawBT(payload.base64, payload.plainText, '', {
+        skipPreview: fromPreview,
+        previewLines: payload.previewLines,
+        title: `${isXReport ? 'Ringkasan Shift (X-Report)' : 'Rekap Tutup Shift (Z-Report)'} #${shift.shiftNo || shift.id || ''}`,
+        rebuild: () => buildShiftReceiptPayload(shift, isXReport, getPrinterConfig()),
+        onConfirm: () => document.getElementById('pos-shift-receipt-modal')?.remove()
+    });
 };
 
 /**
@@ -1174,12 +1241,19 @@ export const printCustomerReceiptDirect = async (orderId = null) => {
 
     const cfg = getPrinterConfig();
     const payload = buildOrderReceiptPayload(order, cfg);
+    const fromPreview = isPreviewModalOpen('receipt-preview-modal');
 
-    if (typeof window.closeReceiptPreviewModal === 'function') {
-        window.closeReceiptPreviewModal();
-    }
-
-    sendToRawBT(payload.base64, payload.plainText);
+    sendToRawBT(payload.base64, payload.plainText, '', {
+        skipPreview: fromPreview,
+        previewLines: payload.previewLines,
+        title: `Struk Pesanan #${order.orderId || ''}`,
+        rebuild: () => buildOrderReceiptPayload(order, getPrinterConfig()),
+        onConfirm: () => {
+            if (typeof window.closeReceiptPreviewModal === 'function' && fromPreview) {
+                window.closeReceiptPreviewModal();
+            }
+        }
+    });
 };
 
 /**
@@ -1201,21 +1275,32 @@ export const printTempoReceiptDirect = (orderId = null) => {
 
     const cfg = getPrinterConfig();
     const payload = buildTempoReceiptPayload(order, cfg);
+    const fromPreview = isPreviewModalOpen('receipt-preview-modal');
 
-    if (typeof window.closeReceiptPreviewModal === 'function') {
-        window.closeReceiptPreviewModal();
-    }
-
-    sendToRawBT(payload.base64, payload.plainText);
+    sendToRawBT(payload.base64, payload.plainText, '', {
+        skipPreview: fromPreview,
+        previewLines: payload.previewLines,
+        title: `Nota Tagihan Tempo #${order.orderId || ''}`,
+        rebuild: () => buildTempoReceiptPayload(order, getPrinterConfig()),
+        onConfirm: () => {
+            if (typeof window.closeReceiptPreviewModal === 'function' && fromPreview) {
+                window.closeReceiptPreviewModal();
+            }
+        }
+    });
 };
 
 /**
- * Uji Coba Cetak RawBT Seketika
+ * Uji Coba Cetak RawBT (Preview → Cetak)
  */
 export const executeRawBTTestPrint = () => {
     const cfg = getPrinterConfig();
     const payload = buildTestReceiptPayload(cfg);
-    sendToRawBT(payload.base64, payload.plainText);
+    sendToRawBT(payload.base64, payload.plainText, '', {
+        previewLines: payload.previewLines,
+        title: 'Uji Coba Cetak Printer',
+        rebuild: () => buildTestReceiptPayload(getPrinterConfig())
+    });
 };
 
 // ─── Expose Global ke window ──────────────────────────────────

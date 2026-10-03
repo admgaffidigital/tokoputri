@@ -1217,10 +1217,7 @@ export const printExpenseSlip = (expenseId) => {
     const srcObj = EXPENSE_SOURCES.find(s => s.key === exp.source) || EXPENSE_SOURCES[0];
     const store = appData.store || {};
 
-    const slipWindow = window.open('', '_blank');
-    if (!slipWindow) return showToast("Izinkan pop-up untuk mencetak Bukti Kas Keluar!");
-
-    slipWindow.document.write(`
+    const fullSlipHtml = `
         <!DOCTYPE html>
         <html lang="id">
         <head>
@@ -1285,16 +1282,23 @@ export const printExpenseSlip = (expenseId) => {
                     </div>
                 </div>
             </div>
-
-            <div class="no-print" style="text-align: center; margin-top: 20px;">
-                <button onclick="window.print()" style="padding: 8px 18px; font-weight: bold; cursor: pointer; background: #0f172a; color: #fff; border: none; border-radius: 8px;">Cetak Bukti Kas</button>
-            </div>
-            <script>
-                window.onload = function() { setTimeout(function() { window.print(); }, 300); }
-            </script>
         </body>
         </html>
-    `);
+    `;
+
+    // Selalu tampilkan Preview terlebih dahulu sebelum cetak
+    if (typeof window.openHtmlPrintPreview === 'function') {
+        window.openHtmlPrintPreview({
+            title: `Bukti Kas Keluar #${exp.id}`,
+            html: fullSlipHtml,
+            paper: 'slip'
+        });
+        return;
+    }
+
+    const slipWindow = window.open('', '_blank');
+    if (!slipWindow) return showToast("Izinkan pop-up untuk mencetak Bukti Kas Keluar!");
+    slipWindow.document.write(fullSlipHtml);
     slipWindow.document.close();
 };
 
