@@ -32,3 +32,6 @@ apk_temp/
 
 # Helper/scratch scripts — not needed in production
 _scripts/
+
+# Cadangan aturan Firestore lokal (rollback)
+firestore.rules.backup
