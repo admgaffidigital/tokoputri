@@ -1101,6 +1101,13 @@ window.previewTempoReceipt = async (orderId) => {
         }
         const o = doc.data();
         hLoad();
+
+        // Satu tampilan preview universal untuk seluruh sistem (konsisten dengan tema)
+        if (typeof window.printTempoReceiptDirect === 'function') {
+            window.lastPrintedOrder = { ...o, orderId: o.orderId || orderId };
+            window.printTempoReceiptDirect(o.orderId || orderId);
+            return;
+        }
         
         const d = o.dateString ? new Date(o.dateString).toLocaleString('id-ID',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}) : '';
         const sN = appData.store?.name || "Toko Putri", sW = appData.store?.wa || "";

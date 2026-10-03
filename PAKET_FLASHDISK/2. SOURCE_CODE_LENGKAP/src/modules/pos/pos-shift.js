@@ -1284,8 +1284,8 @@ export const printShiftSettlementReceipt = (shift, isXReport = false, forcePrevi
     window._lastShiftData = { shift, isXReport };
     const config = typeof getPrinterConfig === 'function' ? getPrinterConfig() : { paperSize: '58mm', deviceType: 'rawbt' };
 
-    // Jika mode Direct Print aktif dan bukan dipaksa preview, langsung cetak ke RawBT!
-    if (!forcePreview && config.directPrint !== false && typeof window.printShiftSettlementDirect === 'function') {
+    // Satu tampilan preview universal untuk seluruh sistem (konsisten dengan tema)
+    if (typeof window.printShiftSettlementDirect === 'function') {
         window.printShiftSettlementDirect(shift, isXReport);
         return;
     }

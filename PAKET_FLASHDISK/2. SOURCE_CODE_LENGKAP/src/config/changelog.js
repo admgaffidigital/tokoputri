@@ -8,6 +8,21 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-10-40',
+        version: 'v1.10.40',
+        date: '2026-10-03',
+        title: 'Konsistensi Desain Total Seluruh Modal Preview Cetak: Unifikasi Tema UTP pada Struk, Dokumen A4 & Thermal',
+        category: 'improvement',
+        badge: 'Design Consistency v1.10.40',
+        items: [
+            'Unifikasi Tema Visual Receipt Preview Modal: Mendesain ulang modal preview struk pelanggan (receipt-preview-modal) dari layout lama yang berbeda sendiri (jomplang) menjadi 100% identik dengan tema UTP (Universal Theme Preview) — ikon badge bergradien tema, chip info bar, tombol Batal/Setelan/Cetak Sekarang bergradien, background dotted canvas, dan mobile bottom-sheet pull-indicator.',
+            'Arsitektur 3-Modal Konsisten: Seluruh modal preview cetak (receipt-preview-modal di index.html, utp-thermal-modal di print-preview.js, dan doc-preview-modal di index.html) kini menggunakan bahasa visual identik — header icon badge utp-btn-primary, chip bar info konteks, footer aksi 3-tombol, border/separator slate-100/dark:slate-800, dan safe-area-inset padding.',
+            'Konsistensi Z-Index & Backdrop: Menyelaraskan receipt-preview-modal ke z-[10050] dengan backdrop rgba(15,23,42,0.82) menggantikan z-[110] bg-slate-900/80 yang inkonsisten.',
+            'Aksesibilitas & Semantik: Penambahan role=dialog, aria-modal=true, dan aria-labelledby pada receipt-preview-modal sesuai standar A11y yang sudah diterapkan di 2 modal lainnya.',
+            'Multi-Channel Distribution v1.10.40 (Android versionCode 11040).'
+        ]
+    },
+    {
         id: 'log-1-10-39',
         version: 'v1.10.39',
         date: '2026-10-03',

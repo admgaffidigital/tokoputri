@@ -2996,11 +2996,8 @@ const showPOSSuccess = (tx) => {
           </div>` : ''}
         </div>
         <div class="px-6 pb-6 flex flex-col gap-2">
-          <button onclick="window.previewPOSReceiptThenPrint(${txJson})" class="w-full py-3.5 rounded-2xl text-white font-black text-sm shadow-lg active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer hover:brightness-105" style="background:linear-gradient(135deg, var(--color-primary-light,#e1b858) 0%, var(--color-primary,#c59b27) 50%, var(--color-primary-dark,#a87f1b) 100%);box-shadow:0 4px 14px rgba(var(--color-primary-rgb),0.35)">
-            <i class="fa-solid fa-eye text-white/90"></i><i class="fa-solid fa-print"></i> Preview &amp; Cetak Struk
-          </button>
-          <button onclick="window.printPOSReceiptDirect(${txJson})" class="w-full py-2.5 rounded-2xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold text-xs hover:bg-slate-50 dark:hover:bg-slate-800 transition-all cursor-pointer flex items-center justify-center gap-1.5">
-            <i class="fa-solid fa-receipt text-slate-400"></i> Preview Struk Thermal (ESC/POS)
+          <button onclick="window.printPOSReceiptDirect(${txJson})" class="w-full py-3.5 rounded-2xl text-white font-black text-sm shadow-lg active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer hover:brightness-105" style="background:linear-gradient(135deg, var(--color-primary-light,#e1b858) 0%, var(--color-primary,#c59b27) 50%, var(--color-primary-dark,#a87f1b) 100%);box-shadow:0 4px 14px rgba(var(--color-primary-rgb),0.35)">
+            <i class="fa-solid fa-eye text-white/90"></i> Preview &amp; Cetak Struk
           </button>
           <button onclick="document.getElementById('pos-success-modal')?.remove()" class="w-full py-2.5 rounded-2xl border border-slate-200/80 dark:border-slate-700/80 text-slate-500 dark:text-slate-400 font-medium text-xs hover:bg-slate-50 dark:hover:bg-slate-800 transition-all cursor-pointer">Transaksi Baru</button>
           ${isInAdmin ? `
@@ -3020,19 +3017,18 @@ const showPOSSuccess = (tx) => {
     }
 };
 
-// ─── Cetak Struk POS: Langsung Cetak atau Preview ─────────────
+// ─── Cetak Struk POS: Selalu lewat Preview Universal ─────────────
 export const printPOSReceipt = (tx) => {
-    document.getElementById('pos-success-modal')?.remove();
-    const cfg = typeof getPrinterConfig === 'function' ? getPrinterConfig() : {};
-    if (cfg.directPrint !== false && typeof window.printPOSReceiptDirect === 'function') {
-        window.printPOSReceiptDirect(tx);
-    } else {
-        previewPOSReceiptThenPrint(tx);
-    }
+    previewPOSReceiptThenPrint(tx);
 };
 
 export const previewPOSReceiptThenPrint = (tx) => {
     window._lastPOSTx = tx;
+    // Satu tampilan preview untuk seluruh sistem (konsisten dengan tema)
+    if (typeof window.printPOSReceiptDirect === 'function') {
+        window.printPOSReceiptDirect(tx);
+        return;
+    }
     const config    = typeof getPrinterConfig === 'function' ? getPrinterConfig() : { paperSize: '58mm', deviceType: 'rawbt' };
     const cols      = typeof window.getPaperCols === 'function' ? window.getPaperCols(config.paperSize) : (config.paperSize === '80mm' ? 48 : 32);
     const is80      = cols >= 40;

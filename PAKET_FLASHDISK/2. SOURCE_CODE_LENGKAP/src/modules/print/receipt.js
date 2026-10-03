@@ -12,8 +12,12 @@ import { getPrinterConfig, getPaperCols } from './printer-settings.js';
 import { renderThermalDOMAndPrint, formatCompactDate, wrapWords } from './rawbt.js';
 
 export const openReceiptPreview = async (orderId = null) => {
-    if (orderId && typeof setCVOrd === 'function') {
+    if (orderId && typeof setCVOrd === 'function' && typeof orderId === 'string') {
         setCVOrd(orderId);
+    }
+    // Satu tampilan preview universal untuk seluruh sistem (konsisten dengan tema)
+    if (typeof window.printCustomerReceiptDirect === 'function') {
+        return window.printCustomerReceiptDirect(orderId);
     }
     const rawTarget = (typeof orderId === 'string' ? orderId : (orderId && orderId.orderId ? orderId.orderId : null)) || cVOrd;
     const targetId = String(rawTarget || '').replace(/^#/, '').trim();

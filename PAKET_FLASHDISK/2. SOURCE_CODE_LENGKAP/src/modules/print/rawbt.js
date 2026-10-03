@@ -1269,6 +1269,11 @@ export const printTempoReceiptDirect = (orderId = null) => {
     }
 
     if (!order) {
+        if (typeof window.previewTempoReceipt === 'function' && targetId && !window.__tempoReceiptFetching) {
+            window.__tempoReceiptFetching = true;
+            Promise.resolve(window.previewTempoReceipt(targetId)).finally(() => { window.__tempoReceiptFetching = false; });
+            return;
+        }
         showToast('Data nota piutang tidak ditemukan.', 'warning');
         return;
     }

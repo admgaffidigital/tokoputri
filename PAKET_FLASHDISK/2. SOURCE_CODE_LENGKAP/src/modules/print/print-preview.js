@@ -371,6 +371,16 @@ export const confirmHtmlPrint = () => {
 };
 
 // ─── Expose ke window untuk atribut onclick ──────────────────
+// Style preview diinjeksi sejak awal agar modal A4 (doc-preview-modal)
+// memakai token desain yang sama persis dengan preview struk.
+if (typeof document !== 'undefined') {
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', ensurePreviewStyles, { once: true });
+    } else {
+        ensurePreviewStyles();
+    }
+}
+export { ensurePreviewStyles };
 window.openThermalPrintPreview       = openThermalPrintPreview;
 window.closeThermalPrintPreview      = closeThermalPrintPreview;
 window.confirmThermalPrint           = confirmThermalPrint;
