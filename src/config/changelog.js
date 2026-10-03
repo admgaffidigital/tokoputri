@@ -8,6 +8,20 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-10-36',
+        version: 'v1.10.36',
+        date: '2026-10-03',
+        title: 'Penyesuaian Nama Resmi Toko Putri ( Official Store ) & Kompilasi Paket Rilis Android App Bundle (.AAB) Siap Play Store',
+        category: 'feature',
+        badge: 'Play Store Release Bundle (.AAB) & Official Store Rebranding v1.10.36',
+        items: [
+            'Rebranding Nama Aplikasi Resmi: Memperbarui nama aplikasi menjadi "Toko Putri ( Official Store )" pada seluruh lapisan ekosistem: Android Native strings.xml (app_name & title_activity_main), Web App Manifest (manifest.json), meta title HTML (index.html), dan konfigurasi Capacitor (capacitor.config.json).',
+            'Kompilasi Resmi Android App Bundle (.AAB) untuk Google Play Store: Menghasilkan file rilis resmi format .aab (TokoPutri(OfficialStore).aab) menggunakan Gradle 8.14 & JDK 21 yang telah ditandatangani dan teruji untuk siap diupload langsung ke Google Play Console.',
+            'Otomasi Generator Build AAB (scripts/build-aab.mjs & npm run build:aab): Menambahkan alur build otomatis satu perintah yang mengintegrasikan kompilasi Vite produksi, sinkronisasi aset Capacitor, eksekusi Gradle :app:bundleRelease, serta distribusi otomatis file AAB ke root proyek dan paket flashdisk.',
+            'Multi-Channel Distribution v1.10.36 (Android versionCode 11036): Sinkronisasi versi konsisten di package.json dan android/app/build.gradle serta pembaruan paket distribusi siap pakai.'
+        ]
+    },
+    {
         id: 'log-1-10-35',
         version: 'v1.10.35',
         date: '2026-10-03',

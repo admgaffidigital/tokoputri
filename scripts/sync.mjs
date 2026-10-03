@@ -21,6 +21,12 @@ if (fs.existsSync('PAKET_FLASHDISK/1. HASIL_BUILD_SIAP_PAKE')) {
 }
 fs.cpSync('dist', 'PAKET_FLASHDISK/1. HASIL_BUILD_SIAP_PAKE', { recursive: true, force: true });
 
+// Pertahankan / salin file AAB ke paket distribusi
+if (fs.existsSync('TokoPutri(OfficialStore).aab')) {
+  fs.copyFileSync('TokoPutri(OfficialStore).aab', '1. HASIL_BUILD_SIAP_PAKE/TokoPutri(OfficialStore).aab');
+  fs.copyFileSync('TokoPutri(OfficialStore).aab', 'PAKET_FLASHDISK/TokoPutri(OfficialStore).aab');
+}
+
 
 // 3. Mirroring source files to flashdisk package
 console.log('💾 [3/4] Menyinkronkan kode sumber ke paket flashdisk...');

@@ -1,6 +1,6 @@
 {
   "appId": "com.tokoputri.app",
-  "appName": "Toko Putri",
+  "appName": "Toko Putri ( Official Store )",
   "webDir": "dist",
   "server": {
     "url": "https://tokoputri-three.vercel.app",
