@@ -15,7 +15,7 @@ import { pushModalHistory, requestCloseModal } from '../../core/router.js';
 // URL rilis GitHub permanen & API endpoint
 export const GITHUB_REPO = 'admgaffidigital/tokoputri';
 export const GITHUB_LATEST_API = `https://api.github.com/repos/${GITHUB_REPO}/releases/latest`;
-export const GITHUB_LATEST_DOWNLOAD_URL = `https://github.com/admgaffidigital/tokoputri/releases/latest/download/TokoPutri.apk`;
+export const GITHUB_LATEST_DOWNLOAD_URL = `https://github.com/admgaffidigital/tokoputri/releases/latest/download/TokoPutri(OfficialStore).apk`;
 
 // Cache metadata rilis agar hemat bandwidth
 let cachedReleaseInfo = null;
@@ -231,7 +231,7 @@ const ensureAppDownloadModalDOM = () => {
             <!-- Kartu QR Code untuk Pengguna Desktop / Laptop -->
             <div id="app-desktop-qr-card" class="p-4 rounded-2xl bg-gradient-to-br from-slate-50 to-emerald-50/40 dark:from-slate-900/60 dark:to-emerald-950/20 border border-emerald-200/60 dark:border-emerald-800/40 flex flex-col sm:flex-row items-center gap-4">
                 <div class="w-28 h-28 bg-white p-2 rounded-xl shadow-md border border-slate-200/80 dark:border-slate-700 shrink-0 flex items-center justify-center">
-                    <img id="app-download-qr-img" src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=https%3A%2F%2Fgithub.com%2Fadmgaffidigital%2Ftokoputri%2Freleases%2Flatest%2Fdownload%2FTokoPutri.apk" alt="QR Code Unduh APK" class="w-full h-full object-contain" loading="lazy">
+                    <img id="app-download-qr-img" src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=https%3A%2F%2Fgithub.com%2Fadmgaffidigital%2Ftokoputri%2Freleases%2Flatest%2Fdownload%2FTokoPutri%28OfficialStore%29.apk" alt="QR Code Unduh APK" class="w-full h-full object-contain" loading="lazy">
                 </div>
                 <div class="flex-1 text-center sm:text-left">
                     <div class="flex items-center justify-center sm:justify-start gap-1.5 text-xs font-black text-slate-800 dark:text-white">
@@ -304,7 +304,7 @@ const ensureAppDownloadModalDOM = () => {
                     <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800">
                         <div class="w-6 h-6 rounded-lg bg-blue-500 text-white text-[11px] font-black flex items-center justify-center mb-1.5">1</div>
                         <h4 class="text-[11px] font-bold text-slate-800 dark:text-white">Unduh APK</h4>
-                        <p class="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5 leading-tight">Ketuk tombol hijau di atas untuk mengunduh TokoPutri.apk.</p>
+                        <p class="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5 leading-tight">Ketuk tombol hijau di atas untuk mengunduh TokoPutri(OfficialStore).apk.</p>
                     </div>
                     <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800">
                         <div class="w-6 h-6 rounded-lg bg-blue-500 text-white text-[11px] font-black flex items-center justify-center mb-1.5">2</div>
@@ -423,7 +423,7 @@ export const downloadLatestApk = () => {
 
     // Tampilkan notifikasi toast
     if (typeof window.showToast === 'function') {
-        window.showToast('Memulai unduhan TokoPutri.apk terbaru. Cek panel notifikasi HP Anda!');
+        window.showToast('Memulai unduhan TokoPutri(OfficialStore).apk terbaru. Cek panel notifikasi HP Anda!');
     }
 
     // Trigger unduhan APK menggunakan link permanen GitHub Releases
@@ -432,7 +432,7 @@ export const downloadLatestApk = () => {
     // Gunakan anchor element agar trigger download browser bekerja di semua platform
     const a = document.createElement('a');
     a.href = downloadUrl;
-    a.setAttribute('download', 'TokoPutri.apk');
+    a.setAttribute('download', 'TokoPutri(OfficialStore).apk');
     a.target = '_blank';
     a.rel = 'noopener noreferrer';
     document.body.appendChild(a);

@@ -21,18 +21,33 @@ if (fs.existsSync('PAKET_FLASHDISK/1. HASIL_BUILD_SIAP_PAKE')) {
 }
 fs.cpSync('dist', 'PAKET_FLASHDISK/1. HASIL_BUILD_SIAP_PAKE', { recursive: true, force: true });
 
-// Pertahankan / salin file AAB & APK rilis ke paket distribusi
+// Pertahankan / salin file AAB & APK rilis resmi ke paket distribusi
 const releaseBinaries = [
   'TokoPutri(OfficialStore).aab',
-  'TokoPutri.aab',
-  'TokoPutri(OfficialStore).apk',
-  'TokoPutri.apk'
+  'TokoPutri(OfficialStore).apk'
 ];
 for (const bin of releaseBinaries) {
   if (fs.existsSync(bin)) {
     fs.copyFileSync(bin, path.join('1. HASIL_BUILD_SIAP_PAKE', bin));
     fs.copyFileSync(bin, path.join('PAKET_FLASHDISK', bin));
     fs.copyFileSync(bin, path.join('PAKET_FLASHDISK/1. HASIL_BUILD_SIAP_PAKE', bin));
+  }
+}
+
+// Bersihkan file binary rilis versi lama jika ada
+const legacyFiles = [
+  'TokoPutri.aab',
+  'TokoPutri.apk',
+  '1. HASIL_BUILD_SIAP_PAKE/TokoPutri.aab',
+  '1. HASIL_BUILD_SIAP_PAKE/TokoPutri.apk',
+  'PAKET_FLASHDISK/TokoPutri.aab',
+  'PAKET_FLASHDISK/TokoPutri.apk',
+  'PAKET_FLASHDISK/1. HASIL_BUILD_SIAP_PAKE/TokoPutri.aab',
+  'PAKET_FLASHDISK/1. HASIL_BUILD_SIAP_PAKE/TokoPutri.apk'
+];
+for (const leg of legacyFiles) {
+  if (fs.existsSync(leg)) {
+    try { fs.rmSync(leg, { force: true }); } catch (e) {}
   }
 }
 
