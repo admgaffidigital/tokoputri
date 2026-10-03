@@ -78,7 +78,7 @@ export const ensureAdminLoaded = async () => {
 window.ensureAdminLoaded = ensureAdminLoaded;
 
 window.checkAdminAccess = async () => {
-    sLoad('Membuka Akses Seller...');
+    sLoad('Membuka Panel Owner...');
     await ensureAdminLoaded();
     hLoad();
     if (typeof window.__checkAdminAccessReal === 'function') {

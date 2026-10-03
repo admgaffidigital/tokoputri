@@ -115,11 +115,11 @@ export const applyStaffMenuPermissions = () => {
         if (welcomeDescEl) welcomeDescEl.textContent = 'Kelola pesanan, katalog produk, dan aktivitas harian toko.';
     } else {
         if (roleBadgeEl) {
-            roleBadgeEl.innerHTML = '<span class="text-[9px] font-bold uppercase text-white/90">Seller</span>';
+            roleBadgeEl.innerHTML = '<span class="text-[9px] font-bold uppercase text-white/90">Staf Toko</span>';
         }
-        if (headerTitleEl) headerTitleEl.textContent = 'CMS SELLER';
-        if (welcomeTitleEl) welcomeTitleEl.innerHTML = 'Selamat Datang, Seller! 👋';
-        if (welcomeTagEl) welcomeTagEl.textContent = 'Panel Kontrol';
+        if (headerTitleEl) headerTitleEl.textContent = 'CMS TOKO';
+        if (welcomeTitleEl) welcomeTitleEl.innerHTML = 'Selamat Datang! 👋';
+        if (welcomeTagEl) welcomeTagEl.textContent = 'Panel Kontrol Toko Putri ( Official Store )';
         if (welcomeDescEl) welcomeDescEl.textContent = 'Kelola produk, pesanan, dan seluruh operasional toko dari satu tempat.';
     }
 };
