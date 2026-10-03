@@ -52,12 +52,12 @@ jobs:
         run: |
           mkdir -p build-output
           if [ -f android/app/build/outputs/apk/release/app-release.apk ]; then
-            cp android/app/build/outputs/apk/release/app-release.apk "build-output/TokoPutri(OfficialStore).apk"
+            cp android/app/build/outputs/apk/release/app-release.apk "build-output/TokoPutri.OfficialStore.apk"
           elif [ -f android/app/build/outputs/apk/debug/app-debug.apk ]; then
-            cp android/app/build/outputs/apk/debug/app-debug.apk "build-output/TokoPutri(OfficialStore).apk"
+            cp android/app/build/outputs/apk/debug/app-debug.apk "build-output/TokoPutri.OfficialStore.apk"
           fi
           if [ -f android/app/build/outputs/bundle/release/app-release.aab ]; then
-            cp android/app/build/outputs/bundle/release/app-release.aab "build-output/TokoPutri(OfficialStore).aab"
+            cp android/app/build/outputs/bundle/release/app-release.aab "build-output/TokoPutri.OfficialStore.aab"
           fi
           echo "Output files ready in build-output:"
           ls -la build-output/
@@ -85,11 +85,11 @@ jobs:
             ### 🚀 Rilis Resmi Toko Putri ( Official Store ) ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || steps.pkg_version.outputs.tag }}
             
             Unduh file installer resmi:
-            - **TokoPutri(OfficialStore).apk**: Installer siap pasang langsung di smartphone Android.
-            - **TokoPutri(OfficialStore).aab**: Android App Bundle resmi untuk diunggah ke Google Play Console.
+            - **TokoPutri.OfficialStore.apk**: Installer siap pasang langsung di smartphone Android.
+            - **TokoPutri.OfficialStore.aab**: Android App Bundle resmi untuk diunggah ke Google Play Console.
           files: |
-            build-output/TokoPutri(OfficialStore).apk
-            build-output/TokoPutri(OfficialStore).aab
+            build-output/TokoPutri.OfficialStore.apk
+            build-output/TokoPutri.OfficialStore.aab
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
