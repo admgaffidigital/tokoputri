@@ -181,7 +181,7 @@ export const renderOrdersList = () => {
     listEl.innerHTML = filtered.map(o => {
         let bC = "text-slate-500 border-slate-200 dark:border-slate-600", iC = "fa-clock", boxBg = "bg-slate-50 dark:bg-slate-700/50", boxText = "text-slate-400";
         if (o.status === 'Baru') {
-            bC = "text-rose-500 border-rose-200 bg-rose-50 dark:bg-rose-900/20 dark:border-rose-800 animate-pulse"; 
+            bC = "text-rose-600 border-rose-300 bg-rose-50 dark:bg-rose-950/40 dark:border-rose-800 font-bold"; 
             iC = "fa-asterisk"; 
             boxBg = "bg-rose-500"; 
             boxText = "text-white shadow-md shadow-rose-500/30";
@@ -285,7 +285,7 @@ export const rAdmOrd = () => {
         <div class="mb-4 flex flex-wrap items-center justify-between gap-3 bg-white dark:bg-slate-800 p-4 sm:p-5 rounded-2xl border border-slate-200/90 dark:border-slate-700/80 shadow-2xs">
             <div class="flex items-center gap-3">
                 <div class="w-11 h-11 rounded-2xl flex items-center justify-center text-white shadow-xs shrink-0" style="background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));">
-                    <i class="fa-solid fa-satellite-dish animate-pulse text-base"></i>
+                    <i class="fa-solid fa-satellite-dish text-base"></i>
                 </div>
                 <div>
                     <h2 class="font-extrabold text-sm sm:text-base text-slate-800 dark:text-slate-100 uppercase tracking-wider leading-tight">Live Orders</h2>

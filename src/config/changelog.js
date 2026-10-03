@@ -8,6 +8,22 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-10-35',
+        version: 'v1.10.35',
+        date: '2026-10-03',
+        title: 'Resolusi Tuntas Layar CMS Berkedip (Zero-Flicker CMS Architecture): Isolasi Latar Belakang Solid, GPU Compositing & Eliminasi Animasi Loop',
+        category: 'fix',
+        badge: 'Zero-Flicker CMS Architecture v1.10.35',
+        items: [
+            'Isolasi Latar Belakang Solid Panel Admin (#view-admin): Mengeliminasi aturan transparansi peninggalan etalase pada panel CMS yang sebelumnya menyebabkan layer transparan z-50 dipaksa me-raster ulang di atas background gradient tetap (#dynamic-bg-container). Panel CMS kini berlatar solid stabil (#F8F6F2 pada light mode, #0B1120 pada dark mode), menghentikan 100% kedipan layar saat scrolling atau interaksi.',
+            'Pembersihan Animasi Keyframe Bertingkat (index.html): Menghapus kelas animasi fade-in dan fade-in-scale pada #view-admin, #admin-dashboard-view, dan #admin-content-view sehingga peralihan antar-menu atau antar-tab di CMS muncul seketika secara instan (0ms) tanpa jeda skala atau kedipan perubahan opacity.',
+            'Hardware Acceleration & GPU Compositing (style.css): Mendaftarkan kontainer CMS ke blok akselerasi GPU (-webkit-backface-visibility: hidden; transform: translateZ(0);), memisahkan paint tree panel admin dari DOM etalase storefront di bawahnya.',
+            'Eliminasi Animasi Berdenyut (animate-pulse) pada Status Stok & Pesanan: Mengganti teks merah berkedip animate-pulse pada produk habis di tabel produk admin dan kartu pesanan baru menjadi pill badge solid yang tenang, tegas, dan mudah dibaca tanpa memicu repaint berkali-kali.',
+            'Integrasi Universal Ketersediaan Stok di Tabel Admin: Menyambungkan tampilan baris stok produk di CMS dengan engine computeTotalProductStock, menyajikan status ketersediaan (Stok Habis, Menipis, Tersedia) secara presisi 1:1 dengan etalase dan POS kasir.',
+            'Multi-Channel Build & Sync v1.10.35 (Android versionCode 11035): Kompilasi produksi web, sinkronisasi paket flashdisk, dan pembaruan platform Android Capacitor selesai 100%.'
+        ]
+    },
+    {
         id: 'log-1-10-34',
         version: 'v1.10.34',
         date: '2026-10-03',

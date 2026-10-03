@@ -78,13 +78,35 @@ html.dark body, html.dark #app-container {
   background-attachment: fixed;
 }
 
-/* Biarkan background canvas & dynamic-bg-container bersinar ke seluruh halaman */
-.view-section:not(#view-admin-login) {
+/* Biarkan background canvas & dynamic-bg-container bersinar ke seluruh etalase pelanggan,
+   TETAPI panel CMS (#view-admin) dan login admin (#view-admin-login) WAJIB berlatar solid kokoh anti-flicker */
+.view-section:not(#view-admin-login):not(#view-admin) {
   background-color: transparent !important;
 }
-.dark .view-section:not(#view-admin-login),
-html.dark .view-section:not(#view-admin-login) {
+.dark .view-section:not(#view-admin-login):not(#view-admin),
+html.dark .view-section:not(#view-admin-login):not(#view-admin) {
   background-color: transparent !important;
+}
+
+/* Latar Belakang Solid Anti-Flicker & Isolasi GPU untuk Panel Admin CMS & Login */
+#view-admin,
+#view-admin-login {
+  background-color: #F8F6F2 !important;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+}
+
+.dark #view-admin,
+html.dark #view-admin,
+.dark #view-admin-login,
+html.dark #view-admin-login {
+  background-color: #0b1120 !important;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
 }
 
 /* Explicit Aspect Ratio Utilities (Mencegah keruntuhan gambar di mobile/desktop) */
@@ -1117,6 +1139,9 @@ body {
 }
 
 /* === ANTI-FLICKER HARDWARE ACCELERATION (GPU COMPOSITING) === */
+#view-admin,
+#admin-dashboard-view,
+#admin-content-view,
 .modal-bottom-sheet,
 [id*="modal-content"],
 [id*="modal-box"],

@@ -11,7 +11,7 @@ import Sortable from 'sortablejs';
 import { appData } from '../../../core/state.js';
 import { el, setH, esc, fCur, showToast, renderProductCoverHtml } from '../../../core/utils.js';
 import { saveApp, sortProductsByOrder } from '../../../services/storage.js';
-import { computeInventoryStats } from '../../../core/pricing.js';
+import { computeInventoryStats, computeTotalProductStock } from '../../../core/pricing.js';
 import { customPrompt, showConfirm } from '../../../core/ui.js';
 import { cTab, setCTab, aSq, setASq } from './index.js';
 
@@ -534,7 +534,16 @@ window.rAdmItms = t => {
                 <div class="min-w-0 flex flex-col justify-center py-0.5">
                     <p class="text-xs sm:text-sm font-bold ${tC} line-clamp-2 uppercase tracking-wide leading-snug mb-1.5">${esc(x.name||x.title||x.bankName||x.code||'Item')}</p>
                     ${isP ? `<p class="text-sm sm:text-base font-black text-[var(--color-primary)] tracking-tight">${fCur(x.price)}</p>` : ''}
-                    ${isP && isAdminActive && useStockEnabled ? `<p class="text-[10px] font-bold mt-1 ${(x.variants&&x.variants.length?x.variants.reduce((s,v)=>s+(parseFloat(v.stock)||0),0):parseFloat(x.stock)||0) === 0 ? 'text-rose-500 animate-pulse' : 'text-blue-500'}"><i class="fa-solid fa-boxes-stacked mr-1"></i>Stok: ${x.variants&&x.variants.length ? x.variants.reduce((s,v)=>s+(parseFloat(v.stock)||0),0).toFixed(2).replace(/\.?0+$/,'') : (parseFloat(x.stock)||0)}</p>` : ''}
+                    ${isP && isAdminActive ? (() => {
+                        const sInfo = computeTotalProductStock(x, appData.store);
+                        if (!sInfo.isManaged) return '';
+                        if (sInfo.isOutOfStock) {
+                            return `<p class="text-[10px] font-bold mt-1 inline-flex items-center gap-1 text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-950/40 px-2 py-0.5 rounded-md"><i class="fa-solid fa-boxes-stacked mr-0.5"></i>Stok Habis (0)</p>`;
+                        }
+                        const stockVal = sInfo.stock != null ? String(sInfo.stock).replace(/\.?0+$/, '') : '0';
+                        const colorCls = sInfo.isLowStock ? 'text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/40' : 'text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40';
+                        return `<p class="text-[10px] font-bold mt-1 inline-flex items-center gap-1 ${colorCls} px-2 py-0.5 rounded-md"><i class="fa-solid fa-boxes-stacked mr-0.5"></i>Stok: ${stockVal}</p>`;
+                    })() : ''}
                     ${isP && isAdminActive && x.hpp ? `<p class="text-[10px] font-bold text-amber-500 mt-0.5"><i class="fa-solid fa-coins mr-1"></i>HPP: ${fCur(x.hpp)}</p>` : ''}
                     ${isP ? (() => {
                         const sold = x.variants && x.variants.length ? x.variants.reduce((s,vv)=>s+(parseFloat(vv.totalSold)||0),0) : (parseFloat(x.totalSold)||0);
