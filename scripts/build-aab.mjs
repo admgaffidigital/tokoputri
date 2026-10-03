@@ -83,30 +83,30 @@ console.log('\n🌐 [2/4] Kompilasi Web Produksi & Sinkronisasi Capacitor Androi
 execSync('npm run build', { stdio: 'inherit', env });
 execSync('npx cap sync android', { stdio: 'inherit', env });
 
-// 4. Jalankan Gradle Bundle Release
-console.log('\n⚙️  [3/4] Mengompilasi Android App Bundle (.aab) dengan Gradle...');
+// 4. Jalankan Gradle Bundle Release & Assemble Release
+console.log('\n⚙️  [3/4] Mengompilasi Android App Bundle (.aab) & APK Rilis dengan Gradle...');
 const androidDir = path.resolve('android');
 const gradlewCmd = process.platform === 'win32' ? 'gradlew.bat' : './gradlew';
-execSync(`${gradlewCmd} :app:bundleRelease`, {
+execSync(`${gradlewCmd} :app:bundleRelease :app:assembleRelease`, {
   cwd: androidDir,
   stdio: 'inherit',
   env
 });
 
-// 5. Verifikasi dan Salin File AAB
-console.log('\n📋 [4/4] Memverifikasi dan mendistribusikan file AAB rilis...');
+// 5. Verifikasi dan Salin File AAB & APK
+console.log('\n📋 [4/4] Memverifikasi dan mendistribusikan file AAB & APK rilis...');
 const aabSource = path.join(androidDir, 'app', 'build', 'outputs', 'bundle', 'release', 'app-release.aab');
+const apkSource = path.join(androidDir, 'app', 'build', 'outputs', 'apk', 'release', 'app-release.apk');
 
 if (!fs.existsSync(aabSource)) {
   console.error(`❌ File AAB rilis tidak ditemukan di: ${aabSource}`);
   process.exit(1);
 }
 
-const stat = fs.statSync(aabSource);
-const sizeMb = (stat.size / (1024 * 1024)).toFixed(2);
-console.log(`✅ Berhasil menghasilkan AAB: app-release.aab (${sizeMb} MB)`);
+const statAab = fs.statSync(aabSource);
+const sizeAabMb = (statAab.size / (1024 * 1024)).toFixed(2);
+console.log(`✅ Berhasil menghasilkan AAB: app-release.aab (${sizeAabMb} MB)`);
 
-// Target salinan
 const aabTargets = [
   'TokoPutri(OfficialStore).aab',
   'TokoPutri.aab',
@@ -120,11 +120,36 @@ for (const target of aabTargets) {
     fs.mkdirSync(dir, { recursive: true });
   }
   fs.copyFileSync(aabSource, target);
-  console.log(`   -> Tersalin ke: ${target}`);
+  console.log(`   -> [AAB] Tersalin ke: ${target}`);
+}
+
+if (fs.existsSync(apkSource)) {
+  const statApk = fs.statSync(apkSource);
+  const sizeApkMb = (statApk.size / (1024 * 1024)).toFixed(2);
+  console.log(`✅ Berhasil menghasilkan APK: app-release.apk (${sizeApkMb} MB)`);
+
+  const apkTargets = [
+    'TokoPutri(OfficialStore).apk',
+    'TokoPutri.apk',
+    'PAKET_FLASHDISK/TokoPutri(OfficialStore).apk',
+    'PAKET_FLASHDISK/TokoPutri.apk',
+    '1. HASIL_BUILD_SIAP_PAKE/TokoPutri(OfficialStore).apk',
+    '1. HASIL_BUILD_SIAP_PAKE/TokoPutri.apk'
+  ];
+
+  for (const target of apkTargets) {
+    const dir = path.dirname(target);
+    if (dir !== '.' && !fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
+    fs.copyFileSync(apkSource, target);
+    console.log(`   -> [APK] Tersalin ke: ${target}`);
+  }
 }
 
 console.log('\n================================================================');
-console.log('🎉 SUKSES! FILE AAB SIAP DIUPLOAD KE GOOGLE PLAY CONSOLE!');
-console.log(`   File Utama : TokoPutri(OfficialStore).aab (${sizeMb} MB)`);
-console.log(`   Versi      : v${pkg.version}`);
+console.log('🎉 SUKSES! FILE AAB & APK SIAP DIGUNAKAN!');
+console.log(`   AAB Play Store : TokoPutri(OfficialStore).aab (${sizeAabMb} MB)`);
+console.log(`   APK Install HP : TokoPutri(OfficialStore).apk`);
+console.log(`   Versi          : v${pkg.version}`);
 console.log('================================================================\n');

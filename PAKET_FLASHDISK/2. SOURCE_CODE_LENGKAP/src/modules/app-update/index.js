@@ -71,7 +71,7 @@ export const fetchLatestReleaseInfo = async () => {
 
             cachedReleaseInfo = {
                 tagName: effectiveTag,
-                name: `Toko Putri ${effectiveTag}`,
+                name: `Toko Putri ( Official Store ) ${effectiveTag}`,
                 publishedAt: isGitHubOlder ? '27 Sep 2026' : formatReleaseDate(data.published_at),
                 fileSize: apkAsset ? formatFileSize(apkAsset.size) : '8.0 MB',
                 downloadUrl: apkAsset?.browser_download_url || GITHUB_LATEST_DOWNLOAD_URL,
@@ -86,7 +86,7 @@ export const fetchLatestReleaseInfo = async () => {
         const fallbackVer = getLatestVersion(appData) || 'v1.9.68';
         cachedReleaseInfo = {
             tagName: fallbackVer,
-            name: `Toko Putri ${fallbackVer}`,
+            name: `Toko Putri ( Official Store ) ${fallbackVer}`,
             publishedAt: '26 Sep 2026',
             fileSize: '8.0 MB',
             downloadUrl: GITHUB_LATEST_DOWNLOAD_URL,
@@ -165,7 +165,7 @@ const ensureAppDownloadModalDOM = () => {
                 <div class="flex-1 min-w-0">
                     <div class="flex items-center gap-2 flex-wrap">
                         <h2 class="text-base sm:text-lg font-black text-slate-900 dark:text-white tracking-tight leading-tight">
-                            Toko Putri
+                            Toko Putri ( Official Store )
                         </h2>
                         <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800/60 text-[9px] font-black uppercase tracking-wider">
                             <i class="fa-solid fa-crown text-[8px]"></i> Pilihan Kasir
@@ -175,7 +175,7 @@ const ensureAppDownloadModalDOM = () => {
                         Adm Gaffi Digital • Official Partner
                     </p>
                     <p class="text-[11px] font-semibold text-slate-500 dark:text-slate-400 mt-1 line-clamp-2 leading-relaxed">
-                        Aplikasi resmi kasir, katalog grosir teknik, cetak struk POS, dan belanja online Toko Putri.
+                        Aplikasi resmi kasir, katalog grosir teknik, cetak struk POS, dan belanja online Toko Putri ( Official Store ).
                     </p>
                 </div>
             </div>
