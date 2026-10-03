@@ -8,6 +8,24 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-10-38',
+        version: 'v1.10.38',
+        date: '2026-10-03',
+        title: 'Security Hardening Fase 1 & Fase 2: Isolasi Data Bisnis Sensitif, Penguatan Aturan Firestore & Auto-Migrasi cms_private',
+        category: 'security',
+        badge: 'Security Hardening Firestore v1.10.38',
+        items: [
+            'Fase 1 — Penguatan Aturan Akses Firestore (43/43 uji emulator lulus): Pengambilan daftar member dan pesanan kini hanya bisa dilakukan staf yang login (sebelumnya siapa saja bisa mengambil ribuan data member sekaligus). Penulisan checkout publik dibatasi ketat per kolom — hanya field yang sah (points, lastOrderAt, paylaterUsed, name) yang boleh berubah dengan batas maksimum poin per transaksi. Data operasional kasir (pos_transactions, pos_shifts, orders) sepenuhnya terkunci untuk staf.',
+            'Fase 2 — Pemisahan Fisik Data Sensitif ke cms_private: Supplier, pembelian (Purchase Order), pengeluaran operasional, setting pajak, dan riwayat Stock Opname dipindahkan dari dokumen publik freshmart/cms_data ke dokumen privat freshmart/cms_private yang hanya dapat dibaca/ditulis oleh staf admin/owner yang terautentikasi Firebase.',
+            'Auto-Migrasi Tanpa Service Account Key: Mekanisme migrasi otomatis berjalan saat Owner pertama kali login setelah pembaruan — data sensitif berpindah dari cms_data ke cms_private di belakang layar tanpa tindakan manual apapun. Flag localStorage freshmart_priv_migrated_v2 memastikan migrasi tidak berjalan ulang.',
+            'Arsitektur saveApp() Bifurkasi: Fungsi saveApp() kini otomatis memisah penyimpanan berdasarkan konstanta PRIVATE_APP_KEYS — field sensitif ditulis ke cms_private, field publik ke cms_data. Mencegah kebocoran data sensitif ke dokumen publik untuk selamanya.',
+            'Listener Realtime Terpisah (attachPrivateDataListener / detachPrivateDataListener): Listener data sensitif hanya dipasang saat admin/owner aktif dan dilepas beserta pembersihan memori saat logout — data supplier/pembelian/pengeluaran tidak pernah tersimpan di memori browser pengguna yang tidak berhak.',
+            'Konfigurasi Firebase CLI (firebase.json & .firebaserc, npm run deploy:rules): Menambahkan konfigurasi project Firebase dan script NPM baru untuk deploy Firestore Rules via CLI dengan satu perintah.',
+            'Verifikasi Production: Dikonfirmasi via Firebase Console — freshmart/cms_private berisi expenses dan purchases; freshmart/cms_data bersih dari field sensitif.',
+            'Multi-Channel Distribution v1.10.38 (Android versionCode 11038).'
+        ]
+    },
+    {
         id: 'log-1-10-37',
         version: 'v1.10.37',
         date: '2026-10-03',

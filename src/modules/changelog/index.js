@@ -56,6 +56,13 @@ const getCategoryMeta = (cat) => {
                 colorClass: 'bg-slate-100 dark:bg-slate-800/90 text-slate-700 dark:text-slate-300 border-slate-200/80 dark:border-slate-700/80',
                 iconColor: 'text-[var(--color-primary)]'
             };
+        case 'security':
+            return {
+                label: 'Keamanan',
+                icon: 'fa-shield-halved',
+                colorClass: 'bg-red-50 dark:bg-red-950/40 text-red-700 dark:text-red-300 border-red-200/80 dark:border-red-800/60',
+                iconColor: 'text-red-500 dark:text-red-400'
+            };
         case 'bugfix':
             return {
                 label: 'Perbaikan',
@@ -229,6 +236,9 @@ export const openChangelogModal = (initialCategory = 'all') => {
                 <button onclick="window.filterChangelog('maintenance')" data-category="maintenance" class="btn-changelog-filter shrink-0 whitespace-nowrap flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-[10px] sm:text-xs font-bold bg-white dark:bg-slate-800/90 hover:bg-slate-100 dark:hover:bg-slate-700/80 border border-slate-200/80 dark:border-slate-700/80 text-slate-700 dark:text-slate-300 transition-all cursor-pointer">
                     <i class="fa-solid fa-wrench text-[10px] text-[var(--color-primary)]"></i>
                     <span>Maintenance</span>
+                </button>
+                <button onclick="window.filterChangelog('security')" data-category="security" class="btn-changelog-filter shrink-0 whitespace-nowrap flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-[10px] sm:text-xs font-bold bg-white dark:bg-slate-800/90 hover:bg-slate-100 dark:hover:bg-slate-700/80 border border-slate-200/80 dark:border-slate-700/80 text-slate-700 dark:text-slate-300 transition-all cursor-pointer">
+                    <i class="fa-solid fa-shield-halved"></i> Keamanan
                 </button>
                 <button onclick="window.filterChangelog('bugfix')" data-category="bugfix" class="btn-changelog-filter shrink-0 whitespace-nowrap flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-[10px] sm:text-xs font-bold bg-white dark:bg-slate-800/90 hover:bg-slate-100 dark:hover:bg-slate-700/80 border border-slate-200/80 dark:border-slate-700/80 text-slate-700 dark:text-slate-300 transition-all cursor-pointer">
                     <i class="fa-solid fa-bug-slash text-[10px] text-[var(--color-primary)]"></i>

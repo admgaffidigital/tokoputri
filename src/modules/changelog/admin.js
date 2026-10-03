@@ -187,6 +187,7 @@ export const rAdmChangelog = () => {
                         <option value="feature">Fitur Baru (Feature)</option>
                         <option value="optimization">Optimasi Performa (Optimization)</option>
                         <option value="maintenance">Pemeliharaan &amp; Maintenance</option>
+                        <option value="security">Keamanan (Security)</option>
                         <option value="bugfix">Perbaikan Bug (Bugfix)</option>
                     </select>
                 </div>
