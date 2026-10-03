@@ -41,7 +41,7 @@ import './modules/app-update/index.js';
 // Services: Upload Media (GAS Drive Integration)
 import './services/upload.js';
 // Services: Penyimpanan Data & Realtime Sync (Firestore / Cache)
-import { loadAppData, attachRealtimeStockSync, attachRealtimeProductsSync, attachRewardsRealtime } from './services/storage.js';
+import { loadAppData, attachRealtimeStockSync, attachRealtimeProductsSync, attachRewardsRealtime, attachPrivateDataListener, detachPrivateDataListener } from './services/storage.js';
 // Modules: Beranda, Banner Slider & Footer
 import { renderFooter } from './modules/home/footer.js';
 import './modules/home/index.js';
@@ -364,6 +364,8 @@ window.addEventListener('DOMContentLoaded', async () => {
                 await ensureAdminLoaded();
                 window.isAdm = true;
                 window.__localIsAdm = true;
+                // Pasang listener data sensitif (suppliers, purchases, expenses, dll) — hanya admin
+                attachPrivateDataListener();
                 if (typeof window.updatePOSHeaderIcon === 'function') window.updatePOSHeaderIcon();
 
                 let loginView = document.getElementById('view-admin-login');
@@ -412,6 +414,8 @@ window.addEventListener('DOMContentLoaded', async () => {
         attachAdminSessionGuard();
         window.isAdm = true;
         window.__localIsAdm = true;
+        // Pasang listener data sensitif (suppliers, purchases, expenses, dll) — hanya owner
+        attachPrivateDataListener();
 
         // Update status toggle icon POS Kasir di header saat auth pulih
         if (typeof window.updatePOSHeaderIcon === 'function') {
@@ -435,6 +439,8 @@ window.addEventListener('DOMContentLoaded', async () => {
         clearActiveStaff();
         window.isAdm = false;
         window.__localIsAdm = false;
+        // Lepas listener dan bersihkan data sensitif dari memori
+        detachPrivateDataListener();
         if (typeof window.updatePOSHeaderIcon === 'function') window.updatePOSHeaderIcon();
     }
 });

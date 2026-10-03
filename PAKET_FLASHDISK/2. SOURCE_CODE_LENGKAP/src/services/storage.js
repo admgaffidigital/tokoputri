@@ -314,33 +314,61 @@ export const loadAppData = async () => {
 // dijamin selalu naik secara berurutan, jadi tidak ada lagi perangkat yang
 // "terkunci" gara-gara jam salah.
 // =====================================================================
+// Field-field ini bersifat sensitif dan HARUS disimpan ke cms_private, bukan cms_data.
+// Diakses oleh saveApp dan attachPrivateDataListener.
+const PRIVATE_APP_KEYS = new Set(['suppliers', 'purchases', 'expenses', 'taxSettings', 'stockOpnameHistory']);
+
 export const saveApp = async (changedKeys = null, updateMeta = null) => {
     try {
         if (Array.isArray(changedKeys)) {
-            const partial = { 
+            // Pisahkan key publik (→ cms_data) dan key sensitif (→ cms_private)
+            const publicKeys = changedKeys.filter(k => k && !PRIVATE_APP_KEYS.has(k));
+            const privateKeys = changedKeys.filter(k => k && PRIVATE_APP_KEYS.has(k));
+
+            const partial = {
                 lastUpdate: firebase.firestore.FieldValue.increment(1),
                 updateType: updateMeta?.updateType || (changedKeys.length ? 'settings_change' : 'full'),
-                changedKeys: changedKeys
+                changedKeys: publicKeys  // hanya key publik yang perlu di-broadcast lewat cms_data
             };
             // FIX BUG #2: Selalu sertakan updatedProductIds jika ada di updateMeta,
             // bahkan saat changedKeys adalah array kosong [] (kasus produk/stok berubah).
-            // Sebelumnya baris ini sudah ada tapi perlu dipastikan tidak dilewati.
             if (updateMeta?.updatedProductIds && Array.isArray(updateMeta.updatedProductIds)) {
                 partial.updatedProductIds = updateMeta.updatedProductIds;
             } else {
                 // Reset field ini agar listener tidak salah baca data lama
                 partial.updatedProductIds = firebase.firestore.FieldValue.delete();
             }
-            changedKeys.forEach(k => { if (k) partial[k] = appData[k]; });
+            publicKeys.forEach(k => { partial[k] = appData[k]; });
             await db.collection("freshmart").doc("cms_data").set(partial, { merge: true });
+
+            // Tulis data sensitif ke cms_private (terpisah, tidak bisa dibaca publik)
+            if (privateKeys.length > 0) {
+                const privatePartial = {};
+                privateKeys.forEach(k => { privatePartial[k] = appData[k]; });
+                await db.collection("freshmart").doc("cms_private").set(privatePartial, { merge: true });
+            }
         } else {
             // Mode lama: timpa penuh. Sengaja dipakai HANYA untuk restore backup.
             const copyData = { ...appData };
             delete copyData.products; // Jangan simpan produk ke dokumen utama
-            delete copyData.auth; // Jangan simpan field auth legacy (password plaintext) ke Firestore
+            delete copyData.auth;     // Jangan simpan field auth legacy ke Firestore
+
+            // Pisahkan data sensitif ke cms_private, jangan ikut ke cms_data
+            const privateData = {};
+            PRIVATE_APP_KEYS.forEach(k => {
+                if (copyData[k] !== undefined) {
+                    privateData[k] = copyData[k];
+                    delete copyData[k];
+                }
+            });
+
             copyData.lastUpdate = firebase.firestore.FieldValue.increment(1);
             copyData.updateType = 'full';
             await db.collection("freshmart").doc("cms_data").set(copyData);
+
+            if (Object.keys(privateData).length > 0) {
+                await db.collection("freshmart").doc("cms_private").set(privateData, { merge: true });
+            }
         }
         // Tebakan optimis untuk cache lokal saja (akan otomatis dikoreksi oleh listener
         // realtime begitu balasan asli dari server tiba) -- TIDAK dikirim ke server.
@@ -470,12 +498,12 @@ export const attachRealtimeStockSync = () => {
             if (f.brands) appData.brands = f.brands;
             if (f.banks) appData.banks = f.banks;
             if (f.faqs) appData.faqs = f.faqs;
-            if (f.suppliers) appData.suppliers = f.suppliers;
-            if (f.purchases) appData.purchases = f.purchases;
-            if (f.expenses) appData.expenses = f.expenses;
+            // CATATAN KEAMANAN: suppliers, purchases, expenses, taxSettings, stockOpnameHistory
+            // kini disimpan di cms_private (bukan cms_data). Listener cms_data tidak lagi
+            // menangani field-field ini — lihat attachPrivateDataListener() di bawah.
             appData.payment = { ...defApp.payment, ...(f.payment || {}) };
             appData.config = { ...defApp.config, ...(f.config || {}) };
-            appData.taxSettings = { ...defApp.taxSettings, ...(f.taxSettings || {}) };
+            // taxSettings kini dari cms_private — tidak di-update di sini
             if (appData.config && appData.config.gasUrl) window.GAS_UPLOAD_URL = appData.config.gasUrl;
             if (appData.banners) appData.banners.forEach(b => { if(b.img) b.img = fixD(b.img); if(b.videoUrl) b.videoUrl = fixDriveVideo(b.videoUrl); });
             if (appData.categories) appData.categories.forEach(c => { 
@@ -642,6 +670,104 @@ export const attachRealtimeProductsSync = () => {
         });
 };
 
+// =====================================================================
+// LISTENER REALTIME cms_private — DATA BISNIS SENSITIF
+// Hanya dipasang saat staf admin/owner login.
+// Membawa: suppliers, purchases, expenses, taxSettings, stockOpnameHistory.
+// Jika pengguna bukan admin (permission denied), error diabaikan dengan tenang.
+// =====================================================================
+// Migrasi otomatis satu kali: pindahkan data sensitif dari cms_data → cms_private
+// jika cms_private kosong (pertama kali deploy Fase 2). Tidak butuh service account key.
+const _runPrivateMigrationIfNeeded = async () => {
+    const FLAG = 'freshmart_priv_migrated_v2';
+    if (localStorage.getItem(FLAG)) return; // sudah pernah dijalankan
+
+    try {
+        const privSnap = await db.collection('freshmart').doc('cms_private').get();
+        const privData = privSnap.exists ? privSnap.data() : {};
+
+        // Cek apakah ada satu saja field sensitif yang belum ada di cms_private
+        const missing = [...PRIVATE_APP_KEYS].filter(k => !(k in privData));
+        if (!missing.length) {
+            localStorage.setItem(FLAG, '1'); // sudah lengkap, tandai selesai
+            return;
+        }
+
+        // Baca data dari cms_data
+        const cmsSnap = await db.collection('freshmart').doc('cms_data').get();
+        if (!cmsSnap.exists) { localStorage.setItem(FLAG, '1'); return; }
+        const cmsData = cmsSnap.data();
+
+        const toWrite = {};
+        const toDelete = {};
+        let hasAny = false;
+        for (const k of missing) {
+            if (k in cmsData) {
+                toWrite[k] = cmsData[k];
+                toDelete[k] = firebase.firestore.FieldValue.delete();
+                hasAny = true;
+            }
+        }
+
+        if (!hasAny) { localStorage.setItem(FLAG, '1'); return; }
+
+        // Tulis ke cms_private, hapus dari cms_data
+        await db.collection('freshmart').doc('cms_private').set(toWrite, { merge: true });
+        await db.collection('freshmart').doc('cms_data').update(toDelete);
+        localStorage.setItem(FLAG, '1');
+        console.info('[Migrasi] Data sensitif berhasil dipindah ke cms_private:', Object.keys(toWrite));
+    } catch (e) {
+        // Bukan masalah fatal — migrasi akan dicoba lagi sesi berikutnya
+        if (e.code !== 'permission-denied') console.warn('[Migrasi] cms_private migration error:', e);
+    }
+};
+
+export const attachPrivateDataListener = () => {
+    if (window.unsubPrivateRealtime) return; // sudah terpasang
+
+    // Jalankan migrasi otomatis satu kali jika belum
+    _runPrivateMigrationIfNeeded();
+
+    window.unsubPrivateRealtime = db.collection('freshmart').doc('cms_private')
+        .onSnapshot((doc) => {
+            if (!doc.exists) return;
+            const d = doc.data();
+            if (Array.isArray(d.suppliers))           appData.suppliers           = d.suppliers;
+            if (Array.isArray(d.purchases))           appData.purchases           = d.purchases;
+            if (Array.isArray(d.expenses))            appData.expenses            = d.expenses;
+            if (Array.isArray(d.stockOpnameHistory))  appData.stockOpnameHistory  = d.stockOpnameHistory;
+            if (d.taxSettings && typeof d.taxSettings === 'object') {
+                appData.taxSettings = { ...defApp.taxSettings, ...d.taxSettings };
+            }
+            // Segarkan tabel admin yang relevan jika sedang terbuka
+            const isAdminActive = window.isAdm || window.__localIsAdm;
+            if (isAdminActive && typeof window.rAdmItms === 'function') {
+                const curTab = window.cTab || '';
+                if (['suppliers', 'purchases', 'expenses', 'stockOpname'].includes(curTab)) {
+                    window.rAdmItms(curTab);
+                }
+            }
+        }, (err) => {
+            // Permission denied = pengguna bukan admin, bukan error
+            if (err.code !== 'permission-denied') {
+                console.warn('[cms_private] Listener error:', err);
+            }
+        });
+};
+
+export const detachPrivateDataListener = () => {
+    if (window.unsubPrivateRealtime) {
+        window.unsubPrivateRealtime();
+        window.unsubPrivateRealtime = null;
+    }
+    // Hapus data sensitif dari memori saat logout
+    appData.suppliers          = [];
+    appData.purchases          = [];
+    appData.expenses           = [];
+    appData.stockOpnameHistory = [];
+    appData.taxSettings        = { ...defApp.taxSettings };
+};
+
 // FITUR BARU (REFACTOR KEAMANAN & HEMAT KUOTA): katalog hadiah dengan cache lokal
 export const attachRewardsRealtime = () => {
     if (window.unsubRewardsRealtime) return; // jangan pasang dobel
@@ -756,3 +882,5 @@ window.attachRealtimeStockSync = attachRealtimeStockSync;
 window.attachRealtimeProductsSync = attachRealtimeProductsSync;
 window.attachRewardsRealtime = attachRewardsRealtime;
 window.updatePwaManifest = updatePwaManifest;
+window.attachPrivateDataListener = attachPrivateDataListener;
+window.detachPrivateDataListener = detachPrivateDataListener;

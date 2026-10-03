@@ -1,146 +1,186 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    
-    // ─── Helper: Verifikasi Owner (Pemilik Utama / Super Admin) ──
+
+    // ═══════════════════════════════════════════════════════════
+    // ATURAN KEAMANAN TOKO PUTRI ( OFFICIAL STORE ) — FASE 1
+    // Prinsip: pembeli etalase TIDAK login, jadi akses publik hanya
+    // untuk (a) membaca katalog, (b) mengambil 1 dokumen by ID
+    // (lacak pesanan / cek member), dan (c) penulisan checkout yang
+    // dibatasi ketat per kolom. Pengambilan massal (list) & ubah/hapus
+    // data operasional HANYA untuk staf yang login.
+    // Cadangan aturan sebelumnya: firestore.rules.backup
+    // ═══════════════════════════════════════════════════════════
+
+    // ─── Helper Otorisasi ─────────────────────────────────────
     function isOwner() {
       return request.auth != null && request.auth.uid == 'K2ijSERTT2dg27yYGTEgn6XHSnW2';
     }
 
-    // ─── Helper: Verifikasi Staf Terdaftar di Firestore ────
-    function getStaffData() {
-      return get(/databases/$(database)/documents/freshmart/cms_data/cashier_accounts/$(request.auth.uid)).data;
+    function staffPath() {
+      return /databases/$(database)/documents/freshmart/cms_data/cashier_accounts/$(request.auth.uid);
     }
 
     function isStaffActive() {
-      return request.auth != null &&
-        exists(/databases/$(database)/documents/freshmart/cms_data/cashier_accounts/$(request.auth.uid)) &&
-        getStaffData().isActive == true;
+      return request.auth != null && exists(staffPath()) && get(staffPath()).data.isActive == true;
     }
 
-    // ─── Helper: Verifikasi Admin Toko ─────────────────────
     function isAdmin() {
-      return isOwner() || (isStaffActive() && (getStaffData().role == 'admin' || getStaffData().role == 'owner'));
+      return isOwner() || (isStaffActive() && (get(staffPath()).data.role == 'admin' || get(staffPath()).data.role == 'owner'));
     }
 
-    // ─── Helper: Verifikasi Kasir Terdaftar ────────────────
     function isCashier() {
-      return isStaffActive() && (getStaffData().role == 'cashier' || !('role' in getStaffData()));
+      return isStaffActive() && (get(staffPath()).data.role == 'cashier' || !('role' in get(staffPath()).data));
     }
-    
-    // Dokumen utama toko (pengaturan, banner, kategori, dll di 'cms_data')
-    match /freshmart/{docId} {
-      allow read: if true;
-      // Owner dan Admin memiliki akses kelola toko. Pelanggan saat checkout hanya diizinkan
-      // memperbarui penanda sinkronisasi: lastUpdate, updateType, updatedProductIds, hasCashier
-      allow write: if isOwner() || isAdmin() ||
-        (resource != null &&
-         request.resource.data.diff(resource.data).affectedKeys().hasOnly(['lastUpdate', 'updateType', 'updatedProductIds', 'hasCashier']));
 
-      // Sub-koleksi Produk
+    // Semua staf terdaftar & aktif (Owner, Admin, Kasir)
+    function isStaff() {
+      return isOwner() || isAdmin() || isCashier();
+    }
+
+    function changed() {
+      return request.resource.data.diff(resource.data).affectedKeys();
+    }
+
+    // Batas kenaikan poin per transaksi checkout tanpa login (anti-manipulasi poin).
+    // Default toko: 1 poin per Rp100.000 → 5000 poin setara belanja Rp500 juta.
+    function maxPointsPerCheckout() {
+      return 5000;
+    }
+
+    // ─── Dokumen Utama Toko (cms_data: pengaturan publik — banner, kategori, dll) ───
+    // PERHATIAN: cms_data boleh dibaca semua orang. Data sensitif (supplier,
+    // pembelian, pengeluaran, pajak, riwayat opname) HARUS disimpan di
+    // cms_private di bawah, BUKAN di dokumen ini.
+    match /freshmart/cms_data {
+      allow read: if true;
+      // Checkout publik hanya boleh menaikkan penanda sinkronisasi stok.
+      allow write: if isAdmin() || (
+        resource != null &&
+        changed().hasOnly(['lastUpdate', 'updateType', 'updatedProductIds']) &&
+        (!('updateType' in changed()) || request.resource.data.updateType == 'stock_change')
+      );
+
+      // ─── Produk ───────────────────────────────────────────
       match /products/{productId} {
         allow read: if true;
-        // Owner & Admin boleh tambah, edit, hapus seluruh produk & varian.
-        // Pelanggan saat checkout HANYA boleh mengubah stock, isActive, variants, totalSold.
-        // Kasir POS juga bisa update stok saat transaksi.
-        allow write: if isAdmin() || isCashier() || (
-          resource != null &&
-          request.resource.data.diff(resource.data).affectedKeys().hasOnly(['stock', 'isActive', 'variants', 'totalSold']) &&
-          (
-            !('stock' in request.resource.data.diff(resource.data).affectedKeys()) ||
-            request.resource.data.stock <= resource.data.stock
-          )
+        allow create, delete: if isAdmin();
+        // Kasir mengurangi stok saat transaksi POS; checkout publik dibatasi per kolom.
+        allow update: if isAdmin() || isCashier() || (
+          changed().hasOnly(['stock', 'isActive', 'variants', 'totalSold']) &&
+          (!('stock' in changed()) ||
+            (request.resource.data.stock is number &&
+             request.resource.data.stock >= 0 &&
+             request.resource.data.stock <= resource.data.get('stock', 0))) &&
+          (!('totalSold' in changed()) ||
+            (request.resource.data.totalSold is number &&
+             request.resource.data.totalSold >= resource.data.get('totalSold', 0))) &&
+          (!('isActive' in changed()) ||
+            request.resource.data.isActive == false || request.resource.data.isActive == 'false') &&
+          (!('variants' in changed()) ||
+            (request.resource.data.variants is list &&
+             request.resource.data.variants.size() == resource.data.variants.size()))
         );
       }
 
-      // ─── Akun Staf & Kasir (PRIVATE: hanya Owner yang bisa buat/edit/hapus) ─
+      // ─── Akun Staf (hanya Owner yang kelola) ──────────────
       match /cashier_accounts/{cashierId} {
-        // Owner atau staf yang bersangkutan bisa membaca data profilnya
         allow get: if isOwner() || (request.auth != null && request.auth.uid == cashierId);
         allow list: if isOwner() || isAdmin();
-        // HANYA Owner yang bisa mendaftarkan, mengubah hak akses, atau menghapus staf
         allow create, update, delete: if isOwner();
       }
 
-      // Database Pelanggan / Member (data profil, poin & limit paylater)
-      // Publik & Kasir dapat membaca data member untuk lookup profil & poin saat transaksi POS.
+      // ─── Database Member ──────────────────────────────────
       match /customers/{phone} {
-        allow read: if true;
-        allow create: if isAdmin() || isCashier();
-        allow update: if isAdmin() || isCashier() ||
-          request.resource.data.diff(resource.data).affectedKeys().hasOnly(['points', 'lastOrderAt', 'paylaterUsed', 'name']);
+        // Cek member 1 per 1 via nomor HP tetap publik; daftar lengkap hanya staf.
+        allow get: if true;
+        allow list: if isStaff();
+        allow create: if isStaff();
         allow delete: if isAdmin();
-      }
-
-      // Program Hadiah / Rewards (katalog publik, stok berkurang saat klaim)
-      match /rewards/{rewardId} {
-        allow read: if true;
-        allow write: if isAdmin() || (
-          resource != null &&
-          request.resource.data.diff(resource.data).affectedKeys().hasOnly(['stock']) &&
-          request.resource.data.stock <= resource.data.stock
+        // Checkout publik: poin naik terbatas / turun (klaim hadiah), PayLater hanya naik.
+        allow update: if isStaff() || (
+          changed().hasOnly(['points', 'lastOrderAt', 'paylaterUsed', 'name']) &&
+          (!('points' in changed()) ||
+            (request.resource.data.points is number &&
+             request.resource.data.points >= 0 &&
+             request.resource.data.points <= resource.data.get('points', 0) + maxPointsPerCheckout())) &&
+          (!('paylaterUsed' in changed()) ||
+            (request.resource.data.paylaterUsed is number &&
+             request.resource.data.paylaterUsed >= resource.data.get('paylaterUsed', 0))) &&
+          // Nama hanya boleh diisi jika sebelumnya kosong (tidak bisa mengganti nama member).
+          (!('name' in changed()) || !('name' in resource.data) || resource.data.name == '')
         );
       }
 
-      // Ulasan Produk (publik boleh membaca & mengirim ulasan baru)
+      // ─── Katalog Hadiah ───────────────────────────────────
+      match /rewards/{rewardId} {
+        allow read: if true;
+        allow create, delete: if isAdmin();
+        // Klaim hadiah saat checkout: stok berkurang tepat 1, tidak negatif.
+        allow update: if isAdmin() || isCashier() || (
+          changed().hasOnly(['stock']) &&
+          request.resource.data.stock is number &&
+          request.resource.data.stock >= 0 &&
+          request.resource.data.stock == resource.data.stock - 1
+        );
+      }
+
+      // ─── Ulasan & Tanya Jawab (publik boleh kirim, dibatasi ukurannya) ───
       match /reviews/{reviewId} {
         allow read: if true;
-        allow create: if true;
+        allow create: if request.resource.data.size() <= 30;
         allow update, delete: if isAdmin();
       }
 
-      // Tanya Jawab / FAQ (publik boleh membaca & mengajukan pertanyaan baru)
       match /faqs/{faqId} {
         allow read: if true;
-        allow create: if true;
+        allow create: if request.resource.data.size() <= 30;
         allow update, delete: if isAdmin();
       }
 
-      // Sesi Admin Tunggal (Single Active Session / Kick-out Otomatis Antar Perangkat Owner)
+      // ─── Sesi Admin Tunggal (kick-out antar perangkat Owner) ───
       match /admin_session/{sessionId} {
         allow read: if true;
         allow write: if isOwner();
       }
 
-      // ─── Transaksi Kasir POS ───────────────────────────────
-      // Terbuka untuk read & create agar kasir POS, admin, dan storefront
-      // dapat membaca riwayat kasir dan mencatat transaksi tanpa terhambat sesi.
+      // ─── Data Operasional Kasir (hanya staf) ──────────────
       match /pos_transactions/{txId} {
-        allow read: if true;
-        allow create: if true;
-        allow update, delete: if isAdmin() || isCashier() || (request.auth != null);
+        allow read, write: if isStaff();
       }
 
-      // ─── Shift Kasir POS (Buka/Tutup Kasir, Rekonsiliasi & Settlement) ──
       match /pos_shifts/{shiftId} {
-        allow read: if true;
-        allow create: if true;
-        allow update, delete: if isAdmin() || isCashier() || (request.auth != null);
+        allow read, write: if isStaff();
       }
 
-      // Pesanan Tempo POS (kompatibilitas modul Piutang Tempo)
       match /orders/{orderId} {
-        allow read: if true;
-        allow create: if true;
-        allow update, delete: if isAdmin() || isCashier() || (request.auth != null);
+        allow read, write: if isStaff();
       }
     }
 
-    // Shift Kasir POS (Koleksi Root Fallback)
+    // ─── Data Bisnis Sensitif (cms_private: HANYA staf admin/owner) ──────────
+    // Menyimpan: suppliers, purchases, expenses, taxSettings, stockOpnameHistory.
+    // Dokumen ini TIDAK PERNAH boleh dibaca publik atau kasir biasa.
+    match /freshmart/cms_private {
+      allow read, write: if isAdmin();
+    }
+
+    // Shift Kasir (koleksi root fallback) — hanya staf
     match /pos_shifts/{shiftId} {
-      allow read: if true;
-      allow create: if true;
-      allow update, delete: if isAdmin() || isCashier() || (request.auth != null);
+      allow read, write: if isStaff();
     }
 
-    // Pesanan Toko Terpadu (Storefront, Kasir POS & CMS Admin)
+    // ─── Pesanan Terpadu (Etalase, Kasir POS & CMS) ───────────
     match /freshmart_orders/{orderId} {
-      allow read: if true;
-      allow create: if true;
-      allow update, delete: if isAdmin() || isCashier() || (request.auth != null);
+      // Lacak pesanan via ID tetap publik; daftar semua pesanan hanya staf.
+      allow get: if true;
+      allow list: if isStaff();
+      // Pembeli hanya boleh membuat pesanan baru berstatus 'Baru'.
+      allow create: if isStaff() || request.resource.data.status == 'Baru';
+      allow update, delete: if isStaff();
     }
 
-    // Lisensi PRO (Hanya Owner)
+    // Lisensi (hanya Owner)
     match /freshmart_licenses/{licenseId} {
       allow read, write: if isOwner();
     }
