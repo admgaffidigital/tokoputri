@@ -8,6 +8,7 @@
 
 import { GAS_UPLOAD_URL } from './gas.js';
 import { el, showToast, sLoad, hLoad, fixD } from '../core/utils.js';
+import { appData } from '../core/state.js';
 
 export const GAS_SECRET_TOKEN = "B7qgwFQqtYLpBqdaK69HgtCfR7s5t67p";
 export const VIDEO_MAX_SIZE_BYTES = 20 * 1024 * 1024; // 20MB
@@ -246,8 +247,106 @@ export const handleRTEditorImage = async (inputElement, editorId) => {
     };
 };
 
+/**
+ * Upload file gambar ke Google Drive via endpoint Google Apps Script (GAS).
+ * Mengompresi gambar otomatis (max 1200px, JPEG 0.82) dan mengembalikan direct view URL Google Drive.
+ * @param {File|Blob} file 
+ * @param {string} prefix 
+ * @returns {Promise<string|null>} URL Google Drive yang sudah dinormalisasi (fixD)
+ */
+export const uploadImageFileToDrive = async (file, prefix = 'BUKTI') => {
+    if (!file) return null;
+    
+    const uploadUrl = window.GAS_UPLOAD_URL || (appData && appData.config && appData.config.gasUrl) || GAS_UPLOAD_URL;
+    if (!uploadUrl || uploadUrl.includes("ISI_DENGAN")) {
+        console.warn("[GAS Upload] GAS_UPLOAD_URL belum dikonfigurasi.");
+        return null;
+    }
+
+    try {
+        // Kompresi sebelum upload untuk efisiensi transfer & kuota Google Drive
+        const base64Data = await new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                const img = new Image();
+                img.onload = () => {
+                    const maxDim = 1200;
+                    let { width, height } = img;
+                    if (width > maxDim || height > maxDim) {
+                        if (width > height) {
+                            height = Math.round((height * maxDim) / width);
+                            width = maxDim;
+                        } else {
+                            width = Math.round((width * maxDim) / height);
+                            height = maxDim;
+                        }
+                    }
+                    const canvas = document.createElement('canvas');
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+                    const dataUrl = canvas.toDataURL('image/jpeg', 0.82);
+                    resolve(dataUrl.split(',')[1]);
+                };
+                img.onerror = () => {
+                    const raw = (ev.target.result || '').toString();
+                    resolve(raw.split(',')[1] || '');
+                };
+                img.src = ev.target.result;
+            };
+            reader.onerror = reject;
+            reader.readAsDataURL(file);
+        });
+
+        if (!base64Data) return null;
+
+        const safeName = (file.name || 'bukti.jpg').replace(/[^a-zA-Z0-9.]/g, '_');
+        const payload = {
+            name: `${prefix}_${Date.now()}_${safeName}`,
+            mimeType: 'image/jpeg',
+            data: base64Data,
+            token: GAS_SECRET_TOKEN
+        };
+
+        const res = await fetch(uploadUrl, {
+            method: 'POST',
+            body: JSON.stringify(payload),
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            redirect: 'follow'
+        });
+
+        if (!res.ok) {
+            console.warn(`[GAS Upload] HTTP error: ${res.status}`);
+            return null;
+        }
+
+        const textRes = await res.text();
+        let responseData;
+        try {
+            responseData = JSON.parse(textRes);
+        } catch(e) {
+            console.warn("[GAS Upload] Parse response error:", textRes);
+            return null;
+        }
+
+        if (responseData && responseData.status === 'success' && responseData.url) {
+            return fixD(responseData.url);
+        } else {
+            console.warn("[GAS Upload] Server message:", responseData && responseData.message);
+            return null;
+        }
+    } catch(err) {
+        console.warn("[GAS Upload] Upload exception:", err);
+        return null;
+    }
+};
+
 // ─── Expose ke window untuk atribut inline HTML ──────
 window.GAS_SECRET_TOKEN = GAS_SECRET_TOKEN;
 window.handleImageUpload = handleImageUpload;
 window.handleVideoUpload = handleVideoUpload;
 window.handleRTEditorImage = handleRTEditorImage;
+window.uploadImageFileToDrive = uploadImageFileToDrive;
+window.uploadBuktiToGDrive = uploadImageFileToDrive;
+

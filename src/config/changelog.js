@@ -8,6 +8,22 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-10-45',
+        version: 'v1.10.45',
+        date: '2026-10-04',
+        title: 'Resolusi Tuntas Tampilan QRIS Sistem, Upload Bukti Transfer ke Google Drive via GAS, dan Arsitektur 0ms Zero-Flicker Modal Riwayat Pesanan',
+        category: 'fix',
+        badge: 'QRIS & Drive Storage v1.10.45',
+        items: [
+            'Resolusi Gambar QRIS Sistem Toko (client-pay.js, payment.js, pos.js, storage.js): Mengatasi masalah gambar QRIS tidak tampil dari sistem dengan menerapkan universal getter getStoreQrisUrl() yang membaca seluruh variasi field toko (appData.payment.qrisUrl, appData.store.qrisUrl, appData.payment.qris, appData.store.qris) dan otomatis menormalisasi tautan Google Drive menggunakan converter fixD(url). Dilengkapi dengan auto-retry onerror cerdas dan tombol 1-klik unduh gambar QRIS penuh.',
+            'Penyimpanan Bukti Transfer ke Google Drive via GAS (upload.js, client-pay.js, payment.js): Bukti transfer cicilan dan pesanan kini otomatis dikompresi ringan (max 1200px, JPEG 0.82) dan diunggah langsung ke folder Google Drive toko melalui endpoint Google Apps Script (GAS_UPLOAD_URL) dengan token keamanan GAS_SECRET_TOKEN. Mengeliminasi bug ReferenceError pada modul payment.js dan menyimpan direct view URL Google Drive di database konfirmasi Firestore.',
+            'Resiliensi Offline & Fallback Toleran Bukti Bayar: Jika koneksi ke Google Drive sedang lambat atau endpoint GAS belum diisi, sistem otomatis menerapkan fallback aman menggunakan data gambar terkompresi lokal sehingga pengajuan pembayaran pelanggan tetap sukses terkirim dan tidak pernah macet.',
+            'Eliminasi Total Layar Berkedip saat Membuka Modal (orders.js & client-pay.js): Memperbaiki bug layar berkedip hitam saat membuka rincian pesanan dengan menerapkan arsitektur Fast Path 0ms. Modal langsung terbuka instan dari cache lokal myOrders tanpa memicu fullscreen loader hitam (sLoad), disusul silent background fetch untuk sinkronisasi ulasan dan status.',
+            'GPU Hardware Compositing Layer (style.css): Mendaftarkan kontainer modal rincian pesanan (#order-detail-modal, #order-detail-content) dan modal pembayaran cicilan (#modal-client-tempo-pay, #modal-client-tempo-pay-box) ke compositing layer GPU (-webkit-backface-visibility: hidden; transform: translateZ(0);) serta menonaktifkan icon animate-pulse yang memicu reflow terus-menerus.',
+            'Multi-Channel Distribution v1.10.45 (Android versionCode 11045).'
+        ]
+    },
+    {
         id: 'log-1-10-44',
         version: 'v1.10.44',
         date: '2026-10-04',

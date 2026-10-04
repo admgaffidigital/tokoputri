@@ -10,7 +10,7 @@
 
 import { db, firebase } from '../../config/firebase.js';
 import { appData } from '../../core/state.js';
-import { el, setH, setIn, esc, fCur, showToast, getOptImg, renderProductCoverHtml } from '../../core/utils.js';
+import { el, setH, setIn, esc, fCur, showToast, getOptImg, renderProductCoverHtml, fixD } from '../../core/utils.js';
 import { getEffHpp, computeTotalProductStock } from '../../core/pricing.js';
 import { canViewHpp } from '../../core/auth-roles.js';
 import { getPaylaterConfig, calculateInstallmentBreakdown } from '../../core/paylater.js';
@@ -1967,7 +1967,8 @@ const renderPayDetail = (method) => {
             </div>
         `;
     } else if (method === 'qris') {
-        const q = appData.payment?.qrisUrl || '';
+        const rawQ = appData.payment?.qrisUrl || appData.store?.qrisUrl || appData.payment?.qris || appData.store?.qris || appData.qrisUrl || '';
+        const q = rawQ ? fixD(rawQ) : '';
         d.innerHTML = `
           ${topRow}
           ${q ? `<div class="flex flex-col items-center justify-center p-3 bg-slate-50 dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700"><img src="${esc(q)}" class="w-48 h-48 object-contain rounded-xl shadow-xs" alt="QRIS"><p class="text-center text-xs font-bold text-slate-600 dark:text-slate-300 mt-2">Arahkan kamera pembeli untuk memindai QRIS</p></div>` 

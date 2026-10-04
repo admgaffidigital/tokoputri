@@ -9,13 +9,27 @@
 
 import { db } from '../../config/firebase.js';
 import { appData, currentMember, myOrders, gOrds } from '../../core/state.js';
-import { el, show, hide, setH, esc, fCur, sLoad, hLoad, showToast, openModalAnim, closeModalAnim } from '../../core/utils.js';
+import { el, show, hide, setH, esc, fCur, sLoad, hLoad, showToast, openModalAnim, closeModalAnim, fixD } from '../../core/utils.js';
+import { uploadImageFileToDrive } from '../../services/upload.js';
 
 let activePaymentOrder = null;
 let currentPayChannel = 'bank'; // 'bank' | 'qris'
 let currentProofDataUrl = null;
 let currentProofFile = null;
 let pendingConfirmationsCache = [];
+
+/**
+ * Ambil URL QRIS Toko yang valid dari sistem & dinormalisasi dengan fixD
+ */
+export const getStoreQrisUrl = () => {
+    const raw = (appData.payment?.qrisUrl || 
+                 appData.payment?.qris || 
+                 appData.store?.qrisUrl || 
+                 appData.store?.qris || 
+                 appData.qrisUrl || 
+                 '').trim();
+    return raw ? fixD(raw) : '';
+};
 
 /**
  * Salin nomor rekening ke clipboard
@@ -192,11 +206,9 @@ export const openClientPaymentModal = async (orderId = null, suggestedAmount = n
     currentProofDataUrl = null;
     currentProofFile = null;
 
-    await loadPendingConfirmations(activePaymentOrder.orderId);
+    // 1. Tampilkan modal instan 0ms dengan data lokal/cache agar tidak berkedip atau delay
     renderClientPaymentModalContent(orders, suggestedAmount);
 
-    modal.classList.remove('hidden', 'pointer-events-none');
-    box.classList.add('pointer-events-auto');
     document.body.classList.add('overflow-hidden');
 
     if (typeof window.pushModalHistory === 'function') {
@@ -204,6 +216,30 @@ export const openClientPaymentModal = async (orderId = null, suggestedAmount = n
     }
 
     openModalAnim(modal, box);
+
+    // 2. Muat konfirmasi pending dari server di background tanpa blocking animasi
+    loadPendingConfirmations(activePaymentOrder.orderId).then((pending) => {
+        if (modal && !modal.classList.contains('hidden') && !modal.classList.contains('opacity-0')) {
+            const pendingSum = (pending || []).filter(c => c.orderId === activePaymentOrder?.orderId && c.status === 'pending')
+                                              .reduce((s, c) => s + (parseFloat(c.amount) || 0), 0);
+            const pWrap = el('client-pay-pending-banner-wrap');
+            if (pWrap) {
+                if (pendingSum > 0) {
+                    pWrap.innerHTML = `
+                    <div class="p-4 sm:p-5 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-800/60 flex items-start sm:items-center gap-3 text-amber-800 dark:text-amber-200 shadow-2xs">
+                        <i class="fa-solid fa-hourglass-half text-amber-500 text-base shrink-0 mt-0.5 sm:mt-0"></i>
+                        <div class="min-w-0 flex-1">
+                            <p class="font-bold text-xs sm:text-sm">Ada Pengajuan Pembayaran Sedang Diverifikasi: <b class="font-mono text-amber-900 dark:text-amber-100">${fCur(pendingSum)}</b></p>
+                            <p class="text-[11px] text-amber-700/80 dark:text-amber-300/80 mt-1 leading-relaxed">Admin toko sedang memeriksa mutasi rekening Anda. Limit kredit belanja Anda akan otomatis pulih segera setelah diverifikasi.</p>
+                        </div>
+                    </div>`;
+                    show(pWrap);
+                } else {
+                    hide(pWrap);
+                }
+            }
+        }
+    }).catch(err => console.warn('[ClientPay] Background pending load error:', err));
 };
 
 /**
@@ -338,7 +374,7 @@ const renderClientPaymentModalContent = (orders, initialAmount = null) => {
             { bankName: 'BCA', bankAccount: '1234567890', bankOwner: appData.store?.name || 'Toko Putri' }
         ];
     }
-    const qrisUrl = appData.payment?.qrisUrl || '';
+    const qrisUrl = getStoreQrisUrl();
 
     box.innerHTML = `
         <!-- DRAG PULL MOBILE -->
@@ -363,15 +399,17 @@ const renderClientPaymentModalContent = (orders, initialAmount = null) => {
         <!-- BODY SCROLLABLE DENGAN PADDING LEGA ANTI-TERTUTUP FOOTER -->
         <div class="p-5 sm:p-6 pb-28 sm:pb-32 overflow-y-auto flex-1 space-y-6 text-xs custom-scrollbar" style="-webkit-overflow-scrolling: touch; overscroll-behavior-y: contain; touch-action: pan-y;">
             <!-- PENDING BANNER JIKA ADA PENGAJUAN -->
-            ${pendingSum > 0 ? `
-            <div class="p-4 sm:p-5 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-800/60 flex items-start sm:items-center gap-3 text-amber-800 dark:text-amber-200 shadow-2xs">
-                <i class="fa-solid fa-hourglass-half text-amber-500 text-base animate-pulse shrink-0 mt-0.5 sm:mt-0"></i>
-                <div class="min-w-0 flex-1">
-                    <p class="font-bold text-xs sm:text-sm">Ada Pengajuan Pembayaran Sedang Diverifikasi: <b class="font-mono text-amber-900 dark:text-amber-100">${fCur(pendingSum)}</b></p>
-                    <p class="text-[11px] text-amber-700/80 dark:text-amber-300/80 mt-1 leading-relaxed">Admin toko sedang memeriksa mutasi rekening Anda. Limit kredit belanja Anda akan otomatis pulih segera setelah diverifikasi.</p>
+            <div id="client-pay-pending-banner-wrap" class="${pendingSum > 0 ? 'block' : 'hidden'}">
+                ${pendingSum > 0 ? `
+                <div class="p-4 sm:p-5 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-800/60 flex items-start sm:items-center gap-3 text-amber-800 dark:text-amber-200 shadow-2xs">
+                    <i class="fa-solid fa-hourglass-half text-amber-500 text-base shrink-0 mt-0.5 sm:mt-0"></i>
+                    <div class="min-w-0 flex-1">
+                        <p class="font-bold text-xs sm:text-sm">Ada Pengajuan Pembayaran Sedang Diverifikasi: <b class="font-mono text-amber-900 dark:text-amber-100">${fCur(pendingSum)}</b></p>
+                        <p class="text-[11px] text-amber-700/80 dark:text-amber-300/80 mt-1 leading-relaxed">Admin toko sedang memeriksa mutasi rekening Anda. Limit kredit belanja Anda akan otomatis pulih segera setelah diverifikasi.</p>
+                    </div>
                 </div>
+                ` : ''}
             </div>
-            ` : ''}
 
             <!-- PILIH NOTA PESANAN (JIKA LEBIH DARI 1) -->
             ${orders.length > 1 ? `
@@ -551,20 +589,26 @@ const renderClientPaymentModalContent = (orders, initialAmount = null) => {
 
                 <!-- CONTAINER CHANNEL QRIS -->
                 <div id="client-pay-channel-qris" class="${currentPayChannel === 'qris' ? 'block' : 'hidden'} space-y-3.5 text-center">
-                    <p class="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">Scan QRIS toko di bawah menggunakan BCA Mobile, Livin, GoPay, OVO, DANA, atau ShopeePay:</p>
+                    <p class="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">Scan QRIS toko di bawah menggunakan BCA Mobile, Livin, GoPay, OVO, DANA, ShopeePay, atau m-Banking apa pun:</p>
                     ${qrisUrl ? `
-                        <div class="inline-block p-4 sm:p-5 rounded-3xl bg-white border border-slate-200 shadow-sm mx-auto">
-                            <img src="${esc(qrisUrl)}" alt="QRIS Resmi Toko Putri" class="w-56 h-56 sm:w-64 sm:h-64 object-contain mx-auto rounded-2xl">
+                        <div class="inline-block p-4 sm:p-5 rounded-3xl bg-white border border-slate-200 dark:border-slate-700 shadow-sm mx-auto">
+                            <img src="${esc(qrisUrl)}" alt="QRIS Resmi Toko Putri" 
+                                 class="w-56 h-56 sm:w-64 sm:h-64 object-contain mx-auto rounded-2xl"
+                                 loading="eager"
+                                 onerror="if(!this.dataset.retried){this.dataset.retried=1;const id=(this.src.match(/\\/d\\/([a-zA-Z0-9_-]+)/)||[])[1];if(id){this.src='https://drive.google.com/uc?export=view&id='+id;}}">
                         </div>
-                        <div>
-                            <a href="${esc(qrisUrl)}" target="_blank" download="QRIS_Toko_Putri.jpg" class="inline-flex items-center gap-1.5 text-xs font-bold text-[var(--color-primary)] hover:underline py-1.5 px-3 rounded-xl bg-[rgba(var(--color-primary-rgb),0.06)]">
+                        <div class="flex items-center justify-center gap-2">
+                            <a href="${esc(qrisUrl)}" target="_blank" rel="noopener noreferrer" download="QRIS_Toko_Putri.jpg" class="inline-flex items-center gap-1.5 text-xs font-bold text-[var(--color-primary)] hover:underline py-1.5 px-3 rounded-xl bg-[rgba(var(--color-primary-rgb),0.06)]">
                                 <i class="fa-solid fa-arrow-down-to-bracket text-sm"></i> Unduh / Buka Gambar QRIS Penuh
                             </a>
                         </div>
                     ` : `
-                        <div class="p-8 rounded-2xl border border-dashed border-slate-200 dark:border-slate-700 text-slate-400 text-center space-y-1.5">
-                            <i class="fa-solid fa-qrcode text-3xl text-slate-300"></i>
-                            <p class="text-xs">QRIS belum diatur oleh toko. Silakan gunakan metode Transfer Bank di atas.</p>
+                        <div class="p-8 rounded-2xl border border-dashed border-slate-200 dark:border-slate-700 text-slate-400 text-center space-y-2 bg-slate-50/50 dark:bg-slate-800/30">
+                            <div class="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center mx-auto text-slate-400 text-xl">
+                                <i class="fa-solid fa-qrcode"></i>
+                            </div>
+                            <p class="text-xs font-bold text-slate-600 dark:text-slate-300">QRIS Toko Belum Dikonfigurasi</p>
+                            <p class="text-[11px] text-slate-400">Silakan gunakan tab Transfer Bank di atas untuk pembayaran ke rekening resmi Toko Putri.</p>
                         </div>
                     `}
                 </div>
@@ -726,20 +770,24 @@ export const submitClientPaymentConfirmation = async () => {
         btn.disabled = true;
         btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i> Mengirim...';
     }
-    sLoad('Mengirim konfirmasi pembayaran ke toko...');
-
     try {
         let finalProofUrl = currentProofDataUrl;
 
-        // Coba upload ke GDrive jika GAS tersedia
-        if (currentProofFile && typeof window.uploadBuktiToGDrive === 'function') {
+        // 1. Upload Bukti Transfer ke Google Drive via GAS Toko Putri
+        if (currentProofFile) {
             try {
-                const gUrl = await window.uploadBuktiToGDrive(currentProofFile, activePaymentOrder.orderId);
-                if (gUrl) finalProofUrl = gUrl;
+                sLoad('Mengupload bukti transfer ke Google Drive...');
+                const gUrl = await uploadImageFileToDrive(currentProofFile, 'BUKTI_CICILAN_' + activePaymentOrder.orderId);
+                if (gUrl) {
+                    finalProofUrl = gUrl;
+                    console.info('[ClientPay] Bukti pembayaran berhasil diunggah ke Google Drive:', gUrl);
+                }
             } catch(eGas) {
-                console.warn('[ClientPay] GDrive upload fallback to compressed image:', eGas);
+                console.warn('[ClientPay] GDrive upload fallback ke gambar terkompresi lokal:', eGas);
             }
         }
+
+        sLoad('Menyimpan konfirmasi pembayaran...');
 
         const cleanPhone = (currentMember?.phone || currentMember?.id || activePaymentOrder.customer?.phone || activePaymentOrder.customer?.wa || '').toString().replace(/\D/g, '');
         const normPhone = cleanPhone.startsWith('0') ? '62' + cleanPhone.substring(1) : cleanPhone;

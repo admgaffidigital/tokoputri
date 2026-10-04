@@ -3300,4 +3300,15 @@ button span > i[class*="fa-"]:not(.hidden):not([hidden]) {
     -webkit-filter: none !important;
 }
 
+/* ─── HARDWARE COMPOSITING & ANTI-FLICKER MODAL ISOLATION ─── */
+#order-detail-modal,
+#order-detail-content,
+#modal-client-tempo-pay,
+#modal-client-tempo-pay-box {
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    transform: translateZ(0);
+}
+
+
 

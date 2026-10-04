@@ -14,6 +14,8 @@ import {
 } from '../../core/utils.js';
 import { toggleDeliveryMethod } from './checkout.js';
 import { calculateAllPaylaterTenors, calculateInstallmentBreakdown, getPaylaterConfig } from '../../core/paylater.js';
+import { GAS_UPLOAD_URL } from '../../services/gas.js';
+import { GAS_SECRET_TOKEN, uploadImageFileToDrive } from '../../services/upload.js';
 
 window.getLocation = () => {
     if(!navigator.geolocation) return showToast("GPS tidak didukung");
@@ -171,38 +173,15 @@ window._doSingleGDriveUpload = async (file, orderId) => {
 // ============================================================
 window.uploadBuktiToGDrive = async (file, orderId) => {
     if (!file) return null;
-    if (!GAS_UPLOAD_URL || GAS_UPLOAD_URL.includes('ISI_DENGAN')) {
-        console.error('GAS_UPLOAD_URL belum dikonfigurasi!');
-        return null; // TOLAK — tidak boleh fallback base64 ke Firestore
+    const uploadEl = el('bukti-uploading-text');
+    if (uploadEl) uploadEl.textContent = 'Mengupload bukti ke Google Drive...';
+    try {
+        const url = await uploadImageFileToDrive(file, 'BUKTI_' + (orderId || Date.now()));
+        return url;
+    } catch(e) {
+        console.warn('Gagal upload bukti ke GDrive via GAS:', e);
+        return null;
     }
-
-    // Kompres dulu sebelum upload
-    let fileToUpload = file;
-    try { fileToUpload = await window.compressImageForUpload(file); } catch(e) { /* pakai asli */ }
-
-    const MAX_RETRY = 2;
-    const TIMEOUT_MS = 30000;
-
-    for (let attempt = 1; attempt <= MAX_RETRY; attempt++) {
-        const uploadEl = el('bukti-uploading-text');
-        if (uploadEl) uploadEl.textContent = attempt > 1
-            ? `Mencoba ulang ke Google Drive... (${attempt}/${MAX_RETRY})`
-            : 'Mengupload ke Google Drive...';
-
-        try {
-            const url = await Promise.race([
-                window._doSingleGDriveUpload(fileToUpload, orderId),
-                new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), TIMEOUT_MS))
-            ]);
-            if (url) return url; // sukses
-        } catch(e) {
-            console.warn(`Percobaan upload ${attempt} gagal:`, e.message);
-        }
-
-        if (attempt < MAX_RETRY) await new Promise(r => setTimeout(r, 1500 * attempt)); // jeda antar retry
-    }
-
-    return null; // GAGAL setelah semua retry
 };
 
 // ============================================================
@@ -315,6 +294,14 @@ window.togglePaymentDetails = () => {
     toggleCls('detail-paylater', 'hidden', m !== 'paylater');
     if (m === 'tempo') window.calculateTempoBalance();
     if (m === 'paylater') window.calculatePaylaterBalance?.();
+
+    if (m === 'qris') {
+        const qEl = el('dyn-qris-img');
+        if (qEl) {
+            const rawQris = (appData.payment?.qrisUrl || appData.store?.qrisUrl || appData.payment?.qris || appData.store?.qris || appData.qrisUrl || '');
+            if (rawQris) qEl.src = fixD(rawQris);
+        }
+    }
 
     // Sembunyikan bagian upload bukti pembayaran jika COD, Kasir, atau PayLater (tanpa kekurangan DP)
     const excessDp = parseFloat(document.getElementById('paylater-dp-input')?.value) || 0;

@@ -11,7 +11,7 @@ import { appData, myOrders, setMyOrders } from '../../core/state.js';
 import { 
     el, show, hide, setIn, setH, getV, setV, esc, fCur, 
     showToast, showConfirm, sLoad, hLoad,
-    rewardStatusLabel 
+    rewardStatusLabel, openModalAnim, closeModalAnim 
 } from '../../core/utils.js';
 
 let unsubMyOrdersRealtime = [];
@@ -290,15 +290,50 @@ export const clearMyOrders = () => {
 };
 
 /**
- * Buka modal rincian pesanan pelanggan
+ * Buka modal rincian pesanan pelanggan (Instant 0ms dari myOrders tanpa black screen loader)
  */
 export const openCustomerOrderDetail = async (orderId) => {
+    // 1. FAST PATH: Jika pesanan sudah ada di cache lokal myOrders, buka INSTAN (0ms) tanpa sLoad / tanpa flash hitam!
+    const localOrder = Array.isArray(myOrders) ? myOrders.find(o => o.orderId === orderId) : null;
+    if (localOrder && localOrder.items && localOrder.items.length > 0) {
+        window.currentCustomerOrder = localOrder;
+        window.lastPrintedOrder = localOrder;
+        renderOrderDetailModal(orderId, localOrder, []);
+
+        // Silent background fetch untuk status terbaru & review status
+        db.collection("freshmart_orders").doc(orderId).get().then(async (doc) => {
+            if (doc.exists) {
+                const d = doc.data();
+                d.orderId = d.orderId || doc.id || orderId;
+                let reviewedKeys = [];
+                if (d.status === 'Selesai') {
+                    try {
+                        const revSnap = await db.collection("freshmart").doc("cms_data").collection("reviews").where("orderId", "==", orderId).get();
+                        reviewedKeys = revSnap.docs.map(r => `${r.data().productId}::${r.data().variantName || ''}`);
+                    } catch(e) {}
+                }
+                window.currentCustomerOrder = d;
+                window.lastPrintedOrder = d;
+                const mIdx = myOrders.findIndex(x => x.orderId === d.orderId);
+                if (mIdx !== -1) {
+                    Object.assign(myOrders[mIdx], d);
+                    saveMyOrdersToStorage();
+                }
+                const modal = document.getElementById('order-detail-modal');
+                if (modal && !modal.classList.contains('hidden') && !modal.classList.contains('opacity-0')) {
+                    renderOrderDetailModal(orderId, d, reviewedKeys, true);
+                }
+            }
+        }).catch(err => console.warn('[MyOrders] Silent background fetch error:', err));
+        return;
+    }
+
+    // 2. SLOW PATH: Jika tidak ada di lokal (misal dari lacak pesanan baru)
     sLoad('Memuat Rincian...');
     try {
         const doc = await db.collection("freshmart_orders").doc(orderId).get();
         if (!doc.exists) { 
             showToast('Pesanan tidak ditemukan.');
-            hLoad();
             return; 
         }
         
@@ -320,20 +355,8 @@ export const openCustomerOrderDetail = async (orderId) => {
         if (Array.isArray(myOrders)) {
             const mIdx = myOrders.findIndex(x => x.orderId === d.orderId);
             if (mIdx !== -1) {
-                let needSave = false;
-                if (!myOrders[mIdx].items || myOrders[mIdx].items.length === 0) {
-                    myOrders[mIdx].items = d.items || [];
-                    needSave = true;
-                }
-                if (!myOrders[mIdx].payment || !myOrders[mIdx].payment.grandTotal) {
-                    myOrders[mIdx].payment = d.payment || {};
-                    needSave = true;
-                }
-                if (!myOrders[mIdx].customer || !myOrders[mIdx].customer.name) {
-                    myOrders[mIdx].customer = d.customer || {};
-                    needSave = true;
-                }
-                if (needSave) saveMyOrdersToStorage();
+                Object.assign(myOrders[mIdx], d);
+                saveMyOrdersToStorage();
             }
         }
 
@@ -349,7 +372,7 @@ export const openCustomerOrderDetail = async (orderId) => {
 /**
  * Render konten HTML modal rincian pesanan
  */
-export const renderOrderDetailModal = (orderId, d, reviewedKeys = []) => {
+export const renderOrderDetailModal = (orderId, d, reviewedKeys = [], isBackgroundUpdate = false) => {
     try {
         if (d) {
             d.orderId = d.orderId || orderId;
@@ -621,19 +644,13 @@ export const renderOrderDetailModal = (orderId, d, reviewedKeys = []) => {
             </div>
         `;
 
-        if (m.classList.contains('opacity-0') && typeof window.pushModalHistory === 'function') {
-            window.pushModalHistory('customerOrder');
-        }
-        m.classList.remove('opacity-0', 'pointer-events-none');
-        document.body.classList.add('overflow-hidden');
-        void m.offsetWidth;
-        requestAnimationFrame(() => {
-            const c = document.getElementById('order-detail-content');
-            if (c) {
-                c.classList.remove('translate-y-full', 'sm:translate-y-10');
-                c.classList.add('translate-y-0', 'sm:translate-y-0');
+        if (!isBackgroundUpdate) {
+            if (m.classList.contains('opacity-0') && typeof window.pushModalHistory === 'function') {
+                window.pushModalHistory('customerOrder');
             }
-        });
+            document.body.classList.add('overflow-hidden');
+            openModalAnim(m, 'order-detail-content');
+        }
 
     } catch (err) {
         console.error("Error Render HTML Modal:", err);
@@ -645,17 +662,12 @@ export const closeCustomerOrderDetailModal = (fH = false) => {
     const doClose = () => {
         const m = document.getElementById('order-detail-modal');
         const c = document.getElementById('order-detail-content');
-        if (c) {
-            c.classList.remove('translate-y-0', 'sm:translate-y-0');
-            c.classList.add('translate-y-full', 'sm:translate-y-10');
-        }
-        setTimeout(() => {
-            if (m) m.classList.add('opacity-0', 'pointer-events-none');
+        closeModalAnim(m, c, () => {
             const otherModalOpen = document.querySelector('[id*="modal"]:not(.hidden):not(.pointer-events-none):not(#order-detail-modal)');
             if (!otherModalOpen) {
                 document.body.classList.remove('overflow-hidden');
             }
-        }, 300);
+        });
     };
 
     if (typeof window.requestCloseModal === 'function') {

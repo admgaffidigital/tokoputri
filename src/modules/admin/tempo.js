@@ -15,7 +15,7 @@ import { appData, gOrds } from '../../core/state.js';
 import { computePaylaterLimitRestore } from '../../core/paylater.js';
 import { 
     el, show, hide, setH, esc, fCur, showToast, showConfirm, sLoad, hLoad, openWhatsApp, normalizeWA,
-    openModalAnim, closeModalAnim 
+    openModalAnim, closeModalAnim, fixD 
 } from '../../core/utils.js';
 
 const pushModalHistory = (id) => window.pushModalHistory?.(id);
@@ -1349,8 +1349,8 @@ const renderTempoConfirmationsContent = () => {
                             <i class="fa-solid fa-image text-slate-400"></i> Lampiran Bukti Transfer:
                         </p>
                         <div class="relative group rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700 max-h-60 sm:max-h-72 bg-slate-100 dark:bg-slate-800 flex items-center justify-center shadow-2xs">
-                            <img src="${esc(c.buktiUrl)}" alt="Bukti Transfer" class="w-full max-h-60 sm:max-h-72 object-contain" onerror="this.src=''; this.alt='Gambar gagal dimuat';" loading="lazy">
-                            <a href="${esc(c.buktiUrl)}" target="_blank" class="absolute inset-0 bg-slate-900/50 opacity-0 group-hover:opacity-100 flex items-center justify-center gap-1.5 text-white text-xs font-bold transition-opacity">
+                            <img src="${esc(fixD(c.buktiUrl))}" alt="Bukti Transfer" class="w-full max-h-60 sm:max-h-72 object-contain" onerror="this.src=''; this.alt='Gambar gagal dimuat';" loading="lazy">
+                            <a href="${esc(fixD(c.buktiUrl))}" target="_blank" rel="noopener noreferrer" class="absolute inset-0 bg-slate-900/50 opacity-0 group-hover:opacity-100 flex items-center justify-center gap-1.5 text-white text-xs font-bold transition-opacity">
                                 <i class="fa-solid fa-arrow-up-right-from-square"></i> Buka Ukuran Penuh
                             </a>
                         </div>

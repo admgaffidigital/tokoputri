@@ -92,7 +92,11 @@ export const loadAppData = async () => {
             appData.store.allBrandsIcon = fixD(appData.store.allBrandsIcon);
             if (appData.store.allBrandsIcon.includes('10b981')) appData.store.allBrandsIcon = 'https://placehold.co/150/f1f5f9/475569?text=Semua+Merek';
         }
-        if(appData.payment.qrisUrl) appData.payment.qrisUrl = fixD(appData.payment.qrisUrl);
+        const qrisVal = appData.payment?.qrisUrl || appData.payment?.qris || appData.store?.qrisUrl || appData.store?.qris || appData.qrisUrl;
+        if (qrisVal) {
+            if (!appData.payment) appData.payment = {};
+            appData.payment.qrisUrl = fixD(qrisVal);
+        }
         
         cart.forEach(i => { if(i.img) i.img = fixD(i.img); });
         wishlist.forEach(i => { if(i.img) i.img = fixD(i.img); });
@@ -502,6 +506,8 @@ export const attachRealtimeStockSync = () => {
             // kini disimpan di cms_private (bukan cms_data). Listener cms_data tidak lagi
             // menangani field-field ini — lihat attachPrivateDataListener() di bawah.
             appData.payment = { ...defApp.payment, ...(f.payment || {}) };
+            const syncQris = appData.payment?.qrisUrl || appData.payment?.qris || appData.store?.qrisUrl || appData.store?.qris || appData.qrisUrl;
+            if (syncQris) appData.payment.qrisUrl = fixD(syncQris);
             appData.config = { ...defApp.config, ...(f.config || {}) };
             // taxSettings kini dari cms_private — tidak di-update di sini
             if (appData.config && appData.config.gasUrl) window.GAS_UPLOAD_URL = appData.config.gasUrl;
