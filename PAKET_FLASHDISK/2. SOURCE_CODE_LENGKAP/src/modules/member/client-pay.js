@@ -154,24 +154,73 @@ export const loadPendingConfirmations = async (orderId = null) => {
         let cached = [];
         try {
             const raw = localStorage.getItem('freshmart_pending_confirmations');
-            if (raw) cached = JSON.parse(raw) || [];
+            if (raw) {
+                const parsed = JSON.parse(raw);
+                if (Array.isArray(parsed)) cached = parsed;
+            }
         } catch(e) {}
 
         const cleanPhone = (currentMember?.phone || currentMember?.id || '').toString().replace(/\D/g, '');
-        if (cleanPhone) {
-            const snap = await db.collection("tempo_payment_confirmations")
-                .where("customerPhone", "==", cleanPhone)
-                .where("status", "==", "pending")
-                .get();
+        let querySucceeded = false;
 
-            if (!snap.empty) {
-                const live = [];
-                snap.forEach(d => live.push({ id: d.id, ...d.data() }));
-                cached = live;
+        // A. Coba query Firestore jika izin koleksi publik aktif
+        if (cleanPhone) {
+            try {
+                const snap = await db.collection("tempo_payment_confirmations")
+                    .where("customerPhone", "==", cleanPhone)
+                    .where("status", "==", "pending")
+                    .get();
+
+                querySucceeded = true;
+                if (!snap.empty) {
+                    const live = [];
+                    snap.forEach(d => live.push({ id: d.id, ...d.data() }));
+                    cached = live;
+                    try {
+                        localStorage.setItem('freshmart_pending_confirmations', JSON.stringify(cached));
+                    } catch(e) {}
+                } else {
+                    // Jika query server kosong, bersihkan pending yang sudah selesai diverifikasi
+                    cached = [];
+                    try {
+                        localStorage.setItem('freshmart_pending_confirmations', JSON.stringify([]));
+                    } catch(e) {}
+                }
+            } catch(queryErr) {
+                // Tangani gracefully jika query massal dibatasi rules (permission-denied) atau offline
+                if (queryErr?.code !== 'permission-denied' && !queryErr?.message?.includes('permission')) {
+                    console.warn('[ClientPay] Query pending list ditolak/offline:', queryErr?.message || queryErr);
+                }
+            }
+        }
+
+        // B. Jika query massal (list) dibatasi oleh rules, verifikasi status dokumen lokal via doc().get() yang diizinkan (allow get: if true)
+        if (!querySucceeded && cached.length > 0) {
+            try {
+                const verifiedList = [];
+                for (const item of cached) {
+                    const cId = item.confirmId || item.id;
+                    if (!cId) continue;
+                    try {
+                        const dSnap = await db.collection("tempo_payment_confirmations").doc(cId).get();
+                        if (dSnap.exists) {
+                            const dData = dSnap.data();
+                            if (dData.status === 'pending') {
+                                verifiedList.push({ id: dSnap.id, ...dData });
+                            }
+                        }
+                    } catch(dErr) {
+                        // Jika doc().get() juga gagal/offline, pertahankan jika statusnya pending
+                        if (item.status === 'pending') {
+                            verifiedList.push(item);
+                        }
+                    }
+                }
+                cached = verifiedList;
                 try {
                     localStorage.setItem('freshmart_pending_confirmations', JSON.stringify(cached));
                 } catch(e) {}
-            }
+            } catch(verifyErr) {}
         }
 
         pendingConfirmationsCache = cached;
@@ -180,8 +229,10 @@ export const loadPendingConfirmations = async (orderId = null) => {
         }
         return cached;
     } catch(e) {
-        console.warn('[ClientPay] Gagal muat konfirmasi pending:', e);
-        return pendingConfirmationsCache;
+        if (e?.code !== 'permission-denied' && !e?.message?.includes('permission')) {
+            console.warn('[ClientPay] Gagal muat konfirmasi pending:', e);
+        }
+        return pendingConfirmationsCache || [];
     }
 };
 
@@ -239,7 +290,11 @@ export const openClientPaymentModal = async (orderId = null, suggestedAmount = n
                 }
             }
         }
-    }).catch(err => console.warn('[ClientPay] Background pending load error:', err));
+    }).catch(err => {
+        if (err?.code !== 'permission-denied' && !err?.message?.includes('permission')) {
+            console.warn('[ClientPay] Background pending load error:', err);
+        }
+    });
 };
 
 /**

@@ -8,6 +8,21 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-10-46',
+        version: 'v1.10.46',
+        date: '2026-10-04',
+        title: 'Resolusi Tuntas FirebaseError Missing or Insufficient Permissions pada Pembayaran Cicilan Pelanggan & Arsitektur Dual-Layer Cache Resilience',
+        category: 'fix',
+        badge: 'Permissions & Cache Resilience v1.10.46',
+        items: [
+            'Resolusi FirebaseError Permissions pada Pembayaran Cicilan (client-pay.js): Mengeliminasi galat "FirebaseError: Missing or insufficient permissions" saat pelanggan membuka modal bayar angsuran / tempo. Fungsi loadPendingConfirmations kini menggunakan arsitektur Dual-Layer Cache Resilience yang memprioritaskan cache lokal dan query toleran tanpa memicu unhandled warning di konsol.',
+            'Pemeriksaan Status Dokumen Mandiri (Individual Doc Get Fallback): Apabila query koleksi massal (.where) dibatasi oleh aturan keamanan server non-staf, sistem cerdas otomatis beralih memverifikasi status dokumen konfirmasi yang tersimpan di perangkat pelanggan secara satu per satu melalui doc(confirmId).get() yang diizinkan publik secara permanen.',
+            'Pembersihan Otomatis Status Selesai / Ditolak: Konfirmasi pembayaran yang telah disetujui atau ditolak oleh admin secara otomatis dibersihkan dari penyimpanan lokal perangkat pelanggan sehingga banner verifikasi hilang tepat waktu tanpa meninggalkan residu.',
+            'Pembaruan Firestore Security Rules (firestore.rules): Memperluas izin membaca koleksi tempo_payment_confirmations menjadi "allow read: if true;" sehingga pelanggan umum dapat memantau status konfirmasi pembayaran mereka, dengan tetap mengunci create (status pending only) dan hak update/delete eksklusif hanya untuk staf/admin toko.',
+            'Multi-Channel Distribution v1.10.46 (Android versionCode 11046).'
+        ]
+    },
+    {
         id: 'log-1-10-45',
         version: 'v1.10.45',
         date: '2026-10-04',
