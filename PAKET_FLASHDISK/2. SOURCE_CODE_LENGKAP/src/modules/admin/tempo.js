@@ -451,9 +451,151 @@ const renderActiveTempoDetailTab = (o, calc) => {
     }
 
     if (currentDetailTab === 'installments') {
+        const isPlOrder = !!(o.payment?.isPaylater || o.isPaylater || o.payment?.subMethod === 'paylater' || (Array.isArray(o.payment?.paylaterSchedule) && o.payment.paylaterSchedule.length > 0));
+        const grandTotalAwal = o.payment?.grandTotal || o.total || 0;
+
+        let paylaterScheduleHtml = '';
+        if (isPlOrder) {
+            const schedule = Array.isArray(o.payment?.paylaterSchedule) && o.payment.paylaterSchedule.length > 0
+                ? o.payment.paylaterSchedule
+                : [{
+                    installmentNo: 1,
+                    dueDate: o.payment?.tempoDueDate || Date.now(),
+                    dueDateStr: formatDateID(o.payment?.tempoDueDate || Date.now()),
+                    pokok: parseFloat(o.payment?.paylaterUsed || calc.sisa) || 0,
+                    adminFee: parseFloat(o.payment?.paylaterAdminFee) || 0,
+                    serviceFee: parseFloat(o.payment?.paylaterServiceFee) || 0,
+                    totalMonthly: parseFloat(o.payment?.paylaterMonthlyInstallment || o.payment?.tempoBalance || calc.sisa) || 0
+                }];
+
+            const totalPayableAll = schedule.reduce((sum, s) => sum + (parseFloat(s.totalMonthly) || 0), 0);
+            const currentBalance = Math.max(0, parseFloat(o.payment?.tempoBalance) || 0);
+            const totalPaidToPaylater = Math.max(0, totalPayableAll - currentBalance);
+
+            let runningTarget = 0;
+            const scheduleItemsHtml = schedule.map((s, idx) => {
+                const mTotal = parseFloat(s.totalMonthly) || 0;
+                const targetBefore = runningTarget;
+                runningTarget += mTotal;
+                const targetAfter = runningTarget;
+
+                let statusLabel = '';
+                let statusBadgeCls = '';
+                let statusIcon = '';
+                let sisaForThis = 0;
+
+                if (totalPaidToPaylater >= targetAfter) {
+                    statusLabel = 'LUNAS';
+                    statusBadgeCls = 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-700';
+                    statusIcon = '<i class="fa-solid fa-circle-check"></i>';
+                    sisaForThis = 0;
+                } else if (totalPaidToPaylater > targetBefore) {
+                    const paidForThis = totalPaidToPaylater - targetBefore;
+                    sisaForThis = Math.max(0, mTotal - paidForThis);
+                    statusLabel = `SEBAGIAN (Sisa ${fCur(sisaForThis)})`;
+                    statusBadgeCls = 'bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-400 border border-amber-300 dark:border-amber-700';
+                    statusIcon = '<i class="fa-solid fa-hourglass-half"></i>';
+                } else {
+                    sisaForThis = mTotal;
+                    const isLate = s.dueDate && (Date.now() > s.dueDate);
+                    if (isLate) {
+                        statusLabel = 'JATUH TEMPO / TERLAMBAT';
+                        statusBadgeCls = 'bg-rose-100 dark:bg-rose-950/60 text-rose-700 dark:text-rose-400 border border-rose-300 dark:border-rose-700';
+                        statusIcon = '<i class="fa-solid fa-circle-exclamation"></i>';
+                    } else {
+                        statusLabel = 'MENUNGGU JATUH TEMPO';
+                        statusBadgeCls = 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700';
+                        statusIcon = '<i class="fa-solid fa-clock"></i>';
+                    }
+                }
+
+                const dueText = s.dueDateStr || (s.dueDate ? formatDateID(s.dueDate) : '-');
+                const tenorName = o.payment?.paylaterTenor === '2m' ? '2 Bulan' : (o.payment?.paylaterTenor === '3m' ? '3 Bulan' : '30 Hari');
+
+                return `
+                  <div class="p-3.5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-2xs space-y-2">
+                    <div class="flex items-center justify-between flex-wrap gap-2">
+                      <div class="flex items-center gap-2">
+                        <span class="w-7 h-7 rounded-xl flex items-center justify-center text-xs font-black shrink-0 font-mono" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary);">
+                          #${s.installmentNo || (idx + 1)}
+                        </span>
+                        <div>
+                          <h4 class="font-bold text-xs text-slate-800 dark:text-slate-100">Angsuran Ke-${s.installmentNo || (idx + 1)} (${tenorName})</h4>
+                          <p class="text-[10px] text-slate-400">Jatuh Tempo: <span class="font-bold text-slate-700 dark:text-slate-300 font-mono">${dueText}</span></p>
+                        </div>
+                      </div>
+                      <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-black ${statusBadgeCls}">
+                        ${statusIcon} ${statusLabel}
+                      </span>
+                    </div>
+
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2 border-t border-slate-100 dark:border-slate-800 text-[11px]">
+                      <div>
+                        <span class="text-[10px] text-slate-400 block">Pokok:</span>
+                        <span class="font-bold text-slate-700 dark:text-slate-300 font-mono">${fCur(s.pokok || 0)}</span>
+                      </div>
+                      <div>
+                        <span class="text-[10px] text-slate-400 block">Biaya Admin:</span>
+                        <span class="font-bold ${(s.adminFee || 0) > 0 ? 'text-amber-600 dark:text-amber-400' : 'text-emerald-600 dark:text-emerald-400'} font-mono">
+                          ${(s.adminFee || 0) > 0 ? fCur(s.adminFee) : 'Gratis'}
+                        </span>
+                      </div>
+                      <div>
+                        <span class="text-[10px] text-slate-400 block">Biaya Layanan:</span>
+                        <span class="font-bold ${(s.serviceFee || 0) > 0 ? 'text-amber-600 dark:text-amber-400' : 'text-emerald-600 dark:text-emerald-400'} font-mono">
+                          ${(s.serviceFee || 0) > 0 ? fCur(s.serviceFee) : 'Gratis'}
+                        </span>
+                      </div>
+                      <div>
+                        <span class="text-[10px] text-slate-400 block">Total Angsuran:</span>
+                        <span class="font-black text-xs font-mono" style="color:var(--color-primary)">${fCur(mTotal)}</span>
+                      </div>
+                    </div>
+
+                    ${sisaForThis > 0 ? `
+                      <div class="pt-2 flex justify-end">
+                        <button type="button" onclick="window.closeTempoDetailModal(); window.openTempoPaymentModal('${o.orderId}', ${sisaForThis});"
+                          class="px-3 py-1.5 rounded-xl text-white font-bold text-[11px] flex items-center gap-1.5 active:scale-95 transition-all shadow-2xs cursor-pointer"
+                          style="background: var(--color-primary);">
+                          <i class="fa-solid fa-money-bill-wave"></i>
+                          <span>Bayar Angsuran Ini (${fCur(sisaForThis)})</span>
+                        </button>
+                      </div>
+                    ` : ''}
+                  </div>
+                `;
+            }).join('');
+
+            const tenorLabel = o.payment?.paylaterTenor === '2m' ? '2 Bulan (2x Cicilan)' : (o.payment?.paylaterTenor === '3m' ? '3 Bulan (3x Cicilan)' : '30 Hari (1x Bayar)');
+
+            paylaterScheduleHtml = `
+              <div class="p-4 rounded-2xl bg-gradient-to-br from-emerald-50/70 via-teal-50/40 to-slate-50 dark:from-emerald-950/20 dark:via-slate-900 dark:to-slate-900 border border-emerald-200/80 dark:border-emerald-800/60 shadow-2xs space-y-3 mb-4">
+                <div class="flex items-center justify-between flex-wrap gap-2">
+                  <div class="flex items-center gap-2">
+                    <span class="w-8 h-8 rounded-xl flex items-center justify-center text-xs text-emerald-600 bg-emerald-100 dark:bg-emerald-900/60 shrink-0">
+                      <i class="fa-solid fa-bolt"></i>
+                    </span>
+                    <div>
+                      <h4 class="font-black text-xs text-emerald-900 dark:text-emerald-300">Jadwal Angsuran Putri PayLater</h4>
+                      <p class="text-[10px] text-emerald-700/80 dark:text-emerald-400 font-semibold">${tenorLabel} • Transparan Tanpa Biaya Tersembunyi</p>
+                    </div>
+                  </div>
+                  <span class="text-[10px] font-black px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-900/60 dark:text-emerald-200">
+                    Plafon Terpakai: ${fCur(o.payment?.paylaterUsed || (grandTotalAwal - (o.payment?.tempoDp || 0)))}
+                  </span>
+                </div>
+
+                <div class="space-y-2">
+                  ${scheduleItemsHtml}
+                </div>
+              </div>
+            `;
+        }
+
+        let historyHtml = '';
         if (installments.length === 0) {
-            return `
-                <div class="text-center py-10 text-slate-400 bg-slate-50/60 dark:bg-slate-900/40 rounded-2xl border-2 border-dashed border-slate-200 dark:border-slate-800 p-6">
+            historyHtml = `
+                <div class="text-center py-8 text-slate-400 bg-slate-50/60 dark:bg-slate-900/40 rounded-2xl border-2 border-dashed border-slate-200 dark:border-slate-800 p-6">
                     <div class="w-12 h-12 rounded-2xl flex items-center justify-center text-xl mb-2.5 mx-auto" style="background: rgba(var(--color-primary-rgb), 0.1); color: var(--color-primary);">
                         <i class="fa-solid fa-receipt"></i>
                     </div>
@@ -465,35 +607,42 @@ const renderActiveTempoDetailTab = (o, calc) => {
                     </button>
                 </div>
             `;
+        } else {
+            historyHtml = `
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between text-xs font-bold text-slate-500 mb-1">
+                        <span>Daftar Transaksi Cicilan (${installments.length})</span>
+                        <span>Total Masuk: <span class="text-emerald-600 font-mono">${fCur(installments.reduce((sum, ins) => sum + (parseFloat(ins.amount) || 0), 0))}</span></span>
+                    </div>
+                    <div class="space-y-2.5">
+                        ${installments.map((ins, idx) => `
+                            <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700 flex items-center justify-between gap-3 shadow-2xs">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-9 h-9 rounded-xl flex items-center justify-center text-xs font-black shrink-0 bg-emerald-100 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-400">
+                                        #${idx + 1}
+                                    </div>
+                                    <div>
+                                        <span class="font-black text-xs text-emerald-600 dark:text-emerald-400 font-mono">+${fCur(ins.amount)}</span>
+                                        <div class="flex items-center gap-2 mt-0.5 text-[10px] text-slate-400">
+                                            <span>${formatDateTimeID(ins.date)}</span>
+                                            <span>•</span>
+                                            <span class="font-bold text-slate-600 dark:text-slate-300">${esc(ins.method || 'Tunai')}</span>
+                                        </div>
+                                        ${ins.note ? `<p class="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5 italic">"${esc(ins.note)}"</p>` : ''}
+                                    </div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
         }
 
         return `
-            <div class="space-y-3">
-                <div class="flex items-center justify-between text-xs font-bold text-slate-500 mb-1">
-                    <span>Daftar Transaksi Cicilan (${installments.length})</span>
-                    <span>Total Masuk: <span class="text-emerald-600 font-mono">${fCur(installments.reduce((sum, ins) => sum + (parseFloat(ins.amount) || 0), 0))}</span></span>
-                </div>
-                <div class="space-y-2.5">
-                    ${installments.map((ins, idx) => `
-                        <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700 flex items-center justify-between gap-3 shadow-2xs">
-                            <div class="flex items-center gap-3">
-                                <div class="w-9 h-9 rounded-xl flex items-center justify-center text-xs font-black shrink-0 bg-emerald-100 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-400">
-                                    #${idx + 1}
-                                </div>
-                                <div>
-                                    <span class="font-black text-xs text-emerald-600 dark:text-emerald-400 font-mono">+${fCur(ins.amount)}</span>
-                                    <div class="flex items-center gap-2 mt-0.5 text-[10px] text-slate-400">
-                                        <span>${formatDateTimeID(ins.date)}</span>
-                                        <span>•</span>
-                                        <span class="font-bold text-slate-600 dark:text-slate-300">${esc(ins.method || 'Tunai')}</span>
-                                    </div>
-                                    ${ins.note ? `<p class="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5 italic">"${esc(ins.note)}"</p>` : ''}
-                                </div>
-                            </div>
-                        </div>
-                    `).join('')}
-                </div>
-            </div>
+          <div class="space-y-4">
+            ${paylaterScheduleHtml}
+            ${historyHtml}
+          </div>
         `;
     }
 
@@ -564,7 +713,7 @@ const renderActiveTempoDetailTab = (o, calc) => {
  * 2. MODAL CATAT PEMBAYARAN CICILAN PIUTANG (modal-tempo-payment)
  * ══════════════════════════════════════════════════════════════════
  */
-export const openTempoPaymentModal = (orderId) => {
+export const openTempoPaymentModal = (orderId, prefillAmount = null) => {
     ensureTempoModals();
     const o = cachedPiutangOrders.find(x => x.orderId === orderId);
     if (!o) return showToast('Data piutang tidak ditemukan!');
@@ -576,6 +725,42 @@ export const openTempoPaymentModal = (orderId) => {
     if (!modal || !content) return;
 
     const totalWajib = Math.round(calc.totalAkhir);
+
+    // Hitung apakah ada angsuran berikutnya yang belum lunas jika pesanan PayLater
+    const isPlOrder = !!(o.payment?.isPaylater || o.isPaylater || o.payment?.subMethod === 'paylater');
+    let suggestedInstallment = 0;
+    if (isPlOrder) {
+        const schedule = Array.isArray(o.payment?.paylaterSchedule) && o.payment.paylaterSchedule.length > 0
+            ? o.payment.paylaterSchedule
+            : [];
+        if (schedule.length > 0) {
+            const totalPayableAll = schedule.reduce((sum, s) => sum + (parseFloat(s.totalMonthly) || 0), 0);
+            const currentBalance = Math.max(0, parseFloat(o.payment?.tempoBalance) || 0);
+            const totalPaidToPaylater = Math.max(0, totalPayableAll - currentBalance);
+
+            let runningTarget = 0;
+            for (const s of schedule) {
+                const mTotal = parseFloat(s.totalMonthly) || 0;
+                const targetBefore = runningTarget;
+                runningTarget += mTotal;
+                if (totalPaidToPaylater < runningTarget) {
+                    const paidForThis = Math.max(0, totalPaidToPaylater - targetBefore);
+                    suggestedInstallment = Math.round(Math.max(0, mTotal - paidForThis));
+                    break;
+                }
+            }
+        } else if (parseFloat(o.payment?.paylaterMonthlyInstallment) > 0) {
+            suggestedInstallment = Math.round(parseFloat(o.payment.paylaterMonthlyInstallment));
+        }
+    }
+
+    // Tentukan nominal awal yang terisi di input
+    let initialAmount = totalWajib;
+    if (prefillAmount !== null && prefillAmount !== undefined && !isNaN(prefillAmount)) {
+        initialAmount = Math.min(totalWajib, Math.max(1, Math.round(prefillAmount)));
+    } else if (suggestedInstallment > 0 && suggestedInstallment < totalWajib) {
+        initialAmount = Math.min(totalWajib, suggestedInstallment);
+    }
 
     setH('modal-tempo-payment-content', `
         <!-- DRAG PULL INDICATOR (NATIVE MOBILE SHEET) -->
@@ -616,6 +801,11 @@ export const openTempoPaymentModal = (orderId) => {
                         <span class="text-amber-600 dark:text-amber-400">Total Wajib Bayar:</span>
                         <span class="text-amber-600 dark:text-amber-400 text-base font-mono">${fCur(totalWajib)}</span>
                     </div>
+                    ${isPlOrder ? `
+                    <div class="pt-2 border-t border-amber-200/60 dark:border-amber-800/40 flex items-center justify-between text-[11px] text-emerald-700 dark:text-emerald-400 font-bold">
+                        <span class="flex items-center gap-1"><i class="fa-solid fa-bolt text-xs"></i> Putri PayLater (${o.payment?.paylaterTenor === '2m' ? '2 Bulan' : (o.payment?.paylaterTenor === '3m' ? '3 Bulan' : '30 Hari')})</span>
+                        <span class="font-mono">${fCur(o.payment?.paylaterMonthlyInstallment || suggestedInstallment)}/bln</span>
+                    </div>` : ''}
                 </div>
 
                 <!-- INPUT NOMINAL PEMBAYARAN -->
@@ -628,7 +818,7 @@ export const openTempoPaymentModal = (orderId) => {
                             required 
                             min="1" 
                             max="${totalWajib}" 
-                            value="${totalWajib}" 
+                            value="${initialAmount}" 
                             oninput="window.recalcTempoPayPreview()"
                             class="admin-input bg-slate-50 dark:bg-slate-900 font-black text-lg pr-24 text-emerald-600 rounded-2xl"
                         >
@@ -644,6 +834,11 @@ export const openTempoPaymentModal = (orderId) => {
 
                     <!-- PRESET QUICK-PAY CHIPS -->
                     <div class="flex items-center gap-1.5 mt-2 overflow-x-auto pb-1 hide-scrollbar">
+                        ${suggestedInstallment > 0 && suggestedInstallment < totalWajib ? `
+                        <button type="button" onclick="window.setQuickPayTempo(${suggestedInstallment})" class="px-2.5 py-1 rounded-xl text-[10px] font-black border border-emerald-300 dark:border-emerald-700 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 active:scale-95 transition-all shrink-0 flex items-center gap-1">
+                            <i class="fa-solid fa-bolt text-[9px]"></i> 1 Angsuran (${fCur(suggestedInstallment)})
+                        </button>
+                        ` : ''}
                         <button type="button" onclick="window.setQuickPayTempo(${Math.round(totalWajib * 0.25)})" class="px-2.5 py-1 rounded-xl text-[10px] font-bold border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-100 text-slate-600 dark:text-slate-300 active:scale-95 transition-all shrink-0">
                             25% (${fCur(Math.round(totalWajib * 0.25))})
                         </button>
@@ -1496,7 +1691,7 @@ const renderTempoCardItem = (o) => {
                         </span>
                         ${(o.payment?.isPaylater || o.isPaylater || o.payment?.subMethod === 'paylater') ? `
                             <span class="text-[9px] font-black px-2 py-0.5 rounded-xl uppercase tracking-widest border border-emerald-300 dark:border-emerald-700 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 flex items-center gap-1">
-                                <i class="fa-solid fa-bolt text-emerald-500"></i>PayLater
+                                <i class="fa-solid fa-bolt text-emerald-500"></i>PayLater (${o.payment?.paylaterTenor === '2m' ? '2 Bulan' : (o.payment?.paylaterTenor === '3m' ? '3 Bulan' : '30 Hari')})
                             </span>
                         ` : ''}
                     </div>
