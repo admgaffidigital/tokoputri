@@ -254,8 +254,8 @@ export const handleRTEditorImage = async (inputElement, editorId) => {
  * @param {string} prefix 
  * @returns {Promise<string|null>} URL Google Drive yang sudah dinormalisasi (fixD)
  */
-export const uploadImageFileToDrive = async (file, prefix = 'BUKTI') => {
-    if (!file) return null;
+export const uploadImageFileToDrive = async (fileOrDataUrl, prefix = 'BUKTI') => {
+    if (!fileOrDataUrl) return null;
     
     const uploadUrl = window.GAS_UPLOAD_URL || (appData && appData.config && appData.config.gasUrl) || GAS_UPLOAD_URL;
     if (!uploadUrl || uploadUrl.includes("ISI_DENGAN")) {
@@ -264,46 +264,58 @@ export const uploadImageFileToDrive = async (file, prefix = 'BUKTI') => {
     }
 
     try {
-        // Kompresi sebelum upload untuk efisiensi transfer & kuota Google Drive
-        const base64Data = await new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.onload = (ev) => {
-                const img = new Image();
-                img.onload = () => {
-                    const maxDim = 1200;
-                    let { width, height } = img;
-                    if (width > maxDim || height > maxDim) {
-                        if (width > height) {
-                            height = Math.round((height * maxDim) / width);
-                            width = maxDim;
-                        } else {
-                            width = Math.round((width * maxDim) / height);
-                            height = maxDim;
+        let base64Data = null;
+        let fileName = 'bukti.jpg';
+
+        if (typeof fileOrDataUrl === 'string') {
+            if (fileOrDataUrl.startsWith('data:')) {
+                base64Data = fileOrDataUrl.split(',')[1];
+            } else {
+                base64Data = fileOrDataUrl;
+            }
+            fileName = `${prefix}_${Date.now()}.jpg`;
+        } else if (fileOrDataUrl instanceof Blob || fileOrDataUrl instanceof File) {
+            fileName = (fileOrDataUrl.name || 'bukti.jpg').replace(/[^a-zA-Z0-9.]/g, '_');
+            // Kompresi sebelum upload untuk efisiensi transfer & kuota Google Drive
+            base64Data = await new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = (ev) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        const maxDim = 1200;
+                        let { width, height } = img;
+                        if (width > maxDim || height > maxDim) {
+                            if (width > height) {
+                                height = Math.round((height * maxDim) / width);
+                                width = maxDim;
+                            } else {
+                                width = Math.round((width * maxDim) / height);
+                                height = maxDim;
+                            }
                         }
-                    }
-                    const canvas = document.createElement('canvas');
-                    canvas.width = width;
-                    canvas.height = height;
-                    const ctx = canvas.getContext('2d');
-                    ctx.drawImage(img, 0, 0, width, height);
-                    const dataUrl = canvas.toDataURL('image/jpeg', 0.82);
-                    resolve(dataUrl.split(',')[1]);
+                        const canvas = document.createElement('canvas');
+                        canvas.width = width;
+                        canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+                        const dataUrl = canvas.toDataURL('image/jpeg', 0.82);
+                        resolve(dataUrl.split(',')[1]);
+                    };
+                    img.onerror = () => {
+                        const raw = (ev.target.result || '').toString();
+                        resolve(raw.split(',')[1] || '');
+                    };
+                    img.src = ev.target.result;
                 };
-                img.onerror = () => {
-                    const raw = (ev.target.result || '').toString();
-                    resolve(raw.split(',')[1] || '');
-                };
-                img.src = ev.target.result;
-            };
-            reader.onerror = reject;
-            reader.readAsDataURL(file);
-        });
+                reader.onerror = reject;
+                reader.readAsDataURL(fileOrDataUrl);
+            });
+        }
 
         if (!base64Data) return null;
 
-        const safeName = (file.name || 'bukti.jpg').replace(/[^a-zA-Z0-9.]/g, '_');
         const payload = {
-            name: `${prefix}_${Date.now()}_${safeName}`,
+            name: `${prefix}_${Date.now()}_${fileName}`,
             mimeType: 'image/jpeg',
             data: base64Data,
             token: GAS_SECRET_TOKEN
@@ -331,6 +343,7 @@ export const uploadImageFileToDrive = async (file, prefix = 'BUKTI') => {
         }
 
         if (responseData && responseData.status === 'success' && responseData.url) {
+            console.info("[GAS Upload] Sukses diunggah ke Google Drive:", responseData.url);
             return fixD(responseData.url);
         } else {
             console.warn("[GAS Upload] Server message:", responseData && responseData.message);

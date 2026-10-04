@@ -22,12 +22,18 @@ let pendingConfirmationsCache = [];
  * Ambil URL QRIS Toko yang valid dari sistem & dinormalisasi dengan fixD
  */
 export const getStoreQrisUrl = () => {
-    const raw = (appData.payment?.qrisUrl || 
+    let raw = (appData.payment?.qrisUrl || 
                  appData.payment?.qris || 
                  appData.store?.qrisUrl || 
                  appData.store?.qris || 
                  appData.qrisUrl || 
                  '').trim();
+    if (!raw) {
+        try {
+            const cms = JSON.parse(localStorage.getItem('freshmart_cms_data') || '{}');
+            raw = (cms.payment?.qrisUrl || cms.payment?.qris || cms.store?.qrisUrl || cms.store?.qris || '').trim();
+        } catch(e) {}
+    }
     return raw ? fixD(raw) : '';
 };
 
@@ -433,7 +439,7 @@ const renderClientPaymentModalContent = (orders, initialAmount = null) => {
 
     box.innerHTML = `
         <!-- DRAG PULL MOBILE -->
-        <div class="pull-indicator sm:hidden"></div>
+        <div class="pull-indicator w-12 h-1.5 rounded-full bg-slate-300 dark:bg-slate-700 mx-auto my-2.5 sm:hidden shrink-0"></div>
 
         <!-- HEADER -->
         <div class="px-5 sm:px-6 pt-3.5 sm:pt-5 pb-4 border-b border-slate-100 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/60 flex items-center justify-between shrink-0">
@@ -451,8 +457,8 @@ const renderClientPaymentModalContent = (orders, initialAmount = null) => {
             </button>
         </div>
 
-        <!-- BODY SCROLLABLE DENGAN PADDING LEGA ANTI-TERTUTUP FOOTER -->
-        <div class="p-5 sm:p-6 pb-28 sm:pb-32 overflow-y-auto flex-1 space-y-6 text-xs custom-scrollbar" style="-webkit-overflow-scrolling: touch; overscroll-behavior-y: contain; touch-action: pan-y;">
+        <!-- BODY SCROLLABLE DENGAN PADDING LEGA ANTI-TERTUTUP FOOTER & HIDE SCROLLBAR NATIVE -->
+        <div class="p-5 sm:p-6 pb-28 sm:pb-32 overflow-y-auto flex-1 space-y-5 text-xs hide-scrollbar" style="-webkit-overflow-scrolling: touch; overscroll-behavior-y: contain; touch-action: pan-y;">
             <!-- PENDING BANNER JIKA ADA PENGAJUAN -->
             <div id="client-pay-pending-banner-wrap" class="${pendingSum > 0 ? 'block' : 'hidden'}">
                 ${pendingSum > 0 ? `
@@ -570,33 +576,34 @@ const renderClientPaymentModalContent = (orders, initialAmount = null) => {
                     <span class="text-[10px] text-slate-400 italic">Bebas cicil atau lunas</span>
                 </div>
                 
-                <!-- Quick Chips -->
-                <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+                <!-- Quick Choice Chips (Symmetric 3-Column on Mobile & Desktop) -->
+                <div class="grid ${scheduleBreakdownList.length > 1 && angsuranBulanIni > 0 && angsuranBulanIni < tempoBal ? 'grid-cols-3' : 'grid-cols-2'} gap-2">
                     ${scheduleBreakdownList.length > 1 && angsuranBulanIni > 0 && angsuranBulanIni < tempoBal ? `
-                    <button type="button" onclick="window.setClientPayAmount(${angsuranBulanIni}, 'angsuran')" class="p-3.5 rounded-2xl border-2 border-[var(--color-primary)] bg-[rgba(var(--color-primary-rgb),0.08)] dark:bg-[rgba(var(--color-primary-rgb),0.15)] text-[var(--color-primary)] font-bold text-xs text-left active:scale-95 transition-all shadow-xs relative overflow-hidden group">
-                        <div class="absolute top-1.5 right-2 px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-wider bg-[var(--color-primary)] text-white">Rekomendasi</div>
-                        <span class="block text-[9px] uppercase tracking-wider opacity-90 font-bold">Angsuran Bulan Ini</span>
-                        <span class="font-mono font-black text-sm sm:text-base mt-1 block">${fCur(angsuranBulanIni)}</span>
-                        <span class="block text-[9px] opacity-75 mt-0.5 font-normal">Termin Ke-${installmentNoBulanIni}</span>
+                    <button type="button" onclick="window.setClientPayAmount(${angsuranBulanIni}, 'angsuran')" class="p-2.5 sm:p-3 rounded-2xl border-2 border-[var(--color-primary)] bg-[rgba(var(--color-primary-rgb),0.08)] dark:bg-[rgba(var(--color-primary-rgb),0.15)] text-[var(--color-primary)] font-bold text-xs text-left active:scale-95 transition-all shadow-xs relative overflow-hidden flex flex-col justify-between">
+                        <span class="block text-[8.5px] uppercase tracking-wider font-extrabold text-[var(--color-primary)] truncate">Bulan Ini</span>
+                        <span class="font-mono font-black text-xs sm:text-sm mt-1 block truncate">${fCur(angsuranBulanIni)}</span>
+                        <span class="block text-[8px] opacity-75 mt-0.5 font-medium truncate">Termin Ke-${installmentNoBulanIni}</span>
                     </button>
                     ` : ''}
-                    <button type="button" onclick="window.setClientPayAmount(${tempoBal}, 'pelunasan')" class="p-3.5 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-750 text-slate-700 dark:text-slate-200 font-bold text-xs text-left active:scale-95 transition-all shadow-2xs">
-                        <span class="block text-[9px] uppercase tracking-wider opacity-75 text-slate-400">Pelunasan Penuh</span>
-                        <span class="font-mono font-black text-sm mt-0.5 block">${fCur(tempoBal)}</span>
-                        <span class="block text-[9px] opacity-75 mt-0.5 font-normal">Lunas Seluruhnya</span>
+                    <button type="button" onclick="window.setClientPayAmount(${tempoBal}, 'pelunasan')" class="p-2.5 sm:p-3 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-750 text-slate-700 dark:text-slate-200 font-bold text-xs text-left active:scale-95 transition-all shadow-2xs flex flex-col justify-between">
+                        <span class="block text-[8.5px] uppercase tracking-wider text-slate-400 font-extrabold truncate">Pelunasan</span>
+                        <span class="font-mono font-black text-xs sm:text-sm mt-1 block truncate">${fCur(tempoBal)}</span>
+                        <span class="block text-[8px] opacity-75 mt-0.5 font-medium truncate">Semua Tenor</span>
                     </button>
-                    <button type="button" onclick="window.focusCustomClientPay()" class="p-3.5 rounded-2xl border border-dashed border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/40 text-slate-600 dark:text-slate-300 font-bold text-xs text-left active:scale-95 transition-all col-span-2 sm:col-span-1 shadow-2xs">
-                        <span class="block text-[9px] uppercase tracking-wider opacity-75 text-slate-400">Nominal Lain</span>
-                        <span class="text-xs mt-0.5 block font-bold">Titipan Bebas</span>
-                        <span class="block text-[9px] opacity-75 mt-0.5 font-normal">Ketik Nominal</span>
+                    <button type="button" onclick="window.focusCustomClientPay()" class="p-2.5 sm:p-3 rounded-2xl border border-dashed border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/40 text-slate-600 dark:text-slate-300 font-bold text-xs text-left active:scale-95 transition-all shadow-2xs flex flex-col justify-between">
+                        <span class="block text-[8.5px] uppercase tracking-wider text-slate-400 font-extrabold truncate">Bebas</span>
+                        <span class="font-bold text-xs sm:text-sm mt-1 block truncate">Ketik Nominal</span>
+                        <span class="block text-[8px] opacity-75 mt-0.5 font-medium truncate">Titipan Sebagian</span>
                     </button>
                 </div>
 
-                <!-- Input Nominal Rupiah -->
+                <!-- Input Nominal Rupiah Anti-Overlap -->
                 <div class="space-y-1.5">
-                    <div class="relative">
-                        <span class="absolute left-4 top-1/2 -translate-y-1/2 font-black text-base text-slate-400">Rp</span>
-                        <input type="number" id="client-pay-amount-input" min="1000" max="${tempoBal}" value="${defaultPayAmount}" class="admin-input pl-12 h-13 text-base sm:text-lg font-black font-mono rounded-2xl focus:border-[var(--color-primary)]" placeholder="0">
+                    <div class="flex items-center rounded-2xl border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 focus-within:border-[var(--color-primary)] focus-within:ring-2 focus-within:ring-[var(--color-primary)]/20 transition-all overflow-hidden shadow-2xs">
+                        <div class="px-4 py-3 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-black text-sm border-r border-slate-200 dark:border-slate-700 select-none shrink-0 flex items-center justify-center">
+                            Rp
+                        </div>
+                        <input type="number" id="client-pay-amount-input" min="1000" max="${tempoBal}" value="${defaultPayAmount}" class="w-full h-12 px-4 bg-transparent text-slate-900 dark:text-white font-black font-mono text-base sm:text-lg focus:outline-none" placeholder="0">
                     </div>
                     <p class="text-[10px] text-slate-400 leading-relaxed">
                         Default terisi nominal <b>Angsuran Bulan Ini (${fCur(defaultPayAmount)})</b>. Anda juga dapat memilih Pelunasan Penuh di atas jika ingin melunasi seluruhnya sekaligus.
@@ -620,22 +627,22 @@ const renderClientPaymentModalContent = (orders, initialAmount = null) => {
                 <!-- CONTAINER CHANNEL BANK -->
                 <div id="client-pay-channel-bank" class="${currentPayChannel === 'bank' ? 'block' : 'hidden'} space-y-3">
                     <p class="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">Silakan transfer nominal di atas ke salah satu rekening resmi Toko Putri:</p>
-                    <div class="space-y-3">
+                    <div class="space-y-2.5">
                         ${banks.map(b => {
                             const bName = b.bankName || b.bank || 'BANK';
                             const bAcc = b.bankAccount || b.number || '-';
                             const bOwner = b.bankOwner || b.name || appData.store?.name || 'Toko Putri';
                             return `
-                            <div class="p-4 sm:p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700 flex flex-col sm:flex-row sm:items-center justify-between gap-3.5 shadow-2xs">
-                                <div>
+                            <div class="p-3.5 sm:p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700 flex items-center justify-between gap-3 shadow-2xs">
+                                <div class="min-w-0 flex-1">
                                     <div class="flex items-center gap-2">
-                                        <span class="px-2.5 py-1 rounded-lg text-[10px] font-black uppercase bg-blue-100 dark:bg-blue-900/60 text-blue-700 dark:text-blue-300 font-mono">${esc(bName)}</span>
-                                        <span class="text-xs font-bold text-slate-800 dark:text-white">${esc(bOwner)}</span>
+                                        <span class="px-2 py-0.5 rounded-lg text-[9.5px] font-black uppercase bg-blue-100 dark:bg-blue-900/60 text-blue-700 dark:text-blue-300 font-mono shrink-0">${esc(bName)}</span>
+                                        <span class="text-xs font-bold text-slate-800 dark:text-white truncate">${esc(bOwner)}</span>
                                     </div>
-                                    <p class="font-mono text-base sm:text-lg font-black text-slate-900 dark:text-slate-100 tracking-wider mt-1.5">${esc(bAcc)}</p>
+                                    <p class="font-mono text-base sm:text-lg font-black text-slate-900 dark:text-slate-100 tracking-wider mt-1 truncate">${esc(bAcc)}</p>
                                 </div>
-                                <button type="button" onclick="window.copyAccountNumber('${esc(bAcc)}')" class="h-11 px-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 hover:bg-slate-100 text-slate-700 dark:text-slate-200 text-xs font-bold flex items-center justify-center gap-2 active:scale-95 transition-all shadow-2xs shrink-0 cursor-pointer">
-                                    <i class="fa-regular fa-copy text-xs"></i> Salin Rekening
+                                <button type="button" onclick="window.copyAccountNumber('${esc(bAcc)}')" class="h-10 px-3.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 hover:bg-slate-100 text-slate-700 dark:text-slate-200 text-xs font-bold flex items-center justify-center gap-1.5 active:scale-95 transition-all shadow-2xs shrink-0 cursor-pointer">
+                                    <i class="fa-regular fa-copy text-xs"></i> <span>Salin</span>
                                 </button>
                             </div>`;
                         }).join('')}
@@ -647,10 +654,10 @@ const renderClientPaymentModalContent = (orders, initialAmount = null) => {
                     <p class="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">Scan QRIS toko di bawah menggunakan BCA Mobile, Livin, GoPay, OVO, DANA, ShopeePay, atau m-Banking apa pun:</p>
                     ${qrisUrl ? `
                         <div class="inline-block p-4 sm:p-5 rounded-3xl bg-white border border-slate-200 dark:border-slate-700 shadow-sm mx-auto">
-                            <img src="${esc(qrisUrl)}" alt="QRIS Resmi Toko Putri" 
+                            <img id="client-pay-qris-img" src="${esc(qrisUrl)}" alt="QRIS Resmi Toko Putri" 
                                  class="w-56 h-56 sm:w-64 sm:h-64 object-contain mx-auto rounded-2xl"
                                  loading="eager"
-                                 onerror="if(!this.dataset.retried){this.dataset.retried=1;const id=(this.src.match(/\\/d\\/([a-zA-Z0-9_-]+)/)||[])[1];if(id){this.src='https://drive.google.com/uc?export=view&id='+id;}}">
+                                 onerror="if(!this.dataset.retried){this.dataset.retried=1;const id=(this.src.match(/(?:id=|\\/d\\/)([a-zA-Z0-9_-]+)/)||[])[1];if(id){this.src='https://drive.google.com/uc?export=view&id='+id;}}else if(this.dataset.retried==1){this.dataset.retried=2;const id=(this.src.match(/(?:id=|\\/d\\/)([a-zA-Z0-9_-]+)/)||[])[1];if(id){this.src='https://drive.google.com/thumbnail?id='+id+'&sz=w800';}}">
                         </div>
                         <div class="flex items-center justify-center gap-2">
                             <a href="${esc(qrisUrl)}" target="_blank" rel="noopener noreferrer" download="QRIS_Toko_Putri.jpg" class="inline-flex items-center gap-1.5 text-xs font-bold text-[var(--color-primary)] hover:underline py-1.5 px-3 rounded-xl bg-[rgba(var(--color-primary-rgb),0.06)]">
@@ -678,20 +685,25 @@ const renderClientPaymentModalContent = (orders, initialAmount = null) => {
                 
                 <input type="file" id="client-pay-proof-input" accept="image/*" class="hidden" onchange="window.handleClientProofFileChange(event)">
                 
-                <div id="client-pay-proof-dropzone" onclick="document.getElementById('client-pay-proof-input').click()" class="p-6 sm:p-8 rounded-2xl border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-[var(--color-primary)] transition-all cursor-pointer text-center bg-slate-50/60 dark:bg-slate-800/40 group">
+                <div id="client-pay-proof-dropzone" onclick="document.getElementById('client-pay-proof-input').click()" class="p-5 sm:p-7 rounded-2xl border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-[var(--color-primary)] transition-all cursor-pointer text-center bg-slate-50/60 dark:bg-slate-800/40 group">
                     <div id="client-pay-proof-placeholder">
-                        <div class="w-13 h-13 rounded-2xl bg-[rgba(var(--color-primary-rgb),0.1)] text-[var(--color-primary)] flex items-center justify-center mx-auto mb-3 group-hover:scale-105 transition-transform">
-                            <i class="fa-solid fa-camera text-2xl"></i>
+                        <div class="w-12 h-12 rounded-2xl bg-[rgba(var(--color-primary-rgb),0.1)] text-[var(--color-primary)] flex items-center justify-center mx-auto mb-2.5 group-hover:scale-105 transition-transform">
+                            <i class="fa-solid fa-camera text-xl"></i>
                         </div>
                         <p class="text-xs sm:text-sm font-bold text-slate-700 dark:text-slate-200">Klik untuk Ambil Foto / Pilih Bukti Transfer</p>
-                        <p class="text-[11px] text-slate-400 mt-1">Format JPG, PNG atau WebP (Otomatis dikompresi ringan)</p>
+                        <p class="text-[11px] text-slate-400 mt-0.5">Format JPG, PNG atau WebP (Otomatis dikompresi ringan)</p>
                     </div>
 
-                    <div id="client-pay-proof-preview-wrap" class="hidden">
-                        <img id="client-pay-proof-img" src="" alt="Preview Bukti" class="max-h-60 sm:max-h-72 mx-auto rounded-2xl border border-slate-200 dark:border-slate-700 object-contain shadow-sm">
-                        <p class="text-xs font-bold text-[var(--color-primary)] mt-3 flex items-center justify-center gap-1.5">
-                            <i class="fa-solid fa-circle-check"></i> Foto siap dikirim (Klik untuk ganti)
-                        </p>
+                    <div id="client-pay-proof-preview-wrap" class="hidden space-y-2.5">
+                        <img id="client-pay-proof-img" src="" alt="Preview Bukti" class="max-h-56 sm:max-h-64 mx-auto rounded-2xl border border-slate-200 dark:border-slate-700 object-contain shadow-sm">
+                        <div class="flex items-center justify-center gap-2">
+                            <span class="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 px-3 py-1.5 rounded-xl border border-emerald-200 dark:border-emerald-800">
+                                <i class="fa-solid fa-circle-check"></i> Foto siap dikirim
+                            </span>
+                            <button type="button" onclick="event.stopPropagation(); window.resetClientProofFile()" class="inline-flex items-center gap-1 text-xs font-bold text-rose-600 hover:text-rose-700 bg-rose-50 dark:bg-rose-950/40 px-3 py-1.5 rounded-xl border border-rose-200 dark:border-rose-800 cursor-pointer">
+                                <i class="fa-solid fa-trash-can"></i> Hapus
+                            </button>
+                        </div>
                     </div>
                 </div>
 
@@ -739,15 +751,30 @@ export const switchClientPayChannel = (ch) => {
     const cQris = el('client-pay-channel-qris');
 
     if (ch === 'bank') {
-        if (bBank) bBank.className = 'py-2 rounded-xl text-xs font-black transition-all bg-white dark:bg-slate-900 shadow-xs text-slate-900 dark:text-white';
-        if (bQris) bQris.className = 'py-2 rounded-xl text-xs font-black transition-all text-slate-500 hover:text-slate-800';
-        if (cBank) show(cBank);
-        if (cQris) hide(cQris);
+        if (bBank) {
+            bBank.className = 'py-2.5 rounded-xl text-xs font-black transition-all bg-white dark:bg-slate-900 shadow-xs text-slate-900 dark:text-white';
+        }
+        if (bQris) {
+            bQris.className = 'py-2.5 rounded-xl text-xs font-black transition-all text-slate-500 hover:text-slate-800';
+        }
+        if (cBank) cBank.classList.remove('hidden');
+        if (cQris) cQris.classList.add('hidden');
     } else {
-        if (bQris) bQris.className = 'py-2 rounded-xl text-xs font-black transition-all bg-white dark:bg-slate-900 shadow-xs text-slate-900 dark:text-white';
-        if (bBank) bBank.className = 'py-2 rounded-xl text-xs font-black transition-all text-slate-500 hover:text-slate-800';
-        if (cQris) show(cQris);
-        if (cBank) hide(cBank);
+        if (bQris) {
+            bQris.className = 'py-2.5 rounded-xl text-xs font-black transition-all bg-white dark:bg-slate-900 shadow-xs text-slate-900 dark:text-white';
+        }
+        if (bBank) {
+            bBank.className = 'py-2.5 rounded-xl text-xs font-black transition-all text-slate-500 hover:text-slate-800';
+        }
+        if (cQris) {
+            cQris.classList.remove('hidden');
+            const img = el('client-pay-qris-img');
+            if (img && (!img.src || img.src.includes('placeholder'))) {
+                const q = getStoreQrisUrl();
+                if (q) img.src = q;
+            }
+        }
+        if (cBank) cBank.classList.add('hidden');
     }
 };
 
@@ -777,7 +804,7 @@ export const handleClientProofFileChange = async (event) => {
     const file = event.target.files && event.target.files[0];
     if (!file) return;
 
-    sLoad('Mengompresi foto bukti transfer...');
+    sLoad('Memproses foto bukti transfer...');
     try {
         currentProofFile = file;
         const compressed = await compressProofImage(file);
@@ -788,14 +815,30 @@ export const handleClientProofFileChange = async (event) => {
         const pPlc = el('client-pay-proof-placeholder');
 
         if (pImg && compressed) pImg.src = compressed;
-        if (pWrap) show(pWrap);
-        if (pPlc) hide(pPlc);
+        if (pWrap) pWrap.classList.remove('hidden');
+        if (pPlc) pPlc.classList.add('hidden');
     } catch(e) {
         console.warn('Gagal memproses gambar:', e);
         showToast('Gagal memproses foto bukti transfer!', 'error');
     } finally {
         hLoad();
     }
+};
+
+/**
+ * Reset / Hapus file bukti transfer yang telah dipilih
+ */
+export const resetClientProofFile = () => {
+    currentProofFile = null;
+    currentProofDataUrl = null;
+    const inp = el('client-pay-proof-input');
+    if (inp) inp.value = '';
+    const pWrap = el('client-pay-proof-preview-wrap');
+    const pPlc = el('client-pay-proof-placeholder');
+    const pImg = el('client-pay-proof-img');
+    if (pImg) pImg.src = '';
+    if (pWrap) pWrap.classList.add('hidden');
+    if (pPlc) pPlc.classList.remove('hidden');
 };
 
 /**
@@ -816,26 +859,29 @@ export const submitClientPaymentConfirmation = async () => {
     if (amount > (tempoBal + 100)) {
         return showToast('Nominal pembayaran melebihi sisa tagihan (' + fCur(tempoBal) + ')!', 'error');
     }
-    if (!currentProofDataUrl) {
+    if (!currentProofDataUrl && !currentProofFile) {
         return showToast('Wajib melampirkan foto / screenshot bukti transfer!', 'error');
     }
 
     const btn = el('client-pay-submit-btn');
     if (btn) {
         btn.disabled = true;
-        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i> Mengirim...';
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i> Mengunggah ke Drive...';
     }
     try {
         let finalProofUrl = currentProofDataUrl;
 
         // 1. Upload Bukti Transfer ke Google Drive via GAS Toko Putri
-        if (currentProofFile) {
+        const fileToUpload = currentProofFile || currentProofDataUrl;
+        if (fileToUpload) {
             try {
                 sLoad('Mengupload bukti transfer ke Google Drive...');
-                const gUrl = await uploadImageFileToDrive(currentProofFile, 'BUKTI_CICILAN_' + activePaymentOrder.orderId);
+                const gUrl = await uploadImageFileToDrive(fileToUpload, 'BUKTI_CICILAN_' + activePaymentOrder.orderId);
                 if (gUrl) {
                     finalProofUrl = gUrl;
                     console.info('[ClientPay] Bukti pembayaran berhasil diunggah ke Google Drive:', gUrl);
+                } else {
+                    console.warn('[ClientPay] Upload GAS mengembalikan null, menggunakan fallback data lokal.');
                 }
             } catch(eGas) {
                 console.warn('[ClientPay] GDrive upload fallback ke gambar terkompresi lokal:', eGas);
@@ -1015,7 +1061,56 @@ export const renderClientInstallmentSchedule = (o, pendingConfirmations = []) =>
                     ` : ''}
                 </div>
 
-                <div class="overflow-x-auto rounded-xl border border-slate-200/80 dark:border-slate-800 custom-scrollbar">
+                <!-- MOBILE VIEW: NATIVE CARDS (ZERO HORIZONTAL SCROLL) -->
+                <div class="sm:hidden space-y-2">
+                    ${schedule.map((s, idx) => {
+                        const mIdx = s.installmentIndex || s.installmentNo || s.installmentNumber || s.month || (idx + 1);
+                        const pPokok = parseFloat(s.pokok || s.principal) || 0;
+                        const pFee = parseFloat((s.adminFee || 0) + (s.serviceFee || 0)) || 0;
+                        const mTotal = parseFloat(s.total || s.totalMonthly || s.totalInstallment) || (pPokok + pFee);
+                        const dueText = s.dueDateFormatted || s.dueDateStr || (s.dueDate ? new Date(s.dueDate).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : '-');
+
+                        let statusLabel = '';
+                        let statusBadgeCls = '';
+                        let isPaid = false;
+
+                        if (totalPaid >= (mTotal * (idx + 1))) {
+                            statusLabel = '✓ Lunas';
+                            statusBadgeCls = 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-700';
+                            isPaid = true;
+                        } else if (pendingSum > 0) {
+                            statusLabel = '⏳ Sedang Diverifikasi';
+                            statusBadgeCls = 'bg-amber-100 text-amber-700 dark:bg-amber-950/60 dark:text-amber-400 border border-amber-300 dark:border-amber-700';
+                        } else {
+                            const isLate = s.dueDate && (Date.now() > s.dueDate);
+                            if (isLate) {
+                                statusLabel = '⚠️ Lewat Jatuh Tempo';
+                                statusBadgeCls = 'bg-rose-100 text-rose-700 dark:bg-rose-950/60 dark:text-rose-400 border border-rose-300 dark:border-rose-700';
+                            } else {
+                                statusLabel = '★ Bayar Bulan Ini';
+                                statusBadgeCls = 'bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300 border border-amber-300 dark:border-amber-700 font-bold';
+                            }
+                        }
+
+                        return `
+                        <div class="p-3 rounded-2xl bg-white dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700 flex items-center justify-between gap-3 shadow-2xs ${isPaid ? 'opacity-60' : ''}">
+                            <div class="flex items-center gap-2.5 min-w-0">
+                                <span class="w-7 h-7 rounded-xl bg-[rgba(var(--color-primary-rgb),0.1)] text-[var(--color-primary)] font-black text-xs flex items-center justify-center shrink-0">${mIdx}</span>
+                                <div class="min-w-0">
+                                    <p class="text-xs font-bold text-slate-800 dark:text-white">Bulan ke-${mIdx}</p>
+                                    <p class="text-[10px] text-slate-400 font-mono mt-0.5">Jatuh Tempo: ${dueText}</p>
+                                </div>
+                            </div>
+                            <div class="text-right shrink-0">
+                                <p class="text-xs font-black font-mono text-slate-900 dark:text-white">${fCur(mTotal)}</p>
+                                <span class="inline-block mt-0.5 px-2 py-0.5 rounded text-[8.5px] font-black uppercase tracking-wider ${statusBadgeCls}">${statusLabel}</span>
+                            </div>
+                        </div>`;
+                    }).join('')}
+                </div>
+
+                <!-- DESKTOP / TABLET VIEW: FULL TABLE -->
+                <div class="hidden sm:block overflow-x-auto rounded-xl border border-slate-200/80 dark:border-slate-800 hide-scrollbar">
                     <table class="w-full text-left whitespace-nowrap min-w-[540px]">
                         <thead class="bg-slate-100/90 dark:bg-slate-800/90 text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">
                             <tr>
@@ -1075,6 +1170,7 @@ if (typeof window !== 'undefined') {
     window.setClientPayAmount = setClientPayAmount;
     window.focusCustomClientPay = focusCustomClientPay;
     window.handleClientProofFileChange = handleClientProofFileChange;
+    window.resetClientProofFile = resetClientProofFile;
     window.submitClientPaymentConfirmation = submitClientPaymentConfirmation;
     window.copyAccountNumber = copyAccountNumber;
     window.renderClientInstallmentSchedule = renderClientInstallmentSchedule;

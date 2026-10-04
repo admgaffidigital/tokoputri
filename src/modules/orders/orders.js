@@ -462,7 +462,7 @@ export const renderOrderDetailModal = (orderId, d, reviewedKeys = [], isBackgrou
         m.innerHTML = `
             <div class="bg-white dark:bg-slate-900 w-full max-w-lg rounded-t-[2.25rem] sm:rounded-3xl max-h-[92dvh] sm:max-h-[88vh] flex flex-col shadow-2xl transform translate-y-full sm:translate-y-10 scale-100 transition-transform duration-300 border border-slate-200/90 dark:border-slate-800 overflow-hidden pointer-events-auto" id="order-detail-content">
                 <!-- DRAG PULL MOBILE -->
-                <div class="pull-indicator sm:hidden"></div>
+                <div class="pull-indicator w-12 h-1.5 rounded-full bg-slate-300 dark:bg-slate-700 mx-auto my-2.5 sm:hidden shrink-0"></div>
 
                 <div class="px-5 sm:px-6 pt-3.5 sm:pt-5 pb-4 border-b border-slate-200 dark:border-slate-800 flex justify-between items-center shrink-0 bg-slate-50 dark:bg-slate-800/80">
                     <div>
@@ -472,7 +472,7 @@ export const renderOrderDetailModal = (orderId, d, reviewedKeys = [], isBackgrou
                     <button onclick="closeCustomerOrderDetailModal()" class="w-8 h-8 flex items-center justify-center rounded-full bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-rose-100 hover:text-rose-500 transition-colors active:scale-95 cursor-pointer" title="Tutup"><i class="fa-solid fa-xmark"></i></button>
                 </div>
                 
-                <div class="p-5 sm:p-6 pb-24 sm:pb-28 overflow-y-auto flex-1 space-y-6 custom-scrollbar text-sm" style="-webkit-overflow-scrolling: touch; overscroll-behavior-y: contain; touch-action: pan-y;">
+                <div class="p-5 sm:p-6 pb-24 sm:pb-28 overflow-y-auto flex-1 space-y-6 hide-scrollbar text-sm" style="-webkit-overflow-scrolling: touch; overscroll-behavior-y: contain; touch-action: pan-y;">
                     <div class="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-xl border border-slate-200 dark:border-slate-700 flex justify-between items-center">
                         <div>
                             <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1">Status Pesanan</p>
@@ -583,29 +583,28 @@ export const renderOrderDetailModal = (orderId, d, reviewedKeys = [], isBackgrou
                                     <p class="text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
                                         <i class="fa-solid fa-calendar-days text-[var(--color-primary)]"></i> Rencana Jadwal Angsuran Anda:
                                     </p>
-                                    <div class="overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-700/80 custom-scrollbar" style="-webkit-overflow-scrolling: touch; touch-action: pan-x pan-y;">
-                                        <table class="w-full text-left text-xs min-w-[320px]">
-                                            <thead class="bg-slate-200/60 dark:bg-slate-700/60 text-[10px] font-black uppercase tracking-wider text-slate-600 dark:text-slate-300">
-                                                <tr>
-                                                    <th class="py-2.5 px-3">Bulan</th>
-                                                    <th class="py-2.5 px-3">Jatuh Tempo</th>
-                                                    <th class="py-2.5 px-3 text-right">Wajib Bayar</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody class="divide-y divide-slate-200 dark:divide-slate-700/60 bg-white dark:bg-slate-900/40">
-                                                ${sched.map((sc, scIdx) => {
-                                                    const scNum = sc.installmentIndex || sc.installmentNo || sc.installmentNumber || sc.month || (scIdx + 1);
-                                                    const scDue = sc.dueDateFormatted || sc.dueDateStr || (sc.dueDate ? new Date(sc.dueDate).toLocaleDateString('id-ID', {day: 'numeric', month: 'short', year: 'numeric'}) : '-');
-                                                    const scAmt = parseFloat(sc.total || sc.totalMonthly || sc.totalInstallment) || mInstall;
-                                                    return `
-                                                    <tr>
-                                                        <td class="py-2.5 px-3 font-bold text-slate-800 dark:text-white">Bulan ke-${scNum}</td>
-                                                        <td class="py-2.5 px-3 text-slate-500 dark:text-slate-400 font-mono text-[11px]">${scDue}</td>
-                                                        <td class="py-2.5 px-3 font-mono font-black text-right text-[var(--color-primary)]">${fCur(scAmt)}</td>
-                                                    </tr>`;
-                                                }).join('')}
-                                            </tbody>
-                                        </table>
+                                    <div class="space-y-2">
+                                        ${sched.map((sc, scIdx) => {
+                                            const scNum = sc.installmentIndex || sc.installmentNo || sc.installmentNumber || sc.month || (scIdx + 1);
+                                            const scDue = sc.dueDateFormatted || sc.dueDateStr || (sc.dueDate ? new Date(sc.dueDate).toLocaleDateString('id-ID', {day: 'numeric', month: 'short', year: 'numeric'}) : '-');
+                                            const scAmt = parseFloat(sc.total || sc.totalMonthly || sc.totalInstallment) || mInstall;
+                                            return `
+                                            <div class="p-3 rounded-2xl bg-white dark:bg-slate-800/80 border border-slate-200/90 dark:border-slate-700/80 flex items-center justify-between gap-3 shadow-2xs">
+                                                <div class="flex items-center gap-2.5 min-w-0">
+                                                    <div class="w-8 h-8 rounded-xl bg-[rgba(var(--color-primary-rgb),0.1)] text-[var(--color-primary)] font-black text-xs flex items-center justify-center shrink-0">
+                                                        ${scNum}
+                                                    </div>
+                                                    <div class="min-w-0">
+                                                        <p class="text-xs font-bold text-slate-800 dark:text-white leading-tight">Bulan ke-${scNum}</p>
+                                                        <p class="text-[10px] text-slate-400 font-mono mt-0.5">Jatuh Tempo: ${scDue}</p>
+                                                    </div>
+                                                </div>
+                                                <div class="text-right shrink-0">
+                                                    <p class="text-xs font-black font-mono text-[var(--color-primary)]">${fCur(scAmt)}</p>
+                                                    <span class="inline-block mt-0.5 px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-700 text-[9px] font-bold uppercase text-slate-500 dark:text-slate-300">Wajib Bayar</span>
+                                                </div>
+                                            </div>`;
+                                        }).join('')}
                                     </div>
                                 </div>`;
                             }

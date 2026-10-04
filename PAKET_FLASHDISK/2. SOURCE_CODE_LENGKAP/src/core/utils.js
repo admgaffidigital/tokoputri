@@ -7,7 +7,7 @@
  */
 
 // ─── DOM Shortcuts ──────────────────────────────────────────
-export const el        = id => document.getElementById(id);
+export const el        = id => (typeof id === 'string' ? document.getElementById(id) : id);
 export const show      = id => { const e = el(id); if(e) e.classList.remove('hidden'); };
 export const hide      = id => { const e = el(id); if(e) e.classList.add('hidden'); };
 export const toggleCls = (id, c, f) => { const e = el(id); if(e) e.classList.toggle(c, f); };

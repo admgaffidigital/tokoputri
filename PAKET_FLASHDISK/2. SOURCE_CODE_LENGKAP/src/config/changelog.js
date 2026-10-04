@@ -8,6 +8,22 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-10-47',
+        version: 'v1.10.47',
+        date: '2026-10-04',
+        title: 'Penyempurnaan Total UI/UX Mobile Native Pembayaran Cicilan & Riwayat Pesanan: Anti-Overlap Input Rupiah, Universal QRIS Multi-Fallback, dan Resiliensi Upload Bukti Google Drive via GAS',
+        category: 'fix',
+        badge: 'Native Mobile & UI Polish v1.10.47',
+        items: [
+            'Resolusi Input Nominal Tumpang Tindih (Anti-Overlap Rupiah Addon): Mengeliminasi bug teks angka dan label "Rp" yang bertumpuk (R146875) dengan memisahkan prefiks Rp ke dalam kotak addon flex mandiri berlatar kontras dengan pembatas vertikal solid, menjamin tata letak input nominal tidak akan pernah bertabrakan di resolusi layar mana pun.',
+            'Universal QRIS Display & Multi-Tier Fallback: Memperbaiki kendala gambar QRIS tidak muncul pada tab QRIS Toko. Logika tab kini secara langsung mengaktifkan kontainer dengan transisi kelas instan, membaca cadangan data QRIS dari CMS data lokal jika store data belum terisi, serta menyematkan 3-tier fallback (lh3 direct -> uc?export=view -> thumbnail w800) untuk keandalan loading 100%.',
+            'Resiliensi Penuh Upload Bukti Transfer ke Google Drive: Memperbarui pipeline pengunggahan bukti bayar pada modul upload.js dan client-pay.js agar mendukung baik objek File/Blob mentah maupun string Base64 DataURL yang sudah terkompresi. Bukti transfer diunggah otomatis ke Google Drive toko via endpoint Google Apps Script (GAS) dengan token resmi dan menyematkan tombol Hapus / Ganti Foto pada dropzone.',
+            'Transformasi Tampilan Mobile Native Rencana Angsuran (Zero Horizontal Scrollbar): Mengganti tabel kaku min-w-[320px] pada modal rincian pesanan (orders.js) dan kartu member (client-pay.js) menjadi Mobile Card List yang dinamis, bersih, dan elegan tanpa memicu scrollbar horizontal kaku yang mengganggu pandangan.',
+            'Ergonomi Antarmuka Bottom Sheet Mobile: Mengganti custom-scrollbar desktop dengan hide-scrollbar berakselerasi sentuh native, merapikan quick choice chips nominal menjadi 3 kolom simetris seimbang, dan menyederhanakan kartu rekening bank dengan tombol salin cepat.',
+            'Multi-Channel Distribution v1.10.47 (Android versionCode 11047).'
+        ]
+    },
+    {
         id: 'log-1-10-46',
         version: 'v1.10.46',
         date: '2026-10-04',
