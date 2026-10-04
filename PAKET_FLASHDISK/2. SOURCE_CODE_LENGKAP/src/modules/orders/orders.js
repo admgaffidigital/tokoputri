@@ -437,7 +437,7 @@ export const renderOrderDetailModal = (orderId, d, reviewedKeys = []) => {
         const grandTotal = (d.payment && d.payment.grandTotal) ? d.payment.grandTotal : 0;
 
         m.innerHTML = `
-            <div class="bg-white dark:bg-slate-900 w-full max-w-lg rounded-t-[2.25rem] sm:rounded-3xl max-h-[92dvh] sm:max-h-[88vh] flex flex-col shadow-2xl transform translate-y-full sm:translate-y-10 scale-100 transition-transform duration-300 border border-slate-200/90 dark:border-slate-800 overflow-hidden" id="order-detail-content">
+            <div class="bg-white dark:bg-slate-900 w-full max-w-lg rounded-t-[2.25rem] sm:rounded-3xl max-h-[92dvh] sm:max-h-[88vh] flex flex-col shadow-2xl transform translate-y-full sm:translate-y-10 scale-100 transition-transform duration-300 border border-slate-200/90 dark:border-slate-800 overflow-hidden pointer-events-auto" id="order-detail-content">
                 <!-- DRAG PULL MOBILE -->
                 <div class="pull-indicator sm:hidden"></div>
 
@@ -449,7 +449,7 @@ export const renderOrderDetailModal = (orderId, d, reviewedKeys = []) => {
                     <button onclick="closeCustomerOrderDetailModal()" class="w-8 h-8 flex items-center justify-center rounded-full bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-rose-100 hover:text-rose-500 transition-colors active:scale-95 cursor-pointer" title="Tutup"><i class="fa-solid fa-xmark"></i></button>
                 </div>
                 
-                <div class="p-5 sm:p-6 pb-20 sm:pb-24 overflow-y-auto flex-1 space-y-6 custom-scrollbar text-sm">
+                <div class="p-5 sm:p-6 pb-24 sm:pb-28 overflow-y-auto flex-1 space-y-6 custom-scrollbar text-sm" style="-webkit-overflow-scrolling: touch; overscroll-behavior-y: contain; touch-action: pan-y;">
                     <div class="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-xl border border-slate-200 dark:border-slate-700 flex justify-between items-center">
                         <div>
                             <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1">Status Pesanan</p>
@@ -560,7 +560,7 @@ export const renderOrderDetailModal = (orderId, d, reviewedKeys = []) => {
                                     <p class="text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
                                         <i class="fa-solid fa-calendar-days text-[var(--color-primary)]"></i> Rencana Jadwal Angsuran Anda:
                                     </p>
-                                    <div class="overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-700/80 custom-scrollbar">
+                                    <div class="overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-700/80 custom-scrollbar" style="-webkit-overflow-scrolling: touch; touch-action: pan-x pan-y;">
                                         <table class="w-full text-left text-xs min-w-[320px]">
                                             <thead class="bg-slate-200/60 dark:bg-slate-700/60 text-[10px] font-black uppercase tracking-wider text-slate-600 dark:text-slate-300">
                                                 <tr>
@@ -570,12 +570,17 @@ export const renderOrderDetailModal = (orderId, d, reviewedKeys = []) => {
                                                 </tr>
                                             </thead>
                                             <tbody class="divide-y divide-slate-200 dark:divide-slate-700/60 bg-white dark:bg-slate-900/40">
-                                                ${sched.map(sc => `
-                                                <tr>
-                                                    <td class="py-2.5 px-3 font-bold text-slate-800 dark:text-white">Bulan ke-${sc.installmentNumber}</td>
-                                                    <td class="py-2.5 px-3 text-slate-500 dark:text-slate-400 font-mono text-[11px]">${sc.dueDateStr || (sc.dueDate ? new Date(sc.dueDate).toLocaleDateString('id-ID', {day: 'numeric', month: 'short', year: 'numeric'}) : '-')}</td>
-                                                    <td class="py-2.5 px-3 font-mono font-black text-right text-[var(--color-primary)]">${fCur(sc.totalMonthly || mInstall)}</td>
-                                                </tr>`).join('')}
+                                                ${sched.map((sc, scIdx) => {
+                                                    const scNum = sc.installmentIndex || sc.installmentNo || sc.installmentNumber || sc.month || (scIdx + 1);
+                                                    const scDue = sc.dueDateFormatted || sc.dueDateStr || (sc.dueDate ? new Date(sc.dueDate).toLocaleDateString('id-ID', {day: 'numeric', month: 'short', year: 'numeric'}) : '-');
+                                                    const scAmt = parseFloat(sc.total || sc.totalMonthly || sc.totalInstallment) || mInstall;
+                                                    return `
+                                                    <tr>
+                                                        <td class="py-2.5 px-3 font-bold text-slate-800 dark:text-white">Bulan ke-${scNum}</td>
+                                                        <td class="py-2.5 px-3 text-slate-500 dark:text-slate-400 font-mono text-[11px]">${scDue}</td>
+                                                        <td class="py-2.5 px-3 font-mono font-black text-right text-[var(--color-primary)]">${fCur(scAmt)}</td>
+                                                    </tr>`;
+                                                }).join('')}
                                             </tbody>
                                         </table>
                                     </div>
@@ -620,6 +625,7 @@ export const renderOrderDetailModal = (orderId, d, reviewedKeys = []) => {
             window.pushModalHistory('customerOrder');
         }
         m.classList.remove('opacity-0', 'pointer-events-none');
+        document.body.classList.add('overflow-hidden');
         void m.offsetWidth;
         requestAnimationFrame(() => {
             const c = document.getElementById('order-detail-content');
@@ -645,6 +651,10 @@ export const closeCustomerOrderDetailModal = (fH = false) => {
         }
         setTimeout(() => {
             if (m) m.classList.add('opacity-0', 'pointer-events-none');
+            const otherModalOpen = document.querySelector('[id*="modal"]:not(.hidden):not(.pointer-events-none):not(#order-detail-modal)');
+            if (!otherModalOpen) {
+                document.body.classList.remove('overflow-hidden');
+            }
         }, 300);
     };
 

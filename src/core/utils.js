@@ -26,13 +26,15 @@ export const openModalAnim = (modalEl, contentEl) => {
     const c = typeof contentEl === 'string' ? el(contentEl) : contentEl;
     if (!m) return;
     
-    m.classList.remove('hidden');
+    m.classList.remove('hidden', 'pointer-events-none');
+    if (c) c.classList.add('pointer-events-auto');
     
     requestAnimationFrame(() => {
         requestAnimationFrame(() => {
-            m.classList.remove('opacity-0');
+            m.classList.remove('opacity-0', 'pointer-events-none');
             if (c) {
-                c.classList.remove('translate-y-full', 'sm:translate-y-10', 'sm:translate-y-8', 'scale-95');
+                c.classList.remove('translate-y-full', 'sm:translate-y-10', 'sm:translate-y-8', 'translate-y-6', 'sm:translate-y-6', 'scale-95');
+                c.classList.add('pointer-events-auto');
             }
         });
     });
@@ -49,9 +51,10 @@ export const closeModalAnim = (modalEl, contentEl, onClosed) => {
         return;
     }
     
-    m.classList.add('opacity-0');
+    m.classList.add('opacity-0', 'pointer-events-none');
     if (c) {
         c.classList.add('translate-y-full', 'sm:translate-y-10', 'sm:translate-y-8', 'scale-95');
+        c.classList.remove('pointer-events-auto');
     }
     
     setTimeout(() => {

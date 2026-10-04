@@ -8,6 +8,22 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-10-44',
+        version: 'v1.10.44',
+        date: '2026-10-04',
+        title: 'Resolusi Tuntas Bug Scroll Stuck pada Riwayat Pesanan & Pembayaran Cicilan Mobile (Touch-Action, Pointer Events & Sheet Drag Isolation)',
+        category: 'fix',
+        badge: 'Mobile Scroll Precision v1.10.44',
+        items: [
+            'Resolusi Tuntas Scroll Stuck di Mobile (orders.js & client-pay.js): Memperbaiki bug di mana modal rincian pesanan dan modal pembayaran mandiri cicilan macet / tidak bisa di-scroll pada layar ponsel.',
+            'Isolasi Gesture Swipe-to-Dismiss (src/core/native-mobile.js): Menyempurnakan deteksi sentuhan bottom sheet agar gesture drag penutup modal HANYA aktif saat pengguna menyentuh handle bar (.pull-indicator) atau header atas. Sentuhan di dalam area scrollable (.overflow-y-auto, tabel cicilan, form nominal) tidak lagi di-hijack oleh gesture sheet drag.',
+            'Perbaikan Pointer Events & Z-Index Stacking: Menghilangkan kendala pointer-events-none yang tertinggal saat modal dibuka via openModalAnim, memastikan kotak modal memiliki pointer-events-auto dan z-index bertingkat (z-[110] di atas rincian pesanan z-[100]).',
+            'Hardware Touch Scrolling (-webkit-overflow-scrolling & overscroll-behavior): Menginjeksi aturan CSS native scrolling touch-action: pan-y dan overscroll-behavior-y: contain pada kontainer scroll riwayat pesanan, tabel angsuran, dan form pembayaran cicilan.',
+            'Body Scroll Lock Sinkron: Mengunci scroll latar belakang halaman saat modal aktif dan memulihkannya dengan aman saat seluruh modal ditutup.',
+            'Multi-Channel Distribution v1.10.44 (Android versionCode 11044).'
+        ]
+    },
+    {
         id: 'log-1-10-43',
         version: 'v1.10.43',
         date: '2026-10-04',

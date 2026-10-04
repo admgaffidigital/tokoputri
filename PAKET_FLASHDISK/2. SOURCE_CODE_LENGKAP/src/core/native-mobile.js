@@ -135,6 +135,12 @@ export const closeModalById = (id) => {
         case 'admin-order-modal':
             if (typeof window.closeOrderDetailModal === 'function') window.closeOrderDetailModal();
             break;
+        case 'order-detail-modal':
+            if (typeof window.closeCustomerOrderDetailModal === 'function') window.closeCustomerOrderDetailModal();
+            break;
+        case 'modal-client-tempo-pay':
+            if (typeof window.closeClientPaymentModal === 'function') window.closeClientPaymentModal();
+            break;
         default: {
             const m = document.getElementById(id);
             if (m) {
@@ -189,19 +195,22 @@ export const initNativeSheetGestures = () => {
         }
         if (!sheetBox) return;
 
-        // Dapatkan elemen scroll di dalam sheet (jika ada)
-        const scrollEl = sheetBox.classList.contains('overflow-y-auto') 
-            ? sheetBox 
-            : sheetBox.querySelector('.overflow-y-auto, .scroll-content, .custom-scrollbar');
-        const sheetScrollTop = scrollEl ? scrollEl.scrollTop : 0;
+        // ── GUARD KRUSIAL 1: Jangan pernah aktifkan sheet drag jika menyentuh kontrol interaktif/form ──
+        if (touch.target.closest('input, select, textarea, button, a, [role="button"], table, .no-drag')) {
+            return;
+        }
 
-        // Dapatkan posisi sentuhan relatif terhadap header sheet
+        // ── GUARD KRUSIAL 2: Area Konten Scrollable Bebas Hambatan ──
+        // Sentuhan di dalam area scrollable (.overflow-y-auto, .custom-scrollbar, dll) HARUS bebas scroll 100%
+        // tanpa di-hijack oleh sheet drag gesture!
+        // Sheet drag HANYA boleh dipicu jika pengguna benar-benar menyentuh handle bar (.pull-indicator) 
+        // atau area drag header paling atas sheet (<= 55px dari puncak kartu sheet).
+        const insideScrollable = Boolean(touch.target.closest('.overflow-y-auto, .overflow-x-auto, .scroll-content, .custom-scrollbar'));
         const rect = sheetBox.getBoundingClientRect();
         const touchOffsetTop = touch.clientY - rect.top;
-        const isNearHandle = touchOffsetTop <= 80 || Boolean(touch.target.closest('.pull-indicator'));
+        const isNearHandle = Boolean(touch.target.closest('.pull-indicator')) || (!insideScrollable && touchOffsetTop <= 55);
 
-        // Jika disentuh di tengah teks/list saat scroll > 5, jangan aktifkan drag
-        if (!isNearHandle && sheetScrollTop > 5) return;
+        if (!isNearHandle) return;
 
         activeDragSheet = sheetBox;
         activeDragModal = modalContainer;

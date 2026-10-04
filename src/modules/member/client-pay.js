@@ -78,12 +78,12 @@ export const ensureClientPaymentModal = () => {
     if (!m) {
         const div = document.createElement('div');
         div.id = 'modal-client-tempo-pay';
-        div.className = 'fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-900/80 transition-opacity duration-300 opacity-0 pointer-events-none';
+        div.className = 'fixed inset-0 z-[110] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-900/80 transition-opacity duration-300 opacity-0 pointer-events-none';
         div.onclick = (e) => {
             if (e.target === div) closeClientPaymentModal();
         };
         div.innerHTML = `
-            <div id="modal-client-tempo-pay-box" class="bg-white dark:bg-slate-900 w-full sm:max-w-lg rounded-t-[2.25rem] sm:rounded-3xl max-h-[92dvh] sm:max-h-[88vh] flex flex-col shadow-2xl border border-slate-200/80 dark:border-slate-800 overflow-hidden transform translate-y-full sm:translate-y-6 transition-transform duration-300" onclick="event.stopPropagation()">
+            <div id="modal-client-tempo-pay-box" class="bg-white dark:bg-slate-900 w-full sm:max-w-lg rounded-t-[2.25rem] sm:rounded-3xl max-h-[92dvh] sm:max-h-[88vh] flex flex-col shadow-2xl border border-slate-200/80 dark:border-slate-800 overflow-hidden pointer-events-auto transform translate-y-full sm:translate-y-6 transition-transform duration-300" onclick="event.stopPropagation()">
                 <!-- Isi Modal dirender reaktif oleh openClientPaymentModal() -->
             </div>
         `;
@@ -195,17 +195,41 @@ export const openClientPaymentModal = async (orderId = null, suggestedAmount = n
     await loadPendingConfirmations(activePaymentOrder.orderId);
     renderClientPaymentModalContent(orders, suggestedAmount);
 
+    modal.classList.remove('hidden', 'pointer-events-none');
+    box.classList.add('pointer-events-auto');
+    document.body.classList.add('overflow-hidden');
+
+    if (typeof window.pushModalHistory === 'function') {
+        window.pushModalHistory('clientTempoPay');
+    }
+
     openModalAnim(modal, box);
 };
 
 /**
  * Tutup Modal Pembayaran Mandiri
  */
-export const closeClientPaymentModal = () => {
-    const modal = el('modal-client-tempo-pay');
-    const box = el('modal-client-tempo-pay-box');
-    if (!modal || !box) return;
-    closeModalAnim(modal, box);
+export const closeClientPaymentModal = (fH = false) => {
+    const doClose = () => {
+        const modal = el('modal-client-tempo-pay');
+        const box = el('modal-client-tempo-pay-box');
+        if (!modal || !box) return;
+        
+        closeModalAnim(modal, box, () => {
+            modal.classList.add('pointer-events-none');
+            box.classList.remove('pointer-events-auto');
+            const otherModalOpen = document.querySelector('[id*="modal"]:not(.hidden):not(.pointer-events-none):not(#modal-client-tempo-pay)');
+            if (!otherModalOpen) {
+                document.body.classList.remove('overflow-hidden');
+            }
+        });
+    };
+
+    if (typeof window.requestCloseModal === 'function') {
+        window.requestCloseModal('clientTempoPay', fH, doClose);
+    } else {
+        doClose();
+    }
 };
 
 /**
@@ -337,7 +361,7 @@ const renderClientPaymentModalContent = (orders, initialAmount = null) => {
         </div>
 
         <!-- BODY SCROLLABLE DENGAN PADDING LEGA ANTI-TERTUTUP FOOTER -->
-        <div class="p-5 sm:p-6 pb-24 sm:pb-28 overflow-y-auto flex-1 space-y-6 text-xs custom-scrollbar">
+        <div class="p-5 sm:p-6 pb-28 sm:pb-32 overflow-y-auto flex-1 space-y-6 text-xs custom-scrollbar" style="-webkit-overflow-scrolling: touch; overscroll-behavior-y: contain; touch-action: pan-y;">
             <!-- PENDING BANNER JIKA ADA PENGAJUAN -->
             ${pendingSum > 0 ? `
             <div class="p-4 sm:p-5 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-800/60 flex items-start sm:items-center gap-3 text-amber-800 dark:text-amber-200 shadow-2xs">
