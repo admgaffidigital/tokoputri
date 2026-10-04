@@ -6,3 +6,4 @@
 
 export * from './voucher.js';
 export * from './reward.js';
+export * from './client-pay.js';

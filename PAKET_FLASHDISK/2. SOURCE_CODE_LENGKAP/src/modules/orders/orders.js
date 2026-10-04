@@ -601,6 +601,11 @@ export const renderOrderDetailModal = (orderId, d, reviewedKeys = []) => {
                     </div>
 
                     <div class="pt-2 flex flex-col sm:flex-row gap-2.5">
+                        ${(parseFloat(d.payment?.tempoBalance) > 0 && d.status !== 'Batal' && d.payment?.paymentStatus !== 'lunas') ? `
+                        <button type="button" onclick="if(typeof window.openClientPaymentModal==='function') window.openClientPaymentModal('${d.orderId}'); else alert('Memuat modul pembayaran...');" class="flex-1 py-3.5 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white text-xs font-bold flex items-center justify-center gap-2 active:scale-95 transition-all cursor-pointer shadow-md">
+                            <i class="fa-solid fa-qrcode text-white"></i> Bayar Angsuran / Cicilan
+                        </button>
+                        ` : ''}
                         <button type="button" onclick="if(typeof window.openReceiptPreview==='function') window.openReceiptPreview('${d.orderId}'); else if(typeof window.printCustomerReceiptDirect==='function') window.printCustomerReceiptDirect('${d.orderId}'); else window.openCustomerReceiptPreview('${d.orderId}');" class="flex-1 py-3.5 rounded-2xl btn-primary text-xs font-bold flex items-center justify-center gap-2 hover:opacity-90 active:scale-95 transition-all cursor-pointer shadow-md">
                             <i class="fa-solid fa-eye text-white/90"></i><i class="fa-solid fa-print"></i> Preview &amp; Cetak Struk
                         </button>

@@ -27,6 +27,7 @@ let activeInstallmentPeriod = 'all'; // 'all' | 'today' | 'week' | 'month'
 let activeInstallmentMethod = 'all'; // 'all' | 'cash' | 'transfer' | 'qris'
 let tempoSearchQuery = '';
 let cachedPiutangOrders = [];
+let pendingTempoConfirmations = [];
 let currentDetailOrderId = null;
 let currentDetailTab = 'items'; // 'items' | 'installments' | 'penalty_info'
 
@@ -36,7 +37,7 @@ let currentDetailTab = 'items'; // 'items' | 'installments' | 'penalty_info'
  */
 export const ensureTempoModals = () => {
     // Bersihkan modal lama jika pernah terinjeksi ke dalam #admin-content
-    ['modal-tempo-detail', 'modal-tempo-payment', 'modal-tempo-penalty'].forEach(id => {
+    ['modal-tempo-detail', 'modal-tempo-payment', 'modal-tempo-penalty', 'modal-tempo-confirmations'].forEach(id => {
         const inside = document.querySelector(`#admin-content #${id}`);
         if (inside) inside.remove();
     });
@@ -78,6 +79,20 @@ export const ensureTempoModals = () => {
         m.innerHTML = `
             <div id="modal-tempo-penalty-box" class="modal-bottom-sheet relative flex max-h-[92dvh] sm:max-h-[88dvh] w-full max-w-md translate-y-full sm:translate-y-10 transform flex-col overflow-hidden rounded-t-[2rem] sm:rounded-3xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xl transition-transform duration-300">
                 <div id="modal-tempo-penalty-content" class="flex-1 overflow-y-auto custom-scrollbar flex flex-col"></div>
+            </div>
+        `;
+        document.body.appendChild(m);
+    }
+
+    // 4. Modal Konfirmasi Pembayaran & Bukti Transfer Pelanggan (Approve / Reject)
+    if (!el('modal-tempo-confirmations')) {
+        const m = document.createElement('div');
+        m.id = 'modal-tempo-confirmations';
+        m.className = 'fixed inset-0 z-[150] flex hidden items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-950/75 opacity-0 transition-opacity duration-300';
+        m.onclick = (e) => { if (e.target === m) window.closeTempoConfirmationsModal?.(); };
+        m.innerHTML = `
+            <div id="modal-tempo-confirmations-box" class="modal-bottom-sheet relative flex max-h-[92dvh] sm:max-h-[88dvh] w-full max-w-2xl translate-y-full sm:translate-y-10 transform flex-col overflow-hidden rounded-t-[2rem] sm:rounded-3xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xl transition-transform duration-300">
+                <div id="modal-tempo-confirmations-content" class="flex-1 overflow-y-auto custom-scrollbar flex flex-col"></div>
             </div>
         `;
         document.body.appendChild(m);
@@ -1231,6 +1246,372 @@ window.openTempoPenaltyModal = openTempoPenaltyModal;
 window.closeTempoPenaltyModal = closeTempoPenaltyModal;
 
 /**
+ * ============================================================
+ * 4. MODAL KONFIRMASI PEMBAYARAN ANGSURAN & BUKTI TRANSFER
+ * ============================================================
+ */
+export const openTempoConfirmationsModal = () => {
+    ensureTempoModals();
+    const modal = el('modal-tempo-confirmations');
+    const box = el('modal-tempo-confirmations-box');
+    if (!modal || !box) return;
+
+    renderTempoConfirmationsContent();
+    openModalAnim(modal, box);
+    pushModalHistory('tempoConfirmations');
+};
+
+export const closeTempoConfirmationsModal = (fH = false) => {
+    const modal = el('modal-tempo-confirmations');
+    const box = el('modal-tempo-confirmations-box');
+    if (!modal || !box) return;
+    requestCloseModal('tempoConfirmations', fH, () => closeModalAnim(modal, box));
+};
+
+window.openTempoConfirmationsModal = openTempoConfirmationsModal;
+window.closeTempoConfirmationsModal = closeTempoConfirmationsModal;
+
+/**
+ * Render Konten Antrean Bukti Transfer
+ */
+const renderTempoConfirmationsContent = () => {
+    const content = el('modal-tempo-confirmations-content');
+    if (!content) return;
+
+    if (!pendingTempoConfirmations || pendingTempoConfirmations.length === 0) {
+        content.innerHTML = `
+            <div class="p-4 sm:p-5 border-b border-slate-200 dark:border-slate-800 flex justify-between items-center bg-slate-50 dark:bg-slate-800/80">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-8 h-8 rounded-xl bg-emerald-500 text-white flex items-center justify-center text-xs font-black shadow-xs">
+                        <i class="fa-solid fa-check"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-slate-800 dark:text-white text-sm">Konfirmasi Pembayaran Pelanggan</h3>
+                        <p class="text-[10px] text-slate-400 font-semibold">Semua Pembayaran Telah Diproses</p>
+                    </div>
+                </div>
+                <button type="button" onclick="window.closeTempoConfirmationsModal()" class="w-8 h-8 flex items-center justify-center rounded-full bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-rose-100 hover:text-rose-500 transition-colors active:scale-95 cursor-pointer">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="p-8 text-center space-y-2">
+                <div class="w-14 h-14 rounded-full bg-emerald-100 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mx-auto text-2xl">
+                    <i class="fa-solid fa-check-double"></i>
+                </div>
+                <p class="text-xs font-bold text-slate-700 dark:text-slate-200">Tidak Ada Antrean Bukti Transfer</p>
+                <p class="text-[11px] text-slate-400">Semua konfirmasi pembayaran dari pelanggan telah disetujui atau ditolak.</p>
+            </div>
+        `;
+        return;
+    }
+
+    const itemsHtml = pendingTempoConfirmations.map((c) => {
+        const timeStr = c.createdAt ? new Date(c.createdAt).toLocaleDateString('id-ID', {
+            day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'
+        }) : '-';
+        const cleanWa = (c.customerPhone || '').replace(/\D/g, '');
+
+        return `
+            <div class="p-4 rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm space-y-3">
+                <div class="flex items-start justify-between gap-3">
+                    <div class="min-w-0">
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <span class="px-2 py-0.5 rounded-md text-[9px] font-black uppercase tracking-wider bg-amber-100 text-amber-800 dark:bg-amber-900/60 dark:text-amber-300 border border-amber-300 dark:border-amber-700">
+                                ${esc(c.channel === 'qris' ? 'QRIS Toko' : (c.bankName || 'Transfer Bank'))}
+                            </span>
+                            <span class="text-[10px] font-mono text-slate-400">Nota: #${esc(c.orderId)}</span>
+                        </div>
+                        <h4 class="text-xs sm:text-sm font-bold text-slate-800 dark:text-white mt-1 truncate">
+                            ${esc(c.customerName || 'Pelanggan')}
+                        </h4>
+                        <div class="flex items-center gap-2 mt-0.5 text-[11px] text-slate-500">
+                            ${cleanWa ? `<a href="https://wa.me/${cleanWa}" target="_blank" class="text-emerald-600 font-bold hover:underline inline-flex items-center gap-1"><i class="fa-brands fa-whatsapp text-xs"></i> +${cleanWa}</a>` : ''}
+                            <span>•</span>
+                            <span class="text-[10px] text-slate-400">${timeStr}</span>
+                        </div>
+                    </div>
+                    <div class="text-right shrink-0">
+                        <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Nominal Ditransfer</p>
+                        <p class="text-sm sm:text-base font-black text-emerald-600 dark:text-emerald-400 font-mono">${fCur(c.amount || 0)}</p>
+                    </div>
+                </div>
+
+                ${c.notes ? `
+                    <div class="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/60 dark:border-slate-700/60 text-[11px] text-slate-600 dark:text-slate-300 italic">
+                        <span class="font-bold not-italic text-slate-400">Catatan:</span> "${esc(c.notes)}"
+                    </div>
+                ` : ''}
+
+                <!-- FOTO BUKTI PEMBAYARAN -->
+                ${c.buktiUrl ? `
+                    <div>
+                        <p class="text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 flex items-center gap-1">
+                            <i class="fa-solid fa-image text-slate-400"></i> Lampiran Bukti Transfer:
+                        </p>
+                        <div class="relative group rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700 max-h-52 bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
+                            <img src="${esc(c.buktiUrl)}" alt="Bukti Transfer" class="w-full max-h-52 object-contain" onerror="this.src=''; this.alt='Gambar gagal dimuat';" loading="lazy">
+                            <a href="${esc(c.buktiUrl)}" target="_blank" class="absolute inset-0 bg-slate-900/50 opacity-0 group-hover:opacity-100 flex items-center justify-center gap-1.5 text-white text-xs font-bold transition-opacity">
+                                <i class="fa-solid fa-arrow-up-right-from-square"></i> Buka Ukuran Penuh
+                            </a>
+                        </div>
+                    </div>
+                ` : `
+                    <p class="text-[10px] font-semibold text-rose-500 italic"><i class="fa-solid fa-triangle-exclamation mr-1"></i> Tidak ada lampiran foto bukti transfer.</p>
+                `}
+
+                <!-- TOMBOL AKSI: APPROVE & REJECT -->
+                <div class="pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-end gap-2">
+                    <button type="button" onclick="window.rejectTempoPaymentConfirmation('${esc(c.id)}')" class="px-3 py-2 rounded-xl text-xs font-bold text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 border border-rose-200 dark:border-rose-900/50 transition-all active:scale-95 cursor-pointer flex items-center gap-1">
+                        <i class="fa-solid fa-xmark"></i> Tolak
+                    </button>
+                    <button type="button" onclick="window.approveTempoPaymentConfirmation('${esc(c.id)}')" class="px-4 py-2 rounded-xl text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 transition-all active:scale-95 shadow-2xs cursor-pointer flex items-center gap-1.5">
+                        <i class="fa-solid fa-check"></i> Setujui Pembayaran
+                    </button>
+                </div>
+            </div>
+        `;
+    }).join('');
+
+    content.innerHTML = `
+        <div class="p-4 sm:p-5 border-b border-slate-200 dark:border-slate-800 flex justify-between items-center bg-slate-50 dark:bg-slate-800/80 shrink-0">
+            <div class="flex items-center gap-2.5">
+                <div class="w-9 h-9 rounded-2xl bg-amber-500 text-white flex items-center justify-center text-xs font-black shadow-xs">
+                    <i class="fa-solid fa-receipt text-sm"></i>
+                </div>
+                <div>
+                    <h3 class="font-bold text-slate-800 dark:text-white text-sm sm:text-base">Antrean Konfirmasi Pembayaran Pelanggan</h3>
+                    <p class="text-[10px] text-slate-400 font-semibold">${pendingTempoConfirmations.length} Bukti Transfer Menunggu Persetujuan</p>
+                </div>
+            </div>
+            <button type="button" onclick="window.closeTempoConfirmationsModal()" class="w-8 h-8 flex items-center justify-center rounded-full bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-rose-100 hover:text-rose-500 transition-colors active:scale-95 cursor-pointer">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        <div class="p-4 sm:p-5 space-y-3.5 overflow-y-auto custom-scrollbar flex-1">
+            ${itemsHtml}
+        </div>
+    `;
+};
+
+/**
+ * Setujui Pembayaran Angsuran/Tempo dari Pelanggan
+ */
+export const approveTempoPaymentConfirmation = async (confirmId) => {
+    const conf = (pendingTempoConfirmations || []).find(c => c.id === confirmId);
+    if (!conf) return showToast('Data konfirmasi tidak ditemukan atau telah diproses.', 'warning');
+
+    const amount = parseFloat(conf.amount) || 0;
+    const orderId = conf.orderId;
+    if (!orderId || amount <= 0) return showToast('Data konfirmasi tidak valid.', 'error');
+
+    showConfirm(
+        'Setujui Pembayaran Pelanggan',
+        `Apakah Anda yakin ingin menyetujui bukti pembayaran ${fCur(amount)} dari ${conf.customerName || 'Pelanggan'} untuk nota #${orderId}?\n\nSaldo piutang nota akan otomatis terpotong dan limit kredit PayLater pelanggan akan langsung dipulihkan secara real-time.`,
+        async () => {
+            sLoad('Memproses persetujuan pembayaran...');
+            try {
+                const orderRef = db.collection("freshmart_orders").doc(orderId);
+                const orderSnap = await orderRef.get();
+                if (!orderSnap.exists) {
+                    throw new Error('Nota pesanan #' + orderId + ' tidak ditemukan di database.');
+                }
+                const orderData = orderSnap.data();
+                const currentBalance = Math.max(0, parseFloat(orderData.payment?.tempoBalance) || 0);
+                const newBalance = Math.max(0, currentBalance - amount);
+
+                // Tambahkan histori cicilan
+                const installments = Array.isArray(orderData.payment?.installments) ? [...orderData.payment.installments] : [];
+                const insId = 'INS-' + Date.now().toString(36).toUpperCase();
+                const now = Date.now();
+                const nowStr = new Date(now).toLocaleDateString('id-ID', {
+                    day: 'numeric',
+                    month: 'short',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+
+                installments.push({
+                    id: insId,
+                    amount: amount,
+                    date: now,
+                    dateStr: nowStr,
+                    method: conf.channel === 'qris' ? 'QRIS Toko' : (conf.bankName || 'Transfer Bank'),
+                    note: (conf.notes ? conf.notes + ' ' : '') + `(Konfirmasi Mandiri ${conf.confirmId || confirmId})`,
+                    recordedBy: auth.currentUser?.email || 'Owner / Kasir',
+                    timestamp: now,
+                    proofUrl: conf.buktiUrl || ''
+                });
+
+                // Update jadwal paylater jika ada
+                let updatedSchedule = null;
+                if (Array.isArray(orderData.payment?.paylaterSchedule) && orderData.payment.paylaterSchedule.length > 0) {
+                    let totalPaidAcc = installments.reduce((s, i) => s + (parseFloat(i.amount) || 0), 0);
+                    updatedSchedule = orderData.payment.paylaterSchedule.map(sc => {
+                        const mTotal = parseFloat(sc.totalMonthly) || 0;
+                        const isPaid = totalPaidAcc >= mTotal;
+                        if (isPaid) totalPaidAcc -= mTotal;
+                        return { ...sc, isPaid };
+                    });
+                }
+
+                const orderUpdates = {
+                    'payment.tempoBalance': newBalance,
+                    'payment.installments': installments,
+                    'payment.lastPaymentDate': now,
+                    'payment.tempoStatus': newBalance <= 0 ? 'LUNAS' : 'DICICIL',
+                    'updatedAt': now
+                };
+
+                if (updatedSchedule) {
+                    orderUpdates['payment.paylaterSchedule'] = updatedSchedule;
+                }
+
+                if (newBalance <= 0) {
+                    orderUpdates['payment.paymentStatus'] = 'lunas';
+                    orderUpdates['payment.isTempoPaid'] = true;
+                    orderUpdates['status'] = 'Selesai';
+                }
+
+                await orderRef.update(orderUpdates);
+
+                // ── PULIHKAN LIMIT PUTRI PAYLATER JIKA PESANAN PAYLATER ──
+                const isPlOrder = !!(orderData.payment?.isPaylater || orderData.isPaylater || orderData.payment?.subMethod === 'paylater');
+                if (isPlOrder) {
+                    const rawPhone = (orderData.customer?.wa || orderData.customer?.phone || conf.customerPhone || '').replace(/\D/g, '');
+                    const normPhone = rawPhone.startsWith('0') ? '62' + rawPhone.slice(1) : rawPhone;
+                    if (normPhone) {
+                        const restoreAmount = computePaylaterLimitRestore(orderData.payment, currentBalance, newBalance, amount);
+                        if (restoreAmount > 0) {
+                            try {
+                                const cRef = db.collection("freshmart").doc("cms_data").collection("customers").doc(normPhone);
+                                await db.runTransaction(async (txn) => {
+                                    const custSnap = await txn.get(cRef);
+                                    if (custSnap.exists) {
+                                        const currentUsed = Math.max(0, parseFloat(custSnap.data().paylaterUsed) || 0);
+                                        const newUsed = Math.max(0, currentUsed - restoreAmount);
+                                        txn.update(cRef, { paylaterUsed: newUsed, updatedAt: now });
+                                    }
+                                });
+
+                                if (Array.isArray(appData.customers)) {
+                                    const mCust = appData.customers.find(c => c && (String(c.id) === normPhone || String(c.phone).replace(/\D/g, '') === rawPhone || String(c.phone).replace(/\D/g, '') === normPhone));
+                                    if (mCust) {
+                                        mCust.paylaterUsed = Math.max(0, (Math.max(0, parseFloat(mCust.paylaterUsed) || 0)) - restoreAmount);
+                                    }
+                                }
+
+                                if (currentMember && (currentMember.phone || currentMember.id)) {
+                                    const currPhoneClean = (currentMember.phone || currentMember.id).toString().replace(/\D/g, '');
+                                    if (currPhoneClean === rawPhone || currPhoneClean === normPhone) {
+                                        currentMember.paylaterUsed = Math.max(0, (Math.max(0, parseFloat(currentMember.paylaterUsed) || 0)) - restoreAmount);
+                                    }
+                                }
+                            } catch(ePl) {
+                                console.warn('[Tempo] Gagal pulihkan limit PayLater:', ePl);
+                            }
+                        }
+                    }
+                }
+
+                // Catat mutasi penerimaan kas di Firestore expenses jika modul kas aktif
+                try {
+                    const cashDoc = {
+                        id: 'INCOME-' + insId,
+                        type: 'income',
+                        category: isPlOrder ? 'Pelunasan PayLater' : 'Pelunasan Piutang Tempo',
+                        amount: amount,
+                        date: new Date(now).toISOString().split('T')[0],
+                        timestamp: now,
+                        paymentMethod: conf.channel === 'qris' ? 'QRIS Toko' : (conf.bankName || 'Transfer Bank'),
+                        account: 'Bank / Kas Toko',
+                        vendor: orderData.customer?.name || conf.customerName || 'Pelanggan',
+                        notes: `Penerimaan cicilan nota #${orderId} (${conf.channel === 'qris' ? 'QRIS' : conf.bankName}) - Bukti ID: ${confirmId}`,
+                        recordedBy: auth.currentUser?.email || 'Owner / Kasir',
+                        refOrderId: orderId
+                    };
+                    await db.collection("freshmart").doc("cms_data").collection("expenses").doc(cashDoc.id).set(cashDoc);
+                } catch(eCash) {
+                    console.warn('[Tempo] Gagal catat mutasi kas masuk:', eCash);
+                }
+
+                // Update status konfirmasi di Firestore
+                await db.collection("tempo_payment_confirmations").doc(confirmId).update({
+                    status: 'approved',
+                    approvedAt: now,
+                    approvedBy: auth.currentUser?.email || 'Owner / Kasir'
+                });
+
+                // Hapus dari pending cache lokal
+                pendingTempoConfirmations = pendingTempoConfirmations.filter(c => c.id !== confirmId);
+
+                hLoad();
+                showToast(`Pembayaran ${fCur(amount)} untuk nota #${orderId} disetujui! Saldo diperbarui & limit dipulihkan.`, 'success');
+
+                // Render ulang modal konfirmasi jika masih terbuka
+                if (pendingTempoConfirmations.length > 0) {
+                    renderTempoConfirmationsContent();
+                } else {
+                    closeTempoConfirmationsModal();
+                }
+
+                // Re-render halaman Piutang CMS
+                await rAdmPiutang();
+
+            } catch (err) {
+                hLoad();
+                console.error('[Tempo] Gagal setujui pembayaran:', err);
+                showToast('Gagal menyetujui pembayaran: ' + err.message, 'error');
+            }
+        },
+        'Ya, Setujui',
+        'Batal'
+    );
+};
+
+/**
+ * Tolak Konfirmasi Bukti Pembayaran
+ */
+export const rejectTempoPaymentConfirmation = async (confirmId) => {
+    const conf = (pendingTempoConfirmations || []).find(c => c.id === confirmId);
+    if (!conf) return showToast('Data konfirmasi tidak ditemukan.', 'warning');
+
+    const reason = prompt('Masukkan alasan penolakan bukti pembayaran (misal: "Dana belum masuk mutasi bank" / "Bukti transfer buram/tidak terbaca"):', 'Dana belum masuk ke mutasi rekening toko');
+    if (reason === null) return; // user cancelled
+
+    sLoad('Menolak konfirmasi pembayaran...');
+    try {
+        const now = Date.now();
+        await db.collection("tempo_payment_confirmations").doc(confirmId).update({
+            status: 'rejected',
+            rejectReason: reason.trim() || 'Ditolak oleh admin toko',
+            rejectedAt: now,
+            rejectedBy: auth.currentUser?.email || 'Owner / Kasir'
+        });
+
+        pendingTempoConfirmations = pendingTempoConfirmations.filter(c => c.id !== confirmId);
+
+        hLoad();
+        showToast('Konfirmasi pembayaran telah ditolak.', 'info');
+
+        if (pendingTempoConfirmations.length > 0) {
+            renderTempoConfirmationsContent();
+        } else {
+            closeTempoConfirmationsModal();
+        }
+
+        await rAdmPiutang();
+    } catch(err) {
+        hLoad();
+        console.error('[Tempo] Gagal tolak pembayaran:', err);
+        showToast('Gagal menolak konfirmasi: ' + err.message, 'error');
+    }
+};
+
+window.approveTempoPaymentConfirmation = approveTempoPaymentConfirmation;
+window.rejectTempoPaymentConfirmation = rejectTempoPaymentConfirmation;
+
+/**
  * Submit Pengaturan Denda
  */
 window.submitTempoPenalty = async (e, orderId) => {
@@ -2242,6 +2623,35 @@ const renderTempoContent = () => {
     let h = `
     <div class="max-w-full pb-12 fade-in-scale text-sm space-y-5">
         
+        ${pendingTempoConfirmations.length > 0 ? `
+        <!-- BANNER ANTREAN KONFIRMASI PEMBAYARAN MASUK PELANGGAN -->
+        <div class="p-4 sm:p-5 rounded-3xl border border-amber-300 dark:border-amber-700/80 bg-gradient-to-r from-amber-500/15 via-amber-500/5 to-teal-500/10 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div class="flex items-center gap-3.5">
+                <div class="w-12 h-12 rounded-2xl bg-amber-500 text-white flex items-center justify-center shadow-md shrink-0 relative">
+                    <i class="fa-solid fa-receipt text-xl"></i>
+                    <span class="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-rose-500 text-white text-[10px] font-black flex items-center justify-center border-2 border-white dark:border-slate-900 animate-bounce">
+                        ${pendingTempoConfirmations.length}
+                    </span>
+                </div>
+                <div>
+                    <h4 class="font-black text-slate-800 dark:text-white text-sm sm:text-base flex items-center gap-2">
+                        Konfirmasi Pembayaran Pelanggan Masuk
+                        <span class="px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-amber-100 text-amber-800 dark:bg-amber-900/60 dark:text-amber-300 border border-amber-300 dark:border-amber-700">
+                            ${pendingTempoConfirmations.length} Perlu Verifikasi
+                        </span>
+                    </h4>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                        Pelanggan telah mengunggah bukti transfer Bank / QRIS toko untuk cicilan tempo. Cek bukti mutasi dan setujui untuk memperbarui saldo &amp; memulihkan limit PayLater pelanggan.
+                    </p>
+                </div>
+            </div>
+            <button type="button" onclick="window.openTempoConfirmationsModal()" class="px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 shadow-xs active:scale-95 transition-all cursor-pointer shrink-0">
+                <i class="fa-solid fa-eye text-sm"></i>
+                <span>Periksa Bukti (${pendingTempoConfirmations.length})</span>
+            </button>
+        </div>
+        ` : ''}
+
         <!-- HEADER KARTU STATISTIK METRIK PIUTANG DENGAN AMBIENT THEME GLOW -->
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div class="bg-white dark:bg-slate-800 p-4 rounded-3xl border border-slate-200/90 dark:border-slate-700 shadow-sm flex items-center gap-3.5 relative overflow-hidden">
@@ -2391,14 +2801,32 @@ const renderActiveTempoTabBody = () => {
 export const rAdmPiutang = async () => {
     sLoad('Memuat data piutang...');
     cachedPiutangOrders = [];
+    pendingTempoConfirmations = [];
     try {
-        const snap = await db.collection("freshmart_orders")
-            .where("payment.method", "==", "tempo")
-            .where("payment.paymentStatus", "==", "hutang")
-            .get();
-        snap.forEach(doc => { 
+        const [ordersSnap, confSnap] = await Promise.all([
+            db.collection("freshmart_orders")
+                .where("payment.method", "==", "tempo")
+                .where("payment.paymentStatus", "==", "hutang")
+                .get(),
+            db.collection("tempo_payment_confirmations")
+                .where("status", "==", "pending")
+                .get()
+                .catch(err => {
+                    console.warn('[Tempo] Gagal memuat konfirmasi pembayaran:', err);
+                    return { empty: true, docs: [] };
+                })
+        ]);
+
+        ordersSnap.forEach(doc => { 
             cachedPiutangOrders.push(doc.data()); 
         });
+
+        if (!confSnap.empty && confSnap.docs) {
+            confSnap.docs.forEach(doc => {
+                pendingTempoConfirmations.push({ id: doc.id, ...doc.data() });
+            });
+            pendingTempoConfirmations.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+        }
     } catch (e) {
         hLoad();
         showToast('Gagal memuat piutang: ' + e.message);
@@ -2415,6 +2843,7 @@ export const rAdmPiutang = async () => {
 
     // Simpan ke window agar sinkron dengan modal dokumen cetak (openDocPreview)
     window.cachedPiutangOrders = cachedPiutangOrders;
+    window.pendingTempoConfirmations = pendingTempoConfirmations;
 
     renderTempoContent();
 };
@@ -2428,6 +2857,10 @@ export default {
     openTempoDetailModal: window.openTempoDetailModal,
     openTempoPaymentModal: window.openTempoPaymentModal,
     openTempoPenaltyModal: window.openTempoPenaltyModal,
+    openTempoConfirmationsModal: window.openTempoConfirmationsModal,
+    closeTempoConfirmationsModal: window.closeTempoConfirmationsModal,
+    approveTempoPaymentConfirmation: window.approveTempoPaymentConfirmation,
+    rejectTempoPaymentConfirmation: window.rejectTempoPaymentConfirmation,
     getTempoOrderCalculations,
     ensureTempoModals
 };

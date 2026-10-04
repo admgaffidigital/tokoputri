@@ -193,5 +193,13 @@ service cloud.firestore {
     match /freshmart_licenses/{licenseId} {
       allow read, write: if isOwner();
     }
+
+    // ─── Konfirmasi Pembayaran Angsuran & Tempo Pelanggan ──────
+    match /tempo_payment_confirmations/{confirmId} {
+      allow get: if true;
+      allow list: if isStaff();
+      allow create: if request.resource.data.status == 'pending';
+      allow update, delete: if isStaff();
+    }
   }
 }

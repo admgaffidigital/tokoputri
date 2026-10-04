@@ -9,6 +9,12 @@
 import { appData, currentMember, setCurrentMember, selectedReward, setSelectedReward, myOrders, gOrds } from '../../core/state.js';
 import { el, show, hide, getV, setH, esc, fCur, ensureScriptLoaded } from '../../core/utils.js';
 import { db, auth } from '../../config/firebase.js';
+import { 
+    openClientPaymentModal, 
+    renderClientInstallmentSchedule, 
+    getMemberActiveTempoOrders, 
+    loadPendingConfirmations 
+} from './client-pay.js';
 
 const memberCache = new Map();
 const MEMBER_CACHE_TTL = 3 * 60 * 1000; // 3 menit cache poin/member
@@ -1256,14 +1262,14 @@ export const rMemberModalBody = () => {
                     </div>
 
                     ${(billing.tagihanWajibBayar > 0 || used > 0) ? `
-                        <div class="pt-2.5 border-t border-dashed border-slate-200 dark:border-slate-700 space-y-2">
-                            <div class="flex items-center justify-between gap-2">
+                        <div class="pt-2.5 border-t border-dashed border-slate-200 dark:border-slate-700 space-y-2.5">
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                                 <div class="min-w-0">
                                     <p class="text-[9px] text-slate-400 uppercase font-black tracking-wider flex items-center gap-1">
                                         <i class="fa-solid fa-file-invoice-dollar text-emerald-500"></i> Tagihan Berjalan (Wajib Bayar)
                                     </p>
                                     <div class="flex items-baseline gap-1.5 mt-0.5 flex-wrap">
-                                        <p class="text-xs sm:text-sm font-black text-rose-600 dark:text-rose-400 font-mono">${fCur(billing.tagihanWajibBayar)}</p>
+                                        <p class="text-sm sm:text-base font-black text-rose-600 dark:text-rose-400 font-mono">${fCur(billing.tagihanWajibBayar)}</p>
                                         ${billing.monthlyInstallment > 0 && billing.monthlyInstallment < billing.tagihanWajibBayar ? `
                                             <span class="text-[10px] font-bold text-slate-500 dark:text-slate-400 font-mono">(${fCur(billing.monthlyInstallment)}/bln)</span>
                                         ` : ''}
@@ -1274,12 +1280,47 @@ export const rMemberModalBody = () => {
                                         </p>
                                     ` : ''}
                                 </div>
-                                <a href="https://wa.me/${((appData.store?.wa)||'').replace(/\D/g,'')}?text=Halo%20Admin%20Toko%20Putri,%20saya%20ingin%20melakukan%20pembayaran%20tagihan%20Putri%20PayLater%20sebesar%20${encodeURIComponent(fCur(waNominal))}%20untuk%20nomor%20${currentMember.phone||''}" target="_blank" class="px-3 py-2 rounded-xl text-[10px] font-black uppercase tracking-wider bg-emerald-600 hover:bg-emerald-700 text-white flex items-center gap-1.5 shadow-2xs transition-all active:scale-95 shrink-0" title="Bayar via WhatsApp">
-                                    <i class="fa-brands fa-whatsapp text-xs"></i> Bayar Tagihan
-                                </a>
+                                <div class="flex items-center gap-2">
+                                    <button type="button" onclick="if(typeof window.openClientPaymentModal==='function') window.openClientPaymentModal('', ${waNominal}); else if(typeof openClientPaymentModal==='function') openClientPaymentModal('', ${waNominal});" class="flex-1 sm:flex-none px-3.5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-wider bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white flex items-center justify-center gap-1.5 shadow-xs transition-all active:scale-95 cursor-pointer">
+                                        <i class="fa-solid fa-qrcode text-xs"></i> Bayar Bank / QRIS
+                                    </button>
+                                    <a href="https://wa.me/${((appData.store?.wa)||'').replace(/\D/g,'')}?text=Halo%20Admin%20Toko%20Putri,%20saya%20ingin%20melakukan%20pembayaran%20tagihan%20Putri%20PayLater%20sebesar%20${encodeURIComponent(fCur(waNominal))}%20untuk%20nomor%20${currentMember.phone||''}" target="_blank" class="p-2.5 rounded-xl text-slate-500 hover:text-emerald-600 border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 flex items-center justify-center active:scale-95 transition-all shadow-2xs" title="Konfirmasi via WhatsApp">
+                                        <i class="fa-brands fa-whatsapp text-sm text-emerald-500"></i>
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     ` : ''}
+                </div>`;
+            })()}
+
+            <!-- TABEL RINCIAN JADWAL ANGSURAN & TAGIHAN BERJALAN PELANGGAN -->
+            ${(() => {
+                const activeOrders = (typeof getMemberActiveTempoOrders === 'function') 
+                    ? getMemberActiveTempoOrders() 
+                    : ((typeof window.getMemberActiveTempoOrders === 'function') ? window.getMemberActiveTempoOrders() : []);
+                if (!activeOrders || activeOrders.length === 0) return '';
+                let pendingList = [];
+                try {
+                    const rawP = localStorage.getItem('freshmart_pending_confirmations');
+                    if (rawP) pendingList = JSON.parse(rawP) || [];
+                } catch(e) {}
+
+                const renderFn = (typeof renderClientInstallmentSchedule === 'function') 
+                    ? renderClientInstallmentSchedule 
+                    : window.renderClientInstallmentSchedule;
+
+                if (typeof renderFn !== 'function') return '';
+
+                return `
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between">
+                        <p class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
+                            <i class="fa-solid fa-list-check text-emerald-500"></i> Jadwal Angsuran &amp; Cicilan Anda
+                        </p>
+                        <span class="text-[10px] font-bold text-[var(--color-primary)]">${activeOrders.length} Tagihan Aktif</span>
+                    </div>
+                    ${activeOrders.map(ord => renderFn(ord, pendingList)).join('')}
                 </div>`;
             })()}
 
