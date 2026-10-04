@@ -8,7 +8,7 @@
 
 import { appData, currentMember, setCurrentMember, selectedReward, setSelectedReward } from '../../core/state.js';
 import { el, show, hide, getV, setH, esc, fCur, ensureScriptLoaded } from '../../core/utils.js';
-import { db } from '../../config/firebase.js';
+import { db, auth } from '../../config/firebase.js';
 
 const memberCache = new Map();
 const MEMBER_CACHE_TTL = 3 * 60 * 1000; // 3 menit cache poin/member
@@ -789,27 +789,45 @@ export const getMemberPointsHistory = async (phone, force = false) => {
         } catch (e) {}
 
         // 2. Ambil pesanan dari Firestore (freshmart_orders)
+        // Aturan keamanan Firestore: query daftar (list) HANYA untuk staf yang login,
+        // sedangkan pembeli publik hanya boleh mengambil 1 dokumen by ID (get).
         let remoteOrders = [];
-        try {
-            const snap = await db.collection("freshmart_orders")
-                .where("customerPhone", "in", Array.from(cleanVariants).slice(0, 10))
-                .limit(50)
-                .get();
-            if (snap && !snap.empty) {
-                remoteOrders = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            }
-        } catch (e) {
-            try {
-                const snap2 = await db.collection("freshmart_orders")
-                    .where("phone", "in", Array.from(cleanVariants).slice(0, 10))
-                    .limit(50)
-                    .get();
-                if (snap2 && !snap2.empty) {
-                    remoteOrders = snap2.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        const isPermissionDenied = (err) => !!err && (err.code === 'permission-denied' || /insufficient permissions/i.test(err.message || ''));
+        const isAuthed = !!(auth && auth.currentUser);
+
+        if (isAuthed) {
+            // 2a. Staf login: query berdasarkan nomor HP (customerPhone lalu phone)
+            for (const field of ['customerPhone', 'phone']) {
+                try {
+                    const snap = await db.collection("freshmart_orders")
+                        .where(field, "in", Array.from(cleanVariants).slice(0, 10))
+                        .limit(50)
+                        .get();
+                    if (snap && !snap.empty) {
+                        remoteOrders = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                        break;
+                    }
+                } catch (e) {
+                    if (isPermissionDenied(e)) break; // bukan staf → pakai jalur publik di bawah
+                    console.warn(`[getMemberPointsHistory] Query ${field} gagal:`, e);
                 }
-            } catch (e2) {
-                console.warn('[getMemberPointsHistory] Firestore query fallback:', e2);
             }
+        }
+
+        // 2b. Pembeli publik (atau query staf kosong/ditolak): segarkan status pesanan
+        // lokal satu per satu via get() by ID — diizinkan oleh aturan Firestore.
+        if (!remoteOrders.length && localOrders.length) {
+            const ids = [...new Set(localOrders.filter(o => o && o.id).map(o => String(o.id)))].slice(0, 20);
+            const results = await Promise.allSettled(
+                ids.map(id => db.collection("freshmart_orders").doc(id).get())
+            );
+            results.forEach(r => {
+                if (r.status === 'fulfilled' && r.value && r.value.exists) {
+                    remoteOrders.push({ id: r.value.id, ...r.value.data() });
+                } else if (r.status === 'rejected' && !isPermissionDenied(r.reason)) {
+                    console.warn('[getMemberPointsHistory] Gagal memuat pesanan:', r.reason);
+                }
+            });
         }
 
         // 3. Gabungkan pesanan dan eliminasi duplikasi
