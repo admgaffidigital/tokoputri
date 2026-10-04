@@ -1008,8 +1008,8 @@ export const rMemberModalBody = () => {
                 ${!stockOk ? `<p class="text-[10px] font-bold text-rose-500 mt-0.5">Stok hadiah habis</p>` : ''}
             </div>
             ${currentMember ? (isSelected
-                ? `<button type="button" onclick="deselectReward()" class="shrink-0 bg-rose-500 hover:bg-rose-600 text-white text-[10px] font-bold uppercase px-3 py-2 rounded-xl active:scale-95 transition-all whitespace-nowrap shadow-xs">Batal</button>`
-                : `<button type="button" ${canClaim ? '' : 'disabled'} onclick="selectReward(${r.id})" class="shrink-0 ${canClaim ? 'primary-bg hover:opacity-90 text-white active:scale-95 shadow-xs' : 'bg-slate-200 dark:bg-slate-700 text-slate-400 cursor-not-allowed'} text-[10px] font-bold uppercase px-3 py-2 rounded-xl transition-all whitespace-nowrap">Pilih Hadiah</button>`) : `<span class="text-[10px] font-bold text-slate-400 uppercase bg-slate-100 dark:bg-slate-800 px-2.5 py-1.5 rounded-lg">${parseFloat(r.pointsCost) || 0} Poin</span>`}
+                ? `<button type="button" onclick="deselectReward()" class="shrink-0 bg-rose-500 hover:bg-rose-600 text-white text-[10px] font-bold uppercase px-3 py-2 rounded-xl active:scale-95 transition-all whitespace-nowrap shadow-xs cursor-pointer">Batal</button>`
+                : `<button type="button" ${canClaim ? '' : 'disabled'} onclick="selectReward('${esc(String(r.id))}')" class="shrink-0 ${canClaim ? 'primary-bg hover:opacity-90 text-white active:scale-95 shadow-xs cursor-pointer' : 'bg-slate-200 dark:bg-slate-700 text-slate-400 cursor-not-allowed'} text-[10px] font-bold uppercase px-3 py-2 rounded-xl transition-all whitespace-nowrap">Pilih Hadiah</button>`) : `<span class="text-[10px] font-bold text-slate-400 uppercase bg-slate-100 dark:bg-slate-800 px-2.5 py-1.5 rounded-lg">${parseFloat(r.pointsCost) || 0} Poin</span>`}
         </div>`;
     }).join('') : `<p class="text-[11px] font-bold text-slate-400 text-center py-3">Belum ada program hadiah yang tersedia.</p>`;
 
@@ -1032,7 +1032,7 @@ export const rMemberModalBody = () => {
                     </button>
                 </div>
                 <div class="text-center mt-2">
-                    <button type="button" onclick="setCurrentMember(null); try{localStorage.removeItem('freshmart_current_member');localStorage.removeItem('freshmart_member_wa');}catch(e){} rMemberModalBody();" class="text-[10px] text-slate-400 hover:text-[var(--color-primary)] font-semibold transition-colors cursor-pointer">
+                    <button type="button" onclick="logoutMember()" class="text-[10px] text-slate-400 hover:text-[var(--color-primary)] font-semibold transition-colors cursor-pointer">
                         <i class="fa-solid fa-user-pen mr-1"></i>Bukan Anda? Cek nomor WhatsApp lain
                     </button>
                 </div>
@@ -1365,6 +1365,15 @@ export const closeMemberModal = (fH = false) => {
     }
 };
 
+export const logoutMember = () => {
+    setCurrentMember(null);
+    try {
+        localStorage.removeItem('freshmart_current_member');
+        localStorage.removeItem('freshmart_member_wa');
+    } catch(e) {}
+    rMemberModalBody();
+};
+
 // ─── Expose ke window untuk interaksi inline onclick di HTML ──────────
 window.renderRewardCatalog = renderRewardCatalog;
 window.checkMemberStatus = checkMemberStatus;
@@ -1380,6 +1389,7 @@ window.getMemberTier = getMemberTier;
 window.formatMemberCardNumber = formatMemberCardNumber;
 window.generateBarcodeSVG = generateBarcodeSVG;
 window.setCurrentMember = setCurrentMember;
+window.logoutMember = logoutMember;
 window.invalidateMemberCache = invalidateMemberCache;
 window.reconcilePointsFromOrders = reconcilePointsFromOrders;
 window.getMemberPointsHistory = getMemberPointsHistory;

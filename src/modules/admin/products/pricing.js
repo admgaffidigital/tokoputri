@@ -79,7 +79,7 @@ window.openQuickPriceModal = (id) => {
             </div>
             <div class="custom-scrollbar p-5 sm:p-6 overflow-y-auto flex-1 space-y-3" id="qp-body">${body}</div>
             <div class="p-5 border-t border-slate-100 dark:border-slate-800 shrink-0">
-                <button onclick="processQuickPrice(${id})" class="btn-primary py-3.5 text-sm shadow-glow !rounded-2xl flex items-center justify-center gap-2 cursor-pointer active:scale-95"><i class="fa-solid fa-save"></i> Simpan Harga</button>
+                <button onclick="processQuickPrice('${esc(String(id))}')" class="btn-primary py-3.5 text-sm shadow-glow !rounded-2xl flex items-center justify-center gap-2 cursor-pointer active:scale-95"><i class="fa-solid fa-save"></i> Simpan Harga</button>
             </div>
         </div>`;
     if (!hasVariants) rQpWhol();
@@ -89,13 +89,22 @@ window.openQuickPriceModal = (id) => {
     pushModalHistory('quickprice');
 };
 
+/** Handler mutasi grosir edit cepat */
+window.qpUpdateWhol = (idx, field, val) => {
+    if (qpWhol[idx]) qpWhol[idx][field] = parseFloat(val) || 0;
+};
+window.qpRemoveWhol = (idx) => {
+    qpWhol.splice(idx, 1);
+    if (typeof window.rQpWhol === 'function') window.rQpWhol();
+};
+
 /** Render daftar baris harga grosir dalam modal edit cepat */
 window.rQpWhol = () => {
     setH('qp-whol-container', qpWhol.length ? qpWhol.map((w, i) => `
         <div class="flex items-center gap-2">
-            <input type="number" min="1" placeholder="Min. Qty" value="${w.minQty||''}" onchange="qpWhol[${i}].minQty=parseFloat(this.value)||0" class="admin-input !py-2.5 !px-3 text-xs bg-slate-50 dark:bg-slate-900/50 flex-1">
-            <input type="number" min="0" placeholder="Harga/Unit" value="${w.price||''}" onchange="qpWhol[${i}].price=parseFloat(this.value)||0" class="admin-input !py-2.5 !px-3 text-xs bg-slate-50 dark:bg-slate-900/50 flex-1">
-            <button type="button" onclick="qpWhol.splice(${i},1); rQpWhol();" class="w-9 h-9 shrink-0 rounded-xl bg-rose-50 text-rose-500 hover:bg-rose-500 hover:text-white flex items-center justify-center transition-all"><i class="fa-solid fa-trash text-xs"></i></button>
+            <input type="number" min="1" placeholder="Min. Qty" value="${w.minQty||''}" onchange="window.qpUpdateWhol(${i}, 'minQty', this.value)" class="admin-input !py-2.5 !px-3 text-xs bg-slate-50 dark:bg-slate-900/50 flex-1">
+            <input type="number" min="0" placeholder="Harga/Unit" value="${w.price||''}" onchange="window.qpUpdateWhol(${i}, 'price', this.value)" class="admin-input !py-2.5 !px-3 text-xs bg-slate-50 dark:bg-slate-900/50 flex-1">
+            <button type="button" onclick="window.qpRemoveWhol(${i})" class="w-9 h-9 shrink-0 rounded-xl bg-rose-50 text-rose-500 hover:bg-rose-500 hover:text-white flex items-center justify-center transition-all cursor-pointer"><i class="fa-solid fa-trash text-xs"></i></button>
         </div>`).join('') : `<p class="text-[11px] font-bold text-slate-400 text-center py-2">Belum ada tingkat harga grosir.</p>`);
 };
 window.qpAddWhol = () => { qpWhol.push({minQty:0, price:0}); rQpWhol(); };

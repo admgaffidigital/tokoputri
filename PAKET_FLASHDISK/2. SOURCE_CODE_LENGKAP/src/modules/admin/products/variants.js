@@ -129,7 +129,7 @@ window.rVarsB = () => {
                 </div>
                 <div>
                     <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Status Stok Varian</label>
-                    <button type="button" onclick="tVars[${i}].isActive = ${!isAct}; rVarsB();" class="w-full py-3.5 px-4 rounded-xl text-[13px] font-bold uppercase tracking-wider transition-all shadow-sm flex items-center justify-center gap-2.5 border-2 active:scale-95 ${isAct ? 'primary-bg border-[var(--color-primary-dark)] shadow-md' : 'bg-slate-100 text-rose-500 border-rose-200 hover:bg-rose-50 dark:bg-slate-800 dark:border-rose-800'}">
+                    <button type="button" onclick="window.toggleVarActive(${i})" class="w-full py-3.5 px-4 rounded-xl text-[13px] font-bold uppercase tracking-wider transition-all shadow-sm flex items-center justify-center gap-2.5 border-2 active:scale-95 cursor-pointer ${isAct ? 'primary-bg border-[var(--color-primary-dark)] shadow-md' : 'bg-slate-100 text-rose-500 border-rose-200 hover:bg-rose-50 dark:bg-slate-800 dark:border-rose-800'}">
                         ${isAct ? '<i class="fa-solid fa-circle-check text-base"></i> STOK TERSEDIA' : '<i class="fa-solid fa-ban text-base"></i> STOK HABIS'}
                     </button>
                 </div>
@@ -159,6 +159,14 @@ window.rVarsB = () => {
 window.addVar = () => { tVars.push({name:'', price:0, priceNormal:0, hpp:0, stock:0, sku:'', img:'', unit:'', colorCode:'', poin:0, isActive: true}); setTVars(tVars); window.rVarsB(); };
 window.rmVar  = (i) => { tVars.splice(i,1); setTVars(tVars); window.rVarsB(); };
 window.uVar   = (i,k,v) => { tVars[i][k] = (k==='price'||k==='priceNormal'||k==='hpp'||k==='stock'||k==='poin') ? parseFloat(v)||0 : (k==='img' ? fixD(v) : v); };
+window.toggleVarActive = (i) => {
+    if (tVars[i]) {
+        const cur = tVars[i].isActive !== false && tVars[i].isActive !== 'false';
+        tVars[i].isActive = !cur;
+        setTVars(tVars);
+        if (typeof window.rVarsB === 'function') window.rVarsB();
+    }
+};
 
 // ─── Database Warna — Helper modal dinamis ────────────────────────────────────
 

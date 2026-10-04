@@ -71,7 +71,7 @@ window.openRestockModal = (id) => {
                 ${variantsHtml}
             </div>
             <div class="p-5 border-t border-slate-100 dark:border-slate-800 shrink-0">
-                <button onclick="processRestock(${id})" class="btn-primary py-3.5 text-sm shadow-glow !rounded-2xl flex items-center justify-center gap-2 cursor-pointer active:scale-95"><i class="fa-solid fa-save"></i> Simpan Restock</button>
+                <button onclick="processRestock('${esc(String(id))}')" class="btn-primary py-3.5 text-sm shadow-glow !rounded-2xl flex items-center justify-center gap-2 cursor-pointer active:scale-95"><i class="fa-solid fa-save"></i> Simpan Restock</button>
             </div>
         </div>`;
     m.style.opacity = '0';
