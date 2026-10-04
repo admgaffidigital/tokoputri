@@ -388,9 +388,28 @@ window.calculatePaylaterBalance = () => {
     }
     let grandTotal = Math.max(0, subAfterDisc + shippingAfterDisc + (taxInfo.grandTotalAdd || 0) - pointsDisc);
 
-    // Hitung rincian multi-tenor PayLater
+    // Evaluasi Limit PayLater & Down Payment (DP)
+    let dpVal = 0;
+    const isExceedLimit = grandTotal > available;
+    if (isExceedLimit) {
+        const deficit = grandTotal - available;
+        dpVal = parseFloat(dpInput?.value) || 0;
+        if (dpVal < deficit) {
+            dpVal = deficit;
+            if (dpInput) dpInput.value = dpVal;
+        }
+        if (excessBox) excessBox.classList.remove('hidden');
+    } else {
+        if (excessBox) excessBox.classList.add('hidden');
+        if (dpInput) dpInput.value = 0;
+        dpVal = 0;
+    }
+
+    const financedAmount = Math.min(available, Math.max(0, grandTotal - dpVal));
+
+    // Hitung rincian multi-tenor PayLater berdasarkan sisa pembiayaan yang dicicil
     const plConfig = getPaylaterConfig();
-    const sim = calculateAllPaylaterTenors(grandTotal, plConfig);
+    const sim = calculateAllPaylaterTenors(financedAmount > 0 ? financedAmount : grandTotal, { ...plConfig, dueDay });
     const tenors = sim.results;
 
     let activeTenorKey = window.selectedCheckoutPaylaterTenor || '30d';
@@ -466,24 +485,16 @@ window.calculatePaylaterBalance = () => {
         `;
     }
 
-    // Evaluasi Limit PayLater
-    if (grandTotal <= available) {
+    // Render Box Status Evaluasi Limit
+    if (!isExceedLimit) {
         if (statusBox) {
-            statusBox.innerHTML = '<div class="flex items-center gap-2 font-extrabold mb-1" style="color: var(--color-primary);"><i class="fa-solid fa-circle-check text-emerald-500 text-sm"></i><span>Limit PayLater Anda Sangat Cukup!</span></div><p class="text-[11px] text-slate-600 dark:text-slate-300 leading-relaxed">Total belanja <b>' + fCur(grandTotal) + '</b> otomatis dipotong dari limit PayLater Anda. Anda <b>tidak perlu bayar sekarang</b> dan tanpa uang muka (DP Rp 0). Angsuran dicicil sesuai tenor ' + esc(activeBreakdown.label) + ' mulai tgl ' + dueDay + ' bulan depan.</p>';
+            statusBox.innerHTML = '<div class="flex items-center gap-2 font-extrabold mb-1" style="color: var(--color-primary);"><i class="fa-solid fa-circle-check text-emerald-500 text-sm"></i><span>Limit PayLater Anda Sangat Cukup!</span></div><p class="text-[11px] text-slate-600 dark:text-slate-300 leading-relaxed">Total belanja <b>' + fCur(grandTotal) + '</b> otomatis dipotong dari limit PayLater Anda. Anda <b>tidak perlu bayar sekarang</b> dan tanpa uang muka (DP Rp 0). Angsuran dicicil sesuai tenor ' + esc(activeBreakdown.label) + ' (' + fCur(activeBreakdown.totalPerMonth) + '/bln) mulai tgl ' + dueDay + ' bulan depan.</p>';
         }
-        if (excessBox) excessBox.classList.add('hidden');
-        if (dpInput) dpInput.value = 0;
     } else {
         const deficit = grandTotal - available;
-        let dp = parseFloat(dpInput?.value) || 0;
-        if (dp < deficit) {
-            dp = deficit;
-            if (dpInput) dpInput.value = dp;
-        }
         if (statusBox) {
-            statusBox.innerHTML = '<div class="flex items-center gap-2 text-amber-700 dark:text-amber-300 font-extrabold mb-1"><i class="fa-solid fa-triangle-exclamation text-amber-500 text-sm"></i><span>Total Belanja Melebihi Sisa Limit PayLater</span></div><p class="text-[11px] text-slate-600 dark:text-slate-300">Sisa limit Anda <b>' + fCur(available) + '</b> akan digunakan maksimal untuk cicilan ' + esc(activeBreakdown.label) + '. Selisih kekurangan sebesar <b>' + fCur(deficit) + '</b> wajib dibayar sebagai DP via Transfer/QRIS.</p>';
+            statusBox.innerHTML = '<div class="flex items-center gap-2 text-amber-700 dark:text-amber-300 font-extrabold mb-1"><i class="fa-solid fa-triangle-exclamation text-amber-500 text-sm"></i><span>Total Belanja Melebihi Sisa Limit PayLater</span></div><p class="text-[11px] text-slate-600 dark:text-slate-300 leading-relaxed">Sisa limit Anda <b>' + fCur(available) + '</b> akan digunakan maksimal untuk cicilan ' + esc(activeBreakdown.label) + ' (' + fCur(activeBreakdown.totalPerMonth) + '/bln). Selisih kekurangan sebesar <b>' + fCur(deficit) + '</b> wajib dibayar sebagai DP via Transfer/QRIS.</p>';
         }
-        if (excessBox) excessBox.classList.remove('hidden');
     }
 
     const needsBukti = (parseFloat(dpInput?.value) || 0) > 0;

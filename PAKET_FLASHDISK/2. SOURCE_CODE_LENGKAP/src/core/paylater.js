@@ -91,6 +91,31 @@ export const getPaylaterConfig = () => {
 };
 
 /**
+ * Helper pembersih angka: mendukung format angka Indonesia ('Rp 300.000', '1.500.000,50', dsb)
+ */
+export const parseCleanNumber = (val) => {
+    if (typeof val === 'number') return isNaN(val) ? 0 : Math.max(0, val);
+    if (!val) return 0;
+    let s = String(val).trim().replace(/[^0-9.,-]/g, '');
+    if (!s) return 0;
+    if (s.includes('.') && s.includes(',')) {
+        s = s.replace(/\./g, '').replace(',', '.');
+    } else if (s.includes('.') && !s.includes(',')) {
+        if (/\.\d{3}($|\.)/.test(s)) {
+            s = s.replace(/\./g, '');
+        }
+    } else if (s.includes(',') && !s.includes('.')) {
+        if (/,\d{3}($|,)/.test(s)) {
+            s = s.replace(/,/g, '');
+        } else {
+            s = s.replace(',', '.');
+        }
+    }
+    const num = parseFloat(s);
+    return isNaN(num) ? 0 : Math.max(0, num);
+};
+
+/**
  * Kalkulasi rincian cicilan transparan untuk tenor tertentu
  * @param {number} amount - Nominal pokok harga produk / subtotal
  * @param {string} tenorKey - '30d' | '2m' | '3m'
@@ -98,7 +123,8 @@ export const getPaylaterConfig = () => {
  */
 export const calculateInstallmentBreakdown = (amount, tenorKey = '30d', customConfig = null) => {
     const config = customConfig || getPaylaterConfig();
-    const cleanAmount = Math.max(0, parseFloat(amount) || 0);
+    const cleanAmount = parseCleanNumber(amount);
+        
     const tenor = config.tenors?.[tenorKey] || DEFAULT_PAYLATER_CONFIG.tenors[tenorKey] || DEFAULT_PAYLATER_CONFIG.tenors['30d'];
 
     const months = Math.max(1, parseInt(tenor.months, 10) || 1);
@@ -108,43 +134,82 @@ export const calculateInstallmentBreakdown = (amount, tenorKey = '30d', customCo
     const pokokTotal = cleanAmount;
     const pokokPerMonth = Math.round(pokokTotal / months);
 
-    // 2. Biaya Administrasi (Admin Fee)
+    // 2. Biaya Administrasi (Admin Fee) - Zero fee jika pokok = 0
     let totalAdminFee = 0;
-    if (tenor.adminFeeType === 'percent') {
-        totalAdminFee = Math.round((pokokTotal * tenor.adminFeeValue) / 100);
-    } else {
-        totalAdminFee = Math.round(tenor.adminFeeValue);
+    const rawAdminVal = Math.max(0, parseFloat(tenor.adminFeeValue) || 0);
+    if (cleanAmount > 0 && rawAdminVal > 0) {
+        if (tenor.adminFeeType === 'percent') {
+            totalAdminFee = Math.round((pokokTotal * rawAdminVal) / 100);
+        } else {
+            totalAdminFee = Math.round(rawAdminVal);
+        }
     }
     const adminFeePerMonth = Math.round(totalAdminFee / months);
 
-    // 3. Biaya Penanganan / Layanan (Service / Processing Fee)
+    // 3. Biaya Penanganan / Layanan (Service / Processing Fee) - Zero fee jika pokok = 0
     let totalServiceFee = 0;
-    if (tenor.serviceFeeType === 'percent') {
-        totalServiceFee = Math.round((pokokTotal * tenor.serviceFeeValue) / 100);
-    } else {
-        totalServiceFee = Math.round(tenor.serviceFeeValue);
+    const rawServiceVal = Math.max(0, parseFloat(tenor.serviceFeeValue) || 0);
+    if (cleanAmount > 0 && rawServiceVal > 0) {
+        if (tenor.serviceFeeType === 'percent') {
+            totalServiceFee = Math.round((pokokTotal * rawServiceVal) / 100);
+        } else {
+            totalServiceFee = Math.round(rawServiceVal);
+        }
     }
     const serviceFeePerMonth = Math.round(totalServiceFee / months);
 
     // 4. Total Angsuran per Bulan & Grand Total Keseluruhan
-    const totalPerMonth = pokokPerMonth + adminFeePerMonth + serviceFeePerMonth;
-    const grandTotal = pokokTotal + totalAdminFee + totalServiceFee;
+    const totalPerMonth = cleanAmount > 0 ? (pokokPerMonth + adminFeePerMonth + serviceFeePerMonth) : 0;
+    const grandTotal = cleanAmount > 0 ? (pokokTotal + totalAdminFee + totalServiceFee) : 0;
 
-    // 5. Jadwal Angsuran Simulasi (Due Dates)
+    // 5. Jadwal Angsuran Simulasi (Due Dates) dengan Rekonsiliasi Presisi 1 Rupiah & Safe Calendar
     const schedule = [];
-    const now = new Date();
-    for (let i = 1; i <= months; i++) {
-        const dueDate = new Date(now.getFullYear(), now.getMonth() + i, 5); // Tgl 5 tiap bulan
-        schedule.push({
-            installmentIndex: i,
-            totalMonths: months,
-            dueDate: dueDate.getTime(),
-            dueDateFormatted: dueDate.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }),
-            pokok: pokokPerMonth,
-            adminFee: adminFeePerMonth,
-            serviceFee: serviceFeePerMonth,
-            total: totalPerMonth
-        });
+    if (cleanAmount > 0) {
+        const now = new Date();
+        const dueDay = Math.max(1, Math.min(31, parseInt(customConfig?.dueDay ?? config?.dueDay ?? 5, 10) || 5));
+        let accumulatedPokok = 0;
+        let accumulatedAdmin = 0;
+        let accumulatedService = 0;
+
+        for (let i = 1; i <= months; i++) {
+            // Safe month & day calculation anti-overflow (misal tgl 31 di bulan Februari)
+            const targetYear = now.getFullYear();
+            const targetMonth = now.getMonth() + i;
+            const testDate = new Date(targetYear, targetMonth, 1);
+            const y = testDate.getFullYear();
+            const m = testDate.getMonth();
+            const maxDaysInMonth = new Date(y, m + 1, 0).getDate();
+            const safeDay = Math.min(dueDay, maxDaysInMonth);
+            const dueDate = new Date(y, m, safeDay, 23, 59, 59);
+
+            let itemPokok = pokokPerMonth;
+            let itemAdmin = adminFeePerMonth;
+            let itemService = serviceFeePerMonth;
+
+            // Bulan terakhir menampung sisa pembulatan agar total persis sama dengan grandTotal
+            if (i === months) {
+                itemPokok = Math.max(0, pokokTotal - accumulatedPokok);
+                itemAdmin = Math.max(0, totalAdminFee - accumulatedAdmin);
+                itemService = Math.max(0, totalServiceFee - accumulatedService);
+            } else {
+                accumulatedPokok += itemPokok;
+                accumulatedAdmin += itemAdmin;
+                accumulatedService += itemService;
+            }
+
+            const itemTotal = itemPokok + itemAdmin + itemService;
+
+            schedule.push({
+                installmentIndex: i,
+                totalMonths: months,
+                dueDate: dueDate.getTime(),
+                dueDateFormatted: dueDate.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }),
+                pokok: itemPokok,
+                adminFee: itemAdmin,
+                serviceFee: itemService,
+                total: itemTotal
+            });
+        }
     }
 
     return {

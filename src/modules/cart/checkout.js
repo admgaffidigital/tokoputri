@@ -9,6 +9,7 @@
 import { appData, cart, setCart, cust, setCust, vouch, setVouch, myOrders, setMyOrders, currentMember, setCurrentMember, selectedReward, setSelectedReward, isSaving, setIsSaving } from '../../core/state.js';
 import { el, show, hide, toggleCls, getV, setV, setIn, setH, esc, fCur, sL, ssL, sLoad, hLoad, renderProductCoverHtml } from '../../core/utils.js';
 import { db, firebase } from '../../config/firebase.js';
+import { calculateInstallmentBreakdown, getPaylaterConfig } from '../../core/paylater.js';
 
 /**
  * Toggle tampilan form drop-point (Kirim ke Lokasi Berbeda)
@@ -684,13 +685,16 @@ export const processOrder = async () => {
             oD.payment.tempoDp = dp;
 
             // Rincian Tenor Multi-Bulan Transparan (v1.10.42)
-            const breakdown = window.currentPaylaterBreakdown || null;
-            const chosenTenor = breakdown ? breakdown.tenorKey : (window.selectedCheckoutPaylaterTenor || '30d');
-            const tenorMonths = breakdown ? (parseInt(breakdown.months, 10) || 1) : 1;
-            const adminFee = breakdown ? (parseFloat(breakdown.totalAdminFee) || 0) : 0;
-            const serviceFee = breakdown ? (parseFloat(breakdown.totalServiceFee) || 0) : 0;
-            const monthlyInstallment = breakdown ? (parseFloat(breakdown.totalPerMonth) || 0) : chargedToPaylater;
-            const schedule = breakdown?.schedule || [];
+            const dueDay = currentMember?.paylaterDueDay || 5;
+            const chosenTenor = window.selectedCheckoutPaylaterTenor || window.currentPaylaterBreakdown?.tenorKey || '30d';
+            const plConfig = getPaylaterConfig();
+            const breakdown = calculateInstallmentBreakdown(chargedToPaylater, chosenTenor, { ...plConfig, dueDay });
+
+            const tenorMonths = breakdown.months;
+            const adminFee = breakdown.totalAdminFee;
+            const serviceFee = breakdown.totalServiceFee;
+            const monthlyInstallment = breakdown.totalPerMonth;
+            const schedule = breakdown.schedule;
 
             oD.payment.paylaterTenor = chosenTenor;
             oD.payment.paylaterMonths = tenorMonths;
@@ -699,14 +703,14 @@ export const processOrder = async () => {
             oD.payment.paylaterMonthlyInstallment = monthlyInstallment;
             oD.payment.paylaterSchedule = schedule;
 
-            const totalPayable = Math.max(0, chargedToPaylater + adminFee + serviceFee);
+            const totalPayable = breakdown.grandTotal;
             oD.payment.tempoBalance = totalPayable;
 
-            // Jatuh tempo sesuai tenor (tgl 5 bulan ke-N)
-            const dueDay = currentMember.paylaterDueDay || 5;
-            const d = new Date();
-            const targetMonth = new Date(d.getFullYear(), d.getMonth() + tenorMonths, dueDay, 23, 59, 59);
-            oD.payment.tempoDueDate = targetMonth.getTime();
+            // Jatuh tempo sesuai tenor (tgl jatuh tempo angsuran terakhir dengan proteksi safe-calendar)
+            const lastInstallmentDue = (schedule.length > 0) 
+                ? schedule[schedule.length - 1].dueDate 
+                : Date.now() + (tenorMonths * 30 * 24 * 60 * 60 * 1000);
+            oD.payment.tempoDueDate = lastInstallmentDue;
             oD.payment.paymentStatus = (totalPayable <= 0) ? 'lunas' : 'hutang';
             oD.isTempo = true;
 

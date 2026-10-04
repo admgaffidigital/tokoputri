@@ -925,7 +925,11 @@ export const renderProductPaylaterWidget = (effectiveUnitPrice = null, currentQt
         }
     }
 
-    const totalAmount = (parseFloat(unitP) || 0) * (parseFloat(currentQty) || 1);
+    const cleanUnit = (typeof unitP === 'number') 
+        ? (isNaN(unitP) ? 0 : Math.max(0, unitP)) 
+        : Math.max(0, parseFloat(String(unitP || '').replace(/[^0-9.-]/g, '')) || 0);
+    const cleanQty = Math.max(1, parseFloat(currentQty) || 1);
+    const totalAmount = cleanUnit * cleanQty;
     const sim = calculateAllPaylaterTenors(totalAmount, config);
     const tenors = sim.results;
 
