@@ -7,7 +7,7 @@
  */
 
 import { appData, currentMember, setCurrentMember, selectedReward, setSelectedReward, myOrders, gOrds } from '../../core/state.js';
-import { el, show, hide, getV, setH, esc, fCur, ensureScriptLoaded } from '../../core/utils.js';
+import { el, show, hide, getV, setH, esc, fCur, ensureScriptLoaded, parseOrderDate } from '../../core/utils.js';
 import { db, auth } from '../../config/firebase.js';
 import { 
     openClientPaymentModal, 
@@ -853,17 +853,9 @@ export const getMemberPointsHistory = async (phone, force = false) => {
         // 4. Ekstraksi mutasi poin (Earn, POS Point Discount, Claim Reward)
         const events = [];
         orderMap.forEach(o => {
-            const rawDate = o.createdAt || o.date || o.timestamp || o.dateString;
-            let dateObj = new Date();
-            if (rawDate) {
-                if (typeof rawDate.toDate === 'function') dateObj = rawDate.toDate();
-                else if (typeof rawDate === 'number' || !isNaN(Number(rawDate))) dateObj = new Date(Number(rawDate));
-                else dateObj = new Date(rawDate);
-            }
-            const dateStr = !isNaN(dateObj.getTime())
-                ? dateObj.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })
-                : '-';
-            const timestamp = !isNaN(dateObj.getTime()) ? dateObj.getTime() : 0;
+            const dateObj = parseOrderDate(o);
+            const dateStr = dateObj.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+            const timestamp = dateObj.getTime();
             const isPos = o.source === 'pos';
 
             // Mutasi A: Poin Belanja Didapat

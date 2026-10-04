@@ -60,18 +60,38 @@ export const parseOrderDate = (o) => {
         d = o.timestamp.toDate();
     } else if (o.createdAt?.toDate) {
         d = o.createdAt.toDate();
+    } else if (o.timestamp && typeof o.timestamp === 'object') {
+        const sec = o.timestamp.seconds ?? o.timestamp._seconds;
+        if (typeof sec === 'number' && !isNaN(sec) && sec > 0) d = new Date(sec * 1000);
+    } else if (o.createdAt && typeof o.createdAt === 'object') {
+        const sec = o.createdAt.seconds ?? o.createdAt._seconds;
+        if (typeof sec === 'number' && !isNaN(sec) && sec > 0) d = new Date(sec * 1000);
     } else if (o.dateMs) {
         d = new Date(o.dateMs);
     } else if (o.dateString) {
         d = new Date(o.dateString);
     } else if (typeof o.timestamp === 'number') {
-        d = new Date(o.timestamp);
+        d = new Date(o.timestamp > 1e11 ? o.timestamp : o.timestamp * 1000);
     } else if (typeof o.timestamp === 'string') {
         d = new Date(o.timestamp);
     } else if (typeof o.createdAt === 'string') {
         d = new Date(o.createdAt);
     }
-    return (d && !isNaN(d.getTime())) ? d : null;
+
+    if (d && !isNaN(d.getTime())) return d;
+
+    // Fallback: coba ekstrak base36 timestamp dari format orderId 'ORD-<base36>-...'
+    const oid = o.orderId || o.id || '';
+    if (typeof oid === 'string' && oid.startsWith('ORD-')) {
+        const parts = oid.split('-');
+        if (parts.length >= 2 && parts[1].length >= 6) {
+            const ts = parseInt(parts[1], 36);
+            if (!isNaN(ts) && ts > 1500000000000 && ts < 2500000000000) {
+                return new Date(ts);
+            }
+        }
+    }
+    return null;
 };
 
 /**

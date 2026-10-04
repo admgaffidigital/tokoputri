@@ -8,6 +8,21 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-10-49',
+        version: 'v1.10.49',
+        date: '2026-10-04',
+        title: 'Penyempurnaan Universal Deteksi Tanggal Riwayat Pesanan & Transformasi Notifikasi Konfirmasi Pembayaran Bento Luxury (Zero Alert)',
+        category: 'fix',
+        badge: 'Universal Date Parser & Luxury Success Modal v1.10.49',
+        items: [
+            'Universal Order Date Parser (utils.js & orders.js): Mengeliminasi bug tampilan "Tanggal Tidak Tersedia" pada modal rincian pesanan dan "Invalid Date" pada kartu riwayat pesanan. Fungsi parseOrderDate secara tangguh mengekstrak tanggal dari Firestore Timestamp murni (.toDate()), serialized Timestamp JSON object ({ seconds, nanoseconds }), string ISO / tanggal localized, numerik timestamp milidetik, hingga ekstraksi cerdas base36 timestamp dari pola nomor nota pesanan ORD-<timestampBase36>-... sebagai jaminan anti-gagal 100%.',
+            'Transformasi Dialog Konfirmasi Pembayaran Bento Luxury (client-pay.js): Menggantikan browser native alert ("tokoputri-three.vercel.app menyatakan: ...") yang kaku, klasik, dan memblokir layar dengan modal Bento Luxury kustom bernuansa hangat Toko Putri. Dilengkapi squircle centang emerald dengan glowing radiance halus, kartu rincian nota & nominal transfer yang elegan, status pengajuan menunggu verifikasi, serta pesan edukasi pemulihan limit kredit PayLater yang melegakan hati pelanggan.',
+            'Eliminasi Notifikasi Ganda / Bertumpuk: Menghilangkan tumpukan toast di sudut atas saat pengajuan pembayaran berhasil, menyatukan seluruh umpan balik ke dalam modal konfirmasi sukses modern dengan tombol CTA "Mengerti & Selesai" yang ramah sentuhan (touch target 48px, active scale 95).',
+            'Penyelarasan Mutasi Poin & Laporan Admin (reward.js & reports.js): Mengintegrasikan parseOrderDate ke riwayat transaksi perolehan poin member dan filter laporan penjualan admin sehingga pembacaan tanggal selalu konsisten di seluruh ekosistem aplikasi.',
+            'Multi-Channel Distribution v1.10.49 (Android versionCode 11049).'
+        ]
+    },
+    {
         id: 'log-1-10-48',
         version: 'v1.10.48',
         date: '2026-10-04',

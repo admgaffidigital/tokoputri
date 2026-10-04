@@ -93,6 +93,89 @@ export const fCur = a => {
     }).format(Math.abs(n)).replace(/^/, n < 0 ? '-' : '');
 };
 
+// ─── Date & Order Timestamp Helpers ──────────────────────────
+/**
+ * Universal Order Date Parser
+ * Mengurai tanggal pesanan secara tangguh dari berbagai kemungkinan format:
+ * - Firestore Timestamp instance (.toDate())
+ * - Firestore Timestamp serialized object ({ seconds: 172..., nanoseconds: ... } atau { _seconds, _nanoseconds })
+ * - Unix timestamp numerik (ms atau detik)
+ * - ISO string / localized date string
+ * - Ekstraksi timestamp base36 dari format ID pesanan 'ORD-<base36Timestamp>-<random>'
+ * - Fallback ke Date.now() jika pesanan ada tapi tidak memiliki metadata tanggal
+ * Dijamin selalu mengembalikan objek Date yang valid (tidak pernah NaN / Invalid Date).
+ */
+export const parseOrderDate = (d) => {
+    if (!d) return new Date();
+
+    // 1. Cek Firestore Timestamp toDate()
+    if (d.timestamp && typeof d.timestamp.toDate === 'function') {
+        try {
+            const dt = d.timestamp.toDate();
+            if (dt instanceof Date && !isNaN(dt.getTime())) return dt;
+        } catch(e) {}
+    }
+    if (d.createdAt && typeof d.createdAt.toDate === 'function') {
+        try {
+            const dt = d.createdAt.toDate();
+            if (dt instanceof Date && !isNaN(dt.getTime())) return dt;
+        } catch(e) {}
+    }
+
+    // 2. Cek Firestore Timestamp serialized object ({ seconds, nanoseconds } atau { _seconds, _nanoseconds })
+    if (d.timestamp && typeof d.timestamp === 'object') {
+        const sec = d.timestamp.seconds ?? d.timestamp._seconds;
+        if (typeof sec === 'number' && !isNaN(sec) && sec > 0) {
+            return new Date(sec * 1000);
+        }
+    }
+    if (d.createdAt && typeof d.createdAt === 'object') {
+        const sec = d.createdAt.seconds ?? d.createdAt._seconds;
+        if (typeof sec === 'number' && !isNaN(sec) && sec > 0) {
+            return new Date(sec * 1000);
+        }
+    }
+
+    // 3. Cek numeric timestamps (dateMs, timestamp, createdAt, date)
+    const candidates = [d.dateMs, d.timestamp, d.createdAt, d.date];
+    for (const cand of candidates) {
+        if (typeof cand === 'number' && !isNaN(cand) && cand > 0) {
+            return new Date(cand > 1e11 ? cand : cand * 1000);
+        }
+        if (typeof cand === 'string' && /^\d{10,13}$/.test(cand.trim())) {
+            const num = Number(cand.trim());
+            return new Date(num > 1e11 ? num : num * 1000);
+        }
+    }
+
+    // 4. Cek string tanggal (dateString, date, createdAt)
+    const strCandidates = [d.dateString, d.date, d.createdAt];
+    for (const s of strCandidates) {
+        if (typeof s === 'string' && s.trim() && s !== '[object Object]') {
+            const parsed = new Date(s);
+            if (!isNaN(parsed.getTime())) return parsed;
+            const safeIso = s.replace(/-/g, '/').replace('T', ' ').replace(/\..*$/, '');
+            const parsedSafe = new Date(safeIso);
+            if (!isNaN(parsedSafe.getTime())) return parsedSafe;
+        }
+    }
+
+    // 5. Cek ekstraksi timestamp base36 dari orderId: format 'ORD-<base36>-...'
+    const orderId = d.orderId || (typeof d === 'string' ? d : '');
+    if (typeof orderId === 'string' && orderId.startsWith('ORD-')) {
+        const parts = orderId.split('-');
+        if (parts.length >= 2 && parts[1].length >= 6) {
+            const ts = parseInt(parts[1], 36);
+            if (!isNaN(ts) && ts > 1500000000000 && ts < 2500000000000) {
+                return new Date(ts);
+            }
+        }
+    }
+
+    return new Date();
+};
+
+
 // ─── Media / URL Helpers ─────────────────────────────────────
 /**
  * Konversi URL Google Drive (berbagai format) ke URL thumbnail langsung
@@ -408,6 +491,7 @@ window.getV = getV;
 window.esc = esc;
 window.fixD = fixD;
 window.fCur = fCur;
+window.parseOrderDate = parseOrderDate;
 window.sL = sL;
 window.ssL = ssL;
 window.triggerHaptic = triggerHaptic;

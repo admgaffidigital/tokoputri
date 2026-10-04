@@ -929,20 +929,18 @@ export const submitClientPaymentConfirmation = async () => {
         hLoad();
         closeClientPaymentModal();
 
-        // Tampilkan konfirmasi ramah & dialog apresiasi
-        if (typeof window.showToast === 'function') {
-            window.showToast('Bukti transfer ' + fCur(amount) + ' berhasil dikirim ke Admin Toko Putri!', 'success');
-        }
-
         // Refresh kartu member digital jika sedang terbuka
         if (typeof window.rMemberModalBody === 'function') {
             window.rMemberModalBody();
         }
 
-        // Tampilkan alert sukses yang melegakan
+        // Tampilkan modal dialog sukses Bento Luxury yang modern & melegakan
         setTimeout(() => {
-            alert('Alhamdulillah! Konfirmasi pembayaran sebesar ' + fCur(amount) + ' untuk nota #' + activePaymentOrder.orderId + ' telah berhasil dikirim ke Admin Toko Putri.\n\nAdmin akan memeriksa mutasi rekening dan menyetujui pembayaran Anda. Limit belanja PayLater Anda akan otomatis pulih segera setelah disetujui.');
-        }, 300);
+            showClientPaymentSuccessModal({
+                orderId: activePaymentOrder?.orderId || '',
+                amount: amount
+            });
+        }, 250);
 
     } catch(err) {
         console.error('[ClientPay] Gagal kirim konfirmasi:', err);
@@ -1161,6 +1159,98 @@ export const renderClientInstallmentSchedule = (o, pendingConfirmations = []) =>
     `;
 };
 
+/**
+ * Tampilkan Modal Konfirmasi Sukses Pembayaran Tempo/PayLater Bento Luxury
+ * Menggantikan alert browser standar yang kaku dengan antarmuka modern yang hangat dan ramah pengguna.
+ */
+export const showClientPaymentSuccessModal = ({ orderId, amount }) => {
+    let m = el('modal-client-pay-success');
+    if (!m) {
+        m = document.createElement('div');
+        m.id = 'modal-client-pay-success';
+        m.className = 'fixed inset-0 z-[120] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs transition-opacity duration-300 opacity-0 pointer-events-none';
+        document.body.appendChild(m);
+    }
+
+    const shortId = orderId ? (orderId.split('-').pop() || orderId) : '-';
+
+    m.innerHTML = `
+        <div id="modal-client-pay-success-box" class="bg-white dark:bg-slate-900 w-full max-w-sm sm:max-w-md rounded-[2.25rem] p-6 sm:p-7 shadow-2xl border border-slate-200/90 dark:border-slate-800 text-center relative overflow-hidden transform scale-95 transition-all duration-300 pointer-events-auto">
+            <!-- Radiant Background Glow -->
+            <div class="absolute -top-16 -left-16 w-36 h-36 rounded-full bg-emerald-500/10 dark:bg-emerald-500/15 blur-2xl pointer-events-none"></div>
+            <div class="absolute -bottom-16 -right-16 w-36 h-36 rounded-full bg-[rgba(var(--color-primary-rgb),0.1)] blur-2xl pointer-events-none"></div>
+
+            <!-- Tombol Tutup X Pojok Kanan Atas -->
+            <button type="button" onclick="window.closeClientPaymentSuccessModal()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 flex items-center justify-center text-xs transition-all active:scale-90 cursor-pointer" title="Tutup">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <!-- Icon Sukses Squircle -->
+            <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-[1.75rem] bg-emerald-50 dark:bg-emerald-950/60 text-emerald-500 dark:text-emerald-400 mx-auto flex items-center justify-center text-3xl sm:text-4xl shadow-inner border border-emerald-200 dark:border-emerald-800/80 mb-3.5">
+                <i class="fa-solid fa-check"></i>
+            </div>
+
+            <!-- Header Text -->
+            <h3 class="text-xl sm:text-2xl font-black text-slate-800 dark:text-white tracking-tight">Konfirmasi Terkirim!</h3>
+            <p class="text-xs sm:text-[13px] text-slate-500 dark:text-slate-400 mt-1.5 leading-relaxed font-medium">
+                Alhamdulillah! Bukti transfer pembayaran cicilan Anda telah berhasil dikirimkan ke Admin Toko Putri.
+            </p>
+
+            <!-- Bento Card Rincian -->
+            <div class="bg-slate-50 dark:bg-slate-800/70 rounded-2xl p-4 my-4.5 border border-slate-100 dark:border-slate-700/60 text-left space-y-2.5 shadow-2xs">
+                <div class="flex justify-between items-center text-xs">
+                    <span class="text-slate-500 dark:text-slate-400 font-medium">Nomor Nota</span>
+                    <span class="font-mono font-bold text-slate-800 dark:text-white">#${esc(shortId)}</span>
+                </div>
+                <div class="flex justify-between items-center text-xs border-t border-slate-200/60 dark:border-slate-700/60 pt-2">
+                    <span class="text-slate-500 dark:text-slate-400 font-medium">Nominal Konfirmasi</span>
+                    <span class="font-extrabold text-sm sm:text-base text-[var(--color-primary)] font-mono">${fCur(amount)}</span>
+                </div>
+                <div class="flex justify-between items-center text-xs border-t border-slate-200/60 dark:border-slate-700/60 pt-2">
+                    <span class="text-slate-500 dark:text-slate-400 font-medium">Status Pengajuan</span>
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 dark:bg-amber-950/50 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800/60">
+                        <i class="fa-solid fa-hourglass-half text-amber-500 text-[9px]"></i> Menunggu Verifikasi
+                    </span>
+                </div>
+            </div>
+
+            <!-- Pesan Info Pemulihan Limit -->
+            <div class="p-3 sm:p-3.5 rounded-xl bg-blue-50/70 dark:bg-blue-950/30 border border-blue-100 dark:border-blue-900/50 text-left flex items-start gap-2.5 mb-5">
+                <i class="fa-solid fa-circle-info text-blue-500 text-sm shrink-0 mt-0.5"></i>
+                <p class="text-[11px] leading-relaxed text-blue-800 dark:text-blue-300 font-normal">
+                    Admin akan segera memeriksa mutasi rekening. Limit belanja <b>Putri PayLater</b> Anda akan otomatis pulih segera setelah disetujui.
+                </p>
+            </div>
+
+            <!-- Tombol CTA Selesai -->
+            <button type="button" onclick="window.closeClientPaymentSuccessModal()" class="w-full h-12 py-3 px-5 rounded-2xl text-white text-xs sm:text-sm font-bold flex items-center justify-center gap-2 active:scale-95 transition-all cursor-pointer shadow-lg" style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
+                <i class="fa-solid fa-check-double mr-1"></i> Mengerti &amp; Selesai
+            </button>
+        </div>
+    `;
+
+    const box = el('modal-client-pay-success-box');
+    document.body.classList.add('overflow-hidden');
+    openModalAnim(m, box);
+};
+
+/**
+ * Tutup Modal Konfirmasi Sukses Pembayaran
+ */
+export const closeClientPaymentSuccessModal = () => {
+    const m = el('modal-client-pay-success');
+    const box = el('modal-client-pay-success-box');
+    if (!m || !box) return;
+    closeModalAnim(m, box, () => {
+        m.classList.add('pointer-events-none');
+        box.classList.remove('pointer-events-auto');
+        const otherModal = document.querySelector('[id*="modal"]:not(.hidden):not(.pointer-events-none):not(#modal-client-pay-success)');
+        if (!otherModal) {
+            document.body.classList.remove('overflow-hidden');
+        }
+    });
+};
+
 // Registrasi global di window untuk akses onclick di HTML template
 if (typeof window !== 'undefined') {
     window.openClientPaymentModal = openClientPaymentModal;
@@ -1174,4 +1264,6 @@ if (typeof window !== 'undefined') {
     window.submitClientPaymentConfirmation = submitClientPaymentConfirmation;
     window.copyAccountNumber = copyAccountNumber;
     window.renderClientInstallmentSchedule = renderClientInstallmentSchedule;
+    window.showClientPaymentSuccessModal = showClientPaymentSuccessModal;
+    window.closeClientPaymentSuccessModal = closeClientPaymentSuccessModal;
 }

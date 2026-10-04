@@ -11,7 +11,7 @@ import { appData, myOrders, setMyOrders } from '../../core/state.js';
 import { 
     el, show, hide, setIn, setH, getV, setV, esc, fCur, 
     showToast, showConfirm, sLoad, hLoad,
-    rewardStatusLabel, openModalAnim, closeModalAnim 
+    rewardStatusLabel, openModalAnim, closeModalAnim, parseOrderDate 
 } from '../../core/utils.js';
 
 let unsubMyOrdersRealtime = [];
@@ -132,7 +132,8 @@ export const renderMyOrders = async () => {
     attachMyOrdersRealtime();
 
     setH('orders-items-container', myOrders.map((o, x) => {
-        const dStr = new Date(o.date).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+        const orderDate = parseOrderDate(o);
+        const dStr = orderDate.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
         
         let bC = "text-slate-500 border-slate-200 bg-slate-50 dark:bg-slate-800 dark:border-slate-700", iC = "fa-clock";
         if (o.status === 'Baru') { 
@@ -426,30 +427,14 @@ export const renderOrderDetailModal = (orderId, d, reviewedKeys = [], isBackgrou
             `;
         }).join('');
 
-        let dStr = "Tanggal Tidak Tersedia";
-        try {
-            let dateObj;
-            if (d.timestamp && typeof d.timestamp.toDate === 'function') {
-                dateObj = d.timestamp.toDate();
-            } else {
-                const rawDate = d.timestamp || d.dateString || Date.now();
-                if (typeof rawDate === 'number') {
-                    dateObj = new Date(rawDate);
-                } else if (!isNaN(Number(rawDate)) && String(rawDate).trim() !== '') {
-                    dateObj = new Date(Number(rawDate));
-                } else {
-                    const safeIso = String(rawDate).replace(/-/g, '/').replace('T', ' ').replace(/\..*$/, '');
-                    dateObj = new Date(rawDate);
-                    if (isNaN(dateObj.getTime())) dateObj = new Date(safeIso);
-                }
-            }
-            
-            if (dateObj && !isNaN(dateObj.getTime())) {
-                dStr = dateObj.toLocaleString('id-ID', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
-            }
-        } catch(e) {
-            console.error("Gagal memproses tanggal:", e);
-        }
+        const orderDate = parseOrderDate(d);
+        const dStr = orderDate.toLocaleString('id-ID', { 
+            day: 'numeric', 
+            month: 'short', 
+            year: 'numeric', 
+            hour: '2-digit', 
+            minute: '2-digit' 
+        });
         
         const subtotal = (d.payment && d.payment.subtotal) ? d.payment.subtotal : 0;
         const shipping = (d.payment && d.payment.shippingCost) ? d.payment.shippingCost : 0;
@@ -631,7 +616,7 @@ export const renderOrderDetailModal = (orderId, d, reviewedKeys = [], isBackgrou
 
                     <div class="pt-3 flex flex-col sm:flex-row gap-3">
                         ${(parseFloat(d.payment?.tempoBalance) > 0 && d.status !== 'Batal' && d.payment?.paymentStatus !== 'lunas') ? `
-                        <button type="button" onclick="if(typeof window.openClientPaymentModal==='function') window.openClientPaymentModal('${d.orderId}'); else alert('Memuat modul pembayaran...');" class="flex-1 h-12 py-3 px-4 rounded-2xl text-white text-xs font-bold flex items-center justify-center gap-2 active:scale-95 transition-all cursor-pointer shadow-md" style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
+                        <button type="button" onclick="if(typeof window.openClientPaymentModal==='function') window.openClientPaymentModal('${d.orderId}'); else if(typeof window.showToast==='function') window.showToast('Memuat modul pembayaran...');" class="flex-1 h-12 py-3 px-4 rounded-2xl text-white text-xs font-bold flex items-center justify-center gap-2 active:scale-95 transition-all cursor-pointer shadow-md" style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
                             <i class="fa-solid fa-qrcode text-white"></i> Bayar Angsuran / Cicilan
                         </button>
                         ` : ''}
