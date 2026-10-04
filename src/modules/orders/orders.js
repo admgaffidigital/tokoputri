@@ -543,22 +543,61 @@ export const renderOrderDetailModal = (orderId, d, reviewedKeys = []) => {
                             <p class="font-bold text-slate-800 dark:text-white uppercase tracking-wider">Total Tagihan</p>
                             <p class="text-lg font-bold text-[var(--color-primary)]">${fCur(grandTotal)}</p>
                         </div>
-                        ${isPl ? `
-                        <div class="mt-2.5 pt-2.5 border-t border-slate-200 dark:border-slate-700/80 space-y-1.5">
-                            <div class="flex justify-between text-emerald-600 dark:text-emerald-400 font-bold">
-                                <span>Tenor Cicilan PayLater</span>
-                                <span>${d.payment?.paylaterTenor === '2m' ? '2 Bulan (2x Cicilan)' : (d.payment?.paylaterTenor === '3m' ? '3 Bulan (3x Cicilan)' : '30 Hari (1x Bayar)')}</span>
-                            </div>
-                            ${d.payment?.paylaterMonthlyInstallment ? `
-                            <div class="flex justify-between text-emerald-700 dark:text-emerald-300 font-black">
-                                <span>Angsuran per Bulan (${d.payment?.paylaterMonths || 1}x)</span>
-                                <span class="font-mono">${fCur(d.payment.paylaterMonthlyInstallment)}/bln</span>
-                            </div>` : ''}
-                            <div class="flex justify-between text-slate-600 dark:text-slate-400">
-                                <span>Jatuh Tempo Pembayaran</span>
-                                <span class="font-bold">${d.payment?.tempoDueDate ? new Date(d.payment.tempoDueDate).toLocaleDateString('id-ID', {day: 'numeric', month: 'short', year: 'numeric'}) : '-'}</span>
-                            </div>
-                        </div>` : ''}
+                        ${(() => {
+                            if (!isPl) return '';
+                            const sched = Array.isArray(d.payment?.paylaterSchedule) && d.payment.paylaterSchedule.length > 0
+                                ? d.payment.paylaterSchedule
+                                : null;
+                            const months = d.payment?.paylaterMonths || (sched ? sched.length : 1);
+                            const mInstall = d.payment?.paylaterMonthlyInstallment || (months > 0 ? Math.round(grandTotal / months) : grandTotal);
+
+                            let tableHtml = '';
+                            if (sched && sched.length > 0) {
+                                tableHtml = `
+                                <div class="mt-3 pt-2.5 border-t border-slate-200 dark:border-slate-700/80 space-y-2">
+                                    <p class="text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
+                                        <i class="fa-solid fa-calendar-days text-emerald-500"></i> Rencana Jadwal Angsuran Anda:
+                                    </p>
+                                    <div class="overflow-hidden rounded-xl border border-slate-200 dark:border-slate-700/80">
+                                        <table class="w-full text-left text-[11px]">
+                                            <thead class="bg-slate-200/60 dark:bg-slate-700/60 text-[9px] font-black uppercase tracking-wider text-slate-600 dark:text-slate-300">
+                                                <tr>
+                                                    <th class="py-2 px-2.5">Bulan</th>
+                                                    <th class="py-2 px-2.5">Jatuh Tempo</th>
+                                                    <th class="py-2 px-2.5 text-right">Wajib Bayar</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody class="divide-y divide-slate-200 dark:divide-slate-700/60 bg-white dark:bg-slate-900/40">
+                                                ${sched.map(sc => `
+                                                <tr>
+                                                    <td class="py-2 px-2.5 font-bold text-slate-800 dark:text-white">Bulan ke-${sc.installmentNumber}</td>
+                                                    <td class="py-2 px-2.5 text-slate-500 dark:text-slate-400">${sc.dueDateStr || (sc.dueDate ? new Date(sc.dueDate).toLocaleDateString('id-ID', {day: 'numeric', month: 'short', year: 'numeric'}) : '-')}</td>
+                                                    <td class="py-2 px-2.5 font-mono font-black text-right text-emerald-600 dark:text-emerald-400">${fCur(sc.totalMonthly || mInstall)}</td>
+                                                </tr>`).join('')}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>`;
+                            }
+
+                            return `
+                            <div class="mt-2.5 pt-2.5 border-t border-slate-200 dark:border-slate-700/80 space-y-1.5">
+                                <div class="flex justify-between text-emerald-600 dark:text-emerald-400 font-bold">
+                                    <span>Tenor Cicilan PayLater</span>
+                                    <span>${d.payment?.paylaterTenor === '2m' ? '2 Bulan (2x Cicilan)' : (d.payment?.paylaterTenor === '3m' ? '3 Bulan (3x Cicilan)' : '30 Hari (1x Bayar)')}</span>
+                                </div>
+                                ${mInstall ? `
+                                <div class="flex justify-between text-emerald-700 dark:text-emerald-300 font-black">
+                                    <span>Angsuran per Bulan (${months}x)</span>
+                                    <span class="font-mono text-emerald-600 dark:text-emerald-400">${fCur(mInstall)}/bln</span>
+                                </div>` : ''}
+                                <div class="flex justify-between text-slate-600 dark:text-slate-400">
+                                    <span>Jatuh Tempo Pertama</span>
+                                    <span class="font-bold">${d.payment?.tempoDueDate ? new Date(d.payment.tempoDueDate).toLocaleDateString('id-ID', {day: 'numeric', month: 'short', year: 'numeric'}) : '-'}</span>
+                                </div>
+                                ${tableHtml}
+                            </div>`;
+                        })()}
                     </div>
 
                     <div class="pt-2 flex flex-col sm:flex-row gap-2.5">

@@ -157,6 +157,31 @@ export const openReceiptPreview = async (orderId = null) => {
         h += `<div style="white-space:pre;font-family:monospace;">${pL(ppnLbl, valStr, cols)}</div>`;
     }
     h += `<div class="border-b border-dashed border-black my-2"></div><div style="white-space:pre;font-family:monospace;font-weight:bold;font-size:12px;">${pL('TOTAL', 'Rp ' + grandTotal.toLocaleString('id-ID'), cols)}</div><div style="white-space:pre;font-family:monospace;">${pL('Metode Bayar', payMethod, cols)}</div>`;
+    if (o.payment?.method === 'tempo' || o.payment?.isPaylater || o.payment?.subMethod === 'paylater') {
+        const isPl = !!(o.payment?.isPaylater || o.payment?.subMethod === 'paylater');
+        if (isPl) {
+            if (o.payment?.paylaterMonths) {
+                const tLbl = o.payment.paylaterTenor === '2m' ? '2 Bulan' : (o.payment.paylaterTenor === '3m' ? '3 Bulan' : '30 Hari');
+                h += `<div style="white-space:pre;font-family:monospace;">${pL('Tenor Cicilan', `${tLbl} (${o.payment.paylaterMonths}x)`, cols)}</div>`;
+            }
+            if (o.payment?.paylaterMonthlyInstallment) {
+                h += `<div style="white-space:pre;font-family:monospace;font-weight:bold;">${pL('Angsuran/Bln', 'Rp ' + Math.round(o.payment.paylaterMonthlyInstallment).toLocaleString('id-ID'), cols)}</div>`;
+            }
+            if (o.payment?.tempoDp > 0) {
+                h += `<div style="white-space:pre;font-family:monospace;">${pL('Uang Muka (DP)', 'Rp ' + Math.round(o.payment.tempoDp).toLocaleString('id-ID'), cols)}</div>`;
+            }
+            h += `<div style="white-space:pre;font-family:monospace;font-weight:bold;">${pL('Tagihan PayLater', 'Rp ' + Math.round(o.payment?.tempoBalance || grandTotal).toLocaleString('id-ID'), cols)}</div>`;
+        } else {
+            if (o.payment?.tempoDp > 0) {
+                h += `<div style="white-space:pre;font-family:monospace;">${pL('Uang Muka (DP)', 'Rp ' + Math.round(o.payment.tempoDp).toLocaleString('id-ID'), cols)}</div>`;
+            }
+            h += `<div style="white-space:pre;font-family:monospace;font-weight:bold;">${pL('Sisa Piutang', 'Rp ' + Math.round(o.payment?.tempoBalance || grandTotal).toLocaleString('id-ID'), cols)}</div>`;
+        }
+        if (o.payment?.tempoDueDate) {
+            const dStr = typeof o.payment.tempoDueDate === 'number' ? new Date(o.payment.tempoDueDate).toLocaleDateString('id-ID', {day:'numeric', month:'short', year:'numeric'}) : o.payment.tempoDueDate;
+            h += `<div style="white-space:pre;font-family:monospace;">${pL('Jatuh Tempo', dStr, cols)}</div>`;
+        }
+    }
     
     // Informasi loyalty poin & reward
     if (config.showPoints && (o.pointsEarned > 0 || o.finalMemberPoints !== undefined)) {

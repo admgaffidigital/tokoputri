@@ -1222,13 +1222,42 @@ export const openDocPreview = (type, targetId = null) => {
             if (isPl) {
                 const tenorMonths = o.payment?.paylaterMonths || 1;
                 const tenorLabel = o.payment?.paylaterTenor === '2m' ? '2 Bulan (2x Cicilan)' : (o.payment?.paylaterTenor === '3m' ? '3 Bulan (3x Cicilan)' : '30 Hari (1x Bayar)');
+                const hasSched = Array.isArray(o.payment?.paylaterSchedule) && o.payment.paylaterSchedule.length > 0;
+                let schedTable = '';
+                if (hasSched) {
+                    schedTable = `
+                    <div class="mt-2.5 pt-2 border-t border-emerald-300/60">
+                        <p class="text-[9px] font-black uppercase tracking-wider text-emerald-900 mb-1.5 flex items-center gap-1">
+                            <i class="fa-solid fa-calendar-check text-emerald-700"></i> Rencana Jadwal Angsuran Cicilan:
+                        </p>
+                        <table class="w-full text-left text-[9.5px] border border-emerald-300 rounded-lg overflow-hidden bg-white">
+                            <thead class="bg-emerald-100 text-emerald-900 font-black uppercase tracking-wider text-[8.5px]">
+                                <tr>
+                                    <th class="py-1 px-2 border-b border-emerald-300">Bulan</th>
+                                    <th class="py-1 px-2 border-b border-emerald-300">Jatuh Tempo</th>
+                                    <th class="py-1 px-2 border-b border-emerald-300 text-right">Angsuran</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-emerald-200">
+                                ${o.payment.paylaterSchedule.map(sc => `
+                                <tr>
+                                    <td class="py-1 px-2 font-bold text-slate-800">Bulan ke-${sc.installmentNumber}</td>
+                                    <td class="py-1 px-2 text-slate-600">${sc.dueDateStr || (sc.dueDate ? new Date(sc.dueDate).toLocaleDateString('id-ID') : '-')}</td>
+                                    <td class="py-1 px-2 font-mono font-black text-right text-emerald-700">${fCur(sc.totalMonthly || o.payment?.paylaterMonthlyInstallment)}</td>
+                                </tr>`).join('')}
+                            </tbody>
+                        </table>
+                    </div>`;
+                }
+
                 extraBlocksHtml += `
                 <div class="mb-4 border border-emerald-200 bg-emerald-50 p-3 rounded-xl text-left">
                     <h4 class="font-bold text-emerald-800 text-[10px] uppercase tracking-widest mb-0.5"><i class="fa-solid fa-handshake text-emerald-600 mr-1"></i> Putri PayLater (${tenorLabel}):</h4>
                     <p class="text-[9.5px] text-emerald-700 font-semibold leading-relaxed">
-                        Sistem pembayaran cicilan resmi Toko Putri tanpa biaya tersembunyi. Jatuh Tempo: ${o.payment.tempoDueDate ? new Date(o.payment.tempoDueDate).toLocaleDateString('id-ID') : '-'}.
+                        Sistem pembayaran cicilan resmi Toko Putri tanpa biaya tersembunyi. Jatuh Tempo Pertama: ${o.payment.tempoDueDate ? new Date(o.payment.tempoDueDate).toLocaleDateString('id-ID') : '-'}.
                         ${o.payment.paylaterMonthlyInstallment ? ` Angsuran: <b>${fCur(o.payment.paylaterMonthlyInstallment)} / bulan</b> (${tenorMonths}x).` : ''}
                     </p>
+                    ${schedTable}
                 </div>`;
             } else {
                 extraBlocksHtml += `
