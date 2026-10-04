@@ -410,13 +410,17 @@ window.calculatePaylaterBalance = () => {
             if (!t || !t.enabled) return '';
             const isSelected = k === activeTenorKey;
             const cardCls = isSelected 
-                ? 'border-2 border-emerald-500 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-950 dark:text-emerald-200 ring-2 ring-emerald-500/20 shadow-xs' 
-                : 'border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/70 text-slate-600 dark:text-slate-300 hover:border-emerald-300';
+                ? 'border-2 text-[var(--color-primary)] shadow-sm' 
+                : 'border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 text-slate-600 dark:text-slate-300 hover:border-slate-300 dark:hover:border-slate-600';
+            const cardStyle = isSelected
+                ? `border-color: var(--color-primary); background: rgba(var(--color-primary-rgb), 0.1); box-shadow: 0 0 0 2px rgba(var(--color-primary-rgb), 0.15);`
+                : '';
             return `
                 <button type="button" onclick="window.selectCheckoutPaylaterTenor('${k}')" 
-                        class="p-2 sm:p-2.5 rounded-xl text-center transition-all cursor-pointer flex flex-col items-center justify-center gap-0.5 ${cardCls}">
+                        class="p-2 sm:p-2.5 rounded-xl text-center transition-all cursor-pointer flex flex-col items-center justify-center gap-0.5 min-h-[46px] select-none touch-manipulation active:scale-95 ${cardCls}"
+                        style="${cardStyle}">
                     <span class="text-[9.5px] font-black uppercase tracking-wider block">${esc(t.shortLabel)}</span>
-                    <span class="text-[11px] sm:text-xs font-black text-emerald-600 dark:text-emerald-400 block">${fCur(t.totalPerMonth)}<span class="text-[8px] font-normal text-slate-400">/bln</span></span>
+                    <span class="text-[11px] sm:text-xs font-black block" ${isSelected ? 'style="color: var(--color-primary);"' : ''}>${fCur(t.totalPerMonth)}<span class="text-[8px] font-normal text-slate-400">/bln</span></span>
                 </button>
             `;
         }).filter(Boolean).join('');
@@ -425,12 +429,14 @@ window.calculatePaylaterBalance = () => {
     // Render Rincian Transparan (Zero Hidden Fees)
     if (tenorBreakdownBox && activeBreakdown) {
         tenorBreakdownBox.innerHTML = `
-            <div class="p-3 sm:p-3.5 rounded-xl bg-white/95 dark:bg-slate-800/90 border border-emerald-200/80 dark:border-emerald-800/60 shadow-2xs space-y-1.5 text-xs">
+            <div class="p-3 sm:p-3.5 rounded-xl bg-white/95 dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700 shadow-2xs space-y-1.5 text-xs" style="border-left: 3.5px solid var(--color-primary);">
                 <div class="flex items-center justify-between pb-1.5 border-b border-slate-100 dark:border-slate-700">
-                    <span class="text-[10px] font-black uppercase tracking-wider text-slate-700 dark:text-slate-200 flex items-center gap-1">
-                        <i class="fa-solid fa-receipt text-emerald-500"></i> Rincian Tenor ${esc(activeBreakdown.label)}
+                    <span class="text-[10px] font-black uppercase tracking-wider text-slate-700 dark:text-slate-200 flex items-center gap-1.5">
+                        <i class="fa-solid fa-receipt" style="color: var(--color-primary);"></i> Rincian Tenor ${esc(activeBreakdown.label)}
                     </span>
-                    <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300">Transparan</span>
+                    <span class="text-[9px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1" style="background: rgba(var(--color-primary-rgb), 0.1); color: var(--color-primary);">
+                        <i class="fa-solid fa-shield-halved text-[9px] text-emerald-500"></i> Transparan
+                    </span>
                 </div>
                 <div class="flex justify-between items-center text-slate-600 dark:text-slate-400 text-[11px]">
                     <span>Pokok Tagihan (${activeBreakdown.months} bulan)</span>
@@ -448,9 +454,9 @@ window.calculatePaylaterBalance = () => {
                         ${activeBreakdown.serviceFeePerMonth === 0 ? 'Rp 0 (Gratis)' : `${fCur(activeBreakdown.serviceFeePerMonth)} / bln`}
                     </span>
                 </div>
-                <div class="pt-2 mt-1.5 border-t border-dashed border-emerald-200 dark:border-emerald-800 flex justify-between items-baseline">
+                <div class="pt-2 mt-1.5 border-t border-dashed border-slate-200 dark:border-slate-700 flex justify-between items-baseline">
                     <span class="text-[11px] font-black uppercase text-slate-800 dark:text-white">Tagihan per Bulan:</span>
-                    <span class="text-sm font-black text-emerald-600 dark:text-emerald-400 font-mono">${fCur(activeBreakdown.totalPerMonth)} <span class="text-[10px] font-bold text-slate-400">/ bulan</span></span>
+                    <span class="text-sm font-black font-mono" style="color: var(--color-primary);">${fCur(activeBreakdown.totalPerMonth)} <span class="text-[10px] font-bold text-slate-400">/ bulan</span></span>
                 </div>
                 <div class="flex justify-between items-center text-[10px] text-slate-500 pt-0.5">
                     <span>Total Tagihan Seluruhnya:</span>
@@ -463,7 +469,7 @@ window.calculatePaylaterBalance = () => {
     // Evaluasi Limit PayLater
     if (grandTotal <= available) {
         if (statusBox) {
-            statusBox.innerHTML = '<div class="flex items-center gap-2 text-emerald-700 dark:text-emerald-300 font-extrabold mb-1"><i class="fa-solid fa-circle-check text-emerald-500 text-sm"></i><span>Limit PayLater Anda Sangat Cukup!</span></div><p class="text-[11px] text-slate-600 dark:text-slate-300">Total belanja <b>' + fCur(grandTotal) + '</b> otomatis dipotong dari limit PayLater Anda. Anda <b>tidak perlu bayar sekarang</b> dan tanpa uang muka (DP Rp 0). Angsuran dicicil sesuai tenor ' + esc(activeBreakdown.label) + ' mulai tgl ' + dueDay + ' bulan depan.</p>';
+            statusBox.innerHTML = '<div class="flex items-center gap-2 font-extrabold mb-1" style="color: var(--color-primary);"><i class="fa-solid fa-circle-check text-emerald-500 text-sm"></i><span>Limit PayLater Anda Sangat Cukup!</span></div><p class="text-[11px] text-slate-600 dark:text-slate-300 leading-relaxed">Total belanja <b>' + fCur(grandTotal) + '</b> otomatis dipotong dari limit PayLater Anda. Anda <b>tidak perlu bayar sekarang</b> dan tanpa uang muka (DP Rp 0). Angsuran dicicil sesuai tenor ' + esc(activeBreakdown.label) + ' mulai tgl ' + dueDay + ' bulan depan.</p>';
         }
         if (excessBox) excessBox.classList.add('hidden');
         if (dpInput) dpInput.value = 0;

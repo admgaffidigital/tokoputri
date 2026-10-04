@@ -858,7 +858,7 @@ export const openSettingForm = (type) => {
             <div class="flex items-center gap-2 p-1.5 bg-slate-100 dark:bg-slate-800 rounded-2xl mb-4 border border-slate-200/80 dark:border-slate-700/80">
                 <button type="button" onclick="window.switchPaymentSubtab('paylater')" id="subtab-btn-paylater"
                         class="flex-1 py-2.5 px-4 rounded-xl text-xs font-black uppercase tracking-wider transition-all flex items-center justify-center gap-2 cursor-pointer ${curTab === 'paylater' ? 'bg-white dark:bg-slate-900 text-slate-800 dark:text-white shadow-xs border border-slate-200/60 dark:border-slate-700' : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'}">
-                    <i class="fa-solid fa-bolt text-amber-500"></i> Putri PayLater &amp; Cicilan 3 Bulan
+                    <i class="fa-solid fa-bolt text-[var(--color-primary)]"></i> Putri PayLater &amp; Cicilan 3 Bulan
                 </button>
                 <button type="button" onclick="window.switchPaymentSubtab('qris')" id="subtab-btn-qris"
                         class="flex-1 py-2.5 px-4 rounded-xl text-xs font-black uppercase tracking-wider transition-all flex items-center justify-center gap-2 cursor-pointer ${curTab === 'qris' ? 'bg-white dark:bg-slate-900 text-slate-800 dark:text-white shadow-xs border border-slate-200/60 dark:border-slate-700' : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'}">
@@ -871,7 +871,7 @@ export const openSettingForm = (type) => {
                 <!-- KARTU 1: KONTROL MASTER & MINIMAL BELANJA -->
                 <div class="p-4 sm:p-5 bg-slate-50/80 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700/80 rounded-2xl shadow-sm space-y-4">
                     <div class="flex items-center gap-3">
-                        <div class="w-9 h-9 rounded-xl flex items-center justify-center text-sm shadow-sm shrink-0 bg-amber-500/15 text-amber-600 dark:text-amber-400">
+                        <div class="w-9 h-9 rounded-xl flex items-center justify-center text-sm shadow-sm shrink-0" style="background: rgba(var(--color-primary-rgb),0.12); color: var(--color-primary)">
                             <i class="fa-solid fa-bolt"></i>
                         </div>
                         <div>
@@ -1028,10 +1028,10 @@ export const openSettingForm = (type) => {
                 </div>
 
                 <!-- KARTU 3: LIVE SIMULATOR REAL-TIME -->
-                <div class="p-4 sm:p-5 bg-gradient-to-br from-amber-500/10 via-amber-500/5 to-transparent dark:from-amber-950/20 dark:via-slate-900/60 dark:to-slate-900/80 border border-amber-500/25 dark:border-amber-500/30 rounded-2xl shadow-sm space-y-4">
+                <div class="p-4 sm:p-5 rounded-2xl shadow-sm space-y-4 border transition-all" style="border-color: rgba(var(--color-primary-rgb), 0.25); background: rgba(var(--color-primary-rgb), 0.03);">
                     <div class="flex items-center justify-between flex-wrap gap-2">
                         <div class="flex items-center gap-3">
-                            <div class="w-9 h-9 rounded-xl flex items-center justify-center text-sm shadow-sm shrink-0 bg-amber-500 text-white">
+                            <div class="w-9 h-9 rounded-xl flex items-center justify-center text-sm shadow-sm shrink-0 text-white" style="background: var(--color-primary);">
                                 <i class="fa-solid fa-calculator"></i>
                             </div>
                             <div>
@@ -1483,10 +1483,10 @@ export const updateAdminPaylaterSim = () => {
         if (!t) return '';
         const isOff = !t.enabled;
         return `
-            <div class="p-3.5 rounded-2xl border ${isOff ? 'border-slate-200 dark:border-slate-700 bg-slate-100/60 dark:bg-slate-800/40 opacity-60' : 'border-amber-300 dark:border-amber-800/70 bg-white dark:bg-slate-900 shadow-2xs'} space-y-2">
+            <div class="p-3.5 rounded-2xl border ${isOff ? 'border-slate-200 dark:border-slate-700 bg-slate-100/60 dark:bg-slate-800/40 opacity-60' : 'border-[var(--color-primary)]/40 bg-white dark:bg-slate-900 shadow-2xs'} space-y-2">
                 <div class="flex items-center justify-between pb-1.5 border-b border-slate-100 dark:border-slate-800">
                     <span class="text-[11px] font-black uppercase tracking-wider text-slate-800 dark:text-white">${esc(t.label)}</span>
-                    <span class="text-[8.5px] font-bold px-1.5 py-0.5 rounded ${isOff ? 'bg-slate-200 text-slate-500' : 'bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300'}">${isOff ? 'Nonaktif' : 'Aktif'}</span>
+                    <span class="text-[8.5px] font-bold px-1.5 py-0.5 rounded ${isOff ? 'bg-slate-200 text-slate-500' : ''}" ${!isOff ? 'style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary);"' : ''}>${isOff ? 'Nonaktif' : 'Aktif'}</span>
                 </div>
                 <div class="space-y-1 text-[11px]">
                     <div class="flex justify-between text-slate-500">
@@ -1504,7 +1504,7 @@ export const updateAdminPaylaterSim = () => {
                 </div>
                 <div class="pt-2 border-t border-dashed border-slate-200 dark:border-slate-700 flex justify-between items-baseline">
                     <span class="text-[10px] font-bold uppercase text-slate-500">Cicilan / bln:</span>
-                    <span class="text-sm font-black text-amber-600 dark:text-amber-400 font-mono">${fCur(t.totalPerMonth)}</span>
+                    <span class="text-sm font-black font-mono" style="color: var(--color-primary);">${fCur(t.totalPerMonth)}</span>
                 </div>
                 <div class="text-[9.5px] text-slate-400 text-right">
                     Total: <b>${fCur(t.grandTotal)}</b>

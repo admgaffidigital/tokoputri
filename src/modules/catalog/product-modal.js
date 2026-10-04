@@ -943,17 +943,17 @@ export const renderProductPaylaterWidget = (effectiveUnitPrice = null, currentQt
     // Jika harga di bawah minimal belanja PayLater
     if (totalAmount < config.minOrder) {
         container.innerHTML = `
-            <div class="rounded-2xl border border-amber-200/80 dark:border-amber-900/60 bg-gradient-to-r from-amber-500/10 via-amber-500/5 to-transparent dark:from-amber-950/30 dark:via-slate-900/50 dark:to-slate-900/70 p-3.5 sm:p-4 shadow-2xs">
+            <div class="rounded-2xl border p-3.5 sm:p-4 shadow-2xs transition-all" style="border-color: rgba(var(--color-primary-rgb),0.22); background: rgba(var(--color-primary-rgb),0.035);">
                 <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-xl bg-amber-500/15 text-amber-600 dark:text-amber-400 flex items-center justify-center text-sm shrink-0">
+                    <div class="w-8 h-8 rounded-xl flex items-center justify-center text-sm shrink-0 shadow-xs" style="background: rgba(var(--color-primary-rgb),0.12); color: var(--color-primary);">
                         <i class="fa-solid fa-bolt"></i>
                     </div>
                     <div class="min-w-0 flex-1">
                         <div class="flex items-center gap-2">
                             <span class="text-[11px] font-black uppercase tracking-wider text-slate-800 dark:text-white">Putri PayLater</span>
-                            <span class="text-[8.5px] font-bold px-1.5 py-0.5 rounded-md bg-amber-500/15 text-amber-700 dark:text-amber-300">Cicil s/d 3 Bulan</span>
+                            <span class="text-[8.5px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider" style="background: rgba(var(--color-primary-rgb),0.12); color: var(--color-primary); border: 1px solid rgba(var(--color-primary-rgb),0.25);">Cicil s/d 3 Bulan</span>
                         </div>
-                        <p class="text-[11px] text-slate-600 dark:text-slate-400 mt-0.5 leading-tight">
+                        <p class="text-[11px] text-slate-600 dark:text-slate-400 mt-1 leading-relaxed">
                             Tersedia cicilan 30 hari hingga 3 bulan untuk belanja minimal <b>${fCur(config.minOrder)}</b> (tambah ${fCur(config.minOrder - totalAmount)} lagi).
                         </p>
                     </div>
@@ -970,13 +970,17 @@ export const renderProductPaylaterWidget = (effectiveUnitPrice = null, currentQt
         if (!t || !t.enabled) return '';
         const isSelected = k === activeKey;
         const btnCls = isSelected 
-            ? 'border-2 border-amber-500 bg-amber-500/15 text-amber-900 dark:text-amber-200 font-black shadow-xs ring-2 ring-amber-500/20' 
-            : 'border border-slate-200 dark:border-slate-700/80 bg-white/90 dark:bg-slate-800/90 text-slate-600 dark:text-slate-300 font-bold hover:border-amber-400/60';
+            ? 'font-black shadow-xs' 
+            : 'border border-slate-200/90 dark:border-slate-700/80 bg-white/95 dark:bg-slate-800/90 text-slate-700 dark:text-slate-300 font-bold hover:border-[var(--color-primary)]/40 active:scale-95';
+        const inlineStyle = isSelected 
+            ? 'border: 2px solid var(--color-primary); background: rgba(var(--color-primary-rgb),0.1); color: var(--color-primary); box-shadow: 0 0 0 2px rgba(var(--color-primary-rgb),0.15);' 
+            : '';
         return `
             <button type="button" onclick="window.selectProductPaylaterTenor('${k}')" 
-                    class="py-2 px-1.5 sm:px-2.5 rounded-xl text-center transition-all cursor-pointer flex flex-col items-center justify-center gap-0.5 ${btnCls}">
+                    class="py-2.5 px-1.5 sm:px-2.5 rounded-xl text-center transition-all cursor-pointer flex flex-col items-center justify-center gap-0.5 min-h-[46px] select-none touch-manipulation ${btnCls}"
+                    style="${inlineStyle}">
                 <span class="text-[9.5px] sm:text-[10px] uppercase tracking-wider leading-none">${esc(t.shortLabel)}</span>
-                <span class="text-[11px] sm:text-xs font-black">${fCur(t.totalPerMonth)}<span class="text-[8px] font-normal opacity-70">/bln</span></span>
+                <span class="text-[11px] sm:text-xs font-black" ${isSelected ? 'style="color: var(--color-primary);"' : ''}>${fCur(t.totalPerMonth)}<span class="text-[8px] font-normal opacity-70">/bln</span></span>
             </button>
         `;
     }).filter(Boolean).join('');
@@ -992,7 +996,7 @@ export const renderProductPaylaterWidget = (effectiveUnitPrice = null, currentQt
         : `<span class="font-bold text-slate-800 dark:text-slate-200">${fCur(activeBreakdown.serviceFeePerMonth)} / bln</span>`;
 
     const breakdownContentHtml = `
-        <div class="mt-3 pt-3 border-t border-amber-200/60 dark:border-amber-900/50 space-y-2 text-xs">
+        <div class="mt-3 pt-3 border-t border-slate-200/70 dark:border-slate-700/70 space-y-2 text-xs">
             <div class="flex justify-between items-center text-slate-600 dark:text-slate-400">
                 <span class="text-[11px]">Harga Pokok (${activeBreakdown.months}x bulan)</span>
                 <span class="font-bold text-slate-800 dark:text-slate-200">${fCur(activeBreakdown.pokokPerMonth)} / bln</span>
@@ -1011,13 +1015,13 @@ export const renderProductPaylaterWidget = (effectiveUnitPrice = null, currentQt
                 </span>
                 ${serviceFeeText}
             </div>
-            <div class="pt-2 mt-2 border-t border-dashed border-amber-200/80 dark:border-amber-900/60 flex justify-between items-baseline">
+            <div class="pt-2 mt-2 border-t border-dashed border-slate-200/80 dark:border-slate-700/80 flex justify-between items-baseline">
                 <div>
                     <span class="block text-[11px] font-black uppercase tracking-wider text-slate-800 dark:text-white">Total Angsuran per Bulan</span>
                     <span class="block text-[9px] text-slate-400 font-medium">Total seluruhnya: ${fCur(activeBreakdown.grandTotal)} (${activeBreakdown.months} bulan)</span>
                 </div>
                 <div class="text-right">
-                    <span class="text-sm sm:text-base font-black text-amber-600 dark:text-amber-400">${fCur(activeBreakdown.totalPerMonth)}</span>
+                    <span class="text-sm sm:text-base font-black font-mono" style="color: var(--color-primary);">${fCur(activeBreakdown.totalPerMonth)}</span>
                     <span class="text-[10px] font-bold text-slate-500"> / bulan</span>
                 </div>
             </div>
@@ -1025,17 +1029,17 @@ export const renderProductPaylaterWidget = (effectiveUnitPrice = null, currentQt
     `;
 
     container.innerHTML = `
-        <div class="rounded-2xl border border-amber-500/25 dark:border-amber-500/30 bg-gradient-to-br from-amber-500/10 via-amber-500/5 to-transparent dark:from-amber-500/15 dark:via-slate-900/70 dark:to-slate-900/90 p-3.5 sm:p-4 shadow-xs">
+        <div class="rounded-2xl border p-3.5 sm:p-4 shadow-xs transition-all" style="border-color: rgba(var(--color-primary-rgb),0.22); background: rgba(var(--color-primary-rgb),0.03);">
             <!-- Header Widget -->
             <div class="flex items-center justify-between gap-2 mb-2.5">
                 <div class="flex items-center gap-2 min-w-0">
-                    <span class="w-6 h-6 rounded-lg bg-amber-500 text-white flex items-center justify-center text-xs shadow-xs shrink-0">
+                    <span class="w-6 h-6 rounded-lg text-white flex items-center justify-center text-xs shadow-xs shrink-0" style="background: var(--color-primary);">
                         <i class="fa-solid fa-bolt"></i>
                     </span>
                     <h4 class="text-xs font-black uppercase tracking-wider text-slate-900 dark:text-white truncate">Putri PayLater</h4>
-                    <span class="px-2 py-0.5 rounded-full text-[8.5px] sm:text-[9px] font-bold uppercase tracking-wider bg-amber-500/15 text-amber-700 dark:text-amber-300 border border-amber-500/25 shrink-0">Cicil s/d 3 Bulan</span>
+                    <span class="px-2 py-0.5 rounded-full text-[8.5px] sm:text-[9px] font-bold uppercase tracking-wider shrink-0" style="background: rgba(var(--color-primary-rgb),0.12); color: var(--color-primary); border: 1px solid rgba(var(--color-primary-rgb),0.25);">Cicil s/d 3 Bulan</span>
                 </div>
-                <button type="button" onclick="window.togglePaylaterBreakdown()" class="text-[10px] font-bold text-amber-700 dark:text-amber-300 hover:underline flex items-center gap-1 cursor-pointer shrink-0">
+                <button type="button" onclick="window.togglePaylaterBreakdown()" class="text-[10px] font-bold hover:underline flex items-center gap-1 cursor-pointer shrink-0" style="color: var(--color-primary);">
                     <span>${isOpen ? 'Sembunyikan' : 'Rincian'}</span>
                     <i class="fa-solid ${isOpen ? 'fa-chevron-up' : 'fa-chevron-down'} text-[9px]"></i>
                 </button>
@@ -1050,7 +1054,7 @@ export const renderProductPaylaterWidget = (effectiveUnitPrice = null, currentQt
             ${isOpen ? breakdownContentHtml : ''}
 
             <!-- Trust Badge -->
-            <div class="mt-2.5 flex items-center justify-between text-[9px] text-slate-500 dark:text-slate-400 font-semibold pt-2 border-t border-amber-200/40 dark:border-amber-900/30">
+            <div class="mt-2.5 flex items-center justify-between text-[9px] text-slate-500 dark:text-slate-400 font-semibold pt-2 border-t border-slate-200/50 dark:border-slate-700/50">
                 <span class="flex items-center gap-1.5"><i class="fa-solid fa-shield-halved text-emerald-500"></i> Rincian 100% Transparan</span>
                 <span class="flex items-center gap-1"><i class="fa-solid fa-check text-emerald-500"></i> Tanpa Biaya Tersembunyi</span>
             </div>
