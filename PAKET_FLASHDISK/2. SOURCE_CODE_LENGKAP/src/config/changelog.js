@@ -8,6 +8,23 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-10-43',
+        version: 'v1.10.43',
+        date: '2026-10-04',
+        title: 'Pencantuman Otomatis Rekening Bank Toko pada Dokumen Cetak A4 & Inovasi Model Pembayaran Cicilan: Jadwal Rencana Angsuran Bulanan Transparan & Prioritas Bayar Termin Bulan Ini',
+        category: 'feature',
+        badge: 'Installment Schedule & Bank Clarity v1.10.43',
+        items: [
+            'Pencantuman Otomatis Rekening Resmi Toko pada Seluruh Dokumen Cetak A4: Memperbaiki kendala rekening bank kosong atau undefined pada Nota Tagihan Tempo (tempo_invoice), Kartu Piutang Pelanggan (tempo_customer_ledger), dan Faktur Penjualan (invoice). Menggunakan universal bank mapper toleran yang membaca daftar rekening resmi toko (appData.banks) dan fallback otomatis ke informasi toko (appData.store).',
+            'Inovasi Model Pembayaran Cicilan (Angsuran Bulan Ini vs Total Semua): Menghilangkan beban psikologis pelanggan yang sebelumnya langsung disodorkan tagihan total seluruh tenor. Form pembayaran mandiri pelanggan (client-pay.js) kini otomatis memprioritaskan nominal \"Angsuran Bulan Ini\" (termin aktif berjalan yang jatuh tempo terdekat) sebagai default rekomendasi pembayaran.',
+            'Tabel Rencana Jadwal Angsuran Bulanan Interaktif: Antarmuka pembayaran menyajikan kartu sorotan angsuran bulan ini lengkap dengan mini-tabel jadwal angsuran tiap bulan (Termin Ke-X, Tanggal Jatuh Tempo, Nominal Angsuran, dan Status Lunas/Wajib Bayar/Mendatang).',
+            '3 Pilihan Cepat Nominal Bayar (Quick Choice Chips): Tombol 1-klik yang mudah dipahami: (1) \"Angsuran Bulan Ini [Rekomendasi]\", (2) \"Pelunasan Penuh (Seluruh Tenor)\", dan (3) \"Nominal Lain (Titipan Bebas)\".',
+            'Tabel Jadwal Angsuran 6 Kolom pada Dokumen Resmi A4: Nota Tagihan Tempo dan Faktur Penjualan A4 kini menyajikan tabel jadwal angsuran profesional mencakup Bulan/Termin, Jatuh Tempo, Pokok, Layanan, Total Angsuran, dan Status Pembayaran.',
+            'Widget Putri PayLater Kartu Member Digital (reward.js): Membedakan dengan tegas Tagihan Wajib Bulan Ini dari Total Sisa Seluruh Tenor, memudahkan pelanggan mengetahui kewajiban berjalan tanpa kebingungan.',
+            'Multi-Channel Distribution v1.10.43 (Android versionCode 11043).'
+        ]
+    },
+    {
         id: 'log-1-10-42',
         version: 'v1.10.42',
         date: '2026-10-04',

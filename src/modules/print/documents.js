@@ -53,6 +53,55 @@ const getStoreLogoHtml = (sizeClass = 'w-16 h-16') => {
 };
 
 /**
+ * Helper untuk merender daftar rekening bank resmi toko secara presisi dan anti-kosong
+ */
+export const getStoreBankListHtml = (itemClass = 'font-mono text-xs') => {
+    const rawBanks = Array.isArray(appData.banks) ? appData.banks : [];
+    const validBanks = rawBanks.filter(b => b && (b.bankName || b.bank || b.bankAccount || b.number || b.account));
+
+    if (validBanks.length > 0) {
+        return validBanks.map(b => {
+            const bName = b.bankName || b.bank || 'BANK';
+            const bAcc = b.bankAccount || b.number || b.account || '-';
+            const bOwner = b.bankOwner || b.name || b.owner || appData.store?.name || 'Toko Putri';
+            return `
+            <div class="${itemClass} flex items-center justify-between gap-2 border-b border-slate-200/60 pb-1.5 last:border-b-0 last:pb-0">
+                <div class="flex items-center gap-1.5 flex-wrap">
+                    <span class="font-bold text-slate-900 uppercase">${esc(bName)}:</span>
+                    <span class="font-bold text-blue-700 tracking-wide font-mono select-all">${esc(bAcc)}</span>
+                </div>
+                <div class="text-[10.5px] text-slate-500 font-sans truncate max-w-[140px] text-right" title="${esc(bOwner)}">
+                    a.n <span class="font-semibold text-slate-700">${esc(bOwner)}</span>
+                </div>
+            </div>`;
+        }).join('');
+    }
+
+    // Fallback jika master rekening belum diatur, ambil dari data toko resmi (appData.store)
+    if (appData.store?.bankName && (appData.store?.bankAccount || appData.store?.bankNumber)) {
+        const sName = appData.store.bankName;
+        const sAcc = appData.store.bankAccount || appData.store.bankNumber;
+        const sOwner = appData.store.bankOwner || appData.store.name || 'Toko Putri';
+        return `
+        <div class="${itemClass} flex items-center justify-between gap-2">
+            <div class="flex items-center gap-1.5 flex-wrap">
+                <span class="font-bold text-slate-900 uppercase">${esc(sName)}:</span>
+                <span class="font-bold text-blue-700 tracking-wide font-mono select-all">${esc(sAcc)}</span>
+            </div>
+            <div class="text-[10.5px] text-slate-500 font-sans truncate max-w-[140px] text-right">
+                a.n <span class="font-semibold text-slate-700">${esc(sOwner)}</span>
+            </div>
+        </div>`;
+    }
+
+    return `
+    <div class="text-[11px] text-slate-600 bg-slate-100 p-2 rounded-lg border border-slate-200">
+        <p class="font-semibold text-slate-800"><i class="fa-solid fa-building-columns text-blue-600 mr-1"></i> Rekening Resmi Toko:</p>
+        <p class="mt-0.5">Konfirmasi transfer via WhatsApp Resmi: <b class="font-mono text-emerald-600">${esc(appData.store?.wa || appData.store?.phone || '-')}</b></p>
+    </div>`;
+};
+
+/**
  * Helper untuk render running continuation header pada Halaman 2..N
  */
 const renderContinuationHeader = ({ docTitle, docNumber, docDate }) => {
@@ -703,9 +752,7 @@ export const openDocPreview = (type, targetId = null) => {
             statusClass = 'text-amber-600 bg-amber-50 border-amber-300';
         }
 
-        const bankListHtml = (appData.banks && appData.banks.length > 0)
-            ? appData.banks.map(b => `<div class="font-mono text-xs"><b class="text-slate-900">${esc(b.bank)}:</b> ${esc(b.number)} a/n ${esc(b.name)}</div>`).join('')
-            : `<div class="text-xs text-slate-500 italic">Hubungi kasir untuk info rekening transfer bank</div>`;
+        const bankListHtml = getStoreBankListHtml('font-mono text-xs');
 
         const kopHtml = `
         <div class="flex justify-between items-start border-b-[3px] border-slate-800 pb-5 mb-5">
@@ -773,32 +820,76 @@ export const openDocPreview = (type, targetId = null) => {
         `);
 
         let paylaterScheduleHtml = '';
+        let tagihanBulanIni = 0;
+        let tglJatuhTempoBulanIni = '-';
+        let firstUnpaidTermin = 1;
+
         if (isPaylater && Array.isArray(o.payment?.paylaterSchedule) && o.payment.paylaterSchedule.length > 0) {
+            let runningTarget = 0;
+            let firstUnpaidFound = false;
+
+            const scheduleRows = o.payment.paylaterSchedule.map((sc, idx) => {
+                const mIdx = sc.installmentIndex || sc.installmentNo || sc.installmentNumber || sc.month || (idx + 1);
+                const pPokok = parseFloat(sc.pokok || sc.principal) || 0;
+                const pFee = parseFloat((sc.adminFee || 0) + (sc.serviceFee || 0)) || 0;
+                const mTotal = parseFloat(sc.total || sc.totalMonthly || sc.totalInstallment) || (pPokok + pFee);
+
+                const targetBefore = runningTarget;
+                runningTarget += mTotal;
+                const targetAfter = runningTarget;
+
+                const dueTime = sc.dueDate || 0;
+                const dueText = sc.dueDateFormatted || sc.dueDateStr || (dueTime ? formatDate(dueTime) : '-');
+
+                let statusBadge = '';
+                if (totalPaid >= targetAfter) {
+                    statusBadge = `<span class="px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-wider bg-emerald-100 text-emerald-700 border border-emerald-300">✓ LUNAS</span>`;
+                } else if (!firstUnpaidFound) {
+                    firstUnpaidFound = true;
+                    firstUnpaidTermin = mIdx;
+                    const sisaTermin = Math.max(0, targetAfter - totalPaid);
+                    tagihanBulanIni = Math.min(sisaTermin, mTotal);
+                    tglJatuhTempoBulanIni = dueText;
+                    const isOverdue = dueTime && (now > dueTime);
+                    statusBadge = isOverdue
+                        ? `<span class="px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-wider bg-rose-100 text-rose-700 border border-rose-300">⚠️ JATUH TEMPO</span>`
+                        : `<span class="px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-wider bg-amber-100 text-amber-800 border border-amber-300">★ WAJIB BULAN INI</span>`;
+                } else {
+                    statusBadge = `<span class="px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider bg-slate-100 text-slate-500 border border-slate-200">BULAN DEPAN</span>`;
+                }
+
+                return `
+                <tr class="hover:bg-slate-50">
+                    <td class="py-2 px-3 text-center text-slate-800 font-bold">Bulan Ke-${mIdx}</td>
+                    <td class="py-2 px-3 font-mono font-medium text-slate-700 text-center">${dueText}</td>
+                    <td class="py-2 px-3 text-right text-slate-600 font-mono">${fCur(pPokok)}</td>
+                    <td class="py-2 px-3 text-right text-slate-500 font-mono">${fCur(pFee)}</td>
+                    <td class="py-2 px-3 text-right font-black font-mono text-slate-900">${fCur(mTotal)}</td>
+                    <td class="py-2 px-3 text-center">${statusBadge}</td>
+                </tr>`;
+            }).join('');
+
             paylaterScheduleHtml = `
             <div class="mb-5">
-                <h3 class="text-xs font-black text-slate-800 uppercase tracking-wider mb-2 flex items-center gap-1.5">
-                    <i class="fa-solid fa-calendar-check text-emerald-600"></i> Rencana Jadwal Angsuran Cicilan (${o.payment?.paylaterMonths || 1}x):
-                </h3>
+                <div class="flex items-center justify-between mb-2">
+                    <h3 class="text-xs font-black text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
+                        <i class="fa-solid fa-calendar-check text-emerald-600"></i> Tabel Rencana Angsuran Bulanan (${o.payment?.paylaterMonths || 1}x Tenor):
+                    </h3>
+                    <span class="text-[10px] text-slate-500 font-medium italic">* Rincian transparan bulan ini &amp; bulan berikutnya</span>
+                </div>
                 <table class="w-full text-left border border-slate-200 rounded-xl overflow-hidden text-xs">
-                    <thead class="bg-slate-100 text-slate-600 font-bold uppercase tracking-wider text-[10px]">
+                    <thead class="bg-slate-100 text-slate-700 font-bold uppercase tracking-wider text-[10px]">
                         <tr>
-                            <th class="py-2 px-3 w-14 text-center border-b border-slate-200">Cicilan</th>
-                            <th class="py-2 px-3 border-b border-slate-200">Termin</th>
-                            <th class="py-2 px-3 text-right border-b border-slate-200">Pokok</th>
-                            <th class="py-2 px-3 text-right border-b border-slate-200">Biaya Admin + Layanan</th>
-                            <th class="py-2 px-3 text-right border-b border-slate-200">Total Angsuran</th>
+                            <th class="py-2.5 px-3 w-24 text-center border-b border-slate-200">Termin</th>
+                            <th class="py-2.5 px-3 text-center border-b border-slate-200">Jatuh Tempo</th>
+                            <th class="py-2.5 px-3 text-right border-b border-slate-200">Pokok</th>
+                            <th class="py-2.5 px-3 text-right border-b border-slate-200">Biaya Layanan</th>
+                            <th class="py-2.5 px-3 text-right border-b border-slate-200">Total Angsuran</th>
+                            <th class="py-2.5 px-3 text-center w-36 border-b border-slate-200">Status Termin</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-100 font-mono">
-                        ${o.payment.paylaterSchedule.map(sc => `
-                        <tr class="hover:bg-slate-50">
-                            <td class="py-1.5 px-3 text-center text-slate-700 font-bold">Ke-${sc.month}</td>
-                            <td class="py-1.5 px-3 text-slate-700 font-sans font-medium">Bulan Ke-${sc.month}</td>
-                            <td class="py-1.5 px-3 text-right text-slate-600">${fCur(sc.principal)}</td>
-                            <td class="py-1.5 px-3 text-right text-slate-500">${fCur((sc.adminFee || 0) + (sc.serviceFee || 0))}</td>
-                            <td class="py-1.5 px-3 text-right font-black text-emerald-700">${fCur(sc.totalInstallment)}</td>
-                        </tr>
-                        `).join('')}
+                        ${scheduleRows}
                     </tbody>
                 </table>
             </div>`;
@@ -838,12 +929,15 @@ export const openDocPreview = (type, targetId = null) => {
 
         const summaryHtml = `
         <div class="grid grid-cols-2 gap-6 mb-5 items-start">
-            <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-1.5">
+            <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2">
                 <h4 class="text-[9.5px] font-bold text-slate-500 uppercase tracking-widest mb-1 border-b border-slate-200 pb-1.5 flex items-center gap-1.5">
-                    <i class="fa-solid fa-building-columns text-[var(--color-primary)]"></i> Rekening Resmi Pembayaran:
+                    <i class="fa-solid fa-building-columns text-[var(--color-primary)]"></i> Rekening Resmi Pembayaran Toko Putri:
                 </h4>
-                <div class="space-y-1 pt-0.5">${bankListHtml}</div>
-                <p class="text-[9.5px] text-slate-500 pt-1.5 border-t border-slate-200">Konfirmasi bukti transfer ke nomor resmi WhatsApp toko kami.</p>
+                <div class="space-y-1.5 pt-0.5">${bankListHtml}</div>
+                <div class="pt-2 border-t border-slate-200 text-[10px] text-slate-500 space-y-0.5">
+                    <p><i class="fa-brands fa-whatsapp text-emerald-500 mr-1"></i> Konfirmasi bukti transfer: <b>${esc(appData.store?.wa || appData.store?.phone || '-')}</b></p>
+                    <p class="text-[9px] text-slate-400 italic">Harap mencantumkan Nomor Nota (#${esc(o.orderId)}) pada berita transfer.</p>
+                </div>
             </div>
 
             <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 text-xs space-y-2">
@@ -853,11 +947,29 @@ export const openDocPreview = (type, targetId = null) => {
                 ${isPaylater && (o.payment?.paylaterServiceFee > 0) ? `<div class="flex justify-between text-slate-600"><span>Biaya Penanganan / Layanan:</span><span class="font-bold">+${fCur(o.payment.paylaterServiceFee)}</span></div>` : ''}
                 ${(parseFloat(o.payment?.tempoDp || o.payment?.dp) || 0) > 0 ? `<div class="flex justify-between text-slate-600"><span>Uang Muka (DP Dibayar):</span><span class="font-bold">${fCur(o.payment?.tempoDp || o.payment?.dp || 0)}</span></div>` : ''}
                 ${totalPaid > 0 ? `<div class="flex justify-between text-emerald-600 font-bold"><span>Total Pembayaran Masuk:</span><span>-${fCur(totalPaid)}</span></div>` : ''}
-                <div class="flex justify-between text-slate-700 font-bold"><span>${isPaylater ? 'Sisa Pokok PayLater:' : 'Sisa Pokok Piutang:'}</span><span>${fCur(sisa)}</span></div>
-                ${isPaylater && o.payment?.paylaterMonthlyInstallment ? `<div class="flex justify-between text-emerald-700 font-black"><span>Angsuran per Bulan (${o.payment?.paylaterMonths || 1}x):</span><span>${fCur(o.payment.paylaterMonthlyInstallment)}/bln</span></div>` : ''}
+                
+                ${isPaylater && tagihanBulanIni > 0 && tagihanBulanIni < sisa ? `
+                <!-- KOTAK HIGHLIGHT ANGSURAN BULAN INI -->
+                <div class="p-2.5 rounded-xl bg-amber-50 border border-amber-300 text-amber-900 space-y-0.5">
+                    <div class="flex justify-between items-center text-[9.5px] font-black uppercase tracking-wider text-amber-800">
+                        <span>Angsuran Bulan Ini (Termin Ke-${firstUnpaidTermin}):</span>
+                        <span class="font-mono text-[9px] bg-amber-200/80 px-1.5 py-0.5 rounded">Jatuh Tempo: ${tglJatuhTempoBulanIni}</span>
+                    </div>
+                    <div class="flex justify-between items-center text-sm font-black font-mono pt-0.5">
+                        <span>Wajib Dibayar Sekarang:</span>
+                        <span class="text-amber-900 text-base font-black">${fCur(tagihanBulanIni)}</span>
+                    </div>
+                </div>
+                <div class="flex justify-between text-slate-500 text-[11px]">
+                    <span>Sisa Termin Bulan Berikutnya:</span>
+                    <span class="font-mono font-bold">${fCur(Math.max(0, sisa - tagihanBulanIni))}</span>
+                </div>
+                ` : ''}
+
+                <div class="flex justify-between text-slate-700 font-bold"><span>${isPaylater ? 'Total Sisa Pokok (Semua Tenor):' : 'Sisa Pokok Piutang:'}</span><span>${fCur(sisa)}</span></div>
                 ${latePenalty > 0 ? `<div class="flex justify-between text-rose-600 font-bold"><span>Denda Keterlambatan:</span><span>+${fCur(latePenalty)}</span></div>` : ''}
                 <div class="flex justify-between items-center border-t-2 border-slate-800 pt-2 mt-1.5 font-bold text-sm text-slate-900">
-                    <span>${isPaylater ? 'SISA TAGIHAN PAYLATER:' : 'SISA WAJIB BAYAR:'}</span>
+                    <span>${isPaylater ? 'TOTAL PELUNASAN PENUH:' : 'SISA WAJIB BAYAR:'}</span>
                     <span class="text-[var(--color-primary)] font-black text-base">${fCur(isLunas ? 0 : totalAkhir)}</span>
                 </div>
             </div>
@@ -981,9 +1093,7 @@ export const openDocPreview = (type, targetId = null) => {
             `;
         });
 
-        const bankListHtml = (appData.banks && appData.banks.length > 0)
-            ? appData.banks.map(b => `<div class="font-mono text-xs"><b class="text-slate-900">${esc(b.bank)}:</b> ${esc(b.number)} a/n ${esc(b.name)}</div>`).join('')
-            : `<div class="text-xs text-slate-500 italic">Hubungi kasir untuk info rekening transfer bank</div>`;
+        const bankListHtml = getStoreBankListHtml('font-mono text-xs');
 
         const kopHtml = `
         <div class="flex justify-between items-start border-b-[3px] border-slate-800 pb-5 mb-5">
@@ -1225,26 +1335,62 @@ export const openDocPreview = (type, targetId = null) => {
                 const hasSched = Array.isArray(o.payment?.paylaterSchedule) && o.payment.paylaterSchedule.length > 0;
                 let schedTable = '';
                 if (hasSched) {
+                    const currentTempoBal = Math.max(0, parseFloat(o.payment?.tempoBalance) || 0);
+                    const installments = o.payment?.installments || [];
+                    const paidAll = installments.reduce((sum, ins) => sum + (parseFloat(ins.amount) || 0), 0);
+                    let runningTgt = 0;
+                    let foundUnpaid = false;
+
                     schedTable = `
                     <div class="mt-2.5 pt-2 border-t border-emerald-300/60">
-                        <p class="text-[9px] font-black uppercase tracking-wider text-emerald-900 mb-1.5 flex items-center gap-1">
-                            <i class="fa-solid fa-calendar-check text-emerald-700"></i> Rencana Jadwal Angsuran Cicilan:
-                        </p>
+                        <div class="flex items-center justify-between mb-1.5">
+                            <p class="text-[9.5px] font-black uppercase tracking-wider text-emerald-900 flex items-center gap-1">
+                                <i class="fa-solid fa-calendar-check text-emerald-700"></i> Jadwal Angsuran Bulanan (${o.payment?.paylaterMonths || 1}x Tenor):
+                            </p>
+                            <span class="text-[8.5px] text-emerald-700 font-semibold italic">* Bulan berjalan vs bulan berikutnya</span>
+                        </div>
                         <table class="w-full text-left text-[9.5px] border border-emerald-300 rounded-lg overflow-hidden bg-white">
                             <thead class="bg-emerald-100 text-emerald-900 font-black uppercase tracking-wider text-[8.5px]">
                                 <tr>
-                                    <th class="py-1 px-2 border-b border-emerald-300">Bulan</th>
-                                    <th class="py-1 px-2 border-b border-emerald-300">Jatuh Tempo</th>
-                                    <th class="py-1 px-2 border-b border-emerald-300 text-right">Angsuran</th>
+                                    <th class="py-1 px-2 border-b border-emerald-300 text-center w-20">Termin</th>
+                                    <th class="py-1 px-2 border-b border-emerald-300 text-center">Jatuh Tempo</th>
+                                    <th class="py-1 px-2 border-b border-emerald-300 text-right">Pokok</th>
+                                    <th class="py-1 px-2 border-b border-emerald-300 text-right">Layanan</th>
+                                    <th class="py-1 px-2 border-b border-emerald-300 text-right">Total Angsuran</th>
+                                    <th class="py-1 px-2 border-b border-emerald-300 text-center w-28">Status</th>
                                 </tr>
                             </thead>
-                            <tbody class="divide-y divide-emerald-200">
-                                ${o.payment.paylaterSchedule.map(sc => `
-                                <tr>
-                                    <td class="py-1 px-2 font-bold text-slate-800">Bulan ke-${sc.installmentNumber}</td>
-                                    <td class="py-1 px-2 text-slate-600">${sc.dueDateStr || (sc.dueDate ? new Date(sc.dueDate).toLocaleDateString('id-ID') : '-')}</td>
-                                    <td class="py-1 px-2 font-mono font-black text-right text-emerald-700">${fCur(sc.totalMonthly || o.payment?.paylaterMonthlyInstallment)}</td>
-                                </tr>`).join('')}
+                            <tbody class="divide-y divide-emerald-200 font-mono">
+                                ${o.payment.paylaterSchedule.map((sc, idx) => {
+                                    const mIdx = sc.installmentIndex || sc.installmentNo || sc.installmentNumber || sc.month || (idx + 1);
+                                    const pPokok = parseFloat(sc.pokok || sc.principal) || 0;
+                                    const pFee = parseFloat((sc.adminFee || 0) + (sc.serviceFee || 0)) || 0;
+                                    const mTotal = parseFloat(sc.total || sc.totalMonthly || sc.totalInstallment) || (pPokok + pFee);
+                                    
+                                    runningTgt += mTotal;
+                                    const dueTime = sc.dueDate || 0;
+                                    const dueStr = sc.dueDateFormatted || sc.dueDateStr || (dueTime ? formatDate(dueTime) : '-');
+
+                                    let badge = '';
+                                    if (paidAll >= runningTgt) {
+                                        badge = `<span class="px-1.5 py-0.2 rounded text-[8px] font-bold uppercase bg-emerald-100 text-emerald-700 border border-emerald-300">✓ LUNAS</span>`;
+                                    } else if (!foundUnpaid) {
+                                        foundUnpaid = true;
+                                        badge = `<span class="px-1.5 py-0.2 rounded text-[8px] font-black uppercase bg-amber-100 text-amber-800 border border-amber-300">★ BULAN INI</span>`;
+                                    } else {
+                                        badge = `<span class="px-1.5 py-0.2 rounded text-[8px] font-medium uppercase bg-slate-100 text-slate-500">MENDATANG</span>`;
+                                    }
+
+                                    return `
+                                    <tr>
+                                        <td class="py-1 px-2 font-bold text-slate-800 text-center font-sans">Bulan Ke-${mIdx}</td>
+                                        <td class="py-1 px-2 text-slate-600 text-center">${dueStr}</td>
+                                        <td class="py-1 px-2 text-right text-slate-600">${fCur(pPokok)}</td>
+                                        <td class="py-1 px-2 text-right text-slate-500">${fCur(pFee)}</td>
+                                        <td class="py-1 px-2 font-black text-right text-emerald-800">${fCur(mTotal)}</td>
+                                        <td class="py-1 px-2 text-center font-sans">${badge}</td>
+                                    </tr>`;
+                                }).join('')}
                             </tbody>
                         </table>
                     </div>`;
@@ -1254,7 +1400,7 @@ export const openDocPreview = (type, targetId = null) => {
                 <div class="mb-4 border border-emerald-200 bg-emerald-50 p-3 rounded-xl text-left">
                     <h4 class="font-bold text-emerald-800 text-[10px] uppercase tracking-widest mb-0.5"><i class="fa-solid fa-handshake text-emerald-600 mr-1"></i> Putri PayLater (${tenorLabel}):</h4>
                     <p class="text-[9.5px] text-emerald-700 font-semibold leading-relaxed">
-                        Sistem pembayaran cicilan resmi Toko Putri tanpa biaya tersembunyi. Jatuh Tempo Pertama: ${o.payment.tempoDueDate ? new Date(o.payment.tempoDueDate).toLocaleDateString('id-ID') : '-'}.
+                        Sistem pembayaran cicilan resmi Toko Putri tanpa biaya tersembunyi. Jatuh Tempo Pertama: ${o.payment.tempoDueDate ? formatDate(o.payment.tempoDueDate) : '-'}.
                         ${o.payment.paylaterMonthlyInstallment ? ` Angsuran: <b>${fCur(o.payment.paylaterMonthlyInstallment)} / bulan</b> (${tenorMonths}x).` : ''}
                     </p>
                     ${schedTable}
@@ -1263,20 +1409,33 @@ export const openDocPreview = (type, targetId = null) => {
                 extraBlocksHtml += `
                 <div class="mb-4 border border-pink-200 bg-pink-50 p-3 rounded-xl text-left">
                     <h4 class="font-bold text-pink-700 text-[10px] uppercase tracking-widest mb-0.5"><i class="fa-solid fa-clock-rotate-left mr-1"></i> Syarat & Ketentuan Pembayaran Tempo:</h4>
-                    <p class="text-[9.5px] text-pink-600 font-semibold leading-relaxed">Maksimal pembayaran sisa tagihan adalah 30 hari (Jatuh Tempo: ${o.payment.tempoDueDate ? new Date(o.payment.tempoDueDate).toLocaleDateString('id-ID') : '-'}). Keterlambatan dikenakan denda sesuai regulasi toko.</p>
+                    <p class="text-[9.5px] text-pink-600 font-semibold leading-relaxed">Maksimal pembayaran sisa tagihan adalah 30 hari (Jatuh Tempo: ${o.payment.tempoDueDate ? formatDate(o.payment.tempoDueDate) : '-'}). Keterlambatan dikenakan denda sesuai regulasi toko.</p>
                 </div>`;
             }
         }
 
+        const invoiceBankListHtml = getStoreBankListHtml('font-mono text-xs');
+
         const summaryHtml = `
-        <div class="flex justify-end mb-5">
-            <div class="w-1/2 md:w-[45%] space-y-1.5 text-xs font-bold text-slate-700">
-                <div class="flex justify-between px-3"><span>Subtotal Produk</span><span class="font-mono">${fCur(o.payment?.subtotal)}</span></div>
-                ${o.payment?.shippingCost ? `<div class="flex justify-between px-3"><span>Ongkos Kirim</span><span class="font-mono">${fCur(o.payment.shippingCost)}</span></div>` : ''}
-                ${o.payment?.shippingDiscount ? `<div class="flex justify-between px-3 text-emerald-600"><span>Diskon Ongkir</span><span class="font-mono">-${fCur(o.payment.shippingDiscount)}</span></div>` : ''}
-                ${o.payment?.productDiscount ? `<div class="flex justify-between px-3 text-rose-600"><span>Diskon Produk</span><span class="font-mono">-${fCur(o.payment.productDiscount)}</span></div>` : ''}
-                ${(o.payment?.paylaterAdminFee > 0) ? `<div class="flex justify-between px-3 text-slate-600"><span>Biaya Admin PayLater</span><span class="font-mono">+${fCur(o.payment.paylaterAdminFee)}</span></div>` : ''}
-                ${(o.payment?.paylaterServiceFee > 0) ? `<div class="flex justify-between px-3 text-slate-600"><span>Biaya Penanganan / Layanan</span><span class="font-mono">+${fCur(o.payment.paylaterServiceFee)}</span></div>` : ''}
+        <div class="grid grid-cols-2 gap-6 mb-5 items-start">
+            <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2">
+                <h4 class="text-[9.5px] font-bold text-slate-500 uppercase tracking-widest mb-1 border-b border-slate-200 pb-1.5 flex items-center gap-1.5">
+                    <i class="fa-solid fa-building-columns text-[var(--color-primary)]"></i> Rekening Resmi Pembayaran Toko Putri:
+                </h4>
+                <div class="space-y-1.5 pt-0.5">${invoiceBankListHtml}</div>
+                <div class="pt-2 border-t border-slate-200 text-[10px] text-slate-500 space-y-0.5">
+                    <p><i class="fa-brands fa-whatsapp text-emerald-500 mr-1"></i> Konfirmasi pembayaran via WhatsApp: <b>${esc(appData.store?.wa || appData.store?.phone || '-')}</b></p>
+                    <p class="text-[9px] text-slate-400 italic">Terima kasih atas transaksi Anda di ${esc(appData.store?.name || 'Toko Putri')}.</p>
+                </div>
+            </div>
+
+            <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 text-xs space-y-2">
+                <div class="flex justify-between text-slate-600"><span>Subtotal Produk</span><span class="font-mono">${fCur(o.payment?.subtotal)}</span></div>
+                ${o.payment?.shippingCost ? `<div class="flex justify-between text-slate-600"><span>Ongkos Kirim</span><span class="font-mono">${fCur(o.payment.shippingCost)}</span></div>` : ''}
+                ${o.payment?.shippingDiscount ? `<div class="flex justify-between text-emerald-600 font-bold"><span>Diskon Ongkir</span><span class="font-mono">-${fCur(o.payment.shippingDiscount)}</span></div>` : ''}
+                ${o.payment?.productDiscount ? `<div class="flex justify-between text-rose-600 font-bold"><span>Diskon Produk</span><span class="font-mono">-${fCur(o.payment.productDiscount)}</span></div>` : ''}
+                ${(o.payment?.paylaterAdminFee > 0) ? `<div class="flex justify-between text-slate-600"><span>Biaya Admin PayLater</span><span class="font-mono">+${fCur(o.payment.paylaterAdminFee)}</span></div>` : ''}
+                ${(o.payment?.paylaterServiceFee > 0) ? `<div class="flex justify-between text-slate-600"><span>Biaya Penanganan / Layanan</span><span class="font-mono">+${fCur(o.payment.paylaterServiceFee)}</span></div>` : ''}
                 ${(() => {
                     const hasPpn = (o.payment?.ppnEnabled || o.payment?.ppnShowZero || (o.payment?.ppnRate === 0) || (o.payment?.ppnAmount && o.payment.ppnAmount > 0)) && (appData.store?.ppnEnabled || o.payment?.ppnEnabled);
                     if (!hasPpn) return '';
@@ -1288,8 +1447,8 @@ export const openDocPreview = (type, targetId = null) => {
                     const dppAmt = o.payment?.dppAmount !== undefined ? o.payment.dppAmount : (isInc && ppnRate > 0 ? Math.round((baseBeforeTax * 100) / (100 + ppnRate)) : Math.max(0, baseBeforeTax));
 
                     return `
-                    <div class="flex justify-between px-3 text-slate-600"><span>DPP</span><span class="font-mono">${fCur(dppAmt)}</span></div>
-                    <div class="flex justify-between px-3 text-amber-600"><span>${ppnLbl}</span><span class="font-mono">${ppnAmt > 0 ? (isInc ? '' : '+') + fCur(ppnAmt) : 'Rp 0'}</span></div>
+                    <div class="flex justify-between text-slate-600"><span>DPP</span><span class="font-mono">${fCur(dppAmt)}</span></div>
+                    <div class="flex justify-between text-amber-600 font-bold"><span>${ppnLbl}</span><span class="font-mono">${ppnAmt > 0 ? (isInc ? '' : '+') + fCur(ppnAmt) : 'Rp 0'}</span></div>
                     `;
                 })()}
                 
@@ -1298,15 +1457,15 @@ export const openDocPreview = (type, targetId = null) => {
                     <span class="font-mono text-base text-emerald-400 font-bold tracking-tight">${fCur(o.payment?.grandTotal)}</span>
                 </div>
                 ${o.payment?.method === 'tempo' ? `
-                <div class="flex justify-between px-3 mt-2 text-emerald-600"><span>${(o.payment?.isPaylater || o.payment?.subMethod === 'paylater') ? 'Limit Terpakai / DP' : 'Uang Muka (DP)'}</span><span class="font-mono">${fCur(o.payment?.tempoDp || 0)}</span></div>
+                <div class="flex justify-between text-emerald-600 font-bold"><span>${(o.payment?.isPaylater || o.payment?.subMethod === 'paylater') ? 'Limit Terpakai / DP' : 'Uang Muka (DP)'}</span><span class="font-mono">${fCur(o.payment?.tempoDp || 0)}</span></div>
                 <div class="flex justify-between items-center bg-rose-50 text-rose-700 p-2.5 rounded-xl mt-1 border border-rose-200">
-                    <span class="font-bold text-xs uppercase tracking-widest">${(o.payment?.isPaylater || o.payment?.subMethod === 'paylater') ? 'Tagihan PayLater' : 'Sisa Tagihan'}</span>
-                    <span class="font-mono text-sm font-bold tracking-tight">${fCur(o.payment?.tempoBalance || 0)}</span>
+                    <span class="font-bold text-xs uppercase tracking-widest">${(o.payment?.isPaylater || o.payment?.subMethod === 'paylater') ? 'Sisa Tagihan PayLater' : 'Sisa Tagihan'}</span>
+                    <span class="font-mono text-sm font-black tracking-tight">${fCur(o.payment?.tempoBalance || 0)}</span>
                 </div>
                 ${(o.payment?.isPaylater || o.payment?.subMethod === 'paylater') && o.payment?.paylaterMonthlyInstallment ? `
-                <div class="flex justify-between px-3 mt-1 text-[11px] text-emerald-700 font-bold">
+                <div class="flex justify-between text-[11px] text-emerald-700 font-bold">
                     <span>Angsuran per Bulan (${o.payment?.paylaterMonths || 1}x)</span>
-                    <span class="font-mono">${fCur(o.payment.paylaterMonthlyInstallment)}/bln</span>
+                    <span class="font-mono font-black">${fCur(o.payment.paylaterMonthlyInstallment)}/bln</span>
                 </div>
                 ` : ''}
                 ` : ''}

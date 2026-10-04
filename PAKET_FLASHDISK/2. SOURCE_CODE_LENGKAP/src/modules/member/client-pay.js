@@ -218,20 +218,102 @@ const renderClientPaymentModalContent = (orders, initialAmount = null) => {
     const o = activePaymentOrder;
     const isPl = !!(o.payment?.isPaylater || o.isPaylater || o.payment?.subMethod === 'paylater');
     const tempoBal = Math.max(0, parseFloat(o.payment?.tempoBalance) || 0);
-    const mInstallment = parseFloat(o.payment?.paylaterMonthlyInstallment) || (isPl && o.payment?.paylaterMonths > 0 ? Math.round(tempoBal / o.payment.paylaterMonths) : tempoBal);
-    const plMonths = parseInt(o.payment?.paylaterMonths) || (o.payment?.paylaterTenor === '2m' ? 2 : (o.payment?.paylaterTenor === '3m' ? 3 : 1));
+    const schedule = (Array.isArray(o.payment?.paylaterSchedule) && o.payment.paylaterSchedule.length > 0)
+        ? o.payment.paylaterSchedule
+        : null;
+    const installments = o.payment?.installments || [];
+    const totalPaid = installments.reduce((sum, ins) => sum + (parseFloat(ins.amount) || 0), 0);
+
+    const plMonths = parseInt(o.payment?.paylaterMonths) || (schedule ? schedule.length : (o.payment?.paylaterTenor === '2m' ? 2 : (o.payment?.paylaterTenor === '3m' ? 3 : 1)));
     const tenorName = isPl ? (o.payment?.paylaterTenor === '2m' ? '2 Bulan' : (o.payment?.paylaterTenor === '3m' ? '3 Bulan' : '30 Hari')) : 'Tempo Toko';
+
+    let angsuranBulanIni = 0;
+    let dueDateBulanIniStr = '-';
+    let dueDateBulanIniTime = 0;
+    let installmentNoBulanIni = 1;
+    let isLateBulanIni = false;
+    let sisaBulanBerikutnya = 0;
+    const scheduleBreakdownList = [];
+
+    if (schedule && schedule.length > 0) {
+        let runningTarget = 0;
+        let foundUnpaid = false;
+
+        schedule.forEach((sc, idx) => {
+            const mIdx = sc.installmentIndex || sc.installmentNo || sc.installmentNumber || sc.month || (idx + 1);
+            const pPokok = parseFloat(sc.pokok || sc.principal) || 0;
+            const pFee = parseFloat((sc.adminFee || 0) + (sc.serviceFee || 0)) || 0;
+            const mTotal = parseFloat(sc.total || sc.totalMonthly || sc.totalInstallment) || (pPokok + pFee);
+
+            const targetBefore = runningTarget;
+            runningTarget += mTotal;
+            const targetAfter = runningTarget;
+
+            const dueTime = sc.dueDate || 0;
+            const dueStr = sc.dueDateFormatted || sc.dueDateStr || (dueTime ? new Date(dueTime).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : '-');
+
+            let statusType = 'upcoming'; // 'paid' | 'current' | 'upcoming'
+            let sisaThisTermin = 0;
+
+            if (totalPaid >= targetAfter) {
+                statusType = 'paid';
+            } else if (!foundUnpaid) {
+                foundUnpaid = true;
+                statusType = 'current';
+                installmentNoBulanIni = mIdx;
+                dueDateBulanIniStr = dueStr;
+                dueDateBulanIniTime = dueTime;
+                isLateBulanIni = dueTime && (Date.now() > dueTime);
+                sisaThisTermin = Math.max(0, targetAfter - totalPaid);
+                angsuranBulanIni = Math.min(sisaThisTermin, mTotal);
+            } else {
+                statusType = 'upcoming';
+                sisaBulanBerikutnya += mTotal;
+            }
+
+            scheduleBreakdownList.push({
+                monthIndex: mIdx,
+                dueStr,
+                dueTime,
+                pokok: pPokok,
+                fee: pFee,
+                total: mTotal,
+                statusType
+            });
+        });
+
+        if (!foundUnpaid) {
+            angsuranBulanIni = tempoBal;
+        }
+    } else {
+        // Single tempo atau tanpa array jadwal
+        angsuranBulanIni = tempoBal;
+        dueDateBulanIniTime = o.payment?.tempoDueDate || 0;
+        dueDateBulanIniStr = dueDateBulanIniTime ? new Date(dueDateBulanIniTime).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : '-';
+        isLateBulanIni = dueDateBulanIniTime && (Date.now() > dueDateBulanIniTime);
+    }
 
     const defaultPayAmount = initialAmount && initialAmount > 0 
         ? Math.min(tempoBal, initialAmount) 
-        : (isPl && mInstallment > 0 && mInstallment < tempoBal ? mInstallment : tempoBal);
+        : (angsuranBulanIni > 0 && angsuranBulanIni < tempoBal ? angsuranBulanIni : tempoBal);
 
     const pendingForThis = pendingConfirmationsCache.filter(c => c.orderId === o.orderId && c.status === 'pending');
     const pendingSum = pendingForThis.reduce((s, c) => s + (parseFloat(c.amount) || 0), 0);
 
-    const banks = appData.banks && appData.banks.length > 0 ? appData.banks : [
-        { bankName: 'BCA', bankAccount: '1234567890', bankOwner: appData.store?.name || 'Toko Putri' }
-    ];
+    const rawBanks = Array.isArray(appData.banks) ? appData.banks : [];
+    let banks = rawBanks.filter(b => b && (b.bankName || b.bank || b.bankAccount || b.number));
+    if (banks.length === 0 && appData.store?.bankName && (appData.store?.bankAccount || appData.store?.bankNumber)) {
+        banks = [{
+            bankName: appData.store.bankName,
+            bankAccount: appData.store.bankAccount || appData.store.bankNumber,
+            bankOwner: appData.store.bankOwner || appData.store.name || 'Toko Putri'
+        }];
+    }
+    if (banks.length === 0) {
+        banks = [
+            { bankName: 'BCA', bankAccount: '1234567890', bankOwner: appData.store?.name || 'Toko Putri' }
+        ];
+    }
     const qrisUrl = appData.payment?.qrisUrl || '';
 
     box.innerHTML = `
@@ -245,8 +327,8 @@ const renderClientPaymentModalContent = (orders, initialAmount = null) => {
                     <i class="fa-solid fa-file-invoice-dollar text-sm"></i>
                 </div>
                 <div>
-                    <h3 class="font-black text-sm sm:text-base text-slate-800 dark:text-white">Pembayaran Tagihan / Cicilan</h3>
-                    <p class="text-[10px] text-slate-400 font-semibold">Konfirmasi Langsung ke Admin Toko Putri</p>
+                    <h3 class="font-black text-sm sm:text-base text-slate-800 dark:text-white">Pembayaran Tagihan Cicilan</h3>
+                    <p class="text-[10px] text-slate-400 font-semibold">Konfirmasi Langsung &amp; Real-Time ke Toko Putri</p>
                 </div>
             </div>
             <button type="button" onclick="window.closeClientPaymentModal()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-rose-100 hover:text-rose-500 dark:bg-slate-800 text-slate-500 flex items-center justify-center transition-all cursor-pointer active:scale-95" title="Tutup">
@@ -281,61 +363,133 @@ const renderClientPaymentModalContent = (orders, initialAmount = null) => {
             </div>
             ` : ''}
 
-            <!-- KARTU RINGKASAN TAGIHAN TERPILIH -->
-            <div class="p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-slate-50 to-slate-100/60 dark:from-slate-800/60 dark:to-slate-900/60 border border-slate-200/80 dark:border-slate-800 space-y-3 shadow-2xs">
-                <div class="flex items-center justify-between text-xs">
-                    <span class="text-slate-400 font-bold">Nota Tagihan</span>
-                    <span class="font-mono font-bold text-slate-800 dark:text-slate-200 text-sm">#${esc(o.orderId)}</span>
+            <!-- KARTU MODEL ANGSURAN: BULAN INI VS BULAN BERIKUTNYA -->
+            <div class="space-y-3">
+                <div class="p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-slate-50 to-slate-100/60 dark:from-slate-800/60 dark:to-slate-900/60 border border-slate-200/80 dark:border-slate-800 space-y-4 shadow-2xs">
+                    <div class="flex items-center justify-between text-xs">
+                        <div class="flex items-center gap-2">
+                            <span class="font-mono font-bold text-slate-800 dark:text-slate-200 text-sm">Nota #${esc(o.orderId)}</span>
+                            <span class="px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-[rgba(var(--color-primary-rgb),0.12)] text-[var(--color-primary)] font-bold">
+                                ${esc(tenorName)}
+                            </span>
+                        </div>
+                        <span class="text-[11px] text-slate-500 dark:text-slate-400 font-medium">Total: ${fCur(o.payment?.grandTotal || o.total || tempoBal)}</span>
+                    </div>
+
+                    ${scheduleBreakdownList.length > 1 ? `
+                    <!-- HIGHLIGHT UTAMA: TAGIHAN BULAN INI -->
+                    <div class="p-4 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-300 dark:border-emerald-800 text-emerald-900 dark:text-emerald-100 space-y-1.5 shadow-2xs">
+                        <div class="flex items-center justify-between flex-wrap gap-1">
+                            <span class="text-[10px] font-black uppercase tracking-wider text-emerald-800 dark:text-emerald-300 flex items-center gap-1.5">
+                                <i class="fa-solid fa-calendar-check text-emerald-600"></i> Angsuran Bulan Ini (Termin Ke-${installmentNoBulanIni} dari ${scheduleBreakdownList.length})
+                            </span>
+                            <span class="px-2 py-0.5 rounded-md text-[9.5px] font-black font-mono ${isLateBulanIni ? 'bg-rose-100 text-rose-700 border border-rose-300' : 'bg-emerald-200/70 dark:bg-emerald-800/70 text-emerald-900 dark:text-emerald-100'}">
+                                ${isLateBulanIni ? 'Lewat Jatuh Tempo' : 'Jatuh Tempo: ' + dueDateBulanIniStr}
+                            </span>
+                        </div>
+                        <div class="flex items-baseline justify-between pt-1">
+                            <span class="text-xs font-bold text-emerald-700 dark:text-emerald-300">Wajib Dibayar:</span>
+                            <span class="font-mono font-black text-2xl text-emerald-900 dark:text-white tracking-tight">${fCur(angsuranBulanIni)}</span>
+                        </div>
+                    </div>
+
+                    <!-- TABEL MINI RINCIAN JADWAL TIAP BULAN -->
+                    <div class="space-y-1.5 pt-1">
+                        <p class="text-[10px] font-black uppercase tracking-wider text-slate-400 flex items-center justify-between">
+                            <span>Jadwal Angsuran Per Bulan</span>
+                            <span class="text-[9px] font-semibold text-slate-500">Transparan &amp; Jelas</span>
+                        </p>
+                        <div class="rounded-xl border border-slate-200/80 dark:border-slate-700/80 overflow-hidden bg-white dark:bg-slate-900/60 text-xs">
+                            <div class="divide-y divide-slate-100 dark:divide-slate-800">
+                                ${scheduleBreakdownList.map(item => `
+                                    <div class="p-2.5 sm:p-3 flex items-center justify-between gap-2 ${item.statusType === 'paid' ? 'bg-slate-50/50 dark:bg-slate-800/20 opacity-60' : (item.statusType === 'current' ? 'bg-emerald-50/30 dark:bg-emerald-950/20 font-bold' : '')}">
+                                        <div class="min-w-0">
+                                            <p class="font-bold text-slate-800 dark:text-slate-200 text-xs">Bulan Ke-${item.monthIndex}</p>
+                                            <p class="text-[10px] text-slate-400 font-mono mt-0.5">Jatuh Tempo: ${item.dueStr}</p>
+                                        </div>
+                                        <div class="text-right shrink-0">
+                                            <p class="font-mono font-black text-xs sm:text-sm text-slate-900 dark:text-white">${fCur(item.total)}</p>
+                                            <div class="mt-0.5">
+                                                ${item.statusType === 'paid' ? `
+                                                    <span class="px-2 py-0.5 rounded text-[8.5px] font-black uppercase bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300">✓ Lunas</span>
+                                                ` : (item.statusType === 'current' ? `
+                                                    <span class="px-2 py-0.5 rounded text-[8.5px] font-black uppercase bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300">★ Bayar Bulan Ini</span>
+                                                ` : `
+                                                    <span class="px-2 py-0.5 rounded text-[8.5px] font-medium uppercase bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400">Bulan Depan</span>
+                                                `)}
+                                            </div>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- RINGKASAN SISA KESELURUHAN -->
+                    <div class="pt-2 border-t border-slate-200/60 dark:border-slate-700/60 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
+                        <span>Total Sisa Seluruh Tenor (Pelunasan Penuh):</span>
+                        <span class="font-mono font-black text-slate-800 dark:text-slate-200 text-sm">${fCur(tempoBal)}</span>
+                    </div>
+                    ` : `
+                    <!-- SINGLE TEMPO / 1 BULAN -->
+                    <div class="pt-2.5 border-t border-slate-200/60 dark:border-slate-700/60 space-y-2">
+                        <div class="flex items-center justify-between text-xs">
+                            <span class="text-slate-500 dark:text-slate-400 font-bold">Tanggal Jatuh Tempo:</span>
+                            <span class="font-mono font-bold ${isLateBulanIni ? 'text-rose-600' : 'text-slate-800 dark:text-slate-200'}">${dueDateBulanIniStr}</span>
+                        </div>
+                        <div class="flex items-center justify-between text-xs pt-1">
+                            <span class="text-slate-500 dark:text-slate-400 font-bold">Sisa Tagihan Wajib Bayar:</span>
+                            <span class="text-base sm:text-lg font-black font-mono text-rose-600 dark:text-rose-400">${fCur(tempoBal)}</span>
+                        </div>
+                    </div>
+                    `}
                 </div>
-                <div class="flex items-center justify-between text-xs">
-                    <span class="text-slate-400 font-bold">Layanan / Tenor</span>
-                    <span class="font-bold text-[var(--color-primary)] flex items-center gap-1.5">
-                        <i class="fa-solid fa-bolt text-xs"></i> ${esc(tenorName)}
-                    </span>
-                </div>
-                <div class="flex items-center justify-between text-xs pt-2.5 border-t border-slate-200/60 dark:border-slate-700/60">
-                    <span class="text-slate-500 dark:text-slate-400 font-bold">Sisa Tagihan Belum Lunas</span>
-                    <span class="text-base sm:text-lg font-black font-mono text-rose-600 dark:text-rose-400">${fCur(tempoBal)}</span>
-                </div>
-                ${isPl && mInstallment > 0 && mInstallment < tempoBal ? `
-                <div class="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 pt-0.5">
-                    <span>Angsuran per Bulan (${plMonths}x)</span>
-                    <span class="font-mono font-bold text-slate-700 dark:text-slate-300">${fCur(mInstallment)} / bulan</span>
-                </div>` : ''}
             </div>
 
             <!-- PILIHAN NOMINAL PEMBAYARAN -->
             <div class="space-y-3">
-                <label class="block text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">Nominal Pembayaran *</label>
+                <div class="flex items-center justify-between">
+                    <label class="block text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">Pilih Nominal Pembayaran *</label>
+                    <span class="text-[10px] text-slate-400 italic">Bebas cicil atau lunas</span>
+                </div>
                 
                 <!-- Quick Chips -->
                 <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
-                    ${isPl && mInstallment > 0 && mInstallment < tempoBal ? `
-                    <button type="button" onclick="window.setClientPayAmount(${mInstallment}, 'angsuran')" class="p-3.5 rounded-2xl border border-[var(--color-primary)]/40 bg-[rgba(var(--color-primary-rgb),0.06)] dark:bg-[rgba(var(--color-primary-rgb),0.12)] text-[var(--color-primary)] font-bold text-xs text-left active:scale-95 transition-all shadow-2xs">
-                        <span class="block text-[9px] uppercase tracking-wider opacity-80">1 Angsuran</span>
-                        <span class="font-mono font-black text-sm mt-0.5 block">${fCur(mInstallment)}</span>
+                    ${scheduleBreakdownList.length > 1 && angsuranBulanIni > 0 && angsuranBulanIni < tempoBal ? `
+                    <button type="button" onclick="window.setClientPayAmount(${angsuranBulanIni}, 'angsuran')" class="p-3.5 rounded-2xl border-2 border-[var(--color-primary)] bg-[rgba(var(--color-primary-rgb),0.08)] dark:bg-[rgba(var(--color-primary-rgb),0.15)] text-[var(--color-primary)] font-bold text-xs text-left active:scale-95 transition-all shadow-xs relative overflow-hidden group">
+                        <div class="absolute top-1.5 right-2 px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-wider bg-[var(--color-primary)] text-white">Rekomendasi</div>
+                        <span class="block text-[9px] uppercase tracking-wider opacity-90 font-bold">Angsuran Bulan Ini</span>
+                        <span class="font-mono font-black text-sm sm:text-base mt-1 block">${fCur(angsuranBulanIni)}</span>
+                        <span class="block text-[9px] opacity-75 mt-0.5 font-normal">Termin Ke-${installmentNoBulanIni}</span>
                     </button>
                     ` : ''}
                     <button type="button" onclick="window.setClientPayAmount(${tempoBal}, 'pelunasan')" class="p-3.5 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-750 text-slate-700 dark:text-slate-200 font-bold text-xs text-left active:scale-95 transition-all shadow-2xs">
                         <span class="block text-[9px] uppercase tracking-wider opacity-75 text-slate-400">Pelunasan Penuh</span>
                         <span class="font-mono font-black text-sm mt-0.5 block">${fCur(tempoBal)}</span>
+                        <span class="block text-[9px] opacity-75 mt-0.5 font-normal">Lunas Seluruhnya</span>
                     </button>
                     <button type="button" onclick="window.focusCustomClientPay()" class="p-3.5 rounded-2xl border border-dashed border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/40 text-slate-600 dark:text-slate-300 font-bold text-xs text-left active:scale-95 transition-all col-span-2 sm:col-span-1 shadow-2xs">
-                        <span class="block text-[9px] uppercase tracking-wider opacity-75 text-slate-400">Titipan Bebas</span>
-                        <span class="text-xs mt-0.5 block font-bold">Ketik Nominal</span>
+                        <span class="block text-[9px] uppercase tracking-wider opacity-75 text-slate-400">Nominal Lain</span>
+                        <span class="text-xs mt-0.5 block font-bold">Titipan Bebas</span>
+                        <span class="block text-[9px] opacity-75 mt-0.5 font-normal">Ketik Nominal</span>
                     </button>
                 </div>
 
                 <!-- Input Nominal Rupiah -->
-                <div class="relative">
-                    <span class="absolute left-4 top-1/2 -translate-y-1/2 font-black text-base text-slate-400">Rp</span>
-                    <input type="number" id="client-pay-amount-input" min="1000" max="${tempoBal}" value="${defaultPayAmount}" class="admin-input pl-12 h-13 text-base sm:text-lg font-black font-mono rounded-2xl focus:border-[var(--color-primary)]" placeholder="0">
+                <div class="space-y-1.5">
+                    <div class="relative">
+                        <span class="absolute left-4 top-1/2 -translate-y-1/2 font-black text-base text-slate-400">Rp</span>
+                        <input type="number" id="client-pay-amount-input" min="1000" max="${tempoBal}" value="${defaultPayAmount}" class="admin-input pl-12 h-13 text-base sm:text-lg font-black font-mono rounded-2xl focus:border-[var(--color-primary)]" placeholder="0">
+                    </div>
+                    <p class="text-[10px] text-slate-400 leading-relaxed">
+                        Default terisi nominal <b>Angsuran Bulan Ini (${fCur(defaultPayAmount)})</b>. Anda juga dapat memilih Pelunasan Penuh di atas jika ingin melunasi seluruhnya sekaligus.
+                    </p>
                 </div>
             </div>
 
             <!-- PILIH SALURAN PEMBAYARAN TOKO (BANK VS QRIS) -->
             <div class="space-y-3.5 pt-3 border-t border-slate-200/60 dark:border-slate-700/60">
-                <label class="block text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">Saluran Pembayaran Resmi Toko *</label>
+                <label class="block text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">Saluran Pembayaran Resmi Toko Putri *</label>
                 
                 <div class="grid grid-cols-2 gap-2 p-1.5 rounded-2xl bg-slate-100 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700">
                     <button type="button" onclick="window.switchClientPayChannel('bank')" id="tab-btn-client-bank" class="py-2.5 rounded-xl text-xs font-black transition-all ${currentPayChannel === 'bank' ? 'bg-white dark:bg-slate-900 shadow-xs text-slate-900 dark:text-white' : 'text-slate-500 hover:text-slate-800'}">
@@ -350,20 +504,24 @@ const renderClientPaymentModalContent = (orders, initialAmount = null) => {
                 <div id="client-pay-channel-bank" class="${currentPayChannel === 'bank' ? 'block' : 'hidden'} space-y-3">
                     <p class="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">Silakan transfer nominal di atas ke salah satu rekening resmi Toko Putri:</p>
                     <div class="space-y-3">
-                        ${banks.map(b => `
+                        ${banks.map(b => {
+                            const bName = b.bankName || b.bank || 'BANK';
+                            const bAcc = b.bankAccount || b.number || '-';
+                            const bOwner = b.bankOwner || b.name || appData.store?.name || 'Toko Putri';
+                            return `
                             <div class="p-4 sm:p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700 flex flex-col sm:flex-row sm:items-center justify-between gap-3.5 shadow-2xs">
                                 <div>
                                     <div class="flex items-center gap-2">
-                                        <span class="px-2.5 py-1 rounded-lg text-[10px] font-black uppercase bg-blue-100 dark:bg-blue-900/60 text-blue-700 dark:text-blue-300 font-mono">${esc(b.bankName || 'BANK')}</span>
-                                        <span class="text-xs font-bold text-slate-800 dark:text-white">${esc(b.bankOwner || appData.store?.name || 'Toko Putri')}</span>
+                                        <span class="px-2.5 py-1 rounded-lg text-[10px] font-black uppercase bg-blue-100 dark:bg-blue-900/60 text-blue-700 dark:text-blue-300 font-mono">${esc(bName)}</span>
+                                        <span class="text-xs font-bold text-slate-800 dark:text-white">${esc(bOwner)}</span>
                                     </div>
-                                    <p class="font-mono text-base sm:text-lg font-black text-slate-900 dark:text-slate-100 tracking-wider mt-1.5">${esc(b.bankAccount || '-')}</p>
+                                    <p class="font-mono text-base sm:text-lg font-black text-slate-900 dark:text-slate-100 tracking-wider mt-1.5">${esc(bAcc)}</p>
                                 </div>
-                                <button type="button" onclick="window.copyAccountNumber('${esc(b.bankAccount || '')}')" class="h-11 px-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 hover:bg-slate-100 text-slate-700 dark:text-slate-200 text-xs font-bold flex items-center justify-center gap-2 active:scale-95 transition-all shadow-2xs shrink-0 cursor-pointer">
+                                <button type="button" onclick="window.copyAccountNumber('${esc(bAcc)}')" class="h-11 px-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 hover:bg-slate-100 text-slate-700 dark:text-slate-200 text-xs font-bold flex items-center justify-center gap-2 active:scale-95 transition-all shadow-2xs shrink-0 cursor-pointer">
                                     <i class="fa-regular fa-copy text-xs"></i> Salin Rekening
                                 </button>
-                            </div>
-                        `).join('')}
+                            </div>`;
+                        }).join('')}
                     </div>
                 </div>
 
@@ -648,8 +806,14 @@ export const renderClientInstallmentSchedule = (o, pendingConfirmations = []) =>
 
     if (schedule && schedule.length > 0) {
         let runningTarget = 0;
+        let foundUnpaid = false;
+
         const rowsHtml = schedule.map((s, idx) => {
-            const mTotal = parseFloat(s.totalMonthly) || 0;
+            const mIdx = s.installmentIndex || s.installmentNo || s.installmentNumber || s.month || (idx + 1);
+            const pPokok = parseFloat(s.pokok || s.principal) || 0;
+            const pFee = parseFloat((s.adminFee || 0) + (s.serviceFee || 0)) || 0;
+            const mTotal = parseFloat(s.total || s.totalMonthly || s.totalInstallment) || (pPokok + pFee);
+
             const targetBefore = runningTarget;
             runningTarget += mTotal;
             const targetAfter = runningTarget;
@@ -665,32 +829,36 @@ export const renderClientInstallmentSchedule = (o, pendingConfirmations = []) =>
             } else if (pendingSum > 0) {
                 statusLabel = '⏳ SEDANG DIVERIFIKASI';
                 statusBadgeCls = 'bg-amber-100 text-amber-700 dark:bg-amber-950/60 dark:text-amber-400 border border-amber-300 dark:border-amber-700';
-            } else {
+            } else if (!foundUnpaid) {
+                foundUnpaid = true;
                 const isLate = s.dueDate && (Date.now() > s.dueDate);
                 if (isLate) {
-                    statusLabel = '⚠️ TERLAMBAT';
+                    statusLabel = '⚠️ JATUH TEMPO';
                     statusBadgeCls = 'bg-rose-100 text-rose-700 dark:bg-rose-950/60 dark:text-rose-400 border border-rose-300 dark:border-rose-700';
                 } else {
-                    statusLabel = 'MENUNGGU TEMPO';
-                    statusBadgeCls = 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400 border border-slate-200 dark:border-slate-700';
+                    statusLabel = '★ WAJIB BULAN INI';
+                    statusBadgeCls = 'bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300 border border-amber-300 dark:border-amber-700 font-bold';
                 }
+            } else {
+                statusLabel = 'BULAN DEPAN';
+                statusBadgeCls = 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400 border border-slate-200 dark:border-slate-700';
             }
 
-            const dueText = s.dueDateStr || (s.dueDate ? new Date(s.dueDate).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : '-');
+            const dueText = s.dueDateFormatted || s.dueDateStr || (s.dueDate ? new Date(s.dueDate).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : '-');
 
             return `
                 <tr class="text-xs ${isPaid ? 'opacity-70 bg-slate-50/50 dark:bg-slate-900/20' : ''}">
                     <td class="py-3 px-4 font-bold text-slate-800 dark:text-slate-200">
-                        Bulan ke-${s.installmentNo || (idx + 1)}
+                        Bulan ke-${mIdx}
                     </td>
                     <td class="py-3 px-4 text-slate-600 dark:text-slate-400 font-mono text-[11px]">
                         ${dueText}
                     </td>
                     <td class="py-3 px-4 font-mono font-bold text-slate-800 dark:text-slate-200">
-                        ${fCur(s.pokok || 0)}
+                        ${fCur(pPokok)}
                     </td>
                     <td class="py-3 px-4 font-mono text-slate-700 dark:text-slate-300 font-bold">
-                        +${fCur((s.adminFee || 0) + (s.serviceFee || 0))}
+                        +${fCur(pFee)}
                     </td>
                     <td class="py-3 px-4 font-mono font-black text-slate-900 dark:text-white">
                         ${fCur(mTotal)}

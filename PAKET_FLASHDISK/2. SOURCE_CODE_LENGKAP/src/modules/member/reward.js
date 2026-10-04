@@ -1042,24 +1042,53 @@ export const getMemberPaylaterBillingSummary = (member) => {
     });
 
     if (activePlOrders.length > 0) {
-        let tagihanWajibBayar = 0;
+        let tagihanBulanIni = 0;
+        let tagihanTotalSemua = 0;
         let totalPokok = 0;
         let totalFee = 0;
         let monthlyInstallment = 0;
         let tenors = [];
 
         activePlOrders.forEach(o => {
-            const bal = parseFloat(o.payment?.tempoBalance) || 0;
+            const bal = Math.max(0, parseFloat(o.payment?.tempoBalance) || 0);
+            tagihanTotalSemua += bal;
+
             const admFee = parseFloat(o.payment?.paylaterAdminFee) || 0;
             const srvFee = parseFloat(o.payment?.paylaterServiceFee) || 0;
             const fees = admFee + srvFee;
             const pUsed = parseFloat(o.payment?.paylaterUsed) || Math.max(0, bal - fees);
             const mInstallment = parseFloat(o.payment?.paylaterMonthlyInstallment) || bal;
 
-            tagihanWajibBayar += bal;
             totalPokok += pUsed;
             totalFee += fees;
             monthlyInstallment += mInstallment;
+
+            const sched = Array.isArray(o.payment?.paylaterSchedule) && o.payment.paylaterSchedule.length > 0
+                ? o.payment.paylaterSchedule
+                : null;
+
+            if (sched && sched.length > 1) {
+                // Multi-tenor: temukan termin pertama yang belum lunas
+                const installments = o.payment?.installments || [];
+                const totalPaid = installments.reduce((sum, ins) => sum + (parseFloat(ins.amount) || 0), 0);
+                let runTarget = 0;
+                let orderBulanIni = 0;
+                for (let i = 0; i < sched.length; i++) {
+                    const sc = sched[i];
+                    const sPokok = parseFloat(sc.pokok || sc.principal) || 0;
+                    const sFee = parseFloat((sc.adminFee || 0) + (sc.serviceFee || 0)) || 0;
+                    const sTotal = parseFloat(sc.total || sc.totalMonthly || sc.totalInstallment) || (sPokok + sFee);
+                    runTarget += sTotal;
+                    if (totalPaid < runTarget) {
+                        const sisaTermin = Math.max(0, runTarget - totalPaid);
+                        orderBulanIni = Math.min(sisaTermin, sTotal);
+                        break;
+                    }
+                }
+                tagihanBulanIni += (orderBulanIni > 0 ? orderBulanIni : bal);
+            } else {
+                tagihanBulanIni += bal;
+            }
 
             const tName = o.payment?.paylaterTenor === '2m' ? '2 Bulan' : (o.payment?.paylaterTenor === '3m' ? '3 Bulan' : '30 Hari');
             if (!tenors.includes(tName)) tenors.push(tName);
@@ -1067,10 +1096,12 @@ export const getMemberPaylaterBillingSummary = (member) => {
 
         return {
             used: used > 0 ? used : totalPokok,
-            tagihanWajibBayar,
+            tagihanBulanIni: tagihanBulanIni > 0 ? tagihanBulanIni : tagihanTotalSemua,
+            tagihanWajibBayar: tagihanTotalSemua,
+            tagihanMendatang: Math.max(0, tagihanTotalSemua - tagihanBulanIni),
             totalPokok: totalPokok > 0 ? totalPokok : used,
             totalFee,
-            monthlyInstallment: monthlyInstallment > 0 ? monthlyInstallment : tagihanWajibBayar,
+            monthlyInstallment: monthlyInstallment > 0 ? monthlyInstallment : tagihanTotalSemua,
             tenorLabel: tenors.join(', '),
             activeCount: activePlOrders.length,
             hasActiveOrder: true
@@ -1080,7 +1111,9 @@ export const getMemberPaylaterBillingSummary = (member) => {
     // Fallback jika belum ada pesanan aktif di penyimpanan browser
     return {
         used,
+        tagihanBulanIni: used,
         tagihanWajibBayar: used,
+        tagihanMendatang: 0,
         totalPokok: used,
         totalFee: 0,
         monthlyInstallment: used,
@@ -1221,9 +1254,9 @@ export const rMemberModalBody = () => {
                     </div>`;
                 }
 
-                const waNominal = (billing.monthlyInstallment > 0 && billing.monthlyInstallment < billing.tagihanWajibBayar) 
-                    ? billing.monthlyInstallment 
-                    : (billing.tagihanWajibBayar > 0 ? billing.tagihanWajibBayar : used);
+                const nominalBulanIni = billing.tagihanBulanIni > 0 ? billing.tagihanBulanIni : (billing.monthlyInstallment > 0 ? billing.monthlyInstallment : billing.tagihanWajibBayar);
+                const hasMultiMonth = billing.tagihanBulanIni > 0 && billing.tagihanBulanIni < billing.tagihanWajibBayar;
+                const waNominal = nominalBulanIni;
 
                 return `
                 <div class="p-4 sm:p-5 rounded-2xl border border-[var(--color-primary)]/25 dark:border-[var(--color-primary)]/35 bg-gradient-to-br from-[rgba(var(--color-primary-rgb),0.06)] via-transparent to-[rgba(var(--color-primary-rgb),0.02)] dark:from-[rgba(var(--color-primary-rgb),0.12)] dark:to-slate-900 shadow-sm relative overflow-hidden space-y-3">
@@ -1267,27 +1300,31 @@ export const rMemberModalBody = () => {
                     ${(billing.tagihanWajibBayar > 0 || used > 0) ? `
                         <div class="pt-2.5 border-t border-dashed border-slate-200 dark:border-slate-700 space-y-2.5">
                             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                                <div class="min-w-0">
+                                <div class="min-w-0 space-y-0.5">
                                     <p class="text-[9px] text-slate-400 uppercase font-black tracking-wider flex items-center gap-1">
-                                        <i class="fa-solid fa-file-invoice-dollar text-[var(--color-primary)]"></i> Tagihan Berjalan (Wajib Bayar)
+                                        <i class="fa-solid fa-file-invoice-dollar text-[var(--color-primary)]"></i> ${hasMultiMonth ? 'Angsuran Bulan Ini (Wajib Bayar)' : 'Tagihan Berjalan (Wajib Bayar)'}
                                     </p>
-                                    <div class="flex items-baseline gap-1.5 mt-0.5 flex-wrap">
-                                        <p class="text-sm sm:text-base font-black text-rose-600 dark:text-rose-400 font-mono">${fCur(billing.tagihanWajibBayar)}</p>
-                                        ${billing.monthlyInstallment > 0 && billing.monthlyInstallment < billing.tagihanWajibBayar ? `
-                                            <span class="text-[10px] font-bold text-slate-500 dark:text-slate-400 font-mono">(${fCur(billing.monthlyInstallment)}/bln)</span>
+                                    <div class="flex items-baseline gap-1.5 flex-wrap">
+                                        <p class="text-base sm:text-lg font-black text-rose-600 dark:text-rose-400 font-mono">${fCur(nominalBulanIni)}</p>
+                                        ${hasMultiMonth ? `
+                                            <span class="text-[10px] text-slate-500 dark:text-slate-400 font-medium">dari total ${fCur(billing.tagihanWajibBayar)}</span>
                                         ` : ''}
                                     </div>
-                                    ${billing.totalFee > 0 ? `
+                                    ${hasMultiMonth ? `
+                                        <p class="text-[9.5px] text-slate-500 dark:text-slate-400 font-medium">
+                                            Sisa Termin Bulan Depan: <b class="font-mono text-slate-700 dark:text-slate-300">${fCur(billing.tagihanMendatang)}</b>
+                                        </p>
+                                    ` : (billing.totalFee > 0 ? `
                                         <p class="text-[9px] text-slate-400 font-medium mt-0.5">
                                             Pokok: <span class="font-mono text-slate-600 dark:text-slate-300 font-bold">${fCur(billing.totalPokok)}</span> + Biaya Tenor: <span class="font-mono text-[var(--color-primary)] font-bold">+${fCur(billing.totalFee)}</span>
                                         </p>
-                                    ` : ''}
+                                    ` : '')}
                                 </div>
-                                <div class="flex items-center gap-2">
-                                    <button type="button" onclick="if(typeof window.openClientPaymentModal==='function') window.openClientPaymentModal('', ${waNominal}); else if(typeof openClientPaymentModal==='function') openClientPaymentModal('', ${waNominal});" class="flex-1 sm:flex-none px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-wider text-white flex items-center justify-center gap-1.5 shadow-sm transition-all active:scale-95 cursor-pointer" style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
-                                        <i class="fa-solid fa-qrcode text-xs"></i> Bayar Bank / QRIS
+                                <div class="flex items-center gap-2 shrink-0">
+                                    <button type="button" onclick="if(typeof window.openClientPaymentModal==='function') window.openClientPaymentModal('', ${nominalBulanIni}); else if(typeof openClientPaymentModal==='function') openClientPaymentModal('', ${nominalBulanIni});" class="flex-1 sm:flex-none px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-wider text-white flex items-center justify-center gap-1.5 shadow-sm transition-all active:scale-95 cursor-pointer" style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
+                                        <i class="fa-solid fa-credit-card text-xs"></i> Bayar ${hasMultiMonth ? 'Bulan Ini' : 'Tagihan'}
                                     </button>
-                                    <a href="https://wa.me/${((appData.store?.wa)||'').replace(/\D/g,'')}?text=Halo%20Admin%20Toko%20Putri,%20saya%20ingin%20melakukan%20pembayaran%20tagihan%20Putri%20PayLater%20sebesar%20${encodeURIComponent(fCur(waNominal))}%20untuk%20nomor%20${currentMember.phone||''}" target="_blank" class="p-2.5 rounded-xl text-slate-500 hover:text-[var(--color-primary)] border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 flex items-center justify-center active:scale-95 transition-all shadow-2xs" title="Konfirmasi via WhatsApp">
+                                    <a href="https://wa.me/${((appData.store?.wa)||'').replace(/\D/g,'')}?text=Halo%20Admin%20Toko%20Putri,%20saya%20ingin%20melakukan%20pembayaran%20tagihan%20Putri%20PayLater%20sebesar%20${encodeURIComponent(fCur(nominalBulanIni))}%20untuk%20nomor%20${currentMember.phone||''}" target="_blank" class="p-2.5 rounded-xl text-slate-500 hover:text-[var(--color-primary)] border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 flex items-center justify-center active:scale-95 transition-all shadow-2xs" title="Konfirmasi via WhatsApp">
                                         <i class="fa-brands fa-whatsapp text-sm text-[var(--color-primary)]"></i>
                                     </a>
                                 </div>
