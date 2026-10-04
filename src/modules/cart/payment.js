@@ -10,9 +10,10 @@
 import { db, firebase } from '../../config/firebase.js';
 import { appData, cart, cust, currentMember } from '../../core/state.js';
 import { 
-    el, show, hide, toggleCls, fCur, showToast, sLoad, hLoad, fixD 
+    el, show, hide, toggleCls, fCur, esc, showToast, sLoad, hLoad, fixD 
 } from '../../core/utils.js';
 import { toggleDeliveryMethod } from './checkout.js';
+import { calculateAllPaylaterTenors, calculateInstallmentBreakdown, getPaylaterConfig } from '../../core/paylater.js';
 
 window.getLocation = () => {
     if(!navigator.geolocation) return showToast("GPS tidak didukung");
@@ -321,6 +322,15 @@ window.togglePaymentDetails = () => {
     toggleCls('bukti-payment-section', 'hidden', !needsBukti);
 };
 
+window.selectedCheckoutPaylaterTenor = window.selectedCheckoutPaylaterTenor || '30d';
+
+window.selectCheckoutPaylaterTenor = (tenorKey) => {
+    window.selectedCheckoutPaylaterTenor = tenorKey;
+    if (typeof window.calculatePaylaterBalance === 'function') {
+        window.calculatePaylaterBalance();
+    }
+};
+
 window.calculatePaylaterBalance = () => {
     const limit = currentMember ? Math.max(0, parseFloat(currentMember.paylaterLimit) || 0) : 0;
     const used = currentMember ? Math.max(0, parseFloat(currentMember.paylaterUsed) || 0) : 0;
@@ -332,9 +342,11 @@ window.calculatePaylaterBalance = () => {
     const statusBox = document.getElementById('paylater-status-box');
     const excessBox = document.getElementById('paylater-excess-dp-container');
     const dpInput = document.getElementById('paylater-dp-input');
+    const tenorChipsGrid = document.getElementById('paylater-tenor-chips-grid');
+    const tenorBreakdownBox = document.getElementById('paylater-tenor-breakdown-box');
 
     if (limitDisp) limitDisp.textContent = fCur(available);
-    if (dueDisp) dueDisp.textContent = 'Tgl ' + dueDay + ' Bulan Depan';
+    if (dueDisp) dueDisp.textContent = 'Tgl ' + dueDay + ' Tiap Bulan';
 
     let sub = cart.reduce((s,i) => s + (parseFloat(getEffP(i))||0) * (parseFloat(i.qty)||0), 0);
     let sC = 0, productDisc = 0, shippingDisc = 0;
@@ -376,9 +388,82 @@ window.calculatePaylaterBalance = () => {
     }
     let grandTotal = Math.max(0, subAfterDisc + shippingAfterDisc + (taxInfo.grandTotalAdd || 0) - pointsDisc);
 
+    // Hitung rincian multi-tenor PayLater
+    const plConfig = getPaylaterConfig();
+    const sim = calculateAllPaylaterTenors(grandTotal, plConfig);
+    const tenors = sim.results;
+
+    let activeTenorKey = window.selectedCheckoutPaylaterTenor || '30d';
+    if (!tenors[activeTenorKey] || !tenors[activeTenorKey].enabled) {
+        const firstEnabled = Object.keys(tenors).find(k => tenors[k].enabled);
+        activeTenorKey = firstEnabled || '30d';
+        window.selectedCheckoutPaylaterTenor = activeTenorKey;
+    }
+    const activeBreakdown = tenors[activeTenorKey];
+    window.currentPaylaterBreakdown = activeBreakdown;
+
+    // Render Tenor Chips di Checkout
+    if (tenorChipsGrid) {
+        const tenorKeys = ['30d', '2m', '3m'];
+        tenorChipsGrid.innerHTML = tenorKeys.map(k => {
+            const t = tenors[k];
+            if (!t || !t.enabled) return '';
+            const isSelected = k === activeTenorKey;
+            const cardCls = isSelected 
+                ? 'border-2 border-emerald-500 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-950 dark:text-emerald-200 ring-2 ring-emerald-500/20 shadow-xs' 
+                : 'border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/70 text-slate-600 dark:text-slate-300 hover:border-emerald-300';
+            return `
+                <button type="button" onclick="window.selectCheckoutPaylaterTenor('${k}')" 
+                        class="p-2 sm:p-2.5 rounded-xl text-center transition-all cursor-pointer flex flex-col items-center justify-center gap-0.5 ${cardCls}">
+                    <span class="text-[9.5px] font-black uppercase tracking-wider block">${esc(t.shortLabel)}</span>
+                    <span class="text-[11px] sm:text-xs font-black text-emerald-600 dark:text-emerald-400 block">${fCur(t.totalPerMonth)}<span class="text-[8px] font-normal text-slate-400">/bln</span></span>
+                </button>
+            `;
+        }).filter(Boolean).join('');
+    }
+
+    // Render Rincian Transparan (Zero Hidden Fees)
+    if (tenorBreakdownBox && activeBreakdown) {
+        tenorBreakdownBox.innerHTML = `
+            <div class="p-3 sm:p-3.5 rounded-xl bg-white/95 dark:bg-slate-800/90 border border-emerald-200/80 dark:border-emerald-800/60 shadow-2xs space-y-1.5 text-xs">
+                <div class="flex items-center justify-between pb-1.5 border-b border-slate-100 dark:border-slate-700">
+                    <span class="text-[10px] font-black uppercase tracking-wider text-slate-700 dark:text-slate-200 flex items-center gap-1">
+                        <i class="fa-solid fa-receipt text-emerald-500"></i> Rincian Tenor ${esc(activeBreakdown.label)}
+                    </span>
+                    <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300">Transparan</span>
+                </div>
+                <div class="flex justify-between items-center text-slate-600 dark:text-slate-400 text-[11px]">
+                    <span>Pokok Tagihan (${activeBreakdown.months} bulan)</span>
+                    <span class="font-bold text-slate-800 dark:text-slate-200">${fCur(activeBreakdown.pokokPerMonth)} / bln</span>
+                </div>
+                <div class="flex justify-between items-center text-slate-600 dark:text-slate-400 text-[11px]">
+                    <span class="flex items-center gap-1">Biaya Admin ${activeBreakdown.adminFeeType === 'percent' && activeBreakdown.adminFeeValue > 0 ? `(${activeBreakdown.adminFeeValue}%)` : ''}</span>
+                    <span class="font-bold ${activeBreakdown.adminFeePerMonth === 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-800 dark:text-slate-200'}">
+                        ${activeBreakdown.adminFeePerMonth === 0 ? 'Rp 0 (Gratis)' : `${fCur(activeBreakdown.adminFeePerMonth)} / bln`}
+                    </span>
+                </div>
+                <div class="flex justify-between items-center text-slate-600 dark:text-slate-400 text-[11px]">
+                    <span class="flex items-center gap-1">Biaya Penanganan ${activeBreakdown.serviceFeeType === 'percent' && activeBreakdown.serviceFeeValue > 0 ? `(${activeBreakdown.serviceFeeValue}%)` : ''}</span>
+                    <span class="font-bold ${activeBreakdown.serviceFeePerMonth === 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-800 dark:text-slate-200'}">
+                        ${activeBreakdown.serviceFeePerMonth === 0 ? 'Rp 0 (Gratis)' : `${fCur(activeBreakdown.serviceFeePerMonth)} / bln`}
+                    </span>
+                </div>
+                <div class="pt-2 mt-1.5 border-t border-dashed border-emerald-200 dark:border-emerald-800 flex justify-between items-baseline">
+                    <span class="text-[11px] font-black uppercase text-slate-800 dark:text-white">Tagihan per Bulan:</span>
+                    <span class="text-sm font-black text-emerald-600 dark:text-emerald-400 font-mono">${fCur(activeBreakdown.totalPerMonth)} <span class="text-[10px] font-bold text-slate-400">/ bulan</span></span>
+                </div>
+                <div class="flex justify-between items-center text-[10px] text-slate-500 pt-0.5">
+                    <span>Total Tagihan Seluruhnya:</span>
+                    <span class="font-bold text-slate-700 dark:text-slate-300">${fCur(activeBreakdown.grandTotal)}</span>
+                </div>
+            </div>
+        `;
+    }
+
+    // Evaluasi Limit PayLater
     if (grandTotal <= available) {
         if (statusBox) {
-            statusBox.innerHTML = '<div class="flex items-center gap-2 text-emerald-700 dark:text-emerald-300 font-extrabold mb-1"><i class="fa-solid fa-circle-check text-emerald-500 text-sm"></i><span>Limit PayLater Anda Sangat Cukup!</span></div><p class="text-[11px] text-slate-600 dark:text-slate-300">Total belanja <b>' + fCur(grandTotal) + '</b> otomatis dipotong dari limit PayLater Anda. Anda <b>tidak perlu bayar sekarang</b> dan tanpa uang muka (DP Rp 0). Tagihan dibayar tanggal ' + dueDay + ' bulan depan.</p>';
+            statusBox.innerHTML = '<div class="flex items-center gap-2 text-emerald-700 dark:text-emerald-300 font-extrabold mb-1"><i class="fa-solid fa-circle-check text-emerald-500 text-sm"></i><span>Limit PayLater Anda Sangat Cukup!</span></div><p class="text-[11px] text-slate-600 dark:text-slate-300">Total belanja <b>' + fCur(grandTotal) + '</b> otomatis dipotong dari limit PayLater Anda. Anda <b>tidak perlu bayar sekarang</b> dan tanpa uang muka (DP Rp 0). Angsuran dicicil sesuai tenor ' + esc(activeBreakdown.label) + ' mulai tgl ' + dueDay + ' bulan depan.</p>';
         }
         if (excessBox) excessBox.classList.add('hidden');
         if (dpInput) dpInput.value = 0;
@@ -390,7 +475,7 @@ window.calculatePaylaterBalance = () => {
             if (dpInput) dpInput.value = dp;
         }
         if (statusBox) {
-            statusBox.innerHTML = '<div class="flex items-center gap-2 text-amber-700 dark:text-amber-300 font-extrabold mb-1"><i class="fa-solid fa-triangle-exclamation text-amber-500 text-sm"></i><span>Total Belanja Melebihi Sisa Limit PayLater</span></div><p class="text-[11px] text-slate-600 dark:text-slate-300">Sisa limit Anda <b>' + fCur(available) + '</b> akan digunakan maksimal. Selisih kekurangan sebesar <b>' + fCur(deficit) + '</b> wajib dibayar sebagai DP via Transfer/QRIS.</p>';
+            statusBox.innerHTML = '<div class="flex items-center gap-2 text-amber-700 dark:text-amber-300 font-extrabold mb-1"><i class="fa-solid fa-triangle-exclamation text-amber-500 text-sm"></i><span>Total Belanja Melebihi Sisa Limit PayLater</span></div><p class="text-[11px] text-slate-600 dark:text-slate-300">Sisa limit Anda <b>' + fCur(available) + '</b> akan digunakan maksimal untuk cicilan ' + esc(activeBreakdown.label) + '. Selisih kekurangan sebesar <b>' + fCur(deficit) + '</b> wajib dibayar sebagai DP via Transfer/QRIS.</p>';
         }
         if (excessBox) excessBox.classList.remove('hidden');
     }

@@ -156,12 +156,12 @@
         }
       }
     </style>
-    <script type="module" crossorigin src="/assets/index-D9IpanNs.js"></script>
+    <script type="module" crossorigin src="/assets/index-JT_SRW0l.js"></script>
     <link rel="modulepreload" crossorigin href="/assets/vendor-firebase-core-D2OF5R23.js">
     <link rel="modulepreload" crossorigin href="/assets/vendor-firebase-db-BIUZcnOd.js">
     <link rel="modulepreload" crossorigin href="/assets/vendor-utils-Bszxp-Ae.js">
     <link rel="modulepreload" crossorigin href="/assets/vendor-sortable-DzmX_rHT.js">
-    <link rel="stylesheet" crossorigin href="/assets/index-CTbz62Lr.css">
+    <link rel="stylesheet" crossorigin href="/assets/index-BviyPpGC.css">
   </head>
   <body data-bg-style="minimalist">
     <!-- UI Components Global -->
@@ -1067,6 +1067,8 @@
             <span class="text-3xl font-bold tracking-tight primary-text" id="product-modal-price">Rp 0</span>
             <span class="accent-badge mb-1.5 rounded-full px-2 py-1 text-[9px] font-bold uppercase tracking-widest">Harga Terbaik</span>
           </div>
+          <!-- WIDGET PUTRI PAYLATER & SIMULASI CICILAN MULTI-BULAN (30 HARI - 3 BULAN) TRANSPARAN -->
+          <div id="product-modal-paylater-container" class="mb-6"></div>
           <div class="mb-6 rounded-2xl border border-slate-100 bg-slate-50 p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900/50">
             <div class="mb-3 flex items-center gap-2 border-b border-slate-200 pb-2 dark:border-slate-700/50">
               <i class="fa-solid fa-circle-info text-sm primary-text"></i>
@@ -2127,6 +2129,24 @@
 
                   <div id="paylater-status-box" class="p-3 rounded-xl bg-white/80 dark:bg-slate-800/80 border border-emerald-200 dark:border-emerald-800/60 text-xs"></div>
 
+                  <!-- PILIHAN TENOR CICILAN MULTI-BULAN (30 HARI - 3 BULAN) TRANSPARAN -->
+                  <div class="mt-3.5" id="paylater-tenor-selection-container">
+                    <div class="flex items-center justify-between mb-2">
+                      <span class="text-[10px] font-black uppercase tracking-wider text-slate-700 dark:text-slate-200 flex items-center gap-1.5">
+                        <i class="fa-solid fa-calendar-days text-emerald-500"></i> Pilih Tenor Cicilan:
+                      </span>
+                      <span class="text-[9px] font-bold text-emerald-600 dark:text-emerald-400">Zero Hidden Fees ✓</span>
+                    </div>
+                    <div class="grid grid-cols-3 gap-2" id="paylater-tenor-chips-grid">
+                      <!-- Diisi dinamis via JS -->
+                    </div>
+                  </div>
+
+                  <!-- KOTAK RINCIAN BIAYA TRANSPARAN (ZERO HIDDEN FEES) -->
+                  <div class="mt-3" id="paylater-tenor-breakdown-box">
+                    <!-- Diisi dinamis via JS -->
+                  </div>
+
                   <div class="mt-3 hidden" id="paylater-excess-dp-container">
                     <div class="flex items-center justify-between gap-3 rounded-xl border border-amber-200 bg-amber-50/80 dark:bg-amber-950/30 p-3 dark:border-amber-800/60">
                       <div class="text-xs">
@@ -2142,7 +2162,7 @@
 
                   <div class="mt-2.5 rounded-xl bg-white/60 p-2.5 dark:bg-slate-800/60">
                     <p class="text-[9px] font-bold leading-relaxed text-slate-500 dark:text-slate-400">
-                      <i class="fa-solid fa-circle-check mr-1 text-emerald-500"></i>Limit otomatis berkurang setelah pesanan dibuat dan akan terisi kembali saat Anda membayar tagihan.
+                      <i class="fa-solid fa-circle-check mr-1 text-emerald-500"></i>Seluruh biaya tercantum transparan tanpa ada biaya tersembunyi. Limit terpakai akan otomatis pulih seiring pembayaran cicilan.
                     </p>
                   </div>
                 </div>

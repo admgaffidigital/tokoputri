@@ -25,6 +25,7 @@ import {
 
 import { updCart } from '../cart/cart.js';
 import { curViewName } from '../../core/router.js';
+import { calculateAllPaylaterTenors, getPaylaterConfig } from '../../core/paylater.js';
 
 window.cSlideIdx = 0;
 let productNavStack = [];
@@ -872,7 +873,191 @@ export const uMPP = () => {
     setIn('btn-modal-price-preview', finalSubtotal);
     const stickyEl = el('sticky-modal-price');
     if (stickyEl) stickyEl.innerText = finalSubtotal;
+    
+    // Perbarui kalkulator simulasi Putri PayLater secara real-time
+    renderProductPaylaterWidget(e, cQty);
 };
+
+window.selectedProductModalTenor = window.selectedProductModalTenor || '3m';
+window.isPaylaterBreakdownOpen = window.isPaylaterBreakdownOpen !== undefined ? window.isPaylaterBreakdownOpen : true;
+
+export const selectProductPaylaterTenor = (tenorKey) => {
+    window.selectedProductModalTenor = tenorKey;
+    uMPP();
+};
+window.selectProductPaylaterTenor = selectProductPaylaterTenor;
+
+export const togglePaylaterBreakdown = () => {
+    window.isPaylaterBreakdownOpen = !window.isPaylaterBreakdownOpen;
+    uMPP();
+};
+window.togglePaylaterBreakdown = togglePaylaterBreakdown;
+
+/**
+ * Render widget simulasi Putri PayLater & Cicilan (30 Hari - 3 Bulan) transparan di detail produk
+ */
+export const renderProductPaylaterWidget = (effectiveUnitPrice = null, currentQty = 1) => {
+    const container = el('product-modal-paylater-container');
+    if (!container) return;
+
+    if (!cProd) {
+        container.innerHTML = '';
+        container.classList.add('hidden');
+        return;
+    }
+
+    const config = getPaylaterConfig();
+    if (!config.enabled) {
+        container.innerHTML = '';
+        container.classList.add('hidden');
+        return;
+    }
+
+    // Hitung nominal harga produk saat ini
+    let unitP = effectiveUnitPrice;
+    if (unitP === null) {
+        let v = (cProd.variants && cVar !== null) ? cProd.variants[cVar] : null;
+        unitP = v?.price ?? cProd.price;
+        if (cProd.wholesale?.length) {
+            for (let w of cProd.wholesale.slice().sort((a, b) => b.minQty - a.minQty)) {
+                if (currentQty >= parseFloat(w.minQty)) { unitP = w.price; break; }
+            }
+        }
+    }
+
+    const totalAmount = (parseFloat(unitP) || 0) * (parseFloat(currentQty) || 1);
+    const sim = calculateAllPaylaterTenors(totalAmount, config);
+    const tenors = sim.results;
+
+    // Tentukan tenor yang aktif terpilih
+    let activeKey = window.selectedProductModalTenor || '3m';
+    if (!tenors[activeKey] || !tenors[activeKey].enabled) {
+        const firstEnabled = Object.keys(tenors).find(k => tenors[k].enabled);
+        activeKey = firstEnabled || '30d';
+        window.selectedProductModalTenor = activeKey;
+    }
+
+    const activeBreakdown = tenors[activeKey];
+    container.classList.remove('hidden');
+
+    // Jika harga di bawah minimal belanja PayLater
+    if (totalAmount < config.minOrder) {
+        container.innerHTML = `
+            <div class="rounded-2xl border border-amber-200/80 dark:border-amber-900/60 bg-gradient-to-r from-amber-500/10 via-amber-500/5 to-transparent dark:from-amber-950/30 dark:via-slate-900/50 dark:to-slate-900/70 p-3.5 sm:p-4 shadow-2xs">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-xl bg-amber-500/15 text-amber-600 dark:text-amber-400 flex items-center justify-center text-sm shrink-0">
+                        <i class="fa-solid fa-bolt"></i>
+                    </div>
+                    <div class="min-w-0 flex-1">
+                        <div class="flex items-center gap-2">
+                            <span class="text-[11px] font-black uppercase tracking-wider text-slate-800 dark:text-white">Putri PayLater</span>
+                            <span class="text-[8.5px] font-bold px-1.5 py-0.5 rounded-md bg-amber-500/15 text-amber-700 dark:text-amber-300">Cicil s/d 3 Bulan</span>
+                        </div>
+                        <p class="text-[11px] text-slate-600 dark:text-slate-400 mt-0.5 leading-tight">
+                            Tersedia cicilan 30 hari hingga 3 bulan untuk belanja minimal <b>${fCur(config.minOrder)}</b> (tambah ${fCur(config.minOrder - totalAmount)} lagi).
+                        </p>
+                    </div>
+                </div>
+            </div>
+        `;
+        return;
+    }
+
+    // Tombol Segmented Tabs Tenor (30 Hari, 2 Bulan, 3 Bulan)
+    const tenorKeys = ['30d', '2m', '3m'];
+    const tenorButtonsHtml = tenorKeys.map(k => {
+        const t = tenors[k];
+        if (!t || !t.enabled) return '';
+        const isSelected = k === activeKey;
+        const btnCls = isSelected 
+            ? 'border-2 border-amber-500 bg-amber-500/15 text-amber-900 dark:text-amber-200 font-black shadow-xs ring-2 ring-amber-500/20' 
+            : 'border border-slate-200 dark:border-slate-700/80 bg-white/90 dark:bg-slate-800/90 text-slate-600 dark:text-slate-300 font-bold hover:border-amber-400/60';
+        return `
+            <button type="button" onclick="window.selectProductPaylaterTenor('${k}')" 
+                    class="py-2 px-1.5 sm:px-2.5 rounded-xl text-center transition-all cursor-pointer flex flex-col items-center justify-center gap-0.5 ${btnCls}">
+                <span class="text-[9.5px] sm:text-[10px] uppercase tracking-wider leading-none">${esc(t.shortLabel)}</span>
+                <span class="text-[11px] sm:text-xs font-black">${fCur(t.totalPerMonth)}<span class="text-[8px] font-normal opacity-70">/bln</span></span>
+            </button>
+        `;
+    }).filter(Boolean).join('');
+
+    // Kotak Rincian Biaya Transparan (Zero Hidden Fees)
+    const isOpen = window.isPaylaterBreakdownOpen;
+    const adminFeeText = activeBreakdown.adminFeePerMonth === 0 
+        ? '<span class="text-emerald-600 dark:text-emerald-400 font-bold">Rp 0 (Gratis)</span>' 
+        : `<span class="font-bold text-slate-800 dark:text-slate-200">${fCur(activeBreakdown.adminFeePerMonth)} / bln</span>`;
+
+    const serviceFeeText = activeBreakdown.serviceFeePerMonth === 0 
+        ? '<span class="text-emerald-600 dark:text-emerald-400 font-bold">Rp 0 (Gratis)</span>' 
+        : `<span class="font-bold text-slate-800 dark:text-slate-200">${fCur(activeBreakdown.serviceFeePerMonth)} / bln</span>`;
+
+    const breakdownContentHtml = `
+        <div class="mt-3 pt-3 border-t border-amber-200/60 dark:border-amber-900/50 space-y-2 text-xs">
+            <div class="flex justify-between items-center text-slate-600 dark:text-slate-400">
+                <span class="text-[11px]">Harga Pokok (${activeBreakdown.months}x bulan)</span>
+                <span class="font-bold text-slate-800 dark:text-slate-200">${fCur(activeBreakdown.pokokPerMonth)} / bln</span>
+            </div>
+            <div class="flex justify-between items-center text-slate-600 dark:text-slate-400">
+                <span class="text-[11px] flex items-center gap-1.5">
+                    <span>Biaya Administrasi</span>
+                    ${activeBreakdown.adminFeeType === 'percent' && activeBreakdown.adminFeeValue > 0 ? `<span class="text-[9px] px-1.5 py-0.2 rounded bg-slate-100 dark:bg-slate-800 font-mono">${activeBreakdown.adminFeeValue}%</span>` : ''}
+                </span>
+                ${adminFeeText}
+            </div>
+            <div class="flex justify-between items-center text-slate-600 dark:text-slate-400">
+                <span class="text-[11px] flex items-center gap-1.5">
+                    <span>Biaya Penanganan &amp; Layanan</span>
+                    ${activeBreakdown.serviceFeeType === 'percent' && activeBreakdown.serviceFeeValue > 0 ? `<span class="text-[9px] px-1.5 py-0.2 rounded bg-slate-100 dark:bg-slate-800 font-mono">${activeBreakdown.serviceFeeValue}%</span>` : ''}
+                </span>
+                ${serviceFeeText}
+            </div>
+            <div class="pt-2 mt-2 border-t border-dashed border-amber-200/80 dark:border-amber-900/60 flex justify-between items-baseline">
+                <div>
+                    <span class="block text-[11px] font-black uppercase tracking-wider text-slate-800 dark:text-white">Total Angsuran per Bulan</span>
+                    <span class="block text-[9px] text-slate-400 font-medium">Total seluruhnya: ${fCur(activeBreakdown.grandTotal)} (${activeBreakdown.months} bulan)</span>
+                </div>
+                <div class="text-right">
+                    <span class="text-sm sm:text-base font-black text-amber-600 dark:text-amber-400">${fCur(activeBreakdown.totalPerMonth)}</span>
+                    <span class="text-[10px] font-bold text-slate-500"> / bulan</span>
+                </div>
+            </div>
+        </div>
+    `;
+
+    container.innerHTML = `
+        <div class="rounded-2xl border border-amber-500/25 dark:border-amber-500/30 bg-gradient-to-br from-amber-500/10 via-amber-500/5 to-transparent dark:from-amber-500/15 dark:via-slate-900/70 dark:to-slate-900/90 p-3.5 sm:p-4 shadow-xs">
+            <!-- Header Widget -->
+            <div class="flex items-center justify-between gap-2 mb-2.5">
+                <div class="flex items-center gap-2 min-w-0">
+                    <span class="w-6 h-6 rounded-lg bg-amber-500 text-white flex items-center justify-center text-xs shadow-xs shrink-0">
+                        <i class="fa-solid fa-bolt"></i>
+                    </span>
+                    <h4 class="text-xs font-black uppercase tracking-wider text-slate-900 dark:text-white truncate">Putri PayLater</h4>
+                    <span class="px-2 py-0.5 rounded-full text-[8.5px] sm:text-[9px] font-bold uppercase tracking-wider bg-amber-500/15 text-amber-700 dark:text-amber-300 border border-amber-500/25 shrink-0">Cicil s/d 3 Bulan</span>
+                </div>
+                <button type="button" onclick="window.togglePaylaterBreakdown()" class="text-[10px] font-bold text-amber-700 dark:text-amber-300 hover:underline flex items-center gap-1 cursor-pointer shrink-0">
+                    <span>${isOpen ? 'Sembunyikan' : 'Rincian'}</span>
+                    <i class="fa-solid ${isOpen ? 'fa-chevron-up' : 'fa-chevron-down'} text-[9px]"></i>
+                </button>
+            </div>
+
+            <!-- Segmented Tenor Buttons -->
+            <div class="grid grid-cols-3 gap-1.5 sm:gap-2">
+                ${tenorButtonsHtml}
+            </div>
+
+            <!-- Rincian Biaya Transparan -->
+            ${isOpen ? breakdownContentHtml : ''}
+
+            <!-- Trust Badge -->
+            <div class="mt-2.5 flex items-center justify-between text-[9px] text-slate-500 dark:text-slate-400 font-semibold pt-2 border-t border-amber-200/40 dark:border-amber-900/30">
+                <span class="flex items-center gap-1.5"><i class="fa-solid fa-shield-halved text-emerald-500"></i> Rincian 100% Transparan</span>
+                <span class="flex items-center gap-1"><i class="fa-solid fa-check text-emerald-500"></i> Tanpa Biaya Tersembunyi</span>
+            </div>
+        </div>
+    `;
+};
+window.renderProductPaylaterWidget = renderProductPaylaterWidget;
 
 export const updateModalQty = c => {
     const useStk = appData.store.useStock === true || appData.store.useStock === 'true';

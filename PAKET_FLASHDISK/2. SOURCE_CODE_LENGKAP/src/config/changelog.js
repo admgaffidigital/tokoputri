@@ -8,6 +8,23 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-10-42',
+        version: 'v1.10.42',
+        date: '2026-10-04',
+        title: 'Sistem Cicilan Multi-Bulan Putri PayLater (30 Hari, 2 Bulan & 3 Bulan) dengan Transparansi Biaya Tanpa Biaya Tersembunyi & Pengaturan CMS Terpadu',
+        category: 'feature',
+        badge: 'PayLater Multi-Tenor Installment v1.10.42',
+        items: [
+            'Sistem Cicilan Multi-Bulan PayLater (1, 2, hingga 3 Bulan): Pelanggan VIP kini dapat memilih opsi tenor angsuran fleksibel hingga 3 bulan dengan jadwal dan perhitungan otomatis yang transparan.',
+            'Transparansi Biaya Mutlak (Zero Hidden Fees): Rincian pembayaran secara gamblang menampilkan Pokok per Bulan, Biaya Admin, dan Biaya Penanganan/Layanan tanpa ada bunga terselubung ataupun potongan mendadak.',
+            'Widget Interaktif di Detail Produk: Menampilkan kalkulasi simulasi cicilan 30 hari, 2 bulan, dan 3 bulan secara langsung di modal produk, otomatis terupdate 0ms saat mengganti varian maupun jumlah pesanan (qty).',
+            'Pilihan Tenor & Rincian Transparan di Checkout: Halaman pembayaran etalase dilengkapi selector chip tenor interaktif dan tabel rincian angsuran per bulan sebelum pesanan dikonfirmasi.',
+            'Pengaturan CMS Terpadu (Card 4 Pembayaran): Pemilik toko dapat mengaktifkan/menonaktifkan tenor, menentukan batas minimal belanja, serta mengatur nominal biaya admin dan layanan (pilihan nominal tetap Rp atau persentase %) dengan simulator kalkulasi live.',
+            'Integrasi Dokumen & Struk Cetak: Rincian tenor, biaya tambahan, dan jadwal angsuran PayLater tercetak rapi pada Nota Tagihan Piutang A4, Faktur Invoice A4, struk thermal 58mm/80mm, serta modal rincian pesanan CMS dan Pelanggan.',
+            'Multi-Channel Distribution v1.10.42 (Android versionCode 11042).'
+        ]
+    },
+    {
         id: 'log-1-10-41',
         version: 'v1.10.41',
         date: '2026-10-03',

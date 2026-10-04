@@ -370,7 +370,8 @@ export const renderOrderDetailModal = (orderId, d, reviewedKeys = []) => {
         
         const dMethod = (d.customer && d.customer.deliveryMethod === 'delivery') ? 'Dikirim ke Alamat' : 'Ambil di Toko (Pickup)';
         const dNotes = esc((d.customer && d.customer.note) ? d.customer.note : '');
-        const pMethod = esc((d.payment && d.payment.method) ? d.payment.method : 'Cash / COD');
+        const isPl = !!(d.payment?.isPaylater || d.isPaylater || d.payment?.subMethod === 'paylater');
+        const pMethod = isPl ? 'Putri PayLater' : esc((d.payment && d.payment.method) ? d.payment.method : 'Cash / COD');
         
         const cartData = d.items || [];
         const hasPO = cartData.some(i => i.poTime && i.poTime !== '');
@@ -523,6 +524,8 @@ export const renderOrderDetailModal = (orderId, d, reviewedKeys = []) => {
                         <div class="flex justify-between text-slate-600 dark:text-slate-400"><p>Ongkos Kirim</p><p class="font-bold text-slate-800 dark:text-white">${fCur(shipping)}</p></div>
                         ${shippingDiscount > 0 ? `<div class="flex justify-between text-[var(--color-primary)]"><p>Diskon Ongkir</p><p class="font-bold">-${fCur(shippingDiscount)}</p></div>` : ''}
                         ${discount > 0 ? `<div class="flex justify-between text-rose-500"><p>Diskon Promo</p><p class="font-bold">-${fCur(discount)}</p></div>` : ''}
+                        ${isPl && (d.payment?.paylaterAdminFee > 0) ? `<div class="flex justify-between text-slate-600 dark:text-slate-400"><p>Biaya Admin PayLater</p><p class="font-bold text-slate-800 dark:text-white">+${fCur(d.payment.paylaterAdminFee)}</p></div>` : ''}
+                        ${isPl && (d.payment?.paylaterServiceFee > 0) ? `<div class="flex justify-between text-slate-600 dark:text-slate-400"><p>Biaya Penanganan / Layanan</p><p class="font-bold text-slate-800 dark:text-white">+${fCur(d.payment.paylaterServiceFee)}</p></div>` : ''}
                         ${(() => {
                             const hasPpn = (d.payment?.ppnEnabled || d.payment?.ppnShowZero || (d.payment?.ppnRate === 0) || (ppnAmt > 0)) && (appData.store?.ppnEnabled || d.payment?.ppnEnabled);
                             if (!hasPpn) return '';
@@ -540,6 +543,22 @@ export const renderOrderDetailModal = (orderId, d, reviewedKeys = []) => {
                             <p class="font-bold text-slate-800 dark:text-white uppercase tracking-wider">Total Tagihan</p>
                             <p class="text-lg font-bold text-[var(--color-primary)]">${fCur(grandTotal)}</p>
                         </div>
+                        ${isPl ? `
+                        <div class="mt-2.5 pt-2.5 border-t border-slate-200 dark:border-slate-700/80 space-y-1.5">
+                            <div class="flex justify-between text-emerald-600 dark:text-emerald-400 font-bold">
+                                <span>Tenor Cicilan PayLater</span>
+                                <span>${d.payment?.paylaterTenor === '2m' ? '2 Bulan (2x Cicilan)' : (d.payment?.paylaterTenor === '3m' ? '3 Bulan (3x Cicilan)' : '30 Hari (1x Bayar)')}</span>
+                            </div>
+                            ${d.payment?.paylaterMonthlyInstallment ? `
+                            <div class="flex justify-between text-emerald-700 dark:text-emerald-300 font-black">
+                                <span>Angsuran per Bulan (${d.payment?.paylaterMonths || 1}x)</span>
+                                <span class="font-mono">${fCur(d.payment.paylaterMonthlyInstallment)}/bln</span>
+                            </div>` : ''}
+                            <div class="flex justify-between text-slate-600 dark:text-slate-400">
+                                <span>Jatuh Tempo Pembayaran</span>
+                                <span class="font-bold">${d.payment?.tempoDueDate ? new Date(d.payment.tempoDueDate).toLocaleDateString('id-ID', {day: 'numeric', month: 'short', year: 'numeric'}) : '-'}</span>
+                            </div>
+                        </div>` : ''}
                     </div>
 
                     <div class="pt-2 flex flex-col sm:flex-row gap-2.5">

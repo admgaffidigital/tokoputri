@@ -569,9 +569,22 @@ export const buildPOSReceiptPayload = (tx, config = null) => {
     } else if (tx.payment?.method === 'tempo') {
         if (isPaylater) {
             builder.twoColumn('Limit Terpakai', fRp(tx.payment?.paylaterUsed || tx.paylaterUsed || (tx.total - (tx.payment?.tempoDp ?? 0))));
+            if (tx.payment?.paylaterMonths) {
+                const tenorLbl = tx.payment.paylaterTenor === '2m' ? '2 Bulan' : (tx.payment.paylaterTenor === '3m' ? '3 Bulan' : '30 Hari');
+                builder.twoColumn('Tenor Cicilan', `${tenorLbl} (${tx.payment.paylaterMonths}x)`);
+            }
+            if (tx.payment?.paylaterAdminFee > 0) {
+                builder.twoColumn('Biaya Admin', `+ ${fRp(tx.payment.paylaterAdminFee)}`);
+            }
+            if (tx.payment?.paylaterServiceFee > 0) {
+                builder.twoColumn('Biaya Layanan', `+ ${fRp(tx.payment.paylaterServiceFee)}`);
+            }
         }
         builder.twoColumn('Uang Muka (DP)', fRp(tx.payment?.tempoDp ?? tx.payment?.dp ?? 0));
         builder.bold(true).twoColumn(isPaylater ? 'Tagihan PayLater' : 'Sisa Piutang', fRp(tx.payment.tempoBalance || 0)).bold(false);
+        if (isPaylater && tx.payment?.paylaterMonthlyInstallment) {
+            builder.twoColumn('Angsuran/Bln', `${fRp(tx.payment.paylaterMonthlyInstallment)} (${tx.payment.paylaterMonths || 1}x)`);
+        }
         if (tx.payment.tempoDueDate) {
             const dueStr = typeof tx.payment.tempoDueDate === 'number'
                 ? new Date(tx.payment.tempoDueDate).toLocaleDateString('id-ID', {day: 'numeric', month: 'short', year: 'numeric'})
@@ -820,8 +833,23 @@ export const buildOrderReceiptPayload = (order, config = null) => {
     builder.doubleSeparator();
     builder.bold(true).size('tall').twoColumn('TOTAL', fRp(grandTot)).size('normal').bold(false);
     builder.doubleSeparator();
-
-    builder.twoColumn('Metode Bayar', (order.payment?.method || 'Tunai').toUpperCase());
+    const isOrderPaylater = order.payment?.isPaylater || order.isPaylater || order.payment?.subMethod === 'paylater';
+    builder.twoColumn('Metode Bayar', isOrderPaylater ? 'PUTRI PAYLATER' : (order.payment?.method || 'Tunai').toUpperCase());
+    if (isOrderPaylater) {
+        if (order.payment?.paylaterMonths) {
+            const tLbl = order.payment.paylaterTenor === '2m' ? '2 Bulan' : (order.payment.paylaterTenor === '3m' ? '3 Bulan' : '30 Hari');
+            builder.twoColumn('Tenor Cicilan', `${tLbl} (${order.payment.paylaterMonths}x)`);
+        }
+        if (order.payment?.paylaterAdminFee > 0) {
+            builder.twoColumn('Biaya Admin', `+ ${fRp(order.payment.paylaterAdminFee)}`);
+        }
+        if (order.payment?.paylaterServiceFee > 0) {
+            builder.twoColumn('Biaya Layanan', `+ ${fRp(order.payment.paylaterServiceFee)}`);
+        }
+        if (order.payment?.paylaterMonthlyInstallment) {
+            builder.twoColumn('Angsuran/Bln', `${fRp(order.payment.paylaterMonthlyInstallment)} (${order.payment.paylaterMonths || 1}x)`);
+        }
+    }
 
     if (cfg.showPoints && (order.pointsEarned > 0 || order.finalMemberPoints !== undefined)) {
         builder.separator('-');
@@ -897,6 +925,10 @@ export const buildTempoReceiptPayload = (order, config = null) => {
 
     const custName = (order.customer?.name || 'Pelanggan').substring(0, is80 ? 18 : 11);
     builder.twoColumn(`Plg  : ${custName}`, isPaylater ? 'Tipe: PayLater' : 'Tipe: Tempo', false, true);
+    if (isPaylater && order.payment?.paylaterMonths) {
+        const tLbl = order.payment.paylaterTenor === '2m' ? '2 Bulan' : (order.payment.paylaterTenor === '3m' ? '3 Bulan' : '30 Hari');
+        builder.twoColumn('Tenor Cicilan', `${tLbl} (${order.payment.paylaterMonths}x)`, false, true);
+    }
 
     if (order.customer?.phone || order.customer?.wa) {
         builder.line(`HP   : ${order.customer.wa || order.customer.phone}`, 'left');
@@ -955,6 +987,14 @@ export const buildTempoReceiptPayload = (order, config = null) => {
     builder.separator('-');
 
     builder.twoColumn('Total Transaksi', fRp(grandTotalAwal));
+    if (isPaylater) {
+        if (order.payment?.paylaterAdminFee > 0) {
+            builder.twoColumn('Biaya Admin', `+ ${fRp(order.payment.paylaterAdminFee)}`);
+        }
+        if (order.payment?.paylaterServiceFee > 0) {
+            builder.twoColumn('Biaya Penanganan', `+ ${fRp(order.payment.paylaterServiceFee)}`);
+        }
+    }
 
     // Histori Cicilan
     if (installments.length > 0) {
@@ -968,6 +1008,9 @@ export const buildTempoReceiptPayload = (order, config = null) => {
     }
 
     builder.twoColumn('Sisa Pokok', fRp(sisa));
+    if (isPaylater && order.payment?.paylaterMonthlyInstallment) {
+        builder.twoColumn('Angsuran/Bln', `${fRp(order.payment.paylaterMonthlyInstallment)} (${order.payment.paylaterMonths || 1}x)`);
+    }
     if (latePenalty > 0) {
         builder.twoColumn(`Denda (${daysLate} Hari)`, `+ ${fRp(latePenalty)}`);
     }

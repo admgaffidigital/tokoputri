@@ -40,6 +40,18 @@ export const defApp = {
         spendPointsEnabled: false,
         spendPointsThreshold: 100000,
         spendPointsPerThreshold: 1,
+        // Konfigurasi Putri PayLater & Cicilan Multi-Bulan Transparan (v1.10.42)
+        paylater: {
+            enabled: true,
+            minOrder: 20000,
+            maxOrder: 10000000,
+            noticeText: 'Cicilan transparan tanpa biaya tersembunyi. Tagihan jatuh tempo setiap bulan.',
+            tenors: {
+                '30d': { enabled: true, label: '30 Hari (1x Bayar)', shortLabel: '30 Hari', months: 1, days: 30, adminFeeType: 'flat', adminFeeValue: 0, serviceFeeType: 'flat', serviceFeeValue: 0 },
+                '2m':  { enabled: true, label: '2 Bulan (Cicilan 2x)', shortLabel: '2 Bulan', months: 2, days: 60, adminFeeType: 'flat', adminFeeValue: 1500, serviceFeeType: 'percent', serviceFeeValue: 1.5 },
+                '3m':  { enabled: true, label: '3 Bulan (Cicilan 3x)', shortLabel: '3 Bulan', months: 3, days: 90, adminFeeType: 'flat', adminFeeValue: 2500, serviceFeeType: 'percent', serviceFeeValue: 2.5 }
+            }
+        },
         terms: "",
         privacy: ""
     },

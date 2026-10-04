@@ -682,14 +682,32 @@ export const processOrder = async () => {
             oD.payment.paylaterUsed = chargedToPaylater;
             oD.payment.dp = dp;
             oD.payment.tempoDp = dp;
-            oD.payment.tempoBalance = chargedToPaylater;
 
-            // Jatuh tempo tgl 5 bulan depan
+            // Rincian Tenor Multi-Bulan Transparan (v1.10.42)
+            const breakdown = window.currentPaylaterBreakdown || null;
+            const chosenTenor = breakdown ? breakdown.tenorKey : (window.selectedCheckoutPaylaterTenor || '30d');
+            const tenorMonths = breakdown ? (parseInt(breakdown.months, 10) || 1) : 1;
+            const adminFee = breakdown ? (parseFloat(breakdown.totalAdminFee) || 0) : 0;
+            const serviceFee = breakdown ? (parseFloat(breakdown.totalServiceFee) || 0) : 0;
+            const monthlyInstallment = breakdown ? (parseFloat(breakdown.totalPerMonth) || 0) : chargedToPaylater;
+            const schedule = breakdown?.schedule || [];
+
+            oD.payment.paylaterTenor = chosenTenor;
+            oD.payment.paylaterMonths = tenorMonths;
+            oD.payment.paylaterAdminFee = adminFee;
+            oD.payment.paylaterServiceFee = serviceFee;
+            oD.payment.paylaterMonthlyInstallment = monthlyInstallment;
+            oD.payment.paylaterSchedule = schedule;
+
+            const totalPayable = Math.max(0, chargedToPaylater + adminFee + serviceFee);
+            oD.payment.tempoBalance = totalPayable;
+
+            // Jatuh tempo sesuai tenor (tgl 5 bulan ke-N)
             const dueDay = currentMember.paylaterDueDay || 5;
             const d = new Date();
-            const nextMonth = new Date(d.getFullYear(), d.getMonth() + 1, dueDay, 23, 59, 59);
-            oD.payment.tempoDueDate = nextMonth.getTime();
-            oD.payment.paymentStatus = (chargedToPaylater <= 0) ? 'lunas' : 'hutang';
+            const targetMonth = new Date(d.getFullYear(), d.getMonth() + tenorMonths, dueDay, 23, 59, 59);
+            oD.payment.tempoDueDate = targetMonth.getTime();
+            oD.payment.paymentStatus = (totalPayable <= 0) ? 'lunas' : 'hutang';
             oD.isTempo = true;
 
             // Catat pemakaian limit ke database member

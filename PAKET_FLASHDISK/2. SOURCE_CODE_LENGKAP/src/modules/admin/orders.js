@@ -545,6 +545,21 @@ export const openOrderDetail = (i) => {
                                 ${isPL ? 'Putri PayLater Member VIP' : 'Penjualan Tempo (Piutang)'}
                             </span>
                         </div>
+                        ${isPL && o.payment?.paylaterMonths ? `
+                        <div class="flex justify-between items-center text-xs">
+                            <span class="text-slate-400">Tenor Cicilan</span>
+                            <span class="font-bold text-white font-mono">${o.payment.paylaterTenor === '2m' ? '2 Bulan (2x Cicilan)' : (o.payment.paylaterTenor === '3m' ? '3 Bulan (3x Cicilan)' : '30 Hari (1x Bayar)')}</span>
+                        </div>` : ''}
+                        ${isPL && (o.payment?.paylaterAdminFee > 0) ? `
+                        <div class="flex justify-between items-center text-xs">
+                            <span class="text-slate-400">Biaya Admin PayLater</span>
+                            <span class="font-bold text-slate-300 font-mono">+${fCur(o.payment.paylaterAdminFee)}</span>
+                        </div>` : ''}
+                        ${isPL && (o.payment?.paylaterServiceFee > 0) ? `
+                        <div class="flex justify-between items-center text-xs">
+                            <span class="text-slate-400">Biaya Layanan / Penanganan</span>
+                            <span class="font-bold text-slate-300 font-mono">+${fCur(o.payment.paylaterServiceFee)}</span>
+                        </div>` : ''}
                         ${isPL ? `
                         <div class="flex justify-between items-center text-xs">
                             <span class="text-slate-400">Limit PayLater Terpakai</span>
@@ -558,6 +573,11 @@ export const openOrderDetail = (i) => {
                             <span class="text-slate-400">Sisa Tagihan ${isPL ? 'PayLater' : 'Piutang'}</span>
                             <span class="font-bold font-mono ${isTempoLunas ? 'text-emerald-400' : (isPL ? 'text-emerald-300' : 'text-amber-400')}">${fCur(tempoBal)}</span>
                         </div>
+                        ${isPL && o.payment?.paylaterMonthlyInstallment ? `
+                        <div class="flex justify-between items-center text-xs text-emerald-300 font-bold bg-emerald-950/40 p-2 rounded-xl border border-emerald-800/40">
+                            <span>Angsuran per Bulan (${o.payment?.paylaterMonths || 1}x)</span>
+                            <span class="font-mono">${fCur(o.payment.paylaterMonthlyInstallment)}/bln</span>
+                        </div>` : ''}
                         <div class="flex justify-between items-center text-xs">
                             <span class="text-slate-400">Status ${isPL ? 'PayLater' : 'Piutang'}</span>
                             <span class="px-2 py-0.5 rounded-lg text-[10px] font-black uppercase tracking-wider ${isTempoLunas ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40' : (isPL ? 'bg-teal-500/20 text-teal-300 border border-teal-500/40' : 'bg-amber-500/20 text-amber-300 border border-amber-500/40')}">

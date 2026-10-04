@@ -742,6 +742,7 @@ export const openDocPreview = (type, targetId = null) => {
                 <h3 class="text-[9.5px] font-bold text-slate-500 uppercase tracking-widest mb-2 border-b border-slate-200 pb-1.5">Ketentuan Jatuh Tempo:</h3>
                 <p class="text-xs font-semibold text-slate-700 mb-1"><span class="text-slate-500">Tanggal Jatuh Tempo:</span> <b class="text-slate-900 font-mono">${formatDate(dueDate)}</b></p>
                 <p class="text-xs font-semibold text-slate-700 mb-1"><span class="text-slate-500">Sistem Pembayaran:</span> <b class="${isPaylater ? 'text-emerald-700 font-bold' : 'text-slate-900'} uppercase">${isPaylater ? 'Putri PayLater Member VIP' : 'Tempo / Bertahap'}</b></p>
+                ${isPaylater ? `<p class="text-xs font-semibold text-slate-700 mb-1"><span class="text-slate-500">Tenor Cicilan:</span> <b class="text-emerald-800 font-bold uppercase">${o.payment?.paylaterTenor === '2m' ? '2 Bulan (2x Cicilan)' : (o.payment?.paylaterTenor === '3m' ? '3 Bulan (3x Cicilan)' : '30 Hari (1x Bayar)')}</b></p>` : ''}
                 ${isLate ? `<p class="text-xs font-bold text-rose-600 mb-1"><span class="text-slate-500">Status:</span> Lewat ${daysLate} Hari (Denda ${rate}%/hari)</p>` : ''}
                 <p class="text-xs font-semibold text-slate-700"><span class="text-slate-500">Kasir / Admin:</span> <b class="text-slate-900 uppercase">${esc(o.cashierName || 'Kasir Toko')}</b></p>
             </div>
@@ -771,7 +772,40 @@ export const openDocPreview = (type, targetId = null) => {
         </tr>
         `);
 
+        let paylaterScheduleHtml = '';
+        if (isPaylater && Array.isArray(o.payment?.paylaterSchedule) && o.payment.paylaterSchedule.length > 0) {
+            paylaterScheduleHtml = `
+            <div class="mb-5">
+                <h3 class="text-xs font-black text-slate-800 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                    <i class="fa-solid fa-calendar-check text-emerald-600"></i> Rencana Jadwal Angsuran Cicilan (${o.payment?.paylaterMonths || 1}x):
+                </h3>
+                <table class="w-full text-left border border-slate-200 rounded-xl overflow-hidden text-xs">
+                    <thead class="bg-slate-100 text-slate-600 font-bold uppercase tracking-wider text-[10px]">
+                        <tr>
+                            <th class="py-2 px-3 w-14 text-center border-b border-slate-200">Cicilan</th>
+                            <th class="py-2 px-3 border-b border-slate-200">Termin</th>
+                            <th class="py-2 px-3 text-right border-b border-slate-200">Pokok</th>
+                            <th class="py-2 px-3 text-right border-b border-slate-200">Biaya Admin + Layanan</th>
+                            <th class="py-2 px-3 text-right border-b border-slate-200">Total Angsuran</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100 font-mono">
+                        ${o.payment.paylaterSchedule.map(sc => `
+                        <tr class="hover:bg-slate-50">
+                            <td class="py-1.5 px-3 text-center text-slate-700 font-bold">Ke-${sc.month}</td>
+                            <td class="py-1.5 px-3 text-slate-700 font-sans font-medium">Bulan Ke-${sc.month}</td>
+                            <td class="py-1.5 px-3 text-right text-slate-600">${fCur(sc.principal)}</td>
+                            <td class="py-1.5 px-3 text-right text-slate-500">${fCur((sc.adminFee || 0) + (sc.serviceFee || 0))}</td>
+                            <td class="py-1.5 px-3 text-right font-black text-emerald-700">${fCur(sc.totalInstallment)}</td>
+                        </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            </div>`;
+        }
+
         const extraBlocksHtml = `
+        ${paylaterScheduleHtml}
         ${installments.length > 0 ? `
         <div class="mb-5">
             <h3 class="text-xs font-black text-slate-800 uppercase tracking-wider mb-2 flex items-center gap-1.5">
@@ -815,9 +849,12 @@ export const openDocPreview = (type, targetId = null) => {
             <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 text-xs space-y-2">
                 <div class="flex justify-between text-slate-600"><span>Total Transaksi Awal:</span><span class="font-bold text-slate-800">${fCur(grandTotalAwal)}</span></div>
                 ${isPaylater ? `<div class="flex justify-between text-emerald-600 font-bold"><span>Limit PayLater Terpakai:</span><span>${fCur(o.payment?.paylaterUsed || (grandTotalAwal - (o.payment?.tempoDp || o.payment?.dp || 0)))}</span></div>` : ''}
+                ${isPaylater && (o.payment?.paylaterAdminFee > 0) ? `<div class="flex justify-between text-slate-600"><span>Biaya Admin PayLater:</span><span class="font-bold">+${fCur(o.payment.paylaterAdminFee)}</span></div>` : ''}
+                ${isPaylater && (o.payment?.paylaterServiceFee > 0) ? `<div class="flex justify-between text-slate-600"><span>Biaya Penanganan / Layanan:</span><span class="font-bold">+${fCur(o.payment.paylaterServiceFee)}</span></div>` : ''}
                 ${(parseFloat(o.payment?.tempoDp || o.payment?.dp) || 0) > 0 ? `<div class="flex justify-between text-slate-600"><span>Uang Muka (DP Dibayar):</span><span class="font-bold">${fCur(o.payment?.tempoDp || o.payment?.dp || 0)}</span></div>` : ''}
                 ${totalPaid > 0 ? `<div class="flex justify-between text-emerald-600 font-bold"><span>Total Pembayaran Masuk:</span><span>-${fCur(totalPaid)}</span></div>` : ''}
                 <div class="flex justify-between text-slate-700 font-bold"><span>${isPaylater ? 'Sisa Pokok PayLater:' : 'Sisa Pokok Piutang:'}</span><span>${fCur(sisa)}</span></div>
+                ${isPaylater && o.payment?.paylaterMonthlyInstallment ? `<div class="flex justify-between text-emerald-700 font-black"><span>Angsuran per Bulan (${o.payment?.paylaterMonths || 1}x):</span><span>${fCur(o.payment.paylaterMonthlyInstallment)}/bln</span></div>` : ''}
                 ${latePenalty > 0 ? `<div class="flex justify-between text-rose-600 font-bold"><span>Denda Keterlambatan:</span><span>+${fCur(latePenalty)}</span></div>` : ''}
                 <div class="flex justify-between items-center border-t-2 border-slate-800 pt-2 mt-1.5 font-bold text-sm text-slate-900">
                     <span>${isPaylater ? 'SISA TAGIHAN PAYLATER:' : 'SISA WAJIB BAYAR:'}</span>
@@ -1181,11 +1218,25 @@ export const openDocPreview = (type, targetId = null) => {
         }
 
         if (o.payment?.method === 'tempo') {
-            extraBlocksHtml += `
-            <div class="mb-4 border border-pink-200 bg-pink-50 p-3 rounded-xl text-left">
-                <h4 class="font-bold text-pink-700 text-[10px] uppercase tracking-widest mb-0.5"><i class="fa-solid fa-clock-rotate-left mr-1"></i> Syarat & Ketentuan Pembayaran Tempo:</h4>
-                <p class="text-[9.5px] text-pink-600 font-semibold leading-relaxed">Maksimal pembayaran sisa tagihan adalah 30 hari (Jatuh Tempo: ${o.payment.tempoDueDate ? new Date(o.payment.tempoDueDate).toLocaleDateString('id-ID') : '-'}). Keterlambatan dikenakan denda sesuai regulasi toko.</p>
-            </div>`;
+            const isPl = !!(o.payment?.isPaylater || o.isPaylater || o.payment?.subMethod === 'paylater');
+            if (isPl) {
+                const tenorMonths = o.payment?.paylaterMonths || 1;
+                const tenorLabel = o.payment?.paylaterTenor === '2m' ? '2 Bulan (2x Cicilan)' : (o.payment?.paylaterTenor === '3m' ? '3 Bulan (3x Cicilan)' : '30 Hari (1x Bayar)');
+                extraBlocksHtml += `
+                <div class="mb-4 border border-emerald-200 bg-emerald-50 p-3 rounded-xl text-left">
+                    <h4 class="font-bold text-emerald-800 text-[10px] uppercase tracking-widest mb-0.5"><i class="fa-solid fa-handshake text-emerald-600 mr-1"></i> Putri PayLater (${tenorLabel}):</h4>
+                    <p class="text-[9.5px] text-emerald-700 font-semibold leading-relaxed">
+                        Sistem pembayaran cicilan resmi Toko Putri tanpa biaya tersembunyi. Jatuh Tempo: ${o.payment.tempoDueDate ? new Date(o.payment.tempoDueDate).toLocaleDateString('id-ID') : '-'}.
+                        ${o.payment.paylaterMonthlyInstallment ? ` Angsuran: <b>${fCur(o.payment.paylaterMonthlyInstallment)} / bulan</b> (${tenorMonths}x).` : ''}
+                    </p>
+                </div>`;
+            } else {
+                extraBlocksHtml += `
+                <div class="mb-4 border border-pink-200 bg-pink-50 p-3 rounded-xl text-left">
+                    <h4 class="font-bold text-pink-700 text-[10px] uppercase tracking-widest mb-0.5"><i class="fa-solid fa-clock-rotate-left mr-1"></i> Syarat & Ketentuan Pembayaran Tempo:</h4>
+                    <p class="text-[9.5px] text-pink-600 font-semibold leading-relaxed">Maksimal pembayaran sisa tagihan adalah 30 hari (Jatuh Tempo: ${o.payment.tempoDueDate ? new Date(o.payment.tempoDueDate).toLocaleDateString('id-ID') : '-'}). Keterlambatan dikenakan denda sesuai regulasi toko.</p>
+                </div>`;
+            }
         }
 
         const summaryHtml = `
@@ -1195,6 +1246,8 @@ export const openDocPreview = (type, targetId = null) => {
                 ${o.payment?.shippingCost ? `<div class="flex justify-between px-3"><span>Ongkos Kirim</span><span class="font-mono">${fCur(o.payment.shippingCost)}</span></div>` : ''}
                 ${o.payment?.shippingDiscount ? `<div class="flex justify-between px-3 text-emerald-600"><span>Diskon Ongkir</span><span class="font-mono">-${fCur(o.payment.shippingDiscount)}</span></div>` : ''}
                 ${o.payment?.productDiscount ? `<div class="flex justify-between px-3 text-rose-600"><span>Diskon Produk</span><span class="font-mono">-${fCur(o.payment.productDiscount)}</span></div>` : ''}
+                ${(o.payment?.paylaterAdminFee > 0) ? `<div class="flex justify-between px-3 text-slate-600"><span>Biaya Admin PayLater</span><span class="font-mono">+${fCur(o.payment.paylaterAdminFee)}</span></div>` : ''}
+                ${(o.payment?.paylaterServiceFee > 0) ? `<div class="flex justify-between px-3 text-slate-600"><span>Biaya Penanganan / Layanan</span><span class="font-mono">+${fCur(o.payment.paylaterServiceFee)}</span></div>` : ''}
                 ${(() => {
                     const hasPpn = (o.payment?.ppnEnabled || o.payment?.ppnShowZero || (o.payment?.ppnRate === 0) || (o.payment?.ppnAmount && o.payment.ppnAmount > 0)) && (appData.store?.ppnEnabled || o.payment?.ppnEnabled);
                     if (!hasPpn) return '';
@@ -1216,11 +1269,17 @@ export const openDocPreview = (type, targetId = null) => {
                     <span class="font-mono text-base text-emerald-400 font-bold tracking-tight">${fCur(o.payment?.grandTotal)}</span>
                 </div>
                 ${o.payment?.method === 'tempo' ? `
-                <div class="flex justify-between px-3 mt-2 text-emerald-600"><span>Uang Muka (DP)</span><span class="font-mono">${fCur(o.payment?.tempoDp || 0)}</span></div>
+                <div class="flex justify-between px-3 mt-2 text-emerald-600"><span>${(o.payment?.isPaylater || o.payment?.subMethod === 'paylater') ? 'Limit Terpakai / DP' : 'Uang Muka (DP)'}</span><span class="font-mono">${fCur(o.payment?.tempoDp || 0)}</span></div>
                 <div class="flex justify-between items-center bg-rose-50 text-rose-700 p-2.5 rounded-xl mt-1 border border-rose-200">
-                    <span class="font-bold text-xs uppercase tracking-widest">Sisa Tagihan</span>
+                    <span class="font-bold text-xs uppercase tracking-widest">${(o.payment?.isPaylater || o.payment?.subMethod === 'paylater') ? 'Tagihan PayLater' : 'Sisa Tagihan'}</span>
                     <span class="font-mono text-sm font-bold tracking-tight">${fCur(o.payment?.tempoBalance || 0)}</span>
                 </div>
+                ${(o.payment?.isPaylater || o.payment?.subMethod === 'paylater') && o.payment?.paylaterMonthlyInstallment ? `
+                <div class="flex justify-between px-3 mt-1 text-[11px] text-emerald-700 font-bold">
+                    <span>Angsuran per Bulan (${o.payment?.paylaterMonths || 1}x)</span>
+                    <span class="font-mono">${fCur(o.payment.paylaterMonthlyInstallment)}/bln</span>
+                </div>
+                ` : ''}
                 ` : ''}
             </div>
         </div>

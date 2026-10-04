@@ -9,11 +9,12 @@
 
 import { appData, isSaving, setIsSaving } from '../../core/state.js';
 import { 
-    el, setH, getV, esc, fixD, 
+    el, setH, getV, esc, fixD, fCur,
     showToast, sLoad, hLoad 
 } from '../../core/utils.js';
 import { uiPalettes, applyUITheme, applyBackgroundStyle } from '../../core/theme.js';
 import { toggleTaxMenuVisibility } from './auth.js';
+import { getPaylaterConfig, calculateInstallmentBreakdown, calculateAllPaylaterTenors } from '../../core/paylater.js';
 
 export { syncAppMeta } from '../../core/theme.js';
 
@@ -76,14 +77,14 @@ export const rAdmSet = () => {
                 </div>
             </button>
 
-            <!-- 4. QRIS Pay -->
+            <!-- 4. Pembayaran (QRIS & Putri PayLater) -->
             <button onclick="openSettingForm('payment')" class="card-modern group relative flex flex-col items-center justify-center gap-3 overflow-hidden p-5 sm:p-6 text-center transition-all duration-300 hover:-translate-y-1.5 hover:border-[var(--color-primary)] hover:bg-[rgba(var(--color-primary-rgb),0.03)] hover:shadow-xl dark:hover:bg-slate-800/60 rounded-[1.75rem] border border-slate-200/80 dark:border-slate-800 bg-white/95 dark:bg-slate-900/60 shadow-xs cursor-pointer active:scale-95">
                 <div class="relative z-10 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl text-white shadow-md transition-all duration-300 group-hover:scale-110" style="background: linear-gradient(135deg, var(--color-primary-light, #e1b858) 0%, var(--color-primary, #c59b27) 50%, var(--color-primary-dark, #a87f1b) 100%); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.28);">
-                    <i class="fa-solid fa-qrcode text-2xl sm:text-3xl"></i>
+                    <i class="fa-solid fa-wallet text-2xl sm:text-3xl"></i>
                 </div>
                 <div class="relative z-10">
-                    <span class="block text-[10px] font-black uppercase leading-tight tracking-widest text-slate-800 dark:text-white sm:text-[11px]">QRIS Pay</span>
-                    <span class="mt-0.5 block text-[9px] font-bold text-slate-400 dark:text-slate-500">Metode Non-Tunai</span>
+                    <span class="block text-[10px] font-black uppercase leading-tight tracking-widest text-slate-800 dark:text-white sm:text-[11px]">Pembayaran</span>
+                    <span class="mt-0.5 block text-[9px] font-bold text-slate-400 dark:text-slate-500">QRIS &amp; Putri PayLater</span>
                 </div>
             </button>
 
@@ -845,60 +846,268 @@ export const openSettingForm = (type) => {
             </div>
         `;
     } else if (type === 'payment') {
-        title = "Metode Pembayaran QRIS"; 
-        subtitle = "Konfigurasi barcode QRIS resmi toko untuk penerimaan pembayaran instan via e-wallet dan m-banking";
-        icon = "fa-qrcode"; 
+        title = "Metode Pembayaran (QRIS & Putri PayLater)"; 
+        subtitle = "Konfigurasi penerimaan digital QRIS dan pengaturan cicilan Putri PayLater 30 hari hingga 3 bulan transparan";
+        icon = "fa-wallet"; 
+        
+        const pl = getPaylaterConfig();
+        const curTab = window.currentPaymentSubtab || 'paylater';
+
         formContent = `
-            <!-- KARTU 1: INTEGRASI BARCODE QRIS TOKO -->
-            <div class="p-4 sm:p-5 bg-slate-50/80 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700/80 rounded-2xl shadow-sm space-y-4">
-                <div class="flex items-center gap-3">
-                    <div class="w-9 h-9 rounded-xl flex items-center justify-center text-sm shadow-sm shrink-0" style="background: rgba(var(--color-primary-rgb),0.12); color: var(--color-primary)">
-                        <i class="fa-solid fa-qrcode"></i>
+            <!-- SUB-NAV TAB SELECTION -->
+            <div class="flex items-center gap-2 p-1.5 bg-slate-100 dark:bg-slate-800 rounded-2xl mb-4 border border-slate-200/80 dark:border-slate-700/80">
+                <button type="button" onclick="window.switchPaymentSubtab('paylater')" id="subtab-btn-paylater"
+                        class="flex-1 py-2.5 px-4 rounded-xl text-xs font-black uppercase tracking-wider transition-all flex items-center justify-center gap-2 cursor-pointer ${curTab === 'paylater' ? 'bg-white dark:bg-slate-900 text-slate-800 dark:text-white shadow-xs border border-slate-200/60 dark:border-slate-700' : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'}">
+                    <i class="fa-solid fa-bolt text-amber-500"></i> Putri PayLater &amp; Cicilan 3 Bulan
+                </button>
+                <button type="button" onclick="window.switchPaymentSubtab('qris')" id="subtab-btn-qris"
+                        class="flex-1 py-2.5 px-4 rounded-xl text-xs font-black uppercase tracking-wider transition-all flex items-center justify-center gap-2 cursor-pointer ${curTab === 'qris' ? 'bg-white dark:bg-slate-900 text-slate-800 dark:text-white shadow-xs border border-slate-200/60 dark:border-slate-700' : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'}">
+                    <i class="fa-solid fa-qrcode text-[var(--color-primary)]"></i> Barcode QRIS Nasional
+                </button>
+            </div>
+
+            <!-- TAB 1: PUTRI PAYLATER & CICILAN 3 BULAN -->
+            <div id="payment-subtab-paylater" class="${curTab === 'paylater' ? '' : 'hidden'} space-y-4">
+                <!-- KARTU 1: KONTROL MASTER & MINIMAL BELANJA -->
+                <div class="p-4 sm:p-5 bg-slate-50/80 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700/80 rounded-2xl shadow-sm space-y-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-xl flex items-center justify-center text-sm shadow-sm shrink-0 bg-amber-500/15 text-amber-600 dark:text-amber-400">
+                            <i class="fa-solid fa-bolt"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider">Kontrol Utama Putri PayLater</h4>
+                            <p class="text-[10px] text-slate-500 dark:text-slate-400">Aktifkan layanan kredit toko & cicilan 30 hari hingga 3 bulan dengan rincian biaya transparan</p>
+                        </div>
                     </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-600 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Status Layanan PayLater</label>
+                            <select id="set-paylater-enabled" class="admin-input !py-3 bg-white dark:bg-slate-900 shadow-sm w-full text-xs font-bold cursor-pointer" onchange="window.updateAdminPaylaterSim()">
+                                <option value="true" ${pl.enabled ? 'selected' : ''}>Aktif (Bisa Digunakan Pelanggan)</option>
+                                <option value="false" ${!pl.enabled ? 'selected' : ''}>Nonaktif</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-600 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Minimal Belanja Cicilan (Rp)</label>
+                            <input type="number" id="set-paylater-min-order" value="${pl.minOrder}" class="admin-input !py-3 bg-white dark:bg-slate-900 shadow-sm w-full text-xs font-mono font-bold" placeholder="20000" min="0" oninput="window.updateAdminPaylaterSim()">
+                            <p class="text-[9.5px] text-slate-400 mt-1">Pembelian di bawah nominal ini belum dapat mencicil.</p>
+                        </div>
+                    </div>
+
                     <div>
-                        <h4 class="text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider">Barcode Pembayaran QRIS Nasional</h4>
-                        <p class="text-[10px] text-slate-500 dark:text-slate-400">Mendukung scan dari GoPay, OVO, DANA, ShopeePay, BCA, Mandiri, BRI, BNI, dan seluruh bank</p>
+                        <label class="block text-[11px] font-bold text-slate-600 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Catatan Transparansi &amp; Ketentuan Toko</label>
+                        <input id="set-paylater-notice-text" value="${esc(pl.noticeText)}" class="admin-input !py-3 bg-white dark:bg-slate-900 shadow-sm w-full text-xs" placeholder="Contoh: Cicilan transparan tanpa biaya tersembunyi. Tagihan jatuh tempo setiap bulan.">
                     </div>
                 </div>
 
-                <div>
-                    <label class="block text-[11px] font-bold text-slate-600 dark:text-slate-400 mb-1.5 uppercase tracking-wider">URL Gambar Barcode QRIS</label>
-                    <div class="flex gap-2">
-                        <input autocomplete='off' id="set-qris-url" value="${esc(appData.payment?.qrisUrl || '')}" class="admin-input !py-3 bg-white dark:bg-slate-900 shadow-sm flex-1 text-xs" placeholder="URL file gambar QRIS atau klik tombol upload di kanan">
-                        <label class="text-white rounded-xl px-4 flex items-center justify-center cursor-pointer transition-all shrink-0 active:scale-95 shadow-sm font-bold text-xs hover:opacity-90" style="background: var(--color-primary)">
-                            <i class="fa-solid fa-cloud-arrow-up mr-1.5"></i> Upload QRIS
-                            <input type="file" accept="image/*" class="hidden" onchange="handleImageUpload(this, 'set-qris-url')">
-                        </label>
-                    </div>
-                </div>
-
-                <!-- PREVIEW BOX QRIS -->
-                ${appData.payment?.qrisUrl ? `
-                    <div class="p-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl flex flex-col sm:flex-row items-center gap-4 shadow-sm">
-                        <div class="p-2 bg-white rounded-xl border border-slate-200 dark:border-slate-600 shadow-inner">
-                            <img src="${esc(appData.payment.qrisUrl)}" alt="Preview QRIS" class="w-28 h-28 object-contain rounded-lg">
-                        </div>
-                        <div class="text-center sm:text-left space-y-1">
-                            <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold" style="background: rgba(var(--color-primary-rgb),0.1); color: var(--color-primary);">
-                                <i class="fa-solid fa-circle-check"></i> QRIS Siap Digunakan
+                <!-- KARTU 2: PENGATURAN TENOR 30 HARI, 2 BULAN, 3 BULAN -->
+                <div class="p-4 sm:p-5 bg-slate-50/80 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700/80 rounded-2xl shadow-sm space-y-4">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 rounded-xl flex items-center justify-center text-sm shadow-sm shrink-0 bg-emerald-500/15 text-emerald-600 dark:text-emerald-400">
+                                <i class="fa-solid fa-calendar-week"></i>
                             </div>
-                            <h5 class="text-xs font-bold text-slate-800 dark:text-slate-100">Barcode QRIS Aktif di Halaman Checkout</h5>
-                            <p class="text-[11px] text-slate-500 dark:text-slate-400">Gambar barcode di atas akan otomatis ditampilkan dengan jelas saat pembeli memilih opsi pembayaran QRIS.</p>
+                            <div>
+                                <h4 class="text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider">Skema Biaya Tenor Cicilan (Zero Hidden Fees)</h4>
+                                <p class="text-[10px] text-slate-500 dark:text-slate-400">Tentukan biaya admin dan biaya penanganan/layanan per tenor (bisa nominal tetap Rp atau persentase %)</p>
+                            </div>
+                        </div>
+                        <span class="text-[9.5px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300">100% Transparan</span>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3.5 pt-1">
+                        <!-- TENOR 1: 30 HARI -->
+                        <div class="p-4 rounded-2xl bg-white dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 shadow-2xs space-y-3">
+                            <div class="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-slate-700">
+                                <div class="flex items-center gap-1.5">
+                                    <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+                                    <span class="text-xs font-black uppercase text-slate-800 dark:text-white">Tenor 30 Hari</span>
+                                </div>
+                                <select id="set-paylater-30d-enabled" class="text-[10px] font-bold py-1 px-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 cursor-pointer" onchange="window.updateAdminPaylaterSim()">
+                                    <option value="true" ${pl.tenors['30d'].enabled ? 'selected' : ''}>Aktif</option>
+                                    <option value="false" ${!pl.tenors['30d'].enabled ? 'selected' : ''}>Nonaktif</option>
+                                </select>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Biaya Admin</label>
+                                <div class="flex gap-1.5">
+                                    <select id="set-paylater-30d-admin-type" class="w-20 text-[11px] font-bold py-2 px-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900" onchange="window.updateAdminPaylaterSim()">
+                                        <option value="flat" ${pl.tenors['30d'].adminFeeType === 'flat' ? 'selected' : ''}>Rp</option>
+                                        <option value="percent" ${pl.tenors['30d'].adminFeeType === 'percent' ? 'selected' : ''}>%</option>
+                                    </select>
+                                    <input type="number" id="set-paylater-30d-admin-val" value="${pl.tenors['30d'].adminFeeValue}" min="0" step="any" class="admin-input !py-2 bg-white dark:bg-slate-900 flex-1 text-xs font-mono font-bold" placeholder="0" oninput="window.updateAdminPaylaterSim()">
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Biaya Penanganan</label>
+                                <div class="flex gap-1.5">
+                                    <select id="set-paylater-30d-service-type" class="w-20 text-[11px] font-bold py-2 px-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900" onchange="window.updateAdminPaylaterSim()">
+                                        <option value="flat" ${pl.tenors['30d'].serviceFeeType === 'flat' ? 'selected' : ''}>Rp</option>
+                                        <option value="percent" ${pl.tenors['30d'].serviceFeeType === 'percent' ? 'selected' : ''}>%</option>
+                                    </select>
+                                    <input type="number" id="set-paylater-30d-service-val" value="${pl.tenors['30d'].serviceFeeValue}" min="0" step="any" class="admin-input !py-2 bg-white dark:bg-slate-900 flex-1 text-xs font-mono font-bold" placeholder="0" oninput="window.updateAdminPaylaterSim()">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- TENOR 2: 2 BULAN -->
+                        <div class="p-4 rounded-2xl bg-white dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 shadow-2xs space-y-3">
+                            <div class="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-slate-700">
+                                <div class="flex items-center gap-1.5">
+                                    <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                                    <span class="text-xs font-black uppercase text-slate-800 dark:text-white">Tenor 2 Bulan</span>
+                                </div>
+                                <select id="set-paylater-2m-enabled" class="text-[10px] font-bold py-1 px-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 cursor-pointer" onchange="window.updateAdminPaylaterSim()">
+                                    <option value="true" ${pl.tenors['2m'].enabled ? 'selected' : ''}>Aktif</option>
+                                    <option value="false" ${!pl.tenors['2m'].enabled ? 'selected' : ''}>Nonaktif</option>
+                                </select>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Biaya Admin</label>
+                                <div class="flex gap-1.5">
+                                    <select id="set-paylater-2m-admin-type" class="w-20 text-[11px] font-bold py-2 px-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900" onchange="window.updateAdminPaylaterSim()">
+                                        <option value="flat" ${pl.tenors['2m'].adminFeeType === 'flat' ? 'selected' : ''}>Rp</option>
+                                        <option value="percent" ${pl.tenors['2m'].adminFeeType === 'percent' ? 'selected' : ''}>%</option>
+                                    </select>
+                                    <input type="number" id="set-paylater-2m-admin-val" value="${pl.tenors['2m'].adminFeeValue}" min="0" step="any" class="admin-input !py-2 bg-white dark:bg-slate-900 flex-1 text-xs font-mono font-bold" placeholder="0" oninput="window.updateAdminPaylaterSim()">
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Biaya Penanganan</label>
+                                <div class="flex gap-1.5">
+                                    <select id="set-paylater-2m-service-type" class="w-20 text-[11px] font-bold py-2 px-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900" onchange="window.updateAdminPaylaterSim()">
+                                        <option value="flat" ${pl.tenors['2m'].serviceFeeType === 'flat' ? 'selected' : ''}>Rp</option>
+                                        <option value="percent" ${pl.tenors['2m'].serviceFeeType === 'percent' ? 'selected' : ''}>%</option>
+                                    </select>
+                                    <input type="number" id="set-paylater-2m-service-val" value="${pl.tenors['2m'].serviceFeeValue}" min="0" step="any" class="admin-input !py-2 bg-white dark:bg-slate-900 flex-1 text-xs font-mono font-bold" placeholder="0" oninput="window.updateAdminPaylaterSim()">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- TENOR 3: 3 BULAN -->
+                        <div class="p-4 rounded-2xl bg-white dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 shadow-2xs space-y-3">
+                            <div class="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-slate-700">
+                                <div class="flex items-center gap-1.5">
+                                    <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+                                    <span class="text-xs font-black uppercase text-slate-800 dark:text-white">Tenor 3 Bulan</span>
+                                </div>
+                                <select id="set-paylater-3m-enabled" class="text-[10px] font-bold py-1 px-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 cursor-pointer" onchange="window.updateAdminPaylaterSim()">
+                                    <option value="true" ${pl.tenors['3m'].enabled ? 'selected' : ''}>Aktif</option>
+                                    <option value="false" ${!pl.tenors['3m'].enabled ? 'selected' : ''}>Nonaktif</option>
+                                </select>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Biaya Admin</label>
+                                <div class="flex gap-1.5">
+                                    <select id="set-paylater-3m-admin-type" class="w-20 text-[11px] font-bold py-2 px-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900" onchange="window.updateAdminPaylaterSim()">
+                                        <option value="flat" ${pl.tenors['3m'].adminFeeType === 'flat' ? 'selected' : ''}>Rp</option>
+                                        <option value="percent" ${pl.tenors['3m'].adminFeeType === 'percent' ? 'selected' : ''}>%</option>
+                                    </select>
+                                    <input type="number" id="set-paylater-3m-admin-val" value="${pl.tenors['3m'].adminFeeValue}" min="0" step="any" class="admin-input !py-2 bg-white dark:bg-slate-900 flex-1 text-xs font-mono font-bold" placeholder="0" oninput="window.updateAdminPaylaterSim()">
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Biaya Penanganan</label>
+                                <div class="flex gap-1.5">
+                                    <select id="set-paylater-3m-service-type" class="w-20 text-[11px] font-bold py-2 px-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900" onchange="window.updateAdminPaylaterSim()">
+                                        <option value="flat" ${pl.tenors['3m'].serviceFeeType === 'flat' ? 'selected' : ''}>Rp</option>
+                                        <option value="percent" ${pl.tenors['3m'].serviceFeeType === 'percent' ? 'selected' : ''}>%</option>
+                                    </select>
+                                    <input type="number" id="set-paylater-3m-service-val" value="${pl.tenors['3m'].serviceFeeValue}" min="0" step="any" class="admin-input !py-2 bg-white dark:bg-slate-900 flex-1 text-xs font-mono font-bold" placeholder="0" oninput="window.updateAdminPaylaterSim()">
+                                </div>
+                            </div>
                         </div>
                     </div>
-                ` : `
-                    <div class="p-6 bg-white dark:bg-slate-800 border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-2xl text-center space-y-2">
-                        <div class="w-12 h-12 rounded-2xl mx-auto flex items-center justify-center text-xl shadow-xs" style="background: rgba(var(--color-primary-rgb),0.12); color: var(--color-primary)">
+                </div>
+
+                <!-- KARTU 3: LIVE SIMULATOR REAL-TIME -->
+                <div class="p-4 sm:p-5 bg-gradient-to-br from-amber-500/10 via-amber-500/5 to-transparent dark:from-amber-950/20 dark:via-slate-900/60 dark:to-slate-900/80 border border-amber-500/25 dark:border-amber-500/30 rounded-2xl shadow-sm space-y-4">
+                    <div class="flex items-center justify-between flex-wrap gap-2">
+                        <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 rounded-xl flex items-center justify-center text-sm shadow-sm shrink-0 bg-amber-500 text-white">
+                                <i class="fa-solid fa-calculator"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider">Simulasi Rumus Langsung (Live Preview)</h4>
+                                <p class="text-[10px] text-slate-500 dark:text-slate-400">Uji coba simulasi otomatis sebelum menyimpan ke sistem</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-[10px] font-bold text-slate-500">Tes Belanja:</span>
+                            <div class="relative flex items-center">
+                                <span class="absolute left-2.5 text-[11px] font-bold text-slate-400">Rp</span>
+                                <input type="number" id="set-paylater-sim-amount" value="300000" min="1000" step="1000"
+                                       class="w-32 py-1.5 pl-8 pr-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-mono font-bold text-right"
+                                       oninput="window.updateAdminPaylaterSim()">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="paylater-admin-sim-container" class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                        <!-- Diisi dinamis oleh updateAdminPaylaterSim -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 2: BARCODE QRIS NASIONAL -->
+            <div id="payment-subtab-qris" class="${curTab === 'qris' ? '' : 'hidden'} space-y-4">
+                <div class="p-4 sm:p-5 bg-slate-50/80 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700/80 rounded-2xl shadow-sm space-y-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-xl flex items-center justify-center text-sm shadow-sm shrink-0" style="background: rgba(var(--color-primary-rgb),0.12); color: var(--color-primary)">
                             <i class="fa-solid fa-qrcode"></i>
                         </div>
-                        <h5 class="text-xs font-bold text-slate-700 dark:text-slate-200">Belum Ada Barcode QRIS</h5>
-                        <p class="text-[11px] text-slate-400 max-w-sm mx-auto">Klik tombol <b>Upload QRIS</b> di atas untuk mengunggah gambar barcode QRIS toko Anda agar pembeli bisa membayar secara digital.</p>
+                        <div>
+                            <h4 class="text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider">Barcode Pembayaran QRIS Nasional</h4>
+                            <p class="text-[10px] text-slate-500 dark:text-slate-400">Mendukung scan dari GoPay, OVO, DANA, ShopeePay, BCA, Mandiri, BRI, BNI, dan seluruh bank</p>
+                        </div>
                     </div>
-                `}
 
-                <div class="p-3 rounded-xl text-[11px] flex items-start gap-2.5 border" style="background: rgba(var(--color-primary-rgb),0.06); border-color: rgba(var(--color-primary-rgb),0.18); color: var(--color-primary-dark, #a87f1b);">
-                    <i class="fa-solid fa-shield-halved mt-0.5 shrink-0" style="color: var(--color-primary)"></i>
-                    <span><b>Keamanan Transaksi:</b> Pastikan barcode QRIS yang diunggah memiliki nama toko Anda yang terdaftar resmi di penyedia jasa pembayaran (PJSP).</span>
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-600 dark:text-slate-400 mb-1.5 uppercase tracking-wider">URL Gambar Barcode QRIS</label>
+                        <div class="flex gap-2">
+                            <input autocomplete='off' id="set-qris-url" value="${esc(appData.payment?.qrisUrl || '')}" class="admin-input !py-3 bg-white dark:bg-slate-900 shadow-sm flex-1 text-xs" placeholder="URL file gambar QRIS atau klik tombol upload di kanan">
+                            <label class="text-white rounded-xl px-4 flex items-center justify-center cursor-pointer transition-all shrink-0 active:scale-95 shadow-sm font-bold text-xs hover:opacity-90" style="background: var(--color-primary)">
+                                <i class="fa-solid fa-cloud-arrow-up mr-1.5"></i> Upload QRIS
+                                <input type="file" accept="image/*" class="hidden" onchange="handleImageUpload(this, 'set-qris-url')">
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- PREVIEW BOX QRIS -->
+                    ${appData.payment?.qrisUrl ? `
+                        <div class="p-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl flex flex-col sm:flex-row items-center gap-4 shadow-sm">
+                            <div class="p-2 bg-white rounded-xl border border-slate-200 dark:border-slate-600 shadow-inner">
+                                <img src="${esc(appData.payment.qrisUrl)}" alt="Preview QRIS" class="w-28 h-28 object-contain rounded-lg">
+                            </div>
+                            <div class="text-center sm:text-left space-y-1">
+                                <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold" style="background: rgba(var(--color-primary-rgb),0.1); color: var(--color-primary);">
+                                    <i class="fa-solid fa-circle-check"></i> QRIS Siap Digunakan
+                                </div>
+                                <h5 class="text-xs font-bold text-slate-800 dark:text-slate-100">Barcode QRIS Aktif di Halaman Checkout</h5>
+                                <p class="text-[11px] text-slate-500 dark:text-slate-400">Gambar barcode di atas akan otomatis ditampilkan dengan jelas saat pembeli memilih opsi pembayaran QRIS.</p>
+                            </div>
+                        </div>
+                    ` : `
+                        <div class="p-6 bg-white dark:bg-slate-800 border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-2xl text-center space-y-2">
+                            <div class="w-12 h-12 rounded-2xl mx-auto flex items-center justify-center text-xl shadow-xs" style="background: rgba(var(--color-primary-rgb),0.12); color: var(--color-primary)">
+                                <i class="fa-solid fa-qrcode"></i>
+                            </div>
+                            <h5 class="text-xs font-bold text-slate-700 dark:text-slate-200">Belum Ada Barcode QRIS</h5>
+                            <p class="text-[11px] text-slate-400 max-w-sm mx-auto">Klik tombol <b>Upload QRIS</b> di atas untuk mengunggah gambar barcode QRIS toko Anda agar pembeli bisa membayar secara digital.</p>
+                        </div>
+                    `}
+
+                    <div class="p-3 rounded-xl text-[11px] flex items-start gap-2.5 border" style="background: rgba(var(--color-primary-rgb),0.06); border-color: rgba(var(--color-primary-rgb),0.18); color: var(--color-primary-dark, #a87f1b);">
+                        <i class="fa-solid fa-shield-halved mt-0.5 shrink-0" style="color: var(--color-primary)"></i>
+                        <span><b>Keamanan Transaksi:</b> Pastikan barcode QRIS yang diunggah memiliki nama toko Anda yang terdaftar resmi di penyedia jasa pembayaran (PJSP).</span>
+                    </div>
                 </div>
             </div>
         `;
@@ -1187,7 +1396,124 @@ export const openSettingForm = (type) => {
             }, 50);
         }
     }
+
+    if (type === 'payment') {
+        setTimeout(() => {
+            if (typeof window.updateAdminPaylaterSim === 'function') {
+                window.updateAdminPaylaterSim();
+            }
+        }, 50);
+    }
 };
+
+window.currentPaymentSubtab = window.currentPaymentSubtab || 'paylater';
+
+export const switchPaymentSubtab = (tab) => {
+    window.currentPaymentSubtab = tab;
+    const tabPL = document.getElementById('payment-subtab-paylater');
+    const tabQR = document.getElementById('payment-subtab-qris');
+    const btnPL = document.getElementById('subtab-btn-paylater');
+    const btnQR = document.getElementById('subtab-btn-qris');
+
+    if (tabPL) tabPL.classList.toggle('hidden', tab !== 'paylater');
+    if (tabQR) tabQR.classList.toggle('hidden', tab !== 'qris');
+
+    if (btnPL) {
+        btnPL.className = `flex-1 py-2.5 px-4 rounded-xl text-xs font-black uppercase tracking-wider transition-all flex items-center justify-center gap-2 cursor-pointer ${tab === 'paylater' ? 'bg-white dark:bg-slate-900 text-slate-800 dark:text-white shadow-xs border border-slate-200/60 dark:border-slate-700' : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'}`;
+    }
+    if (btnQR) {
+        btnQR.className = `flex-1 py-2.5 px-4 rounded-xl text-xs font-black uppercase tracking-wider transition-all flex items-center justify-center gap-2 cursor-pointer ${tab === 'qris' ? 'bg-white dark:bg-slate-900 text-slate-800 dark:text-white shadow-xs border border-slate-200/60 dark:border-slate-700' : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'}`;
+    }
+    if (tab === 'paylater') {
+        setTimeout(() => {
+            if (typeof window.updateAdminPaylaterSim === 'function') {
+                window.updateAdminPaylaterSim();
+            }
+        }, 20);
+    }
+};
+window.switchPaymentSubtab = switchPaymentSubtab;
+
+export const updateAdminPaylaterSim = () => {
+    const container = document.getElementById('paylater-admin-sim-container');
+    if (!container) return;
+
+    const amountInput = document.getElementById('set-paylater-sim-amount');
+    const testAmount = Math.max(1000, parseFloat(amountInput?.value) || 300000);
+
+    const tempConfig = {
+        enabled: (document.getElementById('set-paylater-enabled')?.value || 'true') === 'true',
+        minOrder: Math.max(0, parseFloat(document.getElementById('set-paylater-min-order')?.value) || 20000),
+        maxOrder: 10000000,
+        noticeText: document.getElementById('set-paylater-notice-text')?.value || '',
+        tenors: {
+            '30d': {
+                enabled: (document.getElementById('set-paylater-30d-enabled')?.value || 'true') === 'true',
+                label: '30 Hari (1x Bayar)', shortLabel: '30 Hari', months: 1, days: 30,
+                adminFeeType: document.getElementById('set-paylater-30d-admin-type')?.value || 'flat',
+                adminFeeValue: Math.max(0, parseFloat(document.getElementById('set-paylater-30d-admin-val')?.value) || 0),
+                serviceFeeType: document.getElementById('set-paylater-30d-service-type')?.value || 'flat',
+                serviceFeeValue: Math.max(0, parseFloat(document.getElementById('set-paylater-30d-service-val')?.value) || 0)
+            },
+            '2m': {
+                enabled: (document.getElementById('set-paylater-2m-enabled')?.value || 'true') === 'true',
+                label: '2 Bulan (Cicilan 2x)', shortLabel: '2 Bulan', months: 2, days: 60,
+                adminFeeType: document.getElementById('set-paylater-2m-admin-type')?.value || 'flat',
+                adminFeeValue: Math.max(0, parseFloat(document.getElementById('set-paylater-2m-admin-val')?.value) || 0),
+                serviceFeeType: document.getElementById('set-paylater-2m-service-type')?.value || 'percent',
+                serviceFeeValue: Math.max(0, parseFloat(document.getElementById('set-paylater-2m-service-val')?.value) || 0)
+            },
+            '3m': {
+                enabled: (document.getElementById('set-paylater-3m-enabled')?.value || 'true') === 'true',
+                label: '3 Bulan (Cicilan 3x)', shortLabel: '3 Bulan', months: 3, days: 90,
+                adminFeeType: document.getElementById('set-paylater-3m-admin-type')?.value || 'flat',
+                adminFeeValue: Math.max(0, parseFloat(document.getElementById('set-paylater-3m-admin-val')?.value) || 0),
+                serviceFeeType: document.getElementById('set-paylater-3m-service-type')?.value || 'percent',
+                serviceFeeValue: Math.max(0, parseFloat(document.getElementById('set-paylater-3m-service-val')?.value) || 0)
+            }
+        }
+    };
+
+    const sim = calculateAllPaylaterTenors(testAmount, tempConfig);
+    const tenors = sim.results;
+    const keys = ['30d', '2m', '3m'];
+
+    container.innerHTML = keys.map(k => {
+        const t = tenors[k];
+        if (!t) return '';
+        const isOff = !t.enabled;
+        return `
+            <div class="p-3.5 rounded-2xl border ${isOff ? 'border-slate-200 dark:border-slate-700 bg-slate-100/60 dark:bg-slate-800/40 opacity-60' : 'border-amber-300 dark:border-amber-800/70 bg-white dark:bg-slate-900 shadow-2xs'} space-y-2">
+                <div class="flex items-center justify-between pb-1.5 border-b border-slate-100 dark:border-slate-800">
+                    <span class="text-[11px] font-black uppercase tracking-wider text-slate-800 dark:text-white">${esc(t.label)}</span>
+                    <span class="text-[8.5px] font-bold px-1.5 py-0.5 rounded ${isOff ? 'bg-slate-200 text-slate-500' : 'bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300'}">${isOff ? 'Nonaktif' : 'Aktif'}</span>
+                </div>
+                <div class="space-y-1 text-[11px]">
+                    <div class="flex justify-between text-slate-500">
+                        <span>Pokok / bln:</span>
+                        <span class="font-bold text-slate-700 dark:text-slate-300">${fCur(t.pokokPerMonth)}</span>
+                    </div>
+                    <div class="flex justify-between text-slate-500">
+                        <span>Biaya Admin:</span>
+                        <span class="font-bold ${t.adminFeePerMonth === 0 ? 'text-emerald-500' : 'text-slate-700 dark:text-slate-300'}">${t.adminFeePerMonth === 0 ? 'Rp 0' : fCur(t.adminFeePerMonth)}</span>
+                    </div>
+                    <div class="flex justify-between text-slate-500">
+                        <span>Penanganan:</span>
+                        <span class="font-bold ${t.serviceFeePerMonth === 0 ? 'text-emerald-500' : 'text-slate-700 dark:text-slate-300'}">${t.serviceFeePerMonth === 0 ? 'Rp 0' : fCur(t.serviceFeePerMonth)}</span>
+                    </div>
+                </div>
+                <div class="pt-2 border-t border-dashed border-slate-200 dark:border-slate-700 flex justify-between items-baseline">
+                    <span class="text-[10px] font-bold uppercase text-slate-500">Cicilan / bln:</span>
+                    <span class="text-sm font-black text-amber-600 dark:text-amber-400 font-mono">${fCur(t.totalPerMonth)}</span>
+                </div>
+                <div class="text-[9.5px] text-slate-400 text-right">
+                    Total: <b>${fCur(t.grandTotal)}</b>
+                </div>
+            </div>
+        `;
+    }).join('');
+};
+window.updateAdminPaylaterSim = updateAdminPaylaterSim;
 
 export const saveAdminSettings = async (type) => {
     if (isSaving) return; 
@@ -1259,6 +1585,49 @@ export const saveAdminSettings = async (type) => {
         } else if (type === 'payment') {
             if (!appData.payment) appData.payment = {};
             appData.payment.qrisUrl = fixD(getV('set-qris-url')); 
+
+            if (!appData.store.paylater) appData.store.paylater = {};
+            appData.store.paylater = {
+                enabled: getV('set-paylater-enabled') === 'true',
+                minOrder: Math.max(0, parseFloat(getV('set-paylater-min-order')) || 20000),
+                maxOrder: 10000000,
+                noticeText: getV('set-paylater-notice-text') || 'Cicilan transparan tanpa biaya tersembunyi. Tagihan jatuh tempo setiap bulan.',
+                tenors: {
+                    '30d': {
+                        enabled: getV('set-paylater-30d-enabled') === 'true',
+                        label: '30 Hari (1x Bayar)',
+                        shortLabel: '30 Hari',
+                        months: 1,
+                        days: 30,
+                        adminFeeType: getV('set-paylater-30d-admin-type') || 'flat',
+                        adminFeeValue: Math.max(0, parseFloat(getV('set-paylater-30d-admin-val')) || 0),
+                        serviceFeeType: getV('set-paylater-30d-service-type') || 'flat',
+                        serviceFeeValue: Math.max(0, parseFloat(getV('set-paylater-30d-service-val')) || 0)
+                    },
+                    '2m': {
+                        enabled: getV('set-paylater-2m-enabled') === 'true',
+                        label: '2 Bulan (Cicilan 2x)',
+                        shortLabel: '2 Bulan',
+                        months: 2,
+                        days: 60,
+                        adminFeeType: getV('set-paylater-2m-admin-type') || 'flat',
+                        adminFeeValue: Math.max(0, parseFloat(getV('set-paylater-2m-admin-val')) || 0),
+                        serviceFeeType: getV('set-paylater-2m-service-type') || 'percent',
+                        serviceFeeValue: Math.max(0, parseFloat(getV('set-paylater-2m-service-val')) || 0)
+                    },
+                    '3m': {
+                        enabled: getV('set-paylater-3m-enabled') === 'true',
+                        label: '3 Bulan (Cicilan 3x)',
+                        shortLabel: '3 Bulan',
+                        months: 3,
+                        days: 90,
+                        adminFeeType: getV('set-paylater-3m-admin-type') || 'flat',
+                        adminFeeValue: Math.max(0, parseFloat(getV('set-paylater-3m-admin-val')) || 0),
+                        serviceFeeType: getV('set-paylater-3m-service-type') || 'percent',
+                        serviceFeeValue: Math.max(0, parseFloat(getV('set-paylater-3m-service-val')) || 0)
+                    }
+                }
+            };
         } else if (type === 'config') {
             if (!appData.config) appData.config = {};
             appData.config.gasUrl = getV('set-gas-url');
@@ -1286,7 +1655,7 @@ export const saveAdminSettings = async (type) => {
             toggleTaxMenuVisibility();
         }
         
-        const settingsKeyMap = { profile: 'store', catalog: 'store', shipping: 'store', operasional: ['store', 'taxSettings'], payment: 'payment', config: 'config' };
+        const settingsKeyMap = { profile: 'store', catalog: 'store', shipping: 'store', operasional: ['store', 'taxSettings'], payment: ['payment', 'store'], config: 'config' };
         if (typeof window.saveApp === 'function') {
             const keysToSave = Array.isArray(settingsKeyMap[type]) ? settingsKeyMap[type] : [settingsKeyMap[type] || 'store'];
             await window.saveApp(keysToSave);
