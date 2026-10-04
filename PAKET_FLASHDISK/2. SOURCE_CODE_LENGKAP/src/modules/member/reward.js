@@ -6,7 +6,7 @@
  * ============================================================
  */
 
-import { appData, currentMember, setCurrentMember, selectedReward, setSelectedReward } from '../../core/state.js';
+import { appData, currentMember, setCurrentMember, selectedReward, setSelectedReward, myOrders, gOrds } from '../../core/state.js';
 import { el, show, hide, getV, setH, esc, fCur, ensureScriptLoaded } from '../../core/utils.js';
 import { db, auth } from '../../config/firebase.js';
 
@@ -986,6 +986,102 @@ export const loadMemberPointsHistory = async (phone, force = false) => {
 };
 
 /**
+ * Hitung ringkasan tagihan PayLater aktif member (Pokok vs Biaya Tenor vs Angsuran per Bulan)
+ * Menggabungkan riwayat pesanan (myOrders / localStorage) dan state order toko.
+ */
+export const getMemberPaylaterBillingSummary = (member) => {
+    if (!member) return { used: 0, tagihanWajibBayar: 0, totalPokok: 0, totalFee: 0, monthlyInstallment: 0, tenorLabel: '', hasActiveOrder: false };
+
+    const used = Math.max(0, parseFloat(member.paylaterUsed) || 0);
+    const memberPhoneClean = (member.phone || member.id || '').toString().replace(/\D/g, '');
+
+    // Kumpulkan kandidat pesanan dari semua sumber
+    const candidates = [];
+    if (Array.isArray(myOrders) && myOrders.length) candidates.push(...myOrders);
+    if (Array.isArray(gOrds) && gOrds.length) candidates.push(...gOrds);
+    try {
+        const rawO = localStorage.getItem('freshmart_my_orders');
+        if (rawO) {
+            const parsed = JSON.parse(rawO);
+            if (Array.isArray(parsed)) candidates.push(...parsed);
+        }
+    } catch(e) {}
+
+    // Deduplikasi berdasarkan orderId
+    const seenIds = new Set();
+    const uniqueOrders = candidates.filter(o => {
+        if (!o || !o.orderId || seenIds.has(o.orderId)) return false;
+        seenIds.add(o.orderId);
+        return true;
+    });
+
+    const isMatchMember = (o) => {
+        if (!memberPhoneClean) return true;
+        const cPhone = (o.customer?.phone || o.customer?.wa || '').toString().replace(/\D/g, '');
+        return cPhone && (cPhone === memberPhoneClean || cPhone.endsWith(memberPhoneClean) || memberPhoneClean.endsWith(cPhone));
+    };
+
+    // Filter pesanan PayLater aktif yang belum lunas
+    const activePlOrders = uniqueOrders.filter(o => {
+        const isPl = !!(o.payment?.isPaylater || o.isPaylater || o.payment?.subMethod === 'paylater');
+        if (!isPl) return false;
+        if (o.status === 'Batal' || o.payment?.paymentStatus === 'lunas') return false;
+        const bal = parseFloat(o.payment?.tempoBalance);
+        if (isNaN(bal) || bal <= 0) return false;
+        if (!isMatchMember(o)) return false;
+        return true;
+    });
+
+    if (activePlOrders.length > 0) {
+        let tagihanWajibBayar = 0;
+        let totalPokok = 0;
+        let totalFee = 0;
+        let monthlyInstallment = 0;
+        let tenors = [];
+
+        activePlOrders.forEach(o => {
+            const bal = parseFloat(o.payment?.tempoBalance) || 0;
+            const admFee = parseFloat(o.payment?.paylaterAdminFee) || 0;
+            const srvFee = parseFloat(o.payment?.paylaterServiceFee) || 0;
+            const fees = admFee + srvFee;
+            const pUsed = parseFloat(o.payment?.paylaterUsed) || Math.max(0, bal - fees);
+            const mInstallment = parseFloat(o.payment?.paylaterMonthlyInstallment) || bal;
+
+            tagihanWajibBayar += bal;
+            totalPokok += pUsed;
+            totalFee += fees;
+            monthlyInstallment += mInstallment;
+
+            const tName = o.payment?.paylaterTenor === '2m' ? '2 Bulan' : (o.payment?.paylaterTenor === '3m' ? '3 Bulan' : '30 Hari');
+            if (!tenors.includes(tName)) tenors.push(tName);
+        });
+
+        return {
+            used: used > 0 ? used : totalPokok,
+            tagihanWajibBayar,
+            totalPokok: totalPokok > 0 ? totalPokok : used,
+            totalFee,
+            monthlyInstallment: monthlyInstallment > 0 ? monthlyInstallment : tagihanWajibBayar,
+            tenorLabel: tenors.join(', '),
+            activeCount: activePlOrders.length,
+            hasActiveOrder: true
+        };
+    }
+
+    // Fallback jika belum ada pesanan aktif di penyimpanan browser
+    return {
+        used,
+        tagihanWajibBayar: used,
+        totalPokok: used,
+        totalFee: 0,
+        monthlyInstallment: used,
+        tenorLabel: '',
+        activeCount: 0,
+        hasActiveOrder: false
+    };
+};
+
+/**
  * Render isi modal member (Kartu digital + Progress tier + Katalog Hadiah)
  */
 export const rMemberModalBody = () => {
@@ -1086,7 +1182,8 @@ export const rMemberModalBody = () => {
             <!-- PUTRI PAYLATER DIGITAL CREDIT LIMIT -->
             ${(() => {
                 const limit = Math.max(0, parseFloat(currentMember.paylaterLimit) || 0);
-                const used = Math.max(0, parseFloat(currentMember.paylaterUsed) || 0);
+                const billing = getMemberPaylaterBillingSummary(currentMember);
+                const used = billing.used;
                 const isActive = currentMember.paylaterActive === true || currentMember.paylaterActive === 'true';
                 const available = Math.max(0, limit - used);
                 const percentUsed = limit > 0 ? Math.min(100, Math.max(0, Math.round((used / limit) * 100))) : 0;
@@ -1114,6 +1211,10 @@ export const rMemberModalBody = () => {
                         </div>
                     </div>`;
                 }
+
+                const waNominal = (billing.monthlyInstallment > 0 && billing.monthlyInstallment < billing.tagihanWajibBayar) 
+                    ? billing.monthlyInstallment 
+                    : (billing.tagihanWajibBayar > 0 ? billing.tagihanWajibBayar : used);
 
                 return `
                 <div class="p-4 sm:p-5 rounded-2xl border border-emerald-500/30 dark:border-emerald-500/20 bg-gradient-to-br from-emerald-500/5 via-transparent to-teal-500/5 dark:from-emerald-950/20 dark:to-slate-900 shadow-sm relative overflow-hidden space-y-3">
@@ -1154,15 +1255,29 @@ export const rMemberModalBody = () => {
                         <span class="text-emerald-600 dark:text-emerald-400 font-bold">1-Klik Checkout Siap Pakai</span>
                     </div>
 
-                    ${used > 0 ? `
-                        <div class="pt-2 border-t border-dashed border-slate-200 dark:border-slate-700 flex items-center justify-between gap-2">
-                            <div class="min-w-0">
-                                <p class="text-[9px] text-slate-400 uppercase font-bold tracking-wider">Tagihan Berjalan</p>
-                                <p class="text-xs font-black text-rose-600 dark:text-rose-400 font-mono">${fCur(used)}</p>
+                    ${(billing.tagihanWajibBayar > 0 || used > 0) ? `
+                        <div class="pt-2.5 border-t border-dashed border-slate-200 dark:border-slate-700 space-y-2">
+                            <div class="flex items-center justify-between gap-2">
+                                <div class="min-w-0">
+                                    <p class="text-[9px] text-slate-400 uppercase font-black tracking-wider flex items-center gap-1">
+                                        <i class="fa-solid fa-file-invoice-dollar text-emerald-500"></i> Tagihan Berjalan (Wajib Bayar)
+                                    </p>
+                                    <div class="flex items-baseline gap-1.5 mt-0.5 flex-wrap">
+                                        <p class="text-xs sm:text-sm font-black text-rose-600 dark:text-rose-400 font-mono">${fCur(billing.tagihanWajibBayar)}</p>
+                                        ${billing.monthlyInstallment > 0 && billing.monthlyInstallment < billing.tagihanWajibBayar ? `
+                                            <span class="text-[10px] font-bold text-slate-500 dark:text-slate-400 font-mono">(${fCur(billing.monthlyInstallment)}/bln)</span>
+                                        ` : ''}
+                                    </div>
+                                    ${billing.totalFee > 0 ? `
+                                        <p class="text-[9px] text-slate-400 font-medium mt-0.5">
+                                            Pokok: <span class="font-mono text-slate-600 dark:text-slate-300 font-bold">${fCur(billing.totalPokok)}</span> + Biaya Tenor: <span class="font-mono text-emerald-600 dark:text-emerald-400 font-bold">+${fCur(billing.totalFee)}</span>
+                                        </p>
+                                    ` : ''}
+                                </div>
+                                <a href="https://wa.me/${((appData.store?.wa)||'').replace(/\D/g,'')}?text=Halo%20Admin%20Toko%20Putri,%20saya%20ingin%20melakukan%20pembayaran%20tagihan%20Putri%20PayLater%20sebesar%20${encodeURIComponent(fCur(waNominal))}%20untuk%20nomor%20${currentMember.phone||''}" target="_blank" class="px-3 py-2 rounded-xl text-[10px] font-black uppercase tracking-wider bg-emerald-600 hover:bg-emerald-700 text-white flex items-center gap-1.5 shadow-2xs transition-all active:scale-95 shrink-0" title="Bayar via WhatsApp">
+                                    <i class="fa-brands fa-whatsapp text-xs"></i> Bayar Tagihan
+                                </a>
                             </div>
-                            <a href="https://wa.me/${((appData.store?.wa)||'').replace(/\D/g,'')}?text=Halo%20Admin%20Toko%20Putri,%20saya%20ingin%20melakukan%20pembayaran%20tagihan%20Putri%20PayLater%20sebesar%20${encodeURIComponent(fCur(used))}%20untuk%20nomor%20${currentMember.phone||''}" target="_blank" class="px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-wider bg-emerald-600 hover:bg-emerald-700 text-white flex items-center gap-1.5 shadow-2xs transition-all active:scale-95 shrink-0">
-                                <i class="fa-brands fa-whatsapp text-xs"></i> Bayar Tagihan
-                            </a>
                         </div>
                     ` : ''}
                 </div>`;

@@ -225,6 +225,12 @@ const renderTempoDetailModalContent = (o) => {
     const totalPaid = installments.reduce((sum, ins) => sum + (parseFloat(ins.amount) || 0), 0);
     const grandTotalAwal = o.payment?.grandTotal || (calc.sisa + totalPaid);
 
+    const isPlOrder = !!(o.payment?.isPaylater || o.isPaylater || o.payment?.subMethod === 'paylater');
+    const plFees = (parseFloat(o.payment?.paylaterAdminFee) || 0) + (parseFloat(o.payment?.paylaterServiceFee) || 0);
+    const plUsed = parseFloat(o.payment?.paylaterUsed) || Math.max(0, calc.sisa - plFees);
+    const plMonthly = parseFloat(o.payment?.paylaterMonthlyInstallment) || 0;
+    const plMonths = parseInt(o.payment?.paylaterMonths) || (o.payment?.paylaterTenor === '2m' ? 2 : (o.payment?.paylaterTenor === '3m' ? 3 : 1));
+
     // Status Badge
     let statusBadgeHtml = '';
     if (calc.isLate) {
@@ -292,22 +298,27 @@ const renderTempoDetailModalContent = (o) => {
             <div class="p-4 rounded-2xl border ${calc.isLate ? 'bg-rose-50/60 dark:bg-rose-950/20 border-rose-200 dark:border-rose-900/40' : 'bg-slate-50 dark:bg-slate-800/60 border-slate-200 dark:border-slate-700/80'} shadow-2xs">
                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center sm:text-left">
                     <div>
-                        <span class="block text-[10px] font-bold uppercase tracking-wider text-slate-400">Total Transaksi</span>
-                        <span class="text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-200 font-mono mt-0.5 block">${fCur(grandTotalAwal)}</span>
+                        <span class="block text-[10px] font-bold uppercase tracking-wider text-slate-400">${isPlOrder ? 'Pokok Belanja' : 'Total Transaksi'}</span>
+                        <span class="text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-200 font-mono mt-0.5 block">${fCur(isPlOrder ? plUsed : grandTotalAwal)}</span>
                     </div>
                     <div>
-                        <span class="block text-[10px] font-bold uppercase tracking-wider text-slate-400">Sudah Dibayar</span>
-                        <span class="text-xs sm:text-sm font-bold text-emerald-600 dark:text-emerald-400 font-mono mt-0.5 block">${fCur(totalPaid)}</span>
+                        <span class="block text-[10px] font-bold uppercase tracking-wider text-slate-400">${isPlOrder && plFees > 0 ? 'Biaya PayLater' : 'Sudah Dibayar'}</span>
+                        <span class="text-xs sm:text-sm font-bold ${isPlOrder && plFees > 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-emerald-600 dark:text-emerald-400'} font-mono mt-0.5 block">${isPlOrder && plFees > 0 ? ('+' + fCur(plFees)) : fCur(totalPaid)}</span>
                     </div>
                     <div>
-                        <span class="block text-[10px] font-bold uppercase tracking-wider text-slate-400">Sisa Pokok</span>
-                        <span class="text-xs sm:text-sm font-bold text-slate-700 dark:text-slate-300 font-mono mt-0.5 block">${fCur(calc.sisa)}</span>
+                        <span class="block text-[10px] font-bold uppercase tracking-wider text-slate-400">${isPlOrder && plFees > 0 ? 'Sudah Dibayar' : 'Sisa Pokok'}</span>
+                        <span class="text-xs sm:text-sm font-bold ${isPlOrder && plFees > 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-700 dark:text-slate-300'} font-mono mt-0.5 block">${fCur(isPlOrder && plFees > 0 ? totalPaid : calc.sisa)}</span>
                     </div>
                     <div>
                         <span class="block text-[10px] font-bold uppercase tracking-wider ${calc.isLate ? 'text-rose-500' : 'text-slate-400'}">Total Wajib Bayar</span>
                         <span class="text-sm sm:text-base font-black ${calc.isLate ? 'text-rose-600 dark:text-rose-400' : 'text-slate-900 dark:text-white'} font-mono mt-0.5 block">${fCur(calc.totalAkhir)}</span>
                     </div>
                 </div>
+                ${isPlOrder && plMonthly > 0 && plMonths > 1 ? `
+                <div class="mt-2.5 pt-2 border-t border-slate-200/60 dark:border-slate-700/60 flex items-center justify-between text-xs text-slate-600 dark:text-slate-300">
+                    <span class="font-bold flex items-center gap-1.5"><i class="fa-solid fa-calendar-days text-[var(--color-primary)]"></i> Tenor Cicilan: <b>${plMonths} Bulan (${plMonths}x Bayar)</b></span>
+                    <span class="font-black font-mono text-[var(--color-primary)]">${fCur(plMonthly)} / bulan</span>
+                </div>` : ''}
                 ${calc.latePenalty > 0 ? `
                 <div class="mt-2.5 pt-2 border-t border-rose-200/80 dark:border-rose-900/60 flex items-center justify-between text-xs text-rose-600 dark:text-rose-400">
                     <span class="font-bold flex items-center gap-1.5"><i class="fa-solid fa-clock"></i> Termasuk Denda Keterlambatan (${calc.rate}%/hari • ${calc.daysLate} hari):</span>
@@ -1444,6 +1455,11 @@ window.sendSmartTempoWA = (orderId) => {
     }
 
     const isPL = !!(o.payment?.isPaylater || o.isPaylater || o.payment?.subMethod === 'paylater');
+    const plFees = (parseFloat(o.payment?.paylaterAdminFee) || 0) + (parseFloat(o.payment?.paylaterServiceFee) || 0);
+    const plUsed = parseFloat(o.payment?.paylaterUsed) || Math.max(0, calc.sisa - plFees);
+    const plMonthly = parseFloat(o.payment?.paylaterMonthlyInstallment) || 0;
+    const plMonths = parseInt(o.payment?.paylaterMonths) || (o.payment?.paylaterTenor === '2m' ? 2 : (o.payment?.paylaterTenor === '3m' ? 3 : 1));
+
     let msg = '';
     if (calc.isLate) {
         msg = `*PEMBERITAHUAN JATUH TEMPO ${isPL ? 'PUTRI PAYLATER' : 'TEMPO'} - ${storeName.toUpperCase()}*\n\n` +
@@ -1451,10 +1467,11 @@ window.sendSmartTempoWA = (orderId) => {
               `Kami menginformasikan bahwa tagihan pembelian ${isPL ? 'Putri PayLater' : 'Tempo'} Anda telah *MELEWATI BATAS JATUH TEMPO* (${calc.daysLate} hari keterlambatan).\n\n` +
               `📋 *Rincian Tagihan:*\n` +
               `• No. Pesanan: #${o.orderId}\n` +
-              (isPL ? `• Layanan: Putri PayLater VIP\n` : '') +
+              (isPL ? `• Layanan: Putri PayLater (${plMonths > 1 ? plMonths + ' Bulan' : '30 Hari'})\n` : '') +
               `• Tgl. Transaksi: ${dateStr}\n` +
               `• Tgl. Jatuh Tempo: ${dueStr}\n` +
-              `• Sisa Pokok: ${fCur(calc.sisa)}\n` +
+              (isPL && plFees > 0 ? `• Pokok Belanja: ${fCur(plUsed)}\n• Biaya PayLater: +${fCur(plFees)}\n` : `• Sisa Pokok: ${fCur(calc.sisa)}\n`) +
+              (isPL && plMonthly > 0 && plMonths > 1 ? `• Angsuran per Bulan (${plMonths}x): ${fCur(plMonthly)}/bln\n` : '') +
               (calc.latePenalty > 0 ? `• Denda (${calc.rate}%/hari): ${fCur(calc.latePenalty)}\n` : '') +
               `• *TOTAL HARUS DIBAYAR: ${fCur(calc.totalAkhir)}*\n\n` +
               `💳 *Pembayaran dapat ditransfer ke rekening resmi kami:*\n` +
@@ -1469,10 +1486,12 @@ window.sendSmartTempoWA = (orderId) => {
               `Semoga sehat dan sukses selalu. Kami dari *${storeName}* menginfokan bahwa tagihan pembelian ${isPL ? 'Putri PayLater' : 'Tempo'} Anda akan jatuh tempo *${reminderWord}* (${dueStr}).\n\n` +
               `📋 *Rincian Tagihan:*\n` +
               `• No. Pesanan: #${o.orderId}\n` +
-              (isPL ? `• Layanan: Putri PayLater VIP\n` : '') +
+              (isPL ? `• Layanan: Putri PayLater (${plMonths > 1 ? plMonths + ' Bulan' : '30 Hari'})\n` : '') +
               `• Tgl. Transaksi: ${dateStr}\n` +
               `• Tgl. Jatuh Tempo: ${dueStr}\n` +
-              `• *Sisa Tagihan: ${fCur(calc.totalAkhir)}*\n\n` +
+              (isPL && plFees > 0 ? `• Pokok Belanja: ${fCur(plUsed)}\n• Biaya PayLater: +${fCur(plFees)}\n` : `• Sisa Pokok: ${fCur(calc.sisa)}\n`) +
+              (isPL && plMonthly > 0 && plMonths > 1 ? `• Angsuran per Bulan (${plMonths}x): ${fCur(plMonthly)}/bln\n` : '') +
+              `• *Total Tagihan: ${fCur(calc.totalAkhir)}*\n\n` +
               `💳 *Pembayaran dapat ditransfer ke rekening resmi kami:*\n` +
               `${bankText}\n\n` +
               `Apabila sudah melakukan pembayaran, mohon abaikan pesan ini atau kirimkan bukti transfer ke nomor ini.` +
@@ -1484,10 +1503,12 @@ window.sendSmartTempoWA = (orderId) => {
               `Berikut informasi rincian tagihan pembelian ${isPL ? 'Putri PayLater' : 'Tempo'} Anda di *${storeName}*:\n\n` +
               `📋 *Rincian Tagihan:*\n` +
               `• No. Pesanan: #${o.orderId}\n` +
-              (isPL ? `• Layanan: Putri PayLater VIP\n` : '') +
+              (isPL ? `• Layanan: Putri PayLater (${plMonths > 1 ? plMonths + ' Bulan' : '30 Hari'})\n` : '') +
               `• Tgl. Transaksi: ${dateStr}\n` +
               `• Tgl. Jatuh Tempo: ${dueStr} (tersisa ${calc.daysLeft} hari)\n` +
-              `• *Sisa Pokok: ${fCur(calc.totalAkhir)}*\n\n` +
+              (isPL && plFees > 0 ? `• Pokok Belanja: ${fCur(plUsed)}\n• Biaya PayLater: +${fCur(plFees)}\n` : `• Sisa Pokok: ${fCur(calc.sisa)}\n`) +
+              (isPL && plMonthly > 0 && plMonths > 1 ? `• Angsuran per Bulan (${plMonths}x): ${fCur(plMonthly)}/bln\n` : '') +
+              `• *TOTAL TAGIHAN: ${fCur(calc.totalAkhir)}*\n\n` +
               `💳 *Rekening Pembayaran Resmi:*\n` +
               `${bankText}\n\n` +
               (isPL ? `✨ Bayar tagihan tepat waktu untuk menjaga skor & limit kredit PayLater Anda tetap prima.\n\n` : '') +
@@ -1655,6 +1676,12 @@ const renderTempoCardItem = (o) => {
     const dueStr = calc.dueDate ? formatDateID(calc.dueDate) : '-';
     const custKey = esc(o.customer?.phone || o.customer?.wa || o.customer?.name || '');
 
+    const isPlOrder = !!(o.payment?.isPaylater || o.isPaylater || o.payment?.subMethod === 'paylater');
+    const plFees = (parseFloat(o.payment?.paylaterAdminFee) || 0) + (parseFloat(o.payment?.paylaterServiceFee) || 0);
+    const plUsed = parseFloat(o.payment?.paylaterUsed) || Math.max(0, calc.sisa - plFees);
+    const plMonthly = parseFloat(o.payment?.paylaterMonthlyInstallment) || 0;
+    const plMonths = parseInt(o.payment?.paylaterMonths) || (o.payment?.paylaterTenor === '2m' ? 2 : (o.payment?.paylaterTenor === '3m' ? 3 : 1));
+
     let badgeHTML = '';
     let borderClass = 'border-slate-200 dark:border-slate-700/80';
 
@@ -1698,16 +1725,32 @@ const renderTempoCardItem = (o) => {
                 </div>
             </div>
             
-            <!-- RINGKASAN JATUH TEMPO & POKOK -->
-            <div class="space-y-2 mb-3 bg-slate-50 dark:bg-slate-900/50 p-3 rounded-2xl border border-slate-100 dark:border-slate-700/50">
+            <!-- RINGKASAN JATUH TEMPO, POKOK & BIAYA -->
+            <div class="space-y-1.5 mb-3 bg-slate-50 dark:bg-slate-900/50 p-3 rounded-2xl border border-slate-100 dark:border-slate-700/50">
                 <div class="flex justify-between items-center text-xs">
                     <span class="font-bold text-slate-500">Jatuh Tempo</span>
                     <span class="font-bold font-mono ${calc.isLate ? 'text-rose-600' : (calc.isDueSoon ? 'text-amber-600' : 'text-slate-700 dark:text-slate-300')}">${dueStr}</span>
                 </div>
+                ${isPlOrder && plFees > 0 ? `
+                <div class="flex justify-between items-center text-xs">
+                    <span class="font-bold text-slate-500">Pokok Belanja</span>
+                    <span class="font-bold text-slate-700 dark:text-slate-300 font-mono">${fCur(plUsed)}</span>
+                </div>
+                <div class="flex justify-between items-center text-xs">
+                    <span class="font-bold text-slate-500">Biaya PayLater (${plMonths > 1 ? plMonths + ' Bulan' : '30 Hari'})</span>
+                    <span class="font-bold text-emerald-600 dark:text-emerald-400 font-mono">+${fCur(plFees)}</span>
+                </div>
+                ${plMonthly > 0 && plMonths > 1 ? `
+                <div class="flex justify-between items-center text-xs pt-1 border-t border-slate-200/50 dark:border-slate-700/50">
+                    <span class="font-bold text-slate-500">Angsuran / Bulan (${plMonths}x)</span>
+                    <span class="font-bold text-[var(--color-primary)] font-mono">${fCur(plMonthly)}/bln</span>
+                </div>` : ''}
+                ` : `
                 <div class="flex justify-between items-center text-xs">
                     <span class="font-bold text-slate-500">Sisa Pokok</span>
                     <span class="font-bold text-slate-700 dark:text-slate-300 font-mono">${fCur(calc.sisa)}</span>
                 </div>
+                `}
                 ${calc.isLate ? `
                 <div class="flex justify-between items-center text-xs ${calc.isStopped ? 'text-slate-500' : 'text-rose-600'}">
                     <span class="font-bold">Denda (${calc.rate}%/hari) ${calc.isStopped ? '<span class="text-[9px] bg-slate-200 dark:bg-slate-700 px-1 py-0.5 rounded ml-1">STOPPED</span>' : ''}</span>
