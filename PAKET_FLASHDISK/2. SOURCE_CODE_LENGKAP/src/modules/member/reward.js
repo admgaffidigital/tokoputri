@@ -732,24 +732,27 @@ export const openMemberModal = () => {
     }
     const isAlreadyOpen = m.style.display !== 'none' && m.style.opacity === '1';
     m.innerHTML = `
-        <div class="bg-white dark:bg-slate-900 w-full max-w-lg rounded-t-3xl sm:rounded-3xl max-h-[90vh] flex flex-col shadow-xl border border-slate-200 dark:border-slate-800 overflow-hidden">
+        <div class="bg-white dark:bg-slate-900 w-full max-w-lg rounded-t-[2.25rem] sm:rounded-3xl max-h-[92dvh] sm:max-h-[88vh] flex flex-col shadow-2xl border border-slate-200/90 dark:border-slate-800 overflow-hidden">
+            <!-- DRAG PULL MOBILE -->
+            <div class="pull-indicator sm:hidden"></div>
+
             <!-- Header Modal -->
-            <div class="p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center shrink-0 bg-white dark:bg-slate-900">
-                <div class="flex items-center gap-2.5">
-                    <div class="w-8 h-8 rounded-xl primary-bg flex items-center justify-center text-white shadow-sm shadow-[rgba(var(--color-primary-rgb),0.25)]">
+            <div class="px-5 sm:px-6 pt-3.5 sm:pt-5 pb-4 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center shrink-0 bg-white dark:bg-slate-900">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-2xl flex items-center justify-center text-white shadow-xs" style="background: var(--color-primary); box-shadow: 0 4px 12px rgba(var(--color-primary-rgb), 0.3);">
                         <i class="fa-solid fa-id-card text-xs"></i>
                     </div>
                     <div>
-                        <h3 class="font-bold text-slate-800 dark:text-white text-sm sm:text-base leading-tight">Kartu Member Digital</h3>
-                        <p class="text-[9px] sm:text-[10px] font-semibold text-slate-400">Loyalty Pass &amp; Poin Hadiah Toko Putri</p>
+                        <h3 class="font-black text-slate-800 dark:text-white text-sm sm:text-base leading-tight">Kartu Member Digital</h3>
+                        <p class="text-[10px] font-semibold text-slate-400">Loyalty Pass &amp; Poin Hadiah Toko Putri</p>
                     </div>
                 </div>
-                <button onclick="closeMemberModal()" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:bg-rose-100 hover:text-rose-500 flex items-center justify-center transition-all cursor-pointer">
+                <button onclick="closeMemberModal()" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:bg-rose-100 hover:text-rose-500 flex items-center justify-center transition-all cursor-pointer active:scale-95" title="Tutup">
                     <i class="fa-solid fa-xmark text-sm"></i>
                 </button>
             </div>
-            <!-- Body Modal -->
-            <div class="p-4 sm:p-6 overflow-y-auto flex-1 space-y-5" id="member-modal-body"></div>
+            <!-- Body Modal (Spacious Scroll Clearance) -->
+            <div class="p-5 sm:p-6 pb-20 sm:pb-24 overflow-y-auto flex-1 space-y-6 custom-scrollbar" id="member-modal-body"></div>
         </div>`;
     rMemberModalBody();
     m.style.opacity = '0'; 
@@ -1223,23 +1226,23 @@ export const rMemberModalBody = () => {
                     : (billing.tagihanWajibBayar > 0 ? billing.tagihanWajibBayar : used);
 
                 return `
-                <div class="p-4 sm:p-5 rounded-2xl border border-emerald-500/30 dark:border-emerald-500/20 bg-gradient-to-br from-emerald-500/5 via-transparent to-teal-500/5 dark:from-emerald-950/20 dark:to-slate-900 shadow-sm relative overflow-hidden space-y-3">
+                <div class="p-4 sm:p-5 rounded-2xl border border-[var(--color-primary)]/25 dark:border-[var(--color-primary)]/35 bg-gradient-to-br from-[rgba(var(--color-primary-rgb),0.06)] via-transparent to-[rgba(var(--color-primary-rgb),0.02)] dark:from-[rgba(var(--color-primary-rgb),0.12)] dark:to-slate-900 shadow-sm relative overflow-hidden space-y-3">
                     <div class="flex items-center justify-between">
                         <div class="flex items-center gap-2">
-                            <div class="w-8 h-8 rounded-xl bg-emerald-500 text-white flex items-center justify-center shadow-xs">
+                            <div class="w-8 h-8 rounded-xl text-white flex items-center justify-center shadow-xs" style="background: var(--color-primary);">
                                 <i class="fa-solid fa-bolt text-xs"></i>
                             </div>
                             <div>
                                 <div class="flex items-center gap-1.5">
                                     <span class="text-xs font-black text-slate-900 dark:text-white">Putri PayLater</span>
-                                    <span class="px-1.5 py-0.5 rounded-full text-[8px] font-black uppercase tracking-wider bg-emerald-100 text-emerald-700 dark:bg-emerald-900/60 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700">Aktif</span>
+                                    <span class="px-1.5 py-0.5 rounded-full text-[8px] font-black uppercase tracking-wider bg-[rgba(var(--color-primary-rgb),0.12)] text-[var(--color-primary)] border border-[var(--color-primary)]/30 font-bold">Aktif</span>
                                 </div>
                                 <p class="text-[9px] text-slate-400 font-semibold">Limit Kredit Eksklusif Member Toko</p>
                             </div>
                         </div>
                         <div class="text-right">
                             <p class="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Sisa Limit Tersedia</p>
-                            <p class="text-sm font-black text-emerald-600 dark:text-emerald-400 font-mono">${fCur(available)}</p>
+                            <p class="text-sm font-black text-[var(--color-primary)] font-mono">${fCur(available)}</p>
                         </div>
                     </div>
 
@@ -1250,15 +1253,15 @@ export const rMemberModalBody = () => {
                             <span>Total Plafon: <b class="font-mono text-slate-800 dark:text-slate-200">${fCur(limit)}</b></span>
                         </div>
                         <div class="w-full h-2.5 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden p-0.5">
-                            <div class="h-full rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 transition-all duration-500" style="width: ${percentUsed}%"></div>
+                            <div class="h-full rounded-full transition-all duration-500" style="background: var(--color-primary); width: ${percentUsed}%;"></div>
                         </div>
                     </div>
 
                     <div class="pt-2 border-t border-slate-200/60 dark:border-slate-700/60 flex items-center justify-between text-[10px]">
                         <span class="text-slate-500 dark:text-slate-400 flex items-center gap-1">
-                            <i class="fa-regular fa-calendar-check text-emerald-500"></i> Jatuh Tempo: <b>Tgl ${dueDay} Bulan Depan</b>
+                            <i class="fa-regular fa-calendar-check text-[var(--color-primary)]"></i> Jatuh Tempo: <b>Tgl ${dueDay} Bulan Depan</b>
                         </span>
-                        <span class="text-emerald-600 dark:text-emerald-400 font-bold">1-Klik Checkout Siap Pakai</span>
+                        <span class="text-[var(--color-primary)] font-bold">1-Klik Checkout Siap Pakai</span>
                     </div>
 
                     ${(billing.tagihanWajibBayar > 0 || used > 0) ? `
@@ -1266,7 +1269,7 @@ export const rMemberModalBody = () => {
                             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                                 <div class="min-w-0">
                                     <p class="text-[9px] text-slate-400 uppercase font-black tracking-wider flex items-center gap-1">
-                                        <i class="fa-solid fa-file-invoice-dollar text-emerald-500"></i> Tagihan Berjalan (Wajib Bayar)
+                                        <i class="fa-solid fa-file-invoice-dollar text-[var(--color-primary)]"></i> Tagihan Berjalan (Wajib Bayar)
                                     </p>
                                     <div class="flex items-baseline gap-1.5 mt-0.5 flex-wrap">
                                         <p class="text-sm sm:text-base font-black text-rose-600 dark:text-rose-400 font-mono">${fCur(billing.tagihanWajibBayar)}</p>
@@ -1276,16 +1279,16 @@ export const rMemberModalBody = () => {
                                     </div>
                                     ${billing.totalFee > 0 ? `
                                         <p class="text-[9px] text-slate-400 font-medium mt-0.5">
-                                            Pokok: <span class="font-mono text-slate-600 dark:text-slate-300 font-bold">${fCur(billing.totalPokok)}</span> + Biaya Tenor: <span class="font-mono text-emerald-600 dark:text-emerald-400 font-bold">+${fCur(billing.totalFee)}</span>
+                                            Pokok: <span class="font-mono text-slate-600 dark:text-slate-300 font-bold">${fCur(billing.totalPokok)}</span> + Biaya Tenor: <span class="font-mono text-[var(--color-primary)] font-bold">+${fCur(billing.totalFee)}</span>
                                         </p>
                                     ` : ''}
                                 </div>
                                 <div class="flex items-center gap-2">
-                                    <button type="button" onclick="if(typeof window.openClientPaymentModal==='function') window.openClientPaymentModal('', ${waNominal}); else if(typeof openClientPaymentModal==='function') openClientPaymentModal('', ${waNominal});" class="flex-1 sm:flex-none px-3.5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-wider bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white flex items-center justify-center gap-1.5 shadow-xs transition-all active:scale-95 cursor-pointer">
+                                    <button type="button" onclick="if(typeof window.openClientPaymentModal==='function') window.openClientPaymentModal('', ${waNominal}); else if(typeof openClientPaymentModal==='function') openClientPaymentModal('', ${waNominal});" class="flex-1 sm:flex-none px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-wider text-white flex items-center justify-center gap-1.5 shadow-sm transition-all active:scale-95 cursor-pointer" style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
                                         <i class="fa-solid fa-qrcode text-xs"></i> Bayar Bank / QRIS
                                     </button>
-                                    <a href="https://wa.me/${((appData.store?.wa)||'').replace(/\D/g,'')}?text=Halo%20Admin%20Toko%20Putri,%20saya%20ingin%20melakukan%20pembayaran%20tagihan%20Putri%20PayLater%20sebesar%20${encodeURIComponent(fCur(waNominal))}%20untuk%20nomor%20${currentMember.phone||''}" target="_blank" class="p-2.5 rounded-xl text-slate-500 hover:text-emerald-600 border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 flex items-center justify-center active:scale-95 transition-all shadow-2xs" title="Konfirmasi via WhatsApp">
-                                        <i class="fa-brands fa-whatsapp text-sm text-emerald-500"></i>
+                                    <a href="https://wa.me/${((appData.store?.wa)||'').replace(/\D/g,'')}?text=Halo%20Admin%20Toko%20Putri,%20saya%20ingin%20melakukan%20pembayaran%20tagihan%20Putri%20PayLater%20sebesar%20${encodeURIComponent(fCur(waNominal))}%20untuk%20nomor%20${currentMember.phone||''}" target="_blank" class="p-2.5 rounded-xl text-slate-500 hover:text-[var(--color-primary)] border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 flex items-center justify-center active:scale-95 transition-all shadow-2xs" title="Konfirmasi via WhatsApp">
+                                        <i class="fa-brands fa-whatsapp text-sm text-[var(--color-primary)]"></i>
                                     </a>
                                 </div>
                             </div>
@@ -1313,10 +1316,10 @@ export const rMemberModalBody = () => {
                 if (typeof renderFn !== 'function') return '';
 
                 return `
-                <div class="space-y-3">
+                <div class="space-y-3.5">
                     <div class="flex items-center justify-between">
                         <p class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
-                            <i class="fa-solid fa-list-check text-emerald-500"></i> Jadwal Angsuran &amp; Cicilan Anda
+                            <i class="fa-solid fa-list-check text-[var(--color-primary)]"></i> Jadwal Angsuran &amp; Cicilan Anda
                         </p>
                         <span class="text-[10px] font-bold text-[var(--color-primary)]">${activeOrders.length} Tagihan Aktif</span>
                     </div>

@@ -437,17 +437,19 @@ export const renderOrderDetailModal = (orderId, d, reviewedKeys = []) => {
         const grandTotal = (d.payment && d.payment.grandTotal) ? d.payment.grandTotal : 0;
 
         m.innerHTML = `
-            <div class="bg-white dark:bg-slate-900 w-full max-w-lg rounded-t-3xl sm:rounded-2xl max-h-[88vh] flex flex-col shadow-2xl transform translate-y-full sm:translate-y-10 scale-100 transition-transform duration-300 border border-slate-200 dark:border-slate-700 overflow-hidden" id="order-detail-content">
-                
-                <div class="p-4 sm:p-5 border-b border-slate-200 dark:border-slate-800 flex justify-between items-center shrink-0 bg-slate-50 dark:bg-slate-800/80">
+            <div class="bg-white dark:bg-slate-900 w-full max-w-lg rounded-t-[2.25rem] sm:rounded-3xl max-h-[92dvh] sm:max-h-[88vh] flex flex-col shadow-2xl transform translate-y-full sm:translate-y-10 scale-100 transition-transform duration-300 border border-slate-200/90 dark:border-slate-800 overflow-hidden" id="order-detail-content">
+                <!-- DRAG PULL MOBILE -->
+                <div class="pull-indicator sm:hidden"></div>
+
+                <div class="px-5 sm:px-6 pt-3.5 sm:pt-5 pb-4 border-b border-slate-200 dark:border-slate-800 flex justify-between items-center shrink-0 bg-slate-50 dark:bg-slate-800/80">
                     <div>
-                        <h3 class="font-bold text-slate-800 dark:text-white text-base">Rincian Pesanan</h3>
+                        <h3 class="font-black text-slate-800 dark:text-white text-base">Rincian Pesanan</h3>
                         <p class="text-[11px] font-semibold text-slate-500 dark:text-slate-400 mt-0.5">ID: #${orderId.split('-').pop()}</p>
                     </div>
-                    <button onclick="closeCustomerOrderDetailModal()" class="w-8 h-8 flex items-center justify-center rounded-full bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-rose-100 hover:text-rose-500 transition-colors active:scale-95"><i class="fa-solid fa-xmark"></i></button>
+                    <button onclick="closeCustomerOrderDetailModal()" class="w-8 h-8 flex items-center justify-center rounded-full bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-rose-100 hover:text-rose-500 transition-colors active:scale-95 cursor-pointer" title="Tutup"><i class="fa-solid fa-xmark"></i></button>
                 </div>
                 
-                <div class="p-4 sm:p-5 overflow-y-auto flex-1 space-y-5 custom-scrollbar text-sm">
+                <div class="p-5 sm:p-6 pb-20 sm:pb-24 overflow-y-auto flex-1 space-y-6 custom-scrollbar text-sm">
                     <div class="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-xl border border-slate-200 dark:border-slate-700 flex justify-between items-center">
                         <div>
                             <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1">Status Pesanan</p>
@@ -556,23 +558,23 @@ export const renderOrderDetailModal = (orderId, d, reviewedKeys = []) => {
                                 tableHtml = `
                                 <div class="mt-3 pt-2.5 border-t border-slate-200 dark:border-slate-700/80 space-y-2">
                                     <p class="text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
-                                        <i class="fa-solid fa-calendar-days text-emerald-500"></i> Rencana Jadwal Angsuran Anda:
+                                        <i class="fa-solid fa-calendar-days text-[var(--color-primary)]"></i> Rencana Jadwal Angsuran Anda:
                                     </p>
-                                    <div class="overflow-hidden rounded-xl border border-slate-200 dark:border-slate-700/80">
-                                        <table class="w-full text-left text-[11px]">
-                                            <thead class="bg-slate-200/60 dark:bg-slate-700/60 text-[9px] font-black uppercase tracking-wider text-slate-600 dark:text-slate-300">
+                                    <div class="overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-700/80 custom-scrollbar">
+                                        <table class="w-full text-left text-xs min-w-[320px]">
+                                            <thead class="bg-slate-200/60 dark:bg-slate-700/60 text-[10px] font-black uppercase tracking-wider text-slate-600 dark:text-slate-300">
                                                 <tr>
-                                                    <th class="py-2 px-2.5">Bulan</th>
-                                                    <th class="py-2 px-2.5">Jatuh Tempo</th>
-                                                    <th class="py-2 px-2.5 text-right">Wajib Bayar</th>
+                                                    <th class="py-2.5 px-3">Bulan</th>
+                                                    <th class="py-2.5 px-3">Jatuh Tempo</th>
+                                                    <th class="py-2.5 px-3 text-right">Wajib Bayar</th>
                                                 </tr>
                                             </thead>
                                             <tbody class="divide-y divide-slate-200 dark:divide-slate-700/60 bg-white dark:bg-slate-900/40">
                                                 ${sched.map(sc => `
                                                 <tr>
-                                                    <td class="py-2 px-2.5 font-bold text-slate-800 dark:text-white">Bulan ke-${sc.installmentNumber}</td>
-                                                    <td class="py-2 px-2.5 text-slate-500 dark:text-slate-400">${sc.dueDateStr || (sc.dueDate ? new Date(sc.dueDate).toLocaleDateString('id-ID', {day: 'numeric', month: 'short', year: 'numeric'}) : '-')}</td>
-                                                    <td class="py-2 px-2.5 font-mono font-black text-right text-emerald-600 dark:text-emerald-400">${fCur(sc.totalMonthly || mInstall)}</td>
+                                                    <td class="py-2.5 px-3 font-bold text-slate-800 dark:text-white">Bulan ke-${sc.installmentNumber}</td>
+                                                    <td class="py-2.5 px-3 text-slate-500 dark:text-slate-400 font-mono text-[11px]">${sc.dueDateStr || (sc.dueDate ? new Date(sc.dueDate).toLocaleDateString('id-ID', {day: 'numeric', month: 'short', year: 'numeric'}) : '-')}</td>
+                                                    <td class="py-2.5 px-3 font-mono font-black text-right text-[var(--color-primary)]">${fCur(sc.totalMonthly || mInstall)}</td>
                                                 </tr>`).join('')}
                                             </tbody>
                                         </table>
@@ -581,17 +583,17 @@ export const renderOrderDetailModal = (orderId, d, reviewedKeys = []) => {
                             }
 
                             return `
-                            <div class="mt-2.5 pt-2.5 border-t border-slate-200 dark:border-slate-700/80 space-y-1.5">
-                                <div class="flex justify-between text-emerald-600 dark:text-emerald-400 font-bold">
+                            <div class="mt-3 pt-2.5 border-t border-slate-200 dark:border-slate-700/80 space-y-2">
+                                <div class="flex justify-between text-[var(--color-primary)] font-bold text-xs">
                                     <span>Tenor Cicilan PayLater</span>
                                     <span>${d.payment?.paylaterTenor === '2m' ? '2 Bulan (2x Cicilan)' : (d.payment?.paylaterTenor === '3m' ? '3 Bulan (3x Cicilan)' : '30 Hari (1x Bayar)')}</span>
                                 </div>
                                 ${mInstall ? `
-                                <div class="flex justify-between text-emerald-700 dark:text-emerald-300 font-black">
+                                <div class="flex justify-between text-[var(--color-primary)] font-black text-xs">
                                     <span>Angsuran per Bulan (${months}x)</span>
-                                    <span class="font-mono text-emerald-600 dark:text-emerald-400">${fCur(mInstall)}/bln</span>
+                                    <span class="font-mono text-sm">${fCur(mInstall)}/bln</span>
                                 </div>` : ''}
-                                <div class="flex justify-between text-slate-600 dark:text-slate-400">
+                                <div class="flex justify-between text-slate-600 dark:text-slate-400 text-xs">
                                     <span>Jatuh Tempo Pertama</span>
                                     <span class="font-bold">${d.payment?.tempoDueDate ? new Date(d.payment.tempoDueDate).toLocaleDateString('id-ID', {day: 'numeric', month: 'short', year: 'numeric'}) : '-'}</span>
                                 </div>
@@ -600,13 +602,13 @@ export const renderOrderDetailModal = (orderId, d, reviewedKeys = []) => {
                         })()}
                     </div>
 
-                    <div class="pt-2 flex flex-col sm:flex-row gap-2.5">
+                    <div class="pt-3 flex flex-col sm:flex-row gap-3">
                         ${(parseFloat(d.payment?.tempoBalance) > 0 && d.status !== 'Batal' && d.payment?.paymentStatus !== 'lunas') ? `
-                        <button type="button" onclick="if(typeof window.openClientPaymentModal==='function') window.openClientPaymentModal('${d.orderId}'); else alert('Memuat modul pembayaran...');" class="flex-1 py-3.5 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white text-xs font-bold flex items-center justify-center gap-2 active:scale-95 transition-all cursor-pointer shadow-md">
+                        <button type="button" onclick="if(typeof window.openClientPaymentModal==='function') window.openClientPaymentModal('${d.orderId}'); else alert('Memuat modul pembayaran...');" class="flex-1 h-12 py-3 px-4 rounded-2xl text-white text-xs font-bold flex items-center justify-center gap-2 active:scale-95 transition-all cursor-pointer shadow-md" style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
                             <i class="fa-solid fa-qrcode text-white"></i> Bayar Angsuran / Cicilan
                         </button>
                         ` : ''}
-                        <button type="button" onclick="if(typeof window.openReceiptPreview==='function') window.openReceiptPreview('${d.orderId}'); else if(typeof window.printCustomerReceiptDirect==='function') window.printCustomerReceiptDirect('${d.orderId}'); else window.openCustomerReceiptPreview('${d.orderId}');" class="flex-1 py-3.5 rounded-2xl btn-primary text-xs font-bold flex items-center justify-center gap-2 hover:opacity-90 active:scale-95 transition-all cursor-pointer shadow-md">
+                        <button type="button" onclick="if(typeof window.openReceiptPreview==='function') window.openReceiptPreview('${d.orderId}'); else if(typeof window.printCustomerReceiptDirect==='function') window.printCustomerReceiptDirect('${d.orderId}'); else window.openCustomerReceiptPreview('${d.orderId}');" class="flex-1 h-12 py-3 px-4 rounded-2xl btn-primary text-xs font-bold flex items-center justify-center gap-2 hover:opacity-90 active:scale-95 transition-all cursor-pointer shadow-md">
                             <i class="fa-solid fa-eye text-white/90"></i><i class="fa-solid fa-print"></i> Preview &amp; Cetak Struk
                         </button>
                     </div>

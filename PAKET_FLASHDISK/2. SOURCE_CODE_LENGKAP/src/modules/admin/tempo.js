@@ -91,7 +91,7 @@ export const ensureTempoModals = () => {
         m.className = 'fixed inset-0 z-[150] flex hidden items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-950/75 opacity-0 transition-opacity duration-300';
         m.onclick = (e) => { if (e.target === m) window.closeTempoConfirmationsModal?.(); };
         m.innerHTML = `
-            <div id="modal-tempo-confirmations-box" class="modal-bottom-sheet relative flex max-h-[92dvh] sm:max-h-[88dvh] w-full max-w-2xl translate-y-full sm:translate-y-10 transform flex-col overflow-hidden rounded-t-[2rem] sm:rounded-3xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xl transition-transform duration-300">
+            <div id="modal-tempo-confirmations-box" class="modal-bottom-sheet relative flex max-h-[92dvh] sm:max-h-[88dvh] w-full max-w-2xl translate-y-full sm:translate-y-10 transform flex-col overflow-hidden rounded-t-[2.25rem] sm:rounded-3xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xl transition-transform duration-300">
                 <div id="modal-tempo-confirmations-content" class="flex-1 overflow-y-auto custom-scrollbar flex flex-col"></div>
             </div>
         `;
@@ -361,12 +361,12 @@ const renderTempoDetailModalContent = (o) => {
         </div>
 
         <!-- TAB BODY CONTENT -->
-        <div class="p-4 sm:p-6 overflow-y-auto flex-1 custom-scrollbar bg-white dark:bg-slate-900">
+        <div class="p-5 sm:p-6 pb-20 sm:pb-24 overflow-y-auto flex-1 custom-scrollbar bg-white dark:bg-slate-900">
             ${renderActiveTempoDetailTab(o, calc)}
         </div>
 
-        <!-- STICKY NATIVE ACTION FOOTER (ERGONOMIC TOUCH) -->
-        <div class="p-4 sm:p-5 border-t border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 shrink-0 flex flex-wrap sm:flex-nowrap items-center justify-between gap-2" style="padding-bottom: max(1rem, env(safe-area-inset-bottom))">
+        <!-- STICKY NATIVE ACTION FOOTER (LEGA, SOLID & DOCKING AMAN) -->
+        <div class="p-4 sm:p-5 border-t border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shrink-0 flex flex-wrap sm:flex-nowrap items-center justify-between gap-2.5 shadow-[0_-4px_16px_rgba(0,0,0,0.06)] dark:shadow-[0_-4px_16px_rgba(0,0,0,0.3)]" style="padding-bottom: max(1.25rem, env(safe-area-inset-bottom))">
             <div class="flex items-center gap-1.5 w-full sm:w-auto flex-wrap">
                 <button type="button" onclick="window.closeTempoDetailModal()" class="h-11 px-3.5 rounded-2xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold text-xs hover:bg-slate-100 dark:hover:bg-slate-800 transition-all cursor-pointer active:scale-95">
                     Tutup
@@ -1312,22 +1312,22 @@ const renderTempoConfirmationsContent = () => {
         const cleanWa = (c.customerPhone || '').replace(/\D/g, '');
 
         return `
-            <div class="p-4 rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm space-y-3">
+            <div class="p-4 sm:p-5 rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm space-y-3.5">
                 <div class="flex items-start justify-between gap-3">
                     <div class="min-w-0">
                         <div class="flex items-center gap-2 flex-wrap">
-                            <span class="px-2 py-0.5 rounded-md text-[9px] font-black uppercase tracking-wider bg-amber-100 text-amber-800 dark:bg-amber-900/60 dark:text-amber-300 border border-amber-300 dark:border-amber-700">
+                            <span class="px-2.5 py-1 rounded-lg text-[9px] font-black uppercase tracking-wider bg-amber-100 text-amber-800 dark:bg-amber-900/60 dark:text-amber-300 border border-amber-300 dark:border-amber-700">
                                 ${esc(c.channel === 'qris' ? 'QRIS Toko' : (c.bankName || 'Transfer Bank'))}
                             </span>
-                            <span class="text-[10px] font-mono text-slate-400">Nota: #${esc(c.orderId)}</span>
+                            <span class="text-xs font-mono font-bold text-slate-400">Nota: #${esc(c.orderId)}</span>
                         </div>
-                        <h4 class="text-xs sm:text-sm font-bold text-slate-800 dark:text-white mt-1 truncate">
+                        <h4 class="text-sm sm:text-base font-bold text-slate-800 dark:text-white mt-1 truncate">
                             ${esc(c.customerName || 'Pelanggan')}
                         </h4>
-                        <div class="flex items-center gap-2 mt-0.5 text-[11px] text-slate-500">
+                        <div class="flex items-center gap-2 mt-0.5 text-xs text-slate-500">
                             ${cleanWa ? `<a href="https://wa.me/${cleanWa}" target="_blank" class="text-emerald-600 font-bold hover:underline inline-flex items-center gap-1"><i class="fa-brands fa-whatsapp text-xs"></i> +${cleanWa}</a>` : ''}
                             <span>•</span>
-                            <span class="text-[10px] text-slate-400">${timeStr}</span>
+                            <span class="text-[11px] text-slate-400">${timeStr}</span>
                         </div>
                     </div>
                     <div class="text-right shrink-0">
@@ -1337,7 +1337,7 @@ const renderTempoConfirmationsContent = () => {
                 </div>
 
                 ${c.notes ? `
-                    <div class="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/60 dark:border-slate-700/60 text-[11px] text-slate-600 dark:text-slate-300 italic">
+                    <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/60 dark:border-slate-700/60 text-xs text-slate-600 dark:text-slate-300 italic">
                         <span class="font-bold not-italic text-slate-400">Catatan:</span> "${esc(c.notes)}"
                     </div>
                 ` : ''}
@@ -1345,11 +1345,11 @@ const renderTempoConfirmationsContent = () => {
                 <!-- FOTO BUKTI PEMBAYARAN -->
                 ${c.buktiUrl ? `
                     <div>
-                        <p class="text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 flex items-center gap-1">
+                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 flex items-center gap-1">
                             <i class="fa-solid fa-image text-slate-400"></i> Lampiran Bukti Transfer:
                         </p>
-                        <div class="relative group rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700 max-h-52 bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
-                            <img src="${esc(c.buktiUrl)}" alt="Bukti Transfer" class="w-full max-h-52 object-contain" onerror="this.src=''; this.alt='Gambar gagal dimuat';" loading="lazy">
+                        <div class="relative group rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700 max-h-60 sm:max-h-72 bg-slate-100 dark:bg-slate-800 flex items-center justify-center shadow-2xs">
+                            <img src="${esc(c.buktiUrl)}" alt="Bukti Transfer" class="w-full max-h-60 sm:max-h-72 object-contain" onerror="this.src=''; this.alt='Gambar gagal dimuat';" loading="lazy">
                             <a href="${esc(c.buktiUrl)}" target="_blank" class="absolute inset-0 bg-slate-900/50 opacity-0 group-hover:opacity-100 flex items-center justify-center gap-1.5 text-white text-xs font-bold transition-opacity">
                                 <i class="fa-solid fa-arrow-up-right-from-square"></i> Buka Ukuran Penuh
                             </a>
@@ -1360,11 +1360,11 @@ const renderTempoConfirmationsContent = () => {
                 `}
 
                 <!-- TOMBOL AKSI: APPROVE & REJECT -->
-                <div class="pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-end gap-2">
-                    <button type="button" onclick="window.rejectTempoPaymentConfirmation('${esc(c.id)}')" class="px-3 py-2 rounded-xl text-xs font-bold text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 border border-rose-200 dark:border-rose-900/50 transition-all active:scale-95 cursor-pointer flex items-center gap-1">
+                <div class="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-end gap-2.5">
+                    <button type="button" onclick="window.rejectTempoPaymentConfirmation('${esc(c.id)}')" class="h-11 px-4 rounded-xl text-xs font-bold text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 border border-rose-200 dark:border-rose-900/50 transition-all active:scale-95 cursor-pointer flex items-center gap-1.5">
                         <i class="fa-solid fa-xmark"></i> Tolak
                     </button>
-                    <button type="button" onclick="window.approveTempoPaymentConfirmation('${esc(c.id)}')" class="px-4 py-2 rounded-xl text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 transition-all active:scale-95 shadow-2xs cursor-pointer flex items-center gap-1.5">
+                    <button type="button" onclick="window.approveTempoPaymentConfirmation('${esc(c.id)}')" class="h-11 px-5 rounded-xl text-xs font-bold text-white transition-all active:scale-95 cursor-pointer flex items-center gap-1.5 shadow-sm" style="background: var(--color-primary); box-shadow: 0 4px 12px rgba(var(--color-primary-rgb), 0.3);">
                         <i class="fa-solid fa-check"></i> Setujui Pembayaran
                     </button>
                 </div>
@@ -1373,9 +1373,12 @@ const renderTempoConfirmationsContent = () => {
     }).join('');
 
     content.innerHTML = `
-        <div class="p-4 sm:p-5 border-b border-slate-200 dark:border-slate-800 flex justify-between items-center bg-slate-50 dark:bg-slate-800/80 shrink-0">
-            <div class="flex items-center gap-2.5">
-                <div class="w-9 h-9 rounded-2xl bg-amber-500 text-white flex items-center justify-center text-xs font-black shadow-xs">
+        <!-- DRAG PULL MOBILE -->
+        <div class="pull-indicator sm:hidden"></div>
+
+        <div class="px-5 sm:px-6 pt-3.5 sm:pt-5 pb-4 border-b border-slate-200 dark:border-slate-800 flex justify-between items-center bg-slate-50 dark:bg-slate-800/80 shrink-0">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-2xl text-white flex items-center justify-center text-xs font-black shadow-xs" style="background: var(--color-primary); box-shadow: 0 4px 12px rgba(var(--color-primary-rgb), 0.3);">
                     <i class="fa-solid fa-receipt text-sm"></i>
                 </div>
                 <div>
@@ -1383,11 +1386,11 @@ const renderTempoConfirmationsContent = () => {
                     <p class="text-[10px] text-slate-400 font-semibold">${pendingTempoConfirmations.length} Bukti Transfer Menunggu Persetujuan</p>
                 </div>
             </div>
-            <button type="button" onclick="window.closeTempoConfirmationsModal()" class="w-8 h-8 flex items-center justify-center rounded-full bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-rose-100 hover:text-rose-500 transition-colors active:scale-95 cursor-pointer">
+            <button type="button" onclick="window.closeTempoConfirmationsModal()" class="w-8 h-8 flex items-center justify-center rounded-full bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-rose-100 hover:text-rose-500 transition-colors active:scale-95 cursor-pointer" title="Tutup">
                 <i class="fa-solid fa-xmark"></i>
             </button>
         </div>
-        <div class="p-4 sm:p-5 space-y-3.5 overflow-y-auto custom-scrollbar flex-1">
+        <div class="p-5 sm:p-6 pb-20 sm:pb-24 space-y-4 overflow-y-auto custom-scrollbar flex-1">
             ${itemsHtml}
         </div>
     `;
@@ -2625,9 +2628,9 @@ const renderTempoContent = () => {
         
         ${pendingTempoConfirmations.length > 0 ? `
         <!-- BANNER ANTREAN KONFIRMASI PEMBAYARAN MASUK PELANGGAN -->
-        <div class="p-4 sm:p-5 rounded-3xl border border-amber-300 dark:border-amber-700/80 bg-gradient-to-r from-amber-500/15 via-amber-500/5 to-teal-500/10 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div class="p-4 sm:p-5 rounded-3xl border border-[var(--color-primary)]/30 dark:border-[var(--color-primary)]/40 bg-gradient-to-r from-[rgba(var(--color-primary-rgb),0.12)] via-[rgba(var(--color-primary-rgb),0.04)] to-transparent dark:from-[rgba(var(--color-primary-rgb),0.18)] dark:to-slate-900/60 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div class="flex items-center gap-3.5">
-                <div class="w-12 h-12 rounded-2xl bg-amber-500 text-white flex items-center justify-center shadow-md shrink-0 relative">
+                <div class="w-12 h-12 rounded-2xl text-white flex items-center justify-center shrink-0 relative" style="background: var(--color-primary); box-shadow: 0 4px 12px rgba(var(--color-primary-rgb), 0.35);">
                     <i class="fa-solid fa-receipt text-xl"></i>
                     <span class="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-rose-500 text-white text-[10px] font-black flex items-center justify-center border-2 border-white dark:border-slate-900 animate-bounce">
                         ${pendingTempoConfirmations.length}
@@ -2636,7 +2639,7 @@ const renderTempoContent = () => {
                 <div>
                     <h4 class="font-black text-slate-800 dark:text-white text-sm sm:text-base flex items-center gap-2">
                         Konfirmasi Pembayaran Pelanggan Masuk
-                        <span class="px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-amber-100 text-amber-800 dark:bg-amber-900/60 dark:text-amber-300 border border-amber-300 dark:border-amber-700">
+                        <span class="px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-[rgba(var(--color-primary-rgb),0.12)] text-[var(--color-primary)] border border-[var(--color-primary)]/30">
                             ${pendingTempoConfirmations.length} Perlu Verifikasi
                         </span>
                     </h4>
@@ -2645,7 +2648,7 @@ const renderTempoContent = () => {
                     </p>
                 </div>
             </div>
-            <button type="button" onclick="window.openTempoConfirmationsModal()" class="px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 shadow-xs active:scale-95 transition-all cursor-pointer shrink-0">
+            <button type="button" onclick="window.openTempoConfirmationsModal()" class="px-5 py-2.5 rounded-xl text-white text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 transition-all active:scale-95 cursor-pointer shrink-0" style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
                 <i class="fa-solid fa-eye text-sm"></i>
                 <span>Periksa Bukti (${pendingTempoConfirmations.length})</span>
             </button>

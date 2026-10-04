@@ -254,24 +254,24 @@ const renderClientPaymentModalContent = (orders, initialAmount = null) => {
             </button>
         </div>
 
-        <!-- BODY SCROLLABLE -->
-        <div class="p-5 sm:p-6 overflow-y-auto flex-1 space-y-4 text-xs custom-scrollbar">
+        <!-- BODY SCROLLABLE DENGAN PADDING LEGA ANTI-TERTUTUP FOOTER -->
+        <div class="p-5 sm:p-6 pb-24 sm:pb-28 overflow-y-auto flex-1 space-y-6 text-xs custom-scrollbar">
             <!-- PENDING BANNER JIKA ADA PENGAJUAN -->
             ${pendingSum > 0 ? `
-            <div class="p-3.5 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-800/60 flex items-center gap-2.5 text-amber-800 dark:text-amber-200">
-                <i class="fa-solid fa-hourglass-half text-amber-500 text-sm animate-pulse shrink-0"></i>
+            <div class="p-4 sm:p-5 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-800/60 flex items-start sm:items-center gap-3 text-amber-800 dark:text-amber-200 shadow-2xs">
+                <i class="fa-solid fa-hourglass-half text-amber-500 text-base animate-pulse shrink-0 mt-0.5 sm:mt-0"></i>
                 <div class="min-w-0 flex-1">
-                    <p class="font-bold text-[11px]">Ada Pengajuan Pembayaran Sedang Diverifikasi: <b>${fCur(pendingSum)}</b></p>
-                    <p class="text-[10px] text-amber-700/80 dark:text-amber-300/80 mt-0.5">Admin toko sedang memeriksa mutasi rekening Anda. Limit akan otomatis pulih setelah diverifikasi.</p>
+                    <p class="font-bold text-xs sm:text-sm">Ada Pengajuan Pembayaran Sedang Diverifikasi: <b class="font-mono text-amber-900 dark:text-amber-100">${fCur(pendingSum)}</b></p>
+                    <p class="text-[11px] text-amber-700/80 dark:text-amber-300/80 mt-1 leading-relaxed">Admin toko sedang memeriksa mutasi rekening Anda. Limit kredit belanja Anda akan otomatis pulih segera setelah diverifikasi.</p>
                 </div>
             </div>
             ` : ''}
 
             <!-- PILIH NOTA PESANAN (JIKA LEBIH DARI 1) -->
             ${orders.length > 1 ? `
-            <div>
-                <label class="block text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1.5">Pilih Nota Tagihan</label>
-                <select id="client-pay-order-select" onchange="window.switchClientPaymentOrder(this.value)" class="admin-input bg-slate-50 dark:bg-slate-900 rounded-2xl font-bold cursor-pointer">
+            <div class="space-y-2">
+                <label class="block text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">Pilih Nota Tagihan</label>
+                <select id="client-pay-order-select" onchange="window.switchClientPaymentOrder(this.value)" class="admin-input bg-slate-50 dark:bg-slate-900 rounded-2xl font-bold cursor-pointer h-12 text-xs">
                     ${orders.map(ord => `
                         <option value="${ord.orderId}" ${ord.orderId === o.orderId ? 'selected' : ''}>
                             Nota #${ord.orderId} — Sisa: ${fCur(ord.payment?.tempoBalance || 0)} (${ord.payment?.isPaylater ? 'PayLater' : 'Tempo'})
@@ -282,85 +282,85 @@ const renderClientPaymentModalContent = (orders, initialAmount = null) => {
             ` : ''}
 
             <!-- KARTU RINGKASAN TAGIHAN TERPILIH -->
-            <div class="p-4 rounded-2xl bg-gradient-to-br from-slate-50 to-slate-100/60 dark:from-slate-800/60 dark:to-slate-900/60 border border-slate-200/80 dark:border-slate-800 space-y-2">
-                <div class="flex items-center justify-between text-[11px]">
+            <div class="p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-slate-50 to-slate-100/60 dark:from-slate-800/60 dark:to-slate-900/60 border border-slate-200/80 dark:border-slate-800 space-y-3 shadow-2xs">
+                <div class="flex items-center justify-between text-xs">
                     <span class="text-slate-400 font-bold">Nota Tagihan</span>
-                    <span class="font-mono font-bold text-slate-800 dark:text-slate-200">#${esc(o.orderId)}</span>
+                    <span class="font-mono font-bold text-slate-800 dark:text-slate-200 text-sm">#${esc(o.orderId)}</span>
                 </div>
-                <div class="flex items-center justify-between text-[11px]">
+                <div class="flex items-center justify-between text-xs">
                     <span class="text-slate-400 font-bold">Layanan / Tenor</span>
-                    <span class="font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
-                        <i class="fa-solid fa-bolt text-[10px]"></i> ${esc(tenorName)}
+                    <span class="font-bold text-[var(--color-primary)] flex items-center gap-1.5">
+                        <i class="fa-solid fa-bolt text-xs"></i> ${esc(tenorName)}
                     </span>
                 </div>
-                <div class="flex items-center justify-between text-[11px] pt-1 border-t border-slate-200/60 dark:border-slate-700/60">
+                <div class="flex items-center justify-between text-xs pt-2.5 border-t border-slate-200/60 dark:border-slate-700/60">
                     <span class="text-slate-500 dark:text-slate-400 font-bold">Sisa Tagihan Belum Lunas</span>
-                    <span class="text-sm font-black font-mono text-rose-600 dark:text-rose-400">${fCur(tempoBal)}</span>
+                    <span class="text-base sm:text-lg font-black font-mono text-rose-600 dark:text-rose-400">${fCur(tempoBal)}</span>
                 </div>
                 ${isPl && mInstallment > 0 && mInstallment < tempoBal ? `
-                <div class="flex items-center justify-between text-[10px] text-slate-500 dark:text-slate-400">
+                <div class="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 pt-0.5">
                     <span>Angsuran per Bulan (${plMonths}x)</span>
                     <span class="font-mono font-bold text-slate-700 dark:text-slate-300">${fCur(mInstallment)} / bulan</span>
                 </div>` : ''}
             </div>
 
             <!-- PILIHAN NOMINAL PEMBAYARAN -->
-            <div class="space-y-2">
+            <div class="space-y-3">
                 <label class="block text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">Nominal Pembayaran *</label>
                 
                 <!-- Quick Chips -->
-                <div class="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
                     ${isPl && mInstallment > 0 && mInstallment < tempoBal ? `
-                    <button type="button" onclick="window.setClientPayAmount(${mInstallment}, 'angsuran')" class="py-2 px-2.5 rounded-xl border border-emerald-300 dark:border-emerald-700 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 font-bold text-[10px] text-left active:scale-95 transition-all">
-                        <span class="block text-[9px] uppercase tracking-wider opacity-75">1 Angsuran</span>
-                        <span class="font-mono font-black">${fCur(mInstallment)}</span>
+                    <button type="button" onclick="window.setClientPayAmount(${mInstallment}, 'angsuran')" class="p-3.5 rounded-2xl border border-[var(--color-primary)]/40 bg-[rgba(var(--color-primary-rgb),0.06)] dark:bg-[rgba(var(--color-primary-rgb),0.12)] text-[var(--color-primary)] font-bold text-xs text-left active:scale-95 transition-all shadow-2xs">
+                        <span class="block text-[9px] uppercase tracking-wider opacity-80">1 Angsuran</span>
+                        <span class="font-mono font-black text-sm mt-0.5 block">${fCur(mInstallment)}</span>
                     </button>
                     ` : ''}
-                    <button type="button" onclick="window.setClientPayAmount(${tempoBal}, 'pelunasan')" class="py-2 px-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-100 text-slate-700 dark:text-slate-200 font-bold text-[10px] text-left active:scale-95 transition-all">
+                    <button type="button" onclick="window.setClientPayAmount(${tempoBal}, 'pelunasan')" class="p-3.5 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-750 text-slate-700 dark:text-slate-200 font-bold text-xs text-left active:scale-95 transition-all shadow-2xs">
                         <span class="block text-[9px] uppercase tracking-wider opacity-75 text-slate-400">Pelunasan Penuh</span>
-                        <span class="font-mono font-black">${fCur(tempoBal)}</span>
+                        <span class="font-mono font-black text-sm mt-0.5 block">${fCur(tempoBal)}</span>
                     </button>
-                    <button type="button" onclick="window.focusCustomClientPay()" class="py-2 px-2.5 rounded-xl border border-dashed border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/40 text-slate-600 dark:text-slate-300 font-bold text-[10px] text-left active:scale-95 transition-all col-span-2 sm:col-span-1">
+                    <button type="button" onclick="window.focusCustomClientPay()" class="p-3.5 rounded-2xl border border-dashed border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/40 text-slate-600 dark:text-slate-300 font-bold text-xs text-left active:scale-95 transition-all col-span-2 sm:col-span-1 shadow-2xs">
                         <span class="block text-[9px] uppercase tracking-wider opacity-75 text-slate-400">Titipan Bebas</span>
-                        <span>Nominal Lain</span>
+                        <span class="text-xs mt-0.5 block font-bold">Ketik Nominal</span>
                     </button>
                 </div>
 
                 <!-- Input Nominal Rupiah -->
                 <div class="relative">
-                    <span class="absolute left-4 top-1/2 -translate-y-1/2 font-black text-xs text-slate-400">Rp</span>
-                    <input type="number" id="client-pay-amount-input" min="1000" max="${tempoBal}" value="${defaultPayAmount}" class="admin-input pl-10 text-sm font-black font-mono rounded-2xl" placeholder="0">
+                    <span class="absolute left-4 top-1/2 -translate-y-1/2 font-black text-base text-slate-400">Rp</span>
+                    <input type="number" id="client-pay-amount-input" min="1000" max="${tempoBal}" value="${defaultPayAmount}" class="admin-input pl-12 h-13 text-base sm:text-lg font-black font-mono rounded-2xl focus:border-[var(--color-primary)]" placeholder="0">
                 </div>
             </div>
 
             <!-- PILIH SALURAN PEMBAYARAN TOKO (BANK VS QRIS) -->
-            <div class="space-y-2.5 pt-1">
+            <div class="space-y-3.5 pt-3 border-t border-slate-200/60 dark:border-slate-700/60">
                 <label class="block text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">Saluran Pembayaran Resmi Toko *</label>
                 
-                <div class="grid grid-cols-2 gap-2 p-1 rounded-2xl bg-slate-100 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700">
-                    <button type="button" onclick="window.switchClientPayChannel('bank')" id="tab-btn-client-bank" class="py-2 rounded-xl text-xs font-black transition-all ${currentPayChannel === 'bank' ? 'bg-white dark:bg-slate-900 shadow-xs text-slate-900 dark:text-white' : 'text-slate-500 hover:text-slate-800'}">
+                <div class="grid grid-cols-2 gap-2 p-1.5 rounded-2xl bg-slate-100 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700">
+                    <button type="button" onclick="window.switchClientPayChannel('bank')" id="tab-btn-client-bank" class="py-2.5 rounded-xl text-xs font-black transition-all ${currentPayChannel === 'bank' ? 'bg-white dark:bg-slate-900 shadow-xs text-slate-900 dark:text-white' : 'text-slate-500 hover:text-slate-800'}">
                         <i class="fa-solid fa-building-columns mr-1.5"></i> Transfer Bank
                     </button>
-                    <button type="button" onclick="window.switchClientPayChannel('qris')" id="tab-btn-client-qris" class="py-2 rounded-xl text-xs font-black transition-all ${currentPayChannel === 'qris' ? 'bg-white dark:bg-slate-900 shadow-xs text-slate-900 dark:text-white' : 'text-slate-500 hover:text-slate-800'}">
+                    <button type="button" onclick="window.switchClientPayChannel('qris')" id="tab-btn-client-qris" class="py-2.5 rounded-xl text-xs font-black transition-all ${currentPayChannel === 'qris' ? 'bg-white dark:bg-slate-900 shadow-xs text-slate-900 dark:text-white' : 'text-slate-500 hover:text-slate-800'}">
                         <i class="fa-solid fa-qrcode mr-1.5"></i> QRIS Toko
                     </button>
                 </div>
 
                 <!-- CONTAINER CHANNEL BANK -->
-                <div id="client-pay-channel-bank" class="${currentPayChannel === 'bank' ? 'block' : 'hidden'} space-y-2">
-                    <p class="text-[10px] text-slate-400">Silakan transfer ke salah satu rekening resmi Toko Putri di bawah ini:</p>
-                    <div class="space-y-2">
+                <div id="client-pay-channel-bank" class="${currentPayChannel === 'bank' ? 'block' : 'hidden'} space-y-3">
+                    <p class="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">Silakan transfer nominal di atas ke salah satu rekening resmi Toko Putri:</p>
+                    <div class="space-y-3">
                         ${banks.map(b => `
-                            <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700 flex items-center justify-between gap-3">
+                            <div class="p-4 sm:p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700 flex flex-col sm:flex-row sm:items-center justify-between gap-3.5 shadow-2xs">
                                 <div>
-                                    <div class="flex items-center gap-1.5">
-                                        <span class="px-2 py-0.5 rounded-md text-[9px] font-black uppercase bg-blue-100 dark:bg-blue-900/60 text-blue-700 dark:text-blue-300 font-mono">${esc(b.bankName || 'BANK')}</span>
+                                    <div class="flex items-center gap-2">
+                                        <span class="px-2.5 py-1 rounded-lg text-[10px] font-black uppercase bg-blue-100 dark:bg-blue-900/60 text-blue-700 dark:text-blue-300 font-mono">${esc(b.bankName || 'BANK')}</span>
                                         <span class="text-xs font-bold text-slate-800 dark:text-white">${esc(b.bankOwner || appData.store?.name || 'Toko Putri')}</span>
                                     </div>
-                                    <p class="font-mono text-sm font-black text-slate-900 dark:text-slate-100 tracking-wider mt-1">${esc(b.bankAccount || '-')}</p>
+                                    <p class="font-mono text-base sm:text-lg font-black text-slate-900 dark:text-slate-100 tracking-wider mt-1.5">${esc(b.bankAccount || '-')}</p>
                                 </div>
-                                <button type="button" onclick="window.copyAccountNumber('${esc(b.bankAccount || '')}')" class="px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 hover:bg-slate-100 text-slate-700 dark:text-slate-200 text-[10px] font-bold flex items-center gap-1.5 active:scale-95 transition-all shadow-2xs shrink-0 cursor-pointer">
-                                    <i class="fa-regular fa-copy"></i> Salin
+                                <button type="button" onclick="window.copyAccountNumber('${esc(b.bankAccount || '')}')" class="h-11 px-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 hover:bg-slate-100 text-slate-700 dark:text-slate-200 text-xs font-bold flex items-center justify-center gap-2 active:scale-95 transition-all shadow-2xs shrink-0 cursor-pointer">
+                                    <i class="fa-regular fa-copy text-xs"></i> Salin Rekening
                                 </button>
                             </div>
                         `).join('')}
@@ -368,64 +368,67 @@ const renderClientPaymentModalContent = (orders, initialAmount = null) => {
                 </div>
 
                 <!-- CONTAINER CHANNEL QRIS -->
-                <div id="client-pay-channel-qris" class="${currentPayChannel === 'qris' ? 'block' : 'hidden'} space-y-2.5 text-center">
-                    <p class="text-[10px] text-slate-400">Scan QRIS toko di bawah menggunakan aplikasi mobile banking atau e-wallet (BCA, Livin, GoPay, OVO, DANA, ShopeePay):</p>
+                <div id="client-pay-channel-qris" class="${currentPayChannel === 'qris' ? 'block' : 'hidden'} space-y-3.5 text-center">
+                    <p class="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">Scan QRIS toko di bawah menggunakan BCA Mobile, Livin, GoPay, OVO, DANA, atau ShopeePay:</p>
                     ${qrisUrl ? `
-                        <div class="inline-block p-3 rounded-2xl bg-white border border-slate-200 shadow-sm mx-auto">
-                            <img src="${esc(qrisUrl)}" alt="QRIS Resmi Toko Putri" class="w-48 h-48 object-contain mx-auto rounded-lg">
+                        <div class="inline-block p-4 sm:p-5 rounded-3xl bg-white border border-slate-200 shadow-sm mx-auto">
+                            <img src="${esc(qrisUrl)}" alt="QRIS Resmi Toko Putri" class="w-56 h-56 sm:w-64 sm:h-64 object-contain mx-auto rounded-2xl">
                         </div>
                         <div>
-                            <a href="${esc(qrisUrl)}" target="_blank" download="QRIS_Toko_Putri.jpg" class="inline-flex items-center gap-1.5 text-[10px] font-bold text-[var(--color-primary)] hover:underline">
-                                <i class="fa-solid fa-arrow-down-to-bracket text-xs"></i> Unduh / Buka QRIS Penuh
+                            <a href="${esc(qrisUrl)}" target="_blank" download="QRIS_Toko_Putri.jpg" class="inline-flex items-center gap-1.5 text-xs font-bold text-[var(--color-primary)] hover:underline py-1.5 px-3 rounded-xl bg-[rgba(var(--color-primary-rgb),0.06)]">
+                                <i class="fa-solid fa-arrow-down-to-bracket text-sm"></i> Unduh / Buka Gambar QRIS Penuh
                             </a>
                         </div>
                     ` : `
-                        <div class="p-4 rounded-2xl border border-dashed border-slate-200 dark:border-slate-700 text-slate-400 text-center">
-                            <i class="fa-solid fa-qrcode text-2xl mb-1 text-slate-300"></i>
-                            <p class="text-[10px]">QRIS belum diatur oleh toko. Silakan gunakan metode Transfer Bank di atas.</p>
+                        <div class="p-8 rounded-2xl border border-dashed border-slate-200 dark:border-slate-700 text-slate-400 text-center space-y-1.5">
+                            <i class="fa-solid fa-qrcode text-3xl text-slate-300"></i>
+                            <p class="text-xs">QRIS belum diatur oleh toko. Silakan gunakan metode Transfer Bank di atas.</p>
                         </div>
                     `}
                 </div>
             </div>
 
             <!-- UNGGAH BUKTI TRANSFER -->
-            <div class="space-y-2 pt-2 border-t border-slate-200/60 dark:border-slate-700/60">
-                <label class="block text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">Unggah Bukti Transfer / Resi *</label>
+            <div class="space-y-3.5 pt-3 border-t border-slate-200/60 dark:border-slate-700/60">
+                <div>
+                    <label class="block text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">Unggah Bukti Transfer / Resi *</label>
+                    <p class="text-[11px] text-slate-400 mt-0.5">Lampirkan tangkapan layar (screenshot) atau foto struk bukti mutasi</p>
+                </div>
                 
                 <input type="file" id="client-pay-proof-input" accept="image/*" class="hidden" onchange="window.handleClientProofFileChange(event)">
                 
-                <div id="client-pay-proof-dropzone" onclick="document.getElementById('client-pay-proof-input').click()" class="p-4 rounded-2xl border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-[var(--color-primary)] transition-all cursor-pointer text-center bg-slate-50/60 dark:bg-slate-800/40 group">
+                <div id="client-pay-proof-dropzone" onclick="document.getElementById('client-pay-proof-input').click()" class="p-6 sm:p-8 rounded-2xl border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-[var(--color-primary)] transition-all cursor-pointer text-center bg-slate-50/60 dark:bg-slate-800/40 group">
                     <div id="client-pay-proof-placeholder">
-                        <div class="w-10 h-10 rounded-2xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center mx-auto mb-2 group-hover:scale-105 transition-transform">
-                            <i class="fa-solid fa-camera text-base"></i>
+                        <div class="w-13 h-13 rounded-2xl bg-[rgba(var(--color-primary-rgb),0.1)] text-[var(--color-primary)] flex items-center justify-center mx-auto mb-3 group-hover:scale-105 transition-transform">
+                            <i class="fa-solid fa-camera text-2xl"></i>
                         </div>
-                        <p class="text-xs font-bold text-slate-700 dark:text-slate-200">Klik untuk Ambil Foto / Pilih Screenshot</p>
-                        <p class="text-[10px] text-slate-400 mt-0.5">Format JPG, PNG atau WebP (Otomatis dikompresi)</p>
+                        <p class="text-xs sm:text-sm font-bold text-slate-700 dark:text-slate-200">Klik untuk Ambil Foto / Pilih Bukti Transfer</p>
+                        <p class="text-[11px] text-slate-400 mt-1">Format JPG, PNG atau WebP (Otomatis dikompresi ringan)</p>
                     </div>
 
                     <div id="client-pay-proof-preview-wrap" class="hidden">
-                        <img id="client-pay-proof-img" src="" alt="Preview Bukti" class="max-h-48 mx-auto rounded-xl border border-slate-200 dark:border-slate-700 object-contain shadow-xs">
-                        <p class="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 mt-2 flex items-center justify-center gap-1">
+                        <img id="client-pay-proof-img" src="" alt="Preview Bukti" class="max-h-60 sm:max-h-72 mx-auto rounded-2xl border border-slate-200 dark:border-slate-700 object-contain shadow-sm">
+                        <p class="text-xs font-bold text-[var(--color-primary)] mt-3 flex items-center justify-center gap-1.5">
                             <i class="fa-solid fa-circle-check"></i> Foto siap dikirim (Klik untuk ganti)
                         </p>
                     </div>
                 </div>
 
                 <!-- Input Catatan Pengirim (Opsional) -->
-                <div>
-                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Catatan Tambahan (Opsional)</label>
-                    <input type="text" id="client-pay-notes-input" placeholder="Contoh: Transfer via BCA a.n Putri / Ref 987654" class="admin-input rounded-xl text-xs bg-slate-50 dark:bg-slate-900">
+                <div class="space-y-1.5">
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">Catatan Tambahan (Opsional)</label>
+                    <input type="text" id="client-pay-notes-input" placeholder="Contoh: Transfer dari rekening an. Putri / No. Referensi 987654" class="admin-input rounded-2xl text-xs h-12 bg-slate-50 dark:bg-slate-900 focus:border-[var(--color-primary)]">
                 </div>
             </div>
         </div>
 
-        <!-- STICKY ACTION FOOTER -->
-        <div class="p-4 sm:p-5 border-t border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 shrink-0 flex items-center justify-end gap-2.5" style="padding-bottom: max(1rem, env(safe-area-inset-bottom))">
-            <button type="button" onclick="window.closeClientPaymentModal()" class="h-11 px-4 rounded-2xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold text-xs hover:bg-slate-100 dark:hover:bg-slate-800 transition-all cursor-pointer active:scale-95">
+        <!-- STICKY ACTION FOOTER (LEGA, SOLID & DOCKING AMAN ANTI-TERTUTUP) -->
+        <div class="p-4 sm:p-5 border-t border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shrink-0 flex items-center justify-end gap-3 shadow-[0_-4px_20px_rgba(0,0,0,0.06)] dark:shadow-[0_-4px_20px_rgba(0,0,0,0.35)]" style="padding-bottom: max(1.25rem, env(safe-area-inset-bottom))">
+            <button type="button" onclick="window.closeClientPaymentModal()" class="h-12 px-5 rounded-2xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold text-xs hover:bg-slate-100 dark:hover:bg-slate-800 transition-all cursor-pointer active:scale-95">
                 Batal
             </button>
-            <button type="button" id="client-pay-submit-btn" onclick="window.submitClientPaymentConfirmation()" class="h-11 px-5 rounded-2xl text-white font-bold text-xs shadow-glow transition-all active:scale-95 cursor-pointer flex items-center gap-2" style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
-                <i class="fa-solid fa-paper-plane"></i>
+            <button type="button" id="client-pay-submit-btn" onclick="window.submitClientPaymentConfirmation()" class="h-12 px-6 rounded-2xl text-white font-bold text-xs shadow-glow transition-all active:scale-95 cursor-pointer flex items-center gap-2" style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
+                <i class="fa-solid fa-paper-plane text-xs"></i>
                 <span>Kirim Konfirmasi Pembayaran</span>
             </button>
         </div>
@@ -676,24 +679,24 @@ export const renderClientInstallmentSchedule = (o, pendingConfirmations = []) =>
             const dueText = s.dueDateStr || (s.dueDate ? new Date(s.dueDate).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : '-');
 
             return `
-                <tr class="text-[11px] ${isPaid ? 'opacity-70 bg-slate-50/50 dark:bg-slate-900/20' : ''}">
-                    <td class="py-2.5 px-3 font-bold text-slate-800 dark:text-slate-200">
+                <tr class="text-xs ${isPaid ? 'opacity-70 bg-slate-50/50 dark:bg-slate-900/20' : ''}">
+                    <td class="py-3 px-4 font-bold text-slate-800 dark:text-slate-200">
                         Bulan ke-${s.installmentNo || (idx + 1)}
                     </td>
-                    <td class="py-2.5 px-3 text-slate-600 dark:text-slate-400 font-mono text-[10px]">
+                    <td class="py-3 px-4 text-slate-600 dark:text-slate-400 font-mono text-[11px]">
                         ${dueText}
                     </td>
-                    <td class="py-2.5 px-3 font-mono font-bold text-slate-800 dark:text-slate-200">
+                    <td class="py-3 px-4 font-mono font-bold text-slate-800 dark:text-slate-200">
                         ${fCur(s.pokok || 0)}
                     </td>
-                    <td class="py-2.5 px-3 font-mono text-emerald-600 dark:text-emerald-400 font-bold">
+                    <td class="py-3 px-4 font-mono text-slate-700 dark:text-slate-300 font-bold">
                         +${fCur((s.adminFee || 0) + (s.serviceFee || 0))}
                     </td>
-                    <td class="py-2.5 px-3 font-mono font-black text-slate-900 dark:text-white">
+                    <td class="py-3 px-4 font-mono font-black text-slate-900 dark:text-white">
                         ${fCur(mTotal)}
                     </td>
-                    <td class="py-2.5 px-3 text-right">
-                        <span class="inline-block px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider ${statusBadgeCls}">
+                    <td class="py-3 px-4 text-right">
+                        <span class="inline-block px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${statusBadgeCls}">
                             ${statusLabel}
                         </span>
                     </td>
@@ -702,31 +705,31 @@ export const renderClientInstallmentSchedule = (o, pendingConfirmations = []) =>
         }).join('');
 
         return `
-            <div class="mt-3 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/60 overflow-hidden shadow-2xs space-y-2 p-3 sm:p-4">
-                <div class="flex items-center justify-between flex-wrap gap-2">
+            <div class="mt-3 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-900/60 overflow-hidden shadow-2xs space-y-3 p-4 sm:p-5">
+                <div class="flex items-center justify-between flex-wrap gap-2.5">
                     <div>
-                        <h4 class="text-xs font-black text-slate-800 dark:text-white flex items-center gap-1.5">
+                        <h4 class="text-xs sm:text-sm font-black text-slate-800 dark:text-white flex items-center gap-1.5">
                             <i class="fa-solid fa-calendar-check text-[var(--color-primary)]"></i> Rincian Jadwal Angsuran Anda
                         </h4>
-                        <p class="text-[10px] text-slate-400 font-medium">Nota #${esc(o.orderId)} • ${esc(tenorName)}</p>
+                        <p class="text-[11px] text-slate-400 font-medium mt-0.5">Nota #${esc(o.orderId)} • ${esc(tenorName)}</p>
                     </div>
                     ${tempoBal > 0 ? `
-                    <button type="button" onclick="window.openClientPaymentModal('${esc(o.orderId)}')" class="px-3 py-1.5 rounded-xl text-white font-bold text-[10px] uppercase tracking-wider flex items-center gap-1.5 shadow-2xs active:scale-95 transition-all cursor-pointer" style="background: var(--color-primary);">
-                        <i class="fa-solid fa-credit-card text-[9px]"></i> Bayar Angsuran Ini
+                    <button type="button" onclick="window.openClientPaymentModal('${esc(o.orderId)}')" class="px-3.5 py-2 rounded-xl text-white font-bold text-[10px] uppercase tracking-wider flex items-center gap-1.5 shadow-2xs active:scale-95 transition-all cursor-pointer" style="background: var(--color-primary); box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.3);">
+                        <i class="fa-solid fa-credit-card text-[10px]"></i> Bayar Angsuran Ini
                     </button>
                     ` : ''}
                 </div>
 
-                <div class="overflow-x-auto rounded-xl border border-slate-200/70 dark:border-slate-800 custom-scrollbar">
-                    <table class="w-full text-left whitespace-nowrap">
-                        <thead class="bg-slate-100/80 dark:bg-slate-800/80 text-[9px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                <div class="overflow-x-auto rounded-xl border border-slate-200/80 dark:border-slate-800 custom-scrollbar">
+                    <table class="w-full text-left whitespace-nowrap min-w-[540px]">
+                        <thead class="bg-slate-100/90 dark:bg-slate-800/90 text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">
                             <tr>
-                                <th class="py-2 px-3">Angsuran</th>
-                                <th class="py-2 px-3">Jatuh Tempo</th>
-                                <th class="py-2 px-3">Pokok</th>
-                                <th class="py-2 px-3">Biaya Tenor</th>
-                                <th class="py-2 px-3">Wajib Bayar</th>
-                                <th class="py-2 px-3 text-right">Status</th>
+                                <th class="py-3 px-4">Angsuran</th>
+                                <th class="py-3 px-4">Jatuh Tempo</th>
+                                <th class="py-3 px-4">Pokok</th>
+                                <th class="py-3 px-4">Biaya Tenor</th>
+                                <th class="py-3 px-4">Wajib Bayar</th>
+                                <th class="py-3 px-4 text-right">Status</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-100 dark:divide-slate-800 bg-white dark:bg-slate-900/40">
@@ -735,9 +738,9 @@ export const renderClientInstallmentSchedule = (o, pendingConfirmations = []) =>
                     </table>
                 </div>
 
-                <div class="pt-2 flex items-center justify-between text-[10px] text-slate-500 dark:text-slate-400 flex-wrap gap-2">
-                    <span>Sudah Dibayar: <b class="font-mono text-emerald-600">${fCur(totalPaid)}</b></span>
-                    <span>Sisa Wajib Bayar: <b class="font-mono text-rose-600 font-black">${fCur(tempoBal)}</b></span>
+                <div class="pt-2 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 flex-wrap gap-2.5">
+                    <span>Sudah Dibayar: <b class="font-mono text-emerald-600 dark:text-emerald-400">${fCur(totalPaid)}</b></span>
+                    <span>Sisa Wajib Bayar: <b class="font-mono text-rose-600 dark:text-rose-400 font-black">${fCur(tempoBal)}</b></span>
                 </div>
             </div>
         `;
@@ -749,12 +752,12 @@ export const renderClientInstallmentSchedule = (o, pendingConfirmations = []) =>
             <div class="flex items-center justify-between flex-wrap gap-2">
                 <div>
                     <h4 class="text-xs font-black text-slate-800 dark:text-white flex items-center gap-1.5">
-                        <i class="fa-solid fa-file-invoice text-emerald-500"></i> Tagihan Tempo Berjalan
+                        <i class="fa-solid fa-file-invoice text-[var(--color-primary)]"></i> Tagihan Tempo Berjalan
                     </h4>
                     <p class="text-[10px] text-slate-400 font-medium">Nota #${esc(o.orderId)} • Jatuh Tempo: ${o.payment?.tempoDueDate ? new Date(o.payment.tempoDueDate).toLocaleDateString('id-ID', {day:'numeric', month:'short', year:'numeric'}) : '-'}</p>
                 </div>
                 ${tempoBal > 0 ? `
-                <button type="button" onclick="window.openClientPaymentModal('${esc(o.orderId)}')" class="px-3 py-1.5 rounded-xl text-white font-bold text-[10px] uppercase tracking-wider flex items-center gap-1.5 shadow-2xs active:scale-95 transition-all cursor-pointer" style="background: var(--color-primary);">
+                <button type="button" onclick="window.openClientPaymentModal('${esc(o.orderId)}')" class="px-3 py-1.5 rounded-xl text-white font-bold text-[10px] uppercase tracking-wider flex items-center gap-1.5 shadow-2xs active:scale-95 transition-all cursor-pointer" style="background: var(--color-primary); box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.3);">
                     <i class="fa-solid fa-credit-card text-[9px]"></i> Bayar Sekarang
                 </button>
                 ` : ''}
