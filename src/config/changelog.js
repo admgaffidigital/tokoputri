@@ -8,6 +8,19 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-10-48',
+        version: 'v1.10.48',
+        date: '2026-10-04',
+        title: 'Resolusi Peringatan FirebaseError Permissions saat Admin Menyetujui Konfirmasi Pembayaran Cicilan',
+        category: 'fix',
+        badge: 'Tempo Approval Fix v1.10.48',
+        items: [
+            'Eliminasi Penulisan ke Subkoleksi Yatim (tempo.js): Saat admin menyetujui konfirmasi pembayaran cicilan dari pelanggan, sistem sebelumnya mencoba menulis catatan kas masuk ke subkoleksi freshmart/cms_data/expenses yang tidak dipakai modul mana pun dan tidak memiliki aturan Firestore, sehingga selalu ditolak dengan pesan "Missing or insufficient permissions". Penulisan tersebut dihapus.',
+            'Sumber Kebenaran Tunggal Tetap Terjaga: Penerimaan cicilan tetap tercatat resmi di order.payment.installments (dipakai Kartu Piutang, Nota Tagihan, dan laporan piutang), selaras dengan alur pembayaran manual admin. Aturan keamanan Firestore tidak dilonggarkan.',
+            'Multi-Channel Distribution v1.10.48 (Android versionCode 11048).'
+        ]
+    },
+    {
         id: 'log-1-10-47',
         version: 'v1.10.47',
         date: '2026-10-04',

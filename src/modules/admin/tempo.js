@@ -1517,26 +1517,11 @@ export const approveTempoPaymentConfirmation = async (confirmId) => {
                     }
                 }
 
-                // Catat mutasi penerimaan kas di Firestore expenses jika modul kas aktif
-                try {
-                    const cashDoc = {
-                        id: 'INCOME-' + insId,
-                        type: 'income',
-                        category: isPlOrder ? 'Pelunasan PayLater' : 'Pelunasan Piutang Tempo',
-                        amount: amount,
-                        date: new Date(now).toISOString().split('T')[0],
-                        timestamp: now,
-                        paymentMethod: conf.channel === 'qris' ? 'QRIS Toko' : (conf.bankName || 'Transfer Bank'),
-                        account: 'Bank / Kas Toko',
-                        vendor: orderData.customer?.name || conf.customerName || 'Pelanggan',
-                        notes: `Penerimaan cicilan nota #${orderId} (${conf.channel === 'qris' ? 'QRIS' : conf.bankName}) - Bukti ID: ${confirmId}`,
-                        recordedBy: auth.currentUser?.email || 'Owner / Kasir',
-                        refOrderId: orderId
-                    };
-                    await db.collection("freshmart").doc("cms_data").collection("expenses").doc(cashDoc.id).set(cashDoc);
-                } catch(eCash) {
-                    console.warn('[Tempo] Gagal catat mutasi kas masuk:', eCash);
-                }
+                // Catatan: penerimaan cicilan sudah tercatat resmi di order.payment.installments
+                // (sumber kebenaran tunggal untuk laporan piutang & kartu piutang), sama seperti
+                // alur pembayaran manual admin. Subkoleksi cms_data/expenses tidak dipakai modul
+                // mana pun dan tidak memiliki aturan Firestore, sehingga penulisan ke sana
+                // sebelumnya selalu ditolak (Missing or insufficient permissions).
 
                 // Update status konfirmasi di Firestore
                 await db.collection("tempo_payment_confirmations").doc(confirmId).update({
