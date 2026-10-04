@@ -8,6 +8,7 @@
  */
 
 import { db } from '../../config/firebase.js';
+import { computePaylaterRemainingPrincipal } from '../../core/paylater.js';
 import { 
     appData, gOrds, setGOrds, aOrdLst, setAOrdLst, 
     cVOrd, setCVOrd, isSaving, setIsSaving 
@@ -851,7 +852,10 @@ export const restoreOrderStockAndRewards = async (orderId, orderData = null) => 
             // memang TIDAK berhasil saat checkout → jangan decrement (bisa jadi negatif)
             const wasTracked = ord.paylaterLimitTracked !== false; // undefined = order lama, asumsikan tracked
             try {
-                const usedLimit = parseFloat(ord.payment?.paylaterUsed || ord.paylaterUsed || ord.payment?.tempoBalance) || 0;
+                // Pulihkan hanya sisa POKOK yang belum dipulihkan oleh angsuran sebelumnya
+                const usedLimit = (parseFloat(ord.payment?.paylaterUsed) || 0) > 0
+                    ? computePaylaterRemainingPrincipal(ord.payment)
+                    : (parseFloat(ord.paylaterUsed || ord.payment?.tempoBalance) || 0);
                 if (usedLimit > 0 && wasTracked) {
                     const cleanCustPhone = custPhone.replace(/\D/g, '');
                     const normPhone = cleanCustPhone.startsWith('0') ? '62' + cleanCustPhone.slice(1) : cleanCustPhone;

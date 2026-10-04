@@ -12,6 +12,7 @@
 
 import { db } from '../../config/firebase.js';
 import { appData, gOrds } from '../../core/state.js';
+import { computePaylaterLimitRestore } from '../../core/paylater.js';
 import { 
     el, show, hide, setH, esc, fCur, showToast, showConfirm, sLoad, hLoad, openWhatsApp, normalizeWA,
     openModalAnim, closeModalAnim 
@@ -815,21 +816,23 @@ window.submitTempoPayment = async (e, orderId) => {
             const rawPhone = (data.customer?.wa || data.customer?.phone || '').replace(/\D/g, '');
             const normPhone = rawPhone.startsWith('0') ? '62' + rawPhone.slice(1) : rawPhone;
             if (normPhone) {
+                // Hanya porsi POKOK yang memulihkan limit; biaya admin & penanganan tidak menambah limit.
+                const restoreAmount = computePaylaterLimitRestore(data.payment, currentBalance, newBalance, amount);
                 try {
                     const cRef = db.collection("freshmart").doc("cms_data").collection("customers").doc(normPhone);
-                    await db.runTransaction(async (txn) => {
+                    if (restoreAmount > 0) await db.runTransaction(async (txn) => {
                         const custSnap = await txn.get(cRef);
                         if (custSnap.exists) {
                             const currentUsed = Math.max(0, parseFloat(custSnap.data().paylaterUsed) || 0);
-                            const newUsed = Math.max(0, currentUsed - amount);
+                            const newUsed = Math.max(0, currentUsed - restoreAmount);
                             txn.update(cRef, { paylaterUsed: newUsed });
                         }
                     });
 
-                    if (Array.isArray(appData.customers)) {
+                    if (restoreAmount > 0 && Array.isArray(appData.customers)) {
                         const mCust = appData.customers.find(c => c && (String(c.id) === normPhone || String(c.phone).replace(/\D/g, '') === rawPhone || String(c.phone).replace(/\D/g, '') === normPhone));
                         if (mCust) {
-                            mCust.paylaterUsed = Math.max(0, (Math.max(0, parseFloat(mCust.paylaterUsed) || 0)) - amount);
+                            mCust.paylaterUsed = Math.max(0, (Math.max(0, parseFloat(mCust.paylaterUsed) || 0)) - restoreAmount);
                         }
                     }
                 } catch(ePl) {

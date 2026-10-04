@@ -266,3 +266,44 @@ export const calculateAllPaylaterTenors = (amount, customConfig = null) => {
         amount: Math.max(0, parseFloat(amount) || 0)
     };
 };
+
+/**
+ * Porsi POKOK yang sudah dipulihkan ke limit member pada saldo tagihan tertentu.
+ * Limit hanya terpakai sebesar pokok (payment.paylaterUsed) — biaya admin & penanganan
+ * adalah pendapatan toko dan TIDAK boleh menambah limit saat dibayar.
+ * Return null untuk pesanan non-PayLater / data lama tanpa pokok tercatat.
+ */
+const principalRestoredAt = (payment, balance) => {
+    const principal = Math.max(0, parseFloat(payment?.paylaterUsed) || 0);
+    if (principal <= 0) return null;
+    const fees = Math.max(0, parseFloat(payment?.paylaterAdminFee) || 0) + Math.max(0, parseFloat(payment?.paylaterServiceFee) || 0);
+    const totalPayable = principal + fees;
+    const bal = Math.max(0, parseFloat(balance) || 0);
+    if (bal <= 0) return principal;
+    const paid = Math.max(0, totalPayable - bal);
+    return Math.min(principal, Math.max(0, Math.round((principal * paid) / totalPayable)));
+};
+
+/**
+ * Nominal limit yang dipulihkan saat pembayaran angsuran (saldo balanceBefore → balanceAfter).
+ * Fallback ke nominal bayar untuk pesanan lama yang tidak mencatat pokok.
+ */
+export const computePaylaterLimitRestore = (payment, balanceBefore, balanceAfter, paidAmount = 0) => {
+    const before = principalRestoredAt(payment, balanceBefore);
+    const after = principalRestoredAt(payment, balanceAfter);
+    if (before === null || after === null) return Math.max(0, parseFloat(paidAmount) || 0);
+    return Math.max(0, after - before);
+};
+
+/**
+ * Sisa pokok yang belum dipulihkan (dipakai saat pesanan PayLater dibatalkan),
+ * sehingga angsuran yang sudah dibayar tidak dipulihkan dua kali.
+ */
+export const computePaylaterRemainingPrincipal = (payment) => {
+    const principal = Math.max(0, parseFloat(payment?.paylaterUsed) || 0);
+    if (principal <= 0) return 0;
+    const hasBalance = payment && payment.tempoBalance !== undefined && payment.tempoBalance !== null;
+    if (!hasBalance) return principal;
+    const restored = principalRestoredAt(payment, payment.tempoBalance) || 0;
+    return Math.max(0, principal - restored);
+};
