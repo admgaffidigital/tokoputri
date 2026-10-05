@@ -63,8 +63,10 @@ export const closeModalAnim = (modalEl, contentEl, onClosed) => {
     }, 280);
 };
 
-window.openModalAnim = openModalAnim;
-window.closeModalAnim = closeModalAnim;
+if (typeof window !== 'undefined') {
+    window.openModalAnim = openModalAnim;
+    window.closeModalAnim = closeModalAnim;
+}
 
 // ─── LocalStorage Wrappers ───────────────────────────────────
 export const sL  = k      => { try { return localStorage.getItem(k); }    catch(e) { return null; } };
@@ -343,7 +345,7 @@ export const showConfirm = (t, m, y, n) => {
 };
 
 export const loadedScripts = {};
-window.loadedScripts = loadedScripts;
+if (typeof window !== 'undefined') window.loadedScripts = loadedScripts;
 export const ensureScriptLoaded = (src, checkFn) => {
     if (checkFn && checkFn()) return Promise.resolve();
     if (loadedScripts[src]) return loadedScripts[src];
@@ -476,26 +478,28 @@ export const flyToCartAnimation = (startEl, targetEl = null, imgUrl = null) => {
     }
 };
 
-window.normalizeWA = normalizeWA;
-window.openWhatsApp = openWhatsApp;
-window.sLoad = sLoad;
-window.hLoad = hLoad;
-window.el = el;
-window.show = show;
-window.hide = hide;
-window.toggleCls = toggleCls;
-window.setIn = setIn;
-window.setH = setH;
-window.setV = setV;
-window.getV = getV;
-window.esc = esc;
-window.fixD = fixD;
-window.fCur = fCur;
-window.parseOrderDate = parseOrderDate;
-window.sL = sL;
-window.ssL = ssL;
-window.triggerHaptic = triggerHaptic;
-window.flyToCartAnimation = flyToCartAnimation;
+if (typeof window !== 'undefined') {
+    window.normalizeWA = normalizeWA;
+    window.openWhatsApp = openWhatsApp;
+    window.sLoad = sLoad;
+    window.hLoad = hLoad;
+    window.el = el;
+    window.show = show;
+    window.hide = hide;
+    window.toggleCls = toggleCls;
+    window.setIn = setIn;
+    window.setH = setH;
+    window.setV = setV;
+    window.getV = getV;
+    window.esc = esc;
+    window.fixD = fixD;
+    window.fCur = fCur;
+    window.parseOrderDate = parseOrderDate;
+    window.sL = sL;
+    window.ssL = ssL;
+    window.triggerHaptic = triggerHaptic;
+    window.flyToCartAnimation = flyToCartAnimation;
+}
 
 // ─── Smart Product Cover Engine ──────────────────────────────
 export {
@@ -512,7 +516,9 @@ import {
     getProductCoverSvgDataUri
 } from './product-cover.js';
 
-window.renderProductCoverHtml = renderProductCoverHtml;
-window.getProductTheme = getProductTheme;
-window.getMonogram = getMonogram;
-window.getProductCoverSvgDataUri = getProductCoverSvgDataUri;
+if (typeof window !== 'undefined') {
+    window.renderProductCoverHtml = renderProductCoverHtml;
+    window.getProductTheme = getProductTheme;
+    window.getMonogram = getMonogram;
+    window.getProductCoverSvgDataUri = getProductCoverSvgDataUri;
+}

@@ -1,8 +1,10 @@
 {
   "_meta": {
-    "createdAt": "2026-10-05T03:55:16.534Z",
-    "createdBy": "Developer / Technical Partner",
-    "storeCode": "BERKAH"
+    "createdAt": "2026-10-05T12:37:42.270Z",
+    "createdBy": "Gaffi Digital Tech",
+    "storeCode": "BERKAH",
+    "version": "1.10.55",
+    "generator": "TokoPutri SaaS Engine"
   },
   "store": {
     "name": "Toko Berkah Sejahtera",
@@ -17,53 +19,86 @@
     "costPerKm": 0,
     "isDeliveryEnabled": true,
     "isPickupEnabled": true,
+    "freeShippingMinSpendEnabled": false,
+    "freeShippingMinSpendAmount": 0,
+    "allProductsIcon": "",
+    "allBrandsIcon": "",
+    "categoryStyle": "pill",
+    "brandStyle": "logo",
+    "showCategories": true,
+    "showBrands": true,
     "uiTheme": "teal",
     "themeColor": "#14b8a6",
     "bgStyle": "minimalist",
+    "bgCustomUrl": "",
     "showHeroSlide": true,
     "heroBadgeText": "Siap Melayani",
     "heroWelcomeTag": "SELAMAT DATANG",
     "heroTitle": "Toko Berkah Sejahtera",
     "heroSubtitle": "Pusat belanja resmi, lengkap, dan terpercaya.",
+    "showRewardCatalog": true,
+    "showScrollTopButton": true,
     "useStock": true,
     "ppnEnabled": false,
+    "ppnType": "exclusive",
+    "ppnRate": 11,
+    "spendPointsEnabled": false,
+    "spendPointsThreshold": 100000,
+    "spendPointsPerThreshold": 1,
     "paylater": {
       "enabled": true,
       "minOrder": 20000,
       "maxOrder": 10000000,
-      "noticeText": "Cicilan transparan tanpa biaya tersembunyi.",
+      "noticeText": "Cicilan transparan tanpa biaya tersembunyi. Tagihan jatuh tempo setiap bulan.",
       "tenors": {
         "30d": {
           "enabled": true,
           "label": "30 Hari (1x Bayar)",
+          "shortLabel": "30 Hari",
           "months": 1,
-          "days": 30
+          "days": 30,
+          "adminFeeType": "flat",
+          "adminFeeValue": 0,
+          "serviceFeeType": "flat",
+          "serviceFeeValue": 0
         },
         "2m": {
           "enabled": true,
           "label": "2 Bulan (Cicilan 2x)",
+          "shortLabel": "2 Bulan",
           "months": 2,
-          "days": 60
+          "days": 60,
+          "adminFeeType": "flat",
+          "adminFeeValue": 1500,
+          "serviceFeeType": "percent",
+          "serviceFeeValue": 1.5
         },
         "3m": {
           "enabled": true,
           "label": "3 Bulan (Cicilan 3x)",
+          "shortLabel": "3 Bulan",
           "months": 3,
-          "days": 90
+          "days": 90,
+          "adminFeeType": "flat",
+          "adminFeeValue": 2500,
+          "serviceFeeType": "percent",
+          "serviceFeeValue": 2.5
         }
       }
-    }
+    },
+    "terms": "",
+    "privacy": ""
   },
   "subscription": {
     "status": "active",
     "plan": "pro_managed",
     "storeCode": "BERKAH",
-    "clientName": "Pemilik Toko",
-    "expiresAt": "2027-10-05T03:55:16.534Z",
+    "clientName": "Ahmad Fauzi",
+    "expiresAt": "2027-10-05T12:37:42.270Z",
     "allowGraceDays": 7,
     "developerContact": "6281234567890",
-    "developerName": "Developer / Technical Partner",
-    "lastActivatedAt": "2026-10-05T03:55:16.534Z",
+    "developerName": "Gaffi Digital Tech",
+    "lastActivatedAt": "2026-10-05T12:37:42.270Z",
     "lastLicenseKey": "PUTRI-365D-BERKAH-349C6B"
   },
   "payment": {
@@ -71,5 +106,50 @@
   },
   "config": {
     "gasUrl": ""
+  },
+  "categories": [
+    {
+      "id": "cat-umum",
+      "name": "Umum",
+      "icon": "fa-boxes-stacked",
+      "isVisible": true
+    }
+  ],
+  "brands": [],
+  "banners": [],
+  "banks": [],
+  "products": [],
+  "vouchers": [],
+  "colors": [],
+  "rewards": [],
+  "faqs": [],
+  "customers": [],
+  "changelog": [
+    {
+      "id": "init-berkah",
+      "version": "v1.0.0",
+      "date": "2026-10-05",
+      "title": "Peluncuran Resmi Sistem Toko Berkah Sejahtera",
+      "description": "Sistem toko online, kasir POS terintegrasi, dan manajemen operasional resmi mulai aktif."
+    }
+  ],
+  "deletedChangelogIds": [],
+  "productOrder": [],
+  "suppliers": [],
+  "purchases": [],
+  "expenses": [],
+  "stockOpnameHistory": [],
+  "taxSettings": {
+    "companyName": "Toko Berkah Sejahtera",
+    "npwp": "",
+    "taxScheme": "umkm_final",
+    "customTaxRate": 0.5,
+    "monthlyExpenses": {},
+    "balanceSheet": {
+      "kas": 0,
+      "piutang": 0,
+      "hutang": 0,
+      "modalDisetor": 0
+    }
   }
 }

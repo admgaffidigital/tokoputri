@@ -33,7 +33,7 @@ const defaultConfig = {
 // tersimpan dari sesi sebelumnya.
 try { localStorage.removeItem('freshmart_fb_config'); } catch(e) {}
 
-export const firebaseConfig = window.FIREBASE_CONFIG || defaultConfig;
+export const firebaseConfig = (typeof window !== 'undefined' && window.FIREBASE_CONFIG) ? window.FIREBASE_CONFIG : defaultConfig;
 
 // Inisialisasi Firebase (hanya sekali)
 if (!firebase.apps.length) {

@@ -405,18 +405,20 @@ export const verifyAndApplyLicenseKey = async (rawKey) => {
 /**
  * Handler interaktif submit lisensi dari modal
  */
-window.submitRenewalLicenseKey = async () => {
-    const input = el('renewal-key-input') || el('cms-renewal-key-input');
-    if (!input || !input.value.trim()) {
-        showToast('Silakan masukkan kode lisensi perpanjangan!', 'warning');
-        return;
-    }
-    const ok = await verifyAndApplyLicenseKey(input.value.trim());
-    if (ok) {
-        input.value = '';
-        if (typeof window.closeRenewalModal === 'function') window.closeRenewalModal();
-    }
-};
+if (typeof window !== 'undefined') {
+    window.submitRenewalLicenseKey = async () => {
+        const input = el('renewal-key-input') || el('cms-renewal-key-input');
+        if (!input || !input.value.trim()) {
+            showToast('Silakan masukkan kode lisensi perpanjangan!', 'warning');
+            return;
+        }
+        const ok = await verifyAndApplyLicenseKey(input.value.trim());
+        if (ok) {
+            input.value = '';
+            if (typeof window.closeRenewalModal === 'function') window.closeRenewalModal();
+        }
+    };
+}
 
 /**
  * Modal dialog masukkan lisensi dari dalam CMS Owner
@@ -517,6 +519,8 @@ export const getSubscriptionBentoHtml = () => {
     `;
 };
 
-window.openRenewalModal = openRenewalModal;
-window.closeRenewalModal = closeRenewalModal;
+if (typeof window !== 'undefined') {
+    window.openRenewalModal = openRenewalModal;
+    window.closeRenewalModal = closeRenewalModal;
+}
 

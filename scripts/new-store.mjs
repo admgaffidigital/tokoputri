@@ -14,6 +14,16 @@ import path from 'path';
 
 const LICENSE_SECRET_SALT = 'TP_GAFFI_WHITELABEL_2026';
 
+const THEME_COLORS = {
+    emerald: '#10b981',
+    teal: '#14b8a6',
+    gold: '#c59b27',
+    industrial: '#4f46e5',
+    blue: '#2563eb',
+    rose: '#f43f5e',
+    violet: '#8b5cf6'
+};
+
 const simpleHash = (str) => {
     let hash = 0;
     for (let i = 0; i < str.length; i++) {
@@ -31,6 +41,34 @@ const computeChecksum = (storeCode, days) => {
 
 // Parse arguments
 const args = process.argv.slice(2);
+
+if (args.includes('--help') || args.includes('-h')) {
+    console.log(`
+====================================================================
+  🛠️ PANDUAN PENGGUNAAN GENERATOR TOKO BARU (MANAGED SAAS)
+====================================================================
+
+Penggunaan:
+  node scripts/new-store.mjs [opsi]
+
+Opsi yang tersedia:
+  --name        Nama lengkap toko klien (Contoh: "Toko Berkah Sejahtera")
+  --code        Kode singkat identifier toko (Contoh: "BERKAH")
+  --phone       Nomor WhatsApp toko (Contoh: "081234567890")
+  --client      Nama pemilik toko (Contoh: "Haji Ahmad")
+  --theme       Tema warna UI: emerald | teal | gold | industrial | blue (Default: emerald)
+  --days        Durasi masa aktif lisensi dalam hari (Default: 365)
+  --devContact  Nomor WhatsApp developer / technical partner (Contoh: "6281234567890")
+  --devName     Nama brand/personal developer (Contoh: "Gaffi Digital Tech")
+  -h, --help    Menampilkan panduan ini
+
+Contoh Cepat:
+  node scripts/new-store.mjs --name "Toko Berkah Sejahtera" --code "BERKAH" --client "Ahmad Fauzi" --phone "081234567890" --theme "teal" --days 365
+====================================================================
+    `);
+    process.exit(0);
+}
+
 const params = {
     name: 'Toko Baru',
     code: 'TOKO_BARU',
@@ -47,11 +85,13 @@ for (let i = 0; i < args.length; i++) {
     else if (args[i] === '--code' && args[i + 1]) { params.code = args[++i].toUpperCase().replace(/[^A-Z0-9_]/g, ''); }
     else if (args[i] === '--phone' && args[i + 1]) { params.phone = args[++i]; }
     else if (args[i] === '--client' && args[i + 1]) { params.client = args[++i]; }
-    else if (args[i] === '--theme' && args[i + 1]) { params.theme = args[++i]; }
+    else if (args[i] === '--theme' && args[i + 1]) { params.theme = args[++i].toLowerCase(); }
     else if (args[i] === '--days' && args[i + 1]) { params.days = parseInt(args[++i], 10) || 365; }
     else if (args[i] === '--devContact' && args[i + 1]) { params.devContact = args[++i]; }
     else if (args[i] === '--devName' && args[i + 1]) { params.devName = args[++i]; }
 }
+
+const themeColor = THEME_COLORS[params.theme] || THEME_COLORS.emerald;
 
 const now = new Date();
 const expiryDate = new Date(now.getTime() + (params.days * 24 * 60 * 60 * 1000));
@@ -64,12 +104,14 @@ const formattedExpiry = expiryDate.toLocaleDateString('id-ID', {
 const checksum = computeChecksum(params.code, params.days);
 const initialLicenseKey = `PUTRI-${params.days}D-${params.code}-${checksum}`;
 
-// Profile toko baru siap-impor
+// Profile toko baru siap-impor 100% lengkap dan sesuai skema defApp
 const storeProfile = {
     _meta: {
         createdAt: now.toISOString(),
         createdBy: params.devName,
-        storeCode: params.code
+        storeCode: params.code,
+        version: "1.10.55",
+        generator: "TokoPutri SaaS Engine"
     },
     store: {
         name: params.name,
@@ -84,27 +126,45 @@ const storeProfile = {
         costPerKm: 0,
         isDeliveryEnabled: true,
         isPickupEnabled: true,
+        freeShippingMinSpendEnabled: false,
+        freeShippingMinSpendAmount: 0,
+        allProductsIcon: "",
+        allBrandsIcon: "",
+        categoryStyle: "pill",
+        brandStyle: "logo",
+        showCategories: true,
+        showBrands: true,
         uiTheme: params.theme,
-        themeColor: params.theme === 'emerald' ? '#10b981' : (params.theme === 'teal' ? '#14b8a6' : '#c59b27'),
+        themeColor: themeColor,
         bgStyle: "minimalist",
+        bgCustomUrl: "",
         showHeroSlide: true,
         heroBadgeText: "Siap Melayani",
         heroWelcomeTag: "SELAMAT DATANG",
         heroTitle: params.name,
         heroSubtitle: "Pusat belanja resmi, lengkap, dan terpercaya.",
+        showRewardCatalog: true,
+        showScrollTopButton: true,
         useStock: true,
         ppnEnabled: false,
+        ppnType: "exclusive",
+        ppnRate: 11,
+        spendPointsEnabled: false,
+        spendPointsThreshold: 100000,
+        spendPointsPerThreshold: 1,
         paylater: {
             enabled: true,
             minOrder: 20000,
             maxOrder: 10000000,
-            noticeText: "Cicilan transparan tanpa biaya tersembunyi.",
+            noticeText: "Cicilan transparan tanpa biaya tersembunyi. Tagihan jatuh tempo setiap bulan.",
             tenors: {
-                "30d": { enabled: true, label: "30 Hari (1x Bayar)", months: 1, days: 30 },
-                "2m":  { enabled: true, label: "2 Bulan (Cicilan 2x)", months: 2, days: 60 },
-                "3m":  { enabled: true, label: "3 Bulan (Cicilan 3x)", months: 3, days: 90 }
+                "30d": { enabled: true, label: "30 Hari (1x Bayar)", shortLabel: "30 Hari", months: 1, days: 30, adminFeeType: "flat", adminFeeValue: 0, serviceFeeType: "flat", serviceFeeValue: 0 },
+                "2m":  { enabled: true, label: "2 Bulan (Cicilan 2x)", shortLabel: "2 Bulan", months: 2, days: 60, adminFeeType: "flat", adminFeeValue: 1500, serviceFeeType: "percent", serviceFeeValue: 1.5 },
+                "3m":  { enabled: true, label: "3 Bulan (Cicilan 3x)", shortLabel: "3 Bulan", months: 3, days: 90, adminFeeType: "flat", adminFeeValue: 2500, serviceFeeType: "percent", serviceFeeValue: 2.5 }
             }
-        }
+        },
+        terms: "",
+        privacy: ""
     },
     subscription: {
         status: 'active',
@@ -119,7 +179,42 @@ const storeProfile = {
         lastLicenseKey: initialLicenseKey
     },
     payment: { qrisUrl: "" },
-    config: { gasUrl: "" }
+    config: { gasUrl: "" },
+    categories: [
+        { id: "cat-umum", name: "Umum", icon: "fa-boxes-stacked", isVisible: true }
+    ],
+    brands: [],
+    banners: [],
+    banks: [],
+    products: [],
+    vouchers: [],
+    colors: [],
+    rewards: [],
+    faqs: [],
+    customers: [],
+    changelog: [
+        {
+            id: `init-${params.code.toLowerCase()}`,
+            version: "v1.0.0",
+            date: now.toISOString().split('T')[0],
+            title: `Peluncuran Resmi Sistem ${params.name}`,
+            description: "Sistem toko online, kasir POS terintegrasi, dan manajemen operasional resmi mulai aktif."
+        }
+    ],
+    deletedChangelogIds: [],
+    productOrder: [],
+    suppliers: [],
+    purchases: [],
+    expenses: [],
+    stockOpnameHistory: [],
+    taxSettings: {
+        companyName: params.name,
+        npwp: "",
+        taxScheme: "umkm_final",
+        customTaxRate: 0.5,
+        monthlyExpenses: {},
+        balanceSheet: { kas: 0, piutang: 0, hutang: 0, modalDisetor: 0 }
+    }
 };
 
 // Buat direktori stores-config jika belum ada
@@ -138,7 +233,7 @@ console.log(`  🏪 Nama Toko       : ${params.name}`);
 console.log(`  🔖 Kode Toko       : ${params.code}`);
 console.log(`  👤 Nama Pemilik    : ${params.client}`);
 console.log(`  📱 WhatsApp Toko   : ${params.phone || '-'}`);
-console.log(`  🎨 Tema Tampilan   : ${params.theme}`);
+console.log(`  🎨 Tema Tampilan   : ${params.theme} (${themeColor})`);
 console.log(`  ⏱️  Durasi Sewa     : ${params.days} Hari (Masa Aktif hingga ${formattedExpiry})`);
 console.log(`  🔑 Kunci Lisensi   : \x1b[32m\x1b[1m${initialLicenseKey}\x1b[0m`);
 console.log(`  💾 Berkas Konfig   : stores-config/${params.code}.json`);
@@ -146,7 +241,7 @@ console.log('-'.repeat(68));
 console.log('📋 LANGKAH CEPAT DEPLOY TOKO KLIEN (< 5 MENIT):');
 console.log('1. Buat Firebase Project baru untuk klien (misal: "toko-berkah-id") di console.firebase.google.com');
 console.log('2. Buka Firestore Database -> buat koleksi "freshmart" -> dokumen "cms_data"');
-console.log('3. Salin isi file stores-config/' + params.code + '.json ke cms_data');
+console.log(`3. Salin isi file stores-config/${params.code}.json ke dokumen cms_data`);
 console.log('4. Sambungkan ke Vercel (1 repository, bedakan konfigurasi Firebase melalui environment variables / config.js)');
 console.log('5. (Opsional) Pasang custom domain klien (misal: tokoberkah.com) di dashboard Vercel');
 console.log('6. Buat file .apk bertuliskan nama toko klien dengan Capacitor: npm run build');

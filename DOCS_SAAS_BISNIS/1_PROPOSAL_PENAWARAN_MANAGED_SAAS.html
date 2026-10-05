@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Proposal Penawaran Layanan Managed SaaS — Toko Putri</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#ecfdf5',
+              100: '#d1fae5',
+              500: '#10b981',
+              600: '#059669',
+              700: '#047857',
+              800: '#065f46',
+              900: '#064e3b',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: #f8fafc;
+      color: #0f172a;
+    }
+    @media print {
+      body {
+        background-color: #ffffff !important;
+        color: #000000 !important;
+      }
+      .no-print {
+        display: none !important;
+      }
+      .print-shadow-none {
+        box-shadow: none !important;
+      }
+      .a4-page {
+        margin: 0 !important;
+        padding: 20mm !important;
+        box-shadow: none !important;
+        border: none !important;
+        page-break-after: always;
+        max-width: 100% !important;
+      }
+      .page-break {
+        page-break-before: always;
+      }
+    }
+    .a4-page {
+      max-width: 210mm;
+      min-height: 297mm;
+      margin: 20px auto;
+      background: #ffffff;
+      padding: 24mm 20mm;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+      border-radius: 12px;
+      position: relative;
+    }
+  </style>
+</head>
+<body class="antialiased pb-24">
+
+  <!-- TOP INTERACTIVE CUSTOMIZER (NO PRINT) -->
+  <aside class="no-print bg-slate-900 text-white border-b border-slate-800 sticky top-0 z-50 shadow-xl">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 rounded-lg bg-emerald-500 text-white flex items-center justify-center font-black text-sm shadow-md shadow-emerald-500/30">
+          <i class="fa-solid fa-wand-magic-sparkles"></i>
+        </div>
+        <div>
+          <h1 class="text-xs font-black uppercase tracking-wider text-emerald-400">Customizer Proposal Klien</h1>
+          <p class="text-[11px] text-slate-400">Edit data di bawah, teks proposal di halaman otomatis berubah seketika.</p>
+        </div>
+      </div>
+
+      <div class="flex flex-wrap items-center gap-2">
+        <button type="button" onclick="window.print()" class="px-3.5 py-1.5 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold flex items-center gap-1.5 transition-all shadow-md shadow-emerald-500/20 active:scale-95 cursor-pointer">
+          <i class="fa-solid fa-print"></i> Cetak / Simpan PDF
+        </button>
+        <button type="button" onclick="copyWhatsappSummary()" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer">
+          <i class="fa-brands fa-whatsapp text-emerald-400"></i> Salin Ringkasan WA
+        </button>
+      </div>
+    </div>
+
+    <!-- Live Edit Controls -->
+    <div class="max-w-6xl mx-auto px-4 pb-3 pt-1 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2 text-xs">
+      <div>
+        <label class="block text-[10px] text-slate-400 font-medium mb-1">Nama Toko Klien</label>
+        <input type="text" id="inp-store-name" value="Toko Berkah Sejahtera" oninput="updateProposal()" class="w-full bg-slate-800 border border-slate-700 rounded px-2.5 py-1 text-white text-xs outline-none focus:border-emerald-500">
+      </div>
+      <div>
+        <label class="block text-[10px] text-slate-400 font-medium mb-1">Nama Pemilik Toko</label>
+        <input type="text" id="inp-owner-name" value="Bapak Ahmad Fauzi" oninput="updateProposal()" class="w-full bg-slate-800 border border-slate-700 rounded px-2.5 py-1 text-white text-xs outline-none focus:border-emerald-500">
+      </div>
+      <div>
+        <label class="block text-[10px] text-slate-400 font-medium mb-1">Biaya Setup Awal</label>
+        <input type="text" id="inp-setup-fee" value="Rp 1.000.000" oninput="updateProposal()" class="w-full bg-slate-800 border border-slate-700 rounded px-2.5 py-1 text-white text-xs outline-none focus:border-emerald-500">
+      </div>
+      <div>
+        <label class="block text-[10px] text-slate-400 font-medium mb-1">Sewa Bulanan</label>
+        <input type="text" id="inp-monthly-fee" value="Rp 200.000 / bln" oninput="updateProposal()" class="w-full bg-slate-800 border border-slate-700 rounded px-2.5 py-1 text-white text-xs outline-none focus:border-emerald-500">
+      </div>
+      <div>
+        <label class="block text-[10px] text-slate-400 font-medium mb-1">Sewa Tahunan (Hemat)</label>
+        <input type="text" id="inp-annual-fee" value="Rp 1.800.000 / thn" oninput="updateProposal()" class="w-full bg-slate-800 border border-slate-700 rounded px-2.5 py-1 text-white text-xs outline-none focus:border-emerald-500">
+      </div>
+      <div>
+        <label class="block text-[10px] text-slate-400 font-medium mb-1">WhatsApp Developer</label>
+        <input type="text" id="inp-dev-wa" value="0812-3456-7890" oninput="updateProposal()" class="w-full bg-slate-800 border border-slate-700 rounded px-2.5 py-1 text-white text-xs outline-none focus:border-emerald-500">
+      </div>
+    </div>
+  </aside>
+
+  <!-- PROPOSAL DOCUMENT A4 CONTAINER -->
+  <main class="a4-page">
+    
+    <!-- HEADER SURAT RESMI -->
+    <header class="border-b-2 border-slate-900 pb-5 mb-6 flex items-start justify-between">
+      <div class="space-y-1">
+        <div class="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-[10px] font-black uppercase tracking-wider">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+          Managed Whitelabel SaaS • Solusi Terima Beres
+        </div>
+        <h2 class="text-xl sm:text-2xl font-black tracking-tight text-slate-900 uppercase">
+          Proposal Penawaran Aplikasi Toko &amp; Kasir Terkelola
+        </h2>
+        <p class="text-xs text-slate-500 font-medium">
+          Modernisasi Operasional Toko Fisik, Katalog Online &amp; Keuangan Tanpa Beban Teknis
+        </p>
+      </div>
+
+      <div class="text-right text-[11px] text-slate-500 shrink-0">
+        <p class="font-bold text-slate-800">KODE DOKUMEN:</p>
+        <p class="font-mono text-emerald-600 font-bold" id="doc-code">PROP-SAAS/2026/001</p>
+        <p class="text-[10px] mt-1" id="doc-date">Tanggal: 5 Oktober 2026</p>
+      </div>
+    </header>
+
+    <!-- KEPADA YTH -->
+    <section class="bg-slate-50 rounded-xl p-4 border border-slate-200/80 mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
+      <div>
+        <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Diajukan Kepada Yth:</p>
+        <h3 class="text-sm font-black text-slate-800" id="disp-owner-target">Bapak Ahmad Fauzi</h3>
+        <p class="text-slate-600 font-medium" id="disp-store-target">Pemilik / Manajemen Toko Berkah Sejahtera</p>
+      </div>
+      <div class="sm:text-right border-t sm:border-t-0 pt-2 sm:pt-0 border-slate-200">
+        <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Mitra Pengembang (Technical Partner):</p>
+        <p class="font-bold text-slate-800" id="disp-dev-name">Gaffi Digital Tech &amp; Engineering</p>
+        <p class="text-slate-600 font-mono text-[11px]" id="disp-dev-wa">WA: 0812-3456-7890</p>
+      </div>
+    </section>
+
+    <!-- 1. LATAR BELAKANG -->
+    <section class="space-y-2 mb-6 text-xs text-slate-700 leading-relaxed">
+      <h3 class="text-sm font-black uppercase tracking-wider text-slate-900 flex items-center gap-2">
+        <span class="w-5 h-5 rounded-md bg-emerald-600 text-white flex items-center justify-center text-[10px]">1</span>
+        Latar Belakang &amp; Tantangan Bisnis Ritel
+      </h3>
+      <p>
+        Mengelola toko di era modern membutuhkan sistem pencatatan yang cepat, akurat, dan transparan. Metode manual dengan buku nota kertas kerap menimbulkan selisih stok barang, kebocoran kas, lambatnya antrean kasir, hingga ketidaktahuan atas keuntungan bersih riil usaha.
+      </p>
+      <p>
+        Namun, membangun software kasir mandiri membutuhkan investasi puluhan juta rupiah, belum termasuk biaya langganan server cloud, gaji programmer pemeliharaan, serta risiko kehilangan data. 
+        Melalui skema <b>Managed SaaS (Software as a Service)</b>, kami hadir sebagai mitra teknis profesional Anda: <b>Anda fokus berjualan dan memajukan toko, urusan teknis server, bug, keamanan, dan pembaruan sistem 100% kami yang tangani.</b>
+      </p>
+    </section>
+
+    <!-- 2. FITUR UNGGULAN (BENTO GRID) -->
+    <section class="space-y-3 mb-6">
+      <h3 class="text-sm font-black uppercase tracking-wider text-slate-900 flex items-center gap-2">
+        <span class="w-5 h-5 rounded-md bg-emerald-600 text-white flex items-center justify-center text-[10px]">2</span>
+        Solusi Komprehensif Yang Anda Dapatkan (Terima Beres)
+      </h3>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+        
+        <!-- POS Kasir -->
+        <div class="p-3.5 rounded-xl border border-slate-200 bg-white space-y-1.5 shadow-2xs">
+          <div class="flex items-center gap-2 text-emerald-600 font-bold text-xs">
+            <i class="fa-solid fa-cash-register text-sm"></i>
+            <h4>Aplikasi Kasir POS Fisik Cepat</h4>
+          </div>
+          <ul class="text-[11px] text-slate-600 space-y-1 pl-4 list-disc">
+            <li>Transaksi kasir kilat <b class="text-slate-800">&lt; 5 detik</b> per pelanggan.</li>
+            <li>Dukungan scan barcode via kamera HP / USB scanner.</li>
+            <li>Cetak nota struk thermal Bluetooth otomatis (58mm/80mm).</li>
+            <li><b>HPP Privacy Guard:</b> Kasir staf hanya melihat harga jual, rahasia harga kulakan dan laba toko 100% terkunci untuk Owner.</li>
+          </ul>
+        </div>
+
+        <!-- Storefront Web & PWA -->
+        <div class="p-3.5 rounded-xl border border-slate-200 bg-white space-y-1.5 shadow-2xs">
+          <div class="flex items-center gap-2 text-blue-600 font-bold text-xs">
+            <i class="fa-solid fa-globe text-sm"></i>
+            <h4>Website Toko Online Mewah &amp; PWA</h4>
+          </div>
+          <ul class="text-[11px] text-slate-600 space-y-1 pl-4 list-disc">
+            <li>Toko online resmi berlogo usaha Anda, loading 0 detik.</li>
+            <li>Katalog produk lengkap dengan varian ukuran &amp; warna.</li>
+            <li>Hitung ongkir otomatis &amp; terhubung langsung ke WhatsApp toko.</li>
+            <li>Dukungan pembayaran QRIS dinamis &amp; transfer bank.</li>
+          </ul>
+        </div>
+
+        <!-- Operasional & Finansial -->
+        <div class="p-3.5 rounded-xl border border-slate-200 bg-white space-y-1.5 shadow-2xs">
+          <div class="flex items-center gap-2 text-purple-600 font-bold text-xs">
+            <i class="fa-solid fa-chart-pie text-sm"></i>
+            <h4>Buku Kas &amp; Laporan Finansial</h4>
+          </div>
+          <ul class="text-[11px] text-slate-600 space-y-1 pl-4 list-disc">
+            <li>Laporan otomatis omzet kotor, laba bersih, dan margin riil.</li>
+            <li>Buku Kas Operasional (pencatatan gaji, listrik, sewa tempat).</li>
+            <li>Pencatatan kulakan (PO Supplier) &amp; update HPP rata-rata.</li>
+            <li>Ekspor 1-klik seluruh laporan ke format Excel &amp; PDF A4.</li>
+          </ul>
+        </div>
+
+        <!-- Mobile APK & PayLater -->
+        <div class="p-3.5 rounded-xl border border-slate-200 bg-white space-y-1.5 shadow-2xs">
+          <div class="flex items-center gap-2 text-amber-600 font-bold text-xs">
+            <i class="fa-brands fa-android text-sm"></i>
+            <h4>App Android Branded &amp; Cicilan PayLater</h4>
+          </div>
+          <ul class="text-[11px] text-slate-600 space-y-1 pl-4 list-disc">
+            <li>File aplikasi Android (.APK) bertuliskan nama toko Anda.</li>
+            <li>Fasilitas Putri PayLater (tempo 30 hari / 2-3 bulan) terkontrol.</li>
+            <li>Kartu Piutang &amp; reminder tagihan jatuh tempo bulanan.</li>
+            <li>Program Loyalitas Poin Belanja &amp; Member Pelanggan.</li>
+          </ul>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 3. TABEL HARGA INVESTASI -->
+    <section class="space-y-3 mb-6">
+      <h3 class="text-sm font-black uppercase tracking-wider text-slate-900 flex items-center gap-2">
+        <span class="w-5 h-5 rounded-md bg-emerald-600 text-white flex items-center justify-center text-[10px]">3</span>
+        Paket Investasi &amp; Biaya Layanan
+      </h3>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        
+        <!-- Paket Bulanan -->
+        <div class="rounded-2xl border border-slate-200 p-4 bg-slate-50/50 flex flex-col justify-between">
+          <div>
+            <div class="flex justify-between items-center mb-2">
+              <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500">Paket Reguler</span>
+              <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-200 text-slate-700">Bulanan</span>
+            </div>
+            <div class="text-lg font-black text-slate-900" id="disp-monthly-price">Rp 200.000 <span class="text-xs font-normal text-slate-500">/ bulan</span></div>
+            <p class="text-[11px] text-slate-500 mt-1 mb-3">Setup Awal: <b class="text-slate-700" id="disp-setup-reg">Rp 1.500.000</b> (Sekali Bayar)</p>
+            <ul class="text-[11px] text-slate-600 space-y-1.5 border-t border-slate-200/80 pt-3">
+              <li><i class="fa-solid fa-check text-emerald-600 mr-1.5"></i> Seluruh Modul POS, Web &amp; CMS Owner</li>
+              <li><i class="fa-solid fa-check text-emerald-600 mr-1.5"></i> Cloud Server Database Terisolasi</li>
+              <li><i class="fa-solid fa-check text-emerald-600 mr-1.5"></i> Dukungan Teknis Jam Kerja</li>
+            </ul>
+          </div>
+          <div class="pt-4 mt-3 border-t border-slate-200 text-center">
+            <span class="text-[10px] text-slate-400 font-medium">Cocok untuk uji coba operasional awal</span>
+          </div>
+        </div>
+
+        <!-- Paket Tahunan (VIP) -->
+        <div class="rounded-2xl border-2 border-emerald-500 p-4 bg-emerald-50/30 flex flex-col justify-between relative shadow-sm">
+          <div class="absolute -top-3 right-4 bg-gradient-to-r from-emerald-600 to-teal-600 text-white text-[9px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full shadow-xs">
+            🌟 Rekomendasi Hemat Terbaik
+          </div>
+          <div>
+            <div class="flex justify-between items-center mb-2">
+              <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-800">Paket Managed Tahunan</span>
+              <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">Hemat 25%</span>
+            </div>
+            <div class="text-lg font-black text-emerald-950" id="disp-annual-price">Rp 1.800.000 <span class="text-xs font-normal text-slate-500">/ tahun</span></div>
+            <p class="text-[11px] text-slate-600 mt-1 mb-3">Setup Awal: <b class="text-emerald-700 font-bold" id="disp-setup-promo">Rp 1.000.000</b> <span class="line-through text-slate-400 text-[10px]">Rp 1.500.000</span></p>
+            <ul class="text-[11px] text-slate-700 space-y-1.5 border-t border-emerald-200 pt-3">
+              <li><i class="fa-solid fa-circle-check text-emerald-600 mr-1.5"></i> <b>Semua Fitur Paket Bulanan</b></li>
+              <li><i class="fa-solid fa-circle-check text-emerald-600 mr-1.5"></i> Setara <b>Rp 150.000 / bulan</b> (Sangat Hemat)</li>
+              <li><i class="fa-solid fa-circle-check text-emerald-600 mr-1.5"></i> Prioritas Bantuan Teknis VIP WhatsApp</li>
+              <li><i class="fa-solid fa-circle-check text-emerald-600 mr-1.5"></i> <b>GRATIS</b> Bantuan input 50 produk pertama toko Anda</li>
+            </ul>
+          </div>
+          <div class="pt-4 mt-3 border-t border-emerald-200 text-center">
+            <span class="text-[10px] text-emerald-700 font-bold">Investasi paling efisien &amp; tenang sepanjang tahun</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 4. JAMINAN LAYANAN & KEAMANAN DATA -->
+    <section class="space-y-2 mb-6 text-xs text-slate-700">
+      <h3 class="text-sm font-black uppercase tracking-wider text-slate-900 flex items-center gap-2">
+        <span class="w-5 h-5 rounded-md bg-emerald-600 text-white flex items-center justify-center text-[10px]">4</span>
+        Jaminan Layanan &amp; Kepemilikan Data
+      </h3>
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-1 text-[11px]">
+        <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-200">
+          <p class="font-bold text-slate-800"><i class="fa-solid fa-shield-halved text-emerald-600 mr-1"></i> Data 100% Milik Anda</p>
+          <p class="text-slate-500 mt-0.5">Seluruh data penjualan, pelanggan &amp; keuangan bisa Anda ekspor ke Excel kapan saja.</p>
+        </div>
+        <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-200">
+          <p class="font-bold text-slate-800"><i class="fa-solid fa-server text-blue-600 mr-1"></i> 99.9% Server Uptime</p>
+          <p class="text-slate-500 mt-0.5">Sistem dihosting pada cloud tier enterprise Google Firebase berkecepatan tinggi.</p>
+        </div>
+        <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-200">
+          <p class="font-bold text-slate-800"><i class="fa-solid fa-rotate text-purple-600 mr-1"></i> Update Otomatis</p>
+          <p class="text-slate-500 mt-0.5">Mendapatkan perbaikan bug &amp; fitur baru berkala tanpa biaya maintenance tambahan.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. TANDA TANGAN & PERSETUJUAN -->
+    <footer class="pt-6 border-t-2 border-slate-200 mt-6 text-xs">
+      <p class="text-slate-500 text-center mb-6 text-[11px]">
+        Proposal ini berlaku selama 14 hari kalender sejak tanggal diterbitkan. Untuk konfirmasi atau aktivasi, silakan hubungi kontak mitra pengembang kami.
+      </p>
+
+      <div class="grid grid-cols-2 gap-8 text-center">
+        <div>
+          <p class="text-slate-400 font-bold uppercase tracking-wider text-[10px]">Diusulkan Oleh,</p>
+          <p class="font-bold text-slate-800 mt-0.5" id="sig-dev-name">Mitra Pengembang Sistem</p>
+          <div class="h-16"></div>
+          <p class="font-bold text-slate-800 border-t border-slate-300 pt-1 inline-block min-w-[160px]">( Technical Partner )</p>
+        </div>
+        <div>
+          <p class="text-slate-400 font-bold uppercase tracking-wider text-[10px]">Disetujui Oleh,</p>
+          <p class="font-bold text-slate-800 mt-0.5" id="sig-owner-name">Pemilik / Manajemen Toko</p>
+          <div class="h-16"></div>
+          <p class="font-bold text-slate-800 border-t border-slate-300 pt-1 inline-block min-w-[160px]" id="sig-owner-line">( Bapak Ahmad Fauzi )</p>
+        </div>
+      </div>
+    </footer>
+
+  </main>
+
+  <script>
+    function updateProposal() {
+      const storeName = document.getElementById('inp-store-name').value || 'Toko Klien';
+      const ownerName = document.getElementById('inp-owner-name').value || 'Bapak/Ibu Pemilik Toko';
+      const setupFee = document.getElementById('inp-setup-fee').value || 'Rp 1.000.000';
+      const monthlyFee = document.getElementById('inp-monthly-fee').value || 'Rp 200.000 / bln';
+      const annualFee = document.getElementById('inp-annual-fee').value || 'Rp 1.800.000 / thn';
+      const devWa = document.getElementById('inp-dev-wa').value || '0812-3456-7890';
+
+      document.getElementById('disp-owner-target').innerText = ownerName;
+      document.getElementById('disp-store-target').innerText = 'Pemilik / Manajemen ' + storeName;
+      document.getElementById('disp-dev-wa').innerText = 'WA: ' + devWa;
+
+      document.getElementById('disp-monthly-price').innerHTML = monthlyFee + ' <span class="text-xs font-normal text-slate-500">/ bulan</span>';
+      document.getElementById('disp-annual-price').innerHTML = annualFee + ' <span class="text-xs font-normal text-slate-500">/ tahun</span>';
+      document.getElementById('disp-setup-promo').innerText = setupFee;
+
+      document.getElementById('sig-owner-name').innerText = 'Pemilik / Manajemen ' + storeName;
+      document.getElementById('sig-owner-line').innerText = '( ' + ownerName + ' )';
+    }
+
+    function copyWhatsappSummary() {
+      const storeName = document.getElementById('inp-store-name').value || 'Toko Klien';
+      const ownerName = document.getElementById('inp-owner-name').value || 'Bapak/Ibu Pemilik Toko';
+      const setupFee = document.getElementById('inp-setup-fee').value || 'Rp 1.000.000';
+      const annualFee = document.getElementById('inp-annual-fee').value || 'Rp 1.800.000 / thn';
+      const monthlyFee = document.getElementById('inp-monthly-fee').value || 'Rp 200.000 / bln';
+
+      const text = `Halo ${ownerName},
+
+Terima kasih atas diskusinya mengenai digitalisasi operasional ${storeName}.
+
+Berikut ringkasan Proposal Layanan Aplikasi Toko & Kasir Terkelola (Managed SaaS):
+✅ Aplikasi Kasir Fisik (POS) Kilat & Dukungan Scanner Barcode
+✅ Cetak Struk Thermal Bluetooth Otomatis
+✅ Toko Online Resmi Berlogo Usaha Anda (Storefront Web & PWA)
+✅ Aplikasi Android Khusus Toko Anda (.APK)
+✅ Pembukuan Keuangan, Laporan Laba Bersih & Buku Kas
+✅ Privasi Finansial HPP Kulakan Terkunci Khusus Owner
+✅ Server Cloud Google Firebase 99.9% Uptime Terima Beres
+
+Pilihan Paket Investasi:
+1. Paket Tahunan (Rekomendasi Hemat): ${annualFee} (Setup Awal: ${setupFee})
+2. Paket Bulanan (Fleksibel): ${monthlyFee}
+
+Seluruh urusan teknis server, keamanan data, dan update sistem kami yang kelola. Anda fokus membesarkan usaha dan melayani pelanggan.
+
+Apakah ada hal yang ingin ditanyakan atau kita jadwalkan demo langsung aplikasinya besok?
+Terima kasih! 🙏`;
+
+      navigator.clipboard.writeText(text).then(() => {
+        alert('✅ Draf Ringkasan Proposal berhasil disalin ke clipboard! Silakan paste langsung di chat WhatsApp klien.');
+      }).catch(() => {
+        alert('Gagal menyalin otomatis. Silakan salin manual.');
+      });
+    }
+
+    // Set tanggal hari ini
+    const today = new Date();
+    const formattedDate = today.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+    document.getElementById('doc-date').innerText = 'Tanggal: ' + formattedDate;
+  </script>
+</body>
+</html>

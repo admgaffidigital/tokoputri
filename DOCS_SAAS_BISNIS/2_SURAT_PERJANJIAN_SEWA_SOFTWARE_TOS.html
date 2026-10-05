@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Surat Perjanjian Sewa Pakai Software (SaaS Agreement) — Toko Putri</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Lora:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: #f1f5f9;
+      color: #0f172a;
+    }
+    .legal-font {
+      font-family: 'Lora', Georgia, serif;
+    }
+    @media print {
+      body {
+        background-color: #ffffff !important;
+        color: #000000 !important;
+      }
+      .no-print {
+        display: none !important;
+      }
+      .a4-page {
+        margin: 0 !important;
+        padding: 20mm 15mm !important;
+        box-shadow: none !important;
+        border: none !important;
+        max-width: 100% !important;
+        page-break-after: always;
+      }
+      .page-break {
+        page-break-before: always;
+      }
+    }
+    .a4-page {
+      max-width: 210mm;
+      min-height: 297mm;
+      margin: 20px auto;
+      background: #ffffff;
+      padding: 24mm 20mm;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body class="antialiased pb-24">
+
+  <!-- TOP INTERACTIVE CUSTOMIZER (NO PRINT) -->
+  <aside class="no-print bg-slate-900 text-white border-b border-slate-800 sticky top-0 z-50 shadow-xl">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 rounded-lg bg-emerald-500 text-white flex items-center justify-center font-black text-sm shadow-md shadow-emerald-500/30">
+          <i class="fa-solid fa-file-contract"></i>
+        </div>
+        <div>
+          <h1 class="text-xs font-black uppercase tracking-wider text-emerald-400">Customizer Surat Perjanjian Sewa (ToS)</h1>
+          <p class="text-[11px] text-slate-400">Sesuaikan data para pihak &amp; klausul sewa sebelum dicetak atau diekspor ke PDF.</p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <button type="button" onclick="window.print()" class="px-4 py-1.5 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold flex items-center gap-1.5 transition-all shadow-md shadow-emerald-500/20 active:scale-95 cursor-pointer">
+          <i class="fa-solid fa-print"></i> Cetak Dokumen / Simpan PDF
+        </button>
+      </div>
+    </div>
+
+    <!-- Live Edit Controls -->
+    <div class="max-w-6xl mx-auto px-4 pb-3 pt-1 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2 text-xs">
+      <div>
+        <label class="block text-[10px] text-slate-400 font-medium mb-1">Nama Pihak Pertama (Dev)</label>
+        <input type="text" id="inp-dev-lead" value="Gaffi Digital Tech" oninput="updateContract()" class="w-full bg-slate-800 border border-slate-700 rounded px-2.5 py-1 text-white text-xs outline-none focus:border-emerald-500">
+      </div>
+      <div>
+        <label class="block text-[10px] text-slate-400 font-medium mb-1">Nama Pihak Kedua (Klien)</label>
+        <input type="text" id="inp-client-name" value="Bapak Ahmad Fauzi" oninput="updateContract()" class="w-full bg-slate-800 border border-slate-700 rounded px-2.5 py-1 text-white text-xs outline-none focus:border-emerald-500">
+      </div>
+      <div>
+        <label class="block text-[10px] text-slate-400 font-medium mb-1">Nama Toko Klien</label>
+        <input type="text" id="inp-store-title" value="Toko Berkah Sejahtera" oninput="updateContract()" class="w-full bg-slate-800 border border-slate-700 rounded px-2.5 py-1 text-white text-xs outline-none focus:border-emerald-500">
+      </div>
+      <div>
+        <label class="block text-[10px] text-slate-400 font-medium mb-1">Nomor WhatsApp Klien</label>
+        <input type="text" id="inp-client-phone" value="0812-3456-7890" oninput="updateContract()" class="w-full bg-slate-800 border border-slate-700 rounded px-2.5 py-1 text-white text-xs outline-none focus:border-emerald-500">
+      </div>
+      <div>
+        <label class="block text-[10px] text-slate-400 font-medium mb-1">Paket Sewa Dipilih</label>
+        <select id="inp-plan-type" onchange="updateContract()" class="w-full bg-slate-800 border border-slate-700 rounded px-2 py-1 text-white text-xs outline-none focus:border-emerald-500">
+          <option value="Tahunan">Tahunan (Rp 1.800.000 / thn)</option>
+          <option value="Bulanan">Bulanan (Rp 200.000 / bln)</option>
+        </select>
+      </div>
+      <div>
+        <label class="block text-[10px] text-slate-400 font-medium mb-1">Durasi Masa Aktif</label>
+        <input type="text" id="inp-period" value="1 (Satu) Tahun Penuh" oninput="updateContract()" class="w-full bg-slate-800 border border-slate-700 rounded px-2.5 py-1 text-white text-xs outline-none focus:border-emerald-500">
+      </div>
+    </div>
+  </aside>
+
+  <!-- LEGAL CONTRACT A4 -->
+  <main class="a4-page">
+    
+    <!-- HEADER SURAT KONTRAK -->
+    <header class="text-center border-b-2 border-slate-900 pb-4 mb-6">
+      <h2 class="text-base sm:text-lg font-black tracking-tight uppercase text-slate-900">
+        SURAT PERJANJIAN SEWA PAKAI &amp; KETENTUAN LAYANAN SOFTWARE
+      </h2>
+      <p class="text-xs font-bold text-slate-600 uppercase tracking-widest mt-0.5">
+        MODEL LAYANAN TERKELOLA (MANAGED SAAS AGREEMENT)
+      </p>
+      <p class="text-[11px] font-mono text-slate-500 mt-1" id="disp-contract-no">
+        Nomor Kontrak: SLA-SAAS/2026/BERKAH-001
+      </p>
+    </header>
+
+    <!-- PEMBUKAAN -->
+    <div class="text-xs text-slate-800 leading-relaxed mb-4">
+      <p>
+        Pada hari ini, tanggal <b id="disp-sign-date">5 Oktober 2026</b>, telah dibuat dan disepakati perjanjian kerja sama sewa pakai perangkat lunak sistem kasir dan toko online (<i>Software as a Service</i>) oleh dan antara pihak-pihak di bawah ini:
+      </p>
+    </div>
+
+    <!-- IDENTITAS PARA PIHAK -->
+    <div class="space-y-3 mb-5 text-xs text-slate-800">
+      <div class="bg-slate-50 border border-slate-200 rounded-lg p-3">
+        <p class="font-bold text-slate-900 mb-1">1. PIHAK PERTAMA (Penyedia Layanan / Technical Partner):</p>
+        <table class="w-full text-xs text-slate-700">
+          <tr><td class="w-40 py-0.5 font-medium">Entitas / Pengembang</td><td class="py-0.5">: <b class="text-slate-900" id="disp-dev-entity">Gaffi Digital Tech</b></td></tr>
+          <tr><td class="py-0.5 font-medium">Peran / Tanggung Jawab</td><td class="py-0.5">: Penyedia Infrastruktur Cloud, Pemeliharaan Server, Keamanan &amp; Dukungan Teknis</td></tr>
+          <tr><td class="py-0.5 font-medium">Status Kerjasama</td><td class="py-0.5">: Pemilik Hak Cipta Perangkat Lunak Resmi</td></tr>
+        </table>
+        <p class="text-[10px] text-slate-500 mt-1 italic">Selanjutnya disebut sebagai <b>"PIHAK PERTAMA"</b>.</p>
+      </div>
+
+      <div class="bg-slate-50 border border-slate-200 rounded-lg p-3">
+        <p class="font-bold text-slate-900 mb-1">2. PIHAK KEDUA (Penyewa / Pemilik Usaha Toko):</p>
+        <table class="w-full text-xs text-slate-700">
+          <tr><td class="w-40 py-0.5 font-medium">Nama Penanggung Jawab</td><td class="py-0.5">: <b class="text-slate-900" id="disp-client-rep">Bapak Ahmad Fauzi</b></td></tr>
+          <tr><td class="py-0.5 font-medium">Nama Toko / Usaha</td><td class="py-0.5">: <b class="text-slate-900" id="disp-store-rep">Toko Berkah Sejahtera</b></td></tr>
+          <tr><td class="py-0.5 font-medium">Kontak WhatsApp</td><td class="py-0.5">: <span class="font-mono text-slate-900" id="disp-client-phone-rep">0812-3456-7890</span></td></tr>
+        </table>
+        <p class="text-[10px] text-slate-500 mt-1 italic">Selanjutnya disebut sebagai <b>"PIHAK KEDUA"</b>.</p>
+      </div>
+    </div>
+
+    <!-- PASAL PASAL -->
+    <div class="space-y-4 text-xs text-slate-800 text-justify leading-relaxed">
+      
+      <!-- PASAL 1 -->
+      <div>
+        <h4 class="font-black text-slate-900 uppercase tracking-wider text-[11px] mb-1">
+          PASAL 1 — DEFINISI DAN RUANG LINGKUP LAYANAN
+        </h4>
+        <p>
+          1.1. PIHAK PERTAMA menyediakan akses perangkat lunak sistem kasir fisik (POS), website etalase toko online (Storefront Web &amp; PWA), aplikasi Android (.APK), serta panel manajemen toko (CMS Owner) berbasis komputasi awan (<i>Cloud Hosted</i>).<br>
+          1.2. PIHAK PERTAMA berkewajiban menjaga ketersediaan sistem, penanganan eror (*bug fix*), pencadangan data berkala, serta bantuan teknis operasional.<br>
+          1.3. PIHAK KEDUA berhak menggunakan sistem secara penuh untuk kegiatan transaksi dan pembukuan toko selama masa sewa aktif.
+        </p>
+      </div>
+
+      <!-- PASAL 2 -->
+      <div>
+        <h4 class="font-black text-slate-900 uppercase tracking-wider text-[11px] mb-1">
+          PASAL 2 — HAK KEKAYAAN INTELEKTUAL (HAK CIPTA SOFTWARE)
+        </h4>
+        <p>
+          2.1. <b>Hak Cipta Mutlak:</b> Seluruh kode sumber (<i>source code</i>), arsitektur sistem, algoritma, desain antarmuka, dan sistem pengaman lisensi adalah hak cipta intelektual mutlak milik PIHAK PERTAMA.<br>
+          2.2. Perjanjian ini adalah pemberian <b>Hak Pakai Lisensi Terbatas (Non-Exclusive, Non-Transferable License to Use)</b> dan <b>BUKAN</b> penjualan kepemilikan kode sumber.<br>
+          2.3. PIHAK KEDUA dilarang keras mencoba merekayasa balik (<i>reverse engineering</i>), membongkar, menyalin, menyewakan ulang kepada pihak lain, atau membobol kode pengaman lisensi sistem.
+        </p>
+      </div>
+
+      <!-- PASAL 3 -->
+      <div>
+        <h4 class="font-black text-slate-900 uppercase tracking-wider text-[11px] mb-1">
+          PASAL 3 — KEPEMILIKAN DAN KERAHASIAAN DATA USAHA
+        </h4>
+        <p>
+          3.1. <b>Data Milik Klien 100%:</b> Seluruh data master produk, harga kulakan (HPP), riwayat pesanan, data pelanggan, catatan piutang, dan pembukuan keuangan adalah hak milik mutlak PIHAK KEDUA.<br>
+          3.2. PIHAK PERTAMA menjamin kerahasiaan data finansial PIHAK KEDUA dan dilarang menyalahgunakan atau menjual data transaksi toko kepada pihak ketiga mana pun.<br>
+          3.3. PIHAK KEDUA memiliki hak penuh untuk mengekspor data toko ke dalam format standar (Microsoft Excel / PDF) kapan pun dibutuhkan.
+        </p>
+      </div>
+
+      <!-- PASAL 4 -->
+      <div>
+        <h4 class="font-black text-slate-900 uppercase tracking-wider text-[11px] mb-1">
+          PASAL 4 — JANGKA WAKTU, BIAYA, DAN PERPANJANGAN LISENSI
+        </h4>
+        <p>
+          4.1. Perjanjian ini berlaku untuk masa sewa paket <b id="disp-plan-term">Tahunan</b> selama <b id="disp-period-term">1 (Satu) Tahun Penuh</b> sejak tanggal aktivasi.<br>
+          4.2. Notifikasi tagihan perpanjangan akan diinformasikan oleh sistem secara otomatis melalui Panel Kontrol Owner mulai 7 (tujuh) hari sebelum masa aktif berakhir.<br>
+          4.3. Setiap perpanjangan sewa yang dilunasi akan divalidasi oleh PIHAK PERTAMA dengan menerbitkan <b>Kode Lisensi Kriptografis Resmi</b> yang diinput pada menu Pengaturan Toko.
+        </p>
+      </div>
+
+      <!-- PASAL 5 -->
+      <div>
+        <h4 class="font-black text-slate-900 uppercase tracking-wider text-[11px] mb-1">
+          PASAL 5 — MASA TENGGANG (GRACE PERIOD) &amp; KEAMANAN DATA
+        </h4>
+        <p>
+          5.1. Apabila masa sewa berakhir, sistem memberikan <b>Masa Tenggang (Grace Period) selama 7 (tujuh) hari kalender</b> di mana sistem kasir dan toko tetap dapat beroperasi normal.<br>
+          5.2. Apabila melewati masa tenggang 7 hari perpanjangan belum dilakukan, sistem akan masuk ke mode <b>Penguncian Anggun (Graceful Lockout)</b>.<br>
+          5.3. <b>Jaminan Data Aman:</b> Mode penguncian <b>TIDAK MENGHAPUS DATA APAPUN</b>. Seluruh data toko tersimpan aman di database cloud dan akan langsung aktif kembali seketika kode lisensi baru diaktifkan.
+        </p>
+      </div>
+
+      <!-- PASAL 6 -->
+      <div>
+        <h4 class="font-black text-slate-900 uppercase tracking-wider text-[11px] mb-1">
+          PASAL 6 — TINGKAT LAYANAN &amp; PENYELESAIAN PERSELISIHAN
+        </h4>
+        <p>
+          6.1. PIHAK PERTAMA menjamin ketersediaan server (<i>Uptime SLA</i>) minimal 99.0% setiap bulannya di luar jadwal pemeliharaan terencana.<br>
+          6.2. Segala perselisihan yang timbul dari pelaksanaan perjanjian ini akan diselesaikan secara musyawarah untuk mencapai mufakat secara kekeluargaan dan profesional.
+        </p>
+      </div>
+
+    </div>
+
+    <!-- TANDA TANGAN KEDUA BELAH PIHAK -->
+    <footer class="pt-8 mt-6 border-t-2 border-slate-900 text-xs">
+      <div class="grid grid-cols-2 gap-8 text-center">
+        
+        <div>
+          <p class="font-bold text-slate-900 uppercase text-[11px]">PIHAK PERTAMA</p>
+          <p class="text-slate-500 text-[10px]">Penyedia Layanan / Technical Partner</p>
+          <div class="h-20 flex items-center justify-center">
+            <!-- Space for Stamp / Signature -->
+          </div>
+          <p class="font-bold text-slate-900 border-t border-slate-400 pt-1 inline-block min-w-[180px]" id="sig-dev-bot">
+            ( Gaffi Digital Tech )
+          </p>
+        </div>
+
+        <div>
+          <p class="font-bold text-slate-900 uppercase text-[11px]">PIHAK KEDUA</p>
+          <p class="text-slate-500 text-[10px]">Penyewa / Pemilik Usaha Toko</p>
+          <div class="h-20 flex items-center justify-center">
+            <span class="text-[9px] text-slate-400 border border-dashed border-slate-300 px-3 py-1 rounded">Materai Rp 10.000</span>
+          </div>
+          <p class="font-bold text-slate-900 border-t border-slate-400 pt-1 inline-block min-w-[180px]" id="sig-client-bot">
+            ( Bapak Ahmad Fauzi )
+          </p>
+        </div>
+
+      </div>
+    </footer>
+
+  </main>
+
+  <script>
+    function updateContract() {
+      const devLead = document.getElementById('inp-dev-lead').value || 'Technical Partner';
+      const clientName = document.getElementById('inp-client-name').value || 'Pemilik Toko';
+      const storeTitle = document.getElementById('inp-store-title').value || 'Toko Klien';
+      const clientPhone = document.getElementById('inp-client-phone').value || '-';
+      const planType = document.getElementById('inp-plan-type').value || 'Tahunan';
+      const period = document.getElementById('inp-period').value || '1 (Satu) Tahun';
+
+      document.getElementById('disp-dev-entity').innerText = devLead;
+      document.getElementById('sig-dev-bot').innerText = '( ' + devLead + ' )';
+
+      document.getElementById('disp-client-rep').innerText = clientName;
+      document.getElementById('disp-store-rep').innerText = storeTitle;
+      document.getElementById('disp-client-phone-rep').innerText = clientPhone;
+      document.getElementById('sig-client-bot').innerText = '( ' + clientName + ' )';
+
+      document.getElementById('disp-plan-term').innerText = planType;
+      document.getElementById('disp-period-term').innerText = period;
+    }
+
+    const today = new Date();
+    const formattedDate = today.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+    document.getElementById('disp-sign-date').innerText = formattedDate;
+  </script>
+</body>
+</html>
