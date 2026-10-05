@@ -8,6 +8,20 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-10-54',
+        version: 'v1.10.54',
+        date: '2026-10-05',
+        title: 'Pembersihan Total Folder Legacy Fisik (PAKET_FLASHDISK Purge) & Perampingan Arsitektur Build SaaS',
+        category: 'chore',
+        badge: 'Zero Legacy Physical Flashdisk v1.10.54',
+        items: [
+            'Pembersihan Total Folder Legacy (PAKET_FLASHDISK & 1. HASIL_BUILD_SIAP_PAKE): Menghapus lebih dari 35 MB berkas duplikat peninggalan model penjualan fisik offline yang sudah tidak relevan dengan arsitektur Managed SaaS cloud modern.',
+            'Optimalisasi Pipeline Rilis (scripts/sync.mjs & scripts/build-aab.mjs): Merampingkan pipeline sinkronisasi rilis menjadi sangat cepat dan bersih, hanya berfokus pada folder dist produksi, sinkronisasi platform Android Capacitor, dan berkas binary rilis resmi di root repositori.',
+            'Tata Kelola Repositori Modern: Repositori proyek kini 100% rapi dan bersih dari folder sampah ganda, siap untuk deployment terkelola multi-tenant.',
+            'Multi-Channel Distribution v1.10.54 (Android versionCode 11054).'
+        ]
+    },
+    {
         id: 'log-1-10-53',
         version: 'v1.10.53',
         date: '2026-10-05',

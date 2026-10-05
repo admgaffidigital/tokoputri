@@ -108,9 +108,7 @@ const sizeAabMb = (statAab.size / (1024 * 1024)).toFixed(2);
 console.log(`✅ Berhasil menghasilkan AAB: app-release.aab (${sizeAabMb} MB)`);
 
 const aabTargets = [
-  'TokoPutri(OfficialStore).aab',
-  'PAKET_FLASHDISK/TokoPutri(OfficialStore).aab',
-  '1. HASIL_BUILD_SIAP_PAKE/TokoPutri(OfficialStore).aab'
+  'TokoPutri(OfficialStore).aab'
 ];
 
 for (const target of aabTargets) {
@@ -128,9 +126,7 @@ if (fs.existsSync(apkSource)) {
   console.log(`✅ Berhasil menghasilkan APK: app-release.apk (${sizeApkMb} MB)`);
 
   const apkTargets = [
-    'TokoPutri(OfficialStore).apk',
-    'PAKET_FLASHDISK/TokoPutri(OfficialStore).apk',
-    '1. HASIL_BUILD_SIAP_PAKE/TokoPutri(OfficialStore).apk'
+    'TokoPutri(OfficialStore).apk'
   ];
 
   for (const target of apkTargets) {

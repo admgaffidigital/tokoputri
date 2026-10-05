@@ -4,71 +4,31 @@ import { execSync } from 'child_process';
 
 console.log('\n======================================================');
 console.log('🚀 PEMELIHARAAN SISTEM TOKO PUTRI: SINKRONISASI TOTAL');
+console.log('   Arsitektur: Managed Whitelabel / SaaS (Clean & Fast)');
 console.log('======================================================\n');
 
 // 1. Build Web Production
-console.log('📦 [1/4] Mengompilasi kode web produksi (Vite Production Build)...');
+console.log('📦 [1/3] Mengompilasi kode web produksi (Vite Production Build)...');
 execSync('npm run build', { stdio: 'inherit' });
 
-// 2. Mirroring dist to distribution folders
-console.log('\n📂 [2/4] Menyinkronkan folder hasil build ke distribusi...');
-if (fs.existsSync('1. HASIL_BUILD_SIAP_PAKE')) {
-  fs.rmSync('1. HASIL_BUILD_SIAP_PAKE', { recursive: true, force: true });
-}
-fs.cpSync('dist', '1. HASIL_BUILD_SIAP_PAKE', { recursive: true, force: true });
-if (fs.existsSync('PAKET_FLASHDISK/1. HASIL_BUILD_SIAP_PAKE')) {
-  fs.rmSync('PAKET_FLASHDISK/1. HASIL_BUILD_SIAP_PAKE', { recursive: true, force: true });
-}
-fs.cpSync('dist', 'PAKET_FLASHDISK/1. HASIL_BUILD_SIAP_PAKE', { recursive: true, force: true });
-
-// Pertahankan / salin file AAB & APK rilis resmi ke paket distribusi
-const releaseBinaries = [
-  'TokoPutri(OfficialStore).aab',
-  'TokoPutri(OfficialStore).apk'
-];
-for (const bin of releaseBinaries) {
-  if (fs.existsSync(bin)) {
-    fs.copyFileSync(bin, path.join('1. HASIL_BUILD_SIAP_PAKE', bin));
-    fs.copyFileSync(bin, path.join('PAKET_FLASHDISK', bin));
-    fs.copyFileSync(bin, path.join('PAKET_FLASHDISK/1. HASIL_BUILD_SIAP_PAKE', bin));
-  }
-}
-
-// Bersihkan file binary rilis versi lama jika ada
-const legacyFiles = [
+// 2. Pembersihan folder duplikat / legacy fisik (Flashdisk era cleanup)
+const legacyPaths = [
+  'PAKET_FLASHDISK',
+  '1. HASIL_BUILD_SIAP_PAKE',
   'TokoPutri.aab',
-  'TokoPutri.apk',
-  '1. HASIL_BUILD_SIAP_PAKE/TokoPutri.aab',
-  '1. HASIL_BUILD_SIAP_PAKE/TokoPutri.apk',
-  'PAKET_FLASHDISK/TokoPutri.aab',
-  'PAKET_FLASHDISK/TokoPutri.apk',
-  'PAKET_FLASHDISK/1. HASIL_BUILD_SIAP_PAKE/TokoPutri.aab',
-  'PAKET_FLASHDISK/1. HASIL_BUILD_SIAP_PAKE/TokoPutri.apk'
+  'TokoPutri.apk'
 ];
-for (const leg of legacyFiles) {
-  if (fs.existsSync(leg)) {
-    try { fs.rmSync(leg, { force: true }); } catch (e) {}
+for (const p of legacyPaths) {
+  if (fs.existsSync(p)) {
+    try {
+      fs.rmSync(p, { recursive: true, force: true });
+      console.log(`   -> [Cleanup] Menghapus folder/berkas legacy: ${p}`);
+    } catch (e) {}
   }
 }
 
-
-// 3. Isolasi Distribusi: Lindungi Hak Kekayaan Intelektual (Source Code Lockdown)
-// Model bisnis resmi: Managed Whitelabel / SaaS (source code TIDAK didistribusikan ke klien).
-// Paket distribusi hanya memuat: Hasil Build Web, APK Android Resmi, dan Panduan Non-Teknis.
-console.log('🔒 [3/5] Menjaga keamanan kode sumber (Source Code Lockdown - SaaS Model)...');
-if (fs.existsSync('PAKET_FLASHDISK/2. SOURCE_CODE_LENGKAP')) {
-  fs.rmSync('PAKET_FLASHDISK/2. SOURCE_CODE_LENGKAP', { recursive: true, force: true });
-}
-
-// Sinkronkan panduan operasional non-teknis ke paket distribusi
-if (fs.existsSync('DOCS_SAAS_BISNIS/3_PANDUAN_OPERASIONAL_PEMILIK_TOKO_NON_TEKNIS.md')) {
-  fs.mkdirSync('PAKET_FLASHDISK/3. PANDUAN_DAN_TUTORIAL', { recursive: true });
-  fs.copyFileSync('DOCS_SAAS_BISNIS/3_PANDUAN_OPERASIONAL_PEMILIK_TOKO_NON_TEKNIS.md', 'PAKET_FLASHDISK/3. PANDUAN_DAN_TUTORIAL/PANDUAN_OPERASIONAL_PEMILIK_TOKO_NON_TEKNIS.md');
-  fs.copyFileSync('DOCS_SAAS_BISNIS/2_SURAT_PERJANJIAN_SEWA_SOFTWARE_TOS.md', 'PAKET_FLASHDISK/3. PANDUAN_DAN_TUTORIAL/DOKUMEN_PERJANJIAN_SEWA_SOFTWARE.md');
-}
-
-// 4. Sinkronisasi versi Android di build.gradle
-console.log('🤖 [4/5] Menyinkronkan versi Android build.gradle dari package.json...');
+// 3. Sinkronisasi versi Android di build.gradle
+console.log('\n🤖 [2/3] Menyinkronkan versi Android build.gradle dari package.json...');
 const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
 const gradlePath = 'android/app/build.gradle';
 if (fs.existsSync(gradlePath)) {
@@ -81,10 +41,10 @@ if (fs.existsSync(gradlePath)) {
   console.log(`   -> Android Version Name diset ke: ${pkg.version} (versionCode: ${vCode})`);
 }
 
-// 5. Capacitor sync for Android
-console.log('📱 [5/5] Menyinkronkan platform Android (Capacitor Sync)...');
+// 4. Capacitor sync for Android
+console.log('\n📱 [3/3] Menyinkronkan platform Android (Capacitor Sync)...');
 execSync('npx cap sync android', { stdio: 'inherit' });
 
 console.log('\n======================================================');
-console.log('✅ SELURUH SISTEM & DISTRIBUSI TELAH TERSINKRONISASI!');
+console.log('✅ SELURUH SISTEM & ASET TELAH TERSINKRONISASI 100%!');
 console.log('======================================================\n');
