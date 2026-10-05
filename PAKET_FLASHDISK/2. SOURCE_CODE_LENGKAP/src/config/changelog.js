@@ -8,6 +8,22 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-10-50',
+        version: 'v1.10.50',
+        date: '2026-10-05',
+        title: 'Penyempurnaan Total UI/UX & Ergonomi Mobile Native: Bottom Navigation Frosted Glass Bento Dock, Instant Header Search Capsule, Universal Pull-Indicator Gesture, dan Proteksi Safe-Area Inset',
+        category: 'feat',
+        badge: 'Ultra-Premium Mobile UI/UX & Ergonomics v1.10.50',
+        items: [
+            'Frosted Glass Bento Bottom Navigation Bar (style.css): Mentransformasi bilah navigasi bawah (#bottom-nav-bar) dengan latar kaca frosted (backdrop-filter: blur(20px)), active squircle pill glow bernuansa tema toko aktif, micro-dot indikator aktif, dan center hero hub (Beranda) ber-halo ambient radiant yang mewah dan responsif sentuh.',
+            'Mobile Header Quick-Search Capsule (index.html & catalog.js): Menyematkan kapsul pencarian instan transparan langsung di header etalase mobile dengan tombol hapus 1-ketuk, integrasi barcode scanner kamera live (openCameraScanner), sinkronisasi 2-arah dengan input desktop (#search-input), dan smooth-scroll langsung ke katalog produk saat fokus.',
+            'Universal Pull-Indicator Drag Handle & Safe-Area Protection (index.html & native-mobile.js): Menyematkan bilah handle drag sentuh (.pull-indicator) di puncak modal Kategori, Brand Mitra, Tautan Cepat (Quick Menu), dan Panduan SOP, serta mendaftarkan seluruh modal tersebut ke engine gesture tutup geser bawah (closeModalById) dan menyematkan proteksi bantalan safe-area inset (env(safe-area-inset-bottom)) pada footer seluruh modal.',
+            'POS Kasir Mobile Floating Cart Bar & Stepper Ergonomi (pos.js): Mempercantik bilah keranjang melayang (#pos-mobile-floating-bar) pada mode kasir mobile dengan gradien aksen mewah, penghitung item dinamis beranimasi, dan area sentuh tombol stepper (+/-) yang ergonomis.',
+            'Safe-Area Padding Rincian Pesanan Pelanggan (orders.js): Menjamin tombol aksi dan rincian transaksi pada modal pesanan (#order-detail-modal) selalu tampil bebas dari tertutup oleh gesture bar navigasi bawaan ponsel.',
+            'Multi-Channel Distribution v1.10.50 (Android versionCode 11050).'
+        ]
+    },
+    {
         id: 'log-1-10-49',
         version: 'v1.10.49',
         date: '2026-10-04',

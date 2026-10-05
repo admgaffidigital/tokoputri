@@ -127,7 +127,20 @@ export const closeModalById = (id) => {
             if (typeof window.closePurchasePickerModal === 'function') window.closePurchasePickerModal();
             break;
         case 'quick-menu-modal':
+        case 'quickmenu-modal':
             if (typeof window.closeQuickMenuModal === 'function') window.closeQuickMenuModal();
+            break;
+        case 'category-modal':
+            if (typeof window.closeCategoryModal === 'function') window.closeCategoryModal();
+            break;
+        case 'brand-modal':
+            if (typeof window.closeBrandModal === 'function') window.closeBrandModal();
+            break;
+        case 'quick-variant-modal':
+            if (typeof window.closeQuickVariantSheet === 'function') window.closeQuickVariantSheet();
+            break;
+        case 'shopping-guide-modal':
+            if (typeof window.closeShoppingGuideModal === 'function') window.closeShoppingGuideModal();
             break;
         case 'pos-login-modal':
             if (typeof window.closePOSLoginModal === 'function') window.closePOSLoginModal();

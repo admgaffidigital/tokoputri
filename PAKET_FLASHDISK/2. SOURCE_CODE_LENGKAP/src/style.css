@@ -1269,8 +1269,19 @@ body {
 
 /* === 4B. BOTTOM NAVIGATION BAR (MOBILE NATIVE APP EXPERIENCE) === */
 #bottom-nav-bar {
-    padding-bottom: max(0.45rem, env(safe-area-inset-bottom));
-    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s ease, visibility 0.3s ease;
+    padding-bottom: max(0.55rem, env(safe-area-inset-bottom));
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    background: rgba(255, 255, 255, 0.94);
+    border-top: 1px solid rgba(226, 232, 240, 0.9);
+    box-shadow: 0 -4px 28px rgba(15, 23, 42, 0.07);
+    transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.25s ease, visibility 0.35s ease;
+}
+
+.dark #bottom-nav-bar {
+    background: rgba(11, 17, 32, 0.94);
+    border-top-color: rgba(30, 41, 59, 0.9);
+    box-shadow: 0 -4px 28px rgba(0, 0, 0, 0.45);
 }
 
 #bottom-nav-bar.bnav-hidden {
@@ -1284,38 +1295,62 @@ body {
     -webkit-tap-highlight-color: transparent;
     user-select: none;
     outline: none;
+    position: relative;
 }
 
 .bnav-item .bnav-icon-wrap {
-    width: 46px;
-    height: 28px;
+    width: 48px;
+    height: 30px;
     border-radius: 9999px;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    position: relative;
+    transition: all 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .bnav-item .bnav-icon-wrap i {
-    transition: color 0.2s ease, transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transition: color 0.2s ease, transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .bnav-item:active .bnav-icon-wrap {
-    transform: scale(0.92);
+    transform: scale(0.90);
 }
 
 .bnav-item.active .bnav-icon-wrap {
-    background: rgba(var(--color-primary-rgb), 0.16);
+    background: linear-gradient(135deg, rgba(var(--color-primary-rgb), 0.18), rgba(var(--color-primary-rgb), 0.08));
+    box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.18), inset 0 0 0 1px rgba(var(--color-primary-rgb), 0.2);
 }
 
 .bnav-item.active .bnav-icon-wrap i {
     color: var(--color-primary) !important;
-    transform: scale(1.12);
+    transform: scale(1.15);
 }
 
 .bnav-item.active .bnav-label {
     color: var(--color-primary) !important;
     font-weight: 800 !important;
+    transform: scale(1.02);
+}
+
+/* Micro-dot active indicator under label */
+.bnav-item.active:not(.bnav-center-hub)::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4px;
+    height: 4px;
+    border-radius: 9999px;
+    background-color: var(--color-primary);
+    box-shadow: 0 0 6px var(--color-primary);
+    animation: bnavDotFadeIn 0.25s ease-out;
+}
+
+@keyframes bnavDotFadeIn {
+    from { opacity: 0; transform: translateX(-50%) scale(0); }
+    to { opacity: 1; transform: translateX(-50%) scale(1); }
 }
 
 /* CENTER HERO HUB BUTTON (BERANDA DI TENGAH ELEGAN) */
@@ -1324,36 +1359,37 @@ body {
 }
 
 .bnav-hero-button {
-    width: 52px;
-    height: 52px;
+    width: 54px;
+    height: 54px;
     border-radius: 9999px;
-    background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+    background: linear-gradient(135deg, var(--color-primary-light, #34d399) 0%, var(--color-primary, #10b981) 50%, var(--color-primary-dark, #059669) 100%);
     color: #ffffff;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);
-    transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
-    transform: translateY(-14px);
+    box-shadow: 0 6px 18px rgba(var(--color-primary-rgb), 0.42), 0 0 0 1px rgba(var(--color-primary-rgb), 0.15);
+    transition: all 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transform: translateY(-16px);
     margin-bottom: -10px;
-    border: 3.5px solid #FAF8F5;
+    border: 3.5px solid #ffffff;
 }
 
 .dark .bnav-hero-button {
-    border-color: #1e293b;
+    border-color: #0b1120;
+    box-shadow: 0 6px 22px rgba(var(--color-primary-rgb), 0.52), 0 0 0 1px rgba(var(--color-primary-rgb), 0.3);
 }
 
 .bnav-center-hub:active .bnav-hero-button {
-    transform: translateY(-11px) scale(0.92);
+    transform: translateY(-12px) scale(0.92);
 }
 
 .bnav-center-hub.active .bnav-hero-button {
-    transform: translateY(-16px) scale(1.06);
-    box-shadow: 0 6px 18px rgba(var(--color-primary-rgb), 0.4);
+    transform: translateY(-18px) scale(1.08);
+    box-shadow: 0 8px 26px rgba(var(--color-primary-rgb), 0.58), 0 0 0 2px rgba(var(--color-primary-rgb), 0.35);
 }
 
 .bnav-center-hub.active .bnav-hero-button i {
-    transform: scale(1.1);
+    transform: scale(1.12);
 }
 
 .bnav-center-hub.active .bnav-label {
@@ -2941,15 +2977,17 @@ iframe[src*="vercel.live"] {
     left: 0;
     right: 0;
     z-index: 40;
-    background-color: #ffffff !important;
+    background-color: rgba(255, 255, 255, 0.95) !important;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
     border-top: 1px solid rgba(226, 232, 240, 0.9);
-    box-shadow: 0 -1px 3px rgba(0, 0, 0, 0.03);
-    padding-bottom: max(0.6rem, env(safe-area-inset-bottom));
+    box-shadow: 0 -4px 20px rgba(15, 23, 42, 0.05);
+    padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
 }
 html.dark .product-modal-sticky-action-bar {
-    background-color: #0f172a !important;
+    background-color: rgba(15, 23, 42, 0.95) !important;
     border-top-color: rgba(51, 65, 85, 0.9);
-    box-shadow: 0 -1px 3px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.35);
 }
 
 /* Quick variant bottom sheet safe area */

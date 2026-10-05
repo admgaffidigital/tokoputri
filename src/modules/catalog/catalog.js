@@ -479,11 +479,42 @@ export const resetSemuaFilter = () => {
 
 export const handleSearch = v => { 
     clearTimeout(searchTmr); 
+    const mobInput = el('mobile-header-search');
+    if (mobInput && mobInput.value !== v) mobInput.value = v;
+    const clearBtn = el('mobile-header-search-clear');
+    if (clearBtn) clearBtn.classList.toggle('hidden', !v || !v.trim());
     searchTmr = setTimeout(() => { 
         setSQ(v); 
         setCPage(1); 
         rCat(); 
     }, 300); 
+};
+
+export const handleMobileHeaderSearch = v => {
+    const mainInput = el('search-input');
+    if (mainInput && mainInput.value !== v) mainInput.value = v;
+    const clearBtn = el('mobile-header-search-clear');
+    if (clearBtn) clearBtn.classList.toggle('hidden', !v || !v.trim());
+    handleSearch(v);
+};
+
+export const clearMobileHeaderSearch = () => {
+    const mobInput = el('mobile-header-search');
+    if (mobInput) mobInput.value = '';
+    const mainInput = el('search-input');
+    if (mainInput) mainInput.value = '';
+    const clearBtn = el('mobile-header-search-clear');
+    if (clearBtn) clearBtn.classList.add('hidden');
+    handleSearch('');
+};
+
+export const onMobileSearchFocus = () => {
+    const sec = el('sec-categories') || el('product-container');
+    const sc = document.querySelector('#view-catalog .scroll-content');
+    if (sec && sc) {
+        const topPos = sec.offsetTop - 70;
+        sc.scrollTo({ top: Math.max(0, topPos), behavior: 'smooth' });
+    }
 };
 
 export const handleSort = v => { 
@@ -520,6 +551,9 @@ window.filterSubCategory = filterSubCategory;
 window.filterBrand = filterBrand;
 window.resetSemuaFilter = resetSemuaFilter;
 window.handleSearch = handleSearch;
+window.handleMobileHeaderSearch = handleMobileHeaderSearch;
+window.clearMobileHeaderSearch = clearMobileHeaderSearch;
+window.onMobileSearchFocus = onMobileSearchFocus;
 window.handleSort = handleSort;
 window.toggleView = toggleView;
 window.loadMoreProducts = loadMoreProducts;
