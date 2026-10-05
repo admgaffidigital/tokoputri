@@ -511,7 +511,7 @@ export const clearMobileHeaderSearch = () => {
 export const onMobileSearchFocus = () => {
     const sec = el('sec-categories') || el('product-container');
     const sc = document.querySelector('#view-catalog .scroll-content');
-    if (sec && sc) {
+    if (sec && sc && sc.scrollTop < 60) {
         const topPos = sec.offsetTop - 70;
         sc.scrollTo({ top: Math.max(0, topPos), behavior: 'smooth' });
     }

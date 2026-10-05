@@ -1607,11 +1607,11 @@
           </div>
           <!-- MOBILE HEADER QUICK-SEARCH CAPSULE (INSTANT DISCOVERY) -->
           <div class="mx-auto mt-2 flex w-full items-center gap-2 px-1 sm:hidden">
-            <div class="relative flex-1 flex items-center bg-white/20 dark:bg-black/30 backdrop-blur-md rounded-2xl border border-white/30 dark:border-white/10 px-3 py-1.5 text-white shadow-inner focus-within:bg-white focus-within:text-slate-900 focus-within:border-[var(--color-primary)] transition-all">
-              <i class="fa-solid fa-magnifying-glass text-xs opacity-80 mr-2 text-white/90 focus-within:text-slate-400"></i>
-              <input type="text" id="mobile-header-search" placeholder="Cari ribuan produk toko..." autocomplete="off" class="w-full bg-transparent text-xs font-semibold placeholder:text-white/80 focus:placeholder:text-slate-400 outline-none text-white focus:text-slate-900 dark:focus:text-white" oninput="if(window.handleMobileHeaderSearch) window.handleMobileHeaderSearch(this.value);" onfocus="if(window.onMobileSearchFocus) window.onMobileSearchFocus()">
-              <button type="button" id="mobile-header-search-clear" onclick="window.clearMobileHeaderSearch()" class="hidden text-white/80 hover:text-white focus-within:text-slate-500 p-1 text-xs mr-1 active:scale-90" title="Hapus"><i class="fa-solid fa-xmark"></i></button>
-              <button type="button" onclick="openCameraScanner()" class="text-white/90 hover:text-white focus-within:text-slate-600 p-1 active:scale-90 transition-transform shrink-0" title="Scan Barcode"><i class="fa-solid fa-qrcode text-xs"></i></button>
+            <div class="group relative flex-1 flex items-center bg-white/20 dark:bg-black/30 backdrop-blur-md rounded-2xl border border-white/30 dark:border-white/10 px-3 py-1.5 text-white shadow-inner focus-within:bg-white dark:focus-within:bg-slate-900 focus-within:border-[var(--color-primary)] focus-within:shadow-md transition-all">
+              <i class="fa-solid fa-magnifying-glass text-xs mr-2 text-white/90 group-focus-within:text-slate-400 dark:group-focus-within:text-slate-400 transition-colors"></i>
+              <input type="text" id="mobile-header-search" placeholder="Cari ribuan produk toko..." autocomplete="off" class="w-full bg-transparent text-xs font-semibold placeholder:text-white/80 group-focus-within:placeholder:text-slate-400 outline-none text-white group-focus-within:text-slate-900 dark:group-focus-within:text-white" oninput="if(window.handleMobileHeaderSearch) window.handleMobileHeaderSearch(this.value);" onfocus="if(window.onMobileSearchFocus) window.onMobileSearchFocus()" onkeydown="if(event.key === 'Enter') { this.blur(); }">
+              <button type="button" id="mobile-header-search-clear" onclick="window.clearMobileHeaderSearch()" class="hidden text-white/80 group-focus-within:text-slate-400 hover:text-white dark:hover:text-white p-1 text-xs mr-1 active:scale-90" title="Hapus"><i class="fa-solid fa-xmark"></i></button>
+              <button type="button" onclick="openCameraScanner('mobile-header-search')" class="text-white/90 group-focus-within:text-[var(--color-primary)] hover:text-white p-1 active:scale-90 transition-all shrink-0" title="Scan Barcode"><i class="fa-solid fa-qrcode text-xs"></i></button>
             </div>
           </div>
         </div>
@@ -1663,15 +1663,15 @@
             </div>
           </div>
           <div class="mx-auto w-full max-w-full px-4 pt-4 lg:px-8 xl:max-w-[1200px]">
-            <div class="bento-island-card mb-3 sm:mb-4 lg:mb-6 flex flex-col items-center justify-between gap-3 rounded-2xl p-2.5 sm:p-3 shadow-soft sm:flex-row">
-              <div class="focus-within:ring-[var(--color-primary)]/20 relative flex w-full items-center rounded-xl border border-slate-200 bg-slate-50 transition-all focus-within:border-[var(--color-primary)] focus-within:ring-2 dark:border-slate-700/80 dark:bg-slate-900/60 sm:w-80">
+            <div class="bento-island-card mb-3 sm:mb-4 lg:mb-6 flex flex-row items-center justify-between gap-2.5 sm:gap-3 rounded-2xl p-2 sm:p-3 shadow-soft">
+              <div class="focus-within:ring-[var(--color-primary)]/20 relative hidden sm:flex w-full sm:w-80 items-center rounded-xl border border-slate-200 bg-slate-50 transition-all focus-within:border-[var(--color-primary)] focus-within:ring-2 dark:border-slate-700/80 dark:bg-slate-900/60">
                 <i class="fa-solid fa-search absolute left-4 top-1/2 -translate-y-1/2 text-sm text-slate-400"></i>
                 <input autocomplete="off" class="w-full rounded-xl bg-transparent py-3 pl-11 pr-12 text-sm font-semibold text-slate-800 transition-all placeholder:text-slate-400 focus:outline-none dark:text-white dark:placeholder:text-slate-400" id="search-input" name="cari_produk_q" onkeyup="if (window.handleSearch) window.handleSearch(this.value);" placeholder="Cari nama produk..." type="text" />
                 <button class="absolute right-2 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-xl text-slate-400 transition-all hover:bg-[rgba(var(--color-primary-rgb),0.08)] hover:text-[var(--color-primary)]" onclick="openCameraScanner()"><i class="fa-solid fa-qrcode text-sm"></i></button>
               </div>
-              <div class="flex w-full gap-2 px-1 pb-1 sm:w-auto sm:p-0 sm:pr-1">
+              <div class="flex w-full items-center justify-between gap-2 sm:w-auto sm:justify-start">
                 <div class="relative flex-1 sm:w-40">
-                  <select class="w-full cursor-pointer appearance-none rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-xs font-bold text-slate-700 transition-colors hover:border-slate-300 focus:border-[var(--color-primary)] focus:outline-none dark:border-slate-700 dark:bg-slate-900/60 dark:text-slate-300" id="sort-input" onchange="handleSort(this.value)">
+                  <select class="w-full cursor-pointer appearance-none rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2 sm:py-2.5 text-xs font-bold text-slate-700 transition-colors hover:border-slate-300 focus:border-[var(--color-primary)] focus:outline-none dark:border-slate-700 dark:bg-slate-900/60 dark:text-slate-300" id="sort-input" onchange="handleSort(this.value)">
                     <option value="newest">Terbaru</option>
                     <option value="cheapest">Termurah</option>
                     <option value="expensive">Termahal</option>

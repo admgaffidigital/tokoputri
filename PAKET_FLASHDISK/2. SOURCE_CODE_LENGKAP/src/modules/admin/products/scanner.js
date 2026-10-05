@@ -41,7 +41,7 @@ window.openCameraScanner = async (targetId='search-input') => {
                 let tEl = el(targetId);
                 if(tEl){
                     tEl.value = decodedText;
-                    if(targetId === 'search-input') {
+                    if(targetId === 'search-input' || targetId === 'mobile-header-search') {
                         window.handleSearch?.(decodedText);
                     } else {
                         tEl.dispatchEvent(new Event('input',{bubbles:true}));

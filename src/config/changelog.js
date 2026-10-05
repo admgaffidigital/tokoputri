@@ -8,6 +8,21 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-10-51',
+        version: 'v1.10.51',
+        date: '2026-10-05',
+        title: 'Resolusi Duplikat Kolom Pencarian Mobile & Harmonisasi Filter Etalase Sleek (Single Sticky Search)',
+        category: 'fix',
+        badge: 'Single Sticky Search & Sleek Filter Bar v1.10.51',
+        items: [
+            'Eliminasi Duplikat Kolom Pencarian Mobile (index.html): Menyembunyikan kolom pencarian kedua di kartu katalog bawah (#search-input) pada layar ponsel (hidden sm:flex) sehingga pada tampilan mobile hanya ada satu kolom pencarian tunggal di Header Atas (Sticky Header Search) yang elegan ala Tokopedia/Shopee.',
+            'Perampingan Kartu Filter Etalase (index.html): Mengubah kartu filter katalog di mobile menjadi satu baris kompak (single-row strip) yang bersih dan presisi, hanya menampilkan pilihan Urutan (Sort) dan Tombol Mode Tampilan (Grid/List) tanpa memakan ruang vertikal layar.',
+            'Penyempurnaan Interaksi Mobile Header Search Capsule (index.html & catalog.js): Menambahkan efek transisi warna ikon fokus otomatis (group-focus-within), tombol tutup keyboard instan saat tombol Enter ditekan pada virtual keyboard ponsel, serta penguncian scroll fokus cerdas (sc.scrollTop < 60).',
+            'Sinkronisasi Barcode Scanner Kamera Universal (scanner.js): Memastikan pemindaian barcode dari kamera langsung memicu pencarian dan memperbarui kedua kolom input baik di mobile header maupun desktop.',
+            'Multi-Channel Distribution v1.10.51 (Android versionCode 11051).'
+        ]
+    },
+    {
         id: 'log-1-10-50',
         version: 'v1.10.50',
         date: '2026-10-05',
