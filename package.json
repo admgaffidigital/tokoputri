@@ -1,7 +1,7 @@
 {
   "name": "toko-putri",
   "private": true,
-  "version": "1.10.52",
+  "version": "1.10.53",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -9,6 +9,8 @@
     "preview": "vite preview",
     "sync": "node scripts/sync.mjs",
     "release": "node scripts/sync.mjs",
+    "license:generate": "node scripts/generate-license.mjs",
+    "store:new": "node scripts/new-store.mjs",
     "deploy:rules": "firebase deploy --only firestore:rules",
     "build:aab": "node scripts/build-aab.mjs",
     "cap:sync": "cap sync android",

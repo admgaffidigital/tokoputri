@@ -15,6 +15,7 @@ import {
 import { uiPalettes, applyUITheme, applyBackgroundStyle } from '../../core/theme.js';
 import { toggleTaxMenuVisibility } from './auth.js';
 import { getPaylaterConfig, calculateInstallmentBreakdown, calculateAllPaylaterTenors } from '../../core/paylater.js';
+import { getSubscriptionBentoHtml } from '../../core/subscription.js';
 
 export { syncAppMeta } from '../../core/theme.js';
 
@@ -132,6 +133,9 @@ export const rAdmSet = () => {
                 </div>
             </button>
         </div>
+
+        <!-- 9. Bento Status Lisensi & Layanan Terkelola (SaaS Engine) -->
+        ${getSubscriptionBentoHtml()}
     </div>
     `;
     setH('admin-content', h);

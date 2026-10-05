@@ -53,6 +53,8 @@ import './core/pricing.js';
 import './core/ui.js';
 // Core: Native Mobile Experience Engine (Haptics, Swipe Sheets, Touch Feedbacks)
 import { initNativeMobileEngine, triggerHaptic } from './core/native-mobile.js';
+// Core: Engine Lisensi & Guard Langganan SaaS / Managed Whitelabel
+import { checkAndEnforceSubscriptionLockout, renderSubscriptionNoticeInCMS, openRenewalModal, closeRenewalModal, verifyAndApplyLicenseKey } from './core/subscription.js';
 // Core: Router & History Navigation
 import { setupHistoryRouter } from './core/router.js';
 // Cart: sanitizeCart diimport langsung supaya window.sanitizeCart tidak circular
@@ -477,6 +479,11 @@ window.sanitizeCart = sanitizeCart;
 // Native Mobile Experience Engine (Haptics & Gestures)
 window.initNativeMobileEngine = initNativeMobileEngine;
 window.triggerHaptic = triggerHaptic;
+window.checkAndEnforceSubscriptionLockout = checkAndEnforceSubscriptionLockout;
+window.renderSubscriptionNoticeInCMS = renderSubscriptionNoticeInCMS;
+window.openRenewalModal = openRenewalModal;
+window.closeRenewalModal = closeRenewalModal;
+window.verifyAndApplyLicenseKey = verifyAndApplyLicenseKey;
 
 const bindProp = (name, getter, setter) => {
     try {

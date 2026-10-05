@@ -1,5 +1,0 @@
-# Dependencies
-node_modules/
-
-# Helper/fix scripts — not needed in production
-_scripts/

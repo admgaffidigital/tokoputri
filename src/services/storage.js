@@ -18,6 +18,10 @@ import { updWish } from '../modules/cart/wishlist.js';
 import { rDyn } from '../modules/home/sections.js';
 import { rCat } from '../modules/catalog/catalog.js';
 import { applyUITheme, applyBackgroundStyle } from '../core/theme.js';
+import { 
+    checkAndEnforceSubscriptionLockout, 
+    renderSubscriptionNoticeInCMS 
+} from '../core/subscription.js';
 
 // ─── Helper: Urutkan produk berdasarkan susunan kustom (productOrder) ───────────
 export const sortProductsByOrder = (products, productOrder = null) => {
@@ -130,6 +134,9 @@ export const loadAppData = async () => {
         appData.store = { ...defApp.store, ...(localCms.store || {}) };
         appData.payment = { ...defApp.payment, ...(localCms.payment || {}) };
         appData.config = { ...defApp.config, ...(localCms.config || {}) };
+        if (localCms.subscription) appData.subscription = { ...defApp.subscription, ...localCms.subscription };
+        checkAndEnforceSubscriptionLockout();
+        renderSubscriptionNoticeInCMS();
         if (appData.config && appData.config.gasUrl) window.GAS_UPLOAD_URL = appData.config.gasUrl;
         if (localCms.hasCashier !== undefined) {
             try { localStorage.setItem('pos_has_cashier', localCms.hasCashier ? 'true' : 'false'); } catch(_) {}
@@ -177,6 +184,9 @@ export const loadAppData = async () => {
                 appData.store = { ...defApp.store, ...(f.store || {}) };
                 appData.payment = { ...defApp.payment, ...(f.payment || {}) };
                 appData.config = { ...defApp.config, ...(f.config || {}) };
+                if (f.subscription) appData.subscription = { ...defApp.subscription, ...f.subscription };
+                checkAndEnforceSubscriptionLockout();
+                renderSubscriptionNoticeInCMS();
                 if (appData.config && appData.config.gasUrl) window.GAS_UPLOAD_URL = appData.config.gasUrl;
                 if (f.hasCashier !== undefined) {
                     try { localStorage.setItem('pos_has_cashier', f.hasCashier ? 'true' : 'false'); } catch(_) {}
@@ -509,6 +519,11 @@ export const attachRealtimeStockSync = () => {
             const syncQris = appData.payment?.qrisUrl || appData.payment?.qris || appData.store?.qrisUrl || appData.store?.qris || appData.qrisUrl;
             if (syncQris) appData.payment.qrisUrl = fixD(syncQris);
             appData.config = { ...defApp.config, ...(f.config || {}) };
+            if (f.subscription) {
+                appData.subscription = { ...defApp.subscription, ...f.subscription };
+                checkAndEnforceSubscriptionLockout();
+                renderSubscriptionNoticeInCMS();
+            }
             // taxSettings kini dari cms_private — tidak di-update di sini
             if (appData.config && appData.config.gasUrl) window.GAS_UPLOAD_URL = appData.config.gasUrl;
             if (appData.banners) appData.banners.forEach(b => { if(b.img) b.img = fixD(b.img); if(b.videoUrl) b.videoUrl = fixDriveVideo(b.videoUrl); });

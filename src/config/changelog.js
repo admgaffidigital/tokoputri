@@ -8,6 +8,23 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-10-53',
+        version: 'v1.10.53',
+        date: '2026-10-05',
+        title: 'Transformasi Strategis Model Bisnis: Managed Whitelabel / SaaS Engine, Guard Lisensi Otomatis, Script Kloning 1-Klik, & Isolasi Proteksi Kode Sumber',
+        category: 'feat',
+        badge: 'Managed Whitelabel SaaS Engine v1.10.53',
+        items: [
+            'Engine Lisensi & Guard Langganan SaaS (src/core/subscription.js): Mengimplementasikan modul evaluasi masa aktif toko terkelola (getSubscriptionInfo), deteksi status aktif, peringatan pra-jatuh tempo H-7, masa tenggang (grace period 7 hari), dan penguncian anggun (Graceful Lockout) yang menjamin data toko 100% aman tersimpan saat masa sewa berakhir.',
+            'Slot Banner Notifikasi & Bento Status Lisensi CMS (subscription.js & settings.js): Menyematkan banner peringatan masa sewa ramah di puncak panel kontrol CMS Owner (#cms-subscription-notice-slot) dan Bento Status Lisensi di menu Pengaturan Toko lengkap dengan sisa hari aktif, nama mitra pengembang, tombol hubungi via WhatsApp, dan modal aktivasi kunci lisensi.',
+            'Algoritma Verifikasi Kunci Lisensi Offline/Online (verifyAndApplyLicenseKey): Menerbitkan format lisensi resmi PUTRI-[HARI]D-[KODE_TOKO]-[CHECKSUM] dengan cryptographic checksum dan secret salt developer yang otomatis memperpanjang masa aktif di Firestore cms_data.',
+            'Script Generator Lisensi & Kloning Toko 1-Klik (scripts/generate-license.mjs & scripts/new-store.mjs): Menyediakan alat bantu CLI pengembang untuk men-setup instansi toko klien baru dalam waktu < 5 menit dan menerbitkan lisensi perpanjangan lengkap dengan draf pesan WhatsApp resmi siap kirim.',
+            'Isolasi Proteksi Kode Sumber (Source Code Lockdown): Menjaga kepemilikan hak cipta perangkat lunak dengan mengeliminasi distribusi source code mentah ke klien; klien menerima paket terima beres berupa URL toko langsung, file aplikasi Android (.APK) berlogo toko, dan panduan non-teknis.',
+            'Paket Bisnis & Kontrak Resmi (DOCS_SAAS_BISNIS): Menyusun Proposal Penawaran Managed SaaS, Surat Perjanjian Sewa Software (ToS Agreement), Panduan Pemilik Toko 100% Non-Teknis, dan SOP Onboarding Pengembang.',
+            'Multi-Channel Distribution v1.10.53 (Android versionCode 11053).'
+        ]
+    },
+    {
         id: 'log-1-10-52',
         version: 'v1.10.52',
         date: '2026-10-05',

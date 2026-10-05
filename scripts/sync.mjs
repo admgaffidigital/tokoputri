@@ -52,33 +52,19 @@ for (const leg of legacyFiles) {
 }
 
 
-// 3. Mirroring source files to flashdisk package
-console.log('💾 [3/4] Menyinkronkan kode sumber ke paket flashdisk...');
+// 3. Isolasi Distribusi: Lindungi Hak Kekayaan Intelektual (Source Code Lockdown)
+// Model bisnis resmi: Managed Whitelabel / SaaS (source code TIDAK didistribusikan ke klien).
+// Paket distribusi hanya memuat: Hasil Build Web, APK Android Resmi, dan Panduan Non-Teknis.
+console.log('🔒 [3/5] Menjaga keamanan kode sumber (Source Code Lockdown - SaaS Model)...');
 if (fs.existsSync('PAKET_FLASHDISK/2. SOURCE_CODE_LENGKAP')) {
-  const syncItems = [
-    'package.json',
-    'capacitor.config.json',
-    'src',
-    'public',
-    'index.html',
-    'tailwind.config.js',
-    'vite.config.js',
-    'postcss.config.js',
-    'vercel.json',
-    'firestore.rules'
-  ];
-  for (const item of syncItems) {
-    if (fs.existsSync(item)) {
-      const dest = path.join('PAKET_FLASHDISK/2. SOURCE_CODE_LENGKAP', item);
-      const stat = fs.statSync(item);
-      if (stat.isDirectory()) {
-        fs.cpSync(item, dest, { recursive: true, force: true });
-      } else {
-        fs.mkdirSync(path.dirname(dest), { recursive: true });
-        fs.copyFileSync(item, dest);
-      }
-    }
-  }
+  fs.rmSync('PAKET_FLASHDISK/2. SOURCE_CODE_LENGKAP', { recursive: true, force: true });
+}
+
+// Sinkronkan panduan operasional non-teknis ke paket distribusi
+if (fs.existsSync('DOCS_SAAS_BISNIS/3_PANDUAN_OPERASIONAL_PEMILIK_TOKO_NON_TEKNIS.md')) {
+  fs.mkdirSync('PAKET_FLASHDISK/3. PANDUAN_DAN_TUTORIAL', { recursive: true });
+  fs.copyFileSync('DOCS_SAAS_BISNIS/3_PANDUAN_OPERASIONAL_PEMILIK_TOKO_NON_TEKNIS.md', 'PAKET_FLASHDISK/3. PANDUAN_DAN_TUTORIAL/PANDUAN_OPERASIONAL_PEMILIK_TOKO_NON_TEKNIS.md');
+  fs.copyFileSync('DOCS_SAAS_BISNIS/2_SURAT_PERJANJIAN_SEWA_SOFTWARE_TOS.md', 'PAKET_FLASHDISK/3. PANDUAN_DAN_TUTORIAL/DOKUMEN_PERJANJIAN_SEWA_SOFTWARE.md');
 }
 
 // 4. Sinkronisasi versi Android di build.gradle

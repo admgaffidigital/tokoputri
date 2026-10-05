@@ -1,0 +1,75 @@
+{
+  "_meta": {
+    "createdAt": "2026-10-05T03:55:16.534Z",
+    "createdBy": "Developer / Technical Partner",
+    "storeCode": "BERKAH"
+  },
+  "store": {
+    "name": "Toko Berkah Sejahtera",
+    "code": "BERKAH",
+    "slogan": "Toko Online & Kasir Resmi",
+    "logo": "fa-store",
+    "wa": "081234567890",
+    "phone": "081234567890",
+    "address": "Alamat Toko",
+    "lat": "-7.82308507053985",
+    "lng": "112.0988374794464",
+    "costPerKm": 0,
+    "isDeliveryEnabled": true,
+    "isPickupEnabled": true,
+    "uiTheme": "teal",
+    "themeColor": "#14b8a6",
+    "bgStyle": "minimalist",
+    "showHeroSlide": true,
+    "heroBadgeText": "Siap Melayani",
+    "heroWelcomeTag": "SELAMAT DATANG",
+    "heroTitle": "Toko Berkah Sejahtera",
+    "heroSubtitle": "Pusat belanja resmi, lengkap, dan terpercaya.",
+    "useStock": true,
+    "ppnEnabled": false,
+    "paylater": {
+      "enabled": true,
+      "minOrder": 20000,
+      "maxOrder": 10000000,
+      "noticeText": "Cicilan transparan tanpa biaya tersembunyi.",
+      "tenors": {
+        "30d": {
+          "enabled": true,
+          "label": "30 Hari (1x Bayar)",
+          "months": 1,
+          "days": 30
+        },
+        "2m": {
+          "enabled": true,
+          "label": "2 Bulan (Cicilan 2x)",
+          "months": 2,
+          "days": 60
+        },
+        "3m": {
+          "enabled": true,
+          "label": "3 Bulan (Cicilan 3x)",
+          "months": 3,
+          "days": 90
+        }
+      }
+    }
+  },
+  "subscription": {
+    "status": "active",
+    "plan": "pro_managed",
+    "storeCode": "BERKAH",
+    "clientName": "Pemilik Toko",
+    "expiresAt": "2027-10-05T03:55:16.534Z",
+    "allowGraceDays": 7,
+    "developerContact": "6281234567890",
+    "developerName": "Developer / Technical Partner",
+    "lastActivatedAt": "2026-10-05T03:55:16.534Z",
+    "lastLicenseKey": "PUTRI-365D-BERKAH-349C6B"
+  },
+  "payment": {
+    "qrisUrl": ""
+  },
+  "config": {
+    "gasUrl": ""
+  }
+}

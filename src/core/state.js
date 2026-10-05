@@ -57,6 +57,16 @@ export const defApp = {
     },
     payment:  { qrisUrl: "" },
     config:   { gasUrl: "" },
+    subscription: {
+        status: 'active',
+        plan: 'pro_managed',
+        expiresAt: null,
+        allowGraceDays: 7,
+        storeCode: 'PUTRI',
+        clientName: 'Pemilik Toko',
+        developerContact: '6281234567890',
+        developerName: 'Developer / Technical Partner'
+    },
     banks: [], banners: [], categories: [], brands: [], products: [],
     vouchers: [], colors: [], rewards: [], faqs: [], customers: [], changelog: [], deletedChangelogIds: [], productOrder: [],
     suppliers: [], purchases: [], expenses: [], stockOpnameHistory: [],
