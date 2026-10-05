@@ -1019,22 +1019,22 @@ export const renderClientInstallmentSchedule = (o, pendingConfirmations = []) =>
 
             return `
                 <tr class="text-xs ${isPaid ? 'opacity-70 bg-slate-50/50 dark:bg-slate-900/20' : ''}">
-                    <td class="py-3 px-4 font-bold text-slate-800 dark:text-slate-200">
+                    <td class="py-2.5 px-3 sm:px-3.5 font-bold text-slate-800 dark:text-slate-200">
                         Bulan ke-${mIdx}
                     </td>
-                    <td class="py-3 px-4 text-slate-600 dark:text-slate-400 font-mono text-[11px]">
+                    <td class="py-2.5 px-3 sm:px-3.5 text-slate-600 dark:text-slate-400 font-mono text-[11px]">
                         ${dueText}
                     </td>
-                    <td class="py-3 px-4 font-mono font-bold text-slate-800 dark:text-slate-200">
+                    <td class="py-2.5 px-3 sm:px-3.5 font-mono font-bold text-slate-800 dark:text-slate-200">
                         ${fCur(pPokok)}
                     </td>
-                    <td class="py-3 px-4 font-mono text-slate-700 dark:text-slate-300 font-bold">
+                    <td class="py-2.5 px-3 sm:px-3.5 font-mono text-slate-700 dark:text-slate-300 font-bold">
                         +${fCur(pFee)}
                     </td>
-                    <td class="py-3 px-4 font-mono font-black text-slate-900 dark:text-white">
+                    <td class="py-2.5 px-3 sm:px-3.5 font-mono font-black text-slate-900 dark:text-white">
                         ${fCur(mTotal)}
                     </td>
-                    <td class="py-3 px-4 text-right">
+                    <td class="py-2.5 px-3 sm:px-3.5 text-right">
                         <span class="inline-block px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${statusBadgeCls}">
                             ${statusLabel}
                         </span>
@@ -1108,16 +1108,16 @@ export const renderClientInstallmentSchedule = (o, pendingConfirmations = []) =>
                 </div>
 
                 <!-- DESKTOP / TABLET VIEW: FULL TABLE -->
-                <div class="hidden sm:block overflow-x-auto rounded-xl border border-slate-200/80 dark:border-slate-800 hide-scrollbar">
-                    <table class="w-full text-left whitespace-nowrap min-w-[540px]">
+                <div id="tempo-sched-wrap-${esc(o.orderId)}" class="hidden sm:block overflow-x-auto rounded-xl border border-slate-200/80 dark:border-slate-800 custom-scrollbar">
+                    <table class="w-full text-left whitespace-nowrap min-w-full">
                         <thead class="bg-slate-100/90 dark:bg-slate-800/90 text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">
                             <tr>
-                                <th class="py-3 px-4">Angsuran</th>
-                                <th class="py-3 px-4">Jatuh Tempo</th>
-                                <th class="py-3 px-4">Pokok</th>
-                                <th class="py-3 px-4">Biaya Tenor</th>
-                                <th class="py-3 px-4">Wajib Bayar</th>
-                                <th class="py-3 px-4 text-right">Status</th>
+                                <th class="py-2.5 px-3 sm:px-3.5">Angsuran</th>
+                                <th class="py-2.5 px-3 sm:px-3.5">Jatuh Tempo</th>
+                                <th class="py-2.5 px-3 sm:px-3.5">Pokok</th>
+                                <th class="py-2.5 px-3 sm:px-3.5">Biaya Tenor</th>
+                                <th class="py-2.5 px-3 sm:px-3.5">Wajib Bayar</th>
+                                <th class="py-2.5 px-3 sm:px-3.5 text-right">Status</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-100 dark:divide-slate-800 bg-white dark:bg-slate-900/40">

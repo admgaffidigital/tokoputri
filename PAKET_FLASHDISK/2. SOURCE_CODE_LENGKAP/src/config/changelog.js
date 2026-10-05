@@ -8,6 +8,20 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-10-52',
+        version: 'v1.10.52',
+        date: '2026-10-05',
+        title: 'Resolusi Tuntas Tabel Jadwal Angsuran Terpotong & Responsivitas Luas Modal Member (Zero Clip Table)',
+        category: 'fix',
+        badge: 'Zero Clip Installment Table v1.10.52',
+        items: [
+            'Pelebaran Responsif Modal Member Digital (reward.js): Memperluas kontainer modal kartu member (#member-modal) pada layar tablet dan desktop dari semula terkunci di max-w-lg (512px) menjadi w-full max-w-lg sm:max-w-2xl lg:max-w-3xl sehingga tabel rincian jadwal cicilan dan data mutasi poin memiliki ruang horizontal yang lega dan proporsional.',
+            'Kalibrasi Presisi Tabel Jadwal Angsuran (client-pay.js): Mengganti min-w-[540px] menjadi min-w-full serta merampingkan padding sel tabel (py-2.5 px-3 sm:px-3.5) sehingga seluruh 6 kolom (Angsuran, Jatuh Tempo, Pokok, Biaya Tenor, Wajib Bayar, Status) muat 100% tanpa risiko terpotong di kiri maupun di kanan.',
+            'Eliminasi Scrollbar Tersembunyi (client-pay.js): Mengganti kelas hide-scrollbar menjadi custom-scrollbar pada kontainer tabel angsuran desktop sehingga bila pengguna membuka di viewport yang sangat sempit, track scrollbar tetap tampak jelas dan dapat digeser dengan mulus.',
+            'Multi-Channel Distribution v1.10.52 (Android versionCode 11052).'
+        ]
+    },
+    {
         id: 'log-1-10-51',
         version: 'v1.10.51',
         date: '2026-10-05',
