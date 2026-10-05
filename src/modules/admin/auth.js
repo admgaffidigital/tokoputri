@@ -180,6 +180,7 @@ export const openAdminMenu = () => {
     hide('admin-content-view'); 
     hide('btn-admin-back'); 
     show('admin-logo-box'); 
+    if (typeof window.renderSubscriptionNoticeInCMS === 'function') window.renderSubscriptionNoticeInCMS(); 
     
     setCTab('');
     window.cTab = '';

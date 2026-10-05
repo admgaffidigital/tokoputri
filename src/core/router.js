@@ -119,6 +119,8 @@ export const changeView = (v, fH = false) => {
             import('../modules/pos/pos.js').then(m => {
                 if (typeof m.renderPOSStorefront === 'function') m.renderPOSStorefront();
             }).catch(e => console.error('[POS] Gagal memuat storefront:', e));
+        } else if (v === 'view-admin') {
+            if (typeof window.renderSubscriptionNoticeInCMS === 'function') window.renderSubscriptionNoticeInCMS();
         }
         
         const s = t.querySelector('.scroll-content');
