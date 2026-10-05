@@ -2059,8 +2059,9 @@ html:not(.dark) .card-modern select {
     transition: all 0.3s ease;
 }
 
-/* Base Footer Bento Hub Card */
-.footer-bento-hub {
+/* Base Footer Bento Hub Card & Mobile End-Cap */
+.footer-bento-hub,
+.footer-mobile-endcap {
     background-color: #ffffff !important;
     border: 1px solid rgba(var(--color-primary-rgb), 0.16) !important;
     box-shadow: none !important;
@@ -2068,7 +2069,9 @@ html:not(.dark) .card-modern select {
     transition: all 0.3s ease;
 }
 html.dark .footer-bento-hub,
-.dark .footer-bento-hub {
+.dark .footer-bento-hub,
+html.dark .footer-mobile-endcap,
+.dark .footer-mobile-endcap {
     background-color: #0f172a !important;
     border: 1px solid rgba(var(--color-primary-rgb), 0.26) !important;
     box-shadow: none !important;
@@ -2076,14 +2079,16 @@ html.dark .footer-bento-hub,
 }
 
 /* 8.1 Footer: Gaya Minimalis */
-[data-bg-style="minimalist"] .footer-bento-hub {
+[data-bg-style="minimalist"] .footer-bento-hub,
+[data-bg-style="minimalist"] .footer-mobile-endcap {
     border-radius: 1.75rem !important;
     border-color: rgba(var(--color-primary-rgb), 0.14) !important;
     box-shadow: none !important;
 }
 
 /* 8.2 Footer: Gaya Hero Arch */
-[data-bg-style="hero_arch"] .footer-bento-hub {
+[data-bg-style="hero_arch"] .footer-bento-hub,
+[data-bg-style="hero_arch"] .footer-mobile-endcap {
     border-radius: 2.25rem !important;
     border-color: rgba(var(--color-primary-rgb), 0.20) !important;
     border-top-width: 2px !important;
@@ -2092,7 +2097,9 @@ html.dark .footer-bento-hub,
 
 /* 8.3 Footer: Gaya Aurora Glow */
 [data-bg-style="aurora_glow"] .footer-bento-hub,
-[data-bg-style="dual_tone"] .footer-bento-hub {
+[data-bg-style="dual_tone"] .footer-bento-hub,
+[data-bg-style="aurora_glow"] .footer-mobile-endcap,
+[data-bg-style="dual_tone"] .footer-mobile-endcap {
     border-radius: 2rem !important;
     border-color: rgba(var(--color-primary-rgb), 0.22) !important;
     box-shadow: none !important;
@@ -2100,14 +2107,17 @@ html.dark .footer-bento-hub,
 
 /* 8.4 Footer: Gaya Tech Grid */
 [data-bg-style="tech_grid"] .footer-bento-hub,
-[data-bg-style="geometric_3d"] .footer-bento-hub {
+[data-bg-style="geometric_3d"] .footer-bento-hub,
+[data-bg-style="tech_grid"] .footer-mobile-endcap,
+[data-bg-style="geometric_3d"] .footer-mobile-endcap {
     border-radius: 1.5rem !important;
     border-color: rgba(var(--color-primary-rgb), 0.22) !important;
     box-shadow: none !important;
 }
 
 /* 8.5 Footer: Gaya Industrial */
-[data-bg-style="industrial"] .footer-bento-hub {
+[data-bg-style="industrial"] .footer-bento-hub,
+[data-bg-style="industrial"] .footer-mobile-endcap {
     border-radius: 1.5rem !important;
     border-color: rgba(var(--color-primary-rgb), 0.26) !important;
     border-top-width: 2.5px !important;

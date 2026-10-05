@@ -8,6 +8,21 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-10-55',
+        version: 'v1.10.55',
+        date: '2026-10-05',
+        title: 'Arsitektur Footer Adaptif Cerdas: Mobile-Native Compact End-Cap & Desktop Bento Island Hub',
+        category: 'feat',
+        badge: 'Adaptive Mobile Footer Hub v1.10.55',
+        items: [
+            'Arsitektur Footer Adaptif Responsif (src/modules/home/footer.js): Mengeliminasi tumpukan footer web raksasa yang panjang di layar smartphone. Di layar HP (< 640px), footer bertransformasi menjadi Mobile Native End-Cap (.footer-mobile-endcap) ber-frosted glass yang super ringkas, elegan, dan lincah layaknya aplikasi native Android/iOS (Shopee/Tokopedia style).',
+            'Mobile 1-Tap Dual Action Buttons: Menyematkan tombol cepat chat WhatsApp Customer Support dan Bantuan & FAQ yang ramah jempol langsung di atas penutup katalog HP tanpa mengganggu navigasi dock bawah (#bottom-nav-bar).',
+            'Preservasi Penuh Desktop Bento Island Hub: Layar tablet dan komputer/desktop (>= 640px) tetap menyajikan Bento Island Hub lengkap dengan seluruh sinyal kredibilitas (Official Store, jam buka live ping, alamat fisik, kartu WA & APK, 4 quick action tiles, rincian pembayaran terverifikasi QRIS/Bank, dan logistik ekspedisi).',
+            'Desktop Header Admin / Seller Shortcut (index.html): Menambahkan tombol pintas akses panel kontrol CMS admin di header atas khusus tampilan desktop untuk login 1-klik instan tanpa harus scroll ke bawah.',
+            'Multi-Channel Distribution v1.10.55 (Android versionCode 11055).'
+        ]
+    },
+    {
         id: 'log-1-10-54',
         version: 'v1.10.54',
         date: '2026-10-05',
