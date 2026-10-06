@@ -9,7 +9,7 @@
 
 import Sortable from 'sortablejs';
 import { appData } from '../../../core/state.js';
-import { el, setH, esc, fCur, showToast, renderProductCoverHtml } from '../../../core/utils.js';
+import { el, setH, esc, fCur, showToast, renderProductCoverHtml, isPlaceholderImg } from '../../../core/utils.js';
 import { saveApp, sortProductsByOrder } from '../../../services/storage.js';
 import { computeInventoryStats, computeTotalProductStock } from '../../../core/pricing.js';
 import { customPrompt, showConfirm } from '../../../core/ui.js';
@@ -494,7 +494,8 @@ window.rAdmItms = t => {
         ` : '';
 
         const coverThumb = renderProductCoverHtml(x, { size: 'thumb' });
-        let img = x.img 
+        const hasValidImg = Boolean(x.img && typeof x.img === 'string' && x.img.trim() && !isPlaceholderImg(x.img));
+        let img = hasValidImg 
             ? `<div class="w-16 h-16 sm:w-20 sm:h-20 shrink-0 bg-white border border-slate-100 dark:border-slate-700/60 rounded-2xl p-1.5 flex items-center justify-center overflow-hidden"><img loading="lazy" src="${esc(x.img)}" alt="${esc(x.name)}" onerror="this.onerror=null;this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='flex';" class="w-full h-full object-contain ${isOff?'grayscale opacity-50':''}"><div class="w-full h-full" style="display:none">${coverThumb}</div></div>`
             : `<div class="w-16 h-16 sm:w-20 sm:h-20 shrink-0 border border-slate-100 dark:border-slate-700/60 rounded-2xl overflow-hidden flex items-center justify-center">${coverThumb}</div>`;
         

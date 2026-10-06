@@ -20,7 +20,7 @@ import {
     el, show, hide, setIn, setH, setV, 
     esc, fCur, getOptImg, showToast, 
     getYouTubeId, ssL, openModalAnim, closeModalAnim,
-    renderProductCoverHtml
+    renderProductCoverHtml, isPlaceholderImg
 } from '../../core/utils.js';
 
 import { updCart } from '../cart/cart.js';
@@ -305,10 +305,11 @@ export const previewVariant = (idx) => {
         `;
     } else {
         const coverLg = renderProductCoverHtml(cProd, { size: 'lg' });
+        const prodImg = (cProd.img && !isPlaceholderImg(cProd.img)) ? cProd.img : '';
         html = `
             <div class="relative w-full aspect-square bg-white rounded-3xl overflow-hidden shadow-2xl border border-slate-200 dark:border-slate-800 flex items-center justify-center">
-                ${cProd.img 
-                    ? `<img loading="lazy" decoding="async" class="w-full h-full object-contain" src="${getOptImg(cProd.img, 'w800-rw')}" alt="${esc(cProd.name)}" onerror="this.onerror=null;this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='flex';"><div class="w-full h-full" style="display:none">${coverLg}</div>`
+                ${prodImg 
+                    ? `<img loading="lazy" decoding="async" class="w-full h-full object-contain" src="${getOptImg(prodImg, 'w800-rw')}" alt="${esc(cProd.name)}" onerror="this.onerror=null;this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='flex';"><div class="w-full h-full" style="display:none">${coverLg}</div>`
                     : coverLg}
             </div>
             <div class="mt-5 text-center px-4 w-full">
@@ -337,7 +338,8 @@ export const previewProductImage = () => {
     if (!m || !c) return;
 
     const v = (cProd.variants && cVar !== null) ? cProd.variants[cVar] : null;
-    const imgSrc = v?.img || cProd.img || '';
+    const rawImg = v?.img || cProd.img || '';
+    const imgSrc = isPlaceholderImg(rawImg) ? '' : rawImg;
     const titleStr = v ? `${esc(cProd.name)} - ${esc(v.name)}` : esc(cProd.name);
     const priceStr = fCur(v?.price ?? cProd.price);
     const coverLg = renderProductCoverHtml(cProd, { size: 'lg' });
@@ -484,7 +486,8 @@ export const rProdMod = () => {
             if (zoomInd) zoomInd.classList.add('hidden');
         } else {
             if (vc) vc.classList.add('hidden');
-            const targetImg = v?.img || p.img || '';
+            const rawTargetImg = v?.img || p.img || '';
+            const targetImg = isPlaceholderImg(rawTargetImg) ? '' : rawTargetImg;
             const coverPlaceholder = el('product-modal-cover-placeholder');
             if (!targetImg) {
                 if (i) i.style.display = 'none';
@@ -512,7 +515,8 @@ export const rProdMod = () => {
             vc.innerHTML = '';
             vc.classList.add('hidden');
         }
-        const targetImg = v?.img || p.img || '';
+        const rawTargetImg = v?.img || p.img || '';
+        const targetImg = isPlaceholderImg(rawTargetImg) ? '' : rawTargetImg;
         const coverPlaceholder = el('product-modal-cover-placeholder');
         if (!targetImg) {
             if (i) i.style.display = 'none';

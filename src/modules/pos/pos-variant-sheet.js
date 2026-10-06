@@ -8,7 +8,7 @@
  */
 
 import { appData } from '../../core/state.js';
-import { el, esc, fCur, getOptImg, showToast, renderProductCoverHtml, openModalAnim, closeModalAnim } from '../../core/utils.js';
+import { el, esc, fCur, getOptImg, showToast, renderProductCoverHtml, isPlaceholderImg, openModalAnim, closeModalAnim } from '../../core/utils.js';
 import { getEffHpp } from '../../core/pricing.js';
 import { canViewHpp } from '../../core/auth-roles.js';
 
@@ -130,7 +130,8 @@ const renderVariantSheetContent = (p) => {
         activeStockStr = isOutOfStock ? 'Stok Habis' : `Stok: ${formatQty(activeStock)}`;
     }
 
-    const varImg = activeVar?.img || p.img || '';
+    const rawVarImg = activeVar?.img || p.img || '';
+    const varImg = isPlaceholderImg(rawVarImg) ? '' : rawVarImg;
     const img = varImg ? getOptImg(varImg, 'w200-rw') : '';
     const coverThumb = renderProductCoverHtml(p, { size: 'thumb' });
 

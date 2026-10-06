@@ -10,7 +10,7 @@
 
 import { db, firebase } from '../../config/firebase.js';
 import { appData } from '../../core/state.js';
-import { el, setH, setIn, esc, fCur, showToast, getOptImg, renderProductCoverHtml, fixD } from '../../core/utils.js';
+import { el, setH, setIn, esc, fCur, showToast, getOptImg, renderProductCoverHtml, isPlaceholderImg, fixD } from '../../core/utils.js';
 import { getEffHpp, computeTotalProductStock } from '../../core/pricing.js';
 import { canViewHpp } from '../../core/auth-roles.js';
 import { getPaylaterConfig, calculateInstallmentBreakdown } from '../../core/paylater.js';
@@ -1265,9 +1265,9 @@ export const closePOSCartDrawer = (skipHistory = false) => {
 // ─── Render Katalog ──────────────────────────────────────────
 const getItemImg = (item) => {
     if (!item) return '';
-    if (item.img && typeof item.img === 'string') return getOptImg(item.img, 'w150-rw');
+    if (item.img && typeof item.img === 'string' && !isPlaceholderImg(item.img)) return getOptImg(item.img, 'w150-rw');
     const p = (appData?.products || []).find(x => x && String(x.id) === String(item.id));
-    if (p && p.img && typeof p.img === 'string') return getOptImg(p.img, 'w150-rw');
+    if (p && p.img && typeof p.img === 'string' && !isPlaceholderImg(p.img)) return getOptImg(p.img, 'w150-rw');
     return '';
 };
 
@@ -1363,7 +1363,7 @@ export const renderCatalog = (isLoadMore = false) => {
                </div>`
             : visibleProducts.map(p => {
                 if (!p) return '';
-                const hasImg         = Boolean(p.img && typeof p.img === 'string' && p.img.trim());
+                const hasImg         = Boolean(p.img && typeof p.img === 'string' && p.img.trim() && !isPlaceholderImg(p.img));
                 const imgUrl         = hasImg ? getOptImg(p.img, 'w300-rw') : '';
                 const hasVariants    = Array.isArray(p.variants) && p.variants.length > 0;
                 const hasGrosir      = Array.isArray(p.wholesale) && p.wholesale.length > 0;
@@ -1374,6 +1374,22 @@ export const renderCatalog = (isLoadMore = false) => {
                 const pName          = esc(String(p.name || 'Produk'));
                 const pCat           = esc(String(p.category || ''));
                 const pPrice         = parseFloat(p.price) || 0;
+
+                // Kalkulasi Harga Tampil Cerdas (Variant Support: Menghilangkan label "Rp 0" pada produk ber-varian)
+                let displayPriceHtml = '';
+                if (hasVariants) {
+                    const varPrices = (p.variants || []).map(v => parseFloat(v.price) || 0).filter(pr => pr > 0);
+                    if (varPrices.length > 0) {
+                        const minP = Math.min(...varPrices);
+                        const maxP = Math.max(...varPrices);
+                        displayPriceHtml = minP === maxP ? fRp(minP) : `${fRp(minP)} - ${fRp(maxP)}`;
+                    } else {
+                        displayPriceHtml = pPrice > 0 ? fRp(pPrice) : 'Pilih Varian';
+                    }
+                } else {
+                    displayPriceHtml = fRp(pPrice);
+                }
+
                 // 1. Promo Diskon & Harga Coret
                 let discBadge = '';
                 let priceNormalHtml = '';
@@ -1422,8 +1438,8 @@ export const renderCatalog = (isLoadMore = false) => {
                     candidateChips.push(`<span class="pos-tag-chip shrink-0 whitespace-nowrap bg-[rgba(var(--color-primary-rgb),0.08)] text-[var(--color-primary)]"><i class="fa-solid fa-star"></i> +${activePoin}</span>`);
                 }
 
-                // List Mode: Baris dedikasi hingga 3 chip teratas
-                const listChipsHtml = candidateChips.slice(0, 3).join('');
+                // List Mode: Baris dedikasi hingga 3 chip teratas (Kecualikan pos-tag-stock karena Kolom 2 sudah terdedikasi stok)
+                const listChipsHtml = candidateChips.filter(c => !c.includes('pos-tag-stock')).slice(0, 3).join('');
                 // Grid Mode: 2 chip teratas agar pas 100% presisi di kartu mobile ~150px
                 const gridChipsHtml = candidateChips.slice(0, 2).join('');
 
@@ -1487,8 +1503,8 @@ export const renderCatalog = (isLoadMore = false) => {
 
                         <!-- Kolom 3 (Kanan): Harga Jual & Action Hub -->
                         <div class="flex items-center gap-3 shrink-0 pl-2.5 border-l border-slate-100 dark:border-slate-800/80">
-                            <div class="flex flex-col items-end text-right min-w-[85px] sm:min-w-[105px]">
-                                <span class="text-xs sm:text-sm font-black tracking-tight" style="color:var(--color-primary)">${fRp(pPrice)}</span>
+                            <div class="flex flex-col items-end text-right min-w-[95px] sm:min-w-[125px]">
+                                <span class="text-xs sm:text-sm font-black tracking-tight whitespace-nowrap" style="color:var(--color-primary)">${displayPriceHtml}</span>
                                 ${priceNormalHtml}
                                 ${hppTagHtml ? `<div class="mt-0.5">${hppTagHtml}</div>` : ''}
                             </div>
@@ -1496,7 +1512,9 @@ export const renderCatalog = (isLoadMore = false) => {
                                 ? `<button class="pos-add-btn opacity-40 cursor-not-allowed shrink-0" disabled title="Stok Habis"><i class="fa-solid fa-ban"></i></button>`
                                 : totalQtyInCart > 0
                                     ? `<div class="pos-list-pill-in-cart shrink-0" title="Klik untuk menambah">+${formatQty(totalQtyInCart)}</div>`
-                                    : `<button onclick="event.stopPropagation();window.posAddToCart('${safeId}')" class="pos-add-btn shrink-0" title="Tambah ke keranjang"><i class="fa-solid fa-plus"></i></button>`}
+                                    : hasVariants
+                                        ? `<button onclick="event.stopPropagation();window.posAddToCart('${safeId}')" class="pos-add-btn shrink-0" title="Pilih Varian Produk"><i class="fa-solid fa-layer-group text-xs"></i></button>`
+                                        : `<button onclick="event.stopPropagation();window.posAddToCart('${safeId}')" class="pos-add-btn shrink-0" title="Tambah ke keranjang"><i class="fa-solid fa-plus"></i></button>`}
                         </div>
                     </div>`;
                 }
@@ -1531,7 +1549,7 @@ export const renderCatalog = (isLoadMore = false) => {
                         <div class="pos-card-footer flex items-center justify-between gap-1">
                             <div class="flex flex-col min-w-0 pr-1">
                                 <div class="flex items-baseline gap-1.5 flex-wrap">
-                                    <span class="pos-card-price">${fRp(pPrice)}</span>
+                                    <span class="pos-card-price whitespace-nowrap text-xs font-black" style="color:var(--color-primary)">${displayPriceHtml}</span>
                                     ${priceNormalHtml}
                                 </div>
                                 <div class="flex items-center gap-1 mt-0.5">
@@ -1542,7 +1560,9 @@ export const renderCatalog = (isLoadMore = false) => {
                                 ? `<button class="pos-add-btn opacity-40 cursor-not-allowed shrink-0" disabled title="Stok Habis"><i class="fa-solid fa-ban"></i></button>`
                                 : totalQtyInCart > 0
                                     ? `<button onclick="event.stopPropagation();window.posAddToCart('${safeId}')" class="pos-add-btn shrink-0" title="Tambah lagi (+1)"><b>+${formatQty(totalQtyInCart)}</b></button>`
-                                    : `<button onclick="event.stopPropagation();window.posAddToCart('${safeId}')" class="pos-add-btn shrink-0" title="Tambah ke keranjang"><i class="fa-solid fa-plus"></i></button>`}
+                                    : hasVariants
+                                        ? `<button onclick="event.stopPropagation();window.posAddToCart('${safeId}')" class="pos-add-btn shrink-0" title="Pilih Varian Produk"><i class="fa-solid fa-layer-group text-xs"></i></button>`
+                                        : `<button onclick="event.stopPropagation();window.posAddToCart('${safeId}')" class="pos-add-btn shrink-0" title="Tambah ke keranjang"><i class="fa-solid fa-plus"></i></button>`}
                         </div>
                     </div>
                 </div>`;
@@ -1691,6 +1711,12 @@ const renderCart = () => {
     // Sembunyikan baris Total Modal HPP & Estimasi Laba jika bukan Owner
     document.querySelectorAll('.pos-hpp-margin-row').forEach(row => {
         row.style.display = showHpp ? 'flex' : 'none';
+    });
+
+    // Toggle visibilitas breakdown ringkasan (hanya tampil jika keranjang terisi)
+    const hasItems = posCart.length > 0;
+    document.querySelectorAll('.pos-cart-breakdown').forEach(el => {
+        el.style.display = hasItems ? 'block' : 'none';
     });
 
     const discAmt = posDiscountAmount();
@@ -3713,40 +3739,43 @@ const buildPOSLayout = ({ isStorefront }) => {
 
                 <!-- Summary & Bayar Desktop -->
                 <div class="p-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/60 shrink-0 space-y-2.5">
-                    <div class="flex justify-between text-xs text-slate-500 font-medium">
-                        <span>Subtotal Item</span>
-                        <span class="pos-subtotal-target font-bold text-slate-800 dark:text-slate-200">Rp 0</span>
-                    </div>
-                    <div class="pos-hpp-margin-row flex justify-between text-xs text-slate-500 font-medium" style="display:none">
-                        <span class="flex items-center gap-1"><i class="fa-solid fa-coins text-amber-500 text-[10px]"></i> Total Modal (HPP)</span>
-                        <span class="pos-total-hpp-target font-bold text-amber-600 dark:text-amber-400">Rp 0</span>
-                    </div>
-                    <div class="pos-hpp-margin-row flex justify-between text-xs text-slate-500 font-medium" style="display:none">
-                        <span class="flex items-center gap-1"><i class="fa-solid fa-arrow-trend-up text-emerald-500 text-[10px]"></i> Estimasi Laba</span>
-                        <span class="pos-total-margin-target font-bold text-emerald-600 dark:text-emerald-400">Rp 0</span>
-                    </div>
-                    <!-- Smart Diskon Transaksi Kasir (Rp / %) -->
-                    <div class="space-y-1.5 p-2.5 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200/80 dark:border-slate-700/60 text-xs transition-colors" style="border-color:rgba(var(--color-primary-rgb),0.25)">
-                        <div class="flex items-center justify-between">
-                            <span class="text-slate-700 dark:text-slate-200 font-bold flex items-center gap-1.5">
-                                <div class="w-5 h-5 rounded-md flex items-center justify-center text-[10px] text-white shrink-0 shadow-2xs" style="background:var(--color-primary)">
-                                    <i class="fa-solid fa-tags"></i>
+                    <!-- Breakdown Ringkasan & Diskon (Hanya muncul saat keranjang ada isi agar bebas sesak saat kosong) -->
+                    <div class="pos-cart-breakdown space-y-2.5" style="display:none">
+                        <div class="flex justify-between text-xs text-slate-500 font-medium">
+                            <span>Subtotal Item</span>
+                            <span class="pos-subtotal-target font-bold text-slate-800 dark:text-slate-200">Rp 0</span>
+                        </div>
+                        <div class="pos-hpp-margin-row flex justify-between text-xs text-slate-500 font-medium" style="display:none">
+                            <span class="flex items-center gap-1"><i class="fa-solid fa-coins text-amber-500 text-[10px]"></i> Total Modal (HPP)</span>
+                            <span class="pos-total-hpp-target font-bold text-amber-600 dark:text-amber-400">Rp 0</span>
+                        </div>
+                        <div class="pos-hpp-margin-row flex justify-between text-xs text-slate-500 font-medium" style="display:none">
+                            <span class="flex items-center gap-1"><i class="fa-solid fa-arrow-trend-up text-emerald-500 text-[10px]"></i> Estimasi Laba</span>
+                            <span class="pos-total-margin-target font-bold text-emerald-600 dark:text-emerald-400">Rp 0</span>
+                        </div>
+                        <!-- Smart Diskon Transaksi Kasir (Rp / %) -->
+                        <div class="space-y-1.5 p-2.5 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200/80 dark:border-slate-700/60 text-xs transition-colors" style="border-color:rgba(var(--color-primary-rgb),0.25)">
+                            <div class="flex items-center justify-between">
+                                <span class="text-slate-700 dark:text-slate-200 font-bold flex items-center gap-1.5">
+                                    <div class="w-5 h-5 rounded-md flex items-center justify-center text-[10px] text-white shrink-0 shadow-2xs" style="background:var(--color-primary)">
+                                        <i class="fa-solid fa-tags"></i>
+                                    </div>
+                                    <span>Diskon Transaksi</span>
+                                </span>
+                                <div class="flex items-center bg-slate-200/80 dark:bg-slate-700/80 rounded-lg p-0.5 text-[10px]">
+                                    <button onclick="window.posSetDiscountType('rp')" class="pos-disc-type-rp px-2.5 py-0.5 rounded-md transition-all cursor-pointer font-black text-white shadow-xs text-[10px]" style="background:var(--color-primary)">Rp</button>
+                                    <button onclick="window.posSetDiscountType('percent')" class="pos-disc-type-pct px-2.5 py-0.5 rounded-md transition-all cursor-pointer font-bold text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 text-[10px]">%</button>
                                 </div>
-                                <span>Diskon Transaksi</span>
-                            </span>
-                            <div class="flex items-center bg-slate-200/80 dark:bg-slate-700/80 rounded-lg p-0.5 text-[10px]">
-                                <button onclick="window.posSetDiscountType('rp')" class="pos-disc-type-rp px-2.5 py-0.5 rounded-md transition-all cursor-pointer font-black text-white shadow-xs text-[10px]" style="background:var(--color-primary)">Rp</button>
-                                <button onclick="window.posSetDiscountType('percent')" class="pos-disc-type-pct px-2.5 py-0.5 rounded-md transition-all cursor-pointer font-bold text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 text-[10px]">%</button>
                             </div>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <div class="flex-1 relative">
-                                <span class="pos-disc-prefix absolute left-2.5 top-1/2 -translate-y-1/2 text-[10px] font-black" style="color:var(--color-primary)">Rp</span>
-                                <input type="number" min="0" placeholder="0" class="pos-disc-val-input w-full border border-slate-200 dark:border-slate-700 rounded-lg pl-8 pr-2.5 py-1 text-right text-xs font-mono font-bold bg-white dark:bg-slate-800 focus:outline-none focus:border-[var(--color-primary)] transition-all" oninput="window.posSetDiscountVal(this.value)">
+                            <div class="flex items-center gap-2">
+                                <div class="flex-1 relative">
+                                    <span class="pos-disc-prefix absolute left-2.5 top-1/2 -translate-y-1/2 text-[10px] font-black" style="color:var(--color-primary)">Rp</span>
+                                    <input type="number" min="0" placeholder="0" class="pos-disc-val-input w-full border border-slate-200 dark:border-slate-700 rounded-lg pl-8 pr-2.5 py-1 text-right text-xs font-mono font-bold bg-white dark:bg-slate-800 focus:outline-none focus:border-[var(--color-primary)] transition-all" oninput="window.posSetDiscountVal(this.value)">
+                                </div>
+                                <div class="pos-disc-preview-target hidden text-[10px] font-black text-rose-500 whitespace-nowrap min-w-[70px] text-right"></div>
                             </div>
-                            <div class="pos-disc-preview-target hidden text-[10px] font-black text-rose-500 whitespace-nowrap min-w-[70px] text-right"></div>
+                            <div class="pos-disc-chips-target flex gap-1 overflow-x-auto hide-scrollbar pt-0.5"></div>
                         </div>
-                        <div class="pos-disc-chips-target flex gap-1 overflow-x-auto hide-scrollbar pt-0.5"></div>
                     </div>
                     <div class="flex justify-between items-center pt-2.5 border-t border-slate-200/80 dark:border-slate-800">
                         <div>
@@ -3817,40 +3846,43 @@ const buildPOSLayout = ({ isStorefront }) => {
 
                 <!-- Footer Summary & Pay -->
                 <div class="p-3.5 pb-[calc(1rem+env(safe-area-inset-bottom))] border-t border-slate-100 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-950/80 space-y-2 shrink-0">
-                    <div class="flex justify-between text-xs text-slate-500 font-medium">
-                        <span>Subtotal Item</span>
-                        <span class="pos-subtotal-target font-bold text-slate-700 dark:text-slate-200">Rp 0</span>
-                    </div>
-                    <div class="pos-hpp-margin-row flex justify-between text-xs text-slate-500 font-medium" style="display:none">
-                        <span class="flex items-center gap-1"><i class="fa-solid fa-coins text-amber-500 text-[10px]"></i> Total Modal (HPP)</span>
-                        <span class="pos-total-hpp-target font-bold text-amber-600 dark:text-amber-400">Rp 0</span>
-                    </div>
-                    <div class="pos-hpp-margin-row flex justify-between text-xs text-slate-500 font-medium" style="display:none">
-                        <span class="flex items-center gap-1"><i class="fa-solid fa-arrow-trend-up text-emerald-500 text-[10px]"></i> Estimasi Laba</span>
-                        <span class="pos-total-margin-target font-bold text-emerald-600 dark:text-emerald-400">Rp 0</span>
-                    </div>
-                    <!-- Smart Diskon Transaksi Kasir (Rp / %) di Mobile Drawer -->
-                    <div class="space-y-1.5 p-2 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200/80 dark:border-slate-700/60 text-xs transition-colors" style="border-color:rgba(var(--color-primary-rgb),0.25)">
-                        <div class="flex items-center justify-between">
-                            <span class="text-slate-700 dark:text-slate-200 font-bold flex items-center gap-1.5">
-                                <div class="w-5 h-5 rounded-md flex items-center justify-center text-[10px] text-white shrink-0 shadow-2xs" style="background:var(--color-primary)">
-                                    <i class="fa-solid fa-tags"></i>
+                    <!-- Breakdown Ringkasan & Diskon Mobile (Hanya muncul saat keranjang ada isi agar bebas sesak saat kosong) -->
+                    <div class="pos-cart-breakdown space-y-2" style="display:none">
+                        <div class="flex justify-between text-xs text-slate-500 font-medium">
+                            <span>Subtotal Item</span>
+                            <span class="pos-subtotal-target font-bold text-slate-700 dark:text-slate-200">Rp 0</span>
+                        </div>
+                        <div class="pos-hpp-margin-row flex justify-between text-xs text-slate-500 font-medium" style="display:none">
+                            <span class="flex items-center gap-1"><i class="fa-solid fa-coins text-amber-500 text-[10px]"></i> Total Modal (HPP)</span>
+                            <span class="pos-total-hpp-target font-bold text-amber-600 dark:text-amber-400">Rp 0</span>
+                        </div>
+                        <div class="pos-hpp-margin-row flex justify-between text-xs text-slate-500 font-medium" style="display:none">
+                            <span class="flex items-center gap-1"><i class="fa-solid fa-arrow-trend-up text-emerald-500 text-[10px]"></i> Estimasi Laba</span>
+                            <span class="pos-total-margin-target font-bold text-emerald-600 dark:text-emerald-400">Rp 0</span>
+                        </div>
+                        <!-- Smart Diskon Transaksi Kasir (Rp / %) di Mobile Drawer -->
+                        <div class="space-y-1.5 p-2 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200/80 dark:border-slate-700/60 text-xs transition-colors" style="border-color:rgba(var(--color-primary-rgb),0.25)">
+                            <div class="flex items-center justify-between">
+                                <span class="text-slate-700 dark:text-slate-200 font-bold flex items-center gap-1.5">
+                                    <div class="w-5 h-5 rounded-md flex items-center justify-center text-[10px] text-white shrink-0 shadow-2xs" style="background:var(--color-primary)">
+                                        <i class="fa-solid fa-tags"></i>
+                                    </div>
+                                    <span>Diskon Transaksi</span>
+                                </span>
+                                <div class="flex items-center bg-slate-200/80 dark:bg-slate-700/80 rounded-lg p-0.5 text-[10px]">
+                                    <button onclick="window.posSetDiscountType('rp')" class="pos-disc-type-rp px-2.5 py-0.5 rounded-md transition-all cursor-pointer font-black text-white shadow-xs text-[10px]" style="background:var(--color-primary)">Rp</button>
+                                    <button onclick="window.posSetDiscountType('percent')" class="pos-disc-type-pct px-2.5 py-0.5 rounded-md transition-all cursor-pointer font-bold text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 text-[10px]">%</button>
                                 </div>
-                                <span>Diskon Transaksi</span>
-                            </span>
-                            <div class="flex items-center bg-slate-200/80 dark:bg-slate-700/80 rounded-lg p-0.5 text-[10px]">
-                                <button onclick="window.posSetDiscountType('rp')" class="pos-disc-type-rp px-2.5 py-0.5 rounded-md transition-all cursor-pointer font-black text-white shadow-xs text-[10px]" style="background:var(--color-primary)">Rp</button>
-                                <button onclick="window.posSetDiscountType('percent')" class="pos-disc-type-pct px-2.5 py-0.5 rounded-md transition-all cursor-pointer font-bold text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 text-[10px]">%</button>
                             </div>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <div class="flex-1 relative">
-                                <span class="pos-disc-prefix absolute left-2.5 top-1/2 -translate-y-1/2 text-[10px] font-black" style="color:var(--color-primary)">Rp</span>
-                                <input type="number" min="0" placeholder="0" class="pos-disc-val-input w-full border border-slate-200 dark:border-slate-700 rounded-lg pl-8 pr-2.5 py-1 text-right text-xs font-mono font-bold bg-white dark:bg-slate-800 focus:outline-none focus:border-[var(--color-primary)] transition-all" oninput="window.posSetDiscountVal(this.value)">
+                            <div class="flex items-center gap-2">
+                                <div class="flex-1 relative">
+                                    <span class="pos-disc-prefix absolute left-2.5 top-1/2 -translate-y-1/2 text-[10px] font-black" style="color:var(--color-primary)">Rp</span>
+                                    <input type="number" min="0" placeholder="0" class="pos-disc-val-input w-full border border-slate-200 dark:border-slate-700 rounded-lg pl-8 pr-2.5 py-1 text-right text-xs font-mono font-bold bg-white dark:bg-slate-800 focus:outline-none focus:border-[var(--color-primary)] transition-all" oninput="window.posSetDiscountVal(this.value)">
+                                </div>
+                                <div class="pos-disc-preview-target hidden text-[10px] font-black text-rose-500 whitespace-nowrap min-w-[70px] text-right"></div>
                             </div>
-                            <div class="pos-disc-preview-target hidden text-[10px] font-black text-rose-500 whitespace-nowrap min-w-[70px] text-right"></div>
+                            <div class="pos-disc-chips-target flex gap-1 overflow-x-auto hide-scrollbar pt-0.5"></div>
                         </div>
-                        <div class="pos-disc-chips-target flex gap-1 overflow-x-auto hide-scrollbar pt-0.5"></div>
                     </div>
                     <div class="flex justify-between items-center pt-1.5 border-t border-slate-200/80 dark:border-slate-800">
                         <span class="text-xs font-black uppercase tracking-wider text-slate-700 dark:text-white">Total Tagihan</span>

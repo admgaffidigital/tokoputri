@@ -8,6 +8,22 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-10-59',
+        version: 'v1.10.59',
+        date: '2026-10-06',
+        title: 'Penyempurnaan Total POS Kasir & Etalase: Eliminasi Placeholder Kardus Warisan, Rentang Harga Produk Varian, Pembagian Chip Proporsional & Perampingan Keranjang Kosong',
+        category: 'fix',
+        badge: 'POS UX & Smart Asset Polish v1.10.59',
+        items: [
+            'Eliminasi Permanen Placeholder Kardus Warisan (src/core/utils.js, src/core/product-cover.js): Menghadirkan validator isPlaceholderImg() untuk mendeteksi ID Google Drive peninggalan lawas pada produk tanpa foto asli (seperti varian Paku dan Gembok Crome), secara otomatis mengaktifkan Smart Semantic Cover (icon padlock amber, palu slate, rol cat rose, dll) dengan inisial monogram tanpa watermark pada ukuran thumbnail.',
+            'Kalkulasi Cerdas Rentang Harga Varian POS (src/modules/pos/pos.js): Mengeliminasi bug tampilan "Rp 0" pada produk varian yang memiliki harga root 0 di database. POS kini menghitung otomatis rentang harga terendah hingga tertinggi (misal: Rp 15.000 - Rp 30.000) dan mengganti ikon aksi menjadi tombol layer-group (Pilih Varian).',
+            'Pembersihan Redundansi Chip Stok List Mode (src/modules/pos/pos.js): Menghapus chip duplikat stok di kolom info produk pada tampilan list mode POS Kasir karena status stok dan satuan barang telah disajikan secara terdedikasi di kolom tengah.',
+            'Perampingan Keranjang Kasir Kosong (Zero-Clutter Empty Cart): Membungkus seluruh rincian Subtotal, Total Modal HPP, Estimasi Laba, dan panel Diskon Transaksi ke dalam kontainer .pos-cart-breakdown yang otomatis disembunyikan saat keranjang bernilai 0 item pada Desktop maupun Mobile Drawer.',
+            'Harmonisasi Lintas Modul: Menerapkan filter isPlaceholderImg() secara menyeluruh pada etalase storefront (catalog.js, product-modal.js), keranjang belanja (cart.js, checkout.js), dan tabel katalog produk admin (table.js).',
+            'Multi-Channel Distribution v1.10.59 (Android versionCode 11059).'
+        ]
+    },
+    {
         id: 'log-1-10-58',
         version: 'v1.10.58',
         date: '2026-10-06',

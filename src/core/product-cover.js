@@ -152,7 +152,7 @@ export const renderProductCoverHtml = (product, options = {}) => {
         </div>
 
         <!-- Official Store Watermark -->
-        ${size !== 'thumb' ? `
+        ${size !== 'thumb' && size !== 'sm' ? `
         <div class="cover-watermark">
             <i class="fa-solid fa-store mr-1 text-[7px] opacity-75"></i><span>${storeName}</span>
         </div>` : ''}

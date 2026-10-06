@@ -6,7 +6,7 @@ Aplikasi e-commerce dan manajemen kasir point-of-sales (POS) modern berkinerja t
 
 ## 🛠️ Informasi Pengembang & Hak Cipta
 * **Nama Projek**: TOKO PUTRI
-* **Versi Rilis**: **v1.10.58** (Android VersionCode: `11058`)
+* **Versi Rilis**: **v1.10.59** (Android VersionCode: `11059`)
 * **Dikembangkan & Ditandatangani Oleh**: **Novan Restu Utomo** (Selaku Pengembang Utama dan Developer Asli)
 
 ---
@@ -221,6 +221,16 @@ Aplikasi telah dilengkapi dengan fondasi **Capacitor 8 Android Native**:
 ---
 
 ## 📋 Riwayat Pembaruan (Changelog)
+
+### v1.10.59 — Penyempurnaan Total POS Kasir & Etalase: Eliminasi Placeholder Kardus Warisan, Rentang Harga Produk Varian, Pembagian Chip Proporsional & Perampingan Keranjang Kosong (06 Okt 2026)
+- **Eliminasi Permanen Placeholder Kardus Warisan (`src/core/utils.js`, `src/core/product-cover.js`)**: Menghadirkan validator `isPlaceholderImg()` untuk mendeteksi ID Google Drive peninggalan lawas pada produk tanpa foto asli (seperti varian Paku dan Gembok Crome), secara otomatis mengaktifkan Smart Semantic Cover (icon padlock amber, palu slate, rol cat rose, dll) dengan inisial monogram tanpa watermark pada ukuran thumbnail.
+- **Kalkulasi Cerdas Rentang Harga Varian POS (`src/modules/pos/pos.js`)**: Mengeliminasi bug tampilan "Rp 0" pada produk varian yang memiliki harga root 0 di database. POS kini menghitung otomatis rentang harga terendah hingga tertinggi (misal: Rp 15.000 - Rp 30.000) dan mengganti ikon aksi menjadi tombol layer-group (Pilih Varian).
+- **Pembersihan Redundansi Chip Stok List Mode (`src/modules/pos/pos.js`)**: Menghapus chip duplikat stok di kolom info produk pada tampilan list mode POS Kasir karena status stok dan satuan barang telah disajikan secara terdedikasi di kolom tengah.
+- **Perampingan Keranjang Kasir Kosong (Zero-Clutter Empty Cart)**: Membungkus seluruh rincian Subtotal, Total Modal HPP, Estimasi Laba, dan panel Diskon Transaksi ke dalam kontainer `.pos-cart-breakdown` yang otomatis disembunyikan saat keranjang bernilai 0 item pada Desktop maupun Mobile Drawer.
+- **Harmonisasi Lintas Modul**: Menerapkan filter `isPlaceholderImg()` secara menyeluruh pada etalase storefront (`catalog.js`, `product-modal.js`), keranjang belanja (`cart.js`, `checkout.js`), dan tabel katalog produk admin (`table.js`).
+- **Sinkronisasi Multi-Channel v1.10.59**: Android VersionCode `11059`, bundler Vite, PWA, dan Capacitor.
+
+---
 
 ### v1.10.58 — Transformasi Total Antarmuka POS Kasir: Mode List 3-Kolom Proporsional, Grid Smart Monogram Semantik, Keranjang Struk Ramping & Chiclet Keycaps Taktil (06 Okt 2026)
 - **Mode List POS 3-Kolom Proporsional (`src/modules/pos/pos.js`)**: Mengeliminasi kekosongan void di tengah kartu list dengan pembagian 3 zona seimbang:

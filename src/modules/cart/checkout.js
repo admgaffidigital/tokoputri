@@ -7,7 +7,7 @@
  */
 
 import { appData, cart, setCart, cust, setCust, vouch, setVouch, myOrders, setMyOrders, currentMember, setCurrentMember, selectedReward, setSelectedReward, isSaving, setIsSaving } from '../../core/state.js';
-import { el, show, hide, toggleCls, getV, setV, setIn, setH, esc, fCur, sL, ssL, sLoad, hLoad, renderProductCoverHtml } from '../../core/utils.js';
+import { el, show, hide, toggleCls, getV, setV, setIn, setH, esc, fCur, sL, ssL, sLoad, hLoad, renderProductCoverHtml, isPlaceholderImg } from '../../core/utils.js';
 import { db, firebase } from '../../config/firebase.js';
 import { calculateInstallmentBreakdown, getPaylaterConfig } from '../../core/paylater.js';
 
@@ -364,7 +364,7 @@ export const rPay = () => {
     setH('payment-items-preview', cart.map(i => {
         const variantText = i.variantName ? `<span class="bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-1.5 py-0.5 rounded-lg text-[9px] font-bold">${esc(i.variantName)}</span>` : '';
         const poText = i.poTime ? `<span class="amber-badge px-1.5 py-0.5 rounded-lg text-[8px] font-bold uppercase">PO ${esc(i.poTime)}</span>` : '';
-        const hasCheckImg = Boolean(i.img && typeof i.img === 'string' && i.img.trim());
+        const hasCheckImg = Boolean(i.img && typeof i.img === 'string' && i.img.trim() && !isPlaceholderImg(i.img));
         const coverThumb = renderProductCoverHtml(i, { size: 'thumb' });
         return `
         <div class="flex justify-between items-center bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm min-w-0">

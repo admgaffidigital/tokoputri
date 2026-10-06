@@ -7,7 +7,7 @@
  */
 
 import { appData, cart, setCart } from '../../core/state.js';
-import { el, show, hide, setIn, setH, esc, fCur, ssL, renderProductCoverHtml } from '../../core/utils.js';
+import { el, show, hide, setIn, setH, esc, fCur, ssL, renderProductCoverHtml, isPlaceholderImg } from '../../core/utils.js';
 
 /**
  * Membersihkan keranjang dari produk atau varian yang sudah dihapus/dinonaktifkan Admin
@@ -157,7 +157,7 @@ export const renderCart = () => {
             ? `<span class="w-3.5 h-3.5 rounded-full shadow-inner border border-slate-300 dark:border-slate-600 shrink-0" style="background-color: ${esc(i.colorCode)};"></span>` 
             : '';
 
-        const hasCartImg = Boolean(i.img && typeof i.img === 'string' && i.img.trim());
+        const hasCartImg = Boolean(i.img && typeof i.img === 'string' && i.img.trim() && !isPlaceholderImg(i.img));
         const coverThumb = renderProductCoverHtml(i, { size: 'sm' });
 
         return `

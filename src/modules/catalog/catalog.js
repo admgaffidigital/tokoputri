@@ -7,7 +7,7 @@
  */
 
 import { appData, cart, aCat, setACat, aSubCat, setASubCat, aBrand, setABrand, sQ, setSQ, cSort, setCSort, cView, setCView, cPage, setCPage, iPP } from '../../core/state.js';
-import { el, show, hide, toggleCls, esc, fCur, getOptImg, showToast, renderProductCoverHtml } from '../../core/utils.js';
+import { el, show, hide, toggleCls, esc, fCur, getOptImg, showToast, renderProductCoverHtml, isPlaceholderImg } from '../../core/utils.js';
 import { computeTotalProductStock } from '../../core/pricing.js';
 import { updCart } from '../cart/cart.js';
 import { openProductModal, openQuickVariantSheet } from './product-modal.js';
@@ -273,7 +273,7 @@ export const rCat = () => {
         
         let unt = `<span class="text-[9px] text-slate-600 dark:text-slate-400 font-bold ml-0.5 mb-0.5 uppercase tracking-wide">/${esc(p.unit || 'PCS')}</span>`;
         
-        const hasImg = Boolean(p.img && typeof p.img === 'string' && p.img.trim());
+        const hasImg = Boolean(p.img && typeof p.img === 'string' && p.img.trim() && !isPlaceholderImg(p.img));
         const imgUrl = hasImg ? esc(getOptImg(p.img, 'w300-rw')) : '';
         const coverMdHtml = renderProductCoverHtml(p, { size: 'md' });
         const coverSmHtml = renderProductCoverHtml(p, { size: 'sm' });
@@ -308,8 +308,8 @@ export const rCat = () => {
                                 ${p.variants && p.variants.length > 0 ? '' : unt}
                             </div>
                         </div>
-                        <button type="button" class="w-7 h-7 sm:w-7.5 sm:h-7.5 rounded-xl bg-[rgba(var(--color-primary-rgb),0.08)] text-[var(--color-primary)] border border-[rgba(var(--color-primary-rgb),0.15)] flex items-center justify-center shrink-0 transition-all group-hover:bg-[var(--color-primary)] group-hover:text-white group-hover:scale-105 active:scale-95 shadow-sm cursor-pointer z-20" onclick="quickAddOrOpenProduct(event, '${esc(p.id)}')" title="Tambah ke Keranjang" aria-label="Tambah ${esc(p.name)} ke keranjang">
-                            <i class="fa-solid fa-plus text-xs"></i>
+                        <button type="button" class="w-7 h-7 sm:w-7.5 sm:h-7.5 rounded-xl bg-[rgba(var(--color-primary-rgb),0.08)] text-[var(--color-primary)] border border-[rgba(var(--color-primary-rgb),0.15)] flex items-center justify-center shrink-0 transition-all group-hover:bg-[var(--color-primary)] group-hover:text-white group-hover:scale-105 active:scale-95 shadow-sm cursor-pointer z-20" onclick="quickAddOrOpenProduct(event, '${esc(p.id)}')" title="${p.variants && p.variants.length > 0 ? 'Pilih Varian' : 'Tambah ke Keranjang'}" aria-label="${p.variants && p.variants.length > 0 ? 'Pilih varian ' + esc(p.name) : 'Tambah ' + esc(p.name) + ' ke keranjang'}">
+                            ${p.variants && p.variants.length > 0 ? '<i class="fa-solid fa-layer-group text-xs"></i>' : '<i class="fa-solid fa-plus text-xs"></i>'}
                         </button>
                     </div>
                 </div>
@@ -341,8 +341,8 @@ export const rCat = () => {
                             ${p.variants && p.variants.length > 0 ? '' : unt}
                             ${(p.variants && p.variants.length > 0) || !p.priceNormal || p.priceNormal <= p.price ? '' : `<span class="text-[10px] text-slate-400 dark:text-slate-500 line-through leading-none font-semibold truncate">${fCur(p.priceNormal)}</span>`}
                         </div>
-                        <button type="button" class="w-7 h-7 sm:w-7.5 sm:h-7.5 rounded-lg bg-[rgba(var(--color-primary-rgb),0.08)] text-[var(--color-primary)] border border-[rgba(var(--color-primary-rgb),0.15)] flex items-center justify-center shrink-0 transition-all group-hover:bg-[var(--color-primary)] group-hover:text-white group-hover:scale-105 active:scale-95 shadow-sm mr-0.5 cursor-pointer z-20" onclick="quickAddOrOpenProduct(event, '${esc(p.id)}')" title="Tambah ke Keranjang" aria-label="Tambah ${esc(p.name)} ke keranjang">
-                            <i class="fa-solid fa-plus text-xs"></i>
+                        <button type="button" class="w-7 h-7 sm:w-7.5 sm:h-7.5 rounded-lg bg-[rgba(var(--color-primary-rgb),0.08)] text-[var(--color-primary)] border border-[rgba(var(--color-primary-rgb),0.15)] flex items-center justify-center shrink-0 transition-all group-hover:bg-[var(--color-primary)] group-hover:text-white group-hover:scale-105 active:scale-95 shadow-sm mr-0.5 cursor-pointer z-20" onclick="quickAddOrOpenProduct(event, '${esc(p.id)}')" title="${p.variants && p.variants.length > 0 ? 'Pilih Varian' : 'Tambah ke Keranjang'}" aria-label="${p.variants && p.variants.length > 0 ? 'Pilih varian ' + esc(p.name) : 'Tambah ' + esc(p.name) + ' ke keranjang'}">
+                            ${p.variants && p.variants.length > 0 ? '<i class="fa-solid fa-layer-group text-xs"></i>' : '<i class="fa-solid fa-plus text-xs"></i>'}
                         </button>
                     </div>
                 </div>
