@@ -21,8 +21,14 @@ export const DEFAULT_PRINTER_CONFIG = {
     openCashDrawer: false,
     autoPrintOrder: false,
     headerText: '',
+    storeAddress: '',
+    storePhone: '',
     footerText: 'Terima kasih atas kunjungan Anda!',
+    footerPolicyNote: 'Barang yang sudah dibeli tidak dapat ditukar/dikembalikan tanpa struk resmi.',
     showLogo: true,
+    showAddress: true,
+    showPhone: true,
+    showNpwp: true,
     showPoints: true,
     showBarcode: true,
     networkIp: '192.168.1.200:9100'
@@ -93,8 +99,14 @@ export const openPrinterSettingsModal = () => {
     setValue('printer-paper-size', config.paperSize);
     setValue('printer-network-ip', config.networkIp);
     setValue('printer-header-custom', config.headerText);
+    setValue('printer-address-custom', config.storeAddress);
+    setValue('printer-phone-custom', config.storePhone);
     setValue('printer-footer-custom', config.footerText);
+    setValue('printer-policy-custom', config.footerPolicyNote);
 
+    setChecked('printer-opt-address', config.showAddress !== false);
+    setChecked('printer-opt-phone', config.showPhone !== false);
+    setChecked('printer-opt-npwp', config.showNpwp !== false);
     setChecked('printer-opt-points', config.showPoints);
     setChecked('printer-opt-barcode', config.showBarcode);
     setChecked('printer-opt-direct', config.directPrint === true);
@@ -182,7 +194,13 @@ export const savePrinterSettingsFromModal = () => {
         paperSize: getValue('printer-paper-size', '58mm'),
         networkIp: getValue('printer-network-ip', '192.168.1.200:9100'),
         headerText: getValue('printer-header-custom', ''),
+        storeAddress: getValue('printer-address-custom', ''),
+        storePhone: getValue('printer-phone-custom', ''),
         footerText: getValue('printer-footer-custom', 'Terima kasih atas kunjungan Anda!'),
+        footerPolicyNote: getValue('printer-policy-custom', 'Barang yang sudah dibeli tidak dapat ditukar/dikembalikan tanpa struk resmi.'),
+        showAddress: getChecked('printer-opt-address', true),
+        showPhone: getChecked('printer-opt-phone', true),
+        showNpwp: getChecked('printer-opt-npwp', true),
         showPoints: getChecked('printer-opt-points', true),
         showBarcode: getChecked('printer-opt-barcode', true),
         directPrint: getChecked('printer-opt-direct', false),
@@ -277,8 +295,10 @@ export const executeTestPrint = () => {
 
     const is80 = config.paperSize === '80mm';
     const cols = is80 ? 48 : 32;
-    const storeName = appData.store.name || 'TOKO PUTRI';
-    const storeWa = appData.store.wa || '';
+    const storeName = config.headerText || appData.store?.name || 'TOKO PUTRI';
+    const storeAddr = (config.showAddress !== false) ? (config.storeAddress || appData.store?.address || '') : '';
+    const storeWa = (config.showPhone !== false) ? (config.storePhone || appData.store?.wa || '') : '';
+    const policyNote = config.footerPolicyNote || '';
 
     const padLine = (l, r, len = cols) => {
         const p = len - l.length - r.length;
@@ -292,7 +312,8 @@ export const executeTestPrint = () => {
 
     let h = `
     <div style="text-align:center;font-weight:bold;font-size:14px;margin-bottom:3px;">${esc(storeName)}</div>
-    ${storeWa ? `<div style="text-align:center;font-size:11px;margin-bottom:4px;">WA: ${esc(storeWa)}</div>` : ''}
+    ${storeAddr ? `<div style="text-align:center;font-size:10px;color:#475569;margin-bottom:2px;">${esc(storeAddr)}</div>` : ''}
+    ${storeWa ? `<div style="text-align:center;font-size:11px;margin-bottom:4px;">Telp/WA: ${esc(storeWa)}</div>` : ''}
     <div style="text-align:center;font-weight:bold;font-size:12px;border-top:1px dashed #000;border-bottom:1px dashed #000;padding:3px 0;margin:6px 0;">
         *** UJI COBA CETAK STRUK ***
     </div>
@@ -325,6 +346,10 @@ export const executeTestPrint = () => {
     <div style="text-align:center;font-size:10px;margin-top:6px;line-height:1.3;">
         ${esc(config.footerText || 'Terima kasih atas kunjungan Anda!')}
     </div>
+    ${policyNote ? `
+    <div style="text-align:center;font-size:9px;color:#475569;margin-top:4px;border-top:1px dashed #ccc;padding-top:4px;">
+        ${esc(policyNote)}
+    </div>` : ''}
     <div style="text-align:center;font-size:9px;font-style:italic;margin-top:4px;">
         Printer siap digunakan untuk operasional kasir Toko Putri.
     </div>

@@ -358,7 +358,14 @@ const initBarcodeListener = () => {
             return;
         }
 
-        // 3. Pintasan F6: Tahan Transaksi Sementara (Hold Cart)
+        // 3. Pintasan F5: Cegah Reload Halaman & Cetak Ulang Struk Terakhir
+        if (e.key === 'F5') {
+            e.preventDefault();
+            reprintLastPOSReceipt();
+            return;
+        }
+
+        // 4. Pintasan F6: Tahan Transaksi Sementara (Hold Cart)
         if (e.key === 'F6') {
             e.preventDefault();
             posHoldCurrentCart();
@@ -3182,6 +3189,7 @@ export const processPOSTx = async () => {
 // ─── Dialog Sukses ───────────────────────────────────────────
 const showPOSSuccess = (tx) => {
     window._lastPOSTx = tx;
+    try { localStorage.setItem('freshmart_last_pos_tx', JSON.stringify(tx)); } catch (_) {}
     const changeInfo = tx.payment.method === 'cash'
         ? `<p class="text-sm text-slate-500">Kembalian: <span class="font-black text-emerald-600">${fRp(tx.payment.change)}</span></p>`
         : tx.payment.method === 'tempo' ? `<p class="text-sm text-amber-600 font-semibold">⚠️ Dicatat sebagai Piutang Tempo</p>`
@@ -3251,6 +3259,7 @@ export const printPOSReceipt = (tx) => {
 
 export const previewPOSReceiptThenPrint = (tx) => {
     window._lastPOSTx = tx;
+    try { localStorage.setItem('freshmart_last_pos_tx', JSON.stringify(tx)); } catch (_) {}
     // Satu tampilan preview untuk seluruh sistem (konsisten dengan tema)
     if (typeof window.printPOSReceiptDirect === 'function') {
         window.printPOSReceiptDirect(tx);
@@ -3364,6 +3373,30 @@ export const executePOSPrintDirect = () => {
     } else {
         window.print();
     }
+};
+
+/**
+ * Cetak Ulang Struk Kasir Terakhir (Reprint Last Receipt)
+ * Dipicu oleh tombol pintas [F5] kasir atau tombol aksi cepat di antarmuka POS.
+ */
+export const reprintLastPOSReceipt = () => {
+    let tx = window._lastPOSTx;
+    if (!tx) {
+        try {
+            const raw = localStorage.getItem('freshmart_last_pos_tx');
+            if (raw) tx = JSON.parse(raw);
+        } catch (_) {}
+    }
+    if (!tx && Array.isArray(window.appData?.orders) && window.appData.orders.length > 0) {
+        const posOrders = window.appData.orders.filter(o => o.source === 'pos' || o.isPos || (o.id && o.id.startsWith('POS-')));
+        tx = posOrders.length > 0 ? posOrders[0] : window.appData.orders[0];
+    }
+    if (!tx) {
+        showToast('Belum ada transaksi terakhir untuk dicetak ulang.', 'info');
+        return;
+    }
+    showToast(`Mencetak ulang struk #${tx.txId || tx.id || ''}...`, 'info');
+    previewPOSReceiptThenPrint(tx);
 };
 
 // ─── Debounced Search & Instant Clear ─────────────────────────
@@ -3645,6 +3678,10 @@ const buildPOSLayout = ({ isStorefront }) => {
                 </span>
                 <div id="pos-shift-btn-admin" class="flex items-center shrink-0"></div>
                 <div id="pos-held-btn-admin" class="flex items-center shrink-0"></div>
+                <button onclick="if(typeof window.openPrinterSettingsModal==='function') window.openPrinterSettingsModal();" class="h-8 px-2 sm:px-2.5 rounded-xl bg-white hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold inline-flex items-center gap-1.5 transition-all cursor-pointer whitespace-nowrap shrink-0 shadow-2xs active:scale-95" title="Pengaturan Printer Kasir & Thermal">
+                    <i class="fa-solid fa-print text-xs text-sky-500"></i>
+                    <span class="hidden sm:inline">Printer</span>
+                </button>
                 <button onclick="window.openShoppingGuideModal && window.openShoppingGuideModal('pos')" class="h-8 px-2 sm:px-2.5 rounded-xl bg-white hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold inline-flex items-center gap-1.5 transition-all cursor-pointer whitespace-nowrap shrink-0 shadow-2xs active:scale-95" title="Buku Panduan Kasir POS">
                     <i class="fa-solid fa-circle-question text-xs text-[var(--color-primary)]"></i>
                     <span class="hidden sm:inline">Panduan POS</span>
@@ -3699,6 +3736,7 @@ const buildPOSLayout = ({ isStorefront }) => {
                         <div class="flex items-center gap-1.5 overflow-x-auto hide-scrollbar py-0.5">
                             <button type="button" onclick="document.getElementById('pos-search-input')?.focus()" class="pos-shortcut-chiclet" title="Cari produk [F2]"><kbd class="pos-keycap">F2</kbd><span>Cari</span></button>
                             <button type="button" onclick="window.openPayModal()" class="pos-shortcut-chiclet" title="Proses pembayaran [F4]"><kbd class="pos-keycap">F4</kbd><span>Bayar</span></button>
+                            <button type="button" onclick="window.reprintLastPOSReceipt && window.reprintLastPOSReceipt()" class="pos-shortcut-chiclet" title="Cetak ulang struk terakhir [F5]"><kbd class="pos-keycap">F5</kbd><span>Ulang</span></button>
                             <button type="button" onclick="window.posHoldCurrentCart()" class="pos-shortcut-chiclet" title="Tahan transaksi [F6]"><kbd class="pos-keycap">F6</kbd><span>Tahan</span></button>
                             <button type="button" onclick="document.querySelector('.pos-disc-val-input')?.focus()" class="pos-shortcut-chiclet" title="Fokus input diskon [F7]"><kbd class="pos-keycap">F7</kbd><span>Diskon</span></button>
                             <button type="button" onclick="window.openPOSHeldModal()" class="pos-shortcut-chiclet" title="Buka transaksi tertahan [F8]"><kbd class="pos-keycap">F8</kbd><span>Tertahan</span></button>
@@ -4558,6 +4596,7 @@ window.posProcessManualBarcode = posProcessManualBarcode;
 window.posSearchScannedCode    = posSearchScannedCode;
 window.executePOSPrintDirect   = executePOSPrintDirect;
 window.previewPOSReceiptThenPrint = previewPOSReceiptThenPrint;
+window.reprintLastPOSReceipt   = reprintLastPOSReceipt;
 window.getActiveShift          = getActiveShift;
 window.isShiftActive           = isShiftActive;
 window.syncActiveShiftFromCloud= syncActiveShiftFromCloud;

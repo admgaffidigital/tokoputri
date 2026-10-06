@@ -8,6 +8,23 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-10-61',
+        version: 'v1.10.61',
+        date: '2026-10-06',
+        title: 'Penyempurnaan Total Struk Kasir & Pengaturan Cetak: Header Toko Fleksibel, Barcode Hardware ESC/POS, Cetak Ulang F5 & Kebijakan Toko',
+        category: 'feat',
+        badge: 'Thermal Receipt & Printer Engine Precision v1.10.61',
+        items: [
+            'Header & Identitas Toko di Struk Kasir (src/modules/print/printer-settings.js, rawbt.js): Konfigurasi kustom alamat toko, kontak no HP/WhatsApp, NPWP/NIB, dan toggle opsi tampilkan/sembunyikan identitas toko secara fleksibel pada struk thermal 58mm & 80mm.',
+            'Format Baris Kasir & Pelanggan Multi-Kolom Cerdas: Tampilan nama kasir dan nama pelanggan presisi tanpa pemotongan teks kaku (anti-ugly truncation), mencantumkan status (Member) dan ID Member jika terdaftar.',
+            'Barcode Hardware ESC/POS & Fotorealistik Preview (src/modules/print/rawbt.js, print-preview.js): Menghadirkan fungsi barcode() pada EscPosBuilder dengan perintah native GS k (Code128) serta striping barcode bergaris fotorealistik pada pratinjau thermal interaktif.',
+            'Footer Kebijakan Retur & Garansi Resmi: Menambahkan baris catatan garansi dan retur resmi di bawah footer struk (misal: "Barang yang sudah dibeli tidak dapat ditukar/dikembalikan tanpa struk resmi.").',
+            'Pintasan Keyboard [F5] Cetak Ulang Struk Kasir (src/modules/pos/pos.js): Mengalihkan tombol F5 dari refresh halaman menjadi cetak ulang struk transaksi terakhir (reprint last receipt), dilengkapi chiclet shortcut [F5] dan tombol cepat Printer di header kasir POS.',
+            'Modal Pengaturan Printer Universal (index.html): Menghadirkan kontrol input form lengkap untuk alamat toko, kontak telepon, kebijakan retur, dan toggle visibilitas identitas toko pada struk.',
+            'Multi-Channel Distribution v1.10.61 (Android versionCode 11061).'
+        ]
+    },
+    {
         id: 'log-1-10-60',
         version: 'v1.10.60',
         date: '2026-10-06',

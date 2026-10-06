@@ -1450,15 +1450,29 @@
             </select>
           </div>
 
-          <!-- 3. Header & Footer Struk Custom -->
+          <!-- 3. Header, Identitas Toko & Footer Struk Custom -->
           <div class="space-y-3">
             <div>
               <label class="block text-[11px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">Header Khusus Struk (Opsional)</label>
               <input type="text" id="printer-header-custom" class="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-3 text-xs text-slate-800 dark:text-slate-200 outline-none focus:border-[var(--color-primary)]" placeholder="Biarkan kosong untuk nama toko default" />
             </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+              <div>
+                <label class="block text-[11px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">Alamat Toko di Struk</label>
+                <input type="text" id="printer-address-custom" class="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-3 text-xs text-slate-800 dark:text-slate-200 outline-none focus:border-[var(--color-primary)]" placeholder="Kosongkan jika pakai alamat profil" />
+              </div>
+              <div>
+                <label class="block text-[11px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">No. HP / WA di Struk</label>
+                <input type="text" id="printer-phone-custom" class="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-3 text-xs text-slate-800 dark:text-slate-200 outline-none focus:border-[var(--color-primary)]" placeholder="Contoh: 0812-3456-7890" />
+              </div>
+            </div>
             <div>
               <label class="block text-[11px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">Footer / Pesan Penutup Struk</label>
               <input type="text" id="printer-footer-custom" class="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-3 text-xs text-slate-800 dark:text-slate-200 outline-none focus:border-[var(--color-primary)]" value="Terima kasih atas kunjungan Anda!" />
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">Kebijakan Retur / Garansi di Struk</label>
+              <input type="text" id="printer-policy-custom" class="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-3 text-xs text-slate-800 dark:text-slate-200 outline-none focus:border-[var(--color-primary)]" placeholder="Barang yang sudah dibeli tidak dapat ditukar/dikembalikan..." value="Barang yang sudah dibeli tidak dapat ditukar/dikembalikan tanpa struk resmi." />
             </div>
           </div>
 
@@ -1478,12 +1492,24 @@
                 <span class="text-xs text-slate-700 dark:text-slate-300 font-medium">Auto-Print Struk saat Transaksi Kasir Selesai</span>
               </label>
               <label class="flex items-center gap-2.5 cursor-pointer">
+                <input type="checkbox" id="printer-opt-address" class="rounded accent-[var(--color-primary)] w-4 h-4" checked />
+                <span class="text-xs text-slate-700 dark:text-slate-300 font-medium">Tampilkan Alamat Toko pada Header Struk</span>
+              </label>
+              <label class="flex items-center gap-2.5 cursor-pointer">
+                <input type="checkbox" id="printer-opt-phone" class="rounded accent-[var(--color-primary)] w-4 h-4" checked />
+                <span class="text-xs text-slate-700 dark:text-slate-300 font-medium">Tampilkan No HP / Kontak WhatsApp Toko pada Struk</span>
+              </label>
+              <label class="flex items-center gap-2.5 cursor-pointer">
+                <input type="checkbox" id="printer-opt-npwp" class="rounded accent-[var(--color-primary)] w-4 h-4" checked />
+                <span class="text-xs text-slate-700 dark:text-slate-300 font-medium">Tampilkan Nomor NPWP / NIB Toko pada Struk (Jika Ada)</span>
+              </label>
+              <label class="flex items-center gap-2.5 cursor-pointer">
                 <input type="checkbox" id="printer-opt-points" class="rounded accent-[var(--color-primary)] w-4 h-4" checked />
                 <span class="text-xs text-slate-700 dark:text-slate-300 font-medium">Cetak Saldo Poin &amp; Member Loyalty di Struk</span>
               </label>
               <label class="flex items-center gap-2.5 cursor-pointer">
                 <input type="checkbox" id="printer-opt-barcode" class="rounded accent-[var(--color-primary)] w-4 h-4" checked />
-                <span class="text-xs text-slate-700 dark:text-slate-300 font-medium">Cetak Barcode Nomor Pesanan di Bawah Struk</span>
+                <span class="text-xs text-slate-700 dark:text-slate-300 font-medium">Cetak Barcode Nomor Pesanan di Bawah Struk (ESC/POS Code128)</span>
               </label>
               <label class="flex items-center gap-2.5 cursor-pointer">
                 <input type="checkbox" id="printer-opt-autocut" class="rounded accent-[var(--color-primary)] w-4 h-4" checked />

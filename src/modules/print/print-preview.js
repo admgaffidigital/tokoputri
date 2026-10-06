@@ -60,6 +60,29 @@ const ensurePreviewStyles = () => {
         .utp-line.utp-title { font-size: 2em; line-height: 1.12; }
         .utp-line.utp-tall { height: 2.64em; }
         .utp-line.utp-tall > span { display: block; transform: scaleY(2); transform-origin: top center; }
+        .utp-barcode-wrap { display: flex; flex-direction: column; align-items: center; justify-content: center; margin: 4px 0 2px; }
+        .utp-barcode-bars {
+            width: 80%; max-width: 240px; height: 38px;
+            background: repeating-linear-gradient(
+                90deg,
+                #000 0px, #000 2px,
+                transparent 2px, transparent 4px,
+                #000 4px, #000 7px,
+                transparent 7px, transparent 9px,
+                #000 9px, #000 11px,
+                transparent 11px, transparent 13px,
+                #000 13px, #000 16px,
+                transparent 16px, transparent 18px,
+                #000 18px, #000 19px,
+                transparent 19px, transparent 22px
+            );
+            border-top: 1px solid #000;
+            border-bottom: 1px solid #000;
+        }
+        .utp-barcode-code {
+            font-family: 'Courier New', Courier, ui-monospace, monospace;
+            font-size: 11px; font-weight: 700; letter-spacing: 2px; margin-top: 3px;
+        }
         .utp-chip {
             display: inline-flex; align-items: center; gap: 5px; white-space: nowrap;
             padding: 4px 9px; border-radius: 999px; font-size: 10.5px; font-weight: 700;
@@ -134,6 +157,14 @@ const renderThermalLines = (job) => {
         const txt = esc(String(l.t ?? '')) || '&nbsp;';
         const align = l.a === 'center' ? 'center' : (l.a === 'right' ? 'right' : 'left');
         const weight = l.b ? 800 : 400;
+
+        if (l.isBarcode || l.s === 'barcode') {
+            return `
+            <div class="utp-barcode-wrap" style="text-align:center;">
+                <div class="utp-barcode-bars mx-auto" aria-hidden="true"></div>
+                <div class="utp-barcode-code">*${txt}*</div>
+            </div>`;
+        }
         if (l.s === 'title' || l.s === 'wide') {
             return `<div class="utp-line utp-title" style="text-align:${align};font-weight:${weight}">${txt}</div>`;
         }

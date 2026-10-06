@@ -12,6 +12,7 @@ export {
     renderPOSStorefront,
     printPOSReceipt,
     executePOSPrintDirect,
+    reprintLastPOSReceipt,
     posHoldCurrentCart,
     openPOSHeldModal,
     posRecallHeldCart,

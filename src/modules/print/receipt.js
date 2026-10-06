@@ -93,7 +93,8 @@ export const openReceiptPreview = async (orderId = null) => {
 
     const d = formatCompactDate(o.dateString || o.date || Date.now(), is80);
     const sN = config.headerText || appData.store.name || "Toko Putri";
-    const sW = appData.store.wa || "";
+    const sAddr = config.storeAddress !== undefined && config.storeAddress !== '' ? config.storeAddress : (appData.store.address || "");
+    const sW = config.storePhone !== undefined && config.storePhone !== '' ? config.storePhone : (appData.store.wa || "");
     
     const pL = (l, r, len = cols) => { 
         const left = String(l || '');
@@ -112,9 +113,10 @@ export const openReceiptPreview = async (orderId = null) => {
     const isDelivery = o.customer?.deliveryMethod === 'delivery' || o.deliveryMethod === 'delivery';
 
     let h = `<div class="text-center font-bold" style="font-size:14px;margin-bottom:2px;">${esc(sN)}</div>`;
-    if (sW) h += `<div class="text-center" style="font-size:11px;margin-bottom:4px;">WA: ${esc(sW)}</div>`;
+    if (config.showAddress !== false && sAddr) h += `<div class="text-center" style="font-size:10px;color:#475569;margin-bottom:2px;">${esc(sAddr)}</div>`;
+    if (config.showPhone !== false && sW) h += `<div class="text-center" style="font-size:11px;margin-bottom:4px;">WA: ${esc(sW)}</div>`;
     const npwpStr = o.payment?.taxNpwp || appData.store?.taxNpwp;
-    if (npwpStr) h += `<div class="text-center" style="font-size:10px;font-family:monospace;margin-bottom:4px;">NPWP: ${esc(npwpStr)}</div>`;
+    if (config.showNpwp !== false && npwpStr) h += `<div class="text-center" style="font-size:10px;font-family:monospace;margin-bottom:4px;">NPWP: ${esc(npwpStr)}</div>`;
     h += `<div class="border-b border-dashed border-black my-2"></div>`;
     h += `<div style="white-space:pre;font-family:monospace;">${pL(`Order: #${o.orderId}`, d, cols)}</div>`;
     h += `<div style="white-space:pre;font-family:monospace;">${pL(`Plg  : ${esc(custName).substring(0, is80 ? 18 : 10)}`, `Tipe: ${isDelivery ? 'Kirim' : 'Ambil'}`, cols)}</div>`;
@@ -198,10 +200,19 @@ export const openReceiptPreview = async (orderId = null) => {
 
     // Barcode kasir
     if (config.showBarcode) {
-        h += `<div class="border-b border-dashed border-black my-2"></div><div style="text-align:center;margin:4px 0;"><div style="font-family:monospace;letter-spacing:2px;font-size:11px;font-weight:bold;">*ORDER-${esc(o.orderId)}*</div><div style="font-size:8px;color:#666;">SCAN DI KASIR</div></div>`;
+        h += `<div class="border-b border-dashed border-black my-2"></div>
+        <div style="text-align:center;margin:6px 0 3px;">
+            <div style="width:75%;max-width:200px;height:32px;margin:0 auto;background:repeating-linear-gradient(90deg,#000 0px,#000 2px,transparent 2px,transparent 4px,#000 4px,#000 7px,transparent 7px,transparent 9px,#000 9px,#000 11px,transparent 11px,transparent 13px,#000 13px,#000 16px,transparent 16px,transparent 18px,#000 18px,#000 19px,transparent 19px,transparent 22px);border-top:1px solid #000;border-bottom:1px solid #000;"></div>
+            <div style="font-family:monospace;letter-spacing:2px;font-size:10.5px;font-weight:bold;margin-top:3px;">*ORDER-${esc(o.orderId)}*</div>
+            <div style="font-size:8px;color:#666;">SCAN DI KASIR</div>
+        </div>`;
     }
 
-    h += `<div class="border-b border-dashed border-black my-2"></div><div class="text-center my-2" style="font-size:10px;line-height:1.3;">${esc(config.footerText || 'Terima Kasih Atas Kunjungan Anda')}</div><div class="border-b border-dashed border-black my-2"></div><div style="height:15px;"></div>`;
+    h += `<div class="border-b border-dashed border-black my-2"></div><div class="text-center my-2" style="font-size:10px;line-height:1.3;">${esc(config.footerText || 'Terima Kasih Atas Kunjungan Anda')}</div>`;
+    if (config.footerPolicyNote) {
+        h += `<div class="text-center my-1" style="font-size:9px;line-height:1.25;color:#475569;">${esc(config.footerPolicyNote)}</div>`;
+    }
+    h += `<div class="border-b border-dashed border-black my-2"></div><div style="height:15px;"></div>`;
     
     setH('receipt-paper-content', h);
 

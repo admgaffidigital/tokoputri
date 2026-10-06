@@ -298,6 +298,46 @@ export class EscPosBuilder {
         return this;
     }
 
+    /**
+     * Cetak Barcode Hardware ESC/POS (GS k) & pratinjau visual
+     * Mendukung CODE128 (default) dan CODE39
+     */
+    barcode(codeStr, type = 'CODE128', height = 45) {
+        if (!codeStr) return this;
+        const clean = cleanLineAscii(String(codeStr)).trim();
+        if (!clean) return this;
+
+        this.align('center');
+
+        // GS h n : Tinggi barcode (default 45 dots)
+        this.bytes.push(0x1D, 0x68, Math.max(30, Math.min(100, height)));
+
+        // GS w n : Lebar modul barcode (2 = standar)
+        this.bytes.push(0x1D, 0x77, 0x02);
+
+        // GS H n : Posisi karakter teks HRI (0 = tidak cetak via hardware, dicetak manual agar seragam)
+        this.bytes.push(0x1D, 0x48, 0x00);
+
+        if (type === 'CODE39') {
+            this.bytes.push(0x1D, 0x6B, 0x04);
+            for (let i = 0; i < clean.length; i++) {
+                this.bytes.push(clean.charCodeAt(i));
+            }
+            this.bytes.push(0x00);
+        } else {
+            // CODE128 Subtipe B
+            const rawBytes = [];
+            for (let i = 0; i < clean.length; i++) {
+                rawBytes.push(clean.charCodeAt(i));
+            }
+            this.bytes.push(0x1D, 0x6B, 0x49, rawBytes.length + 2, 0x7B, 0x42, ...rawBytes);
+        }
+
+        this.plainLines.push(`[BARCODE: ${clean}]`);
+        this.previewLines.push({ t: clean, a: 'center', b: false, s: 'barcode', isBarcode: true });
+        return this;
+    }
+
     /** Konversi byte ESC/POS ke format Base64 untuk RawBT */
     toBase64() {
         const u8 = new Uint8Array(this.bytes);
@@ -478,8 +518,8 @@ export const buildPOSReceiptPayload = (tx, config = null) => {
 
     // 2. Kop Toko (Header)
     const storeName = cleanLineAscii(cfg.headerText || appData.store?.name || 'TOKO PUTRI').trim();
-    const storeAddr = cleanLineAscii(appData.store?.address || '').trim();
-    const storeWa   = cleanLineAscii(appData.store?.wa || '').trim();
+    const storeAddr = cleanLineAscii(cfg.storeAddress !== undefined && cfg.storeAddress !== '' ? cfg.storeAddress : (appData.store?.address || '')).trim();
+    const storeWa   = cleanLineAscii(cfg.storePhone !== undefined && cfg.storePhone !== '' ? cfg.storePhone : (appData.store?.wa || '')).trim();
 
     // Logika pemilihan ukuran judul agar tidak terpotong atau wrap sembarangan:
     const maxDoubleWidth = Math.floor(cols / 2);
@@ -492,14 +532,14 @@ export const buildPOSReceiptPayload = (tx, config = null) => {
         builder.size('normal').bold(false);
     }
 
-    if (storeAddr) {
+    if (cfg.showAddress !== false && storeAddr) {
         wrapWords(storeAddr, cols).forEach(l => builder.line(l, 'center'));
     }
-    if (storeWa) {
+    if (cfg.showPhone !== false && storeWa) {
         builder.line(`WA: ${storeWa}`, 'center');
     }
     const npwpStr = tx.payment?.taxNpwp || appData.store?.taxNpwp;
-    if (npwpStr) {
+    if (cfg.showNpwp !== false && npwpStr) {
         builder.line(`NPWP: ${npwpStr}`, 'center');
     }
     builder.separator('-');
@@ -509,12 +549,27 @@ export const buildPOSReceiptPayload = (tx, config = null) => {
     const txNo = `#${tx.txId}`;
     builder.twoColumn(`No : ${txNo}`, dateStr, false, true);
 
-    const ksrName = (tx.cashierName || 'Kasir').substring(0, is80 ? 16 : 9);
-    const plgName = (tx.customer?.name || 'Umum').substring(0, is80 ? 18 : 11);
-    builder.twoColumn(`Ksr: ${ksrName}`, `Plg: ${plgName}`, false, true);
+    const ksrName = cleanLineAscii(tx.cashierName || 'Kasir').trim();
+    const isMember = !!(tx.customer?.isMember || tx.customerType === 'Member');
+    const plgRaw = cleanLineAscii(tx.customer?.name || 'Umum').trim();
+    const plgName = isMember ? `${plgRaw} (Member)` : plgRaw;
+
+    const ksrLabel = `Ksr: ${ksrName}`;
+    const plgLabel = `Plg: ${plgName}`;
+
+    // Cek apakah muat dalam 1 baris atau 2 baris (mencegah teks terpotong kaku)
+    if (ksrLabel.length + 1 + plgLabel.length <= cols) {
+        builder.twoColumn(ksrLabel, plgLabel, false, false);
+    } else {
+        builder.line(ksrLabel, 'left');
+        builder.line(plgLabel, 'left');
+    }
 
     if (tx.customer?.phone) {
         builder.line(`HP : ${tx.customer.phone}`, 'left');
+    }
+    if (isMember && tx.customer?.memberId) {
+        builder.line(`ID : ${tx.customer.memberId}`, 'left');
     }
     builder.separator('-');
 
@@ -566,6 +621,12 @@ export const buildPOSReceiptPayload = (tx, config = null) => {
     if (tx.payment?.method === 'cash') {
         builder.twoColumn('Bayar Tunai', fRp(tx.payment.paid));
         builder.bold(true).twoColumn('Kembalian', fRp(tx.payment.change)).bold(false);
+    } else if (tx.payment?.method === 'transfer') {
+        if (tx.payment?.bank) {
+            builder.twoColumn('Bank Penerima', tx.payment.bank);
+        }
+    } else if (tx.payment?.method === 'qris') {
+        builder.twoColumn('Kanal QRIS', 'QRIS Dinamis (Lunas)');
     } else if (tx.payment?.method === 'tempo') {
         if (isPaylater) {
             builder.twoColumn('Limit Terpakai', fRp(tx.payment?.paylaterUsed || tx.paylaterUsed || (tx.total - (tx.payment?.tempoDp ?? 0))));
@@ -612,15 +673,22 @@ export const buildPOSReceiptPayload = (tx, config = null) => {
     // 8. Barcode Transaksi
     if (cfg.showBarcode) {
         builder.separator('-');
-        builder.align('center');
+        builder.barcode(`POS-${tx.txId}`, 'CODE128', 45);
         builder.line(`*POS-${tx.txId}*`, 'center');
         builder.line('(SCAN DI KASIR)', 'center');
     }
 
-    // 9. Pesan Footer Toko
+    // 9. Pesan Footer Toko & Catatan Kebijakan
     builder.separator('-');
-    const footerText = cfg.footerText || 'Terima Kasih Atas Kunjungan Anda!';
-    wrapWords(footerText, cols).forEach(l => builder.line(l, 'center'));
+    const footerText = cleanLineAscii(cfg.footerText || 'Terima Kasih Atas Kunjungan Anda!').trim();
+    if (footerText) {
+        wrapWords(footerText, cols).forEach(l => builder.line(l, 'center'));
+    }
+    const policyNote = cleanLineAscii(cfg.footerPolicyNote !== undefined ? cfg.footerPolicyNote : 'Barang yang sudah dibeli tidak dapat ditukar/dikembalikan tanpa struk resmi.').trim();
+    if (policyNote) {
+        builder.line('', 'center');
+        wrapWords(policyNote, cols).forEach(l => builder.line(l, 'center'));
+    }
 
     // 10. Pengumpan Kertas & Pemotong
     builder.feed(cfg.feedLines || 3);
@@ -758,8 +826,8 @@ export const buildOrderReceiptPayload = (order, config = null) => {
     builder.init();
 
     const storeName = cleanLineAscii(cfg.headerText || appData.store?.name || 'TOKO PUTRI').trim();
-    const storeAddr = cleanLineAscii(appData.store?.address || '').trim();
-    const storeWa   = cleanLineAscii(appData.store?.wa || '').trim();
+    const storeAddr = cleanLineAscii(cfg.storeAddress !== undefined && cfg.storeAddress !== '' ? cfg.storeAddress : (appData.store?.address || '')).trim();
+    const storeWa   = cleanLineAscii(cfg.storePhone !== undefined && cfg.storePhone !== '' ? cfg.storePhone : (appData.store?.wa || '')).trim();
 
     const maxDoubleWidth = Math.floor(cols / 2);
     if (storeName.length <= maxDoubleWidth) {
@@ -771,10 +839,10 @@ export const buildOrderReceiptPayload = (order, config = null) => {
         builder.size('normal').bold(false);
     }
 
-    if (storeAddr) wrapWords(storeAddr, cols).forEach(l => builder.line(l, 'center'));
-    if (storeWa) builder.line(`WA: ${storeWa}`, 'center');
+    if (cfg.showAddress !== false && storeAddr) wrapWords(storeAddr, cols).forEach(l => builder.line(l, 'center'));
+    if (cfg.showPhone !== false && storeWa) builder.line(`WA: ${storeWa}`, 'center');
     const npwpStrOrder = order.payment?.taxNpwp || appData.store?.taxNpwp;
-    if (npwpStrOrder) builder.line(`NPWP: ${npwpStrOrder}`, 'center');
+    if (cfg.showNpwp !== false && npwpStrOrder) builder.line(`NPWP: ${npwpStrOrder}`, 'center');
     builder.separator('-');
 
     const dateStr = formatCompactDate(order.dateString || order.dateMs || Date.now(), is80);
@@ -859,13 +927,22 @@ export const buildOrderReceiptPayload = (order, config = null) => {
 
     if (cfg.showBarcode) {
         builder.separator('-');
-        builder.align('center');
+        builder.barcode(`ORDER-${order.orderId}`, 'CODE128', 45);
         builder.line(`*ORDER-${order.orderId}*`, 'center');
         builder.line('(SCAN DI KASIR)', 'center');
     }
 
     builder.separator('-');
-    wrapWords(cfg.footerText || 'Terima Kasih Atas Kunjungan Anda!', cols).forEach(l => builder.line(l, 'center'));
+    const footerText = cleanLineAscii(cfg.footerText || 'Terima Kasih Atas Kunjungan Anda!').trim();
+    if (footerText) {
+        wrapWords(footerText, cols).forEach(l => builder.line(l, 'center'));
+    }
+    const policyNote = cleanLineAscii(cfg.footerPolicyNote !== undefined ? cfg.footerPolicyNote : 'Barang yang sudah dibeli tidak dapat ditukar/dikembalikan tanpa struk resmi.').trim();
+    if (policyNote) {
+        builder.line('', 'center');
+        wrapWords(policyNote, cols).forEach(l => builder.line(l, 'center'));
+    }
+
     builder.feed(cfg.feedLines || 3);
     if (cfg.autoCut) builder.cut();
 
@@ -890,8 +967,8 @@ export const buildTempoReceiptPayload = (order, config = null) => {
     builder.init();
 
     const storeName = cleanLineAscii(cfg.headerText || appData.store?.name || 'TOKO PUTRI').trim();
-    const storeAddr = cleanLineAscii(appData.store?.address || '').trim();
-    const storeWa   = cleanLineAscii(appData.store?.wa || '').trim();
+    const storeAddr = cleanLineAscii(cfg.storeAddress !== undefined && cfg.storeAddress !== '' ? cfg.storeAddress : (appData.store?.address || '')).trim();
+    const storeWa   = cleanLineAscii(cfg.storePhone !== undefined && cfg.storePhone !== '' ? cfg.storePhone : (appData.store?.wa || '')).trim();
 
     const maxDoubleWidth = Math.floor(cols / 2);
     if (storeName.length <= maxDoubleWidth) {
@@ -903,8 +980,10 @@ export const buildTempoReceiptPayload = (order, config = null) => {
         builder.size('normal').bold(false);
     }
 
-    if (storeAddr) wrapWords(storeAddr, cols).forEach(l => builder.line(l, 'center'));
-    if (storeWa) builder.line(`WA: ${storeWa}`, 'center');
+    if (cfg.showAddress !== false && storeAddr) wrapWords(storeAddr, cols).forEach(l => builder.line(l, 'center'));
+    if (cfg.showPhone !== false && storeWa) builder.line(`WA: ${storeWa}`, 'center');
+    const npwpStrTempo = order.payment?.taxNpwp || appData.store?.taxNpwp;
+    if (cfg.showNpwp !== false && npwpStrTempo) builder.line(`NPWP: ${npwpStrTempo}`, 'center');
     builder.separator('-');
 
     const isPaylater = order.payment?.isPaylater || order.isPaylater || order.payment?.subMethod === 'paylater';
@@ -1030,13 +1109,22 @@ export const buildTempoReceiptPayload = (order, config = null) => {
 
     if (cfg.showBarcode) {
         builder.separator('-');
-        builder.align('center');
+        builder.barcode(isPaylater ? `PAYLATER-${order.orderId}` : `TEMPO-${order.orderId}`, 'CODE128', 45);
         builder.line(isPaylater ? `*PAYLATER-${order.orderId}*` : `*TEMPO-${order.orderId}*`, 'center');
         builder.line(isPaylater ? '(PUTRI PAYLATER RESMI)' : '(NOTA TEMPO RESMI)', 'center');
     }
 
     builder.separator('-');
-    wrapWords(cfg.footerText || 'Terima Kasih Atas Kerja Sama & Kepercayaannya!', cols).forEach(l => builder.line(l, 'center'));
+    const footerTempo = cleanLineAscii(cfg.footerText || 'Terima Kasih Atas Kerja Sama & Kepercayaannya!').trim();
+    if (footerTempo) {
+        wrapWords(footerTempo, cols).forEach(l => builder.line(l, 'center'));
+    }
+    const policyTempo = cleanLineAscii(cfg.footerPolicyNote !== undefined ? cfg.footerPolicyNote : '').trim();
+    if (policyTempo) {
+        builder.line('', 'center');
+        wrapWords(policyTempo, cols).forEach(l => builder.line(l, 'center'));
+    }
+
     builder.feed(cfg.feedLines || 3);
     if (cfg.autoCut) builder.cut();
 
@@ -1061,6 +1149,9 @@ export const buildTestReceiptPayload = (config = null) => {
     builder.init();
 
     const storeName = cleanLineAscii(cfg.headerText || appData.store?.name || 'TOKO PUTRI').trim();
+    const storeAddr = cleanLineAscii(cfg.storeAddress !== undefined && cfg.storeAddress !== '' ? cfg.storeAddress : (appData.store?.address || '')).trim();
+    const storeWa   = cleanLineAscii(cfg.storePhone !== undefined && cfg.storePhone !== '' ? cfg.storePhone : (appData.store?.wa || '')).trim();
+
     const maxDoubleWidth = Math.floor(cols / 2);
     if (storeName.length <= maxDoubleWidth) {
         builder.align('center').bold(true).size('title').line(storeName.toUpperCase(), 'center');
@@ -1071,8 +1162,8 @@ export const buildTestReceiptPayload = (config = null) => {
         builder.size('normal').bold(false);
     }
 
-    const storeWa = cleanLineAscii(appData.store?.wa || '').trim();
-    if (storeWa) builder.line(`WA: ${storeWa}`, 'center');
+    if (cfg.showAddress !== false && storeAddr) wrapWords(storeAddr, cols).forEach(l => builder.line(l, 'center'));
+    if (cfg.showPhone !== false && storeWa) builder.line(`WA: ${storeWa}`, 'center');
     builder.separator('-');
 
     const testHeader = is80
@@ -1128,13 +1219,18 @@ export const buildTestReceiptPayload = (config = null) => {
 
     if (cfg.showBarcode) {
         builder.separator('-');
-        builder.align('center');
-        builder.line(`*TEST-RAWBT-${Date.now().toString().slice(-6)}*`, 'center');
+        const testBarcodeVal = `TEST-${Date.now().toString().slice(-6)}`;
+        builder.barcode(testBarcodeVal, 'CODE128', 45);
+        builder.line(`*${testBarcodeVal}*`, 'center');
         builder.line('(BARCODE TEST BERHASIL)', 'center');
     }
 
     builder.separator('-');
     wrapWords(cfg.footerText || 'Terima kasih atas kunjungan Anda!', cols).forEach(l => builder.line(l, 'center'));
+    if (cfg.footerPolicyNote) {
+        builder.line('', 'center');
+        wrapWords(cfg.footerPolicyNote, cols).forEach(l => builder.line(l, 'center'));
+    }
     wrapWords('Hasil cetak telah terkalibrasi presisi.', cols).forEach(l => builder.line(l, 'center'));
 
     builder.feed(cfg.feedLines || 3);
