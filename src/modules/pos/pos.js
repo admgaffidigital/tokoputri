@@ -1518,8 +1518,8 @@ export const renderCatalog = (isLoadMore = false) => {
                             <p class="text-[9.5px] sm:text-[10px] uppercase tracking-wider font-bold text-slate-400 dark:text-slate-500 truncate leading-none">${catBrandText}</p>
                             <!-- Line 2: Nama Produk -->
                             <h4 class="text-xs sm:text-[14px] font-bold text-slate-800 dark:text-slate-100 line-clamp-1 sm:line-clamp-2 leading-snug group-hover:text-[var(--color-primary)] transition-colors uppercase break-words" title="${pName}">${pName}</h4>
-                            <!-- Line 3: Chips Badges Lengkap & Rapi 100% di Luar Gambar (Diskon, Stok, PO, Varian, Grosir, Poin, Terjual, Modal HPP) -->
-                            <div class="flex items-center gap-1.5 overflow-x-auto hide-scrollbar no-scrollbar flex-nowrap py-0.5">
+                            <!-- Line 3: Chips Badges Lengkap & Rapi (2-Baris Terkunci Simetris, Anti-Terpotong) -->
+                            <div class="product-chips-wrap">
                                 ${chipsHtml}
                                 ${p.unit ? `<span class="pos-tag-chip pos-tag-stock shrink-0 whitespace-nowrap"><i class="fa-solid fa-box text-[7.5px]"></i> /${esc(p.unit)}</span>` : ''}
                                 ${hppTagHtml}
@@ -1562,8 +1562,8 @@ export const renderCatalog = (isLoadMore = false) => {
                     <div class="pos-card-info flex-1 flex flex-col p-3 sm:p-3.5 min-w-0 bg-white dark:bg-slate-800 relative z-10">
                         <p class="pos-card-cat text-[9.5px] sm:text-[10px] uppercase tracking-wider font-bold text-slate-400 dark:text-slate-500 truncate leading-none mb-1.5">${catBrandText}</p>
                         <h4 class="pos-card-name text-xs sm:text-[13px] font-bold text-slate-800 dark:text-slate-100 line-clamp-2 leading-snug min-h-[2.3rem] sm:min-h-[2.5rem] mb-1.5 group-hover:text-[var(--color-primary)] transition-colors uppercase break-words" title="${pName}">${pName}</h4>
-                        <!-- Baris Chip Operasional Lengkap 100% di Luar Gambar (Diskon, Stok, PO, Varian, Grosir, Poin, Terjual) -->
-                        <div class="h-5.5 mb-2 flex items-center gap-1.5 overflow-x-auto hide-scrollbar no-scrollbar flex-nowrap py-0.5 shrink-0">
+                        <!-- Baris Chip Operasional Lengkap (2-Baris Terkunci Simetris, Anti-Terpotong) -->
+                        <div class="product-chips-wrap">
                             ${chipsHtml}
                         </div>
                         <!-- Footer Harga & Tombol Aksi POS (Anti-Potong) -->

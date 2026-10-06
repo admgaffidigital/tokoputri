@@ -288,8 +288,8 @@ export const rCat = () => {
                 <div class="flex-1 flex flex-col p-3 sm:p-3.5 min-w-0 bg-white dark:bg-slate-800 relative z-10">
                     <p class="text-[9.5px] sm:text-[10px] uppercase tracking-wider font-bold text-slate-400 dark:text-slate-500 truncate leading-none mb-1.5">${catBrandText}</p>
                     <h4 class="text-xs sm:text-[13px] font-bold text-slate-800 dark:text-slate-100 line-clamp-2 leading-snug min-h-[2.3rem] sm:min-h-[2.5rem] mb-1.5 group-hover:text-[var(--color-primary)] transition-colors uppercase break-words">${esc(p.name)}</h4>
-                    <!-- Baris Chips Operasional 100% di Luar Gambar (Anti-Duplikat) -->
-                    <div class="h-5.5 mb-2 flex items-center gap-1.5 overflow-x-auto hide-scrollbar no-scrollbar flex-nowrap py-0.5 shrink-0">
+                    <!-- Baris Chips Operasional (2-Baris Terkunci Simetris, Anti-Terpotong) -->
+                    <div class="product-chips-wrap">
                         ${chipsHtml}
                     </div>
                     <div class="flex items-end justify-between mt-auto pt-1.5 border-t border-slate-100 dark:border-slate-700/50">
@@ -326,8 +326,8 @@ export const rCat = () => {
                     <p class="text-[9.5px] sm:text-[10px] uppercase tracking-wider font-bold text-slate-400 dark:text-slate-500 truncate leading-none">${catBrandText}</p>
                     <!-- Line 2: Nama Produk -->
                     <h4 class="text-xs sm:text-[14px] font-bold text-slate-800 dark:text-slate-100 line-clamp-1 sm:line-clamp-2 leading-snug group-hover:text-[var(--color-primary)] transition-colors uppercase break-words">${esc(p.name)}</h4>
-                    <!-- Line 3: Chips Operasional Rapi 100% di Luar Gambar (Anti-Duplikat) -->
-                    ${chipsHtml ? `<div class="flex items-center gap-1.5 overflow-x-auto hide-scrollbar no-scrollbar flex-nowrap py-0.5">${chipsHtml}</div>` : ''}
+                    <!-- Line 3: Chips Operasional Rapi (2-Baris Terkunci Simetris, Anti-Terpotong) -->
+                    ${chipsHtml ? `<div class="product-chips-wrap">${chipsHtml}</div>` : ''}
                     <!-- Line 4: Harga & Action -->
                     <div class="flex items-center justify-between pt-0.5">
                         <div class="flex items-baseline gap-1.5 min-w-0">

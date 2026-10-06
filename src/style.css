@@ -907,6 +907,36 @@ html.dark #view-admin-login {
     color: var(--color-primary);
 }
 
+/* Container 2-Baris Terkunci Simetris untuk Chip Badges Produk (Mobile Friendly & Zero-Clipping) */
+.product-chips-wrap {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    align-items: center !important;
+    align-content: flex-start !important;
+    gap: 4px !important;
+    box-sizing: border-box !important;
+}
+
+.pos-product-card .product-chips-wrap,
+.pos-catalog-grid-mode .product-chips-wrap,
+#product-container.grid .product-chips-wrap {
+    min-height: 38px !important;
+    max-height: 46px !important;
+    overflow: hidden !important;
+    margin-bottom: 6px !important;
+    flex-shrink: 0 !important;
+}
+
+.pos-list-item .product-chips-wrap,
+.pos-catalog-list-mode .product-chips-wrap,
+#product-container.flex .product-chips-wrap {
+    min-height: 0 !important;
+    max-height: 44px !important;
+    overflow: hidden !important;
+    margin-bottom: 2px !important;
+    flex-shrink: 0 !important;
+}
+
 .pos-card-footer {
     display: flex !important;
     align-items: flex-end !important;

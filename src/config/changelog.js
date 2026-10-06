@@ -8,6 +8,21 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-10-70',
+        version: 'v1.10.70',
+        date: '2026-10-06',
+        title: 'Implementasi 2-Baris Terkunci Simetris untuk Seluruh Badge Produk (Mobile Native Ergonomis & Zero-Clipping)',
+        category: 'feature',
+        badge: '2-Row Symmetric Badges & Zero Mobile Clipping v1.10.70',
+        items: [
+            'Arsitektur 2-Baris Terkunci Simetris (.product-chips-wrap di src/style.css, catalog.js, dan pos.js): Menggantikan flex-nowrap satu baris yang sebelumnya memotong badge di sisi kanan layar HP sempit, digantikan kontainer adaptif 2-baris dengan ketinggian slot terkalibrasi min-height: 38px dan max-height: 46px.',
+            'Eliminasi Total Pemotongan Badge di Layar Ponsel: Seluruh badge informasi (Diskon Promo, Stok Fisik, Pre-Order, Pilihan Varian, Harga Grosir, Poin Reward, dan Akumulasi Terjual) kini mengalir mulus ke baris ke-2 tanpa terpotong di tepi kartu.',
+            'Presisi Simetris 100% Antarkartu: Slot ketinggian 2-baris yang terkunci memastikan seluruh kartu produk dalam satu baris grid memiliki garis dasar harga dan tombol aksi yang sejajar rata, menghilangkan ketimpangan visual antar kartu yang memiliki jumlah badge berbeda.',
+            'Harmonisasi Total Storefront & POS Kasir: Diterapkan secara seragam pada etalase toko dan aplikasi kasir POS di mode Grid maupun List.',
+            'Multi-Channel Distribution v1.10.70 (Android versionCode 11070).'
+        ]
+    },
+    {
         id: 'log-1-10-69',
         version: 'v1.10.69',
         date: '2026-10-06',
