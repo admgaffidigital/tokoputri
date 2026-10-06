@@ -6,7 +6,7 @@ Aplikasi e-commerce dan manajemen kasir point-of-sales (POS) modern berkinerja t
 
 ## 🛠️ Informasi Pengembang & Hak Cipta
 * **Nama Projek**: TOKO PUTRI
-* **Versi Rilis**: **v1.10.59** (Android VersionCode: `11059`)
+* **Versi Rilis**: **v1.10.60** (Android VersionCode: `11060`)
 * **Dikembangkan & Ditandatangani Oleh**: **Novan Restu Utomo** (Selaku Pengembang Utama dan Developer Asli)
 
 ---
@@ -221,6 +221,13 @@ Aplikasi telah dilengkapi dengan fondasi **Capacitor 8 Android Native**:
 ---
 
 ## 📋 Riwayat Pembaruan (Changelog)
+
+### v1.10.60 — Preservasi Gambar Kemasan Kardus Produk Sesuai Preferensi Pengguna & Pemantapan UX POS Kasir (06 Okt 2026)
+- **Preservasi Gambar Kemasan Kardus Produk (`src/core/utils.js`)**: Mengizinkan kembali gambar kemasan kardus produk untuk tampil normal di seluruh katalog etalase dan POS kasir sesuai preferensi pemilik toko ("biarkan gambarnya pakai kardus gambar"), tanpa menghilangkan perbaikan harga varian, tombol layer-group, dan pembersihan keranjang kosong.
+- **Kompabilitas Smart Cover Fallback**: Tetap mempertahankan fallback Smart Semantic Monogram (icon padlock, palu, rol cat) khusus untuk produk yang sama sekali tidak memiliki file foto atau URL rusak.
+- **Sinkronisasi Multi-Channel v1.10.60**: Android VersionCode `11060`, bundler Vite, PWA, dan Capacitor.
+
+---
 
 ### v1.10.59 — Penyempurnaan Total POS Kasir & Etalase: Eliminasi Placeholder Kardus Warisan, Rentang Harga Produk Varian, Pembagian Chip Proporsional & Perampingan Keranjang Kosong (06 Okt 2026)
 - **Eliminasi Permanen Placeholder Kardus Warisan (`src/core/utils.js`, `src/core/product-cover.js`)**: Menghadirkan validator `isPlaceholderImg()` untuk mendeteksi ID Google Drive peninggalan lawas pada produk tanpa foto asli (seperti varian Paku dan Gembok Crome), secara otomatis mengaktifkan Smart Semantic Cover (icon padlock amber, palu slate, rol cat rose, dll) dengan inisial monogram tanpa watermark pada ukuran thumbnail.

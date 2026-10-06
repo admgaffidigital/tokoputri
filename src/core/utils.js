@@ -268,16 +268,14 @@ export const getOptImg = (url, sizeOpt) => {
 };
 
 /**
- * Deteksi apakah URL gambar merupakan placeholder umum atau kardus peninggalan seeder.
- * Menjamin produk tanpa foto asli dirender menggunakan Smart Semantic Product Cover.
+ * Deteksi apakah URL gambar merupakan placeholder kosong / invalid.
+ * Catatan: Gambar kemasan kardus produk tetap diizinkan tampil sesuai preferensi pengguna.
  */
 export const isPlaceholderImg = (url) => {
     if (!url || typeof url !== 'string') return true;
     const u = url.trim();
     if (!u) return true;
     if (u.includes('placehold.co')) return true;
-    // Known generic cardboard box placeholder image URLs on Google Drive
-    if (u.includes('14-KQVas-uLFKRGPNHT9k_-jdKPsyFeYG') || u.includes('1i2IFSfGJgpM7P_-3-KOhV7PWnTlDKER6')) return true;
     return false;
 };
 

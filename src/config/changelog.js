@@ -8,6 +8,19 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-10-60',
+        version: 'v1.10.60',
+        date: '2026-10-06',
+        title: 'Preservasi Gambar Kemasan Kardus Produk Sesuai Preferensi Pengguna & Pemantapan UX POS Kasir',
+        category: 'feat',
+        badge: 'Cardboard Box Asset Preservation & UX Polish v1.10.60',
+        items: [
+            'Preservasi Gambar Kemasan Kardus Produk (src/core/utils.js): Mengizinkan kembali gambar kemasan kardus produk untuk tampil normal di seluruh katalog etalase dan POS kasir sesuai preferensi pemilik toko ("biarkan gambarnya pakai kardus gambar"), tanpa menghilangkan perbaikan harga varian, tombol layer-group, dan pembersihan keranjang kosong.',
+            'Kompabilitas Smart Cover Fallback: Tetap mempertahankan fallback Smart Semantic Monogram (icon padlock, palu, rol cat) khusus untuk produk yang sama sekali tidak memiliki file foto atau URL rusak.',
+            'Multi-Channel Distribution v1.10.60 (Android versionCode 11060).'
+        ]
+    },
+    {
         id: 'log-1-10-59',
         version: 'v1.10.59',
         date: '2026-10-06',
