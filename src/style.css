@@ -907,7 +907,7 @@ html.dark #view-admin-login {
     color: var(--color-primary);
 }
 
-/* Container 2-Baris Terkunci Simetris untuk Chip Badges Produk (Mobile Friendly & Zero-Clipping) */
+/* Container Chip Badges Produk Fleksibel Multi-Baris (Bisa 2, 3, 4+ Baris, Zero-Clipping) */
 .product-chips-wrap {
     display: flex !important;
     flex-wrap: wrap !important;
@@ -915,14 +915,13 @@ html.dark #view-admin-login {
     align-content: flex-start !important;
     gap: 4px !important;
     box-sizing: border-box !important;
+    width: 100% !important;
 }
 
 .pos-product-card .product-chips-wrap,
 .pos-catalog-grid-mode .product-chips-wrap,
 #product-container.grid .product-chips-wrap {
-    min-height: 38px !important;
-    max-height: 46px !important;
-    overflow: hidden !important;
+    min-height: 22px !important;
     margin-bottom: 6px !important;
     flex-shrink: 0 !important;
 }
@@ -931,10 +930,38 @@ html.dark #view-admin-login {
 .pos-catalog-list-mode .product-chips-wrap,
 #product-container.flex .product-chips-wrap {
     min-height: 0 !important;
-    max-height: 44px !important;
-    overflow: hidden !important;
     margin-bottom: 2px !important;
     flex-shrink: 0 !important;
+}
+
+/* Sub-Baris Dedicated HPP Khusus Owner di Dasar Kartu POS Kasir (Full-Width Mini Bar) */
+.pos-card-hpp-bar {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    padding: 3.5px 10px !important;
+    background: rgba(245, 158, 11, 0.08) !important;
+    border-top: 1px dashed rgba(245, 158, 11, 0.28) !important;
+    font-size: 9.5px !important;
+    font-weight: 700 !important;
+    color: #92400e !important;
+    box-sizing: border-box !important;
+    flex-shrink: 0 !important;
+    width: 100% !important;
+    transition: background 0.2s ease;
+}
+
+.dark .pos-card-hpp-bar {
+    background: rgba(245, 158, 11, 0.14) !important;
+    border-top-color: rgba(245, 158, 11, 0.25) !important;
+    color: #fcd34d !important;
+}
+
+.pos-product-card:hover .pos-card-hpp-bar {
+    background: rgba(245, 158, 11, 0.14) !important;
+}
+.dark .pos-product-card:hover .pos-card-hpp-bar {
+    background: rgba(245, 158, 11, 0.22) !important;
 }
 
 .pos-card-footer {

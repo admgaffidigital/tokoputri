@@ -1466,6 +1466,7 @@ export const renderCatalog = (isLoadMore = false) => {
 
                 // 5. HARGA MODAL (HPP) - Hanya ditampilkan jika diizinkan (Owner / Akses Laporan)
                 let hppTagHtml = '';
+                let hppBarHtml = '';
                 if (canViewHpp()) {
                     let hppVal = 0;
                     let hppDisplay = '';
@@ -1485,7 +1486,18 @@ export const renderCatalog = (isLoadMore = false) => {
                         hppDisplay = fRp(hppVal);
                     }
                     if (hppDisplay || (p.hpp != null && parseFloat(p.hpp) > 0)) {
-                        hppTagHtml = `<span class="pos-hpp-tag" title="Harga Pokok Penjualan (Modal Toko)"><i class="fa-solid fa-coins text-[8px]"></i> Modal: <b>${hppDisplay || fRp(parseFloat(p.hpp))}</b></span>`;
+                        const finalHppText = hppDisplay || fRp(parseFloat(p.hpp));
+                        // Tag inline untuk List Mode (berdampingan dengan harga jual)
+                        hppTagHtml = `<span class="pos-hpp-tag" title="Harga Pokok Penjualan (Modal Toko)"><i class="fa-solid fa-coins text-[8px]"></i> Modal: <b>${finalHppText}</b></span>`;
+                        // Sub-baris dedicated di dasar kartu untuk Grid Mode (Full-Width Mini Bar)
+                        hppBarHtml = `
+                        <div class="pos-card-hpp-bar w-full flex items-center justify-between px-3 py-1 bg-amber-500/10 dark:bg-amber-950/40 border-t border-amber-500/20 dark:border-amber-700/30 text-[9.5px] font-bold text-amber-800 dark:text-amber-300 shrink-0 select-none" title="Harga Pokok Penjualan (Modal Toko)">
+                            <span class="inline-flex items-center gap-1.5 truncate">
+                                <i class="fa-solid fa-coins text-[8px] text-amber-600 dark:text-amber-400"></i>
+                                <span>Modal: <b class="font-black text-amber-900 dark:text-amber-200">${finalHppText}</b></span>
+                            </span>
+                            <span class="text-[8px] uppercase tracking-wider font-extrabold text-amber-700 dark:text-amber-300 bg-amber-200/60 dark:bg-amber-900/60 px-1 py-0.5 rounded">HPP</span>
+                        </div>`;
                     }
                 }
 
@@ -1518,18 +1530,20 @@ export const renderCatalog = (isLoadMore = false) => {
                             <p class="text-[9.5px] sm:text-[10px] uppercase tracking-wider font-bold text-slate-400 dark:text-slate-500 truncate leading-none">${catBrandText}</p>
                             <!-- Line 2: Nama Produk -->
                             <h4 class="text-xs sm:text-[14px] font-bold text-slate-800 dark:text-slate-100 line-clamp-1 sm:line-clamp-2 leading-snug group-hover:text-[var(--color-primary)] transition-colors uppercase break-words" title="${pName}">${pName}</h4>
-                            <!-- Line 3: Chips Badges Lengkap & Rapi (2-Baris Terkunci Simetris, Anti-Terpotong) -->
+                            <!-- Line 3: Chips Badges Lengkap & Rapi (Bisa 2, 3, 4+ Baris, Anti-Terpotong) -->
                             <div class="product-chips-wrap">
                                 ${chipsHtml}
                                 ${p.unit ? `<span class="pos-tag-chip pos-tag-stock shrink-0 whitespace-nowrap"><i class="fa-solid fa-box text-[7.5px]"></i> /${esc(p.unit)}</span>` : ''}
-                                ${hppTagHtml}
                             </div>
-                            <!-- Line 4: Harga & Action Button -->
+                            <!-- Line 4: Harga, HPP & Action Button -->
                             <div class="flex items-center justify-between pt-0.5">
-                                <div class="flex items-baseline gap-1.5 min-w-0">
-                                    <p class="text-[var(--color-primary)] font-black text-xs sm:text-[15px] leading-none tracking-tight truncate">${displayPriceHtml}</p>
-                                    ${p.unit ? `<span class="text-[9.5px] sm:text-[10px] text-slate-400 dark:text-slate-500 font-bold ml-0.5 mb-0.5 uppercase tracking-wide">/${esc(p.unit)}</span>` : ''}
-                                    ${priceNormalHtml ? `<span class="text-[10px] sm:text-[11px] text-slate-400 dark:text-slate-500 line-through leading-none font-semibold truncate">${fRp(parseFloat(p.priceNormal))}</span>` : ''}
+                                <div class="flex items-center gap-1.5 min-w-0 flex-wrap">
+                                    <div class="flex items-baseline gap-1">
+                                        <p class="text-[var(--color-primary)] font-black text-xs sm:text-[15px] leading-none tracking-tight truncate">${displayPriceHtml}</p>
+                                        ${p.unit ? `<span class="text-[9.5px] sm:text-[10px] text-slate-400 dark:text-slate-500 font-bold ml-0.5 uppercase tracking-wide">/${esc(p.unit)}</span>` : ''}
+                                        ${priceNormalHtml ? `<span class="text-[10px] sm:text-[11px] text-slate-400 dark:text-slate-500 line-through leading-none font-semibold truncate">${fRp(parseFloat(p.priceNormal))}</span>` : ''}
+                                    </div>
+                                    ${hppTagHtml ? `<span>${hppTagHtml}</span>` : ''}
                                 </div>
                                 <button type="button" class="w-8.5 h-8.5 sm:w-9 sm:h-9 rounded-xl ${stockInfo.isOutOfStock ? 'bg-slate-100 dark:bg-slate-800 text-slate-400 opacity-50 cursor-not-allowed' : totalQtyInCart > 0 ? 'primary-bg text-white shadow-xs' : 'bg-[rgba(var(--color-primary-rgb),0.08)] text-[var(--color-primary)] border border-[rgba(var(--color-primary-rgb),0.2)] hover:bg-[var(--color-primary)] hover:text-white'} flex items-center justify-center shrink-0 transition-all group-hover:scale-105 active:scale-95 shadow-2xs mr-0.5 cursor-pointer z-20" onclick="event.stopPropagation();window.posAddToCart('${safeId}')" title="${stockInfo.isOutOfStock ? 'Stok Habis' : totalQtyInCart > 0 ? 'Tambah lagi (+1)' : hasVariants ? 'Pilih Varian' : 'Tambah ke Keranjang'}">
                                     ${stockInfo.isOutOfStock ? '<i class="fa-solid fa-ban text-xs"></i>' : totalQtyInCart > 0 ? `<b>+${formatQty(totalQtyInCart)}</b>` : hasVariants ? '<i class="fa-solid fa-layer-group text-xs"></i>' : '<i class="fa-solid fa-plus text-xs"></i>'}
@@ -1562,7 +1576,7 @@ export const renderCatalog = (isLoadMore = false) => {
                     <div class="pos-card-info flex-1 flex flex-col p-3 sm:p-3.5 min-w-0 bg-white dark:bg-slate-800 relative z-10">
                         <p class="pos-card-cat text-[9.5px] sm:text-[10px] uppercase tracking-wider font-bold text-slate-400 dark:text-slate-500 truncate leading-none mb-1.5">${catBrandText}</p>
                         <h4 class="pos-card-name text-xs sm:text-[13px] font-bold text-slate-800 dark:text-slate-100 line-clamp-2 leading-snug min-h-[2.3rem] sm:min-h-[2.5rem] mb-1.5 group-hover:text-[var(--color-primary)] transition-colors uppercase break-words" title="${pName}">${pName}</h4>
-                        <!-- Baris Chip Operasional Lengkap (2-Baris Terkunci Simetris, Anti-Terpotong) -->
+                        <!-- Baris Chip Operasional Lengkap (Bisa 2, 3, 4+ Baris Mengalir, Anti-Terpotong) -->
                         <div class="product-chips-wrap">
                             ${chipsHtml}
                         </div>
@@ -1576,13 +1590,14 @@ export const renderCatalog = (isLoadMore = false) => {
                                     <p class="pos-card-price text-[var(--color-primary)] font-black text-xs sm:text-[14px] lg:text-[15px] leading-none tracking-tight truncate">${displayPriceHtml}</p>
                                     ${p.unit ? `<span class="text-[9.5px] sm:text-[10px] text-slate-400 dark:text-slate-500 font-bold ml-0.5 mb-0.5 uppercase tracking-wide">/${esc(p.unit)}</span>` : ''}
                                 </div>
-                                ${hppTagHtml ? `<div class="mt-1">${hppTagHtml}</div>` : ''}
                             </div>
                             <button type="button" class="w-8.5 h-8.5 sm:w-9 sm:h-9 rounded-xl ${stockInfo.isOutOfStock ? 'bg-slate-100 dark:bg-slate-800 text-slate-400 opacity-50 cursor-not-allowed' : totalQtyInCart > 0 ? 'primary-bg text-white shadow-xs' : 'bg-[rgba(var(--color-primary-rgb),0.08)] text-[var(--color-primary)] border border-[rgba(var(--color-primary-rgb),0.2)] hover:bg-[var(--color-primary)] hover:text-white'} flex items-center justify-center shrink-0 transition-all group-hover:scale-105 active:scale-95 shadow-2xs cursor-pointer z-20" onclick="event.stopPropagation();window.posAddToCart('${safeId}')" title="${stockInfo.isOutOfStock ? 'Stok Habis' : totalQtyInCart > 0 ? 'Tambah lagi (+1)' : hasVariants ? 'Pilih Varian' : 'Tambah ke Keranjang'}" aria-label="${pName}">
                                 ${stockInfo.isOutOfStock ? '<i class="fa-solid fa-ban text-xs"></i>' : totalQtyInCart > 0 ? `<b>+${formatQty(totalQtyInCart)}</b>` : hasVariants ? '<i class="fa-solid fa-layer-group text-xs"></i>' : '<i class="fa-solid fa-plus text-xs"></i>'}
                             </button>
                         </div>
                     </div>
+                    <!-- Sub-Baris Dedicated HPP Khusus Owner di Dasar Kartu POS Kasir (Full-Width Mini Bar) -->
+                    ${hppBarHtml}
                 </div>`;
             }).join('');
 

@@ -8,6 +8,21 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-10-71',
+        version: 'v1.10.71',
+        date: '2026-10-06',
+        title: 'Arsitektur Multi-Baris Fleksibel Badge Produk & Sub-Baris Dedicated HPP Khusus Owner POS Kasir',
+        category: 'feature',
+        badge: 'Multi-Row Badges & Dedicated Owner HPP Bar v1.10.71',
+        items: [
+            'Arsitektur Multi-Baris Fleksibel (.product-chips-wrap di src/style.css, catalog.js, dan pos.js): Mengeliminasi batasan max-height dan overflow: hidden kaku sehingga seluruh badge informasi produk (Diskon Promo, Stok Fisik, Pre-Order, Pilihan Varian, Harga Grosir, Poin Reward, Terjual) dapat mengalir bebas ke bawah hingga baris ke-3, ke-4, dan seterusnya tanpa ada yang terpotong.',
+            'Sub-Baris Dedicated HPP Khusus Owner di Dasar Kartu (.pos-card-hpp-bar di src/modules/pos/pos.js & src/style.css): Merelokasi badge Modal HPP dari dalam kolom footer harga yang sempit menjadi baris strip khusus full-width di paling bawah kartu produk POS Kasir berlatar amber lembut.',
+            'Presisi & Kelegaan Footer Kasir 100%: Area harga jual dan tombol transaksi [+] kini memiliki ruang horizontal penuh berdampingan tanpa berdesakan dengan tag modal, menjamin harga rentang panjang dan tombol aksi sejajar rapi sempurna.',
+            'Harmonisasi List Mode POS: Di mode List, chip modal HPP disematkan sejajar di baris harga, membebaskan baris ketiga murni untuk badge operasional produk.',
+            'Multi-Channel Distribution v1.10.71 (Android versionCode 11071).'
+        ]
+    },
+    {
         id: 'log-1-10-70',
         version: 'v1.10.70',
         date: '2026-10-06',
