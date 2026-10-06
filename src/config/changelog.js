@@ -8,6 +8,24 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-10-64',
+        version: 'v1.10.64',
+        date: '2026-10-06',
+        title: 'Harmonisasi Universal Rincian Pajak & Konsistensi Totalan Pesanan (POS Kasir, Web Pelanggan, CMS Admin & Struk Cetak)',
+        category: 'fix',
+        badge: 'Universal Order Tax Harmonization & Summary Consistency v1.10.64',
+        items: [
+            'Universal Order Tax Extractor (src/core/utils.js): Membangun engine terpadu extractOrderTaxInfo(order) yang secara tangguh mengekstrak dan merekonsiliasi seluruh komponen finansial pesanan (Subtotal, Ongkir, Diskon Ongkir, Diskon Promo, Diskon Poin Member, Biaya Admin/Layanan PayLater, DPP, PPN, dan Grand Total).',
+            'Eliminasi Inkonsistensi Toggle Toko pada Pesanan Historis: Menghilangkan dependensi rapuh "&& appData.store.ppnEnabled" pada pesanan lampau, menjamin baris PPN & DPP pada transaksi yang sudah terjadi tidak akan hilang saat toggle toko berubah/nonaktif.',
+            'Rekonsiliasi Otomatis Selisih Implisit PPN: Menangani pesanan lama yang memiliki selisih nominal positif antara grandTotal dan baseBeforeTax dengan memunculkan rincian PPN eksklusif yang transparan tanpa selisih yang membingungkan.',
+            'Harmonisasi Rincian Pesanan Pelanggan (src/modules/orders/orders.js): Modal rincian pesanan pelanggan kini menampilkan Subtotal, Diskon, Ongkir, Biaya PayLater, DPP, PPN, dan Total Tagihan dengan 100% konsisten dan presisi.',
+            'Harmonisasi Modal Detail Pesanan Admin CMS (src/modules/admin/orders.js): Menggantikan filter usang dengan extractOrderTaxInfo sehingga panel CMS Admin menampilkan detail pajak yang identik dengan struk dan aplikasi pelanggan.',
+            'Penyelarasan Modal Bayar & Keranjang POS Kasir (src/modules/pos/pos.js): Modal pembayaran (F4), preview struk kasir, serta rincian keranjang POS kini menampilkan baris DPP dan PPN yang selaras sempurna dengan Total Wajib Bayar.',
+            'Struk Thermal (src/modules/print/receipt.js & rawbt.js) & Faktur Cetak A4 (src/modules/print/documents.js): Dokumen cetak invoice standar A4 dan struk thermal 58mm/80mm kini menggunakan engine universal yang sama.',
+            'Multi-Channel Distribution v1.10.64 (Android versionCode 11064).'
+        ]
+    },
+    {
         id: 'log-1-10-63',
         version: 'v1.10.63',
         date: '2026-10-06',

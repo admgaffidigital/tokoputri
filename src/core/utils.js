@@ -490,6 +490,146 @@ export const flyToCartAnimation = (startEl, targetEl = null, imgUrl = null) => {
     }
 };
 
+/**
+ * Universal Order Tax Extractor (Konsistensi PPN & DPP Selaras di Seluruh Sistem)
+ * Mengekstrak informasi pajak (PPN & DPP) secara konsisten dan tangguh dari dokumen pesanan/transaksi.
+ * Menjamin keselarasan antara Subtotal, Biaya Tambahan/Diskon, PPN, dan Total Tagihan:
+ * 1. Menjaga pesanan lama yang telah memuat PPN agar tetap menampilkan baris PPN meski toggle PPN toko saat ini off.
+ * 2. Merekonsiliasi selisih implisit jika grandTotal > basis biaya sebelum pajak.
+ * 3. Menghitung DPP & PPN inklusif maupun eksklusif secara akurat.
+ * 4. Mendukung tarif PPN 0% (dibebaskan) jika ppnShowZero true.
+ */
+export const extractOrderTaxInfo = (order = {}) => {
+    if (!order || typeof order !== 'object') {
+        return {
+            hasPpn: false,
+            ppnAmount: 0,
+            dppAmount: 0,
+            ppnRate: 0,
+            ppnType: 'exclusive',
+            isInclusive: false,
+            ppnLabel: 'PPN',
+            subtotal: 0,
+            shipping: 0,
+            shippingDiscount: 0,
+            productDiscount: 0,
+            pointDiscount: 0,
+            paylaterAdminFee: 0,
+            paylaterServiceFee: 0,
+            grandTotal: 0,
+            baseBeforeTax: 0
+        };
+    }
+
+    const p = order.payment || {};
+    const store = (typeof window !== 'undefined' && window.appData?.store) ? window.appData.store : {};
+
+    // Komponen Finansial
+    const items = Array.isArray(order.items) ? order.items : (Array.isArray(order.cart) ? order.cart : []);
+    const calcSubtotal = items.reduce((acc, it) => acc + (parseFloat(it.qty || 1) * (parseFloat(it.effectivePrice || it.price) || 0)), 0);
+    const subtotal = (p.subtotal !== undefined && p.subtotal !== null)
+        ? parseFloat(p.subtotal)
+        : ((order.subtotal !== undefined && order.subtotal !== null) ? parseFloat(order.subtotal) : calcSubtotal);
+    
+    const shipping = parseFloat(p.shippingCost ?? order.shippingCost ?? 0) || 0;
+    const shippingDiscount = parseFloat(p.shippingDiscount ?? order.shippingDiscount ?? 0) || 0;
+    const productDiscount = parseFloat(p.productDiscount ?? order.productDiscount ?? 0) || 0;
+    const pointDiscount = parseFloat(order.pointDiscount ?? p.pointDiscount ?? 0) || 0;
+    const paylaterAdminFee = parseFloat(p.paylaterAdminFee ?? 0) || 0;
+    const paylaterServiceFee = parseFloat(p.paylaterServiceFee ?? 0) || 0;
+    const grandTotal = (p.grandTotal !== undefined && p.grandTotal !== null)
+        ? parseFloat(p.grandTotal)
+        : ((order.total !== undefined && order.total !== null)
+            ? parseFloat(order.total)
+            : ((order.grandTotal !== undefined && order.grandTotal !== null)
+                ? parseFloat(order.grandTotal)
+                : Math.max(0, subtotal - productDiscount - pointDiscount + shipping - shippingDiscount + paylaterAdminFee + paylaterServiceFee)));
+
+    // Basis sebelum pajak
+    const baseBeforeTax = Math.max(0, (subtotal - productDiscount - pointDiscount) + (shipping - shippingDiscount) + paylaterAdminFee + paylaterServiceFee);
+
+    // Ekstraksi Tarif & Tipe
+    let ppnRate = (p.ppnRate !== undefined && p.ppnRate !== null && !isNaN(parseFloat(p.ppnRate)))
+        ? parseFloat(p.ppnRate)
+        : ((order.ppnRate !== undefined && order.ppnRate !== null && !isNaN(parseFloat(order.ppnRate)))
+            ? parseFloat(order.ppnRate)
+            : (store.ppnRate !== undefined ? parseFloat(store.ppnRate) : 11));
+    if (isNaN(ppnRate)) ppnRate = 11;
+
+    let ppnType = p.ppnType || order.ppnType || store.ppnType || 'exclusive';
+
+    // Nominal PPN eksplisit
+    let ppnAmount = parseFloat(p.ppnAmount ?? order.ppnAmount ?? order.tax ?? p.tax ?? 0);
+    if (isNaN(ppnAmount)) ppnAmount = 0;
+
+    // Rekonsiliasi Otomatis: jika ppnAmount 0 tetapi ada selisih positif antara grandTotal dan baseBeforeTax
+    if (ppnAmount <= 0 && grandTotal > (baseBeforeTax + 0.5)) {
+        ppnAmount = Math.round(grandTotal - baseBeforeTax);
+        ppnType = 'exclusive';
+        if (ppnRate <= 0 && baseBeforeTax > 0) {
+            ppnRate = Math.round((ppnAmount / baseBeforeTax) * 100);
+        }
+    }
+
+    // Rekonsiliasi Otomatis PPN Inklusif: jika type inclusive dan rate > 0 tetapi ppnAmount belum tersimpan
+    const isStorePpnOn = store.ppnEnabled === true || store.ppnEnabled === 'true';
+    if (ppnAmount <= 0 && ppnType === 'inclusive' && ppnRate > 0 && (p.ppnEnabled === true || isStorePpnOn)) {
+        const dpp = Math.round((baseBeforeTax * 100) / (100 + ppnRate));
+        ppnAmount = Math.max(0, baseBeforeTax - dpp);
+    }
+
+    // DPP (Dasar Pengenaan Pajak)
+    let dppAmount = (p.dppAmount !== undefined && p.dppAmount !== null && !isNaN(parseFloat(p.dppAmount)))
+        ? parseFloat(p.dppAmount)
+        : ((order.dppAmount !== undefined && order.dppAmount !== null && !isNaN(parseFloat(order.dppAmount)))
+            ? parseFloat(order.dppAmount)
+            : null);
+    if (dppAmount === null) {
+        if (ppnType === 'inclusive' && ppnRate > 0) {
+            dppAmount = Math.round((baseBeforeTax * 100) / (100 + ppnRate));
+        } else {
+            dppAmount = baseBeforeTax;
+        }
+    }
+
+    // Penentuan hasPpn:
+    // 1. Pesanan memiliki nominal PPN > 0
+    // 2. ATAU pesanan secara eksplisit bertanda ppnEnabled: true
+    // 3. ATAU pesanan memiliki tarif PPN > 0
+    // 4. ATAU pesanan bertanda tarif 0% (ppnShowZero / ppnRate === 0)
+    // 5. ATAU toko saat ini mengaktifkan PPN dan pesanan tidak secara eksplisit di-exempt (p.ppnEnabled !== false)
+    const isExplicitInOrder = (ppnAmount > 0)
+        || (p.ppnEnabled === true)
+        || (order.ppnEnabled === true)
+        || (p.ppnShowZero === true)
+        || (p.ppnRate !== undefined && p.ppnRate !== null && p.ppnRate > 0)
+        || (p.ppnRate === 0 && p.ppnEnabled !== false);
+    
+    const hasPpn = isExplicitInOrder || (isStorePpnOn && p.ppnEnabled !== false);
+
+    const isInclusive = ppnType === 'inclusive';
+    const ppnLabel = p.ppnLabel || order.ppnLabel || store.ppnTaxLabel || `${isInclusive ? 'Termasuk PPN' : 'PPN'} (${ppnRate}%)`;
+
+    return {
+        hasPpn,
+        ppnAmount,
+        dppAmount,
+        ppnRate,
+        ppnType,
+        isInclusive,
+        ppnLabel,
+        subtotal,
+        shipping,
+        shippingDiscount,
+        productDiscount,
+        pointDiscount,
+        paylaterAdminFee,
+        paylaterServiceFee,
+        grandTotal,
+        baseBeforeTax
+    };
+};
+
 if (typeof window !== 'undefined') {
     window.normalizeWA = normalizeWA;
     window.openWhatsApp = openWhatsApp;
@@ -507,6 +647,7 @@ if (typeof window !== 'undefined') {
     window.fixD = fixD;
     window.fCur = fCur;
     window.parseOrderDate = parseOrderDate;
+    window.extractOrderTaxInfo = extractOrderTaxInfo;
     window.sL = sL;
     window.ssL = ssL;
     window.triggerHaptic = triggerHaptic;

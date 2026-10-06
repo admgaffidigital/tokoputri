@@ -17,7 +17,7 @@ import {
     el, show, hide, setIn, setH, esc, fCur, 
     showToast, showConfirm, sLoad, hLoad, 
     ensureScriptLoaded, rewardStatusLabel,
-    openModalAnim, closeModalAnim
+    openModalAnim, closeModalAnim, extractOrderTaxInfo
 } from '../../core/utils.js';
 
 /**
@@ -267,7 +267,10 @@ export const renderOrdersList = () => {
             <div class="flex items-center justify-between">
                 <div class="flex items-center gap-2">
                     <span class="font-bold text-[var(--color-primary)] text-lg sm:text-xl tracking-tight">${fCur(o.payment?.grandTotal)}</span>
-                    ${o.payment?.ppnAmount ? `<span class="text-[8px] font-bold bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400 px-1.5 py-0.5 rounded border border-amber-200 dark:border-amber-800 uppercase tracking-widest">PPN ${o.payment.ppnRate || 11}%</span>` : ''}
+                    ${(() => {
+                        const tax = extractOrderTaxInfo(o);
+                        return tax.hasPpn ? `<span class="text-[8px] font-bold bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400 px-1.5 py-0.5 rounded border border-amber-200 dark:border-amber-800 uppercase tracking-widest">${tax.ppnRate > 0 ? `PPN ${tax.ppnRate}%` : 'PPN 0%'}</span>` : '';
+                    })()}
                 </div>
                 <div class="flex items-center gap-2 bg-slate-50 dark:bg-slate-900 px-3 py-1.5 rounded-xl border border-slate-100 dark:border-slate-700">
                     <i class="fa-solid ${pI} text-xs"></i>
@@ -362,6 +365,7 @@ export const openOrderDetail = (i) => {
     const o = gOrds.find(x => x.orderId === i);
     if (!o) return; 
     setCVOrd(i);
+    const taxInfo = extractOrderTaxInfo(o);
     
     const isPOS = o.source === 'pos' || o.channel === 'pos';
     const hasWA = !!(o.customer?.wa);
@@ -493,40 +497,28 @@ export const openOrderDetail = (i) => {
                 </div>
                 
                 <div class="space-y-3 font-medium text-sm text-slate-300 relative z-10">
-                    <div class="flex justify-between items-center"><span>Subtotal Produk</span><span class="font-bold text-white">${fCur(o.payment?.subtotal)}</span></div>
-                    ${o.customer?.deliveryMethod === 'delivery' ? `<div class="flex justify-between items-center"><span>Ongkos Kirim</span><span class="font-bold text-white">${fCur(o.payment?.shippingCost)}</span></div>` : ''}
-                    ${o.payment?.shippingDiscount ? `<div class="flex justify-between items-center text-[var(--color-primary)] bg-[rgba(var(--color-primary-rgb),0.15)] px-2 py-1 -mx-2 rounded-xl"><span>Diskon Ongkir</span><span class="font-bold">-${fCur(o.payment.shippingDiscount)}</span></div>` : ''}
-                    ${o.payment?.productDiscount ? `<div class="flex justify-between items-center text-rose-400 bg-rose-900/20 px-2 py-1 -mx-2 rounded-xl"><span>Diskon Promo</span><span class="font-bold">-${fCur(o.payment.productDiscount)}</span></div>` : ''}
-                    ${(() => {
-                        const ptDisc = parseFloat(o.pointDiscount || o.payment?.pointDiscount) || 0;
-                        const pts = parseFloat(o.pointsRedeemed) || 0;
-                        if (ptDisc <= 0) return '';
-                        return `
-                        <div class="flex justify-between items-center text-emerald-400 bg-emerald-950/40 px-2.5 py-1.5 -mx-2 rounded-xl border border-emerald-800/40">
-                            <span class="flex items-center gap-1.5 font-bold"><i class="fa-solid fa-tags text-emerald-400"></i> Diskon Poin Member ${pts > 0 ? `(${pts} Poin)` : ''}</span>
-                            <span class="font-bold font-mono">-${fCur(ptDisc)}</span>
-                        </div>`;
-                    })()}
-                    ${(() => {
-                        if (!o.payment?.ppnAmount || o.payment.ppnAmount <= 0) return '';
-                        const isInc = o.payment.ppnType === 'inclusive';
-                        const ppnRate = o.payment.ppnRate || 11;
-                        const ppnAmt = o.payment.ppnAmount;
-                        const baseBeforeTax = (o.payment.subtotal || 0) - (o.payment.productDiscount || 0) + (o.payment.shippingCost || 0) - (o.payment.shippingDiscount || 0);
-                        const dppAmt = o.payment.dppAmount || (isInc ? Math.round((baseBeforeTax * 100) / (100 + ppnRate)) : Math.max(0, baseBeforeTax));
-
-                        return `
-                        <div class="flex justify-between items-center text-slate-400"><span>DPP (Dasar Pengenaan Pajak)</span><span class="font-bold text-white">${fCur(dppAmt)}</span></div>
-                        <div class="flex justify-between items-center text-amber-400 bg-amber-900/20 px-2 py-1 -mx-2 rounded-xl"><span>${isInc ? 'Termasuk PPN' : 'PPN'} (${ppnRate}%)</span><span class="font-bold">${isInc ? '' : '+'}${fCur(ppnAmt)}</span></div>
-                        `;
-                    })()}
+                    <div class="flex justify-between items-center"><span>Subtotal Produk</span><span class="font-bold text-white">${fCur(taxInfo.subtotal)}</span></div>
+                    ${o.customer?.deliveryMethod === 'delivery' ? `<div class="flex justify-between items-center"><span>Ongkos Kirim</span><span class="font-bold text-white">${fCur(taxInfo.shipping)}</span></div>` : ''}
+                    ${taxInfo.shippingDiscount ? `<div class="flex justify-between items-center text-[var(--color-primary)] bg-[rgba(var(--color-primary-rgb),0.15)] px-2 py-1 -mx-2 rounded-xl"><span>Diskon Ongkir</span><span class="font-bold">-${fCur(taxInfo.shippingDiscount)}</span></div>` : ''}
+                    ${taxInfo.productDiscount ? `<div class="flex justify-between items-center text-rose-400 bg-rose-900/20 px-2 py-1 -mx-2 rounded-xl"><span>Diskon Promo</span><span class="font-bold">-${fCur(taxInfo.productDiscount)}</span></div>` : ''}
+                    ${taxInfo.pointDiscount > 0 ? `
+                    <div class="flex justify-between items-center text-emerald-400 bg-emerald-950/40 px-2.5 py-1.5 -mx-2 rounded-xl border border-emerald-800/40">
+                        <span class="flex items-center gap-1.5 font-bold"><i class="fa-solid fa-tags text-emerald-400"></i> Diskon Poin Member</span>
+                        <span class="font-bold font-mono">-${fCur(taxInfo.pointDiscount)}</span>
+                    </div>` : ''}
+                    ${taxInfo.paylaterAdminFee > 0 ? `<div class="flex justify-between items-center text-slate-300"><span>Biaya Admin PayLater</span><span class="font-bold text-white">+${fCur(taxInfo.paylaterAdminFee)}</span></div>` : ''}
+                    ${taxInfo.paylaterServiceFee > 0 ? `<div class="flex justify-between items-center text-slate-300"><span>Biaya Penanganan / Layanan</span><span class="font-bold text-white">+${fCur(taxInfo.paylaterServiceFee)}</span></div>` : ''}
+                    ${taxInfo.hasPpn ? `
+                    <div class="flex justify-between items-center text-slate-400"><span>DPP (Dasar Pengenaan Pajak)</span><span class="font-bold text-white">${fCur(taxInfo.dppAmount)}</span></div>
+                    <div class="flex justify-between items-center text-amber-400 bg-amber-900/20 px-2 py-1 -mx-2 rounded-xl"><span>${esc(taxInfo.ppnLabel)}</span><span class="font-bold">${taxInfo.isInclusive ? '' : '+'}${fCur(taxInfo.ppnAmount)}</span></div>
+                    ` : ''}
                 </div>
                 
                 <div class="border-t border-dashed border-slate-600/60 my-5 relative z-10"></div>
                 
                 <div class="flex justify-between items-end relative z-10">
                     <span class="text-sm font-bold text-slate-400 uppercase tracking-widest mb-1">Total Tagihan</span>
-                    <span class="text-3xl font-bold text-[var(--color-primary)] tracking-tight font-extrabold">${fCur(o.payment?.grandTotal)}</span>
+                    <span class="text-3xl font-bold text-[var(--color-primary)] tracking-tight font-extrabold">${fCur(taxInfo.grandTotal)}</span>
                 </div>
 
                 ${(() => {

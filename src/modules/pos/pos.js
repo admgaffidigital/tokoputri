@@ -10,7 +10,7 @@
 
 import { db, firebase } from '../../config/firebase.js';
 import { appData } from '../../core/state.js';
-import { el, setH, setIn, esc, fCur, showToast, getOptImg, renderProductCoverHtml, isPlaceholderImg, fixD } from '../../core/utils.js';
+import { el, setH, setIn, esc, fCur, showToast, getOptImg, renderProductCoverHtml, isPlaceholderImg, fixD, extractOrderTaxInfo } from '../../core/utils.js';
 import { getEffHpp, computeTotalProductStock } from '../../core/pricing.js';
 import { canViewHpp } from '../../core/auth-roles.js';
 import { getPaylaterConfig, calculateInstallmentBreakdown } from '../../core/paylater.js';
@@ -1726,6 +1726,25 @@ const renderCart = () => {
         el.style.display = hasItems ? 'block' : 'none';
     });
 
+    // Sinkronisasi Baris Pajak PPN & DPP di Keranjang Kasir
+    const cartTax = posTaxInfo();
+    const hasCartTax = cartTax && (cartTax.ppnEnabled || (cartTax.ppnAmount && cartTax.ppnAmount > 0) || (cartTax.ppnRate > 0 && (appData.store?.ppnEnabled === true || appData.store?.ppnEnabled === 'true')));
+    const isCartTaxInc = cartTax?.ppnType === 'inclusive';
+    const cartTaxAmt = cartTax?.ppnAmount || 0;
+    const cartTaxRate = cartTax?.ppnRate || 0;
+    const cartTaxLbl = cartTax?.ppnLabel || `${isCartTaxInc ? 'Inc. PPN' : 'PPN'} (${cartTaxRate}%)`;
+    const formattedCartTaxAmt = cartTaxAmt > 0 ? `${isCartTaxInc ? '' : '+'}${fRp(cartTaxAmt)}` : 'Rp 0';
+
+    document.querySelectorAll('.pos-tax-breakdown-row').forEach(row => {
+        row.style.display = (hasItems && hasCartTax) ? 'flex' : 'none';
+    });
+    document.querySelectorAll('.pos-tax-label-target').forEach(e => {
+        e.textContent = cartTaxLbl;
+    });
+    document.querySelectorAll('.pos-tax-amt-target').forEach(e => {
+        e.textContent = formattedCartTaxAmt;
+    });
+
     const discAmt = posDiscountAmount();
     const formattedDiscAmt = fRp(discAmt);
 
@@ -1951,6 +1970,14 @@ const renderPayDetail = (method) => {
     const totalCartHpp = getCartTotalHpp();
     const estMargin = Math.max(0, total - totalCartHpp);
     const ptDisc = posMemberPointsDiscount();
+    const tax = posTaxInfo();
+    const hasTax = tax && (tax.ppnEnabled || (tax.ppnAmount && tax.ppnAmount > 0) || (tax.ppnRate > 0 && (appData.store?.ppnEnabled === true || appData.store?.ppnEnabled === 'true')));
+    const isInc = tax?.ppnType === 'inclusive';
+    const taxAmt = tax?.ppnAmount || 0;
+    const taxRate = tax?.ppnRate || 0;
+    const taxLbl = tax?.ppnLabel || `${isInc ? 'Termasuk PPN' : 'PPN'} (${taxRate}%)`;
+    const dppVal = tax?.dppAmount !== undefined ? tax.dppAmount : Math.max(0, posSubtotal() - posDiscountAmount() - ptDisc);
+
     const topRow = `
       <div class="p-3 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-100 dark:border-slate-700/60 mb-2.5 text-xs space-y-1.5">
         <div class="flex justify-between items-center">
@@ -1971,6 +1998,15 @@ const renderPayDetail = (method) => {
         <div class="flex justify-between items-center text-purple-600 dark:text-purple-400 text-[11px]">
           <span class="flex items-center gap-1 font-bold"><i class="fa-solid fa-gift"></i> Klaim Hadiah</span>
           <span class="font-bold truncate max-w-[170px]">${esc(posClaimedReward.name)} (-${posClaimedReward.pointsCost} Pts)</span>
+        </div>` : ''}
+        ${hasTax ? `
+        <div class="flex justify-between items-center text-slate-500 text-[11px]">
+          <span>DPP</span>
+          <span class="font-bold font-mono">${fRp(dppVal)}</span>
+        </div>
+        <div class="flex justify-between items-center text-amber-600 dark:text-amber-400 text-[11px] font-bold">
+          <span>${esc(taxLbl)}</span>
+          <span class="font-black font-mono">${taxAmt > 0 ? (isInc ? '' : '+') + fRp(taxAmt) : 'Rp 0'}</span>
         </div>` : ''}
         <div class="flex justify-between items-center pt-1.5 border-t border-slate-200/60 dark:border-slate-700/60">
           <span class="text-slate-700 dark:text-slate-200 font-bold">Total Wajib Bayar</span>
@@ -3319,14 +3355,13 @@ export const previewPOSReceiptThenPrint = (tx) => {
                 ${(tx.pointDiscount || 0) > 0 ? `<div class="flex justify-between text-emerald-600 font-bold"><span>Diskon Poin (${tx.pointsRedeemed || 0} Pts)</span><span>- ${fRp(tx.pointDiscount)}</span></div>` : ''}
                 ${tx.claimedReward ? `<div class="flex justify-between text-purple-600 font-bold"><span>[Klaim Hadiah]</span><span class="truncate max-w-[150px]">${esc(tx.claimedReward.name)}</span></div>` : ''}
                 ${(() => {
-                    const showPpnRow = (tx.payment?.ppnEnabled || tx.payment?.ppnShowZero || (tx.payment?.ppnRate === 0) || (tx.payment?.ppnAmount && tx.payment.ppnAmount > 0)) && (appData.store?.ppnEnabled || tx.payment?.ppnEnabled);
-                    if (!showPpnRow) return '';
-                    const isInc = tx.payment?.ppnType === 'inclusive';
-                    const rate = tx.payment?.ppnRate !== undefined ? tx.payment.ppnRate : (appData.store?.ppnRate || 0);
-                    const amt = tx.payment?.ppnAmount || 0;
-                    const lbl = tx.payment?.ppnLabel || `${isInc ? 'Inc. PPN' : 'PPN'} (${rate}%)`;
-                    const valStr = amt > 0 ? `${isInc ? '' : '+'}${fRp(amt)}` : 'Rp 0';
-                    return `<div class="flex justify-between"><span>${esc(lbl)}</span><span>${valStr}</span></div>`;
+                    const tax = extractOrderTaxInfo(tx);
+                    if (!tax.hasPpn) return '';
+                    const valStr = tax.ppnAmount > 0 ? `${tax.isInclusive ? '' : '+'}${fRp(tax.ppnAmount)}` : 'Rp 0';
+                    return `
+                    <div class="flex justify-between text-slate-500"><span>DPP</span><span>${fRp(tax.dppAmount)}</span></div>
+                    <div class="flex justify-between font-bold text-amber-600 dark:text-amber-400"><span>${esc(tax.ppnLabel)}</span><span>${valStr}</span></div>
+                    `;
                 })()}
                 <div class="flex justify-between font-black text-sm pt-1 border-t border-slate-200 dark:border-slate-700"><span>TOTAL</span><span style="color:var(--color-primary)">${fRp(tx.total)}</span></div>
                 ${tx.payment.method === 'cash' ? `<div class="flex justify-between"><span>Bayar Tunai</span><span>${fRp(tx.payment.paid)}</span></div><div class="flex justify-between font-bold text-emerald-600"><span>Kembalian</span><span>${fRp(tx.payment.change)}</span></div>` : ''}
@@ -3783,6 +3818,10 @@ const buildPOSLayout = ({ isStorefront }) => {
                             <span>Subtotal Item</span>
                             <span class="pos-subtotal-target font-bold text-slate-800 dark:text-slate-200">Rp 0</span>
                         </div>
+                        <div class="pos-tax-breakdown-row flex justify-between text-xs font-medium" style="display:none">
+                            <span class="pos-tax-label-target text-slate-500">PPN (11%)</span>
+                            <span class="pos-tax-amt-target font-bold font-mono text-amber-600 dark:text-amber-400">Rp 0</span>
+                        </div>
                         <div class="pos-hpp-margin-row flex justify-between text-xs text-slate-500 font-medium" style="display:none">
                             <span class="flex items-center gap-1"><i class="fa-solid fa-coins text-amber-500 text-[10px]"></i> Total Modal (HPP)</span>
                             <span class="pos-total-hpp-target font-bold text-amber-600 dark:text-amber-400">Rp 0</span>
@@ -3889,6 +3928,10 @@ const buildPOSLayout = ({ isStorefront }) => {
                         <div class="flex justify-between text-xs text-slate-500 font-medium">
                             <span>Subtotal Item</span>
                             <span class="pos-subtotal-target font-bold text-slate-700 dark:text-slate-200">Rp 0</span>
+                        </div>
+                        <div class="pos-tax-breakdown-row flex justify-between text-xs font-medium" style="display:none">
+                            <span class="pos-tax-label-target text-slate-500">PPN (11%)</span>
+                            <span class="pos-tax-amt-target font-bold font-mono text-amber-600 dark:text-amber-400">Rp 0</span>
                         </div>
                         <div class="pos-hpp-margin-row flex justify-between text-xs text-slate-500 font-medium" style="display:none">
                             <span class="flex items-center gap-1"><i class="fa-solid fa-coins text-amber-500 text-[10px]"></i> Total Modal (HPP)</span>

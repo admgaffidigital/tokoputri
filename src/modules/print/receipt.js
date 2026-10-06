@@ -7,7 +7,7 @@
 
 import { db } from '../../config/firebase.js';
 import { appData, gOrds, cVOrd, setCVOrd, myOrders } from '../../core/state.js';
-import { el, show, hide, setH, esc, openModalAnim, closeModalAnim } from '../../core/utils.js';
+import { el, show, hide, setH, esc, openModalAnim, closeModalAnim, extractOrderTaxInfo } from '../../core/utils.js';
 import { getPrinterConfig, getPaperCols } from './printer-settings.js';
 import { renderThermalDOMAndPrint, formatCompactDate, wrapWords } from './rawbt.js';
 
@@ -101,10 +101,10 @@ export const openReceiptPreview = async (orderId = null) => {
     };
     
     const orderItems = Array.isArray(o.items) ? o.items : (Array.isArray(o.cart) ? o.cart : []);
-    const calcSubtotal = orderItems.reduce((acc, i) => acc + (parseFloat(i.qty || 1) * (parseFloat(i.effectivePrice || i.price) || 0)), 0);
-    const subtotal = (o.payment && o.payment.subtotal !== undefined) ? o.payment.subtotal : (calcSubtotal || o.total || 0);
-    const shipping = (o.payment && o.payment.shippingCost !== undefined) ? o.payment.shippingCost : 0;
-    const grandTotal = (o.payment && o.payment.grandTotal !== undefined) ? o.payment.grandTotal : (o.total || (subtotal + shipping));
+    const taxInfo = extractOrderTaxInfo(o);
+    const subtotal = taxInfo.subtotal;
+    const shipping = taxInfo.shipping;
+    const grandTotal = taxInfo.grandTotal;
     const payMethod = String(o.payment?.method || o.method || 'Tunai').toUpperCase();
     const custName = o.customer?.name || o.customerName || 'Guest';
     const isDelivery = o.customer?.deliveryMethod === 'delivery' || o.deliveryMethod === 'delivery';
@@ -144,16 +144,14 @@ export const openReceiptPreview = async (orderId = null) => {
     
     h += `<div class="utp-separator"></div>${pL('Subtotal', subtotal.toLocaleString('id-ID'))}`;
     if (isDelivery) h += pL('Ongkir', shipping.toLocaleString('id-ID'));
-    if (o.payment?.shippingDiscount) h += pL('Pot.Ongkir', `-${o.payment.shippingDiscount.toLocaleString('id-ID')}`);
-    if (o.payment?.productDiscount) h += pL('Pot.Harga', `-${o.payment.productDiscount.toLocaleString('id-ID')}`);
-    const showPpn = (o.payment?.ppnEnabled || o.payment?.ppnShowZero || (o.payment?.ppnRate === 0) || (o.payment?.ppnAmount && o.payment.ppnAmount > 0)) && (appData.store?.ppnEnabled || o.payment?.ppnEnabled);
-    if (showPpn) {
-        const isInc = o.payment?.ppnType === 'inclusive';
-        const ppnRate = o.payment?.ppnRate !== undefined ? o.payment.ppnRate : (appData.store?.ppnRate || 0);
-        const ppnAmt = o.payment?.ppnAmount || 0;
-        const ppnLbl = o.payment?.ppnLabel || `${isInc ? 'Inc. PPN' : 'PPN'} (${ppnRate}%)`;
-        const valStr = ppnAmt > 0 ? `${isInc ? '' : '+'}${ppnAmt.toLocaleString('id-ID')}` : '0';
-        h += pL(ppnLbl, valStr);
+    if (taxInfo.shippingDiscount) h += pL('Pot.Ongkir', `-${taxInfo.shippingDiscount.toLocaleString('id-ID')}`);
+    if (taxInfo.productDiscount) h += pL('Pot.Harga', `-${taxInfo.productDiscount.toLocaleString('id-ID')}`);
+    if (taxInfo.pointDiscount > 0) h += pL('Pot.Poin', `-${taxInfo.pointDiscount.toLocaleString('id-ID')}`);
+    if (taxInfo.paylaterAdminFee > 0) h += pL('Biaya Admin', `+${taxInfo.paylaterAdminFee.toLocaleString('id-ID')}`);
+    if (taxInfo.paylaterServiceFee > 0) h += pL('Biaya Layanan', `+${taxInfo.paylaterServiceFee.toLocaleString('id-ID')}`);
+    if (taxInfo.hasPpn) {
+        const valStr = taxInfo.ppnAmount > 0 ? `${taxInfo.isInclusive ? '' : '+'}${taxInfo.ppnAmount.toLocaleString('id-ID')}` : '0';
+        h += pL(taxInfo.ppnLabel, valStr);
     }
     h += `<div class="utp-double-separator"></div><div class="font-bold text-[12px]">${pL('TOTAL', 'Rp ' + grandTotal.toLocaleString('id-ID'))}</div>${pL('Metode Bayar', payMethod)}`;
     if (o.payment?.method === 'tempo' || o.payment?.isPaylater || o.payment?.subMethod === 'paylater') {

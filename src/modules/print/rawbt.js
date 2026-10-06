@@ -11,7 +11,7 @@
 
 import { db } from '../../config/firebase.js';
 import { appData, gOrds, cVOrd, myOrders } from '../../core/state.js';
-import { el, esc } from '../../core/utils.js';
+import { el, esc, extractOrderTaxInfo } from '../../core/utils.js';
 import { showToast } from '../../core/ui.js';
 import { getPrinterConfig, getPaperCols } from './printer-settings.js';
 import { openThermalPrintPreview } from './print-preview.js';
@@ -870,14 +870,10 @@ export const buildPOSReceiptPayload = (tx, config = null) => {
         builder.twoColumn('Poin Reward Ditukar', `-${tx.claimedReward.pointsCost || 0} Poin`);
     }
 
-    const showTxPpn = (tx.payment?.ppnEnabled || tx.payment?.ppnShowZero || (tx.payment?.ppnRate === 0) || (tx.payment?.ppnAmount && tx.payment.ppnAmount > 0)) && (appData.store?.ppnEnabled || tx.payment?.ppnEnabled);
-    if (showTxPpn) {
-        const isInc = tx.payment?.ppnType === 'inclusive';
-        const rate = tx.payment?.ppnRate !== undefined ? tx.payment.ppnRate : (appData.store?.ppnRate || 0);
-        const amt = tx.payment?.ppnAmount || 0;
-        const lbl = tx.payment?.ppnLabel || `${isInc ? 'Inc. PPN' : 'PPN'} (${rate}%)`;
-        const valStr = amt > 0 ? `${isInc ? '' : '+ '}${fRp(amt)}` : 'Rp 0';
-        builder.twoColumn(lbl, valStr);
+    const taxInfo = extractOrderTaxInfo(tx);
+    if (taxInfo.hasPpn) {
+        const valStr = taxInfo.ppnAmount > 0 ? `${taxInfo.isInclusive ? '' : '+ '}${fRp(taxInfo.ppnAmount)}` : 'Rp 0';
+        builder.twoColumn(taxInfo.ppnLabel, valStr);
     }
 
     builder.doubleSeparator();
@@ -1146,30 +1142,34 @@ export const buildOrderReceiptPayload = (order, config = null) => {
 
     builder.separator('-');
 
-    const calcSubtotal = orderItems.reduce((acc, i) => acc + (parseFloat(i.qty || 1) * (parseFloat(i.effectivePrice || i.price) || 0)), 0);
-    const subtotal = (order.payment && order.payment.subtotal !== undefined) ? order.payment.subtotal : (calcSubtotal || order.total || 0);
-    const shipping = (order.payment && order.payment.shippingCost !== undefined) ? order.payment.shippingCost : 0;
-    const grandTot = (order.payment && order.payment.grandTotal !== undefined) ? order.payment.grandTotal : (order.total || (subtotal + shipping));
+    const taxInfo = extractOrderTaxInfo(order);
+    const subtotal = taxInfo.subtotal;
+    const shipping = taxInfo.shipping;
+    const grandTot = taxInfo.grandTotal;
 
     builder.twoColumn('Subtotal', fRp(subtotal));
     if (order.customer?.deliveryMethod === 'delivery' || order.deliveryMethod === 'delivery') {
         builder.twoColumn('Ongkos Kirim', fRp(shipping));
     }
-    if (order.payment?.productDiscount) {
-        builder.twoColumn('Potongan Harga', `- ${fRp(order.payment.productDiscount)}`);
+    if (taxInfo.productDiscount) {
+        builder.twoColumn('Potongan Harga', `- ${fRp(taxInfo.productDiscount)}`);
     }
-    if (order.payment?.shippingDiscount) {
-        builder.twoColumn('Potongan Ongkir', `- ${fRp(order.payment.shippingDiscount)}`);
+    if (taxInfo.shippingDiscount) {
+        builder.twoColumn('Potongan Ongkir', `- ${fRp(taxInfo.shippingDiscount)}`);
+    }
+    if (taxInfo.pointDiscount > 0) {
+        builder.twoColumn('Potongan Poin', `- ${fRp(taxInfo.pointDiscount)}`);
+    }
+    if (taxInfo.paylaterAdminFee > 0) {
+        builder.twoColumn('Biaya Admin', `+ ${fRp(taxInfo.paylaterAdminFee)}`);
+    }
+    if (taxInfo.paylaterServiceFee > 0) {
+        builder.twoColumn('Biaya Layanan', `+ ${fRp(taxInfo.paylaterServiceFee)}`);
     }
 
-    const showOrderPpn = (order.payment?.ppnEnabled || order.payment?.ppnShowZero || (order.payment?.ppnRate === 0) || (order.payment?.ppnAmount && order.payment.ppnAmount > 0)) && (appData.store?.ppnEnabled || order.payment?.ppnEnabled);
-    if (showOrderPpn) {
-        const isInc = order.payment?.ppnType === 'inclusive';
-        const rate = order.payment?.ppnRate !== undefined ? order.payment.ppnRate : (appData.store?.ppnRate || 0);
-        const amt = order.payment?.ppnAmount || 0;
-        const lbl = order.payment?.ppnLabel || `${isInc ? 'Inc. PPN' : 'PPN'} (${rate}%)`;
-        const valStr = amt > 0 ? `${isInc ? '' : '+ '}${fRp(amt)}` : 'Rp 0';
-        builder.twoColumn(lbl, valStr);
+    if (taxInfo.hasPpn) {
+        const valStr = taxInfo.ppnAmount > 0 ? `${taxInfo.isInclusive ? '' : '+ '}${fRp(taxInfo.ppnAmount)}` : 'Rp 0';
+        builder.twoColumn(taxInfo.ppnLabel, valStr);
     }
 
     builder.doubleSeparator();

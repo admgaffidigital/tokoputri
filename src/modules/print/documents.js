@@ -6,7 +6,7 @@
  * ============================================================
  */
 
-import { el, show, hide, setIn, setH, esc, fCur, sLoad, hLoad, openModalAnim, closeModalAnim } from '../../core/utils.js';
+import { el, show, hide, setIn, setH, esc, fCur, sLoad, hLoad, openModalAnim, closeModalAnim, extractOrderTaxInfo } from '../../core/utils.js';
 import { appData } from '../../core/state.js';
 import { canViewHpp } from '../../core/auth-roles.js';
 
@@ -1429,33 +1429,28 @@ export const openDocPreview = (type, targetId = null) => {
                 </div>
             </div>
 
-            <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 text-xs space-y-2">
-                <div class="flex justify-between text-slate-600"><span>Subtotal Produk</span><span class="font-mono">${fCur(o.payment?.subtotal)}</span></div>
-                ${o.payment?.shippingCost ? `<div class="flex justify-between text-slate-600"><span>Ongkos Kirim</span><span class="font-mono">${fCur(o.payment.shippingCost)}</span></div>` : ''}
-                ${o.payment?.shippingDiscount ? `<div class="flex justify-between text-emerald-600 font-bold"><span>Diskon Ongkir</span><span class="font-mono">-${fCur(o.payment.shippingDiscount)}</span></div>` : ''}
-                ${o.payment?.productDiscount ? `<div class="flex justify-between text-rose-600 font-bold"><span>Diskon Produk</span><span class="font-mono">-${fCur(o.payment.productDiscount)}</span></div>` : ''}
-                ${(o.payment?.paylaterAdminFee > 0) ? `<div class="flex justify-between text-slate-600"><span>Biaya Admin PayLater</span><span class="font-mono">+${fCur(o.payment.paylaterAdminFee)}</span></div>` : ''}
-                ${(o.payment?.paylaterServiceFee > 0) ? `<div class="flex justify-between text-slate-600"><span>Biaya Penanganan / Layanan</span><span class="font-mono">+${fCur(o.payment.paylaterServiceFee)}</span></div>` : ''}
-                ${(() => {
-                    const hasPpn = (o.payment?.ppnEnabled || o.payment?.ppnShowZero || (o.payment?.ppnRate === 0) || (o.payment?.ppnAmount && o.payment.ppnAmount > 0)) && (appData.store?.ppnEnabled || o.payment?.ppnEnabled);
-                    if (!hasPpn) return '';
-                    const isInc = o.payment?.ppnType === 'inclusive';
-                    const ppnRate = o.payment?.ppnRate !== undefined ? o.payment.ppnRate : (appData.store?.ppnRate || 0);
-                    const ppnAmt = o.payment?.ppnAmount || 0;
-                    const ppnLbl = o.payment?.ppnLabel || `${isInc ? 'Termasuk PPN' : 'PPN'} (${ppnRate}%)`;
-                    const baseBeforeTax = (o.payment?.subtotal || 0) - (o.payment?.productDiscount || 0) + (o.payment?.shippingCost || 0) - (o.payment?.shippingDiscount || 0);
-                    const dppAmt = o.payment?.dppAmount !== undefined ? o.payment.dppAmount : (isInc && ppnRate > 0 ? Math.round((baseBeforeTax * 100) / (100 + ppnRate)) : Math.max(0, baseBeforeTax));
-
-                    return `
-                    <div class="flex justify-between text-slate-600"><span>DPP</span><span class="font-mono">${fCur(dppAmt)}</span></div>
-                    <div class="flex justify-between text-amber-600 font-bold"><span>${ppnLbl}</span><span class="font-mono">${ppnAmt > 0 ? (isInc ? '' : '+') + fCur(ppnAmt) : 'Rp 0'}</span></div>
-                    `;
-                })()}
-                
-                <div class="flex justify-between items-center bg-slate-800 text-white p-3 rounded-xl mt-2 shadow-xs">
-                    <span class="font-bold text-xs uppercase tracking-widest">Grand Total</span>
-                    <span class="font-mono text-base text-emerald-400 font-bold tracking-tight">${fCur(o.payment?.grandTotal)}</span>
-                </div>
+            ${(() => {
+                const tax = extractOrderTaxInfo(o);
+                return `
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 text-xs space-y-2">
+                    <div class="flex justify-between text-slate-600"><span>Subtotal Produk</span><span class="font-mono">${fCur(tax.subtotal)}</span></div>
+                    ${tax.shipping > 0 ? `<div class="flex justify-between text-slate-600"><span>Ongkos Kirim</span><span class="font-mono">${fCur(tax.shipping)}</span></div>` : ''}
+                    ${tax.shippingDiscount > 0 ? `<div class="flex justify-between text-emerald-600 font-bold"><span>Diskon Ongkir</span><span class="font-mono">-${fCur(tax.shippingDiscount)}</span></div>` : ''}
+                    ${tax.productDiscount > 0 ? `<div class="flex justify-between text-rose-600 font-bold"><span>Diskon Produk</span><span class="font-mono">-${fCur(tax.productDiscount)}</span></div>` : ''}
+                    ${tax.pointDiscount > 0 ? `<div class="flex justify-between text-emerald-600 font-bold"><span>Diskon Poin Reward</span><span class="font-mono">-${fCur(tax.pointDiscount)}</span></div>` : ''}
+                    ${tax.paylaterAdminFee > 0 ? `<div class="flex justify-between text-slate-600"><span>Biaya Admin PayLater</span><span class="font-mono">+${fCur(tax.paylaterAdminFee)}</span></div>` : ''}
+                    ${tax.paylaterServiceFee > 0 ? `<div class="flex justify-between text-slate-600"><span>Biaya Penanganan / Layanan</span><span class="font-mono">+${fCur(tax.paylaterServiceFee)}</span></div>` : ''}
+                    ${tax.hasPpn ? `
+                    <div class="flex justify-between text-slate-600"><span>DPP (Dasar Pengenaan Pajak)</span><span class="font-mono">${fCur(tax.dppAmount)}</span></div>
+                    <div class="flex justify-between text-amber-600 font-bold"><span>${tax.ppnLabel}</span><span class="font-mono">${tax.ppnAmount > 0 ? (tax.isInclusive ? '' : '+') + fCur(tax.ppnAmount) : 'Rp 0'}</span></div>
+                    ` : ''}
+                    
+                    <div class="flex justify-between items-center bg-slate-800 text-white p-3 rounded-xl mt-2 shadow-xs">
+                        <span class="font-bold text-xs uppercase tracking-widest">Grand Total</span>
+                        <span class="font-mono text-base text-emerald-400 font-bold tracking-tight">${fCur(tax.grandTotal)}</span>
+                    </div>
+                `;
+            })()}
                 ${o.payment?.method === 'tempo' ? `
                 <div class="flex justify-between text-emerald-600 font-bold"><span>${(o.payment?.isPaylater || o.payment?.subMethod === 'paylater') ? 'Limit Terpakai / DP' : 'Uang Muka (DP)'}</span><span class="font-mono">${fCur(o.payment?.tempoDp || 0)}</span></div>
                 <div class="flex justify-between items-center bg-rose-50 text-rose-700 p-2.5 rounded-xl mt-1 border border-rose-200">

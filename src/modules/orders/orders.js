@@ -11,7 +11,8 @@ import { appData, myOrders, setMyOrders } from '../../core/state.js';
 import { 
     el, show, hide, setIn, setH, getV, setV, esc, fCur, 
     showToast, showConfirm, sLoad, hLoad,
-    rewardStatusLabel, openModalAnim, closeModalAnim, parseOrderDate 
+    rewardStatusLabel, openModalAnim, closeModalAnim, parseOrderDate,
+    extractOrderTaxInfo 
 } from '../../core/utils.js';
 
 let unsubMyOrdersRealtime = [];
@@ -436,13 +437,13 @@ export const renderOrderDetailModal = (orderId, d, reviewedKeys = [], isBackgrou
             minute: '2-digit' 
         });
         
-        const subtotal = (d.payment && d.payment.subtotal) ? d.payment.subtotal : 0;
-        const shipping = (d.payment && d.payment.shippingCost) ? d.payment.shippingCost : 0;
-        const discount = (d.payment && d.payment.productDiscount) ? d.payment.productDiscount : 0;
-        const shippingDiscount = (d.payment && d.payment.shippingDiscount) ? d.payment.shippingDiscount : 0;
-        const ppnAmt = (d.payment && d.payment.ppnAmount) ? d.payment.ppnAmount : 0;
-        const ppnRt = (d.payment && d.payment.ppnRate) ? d.payment.ppnRate : 0;
-        const grandTotal = (d.payment && d.payment.grandTotal) ? d.payment.grandTotal : 0;
+        const taxInfo = extractOrderTaxInfo(d);
+        const subtotal = taxInfo.subtotal;
+        const shipping = taxInfo.shipping;
+        const discount = taxInfo.productDiscount;
+        const shippingDiscount = taxInfo.shippingDiscount;
+        const pointDiscount = taxInfo.pointDiscount;
+        const grandTotal = taxInfo.grandTotal;
 
         m.innerHTML = `
             <div class="bg-white dark:bg-slate-900 w-full max-w-lg rounded-t-[2.25rem] sm:rounded-3xl max-h-[92dvh] sm:max-h-[88vh] flex flex-col shadow-2xl transform translate-y-full sm:translate-y-10 scale-100 transition-transform duration-300 border border-slate-200/90 dark:border-slate-800 overflow-hidden pointer-events-auto" id="order-detail-content">
@@ -534,21 +535,13 @@ export const renderOrderDetailModal = (orderId, d, reviewedKeys = [], isBackgrou
                         <div class="flex justify-between text-slate-600 dark:text-slate-400"><p>Ongkos Kirim</p><p class="font-bold text-slate-800 dark:text-white">${fCur(shipping)}</p></div>
                         ${shippingDiscount > 0 ? `<div class="flex justify-between text-[var(--color-primary)]"><p>Diskon Ongkir</p><p class="font-bold">-${fCur(shippingDiscount)}</p></div>` : ''}
                         ${discount > 0 ? `<div class="flex justify-between text-rose-500"><p>Diskon Promo</p><p class="font-bold">-${fCur(discount)}</p></div>` : ''}
-                        ${isPl && (d.payment?.paylaterAdminFee > 0) ? `<div class="flex justify-between text-slate-600 dark:text-slate-400"><p>Biaya Admin PayLater</p><p class="font-bold text-slate-800 dark:text-white">+${fCur(d.payment.paylaterAdminFee)}</p></div>` : ''}
-                        ${isPl && (d.payment?.paylaterServiceFee > 0) ? `<div class="flex justify-between text-slate-600 dark:text-slate-400"><p>Biaya Penanganan / Layanan</p><p class="font-bold text-slate-800 dark:text-white">+${fCur(d.payment.paylaterServiceFee)}</p></div>` : ''}
-                        ${(() => {
-                            const hasPpn = (d.payment?.ppnEnabled || d.payment?.ppnShowZero || (d.payment?.ppnRate === 0) || (ppnAmt > 0)) && (appData.store?.ppnEnabled || d.payment?.ppnEnabled);
-                            if (!hasPpn) return '';
-                            const isInc = d.payment?.ppnType === 'inclusive';
-                            const ppnLbl = d.payment?.ppnLabel || `${isInc ? 'Termasuk PPN' : 'PPN'} (${ppnRt}%)`;
-                            const baseBeforeTax = (subtotal - discount) + (shipping - shippingDiscount);
-                            const dppAmt = d.payment?.dppAmount !== undefined ? d.payment.dppAmount : (isInc && ppnRt > 0 ? Math.round((baseBeforeTax * 100) / (100 + ppnRt)) : Math.max(0, baseBeforeTax));
-
-                            return `
-                            <div class="flex justify-between text-slate-600 dark:text-slate-400"><p>DPP (Dasar Pengenaan Pajak)</p><p class="font-bold text-slate-800 dark:text-white">${fCur(dppAmt)}</p></div>
-                            <div class="flex justify-between text-amber-600 dark:text-amber-400"><p>${ppnLbl}</p><p class="font-bold">${ppnAmt > 0 ? (isInc ? '' : '+') + fCur(ppnAmt) : 'Rp 0'}</p></div>
-                            `;
-                        })()}
+                        ${pointDiscount > 0 ? `<div class="flex justify-between text-emerald-600 dark:text-emerald-400"><p>Diskon Poin Member</p><p class="font-bold">-${fCur(pointDiscount)}</p></div>` : ''}
+                        ${isPl && (taxInfo.paylaterAdminFee > 0) ? `<div class="flex justify-between text-slate-600 dark:text-slate-400"><p>Biaya Admin PayLater</p><p class="font-bold text-slate-800 dark:text-white">+${fCur(taxInfo.paylaterAdminFee)}</p></div>` : ''}
+                        ${isPl && (taxInfo.paylaterServiceFee > 0) ? `<div class="flex justify-between text-slate-600 dark:text-slate-400"><p>Biaya Penanganan / Layanan</p><p class="font-bold text-slate-800 dark:text-white">+${fCur(taxInfo.paylaterServiceFee)}</p></div>` : ''}
+                        ${taxInfo.hasPpn ? `
+                        <div class="flex justify-between text-slate-600 dark:text-slate-400"><p>DPP (Dasar Pengenaan Pajak)</p><p class="font-bold text-slate-800 dark:text-white">${fCur(taxInfo.dppAmount)}</p></div>
+                        <div class="flex justify-between text-amber-600 dark:text-amber-400"><p>${esc(taxInfo.ppnLabel)}</p><p class="font-bold">${taxInfo.ppnAmount > 0 ? (taxInfo.isInclusive ? '' : '+') + fCur(taxInfo.ppnAmount) : 'Rp 0'}</p></div>
+                        ` : ''}
                         <div class="flex justify-between items-center border-t border-dashed border-slate-300 dark:border-slate-700 pt-3 mt-2">
                             <p class="font-bold text-slate-800 dark:text-white uppercase tracking-wider">Total Tagihan</p>
                             <p class="text-lg font-bold text-[var(--color-primary)]">${fCur(grandTotal)}</p>
