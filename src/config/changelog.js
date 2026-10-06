@@ -8,6 +8,21 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-10-73',
+        version: 'v1.10.73',
+        date: '2026-10-06',
+        title: 'Restorasi Simetri Sempurna Kartu Grid POS & Penyatuan Modal HPP ke Baris Badges Resmi',
+        category: 'feature',
+        badge: 'Unified HPP Badges & Perfect Grid Symmetry v1.10.73',
+        items: [
+            'Penyatuan Modal HPP ke Baris Chips Resmi: Memindahkan info Modal HPP dari strip dasar kartu (pos-card-hpp-bar) ke dalam deretan badge terpadu (allPosChips) sebagai chip resmi Amber Pastel (bg-amber-50 text-amber-800 border-amber-200/90) dengan ikon koin emas (fa-coins).',
+            'Restorasi Simetri Sempurna Kartu Grid: Mengeliminasi strip dasar kartu berkaki terpisah yang sebelumnya membuat kartu jomplang antara produk ber-HPP dan tanpa HPP. Seluruh kartu di grid POS kini memiliki dasar dan garis batas yang 100% rata, sejajar, dan simetris.',
+            'Anti-Clipped Long Price Range: Menghilangkan pemotongan teks elipsis harga rentang panjang pada mobile (seperti Rp 15.000 - Rp 30.000) dengan perbaikan tipografi break-words dan line-height optimal pada .pos-card-price.',
+            'Pembersihan Total Footer Kasir: Footer kartu di mode Grid maupun List kini 100% murni untuk harga jual resmi toko dan tombol transaksi kasir [+], bebas dari desak-desakan info modal.',
+            'Multi-Channel Distribution v1.10.73 (Android versionCode 11073).'
+        ]
+    },
+    {
         id: 'log-1-10-72',
         version: 'v1.10.72',
         date: '2026-10-06',

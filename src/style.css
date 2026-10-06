@@ -937,36 +937,6 @@ html.dark #view-admin-login {
     flex-shrink: 0 !important;
 }
 
-/* Sub-Baris Dedicated HPP Khusus Owner di Dasar Kartu POS Kasir (Full-Width Mini Bar) */
-.pos-card-hpp-bar {
-    display: flex !important;
-    align-items: center !important;
-    justify-content: space-between !important;
-    padding: 3.5px 10px !important;
-    background: rgba(245, 158, 11, 0.08) !important;
-    border-top: 1px dashed rgba(245, 158, 11, 0.28) !important;
-    font-size: 9.5px !important;
-    font-weight: 700 !important;
-    color: #92400e !important;
-    box-sizing: border-box !important;
-    flex-shrink: 0 !important;
-    width: 100% !important;
-    transition: background 0.2s ease;
-}
-
-.dark .pos-card-hpp-bar {
-    background: rgba(245, 158, 11, 0.14) !important;
-    border-top-color: rgba(245, 158, 11, 0.25) !important;
-    color: #fcd34d !important;
-}
-
-.pos-product-card:hover .pos-card-hpp-bar {
-    background: rgba(245, 158, 11, 0.14) !important;
-}
-.dark .pos-product-card:hover .pos-card-hpp-bar {
-    background: rgba(245, 158, 11, 0.22) !important;
-}
-
 .pos-card-footer {
     display: flex !important;
     align-items: flex-end !important;
@@ -984,10 +954,8 @@ html.dark #view-admin-login {
     font-weight: 900;
     color: var(--color-primary);
     min-width: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    line-height: 1.2;
+    line-height: 1.25;
+    word-break: break-word;
 }
 
 .pos-add-btn {
