@@ -1453,11 +1453,17 @@ export const renderCatalog = (isLoadMore = false) => {
                     ? `<span class="bg-slate-100 text-slate-600 dark:bg-slate-700/60 dark:text-slate-300 border border-slate-200/80 dark:border-slate-600/50 px-1.5 py-0.5 rounded-md text-[8.5px] font-bold flex items-center gap-1 whitespace-nowrap shrink-0 uppercase tracking-wider"><i class="fa-solid fa-fire text-amber-500 text-[7.5px]"></i> ${totalSoldPos} Terjual</span>`
                     : '';
 
+                // Badge Satuan Konsisten & Harmonis (Sky Pastel, Icon Cube)
+                const unitBadge = (p.unit && typeof p.unit === 'string' && p.unit.trim())
+                    ? `<span class="bg-sky-50 text-sky-700 dark:bg-sky-950/60 dark:text-sky-300 border border-sky-200/80 dark:border-sky-800/50 px-1.5 py-0.5 rounded-md text-[8.5px] font-bold flex items-center gap-1 whitespace-nowrap shrink-0 uppercase tracking-wider"><i class="fa-solid fa-cube text-sky-600 dark:text-sky-400 text-[7.5px]"></i> ${esc(p.unit.trim())}</span>`
+                    : '';
+
                 // ── Badges Lengkap & Bersih (100% di Luar Gambar Produk, Anti-Duplikat) ──
                 const allPosChips = [];
                 if (discPill) allPosChips.push(discPill);
                 if (stockChip) allPosChips.push(stockChip);
                 if (poPill) allPosChips.push(poPill);
+                if (unitBadge) allPosChips.push(unitBadge);
                 if (variantBadge) allPosChips.push(variantBadge);
                 if (grosirBadge) allPosChips.push(grosirBadge);
                 if (poinBadge) allPosChips.push(poinBadge);
@@ -1533,7 +1539,6 @@ export const renderCatalog = (isLoadMore = false) => {
                             <!-- Line 3: Chips Badges Lengkap & Rapi (Bisa 2, 3, 4+ Baris, Anti-Terpotong) -->
                             <div class="product-chips-wrap">
                                 ${chipsHtml}
-                                ${p.unit ? `<span class="pos-tag-chip pos-tag-stock shrink-0 whitespace-nowrap"><i class="fa-solid fa-box text-[7.5px]"></i> /${esc(p.unit)}</span>` : ''}
                             </div>
                             <!-- Line 4: Harga, HPP & Action Button -->
                             <div class="flex items-center justify-between pt-0.5">

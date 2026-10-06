@@ -256,11 +256,17 @@ export const rCat = () => {
             ? `<span class="amber-badge px-1.5 py-0.5 rounded-md text-[8.5px] font-bold flex items-center gap-1 whitespace-nowrap shrink-0 uppercase tracking-wider"><i class="fa-solid fa-tags text-[7.5px]"></i> Grosir</span>`
             : '';
 
-        // ── Badges Lengkap & Bersih (100% di Luar Gambar Produk, Anti-Duplikat): Diskon, Stok, PO, Varian, Grosir, Poin & Terjual ──
+        // Badge Satuan Konsisten & Harmonis (Sky Pastel, Icon Cube)
+        const unitBadge = (p.unit && typeof p.unit === 'string' && p.unit.trim())
+            ? `<span class="bg-sky-50 text-sky-700 dark:bg-sky-950/60 dark:text-sky-300 border border-sky-200/80 dark:border-sky-800/50 px-1.5 py-0.5 rounded-md text-[8.5px] font-bold flex items-center gap-1 whitespace-nowrap shrink-0 uppercase tracking-wider"><i class="fa-solid fa-cube text-sky-600 dark:text-sky-400 text-[7.5px]"></i> ${esc(p.unit.trim())}</span>`
+            : '';
+
+        // ── Badges Lengkap & Bersih (100% di Luar Gambar Produk, Anti-Duplikat): Diskon, Stok, PO, Satuan, Varian, Grosir, Poin & Terjual ──
         const allProductChips = [];
         if (discPill) allProductChips.push(discPill);
         if (stockChip) allProductChips.push(stockChip);
         if (poPill) allProductChips.push(poPill);
+        if (unitBadge) allProductChips.push(unitBadge);
         if (variantBadge) allProductChips.push(variantBadge);
         if (grosirBadge) allProductChips.push(grosirBadge);
         if (poinBadge) allProductChips.push(poinBadge);

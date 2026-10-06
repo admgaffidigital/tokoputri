@@ -8,6 +8,20 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-10-72',
+        version: 'v1.10.72',
+        date: '2026-10-06',
+        title: 'Harmonisasi Total Desain Sistem Badge Satuan Produk (Zero-Inconsistency & Sky Pastel Cube)',
+        category: 'feature',
+        badge: 'Consistent Product Unit Badges v1.10.72',
+        items: [
+            'Harmonisasi Desain Sistem Badge Satuan: Mengganti tag satuan lama (pos-tag-chip pos-tag-stock) yang berdimensi pipih (border-radius 5px, font 8px, padding 1px 5px, dan teks /KLG) menjadi badge resmi yang 100% konsisten dengan keluarga badge lainnya (rounded-md 6px, font-bold 8.5px, padding 2px 6px, uppercase tracking-wider).',
+            'Ikon & Warna Tematik Khusus Satuan: Mengganti ikon kotak stok duplikat menjadi ikon 3D Cube (fa-cube) yang elegan berpalet Sky Pastel (bg-sky-50 text-sky-700 dark:bg-sky-950/60 dark:text-sky-300 border-sky-200/80) dan membersihkan karakter slash canggung menjadi nama satuan bersih (misal: KLG, GLN, PCS, DUS).',
+            'Integrasi Universal Array Chips: Menyematkan badge satuan secara otomatis ke dalam urutan chips terpadu (allPosChips & allProductChips) di POS Kasir maupun Etalase Toko (Mode Grid dan Mode List), mengeliminasi anomali badge yang terpasang terpisah di mode list.',
+            'Multi-Channel Distribution v1.10.72 (Android versionCode 11072).'
+        ]
+    },
+    {
         id: 'log-1-10-71',
         version: 'v1.10.71',
         date: '2026-10-06',
