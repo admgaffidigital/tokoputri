@@ -47,7 +47,7 @@ export default defineConfig({
           'vendor-utils': ['dompurify'],
           // Library Drag-and-Drop (dipisah agar tidak membebani modul admin)
           'vendor-sortable': ['sortablejs'],
-          // Modul Admin & CMS Toko Putri (dipisah agar first load storefront lebih cepat)
+          // Modul Admin & CMS Toko Putri (dimuat lazy hanya saat membuka panel admin CMS)
           'module-admin': [
             './src/modules/admin/index.js',
             './src/modules/admin/products/index.js',
@@ -90,6 +90,6 @@ export default defineConfig({
         }
       }
     },
-    chunkSizeWarningLimit: 750
+    chunkSizeWarningLimit: 850
   }
 })

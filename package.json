@@ -1,7 +1,7 @@
 {
   "name": "toko-putri",
   "private": true,
-  "version": "1.10.56",
+  "version": "1.10.57",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -9,6 +9,8 @@
     "preview": "vite preview",
     "sync": "node scripts/sync.mjs",
     "release": "node scripts/sync.mjs",
+    "audit": "node scripts/audit-check.mjs",
+    "maintenance": "node scripts/audit-check.mjs && npm run test:license && npm run sync",
     "license:generate": "node scripts/generate-license.mjs",
     "test:license": "node scripts/test-license-guard.mjs",
     "store:new": "node scripts/new-store.mjs",
