@@ -8,6 +8,23 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-10-63',
+        version: 'v1.10.63',
+        date: '2026-10-06',
+        title: 'Kalibrasi Presisi Zero-Edge-Clipping Struk Thermal: Safe Printable Zone 44mm (POS58) & 68mm (POS80) Anti-Potong Tepi',
+        category: 'fix',
+        badge: 'Zero-Edge-Clipping Thermal Calibration v1.10.63',
+        items: [
+            'Safe Printable Zone Roll Kertas 58mm (44mm Efektif): Mempersempit batas zona cetak dari 48mm ke 44mm dengan padding kiri 0.5mm dan kanan 1.5mm, mengeliminasi risiko teks atau nominal harga terpotong di tepi kanan akibat margin fisik kepala printer thermal kasir (POS-58, Panda, VSC, Epson, Xprinter).',
+            'Safe Printable Zone Roll Kertas 80mm (68mm Efektif): Mengkalibrasi lebar cetak dari 72mm ke 68mm dengan padding pengaman tepi kanan 2.5mm dan kiri 1mm, menjamin seluruh digit harga dan total transaksi tercetak utuh di dalam roll kertas.',
+            'Eliminasi Margin CSS Mendorong (margin: 0 !important): Menghapus total "margin: 0 auto" pada kontainer struk thermal browser (.utp-thermal-wrap & #thermal-print-section) yang sebelumnya menjumlahkan margin CSS dengan margin perangkat keras printer sehingga menggeser teks terlalu ke kanan.',
+            'Right-Clearance Protection (.utp-col-right): Menambahkan padding kanan protektif 1.5mm (58mm) dan 2.5mm (80mm) pada kolom angka nominal harga serta font-variant-numeric: tabular-nums, memberikan jarak aman sebelum bibir pemotong/tepi kertas.',
+            'Proporsionalitas Tipografi & Barcode: Menyesuaikan font base Courier New ke 8.8px (58mm) dan 10.5px (80mm) dengan line-height 1.25, serta membatasi lebar barcode Code128 maksimum 150px (58mm) dan 220px (80mm).',
+            'Unifikasi Uji Coba Cetak (src/modules/print/printer-settings.js): Menghubungkan fungsi Uji Cetak di modal Pengaturan Printer langsung ke engine Dual-Engine Flexbox dan Safe Printable Zone v1.10.63.',
+            'Multi-Channel Distribution v1.10.63 (Android versionCode 11063).'
+        ]
+    },
+    {
         id: 'log-1-10-62',
         version: 'v1.10.62',
         date: '2026-10-06',

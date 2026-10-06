@@ -285,20 +285,19 @@ export const scanUsbPrinter = async () => {
  * Eksekusi Uji Coba Cetak (Test Print) Struk
  */
 export const executeTestPrint = () => {
-    const config = getPrinterConfig();
-    if (config.deviceType === 'rawbt' || !config.deviceType) {
-        if (typeof window.executeRawBTTestPrint === 'function') {
-            window.executeRawBTTestPrint();
-            return;
-        }
+    if (typeof window.executeRawBTTestPrint === 'function') {
+        window.executeRawBTTestPrint();
+        return;
     }
 
+    const config = getPrinterConfig();
     const is80 = config.paperSize === '80mm';
     const cols = is80 ? 48 : 32;
     const storeName = config.headerText || appData.store?.name || 'TOKO PUTRI';
     const storeAddr = (config.showAddress !== false) ? (config.storeAddress || appData.store?.address || '') : '';
     const storeWa = (config.showPhone !== false) ? (config.storePhone || appData.store?.wa || '') : '';
     const policyNote = config.footerPolicyNote || '';
+    const safeWidth = is80 ? '68mm' : '44mm';
 
     const padLine = (l, r, len = cols) => {
         const p = len - l.length - r.length;
@@ -363,7 +362,7 @@ export const executeTestPrint = () => {
         t.id = 'thermal-print-section';
         document.body.appendChild(t);
     }
-    t.innerHTML = `<div style="width:${is80 ? '80mm' : '58mm'};font-family:'Courier New',Courier,monospace;font-size:11px;line-height:1.2;color:#000;background:#fff;padding:4px;">${h}</div>`;
+    t.innerHTML = `<div style="width:${safeWidth};max-width:${safeWidth};font-family:'Courier New',Courier,monospace;font-size:${is80 ? '10.5px' : '8.8px'};line-height:1.2;color:#000;background:#fff;padding:0 ${is80 ? '2.5mm' : '1.5mm'} 4mm ${is80 ? '1mm' : '0.5mm'};box-sizing:border-box;">${h}</div>`;
     
     if (typeof window.sendToRawBT === 'function') {
         const rawText = t.innerText;

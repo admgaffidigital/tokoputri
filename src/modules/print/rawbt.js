@@ -518,8 +518,9 @@ export const renderThermalDOMAndPrint = (content) => {
     const cols = getPaperCols(config.paperSize);
     const is80 = cols >= 40;
     const paperWidth = is80 ? '80mm' : '58mm';
-    const contentWidth = is80 ? '72mm' : '48mm';
-    const fontSize = is80 ? '11px' : '9.5px';
+    // Kalibrasi zona cetak aman (Zero Edge Clipping): 44mm untuk roll 58mm & 68mm untuk roll 80mm
+    const contentWidth = is80 ? '68mm' : '44mm';
+    const fontSize = is80 ? '10.5px' : '8.8px';
 
     const isHTML = typeof content === 'string' && content.includes('<') && content.includes('>');
 
@@ -575,90 +576,95 @@ export const renderThermalDOMAndPrint = (content) => {
   <title>Cetak Struk Thermal</title>
   <style>
     @page {
-      margin: 0mm;
+      margin: 0mm !important;
       size: ${paperWidth} auto;
     }
     * {
-      box-sizing: border-box;
+      box-sizing: border-box !important;
       margin: 0;
       padding: 0;
       -webkit-print-color-adjust: exact !important;
       print-color-adjust: exact !important;
     }
     html, body {
-      margin: 0;
-      padding: 0;
-      width: ${contentWidth};
-      max-width: ${contentWidth};
+      margin: 0 !important;
+      padding: 0 !important;
+      width: ${contentWidth} !important;
+      max-width: ${contentWidth} !important;
       background: #fff;
       color: #000;
       font-family: 'Courier New', Courier, monospace;
       font-size: ${fontSize};
       line-height: 1.25;
+      overflow: hidden;
     }
     .utp-thermal-wrap {
-      width: ${contentWidth};
-      max-width: ${contentWidth};
-      padding: 1mm 1mm 4mm;
-      margin: 0 auto;
+      width: ${contentWidth} !important;
+      max-width: ${contentWidth} !important;
+      box-sizing: border-box !important;
+      padding: 0 ${is80 ? '2.5mm' : '1.5mm'} 4mm ${is80 ? '1mm' : '0.5mm'} !important;
+      margin: 0 !important;
     }
     .utp-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      width: 100%;
-      margin: 0.5px 0;
-      line-height: 1.25;
+      display: flex !important;
+      justify-content: space-between !important;
+      align-items: baseline !important;
+      width: 100% !important;
+      margin: 0.5px 0 !important;
+      line-height: 1.25 !important;
+      box-sizing: border-box !important;
     }
     .utp-col-left {
-      text-align: left;
-      word-break: break-word;
-      flex: 1 1 auto;
+      text-align: left !important;
+      word-break: break-word !important;
+      flex: 1 1 auto !important;
+      min-width: 0 !important;
     }
     .utp-col-right {
-      text-align: right;
-      white-space: nowrap;
-      flex-shrink: 0;
-      margin-left: 5px;
-      font-variant-numeric: tabular-nums;
+      text-align: right !important;
+      white-space: nowrap !important;
+      flex-shrink: 0 !important;
+      margin-left: 5px !important;
+      padding-right: ${is80 ? '2.5mm' : '1.5mm'} !important;
+      font-variant-numeric: tabular-nums !important;
     }
     .utp-line {
-      line-height: 1.25;
-      word-break: break-word;
-      margin: 0.5px 0;
+      line-height: 1.25 !important;
+      word-break: break-word !important;
+      margin: 0.5px 0 !important;
     }
-    .utp-align-center { text-align: center; }
-    .utp-align-right { text-align: right; }
-    .utp-align-left { text-align: left; }
-    .font-bold { font-weight: bold; }
-    .utp-title { font-size: 1.22em; font-weight: bold; line-height: 1.15; }
-    .utp-tall { font-size: 1.15em; font-weight: bold; }
-    .utp-empty-line { height: 0.65em; }
+    .utp-align-center { text-align: center !important; }
+    .utp-align-right { text-align: right !important; }
+    .utp-align-left { text-align: left !important; }
+    .font-bold { font-weight: bold !important; }
+    .utp-title { font-size: 1.2em !important; font-weight: bold !important; line-height: 1.15 !important; }
+    .utp-tall { font-size: 1.12em !important; font-weight: bold !important; }
+    .utp-empty-line { height: 0.6em !important; }
     .utp-separator {
-      border-bottom: 1px dashed #000;
-      margin: 3px 0;
-      width: 100%;
-      height: 0;
+      border-bottom: 1px dashed #000 !important;
+      margin: 2.5px 0 !important;
+      width: 100% !important;
+      height: 0 !important;
     }
     .utp-double-separator {
-      border-bottom: 3px double #000;
-      margin: 3px 0;
-      width: 100%;
-      height: 0;
+      border-bottom: 3px double #000 !important;
+      margin: 2.5px 0 !important;
+      width: 100% !important;
+      height: 0 !important;
     }
     .utp-barcode-wrap {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      margin: 4px 0 2px;
-      text-align: center;
-      width: 100%;
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      justify-content: center !important;
+      margin: 4px 0 2px !important;
+      text-align: center !important;
+      width: 100% !important;
     }
     .utp-barcode-bars {
-      width: 82%;
-      max-width: 220px;
-      height: 36px;
+      width: 82% !important;
+      max-width: ${is80 ? '220px' : '150px'} !important;
+      height: ${is80 ? '36px' : '30px'} !important;
       background: repeating-linear-gradient(
         90deg,
         #000 0px, #000 2px,
@@ -671,17 +677,17 @@ export const renderThermalDOMAndPrint = (content) => {
         transparent 16px, transparent 18px,
         #000 18px, #000 19px,
         transparent 19px, transparent 22px
-      );
-      border-top: 1px solid #000;
-      border-bottom: 1px solid #000;
+      ) !important;
+      border-top: 1px solid #000 !important;
+      border-bottom: 1px solid #000 !important;
     }
     .utp-barcode-code {
-      font-family: 'Courier New', Courier, monospace;
-      font-size: 10px;
-      font-weight: bold;
-      letter-spacing: 2px;
-      margin-top: 2px;
-      text-align: center;
+      font-family: 'Courier New', Courier, monospace !important;
+      font-size: 9.5px !important;
+      font-weight: bold !important;
+      letter-spacing: 2px !important;
+      margin-top: 2px !important;
+      text-align: center !important;
     }
   </style>
 </head>
@@ -729,10 +735,10 @@ const fallbackDOMPrint = (htmlContent, paperWidth, contentWidth) => {
         pageStyle.id = 'dynamic-print-page-style';
         document.head.appendChild(pageStyle);
     }
-    pageStyle.innerHTML = `@media print { @page { margin: 0; size: ${paperWidth} auto; } html, body { width: ${contentWidth} !important; } }`;
+    pageStyle.innerHTML = `@media print { @page { margin: 0 !important; size: ${paperWidth} auto; } html, body { width: ${contentWidth} !important; margin: 0 !important; } }`;
 
     t.innerHTML = `
-        <div class="utp-thermal-wrap" style="width:${contentWidth};font-family:'Courier New',Courier,monospace;font-size:${is80 ? '11px' : '9.5px'};line-height:1.25;color:#000;background:#fff;padding:1mm 1mm;">
+        <div class="utp-thermal-wrap" style="width:${contentWidth};max-width:${contentWidth};font-family:'Courier New',Courier,monospace;font-size:${is80 ? '10.5px' : '8.8px'};line-height:1.25;color:#000;background:#fff;padding:0 ${is80 ? '2.5mm' : '1.5mm'} 4mm ${is80 ? '1mm' : '0.5mm'};margin:0;box-sizing:border-box;">
             ${htmlContent}
         </div>
     `;
