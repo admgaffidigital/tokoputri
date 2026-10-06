@@ -136,6 +136,11 @@ export const formatTwoColumn = (leftStr, rightStr, cols, truncateLeft = false) =
  * Menghasilkan byte binary ESC/POS standar dan teks terformat.
  * ============================================================
  */
+export const escReceipt = (str) => {
+    if (!str) return '';
+    return esc(String(str)).replace(/^ +/gm, (m) => '&nbsp;'.repeat(m.length));
+};
+
 export class EscPosBuilder {
     constructor(cols = 32) {
         this.cols = Number(cols) || 32;
@@ -143,6 +148,8 @@ export class EscPosBuilder {
         this.plainLines = [];
         // Baris terformat untuk Preview WYSIWYG (perataan, tebal, ukuran)
         this.previewLines = [];
+        // Item terstruktur untuk rendering HTML Flexbox presisi
+        this.items = [];
         this._bold = false;
         this._size = 'normal';
     }
@@ -204,7 +211,9 @@ export class EscPosBuilder {
         this.text(str);
         this.bytes.push(0x0A); // LF
         this.plainLines.push(str);
-        this.previewLines.push({ t: cleanLineAscii(str), a: alignMode, b: this._bold, s: this._size });
+        const clean = cleanLineAscii(str);
+        this.previewLines.push({ t: clean, a: alignMode, b: this._bold, s: this._size });
+        this.items.push({ type: 'line', text: clean, align: alignMode, bold: this._bold, size: this._size });
         return this;
     }
 
@@ -216,12 +225,21 @@ export class EscPosBuilder {
     }
 
     /**
-     * Dua kolom rata kiri & kanan presisi tinggi
+     * Dua kolom rata kiri & kanan presisi tinggi (Flexbox HTML + Monospace ESC/POS)
      */
     twoColumn(leftStr = '', rightStr = '', boldMode = false, truncateLeft = false) {
         if (boldMode) this.bold(true);
         const lines = formatTwoColumn(leftStr, rightStr, this.cols, truncateLeft);
-        lines.forEach(l => this.line(l, 'left'));
+        lines.forEach(l => {
+            this.align('left');
+            this.text(l);
+            this.bytes.push(0x0A);
+            this.plainLines.push(l);
+        });
+        const cleanL = cleanLineAscii(String(leftStr || ''));
+        const cleanR = cleanLineAscii(String(rightStr || ''));
+        this.previewLines.push({ type: 'two-column', left: cleanL, right: cleanR, t: lines[0], a: 'left', b: !!boldMode, s: this._size });
+        this.items.push({ type: 'two-column', left: cleanL, right: cleanR, bold: !!boldMode, size: this._size });
         if (boldMode) this.bold(false);
         return this;
     }
@@ -267,13 +285,25 @@ export class EscPosBuilder {
     /** Garis pemisah putus-putus presisi rata kiri (mencegah overflow margin printer) */
     separator(char = '-') {
         const sep = char.repeat(this.cols);
-        this.line(sep, 'left');
+        this.align('left');
+        this.text(sep);
+        this.bytes.push(0x0A);
+        this.plainLines.push(sep);
+        this.previewLines.push({ type: 'separator', t: sep, a: 'left', b: false, s: 'normal' });
+        this.items.push({ type: 'separator', char });
         return this;
     }
 
     /** Garis ganda (===) */
     doubleSeparator() {
-        return this.separator('=');
+        const sep = '='.repeat(this.cols);
+        this.align('left');
+        this.text(sep);
+        this.bytes.push(0x0A);
+        this.plainLines.push(sep);
+        this.previewLines.push({ type: 'double-separator', t: sep, a: 'left', b: false, s: 'normal' });
+        this.items.push({ type: 'double-separator' });
+        return this;
     }
 
     /** Feed baris kosong agar kertas melewati pemotong (ESC d n) */
@@ -283,6 +313,7 @@ export class EscPosBuilder {
             this.plainLines.push('');
             this.previewLines.push({ t: '', a: 'left', b: false, s: 'normal' });
         }
+        this.items.push({ type: 'feed', lines });
         return this;
     }
 
@@ -334,7 +365,8 @@ export class EscPosBuilder {
         }
 
         this.plainLines.push(`[BARCODE: ${clean}]`);
-        this.previewLines.push({ t: clean, a: 'center', b: false, s: 'barcode', isBarcode: true });
+        this.previewLines.push({ type: 'barcode', code: clean, t: clean, a: 'center', b: false, s: 'barcode', isBarcode: true });
+        this.items.push({ type: 'barcode', code: clean });
         return this;
     }
 
@@ -354,6 +386,50 @@ export class EscPosBuilder {
     /** Konversi ke teks polos untuk fallback atau preview */
     toPlainText() {
         return this.plainLines.join('\n');
+    }
+
+    /**
+     * Konversi item terstruktur ke markup HTML Flexbox presisi tinggi (WYSIWYG)
+     * Anti-Potong, Anti-Wrap Angka Rupiah, dan 100% sejajar rapi pada printer desktop/browser.
+     */
+    toHtml() {
+        let html = '';
+        for (const item of this.items) {
+            if (item.type === 'line') {
+                const align = item.align === 'center' ? 'utp-align-center' : (item.align === 'right' ? 'utp-align-right' : 'utp-align-left');
+                const bClass = item.bold ? 'font-bold' : '';
+                let sClass = '';
+                if (item.size === 'title' || item.size === 'wide') sClass = 'utp-title';
+                else if (item.size === 'tall' || item.size === 'total') sClass = 'utp-tall';
+                
+                if (!item.text || !item.text.trim()) {
+                    html += '<div class="utp-empty-line">&nbsp;</div>';
+                } else {
+                    html += `<div class="utp-line ${align} ${bClass} ${sClass}">${escReceipt(item.text)}</div>`;
+                }
+            } else if (item.type === 'two-column') {
+                const bClass = item.bold ? 'font-bold' : '';
+                let sClass = '';
+                if (item.size === 'title' || item.size === 'wide') sClass = 'utp-title';
+                else if (item.size === 'tall' || item.size === 'total') sClass = 'utp-tall';
+
+                html += `<div class="utp-row ${bClass} ${sClass}"><div class="utp-col-left">${escReceipt(item.left)}</div><div class="utp-col-right">${escReceipt(item.right)}</div></div>`;
+            } else if (item.type === 'separator') {
+                html += '<div class="utp-separator"></div>';
+            } else if (item.type === 'double-separator') {
+                html += '<div class="utp-double-separator"></div>';
+            } else if (item.type === 'barcode') {
+                html += `
+                <div class="utp-barcode-wrap">
+                    <div class="utp-barcode-bars" aria-hidden="true"></div>
+                    <div class="utp-barcode-code">*${esc(item.code)}*</div>
+                </div>`;
+            } else if (item.type === 'feed') {
+                const h = Math.max(1, item.lines || 1) * 6;
+                html += `<div style="height:${h}px;"></div>`;
+            }
+        }
+        return html;
     }
 }
 
@@ -433,47 +509,237 @@ const dispatchToThermalPrinter = (escPosBase64, plainText = '', htmlDomContent =
 };
 
 /**
- * Render ke elemen thermal DOM tersembunyi dan panggil window.print()
- * dengan injeksi CSS dinamis sesuai ukuran kertas (58mm atau 80mm).
+ * Render dokumen thermal ke iframe terisolasi atau elemen DOM dan panggil print dialog.
+ * Menggunakan lebar cetak thermal head presisi (48mm untuk 58mm, 72mm untuk 80mm),
+ * Flexbox anti-wrap, dan font Courier New yang pas agar harga tidak anjlok ke baris baru.
  */
 export const renderThermalDOMAndPrint = (content) => {
     const config = getPrinterConfig();
     const cols = getPaperCols(config.paperSize);
     const is80 = cols >= 40;
     const paperWidth = is80 ? '80mm' : '58mm';
+    const contentWidth = is80 ? '72mm' : '48mm';
+    const fontSize = is80 ? '11px' : '9.5px';
 
+    const isHTML = typeof content === 'string' && content.includes('<') && content.includes('>');
+
+    // Jika content bukan HTML (plain text fallback), konversi secara cerdas ke Flexbox HTML
+    let htmlContent = content;
+    if (!isHTML) {
+        const rawLines = String(content || '').split('\n');
+        htmlContent = rawLines.map(line => {
+            const trimmed = line.trim();
+            if (!trimmed) return '<div class="utp-empty-line">&nbsp;</div>';
+            if (/^[-]{8,}$/.test(trimmed)) return '<div class="utp-separator"></div>';
+            if (/^[=]{8,}$/.test(trimmed)) return '<div class="utp-double-separator"></div>';
+            if (/^\[BARCODE:\s*(.+)\]$/i.test(trimmed)) {
+                const bCode = trimmed.replace(/^\[BARCODE:\s*/i, '').replace(/\]$/, '').trim();
+                return `
+                <div class="utp-barcode-wrap">
+                    <div class="utp-barcode-bars" aria-hidden="true"></div>
+                    <div class="utp-barcode-code">*${esc(bCode)}*</div>
+                </div>`;
+            }
+            // Deteksi baris 2-kolom jika ada 3+ spasi berturutan
+            const colMatch = line.match(/^(\s{0,4}.+?)\s{3,}(.+)$/);
+            if (colMatch && colMatch[1] && colMatch[2]) {
+                return `<div class="utp-row"><div class="utp-col-left">${escReceipt(colMatch[1])}</div><div class="utp-col-right">${escReceipt(colMatch[2])}</div></div>`;
+            }
+            return `<div class="utp-line">${escReceipt(line)}</div>`;
+        }).join('');
+    }
+
+    // 1. Coba cetak melalui Hidden Isolated Iframe (Solusi paling bersih & presisi)
+    try {
+        let iframe = document.getElementById('thermal-print-iframe');
+        if (iframe) iframe.remove();
+
+        iframe = document.createElement('iframe');
+        iframe.id = 'thermal-print-iframe';
+        iframe.style.position = 'fixed';
+        iframe.style.right = '0';
+        iframe.style.bottom = '0';
+        iframe.style.width = '0';
+        iframe.style.height = '0';
+        iframe.style.border = '0';
+        iframe.style.visibility = 'hidden';
+        iframe.style.zIndex = '-9999';
+        document.body.appendChild(iframe);
+
+        const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+        iframeDoc.open();
+        iframeDoc.write(`<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Cetak Struk Thermal</title>
+  <style>
+    @page {
+      margin: 0mm;
+      size: ${paperWidth} auto;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: ${contentWidth};
+      max-width: ${contentWidth};
+      background: #fff;
+      color: #000;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: ${fontSize};
+      line-height: 1.25;
+    }
+    .utp-thermal-wrap {
+      width: ${contentWidth};
+      max-width: ${contentWidth};
+      padding: 1mm 1mm 4mm;
+      margin: 0 auto;
+    }
+    .utp-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      width: 100%;
+      margin: 0.5px 0;
+      line-height: 1.25;
+    }
+    .utp-col-left {
+      text-align: left;
+      word-break: break-word;
+      flex: 1 1 auto;
+    }
+    .utp-col-right {
+      text-align: right;
+      white-space: nowrap;
+      flex-shrink: 0;
+      margin-left: 5px;
+      font-variant-numeric: tabular-nums;
+    }
+    .utp-line {
+      line-height: 1.25;
+      word-break: break-word;
+      margin: 0.5px 0;
+    }
+    .utp-align-center { text-align: center; }
+    .utp-align-right { text-align: right; }
+    .utp-align-left { text-align: left; }
+    .font-bold { font-weight: bold; }
+    .utp-title { font-size: 1.22em; font-weight: bold; line-height: 1.15; }
+    .utp-tall { font-size: 1.15em; font-weight: bold; }
+    .utp-empty-line { height: 0.65em; }
+    .utp-separator {
+      border-bottom: 1px dashed #000;
+      margin: 3px 0;
+      width: 100%;
+      height: 0;
+    }
+    .utp-double-separator {
+      border-bottom: 3px double #000;
+      margin: 3px 0;
+      width: 100%;
+      height: 0;
+    }
+    .utp-barcode-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin: 4px 0 2px;
+      text-align: center;
+      width: 100%;
+    }
+    .utp-barcode-bars {
+      width: 82%;
+      max-width: 220px;
+      height: 36px;
+      background: repeating-linear-gradient(
+        90deg,
+        #000 0px, #000 2px,
+        transparent 2px, transparent 4px,
+        #000 4px, #000 7px,
+        transparent 7px, transparent 9px,
+        #000 9px, #000 11px,
+        transparent 11px, transparent 13px,
+        #000 13px, #000 16px,
+        transparent 16px, transparent 18px,
+        #000 18px, #000 19px,
+        transparent 19px, transparent 22px
+      );
+      border-top: 1px solid #000;
+      border-bottom: 1px solid #000;
+    }
+    .utp-barcode-code {
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 10px;
+      font-weight: bold;
+      letter-spacing: 2px;
+      margin-top: 2px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="utp-thermal-wrap">
+    ${htmlContent}
+  </div>
+</body>
+</html>`);
+        iframeDoc.close();
+
+        setTimeout(() => {
+            try {
+                iframe.contentWindow.focus();
+                iframe.contentWindow.print();
+            } catch (errIframe) {
+                console.warn('[RawBT] Iframe print gagal, fallback ke direct print:', errIframe);
+                fallbackDOMPrint(htmlContent, paperWidth, contentWidth);
+            }
+        }, 120);
+        return;
+    } catch (e) {
+        console.warn('[RawBT] Gagal membuat isolated print iframe:', e);
+    }
+
+    // Fallback jika iframe tidak diizinkan oleh sandbox browser
+    fallbackDOMPrint(htmlContent, paperWidth, contentWidth);
+};
+
+const fallbackDOMPrint = (htmlContent, paperWidth, contentWidth) => {
     let t = el('thermal-print-section');
     if (!t) {
         t = document.createElement('div');
         t.id = 'thermal-print-section';
         document.body.appendChild(t);
     }
-
+    const is80 = paperWidth === '80mm';
     t.className = is80 ? 'paper-80mm' : 'paper-58mm';
     document.body.classList.remove('paper-58mm', 'paper-80mm');
     document.body.classList.add(is80 ? 'paper-80mm' : 'paper-58mm');
 
-    // Injeksi aturan @page dinamis sesuai ukuran kertas yang dipilih
     let pageStyle = document.getElementById('dynamic-print-page-style');
     if (!pageStyle) {
         pageStyle = document.createElement('style');
         pageStyle.id = 'dynamic-print-page-style';
         document.head.appendChild(pageStyle);
     }
-    pageStyle.innerHTML = `@media print { @page { margin: 0; size: ${paperWidth} auto; } html, body { width: ${paperWidth} !important; } }`;
-
-    const isHTML = typeof content === 'string' && content.includes('<') && content.includes('>');
-    const formatted = isHTML ? content : `<pre style="font-family:'Courier New',Courier,monospace;font-size:11px;margin:0;line-height:1.25;white-space:pre-wrap;word-break:break-word;">${esc(content)}</pre>`;
+    pageStyle.innerHTML = `@media print { @page { margin: 0; size: ${paperWidth} auto; } html, body { width: ${contentWidth} !important; } }`;
 
     t.innerHTML = `
-        <div style="width:100%;font-family:'Courier New',Courier,monospace;font-size:11px;line-height:1.25;color:#000;background:#fff;padding:0;">
-            ${formatted}
+        <div class="utp-thermal-wrap" style="width:${contentWidth};font-family:'Courier New',Courier,monospace;font-size:${is80 ? '11px' : '9.5px'};line-height:1.25;color:#000;background:#fff;padding:1mm 1mm;">
+            ${htmlContent}
         </div>
     `;
 
     setTimeout(() => {
         window.print();
-    }, 100);
+    }, 120);
 };
 
 /**
@@ -699,7 +965,8 @@ export const buildPOSReceiptPayload = (tx, config = null) => {
     return {
         base64: builder.toBase64(),
         plainText: builder.toPlainText(),
-        previewLines: builder.previewLines
+        previewLines: builder.previewLines,
+        html: builder.toHtml()
     };
 };
 
@@ -808,7 +1075,8 @@ export const buildShiftReceiptPayload = (shift, isXReport = false, config = null
     return {
         base64: builder.toBase64(),
         plainText: builder.toPlainText(),
-        previewLines: builder.previewLines
+        previewLines: builder.previewLines,
+        html: builder.toHtml()
     };
 };
 
@@ -949,7 +1217,8 @@ export const buildOrderReceiptPayload = (order, config = null) => {
     return {
         base64: builder.toBase64(),
         plainText: builder.toPlainText(),
-        previewLines: builder.previewLines
+        previewLines: builder.previewLines,
+        html: builder.toHtml()
     };
 };
 
@@ -1131,7 +1400,8 @@ export const buildTempoReceiptPayload = (order, config = null) => {
     return {
         base64: builder.toBase64(),
         plainText: builder.toPlainText(),
-        previewLines: builder.previewLines
+        previewLines: builder.previewLines,
+        html: builder.toHtml()
     };
 };
 
@@ -1239,7 +1509,8 @@ export const buildTestReceiptPayload = (config = null) => {
     return {
         base64: builder.toBase64(),
         plainText: builder.toPlainText(),
-        previewLines: builder.previewLines
+        previewLines: builder.previewLines,
+        html: builder.toHtml()
     };
 };
 
@@ -1270,7 +1541,7 @@ export const printPOSReceiptDirect = (tx) => {
     const payload = buildPOSReceiptPayload(tx, cfg);
     const fromPreview = isPreviewModalOpen('pos-receipt-fallback-modal');
 
-    sendToRawBT(payload.base64, payload.plainText, '', {
+    sendToRawBT(payload.base64, payload.plainText, payload.html, {
         skipPreview: fromPreview,
         previewLines: payload.previewLines,
         title: `Struk Kasir #${tx.txId || ''}`,
@@ -1295,7 +1566,7 @@ export const printShiftSettlementDirect = (shift, isXReport = false) => {
     const payload = buildShiftReceiptPayload(shift, isXReport, cfg);
     const fromPreview = isPreviewModalOpen('pos-shift-receipt-modal');
 
-    sendToRawBT(payload.base64, payload.plainText, '', {
+    sendToRawBT(payload.base64, payload.plainText, payload.html, {
         skipPreview: fromPreview,
         previewLines: payload.previewLines,
         title: `${isXReport ? 'Ringkasan Shift (X-Report)' : 'Rekap Tutup Shift (Z-Report)'} #${shift.shiftNo || shift.id || ''}`,
@@ -1382,7 +1653,7 @@ export const printCustomerReceiptDirect = async (orderId = null) => {
     const payload = buildOrderReceiptPayload(order, cfg);
     const fromPreview = isPreviewModalOpen('receipt-preview-modal');
 
-    sendToRawBT(payload.base64, payload.plainText, '', {
+    sendToRawBT(payload.base64, payload.plainText, payload.html, {
         skipPreview: fromPreview,
         previewLines: payload.previewLines,
         title: `Struk Pesanan #${order.orderId || ''}`,
@@ -1421,7 +1692,7 @@ export const printTempoReceiptDirect = (orderId = null) => {
     const payload = buildTempoReceiptPayload(order, cfg);
     const fromPreview = isPreviewModalOpen('receipt-preview-modal');
 
-    sendToRawBT(payload.base64, payload.plainText, '', {
+    sendToRawBT(payload.base64, payload.plainText, payload.html, {
         skipPreview: fromPreview,
         previewLines: payload.previewLines,
         title: `Nota Tagihan Tempo #${order.orderId || ''}`,
@@ -1440,7 +1711,7 @@ export const printTempoReceiptDirect = (orderId = null) => {
 export const executeRawBTTestPrint = () => {
     const cfg = getPrinterConfig();
     const payload = buildTestReceiptPayload(cfg);
-    sendToRawBT(payload.base64, payload.plainText, '', {
+    sendToRawBT(payload.base64, payload.plainText, payload.html, {
         previewLines: payload.previewLines,
         title: 'Uji Coba Cetak Printer',
         rebuild: () => buildTestReceiptPayload(getPrinterConfig())

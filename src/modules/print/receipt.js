@@ -96,11 +96,8 @@ export const openReceiptPreview = async (orderId = null) => {
     const sAddr = config.storeAddress !== undefined && config.storeAddress !== '' ? config.storeAddress : (appData.store.address || "");
     const sW = config.storePhone !== undefined && config.storePhone !== '' ? config.storePhone : (appData.store.wa || "");
     
-    const pL = (l, r, len = cols) => { 
-        const left = String(l || '');
-        const right = String(r || '');
-        const p = len - left.length - right.length; 
-        return left + (p > 0 ? ' '.repeat(p) : ' ') + right; 
+    const pL = (l, r) => { 
+        return `<div class="utp-row"><div class="utp-col-left">${esc(l)}</div><div class="utp-col-right">${esc(r)}</div></div>`;
     };
     
     const orderItems = Array.isArray(o.items) ? o.items : (Array.isArray(o.cart) ? o.cart : []);
@@ -117,15 +114,15 @@ export const openReceiptPreview = async (orderId = null) => {
     if (config.showPhone !== false && sW) h += `<div class="text-center" style="font-size:11px;margin-bottom:4px;">WA: ${esc(sW)}</div>`;
     const npwpStr = o.payment?.taxNpwp || appData.store?.taxNpwp;
     if (config.showNpwp !== false && npwpStr) h += `<div class="text-center" style="font-size:10px;font-family:monospace;margin-bottom:4px;">NPWP: ${esc(npwpStr)}</div>`;
-    h += `<div class="border-b border-dashed border-black my-2"></div>`;
-    h += `<div style="white-space:pre;font-family:monospace;">${pL(`Order: #${o.orderId}`, d, cols)}</div>`;
-    h += `<div style="white-space:pre;font-family:monospace;">${pL(`Plg  : ${esc(custName).substring(0, is80 ? 18 : 10)}`, `Tipe: ${isDelivery ? 'Kirim' : 'Ambil'}`, cols)}</div>`;
+    h += `<div class="utp-separator"></div>`;
+    h += pL(`Order: #${o.orderId}`, d);
+    h += pL(`Plg  : ${esc(custName).substring(0, is80 ? 18 : 10)}`, `Tipe: ${isDelivery ? 'Kirim' : 'Ambil'}`);
     if (o.customer?.phone || o.customerPhone) {
-        h += `<div style="white-space:pre;font-family:monospace;">HP   : ${esc(o.customer?.phone || o.customerPhone)}</div>`;
+        h += `<div class="utp-line">HP   : ${esc(o.customer?.phone || o.customerPhone)}</div>`;
     }
-    h += `<div class="border-b border-dashed border-black my-2"></div>`;
+    h += `<div class="utp-separator"></div>`;
     if (o.customer?.note) { 
-        h += `<div style="white-space:pre-wrap;word-break:break-word;">Cat: ${esc(o.customer.note)}</div><div class="border-b border-dashed border-black my-2"></div>`; 
+        h += `<div style="white-space:pre-wrap;word-break:break-word;">Cat: ${esc(o.customer.note)}</div><div class="utp-separator"></div>`; 
     }
     
     // Daftar item barang (defensive guard untuk o.items / o.cart)
@@ -136,19 +133,19 @@ export const openReceiptPreview = async (orderId = null) => {
             const effPrice = i.effectivePrice || i.price || 0;
             const q = `  ${parseFloat(i.qty || 1)} ${esc(i.unit || 'pcs')} x ${Math.round(effPrice).toLocaleString('id-ID')}`;
             const t = (parseFloat(i.qty || 1) * effPrice).toLocaleString('id-ID');
-            h += `<div style="white-space:pre-wrap;font-weight:bold;word-break:break-word;">${n}</div><div style="white-space:pre;font-family:monospace;font-size:11px;">${pL(q, t, cols)}</div>`;
+            h += `<div style="white-space:pre-wrap;font-weight:bold;word-break:break-word;">${n}</div>${pL(q, t)}`;
             if (i.poTime) {
-                h += `<div style="white-space:pre;font-size:10px;font-style:italic;color:#4b5563;">  * Estimasi PO: ${esc(i.poTime)}</div>`;
+                h += `<div style="font-size:10px;font-style:italic;color:#4b5563;">  * Estimasi PO: ${esc(i.poTime)}</div>`;
             }
         });
     } else {
-        h += `<div style="white-space:pre;font-style:italic;color:#64748b;text-align:center;padding:4px 0;">- Tidak ada rincian barang -</div>`;
+        h += `<div style="font-style:italic;color:#64748b;text-align:center;padding:4px 0;">- Tidak ada rincian barang -</div>`;
     }
     
-    h += `<div class="border-b border-dashed border-black my-2"></div><div style="white-space:pre;font-family:monospace;">${pL('Subtotal', subtotal.toLocaleString('id-ID'), cols)}</div>`;
-    if (isDelivery) h += `<div style="white-space:pre;font-family:monospace;">${pL('Ongkir', shipping.toLocaleString('id-ID'), cols)}</div>`;
-    if (o.payment?.shippingDiscount) h += `<div style="white-space:pre;font-family:monospace;">${pL('Pot.Ongkir', `-${o.payment.shippingDiscount.toLocaleString('id-ID')}`, cols)}</div>`;
-    if (o.payment?.productDiscount) h += `<div style="white-space:pre;font-family:monospace;">${pL('Pot.Harga', `-${o.payment.productDiscount.toLocaleString('id-ID')}`, cols)}</div>`;
+    h += `<div class="utp-separator"></div>${pL('Subtotal', subtotal.toLocaleString('id-ID'))}`;
+    if (isDelivery) h += pL('Ongkir', shipping.toLocaleString('id-ID'));
+    if (o.payment?.shippingDiscount) h += pL('Pot.Ongkir', `-${o.payment.shippingDiscount.toLocaleString('id-ID')}`);
+    if (o.payment?.productDiscount) h += pL('Pot.Harga', `-${o.payment.productDiscount.toLocaleString('id-ID')}`);
     const showPpn = (o.payment?.ppnEnabled || o.payment?.ppnShowZero || (o.payment?.ppnRate === 0) || (o.payment?.ppnAmount && o.payment.ppnAmount > 0)) && (appData.store?.ppnEnabled || o.payment?.ppnEnabled);
     if (showPpn) {
         const isInc = o.payment?.ppnType === 'inclusive';
@@ -156,51 +153,51 @@ export const openReceiptPreview = async (orderId = null) => {
         const ppnAmt = o.payment?.ppnAmount || 0;
         const ppnLbl = o.payment?.ppnLabel || `${isInc ? 'Inc. PPN' : 'PPN'} (${ppnRate}%)`;
         const valStr = ppnAmt > 0 ? `${isInc ? '' : '+'}${ppnAmt.toLocaleString('id-ID')}` : '0';
-        h += `<div style="white-space:pre;font-family:monospace;">${pL(ppnLbl, valStr, cols)}</div>`;
+        h += pL(ppnLbl, valStr);
     }
-    h += `<div class="border-b border-dashed border-black my-2"></div><div style="white-space:pre;font-family:monospace;font-weight:bold;font-size:12px;">${pL('TOTAL', 'Rp ' + grandTotal.toLocaleString('id-ID'), cols)}</div><div style="white-space:pre;font-family:monospace;">${pL('Metode Bayar', payMethod, cols)}</div>`;
+    h += `<div class="utp-double-separator"></div><div class="font-bold text-[12px]">${pL('TOTAL', 'Rp ' + grandTotal.toLocaleString('id-ID'))}</div>${pL('Metode Bayar', payMethod)}`;
     if (o.payment?.method === 'tempo' || o.payment?.isPaylater || o.payment?.subMethod === 'paylater') {
         const isPl = !!(o.payment?.isPaylater || o.payment?.subMethod === 'paylater');
         if (isPl) {
             if (o.payment?.paylaterMonths) {
-                const tLbl = o.payment.paylaterTenor === '2m' ? '2 Bulan' : (o.payment.paylaterTenor === '3m' ? '3 Bulan' : '30 Hari');
-                h += `<div style="white-space:pre;font-family:monospace;">${pL('Tenor Cicilan', `${tLbl} (${o.payment.paylaterMonths}x)`, cols)}</div>`;
+                const tLbl = o.payment?.paylaterTenor === '2m' ? '2 Bulan' : (o.payment?.paylaterTenor === '3m' ? '3 Bulan' : '30 Hari');
+                h += pL('Tenor Cicilan', `${tLbl} (${o.payment.paylaterMonths}x)`);
             }
             if (o.payment?.paylaterMonthlyInstallment) {
-                h += `<div style="white-space:pre;font-family:monospace;font-weight:bold;">${pL('Angsuran/Bln', 'Rp ' + Math.round(o.payment.paylaterMonthlyInstallment).toLocaleString('id-ID'), cols)}</div>`;
+                h += `<div class="font-bold">${pL('Angsuran/Bln', 'Rp ' + Math.round(o.payment.paylaterMonthlyInstallment).toLocaleString('id-ID'))}</div>`;
             }
             if (o.payment?.tempoDp > 0) {
-                h += `<div style="white-space:pre;font-family:monospace;">${pL('Uang Muka (DP)', 'Rp ' + Math.round(o.payment.tempoDp).toLocaleString('id-ID'), cols)}</div>`;
+                h += pL('Uang Muka (DP)', 'Rp ' + Math.round(o.payment.tempoDp).toLocaleString('id-ID'));
             }
-            h += `<div style="white-space:pre;font-family:monospace;font-weight:bold;">${pL('Tagihan PayLater', 'Rp ' + Math.round(o.payment?.tempoBalance || grandTotal).toLocaleString('id-ID'), cols)}</div>`;
+            h += `<div class="font-bold">${pL('Tagihan PayLater', 'Rp ' + Math.round(o.payment?.tempoBalance || grandTotal).toLocaleString('id-ID'))}</div>`;
         } else {
             if (o.payment?.tempoDp > 0) {
-                h += `<div style="white-space:pre;font-family:monospace;">${pL('Uang Muka (DP)', 'Rp ' + Math.round(o.payment.tempoDp).toLocaleString('id-ID'), cols)}</div>`;
+                h += pL('Uang Muka (DP)', 'Rp ' + Math.round(o.payment.tempoDp).toLocaleString('id-ID'));
             }
-            h += `<div style="white-space:pre;font-family:monospace;font-weight:bold;">${pL('Sisa Piutang', 'Rp ' + Math.round(o.payment?.tempoBalance || grandTotal).toLocaleString('id-ID'), cols)}</div>`;
+            h += `<div class="font-bold">${pL('Sisa Piutang', 'Rp ' + Math.round(o.payment?.tempoBalance || grandTotal).toLocaleString('id-ID'))}</div>`;
         }
         if (o.payment?.tempoDueDate) {
             const dStr = typeof o.payment.tempoDueDate === 'number' ? new Date(o.payment.tempoDueDate).toLocaleDateString('id-ID', {day:'numeric', month:'short', year:'numeric'}) : o.payment.tempoDueDate;
-            h += `<div style="white-space:pre;font-family:monospace;">${pL('Jatuh Tempo', dStr, cols)}</div>`;
+            h += pL('Jatuh Tempo', dStr);
         }
     }
     
     // Informasi loyalty poin & reward
     if (config.showPoints && (o.pointsEarned > 0 || o.finalMemberPoints !== undefined)) {
-        h += `<div class="border-b border-dashed border-black my-2"></div>`;
-        if (o.pointsEarned > 0) h += `<div style="white-space:pre;font-family:monospace;">${pL('Poin Didapat', '+' + o.pointsEarned + ' Poin', cols)}</div>`;
-        if (o.finalMemberPoints !== undefined && o.finalMemberPoints !== null) h += `<div style="white-space:pre;font-family:monospace;font-weight:bold;">${pL('Saldo Poin', String(o.finalMemberPoints) + ' Poin', cols)}</div>`;
+        h += `<div class="utp-separator"></div>`;
+        if (o.pointsEarned > 0) h += pL('Poin Didapat', '+' + o.pointsEarned + ' Poin');
+        if (o.finalMemberPoints !== undefined && o.finalMemberPoints !== null) h += `<div class="font-bold">${pL('Saldo Poin', String(o.finalMemberPoints) + ' Poin')}</div>`;
         if (o.claimedReward) h += `<div style="white-space:pre-wrap;font-weight:bold;word-break:break-word;margin-top:2px;">HADIAH: ${esc(o.claimedReward.name)}</div>`;
     }
     
     const hasPO = orderItems.some(i => i && i.poTime && i.poTime !== '');
     if (hasPO) {
-        h += `<div class="border-b border-dashed border-black my-2"></div><div style="white-space:pre-wrap;font-size:9px;text-align:center;line-height:1.2;font-style:italic;color:#4b5563;margin-bottom:4px;">* Catatan: Untuk pesanan gabungan, produk PO akan dikirimkan menyusul tanpa tambahan biaya.</div>`;
+        h += `<div class="utp-separator"></div><div style="white-space:pre-wrap;font-size:9px;text-align:center;line-height:1.2;font-style:italic;color:#4b5563;margin-bottom:4px;">* Catatan: Untuk pesanan gabungan, produk PO akan dikirimkan menyusul tanpa tambahan biaya.</div>`;
     }
 
     // Barcode kasir
     if (config.showBarcode) {
-        h += `<div class="border-b border-dashed border-black my-2"></div>
+        h += `<div class="utp-separator"></div>
         <div style="text-align:center;margin:6px 0 3px;">
             <div style="width:75%;max-width:200px;height:32px;margin:0 auto;background:repeating-linear-gradient(90deg,#000 0px,#000 2px,transparent 2px,transparent 4px,#000 4px,#000 7px,transparent 7px,transparent 9px,#000 9px,#000 11px,transparent 11px,transparent 13px,#000 13px,#000 16px,transparent 16px,transparent 18px,#000 18px,#000 19px,transparent 19px,transparent 22px);border-top:1px solid #000;border-bottom:1px solid #000;"></div>
             <div style="font-family:monospace;letter-spacing:2px;font-size:10.5px;font-weight:bold;margin-top:3px;">*ORDER-${esc(o.orderId)}*</div>
@@ -208,11 +205,11 @@ export const openReceiptPreview = async (orderId = null) => {
         </div>`;
     }
 
-    h += `<div class="border-b border-dashed border-black my-2"></div><div class="text-center my-2" style="font-size:10px;line-height:1.3;">${esc(config.footerText || 'Terima Kasih Atas Kunjungan Anda')}</div>`;
+    h += `<div class="utp-separator"></div><div class="text-center my-2" style="font-size:10px;line-height:1.3;">${esc(config.footerText || 'Terima Kasih Atas Kunjungan Anda')}</div>`;
     if (config.footerPolicyNote) {
         h += `<div class="text-center my-1" style="font-size:9px;line-height:1.25;color:#475569;">${esc(config.footerPolicyNote)}</div>`;
     }
-    h += `<div class="border-b border-dashed border-black my-2"></div><div style="height:15px;"></div>`;
+    h += `<div class="utp-separator"></div><div style="height:15px;"></div>`;
     
     setH('receipt-paper-content', h);
 

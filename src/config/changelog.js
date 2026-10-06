@@ -8,6 +8,23 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-10-62',
+        version: 'v1.10.62',
+        date: '2026-10-06',
+        title: 'Precision Dual-Engine Thermal Printing: Eliminasi Total Angka Anjlok, Flexbox WYSIWYG, Isolated Iframe & Kalibrasi Presisi Hardware POS58 / POS80',
+        category: 'fix',
+        badge: 'Thermal Receipt WYSIWYG Precision v1.10.62',
+        items: [
+            'Dual-Engine Architecture (src/modules/print/rawbt.js): Mengimplementasikan mesin cetak ganda terpadu — ESC/POS hardware binary murni (Base64) untuk printer Bluetooth RawBT di Android, serta Structured Flexbox HTML untuk dialog cetak browser desktop (Windows/Mac/Linux) menuju printer fisik POS58/POS80.',
+            'Eliminasi Total Angka Harga Melompat / Anjlok (Anti-Wrap Flexbox): Mengubah baris 2-kolom (Subtotal, Total, PPN, Tunai, Kembalian, Qty x Harga) menjadi Flexbox dengan white-space: nowrap pada sisi kanan harga, menjamin angka nominal mustahil jatuh ke baris berikutnya.',
+            'Garis Pemisah Garansi Tepi (CSS Border Dashed): Mengganti string karakter tanda minus "----" yang rentan wrap terpotong menjadi garis CSS dashed border 100% lebar kertas tanpa risiko terbelah.',
+            'Cetak Terisolasi Bersih via Hidden Iframe (@page 58mm & 80mm): Engine cetak desktop kini menginjeksi dokumen mandiri ke hidden iframe dengan @page { margin: 0; size: 58mm auto; } dan lebar fisik kepala cetak 48mm (untuk kertas 58mm) serta 72mm (untuk kertas 80mm), membebaskan dialog cetak dari polusi margin browser.',
+            'Pembersihan Aturan CSS Destruktif (src/style.css): Menghapus selector liar #thermal-print-section * yang sebelumnya memaksa word-break: break-word dan font-weight: bold pada semua teks, digantikan aturan styling terarah dan font Courier New 9.5px yang proporsional.',
+            'Barcode Visual Code128 Presisi Tinggi: Merender barcode pada dialog cetak browser sebagai striping garis visual Code128 yang tajam dan terbaca oleh barcode scanner, bukan teks mentah [BARCODE: ...].',
+            'Multi-Channel Distribution v1.10.62 (Android versionCode 11062).'
+        ]
+    },
+    {
         id: 'log-1-10-61',
         version: 'v1.10.61',
         date: '2026-10-06',

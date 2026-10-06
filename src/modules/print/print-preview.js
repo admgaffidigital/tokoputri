@@ -60,6 +60,41 @@ const ensurePreviewStyles = () => {
         .utp-line.utp-title { font-size: 2em; line-height: 1.12; }
         .utp-line.utp-tall { height: 2.64em; }
         .utp-line.utp-tall > span { display: block; transform: scaleY(2); transform-origin: top center; }
+        .utp-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            width: 100%;
+            line-height: 1.32;
+        }
+        .utp-col-left {
+            text-align: left;
+            word-break: break-word;
+            flex: 1 1 auto;
+        }
+        .utp-col-right {
+            text-align: right;
+            white-space: nowrap;
+            flex-shrink: 0;
+            margin-left: 6px;
+            font-variant-numeric: tabular-nums;
+        }
+        .utp-separator {
+            border-bottom: 1px dashed #000;
+            margin: 4px 0;
+            width: 100%;
+            height: 0;
+        }
+        .utp-double-separator {
+            border-bottom: 3px double #000;
+            margin: 4px 0;
+            width: 100%;
+            height: 0;
+        }
+        .utp-align-center { text-align: center; }
+        .utp-align-right { text-align: right; }
+        .utp-align-left { text-align: left; }
+        .utp-empty-line { height: 0.65em; }
         .utp-barcode-wrap { display: flex; flex-direction: column; align-items: center; justify-content: center; margin: 4px 0 2px; }
         .utp-barcode-bars {
             width: 80%; max-width: 240px; height: 38px;
@@ -138,13 +173,14 @@ const deviceLabel = (cfg) => {
     return 'Printer Sistem';
 };
 
-// ─── Render baris struk thermal (WYSIWYG ESC/POS) ────────────
+// ─── Render baris struk thermal (WYSIWYG ESC/POS & HTML) ─────
 const renderThermalLines = (job) => {
-    let lines = Array.isArray(job.previewLines) && job.previewLines.length ? job.previewLines : null;
-
-    if (!lines && job.html && /<[a-z][\s\S]*>/i.test(job.html)) {
-        return `<div style="white-space:normal;">${job.html}</div>`;
+    // 1. Prioritas 1: Jika job.html sudah ada, render HTML Flexbox langsung (WYSIWYG 100% presisi)
+    if (job.html && /<[a-z][\s\S]*>/i.test(job.html)) {
+        return `<div class="utp-html-rendered" style="white-space:normal;width:100%;">${job.html}</div>`;
     }
+
+    let lines = Array.isArray(job.previewLines) && job.previewLines.length ? job.previewLines : null;
     if (!lines) {
         lines = String(job.plainText || '').split('\n').map(t => ({ t, a: 'left', b: false, s: 'normal' }));
     }
@@ -154,17 +190,29 @@ const renderThermalLines = (job) => {
     while (trimmed.length > 1 && !String(trimmed[trimmed.length - 1].t || '').trim()) trimmed.pop();
 
     return trimmed.map(l => {
+        if (l.type === 'two-column') {
+            const bClass = l.b ? 'font-bold' : '';
+            return `<div class="utp-row ${bClass}"><div class="utp-col-left">${esc(l.left)}</div><div class="utp-col-right">${esc(l.right)}</div></div>`;
+        }
+        if (l.type === 'separator') {
+            return `<div class="utp-separator"></div>`;
+        }
+        if (l.type === 'double-separator') {
+            return `<div class="utp-double-separator"></div>`;
+        }
+        if (l.isBarcode || l.s === 'barcode' || l.type === 'barcode') {
+            const code = esc(l.code || l.t || '');
+            return `
+            <div class="utp-barcode-wrap" style="text-align:center;">
+                <div class="utp-barcode-bars mx-auto" aria-hidden="true"></div>
+                <div class="utp-barcode-code">*${code}*</div>
+            </div>`;
+        }
+
         const txt = esc(String(l.t ?? '')) || '&nbsp;';
         const align = l.a === 'center' ? 'center' : (l.a === 'right' ? 'right' : 'left');
         const weight = l.b ? 800 : 400;
 
-        if (l.isBarcode || l.s === 'barcode') {
-            return `
-            <div class="utp-barcode-wrap" style="text-align:center;">
-                <div class="utp-barcode-bars mx-auto" aria-hidden="true"></div>
-                <div class="utp-barcode-code">*${txt}*</div>
-            </div>`;
-        }
         if (l.s === 'title' || l.s === 'wide') {
             return `<div class="utp-line utp-title" style="text-align:${align};font-weight:${weight}">${txt}</div>`;
         }
@@ -290,6 +338,7 @@ export const setThermalPreviewPaper = (size) => {
             _thermalJob.base64 = p.base64;
             _thermalJob.plainText = p.plainText;
             _thermalJob.previewLines = p.previewLines;
+            _thermalJob.html = p.html || '';
         }
     } catch (e) {
         console.warn('[PrintPreview] Gagal rebuild payload:', e);

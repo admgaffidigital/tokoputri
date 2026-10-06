@@ -1909,27 +1909,103 @@ html.dark ::-webkit-scrollbar-thumb:hover { background: #334155; }
         opacity: 1 !important; 
         visibility: visible !important; 
         box-sizing: border-box !important;
+        font-family: 'Courier New', Courier, monospace !important;
+        line-height: 1.25 !important;
     }
-    /* Preset Kertas 58mm: Lebar cetak efektif ~48mm-52mm */
+    /* Preset Kertas 58mm: Lebar efektif kepala cetak thermal head 48mm */
     #thermal-print-section.paper-58mm, body.paper-58mm #thermal-print-section {
-        width: 58mm !important;
-        max-width: 58mm !important;
-        padding: 0 2mm !important;
+        width: 48mm !important;
+        max-width: 48mm !important;
+        padding: 0 1mm !important;
+        font-size: 9.5px !important;
     }
-    /* Preset Kertas 80mm: Lebar cetak efektif ~72mm-76mm */
+    /* Preset Kertas 80mm: Lebar efektif kepala cetak thermal head 72mm */
     #thermal-print-section.paper-80mm, body.paper-80mm #thermal-print-section {
-        width: 80mm !important;
-        max-width: 80mm !important;
-        padding: 0 3mm !important;
+        width: 72mm !important;
+        max-width: 72mm !important;
+        padding: 0 2mm !important;
+        font-size: 11px !important;
     }
-    #thermal-print-section * { 
-        font-family: 'Courier New', Courier, monospace !important; 
-        font-size: 11px !important; 
-        font-weight: bold !important; 
-        color: #000 !important; 
-        line-height: 1.25 !important; 
-        box-sizing: border-box !important; 
+    #thermal-print-section .utp-row {
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: baseline !important;
+        width: 100% !important;
+        margin: 0.5px 0 !important;
+        line-height: 1.25 !important;
+    }
+    #thermal-print-section .utp-col-left {
+        text-align: left !important;
         word-break: break-word !important;
+        flex: 1 1 auto !important;
+    }
+    #thermal-print-section .utp-col-right {
+        text-align: right !important;
+        white-space: nowrap !important;
+        flex-shrink: 0 !important;
+        margin-left: 5px !important;
+        font-variant-numeric: tabular-nums !important;
+    }
+    #thermal-print-section .utp-line {
+        line-height: 1.25 !important;
+        word-break: break-word !important;
+        margin: 0.5px 0 !important;
+    }
+    #thermal-print-section .utp-separator {
+        border-bottom: 1px dashed #000 !important;
+        margin: 3px 0 !important;
+        width: 100% !important;
+        height: 0 !important;
+    }
+    #thermal-print-section .utp-double-separator {
+        border-bottom: 3px double #000 !important;
+        margin: 3px 0 !important;
+        width: 100% !important;
+        height: 0 !important;
+    }
+    #thermal-print-section .utp-align-center { text-align: center !important; }
+    #thermal-print-section .utp-align-right { text-align: right !important; }
+    #thermal-print-section .utp-align-left { text-align: left !important; }
+    #thermal-print-section .font-bold { font-weight: bold !important; }
+    #thermal-print-section .utp-title { font-size: 1.22em !important; font-weight: bold !important; line-height: 1.15 !important; }
+    #thermal-print-section .utp-tall { font-size: 1.15em !important; font-weight: bold !important; }
+    #thermal-print-section .utp-empty-line { height: 0.65em !important; }
+    #thermal-print-section .utp-barcode-wrap {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        margin: 4px 0 2px !important;
+        text-align: center !important;
+        width: 100% !important;
+    }
+    #thermal-print-section .utp-barcode-bars {
+        width: 82% !important;
+        max-width: 220px !important;
+        height: 36px !important;
+        background: repeating-linear-gradient(
+            90deg,
+            #000 0px, #000 2px,
+            transparent 2px, transparent 4px,
+            #000 4px, #000 7px,
+            transparent 7px, transparent 9px,
+            #000 9px, #000 11px,
+            transparent 11px, transparent 13px,
+            #000 13px, #000 16px,
+            transparent 16px, transparent 18px,
+            #000 18px, #000 19px,
+            transparent 19px, transparent 22px
+        ) !important;
+        border-top: 1px solid #000 !important;
+        border-bottom: 1px solid #000 !important;
+    }
+    #thermal-print-section .utp-barcode-code {
+        font-family: 'Courier New', Courier, monospace !important;
+        font-size: 10px !important;
+        font-weight: bold !important;
+        letter-spacing: 2px !important;
+        margin-top: 2px !important;
+        text-align: center !important;
     }
     * { 
         -webkit-print-color-adjust: exact !important; 
