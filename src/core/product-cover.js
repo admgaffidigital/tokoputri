@@ -13,7 +13,7 @@ import { esc } from './utils.js';
 /**
  * Deteksi ikon representatif: Paket Box (fa-box-open) vs Shopping Bag (fa-bag-shopping)
  */
-export const getCoverIcon = (productOrName) => {
+export const getCoverCategoryMeta = (productOrName) => {
     let query = '';
     if (typeof productOrName === 'object' && productOrName !== null) {
         query = `${productOrName.name || ''} ${productOrName.category || ''} ${productOrName.subCategory || ''}`.toLowerCase();
@@ -21,28 +21,88 @@ export const getCoverIcon = (productOrName) => {
         query = String(productOrName || '').toLowerCase();
     }
 
-    const BOX_KEYWORDS = [
-        'paku', 'baut', 'sekrup', 'mur', 'pipa', 'pvc', 'paralon', 'semen', 'pasir', 
-        'bata', 'mortar', 'hebel', 'besi', 'baja', 'hollow', 'seng', 'atap', 'kawat', 
-        'cat', 'paint', 'roll', 'kuas', 'thinner', 'amplas', 'alat', 'perkakas', 
-        'tang', 'obeng', 'palu', 'kunci', 'gembok', 'meteran', 'bor', 'gerinda', 'paket', 'box'
-    ];
+    // 1. Cat & Finishing
+    if (query.includes('cat') || query.includes('paint') || query.includes('politur') || query.includes('thinner') || query.includes('no drop') || query.includes('kuas') || query.includes('roll')) {
+        return {
+            icon: 'fa-paint-roller',
+            gradient: 'linear-gradient(135deg, #f43f5e 0%, #be123c 100%)',
+            bgGlow: 'radial-gradient(ellipse at 50% 45%, rgba(244, 63, 94, 0.12) 0%, transparent 70%)',
+            textColor: '#e11d48'
+        };
+    }
+    // 2. Gembok & Kunci Pengaman
+    if (query.includes('gembok') || query.includes('kunci') || query.includes('grendel') || query.includes('slot') || query.includes('silinder')) {
+        return {
+            icon: 'fa-lock',
+            gradient: 'linear-gradient(135deg, #f59e0b 0%, #b45309 100%)',
+            bgGlow: 'radial-gradient(ellipse at 50% 45%, rgba(245, 158, 11, 0.12) 0%, transparent 70%)',
+            textColor: '#d97706'
+        };
+    }
+    // 3. Paku, Baut & Fastener
+    if (query.includes('paku') || query.includes('baut') || query.includes('sekrup') || query.includes('mur') || query.includes('kawat')) {
+        return {
+            icon: 'fa-hammer',
+            gradient: 'linear-gradient(135deg, #64748b 0%, #334155 100%)',
+            bgGlow: 'radial-gradient(ellipse at 50% 45%, rgba(100, 116, 139, 0.12) 0%, transparent 70%)',
+            textColor: '#475569'
+        };
+    }
+    // 4. Pipa & Sambungan Sanitair
+    if (query.includes('pipa') || query.includes('pvc') || query.includes('paralon') || query.includes('kran') || query.includes('sambungan') || query.includes('fitting') || query.includes('knee') || query.includes('tee')) {
+        return {
+            icon: 'fa-faucet-drip',
+            gradient: 'linear-gradient(135deg, #06b6d4 0%, #0e7490 100%)',
+            bgGlow: 'radial-gradient(ellipse at 50% 45%, rgba(6, 182, 212, 0.12) 0%, transparent 70%)',
+            textColor: '#0891b2'
+        };
+    }
+    // 5. Semen & Bahan Bangunan
+    if (query.includes('semen') || query.includes('mortar') || query.includes('pasir') || query.includes('bata') || query.includes('hebel')) {
+        return {
+            icon: 'fa-trowel-bricks',
+            gradient: 'linear-gradient(135deg, #ea580c 0%, #9a3412 100%)',
+            bgGlow: 'radial-gradient(ellipse at 50% 45%, rgba(234, 88, 12, 0.12) 0%, transparent 70%)',
+            textColor: '#c2410c'
+        };
+    }
+    // 6. Perkakas & Alat Pertukangan
+    if (query.includes('perkakas') || query.includes('tang') || query.includes('obeng') || query.includes('palu') || query.includes('bor') || query.includes('gerinda') || query.includes('meteran') || query.includes('gergaji')) {
+        return {
+            icon: 'fa-toolbox',
+            gradient: 'linear-gradient(135deg, #6366f1 0%, #4338ca 100%)',
+            bgGlow: 'radial-gradient(ellipse at 50% 45%, rgba(99, 102, 241, 0.12) 0%, transparent 70%)',
+            textColor: '#4f46e5'
+        };
+    }
 
-    const isBox = BOX_KEYWORDS.some(kw => query.includes(kw));
-    return isBox ? 'fa-box-open' : 'fa-bag-shopping';
+    // Default Brand Theme
+    return {
+        icon: 'fa-box-open',
+        gradient: 'linear-gradient(135deg, var(--color-primary-light, #e1b858) 0%, var(--color-primary, #c59b27) 60%, var(--color-primary-dark, #a87f1b) 100%)',
+        bgGlow: 'radial-gradient(ellipse at 50% 45%, rgba(var(--color-primary-rgb), 0.12) 0%, transparent 70%)',
+        textColor: 'var(--color-primary)'
+    };
+};
+
+/**
+ * Deteksi ikon representatif: Menggunakan meta kategori semantik
+ */
+export const getCoverIcon = (productOrName) => {
+    return getCoverCategoryMeta(productOrName).icon;
 };
 
 /**
  * Backward compatibility getProductTheme
  */
 export const getProductTheme = (productOrName, category = '', brand = '') => {
-    const icon = getCoverIcon(productOrName);
+    const meta = getCoverCategoryMeta(productOrName);
     return {
         id: 'brand',
-        icon: icon,
-        subIcon: icon,
+        icon: meta.icon,
+        subIcon: meta.icon,
         label: 'Produk Resmi',
-        podGradient: 'linear-gradient(135deg, rgba(var(--color-primary-rgb),0.12) 0%, rgba(var(--color-primary-rgb),0.20) 100%)',
+        podGradient: meta.gradient,
         accent: 'rgba(var(--color-primary-rgb),0.1)',
         aura: 'rgba(var(--color-primary-rgb),0.08)',
         shadowColor: 'rgba(var(--color-primary-rgb),0.15)'
@@ -65,7 +125,7 @@ export const getMonogram = (name) => {
 
 /**
  * Render elemen HTML Minimalist Clean Brand Cover.
- * Sederhana, rapi, tidak jomplang dengan theme, ikon paket / bag shopping, dan watermark resmi toko.
+ * Sederhana, rapi, tidak jomplang dengan theme, ikon semantik kategori + monogram resmi toko.
  * @param {Object|string} product - Objek produk atau nama produk
  * @param {Object} options - Pengaturan render { size: 'lg'|'md'|'sm'|'thumb', className: string }
  */
@@ -74,19 +134,21 @@ export const renderProductCoverHtml = (product, options = {}) => {
     const customClass = options.className || '';
 
     const pName = typeof product === 'object' && product !== null ? (product.name || 'Produk') : String(product || 'Produk');
-    const iconClass = getCoverIcon(product);
+    const meta = getCoverCategoryMeta(product);
+    const monogram = getMonogram(pName);
     const storeName = 'PUTRI UTAMA TEKNIK';
 
     return `
     <div class="pos-smart-cover cover-${size} ${customClass}" title="${esc(pName)}">
         <!-- Subtle Theme Glow -->
-        <div class="cover-surface-glow"></div>
+        <div class="cover-surface-glow" style="background:${meta.bgGlow}"></div>
 
-        <!-- Center Icon Pod: Paket Box / Shopping Bag -->
+        <!-- Center Content: Icon Pod + Monogram -->
         <div class="cover-center">
-            <div class="cover-icon-pod">
-                <i class="fa-solid ${iconClass} cover-icon"></i>
+            <div class="cover-icon-pod" style="background:${meta.gradient}">
+                <i class="fa-solid ${meta.icon} cover-icon text-white"></i>
             </div>
+            ${size === 'md' || size === 'lg' ? `<span class="cover-monogram" style="color:${meta.textColor}">${esc(monogram)}</span>` : ''}
         </div>
 
         <!-- Official Store Watermark -->

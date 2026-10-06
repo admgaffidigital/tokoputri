@@ -1,5 +1,5 @@
 # 📖 PANDUAN LENGKAP PENGGUNAAN APLIKASI TOKO & KASIR (UNTUK PEMILIK USAHA)
-**Panduan Operasional Praktis 100% Non-Teknis — Versi Sistem v1.10.57**
+**Panduan Operasional Praktis 100% Non-Teknis — Versi Sistem v1.10.58**
 
 Selamat datang! Panduan ini dirancang khusus untuk pemilik usaha (*Owner*), manajer toko, dan staf kasir agar dapat langsung mengoperasikan seluruh sistem toko secara maksimal, profesional, dan mudah dipahami tanpa memerlukan latar belakang teknis komputer.
 
@@ -89,22 +89,44 @@ Sistem Toko Putri memiliki gerbang masuk terpadu cerdas (*Smart Unified Authenti
 
 ## BAB 4 — MENGOPERASIKAN KASIR FISIK TOKO (POS KASIR & BARCODE SCANNER)
 
-1. Buka menu **"Kasir POS"**. Layar kasir didesain sangat responsif, mendukung layar sentuh (*touchscreen*) maupun komputer desktop biasa.
+Layar kasir POS Toko Putri dirancang khusus dengan ergonomi tinggi berstandar ritel modern, mendukung layar sentuh (*touchscreen*) tablet/HP maupun komputer kasir desktop dengan keyboard fisik.
+
+1. **Memilih Mode Tampilan Katalog (List vs Grid):**
+   - **Mode List (3-Kolom Proporsional):** Sangat cocok untuk toko dengan ratusan jenis produk. Informasi terbagi rapi menjadi 3 kolom:
+     - *Kiri:* Foto/cover barang, inisial monogram, nama barang, kode SKU, dan kategori.
+     - *Tengah:* Status ketersediaan stok fisik real-time dan satuan jual (Pcs, Box, Sak, Kaleng, Roll).
+     - *Kanan:* Harga jual, harga modal (jika akun memiliki izin), dan pil tombol aksi tambah cepat `+` (berubah dinamis menampilkan jumlah yang sudah masuk keranjang).
+   - **Mode Grid (Kartu Visual & Smart Monogram):** Menyajikan kartu barang berbentuk grid modern. Untuk produk yang belum memiliki foto, sistem otomatis menampilkan ikon semantik cerdas (rol cat, gembok, palu paku, kran air, cetok bangunan, toolbox) berlatar warna pastel cerah dan monogram 2 huruf inisial nama barang.
+
 2. **Memasukkan Barang ke Nota Belanja:**
-   - **Cara 1 (Scan Barcode):** Cukup tembakkan barcode scanner ke kemasan barang. Barang seketika masuk ke keranjang belanja kasir dalam 0.1 detik.
-   - **Cara 2 (Pencarian Cepat):** Ketik 2-3 huruf nama barang di kolom cari atas.
-   - **Cara 3 (Katalog Visual):** Sentuh/klik kartu barang pada etalase kasir.
-3. **Mengatur Jumlah & Diskon:**
-   - Klik tombol `+` atau `-` pada keranjang belanja kasir.
-   - Anda dapat memberikan diskon persen (%) atau potongan nominal langsung (Rp).
-4. **Proses Pembayaran:**
-   - Klik tombol besar hijau **"Bayar (F9)"**.
+   - **Cara 1 (Scan Barcode USB/Wireless):** Cukup tembakkan barcode scanner ke kemasan barang. Barang seketika masuk ke keranjang belanja kasir dalam 0.1 detik.
+   - **Cara 2 (Scan Kamera HP/Webcam - F9):** Klik tombol **F9** untuk membuka pemindai kamera bawaan perangkat.
+   - **Cara 3 (Pencarian Cepat):** Ketik 2-3 huruf nama barang atau kode produk di kolom cari atas.
+   - **Cara 4 (Katalog Visual):** Sentuh/klik kartu produk pada katalog etalase kasir.
+
+3. **Mengatur Kuantitas & Diskon Per Item (Ramping On-Demand):**
+   - **Ubah Kuantitas:** Klik tombol `+` atau `-` pada struk belanja, atau ketik langsung angka kuantitasnya (mendukung angka desimal seperti `0.5` atau `1.5`).
+   - **Diskon Per Barang (+Diskon):** Untuk menghemat ruang layar, form diskon tersembunyi rapi di balik tombol `+Diskon`. Jika ada potongan harga, klik tombol tersebut dan masukkan nominal diskon. Harga asli akan otomatis dicoret dan diskon dihitung seketika.
+
+4. **Pintasan Cepat Tuts Fisik & Sentuh (Chiclet Keycaps):**
+   Di bagian atas keranjang kasir tersedia tombol pintas bergaya tuts keyboard fisik yang dapat ditekan langsung pada keyboard komputer atau disentuh pada layar:
+   - `<F2>` : Pilih atau daftarkan nama Pelanggan / Member toko.
+   - `<F4>` : Pintasan instan menuju proses Pembayaran Kasir.
+   - `<F6>` : Tahan antrean transaksi (Hold Cart) jika pembeli ingin mengambil barang lain.
+   - `<F7>` : Kosongkan seluruh keranjang belanja jika batal beli.
+   - `<F8>` : Berikan diskon total nota transaksi (bisa nominal Rp atau persen %).
+   - `<F9>` : Buka/tutup pemindai barcode kamera HP/laptop.
+   - `<Esc>`: Tutup modal atau batalkan dialog aktif.
+
+5. **Proses Pembayaran (Bento Register Island & Bayar F4):**
+   - Panel ringkasan total belanja menyajikan angka tagihan besar dengan tipografi tabular tebal yang jelas dibaca kasir.
+   - Klik tombol besar **"BAYAR SEKARANG [F4]"**.
    - Pilih metode pembayaran:
-     - **Tunai (Cash):** Ketik nominal uang yang diterima (atau klik tombol cepat uang pas / pecahan Rp 50.000 / Rp 100.000); sistem langsung menghitung nominal kembalian dengan akurat.
-     - **QRIS:** Layar kasir akan menampilkan barcode QRIS toko Anda agar pembeli tinggal scan lewat m-banking mereka.
-     - **Transfer Bank:** Untuk pembeli yang membayar via transfer langsung.
-     - **Putri PayLater / Tempo:** Khusus pelanggan langganan yang mengambil barang dulu dan bayar belakangan/cicilan.
-5. Klik **"Selesaikan Transaksi"**. Struk otomatis tercetak ke printer thermal dan stok terpotong seketika!
+     - **Tunai (Cash):** Ketik uang yang diterima atau klik pecahan instan (Uang Pas, 50rb, 100rb, dsb.); kembalian dihitung otomatis.
+     - **QRIS:** Menampilkan barcode QRIS toko untuk di-scan oleh pembeli.
+     - **Transfer Bank:** Untuk pembayaran transfer ke rekening toko.
+     - **Putri PayLater / Tempo:** Khusus pelanggan langganan dengan cicilan atau jatuh tempo.
+   - Klik **"Selesaikan Transaksi"**. Struk thermal kasir otomatis tercetak dan stok barang di database terpotong seketika!
 
 ---
 

@@ -6,7 +6,7 @@ Aplikasi e-commerce dan manajemen kasir point-of-sales (POS) modern berkinerja t
 
 ## 🛠️ Informasi Pengembang & Hak Cipta
 * **Nama Projek**: TOKO PUTRI
-* **Versi Rilis**: **v1.10.57** (Android VersionCode: `11057`)
+* **Versi Rilis**: **v1.10.58** (Android VersionCode: `11058`)
 * **Dikembangkan & Ditandatangani Oleh**: **Novan Restu Utomo** (Selaku Pengembang Utama dan Developer Asli)
 
 ---
@@ -221,6 +221,36 @@ Aplikasi telah dilengkapi dengan fondasi **Capacitor 8 Android Native**:
 ---
 
 ## 📋 Riwayat Pembaruan (Changelog)
+
+### v1.10.58 — Transformasi Total Antarmuka POS Kasir: Mode List 3-Kolom Proporsional, Grid Smart Monogram Semantik, Keranjang Struk Ramping & Chiclet Keycaps Taktil (06 Okt 2026)
+- **Mode List POS 3-Kolom Proporsional (`src/modules/pos/pos.js`)**: Mengeliminasi kekosongan void di tengah kartu list dengan pembagian 3 zona seimbang:
+  - *Kolom Kiri (Identitas & Kode)*: Foto/cover produk, badge inisial monogram, nama produk tebal, kode unik produk, dan subtitle kategori/brand.
+  - *Kolom Tengah (Stok & Satuan)*: Kapsul status ketersediaan stok fisik real-time, badge Pre-Order (PO) terpadu, dan satuan jual.
+  - *Kolom Kanan (Harga & Action Hub)*: Harga jual kontras, label HPP transparan, serta pil aksi interaktif yang dinamis menampilkan kuantitas saat sudah ada di keranjang (`+X di Keranjang`).
+- **Grid Smart Semantic Monogram (`src/core/product-cover.js`)**: Menghilangkan kejenuhan kotak kardus polos pada produk tanpa foto melalui deteksi semantik cerdas nama & kategori barang:
+  - *Cat & Pelapis*: Rol cat dinamis dengan latar gradien rose/merah muda lembut.
+  - *Gembok & Kunci*: Ikon padlock dengan latar gradien amber/emas hangat.
+  - *Paku & Baut*: Ikon palu & paku dengan latar gradien slate industrial.
+  - *Pipa & Sanitair*: Ikon kran air dengan latar gradien cyan jernih.
+  - *Semen & Bangunan*: Ikon cetok bata dengan latar gradien terracotta hangat.
+  - *Perkakas & Alat*: Ikon toolbox dengan latar gradien indigo elegan.
+  - *Monogram 2 Huruf*: Tipografi monogram inisial nama barang modern di tengah kartu untuk identifikasi instan di layar kasir.
+- **Keranjang Struk Ramping On-Demand (`+Diskon Toggle`)**: Mengoptimalkan kapasitas vertikal struk belanja kasir hingga 35-40% lebih banyak (menampilkan 6–8 barang sekaligus tanpa scroll) dengan menyembunyikan input diskon di balik toggle `+Diskon` jika bernilai 0, serta menampilkan coretan harga asli saat diskon aktif.
+- **Bento Register Island & Tipografi Tabular Kasir**: Merombak panel total pembayaran kasir dengan latar kontras tinggi, font tabular monospace tebal anti-lompat, dan penyematan pintasan `[F4]` langsung di dalam tombol utama Proses Pembayaran.
+- **Pintasan Keyboard Chiclet Taktil Realistis**: Menghadirkan tombol pintas bergaya tuts keyboard fisik (`<kbd class="pos-keycap">`) untuk F2-F9 dan Esc yang interaktif dan dapat diklik/disentuh langsung pada layar sentuh maupun keyboard desktop.
+- **Indikator Radar Ping Online**: Memperbarui badge status Online kasir dengan animasi pulsa radar live yang elegan untuk memantau konektivitas sinkronisasi cloud.
+- **Sinkronisasi Multi-Channel v1.10.58**: Android VersionCode `11058`, bundler Vite, PWA, dan Capacitor.
+
+---
+
+### v1.10.57 — Pemeliharaan Menyeluruh & Diagnostik Sistem Terpadu: Audit Statis Multi-Modul, Eliminasi BOM UTF-8, PWA Icon Alignment & Pipeline Maintenance 1-Klik (06 Okt 2026)
+- **Audit Statis Kesehatan Sistem Otomatis (`scripts/audit-check.mjs`, `npm run audit`)**: Menghadirkan engine diagnostik mandiri yang memverifikasi sintaks seluruh berkas konfigurasi JSON kritis, memindai 79 berkas JavaScript di direktori `src/`, dan menguji keabsahan 307 impor modul relatif tanpa celah broken link.
+- **Eliminasi Karakter Tersembunyi BOM UTF-8**: Membersihkan karakter Byte Order Mark (`\uFEFF`) tersembunyi pada `firebase.json` dan `.firebaserc` yang berpotensi menyebabkan parser pihak ketiga gagal membaca konfigurasi.
+- **Penyelarasan Ikon PWA Standar (`public/manifest.json`)**: Menghubungkan deklarasi ikon PWA Web App Manifest secara langsung ke berkas `/official_logo.png` resolusi tinggi (192x192 & 512x512 maskable).
+- **Pipeline Maintenance 1-Klik (`package.json`)**: Menyediakan perintah komprehensif `npm run maintenance` yang secara otomatis menjalankan audit statis integritas kode, test suite engine lisensi (22/22 passed), kompilasi produksi Vite, sinkronisasi Android build.gradle, dan sinkronisasi Capacitor.
+- **Sinkronisasi Multi-Channel v1.10.57**: Android VersionCode `11057`.
+
+---
 
 ### v1.9.49 — Harmonisasi Tema Warna 100% & Adaptive Dual-Mode UX Native App: Item Builder PO, Touch Controls, & Standarisasi Aksi (26 Sep 2026)
 - **Adaptive Dual-Mode PO Item Builder (Mobile Native Cards vs Desktop Table)**: Mengeliminasi total tabel horizontal kaku yang terpotong dan menghasilkan scrollbar buruk di layar ponsel (viewport <640px). Pada mode smartphone, setiap baris barang pesanan otomatis bertransformasi menjadi kartu sentuh native yang lega dengan monogram inisial, pemilih produk intuitif, stepper kuantitas jempol `[-] [ 1 ] [+]`, input harga modal HPP `Rp`, subtotal dinamis seketika, dan tombol hapus cepat. Di layar komputer/tablet, tetap disajikan tabel presisi modern.

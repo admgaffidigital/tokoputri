@@ -61,6 +61,16 @@ let posPaidAmount   = 0;
 let posGlobalDisc   = 0;
 let posDiscountType = 'rp'; // 'rp' | 'percent'
 let posDiscountVal  = 0;
+const posOpenItemDiscKeys = new Set();
+export const togglePOSItemDiscInput = (cartKey) => {
+    const keyStr = String(cartKey);
+    if (posOpenItemDiscKeys.has(keyStr)) {
+        posOpenItemDiscKeys.delete(keyStr);
+    } else {
+        posOpenItemDiscKeys.add(keyStr);
+    }
+    renderCart();
+};
 let barcodeBuffer   = '';
 let barcodeTimer    = null;
 let clockInterval   = null;
@@ -1446,35 +1456,48 @@ export const renderCatalog = (isLoadMore = false) => {
                 const coverMdHtml = renderProductCoverHtml(p, { size: 'md' });
 
                 if (posCatalogViewMode === 'list') {
-                    // ── LIST MODE: Baris kompak & rapi, Kategori & Brand mandiri di atas, chip operasional tidak terpotong ──
+                    // ── LIST MODE: Layout 3-Kolom Proporsional (Identitas - Status Stok/Satuan - Harga & Aksi) ──
                     return `
                     <div class="pos-list-item${totalQtyInCart > 0 ? ' in-cart' : ''}${stockInfo.isOutOfStock ? ' is-out-of-stock cursor-not-allowed' : ' cursor-pointer'}" onclick="window.posAddToCart('${safeId}')">
-                        <div class="pos-list-thumb">
-                            ${hasImg
-                                ? `<img width="52" height="52" loading="lazy" decoding="async" src="${esc(imgUrl)}" alt="${pName}"
-                                     class="absolute inset-0 w-full h-full object-cover object-center block"
-                                     onerror="this.onerror=null;this.style.display='none';this.nextElementSibling.style.display='flex';">
-                                   <div class="absolute inset-0 w-full h-full" style="display:none">${coverSmHtml}</div>`
-                                : coverSmHtml}
-                            ${totalQtyInCart > 0 ? `<div class="pos-qty-badge" style="top:2px;right:2px;min-width:18px;height:18px;font-size:9px;border-width:1.5px">${formatQty(totalQtyInCart)}</div>` : ''}
-                        </div>
-                        <div style="flex:1;min-width:0" class="flex flex-col justify-center">
-                            <!-- Line 1: Eyebrow Kategori & Brand Terdedikasi (100% lebar kartu, anti-terpotong) -->
-                            <p class="text-[9px] uppercase tracking-wider font-bold text-slate-400 dark:text-slate-500 truncate leading-none mb-1">${catBrandText}</p>
-                            <!-- Line 2: Nama Produk -->
-                            <p class="text-xs font-bold text-slate-800 dark:text-slate-100 truncate leading-snug" title="${pName}">${pName}</p>
-                            <!-- Line 3: Chip Operasional Terprioritas (Anti-wrap & Anti-potong) -->
-                            ${listChipsHtml ? `<div class="flex items-center gap-1 overflow-x-auto hide-scrollbar no-scrollbar flex-nowrap py-0.5 mt-0.5">${listChipsHtml}</div>` : ''}
-                            <!-- Line 4: Harga Jual & Harga Modal HPP -->
-                            <div class="flex items-center gap-2 flex-wrap mt-1">
-                                <span style="font-size:12px;font-weight:900;color:var(--color-primary)">${fRp(pPrice)}</span>
-                                ${priceNormalHtml}
-                                ${hppTagHtml}
+                        <!-- Kolom 1 (Kiri): Foto & Nama Produk -->
+                        <div class="flex items-center gap-3 min-w-0 flex-1 sm:flex-[1.4] lg:flex-[1.6]">
+                            <div class="pos-list-thumb">
+                                ${hasImg
+                                    ? `<img width="52" height="52" loading="lazy" decoding="async" src="${esc(imgUrl)}" alt="${pName}"
+                                         class="absolute inset-0 w-full h-full object-cover object-center block"
+                                         onerror="this.onerror=null;this.style.display='none';this.nextElementSibling.style.display='flex';">
+                                       <div class="absolute inset-0 w-full h-full" style="display:none">${coverSmHtml}</div>`
+                                    : coverSmHtml}
+                                ${totalQtyInCart > 0 ? `<div class="pos-qty-badge" style="top:2px;right:2px;min-width:18px;height:18px;font-size:9px;border-width:1.5px">${formatQty(totalQtyInCart)}</div>` : ''}
+                            </div>
+                            <div class="min-w-0 flex-1 flex flex-col justify-center">
+                                <p class="text-[9px] uppercase tracking-wider font-bold text-slate-400 dark:text-slate-500 truncate leading-none mb-1">${catBrandText}</p>
+                                <p class="text-xs font-bold text-slate-800 dark:text-slate-100 truncate leading-snug" title="${pName}">${pName}</p>
+                                ${listChipsHtml ? `<div class="flex items-center gap-1 overflow-x-auto hide-scrollbar no-scrollbar flex-nowrap py-0.5 mt-0.5">${listChipsHtml}</div>` : ''}
                             </div>
                         </div>
-                        ${stockInfo.isOutOfStock 
-                            ? `<button class="pos-add-btn opacity-40 cursor-not-allowed shrink-0" disabled title="Stok Habis"><i class="fa-solid fa-ban"></i></button>`
-                            : `<button onclick="event.stopPropagation();window.posAddToCart('${safeId}')" class="pos-add-btn shrink-0" title="Tambah ke keranjang"><i class="fa-solid fa-plus"></i></button>`}
+
+                        <!-- Kolom 2 (Tengah): Status Stok & Satuan (Mengisi celah kosong tengah) -->
+                        <div class="hidden sm:flex flex-col items-start justify-center px-3 border-l border-slate-100 dark:border-slate-800/80 shrink-0 w-28 md:w-36">
+                            ${stockInfo.isOutOfStock 
+                                ? `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-black uppercase bg-rose-50 text-rose-600 dark:bg-rose-950/40 dark:text-rose-400 border border-rose-200 dark:border-rose-800/60"><i class="fa-solid fa-ban text-[8px]"></i> Stok Habis</span>`
+                                : `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 border border-slate-200 dark:border-slate-700"><i class="fa-solid fa-boxes-stacked text-[8px] text-emerald-500"></i> Stok: <b class="font-black text-slate-900 dark:text-white">${formatQty(stockInfo.totalStock)}</b></span>`}
+                            ${p.unit ? `<span class="text-[9px] text-slate-400 dark:text-slate-500 font-medium mt-1 truncate">Satuan: <b class="text-slate-600 dark:text-slate-300">${esc(p.unit)}</b></span>` : ''}
+                        </div>
+
+                        <!-- Kolom 3 (Kanan): Harga Jual & Action Hub -->
+                        <div class="flex items-center gap-3 shrink-0 pl-2.5 border-l border-slate-100 dark:border-slate-800/80">
+                            <div class="flex flex-col items-end text-right min-w-[85px] sm:min-w-[105px]">
+                                <span class="text-xs sm:text-sm font-black tracking-tight" style="color:var(--color-primary)">${fRp(pPrice)}</span>
+                                ${priceNormalHtml}
+                                ${hppTagHtml ? `<div class="mt-0.5">${hppTagHtml}</div>` : ''}
+                            </div>
+                            ${stockInfo.isOutOfStock 
+                                ? `<button class="pos-add-btn opacity-40 cursor-not-allowed shrink-0" disabled title="Stok Habis"><i class="fa-solid fa-ban"></i></button>`
+                                : totalQtyInCart > 0
+                                    ? `<div class="pos-list-pill-in-cart shrink-0" title="Klik untuk menambah">+${formatQty(totalQtyInCart)}</div>`
+                                    : `<button onclick="event.stopPropagation();window.posAddToCart('${safeId}')" class="pos-add-btn shrink-0" title="Tambah ke keranjang"><i class="fa-solid fa-plus"></i></button>`}
+                        </div>
                     </div>`;
                 }
 
@@ -1511,13 +1534,15 @@ export const renderCatalog = (isLoadMore = false) => {
                                     <span class="pos-card-price">${fRp(pPrice)}</span>
                                     ${priceNormalHtml}
                                 </div>
-                                <div class="flex items-center gap-1 mt-1">
+                                <div class="flex items-center gap-1 mt-0.5">
                                     ${hppTagHtml}
                                 </div>
                             </div>
                             ${stockInfo.isOutOfStock
                                 ? `<button class="pos-add-btn opacity-40 cursor-not-allowed shrink-0" disabled title="Stok Habis"><i class="fa-solid fa-ban"></i></button>`
-                                : `<button onclick="event.stopPropagation();window.posAddToCart('${safeId}')" class="pos-add-btn shrink-0" title="Tambah ke keranjang"><i class="fa-solid fa-plus"></i></button>`}
+                                : totalQtyInCart > 0
+                                    ? `<button onclick="event.stopPropagation();window.posAddToCart('${safeId}')" class="pos-add-btn shrink-0" title="Tambah lagi (+1)"><b>+${formatQty(totalQtyInCart)}</b></button>`
+                                    : `<button onclick="event.stopPropagation();window.posAddToCart('${safeId}')" class="pos-add-btn shrink-0" title="Tambah ke keranjang"><i class="fa-solid fa-plus"></i></button>`}
                         </div>
                     </div>
                 </div>`;
@@ -1586,10 +1611,13 @@ const renderCart = () => {
             const maxItemDisc = itemHpp > 0 ? Math.max(0, Math.round((item.price - itemHpp) * item.qty)) : Math.round(item.price * item.qty);
             const itemMargin = itemHpp > 0 ? Math.round(item.subtotal - (itemHpp * item.qty)) : 0;
             const coverThumbHtml = renderProductCoverHtml(item, { size: 'thumb' });
+            const hasItemDisc = (parseFloat(item.discount) || 0) > 0;
+            const isDiscOpen = posOpenItemDiscKeys.has(String(item.cartKey || item.id)) || hasItemDisc;
+
             return `
-            <div class="group flex items-start gap-2.5 p-2.5 bg-white dark:bg-slate-800/90 rounded-2xl border border-slate-200/90 dark:border-slate-700/80 shadow-xs hover:border-[var(--color-primary)] transition-all">
+            <div class="group flex items-start gap-2.5 p-2 sm:p-2.5 bg-white dark:bg-slate-800/90 rounded-2xl border border-slate-200/90 dark:border-slate-700/80 shadow-xs hover:border-[var(--color-primary)] transition-all">
                 <!-- 44px Thumbnail -->
-                <div class="w-11 h-11 rounded-xl overflow-hidden shrink-0 border border-slate-200/60 dark:border-slate-700 flex items-center justify-center">
+                <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl overflow-hidden shrink-0 border border-slate-200/60 dark:border-slate-700 flex items-center justify-center bg-slate-50 dark:bg-slate-800">
                     ${img 
                         ? `<img width="44" height="44" loading="lazy" src="${esc(img)}" alt="${esc(item.name)}" onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='flex';" class="w-full h-full object-cover">
                            <div class="w-full h-full" style="display:none">${coverThumbHtml}</div>`
@@ -1607,12 +1635,21 @@ const renderCart = () => {
                             ${item.isWholesale && item.basePrice ? `<span class="line-through text-slate-400">${fRp(item.basePrice)}</span> <span class="font-bold" style="color:var(--color-primary)">${fRp(item.price)}</span>` : fRp(item.price)}
                         </span>
                     </div>
-                    <div class="flex items-center gap-1.5 mt-1.5 flex-wrap">
-                        <span class="text-[9px] text-slate-400 font-bold uppercase tracking-wider">Diskon:</span>
-                        <input type="number" min="0" ${itemHpp > 0 ? `max="${maxItemDisc}"` : ''} placeholder="0" value="${item.discount || ''}" onchange="window.posSetItemDisc('${ckey}',this.value)"
-                            class="w-16 text-[10px] font-mono font-bold border border-slate-200 dark:border-slate-700 rounded-md px-1.5 py-0.5 bg-slate-50 dark:bg-slate-700/60 text-right focus:outline-none focus:border-[var(--color-primary)] transition-all">
-                        ${canViewHpp() && itemHpp > 0 ? `<span class="text-[9px] text-amber-600 dark:text-amber-400 font-bold whitespace-nowrap" title="Maksimal diskon agar tidak di bawah harga modal HPP">(Maks: ${fRp(maxItemDisc)})</span>` : ''}
-                    </div>
+
+                    <!-- Smart Item Discount Toggle / Input (Ramping & Bebas Sesak) -->
+                    ${isDiscOpen ? `
+                        <div class="flex items-center gap-1.5 mt-1.5 flex-wrap">
+                            <span class="text-[9px] text-slate-400 font-bold uppercase tracking-wider">Diskon:</span>
+                            <input type="number" min="0" ${itemHpp > 0 ? `max="${maxItemDisc}"` : ''} placeholder="0" value="${item.discount || ''}" onchange="window.posSetItemDisc('${ckey}',this.value)"
+                                class="w-16 text-[10px] font-mono font-bold border border-slate-200 dark:border-slate-700 rounded-md px-1.5 py-0.5 bg-slate-50 dark:bg-slate-700/60 text-right focus:outline-none focus:border-[var(--color-primary)] transition-all">
+                            ${canViewHpp() && itemHpp > 0 ? `<span class="text-[9px] text-amber-600 dark:text-amber-400 font-bold whitespace-nowrap" title="Maksimal diskon">(Maks: ${fRp(maxItemDisc)})</span>` : ''}
+                            ${!hasItemDisc ? `<button type="button" onclick="window.togglePOSItemDiscInput('${ckey}')" class="text-[9px] text-slate-400 hover:text-rose-500 ml-0.5 cursor-pointer" title="Tutup input diskon"><i class="fa-solid fa-xmark"></i></button>` : ''}
+                        </div>` : `
+                        <div class="flex items-center gap-2 mt-1">
+                            <button type="button" onclick="window.togglePOSItemDiscInput('${ckey}')" class="pos-item-disc-btn" title="Beri diskon khusus per item">
+                                <i class="fa-solid fa-tag text-[8px]"></i> +Diskon
+                            </button>
+                        </div>`}
                 </div>
                 <!-- Stepper & Subtotal -->
                 <div class="flex flex-col items-end shrink-0">
@@ -1627,7 +1664,10 @@ const renderCart = () => {
                             <i class="fa-solid fa-trash-can"></i>
                         </button>
                     </div>
-                    <p class="text-xs font-black mt-1.5" style="color:var(--color-primary)">${fRp(item.subtotal)}</p>
+                    <div class="flex items-baseline gap-1 mt-1.5">
+                        ${hasItemDisc ? `<span class="line-through text-[10px] text-slate-400">${fRp(item.price * item.qty)}</span>` : ''}
+                        <p class="text-xs font-black" style="color:var(--color-primary)">${fRp(item.subtotal)}</p>
+                    </div>
                     ${canViewHpp() && itemHpp > 0 ? `<p class="text-[9px] font-bold ${itemMargin >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-500'} mt-0.5" title="Estimasi laba kotor item ini"><i class="fa-solid fa-arrow-trend-up text-[8px] mr-0.5"></i>Untung: ${fRp(itemMargin)}</p>` : ''}
                 </div>
             </div>`;
@@ -3532,7 +3572,11 @@ const buildPOSLayout = ({ isStorefront }) => {
             </div>
             <div class="flex items-center gap-1.5 sm:gap-2 shrink-0 whitespace-nowrap">
                 <span class="pos-network-status-badge hidden sm:inline-flex items-center gap-1.5 text-[10px] font-bold text-emerald-400 bg-emerald-950/40 px-2.5 py-1 rounded-lg border border-emerald-500/30">
-                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span><span>Online</span>
+                    <span class="relative flex h-2 w-2">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                    </span>
+                    <span>Online</span>
                 </span>
                 <div class="pos-offline-sync-container hidden items-center shrink-0"></div>
                 <span id="pos-live-clock" class="hidden sm:inline-block text-[10px] font-mono text-white/90 px-2.5 py-1 bg-black/15 rounded-lg border border-white/20">--:--:--</span>
@@ -3563,7 +3607,11 @@ const buildPOSLayout = ({ isStorefront }) => {
             </div>
             <div class="flex items-center gap-1.5 sm:gap-2 shrink-0 whitespace-nowrap">
                 <span class="pos-network-status-badge hidden sm:inline-flex items-center gap-1.5 text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 px-2.5 py-1 rounded-lg border border-emerald-200 dark:border-emerald-800">
-                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span><span>Online</span>
+                    <span class="relative flex h-2 w-2">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                    </span>
+                    <span>Online</span>
                 </span>
                 <div class="pos-offline-sync-container hidden items-center shrink-0"></div>
                 <span class="hidden md:inline-flex items-center gap-1.5 text-[10px] font-bold text-slate-500 dark:text-slate-400 whitespace-nowrap">
@@ -3621,21 +3669,15 @@ const buildPOSLayout = ({ isStorefront }) => {
                     <div id="pos-cat-filter" class="flex gap-1.5 overflow-x-auto hide-scrollbar pb-0.5"></div>
                     <div id="pos-subcat-filter" class="w-full hidden"></div>
                     <!-- Keyboard Shortcuts Quick Bar (Hanya Desktop >= sm) -->
-                    <div class="hidden sm:flex items-center justify-between text-[10px] text-slate-400 dark:text-slate-500 pt-1 border-t border-slate-100 dark:border-slate-800/80 px-0.5 select-none">
-                        <div class="flex items-center gap-2 overflow-x-auto hide-scrollbar py-0.5">
-                            <span class="inline-flex items-center gap-1"><kbd class="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 font-mono font-bold text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700">F2</kbd> Cari</span>
-                            <span class="text-slate-300 dark:text-slate-700">•</span>
-                            <span class="inline-flex items-center gap-1"><kbd class="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 font-mono font-bold text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700">F4</kbd> Bayar</span>
-                            <span class="text-slate-300 dark:text-slate-700">•</span>
-                            <span class="inline-flex items-center gap-1"><kbd class="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 font-mono font-bold text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700">F6</kbd> Tahan</span>
-                            <span class="text-slate-300 dark:text-slate-700">•</span>
-                            <span class="inline-flex items-center gap-1"><kbd class="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 font-mono font-bold text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700">F7</kbd> Diskon</span>
-                            <span class="text-slate-300 dark:text-slate-700">•</span>
-                            <span class="inline-flex items-center gap-1"><kbd class="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 font-mono font-bold text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700">F8</kbd> Tertahan</span>
-                            <span class="text-slate-300 dark:text-slate-700">•</span>
-                            <span class="inline-flex items-center gap-1"><kbd class="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 font-mono font-bold text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700">F9</kbd> Kamera</span>
-                            <span class="text-slate-300 dark:text-slate-700">•</span>
-                            <span class="inline-flex items-center gap-1"><kbd class="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 font-mono font-bold text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700">Esc</kbd> Batal/Tutup</span>
+                    <div class="hidden sm:flex items-center justify-between text-[10px] text-slate-400 dark:text-slate-500 pt-1.5 border-t border-slate-100 dark:border-slate-800/80 px-0.5 select-none">
+                        <div class="flex items-center gap-1.5 overflow-x-auto hide-scrollbar py-0.5">
+                            <button type="button" onclick="document.getElementById('pos-search-input')?.focus()" class="pos-shortcut-chiclet" title="Cari produk [F2]"><kbd class="pos-keycap">F2</kbd><span>Cari</span></button>
+                            <button type="button" onclick="window.openPayModal()" class="pos-shortcut-chiclet" title="Proses pembayaran [F4]"><kbd class="pos-keycap">F4</kbd><span>Bayar</span></button>
+                            <button type="button" onclick="window.posHoldCurrentCart()" class="pos-shortcut-chiclet" title="Tahan transaksi [F6]"><kbd class="pos-keycap">F6</kbd><span>Tahan</span></button>
+                            <button type="button" onclick="document.querySelector('.pos-disc-val-input')?.focus()" class="pos-shortcut-chiclet" title="Fokus input diskon [F7]"><kbd class="pos-keycap">F7</kbd><span>Diskon</span></button>
+                            <button type="button" onclick="window.openPOSHeldModal()" class="pos-shortcut-chiclet" title="Buka transaksi tertahan [F8]"><kbd class="pos-keycap">F8</kbd><span>Tertahan</span></button>
+                            <button type="button" onclick="window.openPOSCameraScanner()" class="pos-shortcut-chiclet" title="Scan kamera [F9]"><kbd class="pos-keycap">F9</kbd><span>Kamera</span></button>
+                            <button type="button" onclick="window.posClearSearch()" class="pos-shortcut-chiclet" title="Batal / Tutup [Esc]"><kbd class="pos-keycap">Esc</kbd><span>Batal</span></button>
                         </div>
                     </div>
                 </div>
@@ -3706,14 +3748,17 @@ const buildPOSLayout = ({ isStorefront }) => {
                         </div>
                         <div class="pos-disc-chips-target flex gap-1 overflow-x-auto hide-scrollbar pt-0.5"></div>
                     </div>
-                    <div class="flex justify-between items-center pt-2 border-t border-slate-200/80 dark:border-slate-800">
+                    <div class="flex justify-between items-center pt-2.5 border-t border-slate-200/80 dark:border-slate-800">
                         <div>
                             <p class="text-[9px] uppercase tracking-wider font-bold text-slate-400">Total Akhir</p>
-                            <p class="pos-total-target text-xl font-black" style="color:var(--color-primary)">Rp 0</p>
+                            <p class="pos-total-target text-2xl font-black font-mono tracking-tight" style="color:var(--color-primary)">Rp 0</p>
                         </div>
-                        <span class="text-[10px] font-bold px-2 py-1 rounded-md bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">Siap Bayar</span>
+                        <span class="inline-flex items-center gap-1.5 text-[10px] font-bold px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/25">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Siap Bayar
+                        </span>
                     </div>
                     <button onclick="window.openPayModal()" class="pos-pay-btn-target w-full py-3.5 rounded-2xl text-white font-black text-sm shadow-xl disabled:opacity-40 disabled:cursor-not-allowed active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer hover:brightness-105" style="background:linear-gradient(135deg, var(--color-primary-light,#e1b858) 0%, var(--color-primary,#c59b27) 50%, var(--color-primary-dark,#a87f1b) 100%);box-shadow:0 4px 14px rgba(var(--color-primary-rgb),0.35)">
+                        <span class="pos-keycap-on-btn">F4</span>
                         <i class="fa-solid fa-cash-register"></i>
                         <span class="btn-text">PROSES PEMBAYARAN</span>
                     </button>
@@ -3809,9 +3854,10 @@ const buildPOSLayout = ({ isStorefront }) => {
                     </div>
                     <div class="flex justify-between items-center pt-1.5 border-t border-slate-200/80 dark:border-slate-800">
                         <span class="text-xs font-black uppercase tracking-wider text-slate-700 dark:text-white">Total Tagihan</span>
-                        <span class="pos-total-target text-base sm:text-lg font-black" style="color:var(--color-primary)">Rp 0</span>
+                        <span class="pos-total-target text-base sm:text-lg font-black font-mono" style="color:var(--color-primary)">Rp 0</span>
                     </div>
                     <button onclick="window.closePOSCartDrawer(); window.openPayModal();" class="pos-pay-btn-target w-full py-3.5 rounded-2xl text-white font-black text-xs sm:text-sm shadow-xl disabled:opacity-40 disabled:cursor-not-allowed active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer hover:brightness-105" style="background:linear-gradient(135deg, var(--color-primary-light,#e1b858) 0%, var(--color-primary,#c59b27) 50%, var(--color-primary-dark,#a87f1b) 100%);box-shadow:0 4px 14px rgba(var(--color-primary-rgb),0.35)">
+                        <span class="pos-keycap-on-btn">F4</span>
                         <i class="fa-solid fa-cash-register"></i>
                         <span class="btn-text">LANJUT KE PEMBAYARAN</span>
                     </button>
@@ -3954,6 +4000,7 @@ const exposeToWindow = () => {
     window.posFormatQty            = formatQty;
     window.posFQty                 = fQty;
     window.posSetItemDisc          = setItemDisc;
+    window.togglePOSItemDiscInput  = togglePOSItemDiscInput;
     window.posRemoveItem           = removeFromCart;
     window.posClearCart            = clearCart;
     window.openPayModal            = openPayModal;

@@ -8,6 +8,23 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-10-58',
+        version: 'v1.10.58',
+        date: '2026-10-06',
+        title: 'Transformasi Total Antarmuka POS Kasir: Mode List 3-Kolom Proporsional, Grid Smart Monogram Semantik, Keranjang Struk Ramping & Chiclet Keycaps Taktil',
+        category: 'feat',
+        badge: 'POS Cashier UX & Visual Overhaul v1.10.58',
+        items: [
+            'Mode List POS 3-Kolom Proporsional (src/modules/pos/pos.js): Mengeliminasi kekosongan void di tengah kartu list dengan pembagian 3 zona seimbang (Kolom Kiri: identitas visual, inisial kategori, nama produk & kode; Kolom Tengah: status ketersediaan stok & unit; Kolom Kanan: harga jual, indikator HPP, dan pil aksi tambah +1 / kuantitas aktif).',
+            'Grid Smart Semantic Monogram (src/core/product-cover.js): Menghilangkan kejenuhan kotak kardus polos pada produk tanpa foto melalui deteksi semantik cerdas nama & kategori barang (cat -> rol cat gradien rose, gembok/kunci -> padlock amber, paku/baut -> palu slate, pipa/sanitair -> kran cyan, semen -> cetok bata terracotta, perkakas -> toolbox indigo) lengkap dengan 2 huruf inisial monogram tipografi modern.',
+            'Keranjang Struk Ramping On-Demand (+Diskon Toggle): Mengoptimalkan kapasitas vertikal struk belanja kasir hingga 35-40% lebih banyak (menampilkan 6-8 barang sekaligus tanpa scroll) dengan menyembunyikan input diskon di balik toggle "+Diskon" jika bernilai 0, serta menampilkan coretan harga asli saat diskon aktif.',
+            'Bento Register Island & Tipografi Tabular Kasir: Merombak panel total pembayaran kasir dengan latar kontras tinggi, font tabular monospace tebal anti-lompat, dan penyematan pintasan [F4] langsung di dalam tombol utama Proses Pembayaran.',
+            'Pintasan Keyboard Chiclet Taktil Realistis: Menghadirkan tombol pintas bergaya tuts keyboard fisik (<kbd class="pos-keycap">) untuk F2-F9 dan Esc yang interaktif dan dapat diklik/disentuh langsung pada layar sentuh maupun keyboard desktop.',
+            'Indikator Radar Ping Online: Memperbarui badge status Online kasir dengan animasi pulsa radar live yang elegan untuk memantau konektivitas sinkronisasi cloud.',
+            'Multi-Channel Distribution v1.10.58 (Android versionCode 11058).'
+        ]
+    },
+    {
         id: 'log-1-10-57',
         version: 'v1.10.57',
         date: '2026-10-06',

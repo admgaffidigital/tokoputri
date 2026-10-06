@@ -631,8 +631,24 @@ html.dark #view-admin-login {
     position: relative;
     z-index: 2;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
+}
+
+.pos-smart-cover .cover-monogram {
+    font-family: system-ui, -apple-system, sans-serif;
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-top: 5px;
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+    user-select: none;
+}
+
+.dark .pos-smart-cover .cover-monogram {
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
 }
 
 /* Icon Pod: Squircle Solid Bergradien Emas — premium, bersih, tidak jomplang */
@@ -885,24 +901,26 @@ html.dark #view-admin-login {
     transform: scale(0.92);
 }
 
-/* ── MODE LIST — item baris kompak ── */
+/* ── MODE LIST — Layout 3-Kolom Seimbang & Rapi ── */
 .pos-list-item {
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 10px 12px;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 8px 12px;
     background: white;
-    border-radius: 10px;
-    border: 1.5px solid rgba(203, 213, 225, 0.9);
-    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+    border-radius: 12px;
+    border: 1.5px solid rgba(226, 232, 240, 0.95);
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
     cursor: pointer;
-    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
     user-select: none;
 }
 
 .pos-list-item:hover {
     border-color: var(--color-primary);
-    box-shadow: 0 2px 6px rgba(var(--color-primary-rgb), 0.12);
+    box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.14);
+    transform: translateY(-1px);
 }
 
 .pos-list-item:active {
@@ -911,7 +929,145 @@ html.dark #view-admin-login {
 
 .pos-list-item.in-cart {
     border-color: var(--color-primary);
-    box-shadow: 0 0 0 1px rgba(var(--color-primary-rgb), 0.3);
+    background: rgba(var(--color-primary-rgb), 0.02);
+    box-shadow: 0 0 0 1px rgba(var(--color-primary-rgb), 0.4), 0 2px 8px rgba(var(--color-primary-rgb), 0.08);
+}
+
+/* In-Cart Pill Badge untuk Mode List */
+.pos-list-pill-in-cart {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    height: 28px;
+    padding: 0 10px;
+    border-radius: 9px;
+    background: linear-gradient(135deg, var(--color-primary-light, #e1b858) 0%, var(--color-primary, #c59b27) 60%, var(--color-primary-dark, #a87f1b) 100%);
+    color: white;
+    font-size: 11px;
+    font-weight: 900;
+    box-shadow: 0 2px 6px rgba(var(--color-primary-rgb), 0.35);
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+.pos-list-pill-in-cart:hover {
+    transform: scale(1.06);
+    box-shadow: 0 3px 8px rgba(var(--color-primary-rgb), 0.45);
+}
+.pos-list-pill-in-cart:active {
+    transform: scale(0.94);
+}
+
+/* Chiclet Keycaps untuk Keyboard Shortcut POS F2-F9 */
+.pos-shortcut-chiclet {
+    display: inline-flex;
+    align-items: center;
+    gap: 4.5px;
+    padding: 3px 7px;
+    border-radius: 7px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    color: #475569;
+    font-size: 10px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    user-select: none;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+    white-space: nowrap;
+}
+.pos-shortcut-chiclet:hover {
+    background: #ffffff;
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.07);
+}
+.pos-shortcut-chiclet:active {
+    transform: translateY(0);
+    box-shadow: none;
+}
+.dark .pos-shortcut-chiclet {
+    background: #1e293b;
+    border-color: #334155;
+    color: #94a3b8;
+}
+.dark .pos-shortcut-chiclet:hover {
+    background: #0f172a;
+    border-color: var(--color-primary);
+    color: #f1f5f9;
+}
+
+.pos-keycap {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 22px;
+    height: 18px;
+    padding: 0 4px;
+    border-radius: 4px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 9.5px;
+    font-weight: 900;
+    line-height: 1;
+    color: #1e293b;
+    background: linear-gradient(180deg, #ffffff 0%, #f1f5f9 100%);
+    border: 1px solid #cbd5e1;
+    border-bottom: 2px solid #94a3b8;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+}
+.dark .pos-keycap {
+    color: #f87171;
+    background: linear-gradient(180deg, #334155 0%, #1e293b 100%);
+    border-color: #475569;
+    border-bottom: 2px solid #0f172a;
+}
+
+.pos-keycap-on-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 22px;
+    height: 18px;
+    padding: 0 5px;
+    border-radius: 4px;
+    font-family: ui-monospace, monospace;
+    font-size: 9.5px;
+    font-weight: 900;
+    color: #ffffff;
+    background: rgba(0, 0, 0, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    margin-right: 3px;
+}
+
+/* On-demand Item Discount Toggle Button */
+.pos-item-disc-btn {
+    font-size: 9.5px;
+    font-weight: 700;
+    color: #94a3b8;
+    background: transparent;
+    border: 1px dashed #cbd5e1;
+    cursor: pointer;
+    padding: 1.5px 6px;
+    border-radius: 5px;
+    transition: all 0.15s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+}
+.pos-item-disc-btn:hover {
+    color: var(--color-primary);
+    border-color: var(--color-primary);
+    background: rgba(var(--color-primary-rgb), 0.08);
+}
+.dark .pos-item-disc-btn {
+    border-color: #475569;
+    color: #64748b;
+}
+.dark .pos-item-disc-btn:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
 }
 
 .pos-list-thumb {
