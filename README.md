@@ -6,7 +6,7 @@ Aplikasi e-commerce dan manajemen kasir point-of-sales (POS) modern berkinerja t
 
 ## 🛠️ Informasi Pengembang & Hak Cipta
 * **Nama Projek**: TOKO PUTRI
-* **Versi Rilis**: **v1.9.50** (Android VersionCode: `10950`)
+* **Versi Rilis**: **v1.10.57** (Android VersionCode: `11057`)
 * **Dikembangkan & Ditandatangani Oleh**: **Novan Restu Utomo** (Selaku Pengembang Utama dan Developer Asli)
 
 ---
@@ -24,12 +24,11 @@ Aplikasi e-commerce dan manajemen kasir point-of-sales (POS) modern berkinerja t
 Projek ini telah dirancang dengan **arsitektur modular bersih** untuk menjaga kode tetap rapi, mudah dirawat, dan cepat saat pengembangan. Pengembang maupun agen AI Antigravity **WAJIB bekerja pada modul masing-masing di `src/modules/`**, bukan menumpuk markup monolitik di `index.html`.
 
 ```
-├── dist/                          # Hasil kompilasi produksi Vite (siap deploy)
-├── 1. HASIL_BUILD_SIAP_PAKE/      # Salinan build produksi bersih
-├── PAKET_FLASHDISK/               # Paket distribusi untuk klien/pembeli
-│   ├── 1. FILE_SIAP_PAKAI/        # File build siap pakai (drag & drop Netlify)
-│   ├── 2. SOURCE_CODE_LENGKAP/    # Salinan source code lengkap
-│   └── 3. PANDUAN_DAN_TUTORIAL/   # Panduan instalasi dan tutorial pemakaian
+├── dist/                          # Hasil kompilasi produksi Vite (siap deploy ke Vercel/Firebase)
+├── android/                       # Proyek native Android (Capacitor wrapper & APK/AAB builds)
+├── DOCS_SAAS_BISNIS/              # Dokumen legalitas, proposal interaktif HTML & panduan operasional
+├── stores-config/                 # Konfigurasi profil toko klien whitelabel mandiri
+├── scripts/                       # Skrip CLI otomasi (audit, sync, new-store, license, build-aab)
 ├── src/
 │   ├── config/                    # Inisialisasi & konfigurasi (Firebase, db, auth, analytics)
 │   │   └── firebase.js
