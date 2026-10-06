@@ -208,6 +208,7 @@ html.dark #view-admin-login {
 .pos-catalog-grid-mode {
     display: grid !important;
     grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    grid-auto-rows: max-content !important;
     gap: 12px !important;
     padding: 12px !important;
     overflow-y: auto !important;
@@ -279,6 +280,7 @@ html.dark #view-admin-login {
     position: relative;
     width: 100% !important;
     min-width: 0 !important;
+    min-height: 270px !important; /* HARD PROTECT: Anti-Gepeng & Anti-Collapse matematis */
     height: 100% !important;
     box-sizing: border-box !important;
 }
@@ -862,8 +864,14 @@ html.dark #view-admin-login {
     flex-direction: column !important;
     justify-content: space-between !important;
     min-width: 0 !important;
-    padding: 12px 14px 14px 14px !important;
+    padding: 10px 12px 12px 12px !important;
     box-sizing: border-box !important;
+}
+
+@media (min-width: 640px) {
+    .pos-card-info {
+        padding: 12px 14px 14px 14px !important;
+    }
 }
 
 .pos-card-cat {

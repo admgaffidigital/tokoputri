@@ -8,6 +8,21 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-10-68',
+        version: 'v1.10.68',
+        date: '2026-10-06',
+        title: 'Restorasi Matematis Grid-Auto-Rows Max-Content & Hard Floor Anti-Gepeng Kartu Katalog POS Kasir (Eliminasi Total 35px Flat Pill)',
+        category: 'fix',
+        badge: 'Mathematical Grid Protection & Total Anti-Collapse POS v1.10.68',
+        items: [
+            'Restorasi Kritis grid-auto-rows: max-content (src/style.css): Mengembalikan definisi eksplisit track baris grid pada .pos-catalog-grid-mode sehingga layout engine Blink/Chromium/WebView menghitung tinggi kartu secara absolut mengikuti isi konten (gambar 1:1, info bento, chips badges, dan footer harga), bukan membagi rata tinggi kontainer flex scrollable yang sebelumnya memaksa seluruh kartu menciut menjadi baris kapsul datar ~35px.',
+            'Hard Floor Matematis min-height: 270px (src/style.css): Menyematkan proteksi lantai terendah min-height: 270px !important pada .pos-product-card sebagai benteng pengaman matematis tak tertembus yang menjamin kartu produk mustahil menciut atau terkompresi di bawah batas proporsional, baik pada Android WebView, layar HP kecil, maupun desktop beresolusi tinggi.',
+            'Kalibrasi Padding Adaptif Interior Kartu (.pos-card-info di src/style.css): Mengoptimalkan padding interior kartu menjadi 10px 12px 12px 12px di mobile (<640px) dan 12px 14px 14px 14px di desktop/tablet (>=640px) guna memaksimalkan ruang vertikal kartu agar proporsi visual tetap padat, elegan, dan estetik.',
+            'Perlindungan Sempurna 1:1 Native Bento App: Memastikan rasio gambar bujursangkar 1:1, floating discount/stok pills, 2 baris nama produk, baris chips badges tanpa scrollbar, serta footer harga dan tombol kasir 100% utuh terlihat tanpa risiko terpotong.',
+            'Multi-Channel Distribution v1.10.68 (Android versionCode 11068).'
+        ]
+    },
+    {
         id: 'log-1-10-67',
         version: 'v1.10.67',
         date: '2026-10-06',
