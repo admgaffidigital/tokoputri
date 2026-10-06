@@ -118,3 +118,34 @@ Ketika masa aktif klien mendekati jatuh tempo (H-7) dan klien membayar tagihan s
 2. Salin kode lisensi yang muncul di terminal (misal: `PUTRI-365D-BERKAH-349C6B`).
 3. Kirimkan draf pesan WhatsApp yang telah disiapkan otomatis oleh script kepada klien.
 4. Klien memasukkan kode di menu Pengaturan Toko -> Sistem otomatis langsung aktif kembali!
+
+---
+
+## 8. PROSEDUR PEMELIHARAAN SISTEM, AUDIT & DIAGNOSTIK (MAINTENANCE PIPELINE)
+
+Setiap kali melakukan pembaruan kode atau sebelum mendistribusikan aplikasi ke klien baru, jalankan rutinitas diagnostik berikut:
+
+### A. Diagnostik Kesehatan Statis Otomatis (Audit Codebase)
+```bash
+npm run audit
+```
+*Fungsi:* Memverifikasi sintaks seluruh berkas konfigurasi JSON kritis (`package.json`, `capacitor.config.json`, `manifest.json`, `firebase.json`), memindai 79 berkas JS di `src/`, dan menguji keabsahan 307 impor modul relatif.
+
+### B. Uji Ketahanan Guard Lisensi & Masa Tenggang
+```bash
+npm run test:license
+```
+*Fungsi:* Menjalankan 22 skenario pengujian otomatis untuk memverifikasi algoritma checksum, evaluasi masa aktif, banner H-7, masa tenggang 7 hari (*grace period*), dan *graceful lockout*.
+
+### C. Pipeline Pemeliharaan 1-Perintah (Maintenance All-In-One)
+```bash
+npm run maintenance
+```
+*Fungsi:* Menjalankan audit statis, uji lisensi, build produksi Vite, pembersihan folder sampah legacy, sinkronisasi versi Android Gradle, dan sinkronisasi Capacitor dalam satu perintah tunggal.
+
+### D. Pembuatan Bundle Android Play Store (.AAB)
+```bash
+npm run build:aab
+```
+*Fungsi:* Menghasilkan berkas binary resmi Android App Bundle (`.aab`) teroptimasi yang siap diunggah ke Google Play Console.
+

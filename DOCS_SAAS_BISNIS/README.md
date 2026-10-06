@@ -13,8 +13,8 @@ Paket ini dirancang khusus untuk memungkinkan Anda menjual atau menyewakan siste
 | **-** | [1_PROPOSAL_PENAWARAN_MANAGED_SAAS.md](file:///c:/TOKO%20PUTRI/DOCS_SAAS_BISNIS/1_PROPOSAL_PENAWARAN_MANAGED_SAAS.md) | Markdown | Naskah teks mentah proposal penawaran. |
 | **2** | [2_SURAT_PERJANJIAN_SEWA_SOFTWARE_TOS.html](file:///c:/TOKO%20PUTRI/DOCS_SAAS_BISNIS/2_SURAT_PERJANJIAN_SEWA_SOFTWARE_TOS.html) | **HTML Interaktif & Cetak A4 / PDF** | Surat Perjanjian Sewa Pakai Software (Terms of Service & SLA) format resmi hukum Indonesia dengan klausul hak cipta mutlak, hak milik data klien, toleransi masa tenggang, dan slot Materai Rp 10.000. |
 | **-** | [2_SURAT_PERJANJIAN_SEWA_SOFTWARE_TOS.md](file:///c:/TOKO%20PUTRI/DOCS_SAAS_BISNIS/2_SURAT_PERJANJIAN_SEWA_SOFTWARE_TOS.md) | Markdown | Naskah teks mentah surat perjanjian. |
-| **3** | [3_PANDUAN_OPERASIONAL_PEMILIK_TOKO_NON_TEKNIS.md](file:///c:/TOKO%20PUTRI/DOCS_SAAS_BISNIS/3_PANDUAN_OPERASIONAL_PEMILIK_TOKO_NON_TEKNIS.md) | Markdown | Panduan operasional praktis 100% non-teknis untuk pemilik toko (login, setting QRIS, tambah produk, barcode scanner, kasir POS, printer thermal, PayLater, dan cara aktivasi lisensi). |
-| **4** | [4_SOP_DEVELOPER_ONBOARDING_KLONING_TOKO.md](file:///c:/TOKO%20PUTRI/DOCS_SAAS_BISNIS/4_SOP_DEVELOPER_ONBOARDING_KLONING_TOKO.md) | Markdown | SOP internal developer untuk mendirikan (*provisioning*) toko klien baru dalam waktu < 5 menit. |
+| **3** | [3_PANDUAN_OPERASIONAL_PEMILIK_TOKO_NON_TEKNIS.md](file:///c:/TOKO%20PUTRI/DOCS_SAAS_BISNIS/3_PANDUAN_OPERASIONAL_PEMILIK_TOKO_NON_TEKNIS.md) | Markdown | Panduan operasional praktis 100% non-teknis 14 Bab lengkap untuk pemilik usaha (Login Owner vs Kasir, Shift Kasir & Laci, RBAC & HPP Lockdown, Stock Opname Rak, Dokumen Resmi A4 Multi-Halaman, QRIS/Rekening, Printer Bluetooth, PayLater Angsuran Bulanan, Buku Kas Beban Usaha, Laporan Laba Rugi P&L, dan Aktivasi Lisensi). |
+| **4** | [4_SOP_DEVELOPER_ONBOARDING_KLONING_TOKO.md](file:///c:/TOKO%20PUTRI/DOCS_SAAS_BISNIS/4_SOP_DEVELOPER_ONBOARDING_KLONING_TOKO.md) | Markdown | SOP internal developer untuk mendirikan (*provisioning*) toko klien baru (< 5 menit), prosedur rilis binary Android AAB/APK, audit diagnostik sistem (`npm run audit`), dan pipeline pemeliharaan terpadu (`npm run maintenance`). |
 
 ---
 
@@ -22,7 +22,19 @@ Paket ini dirancang khusus untuk memungkinkan Anda menjual atau menyewakan siste
 
 Semua perintah dapat langsung dijalankan dari terminal pada root folder:
 
-### 1. Kloning Toko Klien Baru (Instan < 5 Menit)
+### 1. Pipeline Pemeliharaan Sistem Menyeluruh (Rekomendasi 1-Klik)
+```bash
+npm run maintenance
+```
+*Hasil:* Menjalankan audit statis integritas sistem, verifikasi 22 skenario suite lisensi, kompilasi web produksi Vite, sinkronisasi versi Android Gradle, dan pembaruan aset native Capacitor.
+
+### 2. Audit Diagnostik Kesehatan Kode
+```bash
+npm run audit
+```
+*Hasil:* Memverifikasi 100% keabsahan berkas konfigurasi JSON kritis, memindai 79 berkas JS di `src/`, dan menguji 307 impor modul relatif.
+
+### 3. Kloning Toko Klien Baru (Instan < 5 Menit)
 ```bash
 # Menampilkan panduan parameter
 npm run store:new -- --help
@@ -32,7 +44,7 @@ npm run store:new -- --name "Toko Berkah Sejahtera" --code "BERKAH" --client "Ah
 ```
 *Hasil:* Berkas konfigurasi lengkap `stores-config/BERKAH.json` dan kunci lisensi perdana langsung terbit.
 
-### 2. Generator Kunci Lisensi Perpanjangan Sewa
+### 4. Generator Kunci Lisensi Perpanjangan Sewa
 ```bash
 # Menerbitkan kode lisensi 365 hari untuk toko BERKAH:
 npm run license:generate -- --store "BERKAH" --days 365
@@ -45,7 +57,7 @@ npm run license:generate -- --store "MASTER" --days 365
 ```
 *Hasil:* Kode lisensi kriptografis resmi terbit lengkap dengan draf pesan ramah WhatsApp yang siap dikirimkan ke pemilik toko.
 
-### 3. Validasi & Pengujian Engine Lisensi
+### 5. Validasi & Pengujian Engine Lisensi
 ```bash
 npm run test:license
 ```

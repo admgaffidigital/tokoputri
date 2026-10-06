@@ -1,176 +1,286 @@
 # 📖 PANDUAN LENGKAP PENGGUNAAN APLIKASI TOKO & KASIR (UNTUK PEMILIK USAHA)
-**Panduan Operasional Praktis 100% Non-Teknis — Mudah Dipahami Siapa Saja**
+**Panduan Operasional Praktis 100% Non-Teknis — Versi Sistem v1.10.57**
 
-Selamat datang! Panduan ini dirancang khusus untuk pemilik toko, manajer, dan kasir agar dapat langsung mengoperasikan sistem toko secara maksimal tanpa perlu keahlian teknis komputer.
-
----
-
-## DAFTAR ISI
-1. [Cara Membuka & Masuk ke Panel Pemilik (Owner Login)](#bab-1--cara-membuka--masuk-ke-panel-pemilik-owner-login)
-2. [Mengatur Profil, Logo, Rekening & QRIS Toko](#bab-2--mengatur-profil-logo-rekening--qris-toko)
-3. [Menambah Produk, Foto, Varian, Stok & Harga Modal Kulakan (HPP)](#bab-3--menambah-produk-foto-varian-stok--harga-modal-kulakan-hpp)
-4. [Mengoperasikan Kasir Fisik Toko (POS Kasir)](#bab-4--mengoperasikan-kasir-fisik-toko-pos-kasir)
-5. [Menyambungkan Printer Struk Bluetooth & Cetak Nota](#bab-5--menyambungkan-printer-struk-bluetooth--cetak-nota)
-6. [Mengelola Cicilan Belanja Pelanggan (Putri PayLater)](#bab-6--mengelola-cicilan-belanja-pelanggan-putri-paylater)
-7. [Mencatat Pengeluaran Toko (Buku Kas Operasional)](#bab-7--mencatat-pengeluaran-toko-buku-kas-operasional)
-8. [Melihat Laporan Keuntungan & Ekspor Data ke Excel](#bab-8--melihat-laporan-keuntungan--ekspor-data-ke-excel)
-9. [Cara Memperpanjang Masa Aktif Layanan Toko (Input Kode Lisensi)](#bab-9--cara-memperpanjang-masa-aktif-layanan-toko-input-kode-lisensi)
+Selamat datang! Panduan ini dirancang khusus untuk pemilik usaha (*Owner*), manajer toko, dan staf kasir agar dapat langsung mengoperasikan seluruh sistem toko secara maksimal, profesional, dan mudah dipahami tanpa memerlukan latar belakang teknis komputer.
 
 ---
 
-## BAB 1 — CARA MEMBUKA & MASUK KE PANEL PEMILIK (OWNER LOGIN)
+## 📑 DAFTAR ISI PANDUAN
 
-1. Buka browser (Google Chrome disarankan) di laptop, tablet, atau HP Anda, lalu kunjungi alamat website toko Anda.
-2. Di halaman utama paling bawah (footer), klik tombol kecil bertuliskan **"Akses Admin Toko"** (atau buka menu navigasi bawah `Menu` -> `Akses Admin`).
-3. Anda akan melihat layar login resmi bernuansa mewah **"Panel Pemilik Toko (CMS Owner)"**.
-4. Masukkan **Email** dan **Kata Sandi** yang telah diserahkan oleh tim teknis kami.
+1. [Cara Masuk ke Panel Pemilik (Owner Login) & Panel Kasir](#bab-1--cara-masuk-ke-panel-pemilik-owner-login--panel-kasir)
+2. [Mengatur Profil, Logo, Rekening Bank & QRIS Toko](#bab-2--mengatur-profil-logo-rekening-bank--qris-toko)
+3. [Manajemen Produk: Foto, Kategori, Varian, Stok & Modal Kulakan (HPP)](#bab-3--manajemen-produk-foto-kategori-varian-stok--modal-kulakan-hpp)
+4. [Mengoperasikan Kasir Fisik Toko (POS Kasir & Barcode Scanner)](#bab-4--mengoperasikan-kasir-fisik-toko-pos-kasir--barcode-scanner)
+5. [Manajemen Shift Kasir: Buka Shift, Modal Awal & Tutup Shift](#bab-5--manajemen-shift-kasir-buka-shift-modal-awal--tutup-shift)
+6. [Manajemen Akun Staf & Proteksi Privasi HPP (Kasir Terkunci dari Modal/Laba)](#bab-6--manajemen-akun-staf--proteksi-privasi-hpp-kasir-terkunci-dari-modallaba)
+7. [Audit Inventori Fisik Rak & Gudang (Modul Stock Opname)](#bab-7--audit-inventori-fisik-rak--gudang-modul-stock-opname)
+8. [Menyambungkan Printer Struk Bluetooth & Pengaturan Cetak Struk](#bab-8--menyambungkan-printer-struk-bluetooth--pengaturan-cetak-struk)
+9. [Standar Dokumen Resmi A4: Faktur, Surat Jalan, SPH & Penomoran Halaman](#bab-9--standar-dokumen-resmi-a4-faktur-surat-jalan-sph--penomoran-halaman)
+10. [Mengelola Cicilan Belanja Pelanggan (Putri PayLater & Angsuran Bulanan)](#bab-10--mengelola-cicilan-belanja-pelanggan-putri-paylater--angsuran-bulanan)
+11. [Mencatat Pengeluaran Operasional Toko (Buku Kas Harian)](#bab-11--mencatat-pengeluaran-operasional-toko-buku-kas-harian)
+12. [Pusat Laporan Eksekutif, Laba Bersih & Ekspor Data ke Excel](#bab-12--pusat-laporan-eksekutif-laba-bersih--ekspor-data-ke-excel)
+13. [Ergonomi Mobile Native & Barcode Scanner Kamera di HP](#bab-13--ergonomi-mobile-native--barcode-scanner-kamera-di-hp)
+14. [Perpanjangan Masa Aktif Layanan Toko, Masa Tenggang & Keamanan Data](#bab-14--perpanjangan-masa-aktif-layanan-toko-masa-tenggang--keamanan-data)
+
+---
+
+## BAB 1 — CARA MASUK KE PANEL PEMILIK (OWNER LOGIN) & PANEL KASIR
+
+Sistem Toko Putri memiliki gerbang masuk terpadu cerdas (*Smart Unified Authentication*):
+
+### A. Masuk sebagai Pemilik Toko (Owner)
+1. Buka browser (Google Chrome disarankan) di laptop, tablet, atau HP Anda, lalu buka alamat website toko Anda.
+2. Di header atas atau bagian paling bawah toko, klik tautan **"Admin"** (atau buka menu navigasi bawah `Menu` -> `Akses Admin`).
+3. Anda akan melihat layar login eksekutif bernuansa mewah **"Panel Pemilik Toko (CMS Owner)"**.
+4. Masukkan **Email Pemilik** dan **Kata Sandi**.
 5. Klik **"Masuk ke Panel Kontrol"**.
-6. Anda sekarang berada di beranda utama kontrol toko dengan lencana **👑 Owner**.
+6. Anda akan disambut dengan banner resmi **"Selamat Datang, Pemilik Toko! 👑"** dengan akses penuh ke seluruh 24 menu operasional dan finansial toko.
+
+### B. Masuk sebagai Staf Kasir
+1. Karyawan kasir masuk menggunakan email dan password kasir yang telah Anda buatkan khusus (lihat [Bab 6](#bab-6--manajemen-akun-staf--proteksi-privasi-hpp-kasir-terkunci-dari-modallaba)).
+2. Sistem secara otomatis mendeteksi peran kasir dan **langsung mengarahkan layar ke Antarmuka Kasir POS** tanpa memberikan akses ke menu pengaturan atau keuangan rahasia toko.
 
 ---
 
-## BAB 2 — MENGATUR PROFIL, LOGO, REKENING & QRIS TOKO
+## BAB 2 — MENGATUR PROFIL, LOGO, REKENING BANK & QRIS TOKO
 
-### A. Mengubah Nama, Slogan, dan Nomor WhatsApp
+### A. Mengubah Nama, Slogan, Alamat & WhatsApp Toko
 1. Di Panel Pemilik, klik menu **"Pengaturan Toko"**.
 2. Pilih kartu **"Profil Toko"**.
-3. Ubah nama toko, slogan, nomor WhatsApp (gunakan awalan `08` atau `628`), alamat fisik toko, dan tautan Google Maps.
-4. Klik **"Simpan Perubahan"**.
+3. Ubah nama toko, slogan, nomor WhatsApp (gunakan format `08...` atau `628...`), alamat fisik toko, dan tautan Google Maps.
+4. Klik tombol **"Simpan Perubahan"**.
 
-### B. Memasang Gambar QRIS Toko
+### B. Memasang Gambar Barcode QRIS Toko
 1. Di menu **"Pengaturan Toko"**, pilih kartu **"Pembayaran"**.
-2. Klik tombol **"Pilih Gambar QRIS"** dan upload foto barcode QRIS usaha Anda (misal dari BCA, BRI, Dana Bisnis, Gopay, atau QRIS Bank Mandiri).
-3. Klik **"Simpan Perubahan"**. Pembayaran QRIS akan langsung muncul otomatis saat pelanggan checkout online maupun di kasir.
+2. Klik tombol **"Pilih Gambar QRIS"**, lalu upload foto barcode QRIS usaha Anda (BCA, BRI, Mandiri, Gopay, Dana Bisnis, dsb.).
+3. Klik **"Simpan Perubahan"**. QRIS akan langsung muncul otomatis saat pelanggan membayar di kasir POS maupun saat belanja mandiri online.
 
-### C. Menambah Nomor Rekening Toko
-1. Di Panel Kontrol, klik menu **"Rekening"**.
-2. Klik **"+ Tambah Rekening"**.
-3. Pilih nama Bank (BCA, BRI, Mandiri, BNI, BSI, Dana, ShopeePay, dll), isi nomor rekening dan nama pemilik rekening.
-4. Klik **"Simpan"**. Rekening ini otomatis tercantum di nota struk belanja, faktur resmi A4, dan petunjuk transfer pembeli.
+### C. Menambah Daftar Rekening Bank Toko
+1. Di menu **"Pengaturan Toko"** -> pilih **"Rekening Bank"** (atau menu tab **"Bank"**).
+2. Klik tombol **"+ Tambah Rekening"**.
+3. Masukkan nama bank (BCA, BRI, Mandiri, BNI, BSI, dll), nomor rekening, dan nama pemilik rekening.
+4. Rekening ini dijamin 100% tercantum secara otomatis pada nota struk belanja, faktur resmi A4, nota tagihan tempo, dan kartu piutang pelanggan.
 
 ---
 
-## BAB 3 — MENAMBAH PRODUK, FOTO, VARIAN, STOK & HARGA MODAL KULAKAN (HPP)
+## BAB 3 — MANAJEMEN PRODUK: FOTO, KATEGORI, VARIAN, STOK & MODAL KULAKAN (HPP)
 
-1. Di Panel Pemilik, klik menu **"Produk"**.
+1. Di Panel Pemilik, buka menu **"Produk"**.
 2. Klik tombol hijau **"+ Tambah Produk Baru"**.
-3. **Informasi Dasar:**
-   - **Nama Barang :** Isi nama produk secara jelas (misal: *Beras Pandan Wangi 5kg*).
-   - **Kategori    :** Pilih kategori (misal: *Sembako*).
-   - **Barcode / SKU:** Arahkan kursor lalu scan barcode kemasan barang, atau ketik manual.
-4. **Harga & Finansial:**
-   - **Harga Jual      :** Harga jual normal ke pelanggan (misal: *Rp 75.000*).
-   - **Harga Modal HPP :** Harga saat Anda beli/kulakan (misal: *Rp 63.000*). *(Rahasia: Angka ini hanya bisa dilihat oleh Owner, staf kasir tidak bisa melihatnya).*
-5. **Stok Barang:**
-   - Masukkan jumlah stok fisik yang tersedia di rak/gudang toko.
-   - Sistem akan otomatis mengurangi angka stok setiap kali barang ini terjual.
-6. **Varian Produk (Ukuran / Warna):**
-   - Jika barang memiliki variasi (misal: Ukuran S/M/L atau Warna Merah/Biru), aktifkan tombol **"Gunakan Varian"**, lalu tambahkan nama varian dan harga masing-masing.
-7. **Upload Foto Barang:**
-   - Klik kotak foto lalu pilih gambar produk dari galeri HP atau laptop Anda.
-8. Klik tombol **"Simpan Produk"**. Barang seketika muncul di kasir dan website toko!
+3. **Data Identitas Produk:**
+   - **Nama Barang :** Isi nama lengkap (contoh: *Cat Tembok Anti Bocor 5kg*).
+   - **Kategori & Sub-Kategori :** Pilih kategori induk (misal: *Bahan Bangunan*) lalu pilih jenis barangnya (misal: *Cat & Pelapis*).
+   - **Merek / Brand :** Pilih merek pabrikan barang.
+   - **Barcode / SKU :** Arahkan kursor lalu tembakkan barcode scanner fisik ke kemasan barang, atau biarkan kosong untuk dibuatkan otomatis.
+4. **Harga & Keamanan Finansial:**
+   - **Harga Jual Normal :** Harga eceran untuk pelanggan umum.
+   - **Harga Coret / Promo :** (Opsional) Harga sebelum diskon untuk menarik minat beli.
+   - **Harga Modal Kulakan (HPP) :** Harga riil Anda kulakan ke supplier. *(Sangat Aman: Hanya Pemilik Toko yang bisa melihat angka ini; kasir tidak bisa melihatnya).*
+5. **Manajemen Stok:**
+   - Masukkan jumlah stok fisik awal yang ada di rak/gudang.
+   - Sistem akan otomatis memotong stok setiap terjadi penjualan di kasir atau etalase online.
+6. **Varian Produk (Ukuran / Warna / Kapasitas):**
+   - Jika barang memiliki variasi (misal: Ukuran 1 Liter, 5 Liter, 20 Liter), aktifkan tombol **"Varian Produk"**, lalu masukkan nama varian, stok tiap varian, dan harga masing-masing.
+7. **Foto Produk:**
+   - Klik kotak foto untuk mengunggah gambar produk dari galeri HP atau laptop.
+8. Klik **"Simpan Produk"**. Produk seketika langsung aktif di kasir dan etalase toko.
 
 ---
 
-## BAB 4 — MENGOPERASIKAN KASIR FISIK TOKO (POS KASIR)
+## BAB 4 — MENGOPERASIKAN KASIR FISIK TOKO (POS KASIR & BARCODE SCANNER)
 
-1. Di Panel Pemilik (atau staf kasir), klik menu **"Kasir POS"**.
-2. **Memilih Barang:**
-   - **Cara 1 (Sentuh Layar):** Ketuk gambar barang di katalog kasir.
-   - **Cara 2 (Pencarian Nama):** Ketik nama barang di kolom cari atas.
-   - **Cara 3 (Scanner Barcode):** Arahkan scanner ke kemasan barang; barang otomatis masuk ke keranjang belanja kasir dalam 0.1 detik!
+1. Buka menu **"Kasir POS"**. Layar kasir didesain sangat responsif, mendukung layar sentuh (*touchscreen*) maupun komputer desktop biasa.
+2. **Memasukkan Barang ke Nota Belanja:**
+   - **Cara 1 (Scan Barcode):** Cukup tembakkan barcode scanner ke kemasan barang. Barang seketika masuk ke keranjang belanja kasir dalam 0.1 detik.
+   - **Cara 2 (Pencarian Cepat):** Ketik 2-3 huruf nama barang di kolom cari atas.
+   - **Cara 3 (Katalog Visual):** Sentuh/klik kartu barang pada etalase kasir.
 3. **Mengatur Jumlah & Diskon:**
-   - Klik angka jumlah barang di keranjang kasir untuk menambah/mengurangi.
-   - Klik ikon diskon jika ingin memberi potongan harga per item atau potongan total belanja.
-4. **Pembayaran:**
+   - Klik tombol `+` atau `-` pada keranjang belanja kasir.
+   - Anda dapat memberikan diskon persen (%) atau potongan nominal langsung (Rp).
+4. **Proses Pembayaran:**
    - Klik tombol besar hijau **"Bayar (F9)"**.
-   - Pilih metode bayar:
-     - **Tunai (Cash):** Masukkan uang tunai yang diterima pembeli; sistem otomatis menghitung nominal kembalian dengan tepat!
-     - **QRIS:** Tunjukkan layar QRIS kepada pembeli untuk discan lewat m-Banking/e-wallet mereka.
-     - **Transfer Bank:** Untuk pembeli yang transfer ke rekening toko.
-     - **PayLater (Tempo):** Untuk pelanggan langganan yang berbelanja secara cicilan / jatuh tempo bulanan.
-5. Klik **"Selesaikan Transaksi"**. Struk nota otomatis tercetak ke printer Bluetooth!
+   - Pilih metode pembayaran:
+     - **Tunai (Cash):** Ketik nominal uang yang diterima (atau klik tombol cepat uang pas / pecahan Rp 50.000 / Rp 100.000); sistem langsung menghitung nominal kembalian dengan akurat.
+     - **QRIS:** Layar kasir akan menampilkan barcode QRIS toko Anda agar pembeli tinggal scan lewat m-banking mereka.
+     - **Transfer Bank:** Untuk pembeli yang membayar via transfer langsung.
+     - **Putri PayLater / Tempo:** Khusus pelanggan langganan yang mengambil barang dulu dan bayar belakangan/cicilan.
+5. Klik **"Selesaikan Transaksi"**. Struk otomatis tercetak ke printer thermal dan stok terpotong seketika!
 
 ---
 
-## BAB 5 — MENYAMBUNGKAN PRINTER STRUK BLUETOOTH & CETAK NOTA
+## BAB 5 — MANAJEMEN SHIFT KASIR: BUKA SHIFT, MODAL AWAL & TUTUP SHIFT
 
-1. Nyalakan printer thermal Bluetooth Anda dan pastikan lampu indikator menyala.
-2. Masuk ke menu **"Pengaturan Toko"** -> pilih kartu **"Printer Struk"**.
+Fitur ini memastikan uang kas toko Anda selalu cocok antara uang fisik di laci kasir dan catatan komputer:
+
+1. **Buka Shift (Pagi / Awal Masuk Kasir):**
+   - Saat kasir membuka aplikasi, sistem akan meminta input **Modal Awal Laci Kasir** (contoh: *Rp 200.000* untuk uang kembalian).
+   - Kasir klik **"Buka Shift Kasir"**.
+2. **Operasional Sepanjang Hari:**
+   - Semua penjualan tunai, QRIS, dan cicilan otomatis tercatat rapi per staf kasir yang sedang bertugas.
+3. **Tutup Shift & Rekap Setoran (Sore / Pergantian Staf):**
+   - Saat shift berakhir, kasir klik **"Tutup Shift"**.
+   - Kasir menghitung uang fisik di laci dan mengetikkan nominalnya.
+   - Sistem otomatis mencocokkan apakah ada uang kas yang **Pas**, **Lebih**, atau **Selisih/Kurang**.
+   - Klik **"Cetak Struk Tutup Shift"** untuk bukti rekapitulasi setoran yang ditandatangani kasir dan diserahkan ke Owner.
+
+---
+
+## BAB 6 — MANAJEMEN AKUN STAF & PROTEKSI PRIVASI HPP (KASIR TERKUNCI DARI MODAL/LABA)
+
+Toko Putri dilengkapi sistem keamanan tingkat enterprise dengan **Role-Based Access Control (RBAC)**:
+
+1. **Membuat Akun Kasir Baru:**
+   - Di Panel Pemilik, buka menu **"Akun Staf & Kasir"**.
+   - Klik **"+ Tambah Akun Staf"**.
+   - Isi nama kasir, nomor WhatsApp, email, dan password untuk staf tersebut.
+   - Pilih Role: **"Kasir"**.
+   - Klik **"Simpan Akun"**.
+2. **Proteksi Mutlak Rahasia Toko (HPP Lockdown):**
+   - Kasir **DILARANG dan TERKUNCI 100%** dari melihat harga modal kulakan (HPP), estimasi keuntungan barang, dan total laba bersih toko.
+   - Kasir tidak dapat membuka menu pengaturan toko, tidak dapat menghapus produk, dan tidak dapat mengintip laporan keuangan rahasia pemilik.
+
+---
+
+## BAB 7 — AUDIT INVENTORI FISIK RAK & GUDANG (MODUL STOCK OPNAME)
+
+Stock Opname dilakukan untuk memastikan jumlah barang di rak toko fisik sama persis dengan yang ada di sistem komputer:
+
+1. Di Panel Pemilik, buka menu **"Stock Opname"**.
+2. Klik tombol **"Mulai Opname Baru"**.
+3. Bawa HP atau tablet Anda ke area rak/gudang toko:
+   - Cari barang yang sedang dihitung (atau scan barcode-nya).
+   - Gunakan tombol stepper `[+]` dan `[-]` atau ketik langsung jumlah fisik yang Anda hitung di rak.
+   - Kotak kartu opname menampilkan ringkasan cerdas: **Stok Sistem vs Stok Fisik**, serta **Selisih Barang** (misal: `-2 pcs`).
+4. **Finalisasi & Penyesuaian Otomatis:**
+   - Setelah semua rak selesai dihitung, klik **"Finalisasi Stock Opname"**.
+   - Sistem akan secara otomatis mengoreksi stok database menjadi sama dengan stok fisik riil, serta mencatat laporan dampak selisih rupiah secara transparan ke riwayat audit.
+
+---
+
+## BAB 8 — MENYAMBUNGKAN PRINTER STRUK BLUETOOTH & PENGATURAN CETAK STRUK
+
+1. Nyalakan printer thermal Bluetooth Anda (pastikan lampu indikator menyala dan kertas sudah terpasang).
+2. Di aplikasi, buka menu **"Pengaturan Toko"** -> pilih kartu **"Printer Struk"**.
 3. Klik tombol **"Sambungkan Printer Bluetooth"**.
-4. Browser akan memunculkan daftar perangkat Bluetooth sekitar; pilih nama printer Anda (biasanya bernama *RPP02N, Thermal Printer, Bluetooth Printer, atau MPT-II*).
-5. Klik **"Pair / Sambungkan"**.
-6. Atur lebar kertas: pilih **58mm** (ukuran standar kecil) atau **80mm** (ukuran besar).
-7. Klik tombol **"Cetak Tes Struk"**. Jika kertas keluar tercetak, printer siap digunakan setiap hari!
+4. Browser akan mendeteksi printer sekitar; pilih nama printer Anda (misal: *Thermal Printer, RPP02N, atau MPT-II*), lalu klik **Pair**.
+5. Pilih ukuran kertas:
+   - **58mm:** Ukuran kertas struk standar kasir kecil.
+   - **80mm:** Ukuran kertas struk kasir lebar.
+6. Klik **"Cetak Tes Struk"**. Jika struk tes keluar, printer Anda siap digunakan mencetak nota setiap saat tanpa perlu kabel.
 
 ---
 
-## BAB 6 — MENGELOLA CICILAN BELANJA PELANGGAN (PUTRI PAYLATER)
+## BAB 9 — STANDAR DOKUMEN RESMI A4: FAKTUR, SURAT JALAN, SPH & PENOMORAN HALAMAN
 
-Fitur ini membuat omzet toko Anda melejit karena pelanggan bisa berbelanja nominal besar dengan cicilan ringan jatuh tempo bulanan.
+Untuk transaksi partai besar, proyek kontraktor, instansi, atau grosir, sistem menyediakan cetak dokumen standar presisi **kertas A4 (210 x 297 mm)**:
 
-1. **Melihat Daftar Piutang Pelanggan:**
-   - Buka menu **"Piutang Tempo"**.
-   - Anda dapat melihat daftar nama pelanggan yang memiliki tagihan berjalan, tanggal jatuh tempo, dan sisa saldo hutang.
-2. **Pelanggan Membayar Cicilan:**
-   - Pelanggan dapat membuka riwayat pesanannya sendiri lewat HP, memilih menu **"Bayar Cicilan Mandiri"**, memilih nominal angsuran bulan ini, lalu upload bukti transfer ke rekening toko Anda.
-3. **Persetujuan Pembayaran (Approval):**
-   - Notifikasi pembayaran masuk akan muncul di menu **"Piutang Tempo"**.
-   - Cek ke mutasi rekening bank Anda. Jika uang sudah masuk, klik tombol **"Setujui Pembayaran Cicilan"**.
-   - Saldo piutang pelanggan otomatis berkurang dan limit belanja mereka pulih seketika!
-
----
-
-## BAB 7 — MENCATAT PENGELUARAN TOKO (BUKU KAS OPERASIONAL)
-
-Agar perhitungan laba bersih toko Anda 100% akurat:
-1. Buka menu **"Pengeluaran" (Expenses)**.
-2. Klik **"+ Catat Pengeluaran"**.
-3. Pilih kategori biaya:
-   - *Listrik & Air*
-   - *Gaji Karyawan*
-   - *Sewa Tempat / Kios*
-   - *Plastik & Perlengkapan Toko*
-   - *Transportasi & Logistik*
-   - *Lain-lain*
-4. Masukkan nominal biaya dan catatan singkat.
-5. Klik **"Simpan Pengeluaran"**. Seluruh biaya ini otomatis memotong perhitungan laba bersih toko di laporan bulanan.
+1. Buka menu **"Pesanan"** atau menu cetak dokumen.
+2. Pilih jenis dokumen yang diinginkan:
+   - **Faktur Penjualan (Invoice A4):** Dilengkapi rincian lengkap barang, PPN (jika ada), rekening bank resmi toko, dan kolom tanda tangan penerima/penjual.
+   - **Surat Jalan Pengiriman:** Khusus untuk sopir pengantar barang; menampilkan daftar barang dan jumlah tanpa memunculkan nominal harga.
+   - **Nota Tagihan Tempo:** Dokumen tagihan resmi jatuh tempo bagi pelanggan cicilan/proyek.
+   - **Kartu Piutang Pelanggan (Customer Ledger):** Rekapitulasi mutasi riwayat belanja dan angsuran pembayaran pelanggan dari awal hingga sisa saldo terkini.
+   - **Surat Penawaran Harga (SPH):** Proposal harga resmi untuk tender/pembeli besar.
+3. **Fitur Multi-Halaman Otomatis (Pagination):**
+   - Jika daftar barang sangat banyak, sistem otomatis memecahnya rapi ke lembar ke-2, ke-3, dst.
+   - Setiap halaman memiliki penomoran resmi permanen (*"Halaman 1 dari 2"*) di bagian bawah, serta tanda tangan dan total pembayaran selalu terkunci aman di halaman terakhir tanpa risiko terpotong.
+4. Klik tombol **"Cetak Dokumen"** untuk mencetak langsung ke printer atau memilih **"Simpan sebagai PDF"**.
 
 ---
 
-## BAB 8 — MELIHAT LAPORAN KEUNTUNGAN & EKSPOR DATA KE EXCEL
+## BAB 10 — MENGELOLA CICILAN BELANJA PELANGGAN (PUTRI PAYLATER & ANGSURAN BULANAN)
 
-1. Buka menu **"Laporan" (Reports)**.
-2. Pilih periode yang ingin Anda pantau: **Hari Ini, 7 Hari Terakhir, Bulan Ini, atau Kustom Rentang Tanggal**.
-3. Sistem secara otomatis menyajikan grafik dan ringkasan eksekutif:
-   - **Total Omzet Penjualan**
-   - **Total Modal Kulakan (HPP Terjual)**
-   - **Laba Kotor Toko**
-   - **Total Pengeluaran Beban Operasional**
-   - **Laba Bersih Toko (Net Profit Riil)**
-   - **Barang Terlaris (Top Selling Products)**
-4. Ingin mencetak atau menyimpan laporan?
-   - Klik tombol **"Ekspor ke Excel"** untuk mengunduh laporan spreadsheet rapi.
-   - Klik tombol **"Cetak Dokumen A4"** untuk membuat PDF formal bertanda tangan pemilik toko.
+Fitur ini membuat omzet toko melesat karena pelanggan langganan dapat berbelanja dalam jumlah besar dengan cicilan ringan jatuh tempo bulanan:
 
----
-
-## BAB 9 — CARA MEMPERPANJANG MASA AKTIF LAYANAN TOKO (INPUT KODE LISENSI)
-
-Masa aktif sewa sistem Anda tertera jelas di Panel Kontrol. Ketika masa aktif mendekati akhir (H-7):
-1. Anda akan melihat pengingat ramah di puncak halaman kontrol toko.
-2. Lakukan pembayaran perpanjangan sewa kepada tim pengembang Anda melalui WhatsApp yang tertera.
-3. Tim pengembang akan mengirimkan **Kode Lisensi Resmi**, contohnya:
-   `PUTRI-365D-TOKOANDA-A81F0E`
-4. Untuk mengaktifkannya:
-   - Buka menu **"Pengaturan Toko"**.
-   - Gulir ke kartu paling bawah bertuliskan **"Status Lisensi & Layanan Toko"**.
-   - Klik tombol **"Masukkan Lisensi"**.
-   - Tempelkan (*paste*) kode yang Anda terima dari pengembang.
-   - Klik **"Aktifkan Lisensi"**.
-5. Sistem seketika diperpanjang dan seluruh fungsi berjalan normal!
+1. **Memberikan Limit Belanja ke Pelanggan:**
+   - Buka menu **"Pelanggan"**.
+   - Edit profil pelanggan terpercaya Anda, aktifkan status **"Putri PayLater: Aktif"**, lalu tentukan batas plafon belanja (contoh: *Rp 5.000.000*) dan tanggal jatuh tempo bulanan (misal: *Tanggal 5*).
+2. **Pelanggan Berbelanja Tempo di Kasir:**
+   - Di Kasir POS, pilih metode bayar **"PayLater / Tempo"**. Transaksi berhasil seketika tanpa uang tunai dan saldo hutang pelanggan otomatis tercatat.
+3. **Pembayaran Angsuran Mandiri oleh Pelanggan:**
+   - Pelanggan dapat membuka website toko lewat HP mereka sendiri, masuk ke menu **"Riwayat Pesanan"**, lalu klik **"Bayar Cicilan"**.
+   - Form bayar mandiri otomatis merekomendasikan nominal **"Angsuran Bulan Ini"** (bukan langsung menagih seluruh sisa tenor).
+   - Pelanggan mentransfer uang ke rekening toko dan mengunggah foto bukti transfer.
+4. **Persetujuan (Approval) oleh Pemilik Toko:**
+   - Di Panel Pemilik, buka menu **"Piutang Tempo"**.
+   - Periksa notifikasi konfirmasi pembayaran masuk dan cocokkan dengan mutasi rekening bank Anda.
+   - Klik **"Setujui Pembayaran"**.
+   - Sistem seketika memotong saldo piutang pelanggan, memulihkan limit belanja mereka, dan memunculkan dialog sukses berdesain mewah!
 
 ---
 
-*Jika Anda mengalami kendala atau membutuhkan bantuan, silakan hubungi tim pengembang Anda via tombol WhatsApp di panel kontrol toko.*
-**Selamat Berjualan & Semoga Usaha Anda Semakin Sukses dan Berkah!**
+## BAB 11 — MENCATAT PENGELUARAN OPERASIONAL TOKO (BUKU KAS HARIAN)
+
+Agar laporan laba bersih toko Anda 100% riil dan akurat, seluruh biaya toko wajib dicatat di modul ini:
+
+1. Buka menu **"Biaya Operasional" (Expenses)**.
+2. Klik tombol **"+ Catat Pengeluaran Baru"**.
+3. Pilih kategori biaya yang sesuai:
+   - 👔 *Gaji & Tunjangan Karyawan*
+   - ⚡ *Listrik, Air & Wifi Toko*
+   - 🏪 *Sewa Ruko / Tempat Usaha*
+   - 🚚 *Bensin & Transportasi Pengiriman*
+   - 📦 *Plastik, Lakban & Kemasan Barang*
+   - 🛠 *Pemeliharaan Toko & Peralatan*
+   - 🧾 *Biaya Operasional Lainnya*
+4. Masukkan nominal rupiah (Rp), nama vendor/penerima uang, dan catatan keterangan.
+5. Anda juga dapat memfoto nota/kuitansi fisik untuk disimpan sebagai bukti digital.
+6. Klik **"Simpan Pengeluaran"**. Seluruh biaya ini secara otomatis memotong perhitungan laba kotor di laporan laba rugi toko.
+
+---
+
+## BAB 12 — PUSAT LAPORAN EKSEKUTIF, LABA BERSIH & EKSPOR DATA KE EXCEL
+
+Pusat Laporan Toko Putri mengonsolidasi seluruh aktivitas bisnis ke dalam 7 tab analisis real-time:
+
+1. Buka menu **"Laporan Terpadu" (Reports)**.
+2. Pilih rentang waktu: **Hari Ini, 7 Hari Terakhir, Bulan Ini, atau Pilih Tanggal Sendiri**.
+3. **Laporan yang Tersedia:**
+   - **Laporan Laba Rugi (P&L):** Menampilkan perbandingan Total Penjualan, Total HPP Kulakan, Laba Kotor, Pengeluaran Toko, hingga **Laba Bersih Riil** yang Anda kantongi.
+   - **Laporan Penjualan & Kasir:** Analisis transaksi POS vs Web, distribusi metode bayar (Tunai vs QRIS vs Transfer vs Tempo), serta daftar 10 Produk Terlaris (*Top Selling Products*).
+   - **Laporan Valuasi Stok Rak:** Total nilai rupiah aset seluruh barang yang ada di toko Anda berdasarkan harga modal kulakan.
+   - **Laporan Piutang Pelanggan:** Daftar seluruh sisa tagihan berjalan yang belum lunas.
+4. **Ekspor Data:**
+   - Klik tombol **"Ekspor ke Excel (.xlsx)"** untuk mengunduh laporan pembukuan rapi yang siap dibuka di Microsoft Excel.
+
+---
+
+## BAB 13 — ERGONOMI MOBILE NATIVE & BARCODE SCANNER KAMERA DI HP
+
+Aplikasi toko Anda didesain dengan standar aplikasi mobile native modern:
+
+1. **Bento Navigation Dock (Bawah Layar):**
+   - Saat dibuka di smartphone, navigasi bawah menggunakan kapsul kaca *Frosted Glass* yang mewah, memberikan akses 1-ketuk ke Beranda, Katalog, Keranjang, Transaksi, dan Menu Utama.
+2. **Kapsul Pencarian Cepat di Header:**
+   - Di bagian atas layar HP, tersedia kapsul pencarian instan dengan ikon barcode scanner live.
+   - Ketuk ikon barcode scanner untuk menyalakan kamera HP Anda; arahkan kamera ke barcode produk apa pun untuk langsung menemukan barangnya seketika.
+3. **Tampilan Footer Bersih di HP:**
+   - Bagian bawah toko di smartphone diringkas menjadi penutup mobile ringkas (*Mobile End-Cap*) yang tidak membebani jempol saat menggulir layar katalog.
+
+---
+
+## BAB 14 — PERPANJANGAN MASA AKTIF LAYANAN TOKO, MASA TENGGANG & KEAMANAN DATA
+
+Sistem toko Anda beroperasi dengan model langganan terkelola (*Managed SaaS Engine*):
+
+1. **Peringatan Pra-Jatuh Tempo (H-7):**
+   - 7 hari sebelum masa sewa berakhir, sistem akan menampilkan pengingat ramah di puncak Panel Kontrol Pemilik Toko.
+2. **Masa Tenggang 7 Hari (Grace Period):**
+   - Jika Anda terlambat memperpanjang tepat waktu, sistem memberikan **toleransi masa tenggang selama 7 hari kalender**.
+   - Selama 7 hari ini toko Anda **TETAP BISA BERJUALAN NORMAL** di kasir fisik maupun online.
+3. **Penguncian Anggun & Garansi Data Aman (Zero Data Loss):**
+   - Jika masa tenggang berakhir, sistem akan beralih ke mode penguncian sementara yang ramah (*Graceful Lockout*).
+   - **PERHATIAN: DATA TOKO ANDA TIDAK AKAN PERNAH DIHAPUS**. Seluruh riwayat transaksi, data pelanggan, hutang piutang, dan stok barang tersimpan aman 100% di server cloud.
+4. **Cara Memasukkan Kode Perpanjangan:**
+   - Hubungi tim teknis pengembang Anda melalui WhatsApp yang tertera di banner sistem.
+   - Setelah melakukan pembayaran perpanjangan sewa, tim teknis akan mengirimkan **Kode Lisensi Resmi**, contoh:
+     `PUTRI-365D-TOKOANDA-A81F0E`
+   - Buka menu **"Pengaturan Toko"** -> gulir ke kartu **"Status Lisensi & Layanan Toko"**.
+   - Klik tombol **"Aktivasi Kunci Lisensi"**, tempelkan kode tersebut, lalu klik **"Aktifkan Lisensi"**.
+   - Sistem seketika aktif kembali secara penuh dan toko siap beroperasi melayani pelanggan!
+
+---
+
+💡 *Jika Anda membutuhkan bantuan teknis atau ingin berkonsultasi mengenai fitur tambahan, hubungi tim pengembang Anda melalui kontak WhatsApp resmi yang tersedia di panel kontrol toko.*
+
+**Selamat Berjualan & Sukses Selalu untuk Usaha Anda! 🚀**

@@ -119,47 +119,93 @@ Aturan validasi pengiriman/upload bukti transaksi diatur secara dinamis berdasar
 * **Biaya Pengiriman**: Catatan sistem secara eksplisit menerangkan bahwa produk berlabel PO akan dikirimkan menyusul sesuai estimasi waktu di labelnya, **tanpa dikenakan biaya pengiriman tambahan**.
 * **Integrasi Cetak**: Catatan aturan pengiriman PO ini secara dinamis disisipkan pada struk cetak thermal (`openReceiptPreview`), nota cicilan tempo (`previewTempoReceipt`), invoice A4, dan surat jalan (`openDocPreview`).
 
-### 4. Sistem Kartu Member Digital VIP 3D & Gamifikasi (v1.8.4)
+### 4. Sistem Kartu Member Digital VIP 3D & Gamifikasi
 * **Visual Mewah Layaknya Kartu Fisik**: Dilengkapi EMV Smart Chip emas vektor SVG, logo resmi, efek *embossed text* timbul untuk nama & nomor kartu virtual, serta status keanggotaan aktif.
 * **Animasi 3D Flip Dua Sisi**: Kartu dapat dibalik secara interaktif untuk melihat sisi belakang yang memuat pita magnetik (*magnetic stripe*), strip tanda tangan verifikasi, dan **Barcode Kasir Vektor (Code128)** yang dapat dipindai oleh scanner barcode fisik kasir toko.
-* **Gamifikasi 4 Tingkat Tier**: Sistem otomatis mengelompokkan pelanggan berdasarkan perolehan poin:
-  - 🥉 **Bronze Member** (0 - 99 Poin)
-  - 🥈 **Silver Member** (100 - 499 Poin)
-  - 🥇 **Gold Member** (500 - 999 Poin)
-  - 💎 **Platinum VIP** (1000+ Poin)
-* **Simpan ke Galeri HP (Download PNG HD)**: Pelanggan dapat mengunduh kartu member beresolusi tinggi (skala 3x Retina) ke galeri perangkat HP/komputer mereka.
-* **Auto-Deteksi di Checkout**: Saat pelanggan menginput nomor WA di keranjang belanja, sistem otomatis memunculkan miniatur kartu member dengan saldo poin dan tier aktif.
-* **Sinkronisasi Poin Otomatis & Persistensi Sesi**: Setiap pesanan otomatis mengkreditkan poin ke Firestore, memperbarui saldo kartu member seketika, menginvalidasi cache lama, dan memulihkan sesi pelanggan secara persisten.
+* **Gamifikasi 4 Tingkat Tier**: Bronze (0-99), Silver (100-499), Gold (500-999), Platinum VIP (1000+ Poin).
+* **Simpan ke Galeri HP (Download PNG HD)**: Pelanggan dapat mengunduh kartu member beresolusi tinggi ke galeri perangkat HP/komputer mereka.
+
+### 5. Keamanan Multi-Akun (RBAC 22 Modul) & HPP Privacy Guard
+* **Hierarki Peran Bertingkat**: Sistem membedakan secara tegas otoritas antara **Owner** (akses mutlak 24 modul), **Admin** (operasional harian), dan **Kasir** (eksklusif POS transaksi).
+* **Isolasi Mutlak Privasi Modal HPP**: Akun kasir terkunci 100% dari melihat harga modal kulakan (HPP), estimasi keuntungan per item, dan total laba bersih toko di seluruh antarmuka katalog kasir, keranjang belanja, modal detail produk, dan laporan keuangan.
+
+### 6. Manajemen Shift Kasir POS (Shift Ledger & Setoran Kas)
+* **Buka Shift & Modal Awal**: Kasir mencatat modal uang kembalian di awal shift (`pos_shifts`).
+* **Rekapitulasi Setoran & Tutup Kasir**: Di akhir jam kerja, kasir menghitung uang fisik laci dan mencetak struk tutup shift thermal yang membandingkan total kas sistem vs riil fisik (status Pas, Lebih, atau Selisih).
+
+### 7. Audit Inventori Fisik Rak & Gudang (Modul Stock Opname)
+* **Audit Terpadu Rak & Varian**: Mendukung hitung fisik seluruh katalog produk, stepper kuantitas mobile yang sinkron, kalkulasi selisih fisik vs sistem, serta finalisasi *batch write* otomatis ke Firestore.
+
+### 8. Buku Kas Operasional Toko (Expense Ledger)
+* **Pencatatan Beban Usaha Transaksional**: Mendokumentasikan pengeluaran harian (Gaji, Listrik/Wifi, Sewa Tempat, Transportasi, Kemasan, Pemeliharaan) lengkap dengan vendor dan bukti nota digital, yang secara real-time memotong Laba Kotor pada Laporan Laba Rugi (P&L).
+
+### 9. Standardisasi Dokumen Resmi A4 Multi-Halaman (True Pagination)
+* **Format Presisi Lembar A4 (210 x 297 mm)**: Format cetak resmi untuk Faktur Penjualan, Surat Jalan, Nota Tagihan Tempo, Kartu Piutang, dan SPH.
+* **Pagination Cerdas**: Otomatis memecah baris data tabel jika melebihi 1 halaman, menyertakan running header lanjutan, penomoran resmi (*"Halaman X dari Y"*), dan mengekspor PDF multi-lembar asli via jsPDF.
+
+### 10. Engine Lisensi & Guard Langganan SaaS (Model Managed Whitelabel)
+* **Algoritma Kunci Kriptografis**: Verifikasi kunci lisensi format `PUTRI-[DAYS]D-[STORE]-[CHECKSUM]`.
+* **Proteksi 3-Tahap**: Peringatan ramah H-7 pra-jatuh tempo, toleransi **Masa Tenggang 7 Hari (*Grace Period*)** di mana toko tetap bebas berjualan normal, dan **Graceful Lockout** (penguncian halus tanpa pernah menghapus data toko di cloud).
 
 ---
 
-## 🚀 Perintah CLI Pengembangan & Pemeliharaan
+## 🚀 Perintah CLI Pengembangan, Pemeliharaan & Ekosistem SaaS
 
-Gunakan perintah Node.js berikut dalam terminal projek untuk pemeliharaan harian, pengujian, dan rilis:
+Gunakan perintah Node.js berikut dalam terminal projek untuk pemeliharaan harian, audit diagnostik, pengujian lisensi, kloning toko, dan rilis:
+
+* **Pipeline Pemeliharaan Menyeluruh (Rekomendasi 1-Klik)**:
+  ```bash
+  npm run maintenance
+  ```
+  *Perintah otomatis satu pintu yang menjalankan: (1) Audit diagnostik statis kode & JSON, (2) Pengujian test suite lisensi & masa tenggang (22/22 passed), (3) Kompilasi web produksi Vite, (4) Sinkronisasi versi Android Gradle, dan (5) Sinkronisasi platform native Android Capacitor.*
+
+* **Audit Diagnostik Kesehatan Kode**:
+  ```bash
+  npm run audit
+  ```
+  *Memverifikasi 100% berkas konfigurasi JSON kritis, memindai 79 berkas JS di `src/`, dan memvalidasi keabsahan 307 impor relatif tanpa celah broken link.*
+
+* **Pengujian Suite Lisensi & Guard Langganan**:
+  ```bash
+  npm run test:license
+  ```
+  *Menjalankan 22 unit test otomatis untuk memverifikasi algoritma checksum kunci, evaluasi masa aktif, banner H-7, masa tenggang 7 hari (grace period), dan graceful lockout aman.*
 
 * **Menjalankan Dev Server (Lokal)**:
   ```bash
   npm run dev
   ```
-  *Membuka server pengembangan lokal di browser.*
+  *Membuka server pengembangan lokal Vite di browser pada port 3000.*
 
 * **Melakukan Build Produksi Web**:
   ```bash
   npm run build
   ```
-  *Mengompilasi dan meminifikasi semua aset ke dalam folder `/dist`.*
+  *Mengompilasi dan meminifikasi semua modul ke folder `/dist` dalam waktu super cepat (~8 detik).*
 
-* **Sinkronisasi Total Seluruh Sistem (Rekomendasi Pemeliharaan)**:
+* **Sinkronisasi Multi-Channel & Rilis Android**:
   ```bash
   npm run sync
   ```
-  *Perintah otomatis 1-langkah yang menjalankan build web, menyinkronkan folder `dist/` ke `1. HASIL_BUILD_SIAP_PAKE/`, menyinkronkan paket `PAKET_FLASHDISK/`, dan memperbarui platform `android/` secara instan.*
+  *Menjalankan build produksi web, menyinkronkan versi Android build.gradle, dan memperbarui aset native Android di folder `android/`.*
 
-* **Sinkronisasi Platform Android**:
+* **Kloning Toko Klien Baru (< 5 Menit)**:
   ```bash
-  npm run cap:sync
+  npm run store:new -- --name "Toko Berkah" --code "BERKAH" --client "Ahmad" --phone "081234567890" --days 365
   ```
-  *Menyinkronkan konfigurasi Capacitor dan aset web terbaru ke dalam proyek Android native.*
+  *Menerbitkan konfigurasi toko whitelabel baru di `stores-config/` dan kunci lisensi awal seketika.*
+
+* **Generator Kunci Lisensi Perpanjangan Sewa**:
+  ```bash
+  npm run license:generate -- --store "BERKAH" --days 365
+  ```
+  *Menerbitkan kode lisensi kriptografis resmi lengkap dengan draf pesan WhatsApp ramah untuk penagihan.*
+
+* **Kompilasi Android App Bundle (.AAB Play Store)**:
+  ```bash
+  npm run build:aab
+  ```
+  *Menghasilkan berkas binary resmi `.aab` untuk publikasi ke Google Play Console.*
 
 ---
 
