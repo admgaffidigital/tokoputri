@@ -55,7 +55,7 @@ export const renderFooter = () => {
 
       <!-- ================= 1. MOBILE NATIVE END-CAP (KHUSUS SMARTPHONE < 640px: RINGKAS, BERSIH, NATIVE APP FEEL) ================= -->
       <div class="block sm:hidden w-full px-3.5 mb-2">
-        <div class="footer-mobile-endcap relative overflow-hidden p-4 rounded-3xl transition-all duration-300">
+        <div class="footer-mobile-endcap relative overflow-hidden p-4 rounded-2xl transition-all duration-300">
           
           <!-- Mini Brand & Live Operating Indicator -->
           <div class="flex items-center justify-between gap-3 mb-2.5">
@@ -132,7 +132,9 @@ export const renderFooter = () => {
 
         <div class="relative z-10 mx-auto w-full px-4 sm:px-6 lg:px-8 xl:max-w-[1240px]">
           <!-- MAIN BENTO ISLAND HUB -->
-          <div class="footer-bento-hub relative overflow-hidden rounded-[2rem] sm:rounded-[2.5rem] p-6 sm:p-9 transition-all duration-300">
+          <div class="footer-bento-hub relative overflow-hidden rounded-xl sm:rounded-2xl p-6 sm:p-9 transition-all duration-300">
+            <!-- Top Subtle Theme Accent Line (Harmonisasi dengan Header Toko) -->
+            <div class="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[var(--color-primary)] to-transparent opacity-85 pointer-events-none"></div>
             
             <!-- Atmospheric Subtle Radial Washes Inside Bento -->
             <div class="absolute -top-24 -right-24 w-80 h-80 rounded-full pointer-events-none opacity-20 dark:opacity-15" style="background: radial-gradient(circle, var(--color-primary) 0%, transparent 70%);"></div>
