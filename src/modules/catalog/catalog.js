@@ -168,13 +168,11 @@ export const rCat = () => {
             if (hasB) return 1;
         }
         return (b.id || 0) - (a.id || 0);
-    });
-
-    const c = el('product-container');
+    });    const c = el('product-container');
     if (!c) return;
     c.className = cView === 'grid' 
-        ? 'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-5 2xl:grid-cols-6 gap-2 sm:gap-2.5 md:gap-3 lg:gap-3.5 xl:gap-4' 
-        : 'flex flex-col gap-1.5 sm:gap-2';
+        ? 'grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 md:gap-4.5 lg:grid-cols-4 lg:gap-5 xl:grid-cols-4 2xl:grid-cols-5 min-h-[400px]' 
+        : 'flex flex-col gap-2.5 sm:gap-3';
     
     if (!f.length) {
         if (!window.__isProductsLoaded && !sQ && !aCat && !aBrand) {
@@ -194,40 +192,40 @@ export const rCat = () => {
         let stockChipList = '';
 
         if (stockInfo.isOutOfStock) {
-            nH = `<div class="absolute inset-0 bg-white/75 dark:bg-slate-900/75 z-20 flex items-center justify-center rounded-xl"><span class="bg-slate-800 text-white text-[10px] font-bold px-3 py-1.5 rounded-xl shadow-lg uppercase tracking-widest"><i class="fa-solid fa-ban mr-1"></i> HABIS</span></div>`;
-            stockChipList = `<span class="bg-rose-500 text-white px-1.5 py-0.5 rounded-md text-[8px] font-extrabold flex items-center gap-0.5 whitespace-nowrap shrink-0 uppercase tracking-wider shadow-sm"><i class="fa-solid fa-ban text-[7px]"></i> Habis</span>`;
+            nH = `<div class="absolute inset-0 bg-slate-900/70 z-20 flex items-center justify-center rounded-xl"><span class="bg-rose-600 text-white text-[9px] font-black px-2.5 py-1 rounded-lg shadow-md uppercase tracking-wider flex items-center gap-1"><i class="fa-solid fa-ban"></i> HABIS</span></div>`;
+            stockChipList = `<span class="bg-rose-500 text-white px-2 py-0.5 rounded-md text-[8.5px] font-extrabold flex items-center gap-1 whitespace-nowrap shrink-0 uppercase tracking-wider shadow-sm"><i class="fa-solid fa-ban text-[7.5px]"></i> Habis</span>`;
         } else if (stockInfo.isLowStock) {
-            stockBadge = `<span class="absolute bottom-1.5 right-1.5 z-10 bg-rose-500 text-white text-[8px] font-bold px-1.5 py-0.5 rounded-md shadow uppercase tracking-wider"><i class="fa-solid fa-fire mr-0.5"></i> SISA ${stockInfo.totalStock}</span>`;
-            stockChipList = `<span class="bg-rose-500 text-white px-1.5 py-0.5 rounded-md text-[8px] font-extrabold flex items-center gap-0.5 whitespace-nowrap shrink-0 uppercase tracking-wider shadow-sm"><i class="fa-solid fa-fire text-[7px]"></i> Sisa ${stockInfo.totalStock}</span>`;
+            stockBadge = `<span class="absolute bottom-2 right-2 z-10 bg-rose-500 text-white text-[8.5px] font-black px-2 py-0.5 rounded-md shadow uppercase tracking-wider flex items-center gap-0.5"><i class="fa-solid fa-fire text-[7.5px]"></i> SISA ${stockInfo.totalStock}</span>`;
+            stockChipList = `<span class="bg-rose-500 text-white px-2 py-0.5 rounded-md text-[8.5px] font-extrabold flex items-center gap-1 whitespace-nowrap shrink-0 uppercase tracking-wider shadow-sm"><i class="fa-solid fa-fire text-[7.5px]"></i> Sisa ${stockInfo.totalStock}</span>`;
         } else if (stockInfo.isManaged && stockInfo.totalStock > 0) {
-            stockBadge = `<span class="absolute bottom-1.5 right-1.5 z-10 bg-slate-800/90 text-white text-[8px] font-bold px-1.5 py-0.5 rounded-md shadow uppercase tracking-wider"><i class="fa-solid fa-box mr-0.5"></i> STOK ${stockInfo.totalStock}</span>`;
-            stockChipList = `<span class="bg-slate-800/90 dark:bg-slate-700 text-white px-1.5 py-0.5 rounded-md text-[8px] font-bold flex items-center gap-0.5 whitespace-nowrap shrink-0 uppercase tracking-wider"><i class="fa-solid fa-box text-[7px]"></i> Stok ${stockInfo.totalStock}</span>`;
+            stockBadge = `<span class="absolute bottom-2 right-2 z-10 bg-slate-900/90 dark:bg-slate-800/90 text-white text-[8.5px] font-bold px-2 py-0.5 rounded-md shadow uppercase tracking-wider flex items-center gap-0.5"><i class="fa-solid fa-box text-[7.5px]"></i> STOK ${stockInfo.totalStock}</span>`;
+            stockChipList = `<span class="bg-slate-800/90 dark:bg-slate-700 text-white px-2 py-0.5 rounded-md text-[8.5px] font-bold flex items-center gap-1 whitespace-nowrap shrink-0 uppercase tracking-wider"><i class="fa-solid fa-box text-[7.5px]"></i> Stok ${stockInfo.totalStock}</span>`;
         }
         
         const canOpen = !stockInfo.isOutOfStock || stockInfo.isPreorder;
-        const cardCursorCls = canOpen ? 'cursor-pointer hover:shadow-md hover:-translate-y-1.5 hover:border-[var(--color-primary)]/40' : 'cursor-not-allowed';
-        const cardCursorClsList = canOpen ? 'cursor-pointer hover:shadow-md hover:-translate-y-0.5 hover:border-[var(--color-primary)]/40' : 'cursor-not-allowed';
+        const cardCursorCls = canOpen ? 'cursor-pointer hover:shadow-md hover:-translate-y-1 hover:border-[var(--color-primary)]/45' : 'cursor-not-allowed';
+        const cardCursorClsList = canOpen ? 'cursor-pointer hover:shadow-md hover:-translate-y-0.5 hover:border-[var(--color-primary)]/45' : 'cursor-not-allowed';
 
         let discPill = '';
         let priceNormalHtml = '';
         if (p.priceNormal && p.priceNormal > p.price) {
             let pct = Math.round(((p.priceNormal - p.price) / p.priceNormal) * 100);
-            discPill = `<span class="bg-rose-500 text-white px-1.5 py-0.5 rounded-md text-[8px] font-extrabold flex items-center gap-0.5 whitespace-nowrap shrink-0 uppercase tracking-wider shadow-sm"><i class="fa-solid fa-tags text-[7px]"></i> -${pct}%</span>`;
-            priceNormalHtml = `<p class="text-[10px] text-slate-400 dark:text-slate-500 line-through leading-none font-semibold truncate">${fCur(p.priceNormal)}</p>`;
+            discPill = `<span class="bg-rose-500 text-white px-2 py-0.5 rounded-md text-[8.5px] font-extrabold flex items-center gap-1 whitespace-nowrap shrink-0 uppercase tracking-wider shadow-sm"><i class="fa-solid fa-tags text-[7.5px]"></i> -${pct}%</span>`;
+            priceNormalHtml = `<p class="text-[10px] sm:text-[11px] text-slate-400 dark:text-slate-500 line-through leading-none font-semibold truncate mb-0.5">${fCur(p.priceNormal)}</p>`;
         } else if (p.variants && p.variants.length) {
             const varDiscs = p.variants
                 .filter(v => v.priceNormal && parseFloat(v.priceNormal) > parseFloat(v.price))
                 .map(v => Math.round(((parseFloat(v.priceNormal) - parseFloat(v.price)) / parseFloat(v.priceNormal)) * 100));
             if (varDiscs.length > 0) {
                 const maxPct = Math.max(...varDiscs);
-                discPill = `<span class="bg-rose-500 text-white px-1.5 py-0.5 rounded-md text-[8px] font-extrabold flex items-center gap-0.5 whitespace-nowrap shrink-0 uppercase tracking-wider shadow-sm"><i class="fa-solid fa-tags text-[7px]"></i> -${maxPct}%</span>`;
+                discPill = `<span class="bg-rose-500 text-white px-2 py-0.5 rounded-md text-[8.5px] font-extrabold flex items-center gap-1 whitespace-nowrap shrink-0 uppercase tracking-wider shadow-sm"><i class="fa-solid fa-tags text-[7.5px]"></i> -${maxPct}%</span>`;
             }
         }
 
         const compactPoStr = p.poTime
             ? String(p.poTime).replace(/\s*hari\s*kerja/gi, 'hr').replace(/\s*hari/gi, 'hr').replace(/\s*minggu/gi, 'mgg').replace(/\s*bulan/gi, 'bln').trim()
             : '';
-        let poPill = compactPoStr ? `<span class="bg-amber-500 text-white px-1.5 py-0.5 rounded-md text-[8px] font-extrabold flex items-center gap-0.5 whitespace-nowrap shrink-0 uppercase tracking-wider shadow-sm"><i class="fa-solid fa-clock text-[7px]"></i> PO ${esc(compactPoStr)}</span>` : '';
+        let poPill = compactPoStr ? `<span class="bg-amber-500 text-white px-2 py-0.5 rounded-md text-[8.5px] font-extrabold flex items-center gap-1 whitespace-nowrap shrink-0 uppercase tracking-wider shadow-sm"><i class="fa-solid fa-clock text-[7.5px]"></i> PO ${esc(compactPoStr)}</span>` : '';
 
         // Eyebrow Kategori & Brand Terdedikasi (100% Lebar Kartu, Anti-Terpotong)
         const catBrandText = esc(`${p.subCategory || p.category || 'PRODUK'}${p.brand ? ` · ${p.brand}` : ''}`);
@@ -238,26 +236,27 @@ export const rCat = () => {
             if (poinVals.length) {
                 const uniq = [...new Set(poinVals)];
                 poinBadge = uniq.length === 1
-                    ? `<span class="bg-[rgba(var(--color-primary-rgb),0.08)] text-[var(--color-primary)] px-1.5 py-0.5 rounded-md text-[8px] font-bold flex items-center gap-0.5 whitespace-nowrap shrink-0 uppercase tracking-wider"><i class="fa-solid fa-star text-[7px]"></i> +${uniq[0]}</span>`
-                    : `<span class="bg-[rgba(var(--color-primary-rgb),0.08)] text-[var(--color-primary)] px-1.5 py-0.5 rounded-md text-[8px] font-bold flex items-center gap-0.5 whitespace-nowrap shrink-0 uppercase tracking-wider"><i class="fa-solid fa-star text-[7px]"></i> Poin</span>`;
+                    ? `<span class="bg-[rgba(var(--color-primary-rgb),0.08)] text-[var(--color-primary)] border border-[rgba(var(--color-primary-rgb),0.2)] px-1.5 py-0.5 rounded-md text-[8.5px] font-bold flex items-center gap-1 whitespace-nowrap shrink-0 uppercase tracking-wider"><i class="fa-solid fa-star text-[7.5px]"></i> +${uniq[0]}</span>`
+                    : `<span class="bg-[rgba(var(--color-primary-rgb),0.08)] text-[var(--color-primary)] border border-[rgba(var(--color-primary-rgb),0.2)] px-1.5 py-0.5 rounded-md text-[8.5px] font-bold flex items-center gap-1 whitespace-nowrap shrink-0 uppercase tracking-wider"><i class="fa-solid fa-star text-[7.5px]"></i> Poin</span>`;
             }
         } else if (parseFloat(p.poin) > 0) {
-            poinBadge = `<span class="bg-[rgba(var(--color-primary-rgb),0.08)] text-[var(--color-primary)] px-1.5 py-0.5 rounded-md text-[8px] font-bold flex items-center gap-0.5 whitespace-nowrap shrink-0 uppercase tracking-wider"><i class="fa-solid fa-star text-[7px]"></i> +${parseFloat(p.poin)}</span>`;
+            poinBadge = `<span class="bg-[rgba(var(--color-primary-rgb),0.08)] text-[var(--color-primary)] border border-[rgba(var(--color-primary-rgb),0.2)] px-1.5 py-0.5 rounded-md text-[8.5px] font-bold flex items-center gap-1 whitespace-nowrap shrink-0 uppercase tracking-wider"><i class="fa-solid fa-star text-[7.5px]"></i> +${parseFloat(p.poin)}</span>`;
         }
 
         const totalSoldCard = p.variants && p.variants.length
             ? p.variants.reduce((s, vv) => s + (parseFloat(vv.totalSold) || 0), 0)
             : (parseFloat(p.totalSold) || 0);
+
         const soldBadge = totalSoldCard > 0
-            ? `<span class="bg-slate-100 text-slate-600 dark:bg-slate-700/60 dark:text-slate-300 px-1.5 py-0.5 rounded-md text-[8px] font-bold flex items-center gap-0.5 whitespace-nowrap shrink-0 uppercase tracking-wider"><i class="fa-solid fa-fire text-amber-500 text-[7px]"></i> ${totalSoldCard} Terjual</span>`
+            ? `<span class="bg-slate-100 text-slate-600 dark:bg-slate-700/60 dark:text-slate-300 border border-slate-200/80 dark:border-slate-600/50 px-1.5 py-0.5 rounded-md text-[8.5px] font-bold flex items-center gap-1 whitespace-nowrap shrink-0 uppercase tracking-wider"><i class="fa-solid fa-fire text-amber-500 text-[7.5px]"></i> ${totalSoldCard} Terjual</span>`
             : '';
 
         const variantBadge = (p.variants && p.variants.length > 0)
-            ? `<span class="bg-indigo-50 text-indigo-600 dark:bg-indigo-950/60 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800/50 px-1.5 py-0.5 rounded-md text-[8px] font-bold flex items-center gap-0.5 whitespace-nowrap shrink-0 uppercase tracking-wider"><i class="fa-solid fa-layer-group text-[7px]"></i> Varian</span>`
+            ? `<span class="bg-indigo-50 text-indigo-600 dark:bg-indigo-950/60 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800/50 px-1.5 py-0.5 rounded-md text-[8.5px] font-bold flex items-center gap-1 whitespace-nowrap shrink-0 uppercase tracking-wider"><i class="fa-solid fa-layer-group text-[7.5px]"></i> Varian</span>`
             : '';
 
         const grosirBadge = (p.wholesale?.length && !p.variants?.length)
-            ? `<span class="amber-badge px-1.5 py-0.5 rounded-md text-[8px] font-bold flex items-center gap-0.5 whitespace-nowrap shrink-0 uppercase tracking-wider"><i class="fa-solid fa-tags text-[7px]"></i> Grosir</span>`
+            ? `<span class="amber-badge px-1.5 py-0.5 rounded-md text-[8.5px] font-bold flex items-center gap-1 whitespace-nowrap shrink-0 uppercase tracking-wider"><i class="fa-solid fa-tags text-[7.5px]"></i> Grosir</span>`
             : '';
 
         // ── Badges Lengkap untuk Grid Mode: Semua badge tampil konsisten & rapi tanpa pemotongan ──
@@ -279,7 +278,7 @@ export const rCat = () => {
         if (soldBadge) listCandidates.push(soldBadge);
         const listChipsHtml = listCandidates.join('');
         
-        let unt = `<span class="text-[9px] text-slate-600 dark:text-slate-400 font-bold ml-0.5 mb-0.5 uppercase tracking-wide">/${esc(p.unit || 'PCS')}</span>`;
+        let unt = `<span class="text-[9.5px] sm:text-[10px] text-slate-400 dark:text-slate-500 font-bold ml-0.5 mb-0.5 uppercase tracking-wide">/${esc(p.unit || 'PCS')}</span>`;
         
         const hasImg = Boolean(p.img && typeof p.img === 'string' && p.img.trim() && !isPlaceholderImg(p.img));
         const imgUrl = hasImg ? esc(getOptImg(p.img, 'w300-rw')) : '';
@@ -288,35 +287,35 @@ export const rCat = () => {
 
         if (cView === 'grid') {
             return `
-            <a href="?p=${p.id}" class="w-full bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700/50 rounded-2xl shadow-soft ${cardCursorCls} transition-all duration-300 flex flex-col group relative overflow-hidden text-left" onclick="event.preventDefault(); openProductModal('${esc(p.id)}')">
+            <a href="?p=${p.id}" class="w-full bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700/70 rounded-2xl shadow-xs ${cardCursorCls} transition-all duration-300 flex flex-col group relative overflow-hidden text-left" onclick="event.preventDefault(); openProductModal('${esc(p.id)}')">
                 ${nH}
-                <div class="relative aspect-square w-full bg-white dark:bg-slate-900 flex items-center justify-center shrink-0 border-b border-slate-100 dark:border-slate-700/50 overflow-hidden">
-                      ${(discPill || poPill) ? `<div class="absolute top-2 left-2 z-10 flex flex-col gap-1 items-start pointer-events-none">${discPill}${poPill}</div>` : ''}
+                <div class="relative aspect-square w-full bg-slate-50 dark:bg-slate-900/80 flex items-center justify-center shrink-0 border-b border-slate-100 dark:border-slate-700/50 overflow-hidden">
+                      ${(discPill || poPill) ? `<div class="absolute top-2.5 left-2.5 z-10 flex flex-col gap-1 items-start pointer-events-none">${discPill}${poPill}</div>` : ''}
                       ${stockBadge}
                       ${hasImg 
                           ? `<img width="300" height="300" loading="lazy" decoding="async" sizes="(max-width: 640px) 45vw, (max-width: 1024px) 30vw, 20vw" src="${imgUrl}" alt="${esc(p.name)}" onerror="this.onerror=null;this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='flex';" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 ${nH ? 'grayscale opacity-50' : ''}">
                              <div class="w-full h-full" style="display:none">${coverMdHtml}</div>`
                           : coverMdHtml}
                 </div>
-                <div class="flex-1 flex flex-col p-2.5 sm:p-3 min-w-0 bg-white dark:bg-slate-800 relative z-10">
-                    <p class="text-[9px] sm:text-[9.5px] uppercase tracking-wider font-bold text-slate-400 dark:text-slate-500 truncate leading-none mb-1">${catBrandText}</p>
-                    <h4 class="text-[11px] sm:text-xs font-bold text-slate-700 dark:text-slate-200 line-clamp-2 leading-snug min-h-[2.1rem] sm:min-h-[2.25rem] mb-1 group-hover:text-[var(--color-primary)] transition-colors uppercase break-words">${esc(p.name)}</h4>
-                    <div class="h-5 mb-1.5 flex items-center gap-1 overflow-x-auto hide-scrollbar no-scrollbar flex-nowrap py-0.5 shrink-0">
+                <div class="flex-1 flex flex-col p-3 sm:p-3.5 min-w-0 bg-white dark:bg-slate-800 relative z-10">
+                    <p class="text-[9.5px] sm:text-[10px] uppercase tracking-wider font-bold text-slate-400 dark:text-slate-500 truncate leading-none mb-1.5">${catBrandText}</p>
+                    <h4 class="text-xs sm:text-[13px] font-bold text-slate-800 dark:text-slate-100 line-clamp-2 leading-snug min-h-[2.3rem] sm:min-h-[2.5rem] mb-1.5 group-hover:text-[var(--color-primary)] transition-colors uppercase break-words">${esc(p.name)}</h4>
+                    <div class="h-5.5 mb-2 flex items-center gap-1.5 overflow-x-auto hide-scrollbar no-scrollbar flex-nowrap py-0.5 shrink-0">
                         ${gridChipsHtml}
                     </div>
-                    <div class="flex items-end justify-between mt-auto pt-1">
+                    <div class="flex items-end justify-between mt-auto pt-1.5 border-t border-slate-100 dark:border-slate-700/50">
                         <div class="min-w-0 pr-1">
                             <div class="h-3.5 flex items-center">
                                 ${p.variants && p.variants.length > 0 ? '' : priceNormalHtml}
                             </div>
                             <div class="flex items-baseline gap-0.5">
-                                <p class="text-[var(--color-primary)] font-bold text-xs sm:text-[14px] leading-none tracking-tight truncate">
+                                <p class="text-[var(--color-primary)] font-black text-xs sm:text-[14px] lg:text-[15px] leading-none tracking-tight truncate">
                                     ${p.variants && p.variants.length > 0 ? '<span class="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider">PILIH VARIAN</span>' : fCur(p.price)}
                                 </p>
                                 ${p.variants && p.variants.length > 0 ? '' : unt}
                             </div>
                         </div>
-                        <button type="button" class="w-7 h-7 sm:w-7.5 sm:h-7.5 rounded-xl bg-[rgba(var(--color-primary-rgb),0.08)] text-[var(--color-primary)] border border-[rgba(var(--color-primary-rgb),0.15)] flex items-center justify-center shrink-0 transition-all group-hover:bg-[var(--color-primary)] group-hover:text-white group-hover:scale-105 active:scale-95 shadow-sm cursor-pointer z-20" onclick="quickAddOrOpenProduct(event, '${esc(p.id)}')" title="${p.variants && p.variants.length > 0 ? 'Pilih Varian' : 'Tambah ke Keranjang'}" aria-label="${p.variants && p.variants.length > 0 ? 'Pilih varian ' + esc(p.name) : 'Tambah ' + esc(p.name) + ' ke keranjang'}">
+                        <button type="button" class="w-8.5 h-8.5 sm:w-9 sm:h-9 rounded-xl bg-[rgba(var(--color-primary-rgb),0.08)] text-[var(--color-primary)] border border-[rgba(var(--color-primary-rgb),0.2)] flex items-center justify-center shrink-0 transition-all group-hover:bg-[var(--color-primary)] group-hover:text-white group-hover:scale-105 active:scale-95 shadow-2xs cursor-pointer z-20" onclick="quickAddOrOpenProduct(event, '${esc(p.id)}')" title="${p.variants && p.variants.length > 0 ? 'Pilih Varian' : 'Tambah ke Keranjang'}" aria-label="${p.variants && p.variants.length > 0 ? 'Pilih varian ' + esc(p.name) : 'Tambah ' + esc(p.name) + ' ke keranjang'}">
                             ${p.variants && p.variants.length > 0 ? '<i class="fa-solid fa-layer-group text-xs"></i>' : '<i class="fa-solid fa-plus text-xs"></i>'}
                         </button>
                     </div>
@@ -324,32 +323,33 @@ export const rCat = () => {
             </a>`;
         } else {
             return `
-            <a href="?p=${p.id}" class="w-full bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700/50 rounded-xl sm:rounded-2xl shadow-sm ${cardCursorClsList} transition-all duration-300 flex items-center p-2 sm:p-2.5 gap-2.5 sm:gap-3 group relative overflow-hidden text-left" onclick="event.preventDefault(); openProductModal('${esc(p.id)}')">
+            <a href="?p=${p.id}" class="w-full bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700/70 rounded-2xl shadow-xs ${cardCursorClsList} transition-all duration-300 flex items-center p-3 sm:p-3.5 gap-3 sm:gap-4 group relative overflow-hidden text-left" onclick="event.preventDefault(); openProductModal('${esc(p.id)}')">
                 ${nH}
-                <div class="relative w-20 h-20 sm:w-22 sm:h-22 shrink-0 bg-white dark:bg-slate-900 rounded-lg flex items-center justify-center border border-slate-100 dark:border-slate-700/50 overflow-hidden">
+                <div class="relative w-20 h-20 sm:w-24 sm:h-24 shrink-0 bg-slate-50 dark:bg-slate-900 rounded-xl sm:rounded-2xl flex items-center justify-center border border-slate-100 dark:border-slate-700/50 overflow-hidden">
+                    ${(discPill || poPill) ? `<div class="absolute top-1.5 left-1.5 z-10 flex flex-col gap-0.5 items-start pointer-events-none">${discPill}${poPill}</div>` : ''}
                     ${stockBadge}
                     ${hasImg
-                        ? `<img width="88" height="88" loading="lazy" decoding="async" sizes="88px" src="${imgUrl}" alt="${esc(p.name)}" onerror="this.onerror=null;this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='flex';" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 ${nH ? 'grayscale opacity-50' : ''}">
+                        ? `<img width="96" height="96" loading="lazy" decoding="async" sizes="96px" src="${imgUrl}" alt="${esc(p.name)}" onerror="this.onerror=null;this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='flex';" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 ${nH ? 'grayscale opacity-50' : ''}">
                            <div class="w-full h-full" style="display:none">${coverSmHtml}</div>`
                         : coverSmHtml}
                 </div>
-                <div class="flex-1 min-w-0 flex flex-col justify-center gap-0.5 relative z-10 pr-0.5">
+                <div class="flex-1 min-w-0 flex flex-col justify-between py-0.5 gap-1 relative z-10 pr-0.5">
                     <!-- Line 1: Eyebrow Kategori & Brand Terdedikasi (100% lebar kartu, anti-terpotong) -->
-                    <p class="text-[9px] sm:text-[9.5px] uppercase tracking-wider font-bold text-slate-400 dark:text-slate-500 truncate leading-none">${catBrandText}</p>
+                    <p class="text-[9.5px] sm:text-[10px] uppercase tracking-wider font-bold text-slate-400 dark:text-slate-500 truncate leading-none">${catBrandText}</p>
                     <!-- Line 2: Nama Produk -->
-                    <h4 class="text-xs sm:text-[13px] font-bold text-slate-800 dark:text-slate-100 line-clamp-1 sm:line-clamp-2 leading-tight group-hover:text-[var(--color-primary)] transition-colors uppercase break-words">${esc(p.name)}</h4>
-                    <!-- Line 3: Chips Operasional Rapi Terprioritas (Anti-terpotong, Maks 3) -->
-                    ${listChipsHtml ? `<div class="flex items-center gap-1 overflow-x-auto hide-scrollbar no-scrollbar flex-nowrap py-0.5">${listChipsHtml}</div>` : ''}
+                    <h4 class="text-xs sm:text-[14px] font-bold text-slate-800 dark:text-slate-100 line-clamp-1 sm:line-clamp-2 leading-snug group-hover:text-[var(--color-primary)] transition-colors uppercase break-words">${esc(p.name)}</h4>
+                    <!-- Line 3: Chips Operasional Rapi Terprioritas -->
+                    ${listChipsHtml ? `<div class="flex items-center gap-1.5 overflow-x-auto hide-scrollbar no-scrollbar flex-nowrap py-0.5">${listChipsHtml}</div>` : ''}
                     <!-- Line 4: Harga & Action -->
                     <div class="flex items-center justify-between pt-0.5">
                         <div class="flex items-baseline gap-1.5 min-w-0">
-                            <p class="text-[var(--color-primary)] font-bold text-xs sm:text-[14px] leading-none tracking-tight truncate">
+                            <p class="text-[var(--color-primary)] font-black text-xs sm:text-[15px] leading-none tracking-tight truncate">
                                 ${p.variants && p.variants.length > 0 ? '<span class="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider">PILIH VARIAN</span>' : fCur(p.price)}
                             </p>
                             ${p.variants && p.variants.length > 0 ? '' : unt}
-                            ${(p.variants && p.variants.length > 0) || !p.priceNormal || p.priceNormal <= p.price ? '' : `<span class="text-[10px] text-slate-400 dark:text-slate-500 line-through leading-none font-semibold truncate">${fCur(p.priceNormal)}</span>`}
+                            ${(p.variants && p.variants.length > 0) || !p.priceNormal || p.priceNormal <= p.price ? '' : `<span class="text-[10px] sm:text-[11px] text-slate-400 dark:text-slate-500 line-through leading-none font-semibold truncate">${fCur(p.priceNormal)}</span>`}
                         </div>
-                        <button type="button" class="w-7 h-7 sm:w-7.5 sm:h-7.5 rounded-lg bg-[rgba(var(--color-primary-rgb),0.08)] text-[var(--color-primary)] border border-[rgba(var(--color-primary-rgb),0.15)] flex items-center justify-center shrink-0 transition-all group-hover:bg-[var(--color-primary)] group-hover:text-white group-hover:scale-105 active:scale-95 shadow-sm mr-0.5 cursor-pointer z-20" onclick="quickAddOrOpenProduct(event, '${esc(p.id)}')" title="${p.variants && p.variants.length > 0 ? 'Pilih Varian' : 'Tambah ke Keranjang'}" aria-label="${p.variants && p.variants.length > 0 ? 'Pilih varian ' + esc(p.name) : 'Tambah ' + esc(p.name) + ' ke keranjang'}">
+                        <button type="button" class="w-8.5 h-8.5 sm:w-9 sm:h-9 rounded-xl bg-[rgba(var(--color-primary-rgb),0.08)] text-[var(--color-primary)] border border-[rgba(var(--color-primary-rgb),0.2)] flex items-center justify-center shrink-0 transition-all group-hover:bg-[var(--color-primary)] group-hover:text-white group-hover:scale-105 active:scale-95 shadow-2xs mr-0.5 cursor-pointer z-20" onclick="quickAddOrOpenProduct(event, '${esc(p.id)}')" title="${p.variants && p.variants.length > 0 ? 'Pilih Varian' : 'Tambah ke Keranjang'}" aria-label="${p.variants && p.variants.length > 0 ? 'Pilih varian ' + esc(p.name) : 'Tambah ' + esc(p.name) + ' ke keranjang'}">
                             ${p.variants && p.variants.length > 0 ? '<i class="fa-solid fa-layer-group text-xs"></i>' : '<i class="fa-solid fa-plus text-xs"></i>'}
                         </button>
                     </div>

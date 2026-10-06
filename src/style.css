@@ -209,8 +209,8 @@ html.dark #view-admin-login {
     display: grid !important;
     grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
     grid-auto-rows: max-content !important;
-    gap: 8px !important;
-    padding: 8px !important;
+    gap: 12px !important;
+    padding: 12px !important;
     overflow-y: auto !important;
     flex: 1 1 0% !important;
     align-content: start !important;
@@ -219,23 +219,23 @@ html.dark #view-admin-login {
 
 @media (min-width: 640px) {
     .pos-catalog-grid-mode {
-        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-        gap: 10px !important;
-        padding: 10px !important;
+        grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)) !important;
+        gap: 14px !important;
+        padding: 14px !important;
     }
 }
 
-@media (min-width: 768px) {
+@media (min-width: 1024px) {
     .pos-catalog-grid-mode {
-        grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
-        gap: 12px !important;
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+        gap: 14px !important;
     }
 }
 
 @media (min-width: 1280px) {
     .pos-catalog-grid-mode {
-        grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
-        gap: 14px !important;
+        grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+        gap: 16px !important;
         padding-bottom: 2rem !important;
     }
 }
@@ -244,11 +244,18 @@ html.dark #view-admin-login {
 .pos-catalog-list-mode {
     display: flex !important;
     flex-direction: column !important;
-    gap: 6px !important;
-    padding: 8px !important;
+    gap: 10px !important;
+    padding: 12px !important;
     overflow-y: auto !important;
     flex: 1 1 0% !important;
     padding-bottom: 7rem !important;
+}
+
+@media (min-width: 640px) {
+    .pos-catalog-list-mode {
+        gap: 12px !important;
+        padding: 14px !important;
+    }
 }
 
 @media (min-width: 1280px) {
@@ -257,51 +264,53 @@ html.dark #view-admin-login {
     }
 }
 
-/* Container kartu produk POS grid (Anti-Collapse Hard Floor) */
+/* Container kartu produk POS grid (Bento Native App 1:1 Harmonis dengan Storefront) */
 .pos-product-card {
     display: flex !important;
     flex-direction: column !important;
     background: #ffffff;
-    border-radius: 14px;
-    padding: 8px;
-    border: 1.5px solid rgba(203, 213, 225, 0.9);
-    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05);
+    border-radius: 18px;
+    padding: 0 !important; /* Flush cover header, identik Storefront */
+    border: 1px solid rgba(226, 232, 240, 0.9);
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04), 0 1px 2px rgba(15, 23, 42, 0.02);
     cursor: pointer;
-    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease;
     user-select: none;
     overflow: hidden;
     position: relative;
     width: 100% !important;
     min-width: 0 !important;
-    min-height: 220px !important; /* HARD FLOOR: Tidak pernah bisa gepeng/tergencet */
+    min-height: 250px !important; /* HARD FLOOR: Tidak pernah bisa gepeng/tergencet */
     box-sizing: border-box !important;
 }
 
 .pos-product-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.1);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.08), 0 8px 10px -6px rgba(15, 23, 42, 0.03);
+    border-color: rgba(var(--color-primary-rgb), 0.45);
 }
 
 .pos-product-card:active {
-    transform: scale(0.98);
+    transform: scale(0.985);
 }
 
 .pos-product-card.in-cart {
     border-color: var(--color-primary);
-    box-shadow: 0 0 0 2px rgba(var(--color-primary-rgb), 0.2), 0 2px 8px rgba(15, 23, 42, 0.06);
+    box-shadow: 0 0 0 2px rgba(var(--color-primary-rgb), 0.25), 0 4px 14px rgba(var(--color-primary-rgb), 0.1);
 }
 
-/* Kotak gambar produk: rasio 1:1 langsung & hard min-height */
+/* Kotak gambar produk: rasio 1:1 flush cover atas & hard min-height */
 .pos-img-box {
     position: relative !important;
     width: 100% !important;
     aspect-ratio: 1 / 1 !important;
-    min-height: 120px !important; /* Jaminan fisik: tidak akan pernah 0px */
-    border-radius: 10px;
+    min-height: 120px !important;
+    border-radius: 0 !important;
     overflow: hidden;
-    background: #f1f5f9;
+    background: #f8fafc;
     flex-shrink: 0 !important;
-    margin-bottom: 8px;
+    margin-bottom: 0 !important;
+    border-bottom: 1px solid #f1f5f9;
 }
 
 /* Gambar presisi di dalam kotak — absolute fill penuh */
@@ -313,11 +322,11 @@ html.dark #view-admin-login {
     object-fit: cover !important;
     object-position: center center !important;
     display: block !important;
-    transition: transform 0.3s ease;
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .pos-product-card:hover .pos-img-box img {
-    transform: scale(1.05);
+    transform: scale(1.06);
 }
 
 /* Fallback inner wrapper jika dipakai */
@@ -847,29 +856,31 @@ html.dark #view-admin-login {
     white-space: nowrap;
 }
 
-/* Info produk bawah kotak gambar */
+/* Info produk bawah kotak gambar (Spacious & Clean Bento Interior) */
 .pos-card-info {
     flex: 1;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     min-width: 0;
+    padding: 12px 14px 14px 14px !important;
 }
 
 .pos-card-cat {
-    font-size: 8px;
+    font-size: 9.5px;
     text-transform: uppercase;
-    letter-spacing: 0.07em;
+    letter-spacing: 0.05em;
     font-weight: 700;
     color: #94a3b8;
-    margin-bottom: 2px;
+    margin-bottom: 4px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    line-height: 1.2;
 }
 
 .pos-card-name {
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 700;
     color: #1e293b;
     line-height: 1.35;
@@ -877,34 +888,42 @@ html.dark #view-admin-login {
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
-    min-height: 28px;
+    min-height: 34px;
     margin-bottom: 6px;
+    text-transform: uppercase;
+    word-break: break-word;
+    transition: color 0.2s ease;
+}
+
+.pos-product-card:hover .pos-card-name {
+    color: var(--color-primary);
 }
 
 .pos-card-footer {
     display: flex;
-    align-items: center;
+    align-items: flex-end;
     justify-content: space-between;
-    gap: 4px;
+    gap: 6px;
     border-top: 1px solid #f1f5f9;
-    padding-top: 6px;
+    padding-top: 8px;
     margin-top: auto;
 }
 
 .pos-card-price {
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 900;
     color: var(--color-primary);
     min-width: 0;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    line-height: 1.2;
 }
 
 .pos-add-btn {
-    width: 28px;
-    height: 28px;
-    border-radius: 9px;
+    width: 34px;
+    height: 34px;
+    border-radius: 11px;
     background: linear-gradient(135deg, var(--color-primary-light, #e1b858) 0%, var(--color-primary, #c59b27) 60%, var(--color-primary-dark, #a87f1b) 100%);
     color: white;
     border: none;
@@ -913,50 +932,58 @@ html.dark #view-admin-login {
     justify-content: center;
     cursor: pointer;
     flex-shrink: 0;
-    font-size: 11px;
+    font-size: 12px;
     box-shadow: 0 2px 6px rgba(var(--color-primary-rgb), 0.35);
     transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .pos-add-btn:hover {
     transform: scale(1.08) translateY(-1px);
-    box-shadow: 0 4px 10px rgba(var(--color-primary-rgb), 0.45);
+    box-shadow: 0 4px 12px rgba(var(--color-primary-rgb), 0.45);
 }
 
 .pos-add-btn:active {
     transform: scale(0.92);
 }
 
-/* ── MODE LIST — Layout 3-Kolom Seimbang & Rapi ── */
+/* ── MODE LIST — Layout Sleek Native App 1:1 Harmonis dengan Storefront ── */
 .pos-list-item {
     display: flex;
     align-items: center;
-    justify-content: space-between;
     gap: 12px;
-    padding: 8px 12px;
+    padding: 12px;
     background: white;
-    border-radius: 12px;
-    border: 1.5px solid rgba(226, 232, 240, 0.95);
+    border-radius: 18px;
+    border: 1px solid rgba(226, 232, 240, 0.95);
     box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
     cursor: pointer;
-    transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     user-select: none;
+    position: relative;
+    overflow: hidden;
+}
+
+@media (min-width: 640px) {
+    .pos-list-item {
+        gap: 16px;
+        padding: 14px;
+    }
 }
 
 .pos-list-item:hover {
-    border-color: var(--color-primary);
-    box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.14);
-    transform: translateY(-1px);
+    border-color: rgba(var(--color-primary-rgb), 0.45);
+    box-shadow: 0 6px 18px rgba(var(--color-primary-rgb), 0.12);
+    transform: translateY(-1.5px);
 }
 
 .pos-list-item:active {
-    transform: scale(0.995);
+    transform: scale(0.99);
 }
 
 .pos-list-item.in-cart {
     border-color: var(--color-primary);
     background: rgba(var(--color-primary-rgb), 0.02);
-    box-shadow: 0 0 0 1px rgba(var(--color-primary-rgb), 0.4), 0 2px 8px rgba(var(--color-primary-rgb), 0.08);
+    box-shadow: 0 0 0 1px rgba(var(--color-primary-rgb), 0.35), 0 2px 10px rgba(var(--color-primary-rgb), 0.08);
 }
 
 /* In-Cart Pill Badge untuk Mode List */
@@ -965,9 +992,9 @@ html.dark #view-admin-login {
     align-items: center;
     justify-content: center;
     gap: 3px;
-    height: 28px;
-    padding: 0 10px;
-    border-radius: 9px;
+    height: 34px;
+    padding: 0 12px;
+    border-radius: 11px;
     background: linear-gradient(135deg, var(--color-primary-light, #e1b858) 0%, var(--color-primary, #c59b27) 60%, var(--color-primary-dark, #a87f1b) 100%);
     color: white;
     font-size: 11px;
@@ -1098,16 +1125,24 @@ html.dark #view-admin-login {
 
 .pos-list-thumb {
     position: relative;
-    width: 52px;
-    height: 52px;
-    border-radius: 8px;
+    width: 80px;
+    height: 80px;
+    border-radius: 14px;
     overflow: hidden;
-    background: #f1f5f9;
+    background: #f8fafc;
     flex-shrink: 0;
     border: 1px solid #e2e8f0;
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+@media (min-width: 640px) {
+    .pos-list-thumb {
+        width: 90px;
+        height: 90px;
+        border-radius: 16px;
+    }
 }
 
 .pos-list-thumb img {

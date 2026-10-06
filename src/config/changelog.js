@@ -8,6 +8,24 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-10-66',
+        version: 'v1.10.66',
+        date: '2026-10-06',
+        title: 'Pelebaran Area Katalog Lega Bebas Terhimpit & Harmonisasi Desain Kartu Grid / List View 1:1 Native App (Storefront & POS Kasir)',
+        category: 'feature',
+        badge: 'Spacious Catalog & 1:1 Native App Bento Harmonization v1.10.66',
+        items: [
+            'Pelebaran Area Kanvas Katalog Bebas Terhimpit (index.html): Menghilangkan pembatas sempit (xl:max-w-[1200px]) pada section etalase dan kategori produk, digantikan layout responsif lapang max-w-7xl 2xl:max-w-[1440px] dengan padding lega (px-3 sm:px-6 lg:px-8) sehingga kanvas bernafas bebas di HP, tablet, maupun layar desktop lebar.',
+            'Rekalibrasi Grid Gap & Breakpoint Bernafas Lega: Memperlebar celah antarkartu dari gap-2 (8px sempit yang berdesakan) menjadi gap-3 sm:gap-4 md:gap-4.5 lg:gap-5 (12px–20px) dengan distribusi kolom proporsional (2 kolom mobile, 3 kolom tablet, 4-5 kolom desktop) sehingga setiap kartu memiliki ruang bernapas yang lapang tanpa risiko teks berhimpitan.',
+            'Pelebaran & Rekalibrasi Grid Katalog POS Kasir (.pos-catalog-grid-mode di src/style.css): Memperlebar gap katalog POS dari 8px ke 12px–16px dan padding dari 8px ke 12px–16px dengan pembagian kolom dinamis (2 kolom mobile, 3-4 kolom desktop berdampingan dengan billing panel), mengeliminasi sensasi sempit saat kasir beroperasi.',
+            'Harmonisasi Desain Kartu Grid 1:1 (Storefront & POS Kasir): Menyelaraskan arsitektur kartu produk (.pos-product-card di src/modules/pos/pos.js dan catalog.js) dengan format Bento Native App modern: foto 1:1 flush di bagian atas kartu, floating pill Diskon (-X%) dan Pre-Order di pojok kiri atas foto, floating pill Stok fisik di pojok kanan bawah foto, overlay HABIS transparan gelap di tengah foto, dan floating badge kuantiti keranjang di pojok kanan atas foto.',
+            'Bento Info Interior Super Lega: Menghadirkan padding interior luas p-3 sm:p-3.5 (12px–14px) pada kedua modul dengan Eyebrow Kategori/Brand elegan, judul produk 2 baris tegas (min-h-[2.3rem]), dan deretan Chip Operasional lengkap (Varian, Grosir, Poin Reward, Terjual) yang tertata rapi tanpa scrollbar.',
+            'Harmonisasi Desain List View 1:1 Sleek Native App: Merombak List View POS Kasir dari layout 3-kolom bersekat kaku menjadi layout sleek horizontal native app yang identik dengan Storefront: thumbnail produk lapang (80px–90px rounded-2xl), baris chip lengkap, serta footer harga dan tombol aksi yang selaras.',
+            'Peningkatan Touch Target Tombol Aksi Ergonomis: Meningkatkan dimensi tombol tambah/varian (.pos-add-btn & quick-add) dari 28px ke 34px–36px (rounded-xl) dengan aksen gradien tema yang empuk, responsif, dan nyaman disentuh jari di ponsel Android.',
+            'Multi-Channel Distribution v1.10.66 (Android versionCode 11066).'
+        ]
+    },
+    {
         id: 'log-1-10-65',
         version: 'v1.10.65',
         date: '2026-10-06',

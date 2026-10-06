@@ -1398,75 +1398,84 @@ export const renderCatalog = (isLoadMore = false) => {
                 }
 
                 // 1. Promo Diskon & Harga Coret
-                let discBadge = '';
+                let discPill = '';
                 let priceNormalHtml = '';
                 if (p.priceNormal && parseFloat(p.priceNormal) > pPrice) {
                     const pct = Math.round(((parseFloat(p.priceNormal) - pPrice) / parseFloat(p.priceNormal)) * 100);
-                    discBadge = `<span class="pos-tag-chip pos-tag-promo shrink-0 whitespace-nowrap"><i class="fa-solid fa-tags"></i> -${pct}%</span>`;
-                    priceNormalHtml = `<span class="text-[10px] text-slate-400 line-through font-bold">${fRp(parseFloat(p.priceNormal))}</span>`;
+                    discPill = `<span class="bg-rose-500 text-white px-2 py-0.5 rounded-md text-[8.5px] font-extrabold flex items-center gap-1 whitespace-nowrap shrink-0 uppercase tracking-wider shadow-sm"><i class="fa-solid fa-tags text-[7.5px]"></i> -${pct}%</span>`;
+                    priceNormalHtml = `<p class="text-[10px] sm:text-[11px] text-slate-400 dark:text-slate-500 line-through leading-none font-semibold truncate mb-0.5">${fRp(parseFloat(p.priceNormal))}</p>`;
                 } else if (hasVariants && p.variants && p.variants.length) {
                     const varDiscs = p.variants
                         .filter(v => v.priceNormal && parseFloat(v.priceNormal) > parseFloat(v.price))
                         .map(v => Math.round(((parseFloat(v.priceNormal) - parseFloat(v.price)) / parseFloat(v.priceNormal)) * 100));
                     if (varDiscs.length > 0) {
                         const maxPct = Math.max(...varDiscs);
-                        discBadge = `<span class="pos-tag-chip pos-tag-promo shrink-0 whitespace-nowrap"><i class="fa-solid fa-tags"></i> -${maxPct}%</span>`;
+                        discPill = `<span class="bg-rose-500 text-white px-2 py-0.5 rounded-md text-[8.5px] font-extrabold flex items-center gap-1 whitespace-nowrap shrink-0 uppercase tracking-wider shadow-sm"><i class="fa-solid fa-tags text-[7.5px]"></i> -${maxPct}%</span>`;
                     }
                 }
+
+                const compactPoStr = p.poTime ? formatCompactPoText(p.poTime) : '';
+                let poPill = compactPoStr ? `<span class="bg-amber-500 text-white px-2 py-0.5 rounded-md text-[8.5px] font-extrabold flex items-center gap-1 whitespace-nowrap shrink-0 uppercase tracking-wider shadow-sm"><i class="fa-solid fa-clock text-[7.5px]"></i> PO ${esc(compactPoStr)}</span>` : '';
 
                 // 2. Eyebrow Kategori & Brand Text Terdedikasi (100% Lebar Kartu, Anti-Terpotong)
                 const catBrandText = esc(`${p.subCategory || pCat || 'PRODUK'}${p.brand ? ` · ${p.brand}` : ''}`);
 
-                // 3. Smart Badges Lengkap: Semua badge tampil presisi, konsisten & rapi
-                const candidateChips = [];
-                // Prioritas 1: Promo Diskon (-X%)
-                if (discBadge) candidateChips.push(discBadge);
-
-                // Prioritas 2: Status Ketersediaan & Urgensi Stok Fisik
+                // 3. Status Stok Fisik & Badges
+                let stockBadge = '';
+                let stockChipList = '';
                 if (stockInfo.isOutOfStock) {
-                    candidateChips.push(`<span class="pos-tag-chip pos-tag-low shrink-0 whitespace-nowrap"><i class="fa-solid fa-ban"></i> Habis</span>`);
-                } else if (stockInfo.isManaged && stockInfo.isLowStock) {
-                    candidateChips.push(`<span class="pos-tag-chip pos-tag-low shrink-0 whitespace-nowrap"><i class="fa-solid fa-fire"></i> Sisa ${formatQty(stockInfo.totalStock)}</span>`);
+                    stockChipList = `<span class="bg-rose-500 text-white px-2 py-0.5 rounded-md text-[8.5px] font-extrabold flex items-center gap-1 whitespace-nowrap shrink-0 uppercase tracking-wider shadow-sm"><i class="fa-solid fa-ban text-[7.5px]"></i> Habis</span>`;
+                } else if (stockInfo.isLowStock) {
+                    stockBadge = `<span class="absolute bottom-2 right-2 z-10 bg-rose-500 text-white text-[8.5px] font-black px-2 py-0.5 rounded-md shadow uppercase tracking-wider flex items-center gap-0.5"><i class="fa-solid fa-fire text-[7.5px]"></i> SISA ${formatQty(stockInfo.totalStock)}</span>`;
+                    stockChipList = `<span class="bg-rose-500 text-white px-2 py-0.5 rounded-md text-[8.5px] font-extrabold flex items-center gap-1 whitespace-nowrap shrink-0 uppercase tracking-wider shadow-sm"><i class="fa-solid fa-fire text-[7.5px]"></i> Sisa ${formatQty(stockInfo.totalStock)}</span>`;
                 } else if (stockInfo.isManaged && stockInfo.totalStock > 0) {
-                    candidateChips.push(`<span class="pos-tag-chip pos-tag-stock shrink-0 whitespace-nowrap"><i class="fa-solid fa-box"></i> ${formatQty(stockInfo.totalStock)}</span>`);
+                    stockBadge = `<span class="absolute bottom-2 right-2 z-10 bg-slate-900/90 dark:bg-slate-800/90 text-white text-[8.5px] font-bold px-2 py-0.5 rounded-md shadow uppercase tracking-wider flex items-center gap-0.5"><i class="fa-solid fa-box text-[7.5px]"></i> STOK ${formatQty(stockInfo.totalStock)}</span>`;
+                    stockChipList = `<span class="bg-slate-800/90 dark:bg-slate-700 text-white px-2 py-0.5 rounded-md text-[8.5px] font-bold flex items-center gap-1 whitespace-nowrap shrink-0 uppercase tracking-wider"><i class="fa-solid fa-box text-[7.5px]"></i> Stok ${formatQty(stockInfo.totalStock)}</span>`;
                 }
 
-                // Prioritas 3: Pre-Order (Dapat berdampingan dengan stok fisik jika ready-stock)
-                if (stockInfo.isPreorder) {
-                    const poShort = formatCompactPoText(stockInfo.poTime);
-                    candidateChips.push(`<span class="pos-tag-chip pos-tag-po shrink-0 whitespace-nowrap"><i class="fa-solid fa-clock"></i> PO ${esc(poShort)}</span>`);
-                }
+                // 4. Badges Lengkap (Varian, Grosir, Poin Reward, Terjual)
+                const variantBadge = hasVariants
+                    ? `<span class="bg-indigo-50 text-indigo-600 dark:bg-indigo-950/60 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800/50 px-1.5 py-0.5 rounded-md text-[8.5px] font-bold flex items-center gap-1 whitespace-nowrap shrink-0 uppercase tracking-wider"><i class="fa-solid fa-layer-group text-[7.5px]"></i> Varian</span>`
+                    : '';
 
-                // Prioritas 4: Opsi Varian & Grosir
-                if (hasVariants) {
-                    candidateChips.push(`<span class="pos-tag-chip pos-tag-variant shrink-0 whitespace-nowrap"><i class="fa-solid fa-layer-group"></i> Varian</span>`);
-                }
-                if (hasGrosir) {
-                    candidateChips.push(`<span class="pos-tag-chip pos-tag-grosir shrink-0 whitespace-nowrap"><i class="fa-solid fa-tags"></i> Grosir</span>`);
-                }
+                const grosirBadge = hasGrosir
+                    ? `<span class="amber-badge px-1.5 py-0.5 rounded-md text-[8.5px] font-bold flex items-center gap-1 whitespace-nowrap shrink-0 uppercase tracking-wider"><i class="fa-solid fa-tags text-[7.5px]"></i> Grosir</span>`
+                    : '';
 
-                // Prioritas 5: Poin Reward
                 const activePoin = (p.variants && p.variants.length)
                     ? Math.max(...p.variants.map(v => parseFloat(v.poin) || 0))
                     : (parseFloat(p.poin) || 0);
-                if (activePoin > 0) {
-                    candidateChips.push(`<span class="pos-tag-chip pos-tag-poin shrink-0 whitespace-nowrap"><i class="fa-solid fa-star"></i> +${activePoin}</span>`);
-                }
+                const poinBadge = activePoin > 0
+                    ? `<span class="bg-[rgba(var(--color-primary-rgb),0.08)] text-[var(--color-primary)] border border-[rgba(var(--color-primary-rgb),0.2)] px-1.5 py-0.5 rounded-md text-[8.5px] font-bold flex items-center gap-1 whitespace-nowrap shrink-0 uppercase tracking-wider"><i class="fa-solid fa-star text-[7.5px]"></i> +${activePoin}</span>`
+                    : '';
 
-                // Prioritas 6: Total Terjual (Identik Storefront)
                 const totalSoldPos = (p.variants && p.variants.length)
                     ? p.variants.reduce((s, vv) => s + (parseFloat(vv.totalSold) || 0), 0)
                     : (parseFloat(p.totalSold) || 0);
-                if (totalSoldPos > 0) {
-                    candidateChips.push(`<span class="pos-tag-chip pos-tag-sold shrink-0 whitespace-nowrap"><i class="fa-solid fa-fire text-amber-500"></i> ${totalSoldPos} Terjual</span>`);
-                }
+                const soldBadge = totalSoldPos > 0
+                    ? `<span class="bg-slate-100 text-slate-600 dark:bg-slate-700/60 dark:text-slate-300 border border-slate-200/80 dark:border-slate-600/50 px-1.5 py-0.5 rounded-md text-[8.5px] font-bold flex items-center gap-1 whitespace-nowrap shrink-0 uppercase tracking-wider"><i class="fa-solid fa-fire text-amber-500 text-[7.5px]"></i> ${totalSoldPos} Terjual</span>`
+                    : '';
 
-                // List Mode: Seluruh chip tampil konsisten (kecualikan pos-tag-stock karena Kolom 2 sudah terdedikasi status stok fisik)
-                const listChipsHtml = candidateChips.filter(c => !c.includes('pos-tag-stock')).join('');
-                // Grid Mode: Seluruh chip tampil lengkap, presisi & rapi tanpa pemotongan
-                const gridChipsHtml = candidateChips.join('');
+                // Chips untuk Mode Grid
+                const gridCandidates = [];
+                if (variantBadge) gridCandidates.push(variantBadge);
+                if (grosirBadge) gridCandidates.push(grosirBadge);
+                if (poinBadge) gridCandidates.push(poinBadge);
+                if (soldBadge) gridCandidates.push(soldBadge);
+                const gridChipsHtml = gridCandidates.join('');
 
-                // 4. HARGA MODAL (HPP) - Hanya ditampilkan jika diizinkan (Owner / Akses Laporan)
+                // Chips untuk Mode List
+                const listCandidates = [];
+                if (discPill) listCandidates.push(discPill);
+                if (stockChipList) listCandidates.push(stockChipList);
+                if (poPill) listCandidates.push(poPill);
+                if (variantBadge) listCandidates.push(variantBadge);
+                if (grosirBadge) listCandidates.push(grosirBadge);
+                if (poinBadge) listCandidates.push(poinBadge);
+                if (soldBadge) listCandidates.push(soldBadge);
+                const listChipsHtml = listCandidates.join('');
+
+                // 5. HARGA MODAL (HPP) - Hanya ditampilkan jika diizinkan (Owner / Akses Laporan)
                 let hppTagHtml = '';
                 if (canViewHpp()) {
                     let hppVal = 0;
@@ -1495,65 +1504,72 @@ export const renderCatalog = (isLoadMore = false) => {
                 const coverMdHtml = renderProductCoverHtml(p, { size: 'md' });
 
                 if (posCatalogViewMode === 'list') {
-                    // ── LIST MODE: Layout 3-Kolom Proporsional (Identitas - Status Stok/Satuan - Harga & Aksi) ──
+                    // ── LIST MODE: Layout Sleek Native App 1:1 Harmonis dengan Storefront ──
                     return `
-                    <div class="pos-list-item${totalQtyInCart > 0 ? ' in-cart' : ''}${stockInfo.isOutOfStock ? ' is-out-of-stock cursor-not-allowed' : ' cursor-pointer'}" onclick="window.posAddToCart('${safeId}')">
-                        <!-- Kolom 1 (Kiri): Foto & Nama Produk -->
-                        <div class="flex items-center gap-3 min-w-0 flex-1 sm:flex-[1.4] lg:flex-[1.6]">
-                            <div class="pos-list-thumb">
-                                ${hasImg
-                                    ? `<img width="52" height="52" loading="lazy" decoding="async" src="${esc(imgUrl)}" alt="${pName}"
-                                         class="absolute inset-0 w-full h-full object-cover object-center block"
-                                         onerror="this.onerror=null;this.style.display='none';this.nextElementSibling.style.display='flex';">
-                                       <div class="absolute inset-0 w-full h-full" style="display:none">${coverSmHtml}</div>`
-                                    : coverSmHtml}
-                                ${totalQtyInCart > 0 ? `<div class="pos-qty-badge" style="top:2px;right:2px;min-width:18px;height:18px;font-size:9px;border-width:1.5px">${formatQty(totalQtyInCart)}</div>` : ''}
-                            </div>
-                            <div class="min-w-0 flex-1 flex flex-col justify-center">
-                                <p class="text-[9px] uppercase tracking-wider font-bold text-slate-400 dark:text-slate-500 truncate leading-none mb-1">${catBrandText}</p>
-                                <p class="text-xs font-bold text-slate-800 dark:text-slate-100 truncate leading-snug" title="${pName}">${pName}</p>
-                                ${listChipsHtml ? `<div class="flex items-center gap-1 overflow-x-auto hide-scrollbar no-scrollbar flex-nowrap py-0.5 mt-0.5">${listChipsHtml}</div>` : ''}
-                            </div>
+                    <div class="pos-list-item${totalQtyInCart > 0 ? ' in-cart' : ''}${stockInfo.isOutOfStock ? ' is-out-of-stock cursor-not-allowed' : ' cursor-pointer'} group" onclick="window.posAddToCart('${safeId}')">
+                        <!-- Thumbnail Kiri -->
+                        <div class="pos-list-thumb">
+                            ${(discPill || poPill) ? `<div class="absolute top-1.5 left-1.5 z-10 flex flex-col gap-0.5 items-start pointer-events-none">${discPill}${poPill}</div>` : ''}
+                            ${stockInfo.isOutOfStock ? `
+                                <div class="absolute inset-0 bg-slate-900/70 z-20 flex items-center justify-center">
+                                    <span class="bg-rose-600 text-white text-[8px] font-black px-1.5 py-0.5 rounded shadow uppercase tracking-wider flex items-center gap-0.5">
+                                        <i class="fa-solid fa-ban"></i> HABIS
+                                    </span>
+                                </div>` : ''}
+                            ${totalQtyInCart > 0 ? `<div class="pos-qty-badge" style="top:2px;right:2px;min-width:20px;height:20px;font-size:9.5px;border-width:1.5px">+${formatQty(totalQtyInCart)}</div>` : ''}
+                            ${stockBadge}
+                            ${hasImg
+                                ? `<img width="96" height="96" loading="lazy" decoding="async" src="${esc(imgUrl)}" alt="${pName}"
+                                     class="absolute inset-0 w-full h-full object-cover object-center block"
+                                     onerror="this.onerror=null;this.style.display='none';this.nextElementSibling.style.display='flex';">
+                                   <div class="absolute inset-0 w-full h-full" style="display:none">${coverSmHtml}</div>`
+                                : coverSmHtml}
                         </div>
-
-                        <!-- Kolom 2 (Tengah): Status Stok & Satuan (Mengisi celah kosong tengah) -->
-                        <div class="hidden sm:flex flex-col items-start justify-center px-3 border-l border-slate-100 dark:border-slate-800/80 shrink-0 w-28 md:w-36">
-                            ${stockInfo.isOutOfStock 
-                                ? `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-black uppercase bg-rose-50 text-rose-600 dark:bg-rose-950/40 dark:text-rose-400 border border-rose-200 dark:border-rose-800/60"><i class="fa-solid fa-ban text-[8px]"></i> Stok Habis</span>`
-                                : `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 border border-slate-200 dark:border-slate-700"><i class="fa-solid fa-boxes-stacked text-[8px] text-emerald-500"></i> Stok: <b class="font-black text-slate-900 dark:text-white">${formatQty(stockInfo.totalStock)}</b></span>`}
-                            ${p.unit ? `<span class="text-[9px] text-slate-400 dark:text-slate-500 font-medium mt-1 truncate">Satuan: <b class="text-slate-600 dark:text-slate-300">${esc(p.unit)}</b></span>` : ''}
-                        </div>
-
-                        <!-- Kolom 3 (Kanan): Harga Jual & Action Hub -->
-                        <div class="flex items-center gap-3 shrink-0 pl-2.5 border-l border-slate-100 dark:border-slate-800/80">
-                            <div class="flex flex-col items-end text-right min-w-[95px] sm:min-w-[125px]">
-                                <span class="text-xs sm:text-sm font-black tracking-tight whitespace-nowrap" style="color:var(--color-primary)">${displayPriceHtml}</span>
-                                ${priceNormalHtml}
-                                ${hppTagHtml ? `<div class="mt-0.5">${hppTagHtml}</div>` : ''}
+                        <!-- Konten Kanan -->
+                        <div class="flex-1 min-w-0 flex flex-col justify-between py-0.5 gap-1 relative z-10 pr-0.5">
+                            <!-- Line 1: Eyebrow -->
+                            <p class="text-[9.5px] sm:text-[10px] uppercase tracking-wider font-bold text-slate-400 dark:text-slate-500 truncate leading-none">${catBrandText}</p>
+                            <!-- Line 2: Nama Produk -->
+                            <h4 class="text-xs sm:text-[14px] font-bold text-slate-800 dark:text-slate-100 line-clamp-1 sm:line-clamp-2 leading-snug group-hover:text-[var(--color-primary)] transition-colors uppercase break-words" title="${pName}">${pName}</h4>
+                            <!-- Line 3: Chips Lengkap -->
+                            <div class="flex items-center gap-1.5 overflow-x-auto hide-scrollbar no-scrollbar flex-nowrap py-0.5">
+                                ${listChipsHtml}
+                                ${p.unit ? `<span class="pos-tag-chip pos-tag-stock shrink-0 whitespace-nowrap"><i class="fa-solid fa-box text-[7.5px]"></i> /${esc(p.unit)}</span>` : ''}
+                                ${hppTagHtml}
                             </div>
-                            ${stockInfo.isOutOfStock 
-                                ? `<button class="pos-add-btn opacity-40 cursor-not-allowed shrink-0" disabled title="Stok Habis"><i class="fa-solid fa-ban"></i></button>`
-                                : totalQtyInCart > 0
-                                    ? `<div class="pos-list-pill-in-cart shrink-0" title="Klik untuk menambah">+${formatQty(totalQtyInCart)}</div>`
-                                    : hasVariants
-                                        ? `<button onclick="event.stopPropagation();window.posAddToCart('${safeId}')" class="pos-add-btn shrink-0" title="Pilih Varian Produk"><i class="fa-solid fa-layer-group text-xs"></i></button>`
-                                        : `<button onclick="event.stopPropagation();window.posAddToCart('${safeId}')" class="pos-add-btn shrink-0" title="Tambah ke keranjang"><i class="fa-solid fa-plus"></i></button>`}
+                            <!-- Line 4: Harga & Action -->
+                            <div class="flex items-center justify-between pt-0.5">
+                                <div class="flex items-baseline gap-1.5 min-w-0">
+                                    <span class="text-[var(--color-primary)] font-black text-xs sm:text-[15px] leading-none tracking-tight truncate">${displayPriceHtml}</span>
+                                    ${p.unit ? `<span class="text-[9.5px] sm:text-[10px] text-slate-400 dark:text-slate-500 font-bold ml-0.5 mb-0.5 uppercase tracking-wide">/${esc(p.unit)}</span>` : ''}
+                                    ${p.priceNormal && parseFloat(p.priceNormal) > pPrice ? `<span class="text-[10px] sm:text-[11px] text-slate-400 dark:text-slate-500 line-through leading-none font-semibold truncate">${fRp(parseFloat(p.priceNormal))}</span>` : ''}
+                                </div>
+                                ${stockInfo.isOutOfStock 
+                                    ? `<button class="pos-add-btn opacity-40 cursor-not-allowed shrink-0" disabled title="Stok Habis"><i class="fa-solid fa-ban"></i></button>`
+                                    : totalQtyInCart > 0
+                                        ? `<button onclick="event.stopPropagation();window.posAddToCart('${safeId}')" class="pos-add-btn shrink-0" title="Tambah lagi (+1)"><b>+${formatQty(totalQtyInCart)}</b></button>`
+                                        : hasVariants
+                                            ? `<button onclick="event.stopPropagation();window.posAddToCart('${safeId}')" class="pos-add-btn shrink-0" title="Pilih Varian Produk"><i class="fa-solid fa-layer-group text-xs"></i></button>`
+                                            : `<button onclick="event.stopPropagation();window.posAddToCart('${safeId}')" class="pos-add-btn shrink-0" title="Tambah ke keranjang"><i class="fa-solid fa-plus text-xs"></i></button>`}
+                            </div>
                         </div>
                     </div>`;
                 }
 
-                // ── GRID MODE (Default): kartu 1:1 anti-collapse dengan visual foto bersih & badge presisi ──
+                // ── GRID MODE (Default): Bento Native App 1:1 Harmonis dengan Storefront ──
                 return `
-                <div class="pos-product-card${totalQtyInCart > 0 ? ' in-cart' : ''}${stockInfo.isOutOfStock ? ' is-out-of-stock cursor-not-allowed' : ' cursor-pointer'}" onclick="window.posAddToCart('${safeId}')">
-                    <!-- Kotak Gambar Rasio 1:1 Bersih (Foto Tidak Tertutup Tumpukan Badge) -->
+                <div class="pos-product-card${totalQtyInCart > 0 ? ' in-cart' : ''}${stockInfo.isOutOfStock ? ' is-out-of-stock cursor-not-allowed' : ' cursor-pointer'} group" onclick="window.posAddToCart('${safeId}')">
+                    <!-- Kotak Gambar Rasio 1:1 Flush Cover -->
                     <div class="pos-img-box">
+                        ${(discPill || poPill) ? `<div class="absolute top-2.5 left-2.5 z-10 flex flex-col gap-1 items-start pointer-events-none">${discPill}${poPill}</div>` : ''}
                         ${stockInfo.isOutOfStock ? `
                             <div class="absolute inset-0 bg-slate-900/70 z-20 flex items-center justify-center rounded-xl">
                                 <span class="bg-rose-600 text-white text-[9px] font-black px-2.5 py-1 rounded-lg shadow-md uppercase tracking-wider flex items-center gap-1">
                                     <i class="fa-solid fa-ban"></i> HABIS
                                 </span>
                             </div>` : ''}
-                        ${totalQtyInCart > 0 ? `<div class="pos-qty-badge">${formatQty(totalQtyInCart)}</div>` : ''}
+                        ${totalQtyInCart > 0 ? `<div class="pos-qty-badge">+${formatQty(totalQtyInCart)}</div>` : ''}
+                        ${stockBadge}
                         ${hasImg
                             ? `<img width="300" height="300" loading="lazy" decoding="async" src="${esc(imgUrl)}" alt="${pName}"
                                  class="absolute inset-0 w-full h-full object-cover object-center block"
@@ -1561,23 +1577,25 @@ export const renderCatalog = (isLoadMore = false) => {
                                <div class="absolute inset-0 w-full h-full" style="display:none">${coverMdHtml}</div>`
                             : coverMdHtml}
                     </div>
-                    <!-- Info Produk Rapi -->
+                    <!-- Info Produk Rapi & Lega -->
                     <div class="pos-card-info">
-                        <p class="pos-card-cat truncate mb-1">${catBrandText}</p>
-                        <p class="pos-card-name leading-tight line-clamp-2" title="${pName}">${pName}</p>
-                        <!-- Chip Operasional Rapi Terprioritas (Maks 2 chip presisi anti-overflow, h-5 penjaga tinggi seragam) -->
-                        <div class="h-5 flex items-center gap-1 mt-1 mb-0.5 overflow-x-auto hide-scrollbar no-scrollbar flex-nowrap">
+                        <p class="pos-card-cat truncate mb-1.5">${catBrandText}</p>
+                        <h4 class="pos-card-name leading-snug line-clamp-2 uppercase break-words" title="${pName}">${pName}</h4>
+                        <!-- Baris Chip Operasional -->
+                        <div class="h-5.5 mb-2 flex items-center gap-1.5 overflow-x-auto hide-scrollbar no-scrollbar flex-nowrap py-0.5 shrink-0">
                             ${gridChipsHtml}
                         </div>
-                        <div class="pos-card-footer flex items-center justify-between gap-1">
-                            <div class="flex flex-col min-w-0 pr-1">
-                                <div class="flex items-baseline gap-1.5 flex-wrap">
-                                    <span class="pos-card-price whitespace-nowrap text-xs font-black" style="color:var(--color-primary)">${displayPriceHtml}</span>
+                        <!-- Footer Harga & Tombol -->
+                        <div class="pos-card-footer flex items-end justify-between pt-1.5 mt-auto">
+                            <div class="min-w-0 pr-1">
+                                <div class="h-3.5 flex items-center mb-0.5">
                                     ${priceNormalHtml}
                                 </div>
-                                <div class="flex items-center gap-1 mt-0.5">
-                                    ${hppTagHtml}
+                                <div class="flex items-baseline gap-0.5">
+                                    <span class="pos-card-price text-[var(--color-primary)] font-black text-xs sm:text-[14px] lg:text-[15px] leading-none tracking-tight truncate">${displayPriceHtml}</span>
+                                    ${p.unit ? `<span class="text-[9.5px] sm:text-[10px] text-slate-400 dark:text-slate-500 font-bold ml-0.5 mb-0.5 uppercase tracking-wide">/${esc(p.unit)}</span>` : ''}
                                 </div>
+                                ${hppTagHtml ? `<div class="mt-1">${hppTagHtml}</div>` : ''}
                             </div>
                             ${stockInfo.isOutOfStock
                                 ? `<button class="pos-add-btn opacity-40 cursor-not-allowed shrink-0" disabled title="Stok Habis"><i class="fa-solid fa-ban"></i></button>`
@@ -1585,7 +1603,7 @@ export const renderCatalog = (isLoadMore = false) => {
                                     ? `<button onclick="event.stopPropagation();window.posAddToCart('${safeId}')" class="pos-add-btn shrink-0" title="Tambah lagi (+1)"><b>+${formatQty(totalQtyInCart)}</b></button>`
                                     : hasVariants
                                         ? `<button onclick="event.stopPropagation();window.posAddToCart('${safeId}')" class="pos-add-btn shrink-0" title="Pilih Varian Produk"><i class="fa-solid fa-layer-group text-xs"></i></button>`
-                                        : `<button onclick="event.stopPropagation();window.posAddToCart('${safeId}')" class="pos-add-btn shrink-0" title="Tambah ke keranjang"><i class="fa-solid fa-plus"></i></button>`}
+                                        : `<button onclick="event.stopPropagation();window.posAddToCart('${safeId}')" class="pos-add-btn shrink-0" title="Tambah ke keranjang"><i class="fa-solid fa-plus text-xs"></i></button>`}
                         </div>
                     </div>
                 </div>`;
