@@ -98,7 +98,6 @@ export const ensureClientPaymentModal = () => {
     if (!m) {
         const div = document.createElement('div');
         div.id = 'modal-client-tempo-pay';
-        div.className = 'fixed inset-0 z-[110] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-900/80 transition-opacity duration-300 opacity-0 pointer-events-none';
         div.onclick = (e) => {
             if (e.target === div) closeClientPaymentModal();
         };
@@ -108,7 +107,10 @@ export const ensureClientPaymentModal = () => {
             </div>
         `;
         document.body.appendChild(div);
+        m = div;
     }
+    m.className = 'fixed inset-0 z-[140] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-900/80 transition-opacity duration-300 opacity-0 pointer-events-none';
+    m.style.zIndex = '140';
 };
 
 /**
@@ -250,6 +252,10 @@ export const openClientPaymentModal = async (orderId = null, suggestedAmount = n
     const modal = el('modal-client-tempo-pay');
     const box = el('modal-client-tempo-pay-box');
     if (!modal || !box) return;
+
+    modal.classList.remove('z-[110]');
+    modal.classList.add('z-[140]');
+    modal.style.zIndex = '140';
 
     const orders = getMemberActiveTempoOrders();
     if (!orders.length) {
@@ -1168,9 +1174,10 @@ export const showClientPaymentSuccessModal = ({ orderId, amount }) => {
     if (!m) {
         m = document.createElement('div');
         m.id = 'modal-client-pay-success';
-        m.className = 'fixed inset-0 z-[120] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs transition-opacity duration-300 opacity-0 pointer-events-none';
         document.body.appendChild(m);
     }
+    m.className = 'fixed inset-0 z-[150] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs transition-opacity duration-300 opacity-0 pointer-events-none';
+    m.style.zIndex = '150';
 
     const shortId = orderId ? (orderId.split('-').pop() || orderId) : '-';
 

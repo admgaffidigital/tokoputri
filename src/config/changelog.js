@@ -8,6 +8,20 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-10-74',
+        version: 'v1.10.74',
+        date: '2026-10-07',
+        title: 'Elevasi Z-Index Modal Pembayaran Mandiri Angsuran & PayLater di Depan Layar Kartu Member Digital',
+        category: 'fix',
+        badge: 'Client Payment Stacking & Z-Index Elevation v1.10.74',
+        items: [
+            'Resolusi Layar Pembayaran Tertutup di Belakang (src/modules/member/client-pay.js & src/style.css): Mengoreksi z-index modal pembayaran mandiri angsuran & PayLater (#modal-client-tempo-pay) dari z-[110] menjadi z-[140] (dan style.zIndex = 140 serta aturan tegas di style.css). Memastikan form pembayaran langsung meluncur di depan mata pengguna dan tidak tertutup di belakang Kartu Member Digital (member-modal z-[115]) saat menekan tombol "Bayar Tagihan" atau "Bayar Angsuran Ini".',
+            'Elevasi Dialog Konfirmasi Sukses Pembayaran: Menyelaraskan dialog konfirmasi sukses (#modal-client-pay-success) ke z-[150] (dan style.zIndex = 150) sehingga muncul sempurna di puncak seluruh hierarki modal.',
+            'Stacking Layer Multi-Modal yang Mulus: Pengguna dapat menyelesaikan pembayaran dengan fokus penuh di atas backdrop gelap pelindung, dan saat modal ditutup atau selesai, layar kembali ke Kartu Member Digital secara mulus dan reaktif.',
+            'Multi-Channel Distribution v1.10.74 (Android versionCode 11074).'
+        ]
+    },
+    {
         id: 'log-1-10-73',
         version: 'v1.10.73',
         date: '2026-10-06',

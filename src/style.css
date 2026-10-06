@@ -3749,5 +3749,14 @@ button span > i[class*="fa-"]:not(.hidden):not([hidden]) {
     transform: translateZ(0);
 }
 
+/* ─── ELEVASI Z-INDEX MODAL PEMBAYARAN MANDIRI (DI ATAS KARTU MEMBER & DETAIL PESANAN) ─── */
+#modal-client-tempo-pay {
+    z-index: 140 !important;
+}
+
+#modal-client-pay-success {
+    z-index: 150 !important;
+}
+
 
 
