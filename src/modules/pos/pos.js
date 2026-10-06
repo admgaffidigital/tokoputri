@@ -1506,9 +1506,9 @@ export const renderCatalog = (isLoadMore = false) => {
                 if (posCatalogViewMode === 'list') {
                     // ── LIST MODE: Layout Sleek Native App 1:1 Harmonis dengan Storefront ──
                     return `
-                    <div class="pos-list-item${totalQtyInCart > 0 ? ' in-cart' : ''}${stockInfo.isOutOfStock ? ' is-out-of-stock cursor-not-allowed' : ' cursor-pointer'} group" onclick="window.posAddToCart('${safeId}')">
-                        <!-- Thumbnail Kiri -->
-                        <div class="pos-list-thumb">
+                    <div class="pos-list-item w-full bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700/70 rounded-2xl shadow-xs transition-all duration-300 flex items-center p-3 sm:p-3.5 gap-3 sm:gap-4 group relative overflow-hidden text-left shrink-0${totalQtyInCart > 0 ? ' in-cart' : ''}${stockInfo.isOutOfStock ? ' is-out-of-stock cursor-not-allowed' : ' cursor-pointer'}" onclick="window.posAddToCart('${safeId}')">
+                        <!-- Thumbnail Kiri (Ukuran Presisi 80px/96px Anti-Gepeng) -->
+                        <div class="pos-list-thumb relative w-20 h-20 sm:w-24 sm:h-24 shrink-0 bg-slate-50 dark:bg-slate-900 rounded-xl sm:rounded-2xl flex items-center justify-center border border-slate-100 dark:border-slate-700/50 overflow-hidden">
                             ${(discPill || poPill) ? `<div class="absolute top-1.5 left-1.5 z-10 flex flex-col gap-0.5 items-start pointer-events-none">${discPill}${poPill}</div>` : ''}
                             ${stockInfo.isOutOfStock ? `
                                 <div class="absolute inset-0 bg-slate-900/70 z-20 flex items-center justify-center">
@@ -1520,37 +1520,33 @@ export const renderCatalog = (isLoadMore = false) => {
                             ${stockBadge}
                             ${hasImg
                                 ? `<img width="96" height="96" loading="lazy" decoding="async" src="${esc(imgUrl)}" alt="${pName}"
-                                     class="absolute inset-0 w-full h-full object-cover object-center block"
+                                     class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 ${stockInfo.isOutOfStock ? 'grayscale opacity-50' : ''}"
                                      onerror="this.onerror=null;this.style.display='none';this.nextElementSibling.style.display='flex';">
-                                   <div class="absolute inset-0 w-full h-full" style="display:none">${coverSmHtml}</div>`
+                                   <div class="w-full h-full" style="display:none">${coverSmHtml}</div>`
                                 : coverSmHtml}
                         </div>
                         <!-- Konten Kanan -->
                         <div class="flex-1 min-w-0 flex flex-col justify-between py-0.5 gap-1 relative z-10 pr-0.5">
-                            <!-- Line 1: Eyebrow -->
+                            <!-- Line 1: Eyebrow Kategori & Merek -->
                             <p class="text-[9.5px] sm:text-[10px] uppercase tracking-wider font-bold text-slate-400 dark:text-slate-500 truncate leading-none">${catBrandText}</p>
                             <!-- Line 2: Nama Produk -->
                             <h4 class="text-xs sm:text-[14px] font-bold text-slate-800 dark:text-slate-100 line-clamp-1 sm:line-clamp-2 leading-snug group-hover:text-[var(--color-primary)] transition-colors uppercase break-words" title="${pName}">${pName}</h4>
-                            <!-- Line 3: Chips Lengkap -->
+                            <!-- Line 3: Chips Badges Lengkap & Rapi (Diskon, Stok, PO, Varian, Grosir, Poin, Terjual, Modal HPP) -->
                             <div class="flex items-center gap-1.5 overflow-x-auto hide-scrollbar no-scrollbar flex-nowrap py-0.5">
                                 ${listChipsHtml}
                                 ${p.unit ? `<span class="pos-tag-chip pos-tag-stock shrink-0 whitespace-nowrap"><i class="fa-solid fa-box text-[7.5px]"></i> /${esc(p.unit)}</span>` : ''}
                                 ${hppTagHtml}
                             </div>
-                            <!-- Line 4: Harga & Action -->
+                            <!-- Line 4: Harga & Action Button -->
                             <div class="flex items-center justify-between pt-0.5">
                                 <div class="flex items-baseline gap-1.5 min-w-0">
-                                    <span class="text-[var(--color-primary)] font-black text-xs sm:text-[15px] leading-none tracking-tight truncate">${displayPriceHtml}</span>
+                                    <p class="text-[var(--color-primary)] font-black text-xs sm:text-[15px] leading-none tracking-tight truncate">${displayPriceHtml}</p>
                                     ${p.unit ? `<span class="text-[9.5px] sm:text-[10px] text-slate-400 dark:text-slate-500 font-bold ml-0.5 mb-0.5 uppercase tracking-wide">/${esc(p.unit)}</span>` : ''}
-                                    ${p.priceNormal && parseFloat(p.priceNormal) > pPrice ? `<span class="text-[10px] sm:text-[11px] text-slate-400 dark:text-slate-500 line-through leading-none font-semibold truncate">${fRp(parseFloat(p.priceNormal))}</span>` : ''}
+                                    ${priceNormalHtml ? `<span class="text-[10px] sm:text-[11px] text-slate-400 dark:text-slate-500 line-through leading-none font-semibold truncate">${fRp(parseFloat(p.priceNormal))}</span>` : ''}
                                 </div>
-                                ${stockInfo.isOutOfStock 
-                                    ? `<button class="pos-add-btn opacity-40 cursor-not-allowed shrink-0" disabled title="Stok Habis"><i class="fa-solid fa-ban"></i></button>`
-                                    : totalQtyInCart > 0
-                                        ? `<button onclick="event.stopPropagation();window.posAddToCart('${safeId}')" class="pos-add-btn shrink-0" title="Tambah lagi (+1)"><b>+${formatQty(totalQtyInCart)}</b></button>`
-                                        : hasVariants
-                                            ? `<button onclick="event.stopPropagation();window.posAddToCart('${safeId}')" class="pos-add-btn shrink-0" title="Pilih Varian Produk"><i class="fa-solid fa-layer-group text-xs"></i></button>`
-                                            : `<button onclick="event.stopPropagation();window.posAddToCart('${safeId}')" class="pos-add-btn shrink-0" title="Tambah ke keranjang"><i class="fa-solid fa-plus text-xs"></i></button>`}
+                                <button type="button" class="w-8.5 h-8.5 sm:w-9 sm:h-9 rounded-xl ${stockInfo.isOutOfStock ? 'bg-slate-100 dark:bg-slate-800 text-slate-400 opacity-50 cursor-not-allowed' : totalQtyInCart > 0 ? 'primary-bg text-white shadow-xs' : 'bg-[rgba(var(--color-primary-rgb),0.08)] text-[var(--color-primary)] border border-[rgba(var(--color-primary-rgb),0.2)] hover:bg-[var(--color-primary)] hover:text-white'} flex items-center justify-center shrink-0 transition-all group-hover:scale-105 active:scale-95 shadow-2xs mr-0.5 cursor-pointer z-20" onclick="event.stopPropagation();window.posAddToCart('${safeId}')" title="${stockInfo.isOutOfStock ? 'Stok Habis' : totalQtyInCart > 0 ? 'Tambah lagi (+1)' : hasVariants ? 'Pilih Varian' : 'Tambah ke Keranjang'}">
+                                    ${stockInfo.isOutOfStock ? '<i class="fa-solid fa-ban text-xs"></i>' : totalQtyInCart > 0 ? `<b>+${formatQty(totalQtyInCart)}</b>` : hasVariants ? '<i class="fa-solid fa-layer-group text-xs"></i>' : '<i class="fa-solid fa-plus text-xs"></i>'}
+                                </button>
                             </div>
                         </div>
                     </div>`;
@@ -1558,12 +1554,12 @@ export const renderCatalog = (isLoadMore = false) => {
 
                 // ── GRID MODE (Default): Bento Native App 1:1 Harmonis dengan Storefront ──
                 return `
-                <div class="pos-product-card${totalQtyInCart > 0 ? ' in-cart' : ''}${stockInfo.isOutOfStock ? ' is-out-of-stock cursor-not-allowed' : ' cursor-pointer'} group" onclick="window.posAddToCart('${safeId}')">
+                <div class="pos-product-card w-full bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700/70 rounded-2xl shadow-xs transition-all duration-300 flex flex-col group relative overflow-hidden text-left${totalQtyInCart > 0 ? ' in-cart' : ''}${stockInfo.isOutOfStock ? ' is-out-of-stock cursor-not-allowed' : ' cursor-pointer'}" onclick="window.posAddToCart('${safeId}')">
                     <!-- Kotak Gambar Rasio 1:1 Flush Cover -->
-                    <div class="pos-img-box">
+                    <div class="pos-img-box relative aspect-square w-full bg-slate-50 dark:bg-slate-900/80 flex items-center justify-center shrink-0 border-b border-slate-100 dark:border-slate-700/50 overflow-hidden">
                         ${(discPill || poPill) ? `<div class="absolute top-2.5 left-2.5 z-10 flex flex-col gap-1 items-start pointer-events-none">${discPill}${poPill}</div>` : ''}
                         ${stockInfo.isOutOfStock ? `
-                            <div class="absolute inset-0 bg-slate-900/70 z-20 flex items-center justify-center rounded-xl">
+                            <div class="absolute inset-0 bg-slate-900/70 z-20 flex items-center justify-center">
                                 <span class="bg-rose-600 text-white text-[9px] font-black px-2.5 py-1 rounded-lg shadow-md uppercase tracking-wider flex items-center gap-1">
                                     <i class="fa-solid fa-ban"></i> HABIS
                                 </span>
@@ -1572,38 +1568,34 @@ export const renderCatalog = (isLoadMore = false) => {
                         ${stockBadge}
                         ${hasImg
                             ? `<img width="300" height="300" loading="lazy" decoding="async" src="${esc(imgUrl)}" alt="${pName}"
-                                 class="absolute inset-0 w-full h-full object-cover object-center block"
+                                 class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 ${stockInfo.isOutOfStock ? 'grayscale opacity-50' : ''}"
                                  onerror="this.onerror=null;this.style.display='none';this.nextElementSibling.style.display='flex';">
-                               <div class="absolute inset-0 w-full h-full" style="display:none">${coverMdHtml}</div>`
+                               <div class="w-full h-full" style="display:none">${coverMdHtml}</div>`
                             : coverMdHtml}
                     </div>
                     <!-- Info Produk Rapi & Lega -->
-                    <div class="pos-card-info">
-                        <p class="pos-card-cat truncate mb-1.5">${catBrandText}</p>
-                        <h4 class="pos-card-name leading-snug line-clamp-2 uppercase break-words" title="${pName}">${pName}</h4>
-                        <!-- Baris Chip Operasional -->
+                    <div class="pos-card-info flex-1 flex flex-col p-3 sm:p-3.5 min-w-0 bg-white dark:bg-slate-800 relative z-10">
+                        <p class="pos-card-cat text-[9.5px] sm:text-[10px] uppercase tracking-wider font-bold text-slate-400 dark:text-slate-500 truncate leading-none mb-1.5">${catBrandText}</p>
+                        <h4 class="pos-card-name text-xs sm:text-[13px] font-bold text-slate-800 dark:text-slate-100 line-clamp-2 leading-snug min-h-[2.3rem] sm:min-h-[2.5rem] mb-1.5 group-hover:text-[var(--color-primary)] transition-colors uppercase break-words" title="${pName}">${pName}</h4>
+                        <!-- Baris Chip Operasional Lengkap (Varian, Grosir, Poin, Terjual) -->
                         <div class="h-5.5 mb-2 flex items-center gap-1.5 overflow-x-auto hide-scrollbar no-scrollbar flex-nowrap py-0.5 shrink-0">
                             ${gridChipsHtml}
                         </div>
-                        <!-- Footer Harga & Tombol -->
-                        <div class="pos-card-footer flex items-end justify-between pt-1.5 mt-auto">
+                        <!-- Footer Harga & Tombol Aksi POS (Anti-Potong) -->
+                        <div class="pos-card-footer flex items-end justify-between mt-auto pt-1.5 border-t border-slate-100 dark:border-slate-700/50 shrink-0">
                             <div class="min-w-0 pr-1">
                                 <div class="h-3.5 flex items-center mb-0.5">
                                     ${priceNormalHtml}
                                 </div>
                                 <div class="flex items-baseline gap-0.5">
-                                    <span class="pos-card-price text-[var(--color-primary)] font-black text-xs sm:text-[14px] lg:text-[15px] leading-none tracking-tight truncate">${displayPriceHtml}</span>
+                                    <p class="pos-card-price text-[var(--color-primary)] font-black text-xs sm:text-[14px] lg:text-[15px] leading-none tracking-tight truncate">${displayPriceHtml}</p>
                                     ${p.unit ? `<span class="text-[9.5px] sm:text-[10px] text-slate-400 dark:text-slate-500 font-bold ml-0.5 mb-0.5 uppercase tracking-wide">/${esc(p.unit)}</span>` : ''}
                                 </div>
                                 ${hppTagHtml ? `<div class="mt-1">${hppTagHtml}</div>` : ''}
                             </div>
-                            ${stockInfo.isOutOfStock
-                                ? `<button class="pos-add-btn opacity-40 cursor-not-allowed shrink-0" disabled title="Stok Habis"><i class="fa-solid fa-ban"></i></button>`
-                                : totalQtyInCart > 0
-                                    ? `<button onclick="event.stopPropagation();window.posAddToCart('${safeId}')" class="pos-add-btn shrink-0" title="Tambah lagi (+1)"><b>+${formatQty(totalQtyInCart)}</b></button>`
-                                    : hasVariants
-                                        ? `<button onclick="event.stopPropagation();window.posAddToCart('${safeId}')" class="pos-add-btn shrink-0" title="Pilih Varian Produk"><i class="fa-solid fa-layer-group text-xs"></i></button>`
-                                        : `<button onclick="event.stopPropagation();window.posAddToCart('${safeId}')" class="pos-add-btn shrink-0" title="Tambah ke keranjang"><i class="fa-solid fa-plus text-xs"></i></button>`}
+                            <button type="button" class="w-8.5 h-8.5 sm:w-9 sm:h-9 rounded-xl ${stockInfo.isOutOfStock ? 'bg-slate-100 dark:bg-slate-800 text-slate-400 opacity-50 cursor-not-allowed' : totalQtyInCart > 0 ? 'primary-bg text-white shadow-xs' : 'bg-[rgba(var(--color-primary-rgb),0.08)] text-[var(--color-primary)] border border-[rgba(var(--color-primary-rgb),0.2)] hover:bg-[var(--color-primary)] hover:text-white'} flex items-center justify-center shrink-0 transition-all group-hover:scale-105 active:scale-95 shadow-2xs cursor-pointer z-20" onclick="event.stopPropagation();window.posAddToCart('${safeId}')" title="${stockInfo.isOutOfStock ? 'Stok Habis' : totalQtyInCart > 0 ? 'Tambah lagi (+1)' : hasVariants ? 'Pilih Varian' : 'Tambah ke Keranjang'}" aria-label="${pName}">
+                                ${stockInfo.isOutOfStock ? '<i class="fa-solid fa-ban text-xs"></i>' : totalQtyInCart > 0 ? `<b>+${formatQty(totalQtyInCart)}</b>` : hasVariants ? '<i class="fa-solid fa-layer-group text-xs"></i>' : '<i class="fa-solid fa-plus text-xs"></i>'}
+                            </button>
                         </div>
                     </div>
                 </div>`;

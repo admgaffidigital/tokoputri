@@ -8,6 +8,21 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-10-67',
+        version: 'v1.10.67',
+        date: '2026-10-06',
+        title: 'Resolusi Tuntas Anti-Gepeng & Anti-Potong Kartu Katalog POS Kasir (Harmonisasi Total 1:1 Storefront & POS Native App)',
+        category: 'fix',
+        badge: 'Zero-Clip & Anti-Collapse POS Harmonization v1.10.67',
+        items: [
+            'Resolusi List Mode POS Kasir Anti-Gepeng (src/style.css & src/modules/pos/pos.js): Mengeliminasi penyusutan collapse baris list item dalam flex column dengan menyematkan flex-shrink: 0 !important, hard floor min-height: 96px !important, serta thumbnail bujursangkar presisi 80px/96px (.pos-list-thumb) terkunci shrink-0 sehingga nama produk, chips badges, dan harga jual mustahil gepeng atau tertutup.',
+            'Resolusi Grid Mode POS Kasir Anti-Potong (src/style.css & src/modules/pos/pos.js): Mengeliminasi aturan grid-auto-rows: max-content yang membatasi tinggi track kartu pada WebKit/Blink, membebaskan tinggi kartu mengalir natural mengikuti konten, dan menyematkan flex-shrink: 0 !important pada footer (.pos-card-footer) sehingga nominal harga dan tombol aksi kasir terjamin 100% selalu terlihat utuh.',
+            'Harmonisasi Visual Total 1:1 Native App (Storefront & POS Kasir): Menyelaraskan kartu produk POS Kasir langsung dengan pola Storefront yang terbukti elegan dan lega (rounded-2xl, border-slate-200/80, shadow-xs, touch target 34px–36px) mengeliminasi perbedaan jomplang antara etalase pelanggan dan kasir.',
+            'Kelengkapan Seluruh Badge Operasional Presisi: Menjamin seluruh badge produk (Diskon, Stok Fisik, Pre-Order, Varian, Grosir, Poin Reward, Terjual, serta Tag Modal HPP bagi Owner) tampil konsisten, rapi, dan mudah dibaca di mode Grid maupun List.',
+            'Multi-Channel Distribution v1.10.67 (Android versionCode 11067).'
+        ]
+    },
+    {
         id: 'log-1-10-66',
         version: 'v1.10.66',
         date: '2026-10-06',
