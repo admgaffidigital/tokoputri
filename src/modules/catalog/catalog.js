@@ -214,6 +214,14 @@ export const rCat = () => {
             let pct = Math.round(((p.priceNormal - p.price) / p.priceNormal) * 100);
             discPill = `<span class="bg-rose-500 text-white px-1.5 py-0.5 rounded-md text-[8px] font-extrabold flex items-center gap-0.5 whitespace-nowrap shrink-0 uppercase tracking-wider shadow-sm"><i class="fa-solid fa-tags text-[7px]"></i> -${pct}%</span>`;
             priceNormalHtml = `<p class="text-[10px] text-slate-400 dark:text-slate-500 line-through leading-none font-semibold truncate">${fCur(p.priceNormal)}</p>`;
+        } else if (p.variants && p.variants.length) {
+            const varDiscs = p.variants
+                .filter(v => v.priceNormal && parseFloat(v.priceNormal) > parseFloat(v.price))
+                .map(v => Math.round(((parseFloat(v.priceNormal) - parseFloat(v.price)) / parseFloat(v.priceNormal)) * 100));
+            if (varDiscs.length > 0) {
+                const maxPct = Math.max(...varDiscs);
+                discPill = `<span class="bg-rose-500 text-white px-1.5 py-0.5 rounded-md text-[8px] font-extrabold flex items-center gap-0.5 whitespace-nowrap shrink-0 uppercase tracking-wider shadow-sm"><i class="fa-solid fa-tags text-[7px]"></i> -${maxPct}%</span>`;
+            }
         }
 
         const compactPoStr = p.poTime
@@ -252,15 +260,15 @@ export const rCat = () => {
             ? `<span class="amber-badge px-1.5 py-0.5 rounded-md text-[8px] font-bold flex items-center gap-0.5 whitespace-nowrap shrink-0 uppercase tracking-wider"><i class="fa-solid fa-tags text-[7px]"></i> Grosir</span>`
             : '';
 
-        // ── Smart Priority Badges untuk Grid Mode (Maks 2 chip presisi, tidak menumpuk subcategory) ──
+        // ── Badges Lengkap untuk Grid Mode: Semua badge tampil konsisten & rapi tanpa pemotongan ──
         const gridCandidates = [];
         if (variantBadge) gridCandidates.push(variantBadge);
         if (grosirBadge) gridCandidates.push(grosirBadge);
         if (poinBadge) gridCandidates.push(poinBadge);
         if (soldBadge) gridCandidates.push(soldBadge);
-        const gridChipsHtml = gridCandidates.slice(0, 2).join('');
+        const gridChipsHtml = gridCandidates.join('');
 
-        // ── Smart Priority Badges untuk List View: cantumkan Diskon, Stok & PO langsung di baris chip (Maks 3 chip presisi) ──
+        // ── Badges Lengkap untuk List View: cantumkan Diskon, Stok, PO, Varian, Grosir, Poin & Terjual ──
         const listCandidates = [];
         if (discPill) listCandidates.push(discPill);
         if (stockChipList) listCandidates.push(stockChipList);
@@ -269,7 +277,7 @@ export const rCat = () => {
         if (grosirBadge) listCandidates.push(grosirBadge);
         if (poinBadge) listCandidates.push(poinBadge);
         if (soldBadge) listCandidates.push(soldBadge);
-        const listChipsHtml = listCandidates.slice(0, 3).join('');
+        const listChipsHtml = listCandidates.join('');
         
         let unt = `<span class="text-[9px] text-slate-600 dark:text-slate-400 font-bold ml-0.5 mb-0.5 uppercase tracking-wide">/${esc(p.unit || 'PCS')}</span>`;
         

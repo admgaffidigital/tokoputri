@@ -531,6 +531,32 @@ html.dark #view-admin-login {
     border-color: rgba(239, 68, 68, 0.35);
 }
 
+.pos-tag-sold {
+    background: rgba(100, 116, 139, 0.10);
+    color: #475569;
+    border: 1px solid rgba(100, 116, 139, 0.25);
+    font-weight: 800;
+}
+
+.dark .pos-tag-sold {
+    background: rgba(148, 163, 184, 0.16);
+    color: #cbd5e1;
+    border-color: rgba(148, 163, 184, 0.30);
+}
+
+.pos-tag-poin {
+    background: rgba(var(--color-primary-rgb, 16, 185, 129), 0.10);
+    color: var(--color-primary);
+    border: 1px solid rgba(var(--color-primary-rgb, 16, 185, 129), 0.25);
+    font-weight: 800;
+}
+
+.dark .pos-tag-poin {
+    background: rgba(var(--color-primary-rgb, 16, 185, 129), 0.18);
+    color: var(--color-primary);
+    border-color: rgba(var(--color-primary-rgb, 16, 185, 129), 0.35);
+}
+
 /* Status produk habis pada katalog kasir (identik Storefront) */
 .pos-product-card.is-out-of-stock,
 .pos-list-item.is-out-of-stock {

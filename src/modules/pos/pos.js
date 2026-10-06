@@ -1404,12 +1404,20 @@ export const renderCatalog = (isLoadMore = false) => {
                     const pct = Math.round(((parseFloat(p.priceNormal) - pPrice) / parseFloat(p.priceNormal)) * 100);
                     discBadge = `<span class="pos-tag-chip pos-tag-promo shrink-0 whitespace-nowrap"><i class="fa-solid fa-tags"></i> -${pct}%</span>`;
                     priceNormalHtml = `<span class="text-[10px] text-slate-400 line-through font-bold">${fRp(parseFloat(p.priceNormal))}</span>`;
+                } else if (hasVariants && p.variants && p.variants.length) {
+                    const varDiscs = p.variants
+                        .filter(v => v.priceNormal && parseFloat(v.priceNormal) > parseFloat(v.price))
+                        .map(v => Math.round(((parseFloat(v.priceNormal) - parseFloat(v.price)) / parseFloat(v.priceNormal)) * 100));
+                    if (varDiscs.length > 0) {
+                        const maxPct = Math.max(...varDiscs);
+                        discBadge = `<span class="pos-tag-chip pos-tag-promo shrink-0 whitespace-nowrap"><i class="fa-solid fa-tags"></i> -${maxPct}%</span>`;
+                    }
                 }
 
                 // 2. Eyebrow Kategori & Brand Text Terdedikasi (100% Lebar Kartu, Anti-Terpotong)
                 const catBrandText = esc(`${p.subCategory || pCat || 'PRODUK'}${p.brand ? ` · ${p.brand}` : ''}`);
 
-                // 3. Smart Priority Badges: Seleksi terprioritas (Diskon > Stok Fisik > PO > Varian/Grosir > Poin)
+                // 3. Smart Badges Lengkap: Semua badge tampil presisi, konsisten & rapi
                 const candidateChips = [];
                 // Prioritas 1: Promo Diskon (-X%)
                 if (discBadge) candidateChips.push(discBadge);
@@ -1442,13 +1450,21 @@ export const renderCatalog = (isLoadMore = false) => {
                     ? Math.max(...p.variants.map(v => parseFloat(v.poin) || 0))
                     : (parseFloat(p.poin) || 0);
                 if (activePoin > 0) {
-                    candidateChips.push(`<span class="pos-tag-chip shrink-0 whitespace-nowrap bg-[rgba(var(--color-primary-rgb),0.08)] text-[var(--color-primary)]"><i class="fa-solid fa-star"></i> +${activePoin}</span>`);
+                    candidateChips.push(`<span class="pos-tag-chip pos-tag-poin shrink-0 whitespace-nowrap"><i class="fa-solid fa-star"></i> +${activePoin}</span>`);
                 }
 
-                // List Mode: Baris dedikasi hingga 3 chip teratas (Kecualikan pos-tag-stock karena Kolom 2 sudah terdedikasi stok)
-                const listChipsHtml = candidateChips.filter(c => !c.includes('pos-tag-stock')).slice(0, 3).join('');
-                // Grid Mode: 2 chip teratas agar pas 100% presisi di kartu mobile ~150px
-                const gridChipsHtml = candidateChips.slice(0, 2).join('');
+                // Prioritas 6: Total Terjual (Identik Storefront)
+                const totalSoldPos = (p.variants && p.variants.length)
+                    ? p.variants.reduce((s, vv) => s + (parseFloat(vv.totalSold) || 0), 0)
+                    : (parseFloat(p.totalSold) || 0);
+                if (totalSoldPos > 0) {
+                    candidateChips.push(`<span class="pos-tag-chip pos-tag-sold shrink-0 whitespace-nowrap"><i class="fa-solid fa-fire text-amber-500"></i> ${totalSoldPos} Terjual</span>`);
+                }
+
+                // List Mode: Seluruh chip tampil konsisten (kecualikan pos-tag-stock karena Kolom 2 sudah terdedikasi status stok fisik)
+                const listChipsHtml = candidateChips.filter(c => !c.includes('pos-tag-stock')).join('');
+                // Grid Mode: Seluruh chip tampil lengkap, presisi & rapi tanpa pemotongan
+                const gridChipsHtml = candidateChips.join('');
 
                 // 4. HARGA MODAL (HPP) - Hanya ditampilkan jika diizinkan (Owner / Akses Laporan)
                 let hppTagHtml = '';

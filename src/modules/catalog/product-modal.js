@@ -637,11 +637,15 @@ export const rProdMod = () => {
         bH += `<span class="bg-[var(--color-primary)] text-white px-2.5 py-1 rounded-full text-[9px] font-bold flex items-center gap-1.5 whitespace-nowrap uppercase tracking-wider shadow-sm"><i class="fa-solid fa-star"></i> +${activePoin} Poin</span>`;
     }
 
-    const totalSoldDisplay = hV && cVar !== null
-        ? (parseFloat(v ? v.totalSold : 0) || 0)
-        : (hV ? p.variants.reduce((s, vv) => s + (parseFloat(vv.totalSold) || 0), 0) : (parseFloat(p.totalSold) || 0));
+    const totalSoldAll = (hV && p.variants && p.variants.length)
+        ? p.variants.reduce((s, vv) => s + (parseFloat(vv.totalSold) || 0), 0)
+        : (parseFloat(p.totalSold) || 0);
+    const totalSoldVar = (hV && cVar !== null && v && (parseFloat(v.totalSold) || 0) > 0)
+        ? (parseFloat(v.totalSold) || 0)
+        : totalSoldAll;
+    const totalSoldDisplay = totalSoldVar > 0 ? totalSoldVar : totalSoldAll;
     if (totalSoldDisplay > 0) {
-        bH += `<span class="bg-slate-200 text-slate-600 dark:bg-slate-800 dark:text-slate-400 px-2.5 py-1 rounded-full text-[9px] font-bold flex items-center gap-1.5 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-fire-flame-curved text-orange-400"></i> ${totalSoldDisplay} Terjual</span>`;
+        bH += `<span class="bg-slate-200 text-slate-600 dark:bg-slate-800 dark:text-slate-400 px-2.5 py-1 rounded-full text-[9px] font-bold flex items-center gap-1.5 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-fire text-amber-500"></i> ${totalSoldDisplay} Terjual</span>`;
     }
 
     setH('product-modal-badges', bH);

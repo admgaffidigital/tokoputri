@@ -194,6 +194,14 @@ const renderVariantSheetContent = (p) => {
         ? `<span class="bg-amber-500 text-white px-2 py-0.5 rounded-full text-[8px] font-bold flex items-center gap-1 whitespace-nowrap uppercase tracking-wider shadow-sm"><i class="fa-solid fa-clock"></i> PO ${esc(p.poTime)}</span>`
         : '';
 
+    // Badge Terjual (Total Sold)
+    const totalSoldVar = (p.variants && p.variants.length)
+        ? p.variants.reduce((s, vv) => s + (parseFloat(vv.totalSold) || 0), 0)
+        : (parseFloat(p.totalSold) || 0);
+    const soldPill = totalSoldVar > 0
+        ? `<span class="bg-slate-100 text-slate-600 dark:bg-slate-700/60 dark:text-slate-300 px-2 py-0.5 rounded-full text-[8px] font-bold flex items-center gap-1 whitespace-nowrap uppercase tracking-wider"><i class="fa-solid fa-fire text-amber-500 text-[7px]"></i> ${totalSoldVar} Terjual</span>`
+        : '';
+
     // Harga grosir info (hanya untuk produk tanpa varian)
     let wholesaleHtml = '';
     if (!hasVariants && p.wholesale && p.wholesale.length > 0) {
@@ -234,6 +242,7 @@ const renderVariantSheetContent = (p) => {
             <h4 class="font-extrabold text-sm text-slate-900 dark:text-white line-clamp-2 leading-snug break-words flex items-center gap-1.5 flex-wrap">
                 <span>${esc(p.name)}</span>
                 ${poPill}
+                ${soldPill}
             </h4>
             <div class="mt-1 flex items-baseline gap-2 flex-wrap">
                 ${priceHtml}

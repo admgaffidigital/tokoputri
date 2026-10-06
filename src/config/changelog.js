@@ -8,6 +8,24 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-10-65',
+        version: 'v1.10.65',
+        date: '2026-10-06',
+        title: 'Visibilitas Penuh Seluruh Badge Katalog & Fidelitas Badge Terjual (Storefront & POS Kasir Anti-Slicing)',
+        category: 'fix',
+        badge: 'Full Badge Fidelity & Total Sold Synchronizer v1.10.65',
+        items: [
+            'Visibilitas Penuh Seluruh Badge (Zero-Clipping): Mengeliminasi batasan pemotongan buatan (.slice(0, 2) dan .slice(0, 3)) pada Storefront (src/modules/catalog/catalog.js) dan POS Kasir (src/modules/pos/pos.js) sehingga seluruh badge operasional yang dimiliki produk (Diskon, Stok, PO, Varian, Grosir, Poin Reward, dan Terjual) tampil 100% lengkap tanpa ada yang tersembunyi.',
+            'Integrasi Badge Terjual POS Kasir (src/modules/pos/pos.js): Menyematkan badge total penjualan produk (.pos-tag-sold) pada katalog POS kasir (Grid & List Mode) yang menghitung akumulasi penjualan induk dan varian secara identik dengan etalase pelanggan.',
+            'Deteksi Diskon Otomatis Produk Varian: Mendeteksi diskon harga coret maksimum di antara varian-variannya jika produk induk belum memiliki harga normal, menjamin badge promo (-X%) selalu muncul akurat baik di etalase maupun kasir.',
+            'Presisi Layout Horizontal Tanpa Merusak Grid: Memanfaatkan utilitas flex-nowrap dengan ketinggian terkunci h-5 dan horizontal scroll halus (hide-scrollbar no-scrollbar) sehingga kartu katalog tetap simetris, presisi, dan tidak bertambah tinggi.',
+            'Badge Terjual di Header Variant Sheet Kasir (src/modules/pos/pos-variant-sheet.js): Menyematkan pill badge total terjual berdampingan dengan badge PO di lembar pemilihan varian kasir.',
+            'Fidelitas Badge Terjual Modal Produk Storefront (src/modules/catalog/product-modal.js): Memastikan badge terjual tetap tampil persisten dan tidak menghilang saat pembeli beralih memilih opsi varian.',
+            'Styling CSS Harmonis (.pos-tag-sold & .pos-tag-poin di src/style.css): Menambahkan styling chip modern dengan varian light dan dark mode yang selaras dengan palet tema kasir.',
+            'Multi-Channel Distribution v1.10.65 (Android versionCode 11065).'
+        ]
+    },
+    {
         id: 'log-1-10-64',
         version: 'v1.10.64',
         date: '2026-10-06',
