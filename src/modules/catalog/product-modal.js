@@ -1365,13 +1365,14 @@ export const renderRelatedProducts = p => {
 
         return `
         <div onclick="openProductModal('${esc(item.id)}')" class="group cursor-pointer shrink-0 w-[145px] sm:w-[165px] bg-slate-50 dark:bg-slate-900/70 hover:bg-white dark:hover:bg-slate-800 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-2.5 flex flex-col transition-all duration-300 hover:shadow-md hover:border-[var(--color-primary)]/40 hover:-translate-y-1 snap-start">
+            <!-- Kotak Gambar Bersih Murni -->
             <div class="relative aspect-square w-full rounded-xl bg-white dark:bg-slate-900 overflow-hidden mb-2 border border-slate-100 dark:border-slate-700/50 flex items-center justify-center">
                 ${hasItemImg
                     ? `<img loading="lazy" decoding="async" src="${esc(itemImg)}" alt="${esc(item.name)}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" onerror="this.onerror=null;this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='flex';">
                        <div class="w-full h-full" style="display:none">${coverItemHtml}</div>`
                     : coverItemHtml}
-                ${badgeText ? `<span class="absolute top-1.5 left-1.5 bg-slate-900 text-white text-[7.5px] sm:text-[8px] font-bold px-1.5 py-0.5 rounded-md truncate max-w-[85%] uppercase tracking-wider">${esc(badgeText)}</span>` : ''}
             </div>
+            ${badgeText ? `<p class="text-[9px] uppercase tracking-wider font-bold text-slate-400 dark:text-slate-500 truncate leading-none mb-1">${esc(badgeText)}</p>` : ''}
             <h5 class="text-[11px] font-bold text-slate-700 dark:text-slate-200 line-clamp-2 leading-tight mb-1.5 group-hover:text-[var(--color-primary)] transition-colors uppercase">${esc(item.name)}</h5>
             <div class="mt-auto flex items-baseline justify-between pt-1">
                 <span class="text-xs font-extrabold text-[var(--color-primary)] tracking-tight">${fCur(itemPrice)}</span>

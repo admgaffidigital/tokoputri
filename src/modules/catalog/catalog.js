@@ -188,18 +188,15 @@ export const rCat = () => {
     c.innerHTML = v.map(p => {
         const stockInfo = computeTotalProductStock(p);
         let nH = '';
-        let stockBadge = '';
-        let stockChipList = '';
+        let stockChip = '';
 
         if (stockInfo.isOutOfStock) {
             nH = `<div class="absolute inset-0 bg-slate-900/70 z-20 flex items-center justify-center rounded-xl"><span class="bg-rose-600 text-white text-[9px] font-black px-2.5 py-1 rounded-lg shadow-md uppercase tracking-wider flex items-center gap-1"><i class="fa-solid fa-ban"></i> HABIS</span></div>`;
-            stockChipList = `<span class="bg-rose-500 text-white px-2 py-0.5 rounded-md text-[8.5px] font-extrabold flex items-center gap-1 whitespace-nowrap shrink-0 uppercase tracking-wider shadow-sm"><i class="fa-solid fa-ban text-[7.5px]"></i> Habis</span>`;
+            stockChip = `<span class="bg-rose-500 text-white px-2 py-0.5 rounded-md text-[8.5px] font-extrabold flex items-center gap-1 whitespace-nowrap shrink-0 uppercase tracking-wider shadow-sm"><i class="fa-solid fa-ban text-[7.5px]"></i> Habis</span>`;
         } else if (stockInfo.isLowStock) {
-            stockBadge = `<span class="absolute bottom-2 right-2 z-10 bg-rose-500 text-white text-[8.5px] font-black px-2 py-0.5 rounded-md shadow uppercase tracking-wider flex items-center gap-0.5"><i class="fa-solid fa-fire text-[7.5px]"></i> SISA ${stockInfo.totalStock}</span>`;
-            stockChipList = `<span class="bg-rose-500 text-white px-2 py-0.5 rounded-md text-[8.5px] font-extrabold flex items-center gap-1 whitespace-nowrap shrink-0 uppercase tracking-wider shadow-sm"><i class="fa-solid fa-fire text-[7.5px]"></i> Sisa ${stockInfo.totalStock}</span>`;
+            stockChip = `<span class="bg-rose-500 text-white px-2 py-0.5 rounded-md text-[8.5px] font-extrabold flex items-center gap-1 whitespace-nowrap shrink-0 uppercase tracking-wider shadow-sm"><i class="fa-solid fa-fire text-[7.5px]"></i> Sisa ${stockInfo.totalStock}</span>`;
         } else if (stockInfo.isManaged && stockInfo.totalStock > 0) {
-            stockBadge = `<span class="absolute bottom-2 right-2 z-10 bg-slate-900/90 dark:bg-slate-800/90 text-white text-[8.5px] font-bold px-2 py-0.5 rounded-md shadow uppercase tracking-wider flex items-center gap-0.5"><i class="fa-solid fa-box text-[7.5px]"></i> STOK ${stockInfo.totalStock}</span>`;
-            stockChipList = `<span class="bg-slate-800/90 dark:bg-slate-700 text-white px-2 py-0.5 rounded-md text-[8.5px] font-bold flex items-center gap-1 whitespace-nowrap shrink-0 uppercase tracking-wider"><i class="fa-solid fa-box text-[7.5px]"></i> Stok ${stockInfo.totalStock}</span>`;
+            stockChip = `<span class="bg-slate-800/90 dark:bg-slate-700 text-white px-2 py-0.5 rounded-md text-[8.5px] font-bold flex items-center gap-1 whitespace-nowrap shrink-0 uppercase tracking-wider"><i class="fa-solid fa-box text-[7.5px]"></i> Stok ${stockInfo.totalStock}</span>`;
         }
         
         const canOpen = !stockInfo.isOutOfStock || stockInfo.isPreorder;
@@ -259,24 +256,16 @@ export const rCat = () => {
             ? `<span class="amber-badge px-1.5 py-0.5 rounded-md text-[8.5px] font-bold flex items-center gap-1 whitespace-nowrap shrink-0 uppercase tracking-wider"><i class="fa-solid fa-tags text-[7.5px]"></i> Grosir</span>`
             : '';
 
-        // ── Badges Lengkap untuk Grid Mode: Semua badge tampil konsisten & rapi tanpa pemotongan ──
-        const gridCandidates = [];
-        if (variantBadge) gridCandidates.push(variantBadge);
-        if (grosirBadge) gridCandidates.push(grosirBadge);
-        if (poinBadge) gridCandidates.push(poinBadge);
-        if (soldBadge) gridCandidates.push(soldBadge);
-        const gridChipsHtml = gridCandidates.join('');
-
-        // ── Badges Lengkap untuk List View: cantumkan Diskon, Stok, PO, Varian, Grosir, Poin & Terjual ──
-        const listCandidates = [];
-        if (discPill) listCandidates.push(discPill);
-        if (stockChipList) listCandidates.push(stockChipList);
-        if (poPill) listCandidates.push(poPill);
-        if (variantBadge) listCandidates.push(variantBadge);
-        if (grosirBadge) listCandidates.push(grosirBadge);
-        if (poinBadge) listCandidates.push(poinBadge);
-        if (soldBadge) listCandidates.push(soldBadge);
-        const listChipsHtml = listCandidates.join('');
+        // ── Badges Lengkap & Bersih (100% di Luar Gambar Produk, Anti-Duplikat): Diskon, Stok, PO, Varian, Grosir, Poin & Terjual ──
+        const allProductChips = [];
+        if (discPill) allProductChips.push(discPill);
+        if (stockChip) allProductChips.push(stockChip);
+        if (poPill) allProductChips.push(poPill);
+        if (variantBadge) allProductChips.push(variantBadge);
+        if (grosirBadge) allProductChips.push(grosirBadge);
+        if (poinBadge) allProductChips.push(poinBadge);
+        if (soldBadge) allProductChips.push(soldBadge);
+        const chipsHtml = allProductChips.join('');
         
         let unt = `<span class="text-[9.5px] sm:text-[10px] text-slate-400 dark:text-slate-500 font-bold ml-0.5 mb-0.5 uppercase tracking-wide">/${esc(p.unit || 'PCS')}</span>`;
         
@@ -289,9 +278,8 @@ export const rCat = () => {
             return `
             <a href="?p=${p.id}" class="w-full bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700/70 rounded-2xl shadow-xs ${cardCursorCls} transition-all duration-300 flex flex-col group relative overflow-hidden text-left" onclick="event.preventDefault(); openProductModal('${esc(p.id)}')">
                 ${nH}
+                <!-- Kotak Gambar Rasio 1:1 Bersih Murni (Tanpa Badge Menutupi Gambar) -->
                 <div class="relative aspect-square w-full bg-slate-50 dark:bg-slate-900/80 flex items-center justify-center shrink-0 border-b border-slate-100 dark:border-slate-700/50 overflow-hidden">
-                      ${(discPill || poPill) ? `<div class="absolute top-2.5 left-2.5 z-10 flex flex-col gap-1 items-start pointer-events-none">${discPill}${poPill}</div>` : ''}
-                      ${stockBadge}
                       ${hasImg 
                           ? `<img width="300" height="300" loading="lazy" decoding="async" sizes="(max-width: 640px) 45vw, (max-width: 1024px) 30vw, 20vw" src="${imgUrl}" alt="${esc(p.name)}" onerror="this.onerror=null;this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='flex';" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 ${nH ? 'grayscale opacity-50' : ''}">
                              <div class="w-full h-full" style="display:none">${coverMdHtml}</div>`
@@ -300,8 +288,9 @@ export const rCat = () => {
                 <div class="flex-1 flex flex-col p-3 sm:p-3.5 min-w-0 bg-white dark:bg-slate-800 relative z-10">
                     <p class="text-[9.5px] sm:text-[10px] uppercase tracking-wider font-bold text-slate-400 dark:text-slate-500 truncate leading-none mb-1.5">${catBrandText}</p>
                     <h4 class="text-xs sm:text-[13px] font-bold text-slate-800 dark:text-slate-100 line-clamp-2 leading-snug min-h-[2.3rem] sm:min-h-[2.5rem] mb-1.5 group-hover:text-[var(--color-primary)] transition-colors uppercase break-words">${esc(p.name)}</h4>
+                    <!-- Baris Chips Operasional 100% di Luar Gambar (Anti-Duplikat) -->
                     <div class="h-5.5 mb-2 flex items-center gap-1.5 overflow-x-auto hide-scrollbar no-scrollbar flex-nowrap py-0.5 shrink-0">
-                        ${gridChipsHtml}
+                        ${chipsHtml}
                     </div>
                     <div class="flex items-end justify-between mt-auto pt-1.5 border-t border-slate-100 dark:border-slate-700/50">
                         <div class="min-w-0 pr-1">
@@ -325,9 +314,8 @@ export const rCat = () => {
             return `
             <a href="?p=${p.id}" class="w-full bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700/70 rounded-2xl shadow-xs ${cardCursorClsList} transition-all duration-300 flex items-center p-3 sm:p-3.5 gap-3 sm:gap-4 group relative overflow-hidden text-left" onclick="event.preventDefault(); openProductModal('${esc(p.id)}')">
                 ${nH}
+                <!-- Thumbnail Kiri Bersih Murni (Tanpa Badge Menutupi Gambar) -->
                 <div class="relative w-20 h-20 sm:w-24 sm:h-24 shrink-0 bg-slate-50 dark:bg-slate-900 rounded-xl sm:rounded-2xl flex items-center justify-center border border-slate-100 dark:border-slate-700/50 overflow-hidden">
-                    ${(discPill || poPill) ? `<div class="absolute top-1.5 left-1.5 z-10 flex flex-col gap-0.5 items-start pointer-events-none">${discPill}${poPill}</div>` : ''}
-                    ${stockBadge}
                     ${hasImg
                         ? `<img width="96" height="96" loading="lazy" decoding="async" sizes="96px" src="${imgUrl}" alt="${esc(p.name)}" onerror="this.onerror=null;this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='flex';" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 ${nH ? 'grayscale opacity-50' : ''}">
                            <div class="w-full h-full" style="display:none">${coverSmHtml}</div>`
@@ -338,8 +326,8 @@ export const rCat = () => {
                     <p class="text-[9.5px] sm:text-[10px] uppercase tracking-wider font-bold text-slate-400 dark:text-slate-500 truncate leading-none">${catBrandText}</p>
                     <!-- Line 2: Nama Produk -->
                     <h4 class="text-xs sm:text-[14px] font-bold text-slate-800 dark:text-slate-100 line-clamp-1 sm:line-clamp-2 leading-snug group-hover:text-[var(--color-primary)] transition-colors uppercase break-words">${esc(p.name)}</h4>
-                    <!-- Line 3: Chips Operasional Rapi Terprioritas -->
-                    ${listChipsHtml ? `<div class="flex items-center gap-1.5 overflow-x-auto hide-scrollbar no-scrollbar flex-nowrap py-0.5">${listChipsHtml}</div>` : ''}
+                    <!-- Line 3: Chips Operasional Rapi 100% di Luar Gambar (Anti-Duplikat) -->
+                    ${chipsHtml ? `<div class="flex items-center gap-1.5 overflow-x-auto hide-scrollbar no-scrollbar flex-nowrap py-0.5">${chipsHtml}</div>` : ''}
                     <!-- Line 4: Harga & Action -->
                     <div class="flex items-center justify-between pt-0.5">
                         <div class="flex items-baseline gap-1.5 min-w-0">

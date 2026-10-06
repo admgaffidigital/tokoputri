@@ -8,6 +8,21 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-10-69',
+        version: 'v1.10.69',
+        date: '2026-10-06',
+        title: 'Relokasi Total Seluruh Badge ke Luar Gambar & Eliminasi Absolut Duplikasi Badge Produk (Clean Canvas Etalase & POS Kasir)',
+        category: 'feature',
+        badge: 'Clean Canvas & Zero Duplicate Badges v1.10.69',
+        items: [
+            'Clean Canvas Gambar Produk (src/modules/catalog/catalog.js & src/modules/pos/pos.js): Mengeliminasi seluruh badge melayang/floating (Diskon, Stok/Sisa, Pre-Order) dari atas gambar produk pada mode Grid dan List di Storefront maupun POS Kasir, membebaskan gambar produk dari tumpukan elemen penutup sehingga foto produk tampil 100% bersih, jernih, dan profesional.',
+            'Eliminasi Absolut Duplikasi Badge: Menghilangkan anomali badge ganda (di mana badge yang sama sebelumnya muncul menempel di atas foto dan muncul kembali di deretan chip teks), kini seluruh badge produk terpusat hanya satu kali di baris chip informasi di luar gambar.',
+            'Harmonisasi Baris Chip Terpadu: Mengintegrasikan seluruh status operasional produk (Diskon Promo, Stok Fisik, Pre-Order, Opsi Varian, Harga Grosir, Poin Reward, Akumulasi Terjual, serta Modal HPP Kasir) ke dalam satu barisan horizontal chip estetik tanpa scrollbar liar (hide-scrollbar no-scrollbar).',
+            'Pembersihan Produk Sejenis (src/modules/catalog/product-modal.js): Memindahkan badge kategori pada rekomendasi produk sejenis dari dalam thumbnail menjadi teks eyebrow rapi di bawah thumbnail foto.',
+            'Multi-Channel Distribution v1.10.69 (Android versionCode 11069).'
+        ]
+    },
+    {
         id: 'log-1-10-68',
         version: 'v1.10.68',
         date: '2026-10-06',
