@@ -355,7 +355,7 @@ export const setThermalPreviewPaper = (size) => {
         console.warn('[PrintPreview] Gagal rebuild payload:', e);
     }
     renderThermalModal();
-    showToast(`Ukuran kertas diubah ke ${size} ✅`);
+    showToast(`Ukuran kertas diubah ke ${size}`);
 };
 
 export const openPrinterSettingsFromPreview = () => {

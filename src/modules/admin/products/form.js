@@ -717,5 +717,5 @@ window.promptAddNewSubCategoryToProduct = async () => {
     }
 
     window.updateProductSubCategoryOptions(catName, newSub);
-    showToast(`Sub-kategori '${newSub}' berhasil ditambahkan! ✨`);
+    showToast(`Sub-kategori '${newSub}' berhasil ditambahkan!`);
 };

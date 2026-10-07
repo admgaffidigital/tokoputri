@@ -151,7 +151,7 @@ export const openVoucherModal = () => {
 export const copyVoucherCode = (code) => {
     if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(code).then(() => {
-            if (typeof window.showToast === 'function') window.showToast(`✅ Kode "${code}" disalin ke clipboard!`);
+            if (typeof window.showToast === 'function') window.showToast(`Kode "${code}" disalin ke clipboard!`);
         }).catch(() => {
             if (typeof window.showToast === 'function') window.showToast(`Kode Kupon: ${code}`);
         });

@@ -2104,7 +2104,7 @@ const renderPayDetail = (method) => {
             <button onclick="window.posSetQuickCash(${q.val})" type="button"
                 class="px-2.5 py-1.5 rounded-xl text-[11px] font-black border transition-all active:scale-95 ${q.isPas ? 'text-white border-transparent shadow-xs' : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-700 hover:border-[var(--color-primary)]'}"
                 style="${q.isPas ? 'background:var(--color-primary)' : ''}">
-                ${q.isPas ? '💵 Uang Pas' : `Rp ${q.label}`}
+                ${q.isPas ? '<i class="fa-solid fa-money-bill-wave mr-1 text-emerald-400"></i> Uang Pas' : `Rp ${q.label}`}
             </button>
         `).join('');
 
@@ -2710,7 +2710,7 @@ export const renderPosMemberResult = () => {
           ${posClaimedReward ? `
           <div class="p-2.5 bg-purple-50 dark:bg-purple-950/40 rounded-xl border border-purple-200 dark:border-purple-800/60 flex items-center justify-between gap-2">
             <div class="text-xs min-w-0">
-              <span class="font-bold text-purple-800 dark:text-purple-300 block truncate">🎁 ${esc(posClaimedReward.name)}</span>
+              <span class="font-bold text-purple-800 dark:text-purple-300 block truncate inline-flex items-center gap-1.5"><i class="fa-solid fa-gift text-purple-500"></i> ${esc(posClaimedReward.name)}</span>
               <span class="text-[10px] text-purple-600 dark:text-purple-400 font-mono">Ditukar dengan ${posClaimedReward.pointsCost} Poin</span>
             </div>
             <button type="button" onclick="window.deselectPosReward()" class="text-[10px] font-bold text-rose-500 hover:underline cursor-pointer shrink-0">
@@ -3303,7 +3303,7 @@ const showPOSSuccess = (tx) => {
     try { localStorage.setItem('freshmart_last_pos_tx', JSON.stringify(tx)); } catch (_) {}
     const changeInfo = tx.payment.method === 'cash'
         ? `<p class="text-sm text-slate-500">Kembalian: <span class="font-black text-emerald-600">${fRp(tx.payment.change)}</span></p>`
-        : tx.payment.method === 'tempo' ? `<p class="text-sm text-amber-600 font-semibold">⚠️ Dicatat sebagai Piutang Tempo</p>`
+        : tx.payment.method === 'tempo' ? `<p class="text-sm text-amber-600 font-semibold inline-flex items-center gap-1.5 justify-center"><i class="fa-solid fa-triangle-exclamation text-amber-500"></i> Dicatat sebagai Piutang Tempo</p>`
         : `<p class="text-sm text-slate-500">Metode: ${tx.payment.method.toUpperCase()}</p>`;
     const isInAdmin = !!document.getElementById('pos-admin-container') || (typeof window.cTab === 'function' && window.cTab() === 'pos');
 

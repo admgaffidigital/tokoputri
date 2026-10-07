@@ -210,7 +210,7 @@ export const savePrinterSettingsFromModal = () => {
     };
 
     savePrinterConfig(newConfig);
-    showToast('Pengaturan printer berhasil disimpan! ✅');
+    showToast('Pengaturan printer berhasil disimpan!');
     closePrinterSettingsModal();
 };
 
@@ -242,7 +242,7 @@ export const scanBluetoothPrinter = async () => {
             });
             const nameEl = el('printer-device-name-display');
             if (nameEl) nameEl.value = device.name || 'Bluetooth POS Printer';
-            showToast(`Printer "${device.name || 'Bluetooth POS'}" tersambung! ✅`);
+            showToast(`Printer "${device.name || 'Bluetooth POS'}" tersambung!`);
         }
     } catch (e) {
         if (e.name !== 'NotFoundError') {
@@ -272,7 +272,7 @@ export const scanUsbPrinter = async () => {
             });
             const nameEl = el('printer-device-name-display');
             if (nameEl) nameEl.value = devName;
-            showToast(`Printer USB "${devName}" tersambung! ✅`);
+            showToast(`Printer USB "${devName}" tersambung!`);
         }
     } catch (e) {
         if (e.name !== 'NotFoundError') {
@@ -371,7 +371,7 @@ export const executeTestPrint = () => {
     } else {
         window.print();
     }
-    showToast('Perintah uji cetak berhasil dikirim! 🖨️');
+    showToast('Perintah uji cetak berhasil dikirim!');
 };
 
 // ─── Expose ke window untuk HTML onclick ──────

@@ -449,7 +449,7 @@ export const handleLinkFifoSupplier = async () => {
             supplierId: prod.supplierId
         });
         hLoad();
-        showToast('Supplier berhasil dihubungkan ke produk! 🚚✨');
+        showToast('Supplier berhasil dihubungkan ke produk!');
         renderProductFifoContent();
         window.rAdmItms?.('products');
     } catch(err) {
@@ -524,7 +524,7 @@ export const quickTransferWarehouseToStore = async (productId) => {
         });
 
         hLoad();
-        showToast(`Sukses memindahkan ${qty} ${prod.unit||'pcs'} ke rak toko! 🏪✨`);
+        showToast(`Sukses memindahkan ${qty} ${prod.unit||'pcs'} ke rak toko!`);
         renderProductFifoContent();
         window.rAdmItms?.('products');
     } catch (err) {

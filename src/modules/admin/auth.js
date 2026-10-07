@@ -100,12 +100,12 @@ export const applyStaffMenuPermissions = () => {
     const welcomeTagEl = el('admin-dashboard-welcome-tag');
     const welcomeDescEl = el('admin-dashboard-welcome-desc');
 
-    if (isOwnerUser()) {
+        if (isOwnerUser()) {
         if (roleBadgeEl) {
             roleBadgeEl.innerHTML = '<span class="inline-flex items-center gap-1 text-[9px] font-black uppercase text-amber-300 drop-shadow-xs"><i class="fa-solid fa-crown text-[8px]"></i> Owner</span>';
         }
         if (headerTitleEl) headerTitleEl.textContent = 'CMS OWNER';
-        if (welcomeTitleEl) welcomeTitleEl.innerHTML = 'Selamat Datang, Pemilik Toko! 👑';
+        if (welcomeTitleEl) welcomeTitleEl.innerHTML = 'Selamat Datang, Pemilik Toko! <i class="fa-solid fa-crown text-amber-400 text-lg"></i>';
         if (welcomeTagEl) welcomeTagEl.textContent = 'Panel Kontrol Owner';
         if (welcomeDescEl) welcomeDescEl.textContent = 'Akses penuh seluruh operasional, keuangan, dan pengaturan Toko Putri.';
     } else if (staff?.role === ROLES.ADMIN) {
@@ -114,7 +114,7 @@ export const applyStaffMenuPermissions = () => {
             roleBadgeEl.innerHTML = `<span class="inline-flex items-center gap-1 text-[9px] font-black uppercase text-blue-200 drop-shadow-xs"><i class="fa-solid fa-shield-halved text-[8px]"></i> Admin (${staffName})</span>`;
         }
         if (headerTitleEl) headerTitleEl.textContent = 'CMS ADMIN';
-        if (welcomeTitleEl) welcomeTitleEl.innerHTML = `Selamat Datang, ${staffName}! 🛡️`;
+        if (welcomeTitleEl) welcomeTitleEl.innerHTML = `Selamat Datang, ${staffName}! <i class="fa-solid fa-shield-halved text-blue-400 text-lg"></i>`;
         if (welcomeTagEl) welcomeTagEl.textContent = 'Panel Operasional Admin';
         if (welcomeDescEl) welcomeDescEl.textContent = 'Kelola pesanan, katalog produk, dan aktivitas harian toko.';
     } else {
@@ -122,7 +122,7 @@ export const applyStaffMenuPermissions = () => {
             roleBadgeEl.innerHTML = '<span class="text-[9px] font-bold uppercase text-white/90">Staf Toko</span>';
         }
         if (headerTitleEl) headerTitleEl.textContent = 'CMS TOKO';
-        if (welcomeTitleEl) welcomeTitleEl.innerHTML = 'Selamat Datang! 👋';
+        if (welcomeTitleEl) welcomeTitleEl.innerHTML = 'Selamat Datang!';
         if (welcomeTagEl) welcomeTagEl.textContent = 'Panel Kontrol Toko Putri ( Official Store )';
         if (welcomeDescEl) welcomeDescEl.textContent = 'Kelola produk, pesanan, dan seluruh operasional toko dari satu tempat.';
     }
@@ -397,7 +397,7 @@ export const processAdminLogin = async () => {
             history.replaceState({ view: 'view-admin' }, '', window.location.href);
             if (typeof window.changeView === 'function') window.changeView('view-admin', true);
             openAdminMenu();
-            showToast("Selamat datang, Pemilik Toko! 👑", "success");
+            showToast("Selamat datang, Pemilik Toko!", "success");
             return;
         }
 
@@ -449,7 +449,7 @@ export const processAdminLogin = async () => {
             // Alihkan langsung ke mode POS Kasir!
             history.replaceState({ view: 'view-pos-cashier' }, '', window.location.href);
             if (typeof window.changeView === 'function') window.changeView('view-pos-cashier', true);
-            showToast(`Login Berhasil! Selamat bertugas di Kasir, ${staffProfile.name || 'Kasir'}! 🛒`, "success");
+            showToast(`Login Berhasil! Selamat bertugas di Kasir, ${staffProfile.name || 'Kasir'}!`, "success");
             return;
         }
 
@@ -460,7 +460,7 @@ export const processAdminLogin = async () => {
         history.replaceState({ view: 'view-admin' }, '', window.location.href);
         if (typeof window.changeView === 'function') window.changeView('view-admin', true);
         openAdminMenu();
-        showToast(`Login Berhasil! Selamat bertugas, ${staffProfile.name || 'Admin'}! 🛡️`, "success");
+        showToast(`Login Berhasil! Selamat bertugas, ${staffProfile.name || 'Admin'}!`, "success");
 
     } catch(error) {
         console.error(error);

@@ -70,7 +70,7 @@ export const aF = {
     banners: [
         {key:'title',    label:'Judul Banner',    type:'text'},
         {key:'desc',     label:'Deskripsi Pendek (Opsional)', type:'textarea'},
-        {key:'type',     label:'Tipe Banner', type:'select', options:[{val:'image',text:'🖼 Gambar (Default)'},{val:'video',text:'🎬 Video (Drive / YouTube / MP4)'}]},
+        {key:'type',     label:'Tipe Banner', type:'select', options:[{val:'image',text:'Gambar (Default)'},{val:'video',text:'Video (Drive / YouTube / MP4)'}]},
         {key:'img',      label:'URL Gambar (jika Tipe = Gambar)', type:'text'},
         {key:'videoUrl', label:'URL / Link Video (Google Drive, YouTube, atau MP4)', type:'text'},
         {key:'link',     label:'Link Tujuan Klik (Opsional)', type:'text'}

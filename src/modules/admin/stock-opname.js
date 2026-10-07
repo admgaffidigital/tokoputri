@@ -339,7 +339,7 @@ export const handleSoBarcodeScan = (rawCode) => {
 
         // Mainkan suara kasir jika tersedia
         try { window.playCashierBeep?.(); } catch (_) {}
-        showToast(`Ditemukan: ${matched.productName} (+1 Fisik) ✨`);
+        showToast(`Ditemukan: ${matched.productName} (+1 Fisik)`);
     } else {
         // Jika tidak persis, masukkan ke kolom search query
         soSearchQuery = rawCode.trim();
@@ -450,7 +450,7 @@ export const matchAllUncountedInView = () => {
                 it.reason = 'sesuai';
             });
             renderStockOpnameView();
-            showToast(`${uncounted.length} barang berhasil disamakan! ✨`);
+            showToast(`${uncounted.length} barang berhasil disamakan!`);
         },
         "Ya, Samakan Semua",
         false
@@ -900,10 +900,10 @@ export const renderSoActiveItems = () => {
 
                         <!-- Col 2: Stok Sistem (Desktop Only) -->
                         <div class="hidden lg:flex lg:col-span-2 flex-col items-center justify-center text-center">
-                            <div class="flex items-center gap-1 text-[11px] font-mono">
-                                <span class="text-teal-600 dark:text-teal-400 font-bold" title="Stok Rak Toko">🏪 ${item.systemStoreStock}</span>
+                            <div class="flex items-center gap-1.5 text-[11px] font-mono">
+                                <span class="text-teal-600 dark:text-teal-400 font-bold" title="Stok Rak Toko"><i class="fa-solid fa-store text-[9px] mr-1"></i>${item.systemStoreStock}</span>
                                 <span class="text-slate-300 dark:text-slate-600">•</span>
-                                <span class="text-amber-600 dark:text-amber-400 font-bold" title="Stok Gudang">📦 ${item.systemWarehouseStock}</span>
+                                <span class="text-amber-600 dark:text-amber-400 font-bold" title="Stok Gudang"><i class="fa-solid fa-warehouse text-[9px] mr-1"></i>${item.systemWarehouseStock}</span>
                             </div>
                             <span class="text-[11px] font-black text-slate-700 dark:text-slate-200 font-mono mt-0.5">Total: ${item.systemStock} ${esc(item.unit)}</span>
                         </div>
@@ -927,7 +927,7 @@ export const renderSoActiveItems = () => {
                         <!-- MOBILE ONLY: Compact Bar Sistem vs Fisik (Touch-Friendly) -->
                         <div class="lg:hidden p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800 flex flex-col gap-2">
                             <div class="flex items-center justify-between text-xs">
-                                <span class="text-[10px] font-bold text-slate-400">Sistem: 🏪 <b class="text-teal-600 dark:text-teal-400">${item.systemStoreStock}</b> | 📦 <b class="text-amber-600 dark:text-amber-400">${item.systemWarehouseStock}</b> (Tot: ${item.systemStock})</span>
+                                <span class="text-[10px] font-bold text-slate-400">Sistem: <span class="text-teal-600 dark:text-teal-400 font-bold"><i class="fa-solid fa-store text-[9px] mr-0.5"></i>${item.systemStoreStock}</span> | <span class="text-amber-600 dark:text-amber-400 font-bold"><i class="fa-solid fa-warehouse text-[9px] mr-0.5"></i>${item.systemWarehouseStock}</span> (Tot: ${item.systemStock})</span>
                                 <button type="button" onclick="window.matchSoItem('${item.key}')" class="px-2.5 py-1 rounded-xl primary-bg-soft primary-border border primary-text font-black text-[10px] active:scale-95" title="Samakan fisik = sistem">
                                     = Samakan
                                 </button>
@@ -1336,7 +1336,7 @@ export const executeSoFinalize = async () => {
         await saveApp(['stockOpnameHistory'], { updatedProductIds });
 
         hLoad();
-        showToast("Stock Opname berhasil diterapkan & stok telah disesuaikan! 🎉");
+        showToast("Stock Opname berhasil diterapkan & stok telah disesuaikan!");
 
         // Kosongkan sesi aktif
         soAuditSession = {};
@@ -1517,8 +1517,8 @@ export const viewSoHistoryDetail = (soId) => {
 
                             <div class="flex items-center justify-between sm:justify-end gap-3 shrink-0 pt-1 sm:pt-0 border-t sm:border-t-0 border-slate-100 dark:border-slate-800">
                                 <div class="text-left sm:text-right text-[11px]">
-                                    <span class="text-slate-400 block text-[9px]">Sistem ➔ Fisik</span>
-                                    <span class="font-mono font-bold">${it.systemStock} ➔ <b class="text-slate-900 dark:text-white">${it.physicalStock}</b> ${esc(it.unit || 'pcs')}</span>
+                                    <span class="text-slate-400 block text-[9px]">Sistem <i class="fa-solid fa-arrow-right text-[8px] mx-0.5 text-slate-400"></i> Fisik</span>
+                                    <span class="font-mono font-bold">${it.systemStock} <i class="fa-solid fa-arrow-right text-[8px] mx-0.5 text-slate-400"></i> <b class="text-slate-900 dark:text-white">${it.physicalStock}</b> ${esc(it.unit || 'pcs')}</span>
                                 </div>
                                 <div class="text-right min-w-[80px]">
                                     <span class="px-2 py-0.5 rounded-lg text-[10px] font-black ${it.diff < 0 ? 'bg-rose-100 text-rose-700 dark:bg-rose-950/70 dark:text-rose-300' : 'bg-amber-100 text-amber-700 dark:bg-amber-950/70 dark:text-amber-300'}">

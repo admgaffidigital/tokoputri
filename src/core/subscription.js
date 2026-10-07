@@ -394,7 +394,7 @@ export const verifyAndApplyLicenseKey = async (rawKey) => {
             year: 'numeric'
         });
 
-        showToast(`🎉 Lisensi Berhasil Diaktifkan! Masa aktif diperpanjang +${days} hari (hingga ${formattedNew})`, 'success');
+        showToast(`Lisensi Berhasil Diaktifkan! Masa aktif diperpanjang +${days} hari (hingga ${formattedNew})`, 'success');
         return true;
     } catch(err) {
         console.error('[Subscription] Gagal simpan lisensi:', err);

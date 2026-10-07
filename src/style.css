@@ -3758,5 +3758,52 @@ button span > i[class*="fa-"]:not(.hidden):not([hidden]) {
     z-index: 150 !important;
 }
 
+/* ============================================================
+   NATIVE APP DESIGN SYSTEM TOKENS & UTILITIES — v1.10.84
+   Standardisasi tombol, kartu bento, touch-target 40-44px,
+   dan ruang bernapas lega di seluruh antarmuka aplikasi.
+   ============================================================ */
+.card-native {
+    background-color: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(226, 232, 240, 0.9);
+    border-radius: 1.25rem;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.dark .card-native {
+    background-color: rgba(30, 41, 59, 0.9);
+    border-color: rgba(51, 65, 85, 0.8);
+}
 
+.btn-native-action {
+    height: 2.5rem; /* 40px touch standard */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.375rem;
+    border-radius: 0.75rem;
+    font-weight: 700;
+    font-size: 0.75rem;
+    padding-left: 0.875rem;
+    padding-right: 0.875rem;
+    transition: all 0.15s ease-in-out;
+    cursor: pointer;
+    user-select: none;
+}
+.btn-native-action:active {
+    transform: scale(0.95);
+}
 
+.btn-native-icon {
+    height: 2.5rem; /* 40px touch standard */
+    width: 2.5rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.75rem;
+    transition: all 0.15s ease-in-out;
+    cursor: pointer;
+    user-select: none;
+}
+.btn-native-icon:active {
+    transform: scale(0.95);
+}

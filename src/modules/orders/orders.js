@@ -197,7 +197,7 @@ export const checkOrderStatus = async (orderId, index) => {
             }
             saveMyOrdersToStorage();
             renderMyOrders(); 
-            showToast(`✅ Status Pesanan: ${data.status}`);
+            showToast(`Status Pesanan: ${data.status}`);
         } else {
             showToast("Pesanan tidak ditemukan di server.");
         }
@@ -266,10 +266,10 @@ export const trackOrderManual = async () => {
                 renderMyOrders();
             }
             if (inputEl) inputEl.value = '';
-            showToast('✅ Pesanan berhasil ditemukan!');
+            showToast('Pesanan berhasil ditemukan!');
             openCustomerOrderDetail(searchId);
         } else {
-            showToast('❌ Pesanan dengan ID tersebut tidak ditemukan.');
+            showToast('Pesanan dengan ID tersebut tidak ditemukan.');
         }
     } catch (e) {
         console.error("Gagal melacak pesanan:", e);

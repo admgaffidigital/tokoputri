@@ -1109,11 +1109,11 @@ window.submitTempoPayment = async (e, orderId) => {
         hLoad();
         window.closeTempoPaymentModal();
         if (isPlOrder) {
-            showToast('Cicilan dicatat & Limit Putri PayLater berhasil dipulihkan! ⚡');
+            showToast('Cicilan dicatat & Limit Putri PayLater berhasil dipulihkan!');
         } else if (isShiftSynced) {
-            showToast('Cicilan dicatat & otomatis masuk ke Kas Laci Kasir! 💰');
+            showToast('Cicilan dicatat & otomatis masuk ke Kas Laci Kasir!');
         } else {
-            showToast('Pembayaran cicilan berhasil dicatat! 💰');
+            showToast('Pembayaran cicilan berhasil dicatat!');
         }
 
         // Segarkan data piutang
@@ -2445,14 +2445,14 @@ const renderTempoInstallmentsTab = () => {
                         <button onclick="window.setInstallmentMethod('all')" class="px-2.5 py-1.5 rounded-xl border text-[10px] transition-all cursor-pointer ${activeInstallmentMethod === 'all' ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 border-transparent' : 'bg-slate-50 dark:bg-slate-900 text-slate-500 border-slate-200 dark:border-slate-700'}">
                             Semua Metode
                         </button>
-                        <button onclick="window.setInstallmentMethod('cash')" class="px-2.5 py-1.5 rounded-xl border text-[10px] transition-all cursor-pointer ${activeInstallmentMethod === 'cash' ? 'bg-emerald-600 text-white border-transparent' : 'bg-slate-50 dark:bg-slate-900 text-slate-500 border-slate-200 dark:border-slate-700'}">
-                            💵 Tunai
+                        <button onclick="window.setInstallmentMethod('cash')" class="px-2.5 py-1.5 rounded-xl border text-[10px] transition-all cursor-pointer inline-flex items-center gap-1 ${activeInstallmentMethod === 'cash' ? 'bg-emerald-600 text-white border-transparent' : 'bg-slate-50 dark:bg-slate-900 text-slate-500 border-slate-200 dark:border-slate-700'}">
+                            <i class="fa-solid fa-money-bill-wave ${activeInstallmentMethod === 'cash' ? 'text-white' : 'text-emerald-500'}"></i> Tunai
                         </button>
-                        <button onclick="window.setInstallmentMethod('transfer')" class="px-2.5 py-1.5 rounded-xl border text-[10px] transition-all cursor-pointer ${activeInstallmentMethod === 'transfer' ? 'bg-blue-600 text-white border-transparent' : 'bg-slate-50 dark:bg-slate-900 text-slate-500 border-slate-200 dark:border-slate-700'}">
-                            🏦 Transfer
+                        <button onclick="window.setInstallmentMethod('transfer')" class="px-2.5 py-1.5 rounded-xl border text-[10px] transition-all cursor-pointer inline-flex items-center gap-1 ${activeInstallmentMethod === 'transfer' ? 'bg-blue-600 text-white border-transparent' : 'bg-slate-50 dark:bg-slate-900 text-slate-500 border-slate-200 dark:border-slate-700'}">
+                            <i class="fa-solid fa-building-columns ${activeInstallmentMethod === 'transfer' ? 'text-white' : 'text-blue-500'}"></i> Transfer
                         </button>
-                        <button onclick="window.setInstallmentMethod('qris')" class="px-2.5 py-1.5 rounded-xl border text-[10px] transition-all cursor-pointer ${activeInstallmentMethod === 'qris' ? 'bg-purple-600 text-white border-transparent' : 'bg-slate-50 dark:bg-slate-900 text-slate-500 border-slate-200 dark:border-slate-700'}">
-                            📱 QRIS
+                        <button onclick="window.setInstallmentMethod('qris')" class="px-2.5 py-1.5 rounded-xl border text-[10px] transition-all cursor-pointer inline-flex items-center gap-1 ${activeInstallmentMethod === 'qris' ? 'bg-purple-600 text-white border-transparent' : 'bg-slate-50 dark:bg-slate-900 text-slate-500 border-slate-200 dark:border-slate-700'}">
+                            <i class="fa-solid fa-qrcode ${activeInstallmentMethod === 'qris' ? 'text-white' : 'text-purple-500'}"></i> QRIS
                         </button>
                     </div>
                 </div>

@@ -32,11 +32,11 @@ let _activeRoleFilter = 'all'; // 'all' | 'admin' | 'cashier'
 export const verifyOwnerAuthority = (actionName = 'mengubah data staf') => {
     const user = auth.currentUser;
     if (!user) {
-        showToast(`⚠️ Sesi Belum Terotentikasi: Harap login resmi menggunakan Akun Pemilik Toko (Email Owner) di form login CMS untuk ${actionName}.`, 'warning');
+        showToast(`Sesi Belum Terotentikasi: Harap login resmi menggunakan Akun Pemilik Toko (Email Owner) di form login CMS untuk ${actionName}.`, 'warning');
         return false;
     }
     if (user.uid !== ADMIN_UID) {
-        showToast(`🛑 Akses Ditolak: Hanya Akun Pemilik Utama (Owner) yang berwenang ${actionName}. Akun staf tidak memiliki izin modifikasi database staf.`, 'error');
+        showToast(`Akses Ditolak: Hanya Akun Pemilik Utama (Owner) yang berwenang ${actionName}. Akun staf tidak memiliki izin modifikasi database staf.`, 'error');
         return false;
     }
     return true;
@@ -662,7 +662,7 @@ export const saveStaffAccount = async () => {
         }
 
         closeAddStaffModal();
-        showToast(`Akun "${name}" (${finalRole.toUpperCase()}) berhasil didaftarkan! ✅`, 'success');
+        showToast(`Akun "${name}" (${finalRole.toUpperCase()}) berhasil didaftarkan!`, 'success');
         await loadStaffList();
 
         if (typeof window.updatePOSHeaderIcon === 'function') window.updatePOSHeaderIcon();
@@ -863,7 +863,7 @@ export const saveStaffPermissions = async (uid) => {
         }, { merge: true });
 
         closePermissionsModal();
-        showToast('Hak akses berhasil diperbarui! ✅', 'success');
+        showToast('Hak akses berhasil diperbarui!', 'success');
         await loadStaffList();
 
     } catch (err) {
@@ -978,7 +978,7 @@ export const updateStaffProfile = async (uid) => {
             updatedAt: firebase.firestore.FieldValue.serverTimestamp()
         }, { merge: true });
         closeEditStaffModal();
-        showToast('Profil staf berhasil diperbarui! ✅', 'success');
+        showToast('Profil staf berhasil diperbarui!', 'success');
         await loadStaffList();
     } catch (err) {
         const isPerm = err.code === 'permission-denied' || (err.message && err.message.toLowerCase().includes('permission'));
@@ -1000,7 +1000,7 @@ export const toggleStaffActive = async (uid, newStatus) => {
             isActive: newStatus,
             updatedAt: firebase.firestore.FieldValue.serverTimestamp()
         }, { merge: true });
-        showToast(newStatus ? 'Akun staf diaktifkan ✅' : 'Akun staf dinonaktifkan ❌', 'success');
+        showToast(newStatus ? 'Akun staf diaktifkan' : 'Akun staf dinonaktifkan', 'success');
         await loadStaffList();
     } catch (err) {
         const isPerm = err.code === 'permission-denied' || (err.message && err.message.toLowerCase().includes('permission'));

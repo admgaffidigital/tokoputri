@@ -540,9 +540,9 @@ const renderClientPaymentModalContent = (orders, initialAmount = null) => {
                                             <p class="font-mono font-black text-xs sm:text-sm text-slate-900 dark:text-white">${fCur(item.total)}</p>
                                             <div class="mt-0.5">
                                                 ${item.statusType === 'paid' ? `
-                                                    <span class="px-2 py-0.5 rounded text-[8.5px] font-black uppercase bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300">✓ Lunas</span>
+                                                    <span class="px-2 py-0.5 rounded text-[8.5px] font-black uppercase bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300">Lunas</span>
                                                 ` : (item.statusType === 'current' ? `
-                                                    <span class="px-2 py-0.5 rounded text-[8.5px] font-black uppercase bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300">★ Bayar Bulan Ini</span>
+                                                    <span class="px-2 py-0.5 rounded text-[8.5px] font-black uppercase bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300">Bayar Bulan Ini</span>
                                                 ` : `
                                                     <span class="px-2 py-0.5 rounded text-[8.5px] font-medium uppercase bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400">Bulan Depan</span>
                                                 `)}
@@ -1000,20 +1000,20 @@ export const renderClientInstallmentSchedule = (o, pendingConfirmations = []) =>
             let isPaid = false;
 
             if (totalPaid >= targetAfter) {
-                statusLabel = '✓ LUNAS';
+                statusLabel = 'LUNAS';
                 statusBadgeCls = 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-700';
                 isPaid = true;
             } else if (pendingSum > 0) {
-                statusLabel = '⏳ SEDANG DIVERIFIKASI';
+                statusLabel = 'SEDANG DIVERIFIKASI';
                 statusBadgeCls = 'bg-amber-100 text-amber-700 dark:bg-amber-950/60 dark:text-amber-400 border border-amber-300 dark:border-amber-700';
             } else if (!foundUnpaid) {
                 foundUnpaid = true;
                 const isLate = s.dueDate && (Date.now() > s.dueDate);
                 if (isLate) {
-                    statusLabel = '⚠️ JATUH TEMPO';
+                    statusLabel = 'JATUH TEMPO';
                     statusBadgeCls = 'bg-rose-100 text-rose-700 dark:bg-rose-950/60 dark:text-rose-400 border border-rose-300 dark:border-rose-700';
                 } else {
-                    statusLabel = '★ WAJIB BULAN INI';
+                    statusLabel = 'WAJIB BULAN INI';
                     statusBadgeCls = 'bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300 border border-amber-300 dark:border-amber-700 font-bold';
                 }
             } else {
@@ -1079,19 +1079,19 @@ export const renderClientInstallmentSchedule = (o, pendingConfirmations = []) =>
                         let isPaid = false;
 
                         if (totalPaid >= (mTotal * (idx + 1))) {
-                            statusLabel = '✓ Lunas';
+                            statusLabel = 'Lunas';
                             statusBadgeCls = 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-700';
                             isPaid = true;
                         } else if (pendingSum > 0) {
-                            statusLabel = '⏳ Sedang Diverifikasi';
+                            statusLabel = 'Sedang Diverifikasi';
                             statusBadgeCls = 'bg-amber-100 text-amber-700 dark:bg-amber-950/60 dark:text-amber-400 border border-amber-300 dark:border-amber-700';
                         } else {
                             const isLate = s.dueDate && (Date.now() > s.dueDate);
                             if (isLate) {
-                                statusLabel = '⚠️ Lewat Jatuh Tempo';
+                                statusLabel = 'Lewat Jatuh Tempo';
                                 statusBadgeCls = 'bg-rose-100 text-rose-700 dark:bg-rose-950/60 dark:text-rose-400 border border-rose-300 dark:border-rose-700';
                             } else {
-                                statusLabel = '★ Bayar Bulan Ini';
+                                statusLabel = 'Bayar Bulan Ini';
                                 statusBadgeCls = 'bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300 border border-amber-300 dark:border-amber-700 font-bold';
                             }
                         }

@@ -57,7 +57,7 @@ export const applyNewProductOrder = async (newIdsInView) => {
     try {
         const _save = typeof saveApp === 'function' ? saveApp : (window.saveApp || (async () => {}));
         await _save(['productOrder']);
-        showToast("Urutan produk berhasil disimpan! ✨");
+        showToast("Urutan produk berhasil disimpan!");
     } catch(e) {
         console.warn("Gagal simpan urutan produk:", e);
     }
@@ -147,7 +147,7 @@ window.autoGroupProductsByCategory = async () => {
             });
             const newIds = list.map(p => String(p.id));
             await applyNewProductOrder(newIds);
-            showToast("Produk berhasil dirapikan per kategori! 📦");
+            showToast("Produk berhasil dirapikan per kategori!");
         },
         "Ya, Rapikan",
         false
@@ -233,33 +233,33 @@ window.rAdmL = t => {
     const statsContainer = t === 'products' ? `<div id="admin-product-stats" class="mb-5"></div>` : '';
     const colorActions = t === 'colors' ? `
         <div class="flex gap-2 mb-4 flex-wrap">
-            <button onclick="openImportFromProductsModal()" class="flex items-center gap-2 px-4 py-2 rounded-xl primary-bg-soft border primary-border primary-text font-bold text-[11px] uppercase tracking-widest hover:bg-[rgba(var(--color-primary-rgb),0.2)] transition-all active:scale-95 shadow-sm"><i class="fa-solid fa-box-archive"></i> Impor dari Semua Produk</button>
+            <button onclick="openImportFromProductsModal()" class="h-11 px-4 rounded-xl primary-bg-soft border primary-border text-[var(--color-primary)] font-bold text-xs uppercase tracking-widest hover:primary-bg hover:text-white transition-all active:scale-95 shadow-2xs flex items-center gap-2 cursor-pointer"><i class="fa-solid fa-box-archive"></i> Impor dari Semua Produk</button>
         </div>` : '';
 
     const productToolbar = t === 'products' ? `
-        <div class="flex items-center justify-between gap-2 flex-wrap mb-4 px-1">
+        <div class="flex items-center justify-between gap-3 flex-wrap mb-4 px-1">
             <div class="flex items-center gap-1.5 text-slate-500 dark:text-slate-400 font-bold text-[11px]">
                 <i class="fa-solid fa-up-down-left-right text-[var(--color-primary)]"></i>
-                <span class="hidden sm:inline">Tahan & geser pegangan <i class="fa-solid fa-grip-vertical opacity-60"></i> atau gunakan tombol panah untuk mengatur urutan.</span>
-                <span class="sm:hidden">Geser <i class="fa-solid fa-grip-vertical opacity-60"></i> atau panah untuk atur urutan.</span>
+                <span class="hidden sm:inline">Tahan &amp; geser pegangan <i class="fa-solid fa-grip-vertical opacity-60"></i> atau panah untuk mengatur urutan produk.</span>
+                <span class="sm:hidden">Geser <i class="fa-solid fa-grip-vertical opacity-60"></i> / panah untuk atur urutan.</span>
             </div>
             <div class="flex items-center gap-2 ml-auto flex-wrap">
                 ${(appData.suppliers || []).length > 0 ? `
                     <div class="relative inline-block">
-                        <select onchange="window.adminSupplierFilter = this.value; rAdmItms('products');" class="px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold text-[11px] border border-slate-200/80 dark:border-slate-700 cursor-pointer shadow-2xs">
+                        <select onchange="window.adminSupplierFilter = this.value; rAdmItms('products');" class="h-10 px-3.5 rounded-xl bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-bold text-xs border border-slate-200/90 dark:border-slate-700/80 cursor-pointer shadow-2xs hover:bg-slate-50 transition-colors">
                             <option value="">Semua Supplier (${(appData.suppliers || []).length})</option>
                             ${(appData.suppliers || []).map(s => `<option value="${s.id}" ${window.adminSupplierFilter === String(s.id) ? 'selected' : ''}>${esc(s.name)}</option>`).join('')}
                         </select>
                     </div>
                 ` : ''}
-                <button onclick="window.autoGroupProductsByCategory()" class="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold text-[11px] transition-all active:scale-95 shadow-2xs border border-slate-200/80 dark:border-slate-700" title="Otomatis kumpulkan produk sejenis (Paku dengan Paku, Semen dengan Semen)">
+                <button onclick="window.autoGroupProductsByCategory()" class="h-10 px-3.5 rounded-xl bg-white hover:bg-slate-50 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold text-xs transition-all active:scale-95 shadow-2xs border border-slate-200/90 dark:border-slate-700/80 flex items-center gap-1.5 cursor-pointer" title="Otomatis kumpulkan produk sejenis">
                     <i class="fa-solid fa-layer-group text-[var(--color-primary)]"></i> Rapikan per Kategori
                 </button>
                 <div class="relative inline-block" id="admin-product-order-dropdown-wrap">
-                    <button onclick="window.toggleProductOrderMenu(event)" class="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold text-[11px] transition-all active:scale-95 shadow-2xs border border-slate-200/80 dark:border-slate-700">
+                    <button onclick="window.toggleProductOrderMenu(event)" class="h-10 px-3.5 rounded-xl bg-white hover:bg-slate-50 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold text-xs transition-all active:scale-95 shadow-2xs border border-slate-200/90 dark:border-slate-700/80 flex items-center gap-1.5 cursor-pointer">
                         <i class="fa-solid fa-arrow-down-a-z"></i> Urutkan Cepat <i class="fa-solid fa-chevron-down text-[9px] opacity-60"></i>
                     </button>
-                    <div id="admin-product-order-dropdown" class="hidden absolute right-0 mt-1.5 w-52 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-xl p-1.5 z-40 text-[11px] font-bold">
+                    <div id="admin-product-order-dropdown" class="hidden absolute right-0 mt-1.5 w-52 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-xl p-1.5 z-40 text-xs font-bold">
                         <button onclick="window.sortProductsQuick('az')" class="w-full text-left px-3 py-2 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700/60 flex items-center gap-2 text-slate-700 dark:text-slate-200"><i class="fa-solid fa-arrow-down-a-z text-slate-400"></i> Nama A - Z</button>
                         <button onclick="window.sortProductsQuick('za')" class="w-full text-left px-3 py-2 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700/60 flex items-center gap-2 text-slate-700 dark:text-slate-200"><i class="fa-solid fa-arrow-down-z-a text-slate-400"></i> Nama Z - A</button>
                         <button onclick="window.sortProductsQuick('price_low')" class="w-full text-left px-3 py-2 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700/60 flex items-center gap-2 text-slate-700 dark:text-slate-200"><i class="fa-solid fa-arrow-down-1-9 text-slate-400"></i> Harga Termurah</button>
@@ -272,7 +272,7 @@ window.rAdmL = t => {
         </div>` : '';
 
     const bannerHeroNotice = t === 'banners' ? `
-        <div class="mb-5 p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white border border-[rgba(var(--color-primary-rgb),0.35)] shadow-md flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div class="mb-5 p-4 sm:p-5 rounded-2xl sm:rounded-3xl bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white border border-[rgba(var(--color-primary-rgb),0.35)] shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div class="flex items-center gap-3.5 min-w-0">
                 <div class="relative w-14 h-14 rounded-2xl overflow-hidden border-2 border-white/60 bg-black/40 shrink-0 shadow-inner">
                     <img src="${esc(appData.store.heroMascotImg || '/putri_mascot_anim.gif')}" onerror="this.onerror=null;this.src='/putri_mascot_3d.jpg';" alt="Maskot" class="w-full h-full object-cover">
@@ -285,32 +285,37 @@ window.rAdmL = t => {
                             ${appData.store.showHeroSlide !== false && appData.store.showHeroSlide !== 'false' ? 'Aktif Tayang' : 'Disembunyikan'}
                         </span>
                     </div>
-                    <p class="text-[10px] text-slate-300 mt-0.5 line-clamp-2">Ganti foto wanita/maskot, ubah status badge "Siap Melayani", teks sambutan, atau sembunyikan slide utama.</p>
+                    <p class="text-[10px] text-slate-300 mt-0.5 line-clamp-2">Ganti foto maskot, ubah status badge 'Siap Melayani', teks sambutan, atau sembunyikan slide utama.</p>
                 </div>
             </div>
-            <button onclick="if(typeof window.openHeroBannerModal==='function') window.openHeroBannerModal(); else if(typeof window.openSettingForm==='function') window.openSettingForm('profile');" type="button" class="shrink-0 w-full sm:w-auto px-4 py-2.5 rounded-xl primary-bg hover:opacity-90 text-white font-black text-xs flex items-center justify-center gap-2 active:scale-95 shadow-sm transition-all cursor-pointer">
+            <button onclick="if(typeof window.openHeroBannerModal==='function') window.openHeroBannerModal(); else if(typeof window.openSettingForm==='function') window.openSettingForm('profile');" type="button" class="shrink-0 w-full sm:w-auto h-11 px-4 rounded-xl primary-bg hover:opacity-90 text-white font-bold text-xs flex items-center justify-center gap-2 active:scale-95 shadow-sm transition-all cursor-pointer">
                 <i class="fa-solid fa-wand-magic-sparkles"></i> Kelola Maskot &amp; Sambutan
             </button>
         </div>` : '';
 
     setH('admin-content', `
-        <div class="max-w-5xl mx-auto">
+        <div class="max-w-5xl mx-auto pb-16">
         ${statsContainer}
         ${bannerHeroNotice}
-        <div class="mb-6">
+        <div class="mb-5">
             ${colorActions}
-            <div class="flex gap-2 items-center mb-4">
+            <div class="flex flex-col sm:flex-row gap-2.5 sm:gap-3 items-stretch sm:items-center mb-4">
                 <div class="relative flex-1">
                     <i class="fa-solid fa-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
-                    <input autocomplete='off' id="admin-search-input" name='cari_admin_q' placeholder="Cari..." oninput="(window.setASq ? window.setASq(this.value.toLowerCase()) : (window.aSq=this.value.toLowerCase()));rAdmItms('${t}')" class="w-full bg-white dark:bg-slate-800 border-[1.5px] border-slate-200 dark:border-slate-700 rounded-2xl py-3.5 pl-11 pr-12 text-sm font-bold text-slate-700 dark:text-slate-200 focus:outline-none focus:border-[var(--color-primary)] focus:shadow-[0_0_0_3px_rgba(var(--color-primary-rgb),0.12)] shadow-sm transition-all" ></i>
+                    <input autocomplete='off' id="admin-search-input" name='cari_admin_q' placeholder="Cari produk, SKU, varian, barcode..." oninput="(window.setASq ? window.setASq(this.value.toLowerCase()) : (window.aSq=this.value.toLowerCase()));rAdmItms('${t}')" class="w-full h-12 bg-white dark:bg-slate-800 border border-slate-200/90 dark:border-slate-700/80 rounded-2xl pl-11 pr-12 text-xs sm:text-sm font-bold text-slate-700 dark:text-slate-200 focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/15 shadow-2xs transition-all" >
                     <button onclick="openCameraScanner('admin-search-input')" class="absolute right-2.5 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center text-slate-400 hover:text-[var(--color-primary)] hover:bg-[rgba(var(--color-primary-rgb),0.08)] rounded-xl transition-all" title="Scan Barcode"><i class="fa-solid fa-qrcode text-sm"></i></button>
                 </div>
-                ${t === 'products' ? `
-                <button onclick="openAdminTab('stock_opname')" class="h-[46px] px-3.5 sm:px-4 rounded-2xl border font-bold text-xs flex items-center gap-2 shadow-2xs active:scale-95 transition-all shrink-0 cursor-pointer hover:opacity-90" style="background: rgba(var(--color-primary-rgb), 0.1); color: var(--color-primary); border-color: rgba(var(--color-primary-rgb), 0.25);" title="Stock Opname (Audit Fisik Stok)">
-                    <i class="fa-solid fa-clipboard-check text-sm"></i>
-                    <span class="hidden sm:inline">Stock Opname</span>
-                </button>` : ''}
-                <button onclick="oAAdd()" class="h-[46px] px-5 rounded-2xl primary-bg font-bold text-sm flex items-center gap-2 shadow-glow active:scale-95 transition-all shrink-0"><i class="fa-solid fa-plus text-xs"></i> Tambah</button>
+                <div class="flex items-center gap-2 shrink-0">
+                    ${t === 'products' ? `
+                    <button onclick="openAdminTab('stock_opname')" class="h-12 px-4 rounded-2xl border font-bold text-xs flex items-center gap-2 shadow-2xs active:scale-95 transition-all shrink-0 cursor-pointer hover:opacity-90" style="background: rgba(var(--color-primary-rgb), 0.1); color: var(--color-primary); border-color: rgba(var(--color-primary-rgb), 0.25);" title="Stock Opname (Audit Fisik Stok)">
+                        <i class="fa-solid fa-clipboard-check text-sm"></i>
+                        <span class="hidden sm:inline">Stock Opname</span>
+                    </button>` : ''}
+                    <button onclick="oAAdd()" class="h-12 px-5 rounded-2xl text-white font-bold text-xs sm:text-sm flex items-center gap-2 shadow-glow active:scale-95 transition-all shrink-0 cursor-pointer hover:opacity-95" style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
+                        <i class="fa-solid fa-plus text-xs"></i>
+                        <span>Tambah ${t === 'products' ? 'Produk' : t === 'categories' ? 'Kategori' : t === 'brands' ? 'Merek' : 'Data'}</span>
+                    </button>
+                </div>
             </div>
             ${productToolbar}
         </div>
@@ -336,26 +341,53 @@ window.rAdmItms = t => {
         const st = computeInventoryStats();
         setH('admin-product-stats', `
             <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-                <div class="card-modern p-5 sm:p-5">
-                    <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1.5"><i class="fa-solid fa-box mr-1"></i>Produk Aktif</p>
-                    <p class="text-lg sm:text-xl font-bold text-slate-800 dark:text-white">${st.activeProd}</p>
+                <div class="p-4 sm:p-5 rounded-2xl sm:rounded-3xl bg-white/95 dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs hover:shadow-md transition-all flex flex-col justify-between">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">Produk Aktif</span>
+                        <div class="w-9 h-9 rounded-xl flex items-center justify-center text-xs text-white shadow-xs shrink-0" style="background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));">
+                            <i class="fa-solid fa-box-open"></i>
+                        </div>
+                    </div>
+                    <p class="text-xl sm:text-2xl font-black text-slate-800 dark:text-white tracking-tight">${st.activeProd}</p>
+                    <p class="text-[10px] font-bold text-slate-400 mt-0.5">Katalog Tayang di Etalase</p>
                 </div>
-                <div class="card-modern p-5 sm:p-5">
-                    <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1.5"><i class="fa-solid fa-layer-group mr-1"></i>Varian Aktif</p>
-                    <p class="text-lg sm:text-xl font-bold text-slate-800 dark:text-white">${st.activeVar}</p>
+
+                <div class="p-4 sm:p-5 rounded-2xl sm:rounded-3xl bg-white/95 dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs hover:shadow-md transition-all flex flex-col justify-between">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-[10px] font-black uppercase tracking-wider text-indigo-600 dark:text-indigo-400">Varian Aktif</span>
+                        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-500 to-indigo-600 text-white flex items-center justify-center text-xs shadow-xs shrink-0">
+                            <i class="fa-solid fa-layer-group"></i>
+                        </div>
+                    </div>
+                    <p class="text-xl sm:text-2xl font-black text-indigo-600 dark:text-indigo-400 tracking-tight">${st.activeVar}</p>
+                    <p class="text-[10px] font-bold text-slate-400 mt-0.5">Opsi Rasa, Ukuran &amp; Warna</p>
                 </div>
-                <div class="card-modern p-5 sm:p-5">
-                    <p class="text-[9px] font-bold text-amber-500 uppercase tracking-widest mb-1.5"><i class="fa-solid fa-triangle-exclamation mr-1"></i>Kosong / Nonaktif</p>
-                    <p class="text-lg sm:text-xl font-bold text-amber-500">${st.inactiveProd + st.inactiveVar}</p>
-                    <p class="text-[10px] font-bold text-slate-400 mt-1">${st.inactiveProd} produk, ${st.inactiveVar} varian</p>
+
+                <div class="p-4 sm:p-5 rounded-2xl sm:rounded-3xl bg-white/95 dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs hover:shadow-md transition-all flex flex-col justify-between">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-[10px] font-black uppercase tracking-wider text-amber-600 dark:text-amber-400">Kosong / Nonaktif</span>
+                        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-amber-500 to-amber-600 text-white flex items-center justify-center text-xs shadow-xs shrink-0">
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                        </div>
+                    </div>
+                    <p class="text-xl sm:text-2xl font-black text-amber-600 dark:text-amber-400 tracking-tight">${st.inactiveProd + st.inactiveVar}</p>
+                    <p class="text-[10px] font-bold text-slate-400 mt-0.5">${st.inactiveProd} Produk, ${st.inactiveVar} Varian</p>
                 </div>
-                <div class="card-modern p-5 sm:p-5 bg-slate-50 dark:bg-slate-800/40">
-                    <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1.5"><i class="fa-solid fa-warehouse mr-1"></i>Total Aset Gudang</p>
-                    <p class="text-[10px] font-bold text-slate-500 dark:text-slate-400">Modal (HPP): <b class="text-slate-700 dark:text-slate-200">${fCur(st.assetHpp)}</b></p>
-                    <p class="text-[10px] font-bold text-slate-500 dark:text-slate-400 mt-0.5">Harga Jual: <b class="text-slate-700 dark:text-slate-200">${fCur(st.assetJual)}</b></p>
-                    <button type="button" onclick="if(window.openAdminTab){window.openAdminTab('reports'); setTimeout(() => window.switchReportTab && window.switchReportTab('stock'), 100);}" class="mt-2 inline-flex items-center gap-1.5 text-[10px] font-bold text-[var(--color-primary)] hover:underline cursor-pointer transition-colors">
+
+                <div class="p-4 sm:p-5 rounded-2xl sm:rounded-3xl bg-white/95 dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs hover:shadow-md transition-all flex flex-col justify-between">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-[10px] font-black uppercase tracking-wider text-emerald-600 dark:text-emerald-400">Valuasi Stok</span>
+                        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white flex items-center justify-center text-xs shadow-xs shrink-0">
+                            <i class="fa-solid fa-warehouse"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <p class="text-xs font-bold text-slate-500 dark:text-slate-400">Modal: <b class="text-slate-800 dark:text-slate-200">${fCur(st.assetHpp)}</b></p>
+                        <p class="text-xs font-bold text-slate-500 dark:text-slate-400 mt-0.5">Jual: <b class="text-slate-800 dark:text-slate-200">${fCur(st.assetJual)}</b></p>
+                    </div>
+                    <button type="button" onclick="if(window.openAdminTab){window.openAdminTab('reports'); setTimeout(() => window.switchReportTab && window.switchReportTab('stock'), 100);}" class="mt-2 inline-flex items-center gap-1.5 text-[10px] font-black text-[var(--color-primary)] hover:underline cursor-pointer transition-colors">
                         <i class="fa-solid fa-chart-pie text-[10px]"></i>
-                        <span>Analisis Valuasi Stok Lengkap &rarr;</span>
+                        <span>Laporan Stok Lengkap &rarr;</span>
                     </button>
                 </div>
             </div>
@@ -485,19 +517,8 @@ window.rAdmItms = t => {
         }
 
         let isP = t==='products', isOff = isP && (x.isActive==='false'||x.isActive===false);
-        let bC = isOff ? 'border-rose-200 bg-rose-50/50 dark:border-rose-900/50 dark:bg-rose-900/10' : 'border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-800';
+        let bC = isOff ? 'border-rose-200 bg-rose-50/50 dark:border-rose-900/50 dark:bg-rose-900/10' : 'border-slate-200/90 bg-white/95 dark:border-slate-700/80 dark:bg-slate-800/90';
         let tC = isOff ? 'text-slate-500 dark:text-slate-400 line-through' : 'text-slate-800 dark:text-slate-100';
-        
-        let dragHandle = isP ? `
-            <div class="product-drag-handle flex flex-col items-center justify-center w-7 sm:w-8 -my-2 -ml-1 sm:-ml-2 py-3 cursor-grab active:cursor-grabbing primary-text opacity-25 hover:opacity-90 transition-opacity select-none touch-none group/handle shrink-0" onclick="event.stopPropagation();" title="Tahan & geser untuk mengubah urutan">
-                <i class="fa-solid fa-grip-vertical text-base sm:text-lg group-hover/handle:scale-110 transition-transform"></i>
-            </div>
-            <div class="flex flex-col items-center justify-center shrink-0 gap-1 mr-1 sm:mr-2 select-none" onclick="event.stopPropagation();">
-                <button class="w-6 h-6 rounded-lg primary-bg-soft border primary-border primary-text hover:primary-bg hover:text-white text-[10px] flex items-center justify-center transition-all active:scale-90 shadow-sm ${idx === 0 ? 'opacity-25 pointer-events-none' : ''}" onclick="window.moveProductOrder('${x.id}', -1)" title="Geser Naik 1 Posisi"><i class="fa-solid fa-chevron-up"></i></button>
-                <button class="text-[9px] font-extrabold px-1.5 py-0.5 rounded-md primary-bg-soft border primary-border primary-text hover:primary-bg hover:text-white font-mono tracking-tighter transition-all" onclick="window.jumpProductOrder('${x.id}')" title="Klik untuk lompat ke nomor urut tertentu">#${idx + 1}</button>
-                <button class="w-6 h-6 rounded-lg primary-bg-soft border primary-border primary-text hover:primary-bg hover:text-white text-[10px] flex items-center justify-center transition-all active:scale-90 shadow-sm ${idx === i.length - 1 ? 'opacity-25 pointer-events-none' : ''}" onclick="window.moveProductOrder('${x.id}', 1)" title="Geser Turun 1 Posisi"><i class="fa-solid fa-chevron-down"></i></button>
-            </div>
-        ` : '';
 
         const coverThumb = renderProductCoverHtml(x, { size: 'thumb' });
         const hasValidImg = Boolean(x.img && typeof x.img === 'string' && x.img.trim() && !isPlaceholderImg(x.img));
@@ -506,75 +527,94 @@ window.rAdmItms = t => {
             : `<div class="w-16 h-16 sm:w-20 sm:h-20 shrink-0 border border-slate-100 dark:border-slate-700/60 rounded-2xl overflow-hidden flex items-center justify-center">${coverThumb}</div>`;
         
         const isAdminActive = window.isAdm || window.__localIsAdm;
-        let tglBtn = isP ? (isOff 
-            ? `<button class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl primary-icon-btn border flex items-center justify-center transition-all active:scale-95 shadow-sm" onclick="event.stopPropagation(); toggleProductStatus('${x.id}', true)" title="Aktifkan Stok"><i class="fa-solid fa-check text-xs sm:text-sm"></i></button>`
-            : `<button class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-amber-50 border border-amber-200 text-amber-500 flex items-center justify-center hover:bg-amber-500 hover:text-white dark:bg-amber-900/30 dark:border-amber-800 transition-all active:scale-95 shadow-sm" onclick="event.stopPropagation(); toggleProductStatus('${x.id}', false)" title="Nonaktifkan (Habis)"><i class="fa-solid fa-ban text-xs sm:text-sm"></i></button>`
-        ) : '';
-        
-        let dupBtn = isP 
-            ? `<button class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl primary-icon-btn border flex items-center justify-center transition-all active:scale-95 shadow-sm" onclick="event.stopPropagation(); duplicateProduct('${x.id}')" title="Duplikat Produk"><i class="fa-regular fa-copy text-xs sm:text-sm"></i></button>` 
-            : '';
-
-        // FIX: cek useStock dengan cara yang konsisten
         const useStockEnabled = appData.store.useStock === true || appData.store.useStock === 'true';
-        let restockBtn = (isP && useStockEnabled) 
-            ? `<button class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl primary-icon-btn border flex items-center justify-center transition-all active:scale-95 shadow-sm" onclick="event.stopPropagation(); openRestockModal('${x.id}')" title="Restock Produk"><i class="fa-solid fa-boxes-stacked text-xs sm:text-sm"></i></button>`
-            : '';
-
-        let qPriceBtn = isP
-            ? `<button class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl primary-icon-btn border flex items-center justify-center transition-all active:scale-95 shadow-sm" onclick="event.stopPropagation(); openQuickPriceModal('${x.id}')" title="Edit Cepat Harga"><i class="fa-solid fa-tags text-xs sm:text-sm"></i></button>`
-            : '';
-
-        let cardBtn = (t === 'customers') 
-            ? `<button class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-amber-50 border border-amber-300 text-amber-600 flex items-center justify-center hover:bg-amber-500 hover:text-white dark:bg-amber-900/30 dark:border-amber-800 transition-all active:scale-95 shadow-sm" onclick="event.stopPropagation(); if(typeof window.setCurrentMember==='function') window.setCurrentMember(appData.customers ? appData.customers.find(c=>String(c.id||c.phone)===String('${x.id||x.phone}'))||{name:'${esc(x.name)}',phone:'${esc(x.phone)}',points:${parseFloat(x.points)||0}} : {name:'${esc(x.name)}',phone:'${esc(x.phone)}',points:${parseFloat(x.points)||0}}); if(typeof window.openMemberModal==='function') window.openMemberModal();" title="Buka Kartu Member VIP"><i class="fa-solid fa-id-card text-xs sm:text-sm"></i></button>`
-            : '';
-
-        let editBtn = `<button class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-slate-50 border border-slate-200 text-slate-500 flex items-center justify-center hover:bg-slate-500 hover:text-white dark:bg-slate-700 dark:border-slate-600 dark:text-slate-300 transition-all active:scale-95 shadow-sm" onclick="event.stopPropagation(); oAEd('${t}','${x.id}')" title="Edit Data"><i class="fa-solid fa-pen text-xs sm:text-sm"></i></button>`;
-        
-        let delBtn = `<button class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-rose-50 border border-rose-200 text-rose-500 flex items-center justify-center hover:bg-rose-500 hover:text-white dark:bg-rose-900/30 dark:border-rose-800 transition-all active:scale-95 shadow-sm" onclick="event.stopPropagation(); oADel('${t}','${x.id}')" title="Hapus Permanen"><i class="fa-solid fa-trash text-xs sm:text-sm"></i></button>`;
 
         return `
-        <div data-id="${x.id}" class="product-admin-card p-3.5 sm:p-5 md:p-6 lg:p-8 flex flex-col sm:flex-row sm:items-center justify-between gap-3.5 sm:gap-4 rounded-2xl sm:rounded-[1.5rem] border shadow-2xs cursor-pointer hover:shadow-md hover:-translate-y-0.5 hover:border-[var(--color-primary)]/40 dark:hover:border-[var(--color-primary)]/40 transition-all duration-200 ${bC}" onclick="oAEd('${t}','${x.id}')">
-            <div class="flex items-start sm:items-center gap-2.5 sm:gap-4 min-w-0 w-full">
-                ${dragHandle}
+        <div data-id="${x.id}" class="product-admin-card p-4 sm:p-5 rounded-2xl sm:rounded-3xl border ${bC} shadow-2xs hover:shadow-md hover:border-[var(--color-primary)]/40 transition-all flex flex-col gap-3.5 group">
+            <!-- BARIS 1: IDENTITAS PRODUK, THUMBNAIL, STOK & FIFO -->
+            <div class="flex items-start gap-3 sm:gap-4 min-w-0">
+                <!-- Drag Handle & Order Badge -->
+                ${isP ? `
+                    <div class="flex flex-col items-center justify-center shrink-0 gap-1 select-none pt-0.5" onclick="event.stopPropagation();">
+                        <div class="product-drag-handle w-6 h-6 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700/60 flex items-center justify-center cursor-grab active:cursor-grabbing text-slate-400 hover:text-[var(--color-primary)] transition-colors" title="Tahan &amp; geser untuk mengatur urutan">
+                            <i class="fa-solid fa-grip-vertical text-xs"></i>
+                        </div>
+                        <button class="w-6 h-6 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-700/80 text-slate-600 dark:text-slate-300 text-[9px] flex items-center justify-center transition-all active:scale-90 ${idx === 0 ? 'opacity-25 pointer-events-none' : ''}" onclick="window.moveProductOrder('${x.id}', -1)" title="Geser Naik 1 Posisi">
+                            <i class="fa-solid fa-chevron-up"></i>
+                        </button>
+                        <button class="text-[9px] font-mono font-black px-1.5 py-0.5 rounded-md primary-bg-soft border primary-border text-[var(--color-primary)] transition-all" onclick="window.jumpProductOrder('${x.id}')" title="Klik untuk lompat ke nomor urut tertentu">
+                            #${idx + 1}
+                        </button>
+                        <button class="w-6 h-6 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-700/80 text-slate-600 dark:text-slate-300 text-[9px] flex items-center justify-center transition-all active:scale-90 ${idx === i.length - 1 ? 'opacity-25 pointer-events-none' : ''}" onclick="window.moveProductOrder('${x.id}', 1)" title="Geser Turun 1 Posisi">
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </button>
+                    </div>
+                ` : ''}
+
+                <!-- Thumbnail -->
                 ${img}
-                <div class="min-w-0 flex flex-col justify-center py-0.5">
-                    <p class="text-xs sm:text-sm font-bold ${tC} line-clamp-2 uppercase tracking-wide leading-snug mb-1.5">${esc(x.name||x.title||x.bankName||x.code||'Item')}</p>
+
+                <!-- Info Teks Produk -->
+                <div class="min-w-0 flex-1 flex flex-col justify-center">
+                    <h4 class="text-sm sm:text-base font-black ${tC} line-clamp-2 leading-snug tracking-tight mb-1 cursor-pointer hover:text-[var(--color-primary)] transition-colors" onclick="oAEd('${t}','${x.id}')">
+                        ${esc(x.name||x.title||x.bankName||x.code||'Item')}
+                    </h4>
+
                     ${isP ? `
-                        <div class="flex items-center gap-2 flex-wrap mb-1">
-                            <p class="text-sm sm:text-base font-black text-[var(--color-primary)] tracking-tight">${fCur(x.price)}</p>
-                            <span class="inline-flex items-center gap-1 font-mono text-[9px] font-bold text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-700/80 px-1.5 py-0.5 rounded border border-slate-200/60 dark:border-slate-600/60" title="Kode SKU / Barcode"><i class="fa-solid fa-barcode text-[8px]"></i>${esc(x.sku || 'TANPA SKU')}</span>
-                            ${x.variants && x.variants.length > 0 ? `<span class="inline-flex items-center gap-1 text-[9px] font-black text-indigo-600 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/50 px-1.5 py-0.5 rounded border border-indigo-200 dark:border-indigo-800" title="${x.variants.length} Varian"><i class="fa-solid fa-layer-group text-[8px]"></i>${x.variants.length} Varian</span>` : ''}
+                        <div class="flex items-center gap-2 flex-wrap mb-1.5">
+                            <span class="text-base sm:text-lg font-black text-[var(--color-primary)] tracking-tight">${fCur(x.price)}</span>
+                            <span class="inline-flex items-center gap-1 font-mono text-[9px] font-bold text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-700/80 px-2 py-0.5 rounded-md border border-slate-200/60 dark:border-slate-600/60" title="Kode SKU / Barcode">
+                                <i class="fa-solid fa-barcode text-[8.5px]"></i> ${esc(x.sku || 'TANPA SKU')}
+                            </span>
+                            ${x.variants && x.variants.length > 0 ? `
+                                <span class="inline-flex items-center gap-1 text-[9px] font-black text-indigo-600 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/50 px-2 py-0.5 rounded-md border border-indigo-200 dark:border-indigo-800" title="${x.variants.length} Varian">
+                                    <i class="fa-solid fa-layer-group text-[8.5px]"></i> ${x.variants.length} Varian
+                                </span>
+                            ` : ''}
                         </div>
                     ` : ''}
-                    ${isP && isAdminActive ? (() => {
-                        const sInfo = computeTotalProductStock(x, appData.store);
-                        if (!sInfo.isManaged) return '';
-                        if (sInfo.isOutOfStock) {
-                            return `<p class="text-[10px] font-bold mt-1 inline-flex items-center gap-1 text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-950/40 px-2 py-0.5 rounded-md"><i class="fa-solid fa-boxes-stacked mr-0.5"></i>Stok Habis (0)</p>`;
-                        }
-                        const stockVal = sInfo.stock != null ? String(sInfo.stock).replace(/\.?0+$/, '') : '0';
-                        const colorCls = sInfo.isLowStock ? 'text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/40' : 'text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40';
-                        return `<p class="text-[10px] font-bold mt-1 inline-flex items-center gap-1 ${colorCls} px-2 py-0.5 rounded-md"><i class="fa-solid fa-boxes-stacked mr-0.5"></i>Stok: ${stockVal}</p>`;
-                    })() : ''}
-                    ${isP && isAdminActive && x.hpp ? `<p class="text-[10px] font-bold text-amber-500 mt-0.5"><i class="fa-solid fa-coins mr-1"></i>HPP: ${fCur(x.hpp)}</p>` : ''}
-                    ${isP ? (() => {
-                        const sold = x.variants && x.variants.length ? x.variants.reduce((s,vv)=>s+(parseFloat(vv.totalSold)||0),0) : (parseFloat(x.totalSold)||0);
-                        return sold > 0 ? `<p class="text-[10px] font-bold text-orange-400 mt-0.5"><i class="fa-solid fa-fire-flame-curved mr-1"></i>Terjual: ${sold}</p>` : '';
-                    })() : ''}
-                    ${isP ? (() => {
-                        const sups = Array.isArray(x.suppliers) && x.suppliers.length > 0
-                            ? x.suppliers
-                            : (x.supplierId ? [{ supplierId: x.supplierId, isPrimary: true }] : []);
-                        if (!sups.length) return '';
-                        const firstSup = sups.find(s => s.isPrimary) || sups[0];
-                        const sObj = (appData.suppliers || []).find(s => String(s.id) === String(firstSup.supplierId));
-                        const sName = sObj ? sObj.name : (firstSup.supplierName || 'Supplier');
-                        const extraCount = sups.length - 1;
-                        const batchCount = Array.isArray(x.stockBatches) ? x.stockBatches.filter(b => (parseFloat(b.remainingQty) || 0) > 0).length : 0;
-                        return `
-                            <div class="flex items-center gap-1.5 flex-wrap mt-1">
-                                <button type="button" onclick="event.stopPropagation(); window.openProductFifoModal?.('${x.id}');" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[9.5px] font-bold text-teal-700 dark:text-teal-300 bg-teal-50 hover:bg-teal-100 dark:bg-teal-950/40 dark:hover:bg-teal-900/60 border border-teal-200 dark:border-teal-800 transition-all cursor-pointer shadow-2xs" title="Lihat Rekanan Supplier & Antrean Batch FIFO">
+
+                    <!-- Badges Baris 2: Stok, HPP, Terjual & FIFO -->
+                    <div class="flex items-center gap-1.5 flex-wrap text-xs">
+                        ${isP && isAdminActive ? (() => {
+                            const sInfo = computeTotalProductStock(x, appData.store);
+                            if (!sInfo.isManaged) return '';
+                            if (sInfo.isOutOfStock) {
+                                return `<span class="inline-flex items-center gap-1 text-[9.5px] font-bold text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-950/40 px-2 py-0.5 rounded-md border border-rose-200/80 dark:border-rose-900/60"><i class="fa-solid fa-boxes-stacked mr-0.5"></i>Habis (0)</span>`;
+                            }
+                            const stockVal = sInfo.stock != null ? String(sInfo.stock).replace(/\.?0+$/, '') : '0';
+                            const colorCls = sInfo.isLowStock 
+                                ? 'text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/40 border-amber-200 dark:border-amber-800' 
+                                : 'text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 border-emerald-200 dark:border-emerald-800';
+                            return `<span class="inline-flex items-center gap-1 text-[9.5px] font-bold ${colorCls} px-2 py-0.5 rounded-md border"><i class="fa-solid fa-boxes-stacked mr-0.5"></i>Stok: ${stockVal}</span>`;
+                        })() : ''}
+
+                        ${isP && isAdminActive && x.hpp ? `
+                            <span class="inline-flex items-center gap-1 text-[9.5px] font-bold text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/30 px-2 py-0.5 rounded-md border border-amber-200/60 dark:border-amber-800/60" title="Harga Modal (HPP)">
+                                <i class="fa-solid fa-coins mr-0.5"></i>HPP: ${fCur(x.hpp)}
+                            </span>
+                        ` : ''}
+
+                        ${isP ? (() => {
+                            const sold = x.variants && x.variants.length ? x.variants.reduce((s,vv)=>s+(parseFloat(vv.totalSold)||0),0) : (parseFloat(x.totalSold)||0);
+                            return sold > 0 ? `
+                                <span class="inline-flex items-center gap-1 text-[9.5px] font-bold text-orange-600 dark:text-orange-400 bg-orange-50 dark:bg-orange-950/30 px-2 py-0.5 rounded-md border border-orange-200/60 dark:border-orange-800/60">
+                                    <i class="fa-solid fa-fire mr-0.5"></i>Terjual: ${sold}
+                                </span>` : '';
+                        })() : ''}
+
+                        ${isP ? (() => {
+                            const sups = Array.isArray(x.suppliers) && x.suppliers.length > 0
+                                ? x.suppliers
+                                : (x.supplierId ? [{ supplierId: x.supplierId, isPrimary: true }] : []);
+                            if (!sups.length) return '';
+                            const firstSup = sups.find(s => s.isPrimary) || sups[0];
+                            const sObj = (appData.suppliers || []).find(s => String(s.id) === String(firstSup.supplierId));
+                            const sName = sObj ? sObj.name : (firstSup.supplierName || 'Supplier');
+                            const extraCount = sups.length - 1;
+                            const batchCount = Array.isArray(x.stockBatches) ? x.stockBatches.filter(b => (parseFloat(b.remainingQty) || 0) > 0).length : 0;
+                            return `
+                                <button type="button" onclick="event.stopPropagation(); window.openProductFifoModal?.('${x.id}');" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[9.5px] font-bold text-teal-700 dark:text-teal-300 bg-teal-50 hover:bg-teal-100 dark:bg-teal-950/40 dark:hover:bg-teal-900/60 border border-teal-200 dark:border-teal-800 transition-all cursor-pointer shadow-2xs" title="Lihat Rekanan Supplier &amp; Antrean Batch FIFO">
                                     <i class="fa-solid fa-truck-field text-[8.5px]"></i>
                                     <span class="max-w-[120px] truncate">${esc(sName)}</span>
                                     ${extraCount > 0 ? `<span class="bg-teal-200 dark:bg-teal-800 text-teal-800 dark:text-teal-200 px-1 py-0.2 rounded text-[8.5px] font-black">+${extraCount}</span>` : ''}
@@ -585,34 +625,78 @@ window.rAdmItms = t => {
                                         <span>${batchCount} Batch</span>
                                     </button>
                                 ` : ''}
+                            `;
+                        })() : ''}
+
+                        ${t==='colors' ? `<div class="flex items-center gap-2 mt-1"><div class="w-4 h-4 rounded-full border border-slate-200 dark:border-slate-600 shadow-sm" style="background-color: ${esc(x.hex||'transparent')}"></div><p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest"><i class="fa-solid fa-swatchbook mr-1"></i>${esc(x.catalog||'Tanpa Katalog')}</p></div>` : ''}
+
+                        ${t==='customers' ? `
+                            <p class="text-xs font-bold text-slate-500 dark:text-slate-400"><i class="fa-brands fa-whatsapp text-emerald-500 mr-1"></i>+${esc(x.phone)}</p>
+                            <div class="flex items-center gap-1.5 mt-1 flex-wrap">
+                                <span class="text-[11px] font-bold text-[var(--color-primary)]"><i class="fa-solid fa-star mr-1"></i>${(parseFloat(x.points)||0)} Poin</span>
+                                ${(x.paylaterActive === true || x.paylaterActive === 'true') ? `
+                                    <span class="px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700 flex items-center gap-1">
+                                        <i class="fa-solid fa-bolt text-emerald-500"></i> PayLater: ${fCur(Math.max(0, (parseFloat(x.paylaterLimit)||0) - Math.max(0, parseFloat(x.paylaterUsed)||0)))} / ${fCur(parseFloat(x.paylaterLimit)||0)}
+                                    </span>
+                                ` : `
+                                    <span class="px-1.5 py-0.5 rounded text-[8px] font-bold uppercase bg-slate-100 dark:bg-slate-700 text-slate-400">PayLater Off</span>
+                                `}
                             </div>
-                        `;
-                    })() : ''}
-                    ${t==='colors' ? `<div class="flex items-center gap-2 mt-1"><div class="w-4 h-4 rounded-full border border-slate-200 dark:border-slate-600 shadow-sm" style="background-color: ${esc(x.hex||'transparent')}"></div><p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest"><i class="fa-solid fa-swatchbook mr-1"></i>${esc(x.catalog||'Tanpa Katalog')}</p></div>` : ''}
-                    ${t==='customers' ? `
-                        <p class="text-xs font-bold text-slate-500 dark:text-slate-400"><i class="fa-brands fa-whatsapp text-emerald-500 mr-1"></i>+${esc(x.phone)}</p>
-                        <div class="flex items-center gap-1.5 mt-1 flex-wrap">
-                            <span class="text-[11px] font-bold text-[var(--color-primary)]"><i class="fa-solid fa-star mr-1"></i>${(parseFloat(x.points)||0)} Poin</span>
-                            ${(x.paylaterActive === true || x.paylaterActive === 'true') ? `
-                                <span class="px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700 flex items-center gap-1">
-                                    <i class="fa-solid fa-bolt text-emerald-500"></i> PayLater: ${fCur(Math.max(0, (parseFloat(x.paylaterLimit)||0) - Math.max(0, parseFloat(x.paylaterUsed)||0)))} / ${fCur(parseFloat(x.paylaterLimit)||0)}
-                                </span>
-                            ` : `
-                                <span class="px-1.5 py-0.5 rounded text-[8px] font-bold uppercase bg-slate-100 dark:bg-slate-700 text-slate-400">PayLater Off</span>
-                            `}
-                        </div>
-                    ` : ''}
-                    ${t==='rewards' ? `<p class="text-sm font-bold text-violet-500"><i class="fa-solid fa-star mr-1"></i>${(parseFloat(x.pointsCost)||0)} Poin</p><p class="text-[10px] font-bold text-slate-500 mt-0.5"><i class="fa-solid fa-boxes-stacked mr-1"></i>Stok: ${parseFloat(x.stock)||0}</p>` : ''}
+                        ` : ''}
+
+                        ${t==='rewards' ? `<p class="text-sm font-bold text-violet-500"><i class="fa-solid fa-star mr-1"></i>${(parseFloat(x.pointsCost)||0)} Poin</p><p class="text-[10px] font-bold text-slate-500 mt-0.5"><i class="fa-solid fa-boxes-stacked mr-1"></i>Stok: ${parseFloat(x.stock)||0}</p>` : ''}
+                    </div>
                 </div>
             </div>
-            <div class="flex flex-wrap gap-2 sm:gap-2.5 shrink-0 self-end sm:self-center pt-2.5 sm:pt-0 border-t border-slate-100 sm:border-0 dark:border-slate-700/50 w-full sm:w-auto justify-end">
-                ${tglBtn}
-                ${restockBtn}
-                ${qPriceBtn}
-                ${dupBtn}
-                ${cardBtn}
-                ${editBtn}
-                ${delBtn}
+
+            <!-- BARIS 2: UNIFIED NATIVE ACTION BAR (TOUCH-TARGET STANDARD 40px) -->
+            <div class="flex items-center justify-between gap-2 pt-3 border-t border-slate-100 dark:border-slate-700/60 flex-wrap">
+                <!-- Aksi Status / Restock / Harga Cepat -->
+                <div class="flex items-center gap-2 flex-wrap">
+                    ${isP ? (isOff 
+                        ? `<button type="button" class="h-10 px-3.5 rounded-xl bg-emerald-50 hover:bg-emerald-500 hover:text-white dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 font-bold text-xs flex items-center gap-1.5 transition-all active:scale-95 shadow-2xs cursor-pointer" onclick="event.stopPropagation(); toggleProductStatus('${x.id}', true)" title="Aktifkan Kembali Stok Produk"><i class="fa-solid fa-check text-xs"></i><span>Aktifkan</span></button>`
+                        : `<button type="button" class="h-10 px-3.5 rounded-xl bg-amber-50 hover:bg-amber-500 hover:text-white dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 border border-amber-200 dark:border-amber-800 font-bold text-xs flex items-center gap-1.5 transition-all active:scale-95 shadow-2xs cursor-pointer" onclick="event.stopPropagation(); toggleProductStatus('${x.id}', false)" title="Nonaktifkan (Habis)"><i class="fa-solid fa-ban text-xs"></i><span>Nonaktifkan</span></button>`
+                    ) : ''}
+
+                    ${(isP && useStockEnabled) ? `
+                        <button type="button" class="h-10 px-3.5 rounded-xl primary-bg-soft border primary-border text-[var(--color-primary)] hover:primary-bg hover:text-white font-bold text-xs flex items-center gap-1.5 transition-all active:scale-95 shadow-2xs cursor-pointer" onclick="event.stopPropagation(); openRestockModal('${x.id}')" title="Restock Stok Produk">
+                            <i class="fa-solid fa-boxes-stacked text-xs"></i>
+                            <span>Restock</span>
+                        </button>
+                    ` : ''}
+
+                    ${isP ? `
+                        <button type="button" class="h-10 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-700/80 text-slate-700 dark:text-slate-200 border border-slate-200/80 dark:border-slate-600 font-bold text-xs flex items-center gap-1.5 transition-all active:scale-95 shadow-2xs cursor-pointer" onclick="event.stopPropagation(); openQuickPriceModal('${x.id}')" title="Ubah Cepat Harga Jual">
+                            <i class="fa-solid fa-tags text-xs"></i>
+                            <span class="hidden sm:inline">Harga</span>
+                        </button>
+                    ` : ''}
+
+                    ${t === 'customers' ? `
+                        <button type="button" class="h-10 px-3.5 rounded-xl bg-amber-50 hover:bg-amber-500 hover:text-white dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 border border-amber-300 dark:border-amber-800 font-bold text-xs flex items-center gap-1.5 transition-all active:scale-95 shadow-2xs cursor-pointer" onclick="event.stopPropagation(); if(typeof window.setCurrentMember==='function') window.setCurrentMember(appData.customers ? appData.customers.find(c=>String(c.id||c.phone)===String('${x.id||x.phone}'))||{name:'${esc(x.name)}',phone:'${esc(x.phone)}',points:${parseFloat(x.points)||0}} : {name:'${esc(x.name)}',phone:'${esc(x.phone)}',points:${parseFloat(x.points)||0}}); if(typeof window.openMemberModal==='function') window.openMemberModal();" title="Buka Kartu Member VIP">
+                            <i class="fa-solid fa-id-card text-xs"></i>
+                            <span>Kartu Member</span>
+                        </button>
+                    ` : ''}
+                </div>
+
+                <!-- Aksi Utama: Duplikat, Edit, Hapus -->
+                <div class="flex items-center gap-2 ml-auto">
+                    ${isP ? `
+                        <button type="button" class="h-10 w-10 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-700/80 text-slate-600 dark:text-slate-300 border border-slate-200/80 dark:border-slate-600 flex items-center justify-center transition-all active:scale-95 shadow-2xs cursor-pointer" onclick="event.stopPropagation(); duplicateProduct('${x.id}')" title="Duplikat Produk">
+                            <i class="fa-regular fa-copy text-xs"></i>
+                        </button>
+                    ` : ''}
+
+                    <button type="button" class="h-10 px-4 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-700/80 text-slate-700 dark:text-slate-200 border border-slate-200/80 dark:border-slate-600 font-bold text-xs flex items-center gap-1.5 transition-all active:scale-95 shadow-2xs cursor-pointer" onclick="event.stopPropagation(); oAEd('${t}','${x.id}')" title="Edit Data Lengkap">
+                        <i class="fa-solid fa-pen text-xs"></i>
+                        <span>Edit</span>
+                    </button>
+
+                    <button type="button" class="h-10 w-10 rounded-xl bg-rose-50 hover:bg-rose-500 hover:text-white dark:bg-rose-950/40 text-rose-500 border border-rose-200 dark:border-rose-900 flex items-center justify-center transition-all active:scale-95 shadow-2xs cursor-pointer" onclick="event.stopPropagation(); oADel('${t}','${x.id}')" title="Hapus Permanen">
+                        <i class="fa-solid fa-trash text-xs"></i>
+                    </button>
+                </div>
             </div>
         </div>`;
     }).join(''));
@@ -644,7 +728,7 @@ window.promptAddSubCategory = async (catId) => {
     try {
         const _save = typeof saveApp === 'function' ? saveApp : (window.saveApp || (async () => {}));
         await _save(['categories']);
-        showToast(`Sub-kategori '${newSub}' berhasil ditambahkan ke '${catObj.name}'! ✨`);
+        showToast(`Sub-kategori '${newSub}' berhasil ditambahkan ke '${catObj.name}'!`);
         window.rAdmItms?.('categories');
     } catch(e) {
         console.error("Gagal simpan subkategori:", e);
@@ -707,7 +791,7 @@ window.syncSubCategoriesFromProducts = async (catId) => {
     try {
         const _save = typeof saveApp === 'function' ? saveApp : (window.saveApp || (async () => {}));
         await _save(['categories']);
-        showToast(`${added} sub-kategori berhasil disinkronkan dari produk! ✨`);
+        showToast(`${added} sub-kategori berhasil disinkronkan dari produk!`);
         window.rAdmItms?.('categories');
     } catch(e) {
         console.error("Gagal sinkron subkategori:", e);

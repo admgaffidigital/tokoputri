@@ -190,7 +190,7 @@ window.processRestock = async (id) => {
         closeRestockModal();
         window.rAdmItms?.('products');
         setIn('stat-products', appData.products.filter(p => p.isActive !== 'false' && p.isActive !== false).length);
-        showToast(`✅ Restock +${totalAdded} berhasil! Total stok: ${finalStock}`);
+        showToast(`Restock +${totalAdded} berhasil! Total stok: ${finalStock}`);
     } catch(e) { showToast("Gagal restock: " + (e.message || '')); }
     finally { setIsSaving(false); hLoad(); }
 };

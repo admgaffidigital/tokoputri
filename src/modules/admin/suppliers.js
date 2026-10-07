@@ -692,7 +692,7 @@ window.saveSupplierForm = async (e, existingId) => {
 
         hLoad();
         window.closeSupplierFormModal();
-        showToast(existingId ? 'Data supplier diperbarui! ✨' : 'Supplier baru berhasil ditambahkan! 🎉');
+        showToast(existingId ? 'Data supplier diperbarui!' : 'Supplier baru berhasil ditambahkan!');
         renderSuppliersView();
     } catch (err) {
         hLoad();
@@ -1101,7 +1101,7 @@ const renderSupplierDebtTab = (tempoPurchases, totalDebt, s) => {
                     <span class="block text-[10px] font-black uppercase tracking-widest ${totalDebt > 0 ? 'text-slate-400' : 'text-emerald-600 dark:text-emerald-400'}">Total Hutang Usaha Berjalan</span>
                     <p class="text-2xl font-black ${totalDebt > 0 ? 'text-slate-900 dark:text-white' : 'text-emerald-600 dark:text-emerald-400'} tracking-tight mt-0.5">${fCur(totalDebt)}</p>
                     <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                        ${totalDebt > 0 ? `Ada <b class="text-rose-500 font-black">${unpaidPurchases.length}</b> nota order pembelian tempo yang belum lunas ke supplier ini.` : 'Semua tagihan pembelian ke supplier ini sudah lunas sempurna! ✨'}
+                        ${totalDebt > 0 ? `Ada <b class="text-rose-500 font-black">${unpaidPurchases.length}</b> nota order pembelian tempo yang belum lunas ke supplier ini.` : 'Semua tagihan pembelian ke supplier ini sudah lunas sempurna! <i class="fa-solid fa-circle-check text-emerald-500 ml-0.5"></i>'}
                     </p>
                 </div>
 

@@ -475,7 +475,7 @@ const dispatchToThermalPrinter = (escPosBase64, plainText = '', htmlDomContent =
     if (window.AndroidNativeApp && typeof window.AndroidNativeApp.printRawBT === 'function') {
         try {
             window.AndroidNativeApp.printRawBT(escPosBase64);
-            showToast('Mencetak struk via RawBT... 🖨️');
+            showToast('Mencetak struk via RawBT...');
             return true;
         } catch (e) {
             console.warn('[RawBT] AndroidNativeApp error, mencoba intent...', e);
@@ -485,7 +485,7 @@ const dispatchToThermalPrinter = (escPosBase64, plainText = '', htmlDomContent =
     // 2. Prioritas 2: Browser Android / PWA via Android Intent URL
     if (isAndroid) {
         try {
-            showToast('Membuka Printer RawBT... 🖨️');
+            showToast('Membuka Printer RawBT...');
             const intentUri = `intent:base64,${escPosBase64}#Intent;scheme=rawbt;package=ru.a402d.rawbtprinter;end;`;
             window.location.href = intentUri;
 
@@ -503,7 +503,7 @@ const dispatchToThermalPrinter = (escPosBase64, plainText = '', htmlDomContent =
     }
 
     // 3. Fallback: Browser Print (Laptop/Desktop/iOS/Fallback Non-Android)
-    showToast('Mencetak struk kasir... 🖨️');
+    showToast('Mencetak struk kasir...');
     renderThermalDOMAndPrint(htmlDomContent || plainText);
     return true;
 };

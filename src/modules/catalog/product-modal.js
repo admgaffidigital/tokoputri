@@ -1263,7 +1263,7 @@ export const confirmAddToWishlist = () => {
     ssL('freshmart_wishlist', JSON.stringify(wishlist));
     if (typeof window.updWish === 'function') window.updWish(); 
     closeProductModal(); 
-    showToast("Masuk Favorit ❤️");
+    showToast("Masuk Favorit");
 };
 
 /**
@@ -1516,7 +1516,7 @@ export const toggleQuickVariantWishlist = () => {
         ssL('freshmart_wishlist', JSON.stringify(wishlist));
         if (typeof window.updWish === 'function') window.updWish();
         updateQuickVariantWishUI();
-        showToast("Masuk Favorit ❤️");
+        showToast("Masuk Favorit");
     }
     if (typeof window.triggerHaptic === 'function') window.triggerHaptic('light');
 };

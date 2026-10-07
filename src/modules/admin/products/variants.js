@@ -331,7 +331,7 @@ window.confirmExportVariantToColorDB = async () => {
     sLoad('Menyimpan ke Database Warna...');
     try {
         await saveApp(['colors']);
-        showToast(`"${name}" berhasil disimpan ke Database Warna! 🎨`);
+        showToast(`"${name}" berhasil disimpan ke Database Warna!`);
     } catch(e) { showToast('Gagal menyimpan!'); }
     finally { hLoad(); }
 };
@@ -373,7 +373,7 @@ window.confirmExportAllVariants = async () => {
     _closeColorFloatModal();
     if (!added) { showToast('Semua varian sudah ada di Database Warna!'); return; }
     sLoad('Menyimpan...');
-    try { await saveApp(['colors']); showToast(`${added} warna berhasil diekspor ke Database Warna! 🎨`); }
+    try { await saveApp(['colors']); showToast(`${added} warna berhasil diekspor ke Database Warna!`); }
     catch(e) { showToast('Gagal menyimpan!'); }
     finally { hLoad(); }
 };
@@ -440,7 +440,7 @@ window.confirmImportFromProducts = async () => {
     sLoad('Menyimpan...');
     try {
         await saveApp(['colors']);
-        showToast(`${added} warna berhasil diimpor ke Database Warna! 🎨`);
+        showToast(`${added} warna berhasil diimpor ke Database Warna!`);
         if (window.cTab === 'colors') window.rAdmItms?.('colors');
     } catch(e) { showToast('Gagal menyimpan!'); }
     finally { hLoad(); }

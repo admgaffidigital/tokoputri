@@ -361,7 +361,7 @@ export const openPOSOpenShiftModal = async () => {
             if (typeof window.renderShiftHeaderBadge === 'function') {
                 window.renderShiftHeaderBadge();
             }
-            showToast(`Melanjutkan shift aktif (#${cloudShift.shiftNo || cloudShift.id}) dari perangkat lain! 👋`, 'success');
+            showToast(`Melanjutkan shift aktif (#${cloudShift.shiftNo || cloudShift.id}) dari perangkat lain!`, 'success');
             openShiftSummaryModal();
             return;
         }
@@ -597,7 +597,7 @@ export const confirmStartPOSShift = async () => {
 
     closePOSOpenShiftModal();
     playShiftChime('open');
-    showToast(`Shift kasir dibuka! Modal awal: ${fRp(startingCash)} 🎉`, 'success');
+    showToast(`Shift kasir dibuka! Modal awal: ${fRp(startingCash)}`, 'success');
 
     // Perbarui badge indikator shift di UI
     if (typeof window.renderShiftHeaderBadge === 'function') {

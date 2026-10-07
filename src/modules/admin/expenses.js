@@ -1131,7 +1131,7 @@ export const submitExpenseForm = async () => {
         await saveApp(['expenses']);
         hLoad();
         closeExpenseModal();
-        showToast(id ? "Pengeluaran berhasil diperbarui! 💸" : "Pengeluaran baru berhasil dicatat! 💸");
+        showToast(id ? "Pengeluaran berhasil diperbarui!" : "Pengeluaran baru berhasil dicatat!");
         renderExpensesAdminView();
     } catch (err) {
         hLoad();
@@ -1205,7 +1205,7 @@ export const exportExpensesToCsv = () => {
     link.download = `Buku_Kas_Pengeluaran_TokoPutri_${expSelectedYear}_${expSelectedMonth || 'Semua'}.csv`;
     link.click();
     URL.revokeObjectURL(url);
-    showToast("File Excel/CSV berhasil diunduh! 📊");
+    showToast("File Excel/CSV berhasil diunduh!");
 };
 
 // ─── Cetak Bukti Kas Keluar (BKK) ────────────────────────────

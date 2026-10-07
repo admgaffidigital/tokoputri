@@ -289,7 +289,7 @@ export const processCashierLogin = async () => {
 
         closePOSLoginModal();
         const curSession = getCashierSession();
-        showToast(`Selamat datang, ${curSession?.name || 'Kasir'}! 👋`, 'success');
+        showToast(`Selamat datang, ${curSession?.name || 'Kasir'}!`, 'success');
 
         // Buka POS View
         if (typeof window.changeView === 'function') window.changeView('view-pos-cashier');
@@ -399,7 +399,7 @@ export const cashierLogout = async (bypassShiftCheck = false) => {
     if (typeof window.destroyBarcodeListener === 'function') window.destroyBarcodeListener();
     if (typeof window.stopPOSClock === 'function') window.stopPOSClock();
 
-    showToast('Sesi kasir berakhir. Sampai jumpa! 👋');
+    showToast('Sesi kasir berakhir. Sampai jumpa!');
 
     // Kembali ke storefront
     if (typeof window.changeView === 'function') window.changeView('view-catalog');

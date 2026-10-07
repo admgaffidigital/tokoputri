@@ -124,7 +124,7 @@ export const getMemberTier = (pts = 0) => {
         return {
             level: 4,
             name: 'PLATINUM VIP',
-            badge: '💎 PLATINUM VIP',
+            badge: '<i class="fa-solid fa-gem mr-1"></i> PLATINUM VIP',
             icon: 'fa-gem',
             gradient: 'from-slate-950 via-zinc-900 to-neutral-950 border-amber-400/40 text-amber-200',
             cardBg: 'linear-gradient(135deg, #090d16 0%, #171f30 45%, #0d1322 75%, #050811 100%)',
@@ -147,7 +147,7 @@ export const getMemberTier = (pts = 0) => {
         return {
             level: 3,
             name: 'GOLD MEMBER',
-            badge: '🥇 GOLD MEMBER',
+            badge: '<i class="fa-solid fa-crown mr-1"></i> GOLD MEMBER',
             icon: 'fa-crown',
             gradient: 'from-amber-600 via-yellow-600 to-amber-700 border-yellow-300/40 text-yellow-100',
             cardBg: 'linear-gradient(135deg, #78350f 0%, #b45309 35%, #d97706 70%, #92400e 100%)',
@@ -170,7 +170,7 @@ export const getMemberTier = (pts = 0) => {
         return {
             level: 2,
             name: 'SILVER MEMBER',
-            badge: '🥈 SILVER MEMBER',
+            badge: '<i class="fa-solid fa-medal mr-1"></i> SILVER MEMBER',
             icon: 'fa-medal',
             gradient: 'from-slate-700 via-slate-600 to-slate-800 border-slate-300/40 text-slate-100',
             cardBg: 'linear-gradient(135deg, #1e293b 0%, #334155 40%, #475569 70%, #0f172a 100%)',
@@ -192,7 +192,7 @@ export const getMemberTier = (pts = 0) => {
         return {
             level: 1,
             name: 'BRONZE MEMBER',
-            badge: '🥉 BRONZE MEMBER',
+            badge: '<i class="fa-solid fa-award mr-1"></i> BRONZE MEMBER',
             icon: 'fa-award',
             gradient: 'from-stone-800 via-amber-950 to-stone-900 border-orange-400/30 text-orange-200',
             cardBg: 'linear-gradient(135deg, #381a10 0%, #632917 40%, #7c2d12 70%, #292524 100%)',
@@ -481,7 +481,7 @@ export const downloadMemberCard = async () => {
         }
 
         if (typeof window.showToast === 'function') {
-            window.showToast("Kartu Member Berhasil Disimpan ke Galeri! 🎉");
+            window.showToast("Kartu Member Berhasil Disimpan ke Galeri!");
         }
     } catch (err) {
         console.error("Gagal menyimpan kartu member:", err);
@@ -1480,7 +1480,7 @@ export const lookupMemberPoints = async () => {
             } catch(e) {}
             rMemberModalBody();
             if (typeof window.showToast === 'function') {
-                window.showToast(`Selamat datang kembali, ${mData.name || 'Pelanggan'}! 💳`);
+                window.showToast(`Selamat datang kembali, ${mData.name || 'Pelanggan'}!`);
             }
         } else {
             resultDiv.className = 'text-xs font-bold text-amber-700 dark:text-amber-300 p-3.5 bg-amber-50 dark:bg-amber-900/20 rounded-xl leading-relaxed border border-amber-200 dark:border-amber-800/40 space-y-1.5';

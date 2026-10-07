@@ -8,6 +8,21 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-10-84',
+        version: 'v1.10.84',
+        date: '2026-10-07',
+        title: 'Standarisasi Desain Sistem Native, Touch Target 40px & Tipografi Enterprise Bersih',
+        category: 'feature',
+        badge: 'Native App Design System & Enterprise Typography v1.10.84',
+        items: [
+            'Token Desain Sistem Native (style.css): Penambahan utility class .card-native, .btn-native-action (height 40px, rounded-xl 12px, active:scale-95), dan .btn-native-icon (40px square) untuk menjamin standar ergonomis sentuhan jari (touch-target 40-44px) yang nyaman di perangkat bergerak.',
+            'Unifikasi Baris Aksi Tabel Katalog Admin CMS (table.js): Menata ulang tombol aksi produk (Aktifkan/Nonaktifkan, Restock, Ubah Harga Cepat, Buka Kartu Member VIP, Duplikat Produk, Edit Lengkap, dan Hapus) menjadi 2 baris terstruktur yang sejajar dan lapang di desktop maupun smartphone.',
+            'Elevasi Tipografi & Eliminasi Text Emoji: Membersihkan karakter emoji raw di seluruh notifikasi toast (showToast), status badge piutang/tempo (LUNAS, JATUH TEMPO, WAJIB BULAN INI), dan form input, digantikan dengan ikon resmi FontAwesome SVG dan tipografi Indonesia yang rapi dan profesional.',
+            'Harmonisasi Filter Pesanan Kasir POS vs Storefront Web: Meningkatkan kenyamanan navigasi filter sumber transaksi di panel pesanan admin dengan tombol pill 40px responsif.',
+            'Multi-Channel Distribution v1.10.84 (Android versionCode 11084).'
+        ]
+    },
+    {
         id: 'log-1-10-83',
         version: 'v1.10.83',
         date: '2026-10-07',

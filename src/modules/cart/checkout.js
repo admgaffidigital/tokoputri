@@ -589,14 +589,14 @@ export const processOrder = async () => {
                 } else {
                     setIsSaving(false); 
                     hLoad();
-                    if (typeof window.showToast === 'function') window.showToast('❌ Upload bukti ke Google Drive gagal. Coba pilih gambar lagi!');
+                    if (typeof window.showToast === 'function') window.showToast('Upload bukti ke Google Drive gagal. Coba pilih gambar lagi!');
                     return;
                 }
                 sLoad('Proses Pesanan...');
             } catch(uploadErr) {
                 setIsSaving(false); 
                 hLoad();
-                if (typeof window.showToast === 'function') window.showToast('❌ Gagal upload bukti. Periksa koneksi dan coba lagi!');
+                if (typeof window.showToast === 'function') window.showToast('Gagal upload bukti. Periksa koneksi dan coba lagi!');
                 return;
             }
         }
@@ -1031,11 +1031,11 @@ export const processOrder = async () => {
         }
 
         if (oD.claimedReward && finalMemberPoints !== null) {
-            if (typeof window.showToast === 'function') window.showToast(`✅ Hadiah "${oD.claimedReward.name}" berhasil ditukar! Sisa poin Anda: ${finalMemberPoints}`);
+            if (typeof window.showToast === 'function') window.showToast(`Hadiah "${oD.claimedReward.name}" berhasil ditukar! Sisa poin Anda: ${finalMemberPoints}`);
         } else if (finalMemberPoints !== null && pointsEarnedThisOrder > 0) {
-            if (typeof window.showToast === 'function') window.showToast(`✅ Pesanan berhasil dikirim ke admin! (+${pointsEarnedThisOrder} Poin Member didapat!)`);
+            if (typeof window.showToast === 'function') window.showToast(`Pesanan berhasil dikirim ke admin! (+${pointsEarnedThisOrder} Poin Member didapat!)`);
         } else {
-            if (typeof window.showToast === 'function') window.showToast("✅ Pesanan berhasil dikirim ke admin!");
+            if (typeof window.showToast === 'function') window.showToast("Pesanan berhasil dikirim ke admin!");
         }
         
         setTimeout(() => {
@@ -1099,7 +1099,7 @@ export const processOrder = async () => {
                 window.history.replaceState({ view: 'view-catalog' }, '', window.location.pathname);
             } catch(e) {}
             if (typeof window.changeView === 'function') window.changeView('view-catalog', true);
-            if (typeof window.showToast === 'function') window.showToast("Pesanan Dibuat! 🎉");
+            if (typeof window.showToast === 'function') window.showToast("Pesanan Dibuat!");
         }, 2000);
         
     } catch(e) {

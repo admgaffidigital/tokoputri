@@ -229,7 +229,7 @@ window.handleBuktiUpload = async (event) => {
         const sTxt = el('bukti-success-text');
         const sInfo = el('bukti-storage-info');
         if (sTxt) sTxt.textContent = 'Bukti berhasil disimpan!';
-        if (sInfo) sInfo.textContent = '(tersimpan di Google Drive ✓)';
+        if (sInfo) sInfo.textContent = '(tersimpan di Google Drive)';
         if (sEl) { sEl.classList.remove('hidden'); sEl.style.display = 'flex'; }
         hide('bukti-gdrive-error');
     } else {
@@ -239,7 +239,7 @@ window.handleBuktiUpload = async (event) => {
         const errEl = el('bukti-gdrive-error');
         if (errEl) { errEl.classList.remove('hidden'); errEl.style.display = 'flex'; }
         hide('bukti-success');
-        showToast('❌ Upload ke Google Drive gagal. Coba lagi!');
+        showToast('Upload ke Google Drive gagal. Coba lagi!');
     }
 };
 
@@ -259,13 +259,13 @@ window.retryBuktiUpload = async () => {
         window.buktiGDriveUploaded = true;
         const sEl = el('bukti-success'); const sTxt = el('bukti-success-text'); const sInfo = el('bukti-storage-info');
         if (sTxt) sTxt.textContent = 'Bukti berhasil disimpan!';
-        if (sInfo) sInfo.textContent = '(tersimpan di Google Drive ✓)';
+        if (sInfo) sInfo.textContent = '(tersimpan di Google Drive)';
         if (sEl) { sEl.classList.remove('hidden'); sEl.style.display = 'flex'; }
-        showToast('✅ Upload berhasil!');
+        showToast('Upload berhasil!');
     } else {
         const errEl = el('bukti-gdrive-error');
         if (errEl) { errEl.classList.remove('hidden'); errEl.style.display = 'flex'; }
-        showToast('❌ Masih gagal. Periksa koneksi internet Anda.');
+        showToast('Masih gagal. Periksa koneksi internet Anda.');
     }
 };
 

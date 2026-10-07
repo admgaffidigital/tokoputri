@@ -161,7 +161,7 @@ window.processQuickPrice = async (id) => {
         await _save([], { updateType: 'stock_change', updatedProductIds: [id.toString()] });
         closeQuickPriceModal();
         window.rAdmItms?.('products');
-        showToast("✅ Harga berhasil diperbarui!");
+        showToast("Harga berhasil diperbarui!");
     } catch(e) { showToast("Gagal simpan harga: " + (e.message || '')); }
     finally { setIsSaving(false); hLoad(); }
 };

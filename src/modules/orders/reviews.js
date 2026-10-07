@@ -167,7 +167,7 @@ export const submitReview = async (orderId, productId, variantName, productName,
         await db.collection("freshmart").doc("cms_data").collection("reviews").doc(reviewId.toString()).set(reviewDoc);
         reviewsCache.delete(productId); // Invalidate cache agar ulasan baru segera terlihat
         closeReviewModal();
-        showToast('✅ Terima kasih atas ulasan Anda!');
+        showToast('Terima kasih atas ulasan Anda!');
         if (typeof window.openCustomerOrderDetail === 'function') {
             window.openCustomerOrderDetail(orderId);
         }

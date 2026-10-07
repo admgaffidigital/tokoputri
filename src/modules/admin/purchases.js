@@ -702,13 +702,13 @@ window.receiveAndRestockPO = (poId) => {
                 <span>Tujuan Penyimpanan Barang:</span>
             </p>
             <div class="grid grid-cols-2 gap-2 text-xs">
-                <label class="flex items-center gap-2 p-2.5 rounded-xl border border-teal-500 bg-teal-50/70 dark:bg-teal-950/40 cursor-pointer font-bold text-teal-800 dark:text-teal-200 shadow-2xs">
+                <label class="flex items-center gap-2 p-2.5 rounded-xl border border-teal-500 bg-teal-50/70 dark:bg-teal-950/40 cursor-pointer font-bold text-teal-800 dark:text-teal-200">
                     <input type="radio" name="po_target_location" value="store" checked class="accent-teal-600">
-                    <span>🏪 Rak Toko (Display)</span>
+                    <span class="inline-flex items-center gap-1.5"><i class="fa-solid fa-store text-teal-600"></i> Rak Toko (Display)</span>
                 </label>
-                <label class="flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 cursor-pointer font-bold text-slate-700 dark:text-slate-300 shadow-2xs">
+                <label class="flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 cursor-pointer font-bold text-slate-700 dark:text-slate-300">
                     <input type="radio" name="po_target_location" value="warehouse" class="accent-amber-500">
-                    <span>📦 Gudang Cadangan</span>
+                    <span class="inline-flex items-center gap-1.5"><i class="fa-solid fa-warehouse text-amber-500"></i> Gudang Cadangan</span>
                 </label>
             </div>
         </div>
@@ -811,7 +811,7 @@ window.receiveAndRestockPO = (poId) => {
                 } catch(_) {}
 
                 hLoad();
-                showToast('Barang berhasil diterima & stok toko bertambah! 📦✨');
+                showToast('Barang berhasil diterima & stok toko bertambah!');
                 renderPurchasesView();
             } catch (err) {
                 hLoad();
@@ -1376,10 +1376,10 @@ window.selectProductForPO = (productId, variantIndex = null) => {
 
     if (poPickerTargetRow !== null && tempPOItems[poPickerTargetRow]) {
         tempPOItems[poPickerTargetRow] = itemObj;
-        showToast(`Barang diubah: ${prod.name}${itemObj.variantName ? ` (${itemObj.variantName})` : ''} ✨`);
+        showToast(`Barang diubah: ${prod.name}${itemObj.variantName ? ` (${itemObj.variantName})` : ''}`);
     } else {
         tempPOItems.push(itemObj);
-        showToast(`Ditambahkan: ${prod.name}${itemObj.variantName ? ` (${itemObj.variantName})` : ''} 🛒`);
+        showToast(`Ditambahkan: ${prod.name}${itemObj.variantName ? ` (${itemObj.variantName})` : ''}`);
     }
 
     renderPOItemsTable();
@@ -1417,7 +1417,7 @@ window.addAllVariantsForPO = (productId) => {
     renderPOItemsTable();
     window.recalcPOTotals();
     window.closePOProductPicker();
-    showToast(`${addedCount} varian ${prod.name} berhasil ditambahkan ke PO! 📦✨`);
+    showToast(`${addedCount} varian ${prod.name} berhasil ditambahkan ke PO!`);
 };
 
 /**
@@ -2239,7 +2239,7 @@ window.savePOForm = async (e, existingId) => {
 
         hLoad();
         window.closePOFormModal();
-        showToast(existingId ? 'Order PO diperbarui! ✨' : 'Order PO kulakan berhasil dibuat! 🛒');
+        showToast(existingId ? 'Order PO diperbarui!' : 'Order PO kulakan berhasil dibuat!');
         renderPurchasesView();
     } catch (err) {
         hLoad();
@@ -2782,7 +2782,7 @@ window.submitPurchasePayment = async (e, poId) => {
 
         hLoad();
         window.closePurchasePaymentModal();
-        showToast('Pembayaran hutang supplier berhasil dicatat! 💰');
+        showToast('Pembayaran hutang supplier berhasil dicatat!');
         renderPurchasesView();
     } catch (err) {
         hLoad();
@@ -2833,7 +2833,7 @@ window.sendPOToSupplierWA = (poId) => {
         (po.shippingFee > 0 ? `*Ongkir:* +Rp ${Number(po.shippingFee).toLocaleString('id-ID')}\n` : '') +
         `*TOTAL NILAI PO:* *Rp ${Number(po.total || 0).toLocaleString('id-ID')}*\n` +
         (po.notes ? `\n*Catatan:* ${po.notes}\n` : '') +
-        `\nMohon dicek ketersediaan stok & jadwal armada pengirimannya. Terima kasih atas kerja samanya! 🙏`;
+        `\nMohon dicek ketersediaan stok & jadwal armada pengirimannya. Terima kasih atas kerja samanya!`;
 
     openWhatsApp(cleanPhone, text);
 };

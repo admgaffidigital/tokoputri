@@ -843,7 +843,7 @@ export const openDocPreview = (type, targetId = null) => {
 
                 let statusBadge = '';
                 if (totalPaid >= targetAfter) {
-                    statusBadge = `<span class="px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-wider bg-emerald-100 text-emerald-700 border border-emerald-300">✓ LUNAS</span>`;
+                    statusBadge = `<span class="px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-wider bg-emerald-100 text-emerald-700 border border-emerald-300">LUNAS</span>`;
                 } else if (!firstUnpaidFound) {
                     firstUnpaidFound = true;
                     firstUnpaidTermin = mIdx;
@@ -852,8 +852,8 @@ export const openDocPreview = (type, targetId = null) => {
                     tglJatuhTempoBulanIni = dueText;
                     const isOverdue = dueTime && (now > dueTime);
                     statusBadge = isOverdue
-                        ? `<span class="px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-wider bg-rose-100 text-rose-700 border border-rose-300">⚠️ JATUH TEMPO</span>`
-                        : `<span class="px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-wider bg-amber-100 text-amber-800 border border-amber-300">★ WAJIB BULAN INI</span>`;
+                        ? `<span class="px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-wider bg-rose-100 text-rose-700 border border-rose-300">JATUH TEMPO</span>`
+                        : `<span class="px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-wider bg-amber-100 text-amber-800 border border-amber-300">WAJIB BULAN INI</span>`;
                 } else {
                     statusBadge = `<span class="px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider bg-slate-100 text-slate-500 border border-slate-200">BULAN DEPAN</span>`;
                 }
@@ -1373,10 +1373,10 @@ export const openDocPreview = (type, targetId = null) => {
 
                                     let badge = '';
                                     if (paidAll >= runningTgt) {
-                                        badge = `<span class="px-1.5 py-0.2 rounded text-[8px] font-bold uppercase bg-emerald-100 text-emerald-700 border border-emerald-300">✓ LUNAS</span>`;
+                                        badge = `<span class="px-1.5 py-0.2 rounded text-[8px] font-bold uppercase bg-emerald-100 text-emerald-700 border border-emerald-300">LUNAS</span>`;
                                     } else if (!foundUnpaid) {
                                         foundUnpaid = true;
-                                        badge = `<span class="px-1.5 py-0.2 rounded text-[8px] font-black uppercase bg-amber-100 text-amber-800 border border-amber-300">★ BULAN INI</span>`;
+                                        badge = `<span class="px-1.5 py-0.2 rounded text-[8px] font-black uppercase bg-amber-100 text-amber-800 border border-amber-300">BULAN INI</span>`;
                                     } else {
                                         badge = `<span class="px-1.5 py-0.2 rounded text-[8px] font-medium uppercase bg-slate-100 text-slate-500">MENDATANG</span>`;
                                     }
