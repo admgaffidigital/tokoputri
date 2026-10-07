@@ -8,6 +8,21 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-10-90',
+        version: 'v1.10.90',
+        date: '2026-10-08',
+        title: 'Arsitektur Modal 3-Tier Responsive Desktop: Widescreen Workspace & Split-View Produk',
+        category: 'feature',
+        badge: '3-Tier Desktop Modal Architecture v1.10.90',
+        items: [
+            'Tier 1 (Widescreen Workspace Canvas - 94vw, Max-W-7xl / 1360px): Menghadirkan kanvas kerja desktop yang ultra lapang dan luas untuk modal padat data (Pelacak FIFO & Multi-Supplier, PO Kulakan Builder & Detail, Direktori Rekanan Supplier, Stock Opname Dua Lokasi, Detail Piutang Tempo, Rekap Shift Kasir, Form & Detail Order Admin, hingga Kartu Member Digital). Mengeliminasi rasa sempit/terjepit saat mengelola tabel dan formulir kompleks di monitor PC/Laptop.',
+            'Tier 2 (Spacious 2-Column Split-View - 1160px & 88vh): Merombak tampilan modal detail produk storefront (#product-modal-content) di layar desktop menjadi tata letak 2 kolom elegan setaraf marketplace tier-1 dunia. Kolom kiri selebar 460px didedikasikan untuk galeri foto produk sticky yang luas, sementara kolom kanan menyajikan informasi harga, badge Inc. PPN kapsul, katalog swatch kartu cat, dan pinned bottom buy bar yang selalu siap dieksekusi tanpa perlu scroll bolak-balik.',
+            'Tier 3 (Focused Center Dialogs - 440px s.d. 520px): Mempertahankan dialog konfirmasi cepat, prompt PIN, quick price, restock kilat, dan struk kasir pada proporsi kompak terpusat agar fokus pandangan kasir/admin tetap tajam tanpa melar berlebihan.',
+            'Zero Distorsi Mobile & Tablet (<1024px): Seluruh tata letak 3-Tier diisolasi secara presisi melalui media query desktop (min-width: 1024px), sehingga pengalaman pengguna smartphone pada bottom sheet native, gesture swipe, dan tombol kembali Android tetap 100% mulus dan terlindungi.',
+            'Multi-Channel Distribution v1.10.90 (Android versionCode 11090).'
+        ]
+    },
+    {
         id: 'log-1-10-89',
         version: 'v1.10.89',
         date: '2026-10-07',

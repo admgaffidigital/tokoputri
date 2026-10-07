@@ -4276,4 +4276,129 @@ button span > i[class*="fa-"]:not(.hidden):not([hidden]) {
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
 }
 
+/* ============================================================
+   ARSITEKTUR MODAL 3-TIER RESPONSIVE DESKTOP (LEGA, LUAS & MEWAH)
+   ============================================================ */
+
+/* ─── TIER 1: WORKSPACE / DATA-HEAVY WIDESCREEN MODALS (94vw, Max-W-7xl) ─── */
+/* Modul Analitik, Pelacak FIFO, Kulakan PO, Stock Opname, Piutang & Order */
+@media (min-width: 1024px) {
+    #modal-product-fifo-box,
+    #modal-po-form-box,
+    #modal-po-detail-box,
+    #modal-po-product-picker-box,
+    #modal-supplier-detail-box,
+    #modal-supplier-form-box,
+    #modal-tempo-detail-box,
+    #modal-so-history-content,
+    #pos-shift-summary-box,
+    #admin-order-modal-box,
+    #order-detail-content,
+    #admin-modal-box,
+    #brand-modal > div,
+    #category-modal > div,
+    #member-modal > div {
+        max-width: min(94vw, 1360px) !important;
+        width: 94vw !important;
+        max-height: 90vh !important;
+        border-radius: 1.75rem !important;
+        box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.45) !important;
+    }
+
+    /* Penyesuaian padding internal modal kerja agar lapang & lega */
+    #modal-po-form-content,
+    #modal-tempo-detail-content,
+    #modal-product-fifo-content,
+    #admin-order-modal-content {
+        padding: 1.75rem 2rem !important;
+    }
+}
+
+/* ─── TIER 2: PRODUCT MODAL SPACIOUS 2-COLUMN SPLIT-VIEW (1160px) ─── */
+/* Modal Detail Produk Storefront: Kiri Galeri Foto Sticky, Kanan Info & Beli */
+@media (min-width: 1024px) {
+    #product-modal {
+        padding: 2rem !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+    #product-modal-content {
+        max-width: 1160px !important;
+        width: 92vw !important;
+        max-height: 88vh !important;
+        height: 88vh !important;
+        display: grid !important;
+        grid-template-columns: 460px 1fr !important;
+        grid-template-rows: 1fr auto !important;
+        overflow: hidden !important;
+        border-radius: 1.75rem !important;
+        box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.45) !important;
+    }
+    /* Kolom Kiri: Galeri Foto Produk, Video & Zoom */
+    #product-modal-content > .group {
+        grid-column: 1 / 2 !important;
+        grid-row: 1 / 3 !important;
+        width: 100% !important;
+        height: 100% !important;
+        aspect-ratio: auto !important;
+        border-right: 1px solid rgba(226, 232, 240, 0.8) !important;
+        border-bottom: none !important;
+        background: #f8fafc !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        padding: 2.5rem !important;
+        position: relative !important;
+    }
+    .dark #product-modal-content > .group {
+        border-right-color: rgba(30, 41, 59, 0.8) !important;
+        background: #0b1120 !important;
+    }
+    #product-modal-img {
+        max-height: 420px !important;
+        width: auto !important;
+        object-fit: contain !important;
+        border-radius: 1rem !important;
+    }
+    /* Kolom Kanan: Detail Spesifikasi, Swatch Warna Cat & Info (Scrollable) */
+    #product-modal-content > .flex-1 {
+        grid-column: 2 / 3 !important;
+        grid-row: 1 / 2 !important;
+        overflow-y: auto !important;
+        height: 100% !important;
+        padding: 2rem 2.25rem !important;
+    }
+    /* Kolom Kanan Bawah: Sticky Subtotal & Tombol Aksi Beli */
+    #product-modal-sticky-bar {
+        grid-column: 2 / 3 !important;
+        grid-row: 2 / 3 !important;
+        border-top: 1px solid rgba(226, 232, 240, 0.8) !important;
+        background: #ffffff !important;
+        box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.04) !important;
+        padding: 1rem 2.25rem 1.25rem !important;
+        position: relative !important;
+        bottom: 0 !important;
+    }
+    .dark #product-modal-sticky-bar {
+        border-top-color: rgba(30, 41, 59, 0.8) !important;
+        background: #0f172a !important;
+    }
+}
+
+/* ─── TIER 3: FOCUSED COMPACT DIALOGS (440px - 520px) ─── */
+/* Tetap fokus, terpusat, dan cepat dieksekusi tanpa distorsi */
+@media (min-width: 1024px) {
+    #custom-confirm-modal > div,
+    #custom-prompt-container > div,
+    #exit-confirm-modal > div,
+    #session-kicked-modal > div,
+    #quickprice-modal > div,
+    #restock-modal > div,
+    #pos-login-modal > div,
+    #receipt-preview-modal-box {
+        margin: auto !important;
+        box-shadow: 0 20px 45px -10px rgba(0, 0, 0, 0.35) !important;
+    }
+}
+
 
