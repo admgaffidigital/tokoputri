@@ -8,6 +8,22 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-10-86',
+        version: 'v1.10.86',
+        date: '2026-10-07',
+        title: 'Penyempurnaan Ergonomi Tombol Tambah & Varian: Anti-Gepeng & Desain Visual Premium',
+        category: 'fix',
+        badge: 'Anti-Squash Action Buttons & Premium Color Depth v1.10.86',
+        items: [
+            'Eliminasi Mutlak Masalah Tombol Gepeng (.btn-catalog-action): Mengganti kelas invalid w-8.5 h-8.5 dengan utility class terproteksi aspect-ratio 1:1 (36px di mobile, 38px di desktop) sehingga tombol Tambah (+) dan Pilih Varian selalu bulat/squircle presisi simetris tanpa pernah pipih atau terdistorsi flexbox di layar smartphone.',
+            'Elevasi Visual Tombol Tambah (+) (.btn-catalog-add): Meredesain tombol tambah dari warna pudar transparan menjadi Solid Theme Gradient mewah dengan ikon plus putih berkontras tinggi, border halus, dan soft glow 3D yang sangat memikat untuk diklik.',
+            'Identitas Visual Tombol Pilih Varian (.btn-catalog-variant): Menerapkan palet Indigo Royale Gradient berpadu ikon Layer Group putih bersih yang selaras 100% dengan badge Varian di katalog, memberikan diferensiasi visual instan antara produk langsung beli vs produk multi-opsi.',
+            'Kalkulasi Cerdas Rentang Harga Varian Storefront (catalog.js): Menyelaraskan kartu katalog depan dengan POS kasir sehingga produk bervarian kini menampilkan rentang harga riil dan label PILIH VARIAN yang elegan, tidak lagi hanya menampilkan teks abu-abu polos.',
+            'Harmonisasi Kasir POS (pos.js): Mengintegrasikan desain tombol anti-gepeng yang sama pada POS kasir mode Grid dan List untuk tombol Tambah, Varian, In-Cart Badge, maupun Nonaktif.',
+            'Multi-Channel Distribution v1.10.86 (Android versionCode 11086).'
+        ]
+    },
+    {
         id: 'log-1-10-85',
         version: 'v1.10.85',
         date: '2026-10-07',

@@ -3807,3 +3807,97 @@ button span > i[class*="fa-"]:not(.hidden):not([hidden]) {
 .btn-native-icon:active {
     transform: scale(0.95);
 }
+
+/* ============================================================
+   TOMBOL AKSI BELANJA KATALOG & POS: ANTI-GEPENG & PREMIUM TOUCH
+   ============================================================ */
+.btn-catalog-action {
+    width: 36px !important;
+    height: 36px !important;
+    min-width: 36px !important;
+    min-height: 36px !important;
+    max-width: 36px !important;
+    max-height: 36px !important;
+    aspect-ratio: 1 / 1 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 0.75rem !important; /* 12px squircle */
+    flex-shrink: 0 !important;
+    cursor: pointer !important;
+    user-select: none !important;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    position: relative !important;
+    outline: none !important;
+    box-sizing: border-box !important;
+}
+
+@media (min-width: 640px) {
+    .btn-catalog-action {
+        width: 38px !important;
+        height: 38px !important;
+        min-width: 38px !important;
+        min-height: 38px !important;
+        max-width: 38px !important;
+        max-height: 38px !important;
+        border-radius: 0.875rem !important; /* 14px */
+    }
+}
+
+.btn-catalog-action:active {
+    transform: scale(0.90) !important;
+}
+
+/* Tombol Tambah (+) — Solid Theme Gradient, Clean White Icon, 3D Soft Glow */
+.btn-catalog-add {
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%) !important;
+    color: #ffffff !important;
+    border: 1px solid rgba(255, 255, 255, 0.28) !important;
+    box-shadow: 0 3px 10px rgba(var(--color-primary-rgb), 0.35) !important;
+}
+.btn-catalog-add:hover {
+    box-shadow: 0 5px 14px rgba(var(--color-primary-rgb), 0.48) !important;
+    filter: brightness(1.06) !important;
+    transform: translateY(-1px) scale(1.04) !important;
+}
+.btn-catalog-add:active {
+    transform: scale(0.90) !important;
+    box-shadow: 0 2px 5px rgba(var(--color-primary-rgb), 0.25) !important;
+}
+
+/* Tombol Varian — Indigo Royale Gradient, Layer Group White Icon, Visual Harmony */
+.btn-catalog-variant {
+    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%) !important;
+    color: #ffffff !important;
+    border: 1px solid rgba(255, 255, 255, 0.28) !important;
+    box-shadow: 0 3px 10px rgba(99, 102, 241, 0.35) !important;
+}
+.dark .btn-catalog-variant {
+    background: linear-gradient(135deg, #4f46e5 0%, #3730a3 100%) !important;
+    box-shadow: 0 3px 12px rgba(99, 102, 241, 0.45) !important;
+}
+.btn-catalog-variant:hover {
+    box-shadow: 0 5px 14px rgba(99, 102, 241, 0.48) !important;
+    filter: brightness(1.06) !important;
+    transform: translateY(-1px) scale(1.04) !important;
+}
+.btn-catalog-variant:active {
+    transform: scale(0.90) !important;
+    box-shadow: 0 2px 5px rgba(99, 102, 241, 0.25) !important;
+}
+
+/* Tombol Nonaktif (Stok Habis di POS Kasir) */
+.btn-catalog-disabled {
+    background: #f1f5f9 !important;
+    color: #94a3b8 !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: none !important;
+    cursor: not-allowed !important;
+    opacity: 0.65 !important;
+}
+.dark .btn-catalog-disabled {
+    background: #1e293b !important;
+    color: #64748b !important;
+    border-color: #334155 !important;
+}
+

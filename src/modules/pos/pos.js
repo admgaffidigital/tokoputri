@@ -1587,8 +1587,8 @@ export const renderCatalog = (isLoadMore = false) => {
                                     ${p.unit ? `<span class="text-[9.5px] sm:text-[10px] text-slate-400 dark:text-slate-500 font-bold ml-0.5 uppercase tracking-wide">/${esc(p.unit)}</span>` : ''}
                                     ${priceNormalHtml ? `<span class="text-[10px] sm:text-[11px] text-slate-400 dark:text-slate-500 line-through leading-none font-semibold truncate">${fRp(parseFloat(p.priceNormal))}</span>` : ''}
                                 </div>
-                                <button type="button" class="w-8.5 h-8.5 sm:w-9 sm:h-9 rounded-xl ${stockInfo.isOutOfStock ? 'bg-slate-100 dark:bg-slate-800 text-slate-400 opacity-50 cursor-not-allowed' : totalQtyInCart > 0 ? 'primary-bg text-white shadow-xs' : 'bg-[rgba(var(--color-primary-rgb),0.08)] text-[var(--color-primary)] border border-[rgba(var(--color-primary-rgb),0.2)] hover:bg-[var(--color-primary)] hover:text-white'} flex items-center justify-center shrink-0 transition-all group-hover:scale-105 active:scale-95 shadow-2xs mr-0.5 cursor-pointer z-20" onclick="event.stopPropagation();window.posAddToCart('${safeId}')" title="${stockInfo.isOutOfStock ? 'Stok Habis' : totalQtyInCart > 0 ? 'Tambah lagi (+1)' : hasVariants ? 'Pilih Varian' : 'Tambah ke Keranjang'}">
-                                    ${stockInfo.isOutOfStock ? '<i class="fa-solid fa-ban text-xs"></i>' : totalQtyInCart > 0 ? `<b>+${formatQty(totalQtyInCart)}</b>` : hasVariants ? '<i class="fa-solid fa-layer-group text-xs"></i>' : '<i class="fa-solid fa-plus text-xs"></i>'}
+                                <button type="button" class="${stockInfo.isOutOfStock ? 'btn-catalog-action btn-catalog-disabled' : totalQtyInCart > 0 ? 'btn-catalog-action btn-catalog-add ring-2 ring-[var(--color-primary)]/30' : hasVariants ? 'btn-catalog-action btn-catalog-variant' : 'btn-catalog-action btn-catalog-add'} mr-0.5 z-20" onclick="event.stopPropagation();window.posAddToCart('${safeId}')" title="${stockInfo.isOutOfStock ? 'Stok Habis' : totalQtyInCart > 0 ? 'Tambah lagi (+1)' : hasVariants ? 'Pilih Varian' : 'Tambah ke Keranjang'}">
+                                    ${stockInfo.isOutOfStock ? '<i class="fa-solid fa-ban text-xs"></i>' : totalQtyInCart > 0 ? `<b class="text-xs font-black">+${formatQty(totalQtyInCart)}</b>` : hasVariants ? '<i class="fa-solid fa-layer-group text-[12.5px] font-bold leading-none drop-shadow-2xs"></i>' : '<i class="fa-solid fa-plus text-[13px] font-black leading-none drop-shadow-2xs"></i>'}
                                 </button>
                             </div>
                         </div>
@@ -1623,8 +1623,8 @@ export const renderCatalog = (isLoadMore = false) => {
                             ${chipsHtml}
                         </div>
                         <!-- Footer Harga & Tombol Aksi POS (Anti-Potong) -->
-                        <div class="pos-card-footer flex items-end justify-between mt-auto pt-1.5 border-t border-slate-100 dark:border-slate-700/50 shrink-0">
-                            <div class="min-w-0 pr-1">
+                        <div class="pos-card-footer flex items-end justify-between mt-auto pt-1.5 border-t border-slate-100 dark:border-slate-700/50 shrink-0 gap-2">
+                            <div class="min-w-0 pr-1 flex-1">
                                 <div class="h-3.5 flex items-center mb-0.5">
                                     ${priceNormalHtml}
                                 </div>
@@ -1633,8 +1633,8 @@ export const renderCatalog = (isLoadMore = false) => {
                                     ${p.unit ? `<span class="text-[9.5px] sm:text-[10px] text-slate-400 dark:text-slate-500 font-bold ml-0.5 mb-0.5 uppercase tracking-wide">/${esc(p.unit)}</span>` : ''}
                                 </div>
                             </div>
-                            <button type="button" class="w-8.5 h-8.5 sm:w-9 sm:h-9 rounded-xl ${stockInfo.isOutOfStock ? 'bg-slate-100 dark:bg-slate-800 text-slate-400 opacity-50 cursor-not-allowed' : totalQtyInCart > 0 ? 'primary-bg text-white shadow-xs' : 'bg-[rgba(var(--color-primary-rgb),0.08)] text-[var(--color-primary)] border border-[rgba(var(--color-primary-rgb),0.2)] hover:bg-[var(--color-primary)] hover:text-white'} flex items-center justify-center shrink-0 transition-all group-hover:scale-105 active:scale-95 shadow-2xs cursor-pointer z-20" onclick="event.stopPropagation();window.posAddToCart('${safeId}')" title="${stockInfo.isOutOfStock ? 'Stok Habis' : totalQtyInCart > 0 ? 'Tambah lagi (+1)' : hasVariants ? 'Pilih Varian' : 'Tambah ke Keranjang'}" aria-label="${pName}">
-                                ${stockInfo.isOutOfStock ? '<i class="fa-solid fa-ban text-xs"></i>' : totalQtyInCart > 0 ? `<b>+${formatQty(totalQtyInCart)}</b>` : hasVariants ? '<i class="fa-solid fa-layer-group text-xs"></i>' : '<i class="fa-solid fa-plus text-xs"></i>'}
+                            <button type="button" class="${stockInfo.isOutOfStock ? 'btn-catalog-action btn-catalog-disabled' : totalQtyInCart > 0 ? 'btn-catalog-action btn-catalog-add ring-2 ring-[var(--color-primary)]/30' : hasVariants ? 'btn-catalog-action btn-catalog-variant' : 'btn-catalog-action btn-catalog-add'} z-20" onclick="event.stopPropagation();window.posAddToCart('${safeId}')" title="${stockInfo.isOutOfStock ? 'Stok Habis' : totalQtyInCart > 0 ? 'Tambah lagi (+1)' : hasVariants ? 'Pilih Varian' : 'Tambah ke Keranjang'}" aria-label="${pName}">
+                                ${stockInfo.isOutOfStock ? '<i class="fa-solid fa-ban text-xs"></i>' : totalQtyInCart > 0 ? `<b class="text-xs font-black">+${formatQty(totalQtyInCart)}</b>` : hasVariants ? '<i class="fa-solid fa-layer-group text-[12.5px] font-bold leading-none drop-shadow-2xs"></i>' : '<i class="fa-solid fa-plus text-[13px] font-black leading-none drop-shadow-2xs"></i>'}
                             </button>
                         </div>
                     </div>

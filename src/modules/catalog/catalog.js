@@ -275,6 +275,26 @@ export const rCat = () => {
         
         let unt = `<span class="text-[9.5px] sm:text-[10px] text-slate-400 dark:text-slate-500 font-bold ml-0.5 mb-0.5 uppercase tracking-wide">/${esc(p.unit || 'PCS')}</span>`;
         
+        const hasVariants = Boolean(p.variants && p.variants.length > 0);
+        let displayPriceHtml = '';
+        let variantBadgeLabelHtml = '';
+        if (hasVariants) {
+            const varPrices = (p.variants || [])
+                .filter(v => v && (v.isActive !== false && v.isActive !== 'false'))
+                .map(v => parseFloat(v.price || 0))
+                .filter(pr => !isNaN(pr) && pr > 0);
+            if (varPrices.length > 0) {
+                const minVPrice = Math.min(...varPrices);
+                const maxVPrice = Math.max(...varPrices);
+                displayPriceHtml = minVPrice === maxVPrice ? fCur(minVPrice) : `${fCur(minVPrice)} - ${fCur(maxVPrice)}`;
+            } else {
+                displayPriceHtml = parseFloat(p.price) > 0 ? fCur(p.price) : 'Pilih Varian';
+            }
+            variantBadgeLabelHtml = `<span class="text-[9px] sm:text-[9.5px] text-indigo-600 dark:text-indigo-400 font-extrabold uppercase tracking-wider flex items-center gap-1 leading-none"><i class="fa-solid fa-sliders text-[7.5px]"></i> PILIH VARIAN</span>`;
+        } else {
+            displayPriceHtml = fCur(p.price);
+        }
+
         const hasImg = Boolean(p.img && typeof p.img === 'string' && p.img.trim() && !isPlaceholderImg(p.img));
         const imgUrl = hasImg ? esc(getOptImg(p.img, 'w300-rw')) : '';
         const coverMdHtml = renderProductCoverHtml(p, { size: 'md' });
@@ -298,21 +318,28 @@ export const rCat = () => {
                     <div class="product-chips-wrap">
                         ${chipsHtml}
                     </div>
-                    <div class="flex items-end justify-between mt-auto pt-1.5 border-t border-slate-100 dark:border-slate-700/50">
-                        <div class="min-w-0 pr-1">
+                    <!-- Footer Harga & Tombol Aksi Belanja / Varian (Anti-Gepeng, Touch Target Ergonomis) -->
+                    <div class="flex items-end justify-between mt-auto pt-1.5 border-t border-slate-100 dark:border-slate-700/50 gap-2">
+                        <div class="min-w-0 pr-1 flex-1">
                             <div class="h-3.5 flex items-center">
-                                ${p.variants && p.variants.length > 0 ? '' : priceNormalHtml}
+                                ${hasVariants ? variantBadgeLabelHtml : priceNormalHtml}
                             </div>
                             <div class="flex items-baseline gap-0.5">
                                 <p class="text-[var(--color-primary)] font-black text-xs sm:text-[14px] lg:text-[15px] leading-none tracking-tight truncate">
-                                    ${p.variants && p.variants.length > 0 ? '<span class="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider">PILIH VARIAN</span>' : fCur(p.price)}
+                                    ${displayPriceHtml}
                                 </p>
-                                ${p.variants && p.variants.length > 0 ? '' : unt}
+                                ${unt}
                             </div>
                         </div>
-                        <button type="button" class="w-8.5 h-8.5 sm:w-9 sm:h-9 rounded-xl bg-[rgba(var(--color-primary-rgb),0.08)] text-[var(--color-primary)] border border-[rgba(var(--color-primary-rgb),0.2)] flex items-center justify-center shrink-0 transition-all group-hover:bg-[var(--color-primary)] group-hover:text-white group-hover:scale-105 active:scale-95 shadow-2xs cursor-pointer z-20" onclick="quickAddOrOpenProduct(event, '${esc(p.id)}')" title="${p.variants && p.variants.length > 0 ? 'Pilih Varian' : 'Tambah ke Keranjang'}" aria-label="${p.variants && p.variants.length > 0 ? 'Pilih varian ' + esc(p.name) : 'Tambah ' + esc(p.name) + ' ke keranjang'}">
-                            ${p.variants && p.variants.length > 0 ? '<i class="fa-solid fa-layer-group text-xs"></i>' : '<i class="fa-solid fa-plus text-xs"></i>'}
-                        </button>
+                        ${hasVariants ? `
+                            <button type="button" class="btn-catalog-action btn-catalog-variant z-20" onclick="quickAddOrOpenProduct(event, '${esc(p.id)}')" title="Pilih Varian ${esc(p.name)}" aria-label="Pilih varian ${esc(p.name)}">
+                                <i class="fa-solid fa-layer-group text-[12.5px] font-bold leading-none drop-shadow-2xs"></i>
+                            </button>
+                        ` : `
+                            <button type="button" class="btn-catalog-action btn-catalog-add z-20" onclick="quickAddOrOpenProduct(event, '${esc(p.id)}')" title="Tambah ${esc(p.name)} ke Keranjang" aria-label="Tambah ${esc(p.name)} ke keranjang">
+                                <i class="fa-solid fa-plus text-[13px] font-black leading-none drop-shadow-2xs"></i>
+                            </button>
+                        `}
                     </div>
                 </div>
             </a>`;
@@ -335,17 +362,25 @@ export const rCat = () => {
                     <!-- Line 3: Chips Operasional Rapi (2-Baris Terkunci Simetris, Anti-Terpotong) -->
                     ${chipsHtml ? `<div class="product-chips-wrap">${chipsHtml}</div>` : ''}
                     <!-- Line 4: Harga & Action -->
-                    <div class="flex items-center justify-between pt-0.5">
-                        <div class="flex items-baseline gap-1.5 min-w-0">
+                    <div class="flex items-center justify-between pt-0.5 gap-2">
+                        <div class="flex items-baseline gap-1.5 min-w-0 flex-1">
                             <p class="text-[var(--color-primary)] font-black text-xs sm:text-[15px] leading-none tracking-tight truncate">
-                                ${p.variants && p.variants.length > 0 ? '<span class="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider">PILIH VARIAN</span>' : fCur(p.price)}
+                                ${displayPriceHtml}
                             </p>
-                            ${p.variants && p.variants.length > 0 ? '' : unt}
-                            ${(p.variants && p.variants.length > 0) || !p.priceNormal || p.priceNormal <= p.price ? '' : `<span class="text-[10px] sm:text-[11px] text-slate-400 dark:text-slate-500 line-through leading-none font-semibold truncate">${fCur(p.priceNormal)}</span>`}
+                            ${unt}
+                            ${hasVariants
+                                ? variantBadgeLabelHtml
+                                : ((!p.priceNormal || p.priceNormal <= p.price) ? '' : `<span class="text-[10px] sm:text-[11px] text-slate-400 dark:text-slate-500 line-through leading-none font-semibold truncate">${fCur(p.priceNormal)}</span>`)}
                         </div>
-                        <button type="button" class="w-8.5 h-8.5 sm:w-9 sm:h-9 rounded-xl bg-[rgba(var(--color-primary-rgb),0.08)] text-[var(--color-primary)] border border-[rgba(var(--color-primary-rgb),0.2)] flex items-center justify-center shrink-0 transition-all group-hover:bg-[var(--color-primary)] group-hover:text-white group-hover:scale-105 active:scale-95 shadow-2xs mr-0.5 cursor-pointer z-20" onclick="quickAddOrOpenProduct(event, '${esc(p.id)}')" title="${p.variants && p.variants.length > 0 ? 'Pilih Varian' : 'Tambah ke Keranjang'}" aria-label="${p.variants && p.variants.length > 0 ? 'Pilih varian ' + esc(p.name) : 'Tambah ' + esc(p.name) + ' ke keranjang'}">
-                            ${p.variants && p.variants.length > 0 ? '<i class="fa-solid fa-layer-group text-xs"></i>' : '<i class="fa-solid fa-plus text-xs"></i>'}
-                        </button>
+                        ${hasVariants ? `
+                            <button type="button" class="btn-catalog-action btn-catalog-variant mr-0.5 z-20" onclick="quickAddOrOpenProduct(event, '${esc(p.id)}')" title="Pilih Varian ${esc(p.name)}" aria-label="Pilih varian ${esc(p.name)}">
+                                <i class="fa-solid fa-layer-group text-[12.5px] font-bold leading-none drop-shadow-2xs"></i>
+                            </button>
+                        ` : `
+                            <button type="button" class="btn-catalog-action btn-catalog-add mr-0.5 z-20" onclick="quickAddOrOpenProduct(event, '${esc(p.id)}')" title="Tambah ${esc(p.name)} ke Keranjang" aria-label="Tambah ${esc(p.name)} ke keranjang">
+                                <i class="fa-solid fa-plus text-[13px] font-black leading-none drop-shadow-2xs"></i>
+                            </button>
+                        `}
                     </div>
                 </div>
             </a>`;
