@@ -147,6 +147,22 @@ const formatDateTime = (dateStr) => {
  * Hitung metrik analitik pembelian & hutang supplier
  */
 export const computePurchaseMetrics = () => {
+    // Auto-heal: Pulihkan data purchases & suppliers dari cache mandiri jika memori kosong
+    if (!Array.isArray(appData.purchases) || appData.purchases.length === 0 || !Array.isArray(appData.suppliers) || appData.suppliers.length === 0) {
+        try {
+            const raw = localStorage.getItem('freshmart_cms_private');
+            if (raw) {
+                const parsed = JSON.parse(raw);
+                if ((!Array.isArray(appData.purchases) || appData.purchases.length === 0) && Array.isArray(parsed.purchases) && parsed.purchases.length > 0) {
+                    appData.purchases = parsed.purchases;
+                }
+                if ((!Array.isArray(appData.suppliers) || appData.suppliers.length === 0) && Array.isArray(parsed.suppliers) && parsed.suppliers.length > 0) {
+                    appData.suppliers = parsed.suppliers;
+                }
+            }
+        } catch (_) {}
+    }
+
     const purchases = appData.purchases || [];
     const now = new Date();
     const currentMonth = now.getMonth();
@@ -197,6 +213,19 @@ export const renderPurchasesView = () => {
     ensurePurchaseModals();
     const content = el('admin-content');
     if (!content) return;
+
+    // Auto-heal: Pastikan data purchases terhidrasi seketika dari freshmart_cms_private
+    if (!Array.isArray(appData.purchases) || appData.purchases.length === 0) {
+        try {
+            const raw = localStorage.getItem('freshmart_cms_private');
+            if (raw) {
+                const parsed = JSON.parse(raw);
+                if (Array.isArray(parsed.purchases) && parsed.purchases.length > 0) {
+                    appData.purchases = parsed.purchases;
+                }
+            }
+        } catch (_) {}
+    }
 
     const metrics = computePurchaseMetrics();
     const purchases = appData.purchases || [];

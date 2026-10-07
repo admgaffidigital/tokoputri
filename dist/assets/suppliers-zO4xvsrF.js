@@ -1,4 +1,4 @@
-import{a as c,e as u,b as T,f as m,i as s,aD as A,aE as F,o as D,v as y,l as M,n as g,k as f,H as I,F as L}from"./module-print-CuGBSj6J.js";import{z as N}from"./module-admin-CFt2GSmI.js";import"./vendor-firebase-core-D2OF5R23.js";import"./vendor-firebase-db-BIUZcnOd.js";import"./module-pos-D25gtbAB.js";import"./vendor-sortable-DzmX_rHT.js";import"./module-faq-DXLfBP38.js";const P=()=>{const e=document.querySelector("#admin-content #modal-supplier-detail");e&&e.remove();const r=document.querySelector("#admin-content #modal-supplier-form");if(r&&r.remove(),!u("modal-supplier-detail")){const t=document.createElement("div");t.id="modal-supplier-detail",t.className="fixed inset-0 z-[150] flex hidden items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-950/75 opacity-0 transition-opacity duration-300",t.onclick=a=>{a.target===t&&window.closeSupplierDetailModal?.()},t.innerHTML=`
+import{a as d,e as u,b as A,f as m,i as l,aD as T,aE as I,o as D,v as y,l as M,n as g,k as f,H as F,F as L}from"./module-print-CuGBSj6J.js";import{z as N}from"./module-admin-BkKwbcTA.js";import"./vendor-firebase-core-D2OF5R23.js";import"./vendor-firebase-db-BIUZcnOd.js";import"./module-pos-D25gtbAB.js";import"./vendor-sortable-DzmX_rHT.js";import"./module-faq-B6IWeDdu.js";const P=()=>{const e=document.querySelector("#admin-content #modal-supplier-detail");e&&e.remove();const r=document.querySelector("#admin-content #modal-supplier-form");if(r&&r.remove(),!u("modal-supplier-detail")){const t=document.createElement("div");t.id="modal-supplier-detail",t.className="fixed inset-0 z-[150] flex hidden items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-950/75 opacity-0 transition-opacity duration-300",t.onclick=a=>{a.target===t&&window.closeSupplierDetailModal?.()},t.innerHTML=`
             <div id="modal-supplier-detail-box" class="modal-bottom-sheet relative flex max-h-[92dvh] sm:max-h-[88dvh] w-full max-w-4xl translate-y-full sm:translate-y-10 transform flex-col overflow-hidden rounded-t-[2rem] sm:rounded-3xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xl transition-transform duration-300">
                 <div id="modal-supplier-detail-content" class="flex-1 flex flex-col overflow-hidden"></div>
             </div>
@@ -6,7 +6,7 @@ import{a as c,e as u,b as T,f as m,i as s,aD as A,aE as F,o as D,v as y,l as M,n
             <div id="modal-supplier-form-box" class="modal-bottom-sheet relative flex max-h-[92dvh] sm:max-h-[88dvh] w-full max-w-2xl translate-y-full sm:translate-y-10 transform flex-col overflow-hidden rounded-t-[2rem] sm:rounded-3xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xl transition-transform duration-300">
                 <div id="modal-supplier-form-content" class="flex-1 flex flex-col overflow-hidden"></div>
             </div>
-        `,document.body.appendChild(t)}};let $="",k="all",j=null,b="products";const O=e=>{if(!e)return"-";try{return new Date(e).toLocaleDateString("id-ID",{day:"numeric",month:"short",year:"numeric"})}catch{return e}},H=()=>{const e=c.suppliers||[],r=c.products||[],t=c.purchases||[],a=e.length,l=r.filter(i=>i.supplierId&&e.some(n=>String(n.id)===String(i.supplierId))||Array.isArray(i.suppliers)&&i.suppliers.some(n=>e.some(p=>String(p.id)===String(n.supplierId)))).length,o=t.reduce((i,n)=>{if(n.paymentType==="tempo"&&n.paymentStatus!=="lunas"){const p=(parseFloat(n.total)||0)-(parseFloat(n.amountPaid)||0);return i+(p>0?p:0)}return i},0),d=t.filter(i=>i.status==="ordered").length;return{totalSuppliers:a,linkedProductsCount:l,totalOutstandingDebt:o,activePurchasesCount:d}},h=()=>{if(P(),!u("admin-content"))return;const r=H(),t=c.suppliers||[],a=$.toLowerCase().trim();let l=t.filter(o=>!a||(o.name||"").toLowerCase().includes(a)||(o.code||"").toLowerCase().includes(a)||(o.salesName||"").toLowerCase().includes(a)||(o.phone||"").includes(a)||(o.address||"").toLowerCase().includes(a)?k==="has_debt"?(c.purchases||[]).some(n=>String(n.supplierId)===String(o.id)&&n.paymentType==="tempo"&&n.paymentStatus!=="lunas"&&(parseFloat(n.total)||0)-(parseFloat(n.amountPaid)||0)>0):!0:!1);T("admin-content",`
+        `,document.body.appendChild(t)}};let $="",k="all",j=null,b="products";const O=e=>{if(!e)return"-";try{return new Date(e).toLocaleDateString("id-ID",{day:"numeric",month:"short",year:"numeric"})}catch{return e}},H=()=>{if(!Array.isArray(d.suppliers)||d.suppliers.length===0||!Array.isArray(d.purchases)||d.purchases.length===0)try{const i=localStorage.getItem("freshmart_cms_private");if(i){const p=JSON.parse(i);(!Array.isArray(d.suppliers)||d.suppliers.length===0)&&Array.isArray(p.suppliers)&&p.suppliers.length>0&&(d.suppliers=p.suppliers),(!Array.isArray(d.purchases)||d.purchases.length===0)&&Array.isArray(p.purchases)&&p.purchases.length>0&&(d.purchases=p.purchases)}}catch{}const e=d.suppliers||[],r=d.products||[],t=d.purchases||[],a=e.length,o=r.filter(i=>i.supplierId&&e.some(p=>String(p.id)===String(i.supplierId))||Array.isArray(i.suppliers)&&i.suppliers.some(p=>e.some(c=>String(c.id)===String(p.supplierId)))).length,s=t.reduce((i,p)=>{if(p.paymentType==="tempo"&&p.paymentStatus!=="lunas"){const c=(parseFloat(p.total)||0)-(parseFloat(p.amountPaid)||0);return i+(c>0?c:0)}return i},0),n=t.filter(i=>i.status==="ordered").length;return{totalSuppliers:a,linkedProductsCount:o,totalOutstandingDebt:s,activePurchasesCount:n}},h=()=>{if(P(),!u("admin-content"))return;if(!Array.isArray(d.suppliers)||d.suppliers.length===0)try{const s=localStorage.getItem("freshmart_cms_private");if(s){const n=JSON.parse(s);Array.isArray(n.suppliers)&&n.suppliers.length>0&&(d.suppliers=n.suppliers)}}catch{}const r=H(),t=d.suppliers||[],a=$.toLowerCase().trim();let o=t.filter(s=>!a||(s.name||"").toLowerCase().includes(a)||(s.code||"").toLowerCase().includes(a)||(s.salesName||"").toLowerCase().includes(a)||(s.phone||"").includes(a)||(s.address||"").toLowerCase().includes(a)?k==="has_debt"?(d.purchases||[]).some(p=>String(p.supplierId)===String(s.id)&&p.paymentType==="tempo"&&p.paymentStatus!=="lunas"&&(parseFloat(p.total)||0)-(parseFloat(p.amountPaid)||0)>0):!0:!1);A("admin-content",`
         <div class="space-y-4 sm:space-y-5 fade-in max-w-5xl mx-auto pb-24 pt-1 sm:pt-2">
             <!-- 1. HERO BANNER: MASTER DATA SUPPLIER & REKANAN (THEME HARMONIZED) -->
             <div class="relative overflow-hidden p-5 sm:p-7 rounded-2xl sm:rounded-3xl border border-[rgba(var(--color-primary-rgb),0.2)] bg-gradient-to-br from-white via-white to-[rgba(var(--color-primary-rgb),0.05)] dark:from-slate-900 dark:via-slate-900/90 dark:to-slate-800 shadow-xs">
@@ -96,7 +96,7 @@ import{a as c,e as u,b as T,f as m,i as s,aD as A,aE as F,o as D,v as y,l as M,n
                         <input 
                             type="text" 
                             id="supplier-search-input" 
-                            value="${s($)}" 
+                            value="${l($)}" 
                             placeholder="Cari supplier, kode, kontak sales, alamat..." 
                             oninput="window.handleSupplierSearch(this.value)"
                             class="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl py-3 pl-11 pr-4 text-xs sm:text-sm font-bold text-slate-700 dark:text-slate-200 focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/15 shadow-2xs transition-all"
@@ -116,7 +116,7 @@ import{a as c,e as u,b as T,f as m,i as s,aD as A,aE as F,o as D,v as y,l as M,n
 
             <!-- 3. DAFTAR SUPPLIER / REKANAN -->
             <div id="supplier-cards-list" class="space-y-3">
-                ${l.length===0?`
+                ${o.length===0?`
                     <div class="p-12 text-center flex flex-col items-center justify-center text-slate-400 bg-white/95 dark:bg-slate-800/80 rounded-2xl sm:rounded-3xl border border-slate-200/90 dark:border-slate-700/80">
                         <div class="w-16 h-16 rounded-2xl flex items-center justify-center text-3xl mb-3 shadow-xs" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary);">
                             <i class="fa-solid fa-truck-field"></i>
@@ -127,32 +127,32 @@ import{a as c,e as u,b as T,f as m,i as s,aD as A,aE as F,o as D,v as y,l as M,n
                             <i class="fa-solid fa-plus mr-1.5"></i> Tambah Supplier Pertama
                         </button>
                     </div>
-                `:l.map(o=>B(o)).join("")}
+                `:o.map(s=>B(s)).join("")}
             </div>
         </div>
-    `)},B=e=>{const r=c.products||[],t=c.purchases||[],a=r.filter(n=>String(n.supplierId)===String(e.id)||Array.isArray(n.suppliers)&&n.suppliers.some(p=>String(p.supplierId)===String(e.id))),o=t.filter(n=>String(n.supplierId)===String(e.id)).reduce((n,p)=>{if(p.paymentType==="tempo"&&p.paymentStatus!=="lunas"){const x=(parseFloat(p.total)||0)-(parseFloat(p.amountPaid)||0);return n+(x>0?x:0)}return n},0),d={cash:"Cash / Tunai",tempo_7:"Tempo 7 Hari",tempo_14:"Tempo 14 Hari",tempo_30:"Tempo 30 Hari",tempo_60:"Tempo 60 Hari",konsinyasi:"Konsinyasi (Titip Jual)"},i=e.phone?A(e.phone):"";return`
+    `)},B=e=>{const r=d.products||[],t=d.purchases||[],a=r.filter(p=>String(p.supplierId)===String(e.id)||Array.isArray(p.suppliers)&&p.suppliers.some(c=>String(c.supplierId)===String(e.id))),s=t.filter(p=>String(p.supplierId)===String(e.id)).reduce((p,c)=>{if(c.paymentType==="tempo"&&c.paymentStatus!=="lunas"){const x=(parseFloat(c.total)||0)-(parseFloat(c.amountPaid)||0);return p+(x>0?x:0)}return p},0),n={cash:"Cash / Tunai",tempo_7:"Tempo 7 Hari",tempo_14:"Tempo 14 Hari",tempo_30:"Tempo 30 Hari",tempo_60:"Tempo 60 Hari",konsinyasi:"Konsinyasi (Titip Jual)"},i=e.phone?T(e.phone):"";return`
         <div class="bg-white/95 dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700/80 hover:border-[var(--color-primary)]/50 transition-all rounded-3xl p-4 sm:p-6 shadow-2xs group space-y-4">
             <!-- 1. IDENTITAS UTAMA SUPPLIER & STATUS -->
             <div class="flex items-start justify-between gap-3.5">
                 <div class="flex items-start gap-3.5 min-w-0">
                     <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center text-sm sm:text-base font-black shrink-0 border shadow-xs transition-transform group-hover:scale-105" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary); border-color: rgba(var(--color-primary-rgb), 0.25)">
-                        ${e.code?s(e.code.substring(0,3).toUpperCase()):'<i class="fa-solid fa-truck-field"></i>'}
+                        ${e.code?l(e.code.substring(0,3).toUpperCase()):'<i class="fa-solid fa-truck-field"></i>'}
                     </div>
 
                     <div class="min-w-0 flex-1">
                         <div class="flex items-center gap-2 flex-wrap">
-                            <h4 class="font-black text-sm sm:text-base text-slate-800 dark:text-white truncate tracking-tight">${s(e.name)}</h4>
-                            ${e.code?`<span class="px-2 py-0.5 rounded-lg bg-slate-100 dark:bg-slate-700/70 text-slate-600 dark:text-slate-300 text-[10px] font-mono font-bold border border-slate-200/60 dark:border-slate-700">${s(e.code)}</span>`:""}
-                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold border" style="background: rgba(var(--color-primary-rgb), 0.1); color: var(--color-primary); border-color: rgba(var(--color-primary-rgb), 0.25);">${s(d[e.defaultTerms]||"Cash")}</span>
+                            <h4 class="font-black text-sm sm:text-base text-slate-800 dark:text-white truncate tracking-tight">${l(e.name)}</h4>
+                            ${e.code?`<span class="px-2 py-0.5 rounded-lg bg-slate-100 dark:bg-slate-700/70 text-slate-600 dark:text-slate-300 text-[10px] font-mono font-bold border border-slate-200/60 dark:border-slate-700">${l(e.code)}</span>`:""}
+                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold border" style="background: rgba(var(--color-primary-rgb), 0.1); color: var(--color-primary); border-color: rgba(var(--color-primary-rgb), 0.25);">${l(n[e.defaultTerms]||"Cash")}</span>
                         </div>
 
                         <div class="flex items-center gap-3 text-xs text-slate-500 dark:text-slate-400 mt-1 flex-wrap">
-                            ${e.salesName?`<span><i class="fa-solid fa-user-tie mr-1" style="color:var(--color-primary)"></i>${s(e.salesName)}</span>`:""}
+                            ${e.salesName?`<span><i class="fa-solid fa-user-tie mr-1" style="color:var(--color-primary)"></i>${l(e.salesName)}</span>`:""}
                             ${i?`<a href="https://wa.me/${i}" target="_blank" onclick="event.stopPropagation();" class="text-emerald-600 dark:text-emerald-400 font-bold hover:underline flex items-center gap-1"><i class="fa-brands fa-whatsapp text-sm"></i>+${i}</a>`:""}
-                            ${e.bankName&&e.bankAccount?`<span><i class="fa-solid fa-credit-card mr-1" style="color:var(--color-primary)"></i>${s(e.bankName)}: <b class="font-mono text-slate-700 dark:text-slate-300">${s(e.bankAccount)}</b></span>`:""}
+                            ${e.bankName&&e.bankAccount?`<span><i class="fa-solid fa-credit-card mr-1" style="color:var(--color-primary)"></i>${l(e.bankName)}: <b class="font-mono text-slate-700 dark:text-slate-300">${l(e.bankAccount)}</b></span>`:""}
                         </div>
 
-                        ${e.address?`<p class="text-[11px] text-slate-400 truncate mt-1 max-w-lg"><i class="fa-solid fa-location-dot mr-1 text-rose-500"></i>${s(e.address)}</p>`:""}
+                        ${e.address?`<p class="text-[11px] text-slate-400 truncate mt-1 max-w-lg"><i class="fa-solid fa-location-dot mr-1 text-rose-500"></i>${l(e.address)}</p>`:""}
                     </div>
                 </div>
             </div>
@@ -167,9 +167,9 @@ import{a as c,e as u,b as T,f as m,i as s,aD as A,aE as F,o as D,v as y,l as M,n
                 </div>
 
                 <div class="space-y-0.5 text-right">
-                    <span class="block text-[10px] font-black uppercase tracking-wider ${o>0?"text-amber-500":"text-slate-400"}">Hutang Usaha</span>
-                    <p class="text-sm sm:text-base font-black ${o>0?"text-amber-600 dark:text-amber-400":"text-emerald-600 dark:text-emerald-400"}">
-                        ${o>0?m(o):'<span class="text-xs font-bold text-emerald-500"><i class="fa-solid fa-check mr-1"></i>Lunas (Rp 0)</span>'}
+                    <span class="block text-[10px] font-black uppercase tracking-wider ${s>0?"text-amber-500":"text-slate-400"}">Hutang Usaha</span>
+                    <p class="text-sm sm:text-base font-black ${s>0?"text-amber-600 dark:text-amber-400":"text-emerald-600 dark:text-emerald-400"}">
+                        ${s>0?m(s):'<span class="text-xs font-bold text-emerald-500"><i class="fa-solid fa-check mr-1"></i>Lunas (Rp 0)</span>'}
                     </p>
                 </div>
             </div>
@@ -205,7 +205,7 @@ import{a as c,e as u,b as T,f as m,i as s,aD as A,aE as F,o as D,v as y,l as M,n
                     ${i?`
                         <button 
                             type="button"
-                            onclick="event.stopPropagation(); window.openSupplierWhatsApp('${i}', '${s(e.name)}', '${s(e.salesName||"")}')" 
+                            onclick="event.stopPropagation(); window.openSupplierWhatsApp('${i}', '${l(e.name)}', '${l(e.salesName||"")}')" 
                             class="h-11 px-3 rounded-2xl bg-emerald-50 hover:bg-emerald-500 hover:text-white dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 flex items-center justify-center gap-1.5 transition-all active:scale-95 shadow-2xs cursor-pointer font-bold text-xs" 
                             title="Chat WhatsApp Sales"
                             aria-label="WhatsApp Sales"
@@ -239,8 +239,8 @@ import{a as c,e as u,b as T,f as m,i as s,aD as A,aE as F,o as D,v as y,l as M,n
                 </div>
             </div>
         </div>
-    `};window.handleSupplierSearch=e=>{$=e||"",h()};window.toggleSupplierFilter=()=>{k=k==="all"?"has_debt":"all",h()};window.openSupplierWhatsApp=(e,r,t)=>{const l=`${t?`Halo Pak/Bu ${t}`:`Halo Tim Sales ${r}`} dari *${c.store?.name||"Toko Putri"}*.
-Kami ingin menanyakan ketersediaan stok & mengajukan order barang. Mohon info update pricelist / ketersediaan barang ya. Terima kasih! 🙏`;F(e,l)};window.openSupplierFormModal=(e=null)=>{P();const r=c.suppliers||[],t=!!e,a=t?r.find(i=>String(i.id)===String(e))||{}:{code:"SUP-"+Math.floor(100+Math.random()*900),defaultTerms:"tempo_14"},l=u("modal-supplier-form"),o=u("modal-supplier-form-box"),d=u("modal-supplier-form-content");!l||!d||(T("modal-supplier-form-content",`
+    `};window.handleSupplierSearch=e=>{$=e||"",h()};window.toggleSupplierFilter=()=>{k=k==="all"?"has_debt":"all",h()};window.openSupplierWhatsApp=(e,r,t)=>{const o=`${t?`Halo Pak/Bu ${t}`:`Halo Tim Sales ${r}`} dari *${d.store?.name||"Toko Putri"}*.
+Kami ingin menanyakan ketersediaan stok & mengajukan order barang. Mohon info update pricelist / ketersediaan barang ya. Terima kasih! 🙏`;I(e,o)};window.openSupplierFormModal=(e=null)=>{P();const r=d.suppliers||[],t=!!e,a=t?r.find(i=>String(i.id)===String(e))||{}:{code:"SUP-"+Math.floor(100+Math.random()*900),defaultTerms:"tempo_14"},o=u("modal-supplier-form"),s=u("modal-supplier-form-box"),n=u("modal-supplier-form-content");!o||!n||(A("modal-supplier-form-content",`
         <!-- Pull Indicator for Mobile Bottom Sheet -->
         <div class="pull-indicator sm:hidden"></div>
 
@@ -264,22 +264,22 @@ Kami ingin menanyakan ketersediaan stok & mengajukan order barang. Mohon info up
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1.5">Nama Perusahaan / Supplier *</label>
-                        <input type="text" id="sf-name" required value="${s(a.name||"")}" placeholder="Contoh: PT Semen Gresik Abadi" class="admin-input bg-slate-50/90 dark:bg-slate-800/60 border border-slate-200/90 dark:border-slate-700/80 rounded-xl">
+                        <input type="text" id="sf-name" required value="${l(a.name||"")}" placeholder="Contoh: PT Semen Gresik Abadi" class="admin-input bg-slate-50/90 dark:bg-slate-800/60 border border-slate-200/90 dark:border-slate-700/80 rounded-xl">
                     </div>
 
                     <div>
                         <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1.5">Kode Supplier</label>
-                        <input type="text" id="sf-code" value="${s(a.code||"")}" placeholder="Contoh: SUP-SGA" class="admin-input bg-slate-50/90 dark:bg-slate-800/60 border border-slate-200/90 dark:border-slate-700/80 rounded-xl font-mono">
+                        <input type="text" id="sf-code" value="${l(a.code||"")}" placeholder="Contoh: SUP-SGA" class="admin-input bg-slate-50/90 dark:bg-slate-800/60 border border-slate-200/90 dark:border-slate-700/80 rounded-xl font-mono">
                     </div>
 
                     <div>
                         <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1.5">Nama Sales / PIC Toko</label>
-                        <input type="text" id="sf-salesName" value="${s(a.salesName||"")}" placeholder="Nama kontak sales lapangan" class="admin-input bg-slate-50/90 dark:bg-slate-800/60 border border-slate-200/90 dark:border-slate-700/80 rounded-xl">
+                        <input type="text" id="sf-salesName" value="${l(a.salesName||"")}" placeholder="Nama kontak sales lapangan" class="admin-input bg-slate-50/90 dark:bg-slate-800/60 border border-slate-200/90 dark:border-slate-700/80 rounded-xl">
                     </div>
 
                     <div>
                         <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1.5">No WhatsApp Sales *</label>
-                        <input type="tel" id="sf-phone" required value="${s(a.phone||"")}" placeholder="Contoh: 081234567890" class="admin-input bg-slate-50/90 dark:bg-slate-800/60 border border-slate-200/90 dark:border-slate-700/80 rounded-xl">
+                        <input type="tel" id="sf-phone" required value="${l(a.phone||"")}" placeholder="Contoh: 081234567890" class="admin-input bg-slate-50/90 dark:bg-slate-800/60 border border-slate-200/90 dark:border-slate-700/80 rounded-xl">
                     </div>
 
                     <div>
@@ -296,7 +296,7 @@ Kami ingin menanyakan ketersediaan stok & mengajukan order barang. Mohon info up
 
                     <div>
                         <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1.5">Email (Opsional)</label>
-                        <input type="email" id="sf-email" value="${s(a.email||"")}" placeholder="sales@perusahaan.com" class="admin-input bg-slate-50/90 dark:bg-slate-800/60 border border-slate-200/90 dark:border-slate-700/80 rounded-xl">
+                        <input type="email" id="sf-email" value="${l(a.email||"")}" placeholder="sales@perusahaan.com" class="admin-input bg-slate-50/90 dark:bg-slate-800/60 border border-slate-200/90 dark:border-slate-700/80 rounded-xl">
                     </div>
                 </div>
 
@@ -309,27 +309,27 @@ Kami ingin menanyakan ketersediaan stok & mengajukan order barang. Mohon info up
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                         <div>
                             <label class="block text-[9px] font-bold uppercase text-slate-400 mb-1">Nama Bank</label>
-                            <input type="text" id="sf-bankName" value="${s(a.bankName||"")}" placeholder="BCA / Mandiri / BRI" class="admin-input bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl">
+                            <input type="text" id="sf-bankName" value="${l(a.bankName||"")}" placeholder="BCA / Mandiri / BRI" class="admin-input bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl">
                         </div>
                         <div>
                             <label class="block text-[9px] font-bold uppercase text-slate-400 mb-1">Nomor Rekening</label>
-                            <input type="text" id="sf-bankAccount" value="${s(a.bankAccount||"")}" placeholder="1234567890" class="admin-input bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl font-mono">
+                            <input type="text" id="sf-bankAccount" value="${l(a.bankAccount||"")}" placeholder="1234567890" class="admin-input bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl font-mono">
                         </div>
                         <div>
                             <label class="block text-[9px] font-bold uppercase text-slate-400 mb-1">Atas Nama (A/N)</label>
-                            <input type="text" id="sf-bankHolder" value="${s(a.bankHolder||"")}" placeholder="PT / Nama Pemilik" class="admin-input bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl">
+                            <input type="text" id="sf-bankHolder" value="${l(a.bankHolder||"")}" placeholder="PT / Nama Pemilik" class="admin-input bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl">
                         </div>
                     </div>
                 </div>
 
                 <div>
                     <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1.5">Alamat Kantor / Gudang Supplier</label>
-                    <textarea id="sf-address" rows="2" placeholder="Alamat lengkap supplier..." class="admin-input bg-slate-50/90 dark:bg-slate-800/60 border border-slate-200/90 dark:border-slate-700/80 rounded-xl resize-none">${s(a.address||"")}</textarea>
+                    <textarea id="sf-address" rows="2" placeholder="Alamat lengkap supplier..." class="admin-input bg-slate-50/90 dark:bg-slate-800/60 border border-slate-200/90 dark:border-slate-700/80 rounded-xl resize-none">${l(a.address||"")}</textarea>
                 </div>
 
                 <div>
                     <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1.5">Catatan Khusus (Syarat Order / Jadwal Armada)</label>
-                    <textarea id="sf-notes" rows="2" placeholder="Minimal order 50 sak, jadwal kirim tiap hari Selasa & Kamis..." class="admin-input bg-slate-50/90 dark:bg-slate-800/60 border border-slate-200/90 dark:border-slate-700/80 rounded-xl resize-none">${s(a.notes||"")}</textarea>
+                    <textarea id="sf-notes" rows="2" placeholder="Minimal order 50 sak, jadwal kirim tiap hari Selasa & Kamis..." class="admin-input bg-slate-50/90 dark:bg-slate-800/60 border border-slate-200/90 dark:border-slate-700/80 rounded-xl resize-none">${l(a.notes||"")}</textarea>
                 </div>
             </div>
 
@@ -344,7 +344,7 @@ Kami ingin menanyakan ketersediaan stok & mengajukan order barang. Mohon info up
                 </button>
             </div>
         </form>
-    `),l.classList.contains("hidden")&&typeof window.pushModalHistory=="function"&&window.pushModalHistory("supplierForm"),D(l,o))};window.closeSupplierFormModal=(e=!1)=>{const r=u("modal-supplier-form"),t=u("modal-supplier-form-box");r&&(!e&&typeof window.requestCloseModal=="function"?window.requestCloseModal("supplierForm",!1,()=>y(r,t)):y(r,t))};window.saveSupplierForm=async(e,r)=>{e.preventDefault(),M("Menyimpan Data Supplier...");try{const t=(u("sf-name")?.value||"").trim(),a=(u("sf-code")?.value||"").trim(),l=(u("sf-salesName")?.value||"").trim();let o=(u("sf-phone")?.value||"").trim();const d=u("sf-defaultTerms")?.value||"tempo_14",i=(u("sf-email")?.value||"").trim(),n=(u("sf-bankName")?.value||"").trim(),p=(u("sf-bankAccount")?.value||"").trim(),x=(u("sf-bankHolder")?.value||"").trim(),v=(u("sf-address")?.value||"").trim(),R=(u("sf-notes")?.value||"").trim();if(!t)return g(),f("Nama supplier wajib diisi!");o&&(o=A(o)),c.suppliers||(c.suppliers=[]);const w={id:r||"sup_"+Date.now().toString(36)+"_"+Math.random().toString(36).substring(2,6),name:t,code:a,salesName:l,phone:o,defaultTerms:d,email:i,bankName:n,bankAccount:p,bankHolder:x,address:v,notes:R,updatedAt:new Date().toISOString()};if(!r)w.createdAt=new Date().toISOString(),c.suppliers.unshift(w);else{const S=c.suppliers.findIndex(C=>String(C.id)===String(r));S>-1?c.suppliers[S]={...c.suppliers[S],...w}:c.suppliers.push(w)}await N(["suppliers"]),g(),window.closeSupplierFormModal(),f(r?"Data supplier diperbarui! ✨":"Supplier baru berhasil ditambahkan! 🎉"),h()}catch(t){g(),console.error("Gagal menyimpan supplier:",t),f("Gagal menyimpan: "+(t.message||""))}};window.deleteSupplier=e=>{const t=(c.suppliers||[]).find(d=>String(d.id)===String(e));if(!t)return;const a=(c.products||[]).filter(d=>String(d.supplierId)===String(e)||Array.isArray(d.suppliers)&&d.suppliers.some(i=>String(i.supplierId)===String(e))),l=(c.purchases||[]).filter(d=>String(d.supplierId)===String(e));let o=`Hapus supplier <b>${s(t.name)}</b>?`;a.length>0&&(o+=`<br><span class="text-amber-500 font-bold text-xs mt-1 block">Perhatian: Ada ${a.length} produk di etalase yang terhubung ke supplier ini. Link supplier pada produk tersebut akan dilepas.</span>`),l.length>0&&(o+=`<br><span class="text-rose-500 font-bold text-xs mt-1 block">Terdapat ${l.length} riwayat pesanan kulakan (PO) terkait supplier ini.</span>`),I("Hapus Supplier",o,async()=>{M("Menghapus...");try{c.suppliers=(c.suppliers||[]).filter(i=>String(i.id)!==String(e));let d=!1;(c.products||[]).forEach(i=>{String(i.supplierId)===String(e)&&(delete i.supplierId,d=!0)}),await N(d?["suppliers","products"]:["suppliers"]),g(),f("Supplier berhasil dihapus."),h()}catch(d){g(),console.error("Gagal menghapus supplier:",d),f("Gagal menghapus: "+d.message)}},"Hapus Permanen")};window.openSupplierDetailModal=(e,r="products")=>{P(),j=e,b=r;const a=(c.suppliers||[]).find(i=>String(i.id)===String(e));if(!a)return f("Supplier tidak ditemukan!");const l=u("modal-supplier-detail"),o=u("modal-supplier-detail-box"),d=u("modal-supplier-detail-content");!l||!d||(E(a),l.classList.contains("hidden")&&typeof window.pushModalHistory=="function"&&window.pushModalHistory("supplierDetail"),D(l,o))};window.closeSupplierDetailModal=(e=!1)=>{const r=u("modal-supplier-detail"),t=u("modal-supplier-detail-box");r&&(!e&&typeof window.requestCloseModal=="function"?window.requestCloseModal("supplierDetail",!1,()=>y(r,t)):y(r,t))};window.switchSupplierDetailTab=e=>{b=e;const t=(c.suppliers||[]).find(a=>String(a.id)===String(j));t&&E(t)};const E=e=>{const r=u("modal-supplier-detail-content");if(!r)return;r.className="flex-1 flex flex-col overflow-hidden";const t=c.products||[],a=c.purchases||[],l=t.filter(p=>String(p.supplierId)===String(e.id)||Array.isArray(p.suppliers)&&p.suppliers.some(x=>String(x.supplierId)===String(e.id))),o=a.filter(p=>String(p.supplierId)===String(e.id));o.sort((p,x)=>new Date(x.date||x.createdAt||0)-new Date(p.date||p.createdAt||0));const d=o.filter(p=>p.paymentType==="tempo"),i=d.reduce((p,x)=>{if(x.paymentStatus!=="lunas"){const v=(parseFloat(x.total)||0)-(parseFloat(x.amountPaid)||0);return p+(v>0?v:0)}return p},0),n=e.phone?A(e.phone):"";T("modal-supplier-detail-content",`
+    `),o.classList.contains("hidden")&&typeof window.pushModalHistory=="function"&&window.pushModalHistory("supplierForm"),D(o,s))};window.closeSupplierFormModal=(e=!1)=>{const r=u("modal-supplier-form"),t=u("modal-supplier-form-box");r&&(!e&&typeof window.requestCloseModal=="function"?window.requestCloseModal("supplierForm",!1,()=>y(r,t)):y(r,t))};window.saveSupplierForm=async(e,r)=>{e.preventDefault(),M("Menyimpan Data Supplier...");try{const t=(u("sf-name")?.value||"").trim(),a=(u("sf-code")?.value||"").trim(),o=(u("sf-salesName")?.value||"").trim();let s=(u("sf-phone")?.value||"").trim();const n=u("sf-defaultTerms")?.value||"tempo_14",i=(u("sf-email")?.value||"").trim(),p=(u("sf-bankName")?.value||"").trim(),c=(u("sf-bankAccount")?.value||"").trim(),x=(u("sf-bankHolder")?.value||"").trim(),v=(u("sf-address")?.value||"").trim(),R=(u("sf-notes")?.value||"").trim();if(!t)return g(),f("Nama supplier wajib diisi!");s&&(s=T(s)),d.suppliers||(d.suppliers=[]);const w={id:r||"sup_"+Date.now().toString(36)+"_"+Math.random().toString(36).substring(2,6),name:t,code:a,salesName:o,phone:s,defaultTerms:n,email:i,bankName:p,bankAccount:c,bankHolder:x,address:v,notes:R,updatedAt:new Date().toISOString()};if(!r)w.createdAt=new Date().toISOString(),d.suppliers.unshift(w);else{const S=d.suppliers.findIndex(C=>String(C.id)===String(r));S>-1?d.suppliers[S]={...d.suppliers[S],...w}:d.suppliers.push(w)}await N(["suppliers"]),g(),window.closeSupplierFormModal(),f(r?"Data supplier diperbarui! ✨":"Supplier baru berhasil ditambahkan! 🎉"),h()}catch(t){g(),console.error("Gagal menyimpan supplier:",t),f("Gagal menyimpan: "+(t.message||""))}};window.deleteSupplier=e=>{const t=(d.suppliers||[]).find(n=>String(n.id)===String(e));if(!t)return;const a=(d.products||[]).filter(n=>String(n.supplierId)===String(e)||Array.isArray(n.suppliers)&&n.suppliers.some(i=>String(i.supplierId)===String(e))),o=(d.purchases||[]).filter(n=>String(n.supplierId)===String(e));let s=`Hapus supplier <b>${l(t.name)}</b>?`;a.length>0&&(s+=`<br><span class="text-amber-500 font-bold text-xs mt-1 block">Perhatian: Ada ${a.length} produk di etalase yang terhubung ke supplier ini. Link supplier pada produk tersebut akan dilepas.</span>`),o.length>0&&(s+=`<br><span class="text-rose-500 font-bold text-xs mt-1 block">Terdapat ${o.length} riwayat pesanan kulakan (PO) terkait supplier ini.</span>`),F("Hapus Supplier",s,async()=>{M("Menghapus...");try{d.suppliers=(d.suppliers||[]).filter(i=>String(i.id)!==String(e));let n=!1;(d.products||[]).forEach(i=>{String(i.supplierId)===String(e)&&(delete i.supplierId,n=!0)}),await N(n?["suppliers","products"]:["suppliers"]),g(),f("Supplier berhasil dihapus."),h()}catch(n){g(),console.error("Gagal menghapus supplier:",n),f("Gagal menghapus: "+n.message)}},"Hapus Permanen")};window.openSupplierDetailModal=(e,r="products")=>{P(),j=e,b=r;const a=(d.suppliers||[]).find(i=>String(i.id)===String(e));if(!a)return f("Supplier tidak ditemukan!");const o=u("modal-supplier-detail"),s=u("modal-supplier-detail-box"),n=u("modal-supplier-detail-content");!o||!n||(E(a),o.classList.contains("hidden")&&typeof window.pushModalHistory=="function"&&window.pushModalHistory("supplierDetail"),D(o,s))};window.closeSupplierDetailModal=(e=!1)=>{const r=u("modal-supplier-detail"),t=u("modal-supplier-detail-box");r&&(!e&&typeof window.requestCloseModal=="function"?window.requestCloseModal("supplierDetail",!1,()=>y(r,t)):y(r,t))};window.switchSupplierDetailTab=e=>{b=e;const t=(d.suppliers||[]).find(a=>String(a.id)===String(j));t&&E(t)};const E=e=>{const r=u("modal-supplier-detail-content");if(!r)return;r.className="flex-1 flex flex-col overflow-hidden";const t=d.products||[],a=d.purchases||[],o=t.filter(c=>String(c.supplierId)===String(e.id)||Array.isArray(c.suppliers)&&c.suppliers.some(x=>String(x.supplierId)===String(e.id))),s=a.filter(c=>String(c.supplierId)===String(e.id));s.sort((c,x)=>new Date(x.date||x.createdAt||0)-new Date(c.date||c.createdAt||0));const n=s.filter(c=>c.paymentType==="tempo"),i=n.reduce((c,x)=>{if(x.paymentStatus!=="lunas"){const v=(parseFloat(x.total)||0)-(parseFloat(x.amountPaid)||0);return c+(v>0?v:0)}return c},0),p=e.phone?T(e.phone):"";A("modal-supplier-detail-content",`
         <!-- DRAG PULL INDICATOR (NATIVE MOBILE SHEET) -->
         <div class="pull-indicator sm:hidden"></div>
 
@@ -363,19 +363,19 @@ Kami ingin menanyakan ketersediaan stok & mengajukan order barang. Mohon info up
             <!-- Profil Header Info -->
             <div class="flex items-start gap-3 sm:gap-4 pr-9 sm:pr-10">
                 <div class="w-13 h-13 sm:w-16 sm:h-16 rounded-2xl flex items-center justify-center text-lg sm:text-2xl shrink-0 font-black shadow-xs transition-transform" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary); border: 1.5px solid rgba(var(--color-primary-rgb), 0.25);">
-                    ${e.code?s(e.code.substring(0,3).toUpperCase()):'<i class="fa-solid fa-truck-field"></i>'}
+                    ${e.code?l(e.code.substring(0,3).toUpperCase()):'<i class="fa-solid fa-truck-field"></i>'}
                 </div>
                 <div class="min-w-0 flex-1">
                     <div class="flex items-center gap-2 flex-wrap">
-                        <h3 class="font-black text-base sm:text-xl text-slate-800 dark:text-white tracking-tight leading-tight">${s(e.name)}</h3>
-                        ${e.code?`<span class="px-2 py-0.5 rounded-lg bg-slate-200/80 dark:bg-slate-700/80 text-slate-700 dark:text-slate-300 text-[11px] font-mono font-bold">${s(e.code)}</span>`:""}
+                        <h3 class="font-black text-base sm:text-xl text-slate-800 dark:text-white tracking-tight leading-tight">${l(e.name)}</h3>
+                        ${e.code?`<span class="px-2 py-0.5 rounded-lg bg-slate-200/80 dark:bg-slate-700/80 text-slate-700 dark:text-slate-300 text-[11px] font-mono font-bold">${l(e.code)}</span>`:""}
                     </div>
                     <div class="flex items-center gap-x-3 gap-y-1 text-xs text-slate-500 dark:text-slate-400 mt-1 flex-wrap">
-                        ${e.salesName?`<span><i class="fa-solid fa-user-tie text-[var(--color-primary)] mr-1"></i>Sales: <b>${s(e.salesName)}</b></span>`:""}
-                        ${n?`<a href="https://wa.me/${n}" target="_blank" class="text-emerald-600 dark:text-emerald-400 font-bold hover:underline inline-flex items-center"><i class="fa-brands fa-whatsapp mr-1 text-emerald-500"></i>+${n}</a>`:""}
-                        ${e.bankName&&e.bankAccount?`<span><i class="fa-solid fa-credit-card mr-1" style="color:var(--color-primary)"></i>${s(e.bankName)}: <b class="font-mono text-slate-700 dark:text-slate-200">${s(e.bankAccount)}</b></span>`:""}
+                        ${e.salesName?`<span><i class="fa-solid fa-user-tie text-[var(--color-primary)] mr-1"></i>Sales: <b>${l(e.salesName)}</b></span>`:""}
+                        ${p?`<a href="https://wa.me/${p}" target="_blank" class="text-emerald-600 dark:text-emerald-400 font-bold hover:underline inline-flex items-center"><i class="fa-brands fa-whatsapp mr-1 text-emerald-500"></i>+${p}</a>`:""}
+                        ${e.bankName&&e.bankAccount?`<span><i class="fa-solid fa-credit-card mr-1" style="color:var(--color-primary)"></i>${l(e.bankName)}: <b class="font-mono text-slate-700 dark:text-slate-200">${l(e.bankAccount)}</b></span>`:""}
                     </div>
-                    ${e.address?`<p class="text-[11px] text-slate-400 dark:text-slate-400 mt-1 line-clamp-2"><i class="fa-solid fa-location-dot text-rose-500 mr-1 shrink-0"></i>${s(e.address)}</p>`:""}
+                    ${e.address?`<p class="text-[11px] text-slate-400 dark:text-slate-400 mt-1 line-clamp-2"><i class="fa-solid fa-location-dot text-rose-500 mr-1 shrink-0"></i>${l(e.address)}</p>`:""}
                 </div>
             </div>
 
@@ -388,7 +388,7 @@ Kami ingin menanyakan ketersediaan stok & mengajukan order barang. Mohon info up
                     ${b==="products"?'style="color: var(--color-primary);"':""}
                 >
                     <i class="fa-solid fa-boxes-stacked text-xs shrink-0"></i>
-                    <span class="truncate">Produk (${l.length})</span>
+                    <span class="truncate">Produk (${o.length})</span>
                 </button>
 
                 <button 
@@ -398,7 +398,7 @@ Kami ingin menanyakan ketersediaan stok & mengajukan order barang. Mohon info up
                     ${b==="orders"?'style="color: var(--color-primary);"':""}
                 >
                     <i class="fa-solid fa-cart-flatbed text-xs shrink-0"></i>
-                    <span class="truncate">PO (${o.length})</span>
+                    <span class="truncate">PO (${s.length})</span>
                 </button>
 
                 <button 
@@ -408,7 +408,7 @@ Kami ingin menanyakan ketersediaan stok & mengajukan order barang. Mohon info up
                     ${b==="debt"?'style="color: var(--color-primary);"':""}
                 >
                     <i class="fa-solid fa-file-invoice-dollar text-xs shrink-0"></i>
-                    <span class="truncate">Hutang (${d.length})</span>
+                    <span class="truncate">Hutang (${n.length})</span>
                     ${i>0?'<span class="w-2 h-2 rounded-full bg-rose-500 shrink-0" title="Ada hutang aktif"></span>':""}
                 </button>
             </div>
@@ -416,9 +416,9 @@ Kami ingin menanyakan ketersediaan stok & mengajukan order barang. Mohon info up
 
         <!-- ISI KONTEN TAB (SCROLLABLE, FLUID FLEX-1) -->
         <div class="p-4 sm:p-6 overflow-y-auto flex-1 custom-scrollbar">
-            ${b==="products"?K(l,e):""}
-            ${b==="orders"?U(o,e):""}
-            ${b==="debt"?_(d,i,e):""}
+            ${b==="products"?K(o,e):""}
+            ${b==="orders"?_(s,e):""}
+            ${b==="debt"?U(n,i,e):""}
         </div>
 
         <!-- STICKY ACTION FOOTER (NATIVE APP STANDARD) -->
@@ -437,7 +437,7 @@ Kami ingin menanyakan ketersediaan stok & mengajukan order barang. Mohon info up
                     <i class="fa-solid fa-box-open"></i>
                 </div>
                 <p class="font-bold text-sm text-slate-700 dark:text-slate-200">Belum Ada Produk yang Dihubungkan</p>
-                <p class="text-xs text-slate-400 mt-1 max-w-md mx-auto leading-relaxed">Saat Anda menambahkan atau mengedit produk di menu Katalog Produk, pilih <b>${s(r.name)}</b> pada field Rekanan/Supplier Asal.</p>
+                <p class="text-xs text-slate-400 mt-1 max-w-md mx-auto leading-relaxed">Saat Anda menambahkan atau mengedit produk di menu Katalog Produk, pilih <b>${l(r.name)}</b> pada field Rekanan/Supplier Asal.</p>
                 <button onclick="window.closeSupplierDetailModal(); if(window.openAdminTab) window.openAdminTab('products');" class="mt-4 px-5 py-2.5 rounded-2xl font-bold text-xs cursor-pointer active:scale-95 transition-all inline-flex items-center gap-2 border shadow-xs" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary); border-color: rgba(var(--color-primary-rgb), 0.25);">
                     <i class="fa-solid fa-box-archive text-xs"></i>
                     <span>Buka Katalog Produk Toko</span>
@@ -454,17 +454,17 @@ Kami ingin menanyakan ketersediaan stok & mengajukan order barang. Mohon info up
             </div>
 
             <div class="space-y-3">
-                ${e.map(t=>{const a=L(t,{size:"thumb"}),l=t.img?`<div class="w-14 h-14 shrink-0 rounded-2xl overflow-hidden bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-0.5 flex items-center justify-center shadow-2xs" style="width: 56px; height: 56px; min-width: 56px; min-height: 56px; max-width: 56px; max-height: 56px;"><img src="${s(t.img)}" alt="${s(t.name)}" class="w-full h-full object-cover rounded-xl" onerror="this.onerror=null;this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='flex';"><div class="w-full h-full" style="display:none">${a}</div></div>`:`<div class="w-14 h-14 shrink-0 rounded-2xl overflow-hidden bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-2xs flex items-center justify-center" style="width: 56px; height: 56px; min-width: 56px; min-height: 56px; max-width: 56px; max-height: 56px;">${a}</div>`,o=t.variants&&t.variants.length?t.variants.reduce((n,p)=>n+(parseFloat(p.stock)||0),0):parseFloat(t.stock)||0,d=t.price&&t.hpp?t.price-t.hpp:0,i=t.price&&t.hpp&&t.hpp>0?Math.round(d/t.hpp*100):0;return`
+                ${e.map(t=>{const a=L(t,{size:"thumb"}),o=t.img?`<div class="w-14 h-14 shrink-0 rounded-2xl overflow-hidden bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-0.5 flex items-center justify-center shadow-2xs" style="width: 56px; height: 56px; min-width: 56px; min-height: 56px; max-width: 56px; max-height: 56px;"><img src="${l(t.img)}" alt="${l(t.name)}" class="w-full h-full object-cover rounded-xl" onerror="this.onerror=null;this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='flex';"><div class="w-full h-full" style="display:none">${a}</div></div>`:`<div class="w-14 h-14 shrink-0 rounded-2xl overflow-hidden bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-2xs flex items-center justify-center" style="width: 56px; height: 56px; min-width: 56px; min-height: 56px; max-width: 56px; max-height: 56px;">${a}</div>`,s=t.variants&&t.variants.length?t.variants.reduce((p,c)=>p+(parseFloat(c.stock)||0),0):parseFloat(t.stock)||0,n=t.price&&t.hpp?t.price-t.hpp:0,i=t.price&&t.hpp&&t.hpp>0?Math.round(n/t.hpp*100):0;return`
                         <div class="p-3.5 sm:p-4 rounded-3xl bg-white dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs hover:border-[var(--color-primary)]/50 transition-all space-y-3">
                             <div class="flex items-start justify-between gap-3">
                                 <div class="flex items-start gap-3 min-w-0 flex-1">
-                                    <div class="shrink-0">${l}</div>
+                                    <div class="shrink-0">${o}</div>
                                     <div class="min-w-0 flex-1">
-                                        <h5 class="font-black text-xs sm:text-sm text-slate-800 dark:text-slate-100 truncate">${s(t.name)}</h5>
+                                        <h5 class="font-black text-xs sm:text-sm text-slate-800 dark:text-slate-100 truncate">${l(t.name)}</h5>
                                         <div class="flex items-center gap-2 text-[10px] text-slate-400 mt-1 flex-wrap">
-                                            ${t.sku?`<span class="font-mono bg-slate-100 dark:bg-slate-700/80 px-2 py-0.5 rounded-md text-slate-600 dark:text-slate-300 font-bold">SKU: ${s(t.sku)}</span>`:""}
-                                            ${t.category?`<span class="text-slate-500 dark:text-slate-400 font-medium">${s(t.category)}</span>`:""}
-                                            <span class="font-bold ${o<=2?"text-rose-500":"text-emerald-600 dark:text-emerald-400"}"><i class="fa-solid fa-boxes-stacked mr-1"></i>Stok: ${o} ${s(t.unit||"pcs")}</span>
+                                            ${t.sku?`<span class="font-mono bg-slate-100 dark:bg-slate-700/80 px-2 py-0.5 rounded-md text-slate-600 dark:text-slate-300 font-bold">SKU: ${l(t.sku)}</span>`:""}
+                                            ${t.category?`<span class="text-slate-500 dark:text-slate-400 font-medium">${l(t.category)}</span>`:""}
+                                            <span class="font-bold ${s<=2?"text-rose-500":"text-emerald-600 dark:text-emerald-400"}"><i class="fa-solid fa-boxes-stacked mr-1"></i>Stok: ${s} ${l(t.unit||"pcs")}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -486,14 +486,14 @@ Kami ingin menanyakan ketersediaan stok & mengajukan order barang. Mohon info up
                                 </div>
                                 <div class="text-right">
                                     <span class="block text-[9px] font-black uppercase tracking-wider text-slate-400">Margin Laba</span>
-                                    <span class="font-bold ${d>0?"text-emerald-500":"text-slate-400"}">${d>0?`+${m(d)} (${i}%)`:"-"}</span>
+                                    <span class="font-bold ${n>0?"text-emerald-500":"text-slate-400"}">${n>0?`+${m(n)} (${i}%)`:"-"}</span>
                                 </div>
                             </div>
                         </div>
                     `}).join("")}
             </div>
         </div>
-    `,U=(e,r)=>e.length===0?`
+    `,_=(e,r)=>e.length===0?`
             <div class="text-center py-10 sm:py-12 text-slate-400">
                 <div class="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl mx-auto mb-3 shadow-xs" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary); border: 1.5px solid rgba(var(--color-primary-rgb), 0.25);">
                     <i class="fa-solid fa-receipt"></i>
@@ -507,17 +507,17 @@ Kami ingin menanyakan ketersediaan stok & mengajukan order barang. Mohon info up
             </div>
         `:`
         <div class="space-y-3">
-            ${e.map(t=>{const a={ordered:'<span class="px-2.5 py-1 rounded-full text-[10px] font-bold border" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary); border-color: rgba(var(--color-primary-rgb), 0.25);"><i class="fa-solid fa-clock mr-1"></i>Dipesan</span>',received:'<span class="px-2.5 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold border border-emerald-200 dark:border-emerald-800"><i class="fa-solid fa-boxes-stacked mr-1"></i>Barang Diterima</span>',completed:'<span class="px-2.5 py-1 rounded-full bg-emerald-500 text-white text-[10px] font-black shadow-2xs"><i class="fa-solid fa-check-double mr-1"></i>Selesai &amp; Lunas</span>',cancelled:'<span class="px-2.5 py-1 rounded-full bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 text-[10px] font-bold border border-rose-200 dark:border-rose-800"><i class="fa-solid fa-ban mr-1"></i>Dibatalkan</span>'}[t.status||"ordered"],l=t.paymentType==="tempo"?`
+            ${e.map(t=>{const a={ordered:'<span class="px-2.5 py-1 rounded-full text-[10px] font-bold border" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary); border-color: rgba(var(--color-primary-rgb), 0.25);"><i class="fa-solid fa-clock mr-1"></i>Dipesan</span>',received:'<span class="px-2.5 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold border border-emerald-200 dark:border-emerald-800"><i class="fa-solid fa-boxes-stacked mr-1"></i>Barang Diterima</span>',completed:'<span class="px-2.5 py-1 rounded-full bg-emerald-500 text-white text-[10px] font-black shadow-2xs"><i class="fa-solid fa-check-double mr-1"></i>Selesai &amp; Lunas</span>',cancelled:'<span class="px-2.5 py-1 rounded-full bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 text-[10px] font-bold border border-rose-200 dark:border-rose-800"><i class="fa-solid fa-ban mr-1"></i>Dibatalkan</span>'}[t.status||"ordered"],o=t.paymentType==="tempo"?`
                     <span class="px-2 py-0.5 rounded bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 text-[10px] font-bold border border-amber-200 dark:border-amber-800">
                         Tempo ${t.tempoDays?`${t.tempoDays} Hari`:""} (${t.paymentStatus==="lunas"?"Lunas":"Belum Lunas"})
                     </span>
-                `:`<span class="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 text-[10px] font-bold uppercase">${s(t.paymentType||"Cash")}</span>`;return`
+                `:`<span class="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 text-[10px] font-bold uppercase">${l(t.paymentType||"Cash")}</span>`;return`
                     <div class="bg-white/95 dark:bg-slate-800/90 p-4 border border-slate-200/90 dark:border-slate-700/80 hover:border-[var(--color-primary)]/40 transition-all rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-2xs">
                         <div>
                             <div class="flex items-center gap-2 flex-wrap">
-                                <span class="font-mono font-black text-xs text-slate-800 dark:text-white">${s(t.poNumber||t.id)}</span>
+                                <span class="font-mono font-black text-xs text-slate-800 dark:text-white">${l(t.poNumber||t.id)}</span>
                                 ${a}
-                                ${l}
+                                ${o}
                             </div>
                             <p class="text-[11px] text-slate-400 mt-1 flex items-center gap-3">
                                 <span><i class="fa-regular fa-calendar mr-1"></i>${O(t.date||t.createdAt)}</span>
@@ -538,7 +538,7 @@ Kami ingin menanyakan ketersediaan stok & mengajukan order barang. Mohon info up
                     </div>
                 `}).join("")}
         </div>
-    `,_=(e,r,t)=>{const a=e.filter(l=>(parseFloat(l.total)||0)-(parseFloat(l.amountPaid)||0)>0&&l.paymentStatus!=="lunas");return`
+    `,U=(e,r,t)=>{const a=e.filter(o=>(parseFloat(o.total)||0)-(parseFloat(o.amountPaid)||0)>0&&o.paymentStatus!=="lunas");return`
         <div class="space-y-4">
             <!-- RINGKASAN TOTAL HUTANG USAHA -->
             <div class="p-4 sm:p-5 rounded-3xl ${r>0?"bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700":"bg-emerald-50/70 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-800/60"} flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-2xs">
@@ -553,8 +553,8 @@ Kami ingin menanyakan ketersediaan stok & mengajukan order barang. Mohon info up
                 ${t.bankAccount?`
                     <div class="p-3 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 text-xs shrink-0 shadow-2xs">
                         <span class="block text-[9px] font-bold text-slate-400 uppercase">Rekening Tujuan Transfer:</span>
-                        <p class="font-bold text-slate-800 dark:text-white mt-0.5">${s(t.bankName)}: <b class="font-mono text-base">${s(t.bankAccount)}</b></p>
-                        <p class="text-[10px] text-slate-400">a/n ${s(t.bankHolder||t.name)}</p>
+                        <p class="font-bold text-slate-800 dark:text-white mt-0.5">${l(t.bankName)}: <b class="font-mono text-base">${l(t.bankAccount)}</b></p>
+                        <p class="text-[10px] text-slate-400">a/n ${l(t.bankHolder||t.name)}</p>
                     </div>
                 `:""}
             </div>
@@ -567,21 +567,21 @@ Kami ingin menanyakan ketersediaan stok & mengajukan order barang. Mohon info up
                         <i class="fa-solid fa-circle-check text-2xl text-emerald-500 mb-2"></i>
                         <p class="font-bold text-xs text-slate-600 dark:text-slate-300">Tidak ada tanggungan hutang yang aktif</p>
                     </div>
-                `:a.map(l=>{const o=(parseFloat(l.total)||0)-(parseFloat(l.amountPaid)||0),d=parseFloat(l.amountPaid)||0,i=l.tempoDueDate?O(l.tempoDueDate):"-";return`
+                `:a.map(o=>{const s=(parseFloat(o.total)||0)-(parseFloat(o.amountPaid)||0),n=parseFloat(o.amountPaid)||0,i=o.tempoDueDate?O(o.tempoDueDate):"-";return`
                         <div class="bg-white/95 dark:bg-slate-800/90 p-4 border border-slate-200/90 dark:border-slate-700/80 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-2xs">
                             <div>
                                 <div class="flex items-center gap-2">
-                                    <span class="font-mono font-black text-xs text-slate-800 dark:text-white">${s(l.poNumber||l.id)}</span>
+                                    <span class="font-mono font-black text-xs text-slate-800 dark:text-white">${l(o.poNumber||o.id)}</span>
                                     <span class="text-[10px] px-2 py-0.5 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 font-bold border border-slate-200/80 dark:border-slate-600">Jatuh Tempo: ${i}</span>
                                 </div>
                                 <div class="flex items-center gap-4 text-xs text-slate-500 dark:text-slate-400 mt-1.5 flex-wrap">
-                                    <span>Total: <b>${m(l.total)}</b></span>
-                                    <span>Sudah Dibayar: <b class="text-emerald-500">${m(d)}</b></span>
-                                    <span>Sisa: <b class="text-rose-500 font-bold">${m(o)}</b></span>
+                                    <span>Total: <b>${m(o.total)}</b></span>
+                                    <span>Sudah Dibayar: <b class="text-emerald-500">${m(n)}</b></span>
+                                    <span>Sisa: <b class="text-rose-500 font-bold">${m(s)}</b></span>
                                 </div>
                             </div>
 
-                            <button onclick="window.closeSupplierDetailModal(); if(window.openAdminTab) window.openAdminTab('purchases'); setTimeout(() => { window.openPurchasePaymentModal?.('${l.id}'); }, 200);" class="h-11 px-5 rounded-2xl text-white font-bold text-xs flex items-center justify-center gap-2 shadow-2xs active:scale-95 transition-all cursor-pointer shrink-0" style="background: var(--color-primary); box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.3);">
+                            <button onclick="window.closeSupplierDetailModal(); if(window.openAdminTab) window.openAdminTab('purchases'); setTimeout(() => { window.openPurchasePaymentModal?.('${o.id}'); }, 200);" class="h-11 px-5 rounded-2xl text-white font-bold text-xs flex items-center justify-center gap-2 shadow-2xs active:scale-95 transition-all cursor-pointer shrink-0" style="background: var(--color-primary); box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.3);">
                                 <i class="fa-solid fa-money-bill-wave text-xs"></i>
                                 <span>Bayar / Cicil</span>
                             </button>

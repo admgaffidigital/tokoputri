@@ -126,11 +126,18 @@ export const loadAppData = async () => {
     let localCms = JSON.parse(sL('freshmart_cms_data') || 'null');
     let localProducts = JSON.parse(sL('freshmart_products') || 'null');
     let localRewards = JSON.parse(sL('freshmart_rewards') || 'null');
+    let localPrivate = JSON.parse(sL('freshmart_cms_private') || 'null');
     let localUpdate = parseInt(sL('freshmart_last_update') || '0');
     let hasRenderedCached = false;
 
     if (localCms) {
         Object.assign(appData, defApp, localCms);
+        // Pulihkan juga data privat (suppliers, purchases, dll) dari localPrivate
+        if (localPrivate) {
+            PRIVATE_APP_KEYS.forEach(k => {
+                if (localPrivate[k] !== undefined) appData[k] = localPrivate[k];
+            });
+        }
         appData.store = { ...defApp.store, ...(localCms.store || {}) };
         appData.payment = { ...defApp.payment, ...(localCms.payment || {}) };
         appData.config = { ...defApp.config, ...(localCms.config || {}) };
@@ -159,6 +166,12 @@ export const loadAppData = async () => {
         hLoad();
         hasRenderedCached = true;
     } else {
+        // PERTAMA KALI / INCOGNITO: Pulihkan localPrivate jika ada
+        if (localPrivate) {
+            PRIVATE_APP_KEYS.forEach(k => {
+                if (localPrivate[k] !== undefined) appData[k] = localPrivate[k];
+            });
+        }
         // PERTAMA KALI / INCOGNITO: Render default storefront & sembunyikan fullscreen loader segera!
         rDyn();
         hLoad();
@@ -167,20 +180,43 @@ export const loadAppData = async () => {
     // 2. BACKGROUND REVALIDATION: Sinkronkan update server secara paralel (Promise.all)
     if (!hasRenderedCached) {
         try {
-            const [d, pSnap, rSnap] = await Promise.all([
+            const [d, pSnap, rSnap, privSnap] = await Promise.all([
                 db.collection("freshmart").doc("cms_data").get(),
                 db.collection("freshmart").doc("cms_data").collection("products").get(),
                 db.collection("freshmart").doc("cms_data").collection("rewards").get().catch(e => {
                     console.warn('Initial rewards fetch non-blocking error:', e);
                     return { docs: [] };
-                })
+                }),
+                db.collection("freshmart").doc("cms_private").get().catch(() => ({ exists: false }))
             ]);
 
             if (d.exists) {
                 const f = d.data();
                 const serverUpdate = f.lastUpdate || 0;
                 ssL('freshmart_cms_data', JSON.stringify(f));
-                Object.assign(appData, defApp, f);
+
+                // JANGAN timpa private keys dengan default [] jika cms_data tidak memuatnya!
+                const safeDefApp = { ...defApp };
+                PRIVATE_APP_KEYS.forEach(k => {
+                    if (!(k in f)) {
+                        delete safeDefApp[k]; // Lindungi data appData yang sudah ada
+                    }
+                });
+                Object.assign(appData, safeDefApp, f);
+
+                // Muat data sensitif jika privSnap tersedia
+                if (privSnap && privSnap.exists) {
+                    const pd = privSnap.data();
+                    PRIVATE_APP_KEYS.forEach(k => {
+                        if (pd[k] !== undefined) appData[k] = pd[k];
+                    });
+                    const fullPriv = {};
+                    PRIVATE_APP_KEYS.forEach(k => {
+                        if (appData[k] !== undefined) fullPriv[k] = appData[k];
+                    });
+                    ssL('freshmart_cms_private', JSON.stringify(fullPriv));
+                }
+
                 appData.store = { ...defApp.store, ...(f.store || {}) };
                 appData.payment = { ...defApp.payment, ...(f.payment || {}) };
                 appData.config = { ...defApp.config, ...(f.config || {}) };
@@ -339,27 +375,46 @@ export const saveApp = async (changedKeys = null, updateMeta = null) => {
             const publicKeys = changedKeys.filter(k => k && !PRIVATE_APP_KEYS.has(k));
             const privateKeys = changedKeys.filter(k => k && PRIVATE_APP_KEYS.has(k));
 
+            // 1. SIMPAN SEGERA KE CACHE LOKAL (Offline-First & Anti-Data-Loss)
+            if (privateKeys.length > 0) {
+                const curPriv = JSON.parse(sL('freshmart_cms_private') || '{}');
+                privateKeys.forEach(k => { curPriv[k] = appData[k]; });
+                ssL('freshmart_cms_private', JSON.stringify(curPriv));
+            }
+
+            // 2. Tulis data sensitif ke cms_private (Firestore)
+            if (privateKeys.length > 0) {
+                const privatePartial = {};
+                privateKeys.forEach(k => { privatePartial[k] = appData[k]; });
+                try {
+                    await db.collection("freshmart").doc("cms_private").set(privatePartial, { merge: true });
+                } catch (privErr) {
+                    console.warn('[saveApp] Gagal simpan ke cms_private, mencoba fallback:', privErr);
+                    // Fallback aman: jika cms_private gagal (misal izin/aturan), simpan juga ke cms_data
+                    if (window.isAdm || window.__localIsAdm) {
+                        try {
+                            await db.collection("freshmart").doc("cms_data").set(privatePartial, { merge: true });
+                        } catch (_) {}
+                    }
+                }
+            }
+
+            // 3. Tulis sinyal/data publik ke cms_data
             const partial = {
                 lastUpdate: firebase.firestore.FieldValue.increment(1),
                 updateType: updateMeta?.updateType || (changedKeys.length ? 'settings_change' : 'full'),
                 changedKeys: publicKeys  // hanya key publik yang perlu di-broadcast lewat cms_data
             };
-            // FIX BUG #2: Selalu sertakan updatedProductIds jika ada di updateMeta,
-            // bahkan saat changedKeys adalah array kosong [] (kasus produk/stok berubah).
             if (updateMeta?.updatedProductIds && Array.isArray(updateMeta.updatedProductIds)) {
                 partial.updatedProductIds = updateMeta.updatedProductIds;
             } else {
-                // Reset field ini agar listener tidak salah baca data lama
                 partial.updatedProductIds = firebase.firestore.FieldValue.delete();
             }
             publicKeys.forEach(k => { partial[k] = appData[k]; });
-            await db.collection("freshmart").doc("cms_data").set(partial, { merge: true });
-
-            // Tulis data sensitif ke cms_private (terpisah, tidak bisa dibaca publik)
-            if (privateKeys.length > 0) {
-                const privatePartial = {};
-                privateKeys.forEach(k => { privatePartial[k] = appData[k]; });
-                await db.collection("freshmart").doc("cms_private").set(privatePartial, { merge: true });
+            try {
+                await db.collection("freshmart").doc("cms_data").set(partial, { merge: true });
+            } catch (cmsErr) {
+                console.warn('[saveApp] Gagal simpan ke cms_data:', cmsErr);
             }
         } else {
             // Mode lama: timpa penuh. Sengaja dipakai HANYA untuk restore backup.
@@ -378,12 +433,17 @@ export const saveApp = async (changedKeys = null, updateMeta = null) => {
 
             copyData.lastUpdate = firebase.firestore.FieldValue.increment(1);
             copyData.updateType = 'full';
-            await db.collection("freshmart").doc("cms_data").set(copyData);
+            try {
+                await db.collection("freshmart").doc("cms_data").set(copyData);
+            } catch (_) {}
 
             if (Object.keys(privateData).length > 0) {
-                await db.collection("freshmart").doc("cms_private").set(privateData, { merge: true });
+                try {
+                    await db.collection("freshmart").doc("cms_private").set(privateData, { merge: true });
+                } catch (_) {}
             }
         }
+
         // Tebakan optimis untuk cache lokal saja (akan otomatis dikoreksi oleh listener
         // realtime begitu balasan asli dari server tiba) -- TIDAK dikirim ke server.
         appData.lastUpdate = (parseInt(sL('freshmart_last_update')) || appData.lastUpdate || 0) + 1;
@@ -392,7 +452,22 @@ export const saveApp = async (changedKeys = null, updateMeta = null) => {
         ssL('freshmart_cms_data', JSON.stringify(cacheCopy));
         ssL('freshmart_last_update', appData.lastUpdate.toString());
         ssL('freshmart_products', JSON.stringify(appData.products));
+
+        // Simpan cache lengkap private data ke localStorage
+        const fullPrivCache = {};
+        PRIVATE_APP_KEYS.forEach(k => {
+            if (appData[k] !== undefined) fullPrivCache[k] = appData[k];
+        });
+        ssL('freshmart_cms_private', JSON.stringify(fullPrivCache));
     } catch(e) {
+        console.error('[saveApp] Error saat menyimpan:', e);
+        try {
+            const fullPrivCache = {};
+            PRIVATE_APP_KEYS.forEach(k => {
+                if (appData[k] !== undefined) fullPrivCache[k] = appData[k];
+            });
+            ssL('freshmart_cms_private', JSON.stringify(fullPrivCache));
+        } catch (_) {}
         showToast("Tersimpan secara Lokal");
     }
 };
@@ -567,6 +642,16 @@ export const attachRealtimeStockSync = () => {
 
             ssL('freshmart_cms_data', JSON.stringify(f));
             ssL('freshmart_last_update', serverUpdate.toString());
+
+            // Lindungi private data dari penghapusan cache lokal
+            const privCache = JSON.parse(sL('freshmart_cms_private') || 'null');
+            if (privCache) {
+                PRIVATE_APP_KEYS.forEach(k => {
+                    if (privCache[k] !== undefined && (!appData[k] || (Array.isArray(appData[k]) && appData[k].length === 0 && Array.isArray(privCache[k]) && privCache[k].length > 0))) {
+                        appData[k] = privCache[k];
+                    }
+                });
+            }
 
             if (appData.store) {
                 applyUITheme(appData.store.uiTheme, appData.store.themeColor);
@@ -760,11 +845,27 @@ export const attachPrivateDataListener = () => {
             if (d.taxSettings && typeof d.taxSettings === 'object') {
                 appData.taxSettings = { ...defApp.taxSettings, ...d.taxSettings };
             }
-            // Segarkan tabel admin yang relevan jika sedang terbuka
+
+            // Simpan cache lokal freshmart_cms_private agar selalu tersedia offline
+            const fullPriv = {};
+            PRIVATE_APP_KEYS.forEach(k => {
+                if (appData[k] !== undefined) fullPriv[k] = appData[k];
+            });
+            ssL('freshmart_cms_private', JSON.stringify(fullPriv));
+
+            // Segarkan tampilan admin yang relevan jika sedang terbuka
             const isAdminActive = window.isAdm || window.__localIsAdm;
-            if (isAdminActive && typeof window.rAdmItms === 'function') {
+            if (isAdminActive) {
                 const curTab = window.cTab || '';
-                if (['suppliers', 'purchases', 'expenses', 'stockOpname'].includes(curTab)) {
+                if (curTab === 'suppliers' && typeof window.renderSuppliersView === 'function') {
+                    window.renderSuppliersView();
+                } else if (curTab === 'purchases' && typeof window.renderPurchasesView === 'function') {
+                    window.renderPurchasesView();
+                } else if (curTab === 'expenses' && typeof window.renderExpensesAdminView === 'function') {
+                    window.renderExpensesAdminView();
+                } else if ((curTab === 'stock_opname' || curTab === 'stockOpname') && typeof window.renderStockOpnameView === 'function') {
+                    window.renderStockOpnameView();
+                } else if (typeof window.rAdmItms === 'function') {
                     window.rAdmItms(curTab);
                 }
             }

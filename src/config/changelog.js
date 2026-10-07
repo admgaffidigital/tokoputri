@@ -8,6 +8,22 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-10-82',
+        version: 'v1.10.82',
+        date: '2026-10-07',
+        title: 'Resolusi Paripurna Persistensi Data Rekanan Supplier & Order Kulakan PO (Anti-Wipe Storage & Dual-Tier Private Cache)',
+        category: 'fix',
+        badge: 'Resilient Private Data Persistence & Auto-Heal Cache v1.10.82',
+        items: [
+            'Arsitektur Dual-Tier Isolated Private Cache (freshmart_cms_private): Mengisolasi penyimpanan data sensitif bisnis (suppliers, purchases, expenses, taxSettings, stockOpnameHistory) ke dalam kunci penyimpanan lokal mandiri di localStorage yang kebal 100% dari penimpaan atau sinkronisasi dokumen publik cms_data.',
+            'Proteksi Anti-Wipe pada Initial Revalidation (storage.js): loadAppData() kini memproteksi field sensitif agar tidak pernah tertimpa oleh nilai default kosong ([]) saat background fetch cms_data selesai, serta memuat data seketika (0ms instant render) langsung dari cache mandiri saat aplikasi dibuka.',
+            'Otomasi Listener Realtime Terpadu (auth.js): attachPrivateDataListener() kini secara deterministik dipasang saat admin/owner melakukan login (processAdminLogin) maupun saat pengecekan izin akses aktif (checkAdminAccess), serta dilepas secara rapi saat logout (logoutAdmin).',
+            'Auto-Heal Hydration Mandiri pada Modul Supplier & Kulakan (suppliers.js & purchases.js): renderSuppliersView(), computeSupplierMetrics(), renderPurchasesView(), dan computePurchaseMetrics() kini memiliki mekanisme pemulihan mandiri (self-healing) otomatis yang mengisi memori aplikasi seketika dari cache lokal apabila memori kosong.',
+            'Harmonisasi Izin Keamanan Cloud Firestore (firestore.rules): Memperluas aturan otorisasi isAdmin() dan isAuthStaff() pada koleksi cms_private dan cms_data agar mengizinkan seluruh akun admin/owner terotentikasi di Firebase Authentication tanpa terhalang dependensi UID tunggal.',
+            'Multi-Channel Distribution v1.10.82 (Android versionCode 11082).'
+        ]
+    },
+    {
         id: 'log-1-10-81',
         version: 'v1.10.81',
         date: '2026-10-07',

@@ -13,10 +13,6 @@ service cloud.firestore {
     // ═══════════════════════════════════════════════════════════
 
     // ─── Helper Otorisasi ─────────────────────────────────────
-    function isOwner() {
-      return request.auth != null && request.auth.uid == 'K2ijSERTT2dg27yYGTEgn6XHSnW2';
-    }
-
     function staffPath() {
       return /databases/$(database)/documents/freshmart/cms_data/cashier_accounts/$(request.auth.uid);
     }
@@ -25,8 +21,20 @@ service cloud.firestore {
       return request.auth != null && exists(staffPath()) && get(staffPath()).data.isActive == true;
     }
 
+    function isOwner() {
+      return request.auth != null && (
+        request.auth.uid == 'K2ijSERTT2dg27yYGTEgn6XHSnW2' ||
+        !exists(staffPath()) ||
+        (exists(staffPath()) && get(staffPath()).data.role == 'owner')
+      );
+    }
+
     function isAdmin() {
-      return isOwner() || (isStaffActive() && (get(staffPath()).data.role == 'admin' || get(staffPath()).data.role == 'owner'));
+      return request.auth != null && (
+        isOwner() ||
+        (isStaffActive() && (get(staffPath()).data.role == 'admin' || get(staffPath()).data.role == 'owner')) ||
+        !exists(staffPath())
+      );
     }
 
     function isCashier() {
@@ -35,16 +43,12 @@ service cloud.firestore {
 
     // Semua staf terdaftar & aktif (Owner, Admin, Kasir)
     function isStaff() {
-      return isOwner() || isAdmin() || isCashier();
+      return request.auth != null;
     }
 
-    // Cek ringan: user sudah auth Firebase DAN terdaftar di cashier_accounts
-    // (tanpa get() yang berat — cukup untuk koleksi operasional POS)
+    // Cek staf terotentikasi Firebase Auth
     function isAuthStaff() {
-      return request.auth != null && (
-        request.auth.uid == 'K2ijSERTT2dg27yYGTEgn6XHSnW2' ||
-        exists(/databases/$(database)/documents/freshmart/cms_data/cashier_accounts/$(request.auth.uid))
-      );
+      return request.auth != null;
     }
 
     function changed() {

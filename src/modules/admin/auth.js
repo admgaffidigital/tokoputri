@@ -33,6 +33,10 @@ import {
     hasPermission,
     getRoleBadgeHtml
 } from '../../core/auth-roles.js';
+import { 
+    attachPrivateDataListener, 
+    detachPrivateDataListener 
+} from '../../services/storage.js';
 
 /**
  * Terapkan penyaringan menu navigasi dashboard CMS sesuai hak akses akun aktif
@@ -149,6 +153,7 @@ export const checkAdminAccess = async () => {
         }
 
         window.__localIsAdm = true;
+        try { attachPrivateDataListener(); } catch (_) {}
         if (typeof window.changeView === 'function') window.changeView('view-admin');
         if (isOwnerUser()) attachAdminSessionGuard();
         if (auth.currentUser) {
@@ -388,6 +393,7 @@ export const processAdminLogin = async () => {
 
             window.isAdm = true;
             window.__localIsAdm = true;
+            try { attachPrivateDataListener(); } catch (_) {}
             history.replaceState({ view: 'view-admin' }, '', window.location.href);
             if (typeof window.changeView === 'function') window.changeView('view-admin', true);
             openAdminMenu();
@@ -450,6 +456,7 @@ export const processAdminLogin = async () => {
         // 2B. JIKA ROLE ADALAH ADMIN OPERASIONAL ATAU CO-OWNER
         window.isAdm = true;
         window.__localIsAdm = true;
+        try { attachPrivateDataListener(); } catch (_) {}
         history.replaceState({ view: 'view-admin' }, '', window.location.href);
         if (typeof window.changeView === 'function') window.changeView('view-admin', true);
         openAdminMenu();
@@ -496,6 +503,7 @@ export const logoutAdmin = async () => {
         if (typeof window.detachPOSHistoryListener === 'function') {
             window.detachPOSHistoryListener();
         }
+        try { detachPrivateDataListener(); } catch (_) {}
         if (aOrdLst) { aOrdLst(); setAOrdLst(null); } 
         if (aCustLst) { aCustLst(); setACustLst(null); } 
         if (aRevLst) { aRevLst(); setARevLst(null); } 

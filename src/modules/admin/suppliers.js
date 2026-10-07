@@ -86,6 +86,22 @@ const formatDateIndo = (dateStr) => {
  * Kalkulasi ringkasan metrik supplier
  */
 export const computeSupplierMetrics = () => {
+    // Auto-heal: Pulihkan data supplier & purchases dari cache mandiri jika memori kosong
+    if (!Array.isArray(appData.suppliers) || appData.suppliers.length === 0 || !Array.isArray(appData.purchases) || appData.purchases.length === 0) {
+        try {
+            const raw = localStorage.getItem('freshmart_cms_private');
+            if (raw) {
+                const parsed = JSON.parse(raw);
+                if ((!Array.isArray(appData.suppliers) || appData.suppliers.length === 0) && Array.isArray(parsed.suppliers) && parsed.suppliers.length > 0) {
+                    appData.suppliers = parsed.suppliers;
+                }
+                if ((!Array.isArray(appData.purchases) || appData.purchases.length === 0) && Array.isArray(parsed.purchases) && parsed.purchases.length > 0) {
+                    appData.purchases = parsed.purchases;
+                }
+            }
+        } catch (_) {}
+    }
+
     const suppliers = appData.suppliers || [];
     const products = appData.products || [];
     const purchases = appData.purchases || [];
@@ -125,6 +141,19 @@ export const renderSuppliersView = () => {
     ensureSupplierModals();
     const content = el('admin-content');
     if (!content) return;
+
+    // Auto-heal: Pastikan data supplier terhidrasi seketika dari freshmart_cms_private
+    if (!Array.isArray(appData.suppliers) || appData.suppliers.length === 0) {
+        try {
+            const raw = localStorage.getItem('freshmart_cms_private');
+            if (raw) {
+                const parsed = JSON.parse(raw);
+                if (Array.isArray(parsed.suppliers) && parsed.suppliers.length > 0) {
+                    appData.suppliers = parsed.suppliers;
+                }
+            }
+        } catch (_) {}
+    }
 
     const metrics = computeSupplierMetrics();
     const suppliers = appData.suppliers || [];
