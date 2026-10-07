@@ -667,9 +667,26 @@ window.receiveAndRestockPO = (poId) => {
             <p class="font-bold text-teal-800 dark:text-teal-300"><i class="fa-solid fa-boxes-stacked mr-1"></i>Stok produk berikut akan otomatis bertambah:</p>
             <div class="text-slate-700 dark:text-slate-300 mt-1">${itemsSummary}</div>
         </div>
+        <div class="mt-3 p-3 bg-slate-100 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 text-left">
+            <p class="text-xs font-black text-slate-700 dark:text-slate-200 mb-2 flex items-center gap-1.5">
+                <i class="fa-solid fa-location-dot text-[var(--color-primary)]"></i>
+                <span>Tujuan Penyimpanan Barang:</span>
+            </p>
+            <div class="grid grid-cols-2 gap-2 text-xs">
+                <label class="flex items-center gap-2 p-2.5 rounded-xl border border-teal-500 bg-teal-50/70 dark:bg-teal-950/40 cursor-pointer font-bold text-teal-800 dark:text-teal-200 shadow-2xs">
+                    <input type="radio" name="po_target_location" value="store" checked class="accent-teal-600">
+                    <span>🏪 Rak Toko (Display)</span>
+                </label>
+                <label class="flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 cursor-pointer font-bold text-slate-700 dark:text-slate-300 shadow-2xs">
+                    <input type="radio" name="po_target_location" value="warehouse" class="accent-amber-500">
+                    <span>📦 Gudang Cadangan</span>
+                </label>
+            </div>
+        </div>
         <p class="text-[11px] text-slate-400 mt-2">Harga modal (HPP) produk di katalog juga akan disesuaikan otomatis dengan harga beli PO ini.</p>`,
         async () => {
-            sLoad('Menambahkan Stok ke Gudang...');
+            const chosenLoc = document.querySelector('input[name="po_target_location"]:checked')?.value || 'store';
+            sLoad(chosenLoc === 'warehouse' ? 'Menambahkan Stok ke Gudang Cadangan...' : 'Menambahkan Stok ke Rak Toko...');
             try {
                 let productsUpdated = false;
                 const products = appData.products || [];
@@ -681,7 +698,7 @@ window.receiveAndRestockPO = (poId) => {
                         const addedQty = parseFloat(item.qty) || 0;
                         const newHpp = parseFloat(item.unitPrice) || 0;
 
-                        // 1. Catat ke Antrean Batch FIFO & Update Multi-Supplier Directory
+                        // 1. Catat ke Antrean Batch FIFO & Update Multi-Supplier Directory dengan target lokasi
                         recordFifoRestock(prod, {
                             poId: po.id,
                             poNumber: po.poNumber,
@@ -690,7 +707,8 @@ window.receiveAndRestockPO = (poId) => {
                             qty: addedQty,
                             unitPrice: newHpp,
                             variantName: item.variantName || '',
-                            receivedAt: po.receivedAt || new Date().toISOString()
+                            receivedAt: po.receivedAt || new Date().toISOString(),
+                            targetLocation: chosenLoc
                         });
 
                         // 2. Restock spesifik varian jika item memiliki varian

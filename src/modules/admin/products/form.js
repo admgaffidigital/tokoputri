@@ -51,6 +51,12 @@ window.oAEd = (t, id) => {
     let f = aF[t]||[], h = '';
 
     if(t==='products'){
+        if (d) {
+            if (d.storeStock === undefined && d.warehouseStock === undefined) {
+                d.storeStock = d.stock !== undefined ? d.stock : 0;
+                d.warehouseStock = 0;
+            }
+        }
         setTVars(d && d.variants ? JSON.parse(JSON.stringify(d.variants)) : []);
         setTWhol(d && d.wholesale ? JSON.parse(JSON.stringify(d.wholesale)) : []);
         setTSpec(d && d.specTable ? JSON.parse(JSON.stringify(d.specTable)) : []);
@@ -169,11 +175,19 @@ window.oAEd = (t, id) => {
                 </div>
             </div>`;
         } else {
-            h += `<input autocomplete='off' type="${k.type}" id="af-${k.key}" value="${esc(v)}" class="admin-input shadow-sm bg-slate-50 dark:bg-slate-900 transition-all"
+            const isStoreStock = k.key === 'storeStock';
+            const isWarehouseStock = k.key === 'warehouseStock';
+            const isTotalStock = k.key === 'stock';
+            const onInputAttr = (isStoreStock || isWarehouseStock) ? 'oninput="window.calcTotalStockForm?.()"' : '';
+            const readOnlyAttr = isTotalStock ? 'readonly tabindex="-1"' : '';
+            const bgClass = isTotalStock ? 'bg-slate-100 dark:bg-slate-800/80 font-bold cursor-not-allowed text-slate-700 dark:text-slate-200' : 'bg-slate-50 dark:bg-slate-900';
+            h += `<input autocomplete='off' type="${k.type}" id="af-${k.key}" value="${esc(v)}" class="admin-input shadow-sm ${bgClass} transition-all"
     ${k.key==='price'?'min="0" step="1" placeholder="0"':''}
     ${k.key==='priceNormal'?'min="0" step="1" placeholder="0 (kosong = tidak ada coretan)"':''}
     ${k.key==='hpp'?'min="0" step="1" placeholder="0"':''}
-    ${k.key==='stock'?'min="0" step="0.01" placeholder="0"':''}
+    ${(isStoreStock || isWarehouseStock || isTotalStock)?'min="0" step="0.01" placeholder="0"':''}
+    ${onInputAttr}
+    ${readOnlyAttr}
 >`;
         }
         h += `</div>`;
@@ -195,6 +209,18 @@ window.oAEd = (t, id) => {
     const mAd = el('admin-modal');
     if (mAd && mAd.classList.contains('hidden')) pushModalHistory('admin');
     openModalAnim(mAd, el('admin-modal-box'));
+};
+
+// ─── Kalkulasi Otomatis Total Stok (Toko + Gudang) ──────────────────────────
+window.calcTotalStockForm = () => {
+    const sEl = document.getElementById('af-storeStock');
+    const wEl = document.getElementById('af-warehouseStock');
+    const totEl = document.getElementById('af-stock');
+    if (sEl && wEl && totEl) {
+        const sVal = parseFloat(sEl.value) || 0;
+        const wVal = parseFloat(wEl.value) || 0;
+        totEl.value = (sVal + wVal);
+    }
 };
 
 // ─── Submit Form (Simpan) ─────────────────────────────────────────────────────
@@ -229,7 +255,14 @@ window.submitAdminForm = async () => {
     }
 
     if (!d.name && !d.title && !d.bankName && !d.code) { setIsSaving(false); return showToast("Judul/Nama/Kode wajib diisi!"); }
-    if (curTab === 'products' && !d.sku) d.sku = 'SKU' + Date.now().toString().slice(-6);
+    if (curTab === 'products') {
+        const sStock = parseFloat(d.storeStock) || 0;
+        const wStock = parseFloat(d.warehouseStock) || 0;
+        d.storeStock = sStock;
+        d.warehouseStock = wStock;
+        d.stock = sStock + wStock;
+        if (!d.sku) d.sku = 'SKU' + Date.now().toString().slice(-6);
+    }
 
     if (curTab === 'customers') {
         const normPhone = window.normalizeWA ? window.normalizeWA(d.phone) : (d.phone || '').replace(/\D/g, '').replace(/^0/, '62');
@@ -329,20 +362,42 @@ window.submitAdminForm = async () => {
                     updatedAt: new Date().toISOString()
                 }];
             }
-            const curStock = parseFloat(d.stock) || 0;
+            const curStoreStock = parseFloat(d.storeStock) || 0;
+            const curWarehouseStock = parseFloat(d.warehouseStock) || 0;
+            const curStock = curStoreStock + curWarehouseStock;
+            d.stock = curStock;
             if (curStock > 0) {
-                d.stockBatches = [{
-                    batchId: `BATCH-INIT-${d.id}`,
-                    poId: null,
-                    poNumber: 'STOK AWAL',
-                    supplierId: d.supplierId || '',
-                    supplierName: 'Stok Awal Toko',
-                    receivedAt: new Date().toISOString(),
-                    buyPrice: parseFloat(d.hpp) || 0,
-                    initialQty: curStock,
-                    remainingQty: curStock,
-                    isInitial: true
-                }];
+                d.stockBatches = [];
+                if (curStoreStock > 0) {
+                    d.stockBatches.push({
+                        batchId: `BATCH-INIT-STORE-${d.id}`,
+                        poId: null,
+                        poNumber: 'STOK AWAL (TOKO)',
+                        supplierId: d.supplierId || '',
+                        supplierName: 'Stok Awal Toko',
+                        receivedAt: new Date().toISOString(),
+                        buyPrice: parseFloat(d.hpp) || 0,
+                        initialQty: curStoreStock,
+                        remainingQty: curStoreStock,
+                        location: 'store',
+                        isInitial: true
+                    });
+                }
+                if (curWarehouseStock > 0) {
+                    d.stockBatches.push({
+                        batchId: `BATCH-INIT-WH-${d.id}`,
+                        poId: null,
+                        poNumber: 'STOK AWAL (GUDANG)',
+                        supplierId: d.supplierId || '',
+                        supplierName: 'Stok Awal Gudang',
+                        receivedAt: new Date().toISOString(),
+                        buyPrice: parseFloat(d.hpp) || 0,
+                        initialQty: curWarehouseStock,
+                        remainingQty: curWarehouseStock,
+                        location: 'warehouse',
+                        isInitial: true
+                    });
+                }
             }
         }
     }

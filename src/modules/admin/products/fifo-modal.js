@@ -22,7 +22,8 @@ import {
     normalizeProductInventory, 
     linkSupplierToProduct, 
     setPrimarySupplierForProduct, 
-    computeFifoValuation 
+    computeFifoValuation,
+    transferStockBetweenLocations
 } from '../../../core/fifo-inventory.js';
 
 let activeFifoProductId = null;
@@ -157,27 +158,55 @@ export const renderProductFifoContent = () => {
         </div>
 
         <div class="p-5 sm:p-6 space-y-6">
-            <!-- 1. BENTO STATS CARDS -->
-            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/70 shadow-2xs">
-                    <span class="text-[9px] font-black uppercase tracking-wider text-slate-400">Total Stok Fisik</span>
-                    <p class="text-lg sm:text-xl font-black text-slate-800 dark:text-white mt-0.5">${valuation.totalActiveQty} <span class="text-xs font-bold text-slate-400">${esc(prod.unit || 'pcs')}</span></p>
-                    <p class="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 mt-0.5">Tersedia di Gudang</p>
+            <!-- 1. BENTO STATS CARDS (DUAL-LOCATION & FIFO VALUATION) -->
+            <div class="grid grid-cols-2 sm:grid-cols-5 gap-2.5 sm:gap-3">
+                <div class="p-3.5 rounded-2xl bg-teal-50/70 dark:bg-teal-950/30 border border-teal-200/80 dark:border-teal-800/70 shadow-2xs">
+                    <span class="text-[9px] font-black uppercase tracking-wider text-teal-600 dark:text-teal-400 flex items-center gap-1">
+                        <i class="fa-solid fa-store"></i> Stok Rak Toko
+                    </span>
+                    <p class="text-base sm:text-lg font-black text-slate-800 dark:text-white mt-0.5">${prod.storeStock || 0} <span class="text-[10px] font-bold text-slate-400">${esc(prod.unit || 'pcs')}</span></p>
+                    <p class="text-[9px] font-bold text-teal-600 dark:text-teal-400 mt-0.5">Siap Transaksi Kasir</p>
+                </div>
+                <div class="p-3.5 rounded-2xl bg-amber-50/70 dark:bg-amber-950/30 border border-amber-200/80 dark:border-amber-800/70 shadow-2xs">
+                    <span class="text-[9px] font-black uppercase tracking-wider text-amber-600 dark:text-amber-400 flex items-center gap-1">
+                        <i class="fa-solid fa-warehouse"></i> Stok Gudang
+                    </span>
+                    <p class="text-base sm:text-lg font-black text-slate-800 dark:text-white mt-0.5">${prod.warehouseStock || 0} <span class="text-[10px] font-bold text-slate-400">${esc(prod.unit || 'pcs')}</span></p>
+                    <p class="text-[9px] font-bold text-amber-600 dark:text-amber-400 mt-0.5">Cadangan Belakang</p>
                 </div>
                 <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/70 shadow-2xs">
-                    <span class="text-[9px] font-black uppercase tracking-wider text-amber-500">HPP Aktif (Batch Terdepan)</span>
-                    <p class="text-lg sm:text-xl font-black text-amber-600 dark:text-amber-400 mt-0.5">${fCur(prod.hpp || 0)}</p>
-                    <p class="text-[10px] font-bold text-slate-400 mt-0.5">Modal unit saat ini</p>
+                    <span class="text-[9px] font-black uppercase tracking-wider text-slate-400">Total Stok</span>
+                    <p class="text-base sm:text-lg font-black text-slate-800 dark:text-white mt-0.5">${valuation.totalActiveQty} <span class="text-[10px] font-bold text-slate-400">${esc(prod.unit || 'pcs')}</span></p>
+                    <p class="text-[9px] font-bold text-slate-400 mt-0.5">${valuation.activeBatchesCount} Batch Aktif</p>
                 </div>
                 <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/70 shadow-2xs">
-                    <span class="text-[9px] font-black uppercase tracking-wider" style="color:var(--color-primary)">Valuasi Aset Fisik</span>
-                    <p class="text-lg sm:text-xl font-black text-slate-800 dark:text-white mt-0.5" style="color:var(--color-primary)">${fCur(valuation.totalValuationRp)}</p>
-                    <p class="text-[10px] font-bold text-slate-400 mt-0.5">Akumulasi FIFO Riil</p>
+                    <span class="text-[9px] font-black uppercase tracking-wider text-amber-500">HPP Aktif</span>
+                    <p class="text-base sm:text-lg font-black text-amber-600 dark:text-amber-400 mt-0.5">${fCur(prod.hpp || 0)}</p>
+                    <p class="text-[9px] font-bold text-slate-400 mt-0.5">Batch Terdepan</p>
                 </div>
-                <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/70 shadow-2xs">
-                    <span class="text-[9px] font-black uppercase tracking-wider text-teal-500">Multi-Supplier</span>
-                    <p class="text-lg sm:text-xl font-black text-teal-600 dark:text-teal-400 mt-0.5">${suppliersList.length} <span class="text-xs font-bold text-slate-400">Pemasok</span></p>
-                    <p class="text-[10px] font-bold text-slate-400 mt-0.5">${valuation.activeBatchesCount} Batch Aktif</p>
+                <div class="col-span-2 sm:col-span-1 p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/70 shadow-2xs">
+                    <span class="text-[9px] font-black uppercase tracking-wider" style="color:var(--color-primary)">Valuasi FIFO</span>
+                    <p class="text-base sm:text-lg font-black text-slate-800 dark:text-white mt-0.5" style="color:var(--color-primary)">${fCur(valuation.totalValuationRp)}</p>
+                    <p class="text-[9px] font-bold text-slate-400 mt-0.5">Aset Bersih PSAK</p>
+                </div>
+            </div>
+
+            <!-- BANNER MUTASI INTERNAL TOKO & GUDANG -->
+            <div class="p-4 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/40 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-2xs">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-500 dark:text-amber-400 flex items-center justify-center text-lg shrink-0">
+                        <i class="fa-solid fa-dolly"></i>
+                    </div>
+                    <div>
+                        <h5 class="text-xs sm:text-sm font-black text-slate-800 dark:text-white">Manajemen Pemindahan Stok Internal</h5>
+                        <p class="text-[11px] text-slate-400 font-medium">Pindahkan stok dari gudang cadangan ke rak toko agar kasir selalu siap melayani pelanggan.</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2 w-full sm:w-auto">
+                    <button type="button" onclick="window.quickTransferWarehouseToStore('${prod.id}')" class="flex-1 sm:flex-none px-4 py-2.5 rounded-xl primary-bg text-white font-bold text-xs flex items-center justify-center gap-2 active:scale-95 transition-all shadow-sm cursor-pointer" ${Number(prod.warehouseStock || 0) <= 0 ? 'disabled style="opacity:0.5;cursor:not-allowed;"' : ''}>
+                        <i class="fa-solid fa-arrow-right-arrow-left text-[11px]"></i>
+                        <span>Pindahkan ke Rak Toko</span>
+                    </button>
                 </div>
             </div>
 
@@ -452,9 +481,52 @@ export const handleFifoSimulateChange = (val) => {
     renderProductFifoContent();
 };
 
+/**
+ * Pindahkan stok dari gudang cadangan ke rak toko (Internal Transfer)
+ */
+export const quickTransferWarehouseToStore = async (productId) => {
+    const prod = (appData.products || []).find(p => String(p.id) === String(productId));
+    if (!prod) return showToast('Produk tidak ditemukan!');
+    normalizeProductInventory(prod, appData.suppliers || []);
+
+    const wStock = Number(prod.warehouseStock) || 0;
+    if (wStock <= 0) return showToast('Stok gudang cadangan kosong (0)!');
+
+    const promptQty = await (typeof window.customPrompt === 'function' 
+        ? window.customPrompt(`Pindahkan Stok ke Rak Toko (Tersedia di Gudang: ${wStock} ${prod.unit||'pcs'}):`, String(Math.min(wStock, 10)))
+        : Promise.resolve(null));
+
+    if (!promptQty) return;
+    const qty = parseFloat(promptQty) || 0;
+    if (qty <= 0) return showToast('Jumlah yang dimasukkan tidak valid!');
+    if (qty > wStock) return showToast(`Jumlah melebihi stok gudang (maksimal ${wStock})!`);
+
+    sLoad('Memindahkan stok ke rak toko...');
+    try {
+        const res = transferStockBetweenLocations(prod, 'warehouse', 'store', qty);
+        if (!res.success) throw new Error(res.error || 'Gagal memindahkan stok');
+
+        await db.collection("freshmart").doc("cms_data").collection("products").doc(prod.id.toString()).update({
+            storeStock: prod.storeStock,
+            warehouseStock: prod.warehouseStock,
+            stock: prod.stock,
+            stockBatches: prod.stockBatches || []
+        });
+
+        hLoad();
+        showToast(`Sukses memindahkan ${qty} ${prod.unit||'pcs'} ke rak toko! 🏪✨`);
+        renderProductFifoContent();
+        window.rAdmItms?.('products');
+    } catch (err) {
+        hLoad();
+        showToast('Gagal memindahkan stok: ' + err.message);
+    }
+};
+
 // Bind ke window object
 window.openProductFifoModal = openProductFifoModal;
 window.closeProductFifoModal = closeProductFifoModal;
 window.handleLinkFifoSupplier = handleLinkFifoSupplier;
 window.handleSetFifoPrimarySupplier = handleSetFifoPrimarySupplier;
 window.handleFifoSimulateChange = handleFifoSimulateChange;
+window.quickTransferWarehouseToStore = quickTransferWarehouseToStore;

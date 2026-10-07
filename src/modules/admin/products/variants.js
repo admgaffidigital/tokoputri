@@ -137,9 +137,25 @@ window.rVarsB = () => {
                     <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Harga Modal / HPP (Rp)</label>
                     <input autocomplete='off' placeholder="0" type="number" class="admin-input !text-sm !py-3.5 bg-white dark:bg-slate-800 shadow-sm" value="${v.hpp||0}" onchange="uVar(${i},'hpp',this.value)">
                 </div>
-                <div>
-                    <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Stok Varian (Qty)</label>
-                    <input autocomplete='off' placeholder="0" type="number" min="0" step="0.01" class="admin-input !text-sm !py-3.5 bg-white dark:bg-slate-800 shadow-sm" value="${v.stock !== undefined ? v.stock : ''}" onchange="uVar(${i},'stock',this.value)">
+                <div class="sm:col-span-2 grid grid-cols-1 sm:grid-cols-3 gap-3 p-3.5 rounded-xl bg-slate-100/70 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+                    <div>
+                        <label class="block text-[10px] font-black text-slate-600 dark:text-slate-300 mb-1.5 uppercase tracking-wider flex items-center gap-1">
+                            <i class="fa-solid fa-store text-teal-500"></i> Stok Rak Toko
+                        </label>
+                        <input autocomplete='off' id="var-store-stock-${i}" placeholder="0" type="number" min="0" step="0.01" class="admin-input !text-sm !py-2.5 bg-white dark:bg-slate-900 shadow-sm font-bold" value="${v.storeStock !== undefined ? v.storeStock : (v.stock !== undefined ? v.stock : 0)}" oninput="uVar(${i},'storeStock',this.value)">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-black text-slate-600 dark:text-slate-300 mb-1.5 uppercase tracking-wider flex items-center gap-1">
+                            <i class="fa-solid fa-warehouse text-amber-500"></i> Stok Gudang
+                        </label>
+                        <input autocomplete='off' id="var-warehouse-stock-${i}" placeholder="0" type="number" min="0" step="0.01" class="admin-input !text-sm !py-2.5 bg-white dark:bg-slate-900 shadow-sm font-bold" value="${v.warehouseStock !== undefined ? v.warehouseStock : 0}" oninput="uVar(${i},'warehouseStock',this.value)">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-black text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider flex items-center gap-1">
+                            <i class="fa-solid fa-boxes-stacked"></i> Total Stok Varian
+                        </label>
+                        <input autocomplete='off' id="var-stock-total-${i}" readonly disabled placeholder="0" type="number" class="admin-input !text-sm !py-2.5 bg-slate-200/70 dark:bg-slate-800 font-black text-slate-800 dark:text-white cursor-not-allowed" value="${(parseFloat(v.storeStock !== undefined ? v.storeStock : (v.stock || 0)) || 0) + (parseFloat(v.warehouseStock) || 0)}">
+                    </div>
                 </div>
                 <div>
                     <label class="block text-[11px] font-bold text-[var(--color-primary)] mb-2 uppercase tracking-widest flex items-center gap-1"><i class="fa-solid fa-star"></i> Poin Member (per unit terjual)</label>
@@ -156,9 +172,25 @@ window.rVarsB = () => {
     setH('variants-builder-container', h);
 };
 
-window.addVar = () => { tVars.push({name:'', price:0, priceNormal:0, hpp:0, stock:0, sku:'', img:'', unit:'', colorCode:'', poin:0, isActive: true}); setTVars(tVars); window.rVarsB(); };
+window.addVar = () => { tVars.push({name:'', price:0, priceNormal:0, hpp:0, storeStock:0, warehouseStock:0, stock:0, sku:'', img:'', unit:'', colorCode:'', poin:0, isActive: true}); setTVars(tVars); window.rVarsB(); };
 window.rmVar  = (i) => { tVars.splice(i,1); setTVars(tVars); window.rVarsB(); };
-window.uVar   = (i,k,v) => { tVars[i][k] = (k==='price'||k==='priceNormal'||k==='hpp'||k==='stock'||k==='poin') ? parseFloat(v)||0 : (k==='img' ? fixD(v) : v); };
+window.uVar   = (i,k,v) => { 
+    if (!tVars[i]) return;
+    const numFields = ['price','priceNormal','hpp','stock','storeStock','warehouseStock','poin'];
+    tVars[i][k] = numFields.includes(k) ? parseFloat(v)||0 : (k==='img' ? fixD(v) : v);
+    if (k === 'storeStock' || k === 'warehouseStock') {
+        const sS = parseFloat(tVars[i].storeStock) || 0;
+        const wS = parseFloat(tVars[i].warehouseStock) || 0;
+        tVars[i].stock = sS + wS;
+        const totEl = document.getElementById(`var-stock-total-${i}`);
+        if (totEl) totEl.value = tVars[i].stock;
+    } else if (k === 'stock') {
+        if (tVars[i].warehouseStock === undefined) tVars[i].warehouseStock = 0;
+        tVars[i].storeStock = Math.max(0, (tVars[i].stock || 0) - (tVars[i].warehouseStock || 0));
+        const sEl = document.getElementById(`var-store-stock-${i}`);
+        if (sEl) sEl.value = tVars[i].storeStock;
+    }
+};
 window.toggleVarActive = (i) => {
     if (tVars[i]) {
         const cur = tVars[i].isActive !== false && tVars[i].isActive !== 'false';

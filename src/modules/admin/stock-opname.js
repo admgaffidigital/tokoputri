@@ -105,7 +105,9 @@ export const initOrSyncAuditItems = () => {
         if (hasVariants) {
             p.variants.forEach((v, vIdx) => {
                 const key = `${pId}_v${vIdx}`;
-                const sysStock = parseFloat(v.stock) || 0;
+                const sysStore = v.storeStock !== undefined ? (parseFloat(v.storeStock) || 0) : (parseFloat(v.stock) || 0);
+                const sysWh = parseFloat(v.warehouseStock) || 0;
+                const sysStock = sysStore + sysWh;
                 const hpp = parseFloat(v.hpp) || parseFloat(p.hpp) || 0;
                 const price = parseFloat(v.price) || parseFloat(p.price) || 0;
 
@@ -123,8 +125,14 @@ export const initOrSyncAuditItems = () => {
                         unit: p.unit || 'pcs',
                         img: v.img || p.img || '',
                         colorCode: v.colorCode || '',
+                        systemStoreStock: sysStore,
+                        systemWarehouseStock: sysWh,
                         systemStock: sysStock,
+                        physicalStoreStock: null,
+                        physicalWarehouseStock: null,
                         physicalStock: null,
+                        diffStore: 0,
+                        diffWarehouse: 0,
                         diff: 0,
                         hpp,
                         price,
@@ -135,6 +143,8 @@ export const initOrSyncAuditItems = () => {
                     };
                 } else {
                     // Update system stock in case it changed externally
+                    newSession[key].systemStoreStock = sysStore;
+                    newSession[key].systemWarehouseStock = sysWh;
                     newSession[key].systemStock = sysStock;
                     newSession[key].hpp = hpp;
                     newSession[key].price = price;
@@ -146,7 +156,9 @@ export const initOrSyncAuditItems = () => {
             });
         } else {
             const key = `${pId}_main`;
-            const sysStock = parseFloat(p.stock) || 0;
+            const sysStore = p.storeStock !== undefined ? (parseFloat(p.storeStock) || 0) : (parseFloat(p.stock) || 0);
+            const sysWh = parseFloat(p.warehouseStock) || 0;
+            const sysStock = sysStore + sysWh;
             const hpp = parseFloat(p.hpp) || 0;
             const price = parseFloat(p.price) || 0;
 
@@ -164,8 +176,14 @@ export const initOrSyncAuditItems = () => {
                     unit: p.unit || 'pcs',
                     img: p.img || '',
                     colorCode: '',
+                    systemStoreStock: sysStore,
+                    systemWarehouseStock: sysWh,
                     systemStock: sysStock,
+                    physicalStoreStock: null,
+                    physicalWarehouseStock: null,
                     physicalStock: null,
+                    diffStore: 0,
+                    diffWarehouse: 0,
                     diff: 0,
                     hpp,
                     price,
@@ -175,6 +193,8 @@ export const initOrSyncAuditItems = () => {
                     isCounted: false
                 };
             } else {
+                newSession[key].systemStoreStock = sysStore;
+                newSession[key].systemWarehouseStock = sysWh;
                 newSession[key].systemStock = sysStock;
                 newSession[key].hpp = hpp;
                 newSession[key].price = price;
@@ -331,22 +351,33 @@ export const handleSoBarcodeScan = (rawCode) => {
 };
 
 /**
- * Update Nilai Hitung Fisik Item
+ * Update Nilai Hitung Fisik Item per Lokasi (Toko atau Gudang)
  */
-export const setSoPhysicalCount = (key, val) => {
+export const setSoPhysicalLocation = (key, loc, val) => {
     const item = soAuditSession[key];
     if (!item) return;
 
-    if (val === null || val === '' || isNaN(val)) {
+    if (loc === 'store') {
+        item.physicalStoreStock = (val === null || val === '' || isNaN(val)) ? null : Math.max(0, parseFloat(val) || 0);
+    } else if (loc === 'warehouse') {
+        item.physicalWarehouseStock = (val === null || val === '' || isNaN(val)) ? null : Math.max(0, parseFloat(val) || 0);
+    }
+
+    if (item.physicalStoreStock === null && item.physicalWarehouseStock === null) {
         item.physicalStock = null;
         item.isCounted = false;
+        item.diffStore = 0;
+        item.diffWarehouse = 0;
         item.diff = 0;
         item.diffValueHpp = 0;
     } else {
-        const num = Math.max(0, parseFloat(val) || 0);
-        item.physicalStock = num;
+        const pStore = item.physicalStoreStock !== null ? item.physicalStoreStock : item.systemStoreStock;
+        const pWh = item.physicalWarehouseStock !== null ? item.physicalWarehouseStock : item.systemWarehouseStock;
+        item.physicalStock = pStore + pWh;
         item.isCounted = true;
-        item.diff = num - item.systemStock;
+        item.diffStore = (item.physicalStoreStock !== null ? item.physicalStoreStock : item.systemStoreStock) - item.systemStoreStock;
+        item.diffWarehouse = (item.physicalWarehouseStock !== null ? item.physicalWarehouseStock : item.systemWarehouseStock) - item.systemWarehouseStock;
+        item.diff = item.physicalStock - item.systemStock;
         item.diffValueHpp = item.diff * item.hpp;
         if (item.diff === 0) item.reason = 'sesuai';
     }
@@ -356,13 +387,28 @@ export const setSoPhysicalCount = (key, val) => {
 };
 
 /**
- * Samakan Stok Fisik dengan Stok Sistem (1-Klik)
+ * Update Nilai Hitung Fisik Item (Kompatibel Mundur - Mengisi Rak Toko)
+ */
+export const setSoPhysicalCount = (key, val) => {
+    setSoPhysicalLocation(key, 'store', val);
+};
+
+/**
+ * Samakan Stok Fisik dengan Stok Sistem (1-Klik untuk Toko & Gudang)
  */
 export const matchSoItem = (key) => {
     const item = soAuditSession[key];
     if (!item) return;
-    setSoPhysicalCount(key, item.systemStock);
+    item.physicalStoreStock = item.systemStoreStock;
+    item.physicalWarehouseStock = item.systemWarehouseStock;
+    item.physicalStock = item.systemStock;
+    item.isCounted = true;
+    item.diffStore = 0;
+    item.diffWarehouse = 0;
+    item.diff = 0;
+    item.diffValueHpp = 0;
     item.reason = 'sesuai';
+    renderSoStatsBar();
     updateSoItemRowDom(key);
 };
 
@@ -390,11 +436,15 @@ export const matchAllUncountedInView = () => {
 
     showConfirm(
         `Konfirmasi Samakan Stok (${uncounted.length} Barang)`,
-        `Apakah Anda yakin ingin menyamakan seluruh ${uncounted.length} barang yang belum dihitung agar Stok Fisik = Stok Sistem (Selisih 0)?`,
+        `Apakah Anda yakin ingin menyamakan seluruh ${uncounted.length} barang yang belum dihitung agar Stok Fisik (Toko & Gudang) = Stok Sistem (Selisih 0)?`,
         () => {
             uncounted.forEach(it => {
+                it.physicalStoreStock = it.systemStoreStock;
+                it.physicalWarehouseStock = it.systemWarehouseStock;
                 it.physicalStock = it.systemStock;
                 it.isCounted = true;
+                it.diffStore = 0;
+                it.diffWarehouse = 0;
                 it.diff = 0;
                 it.diffValueHpp = 0;
                 it.reason = 'sesuai';
@@ -441,9 +491,24 @@ const updateSoItemRowDom = (key) => {
     const physInputs = rowEl.querySelectorAll('.so-phys-input');
     physInputs.forEach(input => {
         const newVal = item.physicalStock !== null ? String(item.physicalStock) : '';
-        if (input.value !== newVal) {
-            input.value = newVal;
-        }
+        if (input.value !== newVal) input.value = newVal;
+    });
+
+    const storeInputs = rowEl.querySelectorAll('.so-phys-store');
+    storeInputs.forEach(input => {
+        const newVal = item.physicalStoreStock !== null ? String(item.physicalStoreStock) : '';
+        if (input.value !== newVal) input.value = newVal;
+    });
+
+    const whInputs = rowEl.querySelectorAll('.so-phys-warehouse');
+    whInputs.forEach(input => {
+        const newVal = item.physicalWarehouseStock !== null ? String(item.physicalWarehouseStock) : '';
+        if (input.value !== newVal) input.value = newVal;
+    });
+
+    const totalDisplays = rowEl.querySelectorAll('.so-phys-total-display');
+    totalDisplays.forEach(td => {
+        td.innerText = item.physicalStock !== null ? String(item.physicalStock) : '-';
     });
 
     // Update diff badge (pertahankan label Selisih di mobile)
@@ -800,8 +865,8 @@ export const renderSoActiveItems = () => {
             <!-- Header Kolom (Desktop Only) -->
             <div class="hidden lg:grid grid-cols-12 gap-3 px-5 py-2.5 text-[10px] font-black uppercase tracking-wider text-slate-400 bg-slate-100/70 dark:bg-slate-800/50 rounded-2xl">
                 <div class="col-span-5">Informasi Produk &amp; Varian</div>
-                <div class="col-span-2 text-center">Stok Sistem</div>
-                <div class="col-span-2 text-center">Hasil Fisik Rak</div>
+                <div class="col-span-2 text-center">Stok Sistem (Toko/Gudang)</div>
+                <div class="col-span-2 text-center">Input Fisik (Toko/Gudang)</div>
                 <div class="col-span-3 text-right">Selisih &amp; Keterangan</div>
             </div>
 
@@ -835,41 +900,51 @@ export const renderSoActiveItems = () => {
 
                         <!-- Col 2: Stok Sistem (Desktop Only) -->
                         <div class="hidden lg:flex lg:col-span-2 flex-col items-center justify-center text-center">
-                            <span class="text-sm sm:text-base font-black text-slate-800 dark:text-slate-200 font-mono">${item.systemStock}</span>
-                            <span class="text-[10px] text-slate-400 ml-0.5 font-medium">${esc(item.unit)}</span>
+                            <div class="flex items-center gap-1 text-[11px] font-mono">
+                                <span class="text-teal-600 dark:text-teal-400 font-bold" title="Stok Rak Toko">🏪 ${item.systemStoreStock}</span>
+                                <span class="text-slate-300 dark:text-slate-600">•</span>
+                                <span class="text-amber-600 dark:text-amber-400 font-bold" title="Stok Gudang">📦 ${item.systemWarehouseStock}</span>
+                            </div>
+                            <span class="text-[11px] font-black text-slate-700 dark:text-slate-200 font-mono mt-0.5">Total: ${item.systemStock} ${esc(item.unit)}</span>
                         </div>
 
-                        <!-- Col 3: Input Fisik Rak (Desktop Only) -->
-                        <div class="hidden lg:flex lg:col-span-2 items-center justify-center gap-1">
-                            <button type="button" onclick="window.stepSoPhysicalCount('${item.key}', -1)" class="w-8 h-8 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 font-black text-xs flex items-center justify-center transition-all cursor-pointer active:scale-90 shadow-2xs">
-                                <i class="fa-solid fa-minus"></i>
-                            </button>
-                            <input type="number" min="0" step="any" placeholder="Fisik" value="${item.physicalStock !== null ? item.physicalStock : ''}" onchange="window.setSoPhysicalCount('${item.key}', this.value)" oninput="window.setSoPhysicalCount('${item.key}', this.value)" class="so-phys-input w-16 sm:w-20 py-1.5 px-1 text-center font-mono font-black text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-hidden focus:border-[var(--color-primary)] text-slate-900 dark:text-white shadow-2xs">
-                            <button type="button" onclick="window.stepSoPhysicalCount('${item.key}', 1)" class="w-8 h-8 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 font-black text-xs flex items-center justify-center transition-all cursor-pointer active:scale-90 shadow-2xs">
-                                <i class="fa-solid fa-plus"></i>
-                            </button>
-                            <button type="button" onclick="window.matchSoItem('${item.key}')" class="h-8 px-2 rounded-xl primary-bg-soft primary-border border primary-text hover:bg-[rgba(var(--color-primary-rgb),0.2)] font-black text-[10px] flex items-center justify-center transition-all cursor-pointer active:scale-95 shadow-2xs" title="Samakan fisik dengan stok sistem">
+                        <!-- Col 3: Input Fisik Rak Toko & Gudang (Desktop Only) -->
+                        <div class="hidden lg:flex lg:col-span-2 items-center justify-center gap-1.5">
+                            <div class="flex flex-col items-center gap-1">
+                                <div class="flex items-center gap-1">
+                                    <input type="number" min="0" step="any" placeholder="Toko" value="${item.physicalStoreStock !== null ? item.physicalStoreStock : ''}" onchange="window.setSoPhysicalLocation('${item.key}', 'store', this.value)" oninput="window.setSoPhysicalLocation('${item.key}', 'store', this.value)" class="so-phys-store w-16 py-1.5 px-1 text-center font-mono font-bold text-xs bg-slate-50 dark:bg-slate-800 border border-teal-300/80 dark:border-teal-700/80 rounded-xl focus:outline-hidden text-teal-800 dark:text-teal-200 shadow-2xs" title="Hitung Fisik Rak Toko">
+                                    <input type="number" min="0" step="any" placeholder="Gudang" value="${item.physicalWarehouseStock !== null ? item.physicalWarehouseStock : ''}" onchange="window.setSoPhysicalLocation('${item.key}', 'warehouse', this.value)" oninput="window.setSoPhysicalLocation('${item.key}', 'warehouse', this.value)" class="so-phys-warehouse w-16 py-1.5 px-1 text-center font-mono font-bold text-xs bg-slate-50 dark:bg-slate-800 border border-amber-300/80 dark:border-amber-700/80 rounded-xl focus:outline-hidden text-amber-800 dark:text-amber-200 shadow-2xs" title="Hitung Fisik Gudang Cadangan">
+                                </div>
+                                <span class="text-[10px] font-mono text-slate-400">
+                                    Fisik: <b class="so-phys-total-display text-slate-800 dark:text-white font-black">${item.physicalStock !== null ? item.physicalStock : '-'}</b>
+                                </span>
+                            </div>
+                            <button type="button" onclick="window.matchSoItem('${item.key}')" class="h-8 px-2 rounded-xl primary-bg-soft primary-border border primary-text hover:bg-[rgba(var(--color-primary-rgb),0.2)] font-black text-[10px] flex items-center justify-center transition-all cursor-pointer active:scale-95 shadow-2xs" title="Samakan fisik toko &amp; gudang dengan sistem">
                                 =
                             </button>
                         </div>
 
                         <!-- MOBILE ONLY: Compact Bar Sistem vs Fisik (Touch-Friendly) -->
-                        <div class="lg:hidden p-2.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800 flex items-center justify-between gap-2">
-                            <div class="flex flex-col">
-                                <span class="text-[9px] font-black uppercase tracking-wider text-slate-400">Stok Sistem</span>
-                                <span class="text-xs font-black font-mono text-slate-800 dark:text-slate-200">${item.systemStock} ${esc(item.unit)}</span>
+                        <div class="lg:hidden p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800 flex flex-col gap-2">
+                            <div class="flex items-center justify-between text-xs">
+                                <span class="text-[10px] font-bold text-slate-400">Sistem: 🏪 <b class="text-teal-600 dark:text-teal-400">${item.systemStoreStock}</b> | 📦 <b class="text-amber-600 dark:text-amber-400">${item.systemWarehouseStock}</b> (Tot: ${item.systemStock})</span>
+                                <button type="button" onclick="window.matchSoItem('${item.key}')" class="px-2.5 py-1 rounded-xl primary-bg-soft primary-border border primary-text font-black text-[10px] active:scale-95" title="Samakan fisik = sistem">
+                                    = Samakan
+                                </button>
                             </div>
-                            <div class="flex items-center gap-1.5">
-                                <button type="button" onclick="window.stepSoPhysicalCount('${item.key}', -1)" class="w-10 h-10 rounded-xl bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200/90 dark:border-slate-600 font-black text-sm flex items-center justify-center transition-all cursor-pointer active:scale-90 shadow-2xs" title="Kurangi 1">
-                                    <i class="fa-solid fa-minus"></i>
-                                </button>
-                                <input type="number" min="0" step="any" placeholder="Fisik" value="${item.physicalStock !== null ? item.physicalStock : ''}" onchange="window.setSoPhysicalCount('${item.key}', this.value)" oninput="window.setSoPhysicalCount('${item.key}', this.value)" class="so-phys-input w-20 sm:w-24 h-10 py-1.5 px-2 text-center font-mono font-black text-base bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-hidden focus:border-[var(--color-primary)] text-slate-900 dark:text-white shadow-2xs">
-                                <button type="button" onclick="window.stepSoPhysicalCount('${item.key}', 1)" class="w-10 h-10 rounded-xl bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200/90 dark:border-slate-600 font-black text-sm flex items-center justify-center transition-all cursor-pointer active:scale-90 shadow-2xs" title="Tambah 1">
-                                    <i class="fa-solid fa-plus"></i>
-                                </button>
-                                <button type="button" onclick="window.matchSoItem('${item.key}')" class="h-10 px-3 rounded-xl primary-bg-soft primary-border border primary-text font-black text-sm flex items-center justify-center transition-all cursor-pointer active:scale-95 shadow-2xs" title="Samakan fisik = sistem">
-                                    =
-                                </button>
+                            <div class="grid grid-cols-2 gap-2">
+                                <div class="flex flex-col gap-1">
+                                    <span class="text-[9px] font-bold uppercase tracking-wider text-teal-600 dark:text-teal-400 flex items-center gap-1">
+                                        <i class="fa-solid fa-store"></i> Fisik Toko
+                                    </span>
+                                    <input type="number" min="0" step="any" placeholder="0" value="${item.physicalStoreStock !== null ? item.physicalStoreStock : ''}" onchange="window.setSoPhysicalLocation('${item.key}', 'store', this.value)" oninput="window.setSoPhysicalLocation('${item.key}', 'store', this.value)" class="so-phys-store w-full h-10 py-1 px-2 text-center font-mono font-black text-sm bg-white dark:bg-slate-900 border border-teal-300 dark:border-teal-700 rounded-xl focus:outline-hidden text-slate-900 dark:text-white shadow-2xs">
+                                </div>
+                                <div class="flex flex-col gap-1">
+                                    <span class="text-[9px] font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400 flex items-center gap-1">
+                                        <i class="fa-solid fa-warehouse"></i> Fisik Gudang
+                                    </span>
+                                    <input type="number" min="0" step="any" placeholder="0" value="${item.physicalWarehouseStock !== null ? item.physicalWarehouseStock : ''}" onchange="window.setSoPhysicalLocation('${item.key}', 'warehouse', this.value)" oninput="window.setSoPhysicalLocation('${item.key}', 'warehouse', this.value)" class="so-phys-warehouse w-full h-10 py-1 px-2 text-center font-mono font-black text-sm bg-white dark:bg-slate-900 border border-amber-300 dark:border-amber-700 rounded-xl focus:outline-hidden text-slate-900 dark:text-white shadow-2xs">
+                                </div>
                             </div>
                         </div>
 
@@ -1169,21 +1244,32 @@ export const executeSoFinalize = async () => {
             if (p.variants && p.variants.length > 0) {
                 changes.forEach(c => {
                     if (c.variantIndex !== null && p.variants[c.variantIndex]) {
-                        p.variants[c.variantIndex].stock = c.physicalStock;
-                        if (c.physicalStock > 0 && (p.variants[c.variantIndex].isActive === false || p.variants[c.variantIndex].isActive === 'false')) {
-                            p.variants[c.variantIndex].isActive = true;
+                        const v = p.variants[c.variantIndex];
+                        const finalStore = c.physicalStoreStock !== null ? c.physicalStoreStock : (c.physicalStock !== null ? c.physicalStock : (v.storeStock || 0));
+                        const finalWh = c.physicalWarehouseStock !== null ? c.physicalWarehouseStock : (v.warehouseStock || 0);
+                        v.storeStock = finalStore;
+                        v.warehouseStock = finalWh;
+                        v.stock = finalStore + finalWh;
+                        if (v.stock > 0 && (v.isActive === false || v.isActive === 'false')) {
+                            v.isActive = true;
                         }
                     }
                 });
                 // Recalculate total product stock
-                p.stock = p.variants.reduce((s, v) => s + (parseFloat(v.stock) || 0), 0);
+                p.storeStock = p.variants.reduce((s, v) => s + (parseFloat(v.storeStock) || 0), 0);
+                p.warehouseStock = p.variants.reduce((s, v) => s + (parseFloat(v.warehouseStock) || 0), 0);
+                p.stock = p.storeStock + p.warehouseStock;
                 const anyActive = p.variants.some(v => (parseFloat(v.stock) || 0) > 0 && v.isActive !== false && v.isActive !== 'false');
                 if (anyActive && (p.isActive === false || p.isActive === 'false')) p.isActive = 'true';
             } else {
                 const c = changes[0];
                 if (c) {
-                    p.stock = c.physicalStock;
-                    if (c.physicalStock > 0 && (p.isActive === false || p.isActive === 'false')) p.isActive = 'true';
+                    const finalStore = c.physicalStoreStock !== null ? c.physicalStoreStock : (c.physicalStock !== null ? c.physicalStock : (p.storeStock || 0));
+                    const finalWh = c.physicalWarehouseStock !== null ? c.physicalWarehouseStock : (p.warehouseStock || 0);
+                    p.storeStock = finalStore;
+                    p.warehouseStock = finalWh;
+                    p.stock = finalStore + finalWh;
+                    if (p.stock > 0 && (p.isActive === false || p.isActive === 'false')) p.isActive = 'true';
                 }
             }
 
@@ -1221,8 +1307,14 @@ export const executeSoFinalize = async () => {
                 sku: it.sku || '',
                 category: it.category,
                 unit: it.unit || 'pcs',
+                systemStoreStock: it.systemStoreStock,
+                systemWarehouseStock: it.systemWarehouseStock,
                 systemStock: it.systemStock,
+                physicalStoreStock: it.physicalStoreStock,
+                physicalWarehouseStock: it.physicalWarehouseStock,
                 physicalStock: it.physicalStock,
+                diffStore: it.diffStore,
+                diffWarehouse: it.diffWarehouse,
                 diff: it.diff,
                 hpp: it.hpp,
                 price: it.price,
@@ -1516,6 +1608,7 @@ export const printSoWorksheet = () => {
 window.renderStockOpnameView = renderStockOpnameView;
 window.switchSoSubTab = switchSoSubTab;
 window.setSoPhysicalCount = setSoPhysicalCount;
+window.setSoPhysicalLocation = setSoPhysicalLocation;
 window.stepSoPhysicalCount = stepSoPhysicalCount;
 window.matchSoItem = matchSoItem;
 window.setSoItemReason = setSoItemReason;

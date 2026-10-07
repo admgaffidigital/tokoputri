@@ -79,8 +79,38 @@ export const normalizeProductInventory = (product, allSuppliers = []) => {
                 initialQty: curStock,
                 remainingQty: curStock,
                 variantName: '',
+                location: 'store',
                 isInitial: true
             });
+        }
+    }
+
+    // 3. Normalisasi Dual-Location Stock (Rak Toko vs Gudang Cadangan)
+    if (product.storeStock === undefined && product.warehouseStock === undefined) {
+        product.storeStock = parseFloat(product.stock) || 0;
+        product.warehouseStock = 0;
+    } else {
+        product.storeStock = Math.max(0, parseFloat(product.storeStock) || 0);
+        product.warehouseStock = Math.max(0, parseFloat(product.warehouseStock) || 0);
+    }
+    product.stock = parseFloat((product.storeStock + product.warehouseStock).toFixed(3));
+
+    // Sinkronkan Dual-Location per varian jika ada
+    if (Array.isArray(product.variants)) {
+        product.variants.forEach(v => {
+            if (v.storeStock === undefined && v.warehouseStock === undefined) {
+                v.storeStock = parseFloat(v.stock) || 0;
+                v.warehouseStock = 0;
+            } else {
+                v.storeStock = Math.max(0, parseFloat(v.storeStock) || 0);
+                v.warehouseStock = Math.max(0, parseFloat(v.warehouseStock) || 0);
+            }
+            v.stock = parseFloat((v.storeStock + v.warehouseStock).toFixed(3));
+        });
+        if (product.variants.length > 0) {
+            product.storeStock = product.variants.reduce((acc, it) => acc + (parseFloat(it.storeStock) || 0), 0);
+            product.warehouseStock = product.variants.reduce((acc, it) => acc + (parseFloat(it.warehouseStock) || 0), 0);
+            product.stock = parseFloat((product.storeStock + product.warehouseStock).toFixed(3));
         }
     }
 
@@ -126,6 +156,8 @@ export const recordFifoRestock = (product, restockData = {}) => {
         });
     }
 
+    const targetLocation = (restockData.targetLocation === 'warehouse' || restockData.location === 'warehouse') ? 'warehouse' : 'store';
+
     // 2. Buat Tiket Batch FIFO Baru
     const randomSuffix = Math.random().toString(36).substring(2, 7).toUpperCase();
     const batchId = `BATCH-${Date.now().toString(36).toUpperCase()}-${randomSuffix}`;
@@ -140,6 +172,7 @@ export const recordFifoRestock = (product, restockData = {}) => {
         initialQty: qty,
         remainingQty: qty,
         variantName,
+        location: targetLocation,
         expDate: restockData.expDate || null
     };
 
@@ -148,13 +181,27 @@ export const recordFifoRestock = (product, restockData = {}) => {
     // 3. Urutkan antrean batch secara kronologis (FIFO: Masuk Paling Awal di Indeks Depan)
     product.stockBatches.sort((a, b) => new Date(a.receivedAt || 0) - new Date(b.receivedAt || 0));
 
-    // 4. Sinkronkan Kuantitas Stok Fisik Produk & Varian
+    // 4. Sinkronkan Kuantitas Stok Fisik Produk & Varian per Lokasi
     if (variantName && Array.isArray(product.variants)) {
         const v = product.variants.find(x => x.name === variantName);
-        if (v) v.stock = parseFloat(((parseFloat(v.stock) || 0) + qty).toFixed(3));
-        product.stock = product.variants.reduce((acc, it) => acc + (parseFloat(it.stock) || 0), 0);
+        if (v) {
+            if (targetLocation === 'warehouse') {
+                v.warehouseStock = parseFloat(((parseFloat(v.warehouseStock) || 0) + qty).toFixed(3));
+            } else {
+                v.storeStock = parseFloat(((parseFloat(v.storeStock) || 0) + qty).toFixed(3));
+            }
+            v.stock = parseFloat(((parseFloat(v.storeStock) || 0) + (parseFloat(v.warehouseStock) || 0)).toFixed(3));
+        }
+        product.storeStock = product.variants.reduce((acc, it) => acc + (parseFloat(it.storeStock) || 0), 0);
+        product.warehouseStock = product.variants.reduce((acc, it) => acc + (parseFloat(it.warehouseStock) || 0), 0);
+        product.stock = parseFloat((product.storeStock + product.warehouseStock).toFixed(3));
     } else {
-        product.stock = parseFloat(((parseFloat(product.stock) || 0) + qty).toFixed(3));
+        if (targetLocation === 'warehouse') {
+            product.warehouseStock = parseFloat(((parseFloat(product.warehouseStock) || 0) + qty).toFixed(3));
+        } else {
+            product.storeStock = parseFloat(((parseFloat(product.storeStock) || 0) + qty).toFixed(3));
+        }
+        product.stock = parseFloat((product.storeStock + product.warehouseStock).toFixed(3));
     }
 
     // 4. Perbarui Nilai HPP Berjalan Produk
@@ -261,15 +308,36 @@ export const deductFifoStock = (product, qty, variantName = '') => {
         });
     }
 
-    // Sinkronkan sisa stok produk & varian
+    // Hitung pemotongan Dual-Location: Store First!
+    let curStore = 0;
+    let curWarehouse = 0;
+    let targetObj = product;
+
     if (variantName && Array.isArray(product.variants)) {
         const v = product.variants.find(x => x.name === variantName);
         if (v) {
-            v.stock = Math.max(0, parseFloat(((parseFloat(v.stock) || 0) - needQty).toFixed(3)));
+            targetObj = v;
+            curStore = parseFloat(v.storeStock) || 0;
+            curWarehouse = parseFloat(v.warehouseStock) || 0;
         }
-        product.stock = product.variants.reduce((acc, it) => acc + (parseFloat(it.stock) || 0), 0);
     } else {
-        product.stock = Math.max(0, parseFloat(((parseFloat(product.stock) || 0) - needQty).toFixed(3)));
+        curStore = parseFloat(product.storeStock) || 0;
+        curWarehouse = parseFloat(product.warehouseStock) || 0;
+    }
+
+    const takeFromStore = Math.min(curStore, needQty);
+    const takeFromWarehouse = Math.max(0, needQty - takeFromStore);
+
+    targetObj.storeStock = Math.max(0, parseFloat((curStore - takeFromStore).toFixed(3)));
+    targetObj.warehouseStock = Math.max(0, parseFloat((curWarehouse - takeFromWarehouse).toFixed(3)));
+    targetObj.stock = parseFloat((targetObj.storeStock + targetObj.warehouseStock).toFixed(3));
+
+    if (variantName && Array.isArray(product.variants)) {
+        product.storeStock = product.variants.reduce((acc, it) => acc + (parseFloat(it.storeStock) || 0), 0);
+        product.warehouseStock = product.variants.reduce((acc, it) => acc + (parseFloat(it.warehouseStock) || 0), 0);
+        product.stock = parseFloat((product.storeStock + product.warehouseStock).toFixed(3));
+    } else {
+        product.stock = parseFloat((product.storeStock + product.warehouseStock).toFixed(3));
     }
 
     // Perbarui HPP berjalan produk ke batch berikutnya yang siap dijual
@@ -292,9 +360,83 @@ export const deductFifoStock = (product, qty, variantName = '') => {
 
     return {
         deductedQty: needQty,
+        storeDeducted: takeFromStore,
+        warehouseDeducted: takeFromWarehouse,
+        needWarehouseRetrieval: takeFromWarehouse > 0,
         batchesDeducted,
         totalCost,
         effectiveHpp
+    };
+};
+
+/**
+ * Memindahkan stok secara internal antara Gudang Belakang dan Rak Toko.
+ * 
+ * @param {Object} product Objek produk
+ * @param {'warehouse'|'store'} fromLocation Lokasi asal
+ * @param {'warehouse'|'store'} toLocation Lokasi tujuan
+ * @param {Number} qty Jumlah kuantitas yang dipindah
+ * @param {String} variantName Nama varian jika berlaku
+ * @returns {Object} Hasil mutasi { success, message, transferredQty, newStoreStock, newWarehouseStock }
+ */
+export const transferStockBetweenLocations = (product, fromLocation = 'warehouse', toLocation = 'store', qty = 0, variantName = '') => {
+    const numQty = parseFloat(qty) || 0;
+    if (!product || numQty <= 0) return { success: false, message: 'Jumlah mutasi harus lebih besar dari 0' };
+    if (fromLocation === toLocation) return { success: false, message: 'Lokasi asal dan tujuan tidak boleh sama' };
+
+    normalizeProductInventory(product);
+
+    let targetObj = product;
+    if (variantName && Array.isArray(product.variants)) {
+        const v = product.variants.find(x => x.name === variantName);
+        if (v) targetObj = v;
+    }
+
+    const fromKey = fromLocation === 'warehouse' ? 'warehouseStock' : 'storeStock';
+    const toKey = toLocation === 'warehouse' ? 'warehouseStock' : 'storeStock';
+    const available = parseFloat(targetObj[fromKey]) || 0;
+
+    if (available < numQty) {
+        const locLabel = fromLocation === 'warehouse' ? 'Gudang' : 'Rak Toko';
+        const msg = `Stok di ${locLabel} tidak mencukupi! Tersedia: ${available} ${product.unit || 'pcs'}`;
+        return {
+            success: false,
+            message: msg,
+            error: msg
+        };
+    }
+
+    targetObj[fromKey] = parseFloat((available - numQty).toFixed(3));
+    targetObj[toKey] = parseFloat(((parseFloat(targetObj[toKey]) || 0) + numQty).toFixed(3));
+    targetObj.stock = parseFloat((targetObj.storeStock + targetObj.warehouseStock).toFixed(3));
+
+    if (variantName && Array.isArray(product.variants)) {
+        product.storeStock = product.variants.reduce((acc, it) => acc + (parseFloat(it.storeStock) || 0), 0);
+        product.warehouseStock = product.variants.reduce((acc, it) => acc + (parseFloat(it.warehouseStock) || 0), 0);
+        product.stock = parseFloat((product.storeStock + product.warehouseStock).toFixed(3));
+    }
+
+    // Perbarui lokasi batch jika batch tersimpan dengan tag lokasi
+    let remTransfer = numQty;
+    for (const b of (product.stockBatches || [])) {
+        if (remTransfer <= 0) break;
+        if (variantName && b.variantName !== variantName) continue;
+        if (!variantName && b.variantName) continue;
+        const bLoc = b.location || 'store';
+        if (bLoc === fromLocation && (parseFloat(b.remainingQty) || 0) > 0) {
+            b.location = toLocation;
+            remTransfer -= parseFloat(b.remainingQty);
+        }
+    }
+
+    return {
+        success: true,
+        transferredQty: numQty,
+        fromLocation,
+        toLocation,
+        newStoreStock: targetObj.storeStock,
+        newWarehouseStock: targetObj.warehouseStock,
+        totalStock: targetObj.stock
     };
 };
 
@@ -384,6 +526,8 @@ export const computeFifoValuation = (product) => {
         totalValuationRp: Math.round(totalValuationRp),
         totalActiveQty: parseFloat(totalActiveQty.toFixed(3)),
         activeBatchesCount: activeBatches.length,
+        storeStock: parseFloat((product.storeStock || 0).toFixed(3)),
+        warehouseStock: parseFloat((product.warehouseStock || 0).toFixed(3)),
         batches: activeBatches
     };
 };

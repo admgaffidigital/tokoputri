@@ -8,6 +8,23 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-10-81',
+        version: 'v1.10.81',
+        date: '2026-10-07',
+        title: 'Arsitektur Dual-Location Stock (Rak Toko vs Gudang Cadangan), Floor-First Deduction, Alokasi PO Kulakan & Transfer Stok Internal',
+        category: 'feature',
+        badge: 'Dual-Location Stock Architecture & Floor-First Cashier Deduction v1.10.81',
+        items: [
+            'Arsitektur Dual-Location Inventory (Rak Toko vs Gudang Cadangan): Memperluas struktur stok produk induk dan varian dengan pemisahan transparan antara stok siap jual di etalase/rak toko (storeStock) dan stok cadangan di gudang belakang (warehouseStock), dengan sinkronisasi otomatis total stok (stock = storeStock + warehouseStock) dan kompatibilitas mundur penuh 100% bagi data produk lama.',
+            'Pemotongan Floor-First di Kasir POS & Checkout Online: Seluruh transaksi penjualan secara otomatis memotong stok dari rak toko terlebih dahulu sampai habis (0). Apabila kuantitas pesanan melebihi stok rak toko, kekurangan stok otomatis diambil dari gudang belakang dengan notifikasi penanda pengambilan barang gudang (needWarehouseRetrieval), menjamin stok display toko selalu berputar dan mencegah barang gudang diambil mendahului stok etalase.',
+            'Alokasi Lokasi Simpan saat Penerimaan PO Kulakan (purchases.js): Dialog konfirmasi kedatangan barang pesanan dari supplier kini dilengkapi selector lokasi penyimpanan: 🏪 Langsung ke Rak Toko (Display) atau 📦 Disimpan di Gudang Cadangan. Tiket batch FIFO otomatis mencatat lokasi penempatan barang sesuai keputusan staf penerima.',
+            'Pencatatan Fisik Mandiri per Lokasi pada Stock Opname (stock-opname.js): Lembar audit Stock Opname kini menyediakan kolom input fisik mandiri terpisah antara Fisik Toko dan Fisik Gudang, baik pada mode desktop maupun mobile, menghitung selisih per lokasi secara akurat, dan memperbarui saldo masing-masing lokasi secara presisi saat audit difinalisasi.',
+            'Visualisasi Bento & Transfer Internal 1-Klik (modal-product-fifo): Modal Bento FIFO dilengkapi kartu analitik perbandingan Stok Toko vs Stok Gudang, serta tombol Aksi Mutasi Cepat "Pindahkan ke Rak Toko (Internal Transfer)" yang memudahkan pemindahan stok dari gudang ke rak display dengan validasi ketersediaan stok seketika.',
+            'Test Suite Otomatis Dual-Location Inventory (scripts/test-dual-location-stock.mjs): Dilengkapi rangkaian uji otomatis 9 skenario end-to-end (normalisasi, alokasi kulakan, pemotongan floor-first kasir, perpindahan stok antar lokasi, dan audit stock opname) yang terintegrasi di npm run audit dan maintenance.',
+            'Multi-Channel Distribution v1.10.81 (Android versionCode 11081).'
+        ]
+    },
+    {
         id: 'log-1-10-80',
         version: 'v1.10.80',
         date: '2026-10-07',

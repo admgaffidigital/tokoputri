@@ -3229,6 +3229,8 @@ export const processPOSTx = async () => {
                 if (need.main > 0) {
                     deductFifoStock(prod, need.main);
                     updatePayload.stock = prod.stock;
+                    if (prod.storeStock !== undefined) updatePayload.storeStock = prod.storeStock;
+                    if (prod.warehouseStock !== undefined) updatePayload.warehouseStock = prod.warehouseStock;
                     if (Array.isArray(prod.stockBatches)) updatePayload.stockBatches = prod.stockBatches;
                     if (prod.hpp) updatePayload.hpp = prod.hpp;
                     if (prod.stock === 0) {
@@ -3251,6 +3253,8 @@ export const processPOSTx = async () => {
                     });
                     updatePayload.variants = prod.variants;
                     updatePayload.stock = prod.stock;
+                    if (prod.storeStock !== undefined) updatePayload.storeStock = prod.storeStock;
+                    if (prod.warehouseStock !== undefined) updatePayload.warehouseStock = prod.warehouseStock;
                     if (Array.isArray(prod.stockBatches)) updatePayload.stockBatches = prod.stockBatches;
                 }
 
