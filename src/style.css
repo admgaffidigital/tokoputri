@@ -2389,6 +2389,30 @@ html.dark .accent-badge {
     color: var(--color-primary) !important;
 }
 
+.badge-inc-ppn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4.5px;
+    padding: 3px 9px;
+    border-radius: 9999px;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    background-color: rgba(var(--color-primary-rgb), 0.12) !important;
+    border: 1px solid rgba(var(--color-primary-rgb), 0.25) !important;
+    color: var(--color-primary) !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+    vertical-align: middle;
+    transition: all 0.2s ease;
+}
+html.dark .badge-inc-ppn {
+    background-color: rgba(var(--color-primary-rgb), 0.18) !important;
+    border: 1px solid rgba(var(--color-primary-rgb), 0.4) !important;
+    color: var(--color-primary) !important;
+}
+
 .primary-light-icon-box {
     background-color: rgba(var(--color-primary-rgb), 0.12) !important;
     color: var(--color-primary) !important;

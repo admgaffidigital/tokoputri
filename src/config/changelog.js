@@ -8,6 +8,21 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-10-88',
+        version: 'v1.10.88',
+        date: '2026-10-07',
+        title: 'Penyelarasan Paripurna Badge Inc. PPN: Kapsul Pill Elegan & Desain Sistem Harmonis',
+        category: 'fix',
+        badge: 'Harmonious Inc. PPN Capsule Pill & Price Alignment v1.10.88',
+        items: [
+            'Eliminasi Mutlak Badge Kotak Kaku (Square Box Stamp): Menggantikan badge Inc. PPN lama yang berbingkai kotak kuning kaku (rounded 4px) dengan format kapsul pill oval elegan (rounded-full 9999px) yang selaras 100% dengan bahasa desain seluruh badge modal produk.',
+            'Penyelarasan Palet & Tema Dinamis (.accent-badge & .badge-inc-ppn): Menghilangkan warna kuning border-amber-200 yang jomplang/tidak serasi; kini badge Inc. PPN otomatis beradaptasi menggunakan token tema toko aktif (rgba(var(--color-primary-rgb), 0.12)) dengan border halus, serasi dengan badge Harga Terbaik, Official, dan judul harga.',
+            'Integrasi Ikon Resmi Bukti Pajak: Dilengkapi ikon FontAwesome nota/pajak (<i class=\"fa-solid fa-receipt\"></i>) yang profesional dan proporsional dengan font 9px uppercase tracking-wider.',
+            'Penyelarasan Ketinggian & Wadah Mandiri (#product-modal-price-badges): Memisahkan badge pajak dari string teks angka harga (text-3xl) ke dalam kontainer flex terdedikasi, sehingga Inc. PPN dan Harga Terbaik sejajar sempurna di garis horizontal tengah tanpa floating offset yang jomplang.',
+            'Multi-Channel Distribution v1.10.88 (Android versionCode 11088).'
+        ]
+    },
+    {
         id: 'log-1-10-87',
         version: 'v1.10.87',
         date: '2026-10-07',

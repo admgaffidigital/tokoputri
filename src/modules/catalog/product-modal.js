@@ -651,23 +651,45 @@ export const rProdMod = () => {
     
     setIn('product-modal-title', p.name);
     
+    const ppnEl = el('product-modal-ppn-badge');
     if (hV && cVar === null) {
         setH('product-modal-price', '<span class="text-base sm:text-lg text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider">Pilih Warna/Varian</span>');
+        if (ppnEl) {
+            ppnEl.className = 'hidden';
+            ppnEl.innerHTML = '';
+            ppnEl.style.display = 'none';
+        }
     } else {
         let actPrice = v?.price ?? p.price;
         let actNormal = v?.priceNormal ?? p.priceNormal;
         
         const isIncPpn = (appData.store.ppnEnabled === true || appData.store.ppnEnabled === 'true') && appData.store.ppnType === 'inclusive';
-        const ppnBadge = isIncPpn ? `<span class="text-[9px] font-bold text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/30 px-1.5 py-0.5 rounded border border-amber-200 dark:border-amber-800 uppercase tracking-widest ml-2 align-middle inline-block">Inc. PPN</span>` : '';
         
         let pHtml = '';
         if (actNormal && actNormal > actPrice) {
             let pct = Math.round(((actNormal - actPrice) / actNormal) * 100);
-            pHtml = `<div class="flex flex-col"><span class="text-[11px] text-rose-500 font-bold line-through mb-0.5 tracking-wide">${fCur(actNormal)} <span class="bg-rose-100 text-rose-600 px-1.5 py-0.5 rounded ml-1 text-[9px] no-underline tracking-widest border border-rose-200">-${pct}%</span></span><span>${fCur(actPrice)} ${ppnBadge}</span></div>`;
+            pHtml = `<div class="flex flex-col"><span class="text-[11px] text-rose-500 font-bold line-through mb-0.5 tracking-wide">${fCur(actNormal)} <span class="bg-rose-100 text-rose-600 px-1.5 py-0.5 rounded-full ml-1 text-[9px] no-underline tracking-widest border border-rose-200">-${pct}%</span></span><span>${fCur(actPrice)}</span></div>`;
         } else {
-            pHtml = `<span>${fCur(actPrice)} ${ppnBadge}</span>`;
+            pHtml = `<span>${fCur(actPrice)}</span>`;
         }
         setH('product-modal-price', pHtml);
+
+        if (ppnEl) {
+            if (isIncPpn) {
+                ppnEl.className = 'accent-badge px-2.5 py-1 rounded-full text-[9px] font-bold uppercase tracking-wider inline-flex items-center gap-1.5 whitespace-nowrap shadow-2xs';
+                ppnEl.innerHTML = '<i class="fa-solid fa-receipt text-[8.5px]"></i> Inc. PPN';
+                ppnEl.style.display = 'inline-flex';
+            } else {
+                ppnEl.className = 'hidden';
+                ppnEl.innerHTML = '';
+                ppnEl.style.display = 'none';
+            }
+        } else if (isIncPpn) {
+            // Fallback inline jika container badge belum ada di DOM
+            const fallbackBadge = `<span class="accent-badge px-2.5 py-1 rounded-full text-[9px] font-bold uppercase tracking-wider inline-flex items-center gap-1.5 whitespace-nowrap shadow-2xs ml-2 align-middle"><i class="fa-solid fa-receipt text-[8.5px]"></i> Inc. PPN</span>`;
+            pHtml += ` ${fallbackBadge}`;
+            setH('product-modal-price', pHtml);
+        }
     }
     
     const descEl = el('product-modal-desc');

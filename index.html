@@ -1083,9 +1083,12 @@
         <div class="flex-1 bg-white p-6 dark:bg-[#0f172a] sm:p-7">
           <div class="mb-3 flex flex-wrap gap-1.5" id="product-modal-badges"></div>
           <h3 class="mb-2 break-words text-lg font-bold uppercase leading-tight text-slate-900 dark:text-white sm:text-xl" id="product-modal-title">Nama Produk</h3>
-          <div class="mb-6 flex items-end gap-3 border-b border-slate-100 pb-6 dark:border-slate-800/60">
+          <div class="mb-6 flex flex-wrap items-center gap-2.5 border-b border-slate-100 pb-5 dark:border-slate-800/60">
             <span class="text-3xl font-bold tracking-tight primary-text" id="product-modal-price">Rp 0</span>
-            <span class="accent-badge mb-1.5 rounded-full px-2 py-1 text-[9px] font-bold uppercase tracking-widest">Harga Terbaik</span>
+            <div id="product-modal-price-badges" class="flex flex-wrap items-center gap-1.5">
+              <span id="product-modal-ppn-badge" class="hidden"></span>
+              <span class="accent-badge px-2.5 py-1 rounded-full text-[9px] font-bold uppercase tracking-wider inline-flex items-center gap-1.5 shadow-2xs"><i class="fa-solid fa-tag text-[8px]"></i> Harga Terbaik</span>
+            </div>
           </div>
           <!-- WIDGET PUTRI PAYLATER & SIMULASI CICILAN MULTI-BULAN (30 HARI - 3 BULAN) TRANSPARAN -->
           <div id="product-modal-paylater-container" class="mb-6"></div>
