@@ -1351,12 +1351,15 @@ export const printShiftSettlementReceipt = (shift, isXReport = false, forcePrevi
 
     // Tampilkan modal preview in-page
     document.getElementById('pos-shift-receipt-modal')?.remove();
+    if (typeof window.pushModalHistory === 'function') {
+        window.pushModalHistory('posShiftReceipt');
+    }
     document.body.insertAdjacentHTML('beforeend', `
-    <div id="pos-shift-receipt-modal" class="fixed inset-0 z-[10003] flex items-center justify-center p-3 sm:p-4" style="background:rgba(15,23,42,0.75)">
+    <div id="pos-shift-receipt-modal" class="fixed inset-0 z-[10003] flex items-center justify-center p-3 sm:p-4" style="background:rgba(15,23,42,0.75)" onclick="if(event.target===this) window.closePOSShiftReceiptModal()">
         <div class="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl w-full ${is80 ? 'max-w-[420px]' : 'max-w-[340px]'} border border-slate-200 dark:border-slate-800 overflow-hidden flex flex-col max-h-[90vh]">
             <div class="p-3.5 sm:p-4 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center bg-slate-50 dark:bg-slate-800/50">
                 <span class="font-bold text-xs text-slate-700 dark:text-slate-200 flex items-center gap-1.5"><i class="fa-solid fa-receipt text-emerald-500"></i>Preview Slip Rekap Shift (${cols} Kolom)</span>
-                <button onclick="document.getElementById('pos-shift-receipt-modal')?.remove()" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-slate-700 dark:hover:text-slate-200 transition-colors flex items-center justify-center cursor-pointer"><i class="fa-solid fa-xmark text-sm"></i></button>
+                <button onclick="window.closePOSShiftReceiptModal()" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-slate-700 dark:hover:text-slate-200 transition-colors flex items-center justify-center cursor-pointer" aria-label="Tutup preview"><i class="fa-solid fa-xmark text-sm"></i></button>
             </div>
             <div id="pos-shift-receipt-paper-box" class="p-4 overflow-y-auto flex-1 font-mono text-[11px] bg-slate-50/60 dark:bg-slate-950 text-slate-800 dark:text-slate-200 space-y-1.5 select-text custom-scrollbar">
                 <div class="text-center font-bold text-sm uppercase">${esc(storeName)}</div>
@@ -1418,6 +1421,18 @@ export const printShiftSettlementReceipt = (shift, isXReport = false, forcePrevi
         </div>
     </div>`);
 };
+
+export const closePOSShiftReceiptModal = (fH = false) => {
+    const doClose = () => {
+        document.getElementById('pos-shift-receipt-modal')?.remove();
+    };
+    if (typeof window.requestCloseModal === 'function') {
+        window.requestCloseModal('posShiftReceipt', fH, doClose);
+    } else {
+        doClose();
+    }
+};
+window.closePOSShiftReceiptModal = closePOSShiftReceiptModal;
 
 export const executeShiftPrintDirect = () => {
     if (window._lastShiftData && typeof window.printShiftSettlementDirect === 'function') {

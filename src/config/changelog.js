@@ -8,6 +8,22 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-10-76',
+        version: 'v1.10.76',
+        date: '2026-10-07',
+        title: 'Resolusi Tuntas Preview Nota, Struk & Dokumen Tertutup Instan saat Tombol Back HP Ditekan (Zero Stuck Previews)',
+        category: 'fix',
+        badge: 'Instant Back Dismiss for All Receipt & Document Previews v1.10.76',
+        items: [
+            'Resolusi Akar Masalah Modal Preview Tidak Menutup saat di-Back dari HP (src/core/router.js & src/modules/print/print-preview.js): Memperbaiki ketidaksesuaian ID elemen modal (utp-thermal-modal & utp-html-modal) dan alias fungsi penutup (window.closeThermalPreviewModal & window.closeHtmlPreviewModal) pada router. Sebelumnya, ketidakcocokan ini membuat tombol back HP tidak mengenali modal preview yang sedang aktif sehingga pengguna terpaksa menekan tombol Batal.',
+            'Prioritas Utama Pemindai Preview Cetak (closeTopmostOpenModal Step 0a): Menempatkan deteksi langsung berprioritas tertinggi untuk seluruh 7 modal preview nota, struk, dan dokumen (utp-thermal-modal, utp-html-modal, receipt-preview-modal, doc-preview-modal, modal-expense-receipt-preview, pos-receipt-fallback-modal, dan pos-shift-receipt-modal). Tombol kembali Android atau browser kini menutup preview seketika dalam 1 ketukan tanpa ada yang tertahan.',
+            'Sinkronisasi Riwayat Navigasi Hardware Back (syncHistoryAfterClose): Menyelaraskan status riwayat browser/webview saat tombol back perangkat ditekan sehingga entri modal ter-pop bersih tanpa meninggalkan state zombie atau mengganggu urutan navigasi sebelumnya.',
+            'Integrasi Riwayat & Fungsi Tutup Resmi POS Modals (src/modules/pos/pos.js & src/modules/pos/pos-shift.js): Mendaftarkan pos-receipt-fallback-modal dan pos-shift-receipt-modal ke stack riwayat terpadu (pushModalHistory) lengkap dengan fungsi penutup terdedikasi (closePOSReceiptFallbackModal & closePOSShiftReceiptModal).',
+            'Koreksi ID Modal Bukti Beban Operasional: Memperbaiki elIdMap untuk expenseReceipt dari expense-receipt-preview menjadi modal-expense-receipt-preview.',
+            'Multi-Channel Distribution v1.10.76 (Android versionCode 11076).'
+        ]
+    },
+    {
         id: 'log-1-10-75',
         version: 'v1.10.75',
         date: '2026-10-07',

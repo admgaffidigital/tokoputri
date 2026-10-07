@@ -344,8 +344,8 @@ export const isModalOpenInDOM = (name) => {
         clientTempoPay: 'modal-client-tempo-pay',
         clientPaySuccess: 'modal-client-pay-success',
         tempoConfirmations: 'modal-tempo-confirmations',
-        thermalPreview: 'modal-thermal-preview',
-        htmlPreview: 'modal-html-preview',
+        thermalPreview: 'utp-thermal-modal',
+        htmlPreview: 'utp-html-modal',
         addStaff: 'modal-add-staff',
         permissions: 'modal-permissions',
         editStaff: 'modal-edit-staff',
@@ -363,18 +363,20 @@ export const isModalOpenInDOM = (name) => {
         posHoldPrompt: 'pos-hold-prompt',
         posHeldModal: 'pos-held-modal',
         posCameraScanner: 'pos-camera-scanner',
+        posReceiptFallback: 'pos-receipt-fallback-modal',
+        posShiftReceipt: 'pos-shift-receipt-modal',
         tempoDetail: 'tempo-detail-modal',
         tempoPayment: 'tempo-payment-modal',
         tempoPenalty: 'tempo-penalty-modal',
         expenseForm: 'expense-modal',
-        expenseReceipt: 'expense-receipt-preview'
+        expenseReceipt: 'modal-expense-receipt-preview'
     };
 
     const targetId = elIdMap[name];
     if (!targetId) return false;
     const domEl = document.getElementById(targetId);
     if (!domEl) return false;
-    return !domEl.classList.contains('hidden') && !domEl.classList.contains('opacity-0');
+    return !domEl.classList.contains('hidden') && !domEl.classList.contains('pointer-events-none');
 };
 
 /**
@@ -503,11 +505,23 @@ export const closeModalByName = (m) => {
             if (typeof window.closeTempoConfirmationsModal === 'function') { window.closeTempoConfirmationsModal(true); return true; }
             break;
         case 'thermalPreview':
+            if (typeof window.closeThermalPrintPreview === 'function') { window.closeThermalPrintPreview(true); return true; }
             if (typeof window.closeThermalPreviewModal === 'function') { window.closeThermalPreviewModal(true); return true; }
-            break;
+            document.getElementById('utp-thermal-modal')?.remove();
+            return true;
         case 'htmlPreview':
+            if (typeof window.closeHtmlPrintPreview === 'function') { window.closeHtmlPrintPreview(true); return true; }
             if (typeof window.closeHtmlPreviewModal === 'function') { window.closeHtmlPreviewModal(true); return true; }
-            break;
+            document.getElementById('utp-html-modal')?.remove();
+            return true;
+        case 'posReceiptFallback':
+            if (typeof window.closePOSReceiptFallbackModal === 'function') { window.closePOSReceiptFallbackModal(true); return true; }
+            document.getElementById('pos-receipt-fallback-modal')?.remove();
+            return true;
+        case 'posShiftReceipt':
+            if (typeof window.closePOSShiftReceiptModal === 'function') { window.closePOSShiftReceiptModal(true); return true; }
+            document.getElementById('pos-shift-receipt-modal')?.remove();
+            return true;
         case 'addStaff':
             if (typeof window.closeAddStaffModal === 'function') { window.closeAddStaffModal(true); return true; }
             break;
@@ -620,8 +634,8 @@ export const closeModalByName = (m) => {
         clientTempoPay: 'modal-client-tempo-pay',
         clientPaySuccess: 'modal-client-pay-success',
         tempoConfirmations: 'modal-tempo-confirmations',
-        thermalPreview: 'modal-thermal-preview',
-        htmlPreview: 'modal-html-preview',
+        thermalPreview: 'utp-thermal-modal',
+        htmlPreview: 'utp-html-modal',
         addStaff: 'modal-add-staff',
         permissions: 'modal-permissions',
         editStaff: 'modal-edit-staff',
@@ -639,18 +653,26 @@ export const closeModalByName = (m) => {
         posHoldPrompt: 'pos-hold-prompt',
         posHeldModal: 'pos-held-modal',
         posCameraScanner: 'pos-camera-scanner',
+        posReceiptFallback: 'pos-receipt-fallback-modal',
+        posShiftReceipt: 'pos-shift-receipt-modal',
         tempoDetail: 'tempo-detail-modal',
         tempoPayment: 'tempo-payment-modal',
         tempoPenalty: 'tempo-penalty-modal',
         expenseForm: 'expense-modal',
-        expenseReceipt: 'expense-receipt-preview'
+        expenseReceipt: 'modal-expense-receipt-preview'
     };
     const targetId = elIdMap[m];
     if (targetId) {
         const domEl = document.getElementById(targetId);
-        if (domEl && !domEl.classList.contains('hidden')) {
-            domEl.classList.add('hidden');
-            return true;
+        if (domEl) {
+            if (['utp-thermal-modal', 'utp-html-modal', 'pos-receipt-fallback-modal', 'pos-shift-receipt-modal'].includes(targetId)) {
+                domEl.remove();
+                return true;
+            }
+            if (!domEl.classList.contains('hidden')) {
+                domEl.classList.add('hidden');
+                return true;
+            }
         }
     }
 
@@ -659,13 +681,105 @@ export const closeModalByName = (m) => {
 
 /**
  * Universal LIFO Modal Closer & Fallback Active DOM Scanner
- * Menutup modal paling atas secara berurutan dan mengeliminasi modal yatim/macet
+ * Menutup modal paling atas secara berurutan dan mengeliminasi modal yatim/macet.
+ * @param {boolean} fromPopState - true jika dipicu dari event popstate browser
  */
-export const closeTopmostOpenModal = () => {
-    // 0. Tutup dialog overlay / modal transien yang aktif di DOM segera
+export const closeTopmostOpenModal = (fromPopState = false) => {
+    // Sinkronkan riwayat browser/webview jika penutupan dipicu dari hardware back button (bukan popstate)
+    const syncHistoryAfterClose = () => {
+        if (!fromPopState && typeof history !== 'undefined' && history.state && history.state.modal) {
+            isProgrammaticModalClose = true;
+            if (programmaticCloseTimer) clearTimeout(programmaticCloseTimer);
+            programmaticCloseTimer = setTimeout(() => {
+                isProgrammaticModalClose = false;
+            }, 300);
+            try { history.back(); } catch (e) { isProgrammaticModalClose = false; }
+        }
+    };
+
+    // 0a. PRIORITAS UTAMA: Deteksi & Tutup Tampilan Preview Nota, Struk & Dokumen Aktif
+    // Menjamin jika preview struk/nota/dokumen terbuka, tombol back HP langsung menutupnya seketika tanpa perlu menekan tombol Batal.
+    const previewModalCheckers = [
+        {
+            id: 'utp-thermal-modal',
+            close: () => {
+                if (typeof window.closeThermalPrintPreview === 'function') window.closeThermalPrintPreview(true);
+                else if (typeof window.closeThermalPreviewModal === 'function') window.closeThermalPreviewModal(true);
+                else document.getElementById('utp-thermal-modal')?.remove();
+            }
+        },
+        {
+            id: 'utp-html-modal',
+            close: () => {
+                if (typeof window.closeHtmlPrintPreview === 'function') window.closeHtmlPrintPreview(true);
+                else if (typeof window.closeHtmlPreviewModal === 'function') window.closeHtmlPreviewModal(true);
+                else document.getElementById('utp-html-modal')?.remove();
+            }
+        },
+        {
+            id: 'pos-receipt-fallback-modal',
+            close: () => {
+                if (typeof window.closePOSReceiptFallbackModal === 'function') window.closePOSReceiptFallbackModal(true);
+                else document.getElementById('pos-receipt-fallback-modal')?.remove();
+            }
+        },
+        {
+            id: 'pos-shift-receipt-modal',
+            close: () => {
+                if (typeof window.closePOSShiftReceiptModal === 'function') window.closePOSShiftReceiptModal(true);
+                else document.getElementById('pos-shift-receipt-modal')?.remove();
+            }
+        },
+        {
+            id: 'receipt-preview-modal',
+            isOpen: (el) => !el.classList.contains('hidden'),
+            close: () => {
+                if (typeof window.closeReceiptPreviewModal === 'function') window.closeReceiptPreviewModal(true);
+                else document.getElementById('receipt-preview-modal')?.classList.add('hidden');
+            }
+        },
+        {
+            id: 'doc-preview-modal',
+            isOpen: (el) => !el.classList.contains('hidden'),
+            close: () => {
+                if (typeof window.closeDocPreviewModal === 'function') window.closeDocPreviewModal(true);
+                else document.getElementById('doc-preview-modal')?.classList.add('hidden');
+            }
+        },
+        {
+            id: 'modal-expense-receipt-preview',
+            isOpen: (el) => !el.classList.contains('hidden'),
+            close: () => {
+                if (typeof window.closeExpenseReceiptPreview === 'function') window.closeExpenseReceiptPreview(true);
+                else document.getElementById('modal-expense-receipt-preview')?.classList.add('hidden');
+            }
+        }
+    ];
+
+    for (const p of previewModalCheckers) {
+        const pEl = document.getElementById(p.id);
+        if (pEl && (p.isOpen ? p.isOpen(pEl) : true)) {
+            const mappedName = {
+                'utp-thermal-modal': 'thermalPreview',
+                'utp-html-modal': 'htmlPreview',
+                'pos-receipt-fallback-modal': 'posReceiptFallback',
+                'pos-shift-receipt-modal': 'posShiftReceipt',
+                'receipt-preview-modal': 'receipt',
+                'doc-preview-modal': 'docPreview',
+                'modal-expense-receipt-preview': 'expenseReceipt'
+            }[p.id];
+            if (mappedName) {
+                const idx = oMods.lastIndexOf(mappedName);
+                if (idx > -1) oMods.splice(idx, 1);
+            }
+            p.close();
+            syncHistoryAfterClose();
+            return true;
+        }
+    }
+
+    // 0b. Tutup dialog overlay / modal transien yang aktif di DOM segera
     const transientIds = [
-        'pos-receipt-fallback-modal',
-        'pos-shift-receipt-modal',
         'pos-success-modal',
         'pos-recall-confirm-modal',
         'pos-closed-success-modal'
@@ -674,6 +788,7 @@ export const closeTopmostOpenModal = () => {
         const tEl = document.getElementById(id);
         if (tEl) {
             tEl.remove();
+            syncHistoryAfterClose();
             return true;
         }
     }
@@ -683,12 +798,14 @@ export const closeTopmostOpenModal = () => {
         const topModal = oMods.pop();
         if (isModalOpenInDOM(topModal)) {
             closeModalByName(topModal);
+            syncHistoryAfterClose();
             return true;
         }
     }
 
     // 2. Fallback scan jika ada modal di DOM yang terbuka tapi luput dari oMods
     const allKnownModals = [
+        'posReceiptFallback', 'posShiftReceipt',
         'clientPaySuccess', 'clientTempoPay', 'tempoConfirmations',
         'posVariantSheet', 'posLogin', 'posCartDrawer', 'posPayment',
         'posOpenShift', 'posCloseShift', 'posShiftSummary',
@@ -707,6 +824,7 @@ export const closeTopmostOpenModal = () => {
     for (const name of allKnownModals) {
         if (isModalOpenInDOM(name)) {
             closeModalByName(name);
+            syncHistoryAfterClose();
             return true;
         }
     }
@@ -769,7 +887,7 @@ export const confirmExitApp = () => {
  */
 export const handleAppBackButton = () => {
     // 1. Jika ada modal yang aktif (baik di stack oMods maupun scanner DOM), tutup segera
-    if (closeTopmostOpenModal()) {
+    if (closeTopmostOpenModal(false)) {
         return;
     }
 
@@ -906,7 +1024,7 @@ export const setupHistoryRouter = () => {
         }
 
         // 1. Jika ada modal yang terbuka, tutup modal teratas (LIFO)
-        if (closeTopmostOpenModal()) {
+        if (closeTopmostOpenModal(true)) {
             return;
         }
 

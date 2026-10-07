@@ -485,9 +485,12 @@ if (typeof document !== 'undefined') {
 export { ensurePreviewStyles };
 window.openThermalPrintPreview       = openThermalPrintPreview;
 window.closeThermalPrintPreview      = closeThermalPrintPreview;
+window.closeThermalPreviewModal      = closeThermalPrintPreview;
 window.confirmThermalPrint           = confirmThermalPrint;
 window.setThermalPreviewPaper        = setThermalPreviewPaper;
 window.openPrinterSettingsFromPreview = openPrinterSettingsFromPreview;
 window.openHtmlPrintPreview          = openHtmlPrintPreview;
 window.closeHtmlPrintPreview         = closeHtmlPrintPreview;
+window.closeHtmlPreviewModal         = closeHtmlPrintPreview;
 window.confirmHtmlPrint              = confirmHtmlPrint;
+
