@@ -1210,13 +1210,23 @@
         </div>
 
         <!-- Body: Variant Selector Chips & Quantity -->
-        <div class="p-4 sm:p-5 space-y-4">
-          <!-- Variant Options: 3-Column Swatch Grid (Screen 3 Reference) -->
+        <div class="p-4 sm:p-5 space-y-3.5">
+          <!-- Live Color Spotlight Bar (Tampil dinamis untuk produk cat & varian berkode warna) -->
+          <div id="quick-variant-spotlight" class="hidden"></div>
+
+          <!-- Variant Options -->
           <div>
-            <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500 flex items-center gap-1.5 mb-2.5" id="quick-variant-section-title">
-              <i class="fa-solid fa-sliders text-[var(--color-primary)]"></i> Pilih Varian / Warna
-            </span>
-            <div id="quick-variant-options" class="grid grid-cols-3 gap-2 sm:gap-2.5 max-h-56 overflow-y-auto custom-scrollbar p-0.5"></div>
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500 flex items-center gap-1.5" id="quick-variant-section-title">
+                <i class="fa-solid fa-sliders text-[var(--color-primary)]"></i> Pilih Varian / Warna
+              </span>
+              <span id="quick-variant-count-badge" class="text-[9px] font-extrabold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hidden"></span>
+            </div>
+
+            <!-- Filter Keluarga Warna & Pencarian Instan (Dinamis untuk katalog warna cat) -->
+            <div id="quick-variant-filter-wrap" class="hidden mb-2.5 space-y-2"></div>
+
+            <div id="quick-variant-options" class="max-h-60 sm:max-h-72 overflow-y-auto custom-scrollbar p-0.5"></div>
           </div>
 
           <!-- Quantity Stepper & Live Subtotal Calculator -->

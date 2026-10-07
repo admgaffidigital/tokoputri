@@ -3901,3 +3901,349 @@ button span > i[class*="fa-"]:not(.hidden):not([hidden]) {
     border-color: #334155 !important;
 }
 
+/* === SISTEM KATALOG KARTU WARNA CAT (PAINT SWATCH FAN DECK & CHIP SYSTEM) === */
+/* Kartu Swatch Simulasi Cat Realistik (Dulux / Avian Brands / Nippon Paint Style) */
+.paint-swatch-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    border-radius: 14px;
+    border: 1.5px solid #e2e8f0;
+    background: #ffffff;
+    overflow: hidden;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    padding: 0;
+}
+.dark .paint-swatch-card {
+    border-color: #334155;
+    background: #1e293b;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+}
+.paint-swatch-card:hover:not(:disabled) {
+    border-color: rgba(var(--color-primary-rgb), 0.6);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px -2px rgba(0, 0, 0, 0.08);
+}
+.paint-swatch-card:active:not(:disabled) {
+    transform: scale(0.97);
+}
+.paint-swatch-card.is-selected {
+    border: 2px solid var(--color-primary) !important;
+    background: #ffffff;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px -2px rgba(var(--color-primary-rgb), 0.35), 0 0 0 2px rgba(var(--color-primary-rgb), 0.2) !important;
+}
+.dark .paint-swatch-card.is-selected {
+    background: #1e293b;
+    box-shadow: 0 6px 20px -2px rgba(var(--color-primary-rgb), 0.45), 0 0 0 2px rgba(var(--color-primary-rgb), 0.25) !important;
+}
+.paint-swatch-card:disabled,
+.paint-swatch-card.is-disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    filter: grayscale(0.5);
+    transform: none !important;
+}
+
+/* Blok Warna Cat Penuh di Bagian Atas Kartu */
+.paint-swatch-block {
+    position: relative;
+    width: 100%;
+    height: 52px;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: filter 0.2s ease;
+}
+@media (min-width: 640px) {
+    .paint-swatch-block {
+        height: 60px;
+    }
+}
+.paint-swatch-card:hover:not(:disabled) .paint-swatch-block {
+    filter: brightness(1.03);
+}
+
+/* Efek Satin Sheen 3D / Glossy Light Reflection */
+.paint-sheen-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.35) 0%, rgba(255, 255, 255, 0.10) 38%, rgba(0, 0, 0, 0.02) 65%, rgba(0, 0, 0, 0.14) 100%);
+    pointer-events: none;
+}
+
+/* Cap/Stamp Kode Warna di Pojok Kiri Atas Blok Warna */
+.paint-code-stamp {
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 8px;
+    font-weight: 800;
+    line-height: 1;
+    padding: 2px 4.5px;
+    border-radius: 4px;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    letter-spacing: 0.03em;
+    pointer-events: none;
+    z-index: 2;
+    max-width: 85%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.paint-code-stamp.is-dark-bg {
+    background: rgba(0, 0, 0, 0.38);
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+.paint-code-stamp.is-light-bg {
+    background: rgba(255, 255, 255, 0.72);
+    color: #0f172a;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+/* Badge Centang Terpilih di Tengah Blok Warna */
+.paint-selected-badge {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 3;
+    pointer-events: none;
+    animation: paintBadgePop 0.22s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+@keyframes paintBadgePop {
+    from { transform: scale(0.6); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+.paint-selected-badge-inner {
+    width: 22px;
+    height: 22px;
+    border-radius: 9999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+}
+.paint-selected-badge-inner.is-dark-bg {
+    background: #ffffff;
+    color: #0f172a;
+}
+.paint-selected-badge-inner.is-light-bg {
+    background: #0f172a;
+    color: #ffffff;
+}
+
+/* Tombol Quick Zoom di Pojok Kanan Atas Swatch */
+.paint-swatch-zoom {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 18px;
+    height: 18px;
+    border-radius: 9999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 8px;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    z-index: 4;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+.paint-swatch-zoom.is-dark-bg {
+    background: rgba(0, 0, 0, 0.35);
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+.paint-swatch-zoom.is-light-bg {
+    background: rgba(255, 255, 255, 0.75);
+    color: #0f172a;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+}
+.paint-swatch-zoom:hover {
+    transform: scale(1.15);
+}
+
+/* Panel Informasi Warna di Bagian Bawah Kartu */
+.paint-swatch-info {
+    padding: 6px 7px 7px 7px;
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+    background: inherit;
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+}
+.dark .paint-swatch-info {
+    border-top-color: rgba(255, 255, 255, 0.06);
+}
+.paint-swatch-name {
+    font-size: 10px;
+    font-weight: 800;
+    line-height: 1.25;
+    color: #1e293b;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+@media (min-width: 640px) {
+    .paint-swatch-name {
+        font-size: 11px;
+    }
+}
+.dark .paint-swatch-name {
+    color: #f8fafc;
+}
+.paint-swatch-card.is-selected .paint-swatch-name {
+    color: var(--color-primary);
+    font-weight: 900;
+}
+.paint-swatch-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 4px;
+    margin-top: 1px;
+}
+.paint-swatch-hex {
+    font-family: ui-monospace, SFMono-Regular, monospace;
+    font-size: 7.5px;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+}
+@media (min-width: 640px) {
+    .paint-swatch-hex {
+        font-size: 8px;
+    }
+}
+.dark .paint-swatch-hex {
+    color: #94a3b8;
+}
+.paint-swatch-stock {
+    font-size: 7.5px;
+    font-weight: 800;
+    color: #64748b;
+}
+@media (min-width: 640px) {
+    .paint-swatch-stock {
+        font-size: 8px;
+    }
+}
+.dark .paint-swatch-stock {
+    color: #94a3b8;
+}
+.paint-swatch-stock.is-low {
+    color: #f43f5e;
+}
+
+/* Badge Stok Habis Ribbon */
+.paint-oos-badge {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    padding: 2px 5px;
+    border-radius: 4px;
+    font-size: 7.5px;
+    font-weight: 800;
+    line-height: 1;
+    background: #ef4444;
+    color: #ffffff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    z-index: 5;
+    text-transform: uppercase;
+}
+
+/* Tab Filter Keluarga Warna (Color Family Tabs) */
+.paint-family-nav {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    padding-top: 2px;
+    -webkit-overflow-scrolling: touch;
+}
+.paint-family-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 9px;
+    border-radius: 9999px;
+    font-size: 10px;
+    font-weight: 700;
+    white-space: nowrap;
+    border: 1px solid #e2e8f0;
+    background: #f8fafc;
+    color: #64748b;
+    transition: all 0.15s ease;
+    cursor: pointer;
+    flex-shrink: 0;
+    user-select: none;
+}
+.dark .paint-family-tab {
+    border-color: #334155;
+    background: #1e293b;
+    color: #94a3b8;
+}
+.paint-family-tab:hover {
+    border-color: #cbd5e1;
+    color: #334155;
+}
+.dark .paint-family-tab:hover {
+    border-color: #475569;
+    color: #f1f5f9;
+}
+.paint-family-tab.is-active {
+    background: var(--color-primary) !important;
+    border-color: var(--color-primary) !important;
+    color: #ffffff !important;
+    box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.35);
+}
+.paint-family-tab.is-active span,
+.paint-family-tab.is-active i {
+    color: #ffffff !important;
+}
+
+/* Spotlight Bar Warna Terpilih (Live Active Preview Bar) */
+.paint-spotlight-bar {
+    border: 1.5px solid rgba(var(--color-primary-rgb), 0.25);
+    background: linear-gradient(135deg, rgba(var(--color-primary-rgb), 0.06) 0%, rgba(var(--color-primary-rgb), 0.02) 100%);
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+}
+.dark .paint-spotlight-bar {
+    border-color: rgba(var(--color-primary-rgb), 0.35);
+    background: linear-gradient(135deg, rgba(var(--color-primary-rgb), 0.14) 0%, rgba(var(--color-primary-rgb), 0.05) 100%);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Mini Paint Chip untuk Kasir POS (pos-variant-sheet) */
+.pos-paint-chip {
+    position: relative;
+    width: 24px;
+    height: 24px;
+    border-radius: 7px;
+    overflow: hidden;
+    flex-shrink: 0;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+

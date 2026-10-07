@@ -8,6 +8,23 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-10-87',
+        version: 'v1.10.87',
+        date: '2026-10-07',
+        title: 'Sistem Katalog Kartu Warna Cat (Paint Swatch Fan Deck & Color Family Filter)',
+        category: 'feature',
+        badge: 'Paint Swatch Chip System & Family Filter v1.10.87',
+        items: [
+            'Arsitektur Kartu Swatch Cat Modern (.paint-swatch-card): Merombak tampilan varian khusus produk cat tembok & cat warna menjadi format kartu katalog swatch kartu chip realistik (ala Dulux, Avian Brands, Nippon Paint, Jotun) dengan blok warna penuh, lapisan satin sheen 3D glossy, dan panel informasi kode warna.',
+            'Cap/Stamp Kode Warna Berkontras Cerdas: Dilengkapi kode warna atau kode pabrik pada sudut swatch dengan formula kecerahan YIQ (isDarkColor) yang secara dinamis beralih kontras otomatis antara teks terang vs gelap agar 100% selalu jelas dibaca di atas semua jenis warna cat.',
+            'Live Selected Color Spotlight Bar (.paint-spotlight-bar): Menghadirkan bar spotlight warna aktif di atas lembar varian yang menampilkan preview kotak swatch besar, nama warna tebal, kode hex kapital, harga riil, dan status sisa stok varian terpilih.',
+            'Smart Color Family Filter Tabs (paint-family-nav): Mengelompokkan varian cat secara otomatis ke dalam tab keluarga warna (Semua, Putih & Netral, Kuning & Krem, Oranye & Peach, Merah & Pink, Cokelat & Earthy, Biru & Toska, Hijau Segar, Abu & Gelap) dengan hanya menampilkan tab warna yang memang tersedia pada produk tersebut.',
+            'Pencarian Instan Nama & Kode Warna: Memudahkan pelanggan mencari warna impian secara instan berdasarkan nama maupun kode hex saat produk memiliki banyak variasi warna (10-50 warna).',
+            'Harmonisasi Kasir POS (pos-variant-sheet.js): Meningkatkan visual varian warna cat di kasir POS dengan mini paint chip (.pos-paint-chip) bersaput sheen glossy agar kasir dapat memverifikasi warna kaleng cat pelanggan secara instan dan akurat.',
+            'Multi-Channel Distribution v1.10.87 (Android versionCode 11087).'
+        ]
+    },
+    {
         id: 'log-1-10-86',
         version: 'v1.10.86',
         date: '2026-10-07',

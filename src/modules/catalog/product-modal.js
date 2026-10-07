@@ -268,39 +268,41 @@ export const closeProductModal = (fH = false) => {
  * Preview zoom varian / warna
  */
 export const previewVariant = (idx) => {
-    if (!cProd || !cProd.variants || !cProd.variants[idx]) return;
-    const v = cProd.variants[idx];
+    const targetProd = cProd || qvProd;
+    if (!targetProd || !targetProd.variants || !targetProd.variants[idx]) return;
+    const v = targetProd.variants[idx];
     const m = el('variant-preview-modal');
     const c = el('variant-preview-content');
     if (!m || !c) return;
 
     let html = '';
-    const nameStr = `${esc(cProd.name)} - ${esc(v.name)}`;
-    const priceStr = fCur(v.price || cProd.price);
+    const nameStr = `${esc(targetProd.name)} - ${esc(v.name)}`;
+    const priceStr = fCur(v.price || targetProd.price);
 
     if (v.img) {
         html = `
             <div class="relative w-full aspect-square bg-white rounded-3xl overflow-hidden shadow-2xl border border-slate-200 dark:border-slate-800 flex items-center justify-center">
                 <img class="w-full h-full object-contain" src="${getOptImg(v.img, 'w800-rw')}" alt="${esc(v.name)}">
-                ${v.colorCode ? `<div class="absolute top-4 left-4 w-12 h-12 rounded-full border-4 border-white shadow-lg" style="background-color: ${esc(v.colorCode)};"></div>` : ''}
+                ${v.colorCode ? `<div class="absolute top-4 left-4 w-12 h-12 rounded-full border-4 border-white shadow-lg overflow-hidden" style="background-color: ${esc(v.colorCode)};"><div class="paint-sheen-overlay"></div></div>` : ''}
             </div>
             <div class="mt-5 text-center px-4 w-full">
                 <h4 class="text-white font-extrabold text-lg md:text-xl tracking-wide uppercase break-words leading-tight">${esc(v.name)}</h4>
                 <p class="text-[var(--color-primary)] font-extrabold text-lg mt-1 tracking-tight">${priceStr}</p>
-                <p class="text-slate-400 font-semibold text-[11px] md:text-xs mt-1 uppercase tracking-widest break-words">${esc(cProd.name)}</p>
+                <p class="text-slate-400 font-semibold text-[11px] md:text-xs mt-1 uppercase tracking-widest break-words">${esc(targetProd.name)}</p>
             </div>
         `;
     } else if (v.colorCode) {
         html = `
             <div class="w-full aspect-square rounded-3xl shadow-2xl border-4 border-white/20 flex flex-col items-center justify-center p-6 relative overflow-hidden" style="background-color: ${esc(v.colorCode)};">
-                <div class="absolute bottom-0 inset-x-0 bg-white dark:bg-slate-900 p-6 flex flex-col items-center justify-center text-center border-t border-slate-200/50 dark:border-slate-800/50">
+                <div class="paint-sheen-overlay"></div>
+                <div class="absolute bottom-0 inset-x-0 bg-white dark:bg-slate-900 p-6 flex flex-col items-center justify-center text-center border-t border-slate-200/50 dark:border-slate-800/50 z-10">
                     <span class="text-slate-900 dark:text-white font-extrabold text-lg uppercase tracking-wider break-words leading-tight">${esc(v.name)}</span>
                     <span class="text-slate-500 dark:text-slate-400 font-mono text-xs font-bold mt-1 uppercase">${esc(v.colorCode)}</span>
                     <span class="text-[var(--color-primary)] font-extrabold text-lg mt-1">${priceStr}</span>
                 </div>
             </div>
             <div class="mt-5 text-center px-4 w-full">
-                <p class="text-slate-400 font-semibold text-[11px] md:text-xs mt-1 uppercase tracking-widest break-words">${esc(cProd.name)}</p>
+                <p class="text-slate-400 font-semibold text-[11px] md:text-xs mt-1 uppercase tracking-widest break-words">${esc(targetProd.name)}</p>
             </div>
         `;
     } else {
@@ -398,6 +400,117 @@ export const changeSlide = (dir) => {
     if (window.cSlideIdx < 0) window.cSlideIdx = 1;
     rProdMod();
 };
+
+// ─── UTILITAS WARNA & KATALOG KARTU WARNA CAT (PAINT SWATCH SYSTEM) ──────
+export const hexToRgb = (hex) => {
+    if (!hex) return null;
+    let clean = String(hex).replace('#', '').trim();
+    if (clean.length === 3) {
+        clean = clean.split('').map(c => c + c).join('');
+    }
+    if (clean.length !== 6) return null;
+    const num = parseInt(clean, 16);
+    if (isNaN(num)) return null;
+    return {
+        r: (num >> 16) & 255,
+        g: (num >> 8) & 255,
+        b: num & 255
+    };
+};
+
+export const isDarkColor = (hex) => {
+    const rgb = hexToRgb(hex);
+    if (!rgb) return false;
+    const yiq = ((rgb.r * 299) + (rgb.g * 587) + (rgb.b * 114)) / 1000;
+    return yiq < 145;
+};
+
+export const parsePaintColorInfo = (v) => {
+    const rawName = (v?.name || '').trim();
+    const hex = (v?.colorCode && typeof v.colorCode === 'string' && v.colorCode.trim()) ? v.colorCode.trim() : '';
+    
+    // Deteksi kode warna di depan nama (misal "035 Champagne", "BW Broken White", "9102 Black")
+    let codeStamp = (v?.code || '').trim();
+    let displayName = rawName;
+    
+    if (!codeStamp) {
+        const match = rawName.match(/^([A-Za-z0-9\-\/]{1,6})\s+[-–]?\s*(.+)$/);
+        if (match && match[1] && match[2]) {
+            codeStamp = match[1].toUpperCase();
+            displayName = match[2];
+        } else if (hex) {
+            codeStamp = hex.replace('#', '').toUpperCase();
+        }
+    }
+    
+    return {
+        codeStamp: codeStamp || 'CAT',
+        displayName: displayName || rawName,
+        hex: hex || '#FFFFFF',
+        isDark: isDarkColor(hex)
+    };
+};
+
+export const getPaintColorFamily = (hex, name = '') => {
+    const lowerName = String(name).toLowerCase();
+    if (/(putih|white|snow|ivory|mutiara|pearl|bone|krim|cream|vanilla)/i.test(lowerName)) {
+        if (/(krim|cream|vanilla)/i.test(lowerName)) return 'yellow';
+        return 'white';
+    }
+    if (/(hitam|black|anthracite|charcoal|ebony)/i.test(lowerName)) return 'gray';
+    if (/(abu|grey|gray|silver|slate|semen|smoke|ash)/i.test(lowerName)) return 'gray';
+    if (/(kuning|yellow|lemon|mustard|canary|gold|emas|amber)/i.test(lowerName)) return 'yellow';
+    if (/(oranye|orange|jingga|peach|apricot|salmon|coral|tangerine)/i.test(lowerName)) return 'orange';
+    if (/(merah|red|maroon|crimson|ruby|rose|pink|merah muda|magenta)/i.test(lowerName)) return 'red';
+    if (/(cokelat|coklat|brown|earth|wood|kayu|coffee|kopi|tan|khaki|terracotta|beige)/i.test(lowerName)) return 'brown';
+    if (/(biru|blue|navy|aqua|cyan|sky|langit|indigo|ocean|denim|teal|toska|tosca)/i.test(lowerName)) return 'blue';
+    if (/(hijau|green|lime|olive|mint|daun|lumut|emerald|jade|army)/i.test(lowerName)) return 'green';
+
+    const rgb = hexToRgb(hex);
+    if (!rgb) return 'all';
+    const r = rgb.r / 255, g = rgb.g / 255, b = rgb.b / 255;
+    const max = Math.max(r, g, b), min = Math.min(r, g, b);
+    let h, s, l = (max + min) / 2;
+
+    if (max === min) {
+        h = s = 0;
+    } else {
+        const d = max - min;
+        s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+        switch (max) {
+            case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+            case g: h = (b - r) / d + 2; break;
+            case b: h = (r - g) / d + 4; break;
+        }
+        h /= 6;
+    }
+    const hue = h * 360;
+    const sat = s * 100;
+    const lum = l * 100;
+
+    if (lum >= 88 && sat <= 22) return 'white';
+    if (lum <= 18 || sat <= 12) return 'gray';
+    if (hue >= 15 && hue < 45) return lum < 45 && sat < 60 ? 'brown' : 'orange';
+    if (hue >= 45 && hue < 70) return 'yellow';
+    if (hue >= 70 && hue < 165) return 'green';
+    if (hue >= 165 && hue < 260) return 'blue';
+    if (hue >= 260 && hue < 340) return 'red';
+    if (hue >= 340 || hue < 15) return 'red';
+
+    return 'all';
+};
+
+export const PAINT_FAMILIES = [
+    { id: 'all', label: 'Semua', icon: 'fa-layer-group' },
+    { id: 'white', label: 'Putih & Netral', dot: '#F8FAFC' },
+    { id: 'yellow', label: 'Kuning & Krem', dot: '#FDE047' },
+    { id: 'orange', label: 'Oranye & Peach', dot: '#FB923C' },
+    { id: 'red', label: 'Merah & Pink', dot: '#F43F5E' },
+    { id: 'brown', label: 'Cokelat & Earthy', dot: '#A16207' },
+    { id: 'blue', label: 'Biru & Toska', dot: '#38BDF8' },
+    { id: 'green', label: 'Hijau Segar', dot: '#4ADE80' },
+    { id: 'gray', label: 'Abu & Gelap', dot: '#94A3B8' }
+];
 
 /**
  * Render elemen internal modal detail produk
@@ -743,49 +856,53 @@ export const rProdMod = () => {
 
             let optHTML = '';
             if (isColorCatalog) {
-                // MODEL 1: KATALOG WARNA CAT KHUSUS (Grid Swatch Kartu Simulasi Warna Cat)
+                // MODEL 1: KATALOG WARNA CAT KHUSUS (Grid Swatch Fan Deck & Chip System)
                 optHTML = `<div class="grid grid-cols-3 sm:grid-cols-4 gap-2 sm:gap-2.5 w-full">`;
                 optHTML += p.variants.map((r, x) => {
-                    let isVarActive = r.isActive !== false && r.isActive !== 'false';
+                    const isVarActive = r.isActive !== false && r.isActive !== 'false';
                     const useStkV = appData.store.useStock === true || appData.store.useStock === 'true';
                     const rawVarStock = (r.stock != null && r.stock !== '') ? r.stock : (r.stok != null && r.stok !== '' ? r.stok : null);
                     const hasVStock = rawVarStock !== null && !isNaN(parseFloat(rawVarStock));
                     const varStock = hasVStock ? parseFloat(rawVarStock) : 0;
                     const isVarOutOfStock = useStkV && varStock <= 0;
-                    let isVarSelectable = isVarActive && !isVarOutOfStock;
+                    const isVarSelectable = isVarActive && !isVarOutOfStock;
                     const isSelected = x === cVar;
-                    
-                    let cardClass = "";
-                    if (!isVarSelectable) {
-                        cardClass = "bg-slate-100/70 dark:bg-slate-800/40 border-slate-200 dark:border-slate-700/60 text-slate-400 opacity-50 cursor-not-allowed";
-                    } else if (isSelected) {
-                        cardClass = "border-2 border-[var(--color-primary)] bg-[rgba(var(--color-primary-rgb),0.08)] dark:bg-[rgba(var(--color-primary-rgb),0.15)] ring-2 ring-[var(--color-primary)]/25 shadow-xs text-slate-900 dark:text-white";
-                    } else {
-                        cardClass = "bg-white dark:bg-slate-800/90 border-slate-200/80 dark:border-slate-700/80 text-slate-700 dark:text-slate-300 hover:border-[var(--color-primary)]/50";
-                    }
 
-                    const hex = (r.colorCode && typeof r.colorCode === 'string' && r.colorCode.trim()) ? r.colorCode.trim() : '';
-                    let swatchInner = '';
-                    if (r.img && r.img.trim()) {
-                        swatchInner = `<img src="${getOptImg(r.img, 'w100-rw')}" alt="${esc(r.name)}" class="w-full h-full object-cover rounded-full">`;
-                    }
-                    const swatchDot = hex 
-                        ? `<span class="w-8 h-8 sm:w-9 sm:h-9 rounded-full shrink-0 border border-black/10 shadow-xs flex items-center justify-center mx-auto transition-transform ${isSelected ? 'scale-110' : ''}" style="background-color: ${esc(hex)}">${swatchInner}</span>`
-                        : (r.img ? `<img src="${getOptImg(r.img, 'w100-rw')}" alt="${esc(r.name)}" class="w-8 h-8 sm:w-9 sm:h-9 rounded-full object-cover shrink-0 border border-slate-200 shadow-xs mx-auto">` : '');
+                    const info = parsePaintColorInfo(r);
+                    const hex = info.hex;
+                    const isDark = info.isDark;
 
-                    const zoomBtn = isVarSelectable && (hex || r.img) 
-                        ? `<span onclick="event.stopPropagation(); previewVariant(${x})" class="absolute top-1.5 right-1.5 w-5 h-5 rounded-full bg-white/90 dark:bg-slate-700/90 shadow-sm flex items-center justify-center text-slate-500 hover:text-[var(--color-primary)] hover:scale-110 active:scale-90 transition-all border border-slate-200/50 dark:border-slate-600/50 z-10 cursor-pointer" title="Perbesar"><i class="fa-solid fa-magnifying-glass-plus text-[9px]"></i></span>` 
+                    const zoomBtn = isVarSelectable 
+                        ? `<span onclick="event.stopPropagation(); previewVariant(${x})" class="paint-swatch-zoom ${isDark ? 'is-dark-bg' : 'is-light-bg'}" title="Perbesar"><i class="fa-solid fa-magnifying-glass-plus"></i></span>` 
                         : '';
 
-                    return `<button ${!isVarSelectable ? 'disabled' : ''} class="relative p-2 sm:p-2.5 rounded-2xl text-center border transition-all active:scale-95 flex flex-col items-center justify-center gap-1.5 cursor-pointer overflow-hidden ${cardClass}" ${isVarSelectable ? `onclick="selectVariant(${x})"` : ''}>
-                        ${zoomBtn}
-                        ${swatchDot}
-                        <div class="w-full min-w-0 px-0.5">
-                            <span class="block text-[10px] sm:text-[10.5px] font-black leading-tight truncate ${isSelected ? 'text-amber-950 dark:text-amber-200' : 'text-slate-800 dark:text-white'} ${!isVarSelectable ? 'line-through' : ''}">${esc(r.name)}</span>
-                            <span class="block text-[8px] sm:text-[8.5px] font-bold text-slate-400 dark:text-slate-500 truncate mt-0.5">${hasVStock && !isVarOutOfStock ? `Stok ${varStock}` : esc(r.code || r.unit || (hex ? hex.toUpperCase() : ''))}</span>
-                        </div>
-                        ${isVarOutOfStock && isVarActive ? '<span class="absolute top-1 right-1 px-1 py-0.5 rounded text-[7.5px] bg-rose-500 text-white font-bold leading-none">Habis</span>' : ''}
-                    </button>`;
+                    const selectedBadge = isSelected
+                        ? `<div class="paint-selected-badge"><span class="paint-selected-badge-inner ${isDark ? 'is-dark-bg' : 'is-light-bg'}"><i class="fa-solid fa-check"></i></span></div>`
+                        : '';
+
+                    const hasDiffPrice = r.price && parseFloat(r.price) !== parseFloat(p.price);
+                    const metaRight = hasDiffPrice 
+                        ? `<span class="paint-swatch-stock font-bold ${isSelected ? 'text-[var(--color-primary)]' : ''}">${fCur(r.price)}</span>`
+                        : (hasVStock && !isVarOutOfStock ? `<span class="paint-swatch-stock ${varStock <= 5 ? 'is-low' : ''}">Stok ${varStock}</span>` : `<span class="paint-swatch-stock">${esc(r.unit || p.unit || '')}</span>`);
+
+                    return `
+                        <button type="button" ${!isVarSelectable ? 'disabled' : ''} class="paint-swatch-card ${isSelected ? 'is-selected' : ''} ${!isVarSelectable ? 'is-disabled' : ''}" ${isVarSelectable ? `onclick="selectVariant(${x})"` : ''}>
+                            <div class="paint-swatch-block" style="background-color: ${esc(hex)};">
+                                <div class="paint-sheen-overlay"></div>
+                                <span class="paint-code-stamp ${isDark ? 'is-dark-bg' : 'is-light-bg'}">${esc(info.codeStamp)}</span>
+                                ${zoomBtn}
+                                ${selectedBadge}
+                            </div>
+                            <div class="paint-swatch-info">
+                                <span class="paint-swatch-name ${!isVarSelectable ? 'line-through opacity-60' : ''}">${esc(info.displayName)}</span>
+                                <div class="paint-swatch-meta">
+                                    <span class="paint-swatch-hex">${esc(hex)}</span>
+                                    ${metaRight}
+                                </div>
+                            </div>
+                            ${isVarOutOfStock && isVarActive ? '<span class="paint-oos-badge">Habis</span>' : ''}
+                        </button>
+                    `;
                 }).join('');
                 optHTML += `</div>`;
             } else {
@@ -1404,12 +1521,33 @@ export const renderRelatedProducts = p => {
 let qvProd = null;
 let qvVar = 0;
 let qvQty = 1;
+let qvSearch = '';
+let qvFamily = 'all';
+
+export const filterQuickPaintFamily = (famId) => {
+    qvFamily = famId;
+    renderQuickVariantSheet(false);
+};
+
+export const searchQuickPaintColor = (val) => {
+    qvSearch = val || '';
+    renderQuickVariantSheet(false);
+};
+
+export const clearQuickPaintSearch = () => {
+    qvSearch = '';
+    const input = el('quick-variant-search-input');
+    if (input) input.value = '';
+    renderQuickVariantSheet(false);
+};
 
 export const openQuickVariantSheet = (productId) => {
     const p = appData.products.find(x => String(x.id) === String(productId));
     if (!p) return;
     qvProd = p;
     qvQty = 1;
+    qvSearch = '';
+    qvFamily = 'all';
 
     // Smart Auto-Select: Pilih varian aktif pertama yang memiliki stok
     const useStk = appData.store.useStock === true || appData.store.useStock === 'true';
@@ -1424,7 +1562,7 @@ export const openQuickVariantSheet = (productId) => {
     }
     qvVar = defaultIdx;
 
-    renderQuickVariantSheet();
+    renderQuickVariantSheet(true);
 
     const m = el('quick-variant-modal'), c = el('quick-variant-content');
     if (m && c) {
@@ -1521,11 +1659,16 @@ export const toggleQuickVariantWishlist = () => {
     if (typeof window.triggerHaptic === 'function') window.triggerHaptic('light');
 };
 
-export const renderQuickVariantSheet = () => {
+export const renderQuickVariantSheet = (resetFilters = false) => {
     if (!qvProd) return;
     const p = qvProd;
     const v = p.variants?.[qvVar];
     const useStk = appData.store.useStock === true || appData.store.useStock === 'true';
+
+    if (resetFilters) {
+        qvSearch = '';
+        qvFamily = 'all';
+    }
 
     // Mini Header Update
     const imgEl = el('quick-variant-img');
@@ -1590,47 +1733,163 @@ export const renderQuickVariantSheet = () => {
                 : `<i class="fa-solid fa-sliders text-[var(--color-primary)]"></i> Pilih Varian`;
         }
 
-        if (isColorCatalog) {
-            // MODEL 1: KATALOG WARNA CAT KHUSUS
-            optContainer.className = "grid grid-cols-3 gap-2 sm:gap-2.5 max-h-56 overflow-y-auto custom-scrollbar p-0.5";
-            optContainer.innerHTML = p.variants.map((r, idx) => {
-                const isVarActive = r.isActive !== false && r.isActive !== 'false';
-                const rawS = (r.stock != null && r.stock !== '') ? r.stock : ((r.stok != null && r.stok !== '') ? r.stok : null);
-                const hasS = rawS != null && !isNaN(parseFloat(rawS));
-                const s = hasS ? parseFloat(rawS) : 0;
-                const isOOS = useStk && s <= 0;
-                const isSelectable = isVarActive && !isOOS;
-                const isSelected = idx === qvVar;
-
-                let cardClass = "";
-                if (!isSelectable) {
-                    cardClass = "bg-slate-100/70 dark:bg-slate-800/40 border-slate-200 dark:border-slate-700/60 text-slate-400 opacity-50 cursor-not-allowed";
-                } else if (isSelected) {
-                    cardClass = "border-2 border-[var(--color-primary)] bg-[rgba(var(--color-primary-rgb),0.08)] dark:bg-[rgba(var(--color-primary-rgb),0.15)] ring-2 ring-[var(--color-primary)]/25 shadow-xs text-slate-900 dark:text-white";
-                } else {
-                    cardClass = "bg-white dark:bg-slate-800/90 border-slate-200/80 dark:border-slate-700/80 text-slate-700 dark:text-slate-300 hover:border-[var(--color-primary)]/50";
-                }
-
-                const hex = (r.colorCode && typeof r.colorCode === 'string' && r.colorCode.trim()) ? r.colorCode.trim() : '';
-                let swatchInner = '';
-                if (r.img && r.img.trim()) {
-                    swatchInner = `<img src="${getOptImg(r.img, 'w100-rw')}" alt="${esc(r.name)}" class="w-full h-full object-cover rounded-full">`;
-                }
-                const swatchDot = hex 
-                    ? `<span class="w-8 h-8 sm:w-9 sm:h-9 rounded-full shrink-0 border border-black/10 shadow-xs flex items-center justify-center mx-auto transition-transform ${isSelected ? 'scale-110' : ''}" style="background-color: ${esc(hex)}">${swatchInner}</span>`
-                    : (r.img ? `<img src="${getOptImg(r.img, 'w100-rw')}" alt="${esc(r.name)}" class="w-8 h-8 sm:w-9 sm:h-9 rounded-full object-cover shrink-0 border border-slate-200 shadow-xs mx-auto">` : '');
-
-                return `
-                    <button ${!isSelectable ? 'disabled' : ''} onclick="selectQuickVariant(${idx})" class="p-2 sm:p-2.5 rounded-2xl text-center border transition-all active:scale-95 flex flex-col items-center justify-center gap-1.5 cursor-pointer relative overflow-hidden ${cardClass}">
-                        ${swatchDot}
-                        <div class="w-full min-w-0 px-0.5">
-                            <span class="block text-[10px] sm:text-[10.5px] font-black leading-tight truncate ${isSelected ? 'text-amber-950 dark:text-amber-200' : 'text-slate-800 dark:text-white'} ${!isSelectable ? 'line-through' : ''}">${esc(r.name)}</span>
-                            <span class="block text-[8px] sm:text-[8.5px] font-bold text-slate-400 dark:text-slate-500 truncate mt-0.5">${hasS && !isOOS ? `Stok ${s}` : esc(r.code || r.unit || (hex ? hex.toUpperCase() : ''))}</span>
+        // SPOTLIGHT BAR (Preview Warna Terpilih dengan Gloss & Code Stamp)
+        const spotEl = el('quick-variant-spotlight');
+        if (spotEl) {
+            if (isColorCatalog && v) {
+                const spotInfo = parsePaintColorInfo(v);
+                const spotHex = spotInfo.hex;
+                const isSpotDark = spotInfo.isDark;
+                spotEl.className = 'paint-spotlight-bar flex items-center gap-3 p-2.5 sm:p-3 rounded-2xl mb-3';
+                spotEl.innerHTML = `
+                    <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-xl relative overflow-hidden shrink-0 border border-black/15 shadow-sm" style="background-color: ${esc(spotHex)};">
+                        <div class="paint-sheen-overlay"></div>
+                        <span class="paint-code-stamp ${isSpotDark ? 'is-dark-bg' : 'is-light-bg'}">${esc(spotInfo.codeStamp)}</span>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-1.5 flex-wrap">
+                            <span class="text-[9px] font-black uppercase tracking-widest text-[var(--color-primary)] bg-[rgba(var(--color-primary-rgb),0.1)] px-1.5 py-0.5 rounded-md">Warna Terpilih</span>
+                            <span class="font-mono text-[9.5px] font-bold text-slate-400 dark:text-slate-400 uppercase">${esc(spotHex)}</span>
                         </div>
-                        ${isOOS ? '<span class="absolute top-1 right-1 px-1 py-0.5 rounded text-[7.5px] bg-rose-500 text-white font-bold leading-none">Habis</span>' : ''}
-                    </button>
+                        <h5 class="text-xs sm:text-sm font-black text-slate-900 dark:text-white truncate mt-0.5">${esc(spotInfo.displayName)}</h5>
+                    </div>
+                    <div class="text-right shrink-0">
+                        <span class="text-xs sm:text-sm font-black text-slate-900 dark:text-white">${fCur(priceVal)}</span>
+                        <span class="block text-[9px] font-bold ${varStock > 0 ? 'text-slate-400 dark:text-slate-500' : 'text-rose-500'}">${varStock > 0 ? `Sisa ${varStock} ${v?.unit || p.unit || 'pcs'}` : 'Habis'}</span>
+                    </div>
                 `;
-            }).join('');
+            } else {
+                spotEl.className = 'hidden';
+                spotEl.innerHTML = '';
+            }
+        }
+
+        // FILTER WRAP & SEARCH BAR
+        const filterWrap = el('quick-variant-filter-wrap');
+        const countBadge = el('quick-variant-count-badge');
+
+        if (isColorCatalog) {
+            // Hitung distribusi keluarga warna
+            const familyCounts = { all: p.variants.length };
+            p.variants.forEach(vr => {
+                const fam = getPaintColorFamily(vr.colorCode, vr.name);
+                familyCounts[fam] = (familyCounts[fam] || 0) + 1;
+            });
+
+            const availableFamilies = PAINT_FAMILIES.filter(f => f.id === 'all' || (familyCounts[f.id] && familyCounts[f.id] > 0));
+
+            if (filterWrap) {
+                if (availableFamilies.length > 2 || p.variants.length >= 6) {
+                    filterWrap.className = 'mb-2.5 space-y-2 block';
+
+                    const searchHtml = p.variants.length >= 6 ? `
+                        <div class="relative">
+                            <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-[10px] text-slate-400"></i>
+                            <input id="quick-variant-search-input" type="text" placeholder="Cari warna atau kode hex..." value="${esc(qvSearch)}" oninput="window.searchQuickPaintColor(this.value)" class="w-full h-8 pl-8 pr-7 text-xs rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/80 text-slate-800 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-[var(--color-primary)] transition-all">
+                            ${qvSearch ? `<button type="button" onclick="window.clearQuickPaintSearch()" class="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"><i class="fa-solid fa-xmark text-xs"></i></button>` : ''}
+                        </div>
+                    ` : '';
+
+                    const tabsHtml = `
+                        <div class="paint-family-nav hide-scrollbar">
+                            ${availableFamilies.map(f => {
+                                const isActive = qvFamily === f.id;
+                                const cnt = familyCounts[f.id] || 0;
+                                const iconHtml = f.icon 
+                                    ? `<i class="fa-solid ${f.icon} text-[9px]"></i>` 
+                                    : `<span class="w-2.5 h-2.5 rounded-full inline-block shrink-0 border border-black/10" style="background:${f.dot}"></span>`;
+                                return `<button type="button" onclick="window.filterQuickPaintFamily('${f.id}')" class="paint-family-tab ${isActive ? 'is-active' : ''}">${iconHtml}<span>${f.label} (${cnt})</span></button>`;
+                            }).join('')}
+                        </div>
+                    `;
+
+                    filterWrap.innerHTML = searchHtml + tabsHtml;
+                } else {
+                    filterWrap.className = 'hidden';
+                    filterWrap.innerHTML = '';
+                }
+            }
+
+            // Filter variants
+            let displayed = p.variants.map((vr, origIdx) => ({ vr, origIdx }));
+            if (qvFamily !== 'all') {
+                displayed = displayed.filter(item => getPaintColorFamily(item.vr.colorCode, item.vr.name) === qvFamily);
+            }
+            if (qvSearch && qvSearch.trim()) {
+                const q = qvSearch.trim().toLowerCase();
+                displayed = displayed.filter(item => {
+                    const n = (item.vr.name || '').toLowerCase();
+                    const h = (item.vr.colorCode || '').toLowerCase();
+                    const c = (item.vr.code || '').toLowerCase();
+                    return n.includes(q) || h.includes(q) || c.includes(q);
+                });
+            }
+
+            if (countBadge) {
+                countBadge.innerText = `${displayed.length} Warna`;
+                countBadge.classList.remove('hidden');
+            }
+
+            // MODEL 1: KATALOG WARNA CAT KHUSUS
+            optContainer.className = "grid grid-cols-3 gap-2 sm:gap-2.5 max-h-60 sm:max-h-72 overflow-y-auto custom-scrollbar p-0.5";
+
+            if (displayed.length === 0) {
+                optContainer.innerHTML = `
+                    <div class="col-span-3 py-8 text-center text-slate-400 dark:text-slate-500">
+                        <i class="fa-solid fa-palette text-2xl mb-1.5 opacity-50 block"></i>
+                        <p class="text-xs font-bold">Tidak ada warna yang cocok</p>
+                        <button type="button" onclick="window.clearQuickPaintSearch(); window.filterQuickPaintFamily('all');" class="mt-2.5 px-3 py-1 text-[11px] font-bold rounded-lg bg-slate-100 dark:bg-slate-800 text-[var(--color-primary)] hover:bg-slate-200 transition-colors">
+                            Tampilkan Semua Warna
+                        </button>
+                    </div>
+                `;
+            } else {
+                optContainer.innerHTML = displayed.map(({ vr: r, origIdx: idx }) => {
+                    const isVarActive = r.isActive !== false && r.isActive !== 'false';
+                    const rawS = (r.stock != null && r.stock !== '') ? r.stock : ((r.stok != null && r.stok !== '') ? r.stok : null);
+                    const hasS = rawS != null && !isNaN(parseFloat(rawS));
+                    const s = hasS ? parseFloat(rawS) : 0;
+                    const isOOS = useStk && s <= 0;
+                    const isSelectable = isVarActive && !isOOS;
+                    const isSelected = idx === qvVar;
+
+                    const info = parsePaintColorInfo(r);
+                    const hex = info.hex;
+                    const isDark = info.isDark;
+
+                    const zoomBtn = isSelectable 
+                        ? `<span onclick="event.stopPropagation(); previewVariant(${idx})" class="paint-swatch-zoom ${isDark ? 'is-dark-bg' : 'is-light-bg'}" title="Perbesar"><i class="fa-solid fa-magnifying-glass-plus"></i></span>` 
+                        : '';
+
+                    const selectedBadge = isSelected
+                        ? `<div class="paint-selected-badge"><span class="paint-selected-badge-inner ${isDark ? 'is-dark-bg' : 'is-light-bg'}"><i class="fa-solid fa-check"></i></span></div>`
+                        : '';
+
+                    const hasDiffPrice = r.price && parseFloat(r.price) !== parseFloat(p.price);
+                    const metaRight = hasDiffPrice 
+                        ? `<span class="paint-swatch-stock font-bold ${isSelected ? 'text-[var(--color-primary)]' : ''}">${fCur(r.price)}</span>`
+                        : (hasS && !isOOS ? `<span class="paint-swatch-stock ${s <= 5 ? 'is-low' : ''}">Stok ${s}</span>` : `<span class="paint-swatch-stock">${esc(r.unit || p.unit || '')}</span>`);
+
+                    return `
+                        <button type="button" ${!isSelectable ? 'disabled' : ''} onclick="selectQuickVariant(${idx})" class="paint-swatch-card ${isSelected ? 'is-selected' : ''} ${!isSelectable ? 'is-disabled' : ''}">
+                            <div class="paint-swatch-block" style="background-color: ${esc(hex)};">
+                                <div class="paint-sheen-overlay"></div>
+                                <span class="paint-code-stamp ${isDark ? 'is-dark-bg' : 'is-light-bg'}">${esc(info.codeStamp)}</span>
+                                ${zoomBtn}
+                                ${selectedBadge}
+                            </div>
+                            <div class="paint-swatch-info">
+                                <span class="paint-swatch-name ${!isSelectable ? 'line-through opacity-60' : ''}">${esc(info.displayName)}</span>
+                                <div class="paint-swatch-meta">
+                                    <span class="paint-swatch-hex">${esc(hex)}</span>
+                                    ${metaRight}
+                                </div>
+                            </div>
+                            ${isOOS ? '<span class="paint-oos-badge">Habis</span>' : ''}
+                        </button>
+                    `;
+                }).join('');
+            }
         } else {
             // MODEL 2: VARIAN STANDAR / UMUM (NON-CAT, TANPA KODE HEX)
             optContainer.className = "flex flex-wrap gap-2 max-h-56 overflow-y-auto custom-scrollbar p-0.5";
@@ -1823,4 +2082,7 @@ window.quickVariantAddToCart = quickVariantAddToCart;
 window.quickVariantBuyNow = quickVariantBuyNow;
 window.toggleQuickVariantWishlist = toggleQuickVariantWishlist;
 window.updateQuickVariantWishUI = updateQuickVariantWishUI;
+window.filterQuickPaintFamily = filterQuickPaintFamily;
+window.searchQuickPaintColor = searchQuickPaintColor;
+window.clearQuickPaintSearch = clearQuickPaintSearch;
 
