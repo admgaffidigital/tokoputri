@@ -371,7 +371,8 @@ export const MODAL_ELEMENT_MAP = {
     tempoPayment: ['modal-tempo-payment', 'tempo-payment-modal'],
     tempoPenalty: ['modal-tempo-penalty', 'tempo-penalty-modal'],
     expenseForm: ['modal-expense-form', 'expense-modal'],
-    expenseReceipt: ['modal-expense-receipt-preview']
+    expenseReceipt: ['modal-expense-receipt-preview'],
+    sessionKicked: ['session-kicked-modal']
 };
 
 /**
@@ -518,6 +519,7 @@ export const closeModalByName = (m) => {
             break;
         case 'clientTempoPay':
             if (typeof window.closeClientTempoPayModal === 'function') { window.closeClientTempoPayModal(true); return true; }
+            if (typeof window.closeClientPaymentModal === 'function') { window.closeClientPaymentModal(true); return true; }
             break;
         case 'clientPaySuccess':
             if (typeof window.closeClientPaymentSuccessModal === 'function') { window.closeClientPaymentSuccessModal(true); return true; }
@@ -554,9 +556,11 @@ export const closeModalByName = (m) => {
             break;
         case 'soFinalize':
             if (typeof window.closeSOFinalizeModal === 'function') { window.closeSOFinalizeModal(true); return true; }
+            if (typeof window.closeFinalizeModal === 'function') { window.closeFinalizeModal(true); return true; }
             break;
         case 'soHistory':
             if (typeof window.closeSOHistoryModal === 'function') { window.closeSOHistoryModal(true); return true; }
+            if (typeof window.closeSoHistoryModal === 'function') { window.closeSoHistoryModal(true); return true; }
             break;
         case 'preRestore':
             if (typeof window.closePreRestoreModal === 'function') { window.closePreRestoreModal(true); return true; }
@@ -615,6 +619,10 @@ export const closeModalByName = (m) => {
             return true;
         case 'posLogoutShift':
             document.getElementById('pos-logout-shift-modal')?.remove();
+            return true;
+        case 'sessionKicked':
+            if (typeof window.closeSessionKickedModal === 'function') { window.closeSessionKickedModal(true); return true; }
+            document.getElementById('session-kicked-modal')?.remove();
             return true;
         default:
             break;
@@ -752,7 +760,8 @@ export const closeTopmostOpenModal = (fromPopState = false) => {
         'pos-recall-confirm-modal',
         'pos-delete-confirm-modal',
         'pos-closed-success-modal',
-        'pos-logout-shift-modal'
+        'pos-logout-shift-modal',
+        'session-kicked-modal'
     ];
     for (const id of transientIds) {
         const tEl = document.getElementById(id);
@@ -775,6 +784,7 @@ export const closeTopmostOpenModal = (fromPopState = false) => {
 
     // 2. Fallback scan jika ada modal di DOM yang terbuka tapi luput dari oMods
     const allKnownModals = [
+        'sessionKicked', 'exitConfirm',
         'colorFloat', 'posLogoutShift',
         'posReceiptFallback', 'posShiftReceipt',
         'clientPaySuccess', 'clientTempoPay', 'tempoConfirmations',

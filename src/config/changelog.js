@@ -8,6 +8,22 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-10-78',
+        version: 'v1.10.78',
+        date: '2026-10-07',
+        title: 'Verifikasi Paripurna 69 Modal Sistem, Penyempurnaan Alias Penutup & Proteksi Otomatis Anti-Regresi',
+        category: 'fix',
+        badge: '100% Comprehensive Modal Verification & Zero-Bug Navigation v1.10.78',
+        items: [
+            'Verifikasi Paripurna Seluruh 69 Modal Sistem (scripts/verify-all-modals.mjs): Mengaudit secara forensik seluruh berkas HTML, JavaScript, modul Admin, Kasir POS, dan Etalase untuk menjamin setiap jendela modal, drawer, bottom-sheet, dialog konfirmasi, dan preview cetak 100% terdaftar dalam MODAL_ELEMENT_MAP, memiliki case penutup resmi di closeModalByName, dan terpasang di daftar pemindai aktif allKnownModals.',
+            'Koreksi & Harmonisasi Alias Fungsi Penutup Modal (src/core/router.js, src/modules/member/client-pay.js, src/modules/admin/stock-opname.js): Memperbaiki ketidakcocokan nama fungsi penutup pada modal Pembayaran Mandiri Angsuran (mendukung closeClientPaymentModal dan closeClientTempoPayModal), modal Finalisasi Stock Opname (mendukung closeFinalizeModal dan closeSOFinalizeModal), serta modal Riwayat Berita Acara SO (mendukung closeSoHistoryModal dan closeSOHistoryModal), sehingga penutupan via back button HP/browser selalu mengeksekusi animasi dan pembersihan state yang sempurna.',
+            'Integrasi Modal Sesi Admin Ditendang (sessionKicked / session-kicked-modal): Mendaftarkan modal pemberitahuan saat sesi admin diakhiri oleh perangkat lain ke dalam riwayat browser dan pemindai transien hardware back button, mencegah modal nyangkut atau tidak bisa ditutup dari ponsel.',
+            'Penyempurnaan Pemindai Fallback & Dialog Keluar Aplikasi: Menambahkan exitConfirm dan sessionKicked ke allKnownModals di closeTopmostOpenModal() agar dialog konfirmasi keluar dan modal transien tertutup secara presisi tanpa loop navigasi.',
+            'Script Verifikasi Otomatis & Pipeline Proteksi Anti-Regresi: Menambahkan perintah npm run test:modals ke pipeline audit dan maintenance sehingga inkonsistensi penamaan modal baru otomatis tertolak saat pengujian.',
+            'Multi-Channel Distribution v1.10.78 (Android versionCode 11078).'
+        ]
+    },
+    {
         id: 'log-1-10-77',
         version: 'v1.10.77',
         date: '2026-10-07',

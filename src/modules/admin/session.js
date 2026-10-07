@@ -118,14 +118,37 @@ export const showSessionKickedModal = (deviceName) => {
     m.style.display = 'flex';
     m.style.opacity = '1';
 
+    if (typeof window.pushModalHistory === 'function') {
+        window.pushModalHistory('sessionKicked');
+    }
+
     const okBtn = document.getElementById('btn-session-kicked-ok');
     if (okBtn) {
         okBtn.onclick = () => {
-            m.style.opacity = '0';
-            setTimeout(() => { m.style.display = 'none'; }, 250);
+            closeSessionKickedModal();
         };
     }
 };
+
+export const closeSessionKickedModal = (fromHistory = false) => {
+    const doClose = () => {
+        const m = document.getElementById('session-kicked-modal');
+        if (m) {
+            m.style.opacity = '0';
+            setTimeout(() => { if (m.parentNode) m.remove(); }, 250);
+        }
+    };
+    if (!fromHistory && typeof window.requestCloseModal === 'function') {
+        window.requestCloseModal('sessionKicked', false, doClose);
+    } else {
+        doClose();
+    }
+};
+
+if (typeof window !== 'undefined') {
+    window.showSessionKickedModal = showSessionKickedModal;
+    window.closeSessionKickedModal = closeSessionKickedModal;
+}
 
 /**
  * Memasang listener realtime untuk memantau apakah ada perangkat lain yang mengklaim sesi

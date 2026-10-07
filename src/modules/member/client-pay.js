@@ -1273,6 +1273,7 @@ export const closeClientPaymentSuccessModal = (fH = false) => {
 if (typeof window !== 'undefined') {
     window.openClientPaymentModal = openClientPaymentModal;
     window.closeClientPaymentModal = closeClientPaymentModal;
+    window.closeClientTempoPayModal = closeClientPaymentModal;
     window.switchClientPaymentOrder = switchClientPaymentOrder;
     window.switchClientPayChannel = switchClientPayChannel;
     window.setClientPayAmount = setClientPayAmount;
