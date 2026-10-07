@@ -10,6 +10,7 @@ import { appData, cart, setCart, cust, setCust, vouch, setVouch, myOrders, setMy
 import { el, show, hide, toggleCls, getV, setV, setIn, setH, esc, fCur, sL, ssL, sLoad, hLoad, renderProductCoverHtml, isPlaceholderImg } from '../../core/utils.js';
 import { db, firebase } from '../../config/firebase.js';
 import { calculateInstallmentBreakdown, getPaylaterConfig } from '../../core/paylater.js';
+import { deductFifoStock } from '../../core/fifo-inventory.js';
 
 /**
  * Toggle tampilan form drop-point (Kirim ke Lokasi Berbeda)
@@ -840,8 +841,10 @@ export const processOrder = async () => {
 
                     const updatePayload = {};
                     if (need.main > 0) {
-                        prod.stock = Math.max(0, (parseFloat(prod.stock) || 0) - need.main);
+                        deductFifoStock(prod, need.main);
                         updatePayload.stock = prod.stock;
+                        if (Array.isArray(prod.stockBatches)) updatePayload.stockBatches = prod.stockBatches;
+                        if (prod.hpp) updatePayload.hpp = prod.hpp;
                         if (prod.stock === 0) {
                             prod.isActive = 'false';
                             updatePayload.isActive = 'false';
@@ -851,14 +854,17 @@ export const processOrder = async () => {
                     }
                     if (Object.keys(need.variants).length > 0 && prod.variants) {
                         Object.keys(need.variants).forEach(vName => {
+                            const vNeed = need.variants[vName];
+                            deductFifoStock(prod, vNeed, vName);
                             const vIdx = (prod.variants || []).findIndex(v => v.name === vName);
                             if (vIdx > -1) {
-                                prod.variants[vIdx].stock = Math.max(0, (parseFloat(prod.variants[vIdx].stock) || 0) - need.variants[vName]);
                                 if (prod.variants[vIdx].stock === 0) prod.variants[vIdx].isActive = false;
-                                prod.variants[vIdx].totalSold = (parseFloat(prod.variants[vIdx].totalSold) || 0) + need.variants[vName];
+                                prod.variants[vIdx].totalSold = (parseFloat(prod.variants[vIdx].totalSold) || 0) + vNeed;
                             }
                         });
                         updatePayload.variants = prod.variants;
+                        updatePayload.stock = prod.stock;
+                        if (Array.isArray(prod.stockBatches)) updatePayload.stockBatches = prod.stockBatches;
                     }
 
                     const localIdx = appData.products.findIndex(p => p.id.toString() === pId);

@@ -1,0 +1,389 @@
+/**
+ * ============================================================
+ * ENGINE INTI: MULTI-SUPPLIER & PELACAKAN INVENTORI FIFO (LOT/BATCH)
+ * ============================================================
+ * 
+ * Prinsip Kerja:
+ * 1. Multi-Supplier per Produk:
+ *    Satu produk dapat dipasok oleh banyak supplier. Setiap supplier memiliki
+ *    riwayat harga beli terakhir (lastBuyPrice), SKU supplier, waktu kirim, dan status primer.
+ * 
+ * 2. FIFO (First-In, First-Out) Batch Inventory:
+ *    Setiap penerimaan barang (PO / Kulakan) mencatat batch baru dengan:
+ *    { batchId, poId, poNumber, supplierId, supplierName, receivedAt, buyPrice, initialQty, remainingQty, expDate }
+ * 
+ * 3. Pemotongan Stok FIFO Otomatis:
+ *    Saat transaksi (POS / Checkout), stok dipotong dari batch tertua yang masih memiliki
+ *    remainingQty > 0. HPP riil transaksi dihitung secara matematis berdasarkan modal masing-masing batch.
+ * 
+ * 4. Kompatibilitas Mundur (Backward Compatibility):
+ *    Jika produk belum memiliki stockBatches, sistem membuat batch dasar dari stok dan HPP yang ada.
+ */
+
+/**
+ * Normalisasi struktur inventori produk agar aman diproses oleh engine FIFO & Multi-Supplier.
+ * Menjamin array `suppliers` dan `stockBatches` terinisialisasi tanpa merusak data lama.
+ * 
+ * @param {Object} product Objek produk
+ * @param {Array} allSuppliers Daftar master supplier (opsional, untuk nama fallback)
+ * @returns {Object} Objek produk yang telah ternormalisasi
+ */
+export const normalizeProductInventory = (product, allSuppliers = []) => {
+    if (!product || typeof product !== 'object') return product;
+
+    // 1. Normalisasi Multi-Supplier Directory
+    if (!Array.isArray(product.suppliers)) {
+        product.suppliers = [];
+    }
+
+    // Jika memiliki supplierId warisan (legacy) namun belum tercatat di array suppliers
+    if (product.supplierId && !product.suppliers.some(s => String(s.supplierId) === String(product.supplierId))) {
+        const sObj = (allSuppliers || []).find(s => String(s.id) === String(product.supplierId));
+        product.suppliers.unshift({
+            supplierId: String(product.supplierId),
+            supplierName: sObj ? sObj.name : 'Supplier Utama',
+            lastBuyPrice: parseFloat(product.hpp) || 0,
+            supplierSku: product.sku || '',
+            minOrderQty: 1,
+            isPrimary: true,
+            updatedAt: product.updatedAt || new Date().toISOString()
+        });
+    }
+
+    // Pastikan selalu ada penanda isPrimary jika ada supplier terdaftar
+    if (product.suppliers.length > 0 && !product.suppliers.some(s => s.isPrimary)) {
+        product.suppliers[0].isPrimary = true;
+    }
+
+    // Sinkronkan default supplierId jika belum ada
+    const primarySup = product.suppliers.find(s => s.isPrimary) || product.suppliers[0];
+    if (primarySup && !product.supplierId) {
+        product.supplierId = primarySup.supplierId;
+    }
+
+    // 2. Normalisasi Kolam Batch FIFO
+    if (!Array.isArray(product.stockBatches)) {
+        product.stockBatches = [];
+        const curStock = parseFloat(product.stock) || 0;
+        // Jika produk sudah memiliki stok positif di database tetapi belum memiliki batch
+        if (curStock > 0) {
+            const primaryName = primarySup ? primarySup.supplierName : 'Stok Awal Toko';
+            product.stockBatches.push({
+                batchId: `BATCH-INIT-${product.id || Date.now()}`,
+                poId: null,
+                poNumber: 'STOK AWAL',
+                supplierId: product.supplierId || '',
+                supplierName: primaryName,
+                receivedAt: product.createdAt || new Date(0).toISOString(),
+                buyPrice: parseFloat(product.hpp) || 0,
+                initialQty: curStock,
+                remainingQty: curStock,
+                variantName: '',
+                isInitial: true
+            });
+        }
+    }
+
+    return product;
+};
+
+/**
+ * Mencatat penambahan stok dari penerimaan PO / Kulakan ke dalam antrean batch FIFO.
+ * 
+ * @param {Object} product Objek produk target
+ * @param {Object} restockData Rincian penerimaan:
+ *        { poId, poNumber, supplierId, supplierName, qty, unitPrice, variantName, receivedAt, expDate }
+ * @returns {Object} Objek batch yang baru saja dibuat
+ */
+export const recordFifoRestock = (product, restockData = {}) => {
+    if (!product) return null;
+    normalizeProductInventory(product);
+
+    const qty = parseFloat(restockData.qty) || 0;
+    if (qty <= 0) return null;
+
+    const unitPrice = parseFloat(restockData.unitPrice) || 0;
+    const supplierId = restockData.supplierId ? String(restockData.supplierId) : (product.supplierId || '');
+    const supplierName = restockData.supplierName || 'Pemasok Toko';
+    const variantName = restockData.variantName || '';
+    const receivedAt = restockData.receivedAt || new Date().toISOString();
+
+    // 1. Perbarui atau Tambahkan ke Directory Multi-Supplier Produk
+    const supIdx = product.suppliers.findIndex(s => String(s.supplierId) === supplierId);
+    if (supIdx > -1) {
+        if (unitPrice > 0) product.suppliers[supIdx].lastBuyPrice = unitPrice;
+        if (supplierName) product.suppliers[supIdx].supplierName = supplierName;
+        product.suppliers[supIdx].updatedAt = receivedAt;
+    } else if (supplierId) {
+        product.suppliers.push({
+            supplierId,
+            supplierName,
+            lastBuyPrice: unitPrice,
+            supplierSku: restockData.supplierSku || '',
+            minOrderQty: 1,
+            isPrimary: product.suppliers.length === 0,
+            updatedAt: receivedAt
+        });
+    }
+
+    // 2. Buat Tiket Batch FIFO Baru
+    const randomSuffix = Math.random().toString(36).substring(2, 7).toUpperCase();
+    const batchId = `BATCH-${Date.now().toString(36).toUpperCase()}-${randomSuffix}`;
+    const newBatch = {
+        batchId,
+        poId: restockData.poId || null,
+        poNumber: restockData.poNumber || (restockData.poId ? `PO-${restockData.poId}` : 'KULAKAN'),
+        supplierId,
+        supplierName,
+        receivedAt,
+        buyPrice: unitPrice,
+        initialQty: qty,
+        remainingQty: qty,
+        variantName,
+        expDate: restockData.expDate || null
+    };
+
+    product.stockBatches.push(newBatch);
+
+    // 3. Urutkan antrean batch secara kronologis (FIFO: Masuk Paling Awal di Indeks Depan)
+    product.stockBatches.sort((a, b) => new Date(a.receivedAt || 0) - new Date(b.receivedAt || 0));
+
+    // 4. Sinkronkan Kuantitas Stok Fisik Produk & Varian
+    if (variantName && Array.isArray(product.variants)) {
+        const v = product.variants.find(x => x.name === variantName);
+        if (v) v.stock = parseFloat(((parseFloat(v.stock) || 0) + qty).toFixed(3));
+        product.stock = product.variants.reduce((acc, it) => acc + (parseFloat(it.stock) || 0), 0);
+    } else {
+        product.stock = parseFloat(((parseFloat(product.stock) || 0) + qty).toFixed(3));
+    }
+
+    // 4. Perbarui Nilai HPP Berjalan Produk
+    // HPP berjalan diambil dari batch terdepan yang masih memiliki sisa stok
+    const activeBatch = product.stockBatches.find(b => 
+        (!variantName || b.variantName === variantName) && 
+        (parseFloat(b.remainingQty) || 0) > 0 && 
+        (parseFloat(b.buyPrice) || 0) > 0
+    );
+
+    if (activeBatch) {
+        if (variantName && Array.isArray(product.variants)) {
+            const v = product.variants.find(x => x.name === variantName);
+            if (v) v.hpp = activeBatch.buyPrice;
+        } else {
+            product.hpp = activeBatch.buyPrice;
+        }
+    }
+
+    return newBatch;
+};
+
+/**
+ * Memotong stok produk dengan aturan FIFO (First-In, First-Out).
+ * Memprioritaskan batch tertua terlebih dahulu hingga jumlah qty terpenuhi.
+ * 
+ * @param {Object} product Objek produk
+ * @param {Number} qty Jumlah stok yang dipotong
+ * @param {String} variantName Nama varian jika berlaku
+ * @returns {Object} Hasil alokasi pemotongan FIFO:
+ *          {
+ *            deductedQty: Number,
+ *            batchesDeducted: Array<{ batchId, supplierId, supplierName, qty, buyPrice, subtotalCost }>,
+ *            totalCost: Number,
+ *            effectiveHpp: Number
+ *          }
+ */
+export const deductFifoStock = (product, qty, variantName = '') => {
+    const needQty = parseFloat(qty) || 0;
+    if (!product || needQty <= 0) {
+        return { deductedQty: 0, batchesDeducted: [], totalCost: 0, effectiveHpp: 0 };
+    }
+
+    normalizeProductInventory(product);
+
+    let remainingNeed = needQty;
+    const batchesDeducted = [];
+    let totalCost = 0;
+
+    // Pastikan batch terurut FIFO
+    product.stockBatches.sort((a, b) => new Date(a.receivedAt || 0) - new Date(b.receivedAt || 0));
+
+    // Iterasi memotong dari batch paling tua yang masih memiliki remainingQty > 0
+    for (const batch of product.stockBatches) {
+        if (remainingNeed <= 0) break;
+
+        // Cocokkan spesifikasi varian jika ada
+        if (variantName) {
+            if (batch.variantName !== variantName) continue;
+        } else {
+            // Jika memotong produk utama tanpa varian, hindari batch varian jika ada
+            if (batch.variantName && batch.variantName !== '') continue;
+        }
+
+        const bRem = parseFloat(batch.remainingQty) || 0;
+        if (bRem <= 0) continue;
+
+        const take = Math.min(bRem, remainingNeed);
+        batch.remainingQty = parseFloat((bRem - take).toFixed(3));
+        remainingNeed = parseFloat((remainingNeed - take).toFixed(3));
+
+        const batchCost = parseFloat((take * (parseFloat(batch.buyPrice) || 0)).toFixed(2));
+        totalCost += batchCost;
+
+        batchesDeducted.push({
+            batchId: batch.batchId,
+            poId: batch.poId,
+            poNumber: batch.poNumber,
+            supplierId: batch.supplierId,
+            supplierName: batch.supplierName,
+            qty: take,
+            buyPrice: parseFloat(batch.buyPrice) || 0,
+            subtotalCost: batchCost
+        });
+    }
+
+    // Jika stok batch habis atau tidak mencukupi (stok negatif / darurat),
+    // penuhi sisa kebutuhan menggunakan HPP produk saat ini sebagai fallback
+    if (remainingNeed > 0) {
+        const fallbackPrice = parseFloat(product.hpp) || 0;
+        const fallbackCost = parseFloat((remainingNeed * fallbackPrice).toFixed(2));
+        totalCost += fallbackCost;
+
+        batchesDeducted.push({
+            batchId: 'FALLBACK-DEFICIT',
+            poId: null,
+            poNumber: 'STOK DARURAT',
+            supplierId: product.supplierId || '',
+            supplierName: 'Stok Toko',
+            qty: remainingNeed,
+            buyPrice: fallbackPrice,
+            subtotalCost: fallbackCost,
+            isDeficit: true
+        });
+    }
+
+    // Sinkronkan sisa stok produk & varian
+    if (variantName && Array.isArray(product.variants)) {
+        const v = product.variants.find(x => x.name === variantName);
+        if (v) {
+            v.stock = Math.max(0, parseFloat(((parseFloat(v.stock) || 0) - needQty).toFixed(3)));
+        }
+        product.stock = product.variants.reduce((acc, it) => acc + (parseFloat(it.stock) || 0), 0);
+    } else {
+        product.stock = Math.max(0, parseFloat(((parseFloat(product.stock) || 0) - needQty).toFixed(3)));
+    }
+
+    // Perbarui HPP berjalan produk ke batch berikutnya yang siap dijual
+    const nextActiveBatch = product.stockBatches.find(b => 
+        (!variantName || b.variantName === variantName) && 
+        (parseFloat(b.remainingQty) || 0) > 0 && 
+        (parseFloat(b.buyPrice) || 0) > 0
+    );
+
+    if (nextActiveBatch) {
+        if (variantName && Array.isArray(product.variants)) {
+            const v = product.variants.find(x => x.name === variantName);
+            if (v) v.hpp = nextActiveBatch.buyPrice;
+        } else {
+            product.hpp = nextActiveBatch.buyPrice;
+        }
+    }
+
+    const effectiveHpp = needQty > 0 ? parseFloat((totalCost / needQty).toFixed(2)) : 0;
+
+    return {
+        deductedQty: needQty,
+        batchesDeducted,
+        totalCost,
+        effectiveHpp
+    };
+};
+
+/**
+ * Menghubungkan supplier baru ke produk atau memperbarui data supplier rekanan.
+ * 
+ * @param {Object} product Objek produk
+ * @param {Object} supplierData { supplierId, supplierName, lastBuyPrice, supplierSku, isPrimary }
+ * @returns {Array} Daftar seluruh supplier produk yang terupdate
+ */
+export const linkSupplierToProduct = (product, supplierData = {}) => {
+    if (!product || !supplierData.supplierId) return product?.suppliers || [];
+    normalizeProductInventory(product);
+
+    const supId = String(supplierData.supplierId);
+    const existingIdx = product.suppliers.findIndex(s => String(s.supplierId) === supId);
+
+    if (supplierData.isPrimary) {
+        product.suppliers.forEach(s => { s.isPrimary = false; });
+        product.supplierId = supId;
+    }
+
+    const entry = {
+        supplierId: supId,
+        supplierName: supplierData.supplierName || 'Supplier Rekanan',
+        lastBuyPrice: parseFloat(supplierData.lastBuyPrice) || 0,
+        supplierSku: supplierData.supplierSku || '',
+        minOrderQty: parseFloat(supplierData.minOrderQty) || 1,
+        leadTimeDays: parseInt(supplierData.leadTimeDays, 10) || 0,
+        isPrimary: !!supplierData.isPrimary,
+        updatedAt: new Date().toISOString()
+    };
+
+    if (existingIdx > -1) {
+        product.suppliers[existingIdx] = { ...product.suppliers[existingIdx], ...entry };
+    } else {
+        if (product.suppliers.length === 0) {
+            entry.isPrimary = true;
+            product.supplierId = supId;
+        }
+        product.suppliers.push(entry);
+    }
+
+    return product.suppliers;
+};
+
+/**
+ * Menetapkan satu supplier sebagai Supplier Utama (Primary).
+ * 
+ * @param {Object} product Objek produk
+ * @param {String} supplierId ID supplier yang dipilih
+ */
+export const setPrimarySupplierForProduct = (product, supplierId) => {
+    if (!product || !supplierId) return;
+    normalizeProductInventory(product);
+
+    const targetId = String(supplierId);
+    product.suppliers.forEach(s => {
+        s.isPrimary = String(s.supplierId) === targetId;
+    });
+    product.supplierId = targetId;
+};
+
+/**
+ * Menghitung audit valuasi stok fisik berbasis antrean batch FIFO riil.
+ * Standar PSAK / Financial Reporting: Total Aset = Sum(Sisa Qty Tiap Batch * Harga Beli Batch).
+ * 
+ * @param {Object} product Objek produk
+ * @returns {Object} { totalValuationRp, totalActiveQty, activeBatchesCount, batches }
+ */
+export const computeFifoValuation = (product) => {
+    if (!product) return { totalValuationRp: 0, totalActiveQty: 0, activeBatchesCount: 0, batches: [] };
+    normalizeProductInventory(product);
+
+    const activeBatches = (product.stockBatches || []).filter(b => (parseFloat(b.remainingQty) || 0) > 0);
+    let totalValuationRp = 0;
+    let totalActiveQty = 0;
+
+    activeBatches.forEach(b => {
+        const qty = parseFloat(b.remainingQty) || 0;
+        const price = parseFloat(b.buyPrice) || 0;
+        totalValuationRp += qty * price;
+        totalActiveQty += qty;
+    });
+
+    return {
+        totalValuationRp: Math.round(totalValuationRp),
+        totalActiveQty: parseFloat(totalActiveQty.toFixed(3)),
+        activeBatchesCount: activeBatches.length,
+        batches: activeBatches
+    };
+};

@@ -372,7 +372,8 @@ export const MODAL_ELEMENT_MAP = {
     tempoPenalty: ['modal-tempo-penalty', 'tempo-penalty-modal'],
     expenseForm: ['modal-expense-form', 'expense-modal'],
     expenseReceipt: ['modal-expense-receipt-preview'],
-    sessionKicked: ['session-kicked-modal']
+    sessionKicked: ['session-kicked-modal'],
+    productFifo: ['modal-product-fifo', 'product-fifo-modal']
 };
 
 /**
@@ -624,6 +625,9 @@ export const closeModalByName = (m) => {
             if (typeof window.closeSessionKickedModal === 'function') { window.closeSessionKickedModal(true); return true; }
             document.getElementById('session-kicked-modal')?.remove();
             return true;
+        case 'productFifo':
+            if (typeof window.closeProductFifoModal === 'function') { window.closeProductFifoModal(true); return true; }
+            break;
         default:
             break;
     }
@@ -784,7 +788,7 @@ export const closeTopmostOpenModal = (fromPopState = false) => {
 
     // 2. Fallback scan jika ada modal di DOM yang terbuka tapi luput dari oMods
     const allKnownModals = [
-        'sessionKicked', 'exitConfirm',
+        'productFifo', 'sessionKicked', 'exitConfirm',
         'colorFloat', 'posLogoutShift',
         'posReceiptFallback', 'posShiftReceipt',
         'clientPaySuccess', 'clientTempoPay', 'tempoConfirmations',

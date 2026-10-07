@@ -13,6 +13,7 @@ import { appData } from '../../core/state.js';
 import { el, setH, setIn, esc, fCur, showToast, getOptImg, renderProductCoverHtml, isPlaceholderImg, fixD, extractOrderTaxInfo } from '../../core/utils.js';
 import { getEffHpp, computeTotalProductStock } from '../../core/pricing.js';
 import { canViewHpp } from '../../core/auth-roles.js';
+import { deductFifoStock } from '../../core/fifo-inventory.js';
 import { getPaylaterConfig, calculateInstallmentBreakdown } from '../../core/paylater.js';
 import { getPrinterConfig, openPrinterSettingsModal } from '../print/printer-settings.js';
 import {
@@ -3177,8 +3178,10 @@ export const processPOSTx = async () => {
                 const updatePayload = {};
 
                 if (need.main > 0) {
-                    prod.stock = Math.max(0, (parseFloat(prod.stock) || 0) - need.main);
+                    deductFifoStock(prod, need.main);
                     updatePayload.stock = prod.stock;
+                    if (Array.isArray(prod.stockBatches)) updatePayload.stockBatches = prod.stockBatches;
+                    if (prod.hpp) updatePayload.hpp = prod.hpp;
                     if (prod.stock === 0) {
                         prod.isActive = 'false';
                         updatePayload.isActive = 'false';
@@ -3189,14 +3192,17 @@ export const processPOSTx = async () => {
 
                 if (Object.keys(need.variants).length > 0 && prod.variants) {
                     Object.keys(need.variants).forEach(vName => {
+                        const vNeed = need.variants[vName];
+                        deductFifoStock(prod, vNeed, vName);
                         const vIdx = prod.variants.findIndex(v => v.name === vName);
                         if (vIdx > -1) {
-                            prod.variants[vIdx].stock = Math.max(0, (parseFloat(prod.variants[vIdx].stock) || 0) - need.variants[vName]);
                             if (prod.variants[vIdx].stock === 0) prod.variants[vIdx].isActive = false;
-                            prod.variants[vIdx].totalSold = (parseFloat(prod.variants[vIdx].totalSold) || 0) + need.variants[vName];
+                            prod.variants[vIdx].totalSold = (parseFloat(prod.variants[vIdx].totalSold) || 0) + vNeed;
                         }
                     });
                     updatePayload.variants = prod.variants;
+                    updatePayload.stock = prod.stock;
+                    if (Array.isArray(prod.stockBatches)) updatePayload.stockBatches = prod.stockBatches;
                 }
 
                 const localIdx = (appData.products || []).findIndex(p => String(p.id) === pId);

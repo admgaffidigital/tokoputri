@@ -372,13 +372,18 @@ window.rAdmItms = t => {
     const selSupFilter = window.adminSupplierFilter || '';
     let i = rawList.filter(x => {
         if (t === 'products' && selSupFilter) {
-            if (String(x.supplierId) !== String(selSupFilter)) return false;
+            const hasSup = String(x.supplierId) === String(selSupFilter) ||
+                (Array.isArray(x.suppliers) && x.suppliers.some(s => String(s.supplierId) === String(selSupFilter)));
+            if (!hasSup) return false;
         }
         let m = (x.name||x.title||x.bankName||x.code||x.sku||x.phone||'').toLowerCase().includes(searchVal);
         if(t==='products' && !m) {
             if (x.supplierId && (appData.suppliers || []).length) {
                 const sObj = appData.suppliers.find(s => String(s.id) === String(x.supplierId));
                 if (sObj && (sObj.name || '').toLowerCase().includes(searchVal)) m = true;
+            }
+            if (!m && Array.isArray(x.suppliers)) {
+                m = x.suppliers.some(s => (s.supplierName || '').toLowerCase().includes(searchVal));
             }
             if (!m && x.variants) {
                 m = x.variants.some(v => v.sku && v.sku.toLowerCase().includes(searchVal));
@@ -550,9 +555,31 @@ window.rAdmItms = t => {
                         const sold = x.variants && x.variants.length ? x.variants.reduce((s,vv)=>s+(parseFloat(vv.totalSold)||0),0) : (parseFloat(x.totalSold)||0);
                         return sold > 0 ? `<p class="text-[10px] font-bold text-orange-400 mt-0.5"><i class="fa-solid fa-fire-flame-curved mr-1"></i>Terjual: ${sold}</p>` : '';
                     })() : ''}
-                    ${isP && x.supplierId ? (() => {
-                        const sObj = (appData.suppliers || []).find(s => String(s.id) === String(x.supplierId));
-                        return sObj ? `<p class="text-[10px] font-bold text-teal-600 dark:text-teal-400 mt-0.5"><i class="fa-solid fa-truck-field mr-1"></i>Supplier: <b>${esc(sObj.name)}</b></p>` : '';
+                    ${isP ? (() => {
+                        const sups = Array.isArray(x.suppliers) && x.suppliers.length > 0
+                            ? x.suppliers
+                            : (x.supplierId ? [{ supplierId: x.supplierId, isPrimary: true }] : []);
+                        if (!sups.length) return '';
+                        const firstSup = sups.find(s => s.isPrimary) || sups[0];
+                        const sObj = (appData.suppliers || []).find(s => String(s.id) === String(firstSup.supplierId));
+                        const sName = sObj ? sObj.name : (firstSup.supplierName || 'Supplier');
+                        const extraCount = sups.length - 1;
+                        const batchCount = Array.isArray(x.stockBatches) ? x.stockBatches.filter(b => (parseFloat(b.remainingQty) || 0) > 0).length : 0;
+                        return `
+                            <div class="flex items-center gap-1.5 flex-wrap mt-1">
+                                <button type="button" onclick="event.stopPropagation(); import('./fifo-modal.js').then(m => m.openProductFifoModal('${x.id}'));" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[9.5px] font-bold text-teal-700 dark:text-teal-300 bg-teal-50 hover:bg-teal-100 dark:bg-teal-950/40 dark:hover:bg-teal-900/60 border border-teal-200 dark:border-teal-800 transition-all cursor-pointer shadow-2xs" title="Lihat Rekanan Supplier & Antrean Batch FIFO">
+                                    <i class="fa-solid fa-truck-field text-[8.5px]"></i>
+                                    <span class="max-w-[120px] truncate">${esc(sName)}</span>
+                                    ${extraCount > 0 ? `<span class="bg-teal-200 dark:bg-teal-800 text-teal-800 dark:text-teal-200 px-1 py-0.2 rounded text-[8.5px] font-black">+${extraCount}</span>` : ''}
+                                </button>
+                                ${batchCount > 0 ? `
+                                    <button type="button" onclick="event.stopPropagation(); import('./fifo-modal.js').then(m => m.openProductFifoModal('${x.id}'));" class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md text-[9px] font-black text-amber-700 dark:text-amber-300 bg-amber-50 hover:bg-amber-100 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 transition-all cursor-pointer" title="Lacak Antrean FIFO">
+                                        <i class="fa-solid fa-layer-group text-[8px]"></i>
+                                        <span>${batchCount} Batch</span>
+                                    </button>
+                                ` : ''}
+                            </div>
+                        `;
                     })() : ''}
                     ${t==='colors' ? `<div class="flex items-center gap-2 mt-1"><div class="w-4 h-4 rounded-full border border-slate-200 dark:border-slate-600 shadow-sm" style="background-color: ${esc(x.hex||'transparent')}"></div><p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest"><i class="fa-solid fa-swatchbook mr-1"></i>${esc(x.catalog||'Tanpa Katalog')}</p></div>` : ''}
                     ${t==='customers' ? `

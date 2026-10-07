@@ -93,7 +93,10 @@ export const computeSupplierMetrics = () => {
     const totalSuppliers = suppliers.length;
     
     // Total produk yang terhubung ke supplier mana saja
-    const linkedProductsCount = products.filter(p => p.supplierId && suppliers.some(s => String(s.id) === String(p.supplierId))).length;
+    const linkedProductsCount = products.filter(p => 
+        (p.supplierId && suppliers.some(s => String(s.id) === String(p.supplierId))) ||
+        (Array.isArray(p.suppliers) && p.suppliers.some(ps => suppliers.some(s => String(s.id) === String(ps.supplierId))))
+    ).length;
 
     // Total hutang belum lunas ke seluruh supplier
     const totalOutstandingDebt = purchases.reduce((acc, po) => {
@@ -285,8 +288,11 @@ const renderSupplierCardHtml = (s) => {
     const products = appData.products || [];
     const purchases = appData.purchases || [];
 
-    // Barang yang disuplai oleh rekanan ini
-    const suppliedProducts = products.filter(p => String(p.supplierId) === String(s.id));
+    // Barang yang disuplai oleh rekanan ini (baik supplier utama maupun pendukung)
+    const suppliedProducts = products.filter(p => 
+        String(p.supplierId) === String(s.id) || 
+        (Array.isArray(p.suppliers) && p.suppliers.some(ps => String(ps.supplierId) === String(s.id)))
+    );
 
     // PO terkait supplier ini
     const supplierPurchases = purchases.filter(po => String(po.supplierId) === String(s.id));
@@ -674,8 +680,11 @@ window.deleteSupplier = (supplierId) => {
     const target = suppliers.find(s => String(s.id) === String(supplierId));
     if (!target) return;
 
-    // Cek apakah ada produk terhubung
-    const linkedProducts = (appData.products || []).filter(p => String(p.supplierId) === String(supplierId));
+    // Cek apakah ada produk terhubung (utama maupun pendukung)
+    const linkedProducts = (appData.products || []).filter(p => 
+        String(p.supplierId) === String(supplierId) ||
+        (Array.isArray(p.suppliers) && p.suppliers.some(ps => String(ps.supplierId) === String(supplierId)))
+    );
     const linkedPOs = (appData.purchases || []).filter(po => String(po.supplierId) === String(supplierId));
 
     let warningMsg = `Hapus supplier <b>${esc(target.name)}</b>?`;
@@ -780,8 +789,11 @@ const renderSupplierDetailModalContent = (s) => {
     const products = appData.products || [];
     const purchases = appData.purchases || [];
 
-    // 1. Barang yang disuplai oleh supplier ini
-    const suppliedProducts = products.filter(p => String(p.supplierId) === String(s.id));
+    // 1. Barang yang disuplai oleh supplier ini (baik utama maupun rekanan pendukung)
+    const suppliedProducts = products.filter(p => 
+        String(p.supplierId) === String(s.id) ||
+        (Array.isArray(p.suppliers) && p.suppliers.some(ps => String(ps.supplierId) === String(s.id)))
+    );
 
     // 2. Riwayat PO kulakan dari supplier ini
     const supplierPurchases = purchases.filter(po => String(po.supplierId) === String(s.id));

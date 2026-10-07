@@ -11,6 +11,7 @@ import { saveApp } from '../../../services/storage.js';
 import { appData } from '../../../core/state.js';
 import { el, show, hide, setIn, esc, sLoad, hLoad, showToast, closeModalAnim } from '../../../core/utils.js';
 import { isSaving, setIsSaving } from './index.js';
+import { recordFifoRestock } from '../../../core/fifo-inventory.js';
 
 // Fungsi ini diimpor dari router.js (admin) via window agar tidak circular
 const pushModalHistory  = (id) => window.pushModalHistory?.(id);
@@ -143,9 +144,18 @@ window.processRestock = async (id) => {
                 p.variants.forEach((localVar, i) => {
                     const addVal = parseFloat(document.getElementById('restock-var-' + i)?.value) || 0;
                     if (addVal <= 0) return;
+                    recordFifoRestock(serverProd, {
+                        poId: null,
+                        poNumber: 'RESTOCK CEPAT',
+                        supplierId: serverProd.supplierId || '',
+                        supplierName: 'Penyesuaian Toko',
+                        qty: addVal,
+                        unitPrice: parseFloat(serverProd.variants?.[i]?.hpp || serverProd.hpp) || 0,
+                        variantName: localVar.name,
+                        receivedAt: new Date().toISOString()
+                    });
                     const sIdx = (serverProd.variants || []).findIndex(sv => sv.name === localVar.name);
                     if (sIdx > -1) {
-                        serverProd.variants[sIdx].stock = (parseFloat(serverProd.variants[sIdx].stock)||0) + addVal;
                         if (serverProd.variants[sIdx].stock > 0 &&
                             (serverProd.variants[sIdx].isActive === false || serverProd.variants[sIdx].isActive === 'false')) {
                             serverProd.variants[sIdx].isActive = true;
@@ -157,8 +167,19 @@ window.processRestock = async (id) => {
                 finalStock = serverProd.variants.reduce((s,v) => s+(parseFloat(v.stock)||0), 0);
             } else {
                 const addVal = parseFloat(document.getElementById('restock-main')?.value) || 0;
-                serverProd.stock = (parseFloat(serverProd.stock)||0) + addVal;
-                if (serverProd.stock > 0 && (serverProd.isActive === false || serverProd.isActive === 'false')) serverProd.isActive = 'true';
+                if (addVal > 0) {
+                    recordFifoRestock(serverProd, {
+                        poId: null,
+                        poNumber: 'RESTOCK CEPAT',
+                        supplierId: serverProd.supplierId || '',
+                        supplierName: 'Penyesuaian Toko',
+                        qty: addVal,
+                        unitPrice: parseFloat(serverProd.hpp) || 0,
+                        variantName: '',
+                        receivedAt: new Date().toISOString()
+                    });
+                    if (serverProd.stock > 0 && (serverProd.isActive === false || serverProd.isActive === 'false')) serverProd.isActive = 'true';
+                }
                 finalStock = serverProd.stock;
             }
             transaction.set(prodRef, serverProd);

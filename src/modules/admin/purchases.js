@@ -21,6 +21,7 @@ import {
     openModalAnim, closeModalAnim 
 } from '../../core/utils.js';
 import { saveApp } from '../../services/storage.js';
+import { recordFifoRestock, normalizeProductInventory } from '../../core/fifo-inventory.js';
 
 /**
  * Pastikan seluruh wadah modal Purchase Order terpasang di root document.body
@@ -680,31 +681,27 @@ window.receiveAndRestockPO = (poId) => {
                         const addedQty = parseFloat(item.qty) || 0;
                         const newHpp = parseFloat(item.unitPrice) || 0;
 
-                        // 1. Restock spesifik varian jika item memiliki varian
+                        // 1. Catat ke Antrean Batch FIFO & Update Multi-Supplier Directory
+                        recordFifoRestock(prod, {
+                            poId: po.id,
+                            poNumber: po.poNumber,
+                            supplierId: po.supplierId,
+                            supplierName: po.supplierName,
+                            qty: addedQty,
+                            unitPrice: newHpp,
+                            variantName: item.variantName || '',
+                            receivedAt: po.receivedAt || new Date().toISOString()
+                        });
+
+                        // 2. Restock spesifik varian jika item memiliki varian
                         if (item.variantName && Array.isArray(prod.variants) && prod.variants.length > 0) {
                             const v = prod.variants.find(x => x.name === item.variantName);
                             if (v) {
-                                const curVStock = parseFloat(v.stock) || 0;
-                                v.stock = parseFloat((curVStock + addedQty).toFixed(3));
-                                if (newHpp > 0) v.hpp = newHpp;
                                 if (v.isActive === false || v.isActive === 'false') v.isActive = true;
                             }
                         }
 
-                        // 2. Sinkronkan stok utama produk (desimal presisi)
-                        if (Array.isArray(prod.variants) && prod.variants.length > 0) {
-                            prod.stock = prod.variants.reduce((s, v) => s + (v && v.stock != null ? (parseFloat(v.stock) || 0) : 0), 0);
-                        } else {
-                            const currentStock = parseFloat(prod.stock) || 0;
-                            prod.stock = parseFloat((currentStock + addedQty).toFixed(3));
-                        }
-
-                        // 3. Perbarui HPP jika harga beli modal valid
-                        if (newHpp > 0) {
-                            prod.hpp = newHpp;
-                        }
-
-                        // 4. Jika produk sebelumnya non-aktif karena stok 0, aktifkan kembali
+                        // 3. Jika produk sebelumnya non-aktif karena stok 0, aktifkan kembali
                         if (prod.isActive === false || prod.isActive === 'false') {
                             prod.isActive = true;
                         }
@@ -1233,7 +1230,7 @@ window.openPOProductPicker = (targetRowIndex = null) => {
     // Cek apakah ada supplier terpilih di form PO & produk milik supplier tersebut
     const currentSupplierId = el('pof-supplierId')?.value || '';
     const products = appData.products || [];
-    const hasSupplierProducts = products.some(p => String(p.supplierId) === String(currentSupplierId));
+    const hasSupplierProducts = products.some(p => String(p.supplierId) === String(currentSupplierId) || (Array.isArray(p.suppliers) && p.suppliers.some(s => String(s.supplierId) === String(currentSupplierId))));
     poPickerFilterSupplier = !!(currentSupplierId && hasSupplierProducts);
     poPickerCategory = 'all';
 
@@ -1524,7 +1521,7 @@ const renderPOItemsTable = () => {
                         : renderProductCoverHtml(selectedProd, { size: 'thumb' }))
                     : `<div class="w-full h-full flex items-center justify-center font-black text-xs text-slate-400">#${idx + 1}</div>`;
                 
-                const isFromThisSupplier = selectedProd && String(selectedProd.supplierId) === String(currentSupplierId);
+                const isFromThisSupplier = selectedProd && (String(selectedProd.supplierId) === String(currentSupplierId) || (Array.isArray(selectedProd.suppliers) && selectedProd.suppliers.some(s => String(s.supplierId) === String(currentSupplierId))));
                 const curStock = selectedProd ? (parseFloat(selectedProd.stock) || 0) : null;
                 const hasVariants = selectedProd && Array.isArray(selectedProd.variants) && selectedProd.variants.length > 0;
 
@@ -1755,7 +1752,7 @@ const renderPOProductPickerContent = () => {
     const suppliers = appData.suppliers || [];
     const selectedSupplier = suppliers.find(s => String(s.id) === String(currentSupplierId));
 
-    const supplierProducts = products.filter(p => String(p.supplierId) === String(currentSupplierId));
+    const supplierProducts = products.filter(p => String(p.supplierId) === String(currentSupplierId) || (Array.isArray(p.suppliers) && p.suppliers.some(s => String(s.supplierId) === String(currentSupplierId))));
     const allProductsCount = products.length;
     const supplierProductsCount = supplierProducts.length;
 
@@ -1887,7 +1884,7 @@ const renderPOProductPickerContent = () => {
                     ? `<img src="${esc(prod.img)}" alt="${esc(prod.name)}" class="w-full h-full object-cover" onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='flex';"><div class="w-full h-full" style="display:none">${renderProductCoverHtml(prod, { size: 'thumb' })}</div>`
                     : renderProductCoverHtml(prod, { size: 'thumb' });
                 
-                const isCurrentSupplier = String(prod.supplierId) === String(currentSupplierId);
+                const isCurrentSupplier = String(prod.supplierId) === String(currentSupplierId) || (Array.isArray(prod.suppliers) && prod.suppliers.some(s => String(s.supplierId) === String(currentSupplierId)));
                 const prodStock = parseFloat(prod.stock) || 0;
                 const hasVariants = Array.isArray(prod.variants) && prod.variants.length > 0;
                 const defaultHpp = parseFloat(prod.hpp) || parseFloat(prod.price) || 0;

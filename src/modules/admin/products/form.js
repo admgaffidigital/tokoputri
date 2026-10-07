@@ -281,6 +281,31 @@ window.submitAdminForm = async () => {
                         if (oldVar && oldVar.totalSold) nv.totalSold = oldVar.totalSold;
                     });
                 }
+                // Preservasi batch FIFO dan multi-supplier
+                if (oldProd.stockBatches && !d.stockBatches) {
+                    d.stockBatches = oldProd.stockBatches;
+                }
+                if (oldProd.suppliers && !d.suppliers) {
+                    d.suppliers = oldProd.suppliers;
+                }
+                if (d.supplierId && Array.isArray(d.suppliers)) {
+                    const supIdx = d.suppliers.findIndex(s => String(s.supplierId) === String(d.supplierId));
+                    if (supIdx > -1) {
+                        d.suppliers.forEach(s => s.isPrimary = false);
+                        d.suppliers[supIdx].isPrimary = true;
+                    } else {
+                        const sObj = (appData.suppliers || []).find(s => String(s.id) === String(d.supplierId));
+                        d.suppliers.forEach(s => s.isPrimary = false);
+                        d.suppliers.push({
+                            supplierId: String(d.supplierId),
+                            supplierName: sObj ? sObj.name : 'Supplier Utama',
+                            lastBuyPrice: parseFloat(d.hpp) || 0,
+                            supplierSku: d.sku || '',
+                            isPrimary: true,
+                            updatedAt: new Date().toISOString()
+                        });
+                    }
+                }
             }
             appData[curTab][i] = d;
         } else {
@@ -293,6 +318,32 @@ window.submitAdminForm = async () => {
         appData[curTab].unshift(d);
         if (curTab === 'products') {
             appData.productOrder = [d.id.toString(), ...(appData.productOrder || []).filter(x => String(x) !== d.id.toString())];
+            if (d.supplierId) {
+                const sObj = (appData.suppliers || []).find(s => String(s.id) === String(d.supplierId));
+                d.suppliers = [{
+                    supplierId: String(d.supplierId),
+                    supplierName: sObj ? sObj.name : 'Supplier Utama',
+                    lastBuyPrice: parseFloat(d.hpp) || 0,
+                    supplierSku: d.sku || '',
+                    isPrimary: true,
+                    updatedAt: new Date().toISOString()
+                }];
+            }
+            const curStock = parseFloat(d.stock) || 0;
+            if (curStock > 0) {
+                d.stockBatches = [{
+                    batchId: `BATCH-INIT-${d.id}`,
+                    poId: null,
+                    poNumber: 'STOK AWAL',
+                    supplierId: d.supplierId || '',
+                    supplierName: 'Stok Awal Toko',
+                    receivedAt: new Date().toISOString(),
+                    buyPrice: parseFloat(d.hpp) || 0,
+                    initialQty: curStock,
+                    remainingQty: curStock,
+                    isInitial: true
+                }];
+            }
         }
     }
 

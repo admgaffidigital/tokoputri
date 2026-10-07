@@ -8,6 +8,23 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-10-79',
+        version: 'v1.10.79',
+        date: '2026-10-07',
+        title: 'Arsitektur Multi-Supplier per Produk & Pelacakan Inventori FIFO (First-In, First-Out) Berbasis Batch',
+        category: 'feature',
+        badge: 'Multi-Supplier & FIFO Inventory Batch Tracking v1.10.79',
+        items: [
+            'Engine Inti Multi-Supplier & FIFO Inventory (src/core/fifo-inventory.js): Memperluas arsitektur produk dari supplier tunggal menjadi relasi multi-supplier (prod.suppliers) dengan riwayat harga beli terakhir (lastBuyPrice), SKU pemasok, estimasi lead time, dan penanda Supplier Utama (isPrimary).',
+            'Pelacakan Stok FIFO Berbasis Batch (Lot) Otomatis: Setiap penerimaan barang dari order kulakan/PO (receiveAndRestockPO) secara otomatis melahirkan tiket batch fisik dengan nomor PO, nama supplier, waktu kedatangan (receivedAt), harga beli modal (buyPrice), dan kuantitas masuk.',
+            'Pemotongan Stok Berurutan (First-In, First-Out) di Kasir POS & Checkout: Saat transaksi penjualan di kasir POS atau toko online berlangsung, stok secara otomatis dipotong dari batch tertua yang masih tersedia di gudang. HPP riil transaksi dan laba kotor dihitung secara presisi matematis standar PSAK.',
+            'Modal Bento Visualizer Pelacak Multi-Supplier & Antrean Batch FIFO (modal-product-fifo): Menyediakan antarmuka interaktif mewah untuk inspeksi rekanan supplier, penggantian supplier utama 1-klik, pemantauan progress bar sisa stok tiap batch, dan simulator alokasi penjualan FIFO realtime.',
+            'Integrasi Pencarian & Filter Modul Admin (purchases.js, suppliers.js, table.js): Modul PO kulakan dan Master Supplier kini mengenali produk yang disuplai oleh rekanan bersangkutan baik sebagai supplier utama maupun supplier pendukung.',
+            'Test Suite Otomatis Multi-Supplier & FIFO (scripts/test-fifo-inventory.mjs): Dilengkapi uji otomatis komprehensif (40/40 test cases lolos) yang terintegrasi langsung ke dalam pipeline npm run audit dan maintenance.',
+            'Multi-Channel Distribution v1.10.79 (Android versionCode 11079).'
+        ]
+    },
+    {
         id: 'log-1-10-78',
         version: 'v1.10.78',
         date: '2026-10-07',
