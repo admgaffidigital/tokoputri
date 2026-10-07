@@ -1091,15 +1091,26 @@ export const openFinalizeModal = () => {
     const content = el('modal-so-finalize-content');
     if (modal && content) {
         document.body.classList.add('overflow-hidden');
+        if (typeof window.pushModalHistory === 'function') {
+            window.pushModalHistory('soFinalize');
+        }
         openModalAnim(modal, content);
     }
 };
 
-export const closeFinalizeModal = () => {
-    const modal = el('modal-so-finalize');
-    const content = el('modal-so-finalize-content');
-    document.body.classList.remove('overflow-hidden');
-    if (modal && content) closeModalAnim(modal, content);
+export const closeFinalizeModal = (fH = false) => {
+    const doClose = () => {
+        const modal = el('modal-so-finalize');
+        const content = el('modal-so-finalize-content');
+        document.body.classList.remove('overflow-hidden');
+        if (modal && content) closeModalAnim(modal, content);
+    };
+
+    if (typeof window.requestCloseModal === 'function') {
+        window.requestCloseModal('soFinalize', fH, doClose);
+    } else {
+        doClose();
+    }
 };
 
 /**
@@ -1438,15 +1449,26 @@ export const viewSoHistoryDetail = (soId) => {
     const content = el('modal-so-history-content');
     if (modal && content) {
         document.body.classList.add('overflow-hidden');
+        if (typeof window.pushModalHistory === 'function') {
+            window.pushModalHistory('soHistory');
+        }
         openModalAnim(modal, content);
     }
 };
 
-export const closeSoHistoryModal = () => {
-    const modal = el('modal-so-history-detail');
-    const content = el('modal-so-history-content');
-    document.body.classList.remove('overflow-hidden');
-    if (modal && content) closeModalAnim(modal, content);
+export const closeSoHistoryModal = (fH = false) => {
+    const doClose = () => {
+        const modal = el('modal-so-history-detail');
+        const content = el('modal-so-history-content');
+        document.body.classList.remove('overflow-hidden');
+        if (modal && content) closeModalAnim(modal, content);
+    };
+
+    if (typeof window.requestCloseModal === 'function') {
+        window.requestCloseModal('soHistory', fH, doClose);
+    } else {
+        doClose();
+    }
 };
 
 export const printSoHistoryActive = () => {

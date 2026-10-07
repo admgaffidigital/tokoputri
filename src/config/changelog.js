@@ -8,6 +8,21 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-10-75',
+        version: 'v1.10.75',
+        date: '2026-10-07',
+        title: 'Universal LIFO Modal Closer, Active DOM Scanner & Navigasi Back Berurutan Tanpa Lompatan (Zero-Orphan Modals)',
+        category: 'fix',
+        badge: 'Universal LIFO Modal & Sequential Navigation v1.10.75',
+        items: [
+            'Audit & Integrasi Menyeluruh 64 Modal Sistem: Menyambungkan seluruh modal dan dialog overlay di aplikasi ke sistem riwayat terpadu (pushModalHistory & requestCloseModal), meliputi modul Pembayaran Mandiri Angsuran, Sesi Shift Kasir POS (Buka Shift, Tutup Shift, Ringkasan Kas), Login POS, Kelola Karyawan POS (Tambah, Izin, Edit), Preview Cetak (Thermal & HTML), Stock Opname (Finalisasi & Riwayat), Inspektur Pra-Pemulihan Backup, Pengaturan Banner Hero, dan Lisensi Toko.',
+            'Universal LIFO Modal Closer & Fallback Active DOM Scanner (src/core/router.js): Mengimplementasikan fungsi closeTopmostOpenModal() dan isModalOpenInDOM() yang menutup modal secara berurutan mundur (LIFO: Last In First Out). Dilengkapi pemindai aktif DOM yang otomatis mendeteksi dan menutup overlay yang terlihat meski luput dari stack riwayat, menjamin tidak ada modal yang macet, tertinggal, atau tidak tertutup.',
+            'Eliminasi Mutlak Bug "Loncat-Loncat" Navigasi Back: Memperbaiki handleAppBackButton() dan event popstate agar tidak lagi melakukan pushState maju saat pengguna menekan tombol kembali di halaman pembayaran atau checkout. Alur mundur kini strictly berurutan (Pembayaran -> Checkout -> Keranjang -> Beranda) dengan riwayat yang sinkron 100%.',
+            'Pembersihan Unconditional Stack oMods: requestCloseModal() kini selalu membersihkan entri modal dari array oMods di semua jalur penutupan (termasuk fromHistory = true), mencegah entri phantom/zombie meracuni stack navigasi.',
+            'Multi-Channel Distribution v1.10.75 (Android versionCode 11075).'
+        ]
+    },
+    {
         id: 'log-1-10-74',
         version: 'v1.10.74',
         date: '2026-10-07',

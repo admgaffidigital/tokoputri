@@ -472,6 +472,9 @@ export const openPOSOpenShiftModal = async () => {
     if (!m || !box) return;
 
     m.classList.remove('pointer-events-none');
+    if (typeof window.pushModalHistory === 'function') {
+        window.pushModalHistory('posOpenShift');
+    }
     requestAnimationFrame(() => {
         m.classList.remove('opacity-0');
         box.classList.remove('translate-y-8', 'scale-95');
@@ -483,13 +486,21 @@ export const openPOSOpenShiftModal = async () => {
     }, 250);
 };
 
-export const closePOSOpenShiftModal = () => {
-    const m = el('pos-open-shift-modal');
-    const box = el('pos-open-shift-box');
-    if (!m) return;
-    m.classList.add('opacity-0', 'pointer-events-none');
-    if (box) box.classList.add('translate-y-8', 'scale-95');
-    setTimeout(() => { m.remove(); }, 280);
+export const closePOSOpenShiftModal = (fH = false) => {
+    const doClose = () => {
+        const m = el('pos-open-shift-modal');
+        const box = el('pos-open-shift-box');
+        if (!m) return;
+        m.classList.add('opacity-0', 'pointer-events-none');
+        if (box) box.classList.add('translate-y-8', 'scale-95');
+        setTimeout(() => { m.remove(); }, 280);
+    };
+
+    if (typeof window.requestCloseModal === 'function') {
+        window.requestCloseModal('posOpenShift', fH, doClose);
+    } else {
+        doClose();
+    }
 };
 
 export const posUpdateStartCashChips = () => {
@@ -851,19 +862,30 @@ export const openShiftSummaryModal = () => {
     if (!m || !box) return;
 
     m.classList.remove('pointer-events-none');
+    if (typeof window.pushModalHistory === 'function') {
+        window.pushModalHistory('posShiftSummary');
+    }
     requestAnimationFrame(() => {
         m.classList.remove('opacity-0');
         box.classList.remove('translate-y-8', 'scale-95');
     });
 };
 
-export const closePOSShiftSummaryModal = () => {
-    const m = el('pos-shift-summary-modal');
-    const box = el('pos-shift-summary-box');
-    if (!m) return;
-    m.classList.add('opacity-0', 'pointer-events-none');
-    if (box) box.classList.add('translate-y-8', 'scale-95');
-    setTimeout(() => { m.remove(); }, 280);
+export const closePOSShiftSummaryModal = (fH = false) => {
+    const doClose = () => {
+        const m = el('pos-shift-summary-modal');
+        const box = el('pos-shift-summary-box');
+        if (!m) return;
+        m.classList.add('opacity-0', 'pointer-events-none');
+        if (box) box.classList.add('translate-y-8', 'scale-95');
+        setTimeout(() => { m.remove(); }, 280);
+    };
+
+    if (typeof window.requestCloseModal === 'function') {
+        window.requestCloseModal('posShiftSummary', fH, doClose);
+    } else {
+        doClose();
+    }
 };
 
 // ─── Modal Tutup Shift & Rekonsiliasi Kas Laci (Z-Report) ─────
@@ -1046,6 +1068,9 @@ export const openPOSCloseShiftModal = () => {
     if (!m || !box) return;
 
     m.classList.remove('pointer-events-none');
+    if (typeof window.pushModalHistory === 'function') {
+        window.pushModalHistory('posCloseShift');
+    }
     requestAnimationFrame(() => {
         m.classList.remove('opacity-0');
         box.classList.remove('translate-y-8', 'scale-95');
@@ -1057,13 +1082,21 @@ export const openPOSCloseShiftModal = () => {
     }, 250);
 };
 
-export const closePOSCloseShiftModal = () => {
-    const m = el('pos-close-shift-modal');
-    const box = el('pos-close-shift-box');
-    if (!m) return;
-    m.classList.add('opacity-0', 'pointer-events-none');
-    if (box) box.classList.add('translate-y-8', 'scale-95');
-    setTimeout(() => { m.remove(); }, 280);
+export const closePOSCloseShiftModal = (fH = false) => {
+    const doClose = () => {
+        const m = el('pos-close-shift-modal');
+        const box = el('pos-close-shift-box');
+        if (!m) return;
+        m.classList.add('opacity-0', 'pointer-events-none');
+        if (box) box.classList.add('translate-y-8', 'scale-95');
+        setTimeout(() => { m.remove(); }, 280);
+    };
+
+    if (typeof window.requestCloseModal === 'function') {
+        window.requestCloseModal('posCloseShift', fH, doClose);
+    } else {
+        doClose();
+    }
 };
 
 export const setPOSCountMode = (mode) => {

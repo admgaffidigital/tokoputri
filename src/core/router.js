@@ -20,7 +20,9 @@ export let viewHistoryStack = ['view-catalog'];
  * Mendaftarkan modal yang dibuka ke riwayat browser
  */
 export const pushModalHistory = (name) => {
-    history.pushState({ modal: name }, '', window.location.href);
+    if (typeof history !== 'undefined' && typeof window !== 'undefined') {
+        history.pushState({ modal: name }, '', window.location.href);
+    }
     oMods.push(name);
 };
 
@@ -28,23 +30,23 @@ export const pushModalHistory = (name) => {
  * Menutup modal dengan aman sesuai navigasi History API
  */
 export const requestCloseModal = (name, fH, doClose) => {
+    const idx = oMods.lastIndexOf(name);
+    if (idx > -1) {
+        oMods.splice(idx, 1);
+    }
     if (!fH) {
-        const idx = oMods.lastIndexOf(name);
-        if (idx > -1) {
-            oMods.splice(idx, 1);
-        }
         isProgrammaticModalClose = true;
         if (programmaticCloseTimer) clearTimeout(programmaticCloseTimer);
         programmaticCloseTimer = setTimeout(() => {
             isProgrammaticModalClose = false;
         }, 300);
         try { 
-            history.back(); 
+            if (typeof history !== 'undefined') history.back(); 
         } catch(e) {
             isProgrammaticModalClose = false;
         }
     }
-    doClose();
+    if (typeof doClose === 'function') doClose();
 };
 
 /**
@@ -55,11 +57,20 @@ export const changeView = (v, fH = false) => {
     if (v === curViewName) return; // Hindari duplikasi ke view yang sama
     
     if (!fH) {
-        history.pushState({ view: v }, '', window.location.href);
+        if (typeof history !== 'undefined' && typeof window !== 'undefined') {
+            history.pushState({ view: v }, '', window.location.href);
+        }
         if (v === 'view-catalog') {
             viewHistoryStack = ['view-catalog'];
         } else {
             viewHistoryStack.push(v);
+        }
+    } else {
+        const lastIdx = viewHistoryStack.lastIndexOf(v);
+        if (lastIdx > -1) {
+            viewHistoryStack = viewHistoryStack.slice(0, lastIdx + 1);
+        } else {
+            viewHistoryStack = ['view-catalog', v];
         }
     }
     
@@ -289,57 +300,418 @@ export const initPullToRefresh = () => {
 };
 
 /**
- * Pasang router listener popstate
+ * Periksa apakah modal tertentu sedang aktif & terlihat di DOM
+ */
+export const isModalOpenInDOM = (name) => {
+    const elIdMap = {
+        product: 'product-modal',
+        category: 'category-modal',
+        brand: 'brand-modal',
+        admin: 'admin-modal',
+        adminOrder: 'admin-order-modal',
+        receipt: 'receipt-preview-modal',
+        docPreview: 'doc-preview-modal',
+        scanner: 'scanner-modal',
+        confirm: 'custom-confirm-modal',
+        customerOrder: 'customer-order-detail-modal',
+        restock: 'restock-modal',
+        quickprice: 'quickprice-modal',
+        member: 'member-modal',
+        prompt: 'custom-prompt-modal',
+        review: 'review-modal',
+        quickmenu: 'quickmenu-modal',
+        variantPreview: 'variant-preview-modal',
+        terms: 'terms-modal',
+        privacy: 'privacy-modal',
+        askQuestion: 'modal-ask-question',
+        quickVariant: 'quick-variant-modal',
+        adminFAQ: 'modal-admin-faq',
+        printerSettings: 'printer-settings-modal',
+        exitConfirm: 'exit-confirm-modal',
+        appDownload: 'app-download-modal',
+        voucher: 'voucher-modal',
+        guide: 'shopping-guide-modal',
+        changelog: 'changelog-modal',
+        guarantee: 'quality-guarantee-modal',
+        security: 'security-modal',
+        posVariantSheet: 'pos-variant-sheet',
+        posLogin: 'pos-login-modal',
+        posCartDrawer: 'pos-cart-drawer',
+        posPayment: 'pos-pay-modal',
+        posOpenShift: 'modal-pos-open-shift',
+        posCloseShift: 'modal-pos-close-shift',
+        posShiftSummary: 'modal-pos-shift-summary',
+        clientTempoPay: 'modal-client-tempo-pay',
+        clientPaySuccess: 'modal-client-pay-success',
+        tempoConfirmations: 'modal-tempo-confirmations',
+        thermalPreview: 'modal-thermal-preview',
+        htmlPreview: 'modal-html-preview',
+        addStaff: 'modal-add-staff',
+        permissions: 'modal-permissions',
+        editStaff: 'modal-edit-staff',
+        soFinalize: 'modal-so-finalize',
+        soHistory: 'modal-so-history',
+        preRestore: 'modal-pre-restore-inspector',
+        heroBanner: 'hero-banner-modal',
+        renewal: 'renewal-input-modal',
+        purchaseForm: 'po-form-modal',
+        purchasePicker: 'po-product-picker-modal',
+        purchaseDetail: 'po-detail-modal',
+        purchasePayment: 'po-payment-modal',
+        supplierForm: 'supplier-form-modal',
+        supplierDetail: 'supplier-detail-modal',
+        posHoldPrompt: 'pos-hold-prompt',
+        posHeldModal: 'pos-held-modal',
+        posCameraScanner: 'pos-camera-scanner',
+        tempoDetail: 'tempo-detail-modal',
+        tempoPayment: 'tempo-payment-modal',
+        tempoPenalty: 'tempo-penalty-modal',
+        expenseForm: 'expense-modal',
+        expenseReceipt: 'expense-receipt-preview'
+    };
+
+    const targetId = elIdMap[name];
+    if (!targetId) return false;
+    const domEl = document.getElementById(targetId);
+    if (!domEl) return false;
+    return !domEl.classList.contains('hidden') && !domEl.classList.contains('opacity-0');
+};
+
+/**
+ * Tutup modal spesifik berdasarkan nama registrasinya (LIFO Stack)
  */
 export const closeModalByName = (m) => {
-    if (m === 'product' && typeof window.closeProductModal === 'function') window.closeProductModal(true);
-    else if (m === 'category' && typeof window.closeCategoryModal === 'function') window.closeCategoryModal(true);
-    else if (m === 'brand' && typeof window.closeBrandModal === 'function') window.closeBrandModal(true);
-    else if (m === 'admin' && typeof window.closeAdminModal === 'function') window.closeAdminModal(true);
-    else if (m === 'adminOrder' && typeof window.closeOrderDetailModal === 'function') window.closeOrderDetailModal(true);
-    else if (m === 'receipt' && typeof window.closeReceiptPreviewModal === 'function') window.closeReceiptPreviewModal(true);
-    else if (m === 'docPreview' && typeof window.closeDocPreviewModal === 'function') window.closeDocPreviewModal(true);
-    else if (m === 'scanner' && typeof window.closeCameraScanner === 'function') window.closeCameraScanner(true);
-    else if (m === 'confirm' && typeof window.closeConfirm === 'function') window.closeConfirm(true);
-    else if (m === 'customerOrder' && typeof window.closeCustomerOrderDetailModal === 'function') window.closeCustomerOrderDetailModal(true);
-    else if (m === 'restock' && typeof window.closeRestockModal === 'function') window.closeRestockModal(true);
-    else if (m === 'quickprice' && typeof window.closeQuickPriceModal === 'function') window.closeQuickPriceModal(true);
-    else if (m === 'member' && typeof window.closeMemberModal === 'function') window.closeMemberModal(true);
-    else if (m === 'prompt' && typeof window.closePrompt === 'function') window.closePrompt(true);
-    else if (m === 'review' && typeof window.closeReviewModal === 'function') window.closeReviewModal(true);
-    else if (m === 'quickmenu' && typeof window.closeQuickMenuModal === 'function') window.closeQuickMenuModal(true);
-    else if (m === 'variantPreview' && typeof window.closeVariantPreviewModal === 'function') window.closeVariantPreviewModal(true);
-    else if (m === 'terms' && typeof window.closeTermsModal === 'function') window.closeTermsModal(true);
-    else if (m === 'privacy' && typeof window.closePrivacyModal === 'function') window.closePrivacyModal(true);
-    else if (m === 'askQuestion' && typeof window.closeAskQuestionModal === 'function') window.closeAskQuestionModal(true);
-    else if (m === 'quickVariant' && typeof window.closeQuickVariantSheet === 'function') window.closeQuickVariantSheet(true);
-    else if (m === 'adminFAQ' && typeof window.closeAdminFAQModal === 'function') window.closeAdminFAQModal(true);
-    else if (m === 'printerSettings' && typeof window.closePrinterSettingsModal === 'function') window.closePrinterSettingsModal(true);
-    else if (m === 'exitConfirm' && typeof window.closeExitConfirmModal === 'function') window.closeExitConfirmModal(true);
-    else if (m === 'appDownload' && typeof window.closeAppDownloadModal === 'function') window.closeAppDownloadModal(true);
-    else if (m === 'voucher' && typeof window.closeVoucherModal === 'function') window.closeVoucherModal(true);
-    else if (m === 'guide' && typeof window.closeShoppingGuideModal === 'function') window.closeShoppingGuideModal(true);
-    else if (m === 'changelog' && typeof window.closeChangelogModal === 'function') window.closeChangelogModal(true);
-    else if (m === 'guarantee' && typeof window.closeQualityGuaranteeModal === 'function') window.closeQualityGuaranteeModal(true);
-    else if (m === 'security' && typeof window.closeSecurityModal === 'function') window.closeSecurityModal(true);
-    else if (m === 'posVariantSheet' && typeof window.closePOSVariantSheet === 'function') window.closePOSVariantSheet(true);
-    else if (m === 'posLogin' && typeof window.closePOSLoginModal === 'function') window.closePOSLoginModal(true);
-    else if (m === 'posCartDrawer' && typeof window.closePOSCartDrawer === 'function') window.closePOSCartDrawer(true);
-    else if (m === 'posPayment' && typeof window.closePayModal === 'function') window.closePayModal(true);
-    else if (m === 'purchaseForm' && typeof window.closeCreatePOModal === 'function') window.closeCreatePOModal(true);
-    else if (m === 'purchasePicker' && typeof window.closePOProductPicker === 'function') window.closePOProductPicker(true);
-    else if (m === 'purchaseDetail' && typeof window.closePurchaseDetailModal === 'function') window.closePurchaseDetailModal(true);
-    else if (m === 'purchasePayment' && typeof window.closePurchasePaymentModal === 'function') window.closePurchasePaymentModal(true);
-    else if (m === 'supplierForm' && typeof window.closeSupplierFormModal === 'function') window.closeSupplierFormModal(true);
-    else if (m === 'supplierDetail' && typeof window.closeSupplierDetailModal === 'function') window.closeSupplierDetailModal(true);
-    else if (m === 'posHoldPrompt' && typeof window.closePOSHoldPrompt === 'function') window.closePOSHoldPrompt(true);
-    else if (m === 'posHeldModal' && typeof window.closePOSHeldModal === 'function') window.closePOSHeldModal(true);
-    else if (m === 'posCameraScanner' && typeof window.closePOSCameraScanner === 'function') window.closePOSCameraScanner(true);
-    else if (m === 'tempoDetail' && typeof window.closeTempoDetailModal === 'function') window.closeTempoDetailModal(true);
-    else if (m === 'tempoPayment' && typeof window.closeTempoPaymentModal === 'function') window.closeTempoPaymentModal(true);
-    else if (m === 'tempoPenalty' && typeof window.closeTempoPenaltyModal === 'function') window.closeTempoPenaltyModal(true);
-    else if (m === 'expenseForm' && typeof window.closeExpenseModal === 'function') window.closeExpenseModal(true);
-    else if (m === 'expenseReceipt' && typeof window.closeExpenseReceiptPreview === 'function') window.closeExpenseReceiptPreview(true);
+    switch (m) {
+        case 'product':
+            if (typeof window.closeProductModal === 'function') { window.closeProductModal(true); return true; }
+            break;
+        case 'category':
+            if (typeof window.closeCategoryModal === 'function') { window.closeCategoryModal(true); return true; }
+            break;
+        case 'brand':
+            if (typeof window.closeBrandModal === 'function') { window.closeBrandModal(true); return true; }
+            break;
+        case 'admin':
+            if (typeof window.closeAdminModal === 'function') { window.closeAdminModal(true); return true; }
+            break;
+        case 'adminOrder':
+            if (typeof window.closeOrderDetailModal === 'function') { window.closeOrderDetailModal(true); return true; }
+            break;
+        case 'receipt':
+            if (typeof window.closeReceiptPreviewModal === 'function') { window.closeReceiptPreviewModal(true); return true; }
+            break;
+        case 'docPreview':
+            if (typeof window.closeDocPreviewModal === 'function') { window.closeDocPreviewModal(true); return true; }
+            break;
+        case 'scanner':
+            if (typeof window.closeCameraScanner === 'function') { window.closeCameraScanner(true); return true; }
+            break;
+        case 'confirm':
+            if (typeof window.closeConfirm === 'function') { window.closeConfirm(true); return true; }
+            break;
+        case 'customerOrder':
+            if (typeof window.closeCustomerOrderDetailModal === 'function') { window.closeCustomerOrderDetailModal(true); return true; }
+            break;
+        case 'restock':
+            if (typeof window.closeRestockModal === 'function') { window.closeRestockModal(true); return true; }
+            break;
+        case 'quickprice':
+            if (typeof window.closeQuickPriceModal === 'function') { window.closeQuickPriceModal(true); return true; }
+            break;
+        case 'member':
+            if (typeof window.closeMemberModal === 'function') { window.closeMemberModal(true); return true; }
+            break;
+        case 'prompt':
+            if (typeof window.closePrompt === 'function') { window.closePrompt(true); return true; }
+            break;
+        case 'review':
+            if (typeof window.closeReviewModal === 'function') { window.closeReviewModal(true); return true; }
+            break;
+        case 'quickmenu':
+            if (typeof window.closeQuickMenuModal === 'function') { window.closeQuickMenuModal(true); return true; }
+            break;
+        case 'variantPreview':
+            if (typeof window.closeVariantPreviewModal === 'function') { window.closeVariantPreviewModal(true); return true; }
+            break;
+        case 'terms':
+            if (typeof window.closeTermsModal === 'function') { window.closeTermsModal(true); return true; }
+            break;
+        case 'privacy':
+            if (typeof window.closePrivacyModal === 'function') { window.closePrivacyModal(true); return true; }
+            break;
+        case 'askQuestion':
+            if (typeof window.closeAskQuestionModal === 'function') { window.closeAskQuestionModal(true); return true; }
+            break;
+        case 'quickVariant':
+            if (typeof window.closeQuickVariantSheet === 'function') { window.closeQuickVariantSheet(true); return true; }
+            break;
+        case 'adminFAQ':
+            if (typeof window.closeAdminFAQModal === 'function') { window.closeAdminFAQModal(true); return true; }
+            break;
+        case 'printerSettings':
+            if (typeof window.closePrinterSettingsModal === 'function') { window.closePrinterSettingsModal(true); return true; }
+            break;
+        case 'exitConfirm':
+            if (typeof window.closeExitConfirmModal === 'function') { window.closeExitConfirmModal(true); return true; }
+            break;
+        case 'appDownload':
+            if (typeof window.closeAppDownloadModal === 'function') { window.closeAppDownloadModal(true); return true; }
+            break;
+        case 'voucher':
+            if (typeof window.closeVoucherModal === 'function') { window.closeVoucherModal(true); return true; }
+            break;
+        case 'guide':
+            if (typeof window.closeShoppingGuideModal === 'function') { window.closeShoppingGuideModal(true); return true; }
+            break;
+        case 'changelog':
+            if (typeof window.closeChangelogModal === 'function') { window.closeChangelogModal(true); return true; }
+            break;
+        case 'guarantee':
+            if (typeof window.closeQualityGuaranteeModal === 'function') { window.closeQualityGuaranteeModal(true); return true; }
+            break;
+        case 'security':
+            if (typeof window.closeSecurityModal === 'function') { window.closeSecurityModal(true); return true; }
+            break;
+        case 'posVariantSheet':
+            if (typeof window.closePOSVariantSheet === 'function') { window.closePOSVariantSheet(true); return true; }
+            break;
+        case 'posLogin':
+            if (typeof window.closePOSLoginModal === 'function') { window.closePOSLoginModal(true); return true; }
+            break;
+        case 'posCartDrawer':
+            if (typeof window.closePOSCartDrawer === 'function') { window.closePOSCartDrawer(true); return true; }
+            break;
+        case 'posPayment':
+            if (typeof window.closePayModal === 'function') { window.closePayModal(true); return true; }
+            break;
+        case 'posOpenShift':
+            if (typeof window.closePOSOpenShiftModal === 'function') { window.closePOSOpenShiftModal(true); return true; }
+            break;
+        case 'posCloseShift':
+            if (typeof window.closePOSCloseShiftModal === 'function') { window.closePOSCloseShiftModal(true); return true; }
+            break;
+        case 'posShiftSummary':
+            if (typeof window.closePOSShiftSummaryModal === 'function') { window.closePOSShiftSummaryModal(true); return true; }
+            break;
+        case 'clientTempoPay':
+            if (typeof window.closeClientTempoPayModal === 'function') { window.closeClientTempoPayModal(true); return true; }
+            break;
+        case 'clientPaySuccess':
+            if (typeof window.closeClientPaymentSuccessModal === 'function') { window.closeClientPaymentSuccessModal(true); return true; }
+            break;
+        case 'tempoConfirmations':
+            if (typeof window.closeTempoConfirmationsModal === 'function') { window.closeTempoConfirmationsModal(true); return true; }
+            break;
+        case 'thermalPreview':
+            if (typeof window.closeThermalPreviewModal === 'function') { window.closeThermalPreviewModal(true); return true; }
+            break;
+        case 'htmlPreview':
+            if (typeof window.closeHtmlPreviewModal === 'function') { window.closeHtmlPreviewModal(true); return true; }
+            break;
+        case 'addStaff':
+            if (typeof window.closeAddStaffModal === 'function') { window.closeAddStaffModal(true); return true; }
+            break;
+        case 'permissions':
+            if (typeof window.closePermissionsModal === 'function') { window.closePermissionsModal(true); return true; }
+            break;
+        case 'editStaff':
+            if (typeof window.closeEditStaffModal === 'function') { window.closeEditStaffModal(true); return true; }
+            break;
+        case 'soFinalize':
+            if (typeof window.closeSOFinalizeModal === 'function') { window.closeSOFinalizeModal(true); return true; }
+            break;
+        case 'soHistory':
+            if (typeof window.closeSOHistoryModal === 'function') { window.closeSOHistoryModal(true); return true; }
+            break;
+        case 'preRestore':
+            if (typeof window.closePreRestoreModal === 'function') { window.closePreRestoreModal(true); return true; }
+            break;
+        case 'heroBanner':
+            if (typeof window.closeHeroBannerModal === 'function') { window.closeHeroBannerModal(true); return true; }
+            break;
+        case 'renewal':
+            if (typeof window.closeRenewalModal === 'function') { window.closeRenewalModal(true); return true; }
+            break;
+        case 'purchaseForm':
+            if (typeof window.closeCreatePOModal === 'function') { window.closeCreatePOModal(true); return true; }
+            break;
+        case 'purchasePicker':
+            if (typeof window.closePOProductPicker === 'function') { window.closePOProductPicker(true); return true; }
+            break;
+        case 'purchaseDetail':
+            if (typeof window.closePurchaseDetailModal === 'function') { window.closePurchaseDetailModal(true); return true; }
+            break;
+        case 'purchasePayment':
+            if (typeof window.closePurchasePaymentModal === 'function') { window.closePurchasePaymentModal(true); return true; }
+            break;
+        case 'supplierForm':
+            if (typeof window.closeSupplierFormModal === 'function') { window.closeSupplierFormModal(true); return true; }
+            break;
+        case 'supplierDetail':
+            if (typeof window.closeSupplierDetailModal === 'function') { window.closeSupplierDetailModal(true); return true; }
+            break;
+        case 'posHoldPrompt':
+            if (typeof window.closePOSHoldPrompt === 'function') { window.closePOSHoldPrompt(true); return true; }
+            break;
+        case 'posHeldModal':
+            if (typeof window.closePOSHeldModal === 'function') { window.closePOSHeldModal(true); return true; }
+            break;
+        case 'posCameraScanner':
+            if (typeof window.closePOSCameraScanner === 'function') { window.closePOSCameraScanner(true); return true; }
+            break;
+        case 'tempoDetail':
+            if (typeof window.closeTempoDetailModal === 'function') { window.closeTempoDetailModal(true); return true; }
+            break;
+        case 'tempoPayment':
+            if (typeof window.closeTempoPaymentModal === 'function') { window.closeTempoPaymentModal(true); return true; }
+            break;
+        case 'tempoPenalty':
+            if (typeof window.closeTempoPenaltyModal === 'function') { window.closeTempoPenaltyModal(true); return true; }
+            break;
+        case 'expenseForm':
+            if (typeof window.closeExpenseModal === 'function') { window.closeExpenseModal(true); return true; }
+            break;
+        case 'expenseReceipt':
+            if (typeof window.closeExpenseReceiptPreview === 'function') { window.closeExpenseReceiptPreview(true); return true; }
+            break;
+        default:
+            break;
+    }
+
+    // Fail-safe DOM fallback jika fungsi spesifik modul belum siap
+    const elIdMap = {
+        product: 'product-modal',
+        category: 'category-modal',
+        brand: 'brand-modal',
+        admin: 'admin-modal',
+        adminOrder: 'admin-order-modal',
+        receipt: 'receipt-preview-modal',
+        docPreview: 'doc-preview-modal',
+        scanner: 'scanner-modal',
+        confirm: 'custom-confirm-modal',
+        customerOrder: 'customer-order-detail-modal',
+        restock: 'restock-modal',
+        quickprice: 'quickprice-modal',
+        member: 'member-modal',
+        prompt: 'custom-prompt-modal',
+        review: 'review-modal',
+        quickmenu: 'quickmenu-modal',
+        variantPreview: 'variant-preview-modal',
+        terms: 'terms-modal',
+        privacy: 'privacy-modal',
+        askQuestion: 'modal-ask-question',
+        quickVariant: 'quick-variant-modal',
+        adminFAQ: 'modal-admin-faq',
+        printerSettings: 'printer-settings-modal',
+        exitConfirm: 'exit-confirm-modal',
+        appDownload: 'app-download-modal',
+        voucher: 'voucher-modal',
+        guide: 'shopping-guide-modal',
+        changelog: 'changelog-modal',
+        guarantee: 'quality-guarantee-modal',
+        security: 'security-modal',
+        posVariantSheet: 'pos-variant-sheet',
+        posLogin: 'pos-login-modal',
+        posCartDrawer: 'pos-cart-drawer',
+        posPayment: 'pos-pay-modal',
+        posOpenShift: 'modal-pos-open-shift',
+        posCloseShift: 'modal-pos-close-shift',
+        posShiftSummary: 'modal-pos-shift-summary',
+        clientTempoPay: 'modal-client-tempo-pay',
+        clientPaySuccess: 'modal-client-pay-success',
+        tempoConfirmations: 'modal-tempo-confirmations',
+        thermalPreview: 'modal-thermal-preview',
+        htmlPreview: 'modal-html-preview',
+        addStaff: 'modal-add-staff',
+        permissions: 'modal-permissions',
+        editStaff: 'modal-edit-staff',
+        soFinalize: 'modal-so-finalize',
+        soHistory: 'modal-so-history',
+        preRestore: 'modal-pre-restore-inspector',
+        heroBanner: 'hero-banner-modal',
+        renewal: 'renewal-input-modal',
+        purchaseForm: 'po-form-modal',
+        purchasePicker: 'po-product-picker-modal',
+        purchaseDetail: 'po-detail-modal',
+        purchasePayment: 'po-payment-modal',
+        supplierForm: 'supplier-form-modal',
+        supplierDetail: 'supplier-detail-modal',
+        posHoldPrompt: 'pos-hold-prompt',
+        posHeldModal: 'pos-held-modal',
+        posCameraScanner: 'pos-camera-scanner',
+        tempoDetail: 'tempo-detail-modal',
+        tempoPayment: 'tempo-payment-modal',
+        tempoPenalty: 'tempo-penalty-modal',
+        expenseForm: 'expense-modal',
+        expenseReceipt: 'expense-receipt-preview'
+    };
+    const targetId = elIdMap[m];
+    if (targetId) {
+        const domEl = document.getElementById(targetId);
+        if (domEl && !domEl.classList.contains('hidden')) {
+            domEl.classList.add('hidden');
+            return true;
+        }
+    }
+
+    return false;
+};
+
+/**
+ * Universal LIFO Modal Closer & Fallback Active DOM Scanner
+ * Menutup modal paling atas secara berurutan dan mengeliminasi modal yatim/macet
+ */
+export const closeTopmostOpenModal = () => {
+    // 0. Tutup dialog overlay / modal transien yang aktif di DOM segera
+    const transientIds = [
+        'pos-receipt-fallback-modal',
+        'pos-shift-receipt-modal',
+        'pos-success-modal',
+        'pos-recall-confirm-modal',
+        'pos-closed-success-modal'
+    ];
+    for (const id of transientIds) {
+        const tEl = document.getElementById(id);
+        if (tEl) {
+            tEl.remove();
+            return true;
+        }
+    }
+
+    // 1. Periksa stack oMods secara LIFO (hanya modal yang benar-benar terbuka di DOM)
+    while (oMods.length > 0) {
+        const topModal = oMods.pop();
+        if (isModalOpenInDOM(topModal)) {
+            closeModalByName(topModal);
+            return true;
+        }
+    }
+
+    // 2. Fallback scan jika ada modal di DOM yang terbuka tapi luput dari oMods
+    const allKnownModals = [
+        'clientPaySuccess', 'clientTempoPay', 'tempoConfirmations',
+        'posVariantSheet', 'posLogin', 'posCartDrawer', 'posPayment',
+        'posOpenShift', 'posCloseShift', 'posShiftSummary',
+        'thermalPreview', 'htmlPreview', 'addStaff', 'permissions', 'editStaff',
+        'soFinalize', 'soHistory', 'preRestore', 'heroBanner', 'renewal',
+        'purchasePayment', 'purchaseDetail', 'purchasePicker', 'purchaseForm',
+        'supplierDetail', 'supplierForm', 'posHoldPrompt', 'posHeldModal',
+        'posCameraScanner', 'tempoPenalty', 'tempoPayment', 'tempoDetail',
+        'expenseReceipt', 'expenseForm', 'customerOrder', 'restock', 'quickprice',
+        'member', 'review', 'voucher', 'changelog', 'appDownload', 'guarantee',
+        'security', 'quickVariant', 'variantPreview', 'confirm', 'prompt',
+        'printerSettings', 'docPreview', 'receipt', 'adminFAQ', 'adminOrder',
+        'admin', 'brand', 'category', 'quickmenu', 'guide', 'terms', 'privacy',
+        'scanner', 'askQuestion', 'product'
+    ];
+    for (const name of allKnownModals) {
+        if (isModalOpenInDOM(name)) {
+            closeModalByName(name);
+            return true;
+        }
+    }
+
+    return false;
 };
 
 /**
@@ -396,25 +768,8 @@ export const confirmExitApp = () => {
  * Penanganan Hardware Back Button Cerdas untuk Android & PWA
  */
 export const handleAppBackButton = () => {
-    // 0. Jika ada dialog overlay / modal transien yang aktif di DOM, tutup segera
-    const activeTransientModal = document.getElementById('pos-receipt-fallback-modal') ||
-                                 document.getElementById('pos-shift-receipt-modal') ||
-                                 document.getElementById('pos-success-modal') ||
-                                 document.getElementById('pos-recall-confirm-modal') ||
-                                 document.getElementById('pos-closed-success-modal');
-    if (activeTransientModal) {
-        activeTransientModal.remove();
-        return;
-    }
-
-    // 1. Jika ada modal yang terbuka di stack oMods, tutup modal teratas
-    if (oMods.length > 0) {
-        try {
-            window.history.back();
-        } catch(e) {
-            const m = oMods.pop();
-            closeModalByName(m);
-        }
+    // 1. Jika ada modal yang aktif (baik di stack oMods maupun scanner DOM), tutup segera
+    if (closeTopmostOpenModal()) {
         return;
     }
 
@@ -485,23 +840,36 @@ export const handleAppBackButton = () => {
 
     // 3. Jika sedang di view selain view-catalog (beranda), kembali berurutan secara terstruktur
     if (curViewName !== 'view-catalog') {
+        // Navigasi mundur berurutan: Payment -> Checkout -> Cart -> Catalog
         if (curViewName === 'view-payment') {
-            changeView('view-checkout');
+            if (window.history.length > 1) {
+                window.history.back();
+            } else {
+                changeView('view-checkout', true);
+            }
             return;
         }
         if (curViewName === 'view-checkout') {
-            changeView('view-cart');
+            if (window.history.length > 1) {
+                window.history.back();
+            } else {
+                changeView('view-cart', true);
+            }
             return;
         }
         if (curViewName === 'view-cart') {
-            changeView('view-catalog');
+            if (window.history.length > 1) {
+                window.history.back();
+            } else {
+                changeView('view-catalog', true);
+            }
             return;
         }
         if (window.history.length > 1) {
             window.history.back();
         } else {
             // Fallback jika riwayat browser tidak tersedia: kembali ke beranda
-            changeView('view-catalog');
+            changeView('view-catalog', true);
         }
         return;
     }
@@ -538,9 +906,7 @@ export const setupHistoryRouter = () => {
         }
 
         // 1. Jika ada modal yang terbuka, tutup modal teratas (LIFO)
-        if (oMods.length > 0) {
-            const m = oMods.pop();
-            closeModalByName(m);
+        if (closeTopmostOpenModal()) {
             return;
         }
 
@@ -592,24 +958,30 @@ export const setupHistoryRouter = () => {
 };
 
 // ─── Expose ke window untuk navigasi inline HTML ──────
-window.pushModalHistory = pushModalHistory;
-window.requestCloseModal = requestCloseModal;
-window.changeView = changeView;
-window.setupHistoryRouter = setupHistoryRouter;
-window.onBottomNavClick = onBottomNavClick;
-window.updateBottomNav = updateBottomNav;
-window.initPullToRefresh = initPullToRefresh;
-window.handleAppBackButton = handleAppBackButton;
-window.openExitConfirmModal = openExitConfirmModal;
-window.closeExitConfirmModal = closeExitConfirmModal;
-window.confirmExitApp = confirmExitApp;
-window.isProgrammaticModalClose = isProgrammaticModalClose;
-window.viewHistoryStack = viewHistoryStack;
-try {
-    Object.defineProperty(window, 'curViewName', {
-        get: () => curViewName,
-        set: (v) => { curViewName = v; },
-        configurable: true
-    });
-} catch(e) {}
+if (typeof window !== 'undefined') {
+    window.pushModalHistory = pushModalHistory;
+    window.requestCloseModal = requestCloseModal;
+    window.changeView = changeView;
+    window.setupHistoryRouter = setupHistoryRouter;
+    window.onBottomNavClick = onBottomNavClick;
+    window.updateBottomNav = updateBottomNav;
+    window.initPullToRefresh = initPullToRefresh;
+    window.handleAppBackButton = handleAppBackButton;
+    window.closeTopmostOpenModal = closeTopmostOpenModal;
+    window.isModalOpenInDOM = isModalOpenInDOM;
+    window.closeModalByName = closeModalByName;
+    window.openExitConfirmModal = openExitConfirmModal;
+    window.closeExitConfirmModal = closeExitConfirmModal;
+    window.confirmExitApp = confirmExitApp;
+    window.isProgrammaticModalClose = isProgrammaticModalClose;
+    window.viewHistoryStack = viewHistoryStack;
+    try {
+        Object.defineProperty(window, 'curViewName', {
+            get: () => curViewName,
+            set: (v) => { curViewName = v; },
+            configurable: true
+        });
+    } catch(e) {}
+}
+
 

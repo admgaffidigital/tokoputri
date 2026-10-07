@@ -302,17 +302,28 @@ export const openThermalPrintPreview = (job) => {
     renderThermalModal();
     lockBody();
     bindKeys(() => confirmThermalPrint(), () => closeThermalPrintPreview());
+    if (typeof window.pushModalHistory === 'function') {
+        window.pushModalHistory('thermalPreview');
+    }
     return true;
 };
 
-export const closeThermalPrintPreview = () => {
-    const job = _thermalJob;
-    document.getElementById(THERMAL_MODAL_ID)?.remove();
-    _thermalJob = null;
-    unbindKeys();
-    unlockBody();
-    if (job && typeof job.onCancel === 'function') {
-        try { job.onCancel(); } catch (e) {}
+export const closeThermalPrintPreview = (fH = false) => {
+    const doClose = () => {
+        const job = _thermalJob;
+        document.getElementById(THERMAL_MODAL_ID)?.remove();
+        _thermalJob = null;
+        unbindKeys();
+        unlockBody();
+        if (job && typeof job.onCancel === 'function') {
+            try { job.onCancel(); } catch (e) {}
+        }
+    };
+
+    if (typeof window.requestCloseModal === 'function') {
+        window.requestCloseModal('thermalPreview', fH, doClose);
+    } else {
+        doClose();
     }
 };
 
@@ -405,14 +416,25 @@ export const openHtmlPrintPreview = (opts = {}) => {
     }
     lockBody();
     bindKeys(() => confirmHtmlPrint(), () => closeHtmlPrintPreview());
+    if (typeof window.pushModalHistory === 'function') {
+        window.pushModalHistory('htmlPreview');
+    }
     return true;
 };
 
-export const closeHtmlPrintPreview = () => {
-    document.getElementById(HTML_MODAL_ID)?.remove();
-    _htmlJob = null;
-    unbindKeys();
-    unlockBody();
+export const closeHtmlPrintPreview = (fH = false) => {
+    const doClose = () => {
+        document.getElementById(HTML_MODAL_ID)?.remove();
+        _htmlJob = null;
+        unbindKeys();
+        unlockBody();
+    };
+
+    if (typeof window.requestCloseModal === 'function') {
+        window.requestCloseModal('htmlPreview', fH, doClose);
+    } else {
+        doClose();
+    }
 };
 
 export const confirmHtmlPrint = () => {

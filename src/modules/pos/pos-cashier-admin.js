@@ -545,6 +545,10 @@ export const openAddStaffModal = () => {
     // Inisialisasi preset default Kasir
     window.applyNewStaffPreset(ROLES.CASHIER);
 
+    if (typeof window.pushModalHistory === 'function') {
+        window.pushModalHistory('addStaff');
+    }
+
     setTimeout(() => {
         const box = el('add-staff-modal-box');
         if (box) box.classList.remove('scale-95');
@@ -553,9 +557,16 @@ export const openAddStaffModal = () => {
     }, 10);
 };
 
-export const closeAddStaffModal = () => {
-    const modal = el('add-staff-modal');
-    if (modal) { modal.style.opacity = '0'; setTimeout(() => modal.remove(), 200); }
+export const closeAddStaffModal = (fH = false) => {
+    const doClose = () => {
+        const modal = el('add-staff-modal');
+        if (modal) { modal.style.opacity = '0'; setTimeout(() => modal.remove(), 200); }
+    };
+    if (typeof window.requestCloseModal === 'function') {
+        window.requestCloseModal('addStaff', fH, doClose);
+    } else {
+        doClose();
+    }
 };
 
 export const applyNewStaffPreset = (presetKey) => {
@@ -790,15 +801,26 @@ export const openPermissionsModal = (uid) => {
         </div>
     </div>`);
 
+    if (typeof window.pushModalHistory === 'function') {
+        window.pushModalHistory('permissions');
+    }
+
     setTimeout(() => {
         const box = el('permissions-modal-box');
         if (box) box.classList.remove('scale-95');
     }, 10);
 };
 
-export const closePermissionsModal = () => {
-    const modal = el('permissions-modal');
-    if (modal) { modal.style.opacity = '0'; setTimeout(() => modal.remove(), 200); }
+export const closePermissionsModal = (fH = false) => {
+    const doClose = () => {
+        const modal = el('permissions-modal');
+        if (modal) { modal.style.opacity = '0'; setTimeout(() => modal.remove(), 200); }
+    };
+    if (typeof window.requestCloseModal === 'function') {
+        window.requestCloseModal('permissions', fH, doClose);
+    } else {
+        doClose();
+    }
 };
 
 export const applyEditStaffPreset = (presetKey) => {
@@ -911,15 +933,26 @@ export const openEditStaffModal = (uid, currentName, currentEmail, currentRole) 
         </div>
     </div>`);
 
+    if (typeof window.pushModalHistory === 'function') {
+        window.pushModalHistory('editStaff');
+    }
+
     setTimeout(() => {
         const box = el('edit-staff-modal-box');
         if (box) box.classList.remove('scale-95');
     }, 10);
 };
 
-export const closeEditStaffModal = () => {
-    const modal = el('edit-staff-modal');
-    if (modal) { modal.style.opacity = '0'; setTimeout(() => modal.remove(), 200); }
+export const closeEditStaffModal = (fH = false) => {
+    const doClose = () => {
+        const modal = el('edit-staff-modal');
+        if (modal) { modal.style.opacity = '0'; setTimeout(() => modal.remove(), 200); }
+    };
+    if (typeof window.requestCloseModal === 'function') {
+        window.requestCloseModal('editStaff', fH, doClose);
+    } else {
+        doClose();
+    }
 };
 
 export const updateStaffProfile = async (uid) => {

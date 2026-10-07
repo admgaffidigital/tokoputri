@@ -16,6 +16,7 @@
 import { db } from '../../config/firebase.js';
 import { appData } from '../../core/state.js';
 import { el, setH, esc, showToast, showConfirm, sLoad, hLoad } from '../../core/utils.js';
+import { pushModalHistory, requestCloseModal } from '../../core/router.js';
 
 // ─── State Modul Sync & Backup ────────────────────────────────
 let lastSyncTimestamp = localStorage.getItem('tokoputri_last_sync') || new Date().toISOString();
@@ -745,6 +746,17 @@ export const handleRestoreFileSelect = (event) => {
 /**
  * Modal Dialog Inspektur Pra-Pemulihan
  */
+export const closePreRestoreModal = (fromHistory = false) => {
+    requestCloseModal('preRestore', fromHistory, () => {
+        const m = el('modal-pre-restore-inspector');
+        if (m) m.remove();
+    });
+};
+
+if (typeof window !== 'undefined') {
+    window.closePreRestoreModal = closePreRestoreModal;
+}
+
 const openPreRestoreModal = ({ fileName, backupDate, productsCount, ordersCount, custCount, isFullBackup, backupDataPayload }) => {
     const existingModal = el('modal-pre-restore-inspector');
     if (existingModal) existingModal.remove();
@@ -763,7 +775,7 @@ const openPreRestoreModal = ({ fileName, backupDate, productsCount, ordersCount,
                         <p class="text-[10px] text-amber-700 dark:text-amber-300 font-bold">Verifikasi ringkasan sebelum data diterapkan</p>
                     </div>
                 </div>
-                <button onclick="document.getElementById('modal-pre-restore-inspector').remove()" class="w-8 h-8 rounded-xl text-slate-400 hover:text-slate-600 flex items-center justify-center cursor-pointer">
+                <button onclick="window.closePreRestoreModal && window.closePreRestoreModal()" class="w-8 h-8 rounded-xl text-slate-400 hover:text-slate-600 flex items-center justify-center cursor-pointer">
                     <i class="fa-solid fa-xmark text-sm"></i>
                 </button>
             </div>
@@ -808,7 +820,7 @@ const openPreRestoreModal = ({ fileName, backupDate, productsCount, ordersCount,
 
             <!-- Modal Footer -->
             <div class="p-4 bg-slate-50 dark:bg-slate-800 border-t border-slate-100 dark:border-slate-800 flex items-center justify-end gap-2.5">
-                <button onclick="document.getElementById('modal-pre-restore-inspector').remove()" class="px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold text-xs hover:bg-slate-100 dark:hover:bg-slate-800 transition-all cursor-pointer">
+                <button onclick="window.closePreRestoreModal && window.closePreRestoreModal()" class="px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold text-xs hover:bg-slate-100 dark:hover:bg-slate-800 transition-all cursor-pointer">
                     Batal
                 </button>
                 <button id="btn-execute-restore" class="px-5 py-2.5 rounded-xl text-white font-black text-xs shadow-md active:scale-95 transition-all cursor-pointer hover:opacity-95 flex items-center gap-1.5" style="background:var(--color-primary)">
@@ -821,11 +833,12 @@ const openPreRestoreModal = ({ fileName, backupDate, productsCount, ordersCount,
     `;
 
     document.body.insertAdjacentHTML('beforeend', modalHTML);
+    pushModalHistory('preRestore');
 
     const btnExec = el('btn-execute-restore');
     if (btnExec) {
         btnExec.onclick = () => {
-            el('modal-pre-restore-inspector')?.remove();
+            closePreRestoreModal();
             executeSafeRestore(backupDataPayload);
         };
     }

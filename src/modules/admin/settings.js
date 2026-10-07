@@ -1835,6 +1835,9 @@ export const openHeroBannerModal = () => {
     const currentMascot = appData.store.heroMascotImg || '/putri_mascot_anim.gif';
     
     modal.className = "fixed inset-0 z-[120] flex items-center justify-center bg-slate-900/80 p-4 transition-opacity duration-300";
+    if (typeof window.pushModalHistory === 'function') {
+        window.pushModalHistory('heroBanner');
+    }
     modal.innerHTML = `
         <div class="relative w-full max-w-lg bg-white dark:bg-slate-900 rounded-[2rem] border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
             <div class="p-5 border-b border-slate-100 dark:border-slate-800/80 flex items-center justify-between shrink-0">
@@ -1946,9 +1949,17 @@ export const openHeroBannerModal = () => {
     `;
 };
 
-export const closeHeroBannerModal = () => {
-    const modal = document.getElementById('admin-hero-banner-modal');
-    if (modal) modal.remove();
+export const closeHeroBannerModal = (fH = false) => {
+    const doClose = () => {
+        const modal = document.getElementById('admin-hero-banner-modal');
+        if (modal) modal.remove();
+    };
+
+    if (typeof window.requestCloseModal === 'function') {
+        window.requestCloseModal('heroBanner', fH, doClose);
+    } else {
+        doClose();
+    }
 };
 
 export const saveHeroBannerModal = async () => {

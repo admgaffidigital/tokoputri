@@ -85,19 +85,31 @@ export const openPOSVariantSheet = (productId) => {
 
     renderVariantSheetContent(p);
 
+    if (typeof window.pushModalHistory === 'function') {
+        window.pushModalHistory('posVariantSheet');
+    }
+
     openModalAnim(modal, box);
     if (typeof window.triggerHaptic === 'function') window.triggerHaptic('light');
 };
 
-export const closePOSVariantSheet = () => {
-    const modal = el('pos-variant-sheet');
-    const box   = el('pos-variant-sheet-box');
-    if (!modal) return;
-    closeModalAnim(modal, box, () => {
-        _currentProductId  = null;
-        _selectedVariantIdx = 0;
-        _selectedQty       = 1;
-    });
+export const closePOSVariantSheet = (fH = false) => {
+    const doClose = () => {
+        const modal = el('pos-variant-sheet');
+        const box   = el('pos-variant-sheet-box');
+        if (!modal) return;
+        closeModalAnim(modal, box, () => {
+            _currentProductId  = null;
+            _selectedVariantIdx = 0;
+            _selectedQty       = 1;
+        });
+    };
+
+    if (typeof window.requestCloseModal === 'function') {
+        window.requestCloseModal('posVariantSheet', fH, doClose);
+    } else {
+        doClose();
+    }
 };
 
 // ─── Render Konten Sheet ─────────────────────────────────────

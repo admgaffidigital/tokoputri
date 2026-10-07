@@ -145,6 +145,9 @@ export const openPOSCashierMode = async () => {
 export const openPOSLoginModal = () => {
     const modal = el('pos-login-modal');
     if (!modal) return;
+    if (typeof window.pushModalHistory === 'function') {
+        window.pushModalHistory('posLogin');
+    }
     modal.classList.remove('hidden');
     setTimeout(() => {
         modal.classList.remove('opacity-0');
@@ -159,21 +162,29 @@ export const openPOSLoginModal = () => {
     if (typeof window.triggerHaptic === 'function') window.triggerHaptic('light');
 };
 
-export const closePOSLoginModal = () => {
-    const modal = el('pos-login-modal');
-    const box = el('pos-login-modal-box');
-    if (modal) modal.classList.add('opacity-0');
-    if (box) box.classList.add('translate-y-full');
-    setTimeout(() => {
-        if (modal) modal.classList.add('hidden');
-        // Reset form
-        const emailInput = el('pos-login-email');
-        const passInput = el('pos-login-password');
-        const errEl = el('pos-login-error');
-        if (emailInput) emailInput.value = '';
-        if (passInput) passInput.value = '';
-        if (errEl) { errEl.textContent = ''; errEl.classList.add('hidden'); }
-    }, 300);
+export const closePOSLoginModal = (fH = false) => {
+    const doClose = () => {
+        const modal = el('pos-login-modal');
+        const box = el('pos-login-modal-box');
+        if (modal) modal.classList.add('opacity-0');
+        if (box) box.classList.add('translate-y-full');
+        setTimeout(() => {
+            if (modal) modal.classList.add('hidden');
+            // Reset form
+            const emailInput = el('pos-login-email');
+            const passInput = el('pos-login-password');
+            const errEl = el('pos-login-error');
+            if (emailInput) emailInput.value = '';
+            if (passInput) passInput.value = '';
+            if (errEl) { errEl.textContent = ''; errEl.classList.add('hidden'); }
+        }, 300);
+    };
+
+    if (typeof window.requestCloseModal === 'function') {
+        window.requestCloseModal('posLogin', fH, doClose);
+    } else {
+        doClose();
+    }
 };
 
 // ─── Proses Login Kasir ──────────────────────────────────────

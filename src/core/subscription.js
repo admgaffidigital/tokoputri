@@ -12,6 +12,7 @@
 import { appData, defApp } from './state.js';
 import { el, show, hide, showToast, esc, fCur } from './utils.js';
 import { db } from '../config/firebase.js';
+import { pushModalHistory, requestCloseModal } from './router.js';
 
 // Secret SALT untuk enkripsi/verifikasi kunci lisensi developer
 const LICENSE_SECRET_SALT = 'TP_GAFFI_WHITELABEL_2026';
@@ -455,11 +456,14 @@ export const openRenewalModal = () => {
         </div>
     `;
     m.classList.remove('hidden');
+    pushModalHistory('renewal');
 };
 
-export const closeRenewalModal = () => {
-    const m = el('renewal-input-modal');
-    if (m) m.classList.add('hidden');
+export const closeRenewalModal = (fromHistory = false) => {
+    requestCloseModal('renewal', fromHistory, () => {
+        const m = el('renewal-input-modal');
+        if (m) m.classList.add('hidden');
+    });
 };
 
 /**

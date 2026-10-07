@@ -1238,24 +1238,35 @@ export const showClientPaymentSuccessModal = ({ orderId, amount }) => {
 
     const box = el('modal-client-pay-success-box');
     document.body.classList.add('overflow-hidden');
+    if (typeof window.pushModalHistory === 'function') {
+        window.pushModalHistory('clientPaySuccess');
+    }
     openModalAnim(m, box);
 };
 
 /**
  * Tutup Modal Konfirmasi Sukses Pembayaran
  */
-export const closeClientPaymentSuccessModal = () => {
-    const m = el('modal-client-pay-success');
-    const box = el('modal-client-pay-success-box');
-    if (!m || !box) return;
-    closeModalAnim(m, box, () => {
-        m.classList.add('pointer-events-none');
-        box.classList.remove('pointer-events-auto');
-        const otherModal = document.querySelector('[id*="modal"]:not(.hidden):not(.pointer-events-none):not(#modal-client-pay-success)');
-        if (!otherModal) {
-            document.body.classList.remove('overflow-hidden');
-        }
-    });
+export const closeClientPaymentSuccessModal = (fH = false) => {
+    const doClose = () => {
+        const m = el('modal-client-pay-success');
+        const box = el('modal-client-pay-success-box');
+        if (!m || !box) return;
+        closeModalAnim(m, box, () => {
+            m.classList.add('pointer-events-none');
+            box.classList.remove('pointer-events-auto');
+            const otherModal = document.querySelector('[id*="modal"]:not(.hidden):not(.pointer-events-none):not(#modal-client-pay-success)');
+            if (!otherModal) {
+                document.body.classList.remove('overflow-hidden');
+            }
+        });
+    };
+
+    if (typeof window.requestCloseModal === 'function') {
+        window.requestCloseModal('clientPaySuccess', fH, doClose);
+    } else {
+        doClose();
+    }
 };
 
 // Registrasi global di window untuk akses onclick di HTML template
