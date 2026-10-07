@@ -14,6 +14,7 @@ import { saveApp, sortProductsByOrder } from '../../../services/storage.js';
 import { computeInventoryStats, computeTotalProductStock } from '../../../core/pricing.js';
 import { customPrompt, showConfirm } from '../../../core/ui.js';
 import { cTab, setCTab, aSq, setASq } from './index.js';
+import { openProductFifoModal } from './fifo-modal.js';
 
 let adminSortableInstance = null;
 
@@ -573,13 +574,13 @@ window.rAdmItms = t => {
                         const batchCount = Array.isArray(x.stockBatches) ? x.stockBatches.filter(b => (parseFloat(b.remainingQty) || 0) > 0).length : 0;
                         return `
                             <div class="flex items-center gap-1.5 flex-wrap mt-1">
-                                <button type="button" onclick="event.stopPropagation(); import('./fifo-modal.js').then(m => m.openProductFifoModal('${x.id}'));" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[9.5px] font-bold text-teal-700 dark:text-teal-300 bg-teal-50 hover:bg-teal-100 dark:bg-teal-950/40 dark:hover:bg-teal-900/60 border border-teal-200 dark:border-teal-800 transition-all cursor-pointer shadow-2xs" title="Lihat Rekanan Supplier & Antrean Batch FIFO">
+                                <button type="button" onclick="event.stopPropagation(); window.openProductFifoModal?.('${x.id}');" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[9.5px] font-bold text-teal-700 dark:text-teal-300 bg-teal-50 hover:bg-teal-100 dark:bg-teal-950/40 dark:hover:bg-teal-900/60 border border-teal-200 dark:border-teal-800 transition-all cursor-pointer shadow-2xs" title="Lihat Rekanan Supplier & Antrean Batch FIFO">
                                     <i class="fa-solid fa-truck-field text-[8.5px]"></i>
                                     <span class="max-w-[120px] truncate">${esc(sName)}</span>
                                     ${extraCount > 0 ? `<span class="bg-teal-200 dark:bg-teal-800 text-teal-800 dark:text-teal-200 px-1 py-0.2 rounded text-[8.5px] font-black">+${extraCount}</span>` : ''}
                                 </button>
                                 ${batchCount > 0 ? `
-                                    <button type="button" onclick="event.stopPropagation(); import('./fifo-modal.js').then(m => m.openProductFifoModal('${x.id}'));" class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md text-[9px] font-black text-amber-700 dark:text-amber-300 bg-amber-50 hover:bg-amber-100 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 transition-all cursor-pointer" title="Lacak Antrean FIFO">
+                                    <button type="button" onclick="event.stopPropagation(); window.openProductFifoModal?.('${x.id}');" class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md text-[9px] font-black text-amber-700 dark:text-amber-300 bg-amber-50 hover:bg-amber-100 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 transition-all cursor-pointer" title="Lacak Antrean FIFO">
                                         <i class="fa-solid fa-layer-group text-[8px]"></i>
                                         <span>${batchCount} Batch</span>
                                     </button>
@@ -713,4 +714,7 @@ window.syncSubCategoriesFromProducts = async (catId) => {
         showToast("Gagal sinkron sub-kategori: " + (e.message || ''));
     }
 };
+
+window.openProductFifoModal = openProductFifoModal;
+
 

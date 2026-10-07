@@ -16,7 +16,7 @@ import { db } from '../../../config/firebase.js';
 import { appData } from '../../../core/state.js';
 import { 
     el, setH, esc, fCur, showToast, showConfirm, sLoad, hLoad, 
-    openModalAnim, closeModalAnim, syncHistoryAfterClose, pushModalHistory 
+    openModalAnim, closeModalAnim 
 } from '../../../core/utils.js';
 import { 
     normalizeProductInventory, 
@@ -62,16 +62,26 @@ export const openProductFifoModal = (productId) => {
     normalizeProductInventory(prod, appData.suppliers || []);
 
     renderProductFifoContent();
-    openModalAnim('modal-product-fifo');
-    pushModalHistory('productFifo');
+    const modal = el('modal-product-fifo');
+    const box = el('modal-product-fifo-box');
+    if (modal && modal.classList.contains('hidden') && typeof window.pushModalHistory === 'function') {
+        window.pushModalHistory('productFifo');
+    }
+    openModalAnim(modal, box);
 };
 
 /**
  * Tutup Modal Pelacak Multi-Supplier & Batch FIFO
  */
-export const closeProductFifoModal = () => {
-    closeModalAnim('modal-product-fifo');
-    syncHistoryAfterClose('productFifo');
+export const closeProductFifoModal = (fH = false) => {
+    const modal = el('modal-product-fifo');
+    const box = el('modal-product-fifo-box');
+    if (!modal) return;
+    if (!fH && typeof window.requestCloseModal === 'function') {
+        window.requestCloseModal('productFifo', false, () => closeModalAnim(modal, box));
+    } else {
+        closeModalAnim(modal, box);
+    }
 };
 
 /**

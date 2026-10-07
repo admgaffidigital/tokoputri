@@ -8,6 +8,20 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-10-83',
+        version: 'v1.10.83',
+        date: '2026-10-07',
+        title: 'Resolusi Paripurna Dynamic Import Pelacak FIFO (Vercel MIME Type Error Fix)',
+        category: 'fix',
+        badge: 'Static ESM Bundling & Vercel MIME Resolution v1.10.83',
+        items: [
+            'Resolusi Vercel Dynamic Import MIME Error (table.js & fifo-modal.js): Mengeliminasi inline raw import string (import(\'./fifo-modal.js\')) di dalam atribut onclick HTML yang sebelumnya tidak ter-bundle oleh Vite sehingga memicu TypeError "Failed to fetch dynamically imported module" ber-MIME "text/html" di hosting Vercel.',
+            'Integrasi Statis ke Sub-Modul Admin Products (index.js): Mendaftarkan fifo-modal.js secara langsung ke pipeline kompilasi Vite (src/modules/admin/products/index.js) dan mengekspos handler resmi window.openProductFifoModal.',
+            'Harmonisasi Tombol Bento FIFO: Tombol pelacak supplier & antrean batch FIFO di tabel produk kini memanggil window.openProductFifoModal langsung tanpa dynamic path evaluation di sisi browser.',
+            'Multi-Channel Distribution v1.10.83 (Android versionCode 11083).'
+        ]
+    },
+    {
         id: 'log-1-10-82',
         version: 'v1.10.82',
         date: '2026-10-07',

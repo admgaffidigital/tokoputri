@@ -51,3 +51,4 @@ import './variants.js';
 import './stock.js';
 import './scanner.js';
 import './pricing.js';
+import './fifo-modal.js';
