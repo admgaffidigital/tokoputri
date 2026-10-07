@@ -3872,42 +3872,48 @@ button span > i[class*="fa-"]:not(.hidden):not([hidden]) {
     transform: scale(0.90) !important;
 }
 
-/* Tombol Tambah (+) — Solid Theme Gradient, Clean White Icon, 3D Soft Glow */
+/* Tombol Tambah (+) — Solid Flat Clean Theme, Tajam & Bebas Blur Shadow */
 .btn-catalog-add {
-    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%) !important;
+    background: var(--color-primary) !important;
     color: #ffffff !important;
-    border: 1px solid rgba(255, 255, 255, 0.28) !important;
-    box-shadow: 0 3px 10px rgba(var(--color-primary-rgb), 0.35) !important;
+    border: 1px solid rgba(0, 0, 0, 0.08) !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06) !important;
+}
+.dark .btn-catalog-add {
+    background: var(--color-primary) !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25) !important;
 }
 .btn-catalog-add:hover {
-    box-shadow: 0 5px 14px rgba(var(--color-primary-rgb), 0.48) !important;
-    filter: brightness(1.06) !important;
-    transform: translateY(-1px) scale(1.04) !important;
+    filter: brightness(1.08) !important;
+    transform: translateY(-0.5px) !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
 }
 .btn-catalog-add:active {
-    transform: scale(0.90) !important;
-    box-shadow: 0 2px 5px rgba(var(--color-primary-rgb), 0.25) !important;
+    transform: scale(0.92) !important;
+    box-shadow: none !important;
 }
 
-/* Tombol Varian — Indigo Royale Gradient, Layer Group White Icon, Visual Harmony */
+/* Tombol Varian — Solid Flat Indigo Royale, Tajam & Bebas Blur Shadow */
 .btn-catalog-variant {
-    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%) !important;
+    background: #4f46e5 !important;
     color: #ffffff !important;
-    border: 1px solid rgba(255, 255, 255, 0.28) !important;
-    box-shadow: 0 3px 10px rgba(99, 102, 241, 0.35) !important;
+    border: 1px solid rgba(0, 0, 0, 0.08) !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06) !important;
 }
 .dark .btn-catalog-variant {
-    background: linear-gradient(135deg, #4f46e5 0%, #3730a3 100%) !important;
-    box-shadow: 0 3px 12px rgba(99, 102, 241, 0.45) !important;
+    background: #6366f1 !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25) !important;
 }
 .btn-catalog-variant:hover {
-    box-shadow: 0 5px 14px rgba(99, 102, 241, 0.48) !important;
-    filter: brightness(1.06) !important;
-    transform: translateY(-1px) scale(1.04) !important;
+    filter: brightness(1.08) !important;
+    transform: translateY(-0.5px) !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
 }
 .btn-catalog-variant:active {
-    transform: scale(0.90) !important;
-    box-shadow: 0 2px 5px rgba(99, 102, 241, 0.25) !important;
+    transform: scale(0.92) !important;
+    box-shadow: none !important;
 }
 
 /* Tombol Nonaktif (Stok Habis di POS Kasir) */

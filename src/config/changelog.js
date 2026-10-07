@@ -8,6 +8,20 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-10-89',
+        version: 'v1.10.89',
+        date: '2026-10-07',
+        title: 'Penyempurnaan Visual Tombol Aksi Katalog: Eliminasi Blur & Colored Glow Shadow',
+        category: 'fix',
+        badge: 'Clean Flat & Sharp Action Buttons v1.10.89',
+        items: [
+            'Eliminasi Mutlak Efek Blur & Colored Glow (.btn-catalog-add & .btn-catalog-variant): Menghapus total box-shadow colored glow beradius besar (10px - 14px) yang menimbulkan efek kabur/blur berkabut di sekeliling tombol Tambah (+) dan Pilih Varian pada kartu katalog produk.',
+            'Desain Flat, Bersih & Solid: Mengadopsi standar modern flat design dengan warna solid tegas berpadu border hairline halus (1px) dan bayangan mikro natural (0 1px 2px rgba(0,0,0,0.06)), menghasilkan tombol yang tajam, kontras tinggi, dan bebas blur.',
+            'Sentuhan Hover & Active Ergonomis: Interaksi klik yang reponsif dan stabil dengan transisi scale halus tanpa memicu ledakan bayangan blur.',
+            'Multi-Channel Distribution v1.10.89 (Android versionCode 11089).'
+        ]
+    },
+    {
         id: 'log-1-10-88',
         version: 'v1.10.88',
         date: '2026-10-07',
