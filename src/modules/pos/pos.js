@@ -330,6 +330,53 @@ export const destroyBarcodeListener = () => {
     }
 };
 
+/**
+ * Temukan produk atau varian spesifik berdasarkan kode barcode / SKU / ID
+ */
+export const findProductOrVariantByBarcode = (rawCode) => {
+    if (!rawCode) return null;
+    const c = String(rawCode).trim().toLowerCase();
+    const products = appData.products || [];
+
+    // 1. Prioritas Tertinggi: Cocokkan SKU/Barcode spesifik varian
+    for (const p of products) {
+        if (!p || p.isActive === 'false' || p.isActive === false) continue;
+        if (Array.isArray(p.variants) && p.variants.length > 0) {
+            const vIdx = p.variants.findIndex(v =>
+                v && v.isActive !== false && v.isActive !== 'false' &&
+                ((v.barcode && String(v.barcode).trim().toLowerCase() === c) ||
+                 (v.sku && String(v.sku).trim().toLowerCase() === c))
+            );
+            if (vIdx > -1) {
+                return {
+                    product: p,
+                    variant: p.variants[vIdx],
+                    variantIdx: vIdx,
+                    isVariantMatch: true
+                };
+            }
+        }
+    }
+
+    // 2. Cocokkan SKU/Barcode/ID di level produk induk
+    for (const p of products) {
+        if (!p || p.isActive === 'false' || p.isActive !== false) continue;
+        const bMatch = (p.barcode && String(p.barcode).trim().toLowerCase() === c);
+        const sMatch = (p.sku && String(p.sku).trim().toLowerCase() === c);
+        const iMatch = (p.id && String(p.id).trim().toLowerCase() === c);
+        if (bMatch || sMatch || iMatch) {
+            return {
+                product: p,
+                variant: null,
+                variantIdx: -1,
+                isVariantMatch: false
+            };
+        }
+    }
+
+    return null;
+};
+
 const initBarcodeListener = () => {
     destroyBarcodeListener();
     window.__posBarcodeFn = (e) => {
@@ -446,18 +493,20 @@ const initBarcodeListener = () => {
         // Pemindai Barcode Laser USB (Hardware Barcode Reader)
         if (e.key === 'Enter') {
             if (barcodeBuffer && barcodeBuffer.length >= 3) {
-                const c = barcodeBuffer.trim().toLowerCase();
-                const prod = (appData.products || []).find(p =>
-                    p && p.isActive !== 'false' && p.isActive !== false &&
-                    ((p.barcode && p.barcode.toLowerCase() === c) ||
-                     (p.sku && p.sku.toLowerCase() === c) ||
-                     (p.id && String(p.id).toLowerCase() === c))
-                );
-                if (prod) {
-                    const added = addToCart(prod.id);
-                    if (added) {
-                        playCashierBeep();
-                        showToast(`Ditambahkan: ${prod.name}`, 'success');
+                const match = findProductOrVariantByBarcode(barcodeBuffer);
+                if (match) {
+                    const prod = match.product;
+                    if (match.isVariantMatch && match.variant) {
+                        const vPrice = parseFloat(match.variant.price) || 0;
+                        const added = addToCartWithVariant(prod.id, match.variant.name, vPrice, match.variantIdx, 1);
+                        if (added) {
+                            showToast(`Ditambahkan: ${prod.name} — ${match.variant.name}`, 'success');
+                        }
+                    } else {
+                        const added = addToCart(prod.id);
+                        if (added) {
+                            showToast(`Ditambahkan: ${prod.name}`, 'success');
+                        }
                     }
                 } else {
                     if (typeof window.posSearchFn === 'function') {
@@ -4472,13 +4521,7 @@ const _handleBarcodeResult = (code) => {
     lastScannedCode = code;
     lastScannedTime = now;
 
-    const c = code.toLowerCase();
-    const prod = (appData.products || []).find(p =>
-        p && p.isActive !== 'false' && p.isActive !== false &&
-        ((p.barcode && p.barcode.toLowerCase() === c) ||
-         (p.sku && p.sku.toLowerCase() === c) ||
-         (p.id && String(p.id).toLowerCase() === c))
-    );
+    const match = findProductOrVariantByBarcode(code);
 
     const reticle = el('pos-scanner-reticle');
     const pill = el('pos-scanner-status-pill');
@@ -4486,36 +4529,45 @@ const _handleBarcodeResult = (code) => {
     const bannerTxt = el('pos-last-scanned-text');
     const bannerPrice = el('pos-last-scanned-price');
 
-    if (prod) {
+    if (match) {
         if (reticle) {
             reticle.classList.add('border-emerald-300', 'scale-105', 'bg-emerald-500/20');
             setTimeout(() => {
                 reticle.classList.remove('border-emerald-300', 'scale-105', 'bg-emerald-500/20');
             }, 300);
         }
-        playCashierBeep();
 
-        const hasVariants = prod.variants && prod.variants.length > 0;
-        if (hasVariants) {
-            if (pill) pill.innerHTML = `<span class="text-amber-300 font-bold">Buka pilihan varian...</span>`;
-            closePOSCameraScanner();
-            ensurePOSVariantSheet().then(() => {
-                if (typeof window.openPOSVariantSheet === 'function') window.openPOSVariantSheet(prod.id);
-            });
-            return;
+        const prod = match.product;
+        let added = false;
+        let itemName = prod.name;
+        let itemPrice = parseFloat(prod.price) || 0;
+
+        if (match.isVariantMatch && match.variant) {
+            itemName = `${prod.name} — ${match.variant.name}`;
+            itemPrice = parseFloat(match.variant.price) || 0;
+            added = addToCartWithVariant(prod.id, match.variant.name, itemPrice, match.variantIdx, 1);
+        } else {
+            const hasVariants = prod.variants && prod.variants.length > 0;
+            if (hasVariants) {
+                if (pill) pill.innerHTML = `<span class="text-amber-300 font-bold">Buka pilihan varian...</span>`;
+                closePOSCameraScanner();
+                ensurePOSVariantSheet().then(() => {
+                    if (typeof window.openPOSVariantSheet === 'function') window.openPOSVariantSheet(prod.id);
+                });
+                return;
+            }
+            added = addToCart(prod.id);
         }
-
-        const added = addToCart(prod.id);
 
         if (added) {
             if (banner && bannerTxt && bannerPrice) {
-                bannerTxt.textContent = prod.name;
-                bannerPrice.textContent = fRp(parseFloat(prod.price) || 0);
+                bannerTxt.textContent = itemName;
+                bannerPrice.textContent = fRp(itemPrice);
                 banner.classList.remove('hidden');
             }
 
             if (pill) {
-                pill.innerHTML = `<span class="text-emerald-300 font-black"><i class="fa-solid fa-check mr-1"></i>${esc(prod.name)} (+1)</span>`;
+                pill.innerHTML = `<span class="text-emerald-300 font-black"><i class="fa-solid fa-check mr-1"></i>${esc(itemName)} (+1)</span>`;
                 setTimeout(() => {
                     if (pill) pill.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span><span>Menunggu barcode...</span>`;
                 }, 1500);
@@ -4523,11 +4575,11 @@ const _handleBarcodeResult = (code) => {
 
             if (!posScannerContinuous) {
                 closePOSCameraScanner();
-                showToast(`Ditambahkan: ${prod.name}`, 'success');
+                showToast(`Ditambahkan: ${itemName}`, 'success');
             }
         } else {
             if (pill) {
-                pill.innerHTML = `<span class="text-rose-400 font-bold"><i class="fa-solid fa-ban mr-1"></i>Stok "${esc(prod.name)}" Habis</span>`;
+                pill.innerHTML = `<span class="text-rose-400 font-bold"><i class="fa-solid fa-ban mr-1"></i>Stok "${esc(itemName)}" Habis</span>`;
                 setTimeout(() => {
                     if (pill) pill.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span><span>Menunggu barcode...</span>`;
                 }, 2000);
@@ -4638,6 +4690,7 @@ export const posSearchScannedCode = (code) => {
 };
 
 // Global expose
+window.findProductOrVariantByBarcode = findProductOrVariantByBarcode;
 window.setPOSViewMode          = setPOSViewMode;
 window.renderPOSStorefront     = renderPOSStorefront;
 window.renderPOS               = renderPOS;

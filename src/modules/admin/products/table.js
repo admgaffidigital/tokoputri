@@ -539,7 +539,13 @@ window.rAdmItms = t => {
                 ${img}
                 <div class="min-w-0 flex flex-col justify-center py-0.5">
                     <p class="text-xs sm:text-sm font-bold ${tC} line-clamp-2 uppercase tracking-wide leading-snug mb-1.5">${esc(x.name||x.title||x.bankName||x.code||'Item')}</p>
-                    ${isP ? `<p class="text-sm sm:text-base font-black text-[var(--color-primary)] tracking-tight">${fCur(x.price)}</p>` : ''}
+                    ${isP ? `
+                        <div class="flex items-center gap-2 flex-wrap mb-1">
+                            <p class="text-sm sm:text-base font-black text-[var(--color-primary)] tracking-tight">${fCur(x.price)}</p>
+                            <span class="inline-flex items-center gap-1 font-mono text-[9px] font-bold text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-700/80 px-1.5 py-0.5 rounded border border-slate-200/60 dark:border-slate-600/60" title="Kode SKU / Barcode"><i class="fa-solid fa-barcode text-[8px]"></i>${esc(x.sku || 'TANPA SKU')}</span>
+                            ${x.variants && x.variants.length > 0 ? `<span class="inline-flex items-center gap-1 text-[9px] font-black text-indigo-600 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/50 px-1.5 py-0.5 rounded border border-indigo-200 dark:border-indigo-800" title="${x.variants.length} Varian"><i class="fa-solid fa-layer-group text-[8px]"></i>${x.variants.length} Varian</span>` : ''}
+                        </div>
+                    ` : ''}
                     ${isP && isAdminActive ? (() => {
                         const sInfo = computeTotalProductStock(x, appData.store);
                         if (!sInfo.isManaged) return '';

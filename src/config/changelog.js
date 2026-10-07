@@ -8,6 +8,23 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-10-80',
+        version: 'v1.10.80',
+        date: '2026-10-07',
+        title: 'Harmonisasi Paripurna SKU Produk Induk & Varian, Pemindai Barcode Instan Kasir POS & Visualisasi Kode Terpadu',
+        category: 'feature',
+        badge: 'Instant Variant SKU Barcode Cashier & Uniform SKU Hierarchy v1.10.80',
+        items: [
+            'Arsitektur Hierarki SKU Dual-Layer: Menjamin kejelasan absolut kode SKU pada seluruh tingkatan produk: (1) SKU Induk (product.sku / barcode) untuk produk standar tanpa varian atau kode keluarga produk, otomatis ter-generate jika dikosongkan (SKUSXXXXXX); (2) SKU Varian Mandiri (variant.sku / barcode) untuk tiap varian spesifik (warna, kemasan, ukuran) dengan scanner kamera langsung.',
+            'Pemindai Barcode Laser USB & Kamera POS Instan untuk Varian (src/modules/pos/pos.js): Mengintegrasikan engine pencocokan cerdas findProductOrVariantByBarcode() yang mendeteksi barcode spesifik varian secara prioritas tertinggi. Saat kasir memindai barcode fisik varian, varian tersebut LANGSUNG masuk ke keranjang kasir secara instan tanpa perlu membuka atau memilih ulang di lembar varian.',
+            'Pencarian Cerdas Terpadu Berbasis SKU & Varian: Seluruh kolom pencarian sistem (Etalase Pelanggan di catalog.js, Katalog Kasir POS di pos.js, Tabel Produk Admin di table.js, Surat Pesanan Kulakan PO di purchases.js, dan Stock Opname di stock-opname.js) secara konsisten dan tangguh mencari kecocokan pada kode SKU induk maupun SKU varian.',
+            'Visualisasi SKU Dinamis & Badge Kartu Admin (product-modal.js & table.js): Modal detail etalase kini secara adaptif mengubah pill barcode header ke SKU varian aktif saat varian dipilih pembeli; tabel produk CMS menampilkan chip SKU ber-font mono dan badge jumlah varian di samping harga produk.',
+            'Cetak Dokumen & Lembar Kerja Fisik (documents.js & purchases.js): Cetak barcode label, struk kasir, surat jalan PO kulakan, dan lembar hitung fisik rak (Stock Opname Worksheet) mencetak kode SKU varian secara presisi dengan fallback anggun ke SKU induk jika kosong.',
+            'Test Suite Otomatis Pencocokan Barcode & SKU (scripts/test-sku-barcode-matcher.mjs): Menambahkan rangkaian uji otomatis 8 skenario pencocokan kode produk dan varian yang terintegrasi di npm run audit dan maintenance.',
+            'Multi-Channel Distribution v1.10.80 (Android versionCode 11080).'
+        ]
+    },
+    {
         id: 'log-1-10-79',
         version: 'v1.10.79',
         date: '2026-10-07',
