@@ -249,11 +249,11 @@ const renderTempoDetailModalContent = (o) => {
     // Status Badge
     let statusBadgeHtml = '';
     if (calc.isLate) {
-        statusBadgeHtml = `<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-black uppercase tracking-wider bg-rose-50 text-rose-600 dark:bg-rose-950/40 dark:text-rose-400 border border-rose-200 dark:border-rose-800 shadow-2xs"><i class="fa-solid fa-triangle-exclamation"></i> Terlambat ${calc.daysLate} Hari</span>`;
+        statusBadgeHtml = `<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-[11px] font-black uppercase tracking-wider bg-rose-50 text-rose-600 dark:bg-rose-950/40 dark:text-rose-400 border border-rose-200 dark:border-rose-800 shadow-2xs"><i class="fa-solid fa-triangle-exclamation"></i> Terlambat ${calc.daysLate} Hari</span>`;
     } else if (calc.isDueSoon) {
-        statusBadgeHtml = `<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-black uppercase tracking-wider bg-amber-50 text-amber-600 dark:bg-amber-950/40 dark:text-amber-400 border border-amber-200 dark:border-amber-800 shadow-2xs"><i class="fa-solid fa-clock"></i> Jatuh Tempo H-${calc.daysLeft <= 0 ? '0 (Hari Ini)' : calc.daysLeft}</span>`;
+        statusBadgeHtml = `<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-[11px] font-black uppercase tracking-wider bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-300 border border-amber-200 dark:border-amber-800 shadow-2xs"><i class="fa-solid fa-clock"></i> Jatuh Tempo H-${calc.daysLeft <= 0 ? '0 (Hari Ini)' : calc.daysLeft}</span>`;
     } else {
-        statusBadgeHtml = `<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-black uppercase tracking-wider text-[var(--color-primary)] border shadow-2xs" style="background: rgba(var(--color-primary-rgb), 0.08); border-color: rgba(var(--color-primary-rgb), 0.25);"><i class="fa-solid fa-circle-check"></i> Tempo Berjalan (${calc.daysLeft} Hari Lagi)</span>`;
+        statusBadgeHtml = `<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-[11px] font-black uppercase tracking-wider text-[var(--color-primary)] border shadow-2xs" style="background: rgba(var(--color-primary-rgb), 0.08); border-color: rgba(var(--color-primary-rgb), 0.25);"><i class="fa-solid fa-circle-check"></i> Tempo Berjalan (${calc.daysLeft} Hari Lagi)</span>`;
     }
 
     setH('modal-tempo-detail-content', `
@@ -283,27 +283,26 @@ const renderTempoDetailModalContent = (o) => {
                             </span>
                         ` : ''}
                     </div>
-                    <div class="flex items-center gap-3 mt-1 text-xs text-slate-500 dark:text-slate-400 flex-wrap">
-                        <span class="font-bold text-slate-400">#${esc(o.orderId)}</span>
-                        <span>•</span>
-                        <a href="javascript:void(0)" onclick="window.sendSmartTempoWA('${o.orderId}')" class="font-mono text-emerald-600 dark:text-emerald-400 hover:underline flex items-center gap-1 font-bold">
+                    <div class="flex items-center gap-2 mt-1.5 text-xs text-slate-500 dark:text-slate-400 flex-wrap">
+                        <span class="font-mono font-bold text-slate-500 bg-slate-100 dark:bg-slate-800 px-2.5 py-0.5 rounded-lg text-[11px] border border-slate-200 dark:border-slate-700">#${esc(o.orderId)}</span>
+                        <a href="javascript:void(0)" onclick="window.sendSmartTempoWA('${o.orderId}')" class="font-mono text-emerald-600 dark:text-emerald-400 hover:underline inline-flex items-center gap-1 font-bold text-[11px] bg-emerald-50 dark:bg-emerald-950/40 px-2.5 py-0.5 rounded-lg border border-emerald-200 dark:border-emerald-800">
                             <i class="fa-brands fa-whatsapp"></i> +${esc(waNum || '-')}
                         </a>
-                        <span>•</span>
-                        <button type="button" onclick="if(typeof window.openDocPreview==='function') window.openDocPreview('tempo_customer_ledger', '${esc(o.customer?.phone || o.customer?.wa || o.customer?.name || '')}');" class="text-xs font-bold text-[var(--color-primary)] hover:underline inline-flex items-center gap-1 cursor-pointer">
+                        <button type="button" onclick="if(typeof window.openDocPreview==='function') window.openDocPreview('tempo_customer_ledger', '${esc(o.customer?.phone || o.customer?.wa || o.customer?.name || '')}');" class="text-[11px] font-bold text-[var(--color-primary)] hover:underline inline-flex items-center gap-1 cursor-pointer primary-bg-soft px-2.5 py-0.5 rounded-lg border primary-border">
                             <i class="fa-solid fa-address-book"></i> Kartu Pelanggan
                         </button>
                     </div>
                 </div>
             </div>
 
-            <!-- STATUS & JATUH TEMPO STRIP -->
-            <div class="mt-3.5 flex items-center justify-between flex-wrap gap-2 pt-3 border-t border-slate-200/60 dark:border-slate-800">
-                <div class="flex items-center gap-2">
+            <!-- STATUS & JATUH TEMPO STRIP (LEGA & RAPI) -->
+            <div class="mt-4 p-3 rounded-2xl bg-white dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/80 flex items-center justify-between gap-3 flex-wrap shadow-2xs">
+                <div class="flex items-center gap-2 shrink-0">
                     ${statusBadgeHtml}
                 </div>
-                <div class="text-xs font-bold text-slate-500 dark:text-slate-400">
-                    Batas Waktu: <span class="font-mono text-slate-800 dark:text-slate-200">${dueStr}</span>
+                <div class="text-xs font-bold text-slate-500 dark:text-slate-400 flex items-center gap-1.5 ml-auto sm:ml-0">
+                    <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Batas Waktu:</span>
+                    <span class="font-mono font-bold text-slate-800 dark:text-slate-100 bg-slate-100 dark:bg-slate-700/80 px-2.5 py-1 rounded-xl text-xs border border-slate-200 dark:border-slate-600">${dueStr}</span>
                 </div>
             </div>
         </div>
@@ -2056,27 +2055,34 @@ const renderTempoCardItem = (o) => {
 
     if (calc.isLate) {
         borderClass = 'border-rose-400 dark:border-rose-600 shadow-[0_0_15px_rgba(225,29,72,0.12)]';
-        badgeHTML = `<div class="absolute -right-7 top-4 bg-rose-600 text-white text-[9px] font-bold uppercase tracking-widest px-8 py-1 rotate-45 shadow-sm">TERLAMBAT ${calc.daysLate} HARI</div>`;
+        badgeHTML = `<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-rose-50 text-rose-600 dark:bg-rose-950/50 dark:text-rose-400 border border-rose-200 dark:border-rose-800 shadow-2xs whitespace-nowrap"><i class="fa-solid fa-triangle-exclamation text-[8px]"></i> Terlambat ${calc.daysLate} Hari</span>`;
     } else if (calc.isDueSoon) {
         borderClass = 'border-amber-400 dark:border-amber-600 shadow-[0_0_15px_rgba(245,158,11,0.12)]';
-        badgeHTML = `<div class="absolute -right-7 top-4 bg-amber-500 text-white text-[9px] font-bold uppercase tracking-widest px-8 py-1 rotate-45 shadow-sm">H-${calc.daysLeft <= 0 ? '0 (HARI INI)' : calc.daysLeft}</div>`;
+        badgeHTML = `<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-amber-50 text-amber-700 dark:bg-amber-950/50 dark:text-amber-300 border border-amber-200 dark:border-amber-800 shadow-2xs whitespace-nowrap"><i class="fa-solid fa-clock text-[8px]"></i> H-${calc.daysLeft <= 0 ? '0 (Hari Ini)' : calc.daysLeft}</span>`;
     } else {
-        badgeHTML = `<div class="inline-block px-2.5 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider text-[var(--color-primary)] border" style="background: rgba(var(--color-primary-rgb), 0.08); border-color: rgba(var(--color-primary-rgb), 0.25);">Sisa ${calc.daysLeft} Hari</div>`;
+        badgeHTML = `<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider text-[var(--color-primary)] border shadow-2xs whitespace-nowrap" style="background: rgba(var(--color-primary-rgb), 0.08); border-color: rgba(var(--color-primary-rgb), 0.25);"><i class="fa-regular fa-clock text-[9px]"></i> Sisa ${calc.daysLeft} Hari</span>`;
     }
 
     return `
     <div class="bg-white dark:bg-slate-800 p-4 sm:p-5 rounded-3xl border ${borderClass} relative overflow-hidden group hover:-translate-y-1 transition-all duration-300 shadow-sm flex flex-col justify-between cursor-pointer" onclick="window.openTempoDetailModal('${o.orderId}')">
-        ${badgeHTML}
-        
         <div>
-            <!-- HEADER KARTU DENGAN AVATAR MONOGRAM -->
-            <div class="flex items-start gap-3 mb-3 pr-10">
+            <!-- BARIS 1: TOP BAR KARTU (NOTA & STATUS SISA HARI / JATUH TEMPO) -->
+            <div class="flex items-center justify-between gap-2 mb-3.5 pb-2.5 border-b border-slate-100 dark:border-slate-700/60">
+                <span class="text-[10px] font-mono font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
+                    <i class="fa-solid fa-receipt text-slate-400 text-[10px]"></i> #${o.orderId}
+                </span>
+                <div class="shrink-0">
+                    ${badgeHTML}
+                </div>
+            </div>
+
+            <!-- BARIS 2: AVATAR MONOGRAM, NAMA PELANGGAN, WA & BADGES -->
+            <div class="flex items-start gap-3 mb-3">
                 <div class="w-10 h-10 rounded-2xl flex items-center justify-center text-xs font-black shrink-0 aspect-square shadow-2xs" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary); border: 1px solid rgba(var(--color-primary-rgb), 0.25);">
                     ${monogram}
                 </div>
                 <div class="min-w-0 flex-1">
-                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Nota #${o.orderId}</p>
-                    <h3 class="font-bold text-slate-800 dark:text-slate-100 mt-0.5 uppercase text-sm truncate">${esc(o.customer?.name || 'Anonim')}</h3>
+                    <h3 class="font-bold text-slate-800 dark:text-slate-100 uppercase text-sm truncate">${esc(o.customer?.name || 'Anonim')}</h3>
                     <div class="flex items-center gap-2 mt-1 flex-wrap" onclick="event.stopPropagation()">
                         <p class="text-[11px] font-bold text-slate-500 flex items-center gap-1">
                             <i class="fa-brands fa-whatsapp text-emerald-500"></i>

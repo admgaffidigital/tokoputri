@@ -8,6 +8,20 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-10-85',
+        version: 'v1.10.85',
+        date: '2026-10-07',
+        title: 'Penyempurnaan Ergonomi & Tata Letak Status Sisa Hari Piutang Tempo',
+        category: 'fix',
+        badge: 'Tempo Card Ergonomics & Zero-Cramping Sisa Hari v1.10.85',
+        items: [
+            'Redesain Top Bar Kartu Piutang Tempo (tempo.js): Mengeliminasi pill "Sisa Hari" yang sebelumnya meregang penuh 100% dan menempel rapat tanpa spasi di atas avatar inisial pelanggan. Digantikan dengan Top Bar terstruktur rapi (Nomor Nota di kiri dan Pill Status Sisa Hari/Jatuh Tempo di kanan) dengan garis pemisah halus dan margin lega 14px.',
+            'Pembersihan Spacing Modal Rincian Piutang (modal-tempo-detail): Merelokasi status sisa hari tempo berjalan dan batas waktu jatuh tempo ke dalam wadah Bento Box mandiri yang lapang dan anti-tumpang tindih di layar smartphone.',
+            'Harmonisasi Visual Keterlambatan: Seluruh status tagihan (Sisa Hari, H-3 Jatuh Tempo, dan Terlambat) kini memiliki format badge rounded-full/rounded-xl proporsional yang rapi tanpa distorsi.',
+            'Multi-Channel Distribution v1.10.85 (Android versionCode 11085).'
+        ]
+    },
+    {
         id: 'log-1-10-84',
         version: 'v1.10.84',
         date: '2026-10-07',
