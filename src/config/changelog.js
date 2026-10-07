@@ -8,6 +8,21 @@
 
 export const DEFAULT_CHANGELOG = [
     {
+        id: 'log-1-10-77',
+        version: 'v1.10.77',
+        date: '2026-10-07',
+        title: 'Harmonisasi Total Peta Elemen Modal & Pembebasan Menyeluruh Bug Back Button Seluruh Website (Zero-Bug Back Navigation)',
+        category: 'fix',
+        badge: 'Universal Modal Element Mapping & Zero-Bug Back Navigation v1.10.77',
+        items: [
+            'Audit & Sinkronisasi ID Elemen Modal Seluruh Sistem (src/core/router.js): Mengimplementasikan MODAL_ELEMENT_MAP dengan arsitektur toleran multi-ID / dual-naming. Memperbaiki seluruh ketidakcocokan ID elemen antara DOM nyata dan router pada modul Pesanan Pelanggan (order-detail-modal), Kasir POS Admin (add-staff-modal, permissions-modal, edit-staff-modal), Shift Kasir (pos-open-shift-modal, pos-shift-summary-modal, pos-close-shift-modal), POS Storefront (pos-hold-prompt-modal, pos-held-list-modal, pos-mobile-cart-drawer, pos-camera-scanner-modal), Supplier (modal-supplier-form, modal-supplier-detail), Purchase Order (modal-po-form, modal-po-detail, modal-po-payment, modal-po-product-picker), Piutang Tempo (modal-tempo-detail, modal-tempo-payment, modal-tempo-penalty), Beban Operasional (modal-expense-form), Stock Opname (modal-so-history-detail), Pengaturan Banner (admin-hero-banner-modal), Prompt Kustom (custom-prompt-container), serta Footer Jaminan Mutu (guarantee-modal).',
+            'Pemeriksaan Visibilitas Komputasi Komprehensif (isModalOpenInDOM): Memperbarui deteksi elemen aktif dengan validasi computed style (getComputedStyle display !== none & visibility !== hidden), atribut inline style.display, serta kelas hidden / pointer-events-none, sehingga modal yang dibuka maupun ditutup lewat inline styling atau transisi animasi terdeteksi secara akurat tanpa kesalahan penafsiran.',
+            'Integrasi Stack Riwayat Modal Warna & Peringatan Shift (src/modules/admin/products/variants.js & src/modules/pos/pos-auth.js): Mendaftarkan modal database warna (colorFloat / color-float-modal) dan modal peringatan shift aktif saat logout kasir (posLogoutShift / pos-logout-shift-modal) ke stack riwayat terpadu (pushModalHistory & requestCloseModal), sehingga tombol kembali HP/browser menutup dialog seketika tanpa mengharuskan pengguna menekan tombol Batal.',
+            'Ekspansi Pemindai Transien Cepat (closeTopmostOpenModal Step 0b): Menambahkan pos-delete-confirm-modal dan pos-logout-shift-modal ke daftar transientIds agar seluruh konfirmasi hapus antrean dan peringatan kasir langsung tertutup bersih saat hardware back button ditekan.',
+            'Multi-Channel Distribution v1.10.77 (Android versionCode 11077).'
+        ]
+    },
+    {
         id: 'log-1-10-76',
         version: 'v1.10.76',
         date: '2026-10-07',

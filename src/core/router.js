@@ -300,83 +300,104 @@ export const initPullToRefresh = () => {
 };
 
 /**
+ * Peta Elemen Modal Sistem (Multi-ID & Dual-Naming Tolerant)
+ * Menampung seluruh nama modal dan kandidat ID elemen di DOM
+ */
+export const MODAL_ELEMENT_MAP = {
+    product: ['product-modal'],
+    category: ['category-modal'],
+    brand: ['brand-modal'],
+    admin: ['admin-modal'],
+    adminOrder: ['admin-order-modal'],
+    receipt: ['receipt-preview-modal'],
+    docPreview: ['doc-preview-modal'],
+    scanner: ['scanner-modal'],
+    confirm: ['custom-confirm-modal'],
+    customerOrder: ['order-detail-modal', 'customer-order-detail-modal'],
+    restock: ['restock-modal'],
+    quickprice: ['quickprice-modal'],
+    member: ['member-modal'],
+    prompt: ['custom-prompt-container', 'custom-prompt-modal'],
+    review: ['review-modal'],
+    quickmenu: ['quickmenu-modal'],
+    variantPreview: ['variant-preview-modal'],
+    terms: ['terms-modal'],
+    privacy: ['privacy-modal'],
+    askQuestion: ['modal-ask-question', 'ask-question-modal'],
+    quickVariant: ['quick-variant-modal'],
+    adminFAQ: ['modal-admin-faq', 'admin-faq-modal'],
+    printerSettings: ['printer-settings-modal'],
+    exitConfirm: ['exit-confirm-modal'],
+    appDownload: ['app-download-modal'],
+    voucher: ['voucher-modal'],
+    guide: ['shopping-guide-modal'],
+    changelog: ['changelog-modal'],
+    guarantee: ['guarantee-modal', 'quality-guarantee-modal'],
+    security: ['security-modal'],
+    posVariantSheet: ['pos-variant-sheet'],
+    posLogin: ['pos-login-modal'],
+    posCartDrawer: ['pos-mobile-cart-drawer', 'pos-cart-drawer'],
+    posPayment: ['pos-pay-modal', 'pos-payment-modal'],
+    posOpenShift: ['pos-open-shift-modal', 'modal-pos-open-shift'],
+    posCloseShift: ['pos-close-shift-modal', 'modal-pos-close-shift'],
+    posShiftSummary: ['pos-shift-summary-modal', 'modal-pos-shift-summary'],
+    clientTempoPay: ['modal-client-tempo-pay'],
+    clientPaySuccess: ['modal-client-pay-success'],
+    tempoConfirmations: ['modal-tempo-confirmations'],
+    thermalPreview: ['utp-thermal-modal'],
+    htmlPreview: ['utp-html-modal'],
+    addStaff: ['add-staff-modal', 'modal-add-staff'],
+    permissions: ['permissions-modal', 'modal-permissions'],
+    editStaff: ['edit-staff-modal', 'modal-edit-staff'],
+    soFinalize: ['modal-so-finalize', 'so-finalize-modal'],
+    soHistory: ['modal-so-history-detail', 'modal-so-history', 'so-history-modal'],
+    preRestore: ['modal-pre-restore-inspector'],
+    heroBanner: ['admin-hero-banner-modal', 'hero-banner-modal'],
+    renewal: ['renewal-input-modal'],
+    purchaseForm: ['modal-po-form', 'po-form-modal'],
+    purchasePicker: ['modal-po-product-picker', 'po-product-picker-modal'],
+    purchaseDetail: ['modal-po-detail', 'po-detail-modal'],
+    purchasePayment: ['modal-po-payment', 'po-payment-modal'],
+    supplierForm: ['modal-supplier-form', 'supplier-form-modal'],
+    supplierDetail: ['modal-supplier-detail', 'supplier-detail-modal'],
+    posHoldPrompt: ['pos-hold-prompt-modal', 'pos-hold-prompt'],
+    posHeldModal: ['pos-held-list-modal', 'pos-held-modal'],
+    posCameraScanner: ['pos-camera-scanner-modal', 'pos-camera-scanner'],
+    posReceiptFallback: ['pos-receipt-fallback-modal'],
+    posShiftReceipt: ['pos-shift-receipt-modal'],
+    posLogoutShift: ['pos-logout-shift-modal'],
+    colorFloat: ['color-float-modal'],
+    tempoDetail: ['modal-tempo-detail', 'tempo-detail-modal'],
+    tempoPayment: ['modal-tempo-payment', 'tempo-payment-modal'],
+    tempoPenalty: ['modal-tempo-penalty', 'tempo-penalty-modal'],
+    expenseForm: ['modal-expense-form', 'expense-modal'],
+    expenseReceipt: ['modal-expense-receipt-preview']
+};
+
+/**
  * Periksa apakah modal tertentu sedang aktif & terlihat di DOM
  */
 export const isModalOpenInDOM = (name) => {
-    const elIdMap = {
-        product: 'product-modal',
-        category: 'category-modal',
-        brand: 'brand-modal',
-        admin: 'admin-modal',
-        adminOrder: 'admin-order-modal',
-        receipt: 'receipt-preview-modal',
-        docPreview: 'doc-preview-modal',
-        scanner: 'scanner-modal',
-        confirm: 'custom-confirm-modal',
-        customerOrder: 'customer-order-detail-modal',
-        restock: 'restock-modal',
-        quickprice: 'quickprice-modal',
-        member: 'member-modal',
-        prompt: 'custom-prompt-modal',
-        review: 'review-modal',
-        quickmenu: 'quickmenu-modal',
-        variantPreview: 'variant-preview-modal',
-        terms: 'terms-modal',
-        privacy: 'privacy-modal',
-        askQuestion: 'modal-ask-question',
-        quickVariant: 'quick-variant-modal',
-        adminFAQ: 'modal-admin-faq',
-        printerSettings: 'printer-settings-modal',
-        exitConfirm: 'exit-confirm-modal',
-        appDownload: 'app-download-modal',
-        voucher: 'voucher-modal',
-        guide: 'shopping-guide-modal',
-        changelog: 'changelog-modal',
-        guarantee: 'quality-guarantee-modal',
-        security: 'security-modal',
-        posVariantSheet: 'pos-variant-sheet',
-        posLogin: 'pos-login-modal',
-        posCartDrawer: 'pos-cart-drawer',
-        posPayment: 'pos-pay-modal',
-        posOpenShift: 'modal-pos-open-shift',
-        posCloseShift: 'modal-pos-close-shift',
-        posShiftSummary: 'modal-pos-shift-summary',
-        clientTempoPay: 'modal-client-tempo-pay',
-        clientPaySuccess: 'modal-client-pay-success',
-        tempoConfirmations: 'modal-tempo-confirmations',
-        thermalPreview: 'utp-thermal-modal',
-        htmlPreview: 'utp-html-modal',
-        addStaff: 'modal-add-staff',
-        permissions: 'modal-permissions',
-        editStaff: 'modal-edit-staff',
-        soFinalize: 'modal-so-finalize',
-        soHistory: 'modal-so-history',
-        preRestore: 'modal-pre-restore-inspector',
-        heroBanner: 'hero-banner-modal',
-        renewal: 'renewal-input-modal',
-        purchaseForm: 'po-form-modal',
-        purchasePicker: 'po-product-picker-modal',
-        purchaseDetail: 'po-detail-modal',
-        purchasePayment: 'po-payment-modal',
-        supplierForm: 'supplier-form-modal',
-        supplierDetail: 'supplier-detail-modal',
-        posHoldPrompt: 'pos-hold-prompt',
-        posHeldModal: 'pos-held-modal',
-        posCameraScanner: 'pos-camera-scanner',
-        posReceiptFallback: 'pos-receipt-fallback-modal',
-        posShiftReceipt: 'pos-shift-receipt-modal',
-        tempoDetail: 'tempo-detail-modal',
-        tempoPayment: 'tempo-payment-modal',
-        tempoPenalty: 'tempo-penalty-modal',
-        expenseForm: 'expense-modal',
-        expenseReceipt: 'modal-expense-receipt-preview'
-    };
+    const targets = MODAL_ELEMENT_MAP[name];
+    if (!targets) return false;
+    const targetIds = Array.isArray(targets) ? targets : [targets];
 
-    const targetId = elIdMap[name];
-    if (!targetId) return false;
-    const domEl = document.getElementById(targetId);
-    if (!domEl) return false;
-    return !domEl.classList.contains('hidden') && !domEl.classList.contains('pointer-events-none');
+    for (const targetId of targetIds) {
+        const domEl = document.getElementById(targetId);
+        if (!domEl) continue;
+
+        if (domEl.classList.contains('hidden') || domEl.classList.contains('pointer-events-none')) continue;
+        if (domEl.style.display === 'none' || domEl.style.visibility === 'hidden') continue;
+
+        try {
+            const comp = window.getComputedStyle(domEl);
+            if (comp.display === 'none' || comp.visibility === 'hidden') continue;
+        } catch (e) {}
+
+        return true;
+    }
+
+    return false;
 };
 
 /**
@@ -588,89 +609,36 @@ export const closeModalByName = (m) => {
         case 'expenseReceipt':
             if (typeof window.closeExpenseReceiptPreview === 'function') { window.closeExpenseReceiptPreview(true); return true; }
             break;
+        case 'colorFloat':
+            if (typeof window._closeColorFloatModal === 'function') { window._closeColorFloatModal(true); return true; }
+            document.getElementById('color-float-modal')?.remove();
+            return true;
+        case 'posLogoutShift':
+            document.getElementById('pos-logout-shift-modal')?.remove();
+            return true;
         default:
             break;
     }
 
     // Fail-safe DOM fallback jika fungsi spesifik modul belum siap
-    const elIdMap = {
-        product: 'product-modal',
-        category: 'category-modal',
-        brand: 'brand-modal',
-        admin: 'admin-modal',
-        adminOrder: 'admin-order-modal',
-        receipt: 'receipt-preview-modal',
-        docPreview: 'doc-preview-modal',
-        scanner: 'scanner-modal',
-        confirm: 'custom-confirm-modal',
-        customerOrder: 'customer-order-detail-modal',
-        restock: 'restock-modal',
-        quickprice: 'quickprice-modal',
-        member: 'member-modal',
-        prompt: 'custom-prompt-modal',
-        review: 'review-modal',
-        quickmenu: 'quickmenu-modal',
-        variantPreview: 'variant-preview-modal',
-        terms: 'terms-modal',
-        privacy: 'privacy-modal',
-        askQuestion: 'modal-ask-question',
-        quickVariant: 'quick-variant-modal',
-        adminFAQ: 'modal-admin-faq',
-        printerSettings: 'printer-settings-modal',
-        exitConfirm: 'exit-confirm-modal',
-        appDownload: 'app-download-modal',
-        voucher: 'voucher-modal',
-        guide: 'shopping-guide-modal',
-        changelog: 'changelog-modal',
-        guarantee: 'quality-guarantee-modal',
-        security: 'security-modal',
-        posVariantSheet: 'pos-variant-sheet',
-        posLogin: 'pos-login-modal',
-        posCartDrawer: 'pos-cart-drawer',
-        posPayment: 'pos-pay-modal',
-        posOpenShift: 'modal-pos-open-shift',
-        posCloseShift: 'modal-pos-close-shift',
-        posShiftSummary: 'modal-pos-shift-summary',
-        clientTempoPay: 'modal-client-tempo-pay',
-        clientPaySuccess: 'modal-client-pay-success',
-        tempoConfirmations: 'modal-tempo-confirmations',
-        thermalPreview: 'utp-thermal-modal',
-        htmlPreview: 'utp-html-modal',
-        addStaff: 'modal-add-staff',
-        permissions: 'modal-permissions',
-        editStaff: 'modal-edit-staff',
-        soFinalize: 'modal-so-finalize',
-        soHistory: 'modal-so-history',
-        preRestore: 'modal-pre-restore-inspector',
-        heroBanner: 'hero-banner-modal',
-        renewal: 'renewal-input-modal',
-        purchaseForm: 'po-form-modal',
-        purchasePicker: 'po-product-picker-modal',
-        purchaseDetail: 'po-detail-modal',
-        purchasePayment: 'po-payment-modal',
-        supplierForm: 'supplier-form-modal',
-        supplierDetail: 'supplier-detail-modal',
-        posHoldPrompt: 'pos-hold-prompt',
-        posHeldModal: 'pos-held-modal',
-        posCameraScanner: 'pos-camera-scanner',
-        posReceiptFallback: 'pos-receipt-fallback-modal',
-        posShiftReceipt: 'pos-shift-receipt-modal',
-        tempoDetail: 'tempo-detail-modal',
-        tempoPayment: 'tempo-payment-modal',
-        tempoPenalty: 'tempo-penalty-modal',
-        expenseForm: 'expense-modal',
-        expenseReceipt: 'modal-expense-receipt-preview'
-    };
-    const targetId = elIdMap[m];
-    if (targetId) {
+    const targetCandidates = MODAL_ELEMENT_MAP[m] || [];
+    const idList = Array.isArray(targetCandidates) ? targetCandidates : [targetCandidates];
+    for (const targetId of idList) {
         const domEl = document.getElementById(targetId);
         if (domEl) {
-            if (['utp-thermal-modal', 'utp-html-modal', 'pos-receipt-fallback-modal', 'pos-shift-receipt-modal'].includes(targetId)) {
+            const removeImmediately = [
+                'utp-thermal-modal', 'utp-html-modal', 'pos-receipt-fallback-modal',
+                'pos-shift-receipt-modal', 'pos-hold-prompt-modal', 'pos-held-list-modal',
+                'pos-camera-scanner-modal', 'color-float-modal', 'pos-logout-shift-modal',
+                'custom-prompt-container'
+            ];
+            if (removeImmediately.includes(targetId)) {
                 domEl.remove();
                 return true;
             }
             if (!domEl.classList.contains('hidden')) {
                 domEl.classList.add('hidden');
+                domEl.style.display = 'none';
                 return true;
             }
         }
@@ -782,7 +750,9 @@ export const closeTopmostOpenModal = (fromPopState = false) => {
     const transientIds = [
         'pos-success-modal',
         'pos-recall-confirm-modal',
-        'pos-closed-success-modal'
+        'pos-delete-confirm-modal',
+        'pos-closed-success-modal',
+        'pos-logout-shift-modal'
     ];
     for (const id of transientIds) {
         const tEl = document.getElementById(id);
@@ -805,6 +775,7 @@ export const closeTopmostOpenModal = (fromPopState = false) => {
 
     // 2. Fallback scan jika ada modal di DOM yang terbuka tapi luput dari oMods
     const allKnownModals = [
+        'colorFloat', 'posLogoutShift',
         'posReceiptFallback', 'posShiftReceipt',
         'clientPaySuccess', 'clientTempoPay', 'tempoConfirmations',
         'posVariantSheet', 'posLogin', 'posCartDrawer', 'posPayment',

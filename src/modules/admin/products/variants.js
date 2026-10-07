@@ -175,7 +175,7 @@ window.toggleVarActive = (i) => {
  * Solusi untuk mencegah bug saat mencari elemen modal yang tidak ada di DOM.
  */
 window._openColorFloatModal = (innerHtml) => {
-    _closeColorFloatModal();
+    _closeColorFloatModal(true);
     const overlay = document.createElement('div');
     overlay.id = 'color-float-modal';
     overlay.className = 'fixed inset-0 z-[200] flex items-center justify-center bg-slate-900/80 p-4 opacity-0 transition-opacity duration-300';
@@ -186,19 +186,33 @@ window._openColorFloatModal = (innerHtml) => {
     box.innerHTML = innerHtml;
     overlay.appendChild(box);
     document.body.appendChild(overlay);
+
+    if (typeof window.pushModalHistory === 'function') {
+        window.pushModalHistory('colorFloat');
+    }
+
     requestAnimationFrame(() => {
         overlay.classList.remove('opacity-0');
         box.classList.remove('scale-95');
     });
 };
 
-window._closeColorFloatModal = () => {
+window._closeColorFloatModal = (fromHistory = false) => {
     const overlay = document.getElementById('color-float-modal');
     if (!overlay) return;
     const box = document.getElementById('color-float-box');
-    overlay.classList.add('opacity-0');
-    if (box) box.classList.add('scale-95');
-    setTimeout(() => { if (overlay.parentNode) overlay.remove(); }, 300);
+
+    const doClose = () => {
+        overlay.classList.add('opacity-0');
+        if (box) box.classList.add('scale-95');
+        setTimeout(() => { if (overlay.parentNode) overlay.remove(); }, 300);
+    };
+
+    if (!fromHistory && typeof window.requestCloseModal === 'function') {
+        window.requestCloseModal('colorFloat', false, doClose);
+    } else {
+        doClose();
+    }
 };
 
 // ─── Impor Warna dari Database ────────────────────────────────────────────────

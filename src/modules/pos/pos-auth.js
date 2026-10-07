@@ -317,6 +317,19 @@ export const processCashierLogin = async () => {
 };
 
 // ─── Logout Kasir ────────────────────────────────────────────
+export const closePOSLogoutShiftModal = (fromHistory = false) => {
+    const m = document.getElementById('pos-logout-shift-modal');
+    if (!m) return;
+    if (!fromHistory && typeof window.requestCloseModal === 'function') {
+        window.requestCloseModal('posLogoutShift', false, () => m.remove());
+    } else {
+        m.remove();
+    }
+};
+if (typeof window !== 'undefined') {
+    window.closePOSLogoutShiftModal = closePOSLogoutShiftModal;
+}
+
 export const cashierLogout = async (bypassShiftCheck = false) => {
     // Cek apakah ada shift kasir yang masih aktif
     if (!bypassShiftCheck && typeof window.getActiveShift === 'function') {
@@ -325,8 +338,8 @@ export const cashierLogout = async (bypassShiftCheck = false) => {
             document.getElementById('pos-logout-shift-modal')?.remove();
             const startCashStr = typeof window.fRp === 'function' ? window.fRp(activeShift.startingCash) : 'Rp ' + activeShift.startingCash;
             document.body.insertAdjacentHTML('beforeend', `
-            <div id="pos-logout-shift-modal" class="fixed inset-0 z-[10005] flex items-center justify-center p-3 sm:p-4" style="background:rgba(15,23,42,0.8)">
-                <div class="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl w-full max-w-sm border border-slate-200 dark:border-slate-800 p-5 text-center space-y-4">
+            <div id="pos-logout-shift-modal" class="fixed inset-0 z-[10005] flex items-center justify-center p-3 sm:p-4" style="background:rgba(15,23,42,0.8)" onclick="if(event.target===this) window.closePOSLogoutShiftModal && window.closePOSLogoutShiftModal()">
+                <div class="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl w-full max-w-sm border border-slate-200 dark:border-slate-800 p-5 text-center space-y-4" onclick="event.stopPropagation()">
                     <div class="w-14 h-14 rounded-2xl bg-amber-100 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 flex items-center justify-center text-2xl mx-auto shadow-inner">
                         <i class="fa-solid fa-triangle-exclamation"></i>
                     </div>
@@ -337,18 +350,22 @@ export const cashierLogout = async (bypassShiftCheck = false) => {
                         </p>
                     </div>
                     <div class="space-y-2 pt-1">
-                        <button onclick="document.getElementById('pos-logout-shift-modal')?.remove(); if(typeof window.openPOSCloseShiftModal==='function') window.openPOSCloseShiftModal();" class="w-full py-3 rounded-2xl bg-rose-600 hover:bg-rose-700 text-white font-black text-xs uppercase tracking-wider shadow-md active:scale-95 transition-all flex items-center justify-center gap-1.5 cursor-pointer">
+                        <button onclick="window.closePOSLogoutShiftModal(true); if(typeof window.openPOSCloseShiftModal==='function') window.openPOSCloseShiftModal();" class="w-full py-3 rounded-2xl bg-rose-600 hover:bg-rose-700 text-white font-black text-xs uppercase tracking-wider shadow-md active:scale-95 transition-all flex items-center justify-center gap-1.5 cursor-pointer">
                             <i class="fa-solid fa-lock"></i> Tutup Shift Sekarang
                         </button>
-                        <button onclick="document.getElementById('pos-logout-shift-modal')?.remove(); window.cashierLogout(true);" class="w-full py-2.5 rounded-2xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold text-xs transition-all cursor-pointer">
+                        <button onclick="window.closePOSLogoutShiftModal(true); window.cashierLogout(true);" class="w-full py-2.5 rounded-2xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold text-xs transition-all cursor-pointer">
                             Tetap Logout (Shift Tetap Berjalan)
                         </button>
-                        <button onclick="document.getElementById('pos-logout-shift-modal')?.remove();" class="w-full py-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-xs font-semibold cursor-pointer">
+                        <button onclick="window.closePOSLogoutShiftModal()" class="w-full py-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-xs font-semibold cursor-pointer">
                             Batal
                         </button>
                     </div>
                 </div>
             </div>`);
+
+            if (typeof window.pushModalHistory === 'function') {
+                window.pushModalHistory('posLogoutShift');
+            }
             return;
         }
     }
