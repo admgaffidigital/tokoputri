@@ -20,6 +20,7 @@
     "store:new": "node scripts/new-store.mjs",
     "deploy:rules": "firebase deploy --only firestore:rules",
     "build:aab": "node scripts/build-aab.mjs",
+    "changelog:prune": "node scripts/prune-changelog.mjs",
     "cap:sync": "cap sync android",
     "cap:build": "npm run build && cap sync android"
   },
