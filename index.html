@@ -884,6 +884,28 @@
                 Konfigurasi identitas toko, koordinat GPS pengiriman, tema visual (Gold, Emerald, Burgundy, Sapphire, dll), opsi tombol melayang scroll-to-top, dan kalibrasi ukuran kertas printer thermal RawBT. Seluruh data disinkronisasi ke Cloud Firestore, aplikasi Android APK, dan paket offline flashdisk.
               </p>
             </div>
+
+            <!-- Admin 10 -->
+            <div class="p-4 rounded-2xl border border-slate-200 dark:border-slate-700/80 bg-slate-50/50 dark:bg-slate-800/40 space-y-2">
+              <div class="flex items-center gap-2.5">
+                <span class="w-6 h-6 rounded-lg bg-teal-600 text-white text-xs font-black flex items-center justify-center shrink-0">10</span>
+                <h4 class="font-bold text-slate-800 dark:text-white text-sm">Multi-Supplier Produk &amp; Pelacakan Batch FIFO (First-In, First-Out)</h4>
+              </div>
+              <p class="text-xs leading-relaxed pl-8">
+                Satu produk dapat disuplai oleh beberapa distributor berbeda dengan riwayat harga beli (last buy price) dan kode SKU rekanan masing-masing. Tekan tombol <b>"Supplier Rekanan"</b> atau <b>"X Batch"</b> di tabel produk untuk membuka <i>Modal Bento FIFO</i>. Sistem secara akuntansi otomatis memotong stok dari batch kedatangan tertua terlebih dahulu saat terjadi penjualan, menjamin perhitungan laba kotor toko selalu presisi sesuai harga modal nyata.
+              </p>
+            </div>
+
+            <!-- Admin 11 -->
+            <div class="p-4 rounded-2xl border border-slate-200 dark:border-slate-700/80 bg-slate-50/50 dark:bg-slate-800/40 space-y-2">
+              <div class="flex items-center gap-2.5">
+                <span class="w-6 h-6 rounded-lg bg-teal-600 text-white text-xs font-black flex items-center justify-center shrink-0">11</span>
+                <h4 class="font-bold text-slate-800 dark:text-white text-sm">Inventori Dua Lokasi (Rak Toko vs Gudang Cadangan) &amp; Aturan Floor-First</h4>
+              </div>
+              <p class="text-xs leading-relaxed pl-8">
+                Stok toko kini dibagi jelas menjadi 2 lokasi: <b>Rak Toko (Display siap jual)</b> dan <b>Gudang Cadangan</b>. Saat menerima barang kulakan PO, staf dapat memilih apakah barang langsung dipajang di rak atau disimpan di gudang. Transaksi kasir POS menerapkan prinsip <i>Floor-First</i>: memotong stok rak toko terlebih dahulu sampai habis sebelum menyentuh stok gudang. Pindahkan stok antar-lokasi cukup 1-klik melalui tombol <i>Transfer Internal</i> di modal FIFO atau modul Stock Opname terpadu.
+              </p>
+            </div>
           </div>
 
         </div>
