@@ -4360,13 +4360,19 @@ button span > i[class*="fa-"]:not(.hidden):not([hidden]) {
         object-fit: contain !important;
         border-radius: 1rem !important;
     }
+    /* Tombol Share & Close di Pojok Kanan Atas Modal Desktop */
+    #product-modal-content > .absolute.right-3.top-3 {
+        top: 1.25rem !important;
+        right: 1.25rem !important;
+        z-index: 40 !important;
+    }
     /* Kolom Kanan: Detail Spesifikasi, Swatch Warna Cat & Info (Scrollable) */
     #product-modal-content > .flex-1 {
         grid-column: 2 / 3 !important;
         grid-row: 1 / 2 !important;
         overflow-y: auto !important;
         height: 100% !important;
-        padding: 2rem 2.25rem !important;
+        padding: 2.25rem 3.75rem 2rem 2.25rem !important;
     }
     /* Kolom Kanan Bawah: Sticky Subtotal & Tombol Aksi Beli */
     #product-modal-sticky-bar {
