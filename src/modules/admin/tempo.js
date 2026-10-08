@@ -2679,14 +2679,24 @@ const renderTempoContent = () => {
             </div>
         </div>
 
-        <!-- SHORTCUT KE PUSAT LAPORAN UTANG PIUTANG -->
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 px-1">
+        <!-- SHORTCUT KE PUSAT LAPORAN UTANG PIUTANG & AKSI DOKUMEN REKAP -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 px-1">
             <span class="text-[11px] font-bold text-slate-500 dark:text-slate-400">Manajemen Penagihan &amp; Cicilan Piutang Toko</span>
-            <button type="button" onclick="if(window.openAdminTab){window.openAdminTab('reports'); setTimeout(() => window.switchReportTab && window.switchReportTab('debts'), 100);}" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800/60 hover:bg-amber-100 dark:hover:bg-amber-900/40 transition-all cursor-pointer">
-                <i class="fa-solid fa-chart-pie text-xs"></i>
-                <span>Lihat Analisis Piutang vs Utang di Laporan</span>
-                <i class="fa-solid fa-arrow-right text-[10px]"></i>
-            </button>
+            <div class="flex items-center gap-2 flex-wrap">
+                <button type="button" onclick="window.printTempoRecapA4()" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700/60 shadow-2xs transition-all active:scale-95 cursor-pointer" title="Cetak Rekap Buku Piutang Toko A4 / PDF">
+                    <i class="fa-solid fa-print text-xs text-indigo-500"></i>
+                    <span>Cetak Rekap A4</span>
+                </button>
+                <button type="button" onclick="window.exportTempoCSV()" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 shadow-2xs transition-all active:scale-95 cursor-pointer" title="Ekspor data piutang ke Excel / CSV">
+                    <i class="fa-solid fa-file-excel text-xs text-emerald-600"></i>
+                    <span>Ekspor CSV</span>
+                </button>
+                <button type="button" onclick="if(window.openAdminTab){window.openAdminTab('reports'); setTimeout(() => window.switchReportTab && window.switchReportTab('debts'), 100);}" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800/60 hover:bg-amber-100 dark:hover:bg-amber-900/40 shadow-2xs transition-all active:scale-95 cursor-pointer">
+                    <i class="fa-solid fa-chart-pie text-xs"></i>
+                    <span>Analisis Laporan</span>
+                    <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                </button>
+            </div>
         </div>
 
         <!-- 3 TAB NAVIGASI UTAMA (ORDERS, CUSTOMERS, INSTALLMENTS) -->
@@ -2842,10 +2852,127 @@ export const rAdmPiutang = async () => {
     renderTempoContent();
 };
 
+/**
+ * Cetak Rekap Buku Piutang Toko A4 Resmi (True Multi-Page A4 / PDF)
+ */
+export const printTempoRecapA4 = async () => {
+    try {
+        if (typeof window.openTempoRecapDocPreview === 'function') {
+            window.openTempoRecapDocPreview();
+        } else {
+            const mod = await import('../../modules/print/documents.js');
+            if (mod && typeof mod.openDocPreview === 'function') {
+                mod.openDocPreview('tempo_recap');
+            } else if (typeof window.openDocPreview === 'function') {
+                window.openDocPreview('tempo_recap');
+            } else {
+                showToast('Modul cetak dokumen sedang disiapkan...', 'info');
+            }
+        }
+    } catch (err) {
+        console.error('Error open tempo recap A4:', err);
+        if (typeof window.openDocPreview === 'function') {
+            window.openDocPreview('tempo_recap');
+        } else {
+            showToast('Gagal membuka preview dokumen: ' + err.message, 'warning');
+        }
+    }
+};
+
+/**
+ * Ekspor Data Rekap Piutang & Debitur ke File CSV (Kompatibel Excel / Sheets)
+ */
+export const exportTempoCSV = () => {
+    const list = cachedPiutangOrders && cachedPiutangOrders.length > 0 
+        ? cachedPiutangOrders 
+        : (window.gOrds || []).filter(o => o.payment?.method === 'tempo' && (parseFloat(o.payment?.tempoBalance) > 0 || (o.payment?.status !== 'paid' && o.payment?.status !== 'completed')));
+
+    if (!list || list.length === 0) {
+        showToast('Tidak ada data piutang untuk diekspor ke CSV', 'warning');
+        return;
+    }
+
+    const headers = [
+        'No',
+        'ID Nota',
+        'Nama Debitur',
+        'No WhatsApp / Telepon',
+        'Alamat Debitur',
+        'Tanggal Transaksi',
+        'Jatuh Tempo',
+        'Total Transaksi (Rp)',
+        'Sudah Dibayar (Rp)',
+        'Sisa Pokok (Rp)',
+        'Denda (Rp)',
+        'Total Tagihan Berjalan (Rp)',
+        'Status Aging',
+        'Hari Terlambat',
+        'Catatan / Keterangan'
+    ];
+
+    const escapeCsv = (str) => {
+        if (str === null || str === undefined) return '""';
+        const s = String(str).replace(/"/g, '""');
+        return `"${s}"`;
+    };
+
+    const rows = list.map((o, idx) => {
+        const calc = getTempoOrderCalculations(o);
+        const cust = o.customer || {};
+        const custName = cust.name || 'Pelanggan';
+        const custPhone = cust.wa || cust.phone || '-';
+        const custAddr = cust.address || '-';
+        const orderDate = o.dateString ? new Date(o.dateString).toLocaleDateString('id-ID') : '-';
+        const dueDate = calc.dueDate ? new Date(calc.dueDate).toLocaleDateString('id-ID') : '-';
+        const ins = o.payment?.installments || [];
+        const paid = ins.reduce((sum, item) => sum + (parseFloat(item.amount) || 0), 0);
+        const grandTotal = o.payment?.grandTotal || (calc.sisa + paid);
+        const agingStatus = calc.isLate ? `Terlambat ${calc.daysLate} Hari` : (calc.isDueSoon ? `H-${calc.daysLeft} Jatuh Tempo` : 'Lancar');
+
+        return [
+            idx + 1,
+            escapeCsv(o.orderId || o.id),
+            escapeCsv(custName),
+            escapeCsv(custPhone),
+            escapeCsv(custAddr),
+            escapeCsv(orderDate),
+            escapeCsv(dueDate),
+            Math.round(grandTotal),
+            Math.round(paid),
+            Math.round(calc.sisa),
+            Math.round(calc.latePenalty),
+            Math.round(calc.totalAkhir),
+            escapeCsv(agingStatus),
+            calc.daysLate || 0,
+            escapeCsv(o.notes || o.payment?.notes || '-')
+        ].join(',');
+    });
+
+    const csvContent = '\uFEFF' + [headers.map(h => escapeCsv(h)).join(','), ...rows].join('\r\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const dateStr = new Date().toISOString().slice(0, 10);
+    a.href = url;
+    a.download = `Rekap_Piutang_Toko_Putri_${dateStr}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(() => {
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }, 200);
+
+    showToast(`Berhasil mengekspor ${list.length} data piutang ke CSV!`, 'success');
+};
+
 window.rAdmPiutang = rAdmPiutang;
+window.printTempoRecapA4 = printTempoRecapA4;
+window.exportTempoCSV = exportTempoCSV;
 
 export default {
     rAdmPiutang: window.rAdmPiutang,
+    printTempoRecapA4: window.printTempoRecapA4,
+    exportTempoCSV: window.exportTempoCSV,
     sendSmartTempoWA: window.sendSmartTempoWA,
     sendConsolidatedTempoWA: window.sendConsolidatedTempoWA,
     openTempoDetailModal: window.openTempoDetailModal,

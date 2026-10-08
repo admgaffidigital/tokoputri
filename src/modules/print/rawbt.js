@@ -1025,6 +1025,8 @@ export const buildShiftReceiptPayload = (shift, isXReport = false, config = null
     const qrisSales     = parseFloat(shift.qrisSales) || 0;
     const transferSales = parseFloat(shift.bankSales || shift.transferSales) || 0;
     const tempoSales    = parseFloat(shift.tempoSales) || 0;
+    const cashIn        = parseFloat(shift.cashIn) || 0;
+    const cashOut       = parseFloat(shift.cashOut) || 0;
     const totalSales    = parseFloat(shift.totalSales) || (cashSales + qrisSales + transferSales + tempoSales);
     const txCount       = shift.txCount || 0;
 
@@ -1034,14 +1036,21 @@ export const buildShiftReceiptPayload = (shift, isXReport = false, config = null
     if (qrisSales > 0)     builder.twoColumn('Penjualan QRIS', fRp(qrisSales));
     if (transferSales > 0) builder.twoColumn('Penjualan Transfer', fRp(transferSales));
     if (tempoSales > 0)    builder.twoColumn('Penjualan Tempo', fRp(tempoSales));
+    if (cashIn > 0)        builder.twoColumn('Kas Masuk (In)', `+${fRp(cashIn)}`);
+    if (cashOut > 0)       builder.twoColumn('Kas Keluar (Out)', `-${fRp(cashOut)}`);
     builder.separator('-');
     builder.twoColumn('Total Transaksi', `${txCount} Trx`);
     builder.bold(true).size('tall').twoColumn('TOTAL OMSET', fRp(totalSales)).size('normal').bold(false);
     builder.doubleSeparator();
 
-    // Rekonsiliasi Kas Laci (Z-Report)
-    if (!isXReport) {
-        const expectedCash = startingCash + cashSales;
+    // Rekonsiliasi Kas Laci
+    const expectedCash = Math.max(0, startingCash + cashSales + cashIn - cashOut);
+
+    if (isXReport) {
+        builder.bold(true).line('STATUS KAS LACI SAAT INI', 'left').bold(false);
+        builder.twoColumn('Uang Kas Seharusnya', fRp(expectedCash));
+        builder.separator('-');
+    } else {
         const actualCash   = shift.actualCash !== undefined ? parseFloat(shift.actualCash) : expectedCash;
         const diff         = actualCash - expectedCash;
         const diffStr      = diff === 0 ? 'PAS (0)' : (diff > 0 ? `+${fRp(diff)}` : `-${fRp(Math.abs(diff))}`);

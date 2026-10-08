@@ -28,6 +28,118 @@ import {
 
 let activeFifoProductId = null;
 let fifoSimulateQty = 1;
+let activeFifoTab = 'overview'; // 'overview' | 'ledger'
+let activeLedgerFilter = 'all'; // 'all' | 'in' | 'out'
+
+export const switchFifoTab = (tab) => {
+    activeFifoTab = tab;
+    renderProductFifoContent();
+};
+
+export const setLedgerFilter = (filter) => {
+    activeLedgerFilter = filter;
+    renderProductFifoContent();
+};
+
+/**
+ * Rekonsiliasi Riwayat Mutasi Stok Produk (Stock Card Ledger)
+ */
+export const getProductMutationLedger = (prod) => {
+    const mutations = [];
+    if (!prod) return mutations;
+    const prodIdStr = String(prod.id);
+    const prodNameClean = String(prod.name || '').trim().toLowerCase();
+
+    // 1. Barang Masuk dari PO Kulakan (Purchases)
+    const purchases = appData.purchases || [];
+    purchases.forEach(po => {
+        const isReceived = po.status === 'received' || po.status === 'completed' || po.receivedAt;
+        if (!isReceived) return;
+
+        const items = Array.isArray(po.items) ? po.items : [];
+        items.forEach(it => {
+            const match = String(it.productId || it.id || '') === prodIdStr || 
+                          String(it.name || '').trim().toLowerCase() === prodNameClean;
+            if (match) {
+                const qty = parseFloat(it.qty || it.receivedQty || 0) || 0;
+                if (qty > 0) {
+                    mutations.push({
+                        type: 'in',
+                        source: 'po',
+                        date: po.receivedAt || po.date || po.createdAt || Date.now(),
+                        refNo: po.poNumber || po.id || 'PO',
+                        title: `Penerimaan PO Kulakan #${po.poNumber || po.id}`,
+                        qty: qty,
+                        unit: it.unit || prod.unit || 'pcs',
+                        price: it.buyPrice || it.price || 0,
+                        party: po.supplierName || 'Supplier Rekanan',
+                        location: it.targetLocation === 'store' ? 'Rak Toko' : 'Gudang Cadangan',
+                        notes: po.notes || 'Barang masuk kulakan resmi'
+                    });
+                }
+            }
+        });
+    });
+
+    // 2. Barang Keluar dari Transaksi Penjualan (Orders / POS)
+    const orders = window.gOrds || appData.orders || [];
+    orders.forEach(ord => {
+        if (ord.status === 'cancelled' || ord.status === 'void') return;
+
+        const items = Array.isArray(ord.items) ? ord.items : [];
+        items.forEach(it => {
+            const match = String(it.id || it.productId || '') === prodIdStr ||
+                          String(it.name || '').trim().toLowerCase() === prodNameClean;
+            if (match) {
+                const qty = parseFloat(it.qty || it.quantity || 0) || 0;
+                if (qty > 0) {
+                    mutations.push({
+                        type: 'out',
+                        source: 'sales',
+                        date: ord.createdAt || (ord.dateString ? new Date(ord.dateString).getTime() : Date.now()),
+                        refNo: ord.orderId || ord.id || 'ORD',
+                        title: `Penjualan ${ord.isPos ? 'Kasir POS' : 'Online'} #${ord.orderId || ord.id}`,
+                        qty: qty,
+                        unit: it.unit || prod.unit || 'pcs',
+                        price: it.price || 0,
+                        party: ord.customer?.name || (ord.isPos ? 'Pelanggan Kasir' : 'Pelanggan Toko'),
+                        location: 'Rak Toko',
+                        notes: ord.payment?.method ? `Metode: ${ord.payment.method.toUpperCase()}` : 'Penjualan'
+                    });
+                }
+            }
+        });
+    });
+
+    // 3. Mutasi Batch Stok Masuk jika belum ter-cover
+    const batches = prod.stockBatches || [];
+    batches.forEach(b => {
+        const alreadyCovered = mutations.some(m => m.source === 'po' && m.refNo === (b.poNumber || b.batchNo));
+        if (!alreadyCovered && (parseFloat(b.initialQty) || 0) > 0) {
+            mutations.push({
+                type: 'in',
+                source: 'batch',
+                date: b.receivedAt || Date.now(),
+                refNo: b.poNumber || b.batchNo || 'BATCH',
+                title: `Batch Stok Masuk #${b.poNumber || b.batchNo || 'LOT'}`,
+                qty: parseFloat(b.initialQty) || 0,
+                unit: prod.unit || 'pcs',
+                price: b.buyPrice || 0,
+                party: b.supplierName || 'Pemasok',
+                location: b.location === 'store' ? 'Rak Toko' : 'Gudang Cadangan',
+                notes: `Sisa batch saat ini: ${b.remainingQty || 0} unit`
+            });
+        }
+    });
+
+    mutations.sort((a, b) => {
+        const timeA = new Date(a.date).getTime() || 0;
+        const timeB = new Date(b.date).getTime() || 0;
+        return timeB - timeA;
+    });
+
+    return mutations;
+};
 
 /**
  * Pastikan kontainer modal FIFO terpasang di root document.body
@@ -54,6 +166,8 @@ export const openProductFifoModal = (productId) => {
     ensureProductFifoModal();
     activeFifoProductId = productId;
     fifoSimulateQty = 1;
+    activeFifoTab = 'overview';
+    activeLedgerFilter = 'all';
 
     const prod = (appData.products || []).find(p => String(p.id) === String(productId));
     if (!prod) return showToast('Produk tidak ditemukan!');
@@ -146,6 +260,18 @@ export const renderProductFifoContent = () => {
     const simTotalRevenue = prodPrice * fifoSimulateQty;
     const simGrossProfit = Math.max(0, simTotalRevenue - simCost);
 
+    // Ambil data mutasi stok produk (PO In, Sales Out, Batch Lot)
+    const allMutations = getProductMutationLedger(prod);
+    const mutationsIn = allMutations.filter(m => m.type === 'in');
+    const mutationsOut = allMutations.filter(m => m.type === 'out');
+    const totalIn = mutationsIn.reduce((s, m) => s + m.qty, 0);
+    const totalOut = mutationsOut.reduce((s, m) => s + m.qty, 0);
+    const netStock = (prod.storeStock || 0) + (prod.warehouseStock || 0);
+
+    const displayMutations = activeLedgerFilter === 'in' 
+        ? mutationsIn 
+        : (activeLedgerFilter === 'out' ? mutationsOut : allMutations);
+
     box.innerHTML = `
         <!-- HEADER MODAL -->
         <div class="sticky top-0 z-20 flex items-center justify-between border-b border-slate-100 dark:border-slate-800 bg-white/95 dark:bg-slate-900/95 px-5 py-4 backdrop-blur-md">
@@ -167,6 +293,19 @@ export const renderProductFifoContent = () => {
             </button>
         </div>
 
+        <!-- TABS NAVIGASI MODAL FIFO -->
+        <div class="px-5 py-2.5 border-b border-slate-100 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-800/40 flex items-center gap-2 shrink-0">
+            <button type="button" onclick="window.switchFifoTab('overview')" class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer active:scale-95 ${activeFifoTab === 'overview' ? 'bg-white dark:bg-slate-700 text-slate-800 dark:text-white shadow-2xs border border-slate-200 dark:border-slate-600' : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'}" style="${activeFifoTab === 'overview' ? 'color: var(--color-primary); font-weight: 800;' : ''}">
+                <i class="fa-solid fa-layer-group text-amber-500"></i>
+                <span>Ikhtisar &amp; Antrean Batch FIFO</span>
+            </button>
+            <button type="button" onclick="window.switchFifoTab('ledger')" class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer active:scale-95 ${activeFifoTab === 'ledger' ? 'bg-white dark:bg-slate-700 text-slate-800 dark:text-white shadow-2xs border border-slate-200 dark:border-slate-600' : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'}" style="${activeFifoTab === 'ledger' ? 'color: var(--color-primary); font-weight: 800;' : ''}">
+                <i class="fa-solid fa-book-journal-whills text-teal-500"></i>
+                <span>Kartu Mutasi Stok (${allMutations.length})</span>
+            </button>
+        </div>
+
+        ${activeFifoTab === 'overview' ? `
         <div class="p-5 sm:p-6 space-y-6">
             <!-- 1. BENTO STATS CARDS (DUAL-LOCATION & FIFO VALUATION) -->
             <div class="grid grid-cols-2 sm:grid-cols-5 gap-2.5 sm:gap-3">
@@ -413,6 +552,103 @@ export const renderProductFifoContent = () => {
                 </div>
             </div>
         </div>
+        ` : `
+        <!-- TAB KARTU MUTASI STOK (STOCK CARD LEDGER) -->
+        <div class="p-5 sm:p-6 space-y-5">
+            <!-- 1. BENTO STATS MUTASI STOK -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div class="p-4 rounded-2xl bg-emerald-50/70 dark:bg-emerald-950/30 border border-emerald-200/80 dark:border-emerald-800/70 shadow-2xs">
+                    <span class="text-[9.5px] font-black uppercase tracking-wider text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
+                        <i class="fa-solid fa-arrow-down-left"></i> Total Barang Masuk (PO Kulakan)
+                    </span>
+                    <p class="text-lg sm:text-xl font-black text-slate-800 dark:text-white mt-1 font-mono">
+                        +${totalIn} <span class="text-xs font-bold text-slate-400">${esc(prod.unit || 'pcs')}</span>
+                    </p>
+                    <p class="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 mt-0.5">${mutationsIn.length} Dokumen Kulakan Masuk</p>
+                </div>
+
+                <div class="p-4 rounded-2xl bg-rose-50/70 dark:bg-rose-950/30 border border-rose-200/80 dark:border-rose-800/70 shadow-2xs">
+                    <span class="text-[9.5px] font-black uppercase tracking-wider text-rose-600 dark:text-rose-400 flex items-center gap-1.5">
+                        <i class="fa-solid fa-arrow-up-right"></i> Total Barang Keluar (Penjualan)
+                    </span>
+                    <p class="text-lg sm:text-xl font-black text-slate-800 dark:text-white mt-1 font-mono">
+                        -${totalOut} <span class="text-xs font-bold text-slate-400">${esc(prod.unit || 'pcs')}</span>
+                    </p>
+                    <p class="text-[10px] font-bold text-rose-600 dark:text-rose-400 mt-0.5">${mutationsOut.length} Transaksi Kasir &amp; Web</p>
+                </div>
+
+                <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/70 shadow-2xs">
+                    <span class="text-[9.5px] font-black uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+                        <i class="fa-solid fa-boxes-stacked"></i> Saldo Stok Fisik Realtime
+                    </span>
+                    <p class="text-lg sm:text-xl font-black text-slate-800 dark:text-white mt-1 font-mono">
+                        ${netStock} <span class="text-xs font-bold text-slate-400">${esc(prod.unit || 'pcs')}</span>
+                    </p>
+                    <p class="text-[10px] font-bold text-slate-400 mt-0.5">Toko: ${prod.storeStock || 0} • Gudang: ${prod.warehouseStock || 0}</p>
+                </div>
+            </div>
+
+            <!-- 2. FILTER SEGMENTED KARTU MUTASI -->
+            <div class="flex items-center justify-between flex-wrap gap-2 pt-1 border-t border-slate-100 dark:border-slate-800">
+                <div class="flex items-center gap-1.5 overflow-x-auto hide-scrollbar text-xs font-bold">
+                    <button type="button" onclick="window.setLedgerFilter('all')" class="px-3 py-1.5 rounded-xl border transition-all cursor-pointer active:scale-95 ${activeLedgerFilter === 'all' ? 'bg-slate-900 text-white border-slate-900 dark:bg-white dark:text-slate-900 shadow-2xs' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-transparent'}">
+                        Semua Riwayat (${allMutations.length})
+                    </button>
+                    <button type="button" onclick="window.setLedgerFilter('in')" class="px-3 py-1.5 rounded-xl border transition-all cursor-pointer active:scale-95 ${activeLedgerFilter === 'in' ? 'bg-emerald-600 text-white border-emerald-600 shadow-2xs' : 'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-300 border-transparent'}">
+                        <i class="fa-solid fa-arrow-down-left mr-1"></i>Barang Masuk (${mutationsIn.length})
+                    </button>
+                    <button type="button" onclick="window.setLedgerFilter('out')" class="px-3 py-1.5 rounded-xl border transition-all cursor-pointer active:scale-95 ${activeLedgerFilter === 'out' ? 'bg-rose-600 text-white border-rose-600 shadow-2xs' : 'bg-rose-50 dark:bg-rose-950/30 text-rose-700 dark:text-rose-300 border-transparent'}">
+                        <i class="fa-solid fa-arrow-up-right mr-1"></i>Barang Keluar (${mutationsOut.length})
+                    </button>
+                </div>
+                <span class="text-[11px] text-slate-400 font-medium">Buku Mutasi Stok Riil Berbasis Dokumen Transaksi</span>
+            </div>
+
+            <!-- 3. TABEL / LIST MUTASI KARTU STOK -->
+            <div class="space-y-2">
+                ${displayMutations.length === 0 ? `
+                    <div class="p-8 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200/80 dark:border-slate-700 text-center">
+                        <i class="fa-solid fa-clipboard-list text-3xl text-slate-300 dark:text-slate-600 mb-2"></i>
+                        <p class="text-xs font-bold text-slate-600 dark:text-slate-300">Belum ada catatan mutasi stok untuk filter ini.</p>
+                        <p class="text-[11px] text-slate-400 mt-0.5">Riwayat akan terisi otomatis saat kulakan PO diterima atau pesanan kasir diproses.</p>
+                    </div>
+                ` : displayMutations.map(m => {
+                    const isIn = m.type === 'in';
+                    const dateStr = new Date(m.date).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+                    return `
+                        <div class="p-3.5 sm:p-4 rounded-2xl border transition-all bg-white dark:bg-slate-800 border-slate-200/90 dark:border-slate-700/80 shadow-2xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                            <div class="flex items-start gap-3 min-w-0">
+                                <div class="w-9 h-9 rounded-xl flex items-center justify-center text-xs shrink-0 ${isIn ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800' : 'bg-rose-100 text-rose-700 dark:bg-rose-950/50 dark:text-rose-400 border border-rose-200 dark:border-rose-800'}">
+                                    <i class="fa-solid ${isIn ? 'fa-arrow-down-left' : 'fa-arrow-up-right'}"></i>
+                                </div>
+                                <div class="min-w-0">
+                                    <div class="flex items-center gap-2 flex-wrap">
+                                        <span class="px-2 py-0.5 rounded-md text-[9px] font-black uppercase tracking-wider ${isIn ? 'bg-emerald-600 text-white' : 'bg-rose-600 text-white'}">
+                                            ${isIn ? 'Masuk' : 'Keluar'}
+                                        </span>
+                                        <span class="font-black text-xs sm:text-sm text-slate-800 dark:text-white font-mono">${esc(m.refNo)}</span>
+                                        <span class="text-[10px] text-slate-400 font-medium">• ${dateStr}</span>
+                                    </div>
+                                    <p class="text-[11px] text-slate-600 dark:text-slate-300 mt-1 font-medium truncate">
+                                        ${esc(m.title)} • <span class="text-slate-500">${esc(m.party)}</span>
+                                    </p>
+                                    <p class="text-[10px] text-slate-400 mt-0.5">
+                                        Lokasi: <b class="text-slate-700 dark:text-slate-300">${esc(m.location)}</b> ${m.notes ? `• ${esc(m.notes)}` : ''}
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="text-left sm:text-right shrink-0 border-t sm:border-t-0 pt-2 sm:pt-0 w-full sm:w-auto border-slate-100 dark:border-slate-700 flex sm:flex-col justify-between sm:justify-center items-center sm:items-end">
+                                <span class="text-base sm:text-lg font-black font-mono ${isIn ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}">
+                                    ${isIn ? `+${m.qty}` : `-${m.qty}`} <span class="text-xs font-bold text-slate-400">${esc(m.unit)}</span>
+                                </span>
+                                ${m.price > 0 ? `<span class="text-[10px] text-slate-400 block font-mono">@ ${fCur(m.price)}</span>` : ''}
+                            </div>
+                        </div>
+                    `;
+                }).join('')}
+            </div>
+        </div>
+        `}
 
         <!-- FOOTER MODAL -->
         <div class="sticky bottom-0 z-20 flex items-center justify-end border-t border-slate-100 dark:border-slate-800 bg-white/95 dark:bg-slate-900/95 px-5 py-3.5 backdrop-blur-md">
@@ -536,6 +772,9 @@ export const quickTransferWarehouseToStore = async (productId) => {
 // Bind ke window object
 window.openProductFifoModal = openProductFifoModal;
 window.closeProductFifoModal = closeProductFifoModal;
+window.switchFifoTab = switchFifoTab;
+window.setLedgerFilter = setLedgerFilter;
+window.getProductMutationLedger = getProductMutationLedger;
 window.handleLinkFifoSupplier = handleLinkFifoSupplier;
 window.handleSetFifoPrimarySupplier = handleSetFifoPrimarySupplier;
 window.handleFifoSimulateChange = handleFifoSimulateChange;

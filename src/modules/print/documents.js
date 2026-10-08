@@ -1205,6 +1205,242 @@ export const openDocPreview = (type, targetId = null) => {
     }
 
     // ────────────────────────────────────────────────────────────
+    // 5b. REKAP BUKU BESAR PIUTANG TOKO (ACCOUNTS RECEIVABLE MASTER LEDGER)
+    // ────────────────────────────────────────────────────────────
+    if (type === 'tempo_recap') {
+        const piutangList = window.cachedPiutangOrders && window.cachedPiutangOrders.length > 0 
+            ? window.cachedPiutangOrders 
+            : (window.gOrds || []).filter(o => o.payment?.method === 'tempo' && (parseFloat(o.payment?.tempoBalance) > 0 || (o.payment?.status !== 'paid' && o.payment?.status !== 'completed')));
+
+        if (!piutangList || piutangList.length === 0) {
+            if (typeof window.showToast === 'function') window.showToast('Tidak ada nota piutang aktif untuk direkap.');
+            return;
+        }
+
+        setIn('doc-modal-title', 'Rekap Buku Piutang Toko A4');
+        const logoHTML = getStoreLogoHtml('w-16 h-16');
+        const printDate = formatDate(Date.now(), true);
+        const recapDocNo = `AR-${new Date().toISOString().slice(0, 10).replace(/-/g, '')}-${Math.floor(1000 + Math.random() * 9000)}`;
+
+        let totalGrandTotal = 0;
+        let totalPaid = 0;
+        let totalSisaPokok = 0;
+        let totalDenda = 0;
+        let totalWajibBayar = 0;
+        let countLate = 0;
+        let countDueSoon = 0;
+        let countActive = 0;
+        const uniqueDebtors = new Set();
+
+        const rows = piutangList.map((o, idx) => {
+            const cust = o.customer || {};
+            const custName = cust.name || 'Pelanggan';
+            const custPhone = cust.wa || cust.phone || '-';
+            const debtorKey = `${custName}_${custPhone}`;
+            uniqueDebtors.add(debtorKey);
+
+            const orderDateStr = formatDate(o.dateString || o.createdAt);
+            const dueDateVal = o.payment?.tempoDueDate || 0;
+            const dueDateStr = formatDate(dueDateVal);
+
+            const sisa = parseFloat(o.payment?.tempoBalance) || 0;
+            const rate = o.payment?.tempoPenaltyRate !== undefined ? parseFloat(o.payment.tempoPenaltyRate) : 1;
+            const isStopped = o.payment?.tempoPenaltyStopped === true;
+            let latePenalty = 0;
+            let daysLate = 0;
+            let isLate = false;
+            let isDueSoon = false;
+            const now = Date.now();
+
+            if (dueDateVal > 0) {
+                if (now > dueDateVal) {
+                    daysLate = Math.floor((now - dueDateVal) / (24 * 60 * 60 * 1000));
+                    if (daysLate > 0) isLate = true;
+                } else {
+                    const daysLeft = Math.ceil((dueDateVal - now) / (24 * 60 * 60 * 1000));
+                    if (daysLeft <= 3 && daysLeft >= 0) isDueSoon = true;
+                }
+            }
+
+            if (isStopped) {
+                latePenalty = parseFloat(o.payment?.tempoFixedPenalty) || 0;
+            } else if (isLate) {
+                latePenalty = (rate / 100 * sisa) * daysLate;
+            }
+
+            const installments = o.payment?.installments || [];
+            const paid = installments.reduce((sum, ins) => sum + (parseFloat(ins.amount) || 0), 0);
+            const totalAwal = o.payment?.grandTotal || (sisa + paid);
+            const totalTagihan = sisa + latePenalty;
+
+            totalGrandTotal += totalAwal;
+            totalPaid += paid;
+            totalSisaPokok += sisa;
+            totalDenda += latePenalty;
+            totalWajibBayar += totalTagihan;
+
+            let agingStatusBadge = '';
+            if (isLate) {
+                countLate++;
+                agingStatusBadge = `<span class="inline-block px-1.5 py-0.5 rounded text-[9px] font-bold bg-rose-100 text-rose-700 border border-rose-200">Telat ${daysLate} Hari</span>`;
+            } else if (isDueSoon) {
+                countDueSoon++;
+                agingStatusBadge = `<span class="inline-block px-1.5 py-0.5 rounded text-[9px] font-bold bg-amber-100 text-amber-800 border border-amber-200">H-3 Tempo</span>`;
+            } else {
+                countActive++;
+                agingStatusBadge = `<span class="inline-block px-1.5 py-0.5 rounded text-[9px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">Lancar</span>`;
+            }
+
+            return `
+            <tr class="border-b border-slate-200 text-[10px] hover:bg-slate-50 transition-colors">
+                <td class="py-2 px-2 text-center text-slate-500 font-bold border-r border-slate-200">${idx + 1}</td>
+                <td class="py-2 px-2.5 border-r border-slate-200">
+                    <p class="font-bold text-slate-900 leading-tight">${esc(custName)}</p>
+                    <p class="text-[9px] text-slate-500 font-mono"><i class="fa-brands fa-whatsapp text-emerald-600"></i> ${esc(custPhone)}</p>
+                </td>
+                <td class="py-2 px-2 border-r border-slate-200 font-mono">
+                    <p class="font-bold text-slate-800">#${esc(o.orderId || o.id)}</p>
+                    <p class="text-[9px] text-slate-500">${orderDateStr}</p>
+                </td>
+                <td class="py-2 px-2 text-center border-r border-slate-200 font-mono">
+                    <span class="font-bold ${isLate ? 'text-rose-600' : 'text-slate-700'}">${dueDateStr}</span>
+                </td>
+                <td class="py-2 px-2 text-right border-r border-slate-200 font-mono font-bold text-slate-800">${fCur(sisa)}</td>
+                <td class="py-2 px-2 text-right border-r border-slate-200 font-mono ${latePenalty > 0 ? 'text-rose-600 font-bold' : 'text-slate-400'}">
+                    ${latePenalty > 0 ? `+${fCur(latePenalty)}` : 'Rp 0'}
+                </td>
+                <td class="py-2 px-2 text-right border-r border-slate-200 font-mono font-black text-slate-900 bg-slate-50/80">${fCur(totalTagihan)}</td>
+                <td class="py-2 px-2 text-center">${agingStatusBadge}</td>
+            </tr>`;
+        });
+
+        const kopHtml = `
+        <div class="flex justify-between items-start border-b-[3px] border-slate-800 pb-4 mb-4">
+            <div class="flex items-center gap-3.5">
+                ${logoHTML}
+                <div>
+                    <h1 class="font-black text-xl tracking-tight text-slate-900 uppercase">${esc(appData.store?.name || 'TOKO PUTRI')}</h1>
+                    <p class="text-[11px] font-bold text-slate-500 uppercase tracking-widest">${esc(appData.store?.slogan || 'Pusat Alat Teknik, Bangunan & Perlengkapan')}</p>
+                    <p class="text-[10px] text-slate-500 max-w-sm leading-snug mt-0.5">${esc(appData.store?.address || 'Alamat Toko')}</p>
+                    <p class="text-[10px] text-slate-500"><i class="fa-brands fa-whatsapp text-emerald-500"></i> ${esc(appData.store?.wa || appData.store?.phone || '-')}</p>
+                </div>
+            </div>
+            <div class="text-right">
+                <h2 class="font-black text-xl tracking-widest text-slate-900 uppercase">REKAP BUKU PIUTANG</h2>
+                <p class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">ACCOUNTS RECEIVABLE MASTER LEDGER</p>
+                <p class="text-xs font-bold text-slate-600 font-mono mt-1">#${esc(recapDocNo)}</p>
+                <p class="text-[10px] text-slate-500 mt-0.5">Waktu Cetak: ${printDate}</p>
+            </div>
+        </div>
+        `;
+
+        const bankListHtml = getStoreBankListHtml('font-mono text-[10px]');
+        const metaHtml = `
+        <div class="grid grid-cols-2 gap-4 mb-4">
+            <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-1">
+                <h3 class="text-[9px] font-bold text-slate-500 uppercase tracking-widest border-b border-slate-200 pb-1">Ringkasan Portofolio Debitur:</h3>
+                <div class="grid grid-cols-2 gap-2 text-[10px] pt-1">
+                    <div>
+                        <span class="text-slate-500">Total Debitur:</span>
+                        <b class="text-slate-900 block font-mono text-xs">${uniqueDebtors.size} Orang</b>
+                    </div>
+                    <div>
+                        <span class="text-slate-500">Total Nota Aktif:</span>
+                        <b class="text-slate-900 block font-mono text-xs">${piutangList.length} Transaksi</b>
+                    </div>
+                    <div>
+                        <span class="text-rose-600 font-medium">Nota Terlambat:</span>
+                        <b class="text-rose-700 block font-mono text-xs">${countLate} Nota</b>
+                    </div>
+                    <div>
+                        <span class="text-emerald-600 font-medium">Nota Lancar:</span>
+                        <b class="text-emerald-700 block font-mono text-xs">${countActive} Nota</b>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-1">
+                <h3 class="text-[9px] font-bold text-slate-500 uppercase tracking-widest border-b border-slate-200 pb-1 flex items-center gap-1">
+                    <i class="fa-solid fa-building-columns text-[var(--color-primary)]"></i> Rekening Penerimaan Pelunasan Toko:
+                </h3>
+                <div class="space-y-0.5 pt-0.5">${bankListHtml}</div>
+            </div>
+        </div>
+        `;
+
+        const tableHeaderHtml = `
+        <tr class="border-b-2 border-slate-800 text-[9.5px] font-bold text-white uppercase tracking-wider bg-slate-900">
+            <th class="py-2 px-2 text-center w-8 border-r border-slate-700">No</th>
+            <th class="py-2 px-2.5 border-r border-slate-700">Debitur / Pelanggan</th>
+            <th class="py-2 px-2 w-28 border-r border-slate-700">Nota &amp; Tgl</th>
+            <th class="py-2 px-2 text-center w-24 border-r border-slate-700">Jatuh Tempo</th>
+            <th class="py-2 px-2 text-right w-24 border-r border-slate-700">Sisa Pokok</th>
+            <th class="py-2 px-2 text-right w-20 border-r border-slate-700">Denda</th>
+            <th class="py-2 px-2 text-right w-28 border-r border-slate-700">Total Tagihan</th>
+            <th class="py-2 px-2 text-center w-24">Status Aging</th>
+        </tr>
+        `;
+
+        const summaryHtml = `
+        <div class="grid grid-cols-2 gap-4 mb-4 items-start">
+            <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-[10px] space-y-1">
+                <p class="font-bold text-slate-700 uppercase tracking-wider text-[9px] mb-1">Ketentuan Rekap Piutang Toko:</p>
+                <p class="text-slate-600 leading-snug">1. Dokumen ini sah sebagai bukti buku pembukuan piutang berjalan Toko Putri.</p>
+                <p class="text-slate-600 leading-snug">2. Seluruh nominal sisa pokok dan denda mengikat hingga tanggal cetak dokumen.</p>
+            </div>
+            <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-xs space-y-1.5">
+                <div class="flex justify-between text-slate-600 text-[11px]">
+                    <span>Total Sisa Pokok Piutang:</span>
+                    <span class="font-bold text-slate-800 font-mono">${fCur(totalSisaPokok)}</span>
+                </div>
+                ${totalDenda > 0 ? `
+                <div class="flex justify-between text-rose-600 text-[11px] font-bold">
+                    <span>Total Akumulasi Denda (+):</span>
+                    <span class="font-mono">+${fCur(totalDenda)}</span>
+                </div>` : ''}
+                <div class="flex justify-between items-center border-t-2 border-slate-800 pt-1.5 mt-1 font-bold text-slate-900">
+                    <span class="text-xs uppercase tracking-wider">TOTAL TAGIHAN BERJALAN:</span>
+                    <span class="text-[var(--color-primary)] font-black text-sm font-mono">${fCur(totalWajibBayar)}</span>
+                </div>
+            </div>
+        </div>
+        `;
+
+        const signaturesHtml = `
+        <div class="grid grid-cols-2 gap-8 text-center text-xs mt-auto pt-4 border-t border-slate-200">
+            <div class="flex flex-col items-center">
+                <span class="font-bold text-slate-500 mb-12 uppercase tracking-widest text-[9px]">Petugas Penagihan / Kasir:</span>
+                <div class="w-40 border-b-2 border-slate-800 mb-1"></div>
+                <span class="font-bold text-slate-900 text-[11px] uppercase">( ........................................ )</span>
+            </div>
+            <div class="flex flex-col items-center">
+                <span class="font-bold text-slate-500 mb-12 uppercase tracking-widest text-[9px]">Pemilik Toko (Owner):</span>
+                <div class="w-40 border-b-2 border-slate-800 mb-1"></div>
+                <span class="font-bold text-slate-900 text-[11px] uppercase">${esc(appData.store?.name || 'Toko Putri')}</span>
+            </div>
+        </div>
+        `;
+
+        const pages = paginateTableDocument({
+            docTitle: 'Rekap Buku Piutang Toko',
+            docNumber: recapDocNo,
+            docDate: printDate,
+            kopHtml,
+            metaHtml,
+            tableHeaderHtml,
+            rows,
+            summaryHtml,
+            signaturesHtml,
+            singlePageMax: 7,
+            itemsFirstPage: 7,
+            itemsMiddlePage: 15,
+            itemsLastPage: 7
+        });
+
+        renderPagesToContainer(pages);
+        return;
+    }
+
+    // ────────────────────────────────────────────────────────────
     // 6 & 7. FAKTUR INVOICE & SURAT JALAN PESANAN
     // ────────────────────────────────────────────────────────────
     const targetOrderId = targetId || window.cVOrd;
@@ -1822,7 +2058,7 @@ export const printDocA4 = () => {
     }
 
     const printWindow = window.open('', '_blank');
-    const docTitleLabel = currentDocType === 'invoice' ? 'Faktur Invoice' : (currentDocType === 'po' ? 'Purchase Order' : (currentDocType === 'sph' ? 'Penawaran Harga' : (currentDocType === 'stock_opname' ? 'Berita Acara Stock Opname' : 'Dokumen Resmi A4')));
+    const docTitleLabel = currentDocType === 'invoice' ? 'Faktur Invoice' : (currentDocType === 'po' ? 'Purchase Order' : (currentDocType === 'sph' ? 'Penawaran Harga' : (currentDocType === 'stock_opname' ? 'Berita Acara Stock Opname' : (currentDocType === 'tempo_recap' ? 'Rekap Buku Piutang Toko' : (currentDocType === 'tempo_customer_ledger' ? 'Kartu Piutang Pelanggan' : 'Dokumen Resmi A4')))));
 
     const printHtml = `<!DOCTYPE html>
 <html lang="id">
@@ -2102,8 +2338,11 @@ export const exportDocFile = async (mode) => {
 };
 
 // ─── Expose ke window untuk atribut onclick di HTML ──────
+export const openTempoRecapDocPreview = () => openDocPreview('tempo_recap');
+
 window.openDocPreview = openDocPreview;
 window.openCartSPHPreview = openCartSPHPreview;
+window.openTempoRecapDocPreview = openTempoRecapDocPreview;
 window.fitDocPreview = fitDocPreview;
 window.closeDocPreviewModal = closeDocPreviewModal;
 window.printDocA4 = printDocA4;

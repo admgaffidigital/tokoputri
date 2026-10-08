@@ -387,8 +387,8 @@ const initBarcodeListener = () => {
         const inPos = curView === 'view-pos-cashier' || (curView === 'view-admin' && window.cTab === 'pos');
         if (!inPos) return;
 
-        // 1. Pintasan F2 / F3: Fokus ke Pencarian Produk / Barcode
-        if (e.key === 'F2' || e.key === 'F3') {
+        // 1. Pintasan F1 / F2 / F3: Fokus ke Pencarian Produk / Barcode
+        if (e.key === 'F1' || e.key === 'F2' || e.key === 'F3') {
             e.preventDefault();
             const sf = el('pos-search-input');
             if (sf) { sf.focus(); sf.select(); }
@@ -420,7 +420,7 @@ const initBarcodeListener = () => {
             return;
         }
 
-        // 4. Pintasan F7: Fokus Input Diskon Kasir
+        // 5. Pintasan F7: Fokus Input Diskon Kasir
         if (e.key === 'F7') {
             e.preventDefault();
             const discInp = document.querySelector('.pos-disc-val-input');
@@ -428,14 +428,14 @@ const initBarcodeListener = () => {
             return;
         }
 
-        // 5. Pintasan F8: Buka Keranjang Tertahan (Recall Held)
+        // 6. Pintasan F8: Buka Keranjang Tertahan (Recall Held)
         if (e.key === 'F8') {
             e.preventDefault();
             openPOSHeldModal();
             return;
         }
 
-        // 6. Pintasan F9: Buka/Tutup Scanner Kamera HP / Laptop
+        // 7. Pintasan F9: Buka/Tutup Scanner Kamera HP / Laptop
         if (e.key === 'F9') {
             e.preventDefault();
             if (el('pos-camera-scanner-modal')) closePOSCameraScanner();
@@ -443,7 +443,7 @@ const initBarcodeListener = () => {
             return;
         }
 
-        // 7. Pintasan F10: Buka Ringkasan Shift Kasir
+        // 8. Pintasan F10: Buka Ringkasan Shift Kasir
         if (e.key === 'F10') {
             e.preventDefault();
             if (isShiftActive()) {
@@ -459,8 +459,21 @@ const initBarcodeListener = () => {
             return;
         }
 
-        // 8. Pintasan Escape: Tutup Modal Terbuka atau Bersihkan Pencarian
+        // 9. Pintasan F11: Buka Catat Arus Kas Laci (Kas Masuk / Kas Keluar)
+        if (e.key === 'F11') {
+            e.preventDefault();
+            if (typeof window.openPOSCashMovementModal === 'function') {
+                window.openPOSCashMovementModal();
+            }
+            return;
+        }
+
+        // 10. Pintasan Escape: Tutup Modal Terbuka atau Bersihkan Pencarian
         if (e.key === 'Escape') {
+            if (el('modal-pos-cash-movement')) { 
+                if (typeof window.closePOSCashMovementModal === 'function') window.closePOSCashMovementModal(); 
+                return; 
+            }
             if (el('pos-camera-scanner-modal')) { closePOSCameraScanner(); return; }
             if (el('pos-held-modal')) { closePOSHeldModal(); return; }
             if (el('pos-pay-modal')) { closePayModal(); return; }
@@ -489,6 +502,14 @@ const initBarcodeListener = () => {
 
         const tag = document.activeElement?.tagName?.toLowerCase();
         if (tag === 'input' || tag === 'textarea' || tag === 'select') return;
+
+        // 11. Pintasan Spasi Cepat: Langsung fokus ke kolom pencarian / pemindai barcode
+        if (e.code === 'Space' || e.key === ' ') {
+            e.preventDefault();
+            const sf = el('pos-search-input');
+            if (sf) { sf.focus(); sf.select(); }
+            return;
+        }
 
         // Pemindai Barcode Laser USB (Hardware Barcode Reader)
         if (e.key === 'Enter') {
@@ -3859,13 +3880,16 @@ const buildPOSLayout = ({ isStorefront }) => {
                     <!-- Keyboard Shortcuts Quick Bar (Hanya Desktop >= sm) -->
                     <div class="hidden sm:flex items-center justify-between text-[10px] text-slate-400 dark:text-slate-500 pt-1.5 border-t border-slate-100 dark:border-slate-800/80 px-0.5 select-none">
                         <div class="flex items-center gap-1.5 overflow-x-auto hide-scrollbar py-0.5">
-                            <button type="button" onclick="document.getElementById('pos-search-input')?.focus()" class="pos-shortcut-chiclet" title="Cari produk [F2]"><kbd class="pos-keycap">F2</kbd><span>Cari</span></button>
+                            <button type="button" onclick="document.getElementById('pos-search-input')?.focus()" class="pos-shortcut-chiclet" title="Cari produk / barcode [F1 / F2]"><kbd class="pos-keycap">F1</kbd><span>Cari</span></button>
                             <button type="button" onclick="window.openPayModal()" class="pos-shortcut-chiclet" title="Proses pembayaran [F4]"><kbd class="pos-keycap">F4</kbd><span>Bayar</span></button>
                             <button type="button" onclick="window.reprintLastPOSReceipt && window.reprintLastPOSReceipt()" class="pos-shortcut-chiclet" title="Cetak ulang struk terakhir [F5]"><kbd class="pos-keycap">F5</kbd><span>Ulang</span></button>
                             <button type="button" onclick="window.posHoldCurrentCart()" class="pos-shortcut-chiclet" title="Tahan transaksi [F6]"><kbd class="pos-keycap">F6</kbd><span>Tahan</span></button>
                             <button type="button" onclick="document.querySelector('.pos-disc-val-input')?.focus()" class="pos-shortcut-chiclet" title="Fokus input diskon [F7]"><kbd class="pos-keycap">F7</kbd><span>Diskon</span></button>
                             <button type="button" onclick="window.openPOSHeldModal()" class="pos-shortcut-chiclet" title="Buka transaksi tertahan [F8]"><kbd class="pos-keycap">F8</kbd><span>Tertahan</span></button>
+                            <button type="button" onclick="window.openShiftSummaryModal ? window.openShiftSummaryModal() : (window.openPOSOpenShiftModal && window.openPOSOpenShiftModal())" class="pos-shortcut-chiclet" title="Ringkasan Shift X/Z [F10]"><kbd class="pos-keycap">F10</kbd><span>Shift</span></button>
+                            <button type="button" onclick="window.openPOSCashMovementModal && window.openPOSCashMovementModal()" class="pos-shortcut-chiclet" title="Catat Arus Kas Laci [F11]"><kbd class="pos-keycap">F11</kbd><span>Kas +/-</span></button>
                             <button type="button" onclick="window.openPOSCameraScanner()" class="pos-shortcut-chiclet" title="Scan kamera [F9]"><kbd class="pos-keycap">F9</kbd><span>Kamera</span></button>
+                            <button type="button" onclick="document.getElementById('pos-search-input')?.focus()" class="pos-shortcut-chiclet" title="Fokus cepat [Spasi]"><kbd class="pos-keycap">Space</kbd><span>Barcode</span></button>
                             <button type="button" onclick="window.posClearSearch()" class="pos-shortcut-chiclet" title="Batal / Tutup [Esc]"><kbd class="pos-keycap">Esc</kbd><span>Batal</span></button>
                         </div>
                     </div>

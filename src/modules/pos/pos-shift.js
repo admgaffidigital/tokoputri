@@ -19,6 +19,7 @@ import { appData } from '../../core/state.js';
 import { el, setH, esc, showToast, showConfirm } from '../../core/utils.js';
 import { getCashierSession } from './pos-auth.js';
 import { getPrinterConfig } from '../print/printer-settings.js';
+import { saveApp } from '../../services/storage.js';
 
 // Format Rupiah & Angka Helper POS
 export const fRp = n => 'Rp ' + (Math.round(parseFloat(n) || 0)).toLocaleString('id-ID');
@@ -579,6 +580,9 @@ export const confirmStartPOSShift = async () => {
         qrisSales: 0,
         bankSales: 0,
         tempoSales: 0,
+        cashIn: 0,
+        cashOut: 0,
+        cashMovements: [],
         discountTotal: 0,
         pointsTotal: 0,
         orders: []
@@ -715,6 +719,364 @@ export const recordTempoPaymentToShift = (amount, orderId, note = '') => {
     }
 };
 
+// ─── Kalkulasi Kas Laci Seharusnya (Expected Cash in Drawer) ──
+export const getShiftExpectedCash = (shift) => {
+    if (!shift) return 0;
+    const start = parseFloat(shift.startingCash) || 0;
+    const sales = parseFloat(shift.cashSales) || 0;
+    const cIn   = parseFloat(shift.cashIn) || 0;
+    const cOut  = parseFloat(shift.cashOut) || 0;
+    return Math.max(0, start + sales + cIn - cOut);
+};
+
+// ─── State Tipe Mutasi Kas Aktif ──────────────────────────────
+let _activeCashMovementType = 'out';
+
+// ─── Rekam Mutasi Kas Masuk / Kas Keluar Laci ke Shift & Buku Kas ─
+export const recordCashMovementToShift = async ({ type, amount, reason, category = 'lainnya', recipient = '' }) => {
+    try {
+        const shift = getActiveShift();
+        if (!shift || shift.status !== 'open') {
+            showToast('Shift kasir tidak aktif!', 'warning');
+            return false;
+        }
+
+        const val = parseFloat(amount) || 0;
+        if (val <= 0) return false;
+
+        let expenseId = null;
+        const nowMs = Date.now();
+        const nowIso = new Date(nowMs).toISOString();
+
+        if (type === 'out') {
+            shift.cashOut = (shift.cashOut || 0) + val;
+            expenseId = 'exp_shift_' + nowMs + '_' + Math.random().toString(36).substring(2, 6);
+
+            // Jembatan Otomatis: Buat entri pengeluaran resmi di appData.expenses
+            const newExp = {
+                id: expenseId,
+                date: nowIso.split('T')[0],
+                category: category || 'kemasan',
+                amount: val,
+                desc: `[Laci Kasir SHF #${shift.shiftNo || shift.id}] ${reason}`,
+                source: 'cash',
+                recipient: recipient || shift.cashierName || 'Kasir Toko',
+                createdBy: shift.cashierName || 'Kasir',
+                shiftId: shift.id,
+                receiptImg: null,
+                createdAt: nowIso,
+                updatedAt: nowIso
+            };
+
+            if (!Array.isArray(appData.expenses)) appData.expenses = [];
+            appData.expenses.unshift(newExp);
+            try {
+                await saveApp(['expenses']);
+            } catch (errExp) {
+                console.warn('[POS Shift] Gagal simpan expense ke private storage:', errExp);
+            }
+        } else {
+            shift.cashIn = (shift.cashIn || 0) + val;
+        }
+
+        const movement = {
+            id: 'CSHMV-' + nowMs,
+            type,
+            amount: val,
+            reason: reason || (type === 'out' ? 'Operasional Laci Kasir' : 'Tambah Modal Receh'),
+            category: type === 'out' ? category : 'kas_masuk',
+            recipient: recipient || '',
+            cashierName: shift.cashierName || 'Kasir',
+            time: nowMs,
+            timeISO: nowIso,
+            expenseId
+        };
+
+        if (!Array.isArray(shift.cashMovements)) shift.cashMovements = [];
+        shift.cashMovements.unshift(movement);
+
+        saveActiveShift(shift);
+
+        try {
+            const updatePayload = {
+                cashIn: shift.cashIn || 0,
+                cashOut: shift.cashOut || 0,
+                cashMovements: shift.cashMovements,
+                lastUpdatedISO: nowIso
+            };
+            db.collection('freshmart').doc('cms_data').collection('pos_shifts').doc(shift.id).update(updatePayload).catch(() => {});
+            db.collection('pos_shifts').doc(shift.id).update(updatePayload).catch(() => {});
+        } catch (_) {}
+
+        if (typeof window.renderShiftHeaderBadge === 'function') {
+            window.renderShiftHeaderBadge();
+        }
+
+        // Refresh X-Report jika sedang terbuka
+        const summaryModal = el('pos-shift-summary-modal');
+        if (summaryModal && !summaryModal.classList.contains('opacity-0')) {
+            openShiftSummaryModal();
+        }
+
+        if (type === 'out') {
+            showToast(`Kas keluar ${fRp(val)} berhasil dicatat & masuk ke Buku Kas Toko!`, 'success');
+        } else {
+            showToast(`Kas masuk ${fRp(val)} berhasil ditambahkan ke laci kasir!`, 'success');
+        }
+        return true;
+    } catch (err) {
+        console.warn('[POS Shift] Gagal catat cash movement:', err);
+        showToast('Gagal mencatat arus kas: ' + (err.message || err), 'error');
+        return false;
+    }
+};
+
+// ─── Modal Catat Kas Masuk & Kas Keluar Laci Kasir ─────────────
+export const openPOSCashMovementModal = (defaultType = 'out') => {
+    const shift = getActiveShift();
+    if (!shift || shift.status !== 'open') {
+        showToast('Buka shift kasir terlebih dahulu sebelum mencatat arus kas.', 'warning');
+        openPOSOpenShiftModal();
+        return;
+    }
+
+    document.getElementById('pos-cash-movement-modal')?.remove();
+
+    const expectedCash = getShiftExpectedCash(shift);
+
+    const html = `
+    <div id="pos-cash-movement-modal" class="fixed inset-0 z-[10002] flex items-center justify-center p-3 sm:p-4 transition-all duration-300 opacity-0 pointer-events-none" style="background:rgba(15,23,42,0.8)">
+        <div id="pos-cash-movement-box" class="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl w-full max-w-md border border-slate-200/90 dark:border-slate-800 overflow-hidden transform translate-y-8 scale-95 transition-all duration-300 flex flex-col max-h-[92vh]">
+            <!-- Header Modal -->
+            <div class="px-5 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/80 dark:bg-slate-800/40">
+                <div class="flex items-center gap-3">
+                    <div id="pos-cshmv-header-icon" class="w-10 h-10 rounded-2xl flex items-center justify-center text-white text-base shadow-sm shrink-0 bg-rose-600">
+                        <i class="fa-solid fa-arrow-up-from-bracket"></i>
+                    </div>
+                    <div>
+                        <h3 id="pos-cshmv-header-title" class="text-sm font-black text-slate-800 dark:text-white uppercase tracking-wider">Catat Kas Keluar Laci</h3>
+                        <p class="text-[11px] text-slate-500 dark:text-slate-400">Shift: <b>${esc(shift.shiftNo || shift.id)}</b> &bull; Laci: <b>${fRp(expectedCash)}</b></p>
+                    </div>
+                </div>
+                <button onclick="window.closePOSCashMovementModal()" class="w-8 h-8 rounded-xl bg-slate-200/60 dark:bg-slate-800 hover:bg-slate-300 text-slate-600 dark:text-slate-300 flex items-center justify-center text-sm transition-all cursor-pointer">×</button>
+            </div>
+
+            <!-- Body Modal -->
+            <div class="p-5 space-y-4 overflow-y-auto flex-1">
+                <!-- Tipe Mutasi Tab (Kas Keluar vs Kas Masuk) -->
+                <div class="grid grid-cols-2 p-1 rounded-2xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200/70 dark:border-slate-700/70 gap-1 text-xs">
+                    <button type="button" id="pos-cshmv-tab-out" onclick="window.setPOSCashMovementType('out')" 
+                        class="py-2.5 rounded-xl font-black transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-xs bg-rose-600 text-white">
+                        <i class="fa-solid fa-arrow-up-from-bracket"></i>
+                        <span>Kas Keluar (Biaya)</span>
+                    </button>
+                    <button type="button" id="pos-cshmv-tab-in" onclick="window.setPOSCashMovementType('in')" 
+                        class="py-2.5 rounded-xl font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer text-slate-600 dark:text-slate-300 hover:text-slate-900">
+                        <i class="fa-solid fa-arrow-down-to-bracket"></i>
+                        <span>Kas Masuk (Modal)</span>
+                    </button>
+                </div>
+
+                <!-- Input Nominal Rp -->
+                <div class="space-y-1.5">
+                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-200 flex items-center justify-between">
+                        <span>Nominal Uang Tunai</span>
+                        <span id="pos-cshmv-type-label" class="text-[10px] font-bold text-rose-500 uppercase tracking-wider">Pengeluaran Laci</span>
+                    </label>
+                    <div class="relative">
+                        <span class="absolute left-3.5 top-1/2 -translate-y-1/2 font-black text-sm text-slate-400 pointer-events-none">Rp</span>
+                        <input id="pos-cshmv-amount-input" type="number" min="500" step="1000" placeholder="0" 
+                            class="w-full pl-12 pr-4 py-3 rounded-2xl border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-white font-black text-base focus:outline-none focus:border-rose-500 transition-all text-right">
+                    </div>
+                    <!-- Quick Amount Chips -->
+                    <div class="flex items-center gap-1.5 flex-wrap pt-1">
+                        <button type="button" onclick="window.posSetCashMovementPreset(5000)" class="px-2.5 py-1 rounded-xl text-[10px] font-bold border border-slate-200 dark:border-slate-700 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 transition-all cursor-pointer">5.000</button>
+                        <button type="button" onclick="window.posSetCashMovementPreset(10000)" class="px-2.5 py-1 rounded-xl text-[10px] font-bold border border-slate-200 dark:border-slate-700 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 transition-all cursor-pointer">10.000</button>
+                        <button type="button" onclick="window.posSetCashMovementPreset(20000)" class="px-2.5 py-1 rounded-xl text-[10px] font-bold border border-slate-200 dark:border-slate-700 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 transition-all cursor-pointer">20.000</button>
+                        <button type="button" onclick="window.posSetCashMovementPreset(50000)" class="px-2.5 py-1 rounded-xl text-[10px] font-bold border border-slate-200 dark:border-slate-700 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 transition-all cursor-pointer">50.000</button>
+                        <button type="button" onclick="window.posSetCashMovementPreset(100000)" class="px-2.5 py-1 rounded-xl text-[10px] font-bold border border-slate-200 dark:border-slate-700 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 transition-all cursor-pointer">100.000</button>
+                    </div>
+                </div>
+
+                <!-- Input Keperluan / Alasan -->
+                <div class="space-y-1">
+                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-200">
+                        <i class="fa-regular fa-clipboard text-slate-400 mr-1"></i>Keperluan / Alasan Transaksi
+                    </label>
+                    <input id="pos-cshmv-reason-input" type="text" placeholder="Contoh: Beli kantong kresek / es batu / bensin kurir..."
+                        class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs text-slate-800 dark:text-slate-200 focus:outline-none focus:border-rose-500">
+                </div>
+
+                <!-- Kategori Pengeluaran (Hanya Tampil Saat Kas Keluar) -->
+                <div id="pos-cshmv-category-wrap" class="space-y-1">
+                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-200">
+                        <i class="fa-solid fa-tags text-slate-400 mr-1"></i>Kategori Buku Kas Pengeluaran
+                    </label>
+                    <select id="pos-cshmv-category-select" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs text-slate-800 dark:text-slate-200 focus:outline-none focus:border-rose-500">
+                        <option value="kemasan">Kemasan / Lakban / Plastik Kresek</option>
+                        <option value="transport">Bensin / Ongkir / Transportasi Kurir</option>
+                        <option value="perawatan">Kebersihan / Alat Toko / Perlengkapan</option>
+                        <option value="listrik">Air Minum Galon / Listrik / Es Batu</option>
+                        <option value="gaji">Uang Makan / Konsumsi Kasir &amp; Staf</option>
+                        <option value="lainnya" selected>Biaya Operasional Toko Lainnya</option>
+                    </select>
+                </div>
+
+                <!-- Penerima / Sumber Dana -->
+                <div class="space-y-1">
+                    <label id="pos-cshmv-recipient-label" class="block text-xs font-bold text-slate-700 dark:text-slate-200">
+                        <i class="fa-solid fa-user text-slate-400 mr-1"></i>Penerima Uang (Opsional)
+                    </label>
+                    <input id="pos-cshmv-recipient-input" type="text" placeholder="Contoh: Toko Plastik Sejahtera / Kasir"
+                        class="w-full px-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs text-slate-800 dark:text-slate-200 focus:outline-none focus:border-rose-500">
+                </div>
+
+                <!-- Petunjuk Otomatisasi Buku Kas -->
+                <div id="pos-cshmv-auto-note" class="p-3 rounded-xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200/80 dark:border-amber-800/60 flex items-start gap-2.5 text-[11px] text-amber-800 dark:text-amber-300">
+                    <i class="fa-solid fa-circle-check text-amber-500 mt-0.5 shrink-0"></i>
+                    <span><b>Otomatis Terhubung:</b> Pengeluaran ini langsung masuk ke <b>Buku Kas Toko</b> dan laporan Laba Rugi owner tanpa perlu input manual lagi.</span>
+                </div>
+            </div>
+
+            <!-- Footer Action Buttons -->
+            <div class="p-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-800/40 flex items-center gap-2">
+                <button onclick="window.closePOSCashMovementModal()" class="flex-1 py-3 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-bold text-xs hover:bg-slate-100 transition-all cursor-pointer">
+                    Batal
+                </button>
+                <button id="pos-cshmv-submit-btn" onclick="window.confirmPOSCashMovement()" class="flex-[2] py-3 rounded-2xl bg-rose-600 hover:bg-rose-700 text-white font-black text-xs uppercase tracking-wider shadow-lg active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer">
+                    <i class="fa-solid fa-check"></i>
+                    <span>Simpan Kas Keluar</span>
+                </button>
+            </div>
+        </div>
+    </div>`;
+
+    document.body.insertAdjacentHTML('beforeend', html);
+
+    const m = el('pos-cash-movement-modal');
+    const box = el('pos-cash-movement-box');
+    if (!m || !box) return;
+
+    m.classList.remove('pointer-events-none');
+    if (typeof window.pushModalHistory === 'function') {
+        window.pushModalHistory('posCashMovement');
+    }
+    requestAnimationFrame(() => {
+        m.classList.remove('opacity-0');
+        box.classList.remove('translate-y-8', 'scale-95');
+    });
+
+    setPOSCashMovementType(defaultType);
+
+    setTimeout(() => {
+        const inp = el('pos-cshmv-amount-input');
+        if (inp) { inp.focus(); }
+    }, 250);
+};
+
+export const closePOSCashMovementModal = (fH = false) => {
+    const doClose = () => {
+        const m = el('pos-cash-movement-modal');
+        const box = el('pos-cash-movement-box');
+        if (!m) return;
+        m.classList.add('opacity-0', 'pointer-events-none');
+        if (box) box.classList.add('translate-y-8', 'scale-95');
+        setTimeout(() => { m.remove(); }, 280);
+    };
+
+    if (typeof window.requestCloseModal === 'function') {
+        window.requestCloseModal('posCashMovement', fH, doClose);
+    } else {
+        doClose();
+    }
+};
+
+export const setPOSCashMovementType = (type) => {
+    _activeCashMovementType = type;
+    const tabOut = el('pos-cshmv-tab-out');
+    const tabIn  = el('pos-cshmv-tab-in');
+    const icon   = el('pos-cshmv-header-icon');
+    const title  = el('pos-cshmv-header-title');
+    const typeLbl= el('pos-cshmv-type-label');
+    const catWrap= el('pos-cshmv-category-wrap');
+    const recLbl = el('pos-cshmv-recipient-label');
+    const recInp = el('pos-cshmv-recipient-input');
+    const autoNote = el('pos-cshmv-auto-note');
+    const btn    = el('pos-cshmv-submit-btn');
+    const amtInp = el('pos-cshmv-amount-input');
+
+    if (type === 'out') {
+        if (tabOut) tabOut.className = 'py-2.5 rounded-xl font-black transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-xs bg-rose-600 text-white';
+        if (tabIn)  tabIn.className  = 'py-2.5 rounded-xl font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer text-slate-600 dark:text-slate-300 hover:text-slate-900';
+        if (icon) { icon.className = 'w-10 h-10 rounded-2xl flex items-center justify-center text-white text-base shadow-sm shrink-0 bg-rose-600'; icon.innerHTML = '<i class="fa-solid fa-arrow-up-from-bracket"></i>'; }
+        if (title) title.innerText = 'Catat Kas Keluar Laci';
+        if (typeLbl) { typeLbl.innerText = 'Pengeluaran Laci'; typeLbl.className = 'text-[10px] font-bold text-rose-500 uppercase tracking-wider'; }
+        if (catWrap) catWrap.classList.remove('hidden');
+        if (recLbl) recLbl.innerHTML = '<i class="fa-solid fa-user text-slate-400 mr-1"></i>Penerima Uang (Opsional)';
+        if (recInp) recInp.placeholder = 'Contoh: Toko Plastik Sejahtera / Kasir';
+        if (autoNote) autoNote.classList.remove('hidden');
+        if (btn) { btn.className = 'flex-[2] py-3 rounded-2xl bg-rose-600 hover:bg-rose-700 text-white font-black text-xs uppercase tracking-wider shadow-lg active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer'; btn.innerHTML = '<i class="fa-solid fa-check"></i><span>Simpan Kas Keluar</span>'; }
+        if (amtInp) { amtInp.classList.remove('focus:border-emerald-500'); amtInp.classList.add('focus:border-rose-500'); }
+    } else {
+        if (tabOut) tabOut.className = 'py-2.5 rounded-xl font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer text-slate-600 dark:text-slate-300 hover:text-slate-900';
+        if (tabIn)  tabIn.className  = 'py-2.5 rounded-xl font-black transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-xs bg-emerald-600 text-white';
+        if (icon) { icon.className = 'w-10 h-10 rounded-2xl flex items-center justify-center text-white text-base shadow-sm shrink-0 bg-emerald-600'; icon.innerHTML = '<i class="fa-solid fa-arrow-down-to-bracket"></i>'; }
+        if (title) title.innerText = 'Catat Kas Masuk Laci';
+        if (typeLbl) { typeLbl.innerText = 'Penerimaan Laci'; typeLbl.className = 'text-[10px] font-bold text-emerald-500 uppercase tracking-wider'; }
+        if (catWrap) catWrap.classList.add('hidden');
+        if (recLbl) recLbl.innerHTML = '<i class="fa-solid fa-vault text-slate-400 mr-1"></i>Sumber Uang Masuk';
+        if (recInp) recInp.placeholder = 'Contoh: Tambah Modal Receh dari Brankas / Kas Induk';
+        if (autoNote) autoNote.classList.add('hidden');
+        if (btn) { btn.className = 'flex-[2] py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs uppercase tracking-wider shadow-lg active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer'; btn.innerHTML = '<i class="fa-solid fa-check"></i><span>Simpan Kas Masuk</span>'; }
+        if (amtInp) { amtInp.classList.remove('focus:border-rose-500'); amtInp.classList.add('focus:border-emerald-500'); }
+    }
+};
+
+export const posSetCashMovementPreset = (amount) => {
+    const inp = el('pos-cshmv-amount-input');
+    if (inp) {
+        inp.value = amount;
+        inp.focus();
+        inp.select();
+    }
+};
+
+export const confirmPOSCashMovement = async () => {
+    const shift = getActiveShift();
+    if (!shift || shift.status !== 'open') return;
+
+    const amtInp = el('pos-cshmv-amount-input');
+    const reasonInp = el('pos-cshmv-reason-input');
+    const catSelect = el('pos-cshmv-category-select');
+    const recInp = el('pos-cshmv-recipient-input');
+
+    const amount = parseFloat(amtInp?.value) || 0;
+    if (amount <= 0) {
+        showToast('Nominal uang harus lebih dari Rp 0', 'warning');
+        amtInp?.focus();
+        return;
+    }
+
+    const type = _activeCashMovementType || 'out';
+    const reason = (reasonInp?.value || '').trim() || (type === 'out' ? 'Pengeluaran operasional laci kasir' : 'Kas masuk / modal receh');
+    const category = catSelect?.value || 'lainnya';
+    const recipient = (recInp?.value || '').trim();
+
+    const btn = el('pos-cshmv-submit-btn');
+    if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i> Menyimpan...';
+    }
+
+    const success = await recordCashMovementToShift({ type, amount, reason, category, recipient });
+    if (success) {
+        closePOSCashMovementModal();
+    } else if (btn) {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-check"></i><span>Simpan Transaksi</span>';
+    }
+};
+
 // ─── Modal Ringkasan Shift Berjalan (X-Report) ───────────────
 export const openShiftSummaryModal = () => {
     const shift = getActiveShift();
@@ -725,9 +1087,10 @@ export const openShiftSummaryModal = () => {
 
     document.getElementById('pos-shift-summary-modal')?.remove();
 
-    const expectedCash = (parseFloat(shift.startingCash) || 0) + (parseFloat(shift.cashSales) || 0);
+    const expectedCash = getShiftExpectedCash(shift);
     const durationStr = formatShiftDuration(shift.startTime);
     const startTimeStr = new Date(shift.startTime).toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' });
+    const cashMovements = Array.isArray(shift.cashMovements) ? shift.cashMovements : [];
 
     const html = `
     <div id="pos-shift-summary-modal" class="fixed inset-0 z-[10001] flex items-center justify-center p-3 sm:p-4 transition-all duration-300 opacity-0 pointer-events-none" style="background:rgba(15,23,42,0.75)">
@@ -766,15 +1129,76 @@ export const openShiftSummaryModal = () => {
                 </div>
 
                 <!-- Kartu Utama: Kas di Laci Saat Ini (Expected Cash) -->
-                <div class="p-4 rounded-2xl bg-gradient-to-br from-emerald-500/10 via-emerald-500/5 to-transparent border-2 border-emerald-500/30 flex items-center justify-between">
-                    <div>
-                        <span class="text-[11px] font-bold text-emerald-700 dark:text-emerald-300 uppercase tracking-wider block">Uang Kas di Laci Seharusnya</span>
-                        <span class="text-[10px] text-slate-500 dark:text-slate-400">Modal Awal (${fRp(shift.startingCash)}) + Penjualan Tunai (${fRp(shift.cashSales || 0)})</span>
+                <div class="p-4 rounded-2xl bg-gradient-to-br from-emerald-500/10 via-emerald-500/5 to-transparent border-2 border-emerald-500/30">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <span class="text-[11px] font-bold text-emerald-700 dark:text-emerald-300 uppercase tracking-wider block">Uang Kas di Laci Seharusnya</span>
+                            <span class="text-[10px] text-slate-500 dark:text-slate-400">Modal Awal + Penjualan Tunai + Kas Masuk - Kas Keluar</span>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-xl font-black text-emerald-600 dark:text-emerald-400 block">${fRp(expectedCash)}</span>
+                        </div>
                     </div>
-                    <div class="text-right">
-                        <span class="text-xl font-black text-emerald-600 dark:text-emerald-400 block">${fRp(expectedCash)}</span>
+                    <!-- Micro Formula Pills -->
+                    <div class="mt-3 pt-2.5 border-t border-emerald-500/20 grid grid-cols-2 sm:grid-cols-4 gap-2 text-[10px]">
+                        <div class="p-1.5 rounded-lg bg-white/70 dark:bg-slate-800/60 border border-slate-200/60 dark:border-slate-700">
+                            <span class="text-slate-400 block">Modal Awal</span>
+                            <span class="font-bold text-slate-800 dark:text-white">${fRp(shift.startingCash)}</span>
+                        </div>
+                        <div class="p-1.5 rounded-lg bg-white/70 dark:bg-slate-800/60 border border-slate-200/60 dark:border-slate-700">
+                            <span class="text-slate-400 block">+ Penjualan Tunai</span>
+                            <span class="font-bold text-emerald-600 dark:text-emerald-400">+${fRp(shift.cashSales || 0)}</span>
+                        </div>
+                        <div class="p-1.5 rounded-lg bg-white/70 dark:bg-slate-800/60 border border-slate-200/60 dark:border-slate-700">
+                            <span class="text-slate-400 block">+ Kas Masuk (In)</span>
+                            <span class="font-bold text-emerald-600 dark:text-emerald-400">+${fRp(shift.cashIn || 0)}</span>
+                        </div>
+                        <div class="p-1.5 rounded-lg bg-white/70 dark:bg-slate-800/60 border border-slate-200/60 dark:border-slate-700">
+                            <span class="text-slate-400 block">- Kas Keluar (Out)</span>
+                            <span class="font-bold text-rose-600 dark:text-rose-400">-${fRp(shift.cashOut || 0)}</span>
+                        </div>
                     </div>
                 </div>
+
+                <!-- Tombol Cepat Arus Kas Laci -->
+                <div class="grid grid-cols-2 gap-2">
+                    <button type="button" onclick="window.openPOSCashMovementModal('out')" 
+                        class="py-2.5 px-3 rounded-2xl bg-rose-50 dark:bg-rose-950/30 hover:bg-rose-100 dark:hover:bg-rose-900/40 text-rose-700 dark:text-rose-300 border border-rose-200/80 dark:border-rose-800/60 font-bold text-xs flex items-center justify-center gap-2 transition-all active:scale-95 cursor-pointer shadow-xs">
+                        <i class="fa-solid fa-arrow-up-from-bracket text-xs text-rose-600"></i>
+                        <span>Catat Kas Keluar</span>
+                    </button>
+                    <button type="button" onclick="window.openPOSCashMovementModal('in')" 
+                        class="py-2.5 px-3 rounded-2xl bg-emerald-50 dark:bg-emerald-950/30 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 border border-emerald-200/80 dark:border-emerald-800/60 font-bold text-xs flex items-center justify-center gap-2 transition-all active:scale-95 cursor-pointer shadow-xs">
+                        <i class="fa-solid fa-arrow-down-to-bracket text-xs text-emerald-600"></i>
+                        <span>Catat Kas Masuk</span>
+                    </button>
+                </div>
+
+                <!-- Riwayat Mutasi Kas di Shift Ini (Jika Ada) -->
+                ${cashMovements.length > 0 ? `
+                <div class="space-y-1.5">
+                    <div class="flex items-center justify-between text-xs font-bold text-slate-700 dark:text-slate-200">
+                        <span class="flex items-center gap-1.5"><i class="fa-solid fa-money-bill-transfer text-amber-500"></i>Mutasi Kas Laci Non-Sales (${cashMovements.length})</span>
+                    </div>
+                    <div class="max-h-36 overflow-y-auto space-y-1 pr-1 custom-scrollbar">
+                        ${cashMovements.map(m => `
+                        <div class="p-2 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/60 dark:border-slate-700/60 flex items-center justify-between text-xs">
+                            <div class="flex items-center gap-2 min-w-0">
+                                <span class="w-6 h-6 rounded-lg flex items-center justify-center text-[10px] shrink-0 ${m.type === 'out' ? 'bg-rose-100 text-rose-600 dark:bg-rose-950/60 dark:text-rose-400' : 'bg-emerald-100 text-emerald-600 dark:bg-emerald-950/60 dark:text-emerald-400'}">
+                                    <i class="fa-solid ${m.type === 'out' ? 'fa-arrow-up' : 'fa-arrow-down'}"></i>
+                                </span>
+                                <div class="min-w-0">
+                                    <p class="font-bold text-slate-800 dark:text-white truncate">${esc(m.reason || (m.type === 'out' ? 'Kas Keluar' : 'Kas Masuk'))}</p>
+                                    <p class="text-[10px] text-slate-400">${new Date(m.time).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}${m.recipient ? ` &bull; ${esc(m.recipient)}` : ''}</p>
+                                </div>
+                            </div>
+                            <span class="font-black shrink-0 ${m.type === 'out' ? 'text-rose-600 dark:text-rose-400' : 'text-emerald-600 dark:text-emerald-400'}">
+                                ${m.type === 'out' ? '-' : '+'}${fRp(m.amount)}
+                            </span>
+                        </div>
+                        `).join('')}
+                    </div>
+                </div>` : ''}
 
                 <!-- Rincian Omset Penjualan -->
                 <div class="space-y-2">
@@ -898,7 +1322,7 @@ export const openPOSCloseShiftModal = () => {
 
     document.getElementById('pos-close-shift-modal')?.remove();
 
-    const expectedCash = (parseFloat(shift.startingCash) || 0) + (parseFloat(shift.cashSales) || 0);
+    const expectedCash = getShiftExpectedCash(shift);
 
     const html = `
     <div id="pos-close-shift-modal" class="fixed inset-0 z-[10001] flex items-center justify-center p-3 sm:p-4 transition-all duration-300 opacity-0 pointer-events-none" style="background:rgba(15,23,42,0.8)">
@@ -927,7 +1351,10 @@ export const openPOSCloseShiftModal = () => {
                     <div>
                         <span class="text-[10px] uppercase font-black text-slate-400 block tracking-wider">Uang Kas Sistem (Seharusnya di Laci)</span>
                         <div class="text-xs text-slate-600 dark:text-slate-300 mt-0.5">
-                            Modal Awal: <b>${fRp(shift.startingCash)}</b> + Kas Masuk: <b>${fRp(shift.cashSales || 0)}</b>${(shift.tempoInstallmentCash || 0) > 0 ? ` <span class="text-amber-600 dark:text-amber-400 font-semibold">(incl. Cicilan +${fRp(shift.tempoInstallmentCash)})</span>` : ''}
+                            Modal: <b>${fRp(shift.startingCash)}</b> + Penjualan: <b>${fRp(shift.cashSales || 0)}</b>
+                            ${(shift.cashIn || 0) > 0 ? ` <span class="text-emerald-600 dark:text-emerald-400 font-semibold">(+ Kas Masuk ${fRp(shift.cashIn)})</span>` : ''}
+                            ${(shift.cashOut || 0) > 0 ? ` <span class="text-rose-600 dark:text-rose-400 font-semibold">(- Kas Keluar ${fRp(shift.cashOut)})</span>` : ''}
+                            ${(shift.tempoInstallmentCash || 0) > 0 ? ` <span class="text-amber-600 dark:text-amber-400 font-semibold">(incl. Cicilan +${fRp(shift.tempoInstallmentCash)})</span>` : ''}
                         </div>
                     </div>
                     <div class="text-right">
@@ -1190,7 +1617,7 @@ export const confirmClosePOSShift = async () => {
     const shift = getActiveShift();
     if (!shift) return;
 
-    const expectedCash = (parseFloat(shift.startingCash) || 0) + (parseFloat(shift.cashSales) || 0);
+    const expectedCash = getShiftExpectedCash(shift);
     const actualCash = parseFloat(el('pos-shift-actual-cash-input')?.value) || 0;
     const diff = actualCash - expectedCash;
     const closingNotes = el('pos-shift-close-notes')?.value?.trim() || '';
@@ -1344,7 +1771,7 @@ export const printShiftSettlementReceipt = (shift, isXReport = false, forcePrevi
     const endDateStr = typeof window.formatCompactDate === 'function' ? window.formatCompactDate(shift.endTime || Date.now(), is80) : new Date(shift.endTime || Date.now()).toLocaleString('id-ID');
     const durationStr = shift.duration || formatShiftDuration(shift.startTime, shift.endTime || Date.now());
 
-    const expectedCash = (parseFloat(shift.startingCash) || 0) + (parseFloat(shift.cashSales) || 0);
+    const expectedCash = getShiftExpectedCash(shift);
     const actualCash = shift.actualCash !== undefined ? parseFloat(shift.actualCash) : expectedCash;
     const diff = actualCash - expectedCash;
     const diffStatusStr = diff === 0 ? 'SEIMBANG (PAS)' : (diff > 0 ? `LEBIH (+${fRp(diff)})` : `KURANG (-${fRp(Math.abs(diff))})`);
@@ -1389,6 +1816,10 @@ export const printShiftSettlementReceipt = (shift, isXReport = false, forcePrevi
                 <div class="flex justify-between"><span>Penjualan Tunai</span><span>${fRp((shift.cashSales || 0) - (shift.tempoInstallmentCash || 0))}</span></div>
                 ${(shift.tempoInstallmentCash || 0) > 0 ? `
                 <div class="flex justify-between text-amber-600"><span>+ Cicilan Piutang</span><span>+${fRp(shift.tempoInstallmentCash)}</span></div>` : ''}
+                ${(shift.cashIn || 0) > 0 ? `
+                <div class="flex justify-between text-emerald-600"><span>+ Kas Masuk (In)</span><span>+${fRp(shift.cashIn)}</span></div>` : ''}
+                ${(shift.cashOut || 0) > 0 ? `
+                <div class="flex justify-between text-rose-600"><span>- Kas Keluar (Out)</span><span>-${fRp(shift.cashOut)}</span></div>` : ''}
                 <div class="flex justify-between font-bold"><span>Kas Sistem</span><span>${fRp(expectedCash)}</span></div>
                 ${!isXReport ? `
                 <div class="flex justify-between font-bold"><span>Kas Fisik Dihitung</span><span>${fRp(actualCash)}</span></div>
@@ -1461,18 +1892,30 @@ export const renderShiftHeaderBadge = () => {
             const isStorefront = target.id === 'pos-shift-btn-storefront';
             if (isStorefront) {
                 target.innerHTML = `
-                <button onclick="window.openPOSShiftSummaryModal()" class="h-8 px-2 sm:px-2.5 rounded-xl bg-black/15 hover:bg-black/25 text-white border border-white/20 transition-all cursor-pointer shadow-xs active:scale-95 inline-flex items-center gap-1 sm:gap-1.5 whitespace-nowrap shrink-0" title="Klik untuk lihat ringkasan shift (X-Report)">
-                    <i class="fa-solid fa-cash-register text-emerald-300 text-xs"></i>
-                    <span class="hidden sm:inline text-xs font-medium">Shift: </span>
-                    <b class="text-white text-xs whitespace-nowrap">${fRp(shift.startingCash)}</b>
-                </button>`;
+                <div class="flex items-center gap-1.5 shrink-0">
+                    <button onclick="window.openPOSShiftSummaryModal()" class="h-8 px-2 sm:px-2.5 rounded-xl bg-black/15 hover:bg-black/25 text-white border border-white/20 transition-all cursor-pointer shadow-xs active:scale-95 inline-flex items-center gap-1 sm:gap-1.5 whitespace-nowrap shrink-0" title="Klik untuk lihat ringkasan shift (X-Report)">
+                        <i class="fa-solid fa-cash-register text-emerald-300 text-xs"></i>
+                        <span class="hidden sm:inline text-xs font-medium">Shift: </span>
+                        <b class="text-white text-xs whitespace-nowrap">${fRp(shift.startingCash)}</b>
+                    </button>
+                    <button onclick="window.openPOSCashMovementModal()" class="h-8 px-2 sm:px-2.5 rounded-xl bg-black/15 hover:bg-black/25 text-amber-300 border border-amber-300/30 transition-all cursor-pointer shadow-xs active:scale-95 inline-flex items-center gap-1 whitespace-nowrap shrink-0" title="Catat Kas Keluar (Beli Plastik/Biaya) atau Kas Masuk Laci">
+                        <i class="fa-solid fa-money-bill-transfer text-xs"></i>
+                        <span class="hidden md:inline text-xs font-bold">Kas &plusmn;</span>
+                    </button>
+                </div>`;
             } else {
                 target.innerHTML = `
-                <button onclick="window.openPOSShiftSummaryModal()" class="h-8 px-2.5 sm:px-3 rounded-xl text-xs font-bold bg-[rgba(var(--color-primary-rgb),0.1)] hover:bg-[rgba(var(--color-primary-rgb),0.18)] text-[var(--color-primary)] border border-[rgba(var(--color-primary-rgb),0.25)] inline-flex items-center gap-1.5 transition-all cursor-pointer active:scale-95 whitespace-nowrap shrink-0 shadow-2xs" title="Klik untuk lihat ringkasan shift (X-Report)">
-                    <i class="fa-solid fa-cash-register text-xs"></i>
-                    <span class="hidden sm:inline font-medium">Shift: </span>
-                    <b class="font-black whitespace-nowrap">${fRp(shift.startingCash)}</b>
-                </button>`;
+                <div class="flex items-center gap-1.5 shrink-0">
+                    <button onclick="window.openPOSShiftSummaryModal()" class="h-8 px-2.5 sm:px-3 rounded-xl text-xs font-bold bg-[rgba(var(--color-primary-rgb),0.1)] hover:bg-[rgba(var(--color-primary-rgb),0.18)] text-[var(--color-primary)] border border-[rgba(var(--color-primary-rgb),0.25)] inline-flex items-center gap-1.5 transition-all cursor-pointer active:scale-95 whitespace-nowrap shrink-0 shadow-2xs" title="Klik untuk lihat ringkasan shift (X-Report)">
+                        <i class="fa-solid fa-cash-register text-xs"></i>
+                        <span class="hidden sm:inline font-medium">Shift: </span>
+                        <b class="font-black whitespace-nowrap">${fRp(shift.startingCash)}</b>
+                    </button>
+                    <button onclick="window.openPOSCashMovementModal()" class="h-8 px-2.5 sm:px-3 rounded-xl text-xs font-bold bg-amber-50 hover:bg-amber-100 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800/80 inline-flex items-center gap-1 transition-all cursor-pointer active:scale-95 whitespace-nowrap shrink-0 shadow-2xs" title="Catat Kas Keluar (Beli Plastik/Biaya) atau Kas Masuk Laci">
+                        <i class="fa-solid fa-money-bill-transfer text-xs"></i>
+                        <span class="hidden md:inline font-bold">Kas &plusmn;</span>
+                    </button>
+                </div>`;
             }
         } else {
             const isStorefront = target.id === 'pos-shift-btn-storefront';
@@ -1770,6 +2213,13 @@ window.recordTempoPaymentToShift  = recordTempoPaymentToShift;
 window.openPOSShiftModal          = openShiftSummaryModal;
 window.openPOSShiftSummaryModal   = openShiftSummaryModal;
 window.closePOSShiftSummaryModal  = closePOSShiftSummaryModal;
+window.openPOSCashMovementModal   = openPOSCashMovementModal;
+window.closePOSCashMovementModal  = closePOSCashMovementModal;
+window.setPOSCashMovementType     = setPOSCashMovementType;
+window.posSetCashMovementPreset   = posSetCashMovementPreset;
+window.confirmPOSCashMovement     = confirmPOSCashMovement;
+window.getShiftExpectedCash       = getShiftExpectedCash;
+window.recordCashMovementToShift  = recordCashMovementToShift;
 window.openPOSCloseShiftModal     = openPOSCloseShiftModal;
 window.closePOSCloseShiftModal    = closePOSCloseShiftModal;
 window.setPOSCountMode            = setPOSCountMode;

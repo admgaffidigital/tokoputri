@@ -50,7 +50,7 @@ export const fetchLatestReleaseInfo = async () => {
     if (cachedReleaseInfo) return cachedReleaseInfo;
     if (isFetchingRelease) return null;
 
-    const localVer = getLatestVersion(appData) || 'v1.10.90';
+    const localVer = getLatestVersion(appData) || 'v1.10.91';
 
     isFetchingRelease = true;
     try {
@@ -83,7 +83,7 @@ export const fetchLatestReleaseInfo = async () => {
         }
     } catch (err) {
         // Fallback anggun ke konfigurasi changelog internal
-        const fallbackVer = getLatestVersion(appData) || 'v1.10.90';
+        const fallbackVer = getLatestVersion(appData) || 'v1.10.91';
         cachedReleaseInfo = {
             tagName: fallbackVer,
             name: `Toko Putri ( Official Store ) ${fallbackVer}`,

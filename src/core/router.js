@@ -341,6 +341,7 @@ export const MODAL_ELEMENT_MAP = {
     posOpenShift: ['pos-open-shift-modal', 'modal-pos-open-shift'],
     posCloseShift: ['pos-close-shift-modal', 'modal-pos-close-shift'],
     posShiftSummary: ['pos-shift-summary-modal', 'modal-pos-shift-summary'],
+    posCashMovement: ['pos-cash-movement-modal', 'modal-pos-cash-movement'],
     clientTempoPay: ['modal-client-tempo-pay'],
     clientPaySuccess: ['modal-client-pay-success'],
     tempoConfirmations: ['modal-tempo-confirmations'],
@@ -517,6 +518,9 @@ export const closeModalByName = (m) => {
             break;
         case 'posShiftSummary':
             if (typeof window.closePOSShiftSummaryModal === 'function') { window.closePOSShiftSummaryModal(true); return true; }
+            break;
+        case 'posCashMovement':
+            if (typeof window.closePOSCashMovementModal === 'function') { window.closePOSCashMovementModal(true); return true; }
             break;
         case 'clientTempoPay':
             if (typeof window.closeClientTempoPayModal === 'function') { window.closeClientTempoPayModal(true); return true; }
@@ -793,7 +797,7 @@ export const closeTopmostOpenModal = (fromPopState = false) => {
         'posReceiptFallback', 'posShiftReceipt',
         'clientPaySuccess', 'clientTempoPay', 'tempoConfirmations',
         'posVariantSheet', 'posLogin', 'posCartDrawer', 'posPayment',
-        'posOpenShift', 'posCloseShift', 'posShiftSummary',
+        'posOpenShift', 'posCloseShift', 'posShiftSummary', 'posCashMovement',
         'thermalPreview', 'htmlPreview', 'addStaff', 'permissions', 'editStaff',
         'soFinalize', 'soHistory', 'preRestore', 'heroBanner', 'renewal',
         'purchasePayment', 'purchaseDetail', 'purchasePicker', 'purchaseForm',

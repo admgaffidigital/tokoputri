@@ -96,10 +96,10 @@ export const getCombinedChangelog = (appData, maxLimit = MAX_CHANGELOG_LIMIT) =>
  * Mendapatkan nomor versi terbaru yang aktif
  * Menjamin tidak pernah tertahan pada versi lama meskipun ada log dinamis atau tanggal kembar
  * @param {Object} appData 
- * @returns {String} Contoh: 'v1.10.90'
+ * @returns {String} Contoh: 'v1.10.91'
  */
 export const getLatestVersion = (appData) => {
-    const defaultLatest = DEFAULT_CHANGELOG[0]?.version || 'v1.10.90';
+    const defaultLatest = DEFAULT_CHANGELOG[0]?.version || 'v1.10.91';
     const logs = getCombinedChangelog(appData, null);
     if (!logs || logs.length === 0) return defaultLatest;
     

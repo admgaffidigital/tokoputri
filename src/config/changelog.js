@@ -6,7 +6,7 @@
  * 
  * ATURAN ROLLING 5-LOG TERBARU (ANTI-KODE SAMPAH & ANTI-SPAM):
  * DEFAULT_CHANGELOG dibatasi secara ketat HANYA menyimpan 5 entri rilis
- * terkini (v1.10.90 s.d. v1.10.86). Setiap rilis baru ditambahkan di posisi
+ * terkini (v1.10.91 s.d. v1.10.87). Setiap rilis baru ditambahkan di posisi
  * teratas dan entri ke-6 dipangkas agar berkas tetap super ringan (~12KB vs ~425KB),
  * mengeliminasi kode sampah, dan mencegah spam riwayat di antarmuka website.
  * ============================================================
@@ -15,6 +15,22 @@
 export const MAX_CHANGELOG_LIMIT = 5;
 
 export const DEFAULT_CHANGELOG = [
+    {
+        "id": "log-1-10-91",
+        "version": "v1.10.91",
+        "date": "2026-10-08",
+        "title": "Operasional Kasir Presisi (Arus Kas Laci & Shortcuts) & Finansial Piutang Toko A4 / CSV",
+        "category": "feature",
+        "badge": "Cash Movements, Keyboard Turbo & Debt Recap v1.10.91",
+        "items": [
+            "Pilar A — Manajemen Arus Kas Laci Kasir (Cash In / Cash Out Movements): Mengintegrasikan modal pencatatan kas masuk & kas keluar mandiri (modal-pos-cash-movement) yang otomatis sinkron dengan buku beban operasional toko (appData.expenses) dan cloud pos_shifts. Perhitungan uang kas diharapkan (expectedCash) pada X-Report & Z-Report kini 100% presisi: max(0, startingCash + cashSales + cashIn - cashOut).",
+            "Pilar A — Keyboard Shortcuts Desktop Kasir Lengkap & Chiclet Quick Bar: Memperluas pemindai keyboard kasir dengan [F1 / F2] fokus pencarian, [F10] Shift X/Z, [F11] Arus Kas Laci, dan tombol [Spasi Cepat] saat kursor bebas untuk langsung mengaktifkan pemindai barcode / pencarian seketika tanpa mouse.",
+            "Pilar A — Sinkronisasi Thermal Struk Shift (rawbt.js): Slip rekap shift X-Report dan Z-Report thermal ESC/POS kini otomatis menyertakan baris Kas Masuk (In), Kas Keluar (Out), serta status posisi uang kas laci terkini.",
+            "Pilar B — Cetak Rekap Buku Piutang Toko A4 & Ekspor CSV (tempo.js & documents.js): Menghadirkan cetak Rekap Buku Besar Piutang Toko resmi standar A4 (type: 'tempo_recap') dengan nomor registrasi AR, aging keterlambatan debitur, kop toko, rekening pelunasan resmi, dan tanda tangan Owner/Penagih, serta ekspor file CSV instan (Rekap_Piutang_Toko_Putri.csv) ber-BOM UTF-8 kompatibel Excel.",
+            "Pilar B — Kartu Riwayat Mutasi Stok (Stock Card Ledger di fifo-modal.js): Tab baru 'Kartu Mutasi Stok' pada modal Bento FIFO produk yang merekonsiliasi barang masuk kulakan PO, barang keluar penjualan kasir/online, filter segmented (Semua, Masuk, Keluar), dan ringkasan kuantitas fisik real-time.",
+            "Multi-Channel Distribution v1.10.91 (Android versionCode 11091)."
+        ]
+    },
     {
         "id": "log-1-10-90",
         "version": "v1.10.90",
@@ -74,22 +90,6 @@ export const DEFAULT_CHANGELOG = [
             "Pencarian Instan Nama & Kode Warna: Memudahkan pelanggan mencari warna impian secara instan berdasarkan nama maupun kode hex saat produk memiliki banyak variasi warna (10-50 warna).",
             "Harmonisasi Kasir POS (pos-variant-sheet.js): Meningkatkan visual varian warna cat di kasir POS dengan mini paint chip (.pos-paint-chip) bersaput sheen glossy agar kasir dapat memverifikasi warna kaleng cat pelanggan secara instan dan akurat.",
             "Multi-Channel Distribution v1.10.87 (Android versionCode 11087)."
-        ]
-    },
-    {
-        "id": "log-1-10-86",
-        "version": "v1.10.86",
-        "date": "2026-10-07",
-        "title": "Penyempurnaan Ergonomi Tombol Tambah & Varian: Anti-Gepeng & Desain Visual Premium",
-        "category": "fix",
-        "badge": "Anti-Squash Action Buttons & Premium Color Depth v1.10.86",
-        "items": [
-            "Eliminasi Mutlak Masalah Tombol Gepeng (.btn-catalog-action): Mengganti kelas invalid w-8.5 h-8.5 dengan utility class terproteksi aspect-ratio 1:1 (36px di mobile, 38px di desktop) sehingga tombol Tambah (+) dan Pilih Varian selalu bulat/squircle presisi simetris tanpa pernah pipih atau terdistorsi flexbox di layar smartphone.",
-            "Elevasi Visual Tombol Tambah (+) (.btn-catalog-add): Meredesain tombol tambah dari warna pudar transparan menjadi Solid Theme Gradient mewah dengan ikon plus putih berkontras tinggi, border halus, dan soft glow 3D yang sangat memikat untuk diklik.",
-            "Identitas Visual Tombol Pilih Varian (.btn-catalog-variant): Menerapkan palet Indigo Royale Gradient berpadu ikon Layer Group putih bersih yang selaras 100% dengan badge Varian di katalog, memberikan diferensiasi visual instan antara produk langsung beli vs produk multi-opsi.",
-            "Kalkulasi Cerdas Rentang Harga Varian Storefront (catalog.js): Menyelaraskan kartu katalog depan dengan POS kasir sehingga produk bervarian kini menampilkan rentang harga riil dan label PILIH VARIAN yang elegan, tidak lagi hanya menampilkan teks abu-abu polos.",
-            "Harmonisasi Kasir POS (pos.js): Mengintegrasikan desain tombol anti-gepeng yang sama pada POS kasir mode Grid dan List untuk tombol Tambah, Varian, In-Cart Badge, maupun Nonaktif.",
-            "Multi-Channel Distribution v1.10.86 (Android versionCode 11086)."
         ]
     }
 ];
@@ -163,10 +163,10 @@ export const getCombinedChangelog = (appData, maxLimit = MAX_CHANGELOG_LIMIT) =>
  * Mendapatkan nomor versi terbaru yang aktif
  * Menjamin tidak pernah tertahan pada versi lama meskipun ada log dinamis atau tanggal kembar
  * @param {Object} appData 
- * @returns {String} Contoh: 'v1.10.90'
+ * @returns {String} Contoh: 'v1.10.91'
  */
 export const getLatestVersion = (appData) => {
-    const defaultLatest = DEFAULT_CHANGELOG[0]?.version || 'v1.10.90';
+    const defaultLatest = DEFAULT_CHANGELOG[0]?.version || 'v1.10.91';
     const logs = getCombinedChangelog(appData, null);
     if (!logs || logs.length === 0) return defaultLatest;
     

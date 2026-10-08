@@ -105,7 +105,7 @@ const checksum = computeChecksum(params.code, params.days);
 const initialLicenseKey = `PUTRI-${params.days}D-${params.code}-${checksum}`;
 
 const pkgJsonPath = path.resolve(process.cwd(), 'package.json');
-let pkgVer = '1.10.90';
+let pkgVer = '1.10.91';
 try {
     const pkg = JSON.parse(fs.readFileSync(pkgJsonPath, 'utf8'));
     if (pkg.version) pkgVer = pkg.version;
