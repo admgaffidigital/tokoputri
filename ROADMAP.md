@@ -47,9 +47,9 @@ Dokumen ini menetapkan **Master Plan Roadmap Strategis** berikutnya untuk menjaw
 
 ---
 
-## 📦 FASE 2: Manajemen Retur & Rekonsiliasi Inventori (RMA Engine) (SELESAI - v1.12.1)
+## 📦 FASE 2: Manajemen Retur & Rekonsiliasi Inventori (RMA Engine) (SELESAI - v1.12.2)
 > **Fokus Utama:** Ketertiban penukaran barang, klaim cacat supplier, dan akurasi stok fisik.  
-> **Status:** Selesai & Terverifikasi di `v1.12.1`
+> **Status:** Selesai & Terverifikasi di `v1.12.2`
 
 ### 2.1 Modul Retur Penjualan (*Customer Sales Return*)
 * **Latar Belakang:** Kasus tukang kelebihan beli fitting pipa, salah ukuran kran, atau sisa semen proyek.

@@ -1,7 +1,7 @@
 /**
  * ============================================================
  * MODUL ADMIN: MANAJEMEN RETUR BARANG & REKONSILIASI (RMA ENGINE)
- * Toko Putri Enterprise v1.12.1 - Native App Theme Harmonized & Mobile Card View
+ * Toko Putri Enterprise v1.12.2 - Universal Native Card View & Theme Harmonization
  * 
  * Meliputi:
  * 1. Retur Penjualan (Customer Sales Return):
