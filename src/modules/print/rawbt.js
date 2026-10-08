@@ -948,11 +948,11 @@ export const buildPOSReceiptPayload = (tx, config = null) => {
 
     // 9. Pesan Footer Toko & Catatan Kebijakan
     builder.separator('-');
-    const footerText = cleanLineAscii(cfg.footerText || 'Terima Kasih Atas Kunjungan Anda!').trim();
+    const footerText = cleanLineAscii(cfg.footerText || 'Terima kasih telah mempercayakan kebutuhan bangunan Anda kepada kami.').trim();
     if (footerText) {
         wrapWords(footerText, cols).forEach(l => builder.line(l, 'center'));
     }
-    const policyNote = cleanLineAscii(cfg.footerPolicyNote !== undefined ? cfg.footerPolicyNote : 'Barang yang sudah dibeli tidak dapat ditukar/dikembalikan tanpa struk resmi.').trim();
+    const policyNote = cleanLineAscii(cfg.footerPolicyNote !== undefined ? cfg.footerPolicyNote : 'Barang yang sudah dibeli tidak dapat ditukar/dikembalikan tanpa nota/struk resmi.').trim();
     if (policyNote) {
         builder.line('', 'center');
         wrapWords(policyNote, cols).forEach(l => builder.line(l, 'center'));
@@ -1216,11 +1216,11 @@ export const buildOrderReceiptPayload = (order, config = null) => {
     }
 
     builder.separator('-');
-    const footerText = cleanLineAscii(cfg.footerText || 'Terima Kasih Atas Kunjungan Anda!').trim();
+    const footerText = cleanLineAscii(cfg.footerText || 'Terima kasih telah mempercayakan kebutuhan bangunan Anda kepada kami.').trim();
     if (footerText) {
         wrapWords(footerText, cols).forEach(l => builder.line(l, 'center'));
     }
-    const policyNote = cleanLineAscii(cfg.footerPolicyNote !== undefined ? cfg.footerPolicyNote : 'Barang yang sudah dibeli tidak dapat ditukar/dikembalikan tanpa struk resmi.').trim();
+    const policyNote = cleanLineAscii(cfg.footerPolicyNote !== undefined ? cfg.footerPolicyNote : 'Barang yang sudah dibeli tidak dapat ditukar/dikembalikan tanpa nota/struk resmi.').trim();
     if (policyNote) {
         builder.line('', 'center');
         wrapWords(policyNote, cols).forEach(l => builder.line(l, 'center'));
@@ -1399,7 +1399,7 @@ export const buildTempoReceiptPayload = (order, config = null) => {
     }
 
     builder.separator('-');
-    const footerTempo = cleanLineAscii(cfg.footerText || 'Terima Kasih Atas Kerja Sama & Kepercayaannya!').trim();
+    const footerTempo = cleanLineAscii(cfg.footerText || 'Terima kasih atas kerja sama dan kepercayaan Anda.').trim();
     if (footerTempo) {
         wrapWords(footerTempo, cols).forEach(l => builder.line(l, 'center'));
     }
@@ -1511,7 +1511,7 @@ export const buildTestReceiptPayload = (config = null) => {
     }
 
     builder.separator('-');
-    wrapWords(cfg.footerText || 'Terima kasih atas kunjungan Anda!', cols).forEach(l => builder.line(l, 'center'));
+    wrapWords(cfg.footerText || 'Terima kasih telah mempercayakan kebutuhan bangunan Anda kepada kami.', cols).forEach(l => builder.line(l, 'center'));
     if (cfg.footerPolicyNote) {
         builder.line('', 'center');
         wrapWords(cfg.footerPolicyNote, cols).forEach(l => builder.line(l, 'center'));

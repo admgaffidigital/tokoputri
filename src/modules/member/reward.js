@@ -1241,7 +1241,7 @@ export const rMemberModalBody = () => {
                         </div>
                         <div class="mt-2.5 pt-2.5 border-t border-slate-200/60 dark:border-slate-700/60 flex items-center justify-between">
                             <span class="text-[10px] text-slate-400 font-semibold">Plafon limit hingga Rp 5.000.000</span>
-                            <a href="https://wa.me/${((appData.store?.wa)||'').replace(/\D/g,'')}?text=Halo%20Admin%20Toko%20Putri,%20saya%20ingin%20mengajukan%20aktivasi%20fitur%20Putri%20PayLater%20untuk%20nomor%20${currentMember.phone||''}" target="_blank" class="text-[10px] font-bold text-[var(--color-primary)] hover:underline flex items-center gap-1">Ajukan Aktivasi <i class="fa-solid fa-arrow-right text-[8px]"></i></a>
+                            <a href="https://wa.me/${((appData.store?.wa)||'').replace(/\D/g,'')}?text=${encodeURIComponent(`Halo Admin Toko Putri, saya bermaksud mengajukan aktivasi fasilitas limit kredit Putri PayLater untuk nomor member: ${currentMember.phone||''}. Mohon informasi dan verifikasi persyaratannya. Terima kasih.`)}" target="_blank" class="text-[10px] font-bold text-[var(--color-primary)] hover:underline flex items-center gap-1">Ajukan Aktivasi <i class="fa-solid fa-arrow-right text-[8px]"></i></a>
                         </div>
                     </div>`;
                 }
@@ -1316,7 +1316,7 @@ export const rMemberModalBody = () => {
                                     <button type="button" onclick="if(typeof window.openClientPaymentModal==='function') window.openClientPaymentModal('', ${nominalBulanIni}); else if(typeof openClientPaymentModal==='function') openClientPaymentModal('', ${nominalBulanIni});" class="flex-1 sm:flex-none px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-wider text-white flex items-center justify-center gap-1.5 shadow-sm transition-all active:scale-95 cursor-pointer" style="background: var(--color-primary); box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.35);">
                                         <i class="fa-solid fa-credit-card text-xs"></i> Bayar ${hasMultiMonth ? 'Bulan Ini' : 'Tagihan'}
                                     </button>
-                                    <a href="https://wa.me/${((appData.store?.wa)||'').replace(/\D/g,'')}?text=Halo%20Admin%20Toko%20Putri,%20saya%20ingin%20melakukan%20pembayaran%20tagihan%20Putri%20PayLater%20sebesar%20${encodeURIComponent(fCur(nominalBulanIni))}%20untuk%20nomor%20${currentMember.phone||''}" target="_blank" class="p-2.5 rounded-xl text-slate-500 hover:text-[var(--color-primary)] border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 flex items-center justify-center active:scale-95 transition-all shadow-2xs" title="Konfirmasi via WhatsApp">
+                                    <a href="https://wa.me/${((appData.store?.wa)||'').replace(/\D/g,'')}?text=${encodeURIComponent(`Halo Tim Keuangan Toko Putri, saya ingin konfirmasi pembayaran tagihan Putri PayLater sebesar ${fCur(nominalBulanIni)} untuk nomor akun: ${currentMember.phone||''}. Berikut saya lampirkan bukti transfer pembayarannya. Terima kasih.`)}" target="_blank" class="p-2.5 rounded-xl text-slate-500 hover:text-[var(--color-primary)] border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 flex items-center justify-center active:scale-95 transition-all shadow-2xs" title="Konfirmasi via WhatsApp">
                                         <i class="fa-brands fa-whatsapp text-sm text-[var(--color-primary)]"></i>
                                     </a>
                                 </div>
@@ -1485,7 +1485,8 @@ export const lookupMemberPoints = async () => {
         } else {
             resultDiv.className = 'text-xs font-bold text-amber-700 dark:text-amber-300 p-3.5 bg-amber-50 dark:bg-amber-900/20 rounded-xl leading-relaxed border border-amber-200 dark:border-amber-800/40 space-y-1.5';
             const adminWa = ((appData.store && appData.store.wa) || '').replace(/\D/g, '');
-            const waLink = adminWa ? `https://wa.me/${adminWa}?text=Halo%20Admin%20Toko%20Putri,%20saya%20ingin%20mendaftarkan%20nomor%20saya%20(${rawVal})%20sebagai%20Member%20Resmi.` : '#';
+            const memberRegMsg = encodeURIComponent(`Halo Admin Toko Putri, saya bermaksud mendaftarkan nomor saya (+${rawVal}) sebagai Member Resmi Toko Putri untuk mendapatkan reward poin dan fasilitas tempo. Mohon bantuannya. Terima kasih.`);
+            const waLink = adminWa ? `https://wa.me/${adminWa}?text=${memberRegMsg}` : '#';
             resultDiv.innerHTML = `
                 <div class="flex items-center gap-1.5 text-amber-800 dark:text-amber-200 font-extrabold text-[11px]">
                     <i class="fa-solid fa-circle-info text-amber-500"></i>

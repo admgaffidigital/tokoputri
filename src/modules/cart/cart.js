@@ -380,7 +380,7 @@ export const updCQty = (i, c) => {
                     }
                     if (nv > avail) { 
                         nv = avail; 
-                        if (typeof window.showToast === 'function') window.showToast(`Maks stok: ${avail}`); 
+                        if (typeof window.showToast === 'function') window.showToast(`Kuantitas disesuaikan dengan stok maksimal (${avail} unit)`); 
                     }
                 }
             }
@@ -412,11 +412,11 @@ export const rmCart = i => {
  */
 export const clearCart = () => { 
     if (typeof window.showConfirm === 'function') {
-        window.showConfirm("Kosongkan Keranjang", "Semua barang akan dihapus. Lanjutkan?", () => { 
+        window.showConfirm("Kosongkan Keranjang Belanja", "Apakah Anda yakin ingin menghapus seluruh produk dari keranjang belanja?", () => { 
             setCart([]); 
             updCart(); 
             renderCart(); 
-            if (typeof window.showToast === 'function') window.showToast("Dibersihkan"); 
+            if (typeof window.showToast === 'function') window.showToast("Keranjang belanja berhasil dikosongkan."); 
         });
     } else {
         setCart([]);
@@ -432,8 +432,8 @@ export const validateCartToCheckout = () => {
     if (window.isAdm) {
         if (typeof window.showConfirm === 'function') {
             window.showConfirm(
-                "Akses Ditolak",
-                "Anda sedang login sebagai Seller. Silakan logout terlebih dahulu untuk membuat pesanan sebagai pelanggan.",
+                "Sesi Pengelola Toko Aktif",
+                "Anda saat ini sedang berada dalam akun admin/owner. Silakan keluar (logout) terlebih dahulu untuk membuat pesanan belanja online.",
                 () => { if (typeof window.logoutAdmin === 'function') window.logoutAdmin(); },
                 "Logout Sekarang",
                 false

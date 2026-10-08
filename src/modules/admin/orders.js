@@ -1156,54 +1156,53 @@ export const konfirmasiKeWA = async (orderId) => {
     // Buat pesan sesuai status
     let msg = '';
     if (status === 'Baru') {
-        msg = `Halo *${cName}*! 👋\n\n`
-            + `Terima kasih telah berbelanja di *${storeName}*! 🛒\n\n`
-            + `✅ *Pesanan Anda sudah kami terima!*\n\n`
-            + `📋 No. Pesanan: *#${shortId}*\n`
-            + `💰 Total: *${grandTotal}*\n`
-            + `💳 Pembayaran: *${methodLabel}*\n\n`
-            + `🛍️ *Ringkasan Pesanan:*\n${itemSection}\n`
+        msg = `Halo Bapak/Ibu *${cName}*,\n\n`
+            + `Terima kasih telah mempercayakan kebutuhan material & perlengkapan bangunan Anda kepada *${storeName}*.\n\n`
+            + `📋 *KONFIRMASI PESANAN MATERIAL*\n`
+            + `• No. Referensi : *#${shortId}*\n`
+            + `• Total Transaksi : *${grandTotal}*\n`
+            + `• Metode Bayar : *${methodLabel}*\n\n`
+            + `📦 *Rincian Barang:*\n${itemSection}\n`
             + deliverySection
-            + `\n⏳ Pesanan Anda sedang kami periksa dan akan segera diproses.`
-            + (storePhone ? `\n\nJika ada pertanyaan, balas pesan ini atau hubungi kami. Terima kasih! 🙏` : `\n\nTerima kasih! 🙏`);
+            + `\nSaat ini pesanan Anda telah masuk ke sistem kami dan sedang diverifikasi oleh admin operasional.`
+            + (storePhone ? `\n\nUntuk pertanyaan teknis, perubahan jadwal kirim, atau permintaan faktur/nota resmi, silakan hubungi kami melalui nomor ini. Terima kasih atas kerja sama Anda.` : `\n\nTerima kasih.`);
     } else if (status === 'Diproses') {
-        msg = `Halo *${cName}*! 👋\n\n`
-            + `🔄 *Kabar Terbaru Pesanan Anda!*\n\n`
-            + `Pesanan *#${shortId}* sedang kami siapkan dengan sepenuh hati di *${storeName}*.\n\n`
-            + `📋 No. Pesanan: *#${shortId}*\n`
-            + `💰 Total: *${grandTotal}*\n\n`
-            + `🛍️ *Item yang Disiapkan:*\n${itemSection}\n`
+        msg = `Halo Bapak/Ibu *${cName}*,\n\n`
+            + `Pemberitahuan pemrosesan pesanan material dari *${storeName}*:\n\n`
+            + `📋 *STATUS PESANAN: SEDANG DISIAPKAN*\n`
+            + `• No. Referensi : *#${shortId}*\n`
+            + `• Total Tagihan : *${grandTotal}*\n\n`
+            + `📦 *Daftar Material:*\n${itemSection}\n`
             + deliverySection
             + (isDelivery && !d.isDropPoint
-                ? `\n🚗 Pesanan akan segera dikirim ke alamat Anda. Harap siap menerima!`
+                ? `\nTim logistik kami sedang menyiapkan & memuat barang ke armada. Material akan segera dikirimkan ke alamat Anda. Mohon pastikan akses jalan dan ruang bongkar muat tersedia.`
                 : d.isDropPoint
-                ? `\n🚗 Pesanan akan segera dikirim ke lokasi tujuan yang Anda tentukan.`
-                : `\n🏪 Pesanan Anda akan siap diambil di toko kami sebentar lagi!`)
-            + `\n\nTerima kasih atas kepercayaan Anda! 🙏`;
+                ? `\nMaterial sedang disiapkan untuk pengiriman langsung ke lokasi proyek / penerima tujuan. Armada kami akan berkoordinasi saat proses bongkar muat.`
+                : `\nMaterial pesanan Anda sedang disiapkan di counter pick-up toko dan dapat diambil setelah konfirmasi kesiapan barang ini diterima.`)
+            + `\n\nTerima kasih atas kepercayaan dan kerja sama Anda bersama *${storeName}*.`;
     } else if (status === 'Selesai') {
-        msg = `Halo *${cName}*! 👋\n\n`
-            + `✅ *Pesanan Selesai! Terima kasih sudah berbelanja!*\n\n`
-            + `Pesanan *#${shortId}* dari *${storeName}* telah berhasil diselesaikan.\n\n`
-            + `💰 Total Belanja: *${grandTotal}*\n`
-            + `💳 Pembayaran: *${methodLabel}*\n\n`
-            + `Semoga produk yang Anda terima sesuai harapan! 🎉\n\n`
-            + `💬 *Apakah Anda puas dengan pelayanan kami?*\n`
-            + `Jangan ragu untuk kembali berbelanja di *${storeName}*. Sampai jumpa! 🛒✨`;
+        msg = `Halo Bapak/Ibu *${cName}*,\n\n`
+            + `📋 *SURAT JALAN & TRANSAKSI SELESAI*\n\n`
+            + `Pesanan material *#${shortId}* dari *${storeName}* telah berhasil diserahterimakan dan diselesaikan.\n\n`
+            + `• No. Referensi : *#${shortId}*\n`
+            + `• Total Transaksi : *${grandTotal}*\n`
+            + `• Metode Bayar : *${methodLabel}*\n\n`
+            + `Seluruh barang telah diterima dengan baik. Terima kasih telah mempercayakan suplai material & alat teknik proyek Anda kepada *${storeName}*. Kami senantiasa siap mendukung proyek dan kebutuhan konstruksi Anda berikutnya.`;
     } else if (status === 'Dibatalkan') {
-        msg = `Halo *${cName}*! 👋\n\n`
-            + `❌ *Pemberitahuan Pembatalan Pesanan*\n\n`
-            + `Kami informasikan bahwa pesanan *#${shortId}* di *${storeName}* telah dibatalkan.\n\n`
-            + `💰 Total yang Dibatalkan: *${grandTotal}*\n\n`
-            + `Jika Anda memiliki pertanyaan mengenai pembatalan ini atau ingin memesan kembali, `
-            + `silakan hubungi kami kembali.\n\n`
-            + `Mohon maaf atas ketidaknyamanannya. Terima kasih! 🙏`;
+        msg = `Halo Bapak/Ibu *${cName}*,\n\n`
+            + `📋 *PEMBERITAHUAN PEMBATALAN PESANAN*\n\n`
+            + `Kami menginformasikan bahwa pesanan material *#${shortId}* pada *${storeName}* telah dibatalkan dari sistem.\n\n`
+            + `• No. Referensi : *#${shortId}*\n`
+            + `• Nilai Transaksi : *${grandTotal}*\n\n`
+            + `Apabila pembatalan ini memerlukan klarifikasi lebih lanjut atau Anda ingin melakukan pemesanan ulang / konsultasi spesifikasi material lain, silakan hubungi tim layanan pelanggan kami.\n\n`
+            + `Terima kasih atas perhatian dan kerja sama Anda.`;
     } else {
         // Fallback generik
-        msg = `Halo *${cName}*! 👋\n\n`
-            + `Update status pesanan *#${shortId}* dari *${storeName}*:\n\n`
-            + `📦 Status: *${status}*\n`
-            + `💰 Total: *${grandTotal}*\n\n`
-            + `Terima kasih! 🙏`;
+        msg = `Halo Bapak/Ibu *${cName}*,\n\n`
+            + `Update status pesanan material *#${shortId}* dari *${storeName}*:\n\n`
+            + `📦 Status Terkini : *${status}*\n`
+            + `💰 Total Tagihan : *${grandTotal}*\n\n`
+            + `Terima kasih atas kerja sama Anda bersama ${storeName}.`;
     }
     
     if (typeof window.openWhatsApp === 'function') {
@@ -1233,12 +1232,13 @@ export const konfirmasiKeWAPenerima = async (orderId) => {
         const dpAddr = (d.dropPoint && d.dropPoint.address) ? d.dropPoint.address : '-';
         const status = d.status || 'Diproses';
         
-        const msg = `Halo *${dpName}*! 👋\n\n`
-            + `Kami dari *${storeName}* menginformasikan bahwa ada pesanan barang dari *${cName}* yang akan dikirimkan ke lokasi Anda:\n\n`
-            + `📋 No. Pesanan: *#${orderId.split('-').pop()}*\n`
-            + `🏠 Alamat Tujuan: ${dpAddr}\n`
-            + `📦 Status: *${status}*\n\n`
-            + `Mohon konfirmasi atau pastikan ada yang menerima barang di lokasi tujuan saat kurir tiba. Terima kasih! 🙏`;
+        const msg = `Halo Bapak/Ibu *${dpName}*,\n\n`
+            + `Kami dari tim logistik *${storeName}* menginformasikan jadwal pengiriman material proyek atas pesanan dari *${cName}*:\n\n`
+            + `📋 *DETAIL PENGIRIMAN LOGISTIK*\n`
+            + `• No. Surat Jalan / Pesanan : *#${orderId.split('-').pop()}*\n`
+            + `• Lokasi Proyek / Tujuan : ${dpAddr}\n`
+            + `• Status Pengiriman : *${status}*\n\n`
+            + `Armada kami akan mengantarkan material ke titik bongkar muat yang ditentukan. Mohon pastikan perwakilan proyek / mandor berada di lokasi saat armada tiba. Terima kasih atas kerja sama Anda.`;
         
         if (typeof window.openWhatsApp === 'function') {
             window.openWhatsApp(dpWa, msg);
@@ -1255,7 +1255,7 @@ export const konfirmasiKeWAPenerima = async (orderId) => {
  * Hapus pesanan permanen dari Firestore dengan proteksi pemulihan stok
  */
 export const deleteOrder = (i) => {
-    showConfirm("Hapus Pesanan", "Yakin ingin menghapus pesanan ini secara permanen? Jika pesanan belum dibatalkan, stok barang akan otomatis dikembalikan ke toko.", async () => {
+    showConfirm("Hapus Pesanan", "Apakah Anda yakin ingin menghapus data pesanan ini secara permanen? Jika pesanan belum dibatalkan, alokasi stok material akan otomatis dipulihkan ke inventori toko.", async () => {
         if (isSaving) return; 
         setIsSaving(true); 
         sLoad('Menghapus...');
@@ -1266,7 +1266,7 @@ export const deleteOrder = (i) => {
                 await restoreOrderStockAndRewards(i, ord);
             }
             await db.collection("freshmart_orders").doc(i).delete(); 
-            showToast("Pesanan terhapus & stok aman!"); 
+            showToast("Pesanan berhasil dihapus dan inventori stok telah dipulihkan."); 
             if (cVOrd === i) closeOrderDetailModal(); 
         } catch(e) { 
             showToast("Gagal!"); 

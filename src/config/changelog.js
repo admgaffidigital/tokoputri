@@ -6,7 +6,7 @@
  * 
  * ATURAN ROLLING 5-LOG TERBARU (ANTI-KODE SAMPAH & ANTI-SPAM):
  * DEFAULT_CHANGELOG dibatasi secara ketat HANYA menyimpan 5 entri rilis
- * terkini (v1.10.92 s.d. v1.10.88). Setiap rilis baru ditambahkan di posisi
+ * terkini (v1.10.93 s.d. v1.10.89). Setiap rilis baru ditambahkan di posisi
  * teratas dan entri ke-6 dipangkas agar berkas tetap super ringan (~12KB vs ~425KB),
  * mengeliminasi kode sampah, dan mencegah spam riwayat di antarmuka website.
  * ============================================================
@@ -15,6 +15,21 @@
 export const MAX_CHANGELOG_LIMIT = 5;
 
 export const DEFAULT_CHANGELOG = [
+    {
+        "id": "log-1-10-93",
+        "version": "v1.10.93",
+        "date": "2026-10-08",
+        "title": "Standardisasi Bahasa & Copywriting Profesional Enterprise (Storefront, Checkout, WhatsApp & POS)",
+        "category": "feature",
+        "badge": "Enterprise Copywriting & Tone of Voice v1.10.93",
+        "items": [
+            "Storefront & Etalase Material: Transformasi menyeluruh teks penelusuran, kategori alat teknik, empty state keranjang, dan formulir pengajuan Surat Penawaran Resmi (SPH) dengan diksi bisnis konstruksi yang meyakinkan kontraktor dan pemilik proyek.",
+            "Alur Checkout Online 3 Langkah: Penyempurnaan opsi pengiriman langsung ke proyek/mandor dengan koordinasi titik bongkar muat armada, kejelasan termin pembayaran (Transfer, QRIS, COD, Cash Tempo VIP, Putri PayLater), serta pesan konfirmasi pesanan yang ramah dan formal.",
+            "Otomasi Pesan WhatsApp Pelanggan & Logistik: Template notifikasi resmi berstruktur rapi (Kop Toko, No. Referensi, Status Pemrosesan, Alamat Proyek) untuk status Baru, Diproses, Selesai, dan Drop-Point Armada, menggantikan gaya percakapan kaku/bot.",
+            "POS Kasir & Struk Termal Resmi: Penyelarasan notifikasi kasir (validasi stok persediaan, penahanan antrean, pengosongan keranjang) dan standarisasi teks penutup struk/nota retur resmi untuk membangun kepercayaan pelanggan ritel maupun grosir.",
+            "Multi-Channel Distribution v1.10.93 (Android versionCode 11093)."
+        ]
+    },
     {
         "id": "log-1-10-92",
         "version": "v1.10.92",
@@ -73,21 +88,6 @@ export const DEFAULT_CHANGELOG = [
             "Desain Flat, Bersih & Solid: Mengadopsi standar modern flat design dengan warna solid tegas berpadu border hairline halus (1px) dan bayangan mikro natural (0 1px 2px rgba(0,0,0,0.06)), menghasilkan tombol yang tajam, kontras tinggi, dan bebas blur.",
             "Sentuhan Hover & Active Ergonomis: Interaksi klik yang reponsif dan stabil dengan transisi scale halus tanpa memicu ledakan bayangan blur.",
             "Multi-Channel Distribution v1.10.89 (Android versionCode 11089)."
-        ]
-    },
-    {
-        "id": "log-1-10-88",
-        "version": "v1.10.88",
-        "date": "2026-10-07",
-        "title": "Penyelarasan Paripurna Badge Inc. PPN: Kapsul Pill Elegan & Desain Sistem Harmonis",
-        "category": "fix",
-        "badge": "Harmonious Inc. PPN Capsule Pill & Price Alignment v1.10.88",
-        "items": [
-            "Eliminasi Mutlak Badge Kotak Kaku (Square Box Stamp): Menggantikan badge Inc. PPN lama yang berbingkai kotak kuning kaku (rounded 4px) dengan format kapsul pill oval elegan (rounded-full 9999px) yang selaras 100% dengan bahasa desain seluruh badge modal produk.",
-            "Penyelarasan Palet & Tema Dinamis (.accent-badge & .badge-inc-ppn): Menghilangkan warna kuning border-amber-200 yang jomplang/tidak serasi; kini badge Inc. PPN otomatis beradaptasi menggunakan token tema toko aktif (rgba(var(--color-primary-rgb), 0.12)) dengan border halus, serasi dengan badge Harga Terbaik, Official, dan judul harga.",
-            "Integrasi Ikon Resmi Bukti Pajak: Dilengkapi ikon FontAwesome nota/pajak (<i class=\"fa-solid fa-receipt\"></i>) yang profesional dan proporsional dengan font 9px uppercase tracking-wider.",
-            "Penyelarasan Ketinggian & Wadah Mandiri (#product-modal-price-badges): Memisahkan badge pajak dari string teks angka harga (text-3xl) ke dalam kontainer flex terdedikasi, sehingga Inc. PPN dan Harga Terbaik sejajar sempurna di garis horizontal tengah tanpa floating offset yang jomplang.",
-            "Multi-Channel Distribution v1.10.88 (Android versionCode 11088)."
         ]
     }
 ];
@@ -164,7 +164,7 @@ export const getCombinedChangelog = (appData, maxLimit = MAX_CHANGELOG_LIMIT) =>
  * @returns {String} Contoh: 'v1.10.92'
  */
 export const getLatestVersion = (appData) => {
-    const defaultLatest = DEFAULT_CHANGELOG[0]?.version || 'v1.10.92';
+    const defaultLatest = DEFAULT_CHANGELOG[0]?.version || 'v1.10.93';
     const logs = getCombinedChangelog(appData, null);
     if (!logs || logs.length === 0) return defaultLatest;
     

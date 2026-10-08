@@ -23,8 +23,8 @@ export const DEFAULT_PRINTER_CONFIG = {
     headerText: '',
     storeAddress: '',
     storePhone: '',
-    footerText: 'Terima kasih atas kunjungan Anda!',
-    footerPolicyNote: 'Barang yang sudah dibeli tidak dapat ditukar/dikembalikan tanpa struk resmi.',
+    footerText: 'Terima kasih telah mempercayakan kebutuhan bangunan Anda kepada kami.',
+    footerPolicyNote: 'Barang yang sudah dibeli tidak dapat ditukar/dikembalikan tanpa nota/struk resmi.',
     showLogo: true,
     showAddress: true,
     showPhone: true,
@@ -196,8 +196,8 @@ export const savePrinterSettingsFromModal = () => {
         headerText: getValue('printer-header-custom', ''),
         storeAddress: getValue('printer-address-custom', ''),
         storePhone: getValue('printer-phone-custom', ''),
-        footerText: getValue('printer-footer-custom', 'Terima kasih atas kunjungan Anda!'),
-        footerPolicyNote: getValue('printer-policy-custom', 'Barang yang sudah dibeli tidak dapat ditukar/dikembalikan tanpa struk resmi.'),
+        footerText: getValue('printer-footer-custom', 'Terima kasih telah mempercayakan kebutuhan bangunan Anda kepada kami.'),
+        footerPolicyNote: getValue('printer-policy-custom', 'Barang yang sudah dibeli tidak dapat ditukar/dikembalikan tanpa nota/struk resmi.'),
         showAddress: getChecked('printer-opt-address', true),
         showPhone: getChecked('printer-opt-phone', true),
         showNpwp: getChecked('printer-opt-npwp', true),
@@ -343,7 +343,7 @@ export const executeTestPrint = () => {
 
     h += `
     <div style="text-align:center;font-size:10px;margin-top:6px;line-height:1.3;">
-        ${esc(config.footerText || 'Terima kasih atas kunjungan Anda!')}
+        ${esc(config.footerText || 'Terima kasih telah mempercayakan kebutuhan bangunan Anda kepada kami.')}
     </div>
     ${policyNote ? `
     <div style="text-align:center;font-size:9px;color:#475569;margin-top:4px;border-top:1px dashed #ccc;padding-top:4px;">

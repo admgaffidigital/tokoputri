@@ -52,11 +52,11 @@ export const openProductModal = (i, isFromNavStack = false) => {
             : (parseFloat(p.stock != null && p.stock !== '' ? p.stock : (p.stok != null && p.stok !== '' ? p.stok : 0)) || 0);
     }
     if (!pActive) {
-        showToast('Produk ini sedang tidak tersedia');
+        showToast('Produk ini saat ini belum tersedia untuk pemesanan.');
         return;
     }
     if (useStk && !isPreorder && totalAvail <= 0) {
-        showToast('Maaf, stok produk ini sedang kosong');
+        showToast('Persediaan produk ini sedang habis. Silakan hubungi admin untuk pemesanan / inden.');
         return;
     }
 
@@ -1228,7 +1228,7 @@ export const updateModalQty = c => {
     setV('modal-qty-input', cQty); 
     uMPP();
     if (typeof window.triggerHaptic === 'function') window.triggerHaptic('light');
-    if (useStk && !isPreorder && maxStk !== Infinity && cQty >= maxStk) showToast(`Maks stok: ${maxStk}`);
+    if (useStk && !isPreorder && maxStk !== Infinity && cQty >= maxStk) showToast(`Batas pembelian telah mencapai stok maksimal (${maxStk} unit)`);
 };
 
 export const handleModalQtyChange = v => {
@@ -1259,7 +1259,7 @@ export const selectVariant = i => {
  * Konfirmasi menambahkan produk dari modal ke keranjang belanja (dengan animasi terbang & haptic)
  */
 export const confirmAddProductToCart = (sourceEl = null) => {
-    if (cProd.variants?.length > 0 && cVar === null) return showToast("Pilih varian / warna terlebih dahulu!");
+    if (cProd.variants?.length > 0 && cVar === null) return showToast("Silakan tentukan pilihan varian atau tipe terlebih dahulu.");
     
     const useStk = appData.store.useStock === true || appData.store.useStock === 'true';
     if (useStk) {
@@ -1269,7 +1269,7 @@ export const confirmAddProductToCart = (sourceEl = null) => {
         const inCart = cart.find(i => i.id === cProd.id && i.variantName === vN2);
         const alreadyInCart = inCart ? parseFloat(inCart.qty) || 0 : 0;
         if (cQty + alreadyInCart > avail) {
-            return showToast(`Stok tidak cukup! Tersisa: ${avail}`);
+            return showToast(`Jumlah melebihi sisa persediaan (tersisa ${avail} unit).`);
         }
     }
     
@@ -1305,14 +1305,14 @@ export const confirmAddProductToCart = (sourceEl = null) => {
     }
 
     closeProductModal(); 
-    showToast("Berhasil Masuk Keranjang", "success");
+    showToast("Produk berhasil ditambahkan ke keranjang belanja", "success");
 };
 
 /**
  * Beli Sekarang langsung (Instan Checkout)
  */
 export const buyNowProduct = () => {
-    if (cProd.variants?.length > 0 && cVar === null) return showToast("Pilih varian / warna terlebih dahulu!");
+    if (cProd.variants?.length > 0 && cVar === null) return showToast("Silakan tentukan pilihan varian atau tipe terlebih dahulu.");
 
     const useStk = appData.store.useStock === true || appData.store.useStock === 'true';
     if (useStk) {
@@ -1322,7 +1322,7 @@ export const buyNowProduct = () => {
         const inCart = cart.find(i => i.id === cProd.id && i.variantName === vN2);
         const alreadyInCart = inCart ? parseFloat(inCart.qty) || 0 : 0;
         if (cQty + alreadyInCart > avail) {
-            return showToast(`Stok tidak cukup! Tersisa: ${avail}`);
+            return showToast(`Jumlah melebihi sisa persediaan (tersisa ${avail} unit).`);
         }
     }
 
@@ -1364,7 +1364,7 @@ export const buyNowProduct = () => {
 export const chatWAAboutProduct = () => {
     if (!cProd) return;
     const phone = (appData.store.wa || '').replace(/\D/g, '');
-    if (!phone) return showToast('Nomor WhatsApp toko belum diatur admin.');
+    if (!phone) return showToast('Nomor WhatsApp layanan toko belum dikonfigurasi.');
     
     let targetWa = phone;
     if (targetWa.startsWith('0')) targetWa = '62' + targetWa.slice(1);
@@ -1373,7 +1373,7 @@ export const chatWAAboutProduct = () => {
     const v = cProd.variants?.[cVar];
     const vN = v?.name ? ` (Varian: ${v.name})` : '';
     const price = v?.price ?? cProd.price;
-    const msg = `Halo ${appData.store.name || 'Toko Putri'}, saya ingin bertanya tentang produk *${cProd.name}*${vN} seharga ${fCur(price)}. Apakah produk ini siap kirim?`;
+    const msg = `Halo Tim *${appData.store.name || 'Toko Putri'}*,\n\nSaya ingin berkonsultasi mengenai produk berikut:\n📦 *${cProd.name}*${vN}\n💰 Harga: *${fCur(price)}*\n\nApakah stok barang ini tersedia dan bisa langsung dipesan / dikirim ke lokasi proyek saya? Terima kasih.`;
     
     if (typeof window.triggerHaptic === 'function') window.triggerHaptic('light');
     if (typeof window.openWhatsApp === 'function') {
@@ -1387,10 +1387,10 @@ export const chatWAAboutProduct = () => {
  * Simpan produk ke daftar wishlist/favorit
  */
 export const confirmAddToWishlist = () => {
-    if (cProd.variants?.length > 0 && cVar === null) return showToast("Pilih varian / warna terlebih dahulu!");
+    if (cProd.variants?.length > 0 && cVar === null) return showToast("Silakan tentukan pilihan varian atau tipe terlebih dahulu.");
 
     const v = cProd.variants?.[cVar], vN = v?.name || null;
-    if (wishlist.find(i => i.id === cProd.id && i.variantName === vN)) return showToast("Sudah di Favorit!");
+    if (wishlist.find(i => i.id === cProd.id && i.variantName === vN)) return showToast("Produk ini sudah tersimpan dalam daftar favorit Anda.");
     wishlist.push({
         id: cProd.id, 
         name: cProd.name, 
@@ -1402,7 +1402,7 @@ export const confirmAddToWishlist = () => {
     ssL('freshmart_wishlist', JSON.stringify(wishlist));
     if (typeof window.updWish === 'function') window.updWish(); 
     closeProductModal(); 
-    showToast("Masuk Favorit");
+    showToast("Produk berhasil disimpan ke daftar favorit.");
 };
 
 /**
@@ -1413,7 +1413,7 @@ export const shareProduct = () => {
     
     const productUrl = window.location.origin + window.location.pathname + '?p=' + cProd.id;
     const shareTitle = cProd.name;
-    const shareText = `Cek produk ${cProd.name} di ${appData.store.name} sekarang!`;
+    const shareText = `Temukan produk material berkualitas ${cProd.name} di ${appData.store.name || 'Toko Putri'}!`;
 
     if (navigator.share) {
         navigator.share({
@@ -1426,8 +1426,8 @@ export const shareProduct = () => {
     } else {
         if (navigator.clipboard && navigator.clipboard.writeText) {
             navigator.clipboard.writeText(productUrl)
-                .then(() => showToast("Link produk berhasil disalin!"))
-                .catch(() => showToast("Gagal menyalin link."));
+                .then(() => showToast("Tautan produk berhasil disalin ke papan klip."))
+                .catch(() => showToast("Tidak dapat menyalin tautan produk."));
         } else {
             const e = document.createElement('textarea');
             e.value = productUrl;
@@ -1437,7 +1437,7 @@ export const shareProduct = () => {
             e.select();
             document.execCommand('copy');
             document.body.removeChild(e);
-            showToast("Link produk berhasil disalin!");
+            showToast("Tautan produk berhasil disalin ke papan klip.");
         }
     }
 };

@@ -536,7 +536,7 @@ const initBarcodeListener = () => {
                         const sf = el('pos-search-input');
                         if (sf) { sf.value = barcodeBuffer; posSearch = barcodeBuffer; renderCatalog(); }
                     }
-                    showToast('Barcode tidak ditemukan di katalog', 'warning');
+                    showToast('Kode barcode atau SKU tidak ditemukan di katalog produk.', 'warning');
                 }
                 barcodeBuffer = '';
             }
@@ -557,7 +557,7 @@ export const addToCart = (productId) => {
     // 1. Validasi Produk Aktif (Identik Storefront)
     const pActive = p.isActive !== 'false' && p.isActive !== false;
     if (!pActive) {
-        showToast('Produk ini sedang tidak tersedia', 'warning');
+        showToast('Produk ini sedang dinonaktifkan atau tidak tersedia.', 'warning');
         return false;
     }
 
@@ -573,7 +573,7 @@ export const addToCart = (productId) => {
     // 2. Validasi Stok Tersedia (Identik Storefront)
     const sInfo = getProductStockInfo(p);
     if (sInfo.isManaged && !sInfo.isPreorder && sInfo.isOutOfStock) {
-        showToast(`Maaf, stok "${p.name}" sedang kosong!`, 'warning');
+        showToast(`Persediaan "${p.name}" sedang kosong.`, 'warning');
         return false;
     }
 
@@ -581,7 +581,7 @@ export const addToCart = (productId) => {
     if (existing) {
         const nextQty = parseFloat((existing.qty + 1).toFixed(3));
         if (sInfo.isManaged && !sInfo.isPreorder && nextQty > sInfo.totalStock) {
-            showToast(`Stok tidak cukup! Tersisa: ${formatQty(sInfo.totalStock)} ${p.unit || 'pcs'}`, 'warning');
+            showToast(`Persediaan tidak mencukupi. Sisa stok: ${formatQty(sInfo.totalStock)} ${p.unit || 'pcs'}`, 'warning');
             return false;
         }
         existing.qty = nextQty; recalcItem(existing);
@@ -615,14 +615,14 @@ export const posAddToCartQty = (productId, qty) => {
     // 1. Validasi Produk Aktif (Identik Storefront)
     const pActive = p.isActive !== 'false' && p.isActive !== false;
     if (!pActive) {
-        showToast('Produk ini sedang tidak tersedia', 'warning');
+        showToast('Produk ini sedang dinonaktifkan atau tidak tersedia.', 'warning');
         return false;
     }
 
     // 2. Validasi Stok Tersedia (Identik Storefront)
     const sInfo = getProductStockInfo(p);
     if (sInfo.isManaged && !sInfo.isPreorder && sInfo.isOutOfStock) {
-        showToast(`Maaf, stok "${p.name}" sedang kosong!`, 'warning');
+        showToast(`Persediaan "${p.name}" sedang kosong.`, 'warning');
         return false;
     }
 
@@ -631,13 +631,13 @@ export const posAddToCartQty = (productId, qty) => {
     if (existing) {
         const nextQty = parseFloat((existing.qty + numQty).toFixed(3));
         if (sInfo.isManaged && !sInfo.isPreorder && nextQty > sInfo.totalStock) {
-            showToast(`Stok tidak cukup! Tersisa: ${formatQty(sInfo.totalStock)} ${p.unit || 'pcs'}`, 'warning');
+            showToast(`Persediaan tidak mencukupi. Sisa stok: ${formatQty(sInfo.totalStock)} ${p.unit || 'pcs'}`, 'warning');
             return false;
         }
         existing.qty = nextQty; recalcItem(existing);
     } else {
         if (sInfo.isManaged && !sInfo.isPreorder && numQty > sInfo.totalStock) {
-            showToast(`Stok tidak cukup! Tersisa: ${formatQty(sInfo.totalStock)} ${p.unit || 'pcs'}`, 'warning');
+            showToast(`Persediaan tidak mencukupi. Sisa stok: ${formatQty(sInfo.totalStock)} ${p.unit || 'pcs'}`, 'warning');
             return false;
         }
         const price = parseFloat(p.price) || 0;
@@ -670,7 +670,7 @@ export const addToCartWithVariant = (productId, variantName, variantPrice, varia
     // 1. Validasi Produk Aktif
     const pActive = p.isActive !== 'false' && p.isActive !== false;
     if (!pActive) {
-        showToast('Produk ini sedang tidak tersedia', 'warning');
+        showToast('Produk ini sedang dinonaktifkan atau tidak tersedia.', 'warning');
         return false;
     }
 
@@ -679,7 +679,7 @@ export const addToCartWithVariant = (productId, variantName, variantPrice, varia
     if (v) {
         const vActive = v.isActive !== false && v.isActive !== 'false';
         if (!vActive) {
-            showToast('Varian ini sedang tidak tersedia', 'warning');
+            showToast('Varian produk ini sedang tidak aktif.', 'warning');
             return false;
         }
         const useStk = appData.store?.useStock === true || appData.store?.useStock === 'true';
@@ -690,11 +690,11 @@ export const addToCartWithVariant = (productId, variantName, variantPrice, varia
             const inCartQty = existing ? parseFloat(existing.qty) || 0 : 0;
             const numQty = fQty(qty) || 1;
             if (vStock <= 0) {
-                showToast(`Maaf, stok varian "${v.name}" sedang kosong!`, 'warning');
+                showToast(`Persediaan varian "${v.name}" sedang kosong.`, 'warning');
                 return false;
             }
             if (inCartQty + numQty > vStock) {
-                showToast(`Stok varian "${v.name}" tidak cukup! Sisa: ${formatQty(vStock)}`, 'warning');
+                showToast(`Persediaan varian "${v.name}" tidak mencukupi. Sisa stok: ${formatQty(vStock)}`, 'warning');
                 return false;
             }
         }
@@ -840,10 +840,10 @@ export const clearCart = () => {
         posCart = []; posGlobalDisc = 0; posDiscountVal = 0; posDiscountType = 'rp';
         posPointsRedeemed = 0; posClaimedReward = null;
         renderCart();
-        showToast('Keranjang kasir dikosongkan.');
+        showToast('Keranjang transaksi kasir berhasil dikosongkan.');
     };
     if (typeof window.showConfirm === 'function') {
-        window.showConfirm('Kosongkan Keranjang', 'Hapus semua item dari transaksi saat ini?', executeClear, 'Ya, Kosongkan', true);
+        window.showConfirm('Kosongkan Keranjang Kasir', 'Apakah Anda yakin ingin menghapus seluruh item dari transaksi kasir saat ini?', executeClear, 'Ya, Kosongkan', true);
     } else {
         executeClear();
     }
@@ -951,7 +951,7 @@ export const renderHeldBadges = () => {
 // ─── Tahan Transaksi Saat Ini (Hold / Parkir) ─────────────────
 export const posHoldCurrentCart = () => {
     if (posCart.length === 0) {
-        showToast('Keranjang masih kosong, tidak ada transaksi untuk ditahan.', 'warning');
+        showToast('Keranjang kasir masih kosong. Tidak ada transaksi untuk ditahan.', 'warning');
         return;
     }
 
@@ -1063,7 +1063,7 @@ export const posConfirmHoldCart = () => {
     renderCart();
     renderCatalog();
     playCashierChime('hold');
-    showToast(`Antrean "${note}" berhasil diparkir!`, 'success');
+    showToast(`Transaksi antrean "${note}" berhasil ditahan/diparkir.`, 'success');
 };
 
 // ─── Modal Daftar Antrean Tertahan (Parkir) ─────────────────
@@ -1231,7 +1231,7 @@ const _applyRecall = (heldIdx) => {
     renderCart();
     renderCatalog();
     playCashierChime('recall');
-    showToast(`Antrean "${held.note}" berhasil dipanggil kembali!`, 'success');
+    showToast(`Transaksi antrean "${held.note}" berhasil dimuat kembali.`, 'success');
 };
 
 export const posHoldCurrentAndRecall = (heldId) => {
@@ -1304,7 +1304,7 @@ export const posExecuteDeleteHeld = (heldId) => {
     const held = posHeldCarts.find(x => x.id === heldId);
     posHeldCarts = posHeldCarts.filter(x => x.id !== heldId);
     saveHeldCarts();
-    showToast(`Antrean "${held?.note || ''}" berhasil dihapus.`, 'info');
+    showToast(`Transaksi antrean "${held?.note || ''}" telah dihapus.`, 'info');
     openPOSHeldModal(true);
 };
 
@@ -2949,7 +2949,7 @@ export const lookupPosMember = async () => {
 
 // ─── Proses Transaksi ────────────────────────────────────────
 export const processPOSTx = async () => {
-    if (posCart.length === 0) { showToast('Keranjang kosong!', 'warning'); return; }
+    if (posCart.length === 0) { showToast('Keranjang kasir masih kosong.', 'warning'); return; }
     const totalCartHpp = getCartTotalHpp();
     if (totalCartHpp > 0 && posTotal() < totalCartHpp) {
         const msg = canViewHpp()
@@ -2966,10 +2966,10 @@ export const processPOSTx = async () => {
         ? (posCustomer.phone || el('pos-cust-phone')?.value?.trim() || '')
         : (el('pos-cust-phone')?.value?.trim() || '');
 
-    if (posCustomer.isNewTempo && !custPhone) { showToast('No. HP wajib diisi untuk tempo!', 'warning'); return; }
+    if (posCustomer.isNewTempo && !custPhone) { showToast('Nomor WhatsApp wajib diisi untuk transaksi Cash Tempo.', 'warning'); return; }
     if (posPayMethod === 'cash') {
         posPaidAmount = fNum(el('pos-paid-input')?.value || 0);
-        if (posPaidAmount < posTotal()) { showToast(`Uang kurang! Minimal ${fRp(posTotal())}`, 'warning'); return; }
+        if (posPaidAmount < posTotal()) { showToast(`Nominal pembayaran kurang. Jumlah tagihan: ${fRp(posTotal())}`, 'warning'); return; }
     }
     posCustomer.name  = custName;
     posCustomer.phone = custPhone;
@@ -2980,7 +2980,7 @@ export const processPOSTx = async () => {
     if (isPaylater) {
         const minRequiredDp = posTotal() > sisaLimit ? (posTotal() - sisaLimit) : 0;
         if (dp < minRequiredDp) {
-            showToast(`DP tidak mencukupi limit PayLater! Minimal DP: ${fRp(minRequiredDp)}`, 'warning');
+            showToast(`Uang muka (DP) belum mencukupi batas kredit PayLater. Minimal DP: ${fRp(minRequiredDp)}`, 'warning');
             return;
         }
     }
@@ -2999,14 +2999,14 @@ export const processPOSTx = async () => {
                 const variant = (p.variants || []).find(v => v.name === ci.variantName);
                 const currentStk = parseFloat(variant && variant.stock !== undefined ? variant.stock : 0);
                 if (currentStk < needQty) {
-                    showToast(`Stok ${ci.name} (${ci.variantName}) tidak cukup! Sisa: ${currentStk}`, 'warning');
+                    showToast(`Persediaan ${ci.name} (${ci.variantName}) tidak mencukupi. Sisa stok: ${currentStk}`, 'warning');
                     if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-check-circle mr-2"></i>Selesaikan Transaksi'; }
                     return;
                 }
             } else {
                 const currentStk = parseFloat(p.stock !== undefined ? p.stock : 0);
                 if (currentStk < needQty) {
-                    showToast(`Stok ${ci.name} tidak cukup! Sisa: ${currentStk}`, 'warning');
+                    showToast(`Persediaan ${ci.name} tidak mencukupi. Sisa stok: ${currentStk}`, 'warning');
                     if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-check-circle mr-2"></i>Selesaikan Transaksi'; }
                     return;
                 }

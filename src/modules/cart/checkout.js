@@ -434,13 +434,13 @@ export const processOrder = async () => {
     if (!el('tnc-checkbox').checked || isSaving) return;
 
     if (window.isAdm) {
-        if (typeof window.showToast === 'function') window.showToast("Anda login sebagai Seller. Logout dulu untuk membuat pesanan.");
+        if (typeof window.showToast === 'function') window.showToast("Sesi Pengelola Aktif. Silakan keluar akun untuk membuat pesanan online.");
         return;
     }
 
     const lO = sL('freshmart_last_order');
     if (lO && (Date.now() - parseInt(lO)) < 60000) {
-        if (typeof window.showToast === 'function') window.showToast("Tunggu 1 menit untuk pesanan baru!");
+        if (typeof window.showToast === 'function') window.showToast("Pesanan sebelumnya sedang kami proses. Mohon beri jeda 1 menit sebelum memesan kembali.");
         return;
     }
     
@@ -467,12 +467,12 @@ export const processOrder = async () => {
         ssL('freshmart_cart', JSON.stringify(cart));
         if (typeof window.renderCart === 'function') window.renderCart();
         rPay();
-        if (typeof window.showToast === 'function') window.showToast("Harga produk telah diperbarui. Periksa kembali sebelum order.");
+        if (typeof window.showToast === 'function') window.showToast("Katalog harga telah diperbarui. Mohon periksa kembali rincian belanja Anda.");
         return;
     }
     
     setIsSaving(true); 
-    sLoad('Proses Pesanan...');
+    sLoad('Memproses Pesanan Anda...');
     
     try {
         const sub = cart.reduce((s, i) => s + (parseFloat(getEffP(i)) || 0) * (parseFloat(i.qty) || 0), 0);
@@ -497,7 +497,7 @@ export const processOrder = async () => {
                     if (stk < qty) {
                         setIsSaving(false); 
                         hLoad();
-                        if (typeof window.showToast === 'function') window.showToast(`Stok ${cartItem.name} (${cartItem.variantName}) tidak cukup! Sisa: ${stk}`);
+                        if (typeof window.showToast === 'function') window.showToast(`Persediaan ${cartItem.name} (${cartItem.variantName}) tidak mencukupi (tersisa ${stk} unit).`);
                         return;
                     }
                 } else {
@@ -506,7 +506,7 @@ export const processOrder = async () => {
                     if (stk < qty) {
                         setIsSaving(false); 
                         hLoad();
-                        if (typeof window.showToast === 'function') window.showToast(`Stok ${cartItem.name} tidak cukup! Sisa: ${stk}`);
+                        if (typeof window.showToast === 'function') window.showToast(`Persediaan ${cartItem.name} tidak mencukupi (tersisa ${stk} unit).`);
                         return;
                     }
                 }
@@ -570,10 +570,10 @@ export const processOrder = async () => {
             setIsSaving(false); 
             hLoad();
             if (!window.buktiPaymentFile) {
-                if (typeof window.showToast === 'function') window.showToast('Upload bukti pembayaran terlebih dahulu!');
+                if (typeof window.showToast === 'function') window.showToast('Mohon lampirkan foto struk / bukti pembayaran terlebih dahulu.');
                 return;
             }
-            if (typeof window.showToast === 'function') window.showToast('Tunggu upload Google Drive selesai, atau coba lagi!');
+            if (typeof window.showToast === 'function') window.showToast('Sedang menyelesaikan unggahan bukti transaksi. Mohon tunggu...');
             return;
         }
         
@@ -581,7 +581,7 @@ export const processOrder = async () => {
         
         if (window.buktiPaymentFile && !window.buktiGDriveUploaded) {
             try {
-                sLoad('Upload Bukti ke Google Drive...');
+                sLoad('Mengunggah Bukti Pembayaran...');
                 const uploadedUrl = await window.uploadBuktiToFirebase(window.buktiPaymentFile, oI);
                 if (uploadedUrl && !uploadedUrl.startsWith('data:')) {
                     window.buktiPaymentUrl = uploadedUrl;
@@ -589,14 +589,14 @@ export const processOrder = async () => {
                 } else {
                     setIsSaving(false); 
                     hLoad();
-                    if (typeof window.showToast === 'function') window.showToast('Upload bukti ke Google Drive gagal. Coba pilih gambar lagi!');
+                    if (typeof window.showToast === 'function') window.showToast('Gagal mengunggah berkas bukti. Silakan pilih kembali foto bukti transfer Anda.');
                     return;
                 }
-                sLoad('Proses Pesanan...');
+                sLoad('Memproses Pesanan Anda...');
             } catch(uploadErr) {
                 setIsSaving(false); 
                 hLoad();
-                if (typeof window.showToast === 'function') window.showToast('Gagal upload bukti. Periksa koneksi dan coba lagi!');
+                if (typeof window.showToast === 'function') window.showToast('Koneksi unggah terganggu. Silakan periksa jaringan internet dan coba kembali.');
                 return;
             }
         }
@@ -1031,11 +1031,11 @@ export const processOrder = async () => {
         }
 
         if (oD.claimedReward && finalMemberPoints !== null) {
-            if (typeof window.showToast === 'function') window.showToast(`Hadiah "${oD.claimedReward.name}" berhasil ditukar! Sisa poin Anda: ${finalMemberPoints}`);
+            if (typeof window.showToast === 'function') window.showToast(`Hadiah eksklusif "${oD.claimedReward.name}" berhasil ditukarkan! Sisa poin reward Anda: ${finalMemberPoints}`);
         } else if (finalMemberPoints !== null && pointsEarnedThisOrder > 0) {
-            if (typeof window.showToast === 'function') window.showToast(`Pesanan berhasil dikirim ke admin! (+${pointsEarnedThisOrder} Poin Member didapat!)`);
+            if (typeof window.showToast === 'function') window.showToast(`Pesanan Anda berhasil dikonfirmasi! (+${pointsEarnedThisOrder} Poin Member terkumpul)`);
         } else {
-            if (typeof window.showToast === 'function') window.showToast("Pesanan berhasil dikirim ke admin!");
+            if (typeof window.showToast === 'function') window.showToast("Pesanan Anda berhasil dikonfirmasi dan siap diproses!");
         }
         
         setTimeout(() => {
@@ -1078,7 +1078,7 @@ export const processOrder = async () => {
             const dpAddrEl = el('dp-address'); if (dpAddrEl) dpAddrEl.value = '';
             const dpMapsEl = el('dp-maps-input'); if (dpMapsEl) dpMapsEl.value = '';
             const btnDpLoc = el('btn-dp-location');
-            if (btnDpLoc) btnDpLoc.innerHTML = '<i class="fa-solid fa-location-crosshairs text-sm text-rose-500"></i> <span id="text-dp-location">Sematkan GPS Lokasi Tujuan</span>';
+            if (btnDpLoc) btnDpLoc.innerHTML = '<i class="fa-solid fa-location-crosshairs text-sm text-rose-500"></i> <span id="text-dp-location">Sematkan Titik GPS Lokasi Proyek</span>';
 
             const memBanner = el('member-status-banner'); 
             if (memBanner) hide(memBanner);
@@ -1099,29 +1099,29 @@ export const processOrder = async () => {
                 window.history.replaceState({ view: 'view-catalog' }, '', window.location.pathname);
             } catch(e) {}
             if (typeof window.changeView === 'function') window.changeView('view-catalog', true);
-            if (typeof window.showToast === 'function') window.showToast("Pesanan Dibuat!");
+            if (typeof window.showToast === 'function') window.showToast("Pesanan Anda Berhasil Dibuat!");
         }, 2000);
         
     } catch(e) {
         const msg = e.message || "Error";
         if (msg.startsWith('STOK_TIDAK_CUKUP:')) {
-            if (typeof window.showToast === 'function') window.showToast('Maaf, stok berubah: ' + msg.replace('STOK_TIDAK_CUKUP: ', ''));
+            if (typeof window.showToast === 'function') window.showToast('Ketersediaan stok baru saja diperbarui: ' + msg.replace('STOK_TIDAK_CUKUP: ', ''));
         } else if (msg === 'TEMPO_KHUSUS_MEMBER') {
-            if (typeof window.showToast === 'function') window.showToast('Pembayaran Cash Tempo hanya untuk Member Resmi yang telah didaftarkan Admin!');
+            if (typeof window.showToast === 'function') window.showToast('Fasilitas Cash Tempo khusus untuk Rekanan & Member VIP resmi terdaftar.');
         } else if (msg === 'POIN_TIDAK_CUKUP') {
-            if (typeof window.showToast === 'function') window.showToast('Maaf, poin Anda ternyata tidak cukup untuk hadiah ini. Silakan cek lagi.');
+            if (typeof window.showToast === 'function') window.showToast('Poin reward Anda belum mencukupi untuk penukaran hadiah ini.');
             setSelectedReward(null);
         } else if (msg === 'STOK_HADIAH_HABIS') {
-            if (typeof window.showToast === 'function') window.showToast('Maaf, stok hadiah yang dipilih baru saja habis. Silakan pilih hadiah lain.');
+            if (typeof window.showToast === 'function') window.showToast('Persediaan hadiah yang dipilih baru saja habis. Silakan pilih hadiah lainnya.');
             setSelectedReward(null);
         } else if (msg === 'HADIAH_TIDAK_DITEMUKAN') {
-            if (typeof window.showToast === 'function') window.showToast('Hadiah yang dipilih sudah tidak tersedia. Silakan pilih ulang.');
+            if (typeof window.showToast === 'function') window.showToast('Hadiah yang dipilih sudah tidak aktif. Silakan pilih hadiah pengganti.');
             setSelectedReward(null);
         } else if (msg === 'MEMBER_TIDAK_DITEMUKAN') {
-            if (typeof window.showToast === 'function') window.showToast('Data member tidak ditemukan, klaim hadiah dibatalkan. Pesanan bisa dicoba lagi tanpa hadiah.');
+            if (typeof window.showToast === 'function') window.showToast('Data member tidak terverifikasi. Penukaran hadiah dibatalkan.');
             setSelectedReward(null);
         } else {
-            if (typeof window.showToast === 'function') window.showToast(e.code === 'resource-exhausted' ? "Quota Server Penuh!" : "Gagal proses: " + msg);
+            if (typeof window.showToast === 'function') window.showToast(e.code === 'resource-exhausted' ? "Layanan server sedang padat. Mohon coba sesaat lagi." : "Gagal memproses pesanan: " + msg);
         }
     } finally {
         setIsSaving(false); 
