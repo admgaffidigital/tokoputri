@@ -1,15 +1,15 @@
 # 🗺️ ROADMAP STRATEGIS PENGEMBANGAN SISTEM TOKO PUTRI
 > **Platform Ekosistem Kasir (POS), Gudang Multi-Lokasi, & Finansial Enterprise**  
 > *Spesialisasi Ritel Bahan Bangunan, Alat Teknik, Kelistrikan & Perkakas*  
-> **Target Baseline Saat Ini:** `v1.12.1` | **Target Jangka Panjang:** `v2.0.0`
+> **Target Baseline Saat Ini:** `v1.12.2` | **Target Jangka Panjang:** `v2.0.0`
 
 ---
 
 ## 📌 Visi & Orientasi Pengembangan
-Ekosistem **TOKO PUTRI (Putri Utama Teknik)** telah mencapai kematangan arsitektur di tingkat *Enterprise Retail* pada versi `v1.12.1` dengan integrasi hulu-ke-hilir:
+Ekosistem **TOKO PUTRI (Putri Utama Teknik)** telah mencapai kematangan arsitektur di tingkat *Enterprise Retail* pada versi `v1.12.2` dengan integrasi hulu-ke-hilir:
 - Kasir POS responsif berkecepatan tinggi dengan Dual-Engine Scanner Kamera, Barcode Vektor Code 128, dan Presisi Kuantitas Desimal untuk barang curah/kiloan.
 - Alat Kalkulator Estimator Material Bangunan interaktif (Cat & Plafon, Keramik & Granit, Pasangan Dinding Hebel/Bata).
-- Manajemen Retur Barang & RMA Terpadu (Customer Sales Return & Vendor Purchase Return) dengan dukungan penuh produk multi-varian, pemilih varian dinamis, HPP spesifik varian, alokasi karantina rusak, dan rekonsiliasi kas laci.
+- Manajemen Retur Barang & RMA Terpadu (Customer Sales Return & Vendor Purchase Return) dengan dukungan produk multi-varian, pemilih varian dinamis, HPP spesifik varian, alokasi karantina rusak, rekonsiliasi kas laci, serta Universal Native Card View & Dual-View responsif.
 - Penilaian persediaan akurat berstandar akuntansi PSAK dengan FIFO (*First-In, First-Out*) berbasis batch kulakan.
 - Inventori dua lokasi independen (*Floor-First Deduction*: Rak Toko vs Gudang Cadangan).
 - Buku Kas Laci Kasir (*Cash Movement*), Rekap Shift X/Z Report, dan Manajemen Piutang Tempo (AR Ledger).
@@ -144,13 +144,13 @@ URGENSI TINGGI
 RENDAH ────────────────────────────────────────────────────────► TINGKAT KESULITAN
 ```
 
-| Fase | Nama Modul | Nilai Tambah Bisnis | Estimasi Target |
-| :---: | :--- | :--- | :---: |
-| **Fase 1** | **Qty Desimal & Estimator Bahan** | Transaksi eceran leluasa, fitur pikat konsumen unik | `v1.11.x` |
-| **Fase 2** | **Retur Penjualan & Pembelian** | Tertib tukar barang, akurasi mutasi kasir & stok | `v1.12.x` |
-| **Fase 3** | **Surat Jalan & Pengiriman Proyek** | Logistik armada & material volume besar rapi | `v1.13.x` |
-| **Fase 4** | **Multi-Satuan UOM & Harga Grosir** | Eceran vs grosir otomatis tanpa duplikasi produk | `v1.14.x` |
-| **Fase 5** | **Smart Safety Stock & Otomasi WA** | Pengadaan barang akurat, penagihan tempo cepat | `v2.0.0` |
+| Fase | Nama Modul | Nilai Tambah Bisnis | Estimasi Target | Status |
+| :---: | :--- | :--- | :---: | :---: |
+| **Fase 1** | **Qty Desimal & Estimator Bahan** | Transaksi eceran leluasa, fitur pikat konsumen unik | `v1.11.x` | ✅ **SELESAI** |
+| **Fase 2** | **Retur Penjualan & Pembelian (RMA)** | Tertib tukar barang, akurasi mutasi kasir & stok | `v1.12.x` | ✅ **SELESAI** |
+| **Fase 3** | **Surat Jalan & Pengiriman Proyek** | Logistik armada & material volume besar rapi | `v1.13.x` | ⏳ *Agenda Berikutnya* |
+| **Fase 4** | **Multi-Satuan UOM & Harga Grosir** | Eceran vs grosir otomatis tanpa duplikasi produk | `v1.14.x` | 📋 *Menunggu Fase 3* |
+| **Fase 5** | **Smart Safety Stock & Otomasi WA** | Pengadaan barang akurat, penagihan tempo cepat | `v2.0.0` | 📋 *Menunggu Fase 4* |
 
 ---
 
