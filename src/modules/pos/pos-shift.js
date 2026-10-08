@@ -1568,7 +1568,7 @@ export const updatePOSShiftDiscrepancy = () => {
     const shift = getActiveShift();
     if (!shift) return;
 
-    const expectedCash = (parseFloat(shift.startingCash) || 0) + (parseFloat(shift.cashSales) || 0);
+    const expectedCash = getShiftExpectedCash(shift);
     const actualCash = parseFloat(el('pos-shift-actual-cash-input')?.value) || 0;
     const diff = actualCash - expectedCash;
 
@@ -2008,7 +2008,7 @@ export const loadAdminShiftReports = async () => {
             totalOmsetSum += (parseFloat(s.totalSales) || 0);
             const actual = s.actualCash !== undefined 
                 ? parseFloat(s.actualCash) 
-                : ((parseFloat(s.startingCash) || 0) + (parseFloat(s.cashSales) || 0));
+                : getShiftExpectedCash(s);
             totalCashInDrawerSum += (actual || 0);
         });
 
@@ -2078,7 +2078,7 @@ export const loadAdminShiftReports = async () => {
             const startDate = s.startTime ? new Date(s.startTime).toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' }) : '-';
             const endDate = s.endTime ? new Date(s.endTime).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) + ' WIB' : '';
             const sJson = JSON.stringify(s).replace(/"/g, '&quot;');
-            const actualCash = s.actualCash !== undefined ? s.actualCash : ((s.startingCash || 0) + (s.cashSales || 0));
+            const actualCash = s.actualCash !== undefined ? s.actualCash : getShiftExpectedCash(s);
 
             return `
             <div class="p-4 sm:p-5 rounded-2xl sm:rounded-3xl bg-white dark:bg-slate-800/95 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs hover:shadow-xs transition-all space-y-3.5">
