@@ -132,7 +132,7 @@ export let confirmPromiseResolve = null;
  * Dialog Konfirmasi Aksi (Custom Confirm Modal)
  * Mendukung callback tradisional cb() maupun Promise (await showConfirm(...))
  */
-export const showConfirm = (t, m, cb, btnText = "Ya, Hapus", isDanger = true) => {
+export const showConfirm = (t, m, cb, btnText = null, isDanger = null) => {
     let title = t;
     let msg = m;
     let callback = cb;
@@ -143,9 +143,28 @@ export const showConfirm = (t, m, cb, btnText = "Ya, Hapus", isDanger = true) =>
     if (typeof m === 'function') {
         callback = m;
         msg = t;
-        title = typeof btnText === 'string' && btnText !== "Ya, Hapus" ? btnText : "Konfirmasi Tindakan";
-        btnLabel = typeof cb === 'string' ? cb : "Ya, Lanjutkan";
-        dangerMode = true;
+        title = typeof btnText === 'string' ? btnText : "Konfirmasi Tindakan";
+        btnLabel = typeof cb === 'string' ? cb : null;
+        if (dangerMode === null) dangerMode = true;
+    }
+
+    // Deteksi konteks aksi secara cerdas berdasarkan teks judul & pesan
+    const fullText = `${title || ''} ${typeof msg === 'string' ? msg : ''}`.toLowerCase();
+    const isPrintAction = /cetak|print/.test(fullText);
+    const isExplicitDanger = /hapus|delete|kosongkan|reset|buang|hilang|batalkan/.test(fullText);
+
+    if (dangerMode === null) {
+        dangerMode = isExplicitDanger;
+    }
+
+    if (!btnLabel) {
+        if (isPrintAction) {
+            btnLabel = "Ya, Cetak";
+        } else if (dangerMode) {
+            btnLabel = "Ya, Hapus";
+        } else {
+            btnLabel = "Ya, Lanjutkan";
+        }
     }
 
     let promiseResult = null;
@@ -179,9 +198,14 @@ export const showConfirm = (t, m, cb, btnText = "Ya, Hapus", isDanger = true) =>
             el('confirm-icon-box').className = 'w-16 h-16 bg-rose-50 dark:bg-rose-900/30 text-rose-500 dark:text-rose-400 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-5 border border-rose-200 dark:border-rose-800';
             el('confirm-icon').className = 'fa-solid fa-triangle-exclamation';
         } else {
-            b.className = 'flex-1 py-3.5 bg-[var(--color-primary)] text-white font-bold rounded-2xl hover:opacity-90 active:scale-95 transition-all text-xs sm:text-sm shadow-sm cursor-pointer';
-            el('confirm-icon-box').className = 'w-16 h-16 bg-[rgba(var(--color-primary-rgb),0.08)] dark:bg-[rgba(var(--color-primary-rgb),0.15)] text-[var(--color-primary)] rounded-2xl flex items-center justify-center text-3xl mx-auto mb-5 border border-[var(--color-primary)]/20';
-            el('confirm-icon').className = 'fa-solid fa-copy';
+            b.className = 'flex-1 py-3.5 text-white font-bold rounded-2xl hover:opacity-95 active:scale-95 transition-all text-xs sm:text-sm shadow-sm cursor-pointer';
+            b.style.background = 'var(--color-primary)';
+            b.style.boxShadow = '0 4px 14px rgba(var(--color-primary-rgb), 0.35)';
+            el('confirm-icon-box').className = 'w-16 h-16 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-5 border shadow-2xs';
+            el('confirm-icon-box').style.background = 'rgba(var(--color-primary-rgb), 0.12)';
+            el('confirm-icon-box').style.color = 'var(--color-primary)';
+            el('confirm-icon-box').style.borderColor = 'rgba(var(--color-primary-rgb), 0.25)';
+            el('confirm-icon').className = isPrintAction ? 'fa-solid fa-print' : 'fa-solid fa-circle-check';
         }
     }
     const m2 = el('custom-confirm-modal');

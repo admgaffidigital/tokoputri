@@ -1071,15 +1071,15 @@
         </div>
 
         <!-- Material Category Tabs -->
-        <div class="px-4 sm:px-5 pt-3 pb-2.5 shrink-0 bg-slate-50/80 dark:bg-slate-900/60 border-b border-slate-100 dark:border-slate-800/80">
-          <div class="flex items-center gap-1.5 p-1 bg-slate-200/70 dark:bg-slate-800/90 rounded-2xl">
-            <button id="estimator-tab-btn-paint" onclick="switchEstimatorTab('paint')" class="flex-1 py-2 sm:py-2.5 px-3 rounded-xl font-black text-xs transition-all shadow-xs flex items-center justify-center gap-1.5 whitespace-nowrap cursor-pointer primary-bg text-white">
+        <div class="px-3 sm:px-5 pt-3 pb-2.5 shrink-0 bg-slate-50/80 dark:bg-slate-900/60 border-b border-slate-100 dark:border-slate-800/80">
+          <div class="flex items-center gap-1 sm:gap-1.5 p-1 bg-slate-200/70 dark:bg-slate-800/90 rounded-2xl overflow-x-auto custom-scrollbar" style="scrollbar-width: none; -ms-overflow-style: none;">
+            <button id="estimator-tab-btn-paint" onclick="switchEstimatorTab('paint')" class="shrink-0 sm:flex-1 py-2 sm:py-2.5 px-3 sm:px-4 rounded-xl font-black text-xs transition-all shadow-xs flex items-center justify-center gap-1.5 whitespace-nowrap cursor-pointer primary-bg text-white">
               <i class="fa-solid fa-paintbrush text-xs"></i> <span>Cat &amp; Plafon</span>
             </button>
-            <button id="estimator-tab-btn-tile" onclick="switchEstimatorTab('tile')" class="flex-1 py-2 sm:py-2.5 px-3 rounded-xl font-bold text-xs transition-all flex items-center justify-center gap-1.5 whitespace-nowrap cursor-pointer bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
+            <button id="estimator-tab-btn-tile" onclick="switchEstimatorTab('tile')" class="shrink-0 sm:flex-1 py-2 sm:py-2.5 px-3 sm:px-4 rounded-xl font-bold text-xs transition-all flex items-center justify-center gap-1.5 whitespace-nowrap cursor-pointer bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
               <i class="fa-solid fa-table-cells text-xs"></i> <span>Keramik &amp; Granit</span>
             </button>
-            <button id="estimator-tab-btn-brick" onclick="switchEstimatorTab('brick')" class="flex-1 py-2 sm:py-2.5 px-3 rounded-xl font-bold text-xs transition-all flex items-center justify-center gap-1.5 whitespace-nowrap cursor-pointer bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
+            <button id="estimator-tab-btn-brick" onclick="switchEstimatorTab('brick')" class="shrink-0 sm:flex-1 py-2 sm:py-2.5 px-3 sm:px-4 rounded-xl font-bold text-xs transition-all flex items-center justify-center gap-1.5 whitespace-nowrap cursor-pointer bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
               <i class="fa-solid fa-cubes-stacked text-xs"></i> <span>Dinding &amp; Semen</span>
             </button>
           </div>
@@ -1105,7 +1105,7 @@
 
     <!-- Sales Return Modal (Retur Penjualan Konsumen) -->
     <div class="fixed inset-0 z-[115] flex hidden items-end justify-center bg-slate-900/80 p-0 opacity-0 transition-opacity duration-300 sm:items-center sm:p-5" id="modal-sales-return" onclick="if (event.target === this) closeSalesReturnModal();">
-      <div class="modal-bottom-sheet relative flex max-h-[92dvh] w-full max-w-sm sm:max-w-2xl md:max-w-3xl lg:max-w-4xl translate-y-full transform flex-col overflow-hidden rounded-t-[2rem] sm:rounded-3xl border border-slate-200/90 bg-white shadow-2xl transition-transform duration-300 dark:border-slate-800 dark:bg-[#0b1121] sm:translate-y-10" id="modal-sales-return-box">
+      <div class="modal-bottom-sheet relative flex max-h-[92dvh] w-full max-w-full sm:max-w-2xl md:max-w-3xl lg:max-w-4xl translate-y-full transform flex-col overflow-hidden rounded-t-[2rem] sm:rounded-3xl border border-slate-200/90 bg-white shadow-2xl transition-transform duration-300 dark:border-slate-800 dark:bg-[#0b1121] sm:translate-y-10" id="modal-sales-return-box">
         <div class="pull-indicator sm:hidden" style="margin: 8px auto 2px;"></div>
         <!-- Header -->
         <div class="flex shrink-0 items-center justify-between border-b border-slate-100 p-4 sm:p-5 dark:border-slate-800/80 bg-white dark:bg-[#0b1121]">
@@ -1164,7 +1164,7 @@
 
     <!-- Vendor Purchase Return Modal (Retur Pembelian ke Supplier) -->
     <div class="fixed inset-0 z-[115] flex hidden items-end justify-center bg-slate-900/80 p-0 opacity-0 transition-opacity duration-300 sm:items-center sm:p-5" id="modal-vendor-return" onclick="if (event.target === this) closeVendorReturnModal();">
-      <div class="modal-bottom-sheet relative flex max-h-[92dvh] w-full max-w-sm sm:max-w-2xl md:max-w-3xl lg:max-w-4xl translate-y-full transform flex-col overflow-hidden rounded-t-[2rem] sm:rounded-3xl border border-slate-200/90 bg-white shadow-2xl transition-transform duration-300 dark:border-slate-800 dark:bg-[#0b1121] sm:translate-y-10" id="modal-vendor-return-box">
+      <div class="modal-bottom-sheet relative flex max-h-[92dvh] w-full max-w-full sm:max-w-2xl md:max-w-3xl lg:max-w-4xl translate-y-full transform flex-col overflow-hidden rounded-t-[2rem] sm:rounded-3xl border border-slate-200/90 bg-white shadow-2xl transition-transform duration-300 dark:border-slate-800 dark:bg-[#0b1121] sm:translate-y-10" id="modal-vendor-return-box">
         <div class="pull-indicator sm:hidden" style="margin: 8px auto 2px;"></div>
         <!-- Header -->
         <div class="flex shrink-0 items-center justify-between border-b border-slate-100 p-4 sm:p-5 dark:border-slate-800/80 bg-white dark:bg-[#0b1121]">

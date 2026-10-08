@@ -16,6 +16,22 @@ export const MAX_CHANGELOG_LIMIT = 5;
 
 export const DEFAULT_CHANGELOG = [
     {
+        "id": "log-1-12-02",
+        "version": "v1.12.2",
+        "date": "2026-10-08",
+        "title": "Harmonisasi Desain Native App, Dual-View Riwayat Retur, Tab Bar Estimator & Konfirmasi Cetak Pintar",
+        "category": "feature",
+        "badge": "Native Design System Harmonization & Responsive Dual-View v1.12.2",
+        "items": [
+            "Dual-View Riwayat Retur Responsif (returns.js): Memperkenalkan tampilan dwifungsi (Mobile Card View .card-native di layar HP yang bebas potong & touch-friendly 40px, serta Tabel Analitis lapang di layar Desktop lebar), menghilangkan tabel terpotong horizontal pada riwayat retur penjualan dan pembelian supplier.",
+            "Dialog Konfirmasi Cerdas & Tombol Cetak Selaras Tema (ui.js): Menyempurnakan showConfirm agar secara cerdas mendeteksi konteks cetak dokumen/surat/nota. Eliminasi tombol merah keliru 'Ya, Hapus' dengan ikon bahaya ⚠️ pada alur cetak dokumen retur, digantikan tombol dinamis bertema toko aktif var(--color-primary) dengan teks 'Ya, Cetak' dan ikon fa-print.",
+            "Tab Bar Estimator Anti-Potong Mobile (index.html): Menambahkan dukungan scroll horizontal halus (overflow-x-auto custom-scrollbar) dan shrink-0 pada tab bar kategori Kalkulator Estimator Material Bangunan sehingga teks tab 'Dinding & Semen' dan lainnya tampil utuh tanpa terpotong di layar smartphone.",
+            "Optimalisasi Bottom-Sheet Modal Retur (index.html): Memperlebar wadah modal retur penjualan dan supplier di layar HP (w-full max-w-full sm:max-w-2xl) sehingga form pengisian dan checklist barang mengisi seluruh bidang layar tanpa terasa sempit atau terhimpit.",
+            "Penyelarasan Desain Sistem Native (style.css & returns.js): Standardisasi token kartu .card-native, tombol aksi ergonomis sentuh .btn-native-action (tinggi 40px, radius 12px), dan palet aksen tema toko dinamis di seluruh formulir dan ringkasan metrik.",
+            "Multi-Channel Distribution v1.12.2 (Android versionCode 11202)."
+        ]
+    },
+    {
         "id": "log-1-12-01",
         "version": "v1.12.1",
         "date": "2026-10-08",
@@ -76,21 +92,6 @@ export const DEFAULT_CHANGELOG = [
             "Integrasi Impor Langsung getMemberTier (reward.js & pos.js): Mengimpor helper tingkatan loyalitas getMemberTier secara terstruktur pada modul POS dengan fallback berlapis (getMemberTier -> window.getMemberTier -> fallback default) sehingga kalkulasi tier selalu presisi dan kebal gangguan siklus hidup pemuatan skrip.",
             "Penyelarasan Tata Letak & Keamanan Bar Info Member: Memastikan badge tingkatan member, saldo poin loyalitas (Star), dan plafon Putri PayLater tersusun sejajar rapi (inline-flex, gap-1.5, shadow-2xs) tanpa distorsi teks kapital.",
             "Multi-Channel Distribution v1.10.99 (Android versionCode 11099)."
-        ]
-    },
-    {
-        "id": "log-1-10-98",
-        "version": "v1.10.98",
-        "date": "2026-10-08",
-        "title": "Resolusi Paripurna Layar Berkedip Pengaturan Toko & Arsitektur Single Scroll Container",
-        "category": "feature",
-        "badge": "Zero-Flicker Settings & Single Scroll Container Architecture v1.10.98",
-        "items": [
-            "Eliminasi Total Penyebab Layar Berkedip (flickering/jitter) di Pengaturan Toko: Mengganti elemen dekoratif blur GPU (filter: blur-xl) pada Kartu Lisensi SaaS dengan CSS Radial Gradient murni (radial-gradient) berkinerja tinggi, menghilangkan kalkulasi konvolusi blur dan tile clipping subpixel di batas bawah scroll.",
-            "Pembersihan Konflik Layer GPU & Containment (style.css & subscription.js): Menghapus aturan berbahaya 'contain: layout paint;' pada scroll container admin (#view-admin .scroll-content) dan 'contain: paint;' pada kartu lisensi yang sebelumnya memicu loop invalidasi repaint tak terhingga pada Chromium/WebView.",
-            "Arsitektur Single Dedicated Scroll Container: Mengembalikan kontainer isi (#admin-content-view dan #admin-content) ke 'overflow: visible !important' sehingga tidak memicu multi-level nested scroll container yang saling memicu pertempuran reflow dan overscroll bounce.",
-            "Stabilisasi Animasi & Tombol Bento Menu (settings.js): Mengubah animasi mount halaman dari transform scale (fade-in-scale) ke fade-in berbasis opacity murni (0.95 ke 1.0) tanpa pergeseran koordinat transform, serta merapikan kelas 8 kartu bento pengaturan agar bebas benturan styling hover.",
-            "Multi-Channel Distribution v1.10.98 (Android versionCode 11098)."
         ]
     }
 ];
