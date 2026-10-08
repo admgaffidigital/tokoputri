@@ -6,7 +6,7 @@
  * 
  * ATURAN ROLLING 5-LOG TERBARU (ANTI-KODE SAMPAH & ANTI-SPAM):
  * DEFAULT_CHANGELOG dibatasi secara ketat HANYA menyimpan 5 entri rilis
- * terkini (v1.10.97 s.d. v1.10.93). Setiap rilis baru ditambahkan di posisi
+ * terkini (v1.10.98 s.d. v1.10.94). Setiap rilis baru ditambahkan di posisi
  * teratas dan entri ke-6 dipangkas agar berkas tetap super ringan (~12KB vs ~425KB),
  * mengeliminasi kode sampah, dan mencegah spam riwayat di antarmuka website.
  * ============================================================
@@ -15,6 +15,21 @@
 export const MAX_CHANGELOG_LIMIT = 5;
 
 export const DEFAULT_CHANGELOG = [
+    {
+        "id": "log-1-10-98",
+        "version": "v1.10.98",
+        "date": "2026-10-08",
+        "title": "Resolusi Paripurna Layar Berkedip Pengaturan Toko & Arsitektur Single Scroll Container",
+        "category": "feature",
+        "badge": "Zero-Flicker Settings & Single Scroll Container Architecture v1.10.98",
+        "items": [
+            "Eliminasi Total Penyebab Layar Berkedip (flickering/jitter) di Pengaturan Toko: Mengganti elemen dekoratif blur GPU (filter: blur-xl) pada Kartu Lisensi SaaS dengan CSS Radial Gradient murni (radial-gradient) berkinerja tinggi, menghilangkan kalkulasi konvolusi blur dan tile clipping subpixel di batas bawah scroll.",
+            "Pembersihan Konflik Layer GPU & Containment (style.css & subscription.js): Menghapus aturan berbahaya 'contain: layout paint;' pada scroll container admin (#view-admin .scroll-content) dan 'contain: paint;' pada kartu lisensi yang sebelumnya memicu loop invalidasi repaint tak terhingga pada Chromium/WebView.",
+            "Arsitektur Single Dedicated Scroll Container: Mengembalikan kontainer isi (#admin-content-view dan #admin-content) ke 'overflow: visible !important' sehingga tidak memicu multi-level nested scroll container yang saling memicu pertempuran reflow dan overscroll bounce.",
+            "Stabilisasi Animasi & Tombol Bento Menu (settings.js): Mengubah animasi mount halaman dari transform scale (fade-in-scale) ke fade-in berbasis opacity murni (0.95 ke 1.0) tanpa pergeseran koordinat transform, serta merapikan kelas 8 kartu bento pengaturan agar bebas benturan styling hover.",
+            "Multi-Channel Distribution v1.10.98 (Android versionCode 11098)."
+        ]
+    },
     {
         "id": "log-1-10-97",
         "version": "v1.10.97",
@@ -76,21 +91,6 @@ export const DEFAULT_CHANGELOG = [
             "Auto-Add Enter Barcode pada Kotak Cari POS: Input pencarian kasir (#pos-search-input) kini dilengkapi event listener tombol Enter cerdas (handlePOSSearchKeydown) yang seketika mendeteksi tembakan barcode scanner, langsung memasukkan barang ke keranjang kasir dengan audio chime kasir, dan membersihkan kolom pencarian.",
             "Pencarian Barcode di Etalase Storefront & Admin Table: Filter penelusuran katalog etalase (rCat di catalog.js) dan direktori produk admin (table.js) kini mengenali kode barcode fisik, varian barcode, ID produk, dan fallback label cetak.",
             "Multi-Channel Distribution v1.10.94 (Android versionCode 11094)."
-        ]
-    },
-    {
-        "id": "log-1-10-93",
-        "version": "v1.10.93",
-        "date": "2026-10-08",
-        "title": "Standardisasi Bahasa & Copywriting Profesional Enterprise (Storefront, Checkout, WhatsApp & POS)",
-        "category": "feature",
-        "badge": "Enterprise Copywriting & Tone of Voice v1.10.93",
-        "items": [
-            "Storefront & Etalase Material: Transformasi menyeluruh teks penelusuran, kategori alat teknik, empty state keranjang, dan formulir pengajuan Surat Penawaran Resmi (SPH) dengan diksi bisnis konstruksi yang meyakinkan kontraktor dan pemilik proyek.",
-            "Alur Checkout Online 3 Langkah: Penyempurnaan opsi pengiriman langsung ke proyek/mandor dengan koordinasi titik bongkar muat armada, kejelasan termin pembayaran (Transfer, QRIS, COD, Cash Tempo VIP, Putri PayLater), serta pesan konfirmasi pesanan yang ramah dan formal.",
-            "Otomasi Pesan WhatsApp Pelanggan & Logistik: Template notifikasi resmi berstruktur rapi (Kop Toko, No. Referensi, Status Pemrosesan, Alamat Proyek) untuk status Baru, Diproses, Selesai, dan Drop-Point Armada, menggantikan gaya percakapan kaku/bot.",
-            "POS Kasir & Struk Termal Resmi: Penyelarasan notifikasi kasir (validasi stok persediaan, penahanan antrean, pengosongan keranjang) dan standarisasi teks penutup struk/nota retur resmi untuk membangun kepercayaan pelanggan ritel maupun grosir.",
-            "Multi-Channel Distribution v1.10.93 (Android versionCode 11093)."
         ]
     }
 ];
@@ -167,7 +167,7 @@ export const getCombinedChangelog = (appData, maxLimit = MAX_CHANGELOG_LIMIT) =>
  * @returns {String} Contoh: 'v1.10.92'
  */
 export const getLatestVersion = (appData) => {
-    const defaultLatest = DEFAULT_CHANGELOG[0]?.version || 'v1.10.97';
+    const defaultLatest = DEFAULT_CHANGELOG[0]?.version || 'v1.10.98';
     const logs = getCombinedChangelog(appData, null);
     if (!logs || logs.length === 0) return defaultLatest;
     
