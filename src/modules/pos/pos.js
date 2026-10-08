@@ -15,6 +15,7 @@ import { getEffHpp, computeTotalProductStock } from '../../core/pricing.js';
 import { canViewHpp } from '../../core/auth-roles.js';
 import { deductFifoStock } from '../../core/fifo-inventory.js';
 import { getPaylaterConfig, calculateInstallmentBreakdown } from '../../core/paylater.js';
+import { getMemberTier } from '../member/reward.js';
 import { getPrinterConfig, openPrinterSettingsModal } from '../print/printer-settings.js';
 import {
     getActiveShift,
@@ -2805,7 +2806,8 @@ export const renderPosMemberResult = () => {
     const r = el('pos-member-result');
     if (!r || !posCustomer.isMember) return;
     const pts = parseFloat(posCustomer.points) || 0;
-    const tier = typeof window.getMemberTier === 'function' ? window.getMemberTier(pts) : { badge: 'MEMBER RESMI' };
+    const tierFn = typeof getMemberTier === 'function' ? getMemberTier : (typeof window.getMemberTier === 'function' ? window.getMemberTier : null);
+    const tier = tierFn ? tierFn(pts) : { name: 'MEMBER RESMI', icon: 'fa-award', level: 1 };
     const pointVal = getPointValue();
     const currentPtDiscount = posMemberPointsDiscount();
     const maxPts = getMaxRedeemablePoints();
@@ -2813,6 +2815,23 @@ export const renderPosMemberResult = () => {
     // Filter hadiah aktif yang stoknya > 0
     const activeRewards = (appData.rewards || []).filter(rw => rw.isActive !== 'false' && rw.isActive !== false && (parseFloat(rw.stock) || 0) > 0);
     const remainingPtsAfterRedeem = Math.max(0, pts - (posPointsRedeemed || 0));
+
+    // Nama dan ikon tier member bebas dari tag HTML mentah
+    const tierName = tier?.name || (typeof tier?.badge === 'string' ? tier.badge.replace(/<[^>]*>/g, '').trim() : 'MEMBER RESMI');
+    const tierRawIcon = tier?.icon || 'fa-award';
+    const tierIcon = tierRawIcon.startsWith('fa-') ? tierRawIcon : `fa-${tierRawIcon}`;
+
+    // Styling palet warna badge tier yang proporsional (Light & Dark mode)
+    let tierBadgeColor = 'bg-orange-100 text-orange-900 border-orange-300 dark:bg-orange-950/60 dark:text-orange-200 dark:border-orange-700/60';
+    if (tier?.level === 4) {
+        tierBadgeColor = 'bg-purple-100 text-purple-900 border-purple-300 dark:bg-purple-950/60 dark:text-purple-200 dark:border-purple-700/60';
+    } else if (tier?.level === 3) {
+        tierBadgeColor = 'bg-yellow-100 text-yellow-900 border-yellow-400 dark:bg-yellow-950/60 dark:text-yellow-200 dark:border-yellow-600/60';
+    } else if (tier?.level === 2) {
+        tierBadgeColor = 'bg-slate-100 text-slate-800 border-slate-300 dark:bg-slate-800/80 dark:text-slate-200 dark:border-slate-600';
+    } else if (tier?.level === 1) {
+        tierBadgeColor = 'bg-amber-100 text-amber-900 border-amber-300 dark:bg-amber-950/60 dark:text-amber-200 dark:border-amber-700/60';
+    }
 
     r.innerHTML = `
     <div class="space-y-2.5">
@@ -2824,7 +2843,10 @@ export const renderPosMemberResult = () => {
           </div>
           <div class="min-w-0">
             <div class="flex items-center gap-1.5 flex-wrap">
-              <span class="text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-900/60 text-emerald-800 dark:text-emerald-200 border border-emerald-300 dark:border-emerald-700">${esc(tier.badge || 'VIP')}</span>
+              <span class="text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full ${tierBadgeColor} border inline-flex items-center gap-1 shadow-2xs">
+                <i class="fa-solid ${tierIcon} text-[9px]"></i>
+                <span>${esc(tierName)}</span>
+              </span>
               <span class="text-[10px] font-black text-amber-600 dark:text-amber-400 flex items-center gap-0.5"><i class="fa-solid fa-star text-[9px]"></i>${pts} Poin</span>
               ${(posCustomer.paylaterActive && (posCustomer.paylaterLimit > 0)) ? `
                 <span class="text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-900/60 text-emerald-800 dark:text-emerald-200 border border-emerald-300 dark:border-emerald-700 flex items-center gap-1">

@@ -6,7 +6,7 @@
  * 
  * ATURAN ROLLING 5-LOG TERBARU (ANTI-KODE SAMPAH & ANTI-SPAM):
  * DEFAULT_CHANGELOG dibatasi secara ketat HANYA menyimpan 5 entri rilis
- * terkini (v1.10.98 s.d. v1.10.94). Setiap rilis baru ditambahkan di posisi
+ * terkini (v1.10.99 s.d. v1.10.95). Setiap rilis baru ditambahkan di posisi
  * teratas dan entri ke-6 dipangkas agar berkas tetap super ringan (~12KB vs ~425KB),
  * mengeliminasi kode sampah, dan mencegah spam riwayat di antarmuka website.
  * ============================================================
@@ -15,6 +15,21 @@
 export const MAX_CHANGELOG_LIMIT = 5;
 
 export const DEFAULT_CHANGELOG = [
+    {
+        "id": "log-1-10-99",
+        "version": "v1.10.99",
+        "date": "2026-10-08",
+        "title": "Resolusi Paripurna Bocor Tag HTML Badge Tier Member & Penyelarasan Desain Visual POS Kasir",
+        "category": "feature",
+        "badge": "Clean POS Member Tier Badge & Anti-HTML Leak v1.10.99",
+        "items": [
+            "Eliminasi Total Kebocoran Tag HTML Mentah (pos.js): Memperbaiki bug tampilan data member pada modal pembayaran POS Kasir di mana badge tingkatan loyalitas memunculkan teks mentah '<I CLASS=\"FA-SOLID FA-AWARD MR-1\"></I> BRONZE MEMBER' akibat pemanggilan fungsi escape pada string badge HTML.",
+            "Desain Visual Badge Tier Multilevel Harmonis: Mengekstrak tierName dan tierIcon secara terpisah dan deterministik, merender ikon vektor FontAwesome asli (<i class=\"fa-solid ...\"></i>) berpadu teks nama tier yang terproteksi escape XSS. Dilengkapi palet warna bertingkat resmi (Bronze = Amber/Orange hangat, Silver = Slate perak elegan, Gold = Yellow/Amber berkilau, Platinum = Purple royal eksklusif) di light & dark mode.",
+            "Integrasi Impor Langsung getMemberTier (reward.js & pos.js): Mengimpor helper tingkatan loyalitas getMemberTier secara terstruktur pada modul POS dengan fallback berlapis (getMemberTier -> window.getMemberTier -> fallback default) sehingga kalkulasi tier selalu presisi dan kebal gangguan siklus hidup pemuatan skrip.",
+            "Penyelarasan Tata Letak & Keamanan Bar Info Member: Memastikan badge tingkatan member, saldo poin loyalitas (Star), dan plafon Putri PayLater tersusun sejajar rapi (inline-flex, gap-1.5, shadow-2xs) tanpa distorsi teks kapital.",
+            "Multi-Channel Distribution v1.10.99 (Android versionCode 11099)."
+        ]
+    },
     {
         "id": "log-1-10-98",
         "version": "v1.10.98",
@@ -75,22 +90,6 @@ export const DEFAULT_CHANGELOG = [
             "Feedback Cerdas Kasir & Deteksi Produk Nonaktif: Jika barcode terbaca namun berstatus nonaktif di master admin, kasir mendapatkan notifikasi spesifik sehingga tidak bingung. Dilengkapi tombol kilat 'Cari Teks di POS' untuk mencari produk terdekat dalam 1 ketukan.",
             "Pencarian Etalase Storefront Bebas Hambat Kategori: Filter penelusuran katalog etalase (catalog.js) otomatis mengizinkan produk yang discan lewat kamera tampil seketika meskipun pembeli sedang berada di tab kategori yang berbeda.",
             "Multi-Channel Distribution v1.10.95 (Android versionCode 11095)."
-        ]
-    },
-    {
-        "id": "log-1-10-94",
-        "version": "v1.10.94",
-        "date": "2026-10-08",
-        "title": "Resolusi Paripurna Keterbacaan Barcode Label & Penyatuan Engine Pencarian POS Kasir & Etalase Storefront",
-        "category": "feature",
-        "badge": "High-Readability Barcode & Unified Scanner Search v1.10.94",
-        "items": [
-            "Engine Barcode Code 128 Vektor Murni Generasi Baru (barcode-code128.js): Menambahkan kompresi otomatis Code 128 Subtipe C untuk digit angka genap (batang barcode 40-50% lebih lebar dan tebal), Quiet Zone standar ISO/IEC 15417 (>= 12 modul), background putih solid murni (#ffffff), dan tinggi batang default 58 untuk first-pass read rate 100% pada seluruh scanner laser USB, Bluetooth, maupun kamera HP.",
-            "Desain Proporsional Label Stiker Thermal (barcode-label-modal.js): Mengalokasikan 60%+ area stiker untuk batang barcode (tinggi fisik 14-17mm), nama barang 1 baris terpotong rapi dengan elipsis, crisp edges rendering, serta peningkatan tinggi barcode RawBT ESC/POS ke 55 dots.",
-            "Penyatuan Pencocokan Barcode POS Kasir (pos.js): Fungsi findProductOrVariantByBarcode kini membersihkan prefix AIM Symbology hardware (]C1, ]e0), karakter kontrol, serta mendukung pencocokan menyeluruh: barcode pabrik, SKU toko, ID produk, fallback label SKU-id, barcode varian, SKU varian, dan fallback varian.",
-            "Auto-Add Enter Barcode pada Kotak Cari POS: Input pencarian kasir (#pos-search-input) kini dilengkapi event listener tombol Enter cerdas (handlePOSSearchKeydown) yang seketika mendeteksi tembakan barcode scanner, langsung memasukkan barang ke keranjang kasir dengan audio chime kasir, dan membersihkan kolom pencarian.",
-            "Pencarian Barcode di Etalase Storefront & Admin Table: Filter penelusuran katalog etalase (rCat di catalog.js) dan direktori produk admin (table.js) kini mengenali kode barcode fisik, varian barcode, ID produk, dan fallback label cetak.",
-            "Multi-Channel Distribution v1.10.94 (Android versionCode 11094)."
         ]
     }
 ];
