@@ -23,11 +23,11 @@ export const DEFAULT_CHANGELOG = [
         "category": "feature",
         "badge": "Native Design System Harmonization & Responsive Dual-View v1.12.2",
         "items": [
-            "Dual-View Riwayat Retur Responsif (returns.js): Memperkenalkan tampilan dwifungsi (Mobile Card View .card-native di layar HP yang bebas potong & touch-friendly 40px, serta Tabel Analitis lapang di layar Desktop lebar), menghilangkan tabel terpotong horizontal pada riwayat retur penjualan dan pembelian supplier.",
+            "Universal Card View & Dual-View Riwayat Retur (returns.js): Memperkenalkan tampilan Native Card View (.card-native) bergrid 2-kolom lapang di desktop dan 1-kolom di mobile sebagai default, bebas tabel kaku, dilengkapi avatar monogram pelanggan/supplier, cuplikan item rapi + badge alokasi fisik (Rak Toko / Karantina), serta tombol switcher Card vs Table di toolbar desktop.",
+            "Harmonisasi Tema Toko & Metrik KPI Eksekutif (returns.js): Menyelaraskan 4 kartu metrik RMA (Retur Konsumen, Kasus Nota, Klaim Supplier, Karantina Rusak) dengan token tema toko aktif var(--color-primary), mengeliminasi icon box warna-warni tajam yang jomplang dari tema toko.",
             "Dialog Konfirmasi Cerdas & Tombol Cetak Selaras Tema (ui.js): Menyempurnakan showConfirm agar secara cerdas mendeteksi konteks cetak dokumen/surat/nota. Eliminasi tombol merah keliru 'Ya, Hapus' dengan ikon bahaya ⚠️ pada alur cetak dokumen retur, digantikan tombol dinamis bertema toko aktif var(--color-primary) dengan teks 'Ya, Cetak' dan ikon fa-print.",
             "Tab Bar Estimator Anti-Potong Mobile (index.html): Menambahkan dukungan scroll horizontal halus (overflow-x-auto custom-scrollbar) dan shrink-0 pada tab bar kategori Kalkulator Estimator Material Bangunan sehingga teks tab 'Dinding & Semen' dan lainnya tampil utuh tanpa terpotong di layar smartphone.",
-            "Optimalisasi Bottom-Sheet Modal Retur (index.html): Memperlebar wadah modal retur penjualan dan supplier di layar HP (w-full max-w-full sm:max-w-2xl) sehingga form pengisian dan checklist barang mengisi seluruh bidang layar tanpa terasa sempit atau terhimpit.",
-            "Penyelarasan Desain Sistem Native (style.css & returns.js): Standardisasi token kartu .card-native, tombol aksi ergonomis sentuh .btn-native-action (tinggi 40px, radius 12px), dan palet aksen tema toko dinamis di seluruh formulir dan ringkasan metrik.",
+            "Optimalisasi Bottom-Sheet Modal Retur & Tombol Aksi Sentuh 40px: Memperlebar wadah modal retur penjualan dan supplier di layar HP (w-full max-w-full sm:max-w-2xl) serta menstandarkan tombol cetak berukuran ergonomis sentuh 40px (.btn-native-action) dengan label teks dan ikon jelas (Cetak Nota A4 & Struk Thermal).",
             "Multi-Channel Distribution v1.12.2 (Android versionCode 11202)."
         ]
     },

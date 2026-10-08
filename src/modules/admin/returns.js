@@ -31,11 +31,22 @@ import {
     openModalAnim, closeModalAnim 
 } from '../../core/utils.js';
 
-// State lokal tab aktif ('sales' | 'vendor') & filter
+// State lokal tab aktif ('sales' | 'vendor'), filter pencarian, dan mode tampilan ('card' | 'table')
 let currentReturnTab = 'sales';
 let activeSearchQuery = '';
+let currentViewMode = 'card';
 let selectedOrderForReturn = null;
 let returnDraftItems = []; // Array item yang sedang diedit di modal retur penjualan
+
+/**
+ * Helper Monogram Inisial 2 Huruf Pelanggan / Entitas
+ */
+const getEntityMonogram = (name) => {
+    if (!name) return 'PL';
+    const parts = name.trim().split(/\s+/).filter(Boolean);
+    if (parts.length === 1) return parts[0].substring(0, 2).toUpperCase();
+    return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+};
 
 /**
  * Merender Halaman Utama Manajemen Retur & RMA di Admin CMS
@@ -64,14 +75,14 @@ export const renderReturnsView = () => {
     }, 0);
 
     const html = `
-        <div class="space-y-4 sm:space-y-5 fade-in max-w-5xl mx-auto pb-24 pt-3 sm:pt-4">
+        <div class="space-y-4 sm:space-y-5 fade-in max-w-5xl mx-auto pb-24 pt-1 sm:pt-2">
             <!-- 1. HERO BANNER: PUSAT RETUR & REKONSILIASI RMA (THEME HARMONIZED) -->
             <div class="relative overflow-hidden p-5 sm:p-7 rounded-2xl sm:rounded-3xl border border-[rgba(var(--color-primary-rgb),0.2)] bg-gradient-to-br from-white via-white to-[rgba(var(--color-primary-rgb),0.05)] dark:from-slate-900 dark:via-slate-900/90 dark:to-slate-800 shadow-xs card-native">
                 <!-- Ambient Glow Dekorasi (Radial Gradient Anti-Hard Disc) -->
                 <div class="pointer-events-none absolute inset-0 rounded-2xl sm:rounded-3xl" style="background: radial-gradient(circle at 90% 10%, rgba(var(--color-primary-rgb), 0.12), transparent 60%), radial-gradient(circle at 10% 90%, rgba(var(--color-primary-rgb), 0.08), transparent 50%);"></div>
 
                 <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                    <div class="space-y-1.5">
+                    <div class="space-y-1.5 max-w-xl">
                         <div class="flex items-center gap-2">
                             <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider border shadow-2xs" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary); border-color: rgba(var(--color-primary-rgb), 0.25);">
                                 <i class="fa-solid fa-right-left"></i> Modul Rekonsiliasi RMA
@@ -80,8 +91,8 @@ export const renderReturnsView = () => {
                         <h2 class="text-xl sm:text-2xl font-black tracking-tight text-slate-800 dark:text-white flex items-center gap-2.5">
                             Retur Barang &amp; Rekonsiliasi
                         </h2>
-                        <p class="text-xs text-slate-600 dark:text-slate-300 max-w-xl leading-relaxed">
-                            Rekonsiliasi pengembalian barang konsumen, klaim cacat supplier pabrik, restorasi tiket FIFO, dan kontrol persediaan karantina.
+                        <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                            Rekonsiliasi pengembalian barang konsumen, klaim cacat distributor pabrik, restorasi tiket FIFO, dan kontrol persediaan karantina.
                         </p>
                     </div>
 
@@ -97,57 +108,57 @@ export const renderReturnsView = () => {
                     </div>
                 </div>
 
-                <!-- 2. METRIK BENTO STAT CARDS (4 KPI) -->
+                <!-- 2. METRIK BENTO STAT CARDS (4 KPI SELARAS TEMA TOKO) -->
                 <div class="mt-6 pt-5 border-t border-[rgba(var(--color-primary-rgb),0.15)] dark:border-slate-700/60 grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-3.5">
                     <div class="p-4 rounded-2xl bg-white/95 dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs hover:-translate-y-0.5 hover:shadow-md transition-all duration-200 flex flex-col justify-between">
                         <div class="flex items-center justify-between mb-2">
-                            <span class="text-[10px] font-black uppercase tracking-wider text-rose-600 dark:text-rose-400">Total Retur Konsumen</span>
-                            <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-rose-500 to-rose-600 text-white flex items-center justify-center text-xs shadow-xs shrink-0">
+                            <span class="text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">Total Retur Konsumen</span>
+                            <div class="w-8 h-8 rounded-xl flex items-center justify-center text-xs shadow-2xs shrink-0" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary);">
                                 <i class="fa-solid fa-hand-holding-dollar"></i>
                             </div>
                         </div>
-                        <p class="text-xl sm:text-2xl font-black text-rose-600 dark:text-rose-400 tracking-tight">${fCur(totalSalesRefundRp)}</p>
+                        <p class="text-xl sm:text-2xl font-black text-rose-600 dark:text-rose-400 tracking-tight font-mono">${fCur(totalSalesRefundRp)}</p>
                         <p class="text-[10px] font-bold text-slate-400 mt-0.5">Pengembalian Dana / Kredit</p>
                     </div>
 
                     <div class="p-4 rounded-2xl bg-white/95 dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs hover:-translate-y-0.5 hover:shadow-md transition-all duration-200 flex flex-col justify-between">
                         <div class="flex items-center justify-between mb-2">
                             <span class="text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">Kasus Retur Nota</span>
-                            <div class="w-9 h-9 rounded-xl flex items-center justify-center text-xs text-white shadow-xs shrink-0" style="background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));">
+                            <div class="w-8 h-8 rounded-xl flex items-center justify-center text-xs shadow-2xs shrink-0" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary);">
                                 <i class="fa-solid fa-receipt"></i>
                             </div>
                         </div>
-                        <p class="text-2xl font-black text-slate-800 dark:text-white tracking-tight">${totalSalesReturnCount} <span class="text-xs font-bold text-slate-400">Nota</span></p>
+                        <p class="text-xl sm:text-2xl font-black text-slate-800 dark:text-white tracking-tight">${totalSalesReturnCount} <span class="text-xs font-bold text-slate-400">Nota</span></p>
                         <p class="text-[10px] font-bold text-slate-400 mt-0.5">Transaksi Terselesaikan</p>
                     </div>
 
                     <div class="p-4 rounded-2xl bg-white/95 dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs hover:-translate-y-0.5 hover:shadow-md transition-all duration-200 flex flex-col justify-between">
                         <div class="flex items-center justify-between mb-2">
                             <span class="text-[10px] font-black uppercase tracking-wider text-amber-600 dark:text-amber-400">Klaim Supplier</span>
-                            <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-amber-500 to-amber-600 text-white flex items-center justify-center text-xs shadow-xs shrink-0">
-                                <i class="fa-solid fa-file-invoice-dollar"></i>
+                            <div class="w-8 h-8 rounded-xl bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 border border-amber-200/60 dark:border-amber-800/40 flex items-center justify-center text-xs shadow-2xs shrink-0">
+                                <i class="fa-solid fa-truck-ramp-box"></i>
                             </div>
                         </div>
-                        <p class="text-xl sm:text-2xl font-black text-amber-600 dark:text-amber-400 tracking-tight">${fCur(totalVendorClaimRp)}</p>
+                        <p class="text-xl sm:text-2xl font-black text-amber-600 dark:text-amber-400 tracking-tight font-mono">${fCur(totalVendorClaimRp)}</p>
                         <p class="text-[10px] font-bold text-slate-400 mt-0.5">Potong Hutang / Refund PO</p>
                     </div>
 
                     <div class="p-4 rounded-2xl bg-white/95 dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs hover:-translate-y-0.5 hover:shadow-md transition-all duration-200 flex flex-col justify-between">
                         <div class="flex items-center justify-between mb-2">
-                            <span class="text-[10px] font-black uppercase tracking-wider text-purple-600 dark:text-purple-400">Stok Karantina Rusak</span>
-                            <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 text-white flex items-center justify-center text-xs shadow-xs shrink-0">
-                                <i class="fa-solid fa-triangle-exclamation"></i>
+                            <span class="text-[10px] font-black uppercase tracking-wider text-rose-500 dark:text-rose-400">Karantina Rusak</span>
+                            <div class="w-8 h-8 rounded-xl bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 border border-rose-200/60 dark:border-rose-800/40 flex items-center justify-center text-xs shadow-2xs shrink-0">
+                                <i class="fa-solid fa-shield-halved"></i>
                             </div>
                         </div>
-                        <p class="text-2xl font-black text-purple-600 dark:text-purple-400 tracking-tight">${totalQuarantineQty} <span class="text-xs font-bold text-slate-400">Unit</span></p>
+                        <p class="text-xl sm:text-2xl font-black text-rose-600 dark:text-rose-400 tracking-tight">${totalQuarantineQty} <span class="text-xs font-bold text-slate-400">Unit</span></p>
                         <p class="text-[10px] font-bold text-slate-400 mt-0.5">Menunggu Klaim Distributor</p>
                     </div>
                 </div>
             </div>
 
-            <!-- 3. TOOLBAR: TAB SWITCHER & LIVE SEARCH BAR -->
+            <!-- 3. TOOLBAR: TAB SWITCHER, LIVE SEARCH BAR & VIEW MODE SWITCHER -->
             <div class="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-between card-native p-2.5 sm:p-3 rounded-2xl sm:rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 shadow-2xs">
-                <!-- Tab Pills Switcher -->
+                <!-- Segmented Tab Pills Switcher -->
                 <div class="flex items-center gap-1.5 p-1 bg-slate-100 dark:bg-slate-800/80 rounded-2xl border border-slate-200/60 dark:border-slate-700/60">
                     <button 
                         type="button" 
@@ -175,21 +186,47 @@ export const renderReturnsView = () => {
                     </button>
                 </div>
 
-                <!-- Live Search Box -->
-                <div class="relative flex-1 sm:max-w-md">
-                    <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
-                    <input 
-                        type="text" 
-                        id="returns-search-input" 
-                        value="${esc(activeSearchQuery)}" 
-                        oninput="window.handleReturnsSearch(this.value)" 
-                        placeholder="${currentReturnTab === 'sales' ? 'Cari no retur, no nota, nama pelanggan...' : 'Cari no retur, supplier, rujukan PO...'}" 
-                        class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl py-2.5 pl-10 pr-4 text-xs font-bold text-slate-700 dark:text-slate-200 focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/15 shadow-2xs transition-all"
-                    >
+                <div class="flex items-center gap-2 flex-1 justify-end">
+                    <!-- Live Search Box -->
+                    <div class="relative flex-1 sm:max-w-md">
+                        <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                        <input 
+                            type="text" 
+                            id="returns-search-input" 
+                            value="${esc(activeSearchQuery)}" 
+                            oninput="window.handleReturnsSearch(this.value)" 
+                            placeholder="${currentReturnTab === 'sales' ? 'Cari no retur, no nota, nama pelanggan...' : 'Cari no retur, supplier, rujukan PO...'}" 
+                            class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl py-2.5 pl-10 pr-4 text-xs font-bold text-slate-700 dark:text-slate-200 focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/15 shadow-2xs transition-all"
+                        >
+                    </div>
+
+                    <!-- View Mode Toggle Switcher (Card vs Table) -->
+                    <div class="hidden sm:flex items-center gap-1 p-1 bg-slate-100 dark:bg-slate-800/80 rounded-2xl border border-slate-200/60 dark:border-slate-700/60 shrink-0">
+                        <button 
+                            type="button" 
+                            id="btn-returns-view-card" 
+                            onclick="window.switchReturnsViewMode('card')" 
+                            title="Tampilan Kartu Native App" 
+                            class="w-9 h-9 rounded-xl flex items-center justify-center text-xs transition-all cursor-pointer ${currentViewMode === 'card' ? 'shadow-xs text-white' : 'text-slate-500 hover:text-slate-800 dark:hover:text-white'}" 
+                            style="${currentViewMode === 'card' ? 'background: var(--color-primary); color: #fff;' : ''}"
+                        >
+                            <i class="fa-solid fa-table-cells-large"></i>
+                        </button>
+                        <button 
+                            type="button" 
+                            id="btn-returns-view-table" 
+                            onclick="window.switchReturnsViewMode('table')" 
+                            title="Tampilan Tabel Analitis" 
+                            class="w-9 h-9 rounded-xl flex items-center justify-center text-xs transition-all cursor-pointer ${currentViewMode === 'table' ? 'shadow-xs text-white' : 'text-slate-500 hover:text-slate-800 dark:hover:text-white'}" 
+                            style="${currentViewMode === 'table' ? 'background: var(--color-primary); color: #fff;' : ''}"
+                        >
+                            <i class="fa-solid fa-table-list"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
 
-            <!-- 4. CONTAINER RIWAYAT (DUAL-VIEW: MOBILE CARD LIST & DESKTOP TABLE) -->
+            <!-- 4. CONTAINER DAFTAR RIWAYAT RETUR -->
             <div id="returns-table-wrapper">
                 ${currentReturnTab === 'sales' ? renderSalesReturnsTableHtml() : renderVendorReturnsTableHtml()}
             </div>
@@ -208,6 +245,36 @@ export const switchReturnsTab = (tab) => {
 };
 
 /**
+ * Switcher Mode Tampilan ('card' vs 'table')
+ */
+export const switchReturnsViewMode = (mode) => {
+    currentViewMode = mode;
+    const wrapper = el('returns-table-wrapper');
+    if (wrapper) {
+        wrapper.innerHTML = currentReturnTab === 'sales' ? renderSalesReturnsTableHtml() : renderVendorReturnsTableHtml();
+    }
+    const btnCard = el('btn-returns-view-card');
+    const btnTable = el('btn-returns-view-table');
+    if (btnCard && btnTable) {
+        if (mode === 'card') {
+            btnCard.className = 'w-9 h-9 rounded-xl flex items-center justify-center text-xs transition-all cursor-pointer shadow-xs text-white';
+            btnCard.style.background = 'var(--color-primary)';
+            btnCard.style.color = '#fff';
+            btnTable.className = 'w-9 h-9 rounded-xl flex items-center justify-center text-xs text-slate-500 hover:text-slate-800 dark:hover:text-white transition-all cursor-pointer';
+            btnTable.style.background = '';
+            btnTable.style.color = '';
+        } else {
+            btnTable.className = 'w-9 h-9 rounded-xl flex items-center justify-center text-xs transition-all cursor-pointer shadow-xs text-white';
+            btnTable.style.background = 'var(--color-primary)';
+            btnTable.style.color = '#fff';
+            btnCard.className = 'w-9 h-9 rounded-xl flex items-center justify-center text-xs text-slate-500 hover:text-slate-800 dark:hover:text-white transition-all cursor-pointer';
+            btnCard.style.background = '';
+            btnCard.style.color = '';
+        }
+    }
+};
+
+/**
  * Handle input pencarian live search
  */
 export const handleReturnsSearch = (query) => {
@@ -219,7 +286,7 @@ export const handleReturnsSearch = (query) => {
 };
 
 /**
- * Render Riwayat Retur Penjualan (Dual-View: Mobile Card List + Desktop Table)
+ * Render Riwayat Retur Penjualan (Mendukung Mode Card View & Table View)
  */
 const renderSalesReturnsTableHtml = () => {
     const list = (appData.salesReturns || []).filter(item => {
@@ -249,86 +316,111 @@ const renderSalesReturnsTableHtml = () => {
     // Urutkan terbaru di atas
     const sorted = [...list].sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
 
+    // A. MODE NATIVE CARD VIEW (DEFAULT DI SEMUA LAYAR / JIKA currentViewMode === 'card')
+    if (currentViewMode === 'card') {
+        return `
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-3.5 sm:gap-4">
+                ${sorted.map(r => {
+                    const dateStr = r.createdAt ? new Date(r.createdAt).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '-';
+                    const itemsCount = (r.items || []).length;
+                    const custName = r.customerName || 'Pelanggan Umum';
+                    const monogram = getEntityMonogram(custName);
+                    
+                    let methodBadge = '<span class="px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-[10.5px] font-bold">Lainnya</span>';
+                    if (r.refundMethod === 'cash') {
+                        methodBadge = '<span class="px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 text-[10.5px] font-black inline-flex items-center gap-1.5 border border-emerald-200 dark:border-emerald-800/60 shadow-2xs"><i class="fa-solid fa-money-bill-wave"></i> Tunai (Kas Laci)</span>';
+                    } else if (r.refundMethod === 'credit') {
+                        methodBadge = '<span class="px-2.5 py-1 rounded-full bg-sky-50 text-sky-700 dark:bg-sky-950/60 dark:text-sky-300 text-[10.5px] font-black inline-flex items-center gap-1.5 border border-sky-200 dark:border-sky-800/60 shadow-2xs"><i class="fa-solid fa-wallet"></i> Saldo Kredit</span>';
+                    } else if (r.refundMethod === 'exchange') {
+                        methodBadge = `<span class="px-2.5 py-1 rounded-full text-[10.5px] font-black inline-flex items-center gap-1.5 border shadow-2xs" style="background: rgba(var(--color-primary-rgb), 0.1); color: var(--color-primary); border-color: rgba(var(--color-primary-rgb), 0.25);"><i class="fa-solid fa-repeat"></i> Tukar Barang</span>`;
+                    }
+
+                    return `
+                        <div class="card-native p-4 sm:p-5 rounded-2xl sm:rounded-3xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xs hover:shadow-md transition-all flex flex-col justify-between space-y-3.5">
+                            <!-- Top Bar: Avatar, Nama Pelanggan, No Retur & Badge Metode -->
+                            <div class="flex items-start justify-between gap-3">
+                                <div class="flex items-center gap-3 min-w-0">
+                                    <div class="w-10 h-10 rounded-2xl flex items-center justify-center font-black text-xs shrink-0 shadow-2xs" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary); border: 1px solid rgba(var(--color-primary-rgb), 0.25);">
+                                        ${monogram}
+                                    </div>
+                                    <div class="min-w-0">
+                                        <h5 class="font-black text-sm text-slate-800 dark:text-white leading-tight truncate">
+                                            ${esc(custName)}
+                                        </h5>
+                                        <div class="flex items-center gap-2 mt-0.5 flex-wrap">
+                                            <span class="font-mono font-black text-xs" style="color: var(--color-primary);">${esc(r.id)}</span>
+                                            <span class="text-[10px] font-semibold text-slate-400">&middot; ${dateStr}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="shrink-0">
+                                    ${methodBadge}
+                                </div>
+                            </div>
+
+                            <!-- Middle Section: Rujukan Nota & Daftar Barang yang Diretur -->
+                            <div class="p-3.5 rounded-2xl bg-slate-50/80 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 space-y-2.5">
+                                <div class="flex items-center justify-between text-xs gap-2">
+                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-mono font-bold text-slate-700 dark:text-slate-300 text-[11px]">
+                                        <i class="fa-solid fa-receipt text-slate-400"></i> ${esc(r.orderId || '-')}
+                                    </span>
+                                    <div class="text-right">
+                                        <span class="text-[9.5px] font-bold uppercase tracking-wider text-slate-400 block">Kompensasi Retur</span>
+                                        <span class="text-base font-black text-rose-600 dark:text-rose-400 font-mono">${fCur(r.totalRefund || 0)}</span>
+                                    </div>
+                                </div>
+
+                                <!-- Cuplikan Barang -->
+                                <div class="space-y-1.5 pt-1 border-t border-slate-200/60 dark:border-slate-700/60">
+                                    <div class="flex items-center justify-between text-[10px] font-black uppercase tracking-wider text-slate-400">
+                                        <span>Item Diretur (${itemsCount} macam):</span>
+                                        <span>Alokasi Stok</span>
+                                    </div>
+                                    <div class="space-y-1">
+                                        ${(r.items || []).slice(0, 3).map(i => {
+                                            const condBadge = i.condition === 'damaged' 
+                                                ? '<span class="text-[9.5px] font-black text-rose-500 shrink-0"><i class="fa-solid fa-triangle-exclamation"></i> Karantina</span>' 
+                                                : '<span class="text-[9.5px] font-bold text-emerald-600 dark:text-emerald-400 shrink-0"><i class="fa-solid fa-check"></i> Rak Toko</span>';
+                                            return `
+                                                <div class="flex items-center justify-between gap-2 p-1.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200/70 dark:border-slate-700/70 text-xs">
+                                                    <div class="flex items-center gap-1.5 min-w-0">
+                                                        <span class="px-1.5 py-0.2 rounded-md font-black text-[10px]" style="background: rgba(var(--color-primary-rgb), 0.12); color: var(--color-primary);">${i.qty}x</span>
+                                                        <span class="font-bold text-slate-800 dark:text-slate-200 truncate max-w-[180px]">${esc(i.name)}</span>
+                                                        ${i.variantName ? `<span class="text-[9.5px] text-slate-400 shrink-0">[${esc(i.variantName)}]</span>` : ''}
+                                                    </div>
+                                                    ${condBadge}
+                                                </div>
+                                            `;
+                                        }).join('')}
+                                        ${itemsCount > 3 ? `<p class="text-[10.5px] font-bold text-center text-slate-400 pt-0.5">+${itemsCount - 3} item barang lainnya</p>` : ''}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Bottom Action Bar: Tombol Cetak Native Touch Target 40px -->
+                            <div class="flex items-center gap-2 pt-1 border-t border-slate-100 dark:border-slate-800">
+                                <button type="button" onclick="window.printSalesReturnA4('${esc(r.id)}')" class="btn-native-action flex-1 h-10 rounded-xl sm:rounded-2xl border border-slate-200/90 dark:border-slate-700/80 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold flex items-center justify-center gap-2 shadow-2xs active:scale-95 transition-all cursor-pointer">
+                                    <i class="fa-solid fa-file-invoice text-xs"></i>
+                                    <span>Cetak Nota A4</span>
+                                </button>
+                                <button type="button" onclick="window.printSalesReturnThermal('${esc(r.id)}')" class="btn-native-action flex-1 h-10 rounded-xl sm:rounded-2xl border border-[rgba(var(--color-primary-rgb),0.3)] text-xs font-bold flex items-center justify-center gap-2 shadow-2xs active:scale-95 transition-all cursor-pointer" style="background: rgba(var(--color-primary-rgb), 0.08); color: var(--color-primary);">
+                                    <i class="fa-solid fa-print text-xs"></i>
+                                    <span>Struk Thermal</span>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }).join('')}
+            </div>
+        `;
+    }
+
+    // B. MODE TABEL ANALITIS (JIKA currentViewMode === 'table')
     return `
-        <!-- A. TAMPILAN MOBILE: NATIVE APP CARD VIEW LIST (RAMAH LAYAR HP) -->
-        <div class="block lg:hidden space-y-3">
-            ${sorted.map(r => {
-                const dateStr = r.createdAt ? new Date(r.createdAt).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '-';
-                const itemsCount = (r.items || []).length;
-                
-                let methodBadge = '<span class="px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-[10px] font-bold">Lainnya</span>';
-                if (r.refundMethod === 'cash') {
-                    methodBadge = '<span class="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 text-[10px] font-black inline-flex items-center gap-1 border border-emerald-200 dark:border-emerald-800/60"><i class="fa-solid fa-money-bill-wave"></i> Tunai (Kas)</span>';
-                } else if (r.refundMethod === 'credit') {
-                    methodBadge = '<span class="px-2.5 py-0.5 rounded-full bg-sky-100 text-sky-800 dark:bg-sky-950/60 dark:text-sky-300 text-[10px] font-black inline-flex items-center gap-1 border border-sky-200 dark:border-sky-800/60"><i class="fa-solid fa-wallet"></i> Store Credit</span>';
-                } else if (r.refundMethod === 'exchange') {
-                    methodBadge = '<span class="px-2.5 py-0.5 rounded-full bg-purple-100 text-purple-800 dark:bg-purple-950/60 dark:text-purple-300 text-[10px] font-black inline-flex items-center gap-1 border border-purple-200 dark:border-purple-800/60"><i class="fa-solid fa-repeat"></i> Tukar Barang</span>';
-                }
-
-                return `
-                    <div class="card-native p-4 rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xs space-y-3">
-                        <!-- Top Row: No Retur + Badge Metode -->
-                        <div class="flex items-center justify-between gap-2">
-                            <span class="font-mono font-black text-xs" style="color: var(--color-primary);">${esc(r.id)}</span>
-                            ${methodBadge}
-                        </div>
-
-                        <!-- Row 2: Pelanggan & Tanggal + Rujukan Nota -->
-                        <div class="flex items-start justify-between gap-2 text-xs">
-                            <div>
-                                <h5 class="font-black text-slate-800 dark:text-white leading-tight">${esc(r.customerName || 'Pelanggan Umum')}</h5>
-                                <span class="text-[10px] font-semibold text-slate-400 block mt-0.5">${dateStr}</span>
-                            </div>
-                            <div class="text-right shrink-0">
-                                <span class="text-[9px] font-bold uppercase tracking-wider text-slate-400 block mb-0.5">Rujukan Nota</span>
-                                <span class="px-2 py-0.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-[10.5px] font-mono font-bold text-slate-700 dark:text-slate-300">
-                                    ${esc(r.orderId || '-')}
-                                </span>
-                            </div>
-                        </div>
-
-                        <!-- Row 3: Cuplikan Barang & Total Refund -->
-                        <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800 space-y-1.5">
-                            <div class="flex items-center justify-between gap-2">
-                                <span class="text-[10px] font-bold text-slate-400">Barang yang Diretur (${itemsCount} macam):</span>
-                                <span class="text-[10px] font-black uppercase text-rose-500">Nilai Kompensasi</span>
-                            </div>
-                            <div class="flex items-center justify-between gap-2">
-                                <div class="min-w-0 flex-1 flex flex-wrap gap-1">
-                                    ${(r.items || []).slice(0, 3).map(i => `
-                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 text-slate-700 dark:text-slate-300">
-                                            <span style="color: var(--color-primary);">${i.qty}x</span>
-                                            <span class="truncate max-w-[120px]">${esc(i.name)}</span>
-                                            ${i.variantName ? `<span class="text-[9px] opacity-75">[${esc(i.variantName)}]</span>` : ''}
-                                        </span>
-                                    `).join('')}
-                                    ${itemsCount > 3 ? `<span class="text-[10px] font-bold text-slate-400 self-center">+${itemsCount - 3} lainnya</span>` : ''}
-                                </div>
-                                <div class="text-right shrink-0 pl-2">
-                                    <span class="text-base font-black text-rose-600 dark:text-rose-400">${fCur(r.totalRefund || 0)}</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Row 4: Action Bar Cetak (Touch Target 40px Lega) -->
-                        <div class="flex items-center gap-2 pt-1 border-t border-slate-100 dark:border-slate-800">
-                            <button type="button" onclick="window.printSalesReturnA4('${esc(r.id)}')" class="btn-native-action flex-1 py-2.5 rounded-xl border border-slate-200/90 dark:border-slate-700/80 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold flex items-center justify-center gap-1.5 shadow-2xs active:scale-95 cursor-pointer">
-                                <i class="fa-solid fa-file-invoice text-xs"></i> <span>Cetak Nota A4</span>
-                            </button>
-                            <button type="button" onclick="window.printSalesReturnThermal('${esc(r.id)}')" class="btn-native-action flex-1 py-2.5 rounded-xl border border-slate-200/90 dark:border-slate-700/80 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold flex items-center justify-center gap-1.5 shadow-2xs active:scale-95 cursor-pointer">
-                                <i class="fa-solid fa-print text-xs" style="color: var(--color-primary);"></i> <span>Struk Thermal</span>
-                            </button>
-                        </div>
-                    </div>
-                `;
-            }).join('')}
-        </div>
-
-        <!-- B. TAMPILAN DESKTOP: TABEL ANALITIS LAPANG (LEBAR >= 1024px) -->
-        <div class="hidden lg:block card-native bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl border border-slate-200/90 dark:border-slate-800 shadow-2xs overflow-hidden">
+        <div class="card-native bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl border border-slate-200/90 dark:border-slate-800 shadow-2xs overflow-hidden">
             <div class="overflow-x-auto custom-scrollbar">
                 <table class="w-full text-left text-xs">
-                    <thead class="bg-slate-50 dark:bg-slate-800/60 text-[11px] font-black uppercase tracking-wider text-slate-400 border-b border-slate-200 dark:border-slate-800">
+                    <thead class="bg-slate-50/80 dark:bg-slate-800/60 text-[11px] font-black uppercase tracking-wider text-slate-400 border-b border-slate-200 dark:border-slate-800">
                         <tr>
                             <th class="py-3.5 px-4">No. Retur &amp; Tanggal</th>
                             <th class="py-3.5 px-4">Rujukan Nota</th>
@@ -346,11 +438,11 @@ const renderSalesReturnsTableHtml = () => {
                             
                             let methodBadge = '<span class="px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-[10px] font-bold">Lainnya</span>';
                             if (r.refundMethod === 'cash') {
-                                methodBadge = '<span class="px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 text-[10px] font-black inline-flex items-center gap-1 border border-emerald-200 dark:border-emerald-800/60"><i class="fa-solid fa-money-bill-wave"></i> Tunai (Kas Laci)</span>';
+                                methodBadge = '<span class="px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 text-[10px] font-black inline-flex items-center gap-1 border border-emerald-200 dark:border-emerald-800/60"><i class="fa-solid fa-money-bill-wave"></i> Tunai (Kas Laci)</span>';
                             } else if (r.refundMethod === 'credit') {
-                                methodBadge = '<span class="px-2.5 py-1 rounded-full bg-sky-100 text-sky-800 dark:bg-sky-950/60 dark:text-sky-300 text-[10px] font-black inline-flex items-center gap-1 border border-sky-200 dark:border-sky-800/60"><i class="fa-solid fa-wallet"></i> Store Credit</span>';
+                                methodBadge = '<span class="px-2.5 py-1 rounded-full bg-sky-50 text-sky-700 dark:bg-sky-950/60 dark:text-sky-300 text-[10px] font-black inline-flex items-center gap-1 border border-sky-200 dark:border-sky-800/60"><i class="fa-solid fa-wallet"></i> Saldo Kredit</span>';
                             } else if (r.refundMethod === 'exchange') {
-                                methodBadge = '<span class="px-2.5 py-1 rounded-full bg-purple-100 text-purple-800 dark:bg-purple-950/60 dark:text-purple-300 text-[10px] font-black inline-flex items-center gap-1 border border-purple-200 dark:border-purple-800/60"><i class="fa-solid fa-repeat"></i> Tukar Barang</span>';
+                                methodBadge = `<span class="px-2.5 py-1 rounded-full text-[10px] font-black inline-flex items-center gap-1 border shadow-2xs" style="background: rgba(var(--color-primary-rgb), 0.1); color: var(--color-primary); border-color: rgba(var(--color-primary-rgb), 0.25);"><i class="fa-solid fa-repeat"></i> Tukar Barang</span>`;
                             }
 
                             return `
@@ -360,7 +452,7 @@ const renderSalesReturnsTableHtml = () => {
                                         <span class="text-[10px] font-semibold text-slate-400 block mt-0.5">${dateStr}</span>
                                     </td>
                                     <td class="py-3.5 px-4 font-mono font-bold text-slate-700 dark:text-slate-300">
-                                        <span class="px-2 py-0.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-[11px]">${esc(r.orderId || '-')}</span>
+                                        <span class="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-[11px]">${esc(r.orderId || '-')}</span>
                                     </td>
                                     <td class="py-3.5 px-4">
                                         <span class="font-black text-slate-800 dark:text-white block">${esc(r.customerName || 'Pelanggan Umum')}</span>
@@ -370,19 +462,19 @@ const renderSalesReturnsTableHtml = () => {
                                         <p class="truncate font-semibold text-slate-700 dark:text-slate-300" title="${esc(itemsSummary)}">${esc(itemsSummary || '-')}</p>
                                         <span class="text-[10px] font-bold text-slate-400">${r.items ? r.items.length : 0} macam barang</span>
                                     </td>
-                                    <td class="py-3.5 px-4 text-right font-black text-rose-600 dark:text-rose-400 text-sm">
+                                    <td class="py-3.5 px-4 text-right font-black text-rose-600 dark:text-rose-400 text-sm font-mono">
                                         ${fCur(r.totalRefund || 0)}
                                     </td>
                                     <td class="py-3.5 px-4">
                                         ${methodBadge}
                                     </td>
                                     <td class="py-3.5 px-4 text-center">
-                                        <div class="flex items-center justify-center gap-2">
-                                            <button type="button" onclick="window.printSalesReturnA4('${esc(r.id)}')" title="Cetak Nota Retur A4 Resmi" class="btn-native-icon w-9 h-9 rounded-xl border border-slate-200/90 dark:border-slate-700/80 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 flex items-center justify-center transition-all cursor-pointer active:scale-90 shadow-2xs">
-                                                <i class="fa-solid fa-file-invoice text-xs"></i>
+                                        <div class="flex items-center justify-center gap-1.5">
+                                            <button type="button" onclick="window.printSalesReturnA4('${esc(r.id)}')" title="Cetak Nota Retur A4 Resmi" class="btn-native-action h-9 px-2.5 rounded-xl border border-slate-200/90 dark:border-slate-700/80 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold flex items-center gap-1 shadow-2xs active:scale-95 cursor-pointer">
+                                                <i class="fa-solid fa-file-invoice text-xs"></i> <span>A4</span>
                                             </button>
-                                            <button type="button" onclick="window.printSalesReturnThermal('${esc(r.id)}')" title="Cetak Struk Thermal RawBT" class="btn-native-icon w-9 h-9 rounded-xl border border-slate-200/90 dark:border-slate-700/80 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 flex items-center justify-center transition-all cursor-pointer active:scale-90 shadow-2xs">
-                                                <i class="fa-solid fa-print text-xs" style="color: var(--color-primary);"></i>
+                                            <button type="button" onclick="window.printSalesReturnThermal('${esc(r.id)}')" title="Cetak Struk Thermal RawBT" class="btn-native-action h-9 px-2.5 rounded-xl border text-xs font-bold flex items-center gap-1 shadow-2xs active:scale-95 cursor-pointer" style="background: rgba(var(--color-primary-rgb), 0.1); color: var(--color-primary); border-color: rgba(var(--color-primary-rgb), 0.25);">
+                                                <i class="fa-solid fa-print text-xs"></i> <span>Struk</span>
                                             </button>
                                         </div>
                                     </td>
@@ -397,7 +489,7 @@ const renderSalesReturnsTableHtml = () => {
 };
 
 /**
- * Render Riwayat Retur Pembelian Supplier (Dual-View: Mobile Card List + Desktop Table)
+ * Render Riwayat Retur Pembelian Supplier (Mendukung Mode Card View & Table View)
  */
 const renderVendorReturnsTableHtml = () => {
     const list = (appData.vendorReturns || []).filter(item => {
@@ -425,81 +517,103 @@ const renderVendorReturnsTableHtml = () => {
 
     const sorted = [...list].sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
 
+    // A. MODE NATIVE CARD VIEW (DEFAULT DI SEMUA LAYAR / JIKA currentViewMode === 'card')
+    if (currentViewMode === 'card') {
+        return `
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-3.5 sm:gap-4">
+                ${sorted.map(r => {
+                    const dateStr = r.createdAt ? new Date(r.createdAt).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '-';
+                    const itemsCount = (r.items || []).length;
+                    const supName = r.supplierName || 'Pemasok Toko';
+                    const monogram = getEntityMonogram(supName);
+
+                    let methodBadge = '<span class="px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 text-[10.5px] font-bold">Lainnya</span>';
+                    if (r.settlementMethod === 'ap_deduction') {
+                        methodBadge = '<span class="px-2.5 py-1 rounded-full bg-amber-50 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300 text-[10.5px] font-black inline-flex items-center gap-1.5 border border-amber-200 dark:border-amber-800/60 shadow-2xs"><i class="fa-solid fa-file-invoice-dollar"></i> Potong Hutang PO</span>';
+                    } else if (r.settlementMethod === 'cash_refund') {
+                        methodBadge = '<span class="px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 text-[10.5px] font-black inline-flex items-center gap-1.5 border border-emerald-200 dark:border-emerald-800/60 shadow-2xs"><i class="fa-solid fa-money-bill-wave"></i> Pengembalian Kas</span>';
+                    }
+
+                    return `
+                        <div class="card-native p-4 sm:p-5 rounded-2xl sm:rounded-3xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xs hover:shadow-md transition-all flex flex-col justify-between space-y-3.5">
+                            <!-- Top Bar: Avatar, Nama Pemasok, No Retur & Badge Metode -->
+                            <div class="flex items-start justify-between gap-3">
+                                <div class="flex items-center gap-3 min-w-0">
+                                    <div class="w-10 h-10 rounded-2xl flex items-center justify-center font-black text-xs shrink-0 shadow-2xs bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 border border-amber-200/60 dark:border-amber-800/40">
+                                        ${monogram}
+                                    </div>
+                                    <div class="min-w-0">
+                                        <h5 class="font-black text-sm text-slate-800 dark:text-white leading-tight truncate">
+                                            ${esc(supName)}
+                                        </h5>
+                                        <div class="flex items-center gap-2 mt-0.5 flex-wrap">
+                                            <span class="font-mono font-black text-xs text-amber-600 dark:text-amber-400">${esc(r.id)}</span>
+                                            <span class="text-[10px] font-semibold text-slate-400">&middot; ${dateStr}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="shrink-0">
+                                    ${methodBadge}
+                                </div>
+                            </div>
+
+                            <!-- Middle Section: Rujukan PO & Breakdown Barang -->
+                            <div class="p-3.5 rounded-2xl bg-slate-50/80 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 space-y-2.5">
+                                <div class="flex items-center justify-between text-xs gap-2">
+                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-mono font-bold text-slate-700 dark:text-slate-300 text-[11px]">
+                                        <i class="fa-solid fa-cart-flatbed text-slate-400"></i> ${esc(r.poId || '-')}
+                                    </span>
+                                    <div class="text-right">
+                                        <span class="text-[9.5px] font-bold uppercase tracking-wider text-slate-400 block">Klaim HPP</span>
+                                        <span class="text-base font-black text-amber-600 dark:text-amber-400 font-mono">${fCur(r.totalClaim || 0)}</span>
+                                    </div>
+                                </div>
+
+                                <!-- Cuplikan Barang -->
+                                <div class="space-y-1.5 pt-1 border-t border-slate-200/60 dark:border-slate-700/60">
+                                    <div class="flex items-center justify-between text-[10px] font-black uppercase tracking-wider text-slate-400">
+                                        <span>Item Dikembalikan (${itemsCount} macam):</span>
+                                        <span>Lokasi Asal</span>
+                                    </div>
+                                    <div class="space-y-1">
+                                        ${(r.items || []).slice(0, 3).map(i => {
+                                            const locLabel = i.fromLocation === 'warehouse' ? 'Gudang' : (i.fromLocation === 'quarantine' ? 'Karantina' : 'Rak Toko');
+                                            return `
+                                                <div class="flex items-center justify-between gap-2 p-1.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200/70 dark:border-slate-700/70 text-xs">
+                                                    <div class="flex items-center gap-1.5 min-w-0">
+                                                        <span class="px-1.5 py-0.2 rounded-md font-black text-[10px] bg-amber-50 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300 border border-amber-200 dark:border-amber-800/40">${i.qty}x</span>
+                                                        <span class="font-bold text-slate-800 dark:text-slate-200 truncate max-w-[180px]">${esc(i.name)}</span>
+                                                        ${i.variantName ? `<span class="text-[9.5px] text-slate-400 shrink-0">[${esc(i.variantName)}]</span>` : ''}
+                                                    </div>
+                                                    <span class="text-[9.5px] font-bold text-slate-500 dark:text-slate-400 shrink-0">${locLabel}</span>
+                                                </div>
+                                            `;
+                                        }).join('')}
+                                        ${itemsCount > 3 ? `<p class="text-[10.5px] font-bold text-center text-slate-400 pt-0.5">+${itemsCount - 3} item barang lainnya</p>` : ''}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Bottom Action Bar: Tombol Cetak Native Touch Target 40px -->
+                            <div class="pt-1 border-t border-slate-100 dark:border-slate-800">
+                                <button type="button" onclick="window.printVendorReturnA4('${esc(r.id)}')" class="btn-native-action w-full h-10 rounded-xl sm:rounded-2xl border border-slate-200/90 dark:border-slate-700/80 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold flex items-center justify-center gap-2 shadow-2xs active:scale-95 transition-all cursor-pointer">
+                                    <i class="fa-solid fa-print text-xs text-amber-500"></i>
+                                    <span>Cetak Surat Jalan Retur Barang (A4)</span>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }).join('')}
+            </div>
+        `;
+    }
+
+    // B. MODE TABEL ANALITIS (JIKA currentViewMode === 'table')
     return `
-        <!-- A. TAMPILAN MOBILE: NATIVE APP CARD VIEW LIST (RAMAH LAYAR HP) -->
-        <div class="block lg:hidden space-y-3">
-            ${sorted.map(r => {
-                const dateStr = r.createdAt ? new Date(r.createdAt).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '-';
-                const itemsCount = (r.items || []).length;
-
-                let methodBadge = '<span class="px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 text-[10px] font-bold">Lainnya</span>';
-                if (r.settlementMethod === 'ap_deduction') {
-                    methodBadge = '<span class="px-2.5 py-0.5 rounded-full bg-purple-100 text-purple-800 dark:bg-purple-950/60 dark:text-purple-300 text-[10px] font-black inline-flex items-center gap-1 border border-purple-200 dark:border-purple-800/60"><i class="fa-solid fa-file-invoice-dollar"></i> Potong Hutang PO</span>';
-                } else if (r.settlementMethod === 'cash_refund') {
-                    methodBadge = '<span class="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 text-[10px] font-black inline-flex items-center gap-1 border border-emerald-200 dark:border-emerald-800/60"><i class="fa-solid fa-money-bill-wave"></i> Pengembalian Kas</span>';
-                }
-
-                return `
-                    <div class="card-native p-4 rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xs space-y-3">
-                        <!-- Top Row: No Retur + Badge Metode -->
-                        <div class="flex items-center justify-between gap-2">
-                            <span class="font-mono font-black text-xs text-amber-600 dark:text-amber-400">${esc(r.id)}</span>
-                            ${methodBadge}
-                        </div>
-
-                        <!-- Row 2: Supplier & Tanggal + Rujukan PO -->
-                        <div class="flex items-start justify-between gap-2 text-xs">
-                            <div>
-                                <h5 class="font-black text-slate-800 dark:text-white leading-tight">${esc(r.supplierName || 'Pemasok Toko')}</h5>
-                                <span class="text-[10px] font-semibold text-slate-400 block mt-0.5">${dateStr}</span>
-                            </div>
-                            <div class="text-right shrink-0">
-                                <span class="text-[9px] font-bold uppercase tracking-wider text-slate-400 block mb-0.5">Rujukan PO</span>
-                                <span class="px-2 py-0.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-[10.5px] font-mono font-bold text-slate-700 dark:text-slate-300">
-                                    ${esc(r.poId || '-')}
-                                </span>
-                            </div>
-                        </div>
-
-                        <!-- Row 3: Cuplikan Barang & Total Klaim HPP -->
-                        <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800 space-y-1.5">
-                            <div class="flex items-center justify-between gap-2">
-                                <span class="text-[10px] font-bold text-slate-400">Barang Dikembalikan (${itemsCount} macam):</span>
-                                <span class="text-[10px] font-black uppercase text-amber-500">Nilai Klaim HPP</span>
-                            </div>
-                            <div class="flex items-center justify-between gap-2">
-                                <div class="min-w-0 flex-1 flex flex-wrap gap-1">
-                                    ${(r.items || []).slice(0, 3).map(i => `
-                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 text-slate-700 dark:text-slate-300">
-                                            <span class="text-amber-500">${i.qty}x</span>
-                                            <span class="truncate max-w-[120px]">${esc(i.name)}</span>
-                                            ${i.variantName ? `<span class="text-[9px] opacity-75">[${esc(i.variantName)}]</span>` : ''}
-                                        </span>
-                                    `).join('')}
-                                    ${itemsCount > 3 ? `<span class="text-[10px] font-bold text-slate-400 self-center">+${itemsCount - 3} lainnya</span>` : ''}
-                                </div>
-                                <div class="text-right shrink-0 pl-2">
-                                    <span class="text-base font-black text-amber-600 dark:text-amber-400">${fCur(r.totalClaim || 0)}</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Row 4: Action Bar Cetak Surat Jalan Retur -->
-                        <div class="pt-1 border-t border-slate-100 dark:border-slate-800">
-                            <button type="button" onclick="window.printVendorReturnA4('${esc(r.id)}')" class="btn-native-action w-full py-2.5 rounded-xl border border-slate-200/90 dark:border-slate-700/80 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold flex items-center justify-center gap-1.5 shadow-2xs active:scale-95 cursor-pointer">
-                                <i class="fa-solid fa-print text-xs text-amber-500"></i> <span>Cetak Surat Jalan Retur Barang</span>
-                            </button>
-                        </div>
-                    </div>
-                `;
-            }).join('')}
-        </div>
-
-        <!-- B. TAMPILAN DESKTOP: TABEL ANALITIS LAPANG (LEBAR >= 1024px) -->
-        <div class="hidden lg:block card-native bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl border border-slate-200/90 dark:border-slate-800 shadow-2xs overflow-hidden">
+        <div class="card-native bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl border border-slate-200/90 dark:border-slate-800 shadow-2xs overflow-hidden">
             <div class="overflow-x-auto custom-scrollbar">
                 <table class="w-full text-left text-xs">
-                    <thead class="bg-slate-50 dark:bg-slate-800/60 text-[11px] font-black uppercase tracking-wider text-slate-400 border-b border-slate-200 dark:border-slate-800">
+                    <thead class="bg-slate-50/80 dark:bg-slate-800/60 text-[11px] font-black uppercase tracking-wider text-slate-400 border-b border-slate-200 dark:border-slate-800">
                         <tr>
                             <th class="py-3.5 px-4">No. Retur &amp; Tanggal</th>
                             <th class="py-3.5 px-4">Pemasok / Supplier</th>
@@ -517,9 +631,9 @@ const renderVendorReturnsTableHtml = () => {
 
                             let methodBadge = '<span class="px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 text-[10px] font-bold">Lainnya</span>';
                             if (r.settlementMethod === 'ap_deduction') {
-                                methodBadge = '<span class="px-2.5 py-1 rounded-full bg-purple-100 text-purple-800 dark:bg-purple-950/60 dark:text-purple-300 text-[10px] font-black inline-flex items-center gap-1 border border-purple-200 dark:border-purple-800/60"><i class="fa-solid fa-file-invoice-dollar"></i> Potong Hutang PO</span>';
+                                methodBadge = '<span class="px-2.5 py-1 rounded-full bg-amber-50 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300 text-[10px] font-black inline-flex items-center gap-1 border border-amber-200 dark:border-amber-800/60"><i class="fa-solid fa-file-invoice-dollar"></i> Potong Hutang PO</span>';
                             } else if (r.settlementMethod === 'cash_refund') {
-                                methodBadge = '<span class="px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 text-[10px] font-black inline-flex items-center gap-1 border border-emerald-200 dark:border-emerald-800/60"><i class="fa-solid fa-money-bill-wave"></i> Pengembalian Kas</span>';
+                                methodBadge = '<span class="px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 text-[10px] font-black inline-flex items-center gap-1 border border-emerald-200 dark:border-emerald-800/60"><i class="fa-solid fa-money-bill-wave"></i> Pengembalian Kas</span>';
                             }
 
                             return `
@@ -532,21 +646,21 @@ const renderVendorReturnsTableHtml = () => {
                                         ${esc(r.supplierName || 'Pemasok Toko')}
                                     </td>
                                     <td class="py-3.5 px-4 font-mono font-bold text-slate-700 dark:text-slate-300">
-                                        <span class="px-2 py-0.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-[11px]">${esc(r.poId || '-')}</span>
+                                        <span class="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-[11px]">${esc(r.poId || '-')}</span>
                                     </td>
                                     <td class="py-3.5 px-4 max-w-xs">
                                         <p class="truncate font-semibold text-slate-700 dark:text-slate-300" title="${esc(itemsSummary)}">${esc(itemsSummary || '-')}</p>
                                         <span class="text-[10px] font-bold text-slate-400">${r.items ? r.items.length : 0} macam barang</span>
                                     </td>
-                                    <td class="py-3.5 px-4 text-right font-black text-amber-600 dark:text-amber-400 text-sm">
+                                    <td class="py-3.5 px-4 text-right font-black text-amber-600 dark:text-amber-400 text-sm font-mono">
                                         ${fCur(r.totalClaim || 0)}
                                     </td>
                                     <td class="py-3.5 px-4">
                                         ${methodBadge}
                                     </td>
                                     <td class="py-3.5 px-4 text-center">
-                                        <button type="button" onclick="window.printVendorReturnA4('${esc(r.id)}')" title="Cetak Surat Jalan Retur Barang" class="btn-native-icon w-9 h-9 rounded-xl border border-slate-200/90 dark:border-slate-700/80 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 flex items-center justify-center transition-all cursor-pointer active:scale-90 shadow-2xs mx-auto">
-                                            <i class="fa-solid fa-print text-xs text-amber-500"></i>
+                                        <button type="button" onclick="window.printVendorReturnA4('${esc(r.id)}')" title="Cetak Surat Jalan Retur Barang" class="btn-native-action h-9 px-3 rounded-xl border border-slate-200/90 dark:border-slate-700/80 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold inline-flex items-center gap-1.5 shadow-2xs active:scale-95 cursor-pointer">
+                                            <i class="fa-solid fa-print text-xs text-amber-500"></i> <span>Cetak A4</span>
                                         </button>
                                     </td>
                                 </tr>
@@ -1688,6 +1802,7 @@ export const printVendorReturnA4 = (returnId) => {
 if (typeof window !== 'undefined') {
     window.renderReturnsView = renderReturnsView;
     window.switchReturnsTab = switchReturnsTab;
+    window.switchReturnsViewMode = switchReturnsViewMode;
     window.handleReturnsSearch = handleReturnsSearch;
     window.openSalesReturnModal = openSalesReturnModal;
     window.closeSalesReturnModal = closeSalesReturnModal;
