@@ -156,12 +156,12 @@
         }
       }
     </style>
-    <script type="module" crossorigin src="/assets/index-BLLmpezn.js"></script>
+    <script type="module" crossorigin src="/assets/index-BpFHCAiq.js"></script>
     <link rel="modulepreload" crossorigin href="/assets/vendor-firebase-core-D2OF5R23.js">
     <link rel="modulepreload" crossorigin href="/assets/vendor-firebase-db-BIUZcnOd.js">
     <link rel="modulepreload" crossorigin href="/assets/vendor-utils-DqNA57iZ.js">
     <link rel="modulepreload" crossorigin href="/assets/vendor-sortable-DzmX_rHT.js">
-    <link rel="stylesheet" crossorigin href="/assets/index-CI1hx-ft.css">
+    <link rel="stylesheet" crossorigin href="/assets/index-CbxX5M0g.css">
   </head>
   <body data-bg-style="minimalist">
     <!-- UI Components Global -->
@@ -1618,11 +1618,11 @@
 
         <div class="px-4 sm:px-5 pt-3 border-t border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900" style="padding-bottom: max(14px, env(safe-area-inset-bottom))">
           <p class="text-[11px] text-slate-500 dark:text-slate-400 mb-2.5 flex items-start gap-1.5"><i class="fa-solid fa-circle-info text-[var(--color-primary)] mt-0.5"></i><span>Periksa kembali isi dokumen di atas. Tekan <b class="text-slate-700 dark:text-slate-200">Cetak Sekarang</b> untuk mencetak, atau simpan sebagai Gambar / PDF.</span></p>
-          <div class="flex gap-2">
-            <button type="button" id="doc-preview-cancel" class="hidden sm:flex px-4 py-3.5 rounded-2xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 font-bold text-xs cursor-pointer active:scale-95 transition-all items-center" onclick="closeDocPreviewModal()">Batal</button>
-            <button type="button" id="doc-export-image" class="w-12 sm:w-auto sm:px-4 py-3.5 rounded-2xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 font-bold text-xs flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 transition-all" onclick="exportDocFile('image')" title="Simpan sebagai Gambar" aria-label="Simpan sebagai Gambar"><i class="fa-solid fa-image text-[var(--color-primary)]"></i><span class="hidden sm:inline">Gambar</span></button>
-            <button type="button" id="doc-export-pdf" class="w-12 sm:w-auto sm:px-4 py-3.5 rounded-2xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 font-bold text-xs flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 transition-all" onclick="exportDocFile('pdf')" title="Simpan sebagai PDF" aria-label="Simpan sebagai PDF"><i class="fa-solid fa-file-pdf text-[var(--color-primary)]"></i><span class="hidden sm:inline">PDF</span></button>
-            <button type="button" id="doc-print-confirm" class="utp-btn-primary flex-1 py-3.5 rounded-2xl text-white font-black text-sm flex items-center justify-center gap-2 cursor-pointer active:scale-95 transition-all hover:brightness-105" onclick="printDocA4()"><i class="fa-solid fa-print"></i> Cetak Sekarang</button>
+          <div class="flex items-center gap-2 w-full">
+            <button type="button" id="doc-preview-cancel" class="hidden md:flex h-11 sm:h-12 px-4 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 font-bold text-xs cursor-pointer active:scale-95 transition-all items-center shrink-0" onclick="closeDocPreviewModal()">Batal</button>
+            <button type="button" id="doc-export-image" class="h-11 sm:h-12 px-3 sm:px-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold text-xs flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 transition-all shrink-0" onclick="exportDocFile('image')" title="Simpan sebagai Gambar" aria-label="Simpan sebagai Gambar"><i class="fa-solid fa-image text-[var(--color-primary)]"></i><span>Gambar</span></button>
+            <button type="button" id="doc-export-pdf" class="h-11 sm:h-12 px-3 sm:px-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold text-xs flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 transition-all shrink-0" onclick="exportDocFile('pdf')" title="Simpan sebagai PDF" aria-label="Simpan sebagai PDF"><i class="fa-solid fa-file-pdf text-rose-500"></i><span>PDF</span></button>
+            <button type="button" id="doc-print-confirm" class="utp-btn-primary flex-1 h-11 sm:h-12 px-4 sm:px-6 rounded-xl text-white font-black text-xs sm:text-sm flex items-center justify-center gap-2 cursor-pointer active:scale-95 transition-all hover:brightness-105 shadow-md whitespace-nowrap" onclick="printDocA4()"><i class="fa-solid fa-print"></i><span>Cetak Sekarang</span></button>
           </div>
         </div>
       </div>

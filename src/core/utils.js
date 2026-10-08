@@ -86,13 +86,28 @@ export const esc = s => {
 
 // ─── Currency ───────────────────────────────────────────────
 /**
- * Format angka ke format Rupiah (Rp 1.000.000).
+ * Format angka ke format Rupiah deterministik (Rp 1.000.000).
+ * Menggunakan pemisah ribuan titik murni (.) anti-distorsi locale/OS.
  */
 export const fCur = a => {
     const n = Number(a);
-    return (isNaN(n) || a === null) ? 'Rp 0' : new Intl.NumberFormat('id-ID', {
-        style: 'currency', currency: 'IDR', minimumFractionDigits: 0
-    }).format(Math.abs(n)).replace(/^/, n < 0 ? '-' : '');
+    if (isNaN(n) || a === null) return 'Rp 0';
+    const absVal = Math.abs(Math.round(n));
+    const formatted = absVal.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    return `${n < 0 ? '-' : ''}Rp ${formatted}`;
+};
+
+/**
+ * Format angka akuntansi PSAK resmi.
+ * Nilai pengurang/negatif dibungkus dalam tanda kurung kurawal (Rp 10.000), nol tampil Rp 0.
+ */
+export const fAccounting = (a, isDeduction = false) => {
+    const n = Number(a);
+    if (isNaN(n) || a === null || n === 0) return 'Rp 0';
+    const absVal = Math.abs(Math.round(n));
+    const formatted = absVal.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    if (isDeduction || n < 0) return `(Rp ${formatted})`;
+    return `Rp ${formatted}`;
 };
 
 // ─── Date & Order Timestamp Helpers ──────────────────────────
@@ -646,6 +661,7 @@ if (typeof window !== 'undefined') {
     window.esc = esc;
     window.fixD = fixD;
     window.fCur = fCur;
+    window.fAccounting = fAccounting;
     window.parseOrderDate = parseOrderDate;
     window.extractOrderTaxInfo = extractOrderTaxInfo;
     window.sL = sL;

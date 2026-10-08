@@ -11,7 +11,7 @@ import { db, auth, ADMIN_UID, loadAnalytics, firebaseConfig } from './config/fir
 // Core: Theme Engine (color palettes, dark mode, CSS variables, background style)
 import { uiPalettes, hexToRgb, applyUITheme, initDarkMode, toggleTheme as _toggleTheme, initThemeIcon, applyBackgroundStyle } from './core/theme.js';
 // Core: Utilities (helper functions stateless)
-import { el, show, hide, toggleCls, setIn, setH, setV, getV, sL, ssL, esc, fCur, fixD, getYouTubeId, parseVideoUrl, fixDriveVideo, fixDriveVideoPreview, getOptImg, rewardStatusLabel, updateSEO, injectJSONLD, ensureScriptLoaded, sLoad, hLoad } from './core/utils.js';
+import { el, show, hide, toggleCls, setIn, setH, setV, getV, sL, ssL, esc, fCur, fAccounting, fixD, getYouTubeId, parseVideoUrl, fixDriveVideo, fixDriveVideoPreview, getOptImg, rewardStatusLabel, updateSEO, injectJSONLD, ensureScriptLoaded, sLoad, hLoad } from './core/utils.js';
 
 // Core: State (struktur data default & global state)
 import * as state from './core/state.js';
@@ -463,6 +463,7 @@ window.getV = getV;
 window.esc = esc;
 window.fixD = fixD;
 window.fCur = fCur;
+window.fAccounting = fAccounting;
 window.sL = sL;
 window.ssL = ssL;
 window.defaultFbC = firebaseConfig;

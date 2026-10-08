@@ -448,22 +448,22 @@ export const renderBarcodeLabelModalContent = () => {
         </div>
 
         <!-- 3. FOOTER MODAL (SOLID PINNED / MULTI-ACTION) -->
-        <div class="shrink-0 px-5 sm:px-6 py-4 border-t border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 flex flex-col sm:flex-row items-center justify-between gap-3 z-10">
+        <div class="shrink-0 px-4 sm:px-6 py-3.5 sm:py-4 border-t border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 flex flex-col sm:flex-row items-center justify-between gap-3 z-10">
             <div class="text-xs text-slate-500 dark:text-slate-400 font-bold hidden sm:block">
                 <span>Siap dicetak ke printer label thermal USB/Bluetooth atau printer A4 biasa.</span>
             </div>
 
-            <div class="flex items-center gap-2.5 w-full sm:w-auto">
-                <button type="button" onclick="window.closeProductBarcodeLabelModal()" class="flex-1 sm:flex-initial px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-bold text-xs hover:bg-slate-100 dark:hover:bg-slate-800 transition-all cursor-pointer">
+            <div class="flex items-center gap-2 w-full sm:w-auto">
+                <button type="button" onclick="window.closeProductBarcodeLabelModal()" class="h-11 sm:h-12 px-3.5 sm:px-4 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-bold text-xs hover:bg-slate-100 dark:hover:bg-slate-800 transition-all cursor-pointer active:scale-95 shrink-0 flex items-center justify-center">
                     Batal
                 </button>
 
-                <button type="button" onclick="window.printBarcodeLabelsThermalRawbt()" class="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-900 text-white font-black text-xs transition-all active:scale-95 shadow-sm flex items-center justify-center gap-2 cursor-pointer" title="Cetak via Thermal Bluetooth / RawBT">
+                <button type="button" onclick="window.printBarcodeLabelsThermalRawbt()" class="flex-1 sm:flex-initial h-11 sm:h-12 px-3.5 sm:px-4 rounded-xl bg-slate-800 hover:bg-slate-900 text-white font-bold text-xs transition-all active:scale-95 shadow-xs flex items-center justify-center gap-2 cursor-pointer whitespace-nowrap" title="Cetak via Thermal Bluetooth / RawBT">
                     <i class="fa-solid fa-satellite-dish text-xs"></i>
                     <span>RawBT / Bluetooth</span>
                 </button>
 
-                <button type="button" onclick="window.printBarcodeLabelsBrowser()" class="flex-1 sm:flex-initial px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-black text-xs uppercase tracking-wider transition-all active:scale-95 shadow-md flex items-center justify-center gap-2 cursor-pointer">
+                <button type="button" onclick="window.printBarcodeLabelsBrowser()" class="flex-1 sm:flex-initial h-11 sm:h-12 px-4 sm:px-6 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-black text-xs uppercase tracking-wider transition-all active:scale-95 shadow-md flex items-center justify-center gap-2 cursor-pointer whitespace-nowrap">
                     <i class="fa-solid fa-print text-xs"></i>
                     <span>Cetak Sekarang (${totalLabelsCount})</span>
                 </button>

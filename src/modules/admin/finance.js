@@ -11,7 +11,7 @@ import { db, firebase } from '../../config/firebase.js';
 import { appData, isSaving, setIsSaving } from '../../core/state.js';
 
 import { 
-    el, show, setIn, setH, getV, esc, fCur, 
+    el, show, setIn, setH, getV, esc, fCur, fAccounting,
     showToast, sLoad, hLoad, toggleCls 
 } from '../../core/utils.js';
 import { computeInventoryStats } from './auth.js';
@@ -514,106 +514,382 @@ export const saveTaxSettingsPanel = async () => {
  * Preview dokumen A4 untuk laporan Pajak sebelum dicetak
  */
 export const openTaxDocPreview = (reportType) => {
-    const periodLabel = taxMonth === 0 ? `Tahun ${taxYear}` : `${MONTH_NAMES[taxMonth - 1]} ${taxYear}`;
+    const periodLabel = taxMonth === 0 ? `Tahun ${taxYear} (Setahun Penuh)` : `${MONTH_NAMES[taxMonth - 1]} ${taxYear}`;
     const ts = appData.taxSettings || {};
     const today = new Date().toLocaleDateString('id-ID', {day: '2-digit', month: 'long', year: 'numeric'});
+    const storeName = ts.companyName || appData.store?.name || 'PUTRI UTAMA TEKNIK';
+    const storeAddress = appData.store?.address || 'Jln. Pakem RT005 RW003 Ds. Banyuanyar, Kec. Gurah, Kab. Kediri';
+    const storePhone = appData.store?.wa || appData.store?.phone || '-';
+    const npwpStr = ts.npwp || '';
 
     let logoHTML = '';
-    if (appData.store.logo && (appData.store.logo.includes('http') || appData.store.logo.includes('data:'))) {
-        logoHTML = `<img loading="eager" src="${esc(appData.store.logo)}" class="w-16 h-16 object-contain">`;
+    if (appData.store?.logo && (appData.store.logo.includes('http') || appData.store.logo.includes('data:'))) {
+        logoHTML = `<img loading="eager" src="${esc(appData.store.logo)}" class="w-14 h-14 object-contain rounded-xl border border-slate-200">`;
     } else {
-        logoHTML = `<div class="w-16 h-16 bg-slate-700 text-white flex items-center justify-center rounded-xl"><i class="fa-solid fa-store text-3xl"></i></div>`;
+        logoHTML = `<div class="w-14 h-14 rounded-2xl flex items-center justify-center text-white text-2xl font-black shadow-md shrink-0" style="background: linear-gradient(135deg, var(--color-primary, #b8860b), var(--color-primary-dark, #8b6508));"><i class="fa-solid fa-store"></i></div>`;
     }
 
-    const titles = { summary: 'LAPORAN PPN & OMSET', income: 'LAPORAN LABA RUGI', balance: 'NERACA' };
-    const title = titles[reportType] || 'LAPORAN';
+    const titles = { summary: 'LAPORAN PPN & OMSET BULANAN', income: 'LAPORAN LABA RUGI KOMPREHENSIF', balance: 'NERACA KEUANGAN (BALANCE SHEET)' };
+    const docCodes = { summary: 'PPN', income: 'PL', balance: 'BS' };
+    const title = titles[reportType] || 'LAPORAN KEUANGAN';
+    const docNumber = `DOC-${docCodes[reportType] || 'FIN'}-${taxYear}${taxMonth ? String(taxMonth).padStart(2, '0') : 'FY'}-001`;
 
-    let headerHtml = `
-    <div class="flex justify-between items-start border-b-[3px] border-slate-800 pb-6 mb-6">
-        <div class="flex items-center gap-4">
-            ${logoHTML}
-            <div>
-                <h1 class="font-bold text-xl tracking-tight text-slate-900 uppercase">${esc(ts.companyName || appData.store.name)}</h1>
-                ${ts.npwp ? `<p class="text-xs font-bold text-slate-500 mt-1">NPWP: ${esc(ts.npwp)}</p>` : ''}
-                <p class="text-xs font-medium text-slate-500 mt-1 max-w-sm leading-snug">${esc(appData.store.address || '')}</p>
+    // ─── KOP SURAT RESMI EKSEKUTIF TOKO PUTRI ───
+    const kopHtml = `
+    <div class="border-b-2 border-slate-900 pb-3.5 mb-3.5 select-none">
+        <div class="flex justify-between items-start gap-4">
+            <div class="flex items-center gap-3.5">
+                ${logoHTML}
+                <div>
+                    <h1 class="font-black text-lg sm:text-xl tracking-tight text-slate-900 uppercase leading-none">${esc(storeName)}</h1>
+                    <p class="text-[11px] font-semibold text-slate-500 mt-1 max-w-sm leading-tight">${esc(storeAddress)}</p>
+                    <div class="flex items-center gap-2 mt-1 text-[10px] text-slate-600">
+                        ${npwpStr ? `<span class="font-mono font-bold text-slate-700 bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200">NPWP: ${esc(npwpStr)}</span>` : ''}
+                        <span class="font-bold text-slate-500"><i class="fa-brands fa-whatsapp text-emerald-600 mr-1"></i>${esc(storePhone)}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="text-right shrink-0">
+                <span class="inline-block px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-widest bg-slate-900 text-white mb-1">Executive Statement</span>
+                <h2 class="font-black text-sm sm:text-base tracking-wider text-slate-900 uppercase leading-tight">${title}</h2>
+                <p class="text-xs font-bold text-slate-700 mt-0.5 font-mono">No: <span class="text-blue-700 font-black">${docNumber}</span></p>
+                <p class="text-[10.5px] font-semibold text-slate-500 mt-0.5">Periode: <b class="text-slate-800">${periodLabel}</b> &bull; Dicetak: ${today}</p>
             </div>
         </div>
-        <div class="text-right">
-            <h2 class="font-bold text-2xl tracking-widest text-slate-700 uppercase">${title}</h2>
-            <p class="text-sm font-bold text-slate-600 mt-2">Periode: ${periodLabel}</p>
-            <p class="text-xs font-semibold text-slate-400 mt-1">Dicetak: ${today}</p>
+    </div>
+    <div class="bg-amber-50/90 border border-amber-200/90 rounded-xl p-2.5 mb-3.5 text-[10.5px] font-medium text-amber-900 flex items-start gap-2 leading-relaxed select-none">
+        <i class="fa-solid fa-circle-info text-amber-600 mt-0.5 text-xs shrink-0"></i>
+        <span><b>Rekapitulasi Pembukuan Finansial Internal:</b> Dokumen ini disusun secara otomatis berdasarkan pencatatan transaksi POS Kasir, penjualan etalase, sistem HPP FIFO kulakan, dan buku kas operasional Toko Putri. Mohon validasi ke akuntan sebelum pelaporan SPT resmi.</span>
+    </div>
+    `;
+
+    // ─── KOLOM PENGESAHAN TANDA TANGAN GANDA ───
+    const signaturesHtml = `
+    <div class="mt-auto pt-3 flex justify-between items-end text-xs text-slate-700 select-none">
+        <div class="text-center w-52">
+            <p class="text-[10px] font-bold text-slate-500">Disusun &amp; Diperiksa Oleh,</p>
+            <div class="h-14 flex items-center justify-center">
+                <span class="text-[9.5px] text-slate-300 italic">[Tanda Tangan Staf]</span>
+            </div>
+            <p class="font-black text-slate-900 border-t border-slate-400 pt-1 text-[11px] uppercase">${esc(appData.store?.staffName || 'Bagian Keuangan')}</p>
+            <p class="text-[9.5px] text-slate-500 font-semibold">Administrasi &amp; Kasir</p>
+        </div>
+        <div class="text-center w-52">
+            <p class="text-[10px] font-bold text-slate-500">Disetujui &amp; Disahkan Oleh,</p>
+            <div class="h-14 flex items-center justify-center">
+                <span class="text-[9.5px] text-slate-300 italic">[Tanda Tangan &amp; Stempel]</span>
+            </div>
+            <p class="font-black text-slate-900 border-t border-slate-400 pt-1 text-[11px] uppercase">${esc(storeName)}</p>
+            <p class="text-[9.5px] text-slate-500 font-semibold">Pemilik Usaha / Owner</p>
         </div>
     </div>
-    <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6 text-[11px] font-bold text-amber-700 leading-relaxed">
-        <i class="fa-solid fa-triangle-exclamation mr-1"></i> Dokumen ini adalah rekap internal sebagai alat bantu — bukan dokumen resmi DJP. Mohon validasi ke akuntan/konsultan pajak sebelum digunakan untuk pelaporan SPT resmi.
-    </div>`;
+    `;
 
-    let bodyHtml = '';
+    // ─── RUNNING FOOTER LEMBAR A4 ───
+    const footerHtml = `
+    <div class="a4-page-footer mt-auto pt-2 border-t border-slate-200 flex justify-between items-center text-[10px] text-slate-500 font-mono select-none">
+        <div class="flex items-center gap-1.5">
+            <span class="font-bold text-slate-700 uppercase">${esc(storeName)}</span>
+            <span class="text-slate-300">&bull;</span>
+            <span class="text-slate-500">${esc(title)}</span>
+            <span class="text-slate-300">&bull;</span>
+            <span class="text-slate-400 font-mono">${docNumber}</span>
+        </div>
+        <div class="flex items-center gap-1 font-bold text-slate-600 bg-slate-100 px-2 py-0.5 rounded border border-slate-200">
+            <span>Halaman 1 dari 1</span>
+        </div>
+    </div>
+    `;
+
+    let innerContentHtml = '';
 
     if (reportType === 'summary') {
         const t = getTaxPeriodTotals();
-        const dpp = t.omset - t.disc;
+        const dpp = Math.max(0, t.omset - t.disc);
         const rows = Array.from({length: 12}, (_, i) => i + 1).map(m => {
             const d = gTaxMonthly ? gTaxMonthly[m] : { omset: 0, ppn: 0, orderCount: 0 };
-            return `<tr class="border-b border-slate-200 dark:border-slate-700/80"><td class="py-2.5 px-3 font-bold text-slate-700 dark:text-slate-200">${MONTH_NAMES[m - 1]} ${taxYear}</td><td class="py-2.5 px-3 text-right font-bold text-slate-700 dark:text-slate-200">${fCur(d.omset)}</td><td class="py-2.5 px-3 text-right font-bold text-slate-900 dark:text-white">${fCur(d.ppn)}</td><td class="py-2.5 px-3 text-right font-bold text-slate-500 dark:text-slate-400">${d.orderCount}</td></tr>`;
+            const mDpp = Math.max(0, (d.omset || 0) - (d.disc || 0));
+            return `
+            <tr class="border-b border-slate-200 hover:bg-slate-50/50">
+                <td class="py-2 px-3 font-bold text-slate-800">${MONTH_NAMES[m - 1]} ${taxYear}</td>
+                <td class="py-2 px-3 text-right font-mono tabular-nums font-semibold text-slate-700">${fCur(d.omset || 0)}</td>
+                <td class="py-2 px-3 text-right font-mono tabular-nums font-semibold text-slate-700">${fCur(mDpp)}</td>
+                <td class="py-2 px-3 text-right font-mono tabular-nums font-bold text-amber-700">${fCur(d.ppn || 0)}</td>
+                <td class="py-2 px-3 text-right font-mono tabular-nums font-semibold text-slate-600">${d.orderCount || 0} Trx</td>
+            </tr>`;
         }).join('');
-        bodyHtml = `
-        <div class="grid grid-cols-4 gap-4 mb-8">
-            <div class="bg-slate-50 dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700 rounded-xl p-4"><p class="text-[9px] font-bold text-slate-400 uppercase mb-1">Omset Bruto</p><p class="font-bold text-slate-900 dark:text-white">${fCur(t.omset)}</p></div>
-            <div class="bg-slate-50 dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700 rounded-xl p-4"><p class="text-[9px] font-bold text-slate-400 uppercase mb-1">Diskon</p><p class="font-bold text-rose-600 dark:text-rose-400">${fCur(t.disc)}</p></div>
-            <div class="bg-slate-50 dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700 rounded-xl p-4"><p class="text-[9px] font-bold text-slate-400 uppercase mb-1">DPP</p><p class="font-bold text-slate-900 dark:text-white">${fCur(dpp)}</p></div>
-            <div class="bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/60 rounded-xl p-4"><p class="text-[9px] font-bold text-amber-600 dark:text-amber-400 uppercase mb-1">PPN Keluaran</p><p class="font-bold text-amber-700 dark:text-amber-300">${fCur(t.ppn)}</p></div>
-        </div>
-        <table class="w-full text-xs"><thead><tr class="bg-slate-100 dark:bg-slate-800 text-left"><th class="py-2.5 px-3 font-bold text-slate-500 dark:text-slate-400 uppercase text-[9px]">Bulan</th><th class="py-2.5 px-3 font-bold text-slate-500 dark:text-slate-400 uppercase text-[9px] text-right">Omset</th><th class="py-2.5 px-3 font-bold text-slate-500 dark:text-slate-400 uppercase text-[9px] text-right">PPN Keluaran</th><th class="py-2.5 px-3 font-bold text-slate-500 dark:text-slate-400 uppercase text-[9px] text-right">Pesanan</th></tr></thead><tbody>${rows}</tbody></table>`;
+
+        innerContentHtml = `
+            <div class="grid grid-cols-4 gap-3 mb-3.5 select-none">
+                <div class="p-3 rounded-xl bg-slate-50 border border-slate-200">
+                    <span class="text-[9px] font-black uppercase tracking-wider text-slate-500 block">Omset Bruto</span>
+                    <span class="text-sm font-black text-slate-900 font-mono tabular-nums block mt-0.5">${fCur(t.omset)}</span>
+                </div>
+                <div class="p-3 rounded-xl bg-rose-50/70 border border-rose-200">
+                    <span class="text-[9px] font-black uppercase tracking-wider text-rose-800 block">Diskon Produk</span>
+                    <span class="text-sm font-black text-rose-700 font-mono tabular-nums block mt-0.5">${t.disc > 0 ? fAccounting(t.disc, true) : 'Rp 0'}</span>
+                </div>
+                <div class="p-3 rounded-xl bg-blue-50/70 border border-blue-200">
+                    <span class="text-[9px] font-black uppercase tracking-wider text-blue-900 block">Dasar Pajak (DPP)</span>
+                    <span class="text-sm font-black text-blue-800 font-mono tabular-nums block mt-0.5">${fCur(dpp)}</span>
+                </div>
+                <div class="p-3 rounded-xl bg-amber-50/80 border border-amber-200">
+                    <span class="text-[9px] font-black uppercase tracking-wider text-amber-900 block">Total PPN Keluaran</span>
+                    <span class="text-sm font-black text-amber-700 font-mono tabular-nums block mt-0.5">${fCur(t.ppn)}</span>
+                </div>
+            </div>
+
+            <table class="w-full text-xs border-collapse border border-slate-300 mb-4">
+                <thead>
+                    <tr class="bg-slate-900 text-white font-bold text-[9.5px] uppercase tracking-wider">
+                        <th class="py-2.5 px-3 text-left">Bulan</th>
+                        <th class="py-2.5 px-3 text-right">Omset Bruto</th>
+                        <th class="py-2.5 px-3 text-right">Dasar Pajak (DPP)</th>
+                        <th class="py-2.5 px-3 text-right">PPN Keluaran</th>
+                        <th class="py-2.5 px-3 text-right">Jumlah Pesanan</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-200">
+                    ${rows}
+                    <tr class="bg-slate-100 font-black text-slate-900 border-t-2 border-slate-800">
+                        <td class="py-2.5 px-3 uppercase">Total Tahunan</td>
+                        <td class="py-2.5 px-3 text-right font-mono tabular-nums">${fCur(t.omset)}</td>
+                        <td class="py-2.5 px-3 text-right font-mono tabular-nums">${fCur(dpp)}</td>
+                        <td class="py-2.5 px-3 text-right font-mono tabular-nums text-amber-700">${fCur(t.ppn)}</td>
+                        <td class="py-2.5 px-3 text-right font-mono tabular-nums">${t.orderCount || 0} Trx</td>
+                    </tr>
+                </tbody>
+            </table>
+        `;
     } else if (reportType === 'income') {
         const t = getTaxPeriodTotals();
-        const labaKotor = t.omset - t.disc - t.hpp;
+        const netSales = Math.max(0, t.omset - t.disc);
+        const labaKotor = netSales - t.hpp;
         const totalExpense = getTaxPeriodExpenses();
         const labaBersih = labaKotor - totalExpense;
         const scheme = ts.taxScheme || 'umkm_final';
         let taxRate, taxBase, taxLabel;
-        if (scheme === 'umkm_final') { taxRate = 0.5; taxBase = t.omset; taxLabel = 'PPh Final UMKM (0,5% × Omset)'; }
-        else if (scheme === 'badan_normal') { taxRate = 22; taxBase = Math.max(0, labaBersih); taxLabel = 'PPh Badan (22% × Laba Bersih)'; }
-        else { taxRate = parseFloat(ts.customTaxRate) || 0; taxBase = Math.max(0, labaBersih); taxLabel = `PPh Custom (${taxRate}% × Laba Bersih)`; }
+        if (scheme === 'umkm_final') { taxRate = 0.5; taxBase = t.omset; taxLabel = 'PPh Final UMKM PP 55/2022 (0,5% × Omset)'; }
+        else if (scheme === 'badan_normal') { taxRate = 22; taxBase = Math.max(0, labaBersih); taxLabel = 'PPh Badan UU HPP (22% × Laba Bersih)'; }
+        else { taxRate = parseFloat(ts.customTaxRate) || 0; taxBase = Math.max(0, labaBersih); taxLabel = `PPh Tarif Khusus (${taxRate}% × Laba Bersih)`; }
         const estimasiPajak = taxBase * (taxRate / 100);
         const labaSetelahPajak = labaBersih - estimasiPajak;
-        const row = (label, val, bold, color) => `<div class="flex justify-between py-2 ${bold ? 'border-t-2 border-slate-800 mt-1 pt-3' : 'border-b border-slate-100'}"><span class="${bold ? 'font-bold text-slate-900' : 'font-bold text-slate-600'}">${label}</span><span class="font-bold ${color || 'text-slate-900'}">${val}</span></div>`;
-        bodyHtml = `<div class="max-w-xl">
-            ${row('Omset Bruto', fCur(t.omset))}
-            ${row('(−) Diskon Produk', '-' + fCur(t.disc), false, 'text-rose-600')}
-            ${row('(−) HPP', '-' + fCur(t.hpp), false, 'text-rose-600')}
-            ${row('Laba Kotor', fCur(labaKotor), true, 'text-emerald-600')}
-            ${row('(−) Biaya Operasional', '-' + fCur(totalExpense), false, 'text-rose-600')}
-            ${row('Laba Bersih Sebelum Pajak', fCur(labaBersih), true)}
-            ${row('(−) Estimasi ' + taxLabel, '-' + fCur(estimasiPajak), false, 'text-rose-600')}
-            ${row('Laba Bersih Setelah Pajak (Estimasi)', fCur(labaSetelahPajak), true)}
-        </div>`;
+
+        // Persentase Margin terhadap Omset
+        const grossMarginPct = netSales > 0 ? ((labaKotor / netSales) * 100).toFixed(1) : '0.0';
+        const opexPct = netSales > 0 ? ((totalExpense / netSales) * 100).toFixed(1) : '0.0';
+        const netMarginPct = netSales > 0 ? ((labaSetelahPajak / netSales) * 100).toFixed(1) : '0.0';
+
+        // 4 KPI Cards Eksekutif
+        const kpiHtml = `
+        <div class="grid grid-cols-4 gap-3 mb-3.5 select-none">
+            <div class="p-3 rounded-xl bg-slate-50 border border-slate-200">
+                <span class="text-[9px] font-black uppercase tracking-wider text-slate-500 block">Penjualan Bersih</span>
+                <span class="text-sm font-black text-slate-900 font-mono tabular-nums block mt-0.5">${fCur(netSales)}</span>
+                <span class="text-[9px] font-bold text-slate-400 mt-0.5 block">100% Basis Omset</span>
+            </div>
+            <div class="p-3 rounded-xl bg-emerald-50/70 border border-emerald-200">
+                <span class="text-[9px] font-black uppercase tracking-wider text-emerald-800 block">Laba Kotor (Gross)</span>
+                <span class="text-sm font-black text-emerald-700 font-mono tabular-nums block mt-0.5">${fCur(labaKotor)}</span>
+                <span class="text-[9px] font-bold text-emerald-600 mt-0.5 block">${grossMarginPct}% Gross Margin</span>
+            </div>
+            <div class="p-3 rounded-xl bg-rose-50/70 border border-rose-200">
+                <span class="text-[9px] font-black uppercase tracking-wider text-rose-800 block">Beban Operasional</span>
+                <span class="text-sm font-black text-rose-700 font-mono tabular-nums block mt-0.5">${totalExpense > 0 ? fAccounting(totalExpense, true) : 'Rp 0'}</span>
+                <span class="text-[9px] font-bold text-rose-600 mt-0.5 block">${opexPct}% Opex Ratio</span>
+            </div>
+            <div class="p-3 rounded-xl bg-blue-50/80 border border-blue-200">
+                <span class="text-[9px] font-black uppercase tracking-wider text-blue-900 block">Laba Bersih Akhir</span>
+                <span class="text-sm font-black text-blue-800 font-mono tabular-nums block mt-0.5">${fCur(labaSetelahPajak)}</span>
+                <span class="text-[9px] font-bold text-blue-600 mt-0.5 block">${netMarginPct}% Net Margin</span>
+            </div>
+        </div>
+        `;
+
+        // Tabel Ledger Akuntansi PSAK
+        innerContentHtml = `
+            ${kpiHtml}
+            <table class="w-full text-xs border-collapse border border-slate-300 mb-3.5">
+                <thead>
+                    <tr class="bg-slate-900 text-white font-bold text-[9.5px] uppercase tracking-wider">
+                        <th class="py-2.5 px-3 text-left w-16">Kode</th>
+                        <th class="py-2.5 px-3 text-left">Komponen Akun Finansial</th>
+                        <th class="py-2.5 px-3 text-center w-28">Catatan / %</th>
+                        <th class="py-2.5 px-3 text-right w-36">Rincian (Rp)</th>
+                        <th class="py-2.5 px-3 text-right w-36">Saldo Bersih (Rp)</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-200 text-slate-800">
+                    <!-- I. PENDAPATAN USAHA -->
+                    <tr class="bg-slate-100/70 font-black text-slate-900 text-[10.5px]">
+                        <td class="py-1.5 px-3 font-mono">1.0</td>
+                        <td class="py-1.5 px-3 uppercase tracking-wide" colspan="4">I. PENDAPATAN USAHA (REVENUE)</td>
+                    </tr>
+                    <tr>
+                        <td class="py-1.5 px-3 font-mono text-slate-500 text-[11px]">4-100</td>
+                        <td class="py-1.5 px-3 font-semibold pl-6">Penjualan Kotor (Gross Sales)</td>
+                        <td class="py-1.5 px-3 text-center text-[10px] text-slate-500">POS &amp; Online</td>
+                        <td class="py-1.5 px-3 text-right font-mono tabular-nums font-semibold">${fCur(t.omset)}</td>
+                        <td class="py-1.5 px-3 text-right font-mono tabular-nums text-slate-400">-</td>
+                    </tr>
+                    <tr>
+                        <td class="py-1.5 px-3 font-mono text-slate-500 text-[11px]">4-200</td>
+                        <td class="py-1.5 px-3 font-semibold pl-6 text-rose-700">Potongan &amp; Diskon Penjualan</td>
+                        <td class="py-1.5 px-3 text-center text-[10px] text-rose-600">Diskon Nota</td>
+                        <td class="py-1.5 px-3 text-right font-mono tabular-nums font-semibold text-rose-600">${fAccounting(t.disc, true)}</td>
+                        <td class="py-1.5 px-3 text-right font-mono tabular-nums text-slate-400">-</td>
+                    </tr>
+                    <tr class="bg-slate-50 font-bold text-slate-900 border-t border-slate-300">
+                        <td class="py-2 px-3 font-mono text-[11px]">4-000</td>
+                        <td class="py-2 px-3 pl-6 uppercase text-[11px]">Total Pendapatan Bersih (Net Revenue)</td>
+                        <td class="py-2 px-3 text-center text-[10px] font-mono text-blue-700 font-bold">100.0%</td>
+                        <td class="py-2 px-3 text-right font-mono tabular-nums text-slate-400">-</td>
+                        <td class="py-2 px-3 text-right font-mono tabular-nums font-black text-slate-900 text-[12px]">${fCur(netSales)}</td>
+                    </tr>
+
+                    <!-- II. HPP -->
+                    <tr class="bg-slate-100/70 font-black text-slate-900 text-[10.5px]">
+                        <td class="py-1.5 px-3 font-mono">2.0</td>
+                        <td class="py-1.5 px-3 uppercase tracking-wide" colspan="4">II. HARGA POKOK PENJUALAN (COST OF GOODS SOLD)</td>
+                    </tr>
+                    <tr>
+                        <td class="py-1.5 px-3 font-mono text-slate-500 text-[11px]">5-100</td>
+                        <td class="py-1.5 px-3 font-semibold pl-6 text-rose-700">Beban Pokok Penjualan (HPP FIFO / Kulakan)</td>
+                        <td class="py-1.5 px-3 text-center text-[10px] text-slate-500">Stok Terjual</td>
+                        <td class="py-1.5 px-3 text-right font-mono tabular-nums font-semibold text-rose-600">${fAccounting(t.hpp, true)}</td>
+                        <td class="py-1.5 px-3 text-right font-mono tabular-nums text-slate-400">-</td>
+                    </tr>
+                    <tr class="bg-emerald-50/80 font-black text-emerald-950 border-t border-emerald-300">
+                        <td class="py-2 px-3 font-mono text-[11px]">5-900</td>
+                        <td class="py-2 px-3 pl-6 uppercase tracking-wide text-emerald-900 text-[11px]">LABA KOTOR (GROSS PROFIT)</td>
+                        <td class="py-2 px-3 text-center text-[10px] font-mono text-emerald-700 font-bold">${grossMarginPct}%</td>
+                        <td class="py-2 px-3 text-right font-mono tabular-nums text-slate-400">-</td>
+                        <td class="py-2 px-3 text-right font-mono tabular-nums text-emerald-700 text-[12.5px] font-black">${fCur(labaKotor)}</td>
+                    </tr>
+
+                    <!-- III. BEBAN OPERASIONAL -->
+                    <tr class="bg-slate-100/70 font-black text-slate-900 text-[10.5px]">
+                        <td class="py-1.5 px-3 font-mono">3.0</td>
+                        <td class="py-1.5 px-3 uppercase tracking-wide" colspan="4">III. BEBAN OPERASIONAL (OPERATING EXPENSES)</td>
+                    </tr>
+                    <tr>
+                        <td class="py-1.5 px-3 font-mono text-slate-500 text-[11px]">6-100</td>
+                        <td class="py-1.5 px-3 font-semibold pl-6 text-rose-700">Beban Operasional Toko, Listrik &amp; Biaya Lain</td>
+                        <td class="py-1.5 px-3 text-center text-[10px] text-slate-500">Buku Kas Toko</td>
+                        <td class="py-1.5 px-3 text-right font-mono tabular-nums font-semibold text-rose-600">${fAccounting(totalExpense, true)}</td>
+                        <td class="py-1.5 px-3 text-right font-mono tabular-nums text-slate-400">-</td>
+                    </tr>
+                    <tr class="bg-slate-50 font-bold text-slate-900 border-t border-slate-300">
+                        <td class="py-2 px-3 font-mono text-[11px]">6-900</td>
+                        <td class="py-2 px-3 pl-6 uppercase text-[11px]">Laba Operasional Sebelum Pajak (EBIT)</td>
+                        <td class="py-2 px-3 text-center text-[10px] font-mono text-slate-600">${netSales > 0 ? ((labaBersih / netSales) * 100).toFixed(1) : '0.0'}%</td>
+                        <td class="py-2 px-3 text-right font-mono tabular-nums text-slate-400">-</td>
+                        <td class="py-2 px-3 text-right font-mono tabular-nums font-black text-slate-900 text-[12px]">${fCur(labaBersih)}</td>
+                    </tr>
+
+                    <!-- IV. PAJAK & LABA BERSIH -->
+                    <tr class="bg-slate-100/70 font-black text-slate-900 text-[10.5px]">
+                        <td class="py-1.5 px-3 font-mono">4.0</td>
+                        <td class="py-1.5 px-3 uppercase tracking-wide" colspan="4">IV. ESTIMASI BEBAN PAJAK PENGHASILAN (TAX PROVISION)</td>
+                    </tr>
+                    <tr>
+                        <td class="py-1.5 px-3 font-mono text-slate-500 text-[11px]">9-100</td>
+                        <td class="py-1.5 px-3 font-semibold pl-6 text-rose-700">Estimasi ${esc(taxLabel)}</td>
+                        <td class="py-1.5 px-3 text-center text-[10px] text-rose-600">${taxRate}% Basis</td>
+                        <td class="py-1.5 px-3 text-right font-mono tabular-nums font-semibold text-rose-600">${fAccounting(estimasiPajak, true)}</td>
+                        <td class="py-1.5 px-3 text-right font-mono tabular-nums text-slate-400">-</td>
+                    </tr>
+                    <tr class="bg-blue-50/90 text-blue-950 font-black border-t-2 border-slate-900 border-b-4 border-double border-slate-900">
+                        <td class="py-2.5 px-3 font-mono text-[11.5px]">9-900</td>
+                        <td class="py-2.5 px-3 pl-6 uppercase tracking-wider text-blue-900 text-[11.5px]">LABA BERSIH SETELAH PAJAK (NET INCOME)</td>
+                        <td class="py-2.5 px-3 text-center text-[10.5px] font-mono text-blue-700">${netMarginPct}%</td>
+                        <td class="py-2.5 px-3 text-right font-mono tabular-nums text-slate-400">-</td>
+                        <td class="py-2.5 px-3 text-right font-mono tabular-nums text-blue-900 text-[13.5px] font-black">${fCur(labaSetelahPajak)}</td>
+                    </tr>
+                </tbody>
+            </table>
+        `;
     } else if (reportType === 'balance') {
         const st = computeInventoryStats();
         const bs = ts.balanceSheet || { kas: 0, piutang: 0, hutang: 0 };
         const totalAset = (parseFloat(bs.kas) || 0) + (parseFloat(bs.piutang) || 0) + st.assetHpp;
         const totalKewajiban = parseFloat(bs.hutang) || 0;
         const modalDanLaba = totalAset - totalKewajiban;
-        bodyHtml = `
-        <div class="grid grid-cols-2 gap-8">
-            <div>
-                <h3 class="font-bold text-slate-800 uppercase text-xs tracking-widest mb-3 pb-2 border-b-2 border-slate-800">Aset</h3>
-                <div class="flex justify-between py-2 border-b border-slate-100"><span class="font-bold text-slate-600">Kas &amp; Bank</span><span class="font-bold text-slate-900">${fCur(bs.kas || 0)}</span></div>
-                <div class="flex justify-between py-2 border-b border-slate-100"><span class="font-bold text-slate-600">Piutang Usaha</span><span class="font-bold text-slate-900">${fCur(bs.piutang || 0)}</span></div>
-                <div class="flex justify-between py-2 border-b border-slate-100"><span class="font-bold text-slate-600">Persediaan Barang</span><span class="font-bold text-slate-900">${fCur(st.assetHpp)}</span></div>
-                <div class="flex justify-between py-2.5 border-t-2 border-slate-800 mt-1"><span class="font-bold text-slate-900">Total Aset</span><span class="font-bold text-slate-900">${fCur(totalAset)}</span></div>
+
+        innerContentHtml = `
+            <div class="grid grid-cols-2 gap-5 mb-4">
+                <!-- ASET -->
+                <div class="border border-slate-300 rounded-xl overflow-hidden bg-white">
+                    <div class="bg-slate-900 text-white p-2.5 font-bold text-xs uppercase tracking-wider flex items-center justify-between">
+                        <span>ASET (AKTIVA)</span>
+                        <span class="font-mono text-[10px] text-slate-300">KODE: 1-000</span>
+                    </div>
+                    <div class="p-3 space-y-2 text-xs">
+                        <div class="flex justify-between py-1.5 border-b border-slate-100">
+                            <span class="font-semibold text-slate-700">1-100 Kas &amp; Saldo Bank</span>
+                            <span class="font-mono tabular-nums font-bold text-slate-900">${fCur(bs.kas || 0)}</span>
+                        </div>
+                        <div class="flex justify-between py-1.5 border-b border-slate-100">
+                            <span class="font-semibold text-slate-700">1-200 Piutang Usaha (Nota Tempo)</span>
+                            <span class="font-mono tabular-nums font-bold text-slate-900">${fCur(bs.piutang || 0)}</span>
+                        </div>
+                        <div class="flex justify-between py-1.5 border-b border-slate-100">
+                            <span class="font-semibold text-slate-700">1-300 Persediaan Barang (Nilai HPP Stok)</span>
+                            <span class="font-mono tabular-nums font-bold text-slate-900">${fCur(st.assetHpp)}</span>
+                        </div>
+                        <div class="flex justify-between py-2 border-t-2 border-slate-900 mt-2 bg-slate-50 px-2 rounded font-black text-slate-900">
+                            <span class="uppercase tracking-wider">TOTAL ASET</span>
+                            <span class="font-mono tabular-nums text-sm">${fCur(totalAset)}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- KEWAJIBAN & EKUITAS -->
+                <div class="border border-slate-300 rounded-xl overflow-hidden bg-white">
+                    <div class="bg-slate-900 text-white p-2.5 font-bold text-xs uppercase tracking-wider flex items-center justify-between">
+                        <span>KEWAJIBAN &amp; EKUITAS (PASIVA)</span>
+                        <span class="font-mono text-[10px] text-slate-300">KODE: 2-000 / 3-000</span>
+                    </div>
+                    <div class="p-3 space-y-2 text-xs">
+                        <div class="flex justify-between py-1.5 border-b border-slate-100">
+                            <span class="font-semibold text-slate-700">2-100 Hutang Usaha (Kulakan PO Rekanan)</span>
+                            <span class="font-mono tabular-nums font-bold text-rose-700">${fCur(totalKewajiban)}</span>
+                        </div>
+                        <div class="flex justify-between py-1.5 border-b border-slate-100">
+                            <span class="font-semibold text-slate-700">3-100 Modal Disetor &amp; Saldo Laba Usaha</span>
+                            <span class="font-mono tabular-nums font-bold text-slate-900">${fCur(modalDanLaba)}</span>
+                        </div>
+                        <div class="flex justify-between py-1.5 border-b border-slate-100 opacity-0 pointer-events-none">
+                            <span>-</span><span>-</span>
+                        </div>
+                        <div class="flex justify-between py-2 border-t-2 border-slate-900 mt-2 bg-slate-50 px-2 rounded font-black text-slate-900">
+                            <span class="uppercase tracking-wider">TOTAL KEWAJIBAN + EKUITAS</span>
+                            <span class="font-mono tabular-nums text-sm">${fCur(totalKewajiban + modalDanLaba)}</span>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div>
-                <h3 class="font-bold text-slate-800 uppercase text-xs tracking-widest mb-3 pb-2 border-b-2 border-slate-800">Kewajiban &amp; Modal</h3>
-                <div class="flex justify-between py-2 border-b border-slate-100"><span class="font-bold text-slate-600">Hutang Usaha</span><span class="font-bold text-slate-900">${fCur(totalKewajiban)}</span></div>
-                <div class="flex justify-between py-2 border-b border-slate-100"><span class="font-bold text-slate-600">Modal &amp; Laba Ditahan</span><span class="font-bold text-slate-900">${fCur(modalDanLaba)}</span></div>
-                <div class="flex justify-between py-2.5 border-t-2 border-slate-800 mt-1"><span class="font-bold text-slate-900">Total Kewajiban + Modal</span><span class="font-bold text-slate-900">${fCur(totalKewajiban + modalDanLaba)}</span></div>
-            </div>
-        </div>`;
+        `;
     }
 
+    // ─── BUNGKUS KE DALAM LEMBAR KERTAS A4 RESMI (.a4-page) ───
+    const fullPageHtml = `
+    <div class="a4-page" data-page="1" data-total-pages="1">
+        <div class="a4-page-body flex-1 flex flex-col justify-between">
+            <div>
+                ${kopHtml}
+                ${innerContentHtml}
+            </div>
+            ${signaturesHtml}
+        </div>
+        ${footerHtml}
+    </div>
+    `;
+
     setIn('doc-modal-title', 'Preview ' + title);
-    setH('doc-paper-content', headerHtml + bodyHtml);
+    setH('doc-paper-content', fullPageHtml);
+    const badge = el('doc-page-count-badge');
+    if (badge) badge.textContent = '1 Halaman A4';
     const mDoc = el('doc-preview-modal');
     if (mDoc && mDoc.classList.contains('hidden') && typeof window.pushModalHistory === 'function') {
         window.pushModalHistory('docPreview');

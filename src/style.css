@@ -1473,9 +1473,27 @@ body {
     flex: 1 1 0%; 
     min-height: 0;
     overflow-y: auto; 
+    overflow-x: hidden;
     -webkit-overflow-scrolling: touch; 
     scrollbar-width: none; 
     scroll-behavior: smooth; 
+}
+
+/* Stabilisasi Khusus Container Admin CMS (Zero-Flicker & Zero-Scrollbar-Jitter) */
+#view-admin .scroll-content {
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    overflow-anchor: none !important;
+    scrollbar-gutter: stable;
+    contain: layout paint;
+}
+
+#admin-content-view,
+#admin-content {
+    contain: layout;
+    overflow-x: hidden;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
 }
 
 /* === 3. ANIMATIONS === */

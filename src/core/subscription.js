@@ -489,8 +489,8 @@ export const getSubscriptionBentoHtml = () => {
     }
 
     return `
-        <div class="mt-6 p-5 sm:p-6 rounded-[2rem] border border-slate-200/80 dark:border-slate-800 bg-gradient-to-br from-slate-900 via-slate-900 to-slate-950 text-white shadow-xl relative overflow-hidden">
-            <div class="pointer-events-none absolute -right-10 -bottom-10 w-44 h-44 rounded-full bg-emerald-500/10 blur-2xl"></div>
+        <div class="mt-6 p-5 sm:p-6 rounded-[2rem] border border-slate-200/80 dark:border-slate-800 bg-gradient-to-br from-slate-900 via-slate-900 to-slate-950 text-white shadow-xl relative overflow-hidden" style="isolation: isolate; contain: paint;">
+            <div class="pointer-events-none absolute right-0 bottom-0 w-36 h-36 rounded-full bg-emerald-500/15 blur-xl"></div>
             <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-5 relative z-10">
                 <div class="flex items-start sm:items-center gap-4">
                     <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-400 to-amber-600 text-white flex items-center justify-center text-2xl shrink-0 shadow-lg shadow-amber-500/20">

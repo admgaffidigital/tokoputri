@@ -24,7 +24,7 @@ export { syncAppMeta } from '../../core/theme.js';
  */
 export const rAdmSet = () => {
     let h = `
-    <div class="max-w-full pb-10 text-sm fade-in-scale">
+    <div class="max-w-full pb-6 sm:pb-8 text-sm fade-in-scale">
         <!-- Header Banner Bento -->
         <div class="mb-5 flex items-center justify-between bg-white/95 dark:bg-slate-900/80 p-4 sm:p-5 rounded-[1.5rem] border border-slate-200/80 dark:border-slate-800 shadow-2xs">
             <div class="flex items-center gap-3.5">
