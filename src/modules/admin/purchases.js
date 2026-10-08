@@ -2512,6 +2512,12 @@ window.openPurchaseDetailModal = (poId) => {
                     <i class="fa-solid fa-print"></i>
                     <span>Cetak Surat PO</span>
                 </button>
+                ${po.items && po.items.length > 0 ? `
+                    <button type="button" onclick="window.printPOLabels?.('${po.id}')" class="h-12 px-4 rounded-2xl bg-indigo-50 hover:bg-indigo-600 hover:text-white dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800 font-bold text-xs transition-all cursor-pointer flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-barcode"></i>
+                        <span>Cetak Label Barang</span>
+                    </button>
+                ` : ''}
             </div>
         </div>
     `);
@@ -3015,3 +3021,16 @@ window.printPurchaseOrder = (poId) => {
 // Expose ke global window
 window.renderPurchasesView = renderPurchasesView;
 window.computePurchaseMetrics = computePurchaseMetrics;
+window.printPOLabels = (poId) => {
+    const po = (appData.purchases || []).find(p => String(p.id) === String(poId));
+    if (!po || !po.items || !po.items.length) {
+        if (typeof showToast === 'function') showToast('Tidak ada item pada PO ini!');
+        return;
+    }
+    const item = po.items[0];
+    const qtyMap = {};
+    if (item.variantName) qtyMap[item.variantName] = item.qty;
+    else qtyMap[item.productId] = item.qty;
+    window.openProductBarcodeLabelModal?.(item.productId, qtyMap);
+};
+

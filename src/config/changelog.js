@@ -6,7 +6,7 @@
  * 
  * ATURAN ROLLING 5-LOG TERBARU (ANTI-KODE SAMPAH & ANTI-SPAM):
  * DEFAULT_CHANGELOG dibatasi secara ketat HANYA menyimpan 5 entri rilis
- * terkini (v1.10.91 s.d. v1.10.87). Setiap rilis baru ditambahkan di posisi
+ * terkini (v1.10.92 s.d. v1.10.88). Setiap rilis baru ditambahkan di posisi
  * teratas dan entri ke-6 dipangkas agar berkas tetap super ringan (~12KB vs ~425KB),
  * mengeliminasi kode sampah, dan mencegah spam riwayat di antarmuka website.
  * ============================================================
@@ -15,6 +15,21 @@
 export const MAX_CHANGELOG_LIMIT = 5;
 
 export const DEFAULT_CHANGELOG = [
+    {
+        "id": "log-1-10-92",
+        "version": "v1.10.92",
+        "date": "2026-10-08",
+        "title": "Sistem Cetak Label Barcode & Harga Universal (Thermal Stiker Roll & Kertas A4)",
+        "category": "feature",
+        "badge": "Universal Barcode Label Printer v1.10.92",
+        "items": [
+            "Engine Barcode Code 128 Vektor Murni (barcode-code128.js): Menghadirkan generator barcode Code 128 native SVG beresolusi tinggi tanpa dependensi eksternal, menghasilkan garis barcode hitam pekat kristal yang 100% terbaca instan oleh seluruh pemindai laser kasir POS.",
+            "Modal Pintar Cetak Label Universal (barcode-label-modal.js): Modal konfigurasi cetak stiker label dengan pratinjau live skala 1:1, dukungan multi-varian dengan input jumlah cetak mandiri per varian, opsi stepper (+1, +5, +10, Set Sesuai Stok Fisik), dan tombol toggle informasi stiker (Kop Toko, Harga, Satuan, Teks SKU).",
+            "Multi-Printer & Preset Kertas Lengkap: Mendukung Printer Thermal Stiker Roll khusus (40x30mm, 50x30mm, continuous 58mm & 80mm) via isolasi CSS @page peramban maupun transmisi langsung ESC/POS Bluetooth / RawBT Android, serta format kisi Kertas Stiker A4 Lembaran (Grid 3x10 / 30 label & Grid 2x7 / 14 label) untuk printer inkjet/laser standar.",
+            "Aksesibilitas 1-Klik di Katalog & PO: Tombol 'Label' pada baris produk admin table, chip SKU berkemampuan interaktif, tombol cetak di header modal Bento FIFO, serta tombol cetak kilat pada dokumen penerimaan barang PO kulakan.",
+            "Multi-Channel Distribution v1.10.92 (Android versionCode 11092)."
+        ]
+    },
     {
         "id": "log-1-10-91",
         "version": "v1.10.91",
@@ -73,23 +88,6 @@ export const DEFAULT_CHANGELOG = [
             "Integrasi Ikon Resmi Bukti Pajak: Dilengkapi ikon FontAwesome nota/pajak (<i class=\"fa-solid fa-receipt\"></i>) yang profesional dan proporsional dengan font 9px uppercase tracking-wider.",
             "Penyelarasan Ketinggian & Wadah Mandiri (#product-modal-price-badges): Memisahkan badge pajak dari string teks angka harga (text-3xl) ke dalam kontainer flex terdedikasi, sehingga Inc. PPN dan Harga Terbaik sejajar sempurna di garis horizontal tengah tanpa floating offset yang jomplang.",
             "Multi-Channel Distribution v1.10.88 (Android versionCode 11088)."
-        ]
-    },
-    {
-        "id": "log-1-10-87",
-        "version": "v1.10.87",
-        "date": "2026-10-07",
-        "title": "Sistem Katalog Kartu Warna Cat (Paint Swatch Fan Deck & Color Family Filter)",
-        "category": "feature",
-        "badge": "Paint Swatch Chip System & Family Filter v1.10.87",
-        "items": [
-            "Arsitektur Kartu Swatch Cat Modern (.paint-swatch-card): Merombak tampilan varian khusus produk cat tembok & cat warna menjadi format kartu katalog swatch kartu chip realistik (ala Dulux, Avian Brands, Nippon Paint, Jotun) dengan blok warna penuh, lapisan satin sheen 3D glossy, dan panel informasi kode warna.",
-            "Cap/Stamp Kode Warna Berkontras Cerdas: Dilengkapi kode warna atau kode pabrik pada sudut swatch dengan formula kecerahan YIQ (isDarkColor) yang secara dinamis beralih kontras otomatis antara teks terang vs gelap agar 100% selalu jelas dibaca di atas semua jenis warna cat.",
-            "Live Selected Color Spotlight Bar (.paint-spotlight-bar): Menghadirkan bar spotlight warna aktif di atas lembar varian yang menampilkan preview kotak swatch besar, nama warna tebal, kode hex kapital, harga riil, dan status sisa stok varian terpilih.",
-            "Smart Color Family Filter Tabs (paint-family-nav): Mengelompokkan varian cat secara otomatis ke dalam tab keluarga warna (Semua, Putih & Netral, Kuning & Krem, Oranye & Peach, Merah & Pink, Cokelat & Earthy, Biru & Toska, Hijau Segar, Abu & Gelap) dengan hanya menampilkan tab warna yang memang tersedia pada produk tersebut.",
-            "Pencarian Instan Nama & Kode Warna: Memudahkan pelanggan mencari warna impian secara instan berdasarkan nama maupun kode hex saat produk memiliki banyak variasi warna (10-50 warna).",
-            "Harmonisasi Kasir POS (pos-variant-sheet.js): Meningkatkan visual varian warna cat di kasir POS dengan mini paint chip (.pos-paint-chip) bersaput sheen glossy agar kasir dapat memverifikasi warna kaleng cat pelanggan secara instan dan akurat.",
-            "Multi-Channel Distribution v1.10.87 (Android versionCode 11087)."
         ]
     }
 ];
@@ -163,10 +161,10 @@ export const getCombinedChangelog = (appData, maxLimit = MAX_CHANGELOG_LIMIT) =>
  * Mendapatkan nomor versi terbaru yang aktif
  * Menjamin tidak pernah tertahan pada versi lama meskipun ada log dinamis atau tanggal kembar
  * @param {Object} appData 
- * @returns {String} Contoh: 'v1.10.91'
+ * @returns {String} Contoh: 'v1.10.92'
  */
 export const getLatestVersion = (appData) => {
-    const defaultLatest = DEFAULT_CHANGELOG[0]?.version || 'v1.10.91';
+    const defaultLatest = DEFAULT_CHANGELOG[0]?.version || 'v1.10.92';
     const logs = getCombinedChangelog(appData, null);
     if (!logs || logs.length === 0) return defaultLatest;
     

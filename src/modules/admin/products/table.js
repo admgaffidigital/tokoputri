@@ -563,7 +563,7 @@ window.rAdmItms = t => {
                     ${isP ? `
                         <div class="flex items-center gap-2 flex-wrap mb-1.5">
                             <span class="text-base sm:text-lg font-black text-[var(--color-primary)] tracking-tight">${fCur(x.price)}</span>
-                            <span class="inline-flex items-center gap-1 font-mono text-[9px] font-bold text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-700/80 px-2 py-0.5 rounded-md border border-slate-200/60 dark:border-slate-600/60" title="Kode SKU / Barcode">
+                            <span class="inline-flex items-center gap-1 font-mono text-[9px] font-bold text-slate-500 dark:text-slate-400 bg-slate-100 hover:bg-indigo-50 dark:bg-slate-700/80 dark:hover:bg-indigo-950/50 hover:text-indigo-600 dark:hover:text-indigo-300 px-2 py-0.5 rounded-md border border-slate-200/60 hover:border-indigo-300 dark:border-slate-600/60 transition-colors cursor-pointer" onclick="event.stopPropagation(); window.openProductBarcodeLabelModal?.('${x.id}')" title="Klik untuk Cetak Label Barcode &amp; Harga">
                                 <i class="fa-solid fa-barcode text-[8.5px]"></i> ${esc(x.sku || 'TANPA SKU')}
                             </span>
                             ${x.variants && x.variants.length > 0 ? `
@@ -669,6 +669,11 @@ window.rAdmItms = t => {
                         <button type="button" class="h-10 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-700/80 text-slate-700 dark:text-slate-200 border border-slate-200/80 dark:border-slate-600 font-bold text-xs flex items-center gap-1.5 transition-all active:scale-95 shadow-2xs cursor-pointer" onclick="event.stopPropagation(); openQuickPriceModal('${x.id}')" title="Ubah Cepat Harga Jual">
                             <i class="fa-solid fa-tags text-xs"></i>
                             <span class="hidden sm:inline">Harga</span>
+                        </button>
+
+                        <button type="button" class="h-10 px-3 rounded-xl bg-indigo-50 hover:bg-indigo-600 hover:text-white dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800 font-bold text-xs flex items-center gap-1.5 transition-all active:scale-95 shadow-2xs cursor-pointer" onclick="event.stopPropagation(); window.openProductBarcodeLabelModal?.('${x.id}')" title="Cetak Label Harga &amp; Barcode Barang">
+                            <i class="fa-solid fa-barcode text-xs"></i>
+                            <span class="hidden sm:inline">Label</span>
                         </button>
                     ` : ''}
 
