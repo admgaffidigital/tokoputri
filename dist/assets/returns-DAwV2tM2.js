@@ -1,4 +1,4 @@
-import{e as u,a as n,i as c,f as g,o as N,k as h,b as H,l as I,n as R,G as C,v as D}from"./module-print-BkHVhnq_.js";import{M as E,p as V,N as U}from"./module-pos-Br-NTCig.js";import"./vendor-firebase-core-D2OF5R23.js";import"./vendor-firebase-db-BIUZcnOd.js";import"./module-member-DQMsca3W.js";import"./module-faq-BdeWXHTF.js";let $="sales",S="",m=null,f=[];const M=()=>{if(!u("admin-content"))return;Array.isArray(n.salesReturns)||(n.salesReturns=[]),Array.isArray(n.vendorReturns)||(n.vendorReturns=[]);const a=n.salesReturns.reduce((l,o)=>l+(parseFloat(o.totalRefund)||0),0),e=n.salesReturns.length,r=n.vendorReturns.reduce((l,o)=>l+(parseFloat(o.totalClaim)||0),0),i=(n.products||[]).reduce((l,o)=>{let p=parseFloat(o.damagedStock)||0;return Array.isArray(o.variants)&&(p+=o.variants.reduce((w,d)=>w+(parseFloat(d.damagedStock)||0),0)),l+p},0),s=`
+import{e as u,a as d,i as c,f as g,o as V,k as f,b as Q,l as I,n as R,G as C,v as D}from"./module-print-B46u5dXP.js";import{M as E,p as j,N as U}from"./module-pos-C4P3NrE3.js";import"./vendor-firebase-core-D2OF5R23.js";import"./vendor-firebase-db-BIUZcnOd.js";import"./module-member-DMlLXnT8.js";import"./module-faq-DWvp31M1.js";let P="sales",S="",x=null,k=[];const M=()=>{if(!u("admin-content"))return;Array.isArray(d.salesReturns)||(d.salesReturns=[]),Array.isArray(d.vendorReturns)||(d.vendorReturns=[]);const a=d.salesReturns.reduce((o,s)=>o+(parseFloat(s.totalRefund)||0),0),e=d.salesReturns.length,r=d.vendorReturns.reduce((o,s)=>o+(parseFloat(s.totalClaim)||0),0),l=(d.products||[]).reduce((o,s)=>{let m=parseFloat(s.damagedStock)||0;return Array.isArray(s.variants)&&(m+=s.variants.reduce((v,i)=>v+(parseFloat(i.damagedStock)||0),0)),o+m},0),n=`
         <div class="space-y-6">
             <!-- Header & Action Buttons -->
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-200/80 dark:border-slate-800">
@@ -42,7 +42,7 @@ import{e as u,a as n,i as c,f as g,o as N,k as h,b as H,l as I,n as R,G as C,v a
                 </div>
                 <div class="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 shadow-2xs">
                     <span class="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 block mb-1">Stok Karantina Rusak</span>
-                    <span class="text-lg sm:text-xl font-black text-purple-600 dark:text-purple-400">${i} <span class="text-xs font-semibold text-slate-400">Unit</span></span>
+                    <span class="text-lg sm:text-xl font-black text-purple-600 dark:text-purple-400">${l} <span class="text-xs font-semibold text-slate-400">Unit</span></span>
                     <span class="text-[10px] text-slate-400 block mt-0.5">Menunggu klaim distributor</span>
                 </div>
             </div>
@@ -51,11 +51,11 @@ import{e as u,a as n,i as c,f as g,o as N,k as h,b as H,l as I,n as R,G as C,v a
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white dark:bg-slate-900 p-3 rounded-2xl border border-slate-200/90 dark:border-slate-800 shadow-2xs">
                 <!-- Tab Buttons -->
                 <div class="flex items-center gap-1.5 p-1 bg-slate-100 dark:bg-slate-800/80 rounded-xl">
-                    <button type="button" onclick="window.switchReturnsTab('sales')" class="px-3.5 py-1.5 rounded-lg text-xs font-extrabold transition-all cursor-pointer ${$==="sales"?"bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 shadow-xs":"text-slate-500 hover:text-slate-800 dark:hover:text-white"}">
-                        <i class="fa-solid fa-basket-shopping mr-1"></i> Retur Penjualan (${n.salesReturns.length})
+                    <button type="button" onclick="window.switchReturnsTab('sales')" class="px-3.5 py-1.5 rounded-lg text-xs font-extrabold transition-all cursor-pointer ${P==="sales"?"bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 shadow-xs":"text-slate-500 hover:text-slate-800 dark:hover:text-white"}">
+                        <i class="fa-solid fa-basket-shopping mr-1"></i> Retur Penjualan (${d.salesReturns.length})
                     </button>
-                    <button type="button" onclick="window.switchReturnsTab('vendor')" class="px-3.5 py-1.5 rounded-lg text-xs font-extrabold transition-all cursor-pointer ${$==="vendor"?"bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 shadow-xs":"text-slate-500 hover:text-slate-800 dark:hover:text-white"}">
-                        <i class="fa-solid fa-truck-ramp-box mr-1"></i> Retur Supplier (${n.vendorReturns.length})
+                    <button type="button" onclick="window.switchReturnsTab('vendor')" class="px-3.5 py-1.5 rounded-lg text-xs font-extrabold transition-all cursor-pointer ${P==="vendor"?"bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 shadow-xs":"text-slate-500 hover:text-slate-800 dark:hover:text-white"}">
+                        <i class="fa-solid fa-truck-ramp-box mr-1"></i> Retur Supplier (${d.vendorReturns.length})
                     </button>
                 </div>
 
@@ -69,11 +69,11 @@ import{e as u,a as n,i as c,f as g,o as N,k as h,b as H,l as I,n as R,G as C,v a
             <!-- Table Container -->
             <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/90 dark:border-slate-800 shadow-2xs overflow-hidden">
                 <div id="returns-table-wrapper" class="overflow-x-auto custom-scrollbar">
-                    ${$==="sales"?B():K()}
+                    ${P==="sales"?B():K()}
                 </div>
             </div>
         </div>
-    `;H("admin-content",s)},G=t=>{$=t,M()},J=t=>{S=(t||"").trim().toLowerCase();const a=u("returns-table-wrapper");a&&(a.innerHTML=$==="sales"?B():K())},B=()=>{const t=(n.salesReturns||[]).filter(e=>{if(!S)return!0;const r=S;return e.id&&e.id.toLowerCase().includes(r)||e.orderId&&e.orderId.toLowerCase().includes(r)||e.customerName&&e.customerName.toLowerCase().includes(r)||e.customerPhone&&e.customerPhone.includes(r)});return t.length===0?`
+    `;Q("admin-content",n)},G=t=>{P=t,M()},W=t=>{S=(t||"").trim().toLowerCase();const a=u("returns-table-wrapper");a&&(a.innerHTML=P==="sales"?B():K())},B=()=>{const t=(d.salesReturns||[]).filter(e=>{if(!S)return!0;const r=S;return e.id&&e.id.toLowerCase().includes(r)||e.orderId&&e.orderId.toLowerCase().includes(r)||e.customerName&&e.customerName.toLowerCase().includes(r)||e.customerPhone&&e.customerPhone.includes(r)});return t.length===0?`
             <div class="py-16 text-center text-slate-400 dark:text-slate-500">
                 <div class="w-14 h-14 mx-auto mb-3 rounded-2xl bg-indigo-50 dark:bg-indigo-950/40 text-indigo-500 flex items-center justify-center text-2xl">
                     <i class="fa-solid fa-box-open"></i>
@@ -98,7 +98,7 @@ import{e as u,a as n,i as c,f as g,o as N,k as h,b as H,l as I,n as R,G as C,v a
                 </tr>
             </thead>
             <tbody class="divide-y divide-slate-100 dark:divide-slate-800 text-slate-700 dark:text-slate-300">
-                ${[...t].sort((e,r)=>new Date(r.createdAt||0)-new Date(e.createdAt||0)).map(e=>{const r=e.createdAt?new Date(e.createdAt).toLocaleDateString("id-ID",{day:"2-digit",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"}):"-",i=(e.items||[]).map(l=>`${l.qty}x ${c(l.name)}`).join(", ");let s='<span class="px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-[10px] font-bold">Lainnya</span>';return e.refundMethod==="cash"?s='<span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 text-[10px] font-bold"><i class="fa-solid fa-money-bill mr-1"></i>Tunai (Kas)</span>':e.refundMethod==="credit"?s='<span class="px-2 py-0.5 rounded-full bg-blue-100 text-blue-800 dark:bg-blue-950/60 dark:text-blue-300 text-[10px] font-bold"><i class="fa-solid fa-wallet mr-1"></i>Store Credit</span>':e.refundMethod==="exchange"&&(s='<span class="px-2 py-0.5 rounded-full bg-purple-100 text-purple-800 dark:bg-purple-950/60 dark:text-purple-300 text-[10px] font-bold"><i class="fa-solid fa-repeat mr-1"></i>Tukar Barang</span>'),`
+                ${[...t].sort((e,r)=>new Date(r.createdAt||0)-new Date(e.createdAt||0)).map(e=>{const r=e.createdAt?new Date(e.createdAt).toLocaleDateString("id-ID",{day:"2-digit",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"}):"-",l=(e.items||[]).map(o=>`${o.qty}x ${c(o.name)}${o.variantName?` [${c(o.variantName)}]`:""}`).join(", ");let n='<span class="px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-[10px] font-bold">Lainnya</span>';return e.refundMethod==="cash"?n='<span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 text-[10px] font-bold"><i class="fa-solid fa-money-bill mr-1"></i>Tunai (Kas)</span>':e.refundMethod==="credit"?n='<span class="px-2 py-0.5 rounded-full bg-blue-100 text-blue-800 dark:bg-blue-950/60 dark:text-blue-300 text-[10px] font-bold"><i class="fa-solid fa-wallet mr-1"></i>Store Credit</span>':e.refundMethod==="exchange"&&(n='<span class="px-2 py-0.5 rounded-full bg-purple-100 text-purple-800 dark:bg-purple-950/60 dark:text-purple-300 text-[10px] font-bold"><i class="fa-solid fa-repeat mr-1"></i>Tukar Barang</span>'),`
                         <tr class="hover:bg-slate-50/60 dark:hover:bg-slate-800/40 transition-colors">
                             <td class="py-3.5 px-4 font-bold">
                                 <span class="font-mono text-indigo-600 dark:text-indigo-400 block">${c(e.id)}</span>
@@ -112,14 +112,14 @@ import{e as u,a as n,i as c,f as g,o as N,k as h,b as H,l as I,n as R,G as C,v a
                                 <span class="text-[10px] text-slate-400">${c(e.customerPhone||"")}</span>
                             </td>
                             <td class="py-3.5 px-4 max-w-xs">
-                                <p class="truncate font-medium text-slate-600 dark:text-slate-300" title="${c(i)}">${c(i||"-")}</p>
+                                <p class="truncate font-medium text-slate-600 dark:text-slate-300" title="${c(l)}">${c(l||"-")}</p>
                                 <span class="text-[10px] text-slate-400">${e.items?e.items.length:0} macam barang</span>
                             </td>
                             <td class="py-3.5 px-4 text-right font-black text-rose-600 dark:text-rose-400">
                                 ${g(e.totalRefund||0)}
                             </td>
                             <td class="py-3.5 px-4">
-                                ${s}
+                                ${n}
                             </td>
                             <td class="py-3.5 px-4 text-center">
                                 <div class="flex items-center justify-center gap-1.5">
@@ -135,7 +135,7 @@ import{e as u,a as n,i as c,f as g,o as N,k as h,b as H,l as I,n as R,G as C,v a
                     `}).join("")}
             </tbody>
         </table>
-    `},K=()=>{const t=(n.vendorReturns||[]).filter(e=>{if(!S)return!0;const r=S;return e.id&&e.id.toLowerCase().includes(r)||e.supplierName&&e.supplierName.toLowerCase().includes(r)||e.poId&&e.poId.toLowerCase().includes(r)});return t.length===0?`
+    `},K=()=>{const t=(d.vendorReturns||[]).filter(e=>{if(!S)return!0;const r=S;return e.id&&e.id.toLowerCase().includes(r)||e.supplierName&&e.supplierName.toLowerCase().includes(r)||e.poId&&e.poId.toLowerCase().includes(r)});return t.length===0?`
             <div class="py-16 text-center text-slate-400 dark:text-slate-500">
                 <div class="w-14 h-14 mx-auto mb-3 rounded-2xl bg-amber-50 dark:bg-amber-950/40 text-amber-500 flex items-center justify-center text-2xl">
                     <i class="fa-solid fa-truck-ramp-box"></i>
@@ -160,7 +160,7 @@ import{e as u,a as n,i as c,f as g,o as N,k as h,b as H,l as I,n as R,G as C,v a
                 </tr>
             </thead>
             <tbody class="divide-y divide-slate-100 dark:divide-slate-800 text-slate-700 dark:text-slate-300">
-                ${[...t].sort((e,r)=>new Date(r.createdAt||0)-new Date(e.createdAt||0)).map(e=>{const r=e.createdAt?new Date(e.createdAt).toLocaleDateString("id-ID",{day:"2-digit",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"}):"-",i=(e.items||[]).map(l=>`${l.qty}x ${c(l.name)}`).join(", ");let s='<span class="px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 text-[10px] font-bold">Lainnya</span>';return e.settlementMethod==="ap_deduction"?s='<span class="px-2 py-0.5 rounded-full bg-purple-100 text-purple-800 dark:bg-purple-950/60 dark:text-purple-300 text-[10px] font-bold"><i class="fa-solid fa-file-invoice-dollar mr-1"></i>Potong Hutang PO</span>':e.settlementMethod==="cash_refund"&&(s='<span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 text-[10px] font-bold"><i class="fa-solid fa-money-bill mr-1"></i>Pengembalian Kas</span>'),`
+                ${[...t].sort((e,r)=>new Date(r.createdAt||0)-new Date(e.createdAt||0)).map(e=>{const r=e.createdAt?new Date(e.createdAt).toLocaleDateString("id-ID",{day:"2-digit",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"}):"-",l=(e.items||[]).map(o=>`${o.qty}x ${c(o.name)}${o.variantName?` [${c(o.variantName)}]`:""}`).join(", ");let n='<span class="px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 text-[10px] font-bold">Lainnya</span>';return e.settlementMethod==="ap_deduction"?n='<span class="px-2 py-0.5 rounded-full bg-purple-100 text-purple-800 dark:bg-purple-950/60 dark:text-purple-300 text-[10px] font-bold"><i class="fa-solid fa-file-invoice-dollar mr-1"></i>Potong Hutang PO</span>':e.settlementMethod==="cash_refund"&&(n='<span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 text-[10px] font-bold"><i class="fa-solid fa-money-bill mr-1"></i>Pengembalian Kas</span>'),`
                         <tr class="hover:bg-slate-50/60 dark:hover:bg-slate-800/40 transition-colors">
                             <td class="py-3.5 px-4 font-bold">
                                 <span class="font-mono text-amber-600 dark:text-amber-400 block">${c(e.id)}</span>
@@ -173,14 +173,14 @@ import{e as u,a as n,i as c,f as g,o as N,k as h,b as H,l as I,n as R,G as C,v a
                                 ${c(e.poId||"-")}
                             </td>
                             <td class="py-3.5 px-4 max-w-xs">
-                                <p class="truncate font-medium text-slate-600 dark:text-slate-300" title="${c(i)}">${c(i||"-")}</p>
+                                <p class="truncate font-medium text-slate-600 dark:text-slate-300" title="${c(l)}">${c(l||"-")}</p>
                                 <span class="text-[10px] text-slate-400">${e.items?e.items.length:0} macam barang</span>
                             </td>
                             <td class="py-3.5 px-4 text-right font-black text-amber-600 dark:text-amber-400">
                                 ${g(e.totalClaim||0)}
                             </td>
                             <td class="py-3.5 px-4">
-                                ${s}
+                                ${n}
                             </td>
                             <td class="py-3.5 px-4 text-center">
                                 <button type="button" onclick="window.printVendorReturnA4('${c(e.id)}')" title="Cetak Surat Pengembalian Barang" class="w-7 h-7 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 flex items-center justify-center transition-all cursor-pointer active:scale-90 mx-auto">
@@ -191,7 +191,7 @@ import{e as u,a as n,i as c,f as g,o as N,k as h,b as H,l as I,n as R,G as C,v a
                     `}).join("")}
             </tbody>
         </table>
-    `},W=(t=null)=>{m=null,f=[];const a=u("modal-sales-return"),e=u("modal-sales-return-box");if(!a||!e)return;const r=u("sales-return-order-search");r&&(r.value=t||"");const i=u("sales-return-order-content");i&&(i.innerHTML=""),N(a,e),typeof window.pushModalHistory=="function"&&window.pushModalHistory("salesReturn"),t&&L(t)},j=(t=!1)=>{const a=u("modal-sales-return"),e=u("modal-sales-return-box");if(!a||!e)return;const r=()=>{D(a,e),m=null,f=[]};typeof window.requestCloseModal=="function"?window.requestCloseModal("salesReturn",t,r):r()},L=async t=>{const a=(t||"").trim();if(!a){h("Masukkan nomor struk kasir atau Order ID");return}I("Mencari data transaksi...");try{let e=(n.orders||[]).find(r=>String(r.orderId)===a||String(r.id)===a);if(!e&&typeof firebase<"u"){const r=await firebase.firestore().collection("freshmart_orders").doc(a).get();r.exists&&(e={id:r.id,...r.data()})}if(R(),!e){h("Pesanan tidak ditemukan. Periksa kembali nomor nota!");return}m=e,X(e)}catch(e){R(),console.error("Error mencari order untuk retur:",e),h("Gagal memuat transaksi: "+(e.message||""))}},X=t=>{const a=u("sales-return-order-content");if(!a)return;const e=t.dateString||(t.createdAt?new Date(t.createdAt).toLocaleString("id-ID"):"-"),r=t.customer?.name||t.customerName||"Pelanggan Umum",i=t.source==="pos"?"Kasir POS":"Website Online",s=(n.salesReturns||[]).filter(o=>String(o.orderId)===String(t.orderId||t.id)),l={};s.forEach(o=>{(o.items||[]).forEach(p=>{const w=`${p.id}_${p.variantName||""}`;l[w]=(l[w]||0)+(parseFloat(p.qty)||0)})}),f=(t.items||[]).map((o,p)=>{const w=`${o.id}_${o.variantName||""}`,d=parseFloat(o.qty)||0,k=l[w]||0,v=Math.max(0,parseFloat((d-k).toFixed(3)));return{index:p,id:o.id,sku:o.sku||"",name:o.name||"Produk",variantName:o.variantName||"",price:parseFloat(o.price)||0,boughtQty:d,alreadyReturned:k,maxReturnable:v,returnQty:0,reason:"Kelebihan Proyek / Sisa Bangunan",condition:"good"}}),a.innerHTML=`
+    `},J=(t=null)=>{x=null,k=[];const a=u("modal-sales-return"),e=u("modal-sales-return-box");if(!a||!e)return;const r=u("sales-return-order-search");r&&(r.value=t||"");const l=u("sales-return-order-content");l&&(l.innerHTML=""),V(a,e),typeof window.pushModalHistory=="function"&&window.pushModalHistory("salesReturn"),t&&q(t)},L=(t=!1)=>{const a=u("modal-sales-return"),e=u("modal-sales-return-box");if(!a||!e)return;const r=()=>{D(a,e),x=null,k=[]};typeof window.requestCloseModal=="function"?window.requestCloseModal("salesReturn",t,r):r()},q=async t=>{const a=(t||"").trim();if(!a){f("Masukkan nomor struk kasir atau Order ID");return}I("Mencari data transaksi...");try{let e=(d.orders||[]).find(r=>String(r.orderId)===a||String(r.id)===a);if(!e&&typeof firebase<"u"){const r=await firebase.firestore().collection("freshmart_orders").doc(a).get();r.exists&&(e={id:r.id,...r.data()})}if(R(),!e){f("Pesanan tidak ditemukan. Periksa kembali nomor nota!");return}x=e,X(e)}catch(e){R(),console.error("Error mencari order untuk retur:",e),f("Gagal memuat transaksi: "+(e.message||""))}},X=t=>{const a=u("sales-return-order-content");if(!a)return;const e=t.dateString||(t.createdAt?new Date(t.createdAt).toLocaleString("id-ID"):"-"),r=t.customer?.name||t.customerName||"Pelanggan Umum",l=t.source==="pos"?"Kasir POS":"Website Online",n=(d.salesReturns||[]).filter(s=>String(s.orderId)===String(t.orderId||t.id)),o={};n.forEach(s=>{(s.items||[]).forEach(m=>{const v=`${m.id}_${m.variantName||""}`;o[v]=(o[v]||0)+(parseFloat(m.qty)||0)})}),k=(t.items||[]).map((s,m)=>{const v=`${s.id}_${s.variantName||""}`,i=parseFloat(s.qty)||0,h=o[v]||0,w=Math.max(0,parseFloat((i-h).toFixed(3)));return{index:m,id:s.id,sku:s.sku||"",name:s.name||"Produk",variantName:s.variantName||"",price:parseFloat(s.price)||0,boughtQty:i,alreadyReturned:h,maxReturnable:w,returnQty:0,reason:"Kelebihan Proyek / Sisa Bangunan",condition:"good"}}),a.innerHTML=`
         <!-- Order Header Summary -->
         <div class="p-3.5 rounded-2xl bg-indigo-50/70 dark:bg-indigo-950/30 border border-indigo-200/80 dark:border-indigo-900/50 space-y-1">
             <div class="flex items-center justify-between text-xs font-bold">
@@ -199,7 +199,7 @@ import{e as u,a as n,i as c,f as g,o as N,k as h,b as H,l as I,n as R,G as C,v a
                 <span class="text-indigo-600 dark:text-indigo-400 font-normal text-[11px]">${e}</span>
             </div>
             <div class="flex items-center justify-between text-[11px] text-slate-600 dark:text-slate-400">
-                <span>Pelanggan: <b class="text-slate-800 dark:text-white">${c(r)}</b> (${i})</span>
+                <span>Pelanggan: <b class="text-slate-800 dark:text-white">${c(r)}</b> (${l})</span>
                 <span>Total Belanja: <b class="text-slate-800 dark:text-white">${g(t.payment?.grandTotal||t.total||0)}</b></span>
             </div>
         </div>
@@ -208,18 +208,18 @@ import{e as u,a as n,i as c,f as g,o as N,k as h,b as H,l as I,n as R,G as C,v a
         <div class="space-y-3 pt-2">
             <h4 class="text-xs font-black uppercase tracking-wider text-slate-500">Pilih Barang yang Diretur</h4>
             <div class="space-y-2.5">
-                ${f.map((o,p)=>`
+                ${k.map((s,m)=>`
                     <div class="p-3.5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 space-y-3 shadow-2xs">
                         <div class="flex items-start justify-between gap-3">
                             <div>
-                                <h5 class="font-bold text-xs text-slate-800 dark:text-white">${c(o.name)}</h5>
-                                ${o.variantName?`<span class="inline-block mt-0.5 px-2 py-0.5 rounded-md bg-indigo-50 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 text-[10px] font-bold">${c(o.variantName)}</span>`:""}
-                                <span class="text-[11px] text-slate-500 block mt-0.5">Harga: <b>${g(o.price)}</b> &middot; Beli: <b>${o.boughtQty}</b> unit (Sudah retur: ${o.alreadyReturned})</span>
+                                <h5 class="font-bold text-xs text-slate-800 dark:text-white">${c(s.name)}</h5>
+                                ${s.variantName?`<span class="inline-block mt-0.5 px-2 py-0.5 rounded-md bg-indigo-50 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 text-[10px] font-bold">${c(s.variantName)}</span>`:""}
+                                <span class="text-[11px] text-slate-500 block mt-0.5">Harga: <b>${g(s.price)}</b> &middot; Beli: <b>${s.boughtQty}</b> unit (Sudah retur: ${s.alreadyReturned})</span>
                             </div>
                             <div class="text-right">
-                                <label class="text-[10px] font-bold text-slate-400 block mb-1">Qty Retur (Maks ${o.maxReturnable}):</label>
+                                <label class="text-[10px] font-bold text-slate-400 block mb-1">Qty Retur (Maks ${s.maxReturnable}):</label>
                                 <div class="inline-flex items-center border border-slate-300 dark:border-slate-700 rounded-xl overflow-hidden">
-                                    <input type="number" step="any" min="0" max="${o.maxReturnable}" value="${o.returnQty}" oninput="window.handleReturnQtyChange(${p}, this.value)" class="w-16 p-1 text-center font-bold text-xs bg-slate-50 dark:bg-slate-800 focus:outline-none">
+                                    <input type="number" step="any" min="0" max="${s.maxReturnable}" value="${s.returnQty}" oninput="window.handleReturnQtyChange(${m}, this.value)" class="w-16 p-1 text-center font-bold text-xs bg-slate-50 dark:bg-slate-800 focus:outline-none">
                                 </div>
                             </div>
                         </div>
@@ -228,7 +228,7 @@ import{e as u,a as n,i as c,f as g,o as N,k as h,b as H,l as I,n as R,G as C,v a
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-2 border-t border-slate-100 dark:border-slate-800/80 text-[11px]">
                             <div>
                                 <label class="block text-[10px] font-bold text-slate-400 mb-0.5">Alasan Pengembalian:</label>
-                                <select onchange="window.handleReturnReasonChange(${p}, this.value)" class="w-full p-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-medium">
+                                <select onchange="window.handleReturnReasonChange(${m}, this.value)" class="w-full p-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-medium">
                                     <option value="Kelebihan Proyek / Sisa Bangunan">Kelebihan Proyek / Sisa Bangunan</option>
                                     <option value="Salah Ukuran / Salah Beli">Salah Ukuran / Salah Beli</option>
                                     <option value="Cacat Fisik / Kemasan Rusak">Cacat Fisik / Kemasan Rusak</option>
@@ -238,7 +238,7 @@ import{e as u,a as n,i as c,f as g,o as N,k as h,b as H,l as I,n as R,G as C,v a
                             </div>
                             <div>
                                 <label class="block text-[10px] font-bold text-slate-400 mb-0.5">Kondisi &amp; Alokasi Stok:</label>
-                                <select onchange="window.handleReturnConditionChange(${p}, this.value)" class="w-full p-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-bold">
+                                <select onchange="window.handleReturnConditionChange(${m}, this.value)" class="w-full p-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-bold">
                                     <option value="good">Kondisi Baik (Kembali ke Rak Toko)</option>
                                     <option value="damaged">Cacat/Rusak (Masuk Karantina Rusak)</option>
                                 </select>
@@ -278,7 +278,7 @@ import{e as u,a as n,i as c,f as g,o as N,k as h,b as H,l as I,n as R,G as C,v a
                 <span id="sales-return-grand-total" class="text-base font-black text-rose-600 dark:text-rose-400">Rp 0</span>
             </div>
         </div>
-    `,A()},z=(t,a)=>{if(!f[t])return;const e=Math.max(0,Math.min(f[t].maxReturnable,parseFloat(a)||0));f[t].returnQty=e,A()},Y=(t,a)=>{f[t]&&(f[t].reason=a)},Z=(t,a)=>{f[t]&&(f[t].condition=a)},A=()=>{const t=f.reduce((e,r)=>e+r.returnQty*r.price,0),a=u("sales-return-grand-total");a&&(a.textContent=g(Math.round(t)))},ee=async()=>{if(!m){h("Pilih rujukan nota penjualan terlebih dahulu!");return}const t=f.filter(l=>l.returnQty>0);if(t.length===0){h("Pilih minimal 1 barang dengan kuantitas lebih dari 0 untuk diretur!");return}const a=Math.round(t.reduce((l,o)=>l+o.returnQty*o.price,0)),e=document.querySelector('input[name="sales_refund_method"]:checked'),r=e?e.value:"cash",i=u("sales-return-notes")?.value||"",s=`Konfirmasi proses retur penjualan senilai ${g(a)} dengan metode: ${r.toUpperCase()}?`;if(await C(s)){I("Memproses retur & merestorasi persediaan...");try{const l=new Date().toISOString(),o=Math.random().toString(36).substring(2,6).toUpperCase(),p=`RMA-SLS-${new Date().toISOString().slice(0,10).replace(/-/g,"")}-${o}`;t.forEach(d=>{const k=(n.products||[]).find(v=>String(v.id)===String(d.id));k&&E(k,{returnNumber:p,orderId:m.orderId||m.id,qty:d.returnQty,buyPrice:k.hpp||d.price,variantName:d.variantName,condition:d.condition})}),r==="cash"&&(Array.isArray(n.expenses)||(n.expenses=[]),n.expenses.unshift({id:`EXP-RET-${Date.now()}`,date:l.slice(0,10),createdAt:l,category:"Retur Penjualan",description:`Pengembalian Tunai Retur Nota ${m.orderId||m.id} (${p})`,amount:a,paymentSource:"kas_toko",source:"pos_cashier",receiptNumber:p}));const w={id:p,orderId:m.orderId||m.id,createdAt:l,customerName:m.customer?.name||m.customerName||"Pelanggan Umum",customerPhone:m.customer?.wa||m.customer?.phone||"",cashierName:m.cashierName||"Kasir Toko",source:m.source||"pos",items:t.map(d=>({id:d.id,sku:d.sku,name:d.name,variantName:d.variantName,qty:d.returnQty,soldPrice:d.price,subtotalRefund:Math.round(d.returnQty*d.price),reason:d.reason,condition:d.condition,restockLocation:d.condition==="good"?"store":"quarantine"})),totalRefund:a,refundMethod:r,status:"completed",notes:i};Array.isArray(n.salesReturns)||(n.salesReturns=[]),n.salesReturns.unshift(w),await V(["salesReturns","expenses","products"]),R(),j(),M(),h(`✅ Retur Penjualan ${p} berhasil diproses!`),await C("Cetak Nota Bukti Retur Penjualan sekarang?")&&O(p)}catch(l){R(),console.error("Error proses sales return:",l),h("Gagal memproses retur: "+(l.message||""))}}};let x=[];const te=(t=null,a=null)=>{x=[];const e=u("modal-vendor-return"),r=u("modal-vendor-return-box");!e||!r||(ae(t,a),N(e,r),typeof window.pushModalHistory=="function"&&window.pushModalHistory("vendorReturn"))},q=(t=!1)=>{const a=u("modal-vendor-return"),e=u("modal-vendor-return-box");if(!a||!e)return;const r=()=>{D(a,e),x=[]};typeof window.requestCloseModal=="function"?window.requestCloseModal("vendorReturn",t,r):r()},ae=(t=null,a=null)=>{const e=u("vendor-return-modal-content");if(!e)return;const r=n.suppliers||[],i=n.purchases||[];e.innerHTML=`
+    `,A()},z=(t,a)=>{if(!k[t])return;const e=Math.max(0,Math.min(k[t].maxReturnable,parseFloat(a)||0));k[t].returnQty=e,A()},Y=(t,a)=>{k[t]&&(k[t].reason=a)},Z=(t,a)=>{k[t]&&(k[t].condition=a)},A=()=>{const t=k.reduce((e,r)=>e+r.returnQty*r.price,0),a=u("sales-return-grand-total");a&&(a.textContent=g(Math.round(t)))},ee=async()=>{if(!x){f("Pilih rujukan nota penjualan terlebih dahulu!");return}const t=k.filter(o=>o.returnQty>0);if(t.length===0){f("Pilih minimal 1 barang dengan kuantitas lebih dari 0 untuk diretur!");return}const a=Math.round(t.reduce((o,s)=>o+s.returnQty*s.price,0)),e=document.querySelector('input[name="sales_refund_method"]:checked'),r=e?e.value:"cash",l=u("sales-return-notes")?.value||"",n=`Konfirmasi proses retur penjualan senilai ${g(a)} dengan metode: ${r.toUpperCase()}?`;if(await C(n)){I("Memproses retur & merestorasi persediaan...");try{const o=new Date().toISOString(),s=Math.random().toString(36).substring(2,6).toUpperCase(),m=`RMA-SLS-${new Date().toISOString().slice(0,10).replace(/-/g,"")}-${s}`;t.forEach(i=>{const h=(d.products||[]).find(w=>String(w.id)===String(i.id));if(h){const w=i.variantName&&Array.isArray(h.variants)?h.variants.find(p=>p.name===i.variantName):null,N=w&&w.hpp?parseFloat(w.hpp):parseFloat(h.hpp)||i.price;E(h,{returnNumber:m,orderId:x.orderId||x.id,qty:i.returnQty,buyPrice:N,variantName:i.variantName,condition:i.condition})}}),r==="cash"&&(Array.isArray(d.expenses)||(d.expenses=[]),d.expenses.unshift({id:`EXP-RET-${Date.now()}`,date:o.slice(0,10),createdAt:o,category:"Retur Penjualan",description:`Pengembalian Tunai Retur Nota ${x.orderId||x.id} (${m})`,amount:a,paymentSource:"kas_toko",source:"pos_cashier",receiptNumber:m}));const v={id:m,orderId:x.orderId||x.id,createdAt:o,customerName:x.customer?.name||x.customerName||"Pelanggan Umum",customerPhone:x.customer?.wa||x.customer?.phone||"",cashierName:x.cashierName||"Kasir Toko",source:x.source||"pos",items:t.map(i=>({id:i.id,sku:i.sku,name:i.name,variantName:i.variantName,qty:i.returnQty,soldPrice:i.price,subtotalRefund:Math.round(i.returnQty*i.price),reason:i.reason,condition:i.condition,restockLocation:i.condition==="good"?"store":"quarantine"})),totalRefund:a,refundMethod:r,status:"completed",notes:l};Array.isArray(d.salesReturns)||(d.salesReturns=[]),d.salesReturns.unshift(v),await j(["salesReturns","expenses","products"]),R(),L(),M(),f(`✅ Retur Penjualan ${m} berhasil diproses!`),await C("Cetak Nota Bukti Retur Penjualan sekarang?")&&O(m)}catch(o){R(),console.error("Error proses sales return:",o),f("Gagal memproses retur: "+(o.message||""))}}};let b=[];const te=(t=null,a=null)=>{b=[];const e=u("modal-vendor-return"),r=u("modal-vendor-return-box");!e||!r||(ae(t,a),V(e,r),typeof window.pushModalHistory=="function"&&window.pushModalHistory("vendorReturn"))},F=(t=!1)=>{const a=u("modal-vendor-return"),e=u("modal-vendor-return-box");if(!a||!e)return;const r=()=>{D(a,e),b=[]};typeof window.requestCloseModal=="function"?window.requestCloseModal("vendorReturn",t,r):r()},ae=(t=null,a=null)=>{const e=u("vendor-return-modal-content");if(!e)return;const r=d.suppliers||[],l=d.purchases||[];e.innerHTML=`
         <div class="space-y-4">
             <!-- Pilihan Pemasok & PO -->
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -286,14 +286,14 @@ import{e as u,a as n,i as c,f as g,o as N,k as h,b as H,l as I,n as R,G as C,v a
                     <label class="block text-[11px] font-bold text-slate-700 dark:text-slate-300 mb-1">Pilih Rekanan Supplier:</label>
                     <select id="vendor-return-supplier-select" onchange="window.handleVendorSupplierChange(this.value)" class="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs font-bold text-slate-800 dark:text-white">
                         <option value="">-- Pilih Supplier Pemasok --</option>
-                        ${r.map(s=>`<option value="${c(s.id)}" ${String(s.id)===String(t)?"selected":""}>${c(s.name)}</option>`).join("")}
+                        ${r.map(n=>`<option value="${c(n.id)}" ${String(n.id)===String(t)?"selected":""}>${c(n.name)}</option>`).join("")}
                     </select>
                 </div>
                 <div>
                     <label class="block text-[11px] font-bold text-slate-700 dark:text-slate-300 mb-1">Rujukan PO Kulakan (Opsional):</label>
                     <select id="vendor-return-po-select" class="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs font-semibold text-slate-800 dark:text-white">
                         <option value="">-- Tidak Terikat PO Khusus --</option>
-                        ${i.map(s=>`<option value="${c(s.id)}" ${String(s.id)===String(a)?"selected":""}>${c(s.poNumber||s.id)} - ${g(s.totalPrice||0)}</option>`).join("")}
+                        ${l.map(n=>`<option value="${c(n.id)}" ${String(n.id)===String(a)?"selected":""}>${c(n.poNumber||n.id)} - ${g(n.totalPrice||0)}</option>`).join("")}
                     </select>
                 </div>
             </div>
@@ -336,10 +336,10 @@ import{e as u,a as n,i as c,f as g,o as N,k as h,b as H,l as I,n as R,G as C,v a
                 </div>
             </div>
         </div>
-    `,_()},re=t=>{const a=u("vendor-return-po-select");if(!a)return;const e=(n.purchases||[]).filter(r=>!t||String(r.supplierId)===String(t));a.innerHTML=`
+    `,H()},re=t=>{const a=u("vendor-return-po-select");if(!a)return;const e=(d.purchases||[]).filter(r=>!t||String(r.supplierId)===String(t));a.innerHTML=`
         <option value="">-- Tidak Terikat PO Khusus --</option>
         ${e.map(r=>`<option value="${c(r.id)}">${c(r.poNumber||r.id)} - Sisa Hutang: ${g(r.remainingDebt||0)}</option>`).join("")}
-    `},_=()=>{const t=u("vendor-return-items-list");if(!t)return;const a=x.length;x.push({productId:"",variantName:"",qty:1,buyPrice:0,fromLocation:"store",reason:"Barang Cacat Pabrik"});const e=n.products||[],r=document.createElement("div");r.id=`vendor-item-row-${a}`,r.className="p-3 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 space-y-2 shadow-2xs",r.innerHTML=`
+    `},H=()=>{const t=u("vendor-return-items-list");if(!t)return;const a=b.length;b.push({productId:"",variantName:"",qty:1,buyPrice:0,fromLocation:"store",reason:"Barang Cacat Pabrik"});const e=d.products||[],r=document.createElement("div");r.id=`vendor-item-row-${a}`,r.className="p-3 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 space-y-2 shadow-2xs",r.innerHTML=`
         <div class="flex items-center justify-between gap-2">
             <span class="text-[11px] font-black text-slate-400">#${a+1}</span>
             <button type="button" onclick="window.removeVendorReturnItemRow(${a})" class="w-6 h-6 rounded-lg text-slate-400 hover:text-rose-500 flex items-center justify-center cursor-pointer">
@@ -351,8 +351,10 @@ import{e as u,a as n,i as c,f as g,o as N,k as h,b as H,l as I,n as R,G as C,v a
                 <label class="block text-[10px] font-bold text-slate-400 mb-0.5">Pilih Produk:</label>
                 <select onchange="window.handleVendorItemProductSelect(${a}, this.value)" class="w-full p-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs font-bold text-slate-800 dark:text-white">
                     <option value="">-- Pilih Barang --</option>
-                    ${e.map(i=>`<option value="${c(i.id)}">${c(i.name)} (Stok: ${i.stock})</option>`).join("")}
+                    ${e.map(l=>`<option value="${c(l.id)}">${c(l.name)} (Stok: ${l.stock}${Array.isArray(l.variants)&&l.variants.length>0?` &middot; ${l.variants.length} Varian`:""})</option>`).join("")}
                 </select>
+                <!-- Kontainer Pemilih Varian Spesifik (Dinamis jika produk memiliki varian) -->
+                <div id="vendor-item-variant-box-${a}" class="hidden mt-1.5 p-2 rounded-xl bg-indigo-50/70 dark:bg-indigo-950/40 border border-indigo-200/80 dark:border-indigo-900/50"></div>
             </div>
             <div class="grid grid-cols-2 gap-2">
                 <div>
@@ -360,7 +362,7 @@ import{e as u,a as n,i as c,f as g,o as N,k as h,b as H,l as I,n as R,G as C,v a
                     <input type="number" step="any" min="0.01" value="1" oninput="window.handleVendorItemQtyChange(${a}, this.value)" class="w-full p-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs font-bold text-center">
                 </div>
                 <div>
-                    <label class="block text-[10px] font-bold text-slate-400 mb-0.5">Harga Modal (Rp):</label>
+                    <label class="block text-[10px] font-bold text-slate-400 mb-0.5">Harga Modal / HPP (Rp):</label>
                     <input type="number" id="vendor-item-price-${a}" value="0" oninput="window.handleVendorItemPriceChange(${a}, this.value)" class="w-full p-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs font-bold text-right">
                 </div>
             </div>
@@ -371,6 +373,7 @@ import{e as u,a as n,i as c,f as g,o as N,k as h,b as H,l as I,n as R,G as C,v a
                 <select onchange="window.handleVendorItemLocationChange(${a}, this.value)" class="w-full p-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs">
                     <option value="store">Rak Toko (storeStock)</option>
                     <option value="warehouse">Gudang Belakang (warehouseStock)</option>
+                    <option value="quarantine">Karantina Rusak (damagedStock)</option>
                 </select>
             </div>
             <div>
@@ -383,25 +386,35 @@ import{e as u,a as n,i as c,f as g,o as N,k as h,b as H,l as I,n as R,G as C,v a
                 </select>
             </div>
         </div>
-    `,t.appendChild(r)},se=t=>{const a=u(`vendor-item-row-${t}`);a&&a.remove(),x[t]&&(x[t].removed=!0),P()},ne=(t,a)=>{if(!x[t])return;x[t].productId=a;const e=(n.products||[]).find(r=>String(r.id)===String(a));if(e){const r=parseFloat(e.hpp)||0;x[t].buyPrice=r;const i=u(`vendor-item-price-${t}`);i&&(i.value=r)}P()},oe=(t,a)=>{x[t]&&(x[t].qty=parseFloat(a)||0),P()},le=(t,a)=>{x[t]&&(x[t].buyPrice=parseFloat(a)||0),P()},de=(t,a)=>{x[t]&&(x[t].fromLocation=a)},ie=(t,a)=>{x[t]&&(x[t].reason=a)},P=()=>{const t=x.filter(e=>!e.removed&&e.productId&&e.qty>0).reduce((e,r)=>e+r.qty*r.buyPrice,0),a=u("vendor-return-grand-total");a&&(a.textContent=g(Math.round(t)))},ce=async()=>{const a=u("vendor-return-supplier-select")?.value;if(!a){h("Pilih rekanan supplier terlebih dahulu!");return}const e=(n.suppliers||[]).find(d=>String(d.id)===String(a)),r=x.filter(d=>!d.removed&&d.productId&&d.qty>0);if(r.length===0){h("Pilih minimal 1 barang dengan kuantitas valid untuk diretur!");return}const i=u("vendor-return-po-select")?.value||null,s=document.querySelector('input[name="vendor_settlement_method"]:checked'),l=s?s.value:"ap_deduction",o=u("vendor-return-notes")?.value||"",p=Math.round(r.reduce((d,k)=>d+k.qty*k.buyPrice,0)),w=`Kirim retur barang ke ${e?.name||"Supplier"} senilai klaim ${g(p)}?`;if(await C(w)){I("Memproses pengembalian barang ke supplier...");try{const d=new Date().toISOString(),k=Math.random().toString(36).substring(2,6).toUpperCase(),v=`RMA-VND-${new Date().toISOString().slice(0,10).replace(/-/g,"")}-${k}`;if(r.forEach(b=>{const y=(n.products||[]).find(T=>String(T.id)===String(b.productId));y&&U(y,{qty:b.qty,variantName:b.variantName,fromLocation:b.fromLocation})}),l==="ap_deduction"&&i){const b=(n.purchases||[]).find(y=>String(y.id)===String(i));b&&b.remainingDebt&&(b.remainingDebt=Math.max(0,Math.round(b.remainingDebt-p)),b.remainingDebt===0&&(b.paymentStatus="paid"))}const F={id:v,supplierId:a,supplierName:e?.name||"Pemasok Toko",poId:i,createdAt:d,items:r.map(b=>{const y=(n.products||[]).find(T=>String(T.id)===String(b.productId));return{id:b.productId,name:y?y.name:"Produk",qty:b.qty,buyPrice:b.buyPrice,subtotalCost:Math.round(b.qty*b.buyPrice),fromLocation:b.fromLocation,reason:b.reason}}),totalClaim:p,settlementMethod:l,status:"completed",notes:o};Array.isArray(n.vendorReturns)||(n.vendorReturns=[]),n.vendorReturns.unshift(F),await V(["vendorReturns","purchases","products"]),R(),q(),M(),h(`✅ Retur Supplier ${v} berhasil dicatat!`),await C("Cetak Surat Pengembalian Barang ke Supplier sekarang?")&&Q(v)}catch(d){R(),console.error("Error proses vendor return:",d),h("Gagal memproses retur supplier: "+(d.message||""))}}},O=t=>{const a=(n.salesReturns||[]).find(e=>e.id===t);if(!a)return h("Data retur tidak ditemukan!");if(typeof window.executePrintRawBTData=="function"){const e=n.store?.name||"TOKO PUTRI",r=n.store?.address||"",i=n.store?.wa||"";let s=`${e}
+    `,t.appendChild(r)},ne=t=>{const a=u(`vendor-item-row-${t}`);a&&a.remove(),b[t]&&(b[t].removed=!0),$()},se=(t,a)=>{if(!b[t])return;b[t].productId=a;const e=(d.products||[]).find(l=>String(l.id)===String(a)),r=u(`vendor-item-variant-box-${t}`);if(e&&Array.isArray(e.variants)&&e.variants.length>0){const l=e.variants[0];b[t].variantName=l.name||"";const n=parseFloat(l.hpp)||parseFloat(e.hpp)||0;b[t].buyPrice=n,r&&(r.className="mt-1.5 p-2 rounded-xl bg-indigo-50/70 dark:bg-indigo-950/40 border border-indigo-200/80 dark:border-indigo-900/50 block space-y-1",r.innerHTML=`
+                <div class="flex items-center justify-between">
+                    <label class="block text-[10px] font-black text-indigo-700 dark:text-indigo-300">
+                        <i class="fa-solid fa-layer-group mr-1"></i>Pilih Varian Spesifik:
+                    </label>
+                    <span class="text-[9.5px] font-semibold text-indigo-600 dark:text-indigo-400">${e.variants.length} Varian</span>
+                </div>
+                <select onchange="window.handleVendorItemVariantSelect(${t}, this.value)" class="w-full p-1.5 rounded-lg border border-indigo-300 dark:border-indigo-700 bg-white dark:bg-slate-900 text-xs font-bold text-slate-800 dark:text-white focus:outline-none">
+                    ${e.variants.map(s=>{const m=s.storeStock!==void 0?s.storeStock:s.stock||0,v=s.warehouseStock!==void 0?s.warehouseStock:0,i=s.damagedStock||0,h=parseFloat(s.hpp)||parseFloat(e.hpp)||0;return`<option value="${c(s.name)}">${c(s.name)} (Rak: ${m}, Gudang: ${v}, Rusak: ${i} &middot; HPP: ${g(h)})</option>`}).join("")}
+                </select>
+            `);const o=u(`vendor-item-price-${t}`);o&&(o.value=n)}else if(b[t].variantName="",r&&(r.className="hidden",r.innerHTML=""),e){const l=parseFloat(e.hpp)||0;b[t].buyPrice=l;const n=u(`vendor-item-price-${t}`);n&&(n.value=l)}$()},oe=(t,a)=>{if(!b[t])return;b[t].variantName=a;const e=(d.products||[]).find(r=>String(r.id)===String(b[t].productId));if(e&&Array.isArray(e.variants)){const r=e.variants.find(l=>l.name===a);if(r){const l=parseFloat(r.hpp)||parseFloat(e.hpp)||0;b[t].buyPrice=l;const n=u(`vendor-item-price-${t}`);n&&(n.value=l)}}$()},le=(t,a)=>{b[t]&&(b[t].qty=parseFloat(a)||0),$()},de=(t,a)=>{b[t]&&(b[t].buyPrice=parseFloat(a)||0),$()},ie=(t,a)=>{b[t]&&(b[t].fromLocation=a)},ce=(t,a)=>{b[t]&&(b[t].reason=a)},$=()=>{const t=b.filter(e=>!e.removed&&e.productId&&e.qty>0).reduce((e,r)=>e+r.qty*r.buyPrice,0),a=u("vendor-return-grand-total");a&&(a.textContent=g(Math.round(t)))},ue=async()=>{const a=u("vendor-return-supplier-select")?.value;if(!a){f("Pilih rekanan supplier terlebih dahulu!");return}const e=(d.suppliers||[]).find(i=>String(i.id)===String(a)),r=b.filter(i=>!i.removed&&i.productId&&i.qty>0);if(r.length===0){f("Pilih minimal 1 barang dengan kuantitas valid untuk diretur!");return}const l=u("vendor-return-po-select")?.value||null,n=document.querySelector('input[name="vendor_settlement_method"]:checked'),o=n?n.value:"ap_deduction",s=u("vendor-return-notes")?.value||"",m=Math.round(r.reduce((i,h)=>i+h.qty*h.buyPrice,0)),v=`Kirim retur barang ke ${e?.name||"Supplier"} senilai klaim ${g(m)}?`;if(await C(v)){I("Memproses pengembalian barang ke supplier...");try{const i=new Date().toISOString(),h=Math.random().toString(36).substring(2,6).toUpperCase(),w=`RMA-VND-${new Date().toISOString().slice(0,10).replace(/-/g,"")}-${h}`;if(r.forEach(p=>{const y=(d.products||[]).find(T=>String(T.id)===String(p.productId));y&&U(y,{qty:p.qty,variantName:p.variantName,fromLocation:p.fromLocation})}),o==="ap_deduction"&&l){const p=(d.purchases||[]).find(y=>String(y.id)===String(l));p&&p.remainingDebt&&(p.remainingDebt=Math.max(0,Math.round(p.remainingDebt-m)),p.remainingDebt===0&&(p.paymentStatus="paid"))}const N={id:w,supplierId:a,supplierName:e?.name||"Pemasok Toko",poId:l,createdAt:i,items:r.map(p=>{const y=(d.products||[]).find(T=>String(T.id)===String(p.productId));return{id:p.productId,name:y?y.name:"Produk",variantName:p.variantName||"",sku:p.sku||y?.sku||"",qty:p.qty,buyPrice:p.buyPrice,subtotalClaim:Math.round(p.qty*p.buyPrice),subtotalCost:Math.round(p.qty*p.buyPrice),fromLocation:p.fromLocation,reason:p.reason}}),totalClaim:m,settlementMethod:o,status:"completed",notes:s};Array.isArray(d.vendorReturns)||(d.vendorReturns=[]),d.vendorReturns.unshift(N),await j(["vendorReturns","purchases","products"]),R(),F(),M(),f(`✅ Retur Supplier ${w} berhasil dicatat!`),await C("Cetak Surat Pengembalian Barang ke Supplier sekarang?")&&_(w)}catch(i){R(),console.error("Error proses vendor return:",i),f("Gagal memproses retur supplier: "+(i.message||""))}}},O=t=>{const a=(d.salesReturns||[]).find(e=>e.id===t);if(!a)return f("Data retur tidak ditemukan!");if(typeof window.executePrintRawBTData=="function"){const e=d.store?.name||"TOKO PUTRI",r=d.store?.address||"",l=d.store?.wa||"";let n=`${e}
 ${r}
-Telp/WA: ${i}
-`;s+=`--------------------------------
-`,s+=`NOTA RETUR PENJUALAN
-`,s+=`No Retur: ${a.id}
-`,s+=`No Nota : ${a.orderId||"-"}
-`,s+=`Tanggal : ${new Date(a.createdAt).toLocaleString("id-ID")}
-`,s+=`Konsumen: ${a.customerName||"Umum"}
-`,s+=`--------------------------------
-`,(a.items||[]).forEach(l=>{s+=`${l.name}
-`,s+=`  ${l.qty} x ${g(l.soldPrice)} = ${g(l.subtotalRefund)}
-`,s+=`  [${l.reason}]
-`}),s+=`--------------------------------
-`,s+=`TOTAL RETUR: ${g(a.totalRefund)}
-`,s+=`METODE     : ${a.refundMethod.toUpperCase()}
-`,s+=`--------------------------------
-`,s+=`Barang telah diverifikasi toko.
-`,s+=`Terima kasih atas kerja samanya.
+Telp/WA: ${l}
+`;n+=`--------------------------------
+`,n+=`NOTA RETUR PENJUALAN
+`,n+=`No Retur: ${a.id}
+`,n+=`No Nota : ${a.orderId||"-"}
+`,n+=`Tanggal : ${new Date(a.createdAt).toLocaleString("id-ID")}
+`,n+=`Konsumen: ${a.customerName||"Umum"}
+`,n+=`--------------------------------
+`,(a.items||[]).forEach(o=>{n+=`${o.name}${o.variantName?` (${o.variantName})`:""}
+`,n+=`  ${o.qty} x ${g(o.soldPrice)} = ${g(o.subtotalRefund)}
+`,n+=`  [${o.reason}]
+`}),n+=`--------------------------------
+`,n+=`TOTAL RETUR: ${g(a.totalRefund)}
+`,n+=`METODE     : ${a.refundMethod.toUpperCase()}
+`,n+=`--------------------------------
+`,n+=`Barang telah diverifikasi toko.
+`,n+=`Terima kasih atas kerja samanya.
 
 
-`,window.executePrintRawBTData(s)}else window.printSalesReturnA4(t)},ue=t=>{if(!(n.salesReturns||[]).find(e=>e.id===t))return h("Data retur tidak ditemukan!");typeof window.openDocPreview=="function"?window.openDocPreview("sales_return",{returnId:t}):window.print()},Q=t=>{if(!(n.vendorReturns||[]).find(e=>e.id===t))return h("Data retur supplier tidak ditemukan!");typeof window.openDocPreview=="function"?window.openDocPreview("vendor_return",{returnId:t}):window.print()};typeof window<"u"&&(window.renderReturnsView=M,window.switchReturnsTab=G,window.handleReturnsSearch=J,window.openSalesReturnModal=W,window.closeSalesReturnModal=j,window.searchOrderForReturn=L,window.handleReturnQtyChange=z,window.handleReturnReasonChange=Y,window.handleReturnConditionChange=Z,window.recalcSalesReturnSummary=A,window.submitSalesReturn=ee,window.openVendorReturnModal=te,window.closeVendorReturnModal=q,window.handleVendorSupplierChange=re,window.addVendorReturnItemRow=_,window.removeVendorReturnItemRow=se,window.handleVendorItemProductSelect=ne,window.handleVendorItemQtyChange=oe,window.handleVendorItemPriceChange=le,window.handleVendorItemLocationChange=de,window.handleVendorItemReasonChange=ie,window.recalcVendorReturnSummary=P,window.submitVendorReturn=ce,window.printSalesReturnThermal=O,window.printSalesReturnA4=ue,window.printVendorReturnA4=Q);export{_ as addVendorReturnItemRow,j as closeSalesReturnModal,q as closeVendorReturnModal,Z as handleReturnConditionChange,z as handleReturnQtyChange,Y as handleReturnReasonChange,J as handleReturnsSearch,de as handleVendorItemLocationChange,le as handleVendorItemPriceChange,ne as handleVendorItemProductSelect,oe as handleVendorItemQtyChange,ie as handleVendorItemReasonChange,re as handleVendorSupplierChange,W as openSalesReturnModal,te as openVendorReturnModal,ue as printSalesReturnA4,O as printSalesReturnThermal,Q as printVendorReturnA4,A as recalcSalesReturnSummary,P as recalcVendorReturnSummary,se as removeVendorReturnItemRow,M as renderReturnsView,L as searchOrderForReturn,ee as submitSalesReturn,ce as submitVendorReturn,G as switchReturnsTab};
+`,window.executePrintRawBTData(n)}else window.printSalesReturnA4(t)},pe=t=>{if(!(d.salesReturns||[]).find(e=>e.id===t))return f("Data retur tidak ditemukan!");typeof window.openDocPreview=="function"?window.openDocPreview("sales_return",{returnId:t}):window.print()},_=t=>{if(!(d.vendorReturns||[]).find(e=>e.id===t))return f("Data retur supplier tidak ditemukan!");typeof window.openDocPreview=="function"?window.openDocPreview("vendor_return",{returnId:t}):window.print()};typeof window<"u"&&(window.renderReturnsView=M,window.switchReturnsTab=G,window.handleReturnsSearch=W,window.openSalesReturnModal=J,window.closeSalesReturnModal=L,window.searchOrderForReturn=q,window.handleReturnQtyChange=z,window.handleReturnReasonChange=Y,window.handleReturnConditionChange=Z,window.recalcSalesReturnSummary=A,window.submitSalesReturn=ee,window.openVendorReturnModal=te,window.closeVendorReturnModal=F,window.handleVendorSupplierChange=re,window.addVendorReturnItemRow=H,window.removeVendorReturnItemRow=ne,window.handleVendorItemProductSelect=se,window.handleVendorItemVariantSelect=oe,window.handleVendorItemQtyChange=le,window.handleVendorItemPriceChange=de,window.handleVendorItemLocationChange=ie,window.handleVendorItemReasonChange=ce,window.recalcVendorReturnSummary=$,window.submitVendorReturn=ue,window.printSalesReturnThermal=O,window.printSalesReturnA4=pe,window.printVendorReturnA4=_);export{H as addVendorReturnItemRow,L as closeSalesReturnModal,F as closeVendorReturnModal,Z as handleReturnConditionChange,z as handleReturnQtyChange,Y as handleReturnReasonChange,W as handleReturnsSearch,ie as handleVendorItemLocationChange,de as handleVendorItemPriceChange,se as handleVendorItemProductSelect,le as handleVendorItemQtyChange,ce as handleVendorItemReasonChange,oe as handleVendorItemVariantSelect,re as handleVendorSupplierChange,J as openSalesReturnModal,te as openVendorReturnModal,pe as printSalesReturnA4,O as printSalesReturnThermal,_ as printVendorReturnA4,A as recalcSalesReturnSummary,$ as recalcVendorReturnSummary,ne as removeVendorReturnItemRow,M as renderReturnsView,q as searchOrderForReturn,ee as submitSalesReturn,ue as submitVendorReturn,G as switchReturnsTab};

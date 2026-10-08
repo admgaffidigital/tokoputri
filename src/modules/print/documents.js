@@ -1669,7 +1669,7 @@ export const openDocPreview = (type, targetId = null) => {
                 ${it.sku ? `<span class="text-slate-400 font-mono text-[9px] block">SKU: ${esc(it.sku)}</span>` : ''}
             </td>
             <td class="py-2 px-3 text-center text-[10px] font-semibold text-slate-600">
-                ${it.fromLocation === 'warehouse' ? 'Gudang' : 'Rak Toko'}
+                ${it.fromLocation === 'warehouse' ? 'Gudang' : (it.fromLocation === 'quarantine' ? 'Karantina' : 'Rak Toko')}
             </td>
             <td class="py-2 px-3 text-center font-mono font-bold text-slate-900">${formatQty(it.qty)}</td>
             <td class="py-2 px-3 text-right font-mono text-slate-600">${fCur(it.buyPrice || 0)}</td>

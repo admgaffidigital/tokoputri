@@ -616,7 +616,7 @@ export const deductVendorReturnStock = (product, returnData = {}) => {
     const qty = parseFloat(returnData.qty) || 0;
     if (qty <= 0) return null;
 
-    const fromLocation = returnData.fromLocation === 'warehouse' ? 'warehouse' : 'store';
+    const fromLocation = returnData.fromLocation === 'warehouse' ? 'warehouse' : (returnData.fromLocation === 'quarantine' ? 'quarantine' : 'store');
     const variantName = returnData.variantName || '';
 
     let targetObj = product;
@@ -625,13 +625,14 @@ export const deductVendorReturnStock = (product, returnData = {}) => {
         if (v) targetObj = v;
     }
 
-    const locKey = fromLocation === 'warehouse' ? 'warehouseStock' : 'storeStock';
+    const locKey = fromLocation === 'warehouse' ? 'warehouseStock' : (fromLocation === 'quarantine' ? 'damagedStock' : 'storeStock');
     targetObj[locKey] = Math.max(0, parseFloat(((parseFloat(targetObj[locKey]) || 0) - qty).toFixed(3)));
     targetObj.stock = parseFloat(((parseFloat(targetObj.storeStock) || 0) + (parseFloat(targetObj.warehouseStock) || 0)).toFixed(3));
 
     if (variantName && Array.isArray(product.variants)) {
         product.storeStock = product.variants.reduce((acc, it) => acc + (parseFloat(it.storeStock) || 0), 0);
         product.warehouseStock = product.variants.reduce((acc, it) => acc + (parseFloat(it.warehouseStock) || 0), 0);
+        product.damagedStock = product.variants.reduce((acc, it) => acc + (parseFloat(it.damagedStock) || 0), 0);
         product.stock = parseFloat((product.storeStock + product.warehouseStock).toFixed(3));
     } else {
         product.stock = parseFloat((product.storeStock + product.warehouseStock).toFixed(3));
@@ -639,3 +640,4 @@ export const deductVendorReturnStock = (product, returnData = {}) => {
 
     return { fromLocation, qty };
 };
+

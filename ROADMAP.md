@@ -1,15 +1,15 @@
 # 🗺️ ROADMAP STRATEGIS PENGEMBANGAN SISTEM TOKO PUTRI
 > **Platform Ekosistem Kasir (POS), Gudang Multi-Lokasi, & Finansial Enterprise**  
 > *Spesialisasi Ritel Bahan Bangunan, Alat Teknik, Kelistrikan & Perkakas*  
-> **Target Baseline Saat Ini:** `v1.12.0` | **Target Jangka Panjang:** `v2.0.0`
+> **Target Baseline Saat Ini:** `v1.12.1` | **Target Jangka Panjang:** `v2.0.0`
 
 ---
 
 ## 📌 Visi & Orientasi Pengembangan
-Ekosistem **TOKO PUTRI (Putri Utama Teknik)** telah mencapai kematangan arsitektur di tingkat *Enterprise Retail* pada versi `v1.12.0` dengan integrasi hulu-ke-hilir:
+Ekosistem **TOKO PUTRI (Putri Utama Teknik)** telah mencapai kematangan arsitektur di tingkat *Enterprise Retail* pada versi `v1.12.1` dengan integrasi hulu-ke-hilir:
 - Kasir POS responsif berkecepatan tinggi dengan Dual-Engine Scanner Kamera, Barcode Vektor Code 128, dan Presisi Kuantitas Desimal untuk barang curah/kiloan.
 - Alat Kalkulator Estimator Material Bangunan interaktif (Cat & Plafon, Keramik & Granit, Pasangan Dinding Hebel/Bata).
-- Manajemen Retur Barang & RMA Terpadu (Customer Sales Return & Vendor Purchase Return) dengan restorasi stok FIFO / karantina rusak dan rekonsiliasi finansial kas laci.
+- Manajemen Retur Barang & RMA Terpadu (Customer Sales Return & Vendor Purchase Return) dengan dukungan penuh produk multi-varian, pemilih varian dinamis, HPP spesifik varian, alokasi karantina rusak, dan rekonsiliasi kas laci.
 - Penilaian persediaan akurat berstandar akuntansi PSAK dengan FIFO (*First-In, First-Out*) berbasis batch kulakan.
 - Inventori dua lokasi independen (*Floor-First Deduction*: Rak Toko vs Gudang Cadangan).
 - Buku Kas Laci Kasir (*Cash Movement*), Rekap Shift X/Z Report, dan Manajemen Piutang Tempo (AR Ledger).
@@ -47,15 +47,16 @@ Dokumen ini menetapkan **Master Plan Roadmap Strategis** berikutnya untuk menjaw
 
 ---
 
-## 📦 FASE 2: Manajemen Retur & Rekonsiliasi Inventori (RMA Engine) (SELESAI - v1.12.0)
+## 📦 FASE 2: Manajemen Retur & Rekonsiliasi Inventori (RMA Engine) (SELESAI - v1.12.1)
 > **Fokus Utama:** Ketertiban penukaran barang, klaim cacat supplier, dan akurasi stok fisik.  
-> **Status:** Selesai & Terverifikasi di `v1.12.0`
+> **Status:** Selesai & Terverifikasi di `v1.12.1`
 
 ### 2.1 Modul Retur Penjualan (*Customer Sales Return*)
 * **Latar Belakang:** Kasus tukang kelebihan beli fitting pipa, salah ukuran kran, atau sisa semen proyek.
 * **Fitur & Spesifikasi:**
   - [x] Form Retur Penjualan berbasis pencarian Nomor Struk Kasir / Order ID.
   - [x] Pemilihan item dan kuantitas barang yang dikembalikan dengan input alasan retur (Kelebihan Proyek, Salah Beli Ukuran, Cacat Fisik).
+  - [x] Deteksi otomatis item bervarian dari nota belanja, badge varian di rincian retur, dan restorasi stok spesifik per varian.
   - [x] 3 Opsi Penyelesaian Retur:
     1. **Pengembalian Tunai (*Cash Refund*)**: Memotong buku kas laci kasir secara otomatis.
     2. **Tukar Barang Sejenis / Barang Lain**: Selisih harga diperhitungkan di nota baru kasir.
@@ -67,7 +68,9 @@ Dokumen ini menetapkan **Master Plan Roadmap Strategis** berikutnya untuk menjaw
 * **Latar Belakang:** Pengembalian barang cacat/rusak pabrik (kaleng cat bocor, saklar mati) ke distributor/supplier.
 * **Fitur & Spesifikasi:**
   - [x] Formulir Nota Retur Pembelian terhubung ke data Rekanan Supplier dan riwayat PO Kulakan.
-  - [x] Otomasi pemotongan Saldo Hutang Dagang (*Accounts Payable*) ke supplier terkait.
+  - [x] **Pemilih Varian Dinamis (*Interactive Variant Picker*)**: Otomatis mendeteksi produk bervarian dan menyuguhkan opsi varian dengan live stok per lokasi dan HPP varian.
+  - [x] **Dukungan Retur dari Karantina Rusak**: Pilihan alokasi pengambilan barang dari Karantina Rusak (`damagedStock`), Rak Toko, atau Gudang Cadangan.
+  - [x] Otomasi pemotongan Saldo Hutang Dagang (*Accounts Payable*) ke supplier terkait berdasarkan HPP spesifik varian.
   - [x] Pencatatan jurnal pembalik HPP dan histori mutasi barang keluar di kartu stok.
   - [x] Cetak Surat Pengembalian Barang ke Supplier resmi A4 dengan tanda tangan serah terima.
 

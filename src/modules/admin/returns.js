@@ -203,7 +203,7 @@ const renderSalesReturnsTableHtml = () => {
             <tbody class="divide-y divide-slate-100 dark:divide-slate-800 text-slate-700 dark:text-slate-300">
                 ${sorted.map(r => {
                     const dateStr = r.createdAt ? new Date(r.createdAt).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '-';
-                    const itemsSummary = (r.items || []).map(i => `${i.qty}x ${esc(i.name)}`).join(', ');
+                    const itemsSummary = (r.items || []).map(i => `${i.qty}x ${esc(i.name)}${i.variantName ? ` [${esc(i.variantName)}]` : ''}`).join(', ');
                     
                     let methodBadge = '<span class="px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-[10px] font-bold">Lainnya</span>';
                     if (r.refundMethod === 'cash') {
@@ -300,7 +300,7 @@ const renderVendorReturnsTableHtml = () => {
             <tbody class="divide-y divide-slate-100 dark:divide-slate-800 text-slate-700 dark:text-slate-300">
                 ${sorted.map(r => {
                     const dateStr = r.createdAt ? new Date(r.createdAt).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '-';
-                    const itemsSummary = (r.items || []).map(i => `${i.qty}x ${esc(i.name)}`).join(', ');
+                    const itemsSummary = (r.items || []).map(i => `${i.qty}x ${esc(i.name)}${i.variantName ? ` [${esc(i.variantName)}]` : ''}`).join(', ');
 
                     let methodBadge = '<span class="px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 text-[10px] font-bold">Lainnya</span>';
                     if (r.settlementMethod === 'ap_deduction') {
@@ -623,11 +623,13 @@ export const submitSalesReturn = async () => {
         itemsToReturn.forEach(it => {
             const prod = (appData.products || []).find(p => String(p.id) === String(it.id));
             if (prod) {
+                const varObj = it.variantName && Array.isArray(prod.variants) ? prod.variants.find(v => v.name === it.variantName) : null;
+                const hppToUse = (varObj && varObj.hpp) ? parseFloat(varObj.hpp) : (parseFloat(prod.hpp) || it.price);
                 restoreFifoStock(prod, {
                     returnNumber: returnId,
                     orderId: selectedOrderForReturn.orderId || selectedOrderForReturn.id,
                     qty: it.returnQty,
-                    buyPrice: prod.hpp || it.price,
+                    buyPrice: hppToUse,
                     variantName: it.variantName,
                     condition: it.condition
                 });
@@ -856,8 +858,10 @@ export const addVendorReturnItemRow = () => {
                 <label class="block text-[10px] font-bold text-slate-400 mb-0.5">Pilih Produk:</label>
                 <select onchange="window.handleVendorItemProductSelect(${rowIdx}, this.value)" class="w-full p-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs font-bold text-slate-800 dark:text-white">
                     <option value="">-- Pilih Barang --</option>
-                    ${products.map(p => `<option value="${esc(p.id)}">${esc(p.name)} (Stok: ${p.stock})</option>`).join('')}
+                    ${products.map(p => `<option value="${esc(p.id)}">${esc(p.name)} (Stok: ${p.stock}${Array.isArray(p.variants) && p.variants.length > 0 ? ` &middot; ${p.variants.length} Varian` : ''})</option>`).join('')}
                 </select>
+                <!-- Kontainer Pemilih Varian Spesifik (Dinamis jika produk memiliki varian) -->
+                <div id="vendor-item-variant-box-${rowIdx}" class="hidden mt-1.5 p-2 rounded-xl bg-indigo-50/70 dark:bg-indigo-950/40 border border-indigo-200/80 dark:border-indigo-900/50"></div>
             </div>
             <div class="grid grid-cols-2 gap-2">
                 <div>
@@ -865,7 +869,7 @@ export const addVendorReturnItemRow = () => {
                     <input type="number" step="any" min="0.01" value="1" oninput="window.handleVendorItemQtyChange(${rowIdx}, this.value)" class="w-full p-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs font-bold text-center">
                 </div>
                 <div>
-                    <label class="block text-[10px] font-bold text-slate-400 mb-0.5">Harga Modal (Rp):</label>
+                    <label class="block text-[10px] font-bold text-slate-400 mb-0.5">Harga Modal / HPP (Rp):</label>
                     <input type="number" id="vendor-item-price-${rowIdx}" value="0" oninput="window.handleVendorItemPriceChange(${rowIdx}, this.value)" class="w-full p-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs font-bold text-right">
                 </div>
             </div>
@@ -876,6 +880,7 @@ export const addVendorReturnItemRow = () => {
                 <select onchange="window.handleVendorItemLocationChange(${rowIdx}, this.value)" class="w-full p-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs">
                     <option value="store">Rak Toko (storeStock)</option>
                     <option value="warehouse">Gudang Belakang (warehouseStock)</option>
+                    <option value="quarantine">Karantina Rusak (damagedStock)</option>
                 </select>
             </div>
             <div>
@@ -904,11 +909,67 @@ export const handleVendorItemProductSelect = (idx, prodId) => {
     if (!vendorReturnDraftItems[idx]) return;
     vendorReturnDraftItems[idx].productId = prodId;
     const prod = (appData.products || []).find(p => String(p.id) === String(prodId));
-    if (prod) {
-        const hpp = parseFloat(prod.hpp) || 0;
+    const variantBox = el(`vendor-item-variant-box-${idx}`);
+
+    if (prod && Array.isArray(prod.variants) && prod.variants.length > 0) {
+        // Produk memiliki varian: otomatis set opsi varian pertama dan tampilkan selector
+        const firstVar = prod.variants[0];
+        vendorReturnDraftItems[idx].variantName = firstVar.name || '';
+        const hpp = parseFloat(firstVar.hpp) || parseFloat(prod.hpp) || 0;
         vendorReturnDraftItems[idx].buyPrice = hpp;
+
+        if (variantBox) {
+            variantBox.className = 'mt-1.5 p-2 rounded-xl bg-indigo-50/70 dark:bg-indigo-950/40 border border-indigo-200/80 dark:border-indigo-900/50 block space-y-1';
+            variantBox.innerHTML = `
+                <div class="flex items-center justify-between">
+                    <label class="block text-[10px] font-black text-indigo-700 dark:text-indigo-300">
+                        <i class="fa-solid fa-layer-group mr-1"></i>Pilih Varian Spesifik:
+                    </label>
+                    <span class="text-[9.5px] font-semibold text-indigo-600 dark:text-indigo-400">${prod.variants.length} Varian</span>
+                </div>
+                <select onchange="window.handleVendorItemVariantSelect(${idx}, this.value)" class="w-full p-1.5 rounded-lg border border-indigo-300 dark:border-indigo-700 bg-white dark:bg-slate-900 text-xs font-bold text-slate-800 dark:text-white focus:outline-none">
+                    ${prod.variants.map(v => {
+                        const vStore = v.storeStock !== undefined ? v.storeStock : (v.stock || 0);
+                        const vWh = v.warehouseStock !== undefined ? v.warehouseStock : 0;
+                        const vDamaged = v.damagedStock || 0;
+                        const vHpp = parseFloat(v.hpp) || parseFloat(prod.hpp) || 0;
+                        return `<option value="${esc(v.name)}">${esc(v.name)} (Rak: ${vStore}, Gudang: ${vWh}, Rusak: ${vDamaged} &middot; HPP: ${fCur(vHpp)})</option>`;
+                    }).join('')}
+                </select>
+            `;
+        }
+
         const input = el(`vendor-item-price-${idx}`);
         if (input) input.value = hpp;
+    } else {
+        // Produk tunggal (tanpa varian)
+        vendorReturnDraftItems[idx].variantName = '';
+        if (variantBox) {
+            variantBox.className = 'hidden';
+            variantBox.innerHTML = '';
+        }
+        if (prod) {
+            const hpp = parseFloat(prod.hpp) || 0;
+            vendorReturnDraftItems[idx].buyPrice = hpp;
+            const input = el(`vendor-item-price-${idx}`);
+            if (input) input.value = hpp;
+        }
+    }
+    recalcVendorReturnSummary();
+};
+
+export const handleVendorItemVariantSelect = (idx, variantName) => {
+    if (!vendorReturnDraftItems[idx]) return;
+    vendorReturnDraftItems[idx].variantName = variantName;
+    const prod = (appData.products || []).find(p => String(p.id) === String(vendorReturnDraftItems[idx].productId));
+    if (prod && Array.isArray(prod.variants)) {
+        const v = prod.variants.find(x => x.name === variantName);
+        if (v) {
+            const hpp = parseFloat(v.hpp) || parseFloat(prod.hpp) || 0;
+            vendorReturnDraftItems[idx].buyPrice = hpp;
+            const input = el(`vendor-item-price-${idx}`);
+            if (input) input.value = hpp;
+        }
     }
     recalcVendorReturnSummary();
 };
@@ -1007,8 +1068,11 @@ export const submitVendorReturn = async () => {
                 return {
                     id: it.productId,
                     name: prod ? prod.name : 'Produk',
+                    variantName: it.variantName || '',
+                    sku: it.sku || (prod?.sku) || '',
                     qty: it.qty,
                     buyPrice: it.buyPrice,
+                    subtotalClaim: Math.round(it.qty * it.buyPrice),
                     subtotalCost: Math.round(it.qty * it.buyPrice),
                     fromLocation: it.fromLocation,
                     reason: it.reason
@@ -1068,7 +1132,7 @@ export const printSalesReturnThermal = (returnId) => {
         receiptText += `--------------------------------\n`;
 
         (record.items || []).forEach(it => {
-            receiptText += `${it.name}\n`;
+            receiptText += `${it.name}${it.variantName ? ` (${it.variantName})` : ''}\n`;
             receiptText += `  ${it.qty} x ${fCur(it.soldPrice)} = ${fCur(it.subtotalRefund)}\n`;
             receiptText += `  [${it.reason}]\n`;
         });
@@ -1133,6 +1197,7 @@ if (typeof window !== 'undefined') {
     window.addVendorReturnItemRow = addVendorReturnItemRow;
     window.removeVendorReturnItemRow = removeVendorReturnItemRow;
     window.handleVendorItemProductSelect = handleVendorItemProductSelect;
+    window.handleVendorItemVariantSelect = handleVendorItemVariantSelect;
     window.handleVendorItemQtyChange = handleVendorItemQtyChange;
     window.handleVendorItemPriceChange = handleVendorItemPriceChange;
     window.handleVendorItemLocationChange = handleVendorItemLocationChange;

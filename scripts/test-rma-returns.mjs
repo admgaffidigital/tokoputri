@@ -148,6 +148,56 @@ deductVendorReturnStock(productD, {
 assert(productD.warehouseStock === 15, `Stok gudang terpotong 5 (20 -> 15, didapat: ${productD.warehouseStock})`);
 assert(productD.stock === 35, `Total stok jual kini 35 (didapat: ${productD.stock})`);
 
+// Retur dari Karantina Rusak (damagedStock)
+deductVendorReturnStock(productD, {
+    qty: 3,
+    fromLocation: 'quarantine'
+});
+
+assert(productD.damagedStock === 1, `Stok karantina rusak terpotong 3 (4 -> 1, didapat: ${productD.damagedStock})`);
+assert(productD.stock === 35, `Total stok jual tidak berkurang saat retur dari karantina (didapat: ${productD.stock})`);
+
+// Retur Pembelian Supplier untuk Produk Multi-Varian
+console.log('\n🎨 4b. Uji Pemotongan Stok Retur Supplier pada Produk Multi-Varian:');
+
+const productE = {
+    id: 'PROD-005',
+    name: 'Cat No Drop Anti Bocor',
+    stock: 25,
+    storeStock: 15,
+    warehouseStock: 10,
+    damagedStock: 2,
+    variants: [
+        { name: '1kg Abu-abu', stock: 10, storeStock: 7, warehouseStock: 3, damagedStock: 2, hpp: 45000 },
+        { name: '4kg Abu-abu', stock: 15, storeStock: 8, warehouseStock: 7, damagedStock: 0, hpp: 160000 }
+    ]
+};
+
+deductVendorReturnStock(productE, {
+    qty: 2,
+    variantName: '1kg Abu-abu',
+    fromLocation: 'store'
+});
+
+const v1 = productE.variants.find(v => v.name === '1kg Abu-abu');
+const v4 = productE.variants.find(v => v.name === '4kg Abu-abu');
+assert(v1.storeStock === 5, `Stok rak varian '1kg Abu-abu' terpotong 2 (7 -> 5, didapat: ${v1.storeStock})`);
+assert(v1.stock === 8, `Total stok varian '1kg Abu-abu' kini 8 (didapat: ${v1.stock})`);
+assert(v4.storeStock === 8, `Varian '4kg Abu-abu' tidak terpengaruh (tetap 8, didapat: ${v4.storeStock})`);
+assert(productE.storeStock === 13, `Agregat stok rak produk terkalibrasi otomatis (15 -> 13, didapat: ${productE.storeStock})`);
+assert(productE.stock === 23, `Agregat total stok produk terkalibrasi otomatis (25 -> 23, didapat: ${productE.stock})`);
+
+// Retur varian dari karantina rusak ke supplier
+deductVendorReturnStock(productE, {
+    qty: 2,
+    variantName: '1kg Abu-abu',
+    fromLocation: 'quarantine'
+});
+
+assert(v1.damagedStock === 0, `Stok rusak varian '1kg Abu-abu' habis diklaim ke supplier (2 -> 0, didapat: ${v1.damagedStock})`);
+assert(productE.damagedStock === 0, `Agregat karantina rusak produk master kini 0 (didapat: ${productE.damagedStock})`);
+assert(productE.stock === 23, `Stok jual tetap tidak berubah saat klaim barang rusak (didapat: ${productE.stock})`);
+
 // ─── 5. REKONSILIASI KAS LACI & EXPENSES (CASH REFUND) ────────
 console.log('\n💵 5. Uji Rekonsiliasi Kas Laci (Cash Refund):');
 

@@ -16,6 +16,22 @@ export const MAX_CHANGELOG_LIMIT = 5;
 
 export const DEFAULT_CHANGELOG = [
     {
+        "id": "log-1-12-01",
+        "version": "v1.12.1",
+        "date": "2026-10-08",
+        "title": "Penyempurnaan Dukungan Retur Multi-Varian Produk & Alokasi Karantina Cacat Pemasok",
+        "category": "feature",
+        "badge": "Variant RMA & Supplier Defect Quarantine v1.12.1",
+        "items": [
+            "Dukungan Penuh Retur Produk Multi-Varian ke Pemasok (returns.js): Formulir Retur Pembelian Supplier kini secara otomatis mendeteksi jika produk memiliki varian dan menyuguhkan pemilih varian dinamis. Setiap opsi menampilkan stok rak, stok gudang, karantina rusak, serta HPP spesifik varian.",
+            "Kalkulasi HPP Presisi per Varian: Pemotongan nilai klaim hutang PO (AP deduction) atau pengembalian dana kas supplier kini menggunakan HPP spesifik dari varian yang dipilih (bukan HPP produk induk).",
+            "Dukungan Retur dari Karantina Rusak (Quarantine to Vendor): Menambahkan opsi lokasi asal 'Karantina Rusak (damagedStock)' pada form retur supplier sehingga toko dapat mengembalikan barang cacat pabrik hasil retur konsumen langsung ke pabrik/distributor tanpa mengurangi stok jual yang aktif.",
+            "Sinkronisasi Inventori Varian Real-Time (fifo-inventory.js): Pemotongan retur vendor pada produk bervarian otomatis memotong stok varian target dan mengagregasi kembali total persediaan produk induk di rak toko, gudang cadangan, dan karantina rusak.",
+            "Label Visual Varian pada Ringkasan Tabel & Struk Thermal: Riwayat retur penjualan dan pembelian kini menampilkan badge nama varian [Varian] di tabel admin dan struk kasir thermal.",
+            "Multi-Channel Distribution v1.12.1 (Android versionCode 11201)."
+        ]
+    },
+    {
         "id": "log-1-12-00",
         "version": "v1.12.0",
         "date": "2026-10-08",
@@ -75,21 +91,6 @@ export const DEFAULT_CHANGELOG = [
             "Arsitektur Single Dedicated Scroll Container: Mengembalikan kontainer isi (#admin-content-view dan #admin-content) ke 'overflow: visible !important' sehingga tidak memicu multi-level nested scroll container yang saling memicu pertempuran reflow dan overscroll bounce.",
             "Stabilisasi Animasi & Tombol Bento Menu (settings.js): Mengubah animasi mount halaman dari transform scale (fade-in-scale) ke fade-in berbasis opacity murni (0.95 ke 1.0) tanpa pergeseran koordinat transform, serta merapikan kelas 8 kartu bento pengaturan agar bebas benturan styling hover.",
             "Multi-Channel Distribution v1.10.98 (Android versionCode 11098)."
-        ]
-    },
-    {
-        "id": "log-1-10-97",
-        "version": "v1.10.97",
-        "date": "2026-10-08",
-        "title": "Resolusi Tuntas Transisi Modal Cetak Label Barcode & Penutupan Otomatis Modal Induk (FIFO & PO)",
-        "category": "feature",
-        "badge": "Seamless Barcode Modal Transition & Parent Auto-Closing v1.10.97",
-        "items": [
-            "Auto-Closing & Resolusi Modal Menutupi (barcode-label-modal.js & fifo-modal.js): Memperbaiki bug di mana modal Cetak Label tidak muncul karena terhalang oleh modal Pelacak FIFO yang tidak mau menutup. Fungsi openProductBarcodeLabelModal kini secara otomatis mendeteksi dan menutup modal induk yang sedang aktif (modal-product-fifo dan modal-po-detail) secara mulus tanpa konflik history.back().",
-            "Peningkatan Z-Index Prioritas Tertinggi (z-[200]): Mengangkat lapisan modal Cetak Label Barcode ke z-[200] dan menjamin posisinya selalu berada di urutan anak paling atas DOM body (document.body.appendChild), mengeliminasi risiko modal tertutup atau terperangkap di belakang dialog lain.",
-            "Sinkronisasi Siklus Hidup Modal History API: Memperbaiki registrasi window.pushModalHistory('productBarcodeLabel') dan window.requestCloseModal('productBarcodeLabel') dengan animasi standar openModalAnim / closeModalAnim (double rAF GPU acceleration) untuk konsistensi penutupan tombol fisik Back Android.",
-            "Integrasi Cetak Label Barang PO Kulakan (purchases.js): Tombol 'Cetak Label Barang' pada rincian Purchase Order kini juga otomatis menutup modal PO Detail secara elegan sebelum membuka antrean cetak label barcode.",
-            "Multi-Channel Distribution v1.10.97 (Android versionCode 11097)."
         ]
     }
 ];
